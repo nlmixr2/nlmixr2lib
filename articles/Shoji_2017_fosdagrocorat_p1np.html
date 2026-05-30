@@ -657,14 +657,14 @@ methotrexate. The cohort was 80% female, median age 56 years (range
 <tbody>
 <tr class="odd">
 <td>
-<code>lkde</code> (KDE fosdagrocorat)</td>
+<code>lkel</code> (KDE fosdagrocorat)</td>
 <td>
 <code>log(0.597)</code> /week</td>
 <td>Table 2 P1NP, “KDE Fosdagrocorat”</td>
 </tr>
 <tr class="even">
 <td>
-<code>dlkde_pred</code> (log-ratio KDE pred/fos)</td>
+<code>dlkel_pred</code> (log-ratio KDE pred/fos)</td>
 <td><code>log(0.535/0.597)</code></td>
 <td>Table 2 P1NP, “KDE Prednisone”</td>
 </tr>
@@ -728,7 +728,7 @@ methotrexate. The cohort was 80% female, median age 56 years (range
 </tr>
 <tr class="odd">
 <td>
-<code>etalkde+etaledk50+etalbl</code> block</td>
+<code>etalkel+etaledk50+etalbl</code> block</td>
 <td>
 <code>omega^2</code> 0.9025, 0.4290, 0.2172; cov per Table 2
 q-correlations</td>
@@ -745,7 +745,7 @@ q-correlations</td>
 <td>Table 2 P1NP, “Residual variability %CV [e] = 15.2”</td>
 </tr>
 <tr class="even">
-<td><code>d/dt(depot) = -kde * depot</code></td>
+<td><code>d/dt(depot_kpd) = -kel * depot_kpd</code></td>
 <td>K-PD effect compartment</td>
 <td>Methods, K-PD model equations</td>
 </tr>
@@ -793,11 +793,11 @@ days (weeks 11-12).</p>
 <span>  <span class="va">dose_ev</span> <span class="op">&lt;-</span> <span class="kw">if</span> <span class="op">(</span><span class="va">dose_qd_mg</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="fu">bind_rows</span><span class="op">(</span></span>
 <span>      <span class="fu">tibble</span><span class="op">(</span>id <span class="op">=</span> <span class="va">ids</span>, time <span class="op">=</span> <span class="fl">0</span>,  amt <span class="op">=</span> <span class="va">active_rate</span> <span class="op">*</span> <span class="fl">8</span>,</span>
-<span>             rate <span class="op">=</span> <span class="va">active_rate</span>, evid <span class="op">=</span> <span class="fl">1L</span>, cmt <span class="op">=</span> <span class="st">"depot"</span><span class="op">)</span>,</span>
+<span>             rate <span class="op">=</span> <span class="va">active_rate</span>, evid <span class="op">=</span> <span class="fl">1L</span>, cmt <span class="op">=</span> <span class="st">"depot_kpd"</span><span class="op">)</span>,</span>
 <span>      <span class="fu">tibble</span><span class="op">(</span>id <span class="op">=</span> <span class="va">ids</span>, time <span class="op">=</span> <span class="fl">8</span>,  amt <span class="op">=</span> <span class="va">taper_a_rate</span> <span class="op">*</span> <span class="fl">2</span>,</span>
-<span>             rate <span class="op">=</span> <span class="va">taper_a_rate</span>, evid <span class="op">=</span> <span class="fl">1L</span>, cmt <span class="op">=</span> <span class="st">"depot"</span><span class="op">)</span>,</span>
+<span>             rate <span class="op">=</span> <span class="va">taper_a_rate</span>, evid <span class="op">=</span> <span class="fl">1L</span>, cmt <span class="op">=</span> <span class="st">"depot_kpd"</span><span class="op">)</span>,</span>
 <span>      <span class="fu">tibble</span><span class="op">(</span>id <span class="op">=</span> <span class="va">ids</span>, time <span class="op">=</span> <span class="fl">10</span>, amt <span class="op">=</span> <span class="va">taper_b_rate</span> <span class="op">*</span> <span class="fl">2</span>,</span>
-<span>             rate <span class="op">=</span> <span class="va">taper_b_rate</span>, evid <span class="op">=</span> <span class="fl">1L</span>, cmt <span class="op">=</span> <span class="st">"depot"</span><span class="op">)</span></span>
+<span>             rate <span class="op">=</span> <span class="va">taper_b_rate</span>, evid <span class="op">=</span> <span class="fl">1L</span>, cmt <span class="op">=</span> <span class="st">"depot_kpd"</span><span class="op">)</span></span>
 <span>    <span class="op">)</span></span>
 <span>  <span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
 <span>    <span class="fu">tibble</span><span class="op">(</span>id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">integer</a></span><span class="op">(</span><span class="op">)</span>, time <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="op">)</span>, amt <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="op">)</span>,</span>
@@ -847,7 +847,7 @@ zero via <code><a href="https://nlmixr2.github.io/rxode2/reference/zeroRe.html" 
 <span>  <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/zeroRe.html" class="external-link">zeroRe</a></span><span class="op">(</span><span class="va">mod</span><span class="op">)</span>, events <span class="op">=</span> <span class="va">events</span>,</span>
 <span>  keep <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"arm"</span>, <span class="st">"DOSE"</span>, <span class="st">"DRUG_PRED"</span><span class="op">)</span></span>
 <span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalkde', 'etaledk50', 'etalrbase', 'etaslp'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalkel', 'etaledk50', 'etalrbase', 'etaslp'</span></span>
 <span><span class="co">#&gt; Warning: multi-subject simulation without without 'omega'</span></span></code></pre></div>
 </div>
 <div class="section level2">
@@ -1099,25 +1099,25 @@ models (e.g., <code>das28</code> in
 <strong>Drug arm switching via reparameterization.</strong> Shoji
 2017 reports paper-level point estimates of KDE, Imax, and EDK50
 separately for fosdagrocorat and prednisone. To allow a single
-<code>etalkde</code> / <code>etaledk50</code> pairing with
-<code>lkde</code> / <code>ledk50</code> (the eta-fixed-effect-pairing
+<code>etalkel</code> / <code>etaledk50</code> pairing with
+<code>lkel</code> / <code>ledk50</code> (the eta-fixed-effect-pairing
 convention enforced by <code><a href="../reference/checkModelConventions.html">checkModelConventions()</a></code>), the
 per-drug values are reparameterized as base (fosdagrocorat) + log-ratio
-offset for prednisone (<code>dlkde_pred</code>,
+offset for prednisone (<code>dlkel_pred</code>,
 <code>dledk50_pred</code>) and base + logit-difference offset for Imax
 (<code>dlogitimax_pred</code>). The reparameterization is mathematically
 equivalent to the paper’s encoding – evaluating
-<code>exp(lkde + dlkde_pred * 1)</code> recovers the published 0.535
+<code>exp(lkel + dlkel_pred * 1)</code> recovers the published 0.535
 /week to within rounding, and the analogous identity holds for EDK50 and
 Imax.</li>
 <li>
 <strong>Common etas across drug arms.</strong> The paper does not
 report whether individual subjects could in principle have different
-etalkde values for fosdagrocorat versus prednisone (each subject was
+etalkel values for fosdagrocorat versus prednisone (each subject was
 assigned a single arm in the phase II design, so the question is
-unobservable). The model adds the same <code>etalkde</code> to both
-<code>lkde + dlkde_pred * 1</code> and
-<code>lkde + dlkde_pred * 0</code>, consistent with the standard NONMEM
+unobservable). The model adds the same <code>etalkel</code> to both
+<code>lkel + dlkel_pred * 1</code> and
+<code>lkel + dlkel_pred * 0</code>, consistent with the standard NONMEM
 convention of a single eta per parameter per subject.</li>
 <li>
 <strong>Taper-period dosing approximation.</strong> The paper’s

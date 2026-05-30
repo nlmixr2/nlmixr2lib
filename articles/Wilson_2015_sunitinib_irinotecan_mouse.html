@@ -680,12 +680,12 @@ Table 1 (experiment #2 fit).</p>
 <td>Wilson 2015 Equation 3 (penultimate line)</td>
 </tr>
 <tr class="even">
-<td><code>d/dt(sunitinib)</code></td>
+<td><code>d/dt(depot_kpd_sunitinib)</code></td>
 <td>n/a</td>
 <td>Wilson 2015 Equation 2 (K-PD)</td>
 </tr>
 <tr class="odd">
-<td><code>d/dt(irinotecan)</code></td>
+<td><code>d/dt(depot_kpd_irinotecan)</code></td>
 <td>n/a</td>
 <td>Wilson 2015 Equation 3, paragraph “Model of vascular tumor growth
 with combined …”</td>
@@ -737,14 +737,14 @@ with combined …”</td>
 </tr>
 <tr class="even">
 <td>
-<code>ps_elim</code> (p_S)</td>
-<td><code>fixed(2.12)</code></td>
+<code>lkel_sunitinib</code> (p_S)</td>
+<td><code>fixed(log(2.12))</code></td>
 <td>Wilson 2015 Table 1: p_S = 2.12 day^-1 (fixed)</td>
 </tr>
 <tr class="odd">
 <td>
-<code>pc_elim</code> (p_C)</td>
-<td><code>fixed(0.0850)</code></td>
+<code>lkel_irinotecan</code> (p_C)</td>
+<td><code>fixed(log(0.0850))</code></td>
 <td>Wilson 2015 Table 1: p_C = 0.0850 day^-1 (fixed)</td>
 </tr>
 <tr class="even">
@@ -799,11 +799,11 @@ is exactly 1 regardless of the actual mg/kg.</p>
 <span><span class="va">make_events_one</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">arm</span>, <span class="va">suni_days</span>, <span class="va">irino_days</span>, <span class="va">id</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">s</span> <span class="op">&lt;-</span> <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">suni_days</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="fu">tibble</span><span class="op">(</span>id <span class="op">=</span> <span class="va">id</span>, time <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">suni_days</span><span class="op">)</span>,</span>
-<span>           evid <span class="op">=</span> <span class="fl">1L</span>, amt <span class="op">=</span> <span class="fl">1</span>, cmt <span class="op">=</span> <span class="st">"sunitinib"</span>, arm <span class="op">=</span> <span class="va">arm</span><span class="op">)</span></span>
+<span>           evid <span class="op">=</span> <span class="fl">1L</span>, amt <span class="op">=</span> <span class="fl">1</span>, cmt <span class="op">=</span> <span class="st">"depot_kpd_sunitinib"</span>, arm <span class="op">=</span> <span class="va">arm</span><span class="op">)</span></span>
 <span>  <span class="op">}</span> <span class="kw">else</span> <span class="cn">NULL</span></span>
 <span>  <span class="va">i</span> <span class="op">&lt;-</span> <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">irino_days</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="fu">tibble</span><span class="op">(</span>id <span class="op">=</span> <span class="va">id</span>, time <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">irino_days</span><span class="op">)</span>,</span>
-<span>           evid <span class="op">=</span> <span class="fl">1L</span>, amt <span class="op">=</span> <span class="fl">1</span>, cmt <span class="op">=</span> <span class="st">"irinotecan"</span>, arm <span class="op">=</span> <span class="va">arm</span><span class="op">)</span></span>
+<span>           evid <span class="op">=</span> <span class="fl">1L</span>, amt <span class="op">=</span> <span class="fl">1</span>, cmt <span class="op">=</span> <span class="st">"depot_kpd_irinotecan"</span>, arm <span class="op">=</span> <span class="va">arm</span><span class="op">)</span></span>
 <span>  <span class="op">}</span> <span class="kw">else</span> <span class="cn">NULL</span></span>
 <span>  <span class="va">o</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="op">(</span>id <span class="op">=</span> <span class="va">id</span>, time <span class="op">=</span> <span class="va">obs_times</span>,</span>
 <span>              evid <span class="op">=</span> <span class="fl">0L</span>, amt <span class="op">=</span> <span class="fl">0</span>, cmt <span class="op">=</span> <span class="cn">NA_character_</span>, arm <span class="op">=</span> <span class="va">arm</span><span class="op">)</span></span>
@@ -897,9 +897,9 @@ answer.</p>
 <span><span class="va">nadir_events</span> <span class="op">&lt;-</span> <span class="fu">bind_rows</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_along</a></span><span class="op">(</span><span class="va">test_days</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">j</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">td</span> <span class="op">&lt;-</span> <span class="va">test_days</span><span class="op">[</span><span class="va">j</span><span class="op">]</span></span>
 <span>  <span class="va">s</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="op">(</span>id <span class="op">=</span> <span class="va">j</span>, time <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="fl">11</span><span class="op">)</span>, evid <span class="op">=</span> <span class="fl">1L</span>, amt <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>              cmt <span class="op">=</span> <span class="st">"sunitinib"</span>, irino_day <span class="op">=</span> <span class="va">td</span><span class="op">)</span></span>
+<span>              cmt <span class="op">=</span> <span class="st">"depot_kpd_sunitinib"</span>, irino_day <span class="op">=</span> <span class="va">td</span><span class="op">)</span></span>
 <span>  <span class="va">i</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="op">(</span>id <span class="op">=</span> <span class="va">j</span>, time <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">td</span><span class="op">)</span>, evid <span class="op">=</span> <span class="fl">1L</span>, amt <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>              cmt <span class="op">=</span> <span class="st">"irinotecan"</span>, irino_day <span class="op">=</span> <span class="va">td</span><span class="op">)</span></span>
+<span>              cmt <span class="op">=</span> <span class="st">"depot_kpd_irinotecan"</span>, irino_day <span class="op">=</span> <span class="va">td</span><span class="op">)</span></span>
 <span>  <span class="va">o</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="op">(</span>id <span class="op">=</span> <span class="va">j</span>, time <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">30</span>, by <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span>, evid <span class="op">=</span> <span class="fl">0L</span>, amt <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>              cmt <span class="op">=</span> <span class="cn">NA_character_</span>, irino_day <span class="op">=</span> <span class="va">td</span><span class="op">)</span></span>
 <span>  <span class="fu">bind_rows</span><span class="op">(</span><span class="va">s</span>, <span class="va">i</span>, <span class="va">o</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu">arrange</span><span class="op">(</span><span class="va">time</span><span class="op">)</span></span>
@@ -977,7 +977,7 @@ class of model.</p>
 <p>The interaction term kC = kS * exp(integral_0^T_C S(t) dt) is
 evaluated at the time of irinotecan administration T_C and held constant
 thereafter. The <code>cumSunitinibFrozen</code> state should freeze at
-its T_C value once <code>irinotecan</code> is dosed.</p>
+its T_C value once <code>depot_kpd_irinotecan</code> is dosed.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">freeze_check</span> <span class="op">&lt;-</span> <span class="va">sim_typ</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">arm</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Group 4: combo day 2"</span>, <span class="st">"Group 5: combo day 15"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -1046,15 +1046,15 @@ cumulative sunitinib exposure at the end of dosing is 12 / 2.12 ~= 5.66
 <div class="section level3">
 <h3 id="vehicle-no-drug-effect">3. Vehicle = no drug effect<a class="anchor" aria-label="anchor" href="#vehicle-no-drug-effect"></a>
 </h3>
-<p>In the control arm both <code>sunitinib</code> and
-<code>irinotecan</code> stay at zero throughout, both drug-effect terms
-vanish, and the tumor and carrying-capacity ODEs reduce to the pure
-Wilson 2015 Equation 1 system (generalised logistic with vasculature
-growth).</p>
+<p>In the control arm both <code>depot_kpd_sunitinib</code> and
+<code>depot_kpd_irinotecan</code> stay at zero throughout, both
+drug-effect terms vanish, and the tumor and carrying-capacity ODEs
+reduce to the pure Wilson 2015 Equation 1 system (generalised logistic
+with vasculature growth).</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ctrl_typ</span> <span class="op">&lt;-</span> <span class="va">sim_typ</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">arm</span> <span class="op">==</span> <span class="st">"Control"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">ctrl_typ</span><span class="op">$</span><span class="va">sunitinib</span><span class="op">)</span>  <span class="op">==</span> <span class="fl">0</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">ctrl_typ</span><span class="op">$</span><span class="va">irinotecan</span><span class="op">)</span> <span class="op">==</span> <span class="fl">0</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">ctrl_typ</span><span class="op">$</span><span class="va">depot_kpd_sunitinib</span><span class="op">)</span>  <span class="op">==</span> <span class="fl">0</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">ctrl_typ</span><span class="op">$</span><span class="va">depot_kpd_irinotecan</span><span class="op">)</span> <span class="op">==</span> <span class="fl">0</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/all.html" class="external-link">all</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/diff.html" class="external-link">diff</a></span><span class="op">(</span><span class="va">ctrl_typ</span><span class="op">$</span><span class="va">tumor_size</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Control arm: monotonic tumor growth, no drug states active.\n"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Control arm: monotonic tumor growth, no drug states active.</span></span></code></pre></div>
@@ -1085,7 +1085,7 @@ growth).</p>
 <td>unitless</td>
 </tr>
 <tr class="odd">
-<td><code>beta_c * pc_elim * irinotecan * cycling_cells</code></td>
+<td><code>beta_c * kel_irinotecan * depot_kpd_irinotecan * cycling_cells</code></td>
 <td><code>(1/cu) * (1/day) * cu * mm</code></td>
 <td><code>mm / day</code></td>
 </tr>
@@ -1100,17 +1100,17 @@ growth).</p>
 <td><code>mm / day</code></td>
 </tr>
 <tr class="even">
-<td><code>beta_s * ps_elim * sunitinib * carrying_capacity</code></td>
+<td><code>beta_s * kel_sunitinib * depot_kpd_sunitinib * carrying_capacity</code></td>
 <td><code>(1/cu) * (1/day) * cu * mm</code></td>
 <td><code>mm / day</code></td>
 </tr>
 <tr class="odd">
-<td><code>-ps_elim * sunitinib</code></td>
+<td><code>-kel_sunitinib * depot_kpd_sunitinib</code></td>
 <td><code>(1/day) * cu</code></td>
 <td><code>cu / day</code></td>
 </tr>
 <tr class="even">
-<td><code>-pc_elim * irinotecan</code></td>
+<td><code>-kel_irinotecan * depot_kpd_irinotecan</code></td>
 <td><code>(1/day) * cu</code></td>
 <td><code>cu / day</code></td>
 </tr>

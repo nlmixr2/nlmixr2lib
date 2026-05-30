@@ -39,8 +39,8 @@ The same information is available programmatically via the model’s
 
 | Equation / parameter | Value | Source location |
 |----|----|----|
-| `lkde` (KDE fosdagrocorat) | `log(0.597)` /week | Table 2 P1NP, “KDE Fosdagrocorat” |
-| `dlkde_pred` (log-ratio KDE pred/fos) | `log(0.535/0.597)` | Table 2 P1NP, “KDE Prednisone” |
+| `lkel` (KDE fosdagrocorat) | `log(0.597)` /week | Table 2 P1NP, “KDE Fosdagrocorat” |
+| `dlkel_pred` (log-ratio KDE pred/fos) | `log(0.535/0.597)` | Table 2 P1NP, “KDE Prednisone” |
 | `lkd` | `log(0.609)` /week | Table 2 P1NP, “Kd” |
 | `lbl` | `log(47.0)` ng/mL | Table 2 P1NP, “BL” |
 | `logitimax` (Imax fos) | `logit(0.751)` | Table 2 P1NP, “Imax Fosdagrocorat” |
@@ -51,10 +51,10 @@ The same information is available programmatically via the model’s
 | `lrbmax` | `log(0.0479)` /mg | Table 2 P1NP, “RBmax” |
 | `lt50` | `log(1.13)` weeks | Table 2 P1NP, “T50” |
 | `slp` | `0.162` ng/mL/week | Table 2 P1NP, “SLP” |
-| `etalkde+etaledk50+etalbl` block | `omega^2` 0.9025, 0.4290, 0.2172; cov per Table 2 q-correlations | Table 2 P1NP, “IIV %CV” and “q” rows |
+| `etalkel+etaledk50+etalbl` block | `omega^2` 0.9025, 0.4290, 0.2172; cov per Table 2 q-correlations | Table 2 P1NP, “IIV %CV” and “q” rows |
 | `etaslp` | `0.928^2 = 0.8612` | Table 2 P1NP, “IIV SD \[g_SLP\] = 0.928” |
 | `propSd` | `0.152` | Table 2 P1NP, “Residual variability %CV \[e\] = 15.2” |
-| `d/dt(depot) = -kde * depot` | K-PD effect compartment | Methods, K-PD model equations |
+| `d/dt(depot_kpd) = -kel * depot_kpd` | K-PD effect compartment | Methods, K-PD model equations |
 | `d/dt(effect) = ks * rebound * inhibition - kd * effect` | Biomarker dynamics | Methods, K-PD model + Results rebound equation |
 | `P1NP = effect + slp_i * t` | Observation = response + linear placebo trend | Methods, F(ij) equation |
 
@@ -90,11 +90,11 @@ make_arm <- function(arm_label, dose_qd_mg, drug_pred, n,
   dose_ev <- if (dose_qd_mg > 0) {
     bind_rows(
       tibble(id = ids, time = 0,  amt = active_rate * 8,
-             rate = active_rate, evid = 1L, cmt = "depot"),
+             rate = active_rate, evid = 1L, cmt = "depot_kpd"),
       tibble(id = ids, time = 8,  amt = taper_a_rate * 2,
-             rate = taper_a_rate, evid = 1L, cmt = "depot"),
+             rate = taper_a_rate, evid = 1L, cmt = "depot_kpd"),
       tibble(id = ids, time = 10, amt = taper_b_rate * 2,
-             rate = taper_b_rate, evid = 1L, cmt = "depot")
+             rate = taper_b_rate, evid = 1L, cmt = "depot_kpd")
     )
   } else {
     tibble(id = integer(), time = numeric(), amt = numeric(),
@@ -150,7 +150,7 @@ sim_typ <- rxode2::rxSolve(
   rxode2::zeroRe(mod), events = events,
   keep = c("arm", "DOSE", "DRUG_PRED")
 ) |> as.data.frame()
-#> ℹ omega/sigma items treated as zero: 'etalkde', 'etaledk50', 'etalrbase', 'etaslp'
+#> ℹ omega/sigma items treated as zero: 'etalkel', 'etaledk50', 'etalrbase', 'etaslp'
 #> Warning: multi-subject simulation without without 'omega'
 ```
 
@@ -313,23 +313,23 @@ Expected typical responses (per Methods + paper Discussion):
   flags this as a `[warning]`; the deviation is intentional.
 - **Drug arm switching via reparameterization.** Shoji 2017 reports
   paper-level point estimates of KDE, Imax, and EDK50 separately for
-  fosdagrocorat and prednisone. To allow a single `etalkde` /
-  `etaledk50` pairing with `lkde` / `ledk50` (the
+  fosdagrocorat and prednisone. To allow a single `etalkel` /
+  `etaledk50` pairing with `lkel` / `ledk50` (the
   eta-fixed-effect-pairing convention enforced by
   [`checkModelConventions()`](https://nlmixr2.github.io/nlmixr2lib/reference/checkModelConventions.md)),
   the per-drug values are reparameterized as base (fosdagrocorat) +
-  log-ratio offset for prednisone (`dlkde_pred`, `dledk50_pred`) and
+  log-ratio offset for prednisone (`dlkel_pred`, `dledk50_pred`) and
   base + logit-difference offset for Imax (`dlogitimax_pred`). The
   reparameterization is mathematically equivalent to the paper’s
-  encoding – evaluating `exp(lkde + dlkde_pred * 1)` recovers the
+  encoding – evaluating `exp(lkel + dlkel_pred * 1)` recovers the
   published 0.535 /week to within rounding, and the analogous identity
   holds for EDK50 and Imax.
 - **Common etas across drug arms.** The paper does not report whether
-  individual subjects could in principle have different etalkde values
+  individual subjects could in principle have different etalkel values
   for fosdagrocorat versus prednisone (each subject was assigned a
   single arm in the phase II design, so the question is unobservable).
-  The model adds the same `etalkde` to both `lkde + dlkde_pred * 1` and
-  `lkde + dlkde_pred * 0`, consistent with the standard NONMEM
+  The model adds the same `etalkel` to both `lkel + dlkel_pred * 1` and
+  `lkel + dlkel_pred * 0`, consistent with the standard NONMEM
   convention of a single eta per parameter per subject.
 - **Taper-period dosing approximation.** The paper’s tapered weeks (9-10
   every other day at reduced dose; 11-12 every 3 days) are approximated

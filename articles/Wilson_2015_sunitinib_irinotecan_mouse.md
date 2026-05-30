@@ -55,8 +55,8 @@ S(t) dt) (Wilson 2015 Equation 4). All parameter values come from Wilson
 | `d/dt(cycling_cells)` | n/a | Wilson 2015 Equation 3 (first line) |
 | `d/dt(damaged_cells1..3)` | n/a | Wilson 2015 Equation 3 (transit chain D2-D4) |
 | `d/dt(carrying_capacity)` | n/a | Wilson 2015 Equation 3 (penultimate line) |
-| `d/dt(sunitinib)` | n/a | Wilson 2015 Equation 2 (K-PD) |
-| `d/dt(irinotecan)` | n/a | Wilson 2015 Equation 3, paragraph “Model of vascular tumor growth with combined …” |
+| `d/dt(depot_kpd_sunitinib)` | n/a | Wilson 2015 Equation 2 (K-PD) |
+| `d/dt(depot_kpd_irinotecan)` | n/a | Wilson 2015 Equation 3, paragraph “Model of vascular tumor growth with combined …” |
 | kC = kS \* exp(int S(t) dt) | n/a | Wilson 2015 Equation 4 |
 | `lk_growth` (lambda) | `log(1.34)` | Wilson 2015 Table 1: lambda = 1.34 day^-1 (RSE 10%) |
 | `lb_cap` (b) | `log(0.0027)` | Wilson 2015 Table 1: b = 0.0027 mm^-1 day^-1 (RSE 0.04%) |
@@ -65,8 +65,8 @@ S(t) dt) (Wilson 2015 Equation 4). All parameter values come from Wilson
 | `lks` (k_S) | `log(0.155)` | Wilson 2015 Table 1: k_S = 0.155 (RSE 6%) |
 | `d0` | `fixed(0.29)` | Wilson 2015 Table 1: D(t=0) = 0.29 mm (fixed) |
 | `k0` | `fixed(7.43)` | Wilson 2015 Table 1: K(t=0) = 7.43 mm (fixed) |
-| `ps_elim` (p_S) | `fixed(2.12)` | Wilson 2015 Table 1: p_S = 2.12 day^-1 (fixed) |
-| `pc_elim` (p_C) | `fixed(0.0850)` | Wilson 2015 Table 1: p_C = 0.0850 day^-1 (fixed) |
+| `lkel_sunitinib` (p_S) | `fixed(log(2.12))` | Wilson 2015 Table 1: p_S = 2.12 day^-1 (fixed) |
+| `lkel_irinotecan` (p_C) | `fixed(log(0.0850))` | Wilson 2015 Table 1: p_C = 0.0850 day^-1 (fixed) |
 | `alpha_logistic` (alpha) | `fixed(0.1)` | Wilson 2015 page 723 prose: alpha = 0.1 (fixed; “nearly Gompertzian”) |
 | `propSd_tumor_size` | `0.10` | Placeholder (Wilson 2015 reports no residual error for the median-data NLS fit) |
 | `addSd_tumor_size` | `0.50` | Placeholder (Wilson 2015 reports no residual error for the median-data NLS fit) |
@@ -102,11 +102,11 @@ arms <- tibble::tribble(
 make_events_one <- function(arm, suni_days, irino_days, id) {
   s <- if (length(suni_days) > 0) {
     tibble(id = id, time = as.numeric(suni_days),
-           evid = 1L, amt = 1, cmt = "sunitinib", arm = arm)
+           evid = 1L, amt = 1, cmt = "depot_kpd_sunitinib", arm = arm)
   } else NULL
   i <- if (length(irino_days) > 0) {
     tibble(id = id, time = as.numeric(irino_days),
-           evid = 1L, amt = 1, cmt = "irinotecan", arm = arm)
+           evid = 1L, amt = 1, cmt = "depot_kpd_irinotecan", arm = arm)
   } else NULL
   o <- tibble(id = id, time = obs_times,
               evid = 0L, amt = 0, cmt = NA_character_, arm = arm)
@@ -206,9 +206,9 @@ test_days <- c(0, 3, 6, 9, 12)
 nadir_events <- bind_rows(lapply(seq_along(test_days), function(j) {
   td <- test_days[j]
   s <- tibble(id = j, time = as.numeric(0:11), evid = 1L, amt = 1,
-              cmt = "sunitinib", irino_day = td)
+              cmt = "depot_kpd_sunitinib", irino_day = td)
   i <- tibble(id = j, time = as.numeric(td), evid = 1L, amt = 1,
-              cmt = "irinotecan", irino_day = td)
+              cmt = "depot_kpd_irinotecan", irino_day = td)
   o <- tibble(id = j, time = seq(0, 30, by = 0.5), evid = 0L, amt = 0,
               cmt = NA_character_, irino_day = td)
   bind_rows(s, i, o) |> arrange(time)
@@ -270,7 +270,7 @@ class of model.
 The interaction term kC = kS \* exp(integral_0^T_C S(t) dt) is evaluated
 at the time of irinotecan administration T_C and held constant
 thereafter. The `cumSunitinibFrozen` state should freeze at its T_C
-value once `irinotecan` is dosed.
+value once `depot_kpd_irinotecan` is dosed.
 
 ``` r
 
@@ -330,16 +330,16 @@ stopifnot(isTRUE(all.equal(g5_frozen, expected_total, tolerance = 1e-3)))
 
 ### 3. Vehicle = no drug effect
 
-In the control arm both `sunitinib` and `irinotecan` stay at zero
-throughout, both drug-effect terms vanish, and the tumor and
-carrying-capacity ODEs reduce to the pure Wilson 2015 Equation 1 system
-(generalised logistic with vasculature growth).
+In the control arm both `depot_kpd_sunitinib` and `depot_kpd_irinotecan`
+stay at zero throughout, both drug-effect terms vanish, and the tumor
+and carrying-capacity ODEs reduce to the pure Wilson 2015 Equation 1
+system (generalised logistic with vasculature growth).
 
 ``` r
 
 ctrl_typ <- sim_typ |> filter(arm == "Control")
-stopifnot(max(ctrl_typ$sunitinib)  == 0)
-stopifnot(max(ctrl_typ$irinotecan) == 0)
+stopifnot(max(ctrl_typ$depot_kpd_sunitinib)  == 0)
+stopifnot(max(ctrl_typ$depot_kpd_irinotecan) == 0)
 stopifnot(all(diff(ctrl_typ$tumor_size) > 0))
 cat("Control arm: monotonic tumor growth, no drug states active.\n")
 #> Control arm: monotonic tumor growth, no drug states active.
@@ -351,12 +351,12 @@ cat("Control arm: monotonic tumor growth, no drug states active.\n")
 |----|----|----|
 | `k_growth * cycling_cells` | `(1/day) * mm` | `mm / day` |
 | `(1 - (cycling_cells / carrying_capacity)^alpha_logistic)` | unitless | unitless |
-| `beta_c * pc_elim * irinotecan * cycling_cells` | `(1/cu) * (1/day) * cu * mm` | `mm / day` |
+| `beta_c * kel_irinotecan * depot_kpd_irinotecan * cycling_cells` | `(1/cu) * (1/day) * cu * mm` | `mm / day` |
 | `k_c_eff * damaged_cells_k` | `(1/day) * mm` | `mm / day` |
 | `b_cap * cycling_cells^2` | `(1/(mm*day)) * mm^2` | `mm / day` |
-| `beta_s * ps_elim * sunitinib * carrying_capacity` | `(1/cu) * (1/day) * cu * mm` | `mm / day` |
-| `-ps_elim * sunitinib` | `(1/day) * cu` | `cu / day` |
-| `-pc_elim * irinotecan` | `(1/day) * cu` | `cu / day` |
+| `beta_s * kel_sunitinib * depot_kpd_sunitinib * carrying_capacity` | `(1/cu) * (1/day) * cu * mm` | `mm / day` |
+| `-kel_sunitinib * depot_kpd_sunitinib` | `(1/day) * cu` | `cu / day` |
+| `-kel_irinotecan * depot_kpd_irinotecan` | `(1/day) * cu` | `cu / day` |
 
 `cu` = “concentration unit” (the K-PD normalized amount; Wilson 2015’s
 beta_S and beta_C carry the inverse-cu units that absorb this

@@ -48,11 +48,11 @@ Equations from van Hasselt 2015 Methods Eq. 1 (K-PD depot decay), Eq. 2
 
 | Equation / parameter | Value | Source location |
 |----|----|----|
-| `d/dt(depot) = -KP * depot`, AUC bolus at dose events | n/a | Methods Eq. 1 |
-| `d/dt(PSA) = PSA * (KG - KD0 * exp(-k_res*t) * depot)` | n/a | Methods Eq. 2 |
+| `d/dt(depot_kpd) = -KP * depot_kpd`, AUC bolus at dose events | n/a | Methods Eq. 1 |
+| `d/dt(PSA) = PSA * (KG - KD0 * exp(-k_res*t) * depot_kpd)` | n/a | Methods Eq. 2 |
 | `PSA(0) = PSA0` | n/a | Methods Eq. 2 |
 | Covariate form `(1 + NTRT/720)^h_NTRT` on KD0 | n/a | Methods Eq. 4; Table 2 footnote |
-| `lkp` | `fixed(log(6000))` | Table 2: hKP = 6000 /day, fixed (Results: “We selected a large value of 6,000 to allow for a nearly instantaneous dosing event.”) |
+| `lkel` | `fixed(log(6000))` | Table 2: hKP = 6000 /day, fixed (Results: “We selected a large value of 6,000 to allow for a nearly instantaneous dosing event.”) |
 | `lkd0` | `log(0.241)` | Table 2: hKD0 = 0.241 (RSE 32.6%) |
 | `lkres` | `log(0.0113)` | Table 2: hk = 0.0113 /day (RSE 44.3%) |
 | `lkg` | `log(0.00879)` | Table 2: hKG = 0.00879 /day (RSE 12.6%) |
@@ -111,12 +111,12 @@ subj <- tibble(
   )
 )
 
-# Dosing rows -- one per dose event, AUC supplied as amt into the depot K-PD
-# compartment. evid = 1 is a bolus dose; cmt = "depot" routes the AUC into
-# the drug-effect compartment.
+# Dosing rows -- one per dose event, AUC supplied as amt into the depot_kpd
+# K-PD compartment. evid = 1 is a bolus dose; cmt = "depot_kpd" routes the AUC
+# into the drug-effect compartment.
 dose_rows <- subj |>
   tidyr::crossing(time = dose_times) |>
-  mutate(evid = 1L, amt = auc_per_dose, cmt = "depot")
+  mutate(evid = 1L, amt = auc_per_dose, cmt = "depot_kpd")
 
 # Observation rows (PSA samples) -- no dose, amt = 0.
 obs_rows <- subj |>
@@ -146,7 +146,7 @@ mod <- readModelDb("vanHasselt_2015_eribulin")
 mod_typ <- mod |> rxode2::zeroRe()
 
 events_typ <- bind_rows(
-  tibble(id = 1L, time = dose_times, evid = 1L, amt = auc_per_dose, cmt = "depot"),
+  tibble(id = 1L, time = dose_times, evid = 1L, amt = auc_per_dose, cmt = "depot_kpd"),
   tibble(id = 1L, time = obs_times,  evid = 0L, amt = 0,           cmt = NA_character_)
 ) |>
   mutate(PRIOR_TAXANE = 0L, PRIOR_TAXANE_DAYS = 0) |>
@@ -402,9 +402,9 @@ ggplot(sim_off, aes(time, PSA)) +
 
 `KP = 6000 /day` is large by design (paper Results: “We selected a large
 value of 6,000 to allow for a nearly instantaneous dosing event”). The
-depot half-life is `log(2) / 6000 ~= 0.000116 day = 10 seconds`. The
-vignette plots `depot(t)` for a single AUC = 200 bolus over a 0.001-day
-(~ 1.5 minute) window so the rapid decay is visible.
+depot_kpd half-life is `log(2) / 6000 ~= 0.000116 day = 10 seconds`. The
+vignette plots `depot_kpd(t)` for a single AUC = 200 bolus over a
+0.001-day (~ 1.5 minute) window so the rapid decay is visible.
 
 ``` r
 
@@ -413,7 +413,7 @@ events_pulse <- tibble(
   time = c(0, 1e-6, seq(1e-5, 0.001, length.out = 50)),
   evid = c(1L, rep(0L, 51L)),
   amt  = c(200, rep(0, 51L)),
-  cmt  = c("depot", rep(NA_character_, 51L)),
+  cmt  = c("depot_kpd", rep(NA_character_, 51L)),
   PRIOR_TAXANE = 0L, PRIOR_TAXANE_DAYS = 0
 ) |>
   arrange(time, desc(evid))
@@ -421,11 +421,11 @@ events_pulse <- tibble(
 sim_pulse <- rxode2::rxSolve(mod_typ, events = events_pulse) |> as.data.frame()
 #> ℹ omega/sigma items treated as zero: 'etalpsa0', 'etalkg', 'etalkres', 'etalkd0'
 
-ggplot(sim_pulse |> filter(time > 0), aes(time * 86400, depot)) +  # x-axis in seconds
+ggplot(sim_pulse |> filter(time > 0), aes(time * 86400, depot_kpd)) +  # x-axis in seconds
   geom_line(linewidth = 1, colour = "purple4") +
-  labs(x = "Time after dose (seconds)", y = "depot (ng*h/mL; K-PD effect state)",
-       title = "K-PD depot compartment decay after a single AUC = 200 bolus",
-       caption = "Half-life log(2) / KP = log(2) / 6000 days ~= 10 seconds; depot is essentially impulsive on the day scale.") +
+  labs(x = "Time after dose (seconds)", y = "depot_kpd (ng*h/mL; K-PD effect state)",
+       title = "K-PD depot_kpd compartment decay after a single AUC = 200 bolus",
+       caption = "Half-life log(2) / KP = log(2) / 6000 days ~= 10 seconds; depot_kpd is essentially impulsive on the day scale.") +
   theme_minimal()
 ```
 
@@ -467,17 +467,17 @@ ggplot(resist_df, aes(time, resistance)) +
 
 | Term | Units | Reduces to |
 |----|----|----|
-| `kp * depot` | `(1/day) * (ng*h/mL)` | `(ng*h/mL)/day` |
+| `kel * depot_kpd` | `(1/day) * (ng*h/mL)` | `(ng*h/mL)/day` |
 | `kg * PSA` | `(1/day) * (ng/mL)` | `(ng/mL)/day` |
-| `kd0 * exp(-k_res*t) * depot * PSA` | `(L/(ng*h*day)) * 1 * (ng*h/mL) * (ng/mL)` | `(ng/mL)/day` |
+| `kd0 * exp(-k_res*t) * depot_kpd * PSA` | `(L/(ng*h*day)) * 1 * (ng*h/mL) * (ng/mL)` | `(ng/mL)/day` |
 
-The depot ODE reduces to `(ng*h/mL)/day`, consistent with `depot` having
-units `ng*h/mL` (the AUC area of one dose). The PSA ODE reduces to
-`(ng/mL)/day`, consistent with `PSA` having units `ng/mL`. The paper’s
-published unit string for KD0 (“ng\*h/L /day /day”) is dimensionally
-equivalent to `L/(ng*h*day)` once the product `KD0 * D` is constrained
-to `1/day` (the inhibition-rate dimension that the PSA growth term `KG`
-has) – 1 ug/L equals 1 ng/mL, so
+The depot_kpd ODE reduces to `(ng*h/mL)/day`, consistent with
+`depot_kpd` having units `ng*h/mL` (the AUC area of one dose). The PSA
+ODE reduces to `(ng/mL)/day`, consistent with `PSA` having units
+`ng/mL`. The paper’s published unit string for KD0 (“ng\*h/L /day /day”)
+is dimensionally equivalent to `L/(ng*h*day)` once the product `KD0 * D`
+is constrained to `1/day` (the inhibition-rate dimension that the PSA
+growth term `KG` has) – 1 ug/L equals 1 ng/mL, so
 `(ng*h/mL)^-1 = (ug*h/L)^-1 = L/(ug*h)`. The numerical value `0.241` is
 unchanged.
 
@@ -505,14 +505,13 @@ unchanged.
   via the `amt` column on each dose event; the vignette uses a single
   literature-typical placeholder of 200 ng\*h/mL per dose.
 
-- **K-PD `depot` compartment naming.** The paper’s “drug effect
+- **K-PD `depot_kpd` compartment naming.** The paper’s “drug effect
   compartment D” is a K-PD construct that receives the per-dose
   predicted AUC as a bolus and decays at `KP = 6000 /day`. The
-  compartment is named `depot` here so the standard rxode2 dosing
-  routing applies (`amt` on an `evid = 1` row with `cmt = "depot"`
-  deposits AUC into the K-PD state). This is the closest canonical name
-  available in `inst/references/compartment-names.md`; the semantic is
-  K-PD, not extravascular absorption.
+  compartment is named `depot_kpd` per the canonical K-PD register in
+  `inst/references/compartment-names.md`; standard rxode2 dosing routing
+  applies (`amt` on an `evid = 1` row with `cmt = "depot_kpd"` deposits
+  AUC into the K-PD state).
 
 - **Observation variable named `PSA` rather than `Cc`.** `Cc` is
   canonical for drug concentrations in plasma; here the observation is
@@ -553,6 +552,6 @@ unchanged.
   model with no drug-concentration ODE – there is no plasma drug
   concentration to run NCA on. The vignette substitutes the
   mechanistic-sanity checks above (drug-free pure growth = exp(KG\*t),
-  K-PD depot decay, resistance-term decay, dimensional analysis),
+  K-PD depot_kpd decay, resistance-term decay, dimensional analysis),
   matching the validation pattern used by `Ouerdani_2015_pazopanib.R`
   (also a TGI / DP model).

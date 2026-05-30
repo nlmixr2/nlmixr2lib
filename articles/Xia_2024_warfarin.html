@@ -784,17 +784,17 @@ coagulation-factor transit chains driving INR.</p>
 <ol style="list-style-type: decimal">
 <li>
 <strong>K-PD elimination.</strong> A single virtual administration
-compartment <code>depot</code> receives the warfarin dose (mg);
-first-order elimination at rate KDE = CL/V removes drug from
-<code>depot</code>. The drug-delivery rate at the effect site is DR =
-<code>depot</code> * KDE.</li>
+compartment <code>depot_kpd</code> receives the warfarin dose (mg);
+first-order elimination at rate <code>kel = CL/V</code> (paper’s KDE)
+removes drug from <code>depot_kpd</code>. The drug-delivery rate at the
+effect site is DR = <code>depot_kpd</code> * kel.</li>
 <li>
 <strong>Anticoagulant effect.</strong> Sigmoid Emax inhibition of
 activated vitamin K-dependent coagulation-factor formation: E_anticoag =
 Emax * (DR / EDK50)^gamma / (1 + (DR / EDK50)^gamma), where EDK50 = EC50
 * CL. Equivalently, using the effective drug concentration CDR =
-<code>depot</code> / V: E_anticoag = Emax * CDR^gamma / (EC50^gamma +
-CDR^gamma).</li>
+<code>depot_kpd</code> / V: E_anticoag = Emax * CDR^gamma / (EC50^gamma
++ CDR^gamma).</li>
 <li>
 <strong>Coagulation-factor transit chains.</strong> Two parallel
 3-compartment chains (<code>coag_s1</code> to <code>coag_s3</code> for
@@ -851,7 +851,7 @@ chain (MTT2 ~ 4.6 days) relaxes well past five chain time constants.</p>
 <span>    TIME  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">dose_times</span>, <span class="va">obs_times</span><span class="op">)</span>,</span>
 <span>    EVID  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1L</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">dose_times</span><span class="op">)</span><span class="op">)</span>,  <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0L</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">obs_times</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>    AMT   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="va">dose_mg</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">dose_times</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="cn">NA_real_</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">obs_times</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>    CMT   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"depot"</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">dose_times</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="cn">NA_character_</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">obs_times</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>    CMT   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"depot_kpd"</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">dose_times</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="cn">NA_character_</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">obs_times</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>    WT    <span class="op">=</span> <span class="va">wt</span>,</span>
 <span>    AGE   <span class="op">=</span> <span class="va">age</span>,</span>
 <span>    CYP2C9_S1_COUNT    <span class="op">=</span> <span class="va">cyp2c9_s1</span>,</span>
@@ -1497,13 +1497,13 @@ with the visual return to baseline by day ~35.</p>
 <p>Units in each ODE term, walked once for review:</p>
 <ul>
 <li>
-<code>depot</code> (mg) | <code>kde</code> (1/h) | <code>cl</code>
-(L/h) | <code>vc</code> (L) | <code>ec50</code> (mg/L) |
+<code>depot_kpd</code> (mg) | <code>kel</code> (1/h) |
+<code>cl</code> (L/h) | <code>vc</code> (L) | <code>ec50</code> (mg/L) |
 <code>cdr</code> (mg / L = concentration) | <code>e_anticoag</code>
 (unitless, 0 to 1)</li>
 <li>
-<code>d/dt(depot)</code> = <code>kde * depot</code> ~ (1/h) * mg =
-mg/h. Correct.</li>
+<code>d/dt(depot_kpd)</code> = <code>kel * depot_kpd</code> ~ (1/h)
+* mg = mg/h. Correct.</li>
 <li>
 <code>d/dt(coag_*)</code> = <code>ktr * (input - state)</code> ~
 (1/h) * (unitless) = 1/h. Correct (coag compartments are unitless

@@ -3892,12 +3892,12 @@ Disease-progression (DP) model for prostate-specific antigen (PSA)
 dynamics in metastatic castration-resistant prostate cancer (CRPC)
 patients treated with eribulin mesilate (van Hasselt 2015). K-PD
 framework: the per-dose predicted eribulin AUC enters a single transient
-drug-effect compartment depot that decays with rate KP (fixed to 6000
-/day so the effect is nearly instantaneous after each dose); PSA evolves
-under a first-order growth rate KG counteracted by an inhibition rate
-KD0 multiplied by the K-PD state depot and an exponentially decaying
-resistance factor exp(-k_res*t). PSA0, KD0, KG, k_res have correlated
-lognormal IIV; proportional residual error on PSA
+drug-effect compartment depot_kpd that decays with rate KP (fixed to
+6000 /day so the effect is nearly instantaneous after each dose); PSA
+evolves under a first-order growth rate KG counteracted by an inhibition
+rate KD0 multiplied by the K-PD state depot_kpd and an exponentially
+decaying resistance factor exp(-k_res*t). PSA0, KD0, KG, k_res have
+correlated lognormal IIV; proportional residual error on PSA
 (log-transform-both-sides). Prior taxane treatment (binary PRIOR_TAXANE)
 multiplies PSA0; cumulative number of days of prior taxane treatment
 (continuous PRIOR_TAXANE_DAYS) enters KD0 as (1 + NTRT/720)^theta. The

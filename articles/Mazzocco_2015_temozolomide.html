@@ -662,7 +662,7 @@ row).</p>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td><code>d/dt(kpdConc)</code></td>
+<td><code>d/dt(depot_kpd)</code></td>
 <td>n/a</td>
 <td>Mazzocco 2015 p.731: dC/dt = -KDE * C (K-PD construction per Jacqmin
 2007)</td>
@@ -738,7 +738,7 @@ observations</td>
 </tr>
 <tr class="even">
 <td>
-<code>lkde</code> (KDE)</td>
+<code>lkel</code> (KDE)</td>
 <td><code>fixed(log(8.3))</code></td>
 <td>Table 2: KDE = 8.3 1/month FIXED (paper text: 2.5-day half-life
 equivalent)</td>
@@ -809,7 +809,7 @@ Ribba 2012)</td>
 <td>Table 2 CV column</td>
 </tr>
 <tr class="even">
-<td><code>etalkde</code></td>
+<td><code>etalkel</code></td>
 <td>
 <code>fixed(0.2231)</code> (CV 50% FIXED)</td>
 <td>Table 2 CV column</td>
@@ -877,7 +877,7 @@ highlighted in Figure 1 (top-right).</p>
 <span>  <span class="op">)</span></span>
 <span>  <span class="va">doses</span> <span class="op">&lt;-</span> <span class="va">per_subject</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/expand.html" class="external-link">crossing</a></span><span class="op">(</span>time <span class="op">=</span> <span class="va">dose_times</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu">mutate</span><span class="op">(</span>evid <span class="op">=</span> <span class="fl">1L</span>, amt <span class="op">=</span> <span class="fl">1</span>, cmt <span class="op">=</span> <span class="st">"kpdConc"</span><span class="op">)</span></span>
+<span>    <span class="fu">mutate</span><span class="op">(</span>evid <span class="op">=</span> <span class="fl">1L</span>, amt <span class="op">=</span> <span class="fl">1</span>, cmt <span class="op">=</span> <span class="st">"depot_kpd"</span><span class="op">)</span></span>
 <span>  <span class="va">obs</span> <span class="op">&lt;-</span> <span class="va">per_subject</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/expand.html" class="external-link">crossing</a></span><span class="op">(</span>time <span class="op">=</span> <span class="va">obs_times</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu">mutate</span><span class="op">(</span>evid <span class="op">=</span> <span class="fl">0L</span>, amt <span class="op">=</span> <span class="fl">0</span>, cmt <span class="op">=</span> <span class="cn">NA_character_</span><span class="op">)</span></span>
@@ -922,7 +922,7 @@ kQpP.</p>
 <span>  keep   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"genotype_label"</span>, <span class="st">"TUM_TP53_MUT"</span>, <span class="st">"TUM_1P19Q_CODEL"</span><span class="op">)</span></span>
 <span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalp0', 'etalq0', 'etallambdap', 'etalkpq', 'etalkqpp', 'etaldqp', 'etalgamma', 'etalres', 'etalkde'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalp0', 'etalq0', 'etallambdap', 'etalkpq', 'etalkqpp', 'etaldqp', 'etalgamma', 'etalres', 'etalkel'</span></span>
 <span><span class="co">#&gt; Warning: multi-subject simulation without without 'omega'</span></span>
 <span></span>
 <span><span class="va">typ_summary</span> <span class="op">&lt;-</span> <span class="va">sim_typ</span> <span class="op">|&gt;</span></span>
@@ -1152,7 +1152,7 @@ genotype group.</caption>
 </h3>
 <p>After a single TMZ-cycle bolus of <code>amt = 1</code> at
 <code>t = 0</code>, the K-PD compartment should decay as
-<code>kpdConc(t) = exp(-KDE * t)</code> with
+<code>depot_kpd(t) = exp(-KDE * t)</code> with
 <code>KDE = 8.3 / month</code>, giving a half-life of
 <code>log(2) / 8.3 = 0.0835 month = 2.54 days</code>. Check the
 early-time decay of a single-cycle simulation.</p>
@@ -1167,32 +1167,32 @@ early-time decay of a single-cycle simulation.</p>
 <span></span>
 <span><span class="va">single_dose_events</span> <span class="op">&lt;-</span> <span class="fu">bind_rows</span><span class="op">(</span></span>
 <span>  <span class="fu">tibble</span><span class="op">(</span>id <span class="op">=</span> <span class="fl">1L</span>, TUM_TP53_MUT <span class="op">=</span> <span class="fl">0L</span>, TUM_1P19Q_CODEL <span class="op">=</span> <span class="fl">0L</span>,</span>
-<span>         time <span class="op">=</span> <span class="fl">0</span>, evid <span class="op">=</span> <span class="fl">1L</span>, amt <span class="op">=</span> <span class="fl">1</span>, cmt <span class="op">=</span> <span class="st">"kpdConc"</span><span class="op">)</span>,</span>
+<span>         time <span class="op">=</span> <span class="fl">0</span>, evid <span class="op">=</span> <span class="fl">1L</span>, amt <span class="op">=</span> <span class="fl">1</span>, cmt <span class="op">=</span> <span class="st">"depot_kpd"</span><span class="op">)</span>,</span>
 <span>  <span class="va">single_dose_events</span></span>
 <span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">arrange</span><span class="op">(</span><span class="va">time</span>, <span class="fu">desc</span><span class="op">(</span><span class="va">evid</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">sim_kde</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod_typ</span>, events <span class="op">=</span> <span class="va">single_dose_events</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span><span class="va">sim_kel</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod_typ</span>, events <span class="op">=</span> <span class="va">single_dose_events</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">time</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">mutate</span><span class="op">(</span>predicted <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="op">-</span><span class="fl">8.3</span> <span class="op">*</span> <span class="va">time</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalp0', 'etalq0', 'etallambdap', 'etalkpq', 'etalkqpp', 'etaldqp', 'etalgamma', 'etalres', 'etalkde'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalp0', 'etalq0', 'etallambdap', 'etalkpq', 'etalkqpp', 'etaldqp', 'etalgamma', 'etalres', 'etalkel'</span></span>
 <span></span>
-<span><span class="va">kde_check</span> <span class="op">&lt;-</span> <span class="va">sim_kde</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">select</span><span class="op">(</span><span class="va">time</span>, <span class="va">kpdConc</span>, <span class="va">predicted</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span><span class="va">kel_check</span> <span class="op">&lt;-</span> <span class="va">sim_kel</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">select</span><span class="op">(</span><span class="va">time</span>, <span class="va">depot_kpd</span>, <span class="va">predicted</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
-<span>  <span class="va">kde_check</span>,</span>
+<span>  <span class="va">kel_check</span>,</span>
 <span>  digits <span class="op">=</span> <span class="fl">4</span>,</span>
-<span>  caption <span class="op">=</span> <span class="st">"Simulated kpdConc(t) vs analytic exp(-KDE * t) over the first 0.05 months (~1.5 days)."</span></span>
+<span>  caption <span class="op">=</span> <span class="st">"Simulated depot_kpd(t) vs analytic exp(-KDE * t) over the first 0.05 months (~1.5 days)."</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <table class="table">
-<caption>Simulated kpdConc(t) vs analytic exp(-KDE * t) over the first
+<caption>Simulated depot_kpd(t) vs analytic exp(-KDE * t) over the first
 0.05 months (~1.5 days).</caption>
 <thead><tr class="header">
 <th align="right">time</th>
-<th align="right">kpdConc</th>
+<th align="right">depot_kpd</th>
 <th align="right">predicted</th>
 </tr></thead>
 <tbody>
@@ -1249,7 +1249,7 @@ early-time decay of a single-cycle simulation.</p>
 </tbody>
 </table>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">sim_kde</span><span class="op">$</span><span class="va">kpdConc</span> <span class="op">-</span> <span class="va">sim_kde</span><span class="op">$</span><span class="va">predicted</span><span class="op">)</span><span class="op">)</span> <span class="op">&lt;</span> <span class="fl">1e-3</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">sim_kel</span><span class="op">$</span><span class="va">depot_kpd</span> <span class="op">-</span> <span class="va">sim_kel</span><span class="op">$</span><span class="va">predicted</span><span class="op">)</span><span class="op">)</span> <span class="op">&lt;</span> <span class="fl">1e-3</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="carrying-capacity-cap-prevents-runaway-growth">3. Carrying capacity cap prevents runaway growth<a class="anchor" aria-label="anchor" href="#carrying-capacity-cap-prevents-runaway-growth"></a>
@@ -1270,7 +1270,7 @@ typical-value <code>tumor_size</code> must remain bounded above by
 <span></span>
 <span><span class="va">sim_cap</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod_typ</span>, events <span class="op">=</span> <span class="va">no_dose_events</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalp0', 'etalq0', 'etallambdap', 'etalkpq', 'etalkqpp', 'etaldqp', 'etalgamma', 'etalres', 'etalkde'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalp0', 'etalq0', 'etallambdap', 'etalkpq', 'etalkqpp', 'etaldqp', 'etalgamma', 'etalres', 'etalkel'</span></span>
 <span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
 <span>  <span class="va">sim_cap</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">time</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">12</span>, <span class="fl">24</span>, <span class="fl">60</span>, <span class="fl">120</span>, <span class="fl">240</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -1372,13 +1372,13 @@ horizon. MTD asymptotes below K = 100 mm.</caption>
 <td><code>mm / month</code></td>
 </tr>
 <tr class="odd">
-<td><code>gamma * kde * kpdConc * prolif</code></td>
+<td><code>gamma * kel * depot_kpd * prolif</code></td>
 <td><code>unitless * 1/month * AU * mm</code></td>
 <td>
 <code>mm / month</code> (AU absorbed into gamma)</td>
 </tr>
 <tr class="even">
-<td><code>gamma * kde * kpdConc * quiesc</code></td>
+<td><code>gamma * kel * depot_kpd * quiesc</code></td>
 <td>same</td>
 <td><code>mm / month</code></td>
 </tr>
@@ -1388,7 +1388,7 @@ horizon. MTD asymptotes below K = 100 mm.</caption>
 <td><code>mm / month</code></td>
 </tr>
 <tr class="even">
-<td><code>kde * kpdConc</code></td>
+<td><code>kel * depot_kpd</code></td>
 <td><code>1/month * AU</code></td>
 <td><code>AU / month</code></td>
 </tr>
@@ -1400,7 +1400,7 @@ the states are in <code>mm</code> and <code>t</code> is in months. The
 K-PD compartment is in arbitrary units (AU) whose scale is absorbed into
 the typical-value gamma – changing the dose magnitude from
 <code>amt = 1</code> to <code>amt = 10</code> scales
-<code>kpdConc</code> ten-fold but the published value of
+<code>depot_kpd</code> ten-fold but the published value of
 <code>gamma = 0.254</code> was estimated against the source paper’s
 <code>amt = 1</code> convention, so the dose magnitude is
 load-bearing.</p>
@@ -1429,7 +1429,7 @@ paper does not publish an explicit dose value. The model file is
 calibrated to <code>amt = 1</code> per cycle, which is the convention
 used by the upstream Ribba 2012 K-PD parameterisation that Mazzocco 2015
 builds on. Users supplying a different <code>amt</code> magnitude will
-see proportionally rescaled <code>kpdConc</code> trajectories; to
+see proportionally rescaled <code>depot_kpd</code> trajectories; to
 preserve the published efficacy magnitude with a different dose unit,
 scale <code>gamma</code> by the same factor.</li>
 <li>
@@ -1439,22 +1439,23 @@ term <code>exp(-res * t)</code> is built on the rxode2 simulation time
 K-PD compartment C is zero before treatment). Users with pretreatment
 observations should put <code>t = 0</code> at the start of TMZ therapy
 and use negative times for pretreatment scans; the drug-effect term is
-<code>gamma * kde * C * exp(-res*t)</code> and reduces to zero for
+<code>gamma * kel * C * exp(-res*t)</code> and reduces to zero for
 <code>t &lt; 0</code> because <code>C(0) = 0</code>.</li>
 <li>
 <strong><code><a href="../reference/checkModelConventions.html">checkModelConventions()</a></code> deviations
 (intentional).</strong> Running
 <code>nlmixr2lib::checkModelConventions("Mazzocco_2015_temozolomide")</code>
-flags four warnings (no errors): (1) compartment <code>kpdConc</code> is
-not on the canonical-compartment list; (2) compartments
-<code>prolif</code>, <code>quiesc</code>, <code>quiescDam</code> are not
-on the canonical-compartment list; (3) the single-output observation
-variable should be <code>Cc</code>; (4) <code>units$concentration</code>
-does not contain a per-volume <code>/</code> (the observation is a
-tumour diameter, not a drug concentration). All four are intrinsic to a
-tumour-size-dynamics model with no drug-concentration ODE. The same
-deviations apply to every other tumour-size-dynamics model in the
-package (e.g., <code>tgi_sat_logistic</code>,
+flags three warnings (no errors): (1) compartments <code>prolif</code>,
+<code>quiesc</code>, <code>quiescDam</code> are not on the
+canonical-compartment list (declared as
+<code>paper_specific_compartments</code>); (2) the single-output
+observation variable should be <code>Cc</code>; (3)
+<code>units$concentration</code> does not contain a per-volume
+<code>/</code> (the observation is a tumour diameter, not a drug
+concentration). All three are intrinsic to a tumour-size-dynamics model
+with no drug-concentration ODE. The same deviations apply to every other
+tumour-size-dynamics model in the package (e.g.,
+<code>tgi_sat_logistic</code>,
 <code>oncology_xenograft_simeoni_2004</code>,
 <code>Ouerdani_2015_pazopanib</code>,
 <code>Zecchin_2016_tumorovarian</code>).</li>

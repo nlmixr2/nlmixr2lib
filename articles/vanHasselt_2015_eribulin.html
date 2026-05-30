@@ -664,13 +664,13 @@ R survreg.</p>
 <tbody>
 <tr class="odd">
 <td>
-<code>d/dt(depot) = -KP * depot</code>, AUC bolus at dose
+<code>d/dt(depot_kpd) = -KP * depot_kpd</code>, AUC bolus at dose
 events</td>
 <td>n/a</td>
 <td>Methods Eq. 1</td>
 </tr>
 <tr class="even">
-<td><code>d/dt(PSA) = PSA * (KG - KD0 * exp(-k_res*t) * depot)</code></td>
+<td><code>d/dt(PSA) = PSA * (KG - KD0 * exp(-k_res*t) * depot_kpd)</code></td>
 <td>n/a</td>
 <td>Methods Eq. 2</td>
 </tr>
@@ -685,7 +685,7 @@ events</td>
 <td>Methods Eq. 4; Table 2 footnote</td>
 </tr>
 <tr class="odd">
-<td><code>lkp</code></td>
+<td><code>lkel</code></td>
 <td><code>fixed(log(6000))</code></td>
 <td>Table 2: hKP = 6000 /day, fixed (Results: “We selected a large value
 of 6,000 to allow for a nearly instantaneous dosing event.”)</td>
@@ -838,12 +838,12 @@ predictions should override this default.</p>
 <span>  <span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Dosing rows -- one per dose event, AUC supplied as amt into the depot K-PD</span></span>
-<span><span class="co"># compartment. evid = 1 is a bolus dose; cmt = "depot" routes the AUC into</span></span>
-<span><span class="co"># the drug-effect compartment.</span></span>
+<span><span class="co"># Dosing rows -- one per dose event, AUC supplied as amt into the depot_kpd</span></span>
+<span><span class="co"># K-PD compartment. evid = 1 is a bolus dose; cmt = "depot_kpd" routes the AUC</span></span>
+<span><span class="co"># into the drug-effect compartment.</span></span>
 <span><span class="va">dose_rows</span> <span class="op">&lt;-</span> <span class="va">subj</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/expand.html" class="external-link">crossing</a></span><span class="op">(</span>time <span class="op">=</span> <span class="va">dose_times</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">mutate</span><span class="op">(</span>evid <span class="op">=</span> <span class="fl">1L</span>, amt <span class="op">=</span> <span class="va">auc_per_dose</span>, cmt <span class="op">=</span> <span class="st">"depot"</span><span class="op">)</span></span>
+<span>  <span class="fu">mutate</span><span class="op">(</span>evid <span class="op">=</span> <span class="fl">1L</span>, amt <span class="op">=</span> <span class="va">auc_per_dose</span>, cmt <span class="op">=</span> <span class="st">"depot_kpd"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Observation rows (PSA samples) -- no dose, amt = 0.</span></span>
 <span><span class="va">obs_rows</span> <span class="op">&lt;-</span> <span class="va">subj</span> <span class="op">|&gt;</span></span>
@@ -872,7 +872,7 @@ Figure 2 of the paper.</p>
 <span><span class="va">mod_typ</span> <span class="op">&lt;-</span> <span class="va">mod</span> <span class="op">|&gt;</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/zeroRe.html" class="external-link">zeroRe</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">events_typ</span> <span class="op">&lt;-</span> <span class="fu">bind_rows</span><span class="op">(</span></span>
-<span>  <span class="fu">tibble</span><span class="op">(</span>id <span class="op">=</span> <span class="fl">1L</span>, time <span class="op">=</span> <span class="va">dose_times</span>, evid <span class="op">=</span> <span class="fl">1L</span>, amt <span class="op">=</span> <span class="va">auc_per_dose</span>, cmt <span class="op">=</span> <span class="st">"depot"</span><span class="op">)</span>,</span>
+<span>  <span class="fu">tibble</span><span class="op">(</span>id <span class="op">=</span> <span class="fl">1L</span>, time <span class="op">=</span> <span class="va">dose_times</span>, evid <span class="op">=</span> <span class="fl">1L</span>, amt <span class="op">=</span> <span class="va">auc_per_dose</span>, cmt <span class="op">=</span> <span class="st">"depot_kpd"</span><span class="op">)</span>,</span>
 <span>  <span class="fu">tibble</span><span class="op">(</span>id <span class="op">=</span> <span class="fl">1L</span>, time <span class="op">=</span> <span class="va">obs_times</span>,  evid <span class="op">=</span> <span class="fl">0L</span>, amt <span class="op">=</span> <span class="fl">0</span>,           cmt <span class="op">=</span> <span class="cn">NA_character_</span><span class="op">)</span></span>
 <span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">mutate</span><span class="op">(</span>PRIOR_TAXANE <span class="op">=</span> <span class="fl">0L</span>, PRIOR_TAXANE_DAYS <span class="op">=</span> <span class="fl">0</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -1140,9 +1140,9 @@ time = log(2) / KG = 78.9 days).</p>
 </h3>
 <p><code>KP = 6000 /day</code> is large by design (paper Results: “We
 selected a large value of 6,000 to allow for a nearly instantaneous
-dosing event”). The depot half-life is
+dosing event”). The depot_kpd half-life is
 <code>log(2) / 6000 ~= 0.000116 day = 10 seconds</code>. The vignette
-plots <code>depot(t)</code> for a single AUC = 200 bolus over a
+plots <code>depot_kpd(t)</code> for a single AUC = 200 bolus over a
 0.001-day (~ 1.5 minute) window so the rapid decay is visible.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">events_pulse</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="op">(</span></span>
@@ -1150,7 +1150,7 @@ plots <code>depot(t)</code> for a single AUC = 200 bolus over a
 <span>  time <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1e-6</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">1e-5</span>, <span class="fl">0.001</span>, length.out <span class="op">=</span> <span class="fl">50</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  evid <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1L</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0L</span>, <span class="fl">51L</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  amt  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">200</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">51L</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  cmt  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"depot"</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="cn">NA_character_</span>, <span class="fl">51L</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  cmt  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"depot_kpd"</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="cn">NA_character_</span>, <span class="fl">51L</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  PRIOR_TAXANE <span class="op">=</span> <span class="fl">0L</span>, PRIOR_TAXANE_DAYS <span class="op">=</span> <span class="fl">0</span></span>
 <span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">arrange</span><span class="op">(</span><span class="va">time</span>, <span class="fu">desc</span><span class="op">(</span><span class="va">evid</span><span class="op">)</span><span class="op">)</span></span>
@@ -1158,11 +1158,11 @@ plots <code>depot(t)</code> for a single AUC = 200 bolus over a
 <span><span class="va">sim_pulse</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod_typ</span>, events <span class="op">=</span> <span class="va">events_pulse</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalpsa0', 'etalkg', 'etalkres', 'etalkd0'</span></span>
 <span></span>
-<span><span class="fu">ggplot</span><span class="op">(</span><span class="va">sim_pulse</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">time</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span>, <span class="fu">aes</span><span class="op">(</span><span class="va">time</span> <span class="op">*</span> <span class="fl">86400</span>, <span class="va">depot</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>  <span class="co"># x-axis in seconds</span></span>
+<span><span class="fu">ggplot</span><span class="op">(</span><span class="va">sim_pulse</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">time</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span>, <span class="fu">aes</span><span class="op">(</span><span class="va">time</span> <span class="op">*</span> <span class="fl">86400</span>, <span class="va">depot_kpd</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>  <span class="co"># x-axis in seconds</span></span>
 <span>  <span class="fu">geom_line</span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">1</span>, colour <span class="op">=</span> <span class="st">"purple4"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">labs</span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Time after dose (seconds)"</span>, y <span class="op">=</span> <span class="st">"depot (ng*h/mL; K-PD effect state)"</span>,</span>
-<span>       title <span class="op">=</span> <span class="st">"K-PD depot compartment decay after a single AUC = 200 bolus"</span>,</span>
-<span>       caption <span class="op">=</span> <span class="st">"Half-life log(2) / KP = log(2) / 6000 days ~= 10 seconds; depot is essentially impulsive on the day scale."</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Time after dose (seconds)"</span>, y <span class="op">=</span> <span class="st">"depot_kpd (ng*h/mL; K-PD effect state)"</span>,</span>
+<span>       title <span class="op">=</span> <span class="st">"K-PD depot_kpd compartment decay after a single AUC = 200 bolus"</span>,</span>
+<span>       caption <span class="op">=</span> <span class="st">"Half-life log(2) / KP = log(2) / 6000 days ~= 10 seconds; depot_kpd is essentially impulsive on the day scale."</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">theme_minimal</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><img src="vanHasselt_2015_eribulin_files/figure-html/kpd-decay-1.png" class="r-plt" alt="" width="672"></p>
 </div>
@@ -1212,7 +1212,7 @@ mechanism.</p>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td><code>kp * depot</code></td>
+<td><code>kel * depot_kpd</code></td>
 <td><code>(1/day) * (ng*h/mL)</code></td>
 <td><code>(ng*h/mL)/day</code></td>
 </tr>
@@ -1222,18 +1222,18 @@ mechanism.</p>
 <td><code>(ng/mL)/day</code></td>
 </tr>
 <tr class="odd">
-<td><code>kd0 * exp(-k_res*t) * depot * PSA</code></td>
+<td><code>kd0 * exp(-k_res*t) * depot_kpd * PSA</code></td>
 <td><code>(L/(ng*h*day)) * 1 * (ng*h/mL) * (ng/mL)</code></td>
 <td><code>(ng/mL)/day</code></td>
 </tr>
 </tbody>
 </table>
-<p>The depot ODE reduces to <code>(ng*h/mL)/day</code>, consistent with
-<code>depot</code> having units <code>ng*h/mL</code> (the AUC area of
-one dose). The PSA ODE reduces to <code>(ng/mL)/day</code>, consistent
-with <code>PSA</code> having units <code>ng/mL</code>. The paper’s
-published unit string for KD0 (“ng*h/L /day /day”) is dimensionally
-equivalent to <code>L/(ng*h*day)</code> once the product
+<p>The depot_kpd ODE reduces to <code>(ng*h/mL)/day</code>, consistent
+with <code>depot_kpd</code> having units <code>ng*h/mL</code> (the AUC
+area of one dose). The PSA ODE reduces to <code>(ng/mL)/day</code>,
+consistent with <code>PSA</code> having units <code>ng/mL</code>. The
+paper’s published unit string for KD0 (“ng*h/L /day /day”) is
+dimensionally equivalent to <code>L/(ng*h*day)</code> once the product
 <code>KD0 * D</code> is constrained to <code>1/day</code> (the
 inhibition-rate dimension that the PSA growth term <code>KG</code> has)
 – 1 ug/L equals 1 ng/mL, so
@@ -1266,15 +1266,15 @@ as a dose input. Users with their own eribulin popPK model (or with
 per-patient AUC measurements) should supply AUC values via the
 <code>amt</code> column on each dose event; the vignette uses a single
 literature-typical placeholder of 200 ng*h/mL per dose.</p></li>
-<li><p><strong>K-PD <code>depot</code> compartment naming.</strong> The
-paper’s “drug effect compartment D” is a K-PD construct that receives
-the per-dose predicted AUC as a bolus and decays at
-<code>KP = 6000 /day</code>. The compartment is named <code>depot</code>
-here so the standard rxode2 dosing routing applies (<code>amt</code> on
-an <code>evid = 1</code> row with <code>cmt = "depot"</code> deposits
-AUC into the K-PD state). This is the closest canonical name available
-in <code>inst/references/compartment-names.md</code>; the semantic is
-K-PD, not extravascular absorption.</p></li>
+<li><p><strong>K-PD <code>depot_kpd</code> compartment naming.</strong>
+The paper’s “drug effect compartment D” is a K-PD construct that
+receives the per-dose predicted AUC as a bolus and decays at
+<code>KP = 6000 /day</code>. The compartment is named
+<code>depot_kpd</code> per the canonical K-PD register in
+<code>inst/references/compartment-names.md</code>; standard rxode2
+dosing routing applies (<code>amt</code> on an <code>evid = 1</code> row
+with <code>cmt = "depot_kpd"</code> deposits AUC into the K-PD
+state).</p></li>
 <li><p><strong>Observation variable named <code>PSA</code> rather than
 <code>Cc</code>.</strong> <code>Cc</code> is canonical for drug
 concentrations in plasma; here the observation is endogenous serum PSA,
@@ -1312,9 +1312,9 @@ should consult it for the per-stratum demographic detail.</p></li>
 disease-progression model with no drug-concentration ODE – there is no
 plasma drug concentration to run NCA on. The vignette substitutes the
 mechanistic-sanity checks above (drug-free pure growth = exp(KG*t), K-PD
-depot decay, resistance-term decay, dimensional analysis), matching the
-validation pattern used by <code>Ouerdani_2015_pazopanib.R</code> (also
-a TGI / DP model).</p></li>
+depot_kpd decay, resistance-term decay, dimensional analysis), matching
+the validation pattern used by <code>Ouerdani_2015_pazopanib.R</code>
+(also a TGI / DP model).</p></li>
 </ul>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
