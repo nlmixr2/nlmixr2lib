@@ -17,11 +17,11 @@ Mazzocco_2015_temozolomide <- function() {
     sep = " "
   )
   vignette <- "Mazzocco_2015_temozolomide"
-  paper_specific_compartments <- c("kpdConc", "prolif", "quiesc", "quiescDam")
+  paper_specific_compartments <- c("prolif", "quiesc", "quiescDam")
 
   units <- list(
     time          = "month",
-    dosing        = "arbitrary unit per TMZ cycle (K-PD bolus to the kpdConc virtual drug compartment; the source paper represents each 5-day daily-dosing TMZ cycle as a single bolus of arbitrary magnitude, with the dose units absorbed into the typical-value gamma)",
+    dosing        = "arbitrary unit per TMZ cycle (K-PD bolus to the depot_kpd virtual drug compartment; the source paper represents each 5-day daily-dosing TMZ cycle as a single bolus of arbitrary magnitude, with the dose units absorbed into the typical-value gamma)",
     concentration = "mm (mean tumour diameter MTD = P + Q + Qp; not a drug concentration)"
   )
 
@@ -74,7 +74,7 @@ Mazzocco_2015_temozolomide <- function() {
     # "The population value of KDE parameter was fixed to 8.3 month^-1
     # corresponding to a half-life of 2.5 days, allowing for a residual
     # active concentration of TMZ after 5 days of treatment.").
-    lkde      <- fixed(log(8.3)); label("Virtual-drug elimination rate constant KDE (1/month)")                     # Mazzocco 2015 Table 2: KDE = 8.3 FIXED
+    lkel      <- fixed(log(8.3)); label("Virtual-drug elimination rate constant KDE (1/month)")                     # Mazzocco 2015 Table 2: KDE = 8.3 FIXED
 
     # Carrying capacity K fixed at 100 mm (= 10 cm), inherited from the
     # upstream Ribba 2012 LGG model. Ribba 2014 review Table 1 footnote on
@@ -109,7 +109,7 @@ Mazzocco_2015_temozolomide <- function() {
     # KDE IIV is reported as "50 (FIXED)" in Table 2 -- the value of the
     # variance is held constant rather than estimated. The corresponding
     # log-normal omega^2 is log(0.50^2 + 1) = 0.2231.
-    etalkde      ~ fixed(0.2231)  # CV 50% (FIXED) -> omega^2 = log(0.50^2 + 1) per Mazzocco 2015 Table 2
+    etalkel      ~ fixed(0.2231)  # CV 50% (FIXED) -> omega^2 = log(0.50^2 + 1) per Mazzocco 2015 Table 2
 
     # Constant additive residual error on MTD ("constant error model with
     # parameter value a", Mazzocco 2015 Methods).
@@ -128,7 +128,7 @@ Mazzocco_2015_temozolomide <- function() {
     dqp      <- exp(ldqp + etaldqp)
     gamma    <- exp(lgamma + etalgamma + e_p53_gamma * TUM_TP53_MUT)
     res      <- exp(lres + etalres)
-    kde      <- exp(lkde + etalkde)
+    kel      <- exp(lkel + etalkel)
     K        <- exp(lK)
 
     # K-PD virtual drug + three tumour-tissue ODEs (Mazzocco 2015 p.731
@@ -153,10 +153,10 @@ Mazzocco_2015_temozolomide <- function() {
     # regardless of the sign of exp(-res*t).
     tumor_size <- prolif + quiesc + quiescDam
 
-    drugEffect       <- gamma * kde * kpdConc
+    drugEffect       <- gamma * kel * depot_kpd
     drugEffectProlif <- drugEffect * exp(-res * t)
 
-    d/dt(kpdConc)   <- -kde * kpdConc
+    d/dt(depot_kpd)   <- -kel * depot_kpd
     d/dt(prolif)    <-  lambdap * prolif * (1 - tumor_size / K) +
                         kqpp * quiescDam -
                         kpq * prolif -
@@ -169,7 +169,7 @@ Mazzocco_2015_temozolomide <- function() {
     prolif(0)    <- p0
     quiesc(0)    <- q0
     quiescDam(0) <- 0
-    kpdConc(0)   <- 0
+    depot_kpd(0)   <- 0
 
     # Observation: mean tumour diameter (MTD) in mm, constant additive
     # residual error.

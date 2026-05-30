@@ -20,11 +20,11 @@ Wilson_2015_sunitinib_irinotecan_mouse <- function() {
     sep = " "
   )
   vignette <- "Wilson_2015_sunitinib_irinotecan_mouse"
-  paper_specific_compartments <- c("intIrinotecan", "cumSunitinibFrozen", "sunitinib", "irinotecan")
+  paper_specific_compartments <- c("intIrinotecan", "cumSunitinibFrozen")
 
   units <- list(
     time          = "day",
-    dosing        = "unitless (K-PD; each oral sunitinib or IV irinotecan dose enters its drug-amount compartment with magnitude 1)",
+    dosing        = "unitless (K-PD; each oral sunitinib dose enters depot_kpd_sunitinib and each IV irinotecan dose enters depot_kpd_irinotecan with magnitude 1)",
     concentration = "mm (geometric mean of three orthogonal tumor diameters (l*w*h)^(1/3); not a drug concentration)"
   )
 
@@ -60,8 +60,8 @@ Wilson_2015_sunitinib_irinotecan_mouse <- function() {
     # re-estimated in any companion paper that this file inherits from.
     d0             <- fixed(0.29);   label("Initial mean tumor diameter D(0) (mm)")                          # Wilson 2015 Table 1: D(t=0) = 0.29 mm (fixed)
     k0             <- fixed(7.43);   label("Initial carrying capacity K(0) (mm)")                            # Wilson 2015 Table 1: K(t=0) = 7.43 mm (fixed)
-    ps_elim        <- fixed(2.12);   label("Sunitinib K-PD elimination rate p_S (1/day)")                    # Wilson 2015 Table 1: p_S = 2.12 day^-1 (fixed)
-    pc_elim        <- fixed(0.0850); label("Irinotecan K-PD elimination rate p_C (1/day)")                   # Wilson 2015 Table 1: p_C = 0.0850 day^-1 (fixed)
+    lkel_sunitinib  <- fixed(log(2.12));   label("Sunitinib K-PD elimination rate p_S (1/day; log-transformed)")     # Wilson 2015 Table 1: p_S = 2.12 day^-1 (fixed)
+    lkel_irinotecan <- fixed(log(0.0850)); label("Irinotecan K-PD elimination rate p_C (1/day; log-transformed)")   # Wilson 2015 Table 1: p_C = 0.0850 day^-1 (fixed)
     alpha_logistic <- fixed(0.1);    label("Generalized-logistic exponent alpha (unitless)")                 # Wilson 2015 page 723 prose: alpha = 0.1 (fixed, "nearly Gompertzian")
 
     # Residual error -- placeholder. Wilson 2015 fit the interaction model
@@ -79,11 +79,13 @@ Wilson_2015_sunitinib_irinotecan_mouse <- function() {
     # --- Individual (typical-value) structural parameters -------------------
     # No IIV: Wilson 2015 Table 1 reports point estimates from nonlinear
     # least squares on median tumor data with no random effects.
-    k_growth <- exp(lk_growth)
-    b_cap    <- exp(lb_cap)
-    beta_s   <- exp(lbeta_s)
-    beta_c   <- exp(lbeta_c)
-    k_s      <- exp(lks)
+    k_growth         <- exp(lk_growth)
+    b_cap            <- exp(lb_cap)
+    beta_s           <- exp(lbeta_s)
+    beta_c           <- exp(lbeta_c)
+    k_s              <- exp(lks)
+    kel_sunitinib    <- exp(lkel_sunitinib)
+    kel_irinotecan   <- exp(lkel_irinotecan)
 
     # --- Interaction term (Wilson 2015 Equation 4) --------------------------
     # kC = k_S * exp(integral_0^T_C S(t) dt), where T_C is the time of the
@@ -93,10 +95,10 @@ Wilson_2015_sunitinib_irinotecan_mouse <- function() {
     #
     # Implementation: intIrinotecan accumulates the irinotecan K-PD amount
     # over time. Before the first irinotecan dose intIrinotecan == 0, so
-    # gate_cumS == 1 and cumSunitinibFrozen integrates sunitinib normally.
-    # The first irinotecan dose adds 1 to the irinotecan compartment, which
-    # then begins contributing to intIrinotecan; intIrinotecan crosses 0
-    # immediately, gate_cumS flips to 0, and cumSunitinibFrozen freezes at
+    # gate_cumS == 1 and cumSunitinibFrozen integrates depot_kpd_sunitinib
+    # normally. The first irinotecan dose adds 1 to depot_kpd_irinotecan,
+    # which then begins contributing to intIrinotecan; intIrinotecan crosses
+    # 0 immediately, gate_cumS flips to 0, and cumSunitinibFrozen freezes at
     # its T_C value for the remainder of the simulation. The gate is
     # monotonic (intIrinotecan never decreases), so subsequent irinotecan
     # doses cannot reopen it.
@@ -104,8 +106,8 @@ Wilson_2015_sunitinib_irinotecan_mouse <- function() {
     if (intIrinotecan > 0.0) {
       gate_cumS <- 0.0
     }
-    d/dt(intIrinotecan)      <- irinotecan
-    d/dt(cumSunitinibFrozen) <- sunitinib * gate_cumS
+    d/dt(intIrinotecan)      <- depot_kpd_irinotecan
+    d/dt(cumSunitinibFrozen) <- depot_kpd_sunitinib * gate_cumS
 
     # Effective transit-death rate constant for the irinotecan damage chain.
     # When no sunitinib has been given before T_C (irinotecan monotherapy),
@@ -115,13 +117,13 @@ Wilson_2015_sunitinib_irinotecan_mouse <- function() {
 
     # --- ODE system (Wilson 2015 Equation 3, with interaction kC from Eq. 4) ---
     # State variables and their paper names:
-    #   cycling_cells     = D1 (proliferating tumor diameter compartment, mm)
-    #   damaged_cells1    = D2 (first transit-death compartment)
-    #   damaged_cells2    = D3
-    #   damaged_cells3    = D4
-    #   carrying_capacity = K  (vasculature-limited maximum tumor diameter, mm)
-    #   sunitinib        = S  (K-PD drug-amount compartment, unitless)
-    #   irinotecan       = C  (K-PD drug-amount compartment, unitless)
+    #   cycling_cells          = D1 (proliferating tumor diameter compartment, mm)
+    #   damaged_cells1         = D2 (first transit-death compartment)
+    #   damaged_cells2         = D3
+    #   damaged_cells3         = D4
+    #   carrying_capacity      = K  (vasculature-limited maximum tumor diameter, mm)
+    #   depot_kpd_sunitinib    = S  (K-PD drug-amount compartment, unitless)
+    #   depot_kpd_irinotecan   = C  (K-PD drug-amount compartment, unitless)
     #
     # Generalized-logistic tumor growth with varying carrying capacity follows
     # Hahnfeldt et al. 1999 (Wilson 2015 reference 14); with alpha = 0.1 the
@@ -129,28 +131,28 @@ Wilson_2015_sunitinib_irinotecan_mouse <- function() {
     # injures cycling cells at rate beta_C * p_C * C; injured cells pass
     # through the three damaged-cell compartments at rate k_c_eff before
     # leaving the system (Wilson 2015 Figure 3).
-    d/dt(cycling_cells)     <- k_growth * cycling_cells *
-                                (1 - (cycling_cells / carrying_capacity)^alpha_logistic) -
-                              beta_c * pc_elim * irinotecan * cycling_cells
-    d/dt(damaged_cells1)    <- beta_c * pc_elim * irinotecan * cycling_cells -
-                              k_c_eff * damaged_cells1
-    d/dt(damaged_cells2)    <- k_c_eff * damaged_cells1 - k_c_eff * damaged_cells2
-    d/dt(damaged_cells3)    <- k_c_eff * damaged_cells2 - k_c_eff * damaged_cells3
-    d/dt(carrying_capacity) <- b_cap * cycling_cells * cycling_cells -
-                              beta_s * ps_elim * sunitinib * carrying_capacity
-    d/dt(sunitinib)        <- -ps_elim * sunitinib
-    d/dt(irinotecan)       <- -pc_elim * irinotecan
+    d/dt(cycling_cells)         <- k_growth * cycling_cells *
+                                    (1 - (cycling_cells / carrying_capacity)^alpha_logistic) -
+                                   beta_c * kel_irinotecan * depot_kpd_irinotecan * cycling_cells
+    d/dt(damaged_cells1)        <- beta_c * kel_irinotecan * depot_kpd_irinotecan * cycling_cells -
+                                   k_c_eff * damaged_cells1
+    d/dt(damaged_cells2)        <- k_c_eff * damaged_cells1 - k_c_eff * damaged_cells2
+    d/dt(damaged_cells3)        <- k_c_eff * damaged_cells2 - k_c_eff * damaged_cells3
+    d/dt(carrying_capacity)     <- b_cap * cycling_cells * cycling_cells -
+                                   beta_s * kel_sunitinib * depot_kpd_sunitinib * carrying_capacity
+    d/dt(depot_kpd_sunitinib)   <- -kel_sunitinib  * depot_kpd_sunitinib
+    d/dt(depot_kpd_irinotecan)  <- -kel_irinotecan * depot_kpd_irinotecan
 
     # --- Initial conditions -------------------------------------------------
-    cycling_cells(0)        <- d0
-    carrying_capacity(0)    <- k0
-    damaged_cells1(0)       <- 0.0
-    damaged_cells2(0)       <- 0.0
-    damaged_cells3(0)       <- 0.0
-    sunitinib(0)           <- 0.0
-    irinotecan(0)          <- 0.0
-    intIrinotecan(0)       <- 0.0
-    cumSunitinibFrozen(0)  <- 0.0
+    cycling_cells(0)            <- d0
+    carrying_capacity(0)        <- k0
+    damaged_cells1(0)           <- 0.0
+    damaged_cells2(0)           <- 0.0
+    damaged_cells3(0)           <- 0.0
+    depot_kpd_sunitinib(0)      <- 0.0
+    depot_kpd_irinotecan(0)     <- 0.0
+    intIrinotecan(0)            <- 0.0
+    cumSunitinibFrozen(0)       <- 0.0
 
     # --- Observation and residual error -------------------------------------
     # Wilson 2015 fits the sum D = D1 + D2 + D3 + D4 to the observed mean

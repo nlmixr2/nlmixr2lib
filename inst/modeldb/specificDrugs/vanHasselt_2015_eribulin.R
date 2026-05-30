@@ -1,5 +1,5 @@
 vanHasselt_2015_eribulin <- function() {
-  description <- "Disease-progression (DP) model for prostate-specific antigen (PSA) dynamics in metastatic castration-resistant prostate cancer (CRPC) patients treated with eribulin mesilate (van Hasselt 2015). K-PD framework: the per-dose predicted eribulin AUC enters a single transient drug-effect compartment depot that decays with rate KP (fixed to 6000 /day so the effect is nearly instantaneous after each dose); PSA evolves under a first-order growth rate KG counteracted by an inhibition rate KD0 multiplied by the K-PD state depot and an exponentially decaying resistance factor exp(-k_res*t). PSA0, KD0, KG, k_res have correlated lognormal IIV; proportional residual error on PSA (log-transform-both-sides). Prior taxane treatment (binary PRIOR_TAXANE) multiplies PSA0; cumulative number of days of prior taxane treatment (continuous PRIOR_TAXANE_DAYS) enters KD0 as (1 + NTRT/720)^theta. The companion parametric Weibull survival sub-model fit in R survreg is documented in the vignette but not encoded here (not an ODE / nlmixr2 structure)."
+  description <- "Disease-progression (DP) model for prostate-specific antigen (PSA) dynamics in metastatic castration-resistant prostate cancer (CRPC) patients treated with eribulin mesilate (van Hasselt 2015). K-PD framework: the per-dose predicted eribulin AUC enters a single transient drug-effect compartment depot_kpd that decays with rate KP (fixed to 6000 /day so the effect is nearly instantaneous after each dose); PSA evolves under a first-order growth rate KG counteracted by an inhibition rate KD0 multiplied by the K-PD state depot_kpd and an exponentially decaying resistance factor exp(-k_res*t). PSA0, KD0, KG, k_res have correlated lognormal IIV; proportional residual error on PSA (log-transform-both-sides). Prior taxane treatment (binary PRIOR_TAXANE) multiplies PSA0; cumulative number of days of prior taxane treatment (continuous PRIOR_TAXANE_DAYS) enters KD0 as (1 + NTRT/720)^theta. The companion parametric Weibull survival sub-model fit in R survreg is documented in the vignette but not encoded here (not an ODE / nlmixr2 structure)."
   reference <- paste(
     "van Hasselt JGC, Gupta A, Hussein Z, Beijnen JH, Schellens JHM, Huitema ADR.",
     "Disease Progression/Clinical Outcome Model for Castration-Resistant Prostate Cancer",
@@ -11,7 +11,7 @@ vanHasselt_2015_eribulin <- function() {
   vignette <- "vanHasselt_2015_eribulin"
   units <- list(
     time          = "day",
-    dosing        = "ng*h/mL (predicted per-dose eribulin AUC, supplied as the amt for each dose event into compartment depot via the K-PD framework; the upstream eribulin popPK model -- Majid 2014 J Clin Pharmacol 54:1134; van Hasselt 2013 Br J Clin Pharmacol 76:412 -- is not encoded here)",
+    dosing        = "ng*h/mL (predicted per-dose eribulin AUC, supplied as the amt for each dose event into compartment depot_kpd via the K-PD framework; the upstream eribulin popPK model -- Majid 2014 J Clin Pharmacol 54:1134; van Hasselt 2013 Br J Clin Pharmacol 76:412 -- is not encoded here)",
     concentration = "ng/mL (serum PSA)"
   )
 
@@ -43,7 +43,7 @@ vanHasselt_2015_eribulin <- function() {
     sex_female_pct  = 0,
     race_ethnicity  = "not reported in the main paper text on disk",
     disease_state   = "Metastatic castration-resistant prostate cancer (CRPC). Phase II trial of eribulin mesilate (E7389), de Bono et al. Ann Oncol 2012;23:1241; van Hasselt 2015 reference 33. Subset stratification: 50 patients with prior docetaxel/taxane therapy, 58 taxane-naive.",
-    dose_range      = "eribulin mesilate IV (per de Bono 2012 phase II protocol); per-dose AUC is provided as the amt input to the K-PD depot compartment in this model, not the mg dose itself. The upstream eribulin popPK model used to predict individual AUC (3-compartment linear elimination with albumin / alkaline phosphatase / total bilirubin on CL, Majid 2014 J Clin Pharmacol 54:1134-1143 and van Hasselt 2013 Br J Clin Pharmacol 76:412-424) is referenced but not encoded here.",
+    dose_range      = "eribulin mesilate IV (per de Bono 2012 phase II protocol); per-dose AUC is provided as the amt input to the K-PD depot_kpd compartment in this model, not the mg dose itself. The upstream eribulin popPK model used to predict individual AUC (3-compartment linear elimination with albumin / alkaline phosphatase / total bilirubin on CL, Majid 2014 J Clin Pharmacol 54:1134-1143 and van Hasselt 2013 Br J Clin Pharmacol 76:412-424) is referenced but not encoded here.",
     regions         = "not reported in the main paper text on disk",
     notes           = "108 metastatic CRPC patients from a single Phase II trial of eribulin mesilate (de Bono et al. 2012). PSA-time profiles analysed with NONMEM 7.2 FOCE; survival analysed separately in R survreg. The PD model uses a K-PD approach where the predicted eribulin AUC per dose (from the external popPK model) drives a transient drug-effect compartment. PK data were not available for this study (van Hasselt 2015 Methods 'Pharmacokinetic model')."
   )
@@ -51,7 +51,7 @@ vanHasselt_2015_eribulin <- function() {
   ini({
     # Structural parameters from van Hasselt 2015 Table 2 ('Fixed effect
     # parameters' block, final-model column 'Estimate').
-    lkp    <- fixed(log(6000));    label("Drug-effect compartment depot decay rate KP (1/day; FIXED per paper)") # van Hasselt 2015 Table 2: hKP = 6000 /day, marked '+' = FIXED in the table footnote. Paper Results: 'The optimal value of the drug exposure parameter (KP) was selected based on evaluation of different fixed values in the model. We selected a large value of 6,000 to allow for a nearly instantaneous dosing event.'
+    lkel   <- fixed(log(6000));    label("K-PD elimination rate constant KP (1/day; FIXED per paper)") # van Hasselt 2015 Table 2: hKP = 6000 /day, marked '+' = FIXED in the table footnote. Paper Results: 'The optimal value of the drug exposure parameter (KP) was selected based on evaluation of different fixed values in the model. We selected a large value of 6,000 to allow for a nearly instantaneous dosing event.'
     lkd0   <- log(0.241);          label("Drug PSA inhibition rate KD0 (L/(ng*h*day); the paper's unit string 'ng*h/L /day /day' is dimensionally the same when KD0*D has units 1/day with D in ng*h/mL)") # van Hasselt 2015 Table 2: hKD0 = 0.241 (RSE 32.6%)
     lkres  <- log(0.0113);         label("Drug-resistance development rate k_res (1/day; multiplies exp(-k_res*t))") # van Hasselt 2015 Table 2: hk = 0.0113 (RSE 44.3%)
     lkg    <- log(0.00879);        label("PSA first-order growth rate KG (1/day)") # van Hasselt 2015 Table 2: hKG = 0.00879 (RSE 12.6%)
@@ -106,21 +106,21 @@ vanHasselt_2015_eribulin <- function() {
     # follow the Table 2 footnote ('Individual parameters were defined as:
     # KD0 = hKD0 * (1 + (NTRT/720))^hKD-NTRT * exp(gKD0); ...; PSA0 = hPSA0
     # * hPSA0-PTAX * exp(gPSA0)') and Eq. 4 of the main text.
-    kp     <- exp(lkp)                                              # K-PD decay rate, fixed
+    kel    <- exp(lkel)                                             # K-PD decay rate, fixed
     kd0    <- exp(lkd0   + etalkd0)  * (1 + PRIOR_TAXANE_DAYS / 720)^e_prior_taxane_days_kd0
     kres   <- exp(lkres  + etalkres)
     kg     <- exp(lkg    + etalkg)
     psa0   <- exp(lpsa0  + etalpsa0) * e_prior_taxane_psa0^PRIOR_TAXANE
 
-    # K-PD drug-effect compartment depot (the paper's 'D'). Each dose event
+    # K-PD drug-effect compartment depot_kpd (the paper's 'D'). Each dose event
     # delivers the per-dose predicted eribulin AUC (units ng*h/mL) as a
-    # bolus into depot via the standard rxode2 dosing mechanism (amt column
-    # on an evid=1 row with cmt = 'depot'). depot decays at the fixed rate
-    # kp = 6000 /day, giving a near-instantaneous impulse whose integrated
-    # area equals amt/kp. The upstream popPK model that produces the
+    # bolus into depot_kpd via the standard rxode2 dosing mechanism (amt column
+    # on an evid=1 row with cmt = 'depot_kpd'). depot_kpd decays at the fixed
+    # rate kel = 6000 /day, giving a near-instantaneous impulse whose integrated
+    # area equals amt/kel. The upstream popPK model that produces the
     # per-dose AUC values is NOT encoded here -- the user assembles the
     # event table with AUC values supplied externally (see vignette).
-    d/dt(depot) <- -kp * depot
+    d/dt(depot_kpd) <- -kel * depot_kpd
 
     # PSA dynamics. Paper Eq. 2:
     #   dPSA/dt = KG * PSA - KD0 * exp(-k_res * t) * D(t) * PSA
@@ -128,7 +128,7 @@ vanHasselt_2015_eribulin <- function() {
     # time in days; treatment start is taken as t = 0 so exp(-k_res * t)
     # decays from 1 at study start, encoding progressive drug-resistance
     # development.
-    d/dt(PSA)   <- PSA * (kg - kd0 * exp(-kres * t) * depot)
+    d/dt(PSA)   <- PSA * (kg - kd0 * exp(-kres * t) * depot_kpd)
     PSA(0)      <- psa0
 
     PSA ~ prop(propSd)

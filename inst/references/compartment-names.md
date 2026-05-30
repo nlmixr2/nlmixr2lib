@@ -1558,6 +1558,35 @@ The `depot_<route>` pattern distinguishes parallel dosing routes when a model ca
 
 ---
 
+## K-PD virtual drug compartments
+
+K-PD (kinetic-pharmacodynamic) models treat dose as entering a hypothetical body-amount compartment with first-order elimination and no measured drug concentration; the effect of the dose is driven by the amount in that compartment. The canonical K-PD virtual drug compartment is `depot_kpd`, with elimination rate constant `lkel` (log-transformed) / `kel` (bare) -- the same canonical pair used by single-rate-constant PK elimination. Combination K-PD models with two or more parallel K-PD compartments use the drug-suffixed form `depot_kpd_<drug>` (with paired `lkel_<drug>` / `kel_<drug>` rates), where `<drug>` is registered as a metabolite-suffix token below.
+
+### depot_kpd (**canonical K-PD virtual drug compartment**)
+- **Type:** compartment
+- **Role:** Single hypothetical body-amount compartment used in K-PD models. Receives dose events; decays at first-order rate `kel`. The effect is driven directly by `depot_kpd` (or by `depot_kpd / vc` when a derived "drug-delivery rate concentration" is used).
+- **Source aliases:**
+  - `kpdConc` -- used in `Mazzocco_2015_temozolomide.R`.
+  - `depot` (when the model has no extravascular absorption depot and the lone depot serves as the K-PD virtual drug compartment) -- used in `Shoji_2017_fosdagrocorat_oc.R`, `Shoji_2017_fosdagrocorat_p1np.R`, `vanHasselt_2015_eribulin.R`, `Xia_2024_warfarin.R`.
+- **Example models:** `Mazzocco_2015_temozolomide.R`, `Shoji_2017_fosdagrocorat_oc.R`, `Shoji_2017_fosdagrocorat_p1np.R`, `vanHasselt_2015_eribulin.R`, `Xia_2024_warfarin.R`.
+- **Notes:** Drug-suffixed variants `depot_kpd_<drug>` are accepted for combination K-PD models via the metabolite-suffix mechanism, where `<drug>` is a registered drug-name suffix below (e.g., `depot_kpd_sunitinib`, `depot_kpd_irinotecan` in Wilson 2015). Canonical `depot_kpd` adopted 2026-05-30 per the K-PD canonical-name retrofit (see `memory/kpd-model-canonical-standards.md`).
+
+### sunitinib (**canonical sunitinib K-PD drug-name suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Sunitinib drug-name suffix for combination K-PD compartments and rate constants (`depot_kpd_sunitinib`, `lkel_sunitinib`, `kel_sunitinib`).
+- **Source aliases:** none.
+- **Example models:** `Wilson_2015_sunitinib_irinotecan_mouse.R`.
+- **Notes:** Full INN name (lowercase) rather than the TB-style 3-letter abbreviation because combination K-PD models are rare enough that semantic clarity wins; the abbreviated `sun` form is reserved for a future paper that needs it.
+
+### irinotecan (**canonical irinotecan K-PD drug-name suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Irinotecan drug-name suffix for combination K-PD compartments and rate constants (`depot_kpd_irinotecan`, `lkel_irinotecan`, `kel_irinotecan`).
+- **Source aliases:** none.
+- **Example models:** `Wilson_2015_sunitinib_irinotecan_mouse.R`.
+- **Notes:** Full INN name (lowercase) for the same reason as `sunitinib`.
+
+---
+
 ## Metabolite / sibling-drug / payload suffixes
 
 These tokens may appear as a trailing `_<suffix>` on a canonical compartment, parameter, or residual-SD name to denote a non-parent species tracked alongside the parent. Examples: `central_mmae` (MMAE payload central compartment), `lcl_lesn` (lesinurad clearance in the Hill-McManus dual-urate-lowering-therapy model), `propSd_dxd` (Dxd payload residual proportional SD). The suffix matches via `endsWith(name, "_<suffix>")`; the prefix must be canonical under the relevant validator's check.

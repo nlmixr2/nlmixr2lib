@@ -18,7 +18,7 @@ Shoji_2017_fosdagrocorat_p1np <- function() {
       units              = "(binary)",
       type               = "binary",
       reference_category = "0 (fosdagrocorat or placebo)",
-      notes              = "Shoji 2017 Table 2 reports separate KDE, Imax, and EDK50 estimates for fosdagrocorat and prednisone; the rebound parameters (RBmax, T50) and the response-side parameters (Kd, BL, SLP) are shared between the two drugs. The model selects the active parameter set by adding a log-ratio offset (dlkde_pred / dledk50_pred) and a logit-difference (dlogitimax_pred) when DRUG_PRED = 1, recovering the published Prednisone typical values exactly. For placebo subjects (no dosing events into the K-PD depot) DRUG_PRED is informational only.",
+      notes              = "Shoji 2017 Table 2 reports separate KDE, Imax, and EDK50 estimates for fosdagrocorat and prednisone; the rebound parameters (RBmax, T50) and the response-side parameters (Kd, BL, SLP) are shared between the two drugs. The model selects the active parameter set by adding a log-ratio offset (dlkel_pred / dledk50_pred) and a logit-difference (dlogitimax_pred) when DRUG_PRED = 1, recovering the published Prednisone typical values exactly. For placebo subjects (no dosing events into the K-PD depot) DRUG_PRED is informational only.",
       source_name        = "DRUG_PRED"
     )
   )
@@ -45,13 +45,13 @@ Shoji_2017_fosdagrocorat_p1np <- function() {
     # ===================================================================
     # Drug PK (virtual K-PD depot) -- Shoji 2017 Table 2 (P1NP)
     # KDE differs by drug. Reparameterized as base (fosdagrocorat KDE) plus
-    # a log-ratio offset for prednisone so that a single etalkde pairs with
-    # lkde and reproduces the published values for both arms:
-    #   typical KDE(fos)  = exp(lkde)             = 0.597 /week
-    #   typical KDE(pred) = exp(lkde + dlkde_pred) = 0.535 /week
+    # a log-ratio offset for prednisone so that a single etalkel pairs with
+    # lkel and reproduces the published values for both arms:
+    #   typical KDE(fos)  = exp(lkel)             = 0.597 /week
+    #   typical KDE(pred) = exp(lkel + dlkel_pred) = 0.535 /week
     # ===================================================================
-    lkde       <- log(0.597);          label("Effect-compartment elimination rate KDE for fosdagrocorat (1/week)")        # Shoji 2017 Table 2 P1NP: KDE Fosdagrocorat = 0.597 /week (RSE 17.8%)
-    dlkde_pred <- log(0.535 / 0.597);  label("Log-ratio offset for prednisone KDE: log(KDE_pred / KDE_fos) (unitless)")    # Shoji 2017 Table 2 P1NP: KDE Prednisone   = 0.535 /week (RSE 28.9%)
+    lkel       <- log(0.597);          label("Effect-compartment elimination rate KDE for fosdagrocorat (1/week)")        # Shoji 2017 Table 2 P1NP: KDE Fosdagrocorat = 0.597 /week (RSE 17.8%)
+    dlkel_pred <- log(0.535 / 0.597);  label("Log-ratio offset for prednisone KDE: log(KDE_pred / KDE_fos) (unitless)")    # Shoji 2017 Table 2 P1NP: KDE Prednisone   = 0.535 /week (RSE 28.9%)
 
     # ===================================================================
     # Biomarker (response compartment) -- Shoji 2017 Table 2 (P1NP)
@@ -92,10 +92,10 @@ Shoji_2017_fosdagrocorat_p1np <- function() {
     #   cov(g_KDE,  g_EDK50) = -0.312 * sqrt(0.9025 * 0.4290) = -0.1941
     #   cov(g_BL,   g_KDE)   = -0.316 * sqrt(0.2172 * 0.9025) = -0.1401
     #   cov(g_BL,   g_EDK50) = -0.410 * sqrt(0.2172 * 0.4290) = -0.1251
-    # The same etalkde is added to whichever drug's KDE is active (single eta
+    # The same etalkel is added to whichever drug's KDE is active (single eta
     # on the K-PD depot per subject); analogous for etaledk50.
     # ===================================================================
-    etalkde + etaledk50 + etalrbase ~ c(
+    etalkel + etaledk50 + etalrbase ~ c(
        0.9025,
       -0.1941,  0.4290,
       -0.1401, -0.1251,  0.2172
@@ -119,13 +119,13 @@ Shoji_2017_fosdagrocorat_p1np <- function() {
     # ---- Drug switching: select the active KDE / logit-Imax / EDK50 by arm. ----
     # DRUG_PRED = 0 -> fosdagrocorat; DRUG_PRED = 1 -> prednisone. Placebo
     # subjects have no dose entering the K-PD depot so the choice is
-    # informational. Single etalkde / etaledk50 add to whichever active value.
-    lkde_active      <- lkde      + dlkde_pred      * DRUG_PRED
+    # informational. Single etalkel / etaledk50 add to whichever active value.
+    lkel_active      <- lkel      + dlkel_pred      * DRUG_PRED
     logitimax_active <- logitimax + dlogitimax_pred * DRUG_PRED
     ledk50_active    <- ledk50    + dledk50_pred    * DRUG_PRED
 
     # ---- Individual parameters ----
-    kde   <- exp(lkde_active + etalkde)
+    kel   <- exp(lkel_active + etalkel)
     imax  <- 1 / (1 + exp(-logitimax_active))
     edk50 <- exp(ledk50_active + etaledk50)
     kd    <- exp(lkd)
@@ -140,8 +140,8 @@ Shoji_2017_fosdagrocorat_p1np <- function() {
     # ---- K-PD depot (drug). Drug input enters as zero-order infusion via
     # dosing events (rate = 7 * q.d. dose in mg/week for continuous q.d.
     # dosing per Shoji 2017 Methods); first-order elimination at rate KDE.
-    d/dt(depot) <- -kde * depot
-    ir <- kde * depot
+    d/dt(depot_kpd) <- -kel * depot_kpd
+    ir <- kel * depot_kpd
 
     # ---- Empirical rebound multiplier on synthesis (Shoji 2017 Results,
     # rebound-effect equation). DOSE is the per-subject q.d. dose covariate

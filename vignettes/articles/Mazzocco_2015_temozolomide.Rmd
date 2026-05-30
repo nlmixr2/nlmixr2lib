@@ -33,7 +33,7 @@ Equations from Mazzocco 2015 page 731 (the boxed ODE block) and Figure 2 schemat
 
 | Equation / parameter           | Value                | Source location                                                                |
 |--------------------------------|----------------------|--------------------------------------------------------------------------------|
-| `d/dt(kpdConc)`                | n/a                  | Mazzocco 2015 p.731: dC/dt = -KDE * C (K-PD construction per Jacqmin 2007)     |
+| `d/dt(depot_kpd)`                | n/a                  | Mazzocco 2015 p.731: dC/dt = -KDE * C (K-PD construction per Jacqmin 2007)     |
 | `d/dt(prolif)`                 | n/a                  | Mazzocco 2015 p.731 ODE for dP/dt                                              |
 | `d/dt(quiesc)`                 | n/a                  | Mazzocco 2015 p.731 ODE for dQ/dt                                              |
 | `d/dt(quiescDam)`              | n/a                  | Mazzocco 2015 p.731 ODE for dQp/dt                                             |
@@ -46,7 +46,7 @@ Equations from Mazzocco 2015 page 731 (the boxed ODE block) and Figure 2 schemat
 | `ldqp` (dQp)                   | `log(0.0188)`        | Table 2: dQp = 0.0188 1/month (RSE 19%)                                        |
 | `lgamma` (gamma, p53 wild ref) | `log(0.254)`         | Table 2: gamma p53 wild = 0.254 unitless (RSE 18%)                             |
 | `lres` (res)                   | `log(0.1)`           | Table 2: res = 0.1 1/month (RSE 22%)                                           |
-| `lkde` (KDE)                   | `fixed(log(8.3))`    | Table 2: KDE = 8.3 1/month FIXED (paper text: 2.5-day half-life equivalent)    |
+| `lkel` (KDE)                   | `fixed(log(8.3))`    | Table 2: KDE = 8.3 1/month FIXED (paper text: 2.5-day half-life equivalent)    |
 | `lK`                           | `fixed(log(100))`    | Ribba 2014 review Table 1 footnote: K = 10 cm = 100 mm (upstream Ribba 2012)   |
 | `e_p53_gamma`                  | `log(0.143/0.254) = -0.5743` | Table 2: gamma p53 mutated = 0.143; gamma p53 wild = 0.254              |
 | `e_codel_kqpp`                 | `log(0.00807/0.00947) = -0.1601` | Table 2: kQpP 1p/19q codeleted = 0.00807; non-codeleted = 0.00947    |
@@ -58,7 +58,7 @@ Equations from Mazzocco 2015 page 731 (the boxed ODE block) and Figure 2 schemat
 | `etaldqp`                      | `0.5556` (CV 86.2%)  | Table 2 CV column                                                              |
 | `etalgamma`                    | `0.3857` (CV 68.6%)  | Table 2 CV column                                                              |
 | `etalres`                      | `0.4996` (CV 80.5%)  | Table 2 CV column                                                              |
-| `etalkde`                      | `fixed(0.2231)` (CV 50% FIXED) | Table 2 CV column                                                    |
+| `etalkel`                      | `fixed(0.2231)` (CV 50% FIXED) | Table 2 CV column                                                    |
 | `addSd` (a)                    | `1.73`               | Table 2: a = 1.73 mm (RSE 3%, constant error model)                            |
 | TMZ cycle interval             | 28 days = 0.9203 months | Mazzocco 2015 Methods: "The drug was administered for 5 consecutive days (day 1 to day 5) every 28 days at a daily dose of 200 mg/m^2." |
 
@@ -96,7 +96,7 @@ make_cohort <- function(genotype_label, TUM_TP53_MUT, TUM_1P19Q_CODEL, id_offset
   )
   doses <- per_subject |>
     tidyr::crossing(time = dose_times) |>
-    mutate(evid = 1L, amt = 1, cmt = "kpdConc")
+    mutate(evid = 1L, amt = 1, cmt = "depot_kpd")
   obs <- per_subject |>
     tidyr::crossing(time = obs_times) |>
     mutate(evid = 0L, amt = 0, cmt = NA_character_)
@@ -266,9 +266,9 @@ stopifnot(all(abs(baseline_check$baseline_MTD - (1.72 + 32.1)) < 1e-6))
 
 ## 2. K-PD compartment decays at rate KDE
 
-After a single TMZ-cycle bolus of `amt = 1` at `t = 0`, the K-PD compartment should decay as `kpdConc(t) = exp(-KDE * t)` with `KDE = 8.3 / month`, giving a half-life of `log(2) / 8.3 = 0.0835 month = 2.54 days`. Check the early-time decay of a single-cycle simulation.
+After a single TMZ-cycle bolus of `amt = 1` at `t = 0`, the K-PD compartment should decay as `depot_kpd(t) = exp(-KDE * t)` with `KDE = 8.3 / month`, giving a half-life of `log(2) / 8.3 = 0.0835 month = 2.54 days`. Check the early-time decay of a single-cycle simulation.
 
-```{r kde-check}
+```{r kel-check}
 single_dose_events <- tibble(
   id = 1L,
   TUM_TP53_MUT = 0L,
@@ -279,26 +279,26 @@ single_dose_events <- tibble(
 
 single_dose_events <- bind_rows(
   tibble(id = 1L, TUM_TP53_MUT = 0L, TUM_1P19Q_CODEL = 0L,
-         time = 0, evid = 1L, amt = 1, cmt = "kpdConc"),
+         time = 0, evid = 1L, amt = 1, cmt = "depot_kpd"),
   single_dose_events
 ) |>
   arrange(time, desc(evid))
 
-sim_kde <- rxode2::rxSolve(mod_typ, events = single_dose_events) |>
+sim_kel <- rxode2::rxSolve(mod_typ, events = single_dose_events) |>
   as.data.frame() |>
   filter(time > 0) |>
   mutate(predicted = exp(-8.3 * time))
 
-kde_check <- sim_kde |>
-  select(time, kpdConc, predicted) |>
+kel_check <- sim_kel |>
+  select(time, depot_kpd, predicted) |>
   head(10)
 
 knitr::kable(
-  kde_check,
+  kel_check,
   digits = 4,
-  caption = "Simulated kpdConc(t) vs analytic exp(-KDE * t) over the first 0.05 months (~1.5 days)."
+  caption = "Simulated depot_kpd(t) vs analytic exp(-KDE * t) over the first 0.05 months (~1.5 days)."
 )
-stopifnot(max(abs(sim_kde$kpdConc - sim_kde$predicted)) < 1e-3)
+stopifnot(max(abs(sim_kel$depot_kpd - sim_kel$predicted)) < 1e-3)
 ```
 
 ## 3. Carrying capacity cap prevents runaway growth
@@ -334,18 +334,18 @@ stopifnot(max(sim_cap$tumor_size) < 100)
 | `(1 - tumor_size / K)`                   | unitless                         | unitless       |
 | `kqpp * quiescDam`                      | `1/month * mm`                   | `mm / month`   |
 | `kpq * prolif`                          | `1/month * mm`                   | `mm / month`   |
-| `gamma * kde * kpdConc * prolif`        | `unitless * 1/month * AU * mm`   | `mm / month` (AU absorbed into gamma) |
-| `gamma * kde * kpdConc * quiesc`        | same                             | `mm / month`   |
+| `gamma * kel * depot_kpd * prolif`        | `unitless * 1/month * AU * mm`   | `mm / month` (AU absorbed into gamma) |
+| `gamma * kel * depot_kpd * quiesc`        | same                             | `mm / month`   |
 | `dqp * quiescDam`                       | `1/month * mm`                   | `mm / month`   |
-| `kde * kpdConc`                         | `1/month * AU`                   | `AU / month`   |
+| `kel * depot_kpd`                         | `1/month * AU`                   | `AU / month`   |
 
-All three tumour-tissue ODE right-hand sides reduce to `mm / month`, consistent with `d/dt(state)` where the states are in `mm` and `t` is in months. The K-PD compartment is in arbitrary units (AU) whose scale is absorbed into the typical-value gamma -- changing the dose magnitude from `amt = 1` to `amt = 10` scales `kpdConc` ten-fold but the published value of `gamma = 0.254` was estimated against the source paper's `amt = 1` convention, so the dose magnitude is load-bearing.
+All three tumour-tissue ODE right-hand sides reduce to `mm / month`, consistent with `d/dt(state)` where the states are in `mm` and `t` is in months. The K-PD compartment is in arbitrary units (AU) whose scale is absorbed into the typical-value gamma -- changing the dose magnitude from `amt = 1` to `amt = 10` scales `depot_kpd` ten-fold but the published value of `gamma = 0.254` was estimated against the source paper's `amt = 1` convention, so the dose magnitude is load-bearing.
 
 # Assumptions and deviations
 
 * **Carrying capacity `K = 100 mm` is upstream from Ribba 2012.** Mazzocco 2015 Table 2 reports only seven structural parameters plus two initial conditions; the carrying-capacity value is inherited (without being re-listed) from the predecessor Ribba 2012 LGG TGI model. The Ribba 2012 PDF is not on disk for this extraction; the on-disk Ribba 2014 review (doi:10.1038/psp.2014.12, PMID 24622904) records the value in its Table 1 footnote on the Ribba 2012 row: "theta was not estimated and was fixed to 10 cm". The model file pins the value via `lK <- fixed(log(100))` and cites the provenance in the `reference` block.
-* **K-PD dose magnitude convention.** Mazzocco 2015 represents each 28-day TMZ cycle (five daily 200 mg/m^2 doses on days 1-5) as a single bolus into the virtual drug compartment C; the source paper does not publish an explicit dose value. The model file is calibrated to `amt = 1` per cycle, which is the convention used by the upstream Ribba 2012 K-PD parameterisation that Mazzocco 2015 builds on. Users supplying a different `amt` magnitude will see proportionally rescaled `kpdConc` trajectories; to preserve the published efficacy magnitude with a different dose unit, scale `gamma` by the same factor.
-* **Resistance-clock origin.** The drug-effect resistance term `exp(-res * t)` is built on the rxode2 simulation time `t`. The paper measures `t` from TMZ start (the K-PD compartment C is zero before treatment). Users with pretreatment observations should put `t = 0` at the start of TMZ therapy and use negative times for pretreatment scans; the drug-effect term is `gamma * kde * C * exp(-res*t)` and reduces to zero for `t < 0` because `C(0) = 0`.
-* **`checkModelConventions()` deviations (intentional).** Running `nlmixr2lib::checkModelConventions("Mazzocco_2015_temozolomide")` flags four warnings (no errors): (1) compartment `kpdConc` is not on the canonical-compartment list; (2) compartments `prolif`, `quiesc`, `quiescDam` are not on the canonical-compartment list; (3) the single-output observation variable should be `Cc`; (4) `units$concentration` does not contain a per-volume `/` (the observation is a tumour diameter, not a drug concentration). All four are intrinsic to a tumour-size-dynamics model with no drug-concentration ODE. The same deviations apply to every other tumour-size-dynamics model in the package (e.g., `tgi_sat_logistic`, `oncology_xenograft_simeoni_2004`, `Ouerdani_2015_pazopanib`, `Zecchin_2016_tumorovarian`).
+* **K-PD dose magnitude convention.** Mazzocco 2015 represents each 28-day TMZ cycle (five daily 200 mg/m^2 doses on days 1-5) as a single bolus into the virtual drug compartment C; the source paper does not publish an explicit dose value. The model file is calibrated to `amt = 1` per cycle, which is the convention used by the upstream Ribba 2012 K-PD parameterisation that Mazzocco 2015 builds on. Users supplying a different `amt` magnitude will see proportionally rescaled `depot_kpd` trajectories; to preserve the published efficacy magnitude with a different dose unit, scale `gamma` by the same factor.
+* **Resistance-clock origin.** The drug-effect resistance term `exp(-res * t)` is built on the rxode2 simulation time `t`. The paper measures `t` from TMZ start (the K-PD compartment C is zero before treatment). Users with pretreatment observations should put `t = 0` at the start of TMZ therapy and use negative times for pretreatment scans; the drug-effect term is `gamma * kel * C * exp(-res*t)` and reduces to zero for `t < 0` because `C(0) = 0`.
+* **`checkModelConventions()` deviations (intentional).** Running `nlmixr2lib::checkModelConventions("Mazzocco_2015_temozolomide")` flags three warnings (no errors): (1) compartments `prolif`, `quiesc`, `quiescDam` are not on the canonical-compartment list (declared as `paper_specific_compartments`); (2) the single-output observation variable should be `Cc`; (3) `units$concentration` does not contain a per-volume `/` (the observation is a tumour diameter, not a drug concentration). All three are intrinsic to a tumour-size-dynamics model with no drug-concentration ODE. The same deviations apply to every other tumour-size-dynamics model in the package (e.g., `tgi_sat_logistic`, `oncology_xenograft_simeoni_2004`, `Ouerdani_2015_pazopanib`, `Zecchin_2016_tumorovarian`).
 * **Genotype mutual exclusivity not enforced by the model.** Mazzocco 2015 Methods note that TP53 missense mutation and 1p/19q codeletion are mutually exclusive in their cohort. The model file does not enforce that constraint at the parameter level -- users with the rare double-mutant case will see compounded covariate effects (both `e_p53_gamma` and `e_codel_kqpp` applied); the typical-value cohort in this vignette therefore omits the double-mutant combination.
 * **PKNCA validation is omitted.** This is a tumour-size-dynamics PD model with no drug-concentration ODE -- there is nothing for PKNCA to integrate. The vignette substitutes the mechanistic-sanity checks above (baseline match, K-PD decay rate, carrying-capacity cap, dimensional analysis), matching the validation pattern other tumour-size models in the package use (e.g., `Ouerdani_2015_pazopanib_mouse`, `Zecchin_2016_tumorovarian`).

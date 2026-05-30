@@ -18,7 +18,7 @@ Shoji_2017_fosdagrocorat_oc <- function() {
       units              = "(binary)",
       type               = "binary",
       reference_category = "0 (fosdagrocorat or placebo)",
-      notes              = "Shoji 2017 Table 2 reports separate KDE and EDK50 estimates for fosdagrocorat and prednisone; Imax is fixed to 1 for both drugs in the OC fit, and the rebound parameters (RBmax, T50) and response-side parameters (Kd, BL, SLP) are shared between the drugs. The model selects the active parameter set by adding a fixed log-ratio offset (dlkde_pred / dledk50_pred) when DRUG_PRED = 1.",
+      notes              = "Shoji 2017 Table 2 reports separate KDE and EDK50 estimates for fosdagrocorat and prednisone; Imax is fixed to 1 for both drugs in the OC fit, and the rebound parameters (RBmax, T50) and response-side parameters (Kd, BL, SLP) are shared between the drugs. The model selects the active parameter set by adding a fixed log-ratio offset (dlkel_pred / dledk50_pred) when DRUG_PRED = 1.",
       source_name        = "DRUG_PRED"
     )
   )
@@ -46,11 +46,11 @@ Shoji_2017_fosdagrocorat_oc <- function() {
     # Drug PK (virtual K-PD depot) -- Shoji 2017 Table 2 (OC).
     # KDE for both drugs were FIXED to the P1NP-fit estimates because the
     # OC-only fit was unstable (high RSE). Reparameterized as base
-    # (fosdagrocorat) plus a log-ratio offset for prednisone so etalkde
-    # pairs with lkde.
+    # (fosdagrocorat) plus a log-ratio offset for prednisone so etalkel
+    # pairs with lkel.
     # ===================================================================
-    lkde       <- fixed(log(0.597));         label("Effect-compartment elimination rate KDE for fosdagrocorat (1/week)")        # Shoji 2017 Table 2 OC: KDE Fosdagrocorat = 0.597 /week FIX (from P1NP)
-    dlkde_pred <- fixed(log(0.535 / 0.597)); label("Log-ratio offset for prednisone KDE: log(KDE_pred / KDE_fos) (unitless)")    # Shoji 2017 Table 2 OC: KDE Prednisone   = 0.535 /week FIX (from P1NP)
+    lkel       <- fixed(log(0.597));         label("Effect-compartment elimination rate KDE for fosdagrocorat (1/week)")        # Shoji 2017 Table 2 OC: KDE Fosdagrocorat = 0.597 /week FIX (from P1NP)
+    dlkel_pred <- fixed(log(0.535 / 0.597)); label("Log-ratio offset for prednisone KDE: log(KDE_pred / KDE_fos) (unitless)")    # Shoji 2017 Table 2 OC: KDE Prednisone   = 0.535 /week FIX (from P1NP)
 
     # ===================================================================
     # Biomarker (response compartment) -- Shoji 2017 Table 2 (OC).
@@ -85,9 +85,9 @@ Shoji_2017_fosdagrocorat_oc <- function() {
     #   omega^2[g_KDE]   = 1.23^2  = 1.5129  (123  %CV)
     #   omega^2[g_EDK50] = 0.255^2 = 0.0650  (25.5 %CV)
     #   omega^2[g_BL]    = 0.436^2 = 0.1901  (43.6 %CV)
-    # The same etalkde is added to whichever drug's KDE is active.
+    # The same etalkel is added to whichever drug's KDE is active.
     # ===================================================================
-    etalkde   ~ 1.5129
+    etalkel   ~ 1.5129
     etaledk50 ~ 0.0650
     etalrbase    ~ 0.1901
 
@@ -107,11 +107,11 @@ Shoji_2017_fosdagrocorat_oc <- function() {
   model({
     # ---- Drug switching: select the active KDE / EDK50 by arm. Imax is
     # shared (= 1 for both drugs in the OC fit). ----
-    lkde_active   <- lkde   + dlkde_pred   * DRUG_PRED
+    lkel_active   <- lkel   + dlkel_pred   * DRUG_PRED
     ledk50_active <- ledk50 + dledk50_pred * DRUG_PRED
 
     # ---- Individual parameters ----
-    kde   <- exp(lkde_active + etalkde)
+    kel   <- exp(lkel_active + etalkel)
     edk50 <- exp(ledk50_active + etaledk50)
     kd    <- exp(lkd)
     rbase    <- exp(lrbase + etalrbase)
@@ -125,8 +125,8 @@ Shoji_2017_fosdagrocorat_oc <- function() {
     # ---- K-PD depot (drug). Drug input enters as zero-order infusion via
     # dosing events (rate = 7 * q.d. dose in mg/week); first-order
     # elimination at rate KDE.
-    d/dt(depot) <- -kde * depot
-    ir <- kde * depot
+    d/dt(depot_kpd) <- -kel * depot_kpd
+    ir <- kel * depot_kpd
 
     # ---- Empirical rebound multiplier on synthesis ----
     rebound <- 1 + rbmax * DOSE * t / (t50 + t)
