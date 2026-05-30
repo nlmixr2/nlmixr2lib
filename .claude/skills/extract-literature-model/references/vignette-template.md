@@ -169,10 +169,22 @@ compared against any per-group values reported in the source paper. See
 steady-state, multiple-dose, and sparse-sampling cases.
 
 ```{r pknca}
-# Concentrations — keep the column named Cc (nlmixr2lib convention)
+# Concentrations — keep the column named Cc (nlmixr2lib convention).
+# IMPORTANT: do NOT add `time > 0` or `Cc > 0` to this filter — both drop the
+# time-zero row that PKNCA needs to anchor AUC0-*. Use only `!is.na(Cc)`.
 sim_nca <- sim |>
   dplyr::filter(!is.na(Cc)) |>
   dplyr::select(id, time, Cc, treatment)
+
+# Guarantee a time=0 row per (id, treatment); for extravascular pre-dose Cc=0
+# is the correct value. (See `pknca-recipes.md` § "Time-zero guarantee".)
+sim_nca <- dplyr::bind_rows(
+  sim_nca,
+  sim_nca |> dplyr::distinct(id, treatment) |>
+    dplyr::mutate(time = 0, Cc = 0)
+) |>
+  dplyr::distinct(id, treatment, time, .keep_all = TRUE) |>
+  dplyr::arrange(id, treatment, time)
 
 conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | treatment + id)
 
@@ -195,17 +207,44 @@ intervals <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- PKNCA::pk.nca(nca_data)
-
-nca_summary <- summary(nca_res)
-knitr::kable(nca_summary, caption = "Simulated NCA parameters by dose group.")
 ```
 
 ## Comparison against published NCA
 
-<If the source paper reports NCA parameters (e.g., mean Cmax and AUC by dose
-group in a Table), reproduce that table side-by-side with the simulated values
-here. Note any differences > 20% and investigate — do not tune parameters to
-match.>
+When the source paper reports NCA values (Cmax, Tmax, AUC, half-life, …),
+render a single combined side-by-side table using
+`nlmixr2lib::ncaComparisonTable()`. Do **not** split simulated and reference
+values across separate tables or refer to "see above"; the comparison only
+works if the reader can see both numbers and the discrepancy in one row.
+
+```{r nca_compare}
+# Transcribe the paper's table into a wide tibble, one row per group, one
+# column per PKNCA parameter code (cmax, tmax, aucinf.obs, auclast,
+# half.life, …).
+published <- tibble::tribble(
+  ~treatment, ~cmax,  ~tmax, ~aucinf.obs, ~half.life,
+  "50 mg",    14.8,   2.0,   125.0,       6.5,
+  "100 mg",   28.5,   2.1,   250.0,       6.7
+)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_res,
+  reference = published,
+  by        = "treatment",
+  units     = c(cmax = "ng/mL", aucinf.obs = "ng*h/mL",
+                tmax = "h", half.life = "h"),
+  tolerance_pct = 20
+)
+
+knitr::kable(
+  cmp,
+  caption = "Simulated vs. published NCA. * differs from reference by >20%.",
+  align   = c("l", "l", "r", "r", "r")
+)
+```
+
+Flag any starred rows in the narrative and investigate the source — do not
+tune parameters to match.
 
 # Assumptions and deviations
 
