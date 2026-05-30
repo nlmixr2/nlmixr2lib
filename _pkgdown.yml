@@ -334,6 +334,8 @@ navbar:
         href: articles/Rose_2016_follitropin_delta.html
       - text: "Fondaparinux (Zufferey 2018)"
         href: articles/Zufferey_2018_fondaparinux.html
+      - text: "Fosdagrocorat (Weatherley 2018)"
+        href: articles/Weatherley_2018_fosdagrocorat.html
       - text: "Fosdagrocorat oc (Shoji 2017)"
         href: articles/Shoji_2017_fosdagrocorat_oc.html
       - text: "Fosdagrocorat p1np (Shoji 2017)"
@@ -1608,6 +1610,7 @@ articles:
   - articles/Wang_2021_pertuzumab
   - articles/Wang_2024_sugemalimab
   - articles/Wattanakul_2016_paracetamol
+  - articles/Weatherley_2018_fosdagrocorat
   - articles/Wicha_2017_linezolid_meropenem_vancomycin
   - articles/Wicha_2018_rifampicin
   - articles/Wilbaux_2015_prostate
