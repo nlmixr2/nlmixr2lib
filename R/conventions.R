@@ -206,6 +206,11 @@
     # Dihydroartemisinin, the active metabolite of artesunate
     # (Birgersson 2019 DDMODEL00000297).
     "dha",
+    # Desethylamodiaquine (DEAQ), the principal CYP2C8-derived
+    # antimalarial-active metabolite of amodiaquine. Used as a
+    # metabolite suffix in joint parent-plus-metabolite popPK models
+    # (Ali 2018 doi:10.1128/AAC.02193-17).
+    "deaq",
     # Hydroxy-itraconazole (OH-ITZ), the major active metabolite of
     # itraconazole produced by CYP3A4 hydroxylation. Used as a metabolite
     # suffix in parent + metabolite simultaneous popPK models
