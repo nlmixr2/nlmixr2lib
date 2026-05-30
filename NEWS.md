@@ -2,7 +2,7 @@
 
 # development version
 
-* Add de Vries Schultink 2018 anthracycline + trastuzumab cardiotoxicity ([doi:10.1007/s10928-018-9579-8](https://doi.org/10.1007/s10928-018-9579-8)) -- HER2-positive early-breast-cancer patients on sequential adjuvant therapy. Two model files (one per PD endpoint) sharing one vignette; ratifies new `depot_kpd` compartment, `lthalfrec` parameter, and `CONMED_DOXORUBICIN`, `CONMED_EPIRUBICIN`, `TROPONIN_T_MAX` covariate canonicals.
+* Add Lodise 2018 iclaprim ([doi:10.1128/AAC.01184-17](https://doi.org/10.1128/AAC.01184-17)) -- adults with complicated skin and skin-structure infections from the pooled ASSIST-1 and ASSIST-2 phase 3 trials (ratifies new `DIS_INFECT_CSSSI_SEV` covariate canonical for cSSSI severity-of-infection indicator).
 * Add van Rongen 2018 metformin ([doi:10.1007/s40272-018-0293-1](https://doi.org/10.1007/s40272-018-0293-1)) -- overweight and obese Caucasian adolescents.
 * Add Tarning 2012 artemether and dihydroartemisinin ([doi:10.1186/1475-2875-11-293](https://doi.org/10.1186/1475-2875-11-293)) -- pregnant women with uncomplicated Plasmodium falciparum malaria in Uganda (joint parent + DHA popPK with zero-order dissolution and 6-compartment transit absorption).
 * Add Schoemaker 2017 brivaracetam ([doi:10.1007/s00228-017-2230-6](https://doi.org/10.1007/s00228-017-2230-6)) -- paediatric patients with epilepsy aged 1 month to 16 years; ratifies new `CONMED_PB`, `CONMED_CBZ`, and `CONMED_VPA` covariate canonicals.

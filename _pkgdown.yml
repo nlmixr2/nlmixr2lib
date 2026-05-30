@@ -374,8 +374,10 @@ navbar:
         href: articles/Yao_2018_guselkumab.html
       - text: "Haloperidol (Franken 2017)"
         href: articles/Franken_2017_haloperidol.html
-      - text: "HL2351 (Ngo 2020)"
-        href: articles/Ngo_2020_HL2351.html
+      - text: "Hydroxyurea (Paule 2011)"
+        href: articles/Paule_2011_hydroxyurea.html
+      - text: "Iclaprim (Lodise 2018)"
+        href: articles/Lodise_2018_iclaprim.html
       - text: "Imatinib (Chien 2022)"
         href: articles/Chien_2022_imatinib.html
       - text: "Imatinib (Schindler 2017)"
@@ -1360,6 +1362,8 @@ articles:
   - articles/Llanos_2017_gentamicin
   - articles/Llanos-Paez_2017_gentamicin
   - articles/Llanos-Paez_2020_gentamicin
+  - articles/Llanos_2017_gentamicin
+  - articles/Lodise_2018_iclaprim
   - articles/Lon_2013_abatacept
   - articles/Long-Boyle_2015_busulfan
   - articles/Long_2017_necitumumab

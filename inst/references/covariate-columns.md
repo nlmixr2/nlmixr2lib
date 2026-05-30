@@ -2578,6 +2578,17 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Example models:** `Okada_2025_rocatinlimab.R` (multiplicative shift `1 - 0.372` on linear CL when 1; reference complement is the pooled atopic dermatitis + ulcerative colitis + healthy-volunteer cohort).
 - **Notes:** Used when a population PK model pools plaque-psoriasis patients with a non-psoriasis reference population and psoriasis disease status is retained as a covariate. Scope: specific because the disease-pooling reference category is paper-defined. Ratified canonically on 2026-04-27.
 
+### DIS_INFECT_CSSSI_SEV (**canonical for complicated skin and skin-structure infection severity indicator**)
+- **Description:** 1 = severe complicated skin and skin-structure infection (cSSSI), 0 = not severe cSSSI. Within-cohort severity indicator: stratifies severity inside an already-defined cSSSI / acute bacterial skin and skin-structure infection (ABSSSI) population, not a disease-vs-non-disease cohort indicator. Time-fixed per subject in the source analysis. The exact clinical criteria that classify a patient as severe vs not severe are protocol-defined within the trial dataset and may differ across antimicrobial development programs; per-model `covariateData[[DIS_INFECT_CSSSI_SEV]]$notes` should document the underlying definition when the source paper provides one.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (not severe cSSSI).
+- **Source aliases:**
+  - `SOI` (severity-of-infection indicator; same orientation, 1 = severe / 0 = not severe) -- used in `Lodise_2018_iclaprim.R` (ASSIST-1 / ASSIST-2 phase 3 cSSSI trials).
+- **Example models:** `Lodise_2018_iclaprim.R` (additive-linear shift on inter-compartmental clearance Q: `q_typ = exp(lq) + e_infect_csssi_sev_q * DIS_INFECT_CSSSI_SEV` with `e_infect_csssi_sev_q = +13.5 L/h`, so severe-cSSSI patients have Q rise from 1.85 L/h to 15.35 L/h relative to non-severe patients).
+- **Notes:** Specific scope because the "severe cSSSI" definition is protocol-defined; future antimicrobial popPK papers that test a severity-of-infection contrast in a different infection class (pneumonia, HABP/VABP, bloodstream infection, bone and joint infection) should register sibling canonicals (e.g., `DIS_INFECT_PNEUM_SEV`, `DIS_INFECT_HABP_SEV`) rather than overloading this entry. Distinct from `DIS_SASTHMA` and other disease-state indicators (which contrast a disease cohort with a non-disease reference) -- `DIS_INFECT_CSSSI_SEV` operates *within* an already-cSSSI cohort. The covariate-effect parameter naming drops the `DIS_` prefix per the existing `DIS_CANCER` -> `e_cancer_*` / `DIS_CANCER_PED` -> `e_cancer_ped_*` convention; here that gives `e_infect_csssi_sev_<param>`. Ratified canonically on 2026-05-30 alongside the Lodise 2018 iclaprim extraction.
+
 ### CARRAGEENAN (**canonical for intraplantar-carrageenan inflammatory-challenge indicator**)
 - **Description:** Binary indicator for intraplantar injection of carrageenan suspension as an experimental inflammatory / hyperalgesic challenge. 1 = subject received an intraplantar carrageenan injection at the start of the experiment (the carrageenan-induced peripheral inflammation / thermal-hyperalgesia paradigm); 0 = subject received an intraplantar saline injection (sham control). Time-fixed per subject within an experiment.
 - **Units:** (binary)
