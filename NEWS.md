@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Ueshima 2018 apixaban ([doi:10.1111/bcp.13561](https://doi.org/10.1111/bcp.13561)) -- Japanese adults with atrial fibrillation; ratifies new `SNP_ABCG2_RS2231142_HOM` covariate canonical for the recessive-model ABCG2 421A/A homozygous-variant indicator.
+* Add Oualha 2018 enoxaparin ([doi:10.1111/bcp.13543](https://doi.org/10.1111/bcp.13543)) -- paediatric liver-transplant recipients in the first post-operative week (ratifies new `PFA` covariate canonical for perioperative fluid administration and the new `lfbw` / `lhill_bw` / `ltbw50` body-weight-evolution parameter canonicals).
 * Add van Rongen 2018 metformin ([doi:10.1007/s40272-018-0293-1](https://doi.org/10.1007/s40272-018-0293-1)) -- overweight and obese Caucasian adolescents.
 * Add Tarning 2012 artemether and dihydroartemisinin ([doi:10.1186/1475-2875-11-293](https://doi.org/10.1186/1475-2875-11-293)) -- pregnant women with uncomplicated Plasmodium falciparum malaria in Uganda (joint parent + DHA popPK with zero-order dissolution and 6-compartment transit absorption).
 * Add Schoemaker 2017 brivaracetam ([doi:10.1007/s00228-017-2230-6](https://doi.org/10.1007/s00228-017-2230-6)) -- paediatric patients with epilepsy aged 1 month to 16 years; ratifies new `CONMED_PB`, `CONMED_CBZ`, and `CONMED_VPA` covariate canonicals.

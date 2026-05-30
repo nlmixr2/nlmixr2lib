@@ -274,6 +274,8 @@ navbar:
         href: articles/Ide_2020_elotuzumab.html
       - text: "Emicizumab (Yoneyama 2017)"
         href: articles/Yoneyama_2017_emicizumab.html
+      - text: "Enoxaparin (Oualha 2018)"
+        href: articles/Oualha_2018_enoxaparin.html
       - text: "Epinephrine (Abboud 2009)"
         href: articles/Abboud_2009_epinephrine.html
       - text: "Epinephrine (Oualha 2014)"
@@ -636,8 +638,6 @@ navbar:
         href: articles/Wang_2021_pertuzumab.html
       - text: "PF 06939999 (Guo 2022)"
         href: articles/Guo_2022_PF_06939999.html
-      - text: "PF04236921 (Li 2018)"
-        href: articles/Li_2018_PF04236921.html
       - text: "Phenytoin (Hennig 2015)"
         href: articles/Hennig_2015_phenytoin.html
       - text: "Phenytoin (Tanaka 2012)"
@@ -774,8 +774,8 @@ navbar:
         href: articles/Wu_2012_sirolimus.html
       - text: "Sirukumab (Xu 2011)"
         href: articles/Xu_2011_sirukumab.html
-      - text: "Snake venom (Sanhajariya 2018)"
-        href: articles/Sanhajariya_2018_snake_venom.html
+      - text: "SKL10406 (Park 2014)"
+        href: articles/Park_2014_SKL10406.html
       - text: "Sodium nitrite qsp (VegaVilla 2013)"
         href: articles/VegaVilla_2013_sodium_nitrite_qsp.html
       - text: "Somatropin human (Thorsted 2016)"
@@ -1390,8 +1390,6 @@ articles:
   - articles/Llanos_2017_gentamicin
   - articles/Llanos-Paez_2017_gentamicin
   - articles/Llanos-Paez_2020_gentamicin
-  - articles/Llanos_2017_gentamicin
-  - articles/LohyDas_2018_artesunate
   - articles/Lon_2013_abatacept
   - articles/Long_2017_necitumumab
   - articles/Long-Boyle_2015_busulfan

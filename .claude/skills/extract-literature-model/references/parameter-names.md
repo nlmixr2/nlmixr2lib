@@ -205,35 +205,35 @@ The `lnn` / `nn_fix` form is reserved for Wang & co-authors'
 sigmoidicity exponent in specific BDE / morphine-like models and is a
 distinct canonical from `lhill`.
 
-## Paper-specific etas and residual-SDs
+## Body-weight evolution (perioperative / fluid-resuscitation models)
 
-For models with genuinely paper-mechanistic IIV / residual-error
-parameter names that do not pair 1-to-1 with an `lX` fixed-effect
-parameter, declare them via the `paper_specific_etas` and
-`paper_specific_residual_sds` metadata fields at the top of the
-model function body (analogous to the `depends` field for
-upstream-imported covariates and the `paper_specific_compartments`
-field for paper-mechanistic compartment names):
+Some surgical / critical-care popPK papers fit a transient body-weight curve in
+parallel with the drug PK and use the time-varying body weight `BW(t)` as the
+allometric size descriptor on `V` (and, less commonly, on `CL`). The Oualha
+2018 paediatric-LT enoxaparin paper parameterises BW(t) with a Hill-type
+saturation curve:
 
-```r
-my_model <- function() {
-  description <- "..."
-  reference <- "..."
-  paper_specific_etas <- c("etalogit", "etap1", "etap2")
-  paper_specific_residual_sds <- c("propSd_vact_l1", "propSd_vact_l2")
-  units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
-  ...
-}
+```
+BW(t) = (BWPREOP + PFA / 1000) * (1 - (1 - fbw) * t^hill_bw / (tbw50^hill_bw + t^hill_bw))
 ```
 
-`checkModelConventions()` subtracts these from the parameter-naming
-warning set. Use sparingly: when an eta's underlying typical-value
-parameter is part of a paper-mechanistic structural equation
-(mixture-probability logit transform, transit-rate fractions,
-indirect-response baselines, etc.) rather than a 1-to-1 `lX` ini
-parameter; or when a residual SD uses a paper-specific multi-token
-output suffix (`propSd_vact_l1` for a lesion-stratified PD output)
-that the canonical `propSd_<output>` matcher does not recognise.
+When the paper estimates this curve jointly with the drug PK and reports IIV on
+its parameters, encode the BW(t)-evolution parameters as log-transformed
+primary `ini()` entries:
+
+- `lfbw` -- log asymptotic fractional body-weight retention after fluid loss.
+  Bare name `fbw`, dimensionless, typically in (0, 1].
+- `lhill_bw` -- log Hill steepness of the BW(t) decline curve. Bare name
+  `hill_bw`. Suffixed `_bw` to disambiguate from the PD canonical `lhill`
+  reserved for sigmoidal Emax / Imax (parameter-role distinction, not a
+  notation difference).
+- `ltbw50` -- log time to 50% of the BW loss. Bare name `tbw50`, time units
+  matching the model time unit.
+
+IIV follows the standard pattern (`etalfbw`, `etalhill_bw`, `etaltbw50`); use
+`fixed()` if the source paper holds any of these parameters constant.
+
+Founding example: `Oualha_2018_enoxaparin.R`.
 
 ## Transform prefixes
 
