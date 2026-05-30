@@ -2,6 +2,24 @@
 
 Read this once at dispatch, before starting the 6-phase workflow. Every trigger below is a hard stop: sidecar-ask the operator and wait. A trigger is **not advisory** — silent best-guesses ship as bugs the operator cannot retroactively correct without re-running the whole extraction.
 
+## Standing default — replicate the author's modeling structure
+
+**Build the model the way the authors built it.** This is the default for every extraction; do NOT sidecar to ask "the paper has multiple models, which do you want?" The answer is almost always: extract them as the authors structured them.
+
+- N independent (non-hierarchical) models in one paper → N separate `.R` files (one per model), one vignette per paper.
+- One joint coupled model (parent + metabolite simultaneously, N species sharing parameters, single multi-output) → one `.R` file, one vignette.
+- Base + final in a model-development paper → final only.
+- Sensitivity analyses / obsolete iterations that are not the paper's reported result → exclude.
+
+Almost always allow the original authors' added complexity. The library exists to faithfully reproduce the literature, and collapsing or splitting structure the authors chose is a loss of fidelity.
+
+Only sidecar when one of these two narrow conditions holds (these are the only multi-model triggers):
+
+1. **Infeasible** — replicating the structure requires NONMEM (or other-platform) features rxode2 / nlmixr2 cannot express. Sidecar with the specific feature + proposed simplification.
+2. **Genuinely ambiguous from the paper text** — the text leaves it unclear whether a second parameterisation is intended as a final result or as a robustness check / obsolete iteration. Sidecar with the textual evidence for each interpretation.
+
+See `references/replicate-author-structure.md` for worked examples (de Vries Schultink 2018 → 2 `.R` files + 1 vignette; Yoshida 2021 ipatasertib → 1 `.R` file + 1 vignette).
+
 ## Source acquisition (Phase 1)
 
 - **Lead PDF missing and OA acquisition failed.** All 5 ladder sources tried, no valid PDF whose title matches the task expectation. Sidecar with the structured attempts log from `scripts/acquire-paper.R` (`acquire-log.json`).
@@ -12,7 +30,7 @@ Read this once at dispatch, before starting the 6-phase workflow. Every trigger 
 
 ## Multi-model and ambiguity (Phase 1)
 
-- **Multiple non-hierarchical models in one source.** Base + final → extract final; per-subpopulation, per-endpoint, sensitivity-analysis → list candidates and ask which to extract.
+- **Multiple models in one paper — sidecar only when infeasible or genuinely ambiguous.** Default: replicate the author's structure (see "Standing default" above). Sidecar ONLY when (a) replicating uses NONMEM features rxode2 / nlmixr2 cannot express, or (b) the paper text leaves the count + role of models genuinely uncertain after careful reading. Do NOT sidecar to ask "which one do you want?" — extract all of them as the authors built them.
 - **Parameter values look like initial estimates, not final.** Confirm against published point-estimate tables before treating any `$THETA` / `$OMEGA` initial as final.
 - **Covariate encoding ambiguous.** Reference category, units, transformation not fully specified.
 - **Source column name not in `inst/references/covariate-columns.md`.** Propose a new entry and confirm before adding.
