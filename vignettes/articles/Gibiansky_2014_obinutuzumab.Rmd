@@ -105,7 +105,9 @@ make_cohort <- function(label, WT, SEXF, TUMSZ,
   # Maximum infusion rate 400 mg/h (1000 mg over 2.5 h = 1000/(2.5/24) L/day
   # = 9600 mg/day on a per-day-rate scale).
   dose_times <- c(0, 7, 14, 28, 56, 84, 112, 140)
-  obs_times  <- seq(0, 168, by = 0.5)  # 24 weeks, 0.5-day resolution
+  # 24 weeks, 1-day resolution (downsampled from by=0.5 for vignette build budget;
+  # smooth IV profile is visually identical at 1-day spacing)
+  obs_times  <- seq(0, 168, by = 1)
 
   dosing <- tibble(
     id   = id_offset + 1L,
@@ -254,8 +256,8 @@ ggplot(sim_1d, aes(x = time, y = Cc, colour = cohort)) +
 
 Gibiansky 2014 Figure 2 simulates the four diagnosis groups under the CLL11
 regimen with between-subject random effects retained and overlays the
-5/50/95% percentile bands. The cohort here uses 200 simulated subjects per
-diagnosis (1500 total) carrying typical baseline covariates for each group.
+5/50/95% percentile bands. The cohort here uses 60 simulated subjects per
+diagnosis (240 total) carrying typical baseline covariates for each group.
 
 ```{r figure-2-cohort}
 set.seed(20140042)
@@ -265,7 +267,9 @@ make_vpc_cohort <- function(label, n,
                             TUMTP_BCL = 0L, TUMTP_DLBCL = 0L, TUMTP_MCL = 0L,
                             id_offset = 0L) {
   dose_times <- c(0, 7, 14, 28, 56, 84, 112, 140)
-  obs_times  <- seq(0, 168, by = 1)
+  # 2-day resolution (downsampled from by=1 for vignette build budget;
+  # VPC quantile bands are smooth at 2-day spacing for an mAb IV profile)
+  obs_times  <- seq(0, 168, by = 2)
 
   ids <- seq_len(n)
 
@@ -294,7 +298,9 @@ make_vpc_cohort <- function(label, n,
     arrange(id, time, desc(evid))
 }
 
-n_per <- 200L
+# downsampled from 200 per cohort (800 total) for vignette build budget;
+# VPC 5/50/95 bands are stable at n=60 for an mAb steady-state profile
+n_per <- 60L
 events_2 <- bind_rows(
   make_vpc_cohort("CLL",          n = n_per,
                   WT_dist    = function(n) rnorm(n, 73.7, 14.1),

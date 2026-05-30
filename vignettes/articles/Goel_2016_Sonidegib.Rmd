@@ -113,7 +113,7 @@ A2201).
 
 ```{r virtual-pop}
 set.seed(2982) # last 4 digits of doi:10.1007/s00280-016-2982-1
-n_per_arm <- 120L
+n_per_arm <- 60L  # downsampled from 120 for vignette build budget; VPC band shape preserved
 n_arms    <- 2L
 n_subj    <- n_per_arm * n_arms
 

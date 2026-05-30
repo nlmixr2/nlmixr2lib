@@ -50,7 +50,7 @@ PMC7007418 (Table 3 footnotes b and c).
 
 ```{r virtual-pop}
 set.seed(2020)
-n_subj <- 500
+n_subj <- 200  # downsampled from 500 for vignette build budget; VPC band shape preserved
 
 pop <- data.frame(
   ID     = seq_len(n_subj),
@@ -123,7 +123,7 @@ ggplot(sim_summary, aes(x = time / (24 * 7))) +
     x = "Time (weeks)",
     y = paste0("Durvalumab concentration (", conc_unit, ")"),
     title = "Simulated durvalumab PK (1500 mg IV q4w)",
-    subtitle = "Median and 90% PI (N = 500 virtual hematologic malignancy patients)",
+    subtitle = "Median and 90% PI (N = 200 virtual hematologic malignancy patients)",
     caption = "Model: Ogasawara et al. (2020) Clin Pharmacokinet"
   ) +
   theme_bw()

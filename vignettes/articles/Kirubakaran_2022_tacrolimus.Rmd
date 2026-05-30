@@ -107,7 +107,7 @@ virtual cohort under the paper's two reported regimens.
 ```{r cohort}
 set.seed(2026)
 
-n_subjects <- 100L
+n_subjects <- 50L  # downsampled from 100 for vignette build budget; VPC band shape preserved
 
 # Approximate the model-building cohort:
 #   sex (33/47 male = 70.2%); age (median 53, range 16-70);
@@ -155,7 +155,7 @@ summary(cohort[, c("WT", "HT_cm", "FFM", "HCT")])
 # Simulate to t = 14 days (steady state for tacrolimus is reached by ~3-5
 # days of repeat dosing). Observation times every 0.5 h.
 build_events <- function(cohort, dose_mg, azole_flag, id_offset = 0L) {
-  obs_times <- seq(0, 14 * 24, by = 0.5)
+  obs_times <- seq(0, 14 * 24, by = 1)  # 1 h grid (was 0.5 h) for vignette build budget; smooth profiles unaffected
   dose_times <- seq(0, 14 * 24, by = 12)
   cohort_off <- cohort |>
     mutate(id = id + id_offset)

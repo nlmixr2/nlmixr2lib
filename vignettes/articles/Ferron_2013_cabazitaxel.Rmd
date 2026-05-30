@@ -74,7 +74,7 @@ or correlations.
 
 ```{r virtual-pop}
 set.seed(2013)
-n_subj <- 200
+n_subj <- 120  # downsampled from 200 for vignette build budget; VPC bands stable
 
 # BSA: log-normal around median 1.84 m^2 clipped to observed range 1.30-2.53.
 BSA <- pmin(pmax(rlnorm(n_subj, log(1.84), 0.10), 1.30), 2.53)
@@ -109,7 +109,7 @@ dose_times <- seq(0, (n_cycles - 1) * cycle_h, by = cycle_h)
 intra_cycle <- sort(unique(c(
   seq(0, 1, by = 0.05),                  # during infusion
   seq(1, 12, by = 0.25),                 # post-infusion alpha and beta
-  seq(12, 21 * 24, by = 4)               # to next dose
+  seq(12, 21 * 24, by = 6)               # to next dose (thinned from by=4 for vignette build)
 )))
 post_last <- seq(0, 25 * 24, by = 6)
 obs_times <- sort(unique(c(
@@ -182,7 +182,7 @@ ggplot(sim_summary, aes(x = time)) +
     x = "Time (h)",
     y = "Cabazitaxel concentration (ng/mL)",
     title = "Simulated cabazitaxel PK, 25 mg/m^2 IV 1-h infusion q3w x 3 cycles",
-    subtitle = "Median and 90% prediction interval (N = 200 virtual patients)",
+    subtitle = "Median and 90% prediction interval (N = 120 virtual patients)",
     caption = "Replicates Figure 2 of Ferron 2013."
   ) +
   theme_bw()

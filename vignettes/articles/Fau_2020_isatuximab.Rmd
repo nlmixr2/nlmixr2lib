@@ -168,7 +168,7 @@ between cohorts.
 
 ```{r cohort}
 set.seed(2020)
-n_subj <- 200
+n_subj <- 80  # downsampled from 200 per arm for vignette build budget; VPC band shape preserved
 
 make_cohort <- function(n, mm_nigg_label, id_offset = 0L) {
   tibble(
@@ -200,7 +200,7 @@ make_arm <- function(pop, regimen_name, id_offset = 0L) {
   ipi_amt   <- 10 * pop$WT          # 10 mg/kg
   dose_t    <- c(seq(0, by = 168,  length.out = 4),       # QW x 4 (cycle 1)
                  seq(672, by = 336, length.out = 14))      # Q2W (cycles 2-8)
-  obs_t     <- sort(unique(c(seq(0, 32 * 168, by = 24))))  # daily, ~ 6 mo (was every 8 h)
+  obs_t     <- sort(unique(c(seq(0, 32 * 168, by = 48))))  # every 2 days, ~ 6 mo (downsampled from daily for vignette build budget; smooth profile preserved)
 
   d_dose <- pop |>
     crossing(TIME = dose_t) |>

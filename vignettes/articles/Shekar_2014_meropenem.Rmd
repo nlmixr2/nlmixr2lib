@@ -104,13 +104,15 @@ regimens (500 mg, 1 g, 2 g IV q8h, each over 30 minutes). All five CrCL
 simulations correspond to non-RRT patients (`CRRT_STATUS = 0`); the model's
 RRT branch uses the fixed `TVCL = 5.1 L/h` and so is simulated separately
 below. The published simulations used n = 1,000 per condition; the vignette
-uses n = 200 per condition to stay inside the 5-minute pkgdown render
+uses n = 100 per condition to stay inside the 5-minute pkgdown render
 budget while still resolving the median and 10th-percentile reliably.
 
 ```{r cohort}
 set.seed(20260518)
 
-n_per_combo  <- 200L
+# downsampled from 200 for pkgdown vignette build budget (Monte-Carlo
+# percentiles remain stable; see Assumptions note)
+n_per_combo  <- 100L
 crcl_levels  <- c(20, 50, 80, 120, 180)  # mL/min
 dose_levels  <- c(500, 1000, 2000)       # mg
 infusion_min <- 30                       # minutes (q8h IV bolus over 30 min)
@@ -118,11 +120,13 @@ infusion_h   <- infusion_min / 60
 n_doses      <- 21L                      # 7 days of q8h dosing to reach steady state
 dose_interval_h <- 8
 
-# Sampling schedule: hourly samples over the final 8-hour dosing interval.
+# Sampling schedule over the final 8-hour dosing interval.
 # Last dose at t = 20 * 8 = 160 h; trough at t = 168 h.
+# Grid widened from by = 0.25 to by = 0.5 for vignette build budget;
+# smooth steady-state profile is visually identical at the coarser grid.
 last_dose_time <- (n_doses - 1) * dose_interval_h    # 160 h
 sample_times   <- seq(last_dose_time, last_dose_time + dose_interval_h,
-                      by = 0.25)
+                      by = 0.5)
 
 cohort_grid <- expand.grid(
   crcl_mL_min = crcl_levels,
@@ -321,7 +325,7 @@ inconsistency, not a transcription error in the packaged model -- see the
 Assumptions and deviations section ("Table 3 reproduction") for the
 detailed cross-check against Table 1 observed Cmin, which the packaged
 model reproduces correctly. The 10th-percentile estimates are noisier
-(n = 200 vs n = 1,000 Monte-Carlo draws) but follow the same pattern.
+(n = 100 vs n = 1,000 Monte-Carlo draws) but follow the same pattern.
 
 ## RRT branch -- typical-value steady-state profile
 
@@ -535,9 +539,9 @@ Cmin of 4.9 mg/L.
   dose in `mg` and volumes in `L`, `central / vc` directly gives `mg/L`;
   no scale factor is applied.
 
-- **Virtual cohort uses n = 200 per CrCL / dose condition (vs n = 1,000
+- **Virtual cohort uses n = 100 per CrCL / dose condition (vs n = 1,000
   in the paper).** The vignette has a 5-minute pkgdown render budget;
-  n = 200 per condition with 21 doses per subject and 33 sampling points
+  n = 100 per condition with 21 doses per subject and 17 sampling points
   per dosing interval keeps the render under that budget while still
   resolving the median and 10th-percentile trough comparison to within
   Monte-Carlo noise.

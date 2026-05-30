@@ -155,7 +155,7 @@ or covariate correlations).
 
 ```{r virtual-pop}
 set.seed(2019)
-n_subj <- 200
+n_subj <- 75  # downsampled from 200 for vignette build budget; PI band stays smooth at 3 regimens x 75 subj
 
 # Baseline body weight: log-normal centered on the Table 1 mean 77.6 kg,
 # clipped to the 5th-95th percentile range 47.7-122.0 kg.
@@ -207,9 +207,10 @@ cycle_days  <- 14   # nivolumab q2w in all simulated regimens
 dose_times  <- seq(0, (n_cycles - 1) * cycle_days, by = cycle_days)
 
 obs_times <- sort(unique(c(
-  seq(0, 14, by = 0.25),                          # intensive cycle-1 profile
-  seq(14, n_cycles * cycle_days, by = 2),         # rolling cycles
-  seq(n_cycles * cycle_days, 365, by = 7)         # washout tail
+  seq(0, 14, by = 0.5),                           # intensive cycle-1 profile (thinned from 0.25 for build budget)
+  seq(14, (n_cycles - 1) * cycle_days, by = 4),   # rolling cycles (thinned from 2 for build budget)
+  seq((n_cycles - 1) * cycle_days, n_cycles * cycle_days, by = 1),  # cycle-12 NCA window needs density
+  seq(n_cycles * cycle_days, 365, by = 14)        # washout tail (thinned from 7 for build budget)
 )))
 
 # Helper: build a self-contained event table per regimen with disjoint IDs

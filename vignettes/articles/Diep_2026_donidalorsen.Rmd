@@ -140,7 +140,7 @@ log-normal matching the cohort median (78 kg) and range (37-151.9 kg).
 ```{r cohort}
 set.seed(20260511)
 
-n_each <- 100L
+n_each <- 60L  # downsampled from 100 for vignette build budget
 
 # Two strata: healthy volunteers (DIS_HAE = 0) and HAE patients
 # (DIS_HAE = 1). Phase 1 healthy volunteers had cohort median age 43 y;
@@ -189,12 +189,14 @@ make_cohort <- function(cohort, id_offset = 0L) {
   # subsequent dose; coarser between to keep the vignette under the
   # 5-minute render budget. A single grid is used for both Cc and pkk
   # because rxode2 emits both output variables on every observation row.
+  # Grid coarsened from by=0.5/by=4 for vignette build budget; profiles
+  # are smooth enough that the visual shape is unchanged.
   obs_t <- sort(unique(c(
-    seq(0, 24,      by = 0.5),
-    seq(24, 168,    by = 4),
+    seq(0, 24,      by = 1),
+    seq(24, 168,    by = 8),
     seq(168, tau_h, by = 24),
     rep(dose_times[-1], each = 1) |>
-      (\(x) c(outer(seq(0, 24, by = 0.5), x, "+")))(),
+      (\(x) c(outer(seq(0, 24, by = 1), x, "+")))(),
     seq(0, final_t, by = 24)
   )))
   obs_t <- obs_t[obs_t >= 0 & obs_t <= final_t]

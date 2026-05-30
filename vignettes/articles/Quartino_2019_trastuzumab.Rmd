@@ -145,9 +145,11 @@ make_cohort <- function(n, tumor_type, id_offset = 0L) {
 }
 
 cohort <- dplyr::bind_rows(
-  make_cohort(200, "BC",     id_offset =   0L),
-  make_cohort(200, "AGC",    id_offset = 200L),
-  make_cohort(100, "Others", id_offset = 400L)
+  # Cohort sizes downsampled from 200/200/100 (=500) to 60/60/30 (=150) for
+  # vignette build budget; VPC band shape at n=150 is visually indistinguishable.
+  make_cohort(60, "BC",     id_offset =   0L),
+  make_cohort(60, "AGC",    id_offset =  60L),
+  make_cohort(30, "Others", id_offset = 120L)
 )
 
 # Sanity: IDs are disjoint across cohorts
@@ -188,8 +190,8 @@ make_events_q3w <- function(pop) {
     ) |>
     dplyr::select(id, time, amt, cmt, evid)
 
-  obs_times <- sort(unique(c(seq(0, 21, length.out = 30),    # dense first cycle
-                             seq(21, 21 * n_cycles, length.out = 150))))  # sparse follow-up
+  obs_times <- sort(unique(c(seq(0, 21, length.out = 20),    # dense first cycle (down from 30)
+                             seq(21, 21 * n_cycles, length.out = 90))))  # sparse follow-up (down from 150)
   obs_rows <- dplyr::tibble(
     id   = rep(pop$id, each = length(obs_times)),
     time = rep(obs_times, times = nrow(pop)),
@@ -298,7 +300,7 @@ ggplot(vpc, aes(time)) +
   labs(x = "Time (days)",
        y = "Trastuzumab Cc (ug/mL)",
        title = "Simulated trastuzumab concentration-time profiles by tumor type",
-       subtitle = "8 mg/kg loading + 6 mg/kg q3w; 500 virtual patients",
+       subtitle = "8 mg/kg loading + 6 mg/kg q3w; 150 virtual patients",
        caption = "Median and 5-95% prediction interval; patterned after Quartino 2019 Figure 1.") +
   theme_bw()
 ```

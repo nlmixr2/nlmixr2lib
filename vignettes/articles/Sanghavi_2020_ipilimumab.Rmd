@@ -118,7 +118,7 @@ component is the dominant driver of between-cohort differences.
 
 ```{r cohort}
 set.seed(2020)
-n_subj <- 200
+n_subj <- 100  # downsampled from 200 for vignette build budget; 90% PI band shape preserved
 
 cohort <- tibble(
   ID  = seq_len(n_subj),

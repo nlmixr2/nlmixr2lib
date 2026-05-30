@@ -80,7 +80,7 @@ each evaluated at steady state.
 ```{r cohort}
 set.seed(20260521L)
 
-n_per_cell  <- 200L
+n_per_cell  <- 50L    # downsampled from 200 for vignette build budget; PI bands and trough % preserved
 tau_bid     <- 12     # h, dosing interval for 200 mg BID
 tau_qd      <- 24     # h, dosing interval for 400 mg QD
 n_doses_bid <- 28L    # 14 days of BID dosing
@@ -89,7 +89,7 @@ n_doses_qd  <- 14L    # 14 days of QD dosing
 # Sampling times: full intra-interval profile in the LAST dosing interval
 ss_start_bid <- (n_doses_bid - 1L) * tau_bid     # = 324 h
 ss_start_qd  <- (n_doses_qd  - 1L) * tau_qd      # = 312 h
-prof_bid <- seq(0, tau_bid, by = 0.5)            # 0, 0.5, ..., 12 h within interval
+prof_bid <- seq(0, tau_bid, by = 1.0)            # 0, 1, ..., 12 h (coarsened from by=0.5 for build budget)
 prof_qd  <- seq(0, tau_qd, by = 1.0)             # 0, 1, ..., 24 h within interval
 
 # Genotype mapping table for the three modelled strata
@@ -225,7 +225,7 @@ ggplot(sim_pi, aes(tad, Q50)) +
     title = "Replicates Schipani 2011 Figure 2",
     caption = paste(
       "Median + 5-95% PI at WT = 70 kg pooled across three CYP2B6 strata",
-      "(516GG/983TT, 516TT, 983TC), n = 200 per stratum.",
+      "(516GG/983TT, 516TT, 983TC), n = 50 per stratum.",
       "Red dashed line: 3 mg/L MEC."
     )
   )
@@ -302,7 +302,7 @@ pct_below_mec |>
     title = "Replicates Schipani 2011 Figure 3",
     caption = paste(
       "Simulated steady-state trough proportions below the 3 mg/L MEC,",
-      "n = 200 per cell. Compare to Schipani 2011 Figure 3 narrative."
+      "n = 50 per cell. Compare to Schipani 2011 Figure 3 narrative."
     )
   )
 ```
@@ -454,8 +454,8 @@ literature; the simulated 29-30 h matches the typical-value prediction.
   follows the published final model and omits IOV.
 - **Cohort N for Figure 3 reproduction.** Schipani 2011 simulated
   1000 datasets per cell for Figure 3; the packaged vignette uses
-  200 subjects per cell to stay within the pkgdown 5-minute
-  per-vignette wall-time budget. The smaller N gives slightly more
+  50 subjects per cell to stay within the pkgdown per-vignette
+  wall-time budget. The smaller N gives slightly more
   Monte Carlo noise on the tail percentages but preserves the
   qualitative finding (higher sub-MEC risk on QD vs BID; protective
   effect of 516TT / 983TC variants; weight-dose dependence).

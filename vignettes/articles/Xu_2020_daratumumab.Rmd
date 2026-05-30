@@ -99,7 +99,7 @@ typical mix.
 ```{r cohort}
 set.seed(20260514L)
 
-n_per_arm <- 100L
+n_per_arm <- 60L  # downsampled from 100 for vignette build budget; mean/median trajectories visually identical
 
 make_cohort <- function(n, regimen, dose_schedule, id_offset = 0L) {
   ids <- id_offset + seq_len(n)
@@ -387,7 +387,7 @@ sim_summary <- pub |>
 knitr::kable(
   sim_summary,
   digits = 1,
-  caption = "Published (Xu 2020 Table 2) vs simulated median daratumumab concentrations at key MMY1001 sampling time points. The simulation uses a virtual cohort (n = 100 per arm) and is not expected to match patient-by-patient; the published medians are over small per-arm cohorts (D-Kd single dose n = 8-10; split-dose cohorts n = 14-75). Differences within +/- 30 percent indicate the structural model is reproducing the published exposure pattern; the C2D1 postinfusion peak is the most volatile point because it is most sensitive to body weight and to the timing of the second infusion."
+  caption = "Published (Xu 2020 Table 2) vs simulated median daratumumab concentrations at key MMY1001 sampling time points. The simulation uses a virtual cohort (n = 60 per arm) and is not expected to match patient-by-patient; the published medians are over small per-arm cohorts (D-Kd single dose n = 8-10; split-dose cohorts n = 14-75). Differences within +/- 30 percent indicate the structural model is reproducing the published exposure pattern; the C2D1 postinfusion peak is the most volatile point because it is most sensitive to body weight and to the timing of the second infusion."
 )
 ```
 

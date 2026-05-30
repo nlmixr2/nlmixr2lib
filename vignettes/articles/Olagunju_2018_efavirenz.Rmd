@@ -91,11 +91,11 @@ proportions below the 0.47 and 1.0 ug/mL efficacy cut-offs).
 ```{r cohort}
 set.seed(20260526L)
 
-n_per_cell  <- 200L
+n_per_cell  <- 60L     # downsampled from 200 for vignette build budget
 tau         <- 24      # h, once-daily dosing interval
 n_doses     <- 14L     # 14 days to reach steady state for efavirenz
 ss_start    <- (n_doses - 1L) * tau     # = 312 h
-prof        <- seq(0, tau, by = 0.5)    # 0, 0.5, ..., 24 h within the last interval
+prof        <- seq(0, tau, by = 1)      # downsampled from by=0.5 for vignette build budget
 ref_wt      <- 57                       # cohort median (Olagunju 2018 Table 1)
 
 # Genotype mapping table for the three metaboliser cohorts. The

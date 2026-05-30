@@ -159,7 +159,7 @@ Subject-level data were not released with the paper.
 
 ```{r cohort}
 set.seed(20260508)
-n_subj <- 200
+n_subj <- 50  # downsampled from 200 for vignette build budget; VPC band shape preserved across 3 arms
 
 cohort <- tibble::tibble(
   id          = seq_len(n_subj),
@@ -262,7 +262,7 @@ ggplot(vpc_pk, aes(time, Q50, colour = treatment, fill = treatment)) +
     x = "Time (days)",
     y = "Total evinacumab Cc (mg/L)",
     title = "Simulated 2.5 / 50 / 97.5 percentile profiles, IV q4w arms",
-    caption = "Virtual HoFH cohort (N = 200 per arm); first 6 q4w cycles."
+    caption = "Virtual HoFH cohort (N = 50 per arm); first 6 q4w cycles."
   ) +
   theme_minimal()
 ```
@@ -292,7 +292,7 @@ ggplot(vpc_ldl, aes(time, Q50, colour = treatment, fill = treatment)) +
     x = "Time (days)",
     y = "LDL-C (mg/dL)",
     title = "Simulated LDL-C trajectory by IV q4w dose",
-    caption = "Virtual HoFH cohort (N = 200 per arm); LDL-C target 100 mg/dL shown for reference."
+    caption = "Virtual HoFH cohort (N = 50 per arm); LDL-C target 100 mg/dL shown for reference."
   ) +
   geom_hline(yintercept = 100, linetype = "dashed", colour = "grey40") +
   theme_minimal()

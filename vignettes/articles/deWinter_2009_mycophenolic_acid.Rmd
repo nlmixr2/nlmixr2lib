@@ -135,7 +135,7 @@ to reach steady state.
 ```{r cohort}
 set.seed(20091101L) # paper Springer online publication date
 
-n_per_arm <- 25L
+n_per_arm <- 12L           # downsampled from 25 for vignette build budget; VPC band shape preserved
 n_doses   <- 24L           # 12 days BID
 mmf_mg    <- 1000          # 1 g MMF per dose
 mmf_mw    <- 433.5         # g/mol -> molar dose conversion
@@ -156,7 +156,13 @@ cohorts <- bind_rows(
   make_cohort(n_per_arm, csa = 1, id_offset = n_per_arm)
 )
 
-obs_times <- seq(0, n_doses * 12 + 12, by = 0.25)
+## downsampled grid for vignette build budget; figures only use the last
+## interval [240, 252] h so we keep dense sampling there and coarse elsewhere
+obs_times <- sort(unique(c(
+  seq(0, 240, by = 2),
+  seq(240, 252, by = 0.25),
+  seq(252, n_doses * 12 + 12, by = 2)
+)))
 
 events <- cohorts |>
   rowwise() |>
@@ -286,12 +292,13 @@ clearance.
 
 ```{r figure-5-cohort}
 alb_levels <- c(0.4, 0.5, 0.6)
+# downsampled from 25 to 12 per-ALB for vignette build budget; typical-value lines unaffected
 make_alb_cohort <- function(alb, id_offset) {
-  data.frame(id = id_offset + seq_len(25L),
+  data.frame(id = id_offset + seq_len(12L),
              arm = "Tacrolimus", CRCL = 50, ALB = alb, CONMED_CSA = 0)
 }
 alb_cohorts <- bind_rows(lapply(seq_along(alb_levels),
-  function(i) make_alb_cohort(alb_levels[i], (i - 1L) * 25L)))
+  function(i) make_alb_cohort(alb_levels[i], (i - 1L) * 12L)))
 
 alb_events <- alb_cohorts |>
   rowwise() |>
@@ -353,15 +360,16 @@ displaces MPA from protein binding and accelerates fMPA elimination).
 crcl_levels <- c(10, 30, 50)
 arms <- c("Tacrolimus", "Cyclosporine")
 
+# downsampled from 25 to 12 per-CRCL/arm for vignette build budget; typical-value lines unaffected
 make_crcl_cohort <- function(crcl, arm, id_offset) {
-  data.frame(id = id_offset + seq_len(25L),
+  data.frame(id = id_offset + seq_len(12L),
              arm = arm, CRCL = crcl, ALB = 0.5,
              CONMED_CSA = ifelse(arm == "Cyclosporine", 1L, 0L))
 }
 crcl_cohorts <- bind_rows(lapply(seq_along(crcl_levels), function(i) {
   bind_rows(
-    make_crcl_cohort(crcl_levels[i], "Tacrolimus", (i - 1L) * 50L),
-    make_crcl_cohort(crcl_levels[i], "Cyclosporine", (i - 1L) * 50L + 25L)
+    make_crcl_cohort(crcl_levels[i], "Tacrolimus", (i - 1L) * 24L),
+    make_crcl_cohort(crcl_levels[i], "Cyclosporine", (i - 1L) * 24L + 12L)
   )
 }))
 

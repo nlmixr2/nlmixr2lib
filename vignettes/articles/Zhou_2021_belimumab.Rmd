@@ -153,7 +153,7 @@ make_cohort <- function(n,
 }
 
 adult_cohort <- make_cohort(
-  n              = 500,
+  n              = 120,  # downsampled from 500 for vignette build budget
   age_range      = c(18, 80),
   age_median     = 38,
   wt_range       = c(35.8, 165.4),
@@ -168,7 +168,7 @@ adult_cohort <- make_cohort(
 ) |> mutate(cohort = "All adult")
 
 ped_cohort <- make_cohort(
-  n              = 200,
+  n              = 50,  # downsampled from 200 for vignette build budget
   age_range      = c(6, 18),
   age_median     = 14,
   wt_range       = c(17, 85.5),
@@ -183,7 +183,7 @@ ped_cohort <- make_cohort(
 ) |> mutate(cohort = "All pediatric")
 
 neas_adult_cohort <- make_cohort(
-  n              = 500,
+  n              = 120,  # downsampled from 500 for vignette build budget
   age_range      = c(18, 80),
   age_median     = 38,
   wt_range       = c(35.8, 165.4),
