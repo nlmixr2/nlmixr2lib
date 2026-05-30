@@ -490,6 +490,8 @@ navbar:
         href: articles/Shekar_2014_meropenem.html
       - text: "Meropenem ciprofloxacin (Rees 2018)"
         href: articles/Rees_2018_meropenem_ciprofloxacin.html
+      - text: "Metformin (Choi 2018)"
+        href: articles/Choi_2018_metformin.html
       - text: "Metformin (vanRongen 2018)"
         href: articles/vanRongen_2018_metformin.html
       - text: "Methotrexate (Ruhs 2012)"
@@ -1188,6 +1190,7 @@ articles:
   - articles/Cheng_2026_immunoglobulin
   - articles/Chien_2022_imatinib
   - articles/Choe_2012_busulfan
+  - articles/Choi_2018_metformin
   - articles/Choy_2016_T2DM_WHIG
   - articles/Chua_2025_mirikizumab
   - articles/Chung_2013_vancomycin

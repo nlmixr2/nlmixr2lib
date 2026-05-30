@@ -2,7 +2,8 @@
 
 # development version
 
-* Add Sanhajariya 2018 snake venom ([doi:10.3390/toxins10020073](https://doi.org/10.3390/toxins10020073)) -- exploratory human meta-analysis of 145 snakebite patients across 24 published reports; ratifies new `SNAKEFAMILY_ELAPID` covariate canonical.
+* Add Choi 2018 metformin ([doi:10.12793/tcp.2018.26.1.25](https://doi.org/10.12793/tcp.2018.26.1.25)) -- healthy adult Korean men in a single-dose 2-way crossover bioequivalence study comparing single-agent metformin and a metformin-containing fixed-dose-combination tablet; promotes the `FORM_FDC` covariate canonical from antitubercular-specific to general scope.
+* Add Padoin 1998 cephalexin ([doi:10.1128/aac.42.6.1463](https://doi.org/10.1128/aac.42.6.1463)) -- preclinical male Wistar rats with a cephalexin / quinapril oral coadministration DDI (ratifies new `CONMED_QPRL_ORAL` covariate canonical).
 * Add van Rongen 2018 metformin ([doi:10.1007/s40272-018-0293-1](https://doi.org/10.1007/s40272-018-0293-1)) -- overweight and obese Caucasian adolescents.
 * Add Tarning 2012 artemether and dihydroartemisinin ([doi:10.1186/1475-2875-11-293](https://doi.org/10.1186/1475-2875-11-293)) -- pregnant women with uncomplicated Plasmodium falciparum malaria in Uganda (joint parent + DHA popPK with zero-order dissolution and 6-compartment transit absorption).
 * Add Schoemaker 2017 brivaracetam ([doi:10.1007/s00228-017-2230-6](https://doi.org/10.1007/s00228-017-2230-6)) -- paediatric patients with epilepsy aged 1 month to 16 years; ratifies new `CONMED_PB`, `CONMED_CBZ`, and `CONMED_VPA` covariate canonicals.
