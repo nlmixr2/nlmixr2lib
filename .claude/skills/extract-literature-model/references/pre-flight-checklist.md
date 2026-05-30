@@ -4,39 +4,11 @@ Read this once at dispatch, before starting the 6-phase workflow. Every trigger 
 
 ## Standing default — replicate the author's modeling structure
 
-**Build the model the way the authors built it.** This is the default for every extraction; do NOT sidecar to ask "the paper has multiple models, which do you want?" The answer is almost always: extract them as the authors structured them.
-
-- N independent (non-hierarchical) models in one paper → N separate `.R` files (one per model), one vignette per paper.
-- One joint coupled model (parent + metabolite simultaneously, N species sharing parameters, single multi-output) → one `.R` file, one vignette.
-- Base + final in a model-development paper → final only.
-- Sensitivity analyses / obsolete iterations that are not the paper's reported result → exclude.
-
-Almost always allow the original authors' added complexity. The library exists to faithfully reproduce the literature, and collapsing or splitting structure the authors chose is a loss of fidelity.
-
-Only sidecar when one of these two narrow conditions holds (these are the only multi-model triggers):
-
-1. **Infeasible** — replicating the structure requires NONMEM (or other-platform) features rxode2 / nlmixr2 cannot express. Sidecar with the specific feature + proposed simplification.
-2. **Genuinely ambiguous from the paper text** — the text leaves it unclear whether a second parameterisation is intended as a final result or as a robustness check / obsolete iteration. Sidecar with the textual evidence for each interpretation.
-
-See `references/replicate-author-structure.md` for worked examples (de Vries Schultink 2018 → 2 `.R` files + 1 vignette; Yoshida 2021 ipatasertib → 1 `.R` file + 1 vignette).
+**Default — replicate the author's structure.** Policy and decision table live in `references/replicate-author-structure.md`. Sidecar ONLY when (a) NONMEM/other-platform features can't be expressed in rxode2/nlmixr2, or (b) the paper text leaves model intent genuinely ambiguous after careful reading. Do NOT sidecar to ask "which model do you want?"
 
 ## Standing default — author-surname normalization
 
-**CamelCase across hyphens, spaces, apostrophes, and accents is the default — do NOT sidecar to confirm the filename form.** When the first author's surname contains a hyphen, space, apostrophe, or accent, apply the normalization rules from SKILL.md Phase 1 Step 3b silently when choosing the filename, function name, vignette basename, branch name, and PR title. There is no stop-and-ask trigger for this choice.
-
-Quick reference:
-
-- `Lohy Das` → `LohyDas` (drop spaces, CamelCase across the drop)
-- `Ait-Oudhia` → `AitOudhia` (drop hyphens, CamelCase across the drop)
-- `O'Brien` → `OBrien` (drop apostrophes, CamelCase across the drop)
-- `Câmara` → `Camara` (transliterate accents)
-- `Müller` → `Muller` (transliterate accents)
-- `van Rongen` → `vanRongen` (lowercase particle preserved per published form)
-- `Von Bonin` → `VonBonin` (capitalised particle preserved per published form)
-
-See SKILL.md Phase 1 Step 3b for the full table and rules, and `references/parameter-names.md` § "File naming" for the canonical statement.
-
-If a *different* naming ambiguity arises (e.g., genuinely ambiguous corporate-author convention, or a transliteration that has multiple accepted forms in the literature), that is not covered by this default — sidecar in the normal format and let the operator decide.
+**Author-surname normalization is a hard default — no sidecar.** Apply silently for filename, function name, vignette basename, branch, PR title. Full table + rules: `references/parameter-names.md` § "Author-surname normalization". A genuinely ambiguous corporate-author convention or a transliteration with multiple accepted literary forms remains a normal sidecar.
 
 ## Source acquisition (Phase 1)
 
@@ -67,6 +39,8 @@ If a *different* naming ambiguity arises (e.g., genuinely ambiguous corporate-au
 - **NCA disagreement > ~20%.** PKNCA output disagrees with published NCA after careful review. Do not tune — confirm the source has been correctly transcribed first.
 
 ## PBPK / QSP / MBMA specifics (Phase 1 Step 3a)
+
+See `references/pbpk-qsp-mbma.md` for the discipline; this checklist enumerates only the stop-and-ask triggers.
 
 - **PBPK / QSP parameter not in any on-disk source.** Stricter than popPK: never substitute from "a representative PBPK paper for the same drug class" unless that paper is explicitly cited AND on disk. Sidecar instead.
 - **Source only states "we used SimCYP's standard whole-body model" without writing out ODEs.** The model is not reproducible from on-disk sources. Sidecar or skip — do not fill in from training-data knowledge of typical SimCYP parameterizations.

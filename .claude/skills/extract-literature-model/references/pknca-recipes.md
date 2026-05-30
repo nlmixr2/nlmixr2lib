@@ -203,38 +203,11 @@ Flag any differences > 20% in the narrative; do not tune parameters to match.
   BLQ rule (e.g., M3 method), that's outside the NCA step.
 - **Time-zero records** — PKNCA expects a pre-dose record for IV or a `time = 0`
   observation for extravascular. Ensure the simulation grid includes `time = 0`.
-- **Duplicate IDs across cohorts** — when `events` is assembled from multiple
-  `make_cohort()` calls and `bind_rows`-ed together, confirm
-  `anyDuplicated(events[, c("id", "time", "evid")]) == 0` *before* the
-  `rxSolve` call (and the corresponding check on `sim` after) — by the time
-  you spot wrong NCA values, the silent merge has already happened.
-  `rxSolve` collapses duplicated-ID rows into a single subject that
-  receives the *summed* dose; PKNCA then aggregates one wrong subject as
-  the whole group. Use the `id_offset` pattern in the `make_cohort`
-  snippet in `references/vignette-template.md` to keep ID ranges disjoint.
-- **Carry grouping via `rxSolve(..., keep = ...)`, not a post-hoc
-  `left_join`.** `rxSolve` accepts a `keep = c("col1", "col2")` argument
-  that attaches source columns (cohort, treatment, dose group, regimen,
-  per-subject covariates) directly to the simulation output, aligned per
-  row. This is the strongly preferred pattern. The post-hoc form
-
-  ```r
-  # AVOID
-  sim <- rxode2::rxSolve(mod, events = events) |>
-    dplyr::left_join(events |> dplyr::select(id, treatment) |>
-                       dplyr::distinct(), by = "id")
-  ```
-
-  fans out every output row across every label an `id` carries. Any
-  refactor that introduces an id collision (e.g. adding a new cohort
-  without `id_offset`) silently re-pools the simulation across panels —
-  this was the root cause of the Clegg 2024 nirsevimab Figure 4 bug, where
-  predictions came out ~3-fold too high. Use `keep = ` instead and the
-  PKNCA formula `Cc ~ time | treatment + id` picks the label up
-  automatically. The footgun-free idiom is:
-
-  ```r
-  sim <- rxode2::rxSolve(mod, events = events,
-                         keep = c("treatment", "cohort", "WT")) |>
-    as.data.frame()
-  ```
+- **Cohort-ID safety and grouping via `keep =`** — when `events` is built from
+  multiple `make_cohort()` calls and `bind_rows`-ed, and when the PKNCA
+  formula needs a `treatment` / `cohort` / `regimen` label, follow the
+  patterns in `references/vignette-template.md` § "Notes" (`id_offset`
+  for disjoint IDs; `rxSolve(..., keep = ...)` instead of post-hoc
+  `left_join`). Both errors silently produce wrong NCA values — the
+  Clegg 2024 nirsevimab Figure 4 bug (~3-fold inflation) was a
+  `left_join` after an id collision.

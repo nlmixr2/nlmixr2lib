@@ -13,9 +13,10 @@ Related references:
   description <- "<One-sentence summary, e.g., 'Two-compartment population PK model for <drug> in <population>'>"
   #! Prepend a class / species prefix to description when applicable
   #! (preclinical, in vitro, PBPK, QSP, MBMA) and use the matching
-  #! filename suffix. See SKILL.md Phase 1 steps 3 and 3a for the
-  #! per-class rules and the strict on-disk-only parameter-sourcing rule
-  #! that applies to PBPK / QSP / MBMA.
+  #! filename suffix. See SKILL.md Phase 1 step 3 for the preclinical /
+  #! in-vitro species rules, and references/pbpk-qsp-mbma.md for the
+  #! PBPK / QSP / MBMA discipline (including the strict on-disk-only
+  #! parameter-sourcing rule).
   reference   <- "<Full citation with DOI>"
   vignette    <- "<FirstAuthor>_<Year>_<drug>"  #! basename of vignettes/articles/<FirstAuthor>_<Year>_<drug>.Rmd; used by list-of-models to link here
   units       <- list(time = "<day|hour>", dosing = "<mg|mg/kg>", concentration = "<ug/mL|ng/mL>")
@@ -57,8 +58,8 @@ Related references:
   ini({
     #! Every parameter: log-transform prefix where applicable, label() with units, and a
     #! trailing in-file comment pointing to the source location. Wrap fixed values in
-    #! fixed(). See parameter-names.md for the rules and SKILL.md § "Fixed parameters in
-    #! ini()" for the source-signal checklist.
+    #! fixed(). See parameter-names.md § "Fixed parameters" for source signals and
+    #! encoding examples.
 
     # Structural parameters — reference values for <reference weight / age>
     lka     <- log(<value>); label("<description with units>")  # <source location>
