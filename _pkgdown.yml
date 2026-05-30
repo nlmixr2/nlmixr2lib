@@ -404,6 +404,8 @@ navbar:
         href: articles/Wu_2024_inotuzumab.html
       - text: "InterferonAlfa2a (Jeon 2013)"
         href: articles/Jeon_2013_interferonAlfa2a.html
+      - text: "Ipatasertib (Yoshida 2021)"
+        href: articles/Yoshida_2021_ipatasertib.html
       - text: "Ipilimumab (Sanghavi 2020)"
         href: articles/Sanghavi_2020_ipilimumab.html
       - text: "Isatuximab (Brillac 2025)"
@@ -1620,7 +1622,7 @@ articles:
   - articles/Yao_2018_guselkumab
   - articles/Yassen_2025_asundexian
   - articles/Yin_2021_trastuzumabDeruxtecan
-  - articles/Yoneyama_2017_emicizumab
+  - articles/Yoshida_2021_ipatasertib
   - articles/Yu_2022_ofatumumab
   - articles/Yuan_2019_concizumab
   - articles/Yukawa_1990_phenytoin

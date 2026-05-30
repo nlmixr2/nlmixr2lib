@@ -168,6 +168,11 @@
     # N-desmethyl-bedaquiline metabolite (M2) of bedaquiline
     # (Svensson 2016 DDMODEL00000219).
     "m2",
+    # G-037720 metabolite (M1) of ipatasertib, formed mainly by
+    # CYP3A4-mediated metabolism and pharmacologically active (2- to
+    # 4-fold less potent than the parent). Used in parent + metabolite
+    # joint popPK extractions (Yoshida 2021 doi:10.1002/jcph.1942).
+    "m1",
     # Endoxifen (4-hydroxy-N-desmethyltamoxifen), the major active
     # metabolite of tamoxifen -- Ter Heine 2014.
     "endx",
