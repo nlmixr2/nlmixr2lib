@@ -182,6 +182,8 @@ navbar:
         href: articles/Shi_2018_ceftazidime.html
       - text: "Cemiplimab (Yang 2021)"
         href: articles/Yang_2021_cemiplimab.html
+      - text: "Cephalexin rat (Padoin 1998)"
+        href: articles/Padoin_1998_cephalexin_rat.html
       - text: "Certolizumab (Wade 2015)"
         href: articles/Wade_2015_certolizumab.html
       - text: "Chloroquine (Simpson 2013)"
@@ -1413,7 +1415,7 @@ articles:
   - articles/Ouerdani_2015_pazopanib_mouse
   - articles/Overgaard_2019_semaglutide
   - articles/Ozawa_2007_docetaxel
-  - articles/Padari_2018_penicillin_G
+  - articles/Padoin_1998_cephalexin_rat
   - articles/Panoilia_2015_bevacizumab
   - articles/Papachristos_2020_bevacizumab_pk
   - articles/Papachristos_2020_bevacizumab_pkpd

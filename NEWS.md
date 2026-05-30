@@ -2,8 +2,7 @@
 
 # development version
 
-* Add Laffont 2025 synthetic-opioid overdose reversal simulation chain ([doi:10.1016/j.neuropharm.2025.110546](https://doi.org/10.1016/j.neuropharm.2025.110546)) -- end-to-end vignette assembling the Mann 2022 IV opioid PK + mu-receptor binding + respiratory / cardiovascular physiology layers with the Laffont 2024 intranasal naloxone and nalmefene PK; reproduces Table 1 cardiac-arrest rescue rates and Figs 6-7 brain-hypoxia traces. Extends the Mann 2022 binding panel with nalmefene as ligand 13 (Laffont 2024 Supp Table S3 scaling).
-* Add Mann 2022 translational opioid-overdose model ([doi:10.1002/cpt.2696](https://doi.org/10.1002/cpt.2696)) -- four-layer chain (Mann_2022_fentanyl_iv, Mann_2022_carfentanil_iv, Mann_2022_mu_receptor_binding with all 12 Table-S2 ligands, Mann_2022_respiratory_physiology with cardiac-arrest event); ratifies new `OPIOID_ID`, `ANTAGONIST_ID`, `L_OPIOID_pM`, `L_ANTAGONIST_pM`, `CAR_OPIOID`, and `OPIOID_PATIENT_TYPE` covariate canonicals.
+* Add Padoin 1998 cephalexin ([doi:10.1128/aac.42.6.1463](https://doi.org/10.1128/aac.42.6.1463)) -- preclinical male Wistar rats with a cephalexin / quinapril oral coadministration DDI (ratifies new `CONMED_QPRL_ORAL` covariate canonical).
 * Add van Rongen 2018 metformin ([doi:10.1007/s40272-018-0293-1](https://doi.org/10.1007/s40272-018-0293-1)) -- overweight and obese Caucasian adolescents.
 * Add Tarning 2012 artemether and dihydroartemisinin ([doi:10.1186/1475-2875-11-293](https://doi.org/10.1186/1475-2875-11-293)) -- pregnant women with uncomplicated Plasmodium falciparum malaria in Uganda (joint parent + DHA popPK with zero-order dissolution and 6-compartment transit absorption).
 * Add Schoemaker 2017 brivaracetam ([doi:10.1007/s00228-017-2230-6](https://doi.org/10.1007/s00228-017-2230-6)) -- paediatric patients with epilepsy aged 1 month to 16 years; ratifies new `CONMED_PB`, `CONMED_CBZ`, and `CONMED_VPA` covariate canonicals.
