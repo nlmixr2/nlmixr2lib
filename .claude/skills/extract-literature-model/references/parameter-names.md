@@ -26,19 +26,16 @@ maps directly: `v1` → `vc`, `v2` → `vp`, `v3` → `vp2`.
 
 **Michaelis-Menten Vmax**: always `lvmax` / `vmax`. Never `lvm` / `vm`.
 
-### K-PD / single-rate-constant parameterisation
+### PD structural parameters
 
-Some popPK papers report a single first-order elimination rate constant
-(K-PD or one-compartment-without-explicit-V parameterisation) rather than the
-`cl`/`vc` decomposition. In these models the elimination rate constant is a
-**primary** `ini()` parameter, not a derived micro-constant:
+For effect-compartment, indirect-response, and direct-effect PD models, use:
 
-- `lkel` — log first-order elimination rate constant (K-PD / single-rate-constant form).
-- Inside `model()` the bare name is `kel`. When `vc` is also estimated, use the
-  derived form `kel <- cl/vc` (canonical) — `lkel` as a primary parameter is
-  reserved for the K-PD case where no explicit `vc` exists.
-
-Never use `lke` for this role; standardise on `lkel`.
+- `lec50` — log of EC50 (sigmoid Emax / Imax models). Bare form `ec50`.
+- `lemax` / `limax` — log of Emax / Imax (maximum drug effect on production / loss).
+- `lhill` / `lgamma` — log of Hill / sigmoidicity coefficient.
+- `lke0` — log of effect-compartment equilibration rate constant (when an effect compartment equilibrates with the central compartment).
+- `lthalfrec` — log of an effect-compartment / indirect-response **recovery half-life** (units of time). Use when a paper parameterises a delay-and-recovery process by its half-life rather than by a rate constant. Inside `model()` the bare name is `thalfrec` and the corresponding first-order rate constant is `krec = log(2) / thalfrec`. Founding example: `deVriesSchultink_2018_trastuzumab_LVEF.R` (recovery half-life T1/2rec from de Vries Schultink 2018 Table 2, where dCeff/dt = Ctrastuzumab - log(2)/T1/2rec * Ceff). When the paper parameterises by rate constant instead, use `lkrec` directly and do not introduce a parallel `lthalfrec`.
+- `lke_kpd` — DO NOT use; the canonical K-PD elimination rate is `lkel` (same name as the PK-elimination canonical, with the K-PD context conveyed by the surrounding `depot_kpd` compartment).
 
 ### Multi-component clearance
 

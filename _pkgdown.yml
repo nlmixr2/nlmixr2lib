@@ -72,8 +72,8 @@ navbar:
         href: articles/Almquist_2022_anifrolumab.html
       - text: "Anrukinzumab (Hua 2015)"
         href: articles/Hua_2015_anrukinzumab.html
-      - text: "Anti tryptase (Rymut 2023)"
-        href: articles/Rymut_2023_anti_tryptase.html
+      - text: "Anthracycline troponinT (deVriesSchultink 2018)"
+        href: articles/deVriesSchultink_2018_cardiotoxicity.html
       - text: "Aripiprazole (Knights 2015)"
         href: articles/Knights_2015_aripiprazole.html
       - text: "Artemether (Tarning 2012)"
@@ -864,6 +864,8 @@ navbar:
         href: articles/Quartino_2019_trastuzumab.html
       - text: "Trastuzumab (Reijers 2016)"
         href: articles/Reijers_2016_trastuzumab.html
+      - text: "Trastuzumab LVEF (deVriesSchultink 2018)"
+        href: articles/deVriesSchultink_2018_cardiotoxicity.html
       - text: "Trastuzumab skbr3 (FehlingKaschek 2019)"
         href: articles/FehlingKaschek_2019_trastuzumab_skbr3.html
       - text: "TrastuzumabDeruxtecan (Yin 2021)"
@@ -1623,5 +1625,18 @@ articles:
   - articles/Zufferey_2018_fondaparinux
   - articles/Zuo_2016_UDCA
   - articles/Zurlinden_2016_paracetamol
+  - articles/deHoogd_2017_morphine
+  - articles/deKock_2017_sulfadoxinePyrimethamine
+  - articles/deVriesSchultink_2018_cardiotoxicity
+  - articles/deVriesSchultink_2020_zenocutuzumab
+  - articles/deWinter_2009_mycophenolic_acid
+  - articles/deWit_2016_everolimus
+  - articles/vanHasselt_2015_eribulin
+  - articles/vanRongen_2016_acetaminophen
+  - articles/vanRongen_2017_midazolam
+  - articles/vanRongen_2018_metformin
+  - articles/vanRongen_2018_midazolam
+  - articles/vanWijk_2019_paracetamol
+  - articles/vanderWalt_2013_dapagliflozin
   internal: true
 # AUTOGEN:articles:END

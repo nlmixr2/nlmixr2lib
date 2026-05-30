@@ -83,19 +83,23 @@
     # capillary release term setting the lower physiological limit).
     # State holds a concentration (mmol/L) rather than an amount.
     "nefa",
-    # Viral-dynamics compartments used by Neumann-style biphasic-decline
-    # PK/VD models for hepatitis C and other viral-replication mechanisms
-    # (Wang 2018 daclatasvir/asunaprevir HCV PK/VD MBMA; Neumann et al
-    # 1998 baseline framework). `infected` = productively infected cells
-    # (state I in the source paper); `virus` = free virus (state V); the
-    # paper's uninfected target cells (T) re-use the canonical `target`
-    # compartment (HCV target cells are hepatocytes, not the TMDD soluble
-    # / membrane-bound receptor target that `target` was originally
-    # registered for, but the semantic role - the unbound, drug-naive
-    # species the virus / drug acts on - is the same). State holds a
-    # concentration (cells/mL for `infected`, IU/mL or virion-copies/mL
-    # for `virus`) rather than an amount.
-    "infected", "virus"
+    # Purine metabolism PD compartments used by semi-mechanistic
+    # xanthine / uric-acid turnover models (Hill-McManus 2017
+    # doi:10.1111/bcp.13427). `xanthine` and `urate` hold serum amounts
+    # (mg); `xanthine_urine` and `urate_urine` hold cumulative urinary
+    # excretion amounts (mg) integrated from CLX / CLUA renal-clearance
+    # outflows for direct comparison with 24-h urinary collection data.
+    "xanthine", "urate", "xanthine_urine", "urate_urine",
+    # Kinetic-pharmacodynamic (K-PD) body amount compartment used when
+    # the source paper drives a PD response from a dose-to-effect K-PD
+    # construct rather than from measured plasma concentrations. Drug
+    # amount accumulates from each dose event and decays first-order at
+    # rate `kel`; the canonical PK-elimination parameter `lkel` is
+    # reused (no parallel `lke_kpd`). Suffix `_kpd` disambiguates from
+    # the absorption `depot`. Founding example:
+    # deVriesSchultink_2018_anthracycline_troponinT (anthracycline
+    # K-PD driving the troponin T direct-effect equation).
+    "depot_kpd"
   ),
   # Bare numbered chains (transit / effect / precursor / lat / dar /
   # depot) and metabolite-suffixed compartments are validated

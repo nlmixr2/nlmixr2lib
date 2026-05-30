@@ -2869,7 +2869,7 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Reference category:** n/a -- used with power scaling `(HER2_ECD / ref)^exponent`. Reference 25 ng/mL used in Lu 2014; reference 8.23 ng/mL (population median) used in Bruno 2005, with a 200 ng/mL plateau cap.
 - **Source aliases:**
   - `ECD` -- used in `Lu_2014_trastuzumabemtansine.R` and `Bruno_2005_trastuzumab.R`.
-- **Example models:** `Lu_2014_trastuzumabemtansine.R` (reference 25 ng/mL; exponent 0.035 on CL), `Bruno_2005_trastuzumab.R` (reference 8.23 ng/mL; power exponents 0.041 on CL and 0.105 on V; HER2_ECD capped at 200 ng/mL inside model() to reflect the Bruno 2005 plateau observation).
+- **Example models:** `Lu_2014_trastuzumabemtansine.R` (reference 25 ng/mL; exponent 0.035 on CL), `Bruno_2005_trastuzumab.R` (reference 8.23 ng/mL; power exponents 0.041 on CL and 0.105 on V; HER2_ECD capped at 200 ng/mL inside model() to reflect the Bruno 2005 plateau observation), `deVriesSchultink_2018_trastuzumab_LVEF.R` (inherits the Bruno 2005 trastuzumab popPK as a deterministic forcing function with the same 8.23 ng/mL reference and 200 ng/mL plateau cap; PK IIV is omitted per the source paper's 'fixed effect parameters' clause, so HER2_ECD only enters via the typical-value PK covariate equations).
 - **Notes:** Scoped specific because the covariate is meaningful only for HER2-targeted agents; if a non-HER2 paper uses a shed-antigen analog for a different target, register a target-specific canonical (e.g., `EGFR_ECD`) rather than reusing this one. Disambiguated from the covariate-columns register by the explicit `HER2_` prefix.
 
 ### TRAST_BL (**canonical for baseline trastuzumab concentration from prior therapy**)
@@ -2882,6 +2882,17 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
   - `TBL` -- used in `Lu_2014_trastuzumabemtansine.R`.
 - **Example models:** `Lu_2014_trastuzumabemtansine.R` (linear-on-log coefficient -0.002 per ug/mL on CL).
 - **Notes:** Scoped specific because the covariate is meaningful only for drugs that compete with trastuzumab at the HER2 binding site. Expect values clustered at 0 for trastuzumab-naive patients; Lu 2014 observed 0 at the 5th percentile and 54 ug/mL at the 95th percentile.
+
+### TROPONIN_T_MAX (**canonical for peak post-anthracycline high-sensitive serum troponin T concentration**)
+- **Description:** Peak (maximum) high-sensitive serum troponin T concentration observed per subject during or after the anthracycline-containing portion of an adjuvant or neoadjuvant chemotherapy regimen, in ng/L. Used as a covariate on subsequent trastuzumab-induced LVEF decline (the peak captures the cumulative anthracycline-driven myocyte damage that sensitises the heart to subsequent HER2-directed therapy).
+- **Units:** ng/L
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- median-centered power covariate in de Vries Schultink 2018: `EC50_i = EC50_pop * (TROPONIN_T_MAX / 18)^(-1.16)`, where 18 ng/L is the cohort-median TROPONIN_T_MAX. A TROPONIN_T_MAX value at the cohort median leaves EC50 unchanged from its population value.
+- **Source aliases:**
+  - `TRPmax` -- used in `deVriesSchultink_2018_trastuzumab_LVEF.R`.
+- **Example models:** `deVriesSchultink_2018_trastuzumab_LVEF.R` (power covariate effect on EC50 with median-centered normalisation, exponent -1.16, explaining 15.1% of inter-individual variability in EC50; per de Vries Schultink 2018 Table 2 and the EC50 covariate equation in Results).
+- **Notes:** Derived per-subject from the upstream K-PD anthracycline-troponin T model output (see `deVriesSchultink_2018_anthracycline_troponinT.R`). Treated as a time-fixed baseline covariate for the LVEF model: even though the troponin T peak occurs during anthracycline treatment, by the time the LVEF observations start (typically a few weeks after the last anthracycline dose), the peak is a determined historical scalar per subject. Specific scope until a second cardiotoxicity / cardiac-biomarker model legitimately reuses this indicator. Values are positive; sub-LLOQ peak values are imputed at LLOQ/2 (= 1.5 ng/L for the Roche Modular E hs-TnT assay used in de Vries Schultink 2018).
 
 ### TUMTP_GC (**canonical for gastric-cancer tumor-type indicator**)
 - **Description:** 1 = gastric cancer (GC) or adenocarcinoma of the gastroesophageal junction (GEJ), 0 = other tumor types.
@@ -3557,6 +3568,28 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
   - `MONOTR` -- used in `Kuchimanchi_2024_dostarlimab.R` (the paper's structural-equation indicator for monotherapy; the canonical column carries the inverse value, i.e. `CONMED_CHEMO = 1 - MONOTR`, so the canonical column is 1 when the patient is on combo-chemotherapy).
 - **Example models:** `Zhang_2019_nivolumab.R` (exponential effect on baseline CL: `exp(-0.104)` ~= 0.90 fold, i.e. ~9.7% lower CL relative to monotherapy), `Kuchimanchi_2024_dostarlimab.R` (multiplicative effect on baseline CL: `1 - 0.0779` = 0.922, i.e. 7.79% lower CL on dostarlimab + carboplatin/paclitaxel relative to dostarlimab monotherapy).
 - **Notes:** Promoted from specific to general scope on 2026-04-27 after the Kuchimanchi 2024 dostarlimab + carboplatin/paclitaxel analysis ratified the same pooling convention (any chemotherapy backbone collapsed into a single binary indicator). The two papers use different functional forms for the effect on CL -- Zhang 2019 uses `exp(theta * CONMED_CHEMO)` (exponential) and Kuchimanchi 2024 uses `(1 + theta * CONMED_CHEMO)` (multiplicative); these are different parameterisations of the same underlying study-design indicator and the canonical column meaning is unchanged. Document the per-model functional form in `covariateData[[CONMED_CHEMO]]$notes`.
+
+### CONMED_DOXORUBICIN (**canonical for concomitant doxorubicin (anthracycline) chemotherapy backbone indicator**)
+- **Description:** 1 = subject is receiving (or has received during the relevant observation window) doxorubicin as the anthracycline component of an adjuvant or neoadjuvant chemotherapy regimen; 0 = subject is receiving a different anthracycline (or no anthracycline at all). Used in cardiac-biomarker PD models to differentiate doxorubicin-driven myocardial damage from epirubicin-driven damage (doxorubicin has approximately twice the per-mg cardiotoxic effect of epirubicin at clinically equivalent oncologic exposures).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (subject is not on doxorubicin). When `CONMED_DOXORUBICIN` and `CONMED_EPIRUBICIN` are used together as a pair of complementary indicators (as in de Vries Schultink 2018), both being 0 means no anthracycline.
+- **Source aliases:**
+  - `ANTH_TYPE = 'doxorubicin'` -- used in `deVriesSchultink_2018_anthracycline_troponinT.R` (the source paper records anthracycline as a categorical with levels {'doxorubicin', 'epirubicin'}; the canonical register splits this into a pair of binary indicators following the `CONMED_<drug>` precedent rather than the categorical `ANTH_TYPE`).
+- **Example models:** `deVriesSchultink_2018_anthracycline_troponinT.R` (used jointly with `CONMED_EPIRUBICIN` to switch the K-PD SLOPE parameter for troponin T between doxorubicin (reference) and epirubicin; epirubicin = 0.524-fold of doxorubicin effect, per de Vries Schultink 2018 Table 2).
+- **Notes:** Specific scope until a second cardiotoxicity or anthracycline-effect model legitimately reuses this indicator. Distinct from `CONMED_PLDH` (PEGylated liposomal doxorubicin) and from `CONMED_AVD` (the doxorubicin component of the AVD backbone in Hodgkin lymphoma); use those canonicals for product-formulation or regimen-backbone semantics. When the source dataset's anthracycline column is categorical (`ANTH_TYPE`), derive the canonical indicators as `CONMED_DOXORUBICIN = (ANTH_TYPE == 'doxorubicin')`, `CONMED_EPIRUBICIN = (ANTH_TYPE == 'epirubicin')`.
+
+### CONMED_EPIRUBICIN (**canonical for concomitant epirubicin (anthracycline) chemotherapy backbone indicator**)
+- **Description:** 1 = subject is receiving (or has received during the relevant observation window) epirubicin as the anthracycline component of an adjuvant or neoadjuvant chemotherapy regimen; 0 = subject is receiving a different anthracycline (or no anthracycline at all). The pairing of `CONMED_EPIRUBICIN` with `CONMED_DOXORUBICIN` captures the cardiotoxicity-relevant choice within the anthracycline class; epirubicin is less cardiotoxic per mg than doxorubicin (lifetime cumulative dose threshold approximately 950 mg/m^2 vs 550 mg/m^2 for doxorubicin).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (subject is not on epirubicin). When `CONMED_DOXORUBICIN` and `CONMED_EPIRUBICIN` are used together (as in de Vries Schultink 2018), both being 0 means no anthracycline.
+- **Source aliases:**
+  - `ANTH_TYPE = 'epirubicin'` -- used in `deVriesSchultink_2018_anthracycline_troponinT.R`. See the matching entry for `CONMED_DOXORUBICIN`.
+- **Example models:** `deVriesSchultink_2018_anthracycline_troponinT.R` (used jointly with `CONMED_DOXORUBICIN` to switch the K-PD SLOPE parameter; epirubicin = 0.524-fold of the doxorubicin reference effect on troponin T).
+- **Notes:** Specific scope until a second cardiotoxicity or anthracycline-effect model legitimately reuses this indicator. The two indicators (`CONMED_DOXORUBICIN` and `CONMED_EPIRUBICIN`) are not mutually exclusive in principle (a subject receiving both anthracyclines could have both set to 1), but in practice the de Vries Schultink 2018 cohort assigned exactly one anthracycline per subject.
 
 ### CONMED_EFV (**canonical for concomitant efavirenz indicator**)
 - **Description:** 1 = subject is receiving efavirenz (EFV)-based antiretroviral therapy as the third agent in a combination ART regimen; 0 = subject is on the comparator regimen specified by the source paper (typically a protease-inhibitor-based regimen such as standard lopinavir/ritonavir 4:1). Efavirenz is a CYP3A and UGT inducer, so the indicator is used to flag PXR-mediated induction of metabolic clearance for co-administered antiretrovirals.

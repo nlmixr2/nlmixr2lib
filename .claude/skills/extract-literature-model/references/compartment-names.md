@@ -9,6 +9,7 @@
 Lower case. Snake case only when combining concepts.
 
 - `depot` — extravascular dosing compartment (oral, SC, IM).
+- `depot_kpd` — kinetic-pharmacodynamic (K-PD) body amount compartment. Dose lands here and first-order elimination drives a downstream PD effect; there is no measured plasma concentration to fit against. Suffix `_kpd` disambiguates from the absorption `depot`. Use canonical parameter `lkel` (= log K-PD elimination rate) for the rate constant rather than introducing a parallel `lke_kpd`. Founding example: `deVriesSchultink_2018_anthracycline_troponinT.R` (anthracycline K-PD driving troponin T direct effect).
 - `central` — IV / central sampling compartment.
 - `peripheral1`, `peripheral2` — peripheral compartments for 2- and 3-compartment models.
 - `effect` — effect compartment for PK/PD models.
