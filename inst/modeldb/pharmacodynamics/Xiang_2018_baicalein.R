@@ -286,13 +286,13 @@ Xiang_2018_baicalein <- function() {
     #    vignette Errata for the impulse-response implications and
     #    the alternative transit-chain encoding considered.
     # ================================================================
-    d/dt(tnf_delay1) <- (tnf - tnf_delay1) / tau1
-    d/dt(tnf_delay2) <- (tnf - tnf_delay2) / tau2
+    d/dt(transit1) <- (tnf - transit1) / tau1
+    d/dt(transit2) <- (tnf - transit2) / tau2
 
     # ================================================================
     # 5. IL-6 indirect response (Xiang 2018 Eq 4).
     # ================================================================
-    d/dt(il6) <- kin_il6 * tnf_delay1 - kout_il6 * il6
+    d/dt(il6) <- kin_il6 * transit1 - kout_il6 * il6
 
     # ================================================================
     # 6. iNOS indirect response (Xiang 2018 Eq 6). koutiNOS held at
@@ -302,7 +302,7 @@ Xiang_2018_baicalein <- function() {
     #    normalisation accumulating measurement bias rather than to
     #    true biological non-degradation.
     # ================================================================
-    d/dt(inos) <- kin_inos * tnf_delay2 - kout_inos * inos
+    d/dt(inos) <- kin_inos * transit2 - kout_inos * inos
 
     # ================================================================
     # 7. NO indirect response (Xiang 2018 Eq 7). iNOS^delta is the
@@ -321,8 +321,8 @@ Xiang_2018_baicalein <- function() {
     #    spurious step at t = 0+).
     # ================================================================
     tnf(0)        <- rbase_tnf
-    tnf_delay1(0) <- rbase_tnf
-    tnf_delay2(0) <- rbase_tnf
+    transit1(0) <- rbase_tnf
+    transit2(0) <- rbase_tnf
     il6(0)        <- rbase_il6
     inos(0)       <- rbase_inos
     no(0)         <- rbase_no

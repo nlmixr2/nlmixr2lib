@@ -29,7 +29,7 @@ Rees_2018_meropenem_ciprofloxacin <- function() {
     # --- Bacterial growth and subpopulations (Table 2, HFIM) ---
     log10cfu0   <- 7.37;  label("Initial inoculum (log10 CFU/mL)")                                  # Table 2: Log10CFU0 = 7.37 (SE 2.53%)
     log10cfumax <- 8.80;  label("Maximum population size (log10 CFU/mL)")                           # Table 2: Log10CFUmax = 8.80 (SE 0.796%)
-    k21         <- fixed(50.0); label("Replication rate constant (1/h)")                            # Table 2: k21 = 50.0 (fixed; fast replication, ref 69)
+    lk21        <- fixed(log(50.0)); label("Log replication rate constant k21 (1/h; FIXED)")        # Table 2: k21 = 50.0 (fixed; fast replication, ref 69)
 
     # Mean generation time per subpopulation (minutes); growth rate k12 = 60/MGT (1/h)
     mgt_ss <- 181;  label("Mean generation time, double-susceptible MEMs/CIPs (min)")              # Table 2: k12,ss row = 181 (SE 6.32%)
@@ -66,6 +66,9 @@ Rees_2018_meropenem_ciprofloxacin <- function() {
   })
 
   model({
+    # 0. Back-transform the log replication rate constant.
+    k21 <- exp(lk21)
+
     # 1. Carrying capacity and total inoculum (log10 -> linear, CFU/mL)
     cfumax <- 10^log10cfumax
     cfu0   <- 10^log10cfu0
@@ -96,19 +99,19 @@ Rees_2018_meropenem_ciprofloxacin <- function() {
       kmax_cip * ccip / (ccip + kc50_ir_cip)
 
     # 6. Plateau factor (logistic carrying-capacity limit on successful replication)
-    CFUall <- ss1 + ss2 + ri1 + ri2 + ir1 + ir2
+    CFUall <- bact_susceptible_susceptible1 + bact_susceptible_susceptible2 + bact_resistant_intermediate1 + bact_resistant_intermediate2 + bact_intermediate_resistant1 + bact_intermediate_resistant2
     plat <- 1 - CFUall / cfumax
 
     # 7. Life-cycle growth model: two states per subpopulation (Eqs 2-3).
     #    State 1 = preparing for replication; state 2 = immediately before
     #    replication. State-2 cells replicate at k21 producing 2 daughter
     #    state-1 cells with success probability plat.
-    d/dt(ss1) <- 2 * plat * k21 * ss2 - k12ss * ss1 - kill_ss * ss1
-    d/dt(ss2) <- -k21 * ss2 + k12ss * ss1 - kill_ss * ss2
-    d/dt(ri1) <- 2 * plat * k21 * ri2 - k12ri * ri1 - kill_ri * ri1
-    d/dt(ri2) <- -k21 * ri2 + k12ri * ri1 - kill_ri * ri2
-    d/dt(ir1) <- 2 * plat * k21 * ir2 - k12ir * ir1 - kill_ir * ir1
-    d/dt(ir2) <- -k21 * ir2 + k12ir * ir1 - kill_ir * ir2
+    d/dt(bact_susceptible_susceptible1) <- 2 * plat * k21 * bact_susceptible_susceptible2 - k12ss * bact_susceptible_susceptible1 - kill_ss * bact_susceptible_susceptible1
+    d/dt(bact_susceptible_susceptible2) <- -k21 * bact_susceptible_susceptible2 + k12ss * bact_susceptible_susceptible1 - kill_ss * bact_susceptible_susceptible2
+    d/dt(bact_resistant_intermediate1) <- 2 * plat * k21 * bact_resistant_intermediate2 - k12ri * bact_resistant_intermediate1 - kill_ri * bact_resistant_intermediate1
+    d/dt(bact_resistant_intermediate2) <- -k21 * bact_resistant_intermediate2 + k12ri * bact_resistant_intermediate1 - kill_ri * bact_resistant_intermediate2
+    d/dt(bact_intermediate_resistant1) <- 2 * plat * k21 * bact_intermediate_resistant2 - k12ir * bact_intermediate_resistant1 - kill_ir * bact_intermediate_resistant1
+    d/dt(bact_intermediate_resistant2) <- -k21 * bact_intermediate_resistant2 + k12ir * bact_intermediate_resistant1 - kill_ir * bact_intermediate_resistant2
 
     # 8. Antibiotic concentrations (mg/L): dosed by the user, decline per half-life.
     d/dt(cmem) <- -kel_mem * cmem
@@ -117,14 +120,14 @@ Rees_2018_meropenem_ciprofloxacin <- function() {
     # 9. Initial conditions: pre-existing subpopulations seeded by mutation
     #    frequency; all inoculum placed in state 1 (state-2 equilibrates in
     #    < ~1% of the population within ~1/k12). cmem/ccip start at 0.
-    ss1(0) <- cfu0
-    ri1(0) <- cfu0 * 10^log10mf_mem
-    ir1(0) <- cfu0 * 10^log10mf_cip
+    bact_susceptible_susceptible1(0) <- cfu0
+    bact_resistant_intermediate1(0) <- cfu0 * 10^log10mf_mem
+    bact_intermediate_resistant1(0) <- cfu0 * 10^log10mf_cip
 
     # 10. Outputs: total and resistant viable counts; fit on the log10 scale.
-    CFUrmem <- ri1 + ri2    # meropenem-resistant subpopulation (CFU/mL)
-    CFUrcip <- ir1 + ir2    # ciprofloxacin-resistant subpopulation (CFU/mL)
-    log10CFU <- log10(CFUall)
-    log10CFU ~ add(addSd)
+    CFUrmem <- bact_resistant_intermediate1 + bact_resistant_intermediate2    # meropenem-resistant subpopulation (CFU/mL)
+    CFUrcip <- bact_intermediate_resistant1 + bact_intermediate_resistant2    # ciprofloxacin-resistant subpopulation (CFU/mL)
+    Cc <- log10(CFUall)
+    Cc ~ add(addSd)
   })
 }

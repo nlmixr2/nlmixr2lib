@@ -4,7 +4,7 @@ Sharma_2018_naltrexone_bupropion <- function() {
   vignette <- "Sharma_2018_naltrexone_bupropion"
   units <- list(
     time = "week",
-    dosing = "mg",
+    dosing = "n/a (body-weight disease-trajectory model; naltrexone / bupropion doses enter as the CONMED_NAL_DOSE / CONMED_BUP_DOSE daily-dose covariates driving the Emax, not as rxode2 dose events)",
     concentration = "kg"  # body weight (the single-output "Cc" canonical carries kg, not a drug concentration; see model() comment)
   )
 
@@ -33,7 +33,7 @@ Sharma_2018_naltrexone_bupropion <- function() {
       notes = "1 = subject in the paper-pooled 'others' race category (n = 152, 3.3% of the pooled study 1-6 population per Sharma 2018 Table 1; per Sharma 2018 Covariate Analysis the small Pacific Islander, Native Hawaiian, Native American / Alaska Native, and 'others' subgroups were lumped together into a single 'other' indicator because each was too small individually for meaningful effect estimation); 0 = not in the paper-pooled 'others' category. Time-fixed per subject. Modulates DSTIM: Other DSTIM = 9.73% vs the White/Asian reference 18.5% (Sharma 2018 Table 2). With RACE_BLACK = 0 and RACE_OTHER = 0 the model reproduces the White/Asian-pooled reference DSTIM.",
       source_name = "Race == 'Other' (paper-pooled)"
     ),
-    DOSE_NAL_MGD = list(
+    CONMED_NAL_DOSE = list(
       description = "Naltrexone daily dose at the current observation time (mg/day)",
       units = "mg/day",
       type = "continuous",
@@ -41,7 +41,7 @@ Sharma_2018_naltrexone_bupropion <- function() {
       notes = "Time-varying covariate input carrying the daily naltrexone dose driving the dose-Hill term NAL/(ED50_NAL + NAL) in the combined Emax drug effect (Sharma 2018 Eq. 4). The full Contrave maintenance dose is 32 mg/day naltrexone (4 tablets/day of the 8 mg / 90 mg formulation); the placebo arm is 0 mg/day. Titration weeks 1-4 ramp from 8 -> 16 -> 24 -> 32 mg/day (one tablet added per week); supply the current week's daily dose. Set to 0 to disable the drug effect (e.g. for the placebo arm, or for use of this model purely for placebo+LSI BW-loss simulation).",
       source_name = "NAL (Sharma 2018 Eq. 4 -- daily naltrexone dose in mg)"
     ),
-    DOSE_BUP_MGD = list(
+    CONMED_BUP_DOSE = list(
       description = "Bupropion daily dose at the current observation time (mg/day)",
       units = "mg/day",
       type = "continuous",
@@ -208,11 +208,11 @@ Sharma_2018_naltrexone_bupropion <- function() {
     # E_DTPD = (Emax * t / (t + ET50)) * (NAL/(ED50_NAL + NAL) + BUP/(ED50_BUP + BUP))     [kg]
     # The time-Hill factor t/(t + ET50) = 0 at t = 0 (no instantaneous drug effect at study entry)
     # and saturates to 1 for t >> ET50, giving a gradual ramp-up of the drug effect over weeks.
-    # DOSE_NAL_MGD and DOSE_BUP_MGD are time-varying covariate inputs carrying the current daily
+    # CONMED_NAL_DOSE and CONMED_BUP_DOSE are time-varying covariate inputs carrying the current daily
     # naltrexone and bupropion doses in mg/day; set both to 0 to simulate the placebo arm.
     time_factor <- t / (t + et50)
-    drug_term   <- DOSE_NAL_MGD / (ed50nal + DOSE_NAL_MGD) +
-                   DOSE_BUP_MGD / (ed50bup + DOSE_BUP_MGD)
+    drug_term   <- CONMED_NAL_DOSE / (ed50nal + CONMED_NAL_DOSE) +
+                   CONMED_BUP_DOSE / (ed50bup + CONMED_BUP_DOSE)
     e_dtpd      <- emax * time_factor * drug_term
 
     # ----- ODE for the LSI-modulated BW state (Sharma 2018 Eq. 3) -----

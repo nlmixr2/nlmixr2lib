@@ -112,7 +112,7 @@ Mann_2022_fentanyl_iv <- function() {
     # Fixed allometric exponents (a priori, Algera 2021 / Mann 2022)
     e_wt_cl <- fixed(0.75)
     label("Body-weight allometric exponent on CL and Q (unitless, FIXED)")  # Supplement 1 Pharmacokinetic Component: CL = CL_TV * (WT/70)^0.75
-    e_wt_v  <- fixed(1)
+    e_wt_vc  <- fixed(1)
     label("Body-weight allometric exponent on V1, V2, V3 (unitless, FIXED)") # Supplement 1 Pharmacokinetic Component: V = V_TV * (WT/70)
 
     # IIV -- Table S1 reports log-scale variances omega^2 directly. The
@@ -137,9 +137,9 @@ Mann_2022_fentanyl_iv <- function() {
 
     # Individual structural parameters
     cl  <- exp(lcl  + etalcl)  * wt_ratio^e_wt_cl
-    vc  <- exp(lvc  + etalvc)  * wt_ratio^e_wt_v
-    vp  <- exp(lvp  + etalvp)  * wt_ratio^e_wt_v
-    vp2 <- exp(lvp2 + etalvp2) * wt_ratio^e_wt_v
+    vc  <- exp(lvc  + etalvc)  * wt_ratio^e_wt_vc
+    vp  <- exp(lvp  + etalvp)  * wt_ratio^e_wt_vc
+    vp2 <- exp(lvp2 + etalvp2) * wt_ratio^e_wt_vc
     q   <- exp(lq   + etalq)   * wt_ratio^e_wt_cl
     q2  <- exp(lq2  + etalq2)  * wt_ratio^e_wt_cl
     k1  <- exp(lk1)

@@ -8,18 +8,20 @@ Brekkan_2018_pegfilgrastim <- function() {
   vignette <- "Brekkan_2018_pegfilgrastim"
   units <- list(time = "hour", dosing = "mg", concentration = "ng/mL", ANC = "10^9 cells/L")
 
-  covariateData <- list(
-    # Covariates were evaluated using a full random effects model (FREM)
-    # approach with sex, age, lean body weight (LBW = LBM), body mass index,
-    # weight, and race (time-constant) plus formulation and period
-    # (time-varying). Per the Brekkan 2018 Discussion, no individual
-    # covariate explained more than 2% of variability in the derived
-    # metrics AUC and Cmax (Appendix 2). The structural Table I parameters
-    # used in this model file do not depend on covariates; the covariate
-    # tests are documented here for transparency but the effects from the
-    # Figs 6-9 forest plots are not encoded in model() because the
-    # forest-plot values are graphical only and the paper concludes the
-    # effects are not clinically meaningful.
+  # Covariates were evaluated using a full random effects model (FREM)
+  # approach with sex, age, lean body weight (LBW = LBM), body mass index,
+  # weight, and race (time-constant) plus formulation and period
+  # (time-varying). Per the Brekkan 2018 Discussion, no individual
+  # covariate explained more than 2% of variability in the derived
+  # metrics AUC and Cmax (Appendix 2). The structural Table I parameters
+  # used in this model file do not depend on covariates; the covariate
+  # tests are documented here for transparency but the effects from the
+  # Figs 6-9 forest plots are not encoded in model() because the
+  # forest-plot values are graphical only and the paper concludes the
+  # effects are not clinically meaningful. These FREM-screened covariates
+  # are never used in model(), so they are recorded in
+  # covariatesDataExcluded rather than covariateData.
+  covariatesDataExcluded <- list(
     WT = list(
       description        = "Body weight",
       units              = "kg",

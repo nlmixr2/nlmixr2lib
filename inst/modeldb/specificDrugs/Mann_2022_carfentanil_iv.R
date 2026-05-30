@@ -119,7 +119,7 @@ Mann_2022_carfentanil_iv <- function() {
     # Fixed allometric exponents (inherited from Algera 2021 fentanyl PK)
     e_wt_cl <- fixed(0.75)
     label("Body-weight allometric exponent on CL and Q (unitless, FIXED)")  # Inherited from fentanyl PK; Mann 2022 carfentanil uses same WT scaling
-    e_wt_v  <- fixed(1)
+    e_wt_vc  <- fixed(1)
     label("Body-weight allometric exponent on V1, V2, V3 (unitless, FIXED)") # Inherited from fentanyl PK
 
     # IIV -- same omega^2 values as fentanyl (Mann 2022 Supplement 1 Table
@@ -145,9 +145,9 @@ Mann_2022_carfentanil_iv <- function() {
 
     # Individual structural parameters
     cl  <- exp(lcl  + etalcl)  * wt_ratio^e_wt_cl
-    vc  <- exp(lvc  + etalvc)  * wt_ratio^e_wt_v
-    vp  <- exp(lvp  + etalvp)  * wt_ratio^e_wt_v
-    vp2 <- exp(lvp2 + etalvp2) * wt_ratio^e_wt_v
+    vc  <- exp(lvc  + etalvc)  * wt_ratio^e_wt_vc
+    vp  <- exp(lvp  + etalvp)  * wt_ratio^e_wt_vc
+    vp2 <- exp(lvp2 + etalvp2) * wt_ratio^e_wt_vc
     q   <- exp(lq   + etalq)   * wt_ratio^e_wt_cl
     q2  <- exp(lq2  + etalq2)  * wt_ratio^e_wt_cl
     k1  <- exp(lk1)

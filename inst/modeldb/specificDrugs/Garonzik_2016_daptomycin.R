@@ -165,7 +165,7 @@ Garonzik_2016_daptomycin <- function() {
     dap_eff <- factive * dap
 
     # ---- Total CFU and saturable growth modulators (Eqs 4-7) ----
-    cfu_total <- s1 + s2 + i1 + i2 + r1 + r2
+    cfu_total <- bact_susceptible1 + bact_susceptible2 + bact_intermediate1 + bact_intermediate2 + bact_resistant1 + bact_resistant2
     plateau   <- 1 - cfu_total / (cfu_total + cfu_m)        # Eq 5
     rep_term  <- 2 * plateau                                 # Eq 6
 
@@ -195,24 +195,24 @@ Garonzik_2016_daptomycin <- function() {
     d/dt(dap) <- 0
 
     # Susceptible subpopulation (Garonzik 2016 Eqs 11-12).
-    d/dt(s1) <- rep_term * k21 * s2 * irep_s - k12es_s * s1 - kill_s * s1
-    d/dt(s2) <- -k21 * s2 + k12es_s * s1 - kill_s * s2
+    d/dt(bact_susceptible1) <- rep_term * k21 * bact_susceptible2 * irep_s - k12es_s * bact_susceptible1 - kill_s * bact_susceptible1
+    d/dt(bact_susceptible2) <- -k21 * bact_susceptible2 + k12es_s * bact_susceptible1 - kill_s * bact_susceptible2
 
     # Intermediate subpopulation (same structure with subpopulation-specific
     # Smax_i, Kmax_i, k12_i parameters).
-    d/dt(i1) <- rep_term * k21 * i2 * irep_i - k12es_i * i1 - kill_i * i1
-    d/dt(i2) <- -k21 * i2 + k12es_i * i1 - kill_i * i2
+    d/dt(bact_intermediate1) <- rep_term * k21 * bact_intermediate2 * irep_i - k12es_i * bact_intermediate1 - kill_i * bact_intermediate1
+    d/dt(bact_intermediate2) <- -k21 * bact_intermediate2 + k12es_i * bact_intermediate1 - kill_i * bact_intermediate2
 
     # Resistant subpopulation (Smax_r = Kmax_r = 0, k12_r much slower).
-    d/dt(r1) <- rep_term * k21 * r2 * irep_r - k12es_r * r1 - kill_r * r1
-    d/dt(r2) <- -k21 * r2 + k12es_r * r1 - kill_r * r2
+    d/dt(bact_resistant1) <- rep_term * k21 * bact_resistant2 * irep_r - k12es_r * bact_resistant1 - kill_r * bact_resistant1
+    d/dt(bact_resistant2) <- -k21 * bact_resistant2 + k12es_r * bact_resistant1 - kill_r * bact_resistant2
 
     # Initial conditions. All bacteria start in state 1 (vegetative); state 2
     # is empty. Subpopulations are partitioned by FR_I and FR_R relative to
     # the total inoculum CFU0; the susceptible IC absorbs the remainder.
-    s1(0) <- cfu0 * (1 - fri - frr)
-    i1(0) <- cfu0 * fri
-    r1(0) <- cfu0 * frr
+    bact_susceptible1(0) <- cfu0 * (1 - fri - frr)
+    bact_intermediate1(0) <- cfu0 * fri
+    bact_resistant1(0) <- cfu0 * frr
 
     # ---- Observation ----
     # Observation Cc is log10 of total CFU/mL across the six bacterial

@@ -11,6 +11,14 @@ Landersdorfer_2018_imipenem_tobramycin <- function() {
   vignette <- "Landersdorfer_2018_imipenem_tobramycin"
   units <- list(time = "hour", dosing = "mg/L (drug input concentration)", concentration = "log10 CFU/mL (observation); mg/L (drug covariates)")
 
+  # Cipm / Ctob are the experimentally-controlled imipenem / tobramycin
+  # broth concentrations (the in-vitro HFIM PK forcing functions) supplied
+  # from the data, not epidemiological subject covariates. Declaring them
+  # in `depends` marks them as model inputs so the canonical-covariate
+  # register check does not apply (they are documented in covariateData
+  # below for provenance).
+  depends <- c("Cipm", "Ctob")
+
   covariateData <- list(
     Cipm = list(
       description        = "Unbound imipenem concentration in the hollow-fiber growth medium",
@@ -172,7 +180,7 @@ Landersdorfer_2018_imipenem_tobramycin <- function() {
     # CFUmax). The exact attenuation site is not stated in the
     # paper main text and the Fig S2 schematic was not on disk --
     # see the vignette Assumptions and deviations section.
-    cfu_total <- s1_ss + s2_ss + s1_ri + s2_ri + s1_ir + s2_ir
+    cfu_total <- bact_susceptible_susceptible1 + bact_susceptible_susceptible2 + bact_resistant_intermediate1 + bact_resistant_intermediate2 + bact_intermediate_resistant1 + bact_intermediate_resistant2
     growth_attn <- 1 - cfu_total / (10 ^ logcfumax)
     k12_ss <- k12_ss_base * growth_attn
     k12_ri <- k12_ri_base * growth_attn
@@ -224,14 +232,14 @@ Landersdorfer_2018_imipenem_tobramycin <- function() {
     # was not on disk -- see the vignette Assumptions and
     # deviations section).
 
-    d/dt(s1_ss) <- -k12_ss * s1_ss + 2 * k21 * s2_ss - kill_ss * s1_ss
-    d/dt(s2_ss) <-  k12_ss * s1_ss - k21 * s2_ss - kill_ss * s2_ss
+    d/dt(bact_susceptible_susceptible1) <- -k12_ss * bact_susceptible_susceptible1 + 2 * k21 * bact_susceptible_susceptible2 - kill_ss * bact_susceptible_susceptible1
+    d/dt(bact_susceptible_susceptible2) <-  k12_ss * bact_susceptible_susceptible1 - k21 * bact_susceptible_susceptible2 - kill_ss * bact_susceptible_susceptible2
 
-    d/dt(s1_ri) <- -k12_ri * s1_ri + 2 * k21 * s2_ri - kill_ri * s1_ri
-    d/dt(s2_ri) <-  k12_ri * s1_ri - k21 * s2_ri - kill_ri * s2_ri
+    d/dt(bact_resistant_intermediate1) <- -k12_ri * bact_resistant_intermediate1 + 2 * k21 * bact_resistant_intermediate2 - kill_ri * bact_resistant_intermediate1
+    d/dt(bact_resistant_intermediate2) <-  k12_ri * bact_resistant_intermediate1 - k21 * bact_resistant_intermediate2 - kill_ri * bact_resistant_intermediate2
 
-    d/dt(s1_ir) <- -k12_ir * s1_ir + 2 * k21 * s2_ir - kill_ir * s1_ir
-    d/dt(s2_ir) <-  k12_ir * s1_ir - k21 * s2_ir - kill_ir * s2_ir
+    d/dt(bact_intermediate_resistant1) <- -k12_ir * bact_intermediate_resistant1 + 2 * k21 * bact_intermediate_resistant2 - kill_ir * bact_intermediate_resistant1
+    d/dt(bact_intermediate_resistant2) <-  k12_ir * bact_intermediate_resistant1 - k21 * bact_intermediate_resistant2 - kill_ir * bact_intermediate_resistant2
 
     # =============================================================
     # Initial conditions
@@ -253,12 +261,12 @@ Landersdorfer_2018_imipenem_tobramycin <- function() {
     f_s2_ri <- k12_ri_base / (k12_ri_base + k21)
     f_s2_ir <- k12_ir_base / (k12_ir_base + k21)
 
-    s1_ss(0) <- total0 * frac_ss * (1 - f_s2_ss)
-    s2_ss(0) <- total0 * frac_ss * f_s2_ss
-    s1_ri(0) <- total0 * frac_ri * (1 - f_s2_ri)
-    s2_ri(0) <- total0 * frac_ri * f_s2_ri
-    s1_ir(0) <- total0 * frac_ir * (1 - f_s2_ir)
-    s2_ir(0) <- total0 * frac_ir * f_s2_ir
+    bact_susceptible_susceptible1(0) <- total0 * frac_ss * (1 - f_s2_ss)
+    bact_susceptible_susceptible2(0) <- total0 * frac_ss * f_s2_ss
+    bact_resistant_intermediate1(0) <- total0 * frac_ri * (1 - f_s2_ri)
+    bact_resistant_intermediate2(0) <- total0 * frac_ri * f_s2_ri
+    bact_intermediate_resistant1(0) <- total0 * frac_ir * (1 - f_s2_ir)
+    bact_intermediate_resistant2(0) <- total0 * frac_ir * f_s2_ir
 
     # =============================================================
     # Observation: log10 total viable count (CFU/mL)

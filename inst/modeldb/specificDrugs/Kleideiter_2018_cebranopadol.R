@@ -97,7 +97,7 @@ Kleideiter_2018_cebranopadol <- function() {
       notes              = "Multiplicative effect on F: factor 1.132 (about +13% bioavailability vs the OA/LBP reference); Kleideiter 2018 Table 13 (erratum-corrected: the original Table 13 row labels for DPN and Bunionectomy were swapped per the Page 46 correction in the 2018 erratum).",
       source_name        = "DISEASE"
     ),
-    DIS_BUN = list(
+    DIS_BUNIONECTOMY = list(
       description        = "Post-bunionectomy patient indicator (first-metatarsal bunionectomy cohort)",
       units              = "(binary)",
       type               = "binary",
@@ -129,7 +129,7 @@ Kleideiter_2018_cebranopadol <- function() {
     #   SEXF = 1 (female; the Table 13 most-common-category reference), AGE = 55 y,
     #   WT = 82 kg, CRCL = 106.4 mL/min, ALT = 19 U/L,
     #   FORM_CAPSULE = FORM_SOLUTION = 0 (tablet), CYP2C9_EM = CYP2C9_PIM = 0 (unknown),
-    #   DIS_HEALTHY = DIS_DPN = DIS_BUN = 0 (LBP / OA reference).
+    #   DIS_HEALTHY = DIS_DPN = DIS_BUNIONECTOMY = 0 (LBP / OA reference).
     lcl    <- log(74.3);     label("Apparent oral clearance at the reference covariate set (CL/F, L/h)")                       # Kleideiter 2018 Table 13 'Clearance Reference value'
     lvc    <- log(225);      label("Apparent central volume of distribution at the reference covariate set (Vc/F, L)")         # Kleideiter 2018 Table 13 'Volume central compartment Reference value'
     lvp    <- log(6750);     label("Apparent peripheral volume of distribution at the reference covariate set (Vp/F, L)")      # Kleideiter 2018 Table 13 'Volume peripheral compartment Reference value'
@@ -171,7 +171,7 @@ Kleideiter_2018_cebranopadol <- function() {
     # bunionectomy; +13% / +13% for DPN) confirms this assignment. Per the
     # Phase 1 step 8 errata-handling convention, the erratum-corrected mapping
     # is the source of record here.
-    e_bun_f      <- 1.801;   label("Bunionectomy-vs-LBP/OA F ratio; applied as ratio^DIS_BUN")                                 # Kleideiter 2018 Table 13 (erratum-corrected; original-Table-13-row-labeled 'DPN patients')
+    e_bun_f      <- 1.801;   label("Bunionectomy-vs-LBP/OA F ratio; applied as ratio^DIS_BUNIONECTOMY")                                 # Kleideiter 2018 Table 13 (erratum-corrected; original-Table-13-row-labeled 'DPN patients')
     e_dpn_f      <- 1.132;   label("DPN-vs-LBP/OA F ratio; applied as ratio^DIS_DPN")                                          # Kleideiter 2018 Table 13 (erratum-corrected; original-Table-13-row-labeled 'Bunionectomy patients')
 
     # Inter-individual variability. Kleideiter 2018 Table 13 reports log-normal omega^2
@@ -219,7 +219,7 @@ Kleideiter_2018_cebranopadol <- function() {
     fdepot <- e_solution_f^FORM_SOLUTION *
       e_capsule_f^FORM_CAPSULE *
       e_healthy_f^DIS_HEALTHY *
-      e_bun_f^DIS_BUN *
+      e_bun_f^DIS_BUNIONECTOMY *
       e_dpn_f^DIS_DPN
 
     # Micro-constants for the explicit ODE system.

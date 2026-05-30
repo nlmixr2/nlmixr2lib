@@ -127,7 +127,7 @@ Cardilin_2018_radiation_radiosensitizer_mouse <- function() {
     Cc <- central / vf                       # ug/mL
 
     # 4. Tumor dynamics
-    Vtot <- prolif + damage1 + damage2 + damage3 + irrad1 + irrad2
+    Vtot <- cycling_cells + damaged_cells1 + damaged_cells2 + damaged_cells3 + irrad1 + irrad2
     logi <- 1 - Vtot / cap                    # logistic capacity factor
 
     lethal  <- (1 + bRad * Cc) * (alpha * radDose + beta * radDose * radDose)
@@ -136,27 +136,27 @@ Cardilin_2018_radiation_radiosensitizer_mouse <- function() {
     d/dt(central)  <- -ke * central           # RS1 PK (mg/kg)
     d/dt(radDepot) <- -krad * radDepot        # radiation timing trigger (unit area / fraction)
 
-    d/dt(prolif)  <- kg * prolif * logi - (1 + aDeath * Cc) * kk * prolif - killHaz * prolif
-    d/dt(damage1) <- (1 + aDeath * Cc) * kk * prolif - kk * damage1
-    d/dt(damage2) <- kk * damage1 - kk * damage2
-    d/dt(damage3) <- kk * damage2 - kk * damage3
-    d/dt(irrad1)  <- killHaz * prolif - kk * irrad1 - kg * irrad1 * logi
+    d/dt(cycling_cells)  <- kg * cycling_cells * logi - (1 + aDeath * Cc) * kk * cycling_cells - killHaz * cycling_cells
+    d/dt(damaged_cells1) <- (1 + aDeath * Cc) * kk * cycling_cells - kk * damaged_cells1
+    d/dt(damaged_cells2) <- kk * damaged_cells1 - kk * damaged_cells2
+    d/dt(damaged_cells3) <- kk * damaged_cells2 - kk * damaged_cells3
+    d/dt(irrad1)  <- killHaz * cycling_cells - kk * irrad1 - kg * irrad1 * logi
     d/dt(irrad2)  <- 2 * kg * irrad1 * logi - kk * irrad2   # factor 2: one more division before death
 
     # 5. Initial conditions (Eq. 7; Mathematica supplement). The damage chain
     # starts at the pseudo-steady-state ratios (kk/kg)^n relative to the
     # proliferating compartment so that an untreated tumor grows exponentially at
     # rate kg - kk.
-    prolif(0)  <- v0
-    damage1(0) <- v0 * (kk / kg)
-    damage2(0) <- v0 * (kk / kg)^2
-    damage3(0) <- v0 * (kk / kg)^3
+    cycling_cells(0)  <- v0
+    damaged_cells1(0) <- v0 * (kk / kg)
+    damaged_cells2(0) <- v0 * (kk / kg)^2
+    damaged_cells3(0) <- v0 * (kk / kg)^3
 
     # 6. Observation: total tumor volume (sum of all six compartments)
-    tumorVol <- Vtot
-    tumorVol ~ prop(propSd)
+    tumor_vol <- Vtot
+    tumor_vol ~ prop(propSd)
   })
 }
 attr(Cardilin_2018_radiation_radiosensitizer_mouse, "message") <-
-  "Radiation is given as a unit bolus (amt=1) into the radDepot compartment at each irradiation time; the per-fraction radiation dose (Gy) is the parameter radDose (default 2). RS1 is dosed (mg/kg) into the central compartment. Observation tumorVol is total tumor volume (mm^3)."
+  "Radiation is given as a unit bolus (amt=1) into the radDepot compartment at each irradiation time; the per-fraction radiation dose (Gy) is the parameter radDose (default 2). RS1 is dosed (mg/kg) into the central compartment. Observation tumor_vol is total tumor volume (mm^3)."
 Cardilin_2018_radiation_radiosensitizer_mouse
