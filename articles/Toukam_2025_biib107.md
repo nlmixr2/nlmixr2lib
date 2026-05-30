@@ -280,9 +280,9 @@ sim_q8w |>
 
 | regimen | median_pct_time_ge_70 | pct_subjects_alwaysGE70 | median_trough_sat |
 |:---|---:|---:|---:|
-| 360 mg SC Q8W | 87.7 | 20.0 | 17.9 |
-| 450 mg SC Q8W | 96.5 | 44.7 | 50.7 |
-| 600 mg SC Q8W | 100.0 | 76.0 | 88.5 |
+| 360 mg SC Q8W | 87.7 | 22.0 | 17.8 |
+| 450 mg SC Q8W | 98.2 | 49.3 | 69.3 |
+| 600 mg SC Q8W | 100.0 | 75.3 | 86.7 |
 
 Time spent \>=70% saturated within the Day 56-112 dosing interval, by
 Q8W regimen. {.table}
@@ -657,68 +657,68 @@ knitr::kable(nca_tbl,
 | 180 mg SC SD | adj.r.squared       |        1.000 |   1.000 |    1.000 |
 | 180 mg SC SD | auclast             |           NA |      NA |       NA |
 | 180 mg SC SD | clast.pred          |        0.000 |   0.000 |    0.000 |
-| 180 mg SC SD | cmax                |       18.926 |  11.526 |   35.039 |
-| 180 mg SC SD | half.life           |        2.765 |   2.618 |    3.194 |
-| 180 mg SC SD | lambda.z            |        0.251 |   0.217 |    0.265 |
-| 180 mg SC SD | lambda.z.n.points   |       15.000 |   5.000 |   22.000 |
-| 180 mg SC SD | lambda.z.time.first |       42.000 |  35.000 |   52.000 |
+| 180 mg SC SD | cmax                |       18.389 |  11.904 |   29.712 |
+| 180 mg SC SD | half.life           |        2.787 |   2.617 |    3.281 |
+| 180 mg SC SD | lambda.z            |        0.249 |   0.211 |    0.265 |
+| 180 mg SC SD | lambda.z.n.points   |       14.000 |   4.950 |   20.100 |
+| 180 mg SC SD | lambda.z.time.first |       43.000 |  36.900 |   52.050 |
 | 180 mg SC SD | lambda.z.time.last  |       56.000 |  56.000 |   56.000 |
 | 180 mg SC SD | r.squared           |        1.000 |   1.000 |    1.000 |
-| 180 mg SC SD | span.ratio          |        4.879 |   1.421 |    7.925 |
+| 180 mg SC SD | span.ratio          |        4.682 |   1.034 |    7.211 |
 | 180 mg SC SD | tlast               |       56.000 |  56.000 |   56.000 |
-| 180 mg SC SD | tmax                |        6.000 |   3.000 |    8.100 |
-| 360 mg IV SD | adj.r.squared       |        0.999 |   0.869 |    1.000 |
-| 360 mg IV SD | auclast             |     1431.970 | 902.305 | 1997.795 |
-| 360 mg IV SD | clast.pred          |        0.300 |   0.000 |    5.712 |
-| 360 mg IV SD | cmax                |      109.960 |  59.009 |  195.942 |
-| 360 mg IV SD | half.life           |        2.641 |   0.371 |   11.119 |
-| 360 mg IV SD | lambda.z            |        0.262 |   0.062 |    1.868 |
-| 360 mg IV SD | lambda.z.n.points   |        3.000 |   3.000 |    6.000 |
-| 360 mg IV SD | lambda.z.time.first |       54.000 |  51.000 |   54.000 |
+| 180 mg SC SD | tmax                |        6.000 |   3.000 |    9.000 |
+| 360 mg IV SD | adj.r.squared       |        0.999 |   0.797 |    1.000 |
+| 360 mg IV SD | auclast             |     1383.676 | 896.662 | 2119.438 |
+| 360 mg IV SD | clast.pred          |        0.640 |   0.000 |    5.323 |
+| 360 mg IV SD | cmax                |      106.783 |  61.867 |  191.855 |
+| 360 mg IV SD | half.life           |        2.732 |   0.359 |    8.618 |
+| 360 mg IV SD | lambda.z            |        0.254 |   0.080 |    1.933 |
+| 360 mg IV SD | lambda.z.n.points   |        3.000 |   3.000 |   12.000 |
+| 360 mg IV SD | lambda.z.time.first |       54.000 |  45.000 |   54.000 |
 | 360 mg IV SD | lambda.z.time.last  |       56.000 |  56.000 |   56.000 |
-| 360 mg IV SD | r.squared           |        1.000 |   0.934 |    1.000 |
-| 360 mg IV SD | span.ratio          |        0.855 |   0.180 |    8.400 |
+| 360 mg IV SD | r.squared           |        0.999 |   0.865 |    1.000 |
+| 360 mg IV SD | span.ratio          |        0.888 |   0.249 |   10.709 |
 | 360 mg IV SD | tlast               |       56.000 |  56.000 |   56.000 |
 | 360 mg IV SD | tmax                |        0.000 |   0.000 |    0.000 |
-| 360 mg SC SD | adj.r.squared       |        0.999 |   0.845 |    1.000 |
+| 360 mg SC SD | adj.r.squared       |        1.000 |   0.796 |    1.000 |
 | 360 mg SC SD | auclast             |           NA |      NA |       NA |
-| 360 mg SC SD | clast.pred          |        0.001 |   0.000 |    2.442 |
-| 360 mg SC SD | cmax                |       36.903 |  26.941 |   57.959 |
-| 360 mg SC SD | half.life           |        2.506 |   0.348 |    5.100 |
-| 360 mg SC SD | lambda.z            |        0.277 |   0.136 |    1.991 |
-| 360 mg SC SD | lambda.z.n.points   |        3.000 |   3.000 |    6.050 |
-| 360 mg SC SD | lambda.z.time.first |       54.000 |  50.950 |   54.000 |
+| 360 mg SC SD | clast.pred          |        0.001 |   0.000 |    3.149 |
+| 360 mg SC SD | cmax                |       41.056 |  23.144 |   59.079 |
+| 360 mg SC SD | half.life           |        2.566 |   0.231 |    7.213 |
+| 360 mg SC SD | lambda.z            |        0.270 |   0.096 |    3.001 |
+| 360 mg SC SD | lambda.z.n.points   |        3.000 |   3.000 |    9.050 |
+| 360 mg SC SD | lambda.z.time.first |       54.000 |  47.950 |   54.000 |
 | 360 mg SC SD | lambda.z.time.last  |       56.000 |  56.000 |   56.000 |
-| 360 mg SC SD | r.squared           |        1.000 |   0.884 |    1.000 |
-| 360 mg SC SD | span.ratio          |        0.985 |   0.393 |   10.760 |
+| 360 mg SC SD | r.squared           |        1.000 |   0.896 |    1.000 |
+| 360 mg SC SD | span.ratio          |        1.156 |   0.277 |    8.701 |
 | 360 mg SC SD | tlast               |       56.000 |  56.000 |   56.000 |
-| 360 mg SC SD | tmax                |        6.000 |   4.000 |    9.000 |
-| 600 mg SC SD | adj.r.squared       |        0.999 |   0.870 |    1.000 |
+| 360 mg SC SD | tmax                |        6.000 |   4.000 |    9.050 |
+| 600 mg SC SD | adj.r.squared       |        0.999 |   0.945 |    1.000 |
 | 600 mg SC SD | auclast             |           NA |      NA |       NA |
-| 600 mg SC SD | clast.pred          |        4.446 |   0.001 |    9.285 |
-| 600 mg SC SD | cmax                |       67.268 |  45.749 |   98.964 |
-| 600 mg SC SD | half.life           |        6.466 |   0.527 |   12.606 |
-| 600 mg SC SD | lambda.z            |        0.107 |   0.055 |    1.325 |
+| 600 mg SC SD | clast.pred          |        3.404 |   0.000 |   10.157 |
+| 600 mg SC SD | cmax                |       67.835 |  47.426 |  107.818 |
+| 600 mg SC SD | half.life           |        5.465 |   1.380 |   14.128 |
+| 600 mg SC SD | lambda.z            |        0.127 |   0.049 |    0.510 |
 | 600 mg SC SD | lambda.z.n.points   |        3.000 |   3.000 |    4.050 |
 | 600 mg SC SD | lambda.z.time.first |       54.000 |  52.950 |   54.000 |
 | 600 mg SC SD | lambda.z.time.last  |       56.000 |  56.000 |   56.000 |
-| 600 mg SC SD | r.squared           |        1.000 |   0.935 |    1.000 |
-| 600 mg SC SD | span.ratio          |        0.309 |   0.202 |    4.056 |
+| 600 mg SC SD | r.squared           |        1.000 |   0.972 |    1.000 |
+| 600 mg SC SD | span.ratio          |        0.366 |   0.177 |    2.518 |
 | 600 mg SC SD | tlast               |       56.000 |  56.000 |   56.000 |
-| 600 mg SC SD | tmax                |        6.000 |   4.000 |   10.000 |
+| 600 mg SC SD | tmax                |        6.000 |   4.000 |   10.050 |
 | 72 mg SC SD  | adj.r.squared       |        1.000 |   1.000 |    1.000 |
 | 72 mg SC SD  | auclast             |           NA |      NA |       NA |
 | 72 mg SC SD  | clast.pred          |        0.000 |   0.000 |    0.000 |
-| 72 mg SC SD  | cmax                |        6.263 |   3.251 |   10.499 |
-| 72 mg SC SD  | half.life           |        2.810 |   2.656 |    4.538 |
-| 72 mg SC SD  | lambda.z            |        0.247 |   0.153 |    0.261 |
-| 72 mg SC SD  | lambda.z.n.points   |       33.000 |  15.000 |   35.050 |
-| 72 mg SC SD  | lambda.z.time.first |       24.000 |  21.950 |   42.000 |
+| 72 mg SC SD  | cmax                |        6.241 |   3.309 |   10.387 |
+| 72 mg SC SD  | half.life           |        2.818 |   2.646 |    4.371 |
+| 72 mg SC SD  | lambda.z            |        0.246 |   0.159 |    0.262 |
+| 72 mg SC SD  | lambda.z.n.points   |       33.000 |  14.000 |   35.000 |
+| 72 mg SC SD  | lambda.z.time.first |       24.000 |  22.000 |   43.000 |
 | 72 mg SC SD  | lambda.z.time.last  |       56.000 |  56.000 |   56.000 |
 | 72 mg SC SD  | r.squared           |        1.000 |   1.000 |    1.000 |
-| 72 mg SC SD  | span.ratio          |       11.450 |   2.905 |   12.740 |
+| 72 mg SC SD  | span.ratio          |       11.370 |   3.012 |   12.739 |
 | 72 mg SC SD  | tlast               |       56.000 |  56.000 |   56.000 |
-| 72 mg SC SD  | tmax                |        5.000 |   3.000 |    7.000 |
+| 72 mg SC SD  | tmax                |        5.000 |   3.950 |    7.000 |
 
 Simulated NCA parameters (median and 5th-95th percentile across the
 virtual cohort). {.table}
@@ -746,16 +746,16 @@ nca_tbl |>
 
 | regimen      | PPTESTCD  | median_value |   q05 |    q95 |
 |:-------------|:----------|-------------:|------:|-------:|
-| 180 mg SC SD | half.life |        2.765 | 2.618 |  3.194 |
-| 180 mg SC SD | tmax      |        6.000 | 3.000 |  8.100 |
-| 360 mg IV SD | half.life |        2.641 | 0.371 | 11.119 |
+| 180 mg SC SD | half.life |        2.787 | 2.617 |  3.281 |
+| 180 mg SC SD | tmax      |        6.000 | 3.000 |  9.000 |
+| 360 mg IV SD | half.life |        2.732 | 0.359 |  8.618 |
 | 360 mg IV SD | tmax      |        0.000 | 0.000 |  0.000 |
-| 360 mg SC SD | half.life |        2.506 | 0.348 |  5.100 |
-| 360 mg SC SD | tmax      |        6.000 | 4.000 |  9.000 |
-| 600 mg SC SD | half.life |        6.466 | 0.527 | 12.606 |
-| 600 mg SC SD | tmax      |        6.000 | 4.000 | 10.000 |
-| 72 mg SC SD  | half.life |        2.810 | 2.656 |  4.538 |
-| 72 mg SC SD  | tmax      |        5.000 | 3.000 |  7.000 |
+| 360 mg SC SD | half.life |        2.566 | 0.231 |  7.213 |
+| 360 mg SC SD | tmax      |        6.000 | 4.000 |  9.050 |
+| 600 mg SC SD | half.life |        5.465 | 1.380 | 14.128 |
+| 600 mg SC SD | tmax      |        6.000 | 4.000 | 10.050 |
+| 72 mg SC SD  | half.life |        2.818 | 2.646 |  4.371 |
+| 72 mg SC SD  | tmax      |        5.000 | 3.950 |  7.000 |
 
 Simulated Tmax and observed terminal half-life by regimen. {.table}
 

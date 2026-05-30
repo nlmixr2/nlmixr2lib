@@ -266,9 +266,9 @@ knitr::kable(nca_summary,
 
 | Interval Start | Interval End | treatment | N | AUClast (h\*ng/mL) | Cmax (ng/mL) | Tmax (h) | Half-life (h) | AUCinf,obs (h\*ng/mL) |
 |---:|---:|:---|:---|:---|:---|:---|:---|:---|
-| 0 | 96 | 10 mg | 80 | NC | 3.91 \[36.2\] | 2.00 \[0.500, 9.00\] | 59.9 \[21.6\] | NC |
-| 0 | 96 | 40 mg | 80 | NC | 15.9 \[36.9\] | 2.00 \[0.500, 9.00\] | 61.9 \[23.2\] | NC |
-| 0 | 96 | 80 mg | 80 | NC | 33.8 \[37.1\] | 2.00 \[0.500, 9.00\] | 63.2 \[24.1\] | NC |
+| 0 | 96 | 10 mg | 80 | NC | 3.87 \[37.1\] | 2.00 \[1.00, 9.00\] | 63.5 \[21.6\] | NC |
+| 0 | 96 | 40 mg | 80 | NC | 16.1 \[34.7\] | 2.00 \[0.500, 9.00\] | 62.0 \[21.8\] | NC |
+| 0 | 96 | 80 mg | 80 | NC | 34.6 \[34.6\] | 2.00 \[0.500, 9.00\] | 62.3 \[22.0\] | NC |
 
 Simulated NCA parameters by single-dose cohort (200 subjects per dose,
 Study 4522IL/0086 sampling schedule). {.table style="width:100%;"}

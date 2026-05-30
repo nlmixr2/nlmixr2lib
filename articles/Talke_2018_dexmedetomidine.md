@@ -143,7 +143,6 @@ sim <- rxode2::rxSolve(
   keep = c("WT", "treatment"),
   returnType = "data.frame"
 )
-#> Warning: corrected 'omega' to be a symmetric, positive definite matrix
 
 # Multi-output: filter the simulated data by observation compartment so each
 # time point contributes exactly one row per output. CMT 5 = Cc observations,
@@ -524,7 +523,7 @@ knitr::kable(summary(nca_res),
 
 | start | end | treatment | N | auclast | cmax | tmax | half.life |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | 75 | 0.28 ug/kg over 15 min, IV | 200 | NC | 0.539 \[21.2\] | 15.0 \[15.0, 15.0\] | 74.8 \[10.7\] |
+| 0 | 75 | 0.28 ug/kg over 15 min, IV | 200 | NC | 0.546 \[22.5\] | 15.0 \[15.0, 15.0\] | 75.5 \[9.84\] |
 
 Single-dose NCA over the 75-min observation window (n = 200). {.table
 style="width:100%;"}

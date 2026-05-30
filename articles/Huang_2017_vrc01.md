@@ -387,22 +387,22 @@ knitr::kable(
 
 | regimen                              | PPTESTCD |     Q025 |   median |     Q975 |
 |:-------------------------------------|:---------|---------:|---------:|---------:|
-| A: 10 mg/kg IV q8w                   | auclast  | 1243.878 | 1872.061 | 3095.676 |
-| A: 10 mg/kg IV q8w                   | cav      |   22.212 |   33.430 |   55.280 |
-| A: 10 mg/kg IV q8w                   | cmax     |  286.293 |  395.545 |  531.223 |
-| A: 10 mg/kg IV q8w                   | cmin     |    1.542 |    5.151 |   14.801 |
-| B: 30 mg/kg IV q8w                   | auclast  | 3531.043 | 5462.682 | 8693.285 |
-| B: 30 mg/kg IV q8w                   | cav      |   63.054 |   97.548 |  155.237 |
-| B: 30 mg/kg IV q8w                   | cmax     |  889.253 | 1192.176 | 1641.078 |
-| B: 30 mg/kg IV q8w                   | cmin     |    4.624 |   16.208 |   43.988 |
-| C: 10 mg/kg IV load + 5 mg/kg SC q2w | auclast  |  399.373 |  684.550 | 1009.515 |
-| C: 10 mg/kg IV load + 5 mg/kg SC q2w | cav      |   28.527 |   48.896 |   72.108 |
-| C: 10 mg/kg IV load + 5 mg/kg SC q2w | cmax     |   41.099 |   63.351 |   88.482 |
-| C: 10 mg/kg IV load + 5 mg/kg SC q2w | cmin     |   17.926 |   34.192 |   54.867 |
-| D: 30 mg/kg IV load + 5 mg/kg SC q2w | auclast  |  425.190 |  670.217 | 1064.035 |
-| D: 30 mg/kg IV load + 5 mg/kg SC q2w | cav      |   30.371 |   47.873 |   76.002 |
-| D: 30 mg/kg IV load + 5 mg/kg SC q2w | cmax     |   42.534 |   61.745 |   94.285 |
-| D: 30 mg/kg IV load + 5 mg/kg SC q2w | cmin     |   18.222 |   32.867 |   55.816 |
+| A: 10 mg/kg IV q8w                   | auclast  | 1129.601 | 1857.919 | 3335.373 |
+| A: 10 mg/kg IV q8w                   | cav      |   20.171 |   33.177 |   59.560 |
+| A: 10 mg/kg IV q8w                   | cmax     |  290.658 |  388.212 |  553.785 |
+| A: 10 mg/kg IV q8w                   | cmin     |    1.560 |    5.580 |   16.885 |
+| B: 30 mg/kg IV q8w                   | auclast  | 3524.111 | 5534.524 | 9216.263 |
+| B: 30 mg/kg IV q8w                   | cav      |   62.931 |   98.831 |  164.576 |
+| B: 30 mg/kg IV q8w                   | cmax     |  858.842 | 1198.290 | 1581.761 |
+| B: 30 mg/kg IV q8w                   | cmin     |    5.288 |   16.665 |   47.082 |
+| C: 10 mg/kg IV load + 5 mg/kg SC q2w | auclast  |  381.034 |  701.574 | 1119.616 |
+| C: 10 mg/kg IV load + 5 mg/kg SC q2w | cav      |   27.217 |   50.112 |   79.973 |
+| C: 10 mg/kg IV load + 5 mg/kg SC q2w | cmax     |   39.815 |   64.390 |   96.176 |
+| C: 10 mg/kg IV load + 5 mg/kg SC q2w | cmin     |   15.126 |   34.760 |   59.881 |
+| D: 30 mg/kg IV load + 5 mg/kg SC q2w | auclast  |  446.143 |  713.850 | 1183.324 |
+| D: 30 mg/kg IV load + 5 mg/kg SC q2w | cav      |   31.867 |   50.989 |   84.523 |
+| D: 30 mg/kg IV load + 5 mg/kg SC q2w | cmax     |   44.014 |   64.907 |  102.543 |
+| D: 30 mg/kg IV load + 5 mg/kg SC q2w | cmin     |   20.352 |   36.257 |   64.344 |
 
 Steady-state NCA on the last dosing interval. AUC and Cav are over tau
 (8 weeks for IV, 2 weeks for SC); concentrations in ug/mL, AUC in
@@ -455,10 +455,10 @@ knitr::kable(
 
 | regimen | median_pub | lo_pub | hi_pub | median_sim | lo_sim | hi_sim | pct_diff_median |
 |:---|---:|---:|---:|---:|---:|---:|---:|
-| A: 10 mg/kg IV q8w | 5.54 | 1.69 | 14.50 | 5.15 | 1.54 | 14.80 | -7.03 |
-| B: 30 mg/kg IV q8w | 15.90 | 5.29 | 46.63 | 16.21 | 4.62 | 43.99 | 1.94 |
-| C: 10 mg/kg IV load + 5 mg/kg SC q2w | 34.10 | 18.27 | 65.34 | 34.19 | 17.93 | 54.87 | 0.27 |
-| D: 30 mg/kg IV load + 5 mg/kg SC q2w | 34.10 | 18.27 | 65.34 | 32.87 | 18.22 | 55.82 | -3.61 |
+| A: 10 mg/kg IV q8w | 5.54 | 1.69 | 14.50 | 5.58 | 1.56 | 16.89 | 0.71 |
+| B: 30 mg/kg IV q8w | 15.90 | 5.29 | 46.63 | 16.66 | 5.29 | 47.08 | 4.81 |
+| C: 10 mg/kg IV load + 5 mg/kg SC q2w | 34.10 | 18.27 | 65.34 | 34.76 | 15.13 | 59.88 | 1.93 |
+| D: 30 mg/kg IV load + 5 mg/kg SC q2w | 34.10 | 18.27 | 65.34 | 36.26 | 20.35 | 64.34 | 6.32 |
 
 Steady-state trough (Cmin over the last tau). Published values come from
 the Results paragraph and Figure 5 of Huang 2017; the SC trough applies

@@ -278,16 +278,16 @@ knitr::kable(
 
 | arm             | PPTESTCD |    mean |      sd |
 |:----------------|:---------|--------:|--------:|
-| TTT carrier     | auclast  | 491.839 | 195.156 |
-| TTT carrier     | cav      |  20.493 |   8.132 |
-| TTT carrier     | cmax     |  60.114 |  16.600 |
-| TTT carrier     | cmin     |  11.105 |   6.703 |
-| TTT carrier     | tmax     |   0.833 |   0.341 |
-| TTT non-carrier | auclast  | 596.885 | 247.572 |
-| TTT non-carrier | cav      |  24.870 |  10.316 |
-| TTT non-carrier | cmax     |  72.751 |  19.683 |
-| TTT non-carrier | cmin     |  13.492 |   8.311 |
-| TTT non-carrier | tmax     |   0.860 |   0.355 |
+| TTT carrier     | auclast  | 472.076 | 219.817 |
+| TTT carrier     | cav      |  19.670 |   9.159 |
+| TTT carrier     | cmax     |  56.675 |  16.940 |
+| TTT carrier     | cmin     |  10.879 |   7.700 |
+| TTT carrier     | tmax     |   0.875 |   0.384 |
+| TTT non-carrier | auclast  | 600.279 | 233.513 |
+| TTT non-carrier | cav      |  25.012 |   9.730 |
+| TTT non-carrier | cmax     |  74.496 |  21.204 |
+| TTT non-carrier | cmin     |  13.476 |   7.776 |
+| TTT non-carrier | tmax     |   0.818 |   0.382 |
 
 Day-15 steady-state NCA parameters from the simulated cohort, by ABCB1
 TTT haplotype carrier status. AUC (auclast) units: ug\*h/L; Cmax / Cmin
@@ -333,8 +333,8 @@ knitr::kable(
 
 | arm             | sim_auc_mean | sim_auc_sd |   n |
 |:----------------|-------------:|-----------:|----:|
-| TTT carrier     |        491.8 |      195.2 | 200 |
-| TTT non-carrier |        596.9 |      247.6 | 200 |
+| TTT carrier     |        472.1 |      219.8 | 200 |
+| TTT non-carrier |        600.3 |      233.5 | 200 |
 
 Simulated day-15 AUC0-24 mean and SD by ABCB1 TTT carrier status.
 {.table}
@@ -350,7 +350,7 @@ knitr::kable(
 
 | sim_auc_mean | sim_auc_sd |
 |-------------:|-----------:|
-|        544.4 |      228.8 |
+|        536.2 |      235.4 |
 
 Simulated day-15 AUC0-24 across the pooled cohort (compare to de Wit
 2016 weighted mean ~487 ug\*h/L). {.table}

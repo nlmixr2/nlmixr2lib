@@ -166,7 +166,7 @@ mod_typical <- mod |> rxode2::zeroRe()
 sim_typical <- rxode2::rxSolve(
   mod_typical, events = typical_events, keep = c("dose_group")
 ) |> as.data.frame()
-#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etald2', 'etalrf', 'etalka', 'etalbase', 'etalcb', 'etalga', 'etalecb', 'etalmtt'
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etald2', 'etalrf', 'etalka', 'etalrbase', 'etalcb', 'etalga', 'etalecb', 'etalmtt'
 #> Warning: multi-subject simulation without without 'omega'
 
 # Stochastic VPC with the published IIV across the four dose groups.

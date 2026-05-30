@@ -353,10 +353,10 @@ knitr::kable(
 
 | Interval Start | Interval End | orgf_label | N | Cmax (ug/L) | Tmax (hr) | Half-life (hr) | AUCinf,obs (hr\*ug/L) |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | Inf | ORG_FAIL_COUNT = 0 | 3 | 320 \[73.4\] | 96.0 \[72.0, 120\] | 6.34 \[4.55\], n=2 | NC |
-| 0 | Inf | ORG_FAIL_COUNT = 1 | 3 | 199 \[64.5\] | 72.0 \[72.0, 96.0\] | 6.87 \[4.79\] | NC |
-| 0 | Inf | ORG_FAIL_COUNT = 2 | 3 | 389 \[61.9\] | 72.0 \[72.0, 96.0\] | 6.09 \[2.70\] | NC |
-| 0 | Inf | ORG_FAIL_COUNT = 3 | 3 | 324 \[60.7\] | 96.0 \[48.0, 120\] | 6.36 \[2.30\], n=2 | NC |
+| 0 | Inf | ORG_FAIL_COUNT = 0 | 3 | 189 \[51.2\] | 120 \[36.0, 120\] | NC | NC |
+| 0 | Inf | ORG_FAIL_COUNT = 1 | 3 | 228 \[59.3\] | 72.0 \[72.0, 120\] | 7.41 \[4.69\], n=2 | NC |
+| 0 | Inf | ORG_FAIL_COUNT = 2 | 3 | 732 \[10.3\] | 96.0 \[72.0, 120\] | 9.12 \[6.79\], n=2 | NC |
+| 0 | Inf | ORG_FAIL_COUNT = 3 | 3 | 466 \[92.4\] | 36.0 \[36.0, 72.0\] | 12.6 \[8.71\] | NC |
 
 Simulated NCA parameters by ORG_FAIL_COUNT stratum (PKNCA). {.table}
 

@@ -203,7 +203,7 @@ ggplot(fig1, aes(time, Q50)) +
 #> log-10 transformation introduced infinite values.
 #> log-10 transformation introduced infinite values.
 #> log-10 transformation introduced infinite values.
-#> Warning: Removed 9 rows containing missing values or values outside the scale range
+#> Warning: Removed 11 rows containing missing values or values outside the scale range
 #> (`geom_ribbon()`).
 ```
 
@@ -293,9 +293,9 @@ knitr::kable(nca_summary,
 
 | Interval Start | Interval End | cohort | N | Cmax (ug/mL) | Tmax (h) | Clast (ug/mL) | Half-life (h) | AUCinf,obs (h\*ug/mL) |
 |---:|---:|:---|:---|:---|:---|:---|:---|:---|
-| 0 | Inf | Adult 450 mg q24h | 200 | 4.11 \[20.9\] | 1.50 \[1.25, 1.75\] | 0.00126 \[354\] | 10.1 \[2.01\] | 30.6 \[42.2\] |
-| 0 | Inf | Adult 900 mg q24h | 200 | 8.09 \[20.3\] | 1.50 \[1.25, 1.75\] | 0.00317 \[445\] | 10.5 \[2.26\] | 63.2 \[42.8\] |
-| 0 | Inf | Paediatric q24h | 200 | 4.60 \[18.9\] | 1.50 \[1.25, 1.50\] | 0.000233 \[1500\] | 8.18 \[2.07\] | 27.6 \[46.6\] |
+| 0 | Inf | Adult 450 mg q24h | 200 | 4.11 \[19.8\] | 1.50 \[1.25, 1.75\] | 0.00124 \[478\] | 10.2 \[2.28\] | 30.6 \[41.5\] |
+| 0 | Inf | Adult 900 mg q24h | 200 | 8.08 \[20.0\] | 1.50 \[1.25, 1.50\] | 0.00284 \[300\] | 10.2 \[1.92\] | 61.7 \[36.5\] |
+| 0 | Inf | Paediatric q24h | 200 | 4.59 \[18.6\] | 1.50 \[1.00, 1.50\] | 0.000211 \[1460\] | 8.07 \[1.92\] | 27.2 \[44.3\] |
 
 Single-dose NCA on the simulated cohorts (Cmax in ug/mL, AUC in ug/mL \*
 h, half-life in h). {.table}
@@ -348,9 +348,9 @@ knitr::kable(comparison,
 
 | cohort | Simulated AUC(0,inf) median (5th-95th pct) | Simulated terminal t1/2 median (5th-95th pct) (h) | Published AUC(0,inf) median (range), ug/mL \* h | Published terminal t1/2 median (range), h |
 |:---|:---|:---|:---|:---|
-| Adult 450 mg q24h | 30.7 (15.4-57.3) | 9.7 (7.7-14.3) | 34.3 (11.1-70.3) \[n = 4\] | 10 (7.1-24) \[adults\] |
-| Adult 900 mg q24h | 63.7 (32.8-126.5) | 10.0 (7.7-14.5) | 57.4 (30.9-162) \[n = 9\] | 10 (7.1-24) \[adults\] |
-| Paediatric q24h | 27.3 (14.1-58.9) | 7.6 (5.7-12.1) | 37.4 overall (11.1-161) \[pooled N = 95\] | 7.0 (4.2-11) \[children\] |
+| Adult 450 mg q24h | 30.3 (16.7-60.7) | 9.7 (7.4-14.8) | 34.3 (11.1-70.3) \[n = 4\] | 10 (7.1-24) \[adults\] |
+| Adult 900 mg q24h | 61.7 (33.5-111.3) | 9.8 (7.9-14.4) | 57.4 (30.9-162) \[n = 9\] | 10 (7.1-24) \[adults\] |
+| Paediatric q24h | 28.0 (13.0-52.6) | 7.6 (5.6-12.0) | 37.4 overall (11.1-161) \[pooled N = 95\] | 7.0 (4.2-11) \[children\] |
 
 Simulated AUC(0,inf) and terminal t1/2 by cohort vs. Vezina 2014
 reported values (Results, ‘Derived ganciclovir metrics: exposure and

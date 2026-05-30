@@ -4,7 +4,7 @@
 
 library(nlmixr2lib)
 library(rxode2)
-#> rxode2 5.0.2 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.1 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -177,8 +177,8 @@ knitr::kable(nca_summary, digits = 2,
 
 | start | end | treatment | N | auclast | cmax | tmax | half.life |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | 28 | High-titer ADA | 21 | 8.55 \[47.7\] | 0.933 \[40.0\] | 3.50 \[3.50, 3.50\] | 5.00 \[1.06\] |
-| 0 | 28 | Negative/Low-titer ADA | 479 | 42.9 \[43.7\] | 2.28 \[43.0\] | 3.50 \[3.50, 14.0\] | 16.2 \[5.78\] |
+| 0 | 28 | High-titer ADA | 21 | 9.63 \[49.1\] | 0.982 \[56.5\] | 3.50 \[3.50, 3.50\] | 5.53 \[1.80\] |
+| 0 | 28 | Negative/Low-titer ADA | 479 | 43.3 \[44.9\] | 2.29 \[42.3\] | 3.50 \[3.50, 10.5\] | 16.1 \[5.36\] |
 
 NCA summary (2nd dosing interval, weeks 4-8) {.table}
 

@@ -407,7 +407,7 @@ knitr::kable(summary(nca_res),
 
 | Interval Start | Interval End | treatment | N | AUClast (day\*mg/L) | Cmax (mg/L) | Cmin (mg/L) | Tmax (day) | Cav (mg/L) |
 |---:|---:|:---|:---|:---|:---|:---|:---|:---|
-| 0 | 14 | 5 mg/kg Q2W | 100 | NC | 102 \[20.3\] | 35.7 \[53.3\] | 0.550 \[0.550, 0.550\] | NC |
+| 0 | 14 | 5 mg/kg Q2W | 100 | NC | 99.2 \[24.3\] | 37.0 \[45.9\] | 0.550 \[0.550, 0.550\] | NC |
 
 Steady-state NCA for bevacizumab (5 mg/kg Q2W, last simulated interval,
 PK/PD model). {.table}

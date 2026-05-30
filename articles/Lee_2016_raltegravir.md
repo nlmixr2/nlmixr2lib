@@ -355,7 +355,7 @@ knitr::kable(nca_summary,
 
 | start | end | treatment | N | auclast | cmax | tmax | half.life | aucinf.obs | cl.obs |
 |---:|---:|:---|:---|:---|:---|:---|:---|:---|:---|
-| 0 | 24 | raltegravir_400mg_po | 24 | NC | 1.95 \[187\] | 1.00 \[0.500, 4.00\] | 2.83 \[2.11\] | NC | NC |
+| 0 | 24 | raltegravir_400mg_po | 24 | NC | 2.23 \[89.4\] | 1.50 \[0.500, 4.00\] | 2.69 \[2.00\] | NC | NC |
 
 Simulated NCA parameters for raltegravir parent after a single 400 mg
 oral dose. {.table}
@@ -401,7 +401,7 @@ knitr::kable(
 | metric                 | published | simulated_median |
 |:-----------------------|----------:|-----------------:|
 | CL/F (L/h)             |     41.70 |               NA |
-| Terminal half-life (h) |      2.61 |             2.35 |
+| Terminal half-life (h) |      2.61 |             2.16 |
 
 Published vs simulated derived parameters. {.table}
 

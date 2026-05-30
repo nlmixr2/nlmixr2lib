@@ -4,7 +4,7 @@
 
 library(nlmixr2lib)
 library(rxode2)
-#> rxode2 5.0.2 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.1 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -297,10 +297,10 @@ knitr::kable(nca_summary, caption = "Simulated NCA parameters by single-dose gro
 
 | start | end | dose_label | N | cmax | tmax | half.life | aucinf.obs |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | Inf | 75 mg | 12 | 11.1 \[15.5\] | 7.00 \[4.00, 7.00\] | 11.0 \[3.89\] | 320 \[21.6\] |
-| 0 | Inf | 150 mg | 12 | 21.3 \[9.88\] | 7.00 \[4.00, 7.00\] | 12.8 \[2.63\] | 715 \[14.4\] |
-| 0 | Inf | 300 mg | 12 | 42.3 \[15.6\] | 7.00 \[4.00, 10.0\] | 18.3 \[6.68\] | 1610 \[16.6\] |
-| 0 | Inf | 375 mg | 12 | 49.7 \[13.3\] | 7.00 \[4.00, 10.0\] | 17.3 \[5.71\] | 1770 \[25.6\] |
+| 0 | Inf | 75 mg | 12 | 10.7 \[13.0\] | 7.00 \[4.00, 10.0\] | 11.8 \[5.12\] | 332 \[25.1\] |
+| 0 | Inf | 150 mg | 12 | 20.8 \[16.1\] | 7.00 \[4.00, 10.0\] | 14.8 \[5.58\] | 745 \[18.4\] |
+| 0 | Inf | 300 mg | 12 | 44.6 \[14.0\] | 7.00 \[4.00, 7.00\] | 17.9 \[4.42\] | 1650 \[13.8\] |
+| 0 | Inf | 375 mg | 12 | 49.9 \[14.4\] | 7.00 \[4.00, 10.0\] | 18.1 \[4.87\] | 1810 \[22.4\] |
 
 Simulated NCA parameters by single-dose group (study 1101). {.table}
 
@@ -430,7 +430,7 @@ sessionInfo()
 #> 
 #> other attached packages:
 #> [1] PKNCA_0.12.1          ggplot2_4.0.3         tidyr_1.3.2          
-#> [4] dplyr_1.2.1           rxode2_5.0.2          nlmixr2lib_0.3.2.9000
+#> [4] dplyr_1.2.1           rxode2_5.1.1          nlmixr2lib_0.3.2.9000
 #> 
 #> loaded via a namespace (and not attached):
 #>  [1] gtable_0.3.6          xfun_0.57             bslib_0.11.0         

@@ -1237,12 +1237,12 @@ nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = interv
 #> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
 summary(nca_res)
 #>  start end treatment   N auclast       cmax              tmax    half.life
-#>      0  12    normal 333      NC 198 [31.1] 1.40 [1.30, 5.40] 2.41 [0.930]
-#>      0  12      mild 111      NC 232 [26.6] 1.50 [1.30, 5.00]  2.77 [1.20]
-#>      0  12  moderate  34      NC 261 [30.2] 2.10 [1.30, 4.60]  3.14 [1.34]
-#>      0  12    severe   2      NC 315 [20.0] 1.80 [1.40, 2.20] 2.47 [0.484]
-#>      0  12      ESRD  20      NC 373 [29.5] 3.15 [1.30, 5.60]  5.87 [4.18]
-#>      0  12      <NA> 500      NC 202 [40.4] 1.35 [1.35, 1.35]           NC
+#>      0  12    normal 333      NC 198 [29.9] 1.40 [1.30, 6.00]  2.38 [1.03]
+#>      0  12      mild 111      NC 232 [30.3] 1.40 [1.30, 5.60]  2.81 [1.51]
+#>      0  12  moderate  34      NC 256 [39.9] 2.15 [1.30, 6.20]  3.74 [3.41]
+#>      0  12    severe   2      NC 304 [7.24] 1.80 [1.50, 2.10] 2.52 [0.106]
+#>      0  12      ESRD  20      NC 349 [34.5] 3.00 [1.40, 6.20]  5.57 [4.15]
+#>      0  12      <NA> 500      NC 202 [41.6] 1.35 [1.35, 1.35]           NC
 #> 
 #> Caption: auclast, cmax: geometric mean and geometric coefficient of variation; tmax: median and range; half.life: arithmetic mean and standard deviation; N: number of subjects
 ```

@@ -295,8 +295,8 @@ knitr::kable(
 
 | start | end | group | N | auclast | cmax | tmax |
 |---:|---:|:---|:---|:---|:---|:---|
-| 20 | 24 | Healthy (NASF = 0) | 500 | 200 \[38.2\] | 127 \[36.9\] | 0.250 \[0.250, 0.250\] |
-| 20 | 24 | NASH (NASF \>= 4) | 500 | 156 \[34.6\] | 103 \[33.3\] | 0.250 \[0.250, 0.250\] |
+| 20 | 24 | Healthy (NASF = 0) | 500 | 200 \[36.1\] | 127 \[35.0\] | 0.250 \[0.250, 0.250\] |
+| 20 | 24 | NASH (NASF \>= 4) | 500 | 158 \[33.0\] | 104 \[32.3\] | 0.250 \[0.250, 0.250\] |
 
 Morphine NCA over the last steady-state dosing interval (20-24 h) by
 cohort. {.table}
@@ -327,8 +327,8 @@ knitr::kable(
 
 | start | end | group | N | auclast | cmax | tmax |
 |---:|---:|:---|:---|:---|:---|:---|
-| 20 | 24 | Healthy (NASF = 0) | 500 | 1440 \[39.2\] | 484 \[44.6\] | 0.500 \[0.500, 0.750\] |
-| 20 | 24 | NASH (NASF \>= 4) | 500 | 1620 \[39.0\] | 499 \[40.4\] | 0.500 \[0.500, 1.00\] |
+| 20 | 24 | Healthy (NASF = 0) | 500 | 1480 \[38.0\] | 495 \[43.9\] | 0.500 \[0.250, 1.00\] |
+| 20 | 24 | NASH (NASF \>= 4) | 500 | 1620 \[44.6\] | 495 \[45.6\] | 0.500 \[0.500, 1.00\] |
 
 M3G NCA over the last steady-state dosing interval (20-24 h) by cohort.
 {.table}
@@ -376,8 +376,8 @@ knitr::kable(
 
 | group | n | median_uMh | p2_5_uMh | p97_5_uMh | paper_median | paper_p2_5 | paper_p97_5 |
 |:---|---:|---:|---:|---:|:---|:---|:---|
-| Healthy (NASF = 0) | 500 | 1.432279 | 0.6847009 | 3.043440 | 1.28 | 0.641 | 2.55 |
-| NASH (NASF \>= 4) | 500 | 1.669981 | 0.7260215 | 3.177053 | 2.03 | 1.00 | 4.03 |
+| Healthy (NASF = 0) | 500 | 1.478121 | 0.7681924 | 2.895293 | 1.28 | 0.641 | 2.55 |
+| NASH (NASF \>= 4) | 500 | 1.640982 | 0.6734069 | 3.721285 | 2.03 | 1.00 | 4.03 |
 
 Steady-state M3G AUC over 20-24 h (uM\*h) by cohort: simulated vs Pierre
 2017 (Simulations section, Figure 4 caption). {.table}

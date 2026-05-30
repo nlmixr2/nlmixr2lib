@@ -4,7 +4,7 @@
 
 library(nlmixr2lib)
 library(rxode2)
-#> rxode2 5.0.2 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.1 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -239,9 +239,9 @@ knitr::kable(
 
 | start | end | treatment  | N   | auclast       | cmax          | tmax                |
 |------:|----:|:-----------|:----|:--------------|:--------------|:--------------------|
-|     0 |  28 | 70 mg Q4W  | 150 | 99.6 \[54.6\] | 4.58 \[61.3\] | 7.00 \[3.50, 21.0\] |
-|     0 |  28 | 210 mg Q4W | 150 | 394 \[53.3\]  | 18.0 \[57.1\] | 7.00 \[3.50, 21.0\] |
-|     0 |  28 | 490 mg Q4W | 150 | 831 \[45.7\]  | 38.2 \[53.2\] | 7.00 \[3.50, 28.0\] |
+|     0 |  28 | 70 mg Q4W  | 150 | 98.9 \[68.5\] | 4.66 \[73.6\] | 7.00 \[3.50, 14.0\] |
+|     0 |  28 | 210 mg Q4W | 150 | 418 \[52.2\]  | 19.6 \[60.8\] | 7.00 \[3.50, 14.0\] |
+|     0 |  28 | 490 mg Q4W | 150 | 839 \[55.1\]  | 39.5 \[63.2\] | 7.00 \[3.50, 24.5\] |
 
 Simulated NCA (0–28 day dosing interval) by Zenyatta dose arm. {.table}
 

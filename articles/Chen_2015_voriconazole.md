@@ -260,7 +260,7 @@ knitr::kable(nca_summary,
 
 | start | end | treatment | N | auclast | cmax | cmin | tmax | ctrough |
 |---:|---:|:---|:---|:---|:---|:---|:---|:---|
-| 0 | 12 | 200 mg q12h IV | 200 | 45.6 \[73.2\] | 5.23 \[48.3\] | 2.56 \[145\] | 12.0 \[0.000, 12.0\] | 5.23 \[48.3\] |
+| 0 | 12 | 200 mg q12h IV | 200 | 44.3 \[82.1\] | 5.22 \[53.1\] | 2.40 \[160\] | 12.0 \[0.000, 12.0\] | 5.22 \[53.1\] |
 
 Day-5 NCA on the simulated cohort (steady-state 12 h interval, 200 mg
 q12h IV after a 300 mg loading dose). {.table}
@@ -310,8 +310,8 @@ knitr::kable(tbl, caption = "Simulated steady-state day-5 PK vs. Chen 2015 repor
 |:---|:---|
 | Chen 2015 steady-state AUC0-12 (mean +/- SD, ug.h/mL) | 47.08 +/- 26.28 |
 | Chen 2015 steady-state median Cmin (ug/mL) | 3.26 (start of interval) and 3.76 (end of interval) |
-| Simulated steady-state AUC0-12 (median, 10-90 percentile, ug.h/mL) | 47.1 (18.5-97.6) |
-| Simulated steady-state Cmin at t = 108 h (median, 10-90 percentile, ug/mL) | 5.07 (2.87-9.29) |
+| Simulated steady-state AUC0-12 (median, 10-90 percentile, ug.h/mL) | 50.0 (15.9-109.9) |
+| Simulated steady-state Cmin at t = 108 h (median, 10-90 percentile, ug/mL) | 5.25 (2.74-10.49) |
 
 Simulated steady-state day-5 PK vs. Chen 2015 reported values. {.table}
 

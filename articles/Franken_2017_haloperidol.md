@@ -239,7 +239,7 @@ knitr::kable(
 
 | Interval Start | Interval End | treatment | N | AUClast (h\*ug/L) | Cmax (ug/L) | Cmin (ug/L) | Tmax (h) | Cav (ug/L) |
 |---:|---:|:---|:---|:---|:---|:---|:---|:---|
-| 60 | 72 | 0.5 mg SC q12h | 1000 | 12.7 \[38.6\] | 1.25 \[40.9\] | 0.817 \[42.8\] | 0.500 \[0.500, 0.500\] | 1.06 \[38.6\] |
+| 60 | 72 | 0.5 mg SC q12h | 1000 | 12.5 \[39.7\] | 1.23 \[42.2\] | 0.806 \[43.4\] | 0.500 \[0.500, 0.500\] | 1.04 \[39.7\] |
 
 Simulated NCA across the steady-state 60-72 h dosing interval. {.table}
 

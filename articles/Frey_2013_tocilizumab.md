@@ -318,9 +318,9 @@ sim_typ <- dplyr::bind_rows(
   as.data.frame(rxode2::rxSolve(mod_typical, events = ev_typ(8))) |>
     dplyr::mutate(treatment = "TCZ_8mgkg_q4w")
 )
-#> ℹ omega/sigma items treated as zero: 'etalEC50', 'etalEmax', 'etalKout', 'etalBase', 'etalDMARD'
-#> ℹ omega/sigma items treated as zero: 'etalEC50', 'etalEmax', 'etalKout', 'etalBase', 'etalDMARD'
-#> ℹ omega/sigma items treated as zero: 'etalEC50', 'etalEmax', 'etalKout', 'etalBase', 'etalDMARD'
+#> ℹ omega/sigma items treated as zero: 'etalec50', 'etalemax', 'etalkout', 'etalrbase', 'etalDMARD'
+#> ℹ omega/sigma items treated as zero: 'etalec50', 'etalemax', 'etalkout', 'etalrbase', 'etalDMARD'
+#> ℹ omega/sigma items treated as zero: 'etalec50', 'etalemax', 'etalkout', 'etalrbase', 'etalDMARD'
 ```
 
 ## Replicate published figures
@@ -470,9 +470,9 @@ knitr::kable(comparison, digits = 2,
 
 | treatment | paper_remission_pct | paper_eular_good_pct | das28_typ | cohort_remission_pct | cohort_median_das28 |
 |:---|---:|---:|---:|---:|---:|
-| Placebo | NA | NA | 5.97 | 0.0 | 6.39 |
-| TCZ_4mgkg_q4w | 24 | 32 | 4.13 | 2.5 | 4.40 |
-| TCZ_8mgkg_q4w | 38 | 48 | 3.11 | 7.5 | 3.56 |
+| Placebo | NA | NA | 5.97 | 0.0 | 6.16 |
+| TCZ_4mgkg_q4w | 24 | 32 | 4.13 | 0.0 | 4.47 |
+| TCZ_8mgkg_q4w | 38 | 48 | 3.11 | 12.5 | 3.43 |
 
 Week-24 DAS28 summary. Typical-patient column is IIV-zeroed;
 cohort_remission_pct uses the small N = 40 virtual cohort.

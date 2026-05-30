@@ -225,7 +225,7 @@ ggplot(indiv_cl, aes(cohort, cl_indiv)) +
   labs(x = "Cancer type", y = "Voriconazole CL (L/h)",
        title = "Simulated CL by cancer type",
        caption = "Replicates Figure 1 of Akbar 2025.")
-#> Warning: Removed 3 rows containing non-finite outside the scale range
+#> Warning: Removed 16 rows containing non-finite outside the scale range
 #> (`stat_boxplot()`).
 ```
 
@@ -283,12 +283,12 @@ knitr::kable(nca_summary,
 
 | start | end | cohort | N | auclast | cmax | cmin | tmax | ctrough |
 |---:|---:|:---|:---|:---|:---|:---|:---|:---|
-| 0 | 12 | BreastCancer | 60 | 99.1 \[131\] | 9.77 \[118\] | 7.07 \[155\] | 12.0 \[0.000, 12.0\] | 9.77 \[118\] |
-| 0 | 12 | Glioma | 60 | 22.4 \[146\] | 3.75 \[105\] | 0.613 \[509\] | 0.000 \[0.000, 12.0\] | 3.75 \[105\] |
-| 0 | 12 | Leukemia | 60 | 19.0 \[158\] | 3.12 \[110\] | 0.517 \[930\] | 0.000 \[0.000, 12.0\] | 3.12 \[110\] |
-| 0 | 12 | Lymphoma | 60 | 26.8 \[155\] | 3.93 \[115\] | 0.915 \[735\] | 0.000 \[0.000, 12.0\] | 3.93 \[115\] |
-| 0 | 12 | Myeloma | 60 | 27.0 \[112\] | 3.96 \[84.7\] | 0.988 \[273\] | 0.000 \[0.000, 12.0\] | 3.96 \[84.6\] |
-| 0 | 12 | Sarcoma | 60 | 21.0 \[146\] | 3.37 \[97.4\] | 0.640 \[472\] | 0.000 \[0.000, 12.0\] | 3.37 \[97.4\] |
+| 0 | 12 | BreastCancer | 60 | 91.7 \[145\] | 9.29 \[123\] | 6.25 \[197\] | 12.0 \[0.000, 12.0\] | 9.29 \[123\] |
+| 0 | 12 | Glioma | 60 | 22.8 \[156\] | 3.90 \[104\] | 0.535 \[1440\] | 0.000 \[0.000, 12.0\] | 3.90 \[104\] |
+| 0 | 12 | Leukemia | 60 | 18.9 \[183\] | 3.21 \[119\] | 0.413 \[2660\] | 0.000 \[0.000, 12.0\] | 3.21 \[119\] |
+| 0 | 12 | Lymphoma | 60 | 19.9 \[148\] | 3.47 \[99.0\] | 0.403 \[8110\] | 0.000 \[0.000, 12.0\] | 3.47 \[99.0\] |
+| 0 | 12 | Myeloma | 60 | 23.7 \[118\] | 3.70 \[88.8\] | 0.751 \[360\] | 0.000 \[0.000, 12.0\] | 3.70 \[88.8\] |
+| 0 | 12 | Sarcoma | 60 | 17.8 \[163\] | 3.17 \[95.9\] | 0.319 \[49700\] | 0.000 \[0.000, 12.0\] | 3.17 \[95.9\] |
 
 Day-5 NCA on the simulated cohort by cancer type (steady-state 12 h
 interval, 4 mg/kg twice daily after a one-day 6 mg/kg loading regimen).
@@ -331,7 +331,7 @@ knitr::kable(tbl, caption = "Simulated steady-state day-5 trough vs. Akbar 2025 
 |:---|:---|
 | Akbar 2025 observed trough range across 88 subjects (ug/mL) | 0.10 to 21.0 |
 | Akbar 2025 hospital target trough range (ug/mL) | 1.0 to 5.5 |
-| Simulated cohort median day-5 trough by cancer type, with 10-90 percentile (ug/mL) | BreastCancer: 11.30 (2.84-27.32); Glioma: 4.15 (1.39-10.43); Leukemia: 3.51 (0.93-10.81); Lymphoma: 3.47 (1.27-13.41); Myeloma: 4.03 (1.82-9.18); Sarcoma: 3.57 (1.09-7.75) |
+| Simulated cohort median day-5 trough by cancer type, with 10-90 percentile (ug/mL) | BreastCancer: 10.45 (2.39-28.13); Glioma: 4.50 (1.26-9.01); Leukemia: 3.33 (1.02-11.31); Lymphoma: 3.04 (1.30-9.31); Myeloma: 3.83 (1.52-10.27); Sarcoma: 3.09 (1.38-8.75) |
 
 Simulated steady-state day-5 trough vs. Akbar 2025 reported observed and
 target ranges. {.table}

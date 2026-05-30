@@ -419,8 +419,8 @@ knitr::kable(
 
 | Interval Start | Interval End | treatment | N | Cmax (mg/L) | Tmax (min) | Half-life (min) | AUCinf,obs (min\*mg/L) |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | Inf | nonobese_adolescent | 40 | 33.2 \[25.5\] | 0.500 \[0.500, 0.500\] | 143 \[70.5\] | NC |
-| 0 | Inf | obese_adult | 40 | 19.4 \[29.7\] | 0.500 \[0.500, 120\] | 61.6 \[23.0\] | NC |
+| 0 | Inf | nonobese_adolescent | 40 | 36.3 \[22.3\] | 0.500 \[0.500, 0.500\] | 166 \[81.9\] | NC |
+| 0 | Inf | obese_adult | 40 | 19.0 \[35.3\] | 0.500 \[0.500, 0.500\] | 70.6 \[34.5\] | NC |
 
 Simulated propofol NCA parameters by cohort (no per-cohort published
 reference). {.table}

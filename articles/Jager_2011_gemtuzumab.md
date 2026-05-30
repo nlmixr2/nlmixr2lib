@@ -112,7 +112,7 @@ mod  <- rxode2::rxode2(readModelDb("Jager_2011_gemtuzumab"))
 #> ℹ parameter labels from comments will be replaced by 'label()'
 mod_typ <- rxode2::zeroRe(mod)
 sim  <- rxode2::rxSolve(mod_typ, events = events)
-#> ℹ omega/sigma items treated as zero: 'etalki', 'etalke', 'etalrp'
+#> ℹ omega/sigma items treated as zero: 'etalki', 'etalkel', 'etalrp'
 ```
 
 ## Mechanistic sanity checks

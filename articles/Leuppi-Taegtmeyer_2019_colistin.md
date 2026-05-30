@@ -314,9 +314,9 @@ nca_res  <- PKNCA::pk.nca(nca_data)
 nca_summary <- summary(nca_res)
 nca_summary
 #>  start end               treatment  N auclast        cmax        cmin
-#>    144 168 9MIU_load_then_3MIU_q8h 10      NC 4.22 [47.2] 3.93 [46.8]
+#>    144 168 9MIU_load_then_3MIU_q8h 10      NC 3.45 [73.3] 3.07 [77.0]
 #>               tmax
-#>  19.5 [3.50, 20.0]
+#>  19.5 [3.00, 20.0]
 #> 
 #> Caption: auclast, cmax, cmin: geometric mean and geometric coefficient of variation; tmax: median and range; N: number of subjects
 ```

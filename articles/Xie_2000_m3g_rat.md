@@ -61,7 +61,7 @@ collects everything in one place for review.
 | Equation / parameter | Value | Source location |
 |----|----|----|
 | `d/dt(central)` | n/a | Paper Model A; one-compartment representation, see Assumptions and deviations |
-| `d/dt(brain_ecf)` | n/a | Paper Model B equation 2 |
+| `d/dt(brain_csf)` | n/a | Paper Model B equation 2 |
 | `d/dt(brain_deep)` | n/a | Paper Model B (`brain 2` term in equation 2) |
 | `lcl` (CL_u) | `log(0.0038)` L/min | Paper Results p1787: CL_u = 3.8 mL/min (joint Model A fit) |
 | `lvc` (V_c) | `log(0.1206)` L | Derived: V_c = CL_u \* t_1/2,bl / ln(2) = 3.8 \* 22 / 0.6931 = 120.6 mL |
@@ -124,7 +124,7 @@ make_rat <- function(id, conmed_probenecid_value) {
     amt  = 0,
     evid = 0L,
     rate = 0,
-    cmt  = "Cbrain_ecf",
+    cmt  = "Cbrain_csf",
     CONMED_PROBENECID = conmed_probenecid_value
   )
   bind_rows(dose_row, obs_rows)
@@ -192,9 +192,9 @@ vpc_sum <- sim |>
   filter(time > 0) |>
   group_by(arm, time) |>
   summarise(
-    Q05 = quantile(Cbrain_ecf, 0.05, na.rm = TRUE),
-    Q50 = quantile(Cbrain_ecf, 0.50, na.rm = TRUE),
-    Q95 = quantile(Cbrain_ecf, 0.95, na.rm = TRUE),
+    Q05 = quantile(Cbrain_csf, 0.05, na.rm = TRUE),
+    Q50 = quantile(Cbrain_csf, 0.50, na.rm = TRUE),
+    Q95 = quantile(Cbrain_csf, 0.95, na.rm = TRUE),
     .groups = "drop"
   )
 
@@ -202,7 +202,7 @@ ggplot(vpc_sum, aes(time, Q50, colour = arm, fill = arm)) +
   geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.2, colour = NA) +
   geom_line(linewidth = 0.8) +
   geom_line(data = sim_typical |> filter(time > 0),
-            aes(time, Cbrain_ecf), linetype = "dashed", linewidth = 0.5) +
+            aes(time, Cbrain_csf), linetype = "dashed", linewidth = 0.5) +
   labs(x = "Time (min)", y = "Unbound M3G in brain ECF (uM)",
        title = "Figure 2 replication: brain ECF M3G during 4 h IV M3G infusion",
        caption = "Replicates Figure 2 of Xie 2000 (control + probenecid arms). Dashed = typical-value (zeroed IIV) trace; solid = stochastic-VPC median; ribbon = 5th-95th percentile.")
@@ -246,8 +246,8 @@ end_inf <- sim_typical |>
   filter(time == 240) |>
   transmute(arm,
             cu_pl,
-            cu_br_ecf,
-            ratio = cu_br_ecf / cu_pl)
+            cu_br_csf,
+            ratio = cu_br_csf / cu_pl)
 
 knitr::kable(
   end_inf |> distinct(),
@@ -256,7 +256,7 @@ knitr::kable(
 )
 ```
 
-| arm                |   cu_pl | cu_br_ecf |  ratio |
+| arm                |   cu_pl | cu_br_csf |  ratio |
 |:-------------------|--------:|----------:|-------:|
 | control            | 64.9662 |    6.2141 | 0.0957 |
 | probenecid (day 2) | 64.9662 |    9.6037 | 0.1478 |
@@ -276,7 +276,7 @@ effect: brain ECF half-life of 81 min is \>\> blood half-life of 22 min
 
 late <- sim_typical |>
   filter(time == 360) |>
-  transmute(arm, cu_pl, cu_br_ecf, ratio = cu_br_ecf / cu_pl)
+  transmute(arm, cu_pl, cu_br_csf, ratio = cu_br_csf / cu_pl)
 knitr::kable(
   late |> distinct(),
   digits = 4,
@@ -284,7 +284,7 @@ knitr::kable(
 )
 ```
 
-| arm                |  cu_pl | cu_br_ecf |  ratio |
+| arm                |  cu_pl | cu_br_csf |  ratio |
 |:-------------------|-------:|----------:|-------:|
 | control            | 1.4811 |    0.1426 | 0.0963 |
 | probenecid (day 2) | 1.4811 |    0.2204 | 0.1488 |
@@ -358,29 +358,29 @@ Model A into a 1-compartment plasma surrogate (documented below).
   state the rat brain weight used during the fit. A typical
   Sprague-Dawley rat brain weighs about 1.7-1.8 g, so users who want
   whole-brain amounts in the brain compartments should multiply
-  `brain_ecf` and `brain_deep` by their assumed brain weight in g. The
+  `brain_csf` and `brain_deep` by their assumed brain weight in g. The
   plasma `central` compartment remains in whole-rat (umol) semantics;
   the brain efflux back into plasma is negligible per paper Discussion
   p1789 (~0.02% of body amount at steady state) so the unit mismatch
   between plasma and brain does not affect mass-balance accuracy.
-- **Compartment names `brain_ecf` and `brain_deep` are paper-named
+- **Compartment names `brain_csf` and `brain_deep` are paper-named
   rather than canonical.** The nlmixr2lib canonical compartment list
   includes `central`, `peripheral1`, `peripheral2`, plus a handful of
   named physiologic compartments (`csf`, `isf`, named brain regions,
   etc.). The Xie 2000 brain layer is asymmetric (CL_u,in != CL_u,out
   across the BBB) and the deep brain compartment connects only to the
   brain ECF, not to central – neither matches the symmetric `peripheral`
-  semantics. Naming them `brain_ecf` and `brain_deep` is semantically
+  semantics. Naming them `brain_csf` and `brain_deep` is semantically
   clearer than `peripheral1` / `peripheral2` and follows the Stevens
-  2012 remoxipride precedent of using `brain_ecf` for the
+  2012 remoxipride precedent of using `brain_csf` for the
   microdialysis-sampled compartment. This generates two
   [`checkModelConventions()`](https://nlmixr2.github.io/nlmixr2lib/reference/checkModelConventions.md)
   warnings (`compartments`), accepted by design.
-- **Observation variable named `Cbrain_ecf`, not `Cc`.** `Cc` denotes
+- **Observation variable named `Cbrain_csf`, not `Cc`.** `Cc` denotes
   the central plasma concentration in nlmixr2lib convention; the paper’s
   primary observation is the brain ECF concentration
   (microdialysis-derived), not plasma. Naming the observed variable
-  `Cbrain_ecf` matches the `Cbrain_<region>` paper-named multi-output
+  `Cbrain_csf` matches the `Cbrain_<region>` paper-named multi-output
   exception listed in `compartment-names.md`. This generates one
   [`checkModelConventions()`](https://nlmixr2.github.io/nlmixr2lib/reference/checkModelConventions.md)
   warning (`observation`), accepted by design.

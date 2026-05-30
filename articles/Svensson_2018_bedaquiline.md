@@ -318,10 +318,10 @@ nca_res  <- PKNCA::pk.nca(nca_data)
 nca_summary <- summary(nca_res)
 nca_summary
 #>  start end formulation  N     auclast        cmax              tmax
-#>      0  48   suspended 24 30.5 [25.5] 1.90 [35.8] 6.00 [3.00, 13.0]
-#>      0 336   suspended 24 43.5 [24.6]           .                 .
-#>      0  48       whole 24 31.0 [27.2] 2.19 [46.3] 4.50 [1.50, 15.0]
-#>      0 336       whole 24 43.8 [26.0]           .                 .
+#>      0  48   suspended 24 30.0 [23.8] 2.08 [31.2] 4.75 [2.50, 13.0]
+#>      0 336   suspended 24 41.3 [23.1]           .                 .
+#>      0  48       whole 24 31.8 [19.8] 2.10 [36.2] 4.50 [2.00, 14.0]
+#>      0 336       whole 24 45.7 [20.0]           .                 .
 #> 
 #> Caption: auclast, cmax: geometric mean and geometric coefficient of variation; tmax: median and range; N: number of subjects
 ```

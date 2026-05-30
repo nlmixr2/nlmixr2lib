@@ -391,8 +391,8 @@ knitr::kable(
 
 | start | end | treatment | N | cmax | tmax | half.life | aucinf.obs |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | 672 | IV | 100 | 3710 \[46.4\] | 0.000 \[0.000, 0.000\] | 36.8 \[10.5\] | 286000 \[68.8\] |
-| 0 | 672 | SC | 100 | 391 \[73.9\] | 78.0 \[42.0, 126\] | 82.3 \[42.6\] | 84600 \[58.4\] |
+| 0 | 672 | IV | 100 | 3770 \[48.3\] | 0.000 \[0.000, 0.000\] | 36.7 \[10.5\] | 293000 \[73.3\] |
+| 0 | 672 | SC | 100 | 400 \[68.9\] | 78.0 \[42.0, 132\] | 79.5 \[31.8\] | 87100 \[62.6\] |
 
 Simulated peginesatide noncompartmental PK by route after a single 10 mg
 dose. The SC arm uses route = ‘SC’ (depot, F1 = 0.498); the IV arm uses

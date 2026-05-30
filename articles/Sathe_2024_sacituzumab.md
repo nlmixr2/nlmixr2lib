@@ -644,11 +644,11 @@ knitr::kable(sg_summary, digits = 2,
 | weight_band    | PPTESTCD | median |    q05 |    q95 |
 |:---------------|:---------|-------:|-------:|-------:|
 | High (\>90 kg) | auclast  |     NA |     NA |     NA |
-| High (\>90 kg) | cmax     | 293.45 | 281.67 | 313.48 |
+| High (\>90 kg) | cmax     | 293.15 | 281.86 | 312.10 |
 | Low (\<60 kg)  | auclast  |     NA |     NA |     NA |
-| Low (\<60 kg)  | cmax     | 220.33 | 185.48 | 231.10 |
+| Low (\<60 kg)  | cmax     | 220.01 | 185.40 | 230.76 |
 | Mid (60-90 kg) | auclast  |     NA |     NA |     NA |
-| Mid (60-90 kg) | cmax     | 256.50 | 232.79 | 277.30 |
+| Mid (60-90 kg) | cmax     | 256.59 | 233.11 | 277.25 |
 
 Simulated first-cycle SG Cmax (ug/mL) and AUClast (ug\*h/mL) by
 body-weight band. {.table}
@@ -880,11 +880,11 @@ knitr::kable(sn38_summary, digits = 4,
 | weight_band    | PPTESTCD | median |    q05 |    q95 |
 |:---------------|:---------|-------:|-------:|-------:|
 | High (\>90 kg) | auclast  |     NA |     NA |     NA |
-| High (\>90 kg) | cmax     | 0.1189 | 0.0587 | 0.1845 |
+| High (\>90 kg) | cmax     | 0.0919 | 0.0471 | 0.1736 |
 | Low (\<60 kg)  | auclast  |     NA |     NA |     NA |
-| Low (\<60 kg)  | cmax     | 0.0703 | 0.0388 | 0.1676 |
+| Low (\<60 kg)  | cmax     | 0.0781 | 0.0472 | 0.1492 |
 | Mid (60-90 kg) | auclast  |     NA |     NA |     NA |
-| Mid (60-90 kg) | cmax     | 0.1043 | 0.0605 | 0.2003 |
+| Mid (60-90 kg) | cmax     | 0.0962 | 0.0580 | 0.1791 |
 
 Simulated first-cycle free SN-38 Cmax (ug/mL) and AUClast (ug\*h/mL) by
 body-weight band. {.table}
@@ -1116,11 +1116,11 @@ knitr::kable(tab_summary, digits = 2,
 | weight_band    | PPTESTCD | median |    q05 |    q95 |
 |:---------------|:---------|-------:|-------:|-------:|
 | High (\>90 kg) | auclast  |     NA |     NA |     NA |
-| High (\>90 kg) | cmax     | 357.27 | 262.29 | 537.40 |
+| High (\>90 kg) | cmax     | 383.22 | 293.83 | 555.84 |
 | Low (\<60 kg)  | auclast  |     NA |     NA |     NA |
-| Low (\<60 kg)  | cmax     | 248.32 | 161.31 | 349.07 |
+| Low (\<60 kg)  | cmax     | 264.68 | 160.63 | 330.81 |
 | Mid (60-90 kg) | auclast  |     NA |     NA |     NA |
-| Mid (60-90 kg) | cmax     | 298.85 | 210.74 | 435.16 |
+| Mid (60-90 kg) | cmax     | 303.05 | 213.80 | 439.31 |
 
 Simulated first-cycle total antibody Cmax (ug/mL) and AUClast (ug\*h/mL)
 by body-weight band. {.table}

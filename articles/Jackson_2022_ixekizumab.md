@@ -4,7 +4,7 @@
 
 library(nlmixr2lib)
 library(rxode2)
-#> rxode2 5.0.2 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.1 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -347,12 +347,12 @@ knitr::kable(trough_tbl, digits = 2,
 
 | weight_group | week | mean_trough | sd_trough | median_trough |
 |:-------------|-----:|------------:|----------:|--------------:|
-| \<25 kg      |    8 |        3.27 |      1.07 |          3.39 |
-| \<25 kg      |   12 |        3.04 |      1.04 |          3.14 |
-| 25-50 kg     |    8 |        3.11 |      1.33 |          2.98 |
-| 25-50 kg     |   12 |        2.88 |      1.26 |          2.76 |
-| \>50 kg      |    8 |        3.27 |      1.60 |          2.90 |
-| \>50 kg      |   12 |        3.03 |      1.52 |          2.66 |
+| \<25 kg      |    8 |        2.54 |      1.23 |          2.17 |
+| \<25 kg      |   12 |        2.36 |      1.20 |          1.99 |
+| 25-50 kg     |    8 |        3.28 |      1.48 |          2.80 |
+| 25-50 kg     |   12 |        3.05 |      1.44 |          2.57 |
+| \>50 kg      |    8 |        3.52 |      1.53 |          3.49 |
+| \>50 kg      |   12 |        3.27 |      1.46 |          3.23 |
 
 Simulated mean trough concentrations at Weeks 8 and 12. Compare with
 Jackson 2022 Results 3.1: reported means 3.20–3.33 μg/mL in the 25–50 kg
@@ -416,9 +416,9 @@ knitr::kable(
 
 | start | end | treatment | N | auclast | cmax | cmin | tmax | cav |
 |---:|---:|:---|:---|:---|:---|:---|:---|:---|
-| 0 | 672 | IXE_Q4W\_\<25 kg | 9 | 3620 \[23.1\] | 7.77 \[16.3\] | 2.88 \[37.8\] | 168 \[84.0, 168\] | 5.39 \[23.1\] |
-| 0 | 672 | IXE_Q4W\_\>50 kg | 132 | 3740 \[37.0\] | 8.43 \[30.6\] | 2.69 \[53.2\] | 168 \[84.0, 168\] | 5.57 \[37.0\] |
-| 0 | 672 | IXE_Q4W_25-50 kg | 43 | 3600 \[31.9\] | 8.08 \[25.3\] | 2.61 \[49.2\] | 168 \[84.0, 168\] | 5.35 \[31.9\] |
+| 0 | 672 | IXE_Q4W\_\<25 kg | 9 | 3030 \[27.3\] | 6.85 \[19.0\] | 2.15 \[45.1\] | 84.0 \[84.0, 168\] | 4.50 \[27.3\] |
+| 0 | 672 | IXE_Q4W\_\>50 kg | 132 | 3960 \[35.5\] | 8.77 \[29.2\] | 2.94 \[51.6\] | 168 \[84.0, 168\] | 5.89 \[35.5\] |
+| 0 | 672 | IXE_Q4W_25-50 kg | 43 | 3730 \[31.0\] | 8.28 \[24.9\] | 2.77 \[47.0\] | 168 \[84.0, 168\] | 5.55 \[31.0\] |
 
 Simulated steady-state (Week 8–Week 12) NCA by weight group. Cmin is the
 trough at Week 12; compare with Jackson 2022 Results 3.1: reported mean
@@ -455,9 +455,9 @@ knitr::kable(comparison, digits = 2,
 
 | weight_group | published_mean_trough | published_range | simulated_mean_trough | pct_diff |
 |:---|---:|:---|---:|---:|
-| \<25 kg | NA | Insufficient data | 3.04 | NA |
-| 25-50 kg | 3.27 | 3.20-3.33 | 2.88 | -11.79 |
-| \>50 kg | 3.27 | 3.20-3.33 | 3.03 | -7.09 |
+| \<25 kg | NA | Insufficient data | 2.36 | NA |
+| 25-50 kg | 3.27 | 3.20-3.33 | 3.05 | -6.43 |
+| \>50 kg | 3.27 | 3.20-3.33 | 3.27 | 0.29 |
 
 Week 12 mean trough: simulated vs Jackson 2022 Results 3.1. {.table
 style="width:100%;"}

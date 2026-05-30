@@ -287,8 +287,8 @@ knitr::kable(nca_summary,
 
 | start | end | cohort | N | auclast | cmax | cmin | tmax | ctrough |
 |---:|---:|:---|:---|:---|:---|:---|:---|:---|
-| 0 | 12 | Adult liver (capsule) | 100 | 225 \[50.5\] | 31.2 \[58.4\] | 11.4 \[78.4\] | 1.00 \[1.00, 1.50\] | 11.6 \[79.7\] |
-| 0 | 12 | Adult non-liver (capsule) | 100 | 96.6 \[54.6\] | 17.1 \[62.8\] | 3.25 \[131\] | 1.00 \[0.500, 1.50\] | 3.26 \[132\] |
+| 0 | 12 | Adult liver (capsule) | 100 | 241 \[50.6\] | 30.7 \[57.1\] | 13.2 \[71.2\] | 1.00 \[1.00, 1.50\] | 13.4 \[72.1\] |
+| 0 | 12 | Adult non-liver (capsule) | 100 | 91.8 \[54.8\] | 17.1 \[57.0\] | 2.83 \[154\] | 1.00 \[0.500, 1.50\] | 2.85 \[156\] |
 
 Day-5 NCA on the simulated cohorts (steady-state 12 h interval, 5 mg
 BID, POD 14). {.table}
@@ -329,8 +329,8 @@ knitr::kable(tbl, caption = "Simulated day-5 trough at 5 mg BID, POD 14, by coho
 
 | cohort | typical_value_trough_ngmL | cohort_median_iiv_ngmL_10_90 |
 |:---|:---|:---|
-| Adult liver (capsule) | 13.76 | 12.24 (4.64-25.74) |
-| Adult non-liver (capsule) | 3.10 | 3.57 (0.77-10.52) |
+| Adult liver (capsule) | 13.76 | 14.21 (5.79-27.55) |
+| Adult non-liver (capsule) | 3.10 | 3.20 (0.57-10.78) |
 
 Simulated day-5 trough at 5 mg BID, POD 14, by cohort. {.table}
 

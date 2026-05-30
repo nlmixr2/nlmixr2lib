@@ -213,10 +213,6 @@ ggplot(vpc_pct, aes(time, Q50)) +
        y = "Plasma concentration (ng/mL)",
        title = "Replicates Figure 1 of Varatharajan 2016",
        caption = "Median (black), 25th-75th (blue), and 5th-95th (grey) percentiles from a 70-subject virtual cohort (60 mg/m^2 Dnr, 1-h IV infusion).")
-#> Warning in transformation$transform(x): NaNs produced
-#> Warning in scale_y_log10(): log-10 transformation introduced infinite values.
-#> Warning: Removed 1 row containing missing values or values outside the scale range
-#> (`geom_ribbon()`).
 ```
 
 ![](Varatharajan_2016_daunorubicin_files/figure-html/figure-1-1.png)

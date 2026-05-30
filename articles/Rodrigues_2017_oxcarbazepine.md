@@ -1299,12 +1299,12 @@ knitr::kable(
 
 | cell | auc12_sim_med | ctrough_sim_med | auc12_med | ctrough_med | auc12_pct_diff | ctrough_pct_diff |
 |:---|---:|---:|---:|---:|---:|---:|
-| 10 kg, EIAED+ | 102.3 | 4.1 | 116.5 | 6.1 | -12.2 | -32.6 |
-| 10 kg, EIAED- | 130.2 | 6.6 | 151.0 | 8.9 | -13.8 | -26.1 |
-| 30 kg, EIAED+ | 169.5 | 9.3 | 233.1 | 12.3 | -27.3 | -24.7 |
-| 30 kg, EIAED- | 216.4 | 13.3 | 302.0 | 17.9 | -28.3 | -25.8 |
-| 50 kg, EIAED+ | 213.5 | 13.4 | 289.1 | 17.7 | -26.2 | -24.1 |
-| 50 kg, EIAED- | 277.7 | 19.4 | 380.4 | 25.1 | -27.0 | -22.5 |
+| 10 kg, EIAED+ | 104.8 | 4.5 | 116.5 | 6.1 | -10.0 | -26.4 |
+| 10 kg, EIAED- | 134.9 | 6.8 | 151.0 | 8.9 | -10.7 | -23.7 |
+| 30 kg, EIAED+ | 167.6 | 9.1 | 233.1 | 12.3 | -28.1 | -25.8 |
+| 30 kg, EIAED- | 218.4 | 13.4 | 302.0 | 17.9 | -27.7 | -25.0 |
+| 50 kg, EIAED+ | 211.7 | 13.9 | 289.1 | 17.7 | -26.8 | -21.5 |
+| 50 kg, EIAED- | 276.4 | 19.4 | 380.4 | 25.1 | -27.3 | -22.8 |
 
 Simulated vs published medians of steady-state MHD AUC0-12 (mg\*h/L) and
 Ctrough (mg/L) at 30 mg/kg/day BID. Published medians from Rodrigues

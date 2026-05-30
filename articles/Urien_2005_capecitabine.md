@@ -162,7 +162,7 @@ events_typ <- {
 }
 sim_typ <- rxode2::rxSolve(mod_typ, events = events_typ) |>
   as.data.frame()
-#> ℹ omega/sigma items treated as zero: 'etallag', 'etalvc', 'etalcl', 'etalk_dfur_form', 'etalk_5fu_form', 'etalkel_5fu'
+#> ℹ omega/sigma items treated as zero: 'etaltlag', 'etalvc', 'etalcl', 'etalk_dfur_form', 'etalk_5fu_form', 'etalkel_5fu'
 ```
 
 ## Replicate published figures
@@ -259,9 +259,9 @@ sens <- lapply(bilirubin_grid, function(b) {
     dplyr::mutate(TBILI_label = sprintf("TBILI = %.2f umol/L", b))
 }) |>
   dplyr::bind_rows()
-#> ℹ omega/sigma items treated as zero: 'etallag', 'etalvc', 'etalcl', 'etalk_dfur_form', 'etalk_5fu_form', 'etalkel_5fu'
-#> ℹ omega/sigma items treated as zero: 'etallag', 'etalvc', 'etalcl', 'etalk_dfur_form', 'etalk_5fu_form', 'etalkel_5fu'
-#> ℹ omega/sigma items treated as zero: 'etallag', 'etalvc', 'etalcl', 'etalk_dfur_form', 'etalk_5fu_form', 'etalkel_5fu'
+#> ℹ omega/sigma items treated as zero: 'etaltlag', 'etalvc', 'etalcl', 'etalk_dfur_form', 'etalk_5fu_form', 'etalkel_5fu'
+#> ℹ omega/sigma items treated as zero: 'etaltlag', 'etalvc', 'etalcl', 'etalk_dfur_form', 'etalk_5fu_form', 'etalkel_5fu'
+#> ℹ omega/sigma items treated as zero: 'etaltlag', 'etalvc', 'etalcl', 'etalk_dfur_form', 'etalk_5fu_form', 'etalkel_5fu'
 
 sens_long <- sens |>
   dplyr::select(time, TBILI_label, Cc, Cc_dfcr, Cc_dfur, Cc_5fu) |>
@@ -435,7 +435,7 @@ knitr::kable(nca_cap_summary,
 
 | Interval Start | Interval End | treatment | N | Cmax (umol/L) | Tmax (h) | Half-life (h) | AUCinf,obs (h\*umol/L) |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | Inf | capecitabine | 100 | 8.76 \[64.4\] | 1.00 \[0.400, 4.50\] | 1.32 \[1.92\] | NC |
+| 0 | Inf | capecitabine | 100 | 7.21 \[81.9\] | 1.10 \[0.350, 4.30\] | 1.81 \[2.34\] | NC |
 
 Capecitabine simulated NCA (single oral dose, 4596 umol). {.table}
 
@@ -563,7 +563,7 @@ knitr::kable(summary(nca_dfcr),
 
 | Interval Start | Interval End | treatment | N | Cmax (umol/L) | Tmax (h) | Half-life (h) | AUCinf,obs (h\*umol/L) |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | Inf | 5’-DFCR | 100 | 9.95 \[89.5\] | 1.12 \[0.450, 4.75\] | 1.32 \[1.92\] | NC |
+| 0 | Inf | 5’-DFCR | 100 | 9.07 \[99.2\] | 1.25 \[0.400, 4.40\] | 1.81 \[2.34\] | NC |
 
 5’-DFCR simulated NCA. {.table}
 
@@ -691,7 +691,7 @@ knitr::kable(summary(nca_dfur),
 
 | Interval Start | Interval End | treatment | N | Cmax (umol/L) | Tmax (h) | Half-life (h) | AUCinf,obs (h\*umol/L) |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | Inf | 5’-DFUR | 100 | 20.2 \[64.1\] | 1.43 \[0.700, 5.10\] | 1.32 \[1.92\] | NC |
+| 0 | Inf | 5’-DFUR | 100 | 16.4 \[85.5\] | 1.50 \[0.600, 4.55\] | 1.81 \[2.34\] | NC |
 
 5’-DFUR simulated NCA. {.table}
 
@@ -705,8 +705,6 @@ conc_obj_5fu <- PKNCA::PKNCAconc(
   sim_nca_5fu, conc ~ time | treatment + id,
   concu = "umol/L", timeu = "h"
 )
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
 dose_df_5fu <- dose_df |> dplyr::mutate(treatment = "5-FU")
 dose_obj_5fu <- PKNCA::PKNCAdose(
   dose_df_5fu, amt ~ time | treatment + id,
@@ -715,8 +713,6 @@ dose_obj_5fu <- PKNCA::PKNCAdose(
 nca_5fu <- PKNCA::pk.nca(PKNCA::PKNCAdata(
   conc_obj_5fu, dose_obj_5fu, intervals = intervals
 ))
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (0.05) is not allowed
 #> Warning: Requesting an AUC range starting (0) before the first measurement (0.05) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.05) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.05) is not allowed
@@ -733,21 +729,8 @@ nca_5fu <- PKNCA::pk.nca(PKNCA::PKNCAdata(
 #> Requesting an AUC range starting (0) before the first measurement (0.05) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.05) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.05) is not allowed
-#> Warning in assert_conc(conc = conc): Negative concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in log(data$conc): NaNs produced
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning: Requesting an AUC range starting (0) before the first measurement (0.05) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.05) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.05) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.05) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.05) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.05) is not allowed
@@ -836,7 +819,7 @@ knitr::kable(summary(nca_5fu),
 
 | Interval Start | Interval End | treatment | N | Cmax (umol/L) | Tmax (h) | Half-life (h) | AUCinf,obs (h\*umol/L) |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | Inf | 5-FU | 100 | 1.61 \[74.3\] | 1.43 \[0.700, 5.10\] | 1.32 \[1.92\] | NC |
+| 0 | Inf | 5-FU | 100 | 1.34 \[85.8\] | 1.53 \[0.600, 4.60\] | 1.81 \[2.34\] | NC |
 
 5-FU simulated NCA. {.table}
 

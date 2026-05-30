@@ -331,14 +331,14 @@ knitr::kable(
 
 | arm       | PPTESTCD | median_value |    p05 |    p95 |
 |:----------|:---------|-------------:|-------:|-------:|
-| P + H IV  | auclast  |       2592.3 | 1702.9 | 3753.9 |
-| P + H IV  | cav      |        123.4 |   81.1 |  178.8 |
-| P + H IV  | cmax     |        238.9 |  167.8 |  368.9 |
-| P + H IV  | cmin     |         83.8 |   40.5 |  132.9 |
-| PH FDC SC | auclast  |       2479.5 | 1500.8 | 4203.1 |
-| PH FDC SC | cav      |        118.1 |   71.5 |  200.1 |
-| PH FDC SC | cmax     |        147.3 |   96.6 |  242.8 |
-| PH FDC SC | cmin     |         86.6 |   46.6 |  152.0 |
+| P + H IV  | auclast  |       2504.7 | 1615.9 | 3683.0 |
+| P + H IV  | cav      |        119.3 |   76.9 |  175.4 |
+| P + H IV  | cmax     |        238.1 |  166.3 |  361.1 |
+| P + H IV  | cmin     |         78.8 |   41.5 |  138.5 |
+| PH FDC SC | auclast  |       2474.0 | 1521.4 | 4176.0 |
+| PH FDC SC | cav      |        117.8 |   72.4 |  198.9 |
+| PH FDC SC | cmax     |        149.8 |   94.9 |  237.9 |
+| PH FDC SC | cmin     |         86.1 |   47.7 |  157.6 |
 
 Cycle 7 (steady-state) NCA by arm: median (5th-95th). {.table}
 
@@ -388,10 +388,10 @@ knitr::kable(
 
 | LBW_quartile | median_ctrough |  p05 |   p95 | Wang2021_median | pct_diff |
 |:-------------|---------------:|-----:|------:|----------------:|---------:|
-| Q1 \<42.0    |          113.0 | 58.9 | 164.0 |             100 |     13.0 |
-| Q2 42.0-45.1 |           80.8 | 52.3 | 180.4 |              87 |     -7.1 |
-| Q3 45.1-48.8 |           87.7 | 45.3 | 144.3 |              78 |     12.5 |
-| Q4 \>48.8    |           73.7 | 41.1 | 119.9 |              70 |      5.3 |
+| Q1 \<42.0    |          106.6 | 52.6 | 172.8 |             100 |      6.6 |
+| Q2 42.0-45.1 |           94.7 | 56.9 | 132.1 |              87 |      8.9 |
+| Q3 45.1-48.8 |           82.8 | 43.2 | 132.6 |              78 |      6.1 |
+| Q4 \>48.8    |           73.8 | 45.2 | 118.0 |              70 |      5.4 |
 
 Cycle 7 Ctrough (ug/mL) by LBW quartile, simulated typical-population vs
 Wang 2021 Fig 2A reported medians. {.table}

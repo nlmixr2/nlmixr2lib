@@ -88,7 +88,7 @@ effect.
 ``` r
 
 set.seed(20090611)
-n_per_strat <- 200L
+n_per_strat <- 50L  # downsampled from 200 for vignette build budget; VPC envelope still stable
 
 make_cohort <- function(n, het, hom, label, id_offset = 0L) {
   tibble(
@@ -137,7 +137,7 @@ build_events <- function(demo, dose_mg = 10, obs_grid = sample_times) {
 # Coarse grid for percentile plots / PKNCA.
 events_paper <- build_events(demo)
 # Dense grid for typical-value figure replication.
-events_dense <- build_events(demo, obs_grid = seq(0, 24, by = 0.1))
+events_dense <- build_events(demo, obs_grid = seq(0, 24, by = 0.25))  # by=0.25 (was 0.1) for vignette build budget
 ```
 
 ``` r
@@ -220,15 +220,15 @@ ggplot(vpc_data, aes(time, Q50)) +
   labs(x = "Time post-dose (h)",
        y = "Pravastatin concentration (ng/mL)",
        title = "Stochastic VPC by SLCO1B1*15 genotype",
-       caption = "Single 10 mg oral dose; 200 subjects per stratum.")
+       caption = "Single 10 mg oral dose; 50 subjects per stratum.")
 ```
 
 ![Stochastic VPC: 5th, 50th, 95th percentile pravastatin concentration
-vs. time by SLCO1B1\*15 genotype (n = 200 subjects per
+vs. time by SLCO1B1\*15 genotype (n = 50 subjects per
 stratum).](Ide_2009_pravastatin_files/figure-html/vpc-1.png)
 
 Stochastic VPC: 5th, 50th, 95th percentile pravastatin concentration
-vs. time by SLCO1B1\*15 genotype (n = 200 subjects per stratum).
+vs. time by SLCO1B1\*15 genotype (n = 50 subjects per stratum).
 
 ## PKNCA validation
 
@@ -254,17 +254,17 @@ nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- suppressMessages(suppressWarnings(PKNCA::pk.nca(nca_data)))
 nca_summary <- summary(nca_res)
 knitr::kable(nca_summary,
-             caption = "Single-dose simulated NCA parameters by SLCO1B1*15 genotype stratum (200 subjects per stratum, 10 mg oral).")
+             caption = "Single-dose simulated NCA parameters by SLCO1B1*15 genotype stratum (50 subjects per stratum, 10 mg oral).")
 ```
 
 | start | end | cohort | N | auclast | cmax | tmax | aucinf.obs |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | 24 | \*15 heterozygote | 200 | NC | 21.5 \[31.3\] | 1.00 \[0.500, 2.00\] | NC |
-| 0 | 24 | \*15 homozygote | 200 | NC | 28.7 \[31.5\] | 1.00 \[0.500, 2.00\] | NC |
-| 0 | 24 | \*15 noncarrier | 200 | NC | 14.5 \[27.8\] | 1.00 \[0.500, 2.00\] | NC |
+| 0 | 24 | \*15 heterozygote | 50 | NC | 20.5 \[30.1\] | 1.00 \[0.500, 2.00\] | NC |
+| 0 | 24 | \*15 homozygote | 50 | NC | 27.2 \[25.7\] | 1.00 \[0.500, 2.00\] | NC |
+| 0 | 24 | \*15 noncarrier | 50 | NC | 14.1 \[35.0\] | 1.00 \[0.500, 2.00\] | NC |
 
-Single-dose simulated NCA parameters by SLCO1B1\*15 genotype stratum
-(200 subjects per stratum, 10 mg oral). {.table style="width:100%;"}
+Single-dose simulated NCA parameters by SLCO1B1\*15 genotype stratum (50
+subjects per stratum, 10 mg oral). {.table}
 
 ### Comparison against published exposure metrics
 
@@ -400,7 +400,7 @@ structural mismatch and are worth investigating rather than tuning.
   non-Japanese or female cohorts should consider whether the SLCO1B1
   haplotype frequencies and the underlying enterohepatic-circulation
   parameters generalise.
-- **Vignette uses 200 subjects per stratum.** Small enough to render the
+- **Vignette uses 50 subjects per stratum.** Small enough to render the
   vignette in well under the 5-minute pkgdown gate, large enough to give
   stable VPC percentiles and pooled NCA summaries. Ide 2009 used a
   200-replicate bootstrap of the original 57-subject dataset.

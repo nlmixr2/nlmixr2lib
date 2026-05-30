@@ -350,8 +350,8 @@ nca_res  <- PKNCA::pk.nca(nca_data)
 nca_summary <- summary(nca_res)
 nca_summary
 #>  start end treatment   N     auclast        cmax               tmax
-#>      0  24     Black  71 20.2 [44.9] 1.68 [59.0] 4.00 [0.500, 24.0]
-#>      0  24 non-Black 129 18.8 [56.1] 1.46 [71.5] 5.00 [0.500, 24.0]
+#>      0  24     Black  71 20.4 [37.8] 1.57 [54.2] 6.00 [0.500, 22.0]
+#>      0  24 non-Black 129 20.6 [57.1] 1.54 [69.8]  6.50 [1.00, 24.0]
 #> 
 #> Caption: auclast, cmax: geometric mean and geometric coefficient of variation; tmax: median and range; N: number of subjects
 ```

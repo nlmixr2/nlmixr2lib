@@ -252,10 +252,10 @@ knitr::kable(nca_summary,
 
 | Interval Start | Interval End | treatment | N | AUClast (h\*ng/mL) | Cmax (ng/mL) | Tmax (h) |
 |---:|---:|:---|:---|:---|:---|:---|
-| 0 | 12 | 1 mg BID | 100 | 3.42 \[81.3\] | 0.445 \[92.0\] | 1.00 \[0.250, 3.00\] |
-| 0 | 12 | 3 mg BID | 100 | 9.58 \[87.8\] | 1.33 \[102\] | 1.00 \[0.250, 3.00\] |
-| 0 | 12 | 5 mg BID | 100 | 16.9 \[79.5\] | 2.27 \[95.7\] | 1.00 \[0.250, 3.00\] |
-| 0 | 12 | 10 mg BID | 100 | 35.3 \[99.3\] | 4.89 \[123\] | 1.00 \[0.250, 3.00\] |
+| 0 | 12 | 1 mg BID | 100 | 3.15 \[92.1\] | 0.440 \[108\] | 1.00 \[0.250, 3.00\] |
+| 0 | 12 | 3 mg BID | 100 | 10.0 \[91.8\] | 1.34 \[104\] | 1.00 \[0.250, 3.00\] |
+| 0 | 12 | 5 mg BID | 100 | 17.0 \[98.3\] | 2.29 \[113\] | 1.00 \[0.250, 2.00\] |
+| 0 | 12 | 10 mg BID | 100 | 30.1 \[95.4\] | 4.01 \[111\] | 1.00 \[0.500, 3.00\] |
 
 Simulated steady-state NCA parameters by dose group (100 subjects per
 dose, Phase I-style intensive sampling). {.table}
@@ -312,18 +312,18 @@ knitr::kable(
 
 | treatment | PPTESTCD |  sim_value |    sim_cv | paper_value | paper_cv |
 |:----------|:---------|-----------:|----------:|------------:|---------:|
-| 1 mg BID  | auclast  |  4.4252357 |  82.96214 |         6.6 |       61 |
-| 1 mg BID  | cmax     |  0.6112701 |  91.89559 |         1.0 |       50 |
-| 1 mg BID  | tmax     |  1.0000000 |  42.18948 |         0.7 |       NA |
-| 10 mg BID | auclast  | 47.6491681 |  79.48879 |        20.0 |       54 |
-| 10 mg BID | cmax     |  7.4708145 | 106.54645 |         2.8 |       82 |
-| 10 mg BID | tmax     |  1.0000000 |  43.13403 |         1.3 |       NA |
-| 3 mg BID  | auclast  | 12.5774268 |  77.59620 |        16.0 |       50 |
-| 3 mg BID  | cmax     |  1.8805604 |  90.79569 |         2.6 |       56 |
-| 3 mg BID  | tmax     |  1.0000000 |  43.83688 |         0.9 |       NA |
-| 5 mg BID  | auclast  | 21.3834897 |  71.60917 |        23.0 |       48 |
-| 5 mg BID  | cmax     |  3.1315246 |  89.76655 |         3.5 |       48 |
-| 5 mg BID  | tmax     |  1.0000000 |  42.93824 |         1.0 |       NA |
+| 1 mg BID  | auclast  |  4.3047806 |  92.25553 |         6.6 |       61 |
+| 1 mg BID  | cmax     |  0.6562622 | 111.74362 |         1.0 |       50 |
+| 1 mg BID  | tmax     |  1.0000000 |  46.24645 |         0.7 |       NA |
+| 10 mg BID | auclast  | 40.3125116 |  79.67551 |        20.0 |       54 |
+| 10 mg BID | cmax     |  5.7527723 |  89.15225 |         2.8 |       82 |
+| 10 mg BID | tmax     |  1.0000000 |  42.47825 |         1.3 |       NA |
+| 3 mg BID  | auclast  | 13.3501988 |  81.80113 |        16.0 |       50 |
+| 3 mg BID  | cmax     |  1.9004719 |  93.37653 |         2.6 |       56 |
+| 3 mg BID  | tmax     |  1.0000000 |  48.33096 |         0.9 |       NA |
+| 5 mg BID  | auclast  | 23.4148779 |  83.42684 |        23.0 |       48 |
+| 5 mg BID  | cmax     |  3.4059689 |  99.34426 |         3.5 |       48 |
+| 5 mg BID  | tmax     |  1.0000000 |  47.52927 |         1.0 |       NA |
 
 Side-by-side comparison of simulated steady-state PK (arithmetic mean
 for Cmax and AUC, median for Tmax) against Dogterom 2018 Table 1 Study 1
@@ -366,12 +366,12 @@ knitr::kable(
 )
 ```
 
-| treatment | PPTESTCD | median_v | q05 | q95 | paper_median | paper_lo | paper_hi |
-|:---|:---|---:|---:|---:|---:|---:|---:|
-| 10 mg BID | auclast | 38.503957 | 8.2164318 | 133.830757 | 37.80 | 8.92 | 162.0 |
-| 10 mg BID | cmax | 5.231433 | 0.8889804 | 22.701030 | 8.64 | 1.64 | 50.1 |
-| 5 mg BID | auclast | 16.727154 | 5.1886584 | 51.113840 | 19.30 | 4.48 | 82.6 |
-| 5 mg BID | cmax | 2.243311 | 0.5859224 | 8.267401 | 4.56 | 0.87 | 26.4 |
+| treatment | PPTESTCD |  median_v |       q05 |       q95 | paper_median | paper_lo | paper_hi |
+|:----------|:---------|----------:|----------:|----------:|-------------:|---------:|---------:|
+| 10 mg BID | auclast  | 30.918141 | 8.0556027 | 101.49925 |        37.80 |     8.92 |    162.0 |
+| 10 mg BID | cmax     |  4.357006 | 0.8689336 |  15.25969 |         8.64 |     1.64 |     50.1 |
+| 5 mg BID  | auclast  | 16.462099 | 4.9732232 |  64.61089 |        19.30 |     4.48 |     82.6 |
+| 5 mg BID  | cmax     |  2.255057 | 0.5665826 |  10.32704 |         4.56 |     0.87 |     26.4 |
 
 Side-by-side comparison of simulated steady-state PK (median + empirical
 5th-95th percentiles) against Dogterom 2018 Table 4 pediatric simulated

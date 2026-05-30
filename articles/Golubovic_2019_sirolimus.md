@@ -440,10 +440,10 @@ knitr::kable(
 
 | cohort                           | median |   q05 |   q95 |
 |:---------------------------------|-------:|------:|------:|
-| Reference (age 44, AST normal)   |  10.54 |  4.75 | 17.82 |
-| Young (16-30 y, AST normal)      |   6.84 |  3.19 | 12.90 |
-| Old (50-64 y, AST normal)        |  15.20 |  6.94 | 24.22 |
-| AST elevated (age 44, AST \> 37) |  21.51 | 11.84 | 34.46 |
+| Reference (age 44, AST normal)   |   9.99 |  4.92 | 18.25 |
+| Young (16-30 y, AST normal)      |   7.59 |  3.07 | 14.90 |
+| Old (50-64 y, AST normal)        |  14.14 |  6.79 | 24.99 |
+| AST elevated (age 44, AST \> 37) |  20.10 | 10.58 | 32.75 |
 
 Day-30 trough Cc (ng/mL) at the cohort-mean 3.6 mg/day dosing schedule.
 Golubovic 2019 reports a mean observed trough of 9.85 ng/mL (Table I)
@@ -542,28 +542,28 @@ knitr::kable(
 
 | cohort                           | PPTESTCD |  median |     q05 |      q95 |
 |:---------------------------------|:---------|--------:|--------:|---------:|
-| Reference (age 44, AST normal)   | auclast  | 449.399 | 306.569 |  677.297 |
-| Reference (age 44, AST normal)   | cav      |  18.725 |  12.774 |   28.221 |
-| Reference (age 44, AST normal)   | cmax     |  35.655 |  22.604 |   63.160 |
-| Reference (age 44, AST normal)   | cmin     |  10.522 |   4.730 |   17.732 |
+| Reference (age 44, AST normal)   | auclast  | 457.996 | 308.624 |  670.718 |
+| Reference (age 44, AST normal)   | cav      |  19.083 |  12.859 |   27.947 |
+| Reference (age 44, AST normal)   | cmax     |  37.061 |  23.437 |   57.283 |
+| Reference (age 44, AST normal)   | cmin     |   9.969 |   4.906 |   18.180 |
 | Reference (age 44, AST normal)   | ctrough  |      NA |      NA |       NA |
-| Reference (age 44, AST normal)   | tmax     |   1.000 |   1.000 |    2.000 |
-| Young (16-30 y, AST normal)      | auclast  | 360.353 | 244.246 |  542.167 |
-| Young (16-30 y, AST normal)      | cav      |  15.015 |  10.177 |   22.590 |
-| Young (16-30 y, AST normal)      | cmax     |  33.323 |  20.411 |   59.569 |
-| Young (16-30 y, AST normal)      | cmin     |   6.814 |   3.185 |   12.857 |
+| Reference (age 44, AST normal)   | tmax     |   2.000 |   1.000 |    2.000 |
+| Young (16-30 y, AST normal)      | auclast  | 371.055 | 241.000 |  546.769 |
+| Young (16-30 y, AST normal)      | cav      |  15.461 |  10.042 |   22.782 |
+| Young (16-30 y, AST normal)      | cmax     |  32.150 |  21.013 |   59.899 |
+| Young (16-30 y, AST normal)      | cmin     |   7.568 |   3.067 |   14.835 |
 | Young (16-30 y, AST normal)      | ctrough  |      NA |      NA |       NA |
 | Young (16-30 y, AST normal)      | tmax     |   1.000 |   1.000 |    2.000 |
-| Old (50-64 y, AST normal)        | auclast  | 585.045 | 380.494 |  792.821 |
-| Old (50-64 y, AST normal)        | cav      |  24.377 |  15.854 |   33.034 |
-| Old (50-64 y, AST normal)        | cmax     |  40.857 |  26.424 |   65.988 |
-| Old (50-64 y, AST normal)        | cmin     |  15.105 |   6.939 |   24.155 |
+| Old (50-64 y, AST normal)        | auclast  | 579.539 | 391.452 |  843.519 |
+| Old (50-64 y, AST normal)        | cav      |  24.147 |  16.310 |   35.147 |
+| Old (50-64 y, AST normal)        | cmax     |  42.913 |  27.621 |   78.470 |
+| Old (50-64 y, AST normal)        | cmin     |  14.066 |   6.753 |   24.852 |
 | Old (50-64 y, AST normal)        | ctrough  |      NA |      NA |       NA |
-| Old (50-64 y, AST normal)        | tmax     |   2.000 |   1.000 |    2.050 |
-| AST elevated (age 44, AST \> 37) | auclast  | 747.387 | 535.971 | 1035.418 |
-| AST elevated (age 44, AST \> 37) | cav      |  31.141 |  22.332 |   43.142 |
-| AST elevated (age 44, AST \> 37) | cmax     |  47.568 |  33.706 |   82.355 |
-| AST elevated (age 44, AST \> 37) | cmin     |  21.433 |  11.738 |   34.234 |
+| Old (50-64 y, AST normal)        | tmax     |   1.000 |   1.000 |    2.000 |
+| AST elevated (age 44, AST \> 37) | auclast  | 719.452 | 531.056 | 1019.217 |
+| AST elevated (age 44, AST \> 37) | cav      |  29.977 |  22.127 |   42.467 |
+| AST elevated (age 44, AST \> 37) | cmax     |  46.861 |  32.722 |   69.887 |
+| AST elevated (age 44, AST \> 37) | cmin     |  20.021 |  10.484 |   32.553 |
 | AST elevated (age 44, AST \> 37) | ctrough  |      NA |      NA |       NA |
 | AST elevated (age 44, AST \> 37) | tmax     |   2.000 |   1.000 |    2.000 |
 

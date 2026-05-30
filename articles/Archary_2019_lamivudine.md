@@ -393,14 +393,14 @@ knitr::kable(
 )
 ```
 
-| treatment                   | PPTESTCD |    median |       p05 |      p95 |
-|:----------------------------|:---------|----------:|----------:|---------:|
-| day 1 (60 mg, AGE = 1.4 y)  | auclast  |        NA |        NA |       NA |
-| day 1 (60 mg, AGE = 1.4 y)  | cmax     | 0.9717507 | 0.5954607 | 1.706445 |
-| day 1 (60 mg, AGE = 1.4 y)  | tmax     | 1.5000000 | 1.0000000 | 3.000000 |
-| day 14 (60 mg, AGE = 1.4 y) | auclast  |        NA |        NA |       NA |
-| day 14 (60 mg, AGE = 1.4 y) | cmax     | 0.9842040 | 0.5869891 | 2.107742 |
-| day 14 (60 mg, AGE = 1.4 y) | tmax     | 1.5000000 | 1.0000000 | 2.000000 |
+| treatment                   | PPTESTCD |    median |      p05 |      p95 |
+|:----------------------------|:---------|----------:|---------:|---------:|
+| day 1 (60 mg, AGE = 1.4 y)  | auclast  |        NA |       NA |       NA |
+| day 1 (60 mg, AGE = 1.4 y)  | cmax     | 0.9658237 | 0.551161 | 2.066523 |
+| day 1 (60 mg, AGE = 1.4 y)  | tmax     | 1.5000000 | 1.225000 | 2.000000 |
+| day 14 (60 mg, AGE = 1.4 y) | auclast  |        NA |       NA |       NA |
+| day 14 (60 mg, AGE = 1.4 y) | cmax     | 1.0017429 | 0.470713 | 1.988081 |
+| day 14 (60 mg, AGE = 1.4 y) | tmax     | 1.5000000 | 1.000000 | 2.550000 |
 
 Simulated lamivudine NCA parameters by day cell (60 mg dose, WT = 7 kg,
 AGE = 1.4 y, n = 50 per cell). {.table}

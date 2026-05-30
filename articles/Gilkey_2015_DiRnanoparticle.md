@@ -25,8 +25,9 @@ nanoparticles have the same physicochemical properties as the Dex-NPs.
 
 The packaged file in
 `inst/modeldb/pharmacokinetics/Gilkey_2015_DiRnanoparticle.R` carries
-five compartments (`plasma`, `liv`, `spl`, `kid`, `oth`) tied together
-by paper equations 6 through 10. Parameter values are paper Table 1.
+five compartments (`plasma`, `liver`, `spleen`, `kidney`, `other`) tied
+together by paper equations 6 through 10. Parameter values are paper
+Table 1.
 
 ## Population
 
@@ -92,7 +93,7 @@ below collects them in one place for review.
 |----|----|
 | Time | min (per Table 1 stated flow units) |
 | Dose | ug |
-| Compartment amounts (`plasma`, `liv`, `spl`, `kid`, `oth`) | ug |
+| Compartment amounts (`plasma`, `liver`, `spleen`, `kidney`, `other`) | ug |
 | Concentrations (`cp`, `cliv`, `cspl`, `ckid`, `coth`) | ug/mL |
 | Volumes | mL |
 | Plasma flow rates (`ql`, `qs`, `qk`, `qo`) | mL/min |
@@ -304,7 +305,7 @@ sim_closed <- as.data.frame(rxSolve(
   events = et(seq(0, 60, by = 0.5))
 ))
 
-sim_closed$total_amount <- with(sim_closed, plasma + liv + spl + kid + oth)
+sim_closed$total_amount <- with(sim_closed, plasma + liver + spleen + kidney + other)
 balance_summary <- sim_closed |>
   filter(time %in% c(0, 1, 4, 8, 12, 30, 60)) |>
   transmute(
@@ -509,9 +510,9 @@ V_P per paper convention; time units are minutes). {.table}
   different nanoparticle formulation should consider whether the ‘other’
   compartment is physically meaningful in their context.
 - **Compartment-naming deviation from `naming-conventions.md`.** The
-  PBPK structure uses paper-style compartment names (`plasma`, `liv`,
-  `spl`, `kid`, `oth`) that do not map onto the canonical `central` /
-  `peripheral1` / `depot` / `effect` vocabulary;
+  PBPK structure uses paper-style compartment names (`plasma`, `liver`,
+  `spleen`, `kidney`, `other`) that do not map onto the canonical
+  `central` / `peripheral1` / `depot` / `effect` vocabulary;
   `checkModelConventions("Gilkey_2015_DiRnanoparticle")` flags every
   PBPK compartment as a non-canonical name. The naming used in this file
   follows the paper’s symbolic conventions and matches the pattern used

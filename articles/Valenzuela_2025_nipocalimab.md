@@ -10,7 +10,7 @@ library(PKNCA)
 #> 
 #>     filter
 library(rxode2)
-#> rxode2 5.0.2 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.1 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -180,7 +180,7 @@ icov_gmg <- data.frame(
 
 sim_q2w <- rxode2::rxSolve(mod_typical, ev_q2w, iCov = icov_gmg,
                             returnType = "data.frame")
-#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalFcRn0', 'etalIgG0', 'etalkdeg_IgG', 'etalIgK', 'etaIDecplacebo', 'etaSIgG', 'etaSplacebo'
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalFcRn0', 'etalIgG0', 'etalkdeg_IgG', 'etalIgK', 'etaidecplacebo', 'etasigg', 'etasplacebo'
 sim_q2w <- sim_q2w[!duplicated(sim_q2w$time), ]
 
 # ---- Scenario 2: 30 mg/kg loading + 15 mg/kg Q2W maintenance ----
@@ -197,7 +197,7 @@ ev_load <- et(ev_load, time = obs_times, cmt = "dMGADL",            id = 1)
 
 sim_load <- rxode2::rxSolve(mod_typical, ev_load, iCov = icov_gmg,
                              returnType = "data.frame")
-#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalFcRn0', 'etalIgG0', 'etalkdeg_IgG', 'etalIgK', 'etaIDecplacebo', 'etaSIgG', 'etaSplacebo'
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalFcRn0', 'etalIgG0', 'etalkdeg_IgG', 'etalIgK', 'etaidecplacebo', 'etasigg', 'etasplacebo'
 sim_load <- sim_load[!duplicated(sim_load$time), ]
 ```
 
@@ -303,7 +303,7 @@ icov_hv <- data.frame(
 
 sim_sd <- rxode2::rxSolve(mod_typical, ev_sd, iCov = icov_hv,
                            returnType = "data.frame")
-#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalFcRn0', 'etalIgG0', 'etalkdeg_IgG', 'etalIgK', 'etaIDecplacebo', 'etaSIgG', 'etaSplacebo'
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalFcRn0', 'etalIgG0', 'etalkdeg_IgG', 'etalIgK', 'etaidecplacebo', 'etasigg', 'etasplacebo'
 
 # Cc is already in ug/mL (matches the paper's display unit).
 sim_nca <- sim_sd |>

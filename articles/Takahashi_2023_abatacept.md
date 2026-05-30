@@ -4,7 +4,7 @@
 
 library(nlmixr2lib)
 library(rxode2)
-#> rxode2 5.0.2 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.1 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -313,8 +313,8 @@ knitr::kable(
 
 | cohort       |   n | median_ctrough |   q1 |   q3 | pct_ge_39 |
 |:-------------|----:|---------------:|-----:|-----:|----------:|
-| ABA2 HLA 7/8 |  50 |           55.3 | 45.3 | 61.5 |        88 |
-| ABA2 HLA 8/8 |  50 |           45.3 | 40.1 | 52.0 |        80 |
+| ABA2 HLA 7/8 |  50 |           50.3 | 45.9 | 55.5 |        86 |
+| ABA2 HLA 8/8 |  50 |           47.1 | 40.1 | 58.2 |        78 |
 
 Simulated Ctrough_1 distribution by ABA2 cohort (median, Q1, Q3, % \>=
 39 ug/mL threshold). {.table}
@@ -432,16 +432,16 @@ knitr::kable(sim_nca, digits = 3,
 | cohort       | PPTESTCD  |    mean |     sd |
 |:-------------|:----------|--------:|-------:|
 | ABA2 HLA 7/8 | auclast   |     NaN |     NA |
-| ABA2 HLA 7/8 | cmax      | 233.247 | 45.062 |
-| ABA2 HLA 7/8 | half.life |   5.856 |  1.637 |
+| ABA2 HLA 7/8 | cmax      | 236.065 | 47.232 |
+| ABA2 HLA 7/8 | half.life |   5.373 |  1.196 |
 | ABA2 HLA 7/8 | tmax      |   0.042 |  0.000 |
 | ABA2 HLA 8/8 | auclast   |     NaN |     NA |
-| ABA2 HLA 8/8 | cmax      | 176.060 | 42.770 |
-| ABA2 HLA 8/8 | half.life |   5.458 |  1.383 |
+| ABA2 HLA 8/8 | cmax      | 167.277 | 30.260 |
+| ABA2 HLA 8/8 | half.life |   5.754 |  1.760 |
 | ABA2 HLA 8/8 | tmax      |   0.042 |  0.000 |
 | RA/JIA       | auclast   |     NaN |     NA |
-| RA/JIA       | cmax      | 239.257 | 54.977 |
-| RA/JIA       | half.life |   4.740 |  1.075 |
+| RA/JIA       | cmax      | 228.727 | 55.961 |
+| RA/JIA       | half.life |   5.040 |  1.240 |
 | RA/JIA       | tmax      |   0.042 |  0.000 |
 
 Simulated NCA summaries (post-first-dose 0-6 day window) by cohort.
@@ -503,9 +503,9 @@ knitr::kable(
 
 | quartile             | simulated_ctrough1 |
 |:---------------------|-------------------:|
-| Q1 (25th percentile) |               42.4 |
-| Median               |               49.0 |
-| Q3 (75th percentile) |               58.5 |
+| Q1 (25th percentile) |               40.9 |
+| Median               |               49.7 |
+| Q3 (75th percentile) |               56.6 |
 
 Simulated Ctrough_1 quartiles across both ABA2 cohorts pooled. {.table}
 

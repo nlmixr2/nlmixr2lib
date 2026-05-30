@@ -259,7 +259,7 @@ knitr::kable(
 
 | start | end | cohort | N | cmax | tmax | half.life | aucinf.obs |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | Inf | 160 mg single oral dose | 240 | 6220 \[52.3\] | 0.000 \[0.000, 0.000\] | 9.05 \[1.40\] | 25800 \[38.8\] |
+| 0 | Inf | 160 mg single oral dose | 240 | 6370 \[59.9\] | 0.000 \[0.000, 0.000\] | 9.16 \[1.60\] | 26300 \[43.3\] |
 
 Simulated single-dose NCA across the virtual cohort (160 mg oral).
 {.table style="width:100%;"}

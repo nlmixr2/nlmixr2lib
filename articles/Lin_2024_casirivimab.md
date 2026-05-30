@@ -343,8 +343,8 @@ knitr::kable(nca_summary,
 
 | start | end | treatment | N | cmax | tmax | half.life | aucinf.obs |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | Inf | 1200 mg IV | 500 | 285 \[32.0\] | 1.00 \[1.00, 1.00\] | 32.8 \[11.7\] | NC |
-| 0 | Inf | 1200 mg SC | 500 | 108 \[35.4\] | 7.00 \[1.00, 42.0\] | 33.5 \[12.8\] | NC |
+| 0 | Inf | 1200 mg IV | 500 | 285 \[34.6\] | 1.00 \[1.00, 1.00\] | 34.1 \[14.1\] | NC |
+| 0 | Inf | 1200 mg SC | 500 | 108 \[33.4\] | 7.00 \[1.00, 42.0\] | 34.2 \[13.2\] | NC |
 
 Simulated NCA parameters by route (single 1200 mg dose). {.table}
 

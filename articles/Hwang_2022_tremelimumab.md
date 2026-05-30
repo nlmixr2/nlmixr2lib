@@ -391,8 +391,8 @@ knitr::kable(
 
 | Interval Start | Interval End | treatment | N | AUClast (day\*ug/mL) | Cmax (ug/mL) | Cmin (ug/mL) | Tmax (day) |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | 28 | 1 mg/kg + durva | 200 | 147 \[28.9\] | 11.9 \[20.3\] | NC | 3.00 \[3.00, 3.00\] |
-| 0 | 28 | 10 mg/kg mono | 200 | 1460 \[29.0\] | 119 \[20.0\] | NC | 3.00 \[3.00, 3.00\] |
+| 0 | 28 | 1 mg/kg + durva | 200 | 152 \[28.7\] | 12.1 \[19.7\] | NC | 3.00 \[3.00, 3.00\] |
+| 0 | 28 | 10 mg/kg mono | 200 | 1520 \[25.6\] | 121 \[18.8\] | NC | 3.00 \[3.00, 3.00\] |
 
 Simulated Cycle-1 NCA parameters by regimen (Hwang 2022) {.table}
 
@@ -445,8 +445,8 @@ knitr::kable(comparison)
 
 | treatment | Median Cmax (75 mg-eq, ug/mL) - simulated | Median Cmax (75 mg-eq, ug/mL) - Hwang 2022 Fig 1B | Median Cmin (75 mg-eq, ug/mL) - simulated | Median Cmin (75 mg-eq, ug/mL) - Hwang 2022 Fig 1A |
 |:---|---:|---:|---:|---:|
-| 1 mg/kg + durva | 12.59 | 21.8 | 0 | 3.3 |
-| 10 mg/kg mono | 12.60 | 21.8 | 0 | 3.3 |
+| 1 mg/kg + durva | 12.96 | 21.8 | 0 | 3.3 |
+| 10 mg/kg mono | 12.74 | 21.8 | 0 | 3.3 |
 
 Hwang 2022 also reports a typical-value half-life of approximately **18
 days** (page 1609 narrative, derived from baseline CL = 0.276 L/day and

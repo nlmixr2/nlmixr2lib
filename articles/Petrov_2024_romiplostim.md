@@ -169,7 +169,7 @@ cat("Simulated baseline platelet (non-splen mech 1, n=", nrow(baseline),
     "): mean =", round(mean(baseline$plt), 1),
     "; CV% =", round(100 * sd(baseline$plt) / mean(baseline$plt), 1), "\n",
     sep = "")
-#> Simulated baseline platelet (non-splen mech 1, n=1000): mean =24.1; CV% =51.7
+#> Simulated baseline platelet (non-splen mech 1, n=1000): mean =24.4; CV% =52.5
 
 ggplot(baseline, aes(plt)) +
   geom_histogram(binwidth = 2, fill = "steelblue", colour = "white") +

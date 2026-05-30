@@ -894,20 +894,20 @@ knitr::kable(
 | band               | PPTESTCD | median |    p05 |     p95 |
 |:-------------------|:---------|-------:|-------:|--------:|
 | child_15_24kg      | auclast  |     NA |     NA |      NA |
-| child_15_24kg      | cmax     | 5024.1 | 1655.2 | 13072.9 |
+| child_15_24kg      | cmax     | 5222.1 | 1878.5 | 12724.5 |
 | child_15_24kg      | tmax     |   66.0 |   62.0 |    72.0 |
 | child_25_34kg      | auclast  |     NA |     NA |      NA |
-| child_25_34kg      | cmax     | 4558.0 | 1584.6 | 13357.8 |
-| child_25_34kg      | tmax     |   66.0 |   62.0 |    72.0 |
+| child_25_34kg      | cmax     | 5309.3 | 2007.7 | 13904.5 |
+| child_25_34kg      | tmax     |   66.0 |   64.0 |    72.0 |
 | child_lt15kg       | auclast  |     NA |     NA |      NA |
-| child_lt15kg       | cmax     | 4708.6 | 1635.0 | 11670.3 |
-| child_lt15kg       | tmax     |   66.0 |   62.0 |    72.0 |
+| child_lt15kg       | cmax     | 3637.2 | 1295.0 | 13631.1 |
+| child_lt15kg       | tmax     |   64.0 |   62.0 |    70.0 |
 | nonpreg_adult_ge35 | auclast  |     NA |     NA |      NA |
-| nonpreg_adult_ge35 | cmax     | 5117.1 | 1713.8 | 12082.8 |
+| nonpreg_adult_ge35 | cmax     | 5641.3 | 1931.4 | 15194.4 |
 | nonpreg_adult_ge35 | tmax     |   66.0 |   62.0 |    72.0 |
 | pregnant_2_3_trim  | auclast  |     NA |     NA |      NA |
-| pregnant_2_3_trim  | cmax     | 5736.2 | 1784.8 | 17789.7 |
-| pregnant_2_3_trim  | tmax     |   66.0 |   62.0 |    72.0 |
+| pregnant_2_3_trim  | cmax     | 5799.0 | 1556.6 | 16702.9 |
+| pregnant_2_3_trim  | tmax     |   66.0 |   64.0 |    72.0 |
 
 Simulated 0-72 h NCA across the five weight / pregnancy bands (n = 100
 per band, median \[5%-95%\]). cmax in ng/mL; tmax in h; auclast in
@@ -946,11 +946,11 @@ knitr::kable(
 
 | band_label            | median_ng_mL | p25_ng_mL | p75_ng_mL |
 |:----------------------|-------------:|----------:|----------:|
-| \<15 kg               |          402 |       250 |       714 |
-| 15-24 kg              |          454 |       248 |       705 |
-| 25-34 kg              |          427 |       278 |       756 |
-| \>=35 kg non-pregnant |          464 |       278 |       618 |
-| Pregnant 2-3 trim     |          429 |       225 |       634 |
+| \<15 kg               |          322 |       210 |       527 |
+| 15-24 kg              |          479 |       255 |       720 |
+| 25-34 kg              |          453 |       286 |       788 |
+| \>=35 kg non-pregnant |          481 |       298 |       774 |
+| Pregnant 2-3 trim     |          410 |       278 |       819 |
 
 Simulated day-7 venous plasma lumefantrine by band (n = 100 per band).
 {.table}

@@ -112,18 +112,17 @@ ev <- et(amt = dose_nmol, cmt = "plasma", time = 0) |>
   et(seq(0, 200, by = 4))
 sim_no_deg <- as.data.frame(rxSolve(mod_no_deg, events = ev))
 
+organ_suffix <- c("heart", "lung", "muscle", "skin", "adipose",
+                  "bone", "brain", "kidney", "liver",
+                  "small_intestine", "large_intestine",
+                  "pancreas", "thymus", "spleen", "other")
 igg_cols <- c(
   "plasma", "bcc", "lnode",
-  paste0("vp_", c("ht","lu","mu","sk","ad","bo","br","ki",
-                  "li","si","lr","pa","th","sp","ot")),
-  paste0("bc_", c("ht","lu","mu","sk","ad","bo","br","ki",
-                  "li","si","lr","pa","th","sp","ot")),
-  paste0("eu_", c("ht","lu","mu","sk","ad","bo","br","ki",
-                  "li","si","lr","pa","th","sp","ot")),
-  paste0("eb_", c("ht","lu","mu","sk","ad","bo","br","ki",
-                  "li","si","lr","pa","th","sp","ot")),
-  paste0("is_", c("ht","lu","mu","sk","ad","bo","br","ki",
-                  "li","si","lr","pa","th","sp","ot"))
+  paste0("vp_", organ_suffix),
+  paste0("bc_", organ_suffix),
+  paste0("eu_", organ_suffix),
+  paste0("eb_", organ_suffix),
+  paste0("is_", organ_suffix)
 )
 sim_no_deg$total_igg <- rowSums(sim_no_deg[, igg_cols])
 
@@ -162,26 +161,26 @@ heart endosome:
 
 ``` r
 
-fcrn_init_ht <- 4.98e-5 * 1e9 * 0.00171  # nmol; v_ht_e = 0.00171 L
+fcrn_init_heart <- 4.98e-5 * 1e9 * 0.00171  # nmol; v_he_e = 0.00171 L
 fcrn_check <- sim_no_deg |>
   filter(time %in% c(0, 24, 100, 200)) |>
   transmute(
-    time_h         = time,
-    fr_ht          = round(fr_ht, 6),
-    eb_ht          = round(eb_ht, 6),
-    sum_fr_eb_ht   = round(fr_ht + eb_ht, 6),
-    expected       = round(fcrn_init_ht, 6)
+    time_h            = time,
+    fr_heart          = round(fr_heart, 6),
+    eb_heart          = round(eb_heart, 6),
+    sum_fr_eb_heart   = round(fr_heart + eb_heart, 6),
+    expected          = round(fcrn_init_heart, 6)
   )
 knitr::kable(fcrn_check,
              caption = "FcRn mass balance in the heart endosome.")
 ```
 
-| time_h |    fr_ht |    eb_ht | sum_fr_eb_ht | expected |
-|-------:|---------:|---------:|-------------:|---------:|
-|      0 | 85.15800 | 0.000000 |       85.158 |   85.158 |
-|     24 | 84.65371 | 0.504286 |       85.158 |   85.158 |
-|    100 | 84.40224 | 0.755755 |       85.158 |   85.158 |
-|    200 | 84.42768 | 0.730324 |       85.158 |   85.158 |
+| time_h | fr_heart | eb_heart | sum_fr_eb_heart | expected |
+|-------:|---------:|---------:|----------------:|---------:|
+|      0 | 85.15800 | 0.000000 |          85.158 |   85.158 |
+|     24 | 84.65371 | 0.504286 |          85.158 |   85.158 |
+|    100 | 84.40224 | 0.755755 |          85.158 |   85.158 |
+|    200 | 84.42768 | 0.730324 |          85.158 |   85.158 |
 
 FcRn mass balance in the heart endosome. {.table}
 

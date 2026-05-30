@@ -356,8 +356,8 @@ knitr::kable(nca_summary,
 
 | start | end | cohort | N | cmax | tmax | half.life | aucinf.obs |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | Inf | Morbidly obese adult | 20 | 114 \[48.7\] | 0.000 \[0.000, 0.000\] | 623 \[415\] | 19400 \[40.7\] |
-| 0 | Inf | Obese adolescent | 19 | 63.7 \[56.2\] | 0.000 \[0.000, 0.000\] | 325 \[140\] | 4490 \[33.4\] |
+| 0 | Inf | Morbidly obese adult | 20 | 107 \[43.8\] | 0.000 \[0.000, 0.000\] | 529 \[303\] | 16600 \[16.7\] |
+| 0 | Inf | Obese adolescent | 19 | 54.9 \[49.2\] | 0.000 \[0.000, 0.000\] | 350 \[159\] | 4140 \[34.6\] |
 
 Simulated NCA parameters by cohort after the IV bolus arm. {.table}
 

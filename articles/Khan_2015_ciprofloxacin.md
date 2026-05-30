@@ -143,7 +143,7 @@ Per-parameter origin (also recorded as in-file comments next to each
 | `bact_s(0) = sbase * (1 - mut*1e-6)` | n/a | `.mod` `$PK` line 72 (`A_0(1) = SBASE * (1 - MUT*0.000001)`) |
 | `bact_spe(0) = sbase * mut * 1e-6` | n/a | `.mod` `$PK` line 74 (`A_0(3) = MUT*0.000001*SBASE`) |
 | 6-compartment ODE block | n/a | `.mod` `$DES` lines 117-123 (line-for-line image; see model file) |
-| `lnBact = log((bact_s + bact_r + bact_spe + bact_rpe) + 1e-8)` | n/a | `.mod` `$ERROR` lines 130-132 (`ATOT = A1+A2+A3+A5`; `IPRED = LOG(ATOT + 1e-8)`) |
+| `log_cfu = log((bact_s + bact_r + bact_spe + bact_rpe) + 1e-8)` | n/a | `.mod` `$ERROR` lines 130-132 (`ATOT = A1+A2+A3+A5`; `IPRED = LOG(ATOT + 1e-8)`) |
 
 ## Virtual cohort
 
@@ -193,10 +193,20 @@ mod_typical <- mod |> rxode2::zeroRe()
 
 sim_typical <- rxode2::rxSolve(
   mod_typical,
-  events = events,
-  keep   = c("CAB", "STR", "BASE", "fold_mic", "treatment")
+  # The model expects the canonical CONMED_<drug>_CC covariate names:
+  # `CONMED_CAB_CC` for the in vitro exposure and `CONMED_STR_CC` for
+  # the strain selector. Rename the vignette-local shorthand columns
+  # at the rxSolve call site so the rest of this vignette (which
+  # references CAB / STR throughout) continues to work without
+  # further edits.
+  events = events |>
+    dplyr::rename(CONMED_CAB_CC = CAB, CONMED_STR_CC = STR) |>
+    dplyr::select(id, time, evid, amt, dplyr::everything()),
+  keep   = c("CONMED_CAB_CC", "CONMED_STR_CC",
+             "BASE", "fold_mic", "treatment")
 ) |>
-  as.data.frame()
+  as.data.frame() |>
+  dplyr::rename(CAB = CONMED_CAB_CC, STR = CONMED_STR_CC)
 #> Warning: multi-subject simulation without without 'omega'
 ```
 
@@ -215,7 +225,7 @@ on disk for a side-by-side panel-by-panel comparison.
 pal <- scales::viridis_pal(option = "C", end = 0.9)(length(unique(sim_typical$treatment)))
 treatment_levels <- unique(events$treatment)
 
-ggplot(sim_typical, aes(time, lnBact, colour = factor(treatment, levels = treatment_levels))) +
+ggplot(sim_typical, aes(time, log_cfu, colour = factor(treatment, levels = treatment_levels))) +
   geom_line(linewidth = 0.7) +
   geom_point(size = 1.2) +
   scale_colour_manual(values = pal, name = "ciprofloxacin (mg/L)") +
@@ -247,11 +257,11 @@ the only thing limiting unbounded growth).
 
 no_drug <- subset(sim_typical, abs(CAB) < 1e-12)
 end_count <- tail(no_drug, 1)
-stopifnot(end_count$lnBact > base_log + 5)   # at least 5 ln-units of growth
-stopifnot(end_count$lnBact < base_log + 12)  # but not unbounded
-cat(sprintf("No-drug control: lnBact at t = 0 -> 24h: %.2f -> %.2f (delta = %.2f)\n",
-            base_log, end_count$lnBact, end_count$lnBact - base_log))
-#> No-drug control: lnBact at t = 0 -> 24h: 13.00 -> 20.54 (delta = 7.54)
+stopifnot(end_count$log_cfu > base_log + 5)   # at least 5 ln-units of growth
+stopifnot(end_count$log_cfu < base_log + 12)  # but not unbounded
+cat(sprintf("No-drug control: log_cfu at t = 0 -> 24h: %.2f -> %.2f (delta = %.2f)\n",
+            base_log, end_count$log_cfu, end_count$log_cfu - base_log))
+#> No-drug control: log_cfu at t = 0 -> 24h: 13.00 -> 20.54 (delta = 7.54)
 ```
 
 ### 2 – Static drug at MIC induces a \>5 ln-unit drop by 24 h
@@ -260,10 +270,10 @@ cat(sprintf("No-drug control: lnBact at t = 0 -> 24h: %.2f -> %.2f (delta = %.2f
 
 at_mic <- subset(sim_typical, abs(CAB - mic202) < 1e-12)
 end_mic <- tail(at_mic, 1)
-stopifnot(end_mic$lnBact < base_log - 5)     # at least 5-log kill
-cat(sprintf("CAB = MIC: lnBact at t = 0 -> 24h: %.2f -> %.2f (delta = %.2f)\n",
-            base_log, end_mic$lnBact, end_mic$lnBact - base_log))
-#> CAB = MIC: lnBact at t = 0 -> 24h: 13.00 -> 2.79 (delta = -10.21)
+stopifnot(end_mic$log_cfu < base_log - 5)     # at least 5-log kill
+cat(sprintf("CAB = MIC: log_cfu at t = 0 -> 24h: %.2f -> %.2f (delta = %.2f)\n",
+            base_log, end_mic$log_cfu, end_mic$log_cfu - base_log))
+#> CAB = MIC: log_cfu at t = 0 -> 24h: 13.00 -> 2.79 (delta = -10.21)
 ```
 
 ### 3 – Drug effect saturates as CAB / EC50 -\> infinity
@@ -276,14 +286,14 @@ Hill-Emax term saturates at `emax`.
 
 ev_high <- data.frame(
   id = c(1L, 2L), time = rep(24, 2), evid = 0L, amt = 0,
-  STR = 202L, BASE = base_log,
-  CAB = c(8 * mic202, 100 * mic202)
+  CONMED_STR_CC = 202L, BASE = base_log,
+  CONMED_CAB_CC = c(8 * mic202, 100 * mic202)
 )
 sim_high <- rxode2::rxSolve(mod_typical, events = ev_high) |> as.data.frame()
 #> Warning: multi-subject simulation without without 'omega'
-delta <- diff(sim_high$lnBact)
-cat(sprintf("CAB = 8 x MIC -> 100 x MIC moves lnBact(24h) by %.3f log-units\n", delta))
-#> CAB = 8 x MIC -> 100 x MIC moves lnBact(24h) by -0.019 log-units
+delta <- diff(sim_high$log_cfu)
+cat(sprintf("CAB = 8 x MIC -> 100 x MIC moves log_cfu(24h) by %.3f log-units\n", delta))
+#> CAB = 8 x MIC -> 100 x MIC moves log_cfu(24h) by -0.019 log-units
 stopifnot(abs(delta) < 2)
 ```
 
@@ -309,7 +319,7 @@ bundle_obs <- if (nzchar(bundle_csv) && file.exists(bundle_csv)) {
   read.csv(bundle_csv) |>
     dplyr::filter(EVID == 0, BOBS == 0) |>
     dplyr::transmute(
-      id = ID, time = TIME, lnBact = LNDV,
+      id = ID, time = TIME, log_cfu = LNDV,
       CAB = CAB, fold_mic = CAB / mic202,
       treatment = sprintf("%.4g x MIC (CAB = %.4g mg/L)", CAB / mic202, CAB),
       source = "DDMORE bundle (NONMEM simulation)"
@@ -318,14 +328,14 @@ bundle_obs <- if (nzchar(bundle_csv) && file.exists(bundle_csv)) {
   NULL
 }
 
-p <- ggplot(sim_typical, aes(time, lnBact, colour = factor(round(fold_mic, 4)))) +
+p <- ggplot(sim_typical, aes(time, log_cfu, colour = factor(round(fold_mic, 4)))) +
   geom_line(linewidth = 0.6, alpha = 0.9) +
   scale_colour_viridis_d(option = "C", end = 0.9, name = "fold MIC")
 
 if (!is.null(bundle_obs)) {
   p <- p + geom_point(
     data = bundle_obs,
-    aes(time, lnBact, colour = factor(round(fold_mic, 4))),
+    aes(time, log_cfu, colour = factor(round(fold_mic, 4))),
     shape = 21, fill = "white", size = 1.5, stroke = 0.5
   )
 }
@@ -441,10 +451,10 @@ mechanistic-sanity recipe used above instead.
   cells), where `tumorVol` and `transit1..4` are similarly
   paper-specific.
 
-- **Observation variable is `lnBact`, not `Cc`.** Following the
+- **Observation variable is `log_cfu`, not `Cc`.** Following the
   conventions doc’s exemption for non-PK paper-named outputs (e.g.,
   `tumorSize`, `freeIgE`, `Cbrain_cerebellum`), the colony count
-  observation is named `lnBact` (natural-log of CFU/mL).
+  observation is named `log_cfu` (natural-log of CFU/mL).
   [`checkModelConventions()`](https://nlmixr2.github.io/nlmixr2lib/reference/checkModelConventions.md)
   flags this – it is the documented exemption that applies.
 

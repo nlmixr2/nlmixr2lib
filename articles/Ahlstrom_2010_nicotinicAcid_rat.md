@@ -123,7 +123,7 @@ in the paper:
 
 ev_30 <- make_events(dose_umolkg = 20, dur_min = 30, tmax = 200)
 sim_30 <- as.data.frame(rxSolve(mod_typical, ev_30))
-#> ℹ omega/sigma items treated as zero: 'etalvmax_lo', 'etalq', 'etalsynt', 'etalr0', 'etalkout', 'etalic50'
+#> ℹ omega/sigma items treated as zero: 'etalvmax_lo', 'etalq', 'etalsynt', 'etalrbase', 'etalkout', 'etalic50'
 #> Warning: 
 #> with negative times, compartments initialize at first negative observed time
 #> with positive times, compartments initialize at time zero
@@ -157,7 +157,7 @@ ggplot(sim_30, aes(time, NEFA)) +
 
 ev_300 <- make_events(dose_umolkg = 51, dur_min = 300, tmax = 600)
 sim_300 <- as.data.frame(rxSolve(mod_typical, ev_300))
-#> ℹ omega/sigma items treated as zero: 'etalvmax_lo', 'etalq', 'etalsynt', 'etalr0', 'etalkout', 'etalic50'
+#> ℹ omega/sigma items treated as zero: 'etalvmax_lo', 'etalq', 'etalsynt', 'etalrbase', 'etalkout', 'etalic50'
 
 ggplot(sim_300, aes(time, Cc)) +
   geom_line(linewidth = 0.7) +
@@ -266,7 +266,7 @@ property of the published model, not a translation error – see
 
 ev_baseline <- make_events(dose_umolkg = 0, dur_min = 0, tmax = 120, dt = 5)
 sim_b <- as.data.frame(rxSolve(mod_typical, ev_baseline))
-#> ℹ omega/sigma items treated as zero: 'etalvmax_lo', 'etalq', 'etalsynt', 'etalr0', 'etalkout', 'etalic50'
+#> ℹ omega/sigma items treated as zero: 'etalvmax_lo', 'etalq', 'etalsynt', 'etalrbase', 'etalkout', 'etalic50'
 Cp_baseline_nm <- sim_b$Cc[sim_b$time == 0][1] * 1000   # nmol/L
 NEFA_t0        <- sim_b$NEFA[sim_b$time == 0][1]
 cat(sprintf("Cp_baseline (typical) = %s nmol/L (paper: 6.80 nmol/L)\n",
@@ -294,7 +294,7 @@ NEFA converges to a stable value within the integration window.
 
 ev_hold <- make_events(dose_umolkg = 0, dur_min = 0, tmax = 1440, dt = 30)
 sim_hold <- as.data.frame(rxSolve(mod_typical, ev_hold))
-#> ℹ omega/sigma items treated as zero: 'etalvmax_lo', 'etalq', 'etalsynt', 'etalr0', 'etalkout', 'etalic50'
+#> ℹ omega/sigma items treated as zero: 'etalvmax_lo', 'etalq', 'etalsynt', 'etalrbase', 'etalkout', 'etalic50'
 range_Cc <- range(sim_hold$Cc, na.rm = TRUE)
 # NEFA equilibrates after the moderator chain (~8 / ktol ~ 300 min);
 # evaluate the tail of the simulation for steady-state stability.
@@ -319,10 +319,10 @@ oscillations expected at the chosen `p` exponent.
 ev_pert <- make_events(dose_umolkg = 0, dur_min = 0, tmax = 1500, dt = 5)
 sim_low  <- as.data.frame(rxSolve(mod_typical, ev_pert,
                                   inits = c(nefa = 0.3 * 0.606)))
-#> ℹ omega/sigma items treated as zero: 'etalvmax_lo', 'etalq', 'etalsynt', 'etalr0', 'etalkout', 'etalic50'
+#> ℹ omega/sigma items treated as zero: 'etalvmax_lo', 'etalq', 'etalsynt', 'etalrbase', 'etalkout', 'etalic50'
 sim_high <- as.data.frame(rxSolve(mod_typical, ev_pert,
                                   inits = c(nefa = 2.0 * 0.606)))
-#> ℹ omega/sigma items treated as zero: 'etalvmax_lo', 'etalq', 'etalsynt', 'etalr0', 'etalkout', 'etalic50'
+#> ℹ omega/sigma items treated as zero: 'etalvmax_lo', 'etalq', 'etalsynt', 'etalrbase', 'etalkout', 'etalic50'
 bind_rows(
   sim_low  |> mutate(scenario = "Start at 0.3 x R0"),
   sim_high |> mutate(scenario = "Start at 2.0 x R0")

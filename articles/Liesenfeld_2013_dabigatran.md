@@ -339,7 +339,7 @@ knitr::kable(summary(nca_res),
 
 | start | end | cohort     | N   | auclast | cmax         | tmax                | half.life |
 |------:|----:|:-----------|:----|:--------|:-------------|:--------------------|:----------|
-|     0 |  21 | ESRD_HD200 | 60  | NC      | 110 \[53.9\] | 21.0 \[21.0, 21.0\] | NC        |
+|     0 |  21 | ESRD_HD200 | 60  | NC      | 109 \[48.9\] | 21.0 \[21.0, 21.0\] | NC        |
 
 NCA over the 0-21 h post-first-dose interval (150 mg dabigatran
 etexilate, simulated ESRD cohort, period 1 reference dialysis settings).

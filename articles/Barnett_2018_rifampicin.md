@@ -255,7 +255,7 @@ knitr::kable(nca_summary, caption = "Simulated NCA parameters for the 50-subject
 
 | Interval Start | Interval End | treatment | N | Cmax (umol/L) | Tmax (h) | Half-life (h) | AUCinf,obs (h\*umol/L) |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | Inf | RIF 600 mg PO | 50 | 21.8 \[20.1\] | 2.20 \[1.00, 8.90\] | 4.71 \[1.86\] | NC |
+| 0 | Inf | RIF 600 mg PO | 50 | 22.8 \[21.8\] | 2.50 \[0.900, 5.80\] | 4.57 \[1.88\] | NC |
 
 Simulated NCA parameters for the 50-subject virtual cohort (single 600
 mg PO RIF). {.table}

@@ -10,7 +10,7 @@ library(PKNCA)
 #> 
 #>     filter
 library(rxode2)
-#> rxode2 5.0.2 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.1 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -173,7 +173,7 @@ mg/kg Q3W, 540 mg flat-dose cap for body weight \>= 90 kg):
 
 set.seed(20260427L)
 
-n_subj   <- 200L
+n_subj   <- 100L  # downsampled from 200 for vignette build budget; VPC bands stable at this N
 cycle_dy <- 21
 n_cycles <- 5L
 
@@ -195,7 +195,7 @@ make_subject <- function(id, wt_kg, sexf_ind, age_y, alb_g_L, ast_U_L,
   doses <- rxode2::et() |>
     rxode2::et(amt = dose_mg, cmt = "central", ii = cycle_dy,
                addl = n_cycles - 1L, time = 0)
-  obs <- rxode2::et(seq(0.05, n_cycles * cycle_dy, length.out = 420),
+  obs <- rxode2::et(seq(0.05, n_cycles * cycle_dy, length.out = 180),  # downsampled from 420 for vignette build budget
                     cmt = "Cc")
   ev <- rbind(doses, obs)
   ev$id           <- id
@@ -236,7 +236,7 @@ typ <- readModelDb("Hong_2025_datopotamab") |> rxode2::zeroRe()
 typ_events <- rxode2::et() |>
   rxode2::et(amt = 6 * 66, cmt = "central", ii = cycle_dy,
              addl = n_cycles - 1L, time = 0) |>
-  rxode2::et(seq(0.05, n_cycles * cycle_dy, length.out = 1500), cmt = "Cc")
+  rxode2::et(seq(0.05, n_cycles * cycle_dy, length.out = 400), cmt = "Cc")  # downsampled from 1500 for vignette build budget
 
 typ_events$WT            <- 66
 typ_events$AGE           <- 62
@@ -470,13 +470,13 @@ adc_nca <- PKNCA::pk.nca(PKNCA::PKNCAdata(
 #> Warning: Requesting an AUC range starting (0) before the first measurement
 #> (0.05) is not allowed
 #> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (0.0540027) is not allowed
+#> (0.0926065) is not allowed
 #> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (0.0580053) is not allowed
+#> (0.135213) is not allowed
 #> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (0.062008) is not allowed
+#> (0.17782) is not allowed
 #> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (0.0660107) is not allowed
+#> (0.220426) is not allowed
 adc_nca_summary <- summary(adc_nca)
 
 dxd_nca <- PKNCA::pk.nca(PKNCA::PKNCAdata(
@@ -487,31 +487,31 @@ dxd_nca <- PKNCA::pk.nca(PKNCA::PKNCAdata(
 #> Warning: Requesting an AUC range starting (0) before the first measurement
 #> (0.05) is not allowed
 #> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (0.0540027) is not allowed
+#> (0.0926065) is not allowed
 #> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (0.0580053) is not allowed
+#> (0.135213) is not allowed
 #> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (0.062008) is not allowed
+#> (0.17782) is not allowed
 #> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (0.0660107) is not allowed
+#> (0.220426) is not allowed
 dxd_nca_summary <- summary(dxd_nca)
 
 adc_nca_summary
 #>  start end            treatment cycle N auclast cmax   tmax
 #>      0  21 Dato-DXd 6 mg/kg Q3W     1 1      NC  128 0.0500
-#>      0  21 Dato-DXd 6 mg/kg Q3W     2 1      NC  131 0.0540
-#>      0  21 Dato-DXd 6 mg/kg Q3W     3 1      NC  132 0.0580
-#>      0  21 Dato-DXd 6 mg/kg Q3W     4 1      NC  132 0.0620
-#>      0  21 Dato-DXd 6 mg/kg Q3W     5 1      NC  132 0.0660
+#>      0  21 Dato-DXd 6 mg/kg Q3W     2 1      NC  129 0.0926
+#>      0  21 Dato-DXd 6 mg/kg Q3W     3 1      NC  129  0.135
+#>      0  21 Dato-DXd 6 mg/kg Q3W     4 1      NC  128  0.178
+#>      0  21 Dato-DXd 6 mg/kg Q3W     5 1      NC  127  0.220
 #> 
 #> Caption: auclast, cmax: geometric mean and geometric coefficient of variation; tmax: median and range; N: number of subjects
 dxd_nca_summary
 #>  start end            treatment cycle N auclast cmax  tmax
-#>      0  21 Dato-DXd 6 mg/kg Q3W     1 1      NC 8.34 0.820
-#>      0  21 Dato-DXd 6 mg/kg Q3W     2 1      NC 6.06 0.824
-#>      0  21 Dato-DXd 6 mg/kg Q3W     3 1      NC 6.04 0.828
-#>      0  21 Dato-DXd 6 mg/kg Q3W     4 1      NC 6.06 0.832
-#>      0  21 Dato-DXd 6 mg/kg Q3W     5 1      NC 6.07 0.836
+#>      0  21 Dato-DXd 6 mg/kg Q3W     1 1      NC 8.34 0.839
+#>      0  21 Dato-DXd 6 mg/kg Q3W     2 1      NC 6.09 0.882
+#>      0  21 Dato-DXd 6 mg/kg Q3W     3 1      NC 6.03 0.924
+#>      0  21 Dato-DXd 6 mg/kg Q3W     4 1      NC 6.02 0.967
+#>      0  21 Dato-DXd 6 mg/kg Q3W     5 1      NC 6.03 0.746
 #> 
 #> Caption: auclast, cmax: geometric mean and geometric coefficient of variation; tmax: median and range; N: number of subjects
 ```
@@ -544,9 +544,9 @@ knitr::kable(
 | analyte  | PPTESTCD | cycle_1 | cycle_2 | cycle_3 | cycle_4 | cycle_5 | R_ac_3 |
 |:---------|:---------|--------:|--------:|--------:|--------:|--------:|-------:|
 | DXd      | auclast  |      NA |      NA |      NA |      NA |      NA |     NA |
-| DXd      | cmax     |   8.339 |   6.061 |   6.044 |   6.061 |   6.066 |   0.72 |
+| DXd      | cmax     |   8.342 |   6.094 |   6.028 |   6.023 |   6.031 |   0.72 |
 | Dato-DXd | auclast  |      NA |      NA |      NA |      NA |      NA |     NA |
-| Dato-DXd | cmax     | 127.586 | 130.754 | 131.806 | 132.003 | 131.955 |   1.03 |
+| Dato-DXd | cmax     | 127.586 | 129.392 | 129.106 | 127.984 | 126.638 |   1.01 |
 
 Cycle-1 vs cycle-3 NCA metrics for the typical subject. Hong 2025
 Results report R_ac (AUC) \< 1.2 and R_ac (Cmax) ~ 1 at 6 mg/kg Q3W.
@@ -574,7 +574,7 @@ simulate_typ_wt <- function(wt_kg) {
   ev <- rxode2::et() |>
     rxode2::et(amt = dose_mg, cmt = "central", ii = cycle_dy,
                addl = 2L, time = 0) |>            # 3 cycles total
-    rxode2::et(seq(0.05, 3 * cycle_dy, length.out = 1000), cmt = "Cc")
+    rxode2::et(seq(0.05, 3 * cycle_dy, length.out = 300), cmt = "Cc")  # downsampled from 1000 for vignette build budget
   ev$WT            <- wt_kg
   ev$AGE           <- 62
   ev$SEXF          <- 0

@@ -408,7 +408,7 @@ knitr::kable(
 
 | Interval Start | Interval End | treatment | N | AUClast (h\*mg/L) | Cmax (mg/L) | Cmin (mg/L) | Tmax (h) | Cav (mg/L) |
 |---:|---:|:---|:---|:---|:---|:---|:---|:---|
-| 96 | 120 | 2.4 mg/kg/h | 200 | 21.4 \[43.2\] | 0.893 \[43.3\] | 0.893 \[43.3\] | 24.0 \[0.000, 24.0\] | 0.894 \[43.2\] |
+| 96 | 120 | 2.4 mg/kg/h | 200 | 22.4 \[43.5\] | 0.931 \[43.8\] | 0.931 \[43.8\] | 24.0 \[0.000, 24.0\] | 0.933 \[43.5\] |
 
 S-ketamine steady-state NCA summary over the 96-120 h window (n = 200
 simulated subjects on 2.4 mg/kg/h). {.table}
@@ -436,11 +436,11 @@ knitr::kable(
 
 | Interval Start | Interval End | treatment | N | AUClast (h\*mg/L) | Cmax (mg/L) | Cmin (mg/L) | Tmax (h) | Cav (mg/L) |
 |---:|---:|:---|:---|:---|:---|:---|:---|:---|
-| 96 | 120 | 2.4 mg/kg/h | 200 | 23.2 \[107\] | 1.02 \[107\] | 0.915 \[107\] | 0.000 \[0.000, 0.000\] | 0.966 \[107\] |
+| 96 | 120 | 2.4 mg/kg/h | 200 | 25.3 \[109\] | 1.11 \[109\] | 0.998 \[109\] | 0.000 \[0.000, 0.000\] | 1.05 \[109\] |
 
 S-norketamine steady-state NCA summary over the 96-120 h window
 (apparent S-norketamine concentration absorbs the unidentifiable Fm).
-{.table style="width:100%;"}
+{.table}
 
 ### Comparison against the published simulation
 

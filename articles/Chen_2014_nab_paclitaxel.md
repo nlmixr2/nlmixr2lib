@@ -251,7 +251,7 @@ mod <- readModelDb("Chen_2014_nab_paclitaxel")
 sim_typical <- rxode2::rxSolve(rxode2::zeroRe(mod), events = events,
                                keep = c("ALB", "AGE", "regimen")) |>
   as.data.frame()
-#> ℹ omega/sigma items treated as zero: 'etalvc', 'etalvp', 'etalvmtr', 'etalvmax', 'etalmtt', 'etalslope', 'etalbase'
+#> ℹ omega/sigma items treated as zero: 'etalvc', 'etalvp', 'etalvmtr', 'etalvmax', 'etalmtt', 'etalslope', 'etalrbase'
 #> Warning: multi-subject simulation without without 'omega'
 sim_typical$regimen <- as.character(sim_typical$regimen)
 

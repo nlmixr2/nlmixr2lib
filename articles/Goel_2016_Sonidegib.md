@@ -10,7 +10,7 @@ library(PKNCA)
 #> 
 #>     filter
 library(rxode2)
-#> rxode2 5.0.2 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.1 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -122,7 +122,7 @@ Covariate distributions approximate the pooled cancer-patient sub-cohort
 ``` r
 
 set.seed(2982) # last 4 digits of doi:10.1007/s00280-016-2982-1
-n_per_arm <- 120L
+n_per_arm <- 60L  # downsampled from 120 for vignette build budget; VPC band shape preserved
 n_arms    <- 2L
 n_subj    <- n_per_arm * n_arms
 
@@ -338,13 +338,13 @@ knitr::kable(
 
 | group                     | auclast |   cmax | ctrough | tmax |
 |:--------------------------|--------:|-------:|--------:|-----:|
-| 200 mg QD \| Day 1        |    1184 |  122.5 |      23 |    3 |
-| 200 mg QD \| Steady state |   21507 |  990.2 |     854 |    3 |
-| 800 mg QD \| Day 1        |    3075 |  329.5 |      57 |    3 |
-| 800 mg QD \| Steady state |   49374 | 2311.3 |    1945 |    3 |
+| 200 mg QD \| Day 1        |    1144 |  114.3 |      24 |    3 |
+| 200 mg QD \| Steady state |   18051 |  838.4 |     712 |    3 |
+| 800 mg QD \| Day 1        |    2587 |  255.3 |      53 |    3 |
+| 800 mg QD \| Steady state |   46894 | 2146.0 |    1862 |    3 |
 
 Simulated arithmetic-mean NCA parameters per dose group and phase (N =
-120 subjects per arm; first dose / steady state at day 149). {.table}
+60 subjects per arm; first dose / steady state at day 149). {.table}
 
 ### Comparison against Goel 2016 Table 3
 
@@ -384,10 +384,10 @@ knitr::kable(
 
 | arm | phase | AUC0_24h_pub | Cmax_pub | Cmin_pub | AUC0_24h_sim | Cmax_sim | Cmin_sim | AUC_pct_diff | Cmax_pct_diff | Cmin_pct_diff |
 |:---|:---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| 200 mg QD | Day 1 | 1093 | 114 | 21 | 1184 | 122 | 23 | 8.3 | 7.4 | 8.6 |
-| 200 mg QD | Steady state | 22880 | 1041 | 914 | 21507 | 990 | 854 | -6.0 | -4.9 | -6.6 |
-| 800 mg QD | Day 1 | 2725 | 284 | 53 | 3075 | 330 | 57 | 12.9 | 16.0 | 7.7 |
-| 800 mg QD | Steady state | 57090 | 2598 | 2280 | 49374 | 2311 | 1945 | -13.5 | -11.0 | -14.7 |
+| 200 mg QD | Day 1 | 1093 | 114 | 21 | 1144 | 114 | 24 | 4.7 | 0.3 | 14.2 |
+| 200 mg QD | Steady state | 22880 | 1041 | 914 | 18051 | 838 | 712 | -21.1 | -19.5 | -22.1 |
+| 800 mg QD | Day 1 | 2725 | 284 | 53 | 2587 | 255 | 53 | -5.1 | -10.1 | -0.8 |
+| 800 mg QD | Steady state | 57090 | 2598 | 2280 | 46894 | 2146 | 1862 | -17.9 | -17.4 | -18.3 |
 
 Simulated vs published (Goel 2016 Table 3) Cmax (ng/mL), Cmin (ng/mL),
 and AUC0-24 (ng\*h/mL). {.table style="width:100%;"}

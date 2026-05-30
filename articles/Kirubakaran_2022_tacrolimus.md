@@ -4,7 +4,7 @@
 
 library(nlmixr2lib)
 library(rxode2)
-#> rxode2 5.0.2 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.1 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(PKNCA)
 #> 
@@ -145,7 +145,7 @@ the same virtual cohort under the paper’s two reported regimens.
 
 set.seed(2026)
 
-n_subjects <- 100L
+n_subjects <- 50L  # downsampled from 100 for vignette build budget; VPC band shape preserved
 
 # Approximate the model-building cohort:
 #   sex (33/47 male = 70.2%); age (median 53, range 16-70);
@@ -186,12 +186,12 @@ cohort <- tibble(
 
 summary(cohort[, c("WT", "HT_cm", "FFM", "HCT")])
 #>        WT             HT_cm            FFM             HCT        
-#>  Min.   : 45.66   Min.   :154.6   Min.   :35.65   Min.   :0.2122  
-#>  1st Qu.: 61.65   1st Qu.:170.1   1st Qu.:50.35   1st Qu.:0.2564  
-#>  Median : 75.07   Median :174.9   Median :54.47   Median :0.2783  
-#>  Mean   : 74.98   Mean   :175.3   Mean   :54.39   Mean   :0.2777  
-#>  3rd Qu.: 85.60   3rd Qu.:180.5   3rd Qu.:59.50   3rd Qu.:0.2991  
-#>  Max.   :101.14   Max.   :189.9   Max.   :72.11   Max.   :0.3568
+#>  Min.   : 48.20   Min.   :157.4   Min.   :35.61   Min.   :0.2182  
+#>  1st Qu.: 63.50   1st Qu.:165.4   1st Qu.:50.89   1st Qu.:0.2424  
+#>  Median : 75.91   Median :172.8   Median :56.35   Median :0.2742  
+#>  Mean   : 75.80   Mean   :173.5   Mean   :55.97   Mean   :0.2698  
+#>  3rd Qu.: 85.03   3rd Qu.:180.9   3rd Qu.:60.82   3rd Qu.:0.2876  
+#>  Max.   :104.70   Max.   :188.6   Max.   :71.53   Max.   :0.3472
 ```
 
 ``` r
@@ -201,7 +201,7 @@ summary(cohort[, c("WT", "HT_cm", "FFM", "HCT")])
 # Simulate to t = 14 days (steady state for tacrolimus is reached by ~3-5
 # days of repeat dosing). Observation times every 0.5 h.
 build_events <- function(cohort, dose_mg, azole_flag, id_offset = 0L) {
-  obs_times <- seq(0, 14 * 24, by = 0.5)
+  obs_times <- seq(0, 14 * 24, by = 1)  # 1 h grid (was 0.5 h) for vignette build budget; smooth profiles unaffected
   dose_times <- seq(0, 14 * 24, by = 12)
   cohort_off <- cohort |>
     mutate(id = id + id_offset)
@@ -247,9 +247,9 @@ sim <- rxode2::rxSolve(
 cat("simulation rows:", nrow(sim),
     "\nsubjects per arm:", length(unique(events_on$id)),
     "\nobservation rows per subject:", nrow(sim) / length(unique(events$id)), "\n")
-#> simulation rows: 134600 
-#> subjects per arm: 100 
-#> observation rows per subject: 673
+#> simulation rows: 33700 
+#> subjects per arm: 50 
+#> observation rows per subject: 337
 ```
 
 For deterministic typical-value reproductions, the same model is run
@@ -372,12 +372,12 @@ nca_res  <- suppressWarnings(PKNCA::pk.nca(nca_data))
 
 nca_summary <- summary(nca_res)
 nca_summary
-#>  start end              treatment   N     auclast        cmax        cmin
-#>      0  12  Off azole (3 mg q12h) 100  126 [60.5] 13.9 [44.8] 7.06 [91.1]
-#>      0  12 On azole (0.5 mg q12h) 100 97.1 [60.0] 8.66 [55.1] 7.37 [65.8]
+#>  start end              treatment  N     auclast        cmax        cmin
+#>      0  12  Off azole (3 mg q12h) 50  130 [54.3] 14.1 [41.3] 7.57 [77.1]
+#>      0  12 On azole (0.5 mg q12h) 50 91.2 [77.7] 8.19 [69.9] 6.86 [87.8]
 #>               tmax
-#>  2.25 [1.50, 2.50]
-#>  2.50 [2.50, 3.00]
+#>  2.00 [2.00, 2.00]
+#>  3.00 [2.00, 3.00]
 #> 
 #> Caption: auclast, cmax, cmin: geometric mean and geometric coefficient of variation; tmax: median and range; N: number of subjects
 ```
@@ -407,8 +407,8 @@ sim_typical |>
 
 | treatment | typical_trough_ug_L | dose_mg | dose_norm_trough_ug_L_per_mg |
 |:---|---:|---:|---:|
-| Off azole (3 mg q12h) | 7.40 | 3.0 | 2.47 |
-| On azole (0.5 mg q12h) | 7.75 | 0.5 | 15.50 |
+| Off azole (3 mg q12h) | 7.02 | 3.0 | 2.34 |
+| On azole (0.5 mg q12h) | 7.41 | 0.5 | 14.82 |
 
 Typical-value steady-state trough per regimen. {.table}
 

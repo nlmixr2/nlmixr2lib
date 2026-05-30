@@ -4,7 +4,7 @@
 
 library(nlmixr2lib)
 library(rxode2)
-#> rxode2 5.0.2 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.1 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -269,7 +269,7 @@ knitr::kable(summary(nca, drop.group = "id"),
 
 | start | end | regimen | N | auclast | cmax | cmin | tmax |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | 28 | 150 mg SC Q4W | 100 | 506 \[28.2\] | 23.1 \[27.9\] | 12.8 \[32.9\] | 7.00 \[7.00, 7.00\] |
+| 0 | 28 | 150 mg SC Q4W | 100 | 493 \[31.7\] | 22.4 \[33.4\] | 12.5 \[33.9\] | 7.00 \[7.00, 14.0\] |
 
 Steady-state (dose 5) NCA, 150 mg SC Q4W. {.table style="width:100%;"}
 

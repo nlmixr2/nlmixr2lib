@@ -286,7 +286,7 @@ knitr::kable(as.data.frame(summary(nca_res)),
 
 | Interval Start | Interval End | treatment | N | AUClast (h\*ng/mL) | Cmax (ng/mL) | Tmax (h) | Half-life (h) | AUCinf,obs (h\*ng/mL) |
 |---:|---:|:---|:---|:---|:---|:---|:---|:---|
-| 0 | 24 | 40 mg / 45 kg | 100 | 85.7 \[23.5\] | 12.6 \[21.9\] | 0.500 \[0.250, 1.00\] | 3.94 \[0.00175\] | 87.5 \[23.5\] |
+| 0 | 24 | 40 mg / 45 kg | 100 | 92.4 \[24.2\] | 13.4 \[21.1\] | 0.500 \[0.250, 1.25\] | 3.94 \[0.00212\] | 94.3 \[24.2\] |
 
 Simulated single-dose NCA – MPH-MLR 40 mg in a 45 kg pediatric subject
 (ng/mL, h). {.table}

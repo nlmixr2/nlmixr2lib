@@ -4,7 +4,7 @@
 
 library(nlmixr2lib)
 library(rxode2)
-#> rxode2 5.0.2 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.1 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -768,8 +768,8 @@ knitr::kable(
 
 | Interval Start | Interval End | treatment | N | AUClast (h\*ug/mL) | Cmax (ug/mL) | Tmax (h) | Half-life (h) |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | 504 | 15 mg/kg q1w x2 / 21-day cycle | 200 | NC | 320 \[19.8\] | 180 \[4.00, 180\] | 270 \[81.2\] |
-| 0 | 504 | 20 mg/kg q2w | 200 | NC | 393 \[17.8\] | 348 \[4.00, 348\] | 176 \[49.2\] |
+| 0 | 504 | 15 mg/kg q1w x2 / 21-day cycle | 200 | NC | 315 \[17.8\] | 180 \[4.00, 180\] | 260 \[76.7\] |
+| 0 | 504 | 20 mg/kg q2w | 200 | NC | 391 \[19.1\] | 348 \[4.00, 348\] | 181 \[43.6\] |
 
 Cycle-1 NCA summary (0-21 days post first dose) by dosing regimen.
 {.table}

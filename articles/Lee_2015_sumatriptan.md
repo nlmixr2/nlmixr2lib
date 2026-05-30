@@ -339,7 +339,7 @@ knitr::kable(nca_summary,
 
 | Interval Start | Interval End | cohort | N | AUClast (h\*ng/mL) | Cmax (ng/mL) | Tmax (h) | Half-life (h) | AUCinf,obs (h\*ng/mL) |
 |---:|---:|:---|:---|:---|:---|:---|:---|:---|
-| 0 | Inf | 50 mg oral, single dose | 26 | NC | 26.7 \[27.9\] | 0.750 \[0.500, 2.50\] | 2.39 \[0.679\] | NC |
+| 0 | Inf | 50 mg oral, single dose | 26 | NC | 25.9 \[24.2\] | 0.750 \[0.500, 4.00\] | 2.44 \[0.558\] | NC |
 
 Simulated NCA parameters, 50 mg oral sumatriptan (n = 26 virtual
 subjects). {.table}

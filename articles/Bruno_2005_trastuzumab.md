@@ -4,7 +4,7 @@
 
 library(nlmixr2lib)
 library(rxode2)
-#> rxode2 5.0.2 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.1 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -1631,14 +1631,14 @@ knitr::kable(nca_med, digits = 1,
 
 | regimen | PPTESTCD | median |   q05 |    q95 |
 |:--------|:---------|-------:|------:|-------:|
-| q3w     | auclast  | 1577.1 | 772.5 | 3396.7 |
-| q3w     | cav      |   75.1 |  36.8 |  161.7 |
-| q3w     | cmax     |  143.8 |  38.4 |  300.8 |
-| q3w     | cmin     |   54.5 |  17.9 |  141.8 |
+| q3w     | auclast  | 1745.7 | 798.1 | 3825.2 |
+| q3w     | cav      |   83.1 |  38.0 |  182.2 |
+| q3w     | cmax     |  145.0 |  42.4 |  296.8 |
+| q3w     | cmin     |   60.8 |  18.5 |  162.0 |
 | qw      | auclast  |     NA |    NA |     NA |
 | qw      | cav      |     NA |    NA |     NA |
-| qw      | cmax     |   96.8 |  42.9 |  187.9 |
-| qw      | cmin     |   72.2 |  23.4 |  155.4 |
+| qw      | cmax     |   86.6 |  49.0 |  185.9 |
+| qw      | cmin     |   61.1 |  27.3 |  155.0 |
 
 Steady-state NCA by regimen: simulated median (5-95% prediction
 interval). {.table}
@@ -1666,8 +1666,8 @@ knitr::kable(trough_target,
 
 | regimen |   n | pct_above_20 | median_cmin | q05_cmin | q95_cmin |
 |:--------|----:|-------------:|------------:|---------:|---------:|
-| q3w     | 250 |         91.2 |        48.5 |     15.8 |    129.2 |
-| qw      | 250 |         96.8 |        72.2 |     23.4 |    153.9 |
+| q3w     | 250 |         91.6 |        53.4 |     16.7 |    154.5 |
+| qw      | 250 |         98.4 |        61.1 |     27.3 |    153.8 |
 
 Percentage of simulated subjects with steady-state trough Cc \>= 20
 ug/mL by regimen. Bruno 2005 Results report 91.9% (qw) and 80.2% (q3w).
@@ -1712,11 +1712,11 @@ knitr::kable(comparison, digits = 1,
 
 | regimen | metric              | paper_value | sim_median | pct_diff |
 |:--------|:--------------------|------------:|-----------:|---------:|
-| qw      | Cmax,ss (ug/mL)     |       110.0 |       96.8 |    -12.0 |
-| qw      | Cmin,ss (ug/mL)     |        66.0 |       72.2 |      9.4 |
+| qw      | Cmax,ss (ug/mL)     |       110.0 |       86.6 |    -21.2 |
+| qw      | Cmin,ss (ug/mL)     |        66.0 |       61.1 |     -7.4 |
 | qw      | AUCss (ug\*day/mL)  |       578.0 |         NA |       NA |
-| qw      | % subjects above 20 |        91.9 |       96.8 |      5.3 |
-| q3w     | % subjects above 20 |        80.2 |       91.2 |     13.7 |
+| qw      | % subjects above 20 |        91.9 |       98.4 |      7.1 |
+| q3w     | % subjects above 20 |        80.2 |       91.6 |     14.2 |
 
 Simulated vs Bruno 2005 typical-patient steady-state exposure metrics.
 {.table}

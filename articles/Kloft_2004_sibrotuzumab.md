@@ -385,12 +385,12 @@ nca_res$result |>
   )
 ```
 
-| treatment           | PPTESTCD   |   median |      p05 |       p95 |
-|:--------------------|:-----------|---------:|---------:|----------:|
-| 80 mg single 1-h IV | aucinf.obs |       NA |       NA |        NA |
-| 80 mg single 1-h IV | cmax       | 17.84390 | 11.06654 |  22.54965 |
-| 80 mg single 1-h IV | half.life  | 90.54811 | 43.96467 | 163.46668 |
-| 80 mg single 1-h IV | tmax       |  1.00000 |  1.00000 |   1.00000 |
+| treatment           | PPTESTCD   |    median |      p05 |       p95 |
+|:--------------------|:-----------|----------:|---------:|----------:|
+| 80 mg single 1-h IV | aucinf.obs |        NA |       NA |        NA |
+| 80 mg single 1-h IV | cmax       |  16.89394 | 12.10854 |  25.42742 |
+| 80 mg single 1-h IV | half.life  | 101.46959 | 54.03510 | 177.38516 |
+| 80 mg single 1-h IV | tmax       |   1.00000 |  1.00000 |   1.00000 |
 
 Simulated NCA parameters across the virtual cohort (single 80 mg / 1-h
 IV infusion). {.table}

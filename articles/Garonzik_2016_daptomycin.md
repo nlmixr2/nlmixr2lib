@@ -30,16 +30,16 @@
   but have reduced Smax and Kmax (Smax_r and Kmax_r fixed to 0) and the
   resistant subpopulation has a slower vegetative-to-replicating
   transition (FR_K12r = 0.0442). Protein binding by human serum is
-  encoded as an ‘active fraction’ factive(HUMAN_SERUM_PCT) multiplying
-  the total static daptomycin concentration to give an effective drug
+  encoded as an ‘active fraction’ factive(HS) multiplying the total
+  static daptomycin concentration to give an effective drug
   concentration DAP_EF; the active fraction takes five experimental
-  levels (factive = 1 at 0% human serum, then 0.346, 0.284, 0.239, 0.252
-  at 10%, 30%, 50%, 70% human serum). The model is in-vitro PD only –
-  there is no human PK component; daptomycin is dosed once at t = 0 into
-  the dap compartment and is chemically stable in the medium for the
-  24-h experiment. Random effects (eta) are NOT present: the paper
-  reports replicate-level experimental fits with additive plus
-  small-count Poisson residual error on log10 CFU/mL.
+  levels (factive = 1 at 0% HS, then 0.346, 0.284, 0.239, 0.252 at 10%,
+  30%, 50%, 70% HS). The model is in-vitro PD only – there is no human
+  PK component; daptomycin is dosed once at t = 0 into the dap
+  compartment and is chemically stable in the medium for the 24-h
+  experiment. Random effects (eta) are NOT present: the paper reports
+  replicate-level experimental fits with additive plus small-count
+  Poisson residual error on log10 CFU/mL.
 - Article: <https://doi.org/10.1371/journal.pone.0156131>
 
 ## Population
@@ -61,11 +61,11 @@ CFU/mL; viable counts were sampled at 0, 1, 2, 4, 8, and 24 h; limit of
 detection was 10^2 CFU/mL.
 
 There is no human or animal cohort: this is an in-vitro PD model with
-one experimental covariate (`HUMAN_SERUM_PCT`, the percentage of human
-serum) and no subject-level demographics. Replicate-to-replicate
-variability is captured only via the additive residual standard
-deviation on log10 CFU/mL; the model carries no IIV / inter-experiment
-etas. The complete population metadata is available programmatically via
+one experimental covariate (`HS`, the percentage of human serum) and no
+subject-level demographics. Replicate-to-replicate variability is
+captured only via the additive residual standard deviation on log10
+CFU/mL; the model carries no IIV / inter-experiment etas. The complete
+population metadata is available programmatically via
 `readModelDb("Garonzik_2016_daptomycin")$population`.
 
 ## Source trace
@@ -77,7 +77,7 @@ intermediate `i`, resistant `r`) – with a single static daptomycin
 solution compartment `dap`. The published governing equations are
 Garonzik 2016 Equations 1-12 (pages 3-6). The load-bearing forms are:
 
-    Eq 2:  DAP_EF = factive(% human serum) * Total Daptomycin
+    Eq 2:  DAP_EF = factive(%HS) * Total Daptomycin
 
     Eq 3:  Lag = 1 - exp(-(klag * t)^beta)
 
@@ -104,11 +104,11 @@ Table 2.
 
 | Parameter (paper symbol) | File name | Value | Units | Source |
 |----|----|---:|----|----|
-| factive (10% human serum) | `lfact_hs10` | 0.346 | (unitless) | Table 2 |
-| factive (30% human serum) | `lfact_hs30` | 0.284 | (unitless) | Table 2 |
-| factive (50% human serum) | `lfact_hs50` | 0.239 | (unitless) | Table 2 |
-| factive (70% human serum) | `lfact_hs70` | 0.252 | (unitless) | Table 2 |
-| factive (0% human serum) | (not estimated) | 1.000 | (unitless) | implicit (no serum) |
+| factive (10% HS) | `lfact_hs10` | 0.346 | (unitless) | Table 2 |
+| factive (30% HS) | `lfact_hs30` | 0.284 | (unitless) | Table 2 |
+| factive (50% HS) | `lfact_hs50` | 0.239 | (unitless) | Table 2 |
+| factive (70% HS) | `lfact_hs70` | 0.252 | (unitless) | Table 2 |
+| factive (0% HS) | (not estimated) | 1.000 | (unitless) | implicit (no serum) |
 | Log10CFU0 | `cfu0_log10` | 6.22 | log10 CFU/mL | Table 2 |
 | Log10 FR_I | `fri_log10` | -3.65 | log10 (fraction of CFU0) | Table 2 |
 | Log10 FR_r | `frr_log10` | -5.67 | log10 (fraction of CFU0) | Table 2 |
@@ -139,23 +139,22 @@ deviations section for justification of the non-canonical names):
 | Compartment | Units | Meaning |
 |----|----|----|
 | `dap` | mg/L | static daptomycin bath concentration (no degradation) |
-| `s1` | CFU/mL | susceptible subpopulation, state 1 (vegetative) |
-| `s2` | CFU/mL | susceptible subpopulation, state 2 (replicating) |
-| `i1` | CFU/mL | intermediate subpopulation, state 1 (vegetative) |
-| `i2` | CFU/mL | intermediate subpopulation, state 2 (replicating) |
-| `r1` | CFU/mL | resistant subpopulation, state 1 (vegetative) |
-| `r2` | CFU/mL | resistant subpopulation, state 2 (replicating) |
+| `bact_susceptible1` | CFU/mL | susceptible subpopulation, state 1 (vegetative) |
+| `bact_susceptible2` | CFU/mL | susceptible subpopulation, state 2 (replicating) |
+| `bact_intermediate1` | CFU/mL | intermediate subpopulation, state 1 (vegetative) |
+| `bact_intermediate2` | CFU/mL | intermediate subpopulation, state 2 (replicating) |
+| `bact_resistant1` | CFU/mL | resistant subpopulation, state 1 (vegetative) |
+| `bact_resistant2` | CFU/mL | resistant subpopulation, state 2 (replicating) |
 | `Cc` | log10 CFU/mL | observation: log10 of total bacterial concentration |
 
 ## Helper: build a time-kill scenario
 
 The published experiment used a static daptomycin concentration applied
 at t = 0 and a single human-serum percentage per experiment. The helper
-below builds an `et()` event table for an arbitrary (DAP,
-HUMAN_SERUM_PCT) combination. DAP is inserted as a bolus event into the
-`dap` compartment with `amt` interpreted as the initial bath
-concentration in mg/L; HUMAN_SERUM_PCT is carried as a constant
-per-subject covariate.
+below builds an `et()` event table for an arbitrary (DAP, HS)
+combination. DAP is inserted as a bolus event into the `dap` compartment
+with `amt` interpreted as the initial bath concentration in mg/L; HS is
+carried as a constant per-subject covariate.
 
 ``` r
 
@@ -165,7 +164,7 @@ build_scenario <- function(dap_mgL, hs_pct,
                            times = seq(0, 24, by = 0.25)) {
   ev <- et(times)
   if (dap_mgL > 0) ev <- et(ev, amt = dap_mgL, cmt = "dap", time = 0)
-  ev$HUMAN_SERUM_PCT <- hs_pct
+  ev$HS <- hs_pct
   out <- as.data.frame(rxode2::rxSolve(mod, ev))
   out$dap_init <- dap_mgL
   out$hs_pct   <- hs_pct
@@ -192,8 +191,8 @@ panels <- Map(build_scenario, grid$dap, grid$hs) |> bind_rows()
 
 panels <- panels |>
   mutate(
-    hs_label  = factor(paste0(hs_pct, "% human serum"),
-                       levels = paste0(hs_levels, "% human serum")),
+    hs_label  = factor(paste0(hs_pct, "% HS"),
+                       levels = paste0(hs_levels, "% HS")),
     dap_label = factor(sprintf("%.3g mg/L", dap_init),
                        levels = sprintf("%.3g mg/L", dap_levels))
   )
@@ -216,7 +215,7 @@ ggplot(panels, aes(time, Cc, group = dap_init, color = dap_label)) +
 Garonzik 2016 Figure 5 plots the estimated active fraction against the
 percentage of human serum, demonstrating the plateau effect at high
 serum exposure. We round-trip the four estimated values plus the
-implicit 1.0 at 0% human serum:
+implicit 1.0 at 0% HS:
 
 ``` r
 
@@ -238,7 +237,7 @@ ggplot(factive_tbl, aes(hs_pct, factive)) +
 
 ![](Garonzik_2016_daptomycin_files/figure-html/figure-5-active-fraction-1.png)
 
-The active fraction drops sharply between 0 and 30% human serum and then
+The active fraction drops sharply between 0 and 30% HS and then
 plateaus, consistent with the paper’s Results / Discussion (“at high
 concentrations of human serum, the active fraction value attains a
 plateau”). The mild non-monotonicity (factive(70%) = 0.252 slightly
@@ -251,9 +250,9 @@ interaction at high serum concentrations.
 **Growth control.** With no drug applied (`dap_init = 0`), CFU_total
 must climb from `10^cfu0_log10 = 10^6.22` through the lag phase and
 approach the plateau `CFU_M = 10^9.20`. The growth control is identical
-across HUMAN_SERUM_PCT levels because human serum was not shown to
-affect bacterial growth rate (Garonzik 2016 Results, last paragraph of
-Mechanism based modeling).
+across HS levels because human serum was not shown to affect bacterial
+growth rate (Garonzik 2016 Results, last paragraph of Mechanism based
+modeling).
 
 ``` r
 
@@ -265,27 +264,27 @@ gc |>
   pivot_wider(names_from = time, values_from = Cc,
               names_prefix = "Cc_t") |>
   knitr::kable(digits = 3,
-               caption = "Growth-control (no daptomycin) log10 CFU/mL at four times across the five HUMAN_SERUM_PCT levels.")
+               caption = "Growth-control (no daptomycin) log10 CFU/mL at four times across the five HS levels.")
 ```
 
-| hs_label        | Cc_t0 | Cc_t4 | Cc_t8 | Cc_t24 |
-|:----------------|------:|------:|------:|-------:|
-| 0% human serum  |  6.22 |  6.22 |  6.22 |   6.22 |
-| 10% human serum |  6.22 |  6.22 |  6.22 |   6.22 |
-| 30% human serum |  6.22 |  6.22 |  6.22 |   6.22 |
-| 50% human serum |  6.22 |  6.22 |  6.22 |   6.22 |
-| 70% human serum |  6.22 |  6.22 |  6.22 |   6.22 |
+| hs_label | Cc_t0 | Cc_t4 | Cc_t8 | Cc_t24 |
+|:---------|------:|------:|------:|-------:|
+| 0% HS    |  6.22 |  6.22 |  6.22 |   6.22 |
+| 10% HS   |  6.22 |  6.22 |  6.22 |   6.22 |
+| 30% HS   |  6.22 |  6.22 |  6.22 |   6.22 |
+| 50% HS   |  6.22 |  6.22 |  6.22 |   6.22 |
+| 70% HS   |  6.22 |  6.22 |  6.22 |   6.22 |
 
 Growth-control (no daptomycin) log10 CFU/mL at four times across the
-five HUMAN_SERUM_PCT levels. {.table}
+five HS levels. {.table}
 
 The 24-hour growth-control values converge to ~9.20 (paper `Log10 CFU_M`
 = 9.20), matching Figure 4 panel A (top growth-control curve, open
 diamonds) which saturates at ~9 log10 CFU/mL.
 
 **Active fraction reduces effective concentration.** At a single
-daptomycin level (4 mg/L), increasing HUMAN_SERUM_PCT reduces DAP_EF in
-proportion to factive(HUMAN_SERUM_PCT). Effective concentrations are:
+daptomycin level (4 mg/L), increasing HS reduces DAP_EF in proportion to
+factive(HS). Effective concentrations are:
 
 ``` r
 
@@ -294,48 +293,49 @@ panels |>
   transmute(hs_label, dap_init, factive_check = factive,
             dap_eff_check = dap_eff) |>
   knitr::kable(digits = 4,
-               caption = "Active fraction and effective daptomycin concentration at 4 mg/L total daptomycin, per HUMAN_SERUM_PCT level.")
+               caption = "Active fraction and effective daptomycin concentration at 4 mg/L total daptomycin, per HS level.")
 ```
 
-| hs_label        | dap_init | factive_check | dap_eff_check |
-|:----------------|---------:|--------------:|--------------:|
-| 0% human serum  |        4 |         1.000 |         4.000 |
-| 10% human serum |        4 |         0.346 |         1.384 |
-| 30% human serum |        4 |         0.284 |         1.136 |
-| 50% human serum |        4 |         0.239 |         0.956 |
-| 70% human serum |        4 |         0.252 |         1.008 |
+| hs_label | dap_init | factive_check | dap_eff_check |
+|:---------|---------:|--------------:|--------------:|
+| 0% HS    |        4 |         1.000 |         4.000 |
+| 10% HS   |        4 |         0.346 |         1.384 |
+| 30% HS   |        4 |         0.284 |         1.136 |
+| 50% HS   |        4 |         0.239 |         0.956 |
+| 70% HS   |        4 |         0.252 |         1.008 |
 
 Active fraction and effective daptomycin concentration at 4 mg/L total
-daptomycin, per HUMAN_SERUM_PCT level. {.table}
+daptomycin, per HS level. {.table}
 
 **Resistant subpopulation survives.** Because Smax_r and Kmax_r are both
 fixed at zero, daptomycin has no direct effect on the resistant
 subpopulation. At 24 h after a bactericidal regimen (e.g., 4 mg/L at 0%
-human serum), the residual CFU_total is dominated by `r1` + `r2`:
+HS), the residual CFU_total is dominated by `bact_resistant1` +
+`bact_resistant2`:
 
 ``` r
 
 res <- panels |>
   filter(dap_init == 4, hs_pct == 0, time == 24) |>
-  select(time, cfu_total, s1, s2, i1, i2, r1, r2)
+  select(time, cfu_total, bact_susceptible1, bact_susceptible2, bact_intermediate1, bact_intermediate2, bact_resistant1, bact_resistant2)
 
 res |> knitr::kable(digits = 3,
-  caption = "Compartment-level state at 24 h after 4 mg/L daptomycin at 0% human serum. The residual is essentially the resistant subpopulation; susceptible and intermediate are below the limit of detection.")
+  caption = "Compartment-level state at 24 h after 4 mg/L daptomycin at 0% HS. The residual is essentially the resistant subpopulation; susceptible and intermediate are below the limit of detection.")
 ```
 
-| time | cfu_total |  s1 |  s2 |  i1 |  i2 |    r1 |  r2 |
-|-----:|----------:|----:|----:|----:|----:|------:|----:|
-|   24 |     3.548 |   0 |   0 |   0 |   0 | 3.548 |   0 |
+| time | cfu_total | bact_susceptible1 | bact_susceptible2 | bact_intermediate1 | bact_intermediate2 | bact_resistant1 | bact_resistant2 |
+|---:|---:|---:|---:|---:|---:|---:|---:|
+| 24 | 3.548 | 0 | 0 | 0 | 0 | 3.548 | 0 |
 
-Compartment-level state at 24 h after 4 mg/L daptomycin at 0% human
-serum. The residual is essentially the resistant subpopulation;
-susceptible and intermediate are below the limit of detection. {.table}
+Compartment-level state at 24 h after 4 mg/L daptomycin at 0% HS. The
+residual is essentially the resistant subpopulation; susceptible and
+intermediate are below the limit of detection. {.table}
 
 **Bactericidal threshold.** Garonzik 2016 reports that bactericidal
 activity (\>=3.0 log10 CFU/mL reduction from inoculum, i.e., Cc \<=
-3.22) is reached by 24 h for all DAP \>= 2 mg/L irrespective of
-HUMAN_SERUM_PCT (Results, Time-kill experiments). Check the 24-hour
-values across the grid:
+3.22) is reached by 24 h for all DAP \>= 2 mg/L irrespective of HS
+(Results, Time-kill experiments). Check the 24-hour values across the
+grid:
 
 ``` r
 
@@ -344,31 +344,31 @@ panels |>
   select(hs_label, dap_label, Cc) |>
   pivot_wider(names_from = dap_label, values_from = Cc) |>
   knitr::kable(digits = 2,
-    caption = "log10 CFU/mL at 24 h across a daptomycin x HUMAN_SERUM_PCT grid. Compare against Figure 4 right-edge endpoints; entries <= 3.22 satisfy the 99.9% bactericidal threshold.")
+    caption = "log10 CFU/mL at 24 h across a daptomycin x HS grid. Compare against Figure 4 right-edge endpoints; entries <= 3.22 satisfy the 99.9% bactericidal threshold.")
 ```
 
-| hs_label        | 0.25 mg/L | 0.5 mg/L | 1 mg/L | 2 mg/L | 4 mg/L | 8 mg/L |
-|:----------------|----------:|---------:|-------:|-------:|-------:|-------:|
-| 0% human serum  |      1.85 |     1.24 |   0.65 |   0.55 |   0.55 |   0.55 |
-| 10% human serum |      3.66 |     2.11 |   1.60 |   0.91 |   0.57 |   0.55 |
-| 30% human serum |      4.11 |     2.40 |   1.76 |   1.11 |   0.61 |   0.55 |
-| 50% human serum |      4.43 |     2.81 |   1.88 |   1.29 |   0.67 |   0.55 |
-| 70% human serum |      4.34 |     2.67 |   1.84 |   1.24 |   0.65 |   0.55 |
+| hs_label | 0.25 mg/L | 0.5 mg/L | 1 mg/L | 2 mg/L | 4 mg/L | 8 mg/L |
+|:---------|----------:|---------:|-------:|-------:|-------:|-------:|
+| 0% HS    |      1.85 |     1.24 |   0.65 |   0.55 |   0.55 |   0.55 |
+| 10% HS   |      3.66 |     2.11 |   1.60 |   0.91 |   0.57 |   0.55 |
+| 30% HS   |      4.11 |     2.40 |   1.76 |   1.11 |   0.61 |   0.55 |
+| 50% HS   |      4.43 |     2.81 |   1.88 |   1.29 |   0.67 |   0.55 |
+| 70% HS   |      4.34 |     2.67 |   1.84 |   1.24 |   0.65 |   0.55 |
 
-log10 CFU/mL at 24 h across a daptomycin x HUMAN_SERUM_PCT grid. Compare
-against Figure 4 right-edge endpoints; entries \<= 3.22 satisfy the
-99.9% bactericidal threshold. {.table}
+log10 CFU/mL at 24 h across a daptomycin x HS grid. Compare against
+Figure 4 right-edge endpoints; entries \<= 3.22 satisfy the 99.9%
+bactericidal threshold. {.table}
 
 ## Comparison against published Hill-type parameters (Table 1)
 
 Garonzik 2016 Table 1 reports a separate Hill-type concentration-effect
-fit (Eq 1B, log-ratio area vs daptomycin C / MIC) for USA300 at each
-HUMAN_SERUM_PCT level. The MBM model and the log-ratio Hill fit are
-independent analyses of the same time-kill data, so the MBM round-trip
-at 24 h should be qualitatively consistent with Table 1’s shift towards
-lower Emax and higher EC50 with increasing HUMAN_SERUM_PCT. The Hill-fit
-numbers themselves are not parameters of this packaged model and are
-reproduced here purely for reference:
+fit (Eq 1B, log-ratio area vs daptomycin C / MIC) for USA300 at each HS
+level. The MBM model and the log-ratio Hill fit are independent analyses
+of the same time-kill data, so the MBM round-trip at 24 h should be
+qualitatively consistent with Table 1’s shift towards lower Emax and
+higher EC50 with increasing HS. The Hill-fit numbers themselves are not
+parameters of this packaged model and are reproduced here purely for
+reference:
 
 | Human Serum | E_max | EC50 (xMIC) |    H |
 |-------------|------:|------------:|-----:|
@@ -380,37 +380,34 @@ reproduced here purely for reference:
 
 ## Assumptions and deviations
 
-- **Non-canonical compartment names** (`dap`, `s1`, `s2`, `i1`, `i2`,
-  `r1`, `r2`). The nlmixr2lib canonical compartment register
-  (`R/conventions.R::canonicalCompartments`) targets popPK / PK-PD
-  models for systemic drug disposition; the bacterial-subpopulation
-  state names here have no analog in that register. The names are
-  retained from Garonzik 2016 (paper Methods, “Model for Bacterial Life
-  Cycle”) to keep the source trace direct.
+- **Non-canonical compartment names** (`dap`, `bact_susceptible1`,
+  `bact_susceptible2`, `bact_intermediate1`, `bact_intermediate2`,
+  `bact_resistant1`, `bact_resistant2`). The nlmixr2lib canonical
+  compartment register (`R/conventions.R::canonicalCompartments`)
+  targets popPK / PK-PD models for systemic drug disposition; the
+  bacterial-subpopulation state names here have no analog in that
+  register. The names are retained from Garonzik 2016 (paper Methods,
+  “Model for Bacterial Life Cycle”) to keep the source trace direct.
   [`checkModelConventions()`](https://nlmixr2.github.io/nlmixr2lib/reference/checkModelConventions.md)
   emits compartment-name warnings; they are expected and documented
   here, matching the precedent set by
   `Wicha_2017_linezolid_meropenem_vancomycin.R` and
   `Sadouki_2025_meropenem_gentamicin_ciprofloxacin.R`.
-- **HUMAN_SERUM_PCT is an in-vitro experimental condition.**
-  `HUMAN_SERUM_PCT` is the percent v/v of human serum supplementing the
-  broth – an in-vitro experimental condition rather than a
-  clinical-trial patient covariate. It is registered as a canonical
-  covariate under “Preclinical experimental conditions” in
-  `inst/references/covariate-columns.md` (the register treats
-  data-driven model inputs as covariates, including in-vitro
-  experimental conditions). The column was renamed from the original
-  short `HS` to the spelled-out canonical `HUMAN_SERUM_PCT` on
-  2026-05-27 to align with the register’s naming standards.
-- **HUMAN_SERUM_PCT treated as a discrete five-level factor, not a
-  continuous variable.** factive(HUMAN_SERUM_PCT) is encoded as five
-  fixed estimates – one per experimental HUMAN_SERUM_PCT level (0%, 10%,
-  30%, 50%, 70%). HUMAN_SERUM_PCT values outside this set yield
-  `factive = 0` inside the model (none of the indicator expressions
-  fire), which is a deliberately conspicuous failure rather than a
-  silent interpolation. The paper plots an apparent continuous curve in
-  Figure 5 but only estimates four points; interpolation is the user’s
-  choice and is left out of the packaged model.
+- **HS covariate not in the canonical register.** `HS` is an in-vitro
+  experimental indicator (the percent v/v of human serum supplementing
+  the broth) – not a clinical-trial patient covariate. The canonical
+  register at `inst/references/covariate-columns.md` is for human pop-PK
+  covariates and does not apply. The same precedent is set by
+  `MER_PRESENT`, `Cgen`, and `LOWINOC` in
+  `Sadouki_2025_meropenem_gentamicin_ciprofloxacin.R`.
+- **HS treated as a discrete five-level factor, not a continuous
+  variable.** factive(HS) is encoded as five fixed estimates – one per
+  experimental HS level (0%, 10%, 30%, 50%, 70%). HS values outside this
+  set yield `factive = 0` inside the model (none of the indicator
+  expressions fire), which is a deliberately conspicuous failure rather
+  than a silent interpolation. The paper plots an apparent continuous
+  curve in Figure 5 but only estimates four points; interpolation is the
+  user’s choice and is left out of the packaged model.
 - **Single observation `Cc` carries log10 CFU/mL, not a drug
   concentration.** nlmixr2lib’s single-output convention names the
   observation `Cc`; the underlying quantity here is log10 of total
@@ -433,8 +430,8 @@ reproduced here purely for reference:
   linear CFU/mL. The model converts in `model()`:
   `cfu0 <- 10^cfu0_log10`, `cfu_m <- 10^cfum_log10`, etc. A `1e-6` floor
   is added inside the `log10(...)` observation to avoid `log10(0)` when
-  all bacterial states are driven to zero by combined high-DAP +
-  low-HUMAN_SERUM_PCT regimens.
+  all bacterial states are driven to zero by combined high-DAP + low-HS
+  regimens.
 - **Residual error simplified to the dominant additive term.** Garonzik
   2016 Table 2 reports three residual variability components: an
   additive term on log10 CFU/mL (`epsilon_CFU = 0.558`, estimated), a
@@ -473,5 +470,5 @@ reproduced here purely for reference:
   the four serum-containing levels (10%, 30%, 50%, 70%) and treats the
   0% case as the unbound reference (factive = 1 by construction, no
   protein binding). The packaged model encodes this by forcing
-  `factive = 1` when `HUMAN_SERUM_PCT = 0`; the value is not a `ini()`
-  parameter and is not tabulated in Table 2.
+  `factive = 1` when `HS = 0`; the value is not a `ini()` parameter and
+  is not tabulated in Table 2.

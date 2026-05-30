@@ -4,7 +4,7 @@
 
 library(nlmixr2lib)
 library(rxode2)
-#> rxode2 5.0.2 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.1 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -861,12 +861,12 @@ knitr::kable(nca_med, digits = 1,
 |:---------------|:---------|-------:|------:|------:|
 | 1050 mg q3w    | auclast  |     NA |    NA |    NA |
 | 1050 mg q3w    | cav      |     NA |    NA |    NA |
-| 1050 mg q3w    | cmax     |  444.6 | 291.1 | 693.7 |
-| 1050 mg q3w    | cmin     |  128.0 |  41.7 | 281.2 |
+| 1050 mg q3w    | cmax     |  442.6 | 294.0 | 657.2 |
+| 1050 mg q3w    | cmin     |  115.5 |  41.8 | 245.8 |
 | 840/420 mg q3w | auclast  |     NA |    NA |    NA |
 | 840/420 mg q3w | cav      |     NA |    NA |    NA |
-| 840/420 mg q3w | cmax     |  173.8 | 112.1 | 264.0 |
-| 840/420 mg q3w | cmin     |   47.9 |  17.0 | 109.1 |
+| 840/420 mg q3w | cmax     |  175.5 | 116.3 | 275.5 |
+| 840/420 mg q3w | cmin     |   49.1 |  16.7 | 116.2 |
 
 Steady-state NCA (q3w, interval 7) by regimen: simulated median (5-95%
 PI). {.table}

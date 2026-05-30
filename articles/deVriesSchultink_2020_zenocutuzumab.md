@@ -4,7 +4,7 @@
 
 library(nlmixr2lib)
 library(rxode2)
-#> rxode2 5.0.2 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.1 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -1569,20 +1569,20 @@ knitr::kable(nca_summary, digits = 2,
 |--------:|:---------|-------:|--------:|
 |      80 | auclast  |    NaN |      NA |
 |      80 | cav      |    NaN |      NA |
-|      80 | cmax     |  21.71 |   27.07 |
-|      80 | cmin     |   0.00 |  720.01 |
+|      80 | cmax     |  22.40 |   26.03 |
+|      80 | cmin     |   0.00 |  674.06 |
 |     240 | auclast  |    NaN |      NA |
 |     240 | cav      |    NaN |      NA |
-|     240 | cmax     |  68.46 |   25.47 |
-|     240 | cmin     |   0.10 | 2833.22 |
+|     240 | cmax     |  66.49 |   25.31 |
+|     240 | cmin     |   0.08 | 2692.02 |
 |     480 | auclast  |    NaN |      NA |
 |     480 | cav      |    NaN |      NA |
-|     480 | cmax     | 128.87 |   25.91 |
-|     480 | cmin     |   0.52 | 2182.40 |
+|     480 | cmax     | 132.06 |   26.64 |
+|     480 | cmin     |   0.69 | 1977.43 |
 |     750 | auclast  |    NaN |      NA |
 |     750 | cav      |    NaN |      NA |
-|     750 | cmax     | 207.27 |   25.75 |
-|     750 | cmin     |   1.84 | 1096.02 |
+|     750 | cmax     | 209.55 |   27.10 |
+|     750 | cmin     |   1.89 | 1283.32 |
 
 Single-cycle (0-504 h) NCA by flat dose: simulated geometric mean and
 CV%. AUC reported in mg\*h/mL to match de Vries Schultink 2020 Table 3.
@@ -1615,9 +1615,9 @@ knitr::kable(comparison, digits = 1,
 
 | metric | paper_gmean | sim_gmean | pct_diff_gmean | paper_cv_pct | sim_cv_pct |
 |:---|---:|---:|---:|---:|---:|
-| Cmax (mg/L) | 222.7 | 207.3 | -6.9 | 30 | 25.7 |
+| Cmax (mg/L) | 222.7 | 209.6 | -5.9 | 30 | 27.1 |
 | Cave (mg/L) | 37.4 | NaN | NaN | 43 | NA |
-| Ctrough (mg/L) | 1.4 | 1.8 | 31.6 | 134 | 1096.0 |
+| Ctrough (mg/L) | 1.4 | 1.9 | 35.1 | 134 | 1283.3 |
 | AUC0-tau (mg\*h/mL) | 18.9 | NaN | NaN | 43 | NA |
 
 Simulated (virtual cohort) vs. de Vries Schultink 2020 Table 3 (750 mg

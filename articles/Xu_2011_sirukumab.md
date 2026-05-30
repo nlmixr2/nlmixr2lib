@@ -4,7 +4,7 @@
 
 library(nlmixr2lib)
 library(rxode2)
-#> rxode2 5.0.2 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.1 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -284,26 +284,26 @@ sim_nca <- as.data.frame(nca_res$result) %>%
 
 sim_nca
 #> # A tibble: 18 × 5
-#>    treatment        PPTESTCD      mean      sd     med
-#>    <chr>            <chr>        <dbl>   <dbl>   <dbl>
-#>  1 0.3 mg/kg        aucinf.obs   49.4    5.85    48.5 
-#>  2 0.3 mg/kg        cmax          5.85   0.517    6.03
-#>  3 0.3 mg/kg        half.life    21.4    7.75    19.2 
-#>  4 1 mg/kg          aucinf.obs  201.    39.7    194.  
-#>  5 1 mg/kg          cmax         24.9    5.64    23.8 
-#>  6 1 mg/kg          half.life    23.1    6.73    22.1 
-#>  7 10 mg/kg         aucinf.obs 2330.   746.    2081.  
-#>  8 10 mg/kg         cmax        212.    34.7    224.  
-#>  9 10 mg/kg         half.life    22.1    6.24    21.2 
-#> 10 3 mg/kg          aucinf.obs  641.   309.     588.  
-#> 11 3 mg/kg          cmax         57.5    7.67    60.4 
-#> 12 3 mg/kg          half.life    20.8    9.10    22.0 
-#> 13 6 mg/kg (female) aucinf.obs 1332.   315.    1251.  
-#> 14 6 mg/kg (female) cmax        119.    19.3    109.  
-#> 15 6 mg/kg (female) half.life    28.6   13.6     22.3 
-#> 16 6 mg/kg (male)   aucinf.obs 1300.   318.    1284.  
-#> 17 6 mg/kg (male)   cmax        129.    24.8    131.  
-#> 18 6 mg/kg (male)   half.life    22.1    8.16    18.7
+#>    treatment        PPTESTCD      mean     sd     med
+#>    <chr>            <chr>        <dbl>  <dbl>   <dbl>
+#>  1 0.3 mg/kg        aucinf.obs   56.6   16.5    53.3 
+#>  2 0.3 mg/kg        cmax          6.51   1.22    6.75
+#>  3 0.3 mg/kg        half.life    21.0    6.95   18.3 
+#>  4 1 mg/kg          aucinf.obs  203.    29.7   209.  
+#>  5 1 mg/kg          cmax         22.1    3.06   21.3 
+#>  6 1 mg/kg          half.life    20.5    7.97   19.5 
+#>  7 10 mg/kg         aucinf.obs 2148.   495.   2185.  
+#>  8 10 mg/kg         cmax        214.    33.0   219.  
+#>  9 10 mg/kg         half.life    26.6    9.06   27.8 
+#> 10 3 mg/kg          aucinf.obs  699.   185.    692.  
+#> 11 3 mg/kg          cmax         76.2   11.4    80.6 
+#> 12 3 mg/kg          half.life    20.9    4.44   22.2 
+#> 13 6 mg/kg (female) aucinf.obs 1250.   384.   1172.  
+#> 14 6 mg/kg (female) cmax        127.    29.1   123.  
+#> 15 6 mg/kg (female) half.life    23.3    6.94   22.9 
+#> 16 6 mg/kg (male)   aucinf.obs 1343.   480.   1284.  
+#> 17 6 mg/kg (male)   cmax        137.    17.2   132.  
+#> 18 6 mg/kg (male)   half.life    25.6    5.80   25.5
 ```
 
 ### Comparison against Xu 2011 Table 3
@@ -346,12 +346,12 @@ knitr::kable(compare,
 
 | treatment | cmax_pub_mean | cmax_pub_sd | auc_pub_mean | auc_pub_sd | thalf_pub_median | cmax_sim_mean | cmax_sim_sd | auc_sim_mean | auc_sim_sd | thalf_sim_median | cmax_pct_diff | auc_pct_diff |
 |:---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| 0.3 mg/kg | 7.9 | 1.4 | 82.1 | 20.4 | 20.9 | 5.85 | 0.52 | 49.36 | 5.85 | 19.17 | -25.92 | -39.88 |
-| 1 mg/kg | 19.2 | 1.8 | 167.3 | 23.6 | 19.9 | 24.88 | 5.64 | 201.04 | 39.69 | 22.14 | 29.57 | 20.17 |
-| 3 mg/kg | 60.1 | 14.0 | 540.2 | 175.2 | 18.5 | 57.51 | 7.67 | 640.86 | 308.79 | 21.96 | -4.31 | 18.63 |
-| 6 mg/kg (male) | 116.3 | 11.6 | 1225.0 | 378.2 | 29.6 | 128.90 | 24.83 | 1300.23 | 318.24 | 18.73 | 10.83 | 6.14 |
-| 6 mg/kg (female) | 118.6 | 19.2 | 1262.0 | 307.0 | 25.0 | 119.25 | 19.33 | 1331.75 | 315.12 | 22.28 | 0.55 | 5.53 |
-| 10 mg/kg | 248.8 | 61.7 | 2164.7 | 658.5 | 21.0 | 212.33 | 34.72 | 2330.49 | 746.07 | 21.17 | -14.66 | 7.66 |
+| 0.3 mg/kg | 7.9 | 1.4 | 82.1 | 20.4 | 20.9 | 6.51 | 1.22 | 56.65 | 16.47 | 18.34 | -17.55 | -31.00 |
+| 1 mg/kg | 19.2 | 1.8 | 167.3 | 23.6 | 19.9 | 22.12 | 3.06 | 202.55 | 29.69 | 19.51 | 15.23 | 21.07 |
+| 3 mg/kg | 60.1 | 14.0 | 540.2 | 175.2 | 18.5 | 76.20 | 11.37 | 699.47 | 185.47 | 22.16 | 26.79 | 29.48 |
+| 6 mg/kg (male) | 116.3 | 11.6 | 1225.0 | 378.2 | 29.6 | 137.49 | 17.20 | 1342.77 | 480.26 | 25.50 | 18.22 | 9.61 |
+| 6 mg/kg (female) | 118.6 | 19.2 | 1262.0 | 307.0 | 25.0 | 127.45 | 29.12 | 1249.81 | 384.14 | 22.88 | 7.46 | -0.97 |
+| 10 mg/kg | 248.8 | 61.7 | 2164.7 | 658.5 | 21.0 | 213.75 | 32.98 | 2148.39 | 495.32 | 27.84 | -14.09 | -0.75 |
 
 Simulated NCA vs. Xu 2011 Table 3: Cmax (ug/mL), AUC(0,inf)
 (ug\*day/mL), terminal t1/2 (days). {.table style="width:100%;"}

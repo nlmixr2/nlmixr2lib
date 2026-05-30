@@ -289,8 +289,8 @@ knitr::kable(threshold_check,
 
 | time |   n | p_above10 | median_Cc | time_wk | abstract_pct |
 |-----:|----:|----------:|----------:|--------:|-------------:|
-|   84 | 200 |     0.740 |    14.670 |      12 |         0.87 |
-|  168 | 200 |     0.915 |    18.983 |      24 |         0.98 |
+|   84 | 200 |      0.74 |    13.569 |      12 |         0.87 |
+|  168 | 200 |      0.92 |    18.301 |      24 |         0.98 |
 
 Fraction of virtual infants with Cc \> 10 ug/mL at weeks 12 and 24.
 {.table}
@@ -376,14 +376,14 @@ knitr::kable(summary_tbl, digits = 2,
 
 | cohort                          |   median |      q05 |      q95 | parameter  |
 |:--------------------------------|---------:|---------:|---------:|:-----------|
-| Adult 20 mg/kg i.v.             |    38.56 |    18.52 |    69.22 | half.life  |
-| Infant 80 mg s.c., fixed 2.8 kg |    35.64 |    20.41 |    65.05 | half.life  |
-| Adult 20 mg/kg i.v.             |     0.09 |     0.05 |     0.13 | cl.obs     |
+| Adult 20 mg/kg i.v.             |    35.65 |    15.48 |    62.91 | half.life  |
+| Infant 80 mg s.c., fixed 2.8 kg |    35.14 |    16.49 |    58.88 | half.life  |
+| Adult 20 mg/kg i.v.             |     0.09 |     0.05 |     0.14 | cl.obs     |
 | Infant 80 mg s.c., fixed 2.8 kg |     0.01 |     0.01 |     0.02 | cl.obs     |
-| Adult 20 mg/kg i.v.             |   869.30 |   554.95 |  1365.04 | cmax       |
-| Infant 80 mg s.c., fixed 2.8 kg |   273.12 |   194.91 |   345.90 | cmax       |
-| Adult 20 mg/kg i.v.             | 17689.96 | 12110.45 | 27250.28 | aucinf.obs |
-| Infant 80 mg s.c., fixed 2.8 kg |  8083.55 |  5192.96 | 12918.89 | aucinf.obs |
+| Adult 20 mg/kg i.v.             |   922.45 |   538.37 |  1778.07 | cmax       |
+| Infant 80 mg s.c., fixed 2.8 kg |   260.93 |   181.28 |   382.06 | cmax       |
+| Adult 20 mg/kg i.v.             | 17901.35 | 11355.59 | 27150.89 | aucinf.obs |
+| Infant 80 mg s.c., fixed 2.8 kg |  7266.57 |  4244.91 | 11136.46 | aucinf.obs |
 
 PKNCA: simulated single-dose NCA per cohort. {.table
 style="width:100%;"}
@@ -426,10 +426,10 @@ knitr::kable(cl_per70, digits = 1,
              caption = "Per-70-kg CL from PKNCA (true CL for IV; apparent CL/F for SC).")
 ```
 
-| cohort                          | median |  q05 |   q95 | parameter      |
-|:--------------------------------|-------:|-----:|------:|:---------------|
-| Adult 20 mg/kg i.v.             |   79.4 | 52.6 | 118.6 | CL_70kg (mL/d) |
-| Infant 80 mg s.c., fixed 2.8 kg |  152.7 | 95.7 | 237.7 | CL_70kg (mL/d) |
+| cohort                          | median | q05 |   q95 | parameter      |
+|:--------------------------------|-------:|----:|------:|:---------------|
+| Adult 20 mg/kg i.v.             |   80.0 |  52 | 123.5 | CL_70kg (mL/d) |
+| Infant 80 mg s.c., fixed 2.8 kg |  169.8 | 111 | 290.8 | CL_70kg (mL/d) |
 
 Per-70-kg CL from PKNCA (true CL for IV; apparent CL/F for SC). {.table}
 
@@ -470,8 +470,8 @@ knitr::kable(comparison, digits = 1,
 
 | cohort | cl_pub_70 | t12_pub | t12_sim | cl_sim_70 | t12_pct_diff | cl_pct_diff |
 |:---|---:|---:|---:|---:|---:|---:|
-| Adult 20 mg/kg i.v. | 80.7 | 31 | 38.6 | 79.4 | 24 | -2 |
-| Infant 80 mg s.c., fixed 2.8 kg | 159.0 | 39 | 35.6 | 152.7 | -9 | -4 |
+| Adult 20 mg/kg i.v. | 80.7 | 31 | 35.6 | 80.0 | 15 | -1 |
+| Infant 80 mg s.c., fixed 2.8 kg | 159.0 | 39 | 35.1 | 169.8 | -10 | 7 |
 
 Side-by-side: paper (pub) vs simulated (sim) per-70-kg CL (mL/d) and
 t1/2 (d). {.table}

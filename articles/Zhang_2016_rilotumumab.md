@@ -248,7 +248,7 @@ knitr::kable(
 
 | start | end | treatment | N | auclast | cmax | cmin | tmax | half.life |
 |---:|---:|:---|:---|:---|:---|:---|:---|:---|
-| 0 | 21 | 15 mg/kg Q3W | 200 | 5270 \[32.8\] | 466 \[27.9\] | 164 \[42.0\] | 0.0417 \[0.0417, 0.0417\] | 24.4 \[8.26\] |
+| 0 | 21 | 15 mg/kg Q3W | 200 | 5450 \[34.8\] | 472 \[28.0\] | 170 \[44.3\] | 0.0417 \[0.0417, 0.0417\] | 24.8 \[7.91\] |
 
 Simulated rilotumumab NCA parameters over the 6th (steady-state) dosing
 interval at 15 mg/kg Q3W. {.table}

@@ -539,10 +539,10 @@ knitr::kable(summary(nca_res_adc),
 
 | start | end | regimen | N | auclast | cmax | tmax | cl.last |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | 504 | Study 1: BV 1.6 mg/kg Q3W | 60 | NC | 24.7 \[28.7\] | 7.60 \[7.60, 7.60\] | NC |
-| 0 | 336 | Study 1: BV 1.6 mg/kg Q3W | 60 | NC | 24.7 \[28.7\] | 7.60 \[7.60, 7.60\] | NC |
-| 0 | 504 | Study 2: BV 48 mg/m^2 + AVD Q2W | 60 | NC | 22.3 \[17.0\] | 5.07 \[5.07, 5.07\] | NC |
-| 0 | 336 | Study 2: BV 48 mg/m^2 + AVD Q2W | 60 | NC | 22.3 \[17.0\] | 5.07 \[5.07, 5.07\] | NC |
+| 0 | 504 | Study 1: BV 1.6 mg/kg Q3W | 60 | NC | 24.9 \[27.4\] | 7.60 \[7.60, 7.60\] | NC |
+| 0 | 336 | Study 1: BV 1.6 mg/kg Q3W | 60 | NC | 24.9 \[27.4\] | 7.60 \[7.60, 7.60\] | NC |
+| 0 | 504 | Study 2: BV 48 mg/m^2 + AVD Q2W | 60 | NC | 22.4 \[13.4\] | 5.07 \[5.07, 5.07\] | NC |
+| 0 | 336 | Study 2: BV 48 mg/m^2 + AVD Q2W | 60 | NC | 22.4 \[13.4\] | 5.07 \[5.07, 5.07\] | NC |
 
 Simulated cycle-4 ADC NCA parameters by regimen. {.table}
 
@@ -817,10 +817,10 @@ knitr::kable(summary(nca_res_mmae),
 
 | start | end | regimen | N | auclast | cmax | tmax |
 |---:|---:|:---|:---|:---|:---|:---|
-| 0 | 504 | Study 1: BV 1.6 mg/kg Q3W | 60 | NC | 1.48 \[67.6\] | 27.9 \[7.60, 88.6\] |
-| 0 | 336 | Study 1: BV 1.6 mg/kg Q3W | 60 | NC | 1.48 \[67.6\] | 27.9 \[7.60, 88.6\] |
-| 0 | 504 | Study 2: BV 48 mg/m^2 + AVD Q2W | 60 | NC | 2.60 \[70.0\] | 32.1 \[5.07, 72.6\] |
-| 0 | 336 | Study 2: BV 48 mg/m^2 + AVD Q2W | 60 | NC | 2.60 \[70.0\] | 32.1 \[5.07, 72.6\] |
+| 0 | 504 | Study 1: BV 1.6 mg/kg Q3W | 60 | NC | 1.45 \[83.1\] | 27.9 \[7.60, 98.8\] |
+| 0 | 336 | Study 1: BV 1.6 mg/kg Q3W | 60 | NC | 1.45 \[83.1\] | 27.9 \[7.60, 98.8\] |
+| 0 | 504 | Study 2: BV 48 mg/m^2 + AVD Q2W | 60 | NC | 2.66 \[67.7\] | 32.1 \[11.8, 86.1\] |
+| 0 | 336 | Study 2: BV 48 mg/m^2 + AVD Q2W | 60 | NC | 2.66 \[67.7\] | 32.1 \[11.8, 86.1\] |
 
 Simulated cycle-4 MMAE NCA parameters by regimen. {.table}
 

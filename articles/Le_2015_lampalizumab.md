@@ -277,9 +277,9 @@ ggplot(sim_serum, aes(time, Q50, colour = regimen, fill = regimen)) +
 #> log-10 transformation introduced infinite values.
 #> log-10 transformation introduced infinite values.
 #> log-10 transformation introduced infinite values.
-#> Warning: Removed 19 rows containing missing values or values outside the scale range
+#> Warning: Removed 21 rows containing missing values or values outside the scale range
 #> (`geom_ribbon()`).
-#> Warning: Removed 5 rows containing missing values or values outside the scale range
+#> Warning: Removed 6 rows containing missing values or values outside the scale range
 #> (`geom_line()`).
 ```
 
@@ -546,7 +546,7 @@ knitr::kable(summary(nca_res),
 
 | Interval Start | Interval End | regimen | N | AUClast (day\*mg/L) | Cmax (mg/L) | Tmax (day) | Half-life (day) | AUCinf,obs (day\*mg/L) |
 |---:|---:|:---|:---|:---|:---|:---|:---|:---|
-| 0 | Inf | single_10mg | 30 | NC | 0.240 \[37.8\] | 2.00 \[1.00, 4.00\] | 6.25 \[1.76\] | NC |
+| 0 | Inf | single_10mg | 30 | NC | 0.235 \[31.9\] | 2.00 \[1.00, 2.00\] | 6.23 \[1.19\] | NC |
 
 Serum lampalizumab NCA after single 10 mg ITV dose (apparent terminal
 half-life is the flip-flop ocular t1/2 ~ 5.9 days). {.table}

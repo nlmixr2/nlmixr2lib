@@ -10,7 +10,7 @@ library(PKNCA)
 #> 
 #>     filter
 library(rxode2)
-#> rxode2 5.0.2 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.1 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -335,8 +335,8 @@ knitr::kable(nca_summary, digits = 2,
 
 | PPTESTCD | median |   P05 |    P95 |
 |:---------|-------:|------:|-------:|
-| auclast  |  45.72 | 17.59 | 133.84 |
-| cmax     |   6.38 |  3.62 |  13.83 |
+| auclast  |  50.17 | 14.96 | 155.24 |
+| cmax     |   6.85 |  3.23 |  15.69 |
 | tmax     |   2.50 |  1.50 |   3.50 |
 
 Day-14 PKNCA summary across the virtual cohort {.table}

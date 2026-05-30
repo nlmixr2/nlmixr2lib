@@ -136,7 +136,7 @@ build_events <- function(cohort) {
            treatment, dose_per_kg)
 }
 
-n_per <- 500
+n_per <- 150  # downsampled from 500 for vignette build budget; VPC bands visually identical
 cohort_5  <- bind_rows(
   make_cohort(round(n_per * 0.49), mayo_level = 2L, dose_per_kg_mg = 5,  treatment = "5 mg/kg",  id_offset =     0L),
   make_cohort(round(n_per * 0.51), mayo_level = 3L, dose_per_kg_mg = 5,  treatment = "5 mg/kg",  id_offset =   500L)
@@ -266,10 +266,10 @@ knitr::kable(nca_summary, caption = "PKNCA summary on the [0, 84]-day induction 
 
 | Interval Start | Interval End | treatment_mayo | N | AUClast (day\*mg/L) | Cmax (mg/L) | Cmin (mg/L) | Tmax (day) |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | 84 | 10 mg/kg, Mayo 2 | 245 | 5150 \[42.8\] | 129 \[35.5\] | 16.1 \[98.3\] | 14.0 \[14.0, 42.0\] |
-| 0 | 84 | 10 mg/kg, Mayo 3 | 255 | 4240 \[45.5\] | 118 \[36.3\] | 9.27 \[136\] | 14.0 \[14.0, 42.0\] |
-| 0 | 84 | 5 mg/kg, Mayo 2 | 245 | 2410 \[45.6\] | 61.8 \[36.2\] | 6.93 \[116\] | 14.0 \[14.0, 42.0\] |
-| 0 | 84 | 5 mg/kg, Mayo 3 | 255 | 2090 \[42.5\] | 58.7 \[32.5\] | 4.45 \[126\] | 14.0 \[14.0, 42.0\] |
+| 0 | 84 | 10 mg/kg, Mayo 2 | 74 | 4970 \[46.5\] | 126 \[36.2\] | 14.7 \[116\] | 14.0 \[14.0, 42.0\] |
+| 0 | 84 | 10 mg/kg, Mayo 3 | 76 | 4070 \[47.6\] | 115 \[38.1\] | 8.33 \[138\] | 14.0 \[14.0, 42.0\] |
+| 0 | 84 | 5 mg/kg, Mayo 2 | 74 | 2420 \[42.2\] | 62.4 \[29.4\] | 6.74 \[132\] | 14.0 \[14.0, 42.0\] |
+| 0 | 84 | 5 mg/kg, Mayo 3 | 76 | 2050 \[45.4\] | 57.7 \[36.2\] | 4.34 \[119\] | 14.0 \[14.0, 42.0\] |
 
 PKNCA summary on the \[0, 84\]-day induction window, by treatment and
 baseline Mayo subscore. {.table}
@@ -318,10 +318,10 @@ knitr::kable(
 
 | treatment | MAYO_E | median_pub | q05_pub | q95_pub | median_sim | q05_sim | q95_sim | pct_diff_median |
 |:---|---:|---:|---:|---:|---:|---:|---:|---:|
-| 5 mg/kg | 2 | 2455 | 1215 | 4805 | 2426 | 1149 | 4689 | -1 |
-| 5 mg/kg | 3 | 1979 | 953 | 3990 | 2097 | 1077 | 3991 | 6 |
-| 10 mg/kg | 2 | 4910 | 2431 | 9609 | 4968 | 2633 | 10219 | 1 |
-| 10 mg/kg | 3 | 3958 | 1906 | 7981 | 4285 | 2188 | 8650 | 8 |
+| 5 mg/kg | 2 | 2455 | 1215 | 4805 | 2469 | 1278 | 4089 | 1 |
+| 5 mg/kg | 3 | 1979 | 953 | 3990 | 2056 | 972 | 3857 | 4 |
+| 10 mg/kg | 2 | 4910 | 2431 | 9609 | 4930 | 2668 | 10019 | 0 |
+| 10 mg/kg | 3 | 3958 | 1906 | 7981 | 3878 | 2015 | 7721 | -2 |
 
 Simulated vs. published AUCd84 (mg\*day/L), by dose and baseline Mayo
 subscore (Faelens 2021 Table 1, ‘pub’ = published median + 90% PI).

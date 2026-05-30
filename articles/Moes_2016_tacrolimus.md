@@ -324,10 +324,10 @@ knitr::kable(nca_summary,
 
 | start | end | cohort | N | auclast | cmax | cmin | tmax | ctrough |
 |---:|---:|:---|:---|:---|:---|:---|:---|:---|
-| 0 | 24 | C1 (both nonexpressers) | 200 | 155 \[35.0\] | 11.2 \[34.8\] | 4.57 \[48.7\] | 2.00 \[0.500, 6.00\] | 4.64 \[49.9\] |
-| 0 | 24 | C2 (recipient *1, donor* 3/\*3) | 200 | 126 \[42.3\] | 9.74 \[40.6\] | 3.48 \[60.2\] | 2.00 \[0.500, 7.00\] | 3.51 \[61.1\] |
-| 0 | 24 | C3 (recipient *3/*3, donor \*1) | 200 | 120 \[40.3\] | 10.0 \[43.8\] | 3.22 \[61.5\] | 2.00 \[0.500, 7.00\] | 3.24 \[62.4\] |
-| 0 | 24 | C4 (both \*1 carriers) | 200 | 93.3 \[40.4\] | 8.34 \[41.9\] | 2.28 \[65.3\] | 2.00 \[0.500, 5.50\] | 2.29 \[65.9\] |
+| 0 | 24 | C1 (both nonexpressers) | 200 | 160 \[38.8\] | 11.4 \[38.0\] | 4.76 \[52.1\] | 2.00 \[0.500, 7.00\] | 4.84 \[53.3\] |
+| 0 | 24 | C2 (recipient *1, donor* 3/\*3) | 200 | 121 \[43.2\] | 9.34 \[41.2\] | 3.31 \[62.9\] | 2.00 \[0.500, 9.00\] | 3.34 \[63.9\] |
+| 0 | 24 | C3 (recipient *3/*3, donor \*1) | 200 | 124 \[40.2\] | 9.42 \[38.0\] | 3.45 \[59.3\] | 2.00 \[0.500, 5.50\] | 3.48 \[60.4\] |
+| 0 | 24 | C4 (both \*1 carriers) | 200 | 92.2 \[40.4\] | 8.02 \[45.6\] | 2.28 \[64.4\] | 2.00 \[0.500, 7.00\] | 2.30 \[65.0\] |
 
 Steady-state 24-hour NCA on the simulated cohort, by CYP3A5 combination
 (3 mg once daily). {.table style="width:100%;"}
@@ -388,10 +388,10 @@ knitr::kable(tbl, caption = "Simulated steady-state AUC0-24 vs Moes 2016 Table 1
 |:---|:---|
 | Moes 2016 Table 1, all-subject AUC24 mean +/- SD (ug\*h/L) | 170 +/- 55 |
 | Moes 2016 Table 1, all-subject AUC24 median (range) (ug\*h/L) | 162 (72-330) |
-| Simulated C1 median AUC24 (10-90 pct) at 3 mg/day (ug\*h/L) | 157 (101-234) |
-| Simulated C2 median AUC24 (10-90 pct) at 3 mg/day (ug\*h/L) | 126 (77-206) |
-| Simulated C3 median AUC24 (10-90 pct) at 3 mg/day (ug\*h/L) | 123 (74-195) |
-| Simulated C4 median AUC24 (10-90 pct) at 3 mg/day (ug\*h/L) | 94 (58-159) |
+| Simulated C1 median AUC24 (10-90 pct) at 3 mg/day (ug\*h/L) | 160 (98-258) |
+| Simulated C2 median AUC24 (10-90 pct) at 3 mg/day (ug\*h/L) | 122 (70-199) |
+| Simulated C3 median AUC24 (10-90 pct) at 3 mg/day (ug\*h/L) | 128 (73-198) |
+| Simulated C4 median AUC24 (10-90 pct) at 3 mg/day (ug\*h/L) | 91 (56-152) |
 
 Simulated steady-state AUC0-24 vs Moes 2016 Table 1 reported AUC24.
 {.table}

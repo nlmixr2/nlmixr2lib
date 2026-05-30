@@ -375,8 +375,6 @@ dose_df <- events |>
 
 conc_as <- PKNCA::PKNCAconc(sim_nca_as, Cc ~ time | cohort + id,
                             concu = "ng/mL", timeu = "h")
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
 dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | cohort + id,
                              doseu = "mg")
 
@@ -391,8 +389,6 @@ intervals <- data.frame(
 
 nca_data_as <- PKNCA::PKNCAdata(conc_as, dose_obj, intervals = intervals)
 nca_res_as  <- PKNCA::pk.nca(nca_data_as)
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (0.01) is not allowed
 #> Warning: Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
@@ -440,37 +436,11 @@ nca_res_as  <- PKNCA::pk.nca(nca_data_as)
 #> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (0.01) is not allowed
-#> Warning in assert_conc(conc = conc): Negative concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in log(data$conc): NaNs produced
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (0.01) is not allowed
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (0.01) is not allowed
-#> Warning in assert_conc(conc = conc): Negative concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in log(data$conc): NaNs produced
-#> Warning: Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
@@ -607,9 +577,9 @@ knitr::kable(
 
 | Interval Start | Interval End | cohort | N | AUClast (h\*ng/mL) | Cmax (ng/mL) | Tmax (h) | Half-life (h) |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | 12 | 2 mg/kg, fasted | 60 | NC | 52.2 \[55.2\] | 0.470 \[0.0700, 2.70\] | 0.951 \[0.649\] |
-| 0 | 12 | 4 mg/kg, fasted | 60 | NC | 103 \[52.1\] | 0.550 \[0.0900, 2.10\] | 1.06 \[0.827\] |
-| 0 | 12 | 4 mg/kg, fed | 60 | NC | 53.9 \[81.8\] | 1.30 \[0.220, 4.65\] | 2.09 \[1.89\] |
+| 0 | 12 | 2 mg/kg, fasted | 60 | NC | 63.5 \[57.9\] | 0.480 \[0.0800, 2.15\] | 0.940 \[0.776\] |
+| 0 | 12 | 4 mg/kg, fasted | 60 | NC | 108 \[52.7\] | 0.460 \[0.0800, 2.45\] | 0.838 \[0.503\] |
+| 0 | 12 | 4 mg/kg, fed | 60 | NC | 47.9 \[95.2\] | 1.05 \[0.160, 5.90\] | 2.70 \[3.49\] |
 
 Simulated NCA parameters (AS) by cohort. {.table}
 
@@ -811,9 +781,9 @@ knitr::kable(
 
 | Interval Start | Interval End | cohort | N | AUClast (h\*ng/mL) | Cmax (ng/mL) | Tmax (h) | Half-life (h) |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | 12 | 2 mg/kg, fasted | 60 | NC | 293 \[43.2\] | 1.43 \[0.550, 3.95\] | 2.11 \[0.383\] |
-| 0 | 12 | 4 mg/kg, fasted | 60 | NC | 548 \[35.0\] | 1.50 \[0.800, 4.75\] | 2.16 \[0.665\] |
-| 0 | 12 | 4 mg/kg, fed | 60 | NC | 361 \[61.2\] | 2.68 \[0.800, 5.75\] | 2.85 \[1.88\] |
+| 0 | 12 | 2 mg/kg, fasted | 60 | NC | 287 \[41.8\] | 1.45 \[0.550, 3.70\] | 2.21 \[0.503\] |
+| 0 | 12 | 4 mg/kg, fasted | 60 | NC | 606 \[38.3\] | 1.38 \[0.700, 3.90\] | 2.11 \[0.283\] |
+| 0 | 12 | 4 mg/kg, fed | 60 | NC | 345 \[72.4\] | 2.28 \[0.550, 8.10\] | 3.56 \[3.54\] |
 
 Simulated NCA parameters (DHA) by cohort. {.table}
 

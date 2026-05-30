@@ -248,9 +248,9 @@ knitr::kable(
 
 | band      | pct_simulated | pct_published |
 |:----------|--------------:|--------------:|
-| \<8 mg/L  |          82.4 |          68.2 |
-| 8-12 mg/L |          12.4 |          16.2 |
-| \>12 mg/L |           5.1 |          15.6 |
+| \<8 mg/L  |          85.2 |          68.2 |
+| 8-12 mg/L |           9.3 |          16.2 |
+| \>12 mg/L |           5.5 |          15.6 |
 
 Distribution of simulated steady-state troughs vs published TSC
 distribution (Marquez-Megias 2023, Section 3.1). {.table}
@@ -273,9 +273,9 @@ knitr::kable(
 
 |     | statistic              | simulated | published |
 |:----|:-----------------------|----------:|----------:|
-|     | median Cc (mg/L)       |      3.10 |       4.9 |
-| 5%  | 5th percentile (mg/L)  |      0.22 |        NA |
-| 95% | 95th percentile (mg/L) |     12.35 |        NA |
+|     | median Cc (mg/L)       |      3.14 |       4.9 |
+| 5%  | 5th percentile (mg/L)  |      0.16 |        NA |
+| 95% | 95th percentile (mg/L) |     12.33 |        NA |
 
 Simulated steady-state trough summary vs published median TSC
 (Marquez-Megias 2023, Table 1). {.table}
@@ -345,11 +345,11 @@ knitr::kable(
 
 | PPTESTCD |  median |    q05 |     q95 |
 |:---------|--------:|-------:|--------:|
-| auclast  | 1297.22 | 199.06 | 4490.95 |
-| cav      |    3.86 |   0.59 |   13.37 |
-| cmax     |    4.43 |   0.90 |   13.81 |
-| cmin     |    3.09 |   0.22 |   11.87 |
-| ctrough  |    3.09 |   0.22 |   11.87 |
+| auclast  | 1315.25 | 156.60 | 4413.42 |
+| cav      |    3.91 |   0.47 |   13.14 |
+| cmax     |    4.40 |   0.82 |   13.53 |
+| cmin     |    3.14 |   0.16 |   12.19 |
+| ctrough  |    3.14 |   0.16 |   12.19 |
 | tmax     |  120.00 |  48.00 |  144.00 |
 
 Simulated steady-state NCA over a 14-day maintenance interval (PKNCA, n

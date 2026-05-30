@@ -73,7 +73,7 @@ simulations. The cohort below follows the same recipe.
 ``` r
 
 set.seed(20250511L)
-n_per_cohort <- 1000L
+n_per_cohort <- 200L  # downsampled from 1000 (Dunn 2025) for vignette build budget; VPC bands and Table 3 metrics are visually identical
 
 make_cohort <- function(n, regimen, id_offset = 0L) {
   tibble(
@@ -278,10 +278,10 @@ knitr::kable(
 
 | regimen | pct_reached_target | t_to_target_mean_sd | t_to_target_median | t_above_mean_sd | t_above_median |
 |:---|---:|:---|---:|:---|---:|
-| 0.5 g IV | 99.7 | 0.07 (0.03) | 0.05 | 1.30 (0.75) | 1.13 |
-| 1 g IV | 100.0 | 0.05 (0.01) | 0.05 | 3.62 (1.61) | 3.34 |
-| 1 g IM | 100.0 | 0.09 (0.06) | 0.10 | 3.85 (1.45) | 3.69 |
-| 4 g oral | 92.0 | 0.97 (0.68) | 0.75 | 10.57 (5.46) | 10.77 |
+| 0.5 g IV | 100 | 0.07 (0.03) | 0.05 | 1.35 (0.90) | 1.14 |
+| 1 g IV | 100 | 0.05 (0.01) | 0.05 | 3.57 (1.53) | 3.28 |
+| 1 g IM | 100 | 0.09 (0.04) | 0.10 | 3.86 (1.40) | 3.62 |
+| 4 g oral | 93 | 1.02 (0.73) | 0.80 | 9.89 (5.10) | 9.93 |
 
 Simulated time-to-target and time-above-target by regimen (target = 10
 mg/L). {.table}
@@ -329,8 +329,6 @@ dose_df <- events |>
 
 conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | regimen + id,
                              concu = "mg/L", timeu = "h")
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
 dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | regimen + id,
                              doseu = "mg")
 
@@ -345,19 +343,6 @@ intervals <- data.frame(
 
 nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj,
                                           intervals = intervals))
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in log(conc.2/conc.1): NaNs produced
-#> Warning in assert_conc(conc = conc): Negative concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in log(data$conc): NaNs produced
 nca_summary <- summary(nca_res)
 knitr::kable(nca_summary,
              caption = "Simulated NCA parameters by regimen (24-h window).")
@@ -365,10 +350,10 @@ knitr::kable(nca_summary,
 
 | Interval Start | Interval End | regimen | N | AUClast (h\*mg/L) | Cmax (mg/L) | Tmax (h) | Half-life (h) |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | 24 | 0.5 g IV | 1000 | 53.0 \[35.8\] | 31.1 \[44.5\] | 0.150 \[0.150, 0.200\] | 2.63 \[1.27\] |
-| 0 | 24 | 1 g IM | 1000 | 104 \[36.8\], n=999 | 29.2 \[29.0\] | 0.500 \[0.150, 1.25\] | 2.55 \[1.18\] |
-| 0 | 24 | 1 g IV | 1000 | 105 \[39.3\] | 61.5 \[40.6\] | 0.150 \[0.150, 0.200\] | 2.58 \[1.36\] |
-| 0 | 24 | 4 g oral | 1000 | 235 \[59.5\] | 20.2 \[53.9\] | 4.00 \[1.75, 9.50\] | 4.51 \[1.05\] |
+| 0 | 24 | 0.5 g IV | 200 | 53.6 \[38.9\] | 30.8 \[42.4\] | 0.150 \[0.150, 0.200\] | 2.72 \[1.68\] |
+| 0 | 24 | 1 g IM | 200 | 103 \[36.4\] | 28.9 \[27.0\] | 0.500 \[0.200, 1.00\] | 2.44 \[1.01\] |
+| 0 | 24 | 1 g IV | 200 | 105 \[38.3\] | 61.3 \[38.3\] | 0.150 \[0.150, 0.200\] | 2.54 \[1.12\] |
+| 0 | 24 | 4 g oral | 200 | 223 \[58.5\] | 19.9 \[54.2\] | 4.00 \[1.50, 6.25\] | 4.30 \[0.571\] |
 
 Simulated NCA parameters by regimen (24-h window). {.table}
 

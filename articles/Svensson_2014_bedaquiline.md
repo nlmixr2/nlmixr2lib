@@ -344,9 +344,9 @@ knitr::kable(
 
 | Interval Start | Interval End | treatment | N | AUClast (h\*mg/L) | Cmax (mg/L) | Tmax (h) | Half-life (h) | AUCinf,obs (h\*mg/L) |
 |---:|---:|:---|:---|:---|:---|:---|:---|:---|
-| 0 | 336 | BDQ + rifampicin | 32 | 21.0 \[23.2\] | 1.46 \[14.9\] | 3.25 \[2.50, 5.00\] | 374 \[33.2\] | 23.9 \[26.7\] |
-| 0 | 336 | BDQ + rifapentine | 32 | 22.3 \[28.7\] | 1.53 \[23.0\] | 3.50 \[2.50, 4.50\] | 391 \[37.5\] | 26.0 \[33.2\] |
-| 0 | 336 | BDQ alone | 32 | 57.5 \[18.7\] | 2.59 \[19.8\] | 4.50 \[3.00, 6.50\] | 532 \[109\] | 86.4 \[24.2\] |
+| 0 | 336 | BDQ + rifampicin | 32 | 20.2 \[26.5\] | 1.48 \[19.1\] | 3.00 \[2.50, 4.00\] | 382 \[18.5\] | 23.0 \[30.2\] |
+| 0 | 336 | BDQ + rifapentine | 32 | 22.1 \[28.4\] | 1.53 \[24.6\] | 3.00 \[2.00, 5.00\] | 380 \[35.7\] | 25.4 \[31.1\] |
+| 0 | 336 | BDQ alone | 32 | 54.4 \[22.3\] | 2.48 \[18.6\] | 4.50 \[2.50, 6.50\] | 565 \[114\] | 85.2 \[29.1\] |
 
 Simulated NCA parameters for bedaquiline by treatment arm. {.table}
 
@@ -378,9 +378,9 @@ knitr::kable(
 
 | Interval Start | Interval End | treatment | N | AUClast (h\*mg/L) | Cmax (mg/L) | Tmax (h) | Half-life (h) | AUCinf,obs (h\*mg/L) |
 |---:|---:|:---|:---|:---|:---|:---|:---|:---|
-| 0 | 336 | BDQ + rifampicin | 32 | 4.67 \[21.9\] | 0.0754 \[25.2\] | 9.50 \[6.00, 14.0\] | 124 \[24.1\] | 5.22 \[24.7\] |
-| 0 | 336 | BDQ + rifapentine | 32 | 4.60 \[32.5\] | 0.0699 \[29.6\] | 9.50 \[6.50, 16.0\] | 133 \[30.8\] | 5.25 \[35.5\] |
-| 0 | 336 | BDQ alone | 32 | 6.76 \[24.2\] | 0.0381 \[30.8\] | 14.0 \[8.00, 20.0\] | 1480 \[3810\] | 26.0 \[82.0\] |
+| 0 | 336 | BDQ + rifampicin | 32 | 4.80 \[31.9\] | 0.0764 \[22.1\] | 9.00 \[6.50, 13.0\] | 124 \[27.9\] | 5.36 \[37.7\] |
+| 0 | 336 | BDQ + rifapentine | 32 | 5.20 \[32.9\] | 0.0717 \[25.2\] | 10.0 \[7.50, 15.0\] | 132 \[19.2\] | 5.97 \[35.4\] |
+| 0 | 336 | BDQ alone | 32 | 6.91 \[25.8\] | 0.0375 \[33.3\] | 14.0 \[8.50, 18.0\] | 641 \[342\] | 20.7 \[43.1\] |
 
 Simulated NCA parameters for M2 metabolite by treatment arm. {.table
 style="width:100%;"}
@@ -400,14 +400,14 @@ bdq_auc <- auclast_by_arm(nca_summary_bdq)
 m2_auc  <- auclast_by_arm(nca_summary_m2)
 print(bdq_auc)
 #>           treatment AUClast (h*mg/L)
-#> 1  BDQ + rifampicin      21.0 [23.2]
-#> 2 BDQ + rifapentine      22.3 [28.7]
-#> 3         BDQ alone      57.5 [18.7]
+#> 1  BDQ + rifampicin      20.2 [26.5]
+#> 2 BDQ + rifapentine      22.1 [28.4]
+#> 3         BDQ alone      54.4 [22.3]
 print(m2_auc)
 #>           treatment AUClast (h*mg/L)
-#> 1  BDQ + rifampicin      4.67 [21.9]
-#> 2 BDQ + rifapentine      4.60 [32.5]
-#> 3         BDQ alone      6.76 [24.2]
+#> 1  BDQ + rifampicin      4.80 [31.9]
+#> 2 BDQ + rifapentine      5.20 [32.9]
+#> 3         BDQ alone      6.91 [25.8]
 ```
 
 > Compute the GMRs by hand from the printed AUClast medians: divide the

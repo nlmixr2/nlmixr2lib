@@ -516,7 +516,7 @@ extraction time. The following choices were made:
     warns on these but does not error; the names are descriptive of the
     source paper’s notation and consistent with the precedent set by
     oncology TGI models in the same therapeuticArea / category (e.g.,
-    `tumorSize`, `cyclingCells`).
+    `tumor_size`, `cycling_cells`).
 
 9.  **Bridge to the related Conrado 2014 ADAS-Cog model.** The
     `Conrado_2014_alzheimer.R` model in this package is a complementary

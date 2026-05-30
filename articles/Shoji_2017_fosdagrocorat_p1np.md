@@ -150,7 +150,7 @@ sim_typ <- rxode2::rxSolve(
   rxode2::zeroRe(mod), events = events,
   keep = c("arm", "DOSE", "DRUG_PRED")
 ) |> as.data.frame()
-#> ℹ omega/sigma items treated as zero: 'etalkde', 'etaledk50', 'etalbl', 'etaslp'
+#> ℹ omega/sigma items treated as zero: 'etalkde', 'etaledk50', 'etalrbase', 'etaslp'
 #> Warning: multi-subject simulation without without 'omega'
 ```
 
@@ -249,13 +249,13 @@ knitr::kable(comparison, digits = 1,
 
 | Arm | Published median %CFB (Table 3) | Simulated median %CFB | Difference (pp) |
 |:---|---:|---:|---:|
-| Placebo | 2.5 | 0.5 | -2.0 |
-| Fos 1 mg | -5.7 | -3.7 | 2.0 |
-| Fos 5 mg | -18.2 | -13.5 | 4.7 |
-| Fos 10 mg | -21.7 | -20.4 | 1.3 |
-| Fos 15 mg | -21.6 | -19.5 | 2.1 |
-| Pred 5 mg | -15.4 | -16.7 | -1.3 |
-| Pred 10 mg | -18.3 | -18.4 | -0.1 |
+| Placebo | 2.5 | 1.5 | -1.0 |
+| Fos 1 mg | -5.7 | -8.0 | -2.3 |
+| Fos 5 mg | -18.2 | -18.1 | 0.1 |
+| Fos 10 mg | -21.7 | -19.9 | 1.8 |
+| Fos 15 mg | -21.6 | -21.4 | 0.2 |
+| Pred 5 mg | -15.4 | -12.6 | 2.8 |
+| Pred 10 mg | -18.3 | -14.1 | 4.2 |
 
 P1NP percent change from baseline at week 8 – published vs simulated.
 {.table style="width:100%;"}

@@ -217,8 +217,8 @@ knitr::kable(nca_summary,
 
 | start | end | cohort | N | auclast | cmax | cmin | tmax | ctrough |
 |---:|---:|:---|:---|:---|:---|:---|:---|:---|
-| 0 | 24 | \*1 carrier (expresser) | 200 | 111 \[35.0\] | 10.2 \[31.5\] | 1.92 \[95.5\] | 1.75 \[0.750, 5.50\] | 1.93 \[95.8\] |
-| 0 | 24 | *3/*3 (nonexpresser) | 200 | 231 \[31.6\] | 14.8 \[29.4\] | 6.43 \[50.7\] | 1.75 \[0.750, 6.50\] | 6.50 \[51.6\] |
+| 0 | 24 | \*1 carrier (expresser) | 200 | 109 \[33.4\] | 9.90 \[32.4\] | 1.94 \[88.7\] | 1.75 \[0.750, 5.25\] | 1.94 \[89.1\] |
+| 0 | 24 | *3/*3 (nonexpresser) | 200 | 239 \[32.9\] | 15.3 \[32.0\] | 6.77 \[46.8\] | 1.88 \[0.750, 6.75\] | 6.84 \[47.7\] |
 
 Day-10 NCA on the simulated cohort (steady-state 24 h interval, 4.63 mg
 once daily, by CYP3A5 stratum). {.table}
@@ -258,10 +258,10 @@ knitr::kable(cv_table,
 
 | PPTESTCD | paper_label        | paper_CV_pct_pooled | simulated_CV_pct |
 |:---------|:-------------------|--------------------:|-----------------:|
-| auclast  | AUC24              |                  47 |             48.1 |
-| cmax     | Cmax               |                  45 |             35.8 |
-| cmin     | C0 (Cmin / trough) |                  45 |             70.9 |
-| tmax     | tmax               |                  46 |             41.9 |
+| auclast  | AUC24              |                  47 |             50.2 |
+| cmax     | Cmax               |                  45 |             39.2 |
+| cmin     | C0 (Cmin / trough) |                  45 |             70.1 |
+| tmax     | tmax               |                  46 |             41.8 |
 
 Pooled-cohort %CV on dose-normalised exposure metrics: simulated (this
 vignette, n = 400 across both strata) vs. Benkali 2010 reported value

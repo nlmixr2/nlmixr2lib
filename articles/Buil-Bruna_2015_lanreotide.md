@@ -4,7 +4,7 @@
 
 library(nlmixr2lib)
 library(rxode2)
-#> rxode2 5.0.2 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.1 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -402,10 +402,10 @@ knitr::kable(whole_tbl, digits = 2, caption = "Simulated whole-population SS NCA
 
 | PPTESTCD |  gmean |  pmin |   pmax |
 |:---------|-------:|------:|-------:|
-| auclast  | 226.78 | 93.73 | 612.39 |
-| cav      |   8.10 |  3.35 |  21.87 |
-| cmax     |  11.72 |  4.70 |  30.75 |
-| cmin     |   5.94 |  1.84 |  17.60 |
+| auclast  | 220.42 | 53.77 | 457.06 |
+| cav      |   7.87 |  1.92 |  16.32 |
+| cmax     |  11.31 |  2.97 |  25.53 |
+| cmin     |   5.86 |  1.29 |  12.76 |
 
 Simulated whole-population SS NCA (compare against Buil-Bruna 2015 Table
 3 ‘Whole population’). {.table}
@@ -415,16 +415,16 @@ Simulated whole-population SS NCA (compare against Buil-Bruna 2015 Table
 knitr::kable(sex_tbl,   digits = 2, caption = "Simulated SS NCA by sex (compare against Table 3 'Males' / 'Females').")
 ```
 
-| sex_group | PPTESTCD |  gmean |   pmin |   pmax |
-|:----------|:---------|-------:|-------:|-------:|
-| Female    | auclast  | 234.14 |  93.73 | 435.63 |
-| Female    | cav      |   8.36 |   3.35 |  15.56 |
-| Female    | cmax     |  11.17 |   4.70 |  28.19 |
-| Female    | cmin     |   6.28 |   2.48 |  12.50 |
-| Male      | auclast  | 220.77 | 114.06 | 612.39 |
-| Male      | cav      |   7.88 |   4.07 |  21.87 |
-| Male      | cmax     |  12.20 |   5.24 |  30.75 |
-| Male      | cmin     |   5.67 |   1.84 |  17.60 |
+| sex_group | PPTESTCD |  gmean |  pmin |   pmax |
+|:----------|:---------|-------:|------:|-------:|
+| Female    | auclast  | 230.32 | 92.93 | 457.06 |
+| Female    | cav      |   8.23 |  3.32 |  16.32 |
+| Female    | cmax     |  10.98 |  3.64 |  25.53 |
+| Female    | cmin     |   6.20 |  2.66 |  12.72 |
+| Male      | auclast  | 212.43 | 53.77 | 451.63 |
+| Male      | cav      |   7.59 |  1.92 |  16.13 |
+| Male      | cmax     |  11.60 |  2.97 |  24.21 |
+| Male      | cmin     |   5.59 |  1.29 |  12.76 |
 
 Simulated SS NCA by sex (compare against Table 3 ‘Males’ / ‘Females’).
 {.table}
@@ -436,18 +436,18 @@ knitr::kable(bw_tbl,    digits = 2, caption = "Simulated SS NCA by BW band (comp
 
 | bw_group          | PPTESTCD |  gmean |   pmin |   pmax |
 |:------------------|:---------|-------:|-------:|-------:|
-| BW 70-77 kg (mid) | auclast  | 224.63 | 121.73 | 612.39 |
-| BW 70-77 kg (mid) | cav      |   8.02 |   4.35 |  21.87 |
-| BW 70-77 kg (mid) | cmax     |  11.62 |   5.79 |  30.75 |
-| BW 70-77 kg (mid) | cmin     |   5.86 |   2.56 |  17.60 |
-| BW \<= 62 kg      | auclast  | 271.41 | 132.10 | 446.91 |
-| BW \<= 62 kg      | cav      |   9.69 |   4.72 |  15.96 |
-| BW \<= 62 kg      | cmax     |  13.72 |   7.30 |  28.19 |
-| BW \<= 62 kg      | cmin     |   7.29 |   2.48 |  13.69 |
-| BW \>= 89 kg      | auclast  | 186.68 |  93.73 | 365.46 |
-| BW \>= 89 kg      | cav      |   6.67 |   3.35 |  13.05 |
-| BW \>= 89 kg      | cmax     |   9.89 |   4.70 |  20.62 |
-| BW \>= 89 kg      | cmin     |   4.81 |   1.84 |  10.46 |
+| BW 70-77 kg (mid) | auclast  | 223.33 | 125.45 | 457.06 |
+| BW 70-77 kg (mid) | cav      |   7.98 |   4.48 |  16.32 |
+| BW 70-77 kg (mid) | cmax     |  11.58 |   5.49 |  25.53 |
+| BW 70-77 kg (mid) | cmin     |   5.84 |   1.29 |  12.76 |
+| BW \<= 62 kg      | auclast  | 268.40 | 142.84 | 428.01 |
+| BW \<= 62 kg      | cav      |   9.59 |   5.10 |  15.29 |
+| BW \<= 62 kg      | cmax     |  13.69 |   5.54 |  23.96 |
+| BW \<= 62 kg      | cmin     |   7.18 |   3.75 |  12.72 |
+| BW \>= 89 kg      | auclast  | 163.13 |  53.77 | 330.00 |
+| BW \>= 89 kg      | cav      |   5.83 |   1.92 |  11.79 |
+| BW \>= 89 kg      | cmax     |   8.14 |   2.97 |  18.00 |
+| BW \>= 89 kg      | cmin     |   4.57 |   1.66 |   8.17 |
 
 Simulated SS NCA by BW band (compare against Table 3 BW columns).
 {.table}

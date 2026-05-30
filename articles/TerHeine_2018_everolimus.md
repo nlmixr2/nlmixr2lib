@@ -413,36 +413,36 @@ knitr::kable(
 
 | regimen               | PPTESTCD |  median |    q05 |     q95 |
 |:----------------------|:---------|--------:|-------:|--------:|
-| 0.75 mg BID (no pred) | auclast  |   7.812 |  4.545 |  13.621 |
-| 0.75 mg BID (no pred) | cav      |   0.651 |  0.379 |   1.135 |
-| 0.75 mg BID (no pred) | cmax     |   1.309 |  0.833 |   2.577 |
-| 0.75 mg BID (no pred) | cmin     |   0.430 |  0.234 |   0.803 |
-| 0.75 mg BID (no pred) | tmax     |   0.750 |  0.250 |   2.887 |
-| 1 mg BID (no pred)    | auclast  |  12.096 |  6.866 |  21.890 |
-| 1 mg BID (no pred)    | cav      |   1.008 |  0.572 |   1.824 |
-| 1 mg BID (no pred)    | cmax     |   2.349 |  1.143 |   4.292 |
-| 1 mg BID (no pred)    | cmin     |   0.661 |  0.360 |   1.292 |
-| 1 mg BID (no pred)    | tmax     |   0.500 |  0.250 |   1.887 |
-| 10 mg QD (cancer)     | auclast  | 117.326 | 67.829 | 234.408 |
-| 10 mg QD (cancer)     | cav      |   4.889 |  2.826 |   9.767 |
-| 10 mg QD (cancer)     | cmax     |  17.535 |  9.870 |  33.782 |
-| 10 mg QD (cancer)     | cmin     |   2.543 |  1.338 |   6.075 |
-| 10 mg QD (cancer)     | tmax     |   0.750 |  0.250 |   2.000 |
-| 2.25 mg BID (no pred) | auclast  |  25.453 | 14.268 |  42.353 |
-| 2.25 mg BID (no pred) | cav      |   2.121 |  1.189 |   3.529 |
-| 2.25 mg BID (no pred) | cmax     |   4.789 |  2.726 |   9.194 |
-| 2.25 mg BID (no pred) | cmin     |   1.411 |  0.696 |   2.670 |
-| 2.25 mg BID (no pred) | tmax     |   0.750 |  0.250 |   2.637 |
-| 3 mg BID (high pred)  | auclast  |  23.581 | 14.721 |  35.020 |
-| 3 mg BID (high pred)  | cav      |   1.965 |  1.227 |   2.918 |
-| 3 mg BID (high pred)  | cmax     |   4.466 |  2.604 |   7.397 |
-| 3 mg BID (high pred)  | cmin     |   1.314 |  0.746 |   2.092 |
-| 3 mg BID (high pred)  | tmax     |   0.750 |  0.363 |   1.887 |
-| 3.75 mg BID (cancer)  | auclast  |  38.694 | 23.837 |  70.122 |
-| 3.75 mg BID (cancer)  | cav      |   3.225 |  1.986 |   5.843 |
-| 3.75 mg BID (cancer)  | cmax     |   7.027 |  4.307 |  12.439 |
-| 3.75 mg BID (cancer)  | cmin     |   2.162 |  1.186 |   4.232 |
-| 3.75 mg BID (cancer)  | tmax     |   0.750 |  0.250 |   2.887 |
+| 0.75 mg BID (no pred) | auclast  |   7.623 |  3.957 |  12.159 |
+| 0.75 mg BID (no pred) | cav      |   0.635 |  0.330 |   1.013 |
+| 0.75 mg BID (no pred) | cmax     |   1.381 |  0.753 |   2.461 |
+| 0.75 mg BID (no pred) | cmin     |   0.426 |  0.204 |   0.740 |
+| 0.75 mg BID (no pred) | tmax     |   0.750 |  0.250 |   2.137 |
+| 1 mg BID (no pred)    | auclast  |  10.112 |  7.050 |  19.488 |
+| 1 mg BID (no pred)    | cav      |   0.843 |  0.588 |   1.624 |
+| 1 mg BID (no pred)    | cmax     |   1.917 |  1.241 |   3.510 |
+| 1 mg BID (no pred)    | cmin     |   0.571 |  0.360 |   1.187 |
+| 1 mg BID (no pred)    | tmax     |   0.750 |  0.250 |   1.750 |
+| 10 mg QD (cancer)     | auclast  | 113.533 | 69.932 | 189.248 |
+| 10 mg QD (cancer)     | cav      |   4.731 |  2.914 |   7.885 |
+| 10 mg QD (cancer)     | cmax     |  16.899 |  7.255 |  27.408 |
+| 10 mg QD (cancer)     | cmin     |   2.606 |  1.445 |   4.801 |
+| 10 mg QD (cancer)     | tmax     |   0.750 |  0.250 |   4.162 |
+| 2.25 mg BID (no pred) | auclast  |  24.612 | 13.050 |  48.982 |
+| 2.25 mg BID (no pred) | cav      |   2.051 |  1.087 |   4.082 |
+| 2.25 mg BID (no pred) | cmax     |   4.522 |  2.395 |   8.146 |
+| 2.25 mg BID (no pred) | cmin     |   1.383 |  0.671 |   2.961 |
+| 2.25 mg BID (no pred) | tmax     |   0.750 |  0.250 |   2.550 |
+| 3 mg BID (high pred)  | auclast  |  25.796 | 13.071 |  40.056 |
+| 3 mg BID (high pred)  | cav      |   2.150 |  1.089 |   3.338 |
+| 3 mg BID (high pred)  | cmax     |   4.899 |  2.714 |   8.814 |
+| 3 mg BID (high pred)  | cmin     |   1.351 |  0.675 |   2.289 |
+| 3 mg BID (high pred)  | tmax     |   0.750 |  0.250 |   1.750 |
+| 3.75 mg BID (cancer)  | auclast  |  43.342 | 26.166 |  76.180 |
+| 3.75 mg BID (cancer)  | cav      |   3.612 |  2.181 |   6.348 |
+| 3.75 mg BID (cancer)  | cmax     |   8.050 |  5.007 |  15.768 |
+| 3.75 mg BID (cancer)  | cmin     |   2.470 |  1.324 |   4.503 |
+| 3.75 mg BID (cancer)  | tmax     |   0.750 |  0.250 |   2.387 |
 
 Steady-state plasma NCA per regimen (median with 90% range across the
 50-subject simulated cohort). AUC (auclast) units: ug\*h/L; Cmax / Cmin

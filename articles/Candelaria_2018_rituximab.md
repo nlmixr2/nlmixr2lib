@@ -4,7 +4,7 @@
 
 library(nlmixr2lib)
 library(rxode2)
-#> rxode2 5.0.2 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.1 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -535,8 +535,8 @@ knitr::kable(
 
 | Interval Start | Interval End | treatment | N | AUClast (day\*ug/mL) | Cmax (ug/mL) | Cmin (ug/mL) | Tmax (day) |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | 21 | cycle1 | 250 | NC | 197 \[13.4\] | 26.5 \[33.6\] | 0.200 \[0.200, 0.200\] |
-| 0 | 21 | cycle6 | 250 | 2080 \[26.4\] | 250 \[11.8\] | 51.6 \[41.6\] | 0.250 \[0.250, 0.250\] |
+| 0 | 21 | cycle1 | 250 | NC | 197 \[14.4\] | 26.5 \[34.3\] | 0.200 \[0.200, 0.200\] |
+| 0 | 21 | cycle6 | 250 | 2080 \[27.0\] | 250 \[14.0\] | 51.6 \[42.7\] | 0.250 \[0.250, 0.250\] |
 
 Simulated NCA parameters for cycle 1 (single dose, 0-21 days) and cycle
 6 (steady-state, 0-21 days post the cycle-6 dose). {.table}
@@ -591,10 +591,10 @@ knitr::kable(comparison, digits = 1,
 
 | Parameter | Sim (geometric mean) | Candelaria 2018 Table 3 (RTXM83 arm) |
 |:---|---:|---:|
-| Cmax cycle 1 (ug/mL) | 197.1 | 196.8 |
-| AUC0-21d cycle 1 (h\*ug/mL) | 30927.7 | 44519.0 |
-| Cmax cycle 6 (ug/mL) | 249.9 | 291.0 |
-| AUC0-21d cycle 6 (h\*ug/mL) | 50023.5 | 60875.0 |
+| Cmax cycle 1 (ug/mL) | 197.2 | 196.8 |
+| AUC0-21d cycle 1 (h\*ug/mL) | 30824.3 | 44519.0 |
+| Cmax cycle 6 (ug/mL) | 249.8 | 291.0 |
+| AUC0-21d cycle 6 (h\*ug/mL) | 50011.1 | 60875.0 |
 
 Simulated geometric-mean NCA vs Candelaria 2018 Table 3 RTXM83-arm
 geometric LS means. {.table}

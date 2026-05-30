@@ -507,9 +507,9 @@ knitr::kable(nca_tbl,
 | PPTESTCD   |  median |     q05 |      q95 |
 |:-----------|--------:|--------:|---------:|
 | aucinf.obs |      NA |      NA |       NA |
-| cmax       | 7423.08 | 2823.43 | 20009.33 |
-| half.life  |  118.98 |   30.37 |   527.47 |
-| tmax       |   64.00 |   32.00 |   138.30 |
+| cmax       | 7758.77 | 2368.66 | 19986.38 |
+| half.life  |  111.71 |   30.78 |   516.99 |
+| tmax       |   64.00 |   31.80 |   138.30 |
 
 Simulated single-dose NCA for 180 ug SC peginterferon alfa-2a; median
 and 5-95th percentile across the virtual cohort. {.table}

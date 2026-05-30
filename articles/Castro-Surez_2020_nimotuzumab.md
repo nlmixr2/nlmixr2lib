@@ -4,7 +4,7 @@
 
 library(nlmixr2lib)
 library(rxode2)
-#> rxode2 5.0.2 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.1 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(PKNCA)
 #> 
@@ -404,28 +404,28 @@ nca_tbl <- as.data.frame(nca_res$result) |>
   arrange(treatment, PPTESTCD)
 nca_tbl
 #> # A tibble: 20 × 5
-#>    treatment PPTESTCD      median        p05       p95
-#>    <fct>     <chr>          <dbl>      <dbl>     <dbl>
-#>  1 50 mg     aucinf.obs  2867.     2193.      3803.   
-#>  2 50 mg     clast.obs      0.100     0.0204     0.697
-#>  3 50 mg     cmax          40.1      40.1       40.1  
-#>  4 50 mg     half.life    130.       86.9      265.   
-#>  5 50 mg     tmax           0.5       0.5        0.5  
-#>  6 100 mg    aucinf.obs  4936.     4091.      6955.   
-#>  7 100 mg    clast.obs      0.507     0.341      1.44 
-#>  8 100 mg    cmax          37.9      37.9       37.9  
-#>  9 100 mg    half.life    180.      130.       283.   
-#> 10 100 mg    tmax           0.5       0.5        0.5  
-#> 11 200 mg    aucinf.obs  9484.     7306.     13227.   
-#> 12 200 mg    clast.obs      0.595     0.408      1.83 
-#> 13 200 mg    cmax          75.8      75.8       75.8  
-#> 14 200 mg    half.life    168.      115.       268.   
-#> 15 200 mg    tmax           0.5       0.5        0.5  
-#> 16 400 mg    aucinf.obs 17128.    12511.     26952.   
-#> 17 400 mg    clast.obs      0.808     0.484      2.38 
-#> 18 400 mg    cmax         152.      152.       152.   
-#> 19 400 mg    half.life    165.      104.       255.   
-#> 20 400 mg    tmax           0.5       0.5        0.5
+#>    treatment PPTESTCD       median        p05       p95
+#>    <fct>     <chr>           <dbl>      <dbl>     <dbl>
+#>  1 50 mg     aucinf.obs  2830.      2125.      4071.   
+#>  2 50 mg     clast.obs      0.0579     0.0173     0.769
+#>  3 50 mg     cmax          40.1       40.1       40.1  
+#>  4 50 mg     half.life    117.        81.4      282.   
+#>  5 50 mg     tmax           0.5        0.5        0.5  
+#>  6 100 mg    aucinf.obs  4712.      3960.      6236.   
+#>  7 100 mg    clast.obs      0.509      0.345      1.22 
+#>  8 100 mg    cmax          37.9       37.9       37.9  
+#>  9 100 mg    half.life    184.       146.       252.   
+#> 10 100 mg    tmax           0.5        0.5        0.5  
+#> 11 200 mg    aucinf.obs  9120.      7105.     13962.   
+#> 12 200 mg    clast.obs      0.576      0.402      2.13 
+#> 13 200 mg    cmax          75.8       75.8       75.8  
+#> 14 200 mg    half.life    168.       115.       263.   
+#> 15 200 mg    tmax           0.5        0.5        0.5  
+#> 16 400 mg    aucinf.obs 16902.     12970.     26119.   
+#> 17 400 mg    clast.obs      0.736      0.505      2.48 
+#> 18 400 mg    cmax         152.       152.       152.   
+#> 19 400 mg    half.life    166.        98.9      262.   
+#> 20 400 mg    tmax           0.5        0.5        0.5
 ```
 
 ### Comparison against the published narrative values

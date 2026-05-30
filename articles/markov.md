@@ -196,10 +196,9 @@ fit <- nlmixr2est::nlmixr(modFun, data = dMarkov, est = "focei", control = list(
 #> [====|====|====|====|====|====|====|====|====|====] 0:00:00
 #> → compiling EBE model...
 #> ✔ done
-#> rxode2 5.0.2 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.1 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 #> calculating covariance matrix
-#> [====|====|====|====|====|====|====|====|====|====] 0:00:00 
 #> done
 #> → Calculating residuals/tables
 #> ✔ done
@@ -211,8 +210,8 @@ fit
 #> 
 #> ── Time (sec fit$time): ──
 #> 
-#>           setup optimize covariance table compress    other
-#> elapsed 0.03204 0.004784   0.004785 0.275    0.002 3.729391
+#>            setup optimize covariance table compress    other
+#> elapsed 0.056427 0.003647   0.003649 0.048    0.002 3.923277
 #> 
 #> ── (fit$parFixed or fit$parFixedDf): ──
 #> 
@@ -313,10 +312,10 @@ createMarkovTransitionMatrix(colPrev = dMarkov$previous, colCur = dMarkov$curren
 #> mild     0.3333333 0.5000000 0.1666667
 #> moderate 0.3333333 0.3333333 0.3333333
 createMarkovTransitionMatrix(colPrev = dSim$previous, colCur = dSim$current)
-#>               none       mild  moderate
-#> none     0.5128205 0.12820513 0.3589744
-#> mild     0.0000000 0.12500000 0.8750000
-#> moderate 0.4642857 0.07142857 0.4642857
+#>               none       mild moderate
+#> none     0.6086957 0.06521739 0.326087
+#> mild     0.2500000 0.00000000 0.750000
+#> moderate 0.3600000 0.04000000 0.600000
 ```
 
 or summarized in any other useful way.

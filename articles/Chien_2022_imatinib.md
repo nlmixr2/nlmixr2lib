@@ -211,7 +211,7 @@ knitr::kable(
 
 | Interval Start | Interval End | treatment | N | AUClast (h\*ng/mL) | Cmax (ng/mL) | Tmax (h) | Half-life (h) |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | 72 | single 400 mg | 200 | 29700 \[27.4\] | 1810 \[32.0\] | 3.00 \[1.25, 9.25\] | 13.5 \[1.20\] |
+| 0 | 72 | single 400 mg | 200 | 29700 \[24.9\] | 1790 \[27.3\] | 3.25 \[1.25, 10.0\] | 13.3 \[1.25\] |
 
 Simulated NCA parameters for a single 400 mg oral dose of imatinib in
 healthy volunteers. {.table}
@@ -257,9 +257,9 @@ tibble(
 
 | Parameter         | Published_popPK | Simulated_median | Ratio_sim_pub |
 |:------------------|----------------:|-----------------:|--------------:|
-| Cmax (mg/L)       |            1.84 |            1.806 |         0.982 |
-| AUC0-72 (mg\*h/L) |           30.20 |           29.727 |         0.984 |
-| tmax (h, median)  |            2.97 |            3.000 |         1.010 |
+| Cmax (mg/L)       |            1.84 |            1.787 |         0.971 |
+| AUC0-72 (mg\*h/L) |           30.20 |           29.736 |         0.985 |
+| tmax (h, median)  |            2.97 |            3.250 |         1.094 |
 
 Simulated cohort geometric mean / median vs Chien 2022 Table 3 popPK
 column. {.table}

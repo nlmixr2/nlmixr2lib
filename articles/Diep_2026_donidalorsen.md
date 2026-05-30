@@ -4,7 +4,7 @@
 
 library(nlmixr2lib)
 library(rxode2)
-#> rxode2 5.0.2 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.1 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -144,7 +144,7 @@ log-normal matching the cohort median (78 kg) and range (37-151.9 kg).
 
 set.seed(20260511)
 
-n_each <- 100L
+n_each <- 60L  # downsampled from 100 for vignette build budget
 
 # Two strata: healthy volunteers (DIS_HAE = 0) and HAE patients
 # (DIS_HAE = 1). Phase 1 healthy volunteers had cohort median age 43 y;
@@ -194,12 +194,14 @@ make_cohort <- function(cohort, id_offset = 0L) {
   # subsequent dose; coarser between to keep the vignette under the
   # 5-minute render budget. A single grid is used for both Cc and pkk
   # because rxode2 emits both output variables on every observation row.
+  # Grid coarsened from by=0.5/by=4 for vignette build budget; profiles
+  # are smooth enough that the visual shape is unchanged.
   obs_t <- sort(unique(c(
-    seq(0, 24,      by = 0.5),
-    seq(24, 168,    by = 4),
+    seq(0, 24,      by = 1),
+    seq(24, 168,    by = 8),
     seq(168, tau_h, by = 24),
     rep(dose_times[-1], each = 1) |>
-      (\(x) c(outer(seq(0, 24, by = 0.5), x, "+")))(),
+      (\(x) c(outer(seq(0, 24, by = 1), x, "+")))(),
     seq(0, final_t, by = 24)
   )))
   obs_t <- obs_t[obs_t >= 0 & obs_t <= final_t]
@@ -351,8 +353,8 @@ knitr::kable(
 
 | start | end | stratum | N | auclast | cmax | cmin | tmax |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | 672 | HAE patient | 100 | 5000 \[43.7\] | 405 \[69.2\] | 0.662 \[49.3\] | 2.50 \[1.50, 3.50\] |
-| 0 | 672 | Healthy volunteer | 100 | 5330 \[43.1\] | 566 \[69.5\] | 0.851 \[48.7\] | 2.00 \[1.00, 3.50\] |
+| 0 | 672 | HAE patient | 60 | 5380 \[38.7\] | 467 \[68.7\] | 0.709 \[40.4\] | 2.00 \[1.00, 3.00\] |
+| 0 | 672 | Healthy volunteer | 60 | 4840 \[43.2\] | 494 \[67.0\] | 0.786 \[48.1\] | 2.00 \[1.00, 4.00\] |
 
 Simulated steady-state NCA on cycle 6 (80 mg SC Q4W; HV vs HAE strata).
 {.table}

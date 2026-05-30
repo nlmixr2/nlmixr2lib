@@ -152,7 +152,7 @@ sim_typical <- rxode2::rxSolve(
   addDosing = FALSE
 ) |>
   as.data.frame()
-#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalr0'
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalrbase'
 #> Warning: multi-subject simulation without without 'omega'
 ```
 
@@ -277,7 +277,7 @@ baseline_sim <- rxode2::rxSolve(
   mod_typical, events = ev_noinf
 ) |>
   as.data.frame()
-#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalr0'
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalrbase'
 
 baseline_typical <- 43.5 / 127
 cat(sprintf(

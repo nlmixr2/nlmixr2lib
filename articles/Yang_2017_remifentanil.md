@@ -227,16 +227,16 @@ knitr::kable(
 
 | sex_label | dose_mg_h | pct_at_target_1700 | pct_at_target_2000 | pct_at_target_2300 | pct_at_target_2600 | pct_at_target_2900 | median_Cc_48h_1700 | median_Cc_48h_2000 | median_Cc_48h_2300 | median_Cc_48h_2600 | median_Cc_48h_2900 |
 |:---|---:|:---|:---|:---|:---|:---|:---|:---|:---|:---|:---|
-| Female | 0.105 | 0% | 0% | 0% | 0% | 0% | 0.54 ng/mL | 0.42 ng/mL | 0.30 ng/mL | 0.24 ng/mL | 0.18 ng/mL |
-| Female | 0.210 | 4% | 0% | 0% | 0% | 0% | 1.10 ng/mL | 0.74 ng/mL | 0.59 ng/mL | 0.46 ng/mL | 0.35 ng/mL |
-| Female | 0.420 | 100% | 72% | 4% | 0% | 0% | 2.36 ng/mL | 1.67 ng/mL | 1.21 ng/mL | 0.90 ng/mL | 0.76 ng/mL |
-| Female | 0.630 | 100% | 100% | 96% | 28% | 0% | 3.35 ng/mL | 2.47 ng/mL | 1.83 ng/mL | 1.40 ng/mL | 1.13 ng/mL |
-| Female | 0.840 | 100% | 100% | 100% | 88% | 52% | 4.35 ng/mL | 3.02 ng/mL | 2.31 ng/mL | 1.78 ng/mL | 1.51 ng/mL |
-| Male | 0.105 | 0% | 0% | 0% | 0% | 0% | 1.09 ng/mL | 0.79 ng/mL | 0.64 ng/mL | 0.48 ng/mL | 0.36 ng/mL |
-| Male | 0.210 | 100% | 64% | 12% | 0% | 0% | 2.33 ng/mL | 1.56 ng/mL | 1.24 ng/mL | 0.94 ng/mL | 0.72 ng/mL |
-| Male | 0.420 | 100% | 100% | 100% | 96% | 28% | 4.55 ng/mL | 3.31 ng/mL | 2.35 ng/mL | 1.93 ng/mL | 1.45 ng/mL |
-| Male | 0.630 | 100% | 100% | 100% | 100% | 100% | 6.63 ng/mL | 4.90 ng/mL | 3.31 ng/mL | 2.54 ng/mL | 2.14 ng/mL |
-| Male | 0.840 | 100% | 100% | 100% | 100% | 100% | 9.22 ng/mL | 6.38 ng/mL | 4.79 ng/mL | 3.78 ng/mL | 3.04 ng/mL |
+| Female | 0.105 | 0% | 0% | 0% | 0% | 0% | 0.56 ng/mL | 0.39 ng/mL | 0.30 ng/mL | 0.23 ng/mL | 0.19 ng/mL |
+| Female | 0.210 | 0% | 0% | 0% | 0% | 0% | 1.11 ng/mL | 0.78 ng/mL | 0.60 ng/mL | 0.43 ng/mL | 0.39 ng/mL |
+| Female | 0.420 | 100% | 48% | 0% | 0% | 0% | 2.26 ng/mL | 1.50 ng/mL | 1.18 ng/mL | 0.94 ng/mL | 0.73 ng/mL |
+| Female | 0.630 | 100% | 100% | 88% | 28% | 0% | 3.41 ng/mL | 2.39 ng/mL | 1.76 ng/mL | 1.38 ng/mL | 1.11 ng/mL |
+| Female | 0.840 | 100% | 100% | 100% | 96% | 60% | 4.42 ng/mL | 3.48 ng/mL | 2.37 ng/mL | 1.94 ng/mL | 1.56 ng/mL |
+| Male | 0.105 | 0% | 0% | 0% | 0% | 0% | 1.06 ng/mL | 0.80 ng/mL | 0.59 ng/mL | 0.48 ng/mL | 0.36 ng/mL |
+| Male | 0.210 | 100% | 56% | 4% | 0% | 0% | 2.28 ng/mL | 1.56 ng/mL | 1.21 ng/mL | 1.00 ng/mL | 0.77 ng/mL |
+| Male | 0.420 | 100% | 100% | 100% | 96% | 44% | 4.51 ng/mL | 3.17 ng/mL | 2.35 ng/mL | 1.94 ng/mL | 1.44 ng/mL |
+| Male | 0.630 | 100% | 100% | 100% | 100% | 100% | 6.14 ng/mL | 5.01 ng/mL | 3.58 ng/mL | 2.95 ng/mL | 2.17 ng/mL |
+| Male | 0.840 | 100% | 100% | 100% | 100% | 100% | 8.94 ng/mL | 6.24 ng/mL | 4.53 ng/mL | 3.63 ng/mL | 2.91 ng/mL |
 
 Per-cell percentage of virtual subjects at or above 1.5 ng/mL at t = 48
 h, and median Cc at t = 48 h. Compare with Yang 2017 dosing
@@ -488,12 +488,12 @@ knitr::kable(summary(nca_res),
 
 | start | end | treatment       | N   | auclast | cmax           | tmax                | cav |
 |------:|----:|:----------------|:----|:--------|:---------------|:--------------------|:----|
-|     0 |  48 | Female/0.21mg/h | 25  | NC      | 0.594 \[11.2\] | 4.00 \[2.00, 4.00\] | NC  |
-|     0 |  48 | Female/0.42mg/h | 25  | NC      | 1.21 \[13.4\]  | 4.00 \[2.00, 4.00\] | NC  |
-|     0 |  48 | Female/0.84mg/h | 25  | NC      | 2.37 \[14.2\]  | 4.00 \[2.00, 4.00\] | NC  |
-|     0 |  48 | Male/0.21mg/h   | 25  | NC      | 1.25 \[15.2\]  | 6.00 \[4.00, 8.00\] | NC  |
-|     0 |  48 | Male/0.42mg/h   | 25  | NC      | 2.34 \[13.4\]  | 6.00 \[4.00, 6.00\] | NC  |
-|     0 |  48 | Male/0.84mg/h   | 25  | NC      | 4.81 \[13.2\]  | 6.00 \[4.00, 6.00\] | NC  |
+|     0 |  48 | Female/0.21mg/h | 25  | NC      | 0.591 \[10.2\] | 4.00 \[2.00, 4.00\] | NC  |
+|     0 |  48 | Female/0.42mg/h | 25  | NC      | 1.18 \[11.8\]  | 4.00 \[2.00, 4.00\] | NC  |
+|     0 |  48 | Female/0.84mg/h | 25  | NC      | 2.34 \[11.0\]  | 4.00 \[2.00, 4.00\] | NC  |
+|     0 |  48 | Male/0.21mg/h   | 25  | NC      | 1.23 \[8.67\]  | 6.00 \[4.00, 6.00\] | NC  |
+|     0 |  48 | Male/0.42mg/h   | 25  | NC      | 2.33 \[12.1\]  | 6.00 \[4.00, 6.00\] | NC  |
+|     0 |  48 | Male/0.84mg/h   | 25  | NC      | 4.52 \[9.14\]  | 6.00 \[4.00, 6.00\] | NC  |
 
 NCA over the 0-48 h continuous-infusion window for female and male
 subjects at 2300 RPM and three infusion rates. Cav at steady state

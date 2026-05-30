@@ -904,9 +904,9 @@ knitr::kable(nca_summary,
 
 | Interval Start | Interval End | cohort | N | AUClast (h\*ng/mL) | Cmax (ng/mL) | Tmax (h) | Half-life (h) | AUCinf,obs (h\*ng/mL) |
 |---:|---:|:---|:---|:---|:---|:---|:---|:---|
-| 0 | Inf | 10 mg oral, fasted, + IFN beta-1a | 100 | NC | 23.8 \[38.9\] | 0.500 \[0.250, 1.50\] | 22.1 \[1.45\] | NC |
-| 0 | Inf | 10 mg oral, fasted, no IFN | 100 | NC | 23.8 \[39.0\] | 0.500 \[0.250, 1.50\] | 22.5 \[1.39\] | NC |
-| 0 | Inf | 10 mg oral, fed, no IFN | 100 | NC | 19.3 \[38.2\] | 1.50 \[1.50, 2.00\] | 22.6 \[1.38\] | NC |
+| 0 | Inf | 10 mg oral, fasted, + IFN beta-1a | 100 | NC | 21.5 \[40.0\] | 0.500 \[0.250, 1.50\] | 22.2 \[1.32\] | NC |
+| 0 | Inf | 10 mg oral, fasted, no IFN | 100 | NC | 23.3 \[39.2\] | 0.500 \[0.250, 1.50\] | 22.5 \[1.64\] | NC |
+| 0 | Inf | 10 mg oral, fed, no IFN | 100 | NC | 19.5 \[39.9\] | 1.50 \[1.00, 2.00\] | 22.8 \[1.68\] | NC |
 
 Simulated NCA parameters by cohort (Savic 2017 cladribine 10 mg oral).
 {.table}

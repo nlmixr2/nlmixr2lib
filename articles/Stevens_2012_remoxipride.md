@@ -101,7 +101,7 @@ in `inst/modeldb/ddmore/Stevens_2012_remoxipride.R`):
 | `lka` | `fixed(log(1.54))` | `.lst` L1283, `TH10 FIX` (.mod L114: intranasal absorption rate KA) |
 | `lftot` | `fixed(log(0.892))` | `.lst` L1283, `TH11 FIX` (.mod L115: total intranasal bioavailability) |
 | `f_systemic` | `fixed(0.249)` | `.lst` L1283, `TH12 FIX` (.mod L116: F1 = FTOT \* THETA(12)) |
-| `lk24` | `fixed(log(0.0331))` | `.lst` L1283, `TH13 FIX` (.mod L117: K24 \* 1000 = 33.1, divided by 1000 inside \$PK) \| \| \`lkel_prl\` (= K70) \| \`log(5.20)\` \| \`.lst\` L1283, \`TH1\` (estimated under NWPRI; .mod L60) \| \| \`lec50_prl\` \| \`log(0.0510)\` \| \`.lst\` L1283, \`TH2\` (estimated under NWPRI; .mod L62) \| \| \`lbsl\` \| \`log(6.64)\` \| \`.lst\` L1284, \`TH14\` (.mod L56: typical baseline plasma prolactin, single-dose study) \| \| \`lemax_prl\` \| \`log(17.5)\` \| \`.lst\` L1284, \`TH15\` (.mod L61) \| \| \`lstdm\` \| \`log(0.125)\` \| \`.lst\` L1284, \`TH16\` (.mod L63: positive-feedback synthesis-stimulation slope) \| \| \`e_studydd_bsl\` \| \`-0.290\` \| \`.lst\` L1284, \`TH17\` (.mod L56: TBSL = THETA(14) \* (1 + THETA(17) \* STDY)) \| \| \`lk_release\` (= K67) \| \`log(0.740)\` \| \`.lst\` L1284, \`TH18\` (.mod L59: lactotroph-\>plasma release rate) \| \| \`gamma_prl\` \| \`fixed(1.00)\` \| \`.lst\` L1284, \`TH19 FIX\` (.mod L64: Hill coefficient on the brain-ECF remoxipride stimulation term) \| \| \`etalbsl\` \| \`~ 0.0465\` \| \`.lst\` line 1294, \`OMEGA(1,1)\` (log-scale variance on baseline prolactin; the .mod also fixes OMEGA(2,2) and OMEGA(3,3) to zero) \| \| \`propSd\` \| \`sqrt(0.0780)\` \| \`.lst\` L1310, \`SIGMA(1,1)\` (proportional residual; .mod L143) \| \| \`addSd\` \| \`sqrt(6.62)\` \| \`.lst\` L1313, \`SIGMA(2,2)\` (additive residual on prolactin in ug/L; .mod L144) \| \| \`d/dt(depot) = -ka \* depot\` \| n/a \| \`.mod\` \`\$DES`L75 (DADT(1)) | |`d/dt(depot_brain) = -k24 \* depot_brain`| n/a |`.mod\$DES\` L76 (DADT(2)) \| \| \`d/dt(central) = ka\*depot - kel_plasma\*central - k34\*central - k35\*central + k43\*brain_ecf + k53\*peripheral1\` \| n/a \| \`.mod\` \`\$DES`L77 (DADT(3)) | |`d/dt(brain_ecf) = k24*depot_brain + k34*central - k43*brain_ecf - k40*brain_ecf`| n/a |`.mod\$DES\` L78 (DADT(4)) \| \| \`d/dt(peripheral1) = k35\*central - k53\*peripheral1\` \| n/a \| \`.mod\` \`\$DES`L88 (DADT(5)) | |`eff = 1 + emax_prl \* cp_brain^gamma_prl / (ec50_prl^gamma_prl + cp_brain^gamma_prl)`| n/a |`.mod\$DES\` L80-86 (drug effect on prolactin release) \| \| \`lna7 = max(prolactin, bsl_i)\` \| n/a \| \`.mod\` \`\$DES`L85-93 (positive-feedback floor) | |`std = stdm \* (lna7 - bsl_i)`| n/a |`.mod\$DES\` L95 \| \| \`kf = bsl_i \* kel_prl\` \| n/a \| \`.mod\` \`\$PK`L68 (KF = BSL * K70) | |`kft = kf \* (1 + std)`| n/a |`.mod\$DES\` L96 \| \| \`d/dt(lactotroph) = kft - lactotroph \* k_release \* eff\` \| n/a \| \`.mod\` \`\$DES`L97 (DADT(6)) | |`d/dt(prolactin) = lactotroph \* k_release \* eff - prolactin \* kel_prl`| n/a |`.mod\$DES\` L98 (DADT(7)) \| \| \`lactotroph(0) = bsl \* kel_prl / k_release\` \| n/a \| \`.mod\` \`\$PK`L66 (`A_0(6) = (BSL \* K70) / K67`) | |`prolactin(0) = bsl`| n/a |`.mod\$PK\` L67 (\`A_0(7) = BSL\`) \| \| \`prolactin ~ prop(propSd) + add(addSd)\` \| n/a \| \`.mod\` \`\$ERROR`L102-103 (`Y = IPRED \* (1 + EPS(1)) + EPS(2)`) | |`f(depot) \<- ftot \* f_systemic`| n/a |`.mod\$PK\` L37 (\`F1 = FTOT \* THETA(12)\`) \| \| \`f(depot_brain) \<- ftot \* (1 - f_systemic)\` \| n/a \| \`.mod\` \`\$PK`L38 (`F2 = FTOT - F1\`) |
+| `lk24` | `fixed(log(0.0331))` | `.lst` L1283, `TH13 FIX` (.mod L117: K24 \* 1000 = 33.1, divided by 1000 inside \$PK) \| \| \`lkel_prl\` (= K70) \| \`log(5.20)\` \| \`.lst\` L1283, \`TH1\` (estimated under NWPRI; .mod L60) \| \| \`lec50_prl\` \| \`log(0.0510)\` \| \`.lst\` L1283, \`TH2\` (estimated under NWPRI; .mod L62) \| \| \`lbsl\` \| \`log(6.64)\` \| \`.lst\` L1284, \`TH14\` (.mod L56: typical baseline plasma prolactin, single-dose study) \| \| \`lemax_prl\` \| \`log(17.5)\` \| \`.lst\` L1284, \`TH15\` (.mod L61) \| \| \`lstdm\` \| \`log(0.125)\` \| \`.lst\` L1284, \`TH16\` (.mod L63: positive-feedback synthesis-stimulation slope) \| \| \`e_studydd_bsl\` \| \`-0.290\` \| \`.lst\` L1284, \`TH17\` (.mod L56: TBSL = THETA(14) \* (1 + THETA(17) \* STDY)) \| \| \`lk_release\` (= K67) \| \`log(0.740)\` \| \`.lst\` L1284, \`TH18\` (.mod L59: lactotroph-\>plasma release rate) \| \| \`gamma_prl\` \| \`fixed(1.00)\` \| \`.lst\` L1284, \`TH19 FIX\` (.mod L64: Hill coefficient on the brain-ECF remoxipride stimulation term) \| \| \`etalbsl\` \| \`~ 0.0465\` \| \`.lst\` line 1294, \`OMEGA(1,1)\` (log-scale variance on baseline prolactin; the .mod also fixes OMEGA(2,2) and OMEGA(3,3) to zero) \| \| \`propSd\` \| \`sqrt(0.0780)\` \| \`.lst\` L1310, \`SIGMA(1,1)\` (proportional residual; .mod L143) \| \| \`addSd\` \| \`sqrt(6.62)\` \| \`.lst\` L1313, \`SIGMA(2,2)\` (additive residual on prolactin in ug/L; .mod L144) \| \| \`d/dt(depot) = -ka \* depot\` \| n/a \| \`.mod\` \`\$DES`L75 (DADT(1)) | |`d/dt(depot_brain) = -k24 \* depot_brain`| n/a |`.mod\$DES\` L76 (DADT(2)) \| \| \`d/dt(central) = ka\*depot - kel_plasma\*central - k34\*central - k35\*central + k43\*brain_csf + k53\*peripheral1\` \| n/a \| \`.mod\` \`\$DES`L77 (DADT(3)) | |`d/dt(brain_csf) = k24*depot_brain + k34*central - k43*brain_csf - k40*brain_csf`| n/a |`.mod\$DES\` L78 (DADT(4)) \| \| \`d/dt(peripheral1) = k35\*central - k53\*peripheral1\` \| n/a \| \`.mod\` \`\$DES`L88 (DADT(5)) | |`eff = 1 + emax_prl \* cp_brain^gamma_prl / (ec50_prl^gamma_prl + cp_brain^gamma_prl)`| n/a |`.mod\$DES\` L80-86 (drug effect on prolactin release) \| \| \`lna7 = max(prolactin, bsl_i)\` \| n/a \| \`.mod\` \`\$DES`L85-93 (positive-feedback floor) | |`std = stdm \* (lna7 - bsl_i)`| n/a |`.mod\$DES\` L95 \| \| \`kf = bsl_i \* kel_prl\` \| n/a \| \`.mod\` \`\$PK`L68 (KF = BSL * K70) | |`kft = kf \* (1 + std)`| n/a |`.mod\$DES\` L96 \| \| \`d/dt(lactotroph) = kft - lactotroph \* k_release \* eff\` \| n/a \| \`.mod\` \`\$DES`L97 (DADT(6)) | |`d/dt(prolactin) = lactotroph \* k_release \* eff - prolactin \* kel_prl`| n/a |`.mod\$DES\` L98 (DADT(7)) \| \| \`lactotroph(0) = bsl \* kel_prl / k_release\` \| n/a \| \`.mod\` \`\$PK`L66 (`A_0(6) = (BSL \* K70) / K67`) | |`prolactin(0) = bsl`| n/a |`.mod\$PK\` L67 (\`A_0(7) = BSL\`) \| \| \`prolactin ~ prop(propSd) + add(addSd)\` \| n/a \| \`.mod\` \`\$ERROR`L102-103 (`Y = IPRED \* (1 + EPS(1)) + EPS(2)`) | |`f(depot) \<- ftot \* f_systemic`| n/a |`.mod\$PK\` L37 (\`F1 = FTOT \* THETA(12)\`) \| \| \`f(depot_brain) \<- ftot \* (1 - f_systemic)\` \| n/a \| \`.mod\` \`\$PK`L38 (`F2 = FTOT - F1\`) |
 
 The .mod also includes two NONMEM `EXIT 1 ...` early-exit guards
 (`IF(K30.LT.K40) EXIT 1 200`, `IF(KA.LT.K24) EXIT 1 400`, `.mod`
@@ -150,7 +150,7 @@ mod_typical <- rxode2::zeroRe(mod)
 
 state_names <- mod$state
 state_names
-#> [1] "depot"       "depot_brain" "central"     "brain_ecf"   "peripheral1"
+#> [1] "depot"       "depot_brain" "central"     "brain_csf"   "peripheral1"
 #> [6] "lactotroph"  "prolactin"
 ```
 
@@ -183,7 +183,7 @@ baseline_summary <- sim_baseline |>
     prolactin  = round(prolactin, 6),
     lactotroph = round(lactotroph, 6),
     central    = round(central, 8),
-    brain_ecf  = round(brain_ecf, 8)
+    brain_csf  = round(brain_csf, 8)
   )
 knitr::kable(
   baseline_summary,
@@ -195,7 +195,7 @@ knitr::kable(
 )
 ```
 
-| time | prolactin | lactotroph | central | brain_ecf |
+| time | prolactin | lactotroph | central | brain_csf |
 |-----:|----------:|-----------:|--------:|----------:|
 |    0 |      6.64 |   46.65946 |       0 |         0 |
 |    1 |      6.64 |   46.65946 |       0 |         0 |
@@ -420,7 +420,7 @@ noise model.
   Westerhout 2011) are encoded here; the human-scaled parameters are
   not. Users wanting to simulate the human projection should not load
   this model.
-- **Non-canonical compartment names.** `depot_brain`, `brain_ecf`,
+- **Non-canonical compartment names.** `depot_brain`, `brain_csf`,
   `lactotroph`, and `prolactin` are paper-meaningful names (the source
   biology distinguishes a systemic-absorption depot from a direct
   nose-to-brain depot, a microdialysed brain-ECF compartment from the

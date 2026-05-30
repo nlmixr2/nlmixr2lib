@@ -4,7 +4,7 @@
 
 library(nlmixr2lib)
 library(rxode2)
-#> rxode2 5.0.2 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.1 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -301,8 +301,8 @@ knitr::kable(summary(nca, drop.group = "id"),
 
 | start | end | regimen | N | auclast | cmax | cmin | tmax |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | 28 | 150 mg SC Q4W | 50 | 502 \[27.5\] | 22.9 \[27.5\] | 12.6 \[31.3\] | 7.00 \[7.00, 7.00\] |
-| 0 | 28 | 300 mg SC Q4W | 50 | 1020 \[29.1\] | 46.7 \[28.6\] | 25.7 \[34.7\] | 7.00 \[7.00, 7.00\] |
+| 0 | 28 | 150 mg SC Q4W | 50 | 483 \[34.8\] | 21.7 \[37.2\] | 12.4 \[36.2\] | 7.00 \[7.00, 14.0\] |
+| 0 | 28 | 300 mg SC Q4W | 50 | 1010 \[28.6\] | 46.2 \[29.2\] | 25.2 \[31.8\] | 7.00 \[7.00, 7.00\] |
 
 Steady-state (dose 5) NCA by regimen. {.table style="width:100%;"}
 

@@ -4,7 +4,7 @@
 
 library(nlmixr2lib)
 library(rxode2)
-#> rxode2 5.0.2 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.1 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -263,8 +263,8 @@ knitr::kable(
 
 | regimen | window      | Cmax_median | Ctrough_median | AUCtau_median |
 |:--------|:------------|------------:|---------------:|--------------:|
-| q4w     | weeks 48-52 |       8.436 |          3.622 |       163.022 |
-| q8w     | weeks 44-52 |       6.050 |          0.981 |       171.799 |
+| q4w     | weeks 48-52 |       8.061 |          3.497 |       157.980 |
+| q8w     | weeks 44-52 |       5.971 |          0.953 |       163.798 |
 
 Simulated steady-state per-interval exposures (Cmax / Ctrough in ug/mL;
 AUCtau in ug\*day/mL). {.table}
@@ -317,7 +317,7 @@ knitr::kable(
 
 | start | end | regimen | N | auclast | cmax | tmax | half.life |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | 56 | q8w | 500 | 166 \[44.9\] | 5.96 \[34.7\] | 3.50 \[3.50, 17.5\] | 20.8 \[9.71\] |
+| 0 | 56 | q8w | 500 | 161 \[44.2\] | 5.97 \[34.7\] | 3.50 \[3.50, 17.5\] | 20.1 \[9.47\] |
 
 PKNCA summary for the q8w steady-state maintenance interval (weeks
 44-52). Expected typical terminal half-life ~18.1 days (Chen 2022

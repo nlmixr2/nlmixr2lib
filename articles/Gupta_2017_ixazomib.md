@@ -382,10 +382,10 @@ knitr::kable(
 
 | PPTESTCD   |   median |     q05 |      q95 | n_subj |
 |:-----------|---------:|--------:|---------:|-------:|
-| aucinf.obs | 1261.168 | 607.236 | 2462.891 |    100 |
-| cmax       |   18.508 |   7.673 |   59.124 |    100 |
-| half.life  |  227.856 | 130.474 |  421.461 |    100 |
-| tmax       |    1.250 |   1.250 |    2.750 |    100 |
+| aucinf.obs | 1321.074 | 745.768 | 2387.053 |    100 |
+| cmax       |   19.593 |   7.296 |   60.260 |    100 |
+| half.life  |  226.282 | 135.155 |  558.130 |    100 |
+| tmax       |    1.250 |   1.250 |    2.262 |    100 |
 
 Simulated NCA from a single 4 mg oral dose (n = 100 virtual subjects).
 Cmax in ng/mL; Tmax in h; AUC0-inf in ng\*h/mL; half-life in h. {.table}
@@ -395,9 +395,9 @@ Cmax in ng/mL; Tmax in h; AUC0-inf in ng\*h/mL; half-life in h. {.table}
 | Quantity | Gupta 2017 (reported) | Simulated median (5th-95th) | Notes |
 |----|----|----|----|
 | Tmax | Approx. 1 h post-dose (Introduction; clinical PK summary, page 1356) | 1.25 h | Source-paper text only (no Table). |
-| Cmax | Not reported as a Table entry for a 4 mg oral dose (only AUC profiles) | 18.51 ng/mL | Reference comparison is the geometric-mean AUC; see below. |
-| AUC0-inf | F \* Dose / CL = 0.58 \* 4 / 1.86 = 1.247 mg.h/L = 1,247 ng.h/mL | 1261 ng.h/mL | Derived from Table 3 fixed-effect parameter values. |
-| Terminal t1/2 | Geometric mean 9.53 days (= 228.7 h); 95% CI 9.32-9.75 days | 9.49 days | Geometric-mean half-life is derived in Results section 3.2 from individual estimates; simulated value should be within ~10%. |
+| Cmax | Not reported as a Table entry for a 4 mg oral dose (only AUC profiles) | 19.59 ng/mL | Reference comparison is the geometric-mean AUC; see below. |
+| AUC0-inf | F \* Dose / CL = 0.58 \* 4 / 1.86 = 1.247 mg.h/L = 1,247 ng.h/mL | 1321 ng.h/mL | Derived from Table 3 fixed-effect parameter values. |
+| Terminal t1/2 | Geometric mean 9.53 days (= 228.7 h); 95% CI 9.32-9.75 days | 9.43 days | Geometric-mean half-life is derived in Results section 3.2 from individual estimates; simulated value should be within ~10%. |
 
 The simulated median AUC0-inf, half-life, and Tmax are expected to
 bracket the Gupta 2017 typical-value derivations within ~20% (Cmax is

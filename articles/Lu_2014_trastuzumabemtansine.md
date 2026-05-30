@@ -4,7 +4,7 @@
 
 library(nlmixr2lib)
 library(rxode2)
-#> rxode2 5.0.2 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.1 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -702,7 +702,7 @@ knitr::kable(
 
 | start | end | treatment | N | auclast | cmax | tmax | half.life | aucinf.obs |
 |---:|---:|:---|:---|:---|:---|:---|:---|:---|
-| 0 | 21 | TDM1_3p6_q3w | 200 | NC | 69.6 \[16.5\] | 0.250 \[0.250, 0.250\] | 7.78 \[46.1\] | NC |
+| 0 | 21 | TDM1_3p6_q3w | 200 | NC | 68.8 \[16.4\] | 0.250 \[0.250, 0.250\] | 8.65 \[58.3\] | NC |
 
 PKNCA summary, cycle 1 (0-21 days) after 3.6 mg/kg IV T-DM1. {.table}
 
@@ -731,7 +731,7 @@ knitr::kable(published, digits = 3,
 
 | Parameter              | Simulated (GMean) | Lu 2014 |
 |:-----------------------|------------------:|--------:|
-| Terminal half-life (d) |             4.459 |   3.940 |
+| Terminal half-life (d) |             4.472 |   3.940 |
 | CL (L/day, typical)    |             0.676 |   0.676 |
 | Vc (L, typical)        |             3.127 |   3.127 |
 

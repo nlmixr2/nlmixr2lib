@@ -338,9 +338,9 @@ knitr::kable(
 
 | age_group             |   n | median_h |  q05 |   q95 |
 |:----------------------|----:|---------:|-----:|------:|
-| Adolescents 12-\<18 y | 100 |     85.0 | 48.2 | 133.0 |
-| Adults \>=18 y        | 100 |    101.7 | 58.5 | 166.0 |
-| Children \<12 y       | 100 |     60.8 | 40.4 | 135.1 |
+| Adolescents 12-\<18 y | 100 |     77.2 | 48.1 | 137.8 |
+| Adults \>=18 y        | 100 |    101.9 | 65.4 | 183.0 |
+| Children \<12 y       | 100 |     65.3 | 39.9 | 102.4 |
 
 Simulated rFIX-Fc terminal half-life (h) by age group, single 50 IU/kg
 IV dose. {.table}
@@ -381,9 +381,9 @@ knitr::kable(
 
 | age_group | published_median_h | published_range | simulated_median_h | pct_diff |
 |:---|---:|:---|---:|---:|
-| Children \<12 y | 70 | 51-103 | 60.8 | -13.1 |
-| Adolescents 12-\<18 y | 76 | 66-82 | 85.0 | 11.9 |
-| Adults \>=18 y | 88 | 67-166 | 101.7 | 15.5 |
+| Children \<12 y | 70 | 51-103 | 65.3 | -6.8 |
+| Adolescents 12-\<18 y | 76 | 66-82 | 77.2 | 1.5 |
+| Adults \>=18 y | 88 | 67-166 | 101.9 | 15.8 |
 
 Simulated vs. Koopman 2023 Supplementary Table 3 terminal half-lives.
 {.table style="width:100%;"}

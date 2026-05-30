@@ -4,7 +4,7 @@
 
 library(nlmixr2lib)
 library(rxode2)
-#> rxode2 5.0.2 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.1 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -762,8 +762,8 @@ knitr::kable(
 
 | start | end | treatment         | N   | auclast | cmax         | tmax                |
 |------:|----:|:------------------|:----|:--------|:-------------|:--------------------|
-|     0 | 504 | Adult BCP-ALL     | 200 | NC      | 213 \[42.5\] | 1.00 \[1.00, 1.00\] |
-|     0 | 504 | Pediatric BCP-ALL | 200 | NC      | 243 \[42.5\] | 1.00 \[1.00, 1.00\] |
+|     0 | 504 | Adult BCP-ALL     | 200 | NC      | 205 \[38.9\] | 1.00 \[1.00, 1.00\] |
+|     0 | 504 | Pediatric BCP-ALL | 200 | NC      | 234 \[38.7\] | 1.00 \[1.00, 1.00\] |
 
 Simulated NCA over cycle 1 (0-504 h) for pediatric and adult BCP-ALL
 cohorts. {.table}
@@ -829,9 +829,9 @@ knitr::kable(
 
 | Cohort | Source | Median AUC0-504 (10^3 ng\*h/mL) | IQR (10^3 ng\*h/mL) |
 |:---|:---|---:|:---|
-| Adult BCP-ALL | This vignette (simulated) | 17.5 | 11.0-26.4 |
+| Adult BCP-ALL | This vignette (simulated) | 14.6 | 8.9-23.1 |
 | Adult BCP-ALL | Wu 2024 Table 5 | 19.7 | 12.1-30.3 |
-| Pediatric BCP-ALL | This vignette (simulated) | 24.0 | 15.6-33.2 |
+| Pediatric BCP-ALL | This vignette (simulated) | 20.8 | 12.7-29.2 |
 | Pediatric BCP-ALL | Wu 2024 Table 5 | 26.6 | 17.9-37.0 |
 
 Cycle-1 cumulative AUC0-504h: simulated vs. published Wu 2024 Table 5

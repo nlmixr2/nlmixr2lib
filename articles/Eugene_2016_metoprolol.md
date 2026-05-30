@@ -138,7 +138,7 @@ typ_events <- bind_rows(typ_doses, typ_obs) |>
 
 sim_typ <- rxode2::rxSolve(mod_typ, events = typ_events,
                            keep = c("SEXF", "WT", "treatment"))
-#> ℹ omega/sigma items treated as zero: 'etallag', 'etalka', 'etalvc', 'etalcl'
+#> ℹ omega/sigma items treated as zero: 'etaltlag', 'etalka', 'etalvc', 'etalcl'
 #> Warning: multi-subject simulation without without 'omega'
 ```
 
@@ -256,8 +256,8 @@ knitr::kable(nca_summary,
 
 | Interval Start | Interval End | treatment | N | AUClast (hr\*ng/mL) | Cmax (ng/mL) | Tmax (hr) | Half-life (hr) | AUCinf,obs (hr\*ng/mL) |
 |---:|---:|:---|:---|:---|:---|:---|:---|:---|
-| 0 | 24 | Male (50 mg) | 250 | NC | 79.7 \[56.1\] | 1.40 \[0.400, 11.5\] | 3.49 \[2.52\] | NC |
-| 0 | 24 | Female (50 mg) | 250 | NC | 125 \[56.5\] | 1.95 \[0.400, 13.0\] | 3.55 \[3.33\] | NC |
+| 0 | 24 | Male (50 mg) | 250 | NC | 81.7 \[54.4\] | 1.50 \[0.400, 11.5\] | 3.37 \[1.98\] | NC |
+| 0 | 24 | Female (50 mg) | 250 | NC | 121 \[59.2\] | 1.90 \[0.400, 13.0\] | 3.78 \[3.47\] | NC |
 
 Simulated single-dose 50 mg NCA parameters by sex (median and 5/95
 percentiles across virtual subjects). {.table}

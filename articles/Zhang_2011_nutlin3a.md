@@ -163,7 +163,7 @@ sim <- rxode2::rxSolve(
   mod_typical, events = events,
   keep = c("treatment", "dose_mgkg", "route", "WT")
 ) |> as.data.frame()
-#> ℹ omega/sigma items treated as zero: 'etalka', 'etalke', 'etalvmax'
+#> ℹ omega/sigma items treated as zero: 'etalka', 'etalkel', 'etalvmax'
 #> Warning: multi-subject simulation without without 'omega'
 ```
 
@@ -252,7 +252,7 @@ stopifnot(!anyDuplicated(unique(md_events[, c("id", "time", "evid")])))
 md_sim <- rxode2::rxSolve(mod_typical, events = md_events,
                           keep = c("treatment")) |>
   as.data.frame()
-#> ℹ omega/sigma items treated as zero: 'etalka', 'etalke', 'etalvmax'
+#> ℹ omega/sigma items treated as zero: 'etalka', 'etalkel', 'etalvmax'
 #> Warning: multi-subject simulation without without 'omega'
 
 ggplot(md_sim, aes(time, Cc, colour = treatment)) +
@@ -352,7 +352,7 @@ f_events <- dplyr::bind_rows(
 )
 f_sim <- rxode2::rxSolve(mod_typical, events = f_events,
                           keep = c("treatment")) |> as.data.frame()
-#> ℹ omega/sigma items treated as zero: 'etalka', 'etalke', 'etalvmax'
+#> ℹ omega/sigma items treated as zero: 'etalka', 'etalkel', 'etalvmax'
 #> Warning: multi-subject simulation without without 'omega'
 
 f_auc <- f_sim |>

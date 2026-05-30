@@ -214,7 +214,7 @@ sim_typical <- rxode2::rxSolve(
   keep = c("WT", "dose_mgkg", "route", "treatment"),
   returnType = "data.frame"
 )
-#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalka', 'etalendo', 'etale0', 'etalec50', 'etalgamma', 'etalke0'
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalka', 'etalendo', 'etale0', 'etalec50', 'etalhill', 'etalke0'
 #> Warning: multi-subject simulation without without 'omega'
 sim_typical_cc  <- sim_typical |> dplyr::filter(CMT == 5)
 sim_typical_crp <- sim_typical |> dplyr::filter(CMT == 6)
@@ -277,7 +277,7 @@ dr_sim <- rxode2::rxSolve(
   keep = c("WT", "dose_mgkg", "treatment"),
   returnType = "data.frame"
 )
-#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalka', 'etalendo', 'etale0', 'etalec50', 'etalgamma', 'etalke0'
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalka', 'etalendo', 'etale0', 'etalec50', 'etalhill', 'etalke0'
 #> Warning: multi-subject simulation without without 'omega'
 dr_pd <- dr_sim |>
   dplyr::filter(CMT == 6, time == 28) |>
@@ -738,11 +738,11 @@ knitr::kable(nca_summary,
 
 | start | end | treatment | N | auclast | cmax | tmax | half.life |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | 84 | 0.1 mg/kg IV | 80 | NC | 1.76 \[12.2\] | 0.0417 \[0.0417, 0.0417\] | 46.7 \[9.53\] |
-| 0 | 84 | 1 mg/kg IV | 80 | NC | 16.8 \[10.2\] | 0.0417 \[0.0417, 0.0417\] | 29.8 \[9.15\] |
-| 0 | 84 | 3 mg/kg IV | 80 | NC | 48.1 \[15.4\] | 0.0417 \[0.0417, 0.0417\] | 29.0 \[8.29\] |
-| 0 | 84 | 1 mg/kg SC | 80 | NC | 6.01 \[26.9\] | 7.00 \[3.00, 28.0\] | 32.6 \[9.55\] |
-| 0 | 84 | 3 mg/kg SC | 80 | NC | 18.4 \[28.8\] | 7.00 \[3.00, 56.0\] | 34.5 \[20.9\] |
+| 0 | 84 | 0.1 mg/kg IV | 80 | NC | 1.71 \[12.6\] | 0.0417 \[0.0417, 0.0417\] | 47.4 \[10.8\] |
+| 0 | 84 | 1 mg/kg IV | 80 | NC | 16.8 \[13.1\] | 0.0417 \[0.0417, 0.0417\] | 29.9 \[8.41\] |
+| 0 | 84 | 3 mg/kg IV | 80 | NC | 49.7 \[12.7\] | 0.0417 \[0.0417, 0.0417\] | 29.6 \[9.50\] |
+| 0 | 84 | 1 mg/kg SC | 80 | NC | 5.91 \[29.9\] | 14.0 \[2.00, 42.0\] | 32.4 \[9.80\] |
+| 0 | 84 | 3 mg/kg SC | 80 | NC | 17.6 \[28.2\] | 14.0 \[2.00, 35.0\] | 32.4 \[9.66\] |
 
 Simulated NCA parameters by dose group (5th-95th percentiles across 80
 virtual subjects). {.table}

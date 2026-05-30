@@ -307,9 +307,9 @@ knitr::kable(
 )
 ```
 
-|  Q10 |   Q50 |   Q90 |
-|-----:|------:|------:|
-| 6.14 | 10.62 | 16.01 |
+| Q10 |   Q50 |   Q90 |
+|----:|------:|------:|
+| 6.2 | 10.32 | 16.47 |
 
 Simulated day-7 trough for a 15 kg CYP3A5 nonexpresser at 0.15 mg/kg
 twice daily (0.3 mg/kg/day). Prytula 2016 Discussion reports a 4-8 ug/L
@@ -349,10 +349,10 @@ knitr::kable(
 
 | start | end | cohort | N | auclast | cmax | cmin | tmax |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | 12 | 20 kg expresser | 200 | 97.8 \[46.7\] | 15.9 \[69.1\] | 4.52 \[47.4\] | 0.750 \[0.500, 2.75\] |
-| 0 | 12 | 20 kg nonexpresser | 200 | 143 \[44.4\] | 21.6 \[63.8\] | 7.38 \[42.2\] | 0.750 \[0.500, 3.75\] |
-| 0 | 12 | 40 kg expresser | 200 | 117 \[47.2\] | 18.7 \[66.4\] | 5.46 \[44.4\] | 0.750 \[0.500, 3.25\] |
-| 0 | 12 | 40 kg nonexpresser | 200 | 169 \[48.2\] | 23.5 \[65.9\] | 9.15 \[43.0\] | 1.00 \[0.500, 3.50\] |
+| 0 | 12 | 20 kg expresser | 200 | 103 \[40.4\] | 17.2 \[55.6\] | 4.75 \[40.5\] | 0.750 \[0.500, 2.25\] |
+| 0 | 12 | 20 kg nonexpresser | 200 | 142 \[42.2\] | 21.1 \[59.6\] | 7.42 \[40.7\] | 0.750 \[0.500, 3.00\] |
+| 0 | 12 | 40 kg expresser | 200 | 118 \[42.7\] | 18.7 \[59.2\] | 5.59 \[38.7\] | 0.750 \[0.500, 2.75\] |
+| 0 | 12 | 40 kg nonexpresser | 200 | 173 \[43.9\] | 24.1 \[62.3\] | 9.39 \[37.8\] | 1.00 \[0.500, 3.00\] |
 
 Day-7 NCA on the simulated paediatric cohort at 0.1 mg/kg twice daily
 (steady-state 12-h interval). {.table}
@@ -390,10 +390,10 @@ knitr::kable(
 
 | cohort             | median |   Q25 |   Q75 |
 |:-------------------|-------:|------:|------:|
-| 20 kg expresser    |   98.5 |  73.7 | 134.0 |
-| 20 kg nonexpresser |  144.7 | 110.7 | 193.0 |
-| 40 kg expresser    |  122.8 |  88.4 | 162.8 |
-| 40 kg nonexpresser |  174.7 | 126.3 | 229.6 |
+| 20 kg expresser    |  104.5 |  81.7 | 132.6 |
+| 20 kg nonexpresser |  143.7 | 106.9 | 192.0 |
+| 40 kg expresser    |  115.5 |  88.2 | 156.9 |
+| 40 kg nonexpresser |  174.5 | 130.8 | 227.7 |
 
 Simulated day-7 AUC0-12 (h.ng/mL) by CYP3A5/body-weight stratum at 0.1
 mg/kg twice daily. Prytula 2016 reports a cohort-wide median AUC12 of 97

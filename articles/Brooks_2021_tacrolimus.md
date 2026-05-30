@@ -291,8 +291,8 @@ knitr::kable(nca_summary,
 
 | Interval Start | Interval End | treatment | N | AUClast (hour\*ng/mL) | Cmax (ng/mL) | Cmin (ng/mL) | Cav (ng/mL) | Ctrough (ng/mL) |
 |---:|---:|:---|:---|:---|:---|:---|:---|:---|
-| 312 | 336 | No azole | 100 | 364 \[32.8\] | 15.2 \[32.8\] | 15.1 \[32.7\] | 15.2 \[32.8\] | NC |
-| 312 | 336 | With azole | 100 | 470 \[34.1\] | 19.6 \[34.2\] | 19.6 \[34.0\] | 19.6 \[34.1\] | NC |
+| 312 | 336 | No azole | 100 | 370 \[35.6\] | 15.4 \[35.6\] | 15.4 \[35.5\] | 15.4 \[35.6\] | NC |
+| 312 | 336 | With azole | 100 | 499 \[33.2\] | 20.8 \[33.3\] | 20.8 \[33.1\] | 20.8 \[33.2\] | NC |
 
 Steady-state NCA over the final 24-hour window (hour 312 to 336).
 {.table style="width:100%;"}

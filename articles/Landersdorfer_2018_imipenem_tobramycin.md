@@ -23,8 +23,8 @@
   against population 3 when the tobramycin concentration meets or
   exceeds 1.15 mg/L (i.e. tobramycin permeabilizing the outer bacterial
   membrane toward imipenem). Imipenem and tobramycin concentrations are
-  external time-varying inputs (covariates CONC_IPM_MGL and
-  CONC_TOB_MGL); the model contains no human PK component.
+  external time-varying inputs (covariates Cipm and Ctob); the model
+  contains no human PK component.
 - Article: <https://doi.org/10.1128/AAC.02053-17>
 
 The article’s supplemental material (Fig. S1 – targeted vs observed
@@ -75,8 +75,9 @@ susceptibility profile against imipenem (IPM) and tobramycin (TOB):
 
 Each subpopulation has a two-state LCGM (Bulitta-style): a slow S1 -\>
 S2 transition at rate `k12_p` (1 / “mean generation time”) and a fast
-doubling S2 -\> 2\*S1 at rate `k21 = 50 /h` shared across subpops. The
-slow rate is attenuated by the carrying-capacity logistic factor
+doubling S2 -\> 2\*S1 at a fixed rate of 50 /h (file parameter `lk21`,
+log-transformed) shared across subpops. The slow rate is attenuated by
+the carrying-capacity logistic factor
 `growth_attn = 1 - total / 10^logcfumax` so that the no-drug asymptote
 lands at `logcfumax = 10.1 log10 CFU/mL`. Per Table 1 footnote (c), the
 IR subpopulation shares the SS mean generation time (no benefit of
@@ -111,8 +112,8 @@ mechanistic synergy”). The model encodes this as a discrete switch at
 | HILL,IPM (FIXED) | `lhill_ipm` | 3.0 | (unitless) | Table 1 (fn d) |
 | KC50,SS,IPM | `lkc50_ss_ipm` | 0.175 | mg/L | Table 1 |
 | KC50,RI,IPM | `lkc50_ri_ipm` | 645 | mg/L | Table 1 |
-| KC50,IR,IPM (mono) | `lkc50_ir_ipm_mono` | 112 | mg/L | Table 1 (CONC_TOB_MGL \< tob_cut) |
-| KC50,IR,IPM (combo) | `lkc50_ir_ipm_combo` | 1.60 | mg/L | Table 1 (CONC_TOB_MGL \>= tob_cut) |
+| KC50,IR,IPM (mono) | `lkc50_ir_ipm_mono` | 112 | mg/L | Table 1 (Ctob \< tob_cut) |
+| KC50,IR,IPM (combo) | `lkc50_ir_ipm_combo` | 1.60 | mg/L | Table 1 (Ctob \>= tob_cut) |
 | TOB cut | `tob_cut` | 1.15 | mg/L | Table 1 |
 | Kmax,TOB,SS | `lkmax_tob_ss` | 4.69 | 1/h | Table 1 (also pop 3 per fn e) |
 | Kmax,TOB,RI | `lkmax_tob_ri` | 0.992 | 1/h | Table 1 |
@@ -125,34 +126,33 @@ Compartment and observation conventions:
 
 | Compartment | Units | Meaning |
 |----|----|----|
-| `s1_ss` | CFU/mL | IPM-S/TOB-S subpop, S1 state (pre-replicating) |
-| `s2_ss` | CFU/mL | IPM-S/TOB-S subpop, S2 state (replicating) |
-| `s1_ri` | CFU/mL | IPM-R/TOB-I subpop, S1 state |
-| `s2_ri` | CFU/mL | IPM-R/TOB-I subpop, S2 state |
-| `s1_ir` | CFU/mL | IPM-I/TOB-R subpop, S1 state |
-| `s2_ir` | CFU/mL | IPM-I/TOB-R subpop, S2 state |
+| `bact_susceptible_susceptible1` | CFU/mL | IPM-S/TOB-S subpop, S1 state (pre-replicating) |
+| `bact_susceptible_susceptible2` | CFU/mL | IPM-S/TOB-S subpop, S2 state (replicating) |
+| `bact_resistant_intermediate1` | CFU/mL | IPM-R/TOB-I subpop, S1 state |
+| `bact_resistant_intermediate2` | CFU/mL | IPM-R/TOB-I subpop, S2 state |
+| `bact_intermediate_resistant1` | CFU/mL | IPM-I/TOB-R subpop, S1 state |
+| `bact_intermediate_resistant2` | CFU/mL | IPM-I/TOB-R subpop, S2 state |
 | `Cc` | log10 CFU/mL | observation: log10 of total bacterial concentration (+ 1 CFU floor) |
 
 ## Helper: build an HFIM scenario
 
 The HFIM uses external drug input – imipenem at a constant unbound
 concentration in the bath, tobramycin as a q24h pulse with a piecewise
-elimination pattern. We pass both as time-varying covariates
-`CONC_IPM_MGL` and `CONC_TOB_MGL` on the event table; the rxode2
-simulator interpolates between rows.
+elimination pattern. We pass both as time-varying covariates `Cipm` and
+`Ctob` on the event table; the rxode2 simulator interpolates between
+rows.
 
 The helper below builds an `et()` table that:
 
 - enumerates observation times across a multi-day window,
-- assigns a constant `CONC_IPM_MGL` (the paper’s three percentile
-  imipenem regimens are 7.6, 13.4, and 23.3 mg/L; for monotherapy
-  controls set `CONC_IPM_MGL = 0`),
-- assigns a `CONC_TOB_MGL` profile that is either zero (for
-  IPM-monotherapy arms) or the experimental q24h two-compartment
-  profile. The two-compartment profile is approximated by a piecewise
-  function matching the observed peak (12.3 mg/L at 1.2 h), the 5 h
-  pump-flow inflection, and the 23 h trough (1.37 mg/L) on each 24 h
-  cycle.
+- assigns a constant `Cipm` (the paper’s three percentile imipenem
+  regimens are 7.6, 13.4, and 23.3 mg/L; for monotherapy controls set
+  `Cipm = 0`),
+- assigns a `Ctob` profile that is either zero (for IPM-monotherapy
+  arms) or the experimental q24h two-compartment profile. The
+  two-compartment profile is approximated by a piecewise function
+  matching the observed peak (12.3 mg/L at 1.2 h), the 5 h pump-flow
+  inflection, and the 23 h trough (1.37 mg/L) on each 24 h cycle.
 
 ``` r
 
@@ -187,8 +187,8 @@ build_scenario <- function(label, cipm = 0, use_tob = FALSE,
   data.frame(
     id   = 1L,
     time = times,
-    CONC_IPM_MGL = cipm,
-    CONC_TOB_MGL = ctob,
+    Cipm = cipm,
+    Ctob = ctob,
     amt  = 0,
     evid = 0,
     scenario = label
@@ -197,7 +197,7 @@ build_scenario <- function(label, cipm = 0, use_tob = FALSE,
 
 simulate <- function(scn) {
   out <- as.data.frame(rxode2::rxSolve(mod, events = scn,
-                                       keep = c("scenario", "CONC_IPM_MGL", "CONC_TOB_MGL")))
+                                       keep = c("scenario", "Cipm", "Ctob")))
   out
 }
 ```
@@ -262,7 +262,7 @@ ggplot(combo_sim, aes(time, Cc, color = scenario)) +
 
 The mechanistic-synergy switch on `kc50_ir_ipm_eff` is the load- bearing
 combination mechanism. We show the discontinuity at
-`CONC_TOB_MGL = tob_cut = 1.15 mg/L` by sweeping a static tobramycin
+`Ctob = tob_cut = 1.15 mg/L` by sweeping a static tobramycin
 concentration across the threshold while holding imipenem at the median
 13.4 mg/L. Below threshold, the IR subpop (which dominates the
 combination arm) faces KC50,IR,IPM = 112 mg/L (essentially no imipenem
@@ -276,23 +276,23 @@ sweep_grid <- expand.grid(
   time = seq(0, 24, by = 0.25)
 )
 sweep_grid$id   <- as.integer(factor(sweep_grid$ctob))
-sweep_grid$CONC_IPM_MGL <- 13.4
-sweep_grid$CONC_TOB_MGL <- sweep_grid$ctob
+sweep_grid$Cipm <- 13.4
+sweep_grid$Ctob <- sweep_grid$ctob
 sweep_grid$amt  <- 0
 sweep_grid$evid <- 0
 
 sweep_sim <- as.data.frame(rxode2::rxSolve(mod,
-              events = sweep_grid[, c("id","time","CONC_IPM_MGL","CONC_TOB_MGL","amt","evid")],
-              keep = c("CONC_TOB_MGL")))
+              events = sweep_grid[, c("id","time","Cipm","Ctob","amt","evid")],
+              keep = c("Ctob")))
 #> Warning: multi-subject simulation without without 'omega'
 
-ggplot(sweep_sim, aes(time, Cc, color = factor(round(CONC_TOB_MGL, 2)))) +
+ggplot(sweep_sim, aes(time, Cc, color = factor(round(Ctob, 2)))) +
   geom_line(linewidth = 0.7) +
   scale_y_continuous(limits = c(0, 11), breaks = seq(0, 10, 2)) +
   labs(x = "Time (h)", y = "log10 CFU/mL (Cc)",
        color = "TOB (mg/L)",
-       title = "Mechanistic synergy switch at CONC_TOB_MGL = 1.15 mg/L",
-       caption = "CONC_IPM_MGL fixed at median 13.4 mg/L; small steps across the threshold show the discrete KC50,IR,IPM drop.")
+       title = "Mechanistic synergy switch at Ctob = 1.15 mg/L",
+       caption = "Cipm fixed at median 13.4 mg/L; small steps across the threshold show the discrete KC50,IR,IPM drop.")
 ```
 
 ![](Landersdorfer_2018_imipenem_tobramycin_files/figure-html/synergy-switch-1.png)
@@ -357,19 +357,19 @@ Combination arms at 168 h; expect all to remain \< 2 log10 CFU/mL.
 ``` r
 
 step <- sweep_sim |>
-  filter(time == 24, CONC_TOB_MGL %in% c(0.5, 1.10, 1.20, 2.0)) |>
-  select(CONC_TOB_MGL, Cc) |>
-  arrange(CONC_TOB_MGL)
+  filter(time == 24, Ctob %in% c(0.5, 1.10, 1.20, 2.0)) |>
+  select(Ctob, Cc) |>
+  arrange(Ctob)
 knitr::kable(step, digits = 3,
              caption = "Sub-threshold (1.10) vs super-threshold (1.20) tobramycin at fixed IPM 13.4 mg/L.")
 ```
 
-| CONC_TOB_MGL |     Cc |
-|-------------:|-------:|
-|          0.5 | 10.078 |
-|          1.1 | 10.053 |
-|          1.2 |  3.063 |
-|          2.0 |  2.315 |
+| Ctob |     Cc |
+|-----:|-------:|
+|  0.5 | 10.078 |
+|  1.1 | 10.053 |
+|  1.2 |  3.063 |
+|  2.0 |  2.315 |
 
 Sub-threshold (1.10) vs super-threshold (1.20) tobramycin at fixed IPM
 13.4 mg/L. {.table}
@@ -419,17 +419,17 @@ Sub-threshold (1.10) vs super-threshold (1.20) tobramycin at fixed IPM
 - **Tobramycin profile within model() is an external covariate.** The
   HFIM simulated the human two-compartment tobramycin profile by
   switching the pump flow rate at 5 h each day. The packaged model
-  represents `CONC_TOB_MGL` as a time-varying covariate that the user
-  supplies in the event table; the vignette helper `tob_profile()`
-  approximates the experimental profile (peak 12.3 mg/L at 1.2 h, trough
-  1.37 mg/L at 23 h, q24h dosing). Users with their own tobramycin PK
-  profile can pass arbitrary `CONC_TOB_MGL` values in the event table.
+  represents `Ctob` as a time-varying covariate that the user supplies
+  in the event table; the vignette helper `tob_profile()` approximates
+  the experimental profile (peak 12.3 mg/L at 1.2 h, trough 1.37 mg/L at
+  23 h, q24h dosing). Users with their own tobramycin PK profile can
+  pass arbitrary `Ctob` values in the event table.
 - **Imipenem profile within model() is a constant covariate.** The HFIM
   held imipenem at the three percentile steady-state concentrations
-  (continuous infusion equivalent). The packaged model represents
-  `CONC_IPM_MGL` as a covariate the user holds constant for the
-  duration; users simulating non-constant imipenem PK can pass
-  time-varying `CONC_IPM_MGL` values in the event table.
+  (continuous infusion equivalent). The packaged model represents `Cipm`
+  as a covariate the user holds constant for the duration; users
+  simulating non-constant imipenem PK can pass time-varying `Cipm`
+  values in the event table.
 - **Discrete synergy switch.** The paper reports a 70-fold drop of
   `KC50,IR,IPM` “in the presence of at least 1.15 mg/L tobramycin”
   (Results, page 3 of the article). The packaged model encodes this as a
@@ -447,13 +447,16 @@ Sub-threshold (1.10) vs super-threshold (1.20) tobramycin at fixed IPM
   [`rxode2::zeroRe()`](https://nlmixr2.github.io/rxode2/reference/zeroRe.html)
   is unnecessary because there are no random effects to zero out.
 - **Non-canonical compartment and covariate names.** The bacterial
-  life-cycle states (`s1_ss`, `s2_ss`, `s1_ri`, `s2_ri`, `s1_ir`,
-  `s2_ir`) and in-vitro drug-input covariates (`CONC_IPM_MGL`,
-  `CONC_TOB_MGL`) are not in the nlmixr2lib canonical register, which
-  targets systemic popPK / PK-PD. The names are retained from the
-  paper’s notation to keep the source trace direct.
+  life-cycle states (`bact_susceptible_susceptible1`,
+  `bact_susceptible_susceptible2`, `bact_resistant_intermediate1`,
+  `bact_resistant_intermediate2`, `bact_intermediate_resistant1`,
+  `bact_intermediate_resistant2`) carry the canonical `bact_*`
+  subpopulation names; the in-vitro drug-input covariates (`Cipm`,
+  `Ctob`) are not in the nlmixr2lib canonical register, which targets
+  systemic popPK / PK-PD.
   [`checkModelConventions()`](https://nlmixr2.github.io/nlmixr2lib/reference/checkModelConventions.md)
-  emits warnings for these; they are expected and documented here.
+  emits warnings for the covariates; they are expected and documented
+  here.
 - **Single observation `Cc` carries log10 CFU/mL, not a drug
   concentration.** nlmixr2lib’s single-output convention names the
   observation `Cc`; the underlying quantity here is log10 of total

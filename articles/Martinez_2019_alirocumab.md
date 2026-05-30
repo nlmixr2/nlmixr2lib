@@ -130,7 +130,7 @@ subject-level observed data were released with the paper.
 ``` r
 
 set.seed(20260424)
-n_subj <- 300
+n_subj <- 100  # downsampled from 300 for vignette build budget; VPC bands stay smooth at N=100
 
 cohort <- tibble::tibble(
   id     = seq_len(n_subj),
@@ -165,7 +165,7 @@ make_cohort <- function(cohort, dose_amt, dose_days, treatment, tau,
     dplyr::mutate(amt = dose_amt, cmt = "depot", evid = 1L,
                   treatment = treatment)
   obs_days <- sort(unique(c(
-    seq(0, max(dose_days) + tau, by = 1),
+    seq(0, max(dose_days) + tau, by = 2),  # downsampled from by=1 for vignette build budget; per-dose offsets below keep near-dose density
     dose_days + 0.25,
     dose_days + 1,
     dose_days + 3,
@@ -404,11 +404,11 @@ intervals <- data.frame(
 nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
 summary(nca_res)
 #>  Interval Start Interval End treatment   N AUClast (day*mg/L) Cmax (mg/L)
-#>               0           14 150mg_Q2W 300        95.9 [52.6] 10.1 [46.0]
-#>               0           14  75mg_Q2W 300        42.4 [49.4] 4.67 [41.3]
+#>               0           14 150mg_Q2W 100        97.6 [54.5] 10.6 [47.0]
+#>               0           14  75mg_Q2W 100        41.8 [47.6] 4.64 [40.1]
 #>  Cmin (mg/L)        Tmax (day)  Cav (mg/L)
-#>  3.19 [81.0] 3.00 [1.00, 5.00] 6.85 [52.6]
-#>  1.32 [80.1] 3.00 [1.00, 5.00] 3.03 [49.4]
+#>  3.13 [84.5] 3.00 [1.00, 6.00] 6.97 [54.5]
+#>  1.28 [76.2] 3.00 [1.00, 6.00] 2.98 [47.6]
 #> 
 #> Caption: AUClast, Cmax, Cmin, Cav: geometric mean and geometric coefficient of variation; Tmax: median and range; N: number of subjects
 ```

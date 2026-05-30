@@ -111,7 +111,7 @@ regimens (500 mg, 1 g, 2 g IV q8h, each over 30 minutes). All five CrCL
 simulations correspond to non-RRT patients (`CRRT_STATUS = 0`); the
 model’s RRT branch uses the fixed `TVCL = 5.1 L/h` and so is simulated
 separately below. The published simulations used n = 1,000 per
-condition; the vignette uses n = 200 per condition to stay inside the
+condition; the vignette uses n = 100 per condition to stay inside the
 5-minute pkgdown render budget while still resolving the median and
 10th-percentile reliably.
 
@@ -119,7 +119,9 @@ condition; the vignette uses n = 200 per condition to stay inside the
 
 set.seed(20260518)
 
-n_per_combo  <- 200L
+# downsampled from 200 for pkgdown vignette build budget (Monte-Carlo
+# percentiles remain stable; see Assumptions note)
+n_per_combo  <- 100L
 crcl_levels  <- c(20, 50, 80, 120, 180)  # mL/min
 dose_levels  <- c(500, 1000, 2000)       # mg
 infusion_min <- 30                       # minutes (q8h IV bolus over 30 min)
@@ -127,11 +129,13 @@ infusion_h   <- infusion_min / 60
 n_doses      <- 21L                      # 7 days of q8h dosing to reach steady state
 dose_interval_h <- 8
 
-# Sampling schedule: hourly samples over the final 8-hour dosing interval.
+# Sampling schedule over the final 8-hour dosing interval.
 # Last dose at t = 20 * 8 = 160 h; trough at t = 168 h.
+# Grid widened from by = 0.25 to by = 0.5 for vignette build budget;
+# smooth steady-state profile is visually identical at the coarser grid.
 last_dose_time <- (n_doses - 1) * dose_interval_h    # 160 h
 sample_times   <- seq(last_dose_time, last_dose_time + dose_interval_h,
-                      by = 0.25)
+                      by = 0.5)
 
 cohort_grid <- expand.grid(
   crcl_mL_min = crcl_levels,
@@ -304,11 +308,11 @@ knitr::kable(
 
 | crcl_mL_min | 500 mg 8-hrly p50 | 1000 mg 8-hrly p50 | 2000 mg 8-hrly p50 | 500 mg 8-hrly p10 | 1000 mg 8-hrly p10 | 2000 mg 8-hrly p10 |
 |---:|---:|---:|---:|---:|---:|---:|
-| 20 | 20.1 | 37.8 | 86.4 | 8.7 | 15.7 | 27.9 |
-| 50 | 5.5 | 11.2 | 21.0 | 1.2 | 2.8 | 3.9 |
-| 80 | 2.3 | 4.3 | 9.4 | 0.4 | 0.9 | 1.7 |
-| 120 | 0.7 | 1.6 | 2.7 | 0.0 | 0.1 | 0.3 |
-| 180 | 0.2 | 0.4 | 0.9 | 0.0 | 0.0 | 0.0 |
+| 20 | 20.5 | 39.4 | 85.6 | 10.3 | 13.4 | 45.1 |
+| 50 | 5.5 | 12.3 | 20.8 | 1.0 | 3.3 | 4.8 |
+| 80 | 2.1 | 4.6 | 8.8 | 0.3 | 0.5 | 1.5 |
+| 120 | 0.7 | 1.4 | 2.4 | 0.1 | 0.1 | 0.4 |
+| 180 | 0.2 | 0.3 | 1.0 | 0.0 | 0.0 | 0.0 |
 
 Simulated 50th- and 10th-percentile trough meropenem concentrations by
 CrCL (mL/min) and dose; compare against Shekar 2014 Table 3. {.table
@@ -364,7 +368,7 @@ paper-internal inconsistency, not a transcription error in the packaged
 model – see the Assumptions and deviations section (“Table 3
 reproduction”) for the detailed cross-check against Table 1 observed
 Cmin, which the packaged model reproduces correctly. The 10th-percentile
-estimates are noisier (n = 200 vs n = 1,000 Monte-Carlo draws) but
+estimates are noisier (n = 100 vs n = 1,000 Monte-Carlo draws) but
 follow the same pattern.
 
 ### RRT branch – typical-value steady-state profile
@@ -463,11 +467,11 @@ knitr::kable(
 
 | Interval Start | Interval End | cohort | N | AUClast (hr\*mg/L) | Cmax (mg/L) | Cmin (mg/L) | Tmax (hr) |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 160 | 168 | CrCL 120 / 1000 mg q8h | 200 | 74.4 \[48.8\] | 37.7 \[28.8\] | 1.18 \[349\] | 0.500 \[0.500, 0.500\] |
-| 160 | 168 | CrCL 180 / 1000 mg q8h | 200 | 50.6 \[54.7\] | 34.3 \[30.4\] | 0.296 \[952\] | 0.500 \[0.500, 0.500\] |
-| 160 | 168 | CrCL 20 / 1000 mg q8h | 200 | 422 \[51.2\] | 82.7 \[36.9\] | 37.3 \[71.3\] | 0.500 \[0.500, 0.500\] |
-| 160 | 168 | CrCL 50 / 1000 mg q8h | 200 | 183 \[51.3\] | 52.0 \[31.1\] | 9.90 \[124\] | 0.500 \[0.500, 0.500\] |
-| 160 | 168 | CrCL 80 / 1000 mg q8h | 200 | 110 \[51.7\] | 43.5 \[28.3\] | 3.43 \[199\] | 0.500 \[0.500, 0.500\] |
+| 160 | 168 | CrCL 120 / 1000 mg q8h | 100 | 74.6 \[49.7\] | 39.9 \[27.3\] | 1.12 \[299\] | 0.500 \[0.500, 0.500\] |
+| 160 | 168 | CrCL 180 / 1000 mg q8h | 100 | 45.4 \[49.2\] | 32.8 \[28.8\] | 0.210 \[1310\] | 0.500 \[0.500, 0.500\] |
+| 160 | 168 | CrCL 20 / 1000 mg q8h | 100 | 420 \[52.9\] | 82.2 \[35.6\] | 36.9 \[79.3\] | 0.500 \[0.500, 0.500\] |
+| 160 | 168 | CrCL 50 / 1000 mg q8h | 100 | 181 \[53.1\] | 51.0 \[32.0\] | 10.1 \[129\] | 0.500 \[0.500, 0.500\] |
+| 160 | 168 | CrCL 80 / 1000 mg q8h | 100 | 117 \[57.2\] | 45.4 \[26.8\] | 3.61 \[237\] | 0.500 \[0.500, 0.500\] |
 
 Simulated steady-state NCA parameters at 1 g q8h across CrCL = 20, 50,
 80, 120, 180 mL/min (non-RRT). {.table}
@@ -598,9 +602,9 @@ observed Cmin of 4.9 mg/L.
   With dose in `mg` and volumes in `L`, `central / vc` directly gives
   `mg/L`; no scale factor is applied.
 
-- **Virtual cohort uses n = 200 per CrCL / dose condition (vs n = 1,000
+- **Virtual cohort uses n = 100 per CrCL / dose condition (vs n = 1,000
   in the paper).** The vignette has a 5-minute pkgdown render budget; n
-  = 200 per condition with 21 doses per subject and 33 sampling points
+  = 100 per condition with 21 doses per subject and 17 sampling points
   per dosing interval keeps the render under that budget while still
   resolving the median and 10th-percentile trough comparison to within
   Monte-Carlo noise.

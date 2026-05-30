@@ -207,7 +207,7 @@ knitr::kable(
 
 | start | end | treatment | N | cmax | tmax | half.life | aucinf.obs |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | Inf | IN_3mg | 200 | 10.5 \[36.2\] | 0.300 \[0.100, 2.50\] | 10.2 \[1.09\] | NC |
+| 0 | Inf | IN_3mg | 200 | 9.93 \[44.5\] | 0.300 \[0.100, 4.00\] | 10.2 \[1.26\] | NC |
 
 Simulated NCA parameters for a single 3 mg IN nalmefene HCl dose.
 {.table}

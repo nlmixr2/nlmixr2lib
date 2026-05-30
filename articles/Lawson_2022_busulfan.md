@@ -463,7 +463,7 @@ knitr::kable(cum_auc_summary,
 | Source                        | Median |  Mean |  P2_5 | P97_5 |
 |:------------------------------|-------:|------:|------:|------:|
 | Lawson 2022 Table 4 NCA_PI_D1 |  129.0 | 134.0 | 105.0 | 241.0 |
-| Simulated NCA_PI_D1           |   98.1 |  99.2 |  65.2 | 134.4 |
+| Simulated NCA_PI_D1           |   97.6 |  99.1 |  69.6 | 128.1 |
 
 Cumulative AUC over the 4-day NCA_PI_D1 schedule (mg.h/L). {.table}
 

@@ -7,19 +7,13 @@
 mod_ui <- rxode2::rxode(readModelDb("Kleideiter_2017_cebranopadol"))
 #> ℹ parameter labels from comments will be replaced by 'label()'
 cat(mod_ui$reference, "\n\n", mod_ui$description, sep = "")
-#> Kleideiter E, Piana C, Wang S, Nemeth R, Gautrois M. Clinical Pharmacokinetic Characteristics of Cebranopadol, a Novel First-in-Class Analgesic. Clin Pharmacokinet. 2018;57(1):31-50. doi:10.1007/s40262-017-0545-1. Correction: Clin Pharmacokinet. 2018;57(11):1471-1472. doi:10.1007/s40262-018-0686-x. This model already incorporates the 2018 erratum: the Table 13 bioavailability rows for bunionectomy and DPN patients were swapped in the correction, so the packaged model uses the corrected assignment F_bunionectomy = 1.801 and F_DPN = 1.132.
+#> Kleideiter E, Piana C, Wang S, Nemeth R, Gautrois M. Clinical Pharmacokinetic Characteristics of Cebranopadol, a Novel First-in-Class Analgesic. Clin Pharmacokinet. 2018;57(1):31-50. doi:10.1007/s40262-017-0545-1. Correction: Clin Pharmacokinet. 2018;57(11):1471-1472. doi:10.1007/s40262-018-0686-x.
 #> 
 #> Two-compartment population PK model for oral cebranopadol with two lagged transition compartments in healthy subjects and chronic-pain patients (Kleideiter 2017; with 2018 correction)
 ```
 
 - Article: <https://doi.org/10.1007/s40262-017-0545-1>
 - Correction: <https://doi.org/10.1007/s40262-018-0686-x>
-
-This model and vignette **already incorporate the 2018 erratum**: the
-Table 13 bioavailability rows for bunionectomy and DPN patients were
-swapped in the correction, so the packaged values are F_bunionectomy =
-1.801 and F_DPN = 1.132 (see the source-trace table and the Assumptions
-section below for details).
 
 Cebranopadol is a novel first-in-class oral analgesic acting as a NOP
 receptor and opioid receptor agonist. The Kleideiter 2017 population PK

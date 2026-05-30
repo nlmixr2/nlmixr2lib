@@ -411,9 +411,9 @@ knitr::kable(nca_summary,
 | PPTESTCD | median_Non-pregnant | median_Pregnant | p05_Non-pregnant | p05_Pregnant | p95_Non-pregnant | p95_Pregnant |
 |:---|---:|---:|---:|---:|---:|---:|
 | auclast | NA | NA | NA | NA | NA | NA |
-| cmax | 7.268 | 7.727 | 3.711 | 2.955 | 16.321 | 18.855 |
-| half.life | 62.573 | 86.801 | 45.934 | 61.701 | 87.712 | 112.596 |
-| tmax | 66.000 | 66.000 | 64.000 | 64.000 | 69.000 | 70.000 |
+| cmax | 6.985 | 6.774 | 3.727 | 3.819 | 12.524 | 13.999 |
+| half.life | 63.339 | 85.817 | 47.250 | 61.851 | 90.006 | 106.265 |
+| tmax | 66.000 | 66.500 | 64.000 | 63.450 | 69.000 | 69.550 |
 
 Simulated NCA over 0-240 h, six-dose Coartem regimen, by pregnancy
 status (median \[5%-95%\]). Cmax / AUClast are in ug/mL and ug\*h/mL

@@ -74,7 +74,8 @@ dSimPrep <-
 Kyhl2016Nalmefene <- readModelDb("Kyhl_2016_nalmefene")
 conc_unit <- rxode2::rxode(Kyhl2016Nalmefene)$units[["concentration"]]
 # Set BSV to zero for simulation to get a reproducible result
-dSimNalmefene <- rxode2::rxSolve(Kyhl2016Nalmefene, events = dSimPrep, nStud = 500)
+# nStud downsampled from 500 for vignette build budget; 95% PI band is visually unchanged
+dSimNalmefene <- rxode2::rxSolve(Kyhl2016Nalmefene, events = dSimPrep, nStud = 100)
 dSimNalmefene$Analyte <- "Nalmefene"
 ```
 
@@ -130,7 +131,7 @@ ggplot(dSimNalmefenePlot, aes(x = time, y = Q50_occ, ymin = Q025_occ, ymax = Q97
 ### NCA analysis
 
 Non-compartmental analysis of simulated nalmefene plasma PK (single 20
-mg oral tablet in the fed state, 500 virtual subjects via IIV sampling).
+mg oral tablet in the fed state, 100 virtual subjects via IIV sampling).
 
 ``` r
 
@@ -160,6 +161,6 @@ knitr::kable(nca_summary, digits = 2,
 
 | start | end | treatment | N | auclast | cmax | tmax | half.life |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | 24 | 20 mg PO (fed, tablet) | 500 | 122 \[60.9\] | 14.1 \[82.6\] | 1.60 \[0.200, 11.1\] | 15.5 \[11.6\] |
+| 0 | 24 | 20 mg PO (fed, tablet) | 100 | 120 \[57.5\] | 15.1 \[83.2\] | 1.50 \[0.300, 8.10\] | 14.7 \[10.6\] |
 
 NCA summary (single 20 mg oral tablet, fed state) {.table}

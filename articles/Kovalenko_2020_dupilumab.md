@@ -253,7 +253,7 @@ intervals <- data.frame(
 nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
 summary(nca_res)
 #>  start end    treatment   N     auclast        cmax        cmin         cav
-#>      0  14 300mg_Q2W_SS 400 1190 [43.9] 95.0 [41.9] 70.4 [49.2] 85.1 [43.9]
+#>      0  14 300mg_Q2W_SS 400 1170 [46.3] 93.6 [43.1] 69.3 [53.8] 83.8 [46.3]
 #> 
 #> Caption: auclast, cmax, cmin, cav: geometric mean and geometric coefficient of variation; N: number of subjects
 ```
@@ -280,7 +280,7 @@ sim_typical <- rxode2::rxSolve(
   mod_typical, events = ev_typical, keep = "WT"
 ) |>
   as.data.frame()
-#> ℹ omega/sigma items treated as zero: 'etalvc', 'etalke', 'etalka', 'etalvmax', 'etalmtt'
+#> ℹ omega/sigma items treated as zero: 'etalvc', 'etalkel', 'etalka', 'etalvmax', 'etalmtt'
 
 ss_typical <- sim_typical |>
   dplyr::filter(time >= ss_start, time <= ss_end, !is.na(Cc))

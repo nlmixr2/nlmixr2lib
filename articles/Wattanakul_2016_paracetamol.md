@@ -284,8 +284,8 @@ knitr::kable(
 
 | Interval Start | Interval End | treatment | N | AUClast (h\*mg/L) | Cmax (mg/L) | Tmax (h) | Half-life (h) |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | 12 | IM_600mg | 200 | NC | 9.84 \[15.1\] | 1.00 \[0.500, 1.00\] | 5.30 \[3.74\] |
-| 0 | 12 | PO_600mg | 200 | NC | 7.63 \[300\] | 0.500 \[0.500, 4.00\] | 5.87 \[6.23\] |
+| 0 | 12 | IM_600mg | 200 | NC | 10.0 \[14.1\] | 1.00 \[0.500, 1.00\] | 5.06 \[3.43\] |
+| 0 | 12 | PO_600mg | 200 | NC | 6.79 \[358\] | 0.500 \[0.500, 6.00\] | 5.44 \[4.74\] |
 
 Simulated NCA parameters by route after a single 600 mg paracetamol
 dose, computed over 0-12 h to match Wattanakul 2016 Table 3. {.table}

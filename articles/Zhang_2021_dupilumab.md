@@ -301,11 +301,11 @@ intervals <- data.frame(
 nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
 summary(nca_res)
 #>  Interval Start Interval End treatment   N AUClast (day*mg/L) Cmax (mg/L)
-#>               0           14 200mg_Q2W 200         152 [99.6] 15.6 [79.2]
-#>               0           14 300mg_Q2W 200         306 [89.9] 28.4 [76.4]
+#>               0           14 200mg_Q2W 200          149 [105] 15.1 [84.2]
+#>               0           14 300mg_Q2W 200         286 [84.6] 26.9 [70.1]
 #>  Cmin (mg/L)        Tmax (day)  Cav (mg/L)
-#>   4.14 [241] 3.50 [2.00, 5.00] 10.8 [99.6]
-#>   11.9 [163] 4.00 [2.00, 5.00] 21.9 [89.9]
+#>   4.22 [259] 4.00 [2.00, 5.00]  10.7 [105]
+#>   10.8 [166] 4.00 [2.00, 5.00] 20.4 [84.6]
 #> 
 #> Caption: AUClast, Cmax, Cmin, Cav: geometric mean and geometric coefficient of variation; Tmax: median and range; N: number of subjects
 ```

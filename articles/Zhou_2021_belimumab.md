@@ -10,7 +10,7 @@ library(PKNCA)
 #> 
 #>     filter
 library(rxode2)
-#> rxode2 5.0.2 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.1 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -167,7 +167,7 @@ make_cohort <- function(n,
 }
 
 adult_cohort <- make_cohort(
-  n              = 500,
+  n              = 120,  # downsampled from 500 for vignette build budget
   age_range      = c(18, 80),
   age_median     = 38,
   wt_range       = c(35.8, 165.4),
@@ -182,7 +182,7 @@ adult_cohort <- make_cohort(
 ) |> mutate(cohort = "All adult")
 
 ped_cohort <- make_cohort(
-  n              = 200,
+  n              = 50,  # downsampled from 200 for vignette build budget
   age_range      = c(6, 18),
   age_median     = 14,
   wt_range       = c(17, 85.5),
@@ -197,7 +197,7 @@ ped_cohort <- make_cohort(
 ) |> mutate(cohort = "All pediatric")
 
 neas_adult_cohort <- make_cohort(
-  n              = 500,
+  n              = 120,  # downsampled from 500 for vignette build budget
   age_range      = c(18, 80),
   age_median     = 38,
   wt_range       = c(35.8, 165.4),
@@ -406,9 +406,9 @@ knitr::kable(
 
 | cohort                 | Q1_pub | Q3_pub | Q1_sim | Q3_sim | Q1_pct_diff | Q3_pct_diff |
 |:-----------------------|-------:|-------:|-------:|-------:|------------:|------------:|
-| All adult              |   81.0 |  111.2 |   80.8 |  158.4 |        -0.2 |        42.4 |
-| North East Asian adult |   75.8 |   98.0 |   79.6 |  153.8 |         5.0 |        56.9 |
-| All pediatric          |   78.2 |  105.8 |   65.1 |  122.4 |       -16.8 |        15.7 |
+| All adult              |   81.0 |  111.2 |   85.1 |  152.6 |         5.1 |        37.2 |
+| North East Asian adult |   75.8 |   98.0 |   72.5 |  141.5 |        -4.4 |        44.4 |
+| All pediatric          |   78.2 |  105.8 |   71.4 |  120.2 |        -8.7 |        13.6 |
 
 Cavg,ss (mg/L) at steady state under 10 mg/kg IV Q4W: simulated vs Zhou
 2021 Table 3. {.table}

@@ -4,7 +4,7 @@
 
 library(nlmixr2lib)
 library(rxode2)
-#> rxode2 5.0.2 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.1 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -262,7 +262,7 @@ knitr::kable(
 
 | Time after dose (h) | Simulated median (IQR) | Published median (IQR) |
 |--------------------:|:-----------------------|:-----------------------|
-|                  72 | 23.1 (13.8-42.9)       | 48.4 (29.9-104.7)      |
+|                  72 | 21.4 (11.0-37.6)       | 48.4 (29.9-104.7)      |
 
 Simulated vs published 48 h and 72 h trough concentrations (first 2
 weeks of treatment, MONTH1 = 1). {.table}
@@ -577,9 +577,9 @@ knitr::kable(
 
 | Interval Start | Interval End | treatment | N | Cmax (IU/L) | Tmax (hour) | Half-life (hour) | AUCinf,obs (hour\*IU/L) |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | Inf | Low (\<20 kg) | 67 | 8360 \[4.40\] | 1.00 \[1.00, 1.00\] | 13.1 \[1.44\] | NC |
-| 0 | Inf | Mid (20-50 kg) | 110 | 7070 \[6.42\] | 1.00 \[1.00, 1.00\] | 15.3 \[1.98\] | NC |
-| 0 | Inf | High (\>=50 kg) | 23 | 5930 \[6.06\] | 1.00 \[1.00, 1.00\] | 19.0 \[2.24\] | NC |
+| 0 | Inf | Low (\<20 kg) | 67 | 8260 \[5.55\] | 1.00 \[1.00, 1.00\] | 12.6 \[1.30\] | NC |
+| 0 | Inf | Mid (20-50 kg) | 110 | 7080 \[6.80\] | 1.00 \[1.00, 1.00\] | 15.4 \[2.01\] | NC |
+| 0 | Inf | High (\>=50 kg) | 23 | 5830 \[5.65\] | 1.00 \[1.00, 1.00\] | 17.7 \[2.05\] | NC |
 
 Simulated NCA after a single 20,000 IU/m^2 IV dose (month 1, MONTH1 =
 1), stratified by weight band. {.table}
@@ -734,8 +734,8 @@ fig4 |>
 
 | weight_kg      | 250 | 500 | 750 | 1000 | 1500 | 2000 |
 |:---------------|----:|----:|----:|-----:|-----:|-----:|
-| 10 kg patient  |   6 |  23 |  33 |   48 |   65 |   75 |
-| 100 kg patient |  42 |  74 |  91 |   95 |  100 |  100 |
+| 10 kg patient  |   4 |  24 |  31 |   52 |   65 |   78 |
+| 100 kg patient |  43 |  85 |  89 |   98 |  100 |  100 |
 
 Percentage of simulated subjects with 48 h concentration \>= 100 IU/L,
 by weight and IU/kg dose. {.table}

@@ -24,11 +24,12 @@ library(ggplot2)
 - Description (trontinemab): Trontinemab PK model in non-human primates
   (Grimm 2023): two-compartment plasma PK with Michaelis-Menten
   elimination and brain-region effect-compartment distribution
-  (cerebellum, hippocampus, striatum, cortex, choroid plexus, CSF).
+  (brain_cerebellum, brain_hippocampus, brain_striatum, brain_cortex,
+  choroid plexus, CSF).
 - Description (gantenerumab): Gantenerumab PK model in cynomolgus
   monkeys (Grimm 2023): two-compartment plasma PK with brain
-  extracellular distribution across six brain regions (cerebellum,
-  hippocampus, striatum, cortex, choroid plexus, CSF).
+  extracellular distribution across six brain regions (brain_cerebellum,
+  brain_hippocampus, brain_striatum, brain_cortex, choroid plexus, CSF).
 - Article: <https://doi.org/10.1080/19420862.2023.2261509>
 
 ## Trontinemab replication

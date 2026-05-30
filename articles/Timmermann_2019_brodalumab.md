@@ -324,10 +324,10 @@ intervals <- data.frame(
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- PKNCA::pk.nca(nca_data)
 summary(nca_res)
-#>  start end treatment   N    auclast        cmax           cmin
-#>      0  14 210mg_Q2W 400 19.2 [137] 3.23 [99.8] 0.00288 [2610]
-#>                tmax        cav
-#>  3.00 [0.250, 6.00] 1.37 [137]
+#>  start end treatment   N    auclast        cmax          cmin              tmax
+#>      0  14 210mg_Q2W 400 19.2 [125] 3.24 [94.3] 0.00269 [764] 3.00 [1.00, 6.00]
+#>         cav
+#>  1.37 [125]
 #> 
 #> Caption: auclast, cmax, cmin, cav: geometric mean and geometric coefficient of variation; tmax: median and range; N: number of subjects
 ```
@@ -400,10 +400,10 @@ knitr::kable(comparison, digits = 2,
 
 | Parameter | Mean_pub | Median_pub | CV_pub | Mean_sim | Median_sim | CV_sim | Mean_pct_diff | Median_pct_diff |
 |:---|---:|---:|---:|---:|---:|---:|---:|---:|
-| Cmax week 1 (ug/mL) | 9.95 | 9.57 | 50.7 | 9.42 | 8.92 | 71.15 | -5.36 | -6.83 |
-| Cmax SS (ug/mL) | 20.20 | 16.10 | 76.8 | 18.91 | 16.05 | 71.29 | -6.36 | -0.34 |
+| Cmax week 1 (ug/mL) | 9.95 | 9.57 | 50.7 | 9.62 | 9.73 | 80.85 | -3.34 | 1.63 |
+| Cmax SS (ug/mL) | 20.20 | 16.10 | 76.8 | 20.54 | 16.24 | 81.34 | 1.66 | 0.85 |
 | tmax SS (d) | NA | 4.00 | NA | 4.01 | 4.00 | NA | NA | 0.00 |
-| AUCss (ug\*d/mL) | 225.00 | 160.00 | 92.8 | 207.95 | 163.53 | 95.90 | -7.58 | 2.20 |
+| AUCss (ug\*d/mL) | 225.00 | 160.00 | 92.8 | 229.03 | 166.27 | 107.27 | 1.79 | 3.92 |
 
 Simulated vs. published (Timmermann 2019 Table 4) secondary PK
 parameters for a reference 90 kg patient on 210 mg Q2W+1. Differences \>

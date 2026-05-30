@@ -323,9 +323,9 @@ knitr::kable(
 
 | arm       | aucinf.obs |     cmax | half.life | tmax |
 |:----------|-----------:|---------:|----------:|-----:|
-| control   |    1051666 | 8455.082 |  114.2046 |   15 |
-| seizure   |    1048096 | 8429.565 |  111.6625 |   10 |
-| verapamil |    1056769 | 8526.755 |  112.0767 |   10 |
+| control   |    1052192 | 8528.478 |  103.5328 |   15 |
+| seizure   |    1047776 | 8492.851 |  113.3826 |   10 |
+| verapamil |    1056969 | 8616.815 |  113.8252 |   15 |
 
 Plasma PKNCA medians at 20 mg/kg IP, by experimental arm. Units: Cmax
 ng/mL, Tmax min, AUCinf.obs ng/mL\*min, t1/2 min. {.table}
@@ -361,9 +361,9 @@ knitr::kable(
 
 | arm       | aucinf.obs |     cmax | half.life | tmax |
 |:----------|-----------:|---------:|----------:|-----:|
-| control   |   458806.3 | 1914.443 |  115.5705 |   50 |
-| seizure   |   600212.2 | 2772.538 |  113.0780 |   50 |
-| verapamil |   880581.3 | 4148.356 |  113.3982 |   50 |
+| control   |   335579.9 | 1666.369 |  104.6650 |   45 |
+| seizure   |   583430.3 | 2673.256 |  115.2553 |   50 |
+| verapamil |   798215.9 | 4030.613 |  115.6290 |   50 |
 
 Brain ECF PKNCA medians at 20 mg/kg IP, by experimental arm. {.table}
 

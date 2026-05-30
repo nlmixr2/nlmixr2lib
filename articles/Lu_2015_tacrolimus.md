@@ -378,7 +378,7 @@ knitr::kable(
 
 | Interval Start | Interval End | cohort | N | AUClast (h\*ng/mL) | Cmax (ng/mL) | Tmax (h) | Clast (ng/mL) | Half-life (h) | AUCinf,obs (h\*ng/mL) |
 |---:|---:|:---|:---|:---|:---|:---|:---|:---|:---|
-| 0 | 72 | Healthy volunteer (single 2 mg PO) | 40 | NC | 5.35 \[29.6\] | 1.00 \[0.750, 2.00\] | 0.146 \[125\] | 38.6 \[31.2\] | NC |
+| 0 | 72 | Healthy volunteer (single 2 mg PO) | 40 | NC | 5.68 \[25.8\] | 1.00 \[0.750, 4.00\] | 0.0562 \[903\] | 32.2 \[33.2\] | NC |
 
 Healthy-volunteer simulated NCA after a single 2 mg PO tacrolimus dose.
 {.table}
@@ -428,7 +428,7 @@ knitr::kable(
 
 | Interval Start | Interval End | cohort | N | AUClast (h\*ng/mL) | Cmin (ng/mL) | Cav (ng/mL) |
 |---:|---:|:---|:---|:---|:---|:---|
-| 156 | 168 | Liver-transplant patient (1.5 mg PO q12h) | 50 | NC | 5.11 \[46.3\] | NC |
+| 156 | 168 | Liver-transplant patient (1.5 mg PO q12h) | 50 | NC | 4.33 \[61.2\] | NC |
 
 Liver-transplant simulated steady-state NCA over the final 12 h dosing
 interval (1.5 mg PO q12h). {.table}

@@ -171,7 +171,7 @@ mod_typ <- rxode2::zeroRe(mod)
 sim_typ <- rxode2::rxSolve(mod_typ, events = events,
                            keep = c("cohort", "WT")) |>
   as.data.frame()
-#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvp', 'etalka2', 'etalr0', 'etalwtbase'
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvp', 'etalka2', 'etalrbase', 'etalwtbase'
 #> Warning: multi-subject simulation without without 'omega'
 ```
 
@@ -210,7 +210,7 @@ events_pd <- make_sc_cohort(
 sim_pd <- rxode2::rxSolve(mod_typ, events = events_pd,
                           keep = c("cohort", "WT")) |>
   as.data.frame()
-#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvp', 'etalka2', 'etalr0', 'etalwtbase'
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvp', 'etalka2', 'etalrbase', 'etalwtbase'
 #> Warning: multi-subject simulation without without 'omega'
 ```
 

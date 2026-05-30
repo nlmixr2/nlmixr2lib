@@ -282,7 +282,7 @@ knitr::kable(summary(nca_res),
 
 | start | end | treatment | N | auclast | cmax | cmin | tmax | cav |
 |---:|---:|:---|:---|:---|:---|:---|:---|:---|
-| 0 | 24 | 3 mg QD (adolescent) | 400 | 742 \[39.0\] | 36.1 \[34.6\] | 22.4 \[51.4\] | 8.00 \[6.00, 8.00\] | 30.9 \[39.0\] |
+| 0 | 24 | 3 mg QD (adolescent) | 400 | 715 \[31.8\] | 34.9 \[28.3\] | 21.4 \[41.9\] | 8.00 \[6.00, 8.00\] | 29.8 \[31.8\] |
 
 Steady-state NCA at the final 24-h dosing interval (3 mg QD SC
 adolescent cohort). {.table style="width:100%;"}
@@ -330,8 +330,8 @@ knitr::kable(compare_tbl,
 | Source                       | Cavg_nmol_L |
 |:-----------------------------|:------------|
 | Typical-value closed form    | 31.1        |
-| Simulated cohort (median)    | 28.9        |
-| Simulated cohort (90% range) | 16.1 - 56.8 |
+| Simulated cohort (median)    | 29.0        |
+| Simulated cohort (90% range) | 17.3 - 46.6 |
 
 Predicted steady-state Cavg for the 3 mg QD adolescent cohort. {.table}
 

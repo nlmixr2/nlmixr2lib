@@ -168,7 +168,7 @@ sim_bundle <- rxode2::rxSolve(
   params = c(WT = exp(1))
 ) |>
   as.data.frame()
-#> ℹ omega/sigma items treated as zero: 'etalvc', 'etalke', 'etalvmax', 'etalka'
+#> ℹ omega/sigma items treated as zero: 'etalvc', 'etalkel', 'etalvmax', 'etalka'
 ```
 
 ## F.2 self-consistency check vs the bundle’s simulated dataset
@@ -259,7 +259,7 @@ sim_300sc <- rxode2::rxSolve(
   params = c(WT = 75)
 ) |>
   as.data.frame()
-#> ℹ omega/sigma items treated as zero: 'etalvc', 'etalke', 'etalvmax', 'etalka'
+#> ℹ omega/sigma items treated as zero: 'etalvc', 'etalkel', 'etalvmax', 'etalka'
 
 ggplot(sim_300sc, aes(time, Cc)) +
   geom_line(linewidth = 0.7) +

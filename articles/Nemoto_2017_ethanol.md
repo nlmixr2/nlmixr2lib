@@ -360,7 +360,7 @@ knitr::kable(as.data.frame(summary(nca_res)),
 
 | Interval Start | Interval End | treatment | N | Cmax (mg/L) | Tmax (hour) |
 |---:|---:|:---|:---|:---|:---|
-| 0 | 1 | 14 g ethanol oral | 200 | 158 \[143\] | 0.367 \[0.0333, 0.967\] |
+| 0 | 1 | 14 g ethanol oral | 200 | 145 \[223\] | 0.400 \[0.0333, 1.00\] |
 
 Simulated NCA Cmax / Tmax over 0-1 h after a single 14 g oral ethanol
 dose. {.table}
@@ -391,7 +391,7 @@ knitr::kable(cmax_summary, digits = 3,
 
 |   n | min |   p05 | median |   p95 |   max |
 |----:|----:|------:|-------:|------:|------:|
-| 200 |   0 | 0.054 |   0.19 | 0.447 | 0.616 |
+| 200 |   0 | 0.026 |  0.188 | 0.455 | 0.673 |
 
 Simulated per-subject Cmax (g/L) over 0-6 h. Compare against Nemoto 2017
 observed range 0.025 to 0.41 g/L. {.table}

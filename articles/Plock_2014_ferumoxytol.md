@@ -4,7 +4,7 @@
 
 library(nlmixr2lib)
 library(rxode2)
-#> rxode2 5.0.2 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.1 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(PKNCA)
 #> 
@@ -273,31 +273,31 @@ knitr::kable(
 | cohort     | PPTESTCD            |  median |     p05 |     p95 |
 |:-----------|:--------------------|--------:|--------:|--------:|
 | CKD-non-HD | adj.r.squared       |    1.00 |    1.00 |    1.00 |
-| CKD-non-HD | aucinf.obs          | 5548.19 | 4089.54 | 7684.20 |
-| CKD-non-HD | clast.obs           |    0.13 |    0.01 |    1.23 |
-| CKD-non-HD | clast.pred          |    0.14 |    0.01 |    1.21 |
-| CKD-non-HD | cmax                |  206.77 |  146.66 |  277.77 |
-| CKD-non-HD | half.life           |   14.77 |    9.42 |   23.30 |
-| CKD-non-HD | lambda.z            |    0.05 |    0.03 |    0.07 |
+| CKD-non-HD | aucinf.obs          | 5838.46 | 4277.37 | 8488.88 |
+| CKD-non-HD | clast.obs           |    0.20 |    0.01 |    2.10 |
+| CKD-non-HD | clast.pred          |    0.20 |    0.01 |    2.09 |
+| CKD-non-HD | cmax                |  206.03 |  139.86 |  271.50 |
+| CKD-non-HD | half.life           |   16.00 |    9.96 |   30.73 |
+| CKD-non-HD | lambda.z            |    0.04 |    0.02 |    0.07 |
 | CKD-non-HD | lambda.z.n.points   |    4.00 |    3.00 |    7.00 |
 | CKD-non-HD | lambda.z.time.first |   96.00 |   36.00 |  120.00 |
 | CKD-non-HD | lambda.z.time.last  |  168.00 |  168.00 |  168.00 |
 | CKD-non-HD | r.squared           |    1.00 |    1.00 |    1.00 |
-| CKD-non-HD | span.ratio          |    5.22 |    2.25 |   10.20 |
+| CKD-non-HD | span.ratio          |    5.07 |    1.58 |    9.96 |
 | CKD-non-HD | tlast               |  168.00 |  168.00 |  168.00 |
 | CKD-non-HD | tmax                |    0.00 |    0.00 |    0.00 |
 | HV         | adj.r.squared       |    1.00 |    1.00 |    1.00 |
-| HV         | aucinf.obs          | 6027.98 | 4228.35 | 7764.09 |
-| HV         | clast.obs           |    0.15 |    0.01 |    1.48 |
-| HV         | clast.pred          |    0.15 |    0.01 |    1.47 |
-| HV         | cmax                |  203.65 |  147.06 |  287.45 |
-| HV         | half.life           |   14.67 |    9.50 |   26.11 |
+| HV         | aucinf.obs          | 5770.15 | 4081.05 | 7794.36 |
+| HV         | clast.obs           |    0.15 |    0.01 |    1.29 |
+| HV         | clast.pred          |    0.15 |    0.01 |    1.29 |
+| HV         | cmax                |  196.80 |  135.68 |  273.61 |
+| HV         | half.life           |   14.98 |   10.04 |   22.97 |
 | HV         | lambda.z            |    0.05 |    0.03 |    0.07 |
-| HV         | lambda.z.n.points   |    4.00 |    3.00 |    6.00 |
-| HV         | lambda.z.time.first |   96.00 |   48.00 |  120.00 |
+| HV         | lambda.z.n.points   |    4.00 |    3.00 |    7.00 |
+| HV         | lambda.z.time.first |   96.00 |   36.00 |  120.00 |
 | HV         | lambda.z.time.last  |  168.00 |  168.00 |  168.00 |
 | HV         | r.squared           |    1.00 |    1.00 |    1.00 |
-| HV         | span.ratio          |    5.40 |    1.89 |   10.84 |
+| HV         | span.ratio          |    5.41 |    2.17 |   11.03 |
 | HV         | tlast               |  168.00 |  168.00 |  168.00 |
 | HV         | tmax                |    0.00 |    0.00 |    0.00 |
 

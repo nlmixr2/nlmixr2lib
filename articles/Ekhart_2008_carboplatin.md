@@ -267,10 +267,10 @@ knitr::kable(
 
 | treatment             | PPTESTCD   |    median |       p05 |        p95 |
 |:----------------------|:-----------|----------:|----------:|-----------:|
-| 700 mg over 30 min IV | aucinf.obs | 84.475071 | 65.158306 | 119.583529 |
-| 700 mg over 30 min IV | auclast    | 84.450177 | 65.147790 | 119.311742 |
-| 700 mg over 30 min IV | cmax       | 38.917020 | 31.602259 |  47.021093 |
-| 700 mg over 30 min IV | half.life  |  4.538143 |  2.467776 |   8.480237 |
+| 700 mg over 30 min IV | aucinf.obs | 86.082982 | 62.397876 | 118.898773 |
+| 700 mg over 30 min IV | auclast    | 85.805201 | 62.395545 | 116.697461 |
+| 700 mg over 30 min IV | cmax       | 38.194748 | 31.082558 |  47.743266 |
+| 700 mg over 30 min IV | half.life  |  4.366389 |  2.490971 |   8.685934 |
 | 700 mg over 30 min IV | tmax       |  0.500000 |  0.500000 |   0.500000 |
 
 Simulated free-platinum NCA after a 700 mg / 30 min IV carboplatin dose
@@ -315,7 +315,7 @@ knitr::kable(
 |:-------------------------------------|-----------------:|
 | Target AUC (paper, 5 mg.min/mL)      |         83.33333 |
 | Typical AUC = Dose / CL = 700 / 8.38 |         83.53222 |
-| Simulated cohort median AUC0-inf     |         84.47507 |
+| Simulated cohort median AUC0-inf     |         86.08298 |
 
 AUC reconciliation: paper-target vs typical-value vs simulated cohort
 median. {.table}

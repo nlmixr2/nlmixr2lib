@@ -4,7 +4,7 @@
 
 library(nlmixr2lib)
 library(rxode2)
-#> rxode2 5.0.2 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.1 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(PKNCA)
 #> 
@@ -360,17 +360,17 @@ nca_summary
 #> # A tibble: 12 × 5
 #>    treatment      PPTESTCD   median     p05     p95
 #>    <chr>          <chr>       <dbl>   <dbl>   <dbl>
-#>  1 ADA titer > 64 auclast    6732.  3575.    9789. 
-#>  2 ADA titer > 64 cav          40.1   21.3     58.3
-#>  3 ADA titer > 64 cmax        102.    67.2    151. 
-#>  4 ADA titer > 64 cmin         12.9    2.35    24.0
-#>  5 ADA titer > 64 half.life    68.6   24.1     91.1
+#>  1 ADA titer > 64 auclast    7780.  4072.   10719. 
+#>  2 ADA titer > 64 cav          46.3   24.2     63.8
+#>  3 ADA titer > 64 cmax        106.    72.9    150. 
+#>  4 ADA titer > 64 cmin         17.9    2.50    30.2
+#>  5 ADA titer > 64 half.life    76.5   38.2     99.0
 #>  6 ADA titer > 64 tmax          1      1        1  
-#>  7 ADA-negative   auclast   10346.  5658.   20712. 
-#>  8 ADA-negative   cav          61.6   33.7    123. 
-#>  9 ADA-negative   cmax        117.    79.6    208. 
-#> 10 ADA-negative   cmin         32.1    7.95    81.8
-#> 11 ADA-negative   half.life   108.    54.4    168. 
+#>  7 ADA-negative   auclast   11442.  5578.   20199. 
+#>  8 ADA-negative   cav          68.1   33.2    120. 
+#>  9 ADA-negative   cmax        129.    77.8    205. 
+#> 10 ADA-negative   cmin         34.6    8.26    75.8
+#> 11 ADA-negative   half.life   108.    42.6    164. 
 #> 12 ADA-negative   tmax          1      1        1
 ```
 
@@ -397,8 +397,8 @@ comparison
 #> # A tibble: 4 × 4
 #>   metric                                               published simulated units
 #>   <chr>                                                    <dbl>     <dbl> <chr>
-#> 1 SS Cmin, 5 mg/kg QW, ADA-negative (paper simulation)      83.1      32.1 ug/mL
-#> 2 SS Cmin, 5 mg/kg QW, ADA titer > 64 (paper simulati…      26.9      12.9 ug/mL
+#> 1 SS Cmin, 5 mg/kg QW, ADA-negative (paper simulation)      83.1      34.6 ug/mL
+#> 2 SS Cmin, 5 mg/kg QW, ADA titer > 64 (paper simulati…      26.9      17.9 ug/mL
 #> 3 Observed median Cmin, Study 003 MPM (5 mg/kg D1+D8 …      38.2      NA   ug/mL
 #> 4 Exposure-response threshold for OS                        38.2      NA   ug/mL
 ```

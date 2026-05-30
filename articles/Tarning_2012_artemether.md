@@ -506,16 +506,16 @@ knitr::kable(nca_summary,
              digits = 3)
 ```
 
-| species            | PPTESTCD  | median |    p05 |     p95 |
-|:-------------------|:----------|-------:|-------:|--------:|
-| Artemether         | auclast   |     NA |     NA |      NA |
-| Artemether         | cmax      | 35.055 |  7.507 | 106.965 |
-| Artemether         | half.life |  1.625 |  1.008 |   2.519 |
-| Artemether         | tmax      |  1.000 |  0.800 |   1.610 |
-| Dihydroartemisinin | auclast   |     NA |     NA |      NA |
-| Dihydroartemisinin | cmax      | 56.418 | 11.595 | 402.292 |
-| Dihydroartemisinin | half.life |  1.629 |  1.009 |   2.521 |
-| Dihydroartemisinin | tmax      |  1.200 |  0.900 |   1.902 |
+| species            | PPTESTCD  | median |   p05 |     p95 |
+|:-------------------|:----------|-------:|------:|--------:|
+| Artemether         | auclast   |     NA |    NA |      NA |
+| Artemether         | cmax      | 36.814 | 6.677 |  98.598 |
+| Artemether         | half.life |  1.586 | 0.863 |   2.456 |
+| Artemether         | tmax      |  1.000 | 0.800 |   1.750 |
+| Dihydroartemisinin | auclast   |     NA |    NA |      NA |
+| Dihydroartemisinin | cmax      | 66.775 | 9.135 | 286.519 |
+| Dihydroartemisinin | half.life |  1.587 | 0.863 |   2.459 |
+| Dihydroartemisinin | tmax      |  1.200 | 0.947 |   1.952 |
 
 Simulated NCA over the 0-10 h window after the last dose (60-70 h on the
 original timeline), 60 simulated pregnant Ugandan subjects. Cmax in

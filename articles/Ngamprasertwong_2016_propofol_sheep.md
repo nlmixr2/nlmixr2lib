@@ -285,7 +285,7 @@ knitr::kable(maternal_summary,
 
 | Interval Start | Interval End | treatment | N | AUClast (min\*ug/mL) | Cmax (ug/mL) | Tmax (min) | Clast (ug/mL) |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | 180 | ewe | 50 | 676 \[22.5\] | 7.72 \[18.8\] | 60.0 \[0.000, 60.0\] | 0.529 \[53.4\] |
+| 0 | 180 | ewe | 50 | 705 \[21.1\] | 7.97 \[18.5\] | 60.0 \[0.000, 60.0\] | 0.581 \[49.7\] |
 
 Simulated NCA on maternal Cc (50 typical-subject ewes, HR = 135).
 {.table}
@@ -309,7 +309,7 @@ knitr::kable(fetal_summary,
 
 | Interval Start | Interval End | treatment | N | AUClast (min\*ug/mL) | Cmax (ug/mL) | Tmax (min) | Clast (ug/mL) |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | 180 | ewe | 50 | 662 \[22.2\] | 7.24 \[20.5\] | 60.0 \[60.0, 64.0\] | 0.799 \[59.6\] |
+| 0 | 180 | ewe | 50 | 692 \[21.2\] | 7.58 \[19.6\] | 60.0 \[60.0, 62.0\] | 0.861 \[43.9\] |
 
 Simulated NCA on fetal Cfetus (50 typical-subject ewes, HR = 135).
 {.table style="width:100%;"}

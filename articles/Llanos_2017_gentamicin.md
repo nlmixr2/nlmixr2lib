@@ -10,7 +10,7 @@ library(PKNCA)
 #> 
 #>     filter
 library(rxode2)
-#> rxode2 5.0.2 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.1 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -338,9 +338,9 @@ knitr::kable(nca_summary,
 
 | cohort | median_auclast | median_cmax | median_half.life | median_tmax | P05_auclast | P05_cmax | P05_half.life | P05_tmax | P95_auclast | P95_cmax | P95_half.life | P95_tmax |
 |:---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| 0.2-2 y, 7.5 mg/kg | 56.09 | 23.83 | 8.89 | 0.5 | 35.39 | 16.64 | 4.36 | 0.5 | 93.06 | 37.44 | 18.40 | 0.5 |
-| 10-18.2 y, 6 mg/kg | 88.28 | 30.93 | 8.23 | 0.5 | 58.15 | 20.45 | 2.73 | 0.5 | 129.65 | 46.70 | 15.35 | 0.5 |
-| 2-10 y, 7.5 mg/kg | 67.74 | 26.57 | 9.02 | 0.5 | 42.84 | 17.65 | 3.15 | 0.5 | 100.36 | 38.71 | 18.95 | 0.5 |
+| 0.2-2 y, 7.5 mg/kg | 57.39 | 23.81 | 7.86 | 0.5 | 37.89 | 15.56 | 3.63 | 0.5 | 94.94 | 34.59 | 16.87 | 0.5 |
+| 10-18.2 y, 6 mg/kg | 82.71 | 27.66 | 7.57 | 0.5 | 52.76 | 18.91 | 2.73 | 0.5 | 125.97 | 45.51 | 17.17 | 0.5 |
+| 2-10 y, 7.5 mg/kg | 66.88 | 26.62 | 9.37 | 0.5 | 44.27 | 17.60 | 3.12 | 0.5 | 101.34 | 39.29 | 18.84 | 0.5 |
 
 Simulated NCA by age / dose stratum (median and 5/95th percentiles).
 {.table}

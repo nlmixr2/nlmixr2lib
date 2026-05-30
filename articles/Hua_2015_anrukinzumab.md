@@ -4,7 +4,7 @@
 
 library(nlmixr2lib)
 library(rxode2)
-#> rxode2 5.0.2 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.1 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -558,8 +558,8 @@ knitr::kable(
 
 | start | end | treatment | N | auclast | cmax | tmax | half.life |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | 672 | non-UC | 100 | 2.69e7 \[28.1\] | 88900 \[29.6\] | 672 \[672, 672\] | NC |
-| 0 | 672 | UC | 100 | 2.12e7 \[31.5\] | 74000 \[32.6\] | 672 \[672, 672\] | NC |
+| 0 | 672 | non-UC | 100 | 2.70e7 \[25.6\] | 88700 \[27.1\] | 672 \[672, 672\] | NC |
+| 0 | 672 | UC | 100 | 2.15e7 \[26.8\] | 74700 \[27.2\] | 672 \[672, 672\] | NC |
 
 PKNCA summary after a single 200 mg IV dose (first 28 days), stratified
 by UC vs non-UC. {.table}

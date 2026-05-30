@@ -339,7 +339,9 @@ nca_res  <- PKNCA::pk.nca(nca_data)
 #> Requesting an AUC range starting (0) before the first measurement (10) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (10) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (10) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (10) is not allowed
+#> Warning: Too few points for half-life calculation (min.hl.points=3 with only 2
+#> points)
+#> Warning: Requesting an AUC range starting (0) before the first measurement (10) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (10) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (10) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (10) is not allowed
@@ -660,9 +662,9 @@ knitr::kable(
 |:--------------------|:-----------|--------:|---------:|--------:|
 | 1000 mg single oral | aucinf.obs |      NA |       NA |      NA |
 | 1000 mg single oral | auclast    |      NA |       NA |      NA |
-| 1000 mg single oral | cmax       |   1.471 |   0.9629 |   2.431 |
-| 1000 mg single oral | half.life  | 293.900 | 117.0000 | 631.500 |
-| 1000 mg single oral | tmax       | 110.000 |  50.0000 | 190.500 |
+| 1000 mg single oral | cmax       |   1.488 |   0.9398 |   2.577 |
+| 1000 mg single oral | half.life  | 294.700 | 139.7000 | 617.700 |
+| 1000 mg single oral | tmax       | 100.000 |  50.0000 | 200.500 |
 
 PKNCA on simulated 1000 mg single oral metformin (n = 200 virtual
 subjects). Cmax in mg/L, Tmax / half-life in min, AUC in mg\*min/L.
@@ -705,8 +707,8 @@ knitr::kable(
 
 | parameter | published_median | published_lo | published_hi | units | simulated_median | simulated_q05 | simulated_q95 | pct_diff |
 |:---|---:|---:|---:|:---|---:|---:|---:|---:|
-| cmax | 1.8 | 0.79 | 3.45 | mg/L | 1.471 | 0.9629 | 2.431 | -18.30 |
-| tmax | 120.0 | 60.00 | 240.00 | min | 110.000 | 50.0000 | 190.500 | -8.33 |
+| cmax | 1.8 | 0.79 | 3.45 | mg/L | 1.488 | 0.9398 | 2.577 | -17.3 |
+| tmax | 120.0 | 60.00 | 240.00 | min | 100.000 | 50.0000 | 200.500 | -16.7 |
 | auclast | 603.5 | 286.70 | 1118.20 | mg\*min/L | NA | NA | NA | NA |
 | aucinf.obs | 802.7 | 322.80 | 2568.80 | mg\*min/L | NA | NA | NA | NA |
 

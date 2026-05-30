@@ -397,9 +397,9 @@ knitr::kable(nca_tbl, digits = 2, caption = "Simulated steady-state NCA, PACIFIC
 
 | treatment | AUCss (ug\*h/L) | Cmax,ss (ug/L) | Ctrough,ss (ug/L) | Tmax,ss (h) |
 |:----------|----------------:|---------------:|------------------:|------------:|
-| 10 mg OD  |         4920.33 |         282.32 |            141.89 |        2.66 |
-| 20 mg OD  |         9948.79 |         575.34 |            285.13 |        2.56 |
-| 50 mg OD  |        24355.42 |        1404.38 |            700.34 |        2.56 |
+| 10 mg OD  |         4606.94 |         269.09 |            129.99 |        2.66 |
+| 20 mg OD  |         9976.82 |         573.14 |            286.40 |        2.65 |
+| 50 mg OD  |        23749.72 |        1361.45 |            688.30 |        2.66 |
 
 Simulated steady-state NCA, PACIFIC-STROKE virtual cohort. {.table}
 
@@ -436,9 +436,9 @@ knitr::kable(cmp, digits = 1,
 
 | treatment | AUCss_pub (ug\*h/L) | Cmax,ss_pub (ug/L) | Ctrough,ss_pub (ug/L) | AUCss_sim (ug\*h/L) | Cmax,ss_sim (ug/L) | Ctrough,ss_sim (ug/L) | AUC_pct_diff | Cmax_pct_diff | Ctrough_pct_diff |
 |:---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| 10 mg OD | 4923 | 282 | 141 | 4920.3 | 282.3 | 141.9 | -0.1 | 0.1 | 0.6 |
-| 20 mg OD | 9727 | 559 | 277 | 9948.8 | 575.3 | 285.1 | 2.3 | 2.9 | 2.9 |
-| 50 mg OD | 23941 | 1379 | 680 | 24355.4 | 1404.4 | 700.3 | 1.7 | 1.8 | 3.0 |
+| 10 mg OD | 4923 | 282 | 141 | 4606.9 | 269.1 | 130.0 | -6.4 | -4.6 | -7.8 |
+| 20 mg OD | 9727 | 559 | 277 | 9976.8 | 573.1 | 286.4 | 2.6 | 2.5 | 3.4 |
+| 50 mg OD | 23941 | 1379 | 680 | 23749.7 | 1361.5 | 688.3 | -0.8 | -1.3 | 1.2 |
 
 Simulated vs published geometric-mean steady-state NCA (PACIFIC-STROKE).
 {.table}

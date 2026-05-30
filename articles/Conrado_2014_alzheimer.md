@@ -187,50 +187,24 @@ events$SEXF        <- 1L
 events$APOE4_COUNT <- 0.72
 events$CONMED_AD   <- 1L
 events
-#>    id low time high   cmt amt rate ii addl evid ss dur AGE SEXF APOE4_COUNT
-#> 1   1  NA    0   NA (obs)  NA   NA NA   NA    0 NA  NA  75    1        0.72
-#> 2   1  NA   91   NA (obs)  NA   NA NA   NA    0 NA  NA  75    1        0.72
-#> 3   1  NA  182   NA (obs)  NA   NA NA   NA    0 NA  NA  75    1        0.72
-#> 4   1  NA  273   NA (obs)  NA   NA NA   NA    0 NA  NA  75    1        0.72
-#> 5   1  NA  364   NA (obs)  NA   NA NA   NA    0 NA  NA  75    1        0.72
-#> 6   1  NA  455   NA (obs)  NA   NA NA   NA    0 NA  NA  75    1        0.72
-#> 7   1  NA  546   NA (obs)  NA   NA NA   NA    0 NA  NA  75    1        0.72
-#> 8   1  NA  637   NA (obs)  NA   NA NA   NA    0 NA  NA  75    1        0.72
-#> 9   1  NA  728   NA (obs)  NA   NA NA   NA    0 NA  NA  75    1        0.72
-#> 10  1  NA  819   NA (obs)  NA   NA NA   NA    0 NA  NA  75    1        0.72
-#> 11  1  NA  910   NA (obs)  NA   NA NA   NA    0 NA  NA  75    1        0.72
-#> 12  1  NA 1001   NA (obs)  NA   NA NA   NA    0 NA  NA  75    1        0.72
-#> 13  1  NA 1092   NA (obs)  NA   NA NA   NA    0 NA  NA  75    1        0.72
-#> 14  1  NA 1183   NA (obs)  NA   NA NA   NA    0 NA  NA  75    1        0.72
-#> 15  1  NA 1274   NA (obs)  NA   NA NA   NA    0 NA  NA  75    1        0.72
-#> 16  1  NA 1365   NA (obs)  NA   NA NA   NA    0 NA  NA  75    1        0.72
-#> 17  1  NA 1456   NA (obs)  NA   NA NA   NA    0 NA  NA  75    1        0.72
-#> 18  1  NA 1547   NA (obs)  NA   NA NA   NA    0 NA  NA  75    1        0.72
-#> 19  1  NA 1638   NA (obs)  NA   NA NA   NA    0 NA  NA  75    1        0.72
-#> 20  1  NA 1729   NA (obs)  NA   NA NA   NA    0 NA  NA  75    1        0.72
-#> 21  1  NA 1820   NA (obs)  NA   NA NA   NA    0 NA  NA  75    1        0.72
-#>    CONMED_AD
-#> 1          1
-#> 2          1
-#> 3          1
-#> 4          1
-#> 5          1
-#> 6          1
-#> 7          1
-#> 8          1
-#> 9          1
-#> 10         1
-#> 11         1
-#> 12         1
-#> 13         1
-#> 14         1
-#> 15         1
-#> 16         1
-#> 17         1
-#> 18         1
-#> 19         1
-#> 20         1
-#> 21         1
+#> ── EventTable with 21 records ──
+#> 0 dosing records (see x$get.dosing(); add with add.dosing or et)
+#> 21 observation times (see x$get.sampling(); add with add.sampling or et)
+#> ── First part of x: ──
+#> # A tibble: 21 × 2
+#>     time evid         
+#>    <dbl> <evid>       
+#>  1     0 0:Observation
+#>  2    91 0:Observation
+#>  3   182 0:Observation
+#>  4   273 0:Observation
+#>  5   364 0:Observation
+#>  6   455 0:Observation
+#>  7   546 0:Observation
+#>  8   637 0:Observation
+#>  9   728 0:Observation
+#> 10   819 0:Observation
+#> # ℹ 11 more rows
 ```
 
 ## Simulation (typical-value Richards trajectory)
@@ -241,37 +215,37 @@ mod  <- readModelDb("Conrado_2014_alzheimer")
 mod0 <- rxode2::zeroRe(mod)
 #> Warning: No sigma parameters in the model
 sim_typ <- rxode2::rxSolve(mod0, events, nSub = 1)
-#> ℹ omega/sigma items treated as zero: 'etalbl', 'etasl'
+#> ℹ omega/sigma items treated as zero: 'etalrbase', 'etasl'
 sim_typ$ADAS  <- 70 * sim_typ$mur
 sim_typ$years <- sim_typ$time / 365.25
-knitr::kable(sim_typ[, c("years", "bl", "sl_indiv", "mur", "ADAS")],
+knitr::kable(sim_typ[, c("years", "rbase", "sl_indiv", "mur", "ADAS")],
              digits = 4,
              caption = "Typical-value disease-progression trajectory (no IIV).")
 ```
 
-|  years |   bl | sl_indiv |    mur |    ADAS |
-|-------:|-----:|---------:|-------:|--------:|
-| 0.0000 | 22.2 |    0.153 | 0.3171 | 22.2000 |
-| 0.2491 | 22.2 |    0.153 | 0.3295 | 23.0622 |
-| 0.4983 | 22.2 |    0.153 | 0.3423 | 23.9578 |
-| 0.7474 | 22.2 |    0.153 | 0.3555 | 24.8880 |
-| 0.9966 | 22.2 |    0.153 | 0.3693 | 25.8542 |
-| 1.2457 | 22.2 |    0.153 | 0.3837 | 26.8575 |
-| 1.4949 | 22.2 |    0.153 | 0.3986 | 27.8995 |
-| 1.7440 | 22.2 |    0.153 | 0.4140 | 28.9813 |
-| 1.9932 | 22.2 |    0.153 | 0.4301 | 30.1044 |
-| 2.2423 | 22.2 |    0.153 | 0.4467 | 31.2701 |
-| 2.4914 | 22.2 |    0.153 | 0.4640 | 32.4797 |
-| 2.7406 | 22.2 |    0.153 | 0.4819 | 33.7344 |
-| 2.9897 | 22.2 |    0.153 | 0.5005 | 35.0353 |
-| 3.2389 | 22.2 |    0.153 | 0.5198 | 36.3833 |
-| 3.4880 | 22.2 |    0.153 | 0.5397 | 37.7791 |
-| 3.7372 | 22.2 |    0.153 | 0.5603 | 39.2230 |
-| 3.9863 | 22.2 |    0.153 | 0.5816 | 40.7146 |
-| 4.2355 | 22.2 |    0.153 | 0.6036 | 42.2531 |
-| 4.4846 | 22.2 |    0.153 | 0.6262 | 43.8367 |
-| 4.7337 | 22.2 |    0.153 | 0.6495 | 45.4622 |
-| 4.9829 | 22.2 |    0.153 | 0.6732 | 47.1252 |
+|  years | rbase | sl_indiv |    mur |    ADAS |
+|-------:|------:|---------:|-------:|--------:|
+| 0.0000 |  22.2 |    0.153 | 0.3171 | 22.2000 |
+| 0.2491 |  22.2 |    0.153 | 0.3295 | 23.0622 |
+| 0.4983 |  22.2 |    0.153 | 0.3423 | 23.9578 |
+| 0.7474 |  22.2 |    0.153 | 0.3555 | 24.8880 |
+| 0.9966 |  22.2 |    0.153 | 0.3693 | 25.8542 |
+| 1.2457 |  22.2 |    0.153 | 0.3837 | 26.8575 |
+| 1.4949 |  22.2 |    0.153 | 0.3986 | 27.8995 |
+| 1.7440 |  22.2 |    0.153 | 0.4140 | 28.9813 |
+| 1.9932 |  22.2 |    0.153 | 0.4301 | 30.1044 |
+| 2.2423 |  22.2 |    0.153 | 0.4467 | 31.2701 |
+| 2.4914 |  22.2 |    0.153 | 0.4640 | 32.4797 |
+| 2.7406 |  22.2 |    0.153 | 0.4819 | 33.7344 |
+| 2.9897 |  22.2 |    0.153 | 0.5005 | 35.0353 |
+| 3.2389 |  22.2 |    0.153 | 0.5198 | 36.3833 |
+| 3.4880 |  22.2 |    0.153 | 0.5397 | 37.7791 |
+| 3.7372 |  22.2 |    0.153 | 0.5603 | 39.2230 |
+| 3.9863 |  22.2 |    0.153 | 0.5816 | 40.7146 |
+| 4.2355 |  22.2 |    0.153 | 0.6036 | 42.2531 |
+| 4.4846 |  22.2 |    0.153 | 0.6262 | 43.8367 |
+| 4.7337 |  22.2 |    0.153 | 0.6495 | 45.4622 |
+| 4.9829 |  22.2 |    0.153 | 0.6732 | 47.1252 |
 
 Typical-value disease-progression trajectory (no IIV). {.table}
 
@@ -306,11 +280,11 @@ cov_traj <- dplyr::bind_rows(
   run_typical(85, 1L, 0.72, 1L, "Older subject (AGE = 85)"),
   run_typical(75, 1L, 0.72, 0L, "Off concomitant AD medication")
 )
-#> ℹ omega/sigma items treated as zero: 'etalbl', 'etasl'
-#> ℹ omega/sigma items treated as zero: 'etalbl', 'etasl'
-#> ℹ omega/sigma items treated as zero: 'etalbl', 'etasl'
-#> ℹ omega/sigma items treated as zero: 'etalbl', 'etasl'
-#> ℹ omega/sigma items treated as zero: 'etalbl', 'etasl'
+#> ℹ omega/sigma items treated as zero: 'etalrbase', 'etasl'
+#> ℹ omega/sigma items treated as zero: 'etalrbase', 'etasl'
+#> ℹ omega/sigma items treated as zero: 'etalrbase', 'etasl'
+#> ℹ omega/sigma items treated as zero: 'etalrbase', 'etasl'
+#> ℹ omega/sigma items treated as zero: 'etalrbase', 'etasl'
 
 ggplot(cov_traj, aes(years, ADAS, colour = scenario)) +
   geom_line(linewidth = 0.8) +

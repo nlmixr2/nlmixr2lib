@@ -4,7 +4,7 @@
 
 library(nlmixr2lib)
 library(rxode2)
-#> rxode2 5.0.2 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.1 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -822,12 +822,12 @@ knitr::kable(nca_med, digits = 1,
 |:----|:---------|-------:|------:|------:|
 | IV  | auclast  |     NA |    NA |    NA |
 | IV  | cav      |     NA |    NA |    NA |
-| IV  | cmax     |  162.4 | 117.8 | 215.3 |
-| IV  | cmin     |   57.4 |  26.8 |  99.1 |
+| IV  | cmax     |  159.9 | 117.3 | 219.0 |
+| IV  | cmin     |   57.8 |  29.4 | 103.6 |
 | SC  | auclast  |     NA |    NA |    NA |
 | SC  | cav      |     NA |    NA |    NA |
-| SC  | cmax     |  159.6 |  97.0 | 236.6 |
-| SC  | cmin     |   82.5 |  37.4 | 148.3 |
+| SC  | cmax     |  153.8 |  97.7 | 237.3 |
+| SC  | cmin     |   76.4 |  35.2 | 143.5 |
 
 Steady-state NCA on cycle 13 (q3w interval) by arm: simulated median
 (5-95% PI). {.table}
@@ -874,11 +874,11 @@ knitr::kable(comparison, digits = 1,
 
 | arm | metric             | paper_value | sim_median | sim_q05 | sim_q95 | pct_diff |
 |:----|:-------------------|------------:|-----------:|--------:|--------:|---------:|
-| SC  | Cmax (ug/mL)       |         149 |      159.6 |    97.0 |   236.6 |      7.1 |
-| SC  | Cmin (ug/mL)       |          75 |       82.5 |    37.4 |   148.3 |     10.0 |
+| SC  | Cmax (ug/mL)       |         149 |      153.8 |    97.7 |   237.3 |      3.2 |
+| SC  | Cmin (ug/mL)       |          75 |       76.4 |    35.2 |   143.5 |      1.9 |
 | SC  | AUCss (ug\*day/mL) |        2337 |         NA |      NA |      NA |       NA |
-| IV  | Cmax (ug/mL)       |         182 |      162.4 |   117.8 |   215.3 |    -10.7 |
-| IV  | Cmin (ug/mL)       |          57 |       57.4 |    26.8 |    99.1 |      0.6 |
+| IV  | Cmax (ug/mL)       |         182 |      159.9 |   117.3 |   219.0 |    -12.2 |
+| IV  | Cmin (ug/mL)       |          57 |       57.8 |    29.4 |   103.6 |      1.4 |
 | IV  | AUCss (ug\*day/mL) |        1994 |         NA |      NA |      NA |       NA |
 
 Simulated (virtual cohort, median) vs Quartino 2016 typical-subject

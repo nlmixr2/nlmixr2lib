@@ -421,7 +421,7 @@ knitr::kable(
 
 | n_cross_50 |  pct |
 |-----------:|-----:|
-|         37 | 18.5 |
+|         39 | 19.5 |
 
 Simulated subjects who cross 50 mm during the 6-year follow-up (paper
 reports 27 / 299 men, ~9%). {.table}

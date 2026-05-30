@@ -300,7 +300,7 @@ knitr::kable(
 | source                              | median | iqr_lo | iqr_hi |  mean |    sd |
 |:------------------------------------|-------:|-------:|-------:|------:|------:|
 | Jonckheere 2019 Results paragraph 2 |  19.20 |  15.30 |  23.30 | 19.50 |  6.36 |
-| Packaged model (this vignette)      |  18.51 |  12.63 |  30.17 | 23.65 | 15.87 |
+| Packaged model (this vignette)      |  18.09 |  11.49 |  31.74 | 24.33 | 18.77 |
 
 Comparison of simulated steady-state plasma cefepime concentration
 (C_avg over 48-72 h post-infusion-start) with the cohort-level measured
@@ -359,7 +359,7 @@ knitr::kable(
 | source                              | pct_within_30 | MdPE | MdAPE |
 |:------------------------------------|--------------:|-----:|------:|
 | Jonckheere 2019 Results paragraph 2 |          50.3 | 20.3 |  28.7 |
-| Packaged model (this vignette)      |          36.5 | 15.6 |  43.2 |
+| Packaged model (this vignette)      |          35.0 | 13.4 |  45.4 |
 
 Target-attainment metrics (Varvel criteria) over the 48-96 h
 post-infusion-start window for the simulated 1.5 g/day

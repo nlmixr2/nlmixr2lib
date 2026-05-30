@@ -377,8 +377,8 @@ nca_res$result |>
 
 | treatment  | PPTESTCD |   median |       p05 |       p95 |
 |:-----------|:---------|---------:|----------:|----------:|
-| 1000 mg QD | auclast  | 25.27855 | 12.328268 | 47.106124 |
-| 1000 mg QD | cmax     |  3.22529 |  1.760315 |  5.213808 |
+| 1000 mg QD | auclast  | 25.41631 | 14.718081 | 50.360258 |
+| 1000 mg QD | cmax     |  2.95907 |  1.518925 |  5.295302 |
 | 1000 mg QD | tmax     |  2.00000 |  1.500000 |  4.000000 |
 
 Simulated steady-state NCA parameters (1000 mg QD, WT = 47 kg,

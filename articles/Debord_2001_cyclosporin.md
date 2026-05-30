@@ -742,11 +742,11 @@ knitr::kable(
 
 | Interval Start | Interval End | treatment | N | AUClast (h\*mg/L) | Cmax (mg/L) | Tmax (h) | Half-life (h) | AUCinf,obs (h\*mg/L) |
 |---:|---:|:---|:---|:---|:---|:---|:---|:---|
-| 0 | 24 | 100 mg PO | 55 | NC | 0.693 \[46.6\] | 1.25 \[0.500, 2.00\] | 2.90 \[1.89\] | NC |
-| 0 | 24 | 125 mg PO | 59 | NC | 0.983 \[44.3\] | 1.00 \[0.500, 2.25\] | 2.95 \[1.66\] | NC |
-| 0 | 24 | 150 mg PO | 37 | NC | 0.955 \[49.9\] | 1.25 \[0.500, 2.75\] | 2.96 \[2.22\] | NC |
-| 0 | 24 | 175 mg PO | 24 | NC | 1.32 \[37.3\] | 1.00 \[0.500, 1.75\] | 2.51 \[1.14\] | NC |
-| 0 | 24 | 75 mg PO | 25 | NC | 0.603 \[43.3\] | 1.00 \[0.500, 1.50\] | 2.22 \[1.03\] | NC |
+| 0 | 24 | 100 mg PO | 55 | NC | 0.728 \[41.2\] | 1.00 \[0.750, 2.25\] | 2.75 \[2.46\] | NC |
+| 0 | 24 | 125 mg PO | 59 | NC | 1.00 \[46.9\] | 1.00 \[0.500, 2.25\] | 2.23 \[1.20\] | NC |
+| 0 | 24 | 150 mg PO | 37 | NC | 1.04 \[47.0\] | 1.00 \[0.750, 2.50\] | 2.64 \[1.41\] | NC |
+| 0 | 24 | 175 mg PO | 24 | NC | 1.34 \[32.0\] | 1.00 \[0.500, 1.50\] | 3.23 \[2.13\] | NC |
+| 0 | 24 | 75 mg PO | 25 | NC | 0.541 \[39.8\] | 1.25 \[0.500, 2.00\] | 2.76 \[1.64\] | NC |
 
 Simulated NCA parameters by dose group for a single oral dose of
 cyclosporin microemulsion. {.table style="width:100%;"}
@@ -800,10 +800,10 @@ tibble::tibble(
 
 | Parameter                   | Implied_from_Table_I | Simulated_geo_mean |
 |:----------------------------|---------------------:|-------------------:|
-| Cmax (mg/L per 100 mg)      |                   NA |              0.866 |
+| Cmax (mg/L per 100 mg)      |                   NA |              0.887 |
 | AUCinf (mg\*h/L per 100 mg) |             1.777778 |                NaN |
 | Tmax (h, median)            |                   NA |              1.000 |
-| Terminal t1/2 (h)           |             2.038668 |              2.370 |
+| Terminal t1/2 (h)           |             2.038668 |              2.220 |
 
 Simulated NCA (mixed-dose cohort, geometric means) vs Debord 2001 Table
 I implied values. {.table}

@@ -515,9 +515,9 @@ knitr::kable(nca_summary,
 
 | start | end | treatment | N | auclast | cmax | cmin | tmax | ctrough | half.life |
 |---:|---:|:---|:---|:---|:---|:---|:---|:---|:---|
-| 0 | 168 | 100 mg/m2 weekly | 100 | NC | 58.7 \[22.6\] | . | 1.00 \[1.00, 1.00\] | NC | . |
-| 1177 | 1344 | 100 mg/m2 weekly | 100 | NC | 112 \[22.5\] | 55.4 \[43.6\] | 1.00 \[1.00, 1.00\] | NC | . |
-| 1177 | 2616 | 100 mg/m2 weekly | 100 | . | . | . | . | . | 1930 \[2350\] |
+| 0 | 168 | 100 mg/m2 weekly | 100 | NC | 57.3 \[23.8\] | . | 1.00 \[1.00, 1.00\] | NC | . |
+| 1177 | 1344 | 100 mg/m2 weekly | 100 | NC | 114 \[25.8\] | 57.7 \[49.6\] | 1.00 \[1.00, 1.00\] | NC | . |
+| 1177 | 2616 | 100 mg/m2 weekly | 100 | . | . | . | . | . | 2010 \[2330\] |
 
 Simulated NCA summaries for the 100 mg/m² weekly Phase II cohort.
 {.table}

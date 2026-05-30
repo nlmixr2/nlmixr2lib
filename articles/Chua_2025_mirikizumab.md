@@ -4,7 +4,7 @@
 
 library(nlmixr2lib)
 library(rxode2)
-#> rxode2 5.0.2 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.1 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -283,8 +283,8 @@ knitr::kable(
 
 | start | end | treatment | N | auclast | cmax | cmin | tmax | cav |
 |---:|---:|:---|:---|:---|:---|:---|:---|:---|
-| 0 | 28 | IV_900mg_Q4W_ss | 300 | 1820 \[34.6\] | 339 \[20.0\] | 10.4 \[96.6\] | 0.000 \[0.000, 0.000\] | 65.0 \[34.6\] |
-| 0 | 28 | SC_300mg_Q4W_ss | 300 | 227 \[51.6\] | 14.1 \[43.9\] | 2.58 \[81.9\] | 5.00 \[3.00, 6.50\] | 8.11 \[51.6\] |
+| 0 | 28 | IV_900mg_Q4W_ss | 300 | 1770 \[35.1\] | 338 \[20.5\] | 9.44 \[111\] | 0.000 \[0.000, 0.000\] | 63.2 \[35.1\] |
+| 0 | 28 | SC_300mg_Q4W_ss | 300 | 219 \[54.4\] | 13.8 \[45.4\] | 2.41 \[90.2\] | 5.00 \[2.50, 7.00\] | 7.82 \[54.4\] |
 
 Simulated steady-state NCA by regimen phase (median across N = 300).
 {.table}
@@ -324,8 +324,8 @@ knitr::kable(
 
 | treatment | Cmax_pub | AUCtau_pub | AUCtau_sim | Cmax_sim | Cmax_pct_diff | AUCtau_pct_diff |
 |:---|---:|---:|---:|---:|---:|---:|
-| IV_900mg_Q4W_ss | 332.0 | 1820 | 1843.9 | 336.2 | 1.3 | 1.3 |
-| SC_300mg_Q4W_ss | 13.6 | 220 | 228.7 | 13.9 | 2.5 | 4.0 |
+| IV_900mg_Q4W_ss | 332.0 | 1820 | 1758.6 | 331.6 | -0.1 | -3.4 |
+| SC_300mg_Q4W_ss | 13.6 | 220 | 226.5 | 14.2 | 4.5 | 3.0 |
 
 Simulated vs published steady-state exposures (Chua 2025 Section 3.1.1).
 {.table}

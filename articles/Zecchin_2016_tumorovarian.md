@@ -44,13 +44,13 @@ the *Assumptions, deviations, and Errata* section below.
 
 | Equation / parameter | Value | Source location |
 |----|----|----|
-| `d/dt(tumorSize)` | n/a | `Executable_SLD.mod` `$DES` (`DADT(1) = KG/1000 * A(1) - (KD0/1000 * E0 + KD1/100 * E1) * A(1)`) |
+| `d/dt(tumor_size)` | n/a | `Executable_SLD.mod` `$DES` (`DADT(1) = KG/1000 * A(1) - (KD0/1000 * E0 + KD1/100 * E1) * A(1)`) |
 | Initial tumour size | `ibase * 1000` mm | `Executable_SLD.mod` `$PK` (`A_0(1) = IBASE*1000`) |
 | `lkg` (tumour growth rate) | `log(0.611)` | `Output_real_SLD.lst` FINAL TH1 |
 | `lkd0` (carboplatin death) | `log(0.0497)` | `Output_real_SLD.lst` FINAL TH2 |
 | `lkd1` (gemcitabine death) | `log(0.0164)` | `Output_real_SLD.lst` FINAL TH3 |
 | `libase` (baseline SLD, m) | `log(0.0713)` | `Output_real_SLD.lst` FINAL TH4 |
-| `addSd_tumorSize` (mm) | `18.4` | `Output_real_SLD.lst` FINAL TH5 |
+| `addSd_tumor_size` (mm) | `18.4` | `Output_real_SLD.lst` FINAL TH5 |
 | `etalkg` | `1.72` | `Output_real_SLD.lst` FINAL OMEGA(1,1) |
 | `etalkd0_kd1` (shared) | `1.09` | `Output_real_SLD.lst` FINAL OMEGA(2,2) – shared by KD0 and KD1 per `$PK` block |
 | `etalibase` | `0.515` | `Output_real_SLD.lst` FINAL OMEGA(3,3) |
@@ -176,7 +176,7 @@ sim_typical <- rxode2::rxSolve(
 # Population-typical median trajectories per arm
 typical_summary <- sim_typical |>
   group_by(arm, time) |>
-  summarise(median_SLD = median(tumorSize), .groups = "drop")
+  summarise(median_SLD = median(tumor_size), .groups = "drop")
 
 ggplot(typical_summary, aes(time, median_SLD, colour = arm)) +
   geom_line(linewidth = 1) +
@@ -201,7 +201,7 @@ The expected qualitative pattern holds:
   (`kd0 * AUC_CARBO + kd1 * AUC_GEM`, `$DES` block).
 - **Tumour regrows after treatment ends.** Once the AUC inputs drop to
   zero (after day 126), the death terms vanish and the growth term
-  `kg * tumorSize` takes over, producing exponential regrowth. This
+  `kg * tumor_size` takes over, producing exponential regrowth. This
   matches the model’s structural assumption of no resistance.
 - **Initial value tracks `IBASE * 1000`.** At time 0 the trajectory
   begins at `exp(libase) * 1000` ~= 71 mm, exactly the published
@@ -229,9 +229,9 @@ sim_iiv <- rxode2::rxSolve(
 iiv_summary <- sim_iiv |>
   group_by(arm, time) |>
   summarise(
-    Q05 = quantile(tumorSize, 0.05, na.rm = TRUE),
-    Q50 = quantile(tumorSize, 0.50, na.rm = TRUE),
-    Q95 = quantile(tumorSize, 0.95, na.rm = TRUE),
+    Q05 = quantile(tumor_size, 0.05, na.rm = TRUE),
+    Q50 = quantile(tumor_size, 0.50, na.rm = TRUE),
+    Q95 = quantile(tumor_size, 0.95, na.rm = TRUE),
     .groups = "drop"
   )
 
@@ -272,7 +272,7 @@ linear_check <- function(scale_factor) {
   ) |>
     as.data.frame() |>
     filter(time == n_cycles * cycle_days, arm == "carboplatin alone") |>
-    summarise(SLD_at_end_of_treatment = median(tumorSize),
+    summarise(SLD_at_end_of_treatment = median(tumor_size),
               scale_factor = scale_factor)
 }
 
@@ -338,8 +338,8 @@ was not on disk for this extraction.
 - **[`checkModelConventions()`](https://nlmixr2.github.io/nlmixr2lib/reference/checkModelConventions.md)
   deviations.**
   `nlmixr2lib::checkModelConventions("Zecchin_2016_tumorovarian")`
-  reports three warnings (no errors): (1) the `tumorSize` compartment is
-  not on the canonical-compartment list; (2) the single-output
+  reports three warnings (no errors): (1) the `tumor_size` compartment
+  is not on the canonical-compartment list; (2) the single-output
   observation variable should be `Cc`; (3) `units$concentration` does
   not contain `/` (the mass/volume divider). All three are intrinsic to
   a tumour-size-dynamics model and apply to every existing tumour-size
@@ -348,7 +348,7 @@ was not on disk for this extraction.
   drug concentration; the `Cc` canonical name is reserved for plasma
   drug concentrations and does not fit a tumour-size endpoint; the
   convention checker’s mass/volume unit pattern is also
-  drug-concentration-specific. Renaming `tumorSize` to `Cc` here would
+  drug-concentration-specific. Renaming `tumor_size` to `Cc` here would
   mislead readers about what the observation actually represents. The
   deviations are intentional.
 - **`MINIMIZATION SUCCESSFUL` with caveats.** The source `.lst` reports

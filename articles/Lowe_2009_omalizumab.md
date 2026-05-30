@@ -4,7 +4,7 @@
 
 library(nlmixr2lib)
 library(rxode2)
-#> rxode2 5.0.2 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.1 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -436,7 +436,7 @@ knitr::kable(nca_summary,
 
 | Interval Start | Interval End | cohort | N | Cmax (ng/mL) | Tmax (day) | Half-life (day) | AUCinf,obs (day\*ng/mL) |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | Inf | Bioequivalence: single 150 mg SC | 30 | 13500 \[38.3\] | 7.00 \[1.00, 28.0\] | 20.3 \[6.57\] | 592000 \[40.5\] |
+| 0 | Inf | Bioequivalence: single 150 mg SC | 30 | 11100 \[52.9\] | 7.00 \[1.00, 42.0\] | 21.3 \[9.31\] | 517000 \[41.8\] |
 
 Simulated NCA on total omalizumab after a single 150 mg SC dose
 (bioequivalence cohort). {.table}
@@ -549,7 +549,7 @@ sessionInfo()
 #> 
 #> other attached packages:
 #> [1] PKNCA_0.12.1          ggplot2_4.0.3         tidyr_1.3.2          
-#> [4] dplyr_1.2.1           rxode2_5.0.2          nlmixr2lib_0.3.2.9000
+#> [4] dplyr_1.2.1           rxode2_5.1.1          nlmixr2lib_0.3.2.9000
 #> 
 #> loaded via a namespace (and not attached):
 #>  [1] gtable_0.3.6          xfun_0.57             bslib_0.11.0         

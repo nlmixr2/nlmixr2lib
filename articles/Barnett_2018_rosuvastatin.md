@@ -336,8 +336,8 @@ knitr::kable(nca_summary, caption = "Simulated NCA parameters for RSV alone vs R
 
 | Interval Start | Interval End | treatment | N | AUClast (h\*nmol/L) | Cmax (nmol/L) | Tmax (h) |
 |---:|---:|:---|:---|:---|:---|:---|
-| 0 | Inf | RSV 5 mg PO | 50 | NC | 7.07 \[23.3\] | 2.80 \[1.80, 4.30\] |
-| 0 | Inf | RSV 5 mg PO + RIF 600 mg | 50 | NC | 63.5 \[30.9\] | 1.80 \[1.55, 1.80\] |
+| 0 | Inf | RSV 5 mg PO | 50 | NC | 6.94 \[21.9\] | 2.80 \[2.05, 4.30\] |
+| 0 | Inf | RSV 5 mg PO + RIF 600 mg | 50 | NC | 65.3 \[28.0\] | 1.80 \[1.55, 2.05\] |
 
 Simulated NCA parameters for RSV alone vs RSV + RIF (50 simulated
 subjects each). {.table}

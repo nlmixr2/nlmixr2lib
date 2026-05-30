@@ -510,9 +510,9 @@ knitr::kable(
 
 | Interval Start | Interval End | treatment | N | Cmax (mg/L) | Tmax (min) | Half-life (min) | AUCinf,obs (min\*mg/L) |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | Inf | adult_volunteer | 40 | 12.1 \[75.1\] | 0.250 \[0.250, 120\] | 185 \[137\] | NC |
-| 0 | Inf | neonate | 40 | 5.64 \[48.1\] | 0.250 \[0.250, 0.250\] | 183 \[156\] | NC |
-| 0 | Inf | toddler | 40 | 5.36 \[124\] | 0.250 \[0.250, 0.250\] | 98.5 \[58.0\] | NC |
+| 0 | Inf | adult_volunteer | 40 | 14.1 \[87.6\] | 0.250 \[0.250, 120\] | 166 \[111\] | NC |
+| 0 | Inf | neonate | 40 | 5.50 \[43.8\] | 0.250 \[0.250, 0.250\] | 209 \[213\] | NC |
+| 0 | Inf | toddler | 40 | 7.48 \[99.3\] | 0.250 \[0.250, 0.250\] | 176 \[127\] | NC |
 
 Simulated propofol NCA parameters by cohort (no per-cohort published
 reference). {.table}

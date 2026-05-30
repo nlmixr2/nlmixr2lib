@@ -4,7 +4,7 @@
 
 library(nlmixr2lib)
 library(rxode2)
-#> rxode2 5.0.2 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.1 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -242,9 +242,9 @@ knitr::kable(
 
 | interval  | Cmax_median | Ctrough_median | AUCtau_median |
 |:----------|------------:|---------------:|--------------:|
-| 2 (4-16)  |       15.14 |           2.19 |        589.49 |
-| 3 (16-28) |       12.20 |           1.73 |        463.43 |
-| 4 (28-40) |       11.87 |           1.67 |        448.77 |
+| 2 (4-16)  |       14.68 |           2.08 |        578.84 |
+| 3 (16-28) |       11.83 |           1.66 |        455.14 |
+| 4 (28-40) |       11.43 |           1.60 |        439.90 |
 
 Simulated per-interval exposures (Cmax/Ctrough in ug/mL; AUCtau in
 ug\*day/mL). {.table}
@@ -303,7 +303,7 @@ knitr::kable(
 
 | start | end | treatment | N | auclast | cmax | tmax | half.life |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | 84 | risankizumab_150mg_q12w | 500 | 466 \[35.7\] | 12.2 \[35.6\] | 6.00 \[2.00, 20.0\] | 29.2 \[7.46\] |
+| 0 | 84 | risankizumab_150mg_q12w | 500 | 452 \[36.1\] | 11.8 \[34.8\] | 6.00 \[2.00, 18.0\] | 28.6 \[6.75\] |
 
 PKNCA summary for the steady-state maintenance interval (weeks 16-28).
 Expected terminal half-life ~28 days for a typical 90 kg psoriasis

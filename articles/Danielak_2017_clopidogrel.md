@@ -713,12 +713,12 @@ knitr::kable(nca_clp_summary,
 |:-----------------------|:---------|------:|------:|----:|
 | CYP2C19\*2 carrier     | aucall   |   NaN |    NA |   0 |
 | CYP2C19\*2 carrier     | auclast  |   NaN |    NA |   0 |
-| CYP2C19\*2 carrier     | cmax     | 1.907 | 0.930 |  63 |
-| CYP2C19\*2 carrier     | tmax     | 1.038 | 0.528 |  63 |
+| CYP2C19\*2 carrier     | cmax     | 1.971 | 0.912 |  63 |
+| CYP2C19\*2 carrier     | tmax     | 0.806 | 0.317 |  63 |
 | CYP2C19\*2 non-carrier | aucall   |   NaN |    NA |   0 |
 | CYP2C19\*2 non-carrier | auclast  |   NaN |    NA |   0 |
-| CYP2C19\*2 non-carrier | cmax     | 1.864 | 0.933 | 137 |
-| CYP2C19\*2 non-carrier | tmax     | 0.933 | 0.425 | 137 |
+| CYP2C19\*2 non-carrier | cmax     | 1.956 | 0.912 | 137 |
+| CYP2C19\*2 non-carrier | tmax     | 1.045 | 0.561 | 137 |
 
 Simulated NCA parameters for clopidogrel by CYP2C19\*2 carrier status.
 {.table}
@@ -1160,12 +1160,12 @@ knitr::kable(nca_h4_summary,
 |:-----------------------|:---------|------:|------:|----:|
 | CYP2C19\*2 carrier     | aucall   |   NaN |    NA |   0 |
 | CYP2C19\*2 carrier     | auclast  |   NaN |    NA |   0 |
-| CYP2C19\*2 carrier     | cmax     | 3.288 | 3.070 |  63 |
-| CYP2C19\*2 carrier     | tmax     | 1.058 | 0.528 |  63 |
+| CYP2C19\*2 carrier     | cmax     | 3.298 | 2.226 |  63 |
+| CYP2C19\*2 carrier     | tmax     | 0.822 | 0.316 |  63 |
 | CYP2C19\*2 non-carrier | aucall   |   NaN |    NA |   0 |
 | CYP2C19\*2 non-carrier | auclast  |   NaN |    NA |   0 |
-| CYP2C19\*2 non-carrier | cmax     | 6.080 | 5.066 | 137 |
-| CYP2C19\*2 non-carrier | tmax     | 0.955 | 0.424 | 137 |
+| CYP2C19\*2 non-carrier | cmax     | 6.019 | 4.492 | 137 |
+| CYP2C19\*2 non-carrier | tmax     | 1.063 | 0.559 | 137 |
 
 Simulated NCA parameters for H4 metabolite by CYP2C19\*2 carrier status.
 {.table}

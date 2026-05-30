@@ -279,12 +279,12 @@ knitr::kable(auc_summary, digits = 1,
 
 | treatment     | AUCtau_median | AUCtau_q05 | AUCtau_q95 |
 |:--------------|--------------:|-----------:|-----------:|
-| IV, CRCL=20   |          65.4 |       38.8 |       89.9 |
-| IV, CRCL=60   |          41.2 |       28.5 |       72.0 |
-| IV, CRCL=90   |          28.7 |       16.2 |       51.0 |
-| Oral, CRCL=20 |         110.4 |       55.5 |      170.5 |
-| Oral, CRCL=60 |          73.3 |       49.9 |      118.7 |
-| Oral, CRCL=90 |          48.9 |       26.2 |       70.5 |
+| IV, CRCL=20   |          67.7 |       43.0 |      101.1 |
+| IV, CRCL=60   |          43.4 |       25.3 |       68.4 |
+| IV, CRCL=90   |          30.0 |       16.5 |       46.1 |
+| Oral, CRCL=20 |         107.3 |       62.9 |      154.1 |
+| Oral, CRCL=60 |          65.8 |       40.6 |       95.5 |
+| Oral, CRCL=90 |          48.7 |       28.8 |       75.5 |
 
 Simulated AUC0-tau (ug\*h/mL) at last dosing interval, by route x CRCL
 band. {.table}
@@ -320,12 +320,12 @@ knitr::kable(comparison, digits = 1,
 
 | treatment | AUCtau_median | AUCtau_q05 | AUCtau_q95 | CRCL_pub | AUCtau_pub_mean | pct_diff_pct |
 |:---|---:|---:|---:|---:|---:|---:|
-| IV, CRCL=20 | 65.4 | 38.8 | 89.9 | 20 | 62.1 | 5.3 |
-| IV, CRCL=60 | 41.2 | 28.5 | 72.0 | 60 | 41.3 | -0.3 |
-| IV, CRCL=90 | 28.7 | 16.2 | 51.0 | 90 | 28.1 | 2.1 |
-| Oral, CRCL=20 | 110.4 | 55.5 | 170.5 | 20 | 93.5 | 18.1 |
-| Oral, CRCL=60 | 73.3 | 49.9 | 118.7 | 60 | 62.1 | 18.0 |
-| Oral, CRCL=90 | 48.9 | 26.2 | 70.5 | 90 | 42.9 | 14.0 |
+| IV, CRCL=20 | 67.7 | 43.0 | 101.1 | 20 | 62.1 | 9.0 |
+| IV, CRCL=60 | 43.4 | 25.3 | 68.4 | 60 | 41.3 | 5.1 |
+| IV, CRCL=90 | 30.0 | 16.5 | 46.1 | 90 | 28.1 | 6.7 |
+| Oral, CRCL=20 | 107.3 | 62.9 | 154.1 | 20 | 93.5 | 14.8 |
+| Oral, CRCL=60 | 65.8 | 40.6 | 95.5 | 60 | 62.1 | 5.8 |
+| Oral, CRCL=90 | 48.7 | 28.8 | 75.5 | 90 | 42.9 | 13.5 |
 
 Simulated vs. published AUC0-tau (ug\*h/mL). {.table}
 

@@ -4,7 +4,7 @@
 
 library(nlmixr2lib)
 library(rxode2)
-#> rxode2 5.0.2 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.1 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -145,7 +145,7 @@ to reach steady state.
 
 set.seed(20091101L) # paper Springer online publication date
 
-n_per_arm <- 25L
+n_per_arm <- 12L           # downsampled from 25 for vignette build budget; VPC band shape preserved
 n_doses   <- 24L           # 12 days BID
 mmf_mg    <- 1000          # 1 g MMF per dose
 mmf_mw    <- 433.5         # g/mol -> molar dose conversion
@@ -166,7 +166,13 @@ cohorts <- bind_rows(
   make_cohort(n_per_arm, csa = 1, id_offset = n_per_arm)
 )
 
-obs_times <- seq(0, n_doses * 12 + 12, by = 0.25)
+## downsampled grid for vignette build budget; figures only use the last
+## interval [240, 252] h so we keep dense sampling there and coarse elsewhere
+obs_times <- sort(unique(c(
+  seq(0, 240, by = 2),
+  seq(240, 252, by = 0.25),
+  seq(252, n_doses * 12 + 12, by = 2)
+)))
 
 events <- cohorts |>
   rowwise() |>
@@ -324,12 +330,13 @@ higher total concentrations at constant unbound clearance.
 ``` r
 
 alb_levels <- c(0.4, 0.5, 0.6)
+# downsampled from 25 to 12 per-ALB for vignette build budget; typical-value lines unaffected
 make_alb_cohort <- function(alb, id_offset) {
-  data.frame(id = id_offset + seq_len(25L),
+  data.frame(id = id_offset + seq_len(12L),
              arm = "Tacrolimus", CRCL = 50, ALB = alb, CONMED_CSA = 0)
 }
 alb_cohorts <- bind_rows(lapply(seq_along(alb_levels),
-  function(i) make_alb_cohort(alb_levels[i], (i - 1L) * 25L)))
+  function(i) make_alb_cohort(alb_levels[i], (i - 1L) * 12L)))
 
 alb_events <- alb_cohorts |>
   rowwise() |>
@@ -406,15 +413,16 @@ accelerates fMPA elimination).
 crcl_levels <- c(10, 30, 50)
 arms <- c("Tacrolimus", "Cyclosporine")
 
+# downsampled from 25 to 12 per-CRCL/arm for vignette build budget; typical-value lines unaffected
 make_crcl_cohort <- function(crcl, arm, id_offset) {
-  data.frame(id = id_offset + seq_len(25L),
+  data.frame(id = id_offset + seq_len(12L),
              arm = arm, CRCL = crcl, ALB = 0.5,
              CONMED_CSA = ifelse(arm == "Cyclosporine", 1L, 0L))
 }
 crcl_cohorts <- bind_rows(lapply(seq_along(crcl_levels), function(i) {
   bind_rows(
-    make_crcl_cohort(crcl_levels[i], "Tacrolimus", (i - 1L) * 50L),
-    make_crcl_cohort(crcl_levels[i], "Cyclosporine", (i - 1L) * 50L + 25L)
+    make_crcl_cohort(crcl_levels[i], "Tacrolimus", (i - 1L) * 24L),
+    make_crcl_cohort(crcl_levels[i], "Cyclosporine", (i - 1L) * 24L + 12L)
   )
 }))
 
@@ -560,24 +568,24 @@ knitr::kable(nca_paper_units,
 | fMPA    | Tacrolimus   |   10 |    3.319 | 8.00 |     5.747 |         1.063 |          1.841 |
 | fMPA    | Tacrolimus   |   30 |    1.727 | 0.50 |     3.719 |         0.553 |          1.191 |
 | fMPA    | Tacrolimus   |   50 |    1.706 | 0.50 |     3.359 |         0.547 |          1.076 |
-| fMPAG   | Cyclosporine |   10 |  325.874 | 1.25 |  3677.022 |       161.797 |       1825.641 |
-| fMPAG   | Cyclosporine |   30 |   92.084 | 1.25 |   830.130 |        45.720 |        412.159 |
-| fMPAG   | Cyclosporine |   50 |   59.838 | 1.00 |   414.504 |        29.710 |        205.801 |
+| fMPAG   | Cyclosporine |   10 |  325.874 | 1.25 |  3677.022 |       161.797 |       1825.642 |
+| fMPAG   | Cyclosporine |   30 |   92.084 | 1.25 |   830.130 |        45.720 |        412.160 |
+| fMPAG   | Cyclosporine |   50 |   59.838 | 1.00 |   414.503 |        29.710 |        205.801 |
 | fMPAG   | Tacrolimus   |   10 |  291.209 | 1.00 |  3232.778 |       144.585 |       1605.074 |
 | fMPAG   | Tacrolimus   |   30 |   91.762 | 1.00 |   816.600 |        45.560 |        405.442 |
 | fMPAG   | Tacrolimus   |   50 |   59.397 | 1.00 |   411.601 |        29.491 |        204.360 |
 | tMPA    | Cyclosporine |   10 |   53.706 | 0.50 |    92.908 |        17.202 |         29.758 |
 | tMPA    | Cyclosporine |   30 |   55.404 | 0.50 |    95.743 |        17.746 |         30.666 |
 | tMPA    | Cyclosporine |   50 |   55.629 | 0.50 |    96.161 |        17.818 |         30.800 |
-| tMPA    | Tacrolimus   |   10 |  105.064 | 8.00 |   180.772 |        33.652 |         57.901 |
+| tMPA    | Tacrolimus   |   10 |  105.065 | 8.00 |   180.772 |        33.652 |         57.901 |
 | tMPA    | Tacrolimus   |   30 |   56.759 | 0.50 |   119.665 |        18.180 |         38.329 |
 | tMPA    | Tacrolimus   |   50 |   56.324 | 0.50 |   108.422 |        18.040 |         34.727 |
-| tMPAG   | Cyclosporine |   10 | 1886.783 | 1.25 | 21336.624 |       936.788 |      10593.634 |
-| tMPAG   | Cyclosporine |   30 |  547.861 | 1.25 |  4950.016 |       272.013 |       2457.683 |
-| tMPAG   | Cyclosporine |   50 |  357.248 | 1.00 |  2481.523 |       177.373 |       1232.076 |
-| tMPAG   | Tacrolimus   |   10 | 1692.162 | 1.00 | 18833.813 |       840.158 |       9350.988 |
-| tMPAG   | Tacrolimus   |   30 |  545.584 | 1.00 |  4869.811 |       270.883 |       2417.861 |
-| tMPAG   | Tacrolimus   |   50 |  354.715 | 1.00 |  2464.206 |       176.116 |       1223.478 |
+| tMPAG   | Cyclosporine |   10 | 1886.784 | 1.25 | 21336.626 |       936.788 |      10593.635 |
+| tMPAG   | Cyclosporine |   30 |  547.861 | 1.25 |  4950.018 |       272.013 |       2457.684 |
+| tMPAG   | Cyclosporine |   50 |  357.248 | 1.00 |  2481.522 |       177.373 |       1232.076 |
+| tMPAG   | Tacrolimus   |   10 | 1692.162 | 1.00 | 18833.814 |       840.159 |       9350.988 |
+| tMPAG   | Tacrolimus   |   30 |  545.584 | 1.00 |  4869.811 |       270.882 |       2417.861 |
+| tMPAG   | Tacrolimus   |   50 |  354.715 | 1.00 |  2464.205 |       176.116 |       1223.478 |
 
 Simulated typical-value steady-state NCA parameters per (CNI arm, CRCL)
 cohort. Cmax in mg/L (= ug/mL); AUC in mg\*h/L (matching source-paper

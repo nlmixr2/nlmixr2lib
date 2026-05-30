@@ -262,10 +262,10 @@ nca_res <- PKNCA::pk.nca(
 
 summary(nca_res)
 #>  start end treatment   N        cmax                 tmax   half.life
-#>      0 Inf        IV 200 28.5 [35.4] 0.000 [0.000, 0.000] 24.1 [6.44]
-#>      0 Inf        SC 200 17.7 [33.0]    6.25 [1.25, 27.0] 25.0 [6.66]
+#>      0 Inf        IV 200 29.1 [36.1] 0.000 [0.000, 0.000] 25.0 [6.30]
+#>      0 Inf        SC 200 18.1 [33.2]   6.38 [0.917, 26.5] 23.8 [6.99]
 #>  aucinf.obs
-#>  506 [34.4]
+#>  532 [31.2]
 #>          NC
 #> 
 #> Caption: cmax, aucinf.obs: geometric mean and geometric coefficient of variation; tmax: median and range; half.life: arithmetic mean and standard deviation; N: number of subjects

@@ -435,8 +435,8 @@ knitr::kable(nca_summary,
 | treatment                | PPTESTCD | median |   p05 |   p95 |
 |:-------------------------|:---------|-------:|------:|------:|
 | first_dose_cohort_median | auclast  |     NA |    NA |    NA |
-| first_dose_cohort_median | cmax     |  2.349 | 1.777 | 2.945 |
-| first_dose_cohort_median | tmax     |  3.150 | 1.400 | 4.910 |
+| first_dose_cohort_median | cmax     |  2.183 | 1.568 | 3.375 |
+| first_dose_cohort_median | tmax     |  3.300 | 1.490 | 5.110 |
 
 Simulated first-dose NCA over 0-8 h at cohort-median covariates (n=30
 subjects, median \[5%-95%\]). cmax in mg/L; tmax in h; auclast in

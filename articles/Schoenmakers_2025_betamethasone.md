@@ -274,10 +274,10 @@ knitr::kable(nca_summary,
 
 | start | end | stratum | N | auclast | cmax | tmax | half.life | aucinf.obs |
 |---:|---:|:---|:---|:---|:---|:---|:---|:---|
-| 0 | 24 | eoPE | 200 | 850 \[17.1\] | 80.0 \[32.9\] | 0.750 \[0.250, 1.75\] | . | . |
-| 0 | 48 | eoPE | 200 | 1890 \[17.9\] | 92.0 \[22.2\] | 25.0 \[0.250, 26.0\] | 12.9 \[4.77\] | 2300 \[23.6\] |
-| 0 | 24 | w/o eoPE | 200 | 633 \[17.5\] | 81.2 \[31.9\] | 0.500 \[0.250, 2.00\] | . | . |
-| 0 | 48 | w/o eoPE | 200 | 1310 \[18.6\] | 85.4 \[25.0\] | 0.750 \[0.250, 26.0\] | 7.93 \[2.93\] | 1420 \[21.3\] |
+| 0 | 24 | eoPE | 200 | 852 \[19.2\] | 80.4 \[36.1\] | 0.750 \[0.250, 2.50\] | . | . |
+| 0 | 48 | eoPE | 200 | 1890 \[18.3\] | 91.8 \[24.8\] | 25.0 \[0.250, 26.0\] | 13.0 \[6.15\] | 2300 \[20.2\] |
+| 0 | 24 | w/o eoPE | 200 | 625 \[17.6\] | 76.0 \[32.9\] | 0.750 \[0.250, 1.50\] | . | . |
+| 0 | 48 | w/o eoPE | 200 | 1300 \[18.8\] | 81.2 \[26.1\] | 25.0 \[0.250, 26.0\] | 8.22 \[2.63\] | 1420 \[21.8\] |
 
 Single- and two-dose NCA on the simulated cohort by eoPE stratum (median
 dose 11.4 mg IM at t = 0 and t = 24 h; concentrations in ug/L). {.table
@@ -337,8 +337,8 @@ knitr::kable(tbl, caption = "Simulated stratum medians vs Schoenmakers 2025 Figu
 
 | Stratum | Source median CL/F (L/h) | Source median AUC0-24 (ng.h/mL) | Source median AUC0-inf (ng.h/mL) | Simulated median Cmax (ng/mL) | Simulated median AUC0-24 (ng.h/mL) |
 |:---|:---|:---|:---|:---|:---|
-| eoPE | 9.35 | 709 (range 609-919) | 1567 | 94.8 | 848 |
-| w/o eoPE | 15.78 | 584 (range 394-751) | 1114 | 88.0 | 634 |
+| eoPE | 9.35 | 709 (range 609-919) | 1567 | 97.3 | 859 |
+| w/o eoPE | 15.78 | 584 (range 394-751) | 1114 | 82.5 | 616 |
 
 Simulated stratum medians vs Schoenmakers 2025 Figure 1 / abstract NCA
 values. Source units are ng.h/mL == ug.h/L (paper plots in ug/L).

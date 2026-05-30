@@ -276,12 +276,12 @@ knitr::kable(
 )
 ```
 
-| dose_label | auclast |     cmax |     tmax |
-|:-----------|--------:|---------:|---------:|
-| 100 mg IT  |      NA | 48.95820 | 51.59760 |
-| 150 mg IT  |      NA | 78.52816 | 51.68721 |
-| 30 mg IT   |      NA | 12.36864 | 51.39596 |
-| 60 mg IT   |      NA | 27.21959 | 51.48558 |
+| dose_label | auclast |      cmax |     tmax |
+|:-----------|--------:|----------:|---------:|
+| 100 mg IT  |      NA |  90.53784 | 52.29212 |
+| 150 mg IT  |      NA | 138.10460 | 52.24732 |
+| 30 mg IT   |      NA |  22.18564 | 52.57218 |
+| 60 mg IT   |      NA |  51.94851 | 52.41535 |
 
 Serum NCA over 0-56 d (typical individual, weekly IT). {.table}
 
@@ -298,10 +298,10 @@ knitr::kable(
 
 | dose_label | auclast |      cmax |     tmax |
 |:-----------|--------:|----------:|---------:|
-| 100 mg IT  |      NA | 158.44639 | 7.002275 |
-| 150 mg IT  |      NA | 238.62993 | 7.002275 |
-| 30 mg IT   |      NA |  47.51900 | 7.002275 |
-| 60 mg IT   |      NA |  94.82524 | 7.002275 |
+| 100 mg IT  |      NA | 175.86758 | 49.00993 |
+| 150 mg IT  |      NA | 263.27353 | 42.00865 |
+| 30 mg IT   |      NA |  52.09066 | 49.00993 |
+| 60 mg IT   |      NA | 105.77396 | 49.00993 |
 
 CSF NCA over 0-56 d (typical individual, weekly IT). {.table}
 
@@ -331,8 +331,8 @@ ratio_it_iv_csf <- auc_it_csf_150 / auc_iv_csf
 |----|----|---:|---:|
 | 150 mg weekly IT | Serum | 4007 | NA |
 | 150 mg weekly IT | CSF | 4399 | NA |
-| 120 mg weekly IV | Serum | 4613 | 4619 |
-| 120 mg weekly IV | CSF | 31 | 31 |
+| 120 mg weekly IV | Serum | 4613 | 4620 |
+| 120 mg weekly IV | CSF | 31 | 32 |
 
 The IV-only values (where the latent-target binding is operating only at
 the very low CSF concentrations driven by the constant `k_s2f` flux)

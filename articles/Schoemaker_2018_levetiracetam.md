@@ -190,7 +190,7 @@ mod_typical <- rxode2::zeroRe(rxode2::rxode2(mod_fn))
 #> Warning: some etas defaulted to non-mu referenced, possible parsing error: etalovdp
 #> as a work-around try putting the mu-referenced expression on a simple line
 sim <- rxode2::rxSolve(mod_typical, events = events, returnType = "data.frame")
-#> ℹ omega/sigma items treated as zero: 'etalbase', 'etalsmax', 'etalplac', 'etalemax', 'etalovdp'
+#> ℹ omega/sigma items treated as zero: 'etalrbase', 'etalsmax', 'etalplac', 'etalemax', 'etalovdp'
 
 result <- events_grid |>
   dplyr::left_join(
@@ -303,7 +303,7 @@ events_emax <- data.frame(
 
 sim_emax <- rxode2::rxSolve(mod_typical, events = events_emax,
                             returnType = "data.frame")
-#> ℹ omega/sigma items treated as zero: 'etalbase', 'etalsmax', 'etalplac', 'etalemax', 'etalovdp'
+#> ℹ omega/sigma items treated as zero: 'etalrbase', 'etalsmax', 'etalplac', 'etalemax', 'etalovdp'
 
 ggplot(sim_emax, aes(CAV, expected_count_responder / 28)) +
   geom_line(colour = "steelblue", linewidth = 1) +
@@ -331,7 +331,7 @@ events_pdv <- data.frame(
 )
 sim_pdv <- rxode2::rxSolve(mod_typical, events = events_pdv,
                            returnType = "data.frame")
-#> ℹ omega/sigma items treated as zero: 'etalbase', 'etalsmax', 'etalplac', 'etalemax', 'etalovdp'
+#> ℹ omega/sigma items treated as zero: 'etalrbase', 'etalsmax', 'etalplac', 'etalemax', 'etalovdp'
 
 ggplot(sim_pdv, aes(PDV, expected_count_responder)) +
   geom_line(colour = "steelblue", linewidth = 1) +
@@ -385,7 +385,7 @@ sim_mix <- rxode2::rxSolve(
       p_responder_subject * rate_responder +
       (1 - p_responder_subject) * rate_nonresponder
   )
-#> ℹ omega/sigma items treated as zero: 'etalbase', 'etalsmax', 'etalplac', 'etalemax', 'etalovdp'
+#> ℹ omega/sigma items treated as zero: 'etalrbase', 'etalsmax', 'etalplac', 'etalemax', 'etalovdp'
 
 knitr::kable(
   sim_mix |>
@@ -439,7 +439,7 @@ bundle_snapshot <- data.frame(
 )
 sim_bundle <- rxode2::rxSolve(mod_typical, bundle_snapshot,
                               returnType = "data.frame")
-#> ℹ omega/sigma items treated as zero: 'etalbase', 'etalsmax', 'etalplac', 'etalemax', 'etalovdp'
+#> ℹ omega/sigma items treated as zero: 'etalrbase', 'etalsmax', 'etalplac', 'etalemax', 'etalovdp'
 knitr::kable(
   dplyr::left_join(
     bundle_snapshot,

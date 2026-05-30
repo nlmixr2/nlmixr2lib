@@ -292,11 +292,11 @@ intervals <- data.frame(
 nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
 summary(nca_res)
 #>  start end      treatment   N    auclast        cmax              tmax
-#>      0  21  1.0 mg/kg q3w 500 149 [40.3] 9.48 [29.9] 4.00 [3.00, 5.00]
-#>      0  21 1.75 mg/kg q3w 500 262 [40.9] 16.7 [31.4] 4.00 [3.00, 5.00]
+#>      0  21  1.0 mg/kg q3w 500 149 [38.5] 9.40 [29.4] 4.00 [3.00, 5.00]
+#>      0  21 1.75 mg/kg q3w 500 264 [40.4] 16.7 [30.6] 4.00 [3.00, 5.00]
 #>    half.life
-#>  14.9 [6.64]
-#>  15.1 [7.22]
+#>  15.0 [6.57]
+#>  15.0 [6.79]
 #> 
 #> Caption: auclast, cmax: geometric mean and geometric coefficient of variation; tmax: median and range; half.life: arithmetic mean and standard deviation; N: number of subjects
 ```
@@ -333,8 +333,8 @@ dplyr::left_join(published, nca_tbl, by = "treatment") |>
 
 | treatment | published_aucss | published_thalf | published_cv_aucss | median_auclast | median_half.life | cv_pct_auclast | cv_pct_half.life |
 |:---|:---|:---|:---|---:|---:|---:|---:|
-| 1.0 mg/kg q3w | 151 day\*ug/mL (mean) | ~13 days | 38.0% | 150.33 | 13.59 | 38.62 | 44.68 |
-| 1.75 mg/kg q3w | 264 day\*ug/mL (mean) | ~13 days | 38.0% | 257.36 | 13.30 | 40.99 | 47.79 |
+| 1.0 mg/kg q3w | 151 day\*ug/mL (mean) | ~13 days | 38.0% | 148.42 | 13.80 | 38.16 | 43.84 |
+| 1.75 mg/kg q3w | 264 day\*ug/mL (mean) | ~13 days | 38.0% | 268.10 | 13.76 | 39.49 | 45.14 |
 
 Simulated steady-state AUC and terminal t1/2 vs. Chen 2020 Results.
 {.table style="width:100%;"}

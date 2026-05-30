@@ -4,7 +4,7 @@
 
 library(nlmixr2lib)
 library(rxode2)
-#> rxode2 5.0.2 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.1 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(PKNCA)
 #> 
@@ -547,9 +547,9 @@ nca_summary
 #>   <chr>      <dbl> <dbl> <dbl>
 #> 1 auclast      NA   NA     NA 
 #> 2 cav          NA   NA     NA 
-#> 3 cmax        401. 252.   563.
-#> 4 cmin        122.  54.2  224.
-#> 5 half.life   312. 180.   506.
+#> 3 cmax        376. 254.   615.
+#> 4 cmin        109.  46.9  234.
+#> 5 half.life   294. 158.   501.
 #> 6 tmax        169  169    169
 ```
 

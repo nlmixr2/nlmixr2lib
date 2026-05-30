@@ -248,8 +248,8 @@ knitr::kable(summary_first,
 
 | PPTESTCD |    mean |  median |     sd |
 |:---------|--------:|--------:|-------:|
-| auclast  | 155.768 | 154.759 | 24.562 |
-| cmax     |  14.080 |  13.873 |  2.261 |
+| auclast  | 155.726 | 156.027 | 19.646 |
+| cmax     |  14.076 |  14.057 |  1.826 |
 | tmax     |   1.000 |   1.000 |  0.000 |
 
 Simulated NCA after first dose (window 0-24 h). {.table}
@@ -285,10 +285,10 @@ knitr::kable(summary_ss,
 
 | PPTESTCD |    mean |  median |     sd |
 |:---------|--------:|--------:|-------:|
-| auclast  | 231.947 | 229.108 | 46.359 |
-| cav      |   9.664 |   9.546 |  1.932 |
-| cmax     |  19.104 |  18.897 |  3.525 |
-| cmin     |   5.262 |   5.106 |  1.318 |
+| auclast  | 231.090 | 231.061 | 36.301 |
+| cav      |   9.629 |   9.628 |  1.513 |
+| cmax     |  19.062 |  19.046 |  2.796 |
+| cmin     |   5.224 |   5.186 |  1.019 |
 | tmax     |   1.000 |   1.000 |  0.000 |
 
 Simulated NCA over the final-dose interval (t = 144-168 h). {.table}
@@ -322,9 +322,9 @@ knitr::kable(summary_thalf,
 
 | PPTESTCD   |    mean |  median |     sd |
 |:-----------|--------:|--------:|-------:|
-| aucinf.obs | 345.899 | 335.589 | 84.515 |
-| half.life  |  14.681 |  14.540 |  1.185 |
-| lambda.z   |   0.048 |   0.048 |  0.004 |
+| aucinf.obs | 343.148 | 340.445 | 65.053 |
+| half.life  |  14.658 |  14.621 |  0.917 |
+| lambda.z   |   0.047 |   0.047 |  0.003 |
 
 Simulated terminal-phase NCA after the final dose. {.table}
 
@@ -369,10 +369,10 @@ knitr::kable(cmp, digits = 2,
 
 | Metric                       | Paper mean | Simulation mean | %diff |
 |:-----------------------------|-----------:|----------------:|------:|
-| Terminal t1/2 (h)            |       14.5 |           14.68 |  1.25 |
-| Cmax first dose (ug/mL)      |       14.8 |           14.08 | -4.86 |
-| Cmax last dose, q24h (ug/mL) |       19.8 |           19.10 | -3.52 |
-| AUC_ss,0-tau (ug.h/mL)       |      232.0 |          231.95 | -0.02 |
+| Terminal t1/2 (h)            |       14.5 |           14.66 |  1.09 |
+| Cmax first dose (ug/mL)      |       14.8 |           14.08 | -4.89 |
+| Cmax last dose, q24h (ug/mL) |       19.8 |           19.06 | -3.73 |
+| AUC_ss,0-tau (ug.h/mL)       |      232.0 |          231.09 | -0.39 |
 
 Comparison of simulated NCA against Leshinsky 2017 Table 2. {.table}
 

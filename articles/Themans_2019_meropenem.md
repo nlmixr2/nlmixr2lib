@@ -153,13 +153,13 @@ sim <- rxode2::rxSolve(
   as.data.frame()
 
 head(sim[, c("id", "time", "Cc", "Celf", "WT", "CRCL")])
-#>   id time        Cc      Celf       WT     CRCL
-#> 1  1  0.0  1.463713 0.7682782 75.23055 134.6557
-#> 2  1  0.1 12.488606 0.8178469 75.23055 134.6557
-#> 3  1  0.2 21.610652 0.9858496 75.23055 134.6557
-#> 4  1  0.3 29.225287 1.2461278 75.23055 134.6557
-#> 5  1  0.4 35.642879 1.5780130 75.23055 134.6557
-#> 6  1  0.5 41.107108 1.9651565 75.23055 134.6557
+#>   id time        Cc       Celf       WT     CRCL
+#> 1  1  0.0  1.192338  0.3042387 75.23055 134.6557
+#> 2  1  0.1 17.212588  2.1708725 75.23055 134.6557
+#> 3  1  0.2 30.745482  5.3306755 75.23055 134.6557
+#> 4  1  0.3 42.398999  8.4270228 75.23055 134.6557
+#> 5  1  0.4 52.514081 11.1978722 75.23055 134.6557
+#> 6  1  0.5 61.337605 13.6291797 75.23055 134.6557
 ```
 
 For deterministic typical-value comparisons (no IIV), zero out the
@@ -532,7 +532,7 @@ knitr::kable(summary(nca_plasma),
 
 | Interval Start | Interval End | treatment | N | AUClast (hr\*mg/L) | Cmax (mg/L) | Cmin (mg/L) | Tmax (hr) | Cav (mg/L) |
 |---:|---:|:---|:---|:---|:---|:---|:---|:---|
-| 0 | 8 | meropenem 1g q8h IV (SS) | 200 | NC | 54.4 \[32.0\] | 3.37 \[277\] | 0.500 \[0.500, 0.500\] | NC |
+| 0 | 8 | meropenem 1g q8h IV (SS) | 200 | NC | 53.6 \[31.8\] | 3.68 \[228\] | 0.500 \[0.500, 0.500\] | NC |
 
 Plasma (Cc) NCA at steady state over the 0-8 h interval. {.table}
 
@@ -754,7 +754,7 @@ knitr::kable(summary(nca_elf),
 
 | Interval Start | Interval End | treatment | N | AUClast (hr\*mg/L) | Cmax (mg/L) | Cmin (mg/L) | Tmax (hr) | Cav (mg/L) |
 |---:|---:|:---|:---|:---|:---|:---|:---|:---|
-| 0 | 8 | meropenem 1g q8h IV (SS) | 200 | NC | 7.75 \[58.6\] | 1.09 \[235\] | 1.00 \[0.500, 3.00\] | NC |
+| 0 | 8 | meropenem 1g q8h IV (SS) | 200 | NC | 7.88 \[60.5\] | 1.17 \[206\] | 1.00 \[0.500, 3.00\] | NC |
 
 ELF (Celf) NCA at steady state over the 0-8 h interval. {.table}
 

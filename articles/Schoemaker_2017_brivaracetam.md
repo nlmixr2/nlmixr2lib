@@ -773,7 +773,7 @@ knitr::kable(
 
 | +CBZ | +PB | +VPA | no AED | pred_no_aed_vs_pb_pct | pred_no_aed_vs_cbz_pct | pred_no_aed_vs_vpa_pct |
 |---:|---:|---:|---:|---:|---:|---:|
-| 1.12 | 1.24 | 1.87 | 1.7 | 27.5 | 34.2 | 9.8 |
+| 1.16 | 1.19 | 1.86 | 1.64 | 27.7 | 29.4 | 13.3 |
 
 Simulated AED effects on mean Css vs no-AED reference. Paper-reported
 decreases in exposure: PB 29% (95% CI 17/39%), CBZ 32% (22/42%); VPA

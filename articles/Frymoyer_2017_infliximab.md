@@ -4,7 +4,7 @@
 
 library(nlmixr2lib)
 library(rxode2)
-#> rxode2 5.0.2 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.1 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -300,9 +300,9 @@ troughs |>
 
 | strategy | median_trough | q25_trough | q75_trough | pct_above_3 | pct_above_5 | paper_median | paper_q25 | paper_q75 | paper_pct_above_3 | paper_pct_above_5 |
 |:---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| 5 mg/kg q8wk | 2.1 | 0.9 | 3.8 | 36.5 | 16.0 | 2.2 | 1.2 | 3.4 | 32 | 6 |
-| 7.5 mg/kg q8wk | 2.6 | 1.3 | 5.3 | 42.5 | 27.5 | 3.3 | 1.8 | 5.1 | 62 | 26 |
-| 10 mg/kg q8wk | 3.5 | 1.5 | 6.6 | 56.0 | 34.5 | 4.4 | 2.4 | 6.8 | 71 | 38 |
+| 5 mg/kg q8wk | 1.9 | 1.0 | 3.7 | 32.5 | 18.0 | 2.2 | 1.2 | 3.4 | 32 | 6 |
+| 7.5 mg/kg q8wk | 2.3 | 0.9 | 5.6 | 40.5 | 27.5 | 3.3 | 1.8 | 5.1 | 62 | 26 |
+| 10 mg/kg q8wk | 3.5 | 1.6 | 7.8 | 55.0 | 35.0 | 4.4 | 2.4 | 6.8 | 71 | 38 |
 
 Simulated steady-state troughs vs Frymoyer 2017 Table 3 (median, IQR,
 and percent above 3 and 5 ug/mL). {.table}
@@ -630,10 +630,10 @@ knitr::kable(
 
 | Interval Start | Interval End | treatment | N | AUClast (day\*ug/mL) | Cmax (ug/mL) | Tmax (day) | Half-life (day) |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | 56 | Q1 (low ALB) | 50 | NC | 92.2 \[13.4\] | 0.500 \[0.500, 0.500\] | 12.1 \[3.91\] |
-| 0 | 56 | Q2 | 50 | NC | 92.4 \[13.1\] | 0.500 \[0.500, 0.500\] | 13.1 \[5.75\] |
-| 0 | 56 | Q3 | 50 | NC | 91.2 \[15.1\] | 0.500 \[0.500, 0.500\] | 14.6 \[5.86\] |
-| 0 | 56 | Q4 (high ALB) | 50 | NC | 92.0 \[13.9\] | 0.500 \[0.500, 0.500\] | 13.4 \[3.58\] |
+| 0 | 56 | Q1 (low ALB) | 50 | NC | 93.6 \[14.4\] | 0.500 \[0.500, 0.500\] | 12.3 \[4.16\] |
+| 0 | 56 | Q2 | 50 | NC | 95.6 \[13.1\] | 0.500 \[0.500, 0.500\] | 11.9 \[4.21\] |
+| 0 | 56 | Q3 | 50 | NC | 89.4 \[15.4\] | 0.500 \[0.500, 0.500\] | 12.7 \[4.44\] |
+| 0 | 56 | Q4 (high ALB) | 50 | NC | 95.7 \[12.5\] | 0.500 \[0.500, 0.500\] | 12.6 \[4.15\] |
 
 PKNCA summary after single 5 mg/kg IV infliximab in 53-kg virtual
 pediatric CD subjects, stratified by ALB quartile. {.table

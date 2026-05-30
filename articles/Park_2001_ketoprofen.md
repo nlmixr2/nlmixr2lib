@@ -362,7 +362,7 @@ knitr::kable(summary(nca_res),
 
 | Interval Start | Interval End | treatment | N | AUClast (h\*ug/mL) | Cmax (ug/mL) | Cmin (ug/mL) | Tmax (h) |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | 12 | 100 mg PO BID | 200 | 7.42 \[67.1\] | 1.68 \[63.3\] | 0.0171 \[31700\] | 1.50 \[0.500, 4.20\] |
+| 0 | 12 | 100 mg PO BID | 200 | 7.83 \[66.8\] | 1.85 \[60.9\] | 0.0116 \[1.30e6\] | 1.50 \[0.300, 3.90\] |
 
 Simulated steady-state NCA over 12 h dosing interval (n = 200). {.table}
 
@@ -402,9 +402,9 @@ knitr::kable(
 
 | Quantity | Park 2001 Table 2 (mean +/- SD) | Simulated median (5-95%) |
 |:---|:---|:---|
-| Cmax (ug/mL) | 4.6 +/- 3.2 | 1.73 (0.67-4.29) |
-| Tmax (h) | 2.2 +/- 0.7 | 1.50 (0.60-3.20) |
-| AUC over tau (ug\*h/mL) | 13.3 +/- 7.3 | 7.27 (2.42-19.17) |
+| Cmax (ug/mL) | 4.6 +/- 3.2 | 1.77 (0.80-4.61) |
+| Tmax (h) | 2.2 +/- 0.7 | 1.50 (0.50-2.90) |
+| AUC over tau (ug\*h/mL) | 13.3 +/- 7.3 | 7.49 (2.95-19.87) |
 
 Comparison: observed Park 2001 Table 2 vs simulated 200-subject cohort.
 {.table}

@@ -192,7 +192,7 @@ ev_baseline$GLU <- 5.5
 
 sim_baseline <- rxode2::rxSolve(mod_typical, ev_baseline) |>
   as.data.frame()
-#> ℹ omega/sigma items treated as zero: 'etalkmg', 'etalemax', 'etalgamma', 'etalkmi', 'etalt12i', 'etalvtot', 'etalflambda3', 'etalw1'
+#> ℹ omega/sigma items treated as zero: 'etalkmg', 'etalemax', 'etalhill', 'etalkmi', 'etalt12i', 'etalvtot', 'etalflambda3', 'etalw1'
 
 baseline_summary <- sim_baseline |>
   dplyr::filter(time %in% c(0, 5, 10, 30, 60, 120, 240)) |>
@@ -277,7 +277,7 @@ ev_impulse$GLU <- 5.5
 
 sim_impulse <- rxode2::rxSolve(mod_typical, ev_impulse) |>
   as.data.frame()
-#> ℹ omega/sigma items treated as zero: 'etalkmg', 'etalemax', 'etalgamma', 'etalkmi', 'etalt12i', 'etalvtot', 'etalflambda3', 'etalw1'
+#> ℹ omega/sigma items treated as zero: 'etalkmg', 'etalemax', 'etalhill', 'etalkmi', 'etalt12i', 'etalvtot', 'etalflambda3', 'etalw1'
 
 ggplot(sim_impulse, aes(time, G)) +
   geom_line() +
@@ -362,7 +362,7 @@ ev_clamp$GLU <- approx(clamp_grid$time, clamp_grid$GLU, ev_clamp$time, rule = 2)
 
 sim_clamp <- rxode2::rxSolve(mod_typical, ev_clamp) |>
   as.data.frame()
-#> ℹ omega/sigma items treated as zero: 'etalkmg', 'etalemax', 'etalgamma', 'etalkmi', 'etalt12i', 'etalvtot', 'etalflambda3', 'etalw1'
+#> ℹ omega/sigma items treated as zero: 'etalkmg', 'etalemax', 'etalhill', 'etalkmi', 'etalt12i', 'etalvtot', 'etalflambda3', 'etalw1'
 
 clamp_long <- sim_clamp |>
   dplyr::select(time, INS, GLU, X, Z, G) |>

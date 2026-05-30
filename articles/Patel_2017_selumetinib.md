@@ -414,9 +414,9 @@ knitr::kable(nca_summary, caption = "Selumetinib NCA parameters by regimen (sing
 
 | start | end | regimen | N | auclast | cmax | tmax | half.life |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | 24 | Adult 75 mg fasted | 60 | 4580 \[26.9\] | 1300 \[39.2\] | 1.25 \[0.750, 2.50\] | 9.15 \[5.03\] |
-| 0 | 24 | Adult 75 mg fed (high-fat meal) | 60 | 4120 \[27.0\] | 578 \[28.8\] | 5.50 \[4.75, 7.00\] | 9.06 \[3.58\] |
-| 0 | 24 | Pediatric 25 mg/m^2 fasted | 30 | 2570 \[28.1\] | 1020 \[38.5\] | 1.25 \[0.500, 2.25\] | 9.77 \[4.20\] |
+| 0 | 24 | Adult 75 mg fasted | 60 | 4590 \[30.6\] | 1270 \[42.2\] | 1.25 \[0.750, 2.25\] | 9.06 \[3.76\] |
+| 0 | 24 | Adult 75 mg fed (high-fat meal) | 60 | 4040 \[24.5\] | 590 \[25.4\] | 5.50 \[4.75, 6.75\] | 9.85 \[5.77\] |
+| 0 | 24 | Pediatric 25 mg/m^2 fasted | 30 | 2700 \[28.0\] | 1140 \[41.7\] | 1.25 \[0.250, 2.25\] | 9.57 \[4.56\] |
 
 Selumetinib NCA parameters by regimen (single-dose; PKNCA on the
 stochastic simulation). {.table}
@@ -439,9 +439,9 @@ knitr::kable(summary(nca_res_m), caption = "N-desmethyl-selumetinib NCA paramete
 
 | start | end | regimen | N | auclast | cmax | tmax | half.life |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | 24 | Adult 75 mg fasted | 60 | 326 \[69.5\] | 77.2 \[72.1\] | 1.50 \[0.750, 3.00\] | 9.64 \[4.13\] |
-| 0 | 24 | Adult 75 mg fed (high-fat meal) | 60 | 282 \[62.1\] | 35.1 \[63.4\] | 5.50 \[4.75, 7.25\] | 10.1 \[3.02\] |
-| 0 | 24 | Pediatric 25 mg/m^2 fasted | 30 | 196 \[63.9\] | 66.2 \[54.0\] | 1.25 \[0.500, 2.50\] | 10.4 \[3.63\] |
+| 0 | 24 | Adult 75 mg fasted | 60 | 348 \[50.2\] | 79.3 \[63.6\] | 1.50 \[0.750, 2.50\] | 9.80 \[2.91\] |
+| 0 | 24 | Adult 75 mg fed (high-fat meal) | 60 | 309 \[61.0\] | 40.5 \[62.3\] | 5.50 \[4.75, 7.00\] | 10.0 \[3.82\] |
+| 0 | 24 | Pediatric 25 mg/m^2 fasted | 30 | 193 \[69.4\] | 69.2 \[65.1\] | 1.25 \[0.250, 2.50\] | 10.3 \[3.41\] |
 
 N-desmethyl-selumetinib NCA parameters by regimen. {.table}
 

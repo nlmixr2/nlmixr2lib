@@ -4,7 +4,7 @@
 
 library(nlmixr2lib)
 library(rxode2)
-#> rxode2 5.0.2 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.1 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -223,9 +223,9 @@ knitr::kable(
 
 | interval | Cmax_median | Cmax_mean | Ctrough_median | Ctrough_mean | AUCtau_median | AUCtau_mean |
 |:---|---:|---:|---:|---:|---:|---:|
-| 1 (0-4) | 9.24 | 9.77 | 5.45 | 5.66 | 200.86 | 207.22 |
-| 2 (4-16) | 13.72 | 14.49 | 1.79 | 2.04 | 537.79 | 569.53 |
-| 3 (16-28) | 10.69 | 11.42 | 1.41 | 1.63 | 418.53 | 447.36 |
+| 1 (0-4) | 9.27 | 9.83 | 5.42 | 5.68 | 200.94 | 208.31 |
+| 2 (4-16) | 13.83 | 14.58 | 1.76 | 2.07 | 536.47 | 573.03 |
+| 3 (16-28) | 10.78 | 11.53 | 1.39 | 1.67 | 414.62 | 452.04 |
 
 Simulated per-interval exposures (compare with Thakre 2022 Table 2:
 interval-1 Cmax median 9.40, interval-2 Cmax median 14.1, interval-3
@@ -286,7 +286,7 @@ knitr::kable(
 
 | start | end | treatment | N | auclast | cmax | tmax | half.life |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | 84 | risankizumab_150mg_q12w | 500 | 417 \[38.5\] | 10.7 \[38.1\] | 6.00 \[2.00, 16.0\] | 26.4 \[5.79\] |
+| 0 | 84 | risankizumab_150mg_q12w | 500 | 421 \[38.5\] | 10.8 \[36.8\] | 6.00 \[2.00, 18.0\] | 26.6 \[6.65\] |
 
 PKNCA summary for the third dosing interval (weeks 16-28). Compare Cmax
 / AUClast against Thakre 2022 Table 2 interval 3. {.table

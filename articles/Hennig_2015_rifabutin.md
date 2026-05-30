@@ -447,12 +447,12 @@ bind_rows(res_rfb, res_des) |>
 
 | analyte       | parameter | median |    p05 |    p95 |
 |:--------------|:----------|-------:|-------:|-------:|
-| Rifabutin     | auclast   | 2430.7 | 1340.3 | 5345.5 |
-| Rifabutin     | cmax      |  256.6 |  143.7 |  573.0 |
-| Rifabutin     | tmax      |    3.5 |    2.1 |    4.0 |
-| des-Rifabutin | auclast   |  204.0 |  128.2 |  534.0 |
-| des-Rifabutin | cmax      |   23.5 |   11.4 |   49.6 |
-| des-Rifabutin | tmax      |    3.5 |    2.1 |    4.0 |
+| Rifabutin     | auclast   | 2776.5 | 1385.2 | 5290.6 |
+| Rifabutin     | cmax      |  293.8 |  143.7 |  497.5 |
+| Rifabutin     | tmax      |    3.0 |    2.1 |    4.9 |
+| des-Rifabutin | auclast   |  273.5 |  112.6 |  459.6 |
+| des-Rifabutin | cmax      |   26.5 |   10.3 |   54.0 |
+| des-Rifabutin | tmax      |    3.0 |    2.5 |    4.9 |
 
 Steady-state NCA summary (n = 44 virtual subjects). AUClast in ng\*h/mL;
 Cmax in ng/mL; Tmax in h. {.table}

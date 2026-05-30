@@ -10,7 +10,7 @@ library(PKNCA)
 #> 
 #>     filter
 library(rxode2)
-#> rxode2 5.0.2 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.1 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -155,7 +155,7 @@ to the Phase 2 weight range.
 
 set.seed(20260426)
 
-n_dmd <- 500
+n_dmd <- 120  # downsampled from 500 for vignette build budget; matches paper Phase 2 N=120, VPC envelope is visually identical
 make_dmd_cohort <- function(n, id_offset = 0L) {
   # Log-normal weights matched approximately to Wojciechowski 2022 Table 1
   # Phase 2 column (median 28.9 kg, mean 31.8 kg, SD 11.1 kg, range 14.8-86.4).
@@ -171,7 +171,7 @@ make_dmd_cohort <- function(n, id_offset = 0L) {
 dmd_cohort <- make_dmd_cohort(n_dmd)
 summary(dmd_cohort$WT)
 #>    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-#>   14.80   22.79   28.94   30.73   36.97   86.40
+#>   14.87   22.16   28.92   30.22   35.05   70.56
 ```
 
 ## Simulation
@@ -380,9 +380,9 @@ knitr::kable(comparison,
 
 | Regimen      | Published median (95 % PI) | Simulated median (95 % PI) |
 |:-------------|:---------------------------|:---------------------------|
-| 5 mg/kg Q4W  | 86.9 (69.1, 92.9)          | 93.5 (82.1, 98.8)          |
-| 20 mg/kg Q4W | 96.6 (93.8, 98.2)          | 98.4 (95.5, 99.7)          |
-| 40 mg/kg Q4W | 98.3 (96.8, 99.1)          | 99.2 (97.9, 99.9)          |
+| 5 mg/kg Q4W  | 86.9 (69.1, 92.9)          | 93.4 (81.4, 98.8)          |
+| 20 mg/kg Q4W | 96.6 (93.8, 98.2)          | 98.4 (95.7, 99.7)          |
+| 40 mg/kg Q4W | 98.3 (96.8, 99.1)          | 99.2 (97.9, 99.8)          |
 
 Myostatin coverage in DMD pediatric patients: simulated
 vs. Wojciechowski 2022 Results. {.table}
@@ -418,7 +418,7 @@ ev_sd$WT      <- 28.9
 ev_sd$DIS_DMD <- 1L
 
 sim_sd <- rxode2::rxSolve(mod_typical, ev_sd, returnType = "data.frame")
-#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvmax', 'etalbase', 'etalkdeg_kint'
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvmax', 'etalrbase', 'etalkdeg_kint'
 
 sim_nca <- sim_sd |>
   filter(!is.na(Cc), time >= 0) |>

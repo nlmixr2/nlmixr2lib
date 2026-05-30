@@ -414,9 +414,9 @@ knitr::kable(nca_summary,
 | PPTESTCD | median_Non-pregnant | median_Pregnant | p05_Non-pregnant | p05_Pregnant | p95_Non-pregnant | p95_Pregnant |
 |:---|---:|---:|---:|---:|---:|---:|
 | auclast | NA | NA | NA | NA | NA | NA |
-| cmax | 274.441 | 309.894 | 164.073 | 140.776 | 464.915 | 486.744 |
-| half.life | 562.775 | 562.688 | 442.910 | 485.043 | 715.043 | 706.446 |
-| tmax | 51.000 | 51.000 | 50.000 | 49.000 | 53.000 | 53.000 |
+| cmax | 277.325 | 262.727 | 170.139 | 162.423 | 498.154 | 424.237 |
+| half.life | 578.257 | 605.851 | 443.245 | 464.205 | 715.951 | 808.757 |
+| tmax | 51.000 | 51.000 | 50.000 | 49.000 | 54.000 | 54.000 |
 
 Simulated NCA over 0-90 days, three-day piperaquine-DHA regimen, by
 pregnancy status (median \[5%-95%\]). Cmax in ng/mL; AUClast in

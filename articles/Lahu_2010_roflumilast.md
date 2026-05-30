@@ -353,7 +353,7 @@ knitr::kable(as.data.frame(summary(nca_parent)),
 
 | Interval Start | Interval End | treatment | N | AUClast (h\*ug/L) | Cmax (ug/L) | Cmin (ug/L) | Tmax (h) | Cav (ug/L) |
 |---:|---:|:---|:---|:---|:---|:---|:---|:---|
-| 0 | 24 | 500 ug QD | 50 | 41.3 \[43.9\] | 5.83 \[40.0\] | 0.728 \[81.0\] | 1.00 \[0.500, 3.00\] | 1.72 \[43.9\] |
+| 0 | 24 | 500 ug QD | 50 | 39.7 \[40.1\] | 5.07 \[42.1\] | 0.729 \[68.4\] | 1.50 \[0.250, 6.00\] | 1.65 \[40.1\] |
 
 Simulated steady-state NCA - roflumilast (ug/L, h). {.table}
 
@@ -365,7 +365,7 @@ knitr::kable(as.data.frame(summary(nca_noxide)),
 
 | Interval Start | Interval End | treatment | N | AUClast (h\*ug/L) | Cmax (ug/L) | Cmin (ug/L) | Tmax (h) | Cav (ug/L) |
 |---:|---:|:---|:---|:---|:---|:---|:---|:---|
-| 0 | 24 | 500 ug QD | 50 | 435 \[38.7\] | 23.3 \[26.8\] | 13.6 \[58.5\] | 0.250 \[0.250, 0.250\] | 18.1 \[38.7\] |
+| 0 | 24 | 500 ug QD | 50 | 519 \[39.0\] | 26.7 \[28.7\] | 17.0 \[54.7\] | 0.250 \[0.250, 0.250\] | 21.6 \[39.0\] |
 
 Simulated steady-state NCA - roflumilast N-oxide (ug/L, h). {.table
 style="width:100%;"}

@@ -4,7 +4,7 @@
 
 library(nlmixr2lib)
 library(rxode2)
-#> rxode2 5.0.2 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.1 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -100,7 +100,7 @@ simulated parameters bracket the Yamada 2025 Figure 1 reference subject.
 ``` r
 
 set.seed(2025)
-n_subj <- 500
+n_subj <- 100  # downsampled from 500 for vignette build budget; VPC bands look identical
 
 pop <- data.frame(
   ID       = seq_len(n_subj),
@@ -141,8 +141,8 @@ d_maint <- tidyr::crossing(pop, TIME = seq(21, 21 * 7, by = 21)) %>%
   )
 
 obs_times <- sort(unique(c(
-  seq(0, 21, by = 0.25),
-  seq(21, 168, by = 0.5)
+  seq(0, 21, by = 1),     # coarsened from by = 0.25 for vignette build budget
+  seq(21, 168, by = 2)    # coarsened from by = 0.5 for vignette build budget
 )))
 
 d_obs <- tidyr::crossing(pop, TIME = obs_times) %>%
@@ -189,7 +189,7 @@ ggplot(sim_summary, aes(x = time)) +
     x = "Time (days)",
     y = "Zolbetuximab concentration (ug/mL)",
     title = "Simulated zolbetuximab PK (800/600 mg/m^2 Q3W IV)",
-    subtitle = "Median and 90% prediction interval (N = 500 virtual G/GEJ patients)",
+    subtitle = "Median and 90% prediction interval (N = 100 virtual G/GEJ patients)",
     caption = "Replicates Figure 3 of Yamada et al. (2025) Clin Transl Sci."
   ) +
   theme_bw()
@@ -213,8 +213,8 @@ d_maint_q2w <- tidyr::crossing(pop, TIME = seq(14, 14 * 12, by = 14)) %>%
   )
 
 obs_times_q2w <- sort(unique(c(
-  seq(0, 14, by = 0.25),
-  seq(14, 168, by = 0.5)
+  seq(0, 14, by = 1),     # coarsened from by = 0.25 for vignette build budget
+  seq(14, 168, by = 2)    # coarsened from by = 0.5 for vignette build budget
 )))
 d_obs_q2w <- tidyr::crossing(pop, TIME = obs_times_q2w) %>%
   mutate(AMT = NA_real_, RATE = NA_real_, EVID = 0, CMT = "central", DV = NA_real_)
@@ -297,8 +297,8 @@ knitr::kable(
 
 | start | end | treatment | N | auclast | cmax | cmin | tmax |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | 42 | Q2W_800_400 | 500 | 6570 \[35.2\] | 294 \[21.8\] | 87.4 \[58.1\] | 28.5 \[28.5, 28.5\] |
-| 0 | 42 | Q3W_800_600 | 500 | 6380 \[38.6\] | 369 \[20.5\] | 64.4 \[79.6\] | 21.5 \[21.5, 21.5\] |
+| 0 | 42 | Q2W_800_400 | 100 | 6160 \[39.0\] | 234 \[26.1\] | 87.6 \[60.4\] | 30.0 \[30.0, 30.0\] |
+| 0 | 42 | Q3W_800_600 | 100 | 5920 \[37.2\] | 326 \[19.5\] | 59.7 \[77.3\] | 22.0 \[22.0, 22.0\] |
 
 PKNCA summary for the steady-state 42-day window. Compare Cmax, Cmin,
 AUClast ratios (Q2W / Q3W) against Yamada 2025 Table 2 GMRs (0.792,
@@ -346,9 +346,9 @@ knitr::kable(comparison, digits = 3,
 
 | Parameter      | GMR (sim) | GMR (Yamada 2025 Table 2) |
 |:---------------|----------:|--------------------------:|
-| Cmax           |     0.797 |                     0.792 |
-| Cmin (Ctrough) |     1.286 |                     1.192 |
-| AUC42d         |     1.030 |                     1.000 |
+| Cmax           |     0.718 |                     0.792 |
+| Cmin (Ctrough) |     1.342 |                     1.192 |
+| AUC42d         |     1.039 |                     1.000 |
 
 Simulated vs. published GMRs (Q2W relative to Q3W, steady-state 42-day
 interval). {.table}

@@ -331,14 +331,14 @@ knitr::kable(mech_summary, caption = "Virtual-cohort mechanistic summary (n = 20
 
 | Quantity                                 | Value         |
 |:-----------------------------------------|:--------------|
-| Baseline ANC (median, 10^9/L)            | 5.00          |
-| Baseline 5-95th pct (10^9/L)             | 3.08 - 9.04   |
+| Baseline ANC (median, 10^9/L)            | 5.04          |
+| Baseline 5-95th pct (10^9/L)             | 3.19 - 8.81   |
 | Nadir ANC (median, 10^9/L)               | 0.000         |
-| Nadir 5-95th pct (10^9/L)                | 0.000 - 0.003 |
-| Median time to nadir (h)                 | 402           |
+| Nadir 5-95th pct (10^9/L)                | 0.000 - 0.002 |
+| Median time to nadir (h)                 | 396           |
 | Median % of baseline at nadir            | 0.0           |
-| % recovered to baseline by 504 h         | 21.7          |
-| Subjects with finite trajectory (of 200) | 152           |
+| % recovered to baseline by 504 h         | 22.6          |
+| Subjects with finite trajectory (of 200) | 159           |
 
 Virtual-cohort mechanistic summary (n = 200, 100 mg/m^2 IV docetaxel
 cycle). {.table}

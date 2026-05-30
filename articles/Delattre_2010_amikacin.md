@@ -205,8 +205,6 @@ sim_stoch |>
     subtitle = "Replicates Delattre 2010 Figure 1; 25 mg/kg IV over 30 min"
   ) +
   theme_minimal()
-#> Warning: Removed 1 row containing missing values or values outside the scale range
-#> (`geom_line()`).
 ```
 
 ![](Delattre_2010_amikacin_files/figure-html/figure-1-1.png)
@@ -335,12 +333,12 @@ knitr::kable(
 
 | Interval Start | Interval End | crcl_band | N | AUClast (hr\*mg/L) | Cmax (mg/L) | Tmax (hr) | Half-life (hr) | AUCinf,obs (hr\*mg/L) |
 |---:|---:|:---|:---|:---|:---|:---|:---|:---|
-| 0 | 24 | low CRCL | 30 | NC | 69.4 \[43.3\] | 1.00 \[1.00, 1.00\] | . | . |
-| 0 | Inf | low CRCL | 30 | . | . | . | 19.2 \[8.64\] | NC |
-| 0 | 24 | median CRCL | 29 | NC | 69.1 \[42.2\] | 1.00 \[1.00, 1.00\] | . | . |
-| 0 | Inf | median CRCL | 29 | . | . | . | 11.9 \[6.29\] | NC |
-| 0 | 24 | high CRCL | 29 | NC | 63.9 \[58.4\] | 1.00 \[1.00, 1.00\] | . | . |
-| 0 | Inf | high CRCL | 29 | . | . | . | 7.00 \[4.17\] | NC |
+| 0 | 24 | low CRCL | 30 | NC | 68.8 \[26.8\] | 1.00 \[1.00, 1.00\] | . | . |
+| 0 | Inf | low CRCL | 30 | . | . | . | 19.0 \[10.2\] | NC |
+| 0 | 24 | median CRCL | 29 | NC | 74.8 \[37.6\] | 1.00 \[1.00, 1.00\] | . | . |
+| 0 | Inf | median CRCL | 29 | . | . | . | 15.6 \[11.5\] | NC |
+| 0 | 24 | high CRCL | 29 | NC | 60.2 \[45.6\] | 1.00 \[1.00, 1.00\] | . | . |
+| 0 | Inf | high CRCL | 29 | . | . | . | 5.74 \[3.10\] | NC |
 
 Simulated NCA parameters by CRCL band (PKNCA). {.table}
 

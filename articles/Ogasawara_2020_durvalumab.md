@@ -4,7 +4,7 @@
 
 library(nlmixr2lib)
 library(rxode2)
-#> rxode2 5.0.2 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.1 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -57,7 +57,7 @@ equations verified against PMC7007418 (Table 3 footnotes b and c).
 ``` r
 
 set.seed(2020)
-n_subj <- 500
+n_subj <- 200  # downsampled from 500 for vignette build budget; VPC band shape preserved
 
 pop <- data.frame(
   ID     = seq_len(n_subj),
@@ -135,7 +135,7 @@ ggplot(sim_summary, aes(x = time / (24 * 7))) +
     x = "Time (weeks)",
     y = paste0("Durvalumab concentration (", conc_unit, ")"),
     title = "Simulated durvalumab PK (1500 mg IV q4w)",
-    subtitle = "Median and 90% PI (N = 500 virtual hematologic malignancy patients)",
+    subtitle = "Median and 90% PI (N = 200 virtual hematologic malignancy patients)",
     caption = "Model: Ogasawara et al. (2020) Clin Pharmacokinet"
   ) +
   theme_bw()
@@ -213,8 +213,8 @@ knitr::kable(nca_summary, digits = 2,
 
 | start | end | Disease | N | auclast | cmax | tmax | half.life |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | 28 | MDS/AML | 201 | 4490 \[37.6\] | 349 \[26.1\] | 1.00 \[1.00, 1.00\] | 17.9 \[7.24\] |
-| 0 | 28 | Other | 299 | 5700 \[37.5\] | 415 \[26.8\] | 1.00 \[1.00, 1.00\] | 20.9 \[7.56\] |
+| 0 | 28 | MDS/AML | 79 | 4400 \[38.1\] | 346 \[28.1\] | 1.00 \[1.00, 1.00\] | 17.3 \[6.23\] |
+| 0 | 28 | Other | 121 | 5510 \[38.6\] | 408 \[25.5\] | 1.00 \[1.00, 1.00\] | 20.6 \[8.30\] |
 
 NCA summary (3rd dosing interval, weeks 8-12) {.table}
 

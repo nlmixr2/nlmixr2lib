@@ -707,8 +707,8 @@ knitr::kable(nca_summary, caption = "Simulated MTX NCA parameters by HDMTX dose 
 
 | start | end | treatment | N | cmax | tmax | half.life | aucinf.obs |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | 96 | LR (target Cpss 33 uM) | 200 | 33.8 \[13.8\] | 24.0 \[24.0, 24.0\] | 14.5 \[5.15\] | NC |
-| 0 | 96 | SHR (target Cpss 65 uM) | 200 | 67.5 \[15.4\] | 24.0 \[24.0, 24.0\] | 14.2 \[4.80\] | NC |
+| 0 | 96 | LR (target Cpss 33 uM) | 200 | 33.8 \[14.9\] | 24.0 \[24.0, 24.0\] | 14.8 \[4.98\] | NC |
+| 0 | 96 | SHR (target Cpss 65 uM) | 200 | 68.3 \[13.9\] | 24.0 \[24.0, 24.0\] | 15.1 \[5.37\] | NC |
 
 Simulated MTX NCA parameters by HDMTX dose group. {.table}
 
@@ -747,8 +747,8 @@ knitr::kable(hcy_summary, caption = "Simulated HCY Cmax (uM, total concentration
 
 | treatment | median_HCY_max | p05_HCY_max | p95_HCY_max | median_HCY_AUC | p05_HCY_AUC | p95_HCY_AUC |
 |:---|---:|---:|---:|---:|---:|---:|
-| LR (target Cpss 33 uM) | 10.77719 | 7.406378 | 15.05859 | 304.1805 | 170.8433 | 479.2352 |
-| SHR (target Cpss 65 uM) | 11.39175 | 7.790569 | 17.16736 | 351.2116 | 204.4453 | 623.3927 |
+| LR (target Cpss 33 uM) | 10.76256 | 7.129635 | 17.15573 | 301.7009 | 169.5669 | 524.7031 |
+| SHR (target Cpss 65 uM) | 10.87453 | 7.490848 | 16.46455 | 333.5324 | 202.6401 | 571.0168 |
 
 Simulated HCY Cmax (uM, total concentration) and AUC over baseline
 (uM\*h) by HDMTX dose group; 90% prediction interval (5th / 95th

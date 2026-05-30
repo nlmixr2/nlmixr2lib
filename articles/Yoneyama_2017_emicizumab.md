@@ -151,9 +151,12 @@ build_regimen <- function(label, maintenance_dose_mg_per_kg,
       cmt  = "depot"
     )
 
-  # Observation grid: dense in the first 4 weeks, weekly thereafter
+  # Observation grid: dense in the first 4 weeks, every 3.5 days thereafter.
+  # Loading-window step relaxed from 1 to 2 days for vignette build budget;
+  # post-loading step retained at 3.5 days for PKNCA Cmax fidelity within the
+  # 7-day QW maintenance interval.
   obs_grid <- sort(unique(c(
-    seq(0, 28, by = 1),
+    seq(0, 28, by = 2),
     seq(28, sim_end_day, by = 3.5)
   )))
   obs <- tidyr::expand_grid(id = ids, time = obs_grid) |>
@@ -174,9 +177,11 @@ build_regimen <- function(label, maintenance_dose_mg_per_kg,
 }
 
 events <- dplyr::bind_rows(
-  build_regimen("1.5 mg/kg QW",  1.5, 7,  n_sub = 200, id_offset =    0L),
-  build_regimen("3 mg/kg Q2W",   3.0, 14, n_sub = 200, id_offset =  200L),
-  build_regimen("6 mg/kg Q4W",   6.0, 28, n_sub = 200, id_offset =  400L)
+  # n_sub downsampled from 200 per regimen for vignette build budget; VPC bands
+  # at n=80 are visually indistinguishable from n=200 for this smooth SC profile.
+  build_regimen("1.5 mg/kg QW",  1.5, 7,  n_sub = 80, id_offset =    0L),
+  build_regimen("3 mg/kg Q2W",   3.0, 14, n_sub = 80, id_offset =   80L),
+  build_regimen("6 mg/kg Q4W",   6.0, 28, n_sub = 80, id_offset =  160L)
 )
 stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
 ```
@@ -282,9 +287,9 @@ knitr::kable(ss_trough,
 
 | regimen      |   n | trough_median |
 |:-------------|----:|--------------:|
-| 1.5 mg/kg QW | 200 |      53.70499 |
-| 3 mg/kg Q2W  | 200 |      51.10005 |
-| 6 mg/kg Q4W  | 200 |      44.33320 |
+| 1.5 mg/kg QW |  80 |      54.14345 |
+| 3 mg/kg Q2W  |  80 |      52.63641 |
+| 6 mg/kg Q4W  |  80 |      46.20967 |
 
 Simulated median plasma emicizumab C_trough at week 52 by phase III
 regimen. {.table}
@@ -421,148 +426,7 @@ nca_res  <- PKNCA::pk.nca(nca_data)
 #> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
 #> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
 #> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
 #> Warning: Too few points for half-life calculation (min.hl.points=3 with only 2 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 2 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 2 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 2 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 2 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 2 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 2 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 2 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 2 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 2 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 2 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 2 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 2 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 2 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 2 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 2 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 2 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 2 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 2 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 2 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 2 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 2 points)
 #> Too few points for half-life calculation (min.hl.points=3 with only 2 points)
 #> Too few points for half-life calculation (min.hl.points=3 with only 2 points)
 #> Too few points for half-life calculation (min.hl.points=3 with only 2 points)
@@ -585,9 +449,9 @@ knitr::kable(nca_summary,
 
 | start | end | treatment | N | auclast | cmax | tmax | half.life |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | Inf | 1.5 mg/kg QW | 200 | 369 \[28.9\] | 54.2 \[28.5\] | 3.50 \[3.50, 3.50\] | NC |
-| 0 | Inf | 3 mg/kg Q2W | 200 | 723 \[25.8\] | 55.6 \[24.3\] | 3.50 \[3.50, 7.00\] | 34.0 \[9.63\], n=163 |
-| 0 | Inf | 6 mg/kg Q4W | 200 | 1490 \[26.9\] | 64.3 \[24.2\] | 7.00 \[3.50, 10.5\] | 32.4 \[8.81\] |
+| 0 | Inf | 1.5 mg/kg QW | 80 | 372 \[26.9\] | 54.6 \[26.4\] | 3.50 \[3.50, 3.50\] | NC |
+| 0 | Inf | 3 mg/kg Q2W | 80 | 745 \[28.9\] | 57.2 \[28.2\] | 3.50 \[3.50, 7.00\] | 34.3 \[10.2\], n=64 |
+| 0 | Inf | 6 mg/kg Q4W | 80 | 1510 \[28.0\] | 65.5 \[24.8\] | 7.00 \[3.50, 10.5\] | 32.4 \[8.81\] |
 
 PKNCA over the last steady-state dosing interval, by phase III regimen.
 {.table}

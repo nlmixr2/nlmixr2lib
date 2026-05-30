@@ -4,7 +4,7 @@
 
 library(nlmixr2lib)
 library(rxode2)
-#> rxode2 5.0.2 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.1 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(PKNCA)
 #> 
@@ -543,13 +543,13 @@ nca_summary <- as.data.frame(res$result) |>
   )
 nca_summary
 #> # A tibble: 5 × 4
-#>   PPTESTCD median      p05   p95
-#>   <chr>     <dbl>    <dbl> <dbl>
-#> 1 auclast  NA     NA       NA   
-#> 2 cav      NA     NA       NA   
-#> 3 cmax      0.410  0.0773   2.02
-#> 4 cmin      0.196  0.00730  1.86
-#> 5 tmax      6      6       24
+#>   PPTESTCD median       p05   p95
+#>   <chr>     <dbl>     <dbl> <dbl>
+#> 1 auclast  NA     NA        NA   
+#> 2 cav      NA     NA        NA   
+#> 3 cmax      0.408  0.0607    2.22
+#> 4 cmin      0.125  0.000589  1.24
+#> 5 tmax      6      6        24
 ```
 
 ### Comparison against the published exposure thresholds

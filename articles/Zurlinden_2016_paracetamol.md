@@ -281,10 +281,10 @@ true_dose <- 0.88 * 1000 * 1000 / 151.17
 mass_check_tbl <- mass_check |>
   transmute(
     time_h         = time,
-    APAP_urine_pct = 100 * a_uri_apap / true_dose,
-    AG_urine_pct   = 100 * a_uri_ag   / true_dose,
-    AS_urine_pct   = 100 * a_uri_as   / true_dose,
-    cumulative_pct = 100 * (a_uri_apap + a_uri_ag + a_uri_as) / true_dose
+    APAP_urine_pct = 100 * a_urine_apap / true_dose,
+    AG_urine_pct   = 100 * a_urine_ag   / true_dose,
+    AS_urine_pct   = 100 * a_urine_as   / true_dose,
+    cumulative_pct = 100 * (a_urine_apap + a_urine_ag + a_urine_as) / true_dose
   )
 knitr::kable(mass_check_tbl, digits = 2,
              caption = paste0(
@@ -398,16 +398,17 @@ warnings (no errors). Every warning is intentional and consequential to
 the verbatim PBPK extraction:
 
 - **31 compartment-naming warnings** – the model’s 31 ODE states
-  (`a_fat_apap`, `a_kid_apap`, `a_mus_apap`, `a_rap_apap`, `a_slo_apap`,
-  `a_liv_apap`, `a_art_apap`, `a_ven_apap`, `a_uri_apap`; same for `_ag`
-  and `_as`; plus `a_hep_ag`, `a_hep_as`, `a_paps`, `a_ga`) use
+  (`a_fat_apap`, `a_kidney_apap`, `a_muscle_apap`,
+  `a_rapidly_perfused_apap`, `a_slowly_perfused_apap`, `a_liver_apap`,
+  `a_arterial_apap`, `a_venous_apap`, `a_urine_apap`; same for `_ag` and
+  `_as`; plus `a_hepatic_ag`, `a_hepatic_as`, `a_paps`, `a_ga`) use
   snake-case PBPK-organ names rather than the canonical `central` /
   `peripheral1` / `liver` / metabolite-suffix scheme. The canonical
   scheme is designed for compartmental popPK / popPD models with a
   unique central compartment; whole-body PBPK models route every
   chemical through nine flow-limited tissue compartments and a separate
   hepatocyte sub-compartment, which has no clean mapping onto `central`
-  / `peripheral<n>`. Renaming `a_liv_apap` to `liver` would clash if
+  / `peripheral<n>`. Renaming `a_liver_apap` to `liver` would clash if
   another extraction (a different drug also having a `liver`
   compartment) ever lands. The `a_<tissue>_<chemical>` scheme is
   unambiguous and source-traced.

@@ -319,13 +319,13 @@ knitr::kable(nca_summary, digits = 2,
 
 | arm | PPTESTCD   | median |  p2_5 | p97_5 |
 |:----|:-----------|-------:|------:|------:|
-| BU1 | aucinf.obs |  26.56 | 19.16 | 39.30 |
-| BU1 | cmax       |   4.71 |  3.84 |  6.05 |
-| BU1 | half.life  |   2.77 |  1.89 |  4.06 |
+| BU1 | aucinf.obs |  26.85 | 18.78 | 37.18 |
+| BU1 | cmax       |   4.78 |  3.86 |  5.92 |
+| BU1 | half.life  |   2.81 |  1.98 |  3.85 |
 | BU1 | tmax       |   3.00 |  3.00 |  3.00 |
-| BU4 | aucinf.obs |   6.79 |  4.74 |  8.99 |
-| BU4 | cmax       |   1.32 |  1.10 |  1.56 |
-| BU4 | half.life  |   2.81 |  1.83 |  3.96 |
+| BU4 | aucinf.obs |   6.76 |  4.49 | 10.26 |
+| BU4 | cmax       |   1.33 |  1.11 |  1.61 |
+| BU4 | half.life  |   2.79 |  1.89 |  4.15 |
 | BU4 | tmax       |   2.00 |  2.00 |  2.00 |
 
 Simulated NCA parameters by arm (median, 2.5-97.5 percentiles). {.table}
@@ -358,8 +358,8 @@ knitr::kable(comparison, digits = 2,
 
 | arm | AUCinf_pub_mghL | AUCinf_pub_umolLmin | source | AUCinf_sim_median | pct_diff |
 |:---|---:|---:|:---|---:|---:|
-| BU1 | 26.18 | 6378 | Choe 2012 Results, p. 277 (median AUC0-inf, q24h regimen first dose) | 26.56 | 1.5 |
-| BU4 | 6.08 | 1481 | Choe 2012 Results, p. 277 (median AUC0-inf, q6h regimen first dose) | 6.79 | 11.6 |
+| BU1 | 26.18 | 6378 | Choe 2012 Results, p. 277 (median AUC0-inf, q24h regimen first dose) | 26.85 | 2.5 |
+| BU4 | 6.08 | 1481 | Choe 2012 Results, p. 277 (median AUC0-inf, q6h regimen first dose) | 6.76 | 11.1 |
 
 Per-arm median AUC0-inf: simulated cohort vs. Choe 2012 published
 values. {.table}
@@ -398,8 +398,8 @@ knitr::kable(iiv_tbl,
 
 | CV_cl | CV_vd | source            |
 |------:|------:|:------------------|
-|  16.0 |   9.0 | Choe 2012 Table 2 |
-|  20.1 |  14.9 | Simulated         |
+|  16.0 |     9 | Choe 2012 Table 2 |
+|  18.2 |    14 | Simulated         |
 
 Empirical CV% of individual CL and Vd: published vs simulated. {.table}
 

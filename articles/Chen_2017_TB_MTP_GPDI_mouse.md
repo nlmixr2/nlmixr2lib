@@ -189,7 +189,7 @@ make_regimen <- function(id, regimen, doses_rif, doses_inh, doses_emb, doses_pza
     mutate(
       id            = id,
       regimen       = regimen,
-      DOSE_INH_MGKG = doses_inh
+      CONMED_INH_DOSE = doses_inh
     ) %>%
     arrange(time, desc(evid))
 }
@@ -220,7 +220,7 @@ stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
 mod <- readModelDb("Chen_2017_TB_MTP_GPDI_mouse")
 sim <- rxode2::rxSolve(
   mod, events = events,
-  keep = c("regimen", "DOSE_INH_MGKG"),
+  keep = c("regimen", "CONMED_INH_DOSE"),
   returnType = "data.frame"
 ) %>% as_tibble()
 #> Warning: multi-subject simulation without without 'omega'
@@ -393,8 +393,8 @@ synergy on N-state bacteria. {.table}
   `mod$ini` before solving.
 - **Isoniazid dose-dependent clearance.** The model implements the
   published Chen 2017 Table 1 footnote b relationship CL_inh =
-  CL_inh_lowest *(1 - slope_sigma* (DOSE_INH_MGKG - 12.5)). The
-  DOSE_INH_MGKG covariate carries the per-subject assigned dose level
+  CL_inh_lowest *(1 - slope_sigma* (CONMED_INH_DOSE - 12.5)). The
+  CONMED_INH_DOSE covariate carries the per-subject assigned dose level
   (mg/kg/day) used in the relationship; it is set to 0 for regimens
   without isoniazid.
 - **GPDI functional form.** Chen 2017’s Methods describes the reduced
@@ -456,14 +456,14 @@ synergy on N-state bacteria. {.table}
   warnings; the deviation is intentional because the model carries four
   parallel drugs and three bacterial states that cannot collapse into a
   single canonical PK tree.
-- **Non-canonical paper-specific covariate.** `DOSE_INH_MGKG` is a
-  paper-specific covariate not in
-  `inst/references/covariate-columns.md`. The canonical `DOSE` register
-  entry assumes a single-drug context; in this four-drug combination
-  model only isoniazid needs a per-subject dose-level covariate (its
-  clearance is dose-dependent per Chen 2017 Table 1 footnote b). The
-  other three drugs have linear or fixed-dose PK and their assigned dose
-  enters the simulation only through the event AMT column.
+- **Paper-specific covariate.** `CONMED_INH_DOSE` is the canonical
+  “daily dose of a co-administered named drug” entry for isoniazid
+  (`inst/references/covariate-columns.md`). In this four-drug
+  combination model only isoniazid needs a per-subject dose-level
+  covariate (its clearance is dose-dependent per Chen 2017 Table 1
+  footnote b). The other three drugs have linear or fixed-dose PK and
+  their assigned dose enters the simulation only through the event AMT
+  column.
 
 ## Errata
 

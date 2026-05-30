@@ -4,7 +4,7 @@
 
 library(nlmixr2lib)
 library(rxode2)
-#> rxode2 5.0.2 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.1 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -497,8 +497,8 @@ knitr::kable(nca_summary,
 
 | start | end | regimen | N | auclast | cmax | tmax | half.life | aucinf.obs |
 |---:|---:|:---|:---|:---|:---|:---|:---|:---|
-| 0 | 84 | 10 mg/kg IV SD | 50 | NC | 205 \[28.3\] | 0.0833 \[0.0833, 0.0833\] | 28.7 \[8.02\] | NC |
-| 0 | 84 | 150 mg SC SD | 50 | NC | 14.6 \[22.8\] | 6.00 \[2.00, 21.0\] | 28.2 \[8.27\] | NC |
+| 0 | 84 | 10 mg/kg IV SD | 50 | NC | 221 \[26.9\] | 0.0833 \[0.0833, 0.0833\] | 27.3 \[8.43\] | NC |
+| 0 | 84 | 150 mg SC SD | 50 | NC | 13.7 \[31.3\] | 7.00 \[2.00, 21.0\] | 28.8 \[10.5\] | NC |
 
 Simulated NCA parameters by dosing regimen (PKNCA, n = 50 per arm).
 {.table}

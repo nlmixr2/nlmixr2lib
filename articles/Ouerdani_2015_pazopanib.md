@@ -50,8 +50,8 @@ from 5 mg to 2000 mg (Ouerdani 2015 Methods, clinical-data section).
 
 | Equation / parameter | Value | Source location |
 |----|----|----|
-| `d/dt(tumorSize)` | n/a | Ouerdani 2015 Methods Equation 1 |
-| `d/dt(carryingCapacity)` | n/a | Ouerdani 2015 Methods Equation 1 |
+| `d/dt(tumor_size)` | n/a | Ouerdani 2015 Methods Equation 1 |
+| `d/dt(carrying_capacity)` | n/a | Ouerdani 2015 Methods Equation 1 |
 | `a = a0 * AUC_PAZO^b_a` | n/a | Ouerdani 2015 Methods Equation 2 |
 | `c = c0 * AUC_PAZO^b_c` | n/a | Ouerdani 2015 Methods Equation 3 |
 | `lk_tumor` | `log(0.0021)` | Table 1 clinical k = 0.0021 (RSE 6%) |
@@ -142,7 +142,7 @@ sim_clin_typ <- rxode2::rxSolve(
 #> ℹ omega/sigma items treated as zero: 'etalk_tumor', 'etalk_aa0', 'etalk_cyto0', 'etalk_res'
 
 clin_long <- sim_clin_typ |>
-  select(time, P = tumorSize, K = carryingCapacity) |>
+  select(time, P = tumor_size, K = carrying_capacity) |>
   pivot_longer(c(P, K), names_to = "state", values_to = "value")
 
 ggplot(clin_long, aes(time, value, colour = state, linetype = state)) +
@@ -210,23 +210,23 @@ sim_off <- rxode2::rxSolve(mod_clin_typ, events = events_off) |>
   as.data.frame()
 #> ℹ omega/sigma items treated as zero: 'etalk_tumor', 'etalk_aa0', 'etalk_cyto0', 'etalk_res'
 
-stopifnot(all(diff(sim_off$tumorSize) > 0))
+stopifnot(all(diff(sim_off$tumor_size) > 0))
 
 knitr::kable(
   sim_off |>
-    select(time, tumorSize, carryingCapacity) |>
+    select(time, tumor_size, carrying_capacity) |>
     filter(time %in% c(0, 168, 364, 728, followup_days)),
   digits = 3,
   caption = "Drug-free clinical trajectory (AUC_PAZO = 0; pure logistic growth)."
 )
 ```
 
-| time | tumorSize | carryingCapacity |
-|-----:|----------:|-----------------:|
-|    0 |    85.174 |          329.000 |
-|  168 |   110.225 |          393.890 |
-|  364 |   147.451 |          480.758 |
-|  728 |   245.373 |          678.427 |
+| time | tumor_size | carrying_capacity |
+|-----:|-----------:|------------------:|
+|    0 |     85.174 |           329.000 |
+|  168 |    110.225 |           393.890 |
+|  364 |    147.451 |           480.758 |
+|  728 |    245.373 |           678.427 |
 
 Drug-free clinical trajectory (AUC_PAZO = 0; pure logistic growth).
 {.table}
@@ -242,7 +242,7 @@ point after the initial cytotoxic transient.
 ``` r
 
 crossing_time <- sim_clin_typ |>
-  filter(carryingCapacity < tumorSize) |>
+  filter(carrying_capacity < tumor_size) |>
   summarise(first_cross = min(time)) |>
   pull(first_cross)
 
@@ -251,8 +251,8 @@ cat(sprintf("Typical-value K-below-P crossover at t = %s days (~%.1f months)\n",
 #> Typical-value K-below-P crossover at t = 448 days (~14.7 months)
 
 ggplot(sim_clin_typ, aes(time)) +
-  geom_line(aes(y = tumorSize, colour = "P (tumour)"), linewidth = 1) +
-  geom_line(aes(y = carryingCapacity, colour = "K (capacity)"), linewidth = 1, linetype = "dashed") +
+  geom_line(aes(y = tumor_size, colour = "P (tumour)"), linewidth = 1) +
+  geom_line(aes(y = carrying_capacity, colour = "K (capacity)"), linewidth = 1, linetype = "dashed") +
   geom_vline(xintercept = crossing_time, linetype = "dotted", colour = "grey40") +
   labs(x = "Time (days)", y = "SLD (mm)",
        colour = NULL,
@@ -267,11 +267,11 @@ ggplot(sim_clin_typ, aes(time)) +
 
 | Term | Units | Reduces to |
 |----|----|----|
-| `k_tumor * tumorSize` | `1/day * mm` | `mm / day` |
-| `(1 - tumorSize / carryingCapacity)` | unitless | unitless |
-| `cyto_rate * exp(-k_res*t) * tumorSize` | `1/day * unitless * mm` | `mm / day` |
-| `k_cap * tumorSize^n` | `(mm^0.5 / day) * mm^0.5` | `mm / day` (clinical n = 0.5) |
-| `aa_rate * carryingCapacity` | `1/day * mm` | `mm / day` |
+| `k_tumor * tumor_size` | `1/day * mm` | `mm / day` |
+| `(1 - tumor_size / carrying_capacity)` | unitless | unitless |
+| `cyto_rate * exp(-k_res*t) * tumor_size` | `1/day * unitless * mm` | `mm / day` |
+| `k_cap * tumor_size^n` | `(mm^0.5 / day) * mm^0.5` | `mm / day` (clinical n = 0.5) |
+| `aa_rate * carrying_capacity` | `1/day * mm` | `mm / day` |
 
 Both ODE right-hand sides reduce to `mm / day`, consistent with
 `d/dt(state)` where `state` is in `mm` (SLD scale) and `t` is in days.
@@ -284,16 +284,16 @@ preclinical-to-clinical re-parameterisation.
 - **[`checkModelConventions()`](https://nlmixr2.github.io/nlmixr2lib/reference/checkModelConventions.md)
   deviations (intentional).** Running
   `nlmixr2lib::checkModelConventions("Ouerdani_2015_pazopanib")` flags
-  four warnings (no errors): (1) the `tumorSize` compartment is not on
-  the canonical-compartment list; (2) the `carryingCapacity` compartment
-  is not on the canonical-compartment list; (3) the single-output
-  observation variable should be `Cc`; (4) `units$concentration` does
-  not contain `/` (mass / volume). All four are intrinsic to a
-  tumour-volume-dynamics model with no drug-concentration / dosing ODE.
-  The same deviations apply to every other tumour-size-dynamics model in
-  the package. SLD in mm is not a drug concentration; `Cc` is reserved
-  for plasma drug concentrations and would be misleading here. The
-  deviations are intentional.
+  four warnings (no errors): (1) the `tumor_size` compartment is not on
+  the canonical-compartment list; (2) the `carrying_capacity`
+  compartment is not on the canonical-compartment list; (3) the
+  single-output observation variable should be `Cc`; (4)
+  `units$concentration` does not contain `/` (mass / volume). All four
+  are intrinsic to a tumour-volume-dynamics model with no
+  drug-concentration / dosing ODE. The same deviations apply to every
+  other tumour-size-dynamics model in the package. SLD in mm is not a
+  drug concentration; `Cc` is reserved for plasma drug concentrations
+  and would be misleading here. The deviations are intentional.
 - **`AUC_PAZO > 0` gate.** Same rationale as the paired mouse model: at
   AUC = 0 the power forms `a = a0 * AUC^b_a` and `c = c0 * AUC^b_c`
   would either give `0` (if both exponents are positive) or `a0` / `c0`

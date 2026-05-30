@@ -4,7 +4,7 @@
 
 library(nlmixr2lib)
 library(rxode2)
-#> rxode2 5.0.2 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.1 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -426,8 +426,8 @@ knitr::kable(
 
 | start | end | treatment | N | auclast | cmax | cmin | tmax | half.life |
 |---:|---:|:---|:---|:---|:---|:---|:---|:---|
-| 0 | 56 | IV_induction | 200 | 8370 \[24.2\] | 747 \[16.5\] | 36.4 \[72.4\] | 0.000 \[0.000, 0.000\] | 22.9 \[51.7\] |
-| 0 | 56 | SC_90mg_Q8W_ss | 200 | 1730 \[29.5\] | 60.6 \[19.7\] | 10.7 \[54.7\] | 3.50 \[3.50, 7.00\] | 22.7 \[7.21\] |
+| 0 | 56 | IV_induction | 200 | 8500 \[25.7\] | 770 \[16.7\] | 35.4 \[78.7\] | 0.000 \[0.000, 0.000\] | 17.9 \[5.24\] |
+| 0 | 56 | SC_90mg_Q8W_ss | 200 | 1710 \[33.5\] | 60.7 \[21.8\] | 10.3 \[60.5\] | 3.50 \[3.50, 7.00\] | 21.9 \[4.57\] |
 
 Simulated NCA: IV induction (0-8 weeks) and SC steady-state interval
 (weeks 24-32). {.table}

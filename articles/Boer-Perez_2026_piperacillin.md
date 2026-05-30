@@ -300,9 +300,9 @@ knitr::kable(
 
 | stratum | median_adj.r.squared | median_auclast | median_clast.pred | median_cmax | median_half.life | median_lambda.z | median_lambda.z.n.points | median_lambda.z.time.first | median_lambda.z.time.last | median_r.squared | median_span.ratio | median_tlast | median_tmax | p05_adj.r.squared | p05_auclast | p05_clast.pred | p05_cmax | p05_half.life | p05_lambda.z | p05_lambda.z.n.points | p05_lambda.z.time.first | p05_lambda.z.time.last | p05_r.squared | p05_span.ratio | p05_tlast | p05_tmax | p95_adj.r.squared | p95_auclast | p95_clast.pred | p95_cmax | p95_half.life | p95_lambda.z | p95_lambda.z.n.points | p95_lambda.z.time.first | p95_lambda.z.time.last | p95_r.squared | p95_span.ratio | p95_tlast | p95_tmax |
 |:---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| PMA 30-36 wk | 1 | NA | 20.950 | 190.958 | 3.648 | 0.190 | 46 | 0.75 | 12 | 1 | 3.084 | 12 | 0.5 | 1 | NA | 2.490 | 108.438 | 1.751 | 0.080 | 46 | 0.75 | 12 | 1 | 1.296 | 12 | 0.5 | 1 | NA | 60.540 | 356.047 | 8.680 | 0.396 | 46 | 0.75 | 12 | 1 | 6.425 | 12 | 0.5 |
-| PMA 37-44 wk | 1 | NA | 8.518 | 188.017 | 2.660 | 0.261 | 46 | 0.75 | 12 | 1 | 4.230 | 12 | 0.5 | 1 | NA | 0.298 | 106.673 | 1.181 | 0.103 | 46 | 0.75 | 12 | 1 | 1.667 | 12 | 0.5 | 1 | NA | 42.691 | 311.332 | 6.749 | 0.587 | 46 | 0.75 | 12 | 1 | 9.532 | 12 | 0.5 |
-| PMA \<=29 wk | 1 | NA | 36.968 | 196.230 | 5.098 | 0.136 | 46 | 0.75 | 12 | 1 | 2.207 | 12 | 0.5 | 1 | NA | 3.030 | 119.441 | 1.820 | 0.061 | 46 | 0.75 | 12 | 1 | 0.991 | 12 | 0.5 | 1 | NA | 88.061 | 339.225 | 11.349 | 0.381 | 46 | 0.75 | 12 | 1 | 6.181 | 12 | 0.5 |
+| PMA 30-36 wk | 1 | NA | 23.581 | 188.207 | 3.811 | 0.182 | 46 | 0.75 | 12 | 1 | 2.952 | 12 | 0.5 | 1 | NA | 2.046 | 103.367 | 1.662 | 0.079 | 46 | 0.75 | 12 | 1 | 1.275 | 12 | 0.5 | 1 | NA | 60.470 | 311.224 | 8.822 | 0.417 | 46 | 0.75 | 12 | 1 | 6.770 | 12 | 0.5 |
+| PMA 37-44 wk | 1 | NA | 10.162 | 204.177 | 2.675 | 0.259 | 46 | 0.75 | 12 | 1 | 4.205 | 12 | 0.5 | 1 | NA | 0.245 | 108.257 | 1.132 | 0.117 | 46 | 0.75 | 12 | 1 | 1.898 | 12 | 0.5 | 1 | NA | 38.581 | 320.047 | 5.928 | 0.613 | 46 | 0.75 | 12 | 1 | 9.944 | 12 | 0.5 |
+| PMA \<=29 wk | 1 | NA | 38.845 | 200.509 | 5.088 | 0.136 | 46 | 0.75 | 12 | 1 | 2.211 | 12 | 0.5 | 1 | NA | 8.054 | 113.554 | 2.207 | 0.063 | 46 | 0.75 | 12 | 1 | 1.028 | 12 | 0.5 | 1 | NA | 81.375 | 353.289 | 10.948 | 0.314 | 46 | 0.75 | 12 | 1 | 5.098 | 12 | 0.5 |
 
 Simulated single-dose NCA parameters (median and 5th-95th percentiles)
 by PMA stratum. {.table}
@@ -340,9 +340,9 @@ knitr::kable(
 
 | stratum      |   n | pct_above_50 | median_trough_mgL |
 |:-------------|----:|-------------:|------------------:|
-| PMA 30-36 wk | 200 |           23 |             23.45 |
-| PMA 37-44 wk | 200 |            9 |              8.99 |
-| PMA \<=29 wk | 200 |           46 |             47.04 |
+| PMA 30-36 wk | 200 |         23.0 |             26.95 |
+| PMA 37-44 wk | 200 |          5.5 |             10.70 |
+| PMA \<=29 wk | 200 |         49.0 |             49.52 |
 
 Simulated proportion of subjects with end-of-interval trough
 piperacillin \> 50 mg/L. {.table}

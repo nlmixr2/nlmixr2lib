@@ -300,8 +300,8 @@ knitr::kable(nca_summary,
 
 | start | end | target_ngml | N | auclast | cmax | tmax | half.life | aucinf.obs |
 |---:|---:|:---|:---|:---|:---|:---|:---|:---|
-| 0 | 1 | 1000 | 200 | NC | 1000 \[13.8\] | 0.508 \[0.508, 0.508\] | 0.0522 \[0.00611\] | NC |
-| 0 | 1 | 500 | 200 | NC | 502 \[13.3\] | 0.508 \[0.508, 0.508\] | 0.0523 \[0.00589\] | NC |
+| 0 | 1 | 1000 | 200 | NC | 1010 \[14.4\] | 0.508 \[0.508, 0.508\] | 0.0526 \[0.00645\] | NC |
+| 0 | 1 | 500 | 200 | NC | 494 \[13.9\] | 0.508 \[0.508, 0.508\] | 0.0516 \[0.00623\] | NC |
 
 Simulated NCA parameters by TCI target (median and inter-quartile range
 across 200 virtual subjects). {.table}

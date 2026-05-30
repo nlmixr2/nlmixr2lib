@@ -14,7 +14,7 @@
 - Description: Indirect-response PK/PD model of sarilumab on the
   28-joint disease activity score by C-reactive protein (DAS28-CRP) in
   adults with rheumatoid arthritis (Ma 2020). Sarilumab inhibits the
-  DAS28-CRP production rate (kin) via a sigmoid Emax function that
+  DAS28-CRP production rate (kin) via a sigmoid emax function that
   includes a background DMARD placebo component (PLB). The PK driver is
   the two-compartment, parallel linear + Michaelis-Menten model of Xu
   2019 evaluated at its typical covariate-reference values (adult
@@ -283,9 +283,9 @@ sim_typ <- dplyr::bind_rows(
   as.data.frame(rxode2::rxSolve(mod_typical, events = ev_typ(200))) |>
     dplyr::mutate(treatment = "200mg_Q2W")
 )
-#> ℹ omega/sigma items treated as zero: 'etalvmax', 'etalcl', 'etalvc', 'etalka', 'etalBase', 'etalEmax', 'etalIC50', 'etalKout', 'etalPLB'
-#> ℹ omega/sigma items treated as zero: 'etalvmax', 'etalcl', 'etalvc', 'etalka', 'etalBase', 'etalEmax', 'etalIC50', 'etalKout', 'etalPLB'
-#> ℹ omega/sigma items treated as zero: 'etalvmax', 'etalcl', 'etalvc', 'etalka', 'etalBase', 'etalEmax', 'etalIC50', 'etalKout', 'etalPLB'
+#> ℹ omega/sigma items treated as zero: 'etalvmax', 'etalcl', 'etalvc', 'etalka', 'etalrbase', 'etalemax', 'etalic50', 'etalkout', 'etalPLB'
+#> ℹ omega/sigma items treated as zero: 'etalvmax', 'etalcl', 'etalvc', 'etalka', 'etalrbase', 'etalemax', 'etalic50', 'etalkout', 'etalPLB'
+#> ℹ omega/sigma items treated as zero: 'etalvmax', 'etalcl', 'etalvc', 'etalka', 'etalrbase', 'etalemax', 'etalic50', 'etalkout', 'etalPLB'
 ```
 
 ## Replicate published figures

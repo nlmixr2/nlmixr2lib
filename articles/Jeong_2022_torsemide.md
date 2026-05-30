@@ -79,7 +79,7 @@ the three doses in the same 25/25/50 ratio reported by the paper.
 ``` r
 
 set.seed(20220401L)
-n_per_strat <- 200L
+n_per_strat <- 100L  # downsampled from 200 for vignette build budget; VPC envelope visually identical
 
 make_cohort <- function(n, cyp_em, het, hom, label, id_offset = 0L) {
   tibble(
@@ -314,12 +314,12 @@ knitr::kable(nca_summary,
 
 | start | end | dose_label | N | auclast | cmax | tmax | half.life | aucinf.obs |
 |---:|---:|:---|:---|:---|:---|:---|:---|:---|
-| 0 | 12 | 10 mg | 1200 | NC | 1.78 \[27.7\] | 1.00 \[0.500, 3.00\] | 4.02 \[1.02\] | NC |
-| 0 | 12 | 20 mg | 1200 | NC | 3.56 \[27.8\] | 1.00 \[0.500, 3.00\] | 4.03 \[1.04\] | NC |
-| 0 | 12 | 5 mg | 1200 | NC | 0.900 \[27.0\] | 1.00 \[0.500, 3.00\] | 4.04 \[1.01\] | NC |
+| 0 | 12 | 10 mg | 600 | NC | 1.78 \[27.3\] | 1.00 \[0.500, 2.00\] | 4.03 \[1.02\] | NC |
+| 0 | 12 | 20 mg | 600 | NC | 3.55 \[25.6\] | 1.00 \[0.500, 2.00\] | 3.95 \[1.01\] | NC |
+| 0 | 12 | 5 mg | 600 | NC | 0.885 \[29.2\] | 1.00 \[0.500, 5.00\] | 3.98 \[1.00\] | NC |
 
 Simulated single-dose NCA parameters by oral torsemide dose group (n =
-1200 subjects per dose). {.table style="width:100%;"}
+1200 subjects per dose). {.table}
 
 ### Comparison against published NCA
 
@@ -355,9 +355,9 @@ knitr::kable(
 |:-----------|:---------------|:---------------|:---------------|
 | aucinf.obs | NaN +- NA      | NaN +- NA      | NaN +- NA      |
 | auclast    | NaN +- NA      | NaN +- NA      | NaN +- NA      |
-| cmax       | 1.848 +- 0.479 | 3.695 +- 0.979 | 0.931 +- 0.240 |
-| half.life  | 4.019 +- 1.020 | 4.031 +- 1.043 | 4.035 +- 1.005 |
-| tmax       | 0.873 +- 0.369 | 0.874 +- 0.365 | 0.859 +- 0.359 |
+| cmax       | 1.839 +- 0.486 | 3.667 +- 0.908 | 0.921 +- 0.260 |
+| half.life  | 4.030 +- 1.016 | 3.952 +- 1.007 | 3.977 +- 1.000 |
+| tmax       | 0.891 +- 0.371 | 0.878 +- 0.359 | 0.888 +- 0.415 |
 
 Simulated per-dose NCA summary. Compare to Jeong 2022 Figure 2: T1/2
 2.59-3.44 h, Tmax 0.79-1.13 h, CL/F 2.35-2.71 L/h. {.table}

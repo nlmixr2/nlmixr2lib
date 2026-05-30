@@ -337,7 +337,7 @@ knitr::kable(
 
 | start | end | regimen | N | auclast | cmax | tmax | half.life |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | 24 | 600 mg po qd | 40 | 161 \[86.0\] | 13.4 \[43.9\] | 2.00 \[1.50, 2.50\] | 13.4 \[14.4\] |
+| 0 | 24 | 600 mg po qd | 40 | 151 \[69.5\] | 12.8 \[36.3\] | 2.00 \[1.50, 2.00\] | 10.6 \[6.58\] |
 
 Simulated NCA over the day-5 600 mg po dose interval (regimen-level
 summary). {.table}

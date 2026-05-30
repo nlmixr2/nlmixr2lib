@@ -4,7 +4,7 @@
 
 library(nlmixr2lib)
 library(rxode2)
-#> rxode2 5.0.2 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.1 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -231,8 +231,8 @@ knitr::kable(
 
 | start | end | treatment | N | auclast | cmax | tmax | half.life |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | 56 | ADA-negative | 465 | 887 \[58.6\] | 45.2 \[28.8\] | 3.50 \[3.50, 3.50\] | 14.7 \[6.11\] |
-| 0 | 56 | ADA-positive | 35 | 556 \[62.7\] | 38.3 \[28.0\] | 3.50 \[3.50, 3.50\] | 10.1 \[5.10\] |
+| 0 | 56 | ADA-negative | 465 | 891 \[58.0\] | 45.3 \[28.8\] | 3.50 \[3.50, 3.50\] | 14.9 \[6.67\] |
+| 0 | 56 | ADA-positive | 35 | 545 \[60.3\] | 38.4 \[27.5\] | 3.50 \[3.50, 3.50\] | 9.69 \[4.83\] |
 
 NCA summary (maintenance interval, weeks 22-30), stratified by ADA
 status {.table}

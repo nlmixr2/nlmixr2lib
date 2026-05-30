@@ -246,8 +246,8 @@ compared with the label 5 monthly doses, in a typical pediatric cohort.
 ``` r
 
 set.seed(22802243) # PMID seed
-n_f3 <- 300
-obs_days_f3 <- seq(0, 240, by = 2)
+n_f3 <- 100 # downsampled from 300 for vignette build budget; VPC band shape preserved
+obs_days_f3 <- seq(0, 240, by = 4) # downsampled from by=2; smooth profiles look identical
 
 ev_5 <- make_cohort(n_f3, ga_range = c(26, 41), pna0_range = c(0, 6),
                     max_day = 240, cld_prob = 0.2,
@@ -322,8 +322,8 @@ cohorts <- list(
   list(label = "C. Postnatal 13 to 24 mo", pna = c(13, 24))
 )
 
-obs_days_f5 <- seq(0, 180, by = 2)
-n_per_cohort <- 200
+obs_days_f5 <- seq(0, 180, by = 4) # downsampled from by=2; smooth profiles look identical
+n_per_cohort <- 75 # downsampled from 200 for vignette build budget
 
 sim_f5 <- bind_rows(lapply(seq_along(cohorts), function(i) {
   co <- cohorts[[i]]
@@ -367,7 +367,7 @@ ggplot(d_f5, aes(x = time, y = Q50, colour = cohort, fill = cohort)) +
     x = "Time after first dose (days)",
     y = "Palivizumab serum concentration (ug/mL)",
     title = "Figure 5 (erratum-corrected) - Profiles by postnatal age cohort at first dose",
-    caption = "Simulated median (line) and 90% prediction interval (shaded). N = 200 per cohort, 5 monthly 15 mg/kg IM doses.",
+    caption = paste0("Simulated median (line) and 90% prediction interval (shaded). N = ", n_per_cohort, " per cohort, 5 monthly 15 mg/kg IM doses."),
     colour = NULL, fill = NULL
   ) +
   theme_bw() +
@@ -435,11 +435,11 @@ knitr::kable(nca_summary,
 
 | PPTESTCD |  median |     q05 |     q95 |
 |:---------|--------:|--------:|--------:|
-| auclast  | 4269.21 | 1985.56 | 8014.04 |
-| cav      |  142.31 |   66.19 |  267.13 |
-| cmax     |  201.67 |  100.26 |  353.21 |
-| cmin     |   93.57 |   32.29 |  191.07 |
-| tmax     |    2.00 |    2.00 |    2.00 |
+| auclast  | 3790.93 | 1736.38 | 7254.48 |
+| cav      |  126.36 |   57.88 |  241.82 |
+| cmax     |  180.72 |   97.80 |  323.79 |
+| cmin     |   85.06 |   29.36 |  189.17 |
+| tmax     |    4.00 |    4.00 |    4.00 |
 
 Steady-state NCA (final dosing interval) of the 5-monthly 15 mg/kg IM
 regimen in virtual pediatric infants. {.table}

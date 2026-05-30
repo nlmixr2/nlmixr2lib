@@ -4,7 +4,7 @@
 
 library(nlmixr2lib)
 library(rxode2)
-#> rxode2 5.0.2 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.1 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -211,7 +211,12 @@ virtual cohort matches the paper’s reported variability.
 
 mod <- readModelDb("Zheng_2016_sifalimumab")
 
-events_sim <- events %>% rename(id = ID)
+events_sim <- events %>%
+  rename(id = ID) %>%
+  # Put canonical event-table columns first so rxode2's column
+  # heuristic recognises DOSE as a model parameter taken from the
+  # events table rather than a missing covariate.
+  select(id, time, amt, evid, cmt, dur, everything())
 # `treatment` is already on every row of `events_sim` (carried from `pop`
 # via the dose_rows / obs_rows construction above). Carry it through
 # rxSolve via `keep = ...` rather than a fragile post-hoc left_join
@@ -326,15 +331,15 @@ knitr::kable(sim_nca,
 
 | treatment | PPTESTCD |    mean |      sd |     med |     min |      max |
 |:----------|:---------|--------:|--------:|--------:|--------:|---------:|
-| 200 mg    | auclast  | 1029.07 |  277.96 |  975.76 |  514.96 |  1763.27 |
-| 200 mg    | cmax     |   95.79 |   13.80 |   94.49 |   68.27 |   123.79 |
-| 200 mg    | cmin     |   17.46 |    8.24 |   15.74 |    4.29 |    44.10 |
-| 600 mg    | auclast  | 3022.05 |  746.45 | 2940.25 | 1478.60 |  5576.08 |
-| 600 mg    | cmax     |  275.61 |   47.45 |  269.51 |  175.67 |   405.47 |
-| 600 mg    | cmin     |   51.36 |   21.22 |   48.20 |   11.84 |   124.64 |
-| 1200 mg   | auclast  | 6542.55 | 2134.29 | 6216.92 | 2700.28 | 15048.72 |
-| 1200 mg   | cmax     |  557.52 |  102.22 |  547.70 |  343.23 |   907.78 |
-| 1200 mg   | cmin     |  119.50 |   64.04 |  103.54 |   22.17 |   383.14 |
+| 200 mg    | auclast  | 1040.56 |  269.32 | 1034.91 |  575.75 |  2238.11 |
+| 200 mg    | cmax     |   96.95 |   16.16 |   96.43 |   59.88 |   133.46 |
+| 200 mg    | cmin     |   17.65 |    7.90 |   17.32 |    5.95 |    56.96 |
+| 600 mg    | auclast  | 3006.11 |  756.39 | 2907.81 | 1554.86 |  4988.55 |
+| 600 mg    | cmax     |  272.28 |   41.85 |  267.97 |  190.94 |   375.11 |
+| 600 mg    | cmin     |   51.36 |   22.54 |   47.76 |   12.37 |   113.99 |
+| 1200 mg   | auclast  | 6232.31 | 1747.09 | 5970.99 | 3146.19 | 10554.97 |
+| 1200 mg   | cmax     |  536.99 |   93.52 |  537.22 |  342.05 |   834.14 |
+| 1200 mg   | cmin     |  111.24 |   51.42 |  105.02 |   33.12 |   245.36 |
 
 Steady-state NCA summary (between 13th and 14th doses) from the
 simulated 298-subject virtual cohort: Cmax and Cmin in ug/mL, AUC(tau=28
@@ -375,9 +380,9 @@ knitr::kable(cmax_range,
 
 | treatment | cmax_mean | cmax_med | cmax_min | cmax_max |
 |:----------|----------:|---------:|---------:|---------:|
-| 200 mg    |      95.8 |     94.5 |     68.3 |    123.8 |
-| 600 mg    |     275.6 |    269.5 |    175.7 |    405.5 |
-| 1200 mg   |     557.5 |    547.7 |    343.2 |    907.8 |
+| 200 mg    |      96.9 |     96.4 |     59.9 |    133.5 |
+| 600 mg    |     272.3 |    268.0 |    190.9 |    375.1 |
+| 1200 mg   |     537.0 |    537.2 |    342.1 |    834.1 |
 
 Simulated Cmax,ss by cohort (ug/mL). Overall min-max across cohorts
 should bracket the Zheng 2016 reported 117-562 ug/mL envelope. {.table}

@@ -347,6 +347,7 @@ sim_chk <- as.data.frame(rxode2::rxSolve(mod_typ, events = ev_chk,
                                          keep = c("age", "hcv", "expected")))
 #> ℹ omega/sigma items treated as zero: 'etaasy', 'etaintercept', 'etakrec'
 #> Warning: multi-subject simulation without without 'omega'
+#> Warning: Cannot keep missing columns:
 
 sim_chk$diff <- sim_chk$Cc - sim_chk$expected
 

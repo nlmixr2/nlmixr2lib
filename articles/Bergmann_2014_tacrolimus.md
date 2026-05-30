@@ -324,8 +324,8 @@ knitr::kable(nca_summary,
 
 | start | end | cohort | N | auclast | cmax | cmin | tmax | ctrough |
 |---:|---:|:---|:---|:---|:---|:---|:---|:---|
-| 0 | 12 | \*1 carrier | 200 | 95.6 \[29.7\] | 12.9 \[24.9\] | 4.55 \[44.4\] | 2.00 \[1.00, 3.50\] | 4.69 \[44.1\] |
-| 0 | 12 | *3/*3 (nonexpresser) | 200 | 153 \[31.9\] | 17.9 \[24.5\] | 8.61 \[45.2\] | 2.00 \[1.50, 3.50\] | 8.95 \[44.5\] |
+| 0 | 12 | \*1 carrier | 200 | 96.4 \[32.7\] | 12.9 \[25.6\] | 4.63 \[48.7\] | 2.00 \[1.00, 3.00\] | 4.75 \[48.6\] |
+| 0 | 12 | *3/*3 (nonexpresser) | 200 | 145 \[30.8\] | 17.4 \[24.6\] | 8.00 \[43.8\] | 2.00 \[1.50, 3.00\] | 8.33 \[42.9\] |
 
 Day-5 NCA on the simulated cohort (steady-state 12 h interval, 5 mg
 twice daily). {.table style="width:100%;"}
@@ -374,8 +374,8 @@ knitr::kable(tbl, caption = "Simulated day-5 trough vs. Bergmann 2014 Table 1 re
 |:---|:---|
 | Bergmann 2014 Table 1 reported trough (ug/L) | 9.33 (10-90 pct 5.56-15.97) |
 | Typical-value trough at 5 mg BID, 70 kg, *3/*3 (ng/mL) | 8.66 |
-| Simulated cohort median, *3/*3 (10-90 pct) | 8.92 (4.84-15.28) |
-| Simulated cohort median, \*1 carrier (10-90 pct) | 4.80 (2.78-7.93) |
+| Simulated cohort median, *3/*3 (10-90 pct) | 8.46 (5.02-14.34) |
+| Simulated cohort median, \*1 carrier (10-90 pct) | 4.74 (2.54-8.60) |
 
 Simulated day-5 trough vs. Bergmann 2014 Table 1 reported trough.
 {.table}

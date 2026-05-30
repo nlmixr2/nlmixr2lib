@@ -235,8 +235,8 @@ knitr::kable(nca_summary,
 
 | Interval Start | Interval End | cohort | N | Cmax (ug/mL) | Tmax (h) | Clast (ug/mL) | Half-life (h) | AUCinf,obs (h\*ug/mL) |
 |---:|---:|:---|:---|:---|:---|:---|:---|:---|
-| 0 | Inf | q12h (11.1 mg/kg) | 200 | 2.77 \[44.7\] | 2.00 \[0.750, 7.00\] | 0.0000998 \[9.93e7\] | 3.96 \[2.39\] | 22.1 \[38.5\] |
-| 0 | Inf | q24h (7.4 mg/kg) | 200 | 1.81 \[44.1\] | 2.00 \[0.500, 8.50\] | 0.0000853 \[1.26e8\] | 4.08 \[2.46\] | 14.4 \[41.3\] |
+| 0 | Inf | q12h (11.1 mg/kg) | 200 | 2.69 \[45.8\] | 2.12 \[0.750, 7.25\] | 0.0000667 \[1.79e9\] | 3.84 \[2.12\] | 20.9 \[40.5\] |
+| 0 | Inf | q24h (7.4 mg/kg) | 200 | 1.80 \[38.9\] | 2.25 \[0.500, 6.50\] | 0.000128 \[3.75e7\] | 4.20 \[2.42\] | 15.0 \[41.5\] |
 
 Single-dose NCA on the simulated cohorts (Cmax in ug/mL, AUC in ug/mL \*
 h, half-life in h). {.table}
@@ -278,8 +278,8 @@ knitr::kable(comparison,
 
 | cohort | Simulated AUC(0,inf) median (5th-95th pct), ug/mL \* h | Published AUC(0,inf) median (range), ug/mL \* h |
 |:---|:---|:---|
-| q12h (11.1 mg/kg) | 21.8 (12.5-42.2) | 26.9 (16.5-51.5) |
-| q24h (7.4 mg/kg) | 14.1 (7.6-27.5) | 13.5 (4.84-22.1) |
+| q12h (11.1 mg/kg) | 21.2 (10.6-37.8) | 26.9 (16.5-51.5) |
+| q24h (7.4 mg/kg) | 15.3 (8.0-27.2) | 13.5 (4.84-22.1) |
 
 Simulated AUC(0,inf) by cohort vs. Vezina 2010 reported per-dose
 individual AUC(0,inf) (Results ‘Ganciclovir pharmacokinetics’). {.table}

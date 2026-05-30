@@ -17,17 +17,18 @@
   statins; ezetimibe sigmoidicity is fixed to 1. Statin Emax depends on
   study-arm baseline LDL-C, baseline triglycerides, percentage with
   coronary heart disease (CHD), and binary cohort indicators for acute
-  coronary syndrome (ACS) and heterozygous familial hypercholesterolemia
-  (HeFH). Combination therapy is modelled via a sub-additive interaction
-  coefficient gamma=0.523 (at maximal monotherapy effect the combined
-  LDL-C reduction is about 7 percent smaller than the sum of the two
-  monotherapies). Fluvastatin and lovastatin twice-daily and
-  extended-release formulations multiply the statin ED50 by a fixed
-  ratio (0.645 for fluvastatin; 0.59 for lovastatin). Between-study
-  variances for Emax and ED50 were fixed to zero in the source paper, so
-  the model has no eta IIV; the residual SD describes study-arm-mean
-  variability and the suitable simulation scope is study-arm-mean
-  percent change in LDL-C, not individual-subject concentrations.
+  coronary syndrome (DIS_ACS) and heterozygous familial
+  hypercholesterolemia (HeFH). Combination therapy is modelled via a
+  sub-additive interaction coefficient gamma=0.523 (at maximal
+  monotherapy effect the combined LDL-C reduction is about 7 percent
+  smaller than the sum of the two monotherapies). Fluvastatin and
+  lovastatin twice-daily and extended-release formulations multiply the
+  statin ED50 by a fixed ratio (0.645 for fluvastatin; 0.59 for
+  lovastatin). Between-study variances for Emax and ED50 were fixed to
+  zero in the source paper, so the model has no eta IIV; the residual SD
+  describes study-arm-mean variability and the suitable simulation scope
+  is study-arm-mean percent change in LDL-C, not individual-subject
+  concentrations.
 - Article: <https://doi.org/10.1038/clpt.2014.66>
 
 ## Population
@@ -171,11 +172,11 @@ mod_typ  <- rxode2::zeroRe(mod_full)
 
 # Typical-patient covariate set defined in Vargo 2014 Results (no covariate
 # effects beyond intercept). Used for monotherapy and combination figures.
-typical_pt <- list(LDLC = 180, TRIG = 180, CHD_PCT = 0, ACS = 0, HEFH = 0)
+typical_pt <- list(LDLC = 180, TRIG = 180, DIS_CHD_PERCENT = 0, DIS_ACS = 0, DIS_HEFH = 0)
 
 # Figure 2 caption typical population: baseline LDL 181, TG 168, HDL 48,
 # CHD 24%, no ACS, no HeFH. Used for the Figure 2 replication.
-figure2_pt <- list(LDLC = 181, TRIG = 168, CHD_PCT = 24, ACS = 0, HEFH = 0)
+figure2_pt <- list(LDLC = 181, TRIG = 168, DIS_CHD_PERCENT = 24, DIS_ACS = 0, DIS_HEFH = 0)
 ```
 
 ## Replication: monotherapy dose-response (Vargo 2014 Figure 2)
@@ -189,12 +190,12 @@ prevalence, and no ACS or HeFH (Figure 2 caption).
 ``` r
 
 statins <- c(
-  Atorvastatin = "DOSE_ATV",
-  Fluvastatin  = "DOSE_FLV",
-  Lovastatin   = "DOSE_LOV",
-  Pravastatin  = "DOSE_PRV",
-  Rosuvastatin = "DOSE_RSV",
-  Simvastatin  = "DOSE_SMV"
+  Atorvastatin = "CONMED_ATV_DOSE",
+  Fluvastatin  = "CONMED_FLV_DOSE",
+  Lovastatin   = "CONMED_LOV_DOSE",
+  Pravastatin  = "CONMED_PRV_DOSE",
+  Rosuvastatin = "CONMED_RSV_DOSE",
+  Simvastatin  = "CONMED_SMV_DOSE"
 )
 
 # Each statin gets its own dose grid roughly matching the Figure 2 x-axis.
@@ -213,20 +214,20 @@ make_ev <- function(statin_name, doses, ezt_dose, id_offset = 0L) {
     time        = 0,
     amt         = 0,
     evid        = 0L,
-    DOSE_ATV    = 0,
-    DOSE_FLV    = 0,
-    DOSE_LOV    = 0,
-    DOSE_PRV    = 0,
-    DOSE_RSV    = 0,
-    DOSE_SMV    = 0,
-    DOSE_EZT    = ezt_dose,
-    BID_XR_FLV  = 0,
-    BID_XR_LOV  = 0,
+    CONMED_ATV_DOSE    = 0,
+    CONMED_FLV_DOSE    = 0,
+    CONMED_LOV_DOSE    = 0,
+    CONMED_PRV_DOSE    = 0,
+    CONMED_RSV_DOSE    = 0,
+    CONMED_SMV_DOSE    = 0,
+    CONMED_EZT_DOSE    = ezt_dose,
+    FORM_FLV_BID_XR  = 0,
+    FORM_LOV_BID_XR  = 0,
     LDLC        = figure2_pt$LDLC,
     TRIG        = figure2_pt$TRIG,
-    CHD_PCT     = figure2_pt$CHD_PCT,
-    ACS         = figure2_pt$ACS,
-    HEFH        = figure2_pt$HEFH,
+    DIS_CHD_PERCENT     = figure2_pt$DIS_CHD_PERCENT,
+    DIS_ACS         = figure2_pt$DIS_ACS,
+    DIS_HEFH        = figure2_pt$DIS_HEFH,
     statin      = statin_name,
     dose_statin = doses,
     ezt         = ezt_dose
@@ -305,20 +306,20 @@ ev_chk <- data.frame(
   time        = 0,
   amt         = 0,
   evid        = 0L,
-  DOSE_ATV    = c(0, 1e5, 0,   1e5),
-  DOSE_FLV    = 0,
-  DOSE_LOV    = 0,
-  DOSE_PRV    = 0,
-  DOSE_RSV    = 0,
-  DOSE_SMV    = 0,
-  DOSE_EZT    = c(0, 0,   1e3, 1e3),
-  BID_XR_FLV  = 0,
-  BID_XR_LOV  = 0,
+  CONMED_ATV_DOSE    = c(0, 1e5, 0,   1e5),
+  CONMED_FLV_DOSE    = 0,
+  CONMED_LOV_DOSE    = 0,
+  CONMED_PRV_DOSE    = 0,
+  CONMED_RSV_DOSE    = 0,
+  CONMED_SMV_DOSE    = 0,
+  CONMED_EZT_DOSE    = c(0, 0,   1e3, 1e3),
+  FORM_FLV_BID_XR  = 0,
+  FORM_LOV_BID_XR  = 0,
   LDLC        = 180,
   TRIG        = 180,
-  CHD_PCT     = 0,
-  ACS         = 0,
-  HEFH        = 0,
+  DIS_CHD_PERCENT     = 0,
+  DIS_ACS         = 0,
+  DIS_HEFH        = 0,
   arm         = c("Placebo", "Statin Emax", "Ezetimibe Emax", "Combination Emax")
 )
 
@@ -384,20 +385,20 @@ ev_fdc <- data.frame(
   time        = 0,
   amt         = 0,
   evid        = 0L,
-  DOSE_ATV    = c(10, 20, 40, 80),
-  DOSE_FLV    = 0,
-  DOSE_LOV    = 0,
-  DOSE_PRV    = 0,
-  DOSE_RSV    = 0,
-  DOSE_SMV    = 0,
-  DOSE_EZT    = 10,
-  BID_XR_FLV  = 0,
-  BID_XR_LOV  = 0,
+  CONMED_ATV_DOSE    = c(10, 20, 40, 80),
+  CONMED_FLV_DOSE    = 0,
+  CONMED_LOV_DOSE    = 0,
+  CONMED_PRV_DOSE    = 0,
+  CONMED_RSV_DOSE    = 0,
+  CONMED_SMV_DOSE    = 0,
+  CONMED_EZT_DOSE    = 10,
+  FORM_FLV_BID_XR  = 0,
+  FORM_LOV_BID_XR  = 0,
   LDLC        = figure2_pt$LDLC,
   TRIG        = figure2_pt$TRIG,
-  CHD_PCT     = figure2_pt$CHD_PCT,
-  ACS         = figure2_pt$ACS,
-  HEFH        = figure2_pt$HEFH,
+  DIS_CHD_PERCENT     = figure2_pt$DIS_CHD_PERCENT,
+  DIS_ACS         = figure2_pt$DIS_ACS,
+  DIS_HEFH        = figure2_pt$DIS_HEFH,
   fdc_label   = c("10/10", "10/20", "10/40", "10/80")
 )
 
@@ -448,20 +449,20 @@ sweep_one <- function(covname, values, id_offset = 0L) {
     time        = 0,
     amt         = 0,
     evid        = 0L,
-    DOSE_ATV    = 40,
-    DOSE_FLV    = 0,
-    DOSE_LOV    = 0,
-    DOSE_PRV    = 0,
-    DOSE_RSV    = 0,
-    DOSE_SMV    = 0,
-    DOSE_EZT    = 10,
-    BID_XR_FLV  = 0,
-    BID_XR_LOV  = 0,
+    CONMED_ATV_DOSE    = 40,
+    CONMED_FLV_DOSE    = 0,
+    CONMED_LOV_DOSE    = 0,
+    CONMED_PRV_DOSE    = 0,
+    CONMED_RSV_DOSE    = 0,
+    CONMED_SMV_DOSE    = 0,
+    CONMED_EZT_DOSE    = 10,
+    FORM_FLV_BID_XR  = 0,
+    FORM_LOV_BID_XR  = 0,
     LDLC        = typical_pt$LDLC,
     TRIG        = typical_pt$TRIG,
-    CHD_PCT     = typical_pt$CHD_PCT,
-    ACS         = typical_pt$ACS,
-    HEFH        = typical_pt$HEFH,
+    DIS_CHD_PERCENT     = typical_pt$DIS_CHD_PERCENT,
+    DIS_ACS         = typical_pt$DIS_ACS,
+    DIS_HEFH        = typical_pt$DIS_HEFH,
     covariate   = covname,
     cov_value   = values
   )
@@ -472,7 +473,7 @@ sweep_one <- function(covname, values, id_offset = 0L) {
 sweeps <- list(
   sweep_one("LDLC",    seq(106, 350, by = 10), id_offset = 0L),
   sweep_one("TRIG",    seq(60,  660, by = 30), id_offset = 200L),
-  sweep_one("CHD_PCT", seq(0,   100, by = 5),  id_offset = 400L),
+  sweep_one("DIS_CHD_PERCENT", seq(0,   100, by = 5),  id_offset = 400L),
   sweep_one("ACS",     c(0, 1),                id_offset = 600L),
   sweep_one("HEFH",    c(0, 1),                id_offset = 700L)
 )
@@ -485,14 +486,14 @@ sim_sweep <- rxode2::rxSolve(mod_typ, events = ev_sweep,
   dplyr::mutate(
     deltaLDL_pct = 100 * Cc,
     covariate    = factor(covariate,
-                          levels = c("LDLC", "TRIG", "CHD_PCT", "ACS", "HEFH"))
+                          levels = c("LDLC", "TRIG", "DIS_CHD_PERCENT", "ACS", "HEFH"))
   )
 #> Warning: multi-subject simulation without without 'omega'
 
 # Continuous covariates: line plot; binary covariates: bar plot. Plot in
 # two stacked panels for clarity.
 cont_df <- sim_sweep |>
-  dplyr::filter(covariate %in% c("LDLC", "TRIG", "CHD_PCT"))
+  dplyr::filter(covariate %in% c("LDLC", "TRIG", "DIS_CHD_PERCENT"))
 bin_df <- sim_sweep |>
   dplyr::filter(covariate %in% c("ACS", "HEFH"))
 
@@ -503,7 +504,7 @@ p_cont <- ggplot(cont_df, aes(x = cov_value, y = deltaLDL_pct)) +
              labeller = as_labeller(c(
                LDLC    = "Baseline LDL-C (mg/dL)",
                TRIG    = "Baseline triglycerides (mg/dL)",
-               CHD_PCT = "CHD cohort percentage (%)"
+               DIS_CHD_PERCENT = "CHD cohort percentage (%)"
              ))) +
   labs(x = NULL,
        y = "LDL-C % change at atorva 40 / ezt 10") +
@@ -513,8 +514,8 @@ p_bin <- ggplot(bin_df, aes(x = factor(cov_value), y = deltaLDL_pct)) +
   geom_col(width = 0.55, fill = "steelblue") +
   facet_wrap(~ covariate, nrow = 1,
              labeller = as_labeller(c(
-               ACS  = "ACS cohort (0 = no, 1 = yes)",
-               HEFH = "HeFH cohort (0 = no, 1 = yes)"
+               DIS_ACS  = "ACS cohort (0 = no, 1 = yes)",
+               DIS_HEFH = "HeFH cohort (0 = no, 1 = yes)"
              ))) +
   labs(x = NULL,
        y = "LDL-C % change at atorva 40 / ezt 10") +
@@ -544,7 +545,7 @@ Sensitivity of predicted typical-value LDL-C reduction (atorvastatin 40
 mg + ezetimibe 10 mg) to each individual baseline covariate from Eq 4.
 
 The continuous covariates LDL-C, TG, and CHD% enter Eq 4 with small
-linear or log-linear coefficients; the binary ACS and HeFH cohort
+linear or log-linear coefficients; the binary DIS_ACS and HeFH cohort
 indicators produce additive shifts on Emax. Across the observed
 covariate ranges the predicted LDL-C reduction at atorvastatin 40 +
 ezetimibe 10 mg shifts by roughly +/- 8 percentage points.
@@ -567,20 +568,20 @@ sweep_form <- function(statin_name, dose_col, flag_col, doses) {
       time        = 0,
       amt         = 0,
       evid        = 0L,
-      DOSE_ATV    = 0,
-      DOSE_FLV    = 0,
-      DOSE_LOV    = 0,
-      DOSE_PRV    = 0,
-      DOSE_RSV    = 0,
-      DOSE_SMV    = 0,
-      DOSE_EZT    = 0,
-      BID_XR_FLV  = 0,
-      BID_XR_LOV  = 0,
+      CONMED_ATV_DOSE    = 0,
+      CONMED_FLV_DOSE    = 0,
+      CONMED_LOV_DOSE    = 0,
+      CONMED_PRV_DOSE    = 0,
+      CONMED_RSV_DOSE    = 0,
+      CONMED_SMV_DOSE    = 0,
+      CONMED_EZT_DOSE    = 0,
+      FORM_FLV_BID_XR  = 0,
+      FORM_LOV_BID_XR  = 0,
       LDLC        = 180,
       TRIG        = 180,
-      CHD_PCT     = 0,
-      ACS         = 0,
-      HEFH        = 0,
+      DIS_CHD_PERCENT     = 0,
+      DIS_ACS         = 0,
+      DIS_HEFH        = 0,
       statin      = statin_name,
       dose_statin = doses,
       regimen     = ifelse(flag == 0, "q.d. IR", "b.i.d. or XR")
@@ -592,9 +593,9 @@ sweep_form <- function(statin_name, dose_col, flag_col, doses) {
   dplyr::bind_rows(out)
 }
 
-ev_flv <- sweep_form("Fluvastatin", "DOSE_FLV", "BID_XR_FLV",
+ev_flv <- sweep_form("Fluvastatin", "CONMED_FLV_DOSE", "FORM_FLV_BID_XR",
                      c(0, 5, 10, 20, 40, 80, 160))
-ev_lov <- sweep_form("Lovastatin",  "DOSE_LOV", "BID_XR_LOV",
+ev_lov <- sweep_form("Lovastatin",  "CONMED_LOV_DOSE", "FORM_LOV_BID_XR",
                      c(0, 5, 10, 20, 40, 80, 160))
 
 # Disambiguate IDs across statins so rxSolve does not collapse cohorts.
@@ -669,20 +670,20 @@ ev_env <- data.frame(
   time        = 0,
   amt         = 0,
   evid        = 0L,
-  DOSE_ATV    = env_grid$atv_dose,
-  DOSE_FLV    = 0,
-  DOSE_LOV    = 0,
-  DOSE_PRV    = 0,
-  DOSE_RSV    = 0,
-  DOSE_SMV    = 0,
-  DOSE_EZT    = 10,
-  BID_XR_FLV  = 0,
-  BID_XR_LOV  = 0,
+  CONMED_ATV_DOSE    = env_grid$atv_dose,
+  CONMED_FLV_DOSE    = 0,
+  CONMED_LOV_DOSE    = 0,
+  CONMED_PRV_DOSE    = 0,
+  CONMED_RSV_DOSE    = 0,
+  CONMED_SMV_DOSE    = 0,
+  CONMED_EZT_DOSE    = 10,
+  FORM_FLV_BID_XR  = 0,
+  FORM_LOV_BID_XR  = 0,
   LDLC        = figure2_pt$LDLC,
   TRIG        = figure2_pt$TRIG,
-  CHD_PCT     = figure2_pt$CHD_PCT,
-  ACS         = figure2_pt$ACS,
-  HEFH        = figure2_pt$HEFH,
+  DIS_CHD_PERCENT     = figure2_pt$DIS_CHD_PERCENT,
+  DIS_ACS         = figure2_pt$DIS_ACS,
+  DIS_HEFH        = figure2_pt$DIS_HEFH,
   atv_dose    = env_grid$atv_dose
 )
 
@@ -713,8 +714,8 @@ knitr::kable(env_summary, digits = 2,
 |---------:|-------:|-------:|-------:|
 |       10 | -50.01 | -53.87 | -46.67 |
 |       20 | -55.22 | -59.04 | -51.99 |
-|       40 | -60.23 | -63.80 | -56.44 |
-|       80 | -64.87 | -68.64 | -61.39 |
+|       40 | -60.21 | -63.80 | -56.44 |
+|       80 | -64.88 | -68.64 | -61.39 |
 
 Simulated study-arm-mean LDL-C % change distribution (median, 5th-95th
 percentile) at the four ezetimibe + atorvastatin FDC doses; N_arm = 50.
@@ -767,7 +768,7 @@ arms (typical patient, residual SD scaled to N_arm = 50).
   file uses distinct parameter names per coefficient
   (`e_trig_emax_statin`, `e_chd_emax_statin`, `e_acs_emax_statin`,
   `e_hefh_emax_statin`) consistent with Eq 4’s structure. Eq 4 itself
-  has a typo in which the ACS and HeFH coefficients share the symbol
+  has a typo in which the DIS_ACS and HeFH coefficients share the symbol
   `E_max,5`; their values in Table 3 are unambiguously distinct
   (`-0.117` and `+0.127` respectively).
 
@@ -805,13 +806,13 @@ arms (typical patient, residual SD scaled to N_arm = 50).
   downstream simulation code. The vignette’s stochastic envelope chunk
   applies `sigma / sqrt(N_arm)` explicitly for an example N_arm = 50.
 
-- **Cohort-by-design covariates.** The CHD_PCT, ACS, and HEFH covariates
-  describe properties of the study arm (cohort composition), not
-  individual patients. They are documented in `covariateData` as MBMA
-  study-arm-level covariates outside the scope of the individual-level
-  pop-PK canonical register in `inst/references/covariate-columns.md`;
-  the multi-drug Sadouki 2025 in-vitro PD precedent established this
-  in-file-documentation pattern.
+- **Cohort-by-design covariates.** The DIS_CHD_PERCENT, DIS_ACS, and
+  DIS_HEFH covariates describe properties of the study arm (cohort
+  composition), not individual patients. They are documented in
+  `covariateData` as MBMA study-arm-level covariates outside the scope
+  of the individual-level pop-PK canonical register in
+  `inst/references/covariate-columns.md`; the multi-drug Sadouki 2025
+  in-vitro PD precedent established this in-file-documentation pattern.
 
 - **Multi-statin same-arm scenarios are out-of-calibration.** All Vargo
   2014 trials are single-statin (statin + ezetimibe is the only

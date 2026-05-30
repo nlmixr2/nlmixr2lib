@@ -10,7 +10,7 @@ library(PKNCA)
 #> 
 #>     filter
 library(rxode2)
-#> rxode2 5.0.2 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.1 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -38,7 +38,7 @@ library(ggplot2)
   degeneration (Mulyukov 2018). BCVA is driven by an indirect-response
   ODE in which drug concentration stimulates the BCVA production rate
   (kin) through a Michaelis-Menten-like term with a time-dependent
-  maximum effect Emax(t) = Emax_ss + dEmax_0 \* exp(-kEmax \* t). The PK
+  maximum effect emax(t) = emax_ss + demax_0 \* exp(-kemax \* t). The PK
   is a fixed first-order vitreous-elimination placeholder (kel =
   0.077/day, vitreous volume = 4 mL, no IIV) borrowed from a previous
   population PK analysis (reference 20 of the paper) because vitreous PK
@@ -91,7 +91,6 @@ The same information is available programmatically via the model’s
 ``` r
 
 str(rxode2::rxode2(readModelDb("Mulyukov_2018_ranibizumab"))$meta$population)
-#> ℹ parameter labels from comments will be replaced by 'label()'
 #> List of 14
 #>  $ n_subjects         : int 1524
 #>  $ n_observations     : int 29754
@@ -137,6 +136,12 @@ audit.
 | IIV `kout` | CV 730 % | Table 2 |
 | IIV `Emax_ss` | CV 110 % | Table 2 |
 | IIV `dEmax_0` | CV 1100 % | Table 2 |
+| IIV correlation r(`g0`, `kout`) | −0.14 | Table S1 (Correlations of modeled random effects) |
+| IIV correlation r(`g0`, `Emax_ss`) | 0.27 | Table S1 |
+| IIV correlation r(`g0`, `dEmax_0`) | 0.48 | Table S1 |
+| IIV correlation r(`kout`, `Emax_ss`) | −0.62 | Table S1 |
+| IIV correlation r(`kout`, `dEmax_0`) | −0.89 | Table S1 |
+| IIV correlation r(`Emax_ss`, `dEmax_0`) | 0.46 | Table S1 |
 | σ treatment | 5 letters (additive) | Table 2 |
 | σ sham | 7 letters (additive, not exposed here) | Table 2 (see Assumptions and deviations) |
 
@@ -220,14 +225,13 @@ stopifnot(!anyDuplicated(unique(
 
 mod         <- readModelDb("Mulyukov_2018_ranibizumab")
 mod_typical <- rxode2::zeroRe(mod)
-#> ℹ parameter labels from comments will be replaced by 'label()'
 
 sim_typical_harbor_05 <- rxode2::rxSolve(
   mod_typical,
   events = events_harbor_05 |> filter(id == harbor_05_cohort$id[1]),
   returnType = "data.frame"
 )
-#> ℹ omega/sigma items treated as zero: 'etag0res', 'etalkout', 'etalEmaxss', 'etaldEmax0'
+#> ℹ omega/sigma items treated as zero: 'etag0res', 'etalkout', 'etalemaxss', 'etaldemax0'
 
 sim_harbor_05 <- rxode2::rxSolve(
   mod,
@@ -235,7 +239,6 @@ sim_harbor_05 <- rxode2::rxSolve(
   keep   = c("cohort"),
   returnType = "data.frame"
 )
-#> ℹ parameter labels from comments will be replaced by 'label()'
 
 sim_harbor_20 <- rxode2::rxSolve(
   mod,
@@ -243,7 +246,6 @@ sim_harbor_20 <- rxode2::rxSolve(
   keep   = c("cohort"),
   returnType = "data.frame"
 )
-#> ℹ parameter labels from comments will be replaced by 'label()'
 
 sim_pooled <- rxode2::rxSolve(
   mod,
@@ -251,7 +253,6 @@ sim_pooled <- rxode2::rxSolve(
   keep   = c("cohort"),
   returnType = "data.frame"
 )
-#> ℹ parameter labels from comments will be replaced by 'label()'
 ```
 
 ## Replicate published figures
@@ -274,7 +275,7 @@ ev_single <- data.frame(
   AGE = 77, BCVA = 55
 )
 sim_single <- rxode2::rxSolve(mod_typical, events = ev_single, returnType = "data.frame")
-#> ℹ omega/sigma items treated as zero: 'etag0res', 'etalkout', 'etalEmaxss', 'etaldEmax0'
+#> ℹ omega/sigma items treated as zero: 'etag0res', 'etalkout', 'etalemaxss', 'etaldemax0'
 pk_check <- tibble(
   time           = c(0, 30, 90),
   Cc             = c(sim_single$Cc[which.min(abs(sim_single$time - 0.001))],
@@ -363,8 +364,8 @@ knitr::kable(cfb_summary, digits = 2,
 
 | cohort | mean_delta | median_delta | SD_delta | n | paper_observed_letters | paper_predicted_letters |
 |:---|---:|---:|---:|---:|---:|---:|
-| HARBOR 0.5 mg q4w | 40.66 | 6.70 | 122.42 | 1000 | 10.1 | 8.5 |
-| HARBOR 2.0 mg q4w | 88.61 | 9.91 | 900.20 | 1000 | 9.2 | 9.2 |
+| HARBOR 0.5 mg q4w | 7.97 | 7.14 | 17.81 | 1000 | 10.1 | 8.5 |
+| HARBOR 2.0 mg q4w | 7.23 | 6.79 | 18.26 | 1000 | 9.2 | 9.2 |
 
 Simulated vs. published BCVA change from baseline at 12 months
 (ranibizumab HARBOR arms). Paper values from Results — Model evaluation
@@ -452,7 +453,7 @@ ev_natural <- data.frame(
   AGE = 77, BCVA = 55
 )
 sim_natural <- rxode2::rxSolve(mod_typical, events = ev_natural, returnType = "data.frame")
-#> ℹ omega/sigma items treated as zero: 'etag0res', 'etalkout', 'etalEmaxss', 'etaldEmax0'
+#> ℹ omega/sigma items treated as zero: 'etag0res', 'etalkout', 'etalemaxss', 'etaldemax0'
 sim_natural |>
   filter(time %in% c(0, 365, 365*2, 365*3, 365*4)) |>
   transmute(year = round(time / 365, 1), bcva_predicted = round(bcva, 2),
@@ -501,7 +502,7 @@ sim_nca <- rxode2::rxSolve(mod_typical, events = ev_nca,
                             keep = c("dose_group"),
                             returnType = "data.frame") |>
   filter(time > 0)
-#> ℹ omega/sigma items treated as zero: 'etag0res', 'etalkout', 'etalEmaxss', 'etaldEmax0'
+#> ℹ omega/sigma items treated as zero: 'etag0res', 'etalkout', 'etalemaxss', 'etaldemax0'
 #> Warning: multi-subject simulation without without 'omega'
 
 conc_obj <- PKNCA::PKNCAconc(sim_nca,
@@ -580,6 +581,22 @@ All three match the paper to \< 1 %.
   The paper states the model is insensitive to any $`k_{Emax}`$
   corresponding to a 1-to-3-week Emax half-life, so the discrepancy
   between the two published values is not operationally meaningful.
+- **IIV uses the full 4×4 covariance from Table S1.** Table 2 reports
+  only the marginal SDs / CVs of the four random effects on $`g_0`$,
+  $`k_{out}`$, $`E_{\max}^{ss}`$, and $`\Delta E_{\max}^0`$. The
+  off-diagonal correlations are in the supplement, Table S1
+  (“Correlations of modeled random effects”), and the Stan model in
+  Supplementary File S1 declares a full `cholesky_factor_corr[4]`. The
+  implementation builds the corresponding positive-definite 4×4
+  covariance from Table 2 SDs × Table S1 correlations (in-file comment
+  block above the
+  [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) block
+  enumerates each entry). Earlier versions of this model used a diagonal
+  (independent) IIV; the upgrade preserves the marginal SDs / CVs and
+  adds the published correlations, the strongest of which is
+  r($`k_{out}`$, $`\Delta E_{\max}^0`$) = −0.89 (a patient with a faster
+  natural BCVA decline tends to start with a larger acute treatment
+  effect).
 - **Log-normal mean ≠ typical value.** The paper reports extremely large
   CVs on the PD parameters (CV% 730 for $`k_{out}`$, 1100 for
   $`\Delta E_{\max}^0`$). Because $`E[\exp(\eta)] = \exp(\omega^2/2)`$,

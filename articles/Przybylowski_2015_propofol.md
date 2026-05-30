@@ -445,7 +445,7 @@ knitr::kable(summary(nca_res),
 
 | start | end | treatment | N | auclast | cmax | tmax | half.life |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | 260 | Induction 2 mg/kg + 8 mg/kg/h x 140 min IV | 100 | NC | 12.0 \[33.9\] | 1.00 \[1.00, 1.00\] | 209 \[49.7\] |
+| 0 | 260 | Induction 2 mg/kg + 8 mg/kg/h x 140 min IV | 100 | NC | 11.8 \[41.7\] | 1.00 \[1.00, 1.00\] | 222 \[47.1\] |
 
 Single-subject NCA over the 260 min observation window (cohort n = 100
 ). {.table style="width:100%;"}

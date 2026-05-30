@@ -308,10 +308,10 @@ knitr::kable(
 
 | PPTESTCD |  median |     p05 |     p95 |
 |:---------|--------:|--------:|--------:|
-| auclast  | 6405.68 | 4153.12 | 9825.21 |
-| cav      |   38.13 |   24.72 |   58.48 |
-| cmax     |   42.79 |   27.16 |   65.21 |
-| cmin     |   30.19 |   19.91 |   47.20 |
+| auclast  | 6253.04 | 4245.27 | 8848.21 |
+| cav      |   37.22 |   25.27 |   52.67 |
+| cmax     |   41.79 |   28.27 |   60.10 |
+| cmin     |   29.45 |   20.20 |   42.74 |
 
 Steady-state per-interval NCA: 200 virtual subjects, 1 mg semaglutide SC
 weekly. Cmax, Cmin in nmol/L; AUClast in nmol\*h/L; Cav in nmol/L.

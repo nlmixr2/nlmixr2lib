@@ -51,7 +51,7 @@ Ribba 2014 review (Table 1 footnote on the Ribba 2012 row).
 | `d/dt(prolif)` | n/a | Mazzocco 2015 p.731 ODE for dP/dt |
 | `d/dt(quiesc)` | n/a | Mazzocco 2015 p.731 ODE for dQ/dt |
 | `d/dt(quiescDam)` | n/a | Mazzocco 2015 p.731 ODE for dQp/dt |
-| `tumorSize <- prolif + quiesc + quiescDam` | n/a | Mazzocco 2015 p.731 (“P\* = P + Q + Qp”); compared to the MTD observations |
+| `tumor_size <- prolif + quiesc + quiescDam` | n/a | Mazzocco 2015 p.731 (“P\* = P + Q + Qp”); compared to the MTD observations |
 | `lp0` (P0) | `log(1.72)` | Table 2: P0 = 1.72 mm (RSE 21%) |
 | `lq0` (Q0) | `log(32.1)` | Table 2: Q0 = 32.1 mm (RSE 7%) |
 | `llambdap` (lambda_P) | `log(0.143)` | Table 2: lambda_P = 0.143 1/month (RSE 12%) |
@@ -175,7 +175,7 @@ sim_typ <- rxode2::rxSolve(
 
 typ_summary <- sim_typ |>
   group_by(genotype_label, time) |>
-  summarise(median_MTD = median(tumorSize), .groups = "drop")
+  summarise(median_MTD = median(tumor_size), .groups = "drop")
 
 ggplot(typ_summary, aes(time, median_MTD, colour = genotype_label)) +
   geom_line(linewidth = 1) +
@@ -193,7 +193,7 @@ ggplot(typ_summary, aes(time, median_MTD, colour = genotype_label)) +
 ![](Mazzocco_2015_temozolomide_files/figure-html/figure-1-1.png)
 
 Plotting the three tumour-tissue compartments alongside the total
-`tumorSize` exposes the underlying mechanism: under TMZ, Q drains
+`tumor_size` exposes the underlying mechanism: under TMZ, Q drains
 rapidly into Qp (damaged quiescent), MTD falls; once `exp(-res*t)` has
 decayed the proliferative-tissue effect, P regrows and kQpP repairs Qp
 back to P, giving the slow rebound.
@@ -206,7 +206,7 @@ comp_typ <- sim_typ |>
   summarise(P  = median(prolif),
             Q  = median(quiesc),
             Qp = median(quiescDam),
-            MTD = median(tumorSize),
+            MTD = median(tumor_size),
             .groups = "drop") |>
   pivot_longer(c(P, Q, Qp, MTD), names_to = "state", values_to = "value") |>
   mutate(state = factor(state, levels = c("MTD", "P", "Q", "Qp")))
@@ -286,9 +286,9 @@ The paper’s two retained covariate effects are:
 typ_metrics <- sim_typ |>
   group_by(id, genotype_label) |>
   summarise(
-    baseline_MTD = first(tumorSize),
-    min_MTD      = min(tumorSize),
-    time_min_MTD = time[which.min(tumorSize)],
+    baseline_MTD = first(tumor_size),
+    min_MTD      = min(tumor_size),
+    time_min_MTD = time[which.min(tumor_size)],
     .groups = "drop"
   ) |>
   group_by(genotype_label) |>
@@ -338,7 +338,7 @@ verify.
 baseline_check <- sim_typ |>
   filter(time == 0) |>
   group_by(genotype_label) |>
-  summarise(baseline_MTD = unique(tumorSize), .groups = "drop")
+  summarise(baseline_MTD = unique(tumor_size), .groups = "drop")
 
 knitr::kable(
   baseline_check,
@@ -428,7 +428,7 @@ stopifnot(max(abs(sim_kde$kpdConc - sim_kde$predicted)) < 1e-3)
 
 In the absence of treatment, the proliferative tissue grows logistically
 with rate `lambda_P = 0.143 /month` toward the carrying capacity
-`K = 100 mm`. With no doses applied, the typical-value `tumorSize` must
+`K = 100 mm`. With no doses applied, the typical-value `tumor_size` must
 remain bounded above by `K`.
 
 ``` r
@@ -447,27 +447,27 @@ sim_cap <- rxode2::rxSolve(mod_typ, events = no_dose_events) |>
 
 knitr::kable(
   sim_cap |> filter(time %in% c(0, 12, 24, 60, 120, 240)) |>
-    select(time, tumorSize, prolif, quiesc, quiescDam),
+    select(time, tumor_size, prolif, quiesc, quiescDam),
   digits = 3,
   caption = "Typical untreated trajectory (no TMZ doses) over a 20-year horizon. MTD asymptotes below K = 100 mm."
 )
 ```
 
-| time | tumorSize | prolif | quiesc | quiescDam |
-|-----:|----------:|-------:|-------:|----------:|
-|    0 |    33.820 |  1.720 | 32.100 |         0 |
-|   12 |    36.453 |  3.135 | 33.318 |         0 |
-|   24 |    40.857 |  5.384 | 35.473 |         0 |
-|   60 |    64.440 | 13.705 | 50.735 |         0 |
-|  120 |    86.603 |  6.582 | 80.021 |         0 |
-|  240 |    90.471 |  0.231 | 90.240 |         0 |
+| time | tumor_size | prolif | quiesc | quiescDam |
+|-----:|-----------:|-------:|-------:|----------:|
+|    0 |     33.820 |  1.720 | 32.100 |         0 |
+|   12 |     36.453 |  3.135 | 33.318 |         0 |
+|   24 |     40.857 |  5.384 | 35.473 |         0 |
+|   60 |     64.440 | 13.705 | 50.735 |         0 |
+|  120 |     86.603 |  6.582 | 80.021 |         0 |
+|  240 |     90.471 |  0.231 | 90.240 |         0 |
 
 Typical untreated trajectory (no TMZ doses) over a 20-year horizon. MTD
 asymptotes below K = 100 mm. {.table}
 
 ``` r
 
-stopifnot(max(sim_cap$tumorSize) < 100)
+stopifnot(max(sim_cap$tumor_size) < 100)
 ```
 
 ### 4. Dimensional analysis of the ODE
@@ -475,7 +475,7 @@ stopifnot(max(sim_cap$tumorSize) < 100)
 | Term | Units | Reduces to |
 |----|----|----|
 | `lambdap * prolif` | `1/month * mm` | `mm / month` |
-| `(1 - tumorSize / K)` | unitless | unitless |
+| `(1 - tumor_size / K)` | unitless | unitless |
 | `kqpp * quiescDam` | `1/month * mm` | `mm / month` |
 | `kpq * prolif` | `1/month * mm` | `mm / month` |
 | `gamma * kde * kpdConc * prolif` | `unitless * 1/month * AU * mm` | `mm / month` (AU absorbed into gamma) |

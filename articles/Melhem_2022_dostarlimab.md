@@ -282,7 +282,7 @@ knitr::kable(summary(nca_res),
 
 | start | end | treatment | N | auclast | cmax | tmax | half.life |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | 21 | RTD 500 mg Q3W x4 -\> 1000 mg Q6W | 200 | 2340 \[20.7\] | 188 \[18.9\] | 1.00 \[1.00, 1.00\] | 25.9 \[4.86\] |
+| 0 | 21 | RTD 500 mg Q3W x4 -\> 1000 mg Q6W | 200 | 2310 \[19.9\] | 186 \[17.7\] | 1.00 \[1.00, 1.00\] | 25.8 \[5.12\] |
 
 Simulated NCA parameters (3rd dosing interval, days 21-42 after first
 dose) {.table}

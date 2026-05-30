@@ -288,9 +288,9 @@ knitr::kable(
 
 | regimen | pct_auc_in_target_pub | pct_auc_in_target | pct_auc_below_80_pub | pct_auc_below_80 | pct_auc_above_125_pub | pct_auc_above_125 | pct_cmax_in_target_pub | pct_cmax_in_target |
 |:---|---:|---:|---:|---:|---:|---:|---:|---:|
-| 350 mg | 37.9 | 37.5 | 36.6 | 34.0 | 25.5 | 28.5 | 29.8 | 39.0 |
-| 7.5 mg/kg | 21.7 | 15.0 | 78.1 | 85.0 | 0.2 | 0.0 | 17.3 | 88.5 |
-| 10 mg/kg | 72.1 | 74.0 | 22.2 | 23.5 | 5.7 | 2.5 | 91.6 | 72.0 |
+| 350 mg | 37.9 | 38.5 | 36.6 | 30.5 | 25.5 | 31 | 29.8 | 41.5 |
+| 7.5 mg/kg | 21.7 | 20.0 | 78.1 | 80.0 | 0.2 | 0 | 17.3 | 82.0 |
+| 10 mg/kg | 72.1 | 74.0 | 22.2 | 24.0 | 5.7 | 2 | 91.6 | 71.0 |
 
 Comparison of simulated AUC0-24 and Cmax target-attainment percentages
 with Hennig 2008 Table 3. The ‘pub’ columns are the published values;

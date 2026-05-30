@@ -10,7 +10,7 @@ library(PKNCA)
 #> 
 #>     filter
 library(rxode2)
-#> rxode2 5.0.2 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.1 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -245,7 +245,10 @@ make_subject <- function(id, wt_kg, alb_gL, sexf_ind, tumtp_bc_ind,
     cycle_troughs
   )))
   obs <- rxode2::et(obs_times, cmt = "Cc")
-  ev <- rbind(doses, obs)
+  # Convert to data.frame before attaching covariates so columns survive
+  # the per-subject rbind and downstream rxSolve event-table handling
+  # (rxode2's as.data.frame.rxEt method drops non-canonical columns).
+  ev <- as.data.frame(rbind(doses, obs))
   ev$id <- id
   ev$WT  <- wt_kg
   ev$ALB <- alb_gL
@@ -266,7 +269,6 @@ events <- do.call(
                  hep_mild[i], hep_mod_m[i])
   })
 )
-events <- as.data.frame(events)
 
 stopifnot(length(unique(events$id)) == n_subj)
 ```
@@ -886,11 +888,11 @@ adc_nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj,
 adc_summary <- summary(adc_nca_res)
 adc_summary
 #>  start end cycle   N    auclast       cmax                 tmax ctrough
-#>   0.05  21     1 100 539 [29.9] 119 [18.6]    21.0 [21.0, 21.0]      NC
-#>   0.05  21     2 100         NC 124 [19.3]    21.0 [21.0, 21.0]      NC
-#>   0.05  21     3 100         NC 127 [20.0]    21.0 [21.0, 21.0]      NC
-#>   0.05  21     4 100         NC 129 [20.6]    21.0 [21.0, 21.0]      NC
-#>   0.05  21     5 100         NC 117 [21.4] 0.382 [0.382, 0.382]      NC
+#>   0.05  21     1 100 541 [29.4] 122 [18.6]    21.0 [21.0, 21.0]      NC
+#>   0.05  21     2 100         NC 127 [19.6]    21.0 [21.0, 21.0]      NC
+#>   0.05  21     3 100         NC 130 [20.3]    21.0 [21.0, 21.0]      NC
+#>   0.05  21     4 100         NC 132 [20.9]    21.0 [21.0, 21.0]      NC
+#>   0.05  21     5 100         NC 119 [21.9] 0.382 [0.382, 0.382]      NC
 #> 
 #> Caption: auclast, cmax, ctrough: geometric mean and geometric coefficient of variation; tmax: median and range; N: number of subjects
 ```
@@ -1313,11 +1315,11 @@ dxd_nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(dconc_obj, ddose_obj,
 dxd_summary <- summary(dxd_nca_res)
 dxd_summary
 #>  start end cycle   N     auclast        cmax                        tmax
-#>   0.05  21     1 100 41.3 [64.4] 45.1 [54.7]        0.000 [0.000, 0.000]
-#>   0.05  21     2 100          NC 30.7 [55.7] 7.08e-16 [7.08e-16, 0.0955]
-#>   0.05  21     3 100          NC 16.5 [61.1]        0.191 [0.191, 0.191]
-#>   0.05  21     4 100          NC 12.5 [61.6]        0.286 [0.286, 0.286]
-#>   0.05  21     5 100          NC 9.81 [62.0]        0.382 [0.382, 0.382]
+#>   0.05  21     1 100 38.2 [72.9] 42.8 [67.0]        0.000 [0.000, 0.000]
+#>   0.05  21     2 100          NC 29.0 [67.3] 7.08e-16 [7.08e-16, 0.0955]
+#>   0.05  21     3 100          NC 15.5 [73.5]        0.191 [0.191, 0.191]
+#>   0.05  21     4 100          NC 11.7 [73.4]        0.286 [0.286, 0.286]
+#>   0.05  21     5 100          NC 9.15 [73.2]        0.382 [0.382, 0.382]
 #>  ctrough
 #>       NC
 #>       NC
@@ -1417,18 +1419,18 @@ compare |>
 
 | analyte | cycle | PPTESTCD | geom_mean | paper_geomean | paper_units | pct_diff |
 |:--------|:------|:---------|----------:|--------------:|:------------|---------:|
-| ADC     | 1     | auclast  |    515.82 |         513.0 | ug\*day/mL  |     0.55 |
-| ADC     | 1     | cmax     |    118.52 |         115.0 | ug/mL       |     3.06 |
-| ADC     | 1     | ctrough  |      4.41 |           3.8 | ug/mL       |    15.99 |
-| ADC     | 5     | auclast  |    789.91 |         751.0 | ug\*day/mL  |     5.18 |
-| ADC     | 5     | cmax     |    116.63 |         129.0 | ug/mL       |    -9.59 |
-| ADC     | 5     | ctrough  |     13.43 |          10.9 | ug/mL       |    23.17 |
-| DXd     | 1     | auclast  |     43.75 |          36.8 | ng\*day/mL  |    18.89 |
-| DXd     | 1     | cmax     |     45.07 |          18.6 | ng/mL       |   142.29 |
-| DXd     | 1     | ctrough  |      0.27 |           0.2 | ng/mL       |    33.60 |
-| DXd     | 5     | auclast  |     39.48 |          33.1 | ng\*day/mL  |    19.27 |
-| DXd     | 5     | cmax     |      9.81 |          13.8 | ng/mL       |   -28.92 |
-| DXd     | 5     | ctrough  |      0.53 |           0.4 | ng/mL       |    31.79 |
+| ADC     | 1     | auclast  |    516.92 |         513.0 | ug\*day/mL  |     0.76 |
+| ADC     | 1     | cmax     |    122.07 |         115.0 | ug/mL       |     6.15 |
+| ADC     | 1     | ctrough  |      4.25 |           3.8 | ug/mL       |    11.72 |
+| ADC     | 5     | auclast  |    774.75 |         751.0 | ug\*day/mL  |     3.16 |
+| ADC     | 5     | cmax     |    118.51 |         129.0 | ug/mL       |    -8.13 |
+| ADC     | 5     | ctrough  |     12.98 |          10.9 | ug/mL       |    19.12 |
+| DXd     | 1     | auclast  |     40.52 |          36.8 | ng\*day/mL  |    10.12 |
+| DXd     | 1     | cmax     |     42.78 |          18.6 | ng/mL       |   130.01 |
+| DXd     | 1     | ctrough  |      0.24 |           0.2 | ng/mL       |    18.03 |
+| DXd     | 5     | auclast  |     35.72 |          33.1 | ng\*day/mL  |     7.91 |
+| DXd     | 5     | cmax     |      9.15 |          13.8 | ng/mL       |   -33.71 |
+| DXd     | 5     | ctrough  |      0.47 |           0.4 | ng/mL       |    16.90 |
 
 Comparison of simulated cycle-1 and cycle-5 (steady-state proxy)
 geometric-mean exposure metrics from the 100-subject virtual cohort

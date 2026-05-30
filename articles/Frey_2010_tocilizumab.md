@@ -324,11 +324,11 @@ intervals <- data.frame(
 nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
 summary(nca_res)
 #>  start end   treatment   N     auclast        cmax        cmin
-#>      0  28 4 mg/kg Q4W 200  477 [55.7] 82.2 [53.0] 0.672 [180]
-#>      0  28 8 mg/kg Q4W 200 1240 [49.1]  165 [46.9]  3.95 [240]
+#>      0  28 4 mg/kg Q4W 200  470 [50.6] 80.1 [48.0] 0.646 [177]
+#>      0  28 8 mg/kg Q4W 200 1290 [53.7]  171 [49.3]  4.64 [280]
 #>                     tmax         cav
-#>  0.0417 [0.0417, 0.0417] 17.0 [55.7]
-#>  0.0417 [0.0417, 0.0417] 44.2 [49.1]
+#>  0.0417 [0.0417, 0.0417] 16.8 [50.6]
+#>  0.0417 [0.0417, 0.0417] 46.0 [53.7]
 #> 
 #> Caption: auclast, cmax, cmin, cav: geometric mean and geometric coefficient of variation; tmax: median and range; N: number of subjects
 ```
@@ -397,8 +397,8 @@ knitr::kable(comparison, digits = 2,
 
 | treatment | AUC_pub_mean | AUC_sim_mean | AUC_pct_diff | Cmax_pub_mean | Cmax_sim_mean | Cmax_pct_diff | Cmin_pub_mean | Cmin_sim_mean | Cmin_pct_diff |
 |:---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| 4 mg/kg Q4W | 13 | 12.98 | -0.12 | 88 | 92.60 | 5.22 | 1.5 | 1.35 | -9.70 |
-| 8 mg/kg Q4W | 35 | 33.01 | -5.68 | 183 | 182.59 | -0.23 | 9.7 | 8.30 | -14.41 |
+| 4 mg/kg Q4W | 13 | 12.57 | -3.28 | 88 | 88.82 | 0.93 | 1.5 | 1.24 | -17.46 |
+| 8 mg/kg Q4W | 35 | 35.06 | 0.18 | 183 | 190.10 | 3.88 | 9.7 | 10.04 | 3.55 |
 
 Simulated vs. Frey 2010 Table IV mean steady-state AUC (10^3 h\*ug/mL),
 Cmax (ug/mL), and Cmin (ug/mL). Published values: 4 mg/kg AUC 13 (5.8),

@@ -155,7 +155,7 @@ Subject-level data were not released with the paper.
 ``` r
 
 set.seed(20260508)
-n_subj <- 200
+n_subj <- 50  # downsampled from 200 for vignette build budget; VPC band shape preserved across 3 arms
 
 cohort <- tibble::tibble(
   id          = seq_len(n_subj),
@@ -262,7 +262,7 @@ ggplot(vpc_pk, aes(time, Q50, colour = treatment, fill = treatment)) +
     x = "Time (days)",
     y = "Total evinacumab Cc (mg/L)",
     title = "Simulated 2.5 / 50 / 97.5 percentile profiles, IV q4w arms",
-    caption = "Virtual HoFH cohort (N = 200 per arm); first 6 q4w cycles."
+    caption = "Virtual HoFH cohort (N = 50 per arm); first 6 q4w cycles."
   ) +
   theme_minimal()
 ```
@@ -295,7 +295,7 @@ ggplot(vpc_ldl, aes(time, Q50, colour = treatment, fill = treatment)) +
     x = "Time (days)",
     y = "LDL-C (mg/dL)",
     title = "Simulated LDL-C trajectory by IV q4w dose",
-    caption = "Virtual HoFH cohort (N = 200 per arm); LDL-C target 100 mg/dL shown for reference."
+    caption = "Virtual HoFH cohort (N = 50 per arm); LDL-C target 100 mg/dL shown for reference."
   ) +
   geom_hline(yintercept = 100, linetype = "dashed", colour = "grey40") +
   theme_minimal()
@@ -450,10 +450,10 @@ intervals <- data.frame(
 nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
 nca_summary <- summary(nca_res)
 nca_summary
-#>  start end       treatment   N      auclast       cmax       cmin
-#>      0  28 15 mg/kg IV Q4W 200 13000 [30.0] 804 [20.1] 328 [42.7]
+#>  start end       treatment  N      auclast       cmax       cmin
+#>      0  28 15 mg/kg IV Q4W 50 11700 [32.4] 731 [21.3] 286 [45.9]
 #>                  tmax        cav
-#>  0.000 [0.000, 0.000] 465 [30.0]
+#>  0.000 [0.000, 0.000] 416 [32.4]
 #> 
 #> Caption: auclast, cmax, cmin, cav: geometric mean and geometric coefficient of variation; tmax: median and range; N: number of subjects
 ```
@@ -500,7 +500,7 @@ knitr::kable(trough_compare, digits = 1,
 
 | WT_bin    |   n | mean_Cc | sd_Cc | mean_Cc_paper | sd_Cc_paper | pct_diff_mean |
 |:----------|----:|--------:|------:|--------------:|------------:|--------------:|
-| \> 80 kg  | 400 |   354.3 | 132.1 |         275.8 |        91.9 |          28.5 |
+| \> 80 kg  | 100 |   312.8 | 133.3 |         275.8 |        91.9 |          13.4 |
 | \<= 60 kg |  NA |      NA |    NA |         171.8 |        40.1 |            NA |
 | 60-80 kg  |  NA |      NA |    NA |         245.6 |       102.7 |            NA |
 
@@ -543,10 +543,10 @@ knitr::kable(target_summary, digits = 1,
 
 | target             | pct_paper | pct_sim | abs_diff_pp |
 |:-------------------|----------:|--------:|------------:|
-| \>= 30% reduction  |      86.3 |    93.5 |         7.2 |
-| \>= 50% reduction  |      56.8 |    67.5 |        10.7 |
-| \>= 70% reduction  |       8.4 |     0.0 |        -8.4 |
-| LDL-C \< 100 mg/dL |      52.6 |     0.0 |       -52.6 |
+| \>= 30% reduction  |      86.3 |     100 |        13.7 |
+| \>= 50% reduction  |      56.8 |      86 |        29.2 |
+| \>= 70% reduction  |       8.4 |       0 |        -8.4 |
+| LDL-C \< 100 mg/dL |      52.6 |       0 |       -52.6 |
 
 Simulated vs Pu 2021 Table 3 percentage of HoFH patients achieving LDL-C
 goals at week 24 with 15 mg/kg IV q4w. Absolute differences are in

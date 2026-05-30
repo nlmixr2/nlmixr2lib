@@ -310,9 +310,9 @@ knitr::kable(nca_summary,
 
 | Interval Start | Interval End | treatment | N | Cmax (ug/L) | Cmin (ug/L) | Cav (ug/L) |
 |---:|---:|:---|:---|:---|:---|:---|
-| 5 | 6 | 10 kg child, high dose | 60 | 8.07 \[131\] | 8.07 \[131\] | 8.07 \[131\] |
-| 5 | 6 | 3 kg neonate, low dose | 60 | 0.848 \[96.7\] | 0.848 \[96.7\] | 0.848 \[96.9\] |
-| 5 | 6 | 5 kg infant, mid dose | 60 | 2.67 \[96.2\] | 2.67 \[96.2\] | 2.67 \[95.9\] |
+| 5 | 6 | 10 kg child, high dose | 60 | 7.77 \[124\] | 7.77 \[124\] | 7.77 \[124\] |
+| 5 | 6 | 3 kg neonate, low dose | 60 | 0.817 \[114\] | 0.817 \[114\] | 0.818 \[114\] |
+| 5 | 6 | 5 kg infant, mid dose | 60 | 3.59 \[175\] | 3.59 \[175\] | 3.60 \[173\] |
 
 Simulated steady-state Ep concentrations by infusion scenario. {.table
 style="width:100%;"}

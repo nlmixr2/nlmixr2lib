@@ -152,7 +152,7 @@ mod_typical <- mod |> rxode2::zeroRe()
 sim_typical <- rxode2::rxSolve(mod_typical, events = events,
                                keep = c("arm", "DRUG_ORMU")) |>
   as.data.frame()
-#> ℹ omega/sigma items treated as zero: 'etalEmax', 'etalgamma'
+#> ℹ omega/sigma items treated as zero: 'etalemax', 'etalhill'
 #> Warning: multi-subject simulation without without 'omega'
 ```
 

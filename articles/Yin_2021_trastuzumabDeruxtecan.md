@@ -352,7 +352,7 @@ knitr::kable(
 
 | Interval Start | Interval End | treatment | N | AUClast (day\*ug/mL) | Cmax (ug/mL) | Cmin (ug/mL) | Tmax (day) | Cav (ug/mL) |
 |---:|---:|:---|:---|:---|:---|:---|:---|:---|
-| 0 | 21 | 5.4 mg/kg q3w | 200 | 656 \[32.1\] | 97.7 \[19.7\] | 10.3 \[59.4\] | 1.00 \[1.00, 1.00\] | 31.2 \[32.1\] |
+| 0 | 21 | 5.4 mg/kg q3w | 200 | 683 \[35.0\] | 99.7 \[21.5\] | 10.8 \[62.3\] | 1.00 \[1.00, 1.00\] | 32.5 \[35.0\] |
 
 Simulated NCA parameters at steady state (10th dosing interval, days
 189-210, 5.4 mg/kg q3w). {.table style="width:100%;"}

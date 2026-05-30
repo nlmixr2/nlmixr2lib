@@ -374,10 +374,10 @@ knitr::kable(
 
 | Interval Start | Interval End | stratum_label | N | Cmax (mg/L) | Tmax (hr) | Half-life (hr) | AUCinf,obs (hr\*mg/L) |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | Inf | CRCL 110 mL/min (high) | 5 | 180 \[4.42\] | 0.000 \[0.000, 0.000\] | 1.67 \[0.179\] | 379 \[11.6\] |
-| 0 | Inf | CRCL 25 mL/min (severe RI) | 5 | 234 \[15.5\] | 0.000 \[0.000, 0.000\] | 3.77 \[0.736\] | 1190 \[31.8\] |
-| 0 | Inf | CRCL 45 mL/min (just impaired) | 5 | 230 \[36.1\] | 0.000 \[0.000, 0.000\] | 3.53 \[1.10\] | 1050 \[81.2\] |
-| 0 | Inf | CRCL 70 mL/min (typical) | 5 | 232 \[29.9\] | 0.000 \[0.000, 0.000\] | 2.59 \[0.577\] | 781 \[56.0\] |
+| 0 | Inf | CRCL 110 mL/min (high) | 5 | 247 \[35.9\] | 0.000 \[0.000, 0.000\] | 2.07 \[0.668\] | 622 \[84.5\] |
+| 0 | Inf | CRCL 25 mL/min (severe RI) | 5 | 206 \[14.6\] | 0.000 \[0.000, 0.000\] | 3.46 \[0.490\] | 962 \[29.0\] |
+| 0 | Inf | CRCL 45 mL/min (just impaired) | 5 | 324 \[14.7\] | 0.000 \[0.000, 0.000\] | 4.81 \[1.32\] | 2100 \[41.5\] |
+| 0 | Inf | CRCL 70 mL/min (typical) | 5 | 198 \[33.2\] | 0.000 \[0.000, 0.000\] | 2.68 \[0.946\] | 676 \[69.9\] |
 
 Simulated post-infusion NCA parameters by CRCL stratum (PKNCA). {.table}
 

@@ -284,7 +284,7 @@ sim_stoch |>
   )
 #> Warning in transformation$transform(x): NaNs produced
 #> Warning in scale_y_log10(): log-10 transformation introduced infinite values.
-#> Warning: Removed 30 rows containing missing values or values outside the scale range
+#> Warning: Removed 29 rows containing missing values or values outside the scale range
 #> (`geom_ribbon()`).
 ```
 

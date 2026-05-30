@@ -4,7 +4,7 @@
 
 library(nlmixr2lib)
 library(rxode2)
-#> rxode2 5.0.2 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.1 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -377,7 +377,7 @@ knitr::kable(
 
 | Interval Start | Interval End | regimen | N | AUClast (day\*ug/mL) | Cmax (ug/mL) | Cmin (ug/mL) | Tmax (day) | Half-life (day) |
 |---:|---:|:---|:---|:---|:---|:---|:---|:---|
-| 0 | 56 | q8w | 500 | 169 \[46.8\] | 6.26 \[40.4\] | 0.958 \[75.2\] | 7.00 \[7.00, 21.0\] | 18.3 \[4.36\] |
+| 0 | 56 | q8w | 500 | 172 \[45.2\] | 6.38 \[39.5\] | 0.985 \[73.5\] | 7.00 \[7.00, 21.0\] | 18.5 \[4.97\] |
 
 PKNCA summary for the q8w steady-state maintenance interval (weeks
 44-52). Expected typical terminal half-life ~18.1 days (Yao 2018
@@ -453,12 +453,12 @@ knitr::kable(
 
 | group | n | Median_AUC | Median_Ctrough | Published_AUC | Published_Ctrough | Pct_diff_AUC | Pct_diff_Ctrough |
 |:---|---:|---:|---:|---:|---:|---:|---:|
-| Weight \< 90 kg | 282 | 191.48 | 1.10 | 225 | 1.21 | -14.90 | -8.81 |
-| Weight \>= 90 kg | 218 | 141.45 | 0.79 | 159 | 0.80 | -11.04 | -1.09 |
-| No diabetes | 450 | 168.29 | 1.01 | 196 | 1.04 | -14.14 | -3.08 |
-| Diabetes | 50 | 160.75 | 0.78 | 158 | 0.72 | 1.74 | 7.89 |
-| White | 424 | 169.72 | 1.01 | 192 | 1.02 | -11.60 | -1.37 |
-| Non-White | 76 | 145.27 | 0.70 | 192 | 0.93 | -24.34 | -24.88 |
+| Weight \< 90 kg | 282 | 194.25 | 1.14 | 225 | 1.21 | -13.67 | -5.47 |
+| Weight \>= 90 kg | 218 | 147.43 | 0.84 | 159 | 0.80 | -7.28 | 5.57 |
+| No diabetes | 450 | 175.39 | 1.04 | 196 | 1.04 | -10.51 | 0.45 |
+| Diabetes | 50 | 155.26 | 0.76 | 158 | 0.72 | -1.73 | 5.87 |
+| White | 424 | 177.93 | 1.07 | 192 | 1.02 | -7.33 | 5.09 |
+| Non-White | 76 | 152.31 | 0.76 | 192 | 0.93 | -20.67 | -18.23 |
 
 Comparison of simulated steady-state q8w medians (this cohort, N=500)
 against Yao 2018 Table 5 (published medians from the paper’s

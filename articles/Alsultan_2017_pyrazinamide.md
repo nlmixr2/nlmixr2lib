@@ -264,9 +264,9 @@ knitr::kable(nca_summary,
 
 | start | end | band | N | auclast | cmax | tmax | half.life |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | 24 | 40-55 kg | 100 | 238 \[19.7\] | 24.1 \[22.9\] | 1.00 \[0.250, 7.00\] | 6.80 \[1.78\] |
-| 0 | 24 | 56-75 kg | 100 | 268 \[19.1\] | 26.4 \[24.9\] | 1.00 \[0.250, 7.50\] | 7.00 \[1.84\] |
-| 0 | 24 | 76-90 kg | 100 | 305 \[16.9\] | 27.7 \[15.9\] | 1.12 \[0.250, 7.50\] | 7.86 \[2.00\] |
+| 0 | 24 | 40-55 kg | 100 | 244 \[17.7\] | 24.0 \[20.3\] | 1.12 \[0.250, 8.00\] | 6.93 \[1.72\] |
+| 0 | 24 | 56-75 kg | 100 | 283 \[18.1\] | 26.2 \[20.3\] | 1.00 \[0.250, 7.50\] | 7.59 \[1.99\] |
+| 0 | 24 | 76-90 kg | 100 | 306 \[17.1\] | 28.9 \[15.7\] | 1.00 \[0.250, 5.00\] | 7.64 \[1.97\] |
 
 Day-1 NCA on the simulated cohort by weight band (mean dose 1,000-2,000
 mg per Alsultan 2017 weight-banded dosing). {.table}
@@ -300,9 +300,9 @@ knitr::kable(tbl, caption = "Simulated NCA statistics vs. Alsultan 2017 Table 2.
 
 | Parameter | Alsultan 2017 Table 2 mean (range) | Simulated cohort mean (SD) |
 |:---|:---|:---|
-| Cmax (ug/mL) | 30.8 (16-54) | 26.6 (5.3) |
-| AUC0-24 (ug.h/mL) | 307 (136-579) | 273 (56) |
-| CL/F (L/h) | 4.6 (2.3-7.6) | 5.6 |
+| Cmax (ug/mL) | 30.8 (16-54) | 26.8 (5.2) |
+| AUC0-24 (ug.h/mL) | 307 (136-579) | 280 (55) |
+| CL/F (L/h) | 4.6 (2.3-7.6) | 5.4 |
 
 Simulated NCA statistics vs. Alsultan 2017 Table 2. {.table}
 

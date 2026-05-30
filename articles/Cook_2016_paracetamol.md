@@ -353,10 +353,10 @@ knitr::kable(
 
 | Interval Start | Interval End | group_label | N | Cmax (mg/L) | Tmax (min) | Half-life (min) | AUCinf,obs (min\*mg/L) |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | Inf | 0.7 kg (very preterm) | 6 | 10.6 \[44.7\] | 15.0 \[15.0, 15.0\] | 453 \[228\] | NC |
-| 0 | Inf | 1.5 kg (preterm) | 6 | 9.85 \[12.6\] | 15.0 \[15.0, 15.0\] | 366 \[101\] | NC |
-| 0 | Inf | 2.5 kg (late preterm) | 6 | 7.44 \[21.9\] | 15.0 \[15.0, 15.0\] | 326 \[53.1\] | NC |
-| 0 | Inf | 3.5 kg (term) | 6 | 8.42 \[31.5\] | 15.0 \[15.0, 15.0\] | 253 \[76.5\] | NC |
+| 0 | Inf | 0.7 kg (very preterm) | 6 | 9.90 \[38.1\] | 15.0 \[15.0, 15.0\] | 546 \[214\] | NC |
+| 0 | Inf | 1.5 kg (preterm) | 6 | 8.48 \[21.7\] | 15.0 \[15.0, 15.0\] | 376 \[227\] | NC |
+| 0 | Inf | 2.5 kg (late preterm) | 6 | 9.47 \[29.3\] | 15.0 \[15.0, 15.0\] | 191 \[77.1\] | NC |
+| 0 | Inf | 3.5 kg (term) | 6 | 7.67 \[49.3\] | 15.0 \[15.0, 15.0\] | 375 \[371\] | NC |
 
 Simulated NCA parameters by weight stratum (PKNCA). {.table}
 

@@ -4,7 +4,7 @@
 
 library(nlmixr2lib)
 library(rxode2)
-#> rxode2 5.0.2 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.1 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -661,7 +661,7 @@ knitr::kable(
 
 | Interval Start | Interval End | cohort | N | AUClast (h\*ng/mL) | Cmax (ng/mL) | Tmax (h) | Half-life (h) |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | 24 | HIV_pop | 200 | NC | 228 \[40.2\] | 0.500 \[0.250, 1.00\] | 18.4 \[7.18\] |
+| 0 | 24 | HIV_pop | 200 | NC | 227 \[37.0\] | 0.500 \[0.250, 1.00\] | 18.3 \[6.85\] |
 
 PKNCA summary – TFV plasma, 0-24 h after the first oral TDF 300 mg dose.
 {.table}
@@ -893,7 +893,7 @@ knitr::kable(
 
 | Interval Start | Interval End | cohort | N | AUClast (h\*ng/mL) | Cmax (ng/mL) | Tmax (h) | Half-life (h) |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | 24 | HIV_pop | 200 | NC | 1380 \[16.6\] | 1.00 \[1.00, 2.00\] | 5.03 \[1.36\] |
+| 0 | 24 | HIV_pop | 200 | NC | 1320 \[19.0\] | 1.00 \[1.00, 1.00\] | 5.41 \[1.83\] |
 
 PKNCA summary – FTC plasma, 0-24 h after the first oral FTC 200 mg dose.
 {.table}

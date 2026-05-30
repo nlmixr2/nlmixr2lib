@@ -205,7 +205,7 @@ knitr::kable(
 
 | start | end | treatment | N | cmax | tmax | half.life | aucinf.obs |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | Inf | IN_4mg | 200 | 6.08 \[52.6\] | 0.650 \[0.0500, 3.00\] | 0.890 \[1.10\] | NC |
+| 0 | Inf | IN_4mg | 200 | 6.30 \[48.9\] | 0.650 \[0.150, 1.75\] | 0.770 \[0.277\] | NC |
 
 Simulated NCA parameters for a single 4 mg IN naloxone HCl dose.
 {.table}

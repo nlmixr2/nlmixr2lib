@@ -168,13 +168,15 @@ set.seed(8897) # MEDI8897 = nirsevimab development code
 # receives the summed dose. Without offsets, Figure 4's predictions came out
 # ~3-fold too high because IDs 1..100 appeared in all four cohorts and were
 # collapsed into Frankenstein subjects with ~400 mg in depot at TIME = 0.
-d_p2b <- make_cohort(200, c(29, 35), c(0, 3), 400, id_offset =   0L) |>
+# Cohort sizes downsampled from 200/200/200/100 for vignette build budget;
+# VPC ribbons remain smooth at n=30-40 per panel.
+d_p2b <- make_cohort(40, c(29, 35), c(0, 3), 400, id_offset =   0L) |>
   mutate(trial = "Phase 2b\n(healthy infants, 29 to <35 wGA)")
-d_melody <- make_cohort(200, c(35, 42), c(0, 3), 500, id_offset = 200L) |>
+d_melody <- make_cohort(40, c(35, 42), c(0, 3), 500, id_offset = 200L) |>
   mutate(trial = "MELODY\n(healthy infants, \u226535 wGA)")
-d_med_s1 <- make_cohort(200, c(24, 35), c(0, 3), 400, id_offset = 400L) |>
+d_med_s1 <- make_cohort(40, c(24, 35), c(0, 3), 400, id_offset = 400L) |>
   mutate(trial = "MEDLEY Season 1\n(infants \u226435 wGA, CHD/CLD)")
-d_med_s2 <- make_cohort(100, c(35, 42), c(12, 24), 400,
+d_med_s2 <- make_cohort(30, c(35, 42), c(12, 24), 400,
   season2 = TRUE, id_offset = 600L) |>
   mutate(trial = "MEDLEY Season 2\n(children with CHD/CLD)")
 
@@ -249,7 +251,8 @@ for 360 days. The paper uses 10th/50th/90th percentiles (rather than the
 ``` r
 
 set.seed(3979) # NCT03979313 = MELODY trial
-d_f5 <- make_cohort(500, c(35, 42), c(0, 3), 360,
+# Downsampled from 500 for vignette build budget; 10-50-90 VPC band shape preserved.
+d_f5 <- make_cohort(80, c(35, 42), c(0, 3), 360,
   obs_days = seq(0, 360, by = 7))
 
 out_f5 <- rxode2::rxSolve(mod, events = d_f5) |> as.data.frame()
@@ -284,7 +287,7 @@ ggplot(d_f5_plot, aes(x = time, y = Q50)) +
     y = paste0("Nirsevimab serum concentration (", conc_unit, ")\nPrediction corrected"),
     title = "Figure 5 \u2014 Prediction-corrected VPC: MELODY safety cohort",
     caption = paste0(
-      "Simulated 10th/50th/90th percentiles (N = 500 virtual infants, \u226535 wGA).\n",
+      "Simulated 10th/50th/90th percentiles (N = 80 virtual infants, \u226535 wGA).\n",
       "Original observed data not available."
     )
   ) +
@@ -315,7 +318,10 @@ Day-151 concentration panel).
 ``` r
 
 set.seed(2024)
-n_per_ga <- 200
+# Downsampled from 200 per GA group for vignette build budget; daily obs grid
+# preserved (PKNCA AUC0-365 needs dense sampling). Weight-binned PI bands remain
+# the right shape at n=25/group.
+n_per_ga <- 25
 obs_daily <- seq(0, 365, by = 1)
 
 ga_groups <- list(

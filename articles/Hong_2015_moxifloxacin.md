@@ -509,14 +509,14 @@ knitr::kable(
 |:----------|:-----------|--------:|--------:|--------:|
 | 400 mg    | aucinf.obs |      NA |      NA |      NA |
 | 400 mg    | auclast    |      NA |      NA |      NA |
-| 400 mg    | cmax       | 2129.36 | 1591.78 | 2960.09 |
-| 400 mg    | half.life  |   12.57 |   10.33 |   16.74 |
-| 400 mg    | tmax       |    0.75 |    0.75 |    1.64 |
+| 400 mg    | cmax       | 2173.90 | 1559.87 | 3044.99 |
+| 400 mg    | half.life  |   12.66 |   10.07 |   16.10 |
+| 400 mg    | tmax       |    0.75 |    0.75 |    1.25 |
 | 800 mg    | aucinf.obs |      NA |      NA |      NA |
 | 800 mg    | auclast    |      NA |      NA |      NA |
-| 800 mg    | cmax       | 4054.05 | 2684.34 | 5458.10 |
-| 800 mg    | half.life  |   13.08 |   10.87 |   17.33 |
-| 800 mg    | tmax       |    2.00 |    1.25 |    4.55 |
+| 800 mg    | cmax       | 3995.52 | 2723.56 | 5156.70 |
+| 800 mg    | half.life  |   12.65 |   10.34 |   15.73 |
+| 800 mg    | tmax       |    2.00 |    1.00 |    4.77 |
 
 Simulated NCA by dose (n = 50 per arm). Cmax ng/mL; Tmax h; AUC
 ng\*h/mL; half-life h. {.table}

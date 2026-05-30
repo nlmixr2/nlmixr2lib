@@ -214,11 +214,11 @@ knitr::kable(
 
 | statistic       | simulated | published_table1 |
 |:----------------|----------:|-----------------:|
-| median (mg/L)   |      6.74 |               NA |
-| mean (mg/L)     |      8.20 |              7.8 |
-| SD (mg/L)       |      5.69 |              5.9 |
-| 5th percentile  |      1.46 |               NA |
-| 95th percentile |     19.28 |               NA |
+| median (mg/L)   |      6.63 |               NA |
+| mean (mg/L)     |      8.48 |              7.8 |
+| SD (mg/L)       |      5.99 |              5.9 |
+| 5th percentile  |      1.81 |               NA |
+| 95th percentile |     18.98 |               NA |
 
 Simulated steady-state trough summary vs Drweesh 2026 Table 1 (mean +/-
 SD of all observed troughs). {.table}
@@ -490,10 +490,10 @@ knitr::kable(
 |:---------|-------:|------:|-------:|
 | auclast  |     NA |    NA |     NA |
 | cav      |     NA |    NA |     NA |
-| cmax     |   8.41 |  3.09 |  19.02 |
-| cmin     |   6.69 |  1.46 |  16.24 |
+| cmax     |   8.33 |  3.38 |  19.44 |
+| cmin     |   6.50 |  1.81 |  17.82 |
 | ctrough  |     NA |    NA |     NA |
-| tmax     |  91.20 | 91.20 | 115.20 |
+| tmax     |  91.20 | 91.20 | 139.20 |
 
 Simulated steady-state NCA over one dosing interval (PKNCA, n = 200
 virtual subjects, mean cohort regimen 41.6 mg every 276.6 h). {.table}

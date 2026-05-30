@@ -403,11 +403,10 @@ knitr::kable(
 
 | start | end | treatment | N | auclast | cmax | cmin | tmax | half.life |
 |---:|---:|:---|:---|:---|:---|:---|:---|:---|
-| 0 | 14 | 10 mg/kg Q2W | 100 | 3680 \[46.0\] | 365 \[40.1\] | 201 \[53.8\] | 1.00 \[1.00, 1.00\] | 26.1 \[9.98\] |
-| 0 | 14 | 3 mg/kg Q2W | 100 | 966 \[48.4\] | 99.3 \[37.5\] | 51.2 \[61.6\] | 1.00 \[1.00, 1.00\] | 24.5 \[10.4\] |
+| 0 | 14 | 10 mg/kg Q2W | 100 | 3460 \[42.8\] | 350 \[35.1\] | 187 \[52.0\] | 1.00 \[1.00, 1.00\] | 27.4 \[14.0\] |
+| 0 | 14 | 3 mg/kg Q2W | 100 | 1020 \[44.0\] | 103 \[36.6\] | 55.4 \[53.8\] | 1.00 \[1.00, 1.00\] | 27.5 \[13.2\] |
 
-Simulated NCA parameters at steady state (12th dosing interval) {.table
-style="width:100%;"}
+Simulated NCA parameters at steady state (12th dosing interval) {.table}
 
 ## Comparison against published values
 

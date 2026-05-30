@@ -270,9 +270,9 @@ knitr::kable(nca_summary,
 
 | start | end | cohort | N | auclast | cmax | cmin | tmax | ctrough |
 |---:|---:|:---|:---|:---|:---|:---|:---|:---|
-| 0 | 12 | POD 5 d (early) | 200 | 78.8 \[33.3\] | 8.42 \[45.8\] | 4.76 \[52.4\] | 2.00 \[0.500, 7.00\] | 4.92 \[51.4\] |
-| 0 | 12 | POD 14 d (median) | 200 | 74.3 \[25.4\] | 8.31 \[39.3\] | 4.36 \[37.2\] | 2.00 \[0.500, 6.50\] | 4.48 \[36.2\] |
-| 0 | 12 | POD 60 d (steady-state) | 200 | 65.2 \[23.1\] | 7.49 \[38.8\] | 3.71 \[31.3\] | 2.00 \[0.500, 5.50\] | 3.79 \[30.9\] |
+| 0 | 12 | POD 5 d (early) | 200 | 78.0 \[31.2\] | 8.52 \[44.3\] | 4.72 \[39.7\] | 2.00 \[0.500, 6.50\] | 4.88 \[38.3\] |
+| 0 | 12 | POD 14 d (median) | 200 | 72.6 \[27.2\] | 7.93 \[43.5\] | 4.40 \[32.1\] | 2.00 \[0.500, 8.00\] | 4.54 \[31.4\] |
+| 0 | 12 | POD 60 d (steady-state) | 200 | 64.0 \[23.9\] | 7.46 \[41.5\] | 3.60 \[34.3\] | 2.00 \[0.500, 5.50\] | 3.68 \[33.7\] |
 
 Steady-state day-5 NCA on the simulated cohort (12-h interval, 2.5 mg
 BID), stratified by POD. {.table}
@@ -310,9 +310,9 @@ knitr::kable(tbl,
 | metric | value |
 |:---|:---|
 | Zhu 2014 Methods target trough (10-15 ng/mL) | 10.00-15.00 |
-| Simulated cohort 12-h trough (POD 5 d (early), median \[10-90 pct\] ng/mL) | 5.29 (3.08-7.59) |
-| Simulated cohort 12-h trough (POD 14 d (median), median \[10-90 pct\] ng/mL) | 4.84 (2.93-6.41) |
-| Simulated cohort 12-h trough (POD 60 d (steady-state), median \[10-90 pct\] ng/mL) | 3.90 (2.50-5.43) |
+| Simulated cohort 12-h trough (POD 5 d (early), median \[10-90 pct\] ng/mL) | 5.23 (3.11-6.87) |
+| Simulated cohort 12-h trough (POD 14 d (median), median \[10-90 pct\] ng/mL) | 4.70 (2.95-6.33) |
+| Simulated cohort 12-h trough (POD 60 d (steady-state), median \[10-90 pct\] ng/mL) | 3.85 (2.45-5.36) |
 
 Simulated 12-h trough vs. Zhu 2014 protocol target trough range.
 {.table}

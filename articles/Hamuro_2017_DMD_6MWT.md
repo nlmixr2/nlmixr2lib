@@ -377,15 +377,15 @@ knitr::kable(cfb_table, digits = 1,
 
 | cohort        | stratum    |   n | mean_cfb | sd_cfb |
 |:--------------|:-----------|----:|---------:|-------:|
-| McDonald 2013 | all        |  35 |    -52.4 |   59.0 |
-| McDonald 2013 | \<=7 years |   3 |     23.8 |    7.1 |
-| McDonald 2013 | \>7 years  |  32 |    -59.6 |   56.6 |
-| Goemans 2013  | all        | 106 |    -17.0 |   52.7 |
-| Goemans 2013  | \<=7 years |  36 |     19.1 |    7.8 |
-| Goemans 2013  | \>7 years  |  70 |    -35.5 |   56.3 |
-| Mazzone 2011  | all        |  53 |    -17.6 |   49.3 |
-| Mazzone 2011  | \<=7 years |  15 |     19.0 |    4.4 |
-| Mazzone 2011  | \>7 years  |  38 |    -32.1 |   51.4 |
+| McDonald 2013 | all        |  35 |    -37.5 |   62.0 |
+| McDonald 2013 | \<=7 years |   3 |      2.4 |   25.0 |
+| McDonald 2013 | \>7 years  |  32 |    -41.2 |   63.3 |
+| Goemans 2013  | all        | 106 |    -30.1 |   60.4 |
+| Goemans 2013  | \<=7 years |  36 |     19.7 |    8.2 |
+| Goemans 2013  | \>7 years  |  70 |    -55.7 |   59.6 |
+| Mazzone 2011  | all        |  53 |    -28.5 |   58.9 |
+| Mazzone 2011  | \<=7 years |  15 |     20.1 |    4.4 |
+| Mazzone 2011  | \>7 years  |  38 |    -47.6 |   59.5 |
 
 Simulated mean (SD) 6MWT change from baseline at 1 year, by virtual
 cohort and baseline-age stratum. {.table}
@@ -465,7 +465,7 @@ ggplot(vpc_summary, aes(x = AGE)) +
     )
   ) +
   theme_bw()
-#> Warning: Removed 26 rows containing missing values or values outside the scale range
+#> Warning: Removed 27 rows containing missing values or values outside the scale range
 #> (`geom_ribbon()`).
 #> Warning: Removed 8 rows containing missing values or values outside the scale range
 #> (`geom_line()`).

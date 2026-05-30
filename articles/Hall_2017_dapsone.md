@@ -425,7 +425,7 @@ knitr::kable(nca_summary, caption = "Simulated NCA parameters (single 100 mg ora
 
 | Interval Start | Interval End | treatment | N | Cmax (mg/L) | Tmax (hr) | Clast (mg/L) | Half-life (hr) | $`\lambda_z`$ (1/hr) | AUCinf,obs (hr\*mg/L) |
 |---:|---:|:---|:---|:---|:---|:---|:---|:---|:---|
-| 0 | Inf | 100 mg PO | 200 | 1.36 \[60.5\] | 1.00 \[1.00, 8.00\] | 0.113 \[337\] | 30.3 \[20.8\] | 0.0282 \[74.9\] | NC |
+| 0 | Inf | 100 mg PO | 200 | 1.35 \[57.1\] | 1.00 \[1.00, 8.00\] | 0.138 \[151\] | 30.6 \[20.1\] | 0.0272 \[66.3\] | NC |
 
 Simulated NCA parameters (single 100 mg oral dose). {.table}
 

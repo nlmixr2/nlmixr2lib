@@ -412,10 +412,10 @@ knitr::kable(nca_tbl, digits = 3, caption = "Steady-state NCA parameters by dose
 
 | cohort | median_auclast | median_cmax | median_cmin | median_tmax | q05_auclast | q05_cmax | q05_cmin | q05_tmax | q95_auclast | q95_cmax | q95_cmin | q95_tmax |
 |:---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| 10 mg QD monotherapy | 111.847 | 6.940 | 3.537 | 2 | 84.482 | 4.079 | 2.611 | 1 | 168.026 | 10.682 | 4.848 | 4.00 |
-| 2.5 mg QD monotherapy | 57.796 | 3.233 | 2.001 | 2 | 42.639 | 2.107 | 1.512 | 1 | 76.520 | 5.103 | 2.691 | 3.05 |
-| 5 mg QD + metformin | 91.972 | 5.757 | 2.841 | 2 | 66.134 | 3.600 | 2.186 | 1 | 165.937 | 12.073 | 4.513 | 4.00 |
-| 5 mg QD monotherapy | 66.550 | 3.955 | 2.215 | 2 | 42.186 | 2.356 | 1.401 | 1 | 114.036 | 8.089 | 3.295 | 3.00 |
+| 10 mg QD monotherapy | 105.936 | 5.982 | 3.359 | 2.00 | 73.480 | 3.690 | 2.449 | 1 | 166.988 | 11.584 | 5.075 | 4.00 |
+| 2.5 mg QD monotherapy | 57.759 | 3.283 | 2.045 | 1.75 | 35.175 | 1.919 | 1.177 | 1 | 78.294 | 4.566 | 2.826 | 4.00 |
+| 5 mg QD + metformin | 84.308 | 5.384 | 2.634 | 2.00 | 54.951 | 3.422 | 1.697 | 1 | 175.957 | 14.753 | 4.466 | 3.05 |
+| 5 mg QD monotherapy | 73.710 | 4.345 | 2.411 | 2.00 | 51.123 | 2.657 | 1.653 | 1 | 112.185 | 7.220 | 3.810 | 4.00 |
 
 Steady-state NCA parameters by dose cohort. Cmax/Cmin in ng/mL; AUC_0-24
 in ng h/mL; Tmax in h. {.table style="width:100%;"}

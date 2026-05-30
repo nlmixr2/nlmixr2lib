@@ -490,17 +490,17 @@ knitr::kable(
 | treatment                   | PPTESTCD |   median |      p05 |      p95 |
 |:----------------------------|:---------|---------:|---------:|---------:|
 | delayed ART, day 1 (60 mg)  | auclast  |       NA |       NA |       NA |
-| delayed ART, day 1 (60 mg)  | cmax     | 4.923731 | 3.556354 | 7.613977 |
+| delayed ART, day 1 (60 mg)  | cmax     | 5.433701 | 3.446441 | 7.433760 |
 | delayed ART, day 1 (60 mg)  | tmax     | 1.000000 | 1.000000 | 1.500000 |
 | delayed ART, day 14 (60 mg) | auclast  |       NA |       NA |       NA |
-| delayed ART, day 14 (60 mg) | cmax     | 3.914402 | 2.623056 | 6.121624 |
-| delayed ART, day 14 (60 mg) | tmax     | 1.000000 | 0.750000 | 1.000000 |
+| delayed ART, day 14 (60 mg) | cmax     | 3.738890 | 2.311386 | 5.245073 |
+| delayed ART, day 14 (60 mg) | tmax     | 0.750000 | 0.750000 | 1.000000 |
 | early ART, day 1 (60 mg)    | auclast  |       NA |       NA |       NA |
-| early ART, day 1 (60 mg)    | cmax     | 6.732267 | 4.773513 | 9.654261 |
+| early ART, day 1 (60 mg)    | cmax     | 6.919526 | 4.735552 | 9.592965 |
 | early ART, day 1 (60 mg)    | tmax     | 1.000000 | 1.000000 | 1.500000 |
 | early ART, day 14 (60 mg)   | auclast  |       NA |       NA |       NA |
-| early ART, day 14 (60 mg)   | cmax     | 4.984591 | 3.530725 | 7.656921 |
-| early ART, day 14 (60 mg)   | tmax     | 0.875000 | 0.750000 | 1.000000 |
+| early ART, day 14 (60 mg)   | cmax     | 4.785562 | 3.123182 | 9.031254 |
+| early ART, day 14 (60 mg)   | tmax     | 0.750000 | 0.750000 | 1.000000 |
 
 Simulated abacavir NCA parameters by day-and-arm cell (60 mg dose, WT =
 7 kg, n = 50 per cell). {.table}

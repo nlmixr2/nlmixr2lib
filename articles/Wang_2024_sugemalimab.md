@@ -4,7 +4,7 @@
 
 library(nlmixr2lib)
 library(rxode2)
-#> rxode2 5.0.2 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.1 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -33,7 +33,7 @@ library(PKNCA)
   patients with solid tumours or lymphomas across multiple Phase I-III
   studies. Br J Clin Pharmacol. 2025;91(3):748-760.
   <doi:10.1111/bcp.16276>
-- Description: Two-compartment population PK model with sigmoidal-Emax
+- Description: Two-compartment population PK model with sigmoidal-emax
   time-varying clearance for intravenous sugemalimab (anti-PD-L1 IgG4)
   in adults with advanced solid tumours or lymphomas across nine Phase
   I-III trials (Wang 2024)
@@ -479,7 +479,7 @@ knitr::kable(
 
 | Interval Start | Interval End | treatment | N | AUClast (day\*ug/mL) | Cmax (ug/mL) | Cmin (ug/mL) | Tmax (day) |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | 21 | 1200 mg Q3W | 100 | NC | 295 \[16.3\] | 78.5 \[28.4\] | 1.00 \[1.00, 1.00\] |
+| 0 | 21 | 1200 mg Q3W | 100 | NC | 301 \[18.0\] | 77.9 \[26.0\] | 1.00 \[1.00, 1.00\] |
 
 Cycle 1 NCA summary (days 0-21, 1200 mg Q3W). {.table
 style="width:100%;"}
@@ -524,7 +524,7 @@ knitr::kable(
 
 | Interval Start | Interval End | treatment | N | AUClast (day\*ug/mL) | Cmax (ug/mL) | Cmin (ug/mL) |
 |---:|---:|:---|:---|:---|:---|:---|
-| 0 | 21 | 1200 mg Q3W | 100 | 6410 \[30.3\] | 378 \[26.6\] | 235 \[36.0\] |
+| 0 | 21 | 1200 mg Q3W | 100 | 6380 \[27.0\] | 377 \[23.8\] | 232 \[32.3\] |
 
 Cycle 8 NCA summary (days 147-168, 1200 mg Q3W) - approaching steady
 state. {.table style="width:100%;"}
@@ -583,9 +583,9 @@ knitr::kable(
 
 | PPTESTCD | metric             | published_gm | geomean | diff_pct |
 |:---------|:-------------------|-------------:|--------:|---------:|
-| auclast  | AUCss (μg\*day/mL) |         6951 |  6414.1 |     -7.7 |
-| cmax     | Cmax,ss (μg/mL)    |          571 |   378.0 |    -33.8 |
-| cmin     | Cmin,ss (μg/mL)    |          221 |   234.7 |      6.2 |
+| auclast  | AUCss (μg\*day/mL) |         6951 |  6380.2 |     -8.2 |
+| cmax     | Cmax,ss (μg/mL)    |          571 |   377.5 |    -33.9 |
+| cmin     | Cmin,ss (μg/mL)    |          221 |   231.5 |      4.8 |
 
 Cycle-8 simulated geometric-mean NCA vs. Wang 2024 Table S1 (Age \<= 65
 subgroup, 1200 mg Q3W). {.table}

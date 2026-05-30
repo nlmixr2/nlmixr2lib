@@ -576,7 +576,7 @@ knitr::kable(run_pknca(nca_q2w),
 
 | Interval Start | Interval End | treatment | N | AUClast (day\*mg/L) | Cmax (mg/L) | Cmin (mg/L) | Tmax (day) | Cav (mg/L) |
 |---:|---:|:---|:---|:---|:---|:---|:---|:---|
-| 0 | 14 | 5 mg/kg Q2W | 200 | NC | 204 \[22.9\] | 84.0 \[47.4\] | 0.100 \[0.100, 0.100\] | NC |
+| 0 | 14 | 5 mg/kg Q2W | 200 | NC | 202 \[22.4\] | 84.8 \[43.6\] | 0.100 \[0.100, 0.100\] | NC |
 
 Steady-state NCA (5 mg/kg Q2W, last simulated interval). {.table}
 
@@ -788,7 +788,7 @@ knitr::kable(run_pknca(nca_q3w),
 
 | Interval Start | Interval End | treatment | N | AUClast (day\*mg/L) | Cmax (mg/L) | Cmin (mg/L) | Tmax (day) | Cav (mg/L) |
 |---:|---:|:---|:---|:---|:---|:---|:---|:---|
-| 0 | 21 | 7.5 mg/kg Q3W | 200 | NC | 249 \[22.5\] | 67.5 \[62.2\] | 0.100 \[0.100, 0.100\] | NC |
+| 0 | 21 | 7.5 mg/kg Q3W | 200 | NC | 252 \[22.3\] | 70.9 \[55.0\] | 0.100 \[0.100, 0.100\] | NC |
 
 Steady-state NCA (7.5 mg/kg Q3W, last simulated interval). {.table}
 

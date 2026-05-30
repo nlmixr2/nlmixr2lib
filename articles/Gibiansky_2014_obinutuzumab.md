@@ -105,7 +105,9 @@ make_cohort <- function(label, WT, SEXF, TUMSZ,
   # Maximum infusion rate 400 mg/h (1000 mg over 2.5 h = 1000/(2.5/24) L/day
   # = 9600 mg/day on a per-day-rate scale).
   dose_times <- c(0, 7, 14, 28, 56, 84, 112, 140)
-  obs_times  <- seq(0, 168, by = 0.5)  # 24 weeks, 0.5-day resolution
+  # 24 weeks, 1-day resolution (downsampled from by=0.5 for vignette build budget;
+  # smooth IV profile is visually identical at 1-day spacing)
+  obs_times  <- seq(0, 168, by = 1)
 
   dosing <- tibble(
     id   = id_offset + 1L,
@@ -275,8 +277,8 @@ ggplot(sim_1d, aes(x = time, y = Cc, colour = cohort)) +
 
 Gibiansky 2014 Figure 2 simulates the four diagnosis groups under the
 CLL11 regimen with between-subject random effects retained and overlays
-the 5/50/95% percentile bands. The cohort here uses 200 simulated
-subjects per diagnosis (1500 total) carrying typical baseline covariates
+the 5/50/95% percentile bands. The cohort here uses 60 simulated
+subjects per diagnosis (240 total) carrying typical baseline covariates
 for each group.
 
 ``` r
@@ -288,7 +290,9 @@ make_vpc_cohort <- function(label, n,
                             TUMTP_BCL = 0L, TUMTP_DLBCL = 0L, TUMTP_MCL = 0L,
                             id_offset = 0L) {
   dose_times <- c(0, 7, 14, 28, 56, 84, 112, 140)
-  obs_times  <- seq(0, 168, by = 1)
+  # 2-day resolution (downsampled from by=1 for vignette build budget;
+  # VPC quantile bands are smooth at 2-day spacing for an mAb IV profile)
+  obs_times  <- seq(0, 168, by = 2)
 
   ids <- seq_len(n)
 
@@ -317,7 +321,9 @@ make_vpc_cohort <- function(label, n,
     arrange(id, time, desc(evid))
 }
 
-n_per <- 200L
+# downsampled from 200 per cohort (800 total) for vignette build budget;
+# VPC 5/50/95 bands are stable at n=60 for an mAb steady-state profile
+n_per <- 60L
 events_2 <- bind_rows(
   make_vpc_cohort("CLL",          n = n_per,
                   WT_dist    = function(n) rnorm(n, 73.7, 14.1),
@@ -430,12 +436,12 @@ knitr::kable(nca_summary,
              caption = "Simulated steady-state (cycle 6, days 140-168) NCA parameters by diagnosis.")
 ```
 
-| start | end | cohort | N   | auclast | cmax | cmin | tmax  |
-|------:|----:|:-------|:----|:--------|:-----|:-----|:------|
-|   140 | 168 | BCL    | 1   | 14200   | 690  | 387  | 0.500 |
-|   140 | 168 | CLL    | 1   | 12100   | 617  | 313  | 0.500 |
-|   140 | 168 | DLBCL  | 1   | 14200   | 690  | 387  | 0.500 |
-|   140 | 168 | MCL    | 1   | 6820    | 437  | 136  | 0.500 |
+| start | end | cohort | N   | auclast | cmax | cmin | tmax |
+|------:|----:|:-------|:----|:--------|:-----|:-----|:-----|
+|   140 | 168 | BCL    | 1   | 14200   | 658  | 387  | 1.00 |
+|   140 | 168 | CLL    | 1   | 12000   | 584  | 313  | 1.00 |
+|   140 | 168 | DLBCL  | 1   | 14200   | 658  | 387  | 1.00 |
+|   140 | 168 | MCL    | 1   | 6740    | 402  | 136  | 1.00 |
 
 Simulated steady-state (cycle 6, days 140-168) NCA parameters by
 diagnosis. {.table}
@@ -481,10 +487,10 @@ nca_compare |>
 
 | cohort | AUC tau (ug/mL \* h, simulated) | Cmax tau (ug/mL, simulated) | AUC tau (ug/mL \* h, published) |
 |:---|---:|---:|---:|
-| BCL | 341609.0 | 689.8471 | 12574 |
-| CLL | 289592.1 | 616.6722 | 9943 |
-| DLBCL | 341609.0 | 689.8471 | 12626 |
-| MCL | 163726.0 | 436.5767 | 6038 |
+| BCL | 339644.9 | 657.5642 | 12574 |
+| CLL | 287628.8 | 583.9265 | 9943 |
+| DLBCL | 339644.9 | 657.5642 | 12626 |
+| MCL | 161766.4 | 402.1802 | 6038 |
 
 Simulated vs published steady-state AUC tau by diagnosis (CLL11
 regimen). {.table style="width:100%;"}

@@ -344,9 +344,9 @@ knitr::kable(
 
 | treatment | mean_cavg_paper | mean_cavg | q25_paper |  q25 | q75_paper |  q75 |
 |:----------|----------------:|----------:|----------:|-----:|----------:|-----:|
-| 50 kg     |            1.23 |      1.20 |      0.99 | 0.96 |      1.43 | 1.39 |
-| 75 kg     |            0.92 |      0.89 |      0.73 | 0.72 |      1.08 | 1.03 |
-| 100 kg    |            0.72 |      0.72 |      0.58 | 0.58 |      0.83 | 0.85 |
+| 50 kg     |            1.23 |      1.21 |      0.99 | 0.97 |      1.43 | 1.41 |
+| 75 kg     |            0.92 |      0.88 |      0.73 | 0.71 |      1.08 | 1.01 |
+| 100 kg    |            0.72 |      0.71 |      0.58 | 0.58 |      0.83 | 0.82 |
 
 Average steady-state FE 999049 concentration (ug/L) after 10 ug daily SC
 dosing. Paper values are from Rose 2016 Section 3 / Figure 4b; simulated
@@ -407,11 +407,11 @@ knitr::kable(
 
 | treatment        | aucinf.obs |  cmax | half.life | tmax |
 |:-----------------|-----------:|------:|----------:|-----:|
-| 37.5 IU (2.2 ug) |         NA | 0.061 |    46.399 | 18.5 |
-| 75 IU (4.4 ug)   |         NA | 0.112 |    45.937 | 18.5 |
-| 150 IU (8.8 ug)  |         NA | 0.221 |    47.448 | 18.5 |
-| 225 IU (13.1 ug) |         NA | 0.332 |    47.484 | 19.0 |
-| 450 IU (26.3 ug) |         NA | 0.743 |    43.531 | 18.0 |
+| 37.5 IU (2.2 ug) |         NA | 0.057 |    43.461 | 18.0 |
+| 75 IU (4.4 ug)   |         NA | 0.114 |    42.658 | 18.0 |
+| 150 IU (8.8 ug)  |         NA | 0.230 |    42.453 | 18.0 |
+| 225 IU (13.1 ug) |         NA | 0.334 |    45.592 | 18.5 |
+| 450 IU (26.3 ug) |         NA | 0.705 |    44.212 | 18.0 |
 
 Median simulated NCA parameters by single-dose group across 200 virtual
 subjects per dose (body weight uniform on 51.6-90.0 kg). {.table}

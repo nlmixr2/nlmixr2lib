@@ -337,7 +337,7 @@ knitr::kable(summary(nca_res),
 
 | start | end | treatment | N | auclast | cmax | tmax | half.life |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | 21 | RUBY RTD 500 mg Q3W combo phase | 200 | 2440 \[19.3\] | 188 \[19.4\] | 1.00 \[1.00, 1.00\] | 36.3 \[7.82\] |
+| 0 | 21 | RUBY RTD 500 mg Q3W combo phase | 200 | 2370 \[19.8\] | 182 \[19.3\] | 1.00 \[1.00, 1.00\] | 34.9 \[7.04\] |
 
 Simulated NCA parameters (cycle-2 dosing interval, days 21-42) {.table}
 

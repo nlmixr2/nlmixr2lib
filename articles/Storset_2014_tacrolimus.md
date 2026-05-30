@@ -4,7 +4,7 @@
 
 library(nlmixr2lib)
 library(rxode2)
-#> rxode2 5.0.2 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.1 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -393,10 +393,10 @@ knitr::kable(nca_tbl,
 
 | PPTESTCD | median_value |   Q05 |    Q95 |
 |:---------|-------------:|------:|-------:|
-| auclast  |        91.61 | 43.58 | 151.34 |
-| cav      |         7.63 |  3.63 |  12.61 |
-| cmax     |        11.51 |  6.02 |  20.70 |
-| cmin     |         4.93 |  2.15 |   8.80 |
+| auclast  |        91.76 | 40.97 | 176.22 |
+| cav      |         7.65 |  3.41 |  14.68 |
+| cmax     |        11.98 |  5.50 |  21.92 |
+| cmin     |         4.93 |  2.03 |  10.07 |
 | tmax     |         2.00 |  1.50 |   2.50 |
 
 Simulated NCA at steady state (day 5 dosing interval; n = 200). {.table}
@@ -449,8 +449,8 @@ knitr::kable(comparison,
 
 | Quantity                                 | Value                         |
 |:-----------------------------------------|:------------------------------|
-| Median Cavg,ss (whole-blood, as-is)      | 7.5 ug/L (5th-95th 3.6-12.4)  |
-| Median Cavg,ss (Cstd,HCT45)              | 11.0 ug/L (5th-95th 5.2-18.1) |
+| Median Cavg,ss (whole-blood, as-is)      | 7.5 ug/L (5th-95th 3.4-14.6)  |
+| Median Cavg,ss (Cstd,HCT45)              | 11.0 ug/L (5th-95th 4.9-21.2) |
 | Storset 2014 target Cstd,HCT45           | 14.2 ug/L                     |
 | Storset 2014 acceptable range Cstd,HCT45 | 11.4-17.8 ug/L                |
 
@@ -473,7 +473,7 @@ in_range_pct <- 100 * mean(sim_ss$Cavg_std_hct45 >= 11.4 &
                             sim_ss$Cavg_std_hct45 <= 17.8)
 cat(sprintf("Simulated fraction within acceptable Cstd,HCT45 range: %.1f%%\n",
             in_range_pct))
-#> Simulated fraction within acceptable Cstd,HCT45 range: 38.5%
+#> Simulated fraction within acceptable Cstd,HCT45 range: 33.5%
 cat("Storset 2014 Figure 4A reports 32% (95% CI 29-35%) for the same regimen.\n")
 #> Storset 2014 Figure 4A reports 32% (95% CI 29-35%) for the same regimen.
 ```

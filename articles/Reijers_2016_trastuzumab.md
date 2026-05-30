@@ -4,7 +4,7 @@
 
 library(nlmixr2lib)
 library(rxode2)
-#> rxode2 5.0.2 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.1 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -368,28 +368,28 @@ knitr::kable(nca_summary, digits = 2,
 |:-------------|:-----------|-------:|-------:|-------:|----:|
 | R 6.44 mg/kg | aucinf.obs |    NaN |     NA |     NA |   0 |
 | R 6.44 mg/kg | auclast    |    NaN |     NA |     NA |   0 |
-| R 6.44 mg/kg | cmax       | 152.68 | 104.61 | 212.25 |  46 |
-| R 6.44 mg/kg | half.life  |  12.88 |   5.96 |  17.06 |  46 |
+| R 6.44 mg/kg | cmax       | 148.96 | 102.95 | 200.61 |  46 |
+| R 6.44 mg/kg | half.life  |  13.71 |   7.24 |  17.00 |  46 |
 | R 6.44 mg/kg | tmax       |   0.03 |   0.03 |   0.03 |  46 |
 | T 0.49 mg/kg | aucinf.obs |    NaN |     NA |     NA |   0 |
 | T 0.49 mg/kg | auclast    |    NaN |     NA |     NA |   0 |
-| T 0.49 mg/kg | cmax       |  12.46 |   9.80 |  16.11 |   6 |
-| T 0.49 mg/kg | half.life  |  18.94 |  18.81 |  19.07 |   6 |
+| T 0.49 mg/kg | cmax       |  12.25 |   8.77 |  14.61 |   6 |
+| T 0.49 mg/kg | half.life  |  18.89 |  18.84 |  18.95 |   6 |
 | T 0.49 mg/kg | tmax       |   0.03 |   0.03 |   0.03 |   6 |
 | T 1.48 mg/kg | aucinf.obs |    NaN |     NA |     NA |   0 |
 | T 1.48 mg/kg | auclast    |    NaN |     NA |     NA |   0 |
-| T 1.48 mg/kg | cmax       |  34.27 |  28.47 |  41.56 |   6 |
-| T 1.48 mg/kg | half.life  |  18.63 |  18.47 |  18.74 |   6 |
+| T 1.48 mg/kg | cmax       |  31.65 |  29.87 |  34.88 |   6 |
+| T 1.48 mg/kg | half.life  |  18.60 |  18.51 |  18.69 |   6 |
 | T 1.48 mg/kg | tmax       |   0.03 |   0.03 |   0.03 |   6 |
 | T 2.96 mg/kg | aucinf.obs |    NaN |     NA |     NA |   0 |
 | T 2.96 mg/kg | auclast    |    NaN |     NA |     NA |   0 |
-| T 2.96 mg/kg | cmax       |  63.88 |  51.21 |  94.63 |   6 |
-| T 2.96 mg/kg | half.life  |  18.15 |  17.72 |  18.46 |   6 |
+| T 2.96 mg/kg | cmax       |  61.29 |  47.81 |  78.19 |   6 |
+| T 2.96 mg/kg | half.life  |  18.20 |  17.96 |  18.39 |   6 |
 | T 2.96 mg/kg | tmax       |   0.03 |   0.03 |   0.03 |   6 |
 | T 5.96 mg/kg | aucinf.obs |    NaN |     NA |     NA |   0 |
 | T 5.96 mg/kg | auclast    |    NaN |     NA |     NA |   0 |
-| T 5.96 mg/kg | cmax       | 132.84 |  95.62 | 194.53 |  46 |
-| T 5.96 mg/kg | half.life  |  14.84 |   9.67 |  17.55 |  46 |
+| T 5.96 mg/kg | cmax       | 132.53 |  94.72 | 188.47 |  46 |
+| T 5.96 mg/kg | half.life  |  14.92 |  10.06 |  17.35 |  46 |
 | T 5.96 mg/kg | tmax       |   0.03 |   0.03 |   0.03 |  46 |
 
 Per-arm NCA summary (geometric mean and 5-95% PI) from the simulated

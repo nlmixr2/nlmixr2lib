@@ -362,10 +362,10 @@ knitr::kable(nca_summary,
 
 | start | end | subgroup | N | auclast | cmax | cmin | tmax | ctrough |
 |---:|---:|:---|:---|:---|:---|:---|:---|:---|
-| 0 | 12 | IM or NM, MAC | 100 | 42.2 \[55.3\] | 6.31 \[45.1\] | 1.64 \[94.6\] | 2.00 \[0.500, 3.50\] | 1.67 \[94.8\] |
-| 0 | 12 | IM or NM, RIC | 100 | 62.7 \[43.9\] | 8.52 \[39.2\] | 2.92 \[66.7\] | 2.00 \[0.500, 3.50\] | 3.02 \[67.4\] |
-| 0 | 12 | PM, MAC | 100 | 74.4 \[41.1\] | 9.57 \[37.2\] | 3.70 \[64.3\] | 2.00 \[0.500, 3.50\] | 3.86 \[64.1\] |
-| 0 | 12 | PM, RIC | 100 | 99.1 \[33.6\] | 11.6 \[32.2\] | 5.49 \[48.8\] | 2.00 \[1.00, 3.50\] | 5.80 \[48.4\] |
+| 0 | 12 | IM or NM, MAC | 100 | 41.2 \[52.5\] | 6.33 \[39.9\] | 1.56 \[94.1\] | 2.00 \[0.500, 3.00\] | 1.60 \[94.8\] |
+| 0 | 12 | IM or NM, RIC | 100 | 61.0 \[44.4\] | 8.18 \[36.5\] | 2.78 \[70.3\] | 2.00 \[0.500, 4.00\] | 2.89 \[71.1\] |
+| 0 | 12 | PM, MAC | 100 | 75.6 \[42.4\] | 9.56 \[36.0\] | 3.77 \[62.0\] | 2.00 \[1.00, 3.00\] | 3.94 \[62.5\] |
+| 0 | 12 | PM, RIC | 100 | 99.8 \[42.4\] | 11.7 \[37.2\] | 5.44 \[61.1\] | 2.00 \[0.500, 4.00\] | 5.75 \[61.0\] |
 
 D0 dosing-interval NCA on the simulated cohort under the UNCMC
 institutional protocol (12 h interval). {.table}
@@ -400,10 +400,10 @@ knitr::kable(cmax_summary,
 
 | Sub-group | Simulated D0 Cmax median (ng/mL) | Simulated D0 Cmax 95th percentile (ng/mL) |
 |:---|---:|---:|
-| IM or NM, MAC | 6.69 | 13.73 |
-| IM or NM, RIC | 8.62 | 14.35 |
-| PM, MAC | 9.54 | 16.82 |
-| PM, RIC | 11.90 | 18.49 |
+| IM or NM, MAC | 6.40 | 11.82 |
+| IM or NM, RIC | 8.08 | 14.86 |
+| PM, MAC | 9.84 | 15.63 |
+| PM, RIC | 11.70 | 20.46 |
 
 Per-sub-group D0 Cmax distribution under the UNCMC protocol; compare
 against the Dunlap 2025 Methods 2.6 safety constraint of 24.2 ng/mL.

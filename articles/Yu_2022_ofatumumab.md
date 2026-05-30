@@ -10,7 +10,7 @@ library(PKNCA)
 #> 
 #>     filter
 library(rxode2)
-#> rxode2 5.0.2 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.1 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -244,12 +244,12 @@ sim_doses <- bind_rows(
       mutate(dose_mg = d)
   })
 )
-#> ℹ omega/sigma items treated as zero: 'etalka', 'etalcl', 'etalkdes', 'etalkep', 'etalr0', 'etalksyninf', 'etalvb', 'etalkout', 'etalemax', 'etalogitfdepot', 'etalvc', 'etalksyn0', 'etalq', 'etalb0', 'etalec50', 'etalgamma'
-#> ℹ omega/sigma items treated as zero: 'etalka', 'etalcl', 'etalkdes', 'etalkep', 'etalr0', 'etalksyninf', 'etalvb', 'etalkout', 'etalemax', 'etalogitfdepot', 'etalvc', 'etalksyn0', 'etalq', 'etalb0', 'etalec50', 'etalgamma'
-#> ℹ omega/sigma items treated as zero: 'etalka', 'etalcl', 'etalkdes', 'etalkep', 'etalr0', 'etalksyninf', 'etalvb', 'etalkout', 'etalemax', 'etalogitfdepot', 'etalvc', 'etalksyn0', 'etalq', 'etalb0', 'etalec50', 'etalgamma'
-#> ℹ omega/sigma items treated as zero: 'etalka', 'etalcl', 'etalkdes', 'etalkep', 'etalr0', 'etalksyninf', 'etalvb', 'etalkout', 'etalemax', 'etalogitfdepot', 'etalvc', 'etalksyn0', 'etalq', 'etalb0', 'etalec50', 'etalgamma'
-#> ℹ omega/sigma items treated as zero: 'etalka', 'etalcl', 'etalkdes', 'etalkep', 'etalr0', 'etalksyninf', 'etalvb', 'etalkout', 'etalemax', 'etalogitfdepot', 'etalvc', 'etalksyn0', 'etalq', 'etalb0', 'etalec50', 'etalgamma'
-#> ℹ omega/sigma items treated as zero: 'etalka', 'etalcl', 'etalkdes', 'etalkep', 'etalr0', 'etalksyninf', 'etalvb', 'etalkout', 'etalemax', 'etalogitfdepot', 'etalvc', 'etalksyn0', 'etalq', 'etalb0', 'etalec50', 'etalgamma'
+#> ℹ omega/sigma items treated as zero: 'etalka', 'etalcl', 'etalkdes', 'etalkep', 'etalrbase', 'etalksyninf', 'etalvb', 'etalkout', 'etalemax', 'etalogitfdepot', 'etalvc', 'etalksyn0', 'etalq', 'etalb0', 'etalec50', 'etalhill'
+#> ℹ omega/sigma items treated as zero: 'etalka', 'etalcl', 'etalkdes', 'etalkep', 'etalrbase', 'etalksyninf', 'etalvb', 'etalkout', 'etalemax', 'etalogitfdepot', 'etalvc', 'etalksyn0', 'etalq', 'etalb0', 'etalec50', 'etalhill'
+#> ℹ omega/sigma items treated as zero: 'etalka', 'etalcl', 'etalkdes', 'etalkep', 'etalrbase', 'etalksyninf', 'etalvb', 'etalkout', 'etalemax', 'etalogitfdepot', 'etalvc', 'etalksyn0', 'etalq', 'etalb0', 'etalec50', 'etalhill'
+#> ℹ omega/sigma items treated as zero: 'etalka', 'etalcl', 'etalkdes', 'etalkep', 'etalrbase', 'etalksyninf', 'etalvb', 'etalkout', 'etalemax', 'etalogitfdepot', 'etalvc', 'etalksyn0', 'etalq', 'etalb0', 'etalec50', 'etalhill'
+#> ℹ omega/sigma items treated as zero: 'etalka', 'etalcl', 'etalkdes', 'etalkep', 'etalrbase', 'etalksyninf', 'etalvb', 'etalkout', 'etalemax', 'etalogitfdepot', 'etalvc', 'etalksyn0', 'etalq', 'etalb0', 'etalec50', 'etalhill'
+#> ℹ omega/sigma items treated as zero: 'etalka', 'etalcl', 'etalkdes', 'etalkep', 'etalrbase', 'etalksyninf', 'etalvb', 'etalkout', 'etalemax', 'etalogitfdepot', 'etalvc', 'etalksyn0', 'etalq', 'etalb0', 'etalec50', 'etalhill'
 
 eval_days <- c(7, 28, 84, 182, 365, 730)
 sim_doses_eval <- sim_doses |>
@@ -284,7 +284,7 @@ three weekly loading doses).
 ``` r
 
 sim_20mg <- sim_one(20)
-#> ℹ omega/sigma items treated as zero: 'etalka', 'etalcl', 'etalkdes', 'etalkep', 'etalr0', 'etalksyninf', 'etalvb', 'etalkout', 'etalemax', 'etalogitfdepot', 'etalvc', 'etalksyn0', 'etalq', 'etalb0', 'etalec50', 'etalgamma'
+#> ℹ omega/sigma items treated as zero: 'etalka', 'etalcl', 'etalkdes', 'etalkep', 'etalrbase', 'etalksyninf', 'etalvb', 'etalkout', 'etalemax', 'etalogitfdepot', 'etalvc', 'etalksyn0', 'etalq', 'etalb0', 'etalec50', 'etalhill'
 
 ggplot(sim_20mg, aes(time, Cc)) +
   geom_line(colour = "steelblue", linewidth = 0.7) +
@@ -365,10 +365,10 @@ sim_by_wt <- bind_rows(lapply(weight_levels, function(w) {
   s |> filter(time >= auc_window[1], time <= auc_window[2]) |>
     mutate(WT = w)
 }))
-#> ℹ omega/sigma items treated as zero: 'etalka', 'etalcl', 'etalkdes', 'etalkep', 'etalr0', 'etalksyninf', 'etalvb', 'etalkout', 'etalemax', 'etalogitfdepot', 'etalvc', 'etalksyn0', 'etalq', 'etalb0', 'etalec50', 'etalgamma'
-#> ℹ omega/sigma items treated as zero: 'etalka', 'etalcl', 'etalkdes', 'etalkep', 'etalr0', 'etalksyninf', 'etalvb', 'etalkout', 'etalemax', 'etalogitfdepot', 'etalvc', 'etalksyn0', 'etalq', 'etalb0', 'etalec50', 'etalgamma'
-#> ℹ omega/sigma items treated as zero: 'etalka', 'etalcl', 'etalkdes', 'etalkep', 'etalr0', 'etalksyninf', 'etalvb', 'etalkout', 'etalemax', 'etalogitfdepot', 'etalvc', 'etalksyn0', 'etalq', 'etalb0', 'etalec50', 'etalgamma'
-#> ℹ omega/sigma items treated as zero: 'etalka', 'etalcl', 'etalkdes', 'etalkep', 'etalr0', 'etalksyninf', 'etalvb', 'etalkout', 'etalemax', 'etalogitfdepot', 'etalvc', 'etalksyn0', 'etalq', 'etalb0', 'etalec50', 'etalgamma'
+#> ℹ omega/sigma items treated as zero: 'etalka', 'etalcl', 'etalkdes', 'etalkep', 'etalrbase', 'etalksyninf', 'etalvb', 'etalkout', 'etalemax', 'etalogitfdepot', 'etalvc', 'etalksyn0', 'etalq', 'etalb0', 'etalec50', 'etalhill'
+#> ℹ omega/sigma items treated as zero: 'etalka', 'etalcl', 'etalkdes', 'etalkep', 'etalrbase', 'etalksyninf', 'etalvb', 'etalkout', 'etalemax', 'etalogitfdepot', 'etalvc', 'etalksyn0', 'etalq', 'etalb0', 'etalec50', 'etalhill'
+#> ℹ omega/sigma items treated as zero: 'etalka', 'etalcl', 'etalkdes', 'etalkep', 'etalrbase', 'etalksyninf', 'etalvb', 'etalkout', 'etalemax', 'etalogitfdepot', 'etalvc', 'etalksyn0', 'etalq', 'etalb0', 'etalec50', 'etalhill'
+#> ℹ omega/sigma items treated as zero: 'etalka', 'etalcl', 'etalkdes', 'etalkep', 'etalrbase', 'etalksyninf', 'etalvb', 'etalkout', 'etalemax', 'etalogitfdepot', 'etalvc', 'etalksyn0', 'etalq', 'etalb0', 'etalec50', 'etalhill'
 
 auc_by_wt <- sim_by_wt |>
   group_by(WT) |>

@@ -10,7 +10,7 @@ library(PKNCA)
 #> 
 #>     filter
 library(rxode2)
-#> rxode2 5.0.2 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.1 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -1838,9 +1838,9 @@ knitr::kable(
 
 | Cycle | AUC (ng\*day/mL) sim | Cmax (ng/mL) sim | Ctrough (ng/mL) sim | AUC (ng\*day/mL) published | Cmax (ng/mL) published | Ctrough (ng/mL) published |
 |:---|:---|:---|:---|:---|:---|:---|
-| 1 | NaN +/- NA | 846 +/- 160 | NaN +/- NA | 2,020 +/- 571 | 690 +/- 116 | 13.1 +/- 6.58 |
-| 3 | NaN +/- NA | 869 +/- 162 | NaN +/- NA | 2,640 +/- 522 | 713 +/- 117 | 23.7 +/- 10.1 |
-| 6 | NaN +/- NA | 670 +/- 107 | 25.8 +/- 13.8 | 2,900 +/- 577 | 721 +/- 118 | 29.3 +/- 12.3 |
+| 1 | NaN +/- NA | 821 +/- 144 | NaN +/- NA | 2,020 +/- 571 | 690 +/- 116 | 13.1 +/- 6.58 |
+| 3 | NaN +/- NA | 845 +/- 146 | NaN +/- NA | 2,640 +/- 522 | 713 +/- 117 | 23.7 +/- 10.1 |
+| 6 | NaN +/- NA | 662 +/- 103 | 28.1 +/- 14.4 | 2,900 +/- 577 | 721 +/- 118 | 29.3 +/- 12.3 |
 
 acMMAE NCA – simulated (200 virtual subjects, mixed covariates) vs. Lu
 2019 Table 3 (n = 460, 1.8 mg/kg q3w EBE-based). {.table}
@@ -1879,9 +1879,9 @@ knitr::kable(
 
 | Cycle | AUC (ng\*day/mL) sim | Cmax (ng/mL) sim | Ctrough (ng/mL) sim | AUC (ng\*day/mL) published | Cmax (ng/mL) published | Ctrough (ng/mL) published |
 |:---|:---|:---|:---|:---|:---|:---|
-| 1 | NaN +/- NA | 6.14 +/- 4.12 | NaN +/- NA | 36.5 +/- 33.9 | 4.08 +/- 3.99 | 0.269 +/- 0.820 |
-| 3 | NaN +/- NA | 3.62 +/- 1.86 | NaN +/- NA | 26.4 +/- 24.5 | 2.45 +/- 1.83 | 0.302 +/- 0.707 |
-| 6 | NaN +/- NA | 3.40 +/- 1.76 | 0.409 +/- 0.395 | 25.1 +/- 19.6 | 2.27 +/- 1.57 | 0.308 +/- 0.527 |
+| 1 | NaN +/- NA | 5.91 +/- 5.44 | NaN +/- NA | 36.5 +/- 33.9 | 4.08 +/- 3.99 | 0.269 +/- 0.820 |
+| 3 | NaN +/- NA | 3.38 +/- 1.73 | NaN +/- NA | 26.4 +/- 24.5 | 2.45 +/- 1.83 | 0.302 +/- 0.707 |
+| 6 | NaN +/- NA | 3.16 +/- 1.62 | 0.422 +/- 0.399 | 25.1 +/- 19.6 | 2.27 +/- 1.57 | 0.308 +/- 0.527 |
 
 Unconjugated MMAE NCA – simulated (200 virtual subjects, mixed
 covariates) vs. Lu 2019 Table 3 (n = 460, 1.8 mg/kg q3w EBE-based).

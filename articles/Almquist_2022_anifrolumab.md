@@ -214,7 +214,7 @@ sim_single_typ <- rxode2::rxSolve(
   keep = c("WT", "BGENE21_HIGH", "dose_grp")
 )
 #> ℹ parameter labels from comments will be replaced by 'label()'
-#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalr0', 'etatmax'
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalrbase', 'etatmax'
 
 # Stochastic dose panel (IIV included)
 sim_dose_panel <- rxode2::rxSolve(
@@ -441,7 +441,7 @@ knitr::kable(nca_summary,
 
 | Interval Start | Interval End | treatment | N | Cmax (ug/mL) | Tmax (day) | Half-life (day) | AUCinf,obs (day\*ug/mL) |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | Inf | 300 mg | 25 | 69.5 \[24.3\] | 1.00 \[1.00, 1.00\] | 3.12 \[1.01\], n=24 | NC |
+| 0 | Inf | 300 mg | 25 | 64.6 \[18.7\] | 1.00 \[1.00, 1.00\] | 3.42 \[1.69\], n=24 | NC |
 
 Simulated NCA parameters for the 300 mg IV single-dose IFNGS-high
 cohort. {.table}

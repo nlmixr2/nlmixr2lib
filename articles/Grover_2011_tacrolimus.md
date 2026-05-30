@@ -234,7 +234,7 @@ knitr::kable(nca_summary,
 
 | start | end | treatment | N | auclast | cmax | cmin | tmax | ctrough | half.life |
 |---:|---:|:---|:---|:---|:---|:---|:---|:---|:---|
-| 0 | 12 | 1.27 mg BID | 200 | 106 \[30.0\] | 14.9 \[25.9\] | 5.75 \[42.1\] | 2.00 \[1.00, 4.00\] | 6.07 \[42.9\] | 19.0 \[8.95\] |
+| 0 | 12 | 1.27 mg BID | 200 | 107 \[32.0\] | 14.9 \[25.3\] | 5.71 \[44.2\] | 2.00 \[1.00, 4.00\] | 6.03 \[45.2\] | 18.3 \[9.83\] |
 
 Day-5 NCA on the simulated cohort (steady-state 12 h interval, 1.27 mg
 twice daily, sampling at pre-dose and 0.5, 1, 2, 4, 6, 8, 12 h
@@ -312,7 +312,7 @@ knitr::kable(tbl, caption = "Simulated day-5 steady-state metrics vs. Grover 201
 |:---|:---|
 | Trough at 12 h post-dose (ng/mL) – Grover 2011 Table 1 cohort mean (SD) | 6.53 (2.43) |
 | Trough at 12 h post-dose (ng/mL) – typical-value simulation (no IIV) | 6.37 |
-| Trough at 12 h post-dose (ng/mL) – simulated cohort median (10-90 pct) | 6.27 (3.60-9.88) |
+| Trough at 12 h post-dose (ng/mL) – simulated cohort median (10-90 pct) | 6.27 (3.32-9.98) |
 | Peripheral volume V2/F (L) – Grover 2011 Table 2 mean (SD) | 391.0 (18.6) |
 | Peripheral volume V2/F (L) – typical-value population value | 388.7 |
 | alpha half-life (h) – Grover 2011 Table 2 mean (SD) | 1.18 (0.416) |

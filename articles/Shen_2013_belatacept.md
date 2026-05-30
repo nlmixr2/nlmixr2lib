@@ -296,8 +296,8 @@ knitr::kable(nca_summary, caption = "Simulated single-dose NCA parameters by coh
 
 | start | end | cohort | N | auclast | cmax | tmax | half.life | aucinf.obs | cl.obs |
 |---:|---:|:---|:---|:---|:---|:---|:---|:---|:---|
-| 0 | 28 | 10 mg/kg | 10 | NC | 101 \[35.8\] | 0.0208 \[0.0208, 0.0208\] | 6.89 \[2.46\] | NC | NC |
-| 0 | 28 | 5 mg/kg | 14 | NC | 47.8 \[27.4\] | 0.0208 \[0.0208, 0.0208\] | 6.95 \[4.67\] | NC | NC |
+| 0 | 28 | 10 mg/kg | 10 | NC | 78.3 \[29.8\] | 0.0208 \[0.0208, 0.0208\] | 8.68 \[2.72\] | NC | NC |
+| 0 | 28 | 5 mg/kg | 14 | NC | 50.0 \[36.8\] | 0.0208 \[0.0208, 0.0208\] | 6.30 \[1.95\] | NC | NC |
 
 Simulated single-dose NCA parameters by cohort. {.table}
 

@@ -313,8 +313,8 @@ knitr::kable(overall, digits = 1,
 
 | dose_lab            | p_bleed_pct |
 |:--------------------|------------:|
-| Fondaparinux 1.5 mg |         4.6 |
-| Fondaparinux 2.5 mg |         6.4 |
+| Fondaparinux 1.5 mg |         4.7 |
+| Fondaparinux 2.5 mg |         6.1 |
 
 Simulated probability (%) of major bleeding at day 11, overall by dose.
 {.table}
@@ -332,10 +332,10 @@ knitr::kable(sex_dose, digits = 1,
 
 | sex_lab | dose_lab            | p_bleed_pct |   n |
 |:--------|:--------------------|------------:|----:|
-| Men     | Fondaparinux 1.5 mg |         8.7 | 102 |
-| Men     | Fondaparinux 2.5 mg |        12.1 | 150 |
-| Women   | Fondaparinux 1.5 mg |         3.2 | 298 |
-| Women   | Fondaparinux 2.5 mg |         4.5 | 450 |
+| Men     | Fondaparinux 1.5 mg |         9.3 | 102 |
+| Men     | Fondaparinux 2.5 mg |        11.5 | 150 |
+| Women   | Fondaparinux 1.5 mg |         3.1 | 298 |
+| Women   | Fondaparinux 2.5 mg |         4.4 | 450 |
 
 Simulated probability (%) of major bleeding at day 11 by sex and dose.
 {.table}

@@ -4,7 +4,7 @@
 
 library(nlmixr2lib)
 library(rxode2)
-#> rxode2 5.0.2 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.1 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -324,8 +324,8 @@ knitr::kable(
 
 | start | end | regimen | N | auclast | cmax | cmin | tmax |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | 672 | Abdomen 45 mg q4w | 100 | 1900 \[34.3\] | 214 \[40.7\] | 0.195 \[106\] | 2.50 \[1.00, 6.00\] |
-| 0 | 672 | Arm 45 mg q4w | 100 | 1880 \[37.4\] | 191 \[44.5\] | 0.194 \[108\] | 3.00 \[1.00, 6.00\] |
+| 0 | 672 | Abdomen 45 mg q4w | 100 | 1940 \[35.2\] | 216 \[40.4\] | 0.197 \[112\] | 2.50 \[1.00, 5.50\] |
+| 0 | 672 | Arm 45 mg q4w | 100 | 1940 \[36.7\] | 184 \[38.7\] | 0.204 \[121\] | 3.00 \[1.00, 6.00\] |
 
 Simulated steady-state NCA on cycle 4 (45 mg q4w; arm vs abdomen).
 {.table style="width:100%;"}

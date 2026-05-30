@@ -344,9 +344,11 @@ intervals <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- PKNCA::pk.nca(nca_data)
-#> Warning: Too few points for half-life calculation (min.hl.points=3 with only 2 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 2 points)
+#> Warning: Too few points for half-life calculation (min.hl.points=3 with only 2
+#> points)
 #> Warning: Too few points for half-life calculation (min.hl.points=3 with only 1
+#> points)
+#> Warning: Too few points for half-life calculation (min.hl.points=3 with only 0
 #> points)
 #> Warning: Too few points for half-life calculation (min.hl.points=3 with only 2
 #> points)
@@ -367,16 +369,16 @@ knitr::kable(
 )
 ```
 
-| treatment            | PPTESTCD   |     median |        p05 |         p95 |
-|:---------------------|:-----------|-----------:|-----------:|------------:|
-| morbidly obese adult | aucinf.obs | 4850.73501 | 3000.23162 | 10046.14931 |
-| morbidly obese adult | cmax       |   36.88072 |   20.08922 |    62.04236 |
-| morbidly obese adult | half.life  |   68.16476 |   40.11892 |   239.08697 |
-| morbidly obese adult | tmax       |   75.00000 |   42.25000 |   105.00000 |
-| obese adolescent     | aucinf.obs | 4326.23354 | 2109.77753 |  7928.56901 |
-| obese adolescent     | cmax       |   32.25126 |   18.02230 |    61.47462 |
-| obese adolescent     | half.life  |   50.72530 |   37.92267 |   168.87817 |
-| obese adolescent     | tmax       |   75.00000 |   50.00000 |   105.00000 |
+| treatment            | PPTESTCD   |     median |        p05 |        p95 |
+|:---------------------|:-----------|-----------:|-----------:|-----------:|
+| morbidly obese adult | aucinf.obs | 4492.86236 | 2593.20712 | 7835.26558 |
+| morbidly obese adult | cmax       |   31.92450 |   15.51536 |   65.60762 |
+| morbidly obese adult | half.life  |   60.81191 |   37.41837 |  209.94129 |
+| morbidly obese adult | tmax       |   60.00000 |   50.00000 |  113.25000 |
+| obese adolescent     | aucinf.obs | 4118.91020 | 1932.57725 | 7419.21704 |
+| obese adolescent     | cmax       |   34.28391 |   18.13702 |   63.28903 |
+| obese adolescent     | half.life  |   53.80759 |   34.71332 |  158.42237 |
+| obese adolescent     | tmax       |   60.00000 |   42.25000 |   90.00000 |
 
 Simulated NCA parameters by treatment group (single 7500 microgram oral
 midazolam; PKNCA over the pre-IV window). {.table}
@@ -429,8 +431,8 @@ knitr::kable(
 
 | treatment | auc_inf_med_ug_min_per_L | cl_oral_implied_L_per_min | bundle_typical_CL_L_per_min | publication_typical_CL_L_per_min |
 |:---|---:|---:|---:|---:|
-| morbidly obese adult | 4851 | 1.058 | 0.540 | 0.44 |
-| obese adolescent | 4326 | 1.186 | 0.793 | 0.71 |
+| morbidly obese adult | 4493 | 1.142 | 0.540 | 0.44 |
+| obese adolescent | 4119 | 1.245 | 0.793 | 0.71 |
 
 Simulated AUCinf, NCA-implied oral CL, the bundle .lst typical CL, and
 the publication’s typical CL by treatment group. {.table}

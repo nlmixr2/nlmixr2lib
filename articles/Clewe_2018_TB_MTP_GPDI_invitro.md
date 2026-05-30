@@ -172,7 +172,7 @@ between simulations.
 ``` r
 
 # Static observation grid spanning the 6-day in vitro experiment. The model
-# carries five state ODEs (fbugs, sbugs, nbugs, ar_off, ar_on) and three
+# carries five state ODEs (fbugs, sbugs, nbugs, aroff, aron) and three
 # covariates (CONC_RIF_MGL, CONC_INH_MGL, CONC_EMB_MGL); there are no dosing
 # events because the in vitro drug concentrations are constant by design.
 
@@ -403,13 +403,13 @@ enough, AR_on -\> 1 and INH becomes ineffective.
 sim %>%
   filter(regimen %in% c("Natural growth", "INH 0.625 mg/L", "INH 10 mg/L", "INH 40 mg/L"),
          time %in% c(0, 1, 3, 6)) %>%
-  mutate(ar_total = ar_off + ar_on) %>%
-  select(regimen, time, ar_off, ar_on, ar_total) %>%
+  mutate(ar_total = aroff + aron) %>%
+  select(regimen, time, aroff, aron, ar_total) %>%
   knitr::kable(digits = 4,
                caption = "AR_off / AR_on / total over time -- total must equal 1.")
 ```
 
-| regimen        | time | ar_off |  ar_on | ar_total |
+| regimen        | time |  aroff |   aron | ar_total |
 |:---------------|-----:|-------:|-------:|---------:|
 | Natural growth |    0 | 1.0000 | 0.0000 |        1 |
 | Natural growth |    1 | 1.0000 | 0.0000 |        1 |
@@ -557,9 +557,9 @@ Clinical-Cmax trio (RIF 2 + INH 10 + EMB 8 mg/L) over the 6-day window.
   unchanged at -0.99 vs -0.9999 within the saturating Emax term.
 - **Non-canonical compartment names.** The model uses bacterial-state
   compartments `fbugs` / `sbugs` / `nbugs` and adaptive-resistance
-  states `ar_off` / `ar_on` (mirroring the Chen 2017 mouse twin). These
-  do not match the canonical `depot` / `central` / `peripheral1`
-  register and may trigger
+  states `aroff` / `aron` (mirroring the Chen 2017 mouse twin). These do
+  not match the canonical `depot` / `central` / `peripheral1` register
+  and may trigger
   [`checkModelConventions()`](https://nlmixr2.github.io/nlmixr2lib/reference/checkModelConventions.md)
   warnings; the deviation is intentional because the model carries no PK
   structure – the three bacterial states and two resistance states are

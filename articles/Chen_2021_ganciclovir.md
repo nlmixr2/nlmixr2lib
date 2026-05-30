@@ -259,8 +259,8 @@ knitr::kable(nca_summary,
 
 | Interval Start | Interval End | cohort | N | AUClast (hour\*mg/L) | Cmax (mg/L) | Cmin (mg/L) | Tmax (hour) |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | 24 | 450 mg | 60 | 31.7 \[33.3\] | 3.74 \[45.8\] | 0.263 \[107\] | 2.50 \[1.00, 7.75\] |
-| 0 | 24 | 900 mg | 60 | 60.4 \[34.3\] | 7.66 \[40.2\] | 0.450 \[87.8\] | 2.12 \[1.00, 7.00\] |
+| 0 | 24 | 450 mg | 60 | 30.8 \[26.9\] | 3.87 \[39.5\] | 0.233 \[89.2\] | 2.25 \[1.00, 8.00\] |
+| 0 | 24 | 900 mg | 60 | 63.3 \[31.3\] | 8.18 \[33.5\] | 0.465 \[88.6\] | 2.50 \[1.00, 6.25\] |
 
 Day-7 NCA on the simulated cohort (steady-state 24 h interval, 450 vs
 900 mg VGCV daily). {.table}
@@ -301,8 +301,8 @@ knitr::kable(comparison, digits = 2,
 
 | cohort | Cmax_pub | Tmax_pub | AUC0_24_pub | AUC0_24_sim | Cmax_sim | Tmax_sim | Cmax_pct_diff | Tmax_pct_diff | AUC0_24_pct_diff |
 |:---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| 450 mg | 4.2 | 2.7 | 28.4 | 33.32 | 4.08 | 3.11 | -2.94 | 15.28 | 17.32 |
-| 900 mg | 8.6 | 2.7 | 60.7 | 63.78 | 8.19 | 2.78 | -4.72 | 3.09 | 5.08 |
+| 450 mg | 4.2 | 2.7 | 28.4 | 31.84 | 4.13 | 2.86 | -1.63 | 5.86 | 12.10 |
+| 900 mg | 8.6 | 2.7 | 60.7 | 66.37 | 8.61 | 2.65 | 0.17 | -1.70 | 9.34 |
 
 Simulated mean NCA values vs. Chen 2021 Table 2 Modeling Group means.
 {.table}

@@ -271,7 +271,7 @@ knitr::kable(summary(nca_res),
 
 | Interval Start | Interval End | treatment | N | AUClast (h\*ug/L) | Cmax (ug/L) | Cmin (ug/L) | Tmax (h) | Cav (ug/L) |
 |---:|---:|:---|:---|:---|:---|:---|:---|:---|
-| 0 | 72 | 50 ug/h Durogesic, q72h | 200 | 28.9 \[42.3\] | 0.553 \[40.0\] | 0.251 \[43.8\] | 8.00 \[4.00, 12.0\] | 0.401 \[42.3\] |
+| 0 | 72 | 50 ug/h Durogesic, q72h | 200 | 27.4 \[40.2\] | 0.528 \[37.9\] | 0.238 \[41.6\] | 8.00 \[4.00, 18.0\] | 0.381 \[40.2\] |
 
 Steady-state NCA over the final 72-h patch interval (50 ug/h Durogesic,
 n = 200). {.table style="width:100%;"}
@@ -319,8 +319,8 @@ knitr::kable(compare_tbl,
 | Source | Cavg_ugL |
 |:---|:---|
 | Closed-form Cavg = R/CL (typical 70 kg) | 0.41 |
-| Simulated cohort median Cavg | 0.41 |
-| Simulated cohort 5-95% range | 0.22 - 0.75 |
+| Simulated cohort median Cavg | 0.37 |
+| Simulated cohort 5-95% range | 0.21 - 0.69 |
 | Bista 2015 Table 1 (all dose levels, all sampling times) | 0.88 (median); 0.04 - 9.72 (range) |
 
 Predicted steady-state Cavg for the 50 ug/h adult cohort vs. observed.

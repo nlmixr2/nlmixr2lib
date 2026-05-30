@@ -74,7 +74,7 @@ each evaluated at steady state.
 
 set.seed(20260521L)
 
-n_per_cell  <- 200L
+n_per_cell  <- 50L    # downsampled from 200 for vignette build budget; PI bands and trough % preserved
 tau_bid     <- 12     # h, dosing interval for 200 mg BID
 tau_qd      <- 24     # h, dosing interval for 400 mg QD
 n_doses_bid <- 28L    # 14 days of BID dosing
@@ -83,7 +83,7 @@ n_doses_qd  <- 14L    # 14 days of QD dosing
 # Sampling times: full intra-interval profile in the LAST dosing interval
 ss_start_bid <- (n_doses_bid - 1L) * tau_bid     # = 324 h
 ss_start_qd  <- (n_doses_qd  - 1L) * tau_qd      # = 312 h
-prof_bid <- seq(0, tau_bid, by = 0.5)            # 0, 0.5, ..., 12 h within interval
+prof_bid <- seq(0, tau_bid, by = 1.0)            # 0, 1, ..., 12 h (coarsened from by=0.5 for build budget)
 prof_qd  <- seq(0, tau_qd, by = 1.0)             # 0, 1, ..., 24 h within interval
 
 # Genotype mapping table for the three modelled strata
@@ -220,7 +220,7 @@ ggplot(sim_pi, aes(tad, Q50)) +
     title = "Replicates Schipani 2011 Figure 2",
     caption = paste(
       "Median + 5-95% PI at WT = 70 kg pooled across three CYP2B6 strata",
-      "(516GG/983TT, 516TT, 983TC), n = 200 per stratum.",
+      "(516GG/983TT, 516TT, 983TC), n = 50 per stratum.",
       "Red dashed line: 3 mg/L MEC."
     )
   )
@@ -269,24 +269,24 @@ knitr::kable(
 
 | regimen | geno        | wt_strat | pct_below_mec | median_ctrough |
 |:--------|:------------|:---------|--------------:|---------------:|
-| 200 BID | 516GG/983TT | 50 kg    |           7.0 |           4.89 |
-| 200 BID | 516GG/983TT | 70 kg    |          14.0 |           4.34 |
-| 200 BID | 516GG/983TT | 90 kg    |          23.5 |           3.74 |
-| 200 BID | 516TT       | 50 kg    |           0.5 |           8.37 |
-| 200 BID | 516TT       | 70 kg    |           1.0 |           6.90 |
-| 200 BID | 516TT       | 90 kg    |           1.5 |           5.89 |
-| 200 BID | 983TC       | 50 kg    |           0.0 |           9.24 |
-| 200 BID | 983TC       | 70 kg    |           0.5 |           7.59 |
-| 200 BID | 983TC       | 90 kg    |           0.5 |           6.45 |
-| 400 QD  | 516GG/983TT | 50 kg    |          20.0 |           4.19 |
-| 400 QD  | 516GG/983TT | 70 kg    |          30.5 |           3.76 |
-| 400 QD  | 516GG/983TT | 90 kg    |          44.5 |           3.14 |
-| 400 QD  | 516TT       | 50 kg    |           0.5 |           7.69 |
-| 400 QD  | 516TT       | 70 kg    |           1.0 |           6.41 |
-| 400 QD  | 516TT       | 90 kg    |           6.5 |           5.36 |
-| 400 QD  | 983TC       | 50 kg    |           0.0 |           8.49 |
-| 400 QD  | 983TC       | 70 kg    |           0.5 |           6.93 |
-| 400 QD  | 983TC       | 90 kg    |           5.0 |           5.41 |
+| 200 BID | 516GG/983TT | 50 kg    |             4 |           4.86 |
+| 200 BID | 516GG/983TT | 70 kg    |             8 |           4.85 |
+| 200 BID | 516GG/983TT | 90 kg    |            18 |           3.99 |
+| 200 BID | 516TT       | 50 kg    |             0 |           8.15 |
+| 200 BID | 516TT       | 70 kg    |             0 |           7.38 |
+| 200 BID | 516TT       | 90 kg    |             4 |           5.85 |
+| 200 BID | 983TC       | 50 kg    |             0 |           8.76 |
+| 200 BID | 983TC       | 70 kg    |             4 |           7.55 |
+| 200 BID | 983TC       | 90 kg    |             2 |           6.42 |
+| 400 QD  | 516GG/983TT | 50 kg    |            18 |           4.53 |
+| 400 QD  | 516GG/983TT | 70 kg    |            32 |           4.09 |
+| 400 QD  | 516GG/983TT | 90 kg    |            42 |           3.24 |
+| 400 QD  | 516TT       | 50 kg    |             0 |           7.66 |
+| 400 QD  | 516TT       | 70 kg    |             2 |           5.82 |
+| 400 QD  | 516TT       | 90 kg    |             4 |           5.04 |
+| 400 QD  | 983TC       | 50 kg    |             0 |           8.24 |
+| 400 QD  | 983TC       | 70 kg    |             0 |           7.47 |
+| 400 QD  | 983TC       | 90 kg    |             8 |           5.84 |
 
 Simulated % of subjects with steady-state Ctrough \< 3 mg/L (MEC), by
 regimen, CYP2B6 genotype, and weight stratum. Replicates the Schipani
@@ -326,7 +326,7 @@ pct_below_mec |>
     title = "Replicates Schipani 2011 Figure 3",
     caption = paste(
       "Simulated steady-state trough proportions below the 3 mg/L MEC,",
-      "n = 200 per cell. Compare to Schipani 2011 Figure 3 narrative."
+      "n = 50 per cell. Compare to Schipani 2011 Figure 3 narrative."
     )
   )
 ```
@@ -419,24 +419,24 @@ knitr::kable(
 
 | treatment | auclast_median | cmax_median | cmin_median | half.life_median | tmax_median | auclast_p05 | cmax_p05 | cmin_p05 | half.life_p05 | tmax_p05 | auclast_p95 | cmax_p95 | cmin_p95 | half.life_p95 | tmax_p95 |
 |:---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| 200 BID \| 516GG/983TT \| 50 kg | 65.35 | 5.88 | 4.89 | 34.27 | 2 | 40.67 | 3.83 | 2.85 | 21.31 | 2 | 97.15 | 8.52 | 7.53 | 51.43 | 2.0 |
-| 200 BID \| 516GG/983TT \| 70 kg | 58.67 | 5.32 | 4.34 | 30.75 | 2 | 36.72 | 3.50 | 2.52 | 19.24 | 2 | 87.86 | 7.75 | 6.76 | 46.32 | 2.0 |
-| 200 BID \| 516GG/983TT \| 90 kg | 51.49 | 4.72 | 3.74 | 26.98 | 2 | 29.47 | 2.90 | 1.92 | 15.44 | 2 | 85.28 | 7.53 | 6.54 | 44.91 | 2.0 |
-| 200 BID \| 516TT \| 50 kg | 107.07 | 9.34 | 8.35 | 57.03 | 2 | 71.53 | 6.39 | 5.40 | 37.54 | 2 | 167.80 | 14.37 | 13.36 | 96.46 | 2.5 |
-| 200 BID \| 516TT \| 70 kg | 89.43 | 7.88 | 6.89 | 47.17 | 2 | 56.72 | 5.16 | 4.18 | 29.73 | 2 | 145.76 | 12.55 | 11.55 | 80.84 | 2.5 |
-| 200 BID \| 516TT \| 90 kg | 77.32 | 6.87 | 5.88 | 40.63 | 2 | 50.25 | 4.62 | 3.64 | 26.33 | 2 | 123.08 | 10.67 | 9.67 | 66.44 | 2.0 |
-| 200 BID \| 983TC \| 50 kg | 117.38 | 10.20 | 9.20 | 63.03 | 2 | 75.40 | 6.71 | 5.73 | 39.61 | 2 | 175.63 | 15.02 | 14.00 | 102.49 | 2.5 |
-| 200 BID \| 983TC \| 70 kg | 97.73 | 8.57 | 7.58 | 51.75 | 2 | 61.32 | 5.54 | 4.56 | 32.15 | 2 | 143.17 | 12.33 | 11.33 | 79.12 | 2.5 |
-| 200 BID \| 983TC \| 90 kg | 84.09 | 7.43 | 6.45 | 44.27 | 2 | 48.85 | 4.50 | 3.52 | 25.60 | 2 | 126.31 | 10.94 | 9.94 | 68.40 | 2.0 |
-| 400 QD \| 516GG/983TT \| 50 kg | 127.96 | 6.41 | 4.19 | 33.46 | 3 | 76.69 | 4.31 | 2.12 | 20.06 | 3 | 208.21 | 9.72 | 7.48 | 55.17 | 3.0 |
-| 400 QD \| 516GG/983TT \| 70 kg | 117.42 | 5.98 | 3.76 | 30.70 | 3 | 69.14 | 4.00 | 1.82 | 18.09 | 3 | 187.01 | 8.85 | 6.61 | 49.27 | 3.0 |
-| 400 QD \| 516GG/983TT \| 90 kg | 102.19 | 5.35 | 3.14 | 26.71 | 3 | 62.32 | 3.72 | 1.55 | 16.31 | 3 | 164.01 | 7.90 | 5.67 | 43.03 | 3.0 |
-| 400 QD \| 516TT \| 50 kg | 212.23 | 9.89 | 7.64 | 56.31 | 3 | 132.83 | 6.61 | 4.39 | 34.74 | 3 | 321.68 | 14.38 | 12.10 | 91.01 | 3.0 |
-| 400 QD \| 516TT \| 70 kg | 181.71 | 8.63 | 6.39 | 47.82 | 3 | 117.49 | 5.98 | 3.76 | 30.72 | 3 | 284.57 | 12.86 | 10.60 | 78.28 | 3.0 |
-| 400 QD \| 516TT \| 90 kg | 156.23 | 7.58 | 5.35 | 40.94 | 3 | 94.99 | 5.06 | 2.85 | 24.83 | 3 | 256.14 | 11.69 | 9.44 | 69.27 | 3.0 |
-| 400 QD \| 983TC \| 50 kg | 231.45 | 10.68 | 8.43 | 61.86 | 3 | 146.77 | 7.19 | 4.96 | 38.43 | 3 | 354.61 | 15.72 | 13.43 | 103.44 | 3.0 |
-| 400 QD \| 983TC \| 70 kg | 194.16 | 9.14 | 6.90 | 51.24 | 3 | 125.60 | 6.32 | 4.09 | 32.84 | 3 | 315.46 | 14.12 | 11.85 | 88.78 | 3.0 |
-| 400 QD \| 983TC \| 90 kg | 157.50 | 7.63 | 5.40 | 41.28 | 3 | 100.24 | 5.27 | 3.06 | 26.20 | 3 | 265.54 | 12.08 | 9.82 | 72.18 | 3.0 |
+| 200 BID \| 516GG/983TT \| 50 kg | 64.88 | 5.84 | 4.86 | 34.11 | 2 | 45.75 | 4.26 | 3.27 | 24.05 | 2 | 92.23 | 8.12 | 7.13 | 48.85 | 2 |
+| 200 BID \| 516GG/983TT \| 70 kg | 64.75 | 5.83 | 4.85 | 34.04 | 2 | 39.70 | 3.75 | 2.77 | 20.87 | 2 | 104.59 | 9.14 | 8.15 | 55.74 | 2 |
+| 200 BID \| 516GG/983TT \| 90 kg | 54.37 | 4.97 | 3.99 | 28.57 | 2 | 36.50 | 3.49 | 2.51 | 19.20 | 2 | 85.34 | 7.54 | 6.56 | 45.05 | 2 |
+| 200 BID \| 516TT \| 50 kg | 104.37 | 9.12 | 8.13 | 55.60 | 2 | 69.91 | 6.26 | 5.28 | 36.78 | 2 | 160.02 | 13.73 | 12.73 | 90.91 | 2 |
+| 200 BID \| 516TT \| 70 kg | 95.05 | 8.35 | 7.36 | 50.37 | 2 | 64.19 | 5.79 | 4.80 | 33.75 | 2 | 145.68 | 12.55 | 11.55 | 80.95 | 2 |
+| 200 BID \| 516TT \| 90 kg | 76.80 | 6.83 | 5.85 | 40.45 | 2 | 42.47 | 3.98 | 3.00 | 22.33 | 2 | 128.18 | 11.10 | 10.10 | 69.70 | 2 |
+| 200 BID \| 983TC \| 50 kg | 111.58 | 9.72 | 8.73 | 59.75 | 2 | 72.60 | 6.49 | 5.50 | 38.21 | 2 | 181.02 | 15.47 | 14.45 | 106.75 | 2 |
+| 200 BID \| 983TC \| 70 kg | 97.14 | 8.53 | 7.54 | 51.54 | 2 | 50.54 | 4.65 | 3.67 | 26.56 | 2 | 160.71 | 13.79 | 12.78 | 91.42 | 2 |
+| 200 BID \| 983TC \| 90 kg | 83.54 | 7.40 | 6.41 | 44.07 | 2 | 49.40 | 4.56 | 3.58 | 25.96 | 2 | 126.64 | 10.97 | 9.98 | 68.75 | 2 |
+| 400 QD \| 516GG/983TT \| 50 kg | 136.07 | 6.75 | 4.52 | 35.60 | 3 | 80.10 | 4.45 | 2.25 | 20.95 | 3 | 223.47 | 10.35 | 8.10 | 59.54 | 3 |
+| 400 QD \| 516GG/983TT \| 70 kg | 125.42 | 6.31 | 4.09 | 32.79 | 3 | 65.18 | 3.84 | 1.66 | 17.06 | 3 | 182.72 | 8.67 | 6.44 | 48.10 | 3 |
+| 400 QD \| 516GG/983TT \| 90 kg | 104.63 | 5.45 | 3.24 | 27.35 | 3 | 66.44 | 3.89 | 1.71 | 17.39 | 3 | 164.44 | 7.92 | 5.69 | 43.15 | 3 |
+| 400 QD \| 516TT \| 50 kg | 211.63 | 9.86 | 7.62 | 56.14 | 3 | 142.97 | 7.03 | 4.81 | 37.42 | 3 | 335.30 | 14.93 | 12.65 | 96.00 | 3 |
+| 400 QD \| 516TT \| 70 kg | 167.37 | 8.04 | 5.81 | 43.93 | 3 | 109.45 | 5.65 | 3.44 | 28.61 | 3 | 276.72 | 12.54 | 10.28 | 75.73 | 3 |
+| 400 QD \| 516TT \| 90 kg | 148.47 | 7.26 | 5.03 | 38.88 | 3 | 108.27 | 5.60 | 3.39 | 28.30 | 3 | 233.97 | 10.78 | 8.53 | 62.60 | 3 |
+| 400 QD \| 983TC \| 50 kg | 225.41 | 10.43 | 8.18 | 60.11 | 3 | 139.79 | 6.90 | 4.68 | 36.59 | 3 | 341.50 | 15.18 | 12.90 | 98.35 | 3 |
+| 400 QD \| 983TC \| 70 kg | 207.00 | 9.67 | 7.43 | 54.83 | 3 | 134.69 | 6.69 | 4.47 | 35.23 | 3 | 272.07 | 12.35 | 10.09 | 74.25 | 3 |
+| 400 QD \| 983TC \| 90 kg | 167.85 | 8.06 | 5.83 | 44.06 | 3 | 88.00 | 4.77 | 2.57 | 23.01 | 3 | 237.76 | 10.94 | 8.69 | 63.72 | 3 |
 
 Simulated steady-state NCA parameters (median; 5-95% PI) by
 regimen-genotype-weight cell. Cmax/Cmin in mg/L, Tmax/half.life in h,
@@ -503,12 +503,12 @@ literature; the simulated 29-30 h matches the typical-value prediction.
   Table 2 as a retained variance component. The packaged model follows
   the published final model and omits IOV.
 - **Cohort N for Figure 3 reproduction.** Schipani 2011 simulated 1000
-  datasets per cell for Figure 3; the packaged vignette uses 200
-  subjects per cell to stay within the pkgdown 5-minute per-vignette
-  wall-time budget. The smaller N gives slightly more Monte Carlo noise
-  on the tail percentages but preserves the qualitative finding (higher
-  sub-MEC risk on QD vs BID; protective effect of 516TT / 983TC
-  variants; weight-dose dependence).
+  datasets per cell for Figure 3; the packaged vignette uses 50 subjects
+  per cell to stay within the pkgdown per-vignette wall-time budget. The
+  smaller N gives slightly more Monte Carlo noise on the tail
+  percentages but preserves the qualitative finding (higher sub-MEC risk
+  on QD vs BID; protective effect of 516TT / 983TC variants; weight-dose
+  dependence).
 - **Race / ethnicity not modelled.** Schipani 2011 Methods report
   ethnicity (66.5% Caucasian, 33.5% Black) as a tested covariate; the
   Results note that “no other demographic covariates proved to be

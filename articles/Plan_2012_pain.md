@@ -121,15 +121,21 @@ placebo subject without concomitant paracetamol over the 126-day
 events <- rxode2::et(time = c(0, 1, 7, 14, 28, 56, 84, 126), evid = 0)
 events$CONMED_PARA <- 0
 events
-#>   id low time high   cmt amt rate ii addl evid ss dur CONMED_PARA
-#> 1  1  NA    0   NA (obs)  NA   NA NA   NA    0 NA  NA           0
-#> 2  1  NA    1   NA (obs)  NA   NA NA   NA    0 NA  NA           0
-#> 3  1  NA    7   NA (obs)  NA   NA NA   NA    0 NA  NA           0
-#> 4  1  NA   14   NA (obs)  NA   NA NA   NA    0 NA  NA           0
-#> 5  1  NA   28   NA (obs)  NA   NA NA   NA    0 NA  NA           0
-#> 6  1  NA   56   NA (obs)  NA   NA NA   NA    0 NA  NA           0
-#> 7  1  NA   84   NA (obs)  NA   NA NA   NA    0 NA  NA           0
-#> 8  1  NA  126   NA (obs)  NA   NA NA   NA    0 NA  NA           0
+#> ── EventTable with 8 records ──
+#> 0 dosing records (see x$get.dosing(); add with add.dosing or et)
+#> 8 observation times (see x$get.sampling(); add with add.sampling or et)
+#> ── First part of x: ──
+#> # A tibble: 8 × 2
+#>    time evid         
+#>   <dbl> <evid>       
+#> 1     0 0:Observation
+#> 2     1 0:Observation
+#> 3     7 0:Observation
+#> 4    14 0:Observation
+#> 5    28 0:Observation
+#> 6    56 0:Observation
+#> 7    84 0:Observation
+#> 8   126 0:Observation
 ```
 
 ## Simulation (F.3 mechanistic-sanity check)

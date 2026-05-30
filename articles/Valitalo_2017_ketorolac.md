@@ -969,23 +969,23 @@ knitr::kable(
 |:-------------------|:-----------|-------:|------:|-------:|
 | Male               | aucinf.obs |     NA |    NA |     NA |
 | Male               | auclast    |     NA |    NA |     NA |
-| Male               | cmax       |  4.409 | 3.056 |  6.297 |
-| Male               | half.life  |  7.504 | 4.438 | 12.303 |
+| Male               | cmax       |  3.834 | 2.812 |  5.204 |
+| Male               | half.life  |  7.356 | 4.047 | 13.032 |
 | Male               | tmax       |  0.083 | 0.033 |  0.083 |
 | Nonpregnant female | aucinf.obs |     NA |    NA |     NA |
 | Nonpregnant female | auclast    |     NA |    NA |     NA |
-| Nonpregnant female | cmax       |  4.885 | 3.451 |  7.154 |
-| Nonpregnant female | half.life  |  8.092 | 5.619 | 11.440 |
+| Nonpregnant female | cmax       |  5.332 | 4.098 |  7.197 |
+| Nonpregnant female | half.life  |  7.956 | 6.109 | 10.231 |
 | Nonpregnant female | tmax       |  0.033 | 0.033 |  0.083 |
 | Postpartum         | aucinf.obs |     NA |    NA |     NA |
 | Postpartum         | auclast    |     NA |    NA |     NA |
-| Postpartum         | cmax       |  4.615 | 3.044 |  6.579 |
-| Postpartum         | half.life  |  6.969 | 4.527 |  9.315 |
+| Postpartum         | cmax       |  4.765 | 3.464 |  6.172 |
+| Postpartum         | half.life  |  6.830 | 4.988 |  8.801 |
 | Postpartum         | tmax       |  0.033 | 0.033 |  0.083 |
 | Women at delivery  | aucinf.obs |     NA |    NA |     NA |
 | Women at delivery  | auclast    |     NA |    NA |     NA |
-| Women at delivery  | cmax       |  4.156 | 2.924 |  5.335 |
-| Women at delivery  | half.life  |  6.034 | 3.674 | 10.712 |
+| Women at delivery  | cmax       |  4.047 | 2.839 |  5.385 |
+| Women at delivery  | half.life  |  5.937 | 3.687 | 10.077 |
 | Women at delivery  | tmax       |  0.167 | 0.083 |  0.167 |
 
 Simulated NCA – R-ketorolac, single 15 mg IV bolus (half of 30 mg
@@ -1017,23 +1017,23 @@ knitr::kable(
 |:-------------------|:-----------|-------:|------:|------:|
 | Male               | aucinf.obs |     NA |    NA |    NA |
 | Male               | auclast    |     NA |    NA |    NA |
-| Male               | cmax       |  2.923 | 1.999 | 3.961 |
-| Male               | half.life  |  2.838 | 1.814 | 4.559 |
+| Male               | cmax       |  2.877 | 2.389 | 4.133 |
+| Male               | half.life  |  3.077 | 2.032 | 4.431 |
 | Male               | tmax       |  0.033 | 0.033 | 0.083 |
 | Nonpregnant female | aucinf.obs |     NA |    NA |    NA |
 | Nonpregnant female | auclast    |     NA |    NA |    NA |
-| Nonpregnant female | cmax       |  3.983 | 3.003 | 5.398 |
-| Nonpregnant female | half.life  |  2.592 | 1.719 | 3.598 |
+| Nonpregnant female | cmax       |  4.000 | 2.740 | 4.753 |
+| Nonpregnant female | half.life  |  2.499 | 1.748 | 4.184 |
 | Nonpregnant female | tmax       |  0.033 | 0.033 | 0.033 |
 | Postpartum         | aucinf.obs |     NA |    NA |    NA |
 | Postpartum         | auclast    |     NA |    NA |    NA |
-| Postpartum         | cmax       |  3.779 | 2.438 | 5.011 |
-| Postpartum         | half.life  |  2.415 | 1.457 | 3.640 |
+| Postpartum         | cmax       |  3.834 | 2.782 | 4.729 |
+| Postpartum         | half.life  |  2.367 | 1.735 | 3.492 |
 | Postpartum         | tmax       |  0.033 | 0.033 | 0.083 |
 | Women at delivery  | aucinf.obs |     NA |    NA |    NA |
 | Women at delivery  | auclast    |     NA |    NA |    NA |
-| Women at delivery  | cmax       |  2.305 | 1.842 | 3.337 |
-| Women at delivery  | half.life  |  2.653 | 1.929 | 4.011 |
+| Women at delivery  | cmax       |  2.340 | 1.662 | 3.725 |
+| Women at delivery  | half.life  |  2.607 | 1.729 | 4.676 |
 | Women at delivery  | tmax       |  0.167 | 0.033 | 0.167 |
 
 Simulated NCA – S-ketorolac, single 15 mg IV bolus (half of 30 mg

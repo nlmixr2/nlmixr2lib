@@ -289,26 +289,26 @@ knitr::kable(nca_summary,
 
 | treatment                    | PPTESTCD   |  median |    p05 |     p95 |
 |:-----------------------------|:-----------|--------:|-------:|--------:|
-| T1 (160 mg micronized)       | aucinf.obs |  374.31 | 229.12 |  664.22 |
-| T1 (160 mg micronized)       | auclast    |  363.64 | 225.54 |  640.55 |
-| T1 (160 mg micronized)       | cmax       |   96.94 |  67.86 |  163.90 |
-| T1 (160 mg micronized)       | half.life  |    2.07 |   1.54 |    2.54 |
-| T1 (160 mg micronized)       | tmax       |    1.50 |   0.50 |    2.50 |
-| T2 (160 mg reference)        | aucinf.obs |  360.09 | 193.96 |  774.35 |
-| T2 (160 mg reference)        | auclast    |  354.95 | 191.05 |  742.12 |
-| T2 (160 mg reference)        | cmax       |   97.83 |  58.99 |  178.99 |
-| T2 (160 mg reference)        | half.life  |    2.06 |   1.49 |    2.53 |
+| T1 (160 mg micronized)       | aucinf.obs |  414.18 | 236.28 |  727.68 |
+| T1 (160 mg micronized)       | auclast    |  400.15 | 230.91 |  692.37 |
+| T1 (160 mg micronized)       | cmax       |  112.07 |  59.51 |  180.78 |
+| T1 (160 mg micronized)       | half.life  |    2.06 |   1.62 |    2.79 |
+| T1 (160 mg micronized)       | tmax       |    1.50 |   0.50 |    3.00 |
+| T2 (160 mg reference)        | aucinf.obs |  364.55 | 231.37 |  721.19 |
+| T2 (160 mg reference)        | auclast    |  354.53 | 229.38 |  688.14 |
+| T2 (160 mg reference)        | cmax       |   95.18 |  58.45 |  155.78 |
+| T2 (160 mg reference)        | half.life  |    2.01 |   1.61 |    2.57 |
 | T2 (160 mg reference)        | tmax       |    1.50 |   0.98 |    2.50 |
-| T3 (500 mg reference)        | aucinf.obs | 1082.54 | 626.04 | 2033.32 |
-| T3 (500 mg reference)        | auclast    | 1061.53 | 613.33 | 1919.80 |
-| T3 (500 mg reference)        | cmax       |  310.48 | 163.99 |  507.75 |
-| T3 (500 mg reference)        | half.life  |    2.04 |   1.43 |    2.81 |
-| T3 (500 mg reference)        | tmax       |    1.50 |   0.50 |    2.50 |
-| T4 (160 mg micronized + PIP) | aucinf.obs |  377.76 | 179.83 |  669.57 |
-| T4 (160 mg micronized + PIP) | auclast    |  364.53 | 178.82 |  631.03 |
-| T4 (160 mg micronized + PIP) | cmax       |   95.11 |  56.45 |  157.80 |
-| T4 (160 mg micronized + PIP) | half.life  |    2.03 |   1.49 |    2.73 |
-| T4 (160 mg micronized + PIP) | tmax       |    1.00 |   0.50 |    2.50 |
+| T3 (500 mg reference)        | aucinf.obs | 1250.80 | 623.90 | 2308.39 |
+| T3 (500 mg reference)        | auclast    | 1215.15 | 619.66 | 2230.62 |
+| T3 (500 mg reference)        | cmax       |  331.41 | 188.68 |  568.94 |
+| T3 (500 mg reference)        | half.life  |    1.97 |   1.44 |    2.59 |
+| T3 (500 mg reference)        | tmax       |    1.25 |   0.50 |    2.50 |
+| T4 (160 mg micronized + PIP) | aucinf.obs |  374.41 | 216.54 |  657.32 |
+| T4 (160 mg micronized + PIP) | auclast    |  365.51 | 209.05 |  629.97 |
+| T4 (160 mg micronized + PIP) | cmax       |   98.71 |  56.99 |  160.32 |
+| T4 (160 mg micronized + PIP) | half.life  |    1.97 |   1.53 |    2.47 |
+| T4 (160 mg micronized + PIP) | tmax       |    1.50 |   0.98 |    2.52 |
 
 Simulated NCA per treatment (median \[5%-95%\]). {.table}
 
@@ -359,26 +359,26 @@ knitr::kable(comparison,
 
 | treatment | PPTESTCD | published_median | pub_lo | pub_hi | sim_median | sim_p05 | sim_p95 | pct_diff_median |
 |:---|:---|---:|---:|---:|---:|---:|---:|---:|
-| T1 (160 mg micronized) | cmax | 111.00 | 45.20 | 183.00 | 96.94 | 67.86 | 163.90 | -12.7 |
-| T1 (160 mg micronized) | tmax | 1.41 | 0.76 | 2.06 | 1.50 | 0.50 | 2.50 | 6.4 |
-| T1 (160 mg micronized) | half.life | 1.97 | 1.64 | 3.37 | 2.07 | 1.54 | 2.54 | 5.1 |
-| T1 (160 mg micronized) | auclast | 461.00 | 144.00 | 651.00 | 363.64 | 225.54 | 640.55 | -21.1 |
-| T1 (160 mg micronized) | aucinf.obs | 441.00 | 146.00 | 472.00 | 374.31 | 229.12 | 664.22 | -15.1 |
-| T2 (160 mg reference) | cmax | 96.70 | 52.10 | 169.00 | 97.83 | 58.99 | 178.99 | 1.2 |
+| T1 (160 mg micronized) | cmax | 111.00 | 45.20 | 183.00 | 112.07 | 59.51 | 180.78 | 1.0 |
+| T1 (160 mg micronized) | tmax | 1.41 | 0.76 | 2.06 | 1.50 | 0.50 | 3.00 | 6.4 |
+| T1 (160 mg micronized) | half.life | 1.97 | 1.64 | 3.37 | 2.06 | 1.62 | 2.79 | 4.7 |
+| T1 (160 mg micronized) | auclast | 461.00 | 144.00 | 651.00 | 400.15 | 230.91 | 692.37 | -13.2 |
+| T1 (160 mg micronized) | aucinf.obs | 441.00 | 146.00 | 472.00 | 414.18 | 236.28 | 727.68 | -6.1 |
+| T2 (160 mg reference) | cmax | 96.70 | 52.10 | 169.00 | 95.18 | 58.45 | 155.78 | -1.6 |
 | T2 (160 mg reference) | tmax | 1.09 | 0.77 | 2.28 | 1.50 | 0.98 | 2.50 | 37.6 |
-| T2 (160 mg reference) | half.life | 1.80 | 1.46 | 3.20 | 2.06 | 1.49 | 2.53 | 14.3 |
-| T2 (160 mg reference) | auclast | 342.00 | 178.00 | 624.00 | 354.95 | 191.05 | 742.12 | 3.8 |
-| T2 (160 mg reference) | aucinf.obs | 349.00 | 181.00 | 642.00 | 360.09 | 193.96 | 774.35 | 3.2 |
-| T3 (500 mg reference) | cmax | 244.00 | 133.00 | 479.00 | 310.48 | 163.99 | 507.75 | 27.2 |
-| T3 (500 mg reference) | tmax | 1.72 | 1.12 | 3.65 | 1.50 | 0.50 | 2.50 | -12.8 |
-| T3 (500 mg reference) | half.life | 1.93 | 1.71 | 2.43 | 2.04 | 1.43 | 2.81 | 5.9 |
-| T3 (500 mg reference) | auclast | 956.00 | 462.00 | 1973.00 | 1061.53 | 613.33 | 1919.80 | 11.0 |
-| T3 (500 mg reference) | aucinf.obs | 994.00 | 468.00 | 2040.00 | 1082.54 | 626.04 | 2033.32 | 8.9 |
-| T4 (160 mg micronized + PIP) | cmax | 144.00 | 58.00 | 200.00 | 95.11 | 56.45 | 157.80 | -34.0 |
-| T4 (160 mg micronized + PIP) | tmax | 0.99 | 0.63 | 1.90 | 1.00 | 0.50 | 2.50 | 0.8 |
-| T4 (160 mg micronized + PIP) | half.life | 2.02 | 1.64 | 2.42 | 2.03 | 1.49 | 2.73 | 0.3 |
-| T4 (160 mg micronized + PIP) | auclast | 462.00 | 189.00 | 744.00 | 364.53 | 178.82 | 631.03 | -21.1 |
-| T4 (160 mg micronized + PIP) | aucinf.obs | 467.00 | 192.00 | 761.00 | 377.76 | 179.83 | 669.57 | -19.1 |
+| T2 (160 mg reference) | half.life | 1.80 | 1.46 | 3.20 | 2.01 | 1.61 | 2.57 | 11.7 |
+| T2 (160 mg reference) | auclast | 342.00 | 178.00 | 624.00 | 354.53 | 229.38 | 688.14 | 3.7 |
+| T2 (160 mg reference) | aucinf.obs | 349.00 | 181.00 | 642.00 | 364.55 | 231.37 | 721.19 | 4.5 |
+| T3 (500 mg reference) | cmax | 244.00 | 133.00 | 479.00 | 331.41 | 188.68 | 568.94 | 35.8 |
+| T3 (500 mg reference) | tmax | 1.72 | 1.12 | 3.65 | 1.25 | 0.50 | 2.50 | -27.3 |
+| T3 (500 mg reference) | half.life | 1.93 | 1.71 | 2.43 | 1.97 | 1.44 | 2.59 | 1.9 |
+| T3 (500 mg reference) | auclast | 956.00 | 462.00 | 1973.00 | 1215.15 | 619.66 | 2230.62 | 27.1 |
+| T3 (500 mg reference) | aucinf.obs | 994.00 | 468.00 | 2040.00 | 1250.80 | 623.90 | 2308.39 | 25.8 |
+| T4 (160 mg micronized + PIP) | cmax | 144.00 | 58.00 | 200.00 | 98.71 | 56.99 | 160.32 | -31.5 |
+| T4 (160 mg micronized + PIP) | tmax | 0.99 | 0.63 | 1.90 | 1.50 | 0.98 | 2.52 | 51.2 |
+| T4 (160 mg micronized + PIP) | half.life | 2.02 | 1.64 | 2.42 | 1.97 | 1.53 | 2.47 | -2.4 |
+| T4 (160 mg micronized + PIP) | auclast | 462.00 | 189.00 | 744.00 | 365.51 | 209.05 | 629.97 | -20.9 |
+| T4 (160 mg micronized + PIP) | aucinf.obs | 467.00 | 192.00 | 761.00 | 374.41 | 216.54 | 657.32 | -19.8 |
 
 Published (Birgersson 2016 Table 3, median \[range\] across n = 15) vs
 simulated (median \[5%-95%\] across n = 60). Per the source paper Table

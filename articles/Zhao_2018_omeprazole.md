@@ -412,14 +412,14 @@ nca_cc <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_cc, dose_cc, intervals = intervals
 #> Requesting an AUC range starting (0) before the first measurement (0.5) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.5) is not allowed
 summary(nca_cc)
-#>  Interval Start Interval End treatment  N AUClast (h*mg/L) Cmax (mg/L)
-#>               0           24     EM_UM 38               NC 0.319 [156]
-#>               0           24        IM 11               NC 0.553 [103]
-#>               0           24        PM  2               NC 0.867 [310]
-#>            Tmax (h) Half-life (h)
-#>  2.25 [0.500, 8.00]   15.8 [17.7]
-#>   2.00 [1.50, 13.0]   14.2 [16.5]
-#>   3.50 [3.00, 4.00]   29.3 [36.9]
+#>  Interval Start Interval End treatment  N AUClast (h*mg/L)  Cmax (mg/L)
+#>               0           24     EM_UM 38               NC  0.259 [199]
+#>               0           24        IM 11               NC  0.551 [202]
+#>               0           24        PM  2               NC 0.782 [49.8]
+#>           Tmax (h) Half-life (h)
+#>  2.00 [1.00, 6.50]   27.3 [68.6]
+#>  2.50 [1.00, 7.50]   17.0 [16.7]
+#>  7.00 [6.00, 8.00]   21.1 [19.3]
 #> 
 #> Caption: AUClast, Cmax: geometric mean and geometric coefficient of variation; Tmax: median and range; Half-life: arithmetic mean and standard deviation; N: number of subjects
 ```
@@ -493,14 +493,14 @@ nca_5oh <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_5oh, dose_cc, intervals = interva
 #> Requesting an AUC range starting (0) before the first measurement (0.5) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.5) is not allowed
 summary(nca_5oh)
-#>  Interval Start Interval End treatment  N AUClast (h*mg/L)   Cmax (mg/L)
-#>               0           24     EM_UM 38               NC   0.210 [129]
-#>               0           24        IM 11               NC   0.224 [184]
-#>               0           24        PM  2               NC 0.0363 [1530]
+#>  Interval Start Interval End treatment  N AUClast (h*mg/L)  Cmax (mg/L)
+#>               0           24     EM_UM 38               NC  0.175 [171]
+#>               0           24        IM 11               NC  0.154 [185]
+#>               0           24        PM  2               NC 0.0854 [502]
 #>           Tmax (h)
-#>  4.00 [1.50, 12.0]
-#>  5.00 [2.00, 14.0]
-#>  5.00 [4.50, 5.50]
+#>  4.75 [1.50, 8.00]
+#>  4.50 [2.50, 8.50]
+#>  9.25 [8.50, 10.0]
 #> 
 #> Caption: AUClast, Cmax: geometric mean and geometric coefficient of variation; Tmax: median and range; N: number of subjects
 ```
@@ -575,13 +575,13 @@ nca_sfn <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_sfn, dose_cc, intervals = interva
 #> Requesting an AUC range starting (0) before the first measurement (0.5) is not allowed
 summary(nca_sfn)
 #>  Interval Start Interval End treatment  N AUClast (h*mg/L)  Cmax (mg/L)
-#>               0           24     EM_UM 38               NC  0.164 [127]
-#>               0           24        IM 11               NC 0.237 [96.9]
-#>               0           24        PM  2               NC  0.760 [363]
+#>               0           24     EM_UM 38               NC  0.132 [151]
+#>               0           24        IM 11               NC  0.297 [158]
+#>               0           24        PM  2               NC 0.541 [80.1]
 #>           Tmax (h)
-#>  11.2 [2.50, 24.0]
-#>  8.00 [4.50, 24.0]
-#>  15.5 [11.0, 20.0]
+#>  11.5 [3.00, 24.0]
+#>  13.0 [3.50, 24.0]
+#>  17.5 [11.0, 24.0]
 #> 
 #> Caption: AUClast, Cmax: geometric mean and geometric coefficient of variation; Tmax: median and range; N: number of subjects
 ```

@@ -325,10 +325,10 @@ final_sur <- sim_scen |>
   select(arm, sur)
 print(final_sur)
 #>                       arm        sur
-#> 1                baseline 0.23440250
-#> 2        TUM_SLD = 140 mm 0.16748610
-#> 3            ECOG_GE1 = 1 0.08795882
-#> 4 NWLS turns 1 at day 200 0.00790526
+#> 1                baseline 0.22810862
+#> 2        TUM_SLD = 140 mm 0.16196480
+#> 3            ECOG_GE1 = 1 0.08403746
+#> 4 NWLS turns 1 at day 200 0.00721743
 
 baseline_sur <- final_sur$sur[final_sur$arm == "baseline"]
 non_baseline <- final_sur |> filter(arm != "baseline")

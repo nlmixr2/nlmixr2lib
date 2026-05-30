@@ -400,26 +400,26 @@ knitr::kable(nca_summary,
              digits = 3)
 ```
 
-| analyte     | treatment | PPTESTCD |  median |     p05 |     p95 |
-|:------------|:----------|:---------|--------:|--------:|--------:|
-| 9OH         | EM        | auclast  |  25.901 |   7.928 |  84.789 |
-| 9OH         | EM        | cmax     |   3.393 |   0.820 |   7.745 |
-| 9OH         | EM        | tmax     |   3.500 |   1.800 |   4.500 |
-| 9OH         | IM        | auclast  | 265.417 |  81.472 | 489.894 |
-| 9OH         | IM        | cmax     |  28.050 |  10.822 |  46.195 |
-| 9OH         | IM        | tmax     |   3.500 |   2.775 |   4.825 |
-| 9OH         | PM        | auclast  |  32.932 |   8.182 | 109.401 |
-| 9OH         | PM        | cmax     |   2.911 |   1.048 |   9.687 |
-| 9OH         | PM        | tmax     |   4.750 |   3.713 |   5.762 |
-| risperidone | EM        | auclast  |  34.809 |  22.324 |  75.031 |
-| risperidone | EM        | cmax     |  12.654 |   6.733 |  30.156 |
-| risperidone | EM        | tmax     |   0.750 |   0.500 |   1.000 |
-| risperidone | IM        | auclast  |  54.183 |  33.937 |  87.863 |
-| risperidone | IM        | cmax     |  18.521 |   9.587 |  29.500 |
-| risperidone | IM        | tmax     |   0.750 |   0.750 |   1.000 |
-| risperidone | PM        | auclast  | 175.751 | 108.152 | 350.182 |
-| risperidone | PM        | cmax     |  27.447 |  12.949 |  54.406 |
-| risperidone | PM        | tmax     |   1.250 |   1.000 |   1.250 |
+| analyte     | treatment | PPTESTCD |  median |    p05 |     p95 |
+|:------------|:----------|:---------|--------:|-------:|--------:|
+| 9OH         | EM        | auclast  |  19.486 |  7.600 |  62.126 |
+| 9OH         | EM        | cmax     |   2.423 |  0.842 |   7.207 |
+| 9OH         | EM        | tmax     |   3.000 |  1.750 |   4.450 |
+| 9OH         | IM        | auclast  | 141.530 | 64.639 | 426.477 |
+| 9OH         | IM        | cmax     |  16.100 |  6.779 |  50.910 |
+| 9OH         | IM        | tmax     |   3.750 |  2.475 |   4.575 |
+| 9OH         | PM        | auclast  |  24.044 |  5.766 |  95.427 |
+| 9OH         | PM        | cmax     |   2.294 |  0.640 |   8.577 |
+| 9OH         | PM        | tmax     |   4.625 |  2.738 |   5.750 |
+| risperidone | EM        | auclast  |  36.265 | 19.477 |  69.649 |
+| risperidone | EM        | cmax     |  13.352 |  6.769 |  37.639 |
+| risperidone | EM        | tmax     |   0.750 |  0.500 |   1.000 |
+| risperidone | IM        | auclast  |  55.719 | 34.712 |  82.648 |
+| risperidone | IM        | cmax     |  13.941 | 10.156 |  30.709 |
+| risperidone | IM        | tmax     |   1.000 |  0.675 |   1.000 |
+| risperidone | PM        | auclast  | 176.128 | 93.858 | 411.209 |
+| risperidone | PM        | cmax     |  26.945 | 13.567 |  67.853 |
+| risperidone | PM        | tmax     |   1.250 |  1.000 |   1.250 |
 
 Simulated steady-state NCA over the 0-12 h dosing interval, stratified
 by CYP2D6 phenotype. Cmax in ng/mL, Tmax in h, AUC in ng\*h/mL. Median

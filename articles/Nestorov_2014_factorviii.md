@@ -579,9 +579,9 @@ knitr::kable(
 
 | Interval Start | Interval End | treatment | N | Cmax (IU/dL) | Tmax (h) | Clast (IU/dL) | Half-life (h) | AUCinf,obs (h\*IU/dL) |
 |---:|---:|:---|:---|:---|:---|:---|:---|:---|
-| 0 | Inf | 25 IU/kg single dose | 100 | 46.7 \[18.2\] | 1.00 \[1.00, 1.00\] | 0.0687 \[70.5\] | 63.2 \[3.63\] | NC |
-| 0 | Inf | 50 IU/kg single dose | 100 | 92.7 \[17.8\] | 1.00 \[1.00, 1.00\] | 0.147 \[86.4\] | 62.6 \[4.07\] | NC |
-| 0 | Inf | 65 IU/kg single dose | 100 | 122 \[19.6\] | 1.00 \[1.00, 1.00\] | 0.193 \[96.2\] | 62.9 \[3.51\] | NC |
+| 0 | Inf | 25 IU/kg single dose | 100 | 46.1 \[17.6\] | 1.00 \[1.00, 1.00\] | 0.0763 \[88.8\] | 62.4 \[3.96\] | NC |
+| 0 | Inf | 50 IU/kg single dose | 100 | 93.9 \[18.7\] | 1.00 \[1.00, 1.00\] | 0.139 \[83.1\] | 63.1 \[3.87\] | NC |
+| 0 | Inf | 65 IU/kg single dose | 100 | 123 \[16.4\] | 1.00 \[1.00, 1.00\] | 0.177 \[75.3\] | 63.4 \[3.67\] | NC |
 
 Simulated single-dose NCA parameters, Nestorov 2014 final model.
 {.table}

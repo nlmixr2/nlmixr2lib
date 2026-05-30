@@ -330,9 +330,9 @@ knitr::kable(tibble::tibble(
 
 | Percentile | Simulated | Oosten 2016 Figure 4 caption / Results |
 |:-----------|:----------|:---------------------------------------|
-| 10th       | 1.04      | 0.87                                   |
-| Median     | 1.64      | 1.68                                   |
-| 90th       | 2.77      | 3.22                                   |
+| 10th       | 0.90      | 0.87                                   |
+| Median     | 1.46      | 1.68                                   |
+| 90th       | 2.68      | 3.22                                   |
 
 Plasma concentration 12 h after patch application (rotation 12-h
 scheme). {.table}
@@ -430,7 +430,7 @@ knitr::kable(summary(nca_res),
 
 | Interval Start | Interval End | treatment | N | AUClast (h\*ng/mL) | Cmax (ng/mL) | Tmax (h) | Half-life (h) |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | 168 | 50 ug/h matrix patch | 52 | NC | 0.805 \[77.1\] | 18.8 \[11.5, 39.5\] | 53.2 \[27.4\] |
+| 0 | 168 | 50 ug/h matrix patch | 52 | NC | 0.700 \[77.4\] | 19.5 \[12.5, 35.0\] | 63.4 \[39.2\] |
 
 Single-dose NCA over 168 h post-patch (50 ug/h Durogesic matrix, n =
 52). {.table}

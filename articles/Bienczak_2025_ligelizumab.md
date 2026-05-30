@@ -10,7 +10,7 @@ library(PKNCA)
 #> 
 #>     filter
 library(rxode2)
-#> rxode2 5.0.2 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.1 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -209,9 +209,9 @@ knitr::kable(
 
 | dose_group | median |  p25 |   p75 |
 |:-----------|-------:|-----:|------:|
-| 120 mg q4w |   3.85 | 2.54 |  5.44 |
-| 240 mg q4w |   7.36 | 4.93 | 10.70 |
-| 72 mg q4w  |   2.23 | 1.47 |  3.29 |
+| 120 mg q4w |   3.50 | 2.35 |  5.37 |
+| 240 mg q4w |   7.20 | 4.93 | 10.91 |
+| 72 mg q4w  |   2.21 | 1.51 |  3.08 |
 
 Simulated steady-state trough (Week 20) ligelizumab concentration by
 dose group (ug/mL). {.table}
@@ -263,9 +263,9 @@ knitr::kable(
 
 | ige_group               |   n | median_cmin_ss |  p25 |  p75 |
 |:------------------------|----:|---------------:|-----:|-----:|
-| Low (\<40 IU/mL)        | 107 |           2.97 | 2.18 | 4.11 |
-| Moderate (40-300 IU/mL) | 324 |           2.19 | 1.44 | 3.32 |
-| High (\>=300 IU/mL)     |  69 |           1.75 | 1.13 | 2.19 |
+| Low (\<40 IU/mL)        | 107 |           2.90 | 2.14 | 3.95 |
+| Moderate (40-300 IU/mL) | 324 |           2.15 | 1.45 | 3.00 |
+| High (\>=300 IU/mL)     |  69 |           1.78 | 1.24 | 2.33 |
 
 Simulated steady-state trough (ug/mL) at 72 mg q4w stratified by
 baseline IgE category. {.table}
@@ -358,18 +358,6 @@ nca_res  <- pk.nca(nca_data)
 #> Too few points for half-life calculation (min.hl.points=3 with only 2 points)
 #> Too few points for half-life calculation (min.hl.points=3 with only 2 points)
 #> Too few points for half-life calculation (min.hl.points=3 with only 2 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 2 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 2 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 2 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 2 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 2 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 2 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 2 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 2 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 2 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 2 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 2 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 2 points)
 #> Warning: Too few points for half-life calculation (min.hl.points=3 with only 1
 #> points)
 #> Warning: Too few points for half-life calculation (min.hl.points=3 with only 2 points)
@@ -410,8 +398,7 @@ nca_res  <- pk.nca(nca_data)
 #> Too few points for half-life calculation (min.hl.points=3 with only 2 points)
 #> Too few points for half-life calculation (min.hl.points=3 with only 2 points)
 #> Too few points for half-life calculation (min.hl.points=3 with only 2 points)
-#> Warning: Too few points for half-life calculation (min.hl.points=3 with only 1
-#> points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 2 points)
 knitr::kable(
   summary(nca_res),
   digits = 2,
@@ -421,9 +408,9 @@ knitr::kable(
 
 | start | end | dose_group | N | auclast | cmax | tmax | half.life |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | 28 | 120 mg q4w | 500 | 101 \[39.6\] | 5.88 \[46.3\] | 7.00 \[1.00, 14.0\] | 16.7 \[5.48\], n=467 |
-| 0 | 28 | 240 mg q4w | 500 | 203 \[38.9\] | 12.0 \[46.2\] | 7.00 \[1.00, 21.0\] | 16.5 \[5.82\], n=477 |
-| 0 | 28 | 72 mg q4w | 500 | 60.2 \[43.4\] | 3.50 \[49.8\] | 7.00 \[1.00, 21.0\] | 16.8 \[5.90\], n=474 |
+| 0 | 28 | 120 mg q4w | 500 | 100 \[38.2\] | 5.92 \[42.9\] | 7.00 \[1.00, 14.0\] | 16.6 \[5.97\], n=477 |
+| 0 | 28 | 240 mg q4w | 500 | 205 \[40.3\] | 12.1 \[46.6\] | 7.00 \[1.00, 21.0\] | 16.6 \[5.62\], n=479 |
+| 0 | 28 | 72 mg q4w | 500 | 60.3 \[39.0\] | 3.51 \[46.9\] | 7.00 \[1.00, 14.0\] | 16.8 \[5.42\], n=474 |
 
 Simulated NCA parameters per dose group, first 28-day dosing interval.
 {.table}

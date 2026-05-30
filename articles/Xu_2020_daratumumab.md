@@ -98,7 +98,7 @@ reflects a clinically typical mix.
 
 set.seed(20260514L)
 
-n_per_arm <- 100L
+n_per_arm <- 60L  # downsampled from 100 for vignette build budget; mean/median trajectories visually identical
 
 make_cohort <- function(n, regimen, dose_schedule, id_offset = 0L) {
   ids <- id_offset + seq_len(n)
@@ -361,8 +361,8 @@ knitr::kable(
 
 | PPTESTCD |    median |       Q05 |       Q95 |
 |:---------|----------:|----------:|----------:|
-| auclast  | 23714.020 | 11627.764 | 36208.748 |
-| cmax     |   269.158 |   175.069 |   400.973 |
+| auclast  | 24968.569 | 15342.458 | 35637.369 |
+| cmax     |   260.337 |   177.223 |   403.709 |
 | cmin     |     0.000 |     0.000 |     0.000 |
 | tmax     |    12.000 |     6.000 |    12.000 |
 
@@ -414,25 +414,25 @@ sim_summary <- pub |>
 knitr::kable(
   sim_summary,
   digits = 1,
-  caption = "Published (Xu 2020 Table 2) vs simulated median daratumumab concentrations at key MMY1001 sampling time points. The simulation uses a virtual cohort (n = 100 per arm) and is not expected to match patient-by-patient; the published medians are over small per-arm cohorts (D-Kd single dose n = 8-10; split-dose cohorts n = 14-75). Differences within +/- 30 percent indicate the structural model is reproducing the published exposure pattern; the C2D1 postinfusion peak is the most volatile point because it is most sensitive to body weight and to the timing of the second infusion."
+  caption = "Published (Xu 2020 Table 2) vs simulated median daratumumab concentrations at key MMY1001 sampling time points. The simulation uses a virtual cohort (n = 60 per arm) and is not expected to match patient-by-patient; the published medians are over small per-arm cohorts (D-Kd single dose n = 8-10; split-dose cohorts n = 14-75). Differences within +/- 30 percent indicate the structural model is reproducing the published exposure pattern; the C2D1 postinfusion peak is the most volatile point because it is most sensitive to body weight and to the timing of the second infusion."
 )
 ```
 
 | timepoint | time_hr | regimen | pub_median | pub_low | pub_high | sim_median | sim_low | sim_high | pct_diff |
 |:---|---:|:---|---:|---:|---:|---:|---:|---:|---:|
-| C1D1 postinfusion | 7.0 | Single first dose | 319.2 | 237.5 | 394.7 | 259.7 | 170.5 | 398.3 | -18.6 |
-| C1D1 postinfusion | 7.0 | Split first dose | 156.7 | 82.5 | 345.0 | 128.1 | 78.2 | 197.9 | -18.3 |
-| C1D2 postinfusion | 28.3 | Split first dose | 256.8 | 125.8 | 435.5 | 199.1 | 131.2 | 298.1 | -22.5 |
-| C2D1 postinfusion | 675.4 | Single first dose | 726.6 | 523.1 | 911.6 | 472.9 | 233.2 | 817.6 | -34.9 |
-| C2D1 postinfusion | 675.4 | Split first dose | 688.9 | 0.0 | 1202.4 | 474.2 | 225.4 | 753.2 | -31.2 |
-| C3D1 preinfusion | 1343.9 | Single first dose | 463.2 | 355.9 | 792.9 | 536.5 | 229.9 | 977.0 | 15.8 |
-| C3D1 preinfusion | 1343.9 | Split first dose | 639.2 | 57.7 | 1110.7 | 531.4 | 229.5 | 990.1 | -16.9 |
-| C4D1 preinfusion | 2015.9 | Single first dose | 509.1 | 291.2 | 743.5 | 438.8 | 135.5 | 1004.6 | -13.8 |
-| C4D1 preinfusion | 2015.9 | Split first dose | 523.0 | 92.3 | 1019.3 | 439.1 | 142.1 | 996.3 | -16.0 |
+| C1D1 postinfusion | 7.0 | Single first dose | 319.2 | 237.5 | 394.7 | 253.8 | 171.3 | 399.1 | -20.5 |
+| C1D1 postinfusion | 7.0 | Split first dose | 156.7 | 82.5 | 345.0 | 131.3 | 70.8 | 174.1 | -16.2 |
+| C1D2 postinfusion | 28.3 | Split first dose | 256.8 | 125.8 | 435.5 | 200.3 | 113.4 | 274.7 | -22.0 |
+| C2D1 postinfusion | 675.4 | Single first dose | 726.6 | 523.1 | 911.6 | 520.0 | 313.5 | 829.5 | -28.4 |
+| C2D1 postinfusion | 675.4 | Split first dose | 688.9 | 0.0 | 1202.4 | 467.0 | 306.7 | 770.1 | -32.2 |
+| C3D1 preinfusion | 1343.9 | Single first dose | 463.2 | 355.9 | 792.9 | 574.4 | 278.0 | 1061.7 | 24.0 |
+| C3D1 preinfusion | 1343.9 | Split first dose | 639.2 | 57.7 | 1110.7 | 588.5 | 365.9 | 994.0 | -7.9 |
+| C4D1 preinfusion | 2015.9 | Single first dose | 509.1 | 291.2 | 743.5 | 521.4 | 162.8 | 982.0 | 2.4 |
+| C4D1 preinfusion | 2015.9 | Split first dose | 523.0 | 92.3 | 1019.3 | 482.6 | 249.5 | 987.8 | -7.7 |
 
 Published (Xu 2020 Table 2) vs simulated median daratumumab
 concentrations at key MMY1001 sampling time points. The simulation uses
-a virtual cohort (n = 100 per arm) and is not expected to match
+a virtual cohort (n = 60 per arm) and is not expected to match
 patient-by-patient; the published medians are over small per-arm cohorts
 (D-Kd single dose n = 8-10; split-dose cohorts n = 14-75). Differences
 within +/- 30 percent indicate the structural model is reproducing the

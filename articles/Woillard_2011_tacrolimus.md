@@ -299,8 +299,8 @@ knitr::kable(nca_summary,
 
 | start | end | cohort | N | auclast | cmax | tmax | ctrough |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | 12 | Prograf (IR, BID) | 150 | 80.1 \[37.3\] | 13.3 \[25.3\] | 1.00 \[0.750, 1.75\] | 3.94 \[59.8\] |
-| 0 | 24 | Advagraf (PR, QD) | 150 | 194 \[35.7\] | 12.1 \[25.2\] | 1.75 \[1.00, 3.50\] | 5.58 \[56.0\] |
+| 0 | 12 | Prograf (IR, BID) | 150 | 81.5 \[41.2\] | 13.3 \[23.9\] | 1.00 \[0.500, 1.75\] | 4.08 \[74.5\] |
+| 0 | 24 | Advagraf (PR, QD) | 150 | 190 \[37.5\] | 12.2 \[24.7\] | 1.75 \[1.00, 3.00\] | 5.34 \[61.0\] |
 
 Day-10 steady-state inter-dose NCA by tacrolimus formulation (Prograf 2
 mg BID -\> AUC(0,12h); Advagraf 4 mg QD -\> AUC(0,24h)). {.table

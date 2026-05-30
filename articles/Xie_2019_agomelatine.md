@@ -6,7 +6,7 @@ library(nlmixr2lib)
 library(nlmixr2est)
 #> Loading required package: nlmixr2data
 library(rxode2)
-#> rxode2 5.0.2 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.1 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 #> 
 #> Attaching package: 'rxode2'
@@ -73,8 +73,6 @@ d_sim_prep$ooc2 <-
   d_sim_prep$ooc3 <-
   d_sim_prep$ooc4 <- 0
 d_sim_pop <- nlmixr2(Xie_2019_agomelatine, data = d_sim_prep, est = "rxSolve", control = list(nStud = 1000))
-#> unhandled error message: EE:[lsoda] 70000 steps taken before reaching tout
-#>  @(lsoda.c:748
 #> Warning in FUN(X[[i]], ...): some ID(s) could not solve the ODEs correctly;
 #> These values are replaced with 'NA'
 ```

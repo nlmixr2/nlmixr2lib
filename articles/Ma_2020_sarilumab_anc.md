@@ -4,7 +4,7 @@
 
 library(nlmixr2lib)
 library(rxode2)
-#> rxode2 5.0.2 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.1 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -296,34 +296,34 @@ events <- pop |>
 dim(sim)
 #> [1] 5000   33
 head(sim)
-#>   time     vmax    km       vc       cl        ka     q   vp       kel
-#> 1    0 9.682856 0.939 1.754034 0.192422 0.1236624 0.156 5.23 0.1097026
-#> 2    0 9.682856 0.939 1.754034 0.192422 0.1236624 0.156 5.23 0.1097026
-#> 3    7 9.682856 0.939 1.754034 0.192422 0.1236624 0.156 5.23 0.1097026
-#> 4    7 9.682856 0.939 1.754034 0.192422 0.1236624 0.156 5.23 0.1097026
-#> 5   14 9.682856 0.939 1.754034 0.192422 0.1236624 0.156 5.23 0.1097026
-#> 6   14 9.682856 0.939 1.754034 0.192422 0.1236624 0.156 5.23 0.1097026
-#>          k12        k21        Cc    base     emax     ec50     kout     gamma
-#> 1 0.08893784 0.02982792 0.0000000 6.17129 2.123669 13.82806 34.45922 0.7173072
-#> 2 0.08893784 0.02982792 0.0000000 6.17129 2.123669 13.82806 34.45922 0.7173072
-#> 3 0.08893784 0.02982792 6.1317740 6.17129 2.123669 13.82806 34.45922 0.7173072
-#> 4 0.08893784 0.02982792 6.1317740 6.17129 2.123669 13.82806 34.45922 0.7173072
-#> 5 0.08893784 0.02982792 0.5364942 6.17129 2.123669 13.82806 34.45922 0.7173072
-#> 6 0.08893784 0.02982792 0.5364942 6.17129 2.123669 13.82806 34.45922 0.7173072
-#>        kin       eff      ANC  ipredSim       sim    depot   central
-#> 1 212.6578 0.0000000 6.171290 0.0000000 0.0000000 150.0000  0.000000
-#> 2 212.6578 0.0000000 6.171290 6.1712900 7.7765701 150.0000  0.000000
-#> 3 212.6578 0.7606297 3.502497 6.1317740 6.1127241  63.1175 10.755340
-#> 4 212.6578 0.7606297 3.502497 3.5024973 3.6049971  63.1175 10.755340
-#> 5 212.6578 0.1881626 5.191435 0.5364942 0.8983226 176.5588  0.941029
-#> 6 212.6578 0.1881626 5.191435 5.1914355 7.0364791 176.5588  0.941029
+#>   time    vmax    km       vc        cl        ka     q   vp        kel
+#> 1    0 10.0536 0.939 2.216078 0.1565576 0.1615741 0.156 5.23 0.07064626
+#> 2    0 10.0536 0.939 2.216078 0.1565576 0.1615741 0.156 5.23 0.07064626
+#> 3    7 10.0536 0.939 2.216078 0.1565576 0.1615741 0.156 5.23 0.07064626
+#> 4    7 10.0536 0.939 2.216078 0.1565576 0.1615741 0.156 5.23 0.07064626
+#> 5   14 10.0536 0.939 2.216078 0.1565576 0.1615741 0.156 5.23 0.07064626
+#> 6   14 10.0536 0.939 2.216078 0.1565576 0.1615741 0.156 5.23 0.07064626
+#>          k12        k21        Cc   rbase     emax     ec50     kout     hill
+#> 1 0.07039463 0.02982792 0.0000000 5.30223 4.759127 8.203144 1.240071 1.399104
+#> 2 0.07039463 0.02982792 0.0000000 5.30223 4.759127 8.203144 1.240071 1.399104
+#> 3 0.07039463 0.02982792 8.7073884 5.30223 4.759127 8.203144 1.240071 1.399104
+#> 4 0.07039463 0.02982792 8.7073884 5.30223 4.759127 8.203144 1.240071 1.399104
+#> 5 0.07039463 0.02982792 0.3854449 5.30223 4.759127 8.203144 1.240071 1.399104
+#> 6 0.07039463 0.02982792 0.3854449 5.30223 4.759127 8.203144 1.240071 1.399104
+#>        kin        eff      ANC  ipredSim        sim     depot    central
+#> 1 6.575143 0.00000000 5.302230 0.0000000 0.00000000 150.00000  0.0000000
+#> 2 6.575143 0.00000000 5.302230 5.3022302 3.01595473 150.00000  0.0000000
+#> 3 6.575143 2.47880820 1.495832 8.7073884 8.94215670  48.40565 19.2962532
+#> 4 6.575143 2.47880820 1.495832 1.4958319 1.70262104  48.40565 19.2962532
+#> 5 6.575143 0.06508963 4.817177 0.3854449 0.06907249 165.62072  0.8541761
+#> 6 6.575143 0.06508963 4.817177 4.8171774 4.65833253 165.62072  0.8541761
 #>   peripheral1   effect CMT   WT SMOKE PRICORT dose_mg regimen id
-#> 1    0.000000 6.171290   5 81.1     0       1     150 150 q2w  1
-#> 2    0.000000 6.171290   6 81.1     0       1     150 150 q2w  1
-#> 3    7.324760 3.502497   5 81.1     0       1     150 150 q2w  1
-#> 4    7.324760 3.502497   6 81.1     0       1     150 150 q2w  1
-#> 5    8.112369 5.191435   5 81.1     0       1     150 150 q2w  1
-#> 6    8.112369 5.191435   6 81.1     0       1     150 150 q2w  1
+#> 1    0.000000 5.302230   5 81.1     0       1     150 150 q2w  1
+#> 2    0.000000 5.302230   6 81.1     0       1     150 150 q2w  1
+#> 3    9.380177 1.495832   5 81.1     0       1     150 150 q2w  1
+#> 4    9.380177 1.495832   6 81.1     0       1     150 150 q2w  1
+#> 5   10.697691 4.817177   5 81.1     0       1     150 150 q2w  1
+#> 6   10.697691 4.817177   6 81.1     0       1     150 150 q2w  1
 ```
 
 For deterministic typical-value traces (no between-subject variability),
@@ -358,7 +358,7 @@ typ_events <- typ_template |>
 
 sim_typ <- rxode2::rxSolve(mod_typ, typ_events, returnType = "data.frame") |>
   dplyr::left_join(typ_template, by = "id")
-#> ℹ omega/sigma items treated as zero: 'etalvmax', 'etalcl', 'etalvc', 'etalka', 'etalbase', 'etalemax', 'etalec50', 'etalkout', 'etalgamma'
+#> ℹ omega/sigma items treated as zero: 'etalvmax', 'etalcl', 'etalvc', 'etalka', 'etalrbase', 'etalemax', 'etalec50', 'etalkout', 'etalhill'
 #> Warning: multi-subject simulation without without 'omega'
 ```
 
@@ -433,7 +433,7 @@ With no sarilumab dose, ANC must sit at `BASE` for all time. Confirm:
 ev_placebo <- rxode2::et(seq(0, 56, by = 1), cmt = "ANC")
 ev_placebo$WT <- 71; ev_placebo$SMOKE <- 0; ev_placebo$PRICORT <- 0
 baseline_sim <- rxode2::rxSolve(mod_typ, ev_placebo, returnType = "data.frame")
-#> ℹ omega/sigma items treated as zero: 'etalvmax', 'etalcl', 'etalvc', 'etalka', 'etalbase', 'etalemax', 'etalec50', 'etalkout', 'etalgamma'
+#> ℹ omega/sigma items treated as zero: 'etalvmax', 'etalcl', 'etalvc', 'etalka', 'etalrbase', 'etalemax', 'etalec50', 'etalkout', 'etalhill'
 range(baseline_sim$effect, na.rm = TRUE)
 #> [1] 5.38 5.38
 ```
@@ -481,7 +481,7 @@ ev_single <- rxode2::et(amt = 200, cmt = "depot") |>
   rxode2::et(seq(0, 56, by = 1), cmt = "ANC")
 ev_single$WT <- 71; ev_single$SMOKE <- 0; ev_single$PRICORT <- 0
 recovery_sim <- rxode2::rxSolve(mod_typ, ev_single, returnType = "data.frame")
-#> ℹ omega/sigma items treated as zero: 'etalvmax', 'etalcl', 'etalvc', 'etalka', 'etalbase', 'etalemax', 'etalec50', 'etalkout', 'etalgamma'
+#> ℹ omega/sigma items treated as zero: 'etalvmax', 'etalcl', 'etalvc', 'etalka', 'etalrbase', 'etalemax', 'etalec50', 'etalkout', 'etalhill'
 
 # Time at which ANC is back within 2% of baseline
 within_baseline <- recovery_sim |>
@@ -491,8 +491,8 @@ within_baseline <- recovery_sim |>
 within_baseline
 #>   time vmax    km   vc   cl    ka     q   vp   kel   k12        k21         Cc
 #> 1   36 8.06 0.939 2.08 0.26 0.136 0.156 5.23 0.125 0.075 0.02982792 0.06494031
-#>   base emax ec50 kout gamma     kin        eff      ANC ipredSim      sim
-#> 1 5.38  1.5 10.3 2.11 0.862 11.3518 0.01879049 5.277737 5.277737 5.277737
+#>   rbase emax ec50 kout  hill     kin        eff      ANC ipredSim      sim
+#> 1  5.38  1.5 10.3 2.11 0.862 11.3518 0.01879049 5.277737 5.277737 5.277737
 #>     depot   central peripheral1   effect CMT WT SMOKE PRICORT
 #> 1 1.49529 0.1350758    11.22791 5.277737   6 71     0       0
 ```
@@ -541,8 +541,8 @@ knitr::kable(nca_summary,
 
 | start | end | regimen | N | auclast | cmax | cmin | tmax |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 154 | 168 | 150 q2w | 50 | 108 \[75.1\] | 13.6 \[56.7\] | 2.62 \[188\] | 7.00 \[7.00, 7.00\] |
-| 154 | 168 | 200 q2w | 50 | 230 \[57.2\] | 25.2 \[42.6\] | 8.22 \[115\] | 7.00 \[7.00, 7.00\] |
+| 154 | 168 | 150 q2w | 50 | 101 \[77.0\] | 12.2 \[62.8\] | 2.86 \[158\] | 7.00 \[7.00, 7.00\] |
+| 154 | 168 | 200 q2w | 50 | 233 \[69.2\] | 25.6 \[46.6\] | 8.01 \[168\] | 7.00 \[7.00, 7.00\] |
 
 Steady-state NCA (day 154-168) for sarilumab by regimen. {.table
 style="width:100%;"}

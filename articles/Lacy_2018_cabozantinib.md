@@ -495,9 +495,9 @@ knitr::kable(as.data.frame(summary(nca_res)),
 
 | Interval Start | Interval End | treatment | N | AUClast (h\*ng/mL) | Cmax (ng/mL) | Tmax (h) |
 |---:|---:|:---|:---|:---|:---|:---|
-| 0 | 24 | HV 20 mg tablet | 40 | 1130 \[30.8\] | 72.3 \[47.8\] | 2.75 \[1.25, 24.0\] |
-| 0 | 24 | HV 40 mg tablet | 40 | 2170 \[27.8\] | 131 \[46.0\] | 3.25 \[1.00, 24.0\] |
-| 0 | 24 | HV 60 mg tablet | 40 | 3510 \[27.4\] | 227 \[47.0\] | 2.50 \[1.00, 24.0\] |
+| 0 | 24 | HV 20 mg tablet | 40 | 1070 \[34.4\] | 62.7 \[52.8\] | 4.00 \[1.00, 24.0\] |
+| 0 | 24 | HV 40 mg tablet | 40 | 2230 \[31.9\] | 137 \[49.7\] | 3.25 \[1.00, 24.0\] |
+| 0 | 24 | HV 60 mg tablet | 40 | 3230 \[52.1\] | 203 \[67.7\] | 2.75 \[1.00, 24.0\] |
 
 Simulated single-dose NCA for the HV tablet cohort (20 / 40 / 60 mg).
 Concentrations in ng/mL, time in hours, AUC(0-24h) in ng\*h/mL. {.table

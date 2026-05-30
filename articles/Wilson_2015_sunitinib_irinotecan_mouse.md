@@ -52,9 +52,9 @@ S(t) dt) (Wilson 2015 Equation 4). All parameter values come from Wilson
 
 | Equation / parameter | Value | Source location |
 |----|----|----|
-| `d/dt(cyclingCells)` | n/a | Wilson 2015 Equation 3 (first line) |
-| `d/dt(damagedCells1..3)` | n/a | Wilson 2015 Equation 3 (transit chain D2-D4) |
-| `d/dt(carryingCapacity)` | n/a | Wilson 2015 Equation 3 (penultimate line) |
+| `d/dt(cycling_cells)` | n/a | Wilson 2015 Equation 3 (first line) |
+| `d/dt(damaged_cells1..3)` | n/a | Wilson 2015 Equation 3 (transit chain D2-D4) |
+| `d/dt(carrying_capacity)` | n/a | Wilson 2015 Equation 3 (penultimate line) |
 | `d/dt(sunitinib)` | n/a | Wilson 2015 Equation 2 (K-PD) |
 | `d/dt(irinotecan)` | n/a | Wilson 2015 Equation 3, paragraph “Model of vascular tumor growth with combined …” |
 | kC = kS \* exp(int S(t) dt) | n/a | Wilson 2015 Equation 4 |
@@ -68,8 +68,8 @@ S(t) dt) (Wilson 2015 Equation 4). All parameter values come from Wilson
 | `ps_elim` (p_S) | `fixed(2.12)` | Wilson 2015 Table 1: p_S = 2.12 day^-1 (fixed) |
 | `pc_elim` (p_C) | `fixed(0.0850)` | Wilson 2015 Table 1: p_C = 0.0850 day^-1 (fixed) |
 | `alpha_logistic` (alpha) | `fixed(0.1)` | Wilson 2015 page 723 prose: alpha = 0.1 (fixed; “nearly Gompertzian”) |
-| `propSd_tumorSize` | `0.10` | Placeholder (Wilson 2015 reports no residual error for the median-data NLS fit) |
-| `addSd_tumorSize` | `0.50` | Placeholder (Wilson 2015 reports no residual error for the median-data NLS fit) |
+| `propSd_tumor_size` | `0.10` | Placeholder (Wilson 2015 reports no residual error for the median-data NLS fit) |
+| `addSd_tumor_size` | `0.50` | Placeholder (Wilson 2015 reports no residual error for the median-data NLS fit) |
 
 ## Virtual cohort
 
@@ -149,7 +149,7 @@ sim_typ <- rxode2::rxSolve(
   as.data.frame()
 #> Warning: multi-subject simulation without without 'omega'
 
-ggplot(sim_typ, aes(time, tumorSize, colour = arm)) +
+ggplot(sim_typ, aes(time, tumor_size, colour = arm)) +
   geom_line(linewidth = 1) +
   labs(x = "Time (days)", y = "Mean tumor diameter (mm)",
        colour = NULL,
@@ -174,7 +174,7 @@ much steeper post-irinotecan decline.
 
 sim_typ |>
   filter(arm %in% c("Group 4: combo day 2", "Group 5: combo day 15")) |>
-  ggplot(aes(time, tumorSize, colour = arm)) +
+  ggplot(aes(time, tumor_size, colour = arm)) +
   geom_line(linewidth = 1) +
   geom_vline(data = tibble(arm = c("Group 4: combo day 2", "Group 5: combo day 15"),
                            xint = c(2, 15)),
@@ -225,7 +225,7 @@ sim_nadir <- rxode2::rxSolve(
 nadir_summary <- sim_nadir |>
   filter(time >= irino_day) |>
   group_by(irino_day) |>
-  summarise(nadir_diameter_mm = min(tumorSize), .groups = "drop")
+  summarise(nadir_diameter_mm = min(tumor_size), .groups = "drop")
 
 ggplot(nadir_summary, aes(irino_day, nadir_diameter_mm)) +
   geom_line() +
@@ -340,7 +340,7 @@ carrying-capacity ODEs reduce to the pure Wilson 2015 Equation 1 system
 ctrl_typ <- sim_typ |> filter(arm == "Control")
 stopifnot(max(ctrl_typ$sunitinib)  == 0)
 stopifnot(max(ctrl_typ$irinotecan) == 0)
-stopifnot(all(diff(ctrl_typ$tumorSize) > 0))
+stopifnot(all(diff(ctrl_typ$tumor_size) > 0))
 cat("Control arm: monotonic tumor growth, no drug states active.\n")
 #> Control arm: monotonic tumor growth, no drug states active.
 ```
@@ -349,12 +349,12 @@ cat("Control arm: monotonic tumor growth, no drug states active.\n")
 
 | Term | Units | Reduces to |
 |----|----|----|
-| `k_growth * cyclingCells` | `(1/day) * mm` | `mm / day` |
-| `(1 - (cyclingCells / carryingCapacity)^alpha_logistic)` | unitless | unitless |
-| `beta_c * pc_elim * irinotecan * cyclingCells` | `(1/cu) * (1/day) * cu * mm` | `mm / day` |
-| `k_c_eff * damagedCells_k` | `(1/day) * mm` | `mm / day` |
-| `b_cap * cyclingCells^2` | `(1/(mm*day)) * mm^2` | `mm / day` |
-| `beta_s * ps_elim * sunitinib * carryingCapacity` | `(1/cu) * (1/day) * cu * mm` | `mm / day` |
+| `k_growth * cycling_cells` | `(1/day) * mm` | `mm / day` |
+| `(1 - (cycling_cells / carrying_capacity)^alpha_logistic)` | unitless | unitless |
+| `beta_c * pc_elim * irinotecan * cycling_cells` | `(1/cu) * (1/day) * cu * mm` | `mm / day` |
+| `k_c_eff * damaged_cells_k` | `(1/day) * mm` | `mm / day` |
+| `b_cap * cycling_cells^2` | `(1/(mm*day)) * mm^2` | `mm / day` |
+| `beta_s * ps_elim * sunitinib * carrying_capacity` | `(1/cu) * (1/day) * cu * mm` | `mm / day` |
 | `-ps_elim * sunitinib` | `(1/day) * cu` | `cu / day` |
 | `-pc_elim * irinotecan` | `(1/day) * cu` | `cu / day` |
 
@@ -374,7 +374,7 @@ as such in Wilson 2015 page 724.
 - **Residual-error placeholder.** Wilson 2015 Table 1 fits the
   interaction model to per-group median data via nonlinear least squares
   and does not report any residual-error structure. The
-  `propSd_tumorSize = 0.10` and `addSd_tumorSize = 0.50` values in
+  `propSd_tumor_size = 0.10` and `addSd_tumor_size = 0.50` values in
   `ini()` are placeholders on the same order as Simeoni 2004
   (`oncology_xenograft_simeoni_2004`); a downstream user re-fitting
   Wilson 2015 to subject-level data should re-estimate these. All
@@ -408,18 +408,19 @@ as such in Wilson 2015 page 724.
   `cumS_at_irino_dose` value and the algebraic integral 1/p_S \* (doses
   fired before T_C). The check in section 1 above confirms the deviation
   is within tolerance.
-- **`tumorSize` is mean tumor diameter in mm, not volume.** Wilson 2015
+- **`tumor_size` is mean tumor diameter in mm, not volume.** Wilson 2015
   explicitly chooses the geometric mean of three orthogonal caliper
   measurements (l*w*h)^(1/3) – not a tumor volume – because RECIST
   criteria for human translation operate on linear dimensions.
   Downstream users who want a volume metric should cube the diameter.
 - **[`checkModelConventions()`](https://nlmixr2.github.io/nlmixr2lib/reference/checkModelConventions.md)
-  deviations (intentional).** The model uses non-canonical compartment
-  names (`cyclingCells`, `damagedCells1..3`, `carryingCapacity`,
-  `sunitinib`, `irinotecan`, `intIrinotecan`, `cumSunitinibFrozen`) and
-  a non-canonical observation variable (`tumorSize`). These match the
-  Simeoni 2004 / Ouerdani 2015 mouse-TGI naming convention already
-  established in nlmixr2lib. `Cc` is reserved for plasma drug
+  deviations (intentional).** The TGI compartment names `cycling_cells`,
+  `damaged_cells1..3`, `carrying_capacity`, and the TGI output
+  `tumor_size` are now canonical per the 2026-05-28 naming-audit
+  registration. The remaining non-canonical compartment names
+  (`sunitinib`, `irinotecan`, `intIrinotecan`, `cumSunitinibFrozen`) are
+  drug-specific paper-mechanistic states retained from the Simeoni 2004
+  / Ouerdani 2015 mouse-TGI convention. `Cc` is reserved for plasma drug
   concentrations and would be misleading on a tumor-diameter
   observation. `units$concentration` carries the tumor-diameter
   unit (mm) and `units$dosing` documents the K-PD unit-dose convention.

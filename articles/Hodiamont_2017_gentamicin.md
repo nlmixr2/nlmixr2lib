@@ -283,8 +283,8 @@ knitr::kable(
 
 | regimen | median_Cmax_pub | median_Cmax_sim | pct_in_target_pub | pct_in_target_sim | pct_subther_pub | pct_subther_sim | pct_suprather_pub | pct_suprather_sim |
 |:---|---:|---:|---:|---:|---:|---:|---:|---:|
-| 5 mg/kg | 14.0 | 14.3 | 27.7 | 34.0 | 58.6 | 55.7 | 13.7 | 10.3 |
-| 6 mg/kg | 16.8 | 17.1 | 33.5 | 38.7 | 35.6 | 35.7 | 30.9 | 25.7 |
+| 5 mg/kg | 14.0 | 13.8 | 27.7 | 28.3 | 58.6 | 62.7 | 13.7 | 9.0 |
+| 6 mg/kg | 16.8 | 16.5 | 33.5 | 42.7 | 35.6 | 35.7 | 30.9 | 21.7 |
 
 Comparison of simulated first-dose Cmax statistics with Hodiamont 2017
 Results ‘Simulation of Cmax at Different Starting Doses’. The ‘pub’

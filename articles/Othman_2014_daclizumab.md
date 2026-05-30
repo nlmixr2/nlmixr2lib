@@ -4,7 +4,7 @@
 
 library(nlmixr2lib)
 library(rxode2)
-#> rxode2 5.0.2 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.1 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -341,10 +341,10 @@ knitr::kable(summary(nca_res),
 
 | start | end | treatment | N | cmax | tmax | half.life | aucinf.obs |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | Inf | SC 150 mg single | 60 | 12.2 \[27.8\] | 7.00 \[3.00, 14.0\] | 19.9 \[5.68\] | 472 \[26.6\] |
-| 0 | Inf | SC 300 mg single | 60 | 24.5 \[35.1\] | 7.00 \[3.00, 14.0\] | 20.0 \[5.90\] | 958 \[33.5\] |
-| 0 | Inf | IV 200 mg single | 60 | 46.8 \[32.1\] | 0.000 \[0.000, 0.000\] | 21.1 \[6.53\] | 798 \[31.5\] |
-| 0 | Inf | IV 400 mg single | 60 | 95.1 \[36.4\] | 0.000 \[0.000, 0.000\] | 20.9 \[6.24\] | 1610 \[26.1\] |
+| 0 | Inf | SC 150 mg single | 60 | 11.9 \[28.4\] | 7.00 \[3.00, 14.0\] | 19.1 \[6.53\] | 454 \[30.3\] |
+| 0 | Inf | SC 300 mg single | 60 | 24.1 \[27.8\] | 10.0 \[3.00, 14.0\] | 20.7 \[6.22\] | 976 \[28.5\] |
+| 0 | Inf | IV 200 mg single | 60 | 45.8 \[30.9\] | 0.000 \[0.000, 0.000\] | 19.3 \[5.57\] | 727 \[25.5\] |
+| 0 | Inf | IV 400 mg single | 60 | 94.9 \[36.8\] | 0.000 \[0.000, 0.000\] | 22.1 \[8.54\] | 1670 \[32.0\] |
 
 Simulated NCA for Study 1 SC and Study 3 IV arms. {.table}
 
@@ -404,10 +404,10 @@ knitr::kable(
 
 | treatment | Cmax_sim_mean | Cmax_pub | pct_Cmax | tmax_sim_med | tmax_pub | AUC_sim_mean | AUC_pub_ugdaymL | pct_AUC |
 |:---|---:|---:|---:|---:|---:|---:|---:|---:|
-| SC 150 mg single | 12.66 | 15.3 | -17.2 | 7 | 7 | 486.1 | 675.0 | -28.0 |
-| SC 300 mg single | 25.78 | 27.2 | -5.2 | 7 | 7 | 1001.3 | 1225.0 | -18.3 |
-| IV 200 mg single | 48.39 | 50.7 | -4.5 | 0 | NA | 848.6 | 837.5 | 1.3 |
-| IV 400 mg single | 99.48 | 112.0 | -11.2 | 0 | NA | 1690.4 | 1745.8 | -3.2 |
+| SC 150 mg single | 12.35 | 15.3 | -19.3 | 7 | 7 | 472.5 | 675.0 | -30.0 |
+| SC 300 mg single | 24.95 | 27.2 | -8.3 | 10 | 7 | 1005.3 | 1225.0 | -17.9 |
+| IV 200 mg single | 47.32 | 50.7 | -6.7 | 0 | NA | 766.7 | 837.5 | -8.5 |
+| IV 400 mg single | 99.55 | 112.0 | -11.1 | 0 | NA | 1767.0 | 1745.8 | 1.2 |
 
 Simulated vs published (Othman 2014 §3.2) NCA. AUC published in mg·h/mL
 converted to µg·day/mL (×1000/24). {.table}
@@ -485,11 +485,11 @@ knitr::kable(
 
 | metric                        | published_median | simulated_median |
 |:------------------------------|:-----------------|:-----------------|
-| First dose Cmax (µg/mL)       | 17.8 (10.8-27.9) | 14.0 (8.7-20.9)  |
-| First dose AUCs (µg·day/mL)   | 298 (187-442)    | 307 (198-430)    |
-| Steady state Cmax (µg/mL)     | 31.5 (18.7-51.8) | 24.5 (14.5-37.2) |
-| Steady state AUCs (µg·day/mL) | 558 (335-871)    | 549 (334-825)    |
-| Steady state Ctrough (µg/mL)  | 12.7 (6.13-25.3) | 13.5 (7.6-23.5)  |
+| First dose Cmax (µg/mL)       | 17.8 (10.8-27.9) | 13.9 (8.2-22.5)  |
+| First dose AUCs (µg·day/mL)   | 298 (187-442)    | 308 (183-452)    |
+| Steady state Cmax (µg/mL)     | 31.5 (18.7-51.8) | 24.2 (14.2-38.7) |
+| Steady state AUCs (µg·day/mL) | 558 (335-871)    | 540 (334-855)    |
+| Steady state Ctrough (µg/mL)  | 12.7 (6.13-25.3) | 12.9 (7.2-23.4)  |
 
 Phase III 150 mg SC Q4W: published (Othman 2014 §3.7) vs simulated
 median (5th-95th percentile). Published AUC converted from mg·h/mL to

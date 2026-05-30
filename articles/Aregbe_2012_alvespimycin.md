@@ -334,8 +334,8 @@ knitr::kable(
 
 | PPTESTCD |   p05 | median |   p95 |
 |:---------|------:|-------:|------:|
-| auclast  | 2.667 |  4.379 | 7.053 |
-| cmax     | 0.477 |  0.839 | 1.232 |
+| auclast  | 2.644 |  4.815 | 7.101 |
+| cmax     | 0.597 |  0.861 | 1.236 |
 | tmax     | 1.000 |  1.000 | 1.000 |
 
 Simulated NCA after dose 1 of 36 mg/m^2 schedule A (n = 100). AUC0-24 in

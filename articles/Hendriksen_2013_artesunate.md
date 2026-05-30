@@ -267,10 +267,6 @@ ggplot(vpc_long, aes(time, Q50)) +
 #> This warning is displayed once per session.
 #> Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
 #> generated.
-#> Warning in transformation$transform(x): NaNs produced
-#> Warning in scale_y_log10(): log-10 transformation introduced infinite values.
-#> Warning: Removed 7 rows containing missing values or values outside the scale range
-#> (`geom_ribbon()`).
 ```
 
 ![](Hendriksen_2013_artesunate_files/figure-html/figure-2-vpc-1.png)
@@ -428,181 +424,10 @@ nca_res  <- PKNCA::pk.nca(nca_data)
 #> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (0.001) is not allowed
-#> Warning in assert_conc(conc = conc): Negative concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in log(data$conc): NaNs produced
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (0.001) is not allowed
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (0.001) is not allowed
-#> Warning in assert_conc(conc = conc): Negative concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in log(data$conc): NaNs produced
-#> Warning: Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (0.001) is not allowed
-#> Warning in assert_conc(conc = conc): Negative concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in log(data$conc): NaNs produced
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (0.001) is not allowed
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (0.001) is not allowed
-#> Warning in assert_conc(conc = conc): Negative concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in log(data$conc): NaNs produced
-#> Warning: Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (0.001) is not allowed
-#> Warning in assert_conc(conc = conc): Negative concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in log(data$conc): NaNs produced
-#> Warning: Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (0.001) is not allowed
-#> Warning in assert_conc(conc = conc): Negative concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in log(data$conc): NaNs produced
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (0.001) is not allowed
-#> Warning in assert_conc(conc = conc): Negative concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in log(data$conc): NaNs produced
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (0.001) is not allowed
-#> Warning in assert_conc(conc = conc): Negative concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in log(data$conc): NaNs produced
-#> Warning: Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (0.001) is not allowed
-#> Warning in assert_conc(conc = conc): Negative concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in log(data$conc): NaNs produced
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (0.001) is not allowed
-#> Warning in assert_conc(conc = conc): Negative concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in log(data$conc): NaNs produced
-#> Warning: Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
@@ -639,24 +464,6 @@ nca_res  <- PKNCA::pk.nca(nca_data)
 #> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (0.001) is not allowed
-#> Warning in assert_conc(conc = conc): Negative concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in log(data$conc): NaNs produced
-#> Warning: Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
 #> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
 #> concentrations found
@@ -673,63 +480,6 @@ nca_res  <- PKNCA::pk.nca(nca_data)
 #> concentrations found
 #> Warning in log(data$conc): NaNs produced
 #> Warning: Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (0.001) is not allowed
-#> Warning in assert_conc(conc = conc): Negative concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in log(data$conc): NaNs produced
-#> Warning: Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
@@ -803,7 +553,194 @@ nca_res  <- PKNCA::pk.nca(nca_data)
 #> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
 #> concentrations found
 #> Warning in log(data$conc): NaNs produced
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning: Requesting an AUC range starting (0) before the first measurement
+#> (0.001) is not allowed
+#> Warning in assert_conc(conc = conc): Negative concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in log(data$conc): NaNs produced
 #> Warning: Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning: Requesting an AUC range starting (0) before the first measurement
+#> (0.001) is not allowed
+#> Warning in assert_conc(conc = conc): Negative concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in log(data$conc): NaNs produced
+#> Warning: Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning: Requesting an AUC range starting (0) before the first measurement
+#> (0.001) is not allowed
+#> Warning in assert_conc(conc = conc): Negative concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in log(data$conc): NaNs produced
+#> Warning: Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning: Requesting an AUC range starting (0) before the first measurement
+#> (0.001) is not allowed
+#> Warning in assert_conc(conc = conc): Negative concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in log(data$conc): NaNs produced
+#> Warning: Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning: Requesting an AUC range starting (0) before the first measurement
+#> (0.001) is not allowed
+#> Warning in assert_conc(conc = conc): Negative concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in log(data$conc): NaNs produced
+#> Warning: Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning: Requesting an AUC range starting (0) before the first measurement
+#> (0.001) is not allowed
+#> Warning in assert_conc(conc = conc): Negative concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in log(data$conc): NaNs produced
+#> Warning: Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
 #> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
@@ -880,11 +817,6 @@ nca_res  <- PKNCA::pk.nca(nca_data)
 #> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
 #> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
 #> concentrations found
 #> Warning: Requesting an AUC range starting (0) before the first measurement
@@ -901,135 +833,6 @@ nca_res  <- PKNCA::pk.nca(nca_data)
 #> Warning in log(data$conc): NaNs produced
 #> Warning: Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (0.001) is not allowed
-#> Warning in assert_conc(conc = conc): Negative concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in log(data$conc): NaNs produced
-#> Warning: Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (0.001) is not allowed
-#> Warning in assert_conc(conc = conc): Negative concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in log(data$conc): NaNs produced
-#> Warning: Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (0.001) is not allowed
-#> Warning in assert_conc(conc = conc): Negative concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in log(data$conc): NaNs produced
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (0.001) is not allowed
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (0.001) is not allowed
-#> Warning in assert_conc(conc = conc): Negative concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in log(data$conc): NaNs produced
-#> Warning: Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (0.001) is not allowed
-#> Warning in assert_conc(conc = conc): Negative concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in log(data$conc): NaNs produced
-#> Warning: Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (0.001) is not allowed
-#> Warning in assert_conc(conc = conc): Negative concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in log(data$conc): NaNs produced
-#> Warning: Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
@@ -1072,113 +875,11 @@ nca_res  <- PKNCA::pk.nca(nca_data)
 #> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (0.001) is not allowed
-#> Warning in assert_conc(conc = conc): Negative concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in log(data$conc): NaNs produced
-#> Warning: Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (0.001) is not allowed
-#> Warning in assert_conc(conc = conc): Negative concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in log(data$conc): NaNs produced
-#> Warning: Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (0.001) is not allowed
-#> Warning in assert_conc(conc = conc): Negative concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in log(data$conc): NaNs produced
-#> Warning: Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (0.001) is not allowed
-#> Warning in assert_conc(conc = conc): Negative concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in log(data$conc): NaNs produced
-#> Warning: Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (0.001) is not allowed
-#> Warning in assert_conc(conc = conc): Negative concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in log(data$conc): NaNs produced
-#> Warning: Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
@@ -1227,6 +928,26 @@ nca_res  <- PKNCA::pk.nca(nca_data)
 #> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning: Requesting an AUC range starting (0) before the first measurement
+#> (0.001) is not allowed
+#> Warning in assert_conc(conc = conc): Negative concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in log(data$conc): NaNs produced
+#> Warning: Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
@@ -1293,21 +1014,15 @@ nca_res  <- PKNCA::pk.nca(nca_data)
 #> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (0.001) is not allowed
-#> Warning in assert_conc(conc = conc): Negative concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in log(data$conc): NaNs produced
-#> Warning: Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
@@ -1338,6 +1053,129 @@ nca_res  <- PKNCA::pk.nca(nca_data)
 #> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning: Requesting an AUC range starting (0) before the first measurement
+#> (0.001) is not allowed
+#> Warning in assert_conc(conc = conc): Negative concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in log(data$conc): NaNs produced
+#> Warning: Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning: Requesting an AUC range starting (0) before the first measurement
+#> (0.001) is not allowed
+#> Warning in assert_conc(conc = conc): Negative concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in log(data$conc): NaNs produced
+#> Warning: Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning: Requesting an AUC range starting (0) before the first measurement
+#> (0.001) is not allowed
+#> Warning in assert_conc(conc = conc): Negative concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in log(data$conc): NaNs produced
+#> Warning: Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning: Requesting an AUC range starting (0) before the first measurement
+#> (0.001) is not allowed
+#> Warning in assert_conc(conc = conc): Negative concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in log(data$conc): NaNs produced
+#> Warning: Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning: Requesting an AUC range starting (0) before the first measurement
+#> (0.001) is not allowed
+#> Warning in assert_conc(conc = conc): Negative concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in log(data$conc): NaNs produced
+#> Warning: Requesting an AUC range starting (0) before the first measurement
+#> (0.001) is not allowed
 
 nca_summary_ars <- summary(nca_res)
 knitr::kable(
@@ -1348,13 +1186,13 @@ knitr::kable(
 
 | Interval Start | Interval End | band | N | AUClast (h\*ng/mL) | Cmax (ng/mL) | Tmax (h) | Half-life (h) |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | 12 | 6-7 | 60 | NC | 960 \[90.2\] | 0.0210 \[0.0160, 0.0210\] | 0.498 \[0.436\], n=59 |
-| 0 | 12 | 8-9 | 60 | NC | 777 \[92.6\] | 0.0210 \[0.0210, 0.0210\] | 0.599 \[0.622\] |
-| 0 | 12 | 10-11 | 60 | NC | 841 \[79.7\] | 0.0210 \[0.0210, 0.0210\] | 0.554 \[0.423\] |
-| 0 | 12 | 12-13 | 60 | NC | 793 \[99.4\] | 0.0210 \[0.0210, 0.0210\] | 0.640 \[0.558\] |
-| 0 | 12 | 14-16 | 60 | NC | 992 \[97.1\] | 0.0210 \[0.0210, 0.0210\] | 0.593 \[0.548\] |
-| 0 | 12 | 17-20 | 60 | NC | 822 \[121\] | 0.0210 \[0.0210, 0.0210\] | 0.639 \[0.477\] |
-| 0 | 12 | 21-25 | 60 | NC | 943 \[103\] | 0.0210 \[0.0210, 0.0210\] | 0.680 \[0.477\] |
+| 0 | 12 | 6-7 | 60 | NC | 901 \[94.4\] | 0.0210 \[0.0160, 0.0210\] | 0.499 \[0.400\] |
+| 0 | 12 | 8-9 | 60 | NC | 903 \[105\] | 0.0210 \[0.0160, 0.0210\] | 0.569 \[0.521\] |
+| 0 | 12 | 10-11 | 60 | NC | 982 \[84.3\] | 0.0210 \[0.0160, 0.0210\] | 0.556 \[0.455\] |
+| 0 | 12 | 12-13 | 60 | NC | 924 \[106\] | 0.0210 \[0.0160, 0.0210\] | 0.556 \[0.399\] |
+| 0 | 12 | 14-16 | 60 | NC | 917 \[86.1\] | 0.0210 \[0.0210, 0.0210\] | 0.482 \[0.325\] |
+| 0 | 12 | 17-20 | 60 | NC | 1050 \[65.0\] | 0.0210 \[0.0160, 0.0210\] | 0.591 \[0.370\] |
+| 0 | 12 | 21-25 | 60 | NC | 908 \[103\] | 0.0210 \[0.0210, 0.0210\] | 0.658 \[0.589\] |
 
 Simulated NCA parameters (ARS) by weight band, 2.4 mg/kg IM. {.table}
 
@@ -1799,13 +1637,13 @@ knitr::kable(
 
 | Interval Start | Interval End | band | N | AUClast (h\*ng/mL) | Cmax (ng/mL) | Tmax (h) | Half-life (h) |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | 12 | 6-7 | 60 | NC | 519 \[62.7\] | 0.525 \[0.160, 1.45\] | 0.695 \[0.431\] |
-| 0 | 12 | 8-9 | 60 | NC | 492 \[52.8\] | 0.550 \[0.260, 1.95\] | 0.778 \[0.616\] |
-| 0 | 12 | 10-11 | 60 | NC | 484 \[51.6\] | 0.550 \[0.220, 1.65\] | 0.723 \[0.427\] |
-| 0 | 12 | 12-13 | 60 | NC | 472 \[52.6\] | 0.650 \[0.180, 1.95\] | 0.811 \[0.534\] |
-| 0 | 12 | 14-16 | 60 | NC | 507 \[56.6\] | 0.600 \[0.240, 1.65\] | 0.827 \[0.516\] |
-| 0 | 12 | 17-20 | 60 | NC | 501 \[52.7\] | 0.650 \[0.280, 2.15\] | 0.896 \[0.516\] |
-| 0 | 12 | 21-25 | 60 | NC | 481 \[49.8\] | 0.750 \[0.220, 1.55\] | 0.911 \[0.521\] |
+| 0 | 12 | 6-7 | 60 | NC | 500 \[49.2\] | 0.550 \[0.200, 1.45\] | 0.668 \[0.398\] |
+| 0 | 12 | 8-9 | 60 | NC | 442 \[63.3\] | 0.550 \[0.180, 1.75\] | 0.706 \[0.489\] |
+| 0 | 12 | 10-11 | 60 | NC | 469 \[48.4\] | 0.650 \[0.180, 1.55\] | 0.696 \[0.449\] |
+| 0 | 12 | 12-13 | 60 | NC | 463 \[57.8\] | 0.550 \[0.160, 1.35\] | 0.719 \[0.388\] |
+| 0 | 12 | 14-16 | 60 | NC | 518 \[48.6\] | 0.550 \[0.280, 1.45\] | 0.681 \[0.343\] |
+| 0 | 12 | 17-20 | 60 | NC | 478 \[45.5\] | 0.650 \[0.200, 2.65\] | 0.787 \[0.438\] |
+| 0 | 12 | 21-25 | 60 | NC | 524 \[43.7\] | 0.750 \[0.260, 3.45\] | 0.892 \[0.587\] |
 
 Simulated NCA parameters (DHA) by weight band, 2.4 mg/kg IM. {.table}
 

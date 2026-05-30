@@ -612,7 +612,7 @@ knitr::kable(summary(nca_res),
 
 | start | end | cohort | N | cmax | tmax | half.life | aucinf.obs |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | Inf | 15 mg/kg single IV | 200 | 257 \[22.3\] | 1.00 \[1.00, 1.00\] | 21.9 \[4.06\] | NC |
+| 0 | Inf | 15 mg/kg single IV | 200 | 266 \[21.8\] | 1.00 \[1.00, 1.00\] | 22.3 \[4.21\] | NC |
 
 Single-dose NCA from simulated 15 mg/kg cohort (n = 200). {.table}
 
@@ -661,10 +661,10 @@ knitr::kable(compare_tbl,
 | Quantity | Value |
 |:---|:---|
 | Reported terminal half-life (Berges 2015 Results) | ~20 days |
-| Simulated median half-life | 21.4 days |
-| Simulated 5-95% range half-life | 16.0 - 28.5 days |
+| Simulated median half-life | 21.8 days |
+| Simulated 5-95% range half-life | 15.9 - 30.5 days |
 | End-of-infusion concentration (closed-form, 15 mg/kg / 70 kg / Vc 3.31 L) | 317 ug/mL |
-| Simulated median Cmax | 260 ug/mL |
+| Simulated median Cmax | 263 ug/mL |
 | Closed-form AUCinf (Dose / CL, typical 70 kg) | 3739 ug*day/mL = 3739.3 mg*day/L |
 
 Simulated vs published PK values for the typical-weight 15 mg/kg cohort.

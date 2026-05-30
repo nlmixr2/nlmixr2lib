@@ -339,7 +339,7 @@ knitr::kable(summary(nca_res), caption = "Simulated NCA (300 mg SC single dose).
 
 | start | end | treatment | N | auclast | cmax | tmax | half.life |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | 85 | 300 mg SC single | 100 | NC | 30.5 \[31.5\] | 6.00 \[2.50, 12.5\] | 5.33 \[0.279\] |
+| 0 | 85 | 300 mg SC single | 100 | NC | 30.8 \[34.5\] | 6.00 \[2.50, 13.0\] | 5.33 \[0.182\] |
 
 Simulated NCA (300 mg SC single dose). {.table}
 
@@ -371,7 +371,7 @@ ev_typical_sc <- tibble::tibble(
 sim_typical <- rxode2::rxSolve(mod_typical, events = ev_typical_sc, keep = "WT") |>
   as.data.frame() |>
   dplyr::filter(!is.na(Cc), time > 0)
-#> ℹ omega/sigma items treated as zero: 'etalvc', 'etalke', 'etalka', 'etalvmax'
+#> ℹ omega/sigma items treated as zero: 'etalvc', 'etalkel', 'etalka', 'etalvmax'
 
 typical_summary <- tibble::tibble(
   metric = c(

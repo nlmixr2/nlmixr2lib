@@ -313,13 +313,13 @@ knitr::kable(plasma_summary,
 | analyte | PPTESTCD |  median |     q05 |     q95 |
 |:--------|:---------|--------:|--------:|--------:|
 | 4OH-CTX | auclast  |      NA |      NA |      NA |
-| 4OH-CTX | cmax     |  86.103 |  78.368 |  89.933 |
+| 4OH-CTX | cmax     |  83.385 |  78.318 |  94.948 |
 | 4OH-CTX | tmax     |   0.250 |   0.208 |   0.250 |
 | CEPM    | auclast  |      NA |      NA |      NA |
-| CEPM    | cmax     |  92.268 |  79.711 | 102.977 |
+| CEPM    | cmax     |  94.107 |  74.992 | 111.033 |
 | CEPM    | tmax     |   0.250 |   0.250 |   0.500 |
 | CTX     | auclast  |      NA |      NA |      NA |
-| CTX     | cmax     | 428.032 | 389.625 | 450.543 |
+| CTX     | cmax     | 427.652 | 373.287 | 448.518 |
 | CTX     | tmax     |   0.083 |   0.083 |   0.083 |
 
 Simulated plasma NCA (16 virtual mice, M3 + M4) at the typical-value
@@ -343,17 +343,17 @@ knitr::kable(ecf_summary,
              caption = "Simulated brain/tumor ECF NCA (16 virtual mice, M3 + M4) at the typical-value parameter set with IIV; median (5th, 95th percentiles).")
 ```
 
-| analyte | PPTESTCD | median |   q05 |   q95 |
-|:--------|:---------|-------:|------:|------:|
-| 4OH-CTX | auclast  |     NA |    NA |    NA |
-| 4OH-CTX | cmax     |  0.984 | 0.418 | 6.222 |
-| 4OH-CTX | tmax     |  0.500 | 0.500 | 0.500 |
-| CEPM    | auclast  |     NA |    NA |    NA |
-| CEPM    | cmax     |  1.080 | 0.464 | 2.057 |
-| CEPM    | tmax     |  1.000 | 0.500 | 1.000 |
-| CTX     | auclast  |     NA |    NA |    NA |
-| CTX     | cmax     |  6.976 | 4.981 | 9.788 |
-| CTX     | tmax     |  0.250 | 0.250 | 0.250 |
+| analyte | PPTESTCD | median |   q05 |    q95 |
+|:--------|:---------|-------:|------:|-------:|
+| 4OH-CTX | auclast  |     NA |    NA |     NA |
+| 4OH-CTX | cmax     |  2.365 | 0.368 |  4.111 |
+| 4OH-CTX | tmax     |  0.500 | 0.500 |  0.500 |
+| CEPM    | auclast  |     NA |    NA |     NA |
+| CEPM    | cmax     |  0.785 | 0.309 |  2.091 |
+| CEPM    | tmax     |  1.000 | 0.500 |  1.000 |
+| CTX     | auclast  |     NA |    NA |     NA |
+| CTX     | cmax     |  6.954 | 4.448 | 10.047 |
+| CTX     | tmax     |  0.250 | 0.250 |  0.250 |
 
 Simulated brain/tumor ECF NCA (16 virtual mice, M3 + M4) at the
 typical-value parameter set with IIV; median (5th, 95th percentiles).

@@ -126,7 +126,7 @@ sim_typ <- rxode2::rxSolve(
   rxode2::zeroRe(mod), events = events,
   keep = c("arm", "DOSE", "DRUG_PRED")
 ) |> as.data.frame()
-#> ℹ omega/sigma items treated as zero: 'etalkde', 'etaledk50', 'etalbl', 'etaslp'
+#> ℹ omega/sigma items treated as zero: 'etalkde', 'etaledk50', 'etalrbase', 'etaslp'
 #> Warning: multi-subject simulation without without 'omega'
 ```
 
@@ -211,13 +211,13 @@ knitr::kable(comparison, digits = 1,
 
 | Arm | Published median %CFB (Table 3) | Simulated median %CFB | Difference (pp) |
 |:---|---:|---:|---:|
-| Placebo | 1.8 | 0.8 | -1.0 |
-| Fos 1 mg | 0.1 | 2.9 | 2.8 |
-| Fos 5 mg | -6.7 | -3.8 | 2.9 |
-| Fos 10 mg | -12.6 | -12.8 | -0.2 |
-| Fos 15 mg | -16.8 | -16.4 | 0.4 |
-| Pred 5 mg | -9.7 | -10.6 | -0.9 |
-| Pred 10 mg | -16.9 | -18.0 | -1.1 |
+| Placebo | 1.8 | 1.4 | -0.4 |
+| Fos 1 mg | 0.1 | 0.0 | -0.1 |
+| Fos 5 mg | -6.7 | -7.0 | -0.3 |
+| Fos 10 mg | -12.6 | -11.6 | 1.0 |
+| Fos 15 mg | -16.8 | -17.6 | -0.8 |
+| Pred 5 mg | -9.7 | -8.4 | 1.3 |
+| Pred 10 mg | -16.9 | -14.8 | 2.1 |
 
 Osteocalcin percent change from baseline at week 8 – published vs
 simulated. {.table style="width:100%;"}

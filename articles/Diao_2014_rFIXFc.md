@@ -329,8 +329,8 @@ knitr::kable(
 
 | treatment |   n | median |  q05 |   q95 |
 |:----------|----:|-------:|-----:|------:|
-| 100 IU/kg | 200 |   79.3 | 49.6 | 140.7 |
-| 50 IU/kg  | 200 |   76.3 | 49.0 | 152.0 |
+| 100 IU/kg | 200 |   79.7 | 51.2 | 171.7 |
+| 50 IU/kg  | 200 |   79.3 | 49.5 | 131.8 |
 
 Simulated rFIXFc terminal half-life (h) by dose group, single IV dose.
 {.table}
@@ -347,8 +347,8 @@ knitr::kable(
 
 | treatment |   n | median |  q05 |   q95 |
 |:----------|----:|-------:|-----:|------:|
-| 100 IU/kg | 200 |  104.2 | 69.2 | 155.2 |
-| 50 IU/kg  | 200 |   52.3 | 32.4 |  81.1 |
+| 100 IU/kg | 200 |  110.1 | 67.4 | 158.1 |
+| 50 IU/kg  | 200 |   52.5 | 34.2 |  82.4 |
 
 Simulated rFIXFc Cmax (IU/dL) by dose group, single IV dose. {.table}
 
@@ -364,8 +364,8 @@ knitr::kable(
 
 | treatment |   n | median |    q05 |    q95 |
 |:----------|----:|-------:|-------:|-------:|
-| 100 IU/kg | 200 | 3153.1 | 2135.8 | 4598.1 |
-| 50 IU/kg  | 200 | 1578.2 | 1029.1 | 2241.1 |
+| 100 IU/kg | 200 | 3186.0 | 2222.9 | 4709.8 |
+| 50 IU/kg  | 200 | 1545.1 | 1087.4 | 2266.8 |
 
 Simulated rFIXFc AUC0-inf (IU\*h/dL) by dose group, single IV dose.
 {.table}
@@ -404,8 +404,8 @@ knitr::kable(
 
 | quantity                          | simulated | published | pct_diff |
 |:----------------------------------|----------:|----------:|---------:|
-| Geo mean half-life, 50 IU/kg (h)  |      80.8 |      81.1 |     -0.3 |
-| Geo mean half-life, 100 IU/kg (h) |      81.6 |      81.1 |      0.7 |
+| Geo mean half-life, 50 IU/kg (h)  |      80.0 |      81.1 |     -1.3 |
+| Geo mean half-life, 100 IU/kg (h) |      84.8 |      81.1 |      4.6 |
 
 Simulated vs. Diao 2014 Discussion (p. 476) terminal half-life. {.table}
 

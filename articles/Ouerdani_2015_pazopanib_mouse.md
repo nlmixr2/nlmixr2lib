@@ -40,8 +40,8 @@ Review for pazopanib NDA 022465 (cited in the paper).
 
 | Equation / parameter | Value | Source location |
 |----|----|----|
-| `d/dt(tumorSize)` | n/a | Ouerdani 2015 Methods Equation 1 |
-| `d/dt(carryingCapacity)` | n/a | Ouerdani 2015 Methods Equation 1 |
+| `d/dt(tumor_size)` | n/a | Ouerdani 2015 Methods Equation 1 |
+| `d/dt(carrying_capacity)` | n/a | Ouerdani 2015 Methods Equation 1 |
 | `a = a0 * AUC_PAZO^b_a` | n/a | Ouerdani 2015 Methods Equation 2 |
 | `c = c0 * AUC_PAZO^b_c` | n/a | Ouerdani 2015 Methods Equation 3 |
 | `lk_tumor` | `log(0.166)` | Table 1 preclinical k = 0.166 (RSE 24%) |
@@ -146,8 +146,8 @@ sim_typ <- rxode2::rxSolve(
 # Population-typical median per dose group
 typ_summary <- sim_typ |>
   group_by(dose_label, time) |>
-  summarise(median_P = median(tumorSize),
-            median_K = median(carryingCapacity),
+  summarise(median_P = median(tumor_size),
+            median_K = median(carrying_capacity),
             .groups = "drop")
 
 ggplot(typ_summary, aes(time, median_P, colour = dose_label)) +
@@ -259,7 +259,7 @@ knitr::kable(
 )
 ```
 
-| id | time | k_tumor | k_cap | a0 | c0 | k_res | K0 | cyto_rate | aa_rate | ipredSim | sim | tumorSize | carryingCapacity | TUM_VOL | AUC_PAZO | dose_label |
+| id | time | k_tumor | k_cap | a0 | c0 | k_res | K0 | cyto_rate | aa_rate | ipredSim | sim | tumor_size | carrying_capacity | TUM_VOL | AUC_PAZO | dose_label |
 |---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|:---|
 | 1 | 0 | 0.166 | 0.018 | 0.251 | 0.007 | 0.196 | 543 | 0 | 0 | 109.168 | 109.168 | 109.168 | 543.000 | 109.168 | 0 | 0 mg/kg |
 | 1 | 6 | 0.166 | 0.018 | 0.251 | 0.007 | 0.196 | 543 | 0 | 0 | 220.976 | 220.976 | 220.976 | 560.692 | 109.168 | 0 | 0 mg/kg |
@@ -303,7 +303,7 @@ knitr::kable(
 | 8 | 24 | 0.166 | 0.018 | 0.251 | 0.007 | 0.196 | 543 | 0 | 0 | 593.690 | 593.690 | 593.690 | 700.651 | 111.561 | 0 | 0 mg/kg |
 
 Typical vehicle-arm trajectory (no drug effect, pure logistic growth).
-{.table style="width:100%;"}
+{.table}
 
 ### 2. Drug-effect rates respect the AUC \> 0 gate
 
@@ -348,11 +348,11 @@ stopifnot(identical(gate_check$any_aa,   c(FALSE, TRUE, TRUE, TRUE)))
 
 | Term | Units | Reduces to |
 |----|----|----|
-| `k_tumor * tumorSize` | `1/day * mm^3` | `mm^3 / day` |
-| `(1 - tumorSize / carryingCapacity)` | unitless | unitless |
-| `cyto_rate * exp(-k_res*t) * tumorSize` | `1/day * unitless * mm^3` | `mm^3 / day` |
-| `k_cap * tumorSize^n` | `1/day * (mm^3)^1` | `mm^3 / day` (mouse n = 1) |
-| `aa_rate * carryingCapacity` | `1/day * mm^3` | `mm^3 / day` |
+| `k_tumor * tumor_size` | `1/day * mm^3` | `mm^3 / day` |
+| `(1 - tumor_size / carrying_capacity)` | unitless | unitless |
+| `cyto_rate * exp(-k_res*t) * tumor_size` | `1/day * unitless * mm^3` | `mm^3 / day` |
+| `k_cap * tumor_size^n` | `1/day * (mm^3)^1` | `mm^3 / day` (mouse n = 1) |
+| `aa_rate * carrying_capacity` | `1/day * mm^3` | `mm^3 / day` |
 
 Both ODE right-hand sides come out as `mm^3 / day`, consistent with
 `d/dt(state)` where `state` is in `mm^3` and `t` is in days. The mouse
@@ -366,8 +366,8 @@ re-parameterisation.
 - **[`checkModelConventions()`](https://nlmixr2.github.io/nlmixr2lib/reference/checkModelConventions.md)
   deviations (intentional).** Running
   `nlmixr2lib::checkModelConventions("Ouerdani_2015_pazopanib_mouse")`
-  flags four warnings (no errors): (1) the `tumorSize` compartment is
-  not on the canonical-compartment list; (2) the `carryingCapacity`
+  flags four warnings (no errors): (1) the `tumor_size` compartment is
+  not on the canonical-compartment list; (2) the `carrying_capacity`
   compartment is not on the canonical-compartment list; (3) the
   single-output observation variable should be `Cc`; (4)
   `units$concentration` does not contain `/` (mass / volume) and

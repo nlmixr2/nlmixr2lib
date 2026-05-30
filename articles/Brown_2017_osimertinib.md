@@ -306,7 +306,7 @@ knitr::kable(as.data.frame(summary(nca_parent)),
 
 | Interval Start | Interval End | treatment | N | AUClast (h\*nmol/L) | Cmax (nmol/L) | Cmin (nmol/L) | Tmax (h) | Cav (nmol/L) |
 |---:|---:|:---|:---|:---|:---|:---|:---|:---|
-| 0 | 24 | 80 mg QD | 100 | 11000 \[62.8\] | 493 \[58.4\] | 397 \[75.9\] | 8.00 \[1.00, 18.0\] | 456 \[62.8\] |
+| 0 | 24 | 80 mg QD | 100 | 10800 \[49.8\] | 494 \[46.6\] | 386 \[58.6\] | 7.00 \[1.50, 10.0\] | 450 \[49.8\] |
 
 Simulated steady-state NCA - osimertinib (nmol/L, h). {.table}
 
@@ -318,7 +318,7 @@ knitr::kable(as.data.frame(summary(nca_metab)),
 
 | Interval Start | Interval End | treatment | N | AUClast (h\*nmol/L) | Cmax (nmol/L) | Cmin (nmol/L) | Tmax (h) | Cav (nmol/L) |
 |---:|---:|:---|:---|:---|:---|:---|:---|:---|
-| 0 | 24 | 80 mg QD | 100 | 1070 \[72.6\] | 46.6 \[68.0\] | 41.1 \[83.0\] | 12.0 \[6.00, 24.0\] | 44.4 \[72.6\] |
+| 0 | 24 | 80 mg QD | 100 | 1120 \[59.0\] | 48.9 \[56.8\] | 43.2 \[63.6\] | 12.0 \[4.00, 16.0\] | 46.6 \[59.0\] |
 
 Simulated steady-state NCA - AZ5104 (nmol/L, h). {.table}
 

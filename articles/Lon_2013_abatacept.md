@@ -4,7 +4,7 @@
 
 library(nlmixr2lib)
 library(rxode2)
-#> rxode2 5.0.2 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.1 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -329,18 +329,18 @@ knitr::kable(sim_nca, digits = 3, caption = "Simulated NCA summaries by treatmen
 |:-------------------|:-----------|------:|------:|
 | IV 10 mg/kg        | aucinf.obs |   NaN |    NA |
 | IV 10 mg/kg        | cl.obs     |   NaN |    NA |
-| IV 10 mg/kg        | cmax       | 2.109 | 0.812 |
+| IV 10 mg/kg        | cmax       | 1.280 | 0.211 |
 | IV 10 mg/kg        | half.life  |   NaN |    NA |
 | IV 10 mg/kg        | tmax       | 0.000 | 0.000 |
 | SC 20 mg/kg single | aucinf.obs |   NaN |    NA |
 | SC 20 mg/kg single | cl.obs     |   NaN |    NA |
-| SC 20 mg/kg single | cmax       | 0.972 | 0.143 |
-| SC 20 mg/kg single | half.life  | 4.870 | 0.560 |
-| SC 20 mg/kg single | tmax       | 2.583 | 0.129 |
+| SC 20 mg/kg single | cmax       | 0.853 | 0.133 |
+| SC 20 mg/kg single | half.life  | 5.299 | 0.731 |
+| SC 20 mg/kg single | tmax       | 2.667 | 0.129 |
 | SC multiple        | aucinf.obs |   NaN |    NA |
 | SC multiple        | cl.obs     |   NaN |    NA |
-| SC multiple        | cmax       | 0.975 | 0.163 |
-| SC multiple        | half.life  | 5.303 | 1.256 |
+| SC multiple        | cmax       | 0.991 | 0.100 |
+| SC multiple        | half.life  | 4.649 | 0.389 |
 | SC multiple        | tmax       | 8.667 | 3.266 |
 
 Simulated NCA summaries by treatment arm. {.table}

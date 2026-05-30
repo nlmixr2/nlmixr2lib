@@ -148,7 +148,7 @@ mod_typical <- rxode2::zeroRe(rxode2::rxode2(mod_fn))
 #> Warning: No sigma parameters in the model
 sim <- rxode2::rxSolve(mod_typical, events = events,
                        keep = c("STIM_QUININE_MM"))
-#> ℹ omega/sigma items treated as zero: 'etalEmax', 'etalRIC50', 'etae0', 'etalk1', 'etalk2', 'etad1', 'etad2', 'etaE'
+#> ℹ omega/sigma items treated as zero: 'etalemax', 'etalRIC50', 'etae0', 'etalk1', 'etalk2', 'etad1', 'etad2', 'etae'
 
 sim_df <- as.data.frame(sim) |>
   dplyr::select(id, STIM_QUININE_MM, drugEmax, E, p_low, p_high,

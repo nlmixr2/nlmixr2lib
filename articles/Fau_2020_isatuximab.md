@@ -166,7 +166,7 @@ multiple-myeloma immunoglobulin type is varied between cohorts.
 ``` r
 
 set.seed(2020)
-n_subj <- 200
+n_subj <- 80  # downsampled from 200 per arm for vignette build budget; VPC band shape preserved
 
 make_cohort <- function(n, mm_nigg_label, id_offset = 0L) {
   tibble(
@@ -199,7 +199,7 @@ make_arm <- function(pop, regimen_name, id_offset = 0L) {
   ipi_amt   <- 10 * pop$WT          # 10 mg/kg
   dose_t    <- c(seq(0, by = 168,  length.out = 4),       # QW x 4 (cycle 1)
                  seq(672, by = 336, length.out = 14))      # Q2W (cycles 2-8)
-  obs_t     <- sort(unique(c(seq(0, 32 * 168, by = 24))))  # daily, ~ 6 mo (was every 8 h)
+  obs_t     <- sort(unique(c(seq(0, 32 * 168, by = 48))))  # every 2 days, ~ 6 mo (downsampled from daily for vignette build budget; smooth profile preserved)
 
   d_dose <- pop |>
     crossing(TIME = dose_t) |>
@@ -408,8 +408,8 @@ knitr::kable(summary(nca_res),
 
 | Interval Start | Interval End | treatment | N | AUClast (h\*mg/L) | Cmax (mg/L) | Cmin (mg/L) | Tmax (h) | Cav (mg/L) |
 |---:|---:|:---|:---|:---|:---|:---|:---|:---|
-| 5040 | 5376 | IgG MM | 200 | 45700 \[73.0\] | 226 \[46.2\] | 56.6 \[1910\] | 24.0 \[24.0, 24.0\] | 136 \[73.0\] |
-| 5040 | 5376 | Non-IgG MM | 200 | 92000 \[77.9\] | 367 \[51.8\] | 163 \[596\] | 24.0 \[24.0, 24.0\] | 274 \[77.9\] |
+| 5040 | 5376 | IgG MM | 80 | 44600 \[75.0\] | 203 \[50.6\] | 64.1 \[496\] | 48.0 \[48.0, 48.0\] | 133 \[75.0\] |
+| 5040 | 5376 | Non-IgG MM | 80 | 95400 \[77.4\] | 352 \[57.0\] | 190 \[319\] | 48.0 \[48.0, 48.0\] | 284 \[77.4\] |
 
 Simulated steady-state NCA (final Q2W interval, weeks 30-32) by myeloma
 type. {.table style="width:100%;"}
@@ -447,9 +447,9 @@ knitr::kable(
 
 | Quantity                                 | Value    |
 |:-----------------------------------------|:---------|
-| AUC0-tau (mg·h/L), IgG-MM                | 47727    |
-| AUC0-tau (mg·h/L), non-IgG-MM            | 107216.6 |
-| Ratio non-IgG / IgG (Q2W steady state)   | 2.25     |
+| AUC0-tau (mg·h/L), IgG-MM                | 46034.9  |
+| AUC0-tau (mg·h/L), non-IgG-MM            | 112090.6 |
+| Ratio non-IgG / IgG (Q2W steady state)   | 2.43     |
 | Source (Table 3, SS AUC, Not IgG vs IgG) | × 2.12   |
 
 Simulated steady-state AUC ratio by myeloma type vs Fau 2020 Table 3.
