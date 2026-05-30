@@ -2214,11 +2214,12 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Source aliases:**
   - `T2DM` -- used in `NA_NA_paracetamol.R` (DDMODEL00000228).
   - `T2D` -- used in `Guiastrennec_2016_gastric_emptying.R` (matched-cohort flag, 1 = T2D patient vs 0 = matched nondiabetic control).
+  - `ZDF` -- used in `Han_2018_methionineMetabolismCycle.R` (Zucker Diabetic Fatty rat as T2DM animal model; ZDF/Gmi fa/fa coded T2DM = 1 vs ZDF/Gmi fa/? non-diabetic littermate control coded T2DM = 0).
 - **Example models:** `NA_NA_paracetamol.R` (DDMODEL00000228).
   - `NA_NA_paracetamol.R` (DDMODEL00000228).
   - `Guiastrennec_2016_gastric_emptying.R` (multiplicative -81.1% depression of POTcarbC, the carbohydrate potency on CCK release; all other parameters are common across cohorts).
   - `Lu_2014_sglt_qsp.R` (multiplicative +17.6% shift on the typical-value Vmax2 of SGLT2 in the renal-glucose-reabsorption QSP model: Vmax2_T2DM = 110 mmol/h vs Vmax2_healthy = 93.5 mmol/h per Lu 2014 Table 2 calibration; coded for the Lu 2014 evaluation cohort, where the pre-modern-classification 'diabetics' of Mogensen 1971 are also coded T2DM = 1).
-  - `Sharma_2018_naltrexone_bupropion.R` (multiplicative fixed-covariate effects on Emax, kout, kpro, and baseline body weight in the naltrexone/bupropion DTPD body-weight model; T2DM subjects came from study 6 / NB-304, 10.9% of the pooled 4591-subject analysis population, Sharma 2018 Covariate Analysis).
+  - `Han_2018_methionineMetabolismCycle.R` (preclinical rat MMC model; multiplicative-on-log-scale T2DM effects on five rate constants K_SH (+16 %), K_HM (-92 %), K_HC (-95 %), K_HP (-86 %), K_PH (-99 %) derived from Han 2018 Table 1 ZDF/control ratios; all other rate constants and Vc common across cohorts per Han 2018 Results paragraph 1).
 - **Notes:** Distinct from the existing `DIAB` canonical (which deliberately does not distinguish Type 1 vs Type 2). Specific scope because the reference cohort is study-specific and the mechanism in the example models is a Type-2-versus-healthy stratification of OGTT or SGLT response; a future T2DM-specific study (e.g., a popPK/PD analysis stratifying by HbA1c level) can ratify the same canonical and document the reference cohort in `covariateData[[T2DM]]$notes`.
 
 ### HYPERT (**canonical for hypertension comorbidity / medical-history indicator**)
