@@ -826,6 +826,17 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Nestorov_2014_factorviii.R` (reference 118 IU/dL, exponent -0.343 on CL; VWF antigen).
 - **Notes:** Higher VWF protects FVIII from clearance, so the exponent on CL is negative. VWF is time-varying within an individual (acute-phase response, age, blood group, etc.), but most published population PK models use baseline-only VWF when the within-subject dynamics are not characterized; document the per-model convention in `covariateData[[VWF]]$notes`.
 
+### FVIIIRECENT (**canonical for most recently measured FVIII:C activity**)
+- **Description:** The patient's most recently measured plasma factor VIII coagulant activity (FVIII:C), obtained at most 1 day prior to a desmopressin (DDAVP) test / treatment administration and in the absence of any treatment effect on the measurement. Used as a per-occasion covariate that indexes the patient's current endogenous FVIII synthetic capacity, which the source paper found to be more predictive of DDAVP-triggered FVIII:C response than the alternative `FVIII-lowest` (ever-lowest measurement) covariate. Distinct from the model's observed FVIII:C time profile after DDAVP -- FVIIIRECENT is the single pre-dose anchor value.
+- **Units:** IU/mL (1 IU/mL = 100% of pooled normal plasma FVIII activity; equivalent to 100 IU/dL).
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- used with power scaling `(FVIIIRECENT / ref)^exponent`. Reference value observed: 0.15 IU/mL (Schütte 2018, study-population median FVIII-recent in Table 1).
+- **Source aliases:**
+  - `FVIII-recent`, `FVIII_recent`, `fviii_recent`, `FVIIIRECENT` -- the recently-measured FVIII:C column. Document the source-column name per-model in `covariateData[[FVIIIRECENT]]$source_name`.
+- **Example models:** `Schutte_2018_desmopressin.R` (reference 0.15 IU/mL; exponents +0.74 on baseline FVIII, -0.61 on V1, -0.73 on CL; Schütte 2018 Table 2 final covariate model).
+- **Notes:** Specific scope until a second nonsevere haemophilia A / DDAVP-response model registers the canonical. Time-fixed per desmopressin episode (one pre-dose measurement per occasion). The source paper additionally defines a binary missing-data branch with flat correction factors (1.2 / 1.1 / 0.78 on baseline FVIII / V1 / CL) when FVIIIRECENT was unavailable for a fitted subject; per the standing nlmixr2lib pattern, the missing branch is documented in the validation vignette deviations rather than encoded as a separate `MISSING_FVIIIRECENT` covariate, and simulation users are expected to supply FVIIIRECENT for every simulated patient. Distinct from `FVIII-lowest` (ever-lowest historical FVIII:C), which Schütte 2018 tested but did NOT retain in the final covariate model. Ratified canonically on 2026-05-30 alongside the Schütte 2018 desmopressin extraction.
+
 ### DDIMER (**canonical for plasma D-dimer concentration**)
 - **Description:** Plasma D-dimer protein concentration, the fibrin-degradation peptide produced by plasmin-mediated cleavage of cross-linked fibrin. Used in vascular / coagulation-pathology models as a circulating biomarker of fibrin turnover, intra-aneurysmal thrombus burden, or systemic fibrinolytic activity.
 - **Units:** ng/mL

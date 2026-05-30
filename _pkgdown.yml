@@ -230,10 +230,8 @@ navbar:
         href: articles/Han_2015_decitabine.html
       - text: "Deferoxamine (Bellanti 2015)"
         href: articles/Bellanti_2015_deferoxamine.html
-      - text: "Dexmedetomidine (Perez-Guille 2018)"
-        href: articles/Perez-Guille_2018_dexmedetomidine.html
-      - text: "Dexmedetomidine (Smuszkiewicz 2017)"
-        href: articles/Smuszkiewicz_2017_dexmedetomidine.html
+      - text: "Desmopressin (Schutte 2018)"
+        href: articles/Schutte_2018_desmopressin.html
       - text: "Dexmedetomidine (Talke 2018)"
         href: articles/Talke_2018_dexmedetomidine.html
       - text: "Diazepam (Ku 2018)"
@@ -1483,6 +1481,7 @@ articles:
   - articles/Schoemaker_2017_brivaracetam
   - articles/Schoemaker_2018_levetiracetam
   - articles/Schoenmakers_2025_betamethasone
+  - articles/Schutte_2018_desmopressin
   - articles/Shah_2012_mAb_PBPK
   - articles/Sharma_2018_naltrexone_bupropion
   - articles/Shekar_2014_meropenem
