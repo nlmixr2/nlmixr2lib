@@ -36,8 +36,8 @@ close to 1).
 
 | Equation / parameter | Value | Source location |
 |----------------------|-------|-----------------|
-| `lkde` (KDE fosdagrocorat) | `fixed(log(0.597))` /week | Table 2 OC: "KDE Fosdagrocorat FIX" (from P1NP fit) |
-| `dlkde_pred` | `fixed(log(0.535/0.597))` | Table 2 OC: "KDE Prednisone FIX" (from P1NP fit) |
+| `lkel` (KDE fosdagrocorat) | `fixed(log(0.597))` /week | Table 2 OC: "KDE Fosdagrocorat FIX" (from P1NP fit) |
+| `dlkel_pred` | `fixed(log(0.535/0.597))` | Table 2 OC: "KDE Prednisone FIX" (from P1NP fit) |
 | `lkd`  | `log(0.939)` /week | Table 2 OC, "Kd" |
 | `lbl`  | `log(22.2)` ng/mL | Table 2 OC, "BL" |
 | `imax` | `fixed(1)` | Table 2 OC, "Imax FIX" (both drugs) |
@@ -47,12 +47,12 @@ close to 1).
 | `lrbmax` | `log(0.0276)` /mg | Table 2 OC, "RBmax" |
 | `lt50`   | `log(2.24)` weeks | Table 2 OC, "T50" |
 | `slp`    | `0.0675` ng/mL/week | Table 2 OC, "SLP" |
-| `etalkde`   | `omega^2 = 1.5129` (123% CV) | Table 2 OC, "IIV %CV [g_KDE]" |
+| `etalkel`   | `omega^2 = 1.5129` (123% CV) | Table 2 OC, "IIV %CV [g_KDE]" |
 | `etaledk50` | `omega^2 = 0.0650` (25.5% CV) | Table 2 OC, "IIV %CV [g_EDK50]" |
 | `etalbl`    | `omega^2 = 0.1901` (43.6% CV) | Table 2 OC, "IIV %CV [g_BL]" |
 | `etaslp`    | `omega^2 = 0.338^2 = 0.1142` | Table 2 OC, "IIV SD [g_SLP] = 0.338" |
 | `propSd`    | `0.141` | Table 2 OC, "Residual variability %CV [e] = 14.1" |
-| `d/dt(depot)`  | -kde * depot | Methods, K-PD model equations |
+| `d/dt(depot_kpd)`  | -kel * depot_kpd | Methods, K-PD model equations |
 | `d/dt(effect)` | ks * rebound * inhibition - kd * effect | Methods, K-PD model + Results rebound equation |
 | `OC = effect + slp_i * t` | Observation = response + linear placebo trend | Methods, F(ij) equation |
 
@@ -76,11 +76,11 @@ make_arm <- function(arm_label, dose_qd_mg, drug_pred, n,
   dose_ev <- if (dose_qd_mg > 0) {
     bind_rows(
       tibble(id = ids, time = 0,  amt = active_rate * 8,
-             rate = active_rate, evid = 1L, cmt = "depot"),
+             rate = active_rate, evid = 1L, cmt = "depot_kpd"),
       tibble(id = ids, time = 8,  amt = taper_a_rate * 2,
-             rate = taper_a_rate, evid = 1L, cmt = "depot"),
+             rate = taper_a_rate, evid = 1L, cmt = "depot_kpd"),
       tibble(id = ids, time = 10, amt = taper_b_rate * 2,
-             rate = taper_b_rate, evid = 1L, cmt = "depot")
+             rate = taper_b_rate, evid = 1L, cmt = "depot_kpd")
     )
   } else {
     tibble(id = integer(), time = numeric(), amt = numeric(),
@@ -231,10 +231,10 @@ Expected typical responses:
   deviation as the P1NP sister model and the wider codebase pattern for
   paper-named biomarker outputs.
 - **Drug arm switching via reparameterization.** Same convention as the
-  P1NP sister model (base = fosdagrocorat; `dlkde_pred` and `dledk50_pred`
+  P1NP sister model (base = fosdagrocorat; `dlkel_pred` and `dledk50_pred`
   log-ratio offsets recover the published prednisone values when
   `DRUG_PRED = 1`). For OC the typical-value KDE is fixed to the P1NP
-  estimates -- both `lkde` and `dlkde_pred` are wrapped in `fixed()`.
+  estimates -- both `lkel` and `dlkel_pred` are wrapped in `fixed()`.
 - **Imax fixed to 1 for both drugs.** The OC fit set `Imax = 1` for both
   fosdagrocorat and prednisone because the unconstrained estimate was
   close to 1 (paper Discussion). The inhibition term `1 - imax * ir^c /

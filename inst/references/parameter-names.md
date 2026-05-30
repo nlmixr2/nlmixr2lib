@@ -136,7 +136,9 @@ The `l<base>` convention denotes a population mean estimated on the log scale (`
 - **Role:** First-order elimination rate constant used when no explicit `vc` is estimated (K-PD or single-rate-constant elimination form).
 - **Source aliases:**
   - `lke` -- legacy name; replaced 2026-05-28 by the naming audit.
-- **Example models:** K-PD templates.
+  - `lkde` -- paper-named (Mazzocco 2015 / Shoji 2017 KDE) form; replaced 2026-05-30 by the K-PD canonical-name retrofit.
+  - `lkp` -- paper-named (van Hasselt 2015 KP) form; replaced 2026-05-30 by the K-PD canonical-name retrofit.
+- **Example models:** `Mazzocco_2015_temozolomide.R`, `Shoji_2017_fosdagrocorat_oc.R`, `Shoji_2017_fosdagrocorat_p1np.R`, `vanHasselt_2015_eribulin.R`, K-PD templates. The drug-suffixed `lkel_<drug>` (Wilson 2015: `lkel_sunitinib`, `lkel_irinotecan`) carries the per-drug K-PD elimination rate in combination K-PD models.
 - **Notes:** Canonical `lkel` adopted 2026-05-28 per the naming audit.
 
 ### ltlag (**canonical log-transformed absorption lag time**)
@@ -223,7 +225,10 @@ The bare counterparts of the log-transformed parameters above. Used when the sou
 - **Role:** First-order elimination rate constant in K-PD / single-rate-constant elimination models with no explicit `vc`.
 - **Source aliases:**
   - `ke` -- legacy.
-- **Example models:** K-PD templates.
+  - `kde` -- paper-named (Mazzocco 2015 / Shoji 2017 / Xia 2024 KDE) form; replaced 2026-05-30 by the K-PD canonical-name retrofit.
+  - `kp` -- paper-named (van Hasselt 2015 KP) form; replaced 2026-05-30 by the K-PD canonical-name retrofit.
+  - `ps_elim`, `pc_elim` -- paper-named (Wilson 2015 p_S / p_C) bare drug-specific K-PD elim rates; replaced 2026-05-30 by `kel_sunitinib` / `kel_irinotecan`.
+- **Example models:** K-PD templates plus `Mazzocco_2015_temozolomide.R`, `Shoji_2017_fosdagrocorat_oc.R`, `Shoji_2017_fosdagrocorat_p1np.R`, `vanHasselt_2015_eribulin.R`, `Wilson_2015_sunitinib_irinotecan_mouse.R` (bare drug-suffixed `kel_<drug>`), `Xia_2024_warfarin.R`.
 
 ### k12 (**canonical bare central-to-first-peripheral rate constant**)
 - **Type:** bare-pk

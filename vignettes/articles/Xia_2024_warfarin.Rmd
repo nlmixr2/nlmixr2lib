@@ -98,15 +98,15 @@ collects them in one place.
 The model is a K-PD model with two parallel three-compartment coagulation-factor
 transit chains driving INR.
 
-1. **K-PD elimination.** A single virtual administration compartment `depot`
-   receives the warfarin dose (mg); first-order elimination at rate KDE = CL/V
-   removes drug from `depot`. The drug-delivery rate at the effect site is
-   DR = `depot` * KDE.
+1. **K-PD elimination.** A single virtual administration compartment `depot_kpd`
+   receives the warfarin dose (mg); first-order elimination at rate `kel = CL/V`
+   (paper's KDE) removes drug from `depot_kpd`. The drug-delivery rate at the
+   effect site is DR = `depot_kpd` * kel.
 2. **Anticoagulant effect.** Sigmoid Emax inhibition of activated vitamin
    K-dependent coagulation-factor formation:
    E_anticoag = Emax * (DR / EDK50)^gamma / (1 + (DR / EDK50)^gamma),
    where EDK50 = EC50 * CL. Equivalently, using the effective drug
-   concentration CDR = `depot` / V:
+   concentration CDR = `depot_kpd` / V:
    E_anticoag = Emax * CDR^gamma / (EC50^gamma + CDR^gamma).
 3. **Coagulation-factor transit chains.** Two parallel 3-compartment chains
    (`coag_s1` to `coag_s3` for the fast pool with MTT1 = 27.2 h;
@@ -151,7 +151,7 @@ make_warfarin_events <- function(dose_mg, days = 60,
     TIME  = c(dose_times, obs_times),
     EVID  = c(rep(1L, length(dose_times)),  rep(0L, length(obs_times))),
     AMT   = c(rep(dose_mg, length(dose_times)), rep(NA_real_, length(obs_times))),
-    CMT   = c(rep("depot", length(dose_times)), rep(NA_character_, length(obs_times))),
+    CMT   = c(rep("depot_kpd", length(dose_times)), rep(NA_character_, length(obs_times))),
     WT    = wt,
     AGE   = age,
     CYP2C9_S1_COUNT    = cyp2c9_s1,
@@ -345,9 +345,9 @@ visual return to baseline by day ~35.
 
 Units in each ODE term, walked once for review:
 
-* `depot` (mg) | `kde` (1/h) | `cl` (L/h) | `vc` (L) | `ec50` (mg/L)
+* `depot_kpd` (mg) | `kel` (1/h) | `cl` (L/h) | `vc` (L) | `ec50` (mg/L)
   | `cdr` (mg / L = concentration) | `e_anticoag` (unitless, 0 to 1)
-* `d/dt(depot)` = `kde * depot` ~ (1/h) * mg = mg/h. Correct.
+* `d/dt(depot_kpd)` = `kel * depot_kpd` ~ (1/h) * mg = mg/h. Correct.
 * `d/dt(coag_*)` = `ktr * (input - state)` ~ (1/h) * (unitless) = 1/h.
   Correct (coag compartments are unitless fractional coagulation-factor
   activity).

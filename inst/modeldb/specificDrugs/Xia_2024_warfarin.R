@@ -159,10 +159,10 @@ Xia_2024_warfarin <- function() {
             exp(etalec50)
 
     # K-PD elimination of administered dose from a single virtual depot
-    kde <- cl / vc
+    kel <- cl / vc
 
-    # Effective drug-delivery-rate "concentration": cdr = depot/vc gives cdr/ec50 = DR/EDK50
-    cdr <- depot / vc
+    # Effective drug-delivery-rate "concentration": cdr = depot_kpd/vc gives cdr/ec50 = DR/EDK50
+    cdr <- depot_kpd / vc
     e_anticoag <- emax * cdr^hill / (ec50^hill + cdr^hill)
 
     # Hamberg transit-chain rate constants: ktr = N / MTT_total with N = 3 transit compartments
@@ -170,7 +170,7 @@ Xia_2024_warfarin <- function() {
     ktr_l <- 3 / mtt2
 
     # ODE system
-    d/dt(depot)   <- -kde * depot
+    d/dt(depot_kpd)   <- -kel * depot_kpd
     d/dt(coag_s1) <- ktr_s * (1 - e_anticoag - coag_s1)
     d/dt(coag_s2) <- ktr_s * (coag_s1 - coag_s2)
     d/dt(coag_s3) <- ktr_s * (coag_s2 - coag_s3)
