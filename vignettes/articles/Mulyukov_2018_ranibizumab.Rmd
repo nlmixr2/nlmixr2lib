@@ -98,6 +98,12 @@ below collects the equations and parameters in one place for reviewer audit.
 | IIV `kout`   | CV 730 %                             | Table 2                                   |
 | IIV `Emax_ss`| CV 110 %                             | Table 2                                   |
 | IIV `dEmax_0`| CV 1100 %                            | Table 2                                   |
+| IIV correlation r(`g0`, `kout`)         | −0.14 | Table S1 (Correlations of modeled random effects) |
+| IIV correlation r(`g0`, `Emax_ss`)      |  0.27 | Table S1                                          |
+| IIV correlation r(`g0`, `dEmax_0`)      |  0.48 | Table S1                                          |
+| IIV correlation r(`kout`, `Emax_ss`)    | −0.62 | Table S1                                          |
+| IIV correlation r(`kout`, `dEmax_0`)    | −0.89 | Table S1                                          |
+| IIV correlation r(`Emax_ss`, `dEmax_0`) |  0.46 | Table S1                                          |
 | σ treatment  | 5 letters (additive)                 | Table 2                                   |
 | σ sham       | 7 letters (additive, not exposed here) | Table 2 (see Assumptions and deviations) |
 
@@ -470,6 +476,19 @@ All three match the paper to < 1 %.
   states the model is insensitive to any $k_{Emax}$ corresponding to a
   1-to-3-week Emax half-life, so the discrepancy between the two published
   values is not operationally meaningful.
+- **IIV uses the full 4×4 covariance from Table S1.** Table 2 reports only
+  the marginal SDs / CVs of the four random effects on $g_0$, $k_{out}$,
+  $E_{\max}^{ss}$, and $\Delta E_{\max}^0$. The off-diagonal correlations are
+  in the supplement, Table S1 ("Correlations of modeled random effects"), and
+  the Stan model in Supplementary File S1 declares a full
+  `cholesky_factor_corr[4]`. The implementation builds the corresponding
+  positive-definite 4×4 covariance from Table 2 SDs × Table S1 correlations
+  (in-file comment block above the `ini()` block enumerates each entry).
+  Earlier versions of this model used a diagonal (independent) IIV; the
+  upgrade preserves the marginal SDs / CVs and adds the published
+  correlations, the strongest of which is r($k_{out}$, $\Delta E_{\max}^0$) =
+  −0.89 (a patient with a faster natural BCVA decline tends to start with a
+  larger acute treatment effect).
 - **Log-normal mean ≠ typical value.** The paper reports extremely large
   CVs on the PD parameters (CV% 730 for $k_{out}$, 1100 for $\Delta E_{\max}^0$).
   Because $E[\exp(\eta)] = \exp(\omega^2/2)$, the population mean of a

@@ -13,3 +13,4 @@ docs
 .claude/settings.local.json
 .claude/worktrees/
 data-raw/modeldb-cache.rds
+post_merge_advance.sh

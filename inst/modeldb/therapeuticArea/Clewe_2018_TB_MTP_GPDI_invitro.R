@@ -40,10 +40,10 @@ Clewe_2018_TB_MTP_GPDI_invitro <- function() {
         "The stability of the drugs allowed assessment of activity during the 6 days",
         "of the experiment without the need for replenishment.' Tested concentrations in",
         "the source experiment (Figure 1): rifampicin 0.002, 0.008, 0.03, 0.125, 0.5, 8",
-        "mg/L. Set to 0 in regimens without rifampicin. Registered as the canonical",
-        "CONC_RIF_MGL in inst/references/covariate-columns.md, an in-vitro applied",
-        "drug-concentration covariate (the CONC_<DRUG>_MGL in-vitro family is distinct",
-        "from the state-derived plasma concentration Cc and the CP_<DRUG> plasma PD-driver family)."
+        "mg/L. Set to 0 in regimens without rifampicin. Paper-specific covariate not in",
+        "inst/references/covariate-columns.md because the canonical concentration concept",
+        "in nlmixr2lib is a state-derived plasma concentration (Cc), not a static",
+        "exogenous-drug-concentration covariate used to drive an in vitro PD model."
       ),
       source_name        = "CRIF (Clewe 2018 Materials and methods)"
     ),
@@ -144,7 +144,7 @@ Clewe_2018_TB_MTP_GPDI_invitro <- function() {
     label("F0 -- initial fast-multiplying state count (CFU/mL)")
     # Clewe 2018 Table 1: F0 = 209e3 CFU/mL, RSE 17%.
 
-    lrbase <- log(324e3)
+    ls0 <- log(324e3)
     label("S0 -- initial slow-multiplying state count (CFU/mL)")
     # Clewe 2018 Table 1: S0 = 324e3 CFU/mL, RSE 12%.
 
@@ -369,7 +369,7 @@ Clewe_2018_TB_MTP_GPDI_invitro <- function() {
     ksf      <- exp(lksf)
     kns      <- exp(lkns)
     f0       <- exp(lf0)
-    rbase       <- exp(lrbase)
+    s0       <- exp(ls0)
 
     emax_fg_rif  <- exp(lemax_fg_rif)
     ec50_fg_rif  <- exp(lec50_fg_rif)
@@ -527,7 +527,7 @@ Clewe_2018_TB_MTP_GPDI_invitro <- function() {
     #    populated by F->N and S->N transfer over time).
     # ================================================================
     fbugs(0) <- f0
-    sbugs(0) <- rbase
+    sbugs(0) <- s0
     nbugs(0) <- 0
 
     d/dt(fbugs) <- fbugs * kg * e_fg_rif + ksf * sbugs -

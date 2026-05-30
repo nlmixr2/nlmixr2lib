@@ -252,12 +252,12 @@ regimens <- list(
 run_cohort <- function(reg_name, doses) {
   ev_list <- lapply(seq_len(n_cohort), function(i) {
     et_i <- rxode2::et(id = i, time = seq(0, 24 * n_days, by = 12))
-    if (doses[["fbx"]] > 0) {
-      et_i <- rxode2::et(et_i, id = i, amt = doses[["fbx"]],
+    if (doses["fbx"] > 0) {
+      et_i <- rxode2::et(et_i, id = i, amt = doses["fbx"],
                           cmt = "depot_febx", time = seq(0, 24 * n_days, by = 24))
     }
-    if (doses[["les"]] > 0) {
-      et_i <- rxode2::et(et_i, id = i, amt = doses[["les"]],
+    if (doses["les"] > 0) {
+      et_i <- rxode2::et(et_i, id = i, amt = doses["les"],
                           cmt = "depot_lesn", time = seq(0, 24 * n_days, by = 24))
     }
     as.data.frame(et_i)

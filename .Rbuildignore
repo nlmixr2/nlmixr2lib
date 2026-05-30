@@ -12,3 +12,4 @@
 ^data-raw$
 ^\.lintr$
 ^vignettes/articles$
+^post_merge_advance\.sh$

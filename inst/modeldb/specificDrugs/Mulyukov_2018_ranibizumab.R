@@ -84,20 +84,54 @@ Mulyukov_2018_ranibizumab <- function() {
     g0res <- fixed(0); label("Typical additive residual on baseline BCVA around the observed value (ETDRS letters); paper Eq. g_{i,0} = BVA_i + eta_{1,i}, so typical value is 0")  # Mulyukov 2018 Methods (paragraph above Eq. 3): baseline modelled as normally distributed around observed value with additive random effect
 
     # ------------------------------------------------------------------------
-    # Inter-individual variability.
-    # Baseline BCVA uses an ADDITIVE per-subject random effect in letters (paper
-    # Eq.: g_{i,0} = BVA_i + eta_{1,i}; Table 2 reports the SD, not a CV).
-    # The other three PD parameters (k_out, emax_ss, demax_0) use log-normal
-    # IIV with large CV%; convert to the log-scale variance via
+    # Inter-individual variability: full 4x4 covariance (Mulyukov 2018 Table 2
+    # diagonal + Table S1 off-diagonal correlations).
+    #
+    # Baseline BCVA uses an ADDITIVE per-subject random effect in letters
+    # (paper Eq. g_{i,0} = BVA_i + eta_{1,i}; Table 2 reports an SD, not a CV).
+    # The other three PD parameters (k_out, Emax_ss, dEmax_0) use log-normal
+    # IIV with large CV%; convert each to log-scale variance via
     #   omega^2 = log(CV^2 + 1)
-    #     k_out   CV 730%   -> log(7.30^2 + 1)  = 3.994
-    #     emax_ss CV 110%   -> log(1.10^2 + 1)  = 0.7929
-    #     demax_0 CV 1100%  -> log(11.0^2 + 1)  = 4.804
+    #     k_out   CV 730%   -> log(7.30^2 + 1)  = 3.99434
+    #     Emax_ss CV 110%   -> log(1.10^2 + 1)  = 0.79299
+    #     dEmax_0 CV 1100%  -> log(11.0^2 + 1)  = 4.80402
+    # corresponding to SDs (g0, lkout, lEmaxss, ldEmax0) =
+    # (4.10000, 1.99858, 0.89050, 2.19181).
+    #
+    # Off-diagonal correlations are taken directly from Table S1 ("Correlations
+    # of modeled random effects"). The lower-triangular correlation matrix is:
+    #             g0       lkout    lEmaxss
+    #   lkout    -0.14
+    #   lEmaxss   0.27    -0.62
+    #   ldEmax0   0.48    -0.89     0.46
+    # Covariances cov(i,j) = corr(i,j) * sd(i) * sd(j):
+    #   cov(g0,      lkout)   = -0.14 * 4.10000 * 1.99858 = -1.14719
+    #   cov(g0,      lEmaxss) =  0.27 * 4.10000 * 0.89050 =  0.98578
+    #   cov(g0,      ldEmax0) =  0.48 * 4.10000 * 2.19181 =  4.31348
+    #   cov(lkout,   lEmaxss) = -0.62 * 1.99858 * 0.89050 = -1.10344
+    #   cov(lkout,   ldEmax0) = -0.89 * 1.99858 * 2.19181 = -3.89866
+    #   cov(lEmaxss, ldEmax0) =  0.46 * 0.89050 * 2.19181 =  0.89783
+    # The resulting 4x4 covariance was Cholesky-verified positive definite.
+    #
+    # The Stan model in Supplementary File S1 declares the full 4-vector eta
+    # block (cholesky_factor_corr[n_u] L_u with n_u = 4) and applies it as
+    #   g0 = BVA + eta[1]
+    #   kout = pop_kout * exp(eta[2])
+    #   Emax = pop_Emax * exp(eta[3] + delta_emax_age * cov_age)
+    #   dEmax0 = pop_lamb * exp(eta[4])
+    # which matches the ordering encoded here.
     # ------------------------------------------------------------------------
-    etag0res   ~ 16.81   # Mulyukov 2018 Table 2: IIV g0 SD = 4.1 letters (additive); omega^2 = 4.1^2 = 16.81
-    etalkout   ~ 3.994   # Mulyukov 2018 Table 2: IIV k_out CV 730%; log(7.30^2 + 1) = 3.994
-    etalemaxss ~ 0.7929  # Mulyukov 2018 Table 2: IIV emax_ss CV 110%; log(1.10^2 + 1) = 0.7929
-    etaldemax0 ~ 4.804   # Mulyukov 2018 Table 2: IIV demax_0 CV 1100%; log(11.0^2 + 1) = 4.804
+    # Block layout (lower triangular, row by row; one row per random effect):
+    #   row 1                                              -> var(g0)
+    #   row 2  cov(g0, lkout),    var(lkout)
+    #   row 3  cov(g0, lEmaxss),  cov(lkout, lEmaxss),  var(lEmaxss)
+    #   row 4  cov(g0, ldEmax0),  cov(lkout, ldEmax0),  cov(lEmaxss, ldEmax0),  var(ldEmax0)
+    etag0res + etalkout + etalemaxss + etaldemax0 ~ c(
+       16.81,
+      -1.14719,  3.99434,
+       0.98578, -1.10344, 0.79299,
+       4.31348, -3.89866, 0.89783, 4.80402
+    )
 
     # ------------------------------------------------------------------------
     # Residual error. Paper Table 2 reports two additive residual SDs:

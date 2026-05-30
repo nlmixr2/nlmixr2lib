@@ -42,7 +42,10 @@ PK_2cmt_mAb_Davda_2014 <- function() {
     allov   <- 0.957; label("Allometric exponent on volumes of distribution (unitless)")                      # Davda 2014 Table 3
 
     # IIV — variances reported directly (not CV% shortcuts); correlated block for CL, Vc, Vp
-    etalfdepot ~ 0
+    # Davda 2014 Table 3 footnote a: inter-subject variance of bioavailability F1
+    # was FIXED at 0 (not estimated), so encode it as fix(0) rather than a bare
+    # estimated 0 (the latter misrepresents the source and leaves a singular omega).
+    etalfdepot ~ fix(0)
     etalka ~ 0.416
     etalcl + etalvc + etalvp ~ c(0.0987,
                                  0.0786, 0.116,

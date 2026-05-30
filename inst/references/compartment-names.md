@@ -1141,6 +1141,18 @@ Central-compartment drug states named after the drug INN abbreviation. Sibling t
 - **Source aliases:** none.
 - **Example models:** combination-antibiotic time-kill PD models.
 
+### cmem (**canonical meropenem bath-concentration state**)
+- **Type:** compartment
+- **Role:** Meropenem bath / medium concentration state (mg/L) in hollow-fiber infection-model time-kill PD; dosed by the user and declines at the simulated HFIM elimination rate, driving the Hill-type meropenem killing term on each bacterial subpopulation.
+- **Source aliases:** none.
+- **Example models:** `Rees_2018_meropenem_ciprofloxacin.R`.
+
+### ccip (**canonical ciprofloxacin bath-concentration state**)
+- **Type:** compartment
+- **Role:** Ciprofloxacin bath / medium concentration state (mg/L) in hollow-fiber infection-model time-kill PD; dosed by the user, drives the Emax ciprofloxacin killing term, and lowers the effective meropenem KC50 through the mechanistic-synergy term. Paired with `cmem`.
+- **Source aliases:** none.
+- **Example models:** `Rees_2018_meropenem_ciprofloxacin.R`.
+
 ---
 
 ## Bacterial subpopulation states
@@ -1177,6 +1189,249 @@ Lowercase / uppercase casing variants and mutation suffixes used by combination-
 - **Role:** Non-multiplying bacterial population (capitalised casing variant).
 - **Source aliases:** none.
 - **Example models:** `Clewe_2016_rifampicin.R` (variant casing).
+
+---
+
+## Bacterial subpopulation states (semi-mechanistic time-kill / HFIM PD)
+
+Semi-mechanistic time-kill / hollow-fiber-infection-model (HFIM) PD models (Bulitta / Wicha / Landersdorfer life-cycle growth lineage) partition the bacterial population by antibiotic-resistance phenotype. The canonical scheme spells the phenotype out so the resistance status of each subpopulation is self-documenting in the state name, rather than using the terse single-letter `s` / `i` / `r` source labels:
+
+- **Single-drug models** name each subpopulation `bact_<phenotype>`, where `<phenotype>` is one of the spelled-out resistance phenotypes `susceptible`, `intermediate`, or `resistant`.
+- **Combination-therapy (two-drug) models** name each subpopulation by its joint per-drug status as a spelled-out compound `bact_<drug1pheno>_<drug2pheno>` (the two phenotype tokens are in the model's drug order; e.g., for a meropenem + ciprofloxacin model `bact_resistant_intermediate` is the meropenem-resistant / ciprofloxacin-intermediate subpopulation).
+- An **optional trailing digit** indexes the Bulitta / Wicha two-state bacterial life cycle: `1` = vegetative / resting state, `2` = replicating state (the state-2 cells replicate back into state-1 daughter cells). Subpopulations without a life-cycle split carry no trailing digit.
+
+These states are **not** registered as individual H3 entries; they are matched at runtime by the `bacterialSubpopRegex` constant in `R/conventions.R`:
+
+```
+^bact_(susceptible|intermediate|resistant)(_(susceptible|intermediate|resistant))?[0-9]*$
+```
+
+(The regex is a structural pattern and lives in R alongside the other `*Regex` compartment constants documented in the "Regex constants" header section, not as a name list in this file.)
+
+- **Example models:**
+  - `Garonzik_2016_daptomycin.R` — single-drug: `bact_susceptible1` / `bact_susceptible2`, `bact_intermediate1` / `bact_intermediate2`, `bact_resistant1` / `bact_resistant2` (three subpopulations of decreasing daptomycin susceptibility, each with the two-state life cycle).
+  - `Rees_2018_meropenem_ciprofloxacin.R` — two-drug (meropenem + ciprofloxacin): `bact_susceptible_susceptible1` / `2`, `bact_resistant_intermediate1` / `2`, `bact_intermediate_resistant1` / `2`.
+  - `Landersdorfer_2018_imipenem_tobramycin.R` — two-drug (imipenem + tobramycin): same `bact_<drug1pheno>_<drug2pheno>` compound scheme with the two-state life-cycle digit.
+
+---
+
+## Mann 2022 respiratory / cerebrovascular physiology states
+
+Physiological state variables of the Magosso / Ursino respiratory and cerebrovascular control model with the Mann 2022 opioid-induced-ventilatory-depression and cardiac-arrest extensions (`Mann_2022_respiratory_physiology.R`). The CAR (fraction of mu receptors bound by an opioid agonist) input from the binding layer drives reductions in the ventilatory drives. Registered 2026-05-30 per the naming-warning resolution.
+
+### palv_co2 (**canonical alveolar / arterial CO2 partial pressure**)
+- **Type:** compartment
+- **Role:** Alveolar / arterial CO2 partial pressure (mmHg) gas-exchange state; balances minute-ventilation washout against mixed-venous CO2 delivery (Magosso / Ursino gas-exchange ODE).
+- **Source aliases:** none.
+- **Example models:** `Mann_2022_respiratory_physiology.R`.
+
+### palv_o2 (**canonical alveolar / arterial O2 partial pressure**)
+- **Type:** compartment
+- **Role:** Alveolar / arterial O2 partial pressure (mmHg) gas-exchange state; balances inspired-O2 uptake against mixed-venous O2 delivery and is the quantity compared with the cardiac-arrest threshold.
+- **Source aliases:** none.
+- **Example models:** `Mann_2022_respiratory_physiology.R`.
+
+### cb_co2 (**canonical brain-blood CO2 content**)
+- **Type:** compartment
+- **Role:** Brain blood-gas CO2 content state (Spencer dissociation units); driven by cerebral blood flow times arterial-minus-venous CO2 difference plus brain CO2 metabolic production.
+- **Source aliases:** none.
+- **Example models:** `Mann_2022_respiratory_physiology.R`.
+
+### cb_o2 (**canonical brain-blood O2 content**)
+- **Type:** compartment
+- **Role:** Brain blood-gas O2 content state (Spencer units); driven by cerebral blood flow times arterial-minus-venous O2 difference plus brain O2 metabolic consumption.
+- **Source aliases:** none.
+- **Example models:** `Mann_2022_respiratory_physiology.R`.
+
+### ct_co2 (**canonical peripheral-tissue blood CO2 content**)
+- **Type:** compartment
+- **Role:** Peripheral (non-brain) tissue blood-gas CO2 content state; driven by tissue blood flow times arterial-minus-venous CO2 difference plus tissue CO2 metabolic production.
+- **Source aliases:** none.
+- **Example models:** `Mann_2022_respiratory_physiology.R`.
+
+### ct_o2 (**canonical peripheral-tissue blood O2 content**)
+- **Type:** compartment
+- **Role:** Peripheral (non-brain) tissue blood-gas O2 content state; driven by tissue blood flow times arterial-minus-venous O2 difference plus tissue O2 metabolic consumption.
+- **Source aliases:** none.
+- **Example models:** `Mann_2022_respiratory_physiology.R`.
+
+### yco2 (**canonical filtered peripheral CO2 chemoreflex signal**)
+- **Type:** compartment
+- **Role:** First-order-filtered peripheral-chemoreflex CO2 input signal (dimensionless); modulates cerebral and peripheral blood flow with time-constant tau_co2.
+- **Source aliases:** none.
+- **Example models:** `Mann_2022_respiratory_physiology.R`.
+
+### yo2 (**canonical filtered peripheral O2 chemoreflex signal**)
+- **Type:** compartment
+- **Role:** First-order-filtered peripheral-chemoreflex O2 input signal (dimensionless); modulates blood flow with time-constant tau_o2. Paired with `yco2`.
+- **Source aliases:** none.
+- **Example models:** `Mann_2022_respiratory_physiology.R`.
+
+### dp_state (**canonical peripheral chemoreflex ventilatory drive**)
+- **Type:** compartment
+- **Role:** Peripheral-chemoreflex ventilatory drive state (L/min); opioid-attenuated (factor 1 - CAR^P1) and filtered with time-constant tau_Dp.
+- **Source aliases:** none.
+- **Example models:** `Mann_2022_respiratory_physiology.R`.
+
+### dc_state (**canonical central chemoreflex ventilatory drive**)
+- **Type:** compartment
+- **Role:** Central-chemoreflex ventilatory drive state (L/min); driven by the brain-CO2-minus-baseline error, opioid-attenuated, and filtered with time-constant tau_Dc. Paired with `dp_state`.
+- **Source aliases:** none.
+- **Example models:** `Mann_2022_respiratory_physiology.R`.
+
+### alpha_h (**canonical central hypoxic ventilatory-depression factor**)
+- **Type:** compartment
+- **Role:** Central hypoxic ventilatory-depression factor (dimensionless), Mann 2022 alphaH; first-order relaxes toward a brain-O2-dependent target and multiplies the peripheral drive in the total-ventilation synthesis.
+- **Source aliases:** none.
+- **Example models:** `Mann_2022_respiratory_physiology.R`.
+
+### t_pao2_below (**canonical sub-threshold-PaO2 dwell-time accumulator**)
+- **Type:** compartment
+- **Role:** Accumulator (min) of time arterial O2 partial pressure has spent below the critical cardiac-arrest threshold; grows while PaO2 is below threshold and slowly re-arms above it, gating the cardiovascular-collapse trigger.
+- **Source aliases:** none.
+- **Example models:** `Mann_2022_respiratory_physiology.R`.
+
+### im_arrest (**canonical cardiovascular-collapse cardiac-output multiplier**)
+- **Type:** compartment
+- **Role:** Cardiovascular-collapse multiplier (dimensionless, 0..1) on cardiac output; once the sustained-hypoxemia trigger fires it decays toward zero, driving total cardiac output toward the Mann 2022 cardiac-arrest floor.
+- **Source aliases:** none.
+- **Example models:** `Mann_2022_respiratory_physiology.R`.
+
+---
+
+## Mann 2022 mu-opioid receptor occupancy states
+
+Receptor-occupancy state variables of the Mann 2022 competitive mu-opioid receptor binding layer (`Mann_2022_mu_receptor_binding.R`), tracking simultaneous agonist and antagonist occupancy of a shared receptor pool. Registered 2026-05-30 per the naming-warning resolution.
+
+### RL_op (**canonical mu-opioid agonist receptor-occupancy fraction**)
+- **Type:** compartment
+- **Role:** Fraction of the mu-opioid receptor pool bound by the opioid agonist (0..1); follows the multi-ligand competitive binding ODE and is the CAR output piped into the respiratory-physiology layer.
+- **Source aliases:** none.
+- **Example models:** `Mann_2022_mu_receptor_binding.R`.
+
+### RL_antag (**canonical mu-opioid antagonist receptor-occupancy fraction**)
+- **Type:** compartment
+- **Role:** Fraction of the mu-opioid receptor pool bound by the opioid antagonist (0..1), competing with `RL_op` for the shared free-receptor fraction `R_free = 1 - RL_op - RL_antag`.
+- **Source aliases:** none.
+- **Example models:** `Mann_2022_mu_receptor_binding.R`.
+
+---
+
+## Inflammatory-mediator PD states
+
+Indirect-response state variables of the Xiang 2018 baicalein anti-inflammatory cellular PD cascade (`Xiang_2018_baicalein.R`): a TNF-alpha -> {IL-6, iNOS -> NO} indirect-response chain in LPS-stimulated RAW264.7 macrophages. Registered 2026-05-30 per the naming-warning resolution.
+
+### tnf (**canonical TNF-alpha indirect-response state**)
+- **Type:** compartment
+- **Role:** TNF-alpha indirect-response state (pg/mL) with LPS-stimulated zero-order production inhibited log-linearly by baicalein, and first-order elimination; drives the downstream IL-6 and iNOS responses via delay states.
+- **Source aliases:** none.
+- **Example models:** `Xiang_2018_baicalein.R`.
+
+### il6 (**canonical IL-6 indirect-response state**)
+- **Type:** compartment
+- **Role:** IL-6 indirect-response state (pg/mL) produced at a rate proportional to the lag-delayed TNF-alpha signal, with first-order elimination.
+- **Source aliases:** none.
+- **Example models:** `Xiang_2018_baicalein.R`.
+- **Notes:** Distinct namespace from the `IL6` covariate (an upstream interleukin-6 covariate column); the lowercase `il6` compartment is the modelled IL-6 PD state, not a covariate.
+
+### inos (**canonical iNOS-expression indirect-response state**)
+- **Type:** compartment
+- **Role:** Inducible nitric-oxide-synthase (iNOS) expression state (relative to the t = 0 control) produced from the lag-delayed TNF-alpha signal; elimination held at zero per source to match the post-12.5 h plateau.
+- **Source aliases:** none.
+- **Example models:** `Xiang_2018_baicalein.R`.
+
+### no (**canonical nitric-oxide indirect-response state**)
+- **Type:** compartment
+- **Role:** Nitric-oxide state (uM) produced from iNOS via an iNOS^delta amplification term, with elimination held at zero per source.
+- **Source aliases:** none.
+- **Example models:** `Xiang_2018_baicalein.R`.
+
+---
+
+## Radiation tumor-growth-inhibition states
+
+State variables specific to the Cardilin 2018 combination radiation + radiosensitizer tumor-growth-inhibition model (`Cardilin_2018_radiation_radiosensitizer_mouse.R`), where linear-quadratic radiation kill routes proliferating cells into an irradiated-cell chain that divides at most once more before dying. Registered 2026-05-30 per the naming-warning resolution.
+
+### irrad1 (**canonical first irradiated-cell pool**)
+- **Type:** compartment
+- **Role:** First irradiated-cell pool; receives proliferating cells killed by the linear-quadratic radiation hazard at each fraction and either dies or progresses to a final division.
+- **Source aliases:** none.
+- **Example models:** `Cardilin_2018_radiation_radiosensitizer_mouse.R`.
+
+### irrad2 (**canonical second irradiated-cell pool**)
+- **Type:** compartment
+- **Role:** Second irradiated-cell pool fed by the post-division progression from `irrad1` (factor-2 source for the one final division before death); first-order natural death thereafter.
+- **Source aliases:** none.
+- **Example models:** `Cardilin_2018_radiation_radiosensitizer_mouse.R`.
+
+### radDepot (**canonical radiation-timing trigger compartment**)
+- **Type:** compartment
+- **Role:** Radiation-timing trigger compartment; a unit bolus is dosed in at each irradiation time and decays fast so that the kill hazard integrates to the linear-quadratic lethal-lesion number per fraction (a Dirac-delta numerical device, not a fitted state).
+- **Source aliases:** none.
+- **Example models:** `Cardilin_2018_radiation_radiosensitizer_mouse.R`.
+
+---
+
+## Viral-dynamics states (Neumann target-cell model)
+
+State variables of the Neumann-style three-state HCV target-cell viral-dynamics model used in the Wang 2018 daclatasvir / asunaprevir integrated PK / viral-dynamic model (`Wang_2018_daclatasvir_asunaprevir.R`). Registered 2026-05-30 per the naming-warning resolution.
+
+### virus (**canonical free-virus / virion pool**)
+- **Type:** compartment
+- **Role:** Free-virus / virion pool (Neumann state V); produced by productively-infected cells (drug-inhibited via the combination antiviral effect) and cleared first-order; the log10 of this state is the viral-load output.
+- **Source aliases:** none.
+- **Example models:** `Wang_2018_daclatasvir_asunaprevir.R`.
+
+### infected (**canonical productively-infected cells**)
+- **Type:** compartment
+- **Role:** Productively-infected hepatocytes (Neumann state I); produced by infection of target cells by free virus and lost first-order at rate delta.
+- **Source aliases:** none.
+- **Example models:** `Wang_2018_daclatasvir_asunaprevir.R`.
+- **Notes:** The uninfected target-cell state reuses the existing canonical `target` compartment.
+
+---
+
+## Airway interstitial-fluid (ISF) mAb / target species
+
+Airway interstitial-fluid (ISF) species of the Rymut 2023 mechanistic anti-tryptase mAb (MTPS9579A) PK/PD model (`Rymut_2023_anti_tryptase.R`), where free mAb and mAb-monomer complex are delivered from the systemic circulation to the airway ISF via lymph flow. Registered 2026-05-30 per the naming-warning resolution.
+
+### mab_isf (**canonical free mAb in airway ISF**)
+- **Type:** compartment
+- **Role:** Free MTPS9579A (anti-tryptase mAb) concentration in the airway ISF (nM); enters via lymph influx and binds tetrameric and monomeric tryptase in the ISF.
+- **Source aliases:** none.
+- **Example models:** `Rymut_2023_anti_tryptase.R`.
+
+### monomer_isf (**canonical free monomeric tryptase in airway ISF**)
+- **Type:** compartment
+- **Role:** Free inactive monomeric tryptase concentration in the airway ISF (nM); generated by spontaneous tetramer dissociation and by mAb-induced tetramer disruption, eliminated first-order, and bound by free mAb.
+- **Source aliases:** none.
+- **Example models:** `Rymut_2023_anti_tryptase.R`.
+
+### complex_monomer_isf (**canonical mAb-monomer complex in airway ISF**)
+- **Type:** compartment
+- **Role:** MTPS9579A-monomer complex concentration in the airway ISF (nM); formed from free mAb plus monomeric tryptase (and from tetramer-complex disruption), and also receiving the systemic mAb-monomer complex via lymph influx.
+- **Source aliases:** none.
+- **Example models:** `Rymut_2023_anti_tryptase.R`.
+- **Notes:** The active-tetramer species `target_isf` and the mAb-tetramer complex `complex_isf` in the same model already pass via `targetLocationRegex`.
+
+---
+
+## Body-composition / disease-risk PD outputs
+
+Population body-composition / disease-risk PD output states from the Oniki 2018 elderly-Japanese health-screening companion models. Registered 2026-05-30 per the naming-warning resolution.
+
+### bmi (**canonical body-mass-index PD output**)
+- **Type:** compartment
+- **Role:** Body-mass-index PD output (kg/m^2); the typical BMI as a power-of-age scalar with a female sex multiplier and a DsbA-L T/T additive shift, with log-normal between-subject variability. Sibling of `bw` / `weight`.
+- **Source aliases:** none.
+- **Example models:** `Oniki_2018_bmi.R`.
+- **Notes:** Lowercase `bmi` is the modelled BMI PD output; distinct from the uppercase `BMI` covariate column that drives the companion NAFLD-risk model.
+
+### p_nafld (**canonical NAFLD-probability PD output**)
+- **Type:** compartment
+- **Role:** Probability of nonalcoholic fatty liver disease (NAFLD) PD output (0..1); the expit of a baseline logit floor plus a sigmoidal-Emax function of (BMI - 17) with genotype / lab covariate effects. Sibling of `prob_roc`.
+- **Source aliases:** none.
+- **Example models:** `Oniki_2018_nafld_risk.R`.
 
 ---
 
@@ -1893,6 +2148,24 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Role:** Mycophenolic acid glucuronide (MPAG, 7-O-glucuronide phase II metabolite of mycophenolic acid produced by UGT1A9 and UGT2B7). Major plasma metabolite of mycophenolic acid after MMF dosing in renal transplant recipients.
 - **Source aliases:** none.
 - **Example models:** `deWinter_2009_mycophenolic.R` (doi:10.1007/s10928-009-9136-6).
+
+### mpa (**canonical mycophenolic acid sibling-drug suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Mycophenolic acid (MPA, the active moiety of co-administered mycophenolate mofetil), a co-medication sibling tracked alongside the parent tacrolimus in the TAC-MMF drug-drug-interaction model. Drives `depot_mpa` / `central_mpa` / `peripheral1_mpa` and the `propSd_mpa` residual.
+- **Source aliases:** none.
+- **Example models:** `Kim_2018_tacrolimus.R` (doi:10.1038/s41598-018-20071-3).
+
+### acmpag (**canonical MPA acyl-glucuronide suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Mycophenolic acid acyl-glucuronide (AcMPAG, the minor ~15% acyl-glucuronide phase II metabolite of mycophenolic acid). Distinct from the 7-O-glucuronide `mpag` suffix. Drives `central_acmpag` and the `propSd_acmpag` residual.
+- **Source aliases:** none.
+- **Example models:** `Kim_2018_tacrolimus.R`.
+
+### asv (**canonical asunaprevir sibling-drug suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Asunaprevir (ASV, NS3/4A protease inhibitor), a sibling direct-acting antiviral (DAA) co-administered with daclatasvir; neither is the "parent". Drives `depot_asv` / `central_asv` / `peripheral1_asv` / `effect_asv` and the `propSd_asv` / `addSd_asv` residuals.
+- **Source aliases:** none.
+- **Example models:** `Wang_2018_daclatasvir_asunaprevir.R` (doi:10.1038/aps.2017.84).
 
 ---
 

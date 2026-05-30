@@ -58,10 +58,17 @@ Talke_2018_dexmedetomidine <- function() {
     # cov(CL,V2), cov(V1,V2), cov(Q2,V2), var(V2). PPV CL=0.158, V1=0.339, Q2=0.590, V2=0.868.
     # Correlations: rho(CL,V1)=0.420, rho(CL,Q2)=0.685, rho(V1,Q2)=0.367,
     # rho(CL,V2)=0.971, rho(V1,V2)=0.210, rho(Q2,V2)=0.833.
-    etalcl + etalvc + etalq + etalvp ~ c(0.024964,
-                                         0.022497, 0.114921,
-                                         0.063861, 0.073422, 0.348100,
-                                         0.133167, 0.061793, 0.426595, 0.753424)
+    # NOTE: the Table 3B correlations encoded with the rounded Table 3A PPVs
+    # are not jointly positive-definite (min eigenvalue -2.1e-3, a rounding
+    # artifact), making the IIV covariance invalid for simulation (chol()
+    # fails). The block is adjusted to the nearest positive-definite matrix
+    # (Higham 2002; Matrix::nearPD). Changes are confined to the 3rd-4th
+    # significant figure except var(CL) (0.024964 -> 0.026892), which rises
+    # slightly to admit the strong CL correlations.
+    etalcl + etalvc + etalq + etalvp ~ c(0.026892177,
+                                         0.022190997, 0.114969390,
+                                         0.064167228, 0.073373298, 0.348148950,
+                                         0.132676120, 0.061870386, 0.426517130, 0.753547660)
 
     # PD IIV - full BLOCK(4) on log(E0), log(EMAX), log(C50), log(t1/2 keo).
     # PPV from Talke 2018 Table 4A; correlations from Table 4B. Methods explicitly notes

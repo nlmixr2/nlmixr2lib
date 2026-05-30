@@ -15,18 +15,100 @@
 #' @keywords internal
 #' @noRd
 .nlmixr2libConventionsStatic <- list(
-  # Numbered-chain compartment pattern. Bare numbered chains (transit /
-  # effect / precursor / lat / depot) and metabolite-suffixed
-  # compartments are validated separately via .matchesCompartment() so
-  # that the registered metabolite list can be honored at runtime; this
-  # static regex covers only the numbered-chain patterns. `depot[0-9]+`
-  # accommodates parallel-absorption models with two or more depots.
+  pkParams = c(
+    "lka", "lcl", "lvc", "lvp", "lvp2", "lq", "lq2", "lfdepot",
+    "lvmax", "lcl_ss", "lcl_time", "lcl_renal", "lcl_nonren"
+  ),
+  pkBareParams = c(
+    "ka", "cl", "vc", "vp", "vp2", "q", "q2", "kel",
+    "k12", "k21", "k13", "k31", "fdepot",
+    "vmax", "cl_ss", "cl_time", "cl_renal", "cl_nonren"
+  ),
+  compartments = c(
+    "depot", "central", "peripheral1", "peripheral2", "effect",
+    "target", "complex", "total_target",
+    # Semi-physiological liver compartment used by paper-specific
+    # extraction-ratio first-pass models (Xie_2019_agomelatine).
+    "liver",
+    # Cumulative-hazard state used by time-to-event / dropout sub-models
+    # (Girard_2012_pimasertib). The state integrates the instantaneous
+    # hazard so that survival = exp(-cumhaz); the source NONMEM idiom is
+    # `$MODEL COMP=(CUMHAZ)` with `DADT(<cumhaz>) = HAZARD`.
+    "cumhaz",
+    # Renal-cortex accumulation compartment used by aminoglycoside
+    # nephrotoxicity models (Llanos-Paez_2017_gentamicin). Tracks drug
+    # amount sequestered in the renal cortex via saturable uptake from
+    # the central compartment plus first-order tubular reabsorption back
+    # out (Rougier 2003 / Croes 2011 mechanism).
+    "renal_cortex",
+    # Cerebrospinal-fluid (CSF) and interstitial-fluid (ISF) physiologic
+    # compartments used by mechanistic mAb / target-mediated disposition
+    # models with multiple body-fluid distribution volumes
+    # (Perez-Ruixo_2025_posdinemab).
+    "csf", "isf",
+    # Anatomic brain-region compartments used by mAb brain-distribution
+    # PK models (Grimm_2023_trontinemab, Grimm_2023_gantenerumab). Each
+    # state holds the extracellular drug concentration in the named
+    # region; total brain concentration including residual plasma is
+    # derived as `Cbrain_<region>` in model().
+    "cerebellum", "hippocampus", "striatum", "cortex", "choroid_plexus",
+    # Gallbladder / biliary recirculation compartment used by
+    # enterohepatic-circulation (EHC) popPK models (Ide_2009_pravastatin
+    # and similar). Drug accumulates from the central compartment via
+    # biliary excretion (k12) and re-enters central after a delay
+    # (k21 gated by gallbladder-emptying time tg), producing the
+    # characteristic second-peak phenomenon.
+    "gallbladder",
+    # Soluble vascular endothelial growth factor receptor 2 (sVEGFR2)
+    # plasma compartment used by indirect-response biomarker PD models
+    # for angiogenesis inhibitors (Ait-Oudhia 2016, Hansson 2013a).
+    "svegfr2",
+    # Tumor volume / size compartment used by tumor growth inhibition
+    # (TGI) models in oncology (Ait-Oudhia 2016, NA_NA_sunitinib,
+    # Schindler 2016, Wilbaux 2015 and similar).
+    "tumor",
+    # Endogenous plasma metabolic species used by glucose / lactate
+    # turnover sub-models with drug-stimulated production (Oualha 2014
+    # epinephrine: glucose zero-order production is stimulated by Ep
+    # via an Emax function, and lactate is produced at the rate of
+    # glucose elimination and itself first-order eliminated). Each
+    # state holds a concentration (mmol/L) rather than an amount,
+    # mirroring the source paper's mass-balance parameterisation.
+    "glucose", "lactate",
+    # Plasma non-esterified fatty acids (NEFA / free fatty acids) used
+    # by lipid-turnover PD models with feedback control (Ahlstrom 2010:
+    # NiAc inhibits hydrolysis of TG to NEFA; NEFA formation is also
+    # suppressed by a moderator transit chain (precursor1..precursor8)
+    # representing insulin-like delayed feedback, with a NiAc-independent
+    # capillary release term setting the lower physiological limit).
+    # State holds a concentration (mmol/L) rather than an amount.
+    "nefa",
+    # Viral-dynamics compartments used by Neumann-style biphasic-decline
+    # PK/VD models for hepatitis C and other viral-replication mechanisms
+    # (Wang 2018 daclatasvir/asunaprevir HCV PK/VD MBMA; Neumann et al
+    # 1998 baseline framework). `infected` = productively infected cells
+    # (state I in the source paper); `virus` = free virus (state V); the
+    # paper's uninfected target cells (T) re-use the canonical `target`
+    # compartment (HCV target cells are hepatocytes, not the TMDD soluble
+    # / membrane-bound receptor target that `target` was originally
+    # registered for, but the semantic role - the unbound, drug-naive
+    # species the virus / drug acts on - is the same). State holds a
+    # concentration (cells/mL for `infected`, IU/mL or virion-copies/mL
+    # for `virus`) rather than an amount.
+    "infected", "virus"
+  ),
+  # Bare numbered chains (transit / effect / precursor / lat / dar /
+  # depot) and metabolite-suffixed compartments are validated
+  # separately via .matchesCompartment() so that the registered
+  # metabolite list can be honored at runtime; this static regex
+  # covers only the numbered-chain patterns. `depot[0-9]+` accommodates
+  # parallel-absorption models with two or more depots.
   compartmentRegex = "^(transit|effect|precursor|lat|depot)[0-9]+$",
   # Membrane-limited PBPK sub-compartment pattern: paper-prefix +
   # spelled-out organ name. Recognises the recurring `<sub>_<organ>`
   # shape used in Shah 2012 mAb PBPK and Parhiz 2024 mRNA-LNP
   # extractions (bc / eu / eb / fr / is / int / mrna / luc prefixes).
-  pbpkSubCompartmentRegex = "^(bc|eu|eb|fr|is|int|mrna|luc)_(liver|lung|kidney|spleen|heart|muscle|skin|adipose|bone|brain|small_intestine|large_intestine|pancreas|thymus|portal|remainder|other|hepatic|fat|rapidly_perfused|slowly_perfused|venous|arterial|urine|gut)$",
+  pbpkSubCompartmentRegex = "^(bc|eu|eb|fr|is|int|mrna|luc)_(liver|lung|kidney|spleen|heart|muscle|skin|adipose|bone|brain|small_intestine|large_intestine|pancreas|thymus|portal|remainder|other|hepatic|fat|rapidly_perfused|slowly_perfused|venous|arterial|urine|gut)$", # nolint: line_length_linter.
   # DAR-numbered ADC isoform compartments (`dar0_central`,
   # `dar4_peripheral1`, ...).
   darCompartmentRegex = "^dar[0-9]+_(central|peripheral[0-9]?)$",
@@ -34,11 +116,33 @@
   # compartments (e.g., target_csf, target_isf, target_peripheral,
   # target_peripheral1, complex_csf, complex_isf, complex_peripheral).
   targetLocationRegex = "^(target|complex)_(csf|isf|peripheral[0-9]?)$",
+  # Bacterial subpopulation states for semi-mechanistic time-kill / HFIM
+  # PK-PD models. Subpopulations are named by spelled-out resistance
+  # phenotype `bact_<phenotype>` where <phenotype> is one of
+  # `susceptible` / `intermediate` / `resistant`. For combination-therapy
+  # (two-drug) models the joint per-drug status is a spelled-out compound
+  # `bact_<drug1pheno>_<drug2pheno>` (drug order = the model's drug
+  # order). An optional trailing digit indexes the Bulitta / Wicha
+  # two-state bacterial life cycle (1 = vegetative / resting, 2 =
+  # replicating). The phenotype words are required to be spelled out in
+  # full (no `s`/`i`/`r` abbreviations) so the state names are
+  # self-documenting. Used by Garonzik_2016_daptomycin (single-drug:
+  # bact_susceptible1/2, bact_intermediate1/2, bact_resistant1/2),
+  # Rees_2018_meropenem_ciprofloxacin and
+  # Landersdorfer_2018_imipenem_tobramycin (two-drug, converging to
+  # bact_susceptible_susceptible1/2, bact_resistant_intermediate1/2,
+  # bact_intermediate_resistant1/2). The scheme is documented in
+  # inst/references/compartment-names.md.
+  bacterialSubpopRegex = "^bact_(susceptible|intermediate|resistant)(_(susceptible|intermediate|resistant))?[0-9]*$",
   observationVar = "Cc",
   # propSd and addSd are the canonical proportional and additive
   # residual-error SDs; expSd is the log-scale residual SD used with
-  # `~ lnorm(...)`.
-  residualError = c("propSd", "addSd", "expSd"),
+  # `~ lnorm(...)`. powExp is the power-error exponent `b` in a power
+  # residual model `Cc ~ pow(propSd, powExp)` (residual SD = propSd *
+  # f^powExp), used by popPK papers that report a power error model
+  # (Tod 1998 amikacin). It is a residual-error-structure parameter,
+  # not a deviant SD name.
+  residualError = c("propSd", "addSd", "expSd", "powExp"),
   transformPrefixes = c("l", "logit", "probit"),
   # Covariate-effect names match e_<cov>(_<continuation>)+_<param>.
   # The pattern accepts up to 6 underscore-separated tokens after the
@@ -46,6 +150,169 @@
   # ADA_POSITIVE, FORM_CHO_PHASE2). Semantic interpretation of the
   # trailing tokens is handled by .classifyCovEffect().
   covEffectPattern = "^e_[A-Za-z0-9]+(_[A-Za-z0-9]+){1,5}$",
+  # Lowercase paper / payload names allowed as a third-token suffix on
+  # parameters and compartments for a non-parent species. The set is
+  # extended whenever a new ADC payload, target binding partner, or
+  # secondary-analyte appears in a model. Keep mutually disjoint from
+  # pkBareParams and clComponents to preserve covariate-effect
+  # disambiguation.
+  registeredMetabolites = c(
+    "mmae", "dxd", "sn38", "dm4", "medm4", "mcmmaf",
+    "complex", "ige", "il1b", "tab", "nab",
+    "dar0", "dar1", "dar2", "dar3", "dar4", "dar5", "dar6", "dar7", "dar8",
+    # Small-molecule metabolites of agomelatine (Xie 2019): 3-hydroxy
+    # and 7-desmethyl. Suffixes start with a digit; this is fine
+    # because the convention check matches on `endsWith(name, "_<metab>")`
+    # rather than treating the metabolite name itself as an R identifier.
+    "3oh", "7dm",
+    # N-desmethyl-bedaquiline metabolite (M2) of bedaquiline
+    # (Svensson 2016 DDMODEL00000219).
+    "m2",
+    # Endoxifen (4-hydroxy-N-desmethyltamoxifen), the major active
+    # metabolite of tamoxifen -- Ter Heine 2014.
+    "endx",
+    # Lidocaine sequential metabolites (DDMODEL00000281, NA_NA_lidocaine):
+    # MEGX = monoethylglycinexylidide (LID -> MEGX via CYP1A2/3A4),
+    # GX   = glycinexylidide (MEGX -> GX), and 2,6-XYL = 2,6-xylidide
+    # (LID -> 2,6-XYL minor pathway). Each metabolite is a separate
+    # central compartment with its own apparent volume in the source's
+    # ADVAN5 parent + 3-metabolite structure.
+    "megx", "gx", "xyl",
+    # Morphine-3-glucuronide and morphine-6-glucuronide, the two major
+    # glucuronide metabolites of morphine -- Knibbe 2009 DDMODEL00000248.
+    "m3g", "m6g",
+    # Phase-II conjugates: glucuronide (gluc) and sulphate (sulf).
+    # Used for paracetamol-glucuronide / paracetamol-sulphate plasma
+    # metabolite compartments in Allegaert 2015 (DDMODEL00000267).
+    "gluc", "sulf",
+    # Paracetamol (APAP) phase-II conjugate metabolites -- APAP-glucuronide
+    # ("apapg") and APAP-sulphate ("apaps") used in the Cook 2016 newborn
+    # model (DDMODEL00000271).
+    "apapg", "apaps",
+    # Colistin, the active polymyxin generated in vivo by hydrolysis of
+    # the prodrug colistimethate sodium (CMS). Used as a metabolite
+    # suffix in parent-prodrug CMS / metabolite-active-drug colistin
+    # popPK models (Leuppi-Taegtmeyer 2019 DDMODEL00000295).
+    "col",
+    # Dihydroartemisinin, the active metabolite of artesunate
+    # (Birgersson 2019 DDMODEL00000297).
+    "dha",
+    # Hydroxy-itraconazole (OH-ITZ), the major active metabolite of
+    # itraconazole produced by CYP3A4 hydroxylation. Used as a metabolite
+    # suffix in parent + metabolite simultaneous popPK models
+    # (Hennig 2006 Clin Pharmacokinet 45(11):1099-1114; Hennig 2007 BJCP
+    # 63(4):438-450).
+    "ohi",
+    # Doxorubicinol, the C-13 alcohol metabolite of doxorubicin
+    # (Kunarajah 2017 paediatric oncology popPK/PD model).
+    "doxol",
+    # Daunorubicinol (DOL), the C-13 alcohol metabolite of
+    # daunorubicin formed primarily by carbonyl reductase 1 (CBR1)
+    # in adult AML patients (Varatharajan 2016 Cancer Chemother
+    # Pharmacol 78(5):1051-1058 doi:10.1007/s00280-016-3166-8).
+    "dol",
+    # 25-O-desacetyl rifabutin, the primary active metabolite of
+    # rifabutin formed by arylacetamide deacetylase (Hennig 2015
+    # AAC doi:10.1128/AAC.01195-15).
+    "desrbn",
+    # AZ5104 (N-desmethyl osimertinib), an active EGFR-inhibitor
+    # metabolite of osimertinib formed predominantly via CYP3A4/5
+    # (Brown 2017 BJCP 83(6):1216-1226 doi:10.1111/bcp.13223).
+    "az5104",
+    # N-desmethyl-selumetinib (also reported as the active selumetinib
+    # metabolite, ~3-5-fold more potent for MEK1 inhibition than the
+    # parent), formed by oxidative N-demethylation of selumetinib
+    # (Patel 2017 CPT Pharmacometrics Syst Pharmacol 6(5):305-314
+    # doi:10.1002/psp4.12175).
+    "ndsel",
+    # Capecitabine sequential metabolites (Urien 2005
+    # doi:10.1007/s10928-005-0018-2): 5'-DFCR (5'-deoxy-5-
+    # fluorocytidine, formed in the liver by carboxylesterase from
+    # capecitabine), 5'-DFUR (5'-deoxy-5-fluorouridine, formed from
+    # 5'-DFCR by cytidine deaminase in liver and tumour cells), and
+    # 5-FU (5-fluorouracil, formed from 5'-DFUR by thymidine
+    # phosphorylase preferentially in tumour tissue). Each metabolite
+    # has its own central compartment with apparent volume fixed to
+    # 1 L (only output rate constants K23, K34, K40 are identifiable
+    # in the source NONMEM ADVAN6 fit).
+    "dfcr", "dfur", "5fu",
+    # AS(N-1)3' truncated antisense strand of GalNAc-conjugated
+    # siRNAs (givosiran and other galnac-siRNA conjugates), formed
+    # by removal of the 3'-terminal nucleotide from the antisense
+    # strand. Treated as the active metabolite that is equipotent
+    # with the parent in terms of RISC loading and target mRNA
+    # silencing (Ayyar 2024 doi:10.1016/j.xphs.2023.10.026).
+    "asn1",
+    # 10-monohydroxy derivative (MHD, also "10-hydroxy-carbazepine"),
+    # the primary active metabolite of oxcarbazepine produced by
+    # cytosolic arylketone reductases (Rodrigues 2017 BJCP
+    # doi:10.1111/bcp.13392).
+    "mhd",
+    # Stereo-isomer (R / S) suffixes for enantiomer-resolved popPK
+    # models in which both enantiomers are followed in plasma but no
+    # interconversion is modelled (e.g. Valitalo 2017 ketorolac BJCP
+    # doi:10.1111/bcp.13311). Treated as "non-parent analyte" suffixes
+    # under the same registry as metabolites; neither enantiomer is the
+    # parent.
+    "r", "s",
+    # Roflumilast N-oxide, the active metabolite of roflumilast that
+    # contributes about 90% of total PDE4 inhibitory activity (tPDE4i).
+    # Used as a metabolite suffix in parent-plus-metabolite popPK models
+    # where parent (roflumilast) and metabolite (N-oxide) are fitted
+    # jointly but with independent apparent absorption parameters
+    # (Lahu 2010 doi:10.2165/11536600-000000000-00000).
+    "noxide",
+    # Combined acetaminophen cysteine + mercapturate compartment used by
+    # CYP2E1-oxidation popPK models that lump the two oxidation
+    # metabolites (acetaminophen cysteine and acetaminophen mercapturate)
+    # into a single observation compartment because the two species are
+    # in rapid equilibrium with overlapping disposition (van Rongen 2016
+    # Clin Pharmacokinet doi:10.1007/s40262-015-0357-0).
+    "cysmer",
+    # Glucarpidase (CPG2), the bacterial carboxypeptidase G2 enzyme
+    # given as a rescue therapy after high-dose methotrexate (MTX). Not
+    # a metabolite of MTX but a co-administered perpetrator that
+    # enzymatically hydrolyzes the substrate; the suffix marks the
+    # non-parent species in 2-drug PK/PD models (Kimura 2023
+    # doi:10.21873/anticanres.16351).
+    "cpg2",
+    # 3-N-acetyl-3,4-diaminopyridine (3-Ac DAP), the inactive N-acetyl
+    # metabolite of 3,4-diaminopyridine (amifampridine) free base
+    # produced by N-acetyltransferases. Used in parent-plus-metabolite
+    # popPK models for amifampridine in patients with Lambert-Eaton
+    # myasthenia (Thakkar 2017 doi:10.1002/psp4.12218).
+    "acdap",
+    # H4 (active thiol) metabolite of clopidogrel: the pharmacologically
+    # active species responsible for P2Y12 receptor inhibition, formed
+    # via sequential CYP-mediated oxidation of clopidogrel (CYP2C19 is
+    # the dominant isoform for the second oxidation step). The "H4"
+    # designator refers to the H4 stereoisomer specifically, which is
+    # the antiplatelet-active diastereomer. Used in parent-plus-
+    # metabolite popPK models (Danielak 2017 doi:10.1007/s00228-017-2334-z).
+    "h4",
+    # Mycophenolic acid glucuronide (MPAG, the 7-O-glucuronide phase II
+    # metabolite of mycophenolic acid produced by UGT1A9 and UGT2B7).
+    # MPAG is the major plasma metabolite of mycophenolic acid after
+    # mycophenolate mofetil (MMF) dosing in renal transplant recipients.
+    # Used in parent-plus-metabolite popPK models with explicit competitive
+    # protein binding and enterohepatic recirculation
+    # (de Winter 2009 doi:10.1007/s10928-009-9136-6).
+    "mpag",
+    # Asunaprevir (ASV, BMS-650032), the NS3/4A protease-inhibitor direct-
+    # acting antiviral (DAA) used as the second drug in the Wang 2018
+    # daclatasvir + asunaprevir integrated PK/VD model for genotype-1
+    # chronic hepatitis C. Asunaprevir is not a metabolite of daclatasvir
+    # but is co-administered alongside it; the suffix marks the non-parent
+    # drug under the same multi-drug naming convention used by deKock 2017
+    # sulfadoxine + pyrimethamine (where pyrimethamine carries the `pyra`
+    # suffix and sulfadoxine is the unsuffixed parent). The Wang 2018
+    # model uses daclatasvir as the unsuffixed parent (mentioned first in
+    # the paper's title, the lead NS5A inhibitor in the regimen) and
+    # asunaprevir with `_asv` everywhere
+    # (depot_asv, central_asv, peripheral1_asv, effect_asv, Cc_asv,
+    # lka_asv, lcl_asv, etc.).
+    "asv"
+  ),
   # Suffixes allowed for multi-component CL parameters. `_ss` denotes
   # the steady-state arm; `_time` the time-varying decay arm; `_renal`
   # the glomerular-filtration / tubular-secretion arm; `_nonren` the
@@ -475,6 +742,8 @@
   if (grepl(conv$targetLocationRegex, name)) return(TRUE)
   if (!is.null(conv$pbpkSubCompartmentRegex) &&
       grepl(conv$pbpkSubCompartmentRegex, name)) return(TRUE)
+  if (!is.null(conv$bacterialSubpopRegex) &&
+      grepl(conv$bacterialSubpopRegex, name)) return(TRUE)
   for (metab in conv$registeredMetabolites) {
     suf <- paste0("_", metab)
     if (endsWith(name, suf)) {
