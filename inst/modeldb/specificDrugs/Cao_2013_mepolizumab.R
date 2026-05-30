@@ -16,13 +16,13 @@ Cao_2013_mepolizumab <- function() {
     disease_state  = "Mepolizumab anti-IL-5 humanized IgG1 (population per Smith 2011 PK/PD analysis).",
     dose_range     = "IV; see Cao 2013 Figure 5 mepolizumab panel.",
     regions        = NA,
-    notes          = "Cao 2013 Table 2, Model A. Parameters fit by Cao et al. to plasma concentration profiles digitized from Smith DA et al. Clin Pharmacokinet 2011;50:215-227 (PMID 21348536). sigma1 was fixed at 0.950 in Cao 2013 (not estimated; CV reported as not applicable in Table 2)."
+    notes          = "Cao 2013 Table 2, Model A. Parameters fit by Cao et al. to plasma concentration profiles digitized from Smith DA et al. Clin Pharmacokinet 2011;50:215-227 (PMID 21348536). sigma_tight was fixed at 0.950 in Cao 2013 (not estimated; CV reported as not applicable in Table 2)."
   )
 
   ini({
-    sigma1 <- 0.950; label("Vascular reflection coefficient for tight tissues (unitless; fixed at 0.950 in Cao 2013)")  # Cao 2013 Table 2 (Model A): 0.950, fixed (footnote c "Not applicable")
-    sigma2 <- 0.750; label("Vascular reflection coefficient for leaky tissues (unitless)")                                # Cao 2013 Table 2 (Model A): 0.750 (CV 1.48%)
-    lclp   <- log(0.20424); label("Plasma clearance (CLp, L/day)")                                                        # Cao 2013 Table 2 (Model A): CLp = 0.00851 L/hr (CV 1.50%) = 0.20424 L/day
+    sigma_tight <- 0.950; label("Vascular reflection coefficient for tight tissues (unitless; fixed at 0.950 in Cao 2013)")  # Cao 2013 Table 2 (Model A): 0.950, fixed (footnote c "Not applicable")
+    sigma_leaky <- 0.750; label("Vascular reflection coefficient for leaky tissues (unitless)")                                # Cao 2013 Table 2 (Model A): 0.750 (CV 1.48%)
+    lcl   <- log(0.20424); label("Plasma clearance (CLp, L/day)")                                                        # Cao 2013 Table 2 (Model A): CLp = 0.00851 L/hr (CV 1.50%) = 0.20424 L/day
   })
 
   model({
@@ -38,7 +38,7 @@ Cao_2013_mepolizumab <- function() {
     l2      <- 0.67 * lymphflow
     vlymph  <- vplasma
 
-    clp <- exp(lclp)
+    cl <- exp(lcl)
 
     cp     <- plasma / vplasma
     ctight <- tight  / vtight
@@ -46,12 +46,12 @@ Cao_2013_mepolizumab <- function() {
     clymph <- lymph  / vlymph
 
     d/dt(plasma) <- clymph * lymphflow -
-                    cp * l1 * (1 - sigma1) -
-                    cp * l2 * (1 - sigma2) -
-                    clp * cp
-    d/dt(tight)  <- l1 * (1 - sigma1) * cp -
+                    cp * l1 * (1 - sigma_tight) -
+                    cp * l2 * (1 - sigma_leaky) -
+                    cl * cp
+    d/dt(tight)  <- l1 * (1 - sigma_tight) * cp -
                     l1 * (1 - sigmal) * ctight
-    d/dt(leaky)  <- l2 * (1 - sigma2) * cp -
+    d/dt(leaky)  <- l2 * (1 - sigma_leaky) * cp -
                     l2 * (1 - sigmal) * cleaky
     d/dt(lymph)  <- l1 * (1 - sigmal) * ctight +
                     l2 * (1 - sigmal) * cleaky -

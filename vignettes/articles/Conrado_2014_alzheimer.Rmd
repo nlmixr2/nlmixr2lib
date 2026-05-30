@@ -122,7 +122,7 @@ mod0 <- rxode2::zeroRe(mod)
 sim_typ <- rxode2::rxSolve(mod0, events, nSub = 1)
 sim_typ$ADAS  <- 70 * sim_typ$mur
 sim_typ$years <- sim_typ$time / 365.25
-knitr::kable(sim_typ[, c("years", "bl", "sl_indiv", "mur", "ADAS")],
+knitr::kable(sim_typ[, c("years", "rbase", "sl_indiv", "mur", "ADAS")],
              digits = 4,
              caption = "Typical-value disease-progression trajectory (no IIV).")
 ```

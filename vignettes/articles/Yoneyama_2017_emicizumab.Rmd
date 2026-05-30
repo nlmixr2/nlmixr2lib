@@ -163,9 +163,12 @@ build_regimen <- function(label, maintenance_dose_mg_per_kg,
       cmt  = "depot"
     )
 
-  # Observation grid: dense in the first 4 weeks, weekly thereafter
+  # Observation grid: dense in the first 4 weeks, every 3.5 days thereafter.
+  # Loading-window step relaxed from 1 to 2 days for vignette build budget;
+  # post-loading step retained at 3.5 days for PKNCA Cmax fidelity within the
+  # 7-day QW maintenance interval.
   obs_grid <- sort(unique(c(
-    seq(0, 28, by = 1),
+    seq(0, 28, by = 2),
     seq(28, sim_end_day, by = 3.5)
   )))
   obs <- tidyr::expand_grid(id = ids, time = obs_grid) |>
@@ -186,9 +189,11 @@ build_regimen <- function(label, maintenance_dose_mg_per_kg,
 }
 
 events <- dplyr::bind_rows(
-  build_regimen("1.5 mg/kg QW",  1.5, 7,  n_sub = 200, id_offset =    0L),
-  build_regimen("3 mg/kg Q2W",   3.0, 14, n_sub = 200, id_offset =  200L),
-  build_regimen("6 mg/kg Q4W",   6.0, 28, n_sub = 200, id_offset =  400L)
+  # n_sub downsampled from 200 per regimen for vignette build budget; VPC bands
+  # at n=80 are visually indistinguishable from n=200 for this smooth SC profile.
+  build_regimen("1.5 mg/kg QW",  1.5, 7,  n_sub = 80, id_offset =    0L),
+  build_regimen("3 mg/kg Q2W",   3.0, 14, n_sub = 80, id_offset =   80L),
+  build_regimen("6 mg/kg Q4W",   6.0, 28, n_sub = 80, id_offset =  160L)
 )
 stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
 ```

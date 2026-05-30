@@ -66,7 +66,7 @@ Martinez_2019_alirocumab <- function() {
     lq           <- log(0.0185 * 24);  label("Intercompartmental clearance Q (L/day)")                          # Martinez 2019 Table 2 (0.0185 L/h)
     lvmax        <- log(0.183 * 24);   label("Maximum Michaelis-Menten elimination rate Vmax (mg/day)")         # Martinez 2019 Table 2 (0.183 mg/h; table footer 'mg.h/L' is a typo - text and dimensional analysis confirm mg/h)
     lkm          <- log(7.73);         label("Michaelis-Menten constant Km at reference FPCSK9 (mg/L)")          # Martinez 2019 Table 2 (FPCSK9 reference 72.9 ng/mL)
-    llag         <- log(0.641 / 24);   label("SC absorption lag time (day)")                                    # Martinez 2019 Table 2 (0.641 h)
+    ltlag         <- log(0.641 / 24);   label("SC absorption lag time (day)")                                    # Martinez 2019 Table 2 (0.641 h)
     logitfdepot  <- log(0.862 / (1 - 0.862)); label("Logit of SC bioavailability F (unitless; F_pop = 0.862)")  # Martinez 2019 Table 2 (typical F = 0.862)
 
     # Covariate effects (additive on CLL, additive on Km, power on V3; Martinez 2019 Table 2 and equations).
@@ -120,7 +120,7 @@ Martinez_2019_alirocumab <- function() {
     fdepot  <- 1 / (1 + exp(-logit_f))
 
     # Absorption lag time (no IIV).
-    lag <- exp(llag)
+    lag <- exp(ltlag)
 
     # Observation and state abbreviations.
     Cc <- central / vc

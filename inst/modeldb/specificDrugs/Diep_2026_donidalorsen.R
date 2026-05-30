@@ -99,15 +99,15 @@ Diep_2026_donidalorsen <- function() {
     #   estimated as a parameter: BL = kin/kout"). The PD compartment is the
     #   canonical `effect`; the observation variable is aliased to `pkk`.
     # Functional forms (paper footnotes):
-    #   BL   = TVBL   * (1 + e_dis_hae_bl   * DIS_HAE)
+    #   BL   = TVBL   * (1 + e_dis_hae_rbase   * DIS_HAE)
     #   IC50 = TVIC50 * (1 + e_dis_hae_ic50 * DIS_HAE)
-    lbl   <- log(139);     label("Baseline plasma prekallikrein at reference DIS_HAE = 0 (BL, mg/L)")               # Diep 2026 Table 2 final-model BL = 139 mg/L
+    lrbase   <- log(139);     label("Baseline plasma prekallikrein at reference DIS_HAE = 0 (BL, mg/L)")               # Diep 2026 Table 2 final-model BL = 139 mg/L
     lkout <- log(0.00266); label("First-order PKK loss rate constant (kout, 1/h)")                                  # Diep 2026 Table 2 final-model kout = 0.00266 1/h
     imax  <- 0.992;        label("Maximum fractional inhibition of PKK production by donidalorsen (Imax, unitless)") # Diep 2026 Table 2 final-model Imax = 0.992
     lic50 <- log(0.158);   label("Plasma donidalorsen concentration yielding half-maximum inhibition (IC50, ng/mL)") # Diep 2026 Table 2 final-model IC50 = 0.158 ng/mL
 
     # ---- Covariate effects on PD (Diep 2026 Table 2 footnotes a-b) ----
-    e_dis_hae_bl   <- -0.132; label("Linear effect of HAE-patient indicator on BL (fraction)")   # Diep 2026 Table 2 Estimate; multiplier 1 - 0.132 = 0.868 for HAE
+    e_dis_hae_rbase   <- -0.132; label("Linear effect of HAE-patient indicator on BL (fraction)")   # Diep 2026 Table 2 Estimate; multiplier 1 - 0.132 = 0.868 for HAE
     e_dis_hae_ic50 <-  0.770; label("Linear effect of HAE-patient indicator on IC50 (fraction)") # Diep 2026 Table 2 Estimate; multiplier 1 + 0.770 = 1.770 for HAE
 
     # ---- IIV (Diep 2026 Tables 1 and 2; log-normal eta, omega^2 = log(CV^2 + 1)) ----
@@ -146,7 +146,7 @@ Diep_2026_donidalorsen <- function() {
     )
 
     # PD: independent etas (Table 2; no off-diagonal omega block reported).
-    etalbl   ~ 0.064920  # Diep 2026 Table 2 BSV%CV BL  = 25.9% -> log(0.259^2 + 1)
+    etalrbase   ~ 0.064920  # Diep 2026 Table 2 BSV%CV BL  = 25.9% -> log(0.259^2 + 1)
     etalkout ~ 0.125749  # Diep 2026 Table 2 BSV%CV kout = 36.6% -> log(0.366^2 + 1)
     etalic50 ~ 0.525122  # Diep 2026 Table 2 BSV%CV IC50 = 83.1% -> log(0.831^2 + 1)
 
@@ -184,12 +184,12 @@ Diep_2026_donidalorsen <- function() {
     k21 <- q  / vp
 
     # ---- 2. Individual PD parameters ----
-    # kin is derived so that effect = bl is the no-drug steady state
+    # kin is derived so that effect = rbase is the no-drug steady state
     # (Diep 2026 Section 3.2: BL = kin / kout).
-    bl   <- exp(lbl   + etalbl)   * (1 + e_dis_hae_bl   * DIS_HAE)
+    rbase   <- exp(lrbase   + etalrbase)   * (1 + e_dis_hae_rbase   * DIS_HAE)
     kout <- exp(lkout + etalkout)
     ic50 <- exp(lic50 + etalic50) * (1 + e_dis_hae_ic50 * DIS_HAE)
-    kin  <- bl * kout
+    kin  <- rbase * kout
 
     # ---- 3. ODE system ----
     # depot / central / peripheral1: amounts in mg (subcutaneous dose enters
@@ -209,7 +209,7 @@ Diep_2026_donidalorsen <- function() {
     # 1 - Imax = 0.008 (>99% inhibition).
     inh          <- 1 - Cc * imax / (ic50 + Cc)
     d/dt(effect) <- kin * inh - kout * effect
-    effect(0)    <- bl
+    effect(0)    <- rbase
 
     # pkk is the paper-named alias of the canonical `effect` PD compartment
     # (plasma prekallikrein concentration in mg/L).

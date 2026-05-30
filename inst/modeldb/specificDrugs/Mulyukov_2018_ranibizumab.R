@@ -1,5 +1,5 @@
 Mulyukov_2018_ranibizumab <- function() {
-  description <- "Indirect-response PK/PD model of intravitreal ranibizumab on best-corrected visual acuity (BCVA, ETDRS letters) in anti-VEGF-naive adults with neovascular age-related macular degeneration (Mulyukov 2018). BCVA is driven by an indirect-response ODE in which drug concentration stimulates the BCVA production rate (kin) through a Michaelis-Menten-like term with a time-dependent maximum effect Emax(t) = Emax_ss + dEmax_0 * exp(-kEmax * t). The PK is a fixed first-order vitreous-elimination placeholder (kel = 0.077/day, vitreous volume = 4 mL, no IIV) borrowed from a previous population PK analysis (reference 20 of the paper) because vitreous PK data were not collected in the development studies."
+  description <- "Indirect-response PK/PD model of intravitreal ranibizumab on best-corrected visual acuity (BCVA, ETDRS letters) in anti-VEGF-naive adults with neovascular age-related macular degeneration (Mulyukov 2018). BCVA is driven by an indirect-response ODE in which drug concentration stimulates the BCVA production rate (kin) through a Michaelis-Menten-like term with a time-dependent maximum effect emax(t) = emax_ss + demax_0 * exp(-kemax * t). The PK is a fixed first-order vitreous-elimination placeholder (kel = 0.077/day, vitreous volume = 4 mL, no IIV) borrowed from a previous population PK analysis (reference 20 of the paper) because vitreous PK data were not collected in the development studies."
   reference <- "Mulyukov Z, Weber S, Pigeolet E, Clemens A, Lehr T, Racine A. Neovascular Age-Related Macular Degeneration: A Visual Acuity Model of Natural Disease Progression and Ranibizumab Treatment Effect. CPT Pharmacometrics Syst Pharmacol. 2018;7(10):660-669. doi:10.1002/psp4.12322. PMID: 30043524."
   vignette <- "Mulyukov_2018_ranibizumab"
   units <- list(time = "day", dosing = "mg", concentration = "mg/L (equivalent to ug/mL)", response = "BCVA (ETDRS letters, 0-100)")
@@ -10,7 +10,7 @@ Mulyukov_2018_ranibizumab <- function() {
       units              = "years",
       type               = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject. Power-form effect on steady-state drug effect Emax_ss normalized as (AGE/77)^beta_Emax_ss,AGE (Mulyukov 2018 Eq. 3, Table 2). Reference 77 years is the study-population mean baseline age. Paper narrative: a 4 ETDRS letter reduction in 12-month BCVA improvement is expected for an 85-year-old vs a 65-year-old patient.",
+      notes              = "Time-fixed per subject. Power-form effect on steady-state drug effect emax_ss normalized as (AGE/77)^beta_emax_ss,AGE (Mulyukov 2018 Eq. 3, Table 2). Reference 77 years is the study-population mean baseline age. Paper narrative: a 4 ETDRS letter reduction in 12-month BCVA improvement is expected for an 85-year-old vs a 65-year-old patient.",
       source_name        = "AGE"
     ),
     BCVA = list(
@@ -62,17 +62,17 @@ Mulyukov_2018_ranibizumab <- function() {
     # ------------------------------------------------------------------------
     lgss       <- log(11);          label("Equilibrium BCVA under natural disease progression g_ss (ETDRS letters)")  # Mulyukov 2018 Table 2: g_ss 11 letters (RSE 5%)
     lkout      <- log(0.19 / 365.25); label("BCVA deterioration rate constant kout (1/day)")                          # Mulyukov 2018 Table 2: k_out 0.19/year (t1/2 = 3.6 years); converted to 1/day by /365.25
-    lEmaxss    <- log(6.1);         label("Steady-state maximum drug effect Emax_ss on BCVA kin (unitless)")          # Mulyukov 2018 Table 2: Emax_ss 6.1 (RSE 7%)
-    ldEmax0    <- log(41);          label("Additional drug effect at treatment onset dEmax_0 (unitless)")             # Mulyukov 2018 Table 2: dEmax_0 41 (RSE 12%)
-    lkEmax     <- fixed(log(0.046));label("Rate of Emax decay kEmax (1/day)")                                         # Mulyukov 2018 Table 2: k_Emax 0.046/day (t1/2 = 15 days), fixed
-    lEC50      <- log(2.1);         label("Drug concentration at half-maximum effect EC50 (mg/L = ug/mL)")            # Mulyukov 2018 Table 2: EC50 2.1 ug/mL (= mg/L) (RSE 35%)
+    lemaxss    <- log(6.1);         label("Steady-state maximum drug effect emax_ss on BCVA kin (unitless)")          # Mulyukov 2018 Table 2: emax_ss 6.1 (RSE 7%)
+    ldemax0    <- log(41);          label("Additional drug effect at treatment onset demax_0 (unitless)")             # Mulyukov 2018 Table 2: demax_0 41 (RSE 12%)
+    lkemax     <- fixed(log(0.046));label("Rate of emax decay kemax (1/day)")                                         # Mulyukov 2018 Table 2: k_emax 0.046/day (t1/2 = 15 days), fixed
+    lec50      <- log(2.1);         label("Drug concentration at half-maximum effect ec50 (mg/L = ug/mL)")            # Mulyukov 2018 Table 2: ec50 2.1 ug/mL (= mg/L) (RSE 35%)
 
     # ------------------------------------------------------------------------
     # Covariate effect (Mulyukov 2018 Table 2 / Eq. 3).
-    # Age / baseline-VA / sex effects on k_out, Emax_ss, and dEmax_0 were tested.
-    # Only age on Emax_ss was significant and retained in the final model.
+    # Age / baseline-VA / sex effects on k_out, emax_ss, and demax_0 were tested.
+    # Only age on emax_ss was significant and retained in the final model.
     # ------------------------------------------------------------------------
-    e_age_Emaxss <- -1.4;           label("Power exponent of AGE/77 on Emax_ss (unitless)")                           # Mulyukov 2018 Table 2: beta_Emax_ss,AGE -1.4 (RSE 18%)
+    e_age_emaxss <- -1.4;           label("Power exponent of AGE/77 on emax_ss (unitless)")                           # Mulyukov 2018 Table 2: beta_emax_ss,AGE -1.4 (RSE 18%)
 
     # ------------------------------------------------------------------------
     # Typical-value placeholder for the additive random effect on baseline BCVA.
@@ -87,17 +87,17 @@ Mulyukov_2018_ranibizumab <- function() {
     # Inter-individual variability.
     # Baseline BCVA uses an ADDITIVE per-subject random effect in letters (paper
     # Eq.: g_{i,0} = BVA_i + eta_{1,i}; Table 2 reports the SD, not a CV).
-    # The other three PD parameters (k_out, Emax_ss, dEmax_0) use log-normal
+    # The other three PD parameters (k_out, emax_ss, demax_0) use log-normal
     # IIV with large CV%; convert to the log-scale variance via
     #   omega^2 = log(CV^2 + 1)
     #     k_out   CV 730%   -> log(7.30^2 + 1)  = 3.994
-    #     Emax_ss CV 110%   -> log(1.10^2 + 1)  = 0.7929
-    #     dEmax_0 CV 1100%  -> log(11.0^2 + 1)  = 4.804
+    #     emax_ss CV 110%   -> log(1.10^2 + 1)  = 0.7929
+    #     demax_0 CV 1100%  -> log(11.0^2 + 1)  = 4.804
     # ------------------------------------------------------------------------
     etag0res   ~ 16.81   # Mulyukov 2018 Table 2: IIV g0 SD = 4.1 letters (additive); omega^2 = 4.1^2 = 16.81
     etalkout   ~ 3.994   # Mulyukov 2018 Table 2: IIV k_out CV 730%; log(7.30^2 + 1) = 3.994
-    etalEmaxss ~ 0.7929  # Mulyukov 2018 Table 2: IIV Emax_ss CV 110%; log(1.10^2 + 1) = 0.7929
-    etaldEmax0 ~ 4.804   # Mulyukov 2018 Table 2: IIV dEmax_0 CV 1100%; log(11.0^2 + 1) = 4.804
+    etalemaxss ~ 0.7929  # Mulyukov 2018 Table 2: IIV emax_ss CV 110%; log(1.10^2 + 1) = 0.7929
+    etaldemax0 ~ 4.804   # Mulyukov 2018 Table 2: IIV demax_0 CV 1100%; log(11.0^2 + 1) = 4.804
 
     # ------------------------------------------------------------------------
     # Residual error. Paper Table 2 reports two additive residual SDs:
@@ -119,15 +119,15 @@ Mulyukov_2018_ranibizumab <- function() {
 
     # ------------------------------------------------------------------
     # Individual PD parameters (Mulyukov 2018 Eq. 3 / Table 2).
-    # Only age-on-Emax_ss survived covariate selection; other covariate
-    # effects (baseline VA, sex, age on k_out / dEmax_0) were dropped.
+    # Only age-on-emax_ss survived covariate selection; other covariate
+    # effects (baseline VA, sex, age on k_out / demax_0) were dropped.
     # ------------------------------------------------------------------
     gss    <- exp(lgss)
     kout   <- exp(lkout + etalkout)
-    Emaxss <- exp(lEmaxss + etalEmaxss) * (AGE / 77)^e_age_Emaxss
-    dEmax0 <- exp(ldEmax0 + etaldEmax0)
-    kEmax  <- exp(lkEmax)
-    EC50   <- exp(lEC50)
+    emaxss <- exp(lemaxss + etalemaxss) * (AGE / 77)^e_age_emaxss
+    demax0 <- exp(ldemax0 + etaldemax0)
+    kemax  <- exp(lkemax)
+    ec50   <- exp(lec50)
 
     # Baseline BCVA: additive IIV around the observed per-subject value.
     # Paper: g_{i,0} = BVA_i + eta_{1,i}; typical-value theta g0res fixed(0).
@@ -140,7 +140,7 @@ Mulyukov_2018_ranibizumab <- function() {
     # Time-dependent maximum drug effect (Mulyukov 2018 Eq. 2). `time` is the
     # integration time in days, equal to time from first dose for the event
     # datasets this model expects.
-    Emax_t <- Emaxss + dEmax0 * exp(-kEmax * time)
+    emax_t <- emaxss + demax0 * exp(-kemax * time)
 
     # ------------------------------------------------------------------
     # PK ODE: first-order vitreous elimination. The intravitreal dose is
@@ -159,7 +159,7 @@ Mulyukov_2018_ranibizumab <- function() {
     # to better stability of model fit with no other significant differences."
     # ------------------------------------------------------------------
     bcva(0)    <- g0
-    d/dt(bcva) <- kin * (1 + Emax_t * Cc / (EC50 + Cc)) - kout * bcva
+    d/dt(bcva) <- kin * (1 + emax_t * Cc / (ec50 + Cc)) - kout * bcva
 
     # ------------------------------------------------------------------
     # Observation and error.

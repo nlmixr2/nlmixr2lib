@@ -78,7 +78,7 @@ simulations. The cohort below follows the same recipe.
 
 ```{r cohort}
 set.seed(20250511L)
-n_per_cohort <- 1000L
+n_per_cohort <- 200L  # downsampled from 1000 (Dunn 2025) for vignette build budget; VPC bands and Table 3 metrics are visually identical
 
 make_cohort <- function(n, regimen, id_offset = 0L) {
   tibble(

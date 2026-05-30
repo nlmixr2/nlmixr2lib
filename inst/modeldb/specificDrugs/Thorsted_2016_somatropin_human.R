@@ -116,7 +116,7 @@ Thorsted_2016_somatropin_human <- function() {
     # included for predictions, as patients had only been deprived of
     # rhGH for 1 week in order to washout IGF-1").
     lkout   <- log(0.0178);   label("First-order IGF-1 degradation rate kout (1/h) at 70 kg") # Table 3
-    lr0     <- fixed(log(65)); label("Baseline IGF-1 R0 (ng/mL) - fixed to human population mean (Laursen 1996)") # Table 3 / Methods
+    lrbase     <- fixed(log(65)); label("Baseline IGF-1 R0 (ng/mL) - fixed to human population mean (Laursen 1996)") # Table 3 / Methods
     lemax   <- log(9.88);     label("Maximum stimulation of kin relative to baseline (unscaled from rat)") # Table 3
     lec50   <- log(16.3);     label("rhGH concentration for 50% Emax (ug/L = ng/mL; unscaled from rat)") # Table 3
 
@@ -134,7 +134,7 @@ Thorsted_2016_somatropin_human <- function() {
     etalcl + etalvp ~ c(0.01337,
                         -0.01199, 0.03330)                                                  # Table 2 IIV CL 11.6% CV, Vp 18.4% CV, correlation -0.568
     etalka2  ~ 0.008613                                                                     # Table 2 IIV ka2 9.3% CV (Table 3's 19.3% appears inconsistent - see Errata)
-    etalr0   ~ 0.028504                                                                     # Table 2 IIV R0 17.0% CV: log(0.170^2 + 1)
+    etalrbase   ~ 0.028504                                                                     # Table 2 IIV R0 17.0% CV: log(0.170^2 + 1)
 
     # Residual error - Thorsted 2016 Methods (Prediction of human
     # PKPD): fixed values used in the simulation-based validation.
@@ -161,7 +161,7 @@ Thorsted_2016_somatropin_human <- function() {
 
     # Individual PD parameters
     kout <- exp(lkout)          * wt_norm^e_wt_ka
-    r0   <- exp(lr0 + etalr0)
+    rbase   <- exp(lrbase + etalrbase)
     emax <- exp(lemax)
     ec50 <- exp(lec50)
 
@@ -190,8 +190,8 @@ Thorsted_2016_somatropin_human <- function() {
     # prediction): kin = kout * R0 stimulated directly by plasma Cc via
     # Emax / EC50.
     stim <- emax * Cc / (ec50 + Cc)
-    d/dt(igf1) <- kout * r0 * (1 + stim) - kout * igf1
-    igf1(0)    <- r0
+    d/dt(igf1) <- kout * rbase * (1 + stim) - kout * igf1
+    igf1(0)    <- rbase
 
     # 5. Bioavailability: SC doses go to depot (ka1 path) with F1 and
     # to depot2 (ka2 path) with F2. IV doses are placed into central

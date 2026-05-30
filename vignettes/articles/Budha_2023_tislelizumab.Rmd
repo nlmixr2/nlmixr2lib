@@ -75,7 +75,7 @@ covariates or covariate correlations).
 
 ```{r virtual-pop}
 set.seed(2023)
-n_subj <- 500
+n_subj <- 150  # downsampled from 500 for vignette build budget; VPC band shape preserved
 
 # Weight and age: log-normal / normal fits to reported medians and ranges
 WT  <- pmin(pmax(rlnorm(n_subj, log(65), 0.20), 31.9), 130)
@@ -131,7 +131,7 @@ n_cycles   <- 10
 dose_times <- seq(0, (n_cycles - 1) * cycle_days, by = cycle_days)
 
 obs_times <- sort(unique(c(
-  seq(0, 21, by = 0.5),                     # intensive profile through cycle 1
+  seq(0, 21, by = 1),                       # intensive profile through cycle 1 (relaxed from by=0.5 for vignette build budget)
   seq(21, n_cycles * cycle_days, by = 3),   # pre/post dose through multi-dose
   seq(n_cycles * cycle_days, 365, by = 7)   # washout tail
 )))
@@ -193,7 +193,7 @@ ggplot(sim_summary, aes(x = time / 7)) +
     x = "Time (weeks)",
     y = "Tislelizumab concentration (\u03bcg/mL)",
     title = "Simulated tislelizumab PK, 200 mg IV q3w x 10 cycles",
-    subtitle = "Median and 90% prediction interval (N = 500 virtual patients)",
+    subtitle = "Median and 90% prediction interval (N = 150 virtual patients)",
     caption = "Model: Budha et al. (2023) CPT Pharmacometrics Syst Pharmacol"
   ) +
   theme_bw()

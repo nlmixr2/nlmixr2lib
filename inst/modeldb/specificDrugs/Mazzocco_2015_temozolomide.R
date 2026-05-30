@@ -17,6 +17,8 @@ Mazzocco_2015_temozolomide <- function() {
     sep = " "
   )
   vignette <- "Mazzocco_2015_temozolomide"
+  paper_specific_compartments <- c("kpdConc", "prolif", "quiesc", "quiescDam")
+
   units <- list(
     time          = "month",
     dosing        = "arbitrary unit per TMZ cycle (K-PD bolus to the kpdConc virtual drug compartment; the source paper represents each 5-day daily-dosing TMZ cycle as a single bolus of arbitrary magnitude, with the dose units absorbed into the typical-value gamma)",
@@ -149,13 +151,13 @@ Mazzocco_2015_temozolomide <- function() {
     # supply pretreatment observations at t < 0. The K-PD compartment
     # initial value is 0 so the drug-effect term vanishes for t < 0
     # regardless of the sign of exp(-res*t).
-    tumorSize <- prolif + quiesc + quiescDam
+    tumor_size <- prolif + quiesc + quiescDam
 
     drugEffect       <- gamma * kde * kpdConc
     drugEffectProlif <- drugEffect * exp(-res * t)
 
     d/dt(kpdConc)   <- -kde * kpdConc
-    d/dt(prolif)    <-  lambdap * prolif * (1 - tumorSize / K) +
+    d/dt(prolif)    <-  lambdap * prolif * (1 - tumor_size / K) +
                         kqpp * quiescDam -
                         kpq * prolif -
                         drugEffectProlif * prolif
@@ -171,6 +173,6 @@ Mazzocco_2015_temozolomide <- function() {
 
     # Observation: mean tumour diameter (MTD) in mm, constant additive
     # residual error.
-    tumorSize ~ add(addSd)
+    tumor_size ~ add(addSd)
   })
 }

@@ -122,7 +122,7 @@ Li_2017_CC292 <- function() {
     lvc     <- log(158);   label("Apparent central volume of distribution at AGE = 62 years (V2/F, L)") # Li 2017 Table 2 (V2/F = 158 L)
     lq      <- log(18.7);  label("Apparent inter-compartmental clearance (Q/F, L/h)")                  # Li 2017 Table 2 (Q/F = 18.7 L/h)
     lvp     <- log(72);    label("Apparent peripheral volume of distribution (V3/F, L)")               # Li 2017 Table 2 (V3/F = 72 L)
-    lalag   <- log(0.427); label("Absorption lag time (Alag1, h)")                                     # Li 2017 Table 2 (Alag1 = 0.427 h)
+    ltlag   <- log(0.427); label("Absorption lag time (Alag1, h)")                                     # Li 2017 Table 2 (Alag1 = 0.427 h)
 
     # Covariate effects (Li 2017 final covariate model equations, page 1283).
     # Sex effect on CL/F: categorical linear-deviation form per Methods
@@ -168,7 +168,7 @@ Li_2017_CC292 <- function() {
     vc     <- exp(lvc + etalvc) * (AGE / 62)^e_age_vc
     q      <- exp(lq)
     vp     <- exp(lvp)
-    alag_d <- exp(lalag)
+    alag_d <- exp(ltlag)
 
     # Micro-constants for the 2-compartment central-disposition model.
     kel <- cl / vc

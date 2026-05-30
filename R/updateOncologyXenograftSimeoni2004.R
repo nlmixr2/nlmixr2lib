@@ -14,10 +14,10 @@
 #'   updateOncologyXenograftSimeoni2004(ncmt = 5)
 #' @export
 updateOncologyXenograftSimeoni2004 <- function(object, ncmt,
-                                               damagedCmtName = "damagedCells",
+                                               damagedCmtName = "damaged_cells",
                                                drugEffectName = "drugEffectCyclingCells",
-                                               undamagedCmtName = "cyclingCells",
-                                               tumorVolName = "tumorVol",
+                                               undamagedCmtName = "cycling_cells",
+                                               tumorVolName = "tumor_vol",
                                                transitRateName = "damageTransit") {
   checkmate::assert_integerish(ncmt, lower = 1, upper = 100, any.missing = FALSE, len = 1, null.ok = FALSE)
   if (is.function(object)) {

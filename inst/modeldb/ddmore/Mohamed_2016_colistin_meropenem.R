@@ -10,11 +10,14 @@ Mohamed_2016_colistin_meropenem <- function() {
     sep = " "
   )
   vignette <- "Mohamed_2016_colistin_meropenem"
+  paper_specific_compartments <- c("mero_ce", "mero_bindoff", "col_ce", "col_bindoff", "S_mut", "R_mut")
+
   units <- list(time = "h", dosing = "CFU/mL", concentration = "mg/L")
 
   ddmore_id <- "DDMODEL00000173"
   replicate_of <- NULL
 
+  depends <- c("TYPE", "ID2", "DILmer", "DILcol")
   covariateData <- list(
     BACT = list(
       description = "Bacterial strain indicator: 1 = ARU552 (meropenem-resistant clinical isolate), 2 = ATCC 27853 (wild-type)",
@@ -32,21 +35,21 @@ Mohamed_2016_colistin_meropenem <- function() {
       notes = "Drives MERO/COL/CONTR indicator flags inside model(). Source: .mod $INPUT.",
       source_name = "TYPE"
     ),
-    Ccol = list(
+    CONMED_COL_CC = list(
       description = "Initial colistin concentration in the experimental well at t = 0",
       units = "mg/L",
       type = "continuous",
       reference_category = NULL,
       notes = "Sets the colistin compartment initial value (A_0(6) in NONMEM). Also drives the discrete KE2 (colistin in vitro elimination) lookup table inside model(). Source: .mod $INPUT line 33 and $PK A_0(6) initialization.",
-      source_name = "Ccol"
+      source_name = "CONMED_COL_CC"
     ),
-    Cmer = list(
+    CONMED_MER_CC = list(
       description = "Initial meropenem concentration in the experimental well at t = 0",
       units = "mg/L",
       type = "continuous",
       reference_category = NULL,
       notes = "Sets the meropenem compartment initial value (A_0(3) in NONMEM). Source: .mod $INPUT line 32 and $PK A_0(3) initialization.",
-      source_name = "Cmer"
+      source_name = "CONMED_MER_CC"
     ),
     DILcol = list(
       description = "Per-row bath dilution rate applied to the colistin compartment",
@@ -173,7 +176,7 @@ Mohamed_2016_colistin_meropenem <- function() {
     # All SIGMAs are FIXED. Per-row variance is (SIGMA(1) + SIGMA(REPL+1)) on log10 scale; combined SD on
     # natural-log scale = sqrt(SIGMA(1) + SIGMA(2)) * log(10) (since all replicate-specific SIGMAs are equal).
     # Verbatim collapse to a single additive residual on the log-bacteria observation:
-    addSd_logBact <- fixed(sqrt(0.422 + 0.0364) * log(10)); label("Combined residual SD on natural-log scale (sqrt(SIGMA(1)+SIGMA(2))*log(10) per .lst SIGMA block lines 877-889)") # SIGMA, .mod L521-526
+    addSd_log_cfu <- fixed(sqrt(0.422 + 0.0364) * log(10)); label("Combined residual SD on natural-log scale (sqrt(SIGMA(1)+SIGMA(2))*log(10) per .lst SIGMA block lines 877-889)") # SIGMA, .mod L521-526
   })
 
   model({
@@ -301,99 +304,99 @@ Mohamed_2016_colistin_meropenem <- function() {
     # =====================================================================
     # KE2 — colistin in vitro elimination rate (1/h).
     # The .mod ($PK lines 199-276) hard-codes a per-experiment KE2 lookup
-    # keyed on the experimental-well initial colistin concentration Ccol
+    # keyed on the experimental-well initial colistin concentration CONMED_COL_CC
     # with a TIME break at 8 h. The cascade is reproduced verbatim. Any
-    # Ccol value not in the cascade leaves KE2 = 0 (matching .mod default).
+    # CONMED_COL_CC value not in the cascade leaves KE2 = 0 (matching .mod default).
     # =====================================================================
     KE1 <- 0.02   # Meropenem in vitro elimination rate, .mod L197 (constant, "value obtained from exp")
 
     KE2 <- 0
     # ATCC + colistin alone (.mod L200-213)
-    if (Ccol == 0.04162 && t < 8)  KE2 <- 0.059
-    if (Ccol == 0.04162 && t >= 8) KE2 <- 0.003
-    if (Ccol == 0.1877  && t < 8)  KE2 <- 0.079
-    if (Ccol == 0.1877  && t >= 8) KE2 <- 0.021
-    if (Ccol == 0.2960  && t < 8)  KE2 <- 0.042
-    if (Ccol == 0.2960  && t >= 8) KE2 <- 0.042
-    if (Ccol == 0.7753  && t < 8)  KE2 <- 0.003
-    if (Ccol == 0.7753  && t >= 8) KE2 <- 0.017
-    if (Ccol == 2.182   && t < 8)  KE2 <- 0.038
-    if (Ccol == 2.182   && t >= 8) KE2 <- 0.015
-    if (Ccol == 4.305   && t < 8)  KE2 <- 0.0076
-    if (Ccol == 4.305   && t >= 8) KE2 <- 0.00061
-    if (Ccol == 12.024  && t < 8)  KE2 <- 0.012
-    if (Ccol == 12.024  && t >= 8) KE2 <- 0.0033
+    if (CONMED_COL_CC == 0.04162 && t < 8)  KE2 <- 0.059
+    if (CONMED_COL_CC == 0.04162 && t >= 8) KE2 <- 0.003
+    if (CONMED_COL_CC == 0.1877  && t < 8)  KE2 <- 0.079
+    if (CONMED_COL_CC == 0.1877  && t >= 8) KE2 <- 0.021
+    if (CONMED_COL_CC == 0.2960  && t < 8)  KE2 <- 0.042
+    if (CONMED_COL_CC == 0.2960  && t >= 8) KE2 <- 0.042
+    if (CONMED_COL_CC == 0.7753  && t < 8)  KE2 <- 0.003
+    if (CONMED_COL_CC == 0.7753  && t >= 8) KE2 <- 0.017
+    if (CONMED_COL_CC == 2.182   && t < 8)  KE2 <- 0.038
+    if (CONMED_COL_CC == 2.182   && t >= 8) KE2 <- 0.015
+    if (CONMED_COL_CC == 4.305   && t < 8)  KE2 <- 0.0076
+    if (CONMED_COL_CC == 4.305   && t >= 8) KE2 <- 0.00061
+    if (CONMED_COL_CC == 12.024  && t < 8)  KE2 <- 0.012
+    if (CONMED_COL_CC == 12.024  && t >= 8) KE2 <- 0.0033
     # ARU552 + colistin alone (.mod L214-227)
-    if (Ccol == 0.08091 && t < 8)  KE2 <- 0.16
-    if (Ccol == 0.08091 && t >= 8) KE2 <- 0.039
-    if (Ccol == 0.2483  && t < 8)  KE2 <- 0.031
-    if (Ccol == 0.2483  && t >= 8) KE2 <- 0.070
-    if (Ccol == 0.9582  && t < 8)  KE2 <- 0.049
-    if (Ccol == 0.9582  && t >= 8) KE2 <- 0.093
-    if (Ccol == 2.672   && t < 8)  KE2 <- 0.037
-    if (Ccol == 2.672   && t >= 8) KE2 <- 0.056
-    if (Ccol == 5.113   && t < 8)  KE2 <- 0.027
-    if (Ccol == 5.113   && t >= 8) KE2 <- 0.022
-    if (Ccol == 11.471  && t < 8)  KE2 <- 0.011
-    if (Ccol == 11.471  && t >= 8) KE2 <- 0.0058
-    if (Ccol == 24.099  && t < 8)  KE2 <- 0.0078
-    if (Ccol == 24.099  && t >= 8) KE2 <- 0.0021
+    if (CONMED_COL_CC == 0.08091 && t < 8)  KE2 <- 0.16
+    if (CONMED_COL_CC == 0.08091 && t >= 8) KE2 <- 0.039
+    if (CONMED_COL_CC == 0.2483  && t < 8)  KE2 <- 0.031
+    if (CONMED_COL_CC == 0.2483  && t >= 8) KE2 <- 0.070
+    if (CONMED_COL_CC == 0.9582  && t < 8)  KE2 <- 0.049
+    if (CONMED_COL_CC == 0.9582  && t >= 8) KE2 <- 0.093
+    if (CONMED_COL_CC == 2.672   && t < 8)  KE2 <- 0.037
+    if (CONMED_COL_CC == 2.672   && t >= 8) KE2 <- 0.056
+    if (CONMED_COL_CC == 5.113   && t < 8)  KE2 <- 0.027
+    if (CONMED_COL_CC == 5.113   && t >= 8) KE2 <- 0.022
+    if (CONMED_COL_CC == 11.471  && t < 8)  KE2 <- 0.011
+    if (CONMED_COL_CC == 11.471  && t >= 8) KE2 <- 0.0058
+    if (CONMED_COL_CC == 24.099  && t < 8)  KE2 <- 0.0078
+    if (CONMED_COL_CC == 24.099  && t >= 8) KE2 <- 0.0021
     # Combination experiments (.mod L229-276). CA025 / CA026 grouping per .mod L229-238.
     CA025 <- 0
-    if (Ccol == 0.205) CA025 <- 1
-    if (Ccol == 0.199) CA025 <- 1
-    if (Ccol == 0.195) CA025 <- 1
+    if (CONMED_COL_CC == 0.205) CA025 <- 1
+    if (CONMED_COL_CC == 0.199) CA025 <- 1
+    if (CONMED_COL_CC == 0.195) CA025 <- 1
     CA026 <- 0
-    if (Ccol == 0.211) CA026 <- 1
-    if (Ccol == 0.223) CA026 <- 1
-    if (Ccol == 0.187) CA026 <- 1
+    if (CONMED_COL_CC == 0.211) CA026 <- 1
+    if (CONMED_COL_CC == 0.223) CA026 <- 1
+    if (CONMED_COL_CC == 0.187) CA026 <- 1
     if (CA025 == 1 && t < 8)  KE2 <- 0.196
     if (CA025 == 1 && t >= 8) KE2 <- 0.0534
     if (CA026 == 1 && t < 8)  KE2 <- 0.196
     if (CA026 == 1 && t >= 8) KE2 <- 0.0534
     # Intended 0.5 mg/L combined (.mod L239-250)
-    if (Ccol == 0.431 && t < 8)  KE2 <- 0.111
-    if (Ccol == 0.431 && t >= 8) KE2 <- 0.126
-    if (Ccol == 0.411 && t < 8)  KE2 <- 0.111
-    if (Ccol == 0.411 && t >= 8) KE2 <- 0.126
-    if (Ccol == 0.408 && t < 8)  KE2 <- 0.111
-    if (Ccol == 0.408 && t >= 8) KE2 <- 0.126
-    if (Ccol == 0.482 && t < 8)  KE2 <- 0.111
-    if (Ccol == 0.482 && t >= 8) KE2 <- 0.126
-    if (Ccol == 0.479 && t < 8)  KE2 <- 0.111
-    if (Ccol == 0.479 && t >= 8) KE2 <- 0.126
-    if (Ccol == 0.465 && t < 8)  KE2 <- 0.111
-    if (Ccol == 0.465 && t >= 8) KE2 <- 0.126
+    if (CONMED_COL_CC == 0.431 && t < 8)  KE2 <- 0.111
+    if (CONMED_COL_CC == 0.431 && t >= 8) KE2 <- 0.126
+    if (CONMED_COL_CC == 0.411 && t < 8)  KE2 <- 0.111
+    if (CONMED_COL_CC == 0.411 && t >= 8) KE2 <- 0.126
+    if (CONMED_COL_CC == 0.408 && t < 8)  KE2 <- 0.111
+    if (CONMED_COL_CC == 0.408 && t >= 8) KE2 <- 0.126
+    if (CONMED_COL_CC == 0.482 && t < 8)  KE2 <- 0.111
+    if (CONMED_COL_CC == 0.482 && t >= 8) KE2 <- 0.126
+    if (CONMED_COL_CC == 0.479 && t < 8)  KE2 <- 0.111
+    if (CONMED_COL_CC == 0.479 && t >= 8) KE2 <- 0.126
+    if (CONMED_COL_CC == 0.465 && t < 8)  KE2 <- 0.111
+    if (CONMED_COL_CC == 0.465 && t >= 8) KE2 <- 0.126
     # Intended 1 mg/L combined (.mod L251-254)
-    if (Ccol == 0.673 && t < 8)  KE2 <- 0.0503
-    if (Ccol == 0.673 && t >= 8) KE2 <- 0.0143
-    if (Ccol == 0.71  && t < 8)  KE2 <- 0.0503
-    if (Ccol == 0.71  && t >= 8) KE2 <- 0.0143
+    if (CONMED_COL_CC == 0.673 && t < 8)  KE2 <- 0.0503
+    if (CONMED_COL_CC == 0.673 && t >= 8) KE2 <- 0.0143
+    if (CONMED_COL_CC == 0.71  && t < 8)  KE2 <- 0.0503
+    if (CONMED_COL_CC == 0.71  && t >= 8) KE2 <- 0.0143
     # Intended 2 mg/L combined (.mod L255-264)
-    if (Ccol == 1.467 && t < 8)  KE2 <- 0.0330
-    if (Ccol == 1.467 && t >= 8) KE2 <- 0.0367
-    if (Ccol == 1.234 && t < 8)  KE2 <- 0.0330
-    if (Ccol == 1.234 && t >= 8) KE2 <- 0.0367
-    if (Ccol == 1.433 && t < 8)  KE2 <- 0.0330
-    if (Ccol == 1.433 && t >= 8) KE2 <- 0.0367
-    if (Ccol == 1.657 && t < 8)  KE2 <- 0.0330
-    if (Ccol == 1.657 && t >= 8) KE2 <- 0.0367
-    if (Ccol == 1.418 && t < 8)  KE2 <- 0.0330
-    if (Ccol == 1.418 && t >= 8) KE2 <- 0.0367
+    if (CONMED_COL_CC == 1.467 && t < 8)  KE2 <- 0.0330
+    if (CONMED_COL_CC == 1.467 && t >= 8) KE2 <- 0.0367
+    if (CONMED_COL_CC == 1.234 && t < 8)  KE2 <- 0.0330
+    if (CONMED_COL_CC == 1.234 && t >= 8) KE2 <- 0.0367
+    if (CONMED_COL_CC == 1.433 && t < 8)  KE2 <- 0.0330
+    if (CONMED_COL_CC == 1.433 && t >= 8) KE2 <- 0.0367
+    if (CONMED_COL_CC == 1.657 && t < 8)  KE2 <- 0.0330
+    if (CONMED_COL_CC == 1.657 && t >= 8) KE2 <- 0.0367
+    if (CONMED_COL_CC == 1.418 && t < 8)  KE2 <- 0.0330
+    if (CONMED_COL_CC == 1.418 && t >= 8) KE2 <- 0.0367
     # Intended 4 mg/L combined (.mod L265-272)
-    if (Ccol == 3.523 && t < 8)  KE2 <- 0.0351
-    if (Ccol == 3.523 && t >= 8) KE2 <- 0.0245
-    if (Ccol == 3.447 && t < 8)  KE2 <- 0.0351
-    if (Ccol == 3.447 && t >= 8) KE2 <- 0.0245
-    if (Ccol == 3.288 && t < 8)  KE2 <- 0.0351
-    if (Ccol == 3.288 && t >= 8) KE2 <- 0.0245
-    if (Ccol == 3.031 && t < 8)  KE2 <- 0.0351
-    if (Ccol == 3.031 && t >= 8) KE2 <- 0.0245
+    if (CONMED_COL_CC == 3.523 && t < 8)  KE2 <- 0.0351
+    if (CONMED_COL_CC == 3.523 && t >= 8) KE2 <- 0.0245
+    if (CONMED_COL_CC == 3.447 && t < 8)  KE2 <- 0.0351
+    if (CONMED_COL_CC == 3.447 && t >= 8) KE2 <- 0.0245
+    if (CONMED_COL_CC == 3.288 && t < 8)  KE2 <- 0.0351
+    if (CONMED_COL_CC == 3.288 && t >= 8) KE2 <- 0.0245
+    if (CONMED_COL_CC == 3.031 && t < 8)  KE2 <- 0.0351
+    if (CONMED_COL_CC == 3.031 && t >= 8) KE2 <- 0.0245
     # Intended 8 mg/L combined (.mod L273-276)
-    if (Ccol == 7.669 && t < 8)  KE2 <- 0.00226
-    if (Ccol == 7.669 && t >= 8) KE2 <- 0.0001
-    if (Ccol == 6.622 && t < 8)  KE2 <- 0.00226
-    if (Ccol == 6.622 && t >= 8) KE2 <- 0.0001
+    if (CONMED_COL_CC == 7.669 && t < 8)  KE2 <- 0.00226
+    if (CONMED_COL_CC == 7.669 && t >= 8) KE2 <- 0.0001
+    if (CONMED_COL_CC == 6.622 && t < 8)  KE2 <- 0.00226
+    if (CONMED_COL_CC == 6.622 && t >= 8) KE2 <- 0.0001
 
     # =====================================================================
     # Initial conditions
@@ -401,12 +404,12 @@ Mohamed_2016_colistin_meropenem <- function() {
     # compartment; the mutant subpopulation is initialized via a separate
     # vignette-side dose to S_mut at AMT = inoculum * MUT (matching .mod
     # A_0(9) = NMUT = AMT * MUTA when MERO == 1). Drug-concentration
-    # compartments are initialized from the Ccol / Cmer covariates.
+    # compartments are initialized from the CONMED_COL_CC / CONMED_MER_CC covariates.
     # =====================================================================
-    mero(0)         <- Cmer    # A_0(3) = Cmer, .mod L160
+    mero(0)         <- CONMED_MER_CC    # A_0(3) = CONMED_MER_CC, .mod L160
     mero_ce(0)      <- 0       # A_0(4), .mod L161 (not used)
     mero_bindoff(0) <- 1       # A_0(5), .mod L162 (not used)
-    col(0)          <- Ccol    # A_0(6) = Ccol, .mod L163
+    col(0)          <- CONMED_COL_CC    # A_0(6) = CONMED_COL_CC, .mod L163
     col_ce(0)       <- 0       # A_0(7), .mod L164
     col_bindoff(0)  <- 1       # A_0(8), .mod L165
     R(0)            <- 0       # A_0(2), .mod L159
@@ -611,7 +614,7 @@ Mohamed_2016_colistin_meropenem <- function() {
     # =====================================================================
     ATOT <- S + R + S_mut + R_mut
     if (ATOT < 1e-5) ATOT <- 1e-5
-    logBact <- log(ATOT)
-    logBact ~ add(addSd_logBact)
+    log_cfu <- log(ATOT)
+    log_cfu ~ add(addSd_log_cfu)
   })
 }

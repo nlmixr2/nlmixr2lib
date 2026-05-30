@@ -63,9 +63,9 @@ Wojciechowski_2022_domagrozumab <- function() {
 
     # ---- Total-myostatin compartment (Eqs 4-6, Table 2) ----
     # Total myostatin (free + drug-myostatin complex) tracked as a single state
-    # with quasi-steady-state binding (kss). ksyn is derived as base * kdeg
+    # with quasi-steady-state binding (kss). ksyn is derived as rbase * kdeg
     # (Eq. 5) so that the compartment starts at steady state.
-    lbase   <- log(0.156);     label("Baseline total myostatin in healthy adult volunteers (nM)") # Wojciechowski 2022 Table 2: BASE = 0.156 nM
+    lrbase   <- log(0.156);     label("Baseline total myostatin in healthy adult volunteers (nM)") # Wojciechowski 2022 Table 2: BASE = 0.156 nM
     lkdeg   <- log(0.0381);    label("First-order myostatin degradation rate (1/hour)")            # Wojciechowski 2022 Table 2: kdeg = 0.0381 1/hour
     lkint   <- log(0.00716);   label("First-order drug-myostatin complex internalization rate (1/hour)") # Wojciechowski 2022 Table 2: kint = 0.00716 1/hour
     lkss    <- log(7.76);      label("Quasi-steady-state binding constant for drug-myostatin (nM)") # Wojciechowski 2022 Table 2: kSS  = 7.76 nM
@@ -74,7 +74,7 @@ Wojciechowski_2022_domagrozumab <- function() {
     # Eq. 7: COVSPOP = 1 (HV) or 1 + theta (DMD pediatric); Eq. 8 applies
     # COVSPOP multiplicatively to the typical value, so theta_SPOP_X is added
     # to 1 (not exponentiated) when DIS_DMD == 1.
-    e_dmd_base     <- -0.641; label("Effect of DMD pediatric population on BASE: COVSPOP = 1 + theta when DIS_DMD = 1") # Wojciechowski 2022 Table 2: theta_SPOP_BASE = -0.641
+    e_dmd_rbase     <- -0.641; label("Effect of DMD pediatric population on BASE: COVSPOP = 1 + theta when DIS_DMD = 1") # Wojciechowski 2022 Table 2: theta_SPOP_BASE = -0.641
     e_dmd_kdegkint <- -0.900; label("Effect of DMD pediatric population on kdeg and kint (shared): COVSPOP = 1 + theta when DIS_DMD = 1") # Wojciechowski 2022 Table 2: theta_SPOP_(kdeg,kint) = -0.900
 
     # Ratio of SD for eta_kint relative to eta_kdeg (Wojciechowski 2022 Table 2,
@@ -95,7 +95,7 @@ Wojciechowski_2022_domagrozumab <- function() {
     # matrix (covariances in log-space) using the symbol rho. The implied
     # correlation between eta_CL and eta_V1 is 0.0363 / sqrt(0.05727 * 0.05328)
     # = 0.658, consistent with typical mAb CL-V1 correlations.
-    etalcl + etalvc + etalvmax + etalbase + etalkdeg_kint ~ c(
+    etalcl + etalvc + etalvmax + etalrbase + etalkdeg_kint ~ c(
        0.05727,
        0.0363,    0.05328,
       -0.0122,    0.00352,  0.73304,
@@ -139,13 +139,13 @@ Wojciechowski_2022_domagrozumab <- function() {
     # Eqs. 7-8: COVSPOP = 1 + theta_SPOP * DIS_DMD; multiplicative on the
     # typical value. Single eta_kdegkint drives both kdeg and kint, with kint
     # scaled by the structural ratio e_ratio_kdegkint.
-    cov_spop_base     <- 1 + e_dmd_base     * DIS_DMD
+    cov_spop_rbase     <- 1 + e_dmd_rbase     * DIS_DMD
     cov_spop_kdegkint <- 1 + e_dmd_kdegkint * DIS_DMD
 
-    base <- exp(lbase + etalbase) * cov_spop_base                                # nM
+    rbase <- exp(lrbase + etalrbase) * cov_spop_rbase                                # nM
     kdeg <- exp(lkdeg + etalkdeg_kint) * cov_spop_kdegkint                        # 1/hour
     kint <- exp(lkint + e_ratio_kdegkint * etalkdeg_kint) * cov_spop_kdegkint     # 1/hour
-    ksyn <- base * kdeg                                                          # nM/hour (Eq. 5)
+    ksyn <- rbase * kdeg                                                          # nM/hour (Eq. 5)
 
     # ---- Drug concentration in nM (paper scale) ----
     # central holds the drug amount in mg (rxode2 dosing convention); vc is in
@@ -177,7 +177,7 @@ Wojciechowski_2022_domagrozumab <- function() {
     # initial condition Eq. 6: total_target(0) = BASE.
     d/dt(total_target) <-  ksyn - kdeg * total_target -
                            (kint - kdeg) * Cc_nM * total_target / (kss + Cc_nM)
-    total_target(0)    <-  base
+    total_target(0)    <-  rbase
 
     # ---- Observations ----
     Cc  <- Cc_nM           # Free domagrozumab concentration (nM)

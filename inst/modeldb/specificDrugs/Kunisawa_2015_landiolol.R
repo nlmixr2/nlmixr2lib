@@ -48,7 +48,7 @@ Kunisawa_2015_landiolol <- function() {
     lvc  <- log(4.55);    label("Central volume of distribution Vc at 70 kg (L)")                 # Table 2 (PAD column): TVV1 = 65.0 mL/kg (SE 4.97) = 65.0 * 70 / 1000 = 4.55 L at 70 kg
     lq   <- log(202.86);  label("Intercompartmental clearance Q at 70 kg (L/h)")                  # Table 2 (PAD column): TVQ = 48.3 mL/min/kg (SE 16.4) = 48.3 * 70 * 60 / 1000 = 202.86 L/h at 70 kg
     lvp  <- log(3.808);   label("Peripheral volume of distribution Vp at 70 kg (L)")              # Table 2 (PAD column): TVV2 = 54.4 mL/kg (SE 4.54) = 54.4 * 70 / 1000 = 3.808 L at 70 kg
-    llag <- log(0.01055); label("Lag time on central (h)")                                        # Table 2 (PAD column): TVALAG = 0.633 min (SE 0.000173) = 0.633 / 60 = 0.01055 h
+    ltlag <- log(0.01055); label("Lag time on central (h)")                                        # Table 2 (PAD column): TVALAG = 0.633 min (SE 0.000173) = 0.633 / 60 = 0.01055 h
 
     # Body-weight scaling exponents -- fixed at 1 because the source paper reports parameters per-kg (linear scaling), not estimated allometric exponents
     e_wt_cl <- fixed(1); label("Body-weight scaling exponent on CL (linear normalization)")       # Table 2 reports CL in mL/min/kg (linear per-kg scaling)
@@ -74,7 +74,7 @@ Kunisawa_2015_landiolol <- function() {
     vc   <- exp(lvc)          * (WT / 70)^e_wt_vc
     q    <- exp(lq)           * (WT / 70)^e_wt_q
     vp   <- exp(lvp)          * (WT / 70)^e_wt_vp
-    lagt <- exp(llag)
+    lagt <- exp(ltlag)
 
     # Micro-constants
     kel <- cl / vc

@@ -21,6 +21,8 @@ Back_2018_fenofibrate <- function() {
     "doi:10.1186/s40360-018-0194-5"
   )
   vignette <- "Back_2018_fenofibrate"
+  paper_specific_compartments <- c("stomach_food", "duodenum_food")
+
   units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 
   covariateData <- list(

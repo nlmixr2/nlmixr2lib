@@ -1,13 +1,14 @@
 phenylalanine_charbonneau_2021 <- function() {
   description <- "Phenylalanine model for absorption and metabolism in healthy subjects and patients with PKU"
   reference <- "Charbonneau, M.R., Denney, W.S., Horvath, N.G. et al. Development of a mechanistic model to predict synthetic biotic activity in healthy volunteers and patients with phenylketonuria. Commun Biol 4, 898 (2021). https://doi.org/10.1038/s42003-021-02183-1"
-  covariates <-
-    list(
-      WT = "Body weight in kg",
-      time = "Time in hours",
-      f_pah = "Fraction of healthy PAH activity (healthy = 1; PKU patient = 0 to 0.03)",
-      bl_phe = "Typical values are about 0.075 mmol/L in healthy subjects and 1.18 mmol/L in patients"
+  covariateData <- list(
+    WT = list(
+      description = "Body weight in kg",
+      units = "kg",
+      type = "continuous"
     )
+  )
+  depends <- c("f_pah", "bl_phe")
   # parameters come from Table 4 in paper
   ini({
     bl_phe <- 1.18; label("Baseline Phenylalanine (Phe) concentration (mmol/L)")
@@ -24,7 +25,7 @@ phenylalanine_charbonneau_2021 <- function() {
     vmax_trans <- 0.063; label("Maximum rate of Phe breakdown by transaminase ((mmol/L)/hr)")
     km_trans <- 1.37; label("Michaelis-Menten constant for Phe with transaminase (mmol/L)")
 
-    cl_renal <- 5.696e-4; label("Renal clearance of Phe per body weight ((L/kg)/hr)")
+    lcl_renal <- log(5.696e-4); label("Renal clearance of Phe per body weight ((L/kg)/hr)")
 
     vd <- 0.5; label("Body-weight normalized volume distribution of Phe (L/kg)")
   })
@@ -36,6 +37,7 @@ phenylalanine_charbonneau_2021 <- function() {
 
     v_pah <- vmax_pah*f_pah / (1 + km_pah/phe + km_pah*kact_pah/(phe^2)) # units: (mmol/L)/hr
     v_trans <- vmax_trans / (1 + km_trans/phe) # units: (mmol/L)/hr
+    cl_renal <- exp(lcl_renal)
     v_renal <- phe * cl_renal * vd # units: (mmol/L)/hr
 
     d/dt(gut) <- -ka_gut*gut

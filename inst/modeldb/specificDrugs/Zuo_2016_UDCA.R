@@ -2,6 +2,8 @@ Zuo_2016_UDCA <- function() {
   description <- "Systems model. Enterohepatic recirculation of ursodeoxycholic acid (UDCA) and its glycine (GUDCA) and taurine (TUDCA) conjugates in healthy adults, with adaptation to primary biliary cirrhosis (PBC). 19 ODEs across stomach, intestine, portal vein, blood, liver, biliary system, and feces compartments per analyte; oral square-wave absorption (0.5 h) and meal/snack-modulated biliary-to-intestinal flux. No IIV or residual error - typical-value mechanistic simulation only."
   reference <- "Zuo P, Dobbins RL, O'Connor-Semmes RL, Young MA. A Systems Model for Ursodeoxycholic Acid Metabolism in Healthy and Patients With Primary Biliary Cirrhosis. CPT Pharmacometrics Syst Pharmacol. 2016 Aug;5(8):418-426. doi:10.1002/psp4.12100"
   vignette <- "Zuo_2016_UDCA"
+  paper_specific_compartments <- c("portal_udca", "biliary_udca", "feces_udca", "portal_gudca", "biliary_gudca", "feces_gudca", "portal_tudca", "biliary_tudca", "feces_tudca")
+
   units <- list(time = "h", dosing = "mg", concentration = "umol/L")
 
   covariateData <- list(

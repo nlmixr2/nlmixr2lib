@@ -9,7 +9,7 @@ PK_double_sim_01 <- function() {
     lvc  <- 3 ; label("Central volume of distribution (V)")
     propSd <- 0.5 ; label("Proportional residual error (fraction)")
     lgfdepot1 <- logit(0.8); label("Logit-scale fraction of dose entering first depot (depot1)")
-    lalag <- log(9);          label("Log lag time before second depot (depot2) begins releasing (time units)")
+    ltlag <- log(9);          label("Log lag time before second depot (depot2) begins releasing (time units)")
   })
   model({
     k01 <- exp(tk01)
@@ -17,7 +17,7 @@ PK_double_sim_01 <- function() {
     cl <- exp(lcl)
     vc <- exp(lvc)
     fdepot1 <- expit(lgfdepot1)
-    alag <- exp(lalag)
+    alag <- exp(ltlag)
     
     kel <- cl/vc
     

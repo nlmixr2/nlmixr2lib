@@ -9,6 +9,8 @@ Bizzotto_2016_glucose <- function() {
     sep = " "
   )
   vignette <- "Bizzotto_2016_glucose"
+  paper_specific_compartments <- c("X1", "X", "Z1", "Z", "xHL1", "xHL2", "xPER1", "xPER2", "xPER3", "xPER4")
+
   units <- list(time = "min", dosing = "umol/m^2", concentration = "mmol/L")
   ddmore_id    <- "DDMODEL00000227"
   replicate_of <- NULL
@@ -55,7 +57,7 @@ Bizzotto_2016_glucose <- function() {
     lkmg   <- log(3.88)  ; label("Glucose Michaelis-Menten Km for peripheral uptake (mmol/L)")               # typ_KmG
     lvmax0 <- log(338)   ; label("Basal Vmax of glucose uptake (umol/min/m^2)")                              # typ_Vmax0
     lemax  <- log(4812)  ; label("Insulin-driven asymptotic increase in Vmax (umol/min/m^2)")                # typ_Emax
-    lgamma <- log(1.62)  ; label("Hill exponent on insulin-driven Vmax saturation (unitless)")              # typ_gamma
+    lhill <- log(1.62)  ; label("Hill exponent on insulin-driven Vmax saturation (unitless)")              # typ_gamma
     lkmi   <- log(784)   ; label("Insulin half-saturation for Vmax modulation (pmol/L)")                     # typ_KmI
     lt12i  <- log(15.9)  ; label("Insulin-at-action two-compartment delay half-life (min)")                  # typ_t12I
     lt12g  <- fixed(log(0.7))  ; label("Glucose-at-action two-compartment delay half-life (min) - FIXED")    # typ_t12G fix=true
@@ -76,7 +78,7 @@ Bizzotto_2016_glucose <- function() {
     #   cov = corr * sqrt(var_gamma * var_KmI) = -0.44 * sqrt(0.111 * 0.263) = -0.0752.
     etalkmg                    ~ 0.219                              # var_KmG
     etalemax                   ~ 0.112                              # var_Emax
-    etalgamma + etalkmi        ~ c(0.111, -0.0752, 0.263)           # var_gamma, cov(gamma,KmI), var_KmI
+    etalhill + etalkmi        ~ c(0.111, -0.0752, 0.263)           # var_gamma, cov(hill,KmI), var_KmI
     etalt12i                   ~ 0.151                              # var_t12I
     etalvtot                   ~ 0.0557                             # var_V
     etalflambda3               ~ 0.179                              # var_flambda3
@@ -110,7 +112,7 @@ Bizzotto_2016_glucose <- function() {
     kmg      <- exp(lkmg   + etalkmg)
     vmax0    <- exp(lvmax0)                                    # var_Vmax0  fixed at 0  -> no eta
     emax     <- exp(lemax  + etalemax)
-    gamma    <- exp(lgamma + etalgamma)
+    hill    <- exp(lhill + etalhill)
     kmi      <- exp(lkmi   + etalkmi)
     t12i     <- exp(lt12i  + etalt12i)
     t12g     <- exp(lt12g)                                     # var_t12G   fixed at 0  -> no eta
@@ -146,7 +148,7 @@ Bizzotto_2016_glucose <- function() {
     # peripheral clearance; E is the per-pass fractional extraction (clearance over
     # peripheral flow). Defined here so the periphery-block ODEs below see the
     # current-time values.
-    Vmax_eff <- vmax0 + emax * Z^gamma / (kmi^gamma + Z^gamma)
+    Vmax_eff <- vmax0 + emax * Z^hill / (kmi^hill + Z^hill)
     cl       <- Vmax_eff / (kmg + X)
     E        <- cl / pflow
 

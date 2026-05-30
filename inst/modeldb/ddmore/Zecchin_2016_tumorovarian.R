@@ -61,7 +61,7 @@ Zecchin_2016_tumorovarian <- function() {
     lkd0    <- log(0.0497); label("Carboplatin-related tumour death rate constant (per AUC_CARBO unit, internal /1000 scaling)") # Output_real_SLD.lst FINAL TH2 = 4.97E-02
     lkd1    <- log(0.0164); label("Gemcitabine-related tumour death rate constant (per AUC_GEM unit, internal /100 scaling)")    # Output_real_SLD.lst FINAL TH3 = 1.64E-02
     libase  <- log(0.0713); label("Baseline SLD (m); converted to mm via internal *1000 scaling")    # Output_real_SLD.lst FINAL TH4 = 7.13E-02
-    addSd_tumorSize <- 18.4 ; label("Additive residual error on SLD (mm)")  # Output_real_SLD.lst FINAL TH5 = 1.84E+01
+    addSd_tumor_size <- 18.4 ; label("Additive residual error on SLD (mm)")  # Output_real_SLD.lst FINAL TH5 = 1.84E+01
 
     # IIV - diagonal $OMEGA from Output_real_SLD.lst FINAL OMEGA block. The
     # source NONMEM model (.mod $PK) wires the same ETA(2) onto BOTH KD0 and
@@ -85,7 +85,7 @@ Zecchin_2016_tumorovarian <- function() {
     # initializes A_0(1) = IBASE * 1000 to set the state in mm; the *1000
     # is preserved verbatim so the rxode2 simulation reproduces the source
     # NONMEM trajectory.
-    tumorSize(0) <- ibase * 1000
+    tumor_size(0) <- ibase * 1000
 
     # Tumour size dynamics - direct port of $DES from Executable_SLD.mod:
     #   DADT(1) = KG/1000 * A(1)
@@ -98,8 +98,8 @@ Zecchin_2016_tumorovarian <- function() {
     # verbatim from the source; they preserve the numerical equivalence
     # with the Output_real_SLD.lst final estimates and absorb the unit
     # conventions of the source dataset's exposure metrics.
-    d/dt(tumorSize) <- kg / 1000 * tumorSize -
-      (kd0 / 1000 * AUC_CARBO + kd1 / 100 * AUC_GEM) * tumorSize
+    d/dt(tumor_size) <- kg / 1000 * tumor_size -
+      (kd0 / 1000 * AUC_CARBO + kd1 / 100 * AUC_GEM) * tumor_size
 
     # Additive residual error. The source NONMEM model uses
     # SIGMA = 1 FIX with Y = IPRED + ERR(1)*W and W = FADD = 18.4 mm,
@@ -108,6 +108,6 @@ Zecchin_2016_tumorovarian <- function() {
     # source $ERROR block is omitted from this nlmixr2 translation
     # because forward simulation does not exercise the censoring
     # likelihood; see vignette Assumptions and deviations.
-    tumorSize ~ add(addSd_tumorSize)
+    tumor_size ~ add(addSd_tumor_size)
   })
 }

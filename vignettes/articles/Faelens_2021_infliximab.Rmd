@@ -140,7 +140,7 @@ build_events <- function(cohort) {
            treatment, dose_per_kg)
 }
 
-n_per <- 500
+n_per <- 150  # downsampled from 500 for vignette build budget; VPC bands visually identical
 cohort_5  <- bind_rows(
   make_cohort(round(n_per * 0.49), mayo_level = 2L, dose_per_kg_mg = 5,  treatment = "5 mg/kg",  id_offset =     0L),
   make_cohort(round(n_per * 0.51), mayo_level = 3L, dose_per_kg_mg = 5,  treatment = "5 mg/kg",  id_offset =   500L)

@@ -2,6 +2,8 @@ Zhou_2016_warfarin_vk2 <- function() {
   description <- "Two-drug population PK/PD model for warfarin and intravenous vitamin K2 (menatetrenone) in Japanese adults with atrial fibrillation undergoing catheter ablation. Warfarin and vitamin K2 each have a 1-compartment PK with fixed volumes-of-distribution (Vd1 = 0.183 L/kg for warfarin from Sato 2006; Vd3 = 0.051 L/kg for vitamin K2 from the Eisai product information) and fixed warfarin elimination rate (k10 = 0.0129 1/h); only the vitamin K2 elimination rate (k30) and the indirect-response PD parameters (ks, kd, IC50, Emax, EC50) were estimated from 579 INR observations in 100 patients. Warfarin inhibits clotting-factor synthesis (Emax = 1 - Cp1/(Cp1 + IC50)) while vitamin K2 stimulates it (1 + Emax_vk2 * Cp3/(Cp3 + EC50)); a binary renal-impairment indicator (CREAT >= 1.1 mg/dL in men or >= 0.8 mg/dL in women) reduces IC50 to 61.4% of normal. The model predicts thrombotest (TT, %); INR is recovered from TT via the Gogstad 1986 quadratic conversion (Equation 4)."
   reference   <- "Zhou Z, Yano I, Odaka S, Morita Y, Shizuta S, Hayano M, Kimura T, Akaike A, Inui K-i, Matsubara K. Effect of vitamin K2 on the anticoagulant activity of warfarin during the perioperative period of catheter ablation: Population analysis of retrospective clinical data. J Pharm Health Care Sci. 2016;2:17. doi:10.1186/s40780-016-0053-8. Fixed warfarin PK from Sato 2006 Jpn J Ther Drug Monit 23:10-16; vitamin K2 Vd from Eisai product information. INR <-> TT conversion from Gogstad 1986 Thromb Haemost 56:178-182."
   vignette    <- "Zhou_2016_warfarin_vk2"
+  paper_specific_compartments <- c("central_vk2")
+
   units       <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 
   covariateData <- list(

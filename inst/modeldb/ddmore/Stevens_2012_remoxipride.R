@@ -17,6 +17,7 @@ Stevens_2012_remoxipride <- function() {
   ddmore_id <- "DDMODEL00000268"
   replicate_of <- NULL
 
+  depends <- c("STUDY_DD")
   covariateData <- list(
     STUDY_DD = list(
       description = "Double-dosing-study indicator: 1 = subject was enrolled in the double-dosing protocol (Stevens 2012 'study 3'), 0 = single-dose (intravenous or intranasal) protocols pooled in the same fit.",
@@ -58,7 +59,7 @@ Stevens_2012_remoxipride <- function() {
     lfk40     <- fixed(log(0.302));     label("FK40 = K40/K30 ratio (brain-ECF outflow rate as a fraction of plasma elimination rate, unitless)") # TH9 FIX
     lka       <- fixed(log(1.54));      label("Intranasal absorption rate KA into plasma (1/h)")            # TH10 FIX
     lftot     <- fixed(log(0.892));     label("Total intranasal bioavailability FTOT (unitless)")           # TH11 FIX
-    f_systemic <- fixed(0.249);         label("Fraction of FTOT delivered via the systemic absorption depot (depot -> central); the remaining 1 - f_systemic is delivered via the direct nose-to-brain depot (depot_brain -> brain_ecf)") # TH12 FIX
+    f_systemic <- fixed(0.249);         label("Fraction of FTOT delivered via the systemic absorption depot (depot -> central); the remaining 1 - f_systemic is delivered via the direct nose-to-brain depot (depot_brain -> brain_csf)") # TH12 FIX
     lk24      <- fixed(log(33.1 / 1000)); label("Direct nose-to-brain absorption rate K24 (1/h); the .mod stores K24 * 1000 in THETA(13) and divides by 1000 inside $PK") # TH13 FIX
 
     # PD parameters (TH1, TH2, TH14..TH19); estimated under an NWPRI prior on
@@ -92,9 +93,9 @@ Stevens_2012_remoxipride <- function() {
     # Verbatim translation of Executable_PK_rats.txt $PK + $DES + $ERROR.
     # NONMEM A(i) compartments map to nlmixr2 named states as follows:
     #   A(1) = depot          (intranasal "fast" depot, rate KA -> central)
-    #   A(2) = depot_brain    (intranasal "slow" depot, rate K24 -> brain_ecf)
+    #   A(2) = depot_brain    (intranasal "slow" depot, rate K24 -> brain_csf)
     #   A(3) = central        (plasma, DEFDOSE for IV)
-    #   A(4) = brain_ecf      (microdialysis brain extracellular fluid)
+    #   A(4) = brain_csf      (microdialysis brain extracellular fluid)
     #   A(5) = peripheral1    (PK peripheral)
     #   A(6) = lactotroph     (prolactin storage in lactotrophs)
     #   A(7) = prolactin      (plasma prolactin, the observed)
@@ -144,9 +145,9 @@ Stevens_2012_remoxipride <- function() {
     d/dt(depot_brain) <- -k24 * depot_brain                                         # .mod L76
     d/dt(central)     <-  ka * depot - kel_plasma * central -
                           k34 * central - k35 * central +
-                          k43 * brain_ecf + k53 * peripheral1                       # .mod L77
-    d/dt(brain_ecf)   <-  k24 * depot_brain + k34 * central -
-                          k43 * brain_ecf - k40 * brain_ecf                         # .mod L78
+                          k43 * brain_csf + k53 * peripheral1                       # .mod L77
+    d/dt(brain_csf)   <-  k24 * depot_brain + k34 * central -
+                          k43 * brain_csf - k40 * brain_csf                         # .mod L78
     d/dt(peripheral1) <-  k35 * central - k53 * peripheral1                         # .mod L88
 
     # Bioavailability split for intranasal dosing. The .mod (L36-38) divides
@@ -161,7 +162,7 @@ Stevens_2012_remoxipride <- function() {
     # remoxipride in brain ECF; in the source it is a body-weight-
     # normalized amount-per-(L/kg) since V4 is L/kg, so CP carries an
     # extra factor of kg (mg.kg/L). EC50 is on the same scale.
-    cp_brain <- brain_ecf / vbrain
+    cp_brain <- brain_csf / vbrain
     eff_num  <- emax_prl * cp_brain^gamma_prl
     eff_den  <- ec50_prl^gamma_prl + cp_brain^gamma_prl
     eff      <- 1 + eff_num / (eff_den + 1e-30)                                     # .mod L82

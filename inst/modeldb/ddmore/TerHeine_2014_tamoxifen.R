@@ -59,7 +59,7 @@ TerHeine_2014_tamoxifen <- function() {
     lka <- log(1.90)
     label("First-order absorption rate constant from gut to hepatic compartment (1/h)")
     # PDF Table 2: k12 = 1.90 1/h, RSE 20.2%
-    llag <- log(0.455)
+    ltlag <- log(0.455)
     label("Absorption lag time (h)")
     # PDF Table 2: tlag = 0.455 h, RSE 10.4%
     lcl <- log(9.34)
@@ -156,7 +156,7 @@ TerHeine_2014_tamoxifen <- function() {
     # gives slightly different ODE behaviour during 0 < t < lag (the gut
     # mass stays at the initial dose level rather than appearing at t = lag).
     # Both forms yield the same systemic exposure once t >= lag.
-    lag(depot) <- exp(llag)
+    lag(depot) <- exp(ltlag)
 
     # Plasma concentrations in nmol/L. With dose AMT in mg and Vc in L, the
     # compartment concentration in mg/L converts to nM as

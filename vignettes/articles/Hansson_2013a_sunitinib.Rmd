@@ -298,7 +298,7 @@ by `(1 - eff_*)`-scaled Kin/Kout balance.
   named `vegf`, `svegfr2`, `svegfr3`, and `skit` (paper-named,
   lowercase). This follows the precedent set by `Petrov_2024_romiplostim`
   (`circ`, `precursor1..4`) and `oncology_xenograft_simeoni_2004`
-  (`tumorVol`, `cyclingCells`) — paper-named mechanistic states are
+  (`tumorVol`, `cycling_cells`) — paper-named mechanistic states are
   preferred over generic indexed names. `checkModelConventions()` flags
   these as non-canonical compartments (warning category
   `compartments`); the deviation is justified here because biomarker PD

@@ -54,7 +54,7 @@ Othman_2014_daclizumab <- function() {
     lvp      <- log(2.52);       label("Peripheral volume of distribution for a 70 kg adult (Vp, L)")  # Table 2 (Vp = 2.52 L)
     lq       <- log(0.044 * 24); label("Inter-compartmental clearance for a 70 kg adult (Q, L/day; 44 mL/h)")  # Table 2 (Q = 0.044 L/h)
     lfdepot  <- log(0.84);       label("Subcutaneous bioavailability for 100-300 mg doses (F, fraction)")  # Table 2 (F_100-300mg = 84%)
-    lalag    <- log(2 / 24);     label("Absorption lag time for SC doses (Tlag, day; 2 h)")         # Table 2 (Lag time = 2.0 h)
+    ltlag    <- log(2 / 24);     label("Absorption lag time for SC doses (Tlag, day; 2 h)")         # Table 2 (Lag time = 2.0 h)
 
     # Allometric exponents — estimated, not fixed (Othman 2014 reported that
     # fixing to the classical 0.75 / 1.0 was statistically less favorable than
@@ -111,7 +111,7 @@ Othman_2014_daclizumab <- function() {
     # 50 mg SC records via DOSE_50MG). For IV administration, users route the
     # dose directly to `central` (cmt = 2) so f(depot) and alag(depot) have no
     # effect.
-    alag(depot) <- exp(lalag)
+    alag(depot) <- exp(ltlag)
     f(depot)    <- exp(lfdepot) * (1 + e_dose_50mg_f * DOSE_50MG)
 
     # Concentration: dose in mg, volumes in L -> mg/L = ug/mL

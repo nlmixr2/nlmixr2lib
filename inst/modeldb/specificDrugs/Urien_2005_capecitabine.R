@@ -65,7 +65,7 @@ Urien_2005_capecitabine <- function() {
     # in this static file -- see vignette Errata.
     lka  <- log(2.07)
     label("Capecitabine first-order absorption rate constant (1/h)")  # Urien 2005 Table II: Ka mean 2.07 1/h (median 2.29; 95% CI 0.91-2.66)
-    llag <- log(0.28)
+    ltlag <- log(0.28)
     label("Capecitabine absorption lag time TLAG (h)")  # Urien 2005 Table II: TLAG mean 0.28 h (median 0.16; 95% CI 0.01-0.36)
 
     # Capecitabine apparent central volume V1/F. Bootstrap mean 338 L
@@ -123,7 +123,7 @@ Urien_2005_capecitabine <- function() {
     # (Table II); convert to log-normal omega^2 via omega^2 = log(1 +
     # CV^2). ISV on Ka was deleted in favour of IOV; ISV on CL12 was
     # fixed to 0 -- no eta on lka or lcl_dfcr.
-    etallag         ~ 0.79299  # Urien 2005 Table II: ISV TLAG 110% -> log(1 + 1.10^2) = 0.79299
+    etaltlag         ~ 0.79299  # Urien 2005 Table II: ISV TLAG 110% -> log(1 + 1.10^2) = 0.79299
     etalvc          ~ 1.04706  # Urien 2005 Table II: ISV V1 136% -> log(1 + 1.36^2) = 1.04706
     etalcl          ~ 0.03187  # Urien 2005 Table II: ISV CL10 18% -> log(1 + 0.18^2) = 0.03187
     etalk_dfur_form ~ 0.22314  # Urien 2005 Table II: ISV K23 50% -> log(1 + 0.50^2) = 0.22314
@@ -150,7 +150,7 @@ Urien_2005_capecitabine <- function() {
     # 1. Individual capecitabine PK parameters with bilirubin power
     # scaling on CL10/F (page 826 equation).
     ka       <- exp(lka)
-    tlag     <- exp(llag + etallag)
+    tlag     <- exp(ltlag + etaltlag)
     vc       <- exp(lvc + etalvc)
     cl       <- exp(lcl + etalcl) * (TBILI / 8.8)^e_tbili_cl
     cl_dfcr  <- exp(lcl_dfcr)

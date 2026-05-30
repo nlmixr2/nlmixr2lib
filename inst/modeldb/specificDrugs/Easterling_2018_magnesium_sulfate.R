@@ -49,7 +49,7 @@ Easterling_2018_magnesium_sulfate <- function() {
     #   BL  = 0.925 mmol/L * 24.305 mg/mmol   = 22.48 mg/L
     lcl <- log(3.378); label("Clearance for the reference subject (CL, L/h)")           # Easterling 2018 Table 4 (56.3 mL/min)
     lvc <- log(65.3);  label("Volume of distribution for the reference subject (V, L)") # Easterling 2018 Table 4
-    lbl <- log(22.48); label("Endogenous steady-state baseline magnesium (BL, mg/L)")   # Easterling 2018 Table 4 (0.925 mmol/L = 2.25 mg/dL)
+    lrbase <- log(22.48); label("Endogenous steady-state baseline magnesium (BL, mg/L)")   # Easterling 2018 Table 4 (0.925 mmol/L = 2.25 mg/dL)
 
     # Covariate effects from Easterling 2018 Table 4. Centering references are
     # taken from Methods text (WT_REF = 90.54 kg study mean) and Table 1 (CREAT_REF
@@ -82,7 +82,7 @@ Easterling_2018_magnesium_sulfate <- function() {
     #   CL_i = CL * (1 + e_creat_cl * (CREAT_i / 66.3  - 1))   (linear, centered+normalised)
     cl <- exp(lcl) * (1 + e_creat_cl * (CREAT / 66.3 - 1))
     vc <- exp(lvc) * exp(e_wt_vc * (WT / 90.54 - 1))
-    bl <- exp(lbl)
+    rbase <- exp(lrbase)
 
     # One-compartment model with first-order elimination. Easterling 2018 dosed
     # only intravenously (no IM/oral route in this study); all doses go directly
@@ -93,9 +93,9 @@ Easterling_2018_magnesium_sulfate <- function() {
     d/dt(central) <- -kel * central
 
     # Observation: administered magnesium concentration (central / vc) plus the
-    # endogenous baseline (bl). Concentration units are mg/L of elemental Mg.
+    # endogenous baseline (rbase). Concentration units are mg/L of elemental Mg.
     # Per Methods: 'The administered magnesium was modeled as additive to BL.'
-    Cc <- central / vc + bl
+    Cc <- central / vc + rbase
 
     Cc ~ prop(propSd)
   })

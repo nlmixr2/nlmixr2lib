@@ -57,7 +57,7 @@ Shoji_2017_fosdagrocorat_p1np <- function() {
     # Biomarker (response compartment) -- Shoji 2017 Table 2 (P1NP)
     # ===================================================================
     lkd  <- log(0.609); label("First-order degradation rate Kd of P1NP (1/week)")  # Shoji 2017 Table 2 P1NP: Kd = 0.609 /week (RSE 17.5%)
-    lbl  <- log(47.0);  label("Baseline P1NP concentration BL (ng/mL)")             # Shoji 2017 Table 2 P1NP: BL = 47.0 ng/mL (RSE 2.83%)
+    lrbase  <- log(47.0);  label("Baseline P1NP concentration BL (ng/mL)")             # Shoji 2017 Table 2 P1NP: BL = 47.0 ng/mL (RSE 2.83%)
 
     # Sigmoid Emax inhibition (Hill coefficient fixed to 1 -- paper Discussion:
     # c = 0.920 led to estimation instability, c fixed = 1.5-3 underpredicted).
@@ -95,7 +95,7 @@ Shoji_2017_fosdagrocorat_p1np <- function() {
     # The same etalkde is added to whichever drug's KDE is active (single eta
     # on the K-PD depot per subject); analogous for etaledk50.
     # ===================================================================
-    etalkde + etaledk50 + etalbl ~ c(
+    etalkde + etaledk50 + etalrbase ~ c(
        0.9025,
       -0.1941,  0.4290,
       -0.1401, -0.1251,  0.2172
@@ -129,13 +129,13 @@ Shoji_2017_fosdagrocorat_p1np <- function() {
     imax  <- 1 / (1 + exp(-logitimax_active))
     edk50 <- exp(ledk50_active + etaledk50)
     kd    <- exp(lkd)
-    bl    <- exp(lbl + etalbl)
+    rbase    <- exp(lrbase + etalrbase)
     rbmax <- exp(lrbmax)
     t50   <- exp(lt50)
     slp_i <- slp + etaslp
 
     # ---- Steady-state synthesis at baseline (no drug): Ks = BL * Kd ----
-    ks <- bl * kd
+    ks <- rbase * kd
 
     # ---- K-PD depot (drug). Drug input enters as zero-order infusion via
     # dosing events (rate = 7 * q.d. dose in mg/week for continuous q.d.
@@ -153,7 +153,7 @@ Shoji_2017_fosdagrocorat_p1np <- function() {
 
     # ---- Effect compartment (P1NP biomarker); initial condition = BL ----
     d/dt(effect) <- ks * rebound * inhibition - kd * effect
-    effect(0)    <- bl
+    effect(0)    <- rbase
 
     # ---- Observation: P1NP = R(t) + SLP_i * t (placebo-period linear trend),
     # with proportional residual error in linear space (Shoji 2017 Methods:

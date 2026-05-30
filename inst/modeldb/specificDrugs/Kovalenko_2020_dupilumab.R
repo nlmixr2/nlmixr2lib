@@ -8,8 +8,8 @@ Kovalenko_2020_dupilumab <- function() {
   # Parameterization (as published): 2-compartment model with parallel linear +
   # Michaelis-Menten elimination from central, and a 3-transit-compartment
   # absorption model off a SC depot.  The paper parameterizes the linear
-  # elimination as a first-order rate constant ke (1/d) acting on the central
-  # amount (ke * central), rather than as clearance CL.  Intercompartmental
+  # elimination as a first-order rate constant kel (1/d) acting on the central
+  # amount (kel * central), rather than as clearance CL.  Intercompartmental
   # transport is parameterized as kcp (1/d) and kpc (1/d) directly (with
   # Mpc = kcp/kpc), rather than as Q and Vp.  Km and F were fixed in Model 1 to
   # values carried forward from Kovalenko 2016 (doi:10.1002/psp4.12136); the
@@ -47,7 +47,7 @@ Kovalenko_2020_dupilumab <- function() {
 
   ini({
     lvc <- log(2.48); label("central volume (L)")
-    lke <- log(0.0534); label("elimination rate (1/d)")
+    lkel <- log(0.0534); label("elimination rate (1/d)")
     lkcp <- log(0.213); label("central-to-peripheral rate (1/d)")
     Mpc <- 0.686; label("ratio of kcp and kpc (kpc is peripheral to central rate with units of 1/d)")
     lka <- log(0.256); label("absorption rate (1/d)")
@@ -64,7 +64,7 @@ Kovalenko_2020_dupilumab <- function() {
     # squared here.  The point estimates (0.192, 0.285, 0.474, 0.236, 0.525) are
     # reported as SDs in Supplementary Table 2.
     etalvc  ~ 0.192^2  # Supp. Table S2: omega_Vc  (SD) = 0.192
-    etalke  ~ 0.285^2  # Supp. Table S2: omega_ke  (SD) = 0.285
+    etalkel  ~ 0.285^2  # Supp. Table S2: omega_ke  (SD) = 0.285
     etalka  ~ 0.474^2  # Supp. Table S2: omega_ka  (SD) = 0.474
     etalvmax ~ 0.236^2  # Supp. Table S2: omega_Vm  (SD) = 0.236
     etalmtt ~ 0.525^2  # Supp. Table S2: omega_MTT (SD) = 0.525; applied on log(MTT) here to prevent negative MTT draws (a reparameterization of the Supp. Table 2 additive-on-MTT formulation)
@@ -80,7 +80,7 @@ Kovalenko_2020_dupilumab <- function() {
     # IL-4Ralpha, in Atopic Dermatitis Patients and Normal Volunteers. CPT
     # Pharmacometrics Syst Pharmacol. 2016;5(11):617-624. doi:10.1002/psp4.12136
     vc <- exp(lvc + etalvc)*(WT/75)^e_wt_vc
-    ke <- exp(lke + etalke)
+    kel <- exp(lkel + etalkel)
     kcp <- exp(lkcp)
     ka <- exp(lka + etalka)
     MTT <- exp(lmtt + etalmtt)
@@ -95,8 +95,8 @@ Kovalenko_2020_dupilumab <- function() {
     d/dt(transit2) <- ktr*(transit1 - transit2)
     d/dt(transit3) <- ktr*transit2 - ka*transit3
     # Linear and Michaelis-Menten clearance
-    d/dt(central) <-                 ka*transit3 - ke*central - kcp*central + kpc*periph - central*(vmax/(Km + central/vc))
-    d/dt(periph) <-                                             kcp*central - kpc*periph
+    d/dt(central) <-                 ka*transit3 - kel*central - kcp*central + kpc*peripheral1 - central*(vmax/(Km + central/vc))
+    d/dt(peripheral1) <-                                             kcp*central - kpc*peripheral1
 
     f(depot) <- exp(lfdepot)
     # No unit conversion is required to change mg/L (dosing amount/central

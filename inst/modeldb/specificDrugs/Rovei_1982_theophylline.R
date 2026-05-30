@@ -34,7 +34,7 @@ Rovei_1982_theophylline <- function() {
     # Structural parameters -- pooled across all four doses (Rovei 1982 Table 3, page 774).
     # The paper concludes (page 773, ANOVA on Table 3) that t_lag, t_abs, t_max, t_beta, CL, CL_R, Vd and F are
     # not modified by dose, so across-dose averages are reported here as the typical-value population estimates.
-    llag <- log(0.09); label("Absorption lag time (hr)")                                              # Rovei 1982 Table 3: across-dose mean of t_lag (0.11, 0.09, 0.09, 0.07 h at 125/250/375/500 mg)
+    ltlag <- log(0.09); label("Absorption lag time (hr)")                                              # Rovei 1982 Table 3: across-dose mean of t_lag (0.11, 0.09, 0.09, 0.07 h at 125/250/375/500 mg)
     lka  <- log(1.73); label("First-order absorption rate constant (1/hr)")                           # Rovei 1982 Table 3: ka = ln(2)/t_abs with across-dose mean t_abs = 0.40 h (0.31, 0.44, 0.29, 0.55)
     lcl  <- log(2.94); label("Apparent clearance for a 70 kg adult (L/hr)")                           # Rovei 1982 Table 3: across-dose mean CL = 0.042 L/h/kg * 70 kg = 2.94 L/h
     lvc  <- log(35.7); label("Apparent central volume for a 70 kg adult (L)")                         # Rovei 1982 Table 3: across-dose mean Vd = 0.51 L/kg * 70 kg = 35.7 L
@@ -43,7 +43,7 @@ Rovei_1982_theophylline <- function() {
     # ranges and Results page 773 dose-stratified mean +/- SD); these are not formal popPK omega
     # estimates. Conversion: omega^2 = log(1 + CV^2). Per-parameter rationale recorded in the
     # vignette Source-trace and Assumptions and deviations sections.
-    etallag ~ log(1 + 0.50^2)
+    etaltlag ~ log(1 + 0.50^2)
     etalka  ~ log(1 + 0.50^2)
     etalcl  ~ log(1 + 0.25^2)
     etalvc  ~ log(1 + 0.14^2)
@@ -52,7 +52,7 @@ Rovei_1982_theophylline <- function() {
   })
 
   model({
-    tlag <- exp(llag + etallag)
+    tlag <- exp(ltlag + etaltlag)
     ka   <- exp(lka  + etalka)
     cl   <- exp(lcl  + etalcl) * (WT / 70)
     vc   <- exp(lvc  + etalvc) * (WT / 70)

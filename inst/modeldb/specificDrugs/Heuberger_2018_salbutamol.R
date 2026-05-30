@@ -70,7 +70,7 @@ Heuberger_2018_salbutamol <- function() {
     # this is a synthesis / simulation model with no individual-data fit,
     # so the source authors held every value constant.
     lka      <- fixed(log(0.5));        label("Gut absorption rate constant ka (1/h)")            # Table 1: 0.5 1/h (Auclair, footnote a: adjusted from dog 1.5 1/h)
-    lalag    <- fixed(log(1.5));        label("Gut absorption lag time ALAG (h)")                  # Table 1: 1.5 h (Auclair)
+    ltlag    <- fixed(log(1.5));        label("Gut absorption lag time ALAG (h)")                  # Table 1: 1.5 h (Auclair)
     lfdepot  <- fixed(log(0.80));       label("Gut bioavailability of inhaled dose (fraction)")    # Table 1: 80 % (Auclair). 80 % of inhaled dose is swallowed and absorbed via gut; the residual 20 % is delivered directly to central via a separate dose record (the "lung-direct" component).
 
     # --- Renal clearances (Morgan 1986 human IV/oral data, kept as-is).
@@ -112,7 +112,7 @@ Heuberger_2018_salbutamol <- function() {
     etahct      ~ fixed(0.00489) # Table 1 CV 7  % (Moerkeberg)
     etalfdepot  ~ fixed(0.0515)  # Table 1 CV 23 % (Auclair), footnote b fixed
     etalka      ~ fixed(0.281)   # Table 1 CV 57 % (Auclair)
-    etalalag    ~ fixed(0.524)   # Table 1 CV 83 % (Auclair)
+    etaltlag    ~ fixed(0.524)   # Table 1 CV 83 % (Auclair)
     etalcl      ~ fixed(0.0606)  # Table 1 CV 25 % (Morgan)
     etalcl_sulf ~ fixed(0.0606)  # Table 1 CV 25 % (Morgan)
     etalvc      ~ fixed(0.334)   # Table 1 CV 63 % (Auclair)
@@ -143,7 +143,7 @@ Heuberger_2018_salbutamol <- function() {
 
     # Individual PK parameters with allometric scaling (reference 70 kg).
     ka       <- exp(lka      + etalka)
-    alag_t   <- exp(lalag    + etalalag)
+    alag_t   <- exp(ltlag    + etaltlag)
     cl       <- exp(lcl      + etalcl)      * (WT / 70)^e_wt_cl
     cl_sulf  <- exp(lcl_sulf + etalcl_sulf) * (WT / 70)^e_wt_cl
     vc       <- exp(lvc      + etalvc)      * (WT / 70)^e_wt_vc

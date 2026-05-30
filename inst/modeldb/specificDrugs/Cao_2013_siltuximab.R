@@ -21,9 +21,9 @@ Cao_2013_siltuximab <- function() {
 
   ini({
     # mPBPK Model A parameters from Cao 2013 Table 2 (siltuximab row)
-    sigma1 <- 0.964; label("Vascular reflection coefficient for tight tissues (unitless)")  # Cao 2013 Table 2 (Model A): 0.964 (CV 10.3%)
-    sigma2 <- 0.673; label("Vascular reflection coefficient for leaky tissues (unitless)")  # Cao 2013 Table 2 (Model A): 0.673 (CV 9.27%)
-    lclp   <- log(0.276); label("Plasma clearance (CLp, L/day)")                            # Cao 2013 Table 2 (Model A): CLp = 0.0115 L/hr (CV 5.19%) = 0.276 L/day
+    sigma_tight <- 0.964; label("Vascular reflection coefficient for tight tissues (unitless)")  # Cao 2013 Table 2 (Model A): 0.964 (CV 10.3%)
+    sigma_leaky <- 0.673; label("Vascular reflection coefficient for leaky tissues (unitless)")  # Cao 2013 Table 2 (Model A): 0.673 (CV 9.27%)
+    lcl   <- log(0.276); label("Plasma clearance (CLp, L/day)")                            # Cao 2013 Table 2 (Model A): CLp = 0.0115 L/hr (CV 5.19%) = 0.276 L/day
   })
 
   model({
@@ -43,7 +43,7 @@ Cao_2013_siltuximab <- function() {
     l2      <- 0.67 * lymphflow
     vlymph  <- vplasma   # Cao 2013 Methods, ref 21
 
-    clp <- exp(lclp)
+    cl <- exp(lcl)
 
     # Concentrations (mg/L); compartments hold amounts (mg)
     cp     <- plasma / vplasma
@@ -53,12 +53,12 @@ Cao_2013_siltuximab <- function() {
 
     # Cao 2013 Eqs 1-4 (Model A: clearance from plasma, CLp)
     d/dt(plasma) <- clymph * lymphflow -
-                    cp * l1 * (1 - sigma1) -
-                    cp * l2 * (1 - sigma2) -
-                    clp * cp
-    d/dt(tight)  <- l1 * (1 - sigma1) * cp -
+                    cp * l1 * (1 - sigma_tight) -
+                    cp * l2 * (1 - sigma_leaky) -
+                    cl * cp
+    d/dt(tight)  <- l1 * (1 - sigma_tight) * cp -
                     l1 * (1 - sigmal) * ctight
-    d/dt(leaky)  <- l2 * (1 - sigma2) * cp -
+    d/dt(leaky)  <- l2 * (1 - sigma_leaky) * cp -
                     l2 * (1 - sigmal) * cleaky
     d/dt(lymph)  <- l1 * (1 - sigmal) * ctight +
                     l2 * (1 - sigmal) * cleaky -

@@ -4,15 +4,14 @@ Kyhl_2016_nalmefene <- function() {
   vignette <- "Kyhl_2016_nalmefene"
   units <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
 
+  # WT (body weight) is required upstream for LBM derivation but is not
+  # referenced directly in model() equations -- LBM is computed from WT,
+  # height, and sex using the Janmahasatian formula and supplied directly
+  # as the LBM covariate column. Documented here rather than as a
+  # covariateData entry to keep covariateData restricted to covariates the
+  # model body actually reads.
+
   covariateData <- list(
-    WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
-      reference_category = NULL,
-      notes              = "Required for external derivation of LBM (lean body mass) before model fitting; not referenced directly in model() equations. LBM is computed from WT, height, and sex using the Janmahasatian formula (or equivalent); the result is supplied to model() as the LBM covariate column.",
-      source_name        = "WT"
-    ),
     AGE = list(
       description        = "Subject age",
       units              = "years",

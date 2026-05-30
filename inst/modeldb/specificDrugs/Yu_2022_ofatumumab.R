@@ -114,7 +114,7 @@ Yu_2022_ofatumumab <- function() {
     #   ksyn_inf [mg/L/day]  = 0.0554 * 0.149 = 0.0082546
     #   KD       [mg/L]      = 0.167 * 0.149 = 0.024883
     # k_off and kdes are 1/time and unit-invariant.
-    lr0      <- log(4.8425);        label("Population baseline total CD20 receptor amount R0 in drug-equivalent mg/L (paper: 32.5 nmol/L)")  # Yu 2022 Table 3
+    lrbase      <- log(4.8425);        label("Population baseline total CD20 receptor amount R0 in drug-equivalent mg/L (paper: 32.5 nmol/L)")  # Yu 2022 Table 3
     lksyn0   <- log(0.146765);      label("Population CD20 synthesis rate at t=0 ksyn0 in drug-equivalent mg/L/day (paper: 0.985 nmol/L/day)") # Yu 2022 Table 3
     lksyninf <- log(0.0082546);     label("Population CD20 synthesis rate at t=infinity ksyn_inf in drug-equivalent mg/L/day (paper: 0.0554 nmol/L/day)") # Yu 2022 Table 3
     lkd      <- fixed(log(0.024883));   label("Equilibrium dissociation constant KD in drug-equivalent mg/L (paper: 0.167 nmol/L; FIXED)")    # Yu 2022 Table 3 (fixed)
@@ -125,7 +125,7 @@ Yu_2022_ofatumumab <- function() {
     lb0      <- log(194);      label("Population baseline central-compartment B cell count B0 (cells/uL)")                  # Yu 2022 Table 3
     lemax    <- log(159);      label("Population maximum B-cell-lysis stimulatory effect Emax (unitless)")                  # Yu 2022 Table 3
     lec50    <- log(0.0057);   label("Population free-drug concentration producing 50% of Emax EC50 (mg/L)")                # Yu 2022 Table 3
-    lgamma   <- log(2.81);     label("Hill / sigmoidicity parameter for the lysis stimulatory function (unitless)")         # Yu 2022 Table 3
+    lhill   <- log(2.81);     label("Hill / sigmoidicity parameter for the lysis stimulatory function (unitless)")         # Yu 2022 Table 3
     lkout    <- log(0.0124);   label("Population B cell elimination rate kout (1/day)")                                     # Yu 2022 Table 3
     lqb      <- fixed(log(0.78));     label("Inter-B-cell-compartment flow QB (L/day; FIXED)")                              # Yu 2022 Table 3 (fixed; no IIV reported)
     lvb      <- log(3.7);      label("Peripheral B cell compartment volume Vb (L)")                                         # Yu 2022 Table 3
@@ -139,12 +139,12 @@ Yu_2022_ofatumumab <- function() {
     e_wt_kout     <- -0.624; label("Power exponent of (WT/70) on kout (unitless)")                                          # Yu 2022 Table 3
     e_age_b0      <- -0.282; label("Power exponent of (AGE/38) on B0 (unitless)")                                           # Yu 2022 Table 3
     e_blbc_emax   <-  0.275; label("Power exponent of (BLBCELL/200) on Emax (unitless)")                                    # Yu 2022 Table 3
-    e_iv_r0       <-  0.987; label("Exponential effect of IV administration route on R0 (unitless)")                        # Yu 2022 Table 3
+    e_iv_rbase       <-  0.987; label("Exponential effect of IV administration route on R0 (unitless)")                        # Yu 2022 Table 3
     e_iv_cl       <- -1.07;  label("Exponential effect of IV administration route on CL (unitless)")                        # Yu 2022 Table 3
     e_iv_q        <- -2.31;  label("Exponential effect of IV administration route on Q (unitless)")                         # Yu 2022 Table 3
     e_iv_ksyninf  <-  2.49;  label("Exponential effect of IV administration route on ksyn_inf (unitless)")                  # Yu 2022 Table 3
     e_ai_kep      <-  0.713; label("Exponential effect of AI device on k_e(P) (unitless)")                                  # Yu 2022 Table 3
-    e_ai_r0       <- -0.544; label("Exponential effect of AI device on R0 (unitless)")                                      # Yu 2022 Table 3
+    e_ai_rbase       <- -0.544; label("Exponential effect of AI device on R0 (unitless)")                                      # Yu 2022 Table 3
     e_aplios_emax <-  0.503; label("Exponential effect of APLIOS study on Emax (unitless)")                                 # Yu 2022 Table 3
     e_mirror_kout <- -0.554; label("Exponential effect of MIRROR study on kout (unitless)")                                 # Yu 2022 Table 3
 
@@ -178,11 +178,11 @@ Yu_2022_ofatumumab <- function() {
                                     0.18464, 0.20407, 0.654^2)  # Yu 2022 Table 3 (Block 1: CL/ka/kdes)
 
     # Block 2 covariances (k_e(P), R0, ksyn_inf):
-    #   sd_kep = 1.14, sd_r0 = 0.91, sd_ksyninf = 2.16
-    #   cov(kep,     r0)        = -0.551 * 1.14 * 0.91 = -0.57164
+    #   sd_kep = 1.14, sd_rbase = 0.91, sd_ksyninf = 2.16
+    #   cov(kep,     rbase)        = -0.551 * 1.14 * 0.91 = -0.57164
     #   cov(kep,     ksyninf)   = -0.464 * 1.14 * 2.16 = -1.14266
-    #   cov(r0,      ksyninf)   =  0.470 * 0.91 * 2.16 =  0.92395
-    etalkep + etalr0 + etalksyninf ~ c(1.14^2,
+    #   cov(rbase,      ksyninf)   =  0.470 * 0.91 * 2.16 =  0.92395
+    etalkep + etalrbase + etalksyninf ~ c(1.14^2,
                                        -0.57164, 0.91^2,
                                        -1.14266, 0.92395, 2.16^2)  # Yu 2022 Table 3 (Block 2: k_e(P)/R0/ksyn_inf)
 
@@ -201,7 +201,7 @@ Yu_2022_ofatumumab <- function() {
     etalq          ~ 0.705^2  # Yu 2022 Table 3
     etalb0         ~ 0.394^2  # Yu 2022 Table 3
     etalec50       ~ 0.927^2  # Yu 2022 Table 3
-    etalgamma      ~ 1.46^2   # Yu 2022 Table 3
+    etalhill      ~ 1.46^2   # Yu 2022 Table 3
 
     # ---- Residual error (Yu 2022 Table 3 final-model estimates) -------------
     propSd       <- 0.278;    label("Proportional residual error for ofatumumab plasma concentration (fraction)")  # Yu 2022 Table 3
@@ -223,7 +223,7 @@ Yu_2022_ofatumumab <- function() {
     cl       <- exp(lcl       + etalcl)       * (WT / 70)^e_wt_cl    * exp(e_iv_cl       * ROUTE_IV)
     q        <- exp(lq        + etalq)                               * exp(e_iv_q        * ROUTE_IV)
     vp       <- exp(lvp)
-    r0       <- exp(lr0       + etalr0)       * exp(e_ai_r0        * DEVICE_AI) * exp(e_iv_r0       * ROUTE_IV)
+    rbase       <- exp(lrbase       + etalrbase)       * exp(e_ai_rbase        * DEVICE_AI) * exp(e_iv_rbase       * ROUTE_IV)
     ksyn0    <- exp(lksyn0    + etalksyn0)    * (WT / 70)^e_wt_ksyn0
     ksyninf  <- exp(lksyninf  + etalksyninf)                         * exp(e_iv_ksyninf  * ROUTE_IV)
     kd       <- exp(lkd)
@@ -232,14 +232,14 @@ Yu_2022_ofatumumab <- function() {
     b0_ind   <- exp(lb0       + etalb0)       * (WT / 70)^e_wt_b0    * (AGE / 38)^e_age_b0
     emax     <- exp(lemax     + etalemax)     * (BLBCELL / 200)^e_blbc_emax * exp(e_aplios_emax * STUDY_APLIOS)
     ec50     <- exp(lec50     + etalec50)
-    gamma    <- exp(lgamma    + etalgamma)
+    hill    <- exp(lhill    + etalhill)
     kout     <- exp(lkout     + etalkout)     * (WT / 70)^e_wt_kout  * exp(e_mirror_kout * STUDY_MIRROR)
     qb       <- exp(lqb)
     vb       <- exp(lvb       + etalvb)
 
     # ---- TMDD-QSS algebra (Yu 2022 Eq. 'Lc = ...') --------------------------
     # All concentrations on a single drug-equivalent mg/L scale. Receptor
-    # parameters lr0, lksyn0, lksyninf, lkd above are pre-converted from
+    # parameters lrbase, lksyn0, lksyninf, lkd above are pre-converted from
     # nmol/L using MW 149 kDa.
     #   k_on  [(mg/L)^-1 day^-1] = k_off / KD
     #   Ks    [mg/L]             = (k_e(P) + k_off) / k_on
@@ -250,7 +250,7 @@ Yu_2022_ofatumumab <- function() {
     # Time-varying receptor synthesis (Yu 2022 'ksyn(t) = ksyn_inf + ...').
     # t is in days; kdes is in 1/year (paper uses /365.25).
     ksyn_t   <- ksyninf + (ksyn0 - ksyninf) * exp(-kdes * t / 365.25)
-    kdeg_t   <- ksyn_t / r0
+    kdeg_t   <- ksyn_t / rbase
 
     # Total drug concentration in central from the 'central' state (drug
     # amount, mg) divided by Vc; peripheral drug concentration analogous.
@@ -292,14 +292,14 @@ Yu_2022_ofatumumab <- function() {
     # The 2-B-cell-compartment exchange terms cancel at steady state because
     # Bp(0) = B0 * Vb / Vc is the exact algebraic solution of dBp/dt = 0.
     kin      <- kout * b0_ind
-    stim     <- emax * lc^gamma / (ec50^gamma + lc^gamma)
+    stim     <- emax * lc^hill / (ec50^hill + lc^hill)
     d/dt(bcell)         <- kin - kout * (1 + stim) * bcell - (qb / vc) * bcell + (qb / vb) * bcell_periph
     d/dt(bcell_periph)  <-                                    (qb / vc) * bcell - (qb / vb) * bcell_periph
 
     # ---- Initial conditions -----------------------------------------------
     # Drug compartments start empty; receptor at baseline R0; B cells at B0
     # and Bp(0) = B0 * Vb / Vc per Yu 2022 'B(0) = Bcell0, Bp(0) = ...'.
-    total_target(0) <- r0
+    total_target(0) <- rbase
     bcell(0)        <- b0_ind
     bcell_periph(0) <- b0_ind * vb / vc
 

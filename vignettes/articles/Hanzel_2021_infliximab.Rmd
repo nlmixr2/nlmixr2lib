@@ -134,7 +134,7 @@ IQR 40-46, range 28-54), and all subjects modelled as ADA-negative.
 
 ```{r virtual-pop}
 set.seed(2021)
-n_per_stratum <- 200L  # smaller than the paper's 1000 for vignette runtime
+n_per_stratum <- 50L  # smaller than the paper's 1000 for vignette runtime (downsampled from 200 for vignette build budget)
 
 make_pop <- function(weight, n, id_offset) {
   tibble(
@@ -184,8 +184,10 @@ dose_sc <- pop %>%
 
 obs_times <- sort(unique(c(
   seq(0, 14, by = 1),
-  seq(14, 42, by = 1),
-  seq(42, max(maintenance_days) + 14, by = 1)
+  seq(14, 42, by = 2),
+  # every-2-days during maintenance is smooth-profile-equivalent
+  # (trough_days every 14d are a subset since 14 is divisible by 2)
+  seq(42, max(maintenance_days) + 14, by = 2)
 )))
 
 obs <- pop %>%
@@ -250,7 +252,7 @@ on days 0, 14, 42 (week 6), 98 (week 14), and 154 (week 22), as in the
 part-2 IV arm of the trial.
 
 ```{r vpc-iv-events}
-n_vpc <- 300L
+n_vpc <- 100L  # downsampled from 300 for vignette build budget
 
 set.seed(202101)
 pop_iv <- tibble(
@@ -274,9 +276,9 @@ dose_vpc <- pop_iv %>%
   select(ID, TIME, AMT, EVID, CMT, DV, WT, ALB, ADA_POS)
 
 obs_vpc_times <- sort(unique(c(
-  seq(0,   14, by = 0.5),
-  seq(14,  42, by = 1),
-  seq(42, 220, by = 2)
+  seq(0,   14, by = 1),
+  seq(14,  42, by = 2),
+  seq(42, 220, by = 4)
 )))
 
 obs_vpc <- pop_iv %>%

@@ -80,10 +80,10 @@ Gilkey_2015_DiRnanoparticle <- function() {
     # === Concentration aliases (used in the ODE right-hand sides) ===
     # States are mass amounts (ug); concentrations (ug/mL) are amount / volume.
     cp   <- plasma / vp
-    cliv <- liv    / vliv
-    cspl <- spl    / vspl
-    ckid <- kid    / vkid
-    coth <- oth    / voth
+    cliv <- liver    / vliv
+    cspl <- spleen    / vspl
+    ckid <- kidney    / vkid
+    coth <- other    / voth
 
     # === Mass-balance ODEs (paper equations 6 through 10) ===
     # Equations are written in the paper as time derivatives of CONCENTRATION
@@ -102,23 +102,23 @@ Gilkey_2015_DiRnanoparticle <- function() {
     # (mesenteric / splanchnic style, although the paper does not explicitly
     # call it portal). Spleen and 'other' deliver to liver via their
     # respective distribution ratios.
-    d/dt(liv)    <- cp * (ql - qs) +
+    d/dt(liver)    <- cp * (ql - qs) +
                     qs * (cspl / rs) +
                     qo * (coth / rlo) -
                     (cliv / rl) * (ql + qo)
 
     # Spleen (paper Eq 8)
-    d/dt(spl)    <- cp * qs +
+    d/dt(spleen)    <- cp * qs +
                     qo * (coth / rso) -
                     (cspl / rs) * (qs + qo)
 
     # Kidneys (paper Eq 9). Includes the renal clearance K_K in the outflow.
-    d/dt(kid)    <- cp * qk +
+    d/dt(kidney)    <- cp * qk +
                     qo * (coth / rko) -
                     (ckid / rk) * (qk + qo + kk)
 
     # 'Other' / virtual compartment (paper Eq 10)
-    d/dt(oth)    <- qo * (cp - coth / ro)
+    d/dt(other)    <- qo * (cp - coth / ro)
 
     # === Initial conditions ===
     # Paper treats t = 0 as a step input with plasma concentration = injection

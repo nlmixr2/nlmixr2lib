@@ -37,7 +37,7 @@ Eugene_2016_metoprolol <- function() {
     # structural reference of the MONOLIX model) and males (105 L/h); the published
     # log-additive male effect betaCL_Male = 0.572 reproduces CL_Male as
     # CL_Female * exp(0.572) = 59.1 * 1.772 = 104.7 L/h, matching Table 1.
-    llag      <- log(0.469); label("Absorption lag time (hr)")                                   # Eugene 2016 Table 1: Tlag = 0.469 hr (RSE 4%)
+    ltlag      <- log(0.469); label("Absorption lag time (hr)")                                   # Eugene 2016 Table 1: Tlag = 0.469 hr (RSE 4%)
     lka       <- log(0.235); label("First-order absorption rate constant (1/hr)")                # Eugene 2016 Table 1: Ka = 0.235 hr^-1 (RSE 8%)
     lvc       <- log(38);    label("Apparent central volume of distribution Vc/F (L)")           # Eugene 2016 Table 1: V = 38 L (RSE 95%)
     lcl       <- log(59.1);  label("Apparent clearance CL/F at female reference (L/hr)")         # Eugene 2016 Table 1: CL Females = 59.1 L/hr (RSE 12%); structural reference of the MONOLIX model
@@ -48,7 +48,7 @@ Eugene_2016_metoprolol <- function() {
     # column corresponds to the approximation CV ~= sqrt(omega^2), which matches
     # the table for the high-variance V parameter (omega^2 = 2.43, reported CV ~155%);
     # the exact log-normal CV = sqrt(exp(omega^2) - 1) is larger.
-    etallag ~ 0.030  # Eugene 2016 Table 1: omega^2_Tlag = 0.030 (RSE 113%; reported CV ~17%)
+    etaltlag ~ 0.030  # Eugene 2016 Table 1: omega^2_Tlag = 0.030 (RSE 113%; reported CV ~17%)
     etalka  ~ 0.052  # Eugene 2016 Table 1: omega^2_Ka   = 0.052 (RSE 254%; reported CV ~23%)
     etalvc  ~ 2.43   # Eugene 2016 Table 1: omega^2_V    = 2.43  (RSE 27%;  reported CV ~155%; very high)
     etalcl  ~ 0.143  # Eugene 2016 Table 1: omega^2_CL   = 0.143 (RSE 39%;  reported CV ~38%)
@@ -63,7 +63,7 @@ Eugene_2016_metoprolol <- function() {
     # Individual parameters with log-normal IIV; sex effect on CL is applied as
     # exp(e_sexf_cl * (1 - SEXF)) so that female (SEXF = 1) reproduces the paper's
     # CL_Female reference and male (SEXF = 0) reproduces the paper's CL_Male.
-    tlag <- exp(llag + etallag)
+    tlag <- exp(ltlag + etaltlag)
     ka   <- exp(lka  + etalka)
     vc   <- exp(lvc  + etalvc)
     cl   <- exp(lcl  + e_sexf_cl * (1 - SEXF) + etalcl)

@@ -1,5 +1,5 @@
 Grimm_2023_trontinemab <- function() {
-  description <- "Trontinemab PK model in non-human primates (Grimm 2023): two-compartment plasma PK with Michaelis-Menten elimination and brain-region effect-compartment distribution (cerebellum, hippocampus, striatum, cortex, choroid plexus, CSF)."
+  description <- "Trontinemab PK model in non-human primates (Grimm 2023): two-compartment plasma PK with Michaelis-Menten elimination and brain-region effect-compartment distribution (brain_cerebellum, brain_hippocampus, brain_striatum, brain_cortex, choroid plexus, CSF)."
   reference <- "Grimm HP, Schumacher V, Schafer M, et al. Delivery of the Brainshuttle amyloid-beta antibody fusion trontinemab to non-human primate brain and projected efficacious dose regimens in humans. mAbs. 2023;15(1):2261509. doi:10.1080/19420862.2023.2261509"
   vignette <- "Grimm_2023"
   units <- list(
@@ -47,27 +47,27 @@ Grimm_2023_trontinemab <- function() {
 
     # Brain-region effect-compartment parameters — Grimm 2023 supplementary Table 1
     # Cerebellum
-    kp_cerebellum   <- 5.17e-3; label("Brain distribution coefficient, cerebellum (unitless)")  # supp. Table 1
-    kout_cerebellum <- 0.0624;  label("Brain outflow rate, cerebellum (1/h)")                    # supp. Table 1
-    lfpla_cerebellum <- log(1.26e-3); label("Residual plasma fraction, cerebellum (log)")        # supp. Table 1: fpla = 1.26e-3
+    kp_cerebellum   <- 5.17e-3; label("Brain distribution coefficient, brain_cerebellum (unitless)")  # supp. Table 1
+    kout_cerebellum <- 0.0624;  label("Brain outflow rate, brain_cerebellum (1/h)")                    # supp. Table 1
+    lfpla_cerebellum <- log(1.26e-3); label("Residual plasma fraction, brain_cerebellum (log)")        # supp. Table 1: fpla = 1.26e-3
     etalfpla_cerebellum ~ 1.93                                                                   # supp. Table 1: IIV variance on fpla_cerebellum
 
     # Hippocampus
-    kp_hippocampus   <- 5.59e-3;  label("Brain distribution coefficient, hippocampus (unitless)") # supp. Table 1
-    kout_hippocampus <- 0.0433;   label("Brain outflow rate, hippocampus (1/h)")                  # supp. Table 1
-    lfpla_hippocampus <- log(0.621e-3); label("Residual plasma fraction, hippocampus (log)")      # supp. Table 1: fpla = 0.621e-3
+    kp_hippocampus   <- 5.59e-3;  label("Brain distribution coefficient, brain_hippocampus (unitless)") # supp. Table 1
+    kout_hippocampus <- 0.0433;   label("Brain outflow rate, brain_hippocampus (1/h)")                  # supp. Table 1
+    lfpla_hippocampus <- log(0.621e-3); label("Residual plasma fraction, brain_hippocampus (log)")      # supp. Table 1: fpla = 0.621e-3
     etalfpla_hippocampus ~ 1.04                                                                   # supp. Table 1
 
     # Striatum
-    kp_striatum   <- 7.76e-3; label("Brain distribution coefficient, striatum (unitless)")        # supp. Table 1
-    kout_striatum <- 0.0371;  label("Brain outflow rate, striatum (1/h)")                         # supp. Table 1
-    lfpla_striatum <- log(0.298e-3); label("Residual plasma fraction, striatum (log)")            # supp. Table 1: fpla = 0.298e-3
+    kp_striatum   <- 7.76e-3; label("Brain distribution coefficient, brain_striatum (unitless)")        # supp. Table 1
+    kout_striatum <- 0.0371;  label("Brain outflow rate, brain_striatum (1/h)")                         # supp. Table 1
+    lfpla_striatum <- log(0.298e-3); label("Residual plasma fraction, brain_striatum (log)")            # supp. Table 1: fpla = 0.298e-3
     etalfpla_striatum ~ 1.96                                                                      # supp. Table 1
 
     # Cortex
-    kp_cortex   <- 4.62e-3; label("Brain distribution coefficient, cortex (unitless)")            # supp. Table 1
-    kout_cortex <- 0.0344;  label("Brain outflow rate, cortex (1/h)")                             # supp. Table 1
-    lfpla_cortex <- log(0.782e-3); label("Residual plasma fraction, cortex (log)")                # supp. Table 1: fpla = 0.782e-3
+    kp_cortex   <- 4.62e-3; label("Brain distribution coefficient, brain_cortex (unitless)")            # supp. Table 1
+    kout_cortex <- 0.0344;  label("Brain outflow rate, brain_cortex (1/h)")                             # supp. Table 1
+    lfpla_cortex <- log(0.782e-3); label("Residual plasma fraction, brain_cortex (log)")                # supp. Table 1: fpla = 0.782e-3
     etalfpla_cortex ~ 1.57                                                                        # supp. Table 1
 
     # Choroid plexus
@@ -117,20 +117,20 @@ Grimm_2023_trontinemab <- function() {
     # Brain-region effect compartments — Grimm 2023 page 11
     # Equation 1: dCext/dt = kout * (Kp * Cpla - Cext)
     # Equation 2: Cbrn     = fpla * Cpla + Cext
-    d/dt(cerebellum)     <- kout_cerebellum     * (kp_cerebellum     * Cc - cerebellum)
-    Cbrain_cerebellum     <- fpla_cerebellum     * Cc + cerebellum
+    d/dt(brain_cerebellum)     <- kout_cerebellum     * (kp_cerebellum     * Cc - brain_cerebellum)
+    Cbrain_cerebellum     <- fpla_cerebellum     * Cc + brain_cerebellum
 
-    d/dt(hippocampus)    <- kout_hippocampus    * (kp_hippocampus    * Cc - hippocampus)
-    Cbrain_hippocampus    <- fpla_hippocampus    * Cc + hippocampus
+    d/dt(brain_hippocampus)    <- kout_hippocampus    * (kp_hippocampus    * Cc - brain_hippocampus)
+    Cbrain_hippocampus    <- fpla_hippocampus    * Cc + brain_hippocampus
 
-    d/dt(striatum)       <- kout_striatum       * (kp_striatum       * Cc - striatum)
-    Cbrain_striatum       <- fpla_striatum       * Cc + striatum
+    d/dt(brain_striatum)       <- kout_striatum       * (kp_striatum       * Cc - brain_striatum)
+    Cbrain_striatum       <- fpla_striatum       * Cc + brain_striatum
 
-    d/dt(cortex)         <- kout_cortex         * (kp_cortex         * Cc - cortex)
-    Cbrain_cortex         <- fpla_cortex         * Cc + cortex
+    d/dt(brain_cortex)         <- kout_cortex         * (kp_cortex         * Cc - brain_cortex)
+    Cbrain_cortex         <- fpla_cortex         * Cc + brain_cortex
 
-    d/dt(choroid_plexus) <- kout_choroid_plexus * (kp_choroid_plexus * Cc - choroid_plexus)
-    Cbrain_choroid_plexus <- fpla_choroid_plexus * Cc + choroid_plexus
+    d/dt(brain_choroid_plexus) <- kout_choroid_plexus * (kp_choroid_plexus * Cc - brain_choroid_plexus)
+    Cbrain_choroid_plexus <- fpla_choroid_plexus * Cc + brain_choroid_plexus
 
     d/dt(csf)            <- kout_csf            * (kp_csf            * Cc - csf)
     Cbrain_csf            <- fpla_csf            * Cc + csf

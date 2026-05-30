@@ -14,6 +14,8 @@ Zecchin_2016_survival <- function() {
     sep = " "
   )
   vignette <- "Zecchin_2016_survival"
+  paper_specific_compartments <- c("wts")
+
   units <- list(
     time          = "day",
     dosing        = "n/a (no drug-dosing events; drug exposure enters as time-varying per-cycle AUC_CARBO and AUC_GEM)",
@@ -25,7 +27,7 @@ Zecchin_2016_survival <- function() {
 
   covariateData <- list(
     KG = list(
-      description        = "Subject-specific tumour-size first-order growth rate constant carried over (as an empirical-Bayes posterior) from the upstream Zecchin 2016 SLD model (DDMODEL00000217). Used inside the inline SLD ODE term `KG / 1000 * tumorSize`.",
+      description        = "Subject-specific tumour-size first-order growth rate constant carried over (as an empirical-Bayes posterior) from the upstream Zecchin 2016 SLD model (DDMODEL00000217). Used inside the inline SLD ODE term `KG / 1000 * tumor_size`.",
       units              = "(1/day) * 1000 (source NONMEM convention; the `/1000` rescaling is applied inside the model)",
       type               = "continuous",
       reference_category = NULL,
@@ -33,7 +35,7 @@ Zecchin_2016_survival <- function() {
       source_name        = "KG"
     ),
     KD0 = list(
-      description        = "Subject-specific carboplatin-driven tumour-size death rate constant carried over (as an empirical-Bayes posterior) from the upstream Zecchin 2016 SLD model. Pairs with `AUC_CARBO` inside the SLD ODE term `KD0 / 1000 * AUC_CARBO * tumorSize`.",
+      description        = "Subject-specific carboplatin-driven tumour-size death rate constant carried over (as an empirical-Bayes posterior) from the upstream Zecchin 2016 SLD model. Pairs with `AUC_CARBO` inside the SLD ODE term `KD0 / 1000 * AUC_CARBO * tumor_size`.",
       units              = "(1/day per AUC_CARBO unit) * 1000 (source NONMEM convention; the `/1000` rescaling is applied inside the model)",
       type               = "continuous",
       reference_category = NULL,
@@ -41,7 +43,7 @@ Zecchin_2016_survival <- function() {
       source_name        = "KD0"
     ),
     KD1 = list(
-      description        = "Subject-specific gemcitabine-driven tumour-size death rate constant carried over (as an empirical-Bayes posterior) from the upstream Zecchin 2016 SLD model. Pairs with `AUC_GEM` inside the SLD ODE term `KD1 / 100 * AUC_GEM * tumorSize`.",
+      description        = "Subject-specific gemcitabine-driven tumour-size death rate constant carried over (as an empirical-Bayes posterior) from the upstream Zecchin 2016 SLD model. Pairs with `AUC_GEM` inside the SLD ODE term `KD1 / 100 * AUC_GEM * tumor_size`.",
       units              = "(1/day per AUC_GEM unit) * 100 (source NONMEM convention; the `/100` rescaling is applied inside the model)",
       type               = "continuous",
       reference_category = NULL,
@@ -49,7 +51,7 @@ Zecchin_2016_survival <- function() {
       source_name        = "KD1"
     ),
     IBASE = list(
-      description        = "Subject-specific baseline tumour-size estimate carried over (as an empirical-Bayes posterior) from the upstream Zecchin 2016 SLD model. Sets the SLD ODE initial state (`tumorSize(0) = IBASE * 1000`, in mm) and the denominator of the time-varying tumour-size ratio (`mmbas = IBASE * 1000`).",
+      description        = "Subject-specific baseline tumour-size estimate carried over (as an empirical-Bayes posterior) from the upstream Zecchin 2016 SLD model. Sets the SLD ODE initial state (`tumor_size(0) = IBASE * 1000`, in mm) and the denominator of the time-varying tumour-size ratio (`mmbas = IBASE * 1000`).",
       units              = "metres (source NONMEM convention; the `*1000` conversion to mm is applied inside the model)",
       type               = "continuous",
       reference_category = NULL,
@@ -151,17 +153,17 @@ Zecchin_2016_survival <- function() {
     # KG, KD0, KD1 are subject-level empirical-Bayes posteriors from the
     # upstream Zecchin 2016 SLD model (DDMODEL00000217); AUC_CARBO and
     # AUC_GEM are time-varying drug-exposure covariates.
-    dtum_dt <- KG / 1000 * tumorSize -
-      (KD0 / 1000 * AUC_CARBO + KD1 / 100 * AUC_GEM) * tumorSize
-    d/dt(tumorSize) <- dtum_dt
-    tumorSize(0) <- IBASE * 1000  # mm
+    dtum_dt <- KG / 1000 * tumor_size -
+      (KD0 / 1000 * AUC_CARBO + KD1 / 100 * AUC_GEM) * tumor_size
+    d/dt(tumor_size) <- dtum_dt
+    tumor_size(0) <- IBASE * 1000  # mm
 
     # Tumour-size ratio and the time-varying covariate fed into the
     # hazard. Source $DES freezes WTS at the week-12 (84-day) value, so
     # the wts state integrates d(TSR)/dt for t <= 84 and 0 thereafter.
     # Since TSR(0) = (mmbas - mmbas)/mmbas = 0, wts(0) = 0 reproduces the
     # source `IF(T.EQ.0) WTS = 0` initialisation exactly.
-    tsr <- (tumorSize - mmbas) / mmbas
+    tsr <- (tumor_size - mmbas) / mmbas
     d/dt(wts) <- ifelse(t <= 84, dtum_dt / mmbas, 0)
     wts(0) <- 0
 

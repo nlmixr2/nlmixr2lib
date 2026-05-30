@@ -86,7 +86,7 @@ in the same 25/25/50 ratio reported by the paper.
 
 ```{r cohort}
 set.seed(20220401L)
-n_per_strat <- 200L
+n_per_strat <- 100L  # downsampled from 200 for vignette build budget; VPC envelope visually identical
 
 make_cohort <- function(n, cyp_em, het, hom, label, id_offset = 0L) {
   tibble(

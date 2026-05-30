@@ -53,7 +53,7 @@ Hong_2015_moxifloxacin <- function() {
     lvc       <- log(173);   label("Apparent central volume of distribution V2/F (L)")                                                                  # Hong 2015 Table 3 V2 = 173 (%RSE 3.17)
     lq        <- log(5.62);  label("Apparent inter-compartmental clearance Q/F (L/h)")                                                                  # Hong 2015 Table 3 Q = 5.62 (%RSE 19.2)
     lvp       <- log(47.1);  label("Apparent peripheral volume of distribution V3/F (L)")                                                               # Hong 2015 Table 3 V3 = 47.1 (%RSE 19.0)
-    lalag     <- log(0.46);  label("Absorption lag time alag (h)")                                                                                       # Hong 2015 Table 3 alag = 0.46 (%RSE 17.1)
+    ltlag     <- log(0.46);  label("Absorption lag time alag (h)")                                                                                       # Hong 2015 Table 3 alag = 0.46 (%RSE 17.1)
 
     # IIV on CL/F and V2/F with reported correlation rho_cl-v2 = 0.92; IIV on
     # ka. IIV on Q, V3, alag was reported as 'not estimated' and is omitted.
@@ -155,7 +155,7 @@ Hong_2015_moxifloxacin <- function() {
     vc   <- exp(lvc + etalvc)
     q    <- exp(lq)
     vp   <- exp(lvp)
-    alag_dose <- exp(lalag)
+    alag_dose <- exp(ltlag)
 
     # -----------------------------------------------------------------------
     # 3. Micro-constants and ODE system. Two-compartment disposition with

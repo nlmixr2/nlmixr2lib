@@ -70,7 +70,7 @@ Clewe_2016_rifampicin <- function() {
     label("Typical initial F (fast-multiplying) bacterial count (CFU/mL)")
     # Output_real_MTP.lst TH 8 = 4.10E+00; .mod $THETA(8) = 4.109880.
 
-    ls0 <- log(9770)
+    lrbase <- log(9770)
     label("Typical initial S (slow-multiplying) bacterial count (CFU/mL)")
     # Output_real_MTP.lst TH 9 = 9.77E+03; .mod $THETA(9) = 9770.730.
 
@@ -102,11 +102,11 @@ Clewe_2016_rifampicin <- function() {
     kns    <- exp(lkns)
     bmax   <- exp(lbmax)
     f0     <- exp(lf0 + etalf0)
-    s0     <- exp(ls0)
+    rbase     <- exp(lrbase)
 
     # Initial bacterial population (CFU/mL).
     fbugs(0) <- f0
-    sbugs(0) <- s0
+    sbugs(0) <- rbase
     nbugs(0) <- 0.00001
 
     # Gompertz growth of F bacteria; clamp to non-negative when the

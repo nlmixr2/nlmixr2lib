@@ -9,6 +9,8 @@ Novakovic_2017_cladribine <- function() {
     sep = " "
   )
   vignette <- "Novakovic_2017_cladribine"
+  paper_specific_etas <- c("etap1", "etap2", "etap3", "etap4", "etap5")
+
   units <- list(
     time          = "day",
     dosing        = "mg",

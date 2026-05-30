@@ -99,7 +99,7 @@ the cross-walk for review.
 | `kg_decrease_atcc` (FIX 0)  | THETA(33) FIX| 0                                       | .mod L517, .lst L857 |
 | `kg_decrease_aru`           | THETA(34)    | 0.536                                   | .mod L518, .lst L857 |
 | `kg_dyn_increase`           | THETA(35)    | 0.332                                   | .mod L519, .lst L857 |
-| `addSd_logBact`             | SIGMA(1+2)   | sqrt(0.422 + 0.0364) * log(10) ≈ 1.559  | .mod L521-526, .lst SIGMA block lines 877-889 |
+| `addSd_log_cfu`             | SIGMA(1+2)   | sqrt(0.422 + 0.0364) * log(10) ≈ 1.559  | .mod L521-526, .lst SIGMA block lines 877-889 |
 
 NONMEM placeholders THETA(6) (FIX 0), THETA(24) (FIX 1), THETA(25) (FIX 1),
 THETA(30) (FIX 0), and THETA(32) (FIX 0) are not referenced anywhere in
@@ -167,7 +167,12 @@ print(representative_ids)
 events_raw <- raw |>
   dplyr::filter(ID %in% representative_ids) |>
   dplyr::select(ID, TIME, EVID, CMT, AMT, DV, Ccol, Cmer, TYPE, BACT,
-                DILcol, DILmer, ID2, REPL, BLOQ)
+                DILcol, DILmer, ID2, REPL, BLOQ) |>
+  # The model expects the canonical CONMED_<drug>_CC covariate names
+  # (`CONMED_COL_CC` for colistin, `CONMED_MER_CC` for meropenem).
+  # Rename the source-dataset shorthand columns here so the events
+  # table satisfies the model's covariate declarations.
+  dplyr::rename(CONMED_COL_CC = Ccol, CONMED_MER_CC = Cmer)
 cat("Filtered rows:", nrow(events_raw), "\n")
 ```
 
@@ -221,16 +226,16 @@ cat("Simulated rows:", nrow(sim_df), "\n")
 
 The DV column in the simulated CSV is a NONMEM-generated stochastic
 observation (IPRED + per-replicate residual). Our typical-value
-re-simulation produces `logBact` = ln(total bacteria) which corresponds
+re-simulation produces `log_cfu` = ln(total bacteria) which corresponds
 directly to NONMEM's IPRED (`$ERROR` line `IPRED=LOG(ATOT)`). For each
-observation we compare `logBact` (rxode2 typical-value) against `DV`
+observation we compare `log_cfu` (rxode2 typical-value) against `DV`
 (NONMEM-simulated stochastic observation).
 
 ```{r consistency-summary}
 diff_df <- sim_df |>
   dplyr::mutate(
     cohort = paste0("BACT=", BACT, " / TYPE=", TYPE),
-    residual_log = DV - logBact,
+    residual_log = DV - log_cfu,
     abs_residual = abs(residual_log)
   )
 
@@ -239,14 +244,14 @@ summary_df <- diff_df |>
   dplyr::summarise(
     n              = dplyr::n(),
     median_dv      = stats::median(DV),
-    median_logBact = stats::median(logBact),
+    median_log_cfu = stats::median(log_cfu),
     rmse           = sqrt(mean(residual_log^2)),
     median_abs_res = stats::median(abs_residual),
     .groups = "drop"
   )
 knitr::kable(summary_df, digits = 3,
              caption = paste("Per-cohort self-consistency summary.",
-                             "RMSE / median |DV - logBact| are on natural-log scale."))
+                             "RMSE / median |DV - log_cfu| are on natural-log scale."))
 ```
 
 The expected per-observation residual under perfect translation is the
@@ -256,14 +261,14 @@ values comparable to this magnitude indicate the trajectory is consistent
 with the source; values much larger flag a translation defect.
 
 ```{r consistency-figure, fig.cap = "Typical-value rxode2 trajectory (line) vs NONMEM-simulated DV (points), one panel per (BACT, TYPE) cohort."}
-ggplot(diff_df, aes(time, logBact)) +
+ggplot(diff_df, aes(time, log_cfu)) +
   geom_line(color = "steelblue") +
   geom_point(aes(y = DV), alpha = 0.5, size = 1) +
   facet_wrap(~ cohort, scales = "free_y") +
   labs(x = "Time (h)", y = "ln(total bacterial count, CFU/mL)",
        title = "Self-consistency: rxode2 typical value vs NONMEM-simulated DV",
        caption = paste("Points: DV column (NONMEM stochastic);",
-                       "line: rxode2::rxSolve typical-value `logBact`."))
+                       "line: rxode2::rxSolve typical-value `log_cfu`."))
 ```
 
 # Assumptions and deviations
@@ -271,7 +276,7 @@ ggplot(diff_df, aes(time, logBact)) +
 The verbatim translation deliberately preserves several non-standard
 features of the source model. Each is flagged here for downstream review.
 
-* **Non-canonical observation variable.** `logBact` (ln of total
+* **Non-canonical observation variable.** `log_cfu` (ln of total
   bacterial count) replaces the canonical PK observation `Cc`, mirroring
   the in vitro PD precedent set by
   `inst/modeldb/therapeuticArea/oncology/oncology_sdm_lobo_2002.R`
@@ -315,7 +320,7 @@ features of the source model. Each is flagged here for downstream review.
   uses one common epsilon plus four replicate-specific epsilons (all
   `BLOCK(1) SAME`, all `FIXED` at the same variance). The verbatim
   translation collapses these into a single combined additive residual
-  on natural-log scale (`addSd_logBact = sqrt(0.422 + 0.0364) * log(10)`).
+  on natural-log scale (`addSd_log_cfu = sqrt(0.422 + 0.0364) * log(10)`).
 * **No linked publication on disk.** The associated paper
   ([doi:10.1093/jac/dkv488](https://doi.org/10.1093/jac/dkv488)) is not
   available locally; PKNCA-style comparison against published tables is

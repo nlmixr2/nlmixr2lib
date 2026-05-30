@@ -144,7 +144,7 @@ Clewe_2018_TB_MTP_GPDI_invitro <- function() {
     label("F0 -- initial fast-multiplying state count (CFU/mL)")
     # Clewe 2018 Table 1: F0 = 209e3 CFU/mL, RSE 17%.
 
-    ls0 <- log(324e3)
+    lrbase <- log(324e3)
     label("S0 -- initial slow-multiplying state count (CFU/mL)")
     # Clewe 2018 Table 1: S0 = 324e3 CFU/mL, RSE 12%.
 
@@ -369,7 +369,7 @@ Clewe_2018_TB_MTP_GPDI_invitro <- function() {
     ksf      <- exp(lksf)
     kns      <- exp(lkns)
     f0       <- exp(lf0)
-    s0       <- exp(ls0)
+    rbase       <- exp(lrbase)
 
     emax_fg_rif  <- exp(lemax_fg_rif)
     ec50_fg_rif  <- exp(lec50_fg_rif)
@@ -404,17 +404,17 @@ Clewe_2018_TB_MTP_GPDI_invitro <- function() {
     #    the start of the experiment"). koff fixed to 0, so the two
     #    states sum to 1 indefinitely.
     # ================================================================
-    d/dt(ar_off) <- -kon * CONC_INH_MGL * ar_off
-    d/dt(ar_on)  <-  kon * CONC_INH_MGL * ar_off
-    ar_off(0) <- 1
-    ar_on(0)  <- 0
+    d/dt(aroff) <- -kon * CONC_INH_MGL * aroff
+    d/dt(aron)  <-  kon * CONC_INH_MGL * aroff
+    aroff(0) <- 1
+    aron(0)  <- 0
 
     # Linear adaptive-resistance modulation of INH's EC50 on F-kill and
     # S-kill (Materials and methods: "linear function"; the paper's
     # Eq 3-4 Hill forms with AR_max/AR_50 are alternates that were
     # evaluated but did not enter the final model -- see Table 1).
-    ec50_fd_inh_eff <- ec50_fd_inh * (1 + kar_fd_inh * ar_on)
-    ec50_sd_inh_eff <- ec50_sd_inh * (1 + kar_sd_inh * ar_on)
+    ec50_fd_inh_eff <- ec50_fd_inh * (1 + kar_fd_inh * aron)
+    ec50_sd_inh_eff <- ec50_sd_inh * (1 + kar_sd_inh * aron)
 
     # ================================================================
     # 3. GPDI modulation factors for each drug pair / mechanism. Form
@@ -527,7 +527,7 @@ Clewe_2018_TB_MTP_GPDI_invitro <- function() {
     #    populated by F->N and S->N transfer over time).
     # ================================================================
     fbugs(0) <- f0
-    sbugs(0) <- s0
+    sbugs(0) <- rbase
     nbugs(0) <- 0
 
     d/dt(fbugs) <- fbugs * kg * e_fg_rif + ksf * sbugs -

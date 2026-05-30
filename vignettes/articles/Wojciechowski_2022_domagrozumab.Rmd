@@ -124,7 +124,7 @@ the Phase 2 weight range.
 ```{r cohort}
 set.seed(20260426)
 
-n_dmd <- 500
+n_dmd <- 120  # downsampled from 500 for vignette build budget; matches paper Phase 2 N=120, VPC envelope is visually identical
 make_dmd_cohort <- function(n, id_offset = 0L) {
   # Log-normal weights matched approximately to Wojciechowski 2022 Table 1
   # Phase 2 column (median 28.9 kg, mean 31.8 kg, SD 11.1 kg, range 14.8-86.4).

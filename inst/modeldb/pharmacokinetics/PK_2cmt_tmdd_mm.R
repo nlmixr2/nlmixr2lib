@@ -26,7 +26,7 @@ PK_2cmt_tmdd_mm <- function() {
     lq      <- log(0.5);  label("Intercompartmental clearance (Q, L/day)")                  # Gibiansky 2008 two-compartment extension; generic mAb-scale default
 
     # Saturable (target-mediated) elimination
-    lVm     <- log(0.1);  label("Maximum target-mediated elimination rate (Vm, mg/L/day)")  # Gibiansky 2008 Eq 10 (V_m = k_int * R0); generic TMDD default
+    lvmax     <- log(0.1);  label("Maximum target-mediated elimination rate (Vm, mg/L/day)")  # Gibiansky 2008 Eq 10 (V_m = k_int * R0); generic TMDD default
     lKm     <- log(1.1);  label("MM constant for target-mediated elimination (Km, mg/L)")   # Gibiansky 2008 Eq 10 (K_m approx Kss)
 
     # IIV (generic archetype; single eta on each of CL, Vc, Ka)
@@ -48,7 +48,7 @@ PK_2cmt_tmdd_mm <- function() {
     kel  <- cl / vc
     k12  <- q  / vc
     k21  <- q  / vp
-    vm   <- exp(lVm)
+    vmax   <- exp(lvmax)
     km   <- exp(lKm)
 
     # central holds total drug amount; Cc is concentration in mg/L.
@@ -56,7 +56,7 @@ PK_2cmt_tmdd_mm <- function() {
 
     # Gibiansky 2008 Eq 10 with a linear peripheral distribution compartment.
     d/dt(depot)       <- -ka * depot
-    d/dt(central)     <-  ka * depot - kel * central - vm * Cc * vc / (km + Cc) - k12 * central + k21 * peripheral1
+    d/dt(central)     <-  ka * depot - kel * central - vmax * Cc * vc / (km + Cc) - k12 * central + k21 * peripheral1
     d/dt(peripheral1) <-  k12 * central - k21 * peripheral1
 
     f(depot) <- fdep

@@ -73,11 +73,11 @@ Diep_2022_eplontersen <- function() {
     # ---- Structural PD parameters (Diep 2022 Table 3 final-model column) ----
     # Indirect-response model with inhibition of TTR production:
     #   d/dt(effect) = kin * (1 - Cp * Imax / (IC50 + Cp)) - kout * effect
-    #   kin = bl * kout (so effect = bl at the no-drug steady state)
+    #   kin = rbase * kout (so effect = rbase at the no-drug steady state)
     # The PD compartment is the canonical `effect`; the observed variable
     # is the same TTR concentration assigned to a paper-named output `ttr`
     # for clarity in vignettes and PKNCA recipes.
-    lbl    <- log(31.4);    label("Baseline serum transthyretin (BL, mg/dL)")                                       # Diep 2022 Table 3 BL = 31.4 mg/dL
+    lrbase    <- log(31.4);    label("Baseline serum transthyretin (BL, mg/dL)")                                       # Diep 2022 Table 3 BL = 31.4 mg/dL
     lkout  <- log(0.00398); label("First-order TTR loss rate constant (kout, 1/h)")                                 # Diep 2022 Table 3 kout = 0.00398 1/h
     imax   <- 0.970;        label("Maximum fractional inhibition of TTR production by eplontersen (Imax, unitless)") # Diep 2022 Table 3 Imax = 0.970
     lic50  <- log(0.0283);  label("Plasma eplontersen concentration yielding half-maximum inhibition (IC50, ng/mL)") # Diep 2022 Table 3 IC50 = 0.0283 ng/mL
@@ -93,7 +93,7 @@ Diep_2022_eplontersen <- function() {
     etalq    ~ 0.12777   # Diep 2022 Table 2 IIV%Q  = 36.9%   -> log(0.369^2 + 1)
     etalvp   ~ 0.18147   # Diep 2022 Table 2 IIV%Vp = 44.6%   -> log(0.446^2 + 1)
     etalka   ~ 0.14378   # Diep 2022 Table 2 IIV%ka = 39.3%   -> log(0.393^2 + 1)
-    etalbl   ~ 0.09633   # Diep 2022 Table 3 IIV%BL  = 31.8%  -> log(0.318^2 + 1)
+    etalrbase   ~ 0.09633   # Diep 2022 Table 3 IIV%BL  = 31.8%  -> log(0.318^2 + 1)
     etalkout ~ 0.19349   # Diep 2022 Table 3 IIV%kout = 46.2% -> log(0.462^2 + 1)
     etalic50 ~ 0.52295   # Diep 2022 Table 3 IIV%IC50 = 82.9% -> log(0.829^2 + 1)
 
@@ -127,12 +127,12 @@ Diep_2022_eplontersen <- function() {
     k21 <- q  / vp
 
     # ---- 2. Individual PD parameters ----
-    # kin is derived so that effect = bl is the no-drug steady state
+    # kin is derived so that effect = rbase is the no-drug steady state
     # (Diep 2022 Figure 1: BL = kin / kout).
-    bl   <- exp(lbl   + etalbl)
+    rbase   <- exp(lrbase   + etalrbase)
     kout <- exp(lkout + etalkout)
     ic50 <- exp(lic50 + etalic50)
-    kin  <- bl * kout
+    kin  <- rbase * kout
 
     # ---- 3. ODE system ----
     # depot, central, peripheral1: amounts in mg (subcutaneous dose enters
@@ -152,7 +152,7 @@ Diep_2022_eplontersen <- function() {
     # 1 - Imax = 0.030 (97% inhibition).
     inh          <- 1 - Cc * imax / (ic50 + Cc)
     d/dt(effect) <- kin * inh - kout * effect
-    effect(0)    <- bl
+    effect(0)    <- rbase
 
     # ttr is the paper-named alias of the canonical `effect` PD compartment
     # (serum TTR concentration in mg/dL).

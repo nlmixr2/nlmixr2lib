@@ -85,7 +85,7 @@ Wang_2013_morphine <- function() {
     lkdec  <- log(0.594); label("Decrease in BDE clearance exponent across the paediatric BW range (KDEC, unitless)")           # Output_real_ModelI_Morphine.lst FINAL PARAMETER ESTIMATE TH 1
     lkmin  <- log(0.872); label("Adult-asymptote BDE clearance exponent (KMAX - KDEC, unitless)")                                 # Output_real_ModelI_Morphine.lst TH 2
     lkhal  <- log(4.01) ; label("BDE half-maximal-effect bodyweight (KHAL, kg)")                                                  # Output_real_ModelI_Morphine.lst TH 3
-    lgamma <- log(4.62) ; label("BDE Hill coefficient (GAMMA, unitless)")                                                          # Output_real_ModelI_Morphine.lst TH 4
+    lhill <- log(4.62) ; label("BDE Hill coefficient (GAMMA, unitless)")                                                          # Output_real_ModelI_Morphine.lst TH 4
 
     # ----- Structural PK typical values (reference 70 kg) -----
     lcl  <- log(1.62); label("Population clearance for a 70-kg adult (CL, L/min)")                                                # Output_real_ModelI_Morphine.lst TH 5
@@ -122,8 +122,8 @@ Wang_2013_morphine <- function() {
     kdec  <- exp(lkdec)
     kmin  <- exp(lkmin)
     khal  <- exp(lkhal)
-    gamma <- exp(lgamma)
-    kbde  <- (kdec + kmin) - kdec * (WT ^ gamma) / (khal ^ gamma + WT ^ gamma)
+    hill <- exp(lhill)
+    kbde  <- (kdec + kmin) - kdec * (WT ^ hill) / (khal ^ hill + WT ^ hill)
 
     # 2. Individual PK parameters with adolescent-specific overrides.
     cl <- exp(lcl + etalcl) * (WT / 70) ^ kbde

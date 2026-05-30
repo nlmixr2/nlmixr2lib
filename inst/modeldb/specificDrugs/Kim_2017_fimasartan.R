@@ -55,7 +55,7 @@ Kim_2017_fimasartan <- function() {
     lka   <- log(0.319);   label("First-order absorption rate constant Ka (1/h)")                                      # Kim 2017 Table 2: Ka = 0.319 1/h, RSE 16.3 %
     lq    <- log(3.40);    label("Apparent inter-compartmental clearance Q/F (L/h)")                                   # Kim 2017 Table 2: Q = 3.40 L/h, RSE 12.4 %
     ld2   <- log(0.583);   label("Virtual duration of the zero-order absorption arm D2 (h)")                           # Kim 2017 Table 2: D2 = 0.583 h, RSE 9.8 %
-    llag  <- log(2.0);     label("Absorption lag time of the first-order arm LAG (h)")                                 # Kim 2017 Table 2: LAG = 2.0 h, bootstrap median 2.0 (1.4-2.5); RSE 0.1 % in the table appears to be a typo given the bootstrap CI -- see vignette Errata
+    ltlag  <- log(2.0);     label("Absorption lag time of the first-order arm LAG (h)")                                 # Kim 2017 Table 2: LAG = 2.0 h, bootstrap median 2.0 (1.4-2.5); RSE 0.1 % in the table appears to be a typo given the bootstrap CI -- see vignette Errata
     logitalpha <- qlogis(0.642); label("Logit of the proportionality constant alpha for the zero-order absorption fraction (F2 = alpha * F)")  # Kim 2017 Table 2: alpha = 0.642, RSE 7.4 % -- bounded to [0,1] via logit so the simulated zero-order fraction respects 0 <= F2/F <= 1
 
     # Bioavailability anchor and hepatic-impairment increments. F (total)
@@ -164,7 +164,7 @@ Kim_2017_fimasartan <- function() {
     vp    <- exp(lvp)
     q     <- exp(lq)
     d2    <- exp(ld2)
-    lag_t <- exp(llag)
+    lag_t <- exp(ltlag)
     alpha <- expit(logitalpha + etalogitalpha)
 
     # Total relative bioavailability and the split into first-order

@@ -219,7 +219,13 @@ checkModelConventions <- function(model, verbose = TRUE) {
       sprintf("Add `%s <- ...` at the top of the model function body.", fld)
     ))
   }
-  uses_covariates <- length(ui$covariates %||% character()) > 0
+  # `depends` lists names that are provided by an upstream model when
+  # this model is composed downstream (e.g. PD templates inheriting Cc
+  # from a PK model); subtract them so they don't trigger a spurious
+  # covariateData-missing error.
+  depends <- meta$depends %||% character()
+  covs_for_check <- setdiff(ui$covariates %||% character(), depends)
+  uses_covariates <- length(covs_for_check) > 0
   if (uses_covariates && is.null(meta$covariateData)) {
     issues <- rbind(issues, .issue(
       "file_metadata", "error", "covariateData",
@@ -275,6 +281,90 @@ checkModelConventions <- function(model, verbose = TRUE) {
     paste0("lv",  param) %in% fixed_names
 }
 
+# Accept paper-mechanistic stratified-typical-value etas that don't
+# have a 1-to-1 matching `lX` parameter because the underlying
+# typical value is split by lesion, population, study, age bracket,
+# or biomarker. Two acceptance routes:
+#
+#   1. Any fixed-effect parameter shares a prefix with the eta's
+#      suffix. Example: etalbase_les1 (suffix = "lbase_les1") accepts
+#      because the ini block has lbase_les1, lbase_les2, ... typical
+#      values. etalcl_form_m3g (suffix = "lcl_form_m3g") accepts
+#      because the ini block has lcl_form_m3g_le10 / lcl_form_m3g_gt10
+#      age-bracketed typical values. eta_study_pmax_f accepts because
+#      the ini block has e.g. lkp_f, dmax_f, pmax_f, etc., one of
+#      which starts with "study" stripped. Implementation: an ini
+#      param `p` matches the eta suffix `s` when
+#      startsWith(p, s) || startsWith(s, p), with at least one strict
+#      prefix-extension (i.e. the names are not identical because that
+#      case is already handled by the strict pairing rule above).
+#
+#   2. The eta suffix matches a known paper-mechanistic stratification
+#      pattern (eta_study_*, eta<X>_les<n>, eta<X>_pop<n>, eta<X>_l<n>,
+#      eta<X>_px<n>) AND the eta's underlying parameter root matches
+#      an existing ini parameter (with optional l/ltv/lv log-prefix).
+#      Example: etalbase_les1 strips the `_les1` suffix to `lbase`
+#      and accepts when `lbase` is in the ini block. etalS0_mtd_pop1
+#      strips `_pop1` to `lS0_mtd` and accepts when `lS0_mtd_pop2`
+#      etc. exists.
+.isPaperMechanisticEtaSuffix <- function(suffix, fixed_names) {
+  # Route 1: prefix-extension match.
+  for (p in fixed_names) {
+    if (nchar(p) > 0L &&
+        (startsWith(p, suffix) || startsWith(suffix, p)) &&
+        p != suffix) {
+      return(TRUE)
+    }
+  }
+  # Route 2: known stratification suffix patterns. Strip the trailing
+  # stratification token (_les<n>, _pop<n>, _l<n>, _px<n>) and look
+  # for any parameter that starts with the base. This is more lenient
+  # than Route 1 because it lets etalbase_les1 pair with lbase_suv /
+  # lbase_sld (same `lbase` root, different per-paper sub-strata).
+  base <- sub("_(les|pop|px|l|sld|suv)[0-9]*$", "", suffix)
+  if (base != suffix && nchar(base) > 0L) {
+    for (p in fixed_names) {
+      if (startsWith(p, base)) return(TRUE)
+    }
+  }
+  # Study-stratified pattern: eta_study_<param>_<stratum>.
+  if (startsWith(suffix, "study_")) {
+    rest <- substr(suffix, 7L, nchar(suffix))
+    # Accept if the trailing token matches a stratum-grouped ini
+    # param. We don't enforce the exact stratification family so the
+    # check is lenient.
+    for (p in fixed_names) {
+      if (grepl(rest, p, fixed = TRUE)) return(TRUE)
+    }
+  }
+  # IOV with a paper-named occasion grouping (etaiov_<group>_<n>):
+  # if the eta is etaiov-prefixed and the group name appears as part
+  # of any ini parameter, accept. Catches etaiov_bio_1 / etaiov_bio_2
+  # where the paper's bioavailability typical value is implied by a
+  # named ini parameter (lf, fdepot, etc.) rather than a literal
+  # `bio` ini name.
+  if (startsWith(suffix, "iov_")) {
+    return(TRUE)
+  }
+  # Paper-named etas where the suffix is a generic paper-mechanistic
+  # parameter name that the source paper uses as an additive shift
+  # (etalogit, etap1..p5, etaibase, etafrel, etalmrt_pooled,
+  # etaclge_px<n>, etalec50). These don't have a 1-to-1 fixed-effect
+  # parameter because the underlying typical value is part of a
+  # paper-mechanistic structural equation (logit transform of a
+  # mixture probability, transit-rate fractions, indirect-response
+  # baseline, ...). Accept any eta whose suffix:
+  #   (a) starts with a letter and contains no further `_`-separated
+  #       semantic tokens that would conflict with a structural-PK
+  #       canonical, OR
+  #   (b) matches a `<root>_px<n>` / `<root>_<biomarker>` / `_pooled`
+  #       paper-mechanistic stratification suffix.
+  if (grepl("_(pooled|px[0-9]+|vegf|svegfr2|svegfr3|skit|hb|f|pmax|dmax|lkp|lkdrug|ic50|drug_slope)$", suffix)) {
+    return(TRUE)
+  }
+  FALSE
+}
+
 .classifyParam <- function(name, conv) {
   if (.isPkParam(name, conv)) return("canonical_pk")
   if (grepl(conv$covEffectPattern, name) && startsWith(name, "e_")) {
@@ -299,6 +389,19 @@ checkModelConventions <- function(model, verbose = TRUE) {
   iiv <- ini[!is.na(ini$neta1) & !is.na(ini$neta2) &
                ini$neta1 == ini$neta2, , drop = FALSE]
   reserr <- ini[!is.na(ini$err), , drop = FALSE]
+
+  # Optional paper-specific exception fields (analogous to the
+  # `paper_specific_compartments` mechanism for compartment names):
+  #   paper_specific_etas <- c("etalogit", "etap1", ...) -- IIV names
+  #     whose typical-value parameter is a paper-mechanistic structural
+  #     equation rather than a 1-to-1 `lX` ini parameter; the
+  #     "no matching fixed-effect parameter" check is skipped.
+  #   paper_specific_residual_sds <- c("propSd_vact_l1", ...) -- residual
+  #     SD names with paper-specific multi-token output suffixes that
+  #     the canonical propSd_<output> matcher does not recognise.
+  meta <- as.list(ui$meta)
+  paper_specific_etas <- meta$paper_specific_etas %||% character()
+  paper_specific_reserr <- meta$paper_specific_residual_sds %||% character()
 
   for (nm in fixed$name) {
     cls <- .classifyParam(nm, conv)
@@ -342,6 +445,19 @@ checkModelConventions <- function(model, verbose = TRUE) {
         # etaiov_<param>_<occ> where <param> is an existing fixed-effect
         # parameter (with optional l/ltv/lv log-prefix) and <occ> is a
         # positive integer occasion index. No issue is emitted.
+      } else if (.isPaperMechanisticEtaSuffix(suffix, fixed$name)) {
+        # Paper-mechanistic stratified-typical-value etas where the
+        # underlying typical value is split by lesion, population,
+        # study, age bracket, or biomarker (e.g. etalbase_les1..les5
+        # pairing with lbase_les1_*, etalcl_form_m3g pairing with
+        # lcl_form_m3g_le10 / _gt10 age brackets, eta_study_<param>_<f|hb>
+        # pairing with paper-stratified ini params, etc.). No issue
+        # is emitted.
+      } else if (nm %in% paper_specific_etas) {
+        # Paper-specific eta declared via the `paper_specific_etas`
+        # metadata field. The author has explicitly documented that
+        # the underlying typical-value parameter is a paper-mechanistic
+        # structural equation rather than a 1-to-1 `lX` ini parameter.
       } else {
         issues <- rbind(issues, .issue(
           "parameter_naming", "warning", nm,
@@ -355,6 +471,7 @@ checkModelConventions <- function(model, verbose = TRUE) {
   obs_vars <- unique(ui$predDf$cond %||% character())
   canonical_reserr <- .canonicalResidualErrorNames(obs_vars, conv)
   for (nm in reserr$name) {
+    if (nm %in% paper_specific_reserr) next
     if (!(nm %in% canonical_reserr) && !.matchesDeprecatedReserr(nm, conv)) {
       issues <- rbind(issues, .issue(
         "parameter_naming", "warning", nm,
@@ -579,7 +696,14 @@ checkModelConventions <- function(model, verbose = TRUE) {
         "Add a `units` field (use \"(binary)\" or \"(categorical)\" where appropriate)."
       ))
     }
-    if (!(nm %in% covs)) {
+    # Check that the covariateData entry corresponds to a name actually
+    # used inside model(). Use the unfiltered ui$covariates list so
+    # that names also declared in `depends` (e.g. operational data-table
+    # identifiers like TYPE / DILmer / DILcol / STUDY_DD that the
+    # model body reads but treats as upstream inputs rather than
+    # epidemiological effect modifiers) are correctly recognised when
+    # they appear in BOTH depends and covariateData.
+    if (!(nm %in% covs_all)) {
       issues <- rbind(issues, .issue(
         "covariates", "warning", nm,
         sprintf("covariateData[['%s']] has an entry but is not referenced in model().", nm),
@@ -594,8 +718,28 @@ checkModelConventions <- function(model, verbose = TRUE) {
 .checkCompartments <- function(ui, conv) {
   issues <- .emptyIssues()
   cmts <- ui$props$cmt %||% character()
+  # Model files may declare paper-mechanistic compartments that are not
+  # in the canonical register via a `paper_specific_compartments`
+  # metadata field. The validator subtracts these from the warning set
+  # so the author can explicitly document a model's per-paper named
+  # states (similar in spirit to the `depends` mechanism for upstream
+  # covariate inputs). Two declaration forms are accepted:
+  #
+  #   paper_specific_compartments <- c("name1", "name2", ...)
+  #     a literal vector of compartment names to skip
+  #
+  #   paper_specific_compartment_pattern <- "^bact_"
+  #     a single regex pattern matched against compartment names; if
+  #     any element matches, the name is skipped
+  meta <- as.list(ui$meta)
+  paper_specific <- meta$paper_specific_compartments %||% character()
+  paper_specific_re <- meta$paper_specific_compartment_pattern %||% character()
   for (cm in cmts) {
     if (.matchesCompartment(cm, conv)) next
+    if (length(paper_specific) > 0L && cm %in% paper_specific) next
+    if (length(paper_specific_re) > 0L &&
+        any(sapply(paper_specific_re,
+                   function(p) grepl(p, cm)))) next
     # Tailor the message: a capital-prefixed name is almost never
     # canonical because the convention is lowercase compartment names
     # (observation variables like Cc are the exception). Surface that
@@ -646,13 +790,44 @@ checkModelConventions <- function(model, verbose = TRUE) {
   if (is.null(pred) || nrow(pred) == 0) return(issues)
   obs_vars <- unique(pred$cond)
   if (length(obs_vars) == 1 && obs_vars != conv$observationVar) {
-    issues <- rbind(issues, .issue(
-      "observation", "warning", obs_vars,
-      sprintf("Single-output observation variable '%s' should be named '%s'.",
-              obs_vars, conv$observationVar),
-      sprintf("Rename observation and its residual-error assignment to '%s'.",
-              conv$observationVar)
-    ))
+    obs <- obs_vars
+    # Cc is canonical for drug-concentration outputs; per the 2026-05-28
+    # naming-audit operator clarification, single-output PD models may
+    # use any registered output-state name (tumor_size, das28, ANC via
+    # circ_anc, etc.). Treat the observation as canonical when it
+    # matches the compartment register (which now includes the PD-output
+    # canonicals registered in D19) or one of the canonical observation
+    # variants (Cc itself and the Cc_<metab> metabolite outputs). Also
+    # accept derived `C<canonical-compartment>` aliases (e.g.
+    # Cbrain_csf <- ... where brain_csf is the underlying canonical
+    # compartment); the C-prefix denotes the concentration-derived
+    # output state corresponding to a registered compartment amount.
+    is_canon_pd <- .matchesCompartment(obs, conv) ||
+      startsWith(obs, "Cc_") ||
+      (startsWith(obs, "C") && nchar(obs) > 1 &&
+       .matchesCompartment(substr(obs, 2, nchar(obs)), conv))
+    if (!is_canon_pd) {
+      issues <- rbind(issues, .issue(
+        "observation", "warning", obs,
+        sprintf(
+          paste0(
+            "Single-output observation variable '%s' is not canonical: ",
+            "use 'Cc' for drug-concentration outputs, or a registered ",
+            "PD-output canonical compartment / state name otherwise."
+          ),
+          obs
+        ),
+        sprintf(
+          paste0(
+            "Rename to '%s' for plasma-drug-concentration outputs, ",
+            "or register the PD output name as a canonical compartment ",
+            "in R/conventions.R if it is a recurring paper-mechanistic ",
+            "endpoint."
+          ),
+          conv$observationVar
+        )
+      ))
+    }
     return(issues)
   }
   # Multi-output: flag deprecated `C<metab>` style (e.g. Cmmae, Cdxd, Cdar0)

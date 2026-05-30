@@ -104,7 +104,7 @@ Chen_2014_nab_paclitaxel <- function() {
     # is (BASE / Circ)^gamma. See Methods 'Population PD Model Development' and Figure 1.
     lmtt    <- log(117);     label("MTT: mean transit time Prol->Circ (h)")                                # Table 2: MTT = 117 h (95% CI 109-125; RSE 3.4%)
     lslope  <- log(0.00253); label("Slope: linear drug-effect slope on proliferation (1/(ng/mL))")          # Table 2: Slope = 0.00253 ng/mL^-1 (95% CI 0.00216-0.00290; RSE 7.47%)
-    lbase   <- log(4.28);    label("BASE: baseline circulating ANC (10^9 cells/L)")                        # Table 2: Baseline ANC = 4.28 x 10^9/L (95% CI 3.94-4.62; RSE 4.09%)
+    lrbase   <- log(4.28);    label("BASE: baseline circulating ANC (10^9 cells/L)")                        # Table 2: Baseline ANC = 4.28 x 10^9/L (95% CI 3.94-4.62; RSE 4.09%)
     lgamma  <- log(0.187);   label("gamma: feedback exponent on (BASE / Circ) (unitless)")                 # Table 2: Feedback parameter = 0.187 (95% CI 0.171-0.203; RSE 4.44%)
 
     # ---- Covariate effects on PD ----
@@ -117,7 +117,7 @@ Chen_2014_nab_paclitaxel <- function() {
     # Albumin on baseline ANC: power model centred at the PD-population median 4.0 g/dL
     #   BASE_i = BASE * (ALB / 4.0)^e
     # Negative exponent: higher albumin -> lower baseline ANC.
-    e_alb_base <- -0.998; label("Power exponent of (ALB / 4.0 g/dL) on baseline ANC (unitless)") # Table 2: 'Albumin on baseline ANC' = -0.998 (95% CI -1.5 to -0.494; RSE 25.8%)
+    e_alb_rbase <- -0.998; label("Power exponent of (ALB / 4.0 g/dL) on baseline ANC (unitless)") # Table 2: 'Albumin on baseline ANC' = -0.998 (95% CI -1.5 to -0.494; RSE 25.8%)
 
     # ---- PD inter-individual variability (Chen 2014 Table 2 'Interindividual variability' PD block) ----
     # Paper reports CV%; converted to log-normal eta variance via omega^2 = log(1 + CV^2).
@@ -126,7 +126,7 @@ Chen_2014_nab_paclitaxel <- function() {
     #   Baseline ANC 35.1% -> log(1 + 0.351^2) = 0.1162
     etalmtt   ~ 0.0353
     etalslope ~ 0.1697
-    etalbase  ~ 0.1162
+    etalrbase  ~ 0.1162
 
     # ---- PD residual error (Chen 2014 Table 2 'Residual variability' PD row) ----
     # ANC values were Ln-transformed; proportional error on log-transformed ANC = lognormal
@@ -176,7 +176,7 @@ Chen_2014_nab_paclitaxel <- function() {
     # ---- Individual PD parameters ----
     mtt   <- exp(lmtt   + etalmtt)
     slope <- exp(lslope + etalslope) * (1 + e_age_slope * age_gte65)
-    base  <- exp(lbase  + etalbase)  * (ALB / 4.0)^e_alb_base
+    rbase  <- exp(lrbase  + etalrbase)  * (ALB / 4.0)^e_alb_rbase
     gamma <- exp(lgamma)
 
     # Transit-rate constant for the Friberg chain: KTR = (n + 1) / MTT with n = 3
@@ -188,7 +188,7 @@ Chen_2014_nab_paclitaxel <- function() {
     edrug <- slope * Cc
 
     # Feedback from circulating cells (Friberg 2002 form)
-    feedback <- (base / circ)^gamma
+    feedback <- (rbase / circ)^gamma
 
     # ---- PD ODE system (Friberg 2002 myelosuppression chain) ----
     # precursor1 = Prol (proliferating pool); precursor2..4 = M1..M3 (maturation chain).
@@ -199,11 +199,11 @@ Chen_2014_nab_paclitaxel <- function() {
     d/dt(circ)       <- ktr * precursor4 - ktr * circ
 
     # Initial conditions: system at steady state at the per-subject baseline ANC.
-    precursor1(0) <- base
-    precursor2(0) <- base
-    precursor3(0) <- base
-    precursor4(0) <- base
-    circ(0)       <- base
+    precursor1(0) <- rbase
+    precursor2(0) <- rbase
+    precursor3(0) <- rbase
+    precursor4(0) <- rbase
+    circ(0)       <- rbase
 
     # ---- Observations and error model ----
     Cc  ~ lnorm(expSd)

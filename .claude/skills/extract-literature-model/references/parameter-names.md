@@ -1,6 +1,6 @@
 # Parameter naming for nlmixr2lib models
 
-Authoritative source: `vignettes/create-model-library.Rmd` and `R/conventions.R`. Covers structural PK parameters, transform prefixes, fixed parameters, IIV, covariate-effect parameters, endogenous / mechanistic parameters, residual error, and file-level metadata.
+**Machine-readable source of truth:** `inst/references/parameter-names.md` in the `nlmixr2lib` package. That file is parsed at runtime by `R/conventions.R::.parseTypedNamesMd` and seeds the canonical `pkParams`, `pkBareParams`, and `paperNamedParams` lists used by `checkModelConventions()`. New canonical parameter names MUST be added there; this skill reference is the user-facing summary kept in sync with that file. Companion references: `vignettes/create-model-library.Rmd` (narrative). Covers structural PK parameters, transform prefixes, fixed parameters, IIV, covariate-effect parameters, endogenous / mechanistic parameters, residual error, and file-level metadata.
 
 **Stop-and-ask gate (Phase 1 pre-flight + Phase 3 drafting):** If the model you are extracting needs a parameter name that is NOT in this document, file a sidecar BEFORE writing the model file. Propose: the canonical name (with `l` prefix if log-transformed), its role (one sentence), source paper's local name(s) it would replace, why it isn't an alias of an existing canonical (e.g., why this isn't just `cl_ss` / `cl_time` / `cl_renal` / `cl_nonren` under a different label), and any cross-precedent in existing registered model files. Wait for operator approval before committing. Trivial notation differences (case-only, NONMEM `V1`/`V2`/`V3` → `vc`/`vp`/`vp2`, paper's `Kel` → canonical `kel`) translate silently and do NOT need a sidecar.
 
@@ -114,11 +114,23 @@ Inside `model()` the bare names are `mtt` and `ktr`. Source-paper aliases
 Canonical lag-time prefix: **`ltlag`** (log absorption-lag time).
 
 Source-paper aliases that translate to `ltlag` without sidecar:
-`ALAG1` (NONMEM), `tlag`, `Tlag`, `alag`, `LAG`, `Tz`, `Tz1`. The legacy
-forms `lalag`, `llag`, `ltz` are deprecated in favour of `ltlag`.
+`ALAG1` (NONMEM), `tlag`, `Tlag`, `alag`, `LAG`. The legacy forms
+`lalag`, `llag` are deprecated in favour of `ltlag`.
 
 Inside `model()` the bare name is `tlag`. Apply via `alag(depot) <- tlag`
 or `alag(<cmt>) <- tlag` (preferred over carrying a separate `lag` compartment).
+
+### Acrophase / circadian peak time
+
+Canonical acrophase prefix: **`ltacro`** (log time of peak in a
+circadian-rhythm rate constant). Distinct from absorption-lag time:
+`tacro` is a phase shift inside a sinusoidal modulation of `kin` /
+`kout` rather than a delay between dose administration and absorption.
+
+Used in `indirect_circ_*` circadian-IDR templates with kinetic forms
+such as `kout_t <- kin + amp * sin(2*pi*(t - tacro) / period)` (and
+the cos / amplitude-ratio variants). The legacy form `ltz` is
+deprecated in favour of `ltacro`.
 
 ## Indirect-response (IDR) / turnover parameters
 
@@ -195,6 +207,36 @@ and should retain their `lgamma` / `gamma` name:
 The `lnn` / `nn_fix` form is reserved for Wang & co-authors'
 sigmoidicity exponent in specific BDE / morphine-like models and is a
 distinct canonical from `lhill`.
+
+## Paper-specific etas and residual-SDs
+
+For models with genuinely paper-mechanistic IIV / residual-error
+parameter names that do not pair 1-to-1 with an `lX` fixed-effect
+parameter, declare them via the `paper_specific_etas` and
+`paper_specific_residual_sds` metadata fields at the top of the
+model function body (analogous to the `depends` field for
+upstream-imported covariates and the `paper_specific_compartments`
+field for paper-mechanistic compartment names):
+
+```r
+my_model <- function() {
+  description <- "..."
+  reference <- "..."
+  paper_specific_etas <- c("etalogit", "etap1", "etap2")
+  paper_specific_residual_sds <- c("propSd_vact_l1", "propSd_vact_l2")
+  units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
+  ...
+}
+```
+
+`checkModelConventions()` subtracts these from the parameter-naming
+warning set. Use sparingly: when an eta's underlying typical-value
+parameter is part of a paper-mechanistic structural equation
+(mixture-probability logit transform, transit-rate fractions,
+indirect-response baselines, etc.) rather than a 1-to-1 `lX` ini
+parameter; or when a residual SD uses a paper-specific multi-token
+output suffix (`propSd_vact_l1` for a lesion-stratified PD output)
+that the canonical `propSd_<output>` matcher does not recognise.
 
 ## Transform prefixes
 

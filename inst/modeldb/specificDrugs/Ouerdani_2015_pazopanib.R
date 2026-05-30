@@ -1,5 +1,5 @@
 Ouerdani_2015_pazopanib <- function() {
-  description <- "Semi-mechanistic tumour growth and angiogenesis-inhibition (TGI) model for pazopanib in renal-cell carcinoma patients (Ouerdani 2015 clinical fit): logistic tumour growth (state tumorSize) limited by a separately tracked vasculature-determined carrying capacity (state carryingCapacity), with antiangiogenic and cytotoxic drug effects parameterised as power functions of per-period mean AUC_PAZO and an exponentially declining resistance on the cytotoxic effect. The empirical exponent on capacity growth (n) is fixed at 0.5 for the clinical fit (vs 1 in the paired mouse model) to better describe the tumour-regrowth and long-term-antiangiogenic phases observed in patients."
+  description <- "Semi-mechanistic tumour growth and angiogenesis-inhibition (TGI) model for pazopanib in renal-cell carcinoma patients (Ouerdani 2015 clinical fit): logistic tumour growth (state tumor_size) limited by a separately tracked vasculature-determined carrying capacity (state carrying_capacity), with antiangiogenic and cytotoxic drug effects parameterised as power functions of per-period mean AUC_PAZO and an exponentially declining resistance on the cytotoxic effect. The empirical exponent on capacity growth (n) is fixed at 0.5 for the clinical fit (vs 1 in the paired mouse model) to better describe the tumour-regrowth and long-term-antiangiogenic phases observed in patients."
   reference <- paste(
     "Ouerdani A, Struemper H, Suttle AB, Ouellet D, Ribba B.",
     "Preclinical modeling of tumor growth and angiogenesis inhibition",
@@ -27,7 +27,7 @@ Ouerdani_2015_pazopanib <- function() {
       source_name        = "AUC"
     ),
     TUM_SLD = list(
-      description        = "Per-patient observed baseline RECIST 1.1 sum of longest diameters of target lesions; used as the per-subject initial condition for the tumorSize ODE state.",
+      description        = "Per-patient observed baseline RECIST 1.1 sum of longest diameters of target lesions; used as the per-subject initial condition for the tumor_size ODE state.",
       units              = "mm",
       type               = "continuous",
       reference_category = NULL,
@@ -120,21 +120,21 @@ Ouerdani_2015_pazopanib <- function() {
     # ----- ODE system (Ouerdani 2015 Equation 1, clinical fit with n = 0.5) -----
     #   dP/dt = k * P * (1 - P/K) - a * exp(-d*t) * P
     #   dK/dt = b * P^n           - c * K
-    # P = tumorSize         (mm, SLD).
-    # K = carryingCapacity  (mm, SLD scale); biologically the maximum
+    # P = tumor_size         (mm, SLD).
+    # K = carrying_capacity  (mm, SLD scale); biologically the maximum
     #     tumour size sustainable by the current vasculature.
     # t is rxode2 simulation time in days; treatment start is taken as
     # t = 0 so the exp(-d*t) resistance term decays from 1 at study start.
-    d/dt(tumorSize)        <- k_tumor * tumorSize * (1 - tumorSize / carryingCapacity) -
-                              cyto_rate * exp(-k_res * t) * tumorSize
-    d/dt(carryingCapacity) <- k_cap * tumorSize^n - aa_rate * carryingCapacity
+    d/dt(tumor_size)        <- k_tumor * tumor_size * (1 - tumor_size / carrying_capacity) -
+                              cyto_rate * exp(-k_res * t) * tumor_size
+    d/dt(carrying_capacity) <- k_cap * tumor_size^n - aa_rate * carrying_capacity
 
     # Initial state. P0 is per-patient (covariate TUM_SLD); K0 is the
     # population-typical-value parameter (no IIV in the clinical fit).
-    tumorSize(0)        <- TUM_SLD
-    carryingCapacity(0) <- K0
+    tumor_size(0)        <- TUM_SLD
+    carrying_capacity(0) <- K0
 
     # ----- Observation and combined residual error -----
-    tumorSize ~ add(addSd) + prop(propSd)
+    tumor_size ~ add(addSd) + prop(propSd)
   })
 }

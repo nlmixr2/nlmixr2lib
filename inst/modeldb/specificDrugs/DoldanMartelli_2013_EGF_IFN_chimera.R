@@ -2,6 +2,8 @@ DoldanMartelli_2013_EGF_IFN_chimera <- function() {
   description <- "In vitro (Daudi human Burkitt lymphoma cell line). Mechanistic kinetic model of an EGF-IFNalpha-2a chimeric ligand binding to EGFR and IFN receptor on the cell membrane: sequential two-subunit engagement, receptor lateral diffusion, and internalization (Doldan-Martelli 2013). Default parameters are wild-type IFN chimera in Daudi-EGFR cells (overexpressing EGFR ~300x parental); k2on / k2off can be overridden for K133A and R144A IFN mutants, and R1_0 / R2_0 for parental Daudi cells (see vignette)."
   reference <- "Doldan-Martelli V, Guantes R, Miguez DG. A mathematical model for the rational design of chimeric ligands in selective drug therapies. CPT Pharmacometrics Syst Pharmacol. 2013 Feb 13;2(2):e26. doi:10.1038/psp.2013.2."
   vignette <- "DoldanMartelli_2013_EGF_IFN_chimera"
+  paper_specific_compartments <- c("egfr", "ifnr", "c_egf", "c_ifn", "c_full")
+
   units <- list(
     time = "min",
     dosing = "(none; constant extracellular ligand)",

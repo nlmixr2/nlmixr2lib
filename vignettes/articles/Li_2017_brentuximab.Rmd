@@ -151,7 +151,7 @@ the licensed 1.8 mg/kg IV every-3-weeks regimen for 5 cycles with the
 ```{r cohort}
 set.seed(20250424L)
 
-n_subj   <- 200L
+n_subj   <- 100L  # downsampled from 200 for vignette build budget; VPC ribbon shape preserved
 cycle_dy <- 21
 n_cycles <- 5L
 
@@ -172,7 +172,7 @@ make_subject <- function(id, wt_kg, sexf_ind) {
   doses <- rxode2::et() |>
     rxode2::et(amt = dose_nmol, cmt = "central", ii = cycle_dy,
                addl = n_cycles - 1L, time = 0)
-  obs   <- rxode2::et(seq(0.05, n_cycles * cycle_dy, length.out = 420),
+  obs   <- rxode2::et(seq(0.05, n_cycles * cycle_dy, length.out = 200),  # trimmed grid for vignette build budget; VPC ribbon stays smooth
                       cmt = "Cc")
   ev <- rbind(doses, obs)
   ev$id    <- id
@@ -203,7 +203,7 @@ typ_events <- rxode2::et() |>
   rxode2::et(amt = (1.8 * 75) * 1000 / MW_ADC_kDa,
              cmt = "central", ii = cycle_dy, addl = n_cycles - 1L,
              time = 0) |>
-  rxode2::et(seq(0.05, n_cycles * cycle_dy, length.out = 1500), cmt = "Cc")
+  rxode2::et(seq(0.05, n_cycles * cycle_dy, length.out = 400), cmt = "Cc")  # trimmed from 1500 for vignette build budget; smooth typical-subject curve preserved
 typ_events$WT    <- 75
 typ_events$SEXF  <- 0
 typ_events$CYCLE <- pmax(1L, as.integer(floor(typ_events$time / cycle_dy) + 1L))

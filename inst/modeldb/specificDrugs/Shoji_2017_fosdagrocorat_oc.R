@@ -56,7 +56,7 @@ Shoji_2017_fosdagrocorat_oc <- function() {
     # Biomarker (response compartment) -- Shoji 2017 Table 2 (OC).
     # ===================================================================
     lkd <- log(0.939); label("First-order degradation rate Kd of osteocalcin (1/week)")  # Shoji 2017 Table 2 OC: Kd = 0.939 /week (RSE 24.6%)
-    lbl <- log(22.2);  label("Baseline osteocalcin concentration BL (ng/mL)")             # Shoji 2017 Table 2 OC: BL = 22.2 ng/mL (RSE 2.58%)
+    lrbase <- log(22.2);  label("Baseline osteocalcin concentration BL (ng/mL)")             # Shoji 2017 Table 2 OC: BL = 22.2 ng/mL (RSE 2.58%)
 
     # Sigmoid Emax inhibition -- Imax fixed to 1 for both drugs because the
     # estimate was close to 1 in unconstrained OC fits (paper Discussion).
@@ -89,7 +89,7 @@ Shoji_2017_fosdagrocorat_oc <- function() {
     # ===================================================================
     etalkde   ~ 1.5129
     etaledk50 ~ 0.0650
-    etalbl    ~ 0.1901
+    etalrbase    ~ 0.1901
 
     # Additive (linear-scale) eta on SLP -- Shoji 2017 Methods (same
     # convention as P1NP). Table 2 reports IIV SD = 0.338 ng/mL/week,
@@ -114,13 +114,13 @@ Shoji_2017_fosdagrocorat_oc <- function() {
     kde   <- exp(lkde_active + etalkde)
     edk50 <- exp(ledk50_active + etaledk50)
     kd    <- exp(lkd)
-    bl    <- exp(lbl + etalbl)
+    rbase    <- exp(lrbase + etalrbase)
     rbmax <- exp(lrbmax)
     t50   <- exp(lt50)
     slp_i <- slp + etaslp
 
     # ---- Steady-state synthesis at baseline (no drug): Ks = BL * Kd ----
-    ks <- bl * kd
+    ks <- rbase * kd
 
     # ---- K-PD depot (drug). Drug input enters as zero-order infusion via
     # dosing events (rate = 7 * q.d. dose in mg/week); first-order
@@ -136,7 +136,7 @@ Shoji_2017_fosdagrocorat_oc <- function() {
 
     # ---- Effect compartment (OC biomarker); initial condition = BL ----
     d/dt(effect) <- ks * rebound * inhibition - kd * effect
-    effect(0)    <- bl
+    effect(0)    <- rbase
 
     # ---- Observation: OC = R(t) + SLP_i * t with proportional residual error ----
     OC <- effect + slp_i * t

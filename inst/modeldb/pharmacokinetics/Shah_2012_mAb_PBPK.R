@@ -185,75 +185,75 @@ Shah_2012_mAb_PBPK <- function() {
     cv_bcc <- bcc     / v_bcc
     cv_ln  <- lnode   / v_lnode
 
-    cv_ht <- vp_ht / v_ht_vp; cb_ht <- bc_ht / v_ht_bc; ceu_ht <- eu_ht / v_ht_e
-    ceb_ht <- eb_ht / v_ht_e; cfr_ht <- fr_ht / v_ht_e; cis_ht <- is_ht / v_ht_is
+    cv_ht <- vp_heart / v_ht_vp; cb_ht <- bc_heart / v_ht_bc; ceu_ht <- eu_heart / v_ht_e
+    ceb_ht <- eb_heart / v_ht_e; cfr_ht <- fr_heart / v_ht_e; cis_ht <- is_heart / v_ht_is
 
-    cv_lu <- vp_lu / v_lu_vp; cb_lu <- bc_lu / v_lu_bc; ceu_lu <- eu_lu / v_lu_e
-    ceb_lu <- eb_lu / v_lu_e; cfr_lu <- fr_lu / v_lu_e; cis_lu <- is_lu / v_lu_is
+    cv_lu <- vp_lung / v_lu_vp; cb_lu <- bc_lung / v_lu_bc; ceu_lu <- eu_lung / v_lu_e
+    ceb_lu <- eb_lung / v_lu_e; cfr_lu <- fr_lung / v_lu_e; cis_lu <- is_lung / v_lu_is
 
-    cv_mu <- vp_mu / v_mu_vp; cb_mu <- bc_mu / v_mu_bc; ceu_mu <- eu_mu / v_mu_e
-    ceb_mu <- eb_mu / v_mu_e; cfr_mu <- fr_mu / v_mu_e; cis_mu <- is_mu / v_mu_is
+    cv_mu <- vp_muscle / v_mu_vp; cb_mu <- bc_muscle / v_mu_bc; ceu_mu <- eu_muscle / v_mu_e
+    ceb_mu <- eb_muscle / v_mu_e; cfr_mu <- fr_muscle / v_mu_e; cis_mu <- is_muscle / v_mu_is
 
-    cv_sk <- vp_sk / v_sk_vp; cb_sk <- bc_sk / v_sk_bc; ceu_sk <- eu_sk / v_sk_e
-    ceb_sk <- eb_sk / v_sk_e; cfr_sk <- fr_sk / v_sk_e; cis_sk <- is_sk / v_sk_is
+    cv_sk <- vp_skin / v_sk_vp; cb_sk <- bc_skin / v_sk_bc; ceu_sk <- eu_skin / v_sk_e
+    ceb_sk <- eb_skin / v_sk_e; cfr_sk <- fr_skin / v_sk_e; cis_sk <- is_skin / v_sk_is
 
-    cv_ad <- vp_ad / v_ad_vp; cb_ad <- bc_ad / v_ad_bc; ceu_ad <- eu_ad / v_ad_e
-    ceb_ad <- eb_ad / v_ad_e; cfr_ad <- fr_ad / v_ad_e; cis_ad <- is_ad / v_ad_is
+    cv_ad <- vp_adipose / v_ad_vp; cb_ad <- bc_adipose / v_ad_bc; ceu_ad <- eu_adipose / v_ad_e
+    ceb_ad <- eb_adipose / v_ad_e; cfr_ad <- fr_adipose / v_ad_e; cis_ad <- is_adipose / v_ad_is
 
-    cv_bo <- vp_bo / v_bo_vp; cb_bo <- bc_bo / v_bo_bc; ceu_bo <- eu_bo / v_bo_e
-    ceb_bo <- eb_bo / v_bo_e; cfr_bo <- fr_bo / v_bo_e; cis_bo <- is_bo / v_bo_is
+    cv_bo <- vp_bone / v_bo_vp; cb_bo <- bc_bone / v_bo_bc; ceu_bo <- eu_bone / v_bo_e
+    ceb_bo <- eb_bone / v_bo_e; cfr_bo <- fr_bone / v_bo_e; cis_bo <- is_bone / v_bo_is
 
-    cv_br <- vp_br / v_br_vp; cb_br <- bc_br / v_br_bc; ceu_br <- eu_br / v_br_e
-    ceb_br <- eb_br / v_br_e; cfr_br <- fr_br / v_br_e; cis_br <- is_br / v_br_is
+    cv_br <- vp_brain / v_br_vp; cb_br <- bc_brain / v_br_bc; ceu_br <- eu_brain / v_br_e
+    ceb_br <- eb_brain / v_br_e; cfr_br <- fr_brain / v_br_e; cis_br <- is_brain / v_br_is
 
-    cv_ki <- vp_ki / v_ki_vp; cb_ki <- bc_ki / v_ki_bc; ceu_ki <- eu_ki / v_ki_e
-    ceb_ki <- eb_ki / v_ki_e; cfr_ki <- fr_ki / v_ki_e; cis_ki <- is_ki / v_ki_is
+    cv_ki <- vp_kidney / v_ki_vp; cb_ki <- bc_kidney / v_ki_bc; ceu_ki <- eu_kidney / v_ki_e
+    ceb_ki <- eb_kidney / v_ki_e; cfr_ki <- fr_kidney / v_ki_e; cis_ki <- is_kidney / v_ki_is
 
-    cv_li <- vp_li / v_li_vp; cb_li <- bc_li / v_li_bc; ceu_li <- eu_li / v_li_e
-    ceb_li <- eb_li / v_li_e; cfr_li <- fr_li / v_li_e; cis_li <- is_li / v_li_is
+    cv_li <- vp_liver / v_li_vp; cb_li <- bc_liver / v_li_bc; ceu_li <- eu_liver / v_li_e
+    ceb_li <- eb_liver / v_li_e; cfr_li <- fr_liver / v_li_e; cis_li <- is_liver / v_li_is
 
-    cv_si <- vp_si / v_si_vp; cb_si <- bc_si / v_si_bc; ceu_si <- eu_si / v_si_e
-    ceb_si <- eb_si / v_si_e; cfr_si <- fr_si / v_si_e; cis_si <- is_si / v_si_is
+    cv_si <- vp_small_intestine / v_si_vp; cb_si <- bc_small_intestine / v_si_bc; ceu_si <- eu_small_intestine / v_si_e
+    ceb_si <- eb_small_intestine / v_si_e; cfr_si <- fr_small_intestine / v_si_e; cis_si <- is_small_intestine / v_si_is
 
-    cv_lr <- vp_lr / v_lr_vp; cb_lr <- bc_lr / v_lr_bc; ceu_lr <- eu_lr / v_lr_e
-    ceb_lr <- eb_lr / v_lr_e; cfr_lr <- fr_lr / v_lr_e; cis_lr <- is_lr / v_lr_is
+    cv_lr <- vp_large_intestine / v_lr_vp; cb_lr <- bc_large_intestine / v_lr_bc; ceu_lr <- eu_large_intestine / v_lr_e
+    ceb_lr <- eb_large_intestine / v_lr_e; cfr_lr <- fr_large_intestine / v_lr_e; cis_lr <- is_large_intestine / v_lr_is
 
-    cv_pa <- vp_pa / v_pa_vp; cb_pa <- bc_pa / v_pa_bc; ceu_pa <- eu_pa / v_pa_e
-    ceb_pa <- eb_pa / v_pa_e; cfr_pa <- fr_pa / v_pa_e; cis_pa <- is_pa / v_pa_is
+    cv_pa <- vp_pancreas / v_pa_vp; cb_pa <- bc_pancreas / v_pa_bc; ceu_pa <- eu_pancreas / v_pa_e
+    ceb_pa <- eb_pancreas / v_pa_e; cfr_pa <- fr_pancreas / v_pa_e; cis_pa <- is_pancreas / v_pa_is
 
-    cv_th <- vp_th / v_th_vp; cb_th <- bc_th / v_th_bc; ceu_th <- eu_th / v_th_e
-    ceb_th <- eb_th / v_th_e; cfr_th <- fr_th / v_th_e; cis_th <- is_th / v_th_is
+    cv_th <- vp_thymus / v_th_vp; cb_th <- bc_thymus / v_th_bc; ceu_th <- eu_thymus / v_th_e
+    ceb_th <- eb_thymus / v_th_e; cfr_th <- fr_thymus / v_th_e; cis_th <- is_thymus / v_th_is
 
-    cv_sp <- vp_sp / v_sp_vp; cb_sp <- bc_sp / v_sp_bc; ceu_sp <- eu_sp / v_sp_e
-    ceb_sp <- eb_sp / v_sp_e; cfr_sp <- fr_sp / v_sp_e; cis_sp <- is_sp / v_sp_is
+    cv_sp <- vp_spleen / v_sp_vp; cb_sp <- bc_spleen / v_sp_bc; ceu_sp <- eu_spleen / v_sp_e
+    ceb_sp <- eb_spleen / v_sp_e; cfr_sp <- fr_spleen / v_sp_e; cis_sp <- is_spleen / v_sp_is
 
-    cv_ot <- vp_ot / v_ot_vp; cb_ot <- bc_ot / v_ot_bc; ceu_ot <- eu_ot / v_ot_e
-    ceb_ot <- eb_ot / v_ot_e; cfr_ot <- fr_ot / v_ot_e; cis_ot <- is_ot / v_ot_is
+    cv_ot <- vp_other / v_ot_vp; cb_ot <- bc_other / v_ot_bc; ceu_ot <- eu_other / v_ot_e
+    ceb_ot <- eb_other / v_ot_e; cfr_ot <- fr_other / v_ot_e; cis_ot <- is_other / v_ot_is
 
     # === Vascular plasma ODEs (Eq 4 / Eq 11) ===
     # Arterial input: lung vascular plasma feeds every tissue except itself; the lung
     # is fed from central plasma. Liver also receives portal venous outflow from
     # spleen, pancreas, small intestine, and large intestine (Eq 11).
 
-    d/dt(vp_ht) <- q_ht * cv_lu - (q_ht - l_ht) * cv_ht - (1 - sv_ht) * l_ht * cv_ht - clu_ht * cv_ht + clu_ht * fr * ceb_ht
-    d/dt(vp_lu) <- q_lu * cv_p  - (q_lu - l_lu) * cv_lu - (1 - sv_lu) * l_lu * cv_lu - clu_lu * cv_lu + clu_lu * fr * ceb_lu
-    d/dt(vp_mu) <- q_mu * cv_lu - (q_mu - l_mu) * cv_mu - (1 - sv_mu) * l_mu * cv_mu - clu_mu * cv_mu + clu_mu * fr * ceb_mu
-    d/dt(vp_sk) <- q_sk * cv_lu - (q_sk - l_sk) * cv_sk - (1 - sv_sk) * l_sk * cv_sk - clu_sk * cv_sk + clu_sk * fr * ceb_sk
-    d/dt(vp_ad) <- q_ad * cv_lu - (q_ad - l_ad) * cv_ad - (1 - sv_ad) * l_ad * cv_ad - clu_ad * cv_ad + clu_ad * fr * ceb_ad
-    d/dt(vp_bo) <- q_bo * cv_lu - (q_bo - l_bo) * cv_bo - (1 - sv_bo) * l_bo * cv_bo - clu_bo * cv_bo + clu_bo * fr * ceb_bo
-    d/dt(vp_br) <- q_br * cv_lu - (q_br - l_br) * cv_br - (1 - sv_br) * l_br * cv_br - clu_br * cv_br + clu_br * fr * ceb_br
-    d/dt(vp_ki) <- q_ki * cv_lu - (q_ki - l_ki) * cv_ki - (1 - sv_ki) * l_ki * cv_ki - clu_ki * cv_ki + clu_ki * fr * ceb_ki
-    d/dt(vp_si) <- q_si * cv_lu - (q_si - l_si) * cv_si - (1 - sv_si) * l_si * cv_si - clu_si * cv_si + clu_si * fr * ceb_si
-    d/dt(vp_lr) <- q_lr * cv_lu - (q_lr - l_lr) * cv_lr - (1 - sv_lr) * l_lr * cv_lr - clu_lr * cv_lr + clu_lr * fr * ceb_lr
-    d/dt(vp_pa) <- q_pa * cv_lu - (q_pa - l_pa) * cv_pa - (1 - sv_pa) * l_pa * cv_pa - clu_pa * cv_pa + clu_pa * fr * ceb_pa
-    d/dt(vp_th) <- q_th * cv_lu - (q_th - l_th) * cv_th - (1 - sv_th) * l_th * cv_th - clu_th * cv_th + clu_th * fr * ceb_th
-    d/dt(vp_sp) <- q_sp * cv_lu - (q_sp - l_sp) * cv_sp - (1 - sv_sp) * l_sp * cv_sp - clu_sp * cv_sp + clu_sp * fr * ceb_sp
-    d/dt(vp_ot) <- q_ot * cv_lu - (q_ot - l_ot) * cv_ot - (1 - sv_ot) * l_ot * cv_ot - clu_ot * cv_ot + clu_ot * fr * ceb_ot
+    d/dt(vp_heart) <- q_ht * cv_lu - (q_ht - l_ht) * cv_ht - (1 - sv_ht) * l_ht * cv_ht - clu_ht * cv_ht + clu_ht * fr * ceb_ht
+    d/dt(vp_lung) <- q_lu * cv_p  - (q_lu - l_lu) * cv_lu - (1 - sv_lu) * l_lu * cv_lu - clu_lu * cv_lu + clu_lu * fr * ceb_lu
+    d/dt(vp_muscle) <- q_mu * cv_lu - (q_mu - l_mu) * cv_mu - (1 - sv_mu) * l_mu * cv_mu - clu_mu * cv_mu + clu_mu * fr * ceb_mu
+    d/dt(vp_skin) <- q_sk * cv_lu - (q_sk - l_sk) * cv_sk - (1 - sv_sk) * l_sk * cv_sk - clu_sk * cv_sk + clu_sk * fr * ceb_sk
+    d/dt(vp_adipose) <- q_ad * cv_lu - (q_ad - l_ad) * cv_ad - (1 - sv_ad) * l_ad * cv_ad - clu_ad * cv_ad + clu_ad * fr * ceb_ad
+    d/dt(vp_bone) <- q_bo * cv_lu - (q_bo - l_bo) * cv_bo - (1 - sv_bo) * l_bo * cv_bo - clu_bo * cv_bo + clu_bo * fr * ceb_bo
+    d/dt(vp_brain) <- q_br * cv_lu - (q_br - l_br) * cv_br - (1 - sv_br) * l_br * cv_br - clu_br * cv_br + clu_br * fr * ceb_br
+    d/dt(vp_kidney) <- q_ki * cv_lu - (q_ki - l_ki) * cv_ki - (1 - sv_ki) * l_ki * cv_ki - clu_ki * cv_ki + clu_ki * fr * ceb_ki
+    d/dt(vp_small_intestine) <- q_si * cv_lu - (q_si - l_si) * cv_si - (1 - sv_si) * l_si * cv_si - clu_si * cv_si + clu_si * fr * ceb_si
+    d/dt(vp_large_intestine) <- q_lr * cv_lu - (q_lr - l_lr) * cv_lr - (1 - sv_lr) * l_lr * cv_lr - clu_lr * cv_lr + clu_lr * fr * ceb_lr
+    d/dt(vp_pancreas) <- q_pa * cv_lu - (q_pa - l_pa) * cv_pa - (1 - sv_pa) * l_pa * cv_pa - clu_pa * cv_pa + clu_pa * fr * ceb_pa
+    d/dt(vp_thymus) <- q_th * cv_lu - (q_th - l_th) * cv_th - (1 - sv_th) * l_th * cv_th - clu_th * cv_th + clu_th * fr * ceb_th
+    d/dt(vp_spleen) <- q_sp * cv_lu - (q_sp - l_sp) * cv_sp - (1 - sv_sp) * l_sp * cv_sp - clu_sp * cv_sp + clu_sp * fr * ceb_sp
+    d/dt(vp_other) <- q_ot * cv_lu - (q_ot - l_ot) * cv_ot - (1 - sv_ot) * l_ot * cv_ot - clu_ot * cv_ot + clu_ot * fr * ceb_ot
 
     # Liver - Eq 11 (special): hepatic-artery inflow + splanchnic portal returns,
     # outflow proportional to combined plasma flow leaving liver to central plasma.
     qsum_li <- (q_li - l_li) + (q_sp - l_sp) + (q_pa - l_pa) + (q_si - l_si) + (q_lr - l_lr)
-    d/dt(vp_li) <- q_li * cv_lu +
+    d/dt(vp_liver) <- q_li * cv_lu +
                    (q_sp - l_sp) * cv_sp +
                    (q_pa - l_pa) * cv_pa +
                    (q_si - l_si) * cv_si +
@@ -264,24 +264,24 @@ Shah_2012_mAb_PBPK <- function() {
                    clu_li * fr * ceb_li
 
     # === Vascular blood-cell ODEs (Eq 5 / Eq 12) ===
-    d/dt(bc_ht) <- bcq_ht * (cb_lu - cb_ht)
-    d/dt(bc_lu) <- bcq_lu * (cv_bcc - cb_lu)
-    d/dt(bc_mu) <- bcq_mu * (cb_lu - cb_mu)
-    d/dt(bc_sk) <- bcq_sk * (cb_lu - cb_sk)
-    d/dt(bc_ad) <- bcq_ad * (cb_lu - cb_ad)
-    d/dt(bc_bo) <- bcq_bo * (cb_lu - cb_bo)
-    d/dt(bc_br) <- bcq_br * (cb_lu - cb_br)
-    d/dt(bc_ki) <- bcq_ki * (cb_lu - cb_ki)
-    d/dt(bc_si) <- bcq_si * (cb_lu - cb_si)
-    d/dt(bc_lr) <- bcq_lr * (cb_lu - cb_lr)
-    d/dt(bc_pa) <- bcq_pa * (cb_lu - cb_pa)
-    d/dt(bc_th) <- bcq_th * (cb_lu - cb_th)
-    d/dt(bc_sp) <- bcq_sp * (cb_lu - cb_sp)
-    d/dt(bc_ot) <- bcq_ot * (cb_lu - cb_ot)
+    d/dt(bc_heart) <- bcq_ht * (cb_lu - cb_ht)
+    d/dt(bc_lung) <- bcq_lu * (cv_bcc - cb_lu)
+    d/dt(bc_muscle) <- bcq_mu * (cb_lu - cb_mu)
+    d/dt(bc_skin) <- bcq_sk * (cb_lu - cb_sk)
+    d/dt(bc_adipose) <- bcq_ad * (cb_lu - cb_ad)
+    d/dt(bc_bone) <- bcq_bo * (cb_lu - cb_bo)
+    d/dt(bc_brain) <- bcq_br * (cb_lu - cb_br)
+    d/dt(bc_kidney) <- bcq_ki * (cb_lu - cb_ki)
+    d/dt(bc_small_intestine) <- bcq_si * (cb_lu - cb_si)
+    d/dt(bc_large_intestine) <- bcq_lr * (cb_lu - cb_lr)
+    d/dt(bc_pancreas) <- bcq_pa * (cb_lu - cb_pa)
+    d/dt(bc_thymus) <- bcq_th * (cb_lu - cb_th)
+    d/dt(bc_spleen) <- bcq_sp * (cb_lu - cb_sp)
+    d/dt(bc_other) <- bcq_ot * (cb_lu - cb_ot)
 
     # Liver blood cells - Eq 12 (portal returns from spleen, pancreas, S.Int, L.Int)
     bcqsum_li <- bcq_li + bcq_sp + bcq_pa + bcq_si + bcq_lr
-    d/dt(bc_li) <- bcq_li * cb_lu +
+    d/dt(bc_liver) <- bcq_li * cb_lu +
                    bcq_sp * cb_sp +
                    bcq_pa * cb_pa +
                    bcq_si * cb_si +
@@ -292,97 +292,97 @@ Shah_2012_mAb_PBPK <- function() {
     # bind_X = Kon * C_eu * C_fr * V_e gives the rate (nmol/h) at which mAb binds
     # FcRn within tissue X's endosomal space.
 
-    bind_ht <- kon * ceu_ht * cfr_ht * v_ht_e; ub_ht <- koff * eb_ht
-    d/dt(eu_ht) <- clu_ht * (cv_ht + cis_ht) - bind_ht + ub_ht - kdeg * eu_ht
-    d/dt(eb_ht) <- bind_ht - ub_ht - clu_ht * ceb_ht
-    d/dt(fr_ht) <- ub_ht - bind_ht + clu_ht * ceb_ht
+    bind_ht <- kon * ceu_ht * cfr_ht * v_ht_e; ub_ht <- koff * eb_heart
+    d/dt(eu_heart) <- clu_ht * (cv_ht + cis_ht) - bind_ht + ub_ht - kdeg * eu_heart
+    d/dt(eb_heart) <- bind_ht - ub_ht - clu_ht * ceb_ht
+    d/dt(fr_heart) <- ub_ht - bind_ht + clu_ht * ceb_ht
 
-    bind_lu <- kon * ceu_lu * cfr_lu * v_lu_e; ub_lu <- koff * eb_lu
-    d/dt(eu_lu) <- clu_lu * (cv_lu + cis_lu) - bind_lu + ub_lu - kdeg * eu_lu
-    d/dt(eb_lu) <- bind_lu - ub_lu - clu_lu * ceb_lu
-    d/dt(fr_lu) <- ub_lu - bind_lu + clu_lu * ceb_lu
+    bind_lu <- kon * ceu_lu * cfr_lu * v_lu_e; ub_lu <- koff * eb_lung
+    d/dt(eu_lung) <- clu_lu * (cv_lu + cis_lu) - bind_lu + ub_lu - kdeg * eu_lung
+    d/dt(eb_lung) <- bind_lu - ub_lu - clu_lu * ceb_lu
+    d/dt(fr_lung) <- ub_lu - bind_lu + clu_lu * ceb_lu
 
-    bind_mu <- kon * ceu_mu * cfr_mu * v_mu_e; ub_mu <- koff * eb_mu
-    d/dt(eu_mu) <- clu_mu * (cv_mu + cis_mu) - bind_mu + ub_mu - kdeg * eu_mu
-    d/dt(eb_mu) <- bind_mu - ub_mu - clu_mu * ceb_mu
-    d/dt(fr_mu) <- ub_mu - bind_mu + clu_mu * ceb_mu
+    bind_mu <- kon * ceu_mu * cfr_mu * v_mu_e; ub_mu <- koff * eb_muscle
+    d/dt(eu_muscle) <- clu_mu * (cv_mu + cis_mu) - bind_mu + ub_mu - kdeg * eu_muscle
+    d/dt(eb_muscle) <- bind_mu - ub_mu - clu_mu * ceb_mu
+    d/dt(fr_muscle) <- ub_mu - bind_mu + clu_mu * ceb_mu
 
-    bind_sk <- kon * ceu_sk * cfr_sk * v_sk_e; ub_sk <- koff * eb_sk
-    d/dt(eu_sk) <- clu_sk * (cv_sk + cis_sk) - bind_sk + ub_sk - kdeg * eu_sk
-    d/dt(eb_sk) <- bind_sk - ub_sk - clu_sk * ceb_sk
-    d/dt(fr_sk) <- ub_sk - bind_sk + clu_sk * ceb_sk
+    bind_sk <- kon * ceu_sk * cfr_sk * v_sk_e; ub_sk <- koff * eb_skin
+    d/dt(eu_skin) <- clu_sk * (cv_sk + cis_sk) - bind_sk + ub_sk - kdeg * eu_skin
+    d/dt(eb_skin) <- bind_sk - ub_sk - clu_sk * ceb_sk
+    d/dt(fr_skin) <- ub_sk - bind_sk + clu_sk * ceb_sk
 
-    bind_ad <- kon * ceu_ad * cfr_ad * v_ad_e; ub_ad <- koff * eb_ad
-    d/dt(eu_ad) <- clu_ad * (cv_ad + cis_ad) - bind_ad + ub_ad - kdeg * eu_ad
-    d/dt(eb_ad) <- bind_ad - ub_ad - clu_ad * ceb_ad
-    d/dt(fr_ad) <- ub_ad - bind_ad + clu_ad * ceb_ad
+    bind_ad <- kon * ceu_ad * cfr_ad * v_ad_e; ub_ad <- koff * eb_adipose
+    d/dt(eu_adipose) <- clu_ad * (cv_ad + cis_ad) - bind_ad + ub_ad - kdeg * eu_adipose
+    d/dt(eb_adipose) <- bind_ad - ub_ad - clu_ad * ceb_ad
+    d/dt(fr_adipose) <- ub_ad - bind_ad + clu_ad * ceb_ad
 
-    bind_bo <- kon * ceu_bo * cfr_bo * v_bo_e; ub_bo <- koff * eb_bo
-    d/dt(eu_bo) <- clu_bo * (cv_bo + cis_bo) - bind_bo + ub_bo - kdeg * eu_bo
-    d/dt(eb_bo) <- bind_bo - ub_bo - clu_bo * ceb_bo
-    d/dt(fr_bo) <- ub_bo - bind_bo + clu_bo * ceb_bo
+    bind_bo <- kon * ceu_bo * cfr_bo * v_bo_e; ub_bo <- koff * eb_bone
+    d/dt(eu_bone) <- clu_bo * (cv_bo + cis_bo) - bind_bo + ub_bo - kdeg * eu_bone
+    d/dt(eb_bone) <- bind_bo - ub_bo - clu_bo * ceb_bo
+    d/dt(fr_bone) <- ub_bo - bind_bo + clu_bo * ceb_bo
 
-    bind_br <- kon * ceu_br * cfr_br * v_br_e; ub_br <- koff * eb_br
-    d/dt(eu_br) <- clu_br * (cv_br + cis_br) - bind_br + ub_br - kdeg * eu_br
-    d/dt(eb_br) <- bind_br - ub_br - clu_br * ceb_br
-    d/dt(fr_br) <- ub_br - bind_br + clu_br * ceb_br
+    bind_br <- kon * ceu_br * cfr_br * v_br_e; ub_br <- koff * eb_brain
+    d/dt(eu_brain) <- clu_br * (cv_br + cis_br) - bind_br + ub_br - kdeg * eu_brain
+    d/dt(eb_brain) <- bind_br - ub_br - clu_br * ceb_br
+    d/dt(fr_brain) <- ub_br - bind_br + clu_br * ceb_br
 
-    bind_ki <- kon * ceu_ki * cfr_ki * v_ki_e; ub_ki <- koff * eb_ki
-    d/dt(eu_ki) <- clu_ki * (cv_ki + cis_ki) - bind_ki + ub_ki - kdeg * eu_ki
-    d/dt(eb_ki) <- bind_ki - ub_ki - clu_ki * ceb_ki
-    d/dt(fr_ki) <- ub_ki - bind_ki + clu_ki * ceb_ki
+    bind_ki <- kon * ceu_ki * cfr_ki * v_ki_e; ub_ki <- koff * eb_kidney
+    d/dt(eu_kidney) <- clu_ki * (cv_ki + cis_ki) - bind_ki + ub_ki - kdeg * eu_kidney
+    d/dt(eb_kidney) <- bind_ki - ub_ki - clu_ki * ceb_ki
+    d/dt(fr_kidney) <- ub_ki - bind_ki + clu_ki * ceb_ki
 
-    bind_li <- kon * ceu_li * cfr_li * v_li_e; ub_li <- koff * eb_li
-    d/dt(eu_li) <- clu_li * (cv_li + cis_li) - bind_li + ub_li - kdeg * eu_li
-    d/dt(eb_li) <- bind_li - ub_li - clu_li * ceb_li
-    d/dt(fr_li) <- ub_li - bind_li + clu_li * ceb_li
+    bind_li <- kon * ceu_li * cfr_li * v_li_e; ub_li <- koff * eb_liver
+    d/dt(eu_liver) <- clu_li * (cv_li + cis_li) - bind_li + ub_li - kdeg * eu_liver
+    d/dt(eb_liver) <- bind_li - ub_li - clu_li * ceb_li
+    d/dt(fr_liver) <- ub_li - bind_li + clu_li * ceb_li
 
-    bind_si <- kon * ceu_si * cfr_si * v_si_e; ub_si <- koff * eb_si
-    d/dt(eu_si) <- clu_si * (cv_si + cis_si) - bind_si + ub_si - kdeg * eu_si
-    d/dt(eb_si) <- bind_si - ub_si - clu_si * ceb_si
-    d/dt(fr_si) <- ub_si - bind_si + clu_si * ceb_si
+    bind_si <- kon * ceu_si * cfr_si * v_si_e; ub_si <- koff * eb_small_intestine
+    d/dt(eu_small_intestine) <- clu_si * (cv_si + cis_si) - bind_si + ub_si - kdeg * eu_small_intestine
+    d/dt(eb_small_intestine) <- bind_si - ub_si - clu_si * ceb_si
+    d/dt(fr_small_intestine) <- ub_si - bind_si + clu_si * ceb_si
 
-    bind_lr <- kon * ceu_lr * cfr_lr * v_lr_e; ub_lr <- koff * eb_lr
-    d/dt(eu_lr) <- clu_lr * (cv_lr + cis_lr) - bind_lr + ub_lr - kdeg * eu_lr
-    d/dt(eb_lr) <- bind_lr - ub_lr - clu_lr * ceb_lr
-    d/dt(fr_lr) <- ub_lr - bind_lr + clu_lr * ceb_lr
+    bind_lr <- kon * ceu_lr * cfr_lr * v_lr_e; ub_lr <- koff * eb_large_intestine
+    d/dt(eu_large_intestine) <- clu_lr * (cv_lr + cis_lr) - bind_lr + ub_lr - kdeg * eu_large_intestine
+    d/dt(eb_large_intestine) <- bind_lr - ub_lr - clu_lr * ceb_lr
+    d/dt(fr_large_intestine) <- ub_lr - bind_lr + clu_lr * ceb_lr
 
-    bind_pa <- kon * ceu_pa * cfr_pa * v_pa_e; ub_pa <- koff * eb_pa
-    d/dt(eu_pa) <- clu_pa * (cv_pa + cis_pa) - bind_pa + ub_pa - kdeg * eu_pa
-    d/dt(eb_pa) <- bind_pa - ub_pa - clu_pa * ceb_pa
-    d/dt(fr_pa) <- ub_pa - bind_pa + clu_pa * ceb_pa
+    bind_pa <- kon * ceu_pa * cfr_pa * v_pa_e; ub_pa <- koff * eb_pancreas
+    d/dt(eu_pancreas) <- clu_pa * (cv_pa + cis_pa) - bind_pa + ub_pa - kdeg * eu_pancreas
+    d/dt(eb_pancreas) <- bind_pa - ub_pa - clu_pa * ceb_pa
+    d/dt(fr_pancreas) <- ub_pa - bind_pa + clu_pa * ceb_pa
 
-    bind_th <- kon * ceu_th * cfr_th * v_th_e; ub_th <- koff * eb_th
-    d/dt(eu_th) <- clu_th * (cv_th + cis_th) - bind_th + ub_th - kdeg * eu_th
-    d/dt(eb_th) <- bind_th - ub_th - clu_th * ceb_th
-    d/dt(fr_th) <- ub_th - bind_th + clu_th * ceb_th
+    bind_th <- kon * ceu_th * cfr_th * v_th_e; ub_th <- koff * eb_thymus
+    d/dt(eu_thymus) <- clu_th * (cv_th + cis_th) - bind_th + ub_th - kdeg * eu_thymus
+    d/dt(eb_thymus) <- bind_th - ub_th - clu_th * ceb_th
+    d/dt(fr_thymus) <- ub_th - bind_th + clu_th * ceb_th
 
-    bind_sp <- kon * ceu_sp * cfr_sp * v_sp_e; ub_sp <- koff * eb_sp
-    d/dt(eu_sp) <- clu_sp * (cv_sp + cis_sp) - bind_sp + ub_sp - kdeg * eu_sp
-    d/dt(eb_sp) <- bind_sp - ub_sp - clu_sp * ceb_sp
-    d/dt(fr_sp) <- ub_sp - bind_sp + clu_sp * ceb_sp
+    bind_sp <- kon * ceu_sp * cfr_sp * v_sp_e; ub_sp <- koff * eb_spleen
+    d/dt(eu_spleen) <- clu_sp * (cv_sp + cis_sp) - bind_sp + ub_sp - kdeg * eu_spleen
+    d/dt(eb_spleen) <- bind_sp - ub_sp - clu_sp * ceb_sp
+    d/dt(fr_spleen) <- ub_sp - bind_sp + clu_sp * ceb_sp
 
-    bind_ot <- kon * ceu_ot * cfr_ot * v_ot_e; ub_ot <- koff * eb_ot
-    d/dt(eu_ot) <- clu_ot * (cv_ot + cis_ot) - bind_ot + ub_ot - kdeg * eu_ot
-    d/dt(eb_ot) <- bind_ot - ub_ot - clu_ot * ceb_ot
-    d/dt(fr_ot) <- ub_ot - bind_ot + clu_ot * ceb_ot
+    bind_ot <- kon * ceu_ot * cfr_ot * v_ot_e; ub_ot <- koff * eb_other
+    d/dt(eu_other) <- clu_ot * (cv_ot + cis_ot) - bind_ot + ub_ot - kdeg * eu_other
+    d/dt(eb_other) <- bind_ot - ub_ot - clu_ot * ceb_ot
+    d/dt(fr_other) <- ub_ot - bind_ot + clu_ot * ceb_ot
 
     # === Interstitial ODEs (Eq 9, antigen-binding terms zero for nonspecific mAb) ===
-    d/dt(is_ht) <- (1 - sv_ht) * l_ht * cv_ht - (1 - sigis) * l_ht * cis_ht - clu_ht * cis_ht + clu_ht * (1 - fr) * ceb_ht
-    d/dt(is_lu) <- (1 - sv_lu) * l_lu * cv_lu - (1 - sigis) * l_lu * cis_lu - clu_lu * cis_lu + clu_lu * (1 - fr) * ceb_lu
-    d/dt(is_mu) <- (1 - sv_mu) * l_mu * cv_mu - (1 - sigis) * l_mu * cis_mu - clu_mu * cis_mu + clu_mu * (1 - fr) * ceb_mu
-    d/dt(is_sk) <- (1 - sv_sk) * l_sk * cv_sk - (1 - sigis) * l_sk * cis_sk - clu_sk * cis_sk + clu_sk * (1 - fr) * ceb_sk
-    d/dt(is_ad) <- (1 - sv_ad) * l_ad * cv_ad - (1 - sigis) * l_ad * cis_ad - clu_ad * cis_ad + clu_ad * (1 - fr) * ceb_ad
-    d/dt(is_bo) <- (1 - sv_bo) * l_bo * cv_bo - (1 - sigis) * l_bo * cis_bo - clu_bo * cis_bo + clu_bo * (1 - fr) * ceb_bo
-    d/dt(is_br) <- (1 - sv_br) * l_br * cv_br - (1 - sigis) * l_br * cis_br - clu_br * cis_br + clu_br * (1 - fr) * ceb_br
-    d/dt(is_ki) <- (1 - sv_ki) * l_ki * cv_ki - (1 - sigis) * l_ki * cis_ki - clu_ki * cis_ki + clu_ki * (1 - fr) * ceb_ki
-    d/dt(is_li) <- (1 - sv_li) * l_li * cv_li - (1 - sigis) * l_li * cis_li - clu_li * cis_li + clu_li * (1 - fr) * ceb_li
-    d/dt(is_si) <- (1 - sv_si) * l_si * cv_si - (1 - sigis) * l_si * cis_si - clu_si * cis_si + clu_si * (1 - fr) * ceb_si
-    d/dt(is_lr) <- (1 - sv_lr) * l_lr * cv_lr - (1 - sigis) * l_lr * cis_lr - clu_lr * cis_lr + clu_lr * (1 - fr) * ceb_lr
-    d/dt(is_pa) <- (1 - sv_pa) * l_pa * cv_pa - (1 - sigis) * l_pa * cis_pa - clu_pa * cis_pa + clu_pa * (1 - fr) * ceb_pa
-    d/dt(is_th) <- (1 - sv_th) * l_th * cv_th - (1 - sigis) * l_th * cis_th - clu_th * cis_th + clu_th * (1 - fr) * ceb_th
-    d/dt(is_sp) <- (1 - sv_sp) * l_sp * cv_sp - (1 - sigis) * l_sp * cis_sp - clu_sp * cis_sp + clu_sp * (1 - fr) * ceb_sp
-    d/dt(is_ot) <- (1 - sv_ot) * l_ot * cv_ot - (1 - sigis) * l_ot * cis_ot - clu_ot * cis_ot + clu_ot * (1 - fr) * ceb_ot
+    d/dt(is_heart) <- (1 - sv_ht) * l_ht * cv_ht - (1 - sigis) * l_ht * cis_ht - clu_ht * cis_ht + clu_ht * (1 - fr) * ceb_ht
+    d/dt(is_lung) <- (1 - sv_lu) * l_lu * cv_lu - (1 - sigis) * l_lu * cis_lu - clu_lu * cis_lu + clu_lu * (1 - fr) * ceb_lu
+    d/dt(is_muscle) <- (1 - sv_mu) * l_mu * cv_mu - (1 - sigis) * l_mu * cis_mu - clu_mu * cis_mu + clu_mu * (1 - fr) * ceb_mu
+    d/dt(is_skin) <- (1 - sv_sk) * l_sk * cv_sk - (1 - sigis) * l_sk * cis_sk - clu_sk * cis_sk + clu_sk * (1 - fr) * ceb_sk
+    d/dt(is_adipose) <- (1 - sv_ad) * l_ad * cv_ad - (1 - sigis) * l_ad * cis_ad - clu_ad * cis_ad + clu_ad * (1 - fr) * ceb_ad
+    d/dt(is_bone) <- (1 - sv_bo) * l_bo * cv_bo - (1 - sigis) * l_bo * cis_bo - clu_bo * cis_bo + clu_bo * (1 - fr) * ceb_bo
+    d/dt(is_brain) <- (1 - sv_br) * l_br * cv_br - (1 - sigis) * l_br * cis_br - clu_br * cis_br + clu_br * (1 - fr) * ceb_br
+    d/dt(is_kidney) <- (1 - sv_ki) * l_ki * cv_ki - (1 - sigis) * l_ki * cis_ki - clu_ki * cis_ki + clu_ki * (1 - fr) * ceb_ki
+    d/dt(is_liver) <- (1 - sv_li) * l_li * cv_li - (1 - sigis) * l_li * cis_li - clu_li * cis_li + clu_li * (1 - fr) * ceb_li
+    d/dt(is_small_intestine) <- (1 - sv_si) * l_si * cv_si - (1 - sigis) * l_si * cis_si - clu_si * cis_si + clu_si * (1 - fr) * ceb_si
+    d/dt(is_large_intestine) <- (1 - sv_lr) * l_lr * cv_lr - (1 - sigis) * l_lr * cis_lr - clu_lr * cis_lr + clu_lr * (1 - fr) * ceb_lr
+    d/dt(is_pancreas) <- (1 - sv_pa) * l_pa * cv_pa - (1 - sigis) * l_pa * cis_pa - clu_pa * cis_pa + clu_pa * (1 - fr) * ceb_pa
+    d/dt(is_thymus) <- (1 - sv_th) * l_th * cv_th - (1 - sigis) * l_th * cis_th - clu_th * cis_th + clu_th * (1 - fr) * ceb_th
+    d/dt(is_spleen) <- (1 - sv_sp) * l_sp * cv_sp - (1 - sigis) * l_sp * cis_sp - clu_sp * cis_sp + clu_sp * (1 - fr) * ceb_sp
+    d/dt(is_other) <- (1 - sv_ot) * l_ot * cv_ot - (1 - sigis) * l_ot * cis_ot - clu_ot * cis_ot + clu_ot * (1 - fr) * ceb_ot
 
     # === Central plasma (Eq 1) ===
     # Sums venous returns from tissues whose blood drains directly to plasma
@@ -438,21 +438,21 @@ Shah_2012_mAb_PBPK <- function() {
     # All mAb states start at zero (IV bolus dose enters plasma via the data
     # event table). Free FcRn at fcrn = 4.98e-5 M = fcrn nM in every tissue
     # endosomal space; bound FcRn-mAb starts at zero.
-    fr_ht(0) <- fcrn * v_ht_e
-    fr_lu(0) <- fcrn * v_lu_e
-    fr_mu(0) <- fcrn * v_mu_e
-    fr_sk(0) <- fcrn * v_sk_e
-    fr_ad(0) <- fcrn * v_ad_e
-    fr_bo(0) <- fcrn * v_bo_e
-    fr_br(0) <- fcrn * v_br_e
-    fr_ki(0) <- fcrn * v_ki_e
-    fr_li(0) <- fcrn * v_li_e
-    fr_si(0) <- fcrn * v_si_e
-    fr_lr(0) <- fcrn * v_lr_e
-    fr_pa(0) <- fcrn * v_pa_e
-    fr_th(0) <- fcrn * v_th_e
-    fr_sp(0) <- fcrn * v_sp_e
-    fr_ot(0) <- fcrn * v_ot_e
+    fr_heart(0) <- fcrn * v_ht_e
+    fr_lung(0) <- fcrn * v_lu_e
+    fr_muscle(0) <- fcrn * v_mu_e
+    fr_skin(0) <- fcrn * v_sk_e
+    fr_adipose(0) <- fcrn * v_ad_e
+    fr_bone(0) <- fcrn * v_bo_e
+    fr_brain(0) <- fcrn * v_br_e
+    fr_kidney(0) <- fcrn * v_ki_e
+    fr_liver(0) <- fcrn * v_li_e
+    fr_small_intestine(0) <- fcrn * v_si_e
+    fr_large_intestine(0) <- fcrn * v_lr_e
+    fr_pancreas(0) <- fcrn * v_pa_e
+    fr_thymus(0) <- fcrn * v_th_e
+    fr_spleen(0) <- fcrn * v_sp_e
+    fr_other(0) <- fcrn * v_ot_e
 
     # === Observation ===
     # Cc reports the central plasma concentration (nM). The state amounts are in

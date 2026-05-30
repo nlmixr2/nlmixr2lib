@@ -2,6 +2,8 @@ Yuan_2019_concizumab <- function() {
   description <- "QSP. Systems PK/PD model for concizumab (humanized anti-TFPI IgG4) describing binding to both membrane-bound TFPI (mTFPI; non-linear clearance via receptor-mediated endocytosis) and soluble TFPI (sTFPI; linear clearance via FcRn-recycled pinocytosis) in a minimal physiologically-based PK framework with two nested endothelial endosome compartments. Parameter values for 70 kg adult humans (Yuan 2019 Tables 1-2); the paper also tabulates monkey and rabbit parameter sets."
   reference   <- "Yuan D, Rode F, Cao Y. A systems pharmacokinetic/pharmacodynamic model for concizumab to explore the potential of anti-TFPI recycling antibodies. Eur J Pharm Sci. 2019 Oct 1;138:105032. doi:10.1016/j.ejps.2019.105032. PMID 31374317. mTFPI baseline, kdegm = kint, and koff optimized in the reduced PK/PD model using human PK/PD data digitized from Chowdary 2015 (J Thromb Haemost 13:743-754). Linear-clearance endosome parameters (CLup, CLe, krec, k1on, k1off, FcRn_b) inherited from Yuan 2018 (J Pharmacokinet Pharmacodyn 45:851-864), calibrated using adalimumab."
   vignette    <- "Yuan_2019_concizumab"
+  paper_specific_compartments <- c("a_p", "stfpi_p", "astfpi_p", "mtfpi_p", "amtfpi_p", "a_e1", "mtfpi_e1", "amtfpi_e1", "fcrn_e1", "fcrna_e1", "a_e2", "stfpi_e2", "astfpi_e2", "fcrn_e2", "fcrna_e2", "fcrnastfpi_e2", "a_t", "astfpi_t", "a_lk", "astfpi_lk", "a_lm", "astfpi_lm")
+
   units       <- list(time = "day", dosing = "nmol", concentration = "nM")
 
   covariateData <- list()
@@ -38,8 +40,8 @@ Yuan_2019_concizumab <- function() {
     visf   <- fixed(15.6);    label("Total interstitial fluid volume (L)")                                                      # Yuan 2019 Table 2 (Cao 2013)
     vlymph <- fixed(5.2);     label("Lymph volume (L)")                                                                         # Yuan 2019 Table 2 (Cao 2013)
     ltot   <- fixed(2.904);   label("Total lymph flow (L/day)")                                                                 # Yuan 2019 Table 2 (Cao 2013)
-    sigma1 <- fixed(0.945);   label("Vascular reflection coefficient for tight tissues (unitless)")                             # Yuan 2019 Table 2 (Cao 2013)
-    sigma2 <- fixed(0.697);   label("Vascular reflection coefficient for leaky tissues (unitless)")                             # Yuan 2019 Table 2 (Cao 2013)
+    sigma_tight <- fixed(0.945);   label("Vascular reflection coefficient for tight tissues (unitless)")                             # Yuan 2019 Table 2 (Cao 2013)
+    sigma_leaky <- fixed(0.697);   label("Vascular reflection coefficient for leaky tissues (unitless)")                             # Yuan 2019 Table 2 (Cao 2013)
     sigmal <- fixed(0.2);     label("Lymphatic vascular reflection coefficient (unitless)")                                     # Yuan 2019 Table 2 (Cao 2013)
     kp     <- fixed(0.4);     label("Fraction of interstitial space available for IgG4 antibody distribution (unitless)")       # Yuan 2019 Table 2 (Cao 2013); 0.4 for IgG4, 0.8 for IgG1
 
@@ -144,8 +146,8 @@ Yuan_2019_concizumab <- function() {
     d/dt(a_p) <- ka * depot -
                  rsp_bind_plasma -
                  rmp_bind_plasma -
-                 (1 - sigma1) * l1 * c_ap -
-                 (1 - sigma2) * l2 * c_ap +
+                 (1 - sigma_tight) * l1 * c_ap -
+                 (1 - sigma_leaky) * l2 * c_ap +
                  ltot * c_a_lm -
                  clup * c_ap +
                  krec * fcrna_e1 +
@@ -159,8 +161,8 @@ Yuan_2019_concizumab <- function() {
 
     # Eq. (4) Antibody-sTFPI complex in plasma
     d/dt(astfpi_p) <- rsp_bind_plasma -
-                      (1 - sigma1) * l1 * c_astfpi_p -
-                      (1 - sigma2) * l2 * c_astfpi_p +
+                      (1 - sigma_tight) * l1 * c_astfpi_p -
+                      (1 - sigma_leaky) * l2 * c_astfpi_p +
                       ltot * c_astfpi_lm -
                       clup * c_astfpi_p +
                       krec * fcrnastfpi_e2
@@ -231,19 +233,19 @@ Yuan_2019_concizumab <- function() {
                            krec * fcrnastfpi_e2
 
     # Eq. (18) Free antibody in tight tissue
-    d/dt(a_t) <- (1 - sigma1) * l1 * c_ap -
+    d/dt(a_t) <- (1 - sigma_tight) * l1 * c_ap -
                  (1 - sigmal) * l1 * c_a_t
 
     # Eq. (19) Antibody-sTFPI complex in tight tissue
-    d/dt(astfpi_t) <- (1 - sigma1) * l1 * c_astfpi_p -
+    d/dt(astfpi_t) <- (1 - sigma_tight) * l1 * c_astfpi_p -
                       (1 - sigmal) * l1 * c_astfpi_t
 
     # Eq. (20) Free antibody in leaky tissue
-    d/dt(a_lk) <- (1 - sigma2) * l2 * c_ap -
+    d/dt(a_lk) <- (1 - sigma_leaky) * l2 * c_ap -
                   (1 - sigmal) * l2 * c_a_lk
 
     # Eq. (21) Antibody-sTFPI complex in leaky tissue
-    d/dt(astfpi_lk) <- (1 - sigma2) * l2 * c_astfpi_p -
+    d/dt(astfpi_lk) <- (1 - sigma_leaky) * l2 * c_astfpi_p -
                        (1 - sigmal) * l2 * c_astfpi_lk
 
     # Eq. (22) Free antibody in lymph

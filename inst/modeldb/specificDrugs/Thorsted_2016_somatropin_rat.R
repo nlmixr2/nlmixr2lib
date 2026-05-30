@@ -103,7 +103,7 @@ Thorsted_2016_somatropin_rat <- function() {
     # was collapsed to the single-dose value (which is the one the paper
     # carries forward to the human projection in Table 3).
     lkout   <- log(0.0913);   label("First-order IGF-1 degradation rate kout (1/h)")       # Table 2
-    lr0     <- log(29.4);     label("Baseline IGF-1 R0 (ng/mL)")                            # Table 2
+    lrbase     <- log(29.4);     label("Baseline IGF-1 R0 (ng/mL)")                            # Table 2
     lemax   <- log(9.88);     label("Maximum stimulation of kin relative to baseline (PKPD-study value)") # Table 2
     lec50   <- log(16.3);     label("rhGH effect-compartment concentration for 50% Emax (ug/L = ng/mL)") # Table 2
     lkcplag <- log(0.599);    label("First-order rate constant for the GH effect-delay (CPLAG) chain (1/h)") # Table 2
@@ -125,7 +125,7 @@ Thorsted_2016_somatropin_rat <- function() {
     etalcl + etalvp ~ c(0.01337,
                         -0.01199, 0.03330)                                                  # Table 2 IIV CL 11.6% CV, Vp 18.4% CV, correlation -0.568
     etalka2  ~ 0.008613                                                                     # Table 2 IIV ka2 9.3% CV: log(0.093^2 + 1)
-    etalr0   ~ 0.028504                                                                     # Table 2 IIV R0 17.0% CV: log(0.170^2 + 1)
+    etalrbase   ~ 0.028504                                                                     # Table 2 IIV R0 17.0% CV: log(0.170^2 + 1)
     etalwtbase ~ 0.002697                                                                   # Table 2 IIV WT_BASE 5.2% CV: log(0.052^2 + 1)
 
     # Residual error - Thorsted 2016 Table 2 (PKPD-study values).
@@ -153,7 +153,7 @@ Thorsted_2016_somatropin_rat <- function() {
 
     # Individual PD parameters
     kout   <- exp(lkout)
-    r0     <- exp(lr0 + etalr0)
+    rbase     <- exp(lrbase + etalrbase)
     emax   <- exp(lemax)
     ec50   <- exp(lec50)
     kcplag <- exp(lkcplag)
@@ -190,12 +190,12 @@ Thorsted_2016_somatropin_rat <- function() {
     # IGF-1 indirect response: stimulation of kin (= kout * R0) by the
     # delayed GH effect concentration via Emax / EC50.
     stim <- emax * effect3 / (ec50 + effect3)
-    d/dt(igf1) <- kout * r0 * (1 + stim) - kout * igf1
-    igf1(0)    <- r0
+    d/dt(igf1) <- kout * rbase * (1 + stim) - kout * igf1
+    igf1(0)    <- rbase
 
     # Bodyweight gain: linear in (IGF-1 - R0), only positive contributions
     # (drug-induced excursions above baseline).
-    d/dt(bw) <- sld * (igf1 - r0)
+    d/dt(bw) <- sld * (igf1 - rbase)
     bw(0)    <- wtbase
 
     # 5. Bioavailability: SC dose into depot (ka1 path) gets F1; SC dose

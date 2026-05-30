@@ -65,6 +65,8 @@ NA_NA_paracetamol <- function() {
   vignette <- "NA_NA_paracetamol"
   ddmore_id <- "DDMODEL00000228"
   replicate_of <- NULL
+  paper_specific_compartments <- c("effect_glu_prod", "effect_ins", "cumloss_apap")
+
   units <- list(
     time          = "min",
     dosing        = "mg",                  # paracetamol oral dose; glucose dose enters in g, see description

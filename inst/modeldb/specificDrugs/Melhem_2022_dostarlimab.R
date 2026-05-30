@@ -83,7 +83,7 @@ Melhem_2022_dostarlimab <- function() {
     # (same pattern as Masters_2022_avelumab). The resulting maximum
     # reduction at t >> T50 is 1 - exp(I_max) = 1 - exp(-0.161) = 0.149 (14.9 %),
     # matching the paper.
-    lImax <- log(0.161); label("log|I_max|; magnitude of the log-CL reduction at t >> T50 (unitless)") # Melhem 2022 Table 3: I_max = -0.161
+    limax <- log(0.161); label("log|I_max|; magnitude of the log-CL reduction at t >> T50 (unitless)") # Melhem 2022 Table 3: I_max = -0.161
     lt50  <- log(108);   label("log T50; time at half of I_max (days)")                                # Melhem 2022 Table 3: T50 = 108 d
     lhill <- log(5.29);  label("log Hill; sigmoid steepness coefficient (unitless)")                   # Melhem 2022 Table 3: Hill = 5.29
 
@@ -111,7 +111,7 @@ Melhem_2022_dostarlimab <- function() {
     #   omega^2_Imax        = 0.537
     etalcl + etalvc ~ c(0.0551,
                         0.0210, 0.0258)
-    etalImax ~ 0.537
+    etalimax ~ 0.537
 
     # Residual error (combined additive + proportional). Melhem 2022 Table 3
     # reports proportional 0.133 (unitless) and additive 2.79 mg/L. The
@@ -143,10 +143,10 @@ Melhem_2022_dostarlimab <- function() {
     # Time-dependent CL (Hill function of time since first dose; t in days).
     # I_max < 0; sign applied here to keep individual values strictly negative
     # under log-normal IIV on |I_max|.
-    Imax_i <- -exp(lImax + etalImax)
+    imax_i <- -exp(limax + etalimax)
     t50    <- exp(lt50)
     hill   <- exp(lhill)
-    td_cl  <- exp(Imax_i * t^hill / (t50^hill + t^hill))
+    td_cl  <- exp(imax_i * t^hill / (t50^hill + t^hill))
 
     # Individual PK parameters. CL_base is at t=0 for the reference patient;
     # td_cl folds in the time dependency.

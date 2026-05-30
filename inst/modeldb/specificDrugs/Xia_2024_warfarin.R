@@ -10,6 +10,8 @@ Xia_2024_warfarin <- function() {
     "as reported in Table 3 of Xia 2024."
   )
   vignette <- "Xia_2024_warfarin"
+  paper_specific_compartments <- c("coag_s1", "coag_s2", "coag_s3", "coag_l1", "coag_l2", "coag_l3")
+
   units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
@@ -108,7 +110,7 @@ Xia_2024_warfarin <- function() {
     e_age_cl      <- fixed(-0.00571)    ; label("Age effect on CL (fractional change per year, reference age 71 y)")  # Xia 2024 Table 3 / supplement Eq 7 (fixed)
     lvc           <- fixed(log(14.3))   ; label("Apparent volume of distribution V/F (L) at effect site")             # Xia 2024 Table 3 (fixed, Hamberg literature value)
     lemax         <- fixed(log(1))      ; label("Maximum anticoagulant effect Emax (fixed at 1 = 100%)")              # Xia 2024 supplement Section 1.1 (fixed)
-    lgamma        <- fixed(log(1.39))   ; label("Hill coefficient gamma for the sigmoid Emax effect (unitless)")      # Xia 2024 Table 3 (fixed)
+    lhill        <- fixed(log(1.39))   ; label("Hill coefficient gamma for the sigmoid Emax effect (unitless)")      # Xia 2024 Table 3 (fixed)
     lmtt1         <- fixed(log(27.2))   ; label("Mean transit time of fast coagulation-factor chain MTT1 (h)")        # Xia 2024 Table 3 (fixed)
     lmtt2         <- fixed(log(110.9))  ; label("Mean transit time of slow coagulation-factor chain MTT2 (h)")        # Xia 2024 Table 3 (fixed)
     linrmax       <- fixed(log(20))     ; label("Maximum INR increment above baseline (unitless)")                    # Xia 2024 Table 3 / supplement Section 1.1 (fixed)
@@ -140,7 +142,7 @@ Xia_2024_warfarin <- function() {
     # Volume and derived constants
     vc      <- exp(lvc)
     emax    <- exp(lemax)
-    gamma_e <- exp(lgamma)
+    hill <- exp(lhill)
     mtt1    <- exp(lmtt1)
     mtt2    <- exp(lmtt2)
     inrmax  <- exp(linrmax)
@@ -161,7 +163,7 @@ Xia_2024_warfarin <- function() {
 
     # Effective drug-delivery-rate "concentration": cdr = depot/vc gives cdr/ec50 = DR/EDK50
     cdr <- depot / vc
-    e_anticoag <- emax * cdr^gamma_e / (ec50^gamma_e + cdr^gamma_e)
+    e_anticoag <- emax * cdr^hill / (ec50^hill + cdr^hill)
 
     # Hamberg transit-chain rate constants: ktr = N / MTT_total with N = 3 transit compartments
     ktr_s <- 3 / mtt1

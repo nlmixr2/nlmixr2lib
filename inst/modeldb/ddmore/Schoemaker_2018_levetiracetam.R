@@ -85,7 +85,7 @@ Schoemaker_2018_levetiracetam <- function() {
     # below are the .res finals.
     #
     # NONMEM TH index -> nlmixr2 parameter:
-    #   TH 1 = lbase           (typical log baseline seizure rate, 1/day)
+    #   TH 1 = lrbase           (typical log baseline seizure rate, 1/day)
     #   TH 2 = es50            (Markov ES50, seizures-per-record)
     #   TH 3 = lsmax           (max Markov amplitude on log-rate scale)
     #   TH 4 = lplac           (typical log placebo effect)
@@ -104,7 +104,7 @@ Schoemaker_2018_levetiracetam <- function() {
     #   TH14 = lec50_ped       (peds offset on log EC50; FIXED 0)
     # ------------------------------------------------------------------
 
-    lbase   <- -1.09;        label("Typical log baseline seizure rate (log(seizures/day))")             # Output_real_P241.res TH 1
+    lrbase   <- -1.09;        label("Typical log baseline seizure rate (log(seizures/day))")             # Output_real_P241.res TH 1
     es50    <- 2.75;         label("Markov ES50 (seizures-per-record at which Markov amplitude is half-max)") # Output_real_P241.res TH 2
     lsmax   <- 1.28;         label("Maximum Markov amplitude on log-rate scale (added to log baseline rate as PDV -> Inf, only when CHILD = 1)") # Output_real_P241.res TH 3
     lplac   <- -0.16;        label("Typical log placebo effect during active treatment phase (added to log rate when TRT_PHASE = 1)") # Output_real_P241.res TH 4
@@ -135,7 +135,7 @@ Schoemaker_2018_levetiracetam <- function() {
     # are reproduced verbatim in model() below; ini() carries only the
     # OMEGA variance values.
     # ------------------------------------------------------------------
-    etalbase ~ 0.755    # ETA1 -- Box-Cox-transformed iid eta on baseline   # Output_real_P241.res OMEGA(1,1)
+    etalrbase ~ 0.755    # ETA1 -- Box-Cox-transformed iid eta on baseline   # Output_real_P241.res OMEGA(1,1)
     etalsmax ~ 1.44     # ETA2 -- additive eta on log Markov amplitude      # Output_real_P241.res OMEGA(2,2)
     etalplac ~ 0.166    # ETA3 -- additive eta on log placebo               # Output_real_P241.res OMEGA(3,3)
     etalemax ~ 0.640    # ETA4 -- multiplicative eta on log Emax            # Output_real_P241.res OMEGA(4,4)
@@ -153,10 +153,10 @@ Schoemaker_2018_levetiracetam <- function() {
     # would degenerate to ETA1 itself (log-normal), at bc_shape = 1 it
     # would be exp(ETA1) - 1. nlmixr2 evaluates the expression element-
     # wise, so the same form transfers verbatim.
-    bc_eta_base <- (exp(etalbase)^bc_shape - 1) / bc_shape
+    bc_eta_rbase <- (exp(etalrbase)^bc_shape - 1) / bc_shape
 
     # Subject-level log baseline seizure rate, with the pediatric offset.
-    ls0_subject <- lbase + bc_eta_base + CHILD * lbase_ped
+    ls0_subject <- lrbase + bc_eta_rbase + CHILD * lbase_ped
 
     # Subject-level log Markov amplitude (only used when CHILD = 1, see
     # log_rate_record below).

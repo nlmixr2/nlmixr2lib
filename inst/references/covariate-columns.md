@@ -2817,7 +2817,7 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Source aliases:**
   - `TTYPE` (Quartino 2019) -- decompose into `TUMTP_OTH = as.integer(TTYPE == "Others")`.
   - `PAT2` (Sathe 2024) -- integer-coded tumor type column with levels 1 (mTNBC), 2 (mUC or HR+/HER2- mBC), 4 (Other epithelial); the source NONMEM control stream collapses PAT2 = 1 and PAT2 = 2 into the reference (no effect) and applies the deviation only when PAT2 = 4. Decompose into `TUMTP_OTH = as.integer(PAT2 == 4)`.
-- **Example models:** `Quartino_2019_trastuzumab.R` (per-group typical-value switch on linear CL; NSCLC plus a small residual group of prostate, ovarian, and other histologies), `Sathe_2024_sacituzumab.R` (multiplicative effect on tAB CL: -13.4% when TUMTP_OTH = 1; "Other" pool = small-cell and non-small-cell lung cancer, colorectal cancer, esophageal cancer, pancreatic ductal adenocarcinoma, etc., n = 184; reference = pooled mTNBC + mUC + HR+/HER2- mBC, n = 345), `Lacy_2018_cabozantinib.R` (multiplicative fractional effect on CL/F = +0.178 and on Vc/F = -0.186 for "other malignancies" relative to the healthy-volunteer reference; n = 40 / 1534 = 2.6% of the cohort, all from Study XL184-001 mixed-malignancy first-in-human cohort).
+- **Example models:** `Quartino_2019_trastuzumab.R` (per-group typical-value switch on linear CL; NSCLC plus a small residual group of prostate, ovarian, and other histologies), `Sathe_2024_sacituzumab.R` (multiplicative effect on tAB CL: -13.4% when TUMTP_OTH = 1; "Other" pool = small-cell and non-small-cell lung cancer, colorectal cancer, esophageal cancer, pancreatic ductal adenocarcinoma, etc., n = 184; reference = pooled mTNBC + mUC + HR+/HER2- mBC, n = 345), `Lacy_2018_cabozantinib.R` (multiplicative fractional effect on CL/F = +0.178 and on Vc/F = -0.186 for "other malignancies" relative to the healthy-volunteer reference; n = 40 / 1534 = 2.6% of the cohort, all from Study XL184-001 mixed-malignancy first-in-human cohort), `Wang_2024_sugemalimab.R` (multiplicative effect `exp(e_oth_cl * TUMTP_OTH)` on CL and `exp(e_oth_vc * TUMTP_OTH)` on Vc, with the "Other" pool = the residual tumor-type bucket complementing TUMTP_LYMPH / TUMTP_GC / TUMTP_ESCC in the same model).
 - **Notes:** Scope: specific because the set of histologies collapsed into "Others" is defined by the analysis plan of the source paper; two papers' `TUMTP_OTH` columns are not interchangeable. Document the exact per-paper composition (e.g., "NSCLC + prostate + ovarian + other, n = 107 in Quartino 2019"; "small-cell + non-small-cell lung + CRC + esophageal + pancreatic ductal adenocarcinoma, n = 184 in Sathe 2024"; "advanced mixed malignancies enrolled in the FIH Study XL184-001, n = 40 in Lacy 2018") in `covariateData[[TUMTP_OTH]]$notes`. A given subject can have at most one of the `TUMTP_<GROUP>` indicators (including `TUMTP_OTH`) set to 1; all-zero means the reference group.
 
 ### SPDL1 (**canonical for soluble PD-L1 concentration**)
@@ -4717,6 +4717,16 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Example models:** `Hennig_2006_itraconazole.R` (Hennig 2006 Table II final estimates: capsule `ka` 0.09 h^-1 vs solution `ka` 0.96 h^-1 and capsule relative bioavailability 0.55 vs solution 1; the `etalfdepot` IIV applies only to the capsule arm), `Hennig_2007_itraconazole.R` (selects between `lka_cap` and `lka_sol` typical-value absorption rate constants and applies `f(depot) <- (1 - FORM_CAPSULE) + FORM_CAPSULE * fdepot` so the relative bioavailability `F_rel = 0.817` is applied only to the capsule arm), `Gupta_2016_lenvatinib.R` (relative bioavailability of capsule vs tablet is 0.896; F1 fixed to 1 for the tablet reference; the `etalfcap` IIV (30.2% CV) applies only to the capsule arm), `Lacy_2018_cabozantinib.R` (multiplicative fractional effect of capsule (vs tablet reference) on Ka = -0.579 (57.9% slower absorption for capsule) and on overall bioavailability F = -0.144 (14.4% lower exposure for capsule); tablet F fixed at 1 as the reference; comparator capsule = Cometriq 140 mg approved for MTC), `Kleideiter_2017_cebranopadol.R` (paired with `FORM_TABLET` to encode the three-level cebranopadol formulation stratification: tablet reference, oral solution, liquid-filled capsule; multiplicative effects on `ka` (log shift `log(2.09 / 0.864) = 0.883`), `klag` (log shift `log(0.077 / 0.087) = -0.122`), and bioavailability (factor 1.174) for capsules relative to the tablet reference).
 - **Notes:** Scoped specific because the complement reference category is paper-defined (solution for Hennig itraconazole, tablet for Gupta lenvatinib). Sibling to `FORM_TABLET` (Kyhl 2016 / Tikiso 2021 tablet vs solution) under the `FORM_*` family. Future formulation-comparison models that need a capsule indicator should reuse this canonical, extending the example list and documenting the comparator in per-model notes.
 
+### FORM_ABA_PHASE2 (**canonical for the abatacept SC phase-2 formulation indicator**)
+- **Description:** 1 = subject received the abatacept Phase-2 SC formulation (lower-pH excipient blend, ~56% absolute bioavailability), 0 = subject received the Phase-3 / commercial SC formulation (the ~81% bioavailability reference). Per-dose-occasion indicator: a single subject can carry both indicator values across phase-2-to-phase-3 transition arms.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (Phase-3 / commercial 125 mg SC formulation; the typical-value bioavailability reference).
+- **Source aliases:** none -- the canonical name matches the source-paper column.
+- **Example models:** `Li_2019_abatacept.R` (additive shift on the logit-scale bioavailability: `logit_F = logit_F_TV + FORM_ABA_PHASE2 * (-1.16)`; Li 2019 Table 2 reports the Phase-2 formulation effect as -1.16 logit-scale units, mapping to an absolute F of ~0.56 vs the Phase-3 reference ~0.81).
+- **Notes:** Scoped specific because the Phase-2 vs Phase-3 formulation contrast is tied to the abatacept clinical-development timeline and does not generalise to other drugs. Future Phase-2-vs-commercial bioavailability comparisons for unrelated drug programmes should register their own `FORM_<drug>_PHASE2` canonical rather than reuse this entry. Distinct from the generic `FORM_TABLET` / `FORM_CAPSULE` / `FORM_SUSPENSION` family (oral solid-dosage manipulations) because the contrast here is two SC injectable formulations with different excipient pH. Ratified canonically on 2026-05-28 per the naming-audit D20 review.
+
 ### FORM_SUSPENSION (**canonical for tablet-suspended-in-water formulation indicator**)
 - **Description:** 1 = subject received the modelled drug as solid oral tablets suspended in a small volume of water at bedside immediately before swallowing (i.e. tablets disintegrated into an extemporaneously-prepared liquid suspension rather than a formally manufactured suspension product); 0 = subject received the same solid oral tablets swallowed whole. Per-dose-occasion (not per-subject) indicator because a single participant can receive both formulations across study occasions in a crossover bioequivalence design.
 - **Units:** (binary)
@@ -4824,6 +4834,128 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Source aliases:** `COMB` (used by Yamada 2025 Table 1 with the EOX level coded as the non-reference category; renamed to `CONMED_EOX` to preserve the semantic meaning of the 1-level).
 - **Example models:** `Yamada_2025_zolbetuximab.R` (fractional effect on V1).
 - **Notes:** Disease-backbone indicator. If a future model needs more backbone categories, encode each as its own indicator (`COMB_CAPOX`, `COMB_FOLFOX`, ...) with a single reference group.
+
+### CONMED_CCB (**canonical for concomitant calcium-channel blocker coadministration indicator**)
+- **Description:** 1 = subject was receiving a calcium-channel blocker (CCB) as a co-medication during the study, 0 = no CCB. Captures the documented CYP3A4-inhibition CCB-tacrolimus interaction (CCBs reduce tacrolimus apparent oral clearance because amlodipine, diltiazem, and verapamil inhibit CYP3A4 in the gut wall and liver where tacrolimus is metabolised).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (no CCB).
+- **Source aliases:** none.
+- **Example models:** `Passey_2011_tacrolimus.R` (multiplicative effect on apparent oral CL: `cl_typ * e_ccb_cl^CONMED_CCB` with `e_ccb_cl = 0.812`, i.e. CCB coadministration reduces tacrolimus CL/F by ~19% in adult kidney transplant recipients; Passey 2011 final model Table 4 row "CCB").
+- **Notes:** Specific scope because the CCB-tacrolimus interaction is documented for CYP3A4 substrates and the magnitude is drug-pair specific. Future popPK models for CYP3A4 substrates that need a CCB conmed indicator should reuse this canonical. Ratified 2026-05-28 per the naming audit.
+
+### CONMED_ATV_DOSE, CONMED_FLV_DOSE, CONMED_LOV_DOSE, CONMED_PRV_DOSE, CONMED_RSV_DOSE, CONMED_SMV_DOSE, CONMED_EZT_DOSE, CONMED_INH_DOSE (**canonical for daily dose of a co-administered named drug**)
+- **Description:** Daily dose of the named drug (suffix = INN lowercase abbreviation: `atv` atorvastatin, `flv` fluvastatin, `lov` lovastatin, `prv` pravastatin, `rsv` rosuvastatin, `smv` simvastatin, `ezt` ezetimibe, `inh` isoniazid). 0 = the named drug is not part of the regimen for this study arm / subject; positive value = total daily dose. Captures the dose-response amplitude in MBMA or co-administered-drug PK/PD models where each drug arm contributes its own dose-effect curve.
+- **Units:** mg/day for the statin / ezetimibe series; mg/kg for `CONMED_INH_DOSE` (paper-specific unit, documented in `covariateData[[CONMED_INH_DOSE]]$units`).
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** 0 (the drug is not given in this arm; equivalent to "this drug-arm contributes 0 to its dose-effect term").
+- **Source aliases:** `DOSE_<drug>` legacy form (used in Vargo 2014 statins / ezetimibe MBMA pre-rename, Chen 2017 TB mouse pre-rename); aliases of the canonical `CONMED_<drug>_DOSE` form per the 2026-05-28 naming audit rename.
+- **Example models:** `Vargo_2014_statins_ezetimibe_mbma.R` (each `CONMED_<statin>_DOSE` drives the corresponding statin's Hill / Emax dose-response curve; per-arm dose level in mg/day, default 0 outside the named statin arm; ezetimibe and statin arms combine via the sub-additive `gamma_int` term), `Chen_2017_TB_MTP_GPDI_mouse.R` (`CONMED_INH_DOSE` drives the isoniazid CL adjustment: `cl_inh = cl_inh_lowdose * (1 - slope_inh * (CONMED_INH_DOSE - 12.5))`).
+- **Notes:** The `CONMED_<drug>_DOSE` shape replaces the earlier `DOSE_<drug>` / `DOSE_<drug>_<unit>` names (which conflated a covariate with a dose-amount column). New co-medication dose-effect MBMA models should reuse this family and add the appropriate `<drug>` INN abbreviation. The units field is per-paper. Ratified 2026-05-28 per the naming audit.
+
+### FORM_FLV_BID_XR (**canonical for fluvastatin twice-daily / extended-release formulation indicator**)
+- **Description:** 1 = fluvastatin arm used twice-daily (BID) dosing or an extended-release (XR) formulation; 0 = once-daily immediate-release fluvastatin (the model reference).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (q.d. IR fluvastatin).
+- **Source aliases:** `BID_XR_FLV` legacy form (used in Vargo 2014 statins / ezetimibe MBMA pre-rename); alias of the canonical `FORM_FLV_BID_XR` form per the 2026-05-28 naming audit rename.
+- **Example models:** `Vargo_2014_statins_ezetimibe_mbma.R` (multiplies the fluvastatin ED50 by 0.645 when set to 1; Vargo 2014 Table 3 row "ED50,fluvastatin (b.i.d.|XR) / ED50,fluvastatin"; same ratio used for either regimen because the paper found b.i.d. and XR ED50 estimates were similar). The flag is meaningful only when `CONMED_FLV_DOSE > 0`.
+- **Notes:** Specific scope because the b.i.d.-vs-q.d. / IR-vs-XR formulation comparison is paper-specific to fluvastatin meta-analyses. Sibling of `FORM_LOV_BID_XR` (lovastatin) under the `FORM_<drug>_BID_XR` family pattern. Ratified 2026-05-28 per the naming audit.
+
+### FORM_LOV_BID_XR (**canonical for lovastatin twice-daily / extended-release formulation indicator**)
+- **Description:** 1 = lovastatin arm used twice-daily (BID) dosing or an extended-release (XR) formulation; 0 = once-daily immediate-release lovastatin (the model reference).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (q.d. IR lovastatin).
+- **Source aliases:** `BID_XR_LOV` legacy form (used in Vargo 2014 statins / ezetimibe MBMA pre-rename); alias of the canonical `FORM_LOV_BID_XR` form per the 2026-05-28 naming audit rename.
+- **Example models:** `Vargo_2014_statins_ezetimibe_mbma.R` (multiplies the lovastatin ED50 by 0.59 when set to 1; Vargo 2014 Table 3 row "ED50,lovastatin (b.i.d.|XR) / ED50,lovastatin"). The flag is meaningful only when `CONMED_LOV_DOSE > 0`.
+- **Notes:** Specific scope because the b.i.d.-vs-q.d. / IR-vs-XR formulation comparison is paper-specific to lovastatin meta-analyses. Sibling of `FORM_FLV_BID_XR` (fluvastatin) under the `FORM_<drug>_BID_XR` family pattern. Ratified 2026-05-28 per the naming audit.
+
+### DIS_ACS (**canonical for acute coronary syndrome cohort indicator**)
+- **Description:** 1 = study arm enrolled patients with acute coronary syndrome (ACS), 0 = non-ACS cohort (the model reference).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (non-ACS arm).
+- **Source aliases:** `ACS` legacy form (used in Vargo 2014 statins / ezetimibe MBMA pre-rename); alias of the canonical `DIS_ACS` form per the 2026-05-28 naming audit rename.
+- **Example models:** `Vargo_2014_statins_ezetimibe_mbma.R` (additive shift of -0.117 on the statin Emax in ACS arms; greater statin LDL-C lowering in ACS patients than in the non-ACS reference).
+- **Notes:** Specific scope because the ACS-cohort effect on statin response is paper-specific to the Vargo 2014 MBMA. Sibling of `DIS_HEFH` (HeFH cohort indicator) and the broader `DIS_<indication>` family. Ratified 2026-05-28 per the naming audit.
+
+### DIS_HEFH (**canonical for heterozygous familial hypercholesterolemia cohort indicator**)
+- **Description:** 1 = study arm enrolled patients with heterozygous familial hypercholesterolemia (HeFH), 0 = non-HeFH cohort (the model reference).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (non-HeFH arm).
+- **Source aliases:** `HEFH` legacy form (used in Vargo 2014 statins / ezetimibe MBMA pre-rename); alias of the canonical `DIS_HEFH` form per the 2026-05-28 naming audit rename.
+- **Example models:** `Vargo_2014_statins_ezetimibe_mbma.R` (additive shift of +0.127 on the statin Emax in HeFH arms; smaller statin LDL-C lowering in HeFH patients than in the non-HeFH reference; biologically consistent with the LDLR-pathway disruption in HeFH).
+- **Notes:** Specific scope because the HeFH-cohort effect on statin response is paper-specific. Sibling of `DIS_HOFH` (homozygous form, Pu_2021_evinacumab) and the broader `DIS_<indication>` family. Ratified 2026-05-28 per the naming audit.
+
+### CONMED_RIF_CC, CONMED_INH_CC, CONMED_EMB_CC, CONMED_STR_CC, CONMED_CAB_CC, CONMED_COL_CC, CONMED_MER_CC, CONMED_GEN_CC, CONMED_CIP_CC (**canonical for time-varying plasma / in-vitro concentration of a co-administered named drug**)
+- **Description:** Time-varying plasma (or in-vitro experiment) concentration of the named drug (suffix = INN lowercase abbreviation: `rif` rifampicin, `inh` isoniazid, `emb` ethambutol, `str` streptomycin, `cab` capreomycin / a second antibiotic, `col` colistin, `mer` meropenem, `gen` gentamicin, `cip` ciprofloxacin). Used as the driving exposure for the corresponding drug-effect term in combination PK/PD or in vitro time-kill models. 0 = the named drug is not part of the regimen for this subject / arm.
+- **Units:** mg/L (or ug/mL, equivalent) for in vitro time-kill experiments; ug/mL for clinical plasma-PK-driven PD subsystems. Per-paper unit is documented in `covariateData[[CONMED_<drug>_CC]]$units`.
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** 0 (drug not in regimen).
+- **Source aliases:** `Ccol` / `Cmer` / `Cgen` / `Ccip` (Mohamed 2016, Sadouki 2025) and bare `EMB` / `INH` / `RIF` / `STR` / `CAB` (Clewe 2018, Khan 2015) -- legacy forms used before the 2026-05-28 naming-audit rename. All map to the canonical `CONMED_<drug>_CC` form.
+- **Example models:** `Clewe_2018_rifampicin.R` (in vitro time-kill of rifampicin + isoniazid + ethambutol against M. tuberculosis; each drug exposure is a fixed concentration driving the Hill-Emax effect on the F / S / N bacterial states), `Khan_2015_ciprofloxacin.R` (in vitro streptomycin + capreomycin time-kill), `Mohamed_2016_colistin_meropenem.R` (in vitro colistin + meropenem time-kill against WT and meropenem-resistant P. aeruginosa), `Sadouki_2025_meropenem_gentamicin_ciprofloxacin.R` (combination PD with meropenem / gentamicin / ciprofloxacin time-varying exposures).
+- **Notes:** Companion to the dose covariate `CONMED_<drug>_DOSE` (registered above). The `_CC` suffix distinguishes the dynamic concentration covariate from the dose-level covariate; both share the `<drug>` INN abbreviation. Ratified 2026-05-28 per the naming audit.
+
+### CONMED_MER, CONMED_GEN, CONMED_CIP (**canonical for combination-regimen presence indicators of meropenem / gentamicin / ciprofloxacin**)
+- **Description:** Binary indicator: 1 = the named antibiotic is part of the combination regimen for this study arm, 0 = the antibiotic is not included. Used in combination-antibiotic PD models to gate the corresponding drug-effect term (and any pairwise-interaction term that requires both partners present).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (drug not in regimen; the corresponding `CONMED_<drug>_CC` concentration covariate is then unused / 0).
+- **Source aliases:** `MER_PRESENT`, `GEN_PRESENT`, `CIP_PRESENT` (Sadouki 2025) -- the legacy `_PRESENT` suffix is dropped because binary semantics are conveyed by the type field; renamed 2026-05-28 per the naming audit.
+- **Example models:** `Sadouki_2025_meropenem_gentamicin_ciprofloxacin.R` (used together to compute a combination-of-three indicator that triggers a categorical -1 shift on the BETA parameter when all three antibiotics are co-administered).
+- **Notes:** Companion to the concentration covariate `CONMED_<drug>_CC` (above). For a given drug, `CONMED_<drug>` is the binary "in regimen?" indicator and `CONMED_<drug>_CC` is the time-varying plasma concentration. New combination-PD models should reuse this family. Ratified 2026-05-28 per the naming audit.
+
+### BACT (**canonical for bacterial-strain indicator in in vitro time-kill models**)
+- **Description:** Integer-coded indicator of the bacterial strain used in an in vitro time-kill experiment. Each level represents a structurally distinct strain (e.g., wild-type ATCC reference vs a clinical isolate with a specific resistance pattern); models switch between strain-specific structural parameters at the indicator value. Paper-specific level coding is documented per-file in `covariateData[[BACT]]$notes`.
+- **Units:** (categorical)
+- **Type:** categorical
+- **Scope:** specific
+- **Reference category:** paper-specific (typically the wild-type ATCC reference strain; e.g., BACT = 2 in Mohamed 2016).
+- **Source aliases:** none.
+- **Example models:** `Mohamed_2016_colistin_meropenem.R` (1 = ARU552 meropenem-resistant clinical isolate, 2 = ATCC 27853 wild-type; hard switch on 25+ strain-specific structural parameters).
+- **Notes:** Specific scope because the per-level strain identity is defined by the source experiment. New in vitro time-kill extractions should reuse this canonical and document the per-level strain mapping in covariate notes. Ratified 2026-05-28 per the naming audit.
+
+### LOWINOC (**canonical for low-inoculum experiment indicator**)
+- **Description:** Binary indicator: 1 = study arm / replicate used the low-inoculum experimental design (typically 10^5 - 10^6 CFU/mL starting bacterial count), 0 = standard or high inoculum (typically 10^7 - 10^9 CFU/mL). Captures the inoculum-effect deviation in bacterial-kill kinetics across initial-density groups.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (standard / high inoculum).
+- **Source aliases:** none.
+- **Example models:** `Sadouki_2025_meropenem_gentamicin_ciprofloxacin.R` (gates a low-inoculum-specific shift on the bacterial-kill amplitude; the paper found the low-inoculum arm had a measurably different kill rate from the standard-inoculum arm).
+- **Notes:** Specific scope because the per-paper definition of "low" varies by experiment design. Ratified 2026-05-28 per the naming audit.
+
+### QBL, QEFF (**canonical for baseline / effective renal Q in HD/CRRT renal-replacement models**)
+- **Description:** Renal-replacement-therapy clearance terms used in hemodialysis (HD) / continuous renal replacement therapy (CRRT) popPK models for renally cleared drugs.
+  - `QBL` = baseline (off-HD / off-CRRT) renal Q (L/h); the typical patient's residual renal clearance.
+  - `QEFF` = effective on-HD/CRRT renal Q (L/h); the apparent dialysis-augmented clearance during a session (including the effective renal Q plus the dialyser/filter clearance, depending on the paper's parameterisation).
+- **Units:** L/h
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** none (continuous).
+- **Source aliases:** none.
+- **Example models:** `Leuppi-Taegtmeyer_2019_colistin.R` (colistin / colistimethate sodium popPK in CRRT recipients; QBL drives the off-CRRT typical-value CL, QEFF drives the on-CRRT augmented CL during the session window).
+- **Notes:** Specific scope because the on-/off- HD/CRRT splitting is paper-specific. Future renal-replacement popPK extractions should reuse the QBL/QEFF pair. Ratified 2026-05-28 per the naming audit.
+
+### DIS_CHD_PERCENT (**canonical for coronary-heart-disease cohort prevalence percentage**)
+- **Description:** Study-arm-level percentage (0-100) of the enrolled cohort who carry a coronary heart disease (CHD) diagnosis. Continuous covariate scaled in percent (not fraction).
+- **Units:** %
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** 0% (healthy non-CHD cohort).
+- **Source aliases:** `CHD_PCT` legacy form (used in Vargo 2014 statins / ezetimibe MBMA pre-rename); alias of the canonical `DIS_CHD_PERCENT` form per the 2026-05-28 naming audit rename.
+- **Example models:** `Vargo_2014_statins_ezetimibe_mbma.R` (linear coefficient `e_chd_emax_statin = -0.000649` per percentage point on Emax_statin, i.e. a 24% CHD arm reduces Emax_statin by `0.000649 * 24 = 0.016`; the paper's typical-patient definition uses 24% CHD).
+- **Notes:** MBMA study-arm-level covariate; the canonical register's individual-level pop-PK covariates do not directly fit aggregate-percentage columns, so this canonical is specific-scope and explicitly carries a study-arm aggregate meaning. Future MBMA models should reuse for the CHD-cohort prevalence column. Ratified 2026-05-28 per the naming audit.
 
 ### FORM_P2F2 (**canonical for isatuximab P2F2 drug-material indicator**)
 - **Description:** 1 = isatuximab P2F2 drug material (intended commercial / phase III material, used in the EFC14335 / ICARIA-MM study), 0 = P1F1 drug material (early-phase material used in TED10893 / TED14154 / TCD14079).

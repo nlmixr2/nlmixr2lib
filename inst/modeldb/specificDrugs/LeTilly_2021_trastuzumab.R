@@ -90,13 +90,13 @@ LeTilly_2021_trastuzumab <- function() {
     lat0(0) <- lat_init
     lat1(0) <- lat_init
     lat2(0) <- lat_init
-    lat(0)  <- lat_init
+    lat1(0)  <- lat_init
 
     # Negative feedback on latent target production (Le Tilly 2021
     # equation (8)): Kin(t) = kin * (L(t=0) / L(t))^gamma, with gamma = 1
     # (fixed after sensitivity analysis - "the power parameter gamma was
     # not identifiable and was therefore fixed to 1").
-    kin_t <- kin * lat_init / lat
+    kin_t <- kin * lat_init / lat1
 
     # ---- ODE system ----------------------------------------------------
     # central tracks serum amount (mg); csf tracks CSF amount (mg). Le Tilly
@@ -107,12 +107,12 @@ LeTilly_2021_trastuzumab <- function() {
     # constant in mg/day and is intended for use only at simulated trough
     # concentrations achieved with the studied IT/IV dosing.
     d/dt(central) <- -k_s2f + k_f2s * csf - kel * central
-    d/dt(csf)     <-  k_s2f - k_f2s * csf - kdeg * csf * lat
+    d/dt(csf)     <-  k_s2f - k_f2s * csf - kdeg * csf * lat1
 
     d/dt(lat0)    <-  kin_t - ktr  * lat0
     d/dt(lat1)    <-  ktr   * lat0 - kout * lat1
     d/dt(lat2)    <-  ktr   * lat1 - kout * lat2
-    d/dt(lat)     <-  ktr   * lat2 - kout * lat - kdeg * lat * csf
+    d/dt(lat1)     <-  ktr   * lat2 - kout * lat1 - kdeg * lat1 * csf
 
     # ---- Observations and residual error -------------------------------
     Cc   <- central / vc                         # serum concentration (mg/L = ug/mL)

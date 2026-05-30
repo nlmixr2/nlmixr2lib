@@ -1,6 +1,6 @@
 # Compartment naming for nlmixr2lib models
 
-Authoritative source: `vignettes/create-model-library.Rmd` and `R/conventions.R`. When in doubt, prefer this file; if this file conflicts with `create-model-library.Rmd`, raise the conflict with the user.
+**Machine-readable source of truth:** `inst/references/compartment-names.md` in the `nlmixr2lib` package. That file is parsed at runtime by `R/conventions.R::.parseTypedNamesMd` and seeds the canonical `compartments` and `registeredMetabolites` (metabolite / sibling-drug suffix) lists used by `checkModelConventions()`. New canonical compartments and metabolite suffixes MUST be added there; this skill reference is the user-facing summary kept in sync with that file. Companion references: `vignettes/create-model-library.Rmd` (narrative). When in doubt, prefer the machine-readable register; if this file conflicts with `create-model-library.Rmd`, raise the conflict with the user.
 
 **Stop-and-ask gate (Phase 1 pre-flight + Phase 3 drafting):** If the model you are extracting needs a compartment role that is NOT in this document, file a sidecar BEFORE writing the model file. Propose the canonical role-based name, its source-paper local name(s), and any cross-precedent in existing registered models. Wait for operator approval. Never introduce numbered placeholders like `cmt1` / `compartment_3` / `c1` silently — those are red flags that the role hasn't been canonicalised. Trivial casing differences (the paper's `Central` → canonical `central`) translate silently and do NOT need a sidecar.
 
@@ -35,6 +35,41 @@ Lower case. Snake case only when combining concepts.
   `<metab>` suffix must be a registered metabolite from
   `R/conventions.R::registeredMetabolites`.
 - Therapeutic-area or mechanism-specific compartments: open a GitHub issue before adding new names.
+
+### Paper-specific compartments
+
+When a model has genuinely paper-mechanistic compartments that do not
+fit any canonical pattern (e.g. Bizzotto 2016 glucose-insulin phase
+compartments `X` / `Z` / `xHL1` / `xPER1..4`, Yuan 2019 concizumab
+TFPI mPBPK target/complex chain, FehlingKaschek 2019 trastuzumab QSP
+cell-binding states, Schindler 2016/2017 oncology lesion-stratified
+states, Bizzotto / Lu / VegaVilla QSP states, Chen 2016 nucleotide
+triphosphate intracellular pools, etc.), declare them via a
+`paper_specific_compartments` metadata field at the top of the model
+function body (analogous to the `depends` field for upstream-imported
+covariates):
+
+```r
+my_model <- function() {
+  description <- "..."
+  reference <- "..."
+  paper_specific_compartments <- c("X", "Z", "xHL1", "xPER1", "xPER2")
+  units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
+  ...
+}
+```
+
+A regex form is also accepted for chain-prefix patterns:
+
+```r
+  paper_specific_compartment_pattern <- "^bact_"
+```
+
+`checkModelConventions()` subtracts these from the compartment-warning
+set so the author can explicitly document a model's per-paper named
+states. New extractions should prefer canonical names whenever
+possible; the `paper_specific_compartments` field is for legitimately
+paper-mechanistic states that do not generalise.
 
 ### Brain-region compartments (`brain_<region>` namespace)
 

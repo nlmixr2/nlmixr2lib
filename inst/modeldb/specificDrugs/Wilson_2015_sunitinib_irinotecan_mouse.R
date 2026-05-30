@@ -20,6 +20,8 @@ Wilson_2015_sunitinib_irinotecan_mouse <- function() {
     sep = " "
   )
   vignette <- "Wilson_2015_sunitinib_irinotecan_mouse"
+  paper_specific_compartments <- c("intIrinotecan", "cumSunitinibFrozen", "sunitinib", "irinotecan")
+
   units <- list(
     time          = "day",
     dosing        = "unitless (K-PD; each oral sunitinib or IV irinotecan dose enters its drug-amount compartment with magnitude 1)",
@@ -69,8 +71,8 @@ Wilson_2015_sunitinib_irinotecan_mouse <- function() {
     # Simeoni 2004 (oncology_xenograft_simeoni_2004.R) so the model is usable
     # for stochastic simulation; a downstream user re-fitting the model should
     # re-estimate these.
-    propSd_tumorSize <- 0.10;  label("Proportional residual error on tumor diameter (fraction; placeholder)")  # Not reported in Wilson 2015 Table 1; placeholder
-    addSd_tumorSize  <- 0.50;  label("Additive residual error on tumor diameter (mm; placeholder)")            # Not reported in Wilson 2015 Table 1; placeholder
+    propSd_tumor_size <- 0.10;  label("Proportional residual error on tumor diameter (fraction; placeholder)")  # Not reported in Wilson 2015 Table 1; placeholder
+    addSd_tumor_size  <- 0.50;  label("Additive residual error on tumor diameter (mm; placeholder)")            # Not reported in Wilson 2015 Table 1; placeholder
   })
 
   model({
@@ -113,11 +115,11 @@ Wilson_2015_sunitinib_irinotecan_mouse <- function() {
 
     # --- ODE system (Wilson 2015 Equation 3, with interaction kC from Eq. 4) ---
     # State variables and their paper names:
-    #   cyclingCells     = D1 (proliferating tumor diameter compartment, mm)
-    #   damagedCells1    = D2 (first transit-death compartment)
-    #   damagedCells2    = D3
-    #   damagedCells3    = D4
-    #   carryingCapacity = K  (vasculature-limited maximum tumor diameter, mm)
+    #   cycling_cells     = D1 (proliferating tumor diameter compartment, mm)
+    #   damaged_cells1    = D2 (first transit-death compartment)
+    #   damaged_cells2    = D3
+    #   damaged_cells3    = D4
+    #   carrying_capacity = K  (vasculature-limited maximum tumor diameter, mm)
     #   sunitinib        = S  (K-PD drug-amount compartment, unitless)
     #   irinotecan       = C  (K-PD drug-amount compartment, unitless)
     #
@@ -127,24 +129,24 @@ Wilson_2015_sunitinib_irinotecan_mouse <- function() {
     # injures cycling cells at rate beta_C * p_C * C; injured cells pass
     # through the three damaged-cell compartments at rate k_c_eff before
     # leaving the system (Wilson 2015 Figure 3).
-    d/dt(cyclingCells)     <- k_growth * cyclingCells *
-                                (1 - (cyclingCells / carryingCapacity)^alpha_logistic) -
-                              beta_c * pc_elim * irinotecan * cyclingCells
-    d/dt(damagedCells1)    <- beta_c * pc_elim * irinotecan * cyclingCells -
-                              k_c_eff * damagedCells1
-    d/dt(damagedCells2)    <- k_c_eff * damagedCells1 - k_c_eff * damagedCells2
-    d/dt(damagedCells3)    <- k_c_eff * damagedCells2 - k_c_eff * damagedCells3
-    d/dt(carryingCapacity) <- b_cap * cyclingCells * cyclingCells -
-                              beta_s * ps_elim * sunitinib * carryingCapacity
+    d/dt(cycling_cells)     <- k_growth * cycling_cells *
+                                (1 - (cycling_cells / carrying_capacity)^alpha_logistic) -
+                              beta_c * pc_elim * irinotecan * cycling_cells
+    d/dt(damaged_cells1)    <- beta_c * pc_elim * irinotecan * cycling_cells -
+                              k_c_eff * damaged_cells1
+    d/dt(damaged_cells2)    <- k_c_eff * damaged_cells1 - k_c_eff * damaged_cells2
+    d/dt(damaged_cells3)    <- k_c_eff * damaged_cells2 - k_c_eff * damaged_cells3
+    d/dt(carrying_capacity) <- b_cap * cycling_cells * cycling_cells -
+                              beta_s * ps_elim * sunitinib * carrying_capacity
     d/dt(sunitinib)        <- -ps_elim * sunitinib
     d/dt(irinotecan)       <- -pc_elim * irinotecan
 
     # --- Initial conditions -------------------------------------------------
-    cyclingCells(0)        <- d0
-    carryingCapacity(0)    <- k0
-    damagedCells1(0)       <- 0.0
-    damagedCells2(0)       <- 0.0
-    damagedCells3(0)       <- 0.0
+    cycling_cells(0)        <- d0
+    carrying_capacity(0)    <- k0
+    damaged_cells1(0)       <- 0.0
+    damaged_cells2(0)       <- 0.0
+    damaged_cells3(0)       <- 0.0
     sunitinib(0)           <- 0.0
     irinotecan(0)          <- 0.0
     intIrinotecan(0)       <- 0.0
@@ -156,7 +158,7 @@ Wilson_2015_sunitinib_irinotecan_mouse <- function() {
     # additive + proportional residual error is a placeholder (paper does
     # not specify a residual-error structure for the Table 1 fit; see
     # ini() comments).
-    tumorSize <- cyclingCells + damagedCells1 + damagedCells2 + damagedCells3
-    tumorSize ~ add(addSd_tumorSize) + prop(propSd_tumorSize)
+    tumor_size <- cycling_cells + damaged_cells1 + damaged_cells2 + damaged_cells3
+    tumor_size ~ add(addSd_tumor_size) + prop(propSd_tumor_size)
   })
 }

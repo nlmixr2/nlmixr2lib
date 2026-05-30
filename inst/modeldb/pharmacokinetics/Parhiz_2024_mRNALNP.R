@@ -101,13 +101,13 @@ Parhiz_2024_mRNALNP <- function() {
     # concentration in every organ (supplement equation S5 with R_or = 0
     # collapses to C_free = C_total).
     cv_bl <- blood   / v_bl
-    cv_lu <- vp_lu   / vv_lu
-    cv_he <- vp_he   / vv_he
-    cv_ki <- vp_ki   / vv_ki
-    cv_sp <- vp_sp   / vv_sp
-    cv_li <- vp_li   / vv_li
-    cv_po <- vp_po   / vv_po
-    cv_re <- vp_re   / vv_re
+    cv_lu <- vp_lung   / vv_lu
+    cv_he <- vp_heart   / vv_he
+    cv_ki <- vp_kidney   / vv_ki
+    cv_sp <- vp_spleen   / vv_sp
+    cv_li <- vp_liver   / vv_li
+    cv_po <- vp_portal   / vv_po
+    cv_re <- vp_remainder   / vv_re
 
     # === Vascular ODEs (amount, ug) ===
     # Venous blood -- supplement "Pharmacokinetic Model / Venous Blood"
@@ -123,20 +123,20 @@ Parhiz_2024_mRNALNP <- function() {
 
     # Lung vasculature -- ADAPT 5 XP(3). Pre-pulmonary mixing chamber
     # for the entire cardiac output.
-    d/dt(vp_lu) <- q_co * cv_bl - q_co * cv_lu - cl_lu * cv_lu
+    d/dt(vp_lung) <- q_co * cv_bl - q_co * cv_lu - cl_lu * cv_lu
 
     # Heart, kidney, spleen, portal organs, remainder -- ADAPT 5 XP(5),
     # XP(7), XP(9), XP(2), XP(13). All receive arterial inflow at the
     # lung-vasculature concentration cv_lu.
-    d/dt(vp_he) <- q_he * cv_lu - q_he * cv_he - cl_he * cv_he
-    d/dt(vp_ki) <- q_ki * cv_lu - q_ki * cv_ki - cl_ki * cv_ki
-    d/dt(vp_sp) <- q_sp * cv_lu - q_sp * cv_sp - cl_sp * cv_sp
-    d/dt(vp_po) <- q_po * cv_lu - q_po * cv_po
-    d/dt(vp_re) <- q_re * cv_lu - q_re * cv_re
+    d/dt(vp_heart) <- q_he * cv_lu - q_he * cv_he - cl_he * cv_he
+    d/dt(vp_kidney) <- q_ki * cv_lu - q_ki * cv_ki - cl_ki * cv_ki
+    d/dt(vp_spleen) <- q_sp * cv_lu - q_sp * cv_sp - cl_sp * cv_sp
+    d/dt(vp_portal) <- q_po * cv_lu - q_po * cv_po
+    d/dt(vp_remainder) <- q_re * cv_lu - q_re * cv_re
 
     # Liver vasculature -- ADAPT 5 XP(11). Receives hepatic-artery
     # inflow plus portal returns from spleen and portal organs.
-    d/dt(vp_li) <- q_li * cv_lu + q_sp * cv_sp + q_po * cv_po -
+    d/dt(vp_liver) <- q_li * cv_lu + q_sp * cv_sp + q_po * cv_po -
                     (q_li + q_sp + q_po) * cv_li -
                     cl_li * cv_li
 
@@ -146,26 +146,26 @@ Parhiz_2024_mRNALNP <- function() {
     # mRNA drives a tissue-specific luciferase production rate S_org;
     # luciferase signal decays at kluc (kliv in liver). ADAPT 5 XP(4),
     # XP(15), XP(20) for lung and analogous indices for the other tissues.
-    d/dt(int_lu)  <- cl_lu * cv_lu - klnp * int_lu
-    d/dt(mrna_lu) <- klnp * int_lu - krna * mrna_lu
-    d/dt(luc_lu)  <- slu * mrna_lu - kluc * luc_lu
+    d/dt(int_lung)  <- cl_lu * cv_lu - klnp * int_lung
+    d/dt(mrna_lung) <- klnp * int_lung - krna * mrna_lung
+    d/dt(luc_lung)  <- slu * mrna_lung - kluc * luc_lung
 
-    d/dt(int_he)  <- cl_he * cv_he - klnp * int_he
-    d/dt(mrna_he) <- klnp * int_he - krna * mrna_he
-    d/dt(luc_he)  <- she * mrna_he - kluc * luc_he
+    d/dt(int_heart)  <- cl_he * cv_he - klnp * int_heart
+    d/dt(mrna_heart) <- klnp * int_heart - krna * mrna_heart
+    d/dt(luc_heart)  <- she * mrna_heart - kluc * luc_heart
 
-    d/dt(int_ki)  <- cl_ki * cv_ki - klnp * int_ki
-    d/dt(mrna_ki) <- klnp * int_ki - krna * mrna_ki
-    d/dt(luc_ki)  <- ski * mrna_ki - kluc * luc_ki
+    d/dt(int_kidney)  <- cl_ki * cv_ki - klnp * int_kidney
+    d/dt(mrna_kidney) <- klnp * int_kidney - krna * mrna_kidney
+    d/dt(luc_kidney)  <- ski * mrna_kidney - kluc * luc_kidney
 
-    d/dt(int_sp)  <- cl_sp * cv_sp - klnp * int_sp
-    d/dt(mrna_sp) <- klnp * int_sp - krna * mrna_sp
-    d/dt(luc_sp)  <- ssp * mrna_sp - kluc * luc_sp
+    d/dt(int_spleen)  <- cl_sp * cv_sp - klnp * int_spleen
+    d/dt(mrna_spleen) <- klnp * int_spleen - krna * mrna_spleen
+    d/dt(luc_spleen)  <- ssp * mrna_spleen - kluc * luc_spleen
 
     # Liver uses kliv (separate luciferase decay constant per Table 2).
-    d/dt(int_li)  <- cl_li * cv_li - klnp * int_li
-    d/dt(mrna_li) <- klnp * int_li - krna * mrna_li
-    d/dt(luc_li)  <- sli * mrna_li - kliv * luc_li
+    d/dt(int_liver)  <- cl_li * cv_li - klnp * int_liver
+    d/dt(mrna_liver) <- klnp * int_liver - krna * mrna_liver
+    d/dt(luc_liver)  <- sli * mrna_liver - kliv * luc_liver
 
     # === Derived observation aliases ===
     # Blood concentration (ug/mL) -- canonical Cc observation.
@@ -176,17 +176,15 @@ Parhiz_2024_mRNALNP <- function() {
     # dose / mouse appears explicitly so that re-scaling to a different
     # dose preserves the %ID/g interpretation.
     pid_g_blood  <- 100 * (blood + bldeg)   / (8 * v_bl)
-    pid_g_lung   <- 100 * (vp_lu + int_lu)  / (8 * v_lu)
-    pid_g_heart  <- 100 * (vp_he + int_he)  / (8 * v_he)
-    pid_g_kidney <- 100 * (vp_ki + int_ki)  / (8 * v_ki)
-    pid_g_spleen <- 100 * (vp_sp + int_sp)  / (8 * v_sp)
-    pid_g_liver  <- 100 * (vp_li + int_li)  / (8 * v_li)
+    pid_g_lung   <- 100 * (vp_lung + int_lung)  / (8 * v_lu)
+    pid_g_heart  <- 100 * (vp_heart + int_heart)  / (8 * v_he)
+    pid_g_kidney <- 100 * (vp_kidney + int_kidney)  / (8 * v_ki)
+    pid_g_spleen <- 100 * (vp_spleen + int_spleen)  / (8 * v_sp)
+    pid_g_liver  <- 100 * (vp_liver + int_liver)  / (8 * v_li)
 
     # Luciferase signal per tissue -- ADAPT 5 OUTPUT block Y(7)-Y(11).
-    luc_lung   <- luc_lu
-    luc_heart  <- luc_he
-    luc_kidney <- luc_ki
-    luc_spleen <- luc_sp
-    luc_liver  <- luc_li
+    # The state names already match the desired output names since the
+    # 2026-05-28 PBPK rename to spelled-out organs; no further aliasing
+    # needed.
   })
 }

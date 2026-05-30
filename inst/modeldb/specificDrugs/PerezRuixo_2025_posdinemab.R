@@ -22,7 +22,7 @@ PerezRuixo_2025_posdinemab <- function() {
       units              = "(binary)",
       type               = "binary",
       reference_category = "0 (healthy participant)",
-      notes              = "Multiplicative log-shift on baseline free p217+tau in CSF (R0): exp(e_ad_r0) = 5.995 / 0.793 = 7.56-fold higher in AD vs healthy. No PK-parameter effects.",
+      notes              = "Multiplicative log-shift on baseline free p217+tau in CSF (R0): exp(e_ad_rbase) = 5.995 / 0.793 = 7.56-fold higher in AD vs healthy. No PK-parameter effects.",
       source_name        = "STATUS"
     )
   )
@@ -60,8 +60,8 @@ PerezRuixo_2025_posdinemab <- function() {
     e_wt_vc_vp <- 1.00;  label("Allometric (WT) exponent shared across all volume-like terms (Vc, Vp, VCSF, VISF; fixed; Results)")
 
     # ----- Mechanistic p217+tau / tau-seed parameters (Table 2) --------------
-    lr0    <- log(0.793);                  label("Baseline free p217+tau in CSF, healthy (R0_HV, pmol/L)") # Table 2: R0 healthy 0.793 pmol/L
-    e_ad_r0 <- log(5.995/0.793);           label("Log-shift on R0 for AD (additive on log-scale; exp = 7.56-fold higher)") # Table 2: R0 AD 5.995 pmol/L => log(5.995/0.793) = 2.023
+    lrbase    <- log(0.793);                  label("Baseline free p217+tau in CSF, healthy (R0_HV, pmol/L)") # Table 2: R0 healthy 0.793 pmol/L
+    e_ad_rbase <- log(5.995/0.793);           label("Log-shift on R0 for AD (additive on log-scale; exp = 7.56-fold higher)") # Table 2: R0 AD 5.995 pmol/L => log(5.995/0.793) = 2.023
     lkc    <- log(0.040);                  label("First-order elimination of free p217+tau / tau seeds (kc, 1/h)") # Table 2: 0.040 1/h
     lkint  <- log(0.299);                  label("First-order elimination of free posdinemab in CSF and posdinemab-target complex (kint, 1/h)") # Table 2: 0.299 1/h
 
@@ -87,7 +87,7 @@ PerezRuixo_2025_posdinemab <- function() {
     etalqcsf ~ 0.08300  # QCSF CV 29.4%
     etalvcsf ~ 0.06244  # VCSF CV 25.5%
     etalvisf ~ 0.60466  # VISF CV 91.0%
-    etalr0   ~ 0.37113  # R0   CV 67.7%
+    etalrbase   ~ 0.37113  # R0   CV 67.7%
     etalkc   ~ 0.26156  # kc   CV 54.7%
     etalkint ~ 0.13510  # kint CV 38.2%
 
@@ -121,7 +121,7 @@ PerezRuixo_2025_posdinemab <- function() {
     kint  <- exp(lkint + etalkint)
     kon   <- exp(lkon)
     koff  <- exp(lkoff)
-    R0    <- exp(lr0 + e_ad_r0 * DIS_AD + etalr0)
+    R0    <- exp(lrbase + e_ad_rbase * DIS_AD + etalrbase)
 
     # ISF binding rate constants implementing the 20-fold higher ISF affinity
     # (kd_ISF = kd_CSF / aff_isf_ratio). Decomposition: hold kon constant

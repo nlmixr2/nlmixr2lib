@@ -91,7 +91,7 @@ Ahlstrom_2010_nicotinicAcid_rat <- function() {
     # --------------------------------------------------------------
     # NEFA PD parameters -- Ahlstrom 2010 Table 2.
     # --------------------------------------------------------------
-    lr0      <- log(0.606)   ; label("Baseline NEFA concentration R0 (mmol/L)")                              # Table 2: R0 = 0.606 (RSE 3.51%)
+    lrbase      <- log(0.606)   ; label("Baseline NEFA concentration R0 (mmol/L)")                              # Table 2: R0 = 0.606 (RSE 3.51%)
     lkout    <- log(0.411)   ; label("Fractional turnover rate of NEFA kout (L/mmol/min)")                   # Table 2: kout = 0.411 (RSE 9.22%)
     lktol    <- log(0.0267)  ; label("Turnover rate of moderator chain ktol (1/min)")                        # Table 2: ktol = 0.0267 (RSE 3.40%)
     lic50    <- log(0.0446)  ; label("Potency: NiAc Cp at 50% maximal NEFA-formation inhibition IC50 (umol/L)") # Table 2: IC50 = 0.0446 (RSE 7.20%)
@@ -116,7 +116,7 @@ Ahlstrom_2010_nicotinicAcid_rat <- function() {
     etalvmax_lo ~ 0.6754   # Table 1 IIV Vmax2 CV 98.2% (RSE 24.8)
     etalq       ~ 0.2606   # Table 1 IIV Cld   CV 54.5% (RSE 88.6)
     etalsynt    ~ 0.02472  # Table 1 IIV Synt  CV 15.8% (RSE 62.5)
-    etalr0      ~ 0.08047  # Table 2 IIV R0    CV 29.0% (RSE 43.1)
+    etalrbase      ~ 0.08047  # Table 2 IIV R0    CV 29.0% (RSE 43.1)
     etalkout    ~ 0.2089   # Table 2 IIV kout  CV 48.2% (RSE 35.6)
     etalic50    ~ 0.7039   # Table 2 IIV IC50  CV 101%  (RSE 46.1)
 
@@ -155,7 +155,7 @@ Ahlstrom_2010_nicotinicAcid_rat <- function() {
     vp      <- exp(lvp)
     synt    <- exp(lsynt + etalsynt)
 
-    r0      <- exp(lr0 + etalr0)
+    rbase      <- exp(lrbase + etalrbase)
     kout    <- exp(lkout + etalkout)
     ktol    <- exp(lktol)
     ic50    <- exp(lic50 + etalic50)
@@ -225,7 +225,7 @@ Ahlstrom_2010_nicotinicAcid_rat <- function() {
     # this model.
     # --------------------------------------------------------------
     inh <- imax * Cp^gam / (ic50^gam + Cp^gam)
-    kin <- r0^pmod * (kout * r0 * r0 - kcap)
+    kin <- rbase^pmod * (kout * rbase * rbase - kcap)
 
     d/dt(nefa)       <- kin * (1 - inh) / precursor1^pmod +
                         kcap - kout * precursor8 * nefa
@@ -238,15 +238,15 @@ Ahlstrom_2010_nicotinicAcid_rat <- function() {
     d/dt(precursor7) <- ktol * (precursor6 - precursor7)
     d/dt(precursor8) <- ktol * (precursor7 - precursor8)
 
-    nefa(0)       <- r0
-    precursor1(0) <- r0
-    precursor2(0) <- r0
-    precursor3(0) <- r0
-    precursor4(0) <- r0
-    precursor5(0) <- r0
-    precursor6(0) <- r0
-    precursor7(0) <- r0
-    precursor8(0) <- r0
+    nefa(0)       <- rbase
+    precursor1(0) <- rbase
+    precursor2(0) <- rbase
+    precursor3(0) <- rbase
+    precursor4(0) <- rbase
+    precursor5(0) <- rbase
+    precursor6(0) <- rbase
+    precursor7(0) <- rbase
+    precursor8(0) <- rbase
 
     # --------------------------------------------------------------
     # 5. Observations.

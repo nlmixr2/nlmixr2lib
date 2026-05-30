@@ -2,6 +2,8 @@ Ayyar_2024_givosiran <- function() {
   description <- "Mechanistic translational PK model for the GalNAc-siRNA givosiran (Ayyar & Song 2024) parameterized for human (70 kg adult). 22-ODE system covering SC depot, central plasma (parent + AS(N-1)3' active metabolite), competitive ASGPR receptor binding (free target, parent-target complex, metabolite-target complex), receptor-mediated hepatocyte internalization, endolysosomal sequestration / degradation / endosomal escape, free cytoplasmic siRNA, RISC-loaded siRNA (combined parent + metabolite), kidney vascular and tissue distribution with a deep bound pool and GFR elimination - for parent and metabolite. Pharmacodynamic ALAS1 mRNA silencing (rat-only in the paper) is not included in the human parameterization."
   reference <- "Ayyar VS, Song D. Mechanistic Pharmacokinetics and Pharmacodynamics of GalNAc-siRNA: Translational Model Involving Competitive Receptor-Mediated Disposition and RISC-Dependent Gene Silencing Applied to Givosiran. J Pharm Sci. 2024;113(1):176-190. doi:10.1016/j.xphs.2023.10.026"
   vignette <- "Ayyar_2024_givosiran"
+  paper_specific_compartments <- c("cyto", "cyto_asn1", "risc")
+
   units <- list(
     time = "h",
     dosing = "nmol",
@@ -135,10 +137,10 @@ Ayyar_2024_givosiran <- function() {
     cytoCm <- cyto_asn1 / vhep
     RISC   <- risc / vhep
     # Kidney compartments:
-    Ckvas   <- kid_vas / vkvas
-    Ckvas_m <- kid_vas_asn1 / vkvas
-    Ck      <- kid / vk
-    Ck_m    <- kid_asn1 / vk
+    Ckvas   <- kidney_vas / vkvas
+    Ckvas_m <- kidney_vas_asn1 / vkvas
+    Ck      <- kidney / vk
+    Ck_m    <- kidney_asn1 / vk
 
     # 4. Receptor-binding fluxes (nmol/h) - parent and metabolite
     flux_par_bind   <- kon * Cp   * Rf  * vc
@@ -181,36 +183,36 @@ Ayyar_2024_givosiran <- function() {
     d/dt(complex_asn1) <- flux_met_bind - flux_met_unbind - flux_met_int
 
     # Eq 6: internalized parent-ASGPR complex (nmol)
-    d/dt(liv) <- flux_par_int - kcle * liv
+    d/dt(liver) <- flux_par_int - kcle * liver
 
     # Eq 7: internalized metabolite-ASGPR complex (nmol)
-    d/dt(liv_asn1) <- flux_met_int - kcle * liv_asn1
+    d/dt(liver_asn1) <- flux_met_int - kcle * liver_asn1
 
     # Eq 8: free endosomal parent siRNA (nmol)
     # Two kdeg_e terms: degradation and escape-to-cytosol; both retained
     # exactly as in paper Eq 8.
-    d/dt(liv_endo) <- kcle * liv -
-                      kdege * liv_endo - fesc * kdege * liv_endo -
-                      kassl * liv_endo + kdisl * liv_deep
+    d/dt(liver_endo) <- kcle * liver -
+                      kdege * liver_endo - fesc * kdege * liver_endo -
+                      kassl * liver_endo + kdisl * liver_deep
 
     # Eq 9: free endosomal metabolite siRNA (nmol)
-    d/dt(liv_endo_asn1) <- kcle * liv_asn1 -
-                           kdege * liv_endo_asn1 - fesc * kdege * liv_endo_asn1 -
-                           kassl * liv_endo_asn1 + kdisl * liv_deep_asn1
+    d/dt(liver_endo_asn1) <- kcle * liver_asn1 -
+                           kdege * liver_endo_asn1 - fesc * kdege * liver_endo_asn1 -
+                           kassl * liver_endo_asn1 + kdisl * liver_deep_asn1
 
     # Eq 10: liver endosomal parent bound pool (nmol)
-    d/dt(liv_deep) <- kassl * liv_endo - kdisl * liv_deep
+    d/dt(liver_deep) <- kassl * liver_endo - kdisl * liver_deep
 
     # Eq 11: liver endosomal metabolite bound pool (nmol)
-    d/dt(liv_deep_asn1) <- kassl * liv_endo_asn1 - kdisl * liv_deep_asn1
+    d/dt(liver_deep_asn1) <- kassl * liver_endo_asn1 - kdisl * liver_deep_asn1
 
     # Eq 12: free cytoplasmic parent siRNA (nmol; paper concentration form * Vhep)
-    d/dt(cyto) <- fesc * kdege * liv_endo -
+    d/dt(cyto) <- fesc * kdege * liver_endo -
                   kdegc * cyto -
                   flux_par_risc
 
     # Eq 13: free cytoplasmic metabolite siRNA (nmol)
-    d/dt(cyto_asn1) <- fesc * kdege * liv_endo_asn1 -
+    d/dt(cyto_asn1) <- fesc * kdege * liver_endo_asn1 -
                        kdegc * cyto_asn1 -
                        flux_met_risc
 
@@ -218,28 +220,28 @@ Ayyar_2024_givosiran <- function() {
     d/dt(risc) <- flux_par_risc + flux_met_risc - kcomplx * risc
 
     # Eq 15: parent in kidney vasculature (nmol)
-    d/dt(kid_vas) <- qkid * Cp + qkid * fuk * Ck -
+    d/dt(kidney_vas) <- qkid * Cp + qkid * fuk * Ck -
                      2 * qkid * Ckvas -
                      gfr * fugfr * Ckvas
 
     # Eq 16: metabolite in kidney vasculature (nmol)
-    d/dt(kid_vas_asn1) <- qkid * Cp_m + qkid * fuk * Ck_m -
+    d/dt(kidney_vas_asn1) <- qkid * Cp_m + qkid * fuk * Ck_m -
                           2 * qkid * Ckvas_m -
                           gfr * fugfr * Ckvas_m
 
     # Eq 17: parent in kidney tissue (nmol)
-    d/dt(kid) <- qkid * Ckvas - qkid * fuk * Ck -
-                 kassk * fuk * kid + kdisk * kid_deep
+    d/dt(kidney) <- qkid * Ckvas - qkid * fuk * Ck -
+                 kassk * fuk * kidney + kdisk * kidney_deep
 
     # Eq 18: metabolite in kidney tissue (nmol)
-    d/dt(kid_asn1) <- qkid * Ckvas_m - qkid * fuk * Ck_m -
-                      kassk * fuk * kid_asn1 + kdisk * kid_deep_asn1
+    d/dt(kidney_asn1) <- qkid * Ckvas_m - qkid * fuk * Ck_m -
+                      kassk * fuk * kidney_asn1 + kdisk * kidney_deep_asn1
 
     # Eq 19: kidney bound pool parent (nmol)
-    d/dt(kid_deep) <- kassk * fuk * kid - kdisk * kid_deep
+    d/dt(kidney_deep) <- kassk * fuk * kidney - kdisk * kidney_deep
 
     # Eq 20: kidney bound pool metabolite (nmol)
-    d/dt(kid_deep_asn1) <- kassk * fuk * kid_asn1 - kdisk * kid_deep_asn1
+    d/dt(kidney_deep_asn1) <- kassk * fuk * kidney_asn1 - kdisk * kidney_deep_asn1
 
     # 6. Bioavailability for SC depot (paper Eq 1: Input = ka * Dose * F)
     f(depot) <- exp(lfdepot)

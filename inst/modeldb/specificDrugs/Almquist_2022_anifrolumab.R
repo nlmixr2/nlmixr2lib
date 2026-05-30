@@ -52,7 +52,7 @@ Almquist_2022_anifrolumab <- function() {
 
     # QSS-TMDD binding parameters (target = type I IFN receptor IFNAR1, in nmol/L)
     lkss   <- log(0.712);  label("Quasi-steady-state binding constant Kss = (koff + kint)/kon (nmol/L)")               # Table 1: Kss = 0.712 nmol/L
-    lr0    <- log(0.0999); label("Baseline IFNAR1 concentration R0 (nmol/L)")                                          # Table 1: R0 = 0.0999 nmol/L
+    lrbase    <- log(0.0999); label("Baseline IFNAR1 concentration R0 (nmol/L)")                                          # Table 1: R0 = 0.0999 nmol/L
 
     # Receptor turnover: kdeg fixed from confocal-imaging studies (Wang 2013, supplement ref 1).
     # Supplement appendix (line 140) sets the internalisation rate kint equal to kdeg = 77.4 d^-1
@@ -73,7 +73,7 @@ Almquist_2022_anifrolumab <- function() {
     # IIV (variances; Tmax has additive eta on the linear scale, all others are exp-additive on log-scale)
     etalcl   ~ 0.109   # Table 1: omega^2 = 0.109 (CV ~33.0%) on lcl
     etalvc   ~ 0.0723  # Table 1: omega^2 = 0.0723 (CV ~26.9%) on lvc
-    etalr0   ~ 0.0882  # Table 1: omega^2 = 0.0882 (CV ~29.7%) on lr0
+    etalrbase   ~ 0.0882  # Table 1: omega^2 = 0.0882 (CV ~29.7%) on lrbase
     etatmax  ~ 0.146   # Table 1: omega^2 = 0.146 (CV ~38.2%) on tmax (additive eta, NONMEM ETA(4))
 
     # Residual error (paper Table 1 reports SDs in ng/mL; this implementation works in ug/mL so addSd is /1000)
@@ -98,7 +98,7 @@ Almquist_2022_anifrolumab <- function() {
     q     <- exp(lq)
     vp    <- exp(lvp)
     kss   <- exp(lkss)                                        # nmol/L
-    r0    <- exp(lr0 + etalr0)                                # nmol/L
+    rbase    <- exp(lrbase + etalrbase)                                # nmol/L
     kint  <- kdeg                                             # supplement constraint: complex internalisation rate equals receptor degradation rate
 
     # Working concentrations (with explicit unit handling)
@@ -124,8 +124,8 @@ Almquist_2022_anifrolumab <- function() {
     # Receptor pool: dRtot/dt = kdeg * (R0*Vc - Rtot)  -- supplement appendix DADT(4) under kint = kdeg.
     d/dt(central)      <- -ab_total_loss / qss_denom
     d/dt(peripheral1)  <-  q * (cdrug_ugmL - cperi_ugmL)
-    d/dt(total_target) <-  kdeg * (r0 * vc - total_target)
-    total_target(0)    <-  r0 * vc                            # nmol; supplement appendix A0(4) = R0*V2
+    d/dt(total_target) <-  kdeg * (rbase * vc - total_target)
+    total_target(0)    <-  rbase * vc                            # nmol; supplement appendix A0(4) = R0*V2
 
     # Observation: free anifrolumab serum concentration in ug/mL
     Cc <- cdrug_ugmL

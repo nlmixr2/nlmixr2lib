@@ -2,6 +2,8 @@ Li_2017_brentuximab <- function() {
   description <- "Semimechanistic coupled population PK model for brentuximab vedotin antibody-drug conjugate (ADC) and its released small-molecule payload monomethyl auristatin E (MMAE) in adults with CD30-expressing hematologic malignancies (Li 2017). ADC is described by a linear 3-compartment model with first-order elimination; MMAE by a linear 2-compartment model with first-order elimination. MMAE formation is driven by (1) proteolytic degradation of the ADC (scaled by a time-decaying drug-antibody ratio DAR(t) and a cycle-dependent fraction Fmc = Cycle^Fm) and (2) a first-order deconjugation flux proportional to the per-ADC MMAE payload above the minimum-detectable DAR. Modeled in molar units (amount nmol, volume L, concentration pmol/mL = nmol/L = nM) following the paper's convention."
   reference <- "Li H, Han TH, Hunder NN, Jang G, Zhao B. Population Pharmacokinetics of Brentuximab Vedotin in Patients With CD30-Expressing Hematologic Malignancies. J Clin Pharmacol. 2017;57(9):1148-1158. doi:10.1002/jcph.920. PMID 28513851."
   vignette <- "Li_2017_brentuximab"
+  paper_specific_compartments <- c("pathway_proteolytic", "pathway_deconjugation")
+
   units <- list(
     time          = "day",
     dosing        = "nmol",

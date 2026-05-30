@@ -137,7 +137,7 @@ make_cohort <- function(n, hv = 0L, cd = 0L, smm = 0L,
   )
 }
 
-n_per <- 200L  # smaller per-cohort N for vignette runtime; medians stay stable
+n_per <- 75L  # downsampled from 200 for vignette build budget; medians/IQRs stay stable
 pop <- bind_rows(
   make_cohort(n_per, hv = 1L, cd = 0L, smm = 0L,
               cohort_label = "Healthy volunteers", id_offset = 0L),
@@ -159,9 +159,9 @@ dose_times_single <- 0
 dose_times_multi  <- seq(0, 21 * 4, by = 21)  # cycles 1-5
 
 obs_times <- sort(unique(c(
-  seq(0, 1, by = 0.05),                       # dense intra-infusion
-  seq(1, 21, by = 0.5),                       # dense first cycle
-  seq(21, 21 * 6, by = 1)                     # weekly thereafter
+  seq(0, 1, by = 0.1),                        # intra-infusion (thinned from by=0.05 for vignette build budget)
+  seq(1, 21, by = 1),                         # first cycle (thinned from by=0.5)
+  seq(21, 21 * 6, by = 2)                     # later cycles (thinned from by=1)
 )))
 
 build_events <- function(pop, dose_times) {

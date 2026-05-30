@@ -59,7 +59,7 @@ Abboud_2009_epinephrine <- function() {
     # epinephrine input rate) in nmol/h.
     lcl <- log(127);  label("Clearance for reference subject (CL, L/h)")              # Table 3 (127 L/h at 70 kg BW, SAPS II 50)
     lvc <- log(7.9);  label("Volume of distribution (V, L)")                          # Table 3 (final-model V = 7.9 L)
-    lr0 <- log(43.5); label("Endogenous epinephrine production rate (R0, nmol/h)")    # Table 3
+    lrbase <- log(43.5); label("Endogenous epinephrine production rate (R0, nmol/h)")    # Table 3
 
     # Covariate effects from Abboud 2009 Table 3 (final relationship for CL
     # in the Results section): CL_i = 127 * (BW/70)^0.60 * (SAPS II/50)^-0.67.
@@ -72,7 +72,7 @@ Abboud_2009_epinephrine <- function() {
     # retained in the final model (Methods: "if the correlation between
     # terms was low, it was fixed at 0"), so the two etas are independent.
     etalcl ~ 0.1089  # Table 3 BSV(CL) = 0.33; 0.33^2 = 0.1089
-    etalr0 ~ 1.5129  # Table 3 BSV(R0) = 1.23; 1.23^2 = 1.5129
+    etalrbase ~ 1.5129  # Table 3 BSV(R0) = 1.23; 1.23^2 = 1.5129
 
     # Residual error: both components held fixed at the HPLC assay-
     # quantification values per Methods ("the residual variability
@@ -91,7 +91,7 @@ Abboud_2009_epinephrine <- function() {
     # R0 could be accurately estimated once the residual error was fixed).
     cl <- exp(lcl + etalcl) * (WT / 70)^e_wt_cl * (SAPS_II / 50)^e_saps_ii_cl
     vc <- exp(lvc)
-    r0 <- exp(lr0 + etalr0)
+    rbase <- exp(lrbase + etalrbase)
 
     kel <- cl / vc
 
@@ -99,12 +99,12 @@ Abboud_2009_epinephrine <- function() {
     # epinephrine is administered as an IV infusion (cmt = central, rate
     # column on the dose row); rxode2 adds the event-driven infusion rate
     # to d/dt(central) automatically. The constant endogenous epinephrine
-    # production r0 (nmol/h) is added as a baseline input so the
+    # production rbase (nmol/h) is added as a baseline input so the
     # steady-state plateau equals (rate + R0) / CL, matching the explicit
     # formula in Abboud 2009 Results:
     #   C_plateau (nmol/L) = (rate + R0)
     #                        / ( 127 * (BW/70)^0.60 * (SAPS_II/50)^-0.67 )
-    d/dt(central) <- r0 - kel * central
+    d/dt(central) <- rbase - kel * central
 
     # Initial condition: pre-infusion endogenous steady state, central(0) =
     # R0 / kel = R0 * V / CL, so the observed baseline Cc(0) = R0 / CL
@@ -112,7 +112,7 @@ Abboud_2009_epinephrine <- function() {
     # onset. For a typical subject this yields 43.5 / 127 = 0.343 nmol/L,
     # which matches the observed median baseline epinephrine of
     # 0.34 nmol/L in Table 2.
-    central(0) <- r0 / kel
+    central(0) <- rbase / kel
 
     Cc <- central / vc
 

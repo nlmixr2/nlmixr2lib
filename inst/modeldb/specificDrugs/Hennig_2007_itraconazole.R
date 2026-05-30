@@ -120,7 +120,7 @@ Hennig_2007_itraconazole <- function() {
     # (F_solution fixed to 1) and a single absorption lag-time shared
     # across both formulations.
     lfdepot <- log(0.817)     ; label("Relative bioavailability F_rel of capsule (oral solution F = 1 fixed)")  # Hennig 2007 Table 3, F_rel = 0.817 (RSE 23.5%)
-    llag    <- log(19.3 / 60) ; label("Absorption lag time (h; converted from t_lag = 19.3 min)")               # Hennig 2007 Table 3, t_lag = 19.3 min (RSE 1.68%)
+    ltlag    <- log(19.3 / 60) ; label("Absorption lag time (h; converted from t_lag = 19.3 min)")               # Hennig 2007 Table 3, t_lag = 19.3 min (RSE 1.68%)
 
     # Inter-individual variability. Final-model BSV CV% values from
     # Hennig 2007 Table 3 converted to log-normal omega^2 via
@@ -162,7 +162,7 @@ Hennig_2007_itraconazole <- function() {
     # the oral solution; F = F_rel * exp(etalfdepot) for the capsule.
     fdepot     <- exp(lfdepot + etalfdepot)
     f(depot)   <- (1 - FORM_CAPSULE) + FORM_CAPSULE * fdepot
-    lag(depot) <- exp(llag)
+    lag(depot) <- exp(ltlag)
 
     # Two-compartment parent disposition with first-order metabolism to
     # hydroxy-itraconazole; one-compartment metabolite with linear

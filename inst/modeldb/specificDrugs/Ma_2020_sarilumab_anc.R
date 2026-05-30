@@ -72,7 +72,7 @@ Ma_2020_sarilumab_anc <- function() {
     # ---------------------------------------------------------------------
     # PD parameters (Ma 2020 Table 4 ANC PopPK/PD)
     # ---------------------------------------------------------------------
-    lbase  <- log(5.38); label("Typical baseline ANC (10^9/L)")                            # Ma 2020 Table 4
+    lrbase  <- log(5.38); label("Typical baseline ANC (10^9/L)")                            # Ma 2020 Table 4
     lemax  <- log(1.50); label("Maximum drug-induced stimulation of ANC elimination (Emax, unitless)")  # Ma 2020 Table 4
     lec50  <- log(10.3); label("Sarilumab concentration at 50% of Emax (EC50, mg/L)")      # Ma 2020 Table 4
 
@@ -86,11 +86,11 @@ Ma_2020_sarilumab_anc <- function() {
     # See vignette Assumptions and deviations for full discussion.
     lkout <- log(2.11);   label("First-order ANC elimination rate constant (Kout, 1/day)")  # Ma 2020 Table 4 (corrected decimal typo; published bootstrap median "211" -> 2.11)
 
-    lgamma <- log(0.862); label("Hill coefficient for sigmoidicity of ANC effect (unitless)")  # Ma 2020 Table 4
+    lhill <- log(0.862); label("Hill coefficient for sigmoidicity of ANC effect (unitless)")  # Ma 2020 Table 4
 
     # Covariate effect parameters (power-form exponents)
     e_wt_kout       <- 0.875; label("Weight exponent on Kout (ref 71 kg, unitless)")                           # Ma 2020 Table 4
-    e_smoke_base    <- 1.15;  label("Smoking multiplier on baseline ANC (power-form: BASE * 1.15^SMOKE)")      # Ma 2020 Table 4
+    e_smoke_rbase    <- 1.15;  label("Smoking multiplier on baseline ANC (power-form: BASE * 1.15^SMOKE)")      # Ma 2020 Table 4
     e_pricort_emax  <- 0.819; label("Prior corticosteroid multiplier on Emax (power-form: Emax * 0.819^PRICORT)")  # Ma 2020 Table 4
 
     # ---------------------------------------------------------------------
@@ -108,12 +108,12 @@ Ma_2020_sarilumab_anc <- function() {
 
     # PD IIV (Ma 2020 Table 4)
     # BASE 32.1%, Emax 61.9%, EC50 36.9%, Kout 227% (very high; preserved as
-    # reported), gamma 80.4%.
-    etalbase  ~ 0.09807                                                                        # Ma 2020 Table 4 (32.1% CV)
+    # reported), hill 80.4%.
+    etalrbase  ~ 0.09807                                                                        # Ma 2020 Table 4 (32.1% CV)
     etalemax  ~ 0.32423                                                                        # Ma 2020 Table 4 (61.9% CV)
     etalec50  ~ 0.12762                                                                        # Ma 2020 Table 4 (36.9% CV)
     etalkout  ~ 1.81707                                                                        # Ma 2020 Table 4 (227% CV)
-    etalgamma ~ 0.49851                                                                        # Ma 2020 Table 4 (80.4% CV)
+    etalhill ~ 0.49851                                                                        # Ma 2020 Table 4 (80.4% CV)
 
     # ---------------------------------------------------------------------
     # Residual error
@@ -154,21 +154,21 @@ Ma_2020_sarilumab_anc <- function() {
     # (margination of functional neutrophils out of circulation). The
     # `effect` compartment holds ANC; its initial value is baseline.
     #   d/dt(effect) = Kin - Kout * (1 + Eff) * effect
-    #   Eff          = Emax * Cc^gamma / (EC50^gamma + Cc^gamma)
+    #   Eff          = Emax * Cc^hill / (EC50^hill + Cc^hill)
     # At baseline (Cc = 0): Kin = Kout * BASE, so effect(0) = BASE.
     # -------------------------------------------------------------------
-    base  <- exp(lbase  + etalbase)  * (e_smoke_base)^SMOKE
+    rbase  <- exp(lrbase  + etalrbase)  * (e_smoke_rbase)^SMOKE
     emax  <- exp(lemax  + etalemax)  * (e_pricort_emax)^PRICORT
     ec50  <- exp(lec50  + etalec50)
     kout  <- exp(lkout  + etalkout)  * (WT / 71)^e_wt_kout
-    gamma <- exp(lgamma + etalgamma)
+    hill <- exp(lhill + etalhill)
 
-    kin <- kout * base
+    kin <- kout * rbase
 
-    eff <- emax * Cc^gamma / (ec50^gamma + Cc^gamma)
+    eff <- emax * Cc^hill / (ec50^hill + Cc^hill)
 
     d/dt(effect) <- kin - kout * (1 + eff) * effect
-    effect(0)    <- base
+    effect(0)    <- rbase
 
     ANC <- effect
 

@@ -99,7 +99,7 @@ subject.
 
 ```{r virtual-pop}
 set.seed(2025)
-n_subj <- 500
+n_subj <- 100  # downsampled from 500 for vignette build budget; VPC bands look identical
 
 pop <- data.frame(
   ID       = seq_len(n_subj),
@@ -139,8 +139,8 @@ d_maint <- tidyr::crossing(pop, TIME = seq(21, 21 * 7, by = 21)) %>%
   )
 
 obs_times <- sort(unique(c(
-  seq(0, 21, by = 0.25),
-  seq(21, 168, by = 0.5)
+  seq(0, 21, by = 1),     # coarsened from by = 0.25 for vignette build budget
+  seq(21, 168, by = 2)    # coarsened from by = 0.5 for vignette build budget
 )))
 
 d_obs <- tidyr::crossing(pop, TIME = obs_times) %>%
@@ -184,7 +184,7 @@ ggplot(sim_summary, aes(x = time)) +
     x = "Time (days)",
     y = "Zolbetuximab concentration (ug/mL)",
     title = "Simulated zolbetuximab PK (800/600 mg/m^2 Q3W IV)",
-    subtitle = "Median and 90% prediction interval (N = 500 virtual G/GEJ patients)",
+    subtitle = "Median and 90% prediction interval (N = 100 virtual G/GEJ patients)",
     caption = "Replicates Figure 3 of Yamada et al. (2025) Clin Transl Sci."
   ) +
   theme_bw()
@@ -205,8 +205,8 @@ d_maint_q2w <- tidyr::crossing(pop, TIME = seq(14, 14 * 12, by = 14)) %>%
   )
 
 obs_times_q2w <- sort(unique(c(
-  seq(0, 14, by = 0.25),
-  seq(14, 168, by = 0.5)
+  seq(0, 14, by = 1),     # coarsened from by = 0.25 for vignette build budget
+  seq(14, 168, by = 2)    # coarsened from by = 0.5 for vignette build budget
 )))
 d_obs_q2w <- tidyr::crossing(pop, TIME = obs_times_q2w) %>%
   mutate(AMT = NA_real_, RATE = NA_real_, EVID = 0, CMT = "central", DV = NA_real_)

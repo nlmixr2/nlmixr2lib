@@ -2,6 +2,8 @@ Pu_2021_evinacumab <- function() {
   description <- "Population PK/PD model for evinacumab in healthy volunteers and adults / pediatric patients with homozygous familial hypercholesterolemia (Pu 2021): two-compartment PK with first-order SC absorption (with lag time) and parallel linear plus Michaelis-Menten elimination from the central compartment, linked to a Type 1 indirect-response model for low-density lipoprotein cholesterol (LDL-C) where evinacumab inhibits LDL-C production."
   reference   <- "Pu X, Sale M, Yang F, Zhang Y, Davis JD, Al-Huniti N. Population pharmacokinetics and exposure-response modeling for evinacumab in homozygous familial hypercholesterolemia. CPT Pharmacometrics Syst Pharmacol. 2021;10(11):1412-1421. doi:10.1002/psp4.12711"
   vignette    <- "Pu_2021_evinacumab"
+  paper_specific_compartments <- c("LDL")
+
   units       <- list(time = "day", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
@@ -80,7 +82,7 @@ Pu_2021_evinacumab <- function() {
     lvp     <- log(0.109 * 2.56 / 0.124); label("Peripheral volume of distribution Vp (V3 in source) at 74.1 kg reference (L; = K23 * V2 / K32)")  # Pu 2021 Table 1 final-model K23 * V2 / K32 = 0.109 * 2.56 / 0.124
     lvmax   <- log(3.16);     label("Maximum target-mediated Michaelis-Menten elimination rate Vmax at HV / typical ANGPTL3 reference (mg/day)")   # Pu 2021 Table 1 final-model Vmax
     lkm     <- log(1.02);     label("Michaelis-Menten constant Km (mg/L)")                                                # Pu 2021 Table 1 final-model Km
-    llag    <- log(0.168);    label("SC absorption lag time (day)")                                                       # Pu 2021 Table 1 final-model Alag
+    ltlag    <- log(0.168);    label("SC absorption lag time (day)")                                                       # Pu 2021 Table 1 final-model Alag
     lfdepot <- log(0.714);    label("Log SC bioavailability (F = 0.714, fraction)")                                        # Pu 2021 Table 1 final-model F = 0.714
 
     # ----- PK covariate effects (Pu 2021 Table 1 covariate block) -----
@@ -99,7 +101,7 @@ Pu_2021_evinacumab <- function() {
     # Approximate CV%: CV = sqrt(exp(sigma^2) - 1) -> 36% (CL) and 21% (Vc), matching the paper text.
     etalcl + etalvc ~ c(0.126025, 0.016108, 0.045369)  # Pu 2021 Table 1 sigma(CL)=0.355, sigma(V)=0.213, corr(CL,V)=0.213
     etalka          ~ 0.470596                          # Pu 2021 Table 1 sigma(Ka) = 0.686 -> var = 0.686^2
-    etallag         ~ 1.4161                            # Pu 2021 Table 1 sigma(Alag1) = 1.19 -> var = 1.19^2
+    etaltlag         ~ 1.4161                            # Pu 2021 Table 1 sigma(Alag1) = 1.19 -> var = 1.19^2
 
     # ----- PK residual error (Pu 2021 Table 1 final-model RUV) -----
     addSd  <- 0.303; label("Additive PK residual error on Cc (mg/L)")                            # Pu 2021 Table 1 sigma additive
@@ -140,7 +142,7 @@ Pu_2021_evinacumab <- function() {
     q     <- exp(lq)           * (WT / 74.1)^e_wt_vc_vp
     km    <- exp(lkm)
     vmax  <- exp(lvmax) * (ANGPTL3 / 0.08)^e_angptl3_vmax * exp(e_dis_hofh_vmax * DIS_HOFH)
-    alag1 <- exp(llag + etallag)
+    alag1 <- exp(ltlag + etaltlag)
     fdepot <- exp(lfdepot)
 
     # ----- PK ODE system (Pu 2021 Figure 1 schematic) -----

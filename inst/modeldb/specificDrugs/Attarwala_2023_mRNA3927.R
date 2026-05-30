@@ -2,6 +2,8 @@ Attarwala_2023_mRNA3927 <- function() {
   description <- "Preclinical (mouse, rat, cynomolgus monkey; allometrically scalable to humans). Translational semi-mechanistic PK and PK/PD model for mRNA-3927, an LNP-encapsulated dual mRNA encoding propionyl-CoA carboxylase (PCC) subunits PCCA and PCCB. PK: 3-compartment plasma1-tissue-plasma2 redistribution (V shared between the two plasma compartments; V and V2 fixed at the mouse reference and scaled allometrically) with body-weight allometric scaling of clearances (mouse reference 0.025 kg; estimated exponents cla on CL12/CL32 and clb on CL23/CL20). PD: liver PCC protein 2-compartment indirect-response model driven by an effect compartment linked to plasma mRNA, with synthesis linear in effect-compartment mRNA concentration and first-order degradation. Three downstream biomarkers (2-methylcitrate, 3-hydroxypropionate, C3/C2 carnitine ratio) follow direct sigmoidal Imax suppression by liver PCC protein with Imax fixed at 0.999."
   reference <- "Attarwala H, Lumley M, Liang M, Ivaturi V, Senn J. Translational Pharmacokinetic/Pharmacodynamic Model for mRNA-3927, an Investigational Therapeutic for the Treatment of Propionic Acidemia. Nucleic Acid Ther. 2023;33(2):141-147. doi:10.1089/nat.2022.0036"
   vignette <- "Attarwala_2023_mRNA3927"
+  paper_specific_compartments <- c("pcc", "pcc_p")
+
   units <- list(
     time          = "h",
     dosing        = "mg",
