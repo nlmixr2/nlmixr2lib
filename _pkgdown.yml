@@ -72,8 +72,8 @@ navbar:
         href: articles/Almquist_2022_anifrolumab.html
       - text: "Anrukinzumab (Hua 2015)"
         href: articles/Hua_2015_anrukinzumab.html
-      - text: "Anthracycline troponinT (deVriesSchultink 2018)"
-        href: articles/deVriesSchultink_2018_cardiotoxicity.html
+      - text: "Apixaban (Ueshima 2018)"
+        href: articles/Ueshima_2018_apixaban.html
       - text: "Aripiprazole (Knights 2015)"
         href: articles/Knights_2015_aripiprazole.html
       - text: "Artemether (Tarning 2012)"
@@ -1577,6 +1577,7 @@ articles:
   - articles/Tortorici_2017_a1pi
   - articles/Toukam_2025_biib107
   - articles/Tsuji_2017_linezolid
+  - articles/Ueshima_2018_apixaban
   - articles/Urien_2005_capecitabine
   - articles/Valenzuela_2025_nipocalimab
   - articles/Valitalo_2017_ketorolac

@@ -2,8 +2,7 @@
 
 # development version
 
-* Add Lohy Das 2018 artesunate ([doi:10.1186/s12936-018-2278-5](https://doi.org/10.1186/s12936-018-2278-5)) -- adults with uncomplicated artemisinin-sensitive or -resistant Plasmodium falciparum malaria in southern Myanmar (PK-only extraction; parasite-density covariates on MTT/F and the mixture-Emax PD layer deferred pending the upstream Lohy Das 2017 AAPS J paper).
-* Add Padoin 1998 cephalexin ([doi:10.1128/aac.42.6.1463](https://doi.org/10.1128/aac.42.6.1463)) -- preclinical male Wistar rats with a cephalexin / quinapril oral coadministration DDI (ratifies new `CONMED_QPRL_ORAL` covariate canonical).
+* Add Ueshima 2018 apixaban ([doi:10.1111/bcp.13561](https://doi.org/10.1111/bcp.13561)) -- Japanese adults with atrial fibrillation; ratifies new `SNP_ABCG2_RS2231142_HOM` covariate canonical for the recessive-model ABCG2 421A/A homozygous-variant indicator.
 * Add van Rongen 2018 metformin ([doi:10.1007/s40272-018-0293-1](https://doi.org/10.1007/s40272-018-0293-1)) -- overweight and obese Caucasian adolescents.
 * Add Tarning 2012 artemether and dihydroartemisinin ([doi:10.1186/1475-2875-11-293](https://doi.org/10.1186/1475-2875-11-293)) -- pregnant women with uncomplicated Plasmodium falciparum malaria in Uganda (joint parent + DHA popPK with zero-order dissolution and 6-compartment transit absorption).
 * Add Schoemaker 2017 brivaracetam ([doi:10.1007/s00228-017-2230-6](https://doi.org/10.1007/s00228-017-2230-6)) -- paediatric patients with epilepsy aged 1 month to 16 years; ratifies new `CONMED_PB`, `CONMED_CBZ`, and `CONMED_VPA` covariate canonicals.
