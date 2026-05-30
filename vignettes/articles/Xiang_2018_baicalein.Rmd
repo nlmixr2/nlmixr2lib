@@ -87,11 +87,11 @@ side of each ODE in `model()`; the left-hand side must equal
 |------|----------------------|-----------------|
 | `kin_tnf * (1 - f_bai)` | (pg/mL/h) * (unitless) | pg/mL/h = d/dt(TNF) |
 | `kout_tnf * tnf`        | (1/h) * (pg/mL)        | pg/mL/h = d/dt(TNF) |
-| `(tnf - tnf_delay1) / tau1` | (pg/mL) / (h) | pg/mL/h = d/dt(TNF_delay1) |
-| `(tnf - tnf_delay2) / tau2` | (pg/mL) / (h) | pg/mL/h = d/dt(TNF_delay2) |
-| `kin_il6 * tnf_delay1`  | (1/h) * (pg/mL)        | pg/mL/h = d/dt(IL-6) |
+| `(tnf - transit1) / tau1` | (pg/mL) / (h) | pg/mL/h = d/dt(transit1) |
+| `(tnf - transit2) / tau2` | (pg/mL) / (h) | pg/mL/h = d/dt(transit2) |
+| `kin_il6 * transit1`  | (1/h) * (pg/mL)        | pg/mL/h = d/dt(IL-6) |
 | `kout_il6 * il6`        | (1/h) * (pg/mL)        | pg/mL/h = d/dt(IL-6) |
-| `kin_inos * tnf_delay2` | (1/h) * (pg/mL)        | pg/mL/h then normalized (note below) |
+| `kin_inos * transit2` | (1/h) * (pg/mL)        | pg/mL/h then normalized (note below) |
 | `kout_inos * inos`      | (1/h) * (unitless)     | unitless/h |
 | `kin_no * inos^delta`   | (uM/h) * (unitless)    | uM/h = d/dt(NO) |
 | `kout_no * no`          | (1/h) * (uM)           | uM/h |
@@ -326,12 +326,12 @@ package require attention.
   compartment with mean transit time tau:
 
   ```
-  d/dt(tnf_delay) = (tnf - tnf_delay) / tau
+  d/dt(transit) = (tnf - transit) / tau
   ```
 
   The impulse response of this filter is a single-exponential ramp,
   not a Dirac shift -- a step in tnf at time t produces a smoothed
-  response in tnf_delay over the next several tau, rather than an
+  response in transit over the next several tau, rather than an
   exact translation. For the LPS-stimulated TNF-alpha trace, which
   is itself a smooth approach to its asymptote rather than a step,
   the single-compartment delay is a reasonable approximation; the
@@ -378,7 +378,7 @@ package require attention.
 
 * **Non-canonical compartment names (lint warnings).**
   `checkModelConventions()` flags the six ODE-state names `tnf`,
-  `tnf_delay1`, `tnf_delay2`, `il6`, `inos`, and `no` as non-canonical
+  `transit1`, `transit2`, `il6`, `inos`, and `no` as non-canonical
   because they are not among the canonical PK/PD compartments (depot,
   central, peripheral1, ..., or registered metabolites). This is the
   same pattern used by other in-vitro / mechanism-model entries in
@@ -389,7 +389,7 @@ package require attention.
   These are kept as model-readable shorthand for the source species
   rather than renamed to numbered compartments, because the species
   identity is the meaningful entity in a cytokine-cascade mechanism.
-  `tnf_delay1` and `tnf_delay2` are the single-compartment delay
+  `transit1` and `transit2` are the single-compartment delay
   states implementing the DDE approximation described above.
 
 * **Dosing/concentration unit mismatch (lint warning).**

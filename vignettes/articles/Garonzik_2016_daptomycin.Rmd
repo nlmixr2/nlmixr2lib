@@ -120,12 +120,12 @@ deviations section for justification of the non-canonical names):
 | Compartment | Units    | Meaning                                                  |
 |-------------|----------|----------------------------------------------------------|
 | `dap`       | mg/L     | static daptomycin bath concentration (no degradation)    |
-| `s1`        | CFU/mL   | susceptible subpopulation, state 1 (vegetative)          |
-| `s2`        | CFU/mL   | susceptible subpopulation, state 2 (replicating)         |
-| `i1`        | CFU/mL   | intermediate subpopulation, state 1 (vegetative)         |
-| `i2`        | CFU/mL   | intermediate subpopulation, state 2 (replicating)        |
-| `r1`        | CFU/mL   | resistant subpopulation, state 1 (vegetative)            |
-| `r2`        | CFU/mL   | resistant subpopulation, state 2 (replicating)           |
+| `bact_susceptible1` | CFU/mL   | susceptible subpopulation, state 1 (vegetative)          |
+| `bact_susceptible2` | CFU/mL   | susceptible subpopulation, state 2 (replicating)         |
+| `bact_intermediate1` | CFU/mL   | intermediate subpopulation, state 1 (vegetative)         |
+| `bact_intermediate2` | CFU/mL   | intermediate subpopulation, state 2 (replicating)        |
+| `bact_resistant1` | CFU/mL   | resistant subpopulation, state 1 (vegetative)            |
+| `bact_resistant2` | CFU/mL   | resistant subpopulation, state 2 (replicating)           |
 | `Cc`        | log10 CFU/mL | observation: log10 of total bacterial concentration  |
 
 # Helper: build a time-kill scenario
@@ -260,12 +260,12 @@ panels |>
 **Resistant subpopulation survives.** Because Smax_r and Kmax_r are
 both fixed at zero, daptomycin has no direct effect on the resistant
 subpopulation. At 24 h after a bactericidal regimen (e.g., 4 mg/L at
-0% HS), the residual CFU_total is dominated by `r1` + `r2`:
+0% HS), the residual CFU_total is dominated by `bact_resistant1` + `bact_resistant2`:
 
 ```{r check-resistant}
 res <- panels |>
   filter(dap_init == 4, hs_pct == 0, time == 24) |>
-  select(time, cfu_total, s1, s2, i1, i2, r1, r2)
+  select(time, cfu_total, bact_susceptible1, bact_susceptible2, bact_intermediate1, bact_intermediate2, bact_resistant1, bact_resistant2)
 
 res |> knitr::kable(digits = 3,
   caption = "Compartment-level state at 24 h after 4 mg/L daptomycin at 0% HS. The residual is essentially the resistant subpopulation; susceptible and intermediate are below the limit of detection.")
@@ -306,8 +306,9 @@ reference:
 
 # Assumptions and deviations
 
-- **Non-canonical compartment names** (`dap`, `s1`, `s2`, `i1`, `i2`,
-  `r1`, `r2`). The nlmixr2lib canonical compartment register
+- **Non-canonical compartment names** (`dap`, `bact_susceptible1`,
+  `bact_susceptible2`, `bact_intermediate1`, `bact_intermediate2`,
+  `bact_resistant1`, `bact_resistant2`). The nlmixr2lib canonical compartment register
   (`R/conventions.R::canonicalCompartments`) targets popPK / PK-PD
   models for systemic drug disposition; the bacterial-subpopulation
   state names here have no analog in that register. The names are

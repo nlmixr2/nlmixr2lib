@@ -148,7 +148,7 @@ make_cohort <- function(n, t2dm, treated, id_offset = 0L) {
       evid = 0L,
       amt  = 0,
       cmt  = 1L,
-      DOSE_NAL_MGD = dplyr::if_else(treated == 1L,
+      CONMED_NAL_DOSE = dplyr::if_else(treated == 1L,
                                     dplyr::case_when(
                                       time == 0 ~ 0,
                                       time <= 1 ~ 8,
@@ -157,7 +157,7 @@ make_cohort <- function(n, t2dm, treated, id_offset = 0L) {
                                       TRUE      ~ 32
                                     ),
                                     0),
-      DOSE_BUP_MGD = dplyr::if_else(treated == 1L,
+      CONMED_BUP_DOSE = dplyr::if_else(treated == 1L,
                                     dplyr::case_when(
                                       time == 0 ~ 0,
                                       time <= 1 ~ 90,
@@ -168,7 +168,7 @@ make_cohort <- function(n, t2dm, treated, id_offset = 0L) {
                                     0)
     ) |>
     dplyr::select(id, time, evid, amt, cmt, T2DM, RACE_BLACK, RACE_OTHER,
-                  DOSE_NAL_MGD, DOSE_BUP_MGD, treated)
+                  CONMED_NAL_DOSE, CONMED_BUP_DOSE, treated)
 }
 
 n_per_cell <- 250L  # 250 subjects per (T2DM, treated) cell -> 1000 subjects total

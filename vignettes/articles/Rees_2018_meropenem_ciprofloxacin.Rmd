@@ -66,7 +66,7 @@ structure is from supplement Equations 1-4 and Figure 3.
 |----------------------|-------|-----------------|
 | `log10cfu0` (initial inoculum) | 7.37 | Table 2 |
 | `log10cfumax` (max population size) | 8.80 | Table 2 |
-| `k21` (replication rate, fixed) | 50.0 /h | Table 2 (fixed) |
+| `lk21` (replication rate, fixed) | 50.0 /h | Table 2 (fixed) |
 | `mgt_ss`, `mgt_ri`, `mgt_ir` (mean generation times) | 181, 86.3, 121 min | Table 2 (the "k12" rows; k12 = 60/MGT) |
 | `log10mf_mem`, `log10mf_cip` (mutation frequencies) | -7.70, -4.31 | Table 2 |
 | `kmax_mem`, `kmax_cip` | 0.975, 5.28 /h | Table 2 |
@@ -85,9 +85,9 @@ structure is from supplement Equations 1-4 and Figure 3.
 
 | Symbol | Meaning | Units |
 |--------|---------|-------|
-| `ss1, ss2, ri1, ri2, ir1, ir2` | bacterial states | CFU/mL |
+| `bact_susceptible_susceptible1, bact_susceptible_susceptible2, bact_resistant_intermediate1, bact_resistant_intermediate2, bact_intermediate_resistant1, bact_intermediate_resistant2` | bacterial states | CFU/mL |
 | `cmem, ccip` | antibiotic concentrations | mg/L |
-| `k21, k12*, kel_*, kill_*, kmax_*` | rate constants | 1/h |
+| `lk21, k12*, kel_*, kill_*, kmax_*` | rate constants | 1/h |
 | `kc50_*, ic50_syn` | half-effect concentrations | mg/L |
 | `hill_mem, plat, syn, imax_syn` | dimensionless | -- |
 | `cfumax, cfu0` | population scale / inoculum | CFU/mL |
@@ -126,11 +126,11 @@ transcription error.
 ev_gc <- et(seq(0, 192, by = 1))
 gc <- rxode2::rxSolve(mod, ev_gc, returnType = "data.frame", maxsteps = 1e5)
 
-cat(sprintf("Inoculum log10CFU(0)  = %.3f  (Table 2 Log10CFU0 = 7.37)\n", gc$log10CFU[1]))
+cat(sprintf("Inoculum log10CFU(0)  = %.3f  (Table 2 Log10CFU0 = 7.37)\n", gc$Cc[1]))
 cat(sprintf("Plateau  log10CFU(192)= %.3f  (expected 0.5*CFUmax = %.3f)\n",
-            tail(gc$log10CFU, 1), log10(0.5) + 8.80))
+            tail(gc$Cc, 1), log10(0.5) + 8.80))
 
-ggplot(gc, aes(time, log10CFU)) +
+ggplot(gc, aes(time, Cc)) +
   geom_line(linewidth = 1) +
   geom_hline(yintercept = log10(0.5) + 8.80, linetype = 2, colour = "grey50") +
   labs(x = "Time (h)", y = expression(log[10]~CFU/mL),
@@ -310,12 +310,12 @@ sim |>
   grown steady state and destroy the inoculum.
 * **Convention deviations** (`checkModelConventions()` warnings, no errors). All
   are expected for an in-vitro mechanism-based model: (a) the bacterial-state
-  compartments (`ss1`, `ss2`, `ri1`, `ri2`, `ir1`, `ir2`) and antibiotic-
-  concentration states (`cmem`, `ccip`) are mechanism-specific and have no
-  canonical nlmixr2lib names; (b) `k21` is a fixed mechanistic rate constant
-  reported as a point value, so it is not log-transformed (the convention
-  exempts estimated-only positive parameters); (c) the observation `log10CFU` is
-  a non-PK output (log10 viable count, not a drug concentration `Cc`); (d) the
-  dosing/concentration units are both `mg/L` because the antibiotic input is a
-  concentration in the in-vitro system. Registering the new compartment names in
-  `R/conventions.R` is left as a follow-up.
+  compartments (`bact_susceptible_susceptible1`, `bact_susceptible_susceptible2`,
+  `bact_resistant_intermediate1`, `bact_resistant_intermediate2`,
+  `bact_intermediate_resistant1`, `bact_intermediate_resistant2`) and antibiotic-
+  concentration states (`cmem`, `ccip`) are mechanism-specific; (b) `lk21` is a
+  fixed mechanistic rate constant that is log-transformed for parameterisation
+  consistency; (c) the single observation `Cc` carries a non-PK output (log10
+  viable count, not a drug concentration); (d) the dosing/concentration units are
+  both `mg/L` because the antibiotic input is a concentration in the in-vitro
+  system.

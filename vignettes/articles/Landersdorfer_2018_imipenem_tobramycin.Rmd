@@ -71,7 +71,8 @@ susceptibility profile against imipenem (IPM) and tobramycin (TOB):
 
 Each subpopulation has a two-state LCGM (Bulitta-style): a slow
 S1 -> S2 transition at rate `k12_p` (1 / "mean generation time") and a
-fast doubling S2 -> 2*S1 at rate `k21 = 50 /h` shared across subpops.
+fast doubling S2 -> 2*S1 at a fixed rate of 50 /h (file parameter
+`lk21`, log-transformed) shared across subpops.
 The slow rate is attenuated by the carrying-capacity logistic factor
 `growth_attn = 1 - total / 10^logcfumax` so that the no-drug asymptote
 lands at `logcfumax = 10.1 log10 CFU/mL`. Per Table 1 footnote (c),
@@ -120,12 +121,12 @@ Compartment and observation conventions:
 
 | Compartment | Units    | Meaning |
 |-------------|----------|---------|
-| `s1_ss`     | CFU/mL   | IPM-S/TOB-S subpop, S1 state (pre-replicating) |
-| `s2_ss`     | CFU/mL   | IPM-S/TOB-S subpop, S2 state (replicating) |
-| `s1_ri`     | CFU/mL   | IPM-R/TOB-I subpop, S1 state |
-| `s2_ri`     | CFU/mL   | IPM-R/TOB-I subpop, S2 state |
-| `s1_ir`     | CFU/mL   | IPM-I/TOB-R subpop, S1 state |
-| `s2_ir`     | CFU/mL   | IPM-I/TOB-R subpop, S2 state |
+| `bact_susceptible_susceptible1` | CFU/mL   | IPM-S/TOB-S subpop, S1 state (pre-replicating) |
+| `bact_susceptible_susceptible2` | CFU/mL   | IPM-S/TOB-S subpop, S2 state (replicating) |
+| `bact_resistant_intermediate1`  | CFU/mL   | IPM-R/TOB-I subpop, S1 state |
+| `bact_resistant_intermediate2`  | CFU/mL   | IPM-R/TOB-I subpop, S2 state |
+| `bact_intermediate_resistant1`  | CFU/mL   | IPM-I/TOB-R subpop, S1 state |
+| `bact_intermediate_resistant2`  | CFU/mL   | IPM-I/TOB-R subpop, S2 state |
 | `Cc`        | log10 CFU/mL | observation: log10 of total bacterial concentration (+ 1 CFU floor) |
 
 # Helper: build an HFIM scenario
@@ -396,12 +397,14 @@ knitr::kable(step, digits = 3,
   simulation. Running the model under `rxode2::zeroRe()` is
   unnecessary because there are no random effects to zero out.
 - **Non-canonical compartment and covariate names.** The bacterial
-  life-cycle states (`s1_ss`, `s2_ss`, `s1_ri`, `s2_ri`, `s1_ir`,
-  `s2_ir`) and in-vitro drug-input covariates (`Cipm`, `Ctob`) are
-  not in the nlmixr2lib canonical register, which targets systemic
-  popPK / PK-PD. The names are retained from the paper's notation
-  to keep the source trace direct. `checkModelConventions()` emits
-  warnings for these; they are expected and documented here.
+  life-cycle states (`bact_susceptible_susceptible1`,
+  `bact_susceptible_susceptible2`, `bact_resistant_intermediate1`,
+  `bact_resistant_intermediate2`, `bact_intermediate_resistant1`,
+  `bact_intermediate_resistant2`) carry the canonical `bact_*`
+  subpopulation names; the in-vitro drug-input covariates (`Cipm`,
+  `Ctob`) are not in the nlmixr2lib canonical register, which targets
+  systemic popPK / PK-PD. `checkModelConventions()` emits warnings for
+  the covariates; they are expected and documented here.
 - **Single observation `Cc` carries log10 CFU/mL, not a drug
   concentration.** nlmixr2lib's single-output convention names the
   observation `Cc`; the underlying quantity here is log10 of total

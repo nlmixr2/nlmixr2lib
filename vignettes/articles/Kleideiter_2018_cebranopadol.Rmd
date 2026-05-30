@@ -147,7 +147,7 @@ ref_covariates <- list(
   CYP2C9_PIM    = 0L,
   DIS_HEALTHY   = 0L,
   DIS_DPN       = 0L,
-  DIS_BUN       = 0L
+  DIS_BUNIONECTOMY = 0L
 )
 
 # One subject per arm, deterministic (zero between-subject variance) so the
@@ -169,7 +169,7 @@ make_arm <- function(arm_label, override = list(), id_offset = 0L) {
     CYP2C9_PIM    = cov$CYP2C9_PIM,
     DIS_HEALTHY   = cov$DIS_HEALTHY,
     DIS_DPN       = cov$DIS_DPN,
-    DIS_BUN       = cov$DIS_BUN
+    DIS_BUNIONECTOMY = cov$DIS_BUNIONECTOMY
   )
 }
 
@@ -186,7 +186,7 @@ arms <- bind_rows(
   make_arm("WT 120 kg",                 list(WT = 120),                 id_offset =  9L),
   make_arm("Healthy",                   list(DIS_HEALTHY = 1L),         id_offset = 10L),
   make_arm("DPN",                       list(DIS_DPN = 1L),             id_offset = 11L),
-  make_arm("Bunionectomy",              list(DIS_BUN = 1L),             id_offset = 12L)
+  make_arm("Bunionectomy",              list(DIS_BUNIONECTOMY = 1L),    id_offset = 12L)
 )
 stopifnot(!anyDuplicated(arms$id))
 n_arms <- nrow(arms)
@@ -240,7 +240,7 @@ events <- bind_rows(dose_recs, obs_recs) |>
          SEXF, AGE, WT, CRCL, ALT,
          FORM_CAPSULE, FORM_SOLUTION,
          CYP2C9_EM, CYP2C9_PIM,
-         DIS_HEALTHY, DIS_DPN, DIS_BUN)
+         DIS_HEALTHY, DIS_DPN, DIS_BUNIONECTOMY)
 
 stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
 ```
@@ -431,7 +431,8 @@ shape. See Assumptions and deviations for details.
 - **Four-level disease-state encoding via three indicators.** The model
   encodes the four-category disease factor (LBP and OA reference + healthy,
   DPN, bunionectomy) using three binary indicators `DIS_HEALTHY`,
-  `DIS_DPN`, and `DIS_BUN`, two of which (`DIS_DPN`, `DIS_BUN`) are
+  `DIS_DPN`, and `DIS_BUNIONECTOMY`, two of which (`DIS_DPN`,
+  `DIS_BUNIONECTOMY`) are
   registered as new canonical covariates alongside this model. When all
   three are 0 the subject is in the LBP / OA reference category (the
   Table 13 most-common-category reference).

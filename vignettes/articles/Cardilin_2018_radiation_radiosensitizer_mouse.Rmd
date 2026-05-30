@@ -82,7 +82,7 @@ entry. The table collects them for review.
 Radiation is delivered as a unit bolus (`amt = 1`) into the `radDepot`
 compartment at each irradiation time; the per-fraction radiation dose (Gy) is
 the model parameter `radDose` (default 2). RS1 is dosed (mg/kg) into the
-`central` compartment. The observation `tumorVol` is the total tumor volume
+`central` compartment. The observation `tumor_vol` is the total tumor volume
 (sum of all six tumor compartments, mm^3).
 
 ```{r model}
@@ -115,10 +115,10 @@ groups <- list(
 )
 traj <- bind_rows(lapply(names(groups), function(g) {
   s <- as.data.frame(rxode2::rxSolve(mod_typ, groups[[g]]))
-  data.frame(time = s$time, tumorVol = s$tumorVol, group = g)
+  data.frame(time = s$time, tumor_vol = s$tumor_vol, group = g)
 }))
 
-ggplot(traj, aes(time, tumorVol)) +
+ggplot(traj, aes(time, tumor_vol)) +
   geom_line(linewidth = 0.7) +
   facet_wrap(~group) +
   labs(x = "Time (day)", y = expression("Tumor volume (mm"^3*")"),
@@ -139,7 +139,7 @@ Figure 2.
 The source reports that a single 2 Gy fraction kills 17% of proliferating
 cells, rising to 24%, 46%, and 85% in combination with RS1 10, 50, and
 200 mg/kg (Discussion). We reproduce these by measuring the drop in the
-proliferating compartment across one fraction.
+cycling-cells compartment across one fraction.
 
 ```{r kill-fractions}
 kill_one <- function(rs_dose) {
@@ -149,8 +149,8 @@ kill_one <- function(rs_dose) {
   ev <- rxode2::et(ev, amt = 1, cmt = "radDepot", time = 3)
   s <- as.data.frame(rxode2::rxSolve(mod_typ, ev, maxsteps = 1e6,
                                      atol = 1e-9, rtol = 1e-9))
-  pre  <- s$prolif[which.min(abs(s$time - 2.99))]
-  post <- s$prolif[which.min(abs(s$time - 3.05))]  # after the fast kill spike
+  pre  <- s$cycling_cells[which.min(abs(s$time - 2.99))]
+  post <- s$cycling_cells[which.min(abs(s$time - 3.05))]  # after the fast kill spike
   100 * (1 - post / pre)
 }
 kill_tab <- data.frame(
@@ -214,9 +214,9 @@ sim6 <- rxode2::rxSolve(mod, ev6, nSub = 200, maxsteps = 1e6) |>
 
 vpc6 <- sim6 |>
   group_by(time) |>
-  summarise(Q05 = quantile(tumorVol, 0.05, na.rm = TRUE),
-            Q50 = quantile(tumorVol, 0.50, na.rm = TRUE),
-            Q95 = quantile(tumorVol, 0.95, na.rm = TRUE), .groups = "drop")
+  summarise(Q05 = quantile(tumor_vol, 0.05, na.rm = TRUE),
+            Q50 = quantile(tumor_vol, 0.50, na.rm = TRUE),
+            Q95 = quantile(tumor_vol, 0.95, na.rm = TRUE), .groups = "drop")
 
 ggplot(vpc6, aes(time, Q50)) +
   geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.25) +
@@ -239,9 +239,9 @@ radiation doses. Each ODE term is dimensionally consistent with
 
 | Term | Units | Notes |
 |------|-------|-------|
-| `kg * prolif * logi` | (1/day)(mm^3)(-) = mm^3/day | `logi` dimensionless |
-| `(1 + aDeath*Cc) * kk * prolif` | (-)(1/day)(mm^3) = mm^3/day | `aDeath*Cc` = (mL/ug)(ug/mL) dimensionless |
-| `killHaz * prolif` | (1/day)(mm^3) = mm^3/day | see below |
+| `kg * cycling_cells * logi` | (1/day)(mm^3)(-) = mm^3/day | `logi` dimensionless |
+| `(1 + aDeath*Cc) * kk * cycling_cells` | (-)(1/day)(mm^3) = mm^3/day | `aDeath*Cc` = (mL/ug)(ug/mL) dimensionless |
+| `killHaz * cycling_cells` | (1/day)(mm^3) = mm^3/day | see below |
 | `lethal` | (-)(1/Gy * Gy) = dimensionless | LQ lethal lesions, `alpha*radDose + beta*radDose^2` |
 | `krad * radDepot` | (1/day)(-) integrates to 1 per fraction | numerical delta-trigger |
 | `Cc = central / vf` | (mg/kg)/(L/kg) = mg/L = ug/mL | RS1 plasma concentration |
@@ -285,10 +285,10 @@ fraction `exp(-lethal) = exp(-(1 + bRad*Cc)(alpha*D + beta*D^2))`.
   `sqrt(omega^2) x 100` (Table 1 / Table SI footnotes), so log-scale variances
   are `(BSV%/100)^2` (V0 0.0441, K 0.1024, V/F 0.7744, ke 0.0225).
 - **Convention-lint warnings (justified, not errors).** The mechanistic tumor
-  compartments (`prolif`, `damage1-3`, `irrad1-2`) and the radiation trigger
+  compartments (`cycling_cells`, `damaged_cells1-3`, `irrad1-2`) and the radiation trigger
   (`radDepot`) are not canonical PK compartment names, mirroring the existing
   `oncology_xenograft_simeoni_2004` TGI model. The fitted output is total tumor
-  volume (`tumorVol`, a non-PK output), while `Cc` is correctly reserved for the
+  volume (`tumor_vol`, a non-PK output), while `Cc` is correctly reserved for the
   RS1 plasma concentration. The units `mg/kg` (RS1 dose) and `ug/mL`
   (concentration) are both mass-based and reconcile through the apparent volume
   `V/F` (L/kg); the lint's prefix-level dimensional check is a false positive.
