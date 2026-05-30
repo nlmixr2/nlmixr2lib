@@ -178,8 +178,8 @@ navbar:
         href: articles/Kleideiter_2017_cebranopadol.html
       - text: "Cediranib (Li 2017)"
         href: articles/Li_2017_cediranib.html
-      - text: "Cefathiamidine (Zhi 2018)"
-        href: articles/Zhi_2018_cefathiamidine.html
+      - text: "Cefepime (Capparelli 2005)"
+        href: articles/Capparelli_2005_cefepime.html
       - text: "Cefepime (Jonckheere 2019)"
         href: articles/Jonckheere_2019_cefepime.html
       - text: "Ceftazidime (Shi 2018)"
@@ -1192,7 +1192,7 @@ articles:
   - articles/Cao_2013_siltuximab
   - articles/Cao_2013_tefibazumab
   - articles/Cao_2013_visilizumab
-  - articles/Cardilin_2018_radiation_radiosensitizer_mouse
+  - articles/Capparelli_2005_cefepime
   - articles/CarlssonPetri_2021_liraglutide
   - articles/Castro-Surez_2020_nimotuzumab
   - articles/Catalan-Latorre_2018_taurine_rat
