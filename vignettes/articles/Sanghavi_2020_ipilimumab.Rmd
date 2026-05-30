@@ -273,10 +273,8 @@ geometric-mean Day-1 peak (62.6 μg/mL) and Day-21 trough
 
 ```{r pknca}
 sim_combo <- sim |>
-  filter(treatment == "Combination", !is.na(Cc),
-         time >= 0, time <= 21) |>
-  select(id, time, Cc, treatment) |>
-  filter(time > 0)
+  filter(treatment == "Combination", !is.na(Cc), time <= 21) |>
+  select(id, time, Cc, treatment)
 
 conc_obj <- PKNCA::PKNCAconc(sim_combo, Cc ~ time | treatment + id)
 

@@ -312,9 +312,9 @@ responders). The PKNCA window is the full 21-day cycle 1
 
 ```{r nca}
 nca_conc <- bind_rows(
-  sim       %>% filter(time <= 504, Cc > 0) %>%
+  sim       %>% filter(time <= 504) %>%
     transmute(ID = id, time, Cc, treatment = "Pediatric BCP-ALL"),
-  sim_adult %>% filter(time <= 504, Cc > 0) %>%
+  sim_adult %>% filter(time <= 504) %>%
     transmute(ID = id, time, Cc, treatment = "Adult BCP-ALL")
 )
 

@@ -222,7 +222,7 @@ The PKNCA block below evaluates the simulated cohort over the final dosing inter
 
 ```{r pknca}
 nca_conc <- sim %>%
-  filter(time >= last_dose_time, time <= end_window, Cc > 0) %>%
+  filter(time >= last_dose_time, time <= end_window) %>%
   mutate(time_rel = time - last_dose_time, regimen = "1 mg QW") %>%
   select(id, time_rel, Cc, regimen)
 

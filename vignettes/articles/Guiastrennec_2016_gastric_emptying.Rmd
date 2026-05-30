@@ -237,7 +237,7 @@ ejection fraction EF% - are reported separately in the next section.
 
 ```{r pknca-acetaminophen}
 nca_data <- sim |>
-  dplyr::filter(time > 0, !is.na(Cc)) |>
+  dplyr::filter(!is.na(Cc)) |>
   dplyr::transmute(id = cohort, time, Cc)
 dose_data <- sim |>
   dplyr::filter(time == 0) |>

@@ -248,7 +248,7 @@ NCA on the simulated stochastic cohort, by day cell:
 
 ```{r pknca}
 pkn_in <- sim |>
-  dplyr::filter(time > 0, !is.na(Cc), Cc > 0) |>
+  dplyr::filter(!is.na(Cc)) |>
   dplyr::mutate(treatment = cohort)
 
 dose_pkn <- events |>

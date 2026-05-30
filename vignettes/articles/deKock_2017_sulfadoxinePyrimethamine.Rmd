@@ -256,7 +256,6 @@ of the paper.
 
 ```{r pknca-sulfa}
 sim_nca_sulfa <- sim_typical |>
-  dplyr::filter(time > 0) |>
   dplyr::transmute(id = id, time = time, Cc = Cc,
                    site = site, phase = phase) |>
   dplyr::distinct(id, time, site, phase, .keep_all = TRUE)
@@ -287,7 +286,6 @@ knitr::kable(nca_sulfa_summary, caption = "Simulated sulfadoxine NCA (whole bloo
 
 ```{r pknca-pyra}
 sim_nca_pyra <- sim_typical |>
-  dplyr::filter(time > 0) |>
   dplyr::transmute(id = id, time = time, Cc_pyra = Cc_pyra,
                    site = site, phase = phase) |>
   dplyr::distinct(id, time, site, phase, .keep_all = TRUE)
