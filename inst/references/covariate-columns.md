@@ -3938,6 +3938,17 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Example models:** `Wu_2024_inotuzumab.R` (additive fractional change on CL1: `CL1 * (1 + (-0.132) * CONMED_RITUX)` ~= 13% lower CL1 with concomitant rituximab).
 - **Notes:** Wu 2024 Table 3 footnote b explicitly flips the reference category vs. the predecessor Garrett 2019 adult model: in Garrett 2019 the reference was "with rituximab" (RITUX = 0 meant on-rituximab), whereas in Wu 2024 the reference is "without rituximab" (RITUX = 0 means no concomitant rituximab). Future models that pool an analogous rituximab-combination cohort with a single-agent reference should use this canonical with the Wu 2024 sign convention; if a paper retains the Garrett 2019 reverse-coded convention, document the value transformation in `covariateData[[CONMED_RITUX]]$notes` (`CONMED_RITUX = 1 - source$RITUX`) rather than registering a second canonical. Ratified canonically on 2026-04-26.
 
+### CONMED_RTV (**canonical for concomitant ritonavir (CYP3A4 inhibitor / PK-booster) coadministration indicator**)
+- **Description:** 1 = subject is receiving concomitant ritonavir (RTV), typically at low "booster" doses (100 mg twice daily) as a pharmacokinetic enhancer of co-administered HIV protease inhibitors or other CYP3A4-metabolised antiretrovirals; 0 = no ritonavir. Ritonavir is a potent CYP3A4 inhibitor and P-glycoprotein modulator, so the indicator flags reduced CYP3A4-mediated clearance (and potential bioavailability changes) of the perpetrator-sensitive co-administered drug.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no concomitant ritonavir).
+- **Source aliases:**
+  - `PI` / `PIs` -- used in `Csajka_2004_indinavir.R` (the dataset's binary protease-inhibitor / ritonavir-presence indicator; all 177 RTV-positive patients in Csajka 2004 received ritonavir specifically, so the column captures concomitant ritonavir).
+- **Example models:** `Csajka_2004_indinavir.R` (multiplicative effect on apparent oral clearance: `cl *= (1 + e_rtv_cl * CONMED_RTV)` with `e_rtv_cl = -0.63`, i.e. ritonavir reduces indinavir CL/F by ~63% relative to the no-RTV reference; Csajka 2004 Table 3).
+- **Notes:** Follows the `CONMED_*` concomitant-medication pattern (AED / AMIO / AZA / AZOLE / CBZ / EFV / etc.). Use `CONMED_RTV` for the binary "is ritonavir co-administered" question; for continuous ritonavir exposure as a covariate use the separate `AUC_RTV` canonical (e.g. `Dickinson_2009_atazanavir.R`). The two canonicals are not synonyms -- `AUC_RTV` carries dose-response information that a binary `CONMED_RTV` flag intentionally collapses. Distinct from `CONMED_RIF_LPVR4`, which is a joint rifampicin + super-boosted-LPV/r indicator. Ratified canonically on 2026-05-30 alongside the Csajka 2004 indinavir extraction.
+
 ### CONMED_SPART (**canonical for spartalizumab (PDR001, anti-PD-1) coadministration indicator**)
 - **Description:** 1 = the analyzed therapeutic mAb is coadministered with spartalizumab (PDR001, anti-PD-1 IgG4), 0 = no spartalizumab coadministration. Time-fixed per subject in source analyses to date.
 - **Units:** (binary)
