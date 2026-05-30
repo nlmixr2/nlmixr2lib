@@ -20,6 +20,24 @@ Only sidecar when one of these two narrow conditions holds (these are the only m
 
 See `references/replicate-author-structure.md` for worked examples (de Vries Schultink 2018 → 2 `.R` files + 1 vignette; Yoshida 2021 ipatasertib → 1 `.R` file + 1 vignette).
 
+## Standing default — author-surname normalization
+
+**CamelCase across hyphens, spaces, apostrophes, and accents is the default — do NOT sidecar to confirm the filename form.** When the first author's surname contains a hyphen, space, apostrophe, or accent, apply the normalization rules from SKILL.md Phase 1 Step 3b silently when choosing the filename, function name, vignette basename, branch name, and PR title. There is no stop-and-ask trigger for this choice.
+
+Quick reference:
+
+- `Lohy Das` → `LohyDas` (drop spaces, CamelCase across the drop)
+- `Ait-Oudhia` → `AitOudhia` (drop hyphens, CamelCase across the drop)
+- `O'Brien` → `OBrien` (drop apostrophes, CamelCase across the drop)
+- `Câmara` → `Camara` (transliterate accents)
+- `Müller` → `Muller` (transliterate accents)
+- `van Rongen` → `vanRongen` (lowercase particle preserved per published form)
+- `Von Bonin` → `VonBonin` (capitalised particle preserved per published form)
+
+See SKILL.md Phase 1 Step 3b for the full table and rules, and `references/parameter-names.md` § "File naming" for the canonical statement.
+
+If a *different* naming ambiguity arises (e.g., genuinely ambiguous corporate-author convention, or a transliteration that has multiple accepted forms in the literature), that is not covered by this default — sidecar in the normal format and let the operator decide.
+
 ## Source acquisition (Phase 1)
 
 - **Lead PDF missing and OA acquisition failed.** All 5 ladder sources tried, no valid PDF whose title matches the task expectation. Sidecar with the structured attempts log from `scripts/acquire-paper.R` (`acquire-log.json`).
