@@ -916,6 +916,8 @@ navbar:
         href: articles/Zuo_2016_UDCA.html
       - text: "UnfractionatedHeparin (Jia 2015)"
         href: articles/Jia_2015_unfractionatedHeparin.html
+      - text: "Upadacitinib (Klunder 2017)"
+        href: articles/Klunder_2017_upadacitinib.html
       - text: "Ustekinumab (Aguiar 2021)"
         href: articles/Aguiar_2021_ustekinumab.html
       - text: "Valganciclovir (Vezina 2010)"
@@ -1345,6 +1347,7 @@ articles:
   - articles/Kloprogge_2013_lumefantrine
   - articles/Kloprogge_2014_quinine
   - articles/Kloprogge_2018_lumefantrine
+  - articles/Klunder_2017_upadacitinib
   - articles/Knibbe_2009_morphine
   - articles/Knights_2015_aripiprazole
   - articles/Koloskoff_2025_ganciclovir
