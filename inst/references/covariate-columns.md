@@ -1212,6 +1212,18 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
   - `SBCMABL` (baseline soluble BCMA) -- used in `Papathanasiou_2025_belantamab.R`.
 - **Example models:** `Papathanasiou_2025_belantamab.R` (ng/mL, reference 50; power exponents on initial CL +0.113, on ADC Vc +0.0401, on Imax +0.160).
 - **Notes:** Specific scope because the column is meaningful only for drugs whose mechanism involves the BCMA receptor (and thus a circulating soluble-target pool). Reusing the name for another anti-BCMA agent is acceptable (extend the example-models list). For other oncology TMDD targets register a new canonical (e.g., `HER2_ECD` already exists for HER2; an analogous `SCD20`, `SCD38` would follow the same pattern). Multiple myeloma populations show sBCMA spanning roughly 2 to 2,000 ng/mL, so the (SBCMA/50)^exponent form should be evaluated with care over the full clinical range.
+
+### HBA1C (**canonical for glycated hemoglobin**)
+- **Description:** Glycated hemoglobin (HbA1c, %). Routine clinical laboratory measurement on whole blood reflecting average glycemia over the preceding ~2-3 months; reported in National Glycohemoglobin Standardization Program (NGSP) units.
+- **Units:** % (NGSP). Document the unit standard (NGSP vs IFCC mmol/mol) per-model via `covariateData[[HBA1C]]$units` when a paper reports IFCC units (IFCC mmol/mol = 10.93 * NGSP% - 23.50).
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- used with a power form `(HBA1C / ref)^exponent` or linear-deviation form. Reference value observed: 5.88% (Oniki 2018 NAFLD-risk dataset baseline mean).
+- **Source aliases:**
+  - `HbA1c` -- used in `Oniki_2018_nafld_risk.R` (dataset column for glycated hemoglobin in %).
+- **Example models:** `Oniki_2018_nafld_risk.R` (%, reference 5.88; power exponent -3.34 for `(HBA1C / 5.88)` on the (BMI50 - 17) half-saturation offset of the sigmoidal logit-of-NAFLD function, Oniki 2018 Eq. 4 / Figure 2c).
+- **Notes:** General scope because HbA1c is a routine, paper-independent glycemic-control laboratory measurement. Companion glycemic covariate to `FPG` (baseline fasting plasma glucose), which is routinely reported alongside HbA1c in T2DM / metabolic-syndrome populations. Distinct from `GLU` (time-varying within-subject glucose regressor). Ratified canonically alongside the Oniki 2018 NAFLD-risk extraction.
+
 ## Drug exposure metrics
 
 ### CAV (**canonical for average drug plasma concentration over a dosing interval**)
@@ -1566,6 +1578,50 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Sheng_2016_quinine_rat.R` (sigmoid Emax on the logistic mixing probability between a low-count generalized-Poisson distribution and a right-truncated high-count generalized-Poisson distribution; STIM_QUININE_MM is the only model covariate).
 - **Notes:** Specific scope because the canonical name is bound to quinine HCl dihydrate as the bitter stimulus. Distinct from `CAV` (systemic average drug plasma concentration over a dosing interval) and the `CP_*` family (instantaneous plasma concentration as time-varying PD driver) -- STIM_QUININE_MM is the applied stimulus concentration in solution that contacts the taste receptors directly, with no PK absorption / distribution involved. Future BATA-style extractions with a different bitter compound (caffeine, denatonium, etc.) should register a parallel canonical (e.g. `STIM_CAFFEINE_MM`) rather than overload this name; the `STIM_<drug>_<units>` pattern mirrors the established `CP_<drug>_<units>` precedent. Ratified canonically alongside the Sheng 2016 quinine BATA extraction.
 
+### STIM_ARTESUNATE_NM (**canonical for applied in-vitro artesunate concentration driving a P. falciparum hypoxanthine-uptake-inhibition model**)
+- **Description:** Applied artesunate concentration in the in vitro hypoxanthine-uptake-inhibition assay well (nM). Per-record covariate (the applied well concentration that contacts the parasite culture directly; the model has no PK and no time evolution). Drives the sigmoid Emax inhibition of normalised hypoxanthine uptake by clinical Plasmodium falciparum isolates.
+- **Units:** nM
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters the sigmoid Emax inhibition expression as the concentration argument; set to 0 for the drug-free control well. Reference values observed: Simpson 2013 used a doubling-dilution series 0.044 to 87.0 nM plus a drug-free control well; the WT-reference (Genotype 1) population EC50 is 2.3 nM (Table 3).
+- **Source aliases:**
+  - `C` -- used in `Simpson_2013_artesunate.R` (per-record applied well concentration in nM).
+- **Example models:** `Simpson_2013_artesunate.R` (the only model covariate that varies per record; drives the sigmoid Emax inhibition with the pfmdr1 genotype effects entering on EC50).
+- **Notes:** Specific scope because the canonical name is bound to artesunate as the applied antimalarial stimulus. Member of the in-vitro applied-drug-concentration `STIM_<drug>_<units>` family (siblings `STIM_CHLOROQUINE_NM`, `STIM_LUMEFANTRINE_NM`, `STIM_MEFLOQUINE_NM`, and the bitter-stimulus `STIM_QUININE_MM`) -- the applied stimulus / well concentration that contacts the target directly, distinct from `CAV` (systemic average plasma concentration), the `CP_<drug>` plasma-PD-driver family, and the `CONC_<drug>_MGL` in-vitro antibacterial family (which is reported in mg/L). Ratified canonically alongside the Simpson 2013 antimalarial in-vitro extractions.
+
+### STIM_CHLOROQUINE_NM (**canonical for applied in-vitro chloroquine concentration driving a P. falciparum hypoxanthine-uptake-inhibition model**)
+- **Description:** Applied chloroquine concentration in the in vitro hypoxanthine-uptake-inhibition assay well (nM). Per-record covariate (the applied well concentration that contacts the parasite culture directly; the model has no PK and no time evolution). Drives the sigmoid Emax inhibition of normalised hypoxanthine uptake by clinical Plasmodium falciparum isolates.
+- **Units:** nM
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters the sigmoid Emax inhibition expression as the concentration argument; set to 0 for the drug-free control well. Reference values observed: Simpson 2013 used a doubling-dilution series 10.02 to 10255.9 nM plus a drug-free control well; the WT-reference (Genotype 1) population EC50 is 242 nM (Table 3).
+- **Source aliases:**
+  - `C` -- used in `Simpson_2013_chloroquine.R` (per-record applied well concentration in nM).
+- **Example models:** `Simpson_2013_chloroquine.R` (the only model covariate that varies per record; drives the sigmoid Emax inhibition with the pfmdr1 genotype effects entering on EC50).
+- **Notes:** Specific scope because the canonical name is bound to chloroquine as the applied antimalarial stimulus. Member of the in-vitro applied-drug-concentration `STIM_<drug>_<units>` family (siblings `STIM_ARTESUNATE_NM`, `STIM_LUMEFANTRINE_NM`, `STIM_MEFLOQUINE_NM`, and the bitter-stimulus `STIM_QUININE_MM`) -- the applied stimulus / well concentration that contacts the target directly, distinct from `CAV`, the `CP_<drug>` family, and the `CONC_<drug>_MGL` in-vitro antibacterial family. Ratified canonically alongside the Simpson 2013 antimalarial in-vitro extractions.
+
+### STIM_LUMEFANTRINE_NM (**canonical for applied in-vitro lumefantrine concentration driving a P. falciparum hypoxanthine-uptake-inhibition model**)
+- **Description:** Applied lumefantrine concentration in the in vitro hypoxanthine-uptake-inhibition assay well (nM). Per-record covariate (the applied well concentration that contacts the parasite culture directly; the model has no PK and no time evolution). Drives the sigmoid Emax inhibition of normalised hypoxanthine uptake by clinical Plasmodium falciparum isolates.
+- **Units:** nM
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters the sigmoid Emax inhibition expression as the concentration argument; set to 0 for the drug-free control well. Reference values observed: Simpson 2013 used a doubling-dilution series 2.40 to 235.8 nM plus a drug-free control well; the WT-reference (Genotype 1) population EC50 is 35.7 nM (Table 3).
+- **Source aliases:**
+  - `C` -- used in `Simpson_2013_lumefantrine.R` (per-record applied well concentration in nM).
+- **Example models:** `Simpson_2013_lumefantrine.R` (the only model covariate that varies per record; drives the sigmoid Emax inhibition with the pfmdr1 genotype effects entering on EC50).
+- **Notes:** Specific scope because the canonical name is bound to lumefantrine as the applied antimalarial stimulus. Member of the in-vitro applied-drug-concentration `STIM_<drug>_<units>` family (siblings `STIM_ARTESUNATE_NM`, `STIM_CHLOROQUINE_NM`, `STIM_MEFLOQUINE_NM`, and the bitter-stimulus `STIM_QUININE_MM`) -- the applied stimulus / well concentration that contacts the target directly, distinct from `CAV`, the `CP_<drug>` family, and the `CONC_<drug>_MGL` in-vitro antibacterial family. Ratified canonically alongside the Simpson 2013 antimalarial in-vitro extractions.
+
+### STIM_MEFLOQUINE_NM (**canonical for applied in-vitro mefloquine concentration driving a P. falciparum hypoxanthine-uptake-inhibition model**)
+- **Description:** Applied mefloquine concentration in the in vitro hypoxanthine-uptake-inhibition assay well (nM). Per-record covariate (the applied well concentration that contacts the parasite culture directly; the model has no PK and no time evolution). Drives the sigmoid Emax inhibition of normalised hypoxanthine uptake by clinical Plasmodium falciparum isolates.
+- **Units:** nM
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters the sigmoid Emax inhibition expression as the concentration argument; set to 0 for the drug-free control well. Reference values observed: Simpson 2013 used a doubling-dilution series 1.62 to 1646.6 nM plus a drug-free control well; the WT-reference (Genotype 1) population EC50 is 53.0 nM (Table 3).
+- **Source aliases:**
+  - `C` -- used in `Simpson_2013_mefloquine.R` (per-record applied well concentration in nM).
+- **Example models:** `Simpson_2013_mefloquine.R` (the only model covariate that varies per record; drives the sigmoid Emax inhibition with the pfmdr1 genotype effects entering on EC50).
+- **Notes:** Specific scope because the canonical name is bound to mefloquine as the applied antimalarial stimulus. Member of the in-vitro applied-drug-concentration `STIM_<drug>_<units>` family (siblings `STIM_ARTESUNATE_NM`, `STIM_CHLOROQUINE_NM`, `STIM_LUMEFANTRINE_NM`, and the bitter-stimulus `STIM_QUININE_MM`) -- the applied stimulus / well concentration that contacts the target directly, distinct from `CAV`, the `CP_<drug>` family, and the `CONC_<drug>_MGL` in-vitro antibacterial family. Ratified canonically alongside the Simpson 2013 antimalarial in-vitro extractions.
+
 ### ETSEVO (**canonical for end-tidal sevoflurane concentration in the breathing circuit**)
 - **Description:** End-tidal sevoflurane concentration (vol %) recorded continuously by an anesthesia gas monitor during sevoflurane general anesthesia. Distinct from a systemic plasma concentration -- ETSEVO is the alveolar / breathing-circuit concentration in vol %, used directly as the PD driver in sigmoid-Emax models of consciousness / recovery endpoints. Per-record covariate (per observation epoch); decreases during emergence from approximately the maintenance MAC value (e.g. 1 MAC, 1.5-1.7 vol % in school-aged children with 50% N2O) to 0.
 - **Units:** vol % (volume percent in the breathing circuit; equivalent to fractional inspired/expired sevoflurane x 100)
@@ -1706,6 +1762,16 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
   - `CEMB` -- used in `Clewe_2018_TB_MTP_GPDI_invitro.R` (Clewe 2018 Materials and methods; static ethambutol concentration).
 - **Example models:** `Clewe_2018_TB_MTP_GPDI_invitro.R` (static ethambutol concentration driving the multistate-TB kill effects; tested concentrations 0.0078, 0.031, 0.125, 0.5, 2, 8, 32 mg/L per Figure 1).
 - **Notes:** Specific scope because the value is bound to ethambutol and the in-vitro experimental design. Member of the in-vitro applied-drug-concentration `CONC_<DRUG>_MGL` family (siblings `CONC_RIF_MGL`, `CONC_INH_MGL`, `CONC_IPM_MGL`, `CONC_TOB_MGL`). Ratified canonically on 2026-05-27 alongside the Clewe 2018 extraction.
+
+### CONC_BAI_UM (**canonical for static in-vitro baicalein concentration driving an inflammatory-mediator PD model**)
+- **Description:** Static (time-invariant) baicalein concentration in the cell-culture medium of an in-vitro LPS-stimulated-macrophage experiment, supplied as an exogenous covariate that drives the anti-inflammatory PD effect. Applied experimental concentration in the in-vitro matrix; distinct from a state-derived plasma concentration (`Cc`) and from the `CP_<drug>` plasma-PD-driver family.
+- **Units:** uM
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters the log-linear inhibition term `f(Bai) = alpha * log(CONC_BAI_UM + 1)` (the +1 shift encodes the control with CONC_BAI_UM = 0 -> f = 0 without an undefined ln(0)); set to 0 for the control well. Reference values observed: Xiang 2018 tested 0 (control), 10, 20, and 40 uM (Materials and Methods; Figures 3-4).
+- **Source aliases:** none -- the source uses `C_Bai` (Xiang 2018 Eq 2) in prose; the model column is the canonical `CONC_BAI_UM`.
+- **Example models:** `Xiang_2018_baicalein.R` (time-invariant baicalein concentration driving the log-linear inhibition of LPS-stimulated TNF-alpha production in RAW264.7 macrophages, propagating downstream to IL-6, iNOS, and NO).
+- **Notes:** Specific scope because the value is bound to baicalein and the in-vitro experimental design. Member of the in-vitro applied-drug-concentration `CONC_<drug>_<units>` family; here the unit is uM (sibling concentration covariates such as `CONC_RIF_MGL` are reported in mg/L, so the `<units>` suffix is load-bearing). Distinct from the `STIM_<drug>_<units>` antimalarial-well family and the `CP_<drug>` plasma-PD-driver family. Ratified canonically alongside the Xiang 2018 baicalein extraction.
 
 ### CONC_IPM_MGL (**canonical for time-varying in-vitro imipenem concentration driving an antibacterial PD model**)
 - **Description:** Time-varying unbound imipenem concentration in the hollow-fiber infection model (HFIM) growth medium, supplied externally as an exogenous covariate that drives the bacterial-kill PD effect. Applied experimental concentration in the in-vitro matrix; distinct from `Cc` and the `CP_<DRUG>` plasma-PD-driver family.
@@ -2130,6 +2196,7 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
   - `NA_NA_paracetamol.R` (DDMODEL00000228).
   - `Guiastrennec_2016_gastric_emptying.R` (multiplicative -81.1% depression of POTcarbC, the carbohydrate potency on CCK release; all other parameters are common across cohorts).
   - `Lu_2014_sglt_qsp.R` (multiplicative +17.6% shift on the typical-value Vmax2 of SGLT2 in the renal-glucose-reabsorption QSP model: Vmax2_T2DM = 110 mmol/h vs Vmax2_healthy = 93.5 mmol/h per Lu 2014 Table 2 calibration; coded for the Lu 2014 evaluation cohort, where the pre-modern-classification 'diabetics' of Mogensen 1971 are also coded T2DM = 1).
+  - `Sharma_2018_naltrexone_bupropion.R` (multiplicative fixed-covariate effects on Emax, kout, kpro, and baseline body weight in the naltrexone/bupropion DTPD body-weight model; T2DM subjects came from study 6 / NB-304, 10.9% of the pooled 4591-subject analysis population, Sharma 2018 Covariate Analysis).
 - **Notes:** Distinct from the existing `DIAB` canonical (which deliberately does not distinguish Type 1 vs Type 2). Specific scope because the reference cohort is study-specific and the mechanism in the example models is a Type-2-versus-healthy stratification of OGTT or SGLT response; a future T2DM-specific study (e.g., a popPK/PD analysis stratifying by HbA1c level) can ratify the same canonical and document the reference cohort in `covariateData[[T2DM]]$notes`.
 
 ### HYPERT (**canonical for hypertension comorbidity / medical-history indicator**)
@@ -2285,7 +2352,7 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Reference category:** 0 (non-DPN subject; the complement reference is paper-defined -- for the Kleideiter cebranopadol models the typical-value reference is the pooled nociceptive-pain (low back pain + osteoarthritis) cohort, with the sibling canonicals `DIS_HEALTHY` and `DIS_BUNIONECTOMY` carrying the healthy-volunteer and bunionectomy effects respectively).
 - **Source aliases:**
   - `DIS` -- Kleideiter 2017 (paper Table 13 categorical disease status decomposed to binary `DIS_DPN`).
-- **Example models:** `Kleideiter_2017_cebranopadol.R` (multiplicative effect on bioavailability: `f_disease *= 1.132` for DPN patients relative to the LBP/OA nociceptive-pain reference; the value 1.132 reflects the 2018 erratum correction in which Table 13 rows 27-28 for bunionectomy and DPN were swapped).
+- **Example models:** `Kleideiter_2017_cebranopadol.R` (multiplicative effect on bioavailability: `f_disease *= 1.132` for DPN patients relative to the LBP/OA nociceptive-pain reference; the value 1.132 reflects the 2018 erratum correction in which Table 13 rows 27-28 for bunionectomy and DPN were swapped), `Kleideiter_2018_cebranopadol.R` (DPN-vs-LBP/OA bioavailability ratio 1.132 applied as `ratio^DIS_DPN`; one level of the four-level disease-status stratification {LBP/OA reference, healthy, DPN, bunionectomy}, Kleideiter 2018 Table 13 erratum-corrected).
 - **Notes:** Used when a population PK model pools DPN patients with a non-DPN reference cohort (typically the chronic-pain `LBP/OA` reference plus other strata) and DPN disease status is retained as a covariate. Pairs with `DIS_HEALTHY` and `DIS_BUNIONECTOMY` in the Kleideiter four-level disease-status stratification (LBP/OA reference, healthy, DPN, bunionectomy). Distinct from the existing `DIAB` canonical (binary type-1-or-type-2 diabetes-mellitus comorbidity indicator) and the `T2DM` canonical (type-2-specific) because `DIS_DPN` flags the specific painful-polyneuropathy complication of diabetes used as a chronic-pain clinical-trial enrollment category (cebranopadol phase IIa trials 10 and 12; phase II trial 14). Distinct from the `DIS_HEALTHY` canonical because both indicators may be 0 simultaneously in a pooled chronic-pain analysis where DIS_HEALTHY = 0 means 'patient' but `DIS_DPN = 0` may still mean 'non-DPN patient' (e.g., LBP / OA or bunionectomy patients). Scope: specific because the disease-pooling reference category is paper-defined. Ratified canonically on 2026-05-25 alongside the Kleideiter 2017 cebranopadol extraction.
 
 ### DIS_BUNIONECTOMY (**canonical for post-bunionectomy acute-pain cohort indicator**)
@@ -2296,7 +2363,7 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Reference category:** 0 (non-bunionectomy subject; the complement reference is paper-defined -- for the Kleideiter cebranopadol models the typical-value reference is the pooled nociceptive-pain (low back pain + osteoarthritis) cohort, with the sibling canonicals `DIS_HEALTHY` and `DIS_DPN` carrying the healthy-volunteer and DPN effects respectively).
 - **Source aliases:**
   - `DIS` -- Kleideiter 2017 (paper Table 13 categorical disease status decomposed to binary `DIS_BUNIONECTOMY`).
-- **Example models:** `Kleideiter_2017_cebranopadol.R` (multiplicative effect on bioavailability: `f_disease *= 1.801` for bunionectomy patients relative to the LBP/OA nociceptive-pain reference; the value 1.801 reflects the 2018 erratum correction in which Table 13 rows 27-28 for bunionectomy and DPN were swapped; in the corrected Table 14 bunionectomy patients had 80% higher exposure than the reference, the largest disease-status effect in the analysis).
+- **Example models:** `Kleideiter_2017_cebranopadol.R` (multiplicative effect on bioavailability: `f_disease *= 1.801` for bunionectomy patients relative to the LBP/OA nociceptive-pain reference; the value 1.801 reflects the 2018 erratum correction in which Table 13 rows 27-28 for bunionectomy and DPN were swapped; in the corrected Table 14 bunionectomy patients had 80% higher exposure than the reference, the largest disease-status effect in the analysis), `Kleideiter_2018_cebranopadol.R` (bunionectomy-vs-LBP/OA bioavailability ratio 1.801 applied as `ratio^DIS_BUNIONECTOMY`; one level of the four-level disease-status stratification {LBP/OA reference, healthy, DPN, bunionectomy}, Kleideiter 2018 Table 13 erratum-corrected).
 - **Notes:** Bunionectomy patients are an acute-pain clinical-trial enrollment category distinct from the chronic-pain LBP / OA / DPN categories in the same analysis cohort. Use this canonical when a pooled analgesic / opioid population PK analysis retains a post-bunionectomy cohort as a covariate group; future bunionectomy-anchored analgesic models should extend the example list and document the complement reference. Pairs with `DIS_HEALTHY` and `DIS_DPN` in the Kleideiter four-level disease-status stratification. Distinct from `POD` (continuous post-operative day) and `POSTTX_DAY1` (first-24h-post-transplant indicator) -- those describe surgical-recovery time windows rather than the bunionectomy-cohort enrollment label itself. The shorter form `DIS_BUN` is deliberately avoided to prevent confusion with the common BUN (blood urea nitrogen) laboratory abbreviation. Scope: specific because the disease-pooling reference category is paper-defined. Ratified canonically on 2026-05-25 alongside the Kleideiter 2017 cebranopadol extraction.
 
 ### DIS_CASTLEMAN (**canonical for Castleman's disease indicator**)
@@ -2680,6 +2747,16 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
   - `HCV` -- used in `Majekodunmi_2017_HIV_HCV_CD4_recovery.R` (paper Methods 'Definitions' and Table 2 covariate 'C:Coinf' for HIV/HCV coinfected vs HIV monoinfected; same orientation as the canonical).
 - **Example models:** `Majekodunmi_2017_HIV_HCV_CD4_recovery.R` (multiplicative fractional reduction on the CD4 z-score recovery-rate constant c: `c = (c_pop + etac) * (1 + e_hcv_pos_c * HCV_POS)` with `e_hcv_pos_c = -0.77`; HCV-coinfected children recover at 23% of the HIV-monoinfected rate -- 0.357 /year versus 1.55 /year typical).
 - **Notes:** Parallels the `_POS` suffix convention used by `HIV_POS`, `TB_POS`, `ADA_POS`, `SARS_SEROPOS`, and other serostatus / disease-state indicators. Distinct from any anti-HCV treatment-regimen indicator (e.g., pegylated interferon + ribavirin in Majekodunmi 2017's coinfected subset of 10 children) and from any HCV-genotype indicator (1/2/3/4 distribution reported in Majekodunmi 2017 Table 1 but not used as a covariate). Distinct from a primary disease-state indicator like `DIS_HCV` (not yet registered) -- `HCV_POS` is the coinfection / comorbidity flag in non-HCV-primary indications. Ratified canonically on 2026-05-22 alongside the Majekodunmi 2017 CD4 recovery extraction.
+
+### HCV_GT1B (**canonical for HCV genotype-1B vs 1A subtype indicator**)
+- **Description:** HCV genotype-1 subtype indicator. 1 = patient infected with HCV genotype 1B; 0 = patient infected with HCV genotype 1A (the source-paper reference subtype for the IC50 estimates). Time-fixed per subject (HCV subtype is determined at the time of infection and does not change over the modelled treatment window).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (HCV GT1A; 77 percent of the Wang 2018 viral-dynamics cohort, 55 of 72 patients).
+- **Source aliases:** none -- the source encodes the complement (GT1B = 1 - "Genotype 1A (%)", Wang 2018 Table 2) so that the canonical reference category matches the source-paper IC50,GT1A estimates; the model column is the canonical `HCV_GT1B`.
+- **Example models:** `Wang_2018_daclatasvir_asunaprevir.R` (switches the daclatasvir and asunaprevir antiviral IC50 and the daclatasvir resistance coefficient between GT1A and GT1B values via fixed scaling factors: IC50,DCV 0.041 -> 0.0074 ug/L (SCL = 0.18), IC50,ASV 2.45 -> 0.74 ug/L (SCL = 0.30), Kr,DCV 0.43 -> 0.13 per day; Kr,ASV is the same for both subtypes).
+- **Notes:** Specific scope because the GT1A-vs-GT1B contrast and the IC50 / resistance scaling factors are paper-specific to the Wang 2018 daclatasvir + asunaprevir viral-dynamics MBMA. Distinct from `HCV_POS` (the HCV coinfection / comorbidity flag in non-HCV-primary indications) -- `HCV_GT1B` is a within-HCV-population subtype indicator for an HCV-primary antiviral analysis. Future HCV antiviral models that distinguish additional genotypes (GT2/3/4) should register sibling subtype canonicals rather than overload this binary 1B-vs-1A indicator. Ratified canonically alongside the Wang 2018 daclatasvir/asunaprevir extraction.
 
 ### EARLY_ART (**canonical for early-vs-delayed antiretroviral-treatment-initiation arm indicator**)
 - **Description:** Trial randomization-arm indicator: 1 = subject was randomized to initiate antiretroviral treatment (ART) early (within the first 14 days of admission, before nutritional recovery), 0 = subject was randomized to delayed ART initiation (after nutritional recovery, > 14 days from admission). Time-fixed per subject within the trial. The indicator captures the early-vs-delayed-ART contrast tested in the Archary 2019 / MATCH (Malnutrition and ART Timing in Children with HIV) trial in severely malnourished HIV-infected children; the early-ART arm exhibits ~31% higher abacavir bioavailability than the delayed-ART arm.
@@ -3819,6 +3896,40 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Example models:** `Schoemaker_2017_brivaracetam.R` (multiplicative effect on apparent oral clearance: `cl *= (1 - 0.101 * CONMED_VPA)`; -10.1% relative to no-VPA reference, corresponding to ~11% higher brivaracetam exposure, Schoemaker 2017 Table 1).
 - **Notes:** Drug-specific CONMED_* indicator anticipated in the [[CONMED_AED]] notes. Schoemaker 2017 retained the VPA effect in the final model even though it did not formally meet the SCM inclusion criteria (forward p < 0.01) because quantifying its contribution was considered informative; the authors note the apparent VPA-induced exposure rise may be confounded with VPA-driven weight / fat gain in chronic users. Distinct from the broader [[CONMED_AED]] (any concomitant AED). When a paper distinguishes individual AEDs separately, use the drug-specific canonicals [[CONMED_CBZ]], [[CONMED_PB]], `CONMED_VPA` rather than collapsing into the class-level indicator. Ratified canonically on 2026-05-20 alongside the Schoemaker 2017 brivaracetam paediatric extraction.
 
+### CONMED_SILDENAFIL (**canonical for concomitant sildenafil coadministration indicator**)
+- **Description:** Binary indicator for concomitant sildenafil coadministration. 1 = sildenafil was administered during this experimental occasion (in the Bender 2009 rat study, a 2 mg/kg bolus followed by a 6 h steady-state infusion), 0 = saline (no sildenafil). Per-occasion (not per-subject) in a crossover design.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (saline / no concomitant sildenafil).
+- **Source aliases:**
+  - `SLDB` -- used in `Bender_2009_pregabalin_rat_binary.R` (Bender 2009 binary sildenafil-presence indicator).
+- **Example models:** `Bender_2009_pregabalin_rat_binary.R` (proportional reduction in pregabalin CL when sildenafil is coadministered: `cl *= (1 - e_sild_cl * CONMED_SILDENAFIL)` with `e_sild_cl = 0.302`, i.e. 30.2% lower CL on the sildenafil occasion, Bender 2009 Table IV).
+- **Notes:** Specific scope because the sildenafil-on-pregabalin-CL drug-drug-interaction effect is paper-specific (Bender 2009 used sildenafil as a PDE-5-inhibitor probe). Member of the `CONMED_<drug>` binary concomitant-presence family. Per-occasion in the Bender 2009 crossover (each rat received saline on one occasion and sildenafil on the other, separated by a >= 3-day washout). Companion to `CONMED_SILDENAFIL_NMETAB_CC`, the continuous N-desmethyl-sildenafil-metabolite-concentration covariate used in the saturable-inhibition variant of the same model. Ratified canonically alongside the Bender 2009 pregabalin rat extraction.
+
+### CONMED_SILDENAFIL_NMETAB_CC (**canonical for concomitant sildenafil N-desmethyl metabolite concentration**)
+- **Description:** Time-varying plasma concentration of the active N-desmethyl (N-methyl) metabolite of sildenafil (ng/mL), used as the saturable-inhibition driver on the clearance of a co-administered drug. Time-varying covariate column supplied by the user; set to 0 to recover the no-sildenafil typical-clearance prediction.
+- **Units:** ng/mL
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters a saturable (Michaelis-Menten-style) inhibition factor on CL; set to 0 for the no-sildenafil case. Reference values observed: in Bender 2009 the metabolite reached Cmax ~ 2,100 ng/mL at 4-7 h post bolus and was roughly steady-state during the 6 h sildenafil infusion.
+- **Source aliases:**
+  - `SLDM` -- used in `Bender_2009_pregabalin_rat_smetab.R` (Bender 2009 measured N-methyl-sildenafil-metabolite plasma concentration; paper notation `[SLDM]`).
+- **Example models:** `Bender_2009_pregabalin_rat_smetab.R` (saturable inhibition of pregabalin CL: `cl *= (1 - CONMED_SILDENAFIL_NMETAB_CC / (e_sldm_cl + CONMED_SILDENAFIL_NMETAB_CC))` with the IC50 `e_sldm_cl = 1350` ng/mL, Bender 2009 Table IV).
+- **Notes:** Specific scope because the metabolite-driven saturable-inhibition effect on pregabalin CL is paper-specific. Member of the `CONMED_<drug>_CC` time-varying-concentration family (the `_CC` suffix marks a dynamic concentration covariate, as distinct from the `CONMED_<drug>` binary-presence indicator). Continuous-covariate counterpart to `CONMED_SILDENAFIL` (the binary-presence variant of the same Bender 2009 drug-drug-interaction analysis). Ratified canonically alongside the Bender 2009 pregabalin rat extraction.
+
+### CONMED_NAL_DOSE, CONMED_BUP_DOSE (**canonical for daily dose of co-administered naltrexone / bupropion**)
+- **Description:** Time-varying daily dose of the named drug at the current observation time (suffix = INN lowercase abbreviation: `nal` naltrexone, `bup` bupropion). 0 = the named drug is not part of the regimen at this time; positive value = current total daily dose. Drives the combined dose- and time-dependent Emax drug effect in the naltrexone/bupropion fixed-dose-combination PD model.
+- **Units:** mg/day
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** 0 (the drug is not given; the drug-effect term contributes 0).
+- **Source aliases:**
+  - `DOSE_NAL_MGD` (`NAL`, Sharma 2018 Eq. 4 daily naltrexone dose in mg) -- earlier `DOSE_<drug>_<unit>` form used in `Sharma_2018_naltrexone_bupropion.R` before the `CONMED_<drug>_DOSE` rename. Maps to `CONMED_NAL_DOSE`.
+  - `DOSE_BUP_MGD` (`BUP`, Sharma 2018 Eq. 4 daily bupropion dose in mg) -- earlier `DOSE_<drug>_<unit>` form used in `Sharma_2018_naltrexone_bupropion.R` before the rename. Maps to `CONMED_BUP_DOSE`.
+- **Example models:** `Sharma_2018_naltrexone_bupropion.R` (each daily-dose covariate enters the combined dose- and time-dependent Emax drug effect on body-weight kout: `drug_term = CONMED_NAL_DOSE / (ed50nal + CONMED_NAL_DOSE) + CONMED_BUP_DOSE / (ed50bup + CONMED_BUP_DOSE)`, Sharma 2018 Eq. 4).
+- **Notes:** Specific scope because the dose-effect amplitudes are tied to the Sharma 2018 naltrexone/bupropion DTPD body-weight analysis. Members of the `CONMED_<drug>_DOSE` daily-dose family (siblings `CONMED_ATV_DOSE`, `CONMED_INH_DOSE`, etc.); the `CONMED_<drug>_DOSE` shape replaces the earlier `DOSE_<drug>` / `DOSE_<drug>_<unit>` names (which conflated a covariate with a dose-amount column) per the naming audit. Companion to `T2DM` (the diabetes covariate in the same model). Ratified canonically alongside the Sharma 2018 naltrexone/bupropion extraction.
+
 ### PRICORT (**canonical for prior corticosteroid use indicator**)
 - **Description:** 1 = patient received systemic corticosteroid treatment prior to study entry, 0 = no prior corticosteroid use. Time-fixed per subject.
 - **Units:** (binary)
@@ -4052,7 +4163,8 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Reference category:** 0 (extensive metabolizer OR unknown phenotype; the per-paper reference cohort that 0 represents is paper-defined). When paired with `CYP2C9_EM`, both indicators = 0 indicates the unknown-phenotype stratum and `CYP2C9_EM = 1` with `CYP2C9_PM_IM = 0` indicates the EM stratum.
 - **Source aliases:**
   - `CYP2C9` -- Kleideiter 2017 (paper Table 13 row "CYP2C9 poor and intermediate metabolizers 58.7 L/h").
-- **Example models:** `Kleideiter_2017_cebranopadol.R` (additive log shift on CL: `e_cyp2c9pmim_lcl = log(58.7 / 74.3) = -0.2353`; reduced apparent clearance vs the unknown-phenotype reference; paired with `CYP2C9_EM` to form the three-level stratification).
+  - `CYP2C9_PIM` -- used in `Kleideiter_2018_cebranopadol.R` (the erratum-corrected re-extraction; same pooled poor-or-intermediate-metabolizer semantics, abbreviated `PIM`).
+- **Example models:** `Kleideiter_2017_cebranopadol.R` (additive log shift on CL: `e_cyp2c9pmim_lcl = log(58.7 / 74.3) = -0.2353`; reduced apparent clearance vs the unknown-phenotype reference; paired with `CYP2C9_EM` to form the three-level stratification), `Kleideiter_2018_cebranopadol.R` (multiplicative CL ratio 58.7 / 74.3 = 0.790 applied as `ratio^CYP2C9_PIM`; paired with `CYP2C9_EM`, both 0 = the unknown-phenotype reference, Kleideiter 2018 Table 13).
 - **Notes:** Pairs with `CYP2C9_EM` for the three-level "unknown / EM / PM-IM" stratification used in the Kleideiter cebranopadol model, where the unknown-phenotype reference (both indicators = 0) is the most common category (only 38.3% of the analysis cohort had a known CYP2C9 phenotype). PM and IM are pooled because the source covariate analysis does not separately resolve them; downstream papers that distinguish PM from IM should register a paired `CYP2C9_PM` canonical and split this group, encoding the three-level EM / IM / PM phenotype with two binary indicators on the `SLCO1B1_HAP15_HET` / `SLCO1B1_HAP15_HOM` pattern. Distinct from the `CYP2C9_EM` canonical's Jeong-2022 use (where 0 = IM/PM, no unknown subjects, and the 0-level directly carries the PM/IM phenotype): in the Kleideiter cohort the 0-level of both `CYP2C9_EM` and `CYP2C9_PM_IM` pools all subjects not assigned that specific phenotype label (including the 'unknown' fraction), so per-model `covariateData` notes must document the reference complement. Ratified canonically on 2026-05-25 alongside the Kleideiter 2017 cebranopadol extraction.
 
 ### CYP2B6_IM (**canonical for CYP2B6 intermediate-metabolizer phenotype indicator**)
@@ -4143,6 +4255,39 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
   - `rs396991` (raw allele coding, often `"AA"` / `"AC"` / `"CC"` or `"GG"` / `"GT"` / `"TT"` depending on assay strand): map V allele -> 1, F allele -> 0 with the assay-specific allele convention; derive `FCGR3A_VV = as.integer(genotype is V-homozygous)`.
 - **Example models:** `Aguiar_2021_ustekinumab.R` (Aguiar 2021 Table 2 footnote; logit-scale effect on subcutaneous bioavailability F: 88.8% in V/V vs 71.0% in V/F + F/F).
 - **Notes:** rs396991 (FCGR3A 158V>F) is a well-studied pharmacogenetic polymorphism affecting FcgammaRIIIa-IgG affinity and has been associated with response to several IgG monoclonal antibodies (rituximab, infliximab, ustekinumab). The V allele is the higher-affinity variant. Document the assay-strand allele convention used in the source paper in `covariateData[[FCGR3A_VV]]$notes`. Future models that use a recessive (F/F vs V/* combined) or codominant (additive 0/1/2) coding should register a separate canonical (e.g., `FCGR3A_FF`, `FCGR3A_VCT` for V-allele count) rather than overloading `FCGR3A_VV`.
+
+### DSBAL_TT (**canonical for DsbA-L (GSTK1) rs1917760 T/T genotype indicator**)
+- **Description:** Indicator for the DsbA-L (GSTK1) rs1917760 -1308G>T T/T genotype; 1 = subject carries the T/T genotype, 0 = subject carries the G/G or G/T genotype (the pooled reference). Time-fixed per subject (germline genotype).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (G/G or G/T, pooled).
+- **Source aliases:**
+  - `DsbAL` (three-level column 0 = G/G, 1 = G/T, 2 = T/T) -- used in `Oniki_2018_bmi.R`; derive `DSBAL_TT = as.integer(DsbAL == 2)`. G/G and G/T are pooled because the T/T state is the functional minor-allele genotype most strongly associated with elevated BMI.
+- **Example models:** `Oniki_2018_bmi.R` (additive +1.5 kg/m^2 shift on the typical BMI for T/T carriers vs the pooled G/G-or-G/T reference, Oniki 2018 Eq. 1).
+- **Notes:** General scope because the genotype is a stable germline marker; the GSTK1 (DsbA-L) rs1917760 polymorphism has been associated with adiposity / metabolic phenotypes. Pools the G/G homozygous and G/T heterozygous strata into the reference following the dominant-for-the-minor-allele encoding used by Oniki 2018; future extractions that resolve a separate G/T heterozygote effect should register a paired `DSBAL_GT` indicator on the `SLCO1B1_HAP15_HET` / `SLCO1B1_HAP15_HOM` precedent. Ratified canonically alongside the Oniki 2018 BMI extraction.
+
+### PNPLA3_CG (**canonical for PNPLA3 rs738409 C/G heterozygote indicator**)
+- **Description:** Indicator for the PNPLA3 rs738409 c.444C>G (I148M) C/G heterozygote genotype; 1 = subject carries the C/G genotype, 0 = subject does not carry the C/G genotype. Paired with `PNPLA3_GG` to encode the three-level rs738409 genotype with two binary indicators (C/C is the reference when both are 0). Time-fixed per subject (germline genotype).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (C/C wild-type, when `PNPLA3_GG` is also 0).
+- **Source aliases:**
+  - `PNPLA3` (three-level column 0 = C/C, 1 = C/G, 2 = G/G) -- used in `Oniki_2018_nafld_risk.R`; derive `PNPLA3_CG = as.integer(PNPLA3 == 1)`.
+- **Example models:** `Oniki_2018_nafld_risk.R` (multiplicative factor 0.761 on the (BMI50 - 17) half-saturation offset of the logit-of-NAFLD sigmoid for C/G heterozygotes vs the C/C reference, Oniki 2018 Eq. 4 / Figure 2c; closer to 1 than the G/G factor, consistent with an additive allele-dose effect).
+- **Notes:** General scope because the genotype is a stable germline marker; PNPLA3 rs738409 (I148M) is the best-established common genetic risk variant for non-alcoholic fatty liver disease (NAFLD). Paired with `PNPLA3_GG` (homozygote) following the `SLCO1B1_HAP15_HET` / `SLCO1B1_HAP15_HOM` paired-binary precedent for a three-level genotype where each stratum carries a distinct typical-value effect. Ratified canonically alongside the Oniki 2018 NAFLD-risk extraction.
+
+### PNPLA3_GG (**canonical for PNPLA3 rs738409 G/G homozygote indicator**)
+- **Description:** Indicator for the PNPLA3 rs738409 c.444C>G (I148M) G/G homozygote genotype; 1 = subject carries the G/G genotype, 0 = subject does not carry the G/G genotype. Paired with `PNPLA3_CG` to encode the three-level rs738409 genotype with two binary indicators (C/C is the reference when both are 0). Time-fixed per subject (germline genotype).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (C/C wild-type, when `PNPLA3_CG` is also 0).
+- **Source aliases:**
+  - `PNPLA3` (three-level column 0 = C/C, 1 = C/G, 2 = G/G) -- used in `Oniki_2018_nafld_risk.R`; derive `PNPLA3_GG = as.integer(PNPLA3 == 2)`.
+- **Example models:** `Oniki_2018_nafld_risk.R` (multiplicative factor 0.592 on the (BMI50 - 17) half-saturation offset of the logit-of-NAFLD sigmoid for G/G homozygotes vs the C/C reference, Oniki 2018 Eq. 4 / Figure 2c).
+- **Notes:** General scope. Companion homozygote indicator to `PNPLA3_CG`; see `PNPLA3_CG` notes for the joint three-level usage and reference category. Ratified canonically alongside the Oniki 2018 NAFLD-risk extraction.
 
 ## Immunogenicity
 
@@ -4517,6 +4662,50 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Example models:** `Nemoto_2017_ethanol.R` (additive shift on Vmax: +176 mg/h for *2/*2 homozygotes relative to the *2/*1 reference Vmax of 7790 mg/h; Nemoto 2017 Table II final model).
 - **Notes:** ADH1B*2 is the East-Asian high-activity alcohol-dehydrogenase variant (rs1229984 Arg47His); the *2 allele encodes a ~40x faster ethanol oxidation rate than the *1 wild-type. Allele frequency in Japanese populations is ~70%, so most subjects are *2/*2 or *1/*2 with a small *1/*1 minority (~9% expected). Nemoto 2017 inherits the two-Vmax parameterization from Seng et al. 2014 (which estimated Vmax separately for *2/*1 and *2/*2 in a Chinese + Indian cohort) and does not report an ADH1B genotype distribution for its 34-subject Japanese cohort; the structural model is silent on ADH1B*1/*1 subjects. Future ADH1B-aware ethanol-PK extractions that explicitly model all three genotypes should register `ADH1B_S2_HET` as a companion indicator following the `SLCO1B1_HAP15_HET` / `SLCO1B1_HAP15_HOM` precedent. Ratified canonically on 2026-05-18 alongside the Nemoto 2017 ethanol extraction.
 
+### PFMDR1_86Y (**canonical for P. falciparum pfmdr1 codon-86 tyrosine mutant indicator**)
+- **Description:** Plasmodium falciparum pfmdr1 codon-86 tyrosine mutant indicator (1 = single-copy pfmdr1 with the 86Y mutation, Simpson 2013 Genotype 2; 0 = otherwise). Time-fixed per parasite isolate. This is a parasite-genome indicator (not host pharmacogenetics): the "subject" in the NLME framework is a clinical P. falciparum isolate, not a human patient.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 = Simpson 2013 Genotype 1 single-copy wild-type 86N/1042N (when all four PFMDR1 indicators are 0). The four PFMDR1 indicators are mutually exclusive in the Simpson 2013 cohort (Thai pfmdr1 point mutations occur almost exclusively on single-copy parasites; amplifications occur exclusively on WT 86N/1042N parasites).
+- **Source aliases:**
+  - `X1` -- used in `Simpson_2013_artesunate.R`, `Simpson_2013_chloroquine.R`, `Simpson_2013_lumefantrine.R`, `Simpson_2013_mefloquine.R` (per-isolate Genotype-2 indicator).
+- **Example models:** `Simpson_2013_artesunate.R`, `Simpson_2013_chloroquine.R`, `Simpson_2013_lumefantrine.R`, `Simpson_2013_mefloquine.R` (multiplicative proportional effect on the sigmoid-Emax EC50, `1 + e_pfmdr1_86y_ec50 * PFMDR1_86Y`, drug-specific magnitude per Simpson 2013 Table 3 Genotype-2 percent-change column).
+- **Notes:** Specific scope because the canonical name is a parasite-genome covariate tied to the Simpson 2013 in-vitro antimalarial study design. Explicitly DISTINCT from the human host-pharmacogenetics `ABCB1_*` canonicals (ABCB1 / MDR1 is the human P-glycoprotein efflux-transporter gene; pfmdr1 is the orthologous P. falciparum multidrug-resistance transporter). Member of the four-member mutually-exclusive `PFMDR1_*` Simpson 2013 genotype set (`PFMDR1_86Y`, `PFMDR1_1042D`, `PFMDR1_CN2`, `PFMDR1_CN3PLUS`), with single-copy WT 86N/1042N as the all-zero reference. Future pfmdr1-genotype antimalarial extractions should reuse this set or register sibling parasite-genome canonicals. Ratified canonically alongside the Simpson 2013 antimalarial in-vitro extractions.
+
+### PFMDR1_1042D (**canonical for P. falciparum pfmdr1 codon-1042 aspartate mutant indicator**)
+- **Description:** Plasmodium falciparum pfmdr1 codon-1042 aspartate mutant indicator (1 = single-copy pfmdr1 with the 1042D mutation, Simpson 2013 Genotype 3; 0 = otherwise). Time-fixed per parasite isolate. Parasite-genome indicator (not host pharmacogenetics).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 = Simpson 2013 Genotype 1 single-copy wild-type 86N/1042N (when all four PFMDR1 indicators are 0). Mutually exclusive with the other three PFMDR1 indicators.
+- **Source aliases:**
+  - `X2` -- used in `Simpson_2013_artesunate.R`, `Simpson_2013_chloroquine.R`, `Simpson_2013_lumefantrine.R`, `Simpson_2013_mefloquine.R` (per-isolate Genotype-3 indicator).
+- **Example models:** `Simpson_2013_artesunate.R`, `Simpson_2013_chloroquine.R`, `Simpson_2013_lumefantrine.R`, `Simpson_2013_mefloquine.R` (multiplicative proportional effect on the sigmoid-Emax EC50, `1 + e_pfmdr1_1042d_ec50 * PFMDR1_1042D`, drug-specific magnitude per Simpson 2013 Table 3 Genotype-3 percent-change column).
+- **Notes:** Specific scope. Distinct from the human `ABCB1_*` canonicals (see `PFMDR1_86Y` notes). Member of the four-member mutually-exclusive `PFMDR1_*` Simpson 2013 genotype set with single-copy WT as the all-zero reference. Ratified canonically alongside the Simpson 2013 antimalarial in-vitro extractions.
+
+### PFMDR1_CN2 (**canonical for P. falciparum pfmdr1 double-copy amplification indicator**)
+- **Description:** Plasmodium falciparum pfmdr1 double-copy amplification indicator (1 = two copies of pfmdr1, all wild-type 86N/1042N, Simpson 2013 Genotype 4; 0 = otherwise). Time-fixed per parasite isolate. Parasite-genome indicator (not host pharmacogenetics).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 = Simpson 2013 Genotype 1 single-copy wild-type 86N/1042N (when all four PFMDR1 indicators are 0). Mutually exclusive with the other three PFMDR1 indicators.
+- **Source aliases:**
+  - `X3` -- used in `Simpson_2013_artesunate.R`, `Simpson_2013_chloroquine.R`, `Simpson_2013_lumefantrine.R`, `Simpson_2013_mefloquine.R` (per-isolate Genotype-4 indicator).
+- **Example models:** `Simpson_2013_artesunate.R`, `Simpson_2013_chloroquine.R`, `Simpson_2013_lumefantrine.R`, `Simpson_2013_mefloquine.R` (multiplicative proportional effect on the sigmoid-Emax EC50, `1 + e_pfmdr1_cn2_ec50 * PFMDR1_CN2`, drug-specific magnitude per Simpson 2013 Table 3 Genotype-4 percent-change column).
+- **Notes:** Specific scope. Distinct from the human `ABCB1_*` canonicals (see `PFMDR1_86Y` notes). Member of the four-member mutually-exclusive `PFMDR1_*` Simpson 2013 genotype set with single-copy WT as the all-zero reference; `PFMDR1_CN2` (two copies) and `PFMDR1_CN3PLUS` (three-or-more copies) jointly encode the copy-number amplification axis. Ratified canonically alongside the Simpson 2013 antimalarial in-vitro extractions.
+
+### PFMDR1_CN3PLUS (**canonical for P. falciparum pfmdr1 triple-or-more-copy amplification indicator**)
+- **Description:** Plasmodium falciparum pfmdr1 triple-or-more-copy amplification indicator (1 = three or more copies of pfmdr1, all wild-type 86N/1042N, Simpson 2013 Genotype 5; 0 = otherwise). Time-fixed per parasite isolate. Parasite-genome indicator (not host pharmacogenetics).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 = Simpson 2013 Genotype 1 single-copy wild-type 86N/1042N (when all four PFMDR1 indicators are 0). Mutually exclusive with the other three PFMDR1 indicators.
+- **Source aliases:**
+  - `X4` -- used in `Simpson_2013_artesunate.R`, `Simpson_2013_chloroquine.R`, `Simpson_2013_lumefantrine.R`, `Simpson_2013_mefloquine.R` (per-isolate Genotype-5 indicator).
+- **Example models:** `Simpson_2013_artesunate.R`, `Simpson_2013_chloroquine.R`, `Simpson_2013_lumefantrine.R`, `Simpson_2013_mefloquine.R` (multiplicative proportional effect on the sigmoid-Emax EC50, `1 + e_pfmdr1_cn3plus_ec50 * PFMDR1_CN3PLUS`, drug-specific magnitude per Simpson 2013 Table 3 Genotype-5 percent-change column; for artesunate and mefloquine the triple+ copy group carries the largest EC50 shift, +127% and +188% respectively).
+- **Notes:** Specific scope. Distinct from the human `ABCB1_*` canonicals (see `PFMDR1_86Y` notes). Member of the four-member mutually-exclusive `PFMDR1_*` Simpson 2013 genotype set with single-copy WT as the all-zero reference; paired with `PFMDR1_CN2` on the copy-number amplification axis. Ratified canonically alongside the Simpson 2013 antimalarial in-vitro extractions.
+
 ## Lifestyle / medical history
 
 ### SMOKE (**canonical for current-smoker binary indicator**)
@@ -4582,6 +4771,17 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Example models:**
   - `Johnson_2011_olanzapine_rat.R` (per-dose-record indicator selecting the IP bioavailability `FIP = 0.636` with 87% CV log-normal IIV; ROUTE_IP = 0 selects F = 1 for SC and IV. The encoding `f(central) <- exp(ROUTE_IP * (lfip + etalfip))` collapses to 1 when ROUTE_IP = 0 because exp(0) = 1, so subjects dosed via SC or IV inherit complete bioavailability without IIV on F).
 - **Notes:** This is the per-dose-record covariate-equation indicator, distinct from the dosing-event `cmt` column that names the target compartment (Johnson 2011 doses all routes directly into `central` because the absorption rate constant was not estimable from the available data). When simulating IP doses, set `ROUTE_IP = 1` on the dose record(s); set `ROUTE_IP = 0` for SC and IV dose records. Scope: specific because the IP-vs-other contrast and which parameter it modifies (here, bioavailability) is paper-specific; complementary to `ROUTE_IV` (IV-vs-SC indicator) — a future tri-route study could use both indicators jointly.
+
+### ROUTE_NGT (**canonical for nasogastric-tube-vs-oral administration route indicator**)
+- **Description:** 1 = dose record administered by nasogastric tube (NGT), 0 = oral administration. Per-dose-record covariate flagging NGT delivery when an oral popPK pools whole-tablet / crushed-tablet oral dosing with crushed-tablet-via-NGT dosing, with the route effect captured on an absorption parameter.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (oral administration; the structural reference for the Denti 2018 typical absorption lag time T_lag of 0.242 h).
+- **Source aliases:**
+  - `NGT` -- used in `Denti_2018_levofloxacin.R` (per-dose-record nasogastric-tube indicator).
+- **Example models:** `Denti_2018_levofloxacin.R` (multiplicative effect on the absorption lag time: `(1 + e_route_ngt_tlag * ROUTE_NGT)` with `e_route_ngt_tlag = -0.856`, so NGT delivery shortens T_lag to ~14.4% of its oral value; in the cohort 90/109 (82.6%) children were dosed by crushed tablet via NGT, Denti 2018 Table 2).
+- **Notes:** This is the per-dose-record covariate-equation indicator, distinct from the dosing-event `cmt` column that names the target compartment. When simulating NGT doses, set `ROUTE_NGT = 1` on the dose record(s); set `ROUTE_NGT = 0` for oral dose records. Scope: specific because the NGT-vs-oral contrast and which absorption parameter it modifies are paper-specific. Distinct from the `ROUTE_IV` (IV-vs-SC) and `ROUTE_IP` (IP-vs-non-IP) parenteral-route indicators -- `ROUTE_NGT` is an enteral-delivery-method indicator within oral administration. Ratified canonically alongside the Denti 2018 levofloxacin extraction.
 
 ### DEVICE_AI (**canonical for autoinjector-vs-prefilled-syringe SC device indicator**)
 - **Description:** 1 = subject's SC dose delivered via autoinjector (AI), 0 = prefilled syringe (PFS). Per-subject (study-fixed) covariate flagging the SC delivery device when a model carries device-specific PK effects.
@@ -4727,6 +4927,27 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
   - `CAPSULE` -- earlier name used in the `Hennig_2006_itraconazole.R` and `Hennig_2007_itraconazole.R` model files before the `FORM_*` rename.
 - **Example models:** `Hennig_2006_itraconazole.R` (Hennig 2006 Table II final estimates: capsule `ka` 0.09 h^-1 vs solution `ka` 0.96 h^-1 and capsule relative bioavailability 0.55 vs solution 1; the `etalfdepot` IIV applies only to the capsule arm), `Hennig_2007_itraconazole.R` (selects between `lka_cap` and `lka_sol` typical-value absorption rate constants and applies `f(depot) <- (1 - FORM_CAPSULE) + FORM_CAPSULE * fdepot` so the relative bioavailability `F_rel = 0.817` is applied only to the capsule arm), `Gupta_2016_lenvatinib.R` (relative bioavailability of capsule vs tablet is 0.896; F1 fixed to 1 for the tablet reference; the `etalfcap` IIV (30.2% CV) applies only to the capsule arm), `Lacy_2018_cabozantinib.R` (multiplicative fractional effect of capsule (vs tablet reference) on Ka = -0.579 (57.9% slower absorption for capsule) and on overall bioavailability F = -0.144 (14.4% lower exposure for capsule); tablet F fixed at 1 as the reference; comparator capsule = Cometriq 140 mg approved for MTC), `Kleideiter_2017_cebranopadol.R` (paired with `FORM_TABLET` to encode the three-level cebranopadol formulation stratification: tablet reference, oral solution, liquid-filled capsule; multiplicative effects on `ka` (log shift `log(2.09 / 0.864) = 0.883`), `klag` (log shift `log(0.077 / 0.087) = -0.122`), and bioavailability (factor 1.174) for capsules relative to the tablet reference), `Kleideiter_2018_cebranopadol.R` (three-level formulation factor `{tablet, oral solution, liquid-filled capsule}` encoded into two binary indicators `FORM_CAPSULE` and the sibling new canonical `FORM_SOLUTION`; tablet is the reference when both indicators are 0; capsule multiplicative effects per Kleideiter 2018 Table 13 are 2.09 / 0.864 = 2.419 on Ka, 0.077 / 0.087 = 0.885 on klag, and 1.174 on bioavailability F).
 - **Notes:** Scoped specific because the complement reference category is paper-defined (solution for Hennig itraconazole, tablet for Gupta lenvatinib). Sibling to `FORM_TABLET` (Kyhl 2016 / Tikiso 2021 tablet vs solution) under the `FORM_*` family. Future formulation-comparison models that need a capsule indicator should reuse this canonical, extending the example list and documenting the comparator in per-model notes.
+
+### FORM_SOLUTION (**canonical for oral-solution formulation indicator**)
+- **Description:** 1 = subject received the modelled drug as an oral solution, 0 = the per-paper comparator non-solution formulation (tablet or capsule). The complement reference is paper-defined; document the comparator and the reference-category absorption / bioavailability per-model in `covariateData[[FORM_SOLUTION]]$notes`.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (per-paper non-solution comparator; for Kleideiter 2018 cebranopadol the film-coated tablet is the typical-value reference, with the sibling `FORM_CAPSULE` also at 0 in the reference state).
+- **Source aliases:**
+  - `FORM` (three-level formulation column {tablet, oral solution, liquid-filled capsule}) -- used in `Kleideiter_2018_cebranopadol.R`; the oral-solution level maps to `FORM_SOLUTION = 1` and is paired with `FORM_CAPSULE` so that both = 0 selects the tablet reference.
+- **Example models:** `Kleideiter_2018_cebranopadol.R` (third member of the three-level cebranopadol formulation stratification {tablet reference, oral solution, liquid-filled capsule}, encoded into the two binary indicators `FORM_SOLUTION` and `FORM_CAPSULE`; oral-solution multiplicative effects relative to the tablet reference per Kleideiter 2018 Table 13 are 2.43 / 0.864 = 2.813 on Ka, 0.077 / 0.087 = 0.885 on klag, and 1.045 on bioavailability F).
+- **Notes:** Scoped specific because the complement reference category is paper-defined. Third member of the oral solid-dosage `FORM_*` family alongside `FORM_TABLET` (tablet vs solution) and `FORM_CAPSULE` (capsule vs per-paper comparator); register prose for those entries already anticipates this name. Where a model carries all three formulations, `FORM_CAPSULE` + `FORM_SOLUTION` form the two-indicator encoding with tablet as the all-zero reference. Distinct from `FORM_ASV_LIQUID` (a drug-specific suspension/solution-vs-capsule/tablet indicator for asunaprevir). Ratified canonically alongside the Kleideiter 2018 cebranopadol extraction.
+
+### FORM_ASV_LIQUID (**canonical for asunaprevir liquid (suspension/solution) formulation indicator**)
+- **Description:** Asunaprevir (ASV) formulation indicator. 1 = ASV given as a suspension or oral solution (the higher zero-order absorption-fraction route); 0 = ASV given as a capsule or tablet (the reference formulation). The covariate has no effect when no ASV dose is administered.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (capsule or tablet; the reference formulation in the Wang 2018 ASV PK fit).
+- **Source aliases:** none -- the source Formulation column ("Suspension" / "Solution" -> 1; "Capsule" / "Tablet" -> 0, Wang 2018 Table 1) maps directly onto the canonical orientation; the model column is the canonical `FORM_ASV_LIQUID`.
+- **Example models:** `Wang_2018_daclatasvir_asunaprevir.R` (switches the structural zero-order absorption fraction FK between fk_cap_asv = 0.184 (capsule/tablet) and fk_sol_asv = 0.334 (suspension/solution); both estimated with a shared 65.0% inter-arm-variability CV encoded as a single eta on the logit of FK, Wang 2018 Table 3).
+- **Notes:** Specific scope because the liquid-vs-solid ASV-formulation contrast and the FK absorption-fraction switch are paper-specific to the Wang 2018 daclatasvir + asunaprevir analysis. Drug-specific member of the formulation indicator family; distinct from the generic oral solid-dosage `FORM_TABLET` / `FORM_CAPSULE` / `FORM_SOLUTION` indicators because the contrast here lumps both liquid forms (suspension and solution) against both solid forms (capsule and tablet) for a single named drug (ASV). Per-dose-occasion in principle (a participant could receive both formulations across occasions), but in the Wang 2018 trials each subject received a single ASV formulation. Ratified canonically alongside the Wang 2018 daclatasvir/asunaprevir extraction.
 
 ### FORM_ABA_PHASE2 (**canonical for the abatacept SC phase-2 formulation indicator**)
 - **Description:** 1 = subject received the abatacept Phase-2 SC formulation (lower-pH excipient blend, ~56% absolute bioavailability), 0 = subject received the Phase-3 / commercial SC formulation (the ~81% bioavailability reference). Per-dose-occasion indicator: a single subject can carry both indicator values across phase-2-to-phase-3 transition arms.
@@ -4945,6 +5166,28 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Source aliases:** none.
 - **Example models:** `Sadouki_2025_meropenem_gentamicin_ciprofloxacin.R` (gates a low-inoculum-specific shift on the bacterial-kill amplitude; the paper found the low-inoculum arm had a measurably different kill rate from the standard-inoculum arm).
 - **Notes:** Specific scope because the per-paper definition of "low" varies by experiment design. Ratified 2026-05-28 per the naming audit.
+
+### FLARE (**canonical for flare-design study-arm indicator**)
+- **Description:** Binary study-arm indicator: 1 = the trial used a flare design (subjects washed out of pain medication and required a predefined pain flare-up before randomisation), 0 = non-flare design. A property of the trial design in a model-based meta-analysis (MBMA), not of an individual patient.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (non-flare design).
+- **Source aliases:**
+  - `If` -- used in `Boucher_2018_naproxen_mbma.R` (Boucher 2018 Eqs 2-3).
+- **Example models:** `Boucher_2018_naproxen_mbma.R` (shifts both baseline WOMAC pain `e0` and `emax`; 12 of 18 trials were flare designs).
+- **Notes:** MBMA study-arm-level covariate (a property of the trial design). Specific scope because "flare design" is defined per the osteoarthritis-pain trial-design literature. Registered 2026-05-30 (promoted from the in-file MBMA-covariate documentation convention so `checkModelConventions()` recognises it).
+
+### NAPROXEN (**canonical for naproxen treatment-arm indicator**)
+- **Description:** Binary study-arm treatment indicator: 1 = the arm received naproxen, 0 = the arm received placebo. A property of the trial arm in a model-based meta-analysis (MBMA), not of an individual patient.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (placebo arm).
+- **Source aliases:**
+  - `In` -- used in `Boucher_2018_naproxen_mbma.R` (Boucher 2018 Eqs 3-4).
+- **Example models:** `Boucher_2018_naproxen_mbma.R` (shifts `emax` and shortens `et50`; all 18 included trials had both a naproxen and a placebo arm).
+- **Notes:** MBMA study-arm-level treatment indicator. Specific scope (a per-drug arm indicator). Registered 2026-05-30 (promoted from the in-file MBMA-covariate documentation convention so `checkModelConventions()` recognises it).
 
 ### QBL, QEFF (**canonical for baseline / effective renal Q in HD/CRRT renal-replacement models**)
 - **Description:** Renal-replacement-therapy clearance terms used in hemodialysis (HD) / continuous renal replacement therapy (CRRT) popPK models for renally cleared drugs.
