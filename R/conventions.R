@@ -116,11 +116,33 @@
   # compartments (e.g., target_csf, target_isf, target_peripheral,
   # target_peripheral1, complex_csf, complex_isf, complex_peripheral).
   targetLocationRegex = "^(target|complex)_(csf|isf|peripheral[0-9]?)$",
+  # Bacterial subpopulation states for semi-mechanistic time-kill / HFIM
+  # PK-PD models. Subpopulations are named by spelled-out resistance
+  # phenotype `bact_<phenotype>` where <phenotype> is one of
+  # `susceptible` / `intermediate` / `resistant`. For combination-therapy
+  # (two-drug) models the joint per-drug status is a spelled-out compound
+  # `bact_<drug1pheno>_<drug2pheno>` (drug order = the model's drug
+  # order). An optional trailing digit indexes the Bulitta / Wicha
+  # two-state bacterial life cycle (1 = vegetative / resting, 2 =
+  # replicating). The phenotype words are required to be spelled out in
+  # full (no `s`/`i`/`r` abbreviations) so the state names are
+  # self-documenting. Used by Garonzik_2016_daptomycin (single-drug:
+  # bact_susceptible1/2, bact_intermediate1/2, bact_resistant1/2),
+  # Rees_2018_meropenem_ciprofloxacin and
+  # Landersdorfer_2018_imipenem_tobramycin (two-drug, converging to
+  # bact_susceptible_susceptible1/2, bact_resistant_intermediate1/2,
+  # bact_intermediate_resistant1/2). The scheme is documented in
+  # inst/references/compartment-names.md.
+  bacterialSubpopRegex = "^bact_(susceptible|intermediate|resistant)(_(susceptible|intermediate|resistant))?[0-9]*$",
   observationVar = "Cc",
   # propSd and addSd are the canonical proportional and additive
   # residual-error SDs; expSd is the log-scale residual SD used with
-  # `~ lnorm(...)`.
-  residualError = c("propSd", "addSd", "expSd"),
+  # `~ lnorm(...)`. powExp is the power-error exponent `b` in a power
+  # residual model `Cc ~ pow(propSd, powExp)` (residual SD = propSd *
+  # f^powExp), used by popPK papers that report a power error model
+  # (Tod 1998 amikacin). It is a residual-error-structure parameter,
+  # not a deviant SD name.
+  residualError = c("propSd", "addSd", "expSd", "powExp"),
   transformPrefixes = c("l", "logit", "probit"),
   # Covariate-effect names match e_<cov>(_<continuation>)+_<param>.
   # The pattern accepts up to 6 underscore-separated tokens after the
@@ -720,6 +742,8 @@
   if (grepl(conv$targetLocationRegex, name)) return(TRUE)
   if (!is.null(conv$pbpkSubCompartmentRegex) &&
       grepl(conv$pbpkSubCompartmentRegex, name)) return(TRUE)
+  if (!is.null(conv$bacterialSubpopRegex) &&
+      grepl(conv$bacterialSubpopRegex, name)) return(TRUE)
   for (metab in conv$registeredMetabolites) {
     suf <- paste0("_", metab)
     if (endsWith(name, suf)) {
