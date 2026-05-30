@@ -414,5 +414,35 @@ After this metadata block come `ini()` and `model()`.
 
 - Path: `inst/modeldb/<category>/<FirstAuthor>_<Year>_<drug>.R`.
 - Function name **must** equal the filename minus `.R`. Enforced by `buildModelDb()`.
-- Use the paper's first-author surname (no accents or spaces), four-digit year, and drug INN in lowercase.
-- **Year-letter collision suffix.** When two extractions resolve to the same `<FirstAuthor>_<Year>_<drug>` name (e.g., two same-author/year/drug entries with different scenarios), append a lowercase letter to the year — `Author_2019a_drug.R`, `Author_2019b_drug.R`. Allocate letters in chronological model-development order when known. Never overwrite an existing file silently.
+- `<FirstAuthor>` is the paper's first-author surname, normalised to plain ASCII CamelCase per the rules below. `<Year>` is the four-digit publication year. `<drug>` is the drug INN in lowercase (with a species or mechanism-class suffix when applicable — see SKILL.md Phase 1 steps 3 and 3a).
+
+### Author-surname normalization (hard default — no sidecar)
+
+CamelCase across separators is the **default behaviour**. Apply silently — do NOT raise a stop-and-ask sidecar to confirm the filename form.
+
+| Source author surname | File basename stem | Notes |
+|---|---|---|
+| `Lohy Das`     | `LohyDas`       | Drop spaces, CamelCase across the drop |
+| `Ait-Oudhia`   | `AitOudhia`     | Drop hyphens, CamelCase across the drop |
+| `O'Brien`      | `OBrien`        | Drop apostrophes, CamelCase across the drop |
+| `Câmara`       | `Camara`        | Transliterate accents |
+| `Müller`       | `Muller`        | Transliterate accents |
+| `Łukasz`       | `Lukasz`        | Transliterate accented Latin extensions |
+| `van Rongen`   | `vanRongen`     | Lowercase particle preserved when author publishes that way |
+| `de Winter`    | `deWinter`      | Lowercase particle preserved |
+| `Von Bonin`    | `VonBonin`      | Capitalised particle preserved when author publishes that way |
+| `Mac Donald`   | `MacDonald`     | Drop space, CamelCase |
+| `Câmara De Souza` | `CamaraDeSouza` | Combination: transliterate accent AND drop space AND preserve published particle case |
+
+Rules:
+
+- **Hyphens, spaces, apostrophes**: drop, CamelCase across the drop.
+- **Accents and other diacritics**: transliterate to plain ASCII. The filename must be ASCII-only so the function name (= filename minus `.R`) is a valid R identifier without quoting.
+- **Lowercase particles** ("van", "de", "von", "ten", "le", "du", "la", "del", "el", etc.): preserve the lowercase first letter when the author publishes that way (`van Rongen` → `vanRongen`, `de Kock` → `deKock`).
+- **Capitalised particles**: follow the published author form (`Von Bonin` → `VonBonin`, `De Kock` → `DeKock`).
+
+Precedents in `inst/modeldb/specificDrugs/`: `AitOudhia_2012_canakinumab.R`. The same normalised stem is used for the vignette basename, the `vignette <- "..."` field, the worktree branch name in Phase 2, and the PR title.
+
+### Year-letter collision suffix
+
+When two extractions resolve to the same `<FirstAuthor>_<Year>_<drug>` name (e.g., two same-author/year/drug entries with different scenarios), append a lowercase letter to the year — `Author_2019a_drug.R`, `Author_2019b_drug.R`. Allocate letters in chronological model-development order when known. Never overwrite an existing file silently.

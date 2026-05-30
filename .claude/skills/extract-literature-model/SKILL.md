@@ -108,6 +108,37 @@ Whole-body PBPK, semi-mechanistic PBPK, quantitative systems pharmacology (QSP),
   - The model is suitable for simulating study-level summary outcomes (per-arm mean response) but NOT individual-level concentrations.
   - Document the simulation scope prominently in `description` and in the vignette's Assumptions and deviations section.
 
+### Step 3b — Target file naming (author-surname normalization)
+
+Apply the normalization rule below **silently — no sidecar** when choosing the target filename, function name, vignette basename, and worktree branch name. CamelCase across separators is the **default**; do not stop to ask the operator whether to use `Lohy_Das_...` or `LohyDas_...` (the convention is `LohyDas_...`), nor whether to write `Ait-Oudhia_...` or `AitOudhia_...` (the convention is `AitOudhia_...`).
+
+Transformations applied to the first-author surname BEFORE choosing the filename:
+
+| Source author surname | File basename stem | Notes |
+|---|---|---|
+| `Lohy Das`     | `LohyDas`       | Drop spaces, CamelCase across the drop |
+| `Ait-Oudhia`   | `AitOudhia`     | Drop hyphens, CamelCase across the drop |
+| `O'Brien`      | `OBrien`        | Drop apostrophes, CamelCase across the drop |
+| `Câmara`       | `Camara`        | Transliterate accents |
+| `Müller`       | `Muller`        | Transliterate accents |
+| `Łukasz`       | `Lukasz`        | Transliterate accented Latin extensions |
+| `van Rongen`   | `vanRongen`     | Lowercase particle preserved when author publishes that way |
+| `de Winter`    | `deWinter`      | Lowercase particle preserved |
+| `Von Bonin`    | `VonBonin`      | Capitalised particle preserved when author publishes that way |
+| `Mac Donald`   | `MacDonald`     | Drop space, CamelCase |
+| `Câmara De Souza` | `CamaraDeSouza` | Combination: transliterate accent AND drop space AND preserve published particle case |
+
+Rules:
+
+- **Hyphens, spaces, apostrophes**: drop, CamelCase across the drop.
+- **Accents and other diacritics**: transliterate to plain ASCII (`Câmara` → `Camara`, `Müller` → `Muller`, `Łukasz` → `Lukasz`). The filename must be ASCII-only so the function name (= filename minus `.R`) is a valid R identifier without quoting.
+- **Lowercase particles** ("van", "de", "von", "ten", "le", "du", "la", "del", "el", etc.): preserve the lowercase first letter when the author publishes that way (`van Rongen` → `vanRongen`, `de Kock` → `deKock`).
+- **Capitalised particles**: follow the published author form (`Von Bonin` → `VonBonin`, `De Kock` → `DeKock`).
+
+The same normalised stem is used for: the model filename (`<Stem>_<Year>_<drug>.R`), the function name (which `buildModelDb()` enforces must equal the filename minus `.R`), the `vignette <- "..."` field, the vignette basename under `vignettes/articles/`, the worktree branch name in Phase 2, and the PR title.
+
+Year-letter collision suffixes (`Author_2019a_drug.R`, `Author_2019b_drug.R`) for genuinely-same-author/year/drug pairs are handled separately — see Phase 3 and `references/parameter-names.md` § "File naming".
+
 4. **Prefer trimmed markdown when available.** The preprocessor at `mab_human_consensus/tracking/preprocess_papers.py` writes a `<stem>_trimmed.md` next to each source file (PMC XML, PDF, DOCX, XLSX) containing only the sections the extraction actually needs: Title + Abstract + Methods + Results + Tables + Figure captions. The Introduction, Discussion, Conclusions, References, Acknowledgments, and publisher boilerplate are stripped. If `PMID_<pmid>_pmc_trimmed.md` (or `PMID_<pmid>_trimmed.md` for a PDF, or `<stem>_trimmed.md` for a supplement) exists, read it **instead of** the raw `.xml` / `.pdf` / `.docx` — it's typically 40-95% smaller with no loss of extractable content. Full-text sanity check on the trimmed file: ~15 KB+ (full-text trim) vs < 3 KB (abstract-only trim). Fall back to the raw source only if the `_trimmed.md` doesn't exist, the trim appears to have lost a specific piece of information you need (rare — only when the paper is structurally unusual), or you explicitly need the discarded sections (e.g., to quote a Discussion claim in the vignette narrative).
 
 5. **Verify the source contains full text, not just the abstract.** Wiley / BJCP and some other publishers serve PMC XML containing only front matter + abstract. Before reading for model structure, run a quick sanity check (against the trimmed file if present, otherwise the raw source):
@@ -174,6 +205,8 @@ git fetch origin
 git checkout -b <firstauthor>-<year>-<drug> origin/main
 ```
 
+`<firstauthor>` here is the **normalised** surname stem from Phase 1 Step 3b (CamelCase across hyphens/spaces/apostrophes, accents transliterated, lowercase particles preserved per the published form). Use the same stem the model file and vignette use, just in the lowercase form typical for branch names (e.g. `lohydas-2018-mefloquine`, `vanrongen-2017-midazolam`).
+
 Local `main` may be stale. The regenerated `data/modeldb.rda` / `inst/modeldb.qs2` must reflect current origin/main or they will clobber models added upstream. Never push directly to `main`; always open a PR.
 
 (When this skill runs as a task under `claude_runner`, the runner's preamble
@@ -195,7 +228,7 @@ If the worktree's branch was **already committed and pushed in a prior run** (i.
 
 ## Phase 3 — Model file
 
-File path: `inst/modeldb/<category>/<FirstAuthor>_<Year>_<drug>.R`.
+File path: `inst/modeldb/<category>/<FirstAuthor>_<Year>_<drug>.R`. `<FirstAuthor>` is the **normalised** surname stem — apply the Phase 1 Step 3b table (hyphens/spaces/apostrophes dropped with CamelCase, accents transliterated, lowercase particles preserved per the published form). Do not stop to ask the operator to confirm the normalised form; the policy is a hard default.
 
 If the chosen `<FirstAuthor>_<Year>_<drug>` name collides with an existing file (rare — e.g., two same-author/year/drug entries with different scenarios), append a lowercase letter to the year: `Author_2019a_drug.R`, `Author_2019b_drug.R`. Use the same year-letter for both files in the pair so the chronological ordering is preserved.
 
