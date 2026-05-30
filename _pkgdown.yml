@@ -190,8 +190,8 @@ navbar:
         href: articles/Padoin_1998_cephalexin_rat.html
       - text: "Certolizumab (Wade 2015)"
         href: articles/Wade_2015_certolizumab.html
-      - text: "Chloroquine (Simpson 2013)"
-        href: articles/Simpson_2013_chloroquine.html
+      - text: "Ciprofloxacin (Schaefer 1996)"
+        href: articles/Schaefer_1996_ciprofloxacin.html
       - text: "Ciprofloxacin (Thuo 2011)"
         href: articles/Thuo_2011_ciprofloxacin.html
       - text: "Cladribine (Savic 2017)"
@@ -1520,6 +1520,7 @@ articles:
   - articles/Sassen_2017_crisantaspase
   - articles/Sathe_2024_sacituzumab
   - articles/Savic_2017_cladribine
+  - articles/Schaefer_1996_ciprofloxacin
   - articles/Schindler_2016_sunitinib
   - articles/Schindler_2017_imatinib
   - articles/Schipani_2011_nevirapine
