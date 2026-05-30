@@ -249,6 +249,8 @@ Always label every parameter inside `ini()` with units and a short interpretatio
 
 ## Fixed parameters
 
+<!-- Canonical home — referenced from SKILL.md Phase 3 and verification-checklist.md A. -->
+
 Wrap a parameter value in `fixed()` whenever the source paper holds it constant rather than estimating it. This applies to **every** parameter type: structural THETAs, allometric exponents, IIV variances and covariances, residual-error magnitudes, covariate-effect coefficients, bioavailability anchors. The `fixed()` wrapper is load-bearing provenance — a downstream user must be able to tell which values are estimated point estimates vs structural assumptions.
 
 Source signals that a parameter is fixed:
@@ -417,6 +419,8 @@ After this metadata block come `ini()` and `model()`.
 - `<FirstAuthor>` is the paper's first-author surname, normalised to plain ASCII CamelCase per the rules below. `<Year>` is the four-digit publication year. `<drug>` is the drug INN in lowercase (with a species or mechanism-class suffix when applicable — see SKILL.md Phase 1 steps 3 and 3a).
 
 ### Author-surname normalization (hard default — no sidecar)
+
+<!-- Canonical home — referenced from SKILL.md Phase 1 Step 3b and pre-flight-checklist.md. -->
 
 CamelCase across separators is the **default behaviour**. Apply silently — do NOT raise a stop-and-ask sidecar to confirm the filename form.
 

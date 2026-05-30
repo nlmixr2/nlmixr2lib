@@ -11,8 +11,8 @@ Do not silently resolve ambiguity. Do not tune parameters to make a validation o
 - [ ] On-disk PDF / XML title, first author, journal, and year match the task's `Paper metadata` block. Filename PMID matches the actual PMID in the source (catches mislabelled drops like `PMID_23436260.pdf` actually being Frey 2010 / PMID 20097931).
 - [ ] Drug named in the task metadata matches the molecule the paper actually models.
 - [ ] **Species recorded.** `population$species` is set to the species the final model was fit to (e.g., `"human"`, `"rat (Sprague-Dawley)"`, `"beagle dog"`, `"in vitro (SKBR3 cell line)"`, `"human + rat"` for pooled). Non-human models additionally prepend the species to `description` (e.g., `"Preclinical (rat). ..."`). Filename carries a species suffix when the same drug has both human and animal extractions (e.g., `Geldof_2008_fluvoxamine_rat.R`). Preclinical and in-vitro models are first-class and are extracted without sidecar-asking — the species check is a labelling step, not a gating decision. See SKILL.md Phase 1 step 3.
-- [ ] **Model class recorded** (PBPK / QSP / MBMA / mechanistic-systems papers). `description` prefixed with the framework label (e.g. `"PBPK (whole-body, SimCYP V12.1). ..."`, `"QSP. 33 ODEs + 113 parameters ..."`, `"MBMA. Between-study variance only ..."`). Filename uses a `_pbpk` / `_qsp` / `_mbma` suffix when a popPK extraction of the same paper / drug already exists. See SKILL.md Phase 1 step 3a.
-- [ ] **No class-typical-default substitutions.** For PBPK / QSP / MBMA models, every parameter in `ini()` is sourced from the paper text, an on-disk supplement, or an on-disk upstream paper that the current paper explicitly cites. NO parameter was filled in from training-data knowledge of "what a similar PBPK paper for this drug typically uses", default SimCYP / GastroPlus / OSP library entries, or class-typical literature ranges. Missing parameters went through the Phase 4 missing-parameter sidecar, not silent substitution. See SKILL.md Phase 1 step 3a — this rule is stricter for mechanism models than for popPK.
+- [ ] **Model class recorded** (PBPK / QSP / MBMA / mechanistic-systems papers). `description` prefixed with the framework label (e.g. `"PBPK (whole-body, SimCYP V12.1). ..."`, `"QSP. 33 ODEs + 113 parameters ..."`, `"MBMA. Between-study variance only ..."`). Filename uses a `_pbpk` / `_qsp` / `_mbma` suffix when a popPK extraction of the same paper / drug already exists. See `references/pbpk-qsp-mbma.md`.
+- [ ] **No class-typical-default substitutions.** For PBPK / QSP / MBMA models, every parameter in `ini()` is sourced from the paper text, an on-disk supplement, or an on-disk upstream paper that the current paper explicitly cites. NO parameter was filled in from training-data knowledge of "what a similar PBPK paper for this drug typically uses", default SimCYP / GastroPlus / OSP library entries, or class-typical literature ranges. Missing parameters went through the Phase 4 missing-parameter sidecar, not silent substitution. See `references/pbpk-qsp-mbma.md` — this rule is stricter for mechanism models than for popPK.
 
 ## A. Parameter values
 
@@ -23,7 +23,7 @@ Do not silently resolve ambiguity. Do not tune parameters to make a validation o
 - [ ] **Log-vs-linear reporting.** NONMEM often reports THETAs on the estimation scale (already log), but tables in the paper usually show the back-transformed value. A `log()` wrapper in `ini()` must match what the paper reports: `lcl <- log(0.0388)` is correct when the paper says "CL = 0.0388 L/day."
 - [ ] **CV% vs. variance.** `omega²` in NONMEM output is the variance on the internal scale. For log-normal parameters, CV% relates via `omega² = log(CV² + 1)`. Do not paste CV% directly into `ini()` as if it were a variance.
 - [ ] **Correlated IIV.** If the paper reports a correlation `r` and individual CV%, the covariance is `cov = r × sqrt(var_1 × var_2)`. Verify the block matrix entries match this formula.
-- [ ] **Fixed parameters** the source holds fixed are wrapped in `fixed(...)` in `ini()` — applies to ALL parameter types (THETAs, allometric exponents, IIVs, residual errors, covariate effects, bioavailability anchors), not just IIVs. Source signals: explicit "fixed at <value>" prose, NONMEM `FIX` flags on `$THETA`/`$OMEGA`/`$SIGMA`, allometric exponents reported without uncertainty, bioavailability `F1=1` set as structural anchor, parameters inherited from upstream papers without re-fitting. If a parameter is reported without uncertainty but the paper does not explicitly say "fixed", sidecar-ask before guessing — see `SKILL.md` § "Fixed parameters in `ini()`" for the encoding examples.
+- [ ] **Fixed parameters** the source holds fixed are wrapped in `fixed(...)` in `ini()` — applies to ALL parameter types (THETAs, allometric exponents, IIVs, residual errors, covariate effects, bioavailability anchors), not just IIVs. Source signals: explicit "fixed at <value>" prose, NONMEM `FIX` flags on `$THETA`/`$OMEGA`/`$SIGMA`, allometric exponents reported without uncertainty, bioavailability `F1=1` set as structural anchor, parameters inherited from upstream papers without re-fitting. If a parameter is reported without uncertainty but the paper does not explicitly say "fixed", sidecar-ask before guessing — see `references/parameter-names.md` § "Fixed parameters" for the encoding examples.
 
 ## B. Structural model
 
@@ -59,7 +59,7 @@ Do not silently resolve ambiguity. Do not tune parameters to make a validation o
 - [ ] Function name inside the file **equals** the filename minus `.R`. `buildModelDb()` rejects mismatches.
 - [ ] `description`, `reference`, `vignette`, `units`, `covariateData`, `population` all present before `ini()`.
 - [ ] Validation vignette lives at `vignettes/articles/<FirstAuthor>_<Year>_<drug>.Rmd`, and the model file's `vignette <- "..."` value matches that basename (no path, no extension). Confirm `readModelDb("<model>")$meta$vignette` returns the basename after `devtools::load_all()`.
-- [ ] `population` uses the extensible schema documented in `naming-conventions.md`; any paper-specific keys are allowed.
+- [ ] `population` uses the extensible schema documented in `references/parameter-names.md` § "File-level metadata"; any paper-specific keys are allowed.
 - [ ] No stray `#!` instruction comments from the template remain.
 - [ ] Vignette path is `vignettes/articles/<...>.Rmd` (not top-level `vignettes/`), matching the pkgdown "articles" convention used by every non-legacy vignette in the package.
 - [ ] If this task `depends_on` an upstream-PK task, the model file's `reference` field cites the upstream model (e.g., `"... PK structure adapted from <Author> <Year>; see modellib('<Upstream>')"`). See `references/model-file-template.md` for the lineage snippet.
@@ -92,21 +92,12 @@ See `references/endogenous-validation.md` for full recipes.
 
 ## G. Registration
 
-- [ ] **Vignette renders end-to-end (mandatory pre-push gate; HIGHEST priority).** Run this BEFORE anything else in this section — if the render is broken, fixing it is the only thing that matters until it returns clean. The gate catches the failure modes that pkgdown CI surfaces (missing data columns, time-varying covariates assigned to rxEt objects that get silently dropped, PKNCA formulas referencing absent columns, simulation crashes, named scalars passed as `amt =` to `rxode2::et()`, vignettes exceeding the time budget). If the render fails, the task is BLOCKED — no `git add`, no `git commit`, no `git push`, no PR description, no "renders in ~Xs" claim in any commit message. See SKILL.md Phase 6 step 2 for the full command (with stdout capture, exit-code check, and HTML byte-size check) and the verbatim `RENDER_GATE` evidence line that must be pasted into the PR body. Past extractions have fabricated this evidence and broken CI for downstream merges — do not.
+- [ ] **Vignette renders end-to-end** (mandatory pre-push gate; HIGHEST priority). Run the procedure in `SKILL.md` Phase 6 Step 2 BEFORE anything else in this section. Record the verbatim `RENDER_GATE stem=... exit=0 html_bytes=...` line; paste it into the PR body. Past PRs that fabricated this evidence broke CI for downstream merges — do not.
 
 - [ ] `nlmixr2lib::buildModelDb()` runs to completion.
 - [ ] The new model appears in `modellib()`.
 - [ ] `nlmixr2lib::checkModelConventions(model = "<...>")` returns clean (or all deviations are justified in the vignette's Assumptions and deviations section and noted in the PR body).
-- [ ] **Verify no non-ASCII characters in the new model file or vignette** (mandatory pre-push gate). The model file's `description <-` string is reified into `data/modeldb.rda`, and a single non-ASCII character there triggers `R CMD check` `WARNING: found non-ASCII strings`, breaking the R-CMD-check matrix. The vignette doesn't break R CMD check directly but can cause downstream encoding surprises (cross-platform, locale, knitr, pkgdown), so apply the gate to both.
-
-   ```bash
-   for f in inst/modeldb/<category>/<FirstAuthor>_<Year>_<drug>.R \
-            vignettes/articles/<FirstAuthor>_<Year>_<drug>.Rmd; do
-     LC_ALL=C grep -nP "[^\x00-\x7F]" "$f" && { echo "FAIL: non-ASCII in $f"; exit 1; }
-   done
-   ```
-
-   No matches → pass. If anything matches, replace the offending characters with their ASCII equivalents before committing. The `description` string is the highest-impact site (it is what triggers the R-CMD-check warning), but be thorough — replace non-ASCII anywhere in the new model file and vignette so the gate stays clean even after edits.
+- [ ] **No non-ASCII characters in the new model file or vignette** (mandatory pre-push gate). Run the bash gate in `SKILL.md` Phase 6 Step 5. The model file's `description <-` string is reified into `data/modeldb.rda`; a single non-ASCII character triggers `R CMD check` `WARNING: found non-ASCII strings`, breaking the R-CMD-check matrix. The vignette doesn't break R CMD check directly but can cause downstream encoding surprises (cross-platform, locale, knitr, pkgdown), so apply the gate to both. When the gate matches, substitute using this table:
 
    | Non-ASCII | ASCII replacement |
    | --- | --- |

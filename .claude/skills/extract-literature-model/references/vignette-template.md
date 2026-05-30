@@ -239,11 +239,10 @@ match.>
   `conc`. Keep dose named `amt`, not `dose`. This matches the rest of the
   nlmixr2lib / rxode2 pipeline.
 - For endogenous / turnover models (where NCA isn't the right validation),
-  replace the PKNCA section with:
-  - baseline recovery (simulate with drug removed and confirm return to
-    `css` within the reported time)
-  - turnover / steady-state check (integrate long enough to verify the
-    reported steady-state concentration)
+  replace the PKNCA section with the four validation patterns in
+  `references/endogenous-validation.md` (steady-state hold,
+  perturbation recovery, mass-balance / flux check, dimensional
+  analysis), and use the endogenous vignette outline there.
 - For multi-output models (e.g., parent + metabolite, or plasma + tissue),
   run one PKNCA block per output, each with its own `conc ~ time | id/treatment`.
 - `rxode2::zeroRe()` is helpful when the published figure is a typical-value

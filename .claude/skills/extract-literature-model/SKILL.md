@@ -12,23 +12,25 @@ Work through the six phases below. Stop and ask the user at any of the decision 
 
 ## References
 
-Read on demand based on the paper's model class. The most-used references are listed first.
+Each reference is loaded just in time. Most tasks load only the "Always" set plus one or two conditionals.
 
-**Always:**
-- `references/pre-flight-checklist.md` — consolidated stop-and-ask triggers. Read this once at dispatch.
+**Always — read at dispatch:**
+- `references/pre-flight-checklist.md` — consolidated stop-and-ask triggers.
 - `references/replicate-author-structure.md` — standing default policy on multi-model handling (N files vs 1 file, always 1 vignette per paper) with worked examples.
-- `references/compartment-names.md` — compartment and observation-variable names.
-- `references/parameter-names.md` — structural PK, IIV, residual-error, covariate-effect, fixed-parameter encoding, file-level metadata, file naming.
-- `inst/references/covariate-columns.md` — authoritative register of covariate column names. Consult before introducing any new covariate. (Installed with the package so R code like `checkModelConventions()` can parse it at runtime.)
-- `references/model-file-template.md` — skeleton for the `.R` file.
-- `references/vignette-template.md` — skeleton for the validation vignette.
-- `references/verification-checklist.md` — checklist to walk after the first-pass implementation.
 
-**Conditional (load only when the model class applies):**
-- `references/nonmem-translation.md` — NONMEM → nlmixr2 syntax conversion. Load only when the source is a NONMEM control stream (`.mod` / `.ctl`, supplement with `$PK` / `$DES` / `$THETA` blocks).
+**Always — load by phase:**
+- `references/compartment-names.md`, `references/parameter-names.md`, `inst/references/covariate-columns.md`, `references/model-file-template.md` — Phase 3 (drafting the model file). `parameter-names.md` is also the canonical home for author-surname normalization and fixed-parameter encoding rules. `inst/references/covariate-columns.md` is installed with the package so `checkModelConventions()` parses it at runtime.
+- `references/verification-checklist.md` — Phase 4 (verifying the first-pass implementation).
+- `references/vignette-template.md` — Phase 5 (drafting the validation vignette).
+
+**Conditional — load only when the model class applies:**
+- `references/nonmem-translation.md` — NONMEM → nlmixr2 syntax conversion. Load when the source is a NONMEM control stream (`.mod` / `.ctl`, supplement with `$PK` / `$DES` / `$THETA` blocks).
 - `references/pknca-recipes.md` — PKNCA setups for single-dose, steady-state, and multi-dose NCA. Load for popPK validation; skip for endogenous / mechanistic models.
-- `references/endogenous-validation.md` — validation strategy for endogenous / mechanistic / turnover models. Load only when the source describes turnover, enzyme-kinetic, or steady-state-balance models where PKNCA is not the right check.
-- `references/oa-acquisition.md` — detailed OA-PDF ladder. The Phase 1 Step 0 script (`scripts/acquire-paper.R`) is the entry point; this reference is for understanding the script's failure modes or extending the source list.
+- `references/endogenous-validation.md` — validation strategy for endogenous / mechanistic / turnover models. Load when the source describes turnover, enzyme-kinetic, or steady-state-balance models where PKNCA is not the right check.
+- `references/pbpk-qsp-mbma.md` — extra discipline for whole-body PBPK, QSP, and MBMA papers (description prefix, filename suffix, on-disk-only parameter sourcing, reproducibility check, platform-vs-nlmixr2, MBMA between-study variance ≠ popPK BSV).
+
+**Troubleshooting — read on failure:**
+- `references/oa-acquisition.md` — OA-PDF ladder source-by-source detail. Read when `scripts/acquire-paper.R` exits non-zero and you need to interpret the per-source failure log, or when extending the source list.
 
 **Scripts:**
 - `scripts/acquire-paper.R` — open-access PDF acquisition (Phase 1 Step 0).
@@ -78,66 +80,13 @@ For supplements / errata that the script doesn't cover, see `references/oa-acqui
 
 ### Step 3a — Model class: PBPK, QSP, MBMA, mechanistic-systems
 
-Whole-body PBPK, semi-mechanistic PBPK, quantitative systems pharmacology (QSP), and model-based meta-analysis (MBMA) papers are first-class members of nlmixr2lib when the source provides enough information to reproduce the model end-to-end. Extract them the same way you would a popPK model, with the following discipline points specific to non-popPK model classes:
-
-- **`description` prefix.** Prepend the modeling framework to `description` so users filtering by mechanism class see it in `modellib()` listings. Examples:
-  - `"PBPK (whole-body, SimCYP V12.1). APAP disposition in pregnancy ..."`
-  - `"QSP. 5-lipoxygenase pathway with 33 ODEs, 64 rate laws, 113 parameters ..."`
-  - `"MBMA. Trastuzumab + T-DXd from 103 published trials; between-study variability only ..."`
-
-- **Filename suffix when a popPK extraction already exists for the same drug.** Use `Author_Year_<drug>_pbpk.R`, `_qsp.R`, or `_mbma.R` so the mechanism class is visible at file-tree scan and so they don't collide with a sibling compartmental popPK extraction of the same paper / drug.
-
-- **Parameter sourcing — NEVER substitute from another paper unless that paper is on disk.** PBPK and QSP models often have 50-200+ parameters, many of which live in supplements rather than the main text. If a parameter is not reported in any on-disk source (paper text, on-disk supplement, on-disk upstream citation), DO NOT fill in the gap from training-data knowledge, class-typical values, default SimCYP / GastroPlus / Open Systems Pharmacology library entries, or "what a similar PBPK paper used for the same drug class." Instead, fire the Phase 4 missing-parameter sidecar and let the operator decide between (A) author correspondence, (B) operator drops the supplement, or (C) skip the paper.
-
-  This rule is **stricter** for PBPK / QSP / MBMA than for popPK because the literature is full of mechanism papers that cite each other circularly — substituting from "a representative PBPK paper for the same drug" introduces silent provenance ambiguity (which paper's parameters? which body-composition assumptions? which permeability model? which between-study covariance prior?) that a downstream user cannot audit. The acceptable substitution path is exactly one: the current paper explicitly states "we used the <Author Year> body-composition / metabolism / permeability model" AND that paper is on disk in the source directory; the inherited parameters then get an inline `# inherited from <Author Year> Table N` comment pointing to the upstream paper.
-
-  Class-typical training-data defaults are NOT an acceptable substitute. "kdeg for trastuzumab is typically 0.5/day in the literature" is not a citation; it's a guess. Sidecar instead.
-
-- **Reproducibility check before drafting.** Walk the paper for these provenance markers:
-  - Are all structural parameters (Vmax, Km, kcat, organ volumes, blood flows, permeabilities, partition coefficients, between-study covariance, etc.) tabulated explicitly with units?
-  - Are the ODEs written out, or only described in prose ("we used the standard SimCYP whole-body model")?
-  - Are the dosing-event handling and observation-mapping rules unambiguous?
-  - For MBMA: are the per-study weights / variance estimates explicit, or only summary parameter point estimates?
-
-  If any of these are insufficient, sidecar-ask the operator before drafting. Do not "fill in the gaps" from PBPK / QSP / MBMA class knowledge.
-
-- **PBPK / QSP platforms vs nlmixr2.** SimCYP, GastroPlus, PK-Sim/MoBi, OSP, and similar commercial platforms come with built-in whole-body models that users parameterise. nlmixr2 does not have those platforms — when extracting a SimCYP-published model, you must encode the platform's whole-body ODEs explicitly in `model()`. If the paper only states "we used SimCYP's standard whole-body model" without writing out the ODEs and parameter values, the model is not reproducible from on-disk sources and the appropriate action is sidecar-ask or skip — not fill in from training-data knowledge of how SimCYP's standard model is typically parameterised.
-
-- **MBMA `between-study variability` ≠ popPK BSV.** MBMA papers typically report between-study variance (a study-level random effect on summary metrics) rather than between-subject variance (individual-level $\eta$ on $\theta$). When extracting an MBMA model:
-  - Encode between-study variance as a study-level eta (e.g., `eta_study_lcl ~ <var>`) clearly labelled to distinguish from the popPK pattern; do NOT silently relabel it as `etalcl` (between-subject).
-  - The model is suitable for simulating study-level summary outcomes (per-arm mean response) but NOT individual-level concentrations.
-  - Document the simulation scope prominently in `description` and in the vignette's Assumptions and deviations section.
+If the paper describes a whole-body PBPK, semi-mechanistic PBPK, quantitative systems pharmacology (QSP), or model-based meta-analysis (MBMA) model, load `references/pbpk-qsp-mbma.md` now. That reference covers the `description` prefix and filename suffix conventions, the strict on-disk-only parameter-sourcing rule (stricter than popPK — never substitute from training-data defaults or "a typical SimCYP entry"), the reproducibility check to walk before drafting, the platform-vs-nlmixr2 ODE-encoding rule, and the MBMA between-study-variance ≠ popPK BSV distinction. Extract these models the same way you would a popPK model, with the extra discipline that reference imposes.
 
 ### Step 3b — Target file naming (author-surname normalization)
 
-Apply the normalization rule below **silently — no sidecar** when choosing the target filename, function name, vignette basename, and worktree branch name. CamelCase across separators is the **default**; do not stop to ask the operator whether to use `Lohy_Das_...` or `LohyDas_...` (the convention is `LohyDas_...`), nor whether to write `Ait-Oudhia_...` or `AitOudhia_...` (the convention is `AitOudhia_...`).
+Apply normalization silently — no sidecar — when choosing the filename, function name, vignette basename, branch, and PR title. The full table and rules live in `references/parameter-names.md` § "Author-surname normalization" (canonical). Quick examples: `Lohy Das` → `LohyDas` (drop spaces); `Ait-Oudhia` → `AitOudhia` (drop hyphens); `O'Brien` → `OBrien` (drop apostrophes); `Câmara` → `Camara` (transliterate accents); `van Rongen` → `vanRongen` (lowercase particle preserved per published form); `Von Bonin` → `VonBonin` (capitalised particle preserved per published form).
 
-Transformations applied to the first-author surname BEFORE choosing the filename:
-
-| Source author surname | File basename stem | Notes |
-|---|---|---|
-| `Lohy Das`     | `LohyDas`       | Drop spaces, CamelCase across the drop |
-| `Ait-Oudhia`   | `AitOudhia`     | Drop hyphens, CamelCase across the drop |
-| `O'Brien`      | `OBrien`        | Drop apostrophes, CamelCase across the drop |
-| `Câmara`       | `Camara`        | Transliterate accents |
-| `Müller`       | `Muller`        | Transliterate accents |
-| `Łukasz`       | `Lukasz`        | Transliterate accented Latin extensions |
-| `van Rongen`   | `vanRongen`     | Lowercase particle preserved when author publishes that way |
-| `de Winter`    | `deWinter`      | Lowercase particle preserved |
-| `Von Bonin`    | `VonBonin`      | Capitalised particle preserved when author publishes that way |
-| `Mac Donald`   | `MacDonald`     | Drop space, CamelCase |
-| `Câmara De Souza` | `CamaraDeSouza` | Combination: transliterate accent AND drop space AND preserve published particle case |
-
-Rules:
-
-- **Hyphens, spaces, apostrophes**: drop, CamelCase across the drop.
-- **Accents and other diacritics**: transliterate to plain ASCII (`Câmara` → `Camara`, `Müller` → `Muller`, `Łukasz` → `Lukasz`). The filename must be ASCII-only so the function name (= filename minus `.R`) is a valid R identifier without quoting.
-- **Lowercase particles** ("van", "de", "von", "ten", "le", "du", "la", "del", "el", etc.): preserve the lowercase first letter when the author publishes that way (`van Rongen` → `vanRongen`, `de Kock` → `deKock`).
-- **Capitalised particles**: follow the published author form (`Von Bonin` → `VonBonin`, `De Kock` → `DeKock`).
-
-The same normalised stem is used for: the model filename (`<Stem>_<Year>_<drug>.R`), the function name (which `buildModelDb()` enforces must equal the filename minus `.R`), the `vignette <- "..."` field, the vignette basename under `vignettes/articles/`, the worktree branch name in Phase 2, and the PR title.
-
-Year-letter collision suffixes (`Author_2019a_drug.R`, `Author_2019b_drug.R`) for genuinely-same-author/year/drug pairs are handled separately — see Phase 3 and `references/parameter-names.md` § "File naming".
+The same normalised stem is used for the model filename (`<Stem>_<Year>_<drug>.R`), the function name (which `buildModelDb()` enforces must equal the filename minus `.R`), the `vignette <- "..."` field, the vignette basename under `vignettes/articles/`, the worktree branch name in Phase 2, and the PR title. Year-letter collision suffixes (`Author_2019a_drug.R`, `Author_2019b_drug.R`) for genuinely-same-author/year/drug pairs are handled separately — see Phase 3 and `references/parameter-names.md` § "Year-letter collision suffix".
 
 4. **Prefer trimmed markdown when available.** The preprocessor at `mab_human_consensus/tracking/preprocess_papers.py` writes a `<stem>_trimmed.md` next to each source file (PMC XML, PDF, DOCX, XLSX) containing only the sections the extraction actually needs: Title + Abstract + Methods + Results + Tables + Figure captions. The Introduction, Discussion, Conclusions, References, Acknowledgments, and publisher boilerplate are stripped. If `PMID_<pmid>_pmc_trimmed.md` (or `PMID_<pmid>_trimmed.md` for a PDF, or `<stem>_trimmed.md` for a supplement) exists, read it **instead of** the raw `.xml` / `.pdf` / `.docx` — it's typically 40-95% smaller with no loss of extractable content. Full-text sanity check on the trimmed file: ~15 KB+ (full-text trim) vs < 3 KB (abstract-only trim). Fall back to the raw source only if the `_trimmed.md` doesn't exist, the trim appears to have lost a specific piece of information you need (rare — only when the paper is structurally unusual), or you explicitly need the discarded sections (e.g., to quote a Discussion claim in the vignette narrative).
 
@@ -164,23 +113,7 @@ Year-letter collision suffixes (`Author_2019a_drug.R`, `Author_2019b_drug.R`) fo
 7. **Always search for supplementary information.** Supplements frequently contain the NONMEM control stream and parameter tables that disambiguate model structure. If the user provided only a main article, ask whether a supplement exists and request it.
 8. **Always search for errata, corrigenda, or author corrections.** Check the journal's landing page for the article, the publisher's "corrections" / "notices" feed, and a search like `"<first author> <year> <drug>" erratum` on PubMed and Google Scholar. Ask the user whether they are aware of any corrections if the source is paywalled or the search is inconclusive. **When an erratum revises a value used in the model (parameter estimate, covariate effect, equation, units), the erratum value takes precedence over the main publication.** If multiple errata exist, the most recent supersedes earlier ones. Record the erratum citation in the model file's `reference` metadata alongside the main paper, and in every in-file source-trace comment whose value comes from the erratum, point to the erratum (not the original table).
 9. **Verify parameters are final estimates, not initial estimates.** Supplement control streams usually list initial values in `$THETA` / `$OMEGA`; final values come from the paper's results table or `$TABLE` output. If only a control stream is available, confirm values against any published point estimates before treating them as final.
-10. **Multiple-model handling — replicate the author's structure (default).** The default is to extract the model **exactly as the authors built it**. Almost always allow the original authors' added complexity; the library exists to faithfully reproduce the literature, and collapsing or splitting structure the authors chose is a loss of fidelity. See `references/replicate-author-structure.md` for worked examples.
-
-    Apply this mapping silently — no sidecar:
-
-    - **Base model + final model** in a model-development paper → extract only the final.
-    - **N independent (non-hierarchical) models in one paper** (e.g. two PD endpoints on different cohorts, per-species fits, per-subpopulation fits, parent + metabolite fit independently) → extract as **N separate `.R` files**, one per model. Filenames disambiguate by drug/species/endpoint suffix (`Author_Year_drug1.R`, `Author_Year_drug2.R`, or `Author_Year_drug_rat.R` / `_human.R`).
-    - **One joint coupled model** (parent + metabolite fit simultaneously; N species sharing covariate-mediated parameter sets; a single multi-output model with shared parameters) → extract as **one `.R` file**.
-    - **Per-endpoint sensitivity analyses or alternative parameterisations that the authors did NOT consider the reported result** (e.g. one model is presented as final, another is a robustness check or an obsolete iteration) → extract only the reported final.
-
-    Regardless of how many `.R` files come out, produce **one vignette per paper** (see Phase 5). The vignette walks the paper's narrative and calls each `modellib()` at the right point.
-
-    Stop-and-ask sidecar ONLY when one of these two narrow conditions holds:
-
-    - **Infeasible**: replicating the author's structure requires NONMEM (or other-platform) features that rxode2 / nlmixr2 cannot express (e.g., a specific mixture-model construct, a censoring scheme without a clean nlmixr2 analogue). Sidecar with the specific feature and a proposed simplification.
-    - **Genuinely ambiguous from the paper text**: e.g., the authors reported two parameterisations but the text leaves it unclear whether both are intended final results, or whether the second supersedes the first. Sidecar with the textual evidence for each interpretation.
-
-    Do NOT sidecar for: "the paper has multiple models — which do you want?" That question is answered by the policy above. The recommended answer is almost always "extract all of them as the authors built them, in N files, with one vignette tying them together."
+10. **Multiple-model handling — replicate the author's structure (default).** Extract the model exactly as the authors built it. Apply the N-files vs. 1-file mapping silently — no sidecar. See `references/replicate-author-structure.md` for the full decision table (independent vs. coupled, base-vs-final, sensitivity analyses), the two narrow sidecar conditions (infeasible to express in rxode2/nlmixr2; genuinely ambiguous paper text), and worked examples (de Vries Schultink 2018 → 2 `.R` files + 1 vignette; Yoshida 2021 ipatasertib → 1 `.R` file + 1 vignette). Regardless of how many `.R` files come out, produce one vignette per paper (Phase 5). Do NOT sidecar to ask "the paper has multiple models — which do you want?"
 11. **Systematic review / meta-analysis handling.** If the source is a systematic review or meta-analysis that catalogs other authors' published popPK / PD models without developing an original model of its own, **the default action is to skip the task and queue the cited primary papers for future extraction.** Do not extract a cataloged model from the review's summary table — extracting from a secondary source loses model-selection rationale, covariate-encoding details (reference categories, units, allometric exponents, scaling normalisations), and the full residual-error / IIV structure that only the primary papers contain. Recognise systematic reviews by:
 
     - An explicit "Review" / "Systematic Review" tag on page 1 or in the article-type header.
@@ -228,7 +161,7 @@ If the worktree's branch was **already committed and pushed in a prior run** (i.
 
 ## Phase 3 — Model file
 
-File path: `inst/modeldb/<category>/<FirstAuthor>_<Year>_<drug>.R`. `<FirstAuthor>` is the **normalised** surname stem — apply the Phase 1 Step 3b table (hyphens/spaces/apostrophes dropped with CamelCase, accents transliterated, lowercase particles preserved per the published form). Do not stop to ask the operator to confirm the normalised form; the policy is a hard default.
+File path: `inst/modeldb/<category>/<FirstAuthor>_<Year>_<drug>.R`. `<FirstAuthor>` is the **normalised** surname stem — see Phase 1 Step 3b for the quick-reference examples and `references/parameter-names.md` § "Author-surname normalization" for the full table and rules (hyphens/spaces/apostrophes dropped with CamelCase, accents transliterated, lowercase particles preserved per the published form). Do not stop to ask the operator to confirm the normalised form; the policy is a hard default.
 
 If the chosen `<FirstAuthor>_<Year>_<drug>` name collides with an existing file (rare — e.g., two same-author/year/drug entries with different scenarios), append a lowercase letter to the year: `Author_2019a_drug.R`, `Author_2019b_drug.R`. Use the same year-letter for both files in the pair so the chronological ordering is preserved.
 
@@ -247,11 +180,9 @@ The file body has this shape:
 
 ### Fixed parameters in `ini()`
 
-When the source paper holds a parameter at a known value rather than estimating it, encode that fact by wrapping the value in `fixed()` in `ini()`. This applies to **every** parameter type — structural THETAs, allometric exponents, IIV variances/covariances, residual-error magnitudes, covariate-effect coefficients — not just IIV. Failing to encode the fixed status loses load-bearing provenance: a downstream user cannot tell whether the value was estimated and reported as a point estimate, or whether the source authors held it constant; re-fitting the model under one assumption vs the other gives different results.
+Wrap fixed values in `fixed()` in `ini()` for ALL parameter types (structural THETAs, allometric exponents, IIVs, residual error, covariate effects). The `log()` goes **inside** `fixed()` for log-transformed parameters (`lcl <- fixed(log(2))`, never `log(fixed(2))`). Failing to encode the fixed status loses load-bearing provenance — a downstream user cannot tell whether the value was estimated or held constant.
 
-See `references/parameter-names.md` § "Fixed parameters" for the full list of source signals (prose, NONMEM `FIX` flag, etc.) and the encoding examples. The key syntactic point is that `log()` goes **inside** `fixed()` for log-transformed parameters (`lcl <- fixed(log(2))`, never `log(fixed(2))`).
-
-When in doubt — a $THETA reported with an RSE of 0% but no FIX flag, or a parameter reported to three decimal places with no uncertainty — sidecar-ask the operator before guessing.
+See `references/parameter-names.md` § "Fixed parameters" for source signals (prose, NONMEM `FIX` flag, allometric exponents without uncertainty, F1 anchors, upstream-inherited parameters) and encoding examples. When in doubt — a $THETA reported with an RSE of 0% but no FIX flag, or a parameter reported to three decimal places with no uncertainty — sidecar-ask the operator before guessing.
 
 Follow `references/compartment-names.md` and `references/parameter-names.md` strictly. The quick-reference rules:
 
@@ -303,23 +234,7 @@ Never silently resolve ambiguity. Never tune parameter values to match a validat
 
 Operator-followup tracking: unresolved-parameter cases are recorded in `tracking/operator_followups.md` (the `F1`, `F2`, ... numbered register) so the operator can batch-send author emails. When a reply arrives with a numeric value, the operator records it in the followups file; this skill does NOT email authors.
 
-**Non-paper provenance — annotate inline.** When a parameter value did not come from the paper's text or tables — e.g. the operator read it off a graphical figure, an author supplied it via email correspondence, or it was carried from an upstream-task model file — record the provenance as an inline comment on the parameter line so the source-trace is unambiguous:
-
-```r
-ini({
-  # paper-derived (Table 4)
-  lcl <- log(0.225) ; label("Clearance (L/day)")
-
-  # author correspondence (J. Almquist email 2026-04-29);
-  # see tracking/operator_followups.md F12
-  lkdeg <- log(0.0231) ; label("Receptor degradation rate (1/day)")
-
-  # operator-extracted from Figure 2 (digitised); ±10% uncertainty
-  lvdxd <- log(0.038) ; label("DXd payload volume (L/kg) — figure-derived")
-})
-```
-
-This is mandatory for any parameter not from the paper text/tables. The vignette's Assumptions and deviations / Errata section must also list the non-paper provenance (see `references/vignette-template.md`).
+**Non-paper provenance — annotate inline.** When a parameter value did not come from the paper's text or tables (e.g. the operator read it off a graphical figure, an author supplied it via email correspondence, or it was carried from an upstream-task model file), record the provenance as an inline comment on the parameter line. See `references/model-file-template.md` § "Documenting non-paper-derived parameter values" for the comment forms. This is mandatory for any parameter not from the paper text/tables. The vignette's Assumptions and deviations / Errata section must also list the non-paper provenance (see `references/vignette-template.md`).
 
 ## Phase 5 — Validation vignette
 
@@ -347,15 +262,7 @@ For **endogenous / turnover models** where NCA isn't the right validation, repla
 
 ### Endogenous and mechanistic models
 
-Papers that describe endogenous turnover, steady-state balance, or mechanistic enzyme kinetics (e.g., Kim 2006 IgG FcRn recycling, Charbonneau 2021 phenylalanine) have a different shape than drug PK models:
-
-- Parameters are mechanistic constants (`Vmax`, `Km`, `kint`, `kcat`, `kpro`, baseline concentrations `bl_<species>`, fractional-activity scalars like `f_<enzyme>`) rather than log-transformed CL/V.
-- `ini()` usually has **no IIV etas and no residual error** — the model describes population-typical mechanism, not variability.
-- `model()` has **no dosing events**; the state starts at a biological baseline (`<state>(0) <- bl_<state>` or `<state>(0) <- css`).
-- Validation is **not** PKNCA. Use steady-state / perturbation-recovery / mass-balance checks. See `references/endogenous-validation.md`.
-- Dimensional analysis is load-bearing. These models often mix `mg/mL`, `mg/kg`, `L/kg`, `1/day`; a single unit slip silently corrupts the balance. Walk through every term in every ODE and the derived rates.
-
-Naming conventions for mechanistic parameters are documented in `references/parameter-names.md` § "Endogenous / mechanistic parameters."
+For papers that describe endogenous turnover, steady-state-balance, or mechanistic enzyme kinetics (e.g., Kim 2006 IgG FcRn recycling, Charbonneau 2021 phenylalanine), load `references/endogenous-validation.md` for vignette structure and the four validation patterns (steady-state hold, perturbation recovery, mass-balance / flux check, dimensional analysis). Use the mechanistic parameter names from `references/parameter-names.md` § "Endogenous / mechanistic parameters" (`Vmax`, `Km`, `kint`, `kcat`, baseline `bl_<species>`, fractional-activity `f_<enzyme>`). These models typically have no IIV, no residual error, and no dosing events — the state starts at a biological baseline. Replace the PKNCA section of the vignette with the steady-state / perturbation-recovery / mass-balance / dimensional-analysis checks.
 
 ## Phase 6 — Registration, tests, docs, PR
 
