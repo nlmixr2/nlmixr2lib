@@ -172,10 +172,6 @@ navbar:
         href: articles/Lin_2024_casirivimab.html
       - text: "CC292 (Li 2017)"
         href: articles/Li_2017_CC292.html
-      - text: "Cebranopadol (Kleideiter 2017)"
-        href: articles/Kleideiter_2017_cebranopadol.html
-      - text: "Cebranopadol (Kleideiter 2018)"
-        href: articles/Kleideiter_2018_cebranopadol.html
       - text: "Cediranib (Li 2017)"
         href: articles/Li_2017_cediranib.html
       - text: "Cefathiamidine (Zhi 2018)"
@@ -376,8 +372,6 @@ navbar:
         href: articles/Franken_2017_haloperidol.html
       - text: "HL2351 (Ngo 2020)"
         href: articles/Ngo_2020_HL2351.html
-      - text: "Hydroxyurea (Paule 2011)"
-        href: articles/Paule_2011_hydroxyurea.html
       - text: "Imatinib (Chien 2022)"
         href: articles/Chien_2022_imatinib.html
       - text: "Imatinib (Schindler 2017)"
@@ -462,8 +456,6 @@ navbar:
         href: articles/Chen_2020_luspatercept.html
       - text: "M3g rat (Xie 2000)"
         href: articles/Xie_2000_m3g_rat.html
-      - text: "Magnesium sulfate (Easterling 2018)"
-        href: articles/Easterling_2018_magnesium_sulfate.html
       - text: "MagnesiumSulfate (Salinger 2013)"
         href: articles/Salinger_2013_magnesiumSulfate.html
       - text: "MBG453 (Xu 2023)"
@@ -528,8 +520,6 @@ navbar:
         href: articles/Hong_2015_moxifloxacin.html
       - text: "MRNA3927 (Attarwala 2023)"
         href: articles/Attarwala_2023_mRNA3927.html
-      - text: "Mu receptor binding (Mann 2022)"
-        href: articles/Laffont_2025_opioid_overdose_reversal_simulation.html
       - text: "Mycophenolic acid (deWinter 2009)"
         href: articles/deWinter_2009_mycophenolic_acid.html
       - text: "Nab paclitaxel (Chen 2014)"
@@ -610,10 +600,8 @@ navbar:
         href: articles/Ouerdani_2015_pazopanib.html
       - text: "Pazopanib mouse (Ouerdani 2015)"
         href: articles/Ouerdani_2015_pazopanib_mouse.html
-      - text: "Peginesatide (Naik 2013)"
-        href: articles/Naik_2013_peginesatide.html
-      - text: "Peginterferon alfa 2a (Bi 2017)"
-        href: articles/Bi_2017_peginterferon_alfa_2a.html
+      - text: "Pegfilgrastim (Brekkan 2018)"
+        href: articles/Brekkan_2018_pegfilgrastim.html
       - text: "Peginterferon beta 1a (Hu 2017)"
         href: articles/Hu_2017_peginterferon_beta_1a.html
       - text: "Pembrolizumab (Ahamadi 2017)"
@@ -670,14 +658,8 @@ navbar:
         href: articles/Kloprogge_2014_quinine.html
       - text: "Quinine rat (Sheng 2016)"
         href: articles/Sheng_2016_quinine_rat.html
-      - text: "Raltegravir (Lee 2016)"
-        href: articles/Lee_2016_raltegravir.html
       - text: "Ranibizumab (Mulyukov 2018)"
         href: articles/Mulyukov_2018_ranibizumab.html
-      - text: "Remifentanil (Yang 2017)"
-        href: articles/Yang_2017_remifentanil.html
-      - text: "Respiratory physiology (Mann 2022)"
-        href: articles/Laffont_2025_opioid_overdose_reversal_simulation.html
       - text: "RFIXFc (Diao 2014)"
         href: articles/Diao_2014_rFIXFc.html
       - text: "Rifabutin (Hennig 2015)"
@@ -718,16 +700,10 @@ navbar:
         href: articles/Macpherson_2015_rosuvastatin.html
       - text: "Rucaparib (Wang 2015)"
         href: articles/Wang_2015_rucaparib.html
-      - text: "S ketamine (Flint 2017)"
-        href: articles/Flint_2017_s_ketamine.html
       - text: "Sacituzumab (Sathe 2024)"
         href: articles/Sathe_2024_sacituzumab.html
       - text: "SAL003 (Peng 2024)"
         href: articles/Peng_2024_SAL003.html
-      - text: "Salbutamol (Heuberger 2018)"
-        href: articles/Heuberger_2018_salbutamol.html
-      - text: "Sapropterin (Muntau 2017)"
-        href: articles/Muntau_2017_sapropterin.html
       - text: "Sapropterin (Qi 2014)"
         href: articles/Qi_2014_sapropterin.html
       - text: "Sarilumab (Xu 2019)"
@@ -782,8 +758,6 @@ navbar:
         href: articles/deKock_2017_sulfadoxinePyrimethamine.html
       - text: "SulfadoxinePyrimethamine (Odongo 2015)"
         href: articles/Odongo_2015_sulfadoxinePyrimethamine.html
-      - text: "Sumatriptan (Lee 2015)"
-        href: articles/Lee_2015_sumatriptan.html
       - text: "Sunitinib (Ait-Oudhia 2016)"
         href: articles/Ait-Oudhia_2016_sunitinib.html
       - text: "Sunitinib irinotecan mouse (Wilson 2015)"
@@ -1152,8 +1126,6 @@ articles:
   - articles/Budha_2023_tislelizumab
   - articles/Buil-Bruna_2015_lanreotide
   - articles/Caldes_2009_ganciclovir
-  - articles/Campagne_2019_cyclophosphamide_mouse
-  - articles/Candelaria_2018_rituximab
   - articles/Cao_2013_adecatumumab
   - articles/Cao_2013_gevokizumab
   - articles/Cao_2013_GNbAC1
@@ -1366,7 +1338,6 @@ articles:
   - articles/LeTilly_2021_trastuzumab
   - articles/Leuppi-Taegtmeyer_2019_colistin
   - articles/Li_2006_meropenem
-  - articles/Li_2015_taspoglutide_mbma
   - articles/Li_2017_brentuximab
   - articles/Li_2017_CC292
   - articles/Li_2017_cediranib
@@ -1568,8 +1539,6 @@ articles:
   - articles/vanderWalt_2013_dapagliflozin
   - articles/vanHasselt_2015_eribulin
   - articles/vanRongen_2016_acetaminophen
-  - articles/vanRongen_2017_midazolam
-  - articles/vanRongen_2018_metformin
   - articles/vanRongen_2018_midazolam
   - articles/vanWijk_2019_paracetamol
   - articles/Varatharajan_2016_daunorubicin
