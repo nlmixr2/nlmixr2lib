@@ -175,7 +175,7 @@ summary, as required by the skill's PKNCA recipe.
 
 ```{r nca}
 nca_conc <- sim %>%
-  filter(time >= 154, time <= 210, Cc > 0) %>%
+  filter(time >= 154, time <= 210) %>%
   mutate(
     time_rel = time - 154,
     treatment = ifelse(ADA_POS == 1, "ADA-positive", "ADA-negative")

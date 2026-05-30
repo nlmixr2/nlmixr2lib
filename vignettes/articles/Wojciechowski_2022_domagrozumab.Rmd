@@ -366,7 +366,7 @@ ev_sd$DIS_DMD <- 1L
 sim_sd <- rxode2::rxSolve(mod_typical, ev_sd, returnType = "data.frame")
 
 sim_nca <- sim_sd |>
-  filter(!is.na(Cc), time >= 0) |>
+  filter(!is.na(Cc)) |>
   mutate(id = 1L, treatment = "5 mg/kg IV SD, DMD pediatric") |>
   select(id, time, Cc, treatment)
 

@@ -355,7 +355,7 @@ sim_pknca <- rxSolve(mod, events_pknca, keep = "alb_quartile", returnType = "dat
 
 ```{r pknca-run}
 sim_nca <- sim_pknca |>
-  filter(time > 0, !is.na(Cc), Cc > 0) |>
+  filter(!is.na(Cc)) |>
   transmute(ID = id, time, Cc, treatment = as.character(alb_quartile))
 
 dose_nca <- dose_pknca |>

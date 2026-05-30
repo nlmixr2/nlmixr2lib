@@ -315,7 +315,7 @@ sim_pknca <- rxode2::rxSolve(mod_typical, events = pknca_events,
   dplyr::mutate(id = 1L)
 
 conc_df <- sim_pknca |>
-  dplyr::filter(!is.na(Cc), time > 0) |>
+  dplyr::filter(!is.na(Cc)) |>
   dplyr::select(id, time, Cc, treatment)
 
 dose_df <- pknca_events |>

@@ -212,7 +212,7 @@ suitable for absolute-NCA computation.
 
 ```{r pknca-parent}
 sim_nca <- sim |>
-  dplyr::filter(!is.na(Cc), Cc > 0) |>
+  dplyr::filter(!is.na(Cc)) |>
   dplyr::mutate(treatment = "raltegravir_400mg_po") |>
   dplyr::select(id, time, Cc, treatment)
 

@@ -273,7 +273,7 @@ analytically expected AUC against the published numbers (terminal half-life
 ```{r pknca}
 sim_nca <- sim |>
   as.data.frame() |>
-  filter(!is.na(Cc), time > 0) |>
+  filter(!is.na(Cc)) |>
   select(id, time, Cc, treatment)
 
 dose_df <- events |>

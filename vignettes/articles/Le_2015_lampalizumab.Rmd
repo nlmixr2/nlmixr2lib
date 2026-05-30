@@ -434,7 +434,7 @@ sim_p <- rxode2::rxSolve(mod, events = ev_p,
   dplyr::filter(CMT == 4)
 
 conc_df <- sim_p |>
-  dplyr::filter(!is.na(Cc), Cc > 0) |>
+  dplyr::filter(!is.na(Cc)) |>
   dplyr::select(id, regimen, time, Cc)
 
 dose_df <- d_dose_p |>

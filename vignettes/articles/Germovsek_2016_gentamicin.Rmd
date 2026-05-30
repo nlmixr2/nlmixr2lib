@@ -293,7 +293,7 @@ trough in the < 2 mg/L range for once-daily neonatal dosing).
 
 ```{r pknca}
 sim_for_nca <- sim_typical |>
-  filter(!is.na(Cc), Cc > 0) |>
+  filter(!is.na(Cc)) |>
   select(id, time, Cc, cohort) |>
   as.data.frame()
 

@@ -228,7 +228,7 @@ PKNCA-derived NCA parameters from the simulated typical profile.
 
 ```{r pknca}
 nca_input <- sim |>
-  filter(!is.na(Cc), time > 0) |>
+  filter(!is.na(Cc)) |>
   mutate(id = 1L, treatment = "5 mg/kg IV") |>
   select(id, time, Cc, treatment)
 

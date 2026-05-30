@@ -299,7 +299,7 @@ NCA over the first 8 hours (single dose) so simulated Cmax / Tmax / AUC0-8 can b
 
 ```{r pknca}
 sim_nca <- sim_median |>
-  dplyr::filter(!is.na(Cc), time > 0) |>
+  dplyr::filter(!is.na(Cc)) |>
   dplyr::mutate(treatment = "first_dose_cohort_median",
                 conc_mg_L = Cc) |>
   dplyr::select(id, time, conc_mg_L, treatment)

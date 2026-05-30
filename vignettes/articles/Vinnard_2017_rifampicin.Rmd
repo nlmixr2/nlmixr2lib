@@ -213,7 +213,7 @@ AUC0-24 endpoints), and half-life. The treatment grouping is the dose band.
 
 ```{r pknca}
 sim_nca <- sim |>
-  dplyr::filter(!is.na(Cc), time > 0) |>
+  dplyr::filter(!is.na(Cc)) |>
   dplyr::select(id, time, Cc, treatment) |>
   dplyr::distinct(id, time, .keep_all = TRUE)
 

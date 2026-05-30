@@ -243,7 +243,7 @@ rather than comparative.
 
 ```{r pknca}
 sim_nca <- sim |>
-  dplyr::filter(!is.na(Cc), time > 0) |>
+  dplyr::filter(!is.na(Cc)) |>
   dplyr::mutate(treatment = "180 ug SC") |>
   dplyr::select(id, time, Cc, treatment)
 

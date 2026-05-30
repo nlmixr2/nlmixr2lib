@@ -217,7 +217,7 @@ Compute NCA parameters per cohort and treatment via PKNCA.
 
 ```{r pknca-single, warning = FALSE}
 sim_single <- sim %>%
-  filter(grepl("^single", cohort), !is.na(Cc), time > 0) %>%
+  filter(grepl("^single", cohort), !is.na(Cc)) %>%
   mutate(treatment = case_when(
     FORM_TABLET == 1L  ~ "Tablet 400 ug",
     FORM_CAPSULE == 1L ~ "Capsule 400 ug",

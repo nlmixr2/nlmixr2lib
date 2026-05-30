@@ -218,7 +218,7 @@ steady-state Table 4 of Taubert 2018.
 sim_nca <- sim |>
   dplyr::filter(time > 24 * 6) |>
   dplyr::mutate(time_h = time - 24 * 6) |>
-  dplyr::filter(!is.na(Cc), Cc > 0) |>
+  dplyr::filter(!is.na(Cc)) |>
   dplyr::select(id, time = time_h, Cc, cohort, WT)
 
 conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | cohort + id)

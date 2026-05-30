@@ -281,7 +281,7 @@ NCA over a full single-dose interval is not directly meaningful for a 6-dose 60-
 
 ```{r pknca}
 sim_nca <- sim |>
-  dplyr::filter(!is.na(Cc), time > 0, time <= 72) |>
+  dplyr::filter(!is.na(Cc), time <= 72) |>
   dplyr::mutate(conc_ng_mL = Cc * 1000) |>
   dplyr::select(id, time, conc_ng_mL, band)
 

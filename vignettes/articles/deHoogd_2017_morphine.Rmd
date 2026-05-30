@@ -269,7 +269,7 @@ cohort labels so per-cohort summaries roll up.
 
 ```{r pknca-morphine}
 sim_nca_morphine <- sim_bolus |>
-  filter(!is.na(Cc), time > 0) |>
+  filter(!is.na(Cc)) |>
   select(id, time, Cc, cohort)
 
 dose_df <- events_bolus |>
@@ -306,7 +306,7 @@ knitr::kable(as.data.frame(summary(nca_morphine)),
 
 ```{r pknca-m3g}
 sim_nca_m3g <- sim_bolus |>
-  filter(!is.na(Cc_m3g), time > 0) |>
+  filter(!is.na(Cc_m3g)) |>
   select(id, time, Cc_m3g, cohort) |>
   rename(Cc = Cc_m3g)
 
@@ -326,7 +326,7 @@ knitr::kable(as.data.frame(summary(nca_m3g)),
 
 ```{r pknca-m6g}
 sim_nca_m6g <- sim_bolus |>
-  filter(!is.na(Cc_m6g), time > 0) |>
+  filter(!is.na(Cc_m6g)) |>
   select(id, time, Cc_m6g, cohort) |>
   rename(Cc = Cc_m6g)
 

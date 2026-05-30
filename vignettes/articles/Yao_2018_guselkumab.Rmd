@@ -305,7 +305,7 @@ The expected typical terminal half-life is ~18.1 days for a typical
 
 ```{r nca}
 nca_conc <- sim %>%
-  filter(regimen == "q8w", time >= 44 * 7, time <= 52 * 7, Cc > 0) %>%
+  filter(regimen == "q8w", time >= 44 * 7, time <= 52 * 7) %>%
   mutate(time_rel = time - 44 * 7) %>%
   rename(ID = id) %>%
   select(ID, time_rel, Cc, regimen)

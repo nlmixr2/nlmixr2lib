@@ -405,7 +405,7 @@ enantiomer.
 
 ```{r pknca-r}
 sim_nca_r <- sim |>
-  dplyr::filter(!is.na(Cc_r), time > 0) |>
+  dplyr::filter(!is.na(Cc_r)) |>
   dplyr::select(id, time, Cc_r, treatment)
 
 dose_df_r <- events |>
@@ -433,7 +433,7 @@ nca_r <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj_r, dose_obj_r,
 
 ```{r pknca-s}
 sim_nca_s <- sim |>
-  dplyr::filter(!is.na(Cc_s), time > 0) |>
+  dplyr::filter(!is.na(Cc_s)) |>
   dplyr::select(id, time, Cc_s, treatment)
 
 dose_df_s <- events |>

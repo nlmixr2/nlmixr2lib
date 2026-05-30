@@ -303,7 +303,7 @@ computed per-group.
 
 ```{r pknca}
 single_dose_obs <- sim_iv %>%
-  filter(time >= 0, time <= 28 * 24, Cc > 0) %>%
+  filter(time <= 28 * 24) %>%
   transmute(
     ID  = id,
     time,

@@ -212,7 +212,7 @@ or 24-h trough amikacin concentrations on the first day of administration).
 
 ```{r pknca}
 sim_first <- sim |>
-  dplyr::filter(time <= 24, !is.na(Cc), Cc > 0) |>
+  dplyr::filter(time <= 24, !is.na(Cc)) |>
   dplyr::select(id, time, Cc, regimen)
 
 conc_obj <- PKNCA::PKNCAconc(sim_first, Cc ~ time | regimen + id)

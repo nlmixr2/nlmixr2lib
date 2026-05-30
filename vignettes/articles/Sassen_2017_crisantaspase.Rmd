@@ -314,7 +314,7 @@ pop_band <- pop |>
                        levels = c("Low (<20 kg)", "Mid (20-50 kg)", "High (>=50 kg)")))
 
 nca_conc <- sim |>
-  filter(!is.na(Cc), Cc > 0) |>
+  filter(!is.na(Cc)) |>
   left_join(pop_band |> select(id, weight_band), by = "id") |>
   transmute(id, time, Cc, treatment = weight_band)
 

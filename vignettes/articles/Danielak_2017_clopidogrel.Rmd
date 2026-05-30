@@ -242,7 +242,7 @@ one PKNCA block per analyte (parent + metabolite).
 
 ```{r pknca-clopidogrel}
 sim_nca_clp <- sim |>
-  filter(!is.na(Cc), time > 0) |>
+  filter(!is.na(Cc)) |>
   select(id, time, conc = Cc, genotype)
 
 dose_df <- events |>
@@ -280,7 +280,7 @@ knitr::kable(nca_clp_summary,
 
 ```{r pknca-h4}
 sim_nca_h4 <- sim |>
-  filter(!is.na(Cc_h4), time > 0) |>
+  filter(!is.na(Cc_h4)) |>
   select(id, time, conc = Cc_h4, genotype)
 
 conc_obj_h4 <- PKNCA::PKNCAconc(sim_nca_h4, conc ~ time | genotype + id,

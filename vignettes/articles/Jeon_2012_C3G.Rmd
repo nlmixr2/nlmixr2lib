@@ -250,7 +250,7 @@ comparison.
 
 ```{r pknca}
 sim_nca <- sim |>
-  dplyr::filter(!is.na(Cc), Cc > 0) |>
+  dplyr::filter(!is.na(Cc)) |>
   dplyr::mutate(
     tad = ifelse(treatment == "Day 14 (multi-dose)", time - 24 * 13, time)
   ) |>

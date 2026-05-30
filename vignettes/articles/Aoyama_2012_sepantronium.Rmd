@@ -341,7 +341,7 @@ Css are possible.
 
 ```{r pknca}
 sim_for_nca <- sim_stoch |>
-  filter(!is.na(Cc), Cc > 0, time > 0) |>
+  filter(!is.na(Cc)) |>
   select(id, time, Cc, cancer) |>
   as.data.frame()
 

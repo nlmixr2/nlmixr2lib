@@ -226,7 +226,7 @@ ggplot(as.data.frame(sim_typical), aes(time, totalIL1b)) +
 
 ```{r pknca}
 sim_nca <- sim_df |>
-  dplyr::filter(!is.na(Cc), Cc > 0) |>
+  dplyr::filter(!is.na(Cc)) |>
   dplyr::select(id, time, Cc, regimen)
 
 dose_df <- events |>
