@@ -54,16 +54,16 @@ Li_2015_taspoglutide_mbma <- function() {
       type               = "continuous",
       reference_category = NULL,
       notes              = paste0(
-        "MBMA study-arm-level drug-exposure covariate. Registered against ",
-        "the canonical `CAV` (average drug plasma concentration over a ",
-        "dosing interval) via the `METRIC_TASPO_C` source alias in ",
-        "inst/references/covariate-columns.md; `CAV` already lists this ",
-        "model among its example models and documents the MBMA study-arm ",
-        "usage. The values are reported by Li 2015 Section 3.2: 'the ",
-        "average concentrations (0, 59.85 and 119.7 pmol/l for placebo, ",
-        "taspoglutide 10 and 20 mg) between 2nd and 4th weeks were chosen ",
-        "as metrics'. The concentrations themselves were derived by Li ",
-        "et al. from Ratner 2010 (the source taspoglutide PK study)."
+        "MBMA study-arm-level covariate. The canonical register in ",
+        "inst/references/covariate-columns.md is for individual-level ",
+        "pop-PK covariates and does not directly fit this MBMA study-arm ",
+        "drug-exposure column; this column mirrors the inline-documented ",
+        "precedent set by Vargo_2014_statins_ezetimibe_mbma. The values ",
+        "are reported by Li 2015 Section 3.2: 'the average concentrations ",
+        "(0, 59.85 and 119.7 pmol/l for placebo, taspoglutide 10 and 20 ",
+        "mg) between 2nd and 4th weeks were chosen as metrics'. The ",
+        "concentrations themselves were derived by Li et al. from Ratner ",
+        "2010 (the source taspoglutide PK study)."
       ),
       source_name        = "Cavg.2-4w (Li 2015 Section 3.2)"
     )

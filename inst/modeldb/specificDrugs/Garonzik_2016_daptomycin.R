@@ -1,9 +1,7 @@
 Garonzik_2016_daptomycin <- function() {
-  description <- "In vitro (Staphylococcus aureus USA300, methicillin-resistant CA-MRSA reference strain). Mechanism-based mathematical pharmacodynamic (MBM) model of daptomycin time-kill activity in supplemented Mueller-Hinton broth with 0%, 10%, 30%, 50%, or 70% v/v heat-inactivated human serum. The bacterial population is split into three subpopulations of decreasing daptomycin susceptibility (susceptible, intermediate, resistant), each described by two states (state 1 vegetative, state 2 replicating; six bacterial compartments total). Replication of state 2 cells back into state 1 is gated by a successful-replication probability (REP = 2 x Plateau, with Plateau saturating at a maximum CFU/mL CFUm), and the vegetative-to-replicating transition k12 is modulated by an exponential lag-phase term (Eq 3) and a saturable carrying-capacity term (Eq 7) parameterised by Imax_k12 and IC50_k12. Daptomycin acts on each subpopulation via two mechanisms: a Hill-type stimulation of the probability of death (STI; reduces successful replication via IREP = 1 - STI) and a Hill-type direct killing of bacteria (Kill); the relative balance of the two is the dominant pharmacodynamic feature, with SC50 (0.05 mg/L) much lower than KC50 (4.8 mg/L). The intermediate and resistant subpopulations share the same SC50 and KC50 but have reduced Smax and Kmax (Smax_r and Kmax_r fixed to 0) and the resistant subpopulation has a slower vegetative-to-replicating transition (FR_K12r = 0.0442). Protein binding by human serum is encoded as an 'active fraction' factive(HUMAN_SERUM_PCT) multiplying the total static daptomycin concentration to give an effective drug concentration DAP_EF; the active fraction takes five experimental levels (factive = 1 at 0% human serum, then 0.346, 0.284, 0.239, 0.252 at 10%, 30%, 50%, 70% human serum). The model is in-vitro PD only -- there is no human PK component; daptomycin is dosed once at t = 0 into the dap compartment and is chemically stable in the medium for the 24-h experiment. Random effects (eta) are NOT present: the paper reports replicate-level experimental fits with additive plus small-count Poisson residual error on log10 CFU/mL."
+  description <- "In vitro (Staphylococcus aureus USA300, methicillin-resistant CA-MRSA reference strain). Mechanism-based mathematical pharmacodynamic (MBM) model of daptomycin time-kill activity in supplemented Mueller-Hinton broth with 0%, 10%, 30%, 50%, or 70% v/v heat-inactivated human serum. The bacterial population is split into three subpopulations of decreasing daptomycin susceptibility (susceptible, intermediate, resistant), each described by two states (state 1 vegetative, state 2 replicating; six bacterial compartments total). Replication of state 2 cells back into state 1 is gated by a successful-replication probability (REP = 2 x Plateau, with Plateau saturating at a maximum CFU/mL CFUm), and the vegetative-to-replicating transition k12 is modulated by an exponential lag-phase term (Eq 3) and a saturable carrying-capacity term (Eq 7) parameterised by Imax_k12 and IC50_k12. Daptomycin acts on each subpopulation via two mechanisms: a Hill-type stimulation of the probability of death (STI; reduces successful replication via IREP = 1 - STI) and a Hill-type direct killing of bacteria (Kill); the relative balance of the two is the dominant pharmacodynamic feature, with SC50 (0.05 mg/L) much lower than KC50 (4.8 mg/L). The intermediate and resistant subpopulations share the same SC50 and KC50 but have reduced Smax and Kmax (Smax_r and Kmax_r fixed to 0) and the resistant subpopulation has a slower vegetative-to-replicating transition (FR_K12r = 0.0442). Protein binding by human serum is encoded as an 'active fraction' factive(HS) multiplying the total static daptomycin concentration to give an effective drug concentration DAP_EF; the active fraction takes five experimental levels (factive = 1 at 0% HS, then 0.346, 0.284, 0.239, 0.252 at 10%, 30%, 50%, 70% HS). The model is in-vitro PD only -- there is no human PK component; daptomycin is dosed once at t = 0 into the dap compartment and is chemically stable in the medium for the 24-h experiment. Random effects (eta) are NOT present: the paper reports replicate-level experimental fits with additive plus small-count Poisson residual error on log10 CFU/mL."
   reference <- "Garonzik SM, Lenhard JR, Forrest A, Holden PN, Bulitta JB, Tsuji BT. Defining the active fraction of daptomycin against methicillin-resistant Staphylococcus aureus (MRSA) using a pharmacokinetic and pharmacodynamic approach. PLoS ONE. 2016;11(6):e0156131. doi:10.1371/journal.pone.0156131."
   vignette <- "Garonzik_2016_daptomycin"
-  paper_specific_compartments <- c("s1", "s2", "i1", "i2", "r1", "r2")
-
   units <- list(
     time          = "hour",
     dosing        = "mg/L (static initial daptomycin concentration in the broth)",
@@ -11,27 +9,27 @@ Garonzik_2016_daptomycin <- function() {
   )
 
   covariateData <- list(
-    HUMAN_SERUM_PCT = list(
+    HS = list(
       description        = "Human serum percentage (v/v) supplementing Mueller-Hinton broth in the in-vitro time-kill experiment",
       units              = "% v/v",
       type               = "categorical",
       reference_category = "0 (no human serum; factive forced to 1)",
       notes              = paste(
-        "Five experimental levels were studied: HUMAN_SERUM_PCT in {0, 10, 30, 50, 70}.",
-        "Drives the active-fraction factive(HUMAN_SERUM_PCT) that multiplies the total",
+        "Five experimental levels were studied: HS in {0, 10, 30, 50, 70}.",
+        "Drives the active-fraction factive(HS) that multiplies the total",
         "static daptomycin concentration to give the effective concentration",
         "DAP_EF (Garonzik 2016 Eq 2). factive estimates from Table 2:",
         "factive(10) = 0.346, factive(30) = 0.284, factive(50) = 0.239,",
         "factive(70) = 0.252; factive(0) = 1 by construction (no protein",
-        "binding in the absence of serum). HUMAN_SERUM_PCT values outside this discrete",
+        "binding in the absence of serum). HS values outside this discrete",
         "set make factive = 0 inside the model (none of the indicator",
         "expressions fire) -- a deliberately conspicuous failure rather",
-        "than silent interpolation; if a user wants intermediate HUMAN_SERUM_PCT levels",
+        "than silent interpolation; if a user wants intermediate HS levels",
         "they must add the corresponding factive value or interpolate",
-        "outside the model. Registered as the canonical HUMAN_SERUM_PCT in",
-        "inst/references/covariate-columns.md under Preclinical experimental",
-        "conditions (an in-vitro experimental condition rather than a human",
-        "pop-PK covariate)."
+        "outside the model. In-vitro experimental indicator -- not in",
+        "inst/references/covariate-columns.md (the canonical register is",
+        "for human pop-PK covariates and does not apply to this in-vitro",
+        "PD model)."
       ),
       source_name        = "% Human Serum (paper Methods + Table 2)"
     )
@@ -44,7 +42,7 @@ Garonzik_2016_daptomycin <- function() {
     organism            = "Staphylococcus aureus USA300 (NRS 384, FRP3757), daptomycin MIC = 0.5 mg/L. MBM was fit to USA300 only -- selected as the most common pulsed-field gel electrophoresis type in the USA.",
     second_strain       = "Time-kill data were also collected for VISA Mu50 (NRS 4, HIP5836), daptomycin MIC = 1.0 mg/L, but the MBM was NOT fit to Mu50 (Hill-only PD parameters for Mu50 in Table 1; this model file reproduces the MBM in Table 2 for USA300).",
     system              = "Static time-kill experiments, 24-hour exposure, dense sampling at 0, 1, 2, 4, 8, 24 h.",
-    medium              = "Mueller-Hinton broth supplemented with calcium and magnesium (12.5 mg/L; supplemented Mueller-Hinton broth, SMHB) plus heat-inactivated human serum at the specified human serum percentage. Calcium concentration in each batch titrated to physiologic conditions (1.1-1.3 mmol/L).",
+    medium              = "Mueller-Hinton broth supplemented with calcium and magnesium (12.5 mg/L; supplemented Mueller-Hinton broth, SMHB) plus heat-inactivated human serum at the specified HS percentage. Calcium concentration in each batch titrated to physiologic conditions (1.1-1.3 mmol/L).",
     temperature         = "35 C (standard bacteriology incubation for S. aureus).",
     duration            = "24 h.",
     starting_inoculum   = "approximately 10^6 CFU/mL (model estimate Log10CFU0 = 6.22, Table 2).",
@@ -68,14 +66,14 @@ Garonzik_2016_daptomycin <- function() {
   )
 
   ini({
-    # ---- Active daptomycin fraction at each HUMAN_SERUM_PCT level (Garonzik 2016 Table 2) ----
+    # ---- Active daptomycin fraction at each HS level (Garonzik 2016 Table 2) ----
     # Each factive is bounded in (0, 1); log-transform keeps positivity and is
     # consistent with the rest of the parameter set. factive(0%) = 1 by
     # construction (no serum, no protein binding) and is not estimated.
-    lfact_hs10 <- log(0.346); label("Active daptomycin fraction at 10% human serum (factive10, unitless)")  # Garonzik 2016 Table 2 (factive 10%)
-    lfact_hs30 <- log(0.284); label("Active daptomycin fraction at 30% human serum (factive30, unitless)")  # Garonzik 2016 Table 2 (factive 30%)
-    lfact_hs50 <- log(0.239); label("Active daptomycin fraction at 50% human serum (factive50, unitless)")  # Garonzik 2016 Table 2 (factive 50%)
-    lfact_hs70 <- log(0.252); label("Active daptomycin fraction at 70% human serum (factive70, unitless)")  # Garonzik 2016 Table 2 (factive 70%)
+    lfact_hs10 <- log(0.346); label("Active daptomycin fraction at 10% HS (factive10, unitless)")  # Garonzik 2016 Table 2 (factive 10%)
+    lfact_hs30 <- log(0.284); label("Active daptomycin fraction at 30% HS (factive30, unitless)")  # Garonzik 2016 Table 2 (factive 30%)
+    lfact_hs50 <- log(0.239); label("Active daptomycin fraction at 50% HS (factive50, unitless)")  # Garonzik 2016 Table 2 (factive 50%)
+    lfact_hs70 <- log(0.252); label("Active daptomycin fraction at 70% HS (factive70, unitless)")  # Garonzik 2016 Table 2 (factive 70%)
 
     # ---- Bacterial inoculum and subpopulation fractions ----
     # The paper parameterises CFU0, FR_I, FR_r on log10 scale (Table 2). These
@@ -147,16 +145,16 @@ Garonzik_2016_daptomycin <- function() {
     kmax_i  <- exp(lkmax_i)
     kc50    <- exp(lkc50)
 
-    # ---- Active fraction selection by experimental HUMAN_SERUM_PCT level ----
-    # Boolean indicator multipliers (rxode2 evaluates booleans as 0/1). HUMAN_SERUM_PCT = 0
+    # ---- Active fraction selection by experimental HS level ----
+    # Boolean indicator multipliers (rxode2 evaluates booleans as 0/1). HS = 0
     # gives factive = 1 (no serum, no protein binding); the four estimated
-    # factive values cover HUMAN_SERUM_PCT = 10, 30, 50, 70. Any HUMAN_SERUM_PCT not in {0,10,30,50,70}
+    # factive values cover HS = 10, 30, 50, 70. Any HS not in {0,10,30,50,70}
     # yields factive = 0 (deliberately conspicuous, not interpolated).
-    i_hs0  <- HUMAN_SERUM_PCT == 0
-    i_hs10 <- HUMAN_SERUM_PCT == 10
-    i_hs30 <- HUMAN_SERUM_PCT == 30
-    i_hs50 <- HUMAN_SERUM_PCT == 50
-    i_hs70 <- HUMAN_SERUM_PCT == 70
+    i_hs0  <- HS == 0
+    i_hs10 <- HS == 10
+    i_hs30 <- HS == 30
+    i_hs50 <- HS == 50
+    i_hs70 <- HS == 70
     factive <- i_hs0  * 1 +
                i_hs10 * fact_hs10 +
                i_hs30 * fact_hs30 +
@@ -167,7 +165,7 @@ Garonzik_2016_daptomycin <- function() {
     dap_eff <- factive * dap
 
     # ---- Total CFU and saturable growth modulators (Eqs 4-7) ----
-    cfu_total <- s1 + s2 + i1 + i2 + r1 + r2
+    cfu_total <- bact_susceptible1 + bact_susceptible2 + bact_intermediate1 + bact_intermediate2 + bact_resistant1 + bact_resistant2
     plateau   <- 1 - cfu_total / (cfu_total + cfu_m)        # Eq 5
     rep_term  <- 2 * plateau                                 # Eq 6
 
@@ -197,24 +195,24 @@ Garonzik_2016_daptomycin <- function() {
     d/dt(dap) <- 0
 
     # Susceptible subpopulation (Garonzik 2016 Eqs 11-12).
-    d/dt(s1) <- rep_term * k21 * s2 * irep_s - k12es_s * s1 - kill_s * s1
-    d/dt(s2) <- -k21 * s2 + k12es_s * s1 - kill_s * s2
+    d/dt(bact_susceptible1) <- rep_term * k21 * bact_susceptible2 * irep_s - k12es_s * bact_susceptible1 - kill_s * bact_susceptible1
+    d/dt(bact_susceptible2) <- -k21 * bact_susceptible2 + k12es_s * bact_susceptible1 - kill_s * bact_susceptible2
 
     # Intermediate subpopulation (same structure with subpopulation-specific
     # Smax_i, Kmax_i, k12_i parameters).
-    d/dt(i1) <- rep_term * k21 * i2 * irep_i - k12es_i * i1 - kill_i * i1
-    d/dt(i2) <- -k21 * i2 + k12es_i * i1 - kill_i * i2
+    d/dt(bact_intermediate1) <- rep_term * k21 * bact_intermediate2 * irep_i - k12es_i * bact_intermediate1 - kill_i * bact_intermediate1
+    d/dt(bact_intermediate2) <- -k21 * bact_intermediate2 + k12es_i * bact_intermediate1 - kill_i * bact_intermediate2
 
     # Resistant subpopulation (Smax_r = Kmax_r = 0, k12_r much slower).
-    d/dt(r1) <- rep_term * k21 * r2 * irep_r - k12es_r * r1 - kill_r * r1
-    d/dt(r2) <- -k21 * r2 + k12es_r * r1 - kill_r * r2
+    d/dt(bact_resistant1) <- rep_term * k21 * bact_resistant2 * irep_r - k12es_r * bact_resistant1 - kill_r * bact_resistant1
+    d/dt(bact_resistant2) <- -k21 * bact_resistant2 + k12es_r * bact_resistant1 - kill_r * bact_resistant2
 
     # Initial conditions. All bacteria start in state 1 (vegetative); state 2
     # is empty. Subpopulations are partitioned by FR_I and FR_R relative to
     # the total inoculum CFU0; the susceptible IC absorbs the remainder.
-    s1(0) <- cfu0 * (1 - fri - frr)
-    i1(0) <- cfu0 * fri
-    r1(0) <- cfu0 * frr
+    bact_susceptible1(0) <- cfu0 * (1 - fri - frr)
+    bact_intermediate1(0) <- cfu0 * fri
+    bact_resistant1(0) <- cfu0 * frr
 
     # ---- Observation ----
     # Observation Cc is log10 of total CFU/mL across the six bacterial

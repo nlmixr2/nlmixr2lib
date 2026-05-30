@@ -365,6 +365,46 @@ checkModelConventions <- function(model, verbose = TRUE) {
   FALSE
 }
 
+# Recognize an inter-study / inter-arm-variability (IAV) eta of the form
+# `eta_study_<param>` where `<param>` corresponds to an existing
+# fixed-effect parameter. The eta name passed in has had its leading
+# "eta" stripped, so `suffix` is "_study_<param>" (note the leading
+# underscore -- this is why the `.isPaperMechanisticEtaSuffix` "study_"
+# branch, which expects no leading underscore, does not catch it). Used
+# by model-based meta-analysis (MBMA) extractions that encode
+# study-arm-level random effects in place of between-subject variability
+# (Wang 2018 daclatasvir/asunaprevir; Boucher 2018 naproxen). Acceptance
+# routes for `<param>`:
+#   (a) `<param>` (or `l<param>`) is itself a fixed-effect parameter
+#       -- covers eta_study_lcl (lcl), eta_study_e0 (e0), eta_study_ld_asv;
+#   (b) some fixed-effect name extends `<param>` (startsWith);
+#   (c) token-bridge: a fixed effect shares `<param>`'s first AND last
+#       underscore-separated tokens -- covers a model()-internal combined
+#       typical value built from sibling anchors, e.g. logit_fk_asv
+#       pairing with logit_fk_cap_asv / logit_fk_sol_asv.
+.isStudyEtaSuffix <- function(suffix, fixed_names) {
+  if (!startsWith(suffix, "_study_")) return(FALSE)
+  param <- substr(suffix, 8L, nchar(suffix))   # strip leading "_study_"
+  if (!nzchar(param)) return(FALSE)
+  if (param %in% fixed_names) return(TRUE)
+  if (paste0("l", param) %in% fixed_names) return(TRUE)
+  for (p in fixed_names) {
+    if (nchar(p) > 0L && startsWith(p, param) && p != param) return(TRUE)
+  }
+  ptok <- strsplit(param, "_", fixed = TRUE)[[1]]
+  if (length(ptok) >= 2L) {
+    first <- ptok[[1L]]
+    last <- ptok[[length(ptok)]]
+    for (p in fixed_names) {
+      ftok <- strsplit(p, "_", fixed = TRUE)[[1]]
+      if (length(ftok) >= 2L &&
+          ftok[[1L]] == first &&
+          ftok[[length(ftok)]] == last) return(TRUE)
+    }
+  }
+  FALSE
+}
+
 .classifyParam <- function(name, conv) {
   if (.isPkParam(name, conv)) return("canonical_pk")
   if (grepl(conv$covEffectPattern, name) && startsWith(name, "e_")) {
@@ -445,6 +485,12 @@ checkModelConventions <- function(model, verbose = TRUE) {
         # etaiov_<param>_<occ> where <param> is an existing fixed-effect
         # parameter (with optional l/ltv/lv log-prefix) and <occ> is a
         # positive integer occasion index. No issue is emitted.
+      } else if (.isStudyEtaSuffix(suffix, fixed$name)) {
+        # Inter-study / inter-arm-variability eta of the form
+        # eta_study_<param> (MBMA study-arm-level random effect) where
+        # <param> is an existing fixed-effect parameter (bare, log-
+        # prefixed, prefix-extended, or token-bridged to a combined
+        # typical value). No issue is emitted.
       } else if (.isPaperMechanisticEtaSuffix(suffix, fixed$name)) {
         # Paper-mechanistic stratified-typical-value etas where the
         # underlying typical value is split by lesion, population,
@@ -517,7 +563,8 @@ checkModelConventions <- function(model, verbose = TRUE) {
       out,
       paste0("propSd_", suffix),
       paste0("addSd_",  suffix),
-      paste0("expSd_",  suffix)
+      paste0("expSd_",  suffix),
+      paste0("powExp_", suffix)
     )
   }
   unique(out)
@@ -579,6 +626,25 @@ checkModelConventions <- function(model, verbose = TRUE) {
   covs <- setdiff(covs_all, depends)
   covData <- as.list(ui$meta)$covariateData
   covDataNames <- names(covData %||% list())
+
+  # Covariates the source model documents but intentionally does NOT use
+  # in model() (e.g. FREM-screened demographics whose effects were not
+  # clinically meaningful and have no published point estimate) live in a
+  # `covariatesDataExcluded` metadata list (same shape as covariateData).
+  # They are documentation only: the checker does not require them to
+  # appear in model() and does not flag them as unused. The one guard --
+  # a name listed there must NOT also be referenced in model() (that
+  # would be a mis-filing; it belongs in covariateData instead).
+  covExcluded <- as.list(ui$meta)$covariatesDataExcluded
+  for (nm in names(covExcluded %||% list())) {
+    if (nm %in% covs_all) {
+      issues <- rbind(issues, .issue(
+        "covariates", "warning", nm,
+        sprintf("Covariate '%s' is listed in covariatesDataExcluded but is referenced in model().", nm),
+        "Move it to covariateData (it is actually used), or stop referencing it in model()."
+      ))
+    }
+  }
 
   alias_map <- .nlmixr2libCovariateAliasMap()
   canonical <- names(conv$canonicalCovariates)
@@ -873,7 +939,19 @@ checkModelConventions <- function(model, verbose = TRUE) {
   }
   dosing <- units$dosing
   conc <- units$concentration
-  if (!is.null(dosing) && !is.null(conc) && nzchar(dosing) && nzchar(conc)) {
+  # The dosing<->concentration dimensional checks below are only
+  # meaningful for classical PK models where `dosing` is a simple
+  # administered amount (mass / molar / IU). Skip them when dosing is a
+  # rate or concentration (contains "/"), is declared not-applicable, or
+  # is otherwise not a clean amount token -- i.e. PD / MBMA / in-vitro /
+  # endogenous models, where the `concentration` field documents a
+  # non-plasma-concentration output (CFU, ventilation, probability, body
+  # weight, receptor-occupancy fraction, ...) and a mass/volume check
+  # does not apply. This narrows the check to where it adds value and
+  # removes false positives; it never introduces a new warning.
+  dose_is_amount <- !endo && !is.null(dosing) && nzchar(dosing) &&
+    .unitsRecognizedAmount(dosing)
+  if (dose_is_amount && !is.null(conc) && nzchar(conc)) {
     if (!grepl("/", conc)) {
       issues <- rbind(issues, .issue(
         "units", "warning", "concentration",
@@ -939,6 +1017,23 @@ checkModelConventions <- function(model, verbose = TRUE) {
   (a %in% mass && b %in% mass) ||
     (a %in% molar && b %in% molar) ||
     (a %in% iu && b %in% iu)
+}
+
+# TRUE when `x` is a single recognized administered-amount unit token
+# (mass / molar / IU / mEq), ignoring case and any trailing parenthetical
+# descriptor. Used to gate the dosing<->concentration dimensional checks
+# to classical PK models: when dosing is a rate or concentration (so the
+# token contains "/"), is "n/a" / "not applicable", or is any other
+# non-amount string, this returns FALSE and the checks are skipped.
+.unitsRecognizedAmount <- function(x) {
+  core <- .normUnit(trimws(sub("\\(.*$", "", x)))
+  amounts <- c(
+    "kg", "g", "mg", "ug", "ng", "pg",
+    "mol", "mmol", "umol", "nmol", "pmol",
+    "iu", "miu", "uiu", "niu",
+    "meq", "mu", "u"
+  )
+  core %in% amounts
 }
 
 .checkDeprecatedNames <- function(ui, conv) {

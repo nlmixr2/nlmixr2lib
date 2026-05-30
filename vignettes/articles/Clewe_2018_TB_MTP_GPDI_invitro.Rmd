@@ -323,7 +323,7 @@ sim %>%
   mutate(ar_total = aroff + aron) %>%
   select(regimen, time, aroff, aron, ar_total) %>%
   knitr::kable(digits = 4,
-               caption = "aroff / aron / total over time -- total must equal 1.")
+               caption = "AR_off / AR_on / total over time -- total must equal 1.")
 ```
 
 ### 4. Trio combination at clinical Cmax (Figure 5b reference)

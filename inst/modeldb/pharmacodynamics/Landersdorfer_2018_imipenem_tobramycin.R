@@ -1,5 +1,5 @@
 Landersdorfer_2018_imipenem_tobramycin <- function() {
-  description <- "In vitro (carbapenem-resistant Acinetobacter baumannii FADDI-AB034). Mechanism-based pharmacodynamic model for an imipenem-plus-tobramycin combination in a 7-day hollow-fiber infection model (HFIM). Three pre-existing bacterial subpopulations differing in imipenem and tobramycin susceptibility (population 1 IPM-S/TOB-S, population 2 IPM-R/TOB-I, population 3 IPM-I/TOB-R) each follow a Bulitta two-state life-cycle growth model (S1 -> S2 -> 2*S1 with replication rate k21 fixed and per-subpopulation mean generation time 1/k12). Logistic carrying-capacity attenuation applies to the replicating step. Imipenem kills with a sigmoidal Hill function (Hill = 3 fixed) and tobramycin with an Emax function; mechanistic synergy is encoded as a discrete 70-fold reduction of the imipenem KC50 against population 3 when the tobramycin concentration meets or exceeds 1.15 mg/L (i.e. tobramycin permeabilizing the outer bacterial membrane toward imipenem). Imipenem and tobramycin concentrations are external time-varying inputs (covariates CONC_IPM_MGL and CONC_TOB_MGL); the model contains no human PK component."
+  description <- "In vitro (carbapenem-resistant Acinetobacter baumannii FADDI-AB034). Mechanism-based pharmacodynamic model for an imipenem-plus-tobramycin combination in a 7-day hollow-fiber infection model (HFIM). Three pre-existing bacterial subpopulations differing in imipenem and tobramycin susceptibility (population 1 IPM-S/TOB-S, population 2 IPM-R/TOB-I, population 3 IPM-I/TOB-R) each follow a Bulitta two-state life-cycle growth model (S1 -> S2 -> 2*S1 with replication rate k21 fixed and per-subpopulation mean generation time 1/k12). Logistic carrying-capacity attenuation applies to the replicating step. Imipenem kills with a sigmoidal Hill function (Hill = 3 fixed) and tobramycin with an Emax function; mechanistic synergy is encoded as a discrete 70-fold reduction of the imipenem KC50 against population 3 when the tobramycin concentration meets or exceeds 1.15 mg/L (i.e. tobramycin permeabilizing the outer bacterial membrane toward imipenem). Imipenem and tobramycin concentrations are external time-varying inputs (covariates Cipm and Ctob); the model contains no human PK component."
   reference <- paste(
     "Landersdorfer CB, Yadav R, Rogers KE, Kim TH, Shin BS, Boyce JD, Nation RL, Bulitta JB. (2018).",
     "Combating carbapenem-resistant Acinetobacter baumannii by an optimized imipenem-plus-tobramycin",
@@ -9,25 +9,31 @@ Landersdorfer_2018_imipenem_tobramycin <- function() {
     sep = " "
   )
   vignette <- "Landersdorfer_2018_imipenem_tobramycin"
-  paper_specific_compartments <- c("s1_ss", "s2_ss", "s1_ri", "s2_ri", "s1_ir", "s2_ir")
-
   units <- list(time = "hour", dosing = "mg/L (drug input concentration)", concentration = "log10 CFU/mL (observation); mg/L (drug covariates)")
 
+  # Cipm / Ctob are the experimentally-controlled imipenem / tobramycin
+  # broth concentrations (the in-vitro HFIM PK forcing functions) supplied
+  # from the data, not epidemiological subject covariates. Declaring them
+  # in `depends` marks them as model inputs so the canonical-covariate
+  # register check does not apply (they are documented in covariateData
+  # below for provenance).
+  depends <- c("Cipm", "Ctob")
+
   covariateData <- list(
-    CONC_IPM_MGL = list(
+    Cipm = list(
       description        = "Unbound imipenem concentration in the hollow-fiber growth medium",
       units              = "mg/L",
       type               = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying covariate supplied externally; the HFIM experiment used continuous infusion targeting the 5th-percentile (7.6 mg/L), median (13.4 mg/L), and 95th-percentile (23.3 mg/L) unbound concentrations expected from imipenem 4 g/day continuous infusion in critically ill patients. In-vitro applied drug-concentration covariate, registered as the canonical CONC_IPM_MGL in inst/references/covariate-columns.md.",
+      notes              = "Time-varying covariate supplied externally; the HFIM experiment used continuous infusion targeting the 5th-percentile (7.6 mg/L), median (13.4 mg/L), and 95th-percentile (23.3 mg/L) unbound concentrations expected from imipenem 4 g/day continuous infusion in critically ill patients. In-vitro experimental input -- not in inst/references/covariate-columns.md (the canonical register is for human pop-PK covariates and does not apply to this in-vitro PD model).",
       source_name        = "Imipenem concentration (paper Methods and Fig. 1 legend)"
     ),
-    CONC_TOB_MGL = list(
+    Ctob = list(
       description        = "Unbound tobramycin concentration in the hollow-fiber growth medium",
       units              = "mg/L",
       type               = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying covariate supplied externally; the HFIM experiment simulated the two-compartment unbound tobramycin profile produced by 7 mg/kg q24h 0.5-h infusions (observed peak 12.3 mg/L at 1.2 h, trough 1.37 mg/L at 23 h; pump-flow rate switched at 5 h each day to mimic alpha/beta phases). In-vitro applied drug-concentration covariate, registered as the canonical CONC_TOB_MGL in inst/references/covariate-columns.md.",
+      notes              = "Time-varying covariate supplied externally; the HFIM experiment simulated the two-compartment unbound tobramycin profile produced by 7 mg/kg q24h 0.5-h infusions (observed peak 12.3 mg/L at 1.2 h, trough 1.37 mg/L at 23 h; pump-flow rate switched at 5 h each day to mimic alpha/beta phases). In-vitro experimental input -- not in inst/references/covariate-columns.md.",
       source_name        = "Tobramycin concentration (paper Methods, Fig. S1 reference)"
     )
   )
@@ -98,16 +104,16 @@ Landersdorfer_2018_imipenem_tobramycin <- function() {
 
     # Imipenem KC50 per subpopulation. Population 3 has two
     # values: the monotherapy KC50 (without sufficient tobramycin)
-    # and the combination KC50 (when CONC_TOB_MGL >= tob_cut). model() will
+    # and the combination KC50 (when Ctob >= tob_cut). model() will
     # switch between them at the threshold.
     lkc50_ss_ipm        <- log(0.175)
     label("Imipenem KC50 against IPM-S/TOB-S (population 1; mg/L)")  # Landersdorfer 2018 Table 1
     lkc50_ri_ipm        <- log(645)
     label("Imipenem KC50 against IPM-R/TOB-I (population 2; mg/L)")  # Landersdorfer 2018 Table 1
     lkc50_ir_ipm_mono   <- log(112)
-    label("Imipenem KC50 against IPM-I/TOB-R (population 3; monotherapy or CONC_TOB_MGL < tob_cut; mg/L)")  # Landersdorfer 2018 Table 1
+    label("Imipenem KC50 against IPM-I/TOB-R (population 3; monotherapy or Ctob < tob_cut; mg/L)")  # Landersdorfer 2018 Table 1
     lkc50_ir_ipm_combo  <- log(1.60)
-    label("Imipenem KC50 against IPM-I/TOB-R (population 3; with CONC_TOB_MGL >= tob_cut; mg/L)")  # Landersdorfer 2018 Table 1
+    label("Imipenem KC50 against IPM-I/TOB-R (population 3; with Ctob >= tob_cut; mg/L)")  # Landersdorfer 2018 Table 1
 
     # Tobramycin concentration triggering mechanistic synergy
     # (outer-membrane permeabilization shifts KC50,IR,IPM 70-fold).
@@ -174,7 +180,7 @@ Landersdorfer_2018_imipenem_tobramycin <- function() {
     # CFUmax). The exact attenuation site is not stated in the
     # paper main text and the Fig S2 schematic was not on disk --
     # see the vignette Assumptions and deviations section.
-    cfu_total <- s1_ss + s2_ss + s1_ri + s2_ri + s1_ir + s2_ir
+    cfu_total <- bact_susceptible_susceptible1 + bact_susceptible_susceptible2 + bact_resistant_intermediate1 + bact_resistant_intermediate2 + bact_intermediate_resistant1 + bact_intermediate_resistant2
     growth_attn <- 1 - cfu_total / (10 ^ logcfumax)
     k12_ss <- k12_ss_base * growth_attn
     k12_ri <- k12_ri_base * growth_attn
@@ -187,14 +193,14 @@ Landersdorfer_2018_imipenem_tobramycin <- function() {
     # absence of and 1.60 mg/L in the presence of at least 1.15
     # mg/L tobramycin". Discrete switch at tob_cut.
     kc50_ir_ipm_eff <- kc50_ir_ipm_mono
-    if (CONC_TOB_MGL >= tob_cut) kc50_ir_ipm_eff <- kc50_ir_ipm_combo
+    if (Ctob >= tob_cut) kc50_ir_ipm_eff <- kc50_ir_ipm_combo
 
     # =============================================================
     # Per-subpopulation killing rates (1/h)
     # =============================================================
     # Imipenem: sigmoidal Hill (Emax fixed at Kmax,IPM, shared
     # across subpopulations per Table 1).
-    ipm_hp <- CONC_IPM_MGL ^ hill_ipm
+    ipm_hp <- Cipm ^ hill_ipm
     kill_ss_ipm <- kmax_ipm * ipm_hp / (kc50_ss_ipm ^ hill_ipm + ipm_hp)
     kill_ri_ipm <- kmax_ipm * ipm_hp / (kc50_ri_ipm ^ hill_ipm + ipm_hp)
     kill_ir_ipm <- kmax_ipm * ipm_hp / (kc50_ir_ipm_eff ^ hill_ipm + ipm_hp)
@@ -202,9 +208,9 @@ Landersdorfer_2018_imipenem_tobramycin <- function() {
     # Tobramycin: Emax (Hill = 1; no Hill exponent is tabulated).
     # Kmax for population 3 (IR) is held equal to population 1 (SS)
     # per Table 1 footnote (e).
-    kill_ss_tob <- kmax_tob_ss * CONC_TOB_MGL / (kc50_ss_tob + CONC_TOB_MGL)
-    kill_ri_tob <- kmax_tob_ri * CONC_TOB_MGL / (kc50_ri_tob + CONC_TOB_MGL)
-    kill_ir_tob <- kmax_tob_ss * CONC_TOB_MGL / (kc50_ir_tob + CONC_TOB_MGL)
+    kill_ss_tob <- kmax_tob_ss * Ctob / (kc50_ss_tob + Ctob)
+    kill_ri_tob <- kmax_tob_ri * Ctob / (kc50_ri_tob + Ctob)
+    kill_ir_tob <- kmax_tob_ss * Ctob / (kc50_ir_tob + Ctob)
 
     # Total per-state killing rate per subpopulation (additive).
     kill_ss <- kill_ss_ipm + kill_ss_tob
@@ -226,14 +232,14 @@ Landersdorfer_2018_imipenem_tobramycin <- function() {
     # was not on disk -- see the vignette Assumptions and
     # deviations section).
 
-    d/dt(s1_ss) <- -k12_ss * s1_ss + 2 * k21 * s2_ss - kill_ss * s1_ss
-    d/dt(s2_ss) <-  k12_ss * s1_ss - k21 * s2_ss - kill_ss * s2_ss
+    d/dt(bact_susceptible_susceptible1) <- -k12_ss * bact_susceptible_susceptible1 + 2 * k21 * bact_susceptible_susceptible2 - kill_ss * bact_susceptible_susceptible1
+    d/dt(bact_susceptible_susceptible2) <-  k12_ss * bact_susceptible_susceptible1 - k21 * bact_susceptible_susceptible2 - kill_ss * bact_susceptible_susceptible2
 
-    d/dt(s1_ri) <- -k12_ri * s1_ri + 2 * k21 * s2_ri - kill_ri * s1_ri
-    d/dt(s2_ri) <-  k12_ri * s1_ri - k21 * s2_ri - kill_ri * s2_ri
+    d/dt(bact_resistant_intermediate1) <- -k12_ri * bact_resistant_intermediate1 + 2 * k21 * bact_resistant_intermediate2 - kill_ri * bact_resistant_intermediate1
+    d/dt(bact_resistant_intermediate2) <-  k12_ri * bact_resistant_intermediate1 - k21 * bact_resistant_intermediate2 - kill_ri * bact_resistant_intermediate2
 
-    d/dt(s1_ir) <- -k12_ir * s1_ir + 2 * k21 * s2_ir - kill_ir * s1_ir
-    d/dt(s2_ir) <-  k12_ir * s1_ir - k21 * s2_ir - kill_ir * s2_ir
+    d/dt(bact_intermediate_resistant1) <- -k12_ir * bact_intermediate_resistant1 + 2 * k21 * bact_intermediate_resistant2 - kill_ir * bact_intermediate_resistant1
+    d/dt(bact_intermediate_resistant2) <-  k12_ir * bact_intermediate_resistant1 - k21 * bact_intermediate_resistant2 - kill_ir * bact_intermediate_resistant2
 
     # =============================================================
     # Initial conditions
@@ -255,12 +261,12 @@ Landersdorfer_2018_imipenem_tobramycin <- function() {
     f_s2_ri <- k12_ri_base / (k12_ri_base + k21)
     f_s2_ir <- k12_ir_base / (k12_ir_base + k21)
 
-    s1_ss(0) <- total0 * frac_ss * (1 - f_s2_ss)
-    s2_ss(0) <- total0 * frac_ss * f_s2_ss
-    s1_ri(0) <- total0 * frac_ri * (1 - f_s2_ri)
-    s2_ri(0) <- total0 * frac_ri * f_s2_ri
-    s1_ir(0) <- total0 * frac_ir * (1 - f_s2_ir)
-    s2_ir(0) <- total0 * frac_ir * f_s2_ir
+    bact_susceptible_susceptible1(0) <- total0 * frac_ss * (1 - f_s2_ss)
+    bact_susceptible_susceptible2(0) <- total0 * frac_ss * f_s2_ss
+    bact_resistant_intermediate1(0) <- total0 * frac_ri * (1 - f_s2_ri)
+    bact_resistant_intermediate2(0) <- total0 * frac_ri * f_s2_ri
+    bact_intermediate_resistant1(0) <- total0 * frac_ir * (1 - f_s2_ir)
+    bact_intermediate_resistant2(0) <- total0 * frac_ir * f_s2_ir
 
     # =============================================================
     # Observation: log10 total viable count (CFU/mL)
