@@ -82,6 +82,8 @@ navbar:
         href: articles/Birgersson_2016_artemisinin.html
       - text: "Artesunate (Hendriksen 2013)"
         href: articles/Hendriksen_2013_artesunate.html
+      - text: "Artesunate (LohyDas 2018)"
+        href: articles/LohyDas_2018_artesunate.html
       - text: "Artesunate (Morris 2011)"
         href: articles/Morris_2011_artesunate.html
       - text: "Artesunate (Simpson 2013)"
@@ -1388,6 +1390,8 @@ articles:
   - articles/Llanos_2017_gentamicin
   - articles/Llanos-Paez_2017_gentamicin
   - articles/Llanos-Paez_2020_gentamicin
+  - articles/Llanos_2017_gentamicin
+  - articles/LohyDas_2018_artesunate
   - articles/Lon_2013_abatacept
   - articles/Long_2017_necitumumab
   - articles/Long-Boyle_2015_busulfan
