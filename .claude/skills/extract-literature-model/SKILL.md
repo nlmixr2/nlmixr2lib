@@ -16,6 +16,7 @@ Read on demand based on the paper's model class. The most-used references are li
 
 **Always:**
 - `references/pre-flight-checklist.md` — consolidated stop-and-ask triggers. Read this once at dispatch.
+- `references/replicate-author-structure.md` — standing default policy on multi-model handling (N files vs 1 file, always 1 vignette per paper) with worked examples.
 - `references/compartment-names.md` — compartment and observation-variable names.
 - `references/parameter-names.md` — structural PK, IIV, residual-error, covariate-effect, fixed-parameter encoding, file-level metadata, file naming.
 - `inst/references/covariate-columns.md` — authoritative register of covariate column names. Consult before introducing any new covariate. (Installed with the package so R code like `checkModelConventions()` can parse it at runtime.)
@@ -132,9 +133,23 @@ Whole-body PBPK, semi-mechanistic PBPK, quantitative systems pharmacology (QSP),
 7. **Always search for supplementary information.** Supplements frequently contain the NONMEM control stream and parameter tables that disambiguate model structure. If the user provided only a main article, ask whether a supplement exists and request it.
 8. **Always search for errata, corrigenda, or author corrections.** Check the journal's landing page for the article, the publisher's "corrections" / "notices" feed, and a search like `"<first author> <year> <drug>" erratum` on PubMed and Google Scholar. Ask the user whether they are aware of any corrections if the source is paywalled or the search is inconclusive. **When an erratum revises a value used in the model (parameter estimate, covariate effect, equation, units), the erratum value takes precedence over the main publication.** If multiple errata exist, the most recent supersedes earlier ones. Record the erratum citation in the model file's `reference` metadata alongside the main paper, and in every in-file source-trace comment whose value comes from the erratum, point to the erratum (not the original table).
 9. **Verify parameters are final estimates, not initial estimates.** Supplement control streams usually list initial values in `$THETA` / `$OMEGA`; final values come from the paper's results table or `$TABLE` output. If only a control stream is available, confirm values against any published point estimates before treating them as final.
-10. **Multiple-model handling.**
-    - Base model + final model → extract only the final.
-    - Any other "multiple model" case (per-subpopulation, per-endpoint, sensitivity analyses) → list the candidates to the user and ask which to extract. Offer "one," "all," or "a subset."
+10. **Multiple-model handling — replicate the author's structure (default).** The default is to extract the model **exactly as the authors built it**. Almost always allow the original authors' added complexity; the library exists to faithfully reproduce the literature, and collapsing or splitting structure the authors chose is a loss of fidelity. See `references/replicate-author-structure.md` for worked examples.
+
+    Apply this mapping silently — no sidecar:
+
+    - **Base model + final model** in a model-development paper → extract only the final.
+    - **N independent (non-hierarchical) models in one paper** (e.g. two PD endpoints on different cohorts, per-species fits, per-subpopulation fits, parent + metabolite fit independently) → extract as **N separate `.R` files**, one per model. Filenames disambiguate by drug/species/endpoint suffix (`Author_Year_drug1.R`, `Author_Year_drug2.R`, or `Author_Year_drug_rat.R` / `_human.R`).
+    - **One joint coupled model** (parent + metabolite fit simultaneously; N species sharing covariate-mediated parameter sets; a single multi-output model with shared parameters) → extract as **one `.R` file**.
+    - **Per-endpoint sensitivity analyses or alternative parameterisations that the authors did NOT consider the reported result** (e.g. one model is presented as final, another is a robustness check or an obsolete iteration) → extract only the reported final.
+
+    Regardless of how many `.R` files come out, produce **one vignette per paper** (see Phase 5). The vignette walks the paper's narrative and calls each `modellib()` at the right point.
+
+    Stop-and-ask sidecar ONLY when one of these two narrow conditions holds:
+
+    - **Infeasible**: replicating the author's structure requires NONMEM (or other-platform) features that rxode2 / nlmixr2 cannot express (e.g., a specific mixture-model construct, a censoring scheme without a clean nlmixr2 analogue). Sidecar with the specific feature and a proposed simplification.
+    - **Genuinely ambiguous from the paper text**: e.g., the authors reported two parameterisations but the text leaves it unclear whether both are intended final results, or whether the second supersedes the first. Sidecar with the textual evidence for each interpretation.
+
+    Do NOT sidecar for: "the paper has multiple models — which do you want?" That question is answered by the policy above. The recommended answer is almost always "extract all of them as the authors built them, in N files, with one vignette tying them together."
 11. **Systematic review / meta-analysis handling.** If the source is a systematic review or meta-analysis that catalogs other authors' published popPK / PD models without developing an original model of its own, **the default action is to skip the task and queue the cited primary papers for future extraction.** Do not extract a cataloged model from the review's summary table — extracting from a secondary source loses model-selection rationale, covariate-encoding details (reference categories, units, allometric exponents, scaling normalisations), and the full residual-error / IIV structure that only the primary papers contain. Recognise systematic reviews by:
 
     - An explicit "Review" / "Systematic Review" tag on page 1 or in the article-type header.
@@ -273,9 +288,13 @@ This is mandatory for any parameter not from the paper text/tables. The vignette
 
 ## Phase 5 — Validation vignette
 
-File path: `vignettes/articles/<FirstAuthor>_<Year>_<drug>.Rmd`. Drug-specific vignettes live under `vignettes/articles/` so pkgdown builds them for the site but CRAN does not — `.Rbuildignore` excludes that directory. The basename (without `.Rmd`) must match the `vignette <- "..."` field in the model file. Only the legacy `PK_2cmt_mAb_Davda_2014.Rmd` remains at top-level `vignettes/`.
+File path: `vignettes/articles/<FirstAuthor>_<Year>_<topic>.Rmd`. Drug-specific vignettes live under `vignettes/articles/` so pkgdown builds them for the site but CRAN does not — `.Rbuildignore` excludes that directory. The basename (without `.Rmd`) must match the `vignette <- "..."` field in every model file the paper contributed. Only the legacy `PK_2cmt_mAb_Davda_2014.Rmd` remains at top-level `vignettes/`.
 
-The YAML `title:` and `\VignetteIndexEntry{...}` use the **human form** `<Drug> (<FirstAuthor> <Year>)` (e.g. `Ustekinumab (Aguiar 2021)`), matching the navbar dropdown label generated by `R/modeldb.R::.parseModelLabel()`. The filename stays in the machine form. See `references/vignette-template.md` for the full header and rules around longer descriptive titles.
+**One vignette per paper, regardless of N model files.** When a paper produces N `.R` files (per the Phase 1 step 10 policy — independent models extracted as N separate files), produce **a single vignette** that walks the paper's narrative and uses each `modellib()` call at the appropriate point. Do NOT produce N vignettes (`Author_Year_drug1.Rmd` / `Author_Year_drug2.Rmd`) for a paper that contributed N models — that fragments the reviewer's view of the paper-as-a-unit.
+
+- **Naming**: `<FirstAuthor>_<Year>_<topic>.Rmd`. For a single-model paper, `<topic>` is the drug (e.g. `Hu_2026_clesrovimab.Rmd`). For a multi-model paper, `<topic>` is a phrase that names what the paper is about as a whole, not one of its drugs / endpoints (e.g. `de_vries_schultink_2018_anthracycline_trastuzumab_cardiotoxicity.Rmd`, NOT `de_vries_schultink_2018_anthracyclines.Rmd` plus a second vignette). When in doubt, pick the most prominent shared subject of the paper (a disease, a mechanism, a combination therapy).
+- **`vignette <- "..."` in every contributing model file** points to the same basename. `buildModelDb()` records the vignette per model so all N models in `modellib()` link to the same rendered page.
+- **YAML `title:` and `\VignetteIndexEntry{...}`** use the **human form** of the paper's subject and citation, e.g. `Anthracycline + trastuzumab cardiotoxicity (de Vries Schultink 2018)` — drug list at the start, citation in parentheses. For single-model papers the existing form `<Drug> (<FirstAuthor> <Year>)` (e.g. `Ustekinumab (Aguiar 2021)`) continues unchanged. The filename stays in the machine form. See `references/vignette-template.md` for header rules.
 
 Use `references/vignette-template.md`. Required sections, in order:
 
