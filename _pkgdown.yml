@@ -334,8 +334,8 @@ navbar:
         href: articles/Kim_2017_fimasartan.html
       - text: "Finafloxacin (Taubert 2018)"
         href: articles/Taubert_2018_finafloxacin.html
-      - text: "Flucloxacillin (Landersdorfer 2007)"
-        href: articles/Landersdorfer_2007_flucloxacillin.html
+      - text: "Fluconazole (Wade 2008)"
+        href: articles/Wade_2008_fluconazole.html
       - text: "Flurbiprofen (Zhang 2018)"
         href: articles/Zhang_2018_flurbiprofen.html
       - text: "Follitropin delta (Rose 2016)"
@@ -1650,6 +1650,7 @@ articles:
   - articles/Vezina_2014_valganciclovir
   - articles/Vinnard_2017_rifampicin
   - articles/Voller_2017_phenobarbital
+  - articles/Wade_2008_fluconazole
   - articles/Wade_2015_certolizumab
   - articles/Wang_2012_propofol
   - articles/Wang_2013_morphine

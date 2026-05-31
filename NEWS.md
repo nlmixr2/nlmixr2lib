@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Dorlo 2008 miltefosine ([doi:10.1128/AAC.00014-08](https://doi.org/10.1128/AAC.00014-08)) -- 31 Dutch military personnel with Old World cutaneous leishmaniasis (Leishmania major) contracted in Afghanistan.
+* Add Wade 2008 fluconazole ([doi:10.1128/AAC.00569-08](https://doi.org/10.1128/AAC.00569-08)) -- preterm and term infants <120 days of age receiving intravenous fluconazole for prevention or treatment of invasive candidiasis.
 * Add Padoin 1998 cephalexin ([doi:10.1128/aac.42.6.1463](https://doi.org/10.1128/aac.42.6.1463)) -- preclinical male Wistar rats with a cephalexin / quinapril oral coadministration DDI (ratifies new `CONMED_QPRL_ORAL` covariate canonical).
 * Add van Rongen 2018 metformin ([doi:10.1007/s40272-018-0293-1](https://doi.org/10.1007/s40272-018-0293-1)) -- overweight and obese Caucasian adolescents.
 * Add Tarning 2012 artemether and dihydroartemisinin ([doi:10.1186/1475-2875-11-293](https://doi.org/10.1186/1475-2875-11-293)) -- pregnant women with uncomplicated Plasmodium falciparum malaria in Uganda (joint parent + DHA popPK with zero-order dissolution and 6-compartment transit absorption).
