@@ -66,8 +66,10 @@ navbar:
         href: articles/Tod_1998_amikacin.html
       - text: "Amlitelimab (Tiraboschi 2025)"
         href: articles/Tiraboschi_2025_amlitelimab.html
-      - text: "Amodiaquine (Ali 2018)"
-        href: articles/Ali_2018_amodiaquine.html
+      - text: "Amoxicillin (Tang 2019)"
+        href: articles/Tang_2019_amoxicillin.html
+      - text: "AmphotericinB liposomal (Hong 2006)"
+        href: articles/Hong_2006_amphotericinB_liposomal.html
       - text: "Anifrolumab (Almquist 2022)"
         href: articles/Almquist_2022_anifrolumab.html
       - text: "Anrukinzumab (Hua 2015)"
@@ -1314,6 +1316,7 @@ articles:
   - articles/Hoglund_2017_piperaquine
   - articles/Hoglund_2018_mefloquine
   - articles/Holford_1992_tacrine
+  - articles/Hong_2006_amphotericinB_liposomal
   - articles/Hong_2015_moxifloxacin
   - articles/Hong_2025_datopotamab
   - articles/Hood_2021_medi7836
