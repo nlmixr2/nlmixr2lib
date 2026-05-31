@@ -2523,6 +2523,12 @@ Antibiotic combination-PK drug suffixes (linezolid, vancomycin, meropenem long f
 - **Source aliases:** none.
 - **Example models:** `Chen_2017_TB_MTP_GPDI_mouse.R`.
 
+### nasdox (**canonical N-acetylsulfadoxine (NASDOX) metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** N-acetylsulfadoxine (NASDOX), the N-acetyltransferase-2-mediated acetylated metabolite of sulfadoxine (SDOX). Carried as a separate single-compartment central / peripheral compartment in parent + metabolite popPK models of SDOX.
+- **Source aliases:** none.
+- **Example models:** `Karunajeewa_2009_sulfadoxine.R`.
+
 ---
 
 ## PBPK organ sub-compartment suffixes (Ayyar 2024)

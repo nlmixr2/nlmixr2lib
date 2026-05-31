@@ -708,6 +708,8 @@ navbar:
         href: articles/Alsultan_2017_pyrazinamide.html
       - text: "Pyrazinamide (Horita 2018)"
         href: articles/Horita_2018_pyrazinamide.html
+      - text: "Pyrimethamine (Karunajeewa 2009)"
+        href: articles/Karunajeewa_2009_sulfadoxinePyrimethamine.html
       - text: "Quinine (Kloprogge 2014)"
         href: articles/Kloprogge_2014_quinine.html
       - text: "Quinine (LeJouan 2005)"
@@ -824,6 +826,10 @@ navbar:
         href: articles/Goel_2016_Sonidegib.html
       - text: "Sugemalimab (Wang 2024)"
         href: articles/Wang_2024_sugemalimab.html
+      - text: "Sulfadoxine (Karunajeewa 2009)"
+        href: articles/Karunajeewa_2009_sulfadoxinePyrimethamine.html
+      - text: "SulfadoxinePyrimethamine (Odongo 2015)"
+        href: articles/Odongo_2015_sulfadoxinePyrimethamine.html
       - text: "SulfadoxinePyrimethamine (deKock 2017)"
         href: articles/deKock_2017_sulfadoxinePyrimethamine.html
       - text: "SulfadoxinePyrimethamine (Odongo 2015)"
@@ -1384,7 +1390,7 @@ articles:
   - articles/Jonckheere_2019_cefepime
   - articles/Jonsson_2005_disufenton
   - articles/Jonsson_2011_ethambutol
-  - articles/Jullien_2006_lopinavir
+  - articles/Karunajeewa_2009_sulfadoxinePyrimethamine
   - articles/Kawamura_2018_eribulin
   - articles/Khan_2015_ciprofloxacin
   - articles/Kielbasa_2020_galcanezumab
