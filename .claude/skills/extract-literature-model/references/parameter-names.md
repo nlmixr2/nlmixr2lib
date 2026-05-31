@@ -117,17 +117,37 @@ Source-paper aliases that translate to `ltlag` without sidecar:
 Inside `model()` the bare name is `tlag`. Apply via `alag(depot) <- tlag`
 or `alag(<cmt>) <- tlag` (preferred over carrying a separate `lag` compartment).
 
-### Acrophase / circadian peak time
+## Time-varying protein binding
 
-Canonical acrophase prefix: **`ltacro`** (log time of peak in a
-circadian-rhythm rate constant). Distinct from absorption-lag time:
-`tacro` is a phase shift inside a sinusoidal modulation of `kin` /
-`kout` rather than a delay between dose administration and absorption.
+Canonical slope for linear time-varying unbound-fraction models:
+**`lbfu`** (log slope of unbound fraction with respect to time, 1/time-unit).
+Bare name inside `model()`: `bfu`.
 
-Used in `indirect_circ_*` circadian-IDR templates with kinetic forms
-such as `kout_t <- kin + amp * sin(2*pi*(t - tacro) / period)` (and
-the cos / amplitude-ratio variants). The legacy form `ltz` is
-deprecated in favour of `ltacro`.
+Use this for popPK models that encode an evolving free fraction during the
+study window, typically of the form
+
+```
+fu(t) = fu_ref + bfu * (t - t_ref)
+```
+
+where `fu_ref` is the unbound-fraction anchor at reference time `t_ref` (taken
+from external literature, not estimated), and `bfu` is the time slope. The
+slope is usually fixed at a literature value (`lbfu <- fixed(log(<value>))`)
+because the unbound fraction itself is not measured directly in plasma-
+concentration popPK studies; only the resulting time-trends in apparent CL
+and V are observed. Inter-individual variability on `bfu` may be estimated
+when the source paper reports it.
+
+When the source paper imposes a window of validity for the linear-evolution
+assumption (e.g. "fu evolves linearly from 0 to 72 h"), clamp `t` to the
+declared window inside `model()`:
+
+```
+fu <- fu_ref + bfu * (min(t, t_max) - t_ref)
+```
+
+Founding example: `LeJouan_2005_quinine.R` (children with falciparum malaria;
+fu = b*(t-36) + 0.15, b fixed at 0.001/h, evolution clamped at t = 72 h).
 
 ## Indirect-response (IDR) / turnover parameters
 
