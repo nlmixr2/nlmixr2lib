@@ -2,8 +2,7 @@
 
 # development version
 
-* Add Ande 2018 paclitaxel + everolimus + dasatinib ([doi:10.3389/fphar.2018.00403](https://doi.org/10.3389/fphar.2018.00403)) -- in vitro (JIMT-1 HER2-positive breast cancer cell line) 3DD BelloCell-bioreactor PK/PD model.
-* Add Padoin 1998 cephalexin ([doi:10.1128/aac.42.6.1463](https://doi.org/10.1128/aac.42.6.1463)) -- preclinical male Wistar rats with a cephalexin / quinapril oral coadministration DDI (ratifies new `CONMED_QPRL_ORAL` covariate canonical).
+* Add Gatti 1996 dapsone ([doi:10.1128/aac.40.12.2743](https://doi.org/10.1128/aac.40.12.2743)) -- HIV-infected adults on biweekly Pneumocystis carinii pneumonia prophylaxis.
 * Add van Rongen 2018 metformin ([doi:10.1007/s40272-018-0293-1](https://doi.org/10.1007/s40272-018-0293-1)) -- overweight and obese Caucasian adolescents.
 * Add Tarning 2012 artemether and dihydroartemisinin ([doi:10.1186/1475-2875-11-293](https://doi.org/10.1186/1475-2875-11-293)) -- pregnant women with uncomplicated Plasmodium falciparum malaria in Uganda (joint parent + DHA popPK with zero-order dissolution and 6-compartment transit absorption).
 * Add Schoemaker 2017 brivaracetam ([doi:10.1007/s00228-017-2230-6](https://doi.org/10.1007/s00228-017-2230-6)) -- paediatric patients with epilepsy aged 1 month to 16 years; ratifies new `CONMED_PB`, `CONMED_CBZ`, and `CONMED_VPA` covariate canonicals.
