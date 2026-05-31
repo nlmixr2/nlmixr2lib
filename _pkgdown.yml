@@ -332,6 +332,8 @@ navbar:
         href: articles/Kim_2017_fimasartan.html
       - text: "Finafloxacin (Taubert 2018)"
         href: articles/Taubert_2018_finafloxacin.html
+      - text: "Flucloxacillin (Landersdorfer 2007)"
+        href: articles/Landersdorfer_2007_flucloxacillin.html
       - text: "Flurbiprofen (Zhang 2018)"
         href: articles/Zhang_2018_flurbiprofen.html
       - text: "Follitropin delta (Rose 2016)"
@@ -1395,7 +1397,7 @@ articles:
   - articles/Laffont_2024_naloxone
   - articles/Laffont_2025_opioid_overdose_reversal_simulation
   - articles/Lahu_2010_roflumilast
-  - articles/Lamoth_2009_imipenem
+  - articles/Landersdorfer_2007_flucloxacillin
   - articles/Landersdorfer_2018_imipenem_tobramycin
   - articles/Laouenan_2015_ribavirin
   - articles/Lawson_2022_busulfan
