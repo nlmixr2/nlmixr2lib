@@ -2069,6 +2069,12 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Source aliases:** none.
 - **Example models:** `Hennig_2006_itraconazole.R`, `Hennig_2007_itraconazole.R`.
 
+### ohcla (**canonical 14-(R)-hydroxy-clarithromycin suffix**)
+- **Type:** metabolite-suffix
+- **Role:** 14-(R)-hydroxy-clarithromycin (14-OH-CLA), the principal active metabolite of clarithromycin formed predominantly by CYP3A4-mediated stereospecific hydroxylation at the 14 position. Used as the metabolite suffix in parent + metabolite simultaneous popPK models (compartments `central_ohcla`, parameters `lcl_ohcla` / `lvc_ohcla`, residuals `addSd_ohcla`). Founding example: `Abduljalil_2009_clarithromycin.R`.
+- **Source aliases:** none.
+- **Example models:** `Abduljalil_2009_clarithromycin.R`.
+
 ### doxol (**canonical doxorubicinol suffix**)
 - **Type:** metabolite-suffix
 - **Role:** Doxorubicinol, C-13 alcohol metabolite of doxorubicin.
