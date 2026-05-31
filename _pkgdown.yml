@@ -468,6 +468,8 @@ navbar:
         href: articles/CarlssonPetri_2021_liraglutide.html
       - text: "Lopinavir (Archary 2018)"
         href: articles/Archary_2018_lopinavir.html
+      - text: "Lopinavir (Jullien 2006)"
+        href: articles/Jullien_2006_lopinavir.html
       - text: "Lumefantrine (Kloprogge 2013)"
         href: articles/Kloprogge_2013_lumefantrine.html
       - text: "Lumefantrine (Kloprogge 2018)"
@@ -1353,6 +1355,7 @@ articles:
   - articles/Jonckheere_2019_cefepime
   - articles/Jonsson_2005_disufenton
   - articles/Jonsson_2011_ethambutol
+  - articles/Jullien_2006_lopinavir
   - articles/Kawamura_2018_eribulin
   - articles/Khan_2015_ciprofloxacin
   - articles/Kielbasa_2020_galcanezumab

@@ -3817,6 +3817,18 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Example models:** `Li_2019_abatacept.R` (exponential effect on CL: `CL * exp(0.0640 * CONMED_NSAID)`; ~6.6% higher CL, not clinically relevant per Li 2019).
 - **Notes:** Baseline-use-only in Li 2019; time-varying use is permitted, document per-model. Follows the `CONMED_*` concomitant-medication pattern established for IBD models (AZA / MP / MTX / AMINO).
 
+### CONMED_NVP (**canonical for concomitant nevirapine indicator**)
+- **Description:** 1 = subject is receiving nevirapine (NVP) -- typically as the non-nucleoside reverse-transcriptase inhibitor (NNRTI) third agent in an HIV combination ART regimen -- coadministered with the modelled antiretroviral; 0 = subject is not on nevirapine. Nevirapine is a CYP3A inducer; the indicator is used to flag PXR-mediated induction of metabolic clearance for coadministered CYP3A-cleared antiretrovirals (e.g., the protease inhibitor lopinavir).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (no nevirapine; paper-defined ART backbone excluding NVP).
+- **Source aliases:**
+  - `N` -- in-equation indicator used by Jullien 2006 (final covariate submodel: `CL/F = ... * 1.34^N` with N = 1 if nevirapine combined with lopinavir).
+  - `NVP` -- standard 3-letter HIV abbreviation in NONMEM control streams from pediatric-ART cohorts; same orientation, no value transformation.
+- **Example models:** `Jullien_2006_lopinavir.R` (exponential effect on CL/F: `cl *= exp(log(1.34) * CONMED_NVP)`; +34% CL/F when nevirapine is coadministered).
+- **Notes:** Specific scope until a second model ratifies the name; sister indicator to the registered `CONMED_EFV` (efavirenz) entry, applying to the second commonly co-administered NNRTI. Future ART popPK models that test an NVP-vs-comparator contrast should extend the example list when the comparator matches.
+
 ### CONMED_PARA (**canonical for concomitant paracetamol (acetaminophen) use**)
 - **Description:** 1 = on concomitant paracetamol (acetaminophen) at the observation, 0 = not.
 - **Units:** (binary)

@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Charles 2007 tafenoquine ([doi:10.1128/AAC.01183-06](https://doi.org/10.1128/AAC.01183-06)) -- healthy adult Australian soldiers on weekly malaria prophylaxis.
+* Add Jullien 2006 lopinavir ([doi:10.1128/AAC.00943-05](https://doi.org/10.1128/AAC.00943-05)) -- HIV-infected children from birth to 18 years (ratifies new `CONMED_NVP` covariate canonical).
 * Add Padoin 1998 cephalexin ([doi:10.1128/aac.42.6.1463](https://doi.org/10.1128/aac.42.6.1463)) -- preclinical male Wistar rats with a cephalexin / quinapril oral coadministration DDI (ratifies new `CONMED_QPRL_ORAL` covariate canonical).
 * Add van Rongen 2018 metformin ([doi:10.1007/s40272-018-0293-1](https://doi.org/10.1007/s40272-018-0293-1)) -- overweight and obese Caucasian adolescents.
 * Add Tarning 2012 artemether and dihydroartemisinin ([doi:10.1186/1475-2875-11-293](https://doi.org/10.1186/1475-2875-11-293)) -- pregnant women with uncomplicated Plasmodium falciparum malaria in Uganda (joint parent + DHA popPK with zero-order dissolution and 6-compartment transit absorption).
