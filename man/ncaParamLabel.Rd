@@ -21,7 +21,7 @@ Character vector the same length as `code`.
 Vectorized recoder that maps the PKNCA parameter codes (`PPTESTCD`
 values such as `"cmax"`, `"aucinf.obs"`, `"half.life"`) to the friendly
 pharmacometric labels readers expect in tables and prose (`"Cmax"`,
-`"AUC0-∞ (obs)"`, `"t½"`). Codes that are not in the mapping
+`"AUC0-Inf (obs)"`, `"t1/2"`). Codes that are not in the mapping
 table are returned unchanged with a warning, so unfamiliar parameters
 never get silently dropped.
 }

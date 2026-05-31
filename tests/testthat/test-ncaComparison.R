@@ -1,7 +1,7 @@
 test_that("ncaParamLabel maps known codes to friendly labels", {
   expect_equal(
     ncaParamLabel(c("cmax", "tmax", "auclast", "aucinf.obs", "half.life")),
-    c("Cmax", "Tmax", "AUClast", "AUC0-∞ (obs)", "t½")
+    c("Cmax", "Tmax", "AUClast", "AUC0-\u221e (obs)", "t\u00bd")
   )
 })
 
@@ -99,9 +99,9 @@ test_that("ncaComparisonTable formats NA values with em-dash", {
                           PPORRES  = c(NA_real_, 2.0))
   reference <- data.frame(cmax = NA_real_, tmax = 2.0)
   tbl <- ncaComparisonTable(simulated, reference)
-  expect_equal(tbl[["Reference"]][match("Cmax", tbl[["NCA parameter"]])], "—")
-  expect_equal(tbl[["Simulated"]][match("Cmax", tbl[["NCA parameter"]])], "—")
-  expect_equal(tbl[["% diff"]][match("Cmax", tbl[["NCA parameter"]])], "—")
+  expect_equal(tbl[["Reference"]][match("Cmax", tbl[["NCA parameter"]])], "\u2014")
+  expect_equal(tbl[["Simulated"]][match("Cmax", tbl[["NCA parameter"]])], "\u2014")
+  expect_equal(tbl[["% diff"]][match("Cmax", tbl[["NCA parameter"]])], "\u2014")
 })
 
 test_that("ncaComparisonTable respects params subset", {
@@ -140,5 +140,5 @@ test_that("ncaComparisonTable orders rows by canonical PKNCA parameter order", {
   reference <- data.frame(half.life = 11, cmax = 14, tmax = 2, auclast = 90)
   tbl <- ncaComparisonTable(simulated, reference)
   expect_equal(tbl[["NCA parameter"]],
-               c("Cmax", "Tmax", "AUClast", "t½"))
+               c("Cmax", "Tmax", "AUClast", "t\u00bd"))
 })

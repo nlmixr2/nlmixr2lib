@@ -63,7 +63,7 @@ to the result.
 }
 \details{
 Designed for any nlmixr2 user comparing predicted NCA to a reference
-\U2014 not solely a vignette utility. Accepts a `PKNCAresults` object,
+-- not solely a vignette utility. Accepts a `PKNCAresults` object,
 the `$result` data.frame, or a tidy long frame with columns `PPTESTCD`
 and `PPORRES` for `simulated`; the same shapes plus a wide
 `data.frame` (one row per group, one column per PKNCA parameter code)

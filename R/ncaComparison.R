@@ -3,7 +3,7 @@
 #' Vectorized recoder that maps the PKNCA parameter codes (`PPTESTCD`
 #' values such as `"cmax"`, `"aucinf.obs"`, `"half.life"`) to the friendly
 #' pharmacometric labels readers expect in tables and prose (`"Cmax"`,
-#' `"AUC0-∞ (obs)"`, `"t½"`). Codes that are not in the mapping
+#' `"AUC0-Inf (obs)"`, `"t1/2"`). Codes that are not in the mapping
 #' table are returned unchanged with a warning, so unfamiliar parameters
 #' never get silently dropped.
 #'
@@ -51,13 +51,13 @@ ncaParamLabel <- function(code, units = NULL) {
     tmax           = "Tmax",
     tlast          = "Tlast",
     clast.obs      = "Clast",
-    aucinf.obs     = "AUC0-∞ (obs)",
-    aucinf.pred    = "AUC0-∞ (pred)",
+    aucinf.obs     = "AUC0-\u221e (obs)",
+    aucinf.pred    = "AUC0-\u221e (pred)",
     auclast        = "AUClast",
     aucall         = "AUCall",
-    half.life      = "t½",
-    lambda.z       = "λz",
-    lambda.z.n.points = "λz n points",
+    half.life      = "t\u00bd",
+    lambda.z       = "\u03bbz",
+    lambda.z.n.points = "\u03bbz n points",
     cl.obs         = "CL/F",
     cl.pred        = "CL/F",
     vss.obs        = "Vss/F",
@@ -65,7 +65,7 @@ ncaParamLabel <- function(code, units = NULL) {
     vz.obs         = "Vz/F",
     vz.pred        = "Vz/F",
     cav            = "Cavg",
-    ctau           = "Cτ",
+    ctau           = "C\u03c4",
     ctrough        = "Ctrough",
     accumulation   = "Rac",
     swing          = "Swing",
@@ -73,15 +73,15 @@ ncaParamLabel <- function(code, units = NULL) {
     fluctuation    = "Fluctuation",
     fluctuation_pct = "Fluctuation (%)",
     ptr            = "PTR",
-    aumcinf.obs    = "AUMC0-∞ (obs)",
-    aumcinf.pred   = "AUMC0-∞ (pred)",
+    aumcinf.obs    = "AUMC0-\u221e (obs)",
+    aumcinf.pred   = "AUMC0-\u221e (pred)",
     aumclast       = "AUMC0-t",
-    mrtinf.obs     = "MRT0-∞ (obs)",
-    mrtinf.pred    = "MRT0-∞ (pred)",
+    mrtinf.obs     = "MRT0-\u221e (obs)",
+    mrtinf.pred    = "MRT0-\u221e (pred)",
     mrtlast        = "MRT0-t",
     mrt.iv.obs     = "MRTiv (obs)",
     mrt.iv.pred    = "MRTiv (pred)",
-    thalf.eff.obs  = "t½,eff",
+    thalf.eff.obs  = "t\u00bd,eff",
     f              = "F",
     n.samples      = "N samples",
     ae             = "Ae (amount excreted)",
@@ -104,7 +104,7 @@ ncaParamLabel <- function(code, units = NULL) {
 #' to the result.
 #'
 #' Designed for any nlmixr2 user comparing predicted NCA to a reference
-#' \U2014 not solely a vignette utility. Accepts a `PKNCAresults` object,
+#' -- not solely a vignette utility. Accepts a `PKNCAresults` object,
 #' the `$result` data.frame, or a tidy long frame with columns `PPTESTCD`
 #' and `PPORRES` for `simulated`; the same shapes plus a wide
 #' `data.frame` (one row per group, one column per PKNCA parameter code)
@@ -182,11 +182,13 @@ ncaComparisonTable <- function(simulated, reference,
   ref_long <- .toLongNca(reference, by, value_name = "Reference")
 
   group_order <- if (!is.null(by)) {
-    setNames(
+    stats::setNames(
       lapply(by, function(b) unique(ref_long[[b]])),
       by
     )
-  } else NULL
+  } else {
+    NULL
+  }
 
   if (!is.null(params)) {
     sim_long <- sim_long[sim_long$PPTESTCD %in% params, , drop = FALSE]
@@ -251,7 +253,7 @@ ncaComparisonTable <- function(simulated, reference,
 
   if (any(flagged)) {
     attr(out, "footnote") <- sprintf(
-      "* differs from reference by more than ±%g%%.",
+      "* differs from reference by more than \u00b1%g%%.",
       tolerance_pct
     )
   }
@@ -320,15 +322,21 @@ ncaComparisonTable <- function(simulated, reference,
 
 .fmtNcaValue <- function(x) {
   vapply(x, function(v) {
-    if (is.na(v)) "—"
-    else format(signif(v, 3), scientific = FALSE, trim = TRUE)
+    if (is.na(v)) {
+      "\u2014"
+    } else {
+      format(signif(v, 3), scientific = FALSE, trim = TRUE)
+    }
   }, character(1L))
 }
 
 .fmtNcaPct <- function(x, flagged) {
   out <- vapply(x, function(v) {
-    if (is.na(v)) "—"
-    else sprintf("%+0.1f%%", v)
+    if (is.na(v)) {
+      "\u2014"
+    } else {
+      sprintf("%+0.1f%%", v)
+    }
   }, character(1L))
   out[flagged] <- paste0(out[flagged], "*")
   out
