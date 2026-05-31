@@ -676,6 +676,8 @@ navbar:
         href: articles/Hoglund_2012_piperaquine.html
       - text: "Piperaquine (Hoglund 2017)"
         href: articles/Hoglund_2017_piperaquine.html
+      - text: "Piperaquine (Tarning 2008)"
+        href: articles/Tarning_2008_piperaquine.html
       - text: "Polatuzumab (Lu 2019)"
         href: articles/Lu_2019_polatuzumab.html
       - text: "Posdinemab (PerezRuixo 2025)"
@@ -1614,6 +1616,7 @@ articles:
   - articles/Tan_2009_artesunate
   - articles/Tanaka_2012_phenytoin
   - articles/Tang_2019_amoxicillin
+  - articles/Tarning_2008_piperaquine
   - articles/Tarning_2012_artemether
   - articles/Taubert_2018_finafloxacin
   - articles/Taylor_2020_methotrexate
