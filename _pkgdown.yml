@@ -274,6 +274,10 @@ navbar:
         href: articles/Zhang_2021_dupilumab.html
       - text: "Durvalumab (Ogasawara 2020)"
         href: articles/Ogasawara_2020_durvalumab.html
+      - text: "EGF IFN chimera (DoldanMartelli 2013)"
+        href: articles/DoldanMartelli_2013_EGF_IFN_chimera.html
+      - text: "Efavirenz (Hirt 2009)"
+        href: articles/Hirt_2009_efavirenz.html
       - text: "Efavirenz (Olagunju 2018)"
         href: articles/Olagunju_2018_efavirenz.html
       - text: "EGF IFN chimera (DoldanMartelli 2013)"
@@ -1340,6 +1344,7 @@ articles:
   - articles/Hennig_2015_rifabutin
   - articles/Heuberger_2018_salbutamol
   - articles/HillMcManus_2017_febuxostat_lesinurad
+  - articles/Hirt_2009_efavirenz
   - articles/Hodiamont_2017_gentamicin
   - articles/Hoglund_2012_piperaquine
   - articles/Hoglund_2017_piperaquine
