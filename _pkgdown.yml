@@ -394,6 +394,8 @@ navbar:
         href: articles/Chien_2022_imatinib.html
       - text: "Imatinib (Schindler 2017)"
         href: articles/Schindler_2017_imatinib.html
+      - text: "Imipenem (Lamoth 2009)"
+        href: articles/Lamoth_2009_imipenem.html
       - text: "Immunoglobulin (Cheng 2026)"
         href: articles/Cheng_2026_immunoglobulin.html
       - text: "Indacaterol (Renard 2011)"
@@ -1387,6 +1389,7 @@ articles:
   - articles/Laffont_2024_naloxone
   - articles/Laffont_2025_opioid_overdose_reversal_simulation
   - articles/Lahu_2010_roflumilast
+  - articles/Lamoth_2009_imipenem
   - articles/Landersdorfer_2018_imipenem_tobramycin
   - articles/Laouenan_2015_ribavirin
   - articles/Lawson_2022_busulfan
