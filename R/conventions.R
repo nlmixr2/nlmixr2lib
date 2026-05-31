@@ -17,7 +17,34 @@
 .nlmixr2libConventionsStatic <- list(
   pkParams = c(
     "lka", "lcl", "lvc", "lvp", "lvp2", "lq", "lq2", "lfdepot",
-    "lvmax", "lcl_ss", "lcl_time", "lcl_renal", "lcl_nonren"
+    "lvmax", "lcl_ss", "lcl_time", "lcl_renal", "lcl_nonren",
+    # K-PD / single-rate-constant elimination (primary `ini()` form
+    # used when no explicit `vc` is estimated). Canonical lkel adopted
+    # 2026-05-28 per the naming audit (replaces `lke`).
+    "lkel",
+    # Rate-constant-only multi-compartment parameterisation (primary
+    # `ini()` form when the dependent variable is an amount rather than
+    # a concentration, so volumes of distribution are not identifiable
+    # and the inter-compartmental rate constants are the primary
+    # quantities). NONMEM ADVAN4 / ADVAN11 papers report these as
+    # k_23 / k_32 / k_24 / k_42 under the depot=1, central=2,
+    # peripherals=3/4 numbering; the canonical nlmixr2 names treat
+    # central as 1 and peripherals as 2/3 after the depot is split out.
+    # Founding example: Marier_2002_tobramycin_rat_liposomal /
+    # Marier_2002_tobramycin_rat_conventional (intratracheal tobramycin
+    # in rats; central state carries amount in ug because the lung-
+    # tissue assay output is an amount, not a concentration).
+    "lk12", "lk21", "lk13", "lk31",
+    # Canonical lag-time name. Replaces the legacy `lalag`, `llag`,
+    # `ltz` forms per the 2026-05-28 naming audit.
+    "ltlag",
+    # Influx (plasma -> tissue ECF/CSF) and efflux (tissue -> plasma)
+    # clearances used by physiological CNS-distribution popPK models
+    # in which the brain/tumor extracellular fluid is parameterised as
+    # a separate compartment connected to plasma central via two
+    # asymmetric clearances driven by unbound drug. Used in Campagne
+    # 2019 cyclophosphamide mouse CNS penetration popPK.
+    "lclin", "lclef"
   ),
   pkBareParams = c(
     "ka", "cl", "vc", "vp", "vp2", "q", "q2", "kel",

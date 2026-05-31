@@ -872,6 +872,10 @@ navbar:
         href: articles/Hennig_2008_tobramycin.html
       - text: "Tobramycin inhaled (Ting 2014)"
         href: articles/Ting_2014_tobramycin_inhaled.html
+      - text: "Tobramycin rat conventional (Marier 2002)"
+        href: articles/Marier_2002_tobramycin_rat_conventional.html
+      - text: "Tobramycin rat liposomal (Marier 2002)"
+        href: articles/Marier_2002_tobramycin_rat_liposomal.html
       - text: "Tocilizumab (Bastida 2018)"
         href: articles/Bastida_2018_tocilizumab.html
       - text: "Tocilizumab (Frey 2010)"
@@ -1380,8 +1384,6 @@ articles:
   - articles/Landersdorfer_2018_imipenem_tobramycin
   - articles/Laouenan_2015_ribavirin
   - articles/Lawson_2022_busulfan
-  - articles/LeJouan_2005_quinine
-  - articles/LeTilly_2021_trastuzumab
   - articles/Le_2015_lampalizumab
   - articles/Lee_2015_sumatriptan
   - articles/Lee_2016_raltegravir
@@ -1418,6 +1420,8 @@ articles:
   - articles/Ma_2020_sarilumab_das28crp
   - articles/Macpherson_2015_rosuvastatin
   - articles/Majekodunmi_2017_HIV_HCV_CD4_recovery
+  - articles/Marier_2002_tobramycin_rat_conventional
+  - articles/Marier_2002_tobramycin_rat_liposomal
   - articles/Marquez-Megias_2023_adalimumab
   - articles/Martial_2017_micafungin
   - articles/Martinez_2019_alirocumab
