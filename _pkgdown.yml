@@ -108,6 +108,8 @@ navbar:
         href: articles/Yang_2024_axatilimab.html
       - text: "Azithromycin (Sampson 2014)"
         href: articles/Sampson_2014_azithromycin.html
+      - text: "Azithromycin (Zheng 2018)"
+        href: articles/Zheng_2018_azithromycin.html
       - text: "Bapineuzumab (Hu 2014)"
         href: articles/Hu_2014_bapineuzumab.html
       - text: "BAY81 8973 (Garmann 2017)"
@@ -532,6 +534,8 @@ navbar:
         href: articles/vanRongen_2017_midazolam.html
       - text: "Midazolam pbpk (Brussee 2018)"
         href: articles/Brussee_2018_midazolam_pbpk.html
+      - text: "Miltefosine (Dorlo 2008)"
+        href: articles/Dorlo_2008_miltefosine.html
       - text: "Miltefosine (Dorlo 2017)"
         href: articles/Dorlo_2017_miltefosine.html
       - text: "Miridesap (Sahota 2015)"
@@ -552,6 +556,8 @@ navbar:
         href: articles/Hong_2015_moxifloxacin.html
       - text: "MRNA3927 (Attarwala 2023)"
         href: articles/Attarwala_2023_mRNA3927.html
+      - text: "Mu receptor binding (Mann 2022)"
+        href: articles/Laffont_2025_opioid_overdose_reversal_simulation.html
       - text: "Mycophenolic acid (deWinter 2009)"
         href: articles/deWinter_2009_mycophenolic_acid.html
       - text: "Nab paclitaxel (Chen 2014)"
@@ -672,6 +678,10 @@ navbar:
         href: articles/Lin_2024_pozelimab.html
       - text: "Pravastatin (Ide 2009)"
         href: articles/Ide_2009_pravastatin.html
+      - text: "Pregabalin rat binary (Bender 2009)"
+        href: articles/Bender_2009_pregabalin_rat.html
+      - text: "Pregabalin rat smetab (Bender 2009)"
+        href: articles/Bender_2009_pregabalin_rat.html
       - text: "PRO95780 (Cao 2013)"
         href: articles/Cao_2013_PRO95780.html
       - text: "Propofol (Diepstraten 2013)"
@@ -696,12 +706,16 @@ navbar:
         href: articles/LeJouan_2005_quinine.html
       - text: "Quinine rat (Sheng 2016)"
         href: articles/Sheng_2016_quinine_rat.html
+      - text: "Radiation radiosensitizer mouse (Cardilin 2018)"
+        href: articles/Cardilin_2018_radiation_radiosensitizer_mouse.html
       - text: "Raltegravir (Lee 2016)"
         href: articles/Lee_2016_raltegravir.html
       - text: "Ranibizumab (Mulyukov 2018)"
         href: articles/Mulyukov_2018_ranibizumab.html
       - text: "Remifentanil (Yang 2017)"
         href: articles/Yang_2017_remifentanil.html
+      - text: "Respiratory physiology (Mann 2022)"
+        href: articles/Laffont_2025_opioid_overdose_reversal_simulation.html
       - text: "RFIXFc (Diao 2014)"
         href: articles/Diao_2014_rFIXFc.html
       - text: "Rifabutin (Hennig 2015)"
@@ -1240,7 +1254,9 @@ articles:
   - articles/deHoogd_2017_morphine
   - articles/deKock_2017_sulfadoxinePyrimethamine
   - articles/Delattre_2010_amikacin
+  - articles/DelFrari_2018_propranolol
   - articles/Delor_2013_alzheimer
+  - articles/Denti_2018_levofloxacin
   - articles/deVriesSchultink_2020_zenocutuzumab
   - articles/deWinter_2009_mycophenolic_acid
   - articles/deWit_2016_everolimus
@@ -1254,6 +1270,7 @@ articles:
   - articles/Diepstraten_2013_propofol
   - articles/Dogterom_2018_asenapine
   - articles/DoldanMartelli_2013_EGF_IFN_chimera
+  - articles/Dorlo_2008_miltefosine
   - articles/Dorlo_2017_miltefosine
   - articles/Drweesh_2026_adalimumab
   - articles/Dunlap_2025_tacrolimus
