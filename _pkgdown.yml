@@ -560,8 +560,8 @@ navbar:
         href: articles/Pierre_2017_morphine.html
       - text: "Moxifloxacin (Hong 2015)"
         href: articles/Hong_2015_moxifloxacin.html
-      - text: "MRNA3927 (Attarwala 2023)"
-        href: articles/Attarwala_2023_mRNA3927.html
+      - text: "Moxifloxacin (Landersdorfer 2009)"
+        href: articles/Landersdorfer_2009_moxifloxacin.html
       - text: "Mu receptor binding (Mann 2022)"
         href: articles/Laffont_2025_opioid_overdose_reversal_simulation.html
       - text: "Mycophenolic acid (deWinter 2009)"
@@ -1430,7 +1430,7 @@ articles:
   - articles/Laffont_2024_naloxone
   - articles/Laffont_2025_opioid_overdose_reversal_simulation
   - articles/Lahu_2010_roflumilast
-  - articles/Landersdorfer_2007_flucloxacillin
+  - articles/Landersdorfer_2009_moxifloxacin
   - articles/Landersdorfer_2018_imipenem_tobramycin
   - articles/Laouenan_2015_ribavirin
   - articles/Lawson_2022_busulfan

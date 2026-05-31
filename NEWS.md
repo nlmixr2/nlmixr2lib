@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Karunajeewa 2009 sulfadoxine-pyrimethamine ([doi:10.1128/AAC.00335-09](https://doi.org/10.1128/AAC.00335-09)) -- pregnant and nonpregnant Papua New Guinean women given single-dose IPTp Fansidar (parent SDOX + NASDOX metabolite and pyrimethamine fit as separate popPK models; ratifies new `nasdox` metabolite-suffix canonical).
+* Add Landersdorfer 2009 moxifloxacin ([doi:10.1128/AAC.01056-08](https://doi.org/10.1128/AAC.01056-08)) -- adults undergoing elective total hip replacement (oral 400 mg single-dose serum + cortical / cancellous bone-penetration model).
 * Add Padoin 1998 cephalexin ([doi:10.1128/aac.42.6.1463](https://doi.org/10.1128/aac.42.6.1463)) -- preclinical male Wistar rats with a cephalexin / quinapril oral coadministration DDI (ratifies new `CONMED_QPRL_ORAL` covariate canonical).
 * Add van Rongen 2018 metformin ([doi:10.1007/s40272-018-0293-1](https://doi.org/10.1007/s40272-018-0293-1)) -- overweight and obese Caucasian adolescents.
 * Add Tarning 2012 artemether and dihydroartemisinin ([doi:10.1186/1475-2875-11-293](https://doi.org/10.1186/1475-2875-11-293)) -- pregnant women with uncomplicated Plasmodium falciparum malaria in Uganda (joint parent + DHA popPK with zero-order dissolution and 6-compartment transit absorption).
