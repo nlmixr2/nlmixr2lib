@@ -1044,6 +1044,8 @@ navbar:
         href: articles/Zhou_2016_warfarin_vk2.html
       - text: "Zenocutuzumab (deVriesSchultink 2020)"
         href: articles/deVriesSchultink_2020_zenocutuzumab.html
+      - text: "Zidovudine (Fauchet 2013)"
+        href: articles/Fauchet_2013_zidovudine.html
       - text: "Zolbetuximab (Yamada 2025)"
         href: articles/Yamada_2025_zolbetuximab.html
       # AUTOGEN:specific_drugs:END
@@ -1334,6 +1336,7 @@ articles:
   - articles/Farrell_2012_farletuzumab
   - articles/Fasanmade_2009_infliximab
   - articles/Fau_2020_isatuximab
+  - articles/Fauchet_2013_zidovudine
   - articles/FehlingKaschek_2019_trastuzumab_skbr3
   - articles/Ferron_2013_cabazitaxel
   - articles/Fiedler-Kelly_2019_fremanezumab
