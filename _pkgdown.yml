@@ -542,8 +542,6 @@ navbar:
         href: articles/Teuscher_2015_methylphenidate.html
       - text: "Metoprolol (Eugene 2016)"
         href: articles/Eugene_2016_metoprolol.html
-      - text: "Metronidazole (CohenWolkowiez 2012)"
-        href: articles/CohenWolkowiez_2012_metronidazole.html
       - text: "MHD rat (Clinckers 2008)"
         href: articles/Clinckers_2008_MHD_rat.html
       - text: "MI 219 (Zou 2012)"
@@ -690,6 +688,8 @@ navbar:
         href: articles/Yukawa_1990_phenytoin.html
       - text: "Piperacillin (Boer-Perez 2026)"
         href: articles/Boer-Perez_2026_piperacillin.html
+      - text: "Piperacillin (Landersdorfer 2012)"
+        href: articles/Landersdorfer_2012_piperacillin.html
       - text: "Piperaquine (Hoglund 2012)"
         href: articles/Hoglund_2012_piperaquine.html
       - text: "Piperaquine (Hoglund 2017)"
@@ -1458,7 +1458,7 @@ articles:
   - articles/Laffont_2024_naloxone
   - articles/Laffont_2025_opioid_overdose_reversal_simulation
   - articles/Lahu_2010_roflumilast
-  - articles/Landersdorfer_2009_moxifloxacin
+  - articles/Landersdorfer_2012_piperacillin
   - articles/Landersdorfer_2018_imipenem_tobramycin
   - articles/Laouenan_2015_ribavirin
   - articles/Lawson_2022_busulfan
