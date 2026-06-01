@@ -904,6 +904,8 @@ navbar:
         href: articles/Cao_2013_tefibazumab.html
       - text: "Temozolomide (Mazzocco 2015)"
         href: articles/Mazzocco_2015_temozolomide.html
+      - text: "Tenofovir (Baheti 2011)"
+        href: articles/Baheti_2011_tenofovir.html
       - text: "Tenofovir emtricitabine (Chen 2016)"
         href: articles/Chen_2016_tenofovir_emtricitabine.html
       - text: "Theophylline (Rovei 1982)"
@@ -1194,6 +1196,7 @@ articles:
   - articles/Attarwala_2023_mRNA3927
   - articles/Ayyar_2024_givosiran
   - articles/Back_2018_fenofibrate
+  - articles/Baheti_2011_tenofovir
   - articles/Bajaj_2017_nivolumab
   - articles/Bajaj_2017_nivolumab_ddmore
   - articles/Barnett_2018_coproporphyrin_I
