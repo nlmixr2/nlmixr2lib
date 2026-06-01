@@ -268,6 +268,8 @@ navbar:
         href: articles/Jelliffe_2014_digoxin.html
       - text: "Digoxin (Zhou 2010)"
         href: articles/Zhou_2010_digoxin.html
+      - text: "Dihydroartemisinin (Tarning 2012)"
+        href: articles/Tarning_2012_dihydroartemisinin_piperaquine.html
       - text: "Dilmapimod (Yang 2016)"
         href: articles/Yang_2016_dilmapimod.html
       - text: "Docetaxel (Ozawa 2007)"
@@ -702,8 +704,8 @@ navbar:
         href: articles/Hoglund_2012_piperaquine.html
       - text: "Piperaquine (Hoglund 2017)"
         href: articles/Hoglund_2017_piperaquine.html
-      - text: "Piperaquine (Tarning 2008)"
-        href: articles/Tarning_2008_piperaquine.html
+      - text: "Piperaquine (Tarning 2012)"
+        href: articles/Tarning_2012_dihydroartemisinin_piperaquine.html
       - text: "Polatuzumab (Lu 2019)"
         href: articles/Lu_2019_polatuzumab.html
       - text: "Posdinemab (PerezRuixo 2025)"
@@ -1666,6 +1668,7 @@ articles:
   - articles/Tang_2019_amoxicillin
   - articles/Tarning_2008_piperaquine
   - articles/Tarning_2012_artemether
+  - articles/Tarning_2012_dihydroartemisinin_piperaquine
   - articles/Taubert_2018_finafloxacin
   - articles/Taylor_2020_methotrexate
   - articles/TerHeine_2014_tamoxifen
