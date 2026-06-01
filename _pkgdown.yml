@@ -998,6 +998,8 @@ navbar:
         href: articles/Akbar_2025_voriconazole.html
       - text: "Voriconazole (Chen 2015)"
         href: articles/Chen_2015_voriconazole.html
+      - text: "Voriconazole (Karlsson 2009)"
+        href: articles/Karlsson_2009_voriconazole.html
       - text: "Voriconazole (Lin 2018)"
         href: articles/Lin_2018_voriconazole.html
       - text: "Vortioxetine (Naik 2016)"
@@ -1390,7 +1392,7 @@ articles:
   - articles/Jonckheere_2019_cefepime
   - articles/Jonsson_2005_disufenton
   - articles/Jonsson_2011_ethambutol
-  - articles/Karunajeewa_2009_sulfadoxinePyrimethamine
+  - articles/Karlsson_2009_voriconazole
   - articles/Kawamura_2018_eribulin
   - articles/Khan_2015_ciprofloxacin
   - articles/Kielbasa_2020_galcanezumab
