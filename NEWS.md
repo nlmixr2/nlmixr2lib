@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Wang 2011 raltegravir ([doi:10.1128/AAC.00593-11](https://doi.org/10.1128/AAC.00593-11)) -- healthy adult male volunteers (joint plasma + intracellular PBMC popPK model with empirical accumulation-ratio link).
+* Add Chigutsa 2012 ofloxacin ([doi:10.1128/AAC.00048-12](https://doi.org/10.1128/AAC.00048-12)) -- South African adults with multidrug-resistant tuberculosis.
 * Add Padoin 1998 cephalexin ([doi:10.1128/aac.42.6.1463](https://doi.org/10.1128/aac.42.6.1463)) -- preclinical male Wistar rats with a cephalexin / quinapril oral coadministration DDI (ratifies new `CONMED_QPRL_ORAL` covariate canonical).
 * Add van Rongen 2018 metformin ([doi:10.1007/s40272-018-0293-1](https://doi.org/10.1007/s40272-018-0293-1)) -- overweight and obese Caucasian adolescents.
 * Add Tarning 2012 artemether and dihydroartemisinin ([doi:10.1186/1475-2875-11-293](https://doi.org/10.1186/1475-2875-11-293)) -- pregnant women with uncomplicated Plasmodium falciparum malaria in Uganda (joint parent + DHA popPK with zero-order dissolution and 6-compartment transit absorption).
