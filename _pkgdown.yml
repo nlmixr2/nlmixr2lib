@@ -616,6 +616,10 @@ navbar:
         href: articles/Valenzuela_2025_nipocalimab.html
       - text: "Nirsevimab (Clegg 2024)"
         href: articles/Clegg_2024_nirsevimab.html
+      - text: "Nisin amikacin (Landersdorfer 2013)"
+        href: articles/Landersdorfer_2013_nisin_amikacin_linezolid.html
+      - text: "Nisin linezolid (Landersdorfer 2013)"
+        href: articles/Landersdorfer_2013_nisin_amikacin_linezolid.html
       - text: "Nivolumab (Bajaj 2017)"
         href: articles/Bajaj_2017_nivolumab.html
       - text: "Nivolumab (Zhang 2019)"
@@ -1475,7 +1479,7 @@ articles:
   - articles/Laffont_2024_naloxone
   - articles/Laffont_2025_opioid_overdose_reversal_simulation
   - articles/Lahu_2010_roflumilast
-  - articles/Landersdorfer_2012_piperacillin
+  - articles/Landersdorfer_2013_nisin_amikacin_linezolid
   - articles/Landersdorfer_2018_imipenem_tobramycin
   - articles/Laouenan_2015_ribavirin
   - articles/Lawson_2022_busulfan
