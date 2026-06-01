@@ -766,6 +766,8 @@ navbar:
         href: articles/Clewe_2015_rifampicin.html
       - text: "Rifampicin (Horita 2018)"
         href: articles/Horita_2018_rifampicin.html
+      - text: "Rifampicin (Smythe 2012)"
+        href: articles/Smythe_2012_rifampicin.html
       - text: "Rifampicin (Svensson 2016)"
         href: articles/Svensson_2016_rifampicin.html
       - text: "Rifampicin (Vinnard 2017)"
@@ -1642,6 +1644,7 @@ articles:
   - articles/Simpson_2013_lumefantrine
   - articles/Simpson_2013_mefloquine
   - articles/Smuszkiewicz_2017_dexmedetomidine
+  - articles/Smythe_2012_rifampicin
   - articles/Soehoel_2022_tralokinumab
   - articles/Standing_2012_oseltamivir
   - articles/Stein_2019_Tisagenlecleucel

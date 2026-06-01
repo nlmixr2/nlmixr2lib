@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Tarning 2012 dihydroartemisinin and piperaquine ([doi:10.1128/AAC.05756-11](https://doi.org/10.1128/AAC.05756-11)) -- pregnant and non-pregnant women with uncomplicated Plasmodium falciparum malaria on the Thai-Myanmar border (two independent popPK models from the fixed-dose oral DHA-piperaquine combination trial).
+* Add Smythe 2012 rifampicin ([doi:10.1128/AAC.05792-11](https://doi.org/10.1128/AAC.05792-11)) -- adult tuberculosis patients across South Africa, Senegal, Benin, and Guinea (semimechanistic PK with NFM-allometric scaling and enzyme-pool autoinduction; upstream of the existing Clewe 2015 and Svensson 2016 rifampicin models).
 * Add Padoin 1998 cephalexin ([doi:10.1128/aac.42.6.1463](https://doi.org/10.1128/aac.42.6.1463)) -- preclinical male Wistar rats with a cephalexin / quinapril oral coadministration DDI (ratifies new `CONMED_QPRL_ORAL` covariate canonical).
 * Add van Rongen 2018 metformin ([doi:10.1007/s40272-018-0293-1](https://doi.org/10.1007/s40272-018-0293-1)) -- overweight and obese Caucasian adolescents.
 * Add Tarning 2012 artemether and dihydroartemisinin ([doi:10.1186/1475-2875-11-293](https://doi.org/10.1186/1475-2875-11-293)) -- pregnant women with uncomplicated Plasmodium falciparum malaria in Uganda (joint parent + DHA popPK with zero-order dissolution and 6-compartment transit absorption).
