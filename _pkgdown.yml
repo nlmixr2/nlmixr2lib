@@ -294,6 +294,8 @@ navbar:
         href: articles/Ogasawara_2020_durvalumab.html
       - text: "Efavirenz (Olagunju 2018)"
         href: articles/Olagunju_2018_efavirenz.html
+      - text: "Efavirenz (Salem 2014)"
+        href: articles/Salem_2014_efavirenz.html
       - text: "EGF IFN chimera (DoldanMartelli 2013)"
         href: articles/DoldanMartelli_2013_EGF_IFN_chimera.html
       - text: "Elotuzumab (Ide 2020)"
@@ -1620,6 +1622,7 @@ articles:
   - articles/Rymut_2023_anti_tryptase
   - articles/Sadouki_2025_meropenem_gentamicin_ciprofloxacin
   - articles/Sahota_2015_miridesap
+  - articles/Salem_2014_efavirenz
   - articles/Salinger_2013_magnesiumSulfate
   - articles/Sampson_2014_azithromycin
   - articles/Sanghavi_2020_ipilimumab
