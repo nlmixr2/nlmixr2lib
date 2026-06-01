@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Salem 2014 efavirenz ([doi:10.1128/AAC.01738-13](https://doi.org/10.1128/AAC.01738-13)) -- HIV-1-infected children aged 2 months to 16 years.
+* Add Tremoulet 2014 ampicillin ([doi:10.1128/AAC.02374-13](https://doi.org/10.1128/AAC.02374-13)) -- preterm and term neonates (POPS opportunistic study, NICHD-2011-POP01).
 * Add Padoin 1998 cephalexin ([doi:10.1128/aac.42.6.1463](https://doi.org/10.1128/aac.42.6.1463)) -- preclinical male Wistar rats with a cephalexin / quinapril oral coadministration DDI (ratifies new `CONMED_QPRL_ORAL` covariate canonical).
 * Add van Rongen 2018 metformin ([doi:10.1007/s40272-018-0293-1](https://doi.org/10.1007/s40272-018-0293-1)) -- overweight and obese Caucasian adolescents.
 * Add Tarning 2012 artemether and dihydroartemisinin ([doi:10.1186/1475-2875-11-293](https://doi.org/10.1186/1475-2875-11-293)) -- pregnant women with uncomplicated Plasmodium falciparum malaria in Uganda (joint parent + DHA popPK with zero-order dissolution and 6-compartment transit absorption).

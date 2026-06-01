@@ -70,8 +70,8 @@ navbar:
         href: articles/Tiraboschi_2025_amlitelimab.html
       - text: "Amoxicillin (Tang 2019)"
         href: articles/Tang_2019_amoxicillin.html
-      - text: "AmphotericinB liposomal (Hong 2006)"
-        href: articles/Hong_2006_amphotericinB_liposomal.html
+      - text: "Ampicillin (Tremoulet 2014)"
+        href: articles/Tremoulet_2014_ampicillin.html
       - text: "Anifrolumab (Almquist 2022)"
         href: articles/Almquist_2022_anifrolumab.html
       - text: "Anrukinzumab (Hua 2015)"
@@ -294,8 +294,6 @@ navbar:
         href: articles/Ogasawara_2020_durvalumab.html
       - text: "Efavirenz (Olagunju 2018)"
         href: articles/Olagunju_2018_efavirenz.html
-      - text: "Efavirenz (Salem 2014)"
-        href: articles/Salem_2014_efavirenz.html
       - text: "EGF IFN chimera (DoldanMartelli 2013)"
         href: articles/DoldanMartelli_2013_EGF_IFN_chimera.html
       - text: "Elotuzumab (Ide 2020)"
