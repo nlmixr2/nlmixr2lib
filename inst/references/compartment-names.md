@@ -2154,6 +2154,12 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Source aliases:** none.
 - **Example models:** `Lahu_2010_roflumilast.R` (doi:10.2165/11536600-000000000-00000).
 
+### oc (**canonical oseltamivir carboxylate suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Oseltamivir carboxylate (OC), the active metabolite of oseltamivir formed by hepatic carboxylesterase 1 (HCE1) hydrolysis of the inactive ethyl-ester prodrug. ~80% of an oral dose of oseltamivir is converted to OC; OC is predominantly cleared by the kidney via glomerular filtration and renal secretion.
+- **Source aliases:** none.
+- **Example models:** `Kamal_2013_oseltamivir.R` (doi:10.1128/AAC.02438-12).
+
 ### cysmer (**canonical APAP cysteine+mercapturate suffix**)
 - **Type:** metabolite-suffix
 - **Role:** Combined acetaminophen cysteine + mercapturate compartment used by CYP2E1-oxidation popPK models that lump the two oxidation metabolites (the species are in rapid equilibrium with overlapping disposition).

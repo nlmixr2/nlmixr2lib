@@ -352,7 +352,13 @@
     # asunaprevir with `_asv` everywhere
     # (depot_asv, central_asv, peripheral1_asv, effect_asv, Cc_asv,
     # lka_asv, lcl_asv, etc.).
-    "asv"
+    "asv",
+    # Oseltamivir carboxylate (OC), the active metabolite of oseltamivir
+    # formed by hepatic carboxylesterase 1 (HCE1) hydrolysis of the
+    # inactive ethyl-ester prodrug. Used as a metabolite suffix in
+    # parent-prodrug oseltamivir + active-metabolite OC popPK models
+    # (Kamal 2013 doi:10.1128/AAC.02438-12).
+    "oc"
   ),
   # Suffixes allowed for multi-component CL parameters. `_ss` denotes
   # the steady-state arm; `_time` the time-varying decay arm; `_renal`
