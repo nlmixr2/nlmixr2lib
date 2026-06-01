@@ -706,8 +706,8 @@ navbar:
         href: articles/Yukawa_1990_phenytoin.html
       - text: "Piperacillin (Boer-Perez 2026)"
         href: articles/Boer-Perez_2026_piperacillin.html
-      - text: "Piperacillin (Landersdorfer 2012)"
-        href: articles/Landersdorfer_2012_piperacillin.html
+      - text: "Piperacillin (CohenWolkowiez 2014)"
+        href: articles/CohenWolkowiez_2014_piperacillin_tazobactam.html
       - text: "Piperaquine (Hoglund 2012)"
         href: articles/Hoglund_2012_piperaquine.html
       - text: "Piperaquine (Hoglund 2017)"
@@ -928,6 +928,8 @@ navbar:
         href: articles/Li_2015_taspoglutide_mbma.html
       - text: "Taurine rat (Catalan-Latorre 2018)"
         href: articles/Catalan-Latorre_2018_taurine_rat.html
+      - text: "Tazobactam (CohenWolkowiez 2014)"
+        href: articles/CohenWolkowiez_2014_piperacillin_tazobactam.html
       - text: "Tefibazumab (Cao 2013)"
         href: articles/Cao_2013_tefibazumab.html
       - text: "Temozolomide (Mazzocco 2015)"
@@ -1308,6 +1310,7 @@ articles:
   - articles/Clewe_2018_rifampicin
   - articles/Clewe_2018_TB_MTP_GPDI_invitro
   - articles/Clinckers_2008_MHD_rat
+  - articles/CohenWolkowiez_2014_piperacillin_tazobactam
   - articles/Conrado_2014_alzheimer
   - articles/Cook_2016_paracetamol
   - articles/Csajka_2004_indinavir

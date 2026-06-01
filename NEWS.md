@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Hurtado 2014 levofloxacin ([doi:10.1128/AAC.01884-13](https://doi.org/10.1128/AAC.01884-13)) -- preclinical male Wistar rats with simultaneous plasma and prostate-ISF microdialysis.
+* Add Cohen-Wolkowiez 2014 piperacillin and tazobactam ([doi:10.1128/AAC.02139-13](https://doi.org/10.1128/AAC.02139-13)) -- critically ill premature and term infants under 61 days postnatal age (two independent one-compartment popPK models with shared cohort, vignette, and dosing; promotes `CONMED_GEN` covariate scope from specific to general).
 * Add Padoin 1998 cephalexin ([doi:10.1128/aac.42.6.1463](https://doi.org/10.1128/aac.42.6.1463)) -- preclinical male Wistar rats with a cephalexin / quinapril oral coadministration DDI (ratifies new `CONMED_QPRL_ORAL` covariate canonical).
 * Add van Rongen 2018 metformin ([doi:10.1007/s40272-018-0293-1](https://doi.org/10.1007/s40272-018-0293-1)) -- overweight and obese Caucasian adolescents.
 * Add Tarning 2012 artemether and dihydroartemisinin ([doi:10.1186/1475-2875-11-293](https://doi.org/10.1186/1475-2875-11-293)) -- pregnant women with uncomplicated Plasmodium falciparum malaria in Uganda (joint parent + DHA popPK with zero-order dissolution and 6-compartment transit absorption).
