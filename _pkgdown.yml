@@ -184,6 +184,8 @@ navbar:
         href: articles/Laffont_2025_opioid_overdose_reversal_simulation.html
       - text: "Casirivimab (Lin 2024)"
         href: articles/Lin_2024_casirivimab.html
+      - text: "Caspofungin (Wurthwein 2013)"
+        href: articles/Wurthwein_2013_caspofungin.html
       - text: "CC292 (Li 2017)"
         href: articles/Li_2017_CC292.html
       - text: "Cebranopadol (Kleideiter 2017)"
@@ -1737,6 +1739,7 @@ articles:
   - articles/Wojciechowski_2022_domagrozumab
   - articles/Wu_2012_sirolimus
   - articles/Wu_2024_inotuzumab
+  - articles/Wurthwein_2013_caspofungin
   - articles/Xia_2024_warfarin
   - articles/Xiang_2018_baicalein
   - articles/Xie_2000_m3g_rat
