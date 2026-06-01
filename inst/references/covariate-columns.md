@@ -2589,16 +2589,35 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Example models:** `Okada_2025_rocatinlimab.R` (multiplicative shift `1 - 0.372` on linear CL when 1; reference complement is the pooled atopic dermatitis + ulcerative colitis + healthy-volunteer cohort).
 - **Notes:** Used when a population PK model pools plaque-psoriasis patients with a non-psoriasis reference population and psoriasis disease status is retained as a covariate. Scope: specific because the disease-pooling reference category is paper-defined. Ratified canonically on 2026-04-27.
 
-### DIS_INFECT_CSSSI_SEV (**canonical for complicated skin and skin-structure infection severity indicator**)
-- **Description:** 1 = severe complicated skin and skin-structure infection (cSSSI), 0 = not severe cSSSI. Within-cohort severity indicator: stratifies severity inside an already-defined cSSSI / acute bacterial skin and skin-structure infection (ABSSSI) population, not a disease-vs-non-disease cohort indicator. Time-fixed per subject in the source analysis. The exact clinical criteria that classify a patient as severe vs not severe are protocol-defined within the trial dataset and may differ across antimicrobial development programs; per-model `covariateData[[DIS_INFECT_CSSSI_SEV]]$notes` should document the underlying definition when the source paper provides one.
+### DIS_RA (**canonical for rheumatoid arthritis disease-state indicator**)
+- **Description:** 1 = adult rheumatoid arthritis patient, 0 = non-RA subject (e.g., healthy volunteer, Crohn's disease, systemic lupus erythematosus, or other indication). Time-fixed per subject.
 - **Units:** (binary)
 - **Type:** binary
 - **Scope:** specific
-- **Reference category:** 0 (not severe cSSSI).
-- **Source aliases:**
-  - `SOI` (severity-of-infection indicator; same orientation, 1 = severe / 0 = not severe) -- used in `Lodise_2018_iclaprim.R` (ASSIST-1 / ASSIST-2 phase 3 cSSSI trials).
-- **Example models:** `Lodise_2018_iclaprim.R` (additive-linear shift on inter-compartmental clearance Q: `q_typ = exp(lq) + e_infect_csssi_sev_q * DIS_INFECT_CSSSI_SEV` with `e_infect_csssi_sev_q = +13.5 L/h`, so severe-cSSSI patients have Q rise from 1.85 L/h to 15.35 L/h relative to non-severe patients).
-- **Notes:** Specific scope because the "severe cSSSI" definition is protocol-defined; future antimicrobial popPK papers that test a severity-of-infection contrast in a different infection class (pneumonia, HABP/VABP, bloodstream infection, bone and joint infection) should register sibling canonicals (e.g., `DIS_INFECT_PNEUM_SEV`, `DIS_INFECT_HABP_SEV`) rather than overloading this entry. Distinct from `DIS_SASTHMA` and other disease-state indicators (which contrast a disease cohort with a non-disease reference) -- `DIS_INFECT_CSSSI_SEV` operates *within* an already-cSSSI cohort. The covariate-effect parameter naming drops the `DIS_` prefix per the existing `DIS_CANCER` -> `e_cancer_*` / `DIS_CANCER_PED` -> `e_cancer_ped_*` convention; here that gives `e_infect_csssi_sev_<param>`. Ratified canonically on 2026-05-30 alongside the Lodise 2018 iclaprim extraction.
+- **Reference category:** 0 (non-RA subject; the complement group is paper-defined -- the union of other cohorts pooled in the source analysis).
+- **Source aliases:** none known; source NONMEM control streams typically derive the indicator from a `POPULATION` / `STUDY` categorical alongside other `DIS_*` indicators.
+- **Example models:** `Li_2018_PF04236921.R` (log-shift `e_ra_cl = log(0.00588 / 0.00546) = 0.0741` on linear CL, log-shifts on baseline CRP / IC50 / logit-Imax; one of three orthogonal indicators (DIS_RA / DIS_CD / DIS_SLE) decomposing the four-level HV / RA / CD / SLE cohort with HV as the reference category).
+- **Notes:** Use when a population PK model pools adult RA patients with a non-RA reference population and RA disease status is retained as a covariate distinct from CD / SLE / other indications. Distinct from `DIS_PJIA` (polyarticular juvenile idiopathic arthritis, a pediatric-cohort sibling indicator). Scope: specific because the disease-pooling reference category is paper-defined. Ratified canonically on 2026-06-01 alongside the Li 2018 PF-04236921 extraction.
+
+### DIS_CD (**canonical for Crohn's disease state indicator (multi-indication pooled analyses)**)
+- **Description:** 1 = Crohn's disease patient, 0 = non-CD subject (e.g., healthy volunteer, rheumatoid arthritis, systemic lupus erythematosus, or other indication). Time-fixed per subject. Distinct from `IBD_CD`, which is a pooled-UC+CD discriminator with UC as the reference category; `DIS_CD` is used when the complement group is a heterogeneous non-IBD cohort rather than UC specifically.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (non-CD subject; the complement group is paper-defined -- the union of other cohorts pooled in the source analysis).
+- **Source aliases:** none known; source NONMEM control streams typically derive the indicator from a `POPULATION` / `STUDY` categorical alongside other `DIS_*` indicators.
+- **Example models:** `Li_2018_PF04236921.R` (log-shift `e_cd_cl = log(0.00946 / 0.00546) = 0.5499` on linear CL -- a 73 percent higher typical CL in CD vs the HV reference, consistent with the paper's reported 60 percent higher CL in CD when other covariates are held at reference; also log-shifts on baseline CRP, IC50, and logit-Imax).
+- **Notes:** Use when a population PK model pools CD patients with a non-IBD reference population and Crohn's disease status is retained as a covariate. When the analysis pools CD with UC only (and tests CD-vs-UC as a discriminator), use `IBD_CD` instead. Scope: specific because the disease-pooling reference category is paper-defined. Ratified canonically on 2026-06-01 alongside the Li 2018 PF-04236921 extraction.
+
+### DIS_SLE (**canonical for systemic lupus erythematosus disease-state indicator**)
+- **Description:** 1 = systemic lupus erythematosus patient, 0 = non-SLE subject (e.g., healthy volunteer, rheumatoid arthritis, Crohn's disease, or other indication). Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (non-SLE subject; the complement group is paper-defined -- the union of other cohorts pooled in the source analysis).
+- **Source aliases:** none known; source NONMEM control streams typically derive the indicator from a `POPULATION` / `STUDY` categorical alongside other `DIS_*` indicators.
+- **Example models:** `Li_2018_PF04236921.R` (log-shift `e_sle_cl = log(0.00643 / 0.00546) = 0.1632` on linear CL, log-shifts on baseline CRP / IC50 / logit-Imax, and a Hill coefficient effect `e_sle_gamma = log(1.55) = 0.4383` shifting gamma from 1 in the HV/RA/CD reference to 1.55 in SLE).
+- **Notes:** Use when a population PK model pools SLE patients with a non-SLE reference population and SLE disease status is retained as a covariate. Future SLE-anchored extractions (e.g., anifrolumab, belimumab) that include SLE as a covariate against a non-SLE comparator should extend the example list. Distinct from `BGENE21` / `BGENE21_HIGH` (continuous / binary IFN-21-gene scores within an SLE cohort) -- those operate within an SLE-only population whereas `DIS_SLE` is the across-cohort disease-state flag. Scope: specific because the disease-pooling reference category is paper-defined. Ratified canonically on 2026-06-01 alongside the Li 2018 PF-04236921 extraction.
 
 ### CARRAGEENAN (**canonical for intraplantar-carrageenan inflammatory-challenge indicator**)
 - **Description:** Binary indicator for intraplantar injection of carrageenan suspension as an experimental inflammatory / hyperalgesic challenge. 1 = subject received an intraplantar carrageenan injection at the start of the experiment (the carrageenan-induced peripheral inflammation / thermal-hyperalgesia paradigm); 0 = subject received an intraplantar saline injection (sham control). Time-fixed per subject within an experiment.
