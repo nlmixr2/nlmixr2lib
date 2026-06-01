@@ -186,6 +186,8 @@ navbar:
         href: articles/Capparelli_2005_cefepime.html
       - text: "Cefepime (Jonckheere 2019)"
         href: articles/Jonckheere_2019_cefepime.html
+      - text: "Ceftazidime (Bulitta 2010)"
+        href: articles/Bulitta_2010_ceftazidime.html
       - text: "Ceftazidime (Shi 2018)"
         href: articles/Shi_2018_ceftazidime.html
       - text: "Cemiplimab (Yang 2021)"
@@ -1218,7 +1220,7 @@ articles:
   - articles/Budha_2023_tislelizumab
   - articles/Buelga_2005_vancomycin
   - articles/Buil-Bruna_2015_lanreotide
-  - articles/Bulitta_2009_ceftazidime
+  - articles/Bulitta_2010_ceftazidime
   - articles/Caldes_2009_ganciclovir
   - articles/Campagne_2019_cyclophosphamide_mouse
   - articles/Candelaria_2018_rituximab
