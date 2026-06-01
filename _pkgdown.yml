@@ -488,6 +488,8 @@ navbar:
         href: articles/Shin_2017_levetiracetam.html
       - text: "Levofloxacin (Denti 2018)"
         href: articles/Denti_2018_levofloxacin.html
+      - text: "Levofloxacin rat (Hurtado 2014)"
+        href: articles/Hurtado_2014_levofloxacin_rat.html
       - text: "Ligelizumab (Bienczak 2025)"
         href: articles/Bienczak_2025_ligelizumab.html
       - text: "Linagliptin (Retlich 2015)"
@@ -1420,6 +1422,7 @@ articles:
   - articles/Hu_2026_clesrovimab
   - articles/Hua_2015_anrukinzumab
   - articles/Huang_2017_vrc01
+  - articles/Hurtado_2014_levofloxacin_rat
   - articles/Huynh_2026_VRC07523LS
   - articles/Hwang_2022_tremelimumab
   - articles/Hwang_2023_monalizumab
