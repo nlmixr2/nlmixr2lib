@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Muller 2010 clindamycin ([doi:10.1128/AAC.01017-09](https://doi.org/10.1128/AAC.01017-09)) -- pregnant women in the peripartum period (3-compartment IV popPK with IIV on CL, V3, and residual error magnitude).
+* Add Hietala 2010 artemether, lumefantrine, and parasitemia ([doi:10.1128/AAC.00252-10](https://doi.org/10.1128/AAC.00252-10)) -- Tanzanian children aged 1-10 years with uncomplicated Plasmodium falciparum malaria on six-dose Coartem (joint ARM + DHA PK with OCC-driven time-dependent ARM clearance, LUM PK, and a semi-mechanistic parasite life-cycle PD model driven by ARM / DHA).
 * Add Padoin 1998 cephalexin ([doi:10.1128/aac.42.6.1463](https://doi.org/10.1128/aac.42.6.1463)) -- preclinical male Wistar rats with a cephalexin / quinapril oral coadministration DDI (ratifies new `CONMED_QPRL_ORAL` covariate canonical).
 * Add van Rongen 2018 metformin ([doi:10.1007/s40272-018-0293-1](https://doi.org/10.1007/s40272-018-0293-1)) -- overweight and obese Caucasian adolescents.
 * Add Tarning 2012 artemether and dihydroartemisinin ([doi:10.1186/1475-2875-11-293](https://doi.org/10.1186/1475-2875-11-293)) -- pregnant women with uncomplicated Plasmodium falciparum malaria in Uganda (joint parent + DHA popPK with zero-order dissolution and 6-compartment transit absorption).

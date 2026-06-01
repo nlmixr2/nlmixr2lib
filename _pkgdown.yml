@@ -80,8 +80,12 @@ navbar:
         href: articles/Ueshima_2018_apixaban.html
       - text: "Aripiprazole (Knights 2015)"
         href: articles/Knights_2015_aripiprazole.html
+      - text: "Artemether (Hietala 2010)"
+        href: articles/Hietala_2010_artemether_lumefantrine_malaria.html
       - text: "Artemether (Tarning 2012)"
         href: articles/Tarning_2012_artemether.html
+      - text: "Artemether parasitemia (Hietala 2010)"
+        href: articles/Hietala_2010_artemether_lumefantrine_malaria.html
       - text: "Artemisinin (Birgersson 2016)"
         href: articles/Birgersson_2016_artemisinin.html
       - text: "Artesunate (Hendriksen 2013)"
@@ -486,8 +490,8 @@ navbar:
         href: articles/CarlssonPetri_2021_liraglutide.html
       - text: "Lopinavir (Archary 2018)"
         href: articles/Archary_2018_lopinavir.html
-      - text: "Lopinavir (Jullien 2006)"
-        href: articles/Jullien_2006_lopinavir.html
+      - text: "Lumefantrine (Hietala 2010)"
+        href: articles/Hietala_2010_artemether_lumefantrine_malaria.html
       - text: "Lumefantrine (Kloprogge 2013)"
         href: articles/Kloprogge_2013_lumefantrine.html
       - text: "Lumefantrine (Kloprogge 2018)"
