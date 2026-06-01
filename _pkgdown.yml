@@ -472,6 +472,8 @@ navbar:
         href: articles/Retlich_2015_linagliptin.html
       - text: "Linagliptin (Tadayasu 2014)"
         href: articles/Tadayasu_2014_linagliptin.html
+      - text: "Linezolid (Schmidt 2009)"
+        href: articles/Schmidt_2009_oxazolidinones.html
       - text: "Linezolid (Tsuji 2017)"
         href: articles/Tsuji_2017_linezolid.html
       - text: "Liraglutide (CarlssonPetri 2021)"
@@ -766,6 +768,8 @@ navbar:
         href: articles/Macpherson_2015_rosuvastatin.html
       - text: "Rucaparib (Wang 2015)"
         href: articles/Wang_2015_rucaparib.html
+      - text: "Rwj416457 (Schmidt 2009)"
+        href: articles/Schmidt_2009_oxazolidinones.html
       - text: "S ketamine (Flint 2017)"
         href: articles/Flint_2017_s_ketamine.html
       - text: "Sacituzumab (Sathe 2024)"
