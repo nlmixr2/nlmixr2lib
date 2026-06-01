@@ -136,6 +136,8 @@ navbar:
         href: articles/Zhou_2021_belimumab.html
       - text: "Benralizumab (Wang 2017)"
         href: articles/Wang_2017_benralizumab.html
+      - text: "Benzylpenicillin (Nielsen 2011)"
+        href: articles/Nielsen_2011_antibacterial_efficacy.html
       - text: "Betamethasone (Schoenmakers 2025)"
         href: articles/Schoenmakers_2025_betamethasone.html
       - text: "Bevacizumab (Panoilia 2015)"
@@ -196,6 +198,8 @@ navbar:
         href: articles/Bulitta_2010_ceftazidime.html
       - text: "Ceftazidime (Shi 2018)"
         href: articles/Shi_2018_ceftazidime.html
+      - text: "Cefuroxime (Nielsen 2011)"
+        href: articles/Nielsen_2011_antibacterial_efficacy.html
       - text: "Cemiplimab (Yang 2021)"
         href: articles/Yang_2021_cemiplimab.html
       - text: "Cephalexin rat (Padoin 1998)"
@@ -306,6 +310,8 @@ navbar:
         href: articles/Kawamura_2018_eribulin.html
       - text: "Eribulin (vanHasselt 2015)"
         href: articles/vanHasselt_2015_eribulin.html
+      - text: "Erythromycin (Nielsen 2011)"
+        href: articles/Nielsen_2011_antibacterial_efficacy.html
       - text: "Ethambutol (Horita 2018)"
         href: articles/Horita_2018_ethambutol.html
       - text: "Ethanol (Nemoto 2017)"
@@ -574,6 +580,8 @@ navbar:
         href: articles/Pierre_2017_morphine.html
       - text: "Moxifloxacin (Hong 2015)"
         href: articles/Hong_2015_moxifloxacin.html
+      - text: "Moxifloxacin (Nielsen 2011)"
+        href: articles/Nielsen_2011_antibacterial_efficacy.html
       - text: "MRNA3927 (Attarwala 2023)"
         href: articles/Attarwala_2023_mRNA3927.html
       - text: "Mu receptor binding (Mann 2022)"
@@ -1006,8 +1014,8 @@ navbar:
         href: articles/Li_2018_vancomycin.html
       - text: "Vancomycin (Moore 2016)"
         href: articles/Moore_2016_vancomycin.html
-      - text: "Vancomycin (Roberts 2011)"
-        href: articles/Roberts_2011_vancomycin.html
+      - text: "Vancomycin (Nielsen 2011)"
+        href: articles/Nielsen_2011_antibacterial_efficacy.html
       - text: "Vedolizumab (Rosario 2015)"
         href: articles/Rosario_2015_vedolizumab.html
       - text: "Vinflunine (Schmitt 2018)"

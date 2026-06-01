@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Landersdorfer 2012 piperacillin ([doi:10.1128/AAC.00937-12](https://doi.org/10.1128/AAC.00937-12)) -- healthy adult volunteers receiving single intravenous infusions (1500 mg or 3000 mg crossover; three-compartment popPK with parallel first-order plus mixed-order renal clearance and first-order non-renal clearance).
+* Add Nielsen 2011 in-vitro PKPD model for benzylpenicillin, cefuroxime, erythromycin, moxifloxacin, and vancomycin ([doi:10.1128/AAC.01286-10](https://doi.org/10.1128/AAC.01286-10)) -- *Streptococcus pyogenes* M12 NCTC P1800 in static and dynamic time-kill curve experiments (semimechanistic two-stage life-cycle model with sigmoidal Emax killing).
 * Add Padoin 1998 cephalexin ([doi:10.1128/aac.42.6.1463](https://doi.org/10.1128/aac.42.6.1463)) -- preclinical male Wistar rats with a cephalexin / quinapril oral coadministration DDI (ratifies new `CONMED_QPRL_ORAL` covariate canonical).
 * Add van Rongen 2018 metformin ([doi:10.1007/s40272-018-0293-1](https://doi.org/10.1007/s40272-018-0293-1)) -- overweight and obese Caucasian adolescents.
 * Add Tarning 2012 artemether and dihydroartemisinin ([doi:10.1186/1475-2875-11-293](https://doi.org/10.1186/1475-2875-11-293)) -- pregnant women with uncomplicated Plasmodium falciparum malaria in Uganda (joint parent + DHA popPK with zero-order dissolution and 6-compartment transit absorption).
