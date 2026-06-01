@@ -2523,11 +2523,11 @@ Antibiotic combination-PK drug suffixes (linezolid, vancomycin, meropenem long f
 - **Source aliases:** none.
 - **Example models:** `Chen_2017_TB_MTP_GPDI_mouse.R`.
 
-### nasdox (**canonical N-acetylsulfadoxine (NASDOX) metabolite suffix**)
+### oc (**canonical oseltamivir carboxylate suffix**)
 - **Type:** metabolite-suffix
-- **Role:** N-acetylsulfadoxine (NASDOX), the N-acetyltransferase-2-mediated acetylated metabolite of sulfadoxine (SDOX). Carried as a separate single-compartment central / peripheral compartment in parent + metabolite popPK models of SDOX.
+- **Role:** Oseltamivir carboxylate (OC), the active neuraminidase-inhibitor metabolite formed from the oseltamivir prodrug primarily via human carboxylesterase 1 (HCE1) in the liver.
 - **Source aliases:** none.
-- **Example models:** `Karunajeewa_2009_sulfadoxine.R`.
+- **Example models:** `Standing_2012_oseltamivir.R`.
 
 ---
 

@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Friberg 2012 voriconazole ([doi:10.1128/AAC.05761-11](https://doi.org/10.1128/AAC.05761-11)) -- pooled immunocompromised children, immunocompromised adolescents, and healthy adults (integrated population PK model with two-compartment first-order absorption and mixed linear plus nonlinear Michaelis-Menten elimination with time-dependent Vmax; ratifies new `STDY_VORI` and `ORAL_VORI` covariate canonicals).
+* Add Standing 2012 oseltamivir ([doi:10.1128/AAC.00290-12](https://doi.org/10.1128/AAC.00290-12)) -- preterm and term neonates and infants in a NICU during an A(H1N1) influenza outbreak (ratifies new `oc` oseltamivir-carboxylate registered metabolite suffix).
 * Add Padoin 1998 cephalexin ([doi:10.1128/aac.42.6.1463](https://doi.org/10.1128/aac.42.6.1463)) -- preclinical male Wistar rats with a cephalexin / quinapril oral coadministration DDI (ratifies new `CONMED_QPRL_ORAL` covariate canonical).
 * Add van Rongen 2018 metformin ([doi:10.1007/s40272-018-0293-1](https://doi.org/10.1007/s40272-018-0293-1)) -- overweight and obese Caucasian adolescents.
 * Add Tarning 2012 artemether and dihydroartemisinin ([doi:10.1186/1475-2875-11-293](https://doi.org/10.1186/1475-2875-11-293)) -- pregnant women with uncomplicated Plasmodium falciparum malaria in Uganda (joint parent + DHA popPK with zero-order dissolution and 6-compartment transit absorption).
