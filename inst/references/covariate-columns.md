@@ -805,6 +805,17 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Xia_2024_warfarin.R` (additive baseline in the INR observation equation; cohort mean 1.13, SD 0.59 per Xia 2024 Table 1).
 - **Notes:** Distinct from a time-varying INR observation (the model's observed `INR` variable). Healthy subjects with no anticoagulation typically have INR around 1.0; the Hamberg / Xia 2024 model treats deviations from 1.0 as a subject-specific covariate rather than an estimated parameter so the model returns to the observed baseline when warfarin is withdrawn. Ratified canonically on 2026-05-16 alongside the Xia 2024 warfarin extraction.
 
+### PTR (**canonical for prothrombin time ratio (PT relative to baseline)**)
+- **Description:** Prothrombin time ratio -- the ratio of measured prothrombin time to the pre-treatment baseline prothrombin time of the same subject (or trial-arm population mean). Unitless. Used as a time-varying input biomarker that drives downstream pharmacodynamic / event-rate models for direct oral factor-Xa inhibitors and related anticoagulant pharmacology.
+- **Units:** (unitless ratio)
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- continuous. PTR = 1 corresponds to no FXa-inhibitor effect (placebo / pre-dose baseline) and reproduces the placebo log-odds in `Yoshioka_2018_FXa_inhibitors_mbma`. Must be > 0 because downstream PD equations evaluate `log(PTR)`.
+- **Source aliases:**
+  - `PTR`, `PT_RATIO`, `x` -- in Yoshioka 2018 Eq. 1 / Eq. 2 the symbol `x` is used for the PT ratio; document the source-column name per-model in `covariateData[[PTR]]$source_name`.
+- **Example models:** `Yoshioka_2018_FXa_inhibitors_mbma.R` (model-based meta-analysis: per-arm population-mean PTR is input; outputs are per-arm event probability of ischemic stroke/SE and major bleeding).
+- **Notes:** Distinct from `INR_BASE` (a time-fixed baseline INR scalar used as an additive constant in warfarin K-PD models). PTR is time-varying and must be supplied externally (typically computed from an upstream popPK -> PT-ratio model for the FXa inhibitor of interest, e.g., Girgis 2014 rivaroxaban, Leil 2014 / Chang 2016 apixaban, Krekels 2016 / Koretsune 2015 edoxaban). Yoshioka 2018 corrects all PT measurements to RecombiplasTin reagent equivalence per Gosselin 2016 before computing the ratio; downstream models that consume PTR should document the reagent-correction convention they assume. Scope: specific until a second model ratifies the canonical name.
+
 ### VWF (**canonical for von Willebrand factor concentration**)
 - **Description:** Plasma concentration (or activity) of von Willebrand factor (VWF) -- the multimeric carrier protein that binds and protects circulating factor VIII (FVIII) from proteolytic degradation and rapid clearance. Used as a covariate on FVIII (and FVIII-Fc) clearance because the vast majority (>95%) of circulating FVIII is in complex with VWF.
 - **Units:** IU/dL (equivalent to % of pooled normal plasma); document per-model via `covariateData[[VWF]]$units`. Some sources report `VWF:Ag` (antigen) versus `VWF:RCo` (ristocetin cofactor activity); record which assay was used in `covariateData[[VWF]]$notes`.

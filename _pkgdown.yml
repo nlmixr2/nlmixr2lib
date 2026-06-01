@@ -298,6 +298,8 @@ navbar:
         href: articles/Kuchimanchi_2018_evolocumab.html
       - text: "Exenatide (Cirincione 2017)"
         href: articles/Cirincione_2017_exenatide.html
+      - text: "FXa inhibitors mbma (Yoshioka 2018)"
+        href: articles/Yoshioka_2018_FXa_inhibitors_mbma.html
       - text: "Factorix (Koopman 2023)"
         href: articles/Koopman_2023_factorix.html
       - text: "Factorviii (Nestorov 2014)"
@@ -1593,7 +1595,7 @@ articles:
   - articles/Yao_2018_guselkumab
   - articles/Yassen_2025_asundexian
   - articles/Yin_2021_trastuzumabDeruxtecan
-  - articles/Yoshida_2021_ipatasertib
+  - articles/Yoshioka_2018_FXa_inhibitors_mbma
   - articles/Yu_2022_ofatumumab
   - articles/Yuan_2019_concizumab
   - articles/Yukawa_1990_phenytoin
