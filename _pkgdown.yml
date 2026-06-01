@@ -448,6 +448,8 @@ navbar:
         href: articles/Valitalo_2017_ketorolac.html
       - text: "Lamivudine (Archary 2019)"
         href: articles/Archary_2019_lamivudine.html
+      - text: "Lamivudine (Bouazza 2010)"
+        href: articles/Bouazza_2010_lamivudine.html
       - text: "Lamivudine (Moore 1999)"
         href: articles/Moore_1999_lamivudine.html
       - text: "Lampalizumab (Le 2015)"
@@ -1201,6 +1203,7 @@ articles:
   - articles/Bista_2015_fentanyl
   - articles/Bizzotto_2016_glucose
   - articles/Boer-Perez_2026_piperacillin
+  - articles/Bouazza_2010_lamivudine
   - articles/Boucher_2018_naproxen_mbma
   - articles/Brill_2014_midazolam
   - articles/Brillac_2025_isatuximab
