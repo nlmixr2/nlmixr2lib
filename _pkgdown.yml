@@ -580,8 +580,6 @@ navbar:
         href: articles/Pierre_2017_morphine.html
       - text: "Moxifloxacin (Hong 2015)"
         href: articles/Hong_2015_moxifloxacin.html
-      - text: "Moxifloxacin (Nielsen 2011)"
-        href: articles/Nielsen_2011_antibacterial_efficacy.html
       - text: "MRNA3927 (Attarwala 2023)"
         href: articles/Attarwala_2023_mRNA3927.html
       - text: "Mu receptor binding (Mann 2022)"
@@ -1028,8 +1026,8 @@ navbar:
         href: articles/Akbar_2025_voriconazole.html
       - text: "Voriconazole (Chen 2015)"
         href: articles/Chen_2015_voriconazole.html
-      - text: "Voriconazole (Han 2010)"
-        href: articles/Han_2010_voriconazole.html
+      - text: "Voriconazole (Friberg 2012)"
+        href: articles/Friberg_2012_voriconazole.html
       - text: "Voriconazole (Lin 2018)"
         href: articles/Lin_2018_voriconazole.html
       - text: "Vortioxetine (Naik 2016)"

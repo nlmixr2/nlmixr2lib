@@ -5603,6 +5603,26 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Example models:** `Zhou_2021_belimumab.R` (multiplicative factors 1.63 on CL and 1.26 on V1 when STUDY_LBSL = 1).
 - **Notes:** Conceptually similar to `STUDY1` / `PHASE2` / `ELISA` / `PHASE1` (per-study switches) but specific to the belimumab program. Subject-level (time-fixed); set from the trial identifier on each subject record.
 
+### STDY_VORI (**canonical for Friberg 2012 voriconazole pooled-analysis study indicator**)
+- **Description:** Integer-valued (1-5) subject-level identifier of which of the five pooled PK studies of the Friberg 2012 voriconazole integrated population PK analysis a subject belongs to. 1 / 2 / 3 = immunocompromised children (2 to <12 years; Friberg 2012 Table 1 studies 1-3); 4 = immunocompromised adolescents (12 to <17 years; study 4); 5 = healthy adults (22-55 years; study 5). Time-fixed per subject.
+- **Units:** (integer 1-5)
+- **Type:** categorical
+- **Scope:** specific
+- **Reference category:** 5 (healthy adult study; the typical-value reference for ka, Alag, Q, F1 IIV, CL IIV, and residual error).
+- **Source aliases:** derived per subject from the Friberg 2012 dataset's `STUDY` / `STDY` identifier column.
+- **Example models:** `Friberg_2012_voriconazole.R` (drives several effects: -0.382 Study-1 pediatric modifier on Km and Vmax,1; non-adult uplift on Q (+0.637); adolescent ka modifier; non-adult CL IIV scaling (+1.70); F1 IIV magnitude switching between adult and non-adult; per-study residual-error switching across the four levels Study 1, Study 2, Studies 3+4, Study 5).
+- **Notes:** Departs from the binary `STUDY1` / `STUDY5` / `STUDY_PKU015` precedent because the Friberg 2012 analysis uses five distinct studies and four of them carry distinct typical-value or residual-error coefficients (Studies 3 and 4 share one residual-error magnitude). Encoding as a single integer column avoids registering five paired binary indicators; the model file derives `(STDY_VORI == 1)` style indicators inline.
+
+### ORAL_VORI (**canonical for Friberg 2012 voriconazole observation-during-oral-dose-phase indicator**)
+- **Description:** 1 = observation collected when the most recent administered voriconazole dose was oral (powder for oral suspension or tablet); 0 = observation collected when the most recent administered dose was IV. Per-observation (record-level) indicator.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (IV-phase observation).
+- **Source aliases:** derived per observation from the most recent administered dose's route (POS or tablet -> 1; IV infusion -> 0).
+- **Example models:** `Friberg_2012_voriconazole.R` (combines with `STDY_VORI == 5` to switch the adult residual-error magnitude between IV-only `expSdStdy5Iv = 0.0912` and oral `sqrt(0.0912^2 + 0.132^2) = 0.160` per Table 3 footnote on the residual-error structure W).
+- **Notes:** Conceptually similar to `SAMPLE_INTENSIVE` (a generic per-observation switch between estimated residual-error magnitudes); the contrast here is dosing route (oral vs IV) within the same subject's crossover protocol rather than sampling design. Specific scope because the route-vs-residual-error switch is paper-specific to the Friberg 2012 voriconazole analysis.
+
 ### SAMPLE_INTENSIVE (**canonical for per-observation sampling-intensity indicator**)
 - **Description:** 1 = observation belongs to an intensive (rich, post-dose) PK sampling window; 0 = sparse (pre-dose / steady-state trough) sampling. Per-observation (record-level) indicator used to switch the proportional residual-error magnitude when a source paper estimates separate residual errors for intensive vs sparse sampling phases of the same dataset.
 - **Units:** (binary)
