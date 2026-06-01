@@ -542,6 +542,8 @@ navbar:
         href: articles/Teuscher_2015_methylphenidate.html
       - text: "Metoprolol (Eugene 2016)"
         href: articles/Eugene_2016_metoprolol.html
+      - text: "Metronidazole (CohenWolkowiez 2012)"
+        href: articles/CohenWolkowiez_2012_metronidazole.html
       - text: "MHD rat (Clinckers 2008)"
         href: articles/Clinckers_2008_MHD_rat.html
       - text: "MI 219 (Zou 2012)"
