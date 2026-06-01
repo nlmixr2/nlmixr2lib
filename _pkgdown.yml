@@ -1002,8 +1002,8 @@ navbar:
         href: articles/Akbar_2025_voriconazole.html
       - text: "Voriconazole (Chen 2015)"
         href: articles/Chen_2015_voriconazole.html
-      - text: "Voriconazole (Karlsson 2009)"
-        href: articles/Karlsson_2009_voriconazole.html
+      - text: "Voriconazole (Han 2010)"
+        href: articles/Han_2010_voriconazole.html
       - text: "Voriconazole (Lin 2018)"
         href: articles/Lin_2018_voriconazole.html
       - text: "Vortioxetine (Naik 2016)"
@@ -1339,6 +1339,7 @@ articles:
   - articles/Gupta_2017_ixazomib
   - articles/Hall_2017_dapsone
   - articles/Hamuro_2017_DMD_6MWT
+  - articles/Han_2010_voriconazole
   - articles/Han_2015_decitabine
   - articles/Han_2015_sibutramine
   - articles/Han_2018_methionineMetabolismCycle
