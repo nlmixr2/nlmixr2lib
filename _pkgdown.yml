@@ -304,8 +304,8 @@ navbar:
         href: articles/Ide_2020_elotuzumab.html
       - text: "Emicizumab (Yoneyama 2017)"
         href: articles/Yoneyama_2017_emicizumab.html
-      - text: "Enoxaparin (Oualha 2018)"
-        href: articles/Oualha_2018_enoxaparin.html
+      - text: "Emtricitabine (Valade 2015)"
+        href: articles/Valade_2015_emtricitabine.html
       - text: "Epinephrine (Abboud 2009)"
         href: articles/Abboud_2009_epinephrine.html
       - text: "Epinephrine (Oualha 2014)"
@@ -1720,6 +1720,7 @@ articles:
   - articles/Tsuji_2017_linezolid
   - articles/Ueshima_2018_apixaban
   - articles/Urien_2005_capecitabine
+  - articles/Valade_2015_emtricitabine
   - articles/Valenzuela_2025_nipocalimab
   - articles/Valitalo_2017_ketorolac
   - articles/Valitalo_2017_morphine
