@@ -298,8 +298,6 @@ navbar:
         href: articles/Zhang_2021_dupilumab.html
       - text: "Durvalumab (Ogasawara 2020)"
         href: articles/Ogasawara_2020_durvalumab.html
-      - text: "Efavirenz (Luo 2016)"
-        href: articles/Luo_2016_efavirenz.html
       - text: "Efavirenz (Olagunju 2018)"
         href: articles/Olagunju_2018_efavirenz.html
       - text: "EGF IFN chimera (DoldanMartelli 2013)"
@@ -394,8 +392,8 @@ navbar:
         href: articles/Koloskoff_2025_ganciclovir.html
       - text: "Gantenerumab (Grimm 2023)"
         href: articles/Grimm_2023.html
-      - text: "Gatifloxacin (Smythe 2013)"
-        href: articles/Smythe_2013_gatifloxacin.html
+      - text: "Gentamicin (Bijleveld 2017)"
+        href: articles/Bijleveld_2017_gentamicin.html
       - text: "Gentamicin (Hodiamont 2017)"
         href: articles/Hodiamont_2017_gentamicin.html
       - text: "Gentamicin (Llanos 2017)"
@@ -1270,6 +1268,7 @@ articles:
   - articles/Bi_2017_peginterferon_alfa_2a
   - articles/Bienczak_2016_nevirapine
   - articles/Bienczak_2025_ligelizumab
+  - articles/Bijleveld_2017_gentamicin
   - articles/Birgersson_2016_artemisinin
   - articles/Birgersson_2019_artesunate
   - articles/Bisaso_2014_albumin
