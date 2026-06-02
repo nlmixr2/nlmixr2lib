@@ -302,6 +302,12 @@ navbar:
         href: articles/Zhang_2021_dupilumab.html
       - text: "Durvalumab (Ogasawara 2020)"
         href: articles/Ogasawara_2020_durvalumab.html
+      - text: "E7820 human (Keizer 2011)"
+        href: articles/Keizer_2011_E7820.html
+      - text: "E7820 mouse (Keizer 2011)"
+        href: articles/Keizer_2011_E7820.html
+      - text: "EGF IFN chimera (DoldanMartelli 2013)"
+        href: articles/DoldanMartelli_2013_EGF_IFN_chimera.html
       - text: "Efavirenz (Olagunju 2018)"
         href: articles/Olagunju_2018_efavirenz.html
       - text: "EGF IFN chimera (DoldanMartelli 2013)"
@@ -1488,6 +1494,7 @@ articles:
   - articles/Jonsson_2011_ethambutol
   - articles/Karaiskos_2015_colistin
   - articles/Kawamura_2018_eribulin
+  - articles/Keizer_2011_E7820
   - articles/Khan_2015_ciprofloxacin
   - articles/Kielbasa_2020_galcanezumab
   - articles/Kim_2015_paroxetine

@@ -1737,6 +1737,16 @@ The Ait-Oudhia 2012 canakinumab IL-1beta -> CRP transit cascade: `crp1` / `crp2`
 
 ---
 
+## Keizer 2011 E7820 integrin biomarker
+
+### integrin (**canonical alpha2-integrin biomarker compartment**)
+- **Type:** compartment
+- **Role:** Platelet alpha2-integrin expression turnover pool, the biomarker driven by an indirect-response model in the Keizer 2011 PK/PD analysis of E7820. Used both in the preclinical mouse model (units: % of reference platelet flow-cytometry signal) and in the clinical model (units: MESF, molecules of equivalent soluble fluorochrome) -- the same state with species-specific units.
+- **Source aliases:** I (paper symbol).
+- **Example models:** `Keizer_2011_E7820_mouse.R`, `Keizer_2011_E7820_human.R`.
+
+---
+
 ## Survival / dropout cumulative-hazard compartments
 
 ### cumHaz_os (**canonical overall-survival cumulative-hazard**)
