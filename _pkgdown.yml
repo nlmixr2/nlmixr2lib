@@ -546,6 +546,8 @@ navbar:
         href: articles/Simpson_2013_mefloquine.html
       - text: "Mepolizumab (Cao 2013)"
         href: articles/Cao_2013_mepolizumab.html
+      - text: "Meropenem (Bergen 2017)"
+        href: articles/Bergen_2017_meropenem.html
       - text: "Meropenem (Germovsek 2018)"
         href: articles/Germovsek_2018_meropenem.html
       - text: "Meropenem (Hanberg 2018)"
@@ -1263,6 +1265,7 @@ articles:
   - articles/Bender_2014_trastuzumabEmtansine_reduced
   - articles/Benkali_2010_tacrolimus
   - articles/Berends_2019_infliximab
+  - articles/Bergen_2017_meropenem
   - articles/Berges_2015_ozanezumab
   - articles/Bergmann_2014_tacrolimus
   - articles/Bi_2017_peginterferon_alfa_2a
