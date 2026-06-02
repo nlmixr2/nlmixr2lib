@@ -798,6 +798,8 @@ navbar:
         href: articles/Wicha_2018_rifampicin.html
       - text: "Rilotumumab (Zhang 2016)"
         href: articles/Zhang_2016_rilotumumab.html
+      - text: "Rilpivirine (Aouri 2017)"
+        href: articles/Aouri_2017_rilpivirine.html
       - text: "Risankizumab (Suleiman 2019)"
         href: articles/Suleiman_2019_risankizumab.html
       - text: "Risankizumab (Thakre 2022)"
@@ -1241,6 +1243,7 @@ articles:
   - articles/Alsultan_2017_pyrazinamide
   - articles/Ande_2018_paclitaxel_everolimus_dasatinib
   - articles/Andrews_2017_tacrolimus
+  - articles/Aouri_2017_rilpivirine
   - articles/Aoyama_2012_sepantronium
   - articles/Archary_2018_lopinavir
   - articles/Archary_2019_abacavir
