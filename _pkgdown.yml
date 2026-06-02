@@ -946,10 +946,12 @@ navbar:
         href: articles/Cao_2013_tefibazumab.html
       - text: "Temozolomide (Mazzocco 2015)"
         href: articles/Mazzocco_2015_temozolomide.html
-      - text: "Tenofovir (Baheti 2011)"
-        href: articles/Baheti_2011_tenofovir.html
+      - text: "Tenofovir combined (Lu 2016)"
+        href: articles/Lu_2016_tenofovir.html
       - text: "Tenofovir emtricitabine (Chen 2016)"
         href: articles/Chen_2016_tenofovir_emtricitabine.html
+      - text: "Tenofovir prdi (Lu 2016)"
+        href: articles/Lu_2016_tenofovir.html
       - text: "Theophylline (Rovei 1982)"
         href: articles/Rovei_1982_theophylline.html
       - text: "Theophylline (Suda 2008)"
