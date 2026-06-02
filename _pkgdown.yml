@@ -186,6 +186,8 @@ navbar:
         href: articles/Ekhart_2008_carboplatin.html
       - text: "Carfentanil iv (Mann 2022)"
         href: articles/Laffont_2025_opioid_overdose_reversal_simulation.html
+      - text: "Carvedilol (Othman 2007)"
+        href: articles/Othman_2007_carvedilol.html
       - text: "Casirivimab (Lin 2024)"
         href: articles/Lin_2024_casirivimab.html
       - text: "CC292 (Li 2017)"
@@ -792,8 +794,6 @@ navbar:
         href: articles/Laffont_2025_opioid_overdose_reversal_simulation.html
       - text: "RFIXFc (Diao 2014)"
         href: articles/Diao_2014_rFIXFc.html
-      - text: "Rfxiii cyno (Dodds 2005)"
-        href: articles/Dodds_2005_rfxiii_cyno.html
       - text: "Rifabutin (Hennig 2015)"
         href: articles/Hennig_2015_rifabutin.html
       - text: "Rifampicin (Barnett 2018)"
@@ -1619,6 +1619,7 @@ articles:
   - articles/Olagunju_2018_efavirenz
   - articles/Oniki_2018_BMI_NAFLD
   - articles/Oosten_2016_fentanyl
+  - articles/Othman_2007_carvedilol
   - articles/Othman_2014_daclizumab
   - articles/Oualha_2014_epinephrine
   - articles/Ouerdani_2015_pazopanib
