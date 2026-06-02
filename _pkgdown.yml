@@ -140,8 +140,8 @@ navbar:
         href: articles/Zhou_2021_belimumab.html
       - text: "Benralizumab (Wang 2017)"
         href: articles/Wang_2017_benralizumab.html
-      - text: "Benzylpenicillin (Nielsen 2011)"
-        href: articles/Nielsen_2011_antibacterial_efficacy.html
+      - text: "Benznidazole (Soy 2015)"
+        href: articles/Soy_2015_benznidazole.html
       - text: "Betamethasone (Schoenmakers 2025)"
         href: articles/Schoenmakers_2025_betamethasone.html
       - text: "Bevacizumab (Panoilia 2015)"
@@ -1676,7 +1676,7 @@ articles:
   - articles/Smuszkiewicz_2017_dexmedetomidine
   - articles/Smythe_2013_gatifloxacin
   - articles/Soehoel_2022_tralokinumab
-  - articles/Standing_2012_oseltamivir
+  - articles/Soy_2015_benznidazole
   - articles/Stein_2019_Tisagenlecleucel
   - articles/Stevens_2012_remoxipride
   - articles/Storset_2014_tacrolimus
