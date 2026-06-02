@@ -400,8 +400,8 @@ navbar:
         href: articles/Llanos-Paez_2017_gentamicin.html
       - text: "Gentamicin (Llanos-Paez 2020)"
         href: articles/Llanos-Paez_2020_gentamicin.html
-      - text: "Gentamicin (Mohamed 2012)"
-        href: articles/Mohamed_2012_gentamicin.html
+      - text: "Gentamicin (MedellinGaribay 2015)"
+        href: articles/MedellinGaribay_2015_gentamicin.html
       - text: "Gevokizumab (Cao 2013)"
         href: articles/Cao_2013_gevokizumab.html
       - text: "Givosiran (Ayyar 2024)"
@@ -1538,6 +1538,7 @@ articles:
   - articles/Martinez_2019_alirocumab
   - articles/Masters_2022_avelumab
   - articles/Mazzocco_2015_temozolomide
+  - articles/MedellinGaribay_2015_gentamicin
   - articles/Melhem_2022_dostarlimab
   - articles/Merchan_2015_azithromycin
   - articles/Mo_2018_olaratumab
