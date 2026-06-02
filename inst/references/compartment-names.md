@@ -1984,6 +1984,12 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Source aliases:** none.
 - **Example models:** `Xie_2019_agomelatine.R`.
 
+### m1 (**canonical paper-named M1 metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Generic M1 metabolite suffix used by parent + metabolite popPK extractions in which the source paper names the major active metabolite simply "M1" without supplying a chemical name. Each model file's `description` / `reference` text identifies the specific compound; the `m1` suffix is the shared notational token. Disambiguation by drug context: in `Lehr_2010_tesofensine.R`, M1 is the major CYP3A4-formed metabolite of tesofensine.
+- **Source aliases:** none.
+- **Example models:** `Lehr_2010_tesofensine.R` (tesofensine M1, CYP3A4-formed, in vivo five-fold lower dopamine-reuptake potency than parent per Lehr 2010 Methods reference 17).
+
 ### m2 (**canonical N-desmethyl-bedaquiline (M2) suffix**)
 - **Type:** metabolite-suffix
 - **Role:** N-desmethyl-bedaquiline (M2) metabolite of bedaquiline.

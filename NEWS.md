@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Li 2010 taranabant ([doi:10.1208/s12248-010-9212-2](https://doi.org/10.1208/s12248-010-9212-2)) -- pooled healthy adults and obese subjects (BMI 30-43 kg/m^2).
+* Add Lehr 2010 tesofensine ([doi:10.1208/s12248-009-9164-6](https://doi.org/10.1208/s12248-009-9164-6)) -- mild Alzheimer patients (Phase IIa pooled cohort); joint parent (tesofensine) + metabolite (M1) one-compartment popPK with effect-compartment extended Emax PK/PD on ADAS-Cog, FIXED literature placebo bi-exponential and linear disease progression. Ratifies new `m1` registered metabolite suffix and new `lcl_met` / `lcl_nonmet` canonical multi-component clearance arms (parallel to the existing `lcl_renal` / `lcl_nonren` pair).
 * Add Padoin 1998 cephalexin ([doi:10.1128/aac.42.6.1463](https://doi.org/10.1128/aac.42.6.1463)) -- preclinical male Wistar rats with a cephalexin / quinapril oral coadministration DDI (ratifies new `CONMED_QPRL_ORAL` covariate canonical).
 * Add van Rongen 2018 metformin ([doi:10.1007/s40272-018-0293-1](https://doi.org/10.1007/s40272-018-0293-1)) -- overweight and obese Caucasian adolescents.
 * Add Tarning 2012 artemether and dihydroartemisinin ([doi:10.1186/1475-2875-11-293](https://doi.org/10.1186/1475-2875-11-293)) -- pregnant women with uncomplicated Plasmodium falciparum malaria in Uganda (joint parent + DHA popPK with zero-order dissolution and 6-compartment transit absorption).

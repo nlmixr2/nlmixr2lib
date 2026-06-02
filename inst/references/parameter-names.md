@@ -131,6 +131,20 @@ The `l<base>` convention denotes a population mean estimated on the log scale (`
 - **Source aliases:** none.
 - **Example models:** `Jonckheere_2019_cefepime.R` and similar.
 
+### lcl_met (**canonical log-transformed metabolic-formation clearance arm**)
+- **Type:** log-transformed-pk
+- **Role:** Metabolite-formation component of an additive metabolic + non-metabolic clearance decomposition `CL_parent_total = CL_met + CL_nonmet` in parent + metabolite popPK models where the source paper estimates both elimination arms of the parent separately (the formation flux into the metabolite compartment, and the non-formation loss out of the system). Distinct from `lqm` (paper-specific NONMEM `Qm` formation-rate symbol used by Kunarajah 2017) and from `lcl_<metab>` (which is the metabolite's own elimination clearance, not the parent-to-metabolite formation rate). Used in the parent's `d/dt(central)` total-loss term `-(cl_met + cl_nonmet)/vc * central` and the metabolite's `d/dt(central_<metab>)` input term `+cl_met/vc * central`. Parallel to `lcl_renal` / `lcl_nonren`.
+- **Source aliases:**
+  - `CL_met` -- Lehr 2010 paper notation (the formation clearance of M1 from tesofensine).
+- **Example models:** `Lehr_2010_tesofensine.R` (paper Table I: CL_met/F = 0.416 L/h, no IIV; formation of M1 from tesofensine).
+
+### lcl_nonmet (**canonical log-transformed non-metabolic-formation clearance arm**)
+- **Type:** log-transformed-pk
+- **Role:** Non-formation (renal / non-metabolite-forming hepatic / other) component of an additive metabolic + non-metabolic clearance decomposition (paired with `lcl_met`). Used in the parent's `d/dt(central)` total-loss term `-(cl_met + cl_nonmet)/vc * central` to account for parent elimination not captured by the metabolite-formation flux.
+- **Source aliases:**
+  - `CL_non-met` -- Lehr 2010 paper notation.
+- **Example models:** `Lehr_2010_tesofensine.R` (paper Table I: CL_non-met/F = 1.31 L/h, IIV 42.2% CV; carries the parent CL IIV).
+
 ### lkel (**canonical log-transformed elimination rate constant (K-PD)**)
 - **Type:** log-transformed-pk
 - **Role:** First-order elimination rate constant used when no explicit `vc` is estimated (K-PD or single-rate-constant elimination form).
@@ -290,6 +304,18 @@ The bare counterparts of the log-transformed parameters above. Used when the sou
 - **Role:** Bare counterpart of `lcl_nonren`. Non-renal component of an additive renal + non-renal clearance decomposition.
 - **Source aliases:** none.
 - **Example models:** `Jonckheere_2019_cefepime.R`.
+
+### cl_met (**canonical bare metabolic-formation clearance arm**)
+- **Type:** bare-pk
+- **Role:** Bare counterpart of `lcl_met`. Metabolite-formation component (parent-to-metabolite mass flux) of an additive metabolic + non-metabolic clearance decomposition.
+- **Source aliases:** none.
+- **Example models:** `Lehr_2010_tesofensine.R`.
+
+### cl_nonmet (**canonical bare non-metabolic-formation clearance arm**)
+- **Type:** bare-pk
+- **Role:** Bare counterpart of `lcl_nonmet`. Non-formation (non-metabolite-producing) elimination component of an additive metabolic + non-metabolic clearance decomposition.
+- **Source aliases:** none.
+- **Example models:** `Lehr_2010_tesofensine.R`.
 
 ### tlag (**canonical bare absorption lag time**)
 - **Type:** bare-pk

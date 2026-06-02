@@ -968,8 +968,8 @@ navbar:
         href: articles/Lu_2016_tenofovir.html
       - text: "Tenofovir emtricitabine (Chen 2016)"
         href: articles/Chen_2016_tenofovir_emtricitabine.html
-      - text: "Tenofovir prdi (Lu 2016)"
-        href: articles/Lu_2016_tenofovir.html
+      - text: "Tesofensine (Lehr 2010)"
+        href: articles/Lehr_2010_tesofensine.html
       - text: "Theophylline (Rovei 1982)"
         href: articles/Rovei_1982_theophylline.html
       - text: "Theophylline (Suda 2008)"
@@ -1533,7 +1533,7 @@ articles:
   - articles/Le_2015_lampalizumab
   - articles/Lee_2015_sumatriptan
   - articles/Lee_2016_raltegravir
-  - articles/Leroux_2016_cefotaxime
+  - articles/Lehr_2010_tesofensine
   - articles/Leshinsky_2017_caspofungin_cat
   - articles/Lestini_2015_tgfbinhibitor
   - articles/LeTilly_2021_trastuzumab
