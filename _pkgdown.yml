@@ -112,6 +112,8 @@ navbar:
         href: articles/Masters_2022_avelumab.html
       - text: "Axatilimab (Yang 2024)"
         href: articles/Yang_2024_axatilimab.html
+      - text: "Azithromycin (Merchan 2015)"
+        href: articles/Merchan_2015_azithromycin.html
       - text: "Azithromycin (Sampson 2014)"
         href: articles/Sampson_2014_azithromycin.html
       - text: "Azithromycin (Zheng 2014)"
@@ -1537,6 +1539,7 @@ articles:
   - articles/Masters_2022_avelumab
   - articles/Mazzocco_2015_temozolomide
   - articles/Melhem_2022_dostarlimab
+  - articles/Merchan_2015_azithromycin
   - articles/Mo_2018_olaratumab
   - articles/Moein_2022_etrolizumab
   - articles/Moes_2016_tacrolimus
