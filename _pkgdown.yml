@@ -298,6 +298,8 @@ navbar:
         href: articles/Zhang_2021_dupilumab.html
       - text: "Durvalumab (Ogasawara 2020)"
         href: articles/Ogasawara_2020_durvalumab.html
+      - text: "Efavirenz (Luo 2016)"
+        href: articles/Luo_2016_efavirenz.html
       - text: "Efavirenz (Olagunju 2018)"
         href: articles/Olagunju_2018_efavirenz.html
       - text: "EGF IFN chimera (DoldanMartelli 2013)"
@@ -1540,6 +1542,7 @@ articles:
   - articles/Lu_2019_polatuzumab
   - articles/Lu_2019_tacrolimus_industry_meta
   - articles/Lu_2022_patritumab
+  - articles/Luo_2016_efavirenz
   - articles/Ma_2020_sarilumab_anc
   - articles/Ma_2020_sarilumab_das28crp
   - articles/Macpherson_2015_rosuvastatin
