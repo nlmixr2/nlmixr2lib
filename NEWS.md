@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Yadav 2017 imipenem + tobramycin / amikacin MBM ([doi:10.1128/aac.01011-16](https://doi.org/10.1128/aac.01011-16)) -- in vitro carbapenem- and aminoglycoside-resistant clinical Pseudomonas aeruginosa isolates FADDI-PA088, FADDI-PA001, FADDI-PA022 (five model files, one per studied strain x AGS combination).
+* Add Dodds 2005 recombinant Factor XIII ([doi:10.1208/aapsj070370](https://doi.org/10.1208/aapsj070370)) -- preclinical cynomolgus monkeys (three-state mechanistic popPK with endogenous A2 / B production, mass-action A2 + 2 B -> A2B2 binding, and three ELISA-assay outputs).
 * Add Padoin 1998 cephalexin ([doi:10.1128/aac.42.6.1463](https://doi.org/10.1128/aac.42.6.1463)) -- preclinical male Wistar rats with a cephalexin / quinapril oral coadministration DDI (ratifies new `CONMED_QPRL_ORAL` covariate canonical).
 * Add van Rongen 2018 metformin ([doi:10.1007/s40272-018-0293-1](https://doi.org/10.1007/s40272-018-0293-1)) -- overweight and obese Caucasian adolescents.
 * Add Tarning 2012 artemether and dihydroartemisinin ([doi:10.1186/1475-2875-11-293](https://doi.org/10.1186/1475-2875-11-293)) -- pregnant women with uncomplicated Plasmodium falciparum malaria in Uganda (joint parent + DHA popPK with zero-order dissolution and 6-compartment transit absorption).
