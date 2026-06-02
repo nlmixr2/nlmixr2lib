@@ -222,8 +222,8 @@ navbar:
         href: articles/Muller_2010_clindamycin.html
       - text: "Clopidogrel (Danielak 2017)"
         href: articles/Danielak_2017_clopidogrel.html
-      - text: "Colistin (Plachouras 2009)"
-        href: articles/Plachouras_2009_colistin.html
+      - text: "Colistin (Karaiskos 2015)"
+        href: articles/Karaiskos_2015_colistin.html
       - text: "Concizumab (Yuan 2019)"
         href: articles/Yuan_2019_concizumab.html
       - text: "Crisantaspase (Sassen 2017)"
@@ -1449,7 +1449,7 @@ articles:
   - articles/Jonckheere_2019_cefepime
   - articles/Jonsson_2005_disufenton
   - articles/Jonsson_2011_ethambutol
-  - articles/Karlsson_2009_voriconazole
+  - articles/Karaiskos_2015_colistin
   - articles/Kawamura_2018_eribulin
   - articles/Khan_2015_ciprofloxacin
   - articles/Kielbasa_2020_galcanezumab
