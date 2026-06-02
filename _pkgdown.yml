@@ -198,8 +198,8 @@ navbar:
         href: articles/Capparelli_2005_cefepime.html
       - text: "Cefepime (Jonckheere 2019)"
         href: articles/Jonckheere_2019_cefepime.html
-      - text: "Ceftazidime (Bulitta 2010)"
-        href: articles/Bulitta_2010_ceftazidime.html
+      - text: "Cefotaxime (Leroux 2016)"
+        href: articles/Leroux_2016_cefotaxime.html
       - text: "Ceftazidime (Shi 2018)"
         href: articles/Shi_2018_ceftazidime.html
       - text: "Cefuroxime (Nielsen 2011)"
@@ -1508,6 +1508,7 @@ articles:
   - articles/Le_2015_lampalizumab
   - articles/Lee_2015_sumatriptan
   - articles/Lee_2016_raltegravir
+  - articles/Leroux_2016_cefotaxime
   - articles/Leshinsky_2017_caspofungin_cat
   - articles/Lestini_2015_tgfbinhibitor
   - articles/LeTilly_2021_trastuzumab

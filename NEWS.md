@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Abdul-Aziz 2016 doripenem ([doi:10.1128/AAC.01543-15](https://doi.org/10.1128/AAC.01543-15)) -- Malaysian critically ill adults with sepsis receiving 500 mg IV q8h.
+* Add Leroux 2016 cefotaxime ([doi:10.1128/AAC.01045-16](https://doi.org/10.1128/AAC.01045-16)) -- neonates and young infants (postmenstrual age <= 44 weeks) in French neonatal intensive care units.
 * Add Padoin 1998 cephalexin ([doi:10.1128/aac.42.6.1463](https://doi.org/10.1128/aac.42.6.1463)) -- preclinical male Wistar rats with a cephalexin / quinapril oral coadministration DDI (ratifies new `CONMED_QPRL_ORAL` covariate canonical).
 * Add van Rongen 2018 metformin ([doi:10.1007/s40272-018-0293-1](https://doi.org/10.1007/s40272-018-0293-1)) -- overweight and obese Caucasian adolescents.
 * Add Tarning 2012 artemether and dihydroartemisinin ([doi:10.1186/1475-2875-11-293](https://doi.org/10.1186/1475-2875-11-293)) -- pregnant women with uncomplicated Plasmodium falciparum malaria in Uganda (joint parent + DHA popPK with zero-order dissolution and 6-compartment transit absorption).
