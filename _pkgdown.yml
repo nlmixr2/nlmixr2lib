@@ -432,8 +432,16 @@ navbar:
         href: articles/Chien_2022_imatinib.html
       - text: "Imatinib (Schindler 2017)"
         href: articles/Schindler_2017_imatinib.html
-      - text: "Imipenem (Lamoth 2009)"
-        href: articles/Lamoth_2009_imipenem.html
+      - text: "Imipenem amikacin PA001 (Yadav 2017)"
+        href: articles/Yadav_2017_imipenem_aminoglycoside_pseudomonas.html
+      - text: "Imipenem amikacin PA088 (Yadav 2017)"
+        href: articles/Yadav_2017_imipenem_aminoglycoside_pseudomonas.html
+      - text: "Imipenem tobramycin PA001 (Yadav 2017)"
+        href: articles/Yadav_2017_imipenem_aminoglycoside_pseudomonas.html
+      - text: "Imipenem tobramycin PA022 (Yadav 2017)"
+        href: articles/Yadav_2017_imipenem_aminoglycoside_pseudomonas.html
+      - text: "Imipenem tobramycin PA088 (Yadav 2017)"
+        href: articles/Yadav_2017_imipenem_aminoglycoside_pseudomonas.html
       - text: "Immunoglobulin (Cheng 2026)"
         href: articles/Cheng_2026_immunoglobulin.html
       - text: "Indacaterol (Renard 2011)"
@@ -1797,6 +1805,7 @@ articles:
   - articles/Xu_2019_sarilumab
   - articles/Xu_2020_daratumumab
   - articles/Xu_2023_MBG453
+  - articles/Yadav_2017_imipenem_aminoglycoside_pseudomonas
   - articles/Yamada_2025_zolbetuximab
   - articles/Yang_2016_dilmapimod
   - articles/Yang_2017_remifentanil
