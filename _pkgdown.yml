@@ -506,8 +506,10 @@ navbar:
         href: articles/CarlssonPetri_2021_liraglutide.html
       - text: "Lopinavir (Archary 2018)"
         href: articles/Archary_2018_lopinavir.html
-      - text: "Lumefantrine (Hietala 2010)"
-        href: articles/Hietala_2010_artemether_lumefantrine_malaria.html
+      - text: "Lopinavir placental (Fauchet 2015)"
+        href: articles/Fauchet_2015_lopinavir.html
+      - text: "Lopinavir unbound (Fauchet 2015)"
+        href: articles/Fauchet_2015_lopinavir.html
       - text: "Lumefantrine (Kloprogge 2013)"
         href: articles/Kloprogge_2013_lumefantrine.html
       - text: "Lumefantrine (Kloprogge 2018)"
