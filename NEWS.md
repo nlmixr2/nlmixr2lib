@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Ayyoub 2016 pyronaridine ([doi:10.1128/AAC.02004-15](https://doi.org/10.1128/AAC.02004-15)) -- pediatric malaria patients (0.51-15 years) pooled across one phase II and five phase III pyronaridine-artesunate (Pyramax) trials; ratifies new `FORM_GRANULE` covariate canonical.
+* Add Desai 2016 isavuconazole ([doi:10.1128/AAC.02819-15](https://doi.org/10.1128/AAC.02819-15)) -- pooled adult healthy subjects (nine phase 1 studies) and patients with invasive aspergillosis or other filamentous-fungi IFIs (phase 3 SECURE trial); two-compartment popPK with a Weibull-function first-order absorption stage covering both p.o. and i.v. routes.
 * Add Padoin 1998 cephalexin ([doi:10.1128/aac.42.6.1463](https://doi.org/10.1128/aac.42.6.1463)) -- preclinical male Wistar rats with a cephalexin / quinapril oral coadministration DDI (ratifies new `CONMED_QPRL_ORAL` covariate canonical).
 * Add van Rongen 2018 metformin ([doi:10.1007/s40272-018-0293-1](https://doi.org/10.1007/s40272-018-0293-1)) -- overweight and obese Caucasian adolescents.
 * Add Tarning 2012 artemether and dihydroartemisinin ([doi:10.1186/1475-2875-11-293](https://doi.org/10.1186/1475-2875-11-293)) -- pregnant women with uncomplicated Plasmodium falciparum malaria in Uganda (joint parent + DHA popPK with zero-order dissolution and 6-compartment transit absorption).
