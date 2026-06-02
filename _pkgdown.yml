@@ -302,12 +302,6 @@ navbar:
         href: articles/Zhang_2021_dupilumab.html
       - text: "Durvalumab (Ogasawara 2020)"
         href: articles/Ogasawara_2020_durvalumab.html
-      - text: "E7820 human (Keizer 2011)"
-        href: articles/Keizer_2011_E7820.html
-      - text: "E7820 mouse (Keizer 2011)"
-        href: articles/Keizer_2011_E7820.html
-      - text: "EGF IFN chimera (DoldanMartelli 2013)"
-        href: articles/DoldanMartelli_2013_EGF_IFN_chimera.html
       - text: "Efavirenz (Olagunju 2018)"
         href: articles/Olagunju_2018_efavirenz.html
       - text: "EGF IFN chimera (DoldanMartelli 2013)"
@@ -836,6 +830,8 @@ navbar:
         href: articles/Lahu_2010_roflumilast.html
       - text: "Romiplostim (Petrov 2024)"
         href: articles/Petrov_2024_romiplostim.html
+      - text: "Romiplostim (Wang 2010)"
+        href: articles/Wang_2010_romiplostim.html
       - text: "Rosuvastatin (Barnett 2018)"
         href: articles/Barnett_2018_rosuvastatin.html
       - text: "Rosuvastatin (Macpherson 2015)"
@@ -1789,6 +1785,7 @@ articles:
   - articles/Voller_2017_phenobarbital
   - articles/Wade_2008_fluconazole
   - articles/Wade_2015_certolizumab
+  - articles/Wang_2010_romiplostim
   - articles/Wang_2012_propofol
   - articles/Wang_2013_morphine
   - articles/Wang_2015_rucaparib

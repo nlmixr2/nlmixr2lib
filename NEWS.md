@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Keizer 2011 E7820 ([doi:10.1208/s12248-011-9260-2](https://doi.org/10.1208/s12248-011-9260-2)) -- preclinical female KP-1 xenograft nude mice and adults with advanced solid tumors or lymphoma (sequential PK/PD/tumor-growth indirect-response model for alpha2-integrin biomarker; ratifies new `integrin` canonical compartment).
+* Add Wang 2010 romiplostim ([doi:10.1208/s12248-010-9234-9](https://doi.org/10.1208/s12248-010-9234-9)) -- healthy adult volunteers (single-dose PDMDD + Krzyzanski lifespan PK/PD).
 * Add Padoin 1998 cephalexin ([doi:10.1128/aac.42.6.1463](https://doi.org/10.1128/aac.42.6.1463)) -- preclinical male Wistar rats with a cephalexin / quinapril oral coadministration DDI (ratifies new `CONMED_QPRL_ORAL` covariate canonical).
 * Add van Rongen 2018 metformin ([doi:10.1007/s40272-018-0293-1](https://doi.org/10.1007/s40272-018-0293-1)) -- overweight and obese Caucasian adolescents.
 * Add Tarning 2012 artemether and dihydroartemisinin ([doi:10.1186/1475-2875-11-293](https://doi.org/10.1186/1475-2875-11-293)) -- pregnant women with uncomplicated Plasmodium falciparum malaria in Uganda (joint parent + DHA popPK with zero-order dissolution and 6-compartment transit absorption).
