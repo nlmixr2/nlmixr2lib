@@ -460,6 +460,8 @@ navbar:
         href: articles/Fau_2020_isatuximab.html
       - text: "Isoniazid (Horita 2018)"
         href: articles/Horita_2018_isoniazid.html
+      - text: "Itraconazole (Abuhelwa 2015)"
+        href: articles/Abuhelwa_2015_itraconazole.html
       - text: "Itraconazole (Hennig 2006)"
         href: articles/Hennig_2006_itraconazole.html
       - text: "Itraconazole (Hennig 2007)"
@@ -1215,6 +1217,7 @@ articles:
   desc: Drug-specific validation vignettes. They are reached from the Specific drug models and DDMoRe models navbar dropdowns; this group hides them from the main Articles index.
   contents:
   - articles/Abboud_2009_epinephrine
+  - articles/Abuhelwa_2015_itraconazole
   - articles/Aguiar_2021_ustekinumab
   - articles/Ahamadi_2017_pembrolizumab
   - articles/Ahlstrom_2010_nicotinicAcid_rat
