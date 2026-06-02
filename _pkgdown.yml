@@ -756,6 +756,8 @@ navbar:
         href: articles/Takechi_2018_propranolol.html
       - text: "Pyrazinamide (Alsultan 2017)"
         href: articles/Alsultan_2017_pyrazinamide.html
+      - text: "Pyrazinamide (Chirehwa 2017)"
+        href: articles/Chirehwa_2017_pyrazinamide.html
       - text: "Pyrazinamide (Horita 2018)"
         href: articles/Horita_2018_pyrazinamide.html
       - text: "Pyronaridine (Ayyoub 2016)"
@@ -1321,7 +1323,7 @@ articles:
   - articles/Chen_2022_guselkumab
   - articles/Cheng_2026_immunoglobulin
   - articles/Chien_2022_imatinib
-  - articles/Chigutsa_2012_ofloxacin
+  - articles/Chirehwa_2017_pyrazinamide
   - articles/Choe_2012_busulfan
   - articles/Choi_2018_metformin
   - articles/Choy_2016_T2DM_WHIG
