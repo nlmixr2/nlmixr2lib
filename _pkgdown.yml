@@ -290,6 +290,8 @@ navbar:
         href: articles/Melhem_2022_dostarlimab.html
       - text: "Doxorubicin (Kunarajah 2017)"
         href: articles/Kunarajah_2017_doxorubicin.html
+      - text: "Doxycycline (Hopkins 2017)"
+        href: articles/Hopkins_2017_doxycycline.html
       - text: "Dupilumab (Kovalenko 2016)"
         href: articles/Kovalenko_2016_dupilumab.html
       - text: "Dupilumab (Kovalenko 2020)"
@@ -1442,6 +1444,7 @@ articles:
   - articles/Hong_2015_moxifloxacin
   - articles/Hong_2025_datopotamab
   - articles/Hood_2021_medi7836
+  - articles/Hopkins_2017_doxycycline
   - articles/Horita_2018_ethambutol
   - articles/Horita_2018_isoniazid
   - articles/Horita_2018_pyrazinamide
