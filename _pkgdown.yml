@@ -1086,6 +1086,8 @@ navbar:
         href: articles/Chung_2013_vancomycin.html
       - text: "Vancomycin (Goti 2018)"
         href: articles/Goti_2018_vancomycin.html
+      - text: "Vancomycin (Grimsley 1999)"
+        href: articles/Grimsley_1999_vancomycin.html
       - text: "Vancomycin (Ji 2017)"
         href: articles/Ji_2017_vancomycin.html
       - text: "Vancomycin (Li 2018)"
@@ -1453,6 +1455,7 @@ articles:
   - articles/Golubovic_2019_sirolimus
   - articles/Goti_2018_vancomycin
   - articles/Grimm_2023
+  - articles/Grimsley_1999_vancomycin
   - articles/Grover_2011_tacrolimus
   - articles/Guiastrennec_2016_gastric_emptying
   - articles/Guo_2022_PF_06939999
