@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Koue 2007 aripiprazole ([doi:10.1248/bpb.30.2154](https://doi.org/10.1248/bpb.30.2154)) -- healthy adult Japanese male volunteers (single-dose, multi-dose, and itraconazole-coadministration trials with three-level CYP2D6 phenotype effects on CL/F).
+* Add Hashimoto 1994 zonisamide ([doi:10.1248/bpb.17.323](https://doi.org/10.1248/bpb.17.323)) -- 68 Japanese epileptic patients (pediatric + adult) on chronic oral zonisamide with concomitant carbamazepine effect on Michaelis-Menten Vmax.
 * Add Padoin 1998 cephalexin ([doi:10.1128/aac.42.6.1463](https://doi.org/10.1128/aac.42.6.1463)) -- preclinical male Wistar rats with a cephalexin / quinapril oral coadministration DDI (ratifies new `CONMED_QPRL_ORAL` covariate canonical).
 * Add van Rongen 2018 metformin ([doi:10.1007/s40272-018-0293-1](https://doi.org/10.1007/s40272-018-0293-1)) -- overweight and obese Caucasian adolescents.
 * Add Tarning 2012 artemether and dihydroartemisinin ([doi:10.1186/1475-2875-11-293](https://doi.org/10.1186/1475-2875-11-293)) -- pregnant women with uncomplicated Plasmodium falciparum malaria in Uganda (joint parent + DHA popPK with zero-order dissolution and 6-compartment transit absorption).
