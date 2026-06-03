@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Feng 2012 higenamine ([doi:10.1038/aps.2012.114](https://doi.org/10.1038/aps.2012.114)) -- healthy Chinese adults receiving escalating IV infusion higenamine as a pharmacologic cardiovascular stress-test agent.
+* Add Li 2012 dexamethasone ([doi:10.1038/aps.2011.161](https://doi.org/10.1038/aps.2011.161)) -- preclinical male Sprague-Dawley rats (mechanism-based PK/PD model for CYP3A1/2 induction).
 * Add Padoin 1998 cephalexin ([doi:10.1128/aac.42.6.1463](https://doi.org/10.1128/aac.42.6.1463)) -- preclinical male Wistar rats with a cephalexin / quinapril oral coadministration DDI (ratifies new `CONMED_QPRL_ORAL` covariate canonical).
 * Add van Rongen 2018 metformin ([doi:10.1007/s40272-018-0293-1](https://doi.org/10.1007/s40272-018-0293-1)) -- overweight and obese Caucasian adolescents.
 * Add Tarning 2012 artemether and dihydroartemisinin ([doi:10.1186/1475-2875-11-293](https://doi.org/10.1186/1475-2875-11-293)) -- pregnant women with uncomplicated Plasmodium falciparum malaria in Uganda (joint parent + DHA popPK with zero-order dissolution and 6-compartment transit absorption).

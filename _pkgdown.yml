@@ -268,8 +268,12 @@ navbar:
         href: articles/Han_2015_decitabine.html
       - text: "Deferoxamine (Bellanti 2015)"
         href: articles/Bellanti_2015_deferoxamine.html
-      - text: "Desmopressin (Schutte 2018)"
-        href: articles/Schutte_2018_desmopressin.html
+      - text: "Dexamethasone rat (Li 2012)"
+        href: articles/Li_2012_dexamethasone_rat.html
+      - text: "Dexmedetomidine (Perez-Guille 2018)"
+        href: articles/Perez-Guille_2018_dexmedetomidine.html
+      - text: "Dexmedetomidine (Smuszkiewicz 2017)"
+        href: articles/Smuszkiewicz_2017_dexmedetomidine.html
       - text: "Dexmedetomidine (Talke 2018)"
         href: articles/Talke_2018_dexmedetomidine.html
       - text: "Diazepam (Ku 2018)"
@@ -430,8 +434,8 @@ navbar:
         href: articles/Yao_2018_guselkumab.html
       - text: "Haloperidol (Franken 2017)"
         href: articles/Franken_2017_haloperidol.html
-      - text: "Higenamine (Feng 2012)"
-        href: articles/Feng_2012_higenamine.html
+      - text: "HL2351 (Ngo 2020)"
+        href: articles/Ngo_2020_HL2351.html
       - text: "Hydroxyurea (Paule 2011)"
         href: articles/Paule_2011_hydroxyurea.html
       - text: "Iclaprim (Lodise 2018)"
@@ -1563,7 +1567,7 @@ articles:
   - articles/LeTilly_2021_trastuzumab
   - articles/Leuppi-Taegtmeyer_2019_colistin
   - articles/Li_2006_meropenem
-  - articles/Li_2010_taranabant
+  - articles/Li_2012_dexamethasone_rat
   - articles/Li_2015_taspoglutide_mbma
   - articles/Li_2017_brentuximab
   - articles/Li_2017_CC292
