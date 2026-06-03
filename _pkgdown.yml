@@ -520,6 +520,8 @@ navbar:
         href: articles/Gupta_2016_lenvatinib.html
       - text: "Levetiracetam (Shin 2017)"
         href: articles/Shin_2017_levetiracetam.html
+      - text: "Levetiracetam (Wang 2012)"
+        href: articles/Wang_2012_levetiracetam.html
       - text: "Levofloxacin (Denti 2018)"
         href: articles/Denti_2018_levofloxacin.html
       - text: "Levofloxacin rat (Hurtado 2014)"
@@ -1811,7 +1813,7 @@ articles:
   - articles/Voller_2017_phenobarbital
   - articles/Wade_2008_fluconazole
   - articles/Wade_2015_certolizumab
-  - articles/Wang_2010_romiplostim
+  - articles/Wang_2012_levetiracetam
   - articles/Wang_2012_propofol
   - articles/Wang_2013_morphine
   - articles/Wang_2015_rucaparib
