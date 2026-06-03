@@ -284,6 +284,8 @@ navbar:
         href: articles/Talke_2018_dexmedetomidine.html
       - text: "Diazepam (Ku 2018)"
         href: articles/Ku_2018_diazepam.html
+      - text: "Didanosine (Hirt 2009)"
+        href: articles/Hirt_2009_didanosine.html
       - text: "Digoxin (Jelliffe 2014)"
         href: articles/Jelliffe_2014_digoxin.html
       - text: "Digoxin (Zhou 2010)"
@@ -1494,7 +1496,7 @@ articles:
   - articles/Hennig_2015_rifabutin
   - articles/Heuberger_2018_salbutamol
   - articles/HillMcManus_2017_febuxostat_lesinurad
-  - articles/Hirt_2009_efavirenz
+  - articles/Hirt_2009_didanosine
   - articles/Hodiamont_2017_gentamicin
   - articles/Hoglund_2012_piperaquine
   - articles/Hoglund_2017_piperaquine
