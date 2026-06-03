@@ -524,6 +524,8 @@ navbar:
         href: articles/Kunisawa_2015_landiolol.html
       - text: "Lanreotide (Buil-Bruna 2015)"
         href: articles/Buil-Bruna_2015_lanreotide.html
+      - text: "Lansoprazole (Sakurai 2007)"
+        href: articles/Sakurai_2007_lansoprazole.html
       - text: "Lebrikizumab (Zhu 2017)"
         href: articles/Zhu_2017_lebrikizumab.html
       - text: "Lenvatinib (Gupta 2016)"
@@ -1723,7 +1725,7 @@ articles:
   - articles/Rymut_2023_anti_tryptase
   - articles/Sadouki_2025_meropenem_gentamicin_ciprofloxacin
   - articles/Sahota_2015_miridesap
-  - articles/Salem_2014_efavirenz
+  - articles/Sakurai_2007_lansoprazole
   - articles/Salinger_2013_magnesiumSulfate
   - articles/Sampson_2014_azithromycin
   - articles/Sanghavi_2020_ipilimumab
