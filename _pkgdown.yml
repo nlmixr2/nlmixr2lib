@@ -316,6 +316,8 @@ navbar:
         href: articles/Zhang_2021_dupilumab.html
       - text: "Durvalumab (Ogasawara 2020)"
         href: articles/Ogasawara_2020_durvalumab.html
+      - text: "Efalizumab (Stein 2018)"
+        href: articles/Stein_2018_mAb_nonlinear_PK.html
       - text: "Efavirenz (Olagunju 2018)"
         href: articles/Olagunju_2018_efavirenz.html
       - text: "EGF IFN chimera (DoldanMartelli 2013)"
@@ -570,6 +572,8 @@ navbar:
         href: articles/Easterling_2018_magnesium_sulfate.html
       - text: "MagnesiumSulfate (Salinger 2013)"
         href: articles/Salinger_2013_magnesiumSulfate.html
+      - text: "Mavrilimumab (Stein 2018)"
+        href: articles/Stein_2018_mAb_nonlinear_PK.html
       - text: "MBG453 (Xu 2023)"
         href: articles/Xu_2023_MBG453.html
       - text: "MEDI528 (Cao 2013)"
@@ -860,8 +864,8 @@ navbar:
         href: articles/Lahu_2010_roflumilast.html
       - text: "Romiplostim (Petrov 2024)"
         href: articles/Petrov_2024_romiplostim.html
-      - text: "Romiplostim (Wang 2010)"
-        href: articles/Wang_2010_romiplostim.html
+      - text: "Romosozumab (Stein 2018)"
+        href: articles/Stein_2018_mAb_nonlinear_PK.html
       - text: "Rosuvastatin (Barnett 2018)"
         href: articles/Barnett_2018_rosuvastatin.html
       - text: "Rosuvastatin (Macpherson 2015)"
@@ -1758,7 +1762,7 @@ articles:
   - articles/Smuszkiewicz_2017_dexmedetomidine
   - articles/Smythe_2013_gatifloxacin
   - articles/Soehoel_2022_tralokinumab
-  - articles/Soy_2015_benznidazole
+  - articles/Stein_2018_mAb_nonlinear_PK
   - articles/Stein_2019_Tisagenlecleucel
   - articles/Stevens_2012_remoxipride
   - articles/Storset_2014_tacrolimus
