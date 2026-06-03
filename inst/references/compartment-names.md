@@ -1070,6 +1070,12 @@ PBPK bare organ-amount compartments used by Zhang 2011 nutlin3a and similar full
 - **Source aliases:** none.
 - **Example models:** `Zhang_2011_nutlin3a.R`.
 
+### heart (**canonical bare heart compartment**)
+- **Type:** compartment
+- **Role:** Bare heart organ compartment in full-body PBPK extractions. Total tissue (well-stirred) drug concentration in the myocardium; paired with `lung`, `liver`, `kidney`, `spleen`, `brain` etc. in whole-body PBPK extractions that resolve heart as a distinct organ. The token `heart` already appears in the `vp_heart` canonical entry and in the `pbpkSubCompartmentRegex` valid-organ list (alongside `lung`, `kidney`, `spleen`), so this entry registers the bare-organ form for parity with the surrounding canonicals.
+- **Source aliases:** none.
+- **Example models:** `An_2012_mitoxantrone_mouse_pbpk.R`, `An_2012_mitoxantrone_human_pbpk.R`.
+
 ### bone (**canonical bare bone compartment**)
 - **Type:** compartment
 - **Role:** Bare bone tissue compartment in full-body PBPK extractions.

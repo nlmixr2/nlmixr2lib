@@ -602,6 +602,10 @@ navbar:
         href: articles/Sahota_2015_miridesap.html
       - text: "Mirikizumab (Chua 2025)"
         href: articles/Chua_2025_mirikizumab.html
+      - text: "Mitoxantrone human pbpk (An 2012)"
+        href: articles/An_2012_mitoxantrone_pbpk.html
+      - text: "Mitoxantrone mouse pbpk (An 2012)"
+        href: articles/An_2012_mitoxantrone_pbpk.html
       - text: "Mogamulizumab (Mukai 2019)"
         href: articles/Mukai_2019_mogamulizumab.html
       - text: "Monalizumab (Hwang 2023)"
@@ -1259,7 +1263,7 @@ articles:
   - articles/Almquist_2022_anifrolumab
   - articles/Alqahtani_2018_vancomycin
   - articles/Alsultan_2017_pyrazinamide
-  - articles/Ande_2018_paclitaxel_everolimus_dasatinib
+  - articles/An_2012_mitoxantrone_pbpk
   - articles/Andrews_2017_tacrolimus
   - articles/Aouri_2017_rilpivirine
   - articles/Aoyama_2012_sepantronium
