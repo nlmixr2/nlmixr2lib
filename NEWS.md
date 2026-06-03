@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Honda 2006 mizoribine ([doi:10.1248/bpb.29.2460](https://doi.org/10.1248/bpb.29.2460)) -- healthy Caucasian adult male volunteers.
+* Add Honda 2005 carvedilol ([doi:10.1248/bpb.28.1476](https://doi.org/10.1248/bpb.28.1476)) -- healthy Japanese adult volunteers (R- and S-enantiomer stereoselective popPK with CYP2D6*10 post-hoc stratification).
 * Add Padoin 1998 cephalexin ([doi:10.1128/aac.42.6.1463](https://doi.org/10.1128/aac.42.6.1463)) -- preclinical male Wistar rats with a cephalexin / quinapril oral coadministration DDI (ratifies new `CONMED_QPRL_ORAL` covariate canonical).
 * Add van Rongen 2018 metformin ([doi:10.1007/s40272-018-0293-1](https://doi.org/10.1007/s40272-018-0293-1)) -- overweight and obese Caucasian adolescents.
 * Add Tarning 2012 artemether and dihydroartemisinin ([doi:10.1186/1475-2875-11-293](https://doi.org/10.1186/1475-2875-11-293)) -- pregnant women with uncomplicated Plasmodium falciparum malaria in Uganda (joint parent + DHA popPK with zero-order dissolution and 6-compartment transit absorption).
