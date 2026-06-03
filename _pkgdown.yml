@@ -688,6 +688,8 @@ navbar:
         href: articles/Kamal_2015_oseltamivir.html
       - text: "Osimertinib (Brown 2017)"
         href: articles/Brown_2017_osimertinib.html
+      - text: "Oxaliplatin (Valenzuela 2011)"
+        href: articles/Valenzuela_2011_oxaliplatin.html
       - text: "Oxcarbazepine (Rodrigues 2017)"
         href: articles/Rodrigues_2017_oxcarbazepine.html
       - text: "Ozanezumab (Berges 2015)"
@@ -1767,7 +1769,7 @@ articles:
   - articles/Tsuji_2017_linezolid
   - articles/Ueshima_2018_apixaban
   - articles/Urien_2005_capecitabine
-  - articles/Valade_2015_emtricitabine
+  - articles/Valenzuela_2011_oxaliplatin
   - articles/Valenzuela_2025_nipocalimab
   - articles/Valitalo_2017_ketorolac
   - articles/Valitalo_2017_morphine
