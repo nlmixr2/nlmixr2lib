@@ -336,6 +336,8 @@ navbar:
         href: articles/Horita_2018_ethambutol.html
       - text: "Ethanol (Nemoto 2017)"
         href: articles/Nemoto_2017_ethanol.html
+      - text: "Ethaselen (Ye 2017)"
+        href: articles/Ye_2017_ethaselen.html
       - text: "Etrolizumab (Moein 2022)"
         href: articles/Moein_2022_etrolizumab.html
       - text: "Everolimus (deWit 2016)"
@@ -1852,6 +1854,7 @@ articles:
   - articles/Yang_2024_axatilimab
   - articles/Yao_2018_guselkumab
   - articles/Yassen_2025_asundexian
+  - articles/Ye_2017_ethaselen
   - articles/Yin_2021_trastuzumabDeruxtecan
   - articles/Yoneyama_2017_emicizumab
   - articles/Yoshida_2018_coproporphyrin_I_GDC0810

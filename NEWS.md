@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Pei 2016 iloperidone ([doi:10.1038/aps.2016.96](https://doi.org/10.1038/aps.2016.96)) -- Chinese schizophrenia patients with CYP2D6*10 (rs1065852) genotype effects on the metabolite formation rate constants (ratifies new `CYP2D6_STAR10_HET` / `CYP2D6_STAR10_HOM` covariate canonicals and new `p88` / `p95` metabolite-suffix canonicals).
+* Add Ye 2017 ethaselen ([doi:10.1038/aps.2016.114](https://doi.org/10.1038/aps.2016.114)) -- preclinical BALB/c nude mice bearing A549 NSCLC xenografts (integrated dose-biomarker-response PD model on TrxR and tumor volume).
 * Add Padoin 1998 cephalexin ([doi:10.1128/aac.42.6.1463](https://doi.org/10.1128/aac.42.6.1463)) -- preclinical male Wistar rats with a cephalexin / quinapril oral coadministration DDI (ratifies new `CONMED_QPRL_ORAL` covariate canonical).
 * Add van Rongen 2018 metformin ([doi:10.1007/s40272-018-0293-1](https://doi.org/10.1007/s40272-018-0293-1)) -- overweight and obese Caucasian adolescents.
 * Add Tarning 2012 artemether and dihydroartemisinin ([doi:10.1186/1475-2875-11-293](https://doi.org/10.1186/1475-2875-11-293)) -- pregnant women with uncomplicated Plasmodium falciparum malaria in Uganda (joint parent + DHA popPK with zero-order dissolution and 6-compartment transit absorption).
