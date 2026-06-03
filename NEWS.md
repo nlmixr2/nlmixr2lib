@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Li 2012 clozapine ([doi:10.1038/aps.2012.71](https://doi.org/10.1038/aps.2012.71)) -- Chinese adult inpatients with refractory schizophrenia on maintenance oral clozapine (joint parent + norclozapine popPK with smoking and sex effects on apparent clearance; ratifies new `norcloz` registered metabolite suffix).
+* Add Honda 2006 mizoribine ([doi:10.1248/bpb.29.2460](https://doi.org/10.1248/bpb.29.2460)) -- healthy Caucasian adult male volunteers.
 * Add Padoin 1998 cephalexin ([doi:10.1128/aac.42.6.1463](https://doi.org/10.1128/aac.42.6.1463)) -- preclinical male Wistar rats with a cephalexin / quinapril oral coadministration DDI (ratifies new `CONMED_QPRL_ORAL` covariate canonical).
 * Add van Rongen 2018 metformin ([doi:10.1007/s40272-018-0293-1](https://doi.org/10.1007/s40272-018-0293-1)) -- overweight and obese Caucasian adolescents.
 * Add Tarning 2012 artemether and dihydroartemisinin ([doi:10.1186/1475-2875-11-293](https://doi.org/10.1186/1475-2875-11-293)) -- pregnant women with uncomplicated Plasmodium falciparum malaria in Uganda (joint parent + DHA popPK with zero-order dissolution and 6-compartment transit absorption).
