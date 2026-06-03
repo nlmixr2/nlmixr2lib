@@ -430,8 +430,8 @@ navbar:
         href: articles/Yao_2018_guselkumab.html
       - text: "Haloperidol (Franken 2017)"
         href: articles/Franken_2017_haloperidol.html
-      - text: "HL2351 (Ngo 2020)"
-        href: articles/Ngo_2020_HL2351.html
+      - text: "Higenamine (Feng 2012)"
+        href: articles/Feng_2012_higenamine.html
       - text: "Hydroxyurea (Paule 2011)"
         href: articles/Paule_2011_hydroxyurea.html
       - text: "Iclaprim (Lodise 2018)"
@@ -1414,6 +1414,7 @@ articles:
   - articles/Fau_2020_isatuximab
   - articles/Fauchet_2013_zidovudine
   - articles/FehlingKaschek_2019_trastuzumab_skbr3
+  - articles/Feng_2012_higenamine
   - articles/Ferron_2013_cabazitaxel
   - articles/Fiedler-Kelly_2019_fremanezumab
   - articles/FiedlerKelly_2020_fremanezumab_cm
