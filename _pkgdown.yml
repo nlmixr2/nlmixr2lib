@@ -942,6 +942,8 @@ navbar:
         href: articles/Ait-Oudhia_2016_sunitinib.html
       - text: "Sunitinib irinotecan mouse (Wilson 2015)"
         href: articles/Wilson_2015_sunitinib_irinotecan_mouse.html
+      - text: "TF 505 (Matsumoto 2005)"
+        href: articles/Matsumoto_2005_TF_505.html
       - text: "Tacrine (Holford 1992)"
         href: articles/Holford_1992_tacrine.html
       - text: "Tacrolimus (Andrews 2017)"
@@ -1622,6 +1624,7 @@ articles:
   - articles/Martial_2017_micafungin
   - articles/Martinez_2019_alirocumab
   - articles/Masters_2022_avelumab
+  - articles/Matsumoto_2005_TF_505
   - articles/Mazzocco_2015_temozolomide
   - articles/MedellinGaribay_2015_gentamicin
   - articles/Melhem_2022_dostarlimab
