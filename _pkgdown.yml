@@ -178,6 +178,10 @@ navbar:
         href: articles/Ferron_2013_cabazitaxel.html
       - text: "Cabozantinib (Lacy 2018)"
         href: articles/Lacy_2018_cabozantinib.html
+      - text: "Cabozantinib dose modification (Lacy 2018)"
+        href: articles/Lacy_2018_cabozantinib_exposure_response.html
+      - text: "Cabozantinib tumor (Lacy 2018)"
+        href: articles/Lacy_2018_cabozantinib_exposure_response.html
       - text: "Canakinumab (AitOudhia 2012)"
         href: articles/AitOudhia_2012_canakinumab.html
       - text: "Canakinumab (Chakraborty 2012)"
@@ -1563,6 +1567,7 @@ articles:
   - articles/Kunisawa_2015_landiolol
   - articles/Kyhl_2016_nalmefene
   - articles/Lacy_2018_cabozantinib
+  - articles/Lacy_2018_cabozantinib_exposure_response
   - articles/Laffont_2024_nalmefene
   - articles/Laffont_2024_naloxone
   - articles/Laffont_2025_opioid_overdose_reversal_simulation
