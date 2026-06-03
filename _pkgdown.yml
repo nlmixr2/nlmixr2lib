@@ -210,8 +210,8 @@ navbar:
         href: articles/Leroux_2016_cefotaxime.html
       - text: "Ceftazidime (Shi 2018)"
         href: articles/Shi_2018_ceftazidime.html
-      - text: "Cefuroxime (Alqahtani 2018)"
-        href: articles/Alqahtani_2018_cefuroxime.html
+      - text: "Cefuroxime axetil (Bulitta 2009)"
+        href: articles/Bulitta_2009_cefuroxime_axetil.html
       - text: "Cemiplimab (Yang 2021)"
         href: articles/Yang_2021_cemiplimab.html
       - text: "Cephalexin rat (Padoin 1998)"
@@ -1347,7 +1347,7 @@ articles:
   - articles/Budha_2023_tislelizumab
   - articles/Buelga_2005_vancomycin
   - articles/Buil-Bruna_2015_lanreotide
-  - articles/Bulitta_2010_ceftazidime
+  - articles/Bulitta_2009_cefuroxime_axetil
   - articles/Caldes_2009_ganciclovir
   - articles/Campagne_2019_cyclophosphamide_mouse
   - articles/Candelaria_2018_rituximab
