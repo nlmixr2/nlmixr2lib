@@ -336,8 +336,8 @@ navbar:
         href: articles/Kawamura_2018_eribulin.html
       - text: "Eribulin (vanHasselt 2015)"
         href: articles/vanHasselt_2015_eribulin.html
-      - text: "Etanercept (Fang 2010)"
-        href: articles/Fang_2010_etanercept.html
+      - text: "Ertapenem (Lakota 2018)"
+        href: articles/Lakota_2018_ertapenem.html
       - text: "Ethambutol (Horita 2018)"
         href: articles/Horita_2018_ethambutol.html
       - text: "Ethanol (Nemoto 2017)"
@@ -1572,7 +1572,7 @@ articles:
   - articles/Laffont_2024_naloxone
   - articles/Laffont_2025_opioid_overdose_reversal_simulation
   - articles/Lahu_2010_roflumilast
-  - articles/Landersdorfer_2013_nisin_amikacin_linezolid
+  - articles/Lakota_2018_ertapenem
   - articles/Landersdorfer_2018_imipenem_tobramycin
   - articles/Laouenan_2015_ribavirin
   - articles/Lawson_2022_busulfan

@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Lacy 2018 cabozantinib exposure-response in renal cell carcinoma ([doi:10.1007/s00280-018-3579-7](https://doi.org/10.1007/s00280-018-3579-7)) -- adults with advanced RCC from the phase III METEOR trial; ships a longitudinal-tumor-growth PD model (`Lacy_2018_cabozantinib_tumor`) and a repeated-time-to-event DMAK hazard model (`Lacy_2018_cabozantinib_dose_modification`) driven by upstream popPK-derived CAV.
+* Add Lakota 2018 ertapenem ([doi:10.1128/AAC.00784-18](https://doi.org/10.1128/AAC.00784-18)) -- healthy adults across a wide range of body sizes (normal-weight, obese, and morbidly obese).
 * Add Padoin 1998 cephalexin ([doi:10.1128/aac.42.6.1463](https://doi.org/10.1128/aac.42.6.1463)) -- preclinical male Wistar rats with a cephalexin / quinapril oral coadministration DDI (ratifies new `CONMED_QPRL_ORAL` covariate canonical).
 * Add van Rongen 2018 metformin ([doi:10.1007/s40272-018-0293-1](https://doi.org/10.1007/s40272-018-0293-1)) -- overweight and obese Caucasian adolescents.
 * Add Tarning 2012 artemether and dihydroartemisinin ([doi:10.1186/1475-2875-11-293](https://doi.org/10.1186/1475-2875-11-293)) -- pregnant women with uncomplicated Plasmodium falciparum malaria in Uganda (joint parent + DHA popPK with zero-order dissolution and 6-compartment transit absorption).
