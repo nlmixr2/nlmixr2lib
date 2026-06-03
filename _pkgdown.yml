@@ -1100,8 +1100,8 @@ navbar:
         href: articles/Li_2018_vancomycin.html
       - text: "Vancomycin (Moore 2016)"
         href: articles/Moore_2016_vancomycin.html
-      - text: "Vancomycin (Nielsen 2011)"
-        href: articles/Nielsen_2011_antibacterial_efficacy.html
+      - text: "Vancomycin (Zhao 2014)"
+        href: articles/Zhao_2014_vancomycin.html
       - text: "Vedolizumab (Rosario 2015)"
         href: articles/Rosario_2015_vedolizumab.html
       - text: "Vinflunine (Schmitt 2018)"
@@ -1888,6 +1888,7 @@ articles:
   - articles/Zhang_2019_nivolumab
   - articles/Zhang_2021_dupilumab
   - articles/Zhang_2022_ormutivimab
+  - articles/Zhao_2014_vancomycin
   - articles/Zhao_2018_omeprazole
   - articles/Zheng_2014_azithromycin
   - articles/Zheng_2016_sifalimumab
