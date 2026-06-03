@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Angeli 2016 iron and hepcidin ([doi:10.1208/s12248-016-9875-4](https://doi.org/10.1208/s12248-016-9875-4)) -- healthy non-menopausal women in the French HEPMEN study (joint turnover model of serum iron and serum hepcidin across the menstrual cycle; ratifies new `HIGHAM` and `DLOSS` covariate canonicals and new `iron` and `hep` biomarker-output compartment canonicals).
+* Add Philippe 2015 cyclosporine ([doi:10.1208/s12248-015-9779-8](https://doi.org/10.1208/s12248-015-9779-8)) -- pediatric severe aplastic anemia (PK + interface PD + time-to-event hazard for neutrophil response).
 * Add Padoin 1998 cephalexin ([doi:10.1128/aac.42.6.1463](https://doi.org/10.1128/aac.42.6.1463)) -- preclinical male Wistar rats with a cephalexin / quinapril oral coadministration DDI (ratifies new `CONMED_QPRL_ORAL` covariate canonical).
 * Add van Rongen 2018 metformin ([doi:10.1007/s40272-018-0293-1](https://doi.org/10.1007/s40272-018-0293-1)) -- overweight and obese Caucasian adolescents.
 * Add Tarning 2012 artemether and dihydroartemisinin ([doi:10.1186/1475-2875-11-293](https://doi.org/10.1186/1475-2875-11-293)) -- pregnant women with uncomplicated Plasmodium falciparum malaria in Uganda (joint parent + DHA popPK with zero-order dissolution and 6-compartment transit absorption).
