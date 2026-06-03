@@ -210,8 +210,8 @@ navbar:
         href: articles/Leroux_2016_cefotaxime.html
       - text: "Ceftazidime (Shi 2018)"
         href: articles/Shi_2018_ceftazidime.html
-      - text: "Cefuroxime (Nielsen 2011)"
-        href: articles/Nielsen_2011_antibacterial_efficacy.html
+      - text: "Cefuroxime (Alqahtani 2018)"
+        href: articles/Alqahtani_2018_cefuroxime.html
       - text: "Cemiplimab (Yang 2021)"
         href: articles/Yang_2021_cemiplimab.html
       - text: "Cephalexin rat (Padoin 1998)"
@@ -1291,6 +1291,7 @@ articles:
   - articles/Allegaert_2015_paracetamol
   - articles/Almquist_2016_ticagrelor
   - articles/Almquist_2022_anifrolumab
+  - articles/Alqahtani_2018_cefuroxime
   - articles/Alqahtani_2018_vancomycin
   - articles/Alsultan_2017_pyrazinamide
   - articles/An_2012_mitoxantrone_pbpk
