@@ -2192,11 +2192,11 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Source aliases:** none.
 - **Example models:** `Lahu_2010_roflumilast.R` (doi:10.2165/11536600-000000000-00000).
 
-### oc (**canonical oseltamivir carboxylate suffix**)
+### norcloz (**canonical norclozapine (N-desmethylclozapine) suffix**)
 - **Type:** metabolite-suffix
-- **Role:** Oseltamivir carboxylate (OC), the active metabolite of oseltamivir formed by hepatic carboxylesterase 1 (HCE1) hydrolysis of the inactive ethyl-ester prodrug. ~80% of an oral dose of oseltamivir is converted to OC; OC is predominantly cleared by the kidney via glomerular filtration and renal secretion.
+- **Role:** Norclozapine (N-desmethylclozapine), the primary pharmacologically active metabolite of clozapine formed predominantly by CYP1A2 (with secondary contributions from CYP2C19, CYP3A4, CYP2C9, and CYP2D6). Norclozapine retains receptor affinity at multiple monoaminergic and muscarinic targets and is routinely measured alongside clozapine in therapeutic-drug-monitoring (TDM) practice; the parent-to-metabolite ratio is itself a clinical descriptor of CYP1A2 activity.
 - **Source aliases:** none.
-- **Example models:** `Kamal_2013_oseltamivir.R` (doi:10.1128/AAC.02438-12).
+- **Example models:** `Li_2012_clozapine.R` (doi:10.1038/aps.2012.71).
 
 ### cysmer (**canonical APAP cysteine+mercapturate suffix**)
 - **Type:** metabolite-suffix
