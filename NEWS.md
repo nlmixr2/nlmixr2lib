@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Yang 2010 rosuvastatin LDL-C MBMA ([doi:10.1038/aps.2010.169](https://doi.org/10.1038/aps.2010.169)) -- adults with hypercholesterolemia (Western and Asian study-arm-mean LDL-C reductions; race-on-ED50 covariate).
+* Add He 2012 lamotrigine ([doi:10.1038/aps.2012.118](https://doi.org/10.1038/aps.2012.118)) -- Chinese paediatric patients with epilepsy aged 0.5-17 years.
 * Add Padoin 1998 cephalexin ([doi:10.1128/aac.42.6.1463](https://doi.org/10.1128/aac.42.6.1463)) -- preclinical male Wistar rats with a cephalexin / quinapril oral coadministration DDI (ratifies new `CONMED_QPRL_ORAL` covariate canonical).
 * Add van Rongen 2018 metformin ([doi:10.1007/s40272-018-0293-1](https://doi.org/10.1007/s40272-018-0293-1)) -- overweight and obese Caucasian adolescents.
 * Add Tarning 2012 artemether and dihydroartemisinin ([doi:10.1186/1475-2875-11-293](https://doi.org/10.1186/1475-2875-11-293)) -- pregnant women with uncomplicated Plasmodium falciparum malaria in Uganda (joint parent + DHA popPK with zero-order dissolution and 6-compartment transit absorption).
