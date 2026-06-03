@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Bulitta 2010 colistin ([doi:10.1128/AAC.00881-09](https://doi.org/10.1128/AAC.00881-09)) -- in vitro Pseudomonas aeruginosa PAO1 (NONMEM) plus clinical isolates URMC1 and URMC2 (S-ADAPT); mechanism-based time-kill PD model with three pre-existing bacterial subpopulations, signal-molecule-mediated inoculum effect, and Mg2+/Ca2+ receptor occupancy.
+* Add Mohamed 2012 colistin / CMS ([doi:10.1128/AAC.06426-11](https://doi.org/10.1128/AAC.06426-11)) -- critically ill adults receiving a 480 mg (6 MU) colistin methanesulfonate loading dose plus a semimechanistic Pseudomonas aeruginosa bacterial-kill PKPD layer.
 * Add Padoin 1998 cephalexin ([doi:10.1128/aac.42.6.1463](https://doi.org/10.1128/aac.42.6.1463)) -- preclinical male Wistar rats with a cephalexin / quinapril oral coadministration DDI (ratifies new `CONMED_QPRL_ORAL` covariate canonical).
 * Add van Rongen 2018 metformin ([doi:10.1007/s40272-018-0293-1](https://doi.org/10.1007/s40272-018-0293-1)) -- overweight and obese Caucasian adolescents.
 * Add Tarning 2012 artemether and dihydroartemisinin ([doi:10.1186/1475-2875-11-293](https://doi.org/10.1186/1475-2875-11-293)) -- pregnant women with uncomplicated Plasmodium falciparum malaria in Uganda (joint parent + DHA popPK with zero-order dissolution and 6-compartment transit absorption).

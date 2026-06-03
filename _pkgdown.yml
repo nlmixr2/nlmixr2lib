@@ -234,8 +234,8 @@ navbar:
         href: articles/Smith_2017_clindamycin.html
       - text: "Clopidogrel (Danielak 2017)"
         href: articles/Danielak_2017_clopidogrel.html
-      - text: "Colistin (Jacobs 2016)"
-        href: articles/Jacobs_2016_colistin.html
+      - text: "Colistin (Mohamed 2012)"
+        href: articles/Mohamed_2012_colistin.html
       - text: "Concizumab (Yuan 2019)"
         href: articles/Yuan_2019_concizumab.html
       - text: "Crisantaspase (Sassen 2017)"
@@ -318,8 +318,6 @@ navbar:
         href: articles/Zhang_2021_dupilumab.html
       - text: "Durvalumab (Ogasawara 2020)"
         href: articles/Ogasawara_2020_durvalumab.html
-      - text: "Efalizumab (Stein 2018)"
-        href: articles/Stein_2018_mAb_nonlinear_PK.html
       - text: "Efavirenz (Olagunju 2018)"
         href: articles/Olagunju_2018_efavirenz.html
       - text: "EGF IFN chimera (DoldanMartelli 2013)"
@@ -574,8 +572,6 @@ navbar:
         href: articles/Easterling_2018_magnesium_sulfate.html
       - text: "MagnesiumSulfate (Salinger 2013)"
         href: articles/Salinger_2013_magnesiumSulfate.html
-      - text: "Mavrilimumab (Stein 2018)"
-        href: articles/Stein_2018_mAb_nonlinear_PK.html
       - text: "MBG453 (Xu 2023)"
         href: articles/Xu_2023_MBG453.html
       - text: "MEDI528 (Cao 2013)"
