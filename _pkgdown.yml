@@ -1134,8 +1134,8 @@ navbar:
         href: articles/Zhou_2016_warfarin_vk2.html
       - text: "Zenocutuzumab (deVriesSchultink 2020)"
         href: articles/deVriesSchultink_2020_zenocutuzumab.html
-      - text: "Zidovudine (Fauchet 2013)"
-        href: articles/Fauchet_2013_zidovudine.html
+      - text: "Zika FAV IFN RBV (PiresdeMello 2018)"
+        href: articles/PiresdeMello_2018_zika_FAV_IFN_RBV.html
       - text: "Zolbetuximab (Yamada 2025)"
         href: articles/Yamada_2025_zolbetuximab.html
       # AUTOGEN:specific_drugs:END
@@ -1697,6 +1697,7 @@ articles:
   - articles/PerezRuixo_2025_posdinemab
   - articles/Petrov_2024_romiplostim
   - articles/Pierre_2017_morphine
+  - articles/PiresdeMello_2018_zika_FAV_IFN_RBV
   - articles/Plan_2012_pain
   - articles/Plock_2014_ferumoxytol
   - articles/Pouzin_2022_tusamitamab
