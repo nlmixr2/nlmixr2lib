@@ -1106,6 +1106,8 @@ navbar:
         href: articles/Zhao_2014_vancomycin.html
       - text: "Vedolizumab (Rosario 2015)"
         href: articles/Rosario_2015_vedolizumab.html
+      - text: "Verapamil rat (Syvanen 2011)"
+        href: articles/Syvanen_2011_verapamil_rat.html
       - text: "Vinflunine (Schmitt 2018)"
         href: articles/Schmitt_2018_vinflunine.html
       - text: "Visilizumab (Cao 2013)"
@@ -1780,6 +1782,7 @@ articles:
   - articles/Svensson_2017_bedaquiline
   - articles/Svensson_2018_bedaquiline
   - articles/Svensson_2018_rifampicin
+  - articles/Syvanen_2011_verapamil_rat
   - articles/Tadayasu_2014_linagliptin
   - articles/Takahashi_2023_abatacept
   - articles/Takechi_2018_propranolol
