@@ -5599,6 +5599,16 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Example models:** `Cirincione_2017_exenatide.R`.
 - **Notes:** Paired with `STUDY1`. When both are 0, the subject is in the pooled "other studies" residual-error group.
 
+### STUDY_MD (**canonical for Cirincione 2017 AAPS J ER exenatide multi-dose study cohort indicator**)
+- **Description:** 1 = subject enrolled in the phase II multi-dose study (weekly SC ER exenatide for 15 weeks) of the Cirincione 2017 AAPS J combined single- and multiple-dose population analysis; 0 = phase II single-dose study (one SC ER exenatide dose). Used to switch the study-specific relative bioavailability (f_rel) value and the log-scale residual-error magnitude per study.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (single-dose phase II study).
+- **Source aliases:** derived per subject from the dose-record structure (a subject with > 1 dose record in the multi-dose phase II study -> 1; subjects with a single dose record in the single-dose phase II study -> 0).
+- **Example models:** `Cirincione_2017_exenatide_er.R`.
+- **Notes:** Cirincione 2017 AAPS J Table II reports f_rel(single-dose study) = 8.86% and f_rel(MD study) = 15.5%, and log-scale residual SDs 0.684 (single-dose) vs 0.376 (multi-dose). The `STUDY_MD` indicator selects between them. For the phase III external validation cohort (multi-dose weekly 2 mg ER for 24 weeks), use `STUDY_MD = 1` so the multi-dose f_rel and residual magnitudes apply. Specific scope because the indicator is tied to the AAPS J 2017 ER exenatide combined analysis (single-dose phase II + multi-dose phase II) -- a future pooled analysis with additional study cohorts would justify its own canonical or a promotion to general.
+
 ### STUDY_PKU015 (**canonical for sapropterin PKU-015 pediatric study cohort indicator**)
 - **Description:** 1 = subject enrolled in study PKU-015 (pediatric population pharmacokinetic study of sapropterin in infants and young children, 0-6 years old, of the Qi 2014 pooled analysis); 0 = study PKU-004 (adolescent / adult open-label extension study, >= 9 years old). Used to switch the residual-error magnitude per study under the log-transform-both-sides (LTBS) constant-CV residual model.
 - **Units:** (binary)

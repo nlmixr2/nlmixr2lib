@@ -344,8 +344,8 @@ navbar:
         href: articles/Kuchimanchi_2018_evolocumab.html
       - text: "Exenatide (Cirincione 2017)"
         href: articles/Cirincione_2017_exenatide.html
-      - text: "Exendin939 (Ng 2018)"
-        href: articles/Ng_2018_exendin939.html
+      - text: "Exenatide er (Cirincione 2017)"
+        href: articles/Cirincione_2017_exenatide_er.html
       - text: "Factorix (Koopman 2023)"
         href: articles/Koopman_2023_factorix.html
       - text: "Factorviii (Nestorov 2014)"
@@ -618,8 +618,6 @@ navbar:
         href: articles/Hwang_2023_monalizumab.html
       - text: "Morphine (deHoogd 2017)"
         href: articles/deHoogd_2017_morphine.html
-      - text: "Morphine (Elkomy 2015)"
-        href: articles/Elkomy_2015_morphine.html
       - text: "Morphine (Franken 2015)"
         href: articles/Franken_2015_morphine.html
       - text: "Morphine (Pierre 2017)"
@@ -1360,6 +1358,7 @@ articles:
   - articles/Chua_2025_mirikizumab
   - articles/Chung_2013_vancomycin
   - articles/Cirincione_2017_exenatide
+  - articles/Cirincione_2017_exenatide_er
   - articles/Clegg_2024_nirsevimab
   - articles/Clewe_2015_rifampicin
   - articles/Clewe_2016_rifampicin
