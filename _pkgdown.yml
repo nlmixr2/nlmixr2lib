@@ -540,6 +540,8 @@ navbar:
         href: articles/Simpson_2013_lumefantrine.html
       - text: "Lumiracoxib rat (VasquezBahena 2009)"
         href: articles/VasquezBahena_2009_lumiracoxib_rat.html
+      - text: "Lumiracoxib rat (VelezdeMendizabal 2012)"
+        href: articles/VelezdeMendizabal_2012_lumiracoxib_rat.html
       - text: "Luspatercept (Chen 2020)"
         href: articles/Chen_2020_luspatercept.html
       - text: "M3g rat (Xie 2000)"
@@ -1784,6 +1786,7 @@ articles:
   - articles/Vargo_2014_statins_ezetimibe_mbma
   - articles/VasquezBahena_2009_lumiracoxib_rat
   - articles/VegaVilla_2013_sodium_nitrite_qsp
+  - articles/VelezdeMendizabal_2012_lumiracoxib_rat
   - articles/VelezdeMendizabal_2013_multipleSclerosis
   - articles/Venisse_2008_candida_albicans
   - articles/Vet_2016_midazolam
