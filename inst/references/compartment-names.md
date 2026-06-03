@@ -2413,6 +2413,18 @@ Per-paper metabolite / sibling-drug suffix additions discovered during the 2026-
 - **Source aliases:** none.
 - **Example models:** `Sherwin_2012_risperidone.R`.
 
+### p88 (**canonical iloperidone metabolite P-88 (M1) suffix**)
+- **Type:** metabolite-suffix
+- **Role:** P-88 (also termed M1), the active iloperidone metabolite produced via cytosolic / microsomal enzymes (not CYP2D6); contributes to the iloperidone therapeutic profile via D2 / 5-HT2A receptor binding affinity comparable to the parent.
+- **Source aliases:** none.
+- **Example models:** `Pei_2016_iloperidone.R`.
+
+### p95 (**canonical iloperidone metabolite P-95 (M2) suffix**)
+- **Type:** metabolite-suffix
+- **Role:** P-95 (also termed M2), the iloperidone metabolite produced by CYP2D6-mediated hydroxylation; pharmacologically inactive on the 5-HT2A receptor.
+- **Source aliases:** none.
+- **Example models:** `Pei_2016_iloperidone.R`.
+
 ### 5oh (**canonical 5-hydroxyomeprazole suffix**)
 - **Type:** metabolite-suffix
 - **Role:** 5-hydroxyomeprazole metabolite of omeprazole.

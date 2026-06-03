@@ -438,8 +438,8 @@ navbar:
         href: articles/Ngo_2020_HL2351.html
       - text: "Hydroxyurea (Paule 2011)"
         href: articles/Paule_2011_hydroxyurea.html
-      - text: "Iclaprim (Lodise 2018)"
-        href: articles/Lodise_2018_iclaprim.html
+      - text: "Iloperidone (Pei 2016)"
+        href: articles/Pei_2016_iloperidone.html
       - text: "Imatinib (Chien 2022)"
         href: articles/Chien_2022_imatinib.html
       - text: "Imatinib (Schindler 2017)"
@@ -1670,6 +1670,7 @@ articles:
   - articles/Passey_2011_tacrolimus
   - articles/Patel_2017_selumetinib
   - articles/Paule_2011_hydroxyurea
+  - articles/Pei_2016_iloperidone
   - articles/Peng_2024_SAL003
   - articles/Perez-Guille_2018_dexmedetomidine
   - articles/PerezRuixo_2025_posdinemab
