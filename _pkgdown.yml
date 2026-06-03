@@ -218,6 +218,8 @@ navbar:
         href: articles/Schaefer_1996_ciprofloxacin.html
       - text: "Ciprofloxacin (Thuo 2011)"
         href: articles/Thuo_2011_ciprofloxacin.html
+      - text: "Cisplatin (Boer 2015)"
+        href: articles/Boer_2015_cisplatin.html
       - text: "Cladribine (Savic 2017)"
         href: articles/Savic_2017_cladribine.html
       - text: "Clarithromycin (Abduljalil 2009)"
@@ -1321,6 +1323,7 @@ articles:
   - articles/Bisaso_2014_albumin
   - articles/Bista_2015_fentanyl
   - articles/Bizzotto_2016_glucose
+  - articles/Boer_2015_cisplatin
   - articles/Boer-Perez_2026_piperacillin
   - articles/Bouazza_2011_lamivudine
   - articles/Boucher_2018_naproxen_mbma
