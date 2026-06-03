@@ -98,13 +98,13 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Description:** Subject body height at baseline. Time-fixed unless the source paper states otherwise.
 - **Units:** cm
 - **Type:** continuous
-- **Scope:** specific
-- **Reference category:** n/a -- used with a linear-deviation form `(HT - ref)` or with a power-style scaling. Reference values observed: 167 cm (Naik 2016, vortioxetine adult MDD/GAD population median).
+- **Scope:** general
+- **Reference category:** n/a -- used with a linear-deviation form `(HT - ref)` or with a power-style scaling. Reference values observed: 167 cm (Naik 2016, vortioxetine adult MDD/GAD population median); 165 cm (Zhang 2018 flurbiprofen and Angeli 2016 healthy non-menopausal women).
 - **Source aliases:**
   - `HGT` -- height (cm) abbreviation appearing in some NONMEM control streams.
-  - `HEIGHT` -- spelled-out form.
-- **Example models:** `Naik_2016_vortioxetine.R` (reference 167 cm; linear-additive effect 0.40 L/hr per (HT - 167) cm on CL/F, retained over weight and BMI in stepwise selection because it produced the larger reduction in CL IIV), `Zhang_2018_flurbiprofen.R` (reference 165 cm; linear-multiplicative effect `1 + theta_height * (HT - 165)` on the effect-compartment equilibration rate Ke alongside a paired linear-multiplicative WT effect).
-- **Notes:** Height is sometimes retained as a size covariate when allometric scaling on weight performs less well; it is also an input to BSA, BMI, FFM, and LBM derivations, so a model that retains `HT` alongside one of those derived covariates should document the dependency in `covariateData[[HT]]$notes`. Specific scope until a second adult-popPK model ratifies the name; at that point promote to `general`.
+  - `HEIGHT` -- spelled-out form (used by Angeli 2016).
+- **Example models:** `Naik_2016_vortioxetine.R` (reference 167 cm; linear-additive effect 0.40 L/hr per (HT - 167) cm on CL/F, retained over weight and BMI in stepwise selection because it produced the larger reduction in CL IIV), `Zhang_2018_flurbiprofen.R` (reference 165 cm; linear-multiplicative effect `1 + theta_height * (HT - 165)` on the effect-compartment equilibration rate Ke alongside a paired linear-multiplicative WT effect), `Angeli_2016_iron_hepcidin.R` (reference 165 cm; power-law multiplier `(HT / 165)^32.70` on the hepcidin post-menses rebound parameter `krel_hep`; the very large exponent reflects the narrow height range across the cohort, 158-173 cm at the 10th-90th percentile).
+- **Notes:** Height is sometimes retained as a size covariate when allometric scaling on weight performs less well; it is also an input to BSA, BMI, FFM, and LBM derivations, so a model that retains `HT` alongside one of those derived covariates should document the dependency in `covariateData[[HT]]$notes`. Promoted from `specific` to `general` on 2026-06-03 with the Angeli 2016 iron / hepcidin extraction (the third adult-popPK model to register HT, satisfying the original promotion condition documented when the canonical was introduced).
 
 ### BSA (**canonical for body surface area**)
 - **Description:** Body surface area (typically computed by DuBois, Mosteller, or Haycock from height and weight).
@@ -307,8 +307,9 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Reference category:** 0 (no oral contraceptive). Effect form in Allegaert 2015 is multiplicative: `CL_glucuronide *= theta_CONMED_BIRTHCONTROL` when `CONMED_BIRTHCONTROL == 1`, with `theta_CONMED_BIRTHCONTROL = 1.46` (estrogen-driven UGT2B7 induction).
 - **Source aliases:**
   - `BC` (Allegaert 2015 NONMEM column; same orientation, no transformation) -- used in `Allegaert_2015_paracetamol.R`.
-- **Example models:** `Allegaert_2015_paracetamol.R`.
-- **Notes:** Specific scope because the canonical encoding pools all oral contraceptive types (combined / progestin-only) into a single binary; future models that need to distinguish formulations should register a finer-grained canonical (e.g., `CONMED_BIRTHCONTROL_COMBINED`, `CONMED_BIRTHCONTROL_PROGESTIN`). The full-word canonical name was chosen over a shorter `BC_USE` form for clarity in source traces.
+  - `NOCONTRA` (Angeli 2016 paper notation; INVERTED orientation: `NOCONTRA = 1 - CONMED_BIRTHCONTROL`, so a positive paper-reported `beta_NOCONTRA` corresponds to a negative `e_conmed_birthcontrol_<param>` in the canonical encoding) -- used in `Angeli_2016_iron_hepcidin.R`.
+- **Example models:** `Allegaert_2015_paracetamol.R`, `Angeli_2016_iron_hepcidin.R` (multiplicative effect on iron elimination `kout_iron`; women on oral contraception have ~18% lower iron elimination, consistent with the paper's narrative that contraception limits menstrual blood loss; `e_conmed_birthcontrol_kout_iron = -0.20`).
+- **Notes:** Specific scope because the canonical encoding pools all oral contraceptive types (combined / progestin-only) into a single binary; future models that need to distinguish formulations should register a finer-grained canonical (e.g., `CONMED_BIRTHCONTROL_COMBINED`, `CONMED_BIRTHCONTROL_PROGESTIN`). The full-word canonical name was chosen over a shorter `BC_USE` form for clarity in source traces. When a source paper reports the inverted "no contraception" indicator (Angeli 2016 `NOCONTRA = 1` for women not on contraception), the canonical encoding stores `CONMED_BIRTHCONTROL = 1 - NOCONTRA` and the canonical effect parameter takes the opposite sign of the paper's reported coefficient.
 
 ### DIS_EOPE (**canonical for early-onset pre-eclampsia indicator**)
 - **Description:** Binary indicator of early-onset pre-eclampsia (eoPE); `1` = eoPE diagnosed before 34 weeks gestation, `0` = not eoPE. Time-fixed per subject within the gestational PK study window. Used by population PK models that compare drug disposition in pregnant women with vs without early-onset pre-eclampsia.
@@ -320,6 +321,28 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
   - `PE` -- common abbreviation in obstetric pharmacology papers when the cohort restriction is to early-onset PE only; used in `Schoenmakers_2025_betamethasone.R` (paper notation: `eoPE` / `ThetaPE`).
 - **Example models:** `Schoenmakers_2025_betamethasone.R` (multiplicative effect on CL, encoded via the log-additive form on `lcl`; reduces apparent betamethasone clearance from 15.6 L/h to 9.6 L/h).
 - **Notes:** Distinct from a broader `PREECL` indicator that would pool early-onset, late-onset and postpartum pre-eclampsia. The "early-onset" specifier corresponds to diagnosis before 34 weeks gestation, the conventional clinical cutoff (Phipps 2019 Nat Rev Nephrol). Future papers that enrol mixed early-/late-onset cohorts or that report PE status without the 34-week stratification should register a separate canonical (e.g., `PREECL` for any-onset PE, or `LOPE` for late-onset PE) rather than reusing `DIS_EOPE` with relaxed semantics. Distinct from `PREG` (pregnancy status indicator): `DIS_EOPE` is a complication-of-pregnancy stratifier within a pregnant cohort, whereas `PREG` discriminates pregnant-vs-non-pregnant subjects. Ratified canonically on 2026-05-11 alongside the Schoenmakers 2025 betamethasone extraction.
+
+### HIGHAM (**canonical for Higham pictorial blood-loss assessment chart score**)
+- **Description:** Higham's score (Pictorial Blood-loss Assessment Chart, PBAC), a semi-quantitative pictorial scoring of menstrual blood loss summed across all sanitary protection items used during a menstrual period. Higher scores correspond to heavier menstrual bleeding; a per-menstrual-period score >= 100 is the conventional clinical threshold for menorrhagia (Higham 1990 BJOG). Time-fixed per subject when computed as the mean of the last few cycles preceding the study (the Angeli 2016 use), time-varying when scored per cycle.
+- **Units:** (score; unitless)
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters as a power-law multiplier `(HIGHAM / tHIGHAM)^exponent` on hepcidin synthesis and elimination rate constants in Angeli 2016, with the reference value `tHIGHAM` set near the population median (96.6 in the Angeli 2016 HEPMEN cohort).
+- **Source aliases:**
+  - `HiS` -- Angeli 2016 paper notation; same orientation, no transformation.
+- **Example models:** `Angeli_2016_iron_hepcidin.R` (per-subject mean of the three most recent cycles' Higham scores; enters ksynH and koutH via power-law effects with exponents 0.66 and 0.83 respectively).
+- **Notes:** Specific scope because the Higham / PBAC score is a reproductive-health-specific instrument. Promote to general if a second menstrual-cycle or iron-status paper registers the same instrument. Distinct from generic blood-loss quantities reported in mL (which would warrant a separate `MENSTRUAL_BLOOD_LOSS_ML` canonical). The threshold for menorrhagia is 100 (Higham 1990 BJOG 97:734); the Angeli 2016 cohort had a mean of 96.6 with SD 60.5 (Table I), so most subjects sat near the menorrhagia threshold. Ratified canonically on 2026-06-03 alongside the Angeli 2016 iron and hepcidin extraction.
+
+### DLOSS (**canonical for menstrual-period duration**)
+- **Description:** Per-subject length of the menstrual period (days of menstrual bleeding) used as a time bound on the increased-elimination phase in joint iron / hepcidin turnover models. Time-fixed per subject within a single menstrual cycle (the Angeli 2016 use); set to the individual's observed menses length over the study cycle rather than estimated from the data.
+- **Units:** days
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters the model as the upper bound of the loss-phase indicator window `t < DLOSS`. Reference values observed: Angeli 2016 inclusion criterion required menses length between 3 and 5 days (Methods p. 491); the per-subject value was fixed to the observed individual menses length.
+- **Source aliases:**
+  - `dloss` -- Angeli 2016 paper notation; same orientation, no transformation.
+- **Example models:** `Angeli_2016_iron_hepcidin.R` (per-subject menses length in days; bounds the loss phase during which `kloss` adds to both `kout_iron` and `kout_hep`).
+- **Notes:** Specific scope because the menses-length covariate is meaningful only inside joint iron / hepcidin turnover models that include a discrete loss-phase indicator. Promote to general if a second reproductive-cycle PK / PD paper uses an equivalent per-subject menses-length time-bound. Distinct from `TPP` (time postpartum, weeks; unbounded postpartum time after delivery) and from a hypothetical `CYCLE_LENGTH` covariate (full menstrual cycle length in days, which would warrant a separate canonical). Ratified canonically on 2026-06-03 alongside the Angeli 2016 iron and hepcidin extraction.
 
 ## Vital signs
 
@@ -784,14 +807,14 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Notes:** General scope because absolute neutrophil count is a routine clinical-laboratory measurement that recurs across cytotoxic-chemotherapy myelosuppression models (centred-deviation hazard models, Friberg-family per-subject baseline initial conditions, and time-varying ANC outputs). Promoted to general scope on 2026-05-10 to support `Ozawa_2007_docetaxel.R`. The NEUT canonical units are cells/mm^3, but the reporting unit `10^9 cells/L` (numerically NEUT_per_mm3 / 1000) is also common in oncology papers; per-model `covariateData[[NEUT]]$units` documents the per-paper unit. Distinct from `WBC` (total white blood cell count, of which neutrophils are the largest fraction in healthy adults) -- `NEUT` is a specific differential-count subfraction. Also distinct from `NLR` (neutrophil-to-lymphocyte ratio), which is a derived ratio.
 
 ### FERRITIN_BL (**canonical for baseline serum ferritin concentration**)
-- **Description:** Pre-treatment (or per-subject anchor-time) serum ferritin concentration. Used in iron-overload / transfusion-dependent haemoglobinopathy disease-progression models as the per-subject initial condition for the ferritin state variable (`ferritin(0) <- FERRITIN_BL`). Distinct from a state-output ferritin trajectory: `FERRITIN_BL` is a static per-subject covariate (one value, supplied at simulation start); the state-output ferritin evolves over time per the disease ODE.
-- **Units:** ug/L (clinical reporting convention in iron-overload papers; numerically equivalent to ng/mL). Document per-model via `covariateData[[FERRITIN_BL]]$units`.
+- **Description:** Pre-treatment (or per-subject anchor-time) serum ferritin concentration. Two complementary uses across iron-related models: (1) as the per-subject initial condition for a ferritin state variable in iron-overload disease-progression models (`ferritin(0) <- FERRITIN_BL`; Bellanti 2015), and (2) as a static per-subject covariate entering a power-law multiplier on hepcidin turnover rate constants in iron-status / menstrual-cycle turnover models (Angeli 2016). Distinct from a state-output ferritin trajectory: `FERRITIN_BL` is a static per-subject covariate (one value, supplied at simulation start); a state-output ferritin would evolve over time per a disease ODE.
+- **Units:** ug/L (clinical reporting convention in iron-related papers; numerically equivalent to ng/mL). Document per-model via `covariateData[[FERRITIN_BL]]$units`.
 - **Type:** continuous
-- **Scope:** specific
-- **Reference category:** n/a -- subject-level baseline supplied as a covariate column. Reference values observed: 2260 ug/L (Bellanti 2015 thalassaemia cohort median; range 393-8500 ug/L across 27 transfusion-dependent beta-thalassaemia major patients).
+- **Scope:** general
+- **Reference category:** n/a -- subject-level baseline supplied as a covariate column. Reference values observed: 2260 ug/L (Bellanti 2015 thalassaemia cohort median; range 393-8500 ug/L across 27 transfusion-dependent beta-thalassaemia major patients); 53 ug/L (Angeli 2016 healthy non-menopausal women; mean 53.14, range at 10th-90th percentile 18.6-97.4 ug/L).
 - **Source aliases:** none known.
-- **Example models:** `Bellanti_2015_deferoxamine.R` (ug/L; initial condition for the ferritin compartment; n=27 transfusion-dependent beta-thalassaemia major paediatric / adolescent cohort, median 2260, range 393-8500).
-- **Notes:** Iron storage protein; elevated in transfusional iron overload (beta-thalassaemia major, sickle-cell disease on chronic transfusion, MDS on transfusion support) and in some inflammatory states (acute-phase reactant). Normal range varies by age and sex but is typically ~30-300 ug/L in healthy adults; chronically transfused thalassaemia cohorts routinely run 1,000-10,000 ug/L. Specific scope: ratified canonically on 2026-05-22 with `Bellanti_2015_deferoxamine`; promote to general if a second iron-overload / haematology paper registers a baseline ferritin column with consistent semantics.
+- **Example models:** `Bellanti_2015_deferoxamine.R` (ug/L; initial condition for the ferritin compartment; n=27 transfusion-dependent beta-thalassaemia major paediatric / adolescent cohort, median 2260, range 393-8500), `Angeli_2016_iron_hepcidin.R` (ug/L; per-subject end-of-cycle baseline used as a power-law multiplier `(FERRITIN_BL / 53)^exponent` on hepcidin elimination `kout_hep` (exponent -0.60) and on the hepcidin post-menses rebound `krel_hep` (exponent -1.95); higher baseline ferritin -> slower hepcidin elimination and a smaller rebound, consistent with iron-regulatory feedback).
+- **Notes:** Iron storage protein; elevated in transfusional iron overload (beta-thalassaemia major, sickle-cell disease on chronic transfusion, MDS on transfusion support) and in some inflammatory states (acute-phase reactant); near normal in healthy adults (typically ~30-300 ug/L). Promoted from `specific` to `general` on 2026-06-03 with the Angeli 2016 iron / hepcidin extraction (the second model to register `FERRITIN_BL` with consistent baseline-ferritin semantics across two distinct mechanistic uses).
 
 ## Coagulation / hemostasis biomarkers
 

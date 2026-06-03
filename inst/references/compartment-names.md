@@ -1567,6 +1567,22 @@ Standard clinical-biomarker / endogenous-output compartments. Widely-recognised 
 - **Source aliases:** none.
 - **Example models:** `Tetschke_2018_erythropoiesis.R`.
 
+### iron (**canonical serum iron PD output**)
+- **Type:** compartment
+- **Role:** Serum iron biomarker PD output for iron-metabolism / iron-status turnover models. The state carries the iron concentration directly (umol/L in Angeli 2016) rather than an amount, so the synthesis and elimination rate constants `ksyn_iron` / `kout_iron` have concentration / time and 1 / time units respectively.
+- **Source aliases:**
+  - `Ir` -- Angeli 2016 paper notation; same orientation, no transformation.
+- **Example models:** `Angeli_2016_iron_hepcidin.R`.
+- **Notes:** Registered 2026-06-03 alongside the Angeli 2016 iron / hepcidin joint turnover extraction. Reserved for serum iron as a PD biomarker (concentration-state IDR / turnover models); paper-mechanistic intracellular iron pools or membrane-limited PBPK iron sub-compartments should use a distinct namespaced canonical when they arise.
+
+### hep (**canonical serum hepcidin PD output**)
+- **Type:** compartment
+- **Role:** Serum hepcidin biomarker PD output for hepcidin-driven iron-regulation turnover models. The state carries the hepcidin concentration directly (nmol/L in Angeli 2016) and is paired with `iron` in the Angeli 2016 joint model via a multiplicative coupling on hepcidin synthesis.
+- **Source aliases:**
+  - `He` -- Angeli 2016 paper notation; same orientation, no transformation.
+- **Example models:** `Angeli_2016_iron_hepcidin.R`.
+- **Notes:** Registered 2026-06-03 alongside the Angeli 2016 iron / hepcidin joint turnover extraction. The short `hep` form was chosen to mirror the paper's `He` notation and to follow the existing biomarker-state precedent of short lowercase names (`phe`, `pth`, `thb`, `psa`).
+
 ### psa (**canonical prostate-specific antigen (lowercase form)**)
 - **Type:** compartment
 - **Role:** Prostate-specific antigen PD output (lowercase form alongside the canonical capitalised `PSA`).
