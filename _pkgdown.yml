@@ -236,8 +236,8 @@ navbar:
         href: articles/Abduljalil_2009_clarithromycin.html
       - text: "Clesrovimab (Hu 2026)"
         href: articles/Hu_2026_clesrovimab.html
-      - text: "Clindamycin (Smith 2017)"
-        href: articles/Smith_2017_clindamycin.html
+      - text: "Clomethiazole (Zingmark 2003)"
+        href: articles/Zingmark_2003_clomethiazole.html
       - text: "Clopidogrel (Danielak 2017)"
         href: articles/Danielak_2017_clopidogrel.html
       - text: "Clozapine (Li 2012)"
@@ -1945,6 +1945,7 @@ articles:
   - articles/Zhu_2014_tacrolimus
   - articles/Zhu_2017_lebrikizumab
   - articles/Zierhut_2008_osteoprotegerin
+  - articles/Zingmark_2003_clomethiazole
   - articles/Zou_2012_MI_219
   - articles/Zufferey_2018_fondaparinux
   - articles/Zuo_2016_UDCA
