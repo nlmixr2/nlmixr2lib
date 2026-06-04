@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Park 2014 triflusal ([doi:10.1186/2050-6511-15-75](https://doi.org/10.1186/2050-6511-15-75)) -- 34 healthy Korean adult male volunteers (one-compartment HTB metabolite popPK with binary probability PD for inhibition of platelet aggregation).
+* Add Dhoro 2015 efavirenz ([doi:10.1186/s40360-015-0004-2](https://doi.org/10.1186/s40360-015-0004-2)) -- HIV-positive and HIV/TB co-infected adults in Zimbabwe (one-compartment popPK with CL/F stratified by CYP2B6*18 genotype and multiplicative CYP2B6*6 / body-weight / sex covariate effects).
 * Add Padoin 1998 cephalexin ([doi:10.1128/aac.42.6.1463](https://doi.org/10.1128/aac.42.6.1463)) -- preclinical male Wistar rats with a cephalexin / quinapril oral coadministration DDI (ratifies new `CONMED_QPRL_ORAL` covariate canonical).
 * Add van Rongen 2018 metformin ([doi:10.1007/s40272-018-0293-1](https://doi.org/10.1007/s40272-018-0293-1)) -- overweight and obese Caucasian adolescents.
 * Add Tarning 2012 artemether and dihydroartemisinin ([doi:10.1186/1475-2875-11-293](https://doi.org/10.1186/1475-2875-11-293)) -- pregnant women with uncomplicated Plasmodium falciparum malaria in Uganda (joint parent + DHA popPK with zero-order dissolution and 6-compartment transit absorption).
