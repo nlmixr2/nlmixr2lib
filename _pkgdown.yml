@@ -814,6 +814,10 @@ navbar:
         href: articles/Przybylowski_2015_propofol.html
       - text: "Propofol (Wang 2012)"
         href: articles/Wang_2012_propofol.html
+      - text: "Propofol human (Knibbe 2005)"
+        href: articles/Knibbe_2005_propofol.html
+      - text: "Propofol rat (Knibbe 2005)"
+        href: articles/Knibbe_2005_propofol.html
       - text: "Propofol sheep (Ngamprasertwong 2016)"
         href: articles/Ngamprasertwong_2016_propofol_sheep.html
       - text: "Propranolol (DelFrari 2018)"
@@ -1594,7 +1598,7 @@ articles:
   - articles/Kloprogge_2013_lumefantrine
   - articles/Kloprogge_2014_quinine
   - articles/Kloprogge_2018_lumefantrine
-  - articles/Klunder_2017_upadacitinib
+  - articles/Knibbe_2005_propofol
   - articles/Knibbe_2009_morphine
   - articles/Knights_2015_aripiprazole
   - articles/Koloskoff_2025_ganciclovir
