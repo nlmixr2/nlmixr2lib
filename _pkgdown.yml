@@ -518,8 +518,8 @@ navbar:
         href: articles/Bouazza_2011_lamivudine.html
       - text: "Lamivudine (Moore 1999)"
         href: articles/Moore_1999_lamivudine.html
-      - text: "Lamotrigine (He 2012)"
-        href: articles/He_2012_lamotrigine.html
+      - text: "Lamotrigine (Hussein 1997)"
+        href: articles/Hussein_1997_lamotrigine.html
       - text: "Lampalizumab (Le 2015)"
         href: articles/Le_2015_lampalizumab.html
       - text: "Landiolol (Kunisawa 2015)"
@@ -1528,7 +1528,7 @@ articles:
   - articles/Hu_2026_clesrovimab
   - articles/Hua_2015_anrukinzumab
   - articles/Huang_2017_vrc01
-  - articles/Hurtado_2014_levofloxacin_rat
+  - articles/Hussein_1997_lamotrigine
   - articles/Huynh_2026_VRC07523LS
   - articles/Hwang_2022_tremelimumab
   - articles/Hwang_2023_monalizumab
