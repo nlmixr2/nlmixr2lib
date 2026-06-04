@@ -1074,6 +1074,8 @@ navbar:
         href: articles/Hwang_2022_tremelimumab.html
       - text: "Treosulfan (Danielak 2017)"
         href: articles/Danielak_2017_treosulfan.html
+      - text: "Triflusal (Park 2014)"
+        href: articles/Park_2014_triflusal.html
       - text: "Trontinemab (Grimm 2023)"
         href: articles/Grimm_2023.html
       - text: "Tusamitamab (Pouzin 2022)"
@@ -1697,6 +1699,7 @@ articles:
   - articles/Parhiz_2024_mRNALNP
   - articles/Park_2001_ketoprofen
   - articles/Park_2014_SKL10406
+  - articles/Park_2014_triflusal
   - articles/Passey_2011_tacrolimus
   - articles/Patel_2017_selumetinib
   - articles/Paule_2011_hydroxyurea
