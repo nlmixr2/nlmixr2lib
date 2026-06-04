@@ -88,6 +88,8 @@ navbar:
         href: articles/Hietala_2010_artemether_lumefantrine_malaria.html
       - text: "Artemisinin (Birgersson 2016)"
         href: articles/Birgersson_2016_artemisinin.html
+      - text: "Artemisinin (Sidhu 1998)"
+        href: articles/Sidhu_1998_artemisinin.html
       - text: "Artesunate (Hendriksen 2013)"
         href: articles/Hendriksen_2013_artesunate.html
       - text: "Artesunate (LohyDas 2018)"
@@ -1777,6 +1779,7 @@ articles:
   - articles/Shin_2017_levetiracetam
   - articles/Shoji_2017_fosdagrocorat_oc
   - articles/Shoji_2017_fosdagrocorat_p1np
+  - articles/Sidhu_1998_artemisinin
   - articles/Sikma_2020_tacrolimus_thoracic
   - articles/Sikma_2020_tacrolimus_unbound_plasma
   - articles/Simpson_2013_artesunate
