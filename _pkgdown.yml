@@ -338,8 +338,8 @@ navbar:
         href: articles/Goggin_2004_emfilermin.html
       - text: "Emicizumab (Yoneyama 2017)"
         href: articles/Yoneyama_2017_emicizumab.html
-      - text: "Enoxaparin (SanchezPena 2005)"
-        href: articles/SanchezPena_2005_enoxaparin.html
+      - text: "Enoxaparin (Feng 2006)"
+        href: articles/Feng_2006_enoxaparin.html
       - text: "Epinephrine (Abboud 2009)"
         href: articles/Abboud_2009_epinephrine.html
       - text: "Epinephrine (Oualha 2014)"
@@ -1483,7 +1483,7 @@ articles:
   - articles/Fau_2020_isatuximab
   - articles/Fauchet_2013_zidovudine
   - articles/FehlingKaschek_2019_trastuzumab_skbr3
-  - articles/Feng_2012_higenamine
+  - articles/Feng_2006_enoxaparin
   - articles/Ferron_2013_cabazitaxel
   - articles/Fiedler-Kelly_2019_fremanezumab
   - articles/FiedlerKelly_2020_fremanezumab_cm
