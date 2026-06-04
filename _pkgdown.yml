@@ -708,6 +708,8 @@ navbar:
         href: articles/Lowe_2009_omalizumab.html
       - text: "Omeprazole (Zhao 2018)"
         href: articles/Zhao_2018_omeprazole.html
+      - text: "Ondansetron (deAlwis 1998)"
+        href: articles/deAlwis_1998_ondansetron.html
       - text: "Ontamalimab (Wang 2020)"
         href: articles/Wang_2020_ontamalimab.html
       - text: "Ormutivimab (Zhang 2022)"
@@ -726,8 +728,8 @@ navbar:
         href: articles/Takeuchi_2023_ozoralizumab.html
       - text: "Palivizumab (Robbie 2012)"
         href: articles/Robbie_2012_palivizumab.html
-      - text: "Paracetamol (Anderson 1998)"
-        href: articles/Anderson_1998_paracetamol.html
+      - text: "PAmAb (Cao 2013)"
+        href: articles/Cao_2013_PAmAb.html
       - text: "Paracetamol (Krekels 2015)"
         href: articles/Krekels_2015_paracetamol.html
       - text: "Paracetamol (Wattanakul 2016)"
@@ -1415,6 +1417,7 @@ articles:
   - articles/Danielak_2017_clopidogrel
   - articles/Danielak_2017_treosulfan
   - articles/Dao_2020_sultiame
+  - articles/deAlwis_1998_ondansetron
   - articles/Debord_2001_cyclosporin
   - articles/deHoogd_2017_morphine
   - articles/deKock_2017_sulfadoxinePyrimethamine
