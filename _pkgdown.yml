@@ -1024,6 +1024,8 @@ navbar:
         href: articles/Hennig_2013_tobra.html
       - text: "Tobramycin (Hennig 2008)"
         href: articles/Hennig_2008_tobramycin.html
+      - text: "Tobramycin (Livio 2014)"
+        href: articles/Livio_2014_tobramycin.html
       - text: "Tobramycin inhaled (Ting 2014)"
         href: articles/Ting_2014_tobramycin_inhaled.html
       - text: "Tobramycin rat conventional (Marier 2002)"
@@ -1605,7 +1607,7 @@ articles:
   - articles/Lin_2018_voriconazole
   - articles/Lin_2024_casirivimab
   - articles/Lin_2024_pozelimab
-  - articles/Llanos_2017_gentamicin
+  - articles/Livio_2014_tobramycin
   - articles/Llanos-Paez_2017_gentamicin
   - articles/Llanos-Paez_2020_gentamicin
   - articles/Lon_2013_abatacept
