@@ -2,7 +2,7 @@
 
 # development version
 
-* Add You 2013 hCG kinetics in gestational trophoblastic neoplasia ([doi:10.1038/bjc.2013.123](https://doi.org/10.1038/bjc.2013.123)) -- women with low-risk gestational trophoblastic neoplasia receiving 8-day methotrexate / folinic acid chemotherapy (tumour-biomarker hCG mono-exponential decline with a residual-production asymptote; no drug PK; Box-Cox eta on the hCG0 amplitude).
+* Add Wilbaux 2014 K-PD joint tumour size + CA-125 model ([doi:10.1038/bjc.2014.75](https://doi.org/10.1038/bjc.2014.75)) -- adults with platinum-sensitive recurrent ovarian, peritoneal, or fallopian cancer (CALYPSO phase III trial).
 * Add Padoin 1998 cephalexin ([doi:10.1128/aac.42.6.1463](https://doi.org/10.1128/aac.42.6.1463)) -- preclinical male Wistar rats with a cephalexin / quinapril oral coadministration DDI (ratifies new `CONMED_QPRL_ORAL` covariate canonical).
 * Add van Rongen 2018 metformin ([doi:10.1007/s40272-018-0293-1](https://doi.org/10.1007/s40272-018-0293-1)) -- overweight and obese Caucasian adolescents.
 * Add Tarning 2012 artemether and dihydroartemisinin ([doi:10.1186/1475-2875-11-293](https://doi.org/10.1186/1475-2875-11-293)) -- pregnant women with uncomplicated Plasmodium falciparum malaria in Uganda (joint parent + DHA popPK with zero-order dissolution and 6-compartment transit absorption).
