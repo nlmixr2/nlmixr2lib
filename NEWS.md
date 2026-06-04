@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Fattinger 1991 quinidine ([doi:10.1111/j.1365-2125.1991.tb05531.x](https://doi.org/10.1111/j.1365-2125.1991.tb05531.x)) -- adults treated for supraventricular or ventricular arrhythmias with oral quinidine sulphate or slow-release quinidine bisulphate (ratifies new `DIS_HF_OR_LF_SEV` and `FORM_QUIN_SR` covariate canonicals).
+* Add Anderson 1998 paracetamol ([doi:10.1046/j.1365-2125.1998.00780.x](https://doi.org/10.1046/j.1365-2125.1998.00780.x)) -- ventilator-dependent children (5 months to 12 years) with indwelling ventricular drains; oral PK with CSF equilibration compartment.
 * Add Padoin 1998 cephalexin ([doi:10.1128/aac.42.6.1463](https://doi.org/10.1128/aac.42.6.1463)) -- preclinical male Wistar rats with a cephalexin / quinapril oral coadministration DDI (ratifies new `CONMED_QPRL_ORAL` covariate canonical).
 * Add van Rongen 2018 metformin ([doi:10.1007/s40272-018-0293-1](https://doi.org/10.1007/s40272-018-0293-1)) -- overweight and obese Caucasian adolescents.
 * Add Tarning 2012 artemether and dihydroartemisinin ([doi:10.1186/1475-2875-11-293](https://doi.org/10.1186/1475-2875-11-293)) -- pregnant women with uncomplicated Plasmodium falciparum malaria in Uganda (joint parent + DHA popPK with zero-order dissolution and 6-compartment transit absorption).

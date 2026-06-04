@@ -726,8 +726,8 @@ navbar:
         href: articles/Takeuchi_2023_ozoralizumab.html
       - text: "Palivizumab (Robbie 2012)"
         href: articles/Robbie_2012_palivizumab.html
-      - text: "PAmAb (Cao 2013)"
-        href: articles/Cao_2013_PAmAb.html
+      - text: "Paracetamol (Anderson 1998)"
+        href: articles/Anderson_1998_paracetamol.html
       - text: "Paracetamol (Krekels 2015)"
         href: articles/Krekels_2015_paracetamol.html
       - text: "Paracetamol (Wattanakul 2016)"
@@ -1312,7 +1312,7 @@ articles:
   - articles/Alqahtani_2018_cefuroxime
   - articles/Alqahtani_2018_vancomycin
   - articles/Alsultan_2017_pyrazinamide
-  - articles/An_2012_mitoxantrone_pbpk
+  - articles/Anderson_1998_paracetamol
   - articles/Andrews_2017_tacrolimus
   - articles/Angeli_2016_iron_hepcidin
   - articles/Aoyama_2012_sepantronium
