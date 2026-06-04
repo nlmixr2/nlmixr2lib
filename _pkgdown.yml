@@ -370,6 +370,8 @@ navbar:
         href: articles/Pu_2021_evinacumab.html
       - text: "Evolocumab (Kuchimanchi 2018)"
         href: articles/Kuchimanchi_2018_evolocumab.html
+      - text: "Exemestane (Valle 2005)"
+        href: articles/Valle_2005_exemestane.html
       - text: "Exenatide (Cirincione 2017)"
         href: articles/Cirincione_2017_exenatide.html
       - text: "Exenatide er (Cirincione 2017)"
@@ -1871,13 +1873,7 @@ articles:
   - articles/Valenzuela_2025_nipocalimab
   - articles/Valitalo_2017_ketorolac
   - articles/Valitalo_2017_morphine
-  - articles/vanderWalt_2013_dapagliflozin
-  - articles/vanHasselt_2015_eribulin
-  - articles/vanRongen_2016_acetaminophen
-  - articles/vanRongen_2017_midazolam
-  - articles/vanRongen_2018_metformin
-  - articles/vanRongen_2018_midazolam
-  - articles/vanWijk_2019_paracetamol
+  - articles/Valle_2005_exemestane
   - articles/Varatharajan_2016_daunorubicin
   - articles/Vargo_2014_statins_ezetimibe_mbma
   - articles/VasquezBahena_2009_lumiracoxib_rat
