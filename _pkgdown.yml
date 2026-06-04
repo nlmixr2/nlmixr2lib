@@ -1006,8 +1006,8 @@ navbar:
         href: articles/Sikma_2020_tacrolimus_thoracic.html
       - text: "Tacrolimus unbound plasma (Sikma 2020)"
         href: articles/Sikma_2020_tacrolimus_unbound_plasma.html
-      - text: "Taranabant (Li 2010)"
-        href: articles/Li_2010_taranabant.html
+      - text: "Tafenoquine (Edstein 2001)"
+        href: articles/Edstein_2001_tafenoquine.html
       - text: "Taspoglutide mbma (Li 2015)"
         href: articles/Li_2015_taspoglutide_mbma.html
       - text: "Taurine rat (Catalan-Latorre 2018)"
@@ -1455,6 +1455,7 @@ articles:
   - articles/Dunlap_2025_tacrolimus
   - articles/Dunn_2025_tranexamicAcid
   - articles/Easterling_2018_magnesium_sulfate
+  - articles/Edstein_2001_tafenoquine
   - articles/Ekhart_2008_carboplatin
   - articles/Elassaiss-Schaap_2017_pembrolizumab
   - articles/Elishmereni_2011_il21
