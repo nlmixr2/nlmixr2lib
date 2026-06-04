@@ -448,8 +448,8 @@ navbar:
         href: articles/Yao_2018_guselkumab.html
       - text: "Haloperidol (Franken 2017)"
         href: articles/Franken_2017_haloperidol.html
-      - text: "HL2351 (Ngo 2020)"
-        href: articles/Ngo_2020_HL2351.html
+      - text: "HuHMFG1 (Royer 2010)"
+        href: articles/Royer_2010_HuHMFG1.html
       - text: "Hydroxyurea (Paule 2011)"
         href: articles/Paule_2011_hydroxyurea.html
       - text: "Iloperidone (Pei 2016)"
@@ -1731,6 +1731,7 @@ articles:
   - articles/Rosario_2015_vedolizumab
   - articles/Rose_2016_follitropin_delta
   - articles/Rovei_1982_theophylline
+  - articles/Royer_2010_HuHMFG1
   - articles/Ruhs_2012_methotrexate
   - articles/Rymut_2023_anti_tryptase
   - articles/Sadouki_2025_meropenem_gentamicin_ciprofloxacin

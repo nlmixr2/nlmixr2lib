@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Kuester 2008 matuzumab ([doi:10.1038/sj.bjc.6604265](https://doi.org/10.1038/sj.bjc.6604265)) -- adults with advanced carcinoma (pooled phase I; two-compartment popPK with parallel linear and Michaelis-Menten elimination from the central compartment).
+* Add Royer 2010 HuHMFG1 (AS1402) ([doi:10.1038/sj.bjc.6605560](https://doi.org/10.1038/sj.bjc.6605560)) -- patients with locally advanced or metastatic breast cancer in a phase I dose-escalation study.
 * Add Padoin 1998 cephalexin ([doi:10.1128/aac.42.6.1463](https://doi.org/10.1128/aac.42.6.1463)) -- preclinical male Wistar rats with a cephalexin / quinapril oral coadministration DDI (ratifies new `CONMED_QPRL_ORAL` covariate canonical).
 * Add van Rongen 2018 metformin ([doi:10.1007/s40272-018-0293-1](https://doi.org/10.1007/s40272-018-0293-1)) -- overweight and obese Caucasian adolescents.
 * Add Tarning 2012 artemether and dihydroartemisinin ([doi:10.1186/1475-2875-11-293](https://doi.org/10.1186/1475-2875-11-293)) -- pregnant women with uncomplicated Plasmodium falciparum malaria in Uganda (joint parent + DHA popPK with zero-order dissolution and 6-compartment transit absorption).
