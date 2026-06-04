@@ -5590,15 +5590,28 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Example models:** `Kotani_2022_astegolimab.R`.
 - **Notes:** Zenyatta-study categorical covariate flagging the 70 mg group (lowest dose), modeled as a -15.3% relative change on relative bioavailability. Modeled by Kotani 2022 as `70 mg vs {210 mg, 490 mg}` combined reference.
 
-### DOSE_50MG (**canonical for 50 mg dose administration indicator**)
-- **Description:** 1 = dose record is a 50 mg SC administration, 0 = all other SC doses (100, 150, 200, 300 mg) and all IV doses.
+### DOSE_50MG (**canonical for 50 mg dose-level indicator**)
+- **Description:** 1 = subject or dose record is in the 50 mg dose-level cohort, 0 = any other dose level. Route-neutral (covers SC, IV, oral); per-record or per-subject depending on the source design (record-level when a single subject crossed dose levels, subject-level when subjects were randomized to a fixed dose arm).
 - **Units:** (binary)
 - **Type:** binary
 - **Scope:** specific
-- **Reference category:** 0 (100-300 mg SC or any IV dose).
-- **Source aliases:** derived per dose record from the administered amount (`AMT`).
-- **Example models:** `Othman_2014_daclizumab.R`, `Diao_2016_daclizumab_cd25.R`, `Diao_2016_daclizumab_cd56bright.R`, `Diao_2016_daclizumab_treg.R`.
-- **Notes:** Othman 2014 estimated two separate absolute bioavailabilities because of non-linear dose-normalized exposure at the 50 mg SC dose -- F = 0.84 for the therapeutic 100-300 mg SC range and F = 0.57 for the 50 mg SC cohort. Encoded here as a record-level indicator so the covariate effect `e_dose_50mg_f = 0.57/0.84 - 1 = -0.321` scales bioavailability only on 50 mg SC doses. For clinical-range simulation (150 mg SC Q4W Phase III regimen) leave `DOSE_50MG = 0`. The Diao 2016 PK/PD models inherit the Othman 2014 PK backbone verbatim; they carry `DOSE_50MG` even though the Diao 2016 RRMS regimens are 150 / 300 mg SC only.
+- **Reference category:** 0 (any non-50 mg dose level in the source study, e.g. 100-300 mg SC for Othman 2014, 200 mg or 400 mg t.i.d. oral for Jorga 2000).
+- **Source aliases:**
+  - derived per dose record from the administered amount (`AMT`) -- used in `Othman_2014_daclizumab.R` and the Diao 2016 family.
+  - `I_Dose50mg` -- subject-level indicator derived from study-arm randomization, used in `Jorga_2000_tolcapone_fluctuators.R` for the 50 mg t.i.d. tolcapone fluctuator arm.
+- **Example models:** `Othman_2014_daclizumab.R` (record-level SC), `Diao_2016_daclizumab_cd25.R`, `Diao_2016_daclizumab_cd56bright.R`, `Diao_2016_daclizumab_treg.R`, `Jorga_2000_tolcapone_fluctuators.R` (subject-level oral t.i.d.).
+- **Notes:** Othman 2014 estimated two separate absolute bioavailabilities because of non-linear dose-normalized exposure at the 50 mg SC dose -- F = 0.84 for the therapeutic 100-300 mg SC range and F = 0.57 for the 50 mg SC cohort. Encoded as a record-level indicator so `e_dose_50mg_f = 0.57/0.84 - 1 = -0.321` scales bioavailability only on 50 mg SC dose records. For clinical-range simulation (150 mg SC Q4W Phase III regimen) leave `DOSE_50MG = 0`. The Diao 2016 PK/PD models inherit the Othman 2014 PK backbone verbatim. Jorga 2000 uses the indicator subject-level on the central and peripheral volumes of distribution: `(1 + e_dose_50mg_vc_vp * DOSE_50MG)` with `e_dose_50mg_vc_vp = -0.45` (V is 55% of the 200 mg reference at the 50 mg t.i.d. arm); paired with `DOSE_400MG` in the same fluctuator model so the 200 mg arm is the joint reference (both indicators = 0).
+
+### DOSE_400MG (**canonical for 400 mg dose-level indicator**)
+- **Description:** 1 = subject or dose record is in the 400 mg dose-level cohort, 0 = any other dose level. Route-neutral; per-record or per-subject depending on the source design (subject-level for fixed-arm randomizations such as Jorga 2000's t.i.d. tolcapone study arms).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (any non-400 mg dose level in the source study; for Jorga 2000 paired with `DOSE_50MG = 0` to select the 200 mg t.i.d. reference).
+- **Source aliases:**
+  - `I_Dose400mg` -- subject-level indicator derived from study-arm randomization, used in `Jorga_2000_tolcapone_fluctuators.R` for the 400 mg t.i.d. tolcapone fluctuator arm.
+- **Example models:** `Jorga_2000_tolcapone_fluctuators.R` (subject-level oral t.i.d.).
+- **Notes:** Sibling of `DOSE_50MG` and `DOSE_70MG`; member of the `DOSE_<N>MG` family of dose-level indicators. Jorga 2000 uses the indicator subject-level on the central and peripheral volumes of distribution: `(1 + e_dose_400mg_vc_vp * DOSE_400MG)` with `e_dose_400mg_vc_vp = +0.40` (V is 140% of the 200 mg reference at the 400 mg t.i.d. arm). The dose-dependent V was an empirical finding in the fluctuator cohort that the authors could not confirm in the nonfluctuator cohort (only 200 and 400 mg arms were enrolled there); the effect plausibly reflects a few high-V outliers in the small-volume cohort rather than a true mechanistic dose-V relationship (Jorga 2000 Discussion). Ratified canonically alongside the Jorga 2000 tolcapone extraction.
 
 ### STUDY1 (**canonical for Study-1 cohort indicator**)
 - **Description:** 1 = subject enrolled in Study 1 of the Cirincione 2017 pooled analysis, 0 = other. Used to switch the residual-error magnitude per study.

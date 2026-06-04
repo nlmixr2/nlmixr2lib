@@ -1052,6 +1052,10 @@ navbar:
         href: articles/Frey_2010_tocilizumab.html
       - text: "Tocilizumab (Frey 2013)"
         href: articles/Frey_2013_tocilizumab.html
+      - text: "Tolcapone fluctuators (Jorga 2000)"
+        href: articles/Jorga_2000_tolcapone.html
+      - text: "Tolcapone nonfluctuators (Jorga 2000)"
+        href: articles/Jorga_2000_tolcapone.html
       - text: "Topotecan (Roberts 2016)"
         href: articles/Roberts_2016_topotecan.html
       - text: "Torsemide (Jeong 2022)"
@@ -1559,7 +1563,7 @@ articles:
   - articles/Jonckheere_2019_cefepime
   - articles/Jonsson_2005_disufenton
   - articles/Jonsson_2011_ethambutol
-  - articles/Karaiskos_2015_colistin
+  - articles/Jorga_2000_tolcapone
   - articles/Kawamura_2018_eribulin
   - articles/Keizer_2011_E7820
   - articles/Khan_2015_ciprofloxacin
