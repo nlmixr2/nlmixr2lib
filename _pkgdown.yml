@@ -436,8 +436,8 @@ navbar:
         href: articles/Llanos-Paez_2017_gentamicin.html
       - text: "Gentamicin (Llanos-Paez 2020)"
         href: articles/Llanos-Paez_2020_gentamicin.html
-      - text: "Gentamicin (MedellinGaribay 2015)"
-        href: articles/MedellinGaribay_2015_gentamicin.html
+      - text: "Gentamicin (Thomson 2003)"
+        href: articles/Thomson_2003_gentamicin.html
       - text: "Gevokizumab (Cao 2013)"
         href: articles/Cao_2013_gevokizumab.html
       - text: "Givosiran (Ayyar 2024)"
@@ -1839,6 +1839,7 @@ articles:
   - articles/Thakkar_2017_amifampridine
   - articles/Thakre_2022_risankizumab
   - articles/Themans_2019_meropenem
+  - articles/Thomson_2003_gentamicin
   - articles/Thorsted_2016_somatropin_human
   - articles/Thorsted_2016_somatropin_rat
   - articles/Thuo_2011_ciprofloxacin

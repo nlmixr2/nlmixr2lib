@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Bonate 2004 apomine ([doi:10.1111/j.1365-2125.2004.02111.x](https://doi.org/10.1111/j.1365-2125.2004.02111.x)) -- healthy adult males and adult patients with advanced solid tumours; ratifies new `MIX_LAGGED_ABS` and `MIX_HIGH_VP` covariate canonicals.
+* Add Thomson 2003 gentamicin ([doi:10.1046/j.1365-2125.2003.01819.x](https://doi.org/10.1046/j.1365-2125.2003.01819.x)) -- African young infants with suspected severe sepsis given a single 8 mg/kg intramuscular dose in Kenya.
 * Add Padoin 1998 cephalexin ([doi:10.1128/aac.42.6.1463](https://doi.org/10.1128/aac.42.6.1463)) -- preclinical male Wistar rats with a cephalexin / quinapril oral coadministration DDI (ratifies new `CONMED_QPRL_ORAL` covariate canonical).
 * Add van Rongen 2018 metformin ([doi:10.1007/s40272-018-0293-1](https://doi.org/10.1007/s40272-018-0293-1)) -- overweight and obese Caucasian adolescents.
 * Add Tarning 2012 artemether and dihydroartemisinin ([doi:10.1186/1475-2875-11-293](https://doi.org/10.1186/1475-2875-11-293)) -- pregnant women with uncomplicated Plasmodium falciparum malaria in Uganda (joint parent + DHA popPK with zero-order dissolution and 6-compartment transit absorption).
