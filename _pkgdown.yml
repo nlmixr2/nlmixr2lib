@@ -70,8 +70,8 @@ navbar:
         href: articles/Tiraboschi_2025_amlitelimab.html
       - text: "Amoxicillin (Tang 2019)"
         href: articles/Tang_2019_amoxicillin.html
-      - text: "Ampicillin (Tremoulet 2014)"
-        href: articles/Tremoulet_2014_ampicillin.html
+      - text: "Anakinra (Urien 2013)"
+        href: articles/Urien_2013_anakinra.html
       - text: "Anifrolumab (Almquist 2022)"
         href: articles/Almquist_2022_anifrolumab.html
       - text: "Anrukinzumab (Hua 2015)"
@@ -1818,7 +1818,7 @@ articles:
   - articles/Tsuji_2017_linezolid
   - articles/Ueshima_2018_apixaban
   - articles/Urien_2005_capecitabine
-  - articles/Valenzuela_2011_oxaliplatin
+  - articles/Urien_2013_anakinra
   - articles/Valenzuela_2025_nipocalimab
   - articles/Valitalo_2017_ketorolac
   - articles/Valitalo_2017_morphine
