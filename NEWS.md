@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Green 2003 enoxaparin ([doi:10.1046/j.1365-2125.2003.01849.x](https://doi.org/10.1046/j.1365-2125.2003.01849.x)) -- adults across the BMI range (15-44.9 kg/m^2) treated at the Royal Brisbane Hospital for acute coronary syndrome, deep vein thrombosis, pulmonary embolism, or DVT prophylaxis (two-compartment subcutaneous popPK with LBW on CL and total body weight on Vc).
+* Add Gisleskog 1999 dutasteride ([doi:10.1046/j.1365-2125.1999.00843.x](https://doi.org/10.1046/j.1365-2125.1999.00843.x)) -- healthy male volunteers (single oral dose escalation).
 * Add Padoin 1998 cephalexin ([doi:10.1128/aac.42.6.1463](https://doi.org/10.1128/aac.42.6.1463)) -- preclinical male Wistar rats with a cephalexin / quinapril oral coadministration DDI (ratifies new `CONMED_QPRL_ORAL` covariate canonical).
 * Add van Rongen 2018 metformin ([doi:10.1007/s40272-018-0293-1](https://doi.org/10.1007/s40272-018-0293-1)) -- overweight and obese Caucasian adolescents.
 * Add Tarning 2012 artemether and dihydroartemisinin ([doi:10.1186/1475-2875-11-293](https://doi.org/10.1186/1475-2875-11-293)) -- pregnant women with uncomplicated Plasmodium falciparum malaria in Uganda (joint parent + DHA popPK with zero-order dissolution and 6-compartment transit absorption).
