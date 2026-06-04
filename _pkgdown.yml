@@ -176,6 +176,8 @@ navbar:
         href: articles/Jeon_2012_C3G.html
       - text: "Cabazitaxel (Ferron 2013)"
         href: articles/Ferron_2013_cabazitaxel.html
+      - text: "Cabazitaxel (Janssen 2017)"
+        href: articles/Janssen_2017_cabazitaxel_phenotyping.html
       - text: "Cabozantinib (Lacy 2018)"
         href: articles/Lacy_2018_cabozantinib.html
       - text: "Cabozantinib dose modification (Lacy 2018)"
@@ -618,6 +620,8 @@ navbar:
         href: articles/Martial_2017_micafungin.html
       - text: "Midazolam (Brill 2014)"
         href: articles/Brill_2014_midazolam.html
+      - text: "Midazolam (Janssen 2017)"
+        href: articles/Janssen_2017_cabazitaxel_phenotyping.html
       - text: "Midazolam (vanRongen 2017)"
         href: articles/vanRongen_2017_midazolam.html
       - text: "Midazolam pbpk (Brussee 2018)"
@@ -1533,6 +1537,7 @@ articles:
   - articles/Jackson_2022_ixekizumab
   - articles/Jacobs_2016_colistin
   - articles/Jager_2011_gemtuzumab
+  - articles/Janssen_2017_cabazitaxel_phenotyping
   - articles/Jelliffe_2014_digoxin
   - articles/Jeon_2012_C3G
   - articles/Jeon_2013_interferonAlfa2a
