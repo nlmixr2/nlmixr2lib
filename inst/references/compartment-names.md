@@ -2473,6 +2473,18 @@ Per-paper metabolite / sibling-drug suffix additions discovered during the 2026-
 - **Source aliases:** none.
 - **Example models:** `Schindler_2017_imatinib.R`.
 
+### caf (**canonical caffeine sibling-drug suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Caffeine sibling-drug suffix for combination / drug-drug-interaction models where caffeine is co-administered alongside another primary drug (e.g., caffeine-ephedrine herbal-formulation interactions). Used on `depot_caf` / `central_caf` PK compartments and the paired `Cc_caf` observation variable.
+- **Source aliases:** none.
+- **Example models:** `Csajka_2005_ephedrine_caffeine.R`.
+
+### neph (**canonical norephedrine metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Norephedrine metabolite suffix. Norephedrine is the N-demethylation metabolite of ephedrine. Used on the `central_neph` plasma compartment and the paired `Cc_neph` observation variable in mechanistic ephedrine / norephedrine PK models with Michaelis-Menten conversion.
+- **Source aliases:** none.
+- **Example models:** `Csajka_2005_ephedrine_caffeine.R`.
+
 ---
 
 ## TB-treatment drug suffixes (combination antibiotic)

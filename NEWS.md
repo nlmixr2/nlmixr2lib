@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Goggin 2004 emfilermin ([doi:10.1111/j.1365-2125.2003.02064.x](https://doi.org/10.1111/j.1365-2125.2003.02064.x)) -- healthy postmenopausal women and infertile women undergoing IVF-ET.
+* Add Csajka 2005 ephedrine + caffeine ([doi:10.1111/j.1365-2125.2005.02254.x](https://doi.org/10.1111/j.1365-2125.2005.02254.x)) -- healthy adults with co-administered single oral doses, including caffeine-modulated ephedrine absorption, saturable Michaelis-Menten conversion to norephedrine, and oral-contraceptive effect on caffeine clearance; ratifies new `caf` and `neph` metabolite-suffix tokens.
 * Add Padoin 1998 cephalexin ([doi:10.1128/aac.42.6.1463](https://doi.org/10.1128/aac.42.6.1463)) -- preclinical male Wistar rats with a cephalexin / quinapril oral coadministration DDI (ratifies new `CONMED_QPRL_ORAL` covariate canonical).
 * Add van Rongen 2018 metformin ([doi:10.1007/s40272-018-0293-1](https://doi.org/10.1007/s40272-018-0293-1)) -- overweight and obese Caucasian adolescents.
 * Add Tarning 2012 artemether and dihydroartemisinin ([doi:10.1186/1475-2875-11-293](https://doi.org/10.1186/1475-2875-11-293)) -- pregnant women with uncomplicated Plasmodium falciparum malaria in Uganda (joint parent + DHA popPK with zero-order dissolution and 6-compartment transit absorption).
