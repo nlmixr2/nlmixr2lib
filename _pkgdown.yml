@@ -454,8 +454,8 @@ navbar:
         href: articles/Ngo_2020_HL2351.html
       - text: "Hydroxyurea (Paule 2011)"
         href: articles/Paule_2011_hydroxyurea.html
-      - text: "Iloperidone (Pei 2016)"
-        href: articles/Pei_2016_iloperidone.html
+      - text: "Ifosfamide (Kerbusch 2000)"
+        href: articles/Kerbusch_2000_ifosfamide.html
       - text: "Imatinib (Chien 2022)"
         href: articles/Chien_2022_imatinib.html
       - text: "Imatinib (Schindler 2017)"
@@ -1565,7 +1565,7 @@ articles:
   - articles/Jonsson_2011_ethambutol
   - articles/Jorga_2000_tolcapone
   - articles/Kawamura_2018_eribulin
-  - articles/Keizer_2011_E7820
+  - articles/Kerbusch_2000_ifosfamide
   - articles/Khan_2015_ciprofloxacin
   - articles/Kielbasa_2020_galcanezumab
   - articles/Kim_2015_paroxetine
