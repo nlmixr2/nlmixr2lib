@@ -28,6 +28,8 @@ navbar:
       # AUTOGEN:specific_drugs:BEGIN
       - text: "Abacavir (Archary 2019)"
         href: articles/Archary_2019_abacavir.html
+      - text: "Abacavir (Jullien 2005)"
+        href: articles/Jullien_2005_abacavir.html
       - text: "Abacavir (Tikiso 2021)"
         href: articles/Tikiso_2021_abacavir.html
       - text: "Abatacept (Gandhi 2021)"
@@ -1575,7 +1577,7 @@ articles:
   - articles/Jonckheere_2019_cefepime
   - articles/Jonsson_2005_disufenton
   - articles/Jonsson_2011_ethambutol
-  - articles/Jorga_2000_tolcapone
+  - articles/Jullien_2005_abacavir
   - articles/Kawamura_2018_eribulin
   - articles/Kerbusch_2000_ifosfamide
   - articles/Khan_2015_ciprofloxacin
