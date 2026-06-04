@@ -76,8 +76,10 @@ navbar:
         href: articles/Almquist_2022_anifrolumab.html
       - text: "Anrukinzumab (Hua 2015)"
         href: articles/Hua_2015_anrukinzumab.html
-      - text: "Apixaban (Ueshima 2018)"
-        href: articles/Ueshima_2018_apixaban.html
+      - text: "Anti tryptase (Rymut 2023)"
+        href: articles/Rymut_2023_anti_tryptase.html
+      - text: "Apomine (Bonate 2004)"
+        href: articles/Bonate_2004_apomine.html
       - text: "Aripiprazole (Knights 2015)"
         href: articles/Knights_2015_aripiprazole.html
       - text: "Aripiprazole (Koue 2007)"
@@ -1364,7 +1366,7 @@ articles:
   - articles/Bizzotto_2016_glucose
   - articles/Blair_2004_raltitrexed
   - articles/Boer-Perez_2026_piperacillin
-  - articles/Bouazza_2011_lamivudine
+  - articles/Bonate_2004_apomine
   - articles/Boucher_2018_naproxen_mbma
   - articles/Brill_2014_midazolam
   - articles/Brillac_2025_isatuximab
