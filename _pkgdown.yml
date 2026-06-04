@@ -878,6 +878,8 @@ navbar:
         href: articles/Thakre_2022_risankizumab.html
       - text: "Risperidone (Sherwin 2012)"
         href: articles/Sherwin_2012_risperidone.html
+      - text: "Ritonavir (Kappelhoff 2005)"
+        href: articles/Kappelhoff_2005_ritonavir.html
       - text: "Rituximab (Candelaria 2018)"
         href: articles/Candelaria_2018_rituximab.html
       - text: "Rivipansel (Tammara 2017)"
@@ -1581,7 +1583,7 @@ articles:
   - articles/Jonckheere_2019_cefepime
   - articles/Jonsson_2005_disufenton
   - articles/Jonsson_2011_ethambutol
-  - articles/Jullien_2005_abacavir
+  - articles/Kappelhoff_2005_ritonavir
   - articles/Kawamura_2018_eribulin
   - articles/Kerbusch_2000_ifosfamide
   - articles/Khan_2015_ciprofloxacin
