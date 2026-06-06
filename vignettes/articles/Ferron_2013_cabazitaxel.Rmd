@@ -307,7 +307,7 @@ results can be compared back to the paper's covariate effect on CL.
 
 ```{r nca-cycle1}
 conc1 <- sim |>
-  dplyr::filter(time >= 0, time <= 21 * 24, Cc > 0) |>
+  dplyr::filter(time <= 21 * 24) |>
   dplyr::rename(ID = id) |>
   dplyr::transmute(ID, time_rel = time, Cc, treatment)
 

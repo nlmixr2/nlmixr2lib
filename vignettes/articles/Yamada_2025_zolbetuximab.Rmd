@@ -228,13 +228,13 @@ days 105-147); for the Q2W regimen it covers three cycles of 14 days
 
 ```{r nca}
 ss_q3w <- sim_q3w %>%
-  filter(time >= 105, time <= 147, Cc > 0) %>%
+  filter(time >= 105, time <= 147) %>%
   mutate(time_rel  = time - 105, treatment = "Q3W_800_600") %>%
   rename(ID = id) %>%
   select(ID, time_rel, Cc, treatment)
 
 ss_q2w <- sim_q2w %>%
-  filter(time >= 112, time <= 154, Cc > 0) %>%
+  filter(time >= 112, time <= 154) %>%
   mutate(time_rel  = time - 112, treatment = "Q2W_800_400") %>%
   rename(ID = id) %>%
   select(ID, time_rel, Cc, treatment)

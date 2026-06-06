@@ -325,7 +325,7 @@ sim_nca <- sim_all |>
   dplyr::filter(route == "IV") |>
   mutate(id = match(dose, sort(unique(dose))),
          treatment = as.character(dose)) |>
-  dplyr::filter(time > 0 & time <= 45) |>
+  dplyr::filter(time <= 45) |>
   transmute(id, time, Cc = total_ab_ugml, treatment)
 
 conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | treatment + id)

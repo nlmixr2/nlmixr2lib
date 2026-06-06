@@ -355,7 +355,7 @@ calculation to days 14-60 post-last-dose for the paper-comparable window.
 # elimination phase. PKNCA's `start` and `end` arguments delimit the AUC
 # / half-life window.
 nca_window <- sim_20mg |>
-  filter(time >= last_dose_day + 14, time <= last_dose_day + 60, Cc > 0) |>
+  filter(time >= last_dose_day + 14, time <= last_dose_day + 60) |>
   transmute(id = 1L,
             time = time - last_dose_day,   # re-zero to last dose
             Cc,

@@ -220,7 +220,7 @@ Single-dose, dense-sampling NCA per the recipe in `references/pknca-recipes.md`.
 
 ```{r pknca-art}
 sim_nca_art <- sim |>
-  dplyr::filter(!is.na(Cc), time > 0) |>
+  dplyr::filter(!is.na(Cc)) |>
   dplyr::select(id, time, Cc, treatment) |>
   dplyr::group_by(id, time, treatment) |>
   dplyr::summarise(Cc = mean(Cc), .groups = "drop")
@@ -250,7 +250,7 @@ nca_art <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj_art, dose_obj,
 
 ```{r pknca-dha}
 sim_nca_dha <- sim |>
-  dplyr::filter(!is.na(Cc_dha), time > 0) |>
+  dplyr::filter(!is.na(Cc_dha)) |>
   dplyr::select(id, time, Cc_dha, treatment) |>
   dplyr::group_by(id, time, treatment) |>
   dplyr::summarise(Cc_dha = mean(Cc_dha), .groups = "drop")

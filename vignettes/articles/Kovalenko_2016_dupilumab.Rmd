@@ -209,7 +209,7 @@ single-dose FIH SC arm (NCT01015027) in Table 1 of the paper.
 
 ```{r pknca}
 nca_conc <- sim |>
-  dplyr::filter(cohort == "300 mg SC single", !is.na(Cc), time > 0) |>
+  dplyr::filter(cohort == "300 mg SC single", !is.na(Cc)) |>
   dplyr::mutate(treatment = cohort) |>
   dplyr::select(id, time, Cc, treatment)
 

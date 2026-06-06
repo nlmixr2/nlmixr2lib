@@ -261,7 +261,7 @@ mL).
 
 ```{r pknca}
 nca_input <- sim |>
-  filter(!is.na(Cc), time > 0, Cc > 0) |>
+  filter(!is.na(Cc)) |>
   mutate(id = 1L, treatment = "8 ug IV bare LNP") |>
   select(id, time, Cc, treatment)
 

@@ -246,7 +246,7 @@ the trough fractions reported in Table 4.
 ```{r pknca}
 # Single-dose interval (0-12 h after dose 1) for PKNCA
 sim_nca <- sim |>
-  filter(time <= DOSE_INTERVAL, !is.na(Cc), Cc > 0) |>
+  filter(time <= DOSE_INTERVAL, !is.na(Cc)) |>
   select(id, time, Cc, stratum)
 
 dose_df <- events |>

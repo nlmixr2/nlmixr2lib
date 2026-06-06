@@ -236,7 +236,7 @@ half-life is expected to approximate the paper's reported ≈ 23.8 days
 
 # Cycle 1 interval
 conc1 <- sim |>
-  dplyr::filter(time >= 0, time <= 21, Cc > 0) |>
+  dplyr::filter(time <= 21) |>
   dplyr::rename(ID = id) |>
   dplyr::transmute(ID, time_rel = time, Cc, treatment, interval = "Cycle 1")
 
@@ -268,7 +268,7 @@ knitr::kable(
 # Steady-state-ish interval at cycle 10 (day 189-210)
 # `treatment` already on `sim` via rxSolve's `keep` argument.
 conc_ss <- sim |>
-  dplyr::filter(time >= 189, time <= 210, Cc > 0) |>
+  dplyr::filter(time >= 189, time <= 210) |>
   dplyr::rename(ID = id) |>
   dplyr::transmute(ID, time_rel = time - 189, Cc, treatment)
 

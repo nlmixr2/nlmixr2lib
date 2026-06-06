@@ -354,7 +354,7 @@ and quote the paper-reported scalar checks below.
 
 ```{r pknca}
 sim_pk <- sim_dose_panel |>
-  filter(dose_grp == "300 mg", time > 0, !is.na(Cc), Cc > 0) |>
+  filter(dose_grp == "300 mg", !is.na(Cc)) |>
   transmute(id, time, Cc, treatment = dose_grp)
 
 dose_pk <- dose_panel |>

@@ -313,7 +313,7 @@ CYP2C19 phenotype. Three PKNCA blocks: one per output (omeprazole,
 
 ```{r pknca-cc}
 sim_long_cc <- sim |>
-  filter(!is.na(Cc), time > 0) |>
+  filter(!is.na(Cc)) |>
   transmute(id, time, Cc, treatment = CYP2C19)
 
 dose_long_cc <- events |>
@@ -341,7 +341,7 @@ summary(nca_cc)
 
 ```{r pknca-5oh}
 sim_long_5oh <- sim |>
-  filter(!is.na(Cc_5oh), time > 0) |>
+  filter(!is.na(Cc_5oh)) |>
   transmute(id, time, Cc = Cc_5oh, treatment = CYP2C19)
 
 conc_5oh <- PKNCA::PKNCAconc(
@@ -360,7 +360,7 @@ summary(nca_5oh)
 
 ```{r pknca-sfn}
 sim_long_sfn <- sim |>
-  filter(!is.na(Cc_sfn), time > 0) |>
+  filter(!is.na(Cc_sfn)) |>
   transmute(id, time, Cc = Cc_sfn, treatment = CYP2C19)
 
 conc_sfn <- PKNCA::PKNCAconc(

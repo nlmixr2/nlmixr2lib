@@ -312,7 +312,7 @@ expected typical-individual values.
 
 ```{r pknca}
 sim_nca <- sim_typ |>
-  dplyr::filter(!is.na(Cc), Cc > 0, time > 0) |>
+  dplyr::filter(!is.na(Cc)) |>
   dplyr::transmute(id, time_h = time / 60, Cc, cohort = "typical_2.5kg")
 
 conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time_h | cohort + id)

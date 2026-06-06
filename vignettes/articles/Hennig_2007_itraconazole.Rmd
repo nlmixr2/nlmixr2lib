@@ -289,7 +289,7 @@ metabolite NCA therefore does not report a dose-normalised AUC.
 
 ```{r pknca-itz}
 sim_nca_itz <- sim |>
-  dplyr::filter(!is.na(Cc), time > 0) |>
+  dplyr::filter(!is.na(Cc)) |>
   dplyr::select(id, time, Cc, treatment)
 
 dose_df <- events |>
@@ -317,7 +317,7 @@ nca_itz <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj_itz, dose_obj,
 
 ```{r pknca-ohi}
 sim_nca_ohi <- sim |>
-  dplyr::filter(!is.na(Cc_ohi), time > 0) |>
+  dplyr::filter(!is.na(Cc_ohi)) |>
   dplyr::select(id, time, Cc_ohi, treatment)
 
 conc_obj_ohi <- PKNCA::PKNCAconc(sim_nca_ohi, Cc_ohi ~ time | treatment + id,

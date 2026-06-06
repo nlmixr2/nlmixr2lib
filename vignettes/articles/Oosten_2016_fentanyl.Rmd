@@ -312,7 +312,7 @@ elimination regime reflects absorption rather than elimination
 
 ```{r pknca}
 sim_nca <- sim_td |>
-  dplyr::filter(!is.na(Cc), time > 0) |>
+  dplyr::filter(!is.na(Cc)) |>
   dplyr::select(id, time, Cc, treatment)
 
 dose_df <- events_td |>

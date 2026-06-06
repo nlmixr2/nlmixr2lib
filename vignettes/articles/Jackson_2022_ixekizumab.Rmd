@@ -327,7 +327,7 @@ ss_end   <- 12 * hours_per_week
 
 nca_conc <- sim |>
   as.data.frame() |>
-  filter(time >= ss_start, time <= ss_end, Cc > 0) |>
+  filter(time >= ss_start, time <= ss_end) |>
   mutate(time_rel = time - ss_start,
          treatment = paste0("IXE_Q4W_", weight_group)) |>
   rename(ID = id) |>

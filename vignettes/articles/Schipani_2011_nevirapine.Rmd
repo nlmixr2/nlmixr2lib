@@ -327,8 +327,7 @@ ss_obs <- sim |>
     ),
     tad            = time - interval_start,
     treatment      = paste(regimen, geno, wt_strat, sep = " | ")
-  ) |>
-  dplyr::filter(Cc > 0)
+  )
 
 # One pseudo-dose row per subject at time = 0 of the last interval, with
 # amt corresponding to the regimen's per-dose amount.

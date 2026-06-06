@@ -152,27 +152,50 @@ res_joined <- res_tbl |>
 
 ## Comparing against the published table
 
-When the source paper reports NCA values (e.g., geometric mean with 95% CI), the
-vignette should render a side-by-side table. A simple pattern:
+When the source paper reports NCA values, render a **single combined**
+side-by-side table using `nlmixr2lib::ncaComparisonTable()`. The helper
+accepts a `PKNCAresults` object (or its `$result` data frame) for the
+simulated side, and a wide tibble (one row per group, one column per
+PKNCA code) for the reference side — convenient when transcribing values
+from a paper table.
 
 ```r
-published <- tibble::tibble(
-  treatment   = c("50 mg", "100 mg"),
-  Cmax_pub    = c(<value>, <value>),
-  AUCinf_pub  = c(<value>, <value>)
+published <- tibble::tribble(
+  ~treatment, ~cmax,  ~tmax, ~aucinf.obs, ~half.life,
+  "50 mg",    14.8,   2.0,   125.0,       6.5,
+  "100 mg",   28.5,   2.1,   250.0,       6.7
 )
 
-simulated <- res_tbl |>
-  dplyr::filter(PPTESTCD %in% c("cmax", "aucinf.obs")) |>
-  dplyr::group_by(treatment, PPTESTCD) |>
-  dplyr::summarise(value = median(PPORRES), .groups = "drop") |>
-  tidyr::pivot_wider(names_from = PPTESTCD, values_from = value)
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_res,
+  reference = published,
+  by        = "treatment",
+  units     = c(cmax = "ng/mL", aucinf.obs = "ng*h/mL",
+                tmax = "h", half.life = "h"),
+  tolerance_pct = 20
+)
 
-comparison <- published |> dplyr::left_join(simulated, by = "treatment")
-knitr::kable(comparison)
+knitr::kable(
+  cmp,
+  caption = "Simulated vs. published NCA. * differs from reference by >20%.",
+  align   = c("l", "l", "r", "r", "r")
+)
 ```
 
-Flag any differences > 20% in the narrative; do not tune parameters to match.
+Output: one row per parameter × group, with columns `NCA parameter`, the
+grouping variable(s), `Reference`, `Simulated`, and `% diff`. Rows whose
+discrepancy exceeds `tolerance_pct` get a trailing `*`, and the function
+attaches a footnote string at `attr(cmp, "footnote")`. Friendly parameter
+labels (`Cmax`, `Tmax`, `AUC0-∞ (obs)`, `t½`, …) come from
+[`nlmixr2lib::ncaParamLabel()`] — never render `PPTESTCD` codes
+(`cmax`, `auclast`, …) directly to the reader.
+
+**Never split the comparison into separate simulated / reference tables**
+or use "see above" cross-references — the reader can only verify the
+comparison when both values and the discrepancy sit in the same row.
+`ncaComparisonTable()` enforces this shape automatically.
+
+Flag any starred rows in the narrative; do not tune parameters to match.
 
 ## Common pitfalls
 
@@ -201,8 +224,47 @@ Flag any differences > 20% in the narrative; do not tune parameters to match.
 - **BLQ handling** — the model emits continuous concentrations (no BLQ), so
   BLQ handling in PKNCA is usually a no-op. If the paper applied a specific
   BLQ rule (e.g., M3 method), that's outside the NCA step.
-- **Time-zero records** — PKNCA expects a pre-dose record for IV or a `time = 0`
-  observation for extravascular. Ensure the simulation grid includes `time = 0`.
+- **Time-zero records (mandatory)** — PKNCA's AUC integration starts at the
+  interval's `start` (`= 0` by default), and emits the warning
+  `Requesting an AUC range starting (0) before the first measurement
+  (<t1>) is not allowed` — repeated once per subject — when the
+  concentration frame passed to it has no row at `time = 0`. Two failure
+  modes recur:
+
+  1. **Over-eager filters.** The PKNCA input chunk uses
+     `dplyr::filter(time > 0, !is.na(Cc), Cc > 0)` — borrowed from a
+     log-scale plotting filter — which drops the time-zero row outright.
+     The Archary 2019 abacavir vignette exhibited this; the fix is to use
+     **only** `!is.na(Cc)` in the PKNCA input filter.
+  2. **Sim grid never produced a time-zero observation.** Some
+     `make_cohort()` patterns omit `time = 0` from the observation grid
+     (especially when sampling is sparse), so even an unfiltered output
+     lacks the row.
+
+  The defensive pattern guarantees a row regardless. For extravascular
+  models, pre-dose `Cc = 0` is the correct value; for IV bolus models,
+  set `Cc = dose / Vc` (or accept the back-extrapolated value PKNCA
+  computes when `lambda.z` is fit):
+
+  ```r
+  sim_nca <- sim |>
+    dplyr::filter(!is.na(Cc)) |>
+    dplyr::select(id, time, Cc, treatment)
+
+  # Add time=0 with Cc=0 (extravascular); existing time=0 rows win via
+  # .keep_all = TRUE on the first occurrence.
+  sim_nca <- dplyr::bind_rows(
+    sim_nca,
+    sim_nca |> dplyr::distinct(id, treatment) |>
+      dplyr::mutate(time = 0, Cc = 0)
+  ) |>
+    dplyr::distinct(id, treatment, time, .keep_all = TRUE) |>
+    dplyr::arrange(id, treatment, time)
+  ```
+
+  Verify the rendered vignette is free of the
+  `Requesting an AUC range starting (0)` warning before pushing — it is
+  the single most common PKNCA defect in this repo.
 - **Cohort-ID safety and grouping via `keep =`** — when `events` is built from
   multiple `make_cohort()` calls and `bind_rows`-ed, and when the PKNCA
   formula needs a `treatment` / `cohort` / `regimen` label, follow the

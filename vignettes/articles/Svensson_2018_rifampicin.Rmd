@@ -455,7 +455,7 @@ pkn_in <- sim |>
     tad       = time - ss_clock_start,
     treatment = "600 mg QD (day 7)"
   ) |>
-  dplyr::filter(!is.na(Cc), Cc > 0)
+  dplyr::filter(!is.na(Cc))
 
 dose_pkn <- events |>
   dplyr::filter(evid == 1L, time == ss_clock_start) |>

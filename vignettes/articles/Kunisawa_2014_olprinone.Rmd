@@ -377,7 +377,7 @@ reported in the Discussion.
 
 ```{r pknca}
 sim_for_nca <- sim_stoch_s1 |>
-  filter(!is.na(Cc), Cc > 0, time > 0) |>
+  filter(!is.na(Cc)) |>
   mutate(dose_label = paste0(dose_ug_per_kg, " ug/kg")) |>
   select(id, time, Cc, dose_label) |>
   as.data.frame()

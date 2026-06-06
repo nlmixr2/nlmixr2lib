@@ -230,7 +230,7 @@ sparse-NCA values reported in the literature for cladribine 10 mg oral.
 
 ```{r pknca}
 sim_nca <- sim |>
-  dplyr::filter(!is.na(Cc), time > 0) |>
+  dplyr::filter(!is.na(Cc)) |>
   dplyr::select(id, time, Cc, cohort)
 
 dose_df <- events |>

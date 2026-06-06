@@ -371,8 +371,7 @@ mono_id_range <- 1:n_subj  # monotherapy arm sits in IDs 1..n_subj
 
 # Cycle 1: day 0 to 14
 conc1 <- sim |>
-  dplyr::filter(treatment == "nivo 3 mg/kg q2w monotherapy",
-                time >= 0, time <= 14, Cc > 0) |>
+  dplyr::filter(treatment == "nivo 3 mg/kg q2w monotherapy", time <= 14) |>
   dplyr::transmute(ID = id, time, Cc, treatment)
 
 dose1 <- events |>
@@ -403,8 +402,7 @@ knitr::kable(
 
 ```{r nca-cycle12}
 conc_ss <- sim |>
-  dplyr::filter(treatment == "nivo 3 mg/kg q2w monotherapy",
-                time >= 154, time <= 168, Cc > 0) |>
+  dplyr::filter(treatment == "nivo 3 mg/kg q2w monotherapy", time >= 154, time <= 168) |>
   dplyr::transmute(ID = id, time_rel = time - 154, Cc, treatment)
 
 dose_ss <- pop |>

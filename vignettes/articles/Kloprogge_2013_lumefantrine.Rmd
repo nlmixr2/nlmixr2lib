@@ -216,7 +216,7 @@ Single-cycle NCA over the full follow-up (0-240 hours) so the post-treatment exp
 
 ```{r pknca}
 sim_nca <- sim |>
-  dplyr::filter(!is.na(Cc), time > 0) |>
+  dplyr::filter(!is.na(Cc)) |>
   dplyr::mutate(conc_ug_mL = Cc) |>
   dplyr::select(id, time, conc_ug_mL, treatment) |>
   dplyr::group_by(id, time, treatment) |>

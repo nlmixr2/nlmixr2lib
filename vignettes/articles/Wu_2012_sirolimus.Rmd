@@ -268,7 +268,7 @@ Figure 4.
 
 ```{r pknca}
 sim_nca <- sim |>
-  filter(!is.na(Cc), time > 0) |>
+  filter(!is.na(Cc)) |>
   select(id, time, Cc, dose_group)
 
 dose_df <- events |>

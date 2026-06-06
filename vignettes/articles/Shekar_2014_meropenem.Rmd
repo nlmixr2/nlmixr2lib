@@ -378,8 +378,7 @@ and AUC are comparable across the renal-function spectrum.
 
 ```{r pknca}
 pk_cohort <- sim |>
-  dplyr::filter(CRRT_STATUS == 0L, dose_mg == 1000L,
-                time >= last_dose_time, !is.na(Cc), Cc > 0)
+  dplyr::filter(CRRT_STATUS == 0L, dose_mg == 1000L, time >= last_dose_time, !is.na(Cc))
 
 dose_pk <- events |>
   dplyr::filter(CRRT_STATUS == 0L, dose_mg == 1000L,

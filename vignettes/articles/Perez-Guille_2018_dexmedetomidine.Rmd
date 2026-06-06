@@ -270,7 +270,7 @@ recipe, with a treatment grouping for the cohort summary.
 
 ```{r pknca}
 sim_nca <- sim_cc |>
-  dplyr::filter(time <= total_h, time > 0, !is.na(Cc)) |>
+  dplyr::filter(time <= total_h, !is.na(Cc)) |>
   dplyr::select(id, time, Cc, treatment)
 
 dose_df <- events |>

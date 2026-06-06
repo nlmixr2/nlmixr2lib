@@ -272,8 +272,7 @@ median of 2350 RPM) and a representative subset of doses:
 
 ```{r pknca}
 sim_for_nca <- sim |>
-  dplyr::filter(pump_rpm == 2300, dose_mg_h %in% c(0.21, 0.42, 0.84),
-                !is.na(Cc), time > 0) |>
+  dplyr::filter(pump_rpm == 2300, dose_mg_h %in% c(0.21, 0.42, 0.84), !is.na(Cc)) |>
   dplyr::mutate(
     treatment = paste0(sex_label, "/", dose_mg_h, "mg/h")
   )

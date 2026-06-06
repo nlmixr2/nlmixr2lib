@@ -275,7 +275,7 @@ exhibited linear PK over the 1-18 mg/m^2 range; Wang 2015 Discussion).
 
 ```{r pknca}
 sim_nca <- sim |>
-  filter(!is.na(Cc), time > 0) |>
+  filter(!is.na(Cc)) |>
   select(id, time, Cc, dose_mg_m2) |>
   mutate(treatment = paste0(dose_mg_m2, " mg/m^2"))
 

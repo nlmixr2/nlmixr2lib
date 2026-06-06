@@ -240,7 +240,7 @@ compared with the paper's reported peak / trough / time-to-1% values.
 
 ```{r pknca}
 sim_nca <- sim |>
-  filter(!is.na(Cc), time > 0) |>
+  filter(!is.na(Cc)) |>
   select(id, treatment, time, Cc)
 
 conc_obj <- PKNCA::PKNCAconc(

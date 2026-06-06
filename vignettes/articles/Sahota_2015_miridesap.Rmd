@@ -273,7 +273,7 @@ single-row reference summary matches the figure replicates above.
 
 ```{r pknca}
 sim_nca <- sim_amload |>
-  dplyr::filter(!is.na(Cc), time > 0, time <= 200) |>
+  dplyr::filter(!is.na(Cc), time <= 200) |>
   dplyr::select(id, time, Cc, cohort)
 
 dose_nca <- events_amload |>

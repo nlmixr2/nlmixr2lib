@@ -217,7 +217,7 @@ Compute NCA parameters per cohort and treatment via PKNCA.
 
 ```{r pknca-single, warning = FALSE}
 sim_single <- sim %>%
-  filter(grepl("^single", cohort), !is.na(Cc), time > 0) %>%
+  filter(grepl("^single", cohort), !is.na(Cc)) %>%
   mutate(treatment = case_when(
     FORM_TABLET == 1L  ~ "Tablet 400 ug",
     FORM_CAPSULE == 1L ~ "Capsule 400 ug",
@@ -254,12 +254,34 @@ knitr::kable(nca_summary,
 
 Kleideiter 2017 Table 4 reports Trial 1 NCA in 24 healthy adult males. The published values are arithmetic mean +/- SD across observed subjects; our simulated values come from a typical-value (no-IIV) deterministic run, so distributional spread is not comparable. We compare central tendencies only.
 
-| Quantity | 400 ug tablet (obs) | 400 ug tablet (sim) | 400 ug solution (obs) | 400 ug solution (sim) |
-|----------|---------------------|---------------------|------------------------|-----------------------|
-| Cmax (pg/mL) | 135 +/- 52.5 | see Cmax row | 120 +/- 45.9 | see Cmax row |
-| AUC72 (pg.h/mL) | 3066 +/- 1225 | see auclast row | 2861 +/- 1251 | see auclast row |
-| Tmax (h) | 6.00 (3.50-10.0) median (range) | see Tmax row | 6.00 (2.08-10.0) | see Tmax row |
-| t1/2,z (h) | 84.7 +/- 27.8 | see half.life row | 95.3 +/- 38.8 | see half.life row |
+```{r nca_compare}
+reference <- tibble::tribble(
+  ~treatment,          ~cmax, ~tmax, ~auclast, ~half.life,
+  "Tablet 400 ug",      135,    6.00,     3066,        84.7,
+  "Solution 400 ug",    120,    6.00,     2861,        95.3
+)
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated     = nca_res,
+  reference     = reference,
+  by            = "treatment",
+  params        = c("cmax", "tmax", "auclast", "half.life"),
+  units         = c(cmax = "pg/mL", tmax = "h",
+                    auclast = "pg.h/mL", half.life = "h"),
+  tolerance_pct = 20
+)
+knitr::kable(
+  cmp,
+  caption = paste(
+    "Cebranopadol NCA: typical-value simulated (no IIV) vs.",
+    "Kleideiter 2017 Table 4 (paper mean +/- SD; Tmax shown as the",
+    "paper median; auclast == AUC0-72). * differs from reference by",
+    ">20%. Note: AUC0-72 is the integral over the dosing window;",
+    "half-life sensitivity to the late-time regression window may",
+    "exceed 20% as an artefact of the dense vs sparse NCA terminal",
+    "fits."
+  )
+)
+```
 
 The deterministic-typical Cmax values are expected to be near the geometric mean of the observed data (i.e. roughly equal to or slightly below the arithmetic mean). Tmax should fall within the observed 4-6 h window. The terminal half-life is a true terminal-phase property of the 2-cmt disposition with slow `klag` re-feeding from `transit2`; it is sensitive to the late-time data window used in the NCA regression.
 

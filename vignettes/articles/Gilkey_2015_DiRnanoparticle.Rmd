@@ -329,7 +329,7 @@ sanity check rather than a head-to-head comparison.
 
 ```{r pknca}
 nca_input <- sim_long |>
-  filter(!is.na(Cc), time > 0, Cc > 0) |>
+  filter(!is.na(Cc)) |>
   mutate(id = 1L, treatment = "5 ug/mL IV bolus DiR-NPs") |>
   select(id, time, Cc, treatment)
 

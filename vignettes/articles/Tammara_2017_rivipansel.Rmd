@@ -349,7 +349,7 @@ mod_zero <- rxode2::zeroRe(mod)
 typ_sim <- rxode2::rxSolve(mod_zero, events = typ_events,
                            keep = c("WT", "CRCL", "STUDY_RIV201")) |>
   as.data.frame() |>
-  filter(!is.na(Cc), time > 0) |>
+  filter(!is.na(Cc)) |>
   mutate(id = 1L, treatment = "single 40 mg/kg")
 
 conc_obj_typ <- PKNCA::PKNCAconc(

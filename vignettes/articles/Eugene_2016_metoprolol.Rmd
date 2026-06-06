@@ -208,7 +208,7 @@ formula so per-sex summaries can be compared to derived single-dose values.
 
 ```{r pknca}
 sim_nca <- sim |>
-  filter(!is.na(Cc), Cc > 0) |>
+  filter(!is.na(Cc)) |>
   select(id, time, Cc, treatment)
 
 conc_obj <- PKNCA::PKNCAconc(

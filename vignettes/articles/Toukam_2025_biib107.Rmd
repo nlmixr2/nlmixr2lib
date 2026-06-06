@@ -228,7 +228,7 @@ sim_q8w |>
 # (id, time, regimen) before handing to PKNCA.
 sim_sad_nca <- sim_sad |>
   dplyr::distinct(id, time, regimen, .keep_all = TRUE) |>
-  dplyr::filter(!is.na(Cc), Cc > 0) |>
+  dplyr::filter(!is.na(Cc)) |>
   dplyr::select(id, time, Cc, regimen)
 
 dose_df <- events_sad |>

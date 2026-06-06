@@ -414,8 +414,7 @@ ev_nca <- bind_rows(
 
 sim_nca <- rxode2::rxSolve(mod_typical, events = ev_nca,
                             keep = c("dose_group"),
-                            returnType = "data.frame") |>
-  filter(time > 0)
+                            returnType = "data.frame")
 
 conc_obj <- PKNCA::PKNCAconc(sim_nca,
   Cc ~ time | dose_group + id)

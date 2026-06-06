@@ -206,7 +206,6 @@ the three genotype strata.
 
 ```{r pknca}
 nca_input <- sim_paper |>
-  filter(time > 0) |>
   select(id, time, Cc, cohort)
 
 dose_df <- demo |>

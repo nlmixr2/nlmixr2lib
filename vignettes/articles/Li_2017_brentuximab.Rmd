@@ -349,7 +349,7 @@ point-for-point reference.
 ```{r pknca-adc}
 # Per-cycle ADC concentrations: assign each observation to its cycle interval.
 adc_nca <- pop_sim |>
-  filter(!is.na(Cc_ug_mL), time > 0) |>
+  filter(!is.na(Cc_ug_mL)) |>
   mutate(cycle = pmax(1L, as.integer(floor((time - 1e-9) / cycle_dy) + 1L)),
          time_in_cycle = time - (cycle - 1) * cycle_dy) |>
   filter(cycle <= n_cycles) |>
@@ -382,7 +382,7 @@ adc_nca_summary
 
 ```{r pknca-mmae}
 mmae_nca <- pop_sim |>
-  filter(!is.na(Cmmae_ng_mL), time > 0) |>
+  filter(!is.na(Cmmae_ng_mL)) |>
   mutate(cycle = pmax(1L, as.integer(floor((time - 1e-9) / cycle_dy) + 1L)),
          time_in_cycle = time - (cycle - 1) * cycle_dy) |>
   filter(cycle <= n_cycles) |>

@@ -363,7 +363,7 @@ sim_sd <- rxode2::rxSolve(
   mod, events = sd_events,
   keep = c("WT", "cohort"),
   returnType = "data.frame"
-) |> dplyr::filter(CMT == cmt_cc, time > 0)
+) |> dplyr::filter(CMT == cmt_cc)
 
 sim_nca <- sim_sd |> dplyr::select(id, time, Cc, cohort)
 dose_df <- sd_events |>

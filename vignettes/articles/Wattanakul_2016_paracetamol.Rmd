@@ -218,7 +218,7 @@ hours rather than `aucinf.obs`.
 
 ```{r pknca}
 sim_nca <- sim |>
-  filter(!is.na(Cc), time > 0) |>
+  filter(!is.na(Cc)) |>
   select(id, time, Cc, treatment)
 
 conc_obj <- PKNCA::PKNCAconc(

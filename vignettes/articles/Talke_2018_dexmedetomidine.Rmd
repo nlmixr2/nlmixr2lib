@@ -289,7 +289,7 @@ treatment grouping for the per-cohort summary (recipe 1 of
 
 ```{r pknca}
 sim_nca <- sim_cc |>
-  dplyr::filter(time <= total_min, time > 0) |>
+  dplyr::filter(time <= total_min) |>
   dplyr::select(id, time, Cc, treatment)
 
 dose_df <- events |>

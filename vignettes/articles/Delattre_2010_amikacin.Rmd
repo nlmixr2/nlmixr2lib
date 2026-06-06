@@ -266,7 +266,7 @@ cov_tab$crcl_band <- cut(
 )
 
 sim_for_nca <- sim_stoch |>
-  filter(!is.na(Cc), Cc > 0, time > 0) |>
+  filter(!is.na(Cc)) |>
   left_join(cov_tab |> select(id, crcl_band), by = "id") |>
   select(id, time, Cc, crcl_band) |>
   as.data.frame()

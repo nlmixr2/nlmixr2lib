@@ -299,7 +299,7 @@ Single-cycle NCA over the full Hoglund 2017 follow-up (0 to 90 days = 2160 hours
 
 ```{r pknca}
 sim_nca <- sim |>
-  dplyr::filter(!is.na(Cc), time > 0) |>
+  dplyr::filter(!is.na(Cc)) |>
   dplyr::select(id, time, Cc, band) |>
   dplyr::group_by(id, time, band) |>
   dplyr::summarise(Cc = mean(Cc), .groups = "drop")
