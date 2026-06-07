@@ -392,22 +392,8 @@ navbar:
         href: articles/Goggin_2004_emfilermin.html
       - text: "Emicizumab (Yoneyama 2017)"
         href: articles/Yoneyama_2017_emicizumab.html
-      - text: "Emtricitabine (Valade 2015)"
-        href: articles/Valade_2015_emtricitabine.html
-      - text: "Enoxaparin (Feng 2006)"
-        href: articles/Feng_2006_enoxaparin.html
-      - text: "Enoxaparin (Green 2003)"
-        href: articles/Green_2003_enoxaparin.html
-      - text: "Enoxaparin (Green 2005)"
-        href: articles/Green_2005_enoxaparin.html
-      - text: "Enoxaparin (Oualha 2018)"
-        href: articles/Oualha_2018_enoxaparin.html
-      - text: "Enoxaparin (SanchezPena 2005)"
-        href: articles/SanchezPena_2005_enoxaparin.html
-      - text: "Ephedrine caffeine (Csajka 2005)"
-        href: articles/Csajka_2005_ephedrine_caffeine.html
-      - text: "Epinastine (Sarashina 2005)"
-        href: articles/Sarashina_2005_epinastine.html
+      - text: "Enoxaparin (Berges 2007)"
+        href: articles/Berges_2007_enoxaparin.html
       - text: "Epinephrine (Abboud 2009)"
         href: articles/Abboud_2009_epinephrine.html
       - text: "Epinephrine (Oualha 2014)"
@@ -1525,7 +1511,7 @@ articles:
   - articles/Bender_2014_trastuzumabEmtansine_reduced
   - articles/Benkali_2010_tacrolimus
   - articles/Berends_2019_infliximab
-  - articles/Bergen_2017_meropenem
+  - articles/Berges_2007_enoxaparin
   - articles/Berges_2015_ozanezumab
   - articles/Bergmann_2014_tacrolimus
   - articles/Bi_2017_peginterferon_alfa_2a
