@@ -254,8 +254,8 @@ navbar:
         href: articles/Wade_2015_certolizumab.html
       - text: "Chloroquine (Simpson 2013)"
         href: articles/Simpson_2013_chloroquine.html
-      - text: "Ciclosporin (Ni 2013)"
-        href: articles/Ni_2013_ciclosporin.html
+      - text: "Ciclosporin (Fanta 2007)"
+        href: articles/Fanta_2007_ciclosporin.html
       - text: "Ciprofloxacin (Thuo 2011)"
         href: articles/Thuo_2011_ciprofloxacin.html
       - text: "Cisplatin (Urien 2004)"
@@ -1651,7 +1651,7 @@ articles:
   - articles/Eugene_2016_metoprolol
   - articles/Ezzati_2014_dexmedetomidine_piglet
   - articles/Faelens_2021_infliximab
-  - articles/Fang_2010_etanercept
+  - articles/Fanta_2007_ciclosporin
   - articles/Farrell_2012_farletuzumab
   - articles/Fasanmade_2009_infliximab
   - articles/Fattinger_1991_quinidine
