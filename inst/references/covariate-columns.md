@@ -5232,10 +5232,11 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Units:** (binary)
 - **Type:** binary
 - **Scope:** specific
-- **Reference category:** 0 (per-paper non-syrup comparator: capsule in Nanga 2019 tacrolimus).
+- **Reference category:** 0 (per-paper non-syrup comparator: capsule in Nanga 2019 tacrolimus; tablet in Sarashina 2005 epinastine).
 - **Source aliases:**
   - `syrup formulation` -- used in `Nanga_2019_tacrolimus_metaanalysis.R` (Table 3 covariate-effect label; relative bioavailability of syrup vs capsule = 0.53).
-- **Example models:** `Nanga_2019_tacrolimus_metaanalysis.R` (multiplicative effect on bioavailability per Eq. 4: `f(depot) <- 0.53^FORM_SYRUP`, so capsule users have F = 1 and syrup users have F = 0.53; Nanga 2019 Table 3 'Bioavailability for syrup formulation' = 0.53 with 95% bootstrap CI 0.31 - 0.75).
+  - `FORM` (dry syrup vs tablet) -- used in `Sarashina_2005_epinastine.R` (Table 4 theta_9 multiplier on CL/F: dry-syrup / tablet ratio 1.06; paediatric arm received dry syrup only, adult arm received tablet or dry syrup).
+- **Example models:** `Nanga_2019_tacrolimus_metaanalysis.R` (multiplicative effect on bioavailability per Eq. 4: `f(depot) <- 0.53^FORM_SYRUP`, so capsule users have F = 1 and syrup users have F = 0.53; Nanga 2019 Table 3 'Bioavailability for syrup formulation' = 0.53 with 95% bootstrap CI 0.31 - 0.75), `Sarashina_2005_epinastine.R` (multiplicative ratio 1.06 on CL/F for dry syrup vs tablet; paediatric atopic-dermatitis patients all received dry syrup, healthy adults received either tablet or dry syrup; tablet is the reference (FORM_SYRUP = 0) and dry syrup is FORM_SYRUP = 1).
 - **Notes:** Specific scope because the comparator solid-oral reference is paper-defined (capsule in Nanga 2019). Distinct from `FORM_SUSPENSION` (Svensson 2018: tablets extemporaneously suspended in water at bedside immediately before swallowing -- same tablet swallowed two different ways, where the manipulation affects MAT rather than F) because here the contrast is between two distinct drug products (commercial capsules vs paediatric syrup / suspension). Distinct from `FORM_CAPSULE`, `FORM_TABLET`, and `FORM_POWDER`, which compare those solid-oral forms against a liquid solution or against each other. Future paediatric-syrup / oral-suspension formulation comparisons should reuse this canonical; if a future model contrasts syrup against tablet (rather than capsule), extend the per-model notes rather than registering a sibling canonical. Ratified canonically on 2026-05-18 alongside the Nanga 2019 tacrolimus meta-analysis extraction.
 
 ### FORM_CACO3 (**canonical for calcium-carbonate-tablet vs calcium-containing mineral-water formulation indicator**)
