@@ -26,19 +26,16 @@ maps directly: `v1` → `vc`, `v2` → `vp`, `v3` → `vp2`.
 
 **Michaelis-Menten Vmax**: always `lvmax` / `vmax`. Never `lvm` / `vm`.
 
-### K-PD / single-rate-constant parameterisation
+### PD structural parameters
 
-Some popPK papers report a single first-order elimination rate constant
-(K-PD or one-compartment-without-explicit-V parameterisation) rather than the
-`cl`/`vc` decomposition. In these models the elimination rate constant is a
-**primary** `ini()` parameter, not a derived micro-constant:
+For effect-compartment, indirect-response, and direct-effect PD models, use:
 
-- `lkel` — log first-order elimination rate constant (K-PD / single-rate-constant form).
-- Inside `model()` the bare name is `kel`. When `vc` is also estimated, use the
-  derived form `kel <- cl/vc` (canonical) — `lkel` as a primary parameter is
-  reserved for the K-PD case where no explicit `vc` exists.
-
-Never use `lke` for this role; standardise on `lkel`.
+- `lec50` — log of EC50 (sigmoid Emax / Imax models). Bare form `ec50`.
+- `lemax` / `limax` — log of Emax / Imax (maximum drug effect on production / loss).
+- `lhill` / `lgamma` — log of Hill / sigmoidicity coefficient.
+- `lke0` — log of effect-compartment equilibration rate constant (when an effect compartment equilibrates with the central compartment).
+- `lthalfrec` — log of an effect-compartment / indirect-response **recovery half-life** (units of time). Use when a paper parameterises a delay-and-recovery process by its half-life rather than by a rate constant. Inside `model()` the bare name is `thalfrec` and the corresponding first-order rate constant is `krec = log(2) / thalfrec`. Founding example: `deVriesSchultink_2018_trastuzumab_LVEF.R` (recovery half-life T1/2rec from de Vries Schultink 2018 Table 2, where dCeff/dt = Ctrastuzumab - log(2)/T1/2rec * Ceff). When the paper parameterises by rate constant instead, use `lkrec` directly and do not introduce a parallel `lthalfrec`.
+- `lke_kpd` — DO NOT use; the canonical K-PD elimination rate is `lkel` (same name as the PK-elimination canonical, with the K-PD context conveyed by the surrounding `depot_kpd` compartment).
 
 ### Multi-component clearance
 
@@ -120,17 +117,37 @@ Source-paper aliases that translate to `ltlag` without sidecar:
 Inside `model()` the bare name is `tlag`. Apply via `alag(depot) <- tlag`
 or `alag(<cmt>) <- tlag` (preferred over carrying a separate `lag` compartment).
 
-### Acrophase / circadian peak time
+## Time-varying protein binding
 
-Canonical acrophase prefix: **`ltacro`** (log time of peak in a
-circadian-rhythm rate constant). Distinct from absorption-lag time:
-`tacro` is a phase shift inside a sinusoidal modulation of `kin` /
-`kout` rather than a delay between dose administration and absorption.
+Canonical slope for linear time-varying unbound-fraction models:
+**`lbfu`** (log slope of unbound fraction with respect to time, 1/time-unit).
+Bare name inside `model()`: `bfu`.
 
-Used in `indirect_circ_*` circadian-IDR templates with kinetic forms
-such as `kout_t <- kin + amp * sin(2*pi*(t - tacro) / period)` (and
-the cos / amplitude-ratio variants). The legacy form `ltz` is
-deprecated in favour of `ltacro`.
+Use this for popPK models that encode an evolving free fraction during the
+study window, typically of the form
+
+```
+fu(t) = fu_ref + bfu * (t - t_ref)
+```
+
+where `fu_ref` is the unbound-fraction anchor at reference time `t_ref` (taken
+from external literature, not estimated), and `bfu` is the time slope. The
+slope is usually fixed at a literature value (`lbfu <- fixed(log(<value>))`)
+because the unbound fraction itself is not measured directly in plasma-
+concentration popPK studies; only the resulting time-trends in apparent CL
+and V are observed. Inter-individual variability on `bfu` may be estimated
+when the source paper reports it.
+
+When the source paper imposes a window of validity for the linear-evolution
+assumption (e.g. "fu evolves linearly from 0 to 72 h"), clamp `t` to the
+declared window inside `model()`:
+
+```
+fu <- fu_ref + bfu * (min(t, t_max) - t_ref)
+```
+
+Founding example: `LeJouan_2005_quinine.R` (children with falciparum malaria;
+fu = b*(t-36) + 0.15, b fixed at 0.001/h, evolution clamped at t = 72 h).
 
 ## Indirect-response (IDR) / turnover parameters
 
@@ -208,35 +225,35 @@ The `lnn` / `nn_fix` form is reserved for Wang & co-authors'
 sigmoidicity exponent in specific BDE / morphine-like models and is a
 distinct canonical from `lhill`.
 
-## Paper-specific etas and residual-SDs
+## Body-weight evolution (perioperative / fluid-resuscitation models)
 
-For models with genuinely paper-mechanistic IIV / residual-error
-parameter names that do not pair 1-to-1 with an `lX` fixed-effect
-parameter, declare them via the `paper_specific_etas` and
-`paper_specific_residual_sds` metadata fields at the top of the
-model function body (analogous to the `depends` field for
-upstream-imported covariates and the `paper_specific_compartments`
-field for paper-mechanistic compartment names):
+Some surgical / critical-care popPK papers fit a transient body-weight curve in
+parallel with the drug PK and use the time-varying body weight `BW(t)` as the
+allometric size descriptor on `V` (and, less commonly, on `CL`). The Oualha
+2018 paediatric-LT enoxaparin paper parameterises BW(t) with a Hill-type
+saturation curve:
 
-```r
-my_model <- function() {
-  description <- "..."
-  reference <- "..."
-  paper_specific_etas <- c("etalogit", "etap1", "etap2")
-  paper_specific_residual_sds <- c("propSd_vact_l1", "propSd_vact_l2")
-  units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
-  ...
-}
+```
+BW(t) = (BWPREOP + PFA / 1000) * (1 - (1 - fbw) * t^hill_bw / (tbw50^hill_bw + t^hill_bw))
 ```
 
-`checkModelConventions()` subtracts these from the parameter-naming
-warning set. Use sparingly: when an eta's underlying typical-value
-parameter is part of a paper-mechanistic structural equation
-(mixture-probability logit transform, transit-rate fractions,
-indirect-response baselines, etc.) rather than a 1-to-1 `lX` ini
-parameter; or when a residual SD uses a paper-specific multi-token
-output suffix (`propSd_vact_l1` for a lesion-stratified PD output)
-that the canonical `propSd_<output>` matcher does not recognise.
+When the paper estimates this curve jointly with the drug PK and reports IIV on
+its parameters, encode the BW(t)-evolution parameters as log-transformed
+primary `ini()` entries:
+
+- `lfbw` -- log asymptotic fractional body-weight retention after fluid loss.
+  Bare name `fbw`, dimensionless, typically in (0, 1].
+- `lhill_bw` -- log Hill steepness of the BW(t) decline curve. Bare name
+  `hill_bw`. Suffixed `_bw` to disambiguate from the PD canonical `lhill`
+  reserved for sigmoidal Emax / Imax (parameter-role distinction, not a
+  notation difference).
+- `ltbw50` -- log time to 50% of the BW loss. Bare name `tbw50`, time units
+  matching the model time unit.
+
+IIV follows the standard pattern (`etalfbw`, `etalhill_bw`, `etaltbw50`); use
+`fixed()` if the source paper holds any of these parameters constant.
+
+Founding example: `Oualha_2018_enoxaparin.R`.
 
 ## Transform prefixes
 

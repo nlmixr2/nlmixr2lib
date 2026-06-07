@@ -1,0 +1,418 @@
+---
+title: "Iron and hepcidin joint turnover during the menstrual cycle (Angeli 2016)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Iron and hepcidin joint turnover during the menstrual cycle (Angeli 2016)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4)
+library(nlmixr2lib)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r readModelDb("Angeli_2016_iron_hepcidin")()$meta$reference`
+* Description: `r readModelDb("Angeli_2016_iron_hepcidin")()$meta$description`
+* Article: [AAPS J. 2016 May;18(3):490-504](https://doi.org/10.1208/s12248-016-9875-4)
+* PubMed: <https://pubmed.ncbi.nlm.nih.gov/26832813/>
+
+# Population
+
+The HEPMEN study (Angeli 2016 Methods p. 491) enrolled 90 healthy non-menopausal
+women aged 19-44 years from four French university hospitals (Brest, Nantes,
+Rennes, Tours). Subjects had regular menstrual cycles with menses length between
+3 and 5 days; subjects with low baseline iron concentrations or low haemoglobin
+were excluded. 61% of the cohort took daily oral contraceptives. Six fasting
+morning blood samples were collected per subject across one menstrual cycle for
+serum iron and serum hepcidin (514 measurements in total).
+
+Baseline demographics (Angeli 2016 Table I): age 27.6 (SD 6.3) years, height
+165.4 (6.1) cm, weight 61.8 (9.2) kg, BMI 22.6 (3.0) kg/m^2, Higham's score
+96.6 (60.5). End-of-cycle biological covariates: serum transferrin 2.94 (0.5)
+g/L, serum ferritin 53.14 (44.3) ug/L, haemoglobin 13.48 (0.7) g/dL,
+transferrin saturation 23.81 (8.3) %.
+
+The same information is available programmatically via the model's `population`
+metadata (`readModelDb("Angeli_2016_iron_hepcidin")$population`).
+
+# Source trace
+
+Every model equation and population parameter is annotated inline in
+`inst/modeldb/endogenous/Angeli_2016_iron_hepcidin.R`. The table below collects
+the full provenance for review.
+
+| Equation / parameter | Value (with covariates) | Source location |
+|----------------------|-------|-----------------|
+| `d/dt(iron) = ksyn_iron(t) - kout_iron * iron` | -- | Eq. 4 (p. 495) |
+| `d/dt(hep)  = ksyn_hep(t) * (1 + alpha*(iron - Ir0)) - kout_hep * hep` | -- | Eq. 4 (p. 495) |
+| `iron(0) = ksynI0 / koutI0` | -- | Eq. 5 (p. 495) |
+| `hep(0)  = ksynH0 / koutH0` | -- | Eq. 5 (p. 495) |
+| `ksyn_iron` typical (ksynI)  | 7.57 umol/(L*d) | Table III, Model with covariates |
+| `kout_iron` typical (koutI)  | 0.42 / d        | Table III, Model with covariates |
+| `krel_iron` typical (krelI)  | 2.55 umol/(L*d) | Table III, Model with covariates |
+| `kloss` typical              | 0.14 / d        | Table III, Model with covariates |
+| `ksyn_hep` typical (ksynH)   | 2.48 nmol/(L*d) | Table III, Model with covariates |
+| `kout_hep` typical (koutH)   | 0.82 / d        | Table III, Model with covariates |
+| `krel_hep` typical (krelH)   | 0.28 nmol/(L*d) | Table III, Model with covariates |
+| `alpha` typical              | 0.03 (unitless) | Table III, Model with covariates |
+| `drel` typical               | 5.74 d          | Table III, Model with covariates |
+| `tbeg` (rebound start)       | day 2 (fixed)   | Methods p. 494 (grid search across days 1-5) |
+| `dloss` (menses length)      | per-subject     | Methods p. 494 (fixed to observed values) |
+| `e_conmed_birthcontrol_kout_iron` | -0.20      | Table V (paper's beta_NOCONTRA = +0.20; canonical encoding inverts the indicator) |
+| `e_bmi_krel_iron`            | -3.31 (power)   | Table V |
+| `e_hgb_krel_iron`            | +6.93 (power)   | Table V |
+| `e_higham_ksyn_hep`          | +0.66 (power)   | Table V |
+| `e_higham_kout_hep`          | +0.83 (power)   | Table V |
+| `e_ferritin_bl_kout_hep`     | -0.60 (power)   | Table V |
+| `e_ht_krel_hep`              | +32.70 (power)  | Table V |
+| `e_ferritin_bl_krel_hep`     | -1.95 (power)   | Table V |
+| IIV `etalksyn_iron` (15% CV) | 0.0223 var      | Table III variability column |
+| IIV `etalkrel_iron` (55% CV) | 0.2643 var      | Table III variability column |
+| IIV `etalkloss`    (95% CV)  | 0.6432 var      | Table III variability column |
+| IIV `etalksyn_hep` (24% CV)  | 0.0560 var      | Table III variability column |
+| IIV `etalkout_hep` (57% CV)  | 0.2814 var      | Table III variability column |
+| IIV `etalkrel_hep` (103% CV) | 0.7232 var      | Table III variability column |
+| IIV `etalalpha`    (87% CV)  | 0.5636 var      | Table III variability column |
+| `propSd_Iron` (b_Iron)       | 0.29 (fraction) | Table III; final model proportional-only iron error (Table IV model 32, Methods p. 497) |
+| `addSd_Hep`   (a_Hep)        | 0.17 nmol/L     | Table III; kept for numerical stability (Methods p. 498) |
+| `propSd_Hep`  (b_Hep)        | 0.47 (fraction) | Table III |
+
+## Units check
+
+Iron compartment carries concentration (umol/L). The synthesis-rate constant
+`ksyn_iron` is in (umol/L)/d and the elimination-rate constant `kout_iron`
+is in 1/d, so each ODE term `ksyn_iron` and `kout_iron * iron` has units
+(umol/L)/d, matching `d/dt(iron)`. Hepcidin compartment likewise carries
+nmol/L; `ksyn_hep` is in (nmol/L)/d, `kout_hep` is in 1/d, `alpha` is
+unitless (its argument `iron - Ir0` is umol/L but it sits inside a
+dimensionless `(1 + alpha*(iron - Ir0))` multiplier per the paper's
+parameterization). All ODE terms have matching units.
+
+# Virtual cohort
+
+We use a single typical individual: median covariates from the cohort
+demographics table (Table I) at the population reference values used in the
+model file. `DLOSS` is set to 4 days (within the inclusion window 3-5 days).
+
+```{r typical-individual}
+typical <- tibble::tibble(
+  id                  = 1L,
+  CONMED_BIRTHCONTROL = 1L,         # majority (61%) on oral contraception
+  BMI                 = 22,         # tBMI reference (close to median 22.6)
+  HGB                 = 13.5,       # tHGB reference (close to median 13.48 g/dL)
+  HIGHAM              = 96.6,       # tHIGHAM reference (= cohort mean)
+  FERRITIN_BL         = 53,         # tFERRITIN reference (close to median 53.14 ug/L)
+  HT                  = 165,        # tHT reference (close to median 165.4 cm)
+  DLOSS               = 4           # mid-range menses length (3-5 day inclusion window)
+)
+typical
+```
+
+# Simulation
+
+We simulate one full menstrual cycle (29 days) with observation times every
+0.25 day. For the deterministic typical-value replications we zero out the
+inter-individual random effects (`rxode2::zeroRe`).
+
+```{r typical-sim}
+mod_fn       <- readModelDb("Angeli_2016_iron_hepcidin")
+mod          <- mod_fn()
+mod_typical  <- rxode2::zeroRe(mod)
+
+# Build an observation-only event table (endogenous model, no doses). For
+# multi-output models rxode2 requires cmt to be set on each observation row;
+# the value just has to name a defined compartment because all outputs are
+# returned in separate columns regardless.
+make_events <- function(cov_row, times = seq(0, 29, by = 0.25)) {
+  ev <- data.frame(
+    id   = cov_row$id,
+    time = times,
+    amt  = 0,
+    evid = 0L,
+    cmt  = "Iron"
+  )
+  for (cov in c("CONMED_BIRTHCONTROL","BMI","HGB","HIGHAM","FERRITIN_BL","HT","DLOSS")) {
+    ev[[cov]] <- cov_row[[cov]]
+  }
+  ev
+}
+
+ev_typ <- make_events(typical)
+
+sim_typ <- rxode2::rxSolve(mod_typical, events = ev_typ, returnType = "data.frame")
+head(sim_typ)
+```
+
+# Validation: baseline behaviour without menses
+
+Setting `DLOSS = 0` (no menses) freezes the loss phase, so the system should
+sit at its drug-free steady state for the entire cycle. Iron should hold at
+`ksyn_iron / kout_iron = 7.57 / 0.42 = 18.02 umol/L` (matches the paper's
+discussion-text estimate of 18 umol/L for the average baseline; p. 500) and
+hepcidin at `ksyn_hep / kout_hep = 2.48 / 0.82 = 3.02 nmol/L` (matches the
+"average baseline value of hepcidin was estimated to be 3.0 nmol/L" claim on
+p. 500).
+
+```{r baseline-steady-state}
+ev_baseline <- ev_typ
+ev_baseline$DLOSS <- 0   # no menses-induced loss phase
+
+# Rebound still fires at tbeg = 2 because the rebound window is independent
+# of menses-loss. We evaluate over the first 2 days, before the rebound
+# window opens, to confirm the model holds at its drug-free steady state.
+sim_baseline <- rxode2::rxSolve(mod_typical, events = ev_baseline,
+                                returnType = "data.frame")
+sim_pre_rebound <- subset(sim_baseline, time <= 2)
+
+iron_ss_target <- 7.57 / 0.42
+hep_ss_target  <- 2.48 / 0.82
+iron_ss_target
+hep_ss_target
+
+# Within numerical tolerance of the paper's baseline values:
+max(abs(sim_pre_rebound$Iron - iron_ss_target))
+max(abs(sim_pre_rebound$Hep  - hep_ss_target))
+```
+
+# Flux balance at the drug-free steady state
+
+At `iron = Ir0` the iron ODE evaluates to
+`d/dt(iron) = ksyn_iron - kout_iron * Ir0 = ksyn_iron - kout_iron * ksyn_iron / kout_iron = 0`.
+At `hep = He0` the hepcidin ODE evaluates to
+`d/dt(hep) = ksyn_hep * (1 + alpha * 0) - kout_hep * He0 = ksyn_hep - kout_hep * ksyn_hep / kout_hep = 0`.
+Both fluxes cancel identically.
+
+# Typical menstrual cycle profile
+
+With `DLOSS = 4` (a 4-day menses) and the rebound starting on day 2 for
+`drel = 5.74` days, the model produces an initial drop in both iron and
+hepcidin during menses followed by a marked rebound above baseline before
+returning to baseline in the second half of the cycle. This is the central
+qualitative pattern the joint model was built to reproduce (Angeli 2016
+Discussion p. 499-500; Fig. 4 individual fits show this pattern in most of
+the 90 subjects).
+
+```{r typical-cycle-figure}
+iron_baseline <- 7.57 / 0.42
+hep_baseline  <- 2.48 / 0.82
+
+sim_long <- sim_typ |>
+  dplyr::select(time, Iron, Hep) |>
+  tidyr::pivot_longer(c(Iron, Hep), names_to = "analyte", values_to = "conc") |>
+  dplyr::mutate(
+    analyte = factor(analyte, levels = c("Iron", "Hep"),
+                     labels = c("Serum iron (umol/L)", "Serum hepcidin (nmol/L)"))
+  )
+
+baselines <- tibble::tibble(
+  analyte = factor(c("Serum iron (umol/L)", "Serum hepcidin (nmol/L)"),
+                   levels = c("Serum iron (umol/L)", "Serum hepcidin (nmol/L)")),
+  baseline = c(iron_baseline, hep_baseline)
+)
+
+ggplot(sim_long, aes(x = time, y = conc)) +
+  geom_hline(data = baselines, aes(yintercept = baseline),
+             colour = "grey60", linetype = "dashed") +
+  annotate("rect", xmin = 0, xmax = 4, ymin = -Inf, ymax = Inf,
+           fill = "red", alpha = 0.08) +
+  annotate("rect", xmin = 2, xmax = 2 + 5.74, ymin = -Inf, ymax = Inf,
+           fill = "blue", alpha = 0.05) +
+  geom_line(linewidth = 0.7) +
+  facet_wrap(~ analyte, scales = "free_y", ncol = 1) +
+  labs(
+    x = "Day of menstrual cycle",
+    y = "Concentration",
+    title = "Typical iron and hepcidin profile across one menstrual cycle",
+    subtitle = "Red band: menses-loss phase (days 0-DLOSS); blue band: rebound (days tbeg to tbeg+drel)",
+    caption = "Reproduces the qualitative pattern of Angeli 2016 Fig. 4."
+  ) +
+  theme_minimal()
+```
+
+# Effect of contraception on iron elimination
+
+The paper reports (p. 499) that "women with contraception have a lower
+elimination of iron throughout the cycle, and consequently maintain higher
+iron concentrations." We replicate this by comparing the typical individual
+with and without contraception.
+
+```{r contra-effect}
+ev_no_contra <- ev_typ
+ev_no_contra$CONMED_BIRTHCONTROL <- 0L
+
+sim_with_contra <- sim_typ |> dplyr::mutate(group = "On contraception")
+sim_no_contra   <- rxode2::rxSolve(mod_typical, events = ev_no_contra,
+                                   returnType = "data.frame") |>
+  dplyr::mutate(group = "No contraception")
+
+bind_rows(sim_with_contra, sim_no_contra) |>
+  ggplot(aes(time, Iron, colour = group)) +
+  geom_line(linewidth = 0.7) +
+  labs(
+    x = "Day of menstrual cycle",
+    y = "Serum iron (umol/L)",
+    colour = NULL,
+    title = "Iron profile by contraception use (typical individual)",
+    caption = "Replicates Angeli 2016 Discussion p. 499: contraception users sustain higher serum iron."
+  ) +
+  theme_minimal()
+
+# Steady-state iron ratio (after rebound; deep in the second half of the cycle):
+ratio <- sim_no_contra |>
+  dplyr::filter(time > 25) |>
+  dplyr::summarise(iron_mean = mean(Iron)) |>
+  dplyr::pull(iron_mean) /
+  sim_with_contra |>
+  dplyr::filter(time > 25) |>
+  dplyr::summarise(iron_mean = mean(Iron)) |>
+  dplyr::pull(iron_mean)
+ratio
+```
+
+The ratio of end-of-cycle iron (no contraception / on contraception) is
+`exp(-0.20) = 0.819`, i.e. women without contraception sustain about 18%
+lower iron, consistent with the paper's claim of "about 20%."
+
+# Effect of Higham score on hepcidin
+
+The paper reports (Table V) that Higham score increases both hepcidin
+synthesis (exponent +0.66 on `ksyn_hep`) and elimination (+0.83 on
+`kout_hep`); the net effect is higher hepcidin baseline with a faster
+return to equilibrium.
+
+```{r higham-effect}
+higham_grid <- c(40, 96.6, 160)
+
+higham_sims <- lapply(higham_grid, function(h) {
+  ev_h <- ev_typ
+  ev_h$HIGHAM <- h
+  rxode2::rxSolve(mod_typical, events = ev_h, returnType = "data.frame") |>
+    dplyr::mutate(higham = h)
+}) |> dplyr::bind_rows()
+
+higham_sims |>
+  ggplot(aes(time, Hep, colour = factor(higham))) +
+  geom_line(linewidth = 0.7) +
+  scale_colour_brewer(palette = "Set1", name = "Higham score") +
+  labs(
+    x = "Day of menstrual cycle",
+    y = "Serum hepcidin (nmol/L)",
+    title = "Hepcidin profile by Higham score (typical individual)",
+    caption = "Replicates Angeli 2016 Table V: ksyn_hep and kout_hep both rise with Higham score."
+  ) +
+  theme_minimal()
+```
+
+# Stochastic VPC across 50 simulated subjects
+
+Stochastic simulation with IIV from Table III; covariates are held at the
+typical-individual values to isolate the random-effect contribution.
+
+```{r vpc}
+set.seed(20260603L)
+
+n_sub <- 50L
+times_vpc <- seq(0, 29, by = 0.5)
+ev_cohort <- expand.grid(id = seq_len(n_sub), time = times_vpc)
+ev_cohort$amt  <- 0
+ev_cohort$evid <- 0L
+ev_cohort$cmt  <- "Iron"
+for (cov in c("CONMED_BIRTHCONTROL","BMI","HGB","HIGHAM","FERRITIN_BL","HT","DLOSS")) {
+  ev_cohort[[cov]] <- typical[[cov]]
+}
+
+sim_vpc <- rxode2::rxSolve(mod, events = ev_cohort, returnType = "data.frame")
+
+sim_vpc |>
+  dplyr::select(id, time, Iron, Hep) |>
+  tidyr::pivot_longer(c(Iron, Hep), names_to = "analyte", values_to = "conc") |>
+  dplyr::group_by(analyte, time) |>
+  dplyr::summarise(
+    p05 = quantile(conc, 0.05, na.rm = TRUE),
+    p50 = quantile(conc, 0.50, na.rm = TRUE),
+    p95 = quantile(conc, 0.95, na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(time, p50)) +
+  geom_ribbon(aes(ymin = p05, ymax = p95), alpha = 0.25, fill = "steelblue") +
+  geom_line(colour = "steelblue") +
+  facet_wrap(~ analyte, scales = "free_y", ncol = 1) +
+  labs(
+    x = "Day of menstrual cycle",
+    y = "Concentration",
+    title = "Typical-individual VPC: 50 stochastic simulations, IIV from Table III",
+    caption = "Population-level prediction-interval profile of iron and hepcidin (no residual error overlay)."
+  ) +
+  theme_minimal()
+```
+
+# Comparison against published values
+
+| Quantity | Angeli 2016 (reported) | Packaged model (typical individual at reference covariates) |
+|---|---|---|
+| Iron baseline (umol/L)             | "average baseline ~18 umol/L" (p. 500) | `ksyn_iron / kout_iron = 7.57 / 0.42 = 18.02` |
+| Hepcidin baseline (nmol/L)         | "average baseline ~3.0 nmol/L" (p. 500) | `ksyn_hep / kout_hep = 2.48 / 0.82 = 3.02` |
+| Hepcidin half-life (days)          | "~0.85 day" (p. 499 quotes 0.9 day from `koutH = 0.82 day^-1`) | `log(2)/0.82 = 0.85` |
+| Iron half-life (days)              | "~1.7 days" (p. 499 quotes `koutI = 0.42 day^-1`)            | `log(2)/0.42 = 1.65` |
+| Iron drop magnitude vs baseline    | ~25% during menses (Fig. 4 individual fits) | Reproduced qualitatively in the typical-cycle figure above |
+| Iron rebound vs baseline           | ~41% peak (Discussion p. 500) | Visible in the typical-cycle figure |
+| Hepcidin rebound vs baseline       | ~11% peak (Discussion p. 500) | Visible in the typical-cycle figure |
+| Iron lower with no contraception   | ~20% lower (Discussion p. 499) | `exp(-0.20) = 0.819` -> 18% lower (matches) |
+
+# Assumptions and deviations
+
+* **Covariate centering**. The paper's Table III reports the population-mean
+  parameter values mu for the model with covariates; the Methods (p. 492-493,
+  Eq. 3) defines the continuous-covariate model as
+  `theta_i = mu * (cov / tcov)^beta`. The Methods state that `tcov` is
+  "either the median in the population or a set value" but does not list the
+  set values explicitly. For this package we used:
+  * `tBMI = 22` (a set value, close to median 22.6); reproduces Table V's
+    krelI predictions at the BMI percentile extremes exactly.
+  * `tHGB = 13.5 g/dL` (median); reproduces Table V's krelI predictions
+    closely.
+  * `tHIGHAM = 96.6` (cohort mean / median), `tFERRITIN = 53 ug/L`
+    (median-ish, mean 53.14), `tHT = 165 cm` (median 165.4). These
+    centering choices reproduce the paper's typical baselines
+    (`ksyn_hep / kout_hep = 3.0 nmol/L` at typical Higham, etc.) but do
+    not exactly reproduce Table V's "Estimate at 10th-90th percentile"
+    column for the Higham- and Height-covariate cells. The Table V values
+    at the percentile extremes for `ksyn_hep`, `kout_hep`, and `krel_hep`
+    are consistent with the published `beta` ratios but would require
+    `tHIGHAM ~ 240-320` and `tHT ~ 169` to reproduce Table III's mu values
+    exactly; the paper does not document which set values were used per
+    parameter. The package favours the population-median centering for
+    interpretability at the cost of a slight quantitative deviation at
+    covariate extremes.
+* **`alpha` IIV bound**. The paper reports `alpha = 0.03` with 87% CV IIV.
+  Because `alpha` enters the hepcidin synthesis as `(1 + alpha * (iron -
+  Ir0))`, extreme negative individual `alpha` values combined with a large
+  iron excursion can drive the multiplier below zero in stochastic
+  simulations. In the packaged model we encode `alpha = exp(lalpha + eta)`
+  to enforce positivity; this matches the paper's prose that alpha is a
+  small positive coupling factor.
+* **Residual error**. Iron uses proportional error only; the additive part
+  was dropped in the paper's final model selection (Methods p. 497, Table
+  IV model 32). Hepcidin keeps the combined additive + proportional form;
+  the additive part is small and "kept for numerical stability" per the
+  paper.
+* **Inter-occasion variability**. Not reported by the paper; not encoded.
+* **Sensitivity analysis with abnormal hepcidin subjects**. The paper
+  re-ran the final model excluding three subjects with abnormal hepcidin
+  concentrations (Methods p. 497-498) and reported that fixed-effect
+  estimates were similar; the package uses the full-cohort estimates.
+* **Higham-score centering**. Table V suggests the effective `tHIGHAM`
+  used during fitting differs between `ksyn_hep` (back-computed ~318)
+  and `kout_hep` (back-computed ~240), which is inconsistent with a
+  single per-covariate reference value as stated in the Methods. The
+  packaged model uses a single `tHIGHAM = 96.6` for both parameters
+  per the Methods formulation, accepting a slight loss of fidelity at
+  the covariate percentile extremes in exchange for a clean,
+  reproducible parameterization.

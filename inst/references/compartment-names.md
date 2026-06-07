@@ -807,6 +807,12 @@ These are internationally standardised clinical abbreviations registered as cano
 - **Source aliases:** none.
 - **Example models:** anticoagulant PD models.
 
+### ECT (**canonical ecarin clotting time**)
+- **Type:** compartment
+- **Role:** Ecarin clotting time coagulation-test PD output (selective ecarin-activated thrombin assay used to monitor direct thrombin inhibitors).
+- **Source aliases:** none.
+- **Example models:** direct thrombin inhibitor PD models (dabigatran, argatroban, hirudin / hirulog, melagatran).
+
 ### hb (**canonical hemoglobin**)
 - **Type:** compartment
 - **Role:** Hemoglobin PD output.
@@ -1069,6 +1075,12 @@ PBPK bare organ-amount compartments used by Zhang 2011 nutlin3a and similar full
 - **Role:** Bare brain organ compartment in full-body PBPK extractions.
 - **Source aliases:** none.
 - **Example models:** `Zhang_2011_nutlin3a.R`.
+
+### heart (**canonical bare heart compartment**)
+- **Type:** compartment
+- **Role:** Bare heart organ compartment in full-body PBPK extractions. Total tissue (well-stirred) drug concentration in the myocardium; paired with `lung`, `liver`, `kidney`, `spleen`, `brain` etc. in whole-body PBPK extractions that resolve heart as a distinct organ. The token `heart` already appears in the `vp_heart` canonical entry and in the `pbpkSubCompartmentRegex` valid-organ list (alongside `lung`, `kidney`, `spleen`), so this entry registers the bare-organ form for parity with the surrounding canonicals.
+- **Source aliases:** none.
+- **Example models:** `An_2012_mitoxantrone_mouse_pbpk.R`, `An_2012_mitoxantrone_human_pbpk.R`.
 
 ### bone (**canonical bare bone compartment**)
 - **Type:** compartment
@@ -1561,6 +1573,22 @@ Standard clinical-biomarker / endogenous-output compartments. Widely-recognised 
 - **Source aliases:** none.
 - **Example models:** `Tetschke_2018_erythropoiesis.R`.
 
+### iron (**canonical serum iron PD output**)
+- **Type:** compartment
+- **Role:** Serum iron biomarker PD output for iron-metabolism / iron-status turnover models. The state carries the iron concentration directly (umol/L in Angeli 2016) rather than an amount, so the synthesis and elimination rate constants `ksyn_iron` / `kout_iron` have concentration / time and 1 / time units respectively.
+- **Source aliases:**
+  - `Ir` -- Angeli 2016 paper notation; same orientation, no transformation.
+- **Example models:** `Angeli_2016_iron_hepcidin.R`.
+- **Notes:** Registered 2026-06-03 alongside the Angeli 2016 iron / hepcidin joint turnover extraction. Reserved for serum iron as a PD biomarker (concentration-state IDR / turnover models); paper-mechanistic intracellular iron pools or membrane-limited PBPK iron sub-compartments should use a distinct namespaced canonical when they arise.
+
+### hep (**canonical serum hepcidin PD output**)
+- **Type:** compartment
+- **Role:** Serum hepcidin biomarker PD output for hepcidin-driven iron-regulation turnover models. The state carries the hepcidin concentration directly (nmol/L in Angeli 2016) and is paired with `iron` in the Angeli 2016 joint model via a multiplicative coupling on hepcidin synthesis.
+- **Source aliases:**
+  - `He` -- Angeli 2016 paper notation; same orientation, no transformation.
+- **Example models:** `Angeli_2016_iron_hepcidin.R`.
+- **Notes:** Registered 2026-06-03 alongside the Angeli 2016 iron / hepcidin joint turnover extraction. The short `hep` form was chosen to mirror the paper's `He` notation and to follow the existing biomarker-state precedent of short lowercase names (`phe`, `pth`, `thb`, `psa`).
+
 ### psa (**canonical prostate-specific antigen (lowercase form)**)
 - **Type:** compartment
 - **Role:** Prostate-specific antigen PD output (lowercase form alongside the canonical capitalised `PSA`).
@@ -1734,6 +1762,16 @@ The Ait-Oudhia 2012 canakinumab IL-1beta -> CRP transit cascade: `crp1` / `crp2`
 - **Role:** sKIT placebo-arm output (Hansson 2013b).
 - **Source aliases:** none.
 - **Example models:** `Hansson_2013b_sunitinib.R`.
+
+---
+
+## Keizer 2011 E7820 integrin biomarker
+
+### integrin (**canonical alpha2-integrin biomarker compartment**)
+- **Type:** compartment
+- **Role:** Platelet alpha2-integrin expression turnover pool, the biomarker driven by an indirect-response model in the Keizer 2011 PK/PD analysis of E7820. Used both in the preclinical mouse model (units: % of reference platelet flow-cytometry signal) and in the clinical model (units: MESF, molecules of equivalent soluble fluorochrome) -- the same state with species-specific units.
+- **Source aliases:** I (paper symbol).
+- **Example models:** `Keizer_2011_E7820_mouse.R`, `Keizer_2011_E7820_human.R`.
 
 ---
 
@@ -1984,6 +2022,12 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Source aliases:** none.
 - **Example models:** `Xie_2019_agomelatine.R`.
 
+### m1 (**canonical paper-named M1 metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Generic M1 metabolite suffix used by parent + metabolite popPK extractions in which the source paper names the major active metabolite simply "M1" without supplying a chemical name. Each model file's `description` / `reference` text identifies the specific compound; the `m1` suffix is the shared notational token. Disambiguation by drug context: in `Lehr_2010_tesofensine.R`, M1 is the major CYP3A4-formed metabolite of tesofensine.
+- **Source aliases:** none.
+- **Example models:** `Lehr_2010_tesofensine.R` (tesofensine M1, CYP3A4-formed, in vivo five-fold lower dopamine-reuptake potency than parent per Lehr 2010 Methods reference 17).
+
 ### m2 (**canonical N-desmethyl-bedaquiline (M2) suffix**)
 - **Type:** metabolite-suffix
 - **Role:** N-desmethyl-bedaquiline (M2) metabolite of bedaquiline.
@@ -2069,6 +2113,12 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Source aliases:** none.
 - **Example models:** `Hennig_2006_itraconazole.R`, `Hennig_2007_itraconazole.R`.
 
+### ohcla (**canonical 14-(R)-hydroxy-clarithromycin suffix**)
+- **Type:** metabolite-suffix
+- **Role:** 14-(R)-hydroxy-clarithromycin (14-OH-CLA), the principal active metabolite of clarithromycin formed predominantly by CYP3A4-mediated stereospecific hydroxylation at the 14 position. Used as the metabolite suffix in parent + metabolite simultaneous popPK models (compartments `central_ohcla`, parameters `lcl_ohcla` / `lvc_ohcla`, residuals `addSd_ohcla`). Founding example: `Abduljalil_2009_clarithromycin.R`.
+- **Source aliases:** none.
+- **Example models:** `Abduljalil_2009_clarithromycin.R`.
+
 ### doxol (**canonical doxorubicinol suffix**)
 - **Type:** metabolite-suffix
 - **Role:** Doxorubicinol, C-13 alcohol metabolite of doxorubicin.
@@ -2147,6 +2197,12 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Role:** Roflumilast N-oxide, active metabolite of roflumilast (contributes ~90% of total PDE4 inhibitory activity).
 - **Source aliases:** none.
 - **Example models:** `Lahu_2010_roflumilast.R` (doi:10.2165/11536600-000000000-00000).
+
+### norcloz (**canonical norclozapine (N-desmethylclozapine) suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Norclozapine (N-desmethylclozapine), the primary pharmacologically active metabolite of clozapine formed predominantly by CYP1A2 (with secondary contributions from CYP2C19, CYP3A4, CYP2C9, and CYP2D6). Norclozapine retains receptor affinity at multiple monoaminergic and muscarinic targets and is routinely measured alongside clozapine in therapeutic-drug-monitoring (TDM) practice; the parent-to-metabolite ratio is itself a clinical descriptor of CYP1A2 activity.
+- **Source aliases:** none.
+- **Example models:** `Li_2012_clozapine.R` (doi:10.1038/aps.2012.71).
 
 ### cysmer (**canonical APAP cysteine+mercapturate suffix**)
 - **Type:** metabolite-suffix
@@ -2363,6 +2419,18 @@ Per-paper metabolite / sibling-drug suffix additions discovered during the 2026-
 - **Source aliases:** none.
 - **Example models:** `Sherwin_2012_risperidone.R`.
 
+### p88 (**canonical iloperidone metabolite P-88 (M1) suffix**)
+- **Type:** metabolite-suffix
+- **Role:** P-88 (also termed M1), the active iloperidone metabolite produced via cytosolic / microsomal enzymes (not CYP2D6); contributes to the iloperidone therapeutic profile via D2 / 5-HT2A receptor binding affinity comparable to the parent.
+- **Source aliases:** none.
+- **Example models:** `Pei_2016_iloperidone.R`.
+
+### p95 (**canonical iloperidone metabolite P-95 (M2) suffix**)
+- **Type:** metabolite-suffix
+- **Role:** P-95 (also termed M2), the iloperidone metabolite produced by CYP2D6-mediated hydroxylation; pharmacologically inactive on the 5-HT2A receptor.
+- **Source aliases:** none.
+- **Example models:** `Pei_2016_iloperidone.R`.
+
 ### 5oh (**canonical 5-hydroxyomeprazole suffix**)
 - **Type:** metabolite-suffix
 - **Role:** 5-hydroxyomeprazole metabolite of omeprazole.
@@ -2410,6 +2478,18 @@ Per-paper metabolite / sibling-drug suffix additions discovered during the 2026-
 - **Role:** Lesion-density state suffix in Schindler 2017 imatinib lesion modeling.
 - **Source aliases:** none.
 - **Example models:** `Schindler_2017_imatinib.R`.
+
+### caf (**canonical caffeine sibling-drug suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Caffeine sibling-drug suffix for combination / drug-drug-interaction models where caffeine is co-administered alongside another primary drug (e.g., caffeine-ephedrine herbal-formulation interactions). Used on `depot_caf` / `central_caf` PK compartments and the paired `Cc_caf` observation variable.
+- **Source aliases:** none.
+- **Example models:** `Csajka_2005_ephedrine_caffeine.R`.
+
+### neph (**canonical norephedrine metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Norephedrine metabolite suffix. Norephedrine is the N-demethylation metabolite of ephedrine. Used on the `central_neph` plasma compartment and the paired `Cc_neph` observation variable in mechanistic ephedrine / norephedrine PK models with Michaelis-Menten conversion.
+- **Source aliases:** none.
+- **Example models:** `Csajka_2005_ephedrine_caffeine.R`.
 
 ---
 
@@ -2516,6 +2596,12 @@ Antibiotic combination-PK drug suffixes (linezolid, vancomycin, meropenem long f
 - **Role:** Pyrazinamide (PZA), fourth first-line anti-TB drug, used in `depot_pza` / `central_pza` / `peripheral1_pza` PK subsystem.
 - **Source aliases:** none.
 - **Example models:** `Chen_2017_TB_MTP_GPDI_mouse.R`.
+
+### oc (**canonical oseltamivir carboxylate suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Oseltamivir carboxylate (OC), the active neuraminidase-inhibitor metabolite formed from the oseltamivir prodrug primarily via human carboxylesterase 1 (HCE1) in the liver.
+- **Source aliases:** none.
+- **Example models:** `Standing_2012_oseltamivir.R`.
 
 ---
 

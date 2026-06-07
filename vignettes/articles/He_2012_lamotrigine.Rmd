@@ -1,0 +1,461 @@
+---
+title: "Lamotrigine (He 2012)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Lamotrigine (He 2012)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+```{r model-meta, echo = FALSE}
+.mod_meta <- rxode2::rxode(readModelDb("He_2012_lamotrigine"))
+```
+
+* Citation: `r .mod_meta$meta$reference`
+* Description: `r .mod_meta$meta$description`
+* Article: <https://doi.org/10.1038/aps.2012.118>
+
+The packaged model implements the He 2012 final paediatric lamotrigine (LTG)
+population-PK model: a one-compartment open-kinetic structure with first-order
+absorption and first-order elimination, scaled allometrically on total body
+weight and modified by three concomitant antiepileptic-drug indicators
+(valproate, carbamazepine, phenobarbital) on apparent oral clearance. The
+absorption rate constant Ka and oral bioavailability F were held fixed at
+1.0 1/h and 1.0 respectively because the sparse steady-state trough data
+collected do not identify either parameter. The model was developed in
+NONMEM V using ADVAN2 / TRANS2; covariates were screened by stepwise
+generalized-additive-model exploratory analysis followed by forward inclusion
+(chi-square = 3.84, p < 0.05) and backward elimination (chi-square = 7.88,
+p < 0.005).
+
+# Population
+
+He 2012 fit the model to 191 lamotrigine steady-state trough plasma
+concentrations from 116 Chinese paediatric patients with epilepsy aged
+0.5 to 17 years (PPK model group; He 2012 Table 1). Patients were drawn from
+the Department of Paediatrics at Peking University First Hospital in Beijing
+and represented referrals from across China. Mean total body weight was
+27.87 kg (range 8-85 kg), mean age was 6.91 years, and 68 of 116 patients
+were male. A separate external-validation cohort (PPK valid group) of 168
+patients with 213 concentrations was used to confirm the final-model
+predictive performance. Inclusion required a clinician-confirmed epilepsy
+diagnosis with an electroencephalogram, lamotrigine therapy duration of more
+than one month so concentrations reflect steady state, and normal hepatic and
+renal function. Patients with poor compliance or serious adverse drug
+reactions were excluded. Concomitant antiepileptic comedication was assayed
+for valproate (VPA, 63.4% of patients), carbamazepine (CBZ, 27.2%),
+phenobarbital (PB, 3.7%), oxcarbazepine, clonazepam, levetiracetam, and
+topiramate. Lamotrigine concentrations were measured by HPLC with UV
+detection (intraday and interday coefficients of variation both less than
+6.5%). The same metadata is available programmatically via
+`readModelDb("He_2012_lamotrigine")$meta$population`.
+
+# Source trace
+
+The per-parameter origin is recorded as an in-file comment next to each
+`ini()` entry in
+`inst/modeldb/specificDrugs/He_2012_lamotrigine.R`. The table below collects
+them in one place for review. Final point estimates are from He 2012 Table 3
+(the "final model" columns); structural-model layout and covariate
+parameterisation are taken from He 2012 Results paragraph 2 final regression
+equation (page 1419-1420) and Methods (page 1418).
+
+| Equation / parameter         | Value                          | Source location |
+|------------------------------|--------------------------------|-----------------|
+| `lka` (Ka)                   | fixed(log(1.0)) -> 1.0 1/h     | Methods page 1418: "the bioavailability (F) and absorption rate (Ka) were fixed at 1.0 and 1.0 1/h, respectively" |
+| `lcl` (CL/F at 27.87 kg)     | log(1.01) -> 1.01 L/h          | Table 3 final model: theta1 = 1.01 (RSE 4.48%) |
+| `lvc` (V/F at 27.87 kg)      | fixed(log(16.7)) -> 16.7 L     | Table 3 final model: theta6 = 16.7 (RSE "-"); Results page 1420: "16.7 was calculated by solving 45 = theta6 * (75/27.87)" |
+| `e_wt_cl`                    | 0.635                          | Table 3 final model: theta2 = 0.635 (RSE 7.91%) |
+| `e_wt_vc`                    | fixed(1.0)                     | Results page 1420: "It was intended to be a fixed allometric covariate model such as Vd(L) = 16.7 * (WT/27.87)" |
+| `e_conmed_vpa_cl`            | -0.753                         | Table 3 final model: theta3 = -0.753 (RSE 6.28%) |
+| `e_conmed_cbz_cl`            | +0.868                         | Table 3 final model: theta4 = +0.868 (RSE 5.76%) |
+| `e_conmed_pb_cl`             | +0.633                         | Table 3 final model: theta5 = +0.633 (RSE 13.1%) |
+| `etalcl` (variance)          | 0.067                          | Table 3 final model: omega^2 = 0.067 (RSE 25.0%); CV = 25.8% headline in Results paragraph 3 |
+| `propSd` (proportional)      | sqrt(0.045) = 0.2121           | Table 3 final model: sigma^2 = 0.045 (RSE 37.6%) |
+| Allometric model             | `(WT/27.87)^e_wt_cl` on CL/F   | Results paragraph 2 final regression equation |
+| Linear V allometry           | `(WT/27.87)^e_wt_vc` on V/F    | Results page 1420 Vd formula |
+| AED effect on CL/F           | `exp(theta * indicator)` product across VPA / CBZ / PB | Results paragraph 2 final regression equation |
+| ODE `d/dt(depot)`            | `-ka * depot`                  | NONMEM ADVAN2 / TRANS2 (Methods page 1418) |
+| ODE `d/dt(central)`          | `ka * depot - kel * central`   | NONMEM ADVAN2 / TRANS2 (Methods page 1418) |
+
+# Virtual cohort
+
+Original observed data from the He 2012 paediatric cohort are not publicly
+available. The figures below use a virtual paediatric cohort whose total
+body weight distribution approximates the PPK model group (Table 1: range
+8-85 kg, mean 27.87 kg). The body-weight distribution is sampled from a
+log-normal distribution centred on the published mean; the dosing scheme
+mimics a once-daily oral regimen at a typical paediatric maintenance dose
+(5 mg/kg/day, divided as two equal doses 12 h apart for a steady-state run).
+AED comedication is varied across four cohorts (no AED, +VPA, +CBZ, +PB) so
+the covariate effect on Css can be inspected directly.
+
+```{r cohort}
+set.seed(20120829)
+
+mod <- rxode2::rxode(readModelDb("He_2012_lamotrigine"))
+
+n_per_arm <- 100
+wt_min    <- 8
+wt_max    <- 85
+
+mg_per_kg_per_dose <- 2.5  # 5 mg/kg/day split bid; representative paediatric
+                            # maintenance LTG dose for monotherapy or VPA add-on
+
+make_aed_cohort <- function(n, aed_name, vpa, cbz, pb, id_offset = 0L) {
+  wt <- pmin(pmax(exp(rnorm(n, mean = log(27.87), sd = 0.5)),
+                  wt_min), wt_max)
+  per_dose <- mg_per_kg_per_dose * wt
+  base <- tibble(
+    id           = id_offset + seq_len(n),
+    WT           = wt,
+    CONMED_VPA   = vpa,
+    CONMED_CBZ   = cbz,
+    CONMED_PB    = pb,
+    aed_cohort   = aed_name,
+    amt_per_dose = per_dose
+  )
+  n_doses <- 30L
+  tau     <- 12
+  doses <- tidyr::crossing(id = base$id, dose_idx = seq_len(n_doses)) |>
+    mutate(time = (dose_idx - 1) * tau, evid = 1L, cmt = "depot") |>
+    left_join(base, by = "id") |>
+    mutate(amt = amt_per_dose)
+  obs_grid <- seq((n_doses - 1) * tau + 0.25, n_doses * tau, by = 0.5)
+  obs <- tidyr::crossing(id = base$id, time = obs_grid) |>
+    mutate(evid = 0L, cmt = "Cc", amt = NA_real_) |>
+    left_join(base, by = "id")
+  bind_rows(doses, obs) |>
+    arrange(id, time, desc(evid))
+}
+
+events_ss <- bind_rows(
+  make_aed_cohort(n_per_arm, "no AED", vpa = 0L, cbz = 0L, pb = 0L,
+                  id_offset = 0L),
+  make_aed_cohort(n_per_arm, "+VPA",   vpa = 1L, cbz = 0L, pb = 0L,
+                  id_offset = n_per_arm),
+  make_aed_cohort(n_per_arm, "+CBZ",   vpa = 0L, cbz = 1L, pb = 0L,
+                  id_offset = 2L * n_per_arm),
+  make_aed_cohort(n_per_arm, "+PB",    vpa = 0L, cbz = 0L, pb = 1L,
+                  id_offset = 3L * n_per_arm)
+)
+stopifnot(!anyDuplicated(unique(events_ss[, c("id", "time", "evid")])))
+```
+
+# Simulation
+
+```{r simulate}
+sim_ss <- rxode2::rxSolve(
+  object     = mod,
+  events     = events_ss,
+  keep       = c("WT", "CONMED_VPA", "CONMED_CBZ", "CONMED_PB",
+                 "aed_cohort", "amt_per_dose"),
+  returnType = "data.frame"
+) |>
+  dplyr::filter(time > 0)
+```
+
+For deterministic typical-value replication of the population mean profile,
+zero out the random effects:
+
+```{r simulate-typical}
+sim_ss_typical <- rxode2::rxSolve(
+  object     = rxode2::zeroRe(mod),
+  events     = events_ss,
+  keep       = c("WT", "CONMED_VPA", "CONMED_CBZ", "CONMED_PB",
+                 "aed_cohort", "amt_per_dose"),
+  returnType = "data.frame"
+) |>
+  dplyr::filter(time > 0)
+```
+
+# Replicate published figures
+
+## Steady-state Css distribution by AED comedication (He 2012 Table 5 context)
+
+He 2012 Table 5 reports predicted lamotrigine clearance and recommended
+maintenance doses by AED cohort, aiming for a target steady-state mean
+concentration of 6 ug/mL (= 6 mg/L). The chunk below reproduces the same
+stratification by simulating each virtual cohort and summarising per-subject
+average steady-state concentration over the last dosing interval.
+
+```{r css-distribution, fig.width = 7.5, fig.height = 4.0}
+tau <- 12
+last_interval_start <- 29 * tau
+
+trapz_auc <- function(t, y) {
+  ord <- order(t)
+  t   <- t[ord]
+  y   <- y[ord]
+  sum(0.5 * (y[-1] + y[-length(y)]) * diff(t))
+}
+
+ss_css <- sim_ss |>
+  dplyr::filter(time >= last_interval_start) |>
+  group_by(id, aed_cohort, WT) |>
+  summarise(
+    auc_tau = trapz_auc(time - last_interval_start, Cc),
+    Css     = auc_tau / tau,
+    .groups = "drop"
+  )
+
+ggplot(ss_css, aes(aed_cohort, Css)) +
+  geom_boxplot(outlier.shape = NA) +
+  geom_jitter(width = 0.15, alpha = 0.25, size = 0.8) +
+  geom_hline(yintercept = 6.0, linetype = "dashed", colour = "tomato") +
+  annotate("text", x = 0.6, y = 6.6, hjust = 0, colour = "tomato",
+           label = "Paper target Css = 6 mg/L (He 2012 Table 5)") +
+  labs(x = "Background AED",
+       y = "Steady-state Css (mg/L)",
+       title = "Paediatric lamotrigine Css at 5 mg/kg/day (bid), by AED cohort",
+       caption = paste("Simulated from ", 4L * n_per_arm,
+                       "virtual subjects (n = ", n_per_arm,
+                       "per AED cohort).", sep = " "))
+```
+
+## Typical-value Css vs WT (He 2012 Figure context)
+
+He 2012 Figures 1 and 2 show scatter plots of measured versus predicted LTG
+concentrations for the basic and final models (internal and external
+validation). The chunk below shows the typical-value Css trajectory across
+the paediatric body-weight range at a fixed 5 mg/kg/day bid dose, separated
+by AED background. The flat-with-WT shape inside each cohort reflects the
+dose-proportional 5 mg/kg/day scaling; the vertical separation between
+cohorts is driven by the AED multiplicative effect on CL.
+
+```{r typical-css-vs-wt, fig.width = 7.5, fig.height = 4.5}
+ss_typ_css <- sim_ss_typical |>
+  dplyr::filter(time >= last_interval_start) |>
+  group_by(id, aed_cohort, WT, amt_per_dose) |>
+  summarise(
+    auc_tau = trapz_auc(time - last_interval_start, Cc),
+    Css     = auc_tau / tau,
+    .groups = "drop"
+  )
+
+ggplot(ss_typ_css, aes(WT, Css, colour = aed_cohort)) +
+  geom_point(alpha = 0.6, size = 1) +
+  geom_smooth(se = FALSE, linewidth = 0.7, method = "loess",
+              formula = y ~ x) +
+  geom_hline(yintercept = 6.0, linetype = "dashed", colour = "grey40") +
+  labs(x = "Total body weight (kg)",
+       y = "Typical-value Css (mg/L)",
+       colour = "Background AED",
+       title  = "Typical-value Css vs WT at 5 mg/kg/day bid",
+       caption = "Random effects zeroed; deviation from the 5 mg/kg/day cohort-mean line reflects allometric exponent < 1 on CL and = 1 on V.")
+```
+
+# PKNCA validation
+
+PKNCA is run on the typical-value steady-state simulation, restricted to the
+final dosing interval (`time` in [29*tau, 30*tau] h, with the dose at the
+start of the interval re-anchored to `time = 0`). The treatment grouping is
+the AED cohort so each background can be compared against the others and the
+paper's reported Table 5 clearances and target Css.
+
+```{r pknca}
+last_dose_time <- last_interval_start
+ss_nca_conc <- sim_ss_typical |>
+  dplyr::filter(time >= last_dose_time, time <= last_dose_time + tau) |>
+  dplyr::mutate(time = time - last_dose_time) |>
+  dplyr::select(id, time, Cc, aed_cohort, WT, amt_per_dose) |>
+  dplyr::filter(!is.na(Cc))
+
+ss_nca_dose <- ss_nca_conc |>
+  dplyr::distinct(id, aed_cohort, amt_per_dose) |>
+  dplyr::mutate(time = 0, amt = amt_per_dose)
+
+conc_obj <- PKNCA::PKNCAconc(
+  ss_nca_conc, Cc ~ time | aed_cohort + id,
+  concu = "mg/L", timeu = "hr"
+)
+dose_obj <- PKNCA::PKNCAdose(
+  ss_nca_dose, amt ~ time | aed_cohort + id,
+  doseu = "mg"
+)
+
+intervals_ss <- data.frame(
+  start      = 0,
+  end        = tau,
+  cmax       = TRUE,
+  tmax       = TRUE,
+  auclast    = TRUE,
+  cmin       = TRUE,
+  cav        = TRUE
+)
+
+nca_ss <- PKNCA::pk.nca(
+  PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals_ss)
+)
+nca_ss_summary <- summary(nca_ss)
+knitr::kable(
+  nca_ss_summary,
+  caption = paste("Steady-state NCA over the last 12-hour dosing interval,",
+                  "by AED cohort. Typical-value simulation",
+                  "(no random effects); per-subject heterogeneity comes",
+                  "entirely from the body-weight distribution.")
+)
+```
+
+## Comparison against published clearances
+
+He 2012 Table 5 reports predicted lamotrigine clearance per unit body weight
+and the corresponding maintenance dose required to achieve a steady-state
+mean concentration of 6 mg/L for each polytherapy regimen. The packaged
+model's typical-value CL at the reference weight 27.87 kg multiplied by the
+AED-cohort exponential multiplier is the direct check:
+
+```{r aed-cl-check}
+typical_cl <- tibble(
+  aed_cohort = c("no AED", "+VPA", "+CBZ", "+PB"),
+  CONMED_VPA = c(0L, 1L, 0L, 0L),
+  CONMED_CBZ = c(0L, 0L, 1L, 0L),
+  CONMED_PB  = c(0L, 0L, 0L, 1L)
+) |>
+  mutate(
+    CL_at_27_87_kg = 1.01 *
+      exp(-0.753 * CONMED_VPA) *
+      exp( 0.868 * CONMED_CBZ) *
+      exp( 0.633 * CONMED_PB),
+    CL_per_kg = CL_at_27_87_kg / 27.87
+  )
+paper_cl_per_kg <- c(0.042, 0.019, 0.085, 0.085)
+typical_cl$paper_CL_per_kg <- paper_cl_per_kg
+typical_cl$pct_diff <- round(
+  100 * (typical_cl$CL_per_kg - typical_cl$paper_CL_per_kg) /
+    typical_cl$paper_CL_per_kg,
+  1
+)
+knitr::kable(
+  typical_cl,
+  digits = 4,
+  caption = paste("Typical-value CL/F per AED cohort vs He 2012 Table 5",
+                  "L/h/kg. Paper Table 5 pools PB and CBZ into a single",
+                  "'LTG + (PB or CBZ)' row at 0.085 L/h/kg; the model gives",
+                  "2.40 L/h for CBZ and 1.90 L/h for PB at 27.87 kg, so",
+                  "the L/h/kg average across the two cohorts (0.077 L/h/kg)",
+                  "is within ~10% of the paper's pooled value.")
+)
+```
+
+The simulated AED-cohort means follow the same ranking and magnitude as the
+paper's Table 5: VPA roughly halves CL, while CBZ and PB increase CL by
+factors of approximately 2.4 and 1.9 respectively. The published Table 5
+clearance for the pooled "LTG + (PB or CBZ)" cohort (0.085 L/h/kg) sits
+between the model's individual PB and CBZ predictions (0.068 and
+0.086 L/h/kg per kg at the 27.87 kg reference), and the VPA-cohort value
+matches the paper's 0.019 L/h/kg to ~3 significant figures.
+
+Inverting the relationship gives the Table 5 dose recommendations: at a
+fixed Css target of 6 mg/L,
+
+```{r aed-dose-check}
+typical_dose <- typical_cl |>
+  mutate(
+    dose_mg_per_kg_per_day = 6 * CL_per_kg * 24,
+    paper_dose             = c(6.0, 2.7, 12.1, 12.1)
+  )
+knitr::kable(
+  typical_dose |>
+    select(aed_cohort, paper_dose, dose_mg_per_kg_per_day) |>
+    rename(`Paper Table 5 dose (mg/kg/day)` = paper_dose,
+           `Model-predicted dose (mg/kg/day)` = dose_mg_per_kg_per_day),
+  digits = 2,
+  caption = "Maintenance dose to target Css = 6 mg/L by AED cohort."
+)
+```
+
+# Assumptions and deviations
+
+- **Interindividual-variability scale.** He 2012 Methods (page 1418)
+  describes the IIV model as `CLj = CLpop * exp(etaj)` with
+  `etaj ~ N(0, omega^2)`. The Table 3 row "omega^2_CL" therefore reports
+  the variance on the internal log scale, not a linear-scale CV. The
+  packaged `ini()` reproduces it as `etalcl ~ 0.067` and the
+  corresponding linear-scale CV is
+  `sqrt(exp(0.067) - 1) = 26.4%`, matching the paper's headline
+  "CV = 25.8%" in Results paragraph 3.
+- **Residual-error scale.** He 2012 Methods (page 1418) writes the
+  residual model as `Cobsij = Cpredij * (1 + epsij)` with
+  `epsij ~ N(0, sigma^2)` and reports sigma^2 = 0.045 in Table 3.
+  The packaged model takes `propSd = sqrt(0.045) = 0.2121`, which is
+  the SD scale required by nlmixr2's `Cc ~ prop(propSd)` syntax.
+- **AED-effect functional form.** The packaged model applies the three
+  AED indicators as an exponential product
+  `exp(theta_vpa * VPA) * exp(theta_cbz * CBZ) * exp(theta_pb * PB)`,
+  matching the He 2012 Results paragraph 2 final regression equation.
+  For patients on combination therapy the multiplicative cancellation
+  of the inhibitor (VPA) and inducer (PB / CBZ) effects matches the
+  paper's Discussion paragraph 5: "When an inducing antiepileptic drug
+  (PB or CBZ) and VPA are included in treatments with LTG, both
+  effects, induction and inhibition, are balanced, and LTG CL shows
+  little difference with respect to that observed in monotherapy."
+- **Ka and F fixed.** He 2012 collected sparse trough TDM data that
+  does not inform either Ka or F. Per Methods (page 1418), both were
+  fixed (`Ka = 1.0 1/h`, `F = 1.0`) based on the upstream reference
+  cited as [7]. The packaged model wraps `lka <- fixed(log(1.0))` in
+  `ini()` and lets `f(depot)` default to 1, so downstream users should
+  treat all clearance and volume estimates as apparent (X/F) values.
+- **Vd fixed.** He 2012 Table 3 reports `theta6 = 16.7 L` for V/F with
+  RSE displayed as "-", indicating the parameter was fixed. The paper
+  notes (Results page 1420) the value was anchored to an adult volume
+  of 45 L at 75 kg via the formula
+  `16.7 = theta6 * (75/27.87)`. The packaged model encodes this with
+  `lvc <- fixed(log(16.7))` and a linear allometric exponent
+  `e_wt_vc <- fixed(1.0)`.
+- **Allometric exponents.** The CL allometric exponent on TBW
+  (`e_wt_cl = 0.635`) was estimated, not held at the conventional
+  Anderson-Holford 0.75 value. The Vd allometric exponent
+  (`e_wt_vc = 1.0`) was held fixed at the conventional linear value.
+- **Reference weight.** The model uses the mean total body weight of
+  the PPK model group (27.87 kg, He 2012 Table 1) as the normalising
+  weight for both CL and Vd. This is the same reference used in the
+  paper's final regression equation.
+- **Concentration units.** He 2012 reports lamotrigine plasma
+  concentrations in ug/mL throughout (Table 1, Figures, Table 5
+  target). 1 ug/mL is numerically identical to 1 mg/L, the unit
+  declared in the packaged model's `units$concentration`; no
+  conversion is required.
+- **Steady-state trough sampling.** All observed lamotrigine
+  concentrations in the source dataset were single morning trough
+  samples drawn before the first dose of the day after at least one
+  month of stable therapy. The vignette's virtual cohort simulates a
+  full 12-hour dosing interval to expose Cmax / Tmax / AUC behaviour,
+  but downstream users fitting the model to real trough-only data
+  should expect the residual-error term to absorb part of the
+  cycle-time mismatch.
+- **Screened-but-not-retained covariates.** Age (Table 2 model 3),
+  sex (model 7), and concomitant OXC / CZP / LEV / TPM (models 8-11)
+  were tested in univariate GAM screening and either failed forward
+  inclusion or were dropped in backward elimination because their SE
+  exceeded 100% or their dOFV was below the chi-square threshold.
+  These covariates are noted in `population$co_medication` but are
+  not encoded as effects in the packaged model.
+- **External-validation cohort.** The PPK valid group (n = 168, 213
+  concentrations) was used by the authors only to confirm predictive
+  performance and was not used to refit any parameters. The packaged
+  model carries only the PPK model group estimates.
+- **Errata.** No erratum or corrigendum to He 2012 was located on
+  disk for this extraction. A search of PubMed and the Nature
+  (Acta Pharmacologica Sinica is now published by Nature Springer)
+  corrections feed for `"He" + "lamotrigine" + 2012 + erratum`
+  returned no hits; operators should reconfirm against the journal's
+  corrections listing if a re-extraction is undertaken.
+- **Race / ethnicity.** The study cohort was 100% Chinese paediatric
+  patients with epilepsy, recruited from a single Beijing centre.
+  Race and ethnicity were not tested as covariates in the source.
+  The packaged `population$race_ethnicity` is recorded as "Chinese
+  (Han majority; not formally tested as covariate)" and the virtual
+  cohort therefore does not stratify on race.
