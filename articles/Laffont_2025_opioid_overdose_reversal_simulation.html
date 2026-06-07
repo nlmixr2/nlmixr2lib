@@ -1055,14 +1055,34 @@ cardiac arrest<a class="anchor" aria-label="anchor" href="#composed-chain-opioid
 <span>  <span class="op">}</span></span>
 <span></span>
 <span>  <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxode2.html" class="external-link">rxode2</a></span><span class="op">(</span><span class="op">{</span></span>
-<span>    <span class="co"># ---- opioid PK (3-compartment + biophase) ----</span></span>
-<span>    <span class="co"># All rates are per minute (per Mann_2022_fentanyl_iv / carfentanil)</span></span>
+<span>    <span class="co"># ---- opioid PK (3-compartment + biophase) with Q_Scale shock feedback ----</span></span>
+<span>    <span class="co"># FDA delaymymod.c lines 358-368: during opioid overdose, chemoreflex-</span></span>
+<span>    <span class="co"># driven hyperperfusion raises cardiac output Q above baseline Q_0.</span></span>
+<span>    <span class="co"># The effective central volume of distribution is scaled by Q_Scale,</span></span>
+<span>    <span class="co"># concentrating the opioid in the biophase compartment. As Q/Q_0</span></span>
+<span>    <span class="co"># rises from 1 to ~2 (Q ~8.5 L/min during hypoxic chemoreflex peak),</span></span>
+<span>    <span class="co"># Q_Scale traverses a steep sigmoid centered at Q/Q_0 = 1.6, taking</span></span>
+<span>    <span class="co"># values from 1 to 2 - effectively halving Vc and doubling Ce. This</span></span>
+<span>    <span class="co"># is the positive feedback that, in FDA's published simulations,</span></span>
+<span>    <span class="co"># drives fentanyl-overdose PaO2 below 15 mm Hg for the full 220 s</span></span>
+<span>    <span class="co"># cardiac-arrest sustain window.</span></span>
+<span>    <span class="co"># qtot_for_scale is q_total computed inline here (it is also computed</span></span>
+<span>    <span class="co"># later in physiology block but rxode2 algebraic evaluation is in-order</span></span>
+<span>    <span class="co"># so we re-derive it from the same state values).</span></span>
+<span>    <span class="va">qtot_for_scale</span> <span class="op">&lt;-</span> <span class="fl">0.75</span> <span class="op">*</span> <span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="op">(</span><span class="va">yco2</span> <span class="op">+</span> <span class="va">yo2</span><span class="op">)</span><span class="op">)</span> <span class="op">*</span> <span class="va">im_arrest</span> <span class="op">+</span></span>
+<span>                      <span class="fl">4.25</span> <span class="op">*</span> <span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="fl">0.32</span> <span class="op">*</span> <span class="va">yo2</span><span class="op">)</span>   <span class="op">*</span> <span class="va">im_arrest</span></span>
+<span>    <span class="va">q_scale_raw</span> <span class="op">&lt;-</span> <span class="fl">1</span> <span class="op">+</span> <span class="fl">1</span> <span class="op">/</span> <span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="op">(</span><span class="fl">1.6</span> <span class="op">-</span> <span class="va">qtot_for_scale</span> <span class="op">/</span> <span class="fl">4.87</span><span class="op">)</span> <span class="op">/</span> <span class="fl">0.05</span><span class="op">)</span><span class="op">)</span></span>
+<span>    <span class="va">q_scale</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">q_scale_raw</span> <span class="op">&lt;</span> <span class="fl">1</span><span class="op">)</span> <span class="op">*</span> <span class="fl">1</span> <span class="op">+</span> <span class="op">(</span><span class="va">q_scale_raw</span> <span class="op">&gt;</span> <span class="fl">2</span><span class="op">)</span> <span class="op">*</span> <span class="fl">2</span> <span class="op">+</span></span>
+<span>               <span class="op">(</span><span class="va">q_scale_raw</span> <span class="op">&gt;=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">*</span> <span class="op">(</span><span class="va">q_scale_raw</span> <span class="op">&lt;=</span> <span class="fl">2</span><span class="op">)</span> <span class="op">*</span> <span class="va">q_scale_raw</span></span>
+<span>    <span class="va">vc_eff</span> <span class="op">&lt;-</span> <span class="va">vc</span> <span class="op">/</span> <span class="va">q_scale</span></span>
 <span>    <span class="va">d</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/stats/TDist.html" class="external-link">dt</a></span><span class="op">(</span><span class="va">central</span><span class="op">)</span>     <span class="op">&lt;-</span> <span class="op">-</span><span class="op">(</span><span class="va">cl</span> <span class="op">+</span> <span class="va">q</span> <span class="op">+</span> <span class="va">q2</span><span class="op">)</span> <span class="op">/</span> <span class="va">vc</span> <span class="op">*</span> <span class="va">central</span> <span class="op">+</span></span>
 <span>                          <span class="va">q</span>  <span class="op">/</span> <span class="va">vp</span>  <span class="op">*</span> <span class="va">peripheral1</span> <span class="op">+</span></span>
 <span>                          <span class="va">q2</span> <span class="op">/</span> <span class="va">vp2</span> <span class="op">*</span> <span class="va">peripheral2</span></span>
 <span>    <span class="va">d</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/stats/TDist.html" class="external-link">dt</a></span><span class="op">(</span><span class="va">peripheral1</span><span class="op">)</span> <span class="op">&lt;-</span>  <span class="va">q</span>  <span class="op">/</span> <span class="va">vc</span> <span class="op">*</span> <span class="va">central</span> <span class="op">-</span> <span class="va">q</span>  <span class="op">/</span> <span class="va">vp</span>  <span class="op">*</span> <span class="va">peripheral1</span></span>
 <span>    <span class="va">d</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/stats/TDist.html" class="external-link">dt</a></span><span class="op">(</span><span class="va">peripheral2</span><span class="op">)</span> <span class="op">&lt;-</span>  <span class="va">q2</span> <span class="op">/</span> <span class="va">vc</span> <span class="op">*</span> <span class="va">central</span> <span class="op">-</span> <span class="va">q2</span> <span class="op">/</span> <span class="va">vp2</span> <span class="op">*</span> <span class="va">peripheral2</span></span>
-<span>    <span class="va">d</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/stats/TDist.html" class="external-link">dt</a></span><span class="op">(</span><span class="va">effect</span><span class="op">)</span>      <span class="op">&lt;-</span>  <span class="va">k1</span> <span class="op">*</span> <span class="op">(</span><span class="va">central</span> <span class="op">/</span> <span class="va">vc</span> <span class="op">-</span> <span class="va">effect</span><span class="op">)</span></span>
+<span>    <span class="co"># FDA delaymymod.c line 594: ydot[8] = k1 * y[5] / VPC ... - k1*y[8].</span></span>
+<span>    <span class="co"># The effect-site sees the SCALED central volume, not vc.</span></span>
+<span>    <span class="va">d</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/stats/TDist.html" class="external-link">dt</a></span><span class="op">(</span><span class="va">effect</span><span class="op">)</span>      <span class="op">&lt;-</span>  <span class="va">k1</span> <span class="op">*</span> <span class="op">(</span><span class="va">central</span> <span class="op">/</span> <span class="va">vc_eff</span> <span class="op">-</span> <span class="va">effect</span><span class="op">)</span></span>
 <span>    <span class="co"># Opioid effect-site concentration in pM (feeds binding)</span></span>
 <span>    <span class="va">Ce_pM</span> <span class="op">&lt;-</span> <span class="va">effect</span> <span class="op">*</span> <span class="fl">1e9</span> <span class="op">/</span> <span class="va">mw_opioid</span></span>
 <span></span>
@@ -1096,8 +1116,9 @@ cardiac arrest<a class="anchor" aria-label="anchor" href="#composed-chain-opioid
 <span>    <span class="va">metab_scale</span>     <span class="op">&lt;-</span> <span class="op">(</span><span class="va">fracw_pos</span><span class="op">)</span><span class="op">^</span><span class="fl">0.06319</span></span>
 <span>    <span class="va">metab_scale_co2</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">metab_scale</span> <span class="op">&lt;</span> <span class="fl">0.87</span><span class="op">)</span> <span class="op">*</span> <span class="fl">0.87</span> <span class="op">+</span></span>
 <span>                       <span class="op">(</span><span class="va">metab_scale</span> <span class="op">&gt;=</span> <span class="fl">0.87</span><span class="op">)</span> <span class="op">*</span> <span class="va">metab_scale</span></span>
-<span>    <span class="va">metab_scale_o2</span>  <span class="op">&lt;-</span> <span class="op">(</span><span class="va">metab_scale</span> <span class="op">&gt;</span> <span class="fl">0.93</span><span class="op">)</span> <span class="op">*</span> <span class="fl">0.93</span> <span class="op">+</span></span>
-<span>                       <span class="op">(</span><span class="va">metab_scale</span> <span class="op">&lt;=</span> <span class="fl">0.93</span><span class="op">)</span> <span class="op">*</span> <span class="va">metab_scale</span></span>
+<span>    <span class="co"># FDA: M_B_o2 magnitude floored at fN * |baseline| -&gt; metab_scale_o2 FLOOR at 0.93</span></span>
+<span>    <span class="va">metab_scale_o2</span>  <span class="op">&lt;-</span> <span class="op">(</span><span class="va">metab_scale</span> <span class="op">&lt;</span> <span class="fl">0.93</span><span class="op">)</span> <span class="op">*</span> <span class="fl">0.93</span> <span class="op">+</span></span>
+<span>                       <span class="op">(</span><span class="va">metab_scale</span> <span class="op">&gt;=</span> <span class="fl">0.93</span><span class="op">)</span> <span class="op">*</span> <span class="va">metab_scale</span></span>
 <span>    <span class="va">m_b_co2_real</span> <span class="op">&lt;-</span> <span class="fl">0.04</span>  <span class="op">*</span> <span class="va">metab_scale_co2</span></span>
 <span>    <span class="va">m_t_co2_real</span> <span class="op">&lt;-</span> <span class="fl">0.16</span>  <span class="op">*</span> <span class="va">metab_scale_co2</span></span>
 <span>    <span class="va">m_b_o2_real</span>  <span class="op">&lt;-</span> <span class="op">-</span><span class="fl">0.05</span> <span class="op">*</span> <span class="va">metab_scale_o2</span></span>
@@ -1114,6 +1135,12 @@ cardiac arrest<a class="anchor" aria-label="anchor" href="#composed-chain-opioid
 <span>    <span class="va">p_t_co2</span>      <span class="op">&lt;-</span> <span class="va">c_t_co2_pos</span> <span class="op">/</span> <span class="fl">6.67e-4</span></span>
 <span>    <span class="va">c_t_o2_pos</span>   <span class="op">&lt;-</span> <span class="op">(</span><span class="va">ct_o2</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">*</span> <span class="va">ct_o2</span></span>
 <span>    <span class="va">p_t_o2</span>       <span class="op">&lt;-</span> <span class="va">c_t_o2_pos</span> <span class="op">/</span> <span class="fl">3.17e-5</span></span>
+<span></span>
+<span>    <span class="co"># Low-PaO2 metabolism safety clamps (FDA delaymymod.c lines 296-306):</span></span>
+<span>    <span class="co"># at P_X_o2 &lt; 6 mm Hg scale both O2 consumption and CO2 production</span></span>
+<span>    <span class="co"># by P_X_o2 / 6 so they go smoothly to zero.</span></span>
+<span>    <span class="va">m_o2_safety_brain</span>  <span class="op">&lt;-</span> <span class="op">(</span><span class="va">p_b_o2</span> <span class="op">&lt;</span> <span class="fl">6</span><span class="op">)</span> <span class="op">*</span> <span class="op">(</span><span class="va">p_b_o2</span> <span class="op">/</span> <span class="fl">6</span><span class="op">)</span> <span class="op">+</span> <span class="op">(</span><span class="va">p_b_o2</span> <span class="op">&gt;=</span> <span class="fl">6</span><span class="op">)</span> <span class="op">*</span> <span class="fl">1.0</span></span>
+<span>    <span class="va">m_o2_safety_tissue</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">p_t_o2</span> <span class="op">&lt;</span> <span class="fl">6</span><span class="op">)</span> <span class="op">*</span> <span class="op">(</span><span class="va">p_t_o2</span> <span class="op">/</span> <span class="fl">6</span><span class="op">)</span> <span class="op">+</span> <span class="op">(</span><span class="va">p_t_o2</span> <span class="op">&gt;=</span> <span class="fl">6</span><span class="op">)</span> <span class="op">*</span> <span class="fl">1.0</span></span>
 <span></span>
 <span>    <span class="co"># Spencer C(P) for brain</span></span>
 <span>    <span class="va">f2_b</span>   <span class="op">&lt;-</span> <span class="va">p_b_co2</span> <span class="op">*</span> <span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="fl">0.03255</span> <span class="op">*</span> <span class="va">p_b_o2</span><span class="op">)</span> <span class="op">/</span></span>
@@ -1183,15 +1210,24 @@ cardiac arrest<a class="anchor" aria-label="anchor" href="#composed-chain-opioid
 <span>    <span class="va">p_a_o2</span>  <span class="op">&lt;-</span> <span class="va">r1_rev</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="va">r1_rev</span> <span class="op">*</span> <span class="va">r1_rev</span> <span class="op">-</span> <span class="va">s1_rev</span> <span class="op">+</span> <span class="fl">1e-9</span><span class="op">)</span></span>
 <span></span>
 <span>    <span class="co"># Chemoreflex inputs</span></span>
+<span>    <span class="co"># FDA delaymymod.c line 502: psai_co2 = (sigmoid * 1500/100/1000/60 + Qb0) / Qb0 - 1</span></span>
 <span>    <span class="va">psai_co2</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="op">(</span><span class="op">-</span><span class="fl">30</span> <span class="op">+</span> <span class="fl">60</span> <span class="op">/</span> <span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="op">-</span><span class="op">(</span><span class="va">p_a_co2</span> <span class="op">-</span> <span class="fl">40</span><span class="op">)</span> <span class="op">/</span> <span class="fl">4.5</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">*</span></span>
 <span>                 <span class="fl">1500</span> <span class="op">/</span> <span class="fl">100</span> <span class="op">/</span> <span class="fl">1000</span> <span class="op">+</span> <span class="fl">0.75</span><span class="op">)</span> <span class="op">/</span> <span class="fl">0.75</span> <span class="op">-</span> <span class="fl">1</span></span>
 <span>    <span class="va">psai_o2_raw</span> <span class="op">&lt;-</span> <span class="fl">17</span> <span class="op">*</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="op">-</span><span class="va">p_a_o2</span> <span class="op">/</span> <span class="fl">11</span><span class="op">)</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="op">-</span><span class="fl">95</span> <span class="op">/</span> <span class="fl">11</span><span class="op">)</span><span class="op">)</span></span>
 <span>    <span class="va">psai_o2</span>     <span class="op">&lt;-</span> <span class="op">(</span><span class="va">psai_o2_raw</span> <span class="op">&gt;</span> <span class="fl">2</span><span class="op">)</span> <span class="op">*</span> <span class="fl">2</span> <span class="op">+</span> <span class="op">(</span><span class="va">psai_o2_raw</span> <span class="op">&lt;=</span> <span class="fl">2</span><span class="op">)</span> <span class="op">*</span> <span class="va">psai_o2_raw</span></span>
 <span></span>
-<span>    <span class="va">f_pc_o2_mod_num</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="fl">12.3</span> <span class="op">+</span> <span class="fl">0.8352</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="op">(</span><span class="va">p_a_o2</span> <span class="op">-</span> <span class="fl">45</span><span class="op">)</span> <span class="op">/</span> <span class="fl">29.27</span><span class="op">)</span><span class="op">)</span></span>
-<span>    <span class="va">f_pc_o2_mod_den</span> <span class="op">&lt;-</span> <span class="fl">1</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="op">(</span><span class="va">p_a_o2</span> <span class="op">-</span> <span class="fl">45</span><span class="op">)</span> <span class="op">/</span> <span class="fl">29.27</span><span class="op">)</span></span>
-<span>    <span class="va">p_a_co2_safe</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">p_a_co2</span> <span class="op">&gt;</span> <span class="fl">1e-6</span><span class="op">)</span> <span class="op">*</span> <span class="va">p_a_co2</span> <span class="op">+</span> <span class="op">(</span><span class="va">p_a_co2</span> <span class="op">&lt;=</span> <span class="fl">1e-6</span><span class="op">)</span> <span class="op">*</span> <span class="fl">1e-6</span></span>
-<span>    <span class="va">log_arg</span> <span class="op">&lt;-</span> <span class="va">p_a_co2_safe</span> <span class="op">/</span> <span class="fl">18</span></span>
+<span>    <span class="co"># Chemoreflex transport delays (7 s peripheral, 11 s central) via</span></span>
+<span>    <span class="co"># the nlmixr2lib-registered lagState C user function. Channels 3, 4, 5</span></span>
+<span>    <span class="co"># used here so they do not collide with the standalone model's</span></span>
+<span>    <span class="co"># 0, 1, 2 if both are compiled into the same rxode2 session.</span></span>
+<span>    <span class="va">plag_p_a_o2</span>  <span class="op">&lt;-</span> <span class="fu">lagState</span><span class="op">(</span><span class="va">t</span>, <span class="va">p_a_o2</span>,  <span class="op">(</span><span class="fl">7</span>  <span class="op">/</span> <span class="fl">60</span><span class="op">)</span>, <span class="fl">3</span>, <span class="fl">95</span><span class="op">)</span></span>
+<span>    <span class="va">plag_p_a_co2</span> <span class="op">&lt;-</span> <span class="fu">lagState</span><span class="op">(</span><span class="va">t</span>, <span class="va">p_a_co2</span>, <span class="op">(</span><span class="fl">7</span>  <span class="op">/</span> <span class="fl">60</span><span class="op">)</span>, <span class="fl">4</span>, <span class="fl">40</span><span class="op">)</span></span>
+<span>    <span class="va">clag_p_b_co2</span> <span class="op">&lt;-</span> <span class="fu">lagState</span><span class="op">(</span><span class="va">t</span>, <span class="va">p_b_co2</span>, <span class="op">(</span><span class="fl">11</span> <span class="op">/</span> <span class="fl">60</span><span class="op">)</span>, <span class="fl">5</span>, <span class="fl">45.27</span><span class="op">)</span></span>
+<span></span>
+<span>    <span class="va">f_pc_o2_mod_num</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="fl">12.3</span> <span class="op">+</span> <span class="fl">0.8352</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="op">(</span><span class="va">plag_p_a_o2</span> <span class="op">-</span> <span class="fl">45</span><span class="op">)</span> <span class="op">/</span> <span class="fl">29.27</span><span class="op">)</span><span class="op">)</span></span>
+<span>    <span class="va">f_pc_o2_mod_den</span> <span class="op">&lt;-</span> <span class="fl">1</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="op">(</span><span class="va">plag_p_a_o2</span> <span class="op">-</span> <span class="fl">45</span><span class="op">)</span> <span class="op">/</span> <span class="fl">29.27</span><span class="op">)</span></span>
+<span>    <span class="va">plag_p_a_co2_safe</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">plag_p_a_co2</span> <span class="op">&gt;</span> <span class="fl">1e-6</span><span class="op">)</span> <span class="op">*</span> <span class="va">plag_p_a_co2</span> <span class="op">+</span> <span class="op">(</span><span class="va">plag_p_a_co2</span> <span class="op">&lt;=</span> <span class="fl">1e-6</span><span class="op">)</span> <span class="op">*</span> <span class="fl">1e-6</span></span>
+<span>    <span class="va">log_arg</span> <span class="op">&lt;-</span> <span class="va">plag_p_a_co2_safe</span> <span class="op">/</span> <span class="fl">18</span></span>
 <span>    <span class="va">log_arg_safe</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">log_arg</span> <span class="op">&gt;</span> <span class="fl">1e-6</span><span class="op">)</span> <span class="op">*</span> <span class="va">log_arg</span> <span class="op">+</span> <span class="op">(</span><span class="va">log_arg</span> <span class="op">&lt;=</span> <span class="fl">1e-6</span><span class="op">)</span> <span class="op">*</span> <span class="fl">1e-6</span></span>
 <span>    <span class="va">plag_f_pc</span> <span class="op">&lt;-</span> <span class="fl">1.738</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">log_arg_safe</span><span class="op">)</span> <span class="op">*</span> <span class="va">f_pc_o2_mod_num</span> <span class="op">/</span> <span class="va">f_pc_o2_mod_den</span></span>
 <span></span>
@@ -1208,27 +1244,53 @@ cardiac arrest<a class="anchor" aria-label="anchor" href="#composed-chain-opioid
 <span>    <span class="va">total_drive</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="fl">6.62</span> <span class="op">-</span> <span class="va">kf</span><span class="op">)</span> <span class="op">+</span> <span class="va">chemoreflex_drive</span></span>
 <span>    <span class="va">venti</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">total_drive</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">*</span> <span class="va">total_drive</span></span>
 <span></span>
+<span>    <span class="co"># FDA-faithful one-shot cardiac-arrest scheme via state-dependent mtime.</span></span>
+<span>    <span class="co"># Schedule a solver restart at first_cross_time + 3.6667 (= 220 s); the</span></span>
+<span>    <span class="co"># mtime expression is dynamic: as first_cross_time evolves, the firing</span></span>
+<span>    <span class="co"># time tracks. Once crossed_latch latches at the first PaO2 &lt; 15 crossing,</span></span>
+<span>    <span class="co"># first_cross_time freezes at T1 and the mtime converges to T1 + 220 s.</span></span>
+<span>    <span class="co"># check_complete then closes the decision window so arrest fires iff</span></span>
+<span>    <span class="co"># PaO2 is still below 15 at exactly that mtime moment - matching FDA</span></span>
+<span>    <span class="co"># patientWrapper.R's one-check rule.</span></span>
 <span>    <span class="va">pao2_below</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">p_a_o2</span> <span class="op">&lt;</span> <span class="fl">15</span><span class="op">)</span> <span class="op">*</span> <span class="fl">1.0</span></span>
-<span>    <span class="va">ca_trigger</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">t_pao2_below</span> <span class="op">&gt;</span> <span class="fl">3.6667</span><span class="op">)</span> <span class="op">*</span> <span class="fl">1.0</span></span>
+<span>    <span class="fu">mtime</span><span class="op">(</span><span class="va">t_arrest_check</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">first_cross_time</span> <span class="op">+</span> <span class="fl">3.6667</span></span>
+<span>    <span class="va">ca_arrest_decision</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">t</span> <span class="op">&gt;=</span> <span class="va">t_arrest_check</span><span class="op">)</span> <span class="op">*</span> <span class="op">(</span><span class="va">crossed_latch</span> <span class="op">&gt;</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">*</span></span>
+<span>                          <span class="op">(</span><span class="va">check_complete</span> <span class="op">&lt;</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">*</span> <span class="va">pao2_below</span></span>
 <span></span>
 <span>    <span class="co"># ODEs</span></span>
-<span>    <span class="va">d</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/stats/TDist.html" class="external-link">dt</a></span><span class="op">(</span><span class="va">palv_co2</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">venti</span> <span class="op">*</span> <span class="op">(</span><span class="fl">0</span>   <span class="op">-</span> <span class="va">palv_co2</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="co"># FDA delaymymod.c line 543: Venti_engine = totalVent * Bmax / 60,</span></span>
+<span>    <span class="co"># Bmax = 0.66. After per-second to per-minute unit conversion the</span></span>
+<span>    <span class="co"># alveolar gas-exchange ODEs see venti * Bmax.</span></span>
+<span>    <span class="va">venti_alveolar</span> <span class="op">&lt;-</span> <span class="va">venti</span> <span class="op">*</span> <span class="fl">0.66</span></span>
+<span>    <span class="va">d</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/stats/TDist.html" class="external-link">dt</a></span><span class="op">(</span><span class="va">palv_co2</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">venti_alveolar</span> <span class="op">*</span> <span class="op">(</span><span class="fl">0</span>   <span class="op">-</span> <span class="va">palv_co2</span><span class="op">)</span> <span class="op">+</span></span>
 <span>                      <span class="fl">863</span> <span class="op">*</span> <span class="va">q_total</span> <span class="op">*</span> <span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="fl">0.024</span><span class="op">)</span> <span class="op">*</span> <span class="op">(</span><span class="va">c_v_co2</span> <span class="op">-</span> <span class="va">c_e_co2</span><span class="op">)</span><span class="op">)</span> <span class="op">/</span> <span class="fl">3.28</span></span>
-<span>    <span class="va">d</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/stats/TDist.html" class="external-link">dt</a></span><span class="op">(</span><span class="va">palv_o2</span><span class="op">)</span>  <span class="op">&lt;-</span> <span class="op">(</span><span class="va">venti</span> <span class="op">*</span> <span class="op">(</span><span class="fl">149</span> <span class="op">-</span> <span class="va">palv_o2</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="va">d</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/stats/TDist.html" class="external-link">dt</a></span><span class="op">(</span><span class="va">palv_o2</span><span class="op">)</span>  <span class="op">&lt;-</span> <span class="op">(</span><span class="va">venti_alveolar</span> <span class="op">*</span> <span class="op">(</span><span class="fl">149</span> <span class="op">-</span> <span class="va">palv_o2</span><span class="op">)</span> <span class="op">+</span></span>
 <span>                      <span class="fl">863</span> <span class="op">*</span> <span class="va">q_total</span> <span class="op">*</span> <span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="fl">0.024</span><span class="op">)</span> <span class="op">*</span> <span class="op">(</span><span class="va">c_v_o2</span>  <span class="op">-</span> <span class="va">c_e_o2</span> <span class="op">)</span><span class="op">)</span> <span class="op">/</span> <span class="fl">3.28</span></span>
-<span>    <span class="va">d</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/stats/TDist.html" class="external-link">dt</a></span><span class="op">(</span><span class="va">cb_co2</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">qb</span> <span class="op">*</span> <span class="op">(</span><span class="va">c_a_co2</span> <span class="op">-</span> <span class="va">c_vb_co2</span><span class="op">)</span> <span class="op">+</span> <span class="va">m_b_co2_real</span><span class="op">)</span> <span class="op">/</span> <span class="fl">1.32</span></span>
-<span>    <span class="va">d</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/stats/TDist.html" class="external-link">dt</a></span><span class="op">(</span><span class="va">cb_o2</span><span class="op">)</span>  <span class="op">&lt;-</span> <span class="op">(</span><span class="va">qb</span> <span class="op">*</span> <span class="op">(</span><span class="va">c_a_o2</span>  <span class="op">-</span> <span class="va">c_vb_o2</span> <span class="op">)</span> <span class="op">+</span> <span class="va">m_b_o2_real</span> <span class="op">)</span> <span class="op">/</span> <span class="fl">1.32</span></span>
-<span>    <span class="va">d</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/stats/TDist.html" class="external-link">dt</a></span><span class="op">(</span><span class="va">ct_co2</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">qt</span> <span class="op">*</span> <span class="op">(</span><span class="va">c_a_co2</span> <span class="op">-</span> <span class="va">c_vt_co2</span><span class="op">)</span> <span class="op">+</span> <span class="va">m_t_co2_real</span><span class="op">)</span> <span class="op">/</span> <span class="fl">38.68</span></span>
-<span>    <span class="va">d</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/stats/TDist.html" class="external-link">dt</a></span><span class="op">(</span><span class="va">ct_o2</span><span class="op">)</span>  <span class="op">&lt;-</span> <span class="op">(</span><span class="va">qt</span> <span class="op">*</span> <span class="op">(</span><span class="va">c_a_o2</span>  <span class="op">-</span> <span class="va">c_vt_o2</span> <span class="op">)</span> <span class="op">+</span> <span class="va">m_t_o2_real</span> <span class="op">)</span> <span class="op">/</span> <span class="fl">38.68</span></span>
+<span>    <span class="va">d</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/stats/TDist.html" class="external-link">dt</a></span><span class="op">(</span><span class="va">cb_co2</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">qb</span> <span class="op">*</span> <span class="op">(</span><span class="va">c_a_co2</span> <span class="op">-</span> <span class="va">c_vb_co2</span><span class="op">)</span> <span class="op">+</span> <span class="va">m_b_co2_real</span> <span class="op">*</span> <span class="va">m_o2_safety_brain</span><span class="op">)</span> <span class="op">/</span> <span class="fl">1.32</span></span>
+<span>    <span class="va">d</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/stats/TDist.html" class="external-link">dt</a></span><span class="op">(</span><span class="va">cb_o2</span><span class="op">)</span>  <span class="op">&lt;-</span> <span class="op">(</span><span class="va">qb</span> <span class="op">*</span> <span class="op">(</span><span class="va">c_a_o2</span>  <span class="op">-</span> <span class="va">c_vb_o2</span> <span class="op">)</span> <span class="op">+</span> <span class="va">m_b_o2_real</span>  <span class="op">*</span> <span class="va">m_o2_safety_brain</span><span class="op">)</span> <span class="op">/</span> <span class="fl">1.32</span></span>
+<span>    <span class="va">d</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/stats/TDist.html" class="external-link">dt</a></span><span class="op">(</span><span class="va">ct_co2</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">qt</span> <span class="op">*</span> <span class="op">(</span><span class="va">c_a_co2</span> <span class="op">-</span> <span class="va">c_vt_co2</span><span class="op">)</span> <span class="op">+</span> <span class="va">m_t_co2_real</span> <span class="op">*</span> <span class="va">m_o2_safety_tissue</span><span class="op">)</span> <span class="op">/</span> <span class="fl">38.68</span></span>
+<span>    <span class="va">d</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/stats/TDist.html" class="external-link">dt</a></span><span class="op">(</span><span class="va">ct_o2</span><span class="op">)</span>  <span class="op">&lt;-</span> <span class="op">(</span><span class="va">qt</span> <span class="op">*</span> <span class="op">(</span><span class="va">c_a_o2</span>  <span class="op">-</span> <span class="va">c_vt_o2</span> <span class="op">)</span> <span class="op">+</span> <span class="va">m_t_o2_real</span>  <span class="op">*</span> <span class="va">m_o2_safety_tissue</span><span class="op">)</span> <span class="op">/</span> <span class="fl">38.68</span></span>
 <span>    <span class="va">d</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/stats/TDist.html" class="external-link">dt</a></span><span class="op">(</span><span class="va">yco2</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">psai_co2</span> <span class="op">-</span> <span class="va">yco2</span><span class="op">)</span> <span class="op">/</span> <span class="fl">0.3333</span></span>
 <span>    <span class="va">d</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/stats/TDist.html" class="external-link">dt</a></span><span class="op">(</span><span class="va">yo2</span><span class="op">)</span>  <span class="op">&lt;-</span> <span class="op">(</span><span class="va">psai_o2</span>  <span class="op">-</span> <span class="va">yo2</span><span class="op">)</span>  <span class="op">/</span> <span class="fl">0.1667</span></span>
 <span>    <span class="va">d</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/stats/TDist.html" class="external-link">dt</a></span><span class="op">(</span><span class="va">dp_state</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="op">-</span><span class="va">dp_state</span> <span class="op">+</span> <span class="va">av1</span> <span class="op">*</span> <span class="fl">2.5</span> <span class="op">*</span> <span class="op">(</span><span class="va">plag_f_pc</span> <span class="op">-</span> <span class="fl">3.67</span><span class="op">)</span><span class="op">)</span> <span class="op">/</span> <span class="fl">0.1167</span></span>
-<span>    <span class="va">d</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/stats/TDist.html" class="external-link">dt</a></span><span class="op">(</span><span class="va">dc_state</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="op">-</span><span class="va">dc_state</span> <span class="op">+</span> <span class="va">av1</span> <span class="op">*</span> <span class="fl">2</span>   <span class="op">*</span> <span class="op">(</span><span class="va">p_b_co2</span> <span class="op">-</span> <span class="fl">45.27</span><span class="op">)</span><span class="op">)</span> <span class="op">/</span> <span class="fl">1</span></span>
+<span>    <span class="va">d</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/stats/TDist.html" class="external-link">dt</a></span><span class="op">(</span><span class="va">dc_state</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="op">-</span><span class="va">dc_state</span> <span class="op">+</span> <span class="va">av1</span> <span class="op">*</span> <span class="fl">2</span>   <span class="op">*</span> <span class="op">(</span><span class="va">clag_p_b_co2</span> <span class="op">-</span> <span class="fl">45.27</span><span class="op">)</span><span class="op">)</span> <span class="op">/</span> <span class="fl">1</span></span>
 <span>    <span class="va">d</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/stats/TDist.html" class="external-link">dt</a></span><span class="op">(</span><span class="va">alpha_h</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">hstat</span> <span class="op">-</span> <span class="va">alpha_h</span><span class="op">)</span> <span class="op">/</span> <span class="fl">5</span></span>
-<span>    <span class="va">d</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/stats/TDist.html" class="external-link">dt</a></span><span class="op">(</span><span class="va">t_pao2_below</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">pao2_below</span> <span class="op">-</span> <span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="va">pao2_below</span><span class="op">)</span> <span class="op">*</span> <span class="va">t_pao2_below</span> <span class="op">*</span> <span class="fl">0.1</span></span>
-<span>    <span class="va">d</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/stats/TDist.html" class="external-link">dt</a></span><span class="op">(</span><span class="va">im_arrest</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="op">-</span><span class="va">ca_trigger</span> <span class="op">*</span> <span class="fl">0.024</span> <span class="op">*</span> <span class="va">im_arrest</span></span>
+<span>    <span class="co"># First-crossing detector + capture + decision-window closer + commit latch.</span></span>
+<span>    <span class="co"># ca_arrest_latch grows fast (1000) so it reaches 1 well before</span></span>
+<span>    <span class="co"># check_complete (rate 10, ~7 s window) closes the decision.</span></span>
+<span>    <span class="va">d</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/stats/TDist.html" class="external-link">dt</a></span><span class="op">(</span><span class="va">crossed_latch</span><span class="op">)</span>    <span class="op">&lt;-</span> <span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="va">crossed_latch</span><span class="op">)</span> <span class="op">*</span> <span class="va">pao2_below</span> <span class="op">*</span> <span class="fl">100</span></span>
+<span>    <span class="va">d</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/stats/TDist.html" class="external-link">dt</a></span><span class="op">(</span><span class="va">first_cross_time</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">crossed_latch</span> <span class="op">&lt;</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">*</span> <span class="fl">1.0</span></span>
+<span>    <span class="va">d</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/stats/TDist.html" class="external-link">dt</a></span><span class="op">(</span><span class="va">check_complete</span><span class="op">)</span>   <span class="op">&lt;-</span> <span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="va">check_complete</span><span class="op">)</span> <span class="op">*</span> <span class="op">(</span><span class="va">t</span> <span class="op">&gt;=</span> <span class="va">t_arrest_check</span><span class="op">)</span> <span class="op">*</span></span>
+<span>                              <span class="op">(</span><span class="va">crossed_latch</span> <span class="op">&gt;</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">*</span> <span class="fl">10</span></span>
+<span>    <span class="va">d</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/stats/TDist.html" class="external-link">dt</a></span><span class="op">(</span><span class="va">ca_arrest_latch</span><span class="op">)</span>  <span class="op">&lt;-</span> <span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="va">ca_arrest_latch</span><span class="op">)</span> <span class="op">*</span> <span class="va">ca_arrest_decision</span> <span class="op">*</span> <span class="fl">1000</span></span>
+<span>    <span class="co"># FDA delaypars.R Cim25 = 0.004 * 6 = 0.024 /s; * 60 s/min = 1.44 /min</span></span>
+<span>    <span class="va">d</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/stats/TDist.html" class="external-link">dt</a></span><span class="op">(</span><span class="va">im_arrest</span><span class="op">)</span>        <span class="op">&lt;-</span> <span class="op">-</span><span class="va">ca_arrest_latch</span> <span class="op">*</span> <span class="op">(</span><span class="fl">0.004</span> <span class="op">*</span> <span class="fl">6</span> <span class="op">*</span> <span class="fl">60</span><span class="op">)</span> <span class="op">*</span> <span class="va">im_arrest</span></span>
 <span></span>
-<span>    <span class="co"># Initial conditions (FDA delaystates.R)</span></span>
+<span>    <span class="co"># Initial conditions (FDA delaystates.R nominal values). These are</span></span>
+<span>    <span class="co"># NOT internally self-consistent for the chemoreflex feedback - see</span></span>
+<span>    <span class="co"># the Mann2022Equilibrate() step above and below. Subsequent</span></span>
+<span>    <span class="co"># rxode2::rxSolve calls pass inits = eq_states to override these with</span></span>
+<span>    <span class="co"># the pre-equilibrium values.</span></span>
 <span>    <span class="fu">palv_co2</span><span class="op">(</span><span class="fl">0</span><span class="op">)</span>      <span class="op">&lt;-</span> <span class="fl">40.28</span></span>
 <span>    <span class="fu">palv_o2</span><span class="op">(</span><span class="fl">0</span><span class="op">)</span>       <span class="op">&lt;-</span> <span class="fl">100.2</span></span>
 <span>    <span class="fu">cb_co2</span><span class="op">(</span><span class="fl">0</span><span class="op">)</span>        <span class="op">&lt;-</span> <span class="fl">0.645</span></span>
@@ -1240,18 +1302,22 @@ cardiac arrest<a class="anchor" aria-label="anchor" href="#composed-chain-opioid
 <span>    <span class="fu">dp_state</span><span class="op">(</span><span class="fl">0</span><span class="op">)</span>      <span class="op">&lt;-</span> <span class="fl">0</span></span>
 <span>    <span class="fu">dc_state</span><span class="op">(</span><span class="fl">0</span><span class="op">)</span>      <span class="op">&lt;-</span> <span class="fl">0</span></span>
 <span>    <span class="fu">alpha_h</span><span class="op">(</span><span class="fl">0</span><span class="op">)</span>       <span class="op">&lt;-</span> <span class="fl">1</span></span>
-<span>    <span class="fu">t_pao2_below</span><span class="op">(</span><span class="fl">0</span><span class="op">)</span>  <span class="op">&lt;-</span> <span class="fl">0</span></span>
-<span>    <span class="fu">im_arrest</span><span class="op">(</span><span class="fl">0</span><span class="op">)</span>     <span class="op">&lt;-</span> <span class="fl">1</span></span>
-<span>    <span class="fu">RL_op</span><span class="op">(</span><span class="fl">0</span><span class="op">)</span>         <span class="op">&lt;-</span> <span class="fl">0</span></span>
-<span>    <span class="fu">RL_antag</span><span class="op">(</span><span class="fl">0</span><span class="op">)</span>      <span class="op">&lt;-</span> <span class="fl">0</span></span>
+<span>    <span class="fu">crossed_latch</span><span class="op">(</span><span class="fl">0</span><span class="op">)</span>    <span class="op">&lt;-</span> <span class="fl">0</span></span>
+<span>    <span class="fu">first_cross_time</span><span class="op">(</span><span class="fl">0</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fl">0</span></span>
+<span>    <span class="fu">check_complete</span><span class="op">(</span><span class="fl">0</span><span class="op">)</span>   <span class="op">&lt;-</span> <span class="fl">0</span></span>
+<span>    <span class="fu">ca_arrest_latch</span><span class="op">(</span><span class="fl">0</span><span class="op">)</span>  <span class="op">&lt;-</span> <span class="fl">0</span></span>
+<span>    <span class="fu">im_arrest</span><span class="op">(</span><span class="fl">0</span><span class="op">)</span>        <span class="op">&lt;-</span> <span class="fl">1</span></span>
+<span>    <span class="fu">RL_op</span><span class="op">(</span><span class="fl">0</span><span class="op">)</span>            <span class="op">&lt;-</span> <span class="fl">0</span></span>
+<span>    <span class="fu">RL_antag</span><span class="op">(</span><span class="fl">0</span><span class="op">)</span>         <span class="op">&lt;-</span> <span class="fl">0</span></span>
 <span></span>
 <span>    <span class="co"># Outputs of interest</span></span>
-<span>    <span class="va">Venti</span>  <span class="op">&lt;-</span> <span class="va">venti</span></span>
-<span>    <span class="va">PaO2</span>   <span class="op">&lt;-</span> <span class="va">p_a_o2</span></span>
-<span>    <span class="va">PbO2</span>   <span class="op">&lt;-</span> <span class="va">p_b_o2</span></span>
-<span>    <span class="va">Qtotal</span> <span class="op">&lt;-</span> <span class="va">q_total</span></span>
-<span>    <span class="va">CAact</span>  <span class="op">&lt;-</span> <span class="va">ca_trigger</span></span>
-<span>    <span class="va">Tbelow</span> <span class="op">&lt;-</span> <span class="va">t_pao2_below</span></span>
+<span>    <span class="va">Venti</span>   <span class="op">&lt;-</span> <span class="va">venti</span></span>
+<span>    <span class="va">PaO2</span>    <span class="op">&lt;-</span> <span class="va">p_a_o2</span></span>
+<span>    <span class="va">PbO2</span>    <span class="op">&lt;-</span> <span class="va">p_b_o2</span></span>
+<span>    <span class="va">Qtotal</span>  <span class="op">&lt;-</span> <span class="va">q_total</span></span>
+<span>    <span class="va">CAact</span>   <span class="op">&lt;-</span> <span class="va">ca_arrest_latch</span></span>
+<span>    <span class="va">Tcross</span>  <span class="op">&lt;-</span> <span class="va">first_cross_time</span></span>
+<span>    <span class="va">Tcheck</span>  <span class="op">&lt;-</span> <span class="va">t_arrest_check</span></span>
 <span>  <span class="op">}</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
@@ -1290,11 +1356,61 @@ cardiac arrest<a class="anchor" aria-label="anchor" href="#composed-chain-opioid
 <span>    patient_type <span class="op">=</span> <span class="va">patient_type</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
+<div class="section level3">
+<h3 id="pre-dose-equilibration-via-mann2022equilibrate">Pre-dose equilibration via <code>Mann2022Equilibrate()</code><a class="anchor" aria-label="anchor" href="#pre-dose-equilibration-via-mann2022equilibrate"></a>
+</h3>
+<p>The FDA <code>delaystates.R</code> nominal initial conditions for the
+Mann 2022 physiology layer (<code>palv_co2 = 40.28</code>,
+<code>cb_co2 = 0.645</code> → <code>p_b_co2 ≈ 93.85</code> mm Hg, while
+the chemoreflex baseline reference <code>p_b_co2_0 = 45.27</code>) are
+NOT internally self-consistent: at t = 0 the central chemoreflex sees a
+48.6 mm Hg error in <code>p_b_co2 − p_b_co2_0</code> and transiently
+drives ventilation to ~ 19 L/min before the system settles. If the
+overdose simulation starts from these nominal values, the
+initial-condition transient leaves the system in a state that subsequent
+opioid doses cannot push into sustained PaO2 &lt; 15 mm Hg — and the
+cardiac-arrest endpoint then severely under-counts.</p>
+<p>The FDA <code>simulateToGetOD_IM.R</code> reference script avoids
+this by running a no-drug pre-simulation per subject (call to
+<code>fundede</code>) and using the FINAL state as the dose-time initial
+state. nlmixr2lib exposes the same pattern as the
+<strong><code><a href="../reference/Mann2022Equilibrate.html">Mann2022Equilibrate()</a></code></strong> helper. Call it once
+per parameter set, then pass the resulting equilibrium states to
+<code><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxode2::rxSolve()</a></code> as the <code>inits</code> argument of
+every subsequent dose-bearing call:</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">fent_pars_typical</span> <span class="op">&lt;-</span> <span class="fu">chain_params</span><span class="op">(</span>opioid <span class="op">=</span> <span class="st">"fentanyl"</span>,</span>
+<span>                                  antagonist <span class="op">=</span> <span class="st">"none"</span>,</span>
+<span>                                  patient_type <span class="op">=</span> <span class="fl">1L</span><span class="op">)</span></span>
+<span><span class="va">fent_pars_typical</span> <span class="op">&lt;-</span> <span class="va">fent_pars_typical</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/sets.html" class="external-link">setdiff</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">fent_pars_typical</span><span class="op">)</span>,</span>
+<span>                                               <span class="st">"patient_type"</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="va">eq_states</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Mann2022Equilibrate.html">Mann2022Equilibrate</a></span><span class="op">(</span><span class="va">mod_fent</span>, params <span class="op">=</span> <span class="va">fent_pars_typical</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">eq_states</span><span class="op">)</span></span>
+<span><span class="co">#&gt; List of 11</span></span>
+<span><span class="co">#&gt;  $ palv_co2: num 38.7</span></span>
+<span><span class="co">#&gt;  $ palv_o2 : num 101</span></span>
+<span><span class="co">#&gt;  $ cb_co2  : num 0.613</span></span>
+<span><span class="co">#&gt;  $ cb_o2   : num 0.001</span></span>
+<span><span class="co">#&gt;  $ ct_co2  : num 0.611</span></span>
+<span><span class="co">#&gt;  $ ct_o2   : num 0.00123</span></span>
+<span><span class="co">#&gt;  $ yco2    : num -0.0934</span></span>
+<span><span class="co">#&gt;  $ yo2     : num 0.00067</span></span>
+<span><span class="co">#&gt;  $ dp_state: num -0.2</span></span>
+<span><span class="co">#&gt;  $ dc_state: num 0.344</span></span>
+<span><span class="co">#&gt;  $ alpha_h : num 0.878</span></span></code></pre></div>
+<p>The equilibrium does NOT depend on opioid PK parameters (no drug is
+present during the pre-equilibration), so the same
+<code>eq_states</code> are valid for every subject in the IIV cohort and
+for both fentanyl- and carfentanil-flavoured chains. Every
+<code>rxSolve()</code> call in Steps 1–4 below passes
+<code>inits = eq_states</code> to override the FDA nominal default
+initial conditions baked into the model with the equilibrium values.</p>
+</div>
 </div>
 <div class="section level2">
 <h2 id="step-1---precompute-the-antagonist-effect-site-profile-in-pm">Step 1 - precompute the antagonist effect-site profile in pM<a class="anchor" aria-label="anchor" href="#step-1---precompute-the-antagonist-effect-site-profile-in-pm"></a>
 </h2>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Build typical-value IN naloxone and IN nalmefene effect-site profiles</span></span>
 <span><span class="co"># Time is in MINUTES throughout this vignette. The Laffont 2024 PK</span></span>
 <span><span class="co"># models are at the HOUR time scale; we keep them at the hour scale</span></span>
@@ -1371,7 +1487,7 @@ cardiac arrest<a class="anchor" aria-label="anchor" href="#composed-chain-opioid
 <span>  <span class="fu">mutate</span><span class="op">(</span>Ce_ng_per_mL <span class="op">=</span> <span class="fu">convolve_ce</span><span class="op">(</span><span class="va">time</span>, <span class="va">Cc</span>, <span class="va">ke0_per_hr</span><span class="op">)</span>,</span>
 <span>         time_min     <span class="op">=</span> <span class="va">time</span> <span class="op">*</span> <span class="fl">60</span>,</span>
 <span>         Ce_pM        <span class="op">=</span> <span class="va">Ce_ng_per_mL</span> <span class="op">*</span> <span class="fl">1e6</span> <span class="op">/</span> <span class="fl">339.43</span><span class="op">)</span>  <span class="co"># nalmefene base MW</span></span></code></pre></div>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">bind_rows</span><span class="op">(</span></span>
 <span>  <span class="va">sim_nx</span> <span class="op">|&gt;</span> <span class="fu">mutate</span><span class="op">(</span>arm <span class="op">=</span> <span class="st">"IN naloxone 4 mg HCl"</span><span class="op">)</span>,</span>
 <span>  <span class="va">sim_nm</span> <span class="op">|&gt;</span> <span class="fu">mutate</span><span class="op">(</span>arm <span class="op">=</span> <span class="st">"IN nalmefene 3 mg HCl"</span><span class="op">)</span></span>
@@ -1398,7 +1514,7 @@ reaches a higher early effect-site concentration.
 <h2 id="step-2---precompute-the-rescue-trigger-time-per-opioiddosepatient-combination">Step 2 - precompute the rescue trigger time per opioid+dose+patient
 combination<a class="anchor" aria-label="anchor" href="#step-2---precompute-the-rescue-trigger-time-per-opioiddosepatient-combination"></a>
 </h2>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Mann 2022 / Laffont 2025 schedule the antagonist 1 min after Venti</span></span>
 <span><span class="co"># drops to 40% of baseline. Baseline minute ventilation is 6.62 L/min</span></span>
 <span><span class="co"># (Mann_2022_respiratory_physiology.R wmax_drive / w_baseline), so the</span></span>
@@ -1427,6 +1543,7 @@ combination<a class="anchor" aria-label="anchor" href="#step-2---precompute-the-
 <span>  <span class="op">)</span></span>
 <span>  <span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod_chain</span>, params <span class="op">=</span> <span class="va">pars</span>,</span>
 <span>                                       events <span class="op">=</span> <span class="va">ev</span>,</span>
+<span>                                       inits  <span class="op">=</span> <span class="va">eq_states</span>,</span>
 <span>                                       covsInterpolation <span class="op">=</span> <span class="st">"linear"</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="va">first_below</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="va">sim</span><span class="op">$</span><span class="va">Venti</span> <span class="op">&lt;</span> <span class="va">vent_threshold</span><span class="op">)</span></span>
 <span>  <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">first_below</span><span class="op">)</span> <span class="op">==</span> <span class="fl">0</span><span class="op">)</span> <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="cn">NA_real_</span><span class="op">)</span></span>
@@ -1488,63 +1605,63 @@ Mann 2022 rescue is administered 1 min after the trigger.</caption>
 <tbody>
 <tr class="odd">
 <td align="left">fentanyl 0.820 mg, naive</td>
-<td align="right">2.00</td>
-<td align="right">3.00</td>
+<td align="right">0.35</td>
+<td align="right">1.35</td>
 </tr>
 <tr class="even">
 <td align="left">fentanyl 1.630 mg, naive</td>
-<td align="right">1.95</td>
-<td align="right">2.95</td>
+<td align="right">0.25</td>
+<td align="right">1.25</td>
 </tr>
 <tr class="odd">
 <td align="left">fentanyl 2.970 mg, naive</td>
+<td align="right">0.20</td>
+<td align="right">1.20</td>
+</tr>
+<tr class="even">
+<td align="left">carfentanil 0.010 mg, naive</td>
+<td align="right">2.50</td>
+<td align="right">3.50</td>
+</tr>
+<tr class="odd">
+<td align="left">carfentanil 0.012 mg, naive</td>
 <td align="right">1.85</td>
 <td align="right">2.85</td>
 </tr>
 <tr class="even">
-<td align="left">carfentanil 0.010 mg, naive</td>
-<td align="right">1.45</td>
-<td align="right">2.45</td>
-</tr>
-<tr class="odd">
-<td align="left">carfentanil 0.012 mg, naive</td>
-<td align="right">1.55</td>
-<td align="right">2.55</td>
-</tr>
-<tr class="even">
 <td align="left">carfentanil 0.022 mg, naive</td>
-<td align="right">2.05</td>
-<td align="right">3.05</td>
+<td align="right">0.40</td>
+<td align="right">1.40</td>
 </tr>
 <tr class="odd">
 <td align="left">fentanyl 0.820 mg, chronic</td>
-<td align="right">1.95</td>
-<td align="right">2.95</td>
+<td align="right">0.45</td>
+<td align="right">1.45</td>
 </tr>
 <tr class="even">
 <td align="left">fentanyl 1.630 mg, chronic</td>
-<td align="right">1.95</td>
-<td align="right">2.95</td>
+<td align="right">0.30</td>
+<td align="right">1.30</td>
 </tr>
 <tr class="odd">
 <td align="left">fentanyl 2.970 mg, chronic</td>
-<td align="right">1.90</td>
-<td align="right">2.90</td>
+<td align="right">0.25</td>
+<td align="right">1.25</td>
 </tr>
 <tr class="even">
 <td align="left">carfentanil 0.010 mg, chronic</td>
-<td align="right">1.30</td>
-<td align="right">2.30</td>
+<td align="right">3.15</td>
+<td align="right">4.15</td>
 </tr>
 <tr class="odd">
 <td align="left">carfentanil 0.012 mg, chronic</td>
-<td align="right">1.45</td>
-<td align="right">2.45</td>
+<td align="right">2.20</td>
+<td align="right">3.20</td>
 </tr>
 <tr class="even">
 <td align="left">carfentanil 0.022 mg, chronic</td>
-<td align="right">2.00</td>
-<td align="right">3.00</td>
+<td align="right">0.50</td>
+<td align="right">1.50</td>
 </tr>
 </tbody>
 </table>
@@ -1552,7 +1669,7 @@ Mann 2022 rescue is administered 1 min after the trigger.</caption>
 <div class="section level2">
 <h2 id="step-3---simulate-cardiac-arrest-incidence-per-arm">Step 3 - simulate cardiac-arrest incidence per arm<a class="anchor" aria-label="anchor" href="#step-3---simulate-cardiac-arrest-incidence-per-arm"></a>
 </h2>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Build per-subject parameter draws representing PK + binding variability.</span></span>
 <span><span class="co"># To stay inside the 5-minute pkgdown gate, we use a small N and seed</span></span>
 <span><span class="co"># variability around the typical-value parameters. The Laffont 2025</span></span>
@@ -1563,13 +1680,32 @@ Mann 2022 rescue is administered 1 min after the trigger.</caption>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">20260529L</span><span class="op">)</span></span>
 <span><span class="va">n_per_arm</span> <span class="op">&lt;-</span> <span class="fl">30L</span></span>
-<span><span class="co"># Draw per-subject parameter multipliers using the published IIV CV%</span></span>
+<span><span class="co"># Draw per-subject parameter multipliers using the published Mann 2022 IIV</span></span>
+<span><span class="co"># omega^2 values (Table S1 for the PK row, Table S2 bootstrap for binding).</span></span>
+<span><span class="co"># Broader IIV than the prior 3-parameter sketch - matching the published</span></span>
+<span><span class="co"># variability is what lets the small-N grid land near the published rates</span></span>
+<span><span class="co"># without a 2000-subject bootstrap.</span></span>
 <span><span class="va">draw_subjects</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">n</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu">tibble</span><span class="op">(</span></span>
-<span>    id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span>,</span>
-<span>    cl_mult  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n</span>, <span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fl">0.087</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,    <span class="co"># fentanyl IIV omega2 0.087 (Mann Table S1)</span></span>
-<span>    vc_mult  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n</span>, <span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fl">0.43</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,     <span class="co"># fentanyl IIV omega2 0.43</span></span>
-<span>    kon_mult <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n</span>, <span class="fl">0</span>, <span class="fl">0.3</span><span class="op">)</span><span class="op">)</span>             <span class="co"># ~30% CV on receptor binding (Mann 2022 Table S2 bootstrap)</span></span>
+<span>    id       <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span>,</span>
+<span>    <span class="co"># PK IIV: published Mann 2022 Table S1 omega^2 values (Algera 2021</span></span>
+<span>    <span class="co"># popPK fit). Bootstrap-vs-omega expansion did not close the residual</span></span>
+<span>    <span class="co"># fentanyl arrest gap, so we stay at the published omegas.</span></span>
+<span>    cl_mult  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n</span>, <span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fl">0.087</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,   <span class="co"># Mann Table S1 omega2 CL = 0.087 (30% CV)</span></span>
+<span>    vc_mult  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n</span>, <span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fl">0.43</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,    <span class="co"># Mann Table S1 omega2 V1 = 0.43  (73% CV)</span></span>
+<span>    vp_mult  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n</span>, <span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fl">0.52</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,    <span class="co"># Mann Table S1 omega2 V2 = 0.52  (82% CV)</span></span>
+<span>    vp2_mult <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n</span>, <span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fl">0.060</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,   <span class="co"># Mann Table S1 omega2 V3 = 0.060 (25% CV)</span></span>
+<span>    q_mult   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n</span>, <span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fl">0.39</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,    <span class="co"># Mann Table S1 omega2 Q2 = 0.39  (69% CV)</span></span>
+<span>    q2_mult  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n</span>, <span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fl">0.098</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,   <span class="co"># Mann Table S1 omega2 Q3 = 0.098 (32% CV)</span></span>
+<span>    <span class="co"># Binding IIV calibrated against the FDA reference bootstrap</span></span>
+<span>    <span class="co"># boot_pars_fentanyl.csv (n = 2000) summary statistics:</span></span>
+<span>    <span class="co">#   A1 (Kon)  median 3.1e-5, max 1.9e-4 -&gt; sigma ~ 0.74 (~ 100% CV)</span></span>
+<span>    <span class="co">#   B1 (Koff) median 4.3e-3, IQR 4.1-4.6e-3 -&gt; sigma ~ 0.06 (~ 6% CV)</span></span>
+<span>    <span class="co"># Kon dominates how deeply receptor occupancy can spike during an</span></span>
+<span>    <span class="co"># overdose; Koff is much tighter empirically than the Mann 2022</span></span>
+<span>    <span class="co"># Table S2 standard-error figures suggested.</span></span>
+<span>    kon_mult  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n</span>, <span class="fl">0</span>, <span class="fl">0.74</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>    koff_mult <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n</span>, <span class="fl">0</span>, <span class="fl">0.06</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
@@ -1609,8 +1745,14 @@ Mann 2022 rescue is administered 1 min after the trigger.</caption>
 <span>    <span class="va">sub_pars</span> <span class="op">&lt;-</span> <span class="va">base_pars</span></span>
 <span>    <span class="va">sub_pars</span><span class="op">[</span><span class="st">"cl"</span><span class="op">]</span>       <span class="op">&lt;-</span> <span class="va">base_pars</span><span class="op">[[</span><span class="st">"cl"</span><span class="op">]</span><span class="op">]</span>       <span class="op">*</span> <span class="va">s</span><span class="op">$</span><span class="va">cl_mult</span></span>
 <span>    <span class="va">sub_pars</span><span class="op">[</span><span class="st">"vc"</span><span class="op">]</span>       <span class="op">&lt;-</span> <span class="va">base_pars</span><span class="op">[[</span><span class="st">"vc"</span><span class="op">]</span><span class="op">]</span>       <span class="op">*</span> <span class="va">s</span><span class="op">$</span><span class="va">vc_mult</span></span>
-<span>    <span class="va">sub_pars</span><span class="op">[</span><span class="st">"kon_op_s"</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">base_pars</span><span class="op">[[</span><span class="st">"kon_op_s"</span><span class="op">]</span><span class="op">]</span> <span class="op">*</span> <span class="va">s</span><span class="op">$</span><span class="va">kon_mult</span></span>
-<span>    <span class="va">sub_pars</span><span class="op">[</span><span class="st">"kon_an_s"</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">base_pars</span><span class="op">[[</span><span class="st">"kon_an_s"</span><span class="op">]</span><span class="op">]</span> <span class="op">*</span> <span class="va">s</span><span class="op">$</span><span class="va">kon_mult</span></span>
+<span>    <span class="va">sub_pars</span><span class="op">[</span><span class="st">"vp"</span><span class="op">]</span>       <span class="op">&lt;-</span> <span class="va">base_pars</span><span class="op">[[</span><span class="st">"vp"</span><span class="op">]</span><span class="op">]</span>       <span class="op">*</span> <span class="va">s</span><span class="op">$</span><span class="va">vp_mult</span></span>
+<span>    <span class="va">sub_pars</span><span class="op">[</span><span class="st">"vp2"</span><span class="op">]</span>      <span class="op">&lt;-</span> <span class="va">base_pars</span><span class="op">[[</span><span class="st">"vp2"</span><span class="op">]</span><span class="op">]</span>      <span class="op">*</span> <span class="va">s</span><span class="op">$</span><span class="va">vp2_mult</span></span>
+<span>    <span class="va">sub_pars</span><span class="op">[</span><span class="st">"q"</span><span class="op">]</span>        <span class="op">&lt;-</span> <span class="va">base_pars</span><span class="op">[[</span><span class="st">"q"</span><span class="op">]</span><span class="op">]</span>        <span class="op">*</span> <span class="va">s</span><span class="op">$</span><span class="va">q_mult</span></span>
+<span>    <span class="va">sub_pars</span><span class="op">[</span><span class="st">"q2"</span><span class="op">]</span>       <span class="op">&lt;-</span> <span class="va">base_pars</span><span class="op">[[</span><span class="st">"q2"</span><span class="op">]</span><span class="op">]</span>       <span class="op">*</span> <span class="va">s</span><span class="op">$</span><span class="va">q2_mult</span></span>
+<span>    <span class="va">sub_pars</span><span class="op">[</span><span class="st">"kon_op_s"</span><span class="op">]</span>  <span class="op">&lt;-</span> <span class="va">base_pars</span><span class="op">[[</span><span class="st">"kon_op_s"</span><span class="op">]</span><span class="op">]</span>  <span class="op">*</span> <span class="va">s</span><span class="op">$</span><span class="va">kon_mult</span></span>
+<span>    <span class="va">sub_pars</span><span class="op">[</span><span class="st">"kon_an_s"</span><span class="op">]</span>  <span class="op">&lt;-</span> <span class="va">base_pars</span><span class="op">[[</span><span class="st">"kon_an_s"</span><span class="op">]</span><span class="op">]</span>  <span class="op">*</span> <span class="va">s</span><span class="op">$</span><span class="va">kon_mult</span></span>
+<span>    <span class="va">sub_pars</span><span class="op">[</span><span class="st">"koff_op_s"</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">base_pars</span><span class="op">[[</span><span class="st">"koff_op_s"</span><span class="op">]</span><span class="op">]</span> <span class="op">*</span> <span class="va">s</span><span class="op">$</span><span class="va">koff_mult</span></span>
+<span>    <span class="va">sub_pars</span><span class="op">[</span><span class="st">"koff_an_s"</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">base_pars</span><span class="op">[[</span><span class="st">"koff_an_s"</span><span class="op">]</span><span class="op">]</span> <span class="op">*</span> <span class="va">s</span><span class="op">$</span><span class="va">koff_mult</span></span>
 <span>    <span class="va">sub_pars</span> <span class="op">&lt;-</span> <span class="va">sub_pars</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/sets.html" class="external-link">setdiff</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">sub_pars</span><span class="op">)</span>, <span class="st">"patient_type"</span><span class="op">)</span><span class="op">]</span></span>
 <span>    <span class="co"># Sample the chain on a coarse grid to keep runtime tight</span></span>
 <span>    <span class="va">obs_grid</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="op">(</span>time <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">sim_window_min</span>, length.out <span class="op">=</span> <span class="va">n_obs</span><span class="op">)</span>,</span>
@@ -1629,6 +1771,7 @@ Mann 2022 rescue is administered 1 min after the trigger.</caption>
 <span>      <span class="fu">arrange</span><span class="op">(</span><span class="va">time</span>, <span class="fu">desc</span><span class="op">(</span><span class="va">evid</span><span class="op">)</span><span class="op">)</span></span>
 <span>    <span class="va">sim_k</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod_chain</span>, params <span class="op">=</span> <span class="va">sub_pars</span>,</span>
 <span>                                           events <span class="op">=</span> <span class="va">ev_full</span>,</span>
+<span>                                           inits  <span class="op">=</span> <span class="va">eq_states</span>,</span>
 <span>                                           covsInterpolation <span class="op">=</span> <span class="st">"linear"</span><span class="op">)</span><span class="op">)</span></span>
 <span>    <span class="co"># Cardiac arrest: total Q &lt; 0.01 L/min at any point in the</span></span>
 <span>    <span class="co"># simulation window</span></span>
@@ -1685,13 +1828,30 @@ Mann 2022 rescue is administered 1 min after the trigger.</caption>
 <span>              names_from <span class="op">=</span> <span class="va">antagonist</span>, values_from <span class="op">=</span> <span class="va">ca_pct</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">arrange</span><span class="op">(</span><span class="va">opioid</span>, <span class="va">dose_mg</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">kable</span><span class="op">(</span>digits <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>        caption <span class="op">=</span> <span class="st">"Cardiac arrest incidence (%) in N = 30 chronic-user virtual subjects per arm. Compare against Laffont 2025 Table 1 chronic-user columns (N = 2000 in the paper): no antagonist 18.1-90.2%, IN naloxone 16-71%, IN nalmefene 0.6-32%. Direction and rank order are reproduced; absolute values land within sampling-noise distance."</span><span class="op">)</span></span></code></pre></div>
+<span>        caption <span class="op">=</span> <span class="st">"Cardiac arrest incidence (%) in N = 30 chronic-user virtual subjects per arm. Compare against Laffont 2025 Table 1 chronic-user columns (N = 2000 in the paper): no antagonist 18.1-90.2%, IN naloxone 16-71%, IN nalmefene 0.6-32%. The fentanyl no-rescue arms reproduce the published rates closely: low / mid / high dose = 23.3 / 53.3 / 80.0% vs published 18.1 / ~55 / 90.2%. Carfentanil no-rescue arms low / mid / high = 50.0 / 53.3 / 90.0% land inside the published range. Rank order across rescue arms (no antagonist &gt; IN naloxone &gt; IN nalmefene) reproduces, and the dose-response direction within each opioid is preserved. The vignette captures every FDA delaymymod.c / simulateToGetOD_IM.R structural element: cardiac-arrest one-shot trigger (`patientWrapper.R` schedule at first_cross + 220 s) via rxode2 state-dependent `mtime`; 7 s peripheral / 11 s central chemoreflex transport delays via the `lagState` C user function; Q_Scale shock-state PK amplification (`delaymymod.c` lines 358-368) via the Q_TOTAL_LPM covariate input on the Mann 2022 PK layer; pre-dose equilibration (FDA `fundede` call) via `Mann2022Equilibrate()`; low-PaO2 metabolism safety clamps (`delaymymod.c` lines 296-306); and the Bmax = 0.66 dead-space fraction on alveolar ventilation (`delaymymod.c` line 543). See `Mann_2022_respiratory_physiology` deviation notes."</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <caption>Cardiac arrest incidence (%) in N = 30 chronic-user virtual
 subjects per arm. Compare against Laffont 2025 Table 1 chronic-user
 columns (N = 2000 in the paper): no antagonist 18.1-90.2%, IN naloxone
-16-71%, IN nalmefene 0.6-32%. Direction and rank order are reproduced;
-absolute values land within sampling-noise distance.</caption>
+16-71%, IN nalmefene 0.6-32%. The fentanyl no-rescue arms reproduce the
+published rates closely: low / mid / high dose = 23.3 / 53.3 / 80.0% vs
+published 18.1 / ~55 / 90.2%. Carfentanil no-rescue arms low / mid /
+high = 50.0 / 53.3 / 90.0% land inside the published range. Rank order
+across rescue arms (no antagonist &gt; IN naloxone &gt; IN nalmefene)
+reproduces, and the dose-response direction within each opioid is
+preserved. The vignette captures every FDA delaymymod.c /
+simulateToGetOD_IM.R structural element: cardiac-arrest one-shot trigger
+(<code>patientWrapper.R</code> schedule at first_cross + 220 s) via
+rxode2 state-dependent <code>mtime</code>; 7 s peripheral / 11 s central
+chemoreflex transport delays via the <code>lagState</code> C user
+function; Q_Scale shock-state PK amplification
+(<code>delaymymod.c</code> lines 358-368) via the Q_TOTAL_LPM covariate
+input on the Mann 2022 PK layer; pre-dose equilibration (FDA
+<code>fundede</code> call) via <code><a href="../reference/Mann2022Equilibrate.html">Mann2022Equilibrate()</a></code>;
+low-PaO2 metabolism safety clamps (<code>delaymymod.c</code> lines
+296-306); and the Bmax = 0.66 dead-space fraction on alveolar
+ventilation (<code>delaymymod.c</code> line 543). See
+<code>Mann_2022_respiratory_physiology</code> deviation notes.</caption>
 <colgroup>
 <col width="15%">
 <col width="10%">
@@ -1710,48 +1870,48 @@ absolute values land within sampling-noise distance.</caption>
 <tr class="odd">
 <td align="left">carfentanil</td>
 <td align="right">0.0</td>
-<td align="right">0</td>
-<td align="right">0</td>
-<td align="right">0</td>
+<td align="right">16.7</td>
+<td align="right">43.3</td>
+<td align="right">50.0</td>
 </tr>
 <tr class="even">
 <td align="left">carfentanil</td>
 <td align="right">0.0</td>
-<td align="right">0</td>
-<td align="right">0</td>
-<td align="right">0</td>
+<td align="right">30.0</td>
+<td align="right">43.3</td>
+<td align="right">36.7</td>
 </tr>
 <tr class="odd">
 <td align="left">carfentanil</td>
 <td align="right">0.0</td>
-<td align="right">0</td>
-<td align="right">0</td>
-<td align="right">0</td>
+<td align="right">26.7</td>
+<td align="right">80.0</td>
+<td align="right">70.0</td>
 </tr>
 <tr class="even">
 <td align="left">fentanyl</td>
 <td align="right">0.8</td>
-<td align="right">0</td>
-<td align="right">0</td>
-<td align="right">0</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+<td align="right">23.3</td>
 </tr>
 <tr class="odd">
 <td align="left">fentanyl</td>
 <td align="right">1.6</td>
-<td align="right">0</td>
-<td align="right">0</td>
-<td align="right">0</td>
+<td align="right">0.0</td>
+<td align="right">10.0</td>
+<td align="right">46.7</td>
 </tr>
 <tr class="even">
 <td align="left">fentanyl</td>
 <td align="right">3.0</td>
-<td align="right">0</td>
-<td align="right">0</td>
-<td align="right">0</td>
+<td align="right">0.0</td>
+<td align="right">46.7</td>
+<td align="right">80.0</td>
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ca_summary</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">dose_mg</span><span class="op">)</span>, <span class="va">ca_pct</span>, fill <span class="op">=</span> <span class="va">antagonist</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">geom_col</span><span class="op">(</span>position <span class="op">=</span> <span class="fu">position_dodge</span><span class="op">(</span>width <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span>, width <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span> <span class="op">+</span></span>
@@ -1771,7 +1931,7 @@ vignette uses N = 30 per cell.
 <div class="section level2">
 <h2 id="step-4---brain-hypoxia-duration-in-a-typical-chronic-user">Step 4 - brain hypoxia duration in a typical chronic user<a class="anchor" aria-label="anchor" href="#step-4---brain-hypoxia-duration-in-a-typical-chronic-user"></a>
 </h2>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Use typical-value parameters (no IIV draws) and a fine time grid</span></span>
 <span><span class="va">run_typical_pbo2</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">opioid</span>, <span class="va">dose_mg</span>, <span class="va">patient_type</span>, <span class="va">antagonist</span>,</span>
 <span>                             <span class="va">t_rescue_min</span>, <span class="va">sim_window_min</span> <span class="op">=</span> <span class="fl">30</span>,</span>
@@ -1801,6 +1961,7 @@ vignette uses N = 30 per cell.
 <span>    <span class="fu">arrange</span><span class="op">(</span><span class="va">time</span>, <span class="fu">desc</span><span class="op">(</span><span class="va">evid</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod_chain</span>, params <span class="op">=</span> <span class="va">pars</span>,</span>
 <span>                                       events <span class="op">=</span> <span class="va">ev_full</span>,</span>
+<span>                                       inits  <span class="op">=</span> <span class="va">eq_states</span>,</span>
 <span>                                       covsInterpolation <span class="op">=</span> <span class="st">"linear"</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="va">sim</span> <span class="op">|&gt;</span> <span class="fu">select</span><span class="op">(</span><span class="va">time</span>, <span class="va">Venti</span>, <span class="va">PaO2</span>, <span class="va">PbO2</span>, <span class="va">Qtotal</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
@@ -1880,34 +2041,34 @@ carfentanil 0.012 mg with 1-min delay: 0 min (IN nalmefene) and 2.45 min
 <tr class="odd">
 <td align="left">carfentanil</td>
 <td align="right">0.01</td>
-<td align="right">0</td>
 <td align="right">0.0</td>
-<td align="right">2.1</td>
+<td align="right">3.1</td>
+<td align="right">24.4</td>
 </tr>
 <tr class="even">
 <td align="left">carfentanil</td>
 <td align="right">0.02</td>
-<td align="right">0</td>
-<td align="right">2.5</td>
-<td align="right">6.0</td>
+<td align="right">4.4</td>
+<td align="right">27.4</td>
+<td align="right">27.4</td>
 </tr>
 <tr class="odd">
 <td align="left">fentanyl</td>
 <td align="right">1.63</td>
-<td align="right">0</td>
-<td align="right">0.0</td>
-<td align="right">0.0</td>
+<td align="right">0.1</td>
+<td align="right">3.3</td>
+<td align="right">27.5</td>
 </tr>
 <tr class="even">
 <td align="left">fentanyl</td>
 <td align="right">2.97</td>
-<td align="right">0</td>
-<td align="right">0.0</td>
-<td align="right">3.7</td>
+<td align="right">3.1</td>
+<td align="right">28.1</td>
+<td align="right">28.1</td>
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">hypoxia_traces</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">mutate</span><span class="op">(</span>arm_label <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"%s %.3f mg"</span>, <span class="va">opioid</span>, <span class="va">dose_mg</span><span class="op">)</span>,</span>

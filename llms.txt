@@ -42,6 +42,8 @@ this way.
 
 ## All functions
 
+- [`Mann2022Equilibrate()`](https://nlmixr2.github.io/nlmixr2lib/reference/Mann2022Equilibrate.md)
+  : Pre-equilibrate the Mann 2022 respiratory-physiology states
 - [`addBaseline1exp()`](https://nlmixr2.github.io/nlmixr2lib/reference/addBaseline1exp.md)
   : Add baseline that decays exponential with time
 - [`addBaselineConst()`](https://nlmixr2.github.io/nlmixr2lib/reference/addBaselineConst.md)

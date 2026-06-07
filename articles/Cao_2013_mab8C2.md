@@ -67,9 +67,6 @@ mod <- readModelDb("Cao_2013_mab8C2")
 sim <- rxode2::rxSolve(rxode2::rxode2(mod), events = events,
                        keep = "dose_mg_per_kg") |>
   as.data.frame()
-#> rxode2 already building model, waiting for lock file removal
-#> lock file: "/tmp/RtmpqFwGmG/rxode2/rx_0b39acabf71053a5ced8a7a6b160a765__.rxd/rx_0b39acabf71053a5ced8a7a6b160a765_.c.lock"
-#> .
 ```
 
 ## Replicate Figure 3 (8C2 in mice)

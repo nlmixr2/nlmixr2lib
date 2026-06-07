@@ -756,6 +756,7 @@
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/authors.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/index.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/news/index.html</loc></url>
+<url><loc>https://nlmixr2.github.io/nlmixr2lib/reference/Mann2022Equilibrate.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/reference/addBaseline1exp.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/reference/addBaselineConst.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/reference/addBaselineExp.html</loc></url>
@@ -795,6 +796,7 @@
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/reference/pkTrans.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/reference/readModelDb.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/reference/reexports.html</loc></url>
+<url><loc>https://nlmixr2.github.io/nlmixr2lib/reference/register_lagState.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/reference/removeDepot.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/reference/removeLinesAndInis.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/reference/removeTransit.html</loc></url>

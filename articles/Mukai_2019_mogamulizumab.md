@@ -422,8 +422,8 @@ sessionInfo()
 #> loaded via a namespace (and not attached):
 #>  [1] gtable_0.3.6          xfun_0.58             bslib_0.11.0         
 #>  [4] lattice_0.22-9        vctrs_0.7.3           tools_4.6.0          
-#>  [7] generics_0.1.4        parallel_4.6.0        symengine_0.2.11     
-#> [10] tibble_3.3.1          pkgconfig_2.0.3       data.table_1.18.4    
+#>  [7] generics_0.1.4        parallel_4.6.0        tibble_3.3.1         
+#> [10] symengine_0.2.11      pkgconfig_2.0.3       data.table_1.18.4    
 #> [13] checkmate_2.3.4       RColorBrewer_1.1-3    S7_0.2.2             
 #> [16] desc_1.4.3            RcppParallel_5.1.11-2 lifecycle_1.0.5      
 #> [19] compiler_4.6.0        farver_2.1.2          textshaping_1.0.5    

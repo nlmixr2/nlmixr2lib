@@ -83,9 +83,6 @@ mod <- readModelDb("Cao_2013_gevokizumab")
 sim <- rxode2::rxSolve(rxode2::rxode2(mod), events = events,
                        keep = "dose_mg_per_kg") |>
   as.data.frame()
-#> rxode2 already building model, waiting for lock file removal
-#> lock file: "/tmp/RtmpqFwGmG/rxode2/rx_09213dea9468e9a9a8926fdf2514409f__.rxd/rx_09213dea9468e9a9a8926fdf2514409f_.c.lock"
-#> .
 ```
 
 ## Replicate Figure 5 (gevokizumab panel)
