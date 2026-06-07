@@ -510,3 +510,11 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
 - **Source aliases:** none.
 - **Example models:** `Campagne_2019_cyclophosphamide_mouse.R`.
 - **Notes:** Usually held fixed at the in-vitro equilibrium-dialysis-derived value. The BBB transfer term is `CLin * fu * Cp`.
+
+### t50 (**canonical half-effect / half-decline time**)
+- **Type:** paper-named-param
+- **Role:** Time at which a time-varying effect (clearance decline, Imax-type CL change, gastric-emptying onset, etc.) has reached half of its asymptotic value. Together with an optional Hill / steepness exponent it parameterises the Emax-type time decay `CL(t) = CL0 / (1 + (t / T50)^beta)` and related sigmoidal time-course functions. Time units match the paper's t.
+- **Source aliases:**
+  - `T50` -- common paper notation (e.g., Gupta 2006, Masters 2022, Melhem 2022, Kuchimanchi 2024, Sanghavi 2020, Zhang 2019, Wang 2024, Lu 2019).
+- **Example models:** `Gupta_2006_peginterferon_alfa_2b.R`, `Masters_2022_avelumab.R`, `Melhem_2022_dostarlimab.R`, `Kuchimanchi_2024_dostarlimab.R`, `Sanghavi_2020_ipilimumab.R`, `Zhang_2019_nivolumab.R`, `Wang_2024_sugemalimab.R`, `Lu_2019_polatuzumab.R` (as `lt50_mo` for months-input variant), `Guiastrennec_2016_gastric_emptying.R` (as suffixed `lt50ogtt` / `lt50fat` for two-arm half-onset times).
+- **Notes:** Registered to formalise an already widespread convention. Use the log-transformed `lt50` as the `ini()` parameter and exponentiate inside `model()` (`t50 <- exp(lt50 + etalt50)`). When two or more `T50`-style parameters coexist in the same model, suffix the canonical with a paper-meaningful disambiguator (`lt50ogtt`, `lt50_mo`).

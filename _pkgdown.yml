@@ -624,6 +624,8 @@ navbar:
         href: articles/Naik_2013_peginesatide.html
       - text: "Peginterferon alfa 2a (Bi 2017)"
         href: articles/Bi_2017_peginterferon_alfa_2a.html
+      - text: "Peginterferon alfa 2b (Gupta 2006)"
+        href: articles/Gupta_2006_peginterferon_alfa_2b.html
       - text: "Peginterferon beta 1a (Hu 2017)"
         href: articles/Hu_2017_peginterferon_beta_1a.html
       - text: "Pembrolizumab (Ahamadi 2017)"
@@ -1265,6 +1267,7 @@ articles:
   - articles/Grover_2011_tacrolimus
   - articles/Guiastrennec_2016_gastric_emptying
   - articles/Guo_2022_PF_06939999
+  - articles/Gupta_2006_peginterferon_alfa_2b
   - articles/Gupta_2016_amatuximab
   - articles/Gupta_2016_lenvatinib
   - articles/Gupta_2017_ixazomib
