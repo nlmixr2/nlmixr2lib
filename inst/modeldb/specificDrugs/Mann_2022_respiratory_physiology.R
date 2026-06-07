@@ -111,22 +111,63 @@ Mann_2022_respiratory_physiology <- function() {
       "yco2, yo2 (filtered peripheral-chemoreflex inputs);",
       "dp_state, dc_state (filtered peripheral and central chemoreflex drives);",
       "alpha_h (central ventilatory depression factor).",
-      "Two cardiac-arrest event states are added:",
-      "t_pao2_below (accumulated time arterial O2 partial pressure has",
-      "spent below the critical 15 mm Hg threshold, in minutes), and",
-      "im_arrest (multiplier on cardiac output Qb + Qt during",
-      "post-trigger decay).",
+      "Five cardiac-arrest event states are added to encode the FDA",
+      "patientWrapper.R one-shot scheme: crossed_latch (monotonic",
+      "0->1 capture of the first time PaO2 < 15 mm Hg),",
+      "first_cross_time (tracks t until crossed_latch latches, then",
+      "freezes at T1 = first crossing time), check_complete (monotonic",
+      "0->1 just after t crosses the FDA arrest-check moment, closing",
+      "the one-shot decision window), ca_arrest_latch (monotonic 0->1",
+      "commit fired only inside that window when PaO2 is still below",
+      "threshold - irreversible), and im_arrest (multiplier on cardiac",
+      "output Qb + Qt during post-commit decay).",
+      "An rxode2 state-dependent model event time mtime(t_arrest_check)",
+      "= first_cross_time + ca_sustain_min schedules a solver restart",
+      "at T1 + 220 s so the decision window is reached precisely.",
+      "Initial conditions for the physiology states are the pre-dose",
+      "equilibrium reached after running the FDA delaystates.R nominal",
+      "values for 90 min with no drug; this matches the FDA",
+      "simulateToGetOD_IM.R fundede pre-equilibration step (the FDA",
+      "nominal initial states are NOT internally self-consistent and",
+      "produce a transient over-ventilation that prevents the overdose",
+      "PaO2 trough from reaching the cardiac-arrest threshold).",
       "Spencer / Spence dissociation algebra is computed inline as",
       "intermediate quantities in model() (not as states).",
-      "DEVIATION from the FDA reference implementation:",
-      "the original delaymymod.c uses delay-differential equations",
-      "for the chemoreflex drives via deSolve::dede + lagvalue() with",
+      "DEVIATIONS from the FDA reference implementation:",
+      "(1) Chemoreflex delays. The original delaymymod.c uses delay-",
+      "differential equations via deSolve::dede + lagvalue() with",
       "peripheralDelay = K_Dp/(Qb+Qt) ~ 7 s and centralDelay =",
-      "K_Dc/(Qb+Qt) ~ 11 s. This nlmixr2lib encoding instead applies",
-      "the zero-delay limit Plag_X = X, Clag_X = X. Effect on overdose",
-      "dynamics: short-time-scale chemoreflex perturbations are",
-      "smoothed; minute-to-hour-scale outcomes (time to cardiac arrest,",
-      "PaO2 trajectory, ventilation suppression) are well-preserved.",
+      "K_Dc/(Qb+Qt) ~ 11 s. This nlmixr2lib encoding implements the",
+      "transport-delay LOOKUP exactly via a custom rxode2 C user",
+      "function lagState() (registered at package load) that maintains",
+      "a per-subject ring buffer and returns the linearly-interpolated",
+      "value at t - lag. First-order-lag transit-compartment",
+      "approximations were evaluated and rejected because they damp",
+      "chemoreflex amplitude as well as delaying it, distorting the",
+      "overdose trajectory. The delay DURATIONS themselves are fixed",
+      "at the baseline-Q values (7 s / 11 s) rather than dynamically",
+      "computed as K_Dp/(Qb+Qt) - this avoids the singularity at",
+      "Qb+Qt -> 0 during cardiovascular collapse without materially",
+      "affecting outcomes (the chemoreflex acts on a 1-3 min time",
+      "scale, much longer than the dynamic-lag's 7-30 s range).",
+      "(2) Cardiac-arrest trigger. FDA patientWrapper.R is a two-pass",
+      "scheme: solve once with no collapse, scan PaO2 for the first",
+      "crossing below ca_pao2_threshold, set CA_delay_o2 = first_cross",
+      "+ 220 s, then re-solve with the decay armed at that absolute",
+      "time. The decay arms even if PaO2 is no longer below threshold",
+      "(continuous below-threshold for the full 220 s is NOT required).",
+      "nlmixr2lib encodes the same one-shot semantics inside a SINGLE",
+      "solve using rxode2's state-dependent mtime feature: an",
+      "mtime expression first_cross_time + ca_sustain_min schedules a",
+      "solver restart at T1 + 220 s, an ODE check_complete state then",
+      "closes the decision window so arrest fires iff PaO2 is still",
+      "below threshold at the mtime moment - matching FDA exactly.",
+      "(3) Collapse decay structure. FDA models two separate decay",
+      "states (im25 on Qb, im26 on Qt) with PaCO2-modulated rates",
+      "(Cim25_e = Cim25*0.15 + P_a_co2*Cim25*0.85/52). nlmixr2lib",
+      "uses a single im_arrest multiplier with constant rate; this",
+      "underestimates the late-collapse acceleration that hypercapnia",
+      "produces but reaches the same 0.01 L/min Qtotal floor.",
       "P1 (chemoreflex sensitivity exponent) and P3 (wakefulness",
       "sensitivity exponent) labelling note: the manuscript text says",
       "'P1 for wakefulness, P3 for chemoreflex' but the FDA code",
@@ -162,11 +203,16 @@ Mann_2022_respiratory_physiology <- function() {
     label("Maximum wakefulness drive Wmax (L/min, FIXED)")                                          # FDA delaypars.R: Wmax = 6.62
     w_baseline  <- fixed(6.62)
     label("Baseline wakefulness drive W (L/min, FIXED)")                                            # FDA delaypars.R: W = 6.62
-    # NOTE: FDA delaypars.R also defines Bmax = 0.66 used internally as
-    # Venti = totalVentilation * Bmax / 60 -- this scaling is undone at
-    # the output stage (yout[0] = Venti * 60 / 0.66 = totalVentilation),
-    # so on the L/min time scale used here the net Bmax factor is 1 and
-    # is not encoded as an ini() parameter.
+    # NOTE: FDA delaypars.R defines Bmax = 0.66 (dead-space-corrected
+    # alveolar fraction) used internally as Venti_engine = totalVent *
+    # Bmax / 60 in the per-second gas-exchange ODEs (delaymymod.c line
+    # 543). After unit-converting to per-minute the gas-exchange ODEs
+    # see an effective alveolar ventilation of totalVent * Bmax. The
+    # "scaling undone at output" comment in earlier nlmixr2lib versions
+    # was wrong: the un-scaling applies only to the user-facing Venti
+    # output (yout[0] = Venti_engine * 60 / Bmax = totalVent), NOT to
+    # the internal gas-exchange ODEs. Encoded below as ini parameter
+    # b_max and applied at the alveolar gas ODE site.
 
     # ===== Alveolar / gas-exchange parameters =====
     v_a         <- fixed(3.28)
@@ -179,6 +225,8 @@ Mann_2022_respiratory_physiology <- function() {
     label("Blood-to-gas partition coefficient lambda (unitless, FIXED, Henry's law family)")        # FDA delaypars.R: lumbda = 863
     s1_shunt    <- fixed(0.024)
     label("Pulmonary venous-admixture shunt fraction s1 (unitless, FIXED)")                        # FDA delaypars.R: s1 = 0.024
+    b_max       <- fixed(0.66)
+    label("Alveolar-fraction (dead-space-corrected) Bmax (unitless, FIXED)")                       # FDA delaypars.R: Bmax = 0.66; delaymymod.c line 543 scales totalVent by Bmax/60 in the gas-exchange ODEs
 
     # ===== Blood-gas (Spencer) dissociation curve constants =====
     alpha_co2   <- fixed(6.67e-4)
@@ -285,6 +333,17 @@ Mann_2022_respiratory_physiology <- function() {
     g_dc        <- fixed(2.0)
     label("Central-drive gain G_Dc (FIXED)")                                                       # FDA delaypars.R: G_Dc = 2
 
+    # ===== Chemoreflex transport-delay durations (FDA delaymymod.c) =====
+    # The FDA reference uses dynamic peripheralDelay = K_Dp / (Qb+Qt) and
+    # centralDelay = K_Dc / (Qb+Qt). At baseline Qb+Qt = 5 L/min that gives
+    # ~7 s peripheral and ~11 s central; we fix the lag at the baseline-Q
+    # value here, which avoids the singularity guard at Q -> 0 during
+    # cardiovascular collapse without materially changing the dynamics.
+    peripheral_delay_min <- fixed(7 / 60)
+    label("Peripheral chemoreflex transport delay (min, FIXED, = 7 s / 60)")                       # FDA: K_Dp = 0.588, Q_baseline = 5 L/min => 7 s
+    central_delay_min    <- fixed(11 / 60)
+    label("Central chemoreflex transport delay (min, FIXED, = 11 s / 60)")                         # FDA: K_Dc = 0.9239, Q_baseline => 11 s
+
     # ===== Brain CO2 / O2 baselines for central-drive feedback =====
     p_b_co2_0   <- fixed(45.27)
     label("Baseline brain CO2 partial pressure P_B_co2_0 (mm Hg, FIXED)")                          # FDA delaypars.R: P_B_co2_0 = 45.27
@@ -306,8 +365,8 @@ Mann_2022_respiratory_physiology <- function() {
     label("PaO2 threshold for cardiac-arrest trigger (mm Hg, FIXED, Mann 2022 + Hobler 1973)")     # Mann 2022 Supplement 1 'Cardiovascular Collapse' section: PaO2 < 15 mm Hg triggers collapse; threshold inherited from Hobler 1973 [17]
     ca_sustain_min    <- fixed(3.6667)
     label("Sustained-below-threshold time before collapse-decay activates (min, FIXED, = 220 s)")   # Mann 2022 Supplement 1 'Cardiovascular Collapse' section: 220 s sustained delay
-    ca_decay_rate     <- fixed(0.024)
-    label("Cardiovascular-collapse decay rate Cim25 (1/min after trigger, FIXED)")                  # FDA delaypars.R: Cim25 = 0.004 * 6 = 0.024
+    ca_decay_rate     <- fixed(0.004 * 6 * 60)
+    label("Cardiovascular-collapse decay rate Cim25 (1/min after trigger, FIXED)")                  # FDA delaypars.R: Cim25 = 0.004 * 6 = 0.024 /s; * 60 s/min = 1.44 /min
   })
 
   model({
@@ -337,8 +396,15 @@ Mann_2022_respiratory_physiology <- function() {
     metab_scale <- (fracw_pos)^p2
     metab_scale_co2 <- (metab_scale < fl_minfrac) * fl_minfrac +
                        (metab_scale >= fl_minfrac) * metab_scale
-    metab_scale_o2  <- (metab_scale > fn_maxfrac) * fn_maxfrac +
-                       (metab_scale <= fn_maxfrac) * metab_scale
+    # O2 clamp: FDA delaymymod.c lines 289-294: if M_B_o2_real >=
+    # M_B_o2_0 * fN (magnitude smaller than fN * baseline) then clamp
+    # to M_B_o2_0 * fN. M_B_o2_0 is negative so "magnitude floor at
+    # fN * |baseline|" means metab_scale_o2 FLOOR at fn_maxfrac. The
+    # earlier nlmixr2lib version had this as a CEILING which clamped
+    # baseline O2 consumption to 93% instead of 100%, reducing pre-
+    # equilibrium O2 consumption and biasing PaO2 upward.
+    metab_scale_o2  <- (metab_scale < fn_maxfrac) * fn_maxfrac +
+                       (metab_scale >= fn_maxfrac) * metab_scale
     m_b_co2_real <- m_b_co2_lmin * metab_scale_co2
     m_t_co2_real <- m_t_co2_lmin * metab_scale_co2
     m_b_o2_real  <- m_b_o2_0_lmin * metab_scale_o2
@@ -359,6 +425,14 @@ Mann_2022_respiratory_physiology <- function() {
 
     c_t_o2_pos   <- (ct_o2 > 0) * ct_o2
     p_t_o2       <- c_t_o2_pos / alpha_o2
+
+    # ===== Low-PaO2 metabolism safety clamps (FDA delaymymod.c lines 296-306) =====
+    # When P_B_o2 (or P_T_o2) drops below 6 mm Hg, both brain (tissue)
+    # O2 consumption AND CO2 production are scaled by P_X_o2 / 6, so they
+    # go smoothly to zero with P_X_o2. Without this clamp the metabolism
+    # continues consuming O2 at near-zero PaO2.
+    m_o2_safety_brain  <- (p_b_o2 < 6) * (p_b_o2 / 6) + (p_b_o2 >= 6) * 1.0
+    m_o2_safety_tissue <- (p_t_o2 < 6) * (p_t_o2 / 6) + (p_t_o2 >= 6) * 1.0
 
     # Spencer-curve mapping from brain venous P_co2, P_o2 -> C_Vb_co2, C_Vb_o2
     f2_b   <- p_b_co2 * (1 + beta2_sp * p_b_o2) /
@@ -436,22 +510,39 @@ Mann_2022_respiratory_physiology <- function() {
     p_a_o2  <- r1_rev + sqrt(r1_rev * r1_rev - s1_rev + 1e-9)
 
     # ===== Chemoreflex input states (Magosso / Ursino) =====
-    # psai_co2: CO2 sigmoid input to peripheral chemoreflex.
+    # psai_co2: CO2 sigmoid input to peripheral chemoreflex. FDA
+    # delaymymod.c line 502: psai_co2 = (sigmoid * 1500/100/1000/60
+    # + Qb0) / Qb0 - 1, in FDA's per-second units with Qb0 = 0.75/60
+    # L/s. In our per-minute units with qb0_lmin = 0.75 L/min the /60
+    # drops out and the same formula gives identical dimensionless
+    # values.
     psai_co2 <- ((aco2_drive + bco2_drive / (1 + exp(-(p_a_co2 - cco2_drive) / dco2_drive))) *
                  1500 / 100 / 1000 + qb0_lmin) / qb0_lmin - 1
-    # FDA delaymymod.c line 502: 1500/100/1000/60 = 0.00025; in min-time we
-    # drop the /60 because our blood-flow units are L/min.
 
     # psai_o2: O2 exponential input to peripheral chemoreflex.
     psai_o2_raw <- c1o2_drive * (exp(-p_a_o2 / c2o2_drive) -
                                  exp(-p_a_o2_0 / c2o2_drive))
     psai_o2     <- (psai_o2_raw > 2) * 2 + (psai_o2_raw <= 2) * psai_o2_raw
 
-    # ===== Peripheral chemoreflex drive (Plag_X = X under zero-delay limit) =====
-    f_pc_o2_mod_num <- (f_pc_max + f_pc_min * exp((p_a_o2 - p_a_o2_c) / k_pc_steep))
-    f_pc_o2_mod_den <- 1 + exp((p_a_o2 - p_a_o2_c) / k_pc_steep)
-    p_a_co2_safe <- (p_a_co2 > 1e-6) * p_a_co2 + (p_a_co2 <= 1e-6) * 1e-6
-    log_arg <- p_a_co2_safe / bp_log
+    # ===== Chemoreflex transport-delay lookups via lagState (true delay) =====
+    # FDA delaymymod.c uses deSolve::lagvalue() to retrieve P_a_co2, P_a_o2,
+    # and P_B_co2 at t minus the chemoreflex transport delay. We replicate
+    # this exactly with the lagState C user function (registered at package
+    # load - see R/lagState.R), which maintains a per-subject ring buffer
+    # of recent (time, value) pairs and returns the linearly-interpolated
+    # value at (t - lag). Channels 0/1/2 reserved for this model's three
+    # delay paths. init_val arguments give the steady-state seed used when
+    # t - lag < 0 (the pre-history window during the first few seconds of
+    # solving).
+    plag_p_a_o2  <- lagState(t, p_a_o2,  peripheral_delay_min, 0, p_a_o2_0)
+    plag_p_a_co2 <- lagState(t, p_a_co2, peripheral_delay_min, 1, 40)
+    clag_p_b_co2 <- lagState(t, p_b_co2, central_delay_min,    2, p_b_co2_0)
+
+    # ===== Peripheral chemoreflex drive (uses lagged arterial gases) =====
+    f_pc_o2_mod_num <- (f_pc_max + f_pc_min * exp((plag_p_a_o2 - p_a_o2_c) / k_pc_steep))
+    f_pc_o2_mod_den <- 1 + exp((plag_p_a_o2 - p_a_o2_c) / k_pc_steep)
+    plag_p_a_co2_safe <- (plag_p_a_co2 > 1e-6) * plag_p_a_co2 + (plag_p_a_co2 <= 1e-6) * 1e-6
+    log_arg <- plag_p_a_co2_safe / bp_log
     log_arg_safe <- (log_arg > 1e-6) * log_arg + (log_arg <= 1e-6) * 1e-6
     plag_f_pc <- k_fpc * log(log_arg_safe) * f_pc_o2_mod_num / f_pc_o2_mod_den
 
@@ -473,70 +564,124 @@ Mann_2022_respiratory_physiology <- function() {
     total_drive <- (w_baseline - kf) + chemoreflex_drive
     venti <- (total_drive > 0) * total_drive
 
-    # ===== Cardiac arrest tripwire dynamics =====
-    # t_pao2_below accumulates time PaO2 has spent below the critical
-    # threshold (in minutes). When t_pao2_below crosses ca_sustain_min
-    # (= 220 s / 60), the collapse decay activates on the im_arrest
-    # multiplier on cardiac output.
+    # ===== Cardiac arrest tripwire dynamics (FDA patientWrapper.R scheme) =====
+    # Three ODE states + one rxode2 mtime implement the FDA logic faithfully:
+    #   crossed_latch    - latches 0 -> 1 the moment PaO2 first crosses below
+    #                      ca_pao2_threshold (15 mm Hg).
+    #   first_cross_time - tracks t until crossed_latch latches, then freezes
+    #                      at T1 = time of first crossing.
+    #   check_complete   - latches 0 -> 1 just after t crosses
+    #                      first_cross_time + ca_sustain_min, closing the
+    #                      one-shot arrest decision window.
+    #   ca_arrest_latch  - irreversible 0 -> 1 commit: fires iff PaO2 is below
+    #                      threshold AT the mtime moment.
+    # An rxode2 model event time t_arrest_check = first_cross_time +
+    # ca_sustain_min schedules a solver restart at T1 + 220 s so the
+    # decision window catches the exact moment. mtime is state-dependent:
+    # as first_cross_time evolves the firing time tracks; once
+    # crossed_latch latches first_cross_time freezes and the mtime
+    # converges to T1 + 220 s.
     pao2_below <- (p_a_o2 < ca_pao2_threshold) * 1.0
-    ca_trigger <- (t_pao2_below > ca_sustain_min) * 1.0
+    mtime(t_arrest_check) <- first_cross_time + ca_sustain_min
+    ca_arrest_decision <- (t >= t_arrest_check) * (crossed_latch > 0.5) *
+                          (check_complete < 0.5) * pao2_below
 
     # ===== Gas-exchange ODEs (Magosso / Ursino) =====
-    # Alveolar / arterial CO2 and O2 (FDA delaymymod.c lines 597-598)
-    d/dt(palv_co2) <- (venti * (p_i_co2 - palv_co2) +
+    # FDA delaymymod.c line 543: Venti_engine = totalVent * Bmax / 60,
+    # where Bmax = 0.66 is the dead-space fraction. After unit-converting
+    # FDA's per-second equations to per-minute, the gas-exchange ODEs see
+    # an effective alveolar ventilation of totalVent * Bmax. Without the
+    # Bmax factor my equilibrium palv_co2 settles at 26 mm Hg instead of
+    # ~40 mm Hg, putting the pre-equilibrated state at the wrong CO2
+    # operating point and over-stressing the chemoreflex when opioid hits.
+    venti_alveolar <- venti * b_max
+    d/dt(palv_co2) <- (venti_alveolar * (p_i_co2 - palv_co2) +
                       lumbda * q_total * (1 - s1_shunt) * (c_v_co2 - c_e_co2)) / v_a
-    d/dt(palv_o2)  <- (venti * (p_i_o2_init - palv_o2) +
+    d/dt(palv_o2)  <- (venti_alveolar * (p_i_o2_init - palv_o2) +
                       lumbda * q_total * (1 - s1_shunt) * (c_v_o2 - c_e_o2)) / v_a
 
-    # Brain blood-gas concentrations (FDA lines 599-600)
-    d/dt(cb_co2) <- (qb * (c_a_co2 - c_vb_co2) + m_b_co2_real) / v_b
-    d/dt(cb_o2)  <- (qb * (c_a_o2  - c_vb_o2 ) + m_b_o2_real ) / v_b
+    # Brain blood-gas concentrations (FDA lines 599-600). Metabolism
+    # terms multiplied by safety clamp m_o2_safety_brain so both CO2
+    # production and O2 consumption fade to zero with P_B_o2.
+    d/dt(cb_co2) <- (qb * (c_a_co2 - c_vb_co2) + m_b_co2_real * m_o2_safety_brain) / v_b
+    d/dt(cb_o2)  <- (qb * (c_a_o2  - c_vb_o2 ) + m_b_o2_real  * m_o2_safety_brain) / v_b
 
-    # Tissue blood-gas concentrations (FDA lines 601-602)
-    d/dt(ct_co2) <- (qt * (c_a_co2 - c_vt_co2) + m_t_co2_real) / v_t
-    d/dt(ct_o2)  <- (qt * (c_a_o2  - c_vt_o2 ) + m_t_o2_real ) / v_t
+    # Tissue blood-gas concentrations (FDA lines 601-602). Safety clamp
+    # m_o2_safety_tissue analogous to brain.
+    d/dt(ct_co2) <- (qt * (c_a_co2 - c_vt_co2) + m_t_co2_real * m_o2_safety_tissue) / v_t
+    d/dt(ct_o2)  <- (qt * (c_a_o2  - c_vt_o2 ) + m_t_o2_real  * m_o2_safety_tissue) / v_t
 
     # Chemoreflex input filters (FDA lines 604-605, time-constants in min)
     d/dt(yco2) <- (psai_co2 - yco2) / tau_co2_min
     d/dt(yo2)  <- (psai_o2  - yo2)  / tau_o2_min
 
     # Peripheral and central chemoreflex drives, opioid-attenuated
-    # (FDA lines 514-518 + 606-607, zero-delay limit)
+    # (FDA lines 514-518 + 606-607). Peripheral drive consumes lagged
+    # plag_f_pc (which itself uses lagState-delayed plag_p_a_o2 and
+    # plag_p_a_co2). Central drive consumes lagged clag_p_b_co2.
     d/dt(dp_state) <- (-dp_state + av1 * g_dp * (plag_f_pc - f_pc_0)) / tau_dp_min
-    d/dt(dc_state) <- (-dc_state + av2 * g_dc * (p_b_co2 - p_b_co2_0)) / tau_dc_min
+    d/dt(dc_state) <- (-dc_state + av2 * g_dc * (clag_p_b_co2 - p_b_co2_0)) / tau_dc_min
 
     # alphaH dynamics (Mann 2022 eq 9, in min)
     d/dt(alpha_h) <- (hstat - alpha_h) / tau_h_min
 
-    # Time-below-threshold accumulator for cardiac arrest trigger.
-    # pao2_below evaluates 1 while P_a_o2 < threshold, 0 otherwise.
-    # The state grows at 1 per min while below threshold and resets
-    # slowly while above (so brief excursions above threshold do not
-    # reset the trigger; if a sustained recovery occurs, the slow
-    # negative drift eventually re-arms).
-    d/dt(t_pao2_below) <- pao2_below - (1 - pao2_below) * t_pao2_below * 0.1
+    # First-crossing detector: rapidly latches 0 -> 1 when PaO2 first
+    # crosses below threshold. Time-constant ~ 0.6 s for the attack.
+    d/dt(crossed_latch) <- (1 - crossed_latch) * pao2_below * 100
 
-    # Cardiac-arrest decay multiplier on cardiac output. ca_trigger is 1
-    # once t_pao2_below has accumulated past ca_sustain_min; im_arrest
-    # then decays toward 0 at rate ca_decay_rate (1/min), driving
-    # cardiac output (qb + qt) toward the Mann 2022 cardiac-arrest
-    # floor of 0.01 L/min.
-    d/dt(im_arrest) <- -ca_trigger * ca_decay_rate * im_arrest
+    # First-crossing-time capture: tracks the current time t until
+    # crossed_latch crosses 0.5, then stops (freezes at T1).
+    d/dt(first_cross_time) <- (crossed_latch < 0.5) * 1.0
 
-    # ===== Initial conditions =====
+    # Decision-window closer: latches 0 -> 1 ~7 s after t crosses
+    # t_arrest_check (= first_cross_time + ca_sustain_min). After this,
+    # ca_arrest_decision is forced to 0 forever - matching FDA's
+    # one-shot check at exactly T1 + 220 s. Rate 10 keeps the window
+    # open just long enough for ca_arrest_latch (rate 1000, below) to
+    # fully reach 1 if the decision triggers.
+    d/dt(check_complete) <- (1 - check_complete) * (t >= t_arrest_check) *
+                            (crossed_latch > 0.5) * 10
+
+    # Cardiac-arrest commit latch. Fires only inside the narrow decision
+    # window when ca_arrest_decision == 1 (PaO2 still below at T1 + 220 s).
+    # Rate 1000 ensures full latching within ~3 ms of decision firing,
+    # well before check_complete closes the window. Irreversible afterwards.
+    d/dt(ca_arrest_latch) <- (1 - ca_arrest_latch) * ca_arrest_decision * 1000
+
+    # Cardiac-arrest decay multiplier on cardiac output. im_arrest decays
+    # toward 0 at rate ca_decay_rate (1/min) for as long as the latch is
+    # engaged, driving cardiac output (qb + qt) toward the Mann 2022
+    # cardiac-arrest floor of 0.01 L/min.
+    d/dt(im_arrest) <- -ca_arrest_latch * ca_decay_rate * im_arrest
+
+    # ===== Initial conditions (FDA delaystates.R nominal) =====
+    # These are the FDA reference initial state values, NOT the pre-
+    # dose equilibrium. They are NOT internally self-consistent for the
+    # chemoreflex feedback - the central drive sees a 48.6 mm Hg error
+    # in (p_b_co2 - p_b_co2_0) at t = 0 and drives ventilation
+    # transiently to ~ 19 L/min before settling. For a downstream
+    # opioid-overdose simulation to reproduce the FDA-published cardiac-
+    # arrest rates, callers MUST first run a no-drug pre-equilibration
+    # step (FDA simulateToGetOD_IM.R does this on the fly per subject)
+    # and pass the resulting state values as the inits= argument to
+    # rxode2::rxSolve. The Mann2022Equilibrate() helper function in this
+    # package performs that pre-equilibration in one call.
     palv_co2(0)      <- 40.28
     palv_o2(0)       <- 100.2
-    cb_co2(0)      <- 0.645
-    cb_o2(0)       <- 9.78e-4
-    ct_co2(0)      <- 0.605
-    ct_o2(0)       <- 13e-4
-    yco2(0)         <- 0
-    yo2(0)          <- 0
-    dp_state(0)     <- 0
-    dc_state(0)     <- 0
-    alpha_h(0)      <- 1
-    t_pao2_below(0) <- 0
-    im_arrest(0)    <- 1
+    cb_co2(0)        <- 0.645
+    cb_o2(0)         <- 9.78e-4
+    ct_co2(0)        <- 0.605
+    ct_o2(0)         <- 13e-4
+    yco2(0)          <- 0
+    yo2(0)           <- 0
+    dp_state(0)      <- 0
+    dc_state(0)      <- 0
+    alpha_h(0)       <- 1
+    crossed_latch(0)   <- 0
+    first_cross_time(0) <- 0
+    check_complete(0)  <- 0
+    ca_arrest_latch(0) <- 0
+    im_arrest(0)       <- 1
 
     # ===== Outputs =====
     Venti         <- venti                 # minute ventilation (L/min)
@@ -555,7 +700,8 @@ Mann_2022_respiratory_physiology <- function() {
     po2_virt <- p_a_o2_safe * (40 / p_a_o2_safe)^0.3
     SAT_O2 <- 100 * po2_virt^nSat / (k3_sat^nSat + po2_virt^nSat)
 
-    CA_active     <- ca_trigger            # 1 = cardiac-arrest decay has been activated
-    T_pao2_below  <- t_pao2_below          # accumulated time PaO2 spent below critical threshold (min)
+    CA_active        <- ca_arrest_latch    # 1 = cardiac-arrest decay has been committed (irreversible)
+    First_cross_time <- first_cross_time   # time PaO2 first crossed below critical threshold (min, 0 if no crossing yet)
+    T_arrest_check   <- t_arrest_check     # scheduled FDA-style arrest check time = first_cross_time + ca_sustain_min
   })
 }
