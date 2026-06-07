@@ -94,8 +94,8 @@ navbar:
         href: articles/Mosha_2014_artemether_lumefantrine.html
       - text: "Artemether (Tarning 2012)"
         href: articles/Tarning_2012_artemether.html
-      - text: "Artemether parasitemia (Hietala 2010)"
-        href: articles/Hietala_2010_artemether_lumefantrine_malaria.html
+      - text: "Artemisinin (Asimus 2007)"
+        href: articles/Asimus_2007_artemisinin.html
       - text: "Artemisinin (Birgersson 2016)"
         href: articles/Birgersson_2016_artemisinin.html
       - text: "Artemisinin (Sidhu 1998)"
@@ -1499,6 +1499,7 @@ articles:
   - articles/Archary_2019_lamivudine
   - articles/Areberg_2006_escitalopram
   - articles/Aregbe_2012_alvespimycin
+  - articles/Asimus_2007_artemisinin
   - articles/Attarwala_2023_mRNA3927
   - articles/Ayyar_2024_givosiran
   - articles/Ayyoub_2016_pyronaridine
