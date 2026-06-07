@@ -2,6 +2,7 @@
 
 # development version
 
+* Add Asimus 2007 artemisinin ([doi:10.1111/j.1365-2125.2006.02844.x](https://doi.org/10.1111/j.1365-2125.2006.02844.x)) -- healthy male Vietnamese volunteers and male patients with uncomplicated falciparum malaria (semiphysiological autoinduction popPK with gut + liver + sampling compartments and a precursor + enzyme pool driving time-varying intrinsic clearance).
 * Add Padoin 1998 cephalexin ([doi:10.1128/aac.42.6.1463](https://doi.org/10.1128/aac.42.6.1463)) -- preclinical male Wistar rats with a cephalexin / quinapril oral coadministration DDI (ratifies new `CONMED_QPRL_ORAL` covariate canonical).
 * Add van Rongen 2018 metformin ([doi:10.1007/s40272-018-0293-1](https://doi.org/10.1007/s40272-018-0293-1)) -- overweight and obese Caucasian adolescents.
 * Add Tarning 2012 artemether and dihydroartemisinin ([doi:10.1186/1475-2875-11-293](https://doi.org/10.1186/1475-2875-11-293)) -- pregnant women with uncomplicated Plasmodium falciparum malaria in Uganda (joint parent + DHA popPK with zero-order dissolution and 6-compartment transit absorption).
