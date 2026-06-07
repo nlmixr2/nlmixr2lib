@@ -4743,22 +4743,24 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 
 ## Formulation / assay / study
 
-### ROUTE_IV (**canonical for IV-vs-SC administration route indicator**)
-- **Description:** 1 = subject received intravenous (IV) administration, 0 = subcutaneous (SC) administration. Per-subject (study-fixed) covariate flagging the dosing route when a population analysis pools cohorts that differ by route, with covariate effects on PK parameters that capture route-specific disposition behaviour.
+### ROUTE_IV (**canonical for IV-vs-non-IV administration route indicator**)
+- **Description:** 1 = subject (or occasion) received intravenous (IV) administration, 0 = the comparator non-IV route used in the study (subcutaneous in mAb popPK papers; oral in small-molecule popPK papers). Per-subject (study-fixed) or per-occasion covariate flagging the dosing route when a population analysis pools cohorts that differ by route, with covariate effects on PK parameters that capture route-specific disposition behaviour.
 - **Units:** (binary)
 - **Type:** binary
 - **Scope:** specific
-- **Reference category:** 0 (SC).
+- **Reference category:** 0 (non-IV; SC for the mAb popPK papers, oral for Fanta 2007 ciclosporin).
 - **Source aliases:**
   - "Admin route = IV" (categorical effect column in Yu 2022 covariate equations).
   - `IV` -- used in `Zierhut_2008_osteoprotegerin.R` (DDMODEL00000233 `dataObj` column flagging IV vs SC cohort, switching the PK observation residual SD between `CcpropSdIV` and `CcpropSdSC`).
   - "IV" / "SC arm" -- used in `Wang_2021_pertuzumab.R` (per-subject FeDeriCa arm indicator P+H IV vs PH FDC SC, switching the proportional residual SD between `CcpropSdIv` and `CcpropSdSc`).
+  - `route` -- used in `Fanta_2007_ciclosporin.R` (per-occasion indicator separating the IV 4-hour infusion arm from the oral microemulsion arm; the same subject typically contributes both arms on separate occasions).
 - **Example models:**
   - `Yu_2022_ofatumumab.R` (exponential effect on R0, CL, Q, ksyninf).
   - `Zierhut_2008_osteoprotegerin.R` (per-subject indicator switching the PK observation residual SD between the IV cohort (`CcpropSdIV`) and the SC cohort (`CcpropSdSC`)).
   - `Wang_2021_pertuzumab.R` (per-subject indicator switching the proportional residual SD between the IV (`CcpropSdIv` = 0.175) and SC (`CcpropSdSc` = 0.155) cohorts of the FeDeriCa popPK).
   - `Fiedler-Kelly_2019_fremanezumab.R` (per-subject indicator switching both the central volume of distribution (Vc,IV = 2.98 L FIXED vs Vc,SC = 1.88 L) and the residual-error structure (IV: proportional-only with SD = sqrt(0.0467) = 0.21610; SC: combined additive sqrt(0.204) + proportional sqrt(0.0531)) in the pooled phase 1/2b/3 fremanezumab popPK).
-- **Notes:** This is the per-subject covariate-equation indicator, distinct from the dosing-event `cmt` column that names the target compartment. When simulating, set `ROUTE_IV = 1` for IV cohorts and dose into the central compartment; set `ROUTE_IV = 0` for SC cohorts and dose into the depot. Scope: specific because the set of parameters that differ by route is paper-specific (Yu 2022 carries route-specific exponential effects on disposition parameters; Zierhut 2008, Wang 2021, and Fiedler-Kelly 2019 carry route-specific PK observation residual SDs; Fiedler-Kelly 2019 additionally carries a route-specific central volume of distribution).
+  - `Fanta_2007_ciclosporin.R` (per-occasion indicator carrying a 23% lower typical CL on oral occasions than on IV occasions (`exp(e_route_iv_cl * ROUTE_IV)` with `e_route_iv_cl = log(1/0.77) = 0.2614`) and switching the residual-error structure between IV (`propSdIv = 0.089` + `addSdIv = 1.5 ug/L`) and oral (`propSdPo = 0.20`) arms; the comparator non-IV route is oral microemulsion ciclosporin, not SC).
+- **Notes:** This is the per-subject (or per-occasion) covariate-equation indicator, distinct from the dosing-event `cmt` column that names the target compartment. When simulating, set `ROUTE_IV = 1` for IV cohorts/occasions and dose into the central compartment; set `ROUTE_IV = 0` for non-IV cohorts/occasions and dose into the depot. Scope: specific because the set of parameters that differ by route is paper-specific (Yu 2022 carries route-specific exponential effects on disposition parameters; Zierhut 2008, Wang 2021, and Fiedler-Kelly 2019 carry route-specific PK observation residual SDs; Fiedler-Kelly 2019 additionally carries a route-specific central volume of distribution; Fanta 2007 carries a route-specific CL adjustment to correct an RIA metabolite-cross-reactivity assay artifact on the oral arm). The "non-IV" reference is SC for the mAb popPK papers and oral for Fanta 2007 small-molecule popPK; the canonical interpretation of `ROUTE_IV = 0` is "the comparator route used in the study", not specifically SC.
 
 ### ROUTE_IP (**canonical for intraperitoneal-vs-non-IP administration route indicator**)
 - **Description:** 1 = subject (or dose record) received intraperitoneal (IP) administration; 0 = subcutaneous (SC), intravenous (IV), or any other non-IP route. Per-dose-record covariate flagging the IP route when a preclinical popPK pools multiple routes with route-specific bioavailability and the IP arm is the only route that carries a non-unity F.
