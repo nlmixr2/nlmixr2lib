@@ -1,0 +1,618 @@
+# HuHMFG1 (Royer 2010)
+
+## Model and source
+
+- Citation: Royer B, Yin W, Pegram M, Ibrahim N, Villanueva C, Mir D,
+  Erlandsson F, Pivot X. Population pharmacokinetics of the humanised
+  monoclonal antibody, HuHMFG1 (AS1402), derived from a phase I study on
+  breast cancer. Br J Cancer. 2010;102(5):827-832.
+  <doi:10.1038/sj.bjc.6605560>
+- Description: Two-compartment population PK model with linear
+  elimination for HuHMFG1 (AS1402), a humanised anti-MUC1 monoclonal
+  antibody, in patients with metastatic breast cancer; serum AST enters
+  the typical clearance equation additively (Royer 2010)
+- Article: <https://doi.org/10.1038/sj.bjc.6605560>
+- PubMed (PMID 20160731): <https://pubmed.ncbi.nlm.nih.gov/20160731/>
+
+HuHMFG1 (AS1402) is a humanised IgG1 monoclonal antibody that targets
+the MUC1 tumour-associated antigen. Royer et al. (2010) fit a linear
+two-compartment model to 435 serum concentrations from 26 patients
+enrolled in the Pegram 2009 phase I dose-escalation study (1, 3, 9, and
+16 mg/kg IV infusion) in metastatic breast cancer. The NONMEM ADVAN3
+TRANS4 macro was used (CL, V1, Q, V2 parameterisation), with
+FOCE-INTERACTION estimation.
+
+Inter-patient variability was modelled with exponential random effects
+on V1 and CL only (no estimable random effects on Q or V2). Residual
+variability used a combined proportional + fixed additive model. The
+only retained covariate was serum aspartate aminotransferase (AST),
+which entered the typical-CL equation additively rather than via the
+more common power form.
+
+## Population
+
+The development cohort comprised 26 patients with locally advanced or
+metastatic breast cancer (Royer 2010 Table 2). Median (min-max) baseline
+characteristics: age 55 (32-72) years, weight 73.1 (50-108) kg, height
+165 (155-179) cm, BMI 25.75 (18.00-40.65) kg/m^2, total protein 68
+(54-82) g/L, albumin 41 (27-48) g/L, creatinine clearance 85.3
+(37.2-648.9) mL/min, ALP 86 (47-1127) U/L, ALT 27 (6-252) U/L, AST 29
+(14-1392) U/L, GGT 37 (9-1386) U/L, CA15-3 45 (9-16400), CA27.29 31.3
+(3.5-1723). Patients were enrolled across cohorts of 3, 9, 6, and 8
+individuals at the 1, 3, 9, and 16 mg/kg dose levels respectively; up to
+10 administrations were observed in one patient. Human anti-human
+antibody (HAHA) testing was negative in every assessable patient (0 of
+23) and was not further investigated. The same information is available
+programmatically via `readModelDb("Royer_2010_HuHMFG1")$population`.
+
+## Source trace
+
+The per-parameter origin is recorded as an in-file comment next to each
+`ini()` entry in `inst/modeldb/specificDrugs/Royer_2010_HuHMFG1.R`. The
+table below collects the mapping in one place for reviewer audit.
+
+| Element | Source location | Value / form |
+|----|----|----|
+| Linear two-compartment model, IV input into central | Royer 2010 Results page 829 (“ADVAN3 TRANS4 subroutine”) | `d/dt(central) = -kel*central - k12*central + k21*peripheral1` |
+| Typical V1 (central volume) | Royer 2010 Table 3 | 3.31 L |
+| Typical CL intercept (theta_CL) | Royer 2010 Table 3 | 0.016 L/h |
+| Typical Q (inter-compartmental CL) | Royer 2010 Table 3 | 0.017 L/h |
+| Typical V2 (peripheral volume) | Royer 2010 Table 3 | 2.33 L |
+| AST coefficient (COV_CL) | Royer 2010 Table 3, Results page 829 | 0.0036 (additive on CL, in L/h per unit AST/ASTmed) |
+| ASTmed (study median used for normalisation) | Royer 2010 Table 2 | 29 U/L |
+| CL equation form | Royer 2010 Results page 829 | `CL = 0.016 + 0.0036 * (AST / 29)` (additive, NOT power) |
+| IIV on V1 (omega^2) | Royer 2010 Table 3 | 0.042 (exponential, log-normal) |
+| IIV on CL (omega^2) | Royer 2010 Table 3 | 0.062 (exponential, log-normal) |
+| IIV on Q, V2 | Royer 2010 Table 3 / Results page 829 | Not estimable; omitted from the model |
+| Proportional residual error (sigma^2) | Royer 2010 Table 3 | 0.034 (stored as `propSd = sqrt(0.034) = 0.184`) |
+| Additive residual error (sigma^2, FIXED) | Royer 2010 Table 3 | 2.26 (mg/L)^2 (stored as `addSd = fixed(sqrt(2.26)) = 1.503` mg/L) |
+| Published median distribution half-life | Royer 2010 Results page 829 | 1.87 days (0.49-2.29) |
+| Published median terminal half-life | Royer 2010 Results page 829 | 11.04 days (4.38-15.04) |
+
+### Covariate column naming
+
+| Source column | Canonical column used here | Notes |
+|----|----|----|
+| `AST` | `AST` (U/L) | Baseline aspartate aminotransferase activity; additive form on typical CL with ASTmed = 29 U/L (study median, Table 2). |
+
+## Virtual cohort
+
+The source paper does not publish per-subject baseline covariates. The
+cohort below approximates the Royer 2010 Table 2 marginals so that
+simulated NCA metrics can be compared with the paper’s published median
+half-lives. Body weight is drawn so that its 5th-95th percentiles cover
+the Table 2 range; AST is drawn from a log-normal centred at the study
+median.
+
+``` r
+
+set.seed(2010L)
+n_subj <- 200L
+
+# Per-dose-cohort layout matching Royer 2010 patient counts (3 / 9 / 6 / 8)
+# scaled to n_subj. Each cohort gets a distinct id_offset so the IDs are
+# disjoint when bound together for multi-cohort simulation.
+royer_cohorts <- tibble::tribble(
+  ~cohort,      ~dose_mg_per_kg, ~infusion_dur_min, ~n_paper,
+  "1 mg/kg",                  1,                60,        3,
+  "3 mg/kg",                  3,                60,        9,
+  "9 mg/kg",                  9,               120,        6,
+  "16 mg/kg",                16,               180,        8
+) |>
+  mutate(n_sim     = round(n_subj * n_paper / sum(n_paper)),
+         id_offset = c(0L, head(cumsum(n_sim), -1)))
+
+make_cohort <- function(n, dose_mg_per_kg, infusion_dur_min, id_offset,
+                        cohort_label) {
+  tibble(
+    id             = id_offset + seq_len(n),
+    WT             = pmin(pmax(rnorm(n, mean = 73.1, sd = 14), 50), 108),
+    AST            = pmin(pmax(rlnorm(n, log(29), 0.5), 14), 200),
+    cohort         = cohort_label,
+    dose_mg_per_kg = dose_mg_per_kg,
+    infusion_dur_h = infusion_dur_min / 60
+  )
+}
+
+pop <- do.call(
+  rbind,
+  Map(make_cohort,
+      n                = royer_cohorts$n_sim,
+      dose_mg_per_kg   = royer_cohorts$dose_mg_per_kg,
+      infusion_dur_min = royer_cohorts$infusion_dur_min,
+      id_offset        = royer_cohorts$id_offset,
+      cohort_label     = royer_cohorts$cohort)
+)
+```
+
+## Dosing dataset (single dose, dense sampling)
+
+The paper’s NCA-relevant comparator is the median single-dose terminal
+half-life (~11 days) and distribution half-life (~1.87 days). We
+simulate a single IV infusion at each cohort’s labelled dose level with
+sampling schedule mirroring Table 1 (pre-dose, end of infusion, 1.5-840
+h).
+
+``` r
+
+obs_times_h <- sort(unique(c(
+  0,
+  1.5, 4, 6, 12, 24, 48, 72,
+  seq(96, 240, by = 24),
+  seq(264, 840, by = 24)
+)))
+
+d_dose <- pop |>
+  mutate(
+    time = 0,
+    amt  = dose_mg_per_kg * WT,                  # mg
+    rate = amt / infusion_dur_h,                 # mg/h
+    evid = 1L,
+    cmt  = "central",
+    dv   = NA_real_
+  )
+
+d_obs <- tidyr::crossing(pop, time = obs_times_h) |>
+  mutate(amt = NA_real_, rate = NA_real_, evid = 0L,
+         cmt = "central", dv = NA_real_)
+
+events <- bind_rows(d_dose, d_obs) |>
+  arrange(id, time, desc(evid)) |>
+  as.data.frame()
+
+stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
+```
+
+## Simulation
+
+``` r
+
+mod <- readModelDb("Royer_2010_HuHMFG1")
+sim <- rxode2::rxSolve(mod, events = events,
+                       keep = c("cohort", "dose_mg_per_kg", "WT", "AST"))
+#> ℹ parameter labels from comments will be replaced by 'label()'
+sim_df <- as.data.frame(sim)
+```
+
+### Typical-subject profiles by dose cohort (replicates Royer 2010 Figure 1)
+
+Royer 2010 Figure 1 shows semi-logarithmic concentration-time profiles
+during the first administration at each dose level. The panel below uses
+the same dose cohorts under zero residual variability and at the cohort
+median AST (=29 U/L) to reproduce the typical-subject behaviour.
+
+``` r
+
+mod_typical <- rxode2::zeroRe(mod)
+#> ℹ parameter labels from comments will be replaced by 'label()'
+
+typical_subjects <- royer_cohorts |>
+  mutate(id = seq_len(nrow(royer_cohorts)),
+         WT = 73.1,
+         AST = 29,
+         time = 0,
+         amt  = dose_mg_per_kg * WT,
+         rate = amt / (infusion_dur_min / 60),
+         evid = 1L,
+         cmt  = "central",
+         dv   = NA_real_)
+
+typical_dose <- typical_subjects |>
+  dplyr::select(id, WT, AST, cohort, time, amt, rate, evid, cmt, dv)
+
+typical_obs <- tidyr::crossing(
+  typical_subjects |> dplyr::select(id, WT, AST, cohort),
+  time = c(seq(0, 24, by = 0.5), seq(24, 840, by = 6))
+) |>
+  mutate(amt = NA_real_, rate = NA_real_, evid = 0L,
+         cmt = "central", dv = NA_real_)
+
+events_typical <- bind_rows(typical_dose, typical_obs) |>
+  arrange(id, time, desc(evid)) |>
+  as.data.frame()
+
+sim_typical <- rxode2::rxSolve(mod_typical, events = events_typical,
+                               keep = c("cohort")) |>
+  as.data.frame()
+#> ℹ omega/sigma items treated as zero: 'etalvc', 'etalcl'
+#> Warning: multi-subject simulation without without 'omega'
+
+ggplot(sim_typical |> dplyr::filter(time > 0),
+       aes(x = time, y = Cc, colour = cohort)) +
+  geom_line(linewidth = 1) +
+  scale_y_log10() +
+  labs(
+    x = "Time (h)",
+    y = "HuHMFG1 serum concentration (mg/L)",
+    title = "Typical-subject HuHMFG1 profile after a single IV infusion",
+    subtitle = "Replicates Royer 2010 Figure 1 (1, 3, 9, 16 mg/kg single dose; WT=73.1 kg, AST=29 U/L)",
+    colour = "Dose cohort"
+  ) +
+  theme_bw()
+```
+
+![](Royer_2010_HuHMFG1_files/figure-html/figure-1-typical-1.png)
+
+### VPC-style simulation across the virtual cohort
+
+``` r
+
+vpc_summary <- sim_df |>
+  dplyr::filter(time > 0) |>
+  group_by(cohort, time) |>
+  summarise(
+    median = median(Cc, na.rm = TRUE),
+    lo     = quantile(Cc, 0.05, na.rm = TRUE),
+    hi     = quantile(Cc, 0.95, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+ggplot(vpc_summary, aes(x = time, colour = cohort, fill = cohort)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), alpha = 0.2, colour = NA) +
+  geom_line(aes(y = median), linewidth = 1) +
+  scale_y_log10() +
+  labs(
+    x = "Time (h)",
+    y = "HuHMFG1 serum concentration (mg/L)",
+    title = "Simulated HuHMFG1 profile after a single IV infusion (virtual cohort)",
+    subtitle = paste0("Median and 90% prediction interval, N = ", n_subj, " virtual subjects"),
+    caption = "Patterned after Royer 2010 Figure 3A (first administration VPC).",
+    colour = "Dose cohort", fill = "Dose cohort"
+  ) +
+  theme_bw()
+```
+
+![](Royer_2010_HuHMFG1_files/figure-html/vpc-1.png)
+
+## PKNCA validation
+
+Run a single-dose NCA on the virtual cohort using PKNCA. The Royer 2010
+paper reports median (range) distribution half-life 1.87 (0.49-2.29)
+days and terminal half-life 11.04 (4.38-15.04) days, calculated from the
+final-model parameter estimates rather than from a non-compartmental
+analysis. We compute terminal half-life via PKNCA’s `half.life`
+parameter and compare against the published terminal estimate.
+
+``` r
+
+sim_nca <- sim_df |>
+  dplyr::filter(!is.na(Cc), Cc > 0) |>
+  dplyr::transmute(id, time, Cc, cohort)
+
+dose_df <- events |>
+  dplyr::filter(evid == 1L) |>
+  dplyr::transmute(id, time, amt, cohort)
+
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | cohort + id,
+                             concu = "mg/L", timeu = "h")
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | cohort + id,
+                             doseu = "mg")
+
+intervals <- data.frame(
+  start       = 0,
+  end         = Inf,
+  cmax        = TRUE,
+  tmax        = TRUE,
+  aucinf.obs  = TRUE,
+  half.life   = TRUE
+)
+
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+#> Warning: Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.5) is not allowed
+
+nca_summary <- summary(nca_res)
+knitr::kable(nca_summary,
+             caption = "PKNCA single-dose summary by cohort (terminal half-life reported in hours).")
+```
+
+| Interval Start | Interval End | cohort | N | Cmax (mg/L) | Tmax (h) | Half-life (h) | AUCinf,obs (h\*mg/L) |
+|---:|---:|:---|:---|:---|:---|:---|:---|
+| 0 | Inf | 1 mg/kg | 23 | 22.5 \[31.0\] | 1.50 \[1.50, 1.50\] | 255 \[46.0\] | NC |
+| 0 | Inf | 16 mg/kg | 62 | 321 \[26.5\] | 4.00 \[4.00, 4.00\] | 255 \[61.2\] | NC |
+| 0 | Inf | 3 mg/kg | 69 | 62.3 \[27.4\] | 1.50 \[1.50, 1.50\] | 253 \[57.4\] | NC |
+| 0 | Inf | 9 mg/kg | 46 | 175 \[30.1\] | 4.00 \[4.00, 4.00\] | 257 \[63.6\] | NC |
+
+PKNCA single-dose summary by cohort (terminal half-life reported in
+hours). {.table}
+
+### Comparison against published terminal half-life
+
+``` r
+
+hl_by_id <- nca_res$result |>
+  dplyr::as_tibble() |>
+  dplyr::filter(PPTESTCD == "half.life") |>
+  dplyr::transmute(cohort, id, half_life_h = PPORRES,
+                   half_life_day = PPORRES / 24)
+
+hl_summary <- hl_by_id |>
+  group_by(cohort) |>
+  summarise(
+    `Median t1/2 (day)` = median(half_life_day, na.rm = TRUE),
+    `5th pct (day)`     = quantile(half_life_day, 0.05, na.rm = TRUE),
+    `95th pct (day)`    = quantile(half_life_day, 0.95, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+published <- tibble::tibble(
+  cohort = unique(hl_summary$cohort),
+  `Published median t1/2 (day)` = 11.04,
+  `Published min (day)`         = 4.38,
+  `Published max (day)`         = 15.04
+)
+
+knitr::kable(
+  hl_summary |> dplyr::left_join(published, by = "cohort"),
+  digits = 2,
+  caption = "Simulated vs. published terminal half-life. Royer 2010 reports a single global summary (11.04 days, 4.38-15.04) calculated from the final-model parameters; the simulation column is dose-cohort-stratified."
+)
+```
+
+| cohort | Median t1/2 (day) | 5th pct (day) | 95th pct (day) | Published median t1/2 (day) | Published min (day) | Published max (day) |
+|:---|---:|---:|---:|---:|---:|---:|
+| 1 mg/kg | 10.42 | 8.45 | 13.99 | 11.04 | 4.38 | 15.04 |
+| 16 mg/kg | 10.15 | 7.79 | 15.61 | 11.04 | 4.38 | 15.04 |
+| 3 mg/kg | 10.14 | 7.09 | 14.30 | 11.04 | 4.38 | 15.04 |
+| 9 mg/kg | 10.40 | 7.55 | 14.29 | 11.04 | 4.38 | 15.04 |
+
+Simulated vs. published terminal half-life. Royer 2010 reports a single
+global summary (11.04 days, 4.38-15.04) calculated from the final-model
+parameters; the simulation column is dose-cohort-stratified. {.table}
+
+The simulated terminal half-life across cohorts is expected to track the
+paper’s 11.04-day published median within ~20%. Larger differences would
+reflect interaction between virtual covariate distributions (AST, WT)
+and the additive AST-on-CL term rather than a structural error.
+
+## Assumptions and deviations
+
+Royer 2010 does not publish per-subject baseline covariates, so the
+virtual cohort above approximates rather than reproduces the source
+sample:
+
+- **Body weight** ~ Normal(73.1, 14) kg, clipped to 50-108 kg. The
+  median matches Table 2; the tails cover the Table 2 range.
+- **AST** ~ log-Normal(log 29, 0.5) U/L, clipped to 14-200 U/L. The
+  median matches the Table 2 study median (`ASTmed = 29 U/L`); the upper
+  clip stops short of the most extreme reported value (1392 U/L, likely
+  a small subset with hepatic metastasis) to keep the AST-on-CL effect
+  inside a clinically meaningful range. Royer 2010 retained AST despite
+  hepatic enzymes being correlated; the additive form is preserved
+  exactly as published.
+- **Sex distribution** is not tabulated in Royer 2010. Pegram 2009
+  enrolled women with metastatic breast cancer; the model has no sex
+  effect, so simulation is insensitive to the assumption.
+- **Dose levels and infusion durations** follow Pegram 2009 / Royer 2010
+  Methods page 828: 60 min infusion at 1 and 3 mg/kg, 120 min at 9
+  mg/kg, 180 min at 16 mg/kg. Single-dose simulations omit the
+  multi-cycle schedule (the paper’s first-administration data already
+  drive the reported half-lives).
+- **CL covariate model is additive**, not power. The Royer 2010 equation
+  `CL (L/h) = 0.016 + 0.0036 * (AST / 29)` is reproduced exactly. The
+  intercept (0.016 L/h, Table 3 `theta_CL`) is stored as
+  `lcl = log(0.016)`; the additive AST coefficient (0.0036 L/h, Table 3
+  `COV_CL`) is stored on the linear scale as `e_ast_cl`. The
+  inter-individual random effect is applied multiplicatively
+  (`cl = tvcl * exp(etalcl)`), matching the paper’s “exponential random
+  effect” description.
+- **Residual error variances vs SDs.** Royer 2010 Table 3 reports
+  proportional and additive residual error as variances (sigma^2). The
+  packaged values are stored as SDs (`propSd = sqrt(0.034)`,
+  `addSd = fixed(sqrt(2.26))` mg/L) to match the nlmixr2 `prop()` /
+  `add()` convention.
+- **Random effects on Q and V2** could not be obtained per Royer 2010
+  Results page 829 (“Random effects could not be obtained for either Q
+  or V2”). They are therefore omitted from the model rather than fixed
+  at zero.
+- **Inter-occasion variability** was assessed and found insignificant
+  (Royer 2010 Results page 829); no IOV term is included.
+- **Errata search**: no erratum, corrigendum, or correction notice was
+  located for DOI 10.1038/sj.bjc.6605560 via PubMed (PMID 20160731) at
+  the time of this extraction. The `reference` field will be amended if
+  a later correction surfaces.
+
+## Reference
+
+- Royer B, Yin W, Pegram M, Ibrahim N, Villanueva C, Mir D, Erlandsson
+  F, Pivot X. Population pharmacokinetics of the humanised monoclonal
+  antibody, HuHMFG1 (AS1402), derived from a phase I study on breast
+  cancer. Br J Cancer. 2010;102(5):827-832. <doi:10.1038/sj.bjc.6605560>
