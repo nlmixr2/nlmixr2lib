@@ -298,9 +298,7 @@ Q3W and 10 mg/kg Q3W.
 # Single-dose NCA (first dosing interval, days 0 to 21).
 interval_end_sd <- dose_interval_d
 sim_nca_sd <- sim |>
-  dplyr::filter(!is.na(Cc),
-                time >= 0,
-                time <= interval_end_sd) |>
+  dplyr::filter(!is.na(Cc), time <= interval_end_sd) |>
   dplyr::select(id, treatment, time, Cc)
 
 conc_obj_sd <- PKNCA::PKNCAconc(sim_nca_sd, Cc ~ time | treatment + id)

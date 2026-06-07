@@ -10,7 +10,7 @@ library(PKNCA)
 #> 
 #>     filter
 library(rxode2)
-#> rxode2 5.1.1 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.2 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -457,7 +457,7 @@ single AUC, Cmax, and Ctrough per cycle per subject.
 ``` r
 
 adc_nca <- pop_sim |>
-  filter(!is.na(Cc), time > 0) |>
+  filter(!is.na(Cc)) |>
   mutate(cycle = pmax(1L, as.integer(floor((time - 1e-9) / cycle_dy) + 1L)),
          time_in_cycle = time - (cycle - 1) * cycle_dy) |>
   filter(cycle <= n_cycles) |>
@@ -900,7 +900,7 @@ adc_summary
 ``` r
 
 dxd_nca <- pop_sim |>
-  filter(!is.na(Cc_dxd), time > 0) |>
+  filter(!is.na(Cc_dxd)) |>
   mutate(cycle = pmax(1L, as.integer(floor((time - 1e-9) / cycle_dy) + 1L)),
          time_in_cycle = time - (cycle - 1) * cycle_dy) |>
   filter(cycle <= n_cycles) |>

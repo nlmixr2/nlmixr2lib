@@ -245,7 +245,7 @@ adult treosulfan AUC values for sanity checking.
 ``` r
 
 sim_nca <- sim_typical |>
-  dplyr::filter(!is.na(Cc), time >= 0) |>
+  dplyr::filter(!is.na(Cc)) |>
   dplyr::select(id, time, Cc, treatment)
 
 dose_df <- events |>

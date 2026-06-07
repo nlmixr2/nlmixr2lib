@@ -275,7 +275,7 @@ Discussion, p. 476).
 ``` r
 
 sim_nca <- sim |>
-  filter(!is.na(Cc), Cc > 0) |>
+  filter(!is.na(Cc)) |>
   select(id, time, Cc, treatment)
 
 dose_df <- events |>

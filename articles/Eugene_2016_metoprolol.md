@@ -222,7 +222,7 @@ values.
 ``` r
 
 sim_nca <- sim |>
-  filter(!is.na(Cc), Cc > 0) |>
+  filter(!is.na(Cc)) |>
   select(id, time, Cc, treatment)
 
 conc_obj <- PKNCA::PKNCAconc(
@@ -256,8 +256,8 @@ knitr::kable(nca_summary,
 
 | Interval Start | Interval End | treatment | N | AUClast (hr\*ng/mL) | Cmax (ng/mL) | Tmax (hr) | Half-life (hr) | AUCinf,obs (hr\*ng/mL) |
 |---:|---:|:---|:---|:---|:---|:---|:---|:---|
-| 0 | 24 | Male (50 mg) | 250 | NC | 81.7 \[54.4\] | 1.50 \[0.400, 11.5\] | 3.37 \[1.98\] | NC |
-| 0 | 24 | Female (50 mg) | 250 | NC | 121 \[59.2\] | 1.90 \[0.400, 13.0\] | 3.78 \[3.47\] | NC |
+| 0 | 24 | Male (50 mg) | 250 | 489 \[39.2\] | 81.7 \[54.4\] | 1.50 \[0.400, 11.5\] | 3.37 \[1.98\] | 499 \[38.6\] |
+| 0 | 24 | Female (50 mg) | 250 | 811 \[39.6\] | 121 \[59.2\] | 1.90 \[0.400, 13.0\] | 3.78 \[3.47\] | 841 \[39.1\] |
 
 Simulated single-dose 50 mg NCA parameters by sex (median and 5/95
 percentiles across virtual subjects). {.table}

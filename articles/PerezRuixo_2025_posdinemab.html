@@ -609,7 +609,7 @@
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;     filter</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://nlmixr2.github.io/rxode2/" class="external-link">rxode2</a></span><span class="op">)</span></span>
-<span><span class="co">#&gt; rxode2 5.1.1 using 2 threads (see ?getRxThreads)</span></span>
+<span><span class="co">#&gt; rxode2 5.1.2 using 2 threads (see ?getRxThreads)</span></span>
 <span><span class="co">#&gt;   no cache: create with `rxCreateCache()`</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -1193,7 +1193,7 @@ single-dose simulation.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Use the SAD 30 mg/kg simulation already run above.</span></span>
 <span><span class="va">nca_conc</span> <span class="op">&lt;-</span> <span class="va">sim_hv30</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">time</span> <span class="op">&gt;</span> <span class="fl">0</span>, <span class="va">Cc</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/transmute.html" class="external-link">transmute</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fl">1L</span>, time <span class="op">=</span> <span class="va">time</span>, <span class="va">Cc</span>,</span>
 <span>            treatment <span class="op">=</span> <span class="st">"30 mg/kg IV SD, healthy, 80 kg"</span><span class="op">)</span></span>
 <span></span>
@@ -1208,21 +1208,19 @@ single-dose simulation.</p>
 <span>                        aucinf.obs <span class="op">=</span> <span class="cn">TRUE</span>, half.life <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="va">nca_data</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/PKNCAdata.html" class="external-link">PKNCAdata</a></span><span class="op">(</span><span class="va">conc_obj</span>, <span class="va">dose_obj</span>, intervals <span class="op">=</span> <span class="va">intervals</span><span class="op">)</span></span>
 <span><span class="va">nca_res</span>  <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/pk.nca.html" class="external-link">pk.nca</a></span><span class="op">(</span><span class="va">nca_data</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (1)</span></span>
-<span><span class="co">#&gt; is not allowed</span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">nca_res</span><span class="op">)</span>, digits <span class="op">=</span> <span class="fl">3</span>,</span>
 <span>             caption <span class="op">=</span> <span class="st">"PKNCA summary for a single 30 mg/kg IV bolus (typical 80 kg healthy participant; serum posdinemab in pmol/L)."</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <caption>PKNCA summary for a single 30 mg/kg IV bolus (typical 80 kg
 healthy participant; serum posdinemab in pmol/L).</caption>
 <colgroup>
-<col width="19%">
-<col width="1%">
+<col width="36%">
 <col width="3%">
-<col width="2%">
-<col width="12%">
 <col width="7%">
-<col width="52%">
+<col width="4%">
+<col width="23%">
+<col width="15%">
+<col width="9%">
 </colgroup>
 <thead><tr class="header">
 <th align="left">treatment</th>
@@ -1240,7 +1238,7 @@ healthy participant; serum posdinemab in pmol/L).</caption>
 <td align="right">0</td>
 <td align="right">Inf</td>
 <td align="left">cmax</td>
-<td align="right">4471760.186</td>
+<td align="right">4.518850e+06</td>
 <td align="left">NA</td>
 </tr>
 <tr class="even">
@@ -1249,7 +1247,7 @@ healthy participant; serum posdinemab in pmol/L).</caption>
 <td align="right">0</td>
 <td align="right">Inf</td>
 <td align="left">tmax</td>
-<td align="right">1.000</td>
+<td align="right">0.000000e+00</td>
 <td align="left">NA</td>
 </tr>
 <tr class="odd">
@@ -1258,7 +1256,7 @@ healthy participant; serum posdinemab in pmol/L).</caption>
 <td align="right">0</td>
 <td align="right">Inf</td>
 <td align="left">tlast</td>
-<td align="right">4320.000</td>
+<td align="right">4.320000e+03</td>
 <td align="left">NA</td>
 </tr>
 <tr class="even">
@@ -1267,7 +1265,7 @@ healthy participant; serum posdinemab in pmol/L).</caption>
 <td align="right">0</td>
 <td align="right">Inf</td>
 <td align="left">clast.obs</td>
-<td align="right">5580.971</td>
+<td align="right">5.580971e+03</td>
 <td align="left">NA</td>
 </tr>
 <tr class="odd">
@@ -1276,7 +1274,7 @@ healthy participant; serum posdinemab in pmol/L).</caption>
 <td align="right">0</td>
 <td align="right">Inf</td>
 <td align="left">lambda.z</td>
-<td align="right">0.001</td>
+<td align="right">1.000000e-03</td>
 <td align="left">NA</td>
 </tr>
 <tr class="even">
@@ -1285,7 +1283,7 @@ healthy participant; serum posdinemab in pmol/L).</caption>
 <td align="right">0</td>
 <td align="right">Inf</td>
 <td align="left">r.squared</td>
-<td align="right">1.000</td>
+<td align="right">1.000000e+00</td>
 <td align="left">NA</td>
 </tr>
 <tr class="odd">
@@ -1294,7 +1292,7 @@ healthy participant; serum posdinemab in pmol/L).</caption>
 <td align="right">0</td>
 <td align="right">Inf</td>
 <td align="left">adj.r.squared</td>
-<td align="right">1.000</td>
+<td align="right">1.000000e+00</td>
 <td align="left">NA</td>
 </tr>
 <tr class="even">
@@ -1303,7 +1301,7 @@ healthy participant; serum posdinemab in pmol/L).</caption>
 <td align="right">0</td>
 <td align="right">Inf</td>
 <td align="left">lambda.z.time.first</td>
-<td align="right">148.000</td>
+<td align="right">1.480000e+02</td>
 <td align="left">NA</td>
 </tr>
 <tr class="odd">
@@ -1312,7 +1310,7 @@ healthy participant; serum posdinemab in pmol/L).</caption>
 <td align="right">0</td>
 <td align="right">Inf</td>
 <td align="left">lambda.z.time.last</td>
-<td align="right">4320.000</td>
+<td align="right">4.320000e+03</td>
 <td align="left">NA</td>
 </tr>
 <tr class="even">
@@ -1321,7 +1319,7 @@ healthy participant; serum posdinemab in pmol/L).</caption>
 <td align="right">0</td>
 <td align="right">Inf</td>
 <td align="left">lambda.z.n.points</td>
-<td align="right">284.000</td>
+<td align="right">2.840000e+02</td>
 <td align="left">NA</td>
 </tr>
 <tr class="odd">
@@ -1330,7 +1328,7 @@ healthy participant; serum posdinemab in pmol/L).</caption>
 <td align="right">0</td>
 <td align="right">Inf</td>
 <td align="left">clast.pred</td>
-<td align="right">5534.036</td>
+<td align="right">5.534036e+03</td>
 <td align="left">NA</td>
 </tr>
 <tr class="even">
@@ -1339,7 +1337,7 @@ healthy participant; serum posdinemab in pmol/L).</caption>
 <td align="right">0</td>
 <td align="right">Inf</td>
 <td align="left">half.life</td>
-<td align="right">508.748</td>
+<td align="right">5.087480e+02</td>
 <td align="left">NA</td>
 </tr>
 <tr class="odd">
@@ -1348,7 +1346,7 @@ healthy participant; serum posdinemab in pmol/L).</caption>
 <td align="right">0</td>
 <td align="right">Inf</td>
 <td align="left">span.ratio</td>
-<td align="right">8.201</td>
+<td align="right">8.201000e+00</td>
 <td align="left">NA</td>
 </tr>
 <tr class="even">
@@ -1357,9 +1355,8 @@ healthy participant; serum posdinemab in pmol/L).</caption>
 <td align="right">0</td>
 <td align="right">Inf</td>
 <td align="left">aucinf.obs</td>
-<td align="right">NA</td>
-<td align="left">Requesting an AUC range starting (0) before the first
-measurement (1) is not allowed</td>
+<td align="right">1.592277e+09</td>
+<td align="left">NA</td>
 </tr>
 </tbody>
 </table>

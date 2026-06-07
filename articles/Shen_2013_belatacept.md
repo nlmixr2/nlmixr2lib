@@ -217,7 +217,7 @@ concentrations grouped by dose-level cohort.
 ``` r
 
 sim_nca <- sim |>
-  dplyr::filter(!is.na(Cc), time > 0) |>
+  dplyr::filter(!is.na(Cc)) |>
   dplyr::select(id, time, Cc, cohort)
 
 conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | cohort + id)

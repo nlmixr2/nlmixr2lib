@@ -276,7 +276,7 @@ and `half.life` are computed using PKNCA’s automatic terminal-phase fit.
 ``` r
 
 sim_nca <- sim_typical |>
-  dplyr::filter(!is.na(Cc), time > 0)
+  dplyr::filter(!is.na(Cc))
 
 dose_df <- events |>
   dplyr::filter(evid == 1) |>
@@ -1319,7 +1319,7 @@ Itraconazole (parent) NCA by formulation, typical-value simulation.
 ``` r
 
 conc_obj_ohi <- PKNCA::PKNCAconc(
-  sim_typical |> dplyr::filter(!is.na(Cc_ohi), time > 0) |>
+  sim_typical |> dplyr::filter(!is.na(Cc_ohi)) |>
     dplyr::select(id, time, Cc_ohi, treatment),
   Cc_ohi ~ time | treatment + id,
   concu = "mg/L", timeu = "hr"

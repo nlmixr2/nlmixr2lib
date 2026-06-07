@@ -301,7 +301,7 @@ group).
 ``` r
 
 sim_nca <- sim |>
-  dplyr::filter(!is.na(Cc), time >= 0, time <= 7) |>
+  dplyr::filter(!is.na(Cc), time <= 7) |>
   dplyr::select(id, cohort, time, Cc)
 
 conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | cohort + id)

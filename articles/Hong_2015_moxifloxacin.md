@@ -263,7 +263,7 @@ the simulated medians.
 ``` r
 
 sim_nca <- sim |>
-  dplyr::filter(!is.na(Cc), Cc >= 0, time > 0) |>
+  dplyr::filter(!is.na(Cc)) |>
   dplyr::select(id, time, Cc, treatment)
 
 dose_df <- events |>

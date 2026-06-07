@@ -4,7 +4,7 @@
 
 library(nlmixr2lib)
 library(rxode2)
-#> rxode2 5.1.1 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.2 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -315,10 +315,7 @@ start_ss_840 <- 21 * 6     # day 126: final 420 mg dose under 840/420 q3w
 start_ss_1050 <- 21 * 6    # day 126: final 1050 mg dose under 1050 q3w
 
 sim_ss <- sim |>
-  dplyr::filter(
-    !is.na(Cc), Cc > 0,
-    time >= start_ss_840, time <= start_ss_840 + tau
-  ) |>
+  dplyr::filter(!is.na(Cc), time >= start_ss_840, time <= start_ss_840 + tau) |>
   dplyr::transmute(id, time, Cc, regimen)
 
 dose_ss <- events_cov |>

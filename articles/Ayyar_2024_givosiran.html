@@ -1191,7 +1191,7 @@ per-dose results can be compared with the paper-reported summary
 metrics.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">nca_input</span> <span class="op">&lt;-</span> <span class="va">sim_panel</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">time</span> <span class="op">&gt;</span> <span class="fl">0</span>, <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc_ng_per_mL</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc_ng_per_mL</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">mutate</span><span class="op">(</span>id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">dose_mg_per_kg</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>         treatment <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">dose_mg_per_kg</span>, <span class="st">" mg/kg SC"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">select</span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="va">Cc_ng_per_mL</span>, <span class="va">Cc_asn1_ng_per_mL</span>, <span class="va">treatment</span><span class="op">)</span></span>
@@ -1217,10 +1217,6 @@ metrics.</p>
 <span><span class="va">dose_par</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/PKNCAdose.html" class="external-link">PKNCAdose</a></span><span class="op">(</span><span class="va">dose_df</span>,   <span class="va">amt</span> <span class="op">~</span> <span class="va">time</span> <span class="op">|</span> <span class="va">treatment</span> <span class="op">+</span> <span class="va">id</span><span class="op">)</span></span>
 <span><span class="va">nca_par</span>  <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/pk.nca.html" class="external-link">pk.nca</a></span><span class="op">(</span><span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/PKNCAdata.html" class="external-link">PKNCAdata</a></span><span class="op">(</span><span class="va">conc_par</span>, <span class="va">dose_par</span>,</span>
 <span>                                            intervals <span class="op">=</span> <span class="va">intervals</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
 <span><span class="va">nca_par_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">nca_par</span><span class="op">$</span><span class="va">result</span><span class="op">)</span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
 <span>  <span class="va">nca_par_df</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"treatment"</span>, <span class="st">"PPTESTCD"</span>, <span class="st">"PPORRES"</span><span class="op">)</span><span class="op">]</span>,</span>
@@ -1239,7 +1235,7 @@ h.</caption>
 <tr class="odd">
 <td align="left">0.35 mg/kg SC</td>
 <td align="left">auclast</td>
-<td align="right">NA</td>
+<td align="right">349.78</td>
 </tr>
 <tr class="even">
 <td align="left">0.35 mg/kg SC</td>
@@ -1304,7 +1300,7 @@ h.</caption>
 <tr class="even">
 <td align="left">1 mg/kg SC</td>
 <td align="left">auclast</td>
-<td align="right">NA</td>
+<td align="right">1020.37</td>
 </tr>
 <tr class="odd">
 <td align="left">1 mg/kg SC</td>
@@ -1369,7 +1365,7 @@ h.</caption>
 <tr class="odd">
 <td align="left">2.5 mg/kg SC</td>
 <td align="left">auclast</td>
-<td align="right">NA</td>
+<td align="right">2678.32</td>
 </tr>
 <tr class="even">
 <td align="left">2.5 mg/kg SC</td>
@@ -1434,7 +1430,7 @@ h.</caption>
 <tr class="even">
 <td align="left">5 mg/kg SC</td>
 <td align="left">auclast</td>
-<td align="right">NA</td>
+<td align="right">5820.80</td>
 </tr>
 <tr class="odd">
 <td align="left">5 mg/kg SC</td>
@@ -1503,10 +1499,6 @@ h.</caption>
 <span>                              <span class="va">Cc_asn1_ng_per_mL</span> <span class="op">~</span> <span class="va">time</span> <span class="op">|</span> <span class="va">treatment</span> <span class="op">+</span> <span class="va">id</span><span class="op">)</span></span>
 <span><span class="va">nca_met</span>  <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/pk.nca.html" class="external-link">pk.nca</a></span><span class="op">(</span><span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/PKNCAdata.html" class="external-link">PKNCAdata</a></span><span class="op">(</span><span class="va">conc_met</span>, <span class="va">dose_par</span>,</span>
 <span>                                            intervals <span class="op">=</span> <span class="va">intervals</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
 <span><span class="va">nca_met_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">nca_met</span><span class="op">$</span><span class="va">result</span><span class="op">)</span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
 <span>  <span class="va">nca_met_df</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"treatment"</span>, <span class="st">"PPTESTCD"</span>, <span class="st">"PPORRES"</span><span class="op">)</span><span class="op">]</span>,</span>
@@ -1525,7 +1517,7 @@ h.</caption>
 <tr class="odd">
 <td align="left">0.35 mg/kg SC</td>
 <td align="left">auclast</td>
-<td align="right">NA</td>
+<td align="right">35.66</td>
 </tr>
 <tr class="even">
 <td align="left">0.35 mg/kg SC</td>
@@ -1590,7 +1582,7 @@ h.</caption>
 <tr class="even">
 <td align="left">1 mg/kg SC</td>
 <td align="left">auclast</td>
-<td align="right">NA</td>
+<td align="right">106.22</td>
 </tr>
 <tr class="odd">
 <td align="left">1 mg/kg SC</td>
@@ -1655,7 +1647,7 @@ h.</caption>
 <tr class="odd">
 <td align="left">2.5 mg/kg SC</td>
 <td align="left">auclast</td>
-<td align="right">NA</td>
+<td align="right">292.85</td>
 </tr>
 <tr class="even">
 <td align="left">2.5 mg/kg SC</td>
@@ -1720,7 +1712,7 @@ h.</caption>
 <tr class="even">
 <td align="left">5 mg/kg SC</td>
 <td align="left">auclast</td>
-<td align="right">NA</td>
+<td align="right">692.38</td>
 </tr>
 <tr class="odd">
 <td align="left">5 mg/kg SC</td>

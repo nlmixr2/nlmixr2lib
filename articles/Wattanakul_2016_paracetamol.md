@@ -241,7 +241,7 @@ computed over \[0, 12\] hours rather than `aucinf.obs`.
 ``` r
 
 sim_nca <- sim |>
-  filter(!is.na(Cc), time > 0) |>
+  filter(!is.na(Cc)) |>
   select(id, time, Cc, treatment)
 
 conc_obj <- PKNCA::PKNCAconc(
@@ -284,8 +284,8 @@ knitr::kable(
 
 | Interval Start | Interval End | treatment | N | AUClast (h\*mg/L) | Cmax (mg/L) | Tmax (h) | Half-life (h) |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | 12 | IM_600mg | 200 | NC | 10.0 \[14.1\] | 1.00 \[0.500, 1.00\] | 5.06 \[3.43\] |
-| 0 | 12 | PO_600mg | 200 | NC | 6.79 \[358\] | 0.500 \[0.500, 6.00\] | 5.44 \[4.74\] |
+| 0 | 12 | IM_600mg | 200 | 42.6 \[57.2\] | 10.0 \[14.1\] | 1.00 \[0.500, 1.00\] | 5.06 \[3.43\] |
+| 0 | 12 | PO_600mg | 200 | 31.9 \[356\] | 6.79 \[358\] | 0.500 \[0.500, 6.00\] | 5.44 \[4.74\] |
 
 Simulated NCA parameters by route after a single 600 mg paracetamol
 dose, computed over 0-12 h to match Wattanakul 2016 Table 3. {.table}

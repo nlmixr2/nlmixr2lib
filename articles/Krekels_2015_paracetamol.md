@@ -374,7 +374,7 @@ expected typical-individual values.
 ``` r
 
 sim_nca <- sim_typ |>
-  dplyr::filter(!is.na(Cc), Cc > 0, time > 0) |>
+  dplyr::filter(!is.na(Cc)) |>
   dplyr::transmute(id, time_h = time / 60, Cc, cohort = "typical_2.5kg")
 
 conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time_h | cohort + id)
@@ -396,8 +396,6 @@ intervals <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- PKNCA::pk.nca(nca_data)
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (0.5) is not allowed
 
 knitr::kable(
   as.data.frame(nca_res$result) |>
@@ -419,7 +417,7 @@ knitr::kable(
 
 | cohort        |  cmax | tmax | half.life | aucinf.obs |
 |:--------------|------:|-----:|----------:|-----------:|
-| typical_2.5kg | 13.38 |  0.5 |     4.608 |         NA |
+| typical_2.5kg | 13.38 |  0.5 |     4.608 |      92.27 |
 
 Typical-value PKNCA on simulated plasma paracetamol after a single 15
 mg/kg paracetamol-equivalent IV (15 min infusion) in a 2.5 kg infant.

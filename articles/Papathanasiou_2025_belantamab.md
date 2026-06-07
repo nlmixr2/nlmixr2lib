@@ -334,9 +334,7 @@ agree to within ~20%.
 ``` r
 
 sim_nca <- sim |>
-  dplyr::filter(!is.na(Cc),
-                time >= 0,
-                time <= dose_interval_d) |>
+  dplyr::filter(!is.na(Cc), time <= dose_interval_d) |>
   dplyr::select(id, treatment, time, Cc)
 
 conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | treatment + id)

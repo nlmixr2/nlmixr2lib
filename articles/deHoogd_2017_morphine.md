@@ -287,7 +287,7 @@ uses the four cohort labels so per-cohort summaries roll up.
 ``` r
 
 sim_nca_morphine <- sim_bolus |>
-  filter(!is.na(Cc), time > 0) |>
+  filter(!is.na(Cc)) |>
   select(id, time, Cc, cohort)
 
 dose_df <- events_bolus |>
@@ -342,7 +342,7 @@ Morphine NCA after 10 mg IV bolus. {.table}
 ``` r
 
 sim_nca_m3g <- sim_bolus |>
-  filter(!is.na(Cc_m3g), time > 0) |>
+  filter(!is.na(Cc_m3g)) |>
   select(id, time, Cc_m3g, cohort) |>
   rename(Cc = Cc_m3g)
 
@@ -380,7 +380,7 @@ M3G NCA after 10 mg morphine HCl IV bolus. {.table}
 ``` r
 
 sim_nca_m6g <- sim_bolus |>
-  filter(!is.na(Cc_m6g), time > 0) |>
+  filter(!is.na(Cc_m6g)) |>
   select(id, time, Cc_m6g, cohort) |>
   rename(Cc = Cc_m6g)
 

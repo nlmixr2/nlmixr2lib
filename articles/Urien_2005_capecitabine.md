@@ -301,7 +301,7 @@ of Urien 2005.
 ``` r
 
 sim_nca_cap <- sim |>
-  dplyr::filter(time > 0, !is.na(Cc)) |>
+  dplyr::filter(!is.na(Cc)) |>
   dplyr::transmute(id, time, Cc, treatment = "capecitabine")
 
 dose_df <- events |>
@@ -442,7 +442,7 @@ Capecitabine simulated NCA (single oral dose, 4596 umol). {.table}
 ``` r
 
 sim_nca_dfcr <- sim |>
-  dplyr::filter(time > 0, !is.na(Cc_dfcr)) |>
+  dplyr::filter(!is.na(Cc_dfcr)) |>
   dplyr::transmute(id, time, conc = Cc_dfcr, treatment = "5'-DFCR")
 
 conc_obj_dfcr <- PKNCA::PKNCAconc(
@@ -570,7 +570,7 @@ knitr::kable(summary(nca_dfcr),
 ``` r
 
 sim_nca_dfur <- sim |>
-  dplyr::filter(time > 0, !is.na(Cc_dfur)) |>
+  dplyr::filter(!is.na(Cc_dfur)) |>
   dplyr::transmute(id, time, conc = Cc_dfur, treatment = "5'-DFUR")
 
 conc_obj_dfur <- PKNCA::PKNCAconc(
@@ -698,7 +698,7 @@ knitr::kable(summary(nca_dfur),
 ``` r
 
 sim_nca_5fu <- sim |>
-  dplyr::filter(time > 0, !is.na(Cc_5fu)) |>
+  dplyr::filter(!is.na(Cc_5fu)) |>
   dplyr::transmute(id, time, conc = Cc_5fu, treatment = "5-FU")
 
 conc_obj_5fu <- PKNCA::PKNCAconc(

@@ -301,7 +301,7 @@ terminal half-life from the simulated typical-value `Cc` (ug mRNA / mL).
 ``` r
 
 nca_input <- sim |>
-  filter(!is.na(Cc), time > 0, Cc > 0) |>
+  filter(!is.na(Cc)) |>
   mutate(id = 1L, treatment = "8 ug IV bare LNP") |>
   select(id, time, Cc, treatment)
 
@@ -326,8 +326,6 @@ intervals <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- PKNCA::pk.nca(nca_data)
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (0.05) is not allowed
 nca_summary <- as.data.frame(nca_res$result)
 knitr::kable(
   nca_summary[, c("PPTESTCD", "PPORRES")],
@@ -337,19 +335,19 @@ knitr::kable(
 
 | PPTESTCD            |     PPORRES |
 |:--------------------|------------:|
-| auclast             |          NA |
-| cmax                |   2.0605197 |
-| tmax                |   0.0500000 |
+| auclast             |   0.5003056 |
+| cmax                |   5.2185258 |
+| tmax                |   0.0000000 |
 | tlast               |  24.0000000 |
-| lambda.z            |   6.2308567 |
+| lambda.z            |   6.2308618 |
 | r.squared           |   1.0000000 |
 | adj.r.squared       |   1.0000000 |
-| lambda.z.time.first |   0.1000000 |
+| lambda.z.time.first |   0.0500000 |
 | lambda.z.time.last  |  24.0000000 |
-| lambda.z.n.points   | 479.0000000 |
+| lambda.z.n.points   | 480.0000000 |
 | clast.pred          |   0.0000000 |
-| half.life           |   0.1112443 |
-| span.ratio          | 214.8425045 |
+| half.life           |   0.1112442 |
+| span.ratio          | 215.2921401 |
 
 Simulated NCA parameters for bare-LNP blood concentration after a single
 8 ug IV bolus. {.table}

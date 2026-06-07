@@ -496,7 +496,7 @@ the \>50% peak inhibition at \[SLDM\] ~ 2000 ng/mL.
 
 # Drop ODE-negative excursions and align observation-only rows.
 sim_binary_nca <- sim_binary_typ |>
-  dplyr::filter(!is.na(Cc), Cc >= 0, time <= 24) |>
+  dplyr::filter(!is.na(Cc), time <= 24) |>
   dplyr::mutate(treatment = occasion_label)
 
 dose_binary <- events_binary |>
@@ -549,7 +549,7 @@ Binary model: typical-value NCA per arm. Cmax (ng/mL), Tmax (h), AUC0-24
 ``` r
 
 sim_smetab_nca <- sim_smetab_typ |>
-  dplyr::filter(!is.na(Cc), Cc >= 0, time <= 24) |>
+  dplyr::filter(!is.na(Cc), time <= 24) |>
   dplyr::mutate(treatment = occasion_label)
 
 dose_smetab <- events_smetab |>

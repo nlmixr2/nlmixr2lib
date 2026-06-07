@@ -295,7 +295,7 @@ formulation arms; intervals 0-48 h and 0-336 h match Svensson 2018 Table
 ``` r
 
 sim_for_nca <- sim_vpc |>
-  dplyr::filter(time >= 0, !is.na(Cc)) |>
+  dplyr::filter(!is.na(Cc)) |>
   dplyr::select(id, time, Cc, formulation)
 
 dose_for_nca <- events |>

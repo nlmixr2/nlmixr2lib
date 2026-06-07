@@ -535,7 +535,7 @@ carries `id/treatment` per the skill’s PKNCA recipe.
 ``` r
 
 nca_conc_ped <- sim_ped_recom |>
-  dplyr::filter(time >= 0, time <= 6, !is.na(Cc)) |>
+  dplyr::filter(time <= 6, !is.na(Cc)) |>
   dplyr::select(id, time, Cc, treatment)
 
 nca_dose_ped <- ped |>
@@ -562,7 +562,7 @@ summary(nca_ped)
 ``` r
 
 nca_conc_hm8 <- sim_hm8_iv10 |>
-  dplyr::filter(time >= 0, time <= 6, !is.na(Cc)) |>
+  dplyr::filter(time <= 6, !is.na(Cc)) |>
   dplyr::select(id, time, Cc, treatment)
 
 nca_dose_hm8 <- hm8 |>

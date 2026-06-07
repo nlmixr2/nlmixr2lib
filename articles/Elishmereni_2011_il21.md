@@ -284,7 +284,7 @@ nca_dose <- events |>
   dplyr::select(id, time, amt, treatment = route)
 
 nca_conc <- sim |>
-  dplyr::filter(!is.na(Cc), Cc > 0) |>
+  dplyr::filter(!is.na(Cc)) |>
   dplyr::select(id, time, Cc, treatment = route)
 
 conc_obj <- PKNCA::PKNCAconc(nca_conc, Cc ~ time | treatment + id)

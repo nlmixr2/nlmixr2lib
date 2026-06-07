@@ -235,7 +235,7 @@ ss_dose_df <- events |>
 
 sim_ss_pknca <- sim_ss |>
   dplyr::select(id, time, Cc, treatment) |>
-  dplyr::filter(!is.na(Cc), Cc > 0)
+  dplyr::filter(!is.na(Cc))
 
 conc_obj <- PKNCA::PKNCAconc(sim_ss_pknca, Cc ~ time | treatment + id,
                              concu = "mg/L", timeu = "h")

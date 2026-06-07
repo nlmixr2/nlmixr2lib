@@ -357,7 +357,7 @@ contribution and is directly comparable to the published AUC values.
 
 sim_nca <- sim |>
   as.data.frame() |>
-  filter(!is.na(Cc), time >= 0, time <= 28) |>
+  filter(!is.na(Cc), time <= 28) |>
   mutate(treatment = sprintf("%.1f g/kg", dose_gkg)) |>
   select(id, time, Cc, treatment)
 

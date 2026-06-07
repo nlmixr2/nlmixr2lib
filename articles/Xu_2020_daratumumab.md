@@ -313,8 +313,7 @@ informative.
 ``` r
 
 sim_first_cycle <- sim |>
-  filter(regimen == "Single first dose", !is.na(Cc),
-         time >= 0, time <= 7 * 24) |>
+  filter(regimen == "Single first dose", !is.na(Cc), time <= 7 * 24) |>
   select(id, time, Cc, regimen)
 
 dose_first_cycle <- events |>

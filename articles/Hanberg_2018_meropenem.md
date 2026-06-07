@@ -583,7 +583,7 @@ and half-life computations.
 ``` r
 
 sim_plasma <- sim_table3 |>
-  dplyr::filter(time >= 16, time <= 24, !is.na(Cc), Cc > 0)
+  dplyr::filter(time >= 16, time <= 24, !is.na(Cc))
 
 dose_plasma <- events_table3 |>
   dplyr::filter(evid == 1L, time >= 16, time < 24)

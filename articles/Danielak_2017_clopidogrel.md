@@ -273,7 +273,7 @@ with one PKNCA block per analyte (parent + metabolite).
 ``` r
 
 sim_nca_clp <- sim |>
-  filter(!is.na(Cc), time > 0) |>
+  filter(!is.na(Cc)) |>
   select(id, time, conc = Cc, genotype)
 
 dose_df <- events |>
@@ -726,7 +726,7 @@ Simulated NCA parameters for clopidogrel by CYP2C19\*2 carrier status.
 ``` r
 
 sim_nca_h4 <- sim |>
-  filter(!is.na(Cc_h4), time > 0) |>
+  filter(!is.na(Cc_h4)) |>
   select(id, time, conc = Cc_h4, genotype)
 
 conc_obj_h4 <- PKNCA::PKNCAconc(sim_nca_h4, conc ~ time | genotype + id,

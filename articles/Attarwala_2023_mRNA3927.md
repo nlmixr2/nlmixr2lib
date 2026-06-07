@@ -340,7 +340,7 @@ sim_pknca <- rxode2::rxSolve(mod_typical, events = pknca_events,
 #> ℹ omega/sigma items treated as zero: 'etalcl32', 'etale0_mc2', 'etalbase_mc2', 'etale0_hp3', 'etalbase_hp3', 'etale0_c3c2', 'etalbase_c3c2'
 
 conc_df <- sim_pknca |>
-  dplyr::filter(!is.na(Cc), time > 0) |>
+  dplyr::filter(!is.na(Cc)) |>
   dplyr::select(id, time, Cc, treatment)
 
 dose_df <- pknca_events |>

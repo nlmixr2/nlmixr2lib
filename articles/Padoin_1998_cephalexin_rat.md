@@ -209,7 +209,7 @@ SIPHAR-software noncompartmental analysis the paper used in Tables 1 and
 ``` r
 
 sim_nca <- sim_typical |>
-  dplyr::filter(!is.na(Cc), Cc > 0, time > 0) |>
+  dplyr::filter(!is.na(Cc)) |>
   dplyr::select(id, time, Cc, scenario)
 
 conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | scenario + id)
@@ -250,9 +250,9 @@ knitr::kable(nca_summary, digits = 3,
 
 | scenario | cmax | tmax | tlast | clast.obs | lambda.z | r.squared | adj.r.squared | lambda.z.time.first | lambda.z.time.last | lambda.z.n.points | clast.pred | half.life | span.ratio | aucinf.obs |
 |:---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| Group 4: cephalexin GT alone | 7.907 | 1.15 | 6 | 3.884 | 0.175 | 1 | 1 | 4.55 | 6 | 30 | 3.889 | 3.967 | 0.366 | NA |
-| Group 5: cephalexin + quinapril GT (DDI) | 6.990 | 1.60 | 6 | 4.878 | 0.112 | 1 | 1 | 5.25 | 6 | 16 | 4.881 | 6.212 | 0.121 | NA |
-| Groups 1-3: cephalexin IA | 104.440 | 0.05 | 6 | 1.197 | 0.295 | 1 | 1 | 2.55 | 6 | 70 | 1.193 | 2.352 | 1.467 | NA |
+| Group 4: cephalexin GT alone | 7.907 | 1.15 | 6 | 3.884 | 0.175 | 1 | 1 | 4.55 | 6 | 30 | 3.889 | 3.967 | 0.366 | 57.915 |
+| Group 5: cephalexin + quinapril GT (DDI) | 6.990 | 1.60 | 6 | 4.878 | 0.112 | 1 | 1 | 5.25 | 6 | 16 | 4.881 | 6.212 | 0.121 | 79.251 |
+| Groups 1-3: cephalexin IA | 120.192 | 0.00 | 6 | 1.197 | 0.295 | 1 | 1 | 2.55 | 6 | 70 | 1.193 | 2.352 | 1.467 | 61.700 |
 
 Typical-value NCA per scenario: AUCinf in mg\*h/L, Cmax in mg/L, Tmax in
 h, half-life in h. {.table style="width:100%;"}

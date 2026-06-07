@@ -957,7 +957,7 @@ renal-function spectrum.</p>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">sim_for_nca</span> <span class="op">&lt;-</span> <span class="va">sim_stoch</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span>, <span class="va">Cc</span> <span class="op">&gt;</span> <span class="fl">0</span>, <span class="va">time</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">left_join</span><span class="op">(</span><span class="va">cov_tab</span> <span class="op">|&gt;</span> <span class="fu">select</span><span class="op">(</span><span class="va">id</span>, <span class="va">crcl_band</span><span class="op">)</span>, by <span class="op">=</span> <span class="st">"id"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">select</span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="va">Cc</span>, <span class="va">crcl_band</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
@@ -1027,7 +1027,7 @@ renal-function spectrum.</p>
 <td align="right">24</td>
 <td align="left">low CRCL</td>
 <td align="left">30</td>
-<td align="left">NC</td>
+<td align="left">750 [36.9]</td>
 <td align="left">68.8 [26.8]</td>
 <td align="left">1.00 [1.00, 1.00]</td>
 <td align="left">.</td>
@@ -1042,14 +1042,14 @@ renal-function spectrum.</p>
 <td align="left">.</td>
 <td align="left">.</td>
 <td align="left">19.0 [10.2]</td>
-<td align="left">NC</td>
+<td align="left">1240 [66.0]</td>
 </tr>
 <tr class="odd">
 <td align="right">0</td>
 <td align="right">24</td>
 <td align="left">median CRCL</td>
 <td align="left">29</td>
-<td align="left">NC</td>
+<td align="left">667 [46.3]</td>
 <td align="left">74.8 [37.6]</td>
 <td align="left">1.00 [1.00, 1.00]</td>
 <td align="left">.</td>
@@ -1064,14 +1064,14 @@ renal-function spectrum.</p>
 <td align="left">.</td>
 <td align="left">.</td>
 <td align="left">15.6 [11.5]</td>
-<td align="left">NC</td>
+<td align="left">973 [81.0]</td>
 </tr>
 <tr class="odd">
 <td align="right">0</td>
 <td align="right">24</td>
 <td align="left">high CRCL</td>
 <td align="left">29</td>
-<td align="left">NC</td>
+<td align="left">316 [75.1]</td>
 <td align="left">60.2 [45.6]</td>
 <td align="left">1.00 [1.00, 1.00]</td>
 <td align="left">.</td>
@@ -1086,7 +1086,7 @@ renal-function spectrum.</p>
 <td align="left">.</td>
 <td align="left">.</td>
 <td align="left">5.74 [3.10]</td>
-<td align="left">NC</td>
+<td align="left">340 [81.2]</td>
 </tr>
 </tbody>
 </table>

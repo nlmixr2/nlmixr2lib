@@ -4,7 +4,7 @@
 
 library(nlmixr2lib)
 library(rxode2)
-#> rxode2 5.1.1 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.2 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -209,7 +209,7 @@ the dose group as the treatment grouping variable.
 
 sim_nca <- sim |>
   as.data.frame() |>
-  filter(!is.na(Cc), time >= 0, time <= 28) |>
+  filter(!is.na(Cc), time <= 28) |>
   left_join(treatment_map, by = c("id" = "ID")) |>
   transmute(id = id, time = time, Cc = Cc, treatment = treatment)
 

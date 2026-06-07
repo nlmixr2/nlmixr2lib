@@ -173,7 +173,7 @@ ggplot(vpc, aes(time, q50)) +
 ``` r
 
 sim_nca <- sim_df |>
-  dplyr::filter(!is.na(Cc), time > 0) |>
+  dplyr::filter(!is.na(Cc)) |>
   dplyr::select(id, time, Cc, OCC)
 sim_nca$treatment <- "RIF 600 mg PO"
 

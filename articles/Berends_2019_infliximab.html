@@ -609,7 +609,7 @@
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;     filter</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://nlmixr2.github.io/rxode2/" class="external-link">rxode2</a></span><span class="op">)</span></span>
-<span><span class="co">#&gt; rxode2 5.1.1 using 2 threads (see ?getRxThreads)</span></span>
+<span><span class="co">#&gt; rxode2 5.1.2 using 2 threads (see ?getRxThreads)</span></span>
 <span><span class="co">#&gt;   no cache: create with `rxCreateCache()`</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -1118,7 +1118,7 @@ the skill’s PKNCA recipe.</p>
 <span><span class="va">sim_sd</span> <span class="op">&lt;-</span> <span class="va">sim_sd</span><span class="op">[</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/duplicated.html" class="external-link">duplicated</a></span><span class="op">(</span><span class="va">sim_sd</span><span class="op">$</span><span class="va">time</span><span class="op">)</span>, <span class="op">]</span></span>
 <span></span>
 <span><span class="va">nca_conc</span> <span class="op">&lt;-</span> <span class="va">sim_sd</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">time</span> <span class="op">&gt;</span> <span class="fl">0</span>, <span class="va">Cc</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/transmute.html" class="external-link">transmute</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fl">1L</span>, <span class="va">time</span>, <span class="va">Cc</span>,</span>
 <span>            treatment <span class="op">=</span> <span class="st">"5 mg/kg IV SD, ADA-, ALB 38"</span><span class="op">)</span></span>
 <span></span>
@@ -1134,21 +1134,19 @@ the skill’s PKNCA recipe.</p>
 <span></span>
 <span><span class="va">nca_data</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/PKNCAdata.html" class="external-link">PKNCAdata</a></span><span class="op">(</span><span class="va">conc_obj</span>, <span class="va">dose_obj</span>, intervals <span class="op">=</span> <span class="va">intervals</span><span class="op">)</span></span>
 <span><span class="va">nca_res</span>  <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/pk.nca.html" class="external-link">pk.nca</a></span><span class="op">(</span><span class="va">nca_data</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement</span></span>
-<span><span class="co">#&gt; (0.04) is not allowed</span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">nca_res</span><span class="op">)</span>, digits <span class="op">=</span> <span class="fl">3</span>,</span>
 <span>             caption <span class="op">=</span> <span class="st">"PKNCA summary for a single 5 mg/kg IV bolus (ADA-negative typical-value simulation; IFX in ug/mL)."</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <caption>PKNCA summary for a single 5 mg/kg IV bolus (ADA-negative
 typical-value simulation; IFX in ug/mL).</caption>
 <colgroup>
-<col width="17%">
-<col width="1%">
+<col width="36%">
 <col width="3%">
-<col width="2%">
-<col width="12%">
+<col width="7%">
 <col width="5%">
-<col width="56%">
+<col width="25%">
+<col width="10%">
+<col width="10%">
 </colgroup>
 <thead><tr class="header">
 <th align="left">treatment</th>
@@ -1166,7 +1164,7 @@ typical-value simulation; IFX in ug/mL).</caption>
 <td align="right">0</td>
 <td align="right">Inf</td>
 <td align="left">cmax</td>
-<td align="right">109.034</td>
+<td align="right">110.063</td>
 <td align="left">NA</td>
 </tr>
 <tr class="even">
@@ -1175,7 +1173,7 @@ typical-value simulation; IFX in ug/mL).</caption>
 <td align="right">0</td>
 <td align="right">Inf</td>
 <td align="left">tmax</td>
-<td align="right">0.040</td>
+<td align="right">0.000</td>
 <td align="left">NA</td>
 </tr>
 <tr class="odd">
@@ -1283,9 +1281,8 @@ typical-value simulation; IFX in ug/mL).</caption>
 <td align="right">0</td>
 <td align="right">Inf</td>
 <td align="left">aucinf.obs</td>
-<td align="right">NA</td>
-<td align="left">Requesting an AUC range starting (0) before the first
-measurement (0.04) is not allowed</td>
+<td align="right">867.587</td>
+<td align="left">NA</td>
 </tr>
 </tbody>
 </table>

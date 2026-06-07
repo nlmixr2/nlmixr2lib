@@ -313,8 +313,7 @@ last_dose_per_regimen <- list(
 ss_window <- dplyr::bind_rows(lapply(names(last_dose_per_regimen), function(r) {
   ld <- last_dose_per_regimen[[r]]
   sim |>
-    dplyr::filter(regimen == r, time >= ld$t_dose,
-                  time <= ld$t_dose + ld$interval, Cc > 0) |>
+    dplyr::filter(regimen == r, time >= ld$t_dose, time <= ld$t_dose + ld$interval) |>
     dplyr::mutate(
       t_in_interval = time - ld$t_dose,
       treatment     = r

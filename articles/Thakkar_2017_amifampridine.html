@@ -991,7 +991,7 @@ separately for the 3,4-DAP parent and the 3-Ac DAP metabolite.</p>
 </h3>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim_nca_parent</span> <span class="op">&lt;-</span> <span class="va">sim_single</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span>, <span class="va">time</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">select</span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="va">Cc</span>, <span class="va">cohort</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">dose_df</span> <span class="op">&lt;-</span> <span class="va">events_single</span> <span class="op">|&gt;</span></span>
@@ -1020,12 +1020,6 @@ separately for the 3,4-DAP parent and the 3-Ac DAP metabolite.</p>
 <span><span class="va">nca_parent</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/pk.nca.html" class="external-link">pk.nca</a></span><span class="op">(</span></span>
 <span>  <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/PKNCAdata.html" class="external-link">PKNCAdata</a></span><span class="op">(</span><span class="va">conc_obj_parent</span>, <span class="va">dose_obj</span>, intervals <span class="op">=</span> <span class="va">intervals</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">nca_parent</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>             caption <span class="op">=</span> <span class="st">"3,4-DAP parent NCA after a single 20 mg oral dose."</span><span class="op">)</span></span></code></pre></div>
 <table style="width:100%;" class="table">
@@ -1058,33 +1052,33 @@ separately for the 3,4-DAP parent and the 3-Ac DAP metabolite.</p>
 <td align="right">12</td>
 <td align="left">130 kg</td>
 <td align="left">1</td>
-<td align="left">NC</td>
+<td align="left">116</td>
 <td align="left">59.6</td>
 <td align="left">0.300</td>
 <td align="left">12.1</td>
-<td align="left">NC</td>
+<td align="left">155</td>
 </tr>
 <tr class="even">
 <td align="right">0</td>
 <td align="right">12</td>
 <td align="left">50 kg</td>
 <td align="left">1</td>
-<td align="left">NC</td>
+<td align="left">246</td>
 <td align="left">78.8</td>
 <td align="left">0.400</td>
 <td align="left">7.13</td>
-<td align="left">NC</td>
+<td align="left">320</td>
 </tr>
 <tr class="odd">
 <td align="right">0</td>
 <td align="right">12</td>
 <td align="left">82 kg (median)</td>
 <td align="left">1</td>
-<td align="left">NC</td>
+<td align="left">165</td>
 <td align="left">69.2</td>
 <td align="left">0.300</td>
 <td align="left">9.20</td>
-<td align="left">NC</td>
+<td align="left">220</td>
 </tr>
 </tbody>
 </table>
@@ -1094,7 +1088,7 @@ separately for the 3,4-DAP parent and the 3-Ac DAP metabolite.</p>
 </h3>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim_nca_metab</span> <span class="op">&lt;-</span> <span class="va">sim_single</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc_acdap</span><span class="op">)</span>, <span class="va">time</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc_acdap</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">select</span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="va">Cc_acdap</span>, <span class="va">cohort</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">rename</span><span class="op">(</span>Cc <span class="op">=</span> <span class="va">Cc_acdap</span><span class="op">)</span></span>
 <span></span>
@@ -1106,12 +1100,6 @@ separately for the 3,4-DAP parent and the 3-Ac DAP metabolite.</p>
 <span><span class="va">nca_metab</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/pk.nca.html" class="external-link">pk.nca</a></span><span class="op">(</span></span>
 <span>  <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/PKNCAdata.html" class="external-link">PKNCAdata</a></span><span class="op">(</span><span class="va">conc_obj_metab</span>, <span class="va">dose_obj</span>, intervals <span class="op">=</span> <span class="va">intervals</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">nca_metab</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>             caption <span class="op">=</span> <span class="st">"3-Ac DAP metabolite NCA after a single 20 mg oral dose."</span><span class="op">)</span></span></code></pre></div>
 <table style="width:100%;" class="table">
@@ -1145,33 +1133,33 @@ dose.</caption>
 <td align="right">12</td>
 <td align="left">130 kg</td>
 <td align="left">1</td>
-<td align="left">NC</td>
+<td align="left">499</td>
 <td align="left">119</td>
 <td align="left">1.40</td>
 <td align="left">10.6</td>
-<td align="left">NC</td>
+<td align="left">663</td>
 </tr>
 <tr class="even">
 <td align="right">0</td>
 <td align="right">12</td>
 <td align="left">50 kg</td>
 <td align="left">1</td>
-<td align="left">NC</td>
+<td align="left">972</td>
 <td align="left">126</td>
 <td align="left">2.40</td>
 <td align="left">6.43</td>
-<td align="left">NC</td>
+<td align="left">1370</td>
 </tr>
 <tr class="odd">
 <td align="right">0</td>
 <td align="right">12</td>
 <td align="left">82 kg (median)</td>
 <td align="left">1</td>
-<td align="left">NC</td>
+<td align="left">691</td>
 <td align="left">122</td>
 <td align="left">1.70</td>
 <td align="left">7.70</td>
-<td align="left">NC</td>
+<td align="left">929</td>
 </tr>
 </tbody>
 </table>

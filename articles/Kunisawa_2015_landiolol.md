@@ -257,7 +257,7 @@ so per-group steady-state and washout properties are visible.
 ``` r
 
 sim_nca <- sim |>
-  dplyr::filter(!is.na(Cc), Cc > 0) |>
+  dplyr::filter(!is.na(Cc)) |>
   dplyr::select(id, time, Cc, target_ngml) |>
   dplyr::mutate(target_ngml = as.character(target_ngml))
 

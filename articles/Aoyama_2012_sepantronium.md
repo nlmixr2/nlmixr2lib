@@ -392,7 +392,7 @@ Css are possible.
 ``` r
 
 sim_for_nca <- sim_stoch |>
-  filter(!is.na(Cc), Cc > 0, time > 0) |>
+  filter(!is.na(Cc)) |>
   select(id, time, Cc, cancer) |>
   as.data.frame()
 
@@ -407,6 +407,8 @@ conc_obj <- PKNCA::PKNCAconc(
   concu   = "ng/mL",
   timeu   = "hr"
 )
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
 dose_obj <- PKNCA::PKNCAdose(
   data    = doses_for_nca,
   formula = amt ~ time | cancer + id,

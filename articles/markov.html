@@ -771,7 +771,7 @@ methods (with standard R functions) to convert that to a function for
 <span><span class="co">#&gt; [====|====|====|====|====|====|====|====|====|====] 0:00:00</span></span>
 <span><span class="co">#&gt; → compiling EBE model...</span></span>
 <span><span class="co">#&gt; ✔ done</span></span>
-<span><span class="co">#&gt; rxode2 5.1.1 using 2 threads (see ?getRxThreads)</span></span>
+<span><span class="co">#&gt; rxode2 5.1.2 using 2 threads (see ?getRxThreads)</span></span>
 <span><span class="co">#&gt;   no cache: create with `rxCreateCache()`</span></span>
 <span><span class="co">#&gt; calculating covariance matrix</span></span>
 <span><span class="co">#&gt; done</span></span>
@@ -785,8 +785,10 @@ methods (with standard R functions) to convert that to a function for
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── Time (sec fit$time): ──</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;           setup optimize covariance table compress    other</span></span>
-<span><span class="co">#&gt; elapsed 0.03144 0.004073   0.004075 0.043    0.001 3.866412</span></span>
+<span><span class="co">#&gt;             setup    optimize  covariance preprocess postprocess table compress</span></span>
+<span><span class="co">#&gt; elapsed 0.0682372 0.006661731 0.005340189      0.063       0.021 0.262    0.001</span></span>
+<span><span class="co">#&gt;            other</span></span>
+<span><span class="co">#&gt; elapsed 3.587761</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── (fit$parFixed or fit$parFixedDf): ──</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -817,7 +819,6 @@ methods (with standard R functions) to convert that to a function for
 <span><span class="co">#&gt;    • gradient problems with initial estimate and covariance; see $scaleInfo </span></span>
 <span><span class="co">#&gt;    • last objective function was not at minimum, possible problems in optimization </span></span>
 <span><span class="co">#&gt;    • Hessian reset during optimization; (can control by foceiControl(resetHessianAndEta=.)) </span></span>
-<span><span class="co">#&gt;    • bad solve during optimization </span></span>
 <span><span class="co">#&gt;   Censoring (fit$censInformation): No censoring</span></span>
 <span><span class="co">#&gt;   Minimization message (fit$message):  </span></span>
 <span><span class="co">#&gt;     false convergence (8) </span></span>

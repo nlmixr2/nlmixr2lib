@@ -10,7 +10,7 @@ library(PKNCA)
 #> 
 #>     filter
 library(rxode2)
-#> rxode2 5.1.1 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.2 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -421,7 +421,7 @@ sim_sd <- rxode2::rxSolve(mod_typical, ev_sd, returnType = "data.frame")
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvmax', 'etalrbase', 'etalkdeg_kint'
 
 sim_nca <- sim_sd |>
-  filter(!is.na(Cc), time >= 0) |>
+  filter(!is.na(Cc)) |>
   mutate(id = 1L, treatment = "5 mg/kg IV SD, DMD pediatric") |>
   select(id, time, Cc, treatment)
 

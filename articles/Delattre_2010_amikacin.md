@@ -289,7 +289,7 @@ cov_tab$crcl_band <- cut(
 )
 
 sim_for_nca <- sim_stoch |>
-  filter(!is.na(Cc), Cc > 0, time > 0) |>
+  filter(!is.na(Cc)) |>
   left_join(cov_tab |> select(id, crcl_band), by = "id") |>
   select(id, time, Cc, crcl_band) |>
   as.data.frame()
@@ -333,12 +333,12 @@ knitr::kable(
 
 | Interval Start | Interval End | crcl_band | N | AUClast (hr\*mg/L) | Cmax (mg/L) | Tmax (hr) | Half-life (hr) | AUCinf,obs (hr\*mg/L) |
 |---:|---:|:---|:---|:---|:---|:---|:---|:---|
-| 0 | 24 | low CRCL | 30 | NC | 68.8 \[26.8\] | 1.00 \[1.00, 1.00\] | . | . |
-| 0 | Inf | low CRCL | 30 | . | . | . | 19.0 \[10.2\] | NC |
-| 0 | 24 | median CRCL | 29 | NC | 74.8 \[37.6\] | 1.00 \[1.00, 1.00\] | . | . |
-| 0 | Inf | median CRCL | 29 | . | . | . | 15.6 \[11.5\] | NC |
-| 0 | 24 | high CRCL | 29 | NC | 60.2 \[45.6\] | 1.00 \[1.00, 1.00\] | . | . |
-| 0 | Inf | high CRCL | 29 | . | . | . | 5.74 \[3.10\] | NC |
+| 0 | 24 | low CRCL | 30 | 750 \[36.9\] | 68.8 \[26.8\] | 1.00 \[1.00, 1.00\] | . | . |
+| 0 | Inf | low CRCL | 30 | . | . | . | 19.0 \[10.2\] | 1240 \[66.0\] |
+| 0 | 24 | median CRCL | 29 | 667 \[46.3\] | 74.8 \[37.6\] | 1.00 \[1.00, 1.00\] | . | . |
+| 0 | Inf | median CRCL | 29 | . | . | . | 15.6 \[11.5\] | 973 \[81.0\] |
+| 0 | 24 | high CRCL | 29 | 316 \[75.1\] | 60.2 \[45.6\] | 1.00 \[1.00, 1.00\] | . | . |
+| 0 | Inf | high CRCL | 29 | . | . | . | 5.74 \[3.10\] | 340 \[81.2\] |
 
 Simulated NCA parameters by CRCL band (PKNCA). {.table}
 

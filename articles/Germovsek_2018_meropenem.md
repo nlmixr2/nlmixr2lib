@@ -424,9 +424,7 @@ extension to multi-stratum NCA is straightforward.
 ``` r
 
 nca_input_plasma <- sim |>
-  dplyr::filter(stratum == ">=32 GA / >=2 PNA wk",
-                CSF_TPRO == 1.2,
-                !is.na(Cc), Cc > 0) |>
+  dplyr::filter(stratum == ">=32 GA / >=2 PNA wk", CSF_TPRO == 1.2, !is.na(Cc)) |>
   dplyr::select(id, time, Cc, stratum)
 
 dose_pk <- events |>
@@ -480,9 +478,7 @@ CSF protein 1.2 g/L). {.table}
 ``` r
 
 nca_input_csf <- sim |>
-  dplyr::filter(stratum == ">=32 GA / >=2 PNA wk",
-                CSF_TPRO == 1.2,
-                !is.na(Ccsf), Ccsf > 0) |>
+  dplyr::filter(stratum == ">=32 GA / >=2 PNA wk", CSF_TPRO == 1.2, !is.na(Ccsf)) |>
   dplyr::select(id, time, Ccsf, stratum)
 
 conc_obj_csf <- PKNCA::PKNCAconc(

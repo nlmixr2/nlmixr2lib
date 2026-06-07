@@ -997,7 +997,7 @@ separately for artesunate (<code>Cc</code>) and dihydroartemisinin
 (<code>Cc_dha</code>).</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim_nca_art</span> <span class="op">&lt;-</span> <span class="va">sim</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span>, <span class="va">time</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="va">Cc</span>, <span class="va">treatment</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="va">treatment</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span>Cc <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span>, .groups <span class="op">=</span> <span class="st">"drop"</span><span class="op">)</span></span>
@@ -1025,21 +1025,9 @@ separately for artesunate (<code>Cc</code>) and dihydroartemisinin
 <span></span>
 <span><span class="va">nca_art</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/pk.nca.html" class="external-link">pk.nca</a></span><span class="op">(</span><span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/PKNCAdata.html" class="external-link">PKNCAdata</a></span><span class="op">(</span><span class="va">conc_obj_art</span>, <span class="va">dose_obj</span>,</span>
 <span>                                          intervals <span class="op">=</span> <span class="va">intervals</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement</span></span>
-<span><span class="co">#&gt; (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
 <span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement</span></span>
-<span><span class="co">#&gt; (0.25) is not allowed</span></span>
+<span><span class="co">#&gt; Warning in log(conc.2/conc.1): NaNs produced</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc = conc): Negative concentrations found</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
 <span><span class="co">#&gt; concentrations found</span></span>
@@ -1054,13 +1042,10 @@ separately for artesunate (<code>Cc</code>) and dihydroartemisinin
 <span><span class="co">#&gt; Warning in log(data$conc): NaNs produced</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
 <span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
+<span><span class="co">#&gt; Warning in log(conc.2/conc.1): NaNs produced</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
 <span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement</span></span>
-<span><span class="co">#&gt; (0.25) is not allowed</span></span>
+<span><span class="co">#&gt; Warning in log(conc.2/conc.1): NaNs produced</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc = conc): Negative concentrations found</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
 <span><span class="co">#&gt; concentrations found</span></span>
@@ -1075,12 +1060,10 @@ separately for artesunate (<code>Cc</code>) and dihydroartemisinin
 <span><span class="co">#&gt; Warning in log(data$conc): NaNs produced</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
 <span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement</span></span>
-<span><span class="co">#&gt; (0.25) is not allowed</span></span>
+<span><span class="co">#&gt; Warning in log(conc.2/conc.1): NaNs produced</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
 <span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement</span></span>
-<span><span class="co">#&gt; (0.25) is not allowed</span></span>
+<span><span class="co">#&gt; Warning in log(conc.2/conc.1): NaNs produced</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc = conc): Negative concentrations found</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
 <span><span class="co">#&gt; concentrations found</span></span>
@@ -1095,13 +1078,10 @@ separately for artesunate (<code>Cc</code>) and dihydroartemisinin
 <span><span class="co">#&gt; Warning in log(data$conc): NaNs produced</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
 <span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
+<span><span class="co">#&gt; Warning in log(conc.2/conc.1): NaNs produced</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
 <span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement</span></span>
-<span><span class="co">#&gt; (0.25) is not allowed</span></span>
+<span><span class="co">#&gt; Warning in log(conc.2/conc.1): NaNs produced</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc = conc): Negative concentrations found</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
 <span><span class="co">#&gt; concentrations found</span></span>
@@ -1116,17 +1096,10 @@ separately for artesunate (<code>Cc</code>) and dihydroartemisinin
 <span><span class="co">#&gt; Warning in log(data$conc): NaNs produced</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
 <span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
+<span><span class="co">#&gt; Warning in log(conc.2/conc.1): NaNs produced</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
 <span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement</span></span>
-<span><span class="co">#&gt; (0.25) is not allowed</span></span>
+<span><span class="co">#&gt; Warning in log(conc.2/conc.1): NaNs produced</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc = conc): Negative concentrations found</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
 <span><span class="co">#&gt; concentrations found</span></span>
@@ -1141,13 +1114,10 @@ separately for artesunate (<code>Cc</code>) and dihydroartemisinin
 <span><span class="co">#&gt; Warning in log(data$conc): NaNs produced</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
 <span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
+<span><span class="co">#&gt; Warning in log(conc.2/conc.1): NaNs produced</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
 <span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement</span></span>
-<span><span class="co">#&gt; (0.25) is not allowed</span></span>
+<span><span class="co">#&gt; Warning in log(conc.2/conc.1): NaNs produced</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc = conc): Negative concentrations found</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
 <span><span class="co">#&gt; concentrations found</span></span>
@@ -1162,17 +1132,10 @@ separately for artesunate (<code>Cc</code>) and dihydroartemisinin
 <span><span class="co">#&gt; Warning in log(data$conc): NaNs produced</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
 <span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
+<span><span class="co">#&gt; Warning in log(conc.2/conc.1): NaNs produced</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
 <span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement</span></span>
-<span><span class="co">#&gt; (0.25) is not allowed</span></span>
+<span><span class="co">#&gt; Warning in log(conc.2/conc.1): NaNs produced</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc = conc): Negative concentrations found</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
 <span><span class="co">#&gt; concentrations found</span></span>
@@ -1187,12 +1150,10 @@ separately for artesunate (<code>Cc</code>) and dihydroartemisinin
 <span><span class="co">#&gt; Warning in log(data$conc): NaNs produced</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
 <span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement</span></span>
-<span><span class="co">#&gt; (0.25) is not allowed</span></span>
+<span><span class="co">#&gt; Warning in log(conc.2/conc.1): NaNs produced</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
 <span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement</span></span>
-<span><span class="co">#&gt; (0.25) is not allowed</span></span>
+<span><span class="co">#&gt; Warning in log(conc.2/conc.1): NaNs produced</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc = conc): Negative concentrations found</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
 <span><span class="co">#&gt; concentrations found</span></span>
@@ -1207,12 +1168,10 @@ separately for artesunate (<code>Cc</code>) and dihydroartemisinin
 <span><span class="co">#&gt; Warning in log(data$conc): NaNs produced</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
 <span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement</span></span>
-<span><span class="co">#&gt; (0.25) is not allowed</span></span>
+<span><span class="co">#&gt; Warning in log(conc.2/conc.1): NaNs produced</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
 <span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement</span></span>
-<span><span class="co">#&gt; (0.25) is not allowed</span></span>
+<span><span class="co">#&gt; Warning in log(conc.2/conc.1): NaNs produced</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc = conc): Negative concentrations found</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
 <span><span class="co">#&gt; concentrations found</span></span>
@@ -1227,13 +1186,10 @@ separately for artesunate (<code>Cc</code>) and dihydroartemisinin
 <span><span class="co">#&gt; Warning in log(data$conc): NaNs produced</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
 <span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
+<span><span class="co">#&gt; Warning in log(conc.2/conc.1): NaNs produced</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
 <span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement</span></span>
-<span><span class="co">#&gt; (0.25) is not allowed</span></span>
+<span><span class="co">#&gt; Warning in log(conc.2/conc.1): NaNs produced</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc = conc): Negative concentrations found</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
 <span><span class="co">#&gt; concentrations found</span></span>
@@ -1248,12 +1204,10 @@ separately for artesunate (<code>Cc</code>) and dihydroartemisinin
 <span><span class="co">#&gt; Warning in log(data$conc): NaNs produced</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
 <span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement</span></span>
-<span><span class="co">#&gt; (0.25) is not allowed</span></span>
+<span><span class="co">#&gt; Warning in log(conc.2/conc.1): NaNs produced</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
 <span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement</span></span>
-<span><span class="co">#&gt; (0.25) is not allowed</span></span>
+<span><span class="co">#&gt; Warning in log(conc.2/conc.1): NaNs produced</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc = conc): Negative concentrations found</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
 <span><span class="co">#&gt; concentrations found</span></span>
@@ -1268,12 +1222,10 @@ separately for artesunate (<code>Cc</code>) and dihydroartemisinin
 <span><span class="co">#&gt; Warning in log(data$conc): NaNs produced</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
 <span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement</span></span>
-<span><span class="co">#&gt; (0.25) is not allowed</span></span>
+<span><span class="co">#&gt; Warning in log(conc.2/conc.1): NaNs produced</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
 <span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement</span></span>
-<span><span class="co">#&gt; (0.25) is not allowed</span></span>
+<span><span class="co">#&gt; Warning in log(conc.2/conc.1): NaNs produced</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc = conc): Negative concentrations found</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
 <span><span class="co">#&gt; concentrations found</span></span>
@@ -1288,12 +1240,10 @@ separately for artesunate (<code>Cc</code>) and dihydroartemisinin
 <span><span class="co">#&gt; Warning in log(data$conc): NaNs produced</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
 <span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement</span></span>
-<span><span class="co">#&gt; (0.25) is not allowed</span></span>
+<span><span class="co">#&gt; Warning in log(conc.2/conc.1): NaNs produced</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
 <span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement</span></span>
-<span><span class="co">#&gt; (0.25) is not allowed</span></span>
+<span><span class="co">#&gt; Warning in log(conc.2/conc.1): NaNs produced</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc = conc): Negative concentrations found</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
 <span><span class="co">#&gt; concentrations found</span></span>
@@ -1308,12 +1258,10 @@ separately for artesunate (<code>Cc</code>) and dihydroartemisinin
 <span><span class="co">#&gt; Warning in log(data$conc): NaNs produced</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
 <span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement</span></span>
-<span><span class="co">#&gt; (0.25) is not allowed</span></span>
+<span><span class="co">#&gt; Warning in log(conc.2/conc.1): NaNs produced</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
 <span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement</span></span>
-<span><span class="co">#&gt; (0.25) is not allowed</span></span>
+<span><span class="co">#&gt; Warning in log(conc.2/conc.1): NaNs produced</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc = conc): Negative concentrations found</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
 <span><span class="co">#&gt; concentrations found</span></span>
@@ -1328,12 +1276,10 @@ separately for artesunate (<code>Cc</code>) and dihydroartemisinin
 <span><span class="co">#&gt; Warning in log(data$conc): NaNs produced</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
 <span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement</span></span>
-<span><span class="co">#&gt; (0.25) is not allowed</span></span>
+<span><span class="co">#&gt; Warning in log(conc.2/conc.1): NaNs produced</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
 <span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement</span></span>
-<span><span class="co">#&gt; (0.25) is not allowed</span></span>
+<span><span class="co">#&gt; Warning in log(conc.2/conc.1): NaNs produced</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc = conc): Negative concentrations found</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
 <span><span class="co">#&gt; concentrations found</span></span>
@@ -1348,17 +1294,10 @@ separately for artesunate (<code>Cc</code>) and dihydroartemisinin
 <span><span class="co">#&gt; Warning in log(data$conc): NaNs produced</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
 <span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
+<span><span class="co">#&gt; Warning in log(conc.2/conc.1): NaNs produced</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
 <span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement</span></span>
-<span><span class="co">#&gt; (0.25) is not allowed</span></span>
+<span><span class="co">#&gt; Warning in log(conc.2/conc.1): NaNs produced</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc = conc): Negative concentrations found</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
 <span><span class="co">#&gt; concentrations found</span></span>
@@ -1373,13 +1312,10 @@ separately for artesunate (<code>Cc</code>) and dihydroartemisinin
 <span><span class="co">#&gt; Warning in log(data$conc): NaNs produced</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
 <span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
+<span><span class="co">#&gt; Warning in log(conc.2/conc.1): NaNs produced</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
 <span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement</span></span>
-<span><span class="co">#&gt; (0.25) is not allowed</span></span>
+<span><span class="co">#&gt; Warning in log(conc.2/conc.1): NaNs produced</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc = conc): Negative concentrations found</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
 <span><span class="co">#&gt; concentrations found</span></span>
@@ -1394,15 +1330,10 @@ separately for artesunate (<code>Cc</code>) and dihydroartemisinin
 <span><span class="co">#&gt; Warning in log(data$conc): NaNs produced</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
 <span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
+<span><span class="co">#&gt; Warning in log(conc.2/conc.1): NaNs produced</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
 <span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement</span></span>
-<span><span class="co">#&gt; (0.25) is not allowed</span></span>
+<span><span class="co">#&gt; Warning in log(conc.2/conc.1): NaNs produced</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc = conc): Negative concentrations found</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
 <span><span class="co">#&gt; concentrations found</span></span>
@@ -1417,12 +1348,10 @@ separately for artesunate (<code>Cc</code>) and dihydroartemisinin
 <span><span class="co">#&gt; Warning in log(data$conc): NaNs produced</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
 <span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement</span></span>
-<span><span class="co">#&gt; (0.25) is not allowed</span></span>
+<span><span class="co">#&gt; Warning in log(conc.2/conc.1): NaNs produced</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
 <span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement</span></span>
-<span><span class="co">#&gt; (0.25) is not allowed</span></span>
+<span><span class="co">#&gt; Warning in log(conc.2/conc.1): NaNs produced</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc = conc): Negative concentrations found</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
 <span><span class="co">#&gt; concentrations found</span></span>
@@ -1437,12 +1366,10 @@ separately for artesunate (<code>Cc</code>) and dihydroartemisinin
 <span><span class="co">#&gt; Warning in log(data$conc): NaNs produced</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
 <span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement</span></span>
-<span><span class="co">#&gt; (0.25) is not allowed</span></span>
+<span><span class="co">#&gt; Warning in log(conc.2/conc.1): NaNs produced</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
 <span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement</span></span>
-<span><span class="co">#&gt; (0.25) is not allowed</span></span>
+<span><span class="co">#&gt; Warning in log(conc.2/conc.1): NaNs produced</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc = conc): Negative concentrations found</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
 <span><span class="co">#&gt; concentrations found</span></span>
@@ -1457,12 +1384,10 @@ separately for artesunate (<code>Cc</code>) and dihydroartemisinin
 <span><span class="co">#&gt; Warning in log(data$conc): NaNs produced</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
 <span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement</span></span>
-<span><span class="co">#&gt; (0.25) is not allowed</span></span>
+<span><span class="co">#&gt; Warning in log(conc.2/conc.1): NaNs produced</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
 <span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement</span></span>
-<span><span class="co">#&gt; (0.25) is not allowed</span></span>
+<span><span class="co">#&gt; Warning in log(conc.2/conc.1): NaNs produced</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc = conc): Negative concentrations found</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
 <span><span class="co">#&gt; concentrations found</span></span>
@@ -1477,15 +1402,10 @@ separately for artesunate (<code>Cc</code>) and dihydroartemisinin
 <span><span class="co">#&gt; Warning in log(data$conc): NaNs produced</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
 <span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
+<span><span class="co">#&gt; Warning in log(conc.2/conc.1): NaNs produced</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
 <span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement</span></span>
-<span><span class="co">#&gt; (0.25) is not allowed</span></span>
+<span><span class="co">#&gt; Warning in log(conc.2/conc.1): NaNs produced</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc = conc): Negative concentrations found</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
 <span><span class="co">#&gt; concentrations found</span></span>
@@ -1500,13 +1420,10 @@ separately for artesunate (<code>Cc</code>) and dihydroartemisinin
 <span><span class="co">#&gt; Warning in log(data$conc): NaNs produced</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
 <span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
+<span><span class="co">#&gt; Warning in log(conc.2/conc.1): NaNs produced</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
 <span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement</span></span>
-<span><span class="co">#&gt; (0.25) is not allowed</span></span>
+<span><span class="co">#&gt; Warning in log(conc.2/conc.1): NaNs produced</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc = conc): Negative concentrations found</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
 <span><span class="co">#&gt; concentrations found</span></span>
@@ -1521,12 +1438,10 @@ separately for artesunate (<code>Cc</code>) and dihydroartemisinin
 <span><span class="co">#&gt; Warning in log(data$conc): NaNs produced</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
 <span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement</span></span>
-<span><span class="co">#&gt; (0.25) is not allowed</span></span>
+<span><span class="co">#&gt; Warning in log(conc.2/conc.1): NaNs produced</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
 <span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement</span></span>
-<span><span class="co">#&gt; (0.25) is not allowed</span></span>
+<span><span class="co">#&gt; Warning in log(conc.2/conc.1): NaNs produced</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc = conc): Negative concentrations found</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
 <span><span class="co">#&gt; concentrations found</span></span>
@@ -1541,11 +1456,10 @@ separately for artesunate (<code>Cc</code>) and dihydroartemisinin
 <span><span class="co">#&gt; Warning in log(data$conc): NaNs produced</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
 <span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement</span></span>
-<span><span class="co">#&gt; (0.25) is not allowed</span></span></code></pre></div>
+<span><span class="co">#&gt; Warning in log(conc.2/conc.1): NaNs produced</span></span></code></pre></div>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim_nca_dha</span> <span class="op">&lt;-</span> <span class="va">sim</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc_dha</span><span class="op">)</span>, <span class="va">time</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc_dha</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="va">Cc_dha</span>, <span class="va">treatment</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="va">treatment</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span>Cc_dha <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">Cc_dha</span><span class="op">)</span>, .groups <span class="op">=</span> <span class="st">"drop"</span><span class="op">)</span></span>
@@ -1553,103 +1467,7 @@ separately for artesunate (<code>Cc</code>) and dihydroartemisinin
 <span><span class="va">conc_obj_dha</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/PKNCAconc.html" class="external-link">PKNCAconc</a></span><span class="op">(</span><span class="va">sim_nca_dha</span>, <span class="va">Cc_dha</span> <span class="op">~</span> <span class="va">time</span> <span class="op">|</span> <span class="va">treatment</span> <span class="op">+</span> <span class="va">id</span>,</span>
 <span>                                 concu <span class="op">=</span> <span class="st">"nmol/L"</span>, timeu <span class="op">=</span> <span class="st">"h"</span><span class="op">)</span></span>
 <span><span class="va">nca_dha</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/pk.nca.html" class="external-link">pk.nca</a></span><span class="op">(</span><span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/PKNCAdata.html" class="external-link">PKNCAdata</a></span><span class="op">(</span><span class="va">conc_obj_dha</span>, <span class="va">dose_obj</span>,</span>
-<span>                                          intervals <span class="op">=</span> <span class="va">intervals</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span></code></pre></div>
+<span>                                          intervals <span class="op">=</span> <span class="va">intervals</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">nca_art_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">nca_art</span><span class="op">$</span><span class="va">result</span><span class="op">)</span></span>
 <span><span class="va">art_summary</span> <span class="op">&lt;-</span> <span class="va">nca_art_df</span> <span class="op">|&gt;</span></span>
@@ -1691,21 +1509,21 @@ pregnancy status (median [5%-95%]).</caption>
 <tbody>
 <tr class="odd">
 <td align="left">aucinf.obs</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
+<td align="right">142.969</td>
+<td align="right">158.203</td>
+<td align="right">87.869</td>
+<td align="right">43.999</td>
+<td align="right">329.396</td>
+<td align="right">236.242</td>
 </tr>
 <tr class="even">
 <td align="left">auclast</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
+<td align="right">142.969</td>
+<td align="right">158.203</td>
+<td align="right">87.869</td>
+<td align="right">43.999</td>
+<td align="right">329.396</td>
+<td align="right">236.242</td>
 </tr>
 <tr class="odd">
 <td align="left">cmax</td>
@@ -1777,21 +1595,21 @@ dose, by pregnancy status (median [5%-95%]).</caption>
 <tbody>
 <tr class="odd">
 <td align="left">aucinf.obs</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
+<td align="right">2939.951</td>
+<td align="right">2441.083</td>
+<td align="right">1910.725</td>
+<td align="right">1483.196</td>
+<td align="right">5361.188</td>
+<td align="right">5999.849</td>
 </tr>
 <tr class="even">
 <td align="left">auclast</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
+<td align="right">2939.930</td>
+<td align="right">2441.082</td>
+<td align="right">1910.722</td>
+<td align="right">1483.196</td>
+<td align="right">5361.094</td>
+<td align="right">5999.848</td>
 </tr>
 <tr class="odd">
 <td align="left">cmax</td>

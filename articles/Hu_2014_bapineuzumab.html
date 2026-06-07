@@ -1003,7 +1003,7 @@ paragraph).</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim_nca</span> <span class="op">&lt;-</span> <span class="va">sim</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span>, <span class="va">time</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">select</span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="va">Cc</span>, <span class="va">treatment</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">dose_df</span> <span class="op">&lt;-</span> <span class="va">events</span> <span class="op">|&gt;</span></span>
@@ -1066,7 +1066,7 @@ paragraph).</p>
 <td align="right">91</td>
 <td align="left">0.5 mg/kg</td>
 <td align="left">200</td>
-<td align="left">NC</td>
+<td align="left">180 [25.7]</td>
 <td align="left">11.0 [33.1]</td>
 <td align="left">0.100 [0.0400, 0.100]</td>
 <td align="left">29.5 [7.60]</td>
@@ -1076,7 +1076,7 @@ paragraph).</p>
 <td align="right">91</td>
 <td align="left">1.0 mg/kg</td>
 <td align="left">200</td>
-<td align="left">NC</td>
+<td align="left">360 [25.3]</td>
 <td align="left">22.3 [33.2]</td>
 <td align="left">0.100 [0.0400, 0.100]</td>
 <td align="left">29.2 [7.16]</td>

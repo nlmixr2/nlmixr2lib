@@ -326,7 +326,7 @@ PKNCA and compare against the paper’s reported summary statistics.
 ``` r
 
 sim_nca <- sim |>
-  dplyr::filter(!is.na(Cc), time > 0) |>
+  dplyr::filter(!is.na(Cc)) |>
   dplyr::transmute(id, time, Cc, treatment = route)
 
 conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | treatment + id)

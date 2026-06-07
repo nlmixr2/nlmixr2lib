@@ -4,7 +4,7 @@
 
 library(nlmixr2lib)
 library(rxode2)
-#> rxode2 5.1.1 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.2 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -242,7 +242,7 @@ Thakre 2022 Table 2.
 ``` r
 
 nca_conc <- sim %>%
-  filter(time >= 16 * 7, time <= 28 * 7, Cc > 0) %>%
+  filter(time >= 16 * 7, time <= 28 * 7) %>%
   mutate(
     time_rel  = time - 16 * 7,
     treatment = "risankizumab_150mg_q12w"

@@ -1070,102 +1070,90 @@ h).</caption>
 </h3>
 <p>Leshinsky 2017 Table 2 reports model-independent PK parameters from
 their 1000-cat simulations of the 1 mg/kg q24h regimen with a 1 h
-infusion duration. Selected values:</p>
-<table class="table">
-<colgroup>
-<col width="42%">
-<col width="15%">
-<col width="17%">
-<col width="24%">
-</colgroup>
-<thead><tr class="header">
-<th>Metric</th>
-<th align="right">Paper mean</th>
-<th align="right">Paper median</th>
-<th align="right">Simulation (mean)</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td>Terminal t1/2 (h)</td>
-<td align="right">14.5</td>
-<td align="right">14.5</td>
-<td align="right">(see above)</td>
-</tr>
-<tr class="even">
-<td>Cmax first dose (ug/mL)</td>
-<td align="right">14.8</td>
-<td align="right">15.0</td>
-<td align="right">(see above)</td>
-</tr>
-<tr class="odd">
-<td>Cmax last dose, q24h (ug/mL)</td>
-<td align="right">19.8</td>
-<td align="right">19.6</td>
-<td align="right">(see above)</td>
-</tr>
-<tr class="even">
-<td>AUC_ss,0-tau (ug.h/mL)</td>
-<td align="right">232</td>
-<td align="right">230</td>
-<td align="right">(see above)</td>
-</tr>
-</tbody>
-</table>
-<p>Filling in the comparison from the PKNCA outputs:</p>
+infusion duration. The four headline values are the terminal half-life,
+Cmax after the first dose, Cmax at steady state, and AUC0-τ at steady
+state. We compare them side-by-side against the simulated PKNCA output
+in one combined table; each row pulls the corresponding value from
+whichever window produced it (first-dose window, steady-state interval,
+or terminal tail).</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">get_mean</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">df</span>, <span class="va">code</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="va">v</span> <span class="op">&lt;-</span> <span class="va">df</span><span class="op">$</span><span class="va">mean</span><span class="op">[</span><span class="va">df</span><span class="op">$</span><span class="va">PPTESTCD</span> <span class="op">==</span> <span class="va">code</span><span class="op">]</span></span>
-<span>  <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">v</span><span class="op">)</span> <span class="op">==</span> <span class="fl">0</span><span class="op">)</span> <span class="cn">NA_real_</span> <span class="kw">else</span> <span class="va">v</span></span>
-<span><span class="op">}</span></span>
-<span><span class="va">cmp</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
-<span>  Metric <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Terminal t1/2 (h)"</span>,</span>
-<span>             <span class="st">"Cmax first dose (ug/mL)"</span>,</span>
-<span>             <span class="st">"Cmax last dose, q24h (ug/mL)"</span>,</span>
-<span>             <span class="st">"AUC_ss,0-tau (ug.h/mL)"</span><span class="op">)</span>,</span>
-<span>  `Paper mean` <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">14.5</span>, <span class="fl">14.8</span>, <span class="fl">19.8</span>, <span class="fl">232</span><span class="op">)</span>,</span>
-<span>  `Simulation mean` <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span>    <span class="fu">get_mean</span><span class="op">(</span><span class="va">summary_thalf</span>, <span class="st">"half.life"</span><span class="op">)</span>,</span>
-<span>    <span class="fu">get_mean</span><span class="op">(</span><span class="va">summary_first</span>, <span class="st">"cmax"</span><span class="op">)</span>,</span>
-<span>    <span class="fu">get_mean</span><span class="op">(</span><span class="va">summary_ss</span>,    <span class="st">"cmax"</span><span class="op">)</span>,</span>
-<span>    <span class="fu">get_mean</span><span class="op">(</span><span class="va">summary_ss</span>,    <span class="st">"auclast"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="co"># Build a tidy long simulated frame that ncaComparisonTable() can</span></span>
+<span><span class="co"># consume directly: one row per (window, PPTESTCD) with the published-</span></span>
+<span><span class="co"># style mean. The "window" grouping column lets us compare first-dose</span></span>
+<span><span class="co"># Cmax separately from steady-state Cmax.</span></span>
+<span><span class="va">simulated</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span></span>
+<span>  <span class="va">summary_first</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">PPTESTCD</span> <span class="op">==</span> <span class="st">"cmax"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/transmute.html" class="external-link">transmute</a></span><span class="op">(</span>window <span class="op">=</span> <span class="st">"Cmax first dose"</span>,</span>
+<span>                     PPTESTCD <span class="op">=</span> <span class="st">"cmax"</span>, PPORRES <span class="op">=</span> <span class="va">mean</span><span class="op">)</span>,</span>
+<span>  <span class="va">summary_ss</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">PPTESTCD</span> <span class="op">==</span> <span class="st">"cmax"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/transmute.html" class="external-link">transmute</a></span><span class="op">(</span>window <span class="op">=</span> <span class="st">"Cmax last dose, q24h"</span>,</span>
+<span>                     PPTESTCD <span class="op">=</span> <span class="st">"cmax"</span>, PPORRES <span class="op">=</span> <span class="va">mean</span><span class="op">)</span>,</span>
+<span>  <span class="va">summary_ss</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">PPTESTCD</span> <span class="op">==</span> <span class="st">"auclast"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/transmute.html" class="external-link">transmute</a></span><span class="op">(</span>window <span class="op">=</span> <span class="st">"AUC_ss,0-tau"</span>,</span>
+<span>                     PPTESTCD <span class="op">=</span> <span class="st">"auclast"</span>, PPORRES <span class="op">=</span> <span class="va">mean</span><span class="op">)</span>,</span>
+<span>  <span class="va">summary_thalf</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">PPTESTCD</span> <span class="op">==</span> <span class="st">"half.life"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/transmute.html" class="external-link">transmute</a></span><span class="op">(</span>window <span class="op">=</span> <span class="st">"Terminal t1/2"</span>,</span>
+<span>                     PPTESTCD <span class="op">=</span> <span class="st">"half.life"</span>, PPORRES <span class="op">=</span> <span class="va">mean</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">reference</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tribble.html" class="external-link">tribble</a></span><span class="op">(</span></span>
+<span>  <span class="op">~</span><span class="va">window</span>,                  <span class="op">~</span><span class="va">cmax</span>, <span class="op">~</span><span class="va">auclast</span>, <span class="op">~</span><span class="va">half.life</span>,</span>
+<span>  <span class="st">"Cmax first dose"</span>,         <span class="fl">14.8</span>, <span class="cn">NA_real_</span>, <span class="cn">NA_real_</span>,</span>
+<span>  <span class="st">"Cmax last dose, q24h"</span>,    <span class="fl">19.8</span>, <span class="cn">NA_real_</span>, <span class="cn">NA_real_</span>,</span>
+<span>  <span class="st">"AUC_ss,0-tau"</span>,        <span class="cn">NA_real_</span>,      <span class="fl">232</span>, <span class="cn">NA_real_</span>,</span>
+<span>  <span class="st">"Terminal t1/2"</span>,       <span class="cn">NA_real_</span>, <span class="cn">NA_real_</span>,       <span class="fl">14.5</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">cmp</span> <span class="op">&lt;-</span> <span class="fu">nlmixr2lib</span><span class="fu">::</span><span class="fu"><a href="../reference/ncaComparisonTable.html">ncaComparisonTable</a></span><span class="op">(</span></span>
+<span>  simulated <span class="op">=</span> <span class="va">simulated</span>,</span>
+<span>  reference <span class="op">=</span> <span class="va">reference</span>,</span>
+<span>  by        <span class="op">=</span> <span class="st">"window"</span>,</span>
+<span>  units     <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>cmax <span class="op">=</span> <span class="st">"ug/mL"</span>, auclast <span class="op">=</span> <span class="st">"ug.h/mL"</span>, half.life <span class="op">=</span> <span class="st">"h"</span><span class="op">)</span>,</span>
+<span>  tolerance_pct <span class="op">=</span> <span class="fl">20</span></span>
+<span><span class="op">)</span></span>
+<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
+<span>  <span class="va">cmp</span>,</span>
+<span>  caption <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span></span>
+<span>    <span class="st">"Simulated vs. Leshinsky 2017 Table 2 NCA (1 mg/kg q24h x 7,"</span>,</span>
+<span>    <span class="st">"1 h infusion, cat). * differs from reference by &gt;20%."</span></span>
 <span>  <span class="op">)</span></span>
-<span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>`%diff` <span class="op">=</span> <span class="fl">100</span> <span class="op">*</span> <span class="op">(</span><span class="va">`Simulation mean`</span> <span class="op">-</span> <span class="va">`Paper mean`</span><span class="op">)</span> <span class="op">/</span> <span class="va">`Paper mean`</span><span class="op">)</span></span>
-<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">cmp</span>, digits <span class="op">=</span> <span class="fl">2</span>,</span>
-<span>             caption <span class="op">=</span> <span class="st">"Comparison of simulated NCA against Leshinsky 2017 Table 2."</span><span class="op">)</span></span></code></pre></div>
+<span><span class="op">)</span></span></code></pre></div>
 <table class="table">
-<caption>Comparison of simulated NCA against Leshinsky 2017 Table
-2.</caption>
+<caption>Simulated vs. Leshinsky 2017 Table 2 NCA (1 mg/kg q24h x 7, 1 h
+infusion, cat). * differs from reference by &gt;20%.</caption>
 <thead><tr class="header">
-<th align="left">Metric</th>
-<th align="right">Paper mean</th>
-<th align="right">Simulation mean</th>
-<th align="right">%diff</th>
+<th align="left">NCA parameter</th>
+<th align="left">window</th>
+<th align="left">Reference</th>
+<th align="left">Simulated</th>
+<th align="left">% diff</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td align="left">Terminal t1/2 (h)</td>
-<td align="right">14.5</td>
-<td align="right">14.66</td>
-<td align="right">1.09</td>
+<td align="left">Cmax (ug/mL)</td>
+<td align="left">Cmax first dose</td>
+<td align="left">14.8</td>
+<td align="left">14.1</td>
+<td align="left">-4.9%</td>
 </tr>
 <tr class="even">
-<td align="left">Cmax first dose (ug/mL)</td>
-<td align="right">14.8</td>
-<td align="right">14.08</td>
-<td align="right">-4.89</td>
+<td align="left">Cmax (ug/mL)</td>
+<td align="left">Cmax last dose, q24h</td>
+<td align="left">19.8</td>
+<td align="left">19.1</td>
+<td align="left">-3.7%</td>
 </tr>
 <tr class="odd">
-<td align="left">Cmax last dose, q24h (ug/mL)</td>
-<td align="right">19.8</td>
-<td align="right">19.06</td>
-<td align="right">-3.73</td>
+<td align="left">AUClast (ug.h/mL)</td>
+<td align="left">AUC_ss,0-tau</td>
+<td align="left">232</td>
+<td align="left">231</td>
+<td align="left">-0.4%</td>
 </tr>
 <tr class="even">
-<td align="left">AUC_ss,0-tau (ug.h/mL)</td>
-<td align="right">232.0</td>
-<td align="right">231.09</td>
-<td align="right">-0.39</td>
+<td align="left">t½ (h)</td>
+<td align="left">Terminal t1/2</td>
+<td align="left">14.5</td>
+<td align="left">14.7</td>
+<td align="left">+1.1%</td>
 </tr>
 </tbody>
 </table>

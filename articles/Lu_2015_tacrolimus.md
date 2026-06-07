@@ -389,7 +389,7 @@ interval gives Cmax,ss / Cmin,ss / Cavg,ss:
 ``` r
 
 sim_nca_tx <- sim_df |>
-  dplyr::filter(DIS_HEALTHY == 0L, Cc > 0) |>
+  dplyr::filter(DIS_HEALTHY == 0L) |>
   dplyr::select(id, time, Cc, cohort)
 
 dose_df_tx <- events_tx |>

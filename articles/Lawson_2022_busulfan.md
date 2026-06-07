@@ -356,7 +356,7 @@ same metric on the virtual cohort above.
 ``` r
 
 sim_nca <- sim |>
-  dplyr::filter(!is.na(Cc), time > 0) |>
+  dplyr::filter(!is.na(Cc)) |>
   dplyr::mutate(treatment = "NCA_PI_D1") |>
   dplyr::select(id, time, Cc, treatment) |>
   dplyr::distinct(id, time, .keep_all = TRUE)

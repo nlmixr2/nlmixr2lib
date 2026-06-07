@@ -979,7 +979,7 @@ typical patient) and q24h dosing, the first-dose profile is
 operationally at steady state.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim_nca</span> <span class="op">&lt;-</span> <span class="va">sim_24h</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span>, <span class="va">time</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">select</span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="va">Cc</span>, <span class="va">treatment</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">dose_df</span> <span class="op">&lt;-</span> <span class="va">events_24h</span> <span class="op">|&gt;</span></span>
@@ -1001,11 +1001,6 @@ operationally at steady state.</p>
 <span></span>
 <span><span class="va">nca_data</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/PKNCAdata.html" class="external-link">PKNCAdata</a></span><span class="op">(</span><span class="va">conc_obj</span>, <span class="va">dose_obj</span>, intervals <span class="op">=</span> <span class="va">intervals</span><span class="op">)</span></span>
 <span><span class="va">nca_res</span>  <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/pk.nca.html" class="external-link">pk.nca</a></span><span class="op">(</span><span class="va">nca_data</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
 <span><span class="va">nca_df</span>   <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">nca_res</span><span class="op">$</span><span class="va">result</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
@@ -1031,35 +1026,35 @@ cycle).</caption>
 <td align="left">10.8 mg/kg/q24h</td>
 <td align="right">41.489</td>
 <td align="right">0.5</td>
-<td align="right">NA</td>
+<td align="right">103.409</td>
 <td align="right">11.191</td>
 </tr>
 <tr class="even">
 <td align="left">12.8 mg/kg/q24h</td>
 <td align="right">49.172</td>
 <td align="right">0.5</td>
-<td align="right">NA</td>
+<td align="right">122.558</td>
 <td align="right">11.191</td>
 </tr>
 <tr class="odd">
 <td align="left">14.6 mg/kg/q24h</td>
 <td align="right">56.087</td>
 <td align="right">0.5</td>
-<td align="right">NA</td>
+<td align="right">139.793</td>
 <td align="right">11.191</td>
 </tr>
 <tr class="even">
 <td align="left">7.1 mg/kg/q24h</td>
 <td align="right">27.275</td>
 <td align="right">0.5</td>
-<td align="right">NA</td>
+<td align="right">67.982</td>
 <td align="right">11.191</td>
 </tr>
 <tr class="odd">
 <td align="left">9.5 mg/kg/q24h</td>
 <td align="right">36.495</td>
 <td align="right">0.5</td>
-<td align="right">NA</td>
+<td align="right">90.961</td>
 <td align="right">11.191</td>
 </tr>
 </tbody>
@@ -1070,10 +1065,10 @@ cycle).</caption>
 <p>Llanos-Paez 2018 does not publish a side-by-side NCA table for the
 typical-patient simulations, but it does report Cmax/MIC and AUC24/MIC
 ratios that can be cross-checked. For a typical patient receiving 12.8
-mg/kg/q24h, the simulated AUC24 (NA mg*h/L) divided by an MIC of 2 mg/L
-gives a Cmax/MIC ratio that is qualitatively consistent with the paper’s
-stated <code>AUC24/MIC &gt;= 100</code> target for 12.8 mg/kg/q24h at
-MIC = 2 mg/L.</p>
+mg/kg/q24h, the simulated AUC24 (122.6 mg*h/L) divided by an MIC of 2
+mg/L gives a Cmax/MIC ratio that is qualitatively consistent with the
+paper’s stated <code>AUC24/MIC &gt;= 100</code> target for 12.8
+mg/kg/q24h at MIC = 2 mg/L.</p>
 </div>
 </div>
 <div class="section level2">

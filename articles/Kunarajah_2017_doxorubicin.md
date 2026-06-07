@@ -278,7 +278,7 @@ doxorubicinol. Treatment grouping is the doxorubicin dose level
 ``` r
 
 sim_nca <- sim |>
-  filter(!is.na(Cc), time > 0) |>
+  filter(!is.na(Cc)) |>
   transmute(id, time, Cc, Cc_doxol, treatment = factor(DOSE_MG_M2))
 
 dose_df <- events |>

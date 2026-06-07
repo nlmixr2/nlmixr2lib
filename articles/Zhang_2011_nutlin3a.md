@@ -278,7 +278,7 @@ side-by-side observed-vs-simulated audit.
 ``` r
 
 sim_nca <- sim |>
-  dplyr::filter(time > 0, time <= 48, !is.na(Cc)) |>
+  dplyr::filter(time <= 48, !is.na(Cc)) |>
   dplyr::select(id, time, Cc, treatment)
 
 conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | treatment + id)
@@ -297,27 +297,17 @@ intervals <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- PKNCA::pk.nca(nca_data)
-#> Warning: Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
 nca_summary <- summary(nca_res)
 knitr::kable(nca_summary, caption = "Simulated single-dose plasma NCA per arm.")
 ```
 
 | start | end | treatment    | N   | auclast | cmax | tmax  | half.life | aucinf.obs |
 |------:|----:|:-------------|:----|:--------|:-----|:------|:----------|:-----------|
-|     0 |  24 | IV 10 mg/kg  | 1   | NC      | 2.05 | 0.250 | 5.03      | NC         |
-|     0 |  24 | IV 20 mg/kg  | 1   | NC      | 4.21 | 0.250 | 5.02      | NC         |
-|     0 |  24 | PO 100 mg/kg | 1   | NC      | 6.51 | 1.00  | 4.06      | NC         |
-|     0 |  24 | PO 200 mg/kg | 1   | NC      | 13.2 | 1.00  | 4.07      | NC         |
-|     0 |  24 | PO 50 mg/kg  | 1   | NC      | 3.16 | 1.00  | 3.99      | NC         |
+|     0 |  24 | IV 10 mg/kg  | 1   | 19.2    | 389  | 0.000 | 5.03      | 19.2       |
+|     0 |  24 | IV 20 mg/kg  | 1   | 38.7    | 777  | 0.000 | 5.02      | 38.7       |
+|     0 |  24 | PO 100 mg/kg | 1   | 22.0    | 6.51 | 1.00  | 4.06      | 22.0       |
+|     0 |  24 | PO 200 mg/kg | 1   | 46.0    | 13.2 | 1.00  | 4.07      | 46.0       |
+|     0 |  24 | PO 50 mg/kg  | 1   | 10.2    | 3.16 | 1.00  | 3.99      | 10.2       |
 
 Simulated single-dose plasma NCA per arm. {.table}
 

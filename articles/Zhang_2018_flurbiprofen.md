@@ -322,7 +322,7 @@ Qayyum 2008, Galasko 2003).
 ``` r
 
 sim_nca <- sim_cc |>
-  dplyr::filter(time >= 0, time <= sim_hours) |>
+  dplyr::filter(time <= sim_hours) |>
   dplyr::transmute(id, time, Cc, treatment)
 
 dose_df <- cohort |>

@@ -288,7 +288,7 @@ sim_stoch |>
 ``` r
 
 sim_for_nca <- sim_stoch |>
-  filter(!is.na(Cc), Cc > 0, time > 0) |>
+  filter(!is.na(Cc)) |>
   select(id, time, Cc, cohort) |>
   as.data.frame()
 
@@ -383,8 +383,8 @@ knitr::kable(
 
 | cohort | Cmax simulated (median, 5-95%) | Cmax Table 3 (median, 95% PI) | AUC0-24 simulated (median, 5-95%) | AUC0-24 Table 3 (median, 95% PI) |
 |:---|:---|:---|:---|:---|
-| oncology | 26.6 (16.8-88.3) | 26.1 (18.0-39.4) | NA (NA-NA) | 79.4 (45.8-140.0) |
-| nononcology | 28.5 (15.3-86.6) | 23.0 (14.8-33.6) | NA (NA-NA) | 84.0 (44.1-205.0) |
+| oncology | 26.6 (16.8-88.3) | 26.1 (18.0-39.4) | 75.0 (46.0-125.1) | 79.4 (45.8-140.0) |
+| nononcology | 28.5 (15.3-86.6) | 23.0 (14.8-33.6) | 82.5 (43.0-148.8) | 84.0 (44.1-205.0) |
 
 Simulated Cmax (mg/L) and AUC0-24 (mg\*h/L) at 7.5 mg/kg vs Llanos-Paez
 2020 Table 3 ‘Total’ columns. {.table}

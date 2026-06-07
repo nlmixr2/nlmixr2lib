@@ -400,7 +400,7 @@ sanity check rather than a head-to-head comparison.
 ``` r
 
 nca_input <- sim_long |>
-  filter(!is.na(Cc), time > 0, Cc > 0) |>
+  filter(!is.na(Cc)) |>
   mutate(id = 1L, treatment = "5 ug/mL IV bolus DiR-NPs") |>
   select(id, time, Cc, treatment)
 
@@ -425,8 +425,6 @@ intervals <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- PKNCA::pk.nca(nca_data)
-#> Warning: Requesting an AUC range starting (0) before the first measurement (1)
-#> is not allowed
 nca_summary <- as.data.frame(nca_res$result)
 knitr::kable(
   nca_summary[, c("PPTESTCD", "PPORRES")],
@@ -440,9 +438,9 @@ knitr::kable(
 
 | PPTESTCD            |      PPORRES |
 |:--------------------|-------------:|
-| auclast             |           NA |
-| cmax                |    1.2112682 |
-| tmax                |    1.0000000 |
+| auclast             |   43.6848207 |
+| cmax                |    5.0000000 |
+| tmax                |    0.0000000 |
 | tlast               | 1440.0000000 |
 | lambda.z            |    0.0055332 |
 | r.squared           |    0.9999355 |

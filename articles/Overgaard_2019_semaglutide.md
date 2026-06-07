@@ -263,7 +263,7 @@ dosing interval (last dose at week 15) to verify the Cavg,ss prediction.
 ``` r
 
 nca_conc <- sim %>%
-  filter(time >= last_dose_time, time <= end_window, Cc > 0) %>%
+  filter(time >= last_dose_time, time <= end_window) %>%
   mutate(time_rel = time - last_dose_time, regimen = "1 mg QW") %>%
   select(id, time_rel, Cc, regimen)
 

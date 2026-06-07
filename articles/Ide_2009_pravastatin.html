@@ -931,7 +931,6 @@ vs. time by SLCO1B1*15 genotype (n = 50 subjects per stratum).
 across the three genotype strata.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">nca_input</span> <span class="op">&lt;-</span> <span class="va">sim_paper</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">time</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">select</span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="va">Cc</span>, <span class="va">cohort</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">dose_df</span> <span class="op">&lt;-</span> <span class="va">demo</span> <span class="op">|&gt;</span></span>
@@ -953,13 +952,13 @@ across the three genotype strata.</p>
 stratum (50 subjects per stratum, 10 mg oral).</caption>
 <colgroup>
 <col width="7%">
-<col width="5%">
-<col width="21%">
+<col width="4%">
+<col width="20%">
 <col width="3%">
-<col width="10%">
-<col width="15%">
-<col width="23%">
-<col width="13%">
+<col width="14%">
+<col width="14%">
+<col width="22%">
+<col width="14%">
 </colgroup>
 <thead><tr class="header">
 <th align="right">start</th>
@@ -977,30 +976,30 @@ stratum (50 subjects per stratum, 10 mg oral).</caption>
 <td align="right">24</td>
 <td align="left">*15 heterozygote</td>
 <td align="left">50</td>
-<td align="left">NC</td>
+<td align="left">61.8 [31.7]</td>
 <td align="left">20.5 [30.1]</td>
 <td align="left">1.00 [0.500, 2.00]</td>
-<td align="left">NC</td>
+<td align="left">62.3 [32.4]</td>
 </tr>
 <tr class="even">
 <td align="right">0</td>
 <td align="right">24</td>
 <td align="left">*15 homozygote</td>
 <td align="left">50</td>
-<td align="left">NC</td>
+<td align="left">71.7 [27.9]</td>
 <td align="left">27.2 [25.7]</td>
 <td align="left">1.00 [0.500, 2.00]</td>
-<td align="left">NC</td>
+<td align="left">72.0 [28.5]</td>
 </tr>
 <tr class="odd">
 <td align="right">0</td>
 <td align="right">24</td>
 <td align="left">*15 noncarrier</td>
 <td align="left">50</td>
-<td align="left">NC</td>
+<td align="left">36.5 [27.0]</td>
 <td align="left">14.1 [35.0]</td>
 <td align="left">1.00 [0.500, 2.00]</td>
-<td align="left">NC</td>
+<td align="left">36.7 [27.2]</td>
 </tr>
 </tbody>
 </table>
@@ -1051,22 +1050,22 @@ weighting.</caption>
 <tbody>
 <tr class="odd">
 <td align="left">*15 heterozygote</td>
-<td align="right">NaN</td>
-<td align="right">NA</td>
+<td align="right">64.73358</td>
+<td align="right">19.87542</td>
 <td align="right">23</td>
 <td align="right">0.4035088</td>
 </tr>
 <tr class="even">
 <td align="left">*15 homozygote</td>
-<td align="right">NaN</td>
-<td align="right">NA</td>
+<td align="right">74.39571</td>
+<td align="right">21.26104</td>
 <td align="right">6</td>
 <td align="right">0.1052632</td>
 </tr>
 <tr class="odd">
 <td align="left">*15 noncarrier</td>
-<td align="right">NaN</td>
-<td align="right">NA</td>
+<td align="right">37.74073</td>
+<td align="right">10.13435</td>
 <td align="right">28</td>
 <td align="right">0.4912281</td>
 </tr>
@@ -1095,7 +1094,7 @@ vs. published.</caption>
 <tr class="odd">
 <td align="left">Weighted-mean simulated AUC0-24 (haplotype mix from
 Table I)</td>
-<td align="left">NaN ng*h/mL</td>
+<td align="left">52.5 ng*h/mL</td>
 </tr>
 <tr class="even">
 <td align="left">Reported pooled-cohort AUC (Results, p. 1311)</td>

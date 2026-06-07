@@ -285,7 +285,6 @@ NCA values pooled across phenotypes.
 ``` r
 
 nca_input <- sim_paper |>
-  filter(time > 0) |>
   select(id, time, Cc, dose_mg) |>
   mutate(dose_label = paste0(dose_mg, " mg"))
 

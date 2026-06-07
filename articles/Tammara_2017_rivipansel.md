@@ -365,7 +365,7 @@ mod_zero <- rxode2::zeroRe(mod)
 typ_sim <- rxode2::rxSolve(mod_zero, events = typ_events,
                            keep = c("WT", "CRCL", "STUDY_RIV201")) |>
   as.data.frame() |>
-  filter(!is.na(Cc), time > 0) |>
+  filter(!is.na(Cc)) |>
   mutate(id = 1L, treatment = "single 40 mg/kg")
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalq', 'etalvp', 'etalq2', 'etalvp2'
 
@@ -400,22 +400,22 @@ knitr::kable(
 )
 ```
 
-| PPTESTCD            | PPORRES |
-|:--------------------|--------:|
-| cmax                | 375.000 |
-| tmax                |   0.500 |
-| tlast               |  72.000 |
-| clast.obs           |   0.626 |
-| lambda.z            |   0.063 |
-| r.squared           |   1.000 |
-| adj.r.squared       |   1.000 |
-| lambda.z.time.first |  64.750 |
-| lambda.z.time.last  |  72.000 |
-| lambda.z.n.points   |  30.000 |
-| clast.pred          |   0.625 |
-| half.life           |  11.012 |
-| span.ratio          |   0.658 |
-| aucinf.obs          |      NA |
+| PPTESTCD            |  PPORRES |
+|:--------------------|---------:|
+| cmax                |  375.000 |
+| tmax                |    0.500 |
+| tlast               |   72.000 |
+| clast.obs           |    0.626 |
+| lambda.z            |    0.063 |
+| r.squared           |    1.000 |
+| adj.r.squared       |    1.000 |
+| lambda.z.time.first |   64.750 |
+| lambda.z.time.last  |   72.000 |
+| lambda.z.n.points   |   30.000 |
+| clast.pred          |    0.625 |
+| half.life           |   11.012 |
+| span.ratio          |    0.658 |
+| aucinf.obs          | 2696.668 |
 
 Typical-value NCA after a single 40 mg/kg IV infusion in a phase I 70-kg
 subject (CRCL = 100 mL/min). {.table}

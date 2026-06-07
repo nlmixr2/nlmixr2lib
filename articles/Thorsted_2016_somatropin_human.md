@@ -209,7 +209,7 @@ sim_pd |>
 ``` r
 
 sim_nca <- sim_typ |>
-  dplyr::filter(time > 0, grepl("^IV ", cohort)) |>
+  dplyr::filter(grepl("^IV ", cohort)) |>
   dplyr::select(id, time, Cc, cohort)
 
 dose_df <- events |>
@@ -230,36 +230,16 @@ intervals <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- PKNCA::pk.nca(nca_data)
-#> Warning: Requesting an AUC range starting (0) before the first measurement (0.08) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.08) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.08) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.08) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.08) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.08) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.08) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.08) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.08) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.08) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.08) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.08) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.08) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.08) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.08) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.08) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.08) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.08) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.08) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.08) is not allowed
 knitr::kable(summary(nca_res),
              caption = "Simulated NCA for rhGH after i.v. bolus (typical-value 70 kg adult).")
 ```
 
 | start | end | cohort | N | cmax | tmax | half.life | aucinf.obs |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | 24 | IV 5 ug/kg | 20 | 106 \[0.000\] | 0.0800 \[0.0800, 0.0800\] | 1.76 \[0.000\] | NC |
+| 0 | 24 | IV 5 ug/kg | 20 | 139 \[0.000\] | 0.000 \[0.000, 0.000\] | 1.76 \[0.000\] | 46.5 \[0.000\] |
 
 Simulated NCA for rhGH after i.v. bolus (typical-value 70 kg adult).
-{.table style="width:100%;"}
+{.table}
 
 ## Assumptions and deviations
 

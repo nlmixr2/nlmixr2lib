@@ -603,7 +603,7 @@
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/nlmixr2/nlmixr2lib" class="external-link">nlmixr2lib</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://nlmixr2.github.io/rxode2/" class="external-link">rxode2</a></span><span class="op">)</span></span>
-<span><span class="co">#&gt; rxode2 5.1.1 using 2 threads (see ?getRxThreads)</span></span>
+<span><span class="co">#&gt; rxode2 5.1.2 using 2 threads (see ?getRxThreads)</span></span>
 <span><span class="co">#&gt;   no cache: create with `rxCreateCache()`</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -1014,7 +1014,7 @@ Table 3. The PKNCA formula carries the dose-stratum label through
 <code>keep</code> so the per-arm summaries are directly comparable.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim_nca</span> <span class="op">&lt;-</span> <span class="va">sim</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">time</span> <span class="op">&gt;</span> <span class="fl">0</span>, <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span>, <span class="va">Cc</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="va">Cc</span>, <span class="va">arm</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">dose_df</span> <span class="op">&lt;-</span> <span class="va">events</span> <span class="op">|&gt;</span></span>
@@ -1070,25 +1070,25 @@ simulated cohort.</caption>
 <tr class="odd">
 <td align="left">R 6.44 mg/kg</td>
 <td align="left">aucinf.obs</td>
-<td align="right">NaN</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">0</td>
+<td align="right">1546.84</td>
+<td align="right">1023.43</td>
+<td align="right">2227.82</td>
+<td align="right">46</td>
 </tr>
 <tr class="even">
 <td align="left">R 6.44 mg/kg</td>
 <td align="left">auclast</td>
-<td align="right">NaN</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">0</td>
+<td align="right">1543.46</td>
+<td align="right">1020.63</td>
+<td align="right">2224.82</td>
+<td align="right">46</td>
 </tr>
 <tr class="odd">
 <td align="left">R 6.44 mg/kg</td>
 <td align="left">cmax</td>
-<td align="right">148.96</td>
-<td align="right">102.95</td>
-<td align="right">200.61</td>
+<td align="right">150.81</td>
+<td align="right">104.08</td>
+<td align="right">203.57</td>
 <td align="right">46</td>
 </tr>
 <tr class="even">
@@ -1102,33 +1102,33 @@ simulated cohort.</caption>
 <tr class="odd">
 <td align="left">R 6.44 mg/kg</td>
 <td align="left">tmax</td>
-<td align="right">0.03</td>
-<td align="right">0.03</td>
-<td align="right">0.03</td>
+<td align="right">0.00</td>
+<td align="right">0.00</td>
+<td align="right">0.00</td>
 <td align="right">46</td>
 </tr>
 <tr class="even">
 <td align="left">T 0.49 mg/kg</td>
 <td align="left">aucinf.obs</td>
-<td align="right">NaN</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">0</td>
+<td align="right">34.16</td>
+<td align="right">22.68</td>
+<td align="right">43.52</td>
+<td align="right">6</td>
 </tr>
 <tr class="odd">
 <td align="left">T 0.49 mg/kg</td>
 <td align="left">auclast</td>
-<td align="right">NaN</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">0</td>
+<td align="right">34.11</td>
+<td align="right">22.66</td>
+<td align="right">43.45</td>
+<td align="right">6</td>
 </tr>
 <tr class="even">
 <td align="left">T 0.49 mg/kg</td>
 <td align="left">cmax</td>
-<td align="right">12.25</td>
-<td align="right">8.77</td>
-<td align="right">14.61</td>
+<td align="right">12.45</td>
+<td align="right">8.90</td>
+<td align="right">14.92</td>
 <td align="right">6</td>
 </tr>
 <tr class="odd">
@@ -1142,33 +1142,33 @@ simulated cohort.</caption>
 <tr class="even">
 <td align="left">T 0.49 mg/kg</td>
 <td align="left">tmax</td>
-<td align="right">0.03</td>
-<td align="right">0.03</td>
-<td align="right">0.03</td>
+<td align="right">0.00</td>
+<td align="right">0.00</td>
+<td align="right">0.00</td>
 <td align="right">6</td>
 </tr>
 <tr class="odd">
 <td align="left">T 1.48 mg/kg</td>
 <td align="left">aucinf.obs</td>
-<td align="right">NaN</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">0</td>
+<td align="right">164.52</td>
+<td align="right">135.10</td>
+<td align="right">192.87</td>
+<td align="right">6</td>
 </tr>
 <tr class="even">
 <td align="left">T 1.48 mg/kg</td>
 <td align="left">auclast</td>
-<td align="right">NaN</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">0</td>
+<td align="right">164.30</td>
+<td align="right">134.90</td>
+<td align="right">192.62</td>
+<td align="right">6</td>
 </tr>
 <tr class="odd">
 <td align="left">T 1.48 mg/kg</td>
 <td align="left">cmax</td>
-<td align="right">31.65</td>
-<td align="right">29.87</td>
-<td align="right">34.88</td>
+<td align="right">32.07</td>
+<td align="right">30.20</td>
+<td align="right">35.39</td>
 <td align="right">6</td>
 </tr>
 <tr class="even">
@@ -1182,33 +1182,33 @@ simulated cohort.</caption>
 <tr class="odd">
 <td align="left">T 1.48 mg/kg</td>
 <td align="left">tmax</td>
-<td align="right">0.03</td>
-<td align="right">0.03</td>
-<td align="right">0.03</td>
+<td align="right">0.00</td>
+<td align="right">0.00</td>
+<td align="right">0.00</td>
 <td align="right">6</td>
 </tr>
 <tr class="even">
 <td align="left">T 2.96 mg/kg</td>
 <td align="left">aucinf.obs</td>
-<td align="right">NaN</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">0</td>
+<td align="right">437.60</td>
+<td align="right">333.84</td>
+<td align="right">606.75</td>
+<td align="right">6</td>
 </tr>
 <tr class="odd">
 <td align="left">T 2.96 mg/kg</td>
 <td align="left">auclast</td>
-<td align="right">NaN</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">0</td>
+<td align="right">436.59</td>
+<td align="right">333.12</td>
+<td align="right">605.01</td>
+<td align="right">6</td>
 </tr>
 <tr class="even">
 <td align="left">T 2.96 mg/kg</td>
 <td align="left">cmax</td>
-<td align="right">61.29</td>
-<td align="right">47.81</td>
-<td align="right">78.19</td>
+<td align="right">62.12</td>
+<td align="right">48.39</td>
+<td align="right">79.30</td>
 <td align="right">6</td>
 </tr>
 <tr class="odd">
@@ -1222,33 +1222,33 @@ simulated cohort.</caption>
 <tr class="even">
 <td align="left">T 2.96 mg/kg</td>
 <td align="left">tmax</td>
-<td align="right">0.03</td>
-<td align="right">0.03</td>
-<td align="right">0.03</td>
+<td align="right">0.00</td>
+<td align="right">0.00</td>
+<td align="right">0.00</td>
 <td align="right">6</td>
 </tr>
 <tr class="odd">
 <td align="left">T 5.96 mg/kg</td>
 <td align="left">aucinf.obs</td>
-<td align="right">NaN</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">0</td>
+<td align="right">1293.06</td>
+<td align="right">897.51</td>
+<td align="right">2030.51</td>
+<td align="right">46</td>
 </tr>
 <tr class="even">
 <td align="left">T 5.96 mg/kg</td>
 <td align="left">auclast</td>
-<td align="right">NaN</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">0</td>
+<td align="right">1290.52</td>
+<td align="right">895.81</td>
+<td align="right">2026.71</td>
+<td align="right">46</td>
 </tr>
 <tr class="odd">
 <td align="left">T 5.96 mg/kg</td>
 <td align="left">cmax</td>
-<td align="right">132.53</td>
-<td align="right">94.72</td>
-<td align="right">188.47</td>
+<td align="right">134.12</td>
+<td align="right">95.58</td>
+<td align="right">191.10</td>
 <td align="right">46</td>
 </tr>
 <tr class="even">
@@ -1262,9 +1262,9 @@ simulated cohort.</caption>
 <tr class="odd">
 <td align="left">T 5.96 mg/kg</td>
 <td align="left">tmax</td>
-<td align="right">0.03</td>
-<td align="right">0.03</td>
-<td align="right">0.03</td>
+<td align="right">0.00</td>
+<td align="right">0.00</td>
+<td align="right">0.00</td>
 <td align="right">46</td>
 </tr>
 </tbody>
@@ -1329,37 +1329,37 @@ Reijers 2016 Table 3 geometric mean at actual delivered dose.</caption>
 <td align="left">T 5.96 mg/kg</td>
 <td align="left">AUClast (ug*day/mL)</td>
 <td align="right">1301</td>
-<td align="right">NaN</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">NaN</td>
+<td align="right">1290.5</td>
+<td align="right">895.8</td>
+<td align="right">2026.7</td>
+<td align="right">-0.8</td>
 </tr>
 <tr class="even">
 <td align="left">T 5.96 mg/kg</td>
 <td align="left">AUCinf (ug*day/mL)</td>
 <td align="right">1311</td>
-<td align="right">NaN</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">NaN</td>
+<td align="right">1293.1</td>
+<td align="right">897.5</td>
+<td align="right">2030.5</td>
+<td align="right">-1.4</td>
 </tr>
 <tr class="odd">
 <td align="left">R 6.44 mg/kg</td>
 <td align="left">AUClast (ug*day/mL)</td>
 <td align="right">1588</td>
-<td align="right">NaN</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">NaN</td>
+<td align="right">1543.5</td>
+<td align="right">1020.6</td>
+<td align="right">2224.8</td>
+<td align="right">-2.8</td>
 </tr>
 <tr class="even">
 <td align="left">R 6.44 mg/kg</td>
 <td align="left">AUCinf (ug*day/mL)</td>
 <td align="right">1593</td>
-<td align="right">NaN</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">NaN</td>
+<td align="right">1546.8</td>
+<td align="right">1023.4</td>
+<td align="right">2227.8</td>
+<td align="right">-2.9</td>
 </tr>
 </tbody>
 </table>

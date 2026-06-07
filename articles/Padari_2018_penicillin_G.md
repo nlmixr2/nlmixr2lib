@@ -292,9 +292,7 @@ Cmin convention used by Padari 2018 Table 2.
 ``` r
 
 nca_input <- sim |>
-  dplyr::filter(!is.na(Cc), Cc > 0,
-                time >= last_dose_time,
-                time <= last_dose_time + q_h) |>
+  dplyr::filter(!is.na(Cc), time >= last_dose_time, time <= last_dose_time + q_h) |>
   dplyr::select(id, time, Cc, stratum)
 
 dose_pk <- events |>

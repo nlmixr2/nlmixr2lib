@@ -4,7 +4,7 @@
 
 library(nlmixr2lib)
 library(rxode2)
-#> rxode2 5.1.1 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.2 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -349,7 +349,7 @@ results can be compared.
 
 single_dose_window <- 14
 sim_nca <- sim_f3 %>%
-  filter(time >= 0, time <= single_dose_window, Cc > 0) %>%
+  filter(time <= single_dose_window) %>%
   transmute(ID = id, time, Cc, treatment = weight_kg)
 
 dose_nca <- pop %>%

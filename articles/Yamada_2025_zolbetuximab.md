@@ -4,7 +4,7 @@
 
 library(nlmixr2lib)
 library(rxode2)
-#> rxode2 5.1.1 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.2 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -238,13 +238,13 @@ group by regimen and by subject.
 ``` r
 
 ss_q3w <- sim_q3w %>%
-  filter(time >= 105, time <= 147, Cc > 0) %>%
+  filter(time >= 105, time <= 147) %>%
   mutate(time_rel  = time - 105, treatment = "Q3W_800_600") %>%
   rename(ID = id) %>%
   select(ID, time_rel, Cc, treatment)
 
 ss_q2w <- sim_q2w %>%
-  filter(time >= 112, time <= 154, Cc > 0) %>%
+  filter(time >= 112, time <= 154) %>%
   mutate(time_rel  = time - 112, treatment = "Q2W_800_400") %>%
   rename(ID = id) %>%
   select(ID, time_rel, Cc, treatment)

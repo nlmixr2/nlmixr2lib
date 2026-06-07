@@ -4,7 +4,7 @@
 
 library(nlmixr2lib)
 library(rxode2)
-#> rxode2 5.1.1 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.2 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -263,7 +263,7 @@ canakinumab-bound complex following SC dosing (Chakraborty 2012 Figure
 ``` r
 
 sim_nca <- sim_df |>
-  dplyr::filter(!is.na(Cc), Cc > 0) |>
+  dplyr::filter(!is.na(Cc)) |>
   dplyr::select(id, time, Cc, regimen)
 
 dose_df <- events |>
@@ -505,14 +505,47 @@ Simulated NCA parameters by dosing regimen (PKNCA, n = 50 per arm).
 
 ### Comparison against Chakraborty 2012 Table III
 
-| Regimen | Parameter | Paper (mean +/- SD) | Simulation (median, this vignette) |
-|----|----|----|----|
-| 150 mg SC SD | Cmax (ug/mL) | 15.9 +/- 3.52 (adult CAPS) | see PKNCA table above |
-| 150 mg SC SD | Tmax (d) | 6.98 (1.92-14.0) | see PKNCA table above |
-| 150 mg SC SD | t1/2 (d) | 26.1 +/- 7.31 | see PKNCA table above |
-| 150 mg SC SD | CL/F (L/d) | 0.228 +/- 0.0597 | implicit in dose / AUCinf |
-| 10 mg/kg IV SD | Cmax (ug/mL) | 149 +/- 45.4 (n=4 adult CAPS) | see PKNCA table above |
-| 10 mg/kg IV SD | t1/2 (d) | 31.2 +/- 3.39 | see PKNCA table above |
+``` r
+
+reference <- tibble::tribble(
+  ~regimen,             ~cmax,  ~tmax, ~half.life,
+  "150 mg SC SD",        15.9,   6.98,        26.1,
+  "10 mg/kg IV SD",      149,    NA_real_,    31.2
+)
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated     = nca_res,
+  reference     = reference,
+  by            = "regimen",
+  params        = c("cmax", "tmax", "half.life"),
+  units         = c(cmax = "ug/mL", tmax = "d", half.life = "d"),
+  tolerance_pct = 20
+)
+knitr::kable(
+  cmp,
+  caption = paste(
+    "Canakinumab NCA: simulated (median across n = 50 per arm) vs.",
+    "Chakraborty 2012 Table III (paper mean +/- SD; Tmax shown as",
+    "median (range)). Table III also reports 150 mg SC SD CL/F =",
+    "0.228 +/- 0.0597 L/d (implicit in dose / AUCinf).",
+    "* differs from reference by >20%."
+  )
+)
+```
+
+| NCA parameter | regimen        | Reference | Simulated | % diff   |
+|:--------------|:---------------|:----------|:----------|:---------|
+| Cmax (ug/mL)  | 150 mg SC SD   | 15.9      | 13.6      | -14.4%   |
+| Cmax (ug/mL)  | 10 mg/kg IV SD | 149       | 223       | +49.9%\* |
+| Tmax (d)      | 150 mg SC SD   | 6.98      | 7         | +0.3%    |
+| Tmax (d)      | 10 mg/kg IV SD | —         | 0.0833    | —        |
+| t½ (d)        | 150 mg SC SD   | 26.1      | 26.3      | +0.9%    |
+| t½ (d)        | 10 mg/kg IV SD | 31.2      | 26.1      | -16.4%   |
+
+Canakinumab NCA: simulated (median across n = 50 per arm)
+vs. Chakraborty 2012 Table III (paper mean +/- SD; Tmax shown as median
+(range)). Table III also reports 150 mg SC SD CL/F = 0.228 +/- 0.0597
+L/d (implicit in dose / AUCinf). \* differs from reference by \>20%.
+{.table}
 
 Differences within ~20% of the paper’s mean values are expected because
 the simulation uses CAPS-typical covariate values whereas Table III

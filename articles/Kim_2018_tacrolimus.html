@@ -1034,82 +1034,90 @@ arm and compared against Kim 2018 Table 2 (TAC alone vs. TAC + MMF).</p>
 <h3 id="comparison-against-published-nca-table-2">Comparison against published NCA (Table 2)<a class="anchor" aria-label="anchor" href="#comparison-against-published-nca-table-2"></a>
 </h3>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">res_tbl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">nca_res</span><span class="op">$</span><span class="va">result</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">simulated</span> <span class="op">&lt;-</span> <span class="va">res_tbl</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">PPTESTCD</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cmax"</span>, <span class="st">"tmax"</span>, <span class="st">"aucinf.obs"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">arm</span>, <span class="va">PPTESTCD</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span>value <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/median.html" class="external-link">median</a></span><span class="op">(</span><span class="va">PPORRES</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>, .groups <span class="op">=</span> <span class="st">"drop"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_wider.html" class="external-link">pivot_wider</a></span><span class="op">(</span>names_from <span class="op">=</span> <span class="va">PPTESTCD</span>, values_from <span class="op">=</span> <span class="va">value</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>`CL/F (L/h)` <span class="op">=</span> <span class="fl">5e6</span> <span class="op">/</span> <span class="va">aucinf.obs</span> <span class="op">/</span> <span class="fl">1000</span><span class="op">)</span> <span class="op">|&gt;</span>   <span class="co"># 5 mg = 5e6 ng; AUC in ng*h/mL</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span>`Cmax sim (ng/mL)` <span class="op">=</span> <span class="va">cmax</span>,</span>
-<span>                `Tmax sim (h)` <span class="op">=</span> <span class="va">tmax</span>,</span>
-<span>                `AUCinf sim (ng*h/mL)` <span class="op">=</span> <span class="va">aucinf.obs</span>,</span>
-<span>                `CL/F sim (L/h)` <span class="op">=</span> <span class="va">`CL/F (L/h)`</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">published</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
-<span>  arm <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"TAC alone"</span>, <span class="st">"TAC + MMF"</span><span class="op">)</span>,</span>
-<span>  `Cmax pub (ng/mL)` <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">33.5</span>, <span class="fl">35.0</span><span class="op">)</span>,</span>
-<span>  `Tmax pub (h)` <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span>,</span>
-<span>  `AUCinf pub (ng*h/mL)` <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">322.4</span>, <span class="fl">393.6</span><span class="op">)</span>,</span>
-<span>  `CL/F pub (L/h)` <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">20.1</span>, <span class="fl">14.2</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">published</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tribble.html" class="external-link">tribble</a></span><span class="op">(</span></span>
+<span>  <span class="op">~</span><span class="va">arm</span>,         <span class="op">~</span><span class="va">cmax</span>, <span class="op">~</span><span class="va">tmax</span>, <span class="op">~</span><span class="va">aucinf.obs</span>,</span>
+<span>  <span class="st">"TAC alone"</span>,   <span class="fl">33.5</span>,   <span class="fl">1</span>,    <span class="fl">322.4</span>,</span>
+<span>  <span class="st">"TAC + MMF"</span>,   <span class="fl">35.0</span>,   <span class="fl">2</span>,    <span class="fl">393.6</span></span>
 <span><span class="op">)</span></span>
 <span></span>
+<span><span class="va">cmp</span> <span class="op">&lt;-</span> <span class="fu">nlmixr2lib</span><span class="fu">::</span><span class="fu"><a href="../reference/ncaComparisonTable.html">ncaComparisonTable</a></span><span class="op">(</span></span>
+<span>  simulated     <span class="op">=</span> <span class="va">nca_res</span>,</span>
+<span>  reference     <span class="op">=</span> <span class="va">published</span>,</span>
+<span>  by            <span class="op">=</span> <span class="st">"arm"</span>,</span>
+<span>  params        <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cmax"</span>, <span class="st">"tmax"</span>, <span class="st">"aucinf.obs"</span><span class="op">)</span>,</span>
+<span>  units         <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>cmax <span class="op">=</span> <span class="st">"ng/mL"</span>, tmax <span class="op">=</span> <span class="st">"h"</span>, aucinf.obs <span class="op">=</span> <span class="st">"ng*h/mL"</span><span class="op">)</span>,</span>
+<span>  tolerance_pct <span class="op">=</span> <span class="fl">20</span></span>
+<span><span class="op">)</span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="va">published</span>, <span class="va">simulated</span>, by <span class="op">=</span> <span class="st">"arm"</span><span class="op">)</span>,</span>
-<span>  digits <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>  caption <span class="op">=</span> <span class="st">"Tacrolimus NCA: published (Table 2, mean) vs. simulated (median)."</span></span>
+<span>  <span class="va">cmp</span>,</span>
+<span>  caption <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span></span>
+<span>    <span class="st">"Tacrolimus NCA: simulated (median across n ="</span>,</span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">sim_nca</span><span class="op">$</span><span class="va">id</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>    <span class="st">") vs. published (Kim 2018 Table 2). * differs from reference by"</span>,</span>
+<span>    <span class="st">"&gt;20%."</span></span>
+<span>  <span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<table style="width:100%;" class="table">
-<caption>Tacrolimus NCA: published (Table 2, mean) vs. simulated
-(median).</caption>
-<colgroup>
-<col width="7%">
-<col width="11%">
-<col width="9%">
-<col width="14%">
-<col width="10%">
-<col width="14%">
-<col width="11%">
-<col width="9%">
-<col width="10%">
-</colgroup>
+<table class="table">
+<caption>Tacrolimus NCA: simulated (median across n = 500 )
+vs. published (Kim 2018 Table 2). * differs from reference by
+&gt;20%.</caption>
 <thead><tr class="header">
+<th align="left">NCA parameter</th>
 <th align="left">arm</th>
-<th align="right">Cmax pub (ng/mL)</th>
-<th align="right">Tmax pub (h)</th>
-<th align="right">AUCinf pub (ng*h/mL)</th>
-<th align="right">CL/F pub (L/h)</th>
-<th align="right">AUCinf sim (ng*h/mL)</th>
-<th align="right">Cmax sim (ng/mL)</th>
-<th align="right">Tmax sim (h)</th>
-<th align="right">CL/F sim (L/h)</th>
+<th align="left">Reference</th>
+<th align="left">Simulated</th>
+<th align="left">% diff</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
+<td align="left">Cmax (ng/mL)</td>
 <td align="left">TAC alone</td>
-<td align="right">33.5</td>
-<td align="right">1</td>
-<td align="right">322.4</td>
-<td align="right">20.1</td>
-<td align="right">331.7</td>
-<td align="right">32.2</td>
-<td align="right">1.5</td>
-<td align="right">15.1</td>
+<td align="left">33.5</td>
+<td align="left">32.2</td>
+<td align="left">-3.8%</td>
 </tr>
 <tr class="even">
+<td align="left">Cmax (ng/mL)</td>
 <td align="left">TAC + MMF</td>
-<td align="right">35.0</td>
-<td align="right">2</td>
-<td align="right">393.6</td>
-<td align="right">14.2</td>
-<td align="right">357.8</td>
-<td align="right">34.3</td>
-<td align="right">1.5</td>
-<td align="right">14.0</td>
+<td align="left">35</td>
+<td align="left">34.3</td>
+<td align="left">-2.0%</td>
+</tr>
+<tr class="odd">
+<td align="left">Tmax (h)</td>
+<td align="left">TAC alone</td>
+<td align="left">1</td>
+<td align="left">1.5</td>
+<td align="left">+50.0%*</td>
+</tr>
+<tr class="even">
+<td align="left">Tmax (h)</td>
+<td align="left">TAC + MMF</td>
+<td align="left">2</td>
+<td align="left">1.5</td>
+<td align="left">-25.0%*</td>
+</tr>
+<tr class="odd">
+<td align="left">AUC0-∞ (obs) (ng*h/mL)</td>
+<td align="left">TAC alone</td>
+<td align="left">322</td>
+<td align="left">332</td>
+<td align="left">+2.9%</td>
+</tr>
+<tr class="even">
+<td align="left">AUC0-∞ (obs) (ng*h/mL)</td>
+<td align="left">TAC + MMF</td>
+<td align="left">394</td>
+<td align="left">358</td>
+<td align="left">-9.1%</td>
 </tr>
 </tbody>
 </table>
+<p>The Kim 2018 Table 2 also reports CL/F (TAC alone 20.1 L/h; TAC + MMF
+14.2 L/h). The integrated model’s typical CL/F is 13.8 L/h; the TAC +
+MMF arm matches closely, while the TAC-alone arm runs lower than the
+independent-model NCA-derived value (see Assumptions and deviations
+below).</p>
 <p>The simulated combination-arm exposure (<code>TAC + MMF</code>)
 closely matches the published combination NCA, and the direction of the
 interaction (higher TAC exposure / lower CL/F with MMF) is reproduced.

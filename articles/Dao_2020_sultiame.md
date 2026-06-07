@@ -351,7 +351,7 @@ separately via the cumulative urinary plot above
 ``` r
 
 sim_nca <- sim_typical |>
-  dplyr::filter(!is.na(Cc), Cc >= 0) |>
+  dplyr::filter(!is.na(Cc)) |>
   dplyr::transmute(
     id        = id,
     time      = time,

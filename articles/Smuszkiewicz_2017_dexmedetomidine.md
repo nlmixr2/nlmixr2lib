@@ -209,7 +209,7 @@ the simulated value should match.
 ``` r
 
 sim_nca <- sim |>
-  dplyr::filter(!is.na(Cc), Cc > 0) |>
+  dplyr::filter(!is.na(Cc)) |>
   dplyr::select(id, time, Cc, group)
 
 dose_nca <- events |>

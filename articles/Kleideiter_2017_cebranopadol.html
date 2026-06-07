@@ -989,7 +989,7 @@ behavior.</p>
 <p>Compute NCA parameters per cohort and treatment via PKNCA.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim_single</span> <span class="op">&lt;-</span> <span class="va">sim</span> <span class="op">%&gt;%</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"^single"</span>, <span class="va">cohort</span><span class="op">)</span>, <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span>, <span class="va">time</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"^single"</span>, <span class="va">cohort</span><span class="op">)</span>, <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
 <span>  <span class="fu">mutate</span><span class="op">(</span>treatment <span class="op">=</span> <span class="fu">case_when</span><span class="op">(</span></span>
 <span>    <span class="va">FORM_TABLET</span> <span class="op">==</span> <span class="fl">1L</span>  <span class="op">~</span> <span class="st">"Tablet 400 ug"</span>,</span>
 <span>    <span class="va">FORM_CAPSULE</span> <span class="op">==</span> <span class="fl">1L</span> <span class="op">~</span> <span class="st">"Capsule 400 ug"</span>,</span>
@@ -1088,49 +1088,89 @@ males. The published values are arithmetic mean +/- SD across observed
 subjects; our simulated values come from a typical-value (no-IIV)
 deterministic run, so distributional spread is not comparable. We
 compare central tendencies only.</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">reference</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tribble.html" class="external-link">tribble</a></span><span class="op">(</span></span>
+<span>  <span class="op">~</span><span class="va">treatment</span>,          <span class="op">~</span><span class="va">cmax</span>, <span class="op">~</span><span class="va">tmax</span>, <span class="op">~</span><span class="va">auclast</span>, <span class="op">~</span><span class="va">half.life</span>,</span>
+<span>  <span class="st">"Tablet 400 ug"</span>,      <span class="fl">135</span>,    <span class="fl">6.00</span>,     <span class="fl">3066</span>,        <span class="fl">84.7</span>,</span>
+<span>  <span class="st">"Solution 400 ug"</span>,    <span class="fl">120</span>,    <span class="fl">6.00</span>,     <span class="fl">2861</span>,        <span class="fl">95.3</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">cmp</span> <span class="op">&lt;-</span> <span class="fu">nlmixr2lib</span><span class="fu">::</span><span class="fu"><a href="../reference/ncaComparisonTable.html">ncaComparisonTable</a></span><span class="op">(</span></span>
+<span>  simulated     <span class="op">=</span> <span class="va">nca_res</span>,</span>
+<span>  reference     <span class="op">=</span> <span class="va">reference</span>,</span>
+<span>  by            <span class="op">=</span> <span class="st">"treatment"</span>,</span>
+<span>  params        <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cmax"</span>, <span class="st">"tmax"</span>, <span class="st">"auclast"</span>, <span class="st">"half.life"</span><span class="op">)</span>,</span>
+<span>  units         <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>cmax <span class="op">=</span> <span class="st">"pg/mL"</span>, tmax <span class="op">=</span> <span class="st">"h"</span>,</span>
+<span>                    auclast <span class="op">=</span> <span class="st">"pg.h/mL"</span>, half.life <span class="op">=</span> <span class="st">"h"</span><span class="op">)</span>,</span>
+<span>  tolerance_pct <span class="op">=</span> <span class="fl">20</span></span>
+<span><span class="op">)</span></span>
+<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
+<span>  <span class="va">cmp</span>,</span>
+<span>  caption <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span></span>
+<span>    <span class="st">"Cebranopadol NCA: typical-value simulated (no IIV) vs."</span>,</span>
+<span>    <span class="st">"Kleideiter 2017 Table 4 (paper mean +/- SD; Tmax shown as the"</span>,</span>
+<span>    <span class="st">"paper median; auclast == AUC0-72). * differs from reference by"</span>,</span>
+<span>    <span class="st">"&gt;20%. Note: AUC0-72 is the integral over the dosing window;"</span>,</span>
+<span>    <span class="st">"half-life sensitivity to the late-time regression window may"</span>,</span>
+<span>    <span class="st">"exceed 20% as an artefact of the dense vs sparse NCA terminal"</span>,</span>
+<span>    <span class="st">"fits."</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <table class="table">
-<colgroup>
-<col width="10%">
-<col width="21%">
-<col width="21%">
-<col width="24%">
-<col width="23%">
-</colgroup>
+<caption>Cebranopadol NCA: typical-value simulated (no IIV)
+vs. Kleideiter 2017 Table 4 (paper mean +/- SD; Tmax shown as the paper
+median; auclast == AUC0-72). * differs from reference by &gt;20%. Note:
+AUC0-72 is the integral over the dosing window; half-life sensitivity to
+the late-time regression window may exceed 20% as an artefact of the
+dense vs sparse NCA terminal fits.</caption>
 <thead><tr class="header">
-<th>Quantity</th>
-<th>400 ug tablet (obs)</th>
-<th>400 ug tablet (sim)</th>
-<th>400 ug solution (obs)</th>
-<th>400 ug solution (sim)</th>
+<th align="left">NCA parameter</th>
+<th align="left">treatment</th>
+<th align="left">Reference</th>
+<th align="left">Simulated</th>
+<th align="left">% diff</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td>Cmax (pg/mL)</td>
-<td>135 +/- 52.5</td>
-<td>see Cmax row</td>
-<td>120 +/- 45.9</td>
-<td>see Cmax row</td>
+<td align="left">Cmax (pg/mL)</td>
+<td align="left">Tablet 400 ug</td>
+<td align="left">135</td>
+<td align="left">117</td>
+<td align="left">-13.1%</td>
 </tr>
 <tr class="even">
-<td>AUC72 (pg.h/mL)</td>
-<td>3066 +/- 1225</td>
-<td>see auclast row</td>
-<td>2861 +/- 1251</td>
-<td>see auclast row</td>
+<td align="left">Cmax (pg/mL)</td>
+<td align="left">Solution 400 ug</td>
+<td align="left">120</td>
+<td align="left">118</td>
+<td align="left">-2.1%</td>
 </tr>
 <tr class="odd">
-<td>Tmax (h)</td>
-<td>6.00 (3.50-10.0) median (range)</td>
-<td>see Tmax row</td>
-<td>6.00 (2.08-10.0)</td>
-<td>see Tmax row</td>
+<td align="left">Tmax (h)</td>
+<td align="left">Tablet 400 ug</td>
+<td align="left">6</td>
+<td align="left">7</td>
+<td align="left">+16.7%</td>
 </tr>
 <tr class="even">
-<td>t1/2,z (h)</td>
-<td>84.7 +/- 27.8</td>
-<td>see half.life row</td>
-<td>95.3 +/- 38.8</td>
-<td>see half.life row</td>
+<td align="left">Tmax (h)</td>
+<td align="left">Solution 400 ug</td>
+<td align="left">6</td>
+<td align="left">5</td>
+<td align="left">-16.7%</td>
+</tr>
+<tr class="odd">
+<td align="left">t½ (h)</td>
+<td align="left">Tablet 400 ug</td>
+<td align="left">84.7</td>
+<td align="left">16.5</td>
+<td align="left">-80.5%*</td>
+</tr>
+<tr class="even">
+<td align="left">t½ (h)</td>
+<td align="left">Solution 400 ug</td>
+<td align="left">95.3</td>
+<td align="left">16.9</td>
+<td align="left">-82.2%*</td>
 </tr>
 </tbody>
 </table>

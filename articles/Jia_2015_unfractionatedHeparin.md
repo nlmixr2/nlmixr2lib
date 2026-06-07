@@ -420,7 +420,7 @@ sim_nca <- rxode2::rxSolve(
 #> Warning: multi-subject simulation without without 'omega'
 
 conc_obj <- PKNCA::PKNCAconc(
-  sim_nca |> filter(!is.na(Cc), Cc > 0) |> select(id, time, Cc, treatment),
+  sim_nca |> filter(!is.na(Cc)) |> select(id, time, Cc, treatment),
   Cc ~ time | treatment + id
 )
 

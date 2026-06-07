@@ -265,7 +265,7 @@ typ_sim <- purrr::pmap_dfr(grid, function(region, dose_mg, id_offset)
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc'
 
 nca_input <- typ_sim |>
-  dplyr::filter(time >= 11L * 7L * 24L, Cc > 0) |>
+  dplyr::filter(time >= 11L * 7L * 24L) |>
   dplyr::transmute(
     id = match(treatment, unique(treatment)),
     time_h_within_week = time - 11L * 7L * 24L,

@@ -277,7 +277,7 @@ the table below is the simulated NCA summary at the bundle’s regimen.
 ``` r
 
 sim_nca <- sim |>
-  dplyr::filter(time > 0, time <= sim_hours, !is.na(Cc_col)) |>
+  dplyr::filter(time <= sim_hours, !is.na(Cc_col)) |>
   dplyr::transmute(id = id, time = time, Cc_col = Cc_col,
                    treatment = "9MIU_load_then_3MIU_q8h")
 

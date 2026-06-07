@@ -216,7 +216,7 @@ NCA on the simulated stochastic cohort (single 700 mg dose):
 ``` r
 
 pkn_in <- sim |>
-  dplyr::filter(time >= 0, !is.na(Cc))
+  dplyr::filter(!is.na(Cc))
 
 dose_pkn <- events |>
   dplyr::filter(evid == 1L) |>

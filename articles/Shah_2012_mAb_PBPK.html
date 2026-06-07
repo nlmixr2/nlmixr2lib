@@ -1102,7 +1102,7 @@ after 5 mg/kg IV. Solid line is the platform PBPK model simulation.
 <p>PKNCA-derived NCA parameters from the simulated typical profile.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">nca_input</span> <span class="op">&lt;-</span> <span class="va">sim</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span>, <span class="va">time</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">mutate</span><span class="op">(</span>id <span class="op">=</span> <span class="fl">1L</span>, treatment <span class="op">=</span> <span class="st">"5 mg/kg IV"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">select</span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="va">Cc</span>, <span class="va">treatment</span><span class="op">)</span></span>
 <span></span>
@@ -1128,8 +1128,6 @@ after 5 mg/kg IV. Solid line is the platform PBPK model simulation.
 <span></span>
 <span><span class="va">nca_data</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/PKNCAdata.html" class="external-link">PKNCAdata</a></span><span class="op">(</span><span class="va">conc_obj</span>, <span class="va">dose_obj</span>, intervals <span class="op">=</span> <span class="va">intervals</span><span class="op">)</span></span>
 <span><span class="va">nca_res</span>  <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/pk.nca.html" class="external-link">pk.nca</a></span><span class="op">(</span><span class="va">nca_data</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (4) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (4) is not allowed</span></span>
 <span><span class="va">nca_summary</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">nca_res</span><span class="op">$</span><span class="va">result</span><span class="op">)</span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
 <span>  <span class="va">nca_summary</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"PPTESTCD"</span>, <span class="st">"PPORRES"</span><span class="op">)</span><span class="op">]</span>,</span>
@@ -1145,63 +1143,63 @@ IV).</caption>
 <tbody>
 <tr class="odd">
 <td align="left">auclast</td>
-<td align="right">NA</td>
+<td align="right">2.478941e+05</td>
 </tr>
 <tr class="even">
 <td align="left">cmax</td>
-<td align="right">494.0874075</td>
+<td align="right">7.875973e+02</td>
 </tr>
 <tr class="odd">
 <td align="left">tmax</td>
-<td align="right">4.0000000</td>
+<td align="right">0.000000e+00</td>
 </tr>
 <tr class="even">
 <td align="left">tlast</td>
-<td align="right">1008.0000000</td>
+<td align="right">1.008000e+03</td>
 </tr>
 <tr class="odd">
 <td align="left">clast.obs</td>
-<td align="right">124.3561101</td>
+<td align="right">1.243561e+02</td>
 </tr>
 <tr class="even">
 <td align="left">lambda.z</td>
-<td align="right">0.0011812</td>
+<td align="right">1.181200e-03</td>
 </tr>
 <tr class="odd">
 <td align="left">r.squared</td>
-<td align="right">0.9999025</td>
+<td align="right">9.999025e-01</td>
 </tr>
 <tr class="even">
 <td align="left">adj.r.squared</td>
-<td align="right">0.9999019</td>
+<td align="right">9.999019e-01</td>
 </tr>
 <tr class="odd">
 <td align="left">lambda.z.time.first</td>
-<td align="right">380.0000000</td>
+<td align="right">3.800000e+02</td>
 </tr>
 <tr class="even">
 <td align="left">lambda.z.time.last</td>
-<td align="right">1008.0000000</td>
+<td align="right">1.008000e+03</td>
 </tr>
 <tr class="odd">
 <td align="left">lambda.z.n.points</td>
-<td align="right">158.0000000</td>
+<td align="right">1.580000e+02</td>
 </tr>
 <tr class="even">
 <td align="left">clast.pred</td>
-<td align="right">123.8661097</td>
+<td align="right">1.238661e+02</td>
 </tr>
 <tr class="odd">
 <td align="left">half.life</td>
-<td align="right">586.8103006</td>
+<td align="right">5.868103e+02</td>
 </tr>
 <tr class="even">
 <td align="left">span.ratio</td>
-<td align="right">1.0701925</td>
+<td align="right">1.070193e+00</td>
 </tr>
 <tr class="odd">
 <td align="left">aucinf.obs</td>
-<td align="right">NA</td>
+<td align="right">3.531725e+05</td>
 </tr>
 </tbody>
 </table>

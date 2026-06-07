@@ -10,7 +10,7 @@ library(PKNCA)
 #> 
 #>     filter
 library(rxode2)
-#> rxode2 5.1.1 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.2 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -428,7 +428,7 @@ days 14-60 post-last-dose for the paper-comparable window.
 # elimination phase. PKNCA's `start` and `end` arguments delimit the AUC
 # / half-life window.
 nca_window <- sim_20mg |>
-  filter(time >= last_dose_day + 14, time <= last_dose_day + 60, Cc > 0) |>
+  filter(time >= last_dose_day + 14, time <= last_dose_day + 60) |>
   transmute(id = 1L,
             time = time - last_dose_day,   # re-zero to last dose
             Cc,

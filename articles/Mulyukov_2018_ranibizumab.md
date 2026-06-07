@@ -10,7 +10,7 @@ library(PKNCA)
 #> 
 #>     filter
 library(rxode2)
-#> rxode2 5.1.1 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.2 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -500,8 +500,7 @@ ev_nca <- bind_rows(
 
 sim_nca <- rxode2::rxSolve(mod_typical, events = ev_nca,
                             keep = c("dose_group"),
-                            returnType = "data.frame") |>
-  filter(time > 0)
+                            returnType = "data.frame")
 #> ℹ omega/sigma items treated as zero: 'etag0res', 'etalkout', 'etalemaxss', 'etaldemax0'
 #> Warning: multi-subject simulation without without 'omega'
 

@@ -986,7 +986,7 @@ dosing interval (last dose at week 15) to verify the Cavg,ss
 prediction.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">nca_conc</span> <span class="op">&lt;-</span> <span class="va">sim</span> <span class="op">%&gt;%</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">time</span> <span class="op">&gt;=</span> <span class="va">last_dose_time</span>, <span class="va">time</span> <span class="op">&lt;=</span> <span class="va">end_window</span>, <span class="va">Cc</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">time</span> <span class="op">&gt;=</span> <span class="va">last_dose_time</span>, <span class="va">time</span> <span class="op">&lt;=</span> <span class="va">end_window</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
 <span>  <span class="fu">mutate</span><span class="op">(</span>time_rel <span class="op">=</span> <span class="va">time</span> <span class="op">-</span> <span class="va">last_dose_time</span>, regimen <span class="op">=</span> <span class="st">"1 mg QW"</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
 <span>  <span class="fu">select</span><span class="op">(</span><span class="va">id</span>, <span class="va">time_rel</span>, <span class="va">Cc</span>, <span class="va">regimen</span><span class="op">)</span></span>
 <span></span>

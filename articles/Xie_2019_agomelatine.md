@@ -6,7 +6,7 @@ library(nlmixr2lib)
 library(nlmixr2est)
 #> Loading required package: nlmixr2data
 library(rxode2)
-#> rxode2 5.1.1 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.2 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 #> 
 #> Attaching package: 'rxode2'

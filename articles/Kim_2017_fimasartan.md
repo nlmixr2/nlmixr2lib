@@ -273,7 +273,7 @@ sim_typical |>
 ``` r
 
 sim_nca <- sim |>
-  dplyr::filter(!is.na(Cc), Cc > 0) |>
+  dplyr::filter(!is.na(Cc)) |>
   dplyr::select(id, time, Cc, treatment) |>
   dplyr::distinct(id, time, .keep_all = TRUE) |>
   as.data.frame()

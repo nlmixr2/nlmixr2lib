@@ -324,7 +324,7 @@ meaningful stratification (dose group, regimen) would be used.
 ``` r
 
 sim_day1 <- sim_vpc |>
-  dplyr::filter(time >= 0, time <= 24) |>
+  dplyr::filter(time <= 24) |>
   dplyr::filter(!is.na(Cc)) |>
   dplyr::mutate(treatment = ifelse(RACE_BLACK == 1, "Black", "non-Black")) |>
   dplyr::select(id, time, Cc, treatment)

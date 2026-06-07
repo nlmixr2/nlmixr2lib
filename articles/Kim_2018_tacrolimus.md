@@ -266,41 +266,48 @@ Simulated tacrolimus NCA by treatment arm. {.table}
 
 ``` r
 
-res_tbl <- as.data.frame(nca_res$result)
-
-simulated <- res_tbl |>
-  dplyr::filter(PPTESTCD %in% c("cmax", "tmax", "aucinf.obs")) |>
-  dplyr::group_by(arm, PPTESTCD) |>
-  dplyr::summarise(value = median(PPORRES, na.rm = TRUE), .groups = "drop") |>
-  tidyr::pivot_wider(names_from = PPTESTCD, values_from = value) |>
-  dplyr::mutate(`CL/F (L/h)` = 5e6 / aucinf.obs / 1000) |>   # 5 mg = 5e6 ng; AUC in ng*h/mL
-  dplyr::rename(`Cmax sim (ng/mL)` = cmax,
-                `Tmax sim (h)` = tmax,
-                `AUCinf sim (ng*h/mL)` = aucinf.obs,
-                `CL/F sim (L/h)` = `CL/F (L/h)`)
-
-published <- tibble::tibble(
-  arm = c("TAC alone", "TAC + MMF"),
-  `Cmax pub (ng/mL)` = c(33.5, 35.0),
-  `Tmax pub (h)` = c(1, 2),
-  `AUCinf pub (ng*h/mL)` = c(322.4, 393.6),
-  `CL/F pub (L/h)` = c(20.1, 14.2)
+published <- tibble::tribble(
+  ~arm,         ~cmax, ~tmax, ~aucinf.obs,
+  "TAC alone",   33.5,   1,    322.4,
+  "TAC + MMF",   35.0,   2,    393.6
 )
 
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated     = nca_res,
+  reference     = published,
+  by            = "arm",
+  params        = c("cmax", "tmax", "aucinf.obs"),
+  units         = c(cmax = "ng/mL", tmax = "h", aucinf.obs = "ng*h/mL"),
+  tolerance_pct = 20
+)
 knitr::kable(
-  dplyr::left_join(published, simulated, by = "arm"),
-  digits = 1,
-  caption = "Tacrolimus NCA: published (Table 2, mean) vs. simulated (median)."
+  cmp,
+  caption = paste(
+    "Tacrolimus NCA: simulated (median across n =",
+    length(unique(sim_nca$id)),
+    ") vs. published (Kim 2018 Table 2). * differs from reference by",
+    ">20%."
+  )
 )
 ```
 
-| arm | Cmax pub (ng/mL) | Tmax pub (h) | AUCinf pub (ng\*h/mL) | CL/F pub (L/h) | AUCinf sim (ng\*h/mL) | Cmax sim (ng/mL) | Tmax sim (h) | CL/F sim (L/h) |
-|:---|---:|---:|---:|---:|---:|---:|---:|---:|
-| TAC alone | 33.5 | 1 | 322.4 | 20.1 | 331.7 | 32.2 | 1.5 | 15.1 |
-| TAC + MMF | 35.0 | 2 | 393.6 | 14.2 | 357.8 | 34.3 | 1.5 | 14.0 |
+| NCA parameter           | arm       | Reference | Simulated | % diff   |
+|:------------------------|:----------|:----------|:----------|:---------|
+| Cmax (ng/mL)            | TAC alone | 33.5      | 32.2      | -3.8%    |
+| Cmax (ng/mL)            | TAC + MMF | 35        | 34.3      | -2.0%    |
+| Tmax (h)                | TAC alone | 1         | 1.5       | +50.0%\* |
+| Tmax (h)                | TAC + MMF | 2         | 1.5       | -25.0%\* |
+| AUC0-∞ (obs) (ng\*h/mL) | TAC alone | 322       | 332       | +2.9%    |
+| AUC0-∞ (obs) (ng\*h/mL) | TAC + MMF | 394       | 358       | -9.1%    |
 
-Tacrolimus NCA: published (Table 2, mean) vs. simulated (median).
-{.table style="width:100%;"}
+Tacrolimus NCA: simulated (median across n = 500 ) vs. published (Kim
+2018 Table 2). \* differs from reference by \>20%. {.table}
+
+The Kim 2018 Table 2 also reports CL/F (TAC alone 20.1 L/h; TAC + MMF
+14.2 L/h). The integrated model’s typical CL/F is 13.8 L/h; the TAC +
+MMF arm matches closely, while the TAC-alone arm runs lower than the
+independent-model NCA-derived value (see Assumptions and deviations
+below).
 
 The simulated combination-arm exposure (`TAC + MMF`) closely matches the
 published combination NCA, and the direction of the interaction (higher

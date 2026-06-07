@@ -4,7 +4,7 @@
 
 library(nlmixr2lib)
 library(rxode2)
-#> rxode2 5.1.1 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.2 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -372,7 +372,7 @@ ss_end   <- 12 * hours_per_week
 
 nca_conc <- sim |>
   as.data.frame() |>
-  filter(time >= ss_start, time <= ss_end, Cc > 0) |>
+  filter(time >= ss_start, time <= ss_end) |>
   mutate(time_rel = time - ss_start,
          treatment = paste0("IXE_Q4W_", weight_group)) |>
   rename(ID = id) |>

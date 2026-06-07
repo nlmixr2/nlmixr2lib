@@ -283,7 +283,7 @@ as a sanity check on the simulation pipeline.
 ``` r
 
 sim_for_nca <- sim |>
-  filter(!is.na(Cc), Cc > 0) |>
+  filter(!is.na(Cc)) |>
   select(id, time, Cc, group_label)
 
 doses_for_nca <- events |>

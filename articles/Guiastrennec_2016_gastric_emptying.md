@@ -254,7 +254,7 @@ ejection fraction EF% - are reported separately in the next section.
 ``` r
 
 nca_data <- sim |>
-  dplyr::filter(time > 0, !is.na(Cc)) |>
+  dplyr::filter(!is.na(Cc)) |>
   dplyr::transmute(id = cohort, time, Cc)
 dose_data <- sim |>
   dplyr::filter(time == 0) |>
@@ -267,16 +267,13 @@ intervals <- data.frame(start = 0, end = 240,
                         cmax = TRUE, tmax = TRUE,
                         auclast = TRUE, half.life = TRUE)
 nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
-#> Warning: Requesting an AUC range starting (0) before the first measurement (5) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (5) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (5) is not allowed
 knitr::kable(summary(nca_res),
              caption = "Acetaminophen NCA (simulated typical-value, by test drink).")
 ```
 
-| start | end | N   | auclast | cmax         | tmax                | half.life     |
-|------:|----:|:----|:--------|:-------------|:--------------------|:--------------|
-|     0 | 240 | 3   | NC      | 132 \[27.7\] | 55.0 \[15.0, 80.0\] | 121 \[0.112\] |
+| start | end | N   | auclast        | cmax         | tmax                | half.life     |
+|------:|----:|:----|:---------------|:-------------|:--------------------|:--------------|
+|     0 | 240 | 3   | 16500 \[3.60\] | 132 \[27.7\] | 55.0 \[15.0, 80.0\] | 121 \[0.112\] |
 
 Acetaminophen NCA (simulated typical-value, by test drink). {.table}
 

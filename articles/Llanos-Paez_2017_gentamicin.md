@@ -235,7 +235,7 @@ operationally at steady state.
 ``` r
 
 sim_nca <- sim_24h |>
-  filter(!is.na(Cc), time > 0) |>
+  filter(!is.na(Cc)) |>
   select(id, time, Cc, treatment)
 
 dose_df <- events_24h |>
@@ -257,11 +257,6 @@ intervals <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- PKNCA::pk.nca(nca_data)
-#> Warning: Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
 nca_df   <- as.data.frame(nca_res$result)
 
 knitr::kable(
@@ -276,11 +271,11 @@ knitr::kable(
 
 | treatment       |   cmax | tmax | auclast | half.life |
 |:----------------|-------:|-----:|--------:|----------:|
-| 10.8 mg/kg/q24h | 41.489 |  0.5 |      NA |    11.191 |
-| 12.8 mg/kg/q24h | 49.172 |  0.5 |      NA |    11.191 |
-| 14.6 mg/kg/q24h | 56.087 |  0.5 |      NA |    11.191 |
-| 7.1 mg/kg/q24h  | 27.275 |  0.5 |      NA |    11.191 |
-| 9.5 mg/kg/q24h  | 36.495 |  0.5 |      NA |    11.191 |
+| 10.8 mg/kg/q24h | 41.489 |  0.5 | 103.409 |    11.191 |
+| 12.8 mg/kg/q24h | 49.172 |  0.5 | 122.558 |    11.191 |
+| 14.6 mg/kg/q24h | 56.087 |  0.5 | 139.793 |    11.191 |
+| 7.1 mg/kg/q24h  | 27.275 |  0.5 |  67.982 |    11.191 |
+| 9.5 mg/kg/q24h  | 36.495 |  0.5 |  90.961 |    11.191 |
 
 Simulated typical-patient NCA parameters by dose group (24-hour cycle).
 {.table}
@@ -290,9 +285,10 @@ Simulated typical-patient NCA parameters by dose group (24-hour cycle).
 Llanos-Paez 2018 does not publish a side-by-side NCA table for the
 typical-patient simulations, but it does report Cmax/MIC and AUC24/MIC
 ratios that can be cross-checked. For a typical patient receiving 12.8
-mg/kg/q24h, the simulated AUC24 (NA mg\*h/L) divided by an MIC of 2 mg/L
-gives a Cmax/MIC ratio that is qualitatively consistent with the paper’s
-stated `AUC24/MIC >= 100` target for 12.8 mg/kg/q24h at MIC = 2 mg/L.
+mg/kg/q24h, the simulated AUC24 (122.6 mg\*h/L) divided by an MIC of 2
+mg/L gives a Cmax/MIC ratio that is qualitatively consistent with the
+paper’s stated `AUC24/MIC >= 100` target for 12.8 mg/kg/q24h at MIC = 2
+mg/L.
 
 ## Assumptions and deviations
 

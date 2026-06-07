@@ -293,7 +293,7 @@ single-row reference summary matches the figure replicates above.
 ``` r
 
 sim_nca <- sim_amload |>
-  dplyr::filter(!is.na(Cc), time > 0, time <= 200) |>
+  dplyr::filter(!is.na(Cc), time <= 200) |>
   dplyr::select(id, time, Cc, cohort)
 
 dose_nca <- events_amload |>
@@ -321,10 +321,10 @@ knitr::kable(nca_summary,
 
 | start | end | cohort                | N   | cmax | tmax | half.life | aucinf.obs |
 |------:|----:|:----------------------|:----|:-----|:-----|:----------|:-----------|
-|     0 | Inf | AMLOAD = 0 (healthy)  | 1   | 2890 | 48.0 | 7.96      | NC         |
-|     0 | Inf | AMLOAD = 1 (small)    | 1   | 2890 | 48.0 | 7.96      | NC         |
-|     0 | Inf | AMLOAD = 2 (moderate) | 1   | 2880 | 48.0 | 8.31      | NC         |
-|     0 | Inf | AMLOAD = 3 (large)    | 1   | 2870 | 48.0 | 8.02      | NC         |
+|     0 | Inf | AMLOAD = 0 (healthy)  | 1   | 2890 | 48.0 | 7.96      | 139000     |
+|     0 | Inf | AMLOAD = 1 (small)    | 1   | 2890 | 48.0 | 7.96      | 139000     |
+|     0 | Inf | AMLOAD = 2 (moderate) | 1   | 2880 | 48.0 | 8.31      | 138000     |
+|     0 | Inf | AMLOAD = 3 (large)    | 1   | 2870 | 48.0 | 8.02      | 137000     |
 
 Simulated CPHPC NCA parameters by AMLOAD-sweep cohort (typical-value
 subject; 20 mg/h IV infusion x 48 h). {.table}

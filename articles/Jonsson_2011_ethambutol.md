@@ -334,13 +334,25 @@ applied between `start = 0` and `end = 24` post-dose).
 
 ``` r
 
+# Keep pre-dose Cc = 0 / Cmin: filter only on missing Cc. (The `Cc > 0`
+# filter that used to live here was log-scale-plotting leftover; for
+# PKNCA it drops the time = 0 anchor and triggers the AUC-range warning.)
 pkn_in <- sim |>
   dplyr::filter(time >= ss_clock_start, time <= ss_clock_start + 24) |>
   dplyr::mutate(
     tad       = time - ss_clock_start,
     treatment = "1000 mg QD"
   ) |>
-  dplyr::filter(!is.na(Cc), Cc > 0)
+  dplyr::filter(!is.na(Cc))
+
+# Defensive: ensure tad = 0 exists per (id, treatment).
+pkn_in <- dplyr::bind_rows(
+  pkn_in,
+  pkn_in |> dplyr::distinct(id, treatment) |>
+    dplyr::mutate(tad = 0, Cc = 0)
+) |>
+  dplyr::distinct(id, treatment, tad, .keep_all = TRUE) |>
+  dplyr::arrange(id, treatment, tad)
 
 dose_pkn <- events |>
   dplyr::filter(evid == 1L, time == ss_clock_start) |>
@@ -370,27 +382,63 @@ nca_res$result |>
     p95    = stats::quantile(PPORRES, 0.95, na.rm = TRUE),
     .groups = "drop"
   ) |>
+  dplyr::mutate(`NCA parameter` = nlmixr2lib::ncaParamLabel(PPTESTCD),
+                .keep = "unused", .before = "treatment") |>
   knitr::kable(
-    caption = "Simulated steady-state NCA parameters (1000 mg QD, WT = 47 kg, HIV-negative cohort, n = 60)."
+    caption = "Simulated steady-state NCA parameters (1000 mg QD, WT = 47 kg, HIV-negative cohort, n = 60). Cmax (mg/L); Tmax (h); AUClast (mg*h/L)."
   )
 ```
 
-| treatment  | PPTESTCD |   median |       p05 |       p95 |
-|:-----------|:---------|---------:|----------:|----------:|
-| 1000 mg QD | auclast  | 25.41631 | 14.718081 | 50.360258 |
-| 1000 mg QD | cmax     |  2.95907 |  1.518925 |  5.295302 |
-| 1000 mg QD | tmax     |  2.00000 |  1.500000 |  4.000000 |
+| NCA parameter | treatment  |   median |       p05 |       p95 |
+|:--------------|:-----------|---------:|----------:|----------:|
+| AUClast       | 1000 mg QD | 25.41631 | 14.718081 | 50.360258 |
+| Cmax          | 1000 mg QD |  2.95907 |  1.518925 |  5.295302 |
+| Tmax          | 1000 mg QD |  2.00000 |  1.500000 |  4.000000 |
 
 Simulated steady-state NCA parameters (1000 mg QD, WT = 47 kg,
-HIV-negative cohort, n = 60). {.table}
+HIV-negative cohort, n = 60). Cmax (mg/L); Tmax (h); AUClast (mg\*h/L).
+{.table}
 
 The Jonsson 2011 abstract reports the typical CL/F at 50 kg as
 `39.9 L/h`. At steady state with `Dose = 1000 mg`, `tau = 24 h`,
 `F = 1`, the expected
 `AUCss(0-tau) = Dose * F / CL_i ≈ 1000 / 38.13 ≈ 26.2 mg·h/L` for a
 typical 47 kg subject (`CL_i = 39.9 * (47/50)^0.75 = 38.13 L/h`). The
-simulated `auclast` median should land near that value; see the table
-above.
+simulated value is compared side-by-side against that expectation below.
+
+``` r
+
+reference <- tibble::tibble(
+  treatment = "1000 mg QD",
+  auclast   = 26.2
+)
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated     = nca_res,
+  reference     = reference,
+  by            = "treatment",
+  params        = "auclast",
+  units         = c(auclast = "mg*h/L"),
+  tolerance_pct = 20
+)
+knitr::kable(
+  cmp,
+  caption = paste(
+    "Simulated steady-state AUC0-24 (1000 mg QD, WT = 47 kg, n = 60)",
+    "vs. expected 26.2 mg*h/L from the Jonsson 2011 abstract CL/F at",
+    "50 kg with the published WT^0.75 allometric scaling.",
+    "* differs from reference by >20%."
+  )
+)
+```
+
+| NCA parameter     | treatment  | Reference | Simulated | % diff |
+|:------------------|:-----------|:----------|:----------|:-------|
+| AUClast (mg\*h/L) | 1000 mg QD | 26.2      | 25.4      | -3.0%  |
+
+Simulated steady-state AUC0-24 (1000 mg QD, WT = 47 kg, n = 60)
+vs. expected 26.2 mg*h/L from the Jonsson 2011 abstract CL/F at 50 kg
+with the published WT^0.75 allometric scaling.* differs from reference
+by \>20%. {.table}
 
 ## Inter-occasion variability (optional check)
 

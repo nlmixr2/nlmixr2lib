@@ -350,7 +350,7 @@ range expected for IV propofol whole-blood concentrations.
 ``` r
 
 sim_nca <- sim |>
-  dplyr::filter(!is.na(Cc), time > 0) |>
+  dplyr::filter(!is.na(Cc)) |>
   dplyr::select(id, time, Cc, treatment)
 
 dose_df <- events |>

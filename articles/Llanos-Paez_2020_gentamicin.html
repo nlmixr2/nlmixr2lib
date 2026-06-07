@@ -1012,7 +1012,7 @@ overlay).</p>
 </h2>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim_for_nca</span> <span class="op">&lt;-</span> <span class="va">sim_stoch</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span>, <span class="va">Cc</span> <span class="op">&gt;</span> <span class="fl">0</span>, <span class="va">time</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">select</span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="va">Cc</span>, <span class="va">cohort</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
@@ -1122,14 +1122,14 @@ Llanos-Paez 2020 Table 3 ‘Total’ columns.</caption>
 <td align="left">oncology</td>
 <td align="left">26.6 (16.8-88.3)</td>
 <td align="left">26.1 (18.0-39.4)</td>
-<td align="left">NA (NA-NA)</td>
+<td align="left">75.0 (46.0-125.1)</td>
 <td align="left">79.4 (45.8-140.0)</td>
 </tr>
 <tr class="even">
 <td align="left">nononcology</td>
 <td align="left">28.5 (15.3-86.6)</td>
 <td align="left">23.0 (14.8-33.6)</td>
-<td align="left">NA (NA-NA)</td>
+<td align="left">82.5 (43.0-148.8)</td>
 <td align="left">84.0 (44.1-205.0)</td>
 </tr>
 </tbody>

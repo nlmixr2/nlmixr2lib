@@ -1161,7 +1161,7 @@ half-life = 27.6 days for casirivimab).</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim_nca</span> <span class="op">&lt;-</span> <span class="va">sim</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span>, <span class="va">time</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">select</span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="va">Cc</span>, <span class="va">treatment</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">dose_df</span> <span class="op">&lt;-</span> <span class="va">events</span> <span class="op">|&gt;</span></span>
@@ -1191,12 +1191,12 @@ half-life = 27.6 days for casirivimab).</p>
 dose).</caption>
 <colgroup>
 <col width="7%">
-<col width="5%">
+<col width="4%">
+<col width="13%">
+<col width="4%">
+<col width="13%">
+<col width="25%">
 <col width="14%">
-<col width="5%">
-<col width="14%">
-<col width="23%">
-<col width="15%">
 <col width="14%">
 </colgroup>
 <thead><tr class="header">
@@ -1215,10 +1215,10 @@ dose).</caption>
 <td align="right">Inf</td>
 <td align="left">1200 mg IV</td>
 <td align="left">500</td>
-<td align="left">285 [34.6]</td>
-<td align="left">1.00 [1.00, 1.00]</td>
+<td align="left">336 [41.0]</td>
+<td align="left">0.000 [0.000, 0.000]</td>
 <td align="left">34.1 [14.1]</td>
-<td align="left">NC</td>
+<td align="left">7430 [43.3]</td>
 </tr>
 <tr class="even">
 <td align="right">0</td>
@@ -1228,7 +1228,7 @@ dose).</caption>
 <td align="left">108 [33.4]</td>
 <td align="left">7.00 [1.00, 42.0]</td>
 <td align="left">34.2 [13.2]</td>
-<td align="left">NC</td>
+<td align="left">5320 [42.1]</td>
 </tr>
 </tbody>
 </table>

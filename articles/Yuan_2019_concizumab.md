@@ -458,7 +458,7 @@ sim_nca <- sim_all |>
   dplyr::filter(route == "IV") |>
   mutate(id = match(dose, sort(unique(dose))),
          treatment = as.character(dose)) |>
-  dplyr::filter(time > 0 & time <= 45) |>
+  dplyr::filter(time <= 45) |>
   transmute(id, time, Cc = total_ab_ugml, treatment)
 
 conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | treatment + id)
@@ -491,10 +491,10 @@ knitr::kable(nca_summary,
 
 | start | end | treatment     | N   | cmax | tmax  | half.life | aucinf.obs |
 |------:|----:|:--------------|:----|:-----|:------|:----------|:-----------|
-|     0 |  45 | IV 0.25 mg/kg | 1   | 5.66 | 0.250 | 3.63      | NC         |
-|     0 |  45 | IV 1 mg/kg    | 1   | 24.2 | 0.250 | 3.63      | NC         |
-|     0 |  45 | IV 3 mg/kg    | 1   | 73.5 | 0.250 | 3.59      | NC         |
-|     0 |  45 | IV 9 mg/kg    | 1   | 221  | 0.250 | 2.72      | NC         |
+|     0 |  45 | IV 0.25 mg/kg | 1   | 6.73 | 0.000 | 3.63      | 8.46       |
+|     0 |  45 | IV 1 mg/kg    | 1   | 26.9 | 0.000 | 3.63      | 64.9       |
+|     0 |  45 | IV 3 mg/kg    | 1   | 80.8 | 0.000 | 3.59      | 343        |
+|     0 |  45 | IV 9 mg/kg    | 1   | 242  | 0.000 | 2.72      | 1610       |
 
 PKNCA-derived NCA parameters for total concizumab (typical-value
 simulation, IV cohorts). {.table}

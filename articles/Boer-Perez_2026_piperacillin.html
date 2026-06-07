@@ -957,7 +957,7 @@ compared qualitatively to the trough fractions reported in Table 4.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Single-dose interval (0-12 h after dose 1) for PKNCA</span></span>
 <span><span class="va">sim_nca</span> <span class="op">&lt;-</span> <span class="va">sim</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">time</span> <span class="op">&lt;=</span> <span class="va">DOSE_INTERVAL</span>, <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span>, <span class="va">Cc</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">time</span> <span class="op">&lt;=</span> <span class="va">DOSE_INTERVAL</span>, <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">select</span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="va">Cc</span>, <span class="va">stratum</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">dose_df</span> <span class="op">&lt;-</span> <span class="va">events</span> <span class="op">|&gt;</span></span>
@@ -1087,7 +1087,7 @@ percentiles) by PMA stratum.</caption>
 <tr class="odd">
 <td align="left">PMA 30-36 wk</td>
 <td align="right">1</td>
-<td align="right">NA</td>
+<td align="right">898.492</td>
 <td align="right">23.581</td>
 <td align="right">188.207</td>
 <td align="right">3.811</td>
@@ -1100,7 +1100,7 @@ percentiles) by PMA stratum.</caption>
 <td align="right">12</td>
 <td align="right">0.5</td>
 <td align="right">1</td>
-<td align="right">NA</td>
+<td align="right">533.275</td>
 <td align="right">2.046</td>
 <td align="right">103.367</td>
 <td align="right">1.662</td>
@@ -1113,7 +1113,7 @@ percentiles) by PMA stratum.</caption>
 <td align="right">12</td>
 <td align="right">0.5</td>
 <td align="right">1</td>
-<td align="right">NA</td>
+<td align="right">1438.382</td>
 <td align="right">60.470</td>
 <td align="right">311.224</td>
 <td align="right">8.822</td>
@@ -1129,7 +1129,7 @@ percentiles) by PMA stratum.</caption>
 <tr class="even">
 <td align="left">PMA 37-44 wk</td>
 <td align="right">1</td>
-<td align="right">NA</td>
+<td align="right">750.626</td>
 <td align="right">10.162</td>
 <td align="right">204.177</td>
 <td align="right">2.675</td>
@@ -1142,7 +1142,7 @@ percentiles) by PMA stratum.</caption>
 <td align="right">12</td>
 <td align="right">0.5</td>
 <td align="right">1</td>
-<td align="right">NA</td>
+<td align="right">426.042</td>
 <td align="right">0.245</td>
 <td align="right">108.257</td>
 <td align="right">1.132</td>
@@ -1155,7 +1155,7 @@ percentiles) by PMA stratum.</caption>
 <td align="right">12</td>
 <td align="right">0.5</td>
 <td align="right">1</td>
-<td align="right">NA</td>
+<td align="right">1271.595</td>
 <td align="right">38.581</td>
 <td align="right">320.047</td>
 <td align="right">5.928</td>
@@ -1171,7 +1171,7 @@ percentiles) by PMA stratum.</caption>
 <tr class="odd">
 <td align="left">PMA &lt;=29 wk</td>
 <td align="right">1</td>
-<td align="right">NA</td>
+<td align="right">1122.335</td>
 <td align="right">38.845</td>
 <td align="right">200.509</td>
 <td align="right">5.088</td>
@@ -1184,7 +1184,7 @@ percentiles) by PMA stratum.</caption>
 <td align="right">12</td>
 <td align="right">0.5</td>
 <td align="right">1</td>
-<td align="right">NA</td>
+<td align="right">704.560</td>
 <td align="right">8.054</td>
 <td align="right">113.554</td>
 <td align="right">2.207</td>
@@ -1197,7 +1197,7 @@ percentiles) by PMA stratum.</caption>
 <td align="right">12</td>
 <td align="right">0.5</td>
 <td align="right">1</td>
-<td align="right">NA</td>
+<td align="right">1767.960</td>
 <td align="right">81.375</td>
 <td align="right">353.289</td>
 <td align="right">10.948</td>

@@ -328,7 +328,7 @@ parameters.
 ``` r
 
 sim_nca <- sim |>
-  filter(!is.na(Cc), time > 0) |>
+  filter(!is.na(Cc)) |>
   mutate(treatment = "14 g ethanol oral") |>
   select(id, time, Cc, treatment)
 

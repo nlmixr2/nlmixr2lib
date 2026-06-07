@@ -1102,7 +1102,7 @@ two-compartment model, and a single terminal half-life consistent with
 the 57.7-minute beta-phase value reported in the Discussion.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim_for_nca</span> <span class="op">&lt;-</span> <span class="va">sim_stoch_s1</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span>, <span class="va">Cc</span> <span class="op">&gt;</span> <span class="fl">0</span>, <span class="va">time</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">mutate</span><span class="op">(</span>dose_label <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">dose_ug_per_kg</span>, <span class="st">" ug/kg"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">select</span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="va">Cc</span>, <span class="va">dose_label</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
@@ -1173,7 +1173,7 @@ the 57.7-minute beta-phase value reported in the Discussion.</p>
 <td align="left">7.14 [1.66]</td>
 <td align="left">0.0833 [0.0833, 0.0833]</td>
 <td align="left">0.949 [0.0905]</td>
-<td align="left">NC</td>
+<td align="left">2.75 [14.0]</td>
 </tr>
 <tr class="even">
 <td align="right">0</td>
@@ -1183,7 +1183,7 @@ the 57.7-minute beta-phase value reported in the Discussion.</p>
 <td align="left">57.1 [1.29]</td>
 <td align="left">0.0833 [0.0833, 0.0833]</td>
 <td align="left">0.942 [0.0603]</td>
-<td align="left">NC</td>
+<td align="left">21.9 [10.1]</td>
 </tr>
 <tr class="odd">
 <td align="right">0</td>
@@ -1193,7 +1193,7 @@ the 57.7-minute beta-phase value reported in the Discussion.</p>
 <td align="left">14.5 [1.19]</td>
 <td align="left">0.0833 [0.0833, 0.0833]</td>
 <td align="left">1.01 [0.0687]</td>
-<td align="left">NC</td>
+<td align="left">6.09 [10.4]</td>
 </tr>
 <tr class="even">
 <td align="right">0</td>
@@ -1203,7 +1203,7 @@ the 57.7-minute beta-phase value reported in the Discussion.</p>
 <td align="left">115 [1.61]</td>
 <td align="left">0.0833 [0.0833, 0.0833]</td>
 <td align="left">0.982 [0.0836]</td>
-<td align="left">NC</td>
+<td align="left">46.5 [13.3]</td>
 </tr>
 <tr class="odd">
 <td align="right">0</td>
@@ -1213,7 +1213,7 @@ the 57.7-minute beta-phase value reported in the Discussion.</p>
 <td align="left">172 [1.89]</td>
 <td align="left">0.0833 [0.0833, 0.0833]</td>
 <td align="left">0.959 [0.0914]</td>
-<td align="left">NC</td>
+<td align="left">67.1 [15.1]</td>
 </tr>
 <tr class="even">
 <td align="right">0</td>
@@ -1223,7 +1223,7 @@ the 57.7-minute beta-phase value reported in the Discussion.</p>
 <td align="left">28.7 [1.43]</td>
 <td align="left">0.0833 [0.0833, 0.0833]</td>
 <td align="left">0.962 [0.0691]</td>
-<td align="left">NC</td>
+<td align="left">11.3 [11.5]</td>
 </tr>
 <tr class="odd">
 <td align="right">0</td>
@@ -1233,7 +1233,7 @@ the 57.7-minute beta-phase value reported in the Discussion.</p>
 <td align="left">287 [1.66]</td>
 <td align="left">0.0833 [0.0833, 0.0833]</td>
 <td align="left">0.969 [0.0841]</td>
-<td align="left">NC</td>
+<td align="left">114 [13.6]</td>
 </tr>
 </tbody>
 </table>

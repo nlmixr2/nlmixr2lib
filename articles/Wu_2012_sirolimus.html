@@ -1073,7 +1073,7 @@ dose so the per-dose-group NCA summary mirrors the dose-stratified
 panels of Wu 2012 Figure 4.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim_nca</span> <span class="op">&lt;-</span> <span class="va">sim</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span>, <span class="va">time</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">select</span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="va">Cc</span>, <span class="va">dose_group</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">dose_df</span> <span class="op">&lt;-</span> <span class="va">events</span> <span class="op">|&gt;</span></span>
@@ -1137,9 +1137,9 @@ interval) from the simulated cohort.</caption>
 <tr class="even">
 <td align="left">1 mg</td>
 <td align="left">auclast</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
+<td align="right">74.96</td>
+<td align="right">34.00</td>
+<td align="right">140.29</td>
 </tr>
 <tr class="odd">
 <td align="left">1 mg</td>
@@ -1228,9 +1228,9 @@ interval) from the simulated cohort.</caption>
 <tr class="odd">
 <td align="left">4 mg</td>
 <td align="left">auclast</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
+<td align="right">277.48</td>
+<td align="right">124.79</td>
+<td align="right">542.63</td>
 </tr>
 <tr class="even">
 <td align="left">4 mg</td>
@@ -1319,9 +1319,9 @@ interval) from the simulated cohort.</caption>
 <tr class="even">
 <td align="left">10 mg</td>
 <td align="left">auclast</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
+<td align="right">710.68</td>
+<td align="right">342.17</td>
+<td align="right">1345.70</td>
 </tr>
 <tr class="odd">
 <td align="left">10 mg</td>
@@ -1410,9 +1410,9 @@ interval) from the simulated cohort.</caption>
 <tr class="odd">
 <td align="left">30 mg</td>
 <td align="left">auclast</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
+<td align="right">2050.04</td>
+<td align="right">1051.32</td>
+<td align="right">3609.67</td>
 </tr>
 <tr class="even">
 <td align="left">30 mg</td>
@@ -1501,9 +1501,9 @@ interval) from the simulated cohort.</caption>
 <tr class="even">
 <td align="left">60 mg</td>
 <td align="left">auclast</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
+<td align="right">4337.12</td>
+<td align="right">1688.91</td>
+<td align="right">7478.79</td>
 </tr>
 <tr class="odd">
 <td align="left">60 mg</td>

@@ -240,7 +240,7 @@ dose band.
 ``` r
 
 sim_nca <- sim |>
-  dplyr::filter(!is.na(Cc), time > 0) |>
+  dplyr::filter(!is.na(Cc)) |>
   dplyr::select(id, time, Cc, treatment) |>
   dplyr::distinct(id, time, .keep_all = TRUE)
 
@@ -271,86 +271,6 @@ intervals <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- PKNCA::pk.nca(nca_data)
-#> Warning: Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
 
 nca_tbl <- as.data.frame(nca_res$result)
 knitr::kable(
@@ -359,23 +279,22 @@ knitr::kable(
 )
 ```
 
-| treatment | id | start | end | PPTESTCD | PPORRES | exclude | PPORRESU |
-|:---|---:|---:|---:|:---|---:|:---|:---|
-| 300 mg | 1 | 0 | 8 | auclast | NA | Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed | h\*mg/L |
-| 300 mg | 1 | 0 | 8 | cmax | 4.4855222 | NA | mg/L |
-| 300 mg | 1 | 0 | 8 | tmax | 2.7500000 | NA | h |
-| 300 mg | 1 | 0 | 24 | auclast | NA | Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed | h\*mg/L |
-| 300 mg | 1 | 0 | 24 | cmax | 4.4855222 | NA | mg/L |
-| 300 mg | 1 | 0 | 24 | tmax | 2.7500000 | NA | h |
-| 300 mg | 1 | 0 | 24 | tlast | 24.0000000 | NA | h |
-| 300 mg | 1 | 0 | 24 | lambda.z | 0.2477855 | NA | 1/h |
-| 300 mg | 1 | 0 | 24 | r.squared | 0.9999424 | NA | unitless |
-| 300 mg | 1 | 0 | 24 | adj.r.squared | 0.9999417 | NA | unitless |
-| 300 mg | 1 | 0 | 24 | lambda.z.time.first | 3.0000000 | NA | h |
-| 300 mg | 1 | 0 | 24 | lambda.z.time.last | 24.0000000 | NA | h |
+| treatment |  id | start | end | PPTESTCD            |    PPORRES | exclude | PPORRESU |
+|:----------|----:|------:|----:|:--------------------|-----------:|:--------|:---------|
+| 300 mg    |   1 |     0 |   8 | auclast             | 20.7683115 | NA      | h\*mg/L  |
+| 300 mg    |   1 |     0 |   8 | cmax                |  4.4855222 | NA      | mg/L     |
+| 300 mg    |   1 |     0 |   8 | tmax                |  2.7500000 | NA      | h        |
+| 300 mg    |   1 |     0 |  24 | auclast             | 26.2911944 | NA      | h\*mg/L  |
+| 300 mg    |   1 |     0 |  24 | cmax                |  4.4855222 | NA      | mg/L     |
+| 300 mg    |   1 |     0 |  24 | tmax                |  2.7500000 | NA      | h        |
+| 300 mg    |   1 |     0 |  24 | tlast               | 24.0000000 | NA      | h        |
+| 300 mg    |   1 |     0 |  24 | lambda.z            |  0.2477855 | NA      | 1/h      |
+| 300 mg    |   1 |     0 |  24 | r.squared           |  0.9999424 | NA      | unitless |
+| 300 mg    |   1 |     0 |  24 | adj.r.squared       |  0.9999417 | NA      | unitless |
+| 300 mg    |   1 |     0 |  24 | lambda.z.time.first |  3.0000000 | NA      | h        |
+| 300 mg    |   1 |     0 |  24 | lambda.z.time.last  | 24.0000000 | NA      | h        |
 
-First 12 rows of the per-subject PKNCA result table. {.table
-style="width:100%;"}
+First 12 rows of the per-subject PKNCA result table. {.table}
 
 ### Comparison against published NCA medians
 
@@ -428,7 +347,7 @@ knitr::kable(compare, caption = "Simulated vs Vinnard 2017 observed pre-ART NCA 
 
 | endpoint | simulated_median | simulated_5_95 | observed_median | observed_range |
 |:---|---:|:---|---:|:---|
-| AUC0-24 (mg\*h/L) | NA | NA - NA | 34.4 | 8.2-80.2 |
+| AUC0-24 (mg\*h/L) | 31.94 | 19.00 - 53.25 | 34.4 | 8.2-80.2 |
 | Cmax (mg/L) | 7.09 | 4.30 - 11.15 | 7.4 | 2.56-11.61 |
 | Cmax (mg/L) | 7.09 | 4.30 - 11.15 | 7.4 | 2.56-11.61 |
 

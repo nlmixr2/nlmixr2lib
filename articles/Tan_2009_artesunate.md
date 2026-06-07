@@ -366,7 +366,7 @@ food-effect and dose-proportionality narratives in Discussion p.10).
 ``` r
 
 sim_nca_as <- sim |>
-  dplyr::filter(!is.na(Cc), time > 0) |>
+  dplyr::filter(!is.na(Cc)) |>
   dplyr::select(id, time, Cc = Cc_ng_per_mL, cohort)
 
 dose_df <- events |>
@@ -586,7 +586,7 @@ Simulated NCA parameters (AS) by cohort. {.table}
 ``` r
 
 sim_nca_dha <- sim |>
-  dplyr::filter(!is.na(Cc_dha), time > 0) |>
+  dplyr::filter(!is.na(Cc_dha)) |>
   dplyr::select(id, time, Cc_dha = Cc_dha_ng_per_mL, cohort)
 
 conc_dha <- PKNCA::PKNCAconc(sim_nca_dha, Cc_dha ~ time | cohort + id,

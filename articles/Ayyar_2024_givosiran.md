@@ -313,7 +313,7 @@ can be compared with the paper-reported summary metrics.
 ``` r
 
 nca_input <- sim_panel |>
-  filter(time > 0, !is.na(Cc_ng_per_mL)) |>
+  filter(!is.na(Cc_ng_per_mL)) |>
   mutate(id = as.integer(factor(dose_mg_per_kg)),
          treatment = paste0(dose_mg_per_kg, " mg/kg SC")) |>
   select(id, time, Cc_ng_per_mL, Cc_asn1_ng_per_mL, treatment)
@@ -339,10 +339,6 @@ conc_par <- PKNCA::PKNCAconc(nca_input,
 dose_par <- PKNCA::PKNCAdose(dose_df,   amt ~ time | treatment + id)
 nca_par  <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_par, dose_par,
                                             intervals = intervals))
-#> Warning: Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
 nca_par_df <- as.data.frame(nca_par$result)
 knitr::kable(
   nca_par_df[, c("treatment", "PPTESTCD", "PPORRES")],
@@ -353,7 +349,7 @@ knitr::kable(
 
 | treatment     | PPTESTCD            | PPORRES |
 |:--------------|:--------------------|--------:|
-| 0.35 mg/kg SC | auclast             |      NA |
+| 0.35 mg/kg SC | auclast             |  349.78 |
 | 0.35 mg/kg SC | cmax                |   20.23 |
 | 0.35 mg/kg SC | tmax                |    2.00 |
 | 0.35 mg/kg SC | tlast               |   24.00 |
@@ -366,7 +362,7 @@ knitr::kable(
 | 0.35 mg/kg SC | clast.pred          |    9.38 |
 | 0.35 mg/kg SC | half.life           |   19.18 |
 | 0.35 mg/kg SC | span.ratio          |    1.12 |
-| 1 mg/kg SC    | auclast             |      NA |
+| 1 mg/kg SC    | auclast             | 1020.37 |
 | 1 mg/kg SC    | cmax                |   59.35 |
 | 1 mg/kg SC    | tmax                |    2.00 |
 | 1 mg/kg SC    | tlast               |   24.00 |
@@ -379,7 +375,7 @@ knitr::kable(
 | 1 mg/kg SC    | clast.pred          |   27.13 |
 | 1 mg/kg SC    | half.life           |   18.82 |
 | 1 mg/kg SC    | span.ratio          |    1.14 |
-| 2.5 mg/kg SC  | auclast             |      NA |
+| 2.5 mg/kg SC  | auclast             | 2678.32 |
 | 2.5 mg/kg SC  | cmax                |  157.86 |
 | 2.5 mg/kg SC  | tmax                |    2.25 |
 | 2.5 mg/kg SC  | tlast               |   24.00 |
@@ -392,7 +388,7 @@ knitr::kable(
 | 2.5 mg/kg SC  | clast.pred          |   69.79 |
 | 2.5 mg/kg SC  | half.life           |   18.02 |
 | 2.5 mg/kg SC  | span.ratio          |    1.19 |
-| 5 mg/kg SC    | auclast             |      NA |
+| 5 mg/kg SC    | auclast             | 5820.80 |
 | 5 mg/kg SC    | cmax                |  350.56 |
 | 5 mg/kg SC    | tmax                |    2.25 |
 | 5 mg/kg SC    | tlast               |   24.00 |
@@ -414,10 +410,6 @@ conc_met <- PKNCA::PKNCAconc(nca_input,
                               Cc_asn1_ng_per_mL ~ time | treatment + id)
 nca_met  <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_met, dose_par,
                                             intervals = intervals))
-#> Warning: Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
 nca_met_df <- as.data.frame(nca_met$result)
 knitr::kable(
   nca_met_df[, c("treatment", "PPTESTCD", "PPORRES")],
@@ -428,7 +420,7 @@ knitr::kable(
 
 | treatment     | PPTESTCD            | PPORRES |
 |:--------------|:--------------------|--------:|
-| 0.35 mg/kg SC | auclast             |      NA |
+| 0.35 mg/kg SC | auclast             |   35.66 |
 | 0.35 mg/kg SC | cmax                |    2.04 |
 | 0.35 mg/kg SC | tmax                |    2.75 |
 | 0.35 mg/kg SC | tlast               |   24.00 |
@@ -441,7 +433,7 @@ knitr::kable(
 | 0.35 mg/kg SC | clast.pred          |    0.97 |
 | 0.35 mg/kg SC | half.life           |   19.03 |
 | 0.35 mg/kg SC | span.ratio          |    1.08 |
-| 1 mg/kg SC    | auclast             |      NA |
+| 1 mg/kg SC    | auclast             |  106.22 |
 | 1 mg/kg SC    | cmax                |    6.16 |
 | 1 mg/kg SC    | tmax                |    3.00 |
 | 1 mg/kg SC    | tlast               |   24.00 |
@@ -454,7 +446,7 @@ knitr::kable(
 | 1 mg/kg SC    | clast.pred          |    2.85 |
 | 1 mg/kg SC    | half.life           |   18.34 |
 | 1 mg/kg SC    | span.ratio          |    1.12 |
-| 2.5 mg/kg SC  | auclast             |      NA |
+| 2.5 mg/kg SC  | auclast             |  292.85 |
 | 2.5 mg/kg SC  | cmax                |   17.45 |
 | 2.5 mg/kg SC  | tmax                |    3.00 |
 | 2.5 mg/kg SC  | tlast               |   24.00 |
@@ -467,7 +459,7 @@ knitr::kable(
 | 2.5 mg/kg SC  | clast.pred          |    7.55 |
 | 2.5 mg/kg SC  | half.life           |   16.97 |
 | 2.5 mg/kg SC  | span.ratio          |    0.96 |
-| 5 mg/kg SC    | auclast             |      NA |
+| 5 mg/kg SC    | auclast             |  692.38 |
 | 5 mg/kg SC    | cmax                |   43.12 |
 | 5 mg/kg SC    | tmax                |    3.00 |
 | 5 mg/kg SC    | tlast               |   24.00 |

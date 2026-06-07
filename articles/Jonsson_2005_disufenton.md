@@ -327,7 +327,7 @@ as a sanity check on the simulation pipeline.
 # Reset time-from-end-of-infusion at t = 72 h so PKNCA's lambda.z fit sees a
 # clean post-infusion decay.
 sim_for_nca <- sim |>
-  filter(!is.na(Cc), Cc > 0, time >= 72) |>
+  filter(!is.na(Cc), time >= 72) |>
   mutate(time = time - 72) |>
   select(id, time, Cc, stratum_label)
 

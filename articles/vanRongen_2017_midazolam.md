@@ -313,7 +313,7 @@ isolate the IV contribution.
 
 # Build IV-only arm for both cohorts
 sim_iv <- sim_df |>
-  filter(!is.na(Cc), Cc > 0) |>
+  filter(!is.na(Cc)) |>
   group_by(id) |>
   mutate(
     t_iv = case_when(

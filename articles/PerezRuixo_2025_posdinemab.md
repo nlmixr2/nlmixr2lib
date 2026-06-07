@@ -10,7 +10,7 @@ library(PKNCA)
 #> 
 #>     filter
 library(rxode2)
-#> rxode2 5.1.1 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.2 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -378,7 +378,7 @@ single-dose simulation.
 
 # Use the SAD 30 mg/kg simulation already run above.
 nca_conc <- sim_hv30 |>
-  filter(time > 0, Cc > 0) |>
+  filter(!is.na(Cc)) |>
   transmute(id = 1L, time = time, Cc,
             treatment = "30 mg/kg IV SD, healthy, 80 kg")
 
@@ -393,28 +393,26 @@ intervals <- data.frame(start = 0, end = Inf,
                         aucinf.obs = TRUE, half.life = TRUE)
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- PKNCA::pk.nca(nca_data)
-#> Warning: Requesting an AUC range starting (0) before the first measurement (1)
-#> is not allowed
 knitr::kable(as.data.frame(nca_res), digits = 3,
              caption = "PKNCA summary for a single 30 mg/kg IV bolus (typical 80 kg healthy participant; serum posdinemab in pmol/L).")
 ```
 
 | treatment | id | start | end | PPTESTCD | PPORRES | exclude |
 |:---|---:|---:|---:|:---|---:|:---|
-| 30 mg/kg IV SD, healthy, 80 kg | 1 | 0 | Inf | cmax | 4471760.186 | NA |
-| 30 mg/kg IV SD, healthy, 80 kg | 1 | 0 | Inf | tmax | 1.000 | NA |
-| 30 mg/kg IV SD, healthy, 80 kg | 1 | 0 | Inf | tlast | 4320.000 | NA |
-| 30 mg/kg IV SD, healthy, 80 kg | 1 | 0 | Inf | clast.obs | 5580.971 | NA |
-| 30 mg/kg IV SD, healthy, 80 kg | 1 | 0 | Inf | lambda.z | 0.001 | NA |
-| 30 mg/kg IV SD, healthy, 80 kg | 1 | 0 | Inf | r.squared | 1.000 | NA |
-| 30 mg/kg IV SD, healthy, 80 kg | 1 | 0 | Inf | adj.r.squared | 1.000 | NA |
-| 30 mg/kg IV SD, healthy, 80 kg | 1 | 0 | Inf | lambda.z.time.first | 148.000 | NA |
-| 30 mg/kg IV SD, healthy, 80 kg | 1 | 0 | Inf | lambda.z.time.last | 4320.000 | NA |
-| 30 mg/kg IV SD, healthy, 80 kg | 1 | 0 | Inf | lambda.z.n.points | 284.000 | NA |
-| 30 mg/kg IV SD, healthy, 80 kg | 1 | 0 | Inf | clast.pred | 5534.036 | NA |
-| 30 mg/kg IV SD, healthy, 80 kg | 1 | 0 | Inf | half.life | 508.748 | NA |
-| 30 mg/kg IV SD, healthy, 80 kg | 1 | 0 | Inf | span.ratio | 8.201 | NA |
-| 30 mg/kg IV SD, healthy, 80 kg | 1 | 0 | Inf | aucinf.obs | NA | Requesting an AUC range starting (0) before the first measurement (1) is not allowed |
+| 30 mg/kg IV SD, healthy, 80 kg | 1 | 0 | Inf | cmax | 4.518850e+06 | NA |
+| 30 mg/kg IV SD, healthy, 80 kg | 1 | 0 | Inf | tmax | 0.000000e+00 | NA |
+| 30 mg/kg IV SD, healthy, 80 kg | 1 | 0 | Inf | tlast | 4.320000e+03 | NA |
+| 30 mg/kg IV SD, healthy, 80 kg | 1 | 0 | Inf | clast.obs | 5.580971e+03 | NA |
+| 30 mg/kg IV SD, healthy, 80 kg | 1 | 0 | Inf | lambda.z | 1.000000e-03 | NA |
+| 30 mg/kg IV SD, healthy, 80 kg | 1 | 0 | Inf | r.squared | 1.000000e+00 | NA |
+| 30 mg/kg IV SD, healthy, 80 kg | 1 | 0 | Inf | adj.r.squared | 1.000000e+00 | NA |
+| 30 mg/kg IV SD, healthy, 80 kg | 1 | 0 | Inf | lambda.z.time.first | 1.480000e+02 | NA |
+| 30 mg/kg IV SD, healthy, 80 kg | 1 | 0 | Inf | lambda.z.time.last | 4.320000e+03 | NA |
+| 30 mg/kg IV SD, healthy, 80 kg | 1 | 0 | Inf | lambda.z.n.points | 2.840000e+02 | NA |
+| 30 mg/kg IV SD, healthy, 80 kg | 1 | 0 | Inf | clast.pred | 5.534036e+03 | NA |
+| 30 mg/kg IV SD, healthy, 80 kg | 1 | 0 | Inf | half.life | 5.087480e+02 | NA |
+| 30 mg/kg IV SD, healthy, 80 kg | 1 | 0 | Inf | span.ratio | 8.201000e+00 | NA |
+| 30 mg/kg IV SD, healthy, 80 kg | 1 | 0 | Inf | aucinf.obs | 1.592277e+09 | NA |
 
 PKNCA summary for a single 30 mg/kg IV bolus (typical 80 kg healthy
 participant; serum posdinemab in pmol/L). {.table}

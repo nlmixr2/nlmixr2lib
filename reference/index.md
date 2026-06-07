@@ -84,6 +84,10 @@
   : Model library for nlmixr2
 - [`modellib()`](https://nlmixr2.github.io/nlmixr2lib/reference/modellib.md)
   : Get the model from the model library
+- [`ncaComparisonTable()`](https://nlmixr2.github.io/nlmixr2lib/reference/ncaComparisonTable.md)
+  : Build a side-by-side NCA comparison table (simulated vs. reference)
+- [`ncaParamLabel()`](https://nlmixr2.github.io/nlmixr2lib/reference/ncaParamLabel.md)
+  : Map PKNCA parameter codes to friendly human-readable labels
 - [`pkTrans()`](https://nlmixr2.github.io/nlmixr2lib/reference/pkTrans.md)
   : Change the transformation type for PK models
 - [`readModelDb()`](https://nlmixr2.github.io/nlmixr2lib/reference/readModelDb.md)

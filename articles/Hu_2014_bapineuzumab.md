@@ -289,7 +289,7 @@ paragraph).
 
 sim_nca <- sim |>
   as.data.frame() |>
-  filter(!is.na(Cc), time > 0) |>
+  filter(!is.na(Cc)) |>
   select(id, time, Cc, treatment)
 
 dose_df <- events |>
@@ -327,8 +327,8 @@ knitr::kable(
 
 | Interval Start | Interval End | treatment | N | AUClast (day\*ug/mL) | Cmax (ug/mL) | Tmax (day) | Half-life (day) |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | 91 | 0.5 mg/kg | 200 | NC | 11.0 \[33.1\] | 0.100 \[0.0400, 0.100\] | 29.5 \[7.60\] |
-| 0 | 91 | 1.0 mg/kg | 200 | NC | 22.3 \[33.2\] | 0.100 \[0.0400, 0.100\] | 29.2 \[7.16\] |
+| 0 | 91 | 0.5 mg/kg | 200 | 180 \[25.7\] | 11.0 \[33.1\] | 0.100 \[0.0400, 0.100\] | 29.5 \[7.60\] |
+| 0 | 91 | 1.0 mg/kg | 200 | 360 \[25.3\] | 22.3 \[33.2\] | 0.100 \[0.0400, 0.100\] | 29.2 \[7.16\] |
 
 Simulated single-dose NCA parameters by dose level (interval 0-91 days,
 end of first dosing cycle). {.table style="width:100%;"}

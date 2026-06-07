@@ -289,7 +289,7 @@ dose_df <- events_sd |>
   dplyr::select(id, time, amt, regimen)
 
 sim_nca_oxc <- sim_sd_typical |>
-  dplyr::filter(!is.na(Cc), time > 0) |>
+  dplyr::filter(!is.na(Cc)) |>
   dplyr::select(id, time, Cc, regimen)
 
 conc_oxc <- PKNCA::PKNCAconc(
@@ -730,7 +730,7 @@ simulation. {.table}
 ``` r
 
 sim_nca_mhd <- sim_sd_typical |>
-  dplyr::filter(!is.na(Cc_mhd), time > 0) |>
+  dplyr::filter(!is.na(Cc_mhd)) |>
   dplyr::select(id, time, Cc_mhd, regimen)
 
 conc_mhd <- PKNCA::PKNCAconc(

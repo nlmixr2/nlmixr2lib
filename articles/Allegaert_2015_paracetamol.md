@@ -313,7 +313,7 @@ stratum identifier (`cohort`), so per-cohort Cmax / Tmax / AUC\[0-Inf\]
 ``` r
 
 sim_nca <- sim |>
-  dplyr::filter(!is.na(Cc), Cc > 0) |>
+  dplyr::filter(!is.na(Cc)) |>
   dplyr::select(id, time, Cc, cohort)
 
 conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | cohort + id)

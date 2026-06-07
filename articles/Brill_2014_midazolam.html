@@ -1001,10 +1001,25 @@ morbidly obese).</p>
 <h3 id="nca-after-5-mg-iv-bolus">NCA after 5 mg IV bolus<a class="anchor" aria-label="anchor" href="#nca-after-5-mg-iv-bolus"></a>
 </h3>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">conc_iv</span> <span class="op">&lt;-</span> <span class="va">sim_4a</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span>, <span class="va">time</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<code class="sourceCode R"><span><span class="co"># Keep the time = 0 row — required by PKNCA to anchor AUC0-*. The</span></span>
+<span><span class="co"># `time &gt; 0` filter that used to live here dropped the row and triggered</span></span>
+<span><span class="co"># the "Requesting an AUC range starting (0)" warning across every</span></span>
+<span><span class="co"># subject.</span></span>
+<span><span class="va">conc_iv</span> <span class="op">&lt;-</span> <span class="va">sim_4a</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="va">Cc</span>, <span class="va">cohort</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>cohort <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="va">cohort</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># For IV bolus, set Cc(0) = dose / Vc back-extrapolation isn't safe here</span></span>
+<span><span class="co"># (Vc varies by cohort), so we set Cc = 0 immediately pre-dose and let</span></span>
+<span><span class="co"># PKNCA's linear-up/log-down handle the interval anchor.</span></span>
+<span><span class="va">conc_iv</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span></span>
+<span>  <span class="va">conc_iv</span>,</span>
+<span>  <span class="va">conc_iv</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/distinct.html" class="external-link">distinct</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">cohort</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>time <span class="op">=</span> <span class="fl">0</span>, Cc <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>
+<span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/distinct.html" class="external-link">distinct</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">cohort</span>, <span class="va">time</span>, .keep_all <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">cohort</span>, <span class="va">time</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">dose_iv</span> <span class="op">&lt;-</span> <span class="va">ev_iv_bolus</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">evid</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -1027,52 +1042,59 @@ morbidly obese).</p>
 <span></span>
 <span><span class="va">nca_iv</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/pk.nca.html" class="external-link">pk.nca</a></span><span class="op">(</span><span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/PKNCAdata.html" class="external-link">PKNCAdata</a></span><span class="op">(</span><span class="va">conc_obj_iv</span>, <span class="va">dose_obj_iv</span>,</span>
 <span>                                         intervals <span class="op">=</span> <span class="va">intervals_iv</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">nca_iv</span><span class="op">$</span><span class="va">result</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>               <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">cohort</span>, <span class="va">id</span>, <span class="va">PPTESTCD</span>, <span class="va">PPORRES</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>               <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_wider.html" class="external-link">pivot_wider</a></span><span class="op">(</span>names_from <span class="op">=</span> <span class="va">PPTESTCD</span>, values_from <span class="op">=</span> <span class="va">PPORRES</span><span class="op">)</span>,</span>
+<span></span>
+<span><span class="co"># Friendly labels for the rendered table</span></span>
+<span><span class="va">nca_iv_tbl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">nca_iv</span><span class="op">$</span><span class="va">result</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">cohort</span>, <span class="va">id</span>, <span class="va">PPTESTCD</span>, <span class="va">PPORRES</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_wider.html" class="external-link">pivot_wider</a></span><span class="op">(</span>names_from <span class="op">=</span> <span class="va">PPTESTCD</span>, values_from <span class="op">=</span> <span class="va">PPORRES</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">nca_iv_tbl</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">nca_iv_tbl</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cohort"</span>, <span class="st">"id"</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">nca_iv_tbl</span><span class="op">)</span>,</span>
+<span>  <span class="fu">nlmixr2lib</span><span class="fu">::</span><span class="fu"><a href="../reference/ncaParamLabel.html">ncaParamLabel</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">nca_iv_tbl</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: ncaParamLabel(): unknown PKNCA code(s) returned as-is: 'cohort', 'id',</span></span>
+<span><span class="co">#&gt; 'r.squared', 'adj.r.squared', 'lambda.z.time.first', 'lambda.z.time.last',</span></span>
+<span><span class="co">#&gt; 'clast.pred', 'span.ratio'</span></span>
+<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">nca_iv_tbl</span>,</span>
 <span>             caption <span class="op">=</span> <span class="st">"Simulated NCA after 5 mg IV bolus, typical subjects."</span>,</span>
 <span>             digits <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <caption>Simulated NCA after 5 mg IV bolus, typical subjects.</caption>
 <colgroup>
-<col width="12%">
+<col width="13%">
 <col width="1%">
 <col width="4%">
 <col width="2%">
 <col width="3%">
-<col width="5%">
-<col width="4%">
+<col width="3%">
+<col width="3%">
 <col width="5%">
 <col width="7%">
+<col width="11%">
 <col width="10%">
-<col width="10%">
-<col width="9%">
+<col width="6%">
+<col width="6%">
 <col width="5%">
-<col width="5%">
-<col width="5%">
-<col width="5%">
+<col width="6%">
+<col width="7%">
 </colgroup>
 <thead><tr class="header">
 <th align="left">cohort</th>
 <th align="right">id</th>
-<th align="right">cmax</th>
-<th align="right">tmax</th>
-<th align="right">tlast</th>
-<th align="right">clast.obs</th>
-<th align="right">lambda.z</th>
+<th align="right">Cmax</th>
+<th align="right">Tmax</th>
+<th align="right">Tlast</th>
+<th align="right">Clast</th>
+<th align="right">λz</th>
 <th align="right">r.squared</th>
 <th align="right">adj.r.squared</th>
 <th align="right">lambda.z.time.first</th>
 <th align="right">lambda.z.time.last</th>
-<th align="right">lambda.z.n.points</th>
+<th align="right">λz n points</th>
 <th align="right">clast.pred</th>
-<th align="right">half.life</th>
+<th align="right">t½</th>
 <th align="right">span.ratio</th>
-<th align="right">aucinf.obs</th>
+<th align="right">AUC0-∞ (obs)</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
@@ -1091,7 +1113,7 @@ morbidly obese).</p>
 <td align="right">2.108</td>
 <td align="right">223.183</td>
 <td align="right">1.281</td>
-<td align="right">NA</td>
+<td align="right">13784.05</td>
 </tr>
 <tr class="even">
 <td align="left">Morbidly obese 112 kg</td>
@@ -1109,7 +1131,7 @@ morbidly obese).</p>
 <td align="right">4.089</td>
 <td align="right">416.472</td>
 <td align="right">0.206</td>
-<td align="right">NA</td>
+<td align="right">12775.00</td>
 </tr>
 <tr class="odd">
 <td align="left">Morbidly obese 145 kg</td>
@@ -1127,7 +1149,7 @@ morbidly obese).</p>
 <td align="right">4.265</td>
 <td align="right">591.174</td>
 <td align="right">0.340</td>
-<td align="right">NA</td>
+<td align="right">11559.46</td>
 </tr>
 <tr class="even">
 <td align="left">Morbidly obese 186 kg</td>
@@ -1145,7 +1167,7 @@ morbidly obese).</p>
 <td align="right">3.348</td>
 <td align="right">1048.790</td>
 <td align="right">0.445</td>
-<td align="right">NA</td>
+<td align="right">10876.15</td>
 </tr>
 </tbody>
 </table>
@@ -1155,9 +1177,17 @@ morbidly obese).</p>
 </h3>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">conc_oral</span> <span class="op">&lt;-</span> <span class="va">sim_4c</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span>, <span class="va">time</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="va">Cc</span>, <span class="va">cohort</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>cohort <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="va">cohort</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">conc_oral</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span></span>
+<span>  <span class="va">conc_oral</span>,</span>
+<span>  <span class="va">conc_oral</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/distinct.html" class="external-link">distinct</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">cohort</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>time <span class="op">=</span> <span class="fl">0</span>, Cc <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>
+<span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/distinct.html" class="external-link">distinct</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">cohort</span>, <span class="va">time</span>, .keep_all <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">cohort</span>, <span class="va">time</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">dose_oral</span> <span class="op">&lt;-</span> <span class="va">ev_oral</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">evid</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -1171,53 +1201,59 @@ morbidly obese).</p>
 <span></span>
 <span><span class="va">nca_oral</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/pk.nca.html" class="external-link">pk.nca</a></span><span class="op">(</span><span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/PKNCAdata.html" class="external-link">PKNCAdata</a></span><span class="op">(</span><span class="va">conc_obj_o</span>, <span class="va">dose_obj_o</span>,</span>
 <span>                                            intervals <span class="op">=</span> <span class="va">intervals_iv</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">nca_oral</span><span class="op">$</span><span class="va">result</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>               <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">cohort</span>, <span class="va">id</span>, <span class="va">PPTESTCD</span>, <span class="va">PPORRES</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>               <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_wider.html" class="external-link">pivot_wider</a></span><span class="op">(</span>names_from <span class="op">=</span> <span class="va">PPTESTCD</span>, values_from <span class="op">=</span> <span class="va">PPORRES</span><span class="op">)</span>,</span>
+<span></span>
+<span><span class="va">nca_oral_tbl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">nca_oral</span><span class="op">$</span><span class="va">result</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">cohort</span>, <span class="va">id</span>, <span class="va">PPTESTCD</span>, <span class="va">PPORRES</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_wider.html" class="external-link">pivot_wider</a></span><span class="op">(</span>names_from <span class="op">=</span> <span class="va">PPTESTCD</span>, values_from <span class="op">=</span> <span class="va">PPORRES</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">nca_oral_tbl</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">nca_oral_tbl</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cohort"</span>, <span class="st">"id"</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">nca_oral_tbl</span><span class="op">)</span>,</span>
+<span>  <span class="fu">nlmixr2lib</span><span class="fu">::</span><span class="fu"><a href="../reference/ncaParamLabel.html">ncaParamLabel</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">nca_oral_tbl</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: ncaParamLabel(): unknown PKNCA code(s) returned as-is: 'cohort', 'id',</span></span>
+<span><span class="co">#&gt; 'r.squared', 'adj.r.squared', 'lambda.z.time.first', 'lambda.z.time.last',</span></span>
+<span><span class="co">#&gt; 'clast.pred', 'span.ratio'</span></span>
+<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">nca_oral_tbl</span>,</span>
 <span>             caption <span class="op">=</span> <span class="st">"Simulated NCA after 7.5 mg oral dose, typical subjects."</span>,</span>
 <span>             digits <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></code></pre></div>
-<table class="table">
+<table style="width:100%;" class="table">
 <caption>Simulated NCA after 7.5 mg oral dose, typical
 subjects.</caption>
 <colgroup>
-<col width="12%">
+<col width="13%">
 <col width="1%">
 <col width="3%">
 <col width="2%">
 <col width="3%">
-<col width="5%">
-<col width="4%">
+<col width="3%">
+<col width="3%">
 <col width="5%">
 <col width="7%">
+<col width="11%">
 <col width="10%">
-<col width="10%">
-<col width="9%">
+<col width="6%">
+<col width="6%">
 <col width="5%">
-<col width="5%">
-<col width="5%">
-<col width="5%">
+<col width="6%">
+<col width="7%">
 </colgroup>
 <thead><tr class="header">
 <th align="left">cohort</th>
 <th align="right">id</th>
-<th align="right">cmax</th>
-<th align="right">tmax</th>
-<th align="right">tlast</th>
-<th align="right">clast.obs</th>
-<th align="right">lambda.z</th>
+<th align="right">Cmax</th>
+<th align="right">Tmax</th>
+<th align="right">Tlast</th>
+<th align="right">Clast</th>
+<th align="right">λz</th>
 <th align="right">r.squared</th>
 <th align="right">adj.r.squared</th>
 <th align="right">lambda.z.time.first</th>
 <th align="right">lambda.z.time.last</th>
-<th align="right">lambda.z.n.points</th>
+<th align="right">λz n points</th>
 <th align="right">clast.pred</th>
-<th align="right">half.life</th>
+<th align="right">t½</th>
 <th align="right">span.ratio</th>
-<th align="right">aucinf.obs</th>
+<th align="right">AUC0-∞ (obs)</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
@@ -1236,7 +1272,7 @@ subjects.</caption>
 <td align="right">0.987</td>
 <td align="right">222.258</td>
 <td align="right">1.152</td>
-<td align="right">NA</td>
+<td align="right">5921.562</td>
 </tr>
 <tr class="even">
 <td align="left">Morbidly obese 112 kg</td>
@@ -1254,7 +1290,7 @@ subjects.</caption>
 <td align="right">1.832</td>
 <td align="right">405.219</td>
 <td align="right">0.210</td>
-<td align="right">NA</td>
+<td align="right">5439.798</td>
 </tr>
 <tr class="odd">
 <td align="left">Morbidly obese 145 kg</td>
@@ -1272,7 +1308,7 @@ subjects.</caption>
 <td align="right">4.184</td>
 <td align="right">574.687</td>
 <td align="right">0.364</td>
-<td align="right">NA</td>
+<td align="right">10392.851</td>
 </tr>
 <tr class="even">
 <td align="left">Morbidly obese 186 kg</td>
@@ -1290,7 +1326,7 @@ subjects.</caption>
 <td align="right">3.170</td>
 <td align="right">1042.647</td>
 <td align="right">0.368</td>
-<td align="right">NA</td>
+<td align="right">9834.765</td>
 </tr>
 </tbody>
 </table>

@@ -1004,7 +1004,7 @@ treatment grouping uses the AMLOAD-derived cohort label so the
 single-row reference summary matches the figure replicates above.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim_nca</span> <span class="op">&lt;-</span> <span class="va">sim_amload</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span>, <span class="va">time</span> <span class="op">&gt;</span> <span class="fl">0</span>, <span class="va">time</span> <span class="op">&lt;=</span> <span class="fl">200</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span>, <span class="va">time</span> <span class="op">&lt;=</span> <span class="fl">200</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="va">Cc</span>, <span class="va">cohort</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">dose_nca</span> <span class="op">&lt;-</span> <span class="va">events_amload</span> <span class="op">|&gt;</span></span>
@@ -1060,7 +1060,7 @@ single-row reference summary matches the figure replicates above.</p>
 <td align="left">2890</td>
 <td align="left">48.0</td>
 <td align="left">7.96</td>
-<td align="left">NC</td>
+<td align="left">139000</td>
 </tr>
 <tr class="even">
 <td align="right">0</td>
@@ -1070,7 +1070,7 @@ single-row reference summary matches the figure replicates above.</p>
 <td align="left">2890</td>
 <td align="left">48.0</td>
 <td align="left">7.96</td>
-<td align="left">NC</td>
+<td align="left">139000</td>
 </tr>
 <tr class="odd">
 <td align="right">0</td>
@@ -1080,7 +1080,7 @@ single-row reference summary matches the figure replicates above.</p>
 <td align="left">2880</td>
 <td align="left">48.0</td>
 <td align="left">8.31</td>
-<td align="left">NC</td>
+<td align="left">138000</td>
 </tr>
 <tr class="even">
 <td align="right">0</td>
@@ -1090,7 +1090,7 @@ single-row reference summary matches the figure replicates above.</p>
 <td align="left">2870</td>
 <td align="left">48.0</td>
 <td align="left">8.02</td>
-<td align="left">NC</td>
+<td align="left">137000</td>
 </tr>
 </tbody>
 </table>

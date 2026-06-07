@@ -283,10 +283,25 @@ morbidly obese).
 
 ``` r
 
+# Keep the time = 0 row — required by PKNCA to anchor AUC0-*. The
+# `time > 0` filter that used to live here dropped the row and triggered
+# the "Requesting an AUC range starting (0)" warning across every
+# subject.
 conc_iv <- sim_4a |>
-  dplyr::filter(!is.na(Cc), time > 0) |>
+  dplyr::filter(!is.na(Cc)) |>
   dplyr::select(id, time, Cc, cohort) |>
   dplyr::mutate(cohort = as.character(cohort))
+
+# For IV bolus, set Cc(0) = dose / Vc back-extrapolation isn't safe here
+# (Vc varies by cohort), so we set Cc = 0 immediately pre-dose and let
+# PKNCA's linear-up/log-down handle the interval anchor.
+conc_iv <- dplyr::bind_rows(
+  conc_iv,
+  conc_iv |> dplyr::distinct(id, cohort) |>
+    dplyr::mutate(time = 0, Cc = 0)
+) |>
+  dplyr::distinct(id, cohort, time, .keep_all = TRUE) |>
+  dplyr::arrange(id, cohort, time)
 
 dose_iv <- ev_iv_bolus |>
   dplyr::filter(evid == 1) |>
@@ -309,23 +324,30 @@ intervals_iv <- data.frame(
 
 nca_iv <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj_iv, dose_obj_iv,
                                          intervals = intervals_iv))
-#> Warning: Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-knitr::kable(as.data.frame(nca_iv$result) |>
-               dplyr::select(cohort, id, PPTESTCD, PPORRES) |>
-               tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES),
+
+# Friendly labels for the rendered table
+nca_iv_tbl <- as.data.frame(nca_iv$result) |>
+  dplyr::select(cohort, id, PPTESTCD, PPORRES) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES)
+names(nca_iv_tbl) <- ifelse(
+  names(nca_iv_tbl) %in% c("cohort", "id"),
+  names(nca_iv_tbl),
+  nlmixr2lib::ncaParamLabel(names(nca_iv_tbl))
+)
+#> Warning: ncaParamLabel(): unknown PKNCA code(s) returned as-is: 'cohort', 'id',
+#> 'r.squared', 'adj.r.squared', 'lambda.z.time.first', 'lambda.z.time.last',
+#> 'clast.pred', 'span.ratio'
+knitr::kable(nca_iv_tbl,
              caption = "Simulated NCA after 5 mg IV bolus, typical subjects.",
              digits = 3)
 ```
 
-| cohort | id | cmax | tmax | tlast | clast.obs | lambda.z | r.squared | adj.r.squared | lambda.z.time.first | lambda.z.time.last | lambda.z.n.points | clast.pred | half.life | span.ratio | aucinf.obs |
+| cohort | id | Cmax | Tmax | Tlast | Clast | λz | r.squared | adj.r.squared | lambda.z.time.first | lambda.z.time.last | λz n points | clast.pred | t½ | span.ratio | AUC0-∞ (obs) |
 |:---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| Healthy volunteer 76 kg | 1 | 223.472 | 1 | 800 | 2.118 | 0.003 | 1 | 1 | 514 | 800 | 287 | 2.108 | 223.183 | 1.281 | NA |
-| Morbidly obese 112 kg | 2 | 128.108 | 1 | 800 | 4.093 | 0.002 | 1 | 1 | 714 | 800 | 87 | 4.089 | 416.472 | 0.206 | NA |
-| Morbidly obese 145 kg | 3 | 92.078 | 1 | 800 | 4.271 | 0.001 | 1 | 1 | 599 | 800 | 202 | 4.265 | 591.174 | 0.340 | NA |
-| Morbidly obese 186 kg | 4 | 68.231 | 1 | 800 | 3.354 | 0.001 | 1 | 1 | 333 | 800 | 468 | 3.348 | 1048.790 | 0.445 | NA |
+| Healthy volunteer 76 kg | 1 | 223.472 | 1 | 800 | 2.118 | 0.003 | 1 | 1 | 514 | 800 | 287 | 2.108 | 223.183 | 1.281 | 13784.05 |
+| Morbidly obese 112 kg | 2 | 128.108 | 1 | 800 | 4.093 | 0.002 | 1 | 1 | 714 | 800 | 87 | 4.089 | 416.472 | 0.206 | 12775.00 |
+| Morbidly obese 145 kg | 3 | 92.078 | 1 | 800 | 4.271 | 0.001 | 1 | 1 | 599 | 800 | 202 | 4.265 | 591.174 | 0.340 | 11559.46 |
+| Morbidly obese 186 kg | 4 | 68.231 | 1 | 800 | 3.354 | 0.001 | 1 | 1 | 333 | 800 | 468 | 3.348 | 1048.790 | 0.445 | 10876.15 |
 
 Simulated NCA after 5 mg IV bolus, typical subjects. {.table}
 
@@ -334,9 +356,17 @@ Simulated NCA after 5 mg IV bolus, typical subjects. {.table}
 ``` r
 
 conc_oral <- sim_4c |>
-  dplyr::filter(!is.na(Cc), time > 0) |>
+  dplyr::filter(!is.na(Cc)) |>
   dplyr::select(id, time, Cc, cohort) |>
   dplyr::mutate(cohort = as.character(cohort))
+
+conc_oral <- dplyr::bind_rows(
+  conc_oral,
+  conc_oral |> dplyr::distinct(id, cohort) |>
+    dplyr::mutate(time = 0, Cc = 0)
+) |>
+  dplyr::distinct(id, cohort, time, .keep_all = TRUE) |>
+  dplyr::arrange(id, cohort, time)
 
 dose_oral <- ev_oral |>
   dplyr::filter(evid == 1) |>
@@ -350,25 +380,32 @@ dose_obj_o <- PKNCA::PKNCAdose(dose_oral, amt ~ time | cohort + id,
 
 nca_oral <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj_o, dose_obj_o,
                                             intervals = intervals_iv))
-#> Warning: Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-knitr::kable(as.data.frame(nca_oral$result) |>
-               dplyr::select(cohort, id, PPTESTCD, PPORRES) |>
-               tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES),
+
+nca_oral_tbl <- as.data.frame(nca_oral$result) |>
+  dplyr::select(cohort, id, PPTESTCD, PPORRES) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES)
+names(nca_oral_tbl) <- ifelse(
+  names(nca_oral_tbl) %in% c("cohort", "id"),
+  names(nca_oral_tbl),
+  nlmixr2lib::ncaParamLabel(names(nca_oral_tbl))
+)
+#> Warning: ncaParamLabel(): unknown PKNCA code(s) returned as-is: 'cohort', 'id',
+#> 'r.squared', 'adj.r.squared', 'lambda.z.time.first', 'lambda.z.time.last',
+#> 'clast.pred', 'span.ratio'
+knitr::kable(nca_oral_tbl,
              caption = "Simulated NCA after 7.5 mg oral dose, typical subjects.",
              digits = 3)
 ```
 
-| cohort | id | cmax | tmax | tlast | clast.obs | lambda.z | r.squared | adj.r.squared | lambda.z.time.first | lambda.z.time.last | lambda.z.n.points | clast.pred | half.life | span.ratio | aucinf.obs |
+| cohort | id | Cmax | Tmax | Tlast | Clast | λz | r.squared | adj.r.squared | lambda.z.time.first | lambda.z.time.last | λz n points | clast.pred | t½ | span.ratio | AUC0-∞ (obs) |
 |:---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| Healthy volunteer 76 kg | 1 | 34.092 | 40 | 800 | 0.992 | 0.003 | 1 | 1 | 544 | 800 | 257 | 0.987 | 222.258 | 1.152 | NA |
-| Morbidly obese 112 kg | 2 | 23.285 | 40 | 800 | 1.834 | 0.002 | 1 | 1 | 715 | 800 | 86 | 1.832 | 405.219 | 0.210 | NA |
-| Morbidly obese 145 kg | 3 | 26.199 | 83 | 800 | 4.191 | 0.001 | 1 | 1 | 591 | 800 | 210 | 4.184 | 574.687 | 0.364 | NA |
-| Morbidly obese 186 kg | 4 | 22.493 | 86 | 800 | 3.175 | 0.001 | 1 | 1 | 416 | 800 | 385 | 3.170 | 1042.647 | 0.368 | NA |
+| Healthy volunteer 76 kg | 1 | 34.092 | 40 | 800 | 0.992 | 0.003 | 1 | 1 | 544 | 800 | 257 | 0.987 | 222.258 | 1.152 | 5921.562 |
+| Morbidly obese 112 kg | 2 | 23.285 | 40 | 800 | 1.834 | 0.002 | 1 | 1 | 715 | 800 | 86 | 1.832 | 405.219 | 0.210 | 5439.798 |
+| Morbidly obese 145 kg | 3 | 26.199 | 83 | 800 | 4.191 | 0.001 | 1 | 1 | 591 | 800 | 210 | 4.184 | 574.687 | 0.364 | 10392.851 |
+| Morbidly obese 186 kg | 4 | 22.493 | 86 | 800 | 3.175 | 0.001 | 1 | 1 | 416 | 800 | 385 | 3.170 | 1042.647 | 0.368 | 9834.765 |
 
-Simulated NCA after 7.5 mg oral dose, typical subjects. {.table}
+Simulated NCA after 7.5 mg oral dose, typical subjects. {.table
+style="width:100%;"}
 
 ### Comparison against the published qualitative claims
 

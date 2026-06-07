@@ -259,7 +259,7 @@ PKNCA-derived NCA parameters from the simulated typical profile.
 ``` r
 
 nca_input <- sim |>
-  filter(!is.na(Cc), time > 0) |>
+  filter(!is.na(Cc)) |>
   mutate(id = 1L, treatment = "5 mg/kg IV") |>
   select(id, time, Cc, treatment)
 
@@ -285,8 +285,6 @@ intervals <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- PKNCA::pk.nca(nca_data)
-#> Warning: Requesting an AUC range starting (0) before the first measurement (4) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (4) is not allowed
 nca_summary <- as.data.frame(nca_res$result)
 knitr::kable(
   nca_summary[, c("PPTESTCD", "PPORRES")],
@@ -296,21 +294,21 @@ knitr::kable(
 
 | PPTESTCD            |      PPORRES |
 |:--------------------|-------------:|
-| auclast             |           NA |
-| cmax                |  494.0874075 |
-| tmax                |    4.0000000 |
-| tlast               | 1008.0000000 |
-| clast.obs           |  124.3561101 |
-| lambda.z            |    0.0011812 |
-| r.squared           |    0.9999025 |
-| adj.r.squared       |    0.9999019 |
-| lambda.z.time.first |  380.0000000 |
-| lambda.z.time.last  | 1008.0000000 |
-| lambda.z.n.points   |  158.0000000 |
-| clast.pred          |  123.8661097 |
-| half.life           |  586.8103006 |
-| span.ratio          |    1.0701925 |
-| aucinf.obs          |           NA |
+| auclast             | 2.478941e+05 |
+| cmax                | 7.875973e+02 |
+| tmax                | 0.000000e+00 |
+| tlast               | 1.008000e+03 |
+| clast.obs           | 1.243561e+02 |
+| lambda.z            | 1.181200e-03 |
+| r.squared           | 9.999025e-01 |
+| adj.r.squared       | 9.999019e-01 |
+| lambda.z.time.first | 3.800000e+02 |
+| lambda.z.time.last  | 1.008000e+03 |
+| lambda.z.n.points   | 1.580000e+02 |
+| clast.pred          | 1.238661e+02 |
+| half.life           | 5.868103e+02 |
+| span.ratio          | 1.070193e+00 |
+| aucinf.obs          | 3.531725e+05 |
 
 Simulated NCA parameters for human plasma adalimumab (5 mg/kg IV).
 {.table}

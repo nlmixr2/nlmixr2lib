@@ -10,7 +10,7 @@ library(PKNCA)
 #> 
 #>     filter
 library(rxode2)
-#> rxode2 5.1.1 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.2 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -436,7 +436,6 @@ cycle-1 to cycle-3 *ratio* and the qualitative ordering between cycles.
 ``` r
 
 typ_nca_input <- typ_sim |>
-  filter(time > 0) |>
   mutate(
     cycle         = pmax(1L, as.integer(floor((time - 1e-9) / cycle_dy) + 1L)),
     time_in_cycle = time - (cycle - 1) * cycle_dy

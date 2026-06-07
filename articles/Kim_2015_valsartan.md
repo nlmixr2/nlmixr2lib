@@ -229,7 +229,7 @@ parameterization at the reported parameter values.
 ``` r
 
 nca_window <- sim |>
-  filter(!is.na(Cc), time >= 0, time <= 48) |>
+  filter(!is.na(Cc), time <= 48) |>
   select(id, time, Cc, cohort)
 
 dose_df <- demo |>

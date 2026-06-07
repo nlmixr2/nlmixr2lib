@@ -177,7 +177,7 @@ a severe impaired renal function (i.e. 15189 (14 884 -15494) ng h ml -1
 ``` r
 
 sim_nca <- sim_typ |>
-  dplyr::filter(!is.na(Cc), time > 0) |>
+  dplyr::filter(!is.na(Cc)) |>
   dplyr::distinct(id, time, cohort, .keep_all = TRUE) |>
   dplyr::select(id, time, Cc, cohort)
 
@@ -210,20 +210,20 @@ knitr::kable(
 
 | cohort                 | PPTESTCD            |      PPORRES |
 |:-----------------------|:--------------------|-------------:|
-| Normal renal (CRCL=82) | cmax                | 6048.4433911 |
-| Normal renal (CRCL=82) | tmax                |    0.5000000 |
-| Normal renal (CRCL=82) | tlast               |  504.0000000 |
-| Normal renal (CRCL=82) | clast.obs           |    0.0257505 |
-| Normal renal (CRCL=82) | lambda.z            |    0.0160644 |
-| Normal renal (CRCL=82) | r.squared           |    0.9999198 |
-| Normal renal (CRCL=82) | adj.r.squared       |    0.9999191 |
-| Normal renal (CRCL=82) | lambda.z.time.first |   64.0000000 |
-| Normal renal (CRCL=82) | lambda.z.time.last  |  504.0000000 |
-| Normal renal (CRCL=82) | lambda.z.n.points   |  111.0000000 |
-| Normal renal (CRCL=82) | clast.pred          |    0.0254614 |
-| Normal renal (CRCL=82) | half.life           |   43.1480928 |
-| Normal renal (CRCL=82) | span.ratio          |   10.1974380 |
-| Normal renal (CRCL=82) | aucinf.obs          |           NA |
+| Normal renal (CRCL=82) | cmax                | 6.048443e+03 |
+| Normal renal (CRCL=82) | tmax                | 5.000000e-01 |
+| Normal renal (CRCL=82) | tlast               | 5.040000e+02 |
+| Normal renal (CRCL=82) | clast.obs           | 2.575050e-02 |
+| Normal renal (CRCL=82) | lambda.z            | 1.606440e-02 |
+| Normal renal (CRCL=82) | r.squared           | 9.999198e-01 |
+| Normal renal (CRCL=82) | adj.r.squared       | 9.999191e-01 |
+| Normal renal (CRCL=82) | lambda.z.time.first | 6.400000e+01 |
+| Normal renal (CRCL=82) | lambda.z.time.last  | 5.040000e+02 |
+| Normal renal (CRCL=82) | lambda.z.n.points   | 1.110000e+02 |
+| Normal renal (CRCL=82) | clast.pred          | 2.546140e-02 |
+| Normal renal (CRCL=82) | half.life           | 4.314809e+01 |
+| Normal renal (CRCL=82) | span.ratio          | 1.019744e+01 |
+| Normal renal (CRCL=82) | aucinf.obs          | 1.422355e+04 |
 
 Simulated NCA parameters for a typical patient receiving 320 mg/m^2 IV
 vinflunine. {.table}
@@ -249,7 +249,7 @@ knitr::kable(
 
 | Metric | Schmitt 2018 (normal renal, 320 mg/m^2) | nlmixr2lib typical-PK simulation | Relative difference |
 |:---|:---|:---|:---|
-| AUC0-inf (ng.h/mL) | ~15189 (14884-15494) | NA | NA% |
+| AUC0-inf (ng.h/mL) | ~15189 (14884-15494) | 14224 | -6.4% |
 
 Comparison of simulated typical-PK AUC against Schmitt 2018 p.1611
 published mean AUC for normal renal function. {.table}

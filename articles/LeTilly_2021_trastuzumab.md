@@ -226,8 +226,7 @@ window.
 ``` r
 
 nca_input <- sim_long |>
-  filter(matrix == "Serum (Cc)" | matrix == "CSF (Ccsf)",
-         route == "IT", time > 0) |>
+  filter(matrix == "Serum (Cc)" | matrix == "CSF (Ccsf)", route == "IT") |>
   mutate(id = match(dose_label, unique(dose_label)),
          analyte = matrix) |>
   filter(!is.na(conc), is.finite(conc))

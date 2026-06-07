@@ -327,7 +327,7 @@ Wu 2012 Figure 4.
 ``` r
 
 sim_nca <- sim |>
-  filter(!is.na(Cc), time > 0) |>
+  filter(!is.na(Cc)) |>
   select(id, time, Cc, dose_group)
 
 dose_df <- events |>
@@ -372,73 +372,73 @@ knitr::kable(
 )
 ```
 
-| dose_group | PPTESTCD            | median |    q05 |    q95 |
-|:-----------|:--------------------|-------:|-------:|-------:|
-| 1 mg       | adj.r.squared       |   1.00 |   1.00 |   1.00 |
-| 1 mg       | auclast             |     NA |     NA |     NA |
-| 1 mg       | clast.pred          |   0.09 |   0.01 |   0.37 |
-| 1 mg       | cmax                |   3.91 |   2.26 |   6.47 |
-| 1 mg       | half.life           |  59.02 |  26.61 | 108.12 |
-| 1 mg       | lambda.z            |   0.01 |   0.01 |   0.03 |
-| 1 mg       | lambda.z.n.points   |   7.00 |   6.00 |   7.00 |
-| 1 mg       | lambda.z.time.first |  24.00 |  24.00 |  36.00 |
-| 1 mg       | lambda.z.time.last  | 168.00 | 168.00 | 168.00 |
-| 1 mg       | r.squared           |   1.00 |   1.00 |   1.00 |
-| 1 mg       | span.ratio          |   2.38 |   1.22 |   5.41 |
-| 1 mg       | tlast               | 168.00 | 168.00 | 168.00 |
-| 1 mg       | tmax                |   2.00 |   1.00 |   4.00 |
-| 4 mg       | adj.r.squared       |   1.00 |   1.00 |   1.00 |
-| 4 mg       | auclast             |     NA |     NA |     NA |
-| 4 mg       | clast.pred          |   0.26 |   0.02 |   1.44 |
-| 4 mg       | cmax                |  13.80 |   7.96 |  23.93 |
-| 4 mg       | half.life           |  49.99 |  23.87 | 120.34 |
-| 4 mg       | lambda.z            |   0.01 |   0.01 |   0.03 |
-| 4 mg       | lambda.z.n.points   |   7.00 |   6.00 |   7.00 |
-| 4 mg       | lambda.z.time.first |  24.00 |  24.00 |  36.00 |
-| 4 mg       | lambda.z.time.last  | 168.00 | 168.00 | 168.00 |
-| 4 mg       | r.squared           |   1.00 |   1.00 |   1.00 |
-| 4 mg       | span.ratio          |   2.82 |   1.10 |   6.03 |
-| 4 mg       | tlast               | 168.00 | 168.00 | 168.00 |
-| 4 mg       | tmax                |   2.00 |   1.00 |   4.00 |
-| 10 mg      | adj.r.squared       |   1.00 |   1.00 |   1.00 |
-| 10 mg      | auclast             |     NA |     NA |     NA |
-| 10 mg      | clast.pred          |   0.80 |   0.06 |   3.80 |
-| 10 mg      | cmax                |  29.51 |  18.01 |  51.00 |
-| 10 mg      | half.life           |  51.93 |  23.78 |  96.95 |
-| 10 mg      | lambda.z            |   0.01 |   0.01 |   0.03 |
-| 10 mg      | lambda.z.n.points   |   7.00 |   6.00 |   7.00 |
-| 10 mg      | lambda.z.time.first |  24.00 |  24.00 |  36.00 |
-| 10 mg      | lambda.z.time.last  | 168.00 | 168.00 | 168.00 |
-| 10 mg      | r.squared           |   1.00 |   1.00 |   1.00 |
-| 10 mg      | span.ratio          |   2.71 |   1.38 |   6.06 |
-| 10 mg      | tlast               | 168.00 | 168.00 | 168.00 |
-| 10 mg      | tmax                |   2.00 |   2.00 |   4.00 |
-| 30 mg      | adj.r.squared       |   1.00 |   1.00 |   1.00 |
-| 30 mg      | auclast             |     NA |     NA |     NA |
-| 30 mg      | clast.pred          |   2.13 |   0.25 |   8.54 |
-| 30 mg      | cmax                |  66.68 |  36.14 | 106.37 |
-| 30 mg      | half.life           |  51.16 |  26.18 | 114.02 |
-| 30 mg      | lambda.z            |   0.01 |   0.01 |   0.03 |
-| 30 mg      | lambda.z.n.points   |   6.00 |   5.00 |   7.00 |
-| 30 mg      | lambda.z.time.first |  36.00 |  24.00 |  48.00 |
-| 30 mg      | lambda.z.time.last  | 168.00 | 168.00 | 168.00 |
-| 30 mg      | r.squared           |   1.00 |   1.00 |   1.00 |
-| 30 mg      | span.ratio          |   2.60 |   1.15 |   5.46 |
-| 30 mg      | tlast               | 168.00 | 168.00 | 168.00 |
-| 30 mg      | tmax                |   4.00 |   2.00 |   8.00 |
-| 60 mg      | adj.r.squared       |   1.00 |   1.00 |   1.00 |
-| 60 mg      | auclast             |     NA |     NA |     NA |
-| 60 mg      | clast.pred          |   5.22 |   0.37 |  19.34 |
-| 60 mg      | cmax                |  90.04 |  57.43 | 142.91 |
-| 60 mg      | half.life           |  52.96 |  24.70 |  98.99 |
-| 60 mg      | lambda.z            |   0.01 |   0.01 |   0.03 |
-| 60 mg      | lambda.z.n.points   |   6.00 |   5.00 |   6.00 |
-| 60 mg      | lambda.z.time.first |  36.00 |  36.00 |  48.00 |
-| 60 mg      | lambda.z.time.last  | 168.00 | 168.00 | 168.00 |
-| 60 mg      | r.squared           |   1.00 |   1.00 |   1.00 |
-| 60 mg      | span.ratio          |   2.42 |   1.17 |   5.34 |
-| 60 mg      | tlast               | 168.00 | 168.00 | 168.00 |
-| 60 mg      | tmax                |  12.00 |   4.00 |  12.00 |
+| dose_group | PPTESTCD            |  median |     q05 |     q95 |
+|:-----------|:--------------------|--------:|--------:|--------:|
+| 1 mg       | adj.r.squared       |    1.00 |    1.00 |    1.00 |
+| 1 mg       | auclast             |   74.96 |   34.00 |  140.29 |
+| 1 mg       | clast.pred          |    0.09 |    0.01 |    0.37 |
+| 1 mg       | cmax                |    3.91 |    2.26 |    6.47 |
+| 1 mg       | half.life           |   59.02 |   26.61 |  108.12 |
+| 1 mg       | lambda.z            |    0.01 |    0.01 |    0.03 |
+| 1 mg       | lambda.z.n.points   |    7.00 |    6.00 |    7.00 |
+| 1 mg       | lambda.z.time.first |   24.00 |   24.00 |   36.00 |
+| 1 mg       | lambda.z.time.last  |  168.00 |  168.00 |  168.00 |
+| 1 mg       | r.squared           |    1.00 |    1.00 |    1.00 |
+| 1 mg       | span.ratio          |    2.38 |    1.22 |    5.41 |
+| 1 mg       | tlast               |  168.00 |  168.00 |  168.00 |
+| 1 mg       | tmax                |    2.00 |    1.00 |    4.00 |
+| 4 mg       | adj.r.squared       |    1.00 |    1.00 |    1.00 |
+| 4 mg       | auclast             |  277.48 |  124.79 |  542.63 |
+| 4 mg       | clast.pred          |    0.26 |    0.02 |    1.44 |
+| 4 mg       | cmax                |   13.80 |    7.96 |   23.93 |
+| 4 mg       | half.life           |   49.99 |   23.87 |  120.34 |
+| 4 mg       | lambda.z            |    0.01 |    0.01 |    0.03 |
+| 4 mg       | lambda.z.n.points   |    7.00 |    6.00 |    7.00 |
+| 4 mg       | lambda.z.time.first |   24.00 |   24.00 |   36.00 |
+| 4 mg       | lambda.z.time.last  |  168.00 |  168.00 |  168.00 |
+| 4 mg       | r.squared           |    1.00 |    1.00 |    1.00 |
+| 4 mg       | span.ratio          |    2.82 |    1.10 |    6.03 |
+| 4 mg       | tlast               |  168.00 |  168.00 |  168.00 |
+| 4 mg       | tmax                |    2.00 |    1.00 |    4.00 |
+| 10 mg      | adj.r.squared       |    1.00 |    1.00 |    1.00 |
+| 10 mg      | auclast             |  710.68 |  342.17 | 1345.70 |
+| 10 mg      | clast.pred          |    0.80 |    0.06 |    3.80 |
+| 10 mg      | cmax                |   29.51 |   18.01 |   51.00 |
+| 10 mg      | half.life           |   51.93 |   23.78 |   96.95 |
+| 10 mg      | lambda.z            |    0.01 |    0.01 |    0.03 |
+| 10 mg      | lambda.z.n.points   |    7.00 |    6.00 |    7.00 |
+| 10 mg      | lambda.z.time.first |   24.00 |   24.00 |   36.00 |
+| 10 mg      | lambda.z.time.last  |  168.00 |  168.00 |  168.00 |
+| 10 mg      | r.squared           |    1.00 |    1.00 |    1.00 |
+| 10 mg      | span.ratio          |    2.71 |    1.38 |    6.06 |
+| 10 mg      | tlast               |  168.00 |  168.00 |  168.00 |
+| 10 mg      | tmax                |    2.00 |    2.00 |    4.00 |
+| 30 mg      | adj.r.squared       |    1.00 |    1.00 |    1.00 |
+| 30 mg      | auclast             | 2050.04 | 1051.32 | 3609.67 |
+| 30 mg      | clast.pred          |    2.13 |    0.25 |    8.54 |
+| 30 mg      | cmax                |   66.68 |   36.14 |  106.37 |
+| 30 mg      | half.life           |   51.16 |   26.18 |  114.02 |
+| 30 mg      | lambda.z            |    0.01 |    0.01 |    0.03 |
+| 30 mg      | lambda.z.n.points   |    6.00 |    5.00 |    7.00 |
+| 30 mg      | lambda.z.time.first |   36.00 |   24.00 |   48.00 |
+| 30 mg      | lambda.z.time.last  |  168.00 |  168.00 |  168.00 |
+| 30 mg      | r.squared           |    1.00 |    1.00 |    1.00 |
+| 30 mg      | span.ratio          |    2.60 |    1.15 |    5.46 |
+| 30 mg      | tlast               |  168.00 |  168.00 |  168.00 |
+| 30 mg      | tmax                |    4.00 |    2.00 |    8.00 |
+| 60 mg      | adj.r.squared       |    1.00 |    1.00 |    1.00 |
+| 60 mg      | auclast             | 4337.12 | 1688.91 | 7478.79 |
+| 60 mg      | clast.pred          |    5.22 |    0.37 |   19.34 |
+| 60 mg      | cmax                |   90.04 |   57.43 |  142.91 |
+| 60 mg      | half.life           |   52.96 |   24.70 |   98.99 |
+| 60 mg      | lambda.z            |    0.01 |    0.01 |    0.03 |
+| 60 mg      | lambda.z.n.points   |    6.00 |    5.00 |    6.00 |
+| 60 mg      | lambda.z.time.first |   36.00 |   36.00 |   48.00 |
+| 60 mg      | lambda.z.time.last  |  168.00 |  168.00 |  168.00 |
+| 60 mg      | r.squared           |    1.00 |    1.00 |    1.00 |
+| 60 mg      | span.ratio          |    2.42 |    1.17 |    5.34 |
+| 60 mg      | tlast               |  168.00 |  168.00 |  168.00 |
+| 60 mg      | tmax                |   12.00 |    4.00 |   12.00 |
 
 Per-dose-group NCA summary (median, 5-95 percent prediction interval)
 from the simulated cohort. {.table}

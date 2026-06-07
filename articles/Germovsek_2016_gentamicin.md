@@ -328,7 +328,7 @@ dosing).
 ``` r
 
 sim_for_nca <- sim_typical |>
-  filter(!is.na(Cc), Cc > 0) |>
+  filter(!is.na(Cc)) |>
   select(id, time, Cc, cohort) |>
   as.data.frame()
 

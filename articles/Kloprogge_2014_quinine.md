@@ -353,7 +353,7 @@ column (median and range across the 22 subjects).
 ``` r
 
 sim_nca <- sim_median |>
-  dplyr::filter(!is.na(Cc), time > 0) |>
+  dplyr::filter(!is.na(Cc)) |>
   dplyr::mutate(treatment = "first_dose_cohort_median",
                 conc_mg_L = Cc) |>
   dplyr::select(id, time, conc_mg_L, treatment)
@@ -379,36 +379,6 @@ intervals <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- PKNCA::pk.nca(nca_data)
-#> Warning: Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
 ```
 
 ``` r
@@ -432,11 +402,11 @@ knitr::kable(nca_summary,
              digits = 3)
 ```
 
-| treatment                | PPTESTCD | median |   p05 |   p95 |
-|:-------------------------|:---------|-------:|------:|------:|
-| first_dose_cohort_median | auclast  |     NA |    NA |    NA |
-| first_dose_cohort_median | cmax     |  2.183 | 1.568 | 3.375 |
-| first_dose_cohort_median | tmax     |  3.300 | 1.490 | 5.110 |
+| treatment                | PPTESTCD | median |    p05 |    p95 |
+|:-------------------------|:---------|-------:|-------:|-------:|
+| first_dose_cohort_median | auclast  | 14.385 | 10.475 | 21.344 |
+| first_dose_cohort_median | cmax     |  2.183 |  1.568 |  3.375 |
+| first_dose_cohort_median | tmax     |  3.300 |  1.490 |  5.110 |
 
 Simulated first-dose NCA over 0-8 h at cohort-median covariates (n=30
 subjects, median \[5%-95%\]). cmax in mg/L; tmax in h; auclast in

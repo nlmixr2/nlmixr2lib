@@ -248,9 +248,23 @@ NCA on the simulated stochastic cohort, by day-and-arm cell:
 
 ``` r
 
+# Keep the time = 0 row — required by PKNCA to anchor AUC0-* and to
+# avoid the "Requesting an AUC range starting (0)" warning. Filter only
+# on missing Cc, never on `time > 0` or `Cc > 0`.
 pkn_in <- sim |>
-  dplyr::filter(time > 0, !is.na(Cc), Cc > 0) |>
-  dplyr::mutate(treatment = cohort)
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::mutate(treatment = cohort) |>
+  dplyr::select(id, time, Cc, treatment)
+
+# Defensive guarantee: ensure a time = 0 row per (id, treatment) survives
+# the filter (Cc = 0 is correct pre-dose for this extravascular model).
+pkn_in <- dplyr::bind_rows(
+  pkn_in,
+  pkn_in |> dplyr::distinct(id, treatment) |>
+    dplyr::mutate(time = 0, Cc = 0)
+) |>
+  dplyr::distinct(id, treatment, time, .keep_all = TRUE) |>
+  dplyr::arrange(id, treatment, time)
 
 dose_pkn <- events |>
   dplyr::filter(evid == 1L) |>
@@ -270,208 +284,71 @@ intervals <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- PKNCA::pk.nca(nca_data)
-#> Warning: Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+```
 
-nca_summary <- nca_res$result |>
+### Comparison against published values
+
+Archary 2019 Section 3.4 reports the median (IQR) abacavir AUC0-12
+across all study days for four outcome strata: **19.1 \[9.1-31.1\]
+h\*mg/L** (week 12, treatment-failure), **18.5 \[12.2-36.4\] h\*mg/L**
+(week 12, treatment-success), **20.9 \[12.7-33.3\] h\*mg/L** (week 48,
+treatment-failure), and **15.7 \[8.9-28.4\] h\*mg/L** (week 48,
+treatment-success). The published strata reflect outcome-by-week
+subgroups across the trial’s full WHO weight-band cohort and are not
+directly comparable to the four day-and-arm cohort cells simulated here
+(60 mg, 7 kg). For a quick sanity check we compare the simulated AUC0-12
+aggregated across all four cells to the published
+treatment-success-week-12 median, which is the closest one-number
+summary available.
+
+``` r
+
+# Aggregate the simulated cohorts (4 cells, n = 50 each) into one
+# overall comparison row.
+sim_overall <- as.data.frame(nca_res$result) |>
+  dplyr::mutate(stratum = "All cohort cells aggregated (n = 200)")
+
+reference <- tibble::tribble(
+  ~stratum,                                          ~auclast,
+  "All cohort cells aggregated (n = 200)",            18.5
+)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated     = sim_overall,
+  reference     = reference,
+  by            = "stratum",
+  params        = "auclast",
+  units         = c(auclast = "h*mg/L"),
+  tolerance_pct = 30   # ±30%: the strata don't map 1:1; loose check only
+)
+knitr::kable(
+  cmp,
+  caption = paste(
+    "Sanity comparison of simulated AUC0-12 against the Archary 2019",
+    "Section 3.4 treatment-success-week-12 median (18.5 h*mg/L). The",
+    "simulated cohort is a single dose level and weight; the published",
+    "strata span the full WHO weight-band cohort, so a loose ±30%",
+    "tolerance applies. * differs from reference by >30%."
+  )
+)
+```
+
+| NCA parameter | stratum | Reference | Simulated | % diff |
+|:---|:---|:---|:---|:---|
+| AUClast (h\*mg/L) | All cohort cells aggregated (n = 200) | 18.5 | 15.2 | -17.8% |
+
+Sanity comparison of simulated AUC0-12 against the Archary 2019 Section
+3.4 treatment-success-week-12 median (18.5 h*mg/L). The simulated cohort
+is a single dose level and weight; the published strata span the full
+WHO weight-band cohort, so a loose ±30% tolerance applies.* differs from
+reference by \>30%. {.table}
+
+Per-cohort simulated NCA (Cmax, Tmax, AUC0-12 by day-and-arm cell) for
+visual inspection:
+
+``` r
+
+nca_per_cell <- as.data.frame(nca_res$result) |>
   dplyr::filter(PPTESTCD %in% c("cmax", "tmax", "auclast")) |>
   dplyr::group_by(treatment, PPTESTCD) |>
   dplyr::summarise(
@@ -479,47 +356,36 @@ nca_summary <- nca_res$result |>
     p05    = stats::quantile(PPORRES, 0.05, na.rm = TRUE),
     p95    = stats::quantile(PPORRES, 0.95, na.rm = TRUE),
     .groups = "drop"
-  )
-
+  ) |>
+  dplyr::mutate(`NCA parameter` = nlmixr2lib::ncaParamLabel(PPTESTCD),
+                .keep = "unused", .before = "treatment")
 knitr::kable(
-  nca_summary,
-  caption = "Simulated abacavir NCA parameters by day-and-arm cell (60 mg dose, WT = 7 kg, n = 50 per cell)."
+  nca_per_cell,
+  caption = "Simulated abacavir NCA per cohort cell (60 mg, WT = 7 kg, n = 50 per cell). Cmax (mg/L); Tmax (h); AUClast (h*mg/L)."
 )
 ```
 
-| treatment                   | PPTESTCD |   median |      p05 |      p95 |
-|:----------------------------|:---------|---------:|---------:|---------:|
-| delayed ART, day 1 (60 mg)  | auclast  |       NA |       NA |       NA |
-| delayed ART, day 1 (60 mg)  | cmax     | 5.433701 | 3.446441 | 7.433760 |
-| delayed ART, day 1 (60 mg)  | tmax     | 1.000000 | 1.000000 | 1.500000 |
-| delayed ART, day 14 (60 mg) | auclast  |       NA |       NA |       NA |
-| delayed ART, day 14 (60 mg) | cmax     | 3.738890 | 2.311386 | 5.245073 |
-| delayed ART, day 14 (60 mg) | tmax     | 0.750000 | 0.750000 | 1.000000 |
-| early ART, day 1 (60 mg)    | auclast  |       NA |       NA |       NA |
-| early ART, day 1 (60 mg)    | cmax     | 6.919526 | 4.735552 | 9.592965 |
-| early ART, day 1 (60 mg)    | tmax     | 1.000000 | 1.000000 | 1.500000 |
-| early ART, day 14 (60 mg)   | auclast  |       NA |       NA |       NA |
-| early ART, day 14 (60 mg)   | cmax     | 4.785562 | 3.123182 | 9.031254 |
-| early ART, day 14 (60 mg)   | tmax     | 0.750000 | 0.750000 | 1.000000 |
+| NCA parameter | treatment                   |    median |       p05 |       p95 |
+|:--------------|:----------------------------|----------:|----------:|----------:|
+| AUClast       | delayed ART, day 1 (60 mg)  | 17.970352 | 10.466941 | 31.635434 |
+| Cmax          | delayed ART, day 1 (60 mg)  |  5.433701 |  3.446441 |  7.433760 |
+| Tmax          | delayed ART, day 1 (60 mg)  |  1.000000 |  1.000000 |  1.500000 |
+| AUClast       | delayed ART, day 14 (60 mg) |  9.335070 |  4.925630 | 15.616123 |
+| Cmax          | delayed ART, day 14 (60 mg) |  3.738890 |  2.311386 |  5.245073 |
+| Tmax          | delayed ART, day 14 (60 mg) |  0.750000 |  0.750000 |  1.000000 |
+| AUClast       | early ART, day 1 (60 mg)    | 23.472877 | 14.433157 | 37.255814 |
+| Cmax          | early ART, day 1 (60 mg)    |  6.919526 |  4.735552 |  9.592965 |
+| Tmax          | early ART, day 1 (60 mg)    |  1.000000 |  1.000000 |  1.500000 |
+| AUClast       | early ART, day 14 (60 mg)   | 12.081072 |  6.704068 | 27.628669 |
+| Cmax          | early ART, day 14 (60 mg)   |  4.785562 |  3.123182 |  9.031254 |
+| Tmax          | early ART, day 14 (60 mg)   |  0.750000 |  0.750000 |  1.000000 |
 
-Simulated abacavir NCA parameters by day-and-arm cell (60 mg dose, WT =
-7 kg, n = 50 per cell). {.table}
+Simulated abacavir NCA per cohort cell (60 mg, WT = 7 kg, n = 50 per
+cell). Cmax (mg/L); Tmax (h); AUClast (h\*mg/L). {.table}
 
-### Comparison against published values
-
-Archary 2019 Section 3.4 reports the median (IQR) abacavir AUC0-12
-across all study days for two outcome strata at week 12: **19.1
-\[9.1-31.1\] h*mg/L for treatment-failure patients **and** 18.5
-\[12.2-36.4\] h*mg/L for treatment-success patients**, and at week 48
-reports 20.9 \[12.7-33.3\] h*mg/L (failure) and 15.7 \[8.9-28.4\] h*mg/L
-(success). The simulated AUC0-12 above should sit in the same broad
-range; the cohort cells in this vignette correspond to a single dose
-level (60 mg) at one weight (7 kg), so they are not directly comparable
-to the per-patient AUC0-12 spread the source reports across the full
-WHO-weight-band cohort. The simulated values pass the qualitative sanity
-bar (Cmax around 4-7 mg/L, Tmax around 1-2 h, AUC0-12 in the
-single-to-low-double-digit h\*mg/L range for the cohort-median 7 kg
-weight).
+The simulated values pass the qualitative sanity bar (Cmax around 4-7
+mg/L, Tmax around 1-2 h, AUC0-12 in the single-to-low-double-digit
+h\*mg/L range for the cohort-median 7 kg weight).
 
 ## Assumptions and deviations
 

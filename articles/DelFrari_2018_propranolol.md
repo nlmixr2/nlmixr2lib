@@ -364,12 +364,7 @@ Steady-state NCA on the regular-BID regimen, computing Cmax, Tmax, Cmin
 ``` r
 
 ss_bid <- sim |>
-  dplyr::filter(
-    regimen == "Regular BID (8h, 20h)",
-    time >= (n_days_ss - 1L) * 24 + 8,
-    time <= (n_days_ss - 1L) * 24 + 20,
-    !is.na(Cc), Cc > 0
-  ) |>
+  dplyr::filter(regimen == "Regular BID (8h, 20h)", time >= (n_days_ss - 1L) * 24 + 8, time <= (n_days_ss - 1L) * 24 + 20, !is.na(Cc)) |>
   dplyr::mutate(
     tad       = time - ((n_days_ss - 1L) * 24 + 8),
     treatment = group

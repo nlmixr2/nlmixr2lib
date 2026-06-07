@@ -196,7 +196,7 @@ fit <- nlmixr2est::nlmixr(modFun, data = dMarkov, est = "focei", control = list(
 #> [====|====|====|====|====|====|====|====|====|====] 0:00:00
 #> → compiling EBE model...
 #> ✔ done
-#> rxode2 5.1.1 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.2 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 #> calculating covariance matrix
 #> done
@@ -210,8 +210,10 @@ fit
 #> 
 #> ── Time (sec fit$time): ──
 #> 
-#>           setup optimize covariance table compress    other
-#> elapsed 0.03144 0.004073   0.004075 0.043    0.001 3.866412
+#>             setup    optimize  covariance preprocess postprocess table compress
+#> elapsed 0.0682372 0.006661731 0.005340189      0.063       0.021 0.262    0.001
+#>            other
+#> elapsed 3.587761
 #> 
 #> ── (fit$parFixed or fit$parFixedDf): ──
 #> 
@@ -242,7 +244,6 @@ fit
 #>    • gradient problems with initial estimate and covariance; see $scaleInfo 
 #>    • last objective function was not at minimum, possible problems in optimization 
 #>    • Hessian reset during optimization; (can control by foceiControl(resetHessianAndEta=.)) 
-#>    • bad solve during optimization 
 #>   Censoring (fit$censInformation): No censoring
 #>   Minimization message (fit$message):  
 #>     false convergence (8) 

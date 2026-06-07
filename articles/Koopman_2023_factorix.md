@@ -290,7 +290,7 @@ Table 3.
 ``` r
 
 sim_nca <- sim |>
-  filter(!is.na(Cc), Cc > 0) |>
+  filter(!is.na(Cc)) |>
   select(id, time, Cc, age_group)
 
 dose_df <- events |>

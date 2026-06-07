@@ -10,7 +10,7 @@ library(PKNCA)
 #> 
 #>     filter
 library(rxode2)
-#> rxode2 5.1.1 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.2 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -338,7 +338,7 @@ sim_sd <- rxode2::rxSolve(mod_typical, ev_sd, iCov = icov_sd,
 sim_sd <- sim_sd[!duplicated(sim_sd$time), ]
 
 nca_conc <- sim_sd |>
-  filter(time > 0, Cc > 0) |>
+  filter(!is.na(Cc)) |>
   transmute(id = 1L, time, Cc,
             treatment = "5 mg/kg IV SD, ADA-, ALB 38")
 
@@ -354,28 +354,26 @@ intervals <- data.frame(start = 0, end = Inf,
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- PKNCA::pk.nca(nca_data)
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (0.04) is not allowed
 knitr::kable(as.data.frame(nca_res), digits = 3,
              caption = "PKNCA summary for a single 5 mg/kg IV bolus (ADA-negative typical-value simulation; IFX in ug/mL).")
 ```
 
-| treatment | id | start | end | PPTESTCD | PPORRES | exclude |
-|:---|---:|---:|---:|:---|---:|:---|
-| 5 mg/kg IV SD, ADA-, ALB 38 | 1 | 0 | Inf | cmax | 109.034 | NA |
-| 5 mg/kg IV SD, ADA-, ALB 38 | 1 | 0 | Inf | tmax | 0.040 | NA |
-| 5 mg/kg IV SD, ADA-, ALB 38 | 1 | 0 | Inf | tlast | 56.000 | NA |
-| 5 mg/kg IV SD, ADA-, ALB 38 | 1 | 0 | Inf | clast.obs | 0.928 | NA |
-| 5 mg/kg IV SD, ADA-, ALB 38 | 1 | 0 | Inf | lambda.z | 0.072 | NA |
-| 5 mg/kg IV SD, ADA-, ALB 38 | 1 | 0 | Inf | r.squared | 1.000 | NA |
-| 5 mg/kg IV SD, ADA-, ALB 38 | 1 | 0 | Inf | adj.r.squared | 1.000 | NA |
-| 5 mg/kg IV SD, ADA-, ALB 38 | 1 | 0 | Inf | lambda.z.time.first | 12.000 | NA |
-| 5 mg/kg IV SD, ADA-, ALB 38 | 1 | 0 | Inf | lambda.z.time.last | 56.000 | NA |
-| 5 mg/kg IV SD, ADA-, ALB 38 | 1 | 0 | Inf | lambda.z.n.points | 23.000 | NA |
-| 5 mg/kg IV SD, ADA-, ALB 38 | 1 | 0 | Inf | clast.pred | 0.924 | NA |
-| 5 mg/kg IV SD, ADA-, ALB 38 | 1 | 0 | Inf | half.life | 9.673 | NA |
-| 5 mg/kg IV SD, ADA-, ALB 38 | 1 | 0 | Inf | span.ratio | 4.549 | NA |
-| 5 mg/kg IV SD, ADA-, ALB 38 | 1 | 0 | Inf | aucinf.obs | NA | Requesting an AUC range starting (0) before the first measurement (0.04) is not allowed |
+| treatment                   |  id | start | end | PPTESTCD            | PPORRES | exclude |
+|:----------------------------|----:|------:|----:|:--------------------|--------:|:--------|
+| 5 mg/kg IV SD, ADA-, ALB 38 |   1 |     0 | Inf | cmax                | 110.063 | NA      |
+| 5 mg/kg IV SD, ADA-, ALB 38 |   1 |     0 | Inf | tmax                |   0.000 | NA      |
+| 5 mg/kg IV SD, ADA-, ALB 38 |   1 |     0 | Inf | tlast               |  56.000 | NA      |
+| 5 mg/kg IV SD, ADA-, ALB 38 |   1 |     0 | Inf | clast.obs           |   0.928 | NA      |
+| 5 mg/kg IV SD, ADA-, ALB 38 |   1 |     0 | Inf | lambda.z            |   0.072 | NA      |
+| 5 mg/kg IV SD, ADA-, ALB 38 |   1 |     0 | Inf | r.squared           |   1.000 | NA      |
+| 5 mg/kg IV SD, ADA-, ALB 38 |   1 |     0 | Inf | adj.r.squared       |   1.000 | NA      |
+| 5 mg/kg IV SD, ADA-, ALB 38 |   1 |     0 | Inf | lambda.z.time.first |  12.000 | NA      |
+| 5 mg/kg IV SD, ADA-, ALB 38 |   1 |     0 | Inf | lambda.z.time.last  |  56.000 | NA      |
+| 5 mg/kg IV SD, ADA-, ALB 38 |   1 |     0 | Inf | lambda.z.n.points   |  23.000 | NA      |
+| 5 mg/kg IV SD, ADA-, ALB 38 |   1 |     0 | Inf | clast.pred          |   0.924 | NA      |
+| 5 mg/kg IV SD, ADA-, ALB 38 |   1 |     0 | Inf | half.life           |   9.673 | NA      |
+| 5 mg/kg IV SD, ADA-, ALB 38 |   1 |     0 | Inf | span.ratio          |   4.549 | NA      |
+| 5 mg/kg IV SD, ADA-, ALB 38 |   1 |     0 | Inf | aucinf.obs          | 867.587 | NA      |
 
 PKNCA summary for a single 5 mg/kg IV bolus (ADA-negative typical-value
 simulation; IFX in ug/mL). {.table}

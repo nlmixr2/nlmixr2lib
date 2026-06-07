@@ -905,7 +905,7 @@ moderate or a severe impaired renal function (i.e. 15189 (14 884 -15494)
 ng h ml -1 …)”).</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim_nca</span> <span class="op">&lt;-</span> <span class="va">sim_typ</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span>, <span class="va">time</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/distinct.html" class="external-link">distinct</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="va">cohort</span>, .keep_all <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="va">Cc</span>, <span class="va">cohort</span><span class="op">)</span></span>
 <span></span>
@@ -946,72 +946,72 @@ mg/m^2 IV vinflunine.</caption>
 <tr class="odd">
 <td align="left">Normal renal (CRCL=82)</td>
 <td align="left">cmax</td>
-<td align="right">6048.4433911</td>
+<td align="right">6.048443e+03</td>
 </tr>
 <tr class="even">
 <td align="left">Normal renal (CRCL=82)</td>
 <td align="left">tmax</td>
-<td align="right">0.5000000</td>
+<td align="right">5.000000e-01</td>
 </tr>
 <tr class="odd">
 <td align="left">Normal renal (CRCL=82)</td>
 <td align="left">tlast</td>
-<td align="right">504.0000000</td>
+<td align="right">5.040000e+02</td>
 </tr>
 <tr class="even">
 <td align="left">Normal renal (CRCL=82)</td>
 <td align="left">clast.obs</td>
-<td align="right">0.0257505</td>
+<td align="right">2.575050e-02</td>
 </tr>
 <tr class="odd">
 <td align="left">Normal renal (CRCL=82)</td>
 <td align="left">lambda.z</td>
-<td align="right">0.0160644</td>
+<td align="right">1.606440e-02</td>
 </tr>
 <tr class="even">
 <td align="left">Normal renal (CRCL=82)</td>
 <td align="left">r.squared</td>
-<td align="right">0.9999198</td>
+<td align="right">9.999198e-01</td>
 </tr>
 <tr class="odd">
 <td align="left">Normal renal (CRCL=82)</td>
 <td align="left">adj.r.squared</td>
-<td align="right">0.9999191</td>
+<td align="right">9.999191e-01</td>
 </tr>
 <tr class="even">
 <td align="left">Normal renal (CRCL=82)</td>
 <td align="left">lambda.z.time.first</td>
-<td align="right">64.0000000</td>
+<td align="right">6.400000e+01</td>
 </tr>
 <tr class="odd">
 <td align="left">Normal renal (CRCL=82)</td>
 <td align="left">lambda.z.time.last</td>
-<td align="right">504.0000000</td>
+<td align="right">5.040000e+02</td>
 </tr>
 <tr class="even">
 <td align="left">Normal renal (CRCL=82)</td>
 <td align="left">lambda.z.n.points</td>
-<td align="right">111.0000000</td>
+<td align="right">1.110000e+02</td>
 </tr>
 <tr class="odd">
 <td align="left">Normal renal (CRCL=82)</td>
 <td align="left">clast.pred</td>
-<td align="right">0.0254614</td>
+<td align="right">2.546140e-02</td>
 </tr>
 <tr class="even">
 <td align="left">Normal renal (CRCL=82)</td>
 <td align="left">half.life</td>
-<td align="right">43.1480928</td>
+<td align="right">4.314809e+01</td>
 </tr>
 <tr class="odd">
 <td align="left">Normal renal (CRCL=82)</td>
 <td align="left">span.ratio</td>
-<td align="right">10.1974380</td>
+<td align="right">1.019744e+01</td>
 </tr>
 <tr class="even">
 <td align="left">Normal renal (CRCL=82)</td>
 <td align="left">aucinf.obs</td>
-<td align="right">NA</td>
+<td align="right">1.422355e+04</td>
 </tr>
 </tbody>
 </table>
@@ -1050,8 +1050,8 @@ p.1611 published mean AUC for normal renal function.</caption>
 <tbody><tr class="odd">
 <td align="left">AUC0-inf (ng.h/mL)</td>
 <td align="left">~15189 (14884-15494)</td>
-<td align="left">NA</td>
-<td align="left">NA%</td>
+<td align="left">14224</td>
+<td align="left">-6.4%</td>
 </tr></tbody>
 </table>
 </div>

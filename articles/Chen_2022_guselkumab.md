@@ -4,7 +4,7 @@
 
 library(nlmixr2lib)
 library(rxode2)
-#> rxode2 5.1.1 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.2 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -278,7 +278,7 @@ kg subject (Results section, page 752).
 ``` r
 
 nca_conc <- sim %>%
-  filter(regimen == "q8w", time >= 44 * 7, time <= 52 * 7, Cc > 0) %>%
+  filter(regimen == "q8w", time >= 44 * 7, time <= 52 * 7) %>%
   mutate(time_rel = time - 44 * 7) %>%
   rename(ID = id) %>%
   select(ID, time_rel, Cc, regimen)

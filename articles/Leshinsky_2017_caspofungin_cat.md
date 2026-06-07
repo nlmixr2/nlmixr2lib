@@ -332,49 +332,65 @@ Simulated terminal-phase NCA after the final dose. {.table}
 
 Leshinsky 2017 Table 2 reports model-independent PK parameters from
 their 1000-cat simulations of the 1 mg/kg q24h regimen with a 1 h
-infusion duration. Selected values:
-
-| Metric                       | Paper mean | Paper median | Simulation (mean) |
-|------------------------------|-----------:|-------------:|------------------:|
-| Terminal t1/2 (h)            |       14.5 |         14.5 |       (see above) |
-| Cmax first dose (ug/mL)      |       14.8 |         15.0 |       (see above) |
-| Cmax last dose, q24h (ug/mL) |       19.8 |         19.6 |       (see above) |
-| AUC_ss,0-tau (ug.h/mL)       |        232 |          230 |       (see above) |
-
-Filling in the comparison from the PKNCA outputs:
+infusion duration. The four headline values are the terminal half-life,
+Cmax after the first dose, Cmax at steady state, and AUC0-τ at steady
+state. We compare them side-by-side against the simulated PKNCA output
+in one combined table; each row pulls the corresponding value from
+whichever window produced it (first-dose window, steady-state interval,
+or terminal tail).
 
 ``` r
 
-get_mean <- function(df, code) {
-  v <- df$mean[df$PPTESTCD == code]
-  if (length(v) == 0) NA_real_ else v
-}
-cmp <- tibble::tibble(
-  Metric = c("Terminal t1/2 (h)",
-             "Cmax first dose (ug/mL)",
-             "Cmax last dose, q24h (ug/mL)",
-             "AUC_ss,0-tau (ug.h/mL)"),
-  `Paper mean` = c(14.5, 14.8, 19.8, 232),
-  `Simulation mean` = c(
-    get_mean(summary_thalf, "half.life"),
-    get_mean(summary_first, "cmax"),
-    get_mean(summary_ss,    "cmax"),
-    get_mean(summary_ss,    "auclast")
+# Build a tidy long simulated frame that ncaComparisonTable() can
+# consume directly: one row per (window, PPTESTCD) with the published-
+# style mean. The "window" grouping column lets us compare first-dose
+# Cmax separately from steady-state Cmax.
+simulated <- dplyr::bind_rows(
+  summary_first |> dplyr::filter(PPTESTCD == "cmax") |>
+    dplyr::transmute(window = "Cmax first dose",
+                     PPTESTCD = "cmax", PPORRES = mean),
+  summary_ss |> dplyr::filter(PPTESTCD == "cmax") |>
+    dplyr::transmute(window = "Cmax last dose, q24h",
+                     PPTESTCD = "cmax", PPORRES = mean),
+  summary_ss |> dplyr::filter(PPTESTCD == "auclast") |>
+    dplyr::transmute(window = "AUC_ss,0-tau",
+                     PPTESTCD = "auclast", PPORRES = mean),
+  summary_thalf |> dplyr::filter(PPTESTCD == "half.life") |>
+    dplyr::transmute(window = "Terminal t1/2",
+                     PPTESTCD = "half.life", PPORRES = mean)
+)
+reference <- tibble::tribble(
+  ~window,                  ~cmax, ~auclast, ~half.life,
+  "Cmax first dose",         14.8, NA_real_, NA_real_,
+  "Cmax last dose, q24h",    19.8, NA_real_, NA_real_,
+  "AUC_ss,0-tau",        NA_real_,      232, NA_real_,
+  "Terminal t1/2",       NA_real_, NA_real_,       14.5
+)
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = simulated,
+  reference = reference,
+  by        = "window",
+  units     = c(cmax = "ug/mL", auclast = "ug.h/mL", half.life = "h"),
+  tolerance_pct = 20
+)
+knitr::kable(
+  cmp,
+  caption = paste(
+    "Simulated vs. Leshinsky 2017 Table 2 NCA (1 mg/kg q24h x 7,",
+    "1 h infusion, cat). * differs from reference by >20%."
   )
-) |>
-  dplyr::mutate(`%diff` = 100 * (`Simulation mean` - `Paper mean`) / `Paper mean`)
-knitr::kable(cmp, digits = 2,
-             caption = "Comparison of simulated NCA against Leshinsky 2017 Table 2.")
+)
 ```
 
-| Metric                       | Paper mean | Simulation mean | %diff |
-|:-----------------------------|-----------:|----------------:|------:|
-| Terminal t1/2 (h)            |       14.5 |           14.66 |  1.09 |
-| Cmax first dose (ug/mL)      |       14.8 |           14.08 | -4.89 |
-| Cmax last dose, q24h (ug/mL) |       19.8 |           19.06 | -3.73 |
-| AUC_ss,0-tau (ug.h/mL)       |      232.0 |          231.09 | -0.39 |
+| NCA parameter     | window               | Reference | Simulated | % diff |
+|:------------------|:---------------------|:----------|:----------|:-------|
+| Cmax (ug/mL)      | Cmax first dose      | 14.8      | 14.1      | -4.9%  |
+| Cmax (ug/mL)      | Cmax last dose, q24h | 19.8      | 19.1      | -3.7%  |
+| AUClast (ug.h/mL) | AUC_ss,0-tau         | 232       | 231       | -0.4%  |
+| t½ (h)            | Terminal t1/2        | 14.5      | 14.7      | +1.1%  |
 
-Comparison of simulated NCA against Leshinsky 2017 Table 2. {.table}
+Simulated vs. Leshinsky 2017 Table 2 NCA (1 mg/kg q24h x 7, 1 h
+infusion, cat). \* differs from reference by \>20%. {.table}
 
 Differences within ~10% are expected because (a) the paper used 1000
 subjects vs the 500 here, (b) the paper’s body-weight distribution is

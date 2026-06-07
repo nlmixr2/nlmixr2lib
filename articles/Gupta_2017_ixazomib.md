@@ -335,7 +335,7 @@ sim_nca <- rxode2::rxSolve(mod, events = events_nca, addDosing = FALSE,
 ``` r
 
 conc_df <- sim_nca |>
-  dplyr::filter(!is.na(Cc), Cc >= 0) |>
+  dplyr::filter(!is.na(Cc)) |>
   dplyr::select(id, time, Cc, treatment)
 
 dose_df <- events_nca |>

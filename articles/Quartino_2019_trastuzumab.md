@@ -4,7 +4,7 @@
 
 library(nlmixr2lib)
 library(rxode2)
-#> rxode2 5.1.1 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.2 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -349,7 +349,7 @@ start_ss   <- 21 * 17                       # final q3w dose
 end_ss     <- start_ss + tau
 
 sim_ss <- sim |>
-  dplyr::filter(time >= start_ss, time <= end_ss, !is.na(Cc), Cc > 0) |>
+  dplyr::filter(time >= start_ss, time <= end_ss, !is.na(Cc)) |>
   dplyr::transmute(id, time, Cc, tumor_type)
 
 dose_ss <- events_q3w_cov |>

@@ -299,42 +299,54 @@ conc_obj_m <- PKNCA::PKNCAconc(sim_nca_az5104, conc ~ time | treatment + id,
                                concu = "nmol/L", timeu = "h")
 nca_metab <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj_m, dose_obj,
                                             intervals = intervals))
-
-knitr::kable(as.data.frame(summary(nca_parent)),
-             caption = "Simulated steady-state NCA - osimertinib (nmol/L, h).")
 ```
-
-| Interval Start | Interval End | treatment | N | AUClast (h\*nmol/L) | Cmax (nmol/L) | Cmin (nmol/L) | Tmax (h) | Cav (nmol/L) |
-|---:|---:|:---|:---|:---|:---|:---|:---|:---|
-| 0 | 24 | 80 mg QD | 100 | 10800 \[49.8\] | 494 \[46.6\] | 386 \[58.6\] | 7.00 \[1.50, 10.0\] | 450 \[49.8\] |
-
-Simulated steady-state NCA - osimertinib (nmol/L, h). {.table}
-
-``` r
-
-knitr::kable(as.data.frame(summary(nca_metab)),
-             caption = "Simulated steady-state NCA - AZ5104 (nmol/L, h).")
-```
-
-| Interval Start | Interval End | treatment | N | AUClast (h\*nmol/L) | Cmax (nmol/L) | Cmin (nmol/L) | Tmax (h) | Cav (nmol/L) |
-|---:|---:|:---|:---|:---|:---|:---|:---|:---|
-| 0 | 24 | 80 mg QD | 100 | 1120 \[59.0\] | 48.9 \[56.8\] | 43.2 \[63.6\] | 12.0 \[4.00, 16.0\] | 46.6 \[59.0\] |
-
-Simulated steady-state NCA - AZ5104 (nmol/L, h). {.table}
 
 ### Comparison against published NCA
 
 Brown 2017 reports typical NSCLC steady-state values for an 80 mg
-once-daily dose in the Results paragraph “Model development”:
+once-daily dose in the Results paragraph “Model development” — AUCss,
+Css,max, and Css,min for both osimertinib (parent) and AZ5104
+(metabolite). The combined comparison:
 
-| Analyte | Parameter | Published (Brown 2017) | Simulated (this vignette) |
-|----|----|----|----|
-| Osimertinib | AUCss (nmol\*h/L) | 11258 | see PKNCA `auclast` row above |
-| Osimertinib | Css,max (nmol/L) | 501 | see PKNCA `cmax` row above |
-| Osimertinib | Css,min (nmol/L) | 417 | see PKNCA `cmin` row above |
-| AZ5104 | AUCss (nmol\*h/L) | 1271 | see PKNCA `auclast` row above |
-| AZ5104 | Css,max (nmol/L) | 56 | see PKNCA `cmax` row above |
-| AZ5104 | Css,min (nmol/L) | 52 | see PKNCA `cmin` row above |
+``` r
+
+simulated <- dplyr::bind_rows(
+  as.data.frame(nca_parent$result) |> dplyr::mutate(analyte = "Osimertinib"),
+  as.data.frame(nca_metab$result)  |> dplyr::mutate(analyte = "AZ5104")
+)
+reference <- tibble::tribble(
+  ~analyte,      ~auclast, ~cmax, ~cmin,
+  "Osimertinib",   11258,   501,   417,
+  "AZ5104",         1271,    56,    52
+)
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated     = simulated,
+  reference     = reference,
+  by            = "analyte",
+  params        = c("auclast", "cmax", "cmin"),
+  units         = c(auclast = "nmol*h/L", cmax = "nmol/L", cmin = "nmol/L"),
+  tolerance_pct = 20
+)
+knitr::kable(
+  cmp,
+  caption = paste(
+    "Simulated vs. Brown 2017 steady-state NCA (80 mg QD, parent +",
+    "AZ5104 metabolite). * differs from reference by >20%."
+  )
+)
+```
+
+| NCA parameter       | analyte     | Reference | Simulated | % diff   |
+|:--------------------|:------------|:----------|:----------|:---------|
+| Cmax (nmol/L)       | Osimertinib | 501       | 507       | +1.2%    |
+| Cmax (nmol/L)       | AZ5104      | 56        | 45.8      | -18.3%   |
+| Cmin (nmol/L)       | Osimertinib | 417       | 387       | -7.2%    |
+| Cmin (nmol/L)       | AZ5104      | 52        | 39.2      | -24.7%\* |
+| AUClast (nmol\*h/L) | Osimertinib | 11300     | 11100     | -1.6%    |
+| AUClast (nmol\*h/L) | AZ5104      | 1270      | 1030      | -18.6%   |
+
+Simulated vs. Brown 2017 steady-state NCA (80 mg QD, parent + AZ5104
+metabolite). \* differs from reference by \>20%. {.table}
 
 The simulated typical-value steady-state averages should reproduce the
 published values within a few percent because the simulation uses the

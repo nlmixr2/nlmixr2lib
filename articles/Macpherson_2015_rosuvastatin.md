@@ -239,7 +239,6 @@ the three single-dose cohorts.
 ``` r
 
 nca_input <- sim_paper |>
-  filter(time > 0) |>
   select(id, time, Cc, treatment)
 
 dose_df <- demo |>
@@ -266,9 +265,9 @@ knitr::kable(nca_summary,
 
 | Interval Start | Interval End | treatment | N | AUClast (h\*ng/mL) | Cmax (ng/mL) | Tmax (h) | Half-life (h) | AUCinf,obs (h\*ng/mL) |
 |---:|---:|:---|:---|:---|:---|:---|:---|:---|
-| 0 | 96 | 10 mg | 80 | NC | 3.87 \[37.1\] | 2.00 \[1.00, 9.00\] | 63.5 \[21.6\] | NC |
-| 0 | 96 | 40 mg | 80 | NC | 16.1 \[34.7\] | 2.00 \[0.500, 9.00\] | 62.0 \[21.8\] | NC |
-| 0 | 96 | 80 mg | 80 | NC | 34.6 \[34.6\] | 2.00 \[0.500, 9.00\] | 62.3 \[22.0\] | NC |
+| 0 | 96 | 10 mg | 80 | 46.0 \[37.3\] | 3.87 \[37.1\] | 2.00 \[1.00, 9.00\] | 63.5 \[21.6\] | 51.8 \[43.3\] |
+| 0 | 96 | 40 mg | 80 | 192 \[42.8\] | 16.1 \[34.7\] | 2.00 \[0.500, 9.00\] | 62.0 \[21.8\] | 218 \[50.0\] |
+| 0 | 96 | 80 mg | 80 | 400 \[40.5\] | 34.6 \[34.6\] | 2.00 \[0.500, 9.00\] | 62.3 \[22.0\] | 458 \[48.2\] |
 
 Simulated NCA parameters by single-dose cohort (200 subjects per dose,
 Study 4522IL/0086 sampling schedule). {.table style="width:100%;"}
@@ -298,11 +297,11 @@ knitr::kable(auc_by_dose,
              caption = "Median simulated AUCinf by dose, with the dose-normalised AUCinf/mg column verifying dose linearity.")
 ```
 
-| treatment | dose_mg | median_auc | q05 | q95 | auc_per_mg |
-|:----------|--------:|-----------:|----:|----:|-----------:|
-| 10 mg     |      10 |         NA |  NA |  NA |         NA |
-| 40 mg     |      40 |         NA |  NA |  NA |         NA |
-| 80 mg     |      80 |         NA |  NA |  NA |         NA |
+| treatment | dose_mg | median_auc |       q05 |      q95 | auc_per_mg |
+|:----------|--------:|-----------:|----------:|---------:|-----------:|
+| 10 mg     |      10 |   50.70489 |  25.98403 | 103.0506 |   5.070489 |
+| 40 mg     |      40 |  220.17752 | 105.22929 | 390.3965 |   5.504438 |
+| 80 mg     |      80 |  444.81679 | 219.63401 | 926.3404 |   5.560210 |
 
 Median simulated AUCinf by dose, with the dose-normalised AUCinf/mg
 column verifying dose linearity. {.table}

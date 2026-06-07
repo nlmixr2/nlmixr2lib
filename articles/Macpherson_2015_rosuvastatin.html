@@ -920,7 +920,6 @@ female children of the same weight.
 across the three single-dose cohorts.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">nca_input</span> <span class="op">&lt;-</span> <span class="va">sim_paper</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">time</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">select</span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="va">Cc</span>, <span class="va">treatment</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">dose_df</span> <span class="op">&lt;-</span> <span class="va">demo</span> <span class="op">|&gt;</span></span>
@@ -974,33 +973,33 @@ per dose, Study 4522IL/0086 sampling schedule).</caption>
 <td align="right">96</td>
 <td align="left">10 mg</td>
 <td align="left">80</td>
-<td align="left">NC</td>
+<td align="left">46.0 [37.3]</td>
 <td align="left">3.87 [37.1]</td>
 <td align="left">2.00 [1.00, 9.00]</td>
 <td align="left">63.5 [21.6]</td>
-<td align="left">NC</td>
+<td align="left">51.8 [43.3]</td>
 </tr>
 <tr class="even">
 <td align="right">0</td>
 <td align="right">96</td>
 <td align="left">40 mg</td>
 <td align="left">80</td>
-<td align="left">NC</td>
+<td align="left">192 [42.8]</td>
 <td align="left">16.1 [34.7]</td>
 <td align="left">2.00 [0.500, 9.00]</td>
 <td align="left">62.0 [21.8]</td>
-<td align="left">NC</td>
+<td align="left">218 [50.0]</td>
 </tr>
 <tr class="odd">
 <td align="right">0</td>
 <td align="right">96</td>
 <td align="left">80 mg</td>
 <td align="left">80</td>
-<td align="left">NC</td>
+<td align="left">400 [40.5]</td>
 <td align="left">34.6 [34.6]</td>
 <td align="left">2.00 [0.500, 9.00]</td>
 <td align="left">62.3 [22.0]</td>
-<td align="left">NC</td>
+<td align="left">458 [48.2]</td>
 </tr>
 </tbody>
 </table>
@@ -1041,26 +1040,26 @@ AUCinf/mg column verifying dose linearity.</caption>
 <tr class="odd">
 <td align="left">10 mg</td>
 <td align="right">10</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
+<td align="right">50.70489</td>
+<td align="right">25.98403</td>
+<td align="right">103.0506</td>
+<td align="right">5.070489</td>
 </tr>
 <tr class="even">
 <td align="left">40 mg</td>
 <td align="right">40</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
+<td align="right">220.17752</td>
+<td align="right">105.22929</td>
+<td align="right">390.3965</td>
+<td align="right">5.504438</td>
 </tr>
 <tr class="odd">
 <td align="left">80 mg</td>
 <td align="right">80</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
+<td align="right">444.81679</td>
+<td align="right">219.63401</td>
+<td align="right">926.3404</td>
+<td align="right">5.560210</td>
 </tr>
 </tbody>
 </table>

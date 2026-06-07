@@ -295,8 +295,7 @@ median of 2350 RPM) and a representative subset of doses:
 ``` r
 
 sim_for_nca <- sim |>
-  dplyr::filter(pump_rpm == 2300, dose_mg_h %in% c(0.21, 0.42, 0.84),
-                !is.na(Cc), time > 0) |>
+  dplyr::filter(pump_rpm == 2300, dose_mg_h %in% c(0.21, 0.42, 0.84), !is.na(Cc)) |>
   dplyr::mutate(
     treatment = paste0(sex_label, "/", dose_mg_h, "mg/h")
   )
@@ -331,169 +330,19 @@ intervals <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- PKNCA::pk.nca(nca_data)
-#> Warning: Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (2) is not allowed
 knitr::kable(summary(nca_res),
   caption = "NCA over the 0-48 h continuous-infusion window for female and male subjects at 2300 RPM and three infusion rates. Cav at steady state equals the closed-form Css = (infusion rate) / CL_i."
 )
 ```
 
-| start | end | treatment       | N   | auclast | cmax           | tmax                | cav |
-|------:|----:|:----------------|:----|:--------|:---------------|:--------------------|:----|
-|     0 |  48 | Female/0.21mg/h | 25  | NC      | 0.591 \[10.2\] | 4.00 \[2.00, 4.00\] | NC  |
-|     0 |  48 | Female/0.42mg/h | 25  | NC      | 1.18 \[11.8\]  | 4.00 \[2.00, 4.00\] | NC  |
-|     0 |  48 | Female/0.84mg/h | 25  | NC      | 2.34 \[11.0\]  | 4.00 \[2.00, 4.00\] | NC  |
-|     0 |  48 | Male/0.21mg/h   | 25  | NC      | 1.23 \[8.67\]  | 6.00 \[4.00, 6.00\] | NC  |
-|     0 |  48 | Male/0.42mg/h   | 25  | NC      | 2.33 \[12.1\]  | 6.00 \[4.00, 6.00\] | NC  |
-|     0 |  48 | Male/0.84mg/h   | 25  | NC      | 4.52 \[9.14\]  | 6.00 \[4.00, 6.00\] | NC  |
+| start | end | treatment | N | auclast | cmax | tmax | cav |
+|---:|---:|:---|:---|:---|:---|:---|:---|
+| 0 | 48 | Female/0.21mg/h | 25 | 27.7 \[10.7\] | 0.591 \[10.2\] | 4.00 \[2.00, 4.00\] | 0.577 \[10.7\] |
+| 0 | 48 | Female/0.42mg/h | 25 | 55.4 \[12.0\] | 1.18 \[11.8\] | 4.00 \[2.00, 4.00\] | 1.15 \[12.0\] |
+| 0 | 48 | Female/0.84mg/h | 25 | 110 \[11.1\] | 2.34 \[11.0\] | 4.00 \[2.00, 4.00\] | 2.29 \[11.1\] |
+| 0 | 48 | Male/0.21mg/h | 25 | 57.6 \[9.36\] | 1.23 \[8.67\] | 6.00 \[4.00, 6.00\] | 1.20 \[9.36\] |
+| 0 | 48 | Male/0.42mg/h | 25 | 109 \[12.3\] | 2.33 \[12.1\] | 6.00 \[4.00, 6.00\] | 2.27 \[12.3\] |
+| 0 | 48 | Male/0.84mg/h | 25 | 211 \[9.18\] | 4.52 \[9.14\] | 6.00 \[4.00, 6.00\] | 4.40 \[9.18\] |
 
 NCA over the 0-48 h continuous-infusion window for female and male
 subjects at 2300 RPM and three infusion rates. Cav at steady state

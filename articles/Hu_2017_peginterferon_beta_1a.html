@@ -888,7 +888,7 @@ metrics exactly.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">conc_obj</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/PKNCAconc.html" class="external-link">PKNCAconc</a></span><span class="op">(</span></span>
 <span>  <span class="va">sim_typ</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span>, <span class="va">time</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="va">Cc</span>, <span class="va">quintile</span><span class="op">)</span>,</span>
 <span>  <span class="va">Cc</span> <span class="op">~</span> <span class="va">time</span> <span class="op">|</span> <span class="va">quintile</span> <span class="op">+</span> <span class="va">id</span>,</span>
 <span>  concu <span class="op">=</span> <span class="st">"ng/mL"</span>, timeu <span class="op">=</span> <span class="st">"hour"</span></span>
@@ -911,16 +911,6 @@ metrics exactly.</p>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">nca_typ</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/pk.nca.html" class="external-link">pk.nca</a></span><span class="op">(</span><span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/PKNCAdata.html" class="external-link">PKNCAdata</a></span><span class="op">(</span><span class="va">conc_obj</span>, <span class="va">dose_obj</span>, intervals <span class="op">=</span> <span class="va">intervals_single</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (0.5) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.5) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.5) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.5) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.5) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.5) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.5) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.5) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.5) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.5) is not allowed</span></span>
 <span></span>
 <span><span class="va">nca_typ_tbl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">nca_typ</span><span class="op">$</span><span class="va">result</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">PPTESTCD</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cmax"</span>, <span class="st">"aucinf.obs"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -972,7 +962,7 @@ model.</caption>
 <td align="right">297</td>
 <td align="right">297.3</td>
 <td align="right">44.7</td>
-<td align="right">NA</td>
+<td align="right">44.72</td>
 </tr>
 <tr class="even">
 <td align="left">Q2</td>
@@ -980,7 +970,7 @@ model.</caption>
 <td align="right">273</td>
 <td align="right">273.0</td>
 <td align="right">40.8</td>
-<td align="right">NA</td>
+<td align="right">40.82</td>
 </tr>
 <tr class="odd">
 <td align="left">Q3</td>
@@ -988,7 +978,7 @@ model.</caption>
 <td align="right">254</td>
 <td align="right">253.6</td>
 <td align="right">38.0</td>
-<td align="right">NA</td>
+<td align="right">37.99</td>
 </tr>
 <tr class="even">
 <td align="left">Q4</td>
@@ -996,7 +986,7 @@ model.</caption>
 <td align="right">232</td>
 <td align="right">232.3</td>
 <td align="right">35.2</td>
-<td align="right">NA</td>
+<td align="right">35.14</td>
 </tr>
 <tr class="odd">
 <td align="left">Q5</td>
@@ -1004,7 +994,7 @@ model.</caption>
 <td align="right">197</td>
 <td align="right">196.8</td>
 <td align="right">30.8</td>
-<td align="right">NA</td>
+<td align="right">30.84</td>
 </tr>
 </tbody>
 </table>

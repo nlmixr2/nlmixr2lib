@@ -238,7 +238,6 @@ the three genotype strata.
 ``` r
 
 nca_input <- sim_paper |>
-  filter(time > 0) |>
   select(id, time, Cc, cohort)
 
 dose_df <- demo |>
@@ -259,9 +258,9 @@ knitr::kable(nca_summary,
 
 | start | end | cohort | N | auclast | cmax | tmax | aucinf.obs |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | 24 | \*15 heterozygote | 50 | NC | 20.5 \[30.1\] | 1.00 \[0.500, 2.00\] | NC |
-| 0 | 24 | \*15 homozygote | 50 | NC | 27.2 \[25.7\] | 1.00 \[0.500, 2.00\] | NC |
-| 0 | 24 | \*15 noncarrier | 50 | NC | 14.1 \[35.0\] | 1.00 \[0.500, 2.00\] | NC |
+| 0 | 24 | \*15 heterozygote | 50 | 61.8 \[31.7\] | 20.5 \[30.1\] | 1.00 \[0.500, 2.00\] | 62.3 \[32.4\] |
+| 0 | 24 | \*15 homozygote | 50 | 71.7 \[27.9\] | 27.2 \[25.7\] | 1.00 \[0.500, 2.00\] | 72.0 \[28.5\] |
+| 0 | 24 | \*15 noncarrier | 50 | 36.5 \[27.0\] | 14.1 \[35.0\] | 1.00 \[0.500, 2.00\] | 36.7 \[27.2\] |
 
 Single-dose simulated NCA parameters by SLCO1B1\*15 genotype stratum (50
 subjects per stratum, 10 mg oral). {.table}
@@ -305,9 +304,9 @@ knitr::kable(weighted_table,
 
 | cohort            | mean_auc24 | sd_auc24 | table_i_count | table_i_weight |
 |:------------------|-----------:|---------:|--------------:|---------------:|
-| \*15 heterozygote |        NaN |       NA |            23 |      0.4035088 |
-| \*15 homozygote   |        NaN |       NA |             6 |      0.1052632 |
-| \*15 noncarrier   |        NaN |       NA |            28 |      0.4912281 |
+| \*15 heterozygote |   64.73358 | 19.87542 |            23 |      0.4035088 |
+| \*15 homozygote   |   74.39571 | 21.26104 |             6 |      0.1052632 |
+| \*15 noncarrier   |   37.74073 | 10.13435 |            28 |      0.4912281 |
 
 Per-stratum simulated mean AUC0-24 vs. Table I weighting. {.table}
 
@@ -324,7 +323,7 @@ knitr::kable(tibble::tibble(
 
 | metric | value |
 |:---|:---|
-| Weighted-mean simulated AUC0-24 (haplotype mix from Table I) | NaN ng\*h/mL |
+| Weighted-mean simulated AUC0-24 (haplotype mix from Table I) | 52.5 ng\*h/mL |
 | Reported pooled-cohort AUC (Results, p. 1311) | 56.2 +/- 26.3 ng\*h/mL (range 15.9-131) |
 
 Pooled-cohort AUC: simulated weighted mean vs. published. {.table}

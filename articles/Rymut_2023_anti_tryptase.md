@@ -4,7 +4,7 @@
 
 library(nlmixr2lib)
 library(rxode2)
-#> rxode2 5.1.1 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.2 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -395,7 +395,7 @@ half-life on the order of weeks at supra-saturation doses).
 ``` r
 
 sad_nca_input <- sad_sim |>
-  dplyr::filter(!is.na(Cc), Cc > 0)
+  dplyr::filter(!is.na(Cc))
 
 conc_obj <- PKNCA::PKNCAconc(
   sad_nca_input,

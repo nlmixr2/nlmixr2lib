@@ -89,7 +89,7 @@ sim |>
 ``` r
 
 sim_nca <- sim |>
-  dplyr::filter(!is.na(Cc), Cc > 0) |>
+  dplyr::filter(!is.na(Cc)) |>
   dplyr::transmute(id = id, time = time, conc = Cc,
                    dose_mg_per_kg = dose_mg_per_kg)
 dose_df <- events |>

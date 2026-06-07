@@ -301,7 +301,7 @@ sim_sd <- rxode2::rxSolve(mod, events = events_sd, keep = "dose") |>
 #> ℹ parameter labels from comments will be replaced by 'label()'
 
 sim_nca <- sim_sd |>
-  dplyr::filter(!is.na(Cc), time > 0) |>
+  dplyr::filter(!is.na(Cc)) |>
   dplyr::transmute(id, time, Cc, treatment = paste0(dose, " mg PO"), dose)
 
 dose_nca <- events_sd |>

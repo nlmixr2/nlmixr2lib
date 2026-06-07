@@ -213,7 +213,7 @@ sim_typ <- rxode2::rxSolve(mod_typical, events = single_events,
 
 conc_obj <- PKNCA::PKNCAconc(
   sim_typ |>
-    dplyr::filter(!is.na(Cc), time > 0) |>
+    dplyr::filter(!is.na(Cc)) |>
     dplyr::select(id, time, Cc, quintile),
   Cc ~ time | quintile + id,
   concu = "ng/mL", timeu = "hour"
@@ -236,16 +236,6 @@ intervals_single <- data.frame(
 )
 
 nca_typ <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals_single))
-#> Warning: Requesting an AUC range starting (0) before the first measurement (0.5) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.5) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.5) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.5) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.5) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.5) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.5) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.5) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.5) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.5) is not allowed
 
 nca_typ_tbl <- as.data.frame(nca_typ$result) |>
   dplyr::filter(PPTESTCD %in% c("cmax", "aucinf.obs")) |>
@@ -273,11 +263,11 @@ dplyr::left_join(published, nca_typ_tbl, by = "quintile") |>
 
 | quintile | bmi_median | cmax_pub_pg_mL | cmax_sim_pg_mL | auct_pub_h_ng_mL | auct_sim_h_ng_mL |
 |:---|---:|---:|---:|---:|---:|
-| Q1 | 19.3 | 297 | 297.3 | 44.7 | NA |
-| Q2 | 21.7 | 273 | 273.0 | 40.8 | NA |
-| Q3 | 23.8 | 254 | 253.6 | 38.0 | NA |
-| Q4 | 26.3 | 232 | 232.3 | 35.2 | NA |
-| Q5 | 31.1 | 197 | 196.8 | 30.8 | NA |
+| Q1 | 19.3 | 297 | 297.3 | 44.7 | 44.72 |
+| Q2 | 21.7 | 273 | 273.0 | 40.8 | 40.82 |
+| Q3 | 23.8 | 254 | 253.6 | 38.0 | 37.99 |
+| Q4 | 26.3 | 232 | 232.3 | 35.2 | 35.14 |
+| Q5 | 31.1 | 197 | 196.8 | 30.8 | 30.84 |
 
 Typical-value Cmax and AUC by BMI quintile: simulated single-dose vs Hu
 2017 Table 3 (Discussion). AUC0-tau at steady state equals AUC0-inf

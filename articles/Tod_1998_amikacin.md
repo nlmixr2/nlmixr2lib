@@ -228,7 +228,7 @@ day of administration).
 ``` r
 
 sim_first <- sim |>
-  dplyr::filter(time <= 24, !is.na(Cc), Cc > 0) |>
+  dplyr::filter(time <= 24, !is.na(Cc)) |>
   dplyr::select(id, time, Cc, regimen)
 
 conc_obj <- PKNCA::PKNCAconc(sim_first, Cc ~ time | regimen + id)
@@ -249,63 +249,6 @@ intervals_first <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals_first)
 nca_res  <- PKNCA::pk.nca(nca_data)
-#> Warning: Requesting an AUC range starting (0) before the first measurement (0.5) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.5) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.5) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.5) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.5) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.5) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.5) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.5) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.5) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.5) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.5) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.5) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.5) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.5) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.5) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.5) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.5) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.5) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.5) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.5) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.5) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.5) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.5) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.5) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.5) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.5) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.5) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.5) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.5) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.5) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.5) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.5) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.5) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.5) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.5) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.5) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.5) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.5) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.5) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.5) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.5) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.5) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.5) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.5) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.5) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.5) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.5) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.5) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.5) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.5) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.5) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.5) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.5) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.5) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.5) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.5) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.5) is not allowed
 
 nca_summary <- as.data.frame(nca_res$result) |>
   dplyr::group_by(regimen, PPTESTCD) |>
@@ -320,36 +263,36 @@ knitr::kable(nca_summary,
              caption = "Simulated first-interval NCA parameters by regimen.")
 ```
 
-| regimen          | PPTESTCD            |   mean | median |    sd |
-|:-----------------|:--------------------|-------:|-------:|------:|
-| 20 mg/kg o.d.    | adj.r.squared       |   1.00 |   1.00 |  0.00 |
-| 20 mg/kg o.d.    | aucinf.obs          |    NaN |     NA |    NA |
-| 20 mg/kg o.d.    | clast.obs           |   2.06 |   1.98 |  1.73 |
-| 20 mg/kg o.d.    | clast.pred          |   2.05 |   1.97 |  1.73 |
-| 20 mg/kg o.d.    | cmax                | 114.05 | 112.69 | 22.11 |
-| 20 mg/kg o.d.    | half.life           |   5.78 |   5.64 |  1.92 |
-| 20 mg/kg o.d.    | lambda.z            |   0.13 |   0.12 |  0.04 |
-| 20 mg/kg o.d.    | lambda.z.n.points   |  38.54 |  39.00 |  4.00 |
-| 20 mg/kg o.d.    | lambda.z.time.first |   5.23 |   5.00 |  2.00 |
-| 20 mg/kg o.d.    | lambda.z.time.last  |  24.00 |  24.00 |  0.00 |
-| 20 mg/kg o.d.    | r.squared           |   1.00 |   1.00 |  0.00 |
-| 20 mg/kg o.d.    | span.ratio          |   3.68 |   3.27 |  1.44 |
-| 20 mg/kg o.d.    | tlast               |  24.00 |  24.00 |  0.00 |
-| 20 mg/kg o.d.    | tmax                |   0.50 |   0.50 |  0.00 |
-| 7.5 mg/kg b.i.d. | adj.r.squared       |   1.00 |   1.00 |  0.00 |
-| 7.5 mg/kg b.i.d. | aucinf.obs          |    NaN |     NA |    NA |
-| 7.5 mg/kg b.i.d. | clast.obs           |   3.77 |   3.77 |  1.94 |
-| 7.5 mg/kg b.i.d. | clast.pred          |   3.76 |   3.76 |  1.94 |
-| 7.5 mg/kg b.i.d. | cmax                |  50.10 |  48.75 | 10.72 |
-| 7.5 mg/kg b.i.d. | half.life           |   5.71 |   5.21 |  1.98 |
-| 7.5 mg/kg b.i.d. | lambda.z            |   0.13 |   0.13 |  0.04 |
-| 7.5 mg/kg b.i.d. | lambda.z.n.points   |  13.41 |  14.00 |  3.16 |
-| 7.5 mg/kg b.i.d. | lambda.z.time.first |  17.79 |  17.50 |  1.58 |
-| 7.5 mg/kg b.i.d. | lambda.z.time.last  |  24.00 |  24.00 |  0.00 |
-| 7.5 mg/kg b.i.d. | r.squared           |   1.00 |   1.00 |  0.00 |
-| 7.5 mg/kg b.i.d. | span.ratio          |   1.27 |   1.19 |  0.65 |
-| 7.5 mg/kg b.i.d. | tlast               |  24.00 |  24.00 |  0.00 |
-| 7.5 mg/kg b.i.d. | tmax                |  12.50 |  12.50 |  0.00 |
+| regimen          | PPTESTCD            |   mean | median |     sd |
+|:-----------------|:--------------------|-------:|-------:|-------:|
+| 20 mg/kg o.d.    | adj.r.squared       |   1.00 |   1.00 |   0.00 |
+| 20 mg/kg o.d.    | aucinf.obs          | 374.36 | 341.34 | 127.88 |
+| 20 mg/kg o.d.    | clast.obs           |   2.06 |   1.98 |   1.73 |
+| 20 mg/kg o.d.    | clast.pred          |   2.05 |   1.97 |   1.73 |
+| 20 mg/kg o.d.    | cmax                | 114.05 | 112.69 |  22.11 |
+| 20 mg/kg o.d.    | half.life           |   5.78 |   5.64 |   1.92 |
+| 20 mg/kg o.d.    | lambda.z            |   0.13 |   0.12 |   0.04 |
+| 20 mg/kg o.d.    | lambda.z.n.points   |  38.54 |  39.00 |   4.00 |
+| 20 mg/kg o.d.    | lambda.z.time.first |   5.23 |   5.00 |   2.00 |
+| 20 mg/kg o.d.    | lambda.z.time.last  |  24.00 |  24.00 |   0.00 |
+| 20 mg/kg o.d.    | r.squared           |   1.00 |   1.00 |   0.00 |
+| 20 mg/kg o.d.    | span.ratio          |   3.68 |   3.27 |   1.44 |
+| 20 mg/kg o.d.    | tlast               |  24.00 |  24.00 |   0.00 |
+| 20 mg/kg o.d.    | tmax                |   0.50 |   0.50 |   0.00 |
+| 7.5 mg/kg b.i.d. | adj.r.squared       |   1.00 |   1.00 |   0.00 |
+| 7.5 mg/kg b.i.d. | aucinf.obs          | 293.46 | 289.57 |  90.47 |
+| 7.5 mg/kg b.i.d. | clast.obs           |   3.77 |   3.77 |   1.94 |
+| 7.5 mg/kg b.i.d. | clast.pred          |   3.76 |   3.76 |   1.94 |
+| 7.5 mg/kg b.i.d. | cmax                |  50.10 |  48.75 |  10.72 |
+| 7.5 mg/kg b.i.d. | half.life           |   5.71 |   5.21 |   1.98 |
+| 7.5 mg/kg b.i.d. | lambda.z            |   0.13 |   0.13 |   0.04 |
+| 7.5 mg/kg b.i.d. | lambda.z.n.points   |  13.41 |  14.00 |   3.16 |
+| 7.5 mg/kg b.i.d. | lambda.z.time.first |  17.79 |  17.50 |   1.58 |
+| 7.5 mg/kg b.i.d. | lambda.z.time.last  |  24.00 |  24.00 |   0.00 |
+| 7.5 mg/kg b.i.d. | r.squared           |   1.00 |   1.00 |   0.00 |
+| 7.5 mg/kg b.i.d. | span.ratio          |   1.27 |   1.19 |   0.65 |
+| 7.5 mg/kg b.i.d. | tlast               |  24.00 |  24.00 |   0.00 |
+| 7.5 mg/kg b.i.d. | tmax                |  12.50 |  12.50 |   0.00 |
 
 Simulated first-interval NCA parameters by regimen. {.table}
 

@@ -314,7 +314,7 @@ and AUC_inf against the values quoted in Lin 2024 (page 1941: half-life
 
 sim_nca <- sim |>
   as.data.frame() |>
-  filter(!is.na(Cc), time > 0) |>
+  filter(!is.na(Cc)) |>
   select(id, time, Cc, treatment)
 
 dose_df <- events |>
@@ -343,8 +343,8 @@ knitr::kable(nca_summary,
 
 | start | end | treatment | N | cmax | tmax | half.life | aucinf.obs |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | Inf | 1200 mg IV | 500 | 285 \[34.6\] | 1.00 \[1.00, 1.00\] | 34.1 \[14.1\] | NC |
-| 0 | Inf | 1200 mg SC | 500 | 108 \[33.4\] | 7.00 \[1.00, 42.0\] | 34.2 \[13.2\] | NC |
+| 0 | Inf | 1200 mg IV | 500 | 336 \[41.0\] | 0.000 \[0.000, 0.000\] | 34.1 \[14.1\] | 7430 \[43.3\] |
+| 0 | Inf | 1200 mg SC | 500 | 108 \[33.4\] | 7.00 \[1.00, 42.0\] | 34.2 \[13.2\] | 5320 \[42.1\] |
 
 Simulated NCA parameters by route (single 1200 mg dose). {.table}
 

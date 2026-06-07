@@ -254,7 +254,7 @@ concentration range sampled.
 ``` r
 
 sim_nca <- sim_typ |>
-  dplyr::filter(time > 0, grepl("^IV ", cohort)) |>
+  dplyr::filter(grepl("^IV ", cohort)) |>
   dplyr::select(id, time, Cc, cohort)
 
 dose_df <- events |>
@@ -275,97 +275,16 @@ intervals <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- PKNCA::pk.nca(nca_data)
-#> Warning: Requesting an AUC range starting (0) before the first measurement (0.08) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.08) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.08) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.08) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.08) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.08) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.08) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.08) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.08) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.08) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.08) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.08) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.08) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.08) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.08) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.08) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.08) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.08) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.08) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.08) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.08) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.08) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.08) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.08) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.08) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.08) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.08) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.08) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.08) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.08) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.08) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.08) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.08) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.08) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.08) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.08) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.08) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.08) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.08) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.08) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.08) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.08) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.08) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.08) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.08) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.08) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.08) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.08) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.08) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.08) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.08) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.08) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.08) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.08) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.08) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.08) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.08) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.08) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.08) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.08) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.08) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.08) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.08) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.08) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.08) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.08) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.08) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.08) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.08) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.08) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.08) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.08) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.08) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.08) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.08) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.08) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.08) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.08) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.08) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.08) is not allowed
 knitr::kable(summary(nca_res),
              caption = "Simulated NCA for rhGH after i.v. bolus (typical-value rat).")
 ```
 
 | start | end | cohort | N | cmax | tmax | half.life | aucinf.obs |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | 12 | IV 1106 ug | 40 | 103000 \[0.000\] | 0.0800 \[0.0800, 0.0800\] | 0.659 \[0.000\] | NC |
-| 0 | 12 | IV 3319 ug | 40 | 309000 \[0.000\] | 0.0800 \[0.0800, 0.0800\] | 0.659 \[0.000\] | NC |
+| 0 | 12 | IV 1106 ug | 40 | 160000 \[0.000\] | 0.000 \[0.000, 0.000\] | 0.659 \[0.000\] | 37900 \[0.000\] |
+| 0 | 12 | IV 3319 ug | 40 | 481000 \[0.000\] | 0.000 \[0.000, 0.000\] | 0.659 \[0.000\] | 116000 \[0.000\] |
 
-Simulated NCA for rhGH after i.v. bolus (typical-value rat). {.table
-style="width:100%;"}
+Simulated NCA for rhGH after i.v. bolus (typical-value rat). {.table}
 
 ## Assumptions and deviations
 

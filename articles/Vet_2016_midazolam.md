@@ -314,7 +314,7 @@ gradient seen in the F.2 plot above.
 ``` r
 
 sim_for_nca <- sim |>
-  filter(!is.na(Cc), Cc > 0) |>
+  filter(!is.na(Cc)) |>
   select(id, time, Cc, orgf_label)
 
 doses_for_nca <- events |>

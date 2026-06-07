@@ -243,7 +243,7 @@ separately for the 3,4-DAP parent and the 3-Ac DAP metabolite.
 ``` r
 
 sim_nca_parent <- sim_single |>
-  filter(!is.na(Cc), time > 0) |>
+  filter(!is.na(Cc)) |>
   select(id, time, Cc, cohort)
 
 dose_df <- events_single |>
@@ -272,21 +272,15 @@ intervals <- data.frame(
 nca_parent <- PKNCA::pk.nca(
   PKNCA::PKNCAdata(conc_obj_parent, dose_obj, intervals = intervals)
 )
-#> Warning: Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
 knitr::kable(as.data.frame(summary(nca_parent)),
              caption = "3,4-DAP parent NCA after a single 20 mg oral dose.")
 ```
 
 | Interval Start | Interval End | cohort | N | AUClast (h\*ng/mL) | Cmax (ng/mL) | Tmax (h) | Half-life (h) | AUCinf,obs (h\*ng/mL) |
 |---:|---:|:---|:---|:---|:---|:---|:---|:---|
-| 0 | 12 | 130 kg | 1 | NC | 59.6 | 0.300 | 12.1 | NC |
-| 0 | 12 | 50 kg | 1 | NC | 78.8 | 0.400 | 7.13 | NC |
-| 0 | 12 | 82 kg (median) | 1 | NC | 69.2 | 0.300 | 9.20 | NC |
+| 0 | 12 | 130 kg | 1 | 116 | 59.6 | 0.300 | 12.1 | 155 |
+| 0 | 12 | 50 kg | 1 | 246 | 78.8 | 0.400 | 7.13 | 320 |
+| 0 | 12 | 82 kg (median) | 1 | 165 | 69.2 | 0.300 | 9.20 | 220 |
 
 3,4-DAP parent NCA after a single 20 mg oral dose. {.table
 style="width:100%;"}
@@ -296,7 +290,7 @@ style="width:100%;"}
 ``` r
 
 sim_nca_metab <- sim_single |>
-  filter(!is.na(Cc_acdap), time > 0) |>
+  filter(!is.na(Cc_acdap)) |>
   select(id, time, Cc_acdap, cohort) |>
   rename(Cc = Cc_acdap)
 
@@ -308,21 +302,15 @@ conc_obj_metab <- PKNCA::PKNCAconc(
 nca_metab <- PKNCA::pk.nca(
   PKNCA::PKNCAdata(conc_obj_metab, dose_obj, intervals = intervals)
 )
-#> Warning: Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
 knitr::kable(as.data.frame(summary(nca_metab)),
              caption = "3-Ac DAP metabolite NCA after a single 20 mg oral dose.")
 ```
 
 | Interval Start | Interval End | cohort | N | AUClast (h\*ng/mL) | Cmax (ng/mL) | Tmax (h) | Half-life (h) | AUCinf,obs (h\*ng/mL) |
 |---:|---:|:---|:---|:---|:---|:---|:---|:---|
-| 0 | 12 | 130 kg | 1 | NC | 119 | 1.40 | 10.6 | NC |
-| 0 | 12 | 50 kg | 1 | NC | 126 | 2.40 | 6.43 | NC |
-| 0 | 12 | 82 kg (median) | 1 | NC | 122 | 1.70 | 7.70 | NC |
+| 0 | 12 | 130 kg | 1 | 499 | 119 | 1.40 | 10.6 | 663 |
+| 0 | 12 | 50 kg | 1 | 972 | 126 | 2.40 | 6.43 | 1370 |
+| 0 | 12 | 82 kg (median) | 1 | 691 | 122 | 1.70 | 7.70 | 929 |
 
 3-Ac DAP metabolite NCA after a single 20 mg oral dose. {.table
 style="width:100%;"}

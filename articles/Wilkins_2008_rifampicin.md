@@ -400,7 +400,7 @@ pkn_in <- sim |>
     tad        = time - ss_clock_start,
     treatment  = dose_label
   ) |>
-  dplyr::filter(!is.na(Cc), Cc > 0)
+  dplyr::filter(!is.na(Cc))
 
 dose_pkn <- events_fdc |>
   dplyr::filter(evid == 1L, time == ss_clock_start) |>

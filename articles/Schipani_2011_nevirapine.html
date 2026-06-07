@@ -1186,8 +1186,7 @@ QD), stratified by genotype-and-weight cell.</p>
 <span>    <span class="op">)</span>,</span>
 <span>    tad            <span class="op">=</span> <span class="va">time</span> <span class="op">-</span> <span class="va">interval_start</span>,</span>
 <span>    treatment      <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="va">regimen</span>, <span class="va">geno</span>, <span class="va">wt_strat</span>, sep <span class="op">=</span> <span class="st">" | "</span><span class="op">)</span></span>
-<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">Cc</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
 <span></span>
 <span><span class="co"># One pseudo-dose row per subject at time = 0 of the last interval, with</span></span>
 <span><span class="co"># amt corresponding to the regimen's per-dose amount.</span></span>

@@ -1288,7 +1288,7 @@ redistributed here.</p>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">route</span> <span class="op">==</span> <span class="st">"IV"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">mutate</span><span class="op">(</span>id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/match.html" class="external-link">match</a></span><span class="op">(</span><span class="va">dose</span>, <span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">dose</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>         treatment <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="va">dose</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">time</span> <span class="op">&gt;</span> <span class="fl">0</span> <span class="op">&amp;</span> <span class="va">time</span> <span class="op">&lt;=</span> <span class="fl">45</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">time</span> <span class="op">&lt;=</span> <span class="fl">45</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">transmute</span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, Cc <span class="op">=</span> <span class="va">total_ab_ugml</span>, <span class="va">treatment</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">conc_obj</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/PKNCAconc.html" class="external-link">PKNCAconc</a></span><span class="op">(</span><span class="va">sim_nca</span>, <span class="va">Cc</span> <span class="op">~</span> <span class="va">time</span> <span class="op">|</span> <span class="va">treatment</span> <span class="op">+</span> <span class="va">id</span><span class="op">)</span></span>
@@ -1336,40 +1336,40 @@ redistributed here.</p>
 <td align="right">45</td>
 <td align="left">IV 0.25 mg/kg</td>
 <td align="left">1</td>
-<td align="left">5.66</td>
-<td align="left">0.250</td>
+<td align="left">6.73</td>
+<td align="left">0.000</td>
 <td align="left">3.63</td>
-<td align="left">NC</td>
+<td align="left">8.46</td>
 </tr>
 <tr class="even">
 <td align="right">0</td>
 <td align="right">45</td>
 <td align="left">IV 1 mg/kg</td>
 <td align="left">1</td>
-<td align="left">24.2</td>
-<td align="left">0.250</td>
+<td align="left">26.9</td>
+<td align="left">0.000</td>
 <td align="left">3.63</td>
-<td align="left">NC</td>
+<td align="left">64.9</td>
 </tr>
 <tr class="odd">
 <td align="right">0</td>
 <td align="right">45</td>
 <td align="left">IV 3 mg/kg</td>
 <td align="left">1</td>
-<td align="left">73.5</td>
-<td align="left">0.250</td>
+<td align="left">80.8</td>
+<td align="left">0.000</td>
 <td align="left">3.59</td>
-<td align="left">NC</td>
+<td align="left">343</td>
 </tr>
 <tr class="even">
 <td align="right">0</td>
 <td align="right">45</td>
 <td align="left">IV 9 mg/kg</td>
 <td align="left">1</td>
-<td align="left">221</td>
-<td align="left">0.250</td>
+<td align="left">242</td>
+<td align="left">0.000</td>
 <td align="left">2.72</td>
-<td align="left">NC</td>
+<td align="left">1610</td>
 </tr>
 </tbody>
 </table>

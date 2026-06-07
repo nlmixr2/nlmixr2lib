@@ -10,7 +10,7 @@ library(PKNCA)
 #> 
 #>     filter
 library(rxode2)
-#> rxode2 5.1.1 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.2 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -457,7 +457,7 @@ the NCA output, not a point-for-point reference.
 
 # Per-cycle ADC concentrations: assign each observation to its cycle interval.
 adc_nca <- pop_sim |>
-  filter(!is.na(Cc_ug_mL), time > 0) |>
+  filter(!is.na(Cc_ug_mL)) |>
   mutate(cycle = pmax(1L, as.integer(floor((time - 1e-9) / cycle_dy) + 1L)),
          time_in_cycle = time - (cycle - 1) * cycle_dy) |>
   filter(cycle <= n_cycles) |>
@@ -999,7 +999,7 @@ adc_nca_summary
 ``` r
 
 mmae_nca <- pop_sim |>
-  filter(!is.na(Cmmae_ng_mL), time > 0) |>
+  filter(!is.na(Cmmae_ng_mL)) |>
   mutate(cycle = pmax(1L, as.integer(floor((time - 1e-9) / cycle_dy) + 1L)),
          time_in_cycle = time - (cycle - 1) * cycle_dy) |>
   filter(cycle <= n_cycles) |>

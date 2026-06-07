@@ -10,7 +10,7 @@ library(PKNCA)
 #> 
 #>     filter
 library(rxode2)
-#> rxode2 5.1.1 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.2 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -307,7 +307,7 @@ sim_sd <- rxode2::rxSolve(mod_typical, ev_sd, iCov = icov_hv,
 
 # Cc is already in ug/mL (matches the paper's display unit).
 sim_nca <- sim_sd |>
-  dplyr::filter(!is.na(Cc), time >= 0) |>
+  dplyr::filter(!is.na(Cc)) |>
   dplyr::mutate(
     id        = 1L,
     treatment = "15 mg/kg IV SD, healthy"

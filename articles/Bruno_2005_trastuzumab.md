@@ -4,7 +4,7 @@
 
 library(nlmixr2lib)
 library(rxode2)
-#> rxode2 5.1.1 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.2 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -328,14 +328,10 @@ end_ss_q3w   <- start_ss_q3w + tau_q3w
 
 sim_ss <- dplyr::bind_rows(
   sim |>
-    dplyr::filter(regimen == "qw",
-                  time >= start_ss_qw,  time <= end_ss_qw,
-                  !is.na(Cc), Cc > 0) |>
+    dplyr::filter(regimen == "qw", time >= start_ss_qw, time <= end_ss_qw, !is.na(Cc)) |>
     dplyr::transmute(id, time, Cc, regimen),
   sim |>
-    dplyr::filter(regimen == "q3w",
-                  time >= start_ss_q3w, time <= end_ss_q3w,
-                  !is.na(Cc), Cc > 0) |>
+    dplyr::filter(regimen == "q3w", time >= start_ss_q3w, time <= end_ss_q3w, !is.na(Cc)) |>
     dplyr::transmute(id, time, Cc, regimen)
 )
 

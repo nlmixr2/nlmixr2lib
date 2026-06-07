@@ -448,8 +448,8 @@ by the 76.9% IIV on CL.
 | CL/F typical at WT = 6.115 kg, PNA = 113 days | 9.34 L/h | exp(`lcl`) | structural identity |
 | V/F typical at WT = 6.115 kg | 146 L | exp(`lvc`) | structural identity |
 | ka (fixed) | 1.03 1/h | exp(`lka`) | structural identity |
-| Steady-state peak (q12h, median) | 69.3 ng/mL | see PKNCA table above | numerical |
-| Steady-state trough (q12h, median) | 26.4 ng/mL | see PKNCA table above | numerical |
+| Steady-state peak (q12h, median) | 69.3 ng/mL | 101.96 ng/mL | numerical |
+| Steady-state trough (q12h, median) | 26.4 ng/mL | 58.52 ng/mL | numerical |
 | Treatment-success probability, week 12 | 43.8% | see PD table above | numerical |
 | Treatment-success probability, week 24 | 78.1% | see PD table above | numerical |
 | Post hoc CL/F at week 24 (median, L/h/kg) | 3.4 | derived: CL_typical \* (PNA_24wk/113) / WT | structural identity |

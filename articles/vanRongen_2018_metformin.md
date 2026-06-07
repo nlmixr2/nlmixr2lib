@@ -207,7 +207,7 @@ of van Rongen 2018.
 ``` r
 
 sim_nca <- sim |>
-  dplyr::filter(!is.na(Cc), Cc > 0) |>
+  dplyr::filter(!is.na(Cc)) |>
   dplyr::select(id, time, Cc, cohort)
 
 conc_obj <- PKNCA::PKNCAconc(

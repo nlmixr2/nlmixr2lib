@@ -1096,13 +1096,25 @@ HIV-positive patients exhibit a 15.4% reduction in oral bioavailability
 interval (PKNCA’s <code>auclast</code> applied between
 <code>start = 0</code> and <code>end = 24</code> post-dose).</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">pkn_in</span> <span class="op">&lt;-</span> <span class="va">sim</span> <span class="op">|&gt;</span></span>
+<code class="sourceCode R"><span><span class="co"># Keep pre-dose Cc = 0 / Cmin: filter only on missing Cc. (The `Cc &gt; 0`</span></span>
+<span><span class="co"># filter that used to live here was log-scale-plotting leftover; for</span></span>
+<span><span class="co"># PKNCA it drops the time = 0 anchor and triggers the AUC-range warning.)</span></span>
+<span><span class="va">pkn_in</span> <span class="op">&lt;-</span> <span class="va">sim</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">time</span> <span class="op">&gt;=</span> <span class="va">ss_clock_start</span>, <span class="va">time</span> <span class="op">&lt;=</span> <span class="va">ss_clock_start</span> <span class="op">+</span> <span class="fl">24</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
 <span>    tad       <span class="op">=</span> <span class="va">time</span> <span class="op">-</span> <span class="va">ss_clock_start</span>,</span>
 <span>    treatment <span class="op">=</span> <span class="st">"1000 mg QD"</span></span>
 <span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span>, <span class="va">Cc</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Defensive: ensure tad = 0 exists per (id, treatment).</span></span>
+<span><span class="va">pkn_in</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span></span>
+<span>  <span class="va">pkn_in</span>,</span>
+<span>  <span class="va">pkn_in</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/distinct.html" class="external-link">distinct</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">treatment</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>tad <span class="op">=</span> <span class="fl">0</span>, Cc <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>
+<span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/distinct.html" class="external-link">distinct</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">treatment</span>, <span class="va">tad</span>, .keep_all <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">treatment</span>, <span class="va">tad</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">dose_pkn</span> <span class="op">&lt;-</span> <span class="va">events</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">evid</span> <span class="op">==</span> <span class="fl">1L</span>, <span class="va">time</span> <span class="op">==</span> <span class="va">ss_clock_start</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -1132,37 +1144,40 @@ interval (PKNCA’s <code>auclast</code> applied between
 <span>    p95    <span class="op">=</span> <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">PPORRES</span>, <span class="fl">0.95</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
 <span>    .groups <span class="op">=</span> <span class="st">"drop"</span></span>
 <span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>`NCA parameter` <span class="op">=</span> <span class="fu">nlmixr2lib</span><span class="fu">::</span><span class="fu"><a href="../reference/ncaParamLabel.html">ncaParamLabel</a></span><span class="op">(</span><span class="va">PPTESTCD</span><span class="op">)</span>,</span>
+<span>                .keep <span class="op">=</span> <span class="st">"unused"</span>, .before <span class="op">=</span> <span class="st">"treatment"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
-<span>    caption <span class="op">=</span> <span class="st">"Simulated steady-state NCA parameters (1000 mg QD, WT = 47 kg, HIV-negative cohort, n = 60)."</span></span>
+<span>    caption <span class="op">=</span> <span class="st">"Simulated steady-state NCA parameters (1000 mg QD, WT = 47 kg, HIV-negative cohort, n = 60). Cmax (mg/L); Tmax (h); AUClast (mg*h/L)."</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
 <table class="table">
 <caption>Simulated steady-state NCA parameters (1000 mg QD, WT = 47 kg,
-HIV-negative cohort, n = 60).</caption>
+HIV-negative cohort, n = 60). Cmax (mg/L); Tmax (h); AUClast
+(mg*h/L).</caption>
 <thead><tr class="header">
+<th align="left">NCA parameter</th>
 <th align="left">treatment</th>
-<th align="left">PPTESTCD</th>
 <th align="right">median</th>
 <th align="right">p05</th>
 <th align="right">p95</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
+<td align="left">AUClast</td>
 <td align="left">1000 mg QD</td>
-<td align="left">auclast</td>
 <td align="right">25.41631</td>
 <td align="right">14.718081</td>
 <td align="right">50.360258</td>
 </tr>
 <tr class="even">
+<td align="left">Cmax</td>
 <td align="left">1000 mg QD</td>
-<td align="left">cmax</td>
 <td align="right">2.95907</td>
 <td align="right">1.518925</td>
 <td align="right">5.295302</td>
 </tr>
 <tr class="odd">
+<td align="left">Tmax</td>
 <td align="left">1000 mg QD</td>
-<td align="left">tmax</td>
 <td align="right">2.00000</td>
 <td align="right">1.500000</td>
 <td align="right">4.000000</td>
@@ -1175,8 +1190,49 @@ HIV-negative cohort, n = 60).</caption>
 <code>AUCss(0-tau) = Dose * F / CL_i ≈ 1000 / 38.13 ≈ 26.2 mg·h/L</code>
 for a typical 47 kg subject
 (<code>CL_i = 39.9 * (47/50)^0.75 = 38.13 L/h</code>). The simulated
-<code>auclast</code> median should land near that value; see the table
-above.</p>
+value is compared side-by-side against that expectation below.</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">reference</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
+<span>  treatment <span class="op">=</span> <span class="st">"1000 mg QD"</span>,</span>
+<span>  auclast   <span class="op">=</span> <span class="fl">26.2</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">cmp</span> <span class="op">&lt;-</span> <span class="fu">nlmixr2lib</span><span class="fu">::</span><span class="fu"><a href="../reference/ncaComparisonTable.html">ncaComparisonTable</a></span><span class="op">(</span></span>
+<span>  simulated     <span class="op">=</span> <span class="va">nca_res</span>,</span>
+<span>  reference     <span class="op">=</span> <span class="va">reference</span>,</span>
+<span>  by            <span class="op">=</span> <span class="st">"treatment"</span>,</span>
+<span>  params        <span class="op">=</span> <span class="st">"auclast"</span>,</span>
+<span>  units         <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>auclast <span class="op">=</span> <span class="st">"mg*h/L"</span><span class="op">)</span>,</span>
+<span>  tolerance_pct <span class="op">=</span> <span class="fl">20</span></span>
+<span><span class="op">)</span></span>
+<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
+<span>  <span class="va">cmp</span>,</span>
+<span>  caption <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span></span>
+<span>    <span class="st">"Simulated steady-state AUC0-24 (1000 mg QD, WT = 47 kg, n = 60)"</span>,</span>
+<span>    <span class="st">"vs. expected 26.2 mg*h/L from the Jonsson 2011 abstract CL/F at"</span>,</span>
+<span>    <span class="st">"50 kg with the published WT^0.75 allometric scaling."</span>,</span>
+<span>    <span class="st">"* differs from reference by &gt;20%."</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<table class="table">
+<caption>Simulated steady-state AUC0-24 (1000 mg QD, WT = 47 kg, n = 60)
+vs. expected 26.2 mg<em>h/L from the Jonsson 2011 abstract CL/F at 50 kg
+with the published WT^0.75 allometric scaling. </em> differs from
+reference by &gt;20%.</caption>
+<thead><tr class="header">
+<th align="left">NCA parameter</th>
+<th align="left">treatment</th>
+<th align="left">Reference</th>
+<th align="left">Simulated</th>
+<th align="left">% diff</th>
+</tr></thead>
+<tbody><tr class="odd">
+<td align="left">AUClast (mg*h/L)</td>
+<td align="left">1000 mg QD</td>
+<td align="left">26.2</td>
+<td align="left">25.4</td>
+<td align="left">-3.0%</td>
+</tr></tbody>
+</table>
 </div>
 <div class="section level2">
 <h2 id="inter-occasion-variability-optional-check">Inter-occasion variability (optional check)<a class="anchor" aria-label="anchor" href="#inter-occasion-variability-optional-check"></a>
@@ -1187,7 +1243,7 @@ above.</p>
 <code>etaiov_cl_&lt;k&gt;</code> slots multiplies into <code>cl</code>;
 with all four slots sharing a common variance (0.127), the marginal
 IOV-only spread is the same across occasions.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">iov_events</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span></span>
 <span>  <span class="va">events</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>OCC <span class="op">=</span> <span class="fl">1L</span><span class="op">)</span>,</span>
 <span>  <span class="va">events</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>OCC <span class="op">=</span> <span class="fl">2L</span><span class="op">)</span></span>

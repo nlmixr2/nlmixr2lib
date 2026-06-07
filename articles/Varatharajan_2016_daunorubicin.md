@@ -273,7 +273,7 @@ and compared against the population median Dnr AUC.
 ``` r
 
 sim_nca <- sim_typ |>
-  filter(time > 0, !is.na(Cc)) |>
+  filter(!is.na(Cc)) |>
   mutate(treatment = "60 mg/m^2 Dnr")
 
 dose_df <- events |>

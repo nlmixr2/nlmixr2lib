@@ -288,7 +288,7 @@ simulated 5th-95th percentile.
 # t = 0 zero-concentration row so PKNCA can integrate AUC from the dose time
 # without rejecting `start = 0` for being earlier than the first measurement.
 first_dose_window <- sim |>
-  dplyr::filter(time <= 24, !is.na(Cc), Cc >= 0) |>
+  dplyr::filter(time <= 24, !is.na(Cc)) |>
   dplyr::mutate(treatment = "schedule A, dose 1")
 
 dose_first <- events |>

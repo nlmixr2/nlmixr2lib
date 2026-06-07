@@ -319,7 +319,7 @@ reference dose; the later IV bolus is excluded from the NCA window via
 ``` r
 
 sim_nca <- sim |>
-  dplyr::filter(!is.na(Cc), time >= 0, time < iv_time_min) |>
+  dplyr::filter(!is.na(Cc), time < iv_time_min) |>
   dplyr::transmute(id, time, Cc, treatment, WT, ADOLESCENT)
 
 dose_df <- events |>

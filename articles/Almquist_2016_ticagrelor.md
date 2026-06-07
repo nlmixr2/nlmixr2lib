@@ -259,7 +259,7 @@ plausible NCA metrics for an IV bolus.
 # rxSolve drops the id column for single-subject simulations; add it back
 # explicitly so PKNCA can group on it.
 sim_nca <- sim_s2 |>
-  filter(!is.na(Cc), time > 0) |>
+  filter(!is.na(Cc)) |>
   mutate(id = 1L) |>
   select(id, time, Cc, treatment)
 

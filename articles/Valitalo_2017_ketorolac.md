@@ -418,7 +418,7 @@ has units of mg\*h/L per 15 mg of enantiomer.
 ``` r
 
 sim_nca_r <- sim |>
-  dplyr::filter(!is.na(Cc_r), time > 0) |>
+  dplyr::filter(!is.na(Cc_r)) |>
   dplyr::select(id, time, Cc_r, treatment)
 
 dose_df_r <- events |>
@@ -442,252 +442,12 @@ intervals <- data.frame(
 
 nca_r <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj_r, dose_obj_r,
                                         intervals = intervals))
-#> Warning: Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
 ```
 
 ``` r
 
 sim_nca_s <- sim |>
-  dplyr::filter(!is.na(Cc_s), time > 0) |>
+  dplyr::filter(!is.na(Cc_s)) |>
   dplyr::select(id, time, Cc_s, treatment)
 
 dose_df_s <- events |>
@@ -701,246 +461,6 @@ dose_obj_s <- PKNCA::PKNCAdose(dose_df_s, amt ~ time | treatment + id,
 
 nca_s <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj_s, dose_obj_s,
                                         intervals = intervals))
-#> Warning: Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
 ```
 
 ``` r
@@ -965,28 +485,28 @@ knitr::kable(
 )
 ```
 
-| treatment          | PPTESTCD   | median |   p05 |    p95 |
-|:-------------------|:-----------|-------:|------:|-------:|
-| Male               | aucinf.obs |     NA |    NA |     NA |
-| Male               | auclast    |     NA |    NA |     NA |
-| Male               | cmax       |  3.834 | 2.812 |  5.204 |
-| Male               | half.life  |  7.356 | 4.047 | 13.032 |
-| Male               | tmax       |  0.083 | 0.033 |  0.083 |
-| Nonpregnant female | aucinf.obs |     NA |    NA |     NA |
-| Nonpregnant female | auclast    |     NA |    NA |     NA |
-| Nonpregnant female | cmax       |  5.332 | 4.098 |  7.197 |
-| Nonpregnant female | half.life  |  7.956 | 6.109 | 10.231 |
-| Nonpregnant female | tmax       |  0.033 | 0.033 |  0.083 |
-| Postpartum         | aucinf.obs |     NA |    NA |     NA |
-| Postpartum         | auclast    |     NA |    NA |     NA |
-| Postpartum         | cmax       |  4.765 | 3.464 |  6.172 |
-| Postpartum         | half.life  |  6.830 | 4.988 |  8.801 |
-| Postpartum         | tmax       |  0.033 | 0.033 |  0.083 |
-| Women at delivery  | aucinf.obs |     NA |    NA |     NA |
-| Women at delivery  | auclast    |     NA |    NA |     NA |
-| Women at delivery  | cmax       |  4.047 | 2.839 |  5.385 |
-| Women at delivery  | half.life  |  5.937 | 3.687 | 10.077 |
-| Women at delivery  | tmax       |  0.167 | 0.083 |  0.167 |
+| treatment          | PPTESTCD   | median |    p05 |    p95 |
+|:-------------------|:-----------|-------:|-------:|-------:|
+| Male               | aucinf.obs |  7.880 |  5.116 | 14.642 |
+| Male               | auclast    |  7.521 |  4.958 | 12.193 |
+| Male               | cmax       |  4.171 |  3.053 |  5.635 |
+| Male               | half.life  |  7.356 |  4.047 | 13.032 |
+| Male               | tmax       |  0.033 |  0.000 |  0.083 |
+| Nonpregnant female | aucinf.obs | 16.286 |  7.728 | 24.000 |
+| Nonpregnant female | auclast    | 14.421 |  7.475 | 19.200 |
+| Nonpregnant female | cmax       |  5.332 |  4.098 |  7.391 |
+| Nonpregnant female | half.life  |  7.956 |  6.109 | 10.231 |
+| Nonpregnant female | tmax       |  0.033 |  0.033 |  0.083 |
+| Postpartum         | aucinf.obs | 13.950 | 10.149 | 17.841 |
+| Postpartum         | auclast    | 13.129 |  9.668 | 15.850 |
+| Postpartum         | cmax       |  5.140 |  3.464 |  6.435 |
+| Postpartum         | half.life  |  6.830 |  4.988 |  8.801 |
+| Postpartum         | tmax       |  0.033 |  0.000 |  0.033 |
+| Women at delivery  | aucinf.obs |  8.607 |  5.030 | 12.236 |
+| Women at delivery  | auclast    |  8.174 |  4.978 | 10.975 |
+| Women at delivery  | cmax       |  4.047 |  2.839 |  6.047 |
+| Women at delivery  | half.life  |  5.937 |  3.687 | 10.077 |
+| Women at delivery  | tmax       |  0.167 |  0.000 |  0.167 |
 
 Simulated NCA – R-ketorolac, single 15 mg IV bolus (half of 30 mg
 racemic), by cohort (median \[5%-95%\]). {.table}
@@ -1015,26 +535,26 @@ knitr::kable(
 
 | treatment          | PPTESTCD   | median |   p05 |   p95 |
 |:-------------------|:-----------|-------:|------:|------:|
-| Male               | aucinf.obs |     NA |    NA |    NA |
-| Male               | auclast    |     NA |    NA |    NA |
-| Male               | cmax       |  2.877 | 2.389 | 4.133 |
+| Male               | aucinf.obs |  2.728 | 2.090 | 3.689 |
+| Male               | auclast    |  2.726 | 2.088 | 3.685 |
+| Male               | cmax       |  3.592 | 2.516 | 6.151 |
 | Male               | half.life  |  3.077 | 2.032 | 4.431 |
-| Male               | tmax       |  0.033 | 0.033 | 0.083 |
-| Nonpregnant female | aucinf.obs |     NA |    NA |    NA |
-| Nonpregnant female | auclast    |     NA |    NA |    NA |
-| Nonpregnant female | cmax       |  4.000 | 2.740 | 4.753 |
+| Male               | tmax       |  0.000 | 0.000 | 0.033 |
+| Nonpregnant female | aucinf.obs |  3.983 | 2.603 | 8.347 |
+| Nonpregnant female | auclast    |  3.980 | 2.602 | 7.924 |
+| Nonpregnant female | cmax       |  4.156 | 2.930 | 5.132 |
 | Nonpregnant female | half.life  |  2.499 | 1.748 | 4.184 |
-| Nonpregnant female | tmax       |  0.033 | 0.033 | 0.033 |
-| Postpartum         | aucinf.obs |     NA |    NA |    NA |
-| Postpartum         | auclast    |     NA |    NA |    NA |
-| Postpartum         | cmax       |  3.834 | 2.782 | 4.729 |
+| Nonpregnant female | tmax       |  0.033 | 0.000 | 0.033 |
+| Postpartum         | aucinf.obs |  3.679 | 2.557 | 4.753 |
+| Postpartum         | auclast    |  3.679 | 2.557 | 4.733 |
+| Postpartum         | cmax       |  4.186 | 3.222 | 6.066 |
 | Postpartum         | half.life  |  2.367 | 1.735 | 3.492 |
-| Postpartum         | tmax       |  0.033 | 0.033 | 0.083 |
-| Women at delivery  | aucinf.obs |     NA |    NA |    NA |
-| Women at delivery  | auclast    |     NA |    NA |    NA |
-| Women at delivery  | cmax       |  2.340 | 1.662 | 3.725 |
+| Postpartum         | tmax       |  0.033 | 0.000 | 0.033 |
+| Women at delivery  | aucinf.obs |  2.418 | 1.685 | 3.998 |
+| Women at delivery  | auclast    |  2.395 | 1.684 | 3.984 |
+| Women at delivery  | cmax       |  3.412 | 1.903 | 5.355 |
 | Women at delivery  | half.life  |  2.607 | 1.729 | 4.676 |
-| Women at delivery  | tmax       |  0.167 | 0.033 | 0.167 |
+| Women at delivery  | tmax       |  0.000 | 0.000 | 0.083 |
 
 Simulated NCA – S-ketorolac, single 15 mg IV bolus (half of 30 mg
 racemic), by cohort (median \[5%-95%\]). {.table}
@@ -1089,10 +609,10 @@ knitr::kable(
 
 | treatment | median_auc_r | median_auc_s | ratio_r_vs_ref | ratio_s_vs_ref | auc_s_over_r |
 |:---|---:|---:|---:|---:|---:|
-| Male | NA | NA | NA | NA | NA |
-| Nonpregnant female | NA | NA | NA | NA | NA |
-| Postpartum | NA | NA | NA | NA | NA |
-| Women at delivery | NA | NA | NA | NA | NA |
+| Male | 7.880 | 2.728 | 0.484 | 0.685 | 0.346 |
+| Nonpregnant female | 16.286 | 3.983 | 1.000 | 1.000 | 0.245 |
+| Postpartum | 13.950 | 3.679 | 0.857 | 0.924 | 0.264 |
+| Women at delivery | 8.607 | 2.418 | 0.528 | 0.607 | 0.281 |
 
 Simulated AUC0-inf (mg\*h/L per 15 mg enantiomer) and ratios vs the
 nonpregnant-female reference cohort. Expected from Valitalo 2017: women

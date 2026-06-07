@@ -171,7 +171,7 @@ variable is the fixed regimen “IN_4mg”.
 
 sim_nca <- sim %>%
   mutate(treatment = "IN_4mg") %>%
-  filter(!is.na(Cc), time > 0) %>%
+  filter(!is.na(Cc)) %>%
   select(id, time, Cc, treatment)
 
 conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | treatment + id)

@@ -924,7 +924,7 @@ the SIPHAR-software noncompartmental analysis the paper used in Tables 1
 and 2.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim_nca</span> <span class="op">&lt;-</span> <span class="va">sim_typical</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span>, <span class="va">Cc</span> <span class="op">&gt;</span> <span class="fl">0</span>, <span class="va">time</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="va">Cc</span>, <span class="va">scenario</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">conc_obj</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/PKNCAconc.html" class="external-link">PKNCAconc</a></span><span class="op">(</span><span class="va">sim_nca</span>, <span class="va">Cc</span> <span class="op">~</span> <span class="va">time</span> <span class="op">|</span> <span class="va">scenario</span> <span class="op">+</span> <span class="va">id</span><span class="op">)</span></span>
@@ -1014,7 +1014,7 @@ Tmax in h, half-life in h.</caption>
 <td align="right">3.889</td>
 <td align="right">3.967</td>
 <td align="right">0.366</td>
-<td align="right">NA</td>
+<td align="right">57.915</td>
 </tr>
 <tr class="even">
 <td align="left">Group 5: cephalexin + quinapril GT (DDI)</td>
@@ -1031,12 +1031,12 @@ Tmax in h, half-life in h.</caption>
 <td align="right">4.881</td>
 <td align="right">6.212</td>
 <td align="right">0.121</td>
-<td align="right">NA</td>
+<td align="right">79.251</td>
 </tr>
 <tr class="odd">
 <td align="left">Groups 1-3: cephalexin IA</td>
-<td align="right">104.440</td>
-<td align="right">0.05</td>
+<td align="right">120.192</td>
+<td align="right">0.00</td>
 <td align="right">6</td>
 <td align="right">1.197</td>
 <td align="right">0.295</td>
@@ -1048,7 +1048,7 @@ Tmax in h, half-life in h.</caption>
 <td align="right">1.193</td>
 <td align="right">2.352</td>
 <td align="right">1.467</td>
-<td align="right">NA</td>
+<td align="right">61.700</td>
 </tr>
 </tbody>
 </table>

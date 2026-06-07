@@ -906,7 +906,7 @@ placed before <code>id</code> in the formula so per-sex summaries can be
 compared to derived single-dose values.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim_nca</span> <span class="op">&lt;-</span> <span class="va">sim</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span>, <span class="va">Cc</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">select</span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="va">Cc</span>, <span class="va">treatment</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">conc_obj</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/PKNCAconc.html" class="external-link">PKNCAconc</a></span><span class="op">(</span></span>
@@ -967,22 +967,22 @@ compared to derived single-dose values.</p>
 <td align="right">24</td>
 <td align="left">Male (50 mg)</td>
 <td align="left">250</td>
-<td align="left">NC</td>
+<td align="left">489 [39.2]</td>
 <td align="left">81.7 [54.4]</td>
 <td align="left">1.50 [0.400, 11.5]</td>
 <td align="left">3.37 [1.98]</td>
-<td align="left">NC</td>
+<td align="left">499 [38.6]</td>
 </tr>
 <tr class="even">
 <td align="right">0</td>
 <td align="right">24</td>
 <td align="left">Female (50 mg)</td>
 <td align="left">250</td>
-<td align="left">NC</td>
+<td align="left">811 [39.6]</td>
 <td align="left">121 [59.2]</td>
 <td align="left">1.90 [0.400, 13.0]</td>
 <td align="left">3.78 [3.47]</td>
-<td align="left">NC</td>
+<td align="left">841 [39.1]</td>
 </tr>
 </tbody>
 </table>

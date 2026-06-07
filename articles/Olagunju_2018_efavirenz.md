@@ -317,7 +317,7 @@ paper.
 ``` r
 
 ss_obs <- sim |>
-  dplyr::filter(time >= ss_start, !is.na(Cc), Cc > 0) |>
+  dplyr::filter(time >= ss_start, !is.na(Cc)) |>
   dplyr::mutate(
     tad       = time - ss_start,
     treatment = cohort

@@ -4,7 +4,7 @@
 
 library(nlmixr2lib)
 library(rxode2)
-#> rxode2 5.1.1 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.2 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -321,7 +321,7 @@ the per-arm summaries are directly comparable.
 ``` r
 
 sim_nca <- sim |>
-  dplyr::filter(time > 0, !is.na(Cc), Cc > 0) |>
+  dplyr::filter(!is.na(Cc)) |>
   dplyr::select(id, time, Cc, arm)
 
 dose_df <- events |>
@@ -364,33 +364,33 @@ knitr::kable(nca_summary, digits = 2,
              caption = "Per-arm NCA summary (geometric mean and 5-95% PI) from the simulated cohort.")
 ```
 
-| arm          | PPTESTCD   |     gm |    q05 |    q95 |   n |
-|:-------------|:-----------|-------:|-------:|-------:|----:|
-| R 6.44 mg/kg | aucinf.obs |    NaN |     NA |     NA |   0 |
-| R 6.44 mg/kg | auclast    |    NaN |     NA |     NA |   0 |
-| R 6.44 mg/kg | cmax       | 148.96 | 102.95 | 200.61 |  46 |
-| R 6.44 mg/kg | half.life  |  13.71 |   7.24 |  17.00 |  46 |
-| R 6.44 mg/kg | tmax       |   0.03 |   0.03 |   0.03 |  46 |
-| T 0.49 mg/kg | aucinf.obs |    NaN |     NA |     NA |   0 |
-| T 0.49 mg/kg | auclast    |    NaN |     NA |     NA |   0 |
-| T 0.49 mg/kg | cmax       |  12.25 |   8.77 |  14.61 |   6 |
-| T 0.49 mg/kg | half.life  |  18.89 |  18.84 |  18.95 |   6 |
-| T 0.49 mg/kg | tmax       |   0.03 |   0.03 |   0.03 |   6 |
-| T 1.48 mg/kg | aucinf.obs |    NaN |     NA |     NA |   0 |
-| T 1.48 mg/kg | auclast    |    NaN |     NA |     NA |   0 |
-| T 1.48 mg/kg | cmax       |  31.65 |  29.87 |  34.88 |   6 |
-| T 1.48 mg/kg | half.life  |  18.60 |  18.51 |  18.69 |   6 |
-| T 1.48 mg/kg | tmax       |   0.03 |   0.03 |   0.03 |   6 |
-| T 2.96 mg/kg | aucinf.obs |    NaN |     NA |     NA |   0 |
-| T 2.96 mg/kg | auclast    |    NaN |     NA |     NA |   0 |
-| T 2.96 mg/kg | cmax       |  61.29 |  47.81 |  78.19 |   6 |
-| T 2.96 mg/kg | half.life  |  18.20 |  17.96 |  18.39 |   6 |
-| T 2.96 mg/kg | tmax       |   0.03 |   0.03 |   0.03 |   6 |
-| T 5.96 mg/kg | aucinf.obs |    NaN |     NA |     NA |   0 |
-| T 5.96 mg/kg | auclast    |    NaN |     NA |     NA |   0 |
-| T 5.96 mg/kg | cmax       | 132.53 |  94.72 | 188.47 |  46 |
-| T 5.96 mg/kg | half.life  |  14.92 |  10.06 |  17.35 |  46 |
-| T 5.96 mg/kg | tmax       |   0.03 |   0.03 |   0.03 |  46 |
+| arm          | PPTESTCD   |      gm |     q05 |     q95 |   n |
+|:-------------|:-----------|--------:|--------:|--------:|----:|
+| R 6.44 mg/kg | aucinf.obs | 1546.84 | 1023.43 | 2227.82 |  46 |
+| R 6.44 mg/kg | auclast    | 1543.46 | 1020.63 | 2224.82 |  46 |
+| R 6.44 mg/kg | cmax       |  150.81 |  104.08 |  203.57 |  46 |
+| R 6.44 mg/kg | half.life  |   13.71 |    7.24 |   17.00 |  46 |
+| R 6.44 mg/kg | tmax       |    0.00 |    0.00 |    0.00 |  46 |
+| T 0.49 mg/kg | aucinf.obs |   34.16 |   22.68 |   43.52 |   6 |
+| T 0.49 mg/kg | auclast    |   34.11 |   22.66 |   43.45 |   6 |
+| T 0.49 mg/kg | cmax       |   12.45 |    8.90 |   14.92 |   6 |
+| T 0.49 mg/kg | half.life  |   18.89 |   18.84 |   18.95 |   6 |
+| T 0.49 mg/kg | tmax       |    0.00 |    0.00 |    0.00 |   6 |
+| T 1.48 mg/kg | aucinf.obs |  164.52 |  135.10 |  192.87 |   6 |
+| T 1.48 mg/kg | auclast    |  164.30 |  134.90 |  192.62 |   6 |
+| T 1.48 mg/kg | cmax       |   32.07 |   30.20 |   35.39 |   6 |
+| T 1.48 mg/kg | half.life  |   18.60 |   18.51 |   18.69 |   6 |
+| T 1.48 mg/kg | tmax       |    0.00 |    0.00 |    0.00 |   6 |
+| T 2.96 mg/kg | aucinf.obs |  437.60 |  333.84 |  606.75 |   6 |
+| T 2.96 mg/kg | auclast    |  436.59 |  333.12 |  605.01 |   6 |
+| T 2.96 mg/kg | cmax       |   62.12 |   48.39 |   79.30 |   6 |
+| T 2.96 mg/kg | half.life  |   18.20 |   17.96 |   18.39 |   6 |
+| T 2.96 mg/kg | tmax       |    0.00 |    0.00 |    0.00 |   6 |
+| T 5.96 mg/kg | aucinf.obs | 1293.06 |  897.51 | 2030.51 |  46 |
+| T 5.96 mg/kg | auclast    | 1290.52 |  895.81 | 2026.71 |  46 |
+| T 5.96 mg/kg | cmax       |  134.12 |   95.58 |  191.10 |  46 |
+| T 5.96 mg/kg | half.life  |   14.92 |   10.06 |   17.35 |  46 |
+| T 5.96 mg/kg | tmax       |    0.00 |    0.00 |    0.00 |  46 |
 
 Per-arm NCA summary (geometric mean and 5-95% PI) from the simulated
 cohort. {.table}
@@ -434,10 +434,10 @@ knitr::kable(comparison, digits = 1,
 
 | arm          | metric               | paper_gm | sim_gm | sim_q05 | sim_q95 | pct_diff |
 |:-------------|:---------------------|---------:|-------:|--------:|--------:|---------:|
-| T 5.96 mg/kg | AUClast (ug\*day/mL) |     1301 |    NaN |      NA |      NA |      NaN |
-| T 5.96 mg/kg | AUCinf (ug\*day/mL)  |     1311 |    NaN |      NA |      NA |      NaN |
-| R 6.44 mg/kg | AUClast (ug\*day/mL) |     1588 |    NaN |      NA |      NA |      NaN |
-| R 6.44 mg/kg | AUCinf (ug\*day/mL)  |     1593 |    NaN |      NA |      NA |      NaN |
+| T 5.96 mg/kg | AUClast (ug\*day/mL) |     1301 | 1290.5 |   895.8 |  2026.7 |     -0.8 |
+| T 5.96 mg/kg | AUCinf (ug\*day/mL)  |     1311 | 1293.1 |   897.5 |  2030.5 |     -1.4 |
+| R 6.44 mg/kg | AUClast (ug\*day/mL) |     1588 | 1543.5 |  1020.6 |  2224.8 |     -2.8 |
+| R 6.44 mg/kg | AUCinf (ug\*day/mL)  |     1593 | 1546.8 |  1023.4 |  2227.8 |     -2.9 |
 
 Per-arm AUC: simulated geometric mean (with 5-95% PI) vs Reijers 2016
 Table 3 geometric mean at actual delivered dose. {.table}

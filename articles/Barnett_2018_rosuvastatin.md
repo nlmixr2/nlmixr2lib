@@ -199,7 +199,7 @@ sim_nca <- dplyr::bind_rows(
   sim_alone |> dplyr::mutate(treatment = "RSV 5 mg PO"),
   sim_rif   |> dplyr::mutate(treatment = "RSV 5 mg PO + RIF 600 mg")
 ) |>
-  dplyr::filter(!is.na(Cc), time > 0) |>
+  dplyr::filter(!is.na(Cc)) |>
   dplyr::mutate(id_global = paste(treatment, id, sep = "::")) |>
   dplyr::select(id = id_global, time, Cc, treatment)
 
