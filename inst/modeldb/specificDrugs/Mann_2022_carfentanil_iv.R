@@ -54,6 +54,22 @@ Mann_2022_carfentanil_iv <- function() {
         "V = V_TV * (WT/70). Reference weight 70 kg."
       ),
       source_name        = "weight"
+    ),
+    Q_TOTAL_LPM = list(
+      description        = "Total cardiac output Qb + Qt feeding the FDA delaymymod.c lines 358-368 shock-state Q_Scale feedback that concentrates the opioid in the biophase compartment as hyperperfusion raises Q above baseline.",
+      units              = "L/min",
+      type               = "continuous",
+      reference_category = "4.87 (baseline; gives Q_Scale ~ 1, no amplification)",
+      notes              = paste(
+        "Same semantics as the Mann_2022_fentanyl_iv Q_TOTAL_LPM",
+        "covariate. Standalone: pass 4.87 to keep Q_Scale = 1.",
+        "In a composed overdose chain: pass Mann_2022_respiratory_",
+        "physiology's Q_total so that during carfentanil-induced",
+        "hyperperfusion Q_Scale saturates at 2 and the effective",
+        "central volume halves, doubling the effect-site",
+        "concentration in line with FDA delaymymod.c."
+      ),
+      source_name        = "(none; new canonical covariate registered for this model)"
     )
   )
 
@@ -156,13 +172,22 @@ Mann_2022_carfentanil_iv <- function() {
     # parameter when simulateToGetOD_IM.R sets opioid = "carfentanil").
     carfentanil_mw_g_mol <- 394.5
 
-    # Three-compartment IV disposition with biophase effect compartment
+    # FDA shock-state PK amplification (delaymymod.c lines 358-368).
+    # See Q_TOTAL_LPM covariate documentation; standalone use leaves
+    # q_scale ~ 1, composed use lets it saturate toward 2 during
+    # carfentanil-induced hyperperfusion.
+    q_scale_raw <- 1 + 1 / (1 + exp((1.6 - Q_TOTAL_LPM / 4.87) / 0.05))
+    q_scale <- (q_scale_raw < 1) * 1 + (q_scale_raw > 2) * 2 +
+               (q_scale_raw >= 1) * (q_scale_raw <= 2) * q_scale_raw
+    vc_eff <- vc / q_scale
+
+    # Three-compartment IV disposition with biophase effect compartment.
     d/dt(central)     <- -(cl + q + q2) / vc * central +
                           q  / vp  * peripheral1 +
                           q2 / vp2 * peripheral2
     d/dt(peripheral1) <-  q  / vc * central - q  / vp  * peripheral1
     d/dt(peripheral2) <-  q2 / vc * central - q2 / vp2 * peripheral2
-    d/dt(effect)      <-  k1 * (central / vc - effect)
+    d/dt(effect)      <-  k1 * (central / vc_eff - effect)
 
     # Outputs
     Cc    <- (central / vc) * 1000                                          # plasma carfentanil (ng/mL) = (mg/L) * 1000

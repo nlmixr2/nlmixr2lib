@@ -6012,6 +6012,41 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 
 ### DIS_POSTSE_KAINATE (**canonical for the post-status-epilepticus state induced by kainic-acid pre-treatment in rats**)
 - **Description:** 1 = animal underwent kainic-acid-induced status epilepticus (SE) some number of days prior to the modelled observation window, 0 = animal received saline (or another non-epileptogenic control). Time-fixed per animal in the Syvanen 2011 source study (the SE-induction-to-PET interval is a per-arm design constant -- 7 days post-induction at scanning); the canonical column models the chronic post-SE state at a defined post-induction interval, NOT the acute SE episode itself.
+
+
+### L_ANTAGONIST_pM (**canonical for time-varying opioid-antagonist effect-site concentration input to the Mann 2022 binding layer**)
+- **Description:** Time-varying opioid-antagonist effect-site concentration in picomolar (pM), supplied as a data covariate to the multi-ligand competitive mu-receptor binding model. Antagonist analogue of `L_OPIOID_pM`. In a composed Mann 2022 + Laffont 2024 / 2025 chain, the upstream antagonist PK layer (`Laffont_2024_naloxone` or `Laffont_2024_nalmefene`) is post-processed in the vignette by (a) converting time to minutes, (b) convolving plasma concentration with the Mann 2022 ke0 = 0.001774 1/s effect-site equilibration (carried into Laffont 2024 Supp Table S3 unchanged for both nalmefene and naloxone), and (c) converting ng/mL to pM via the antagonist's free-base molecular weight (naloxone 327.37 g/mol, nalmefene 339.43 g/mol); the resulting per-subject time series is supplied as this covariate.
+- **Units:** pM (picomolar)
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a.
+- **Source aliases:** none.
+- **Example models:** `Mann_2022_mu_receptor_binding.R`.
+- **Notes:** Scope: specific. Same pM-unit / Table-S2-Kon-unit alignment requirement as `L_OPIOID_pM`. Ratified canonically on 2026-05-29 alongside the Mann 2022 translational-model extraction.
+
+
+### CAR_OPIOID (**canonical for time-varying fraction of mu-opioid receptors bound by an agonist input to the Mann 2022 physiology layer**)
+- **Description:** Time-varying fraction (0..1) of mu-opioid receptors bound by an opioid agonist. The Mann 2022 respiratory-physiology layer consumes this as a data covariate to drive opioid-induced reductions in wakefulness drive (W - Wmax * CAR^P3) and in chemoreflex drives (factor 1 - CAR^P1). In the composed Mann 2022 chain, this is the `RL_op` output of `Mann_2022_mu_receptor_binding.R`; in standalone physiology-only use, the operator supplies CAR_OPIOID as a time-varying data column.
+- **Units:** fraction (0..1)
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a; 0 = no receptor occupancy = baseline ventilation.
+- **Source aliases:** `RL_op` / `CAR` (binding-model output name).
+- **Example models:** `Mann_2022_respiratory_physiology.R`.
+- **Notes:** Scope: specific because the semantics are anchored to mu-opioid receptor occupancy in the Mann 2022 translational chain. Future opioid-pharmacology models that consume a different receptor-occupancy concept (e.g., kappa-opioid or delta-opioid) should register a separately named canonical with the receptor subtype in the name (e.g., `CAR_KAPPA`). Ratified canonically on 2026-05-29 alongside the Mann 2022 translational-model extraction.
+
+### Q_TOTAL_LPM (**canonical for total cardiac output input to the Mann 2022 opioid-PK shock-state Q_Scale feedback**)
+- **Description:** Time-varying total cardiac output Qb + Qt (cerebral + peripheral-tissue blood flow), in L/min, supplied to the Mann 2022 IV-opioid PK models so they can evaluate the FDA delaymymod.c lines 358-368 shock-state Q_Scale feedback: `Q_Scale = 1 + 1 / (1 + exp((1.6 - Q_TOTAL_LPM / 4.87) / 0.05))`, clamped to [1, 2]. Q_Scale scales the effective central volume of distribution down (`vc_eff = vc / Q_Scale`) so that hyperperfusion-driven concentration of opioid in the central / biophase compartment is captured during overdose-induced chemoreflex hyperperfusion. Without this feedback the standalone PK model under-estimates effect-site concentration in shock conditions and produces PaO2 troughs too shallow to reach the cardiac-arrest threshold.
+- **Units:** L/min
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** 4.87 L/min (FDA delaymymod.c baseline Q_0; gives Q_Scale = 1, no amplification). Standalone PK use should leave Q_TOTAL_LPM at this baseline.
+- **Source aliases:** `q_total` / `Q_total` / `Q` (physiology layer state name).
+- **Example models:** `Mann_2022_fentanyl_iv.R`, `Mann_2022_carfentanil_iv.R`.
+- **Notes:** Scope: specific because the 4.87 / 1.6 / 0.05 numerics are anchored to the FDA delaymymod.c Q_0 baseline and the empirical sigmoid centred at Q/Q_0 = 1.6. In the composed Mann 2022 chain Q_TOTAL_LPM is the `Q_total = qb + qt` output of `Mann_2022_respiratory_physiology.R`; in standalone PK-only use the operator supplies Q_TOTAL_LPM = 4.87 (or whatever fixed baseline appropriate). Registered canonically on 2026-06-07 alongside the FDA shock-state PK amplification fix.
+
+### OPIOID_PATIENT_TYPE (**canonical for opioid-naive vs chronic-opioid-user indicator in the Mann 2022 respiratory-depression PD layer**)
+- **Description:** Binary indicator selecting the pharmacodynamic-sensitivity parameter set in the Mann 2022 respiratory-physiology layer. 0 = healthy opioid-naive volunteer (P1 = 2.875, P3 = 0.9); 1 = chronic opioid user with established tolerance (P1 = 4.226, P3 = 1.323). P2 (metabolism exponent) is shared across both patient types at 0.06319. The naive vs chronic split is empirically calibrated against Algera 2021 (Clin Pharmacol Ther 2021;109(3):637-645) and Stoeckel 1982 (Br J Anaesth 1982;54(10):1087-1095); the numeric P1, P3 values are taken from FDA simulateToGetOD_IM.R lines 185-192 (Mann 2022 reference implementation).
 - **Units:** (binary)
 - **Type:** binary
 - **Scope:** specific
