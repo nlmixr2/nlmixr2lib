@@ -807,6 +807,12 @@ These are internationally standardised clinical abbreviations registered as cano
 - **Source aliases:** none.
 - **Example models:** anticoagulant PD models.
 
+### ECT (**canonical ecarin clotting time**)
+- **Type:** compartment
+- **Role:** Ecarin clotting time coagulation-test PD output (selective ecarin-activated thrombin assay used to monitor direct thrombin inhibitors).
+- **Source aliases:** none.
+- **Example models:** direct thrombin inhibitor PD models (dabigatran, argatroban, hirudin / hirulog, melagatran).
+
 ### hb (**canonical hemoglobin**)
 - **Type:** compartment
 - **Role:** Hemoglobin PD output.

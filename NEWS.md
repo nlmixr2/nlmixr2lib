@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Viberg 2006 cefuroxime ([doi:10.1111/j.1365-2125.2006.02652.x](https://doi.org/10.1111/j.1365-2125.2006.02652.x)) -- adult patients with bacterial infections and a wide range of renal function (promotes `CYSC` covariate scope from `specific` to `general`).
+* Add Liesenfeld 2006 dabigatran aPTT and ECT PD ([doi:10.1111/j.1365-2125.2006.02667.x](https://doi.org/10.1111/j.1365-2125.2006.02667.x)) -- orthopaedic surgery patients receiving oral dabigatran etexilate after total hip replacement (BISTRO I); ratifies new `ECT` canonical compartment for ecarin clotting time PD output.
 * Add Padoin 1998 cephalexin ([doi:10.1128/aac.42.6.1463](https://doi.org/10.1128/aac.42.6.1463)) -- preclinical male Wistar rats with a cephalexin / quinapril oral coadministration DDI (ratifies new `CONMED_QPRL_ORAL` covariate canonical).
 * Add van Rongen 2018 metformin ([doi:10.1007/s40272-018-0293-1](https://doi.org/10.1007/s40272-018-0293-1)) -- overweight and obese Caucasian adolescents.
 * Add Tarning 2012 artemether and dihydroartemisinin ([doi:10.1186/1475-2875-11-293](https://doi.org/10.1186/1475-2875-11-293)) -- pregnant women with uncomplicated Plasmodium falciparum malaria in Uganda (joint parent + DHA popPK with zero-order dissolution and 6-compartment transit absorption).
