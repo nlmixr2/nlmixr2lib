@@ -642,7 +642,7 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Source aliases:**
   - `Cystatin C` / `cystatin` -- Chung 2013 paper narrative and Table 2 footnote.
   - `CysC` -- Viberg 2006 paper narrative and Table 4 footnote.
-- **Example models:** `Chung_2013_vancomycin.R` (mg/L, reference 0.91; power exponent -0.780 on CL: `CL_pop * (CYSC / 0.91)^-0.780`); `Viberg_2006_cefuroxime.R` (mg/L; centred-linear effect on 1/CYSC with coefficient 1.43 per (mg/L)^-1 and reference 0.758 (mg/L)^-1 on CL: `CL_pop * (1 + 1.43 * (1/CYSC - 0.758))`).
+- **Example models:** `Chung_2013_vancomycin.R` (mg/L, reference 0.91; power exponent -0.780 on CL: `CL_pop * (CYSC / 0.91)^-0.780`), `Viberg_2006_cefuroxime.R` (mg/L; centred-linear effect on 1/CYSC with coefficient 1.43 per (mg/L)^-1 and reference 0.758 (mg/L)^-1 on CL: `CL_pop * (1 + 1.43 * (1/CYSC - 0.758))`).
 - **Notes:** Cystatin C is freely filtered at the glomerulus and is not secreted by the renal tubule (unlike creatinine), so it is less sensitive to muscle mass, body composition, and tubular-secretion blockers. Reference ranges 0.57-0.97 mg/L for adult females and 0.65-1.10 mg/L for adult males (Chung 2013 Methods; Roche Cobas 6000 particle-enhanced immunoturbidimetric assay). Distinct from `CREAT` (serum creatinine) -- the two are commonly reported alongside each other and can enter the same model as separate covariates (as in Chung 2013, where CYSC explains 62% of CL variability vs SCr 13%). The functional form (power on CYSC vs centred-linear on 1/CYSC) is paper-specific and lives in the model file; the canonical column is the underlying biomarker concentration in mg/L.
 
 ### HEPIMP (**canonical for hepatic-impairment indicator (NCI ODWG classification)**)
