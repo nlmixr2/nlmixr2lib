@@ -850,6 +850,12 @@ These are internationally standardised clinical abbreviations registered as cano
 - **Source aliases:** none.
 - **Example models:** endocrinology / coagulation PD models.
 
+### QTc (**canonical heart-rate-corrected QT interval**)
+- **Type:** compartment
+- **Role:** Heart-rate-corrected QT interval (electrocardiographic PD endpoint), typically expressed in ms. Used as the observation variable in direct-effect Emax models of drug-induced QT prolongation (cardiac-safety / thorough-QT studies, e.g. quinidine, moxifloxacin, sotalol). The choice of correction formula (Bazett, Fridericia, individual-correction) is paper-dependent and recorded in `description`; the canonical name covers the corrected-interval output regardless of which correction was applied.
+- **Source aliases:** `QTcB` (Bazett), `QTcF` (Fridericia), `QTcI` (individual correction) — translate to `QTc` and record the correction in the model file's description / vignette.
+- **Example models:** `Shin_2006_quinidine_QT.R` (Bazett-corrected QT interval; founding example).
+
 ---
 
 ## Bacterial-count PD outputs

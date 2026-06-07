@@ -936,14 +936,8 @@ navbar:
         href: articles/Chirehwa_2017_pyrazinamide.html
       - text: "Pyrazinamide (Horita 2018)"
         href: articles/Horita_2018_pyrazinamide.html
-      - text: "Pyrimethamine (Karunajeewa 2009)"
-        href: articles/Karunajeewa_2009_sulfadoxinePyrimethamine.html
-      - text: "Pyronaridine (Ayyoub 2016)"
-        href: articles/Ayyoub_2016_pyronaridine.html
-      - text: "Quinidine (Fattinger 1991)"
-        href: articles/Fattinger_1991_quinidine.html
-      - text: "Quinidine rat (Syvanen 2012)"
-        href: articles/Syvanen_2012_quinidine_rat.html
+      - text: "Quinidine QT (Shin 2006)"
+        href: articles/Shin_2006_quinidine_QT.html
       - text: "Quinine (Kloprogge 2014)"
         href: articles/Kloprogge_2014_quinine.html
       - text: "Quinine (LeJouan 2005)"
@@ -2028,6 +2022,7 @@ articles:
   - articles/Sherer_2012_AAA
   - articles/Sherwin_2012_risperidone
   - articles/Shi_2018_ceftazidime
+  - articles/Shin_2006_quinidine_QT
   - articles/Shin_2014_sevoflurane
   - articles/Shin_2017_levetiracetam
   - articles/Shoji_2017_fosdagrocorat_oc
