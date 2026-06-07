@@ -625,26 +625,10 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
 - **Example models:** `Campagne_2019_cyclophosphamide_mouse.R`.
 - **Notes:** Usually held fixed at the in-vitro equilibrium-dialysis-derived value. The BBB transfer term is `CLin * fu * Cp`.
 
-### sg (**canonical glucose effectiveness (Bergman minimal model)**)
+### t50 (**canonical half-effect / half-decline time**)
 - **Type:** paper-named-param
-- **Role:** Insulin-independent glucose disappearance rate constant in the Bergman glucose minimal model (1 / time). Drives the basal-glucose self-regulation arm `-sg * (G - Gb)` of the glucose ODE.
+- **Role:** Time at which a time-varying effect (clearance decline, Imax-type CL change, gastric-emptying onset, etc.) has reached half of its asymptotic value. Together with an optional Hill / steepness exponent it parameterises the Emax-type time decay `CL(t) = CL0 / (1 + (t / T50)^beta)` and related sigmoidal time-course functions. Time units match the paper's t.
 - **Source aliases:**
-  - `SG` -- universal symbol in the IVGTT minimal-model literature (Bergman 1979, Bergman 1981, Pacini 1986). Case-only difference from the canonical lowercase form.
-- **Example models:** `Denti_2010_glucoseMinimal.R` (introduces canonical; reference 0.0192 1/min in healthy adults).
-- **Notes:** Paper-mechanistic Bergman-minimal-model parameter family (sg, si, p2). Always log-transformed for estimation (`lsg <- log(...)` in `ini()`, `sg <- exp(lsg + etalsg)` in `model()`) because the minimal-model literature uniformly assumes log-normal IIV.
-
-### si (**canonical insulin sensitivity (Bergman minimal model)**)
-- **Type:** paper-named-param
-- **Role:** Insulin sensitivity in the Bergman glucose minimal model (volume / time / insulin-concentration). Couples the insulin-action state X to the deviation of plasma insulin from basal: `dX/dt = -p2 * X + p2 * si * (I - Ib)`. Reports the steady-state increase in fractional glucose clearance per unit increase in plasma insulin above basal.
-- **Source aliases:**
-  - `SI` -- universal symbol in the IVGTT minimal-model literature. Case-only difference from the canonical lowercase form.
-- **Example models:** `Denti_2010_glucoseMinimal.R` (introduces canonical; reference 5.83e-5 L/(min*pmol) in healthy adults).
-- **Notes:** Paper-mechanistic Bergman-minimal-model parameter family (sg, si, p2). Always log-transformed (`lsi`). Units depend on the units chosen for plasma insulin in `model()`; the canonical units are L/(min*pmol) when I is in pmol/L, or mL/(min*pmol) when I is in pmol/mL. Document the per-model insulin units in the model file's `units` block or `covariateData[[INS]]$units`.
-
-### p2 (**canonical insulin-action rate constant (Bergman minimal model)**)
-- **Type:** paper-named-param
-- **Role:** First-order rate constant for the insulin-action state X in the Bergman glucose minimal model (1 / time). Sets the speed at which X equilibrates to its insulin-driven steady-state value: small p2 implies a slow delay between plasma-insulin rise and glucose-clearance increase.
-- **Source aliases:**
-  - `P2` -- universal symbol in the IVGTT minimal-model literature. Case-only difference from the canonical lowercase form.
-- **Example models:** `Denti_2010_glucoseMinimal.R` (introduces canonical; reference 0.0254 1/min in healthy adults).
-- **Notes:** Paper-mechanistic Bergman-minimal-model parameter family (sg, si, p2). Always log-transformed (`lp2`). In the Bergman parameterisation X is the insulin-action variable (units 1/time, conceptually `si * (I - Ib)` at steady state); see also the `vd` paper-named-param entry for the apparent glucose volume per body mass.
+  - `T50` -- common paper notation (e.g., Gupta 2006, Masters 2022, Melhem 2022, Kuchimanchi 2024, Sanghavi 2020, Zhang 2019, Wang 2024, Lu 2019).
+- **Example models:** `Gupta_2006_peginterferon_alfa_2b.R`, `Masters_2022_avelumab.R`, `Melhem_2022_dostarlimab.R`, `Kuchimanchi_2024_dostarlimab.R`, `Sanghavi_2020_ipilimumab.R`, `Zhang_2019_nivolumab.R`, `Wang_2024_sugemalimab.R`, `Lu_2019_polatuzumab.R` (as `lt50_mo` for months-input variant), `Guiastrennec_2016_gastric_emptying.R` (as suffixed `lt50ogtt` / `lt50fat` for two-arm half-onset times).
+- **Notes:** Registered to formalise an already widespread convention. Use the log-transformed `lt50` as the `ini()` parameter and exponentiate inside `model()` (`t50 <- exp(lt50 + etalt50)`). When two or more `T50`-style parameters coexist in the same model, suffix the canonical with a paper-meaningful disambiguator (`lt50ogtt`, `lt50_mo`).
