@@ -1044,6 +1044,8 @@ navbar:
         href: articles/Vinnard_2017_rifampicin.html
       - text: "Rifampicin (Wicha 2018)"
         href: articles/Wicha_2018_rifampicin.html
+      - text: "Rifapentine (Zvada 2010)"
+        href: articles/Zvada_2010_rifapentine.html
       - text: "Rilotumumab (Zhang 2016)"
         href: articles/Zhang_2016_rilotumumab.html
       - text: "Rilpivirine (Aouri 2017)"
@@ -2258,6 +2260,7 @@ articles:
   - articles/Zufferey_2018_fondaparinux
   - articles/Zuo_2016_UDCA
   - articles/Zurlinden_2016_paracetamol
+  - articles/Zvada_2010_rifapentine
   - articles/deAlwis_1998_ondansetron
   - articles/deHoogd_2017_morphine
   - articles/deJonge_2005_paclitaxel
