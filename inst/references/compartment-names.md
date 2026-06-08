@@ -2461,6 +2461,13 @@ Per-paper metabolite / sibling-drug suffix additions discovered during the 2026-
 - **Source aliases:** none.
 - **Example models:** `Ait-Oudhia_2016_sunitinib.R`.
 
+### dact (**canonical desacetylcefotaxime metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Desacetylcefotaxime (DACT), the major active metabolite of cefotaxime (CTX) formed by hepatic deacetylation. Used as a metabolite suffix in parent + metabolite simultaneous popPK models where CTX and DACT are fitted jointly with the conventional 1:1 (CTX-equivalent) mass-balance assumption FDACT/CTX = 1.
+- **Source aliases:**
+  - `DACT` -- used in `Ahsman_2010_cefotaxime.R` (paper notation).
+- **Example models:** `Ahsman_2010_cefotaxime.R`.
+
 ### tam (**canonical tamoxifen tracking-species suffix**)
 - **Type:** metabolite-suffix
 - **Role:** Tamoxifen tracking species suffix (documented as the ticagrelor-paired tracking species in Almquist 2016).
