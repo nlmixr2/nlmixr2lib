@@ -184,6 +184,8 @@ navbar:
         href: articles/Zhi_2018_cefathiamidine.html
       - text: "Cefepime (Jonckheere 2019)"
         href: articles/Jonckheere_2019_cefepime.html
+      - text: "Cefotaxime (Ahsman 2010)"
+        href: articles/Ahsman_2010_cefotaxime.html
       - text: "Ceftazidime (Shi 2018)"
         href: articles/Shi_2018_ceftazidime.html
       - text: "Cemiplimab (Yang 2021)"
@@ -1113,6 +1115,7 @@ articles:
   - articles/Ahamadi_2017_pembrolizumab
   - articles/Ahlstrom_2010_nicotinicAcid_rat
   - articles/Ahn_2014_parathyroidHormone
+  - articles/Ahsman_2010_cefotaxime
   - articles/Ait-Oudhia_2016_sunitinib
   - articles/AitOudhia_2012_canakinumab
   - articles/Akbar_2025_voriconazole

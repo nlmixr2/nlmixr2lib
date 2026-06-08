@@ -719,6 +719,28 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Yang_2017_remifentanil.R` (power effect on remifentanil CL: `(ECMO_PUMP_SPEED / 2350)^2.04`; higher pump speed associated with higher CL, hypothesised mechanism is increased spontaneous drug degradation at high centrifugal-pump shear).
 - **Notes:** Distinct from blood flow rate (BFR, mL/min) and from dialysate flow rate (DFR, mL/min) which characterise renal-replacement-therapy circuits. ECMO circuits use a centrifugal pump whose rotational speed sets the cardiac-output augmentation; the resulting blood flow rate (LPM) is a separate measured quantity that depends on circuit resistance and patient hemodynamics. Yang 2017 tested both ECMO pump speed (RPM) and ECMO flow rate (LPM) and only pump speed was retained as a significant covariate (ECMO flow rate was not significantly associated with PK parameters). Ratified canonically on 2026-05-23 alongside the Yang 2017 remifentanil extraction.
 
+### Q_CVVH (**canonical for continuous venovenous hemofiltration circuit flow rate during ECMO**)
+- **Description:** Flow rate through the continuous venovenous hemofiltration (CVVH) filter when it is placed parallel to the ECMO circuit. The filter contributes solute removal that adds to the drug's apparent CL whenever CVVH is active; the column is zero in subjects whose ECMO circuit has no CVVH filter or whose CVVH is currently off. Continuous covariate; naturally time-varying although the source paper treats the per-subject median as time-fixed (the median Q_CVVH per individual did not vary much during sampling).
+- **Units:** mL/min
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- enters as a power-centered effect `(Q_CVVH / ref)^exponent` with the source paper additionally gating the effect to 1 when `Q_CVVH = 0` (no CVVH active). The reference value is paper-specific (cohort median during CVVH operation): Ahsman 2010 uses 193 mL/min (cohort median; Table 1).
+- **Source aliases:**
+  - `QCVVH` -- used in `Ahsman_2010_cefotaxime.R` (paper notation, subscript dropped).
+- **Example models:** `Ahsman_2010_cefotaxime.R` (power effect on DACT metabolite CL: `(Q_CVVH / 193)^0.72` when CVVH active, 1 otherwise).
+- **Notes:** Distinct from `ECMO_PUMP_SPEED` (the centrifugal-pump rotational speed setting cardiac-output augmentation) and from `BFR` / `DFR` (blood-flow / dialysate-flow rates characterising standalone hemodialysis circuits): Q_CVVH is the slow-clearance flow through a CVVH filter integrated INTO an ECMO circuit. Distinct from `CRRT_STATUS` (binary on / off indicator for continuous RRT) which captures presence-of-therapy rather than its rate. Future ECMO + CVVH popPK extractions that quantify CVVH flow should reuse this canonical and extend the example list. Ratified canonically alongside the Ahsman 2010 cefotaxime extraction.
+
+### T_POST_ECMO (**canonical for time after ECMO decannulation (end of extracorporeal circulation)**)
+- **Description:** Wall-clock time elapsed since the patient was decannulated from ECMO (the end of extracorporeal circulation). Zero before and during ECMO support; becomes positive after decannulation and increases linearly with time. Naturally time-varying. Used as a power-centred recovery-time covariate on PK parameters whose values change as the patient transitions off ECMO back to native circulation.
+- **Units:** hour
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- enters as a power-centered effect `(T_POST_ECMO / ref)^exponent` with the source paper additionally gating the effect to 1 when `T_POST_ECMO = 0` (before or during ECMO). The reference value is paper-specific: Ahsman 2010 uses 100 h (Appendix).
+- **Source aliases:**
+  - `tEND` -- used in `Ahsman_2010_cefotaxime.R` (paper notation, subscript dropped).
+- **Example models:** `Ahsman_2010_cefotaxime.R` (power effect on parent CTX CL: `(T_POST_ECMO / 100)^0.16` when post-ECMO, 1 otherwise; power effect on DACT metabolite CL: `(T_POST_ECMO / 100)^0.53` when post-ECMO, 1 otherwise).
+- **Notes:** Conceptually a time-since-event covariate similar to `TPP` (time postpartum) and `T_ENTRY` (per-subject study-entry time) but anchored to ECMO decannulation. Distinct from `t_EC` (time since ECMO START / beginning of extracorporeal circulation, which the source paper tested but did not retain) and from on-ECMO duration covariates. The gating-at-zero convention is structural: during ECMO the recovery-time covariate is undefined / not yet started, so the (0 / ref)^exponent expression would collapse pathologically and the implementer must short-circuit the multiplier to 1. Future ECMO popPK extractions that include a post-decannulation recovery phase should reuse this canonical and extend the example list. Ratified canonically alongside the Ahsman 2010 cefotaxime extraction.
+
 ## Hematology
 
 ### HGB (**canonical for hemoglobin**)
