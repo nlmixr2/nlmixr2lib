@@ -2143,6 +2143,12 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Source aliases:** none.
 - **Example models:** `Hennig_2015_rifabutin.R` (doi:10.1128/AAC.01195-15).
 
+### desrpt (**canonical 25-O-desacetyl rifapentine suffix**)
+- **Type:** metabolite-suffix
+- **Role:** 25-O-desacetyl rifapentine (25-DRFP), primary active metabolite of rifapentine, formed by enzymatic deacetylation; microbiologically active against Mycobacterium tuberculosis. Parallel naming to the registered `desrbn` (25-O-desacetyl rifabutin) suffix.
+- **Source aliases:** `25-DRFP` / `25DRFP` / `metabolite_M` (paper narrative in Zvada 2010 Methods and Figure 1 caption).
+- **Example models:** `Zvada_2010_rifapentine.R` (doi:10.1128/AAC.00345-10).
+
 ### az5104 (**canonical AZ5104 osimertinib metabolite suffix**)
 - **Type:** metabolite-suffix
 - **Role:** AZ5104 (N-desmethyl osimertinib), active EGFR-inhibitor metabolite of osimertinib formed predominantly via CYP3A4/5.

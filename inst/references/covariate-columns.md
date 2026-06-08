@@ -5210,6 +5210,46 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Example models:** `Zuo_2016_UDCA.R` (multiplies the biliary-to-intestine rate constants K_BI,0/1/2 by E_snack = 9.53 during snack windows; one snack modelled per day at +7 h after the morning dose in the Xiang 2011 single-dose study, 0.5 hour long).
 - **Notes:** Specific scope; same per-paper-defined operational definition as `MEAL_FLAG`. Time-varying.
 
+### MEAL_A (**canonical for Zvada 2010 meal-A high-fat English breakfast indicator**)
+- **Description:** 1 = oral dose administered 30 min after Zvada 2010 meal A (a high-fat English breakfast); 0 = otherwise. Per Zvada 2010 Table 1 meal A consists of 2 rashers of bacon (20 g), 1 fried egg (50 g), 1 slice white toast (30 g) with butter (7 g) and marmalade (10 g), 2 cups decaffeinated coffee (400 ml) with full-cream milk (100 ml) and 2 teaspoons sugar (10 g); 18.9 g protein, 27 g fat, 38 g carbohydrate, 1,966 kJ, 627 g total weight. Distinct from the general `FED_HIGHFAT` because Zvada 2010 isolates four operationally-distinct meal compositions (A/B/C/D) each with its own bioavailability effect estimate and because the paper's Discussion explicitly attributes part of meal A's effect to eggs rather than total fat.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (fasted dosing, equivalent to Zvada 2010 meal E = 200 ml of water; the all-zero state of MEAL_A / MEAL_B / MEAL_C / MEAL_D).
+- **Source aliases:** paper narrative "meal A" (Zvada 2010 Table 1 / Table 3).
+- **Example models:** `Zvada_2010_rifapentine.R` (additive contribution to TVF = 1 * (1 + sum of per-meal fractional changes); RXF_A = +0.857, RSE 20.1%; Zvada 2010 Table 3).
+- **Notes:** Specific scope because the operational meal definition is paper-specific. Mutually exclusive with `MEAL_B`, `MEAL_C`, `MEAL_D` - at most one of the four indicators can be 1 on a given dosing record; the fasted reference is all four = 0. Future rifapentine / antimycobacterial food-effect studies that reuse the same meal compositions (uncommon - meal compositions are typically protocol-specific) can extend this entry's example list. Distinct from `MEAL_FLAG` / `SNACK_FLAG` (time-varying intra-day flags) because `MEAL_A` is a per-dose-record indicator that selects between five mutually exclusive meal states.
+
+### MEAL_B (**canonical for Zvada 2010 meal-B low-fat bulky maize-meal porridge indicator**)
+- **Description:** 1 = oral dose administered 30 min after Zvada 2010 meal B (a low-fat bulky maize-meal porridge breakfast); 0 = otherwise. Per Zvada 2010 Table 1 meal B consists of 1.5 cups soft maize meal porridge (375 g cooked) with 3 teaspoons sugar (15 g), 1 cup decaffeinated coffee (200 ml) with full-cream milk (50 ml) and 1 teaspoon sugar (5 g); 6 g protein, 3 g fat, 66 g carbohydrate, 1,285 kJ, 645 g total weight.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (fasted dosing, equivalent to Zvada 2010 meal E).
+- **Source aliases:** paper narrative "meal B" (Zvada 2010 Table 1 / Table 3).
+- **Example models:** `Zvada_2010_rifapentine.R` (additive contribution to TVF; RXF_B = +0.327, RSE 40.4%; Zvada 2010 Table 3).
+- **Notes:** Specific scope; mutually exclusive with `MEAL_A`, `MEAL_C`, `MEAL_D`. See `MEAL_A` notes for the per-dose-record indicator pattern.
+
+### MEAL_C (**canonical for Zvada 2010 meal-C high-fat bulky maize-meal porridge with lard indicator**)
+- **Description:** 1 = oral dose administered 30 min after Zvada 2010 meal C (a high-fat bulky maize-meal porridge breakfast with lard); 0 = otherwise. Per Zvada 2010 Table 1 meal C consists of 1.5 cups soft maize meal porridge (375 g cooked) with 3 teaspoons sugar (15 g) and 5 teaspoons of lard (25 g), 1 cup decaffeinated coffee (200 ml) with full-cream milk (50 ml) and 1 teaspoon sugar (5 g); 6 g protein, 28 g fat, 66 g carbohydrate, 2,229 kJ, 670 g total weight.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (fasted dosing, equivalent to Zvada 2010 meal E).
+- **Source aliases:** paper narrative "meal C" (Zvada 2010 Table 1 / Table 3).
+- **Example models:** `Zvada_2010_rifapentine.R` (additive contribution to TVF; RXF_C = +0.457, RSE 29.3%; Zvada 2010 Table 3).
+- **Notes:** Specific scope; mutually exclusive with `MEAL_A`, `MEAL_B`, `MEAL_D`. Meal C and meal A have similar total fat content but the Zvada 2010 Discussion attributes the substantially smaller effect of meal C (+45.7%) versus meal A (+85.7%) to the absence of eggs in C - supporting the authors' egg-specific bioavailability hypothesis.
+
+### MEAL_D (**canonical for Zvada 2010 meal-D low-fat high-fluid chicken noodle soup indicator**)
+- **Description:** 1 = oral dose administered 30 min after Zvada 2010 meal D (a low-fat high-fluid chicken noodle soup breakfast); 0 = otherwise. Per Zvada 2010 Table 1 meal D consists of 2 cups reconstituted powdered chicken noodle soup (400 ml), 1 cup decaffeinated coffee (200 ml) with skim milk (50 ml) and 1 teaspoon sugar (5 g); 9 g protein, 4 g fat, 28 g carbohydrate, 774 kJ, 660 g total weight.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (fasted dosing, equivalent to Zvada 2010 meal E).
+- **Source aliases:** paper narrative "meal D" (Zvada 2010 Table 1 / Table 3).
+- **Example models:** `Zvada_2010_rifapentine.R` (additive contribution to TVF; RXF_D = +0.489, RSE 30.7%; Zvada 2010 Table 3).
+- **Notes:** Specific scope; mutually exclusive with `MEAL_A`, `MEAL_B`, `MEAL_C`. Zvada 2010 Discussion notes that monosodium glutamate (MSG) in the chicken noodle soup may contribute to the effect by accelerating gastric emptying (per Boutry et al., Am J Physiol Endocrinol Metab 2011, on MSG and gastric emptying).
+
 ### FRACABS (**canonical for dose-record fractional absorption supplied as a data column**)
 - **Description:** Per-dose-record fractional absorption (0-1) supplied as a covariate when the source paper reports F as a dose-dependent function rather than as a single estimable bioavailability parameter. The model wires the covariate into a bioavailability hook (`f(<depot>) <- FRACABS`); the user supplies the per-dose F value derived from the paper's regression / lookup table.
 - **Units:** fraction
