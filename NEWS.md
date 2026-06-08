@@ -2,8 +2,7 @@
 
 # development version
 
-* Add Zvada 2010 rifapentine ([doi:10.1128/AAC.00345-10](https://doi.org/10.1128/AAC.00345-10)) -- healthy adult male volunteers receiving single 900 mg oral rifapentine after four meal types or fasted (parent + 25-O-desacetyl rifapentine popPK with food effect on bioavailability; ratifies new `desrpt` registered metabolite suffix and new `MEAL_A`, `MEAL_B`, `MEAL_C`, `MEAL_D` covariate canonicals).
-* Add Berges 2007 enoxaparin ([doi:10.1111/j.1365-2125.2007.02920.x](https://doi.org/10.1111/j.1365-2125.2007.02920.x)) -- elderly inpatients (>75 years) on prophylactic subcutaneous enoxaparin 4000 IU once daily for VTE prophylaxis (PROPHRE.75 study).
+* Add Bulitta 2011 cefpirome ([doi:10.1128/AAC.01484-10](https://doi.org/10.1128/AAC.01484-10)) -- adult cystic fibrosis patients and matched healthy volunteers (ratifies new `DIS_CF` covariate canonical).
 * Add Padoin 1998 cephalexin ([doi:10.1128/aac.42.6.1463](https://doi.org/10.1128/aac.42.6.1463)) -- preclinical male Wistar rats with a cephalexin / quinapril oral coadministration DDI (ratifies new `CONMED_QPRL_ORAL` covariate canonical).
 * Add van Rongen 2018 metformin ([doi:10.1007/s40272-018-0293-1](https://doi.org/10.1007/s40272-018-0293-1)) -- overweight and obese Caucasian adolescents.
 * Add Tarning 2012 artemether and dihydroartemisinin ([doi:10.1186/1475-2875-11-293](https://doi.org/10.1186/1475-2875-11-293)) -- pregnant women with uncomplicated Plasmodium falciparum malaria in Uganda (joint parent + DHA popPK with zero-order dissolution and 6-compartment transit absorption).
