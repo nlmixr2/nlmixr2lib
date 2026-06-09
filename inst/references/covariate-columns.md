@@ -577,15 +577,18 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Notes:** Universal lab marker. Sanghavi 2020 log-transforms LDH because the distribution is heavily right-skewed (range 74-6,245 U/L over a median of 217); other papers may use a simple `(LDH/ref)^exponent` form. Document the functional form in `covariateData[[LDH]]$notes`.
 
 ### HEPIMP_MILD (**canonical for mild hepatic impairment indicator**)
-- **Description:** 1 = mild hepatic impairment per the National Cancer Institute Organ Dysfunction Working Group (NCI ODWG) criteria, 0 = normal hepatic function or non-mild category. NCI ODWG mild = total bilirubin <= ULN with AST > ULN, OR total bilirubin > 1.0xULN to <= 1.5xULN with any AST.
+- **Description:** 1 = mild hepatic impairment, 0 = normal hepatic function or non-mild category. The classification scheme that defines "mild" is paper-specific and must be documented in per-model `covariateData[[HEPIMP_MILD]]$notes`. Two schemes are commonly encountered:
+  - **NCI ODWG group 2**: total bilirubin <= ULN with AST > ULN, OR total bilirubin > 1.0xULN to <= 1.5xULN with any AST (Ramalingam SS et al., J Clin Oncol 2010;28:4507).
+  - **Child-Pugh Class A**: composite score 5-6 across bilirubin, albumin, INR, ascites, and encephalopathy.
 - **Units:** (binary)
 - **Type:** binary
 - **Scope:** general
-- **Reference category:** 0 (normal hepatic function; the moderate / severe categories are typically pooled into the reference for population PK analyses where mild impairment is the only category with non-trivial sample size).
+- **Reference category:** 0 (normal hepatic function; the moderate / severe categories are typically pooled into the reference for population PK analyses where mild impairment is the only category with non-trivial sample size, or are partitioned into companion `HEPIMP_MOD` / `HEPIMP_SEV` indicators when each stratum carries its own effect).
 - **Source aliases:**
   - `HEPIMP` (with values `1 = mild / 0 = others`) -- used in `Lin_2024_casirivimab.R`.
-- **Example models:** `Lin_2024_casirivimab.R` (multiplicative fractional change on CL), `Lu_2022_patritumab.R` (paired with `HEPIMP_MOD_MISSING`; multiplicative fractional effect 0.706 on CLDXd for mild impairment vs the normal-hepatic-function reference).
-- **Notes:** Use this column when a model dichotomizes hepatic-impairment status as "mild vs. others" (i.e., normal + the rare moderate/severe cases pooled into the reference). For models that test moderate or severe as separate categories, register additional canonicals `HEPIMP_MOD` / `HEPIMP_SEV` rather than overloading this entry.
+  - `HEP1` -- used in `Desai_2016_isavuconazole.R` (paper's liver-function index HEP1 for mild Child-Pugh A; same orientation as the canonical).
+- **Example models:** `Lin_2024_casirivimab.R` (NCI ODWG mild; multiplicative fractional change on CL), `Lu_2022_patritumab.R` (NCI ODWG mild; paired with `HEPIMP_MOD_MISSING`; multiplicative fractional effect 0.706 on CLDXd for mild impairment vs the normal-hepatic-function reference), `Desai_2016_isavuconazole.R` (Child-Pugh A; log-additive shift `e_hepimp_mild_cl = log(1.55 / 2.54) = -0.494` on CL and `e_hepimp_mild_q = log(38.8 / 33.678) = +0.142` on Q vs the healthy reference, paired with `HEPIMP_MOD` for the parallel Child-Pugh B stratum).
+- **Notes:** Use this column when a model dichotomizes hepatic-impairment status as "mild vs. others" (i.e., normal + the rare moderate/severe cases pooled into the reference). For models that test moderate or severe as separate categories, register additional canonicals `HEPIMP_MOD` / `HEPIMP_SEV` rather than overloading this entry. The classification scheme (NCI ODWG vs Child-Pugh vs other) is paper-specific and must be documented per-model. The Child-Pugh scheme extension was ratified alongside the Desai 2016 isavuconazole extraction.
 
 ### HEPIMP_MOD_MISSING (**canonical for composite moderate-or-data-missing hepatic impairment indicator**)
 - **Description:** 1 = moderate hepatic impairment per the NCI ODWG criteria OR baseline hepatic-function data missing/unknown; 0 = normal hepatic function or any other (non-moderate, non-missing) category. Composite indicator used by source papers that pool the moderate-impairment subgroup with patients whose hepatic-function data are missing because both subgroups are individually too small to estimate as separate effects.
@@ -641,6 +644,19 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
   - `NASF` -- used in `Pierre_2017_morphine.R` (Pierre 2017 Methods 'Covariate analysis').
 - **Example models:** `Pierre_2017_morphine.R` (linear effect on `log(NASF / 4)` for NASF >= 4 with coefficient -0.628 on M3G clearance: `CL_M3G_i = CL_M3G_pop * (1 + e_nasf_cl_m3g * log(NASF / 4))` for NASF >= 4 and `CL_M3G_i = CL_M3G_pop` for NASF < 4; higher NASF reduces M3G clearance via reduced biliary excretion and increased basolateral efflux of M3G into systemic circulation).
 - **Notes:** The NAFLD activity score (NAS) component is the histology score described by Bondini 2007 / Kleiner 2005 and references therein; the fibrosis staging is the Brunt / NASH-CRN system. The combined NASF score is the noninvasive staging proposed by Santiago-Rolon 2015 (Proc R Health Sci J 34:189-194) and used by Angulo 2007 as the NAFLD Fibrosis Score cutoff. Scope: specific because the precise cutoff (NASF >= 4) and the linear-on-log functional form are Pierre 2017's modeling choice; future papers may model NASF or its components differently. Distinct from `HEPIMP*` (NCI ODWG oncology-trial hepatic-impairment categories) and from continuous liver enzymes (ALT, AST, ALP) -- NASF is a biopsy-derived disease-severity ordinal specific to NAFLD / NASH. Ratified canonically on 2026-05-18 alongside the Pierre 2017 morphine extraction.
+
+### HEPIMP_MOD (**canonical for moderate hepatic impairment indicator**)
+- **Description:** 1 = moderate hepatic impairment, 0 = normal hepatic function or any other (non-moderate) category. The classification scheme that defines "moderate" is paper-specific and must be documented in per-model `covariateData[[HEPIMP_MOD]]$notes`. Two schemes are commonly encountered:
+  - **NCI ODWG group 3**: total bilirubin > 1.5-3 x ULN with any AST (Ramalingam SS et al., J Clin Oncol 2010;28:4507).
+  - **Child-Pugh Class B**: composite score 7-9 across bilirubin, albumin, INR, ascites, and encephalopathy.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (any non-moderate category: normal, mild, or severe; the model typically uses HEPIMP_MOD alongside HEPIMP_MILD and/or HEPIMP_SEV to partition the non-moderate pool further).
+- **Source aliases:**
+  - `HEP2` -- used in `Desai_2016_isavuconazole.R` (paper's liver-function index HEP2 for moderate Child-Pugh B; same orientation as the canonical).
+- **Example models:** `Desai_2016_isavuconazole.R` (Child-Pugh Class B; log-additive shift `e_hepimp_mod_cl = log(1.326 / 2.54) = -0.650` on CL and `e_hepimp_mod_q = log(63.554 / 33.678) = +0.635` on Q vs the healthy reference, paired with `HEPIMP_MILD` for the parallel Child-Pugh A stratum; encodes the paper's three-typical-value form `CL = theta_g * exp(eta_jCL)` as a healthy-reference baseline plus group-specific log shifts).
+- **Notes:** Use this column when a model dichotomizes moderate hepatic impairment as a separate indicator from milder or more-severe categories. The classification scheme (NCI ODWG vs Child-Pugh vs other) is paper-specific and must be documented per-model. Companion to `HEPIMP_MILD` (mild only) and `HEPIMP_SEV` (severe only). Distinct from `HEPIMP_MOD_MISSING` (pools moderate cases with missing-data cases) and `HEPIMP_MODSEV` (pools moderate with severe). Anticipated by the `HEPIMP_MILD` entry's Notes: "For models that test moderate or severe as separate categories, register additional canonicals HEPIMP_MOD / HEPIMP_SEV rather than overloading this entry." HEPIMP_SEV was registered separately; HEPIMP_MOD completes the parallel.
 
 ### HEPIMP_SEV (**canonical for severe hepatic impairment indicator**)
 - **Description:** 1 = severe hepatic impairment, 0 = normal hepatic function or less-than-severe category. The classification scheme that defines "severe" is paper-specific and must be documented in per-model `covariateData[[HEPIMP_SEV]]$notes`. Two schemes are commonly encountered:

@@ -410,6 +410,8 @@ navbar:
         href: articles/Brillac_2025_isatuximab.html
       - text: "Isatuximab (Fau 2020)"
         href: articles/Fau_2020_isatuximab.html
+      - text: "Isavuconazole (Desai 2016)"
+        href: articles/Desai_2016_isavuconazole.html
       - text: "Isoniazid (Horita 2018)"
         href: articles/Horita_2018_isoniazid.html
       - text: "Itraconazole (Hennig 2006)"
@@ -1214,6 +1216,7 @@ articles:
   - articles/Delattre_2010_amikacin
   - articles/Delor_2013_alzheimer
   - articles/Denti_2018_levofloxacin
+  - articles/Desai_2016_isavuconazole
   - articles/Diao_2014_rFIXFc
   - articles/Diao_2016_daclizumab_cd25
   - articles/Diao_2016_daclizumab_cd56bright

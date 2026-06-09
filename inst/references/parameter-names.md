@@ -171,6 +171,30 @@ The `l<base>` convention denotes a population mean estimated on the log scale (`
 - **Source aliases:** none.
 - **Example models:** `Campagne_2019_cyclophosphamide_mouse.R`.
 
+### lkamax (**canonical log-transformed Weibull-absorption asymptotic maximum rate constant**)
+- **Type:** log-transformed-pk
+- **Role:** Log of the maximum / asymptotic first-order absorption rate constant in a Piotrovskij-style time-dependent (Weibull) absorption model `ka(t) = kamax * (1 - exp(-(ra * tad)^gam1))` (1 / time). The bare counterpart inside `model()` is `kamax`.
+- **Source aliases:**
+  - `KAMAX` -- NONMEM `$THETA` convention used in NONMEM 7-era Weibull-absorption control streams.
+- **Example models:** `Desai_2016_isavuconazole.R` (founding example).
+- **Notes:** Distinct from `lka` (the single first-order rate constant of the simple zero-shape absorption model). Used together with `lra` and `lgam1` to parameterize Weibull / Piotrovskij time-dependent absorption. Ratified canonically alongside the Desai 2016 isavuconazole extraction.
+
+### lra (**canonical log-transformed Weibull-absorption rate-scaling parameter**)
+- **Type:** log-transformed-pk
+- **Role:** Log of the rate-scaling parameter inside a Piotrovskij-style Weibull time-dependent ka (1 / time). The product `(ra * tad)^gam1` drives the time-dependence of ka; larger `ra` shifts the ka rise earlier. The bare counterpart inside `model()` is `ra`.
+- **Source aliases:**
+  - `RA` -- NONMEM `$THETA` convention used in Weibull-absorption control streams.
+- **Example models:** `Desai_2016_isavuconazole.R` (founding example).
+- **Notes:** Distinct from `lka` (simple first-order absorption) and from any infusion-rate parameter. Used together with `lkamax` and `lgam1`. Ratified canonically alongside the Desai 2016 isavuconazole extraction.
+
+### lgam1 (**canonical log-transformed Weibull-absorption shape parameter**)
+- **Type:** log-transformed-pk
+- **Role:** Log of the unitless Weibull shape (sigmoidicity) parameter inside a Piotrovskij-style time-dependent ka. Larger values make the ka rise more abruptly; `gam1 = 1` reduces the Weibull form to a simple saturating exponential. The bare counterpart inside `model()` is `gam1`.
+- **Source aliases:**
+  - `GAM1` / `GAMMA1` -- NONMEM `$THETA` convention used in Weibull-absorption control streams.
+- **Example models:** `Desai_2016_isavuconazole.R` (founding example).
+- **Notes:** Distinct from `lhill` (sigmoidal Emax / Imax exponent) and from `lgamma` (Friberg myelosuppression feedback / TGI growth exponents). The `gam1` suffix follows the NONMEM convention for Weibull-absorption sigmoidicity. Ratified canonically alongside the Desai 2016 isavuconazole extraction.
+
 ---
 
 ## Bare structural PK parameters
@@ -316,6 +340,27 @@ The bare counterparts of the log-transformed parameters above. Used when the sou
 - **Role:** Bare counterpart of `lclef`. Efflux clearance from a tissue ECF compartment back to plasma central.
 - **Source aliases:** none.
 - **Example models:** `Campagne_2019_cyclophosphamide_mouse.R`.
+
+### kamax (**canonical bare Weibull-absorption asymptotic maximum rate constant**)
+- **Type:** bare-pk
+- **Role:** Bare counterpart of `lkamax`. Maximum / asymptotic first-order absorption rate constant in a Piotrovskij-style time-dependent (Weibull) absorption model (1 / time).
+- **Source aliases:**
+  - `KAMAX` -- NONMEM convention.
+- **Example models:** `Desai_2016_isavuconazole.R` (founding example).
+
+### ra (**canonical bare Weibull-absorption rate-scaling parameter**)
+- **Type:** bare-pk
+- **Role:** Bare counterpart of `lra`. Rate-scaling parameter inside a Piotrovskij-style Weibull time-dependent ka (1 / time).
+- **Source aliases:**
+  - `RA` -- NONMEM convention.
+- **Example models:** `Desai_2016_isavuconazole.R` (founding example).
+
+### gam1 (**canonical bare Weibull-absorption shape parameter**)
+- **Type:** bare-pk
+- **Role:** Bare counterpart of `lgam1`. Unitless Weibull shape (sigmoidicity) parameter inside a Piotrovskij-style time-dependent ka.
+- **Source aliases:**
+  - `GAM1` / `GAMMA1` -- NONMEM convention.
+- **Example models:** `Desai_2016_isavuconazole.R` (founding example).
 
 ---
 
