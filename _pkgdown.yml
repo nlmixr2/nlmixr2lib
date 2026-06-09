@@ -534,10 +534,8 @@ navbar:
         href: articles/Koloskoff_2025_ganciclovir.html
       - text: "Gantenerumab (Grimm 2023)"
         href: articles/Grimm_2023.html
-      - text: "Gatifloxacin (Smythe 2013)"
-        href: articles/Smythe_2013_gatifloxacin.html
-      - text: "Gentamicin (Bijleveld 2017)"
-        href: articles/Bijleveld_2017_gentamicin.html
+      - text: "Garenoxacin (VanWart 2004)"
+        href: articles/VanWart_2004_garenoxacin.html
       - text: "Gentamicin (Hodiamont 2017)"
         href: articles/Hodiamont_2017_gentamicin.html
       - text: "Gentamicin (Llanos 2017)"
@@ -2180,14 +2178,7 @@ articles:
   - articles/Valenzuela_2025_nipocalimab
   - articles/Valitalo_2017_ketorolac
   - articles/Valitalo_2017_morphine
-  - articles/Valle_2005_exemestane
-  - articles/vanderWalt_2013_dapagliflozin
-  - articles/vanHasselt_2015_eribulin
-  - articles/vanRongen_2016_acetaminophen
-  - articles/vanRongen_2017_midazolam
-  - articles/vanRongen_2018_metformin
-  - articles/vanRongen_2018_midazolam
-  - articles/vanWijk_2019_paracetamol
+  - articles/VanWart_2004_garenoxacin
   - articles/Varatharajan_2016_daunorubicin
   - articles/Vargo_2014_statins_ezetimibe_mbma
   - articles/VasquezBahena_2009_lumiracoxib_rat
