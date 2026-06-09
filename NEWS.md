@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Robarge 2017 efavirenz ([doi:10.1128/AAC.01813-16](https://doi.org/10.1128/AAC.01813-16)) -- HIV-seronegative adult volunteers after a single 600 mg oral dose; ratifies new `FM` (fat mass) covariate canonical paired with the existing `FFM`.
+* Add Areberg 2006 escitalopram ([doi:10.1208/aapsj080102](https://doi.org/10.1208/aapsj080102)) -- Caucasian adults with normal hepatic function or mild / moderate hepatic impairment (ratifies new continuous `CYP2C19` covariate canonical for probe-derived CYP2C19 activity proxies).
 * Add Padoin 1998 cephalexin ([doi:10.1128/aac.42.6.1463](https://doi.org/10.1128/aac.42.6.1463)) -- preclinical male Wistar rats with a cephalexin / quinapril oral coadministration DDI (ratifies new `CONMED_QPRL_ORAL` covariate canonical).
 * Add van Rongen 2018 metformin ([doi:10.1007/s40272-018-0293-1](https://doi.org/10.1007/s40272-018-0293-1)) -- overweight and obese Caucasian adolescents.
 * Add Tarning 2012 artemether and dihydroartemisinin ([doi:10.1186/1475-2875-11-293](https://doi.org/10.1186/1475-2875-11-293)) -- pregnant women with uncomplicated Plasmodium falciparum malaria in Uganda (joint parent + DHA popPK with zero-order dissolution and 6-compartment transit absorption).

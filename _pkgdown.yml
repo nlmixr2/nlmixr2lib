@@ -382,8 +382,8 @@ navbar:
         href: articles/Ogasawara_2020_durvalumab.html
       - text: "Efavirenz (Olagunju 2018)"
         href: articles/Olagunju_2018_efavirenz.html
-      - text: "Efavirenz (Robarge 2017)"
-        href: articles/Robarge_2017_efavirenz.html
+      - text: "EGF IFN chimera (DoldanMartelli 2013)"
+        href: articles/DoldanMartelli_2013_EGF_IFN_chimera.html
       - text: "Elotuzumab (Ide 2020)"
         href: articles/Ide_2020_elotuzumab.html
       - text: "Emfilermin (Goggin 2004)"
@@ -420,14 +420,8 @@ navbar:
         href: articles/Kawamura_2018_eribulin.html
       - text: "Eribulin (vanHasselt 2015)"
         href: articles/vanHasselt_2015_eribulin.html
-      - text: "Ertapenem (Lakota 2018)"
-        href: articles/Lakota_2018_ertapenem.html
-      - text: "Erythromycin (Nielsen 2011)"
-        href: articles/Nielsen_2011_antibacterial_efficacy.html
-      - text: "Esketamine (PerezRuixo 2020)"
-        href: articles/PerezRuixo_2020_esketamine.html
-      - text: "Etanercept (Fang 2010)"
-        href: articles/Fang_2010_etanercept.html
+      - text: "Escitalopram (Areberg 2006)"
+        href: articles/Areberg_2006_escitalopram.html
       - text: "Ethambutol (Horita 2018)"
         href: articles/Horita_2018_ethambutol.html
       - text: "Ethambutol (Jonsson 2011)"
@@ -1516,6 +1510,7 @@ articles:
   - articles/Archary_2018_lopinavir
   - articles/Archary_2019_abacavir
   - articles/Archary_2019_lamivudine
+  - articles/Areberg_2006_escitalopram
   - articles/Aregbe_2012_alvespimycin
   - articles/Attarwala_2023_mRNA3927
   - articles/Ayyar_2024_givosiran
