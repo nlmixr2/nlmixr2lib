@@ -15,8 +15,6 @@ updateOncologyXenograftSimeoni2004(
 )
 }
 \arguments{
-\item{object}{Fitted object or function specifying the model.}
-
 \item{ncmt}{The desired number of damaged cell compartments}
 
 \item{damagedCmtName, undamagedCmtName, tumorVolName}{character string names
