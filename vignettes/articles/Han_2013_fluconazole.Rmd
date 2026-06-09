@@ -1,0 +1,568 @@
+---
+title: "Fluconazole (Han 2013)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Fluconazole (Han 2013)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse   = TRUE,
+  comment    = "#>",
+  fig.width  = 7,
+  fig.height = 4.5
+)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+```{r meta}
+mod_meta <- nlmixr2est::nlmixr(readModelDb("Han_2013_fluconazole"))$meta
+```
+
+* Citation: `r mod_meta$reference`
+* Description: `r mod_meta$description`
+* Article (DOI): <https://doi.org/10.1128/AAC.01372-12>
+
+This vignette validates the packaged `Han_2013_fluconazole` model -- a
+one-compartment IV population PK model for fluconazole in 60 adult
+burn-ICU patients with suspected or confirmed Candida infection -- against
+the source publication's Figure 2 (steady-state VPC by 100, 200, and 400
+mg daily regimens) and Figure 3 (probability of fAUC/MIC target attainment
+across patient subtypes at 200 and 400 mg/day). The packaged model
+encodes the piecewise CL covariate structure of Han 2013 Table 3, in which
+a fixed CRRT-cohort CL (`theta3 = 1.85 L/h`) substitutes for the additive
+non-CRRT formula (`theta1 + (CLCR/120)*theta4 + TBI*theta7 + SEPS*theta9`)
+whenever `CRRT_STATUS = 1`, and an additive WT / edema / postburn-recency
+formula on V (`theta5*WT/65 + theta6*EDEM + theta8*TBI`) without the
+not-estimable `theta2` intercept.
+
+# Population
+
+Han 2013 enrolled 60 burn-ICU patients (50 male / 10 female) at Hangang
+Sacred Heart Hospital between December 2008 and May 2010, with burns
+ranging from 11 to 95 percent of total body surface area (mean TBSA
+50.3 percent). Patients were intravenously infused with 100-400 mg
+fluconazole over 10-40 minutes every 24 h for treatment of suspected
+(47/60) or confirmed (13/60) fungal infection, and PK sampling was
+performed at steady state after 5-17 days (mean 6.5 days) of fluconazole
+therapy. The cohort had mean age 50.3 years (range 20-82), mean weight
+65.6 kg (range 40-90 kg), mean Cockcroft-Gault creatinine clearance
+123.5 mL/min (range 21.6-282.7), and APACHE II score mean 7.6 (range
+2-26). Twenty-nine of 60 had clinically diagnosed sepsis, 20/60 had
+clinical edema (puffy face and pitting peripheral edema), 15/60 were on
+continuous renal replacement therapy, and mean time from burn injury to
+fluconazole administration was 23 days (range 7-88) (Han 2013 Table 1).
+
+The same information is available programmatically via the model's
+`population` metadata:
+
+```{r population}
+str(mod_meta$population)
+```
+
+# Source trace
+
+The per-parameter origin is recorded as an in-file comment next to each
+`ini()` entry in `inst/modeldb/specificDrugs/Han_2013_fluconazole.R`. The
+table below collects them in one place; all values come from Han 2013
+Table 3 (Final parameter estimates and bootstrap results).
+
+| Parameter / equation                                                                                  | Value                          | Source location                       |
+|-------------------------------------------------------------------------------------------------------|--------------------------------|---------------------------------------|
+| `lcl` (CL intercept, non-CRRT)                                                                        | `log(0.693)`                   | Table 3 row `theta1` = 0.693 L/h      |
+| `lcl_rrt` (CL on CRRT)                                                                                | `log(1.85)`                    | Table 3 row `theta3` = 1.85 L/h       |
+| `lvc` (V proportionality at WT = 65 kg)                                                               | `log(50.3)`                    | Table 3 row `theta5` = 50.3 L         |
+| `e_crcl_cl` (CL slope per CLCR/120)                                                                   | 0.557                          | Table 3 row `theta4` = 0.557 L/h      |
+| `e_dis_burn_recent_cl` (CL shift if within 30 postburn days)                                          | 0.504                          | Table 3 row `theta7` = 0.504 L/h      |
+| `e_dis_sepsis_cl` (CL shift if sepsis)                                                                | -0.369                         | Table 3 row `theta9` = -0.369 L/h     |
+| `e_dis_edema_vc` (V shift if edema)                                                                   | 13.6                           | Table 3 row `theta6` = 13.6 L         |
+| `e_dis_burn_recent_vc` (V shift if within 30 postburn days)                                           | 9.61                           | Table 3 row `theta8` = 9.61 L         |
+| `etalcl ~ 0.12000`                                                                                    | `log(0.357^2 + 1)`             | Table 3 row `omega1^2` BSV CL non-CRRT = 35.7 %CV |
+| `etalvc ~ 0.02983`                                                                                    | `log(0.174^2 + 1)`             | Table 3 row `omega2^2` BSV V = 17.4 %CV |
+| `etalcl_rrt ~ 0.02559`                                                                                | `log(0.161^2 + 1)`             | Table 3 row `omega3^2` BSV CL CRRT = 16.1 %CV |
+| `propSd <- 0.3332`                                                                                    | `sqrt(0.111)`                  | Table 3 row `sigma1^2` = 0.111 (proportional variance) |
+| `cl_norrt <- (exp(lcl) + e_crcl_cl*(CRCL/120) + e_dis_burn_recent_cl*DIS_BURN_RECENT + e_dis_sepsis_cl*DIS_SEPSIS) * exp(etalcl)` | n/a | Table 3 caption: `CL = (1 - CRRT)*(theta1 + CLCR*theta4 + TBI*theta7 + SEPS*theta9) + CRRT*theta3`; Table 3 `theta4` description "Proportionality constant between CL and CLCR/120" fixes the (CLCR/120) normalisation. |
+| `cl_rrt <- exp(lcl_rrt) * exp(etalcl_rrt)`                                                            | n/a                            | Table 3 caption: `+ CRRT*theta3`      |
+| `cl <- (1 - CRRT_STATUS)*cl_norrt + CRRT_STATUS*cl_rrt`                                               | n/a                            | Table 3 caption                       |
+| `vc <- ((WT/65)*exp(lvc) + e_dis_edema_vc*DIS_EDEMA + e_dis_burn_recent_vc*DIS_BURN_RECENT) * exp(etalvc)` | n/a                       | Table 3 caption: `V = theta2 + (WT/65)*theta5 + EDEM*theta6 + TBI*theta8`; Table 3 footnote b: theta2 "not successfully estimated" -> dropped |
+| `d/dt(central) <- -kel*central`                                                                       | n/a                            | Han 2013 Results, "one-compartment first-order elimination model" |
+| `Cc ~ prop(propSd)`                                                                                   | n/a                            | Han 2013 Results, "proportional residual error was chosen as the base PK model" |
+
+The discussion paragraph below Table 3 provides two structural-model
+sanity values that the encoded equations must reproduce:
+
+* "When a patient was in hypermetabolic status with a CLCR of 120, the
+  typical value of CL was expected to be 1.75 liters/h (sum of theta1,
+  theta4, and theta7)." At CRRT = 0, CLCR = 120, TBI = 1, SEPS = 0:
+  `CL = 0.693 + 0.557*1 + 0.504*1 + 0 = 1.754 L/h`. Matches.
+* "For a patient within 30 days after injury, weighing 65 kg, the typical
+  value of V was estimated to be 59.9 liters (sum of theta5 and theta8)
+  when the patient had no edema." At WT = 65, EDEM = 0, TBI = 1:
+  `V = (65/65)*50.3 + 0 + 9.61 = 59.91 L`. Matches.
+
+# Virtual cohort
+
+Original observed concentrations are not publicly available. The cohort
+below reproduces the steady-state VPC design described in Han 2013
+Methods (1,000 virtual patients with the covariate composition of the
+original data set; concentrations simulated at the seven sampling time
+points 3, 5, 9, 24, 27, 48, and 51 h after the start of infusion). The
+vignette uses n = 200 per dose regimen (reduced from 1,000 to stay
+inside the 5-minute pkgdown render budget; the median, 5th, and 95th
+percentiles remain stable). The covariate composition is sampled to match
+the Han 2013 Table 1 marginal distributions: CRRT 25%, sepsis 48%, edema
+33%, recent-postburn (< 30 days) approximately 65% (consistent with mean
+postburn time 23 days and majority of subjects in the acute hypermetabolic
+window), weight log-normally distributed around mean 65.6 kg, and CLCR
+log-normally distributed around mean 123.5 mL/min (truncated at the Table 1
+range 21.6-282.7).
+
+```{r cohort}
+set.seed(20260609)
+
+n_per_dose <- 200L
+dose_levels <- c(100, 200, 400)    # mg q24h
+infusion_min <- 25                 # minutes (Han 2013 Methods: 10-40 min, midpoint 25 min)
+infusion_h <- infusion_min / 60
+n_doses    <- 7L                   # 7 days q24h to reach steady state
+tau_h      <- 24
+
+# Sampling schedule matches Han 2013 Methods: 0, 3, 5, 9, 24, 27, 48, 51 h
+# relative to the start of an arbitrary dosing interval at steady state.
+# We pick the final 48 h window (interval (n_doses-1) and (n_doses)) so the
+# trough at 48 h lands cleanly between two doses for SS interval comparison.
+last_dose_time <- (n_doses - 1) * tau_h                 # 144 h
+ss_window_start <- last_dose_time - tau_h               # 120 h (start of penultimate interval)
+han_sample_offsets <- c(0, 3, 5, 9, 24, 27, 48, 51)     # h within penultimate interval
+ss_sample_times <- ss_window_start + han_sample_offsets
+
+# A denser grid for visual VPC overlay (covers two full intervals after
+# steady state).
+plot_sample_times <- seq(ss_window_start, ss_window_start + 51, by = 0.5)
+
+sample_times <- sort(unique(c(ss_sample_times, plot_sample_times)))
+
+# Helper draws one virtual cohort matched to Han 2013 Table 1 marginals.
+draw_covariates <- function(n, id_offset = 0L) {
+  # WT: truncated log-normal around the Table 1 mean 65.6 kg
+  wt <- pmin(pmax(rlnorm(n, log(65.6) - 0.5 * 0.15^2, 0.15), 40), 90)
+  # CLCR: truncated log-normal around the Table 1 mean 123.5 mL/min
+  crcl <- pmin(pmax(rlnorm(n, log(123.5) - 0.5 * 0.45^2, 0.45),
+                    21.6), 282.7)
+  # Binary covariates per Table 1 marginal prevalences
+  sepsis <- rbinom(n, 1, 29 / 60)
+  edema  <- rbinom(n, 1, 20 / 60)
+  crrt   <- rbinom(n, 1, 15 / 60)
+  burn_recent <- rbinom(n, 1, 0.65)  # see Assumptions section
+  data.frame(
+    id              = id_offset + seq_len(n),
+    WT              = wt,
+    CRCL            = crcl,
+    CRRT_STATUS     = crrt,
+    DIS_SEPSIS      = sepsis,
+    DIS_EDEMA       = edema,
+    DIS_BURN_RECENT = burn_recent
+  )
+}
+
+make_cohort <- function(dose_mg, id_offset) {
+  covs <- draw_covariates(n = n_per_dose, id_offset = id_offset)
+  dose_rows <- data.frame(
+    id   = rep(covs$id, each = n_doses),
+    time = rep(seq(0, by = tau_h, length.out = n_doses), times = n_per_dose),
+    evid = 1L,
+    amt  = dose_mg,
+    rate = dose_mg / infusion_h,
+    dv   = NA_real_
+  )
+  obs_rows <- data.frame(
+    id   = rep(covs$id, each = length(sample_times)),
+    time = rep(sample_times, times = n_per_dose),
+    evid = 0L,
+    amt  = NA_real_,
+    rate = NA_real_,
+    dv   = NA_real_
+  )
+  out <- rbind(dose_rows, obs_rows)
+  out <- merge(out, covs, by = "id", all.x = TRUE)
+  out$cohort  <- sprintf("%s mg q24h", dose_mg)
+  out$dose_mg <- dose_mg
+  out[order(out$id, out$time, -out$evid), ]
+}
+
+events_list <- vector("list", length(dose_levels))
+for (i in seq_along(dose_levels)) {
+  events_list[[i]] <- make_cohort(
+    dose_mg   = dose_levels[i],
+    id_offset = (i - 1L) * n_per_dose
+  )
+}
+events <- dplyr::bind_rows(events_list)
+
+stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
+```
+
+# Simulation
+
+```{r simulate}
+mod <- readModelDb("Han_2013_fluconazole")
+
+sim <- rxode2::rxSolve(
+  object = mod, events = events,
+  keep   = c("cohort", "dose_mg", "WT", "CRCL", "CRRT_STATUS",
+             "DIS_SEPSIS", "DIS_EDEMA", "DIS_BURN_RECENT")
+) |>
+  as.data.frame()
+```
+
+# Replicate published figures
+
+## Figure 2 -- steady-state VPC by daily dose regimen
+
+Han 2013 Figure 2 plots simulated 90% confidence intervals (5th-95th
+percentiles) of fluconazole plasma concentrations grouped by the 100,
+200, and 400 mg/day dosing regimens, with concentrations on a log scale.
+The figure shows a single 48-h steady-state window. The vignette
+reproduces the per-dose VPC ribbons and median curve at the matching
+sampling time points.
+
+```{r figure-2}
+ss_vpc <- sim |>
+  dplyr::filter(time %in% plot_sample_times) |>
+  dplyr::mutate(time_h_in_ss_window = time - ss_window_start)
+
+ss_summary <- ss_vpc |>
+  dplyr::group_by(dose_mg, cohort, time_h_in_ss_window) |>
+  dplyr::summarise(
+    p05 = quantile(Cc, 0.05, na.rm = TRUE),
+    p50 = quantile(Cc, 0.50, na.rm = TRUE),
+    p95 = quantile(Cc, 0.95, na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  dplyr::mutate(
+    cohort = factor(cohort,
+                    levels = sprintf("%s mg q24h", dose_levels))
+  )
+
+ggplot(ss_summary,
+       aes(time_h_in_ss_window, p50, group = cohort)) +
+  geom_ribbon(aes(ymin = p05, ymax = p95), fill = "steelblue", alpha = 0.25) +
+  geom_line(linewidth = 0.7, colour = "steelblue") +
+  facet_wrap(~ cohort) +
+  scale_y_log10() +
+  labs(
+    x        = "Time within steady-state window (h)",
+    y        = "Fluconazole plasma concentration (ug/mL, log scale)",
+    title    = "Figure 2 -- steady-state VPC by daily dose",
+    subtitle = paste0("Replicates Han 2013 Figure 2 (100, 200, 400 mg/day); ",
+                      "n = ", n_per_dose, " per dose; ",
+                      "median (line) and 5th-95th percentile (ribbon).")
+  ) +
+  theme_minimal()
+```
+
+## Figure 3 -- probability of fAUC/MIC target attainment
+
+Han 2013 Figure 3 plots the probability of target attainment (PTA) for
+fAUC/MIC targets of 25 (upper panels) and 50 (lower panels) versus MIC
+across patient subtypes that affect fluconazole CL (CRRT, sepsis, and
+burn-recency status). The fAUC is computed as 0.88 * AUC_ss because
+fluconazole is approximately 12% protein bound (Han 2013 Methods, citing
+EUCAST 2007 reference 14); AUC_ss = daily dose / CL because fluconazole
+PK is linear in the dose range studied. The replication below tabulates
+PTA at MIC = 0.5, 1, and 2 ug/mL for 200 and 400 mg/day at three
+patient profiles: CRRT, no-CRRT/sepsis/recent burn, and
+no-CRRT/no-sepsis/resolved (no recent burn). All profiles use the median
+CLCR (123.5 mL/min) and median WT (65 kg).
+
+```{r figure-3}
+# Per Han 2013 simulation: AUC_ss = daily_dose / CL at the typical-value level
+# is shifted by IIV via the standard exp(eta) on CL. For PTA simulation,
+# match the paper's approach: draw CL from the typical structural model under
+# each patient profile and compute AUC = daily_dose / CL_i for each draw.
+
+draw_cl <- function(n, profile, dose_mg) {
+  # profile is a list with WT, CRCL, CRRT_STATUS, DIS_SEPSIS, DIS_EDEMA, DIS_BURN_RECENT
+  if (profile$CRRT_STATUS == 1L) {
+    eta <- rnorm(n, 0, sqrt(0.02559))
+    cl_typ <- 1.85
+  } else {
+    eta <- rnorm(n, 0, sqrt(0.12000))
+    cl_typ <- 0.693 +
+              0.557 * (profile$CRCL / 120) +
+              0.504 * profile$DIS_BURN_RECENT +
+              (-0.369) * profile$DIS_SEPSIS
+  }
+  cl_typ * exp(eta)
+}
+
+pta_one <- function(dose_mg, profile, target, mics, n_draws = 10000L) {
+  cl <- draw_cl(n_draws, profile, dose_mg)
+  auc <- dose_mg / cl                          # ug*h/mL = mg*h/L (since 1 mg/L = 1 ug/mL)
+  fauc <- 0.88 * auc                           # 12% protein binding -> 88% free
+  sapply(mics, function(m) mean(fauc / m >= target))
+}
+
+profiles <- list(
+  "CRRT (1g equivalent)" = list(
+    WT = 65, CRCL = 0, CRRT_STATUS = 1L,
+    DIS_SEPSIS = 0L, DIS_EDEMA = 0L, DIS_BURN_RECENT = 0L
+  ),
+  "non-CRRT, septic, recent burn" = list(
+    WT = 65, CRCL = 123.5, CRRT_STATUS = 0L,
+    DIS_SEPSIS = 1L, DIS_EDEMA = 0L, DIS_BURN_RECENT = 1L
+  ),
+  "non-CRRT, no sepsis, resolved" = list(
+    WT = 65, CRCL = 123.5, CRRT_STATUS = 0L,
+    DIS_SEPSIS = 0L, DIS_EDEMA = 0L, DIS_BURN_RECENT = 0L
+  )
+)
+
+mic_grid <- c(0.5, 1, 2)
+pta_grid <- expand.grid(
+  profile = names(profiles),
+  dose_mg = c(200, 400),
+  target  = c(25, 50),
+  stringsAsFactors = FALSE
+)
+
+pta_rows <- vector("list", nrow(pta_grid))
+for (i in seq_len(nrow(pta_grid))) {
+  row <- pta_grid[i, ]
+  vals <- pta_one(
+    dose_mg = row$dose_mg,
+    profile = profiles[[row$profile]],
+    target  = row$target,
+    mics    = mic_grid
+  )
+  pta_rows[[i]] <- data.frame(
+    profile = row$profile,
+    dose_mg = row$dose_mg,
+    target  = row$target,
+    mic     = mic_grid,
+    pta     = round(vals, 3)
+  )
+}
+pta_long <- dplyr::bind_rows(pta_rows)
+
+pta_wide <- pta_long |>
+  tidyr::pivot_wider(
+    names_from  = mic,
+    values_from = pta,
+    names_glue  = "PTA at MIC = {mic} ug/mL"
+  ) |>
+  dplyr::arrange(profile, target, dose_mg)
+
+knitr::kable(
+  pta_wide,
+  caption = paste0("Probability of fAUC/MIC target attainment (PTA) ",
+                   "for fluconazole 200 and 400 mg/day across three ",
+                   "patient profiles, computed from 10,000 Monte-Carlo ",
+                   "draws of CL under the Han 2013 covariate model. ",
+                   "Compare against Han 2013 Figure 3.")
+)
+```
+
+Han 2013 Figure 3 reports near-100 % PTA for 400 mg/day at a target of
+25 across all profiles when MIC <= 2 ug/mL, and shows the CRRT / recent-
+burn profiles producing markedly lower PTA at the higher target (50)
+because their CL is higher. The simulated table reproduces this
+qualitative pattern: the recent-burn / non-CRRT / septic profile and the
+CRRT profile have lower PTA than the resolved-phase reference at the
+stricter target of 50.
+
+# PKNCA validation
+
+PKNCA computes the steady-state AUC0-tau on the penultimate dosing
+interval (`ss_window_start` to `ss_window_start + tau_h`) across the
+three dose regimens. The treatment grouping in the formula is the
+`cohort` label so per-dose Cmax, Cmin, Cavg, and AUC0-tau are summarised
+together.
+
+```{r pknca}
+pk_conc <- sim |>
+  dplyr::filter(time >= ss_window_start, time <= ss_window_start + tau_h,
+                !is.na(Cc), Cc > 0) |>
+  dplyr::select(id, time, Cc, cohort)
+
+pk_dose <- events |>
+  dplyr::filter(evid == 1L,
+                time >= ss_window_start, time < ss_window_start + tau_h) |>
+  dplyr::select(id, time, amt, cohort)
+
+conc_obj <- PKNCA::PKNCAconc(
+  data    = pk_conc,
+  formula = Cc ~ time | cohort + id,
+  concu   = "ug/mL",
+  timeu   = "hr"
+)
+dose_obj <- PKNCA::PKNCAdose(
+  data    = pk_dose,
+  formula = amt ~ time | cohort + id,
+  doseu   = "mg"
+)
+
+intervals <- data.frame(
+  start   = ss_window_start,
+  end     = ss_window_start + tau_h,
+  cmax    = TRUE,
+  tmax    = TRUE,
+  cmin    = TRUE,
+  cav     = TRUE,
+  auclast = TRUE
+)
+
+nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
+nca_res  <- suppressWarnings(PKNCA::pk.nca(nca_data))
+
+knitr::kable(
+  summary(nca_res),
+  caption = paste0("Steady-state NCA parameters (Cmax,ss, Cmin,ss, ",
+                   "Cavg,ss, AUC0-tau,ss) by dose regimen at ",
+                   "the penultimate dosing interval; n = ",
+                   n_per_dose, " per regimen.")
+)
+```
+
+## Comparison against derived AUC_ss
+
+Han 2013 did not publish an NCA table directly. The Methods section,
+however, states that the simulated 24-h steady-state AUC was computed as
+`daily_dose / CL` because fluconazole shows linear PK in the dose range
+studied. For the resolved-phase typical patient (CRRT = 0, CLCR = 120,
+TBI = 0, SEPS = 0), `CL = 0.693 + 0.557 = 1.25 L/h` (Han 2013 Discussion
+explicit value), so:
+
+| Daily dose | Expected AUC_ss (mg*h/L = ug*h/mL) |
+|------------|-------------------------------------|
+| 100 mg     | 100 / 1.25 = 80                     |
+| 200 mg     | 200 / 1.25 = 160                    |
+| 400 mg     | 400 / 1.25 = 320                    |
+
+These expected AUC_ss values are the typical-value reference; the
+simulated PKNCA AUC0-tau median should be close to the expected value at
+the resolved-phase typical patient. The simulated medians above include
+the full cohort with CRRT (CL = 1.85, AUC reduced by 1.25/1.85), recent
+burn (CL increased), and sepsis (CL decreased) variation, so the cohort
+median AUC0-tau will be slightly below the resolved-phase typical-patient
+value of 80 / 160 / 320 ug*h/mL.
+
+# Assumptions and deviations
+
+- **`theta2` (V intercept) dropped per Han 2013 Table 3 footnote b.** The
+  Table 3 row for `theta2` records "NE" (not estimated) with the footnote
+  "In the final model, when the covariates were fully included, the
+  slope of the proportional relationship (theta2) was not successfully
+  estimated." The packaged model encodes the V equation as
+  `V = (WT/65)*exp(lvc) + e_dis_edema_vc*EDEM + e_dis_burn_recent_vc*TBI`
+  with `theta2 = 0`, consistent with the Han 2013 Discussion line "For a
+  patient within 30 days after injury, weighing 65 kg, the typical value
+  of V was estimated to be 59.9 liters (sum of theta5 and theta8)" --
+  no theta2 contribution is included in the published reference value.
+
+- **CLCR normalisation factor 120 mL/min from Han 2013 Table 3 parameter
+  description.** Han 2013 Table 2 writes the model-development equations
+  as `CL_RENAL = (theta1 + CLCR * theta4) * exp(eta1)` (CLCR as bare
+  mL/min), but Han 2013 Table 3 describes `theta4` as the "Proportionality
+  constant between CL and CLCR/120" and Han 2013 Discussion reports that
+  at CLCR = 120 the CL contribution from this term equals `theta4` = 0.557
+  L/h (which is consistent only if `(CLCR/120) * theta4` is used, not
+  `CLCR * theta4`). The packaged model uses the Table 3 / Discussion
+  form `(CLCR / 120) * theta4`; the Table 2 form appears to be a
+  typographical contraction of the normalised version.
+
+- **CRCL stored under the canonical `CRCL` column despite NOT being
+  BSA-normalized.** Han 2013 uses raw Cockcroft-Gault CrCL (mL/min, not
+  BSA-normalized). Following the precedent of `Delattre_2010_amikacin.R`
+  and `Shekar_2014_meropenem.R`, the model stores the source `CLCR`
+  column under `CRCL`, with the raw / non-BSA-normalized status documented
+  in the per-model `covariateData[[CRCL]]$units` and `notes` fields. Do
+  not compare the magnitude of `e_crcl_cl = 0.557` against BSA-normalized
+  reference values listed in the canonical entry -- the units differ.
+
+- **Three new canonical covariates ratified alongside this extraction.**
+  `DIS_SEPSIS`, `DIS_EDEMA`, and `DIS_BURN_RECENT` are added to
+  `inst/references/covariate-columns.md`. The Han 2013 source column
+  names `SEPS`, `EDEM`, and `TBI` are recorded as aliases in each
+  respective entry. The `TBI` alias carries an explicit note that this
+  Han 2013 column does NOT denote traumatic brain injury -- it is a
+  recoded binary indicator at the 30-day postburn threshold.
+
+- **Conditional IIV split by CRRT status; `etalcl_rrt` declared as
+  paper-specific.** Han 2013 reports two distinct CL BSV estimates
+  (omega1^2 = 35.7 %CV for the non-RRT arm, omega3^2 = 16.1 %CV for the
+  RRT arm). The packaged model encodes this by pairing each arm with its
+  own multiplicative eta (`etalcl` for non-RRT, `etalcl_rrt` for RRT).
+  `etalcl_rrt` is declared in `paper_specific_etas` at the top of the
+  model function because the conditional-IIV split-by-CRRT structure
+  does not match the 1-to-1 eta-to-lparam pairing rule enforced by
+  `checkModelConventions()`. The non-applicable arm's eta evaluates with
+  the indicator-zeroed multiplier in `model()`, so each subject's
+  per-time-point CL only carries the IIV from the arm matching their
+  CRRT status.
+
+- **Additive covariate model implemented in linear space.** Han 2013
+  reports `CL = theta1 + ...` and `V = theta5*WT/65 + ...` as additive
+  formulas, not multiplicative. The packaged model preserves the
+  additive structure by computing the linear sum first and then
+  multiplying by `exp(eta)`; the structural log-transformed `lcl`,
+  `lcl_rrt`, and `lvc` are back-transformed via `exp(...)` inside
+  `model()` so only positive intercepts enter the additive sum. The
+  additive covariate coefficients (`e_crcl_cl`, `e_dis_burn_recent_cl`,
+  `e_dis_sepsis_cl`, `e_dis_edema_vc`, `e_dis_burn_recent_vc`) are kept
+  in linear space because they can take negative values (the sepsis
+  coefficient is -0.369 L/h).
+
+- **`propSd <- sqrt(0.111) = 0.3332` not `0.111`.** Han 2013 Table 3
+  reports the proportional residual error as `sigma1^2 = 0.111`, the
+  NONMEM `$SIGMA` value (variance on the proportional residual scale,
+  not SD). For nlmixr2's `Cc ~ prop(propSd)` the `propSd` argument is
+  the SD of the proportional residual, so `propSd = sqrt(0.111) = 0.3332`.
+
+- **Recent-postburn (`DIS_BURN_RECENT = 1`) prevalence in the virtual
+  cohort set to ~65 %.** Han 2013 Table 1 reports the mean time from burn
+  injury was 23 days (range 7-88), which places the majority of the
+  cohort in the acute hypermetabolic window (within 30 days), but the
+  paper does not tabulate the exact `TBI` prevalence. The vignette uses
+  65 % as a reasonable approximation (the mean of 23 days suggests well
+  over half the cohort had time from burn injury < 30 days); changing
+  this rate affects only the marginal cohort statistics in Figure 2,
+  not the per-subject typical-value predictions, and not the PTA table
+  (which fixes the patient profile rather than sampling it).
+
+- **Infusion duration set to 25 min (midpoint of Han 2013 Methods).**
+  Han 2013 Methods reports fluconazole was "intravenously infused with
+  100 to 400 mg of fluconazole for 10 to 40 min every 24 h"; the
+  vignette uses 25 min as the midpoint. The exact infusion duration
+  affects the very early time-course (Cmax shape during infusion) but
+  has negligible effect on AUC and on Cmin / Cavg / Ctau at steady
+  state, which are the quantities the validation focuses on.
+
+- **Steady state defined at 7 days of q24h dosing.** Han 2013 sampled
+  patients who had received 5-17 days (mean 6.5 days) of fluconazole
+  therapy at the start of PK sampling. The vignette uses 7 doses (7 days)
+  before sampling the penultimate interval at days 5-7; with the
+  typical-patient terminal half-life of ln(2) * 50.3 / 1.25 = 27.9 h,
+  steady state is reached within 5-6 days, so 7 days is sufficient.
+
+- **Race / ethnicity not modeled.** Han 2013 enrolled a single-centre
+  Korean cohort. The paper does not test race as a covariate; the model
+  does not include a race effect.
+
+- **No additive residual error in the final model.** Han 2013 Methods
+  describes the candidate residual-error structure as a combined additive
+  plus proportional model. Han 2013 Results section ("PK model")
+  states: "A one-compartment first-order elimination model with
+  proportional residual error was chosen as the base PK model." Only the
+  proportional component is reported in Table 3 (sigma1^2 = 0.111); no
+  additive sigma is reported. The packaged model uses
+  `Cc ~ prop(propSd)` (no additive component).

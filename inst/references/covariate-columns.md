@@ -2567,6 +2567,39 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Example models:** `Okada_2025_rocatinlimab.R` (multiplicative shift `1 - 0.372` on linear CL when 1; reference complement is the pooled atopic dermatitis + ulcerative colitis + healthy-volunteer cohort).
 - **Notes:** Used when a population PK model pools plaque-psoriasis patients with a non-psoriasis reference population and psoriasis disease status is retained as a covariate. Scope: specific because the disease-pooling reference category is paper-defined. Ratified canonically on 2026-04-27.
 
+### DIS_SEPSIS (**canonical for active-sepsis co-condition indicator**)
+- **Description:** 1 = active sepsis / septic syndrome at the start of (or during) the modeled PK interval, 0 = no sepsis. Time-fixed per subject for the typical popPK use-case (Han 2013), although time-varying use is permitted; document per-model in `covariateData[[DIS_SEPSIS]]$notes` whether the indicator is fixed at PK-sampling onset or updated dynamically over the observation period. Used as a binary co-condition indicator on PK parameters (clearance, volume) when a study population pools septic and non-septic subjects, typically in ICU / burn-ICU / critically ill cohorts.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no sepsis).
+- **Source aliases:**
+  - `SEPS` -- used in `Han_2013_fluconazole.R` (Han 2013 Methods / Table 1 covariate with values 0 = no sepsis, 1 = sepsis; same orientation as the canonical).
+- **Example models:** `Han_2013_fluconazole.R` (additive shift on the non-RRT CL arm: `CL_norrt = theta1 + (CLCR/120)*theta4 + TBI*theta7 + SEPS*theta9` with `theta9 = -0.369 L/h` -- septic patients have about 0.37 L/h lower CL in the non-RRT arm).
+- **Notes:** Distinct from chronic disease-state indicators (e.g., `DIS_UC`, `DIS_HAE`) -- sepsis is an acute / transient co-condition rather than a chronic indication label. Distinct from `CRP` / `IL6` / `SAPS_II`, which are biomarker / severity-score columns that may co-vary with clinical sepsis but are conceptually distinct from a binary clinical-sepsis diagnostic flag. Ratified canonically on 2026-06-09 alongside the Han 2013 fluconazole extraction.
+
+### DIS_EDEMA (**canonical for clinical edema presence indicator**)
+- **Description:** 1 = clinical edema present (typical clinical definition: puffy face and/or pitting peripheral edema), 0 = no clinical edema. Time-fixed per subject in the typical popPK use-case (Han 2013), although time-varying use is permitted; document per-model in `covariateData[[DIS_EDEMA]]$notes` whether the indicator is fixed at PK-sampling onset or updated dynamically. Used as a binary co-condition indicator on PK volume (most commonly) when third-space / extravascular fluid expansion is expected to alter drug distribution.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no clinical edema).
+- **Source aliases:**
+  - `EDEM` -- used in `Han_2013_fluconazole.R` (Han 2013 Methods / Table 1 covariate with values 0 = no edema, 1 = clinical edema by the paper's puffy-face and leg-pitting criterion; same orientation as the canonical).
+- **Example models:** `Han_2013_fluconazole.R` (additive shift on V: `V = (WT/65)*theta5 + EDEM*theta6 + TBI*theta8` with `theta6 = 13.6 L` -- edematous patients have about 13.6 L larger V).
+- **Notes:** Conceptually distinct from `DIS_HAE` (hereditary angioedema disease-state indicator) -- `DIS_EDEMA` is a generic clinical-sign flag (e.g., burn-related capillary leak, congestive heart failure, hypoalbuminemia) rather than a disease classification. Distinct from a continuous fluid-balance / weight-gain column. Ratified canonically on 2026-06-09 alongside the Han 2013 fluconazole extraction.
+
+### DIS_BURN_RECENT (**canonical for recent-postburn-injury hypermetabolic-phase indicator**)
+- **Description:** 1 = within the paper-defined recent-postburn window (i.e., the acute hypermetabolic phase shortly after burn injury), 0 = beyond the window. Time-varying within a subject is permitted as time since injury crosses the cutoff; in Han 2013 the cutoff is 30 days postburn (the hypermetabolic response is maximized between days 7-17 and substantially resolved by day 30; the binary recoding captures patients whose physiology is dominated by the hypermetabolic period). The exact recency threshold is paper-specific -- document the threshold in each model's `covariateData[[DIS_BURN_RECENT]]$notes`. Used as a piecewise covariate on PK parameters (CL and / or V) that change during the acute hypermetabolic phase.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (beyond the recent-postburn window; i.e., resolved hypermetabolic phase).
+- **Source aliases:**
+  - `TBI` -- used in `Han_2013_fluconazole.R` (Han 2013 Methods / Tables 2 and 3 covariate with values 1 = within 30 days of burn injury, 0 = at least 30 days postburn; same orientation as the canonical, with the recency threshold = 30 days documented per-model). NOTE: `TBI` in this register is a recoded binary covariate; it does NOT denote traumatic brain injury (the common medical abbreviation) and is NOT a continuous time-from-burn-injury value.
+- **Example models:** `Han_2013_fluconazole.R` (recency threshold = 30 days; additive shifts on both CL and V: `CL_norrt += TBI*theta7` with `theta7 = 0.504 L/h` and `V += TBI*theta8` with `theta8 = 9.61 L` -- recent-postburn patients have about 0.5 L/h higher CL and 9.6 L larger V relative to the resolved-phase reference).
+- **Notes:** Generalised binary recoding rather than a continuous time-from-burn-injury column. A future paper that uses a continuous days-from-burn-injury covariate (analogous to `TPP` for time-postpartum) would warrant its own canonical (suggested name: `POSTBURN_DAYS`); `DIS_BURN_RECENT` is reserved for binary phase indicators. The paper's source-column name `TBI` is preserved as a documented alias even though it collides with the medical abbreviation for traumatic brain injury -- this is the author's chosen column name and the canonical avoids the collision. Ratified canonically on 2026-06-09 alongside the Han 2013 fluconazole extraction.
+
 ### CARRAGEENAN (**canonical for intraplantar-carrageenan inflammatory-challenge indicator**)
 - **Description:** Binary indicator for intraplantar injection of carrageenan suspension as an experimental inflammatory / hyperalgesic challenge. 1 = subject received an intraplantar carrageenan injection at the start of the experiment (the carrageenan-induced peripheral inflammation / thermal-hyperalgesia paradigm); 0 = subject received an intraplantar saline injection (sham control). Time-fixed per subject within an experiment.
 - **Units:** (binary)
