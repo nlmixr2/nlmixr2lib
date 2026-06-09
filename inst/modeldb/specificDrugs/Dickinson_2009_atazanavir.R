@@ -5,12 +5,12 @@ Dickinson_2009_atazanavir <- function() {
   units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
-    AUC_RTV = list(
+    CONMED_RTV_AUC = list(
       description        = "Ritonavir AUC over the 0-24 h dosing interval (per-subject, time-fixed within an evaluated regimen)",
       units              = "mg*h/L",
       type               = "continuous",
       reference_category = NULL,
-      notes              = "Enters atazanavir CL/F via the power form CL = exp(lcl) * (AUC_RTV / 7.52)^e_aucrtv_cl, centred at the cohort median 7.52 mg*h/L (Dickinson 2009 Table 1 / Results page 1236). Computed by the source authors using non-compartmental methods (WinNonlin 5.2) on the ritonavir concentration-time data. Set per-subject; for simulation users without observed ritonavir AUC, the cohort median (7.52) reproduces typical-value behaviour. Healthy volunteers 7.36 mg*h/L (range 4.31-13.42); HIV-infected 7.59 mg*h/L (range 2.41-22.05); pooled 7.52 (2.41-22.05) per Table 1.",
+      notes              = "Enters atazanavir CL/F via the power form CL = exp(lcl) * (CONMED_RTV_AUC / 7.52)^e_aucrtv_cl, centred at the cohort median 7.52 mg*h/L (Dickinson 2009 Table 1 / Results page 1236). Computed by the source authors using non-compartmental methods (WinNonlin 5.2) on the ritonavir concentration-time data. Set per-subject; for simulation users without observed ritonavir AUC, the cohort median (7.52) reproduces typical-value behaviour. Healthy volunteers 7.36 mg*h/L (range 4.31-13.42); HIV-infected 7.59 mg*h/L (range 2.41-22.05); pooled 7.52 (2.41-22.05) per Table 1.",
       source_name        = "RTVAUC"
     )
   )
@@ -34,7 +34,7 @@ Dickinson_2009_atazanavir <- function() {
 
   ini({
     # Structural parameters from Dickinson 2009 Table 2 (final-model column).
-    lcl   <- log(7.7);  label("Apparent oral clearance at AUC_RTV = 7.52 mg*h/L (CL/F, L/h)")  # Table 2 final: CL/F = 7.7 L/h (RSE 5%)
+    lcl   <- log(7.7);  label("Apparent oral clearance at CONMED_RTV_AUC = 7.52 mg*h/L (CL/F, L/h)")  # Table 2 final: CL/F = 7.7 L/h (RSE 5%)
     lvc   <- log(103);  label("Apparent volume of distribution (V/F, L)")                      # Table 2 final: V/F = 103 L (RSE 13%)
     lka   <- log(3.4);  label("First-order absorption rate constant (ka, 1/h)")                # Table 2 final: ka = 3.4 1/h (RSE 34%)
     ltlag <- log(0.96); label("Absorption lag-time (Tlag, h)")                                 # Table 2 final: Lag-time = 0.96 h (RSE 1%)
@@ -58,7 +58,7 @@ Dickinson_2009_atazanavir <- function() {
 
   model({
     # Individual PK parameters
-    cl   <- exp(lcl + etalcl) * (AUC_RTV / 7.52)^e_aucrtv_cl
+    cl   <- exp(lcl + etalcl) * (CONMED_RTV_AUC / 7.52)^e_aucrtv_cl
     vc   <- exp(lvc + etalvc)
     ka   <- exp(lka + etalka)
     tlag <- exp(ltlag)

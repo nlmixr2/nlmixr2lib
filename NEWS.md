@@ -2,7 +2,8 @@
 
 # development version
 
-* Add Van Wart 2004 garenoxacin ([doi:10.1128/AAC.48.12.4766-4777.2004](https://doi.org/10.1128/AAC.48.12.4766-4777.2004)) -- adult outpatients with community-acquired respiratory tract infections (ratifies new `CONMED_PSEUDOEPHEDRINE` covariate canonical; promotes `IBW` to general scope).
+* Add Colombo 2006 atazanavir ([doi:10.1128/aac.00098-06](https://doi.org/10.1128/aac.00098-06)) -- HIV-1 infected adults on routine antiretroviral therapy (ratifies new `CONMED_RTV` binary covariate canonical and renames the previous `AUC_RTV` to `CONMED_RTV_AUC`).
+* Add Padoin 1998 cephalexin ([doi:10.1128/aac.42.6.1463](https://doi.org/10.1128/aac.42.6.1463)) -- preclinical male Wistar rats with a cephalexin / quinapril oral coadministration DDI (ratifies new `CONMED_QPRL_ORAL` covariate canonical).
 * Add van Rongen 2018 metformin ([doi:10.1007/s40272-018-0293-1](https://doi.org/10.1007/s40272-018-0293-1)) -- overweight and obese Caucasian adolescents.
 * Add Tarning 2012 artemether and dihydroartemisinin ([doi:10.1186/1475-2875-11-293](https://doi.org/10.1186/1475-2875-11-293)) -- pregnant women with uncomplicated Plasmodium falciparum malaria in Uganda (joint parent + DHA popPK with zero-order dissolution and 6-compartment transit absorption).
 * Add Lowe 2009 omalizumab ([doi:10.1111/j.1365-2125.2009.03401.x](https://doi.org/10.1111/j.1365-2125.2009.03401.x)) -- adults and adolescents (12-79 years) with severe persistent allergic asthma plus healthy atopic volunteers (mechanism-based binding popPK/PD for free omalizumab, free IgE, and the omalizumab-IgE complex; extends Hayashi 2007).
