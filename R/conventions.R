@@ -311,7 +311,13 @@
     # asunaprevir with `_asv` everywhere
     # (depot_asv, central_asv, peripheral1_asv, effect_asv, Cc_asv,
     # lka_asv, lcl_asv, etc.).
-    "asv"
+    "asv",
+    # CDB-4453, the active monodemethylated metabolite of telapristone
+    # (CDB-4124) formed by N-demethylation on the C-17 side chain. Used
+    # in the Morris 2011 parent (telapristone) + metabolite (CDB-4453)
+    # popPK model where the metabolite apparent volume V3/F is fixed
+    # to 1 L for identifiability (Morris 2011 doi:10.1208/s12248-011-9304-7).
+    "cdb4453"
   ),
   # Suffixes allowed for multi-component CL parameters. `_ss` denotes
   # the steady-state arm; `_time` the time-varying decay arm; `_renal`

@@ -850,6 +850,8 @@ navbar:
         href: articles/Catalan-Latorre_2018_taurine_rat.html
       - text: "Tefibazumab (Cao 2013)"
         href: articles/Cao_2013_tefibazumab.html
+      - text: "Telapristone (Morris 2011)"
+        href: articles/Morris_2011_telapristone.html
       - text: "Temozolomide (Mazzocco 2015)"
         href: articles/Mazzocco_2015_temozolomide.html
       - text: "Tenofovir emtricitabine (Chen 2016)"
@@ -1416,6 +1418,7 @@ articles:
   - articles/Moore_1999_lamivudine
   - articles/Moore_2016_vancomycin
   - articles/Morris_2011_artesunate
+  - articles/Morris_2011_telapristone
   - articles/Mould_2007_alemtuzumab
   - articles/Mukai_2019_mogamulizumab
   - articles/Mulyukov_2018_ranibizumab
