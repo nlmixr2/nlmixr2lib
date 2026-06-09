@@ -1,5 +1,5 @@
-Jonsson_2011_ethambutol <- function() {
-  description <- "Two-compartment population PK model for oral ethambutol in adult South African pulmonary tuberculosis patients (Jonsson 2011), with one transit compartment preceding first-order absorption, allometric scaling on clearance and volume terms (theory-based exponents on a 50 kg reference), an HIV-status effect on bioavailability, and 4-occasion inter-occasion variability on apparent oral clearance."
+Jonsson_2011_ethambutol_ddmore <- function() {
+  description <- "DDMoRE-source replicate of Jonsson_2011_ethambutol. Two-compartment population PK model for oral ethambutol in adult South African pulmonary tuberculosis patients (Jonsson 2011), with one transit compartment preceding first-order absorption, allometric scaling on clearance and volume terms (theory-based exponents on a 50 kg reference), an HIV-status effect on bioavailability, and 4-occasion inter-occasion variability on apparent oral clearance. Parameter values are taken from the DDMORE bundle Output_real_run32150.lst FINAL PARAMETER ESTIMATE block (DDMODEL00000220); see inst/modeldb/specificDrugs/Jonsson_2011_ethambutol.R for the publication-Table-2-sourced replicate."
   reference <- paste(
     "Jonsson S, Davidse A, Wilkins J, Van der Walt JS, Simonsson US,",
     "Karlsson MO, Smith P, McIlleron H. (2011). Population pharmacokinetics",
@@ -7,12 +7,14 @@ Jonsson_2011_ethambutol <- function() {
     "Antimicrob Agents Chemother 55(9):4230-7.",
     "doi:10.1128/AAC.00274-11.",
     "DDMORE Foundation Model Repository: DDMODEL00000220.",
+    "See modellib('Jonsson_2011_ethambutol') for the publication-Table-2-sourced",
+    "replicate of the same fit.",
     sep = " "
   )
-  vignette <- "Jonsson_2011_ethambutol"
+  vignette <- "Jonsson_2011_ethambutol_ddmore"
   units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
   ddmore_id    <- "DDMODEL00000220"
-  replicate_of <- NULL
+  replicate_of <- "inst/modeldb/specificDrugs/Jonsson_2011_ethambutol.R"
 
   covariateData <- list(
     WT = list(
@@ -71,16 +73,16 @@ Jonsson_2011_ethambutol <- function() {
 
     # Inter-individual variability (IIV). NONMEM `$OMEGA` diagonals (with V2, V3, Q
     # all `0 FIX` in the .mod, so no IIV is estimated on those parameters).
-    etalcl  ~ 0.0381  # OMEGA(1,1) FINAL = 3.81E-02 — IIV CL (log-normal variance)
-    etalka  ~ 0.153   # OMEGA(3,3) FINAL = 1.53E-01 — IIV Ka  (log-normal variance)
-    etalmtt ~ 0.862   # OMEGA(6,6) FINAL = 8.62E-01 — IIV MTT (log-normal variance)
+    etalcl  ~ 0.0381  # OMEGA(1,1) FINAL = 3.81E-02 -- IIV CL (log-normal variance)
+    etalka  ~ 0.153   # OMEGA(3,3) FINAL = 1.53E-01 -- IIV Ka  (log-normal variance)
+    etalmtt ~ 0.862   # OMEGA(6,6) FINAL = 8.62E-01 -- IIV MTT (log-normal variance)
 
     # Inter-occasion variability (IOV) on log-CL. Source `$OMEGA BLOCK(1)` followed by
     # three `BLOCK(1) SAME` re-uses the same single-element variance across the four
     # occasions; the FINAL estimate of that variance is OMEGA(7,7) = 1.27E-01. nlmixr2
     # has no `SAME` shortcut, so each occasion gets its own eta with the variance fixed
     # to the shared value after the first (matching the Xie_2019_agomelatine pattern).
-    etaiov_cl_1 ~ 0.127            # OMEGA(7,7)  FINAL = 1.27E-01 — estimated occasion-1 IOV variance
+    etaiov_cl_1 ~ 0.127            # OMEGA(7,7)  FINAL = 1.27E-01 -- estimated occasion-1 IOV variance
     etaiov_cl_2 ~ fix(0.127)       # OMEGA(8,8)  fixed equal to OMEGA(7,7) per `$OMEGA BLOCK(1) SAME`
     etaiov_cl_3 ~ fix(0.127)       # OMEGA(9,9)  fixed equal to OMEGA(7,7) per `$OMEGA BLOCK(1) SAME`
     etaiov_cl_4 ~ fix(0.127)       # OMEGA(10,10) fixed equal to OMEGA(7,7) per `$OMEGA BLOCK(1) SAME`
@@ -129,10 +131,10 @@ Jonsson_2011_ethambutol <- function() {
 
     # Bioavailability on the dosing (transit1) compartment. The .mod sets
     # F1 = 1 * FCOV with FCOV = 1 + THETA(9) on HIV-positive subjects (THETA(9) = -0.154
-    # → 15.4% lower bioavailability on HIV-positive); HIV-negative reference keeps F1 = 1.
+    # -> 15.4% lower bioavailability on HIV-positive); HIV-negative reference keeps F1 = 1.
     f(transit1) <- 1 + e_hiv_pos_f * HIV_POS
 
-    # Concentration in plasma. Dose units mg, Vc units L → Cc units mg/L (= ug/mL).
+    # Concentration in plasma. Dose units mg, Vc units L -> Cc units mg/L (= ug/mL).
     Cc <- central / vc
 
     # Combined proportional + additive residual error (default Pythagorean / combined2

@@ -2955,8 +2955,8 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Scope:** general
 - **Reference category:** 0 (HIV-negative).
 - **Source aliases:**
-  - `HIV` -- used in `Jonsson_2011_ethambutol.R` (DDMODEL00000220 NMTRAN `$INPUT` column with values 0 = HIV negative, 1 = HIV positive; same orientation as the canonical).
-- **Example models:** `Jonsson_2011_ethambutol.R` (multiplicative `1 + e_hiv_pos_f * HIV_POS` shift on bioavailability; HIV-positive patients exhibit a 15.5% reduction in ethambutol bioavailability versus HIV-negative reference).
+  - `HIV` -- used in `Jonsson_2011_ethambutol.R` (paper-Table-2 source; same orientation as the canonical) and `Jonsson_2011_ethambutol_ddmore.R` (DDMODEL00000220 NMTRAN `$INPUT` column with values 0 = HIV negative, 1 = HIV positive; same orientation as the canonical).
+- **Example models:** `Jonsson_2011_ethambutol.R` and `Jonsson_2011_ethambutol_ddmore.R` (multiplicative `1 + e_hiv_pos_f * HIV_POS` shift on bioavailability; HIV-positive patients exhibit a 15.4% reduction in ethambutol bioavailability versus HIV-negative reference).
 - **Notes:** Parallels the `_POS` suffix convention used by `ADA_POS`, `SARS_SEROPOS`, and other serostatus / antibody-positivity indicators. Distinct from a primary disease-state indicator like `DIS_HIV` (not yet registered) -- `HIV_POS` is a comorbidity flag in non-HIV-primary indications where HIV-vs-non-HIV is tested as a PK covariate. Ratified canonically on 2026-05-06.
 
 ### TB_POS (**canonical for active tuberculosis co-infection indicator**)
@@ -6021,8 +6021,8 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Scope:** general
 - **Reference category:** n/a -- `OCC` is decomposed inside `model()` into mutually-exclusive binary indicators, e.g., `oc1 <- (OCC == 1)`, `oc2 <- (OCC == 2)`, ..., that are then multiplied against per-occasion `eta*` slots.
 - **Source aliases:**
-  - `OCC` -- used in `Jonsson_2011_ethambutol.R` (DDMODEL00000220 NMTRAN `$INPUT` column; values 1..4).
-- **Example models:** `Jonsson_2011_ethambutol.R` (4-occasion IOV on log-CL; `cl <- exp(lcl + etalcl + oc1 * etalcl_oc1 + oc2 * etalcl_oc2 + oc3 * etalcl_oc3 + oc4 * etalcl_oc4) * (WT/50)^0.75`, where each `etalcl_oc<k>` is a separate `~ fix(0.127)` after the first to encode NONMEM `$OMEGA BLOCK(1) SAME`), `Aregbe_2012_alvespimycin.R` (5-occasion BOV on Q2 and V1), `Oosten_2016_fentanyl.R` (10-occasion IOV on transdermal Ka; only `OCC >= 1` records carry IOV, sc / non-transdermal records pass `OCC = 0` so all indicators zero out).
+  - `OCC` -- used in `Jonsson_2011_ethambutol.R` (paper-Table-2 source) and `Jonsson_2011_ethambutol_ddmore.R` (DDMODEL00000220 NMTRAN `$INPUT` column; values 1..4).
+- **Example models:** `Jonsson_2011_ethambutol.R` and `Jonsson_2011_ethambutol_ddmore.R` (4-occasion IOV on log-CL; `cl <- exp(lcl + etalcl + oc1 * etalcl_oc1 + oc2 * etalcl_oc2 + oc3 * etalcl_oc3 + oc4 * etalcl_oc4) * (WT/50)^0.75`, where each `etalcl_oc<k>` is a separate `~ fix(0.127)` after the first to encode NONMEM `$OMEGA BLOCK(1) SAME`), `Aregbe_2012_alvespimycin.R` (5-occasion BOV on Q2 and V1), `Oosten_2016_fentanyl.R` (10-occasion IOV on transdermal Ka; only `OCC >= 1` records carry IOV, sc / non-transdermal records pass `OCC = 0` so all indicators zero out).
 - **Notes:** `OCC` is the recommended canonical for new IOV-using models -- the binary `ooc1..oocN` indicators below remain canonical for legacy / pre-existing models that ship the data already-decomposed. Ratified canonically on 2026-05-06.
 
 ### ooc1, ooc2, ooc3, ooc4 (**canonical for mutually-exclusive crossover occasion indicators**)
