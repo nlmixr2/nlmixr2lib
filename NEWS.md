@@ -2,6 +2,7 @@
 
 # development version
 
+* Add Veinstein 2013 gentamicin ([doi:10.1128/AAC.01762-12](https://doi.org/10.1128/AAC.01762-12)) -- critically ill adult ICU patients on 4-h intermittent hemodialysis; ratifies new `lcl_hemodialysis` parameter canonical and renames the prior `DIAL` covariate canonical to `HEMODIALYSIS` (Liesenfeld 2013 dabigatran and Jacobs 2016 colistin updated to follow).
 * Add Berges 2007 enoxaparin ([doi:10.1111/j.1365-2125.2007.02920.x](https://doi.org/10.1111/j.1365-2125.2007.02920.x)) -- elderly inpatients (>75 years) on prophylactic subcutaneous enoxaparin 4000 IU once daily for VTE prophylaxis (PROPHRE.75 study).
 * Add Padoin 1998 cephalexin ([doi:10.1128/aac.42.6.1463](https://doi.org/10.1128/aac.42.6.1463)) -- preclinical male Wistar rats with a cephalexin / quinapril oral coadministration DDI (ratifies new `CONMED_QPRL_ORAL` covariate canonical).
 * Add van Rongen 2018 metformin ([doi:10.1007/s40272-018-0293-1](https://doi.org/10.1007/s40272-018-0293-1)) -- overweight and obese Caucasian adolescents.
