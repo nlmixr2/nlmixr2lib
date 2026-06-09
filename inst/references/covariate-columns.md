@@ -3822,15 +3822,15 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Notes:** Specific scope until a second cardiotoxicity or anthracycline-effect model legitimately reuses this indicator. The two indicators (`CONMED_DOXORUBICIN` and `CONMED_EPIRUBICIN`) are not mutually exclusive in principle (a subject receiving both anthracyclines could have both set to 1), but in practice the de Vries Schultink 2018 cohort assigned exactly one anthracycline per subject.
 
 ### CONMED_EFV (**canonical for concomitant efavirenz indicator**)
-- **Description:** 1 = subject is receiving efavirenz (EFV)-based antiretroviral therapy as the third agent in a combination ART regimen; 0 = subject is on the comparator regimen specified by the source paper (typically a protease-inhibitor-based regimen such as standard lopinavir/ritonavir 4:1). Efavirenz is a CYP3A and UGT inducer, so the indicator is used to flag PXR-mediated induction of metabolic clearance for co-administered antiretrovirals.
+- **Description:** 1 = subject has reached the post-induction equilibrium on concomitant efavirenz (EFV)-based therapy (typically receiving daily 600 mg oral EFV for at least the paper-specified onset lag); 0 = subject is not on EFV or is still within the pre-induction lag window. Efavirenz is a CYP3A and UGT inducer, so the indicator flags PXR-mediated induction of metabolic clearance for co-administered drugs.
 - **Units:** (binary)
 - **Type:** binary
-- **Scope:** specific
-- **Reference category:** 0 (non-EFV reference regimen, paper-defined; e.g., LPV/r 4:1 in Tikiso 2021).
+- **Scope:** general
+- **Reference category:** 0 (not on EFV; the comparator population is paper-defined and may be "no co-medication" in DDI-style studies, "LPV/r-based ART" or another ART regimen in ART-PK studies, etc.).
 - **Source aliases:**
   - `EFV` -- used in `Tikiso_2021_abacavir.R` (the dataset's paper-defined indicator, 1 = on EFV-based ART, 0 = on standard LPV/r 4:1).
-- **Example models:** `Tikiso_2021_abacavir.R` (multiplicative effect on apparent oral clearance: `cl *= (1 + 0.120 * CONMED_EFV)`; +12.0% relative to the LPV/r 4:1 reference).
-- **Notes:** Specific scope because the comparator regimen (LPV/r 4:1 in Tikiso 2021) is paper-defined; future ART population-PK models that test EFV-vs-other contrasts should extend the example list when the comparator matches, or register a finer-grained sibling indicator otherwise.
+- **Example models:** `Svensson_2013_bedaquiline.R` (multiplicative factor on apparent CL_BDQ and CL_M2: `cl_eff = cl_base * 2.07^CONMED_EFV` and on apparent CL_M3: `cl_eff = cl_base * 1.12^CONMED_EFV`; healthy-volunteer DDI study with no-co-medication reference and 1-week onset lag from start of 600 mg once-nightly EFV), `Tikiso_2021_abacavir.R` (multiplicative effect on apparent oral clearance: `cl *= (1 + 0.120 * CONMED_EFV)`; +12.0% relative to the LPV/r 4:1 reference in HIV-infected children on combination ART).
+- **Notes:** General scope: the canonical meaning is "is on EFV-based therapy at post-induction equilibrium" and this applies whether the comparator population is "no co-medication" (DDI studies like Svensson 2013) or "another ART regimen" (ART popPK studies like Tikiso 2021). Document the paper-specific comparator in each model's `covariateData[[CONMED_EFV]]$reference_category`. Onset-lag conventions: Svensson 2013 uses a 1-week lag from start of 600 mg once-nightly EFV; pre-induction observations should carry `CONMED_EFV = 0`.
 
 ### CONMED_NNRTI_IND (**canonical for concomitant enzyme-inducing NNRTI indicator**)
 - **Description:** 1 = subject is coadministered an enzyme-inducing non-nucleoside reverse transcriptase inhibitor (efavirenz or nevirapine) at the observation, 0 = no concomitant enzyme-inducing NNRTI. Both efavirenz and nevirapine are CYP3A4 inducers; this pooled indicator collapses their effects on metabolite elimination of co-administered antiretrovirals into a single binary covariate.
