@@ -2397,6 +2397,17 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Example models:** `Diep_2026_donidalorsen.R` (linear `(1 + theta * DIS_HAE)` multiplicative effects on apparent central volume Vc/F (theta = +0.426, +42.6%), apparent intercompartmental clearance Q/F (theta = -0.261, -26.1%), baseline plasma prekallikrein BL (theta = -0.132, -13.2%), and donidalorsen IC50 on PKK production (theta = +0.770, +77.0%) for patients with HAE vs healthy volunteers).
 - **Notes:** Used when a population PK/PD model pools HAE patients with healthy volunteers and HAE disease status is retained as a covariate. The three molecular HAE subtypes (HAE-C1INH-Type1, HAE-C1INH-Type2, HAE-nC1INH) are pooled in this indicator following the Diep 2026 analysis; if a future paper resolves subtype-specific covariate effects, separate canonical indicators (e.g., `DIS_HAE_C1INH_T1`) can be added without conflicting with this pooled indicator. Scope: specific because the complement reference category is paper-defined.
 
+### DIS_EDEMA (**canonical for clinically-evident peripheral edema indicator**)
+- **Description:** 1 = clinically-evident peripheral edema (puffy face, pitting edema in the legs, or equivalent clinical diagnosis of interstitial fluid retention); 0 = no clinical edema. Treatment-status-flag-like binary indicator used as a multiplicative or additive linear-deviation effect on PK parameters that change with peripheral interstitial fluid retention (typically a volume of distribution, distribution-rate, or metabolite-conversion-rate kinetics).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (no clinical edema)
+- **Source aliases:**
+  - `EDEMA` -- used in `Lee_2013_colistin.R` (Table 1 footnote d: clinical diagnosis -- puffy face and pitting edema in the legs); enters the model as an additive linear deviation on the CMS->colistin turnover rate constant TR: `TR = theta3 - EDEMA * theta5`, so edematous subjects have a smaller TR.
+- **Example models:** `Lee_2013_colistin.R` (50 burn-ICU adults; 18/50 edematous on Day 1 of CMS administration; reduces TR from 0.796 to 0.371 h^-1).
+- **Notes:** Time-fixed per subject in Lee 2013 (single clinical assessment on Day 1 of colistin administration; the source paper does not record serial edema-status updates). A future paper using serial edema assessment would treat this as time-varying. Distinct from disease-state indicators that name a chronic condition (`DIS_HAE` hereditary angioedema; `DIS_PBC` PBC) because clinical edema is a transient physical-exam finding that can resolve, and distinct from fluid-balance laboratory markers (`ALB` serum albumin, `TPRO` total serum protein) because `DIS_EDEMA` captures the binary clinical finding rather than the underlying biochemistry. Scope kept `specific` pending a second model that ratifies the same orientation and semantics. Ratified canonically on 2026-06-09 alongside the Lee 2013 colistin-in-burn-patients extraction (operator-resolved sidecar request-001 / response-001 on the canonical name `DIS_EDEMA`).
+
 ### DIS_PBC (**canonical for primary biliary cirrhosis disease-state indicator**)
 - **Description:** 1 = patient with primary biliary cirrhosis (PBC), an autoimmune destruction of intrahepatic bile ducts causing chronic cholestasis; 0 = non-PBC subject (healthy reference cohort or other non-PBC reference). Time-fixed per subject.
 - **Units:** (binary)
