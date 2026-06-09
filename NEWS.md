@@ -2,8 +2,7 @@
 
 # development version
 
-* Add Fung 2008 1,4-butanediol ([doi:10.1208/s12248-007-9006-3](https://doi.org/10.1208/s12248-007-9006-3)) -- preclinical adult male Sprague-Dawley rats (multi-substance population PK model jointly fitting BD, the unmeasured semialdehyde intermediate, GHB, and ethanol with Michaelis-Menten elimination and mutual competitive inhibition; IV and oral routes).
-* Add Berges 2007 enoxaparin ([doi:10.1111/j.1365-2125.2007.02920.x](https://doi.org/10.1111/j.1365-2125.2007.02920.x)) -- elderly inpatients (>75 years) on prophylactic subcutaneous enoxaparin 4000 IU once daily for VTE prophylaxis (PROPHRE.75 study).
+* Add Savic 2010 warfarin ([doi:10.1208/s12248-010-9238-5](https://doi.org/10.1208/s12248-010-9238-5)) -- 33 adult subjects from the historical O'Reilly 1968 / 1963 warfarin dataset, presented as the worked PKPD illustration for MONOLIX 3.1's SAEM-for-ordered-categorical-data algorithm (founding registry example of proportional-odds PD parameters `alpha1`, `alpha2`, `beta` and effect-compartment rate constant `ke0`).
 * Add Padoin 1998 cephalexin ([doi:10.1128/aac.42.6.1463](https://doi.org/10.1128/aac.42.6.1463)) -- preclinical male Wistar rats with a cephalexin / quinapril oral coadministration DDI (ratifies new `CONMED_QPRL_ORAL` covariate canonical).
 * Add van Rongen 2018 metformin ([doi:10.1007/s40272-018-0293-1](https://doi.org/10.1007/s40272-018-0293-1)) -- overweight and obese Caucasian adolescents.
 * Add Tarning 2012 artemether and dihydroartemisinin ([doi:10.1186/1475-2875-11-293](https://doi.org/10.1186/1475-2875-11-293)) -- pregnant women with uncomplicated Plasmodium falciparum malaria in Uganda (joint parent + DHA popPK with zero-order dissolution and 6-compartment transit absorption).
