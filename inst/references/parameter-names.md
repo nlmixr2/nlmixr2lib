@@ -510,3 +510,32 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
 - **Source aliases:** none.
 - **Example models:** `Campagne_2019_cyclophosphamide_mouse.R`.
 - **Notes:** Usually held fixed at the in-vitro equilibrium-dialysis-derived value. The BBB transfer term is `CLin * fu * Cp`.
+
+### ke0 (**canonical effect-compartment equilibration rate constant**)
+- **Type:** paper-named-param
+- **Role:** First-order equilibration rate constant for the Sheiner-style effect-compartment in PK-PD models (1 / time). Drives the link compartment that lags effect-site concentration behind plasma concentration: `d(Ce)/dt = ke0 * (Cc - Ce)`, or equivalently in amount form `d(Qe)/dt = ke0 * Qc - ke0 * Qe`.
+- **Source aliases:**
+  - `keo` -- some papers/textbooks use this variant; both refer to the same parameter.
+- **Example models:** `Savic_2010_warfarin.R` (founding registry example -- 1-compartment PK with effect-compartment-driven proportional-odds PD); `Schindler_2016_sunitinib.R` (effect-compartment equilibration with daily AUC at ln(2)/50 1/h).
+- **Notes:** Log-transformed form `lke0` is used when the source paper reports an exponential typical-value form and the parameter is estimated. Pairs with an `effect` compartment.
+
+### alpha1 (**canonical proportional-odds intercept for the highest cumulative category**)
+- **Type:** paper-named-param
+- **Role:** Cumulative-logit intercept for the highest-category cumulative probability in a proportional-odds (ordered-categorical) PD model: `logit P(Y >= M) = alpha1 + h(beta, x)`, where M is the highest non-baseline category and h is a linear predictor in covariates / effect-site concentration. Estimated on the linear scale (typically negative -- corresponds to a low baseline probability of being in the highest category).
+- **Source aliases:** none.
+- **Example models:** `Savic_2010_warfarin.R` (founding registry example -- proportional-odds PD with three categories; warfarin PCA categorisation).
+- **Notes:** Linear-scale parameter; not log-transformed. Pairs with `alpha2` (next-lower-category increment) and `beta` (PD slope). IIV on alpha1 is the random intercept of the proportional-odds model and is also on the linear scale (`etaalpha1 ~ <linear-scale variance>`).
+
+### alpha2 (**canonical proportional-odds intercept increment for the second-highest category**)
+- **Type:** paper-named-param
+- **Role:** Positive linear-scale increment from the cumulative-logit intercept for `P(Y >= M)` to the cumulative-logit intercept for `P(Y >= M-1)` in a proportional-odds model with three or more categories: `logit P(Y >= M-1) = alpha1 + alpha2 + h(beta, x)`. The positivity of alpha2 enforces the cumulative-probability ordering `P(Y >= M-1) >= P(Y >= M)`.
+- **Source aliases:** none.
+- **Example models:** `Savic_2010_warfarin.R` (founding registry example).
+- **Notes:** Linear-scale parameter; not log-transformed (the positivity is structurally enforced by the model and is not in itself a reason to take the log -- the parameter is reported on the linear scale by the source paper). For proportional-odds models with more than three categories, additional increments `alpha3`, `alpha4`, ... would be registered as they appear.
+
+### beta (**canonical proportional-odds PD slope on the linear predictor**)
+- **Type:** paper-named-param
+- **Role:** Linear-predictor coefficient on the driver variable (effect-site concentration, dose, time, etc.) in a proportional-odds (ordered-categorical) PD model: `logit P(Y >= m) = (alpha1 + ... + alpha_{M-m+1}) + beta * x`. Units of inverse-driver (e.g., 1 / (mg/L) for a concentration-driven model).
+- **Source aliases:** none.
+- **Example models:** `Savic_2010_warfarin.R` (founding registry example -- PD slope on effect-site warfarin concentration).
+- **Notes:** Linear-scale parameter. Sign carries the direction of drug effect on the response category. Distinct from the regression-style covariate-effect parameters (`e_<cov>_<param>`) -- those modify PK / PD primary parameters multiplicatively or additively, whereas this `beta` is the slope of the cumulative-logit PD likelihood.
