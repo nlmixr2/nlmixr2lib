@@ -353,28 +353,12 @@
     # (depot_asv, central_asv, peripheral1_asv, effect_asv, Cc_asv,
     # lka_asv, lcl_asv, etc.).
     "asv",
-    # Oseltamivir carboxylate (OC), the active metabolite of oseltamivir
-    # formed by hepatic carboxylesterase 1 (HCE1) hydrolysis of the
-    # inactive ethyl-ester prodrug. Used as a metabolite suffix in
-    # parent-prodrug oseltamivir + active-metabolite OC popPK models
-    # (Kamal 2013 doi:10.1128/AAC.02438-12).
-    "oc",
-    # Rocuronium, the aminosteroid neuromuscular blocking agent
-    # paired with sugammadex (the reversal agent / parent) in the
-    # Kleijn 2011 sugammadex-mediated reversal PK-PD model. Neither
-    # drug is a metabolite of the other; the suffix marks rocuronium
-    # as the non-parent species under the same multi-drug naming
-    # convention used by deKock 2017 sulfadoxine + pyrimethamine
-    # (where pyrimethamine carries `pyra`) and Wang 2018 daclatasvir
-    # + asunaprevir (where asunaprevir carries `asv`). Sugammadex is
-    # the unsuffixed parent (mentioned first in the paper title,
-    # the focal investigational drug) and rocuronium gets `_roc`
-    # everywhere (central_roc, peripheral1_roc, effect_roc, lcl_roc,
-    # lvc_roc, lq_roc, lvp_roc, Cc_roc, propSd_roc, etc.). The model
-    # also uses the existing `complex` suffix for the sugammadex-
-    # rocuronium inclusion complex; Kleijn 2011
-    # doi:10.1111/j.1365-2125.2011.04000.x.
-    "roc"
+    # CDB-4453, the active monodemethylated metabolite of telapristone
+    # (CDB-4124) formed by N-demethylation on the C-17 side chain. Used
+    # in the Morris 2011 parent (telapristone) + metabolite (CDB-4453)
+    # popPK model where the metabolite apparent volume V3/F is fixed
+    # to 1 L for identifiability (Morris 2011 doi:10.1208/s12248-011-9304-7).
+    "cdb4453"
   ),
   # Suffixes allowed for multi-component CL parameters. `_ss` denotes
   # the steady-state arm; `_time` the time-varying decay arm; `_renal`

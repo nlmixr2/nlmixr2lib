@@ -1460,6 +1460,8 @@ navbar:
         href: articles/Nichols_2016_piperacillin_tazobactam.html
       - text: "Tefibazumab (Cao 2013)"
         href: articles/Cao_2013_tefibazumab.html
+      - text: "Telapristone (Morris 2011)"
+        href: articles/Morris_2011_telapristone.html
       - text: "Temozolomide (Mazzocco 2015)"
         href: articles/Mazzocco_2015_temozolomide.html
       - text: "Tenofovir (Baheti 2011)"
@@ -2291,7 +2293,7 @@ articles:
   - articles/Moore_1999_lamivudine
   - articles/Moore_2016_vancomycin
   - articles/Morris_2011_artesunate
-  - articles/Mosha_2014_artemether_lumefantrine
+  - articles/Morris_2011_telapristone
   - articles/Mould_2007_alemtuzumab
   - articles/Mukai_2019_mogamulizumab
   - articles/Mukonzo_2009_efavirenz
