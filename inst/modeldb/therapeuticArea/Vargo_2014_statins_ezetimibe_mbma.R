@@ -17,7 +17,7 @@ Vargo_2014_statins_ezetimibe_mbma <- function() {
   )
 
   covariateData <- list(
-    CONMED_ATV_DOSE = list(
+    CONMED_ATORVASTATIN_DOSE = list(
       description        = "Per-arm atorvastatin daily dose (mg/day; 0 if atorvastatin is not in the regimen).",
       units              = "mg/day",
       type               = "continuous",
@@ -325,8 +325,8 @@ Vargo_2014_statins_ezetimibe_mbma <- function() {
     # an arm with two statins simultaneously the model returns the
     # additive sum of their individual Emax contributions, which is
     # outside the paper's calibration range.
-    f_atv <- emax_statin_mag * (CONMED_ATV_DOSE ^ n_statin) /
-             ((CONMED_ATV_DOSE ^ n_statin) + (ed50_atv ^ n_statin))
+    f_atv <- emax_statin_mag * (CONMED_ATORVASTATIN_DOSE ^ n_statin) /
+             ((CONMED_ATORVASTATIN_DOSE ^ n_statin) + (ed50_atv ^ n_statin))
     f_flv <- emax_statin_mag * (CONMED_FLV_DOSE ^ n_statin) /
              ((CONMED_FLV_DOSE ^ n_statin) + (ed50_flv ^ n_statin))
     f_lov <- emax_statin_mag * (CONMED_LOV_DOSE ^ n_statin) /
