@@ -2032,7 +2032,14 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Type:** metabolite-suffix
 - **Role:** N-desmethyl-bedaquiline (M2) metabolite of bedaquiline.
 - **Source aliases:** none.
-- **Example models:** `Svensson_2016_bedaquiline.R` (DDMODEL00000219).
+- **Example models:** `Svensson_2013_bedaquiline.R`, `Svensson_2016_bedaquiline.R` (DDMODEL00000219).
+
+### m3 (**canonical N,N-bis-desmethyl-bedaquiline (M3) suffix**)
+- **Type:** metabolite-suffix
+- **Role:** N,N-bis-desmethyl-bedaquiline (M3) metabolite of bedaquiline; the downstream demethylation product of M2 (responsible enzyme(s) not identified in vitro but suspected CYP3A4-mediated demethylation by analogy with the BDQ -> M2 step).
+- **Source aliases:** none.
+- **Example models:** `Svensson_2013_bedaquiline.R`.
+- **Notes:** Distinct from `m3g` (morphine-3-glucuronide) — the suffix matcher uses `endsWith(name, "_m3")` vs `endsWith(name, "_m3g")` and these do not collide. Registered alongside the Svensson 2013 bedaquiline extraction (the first BDQ paper to model the M3 metabolite).
 
 ### endx (**canonical endoxifen suffix**)
 - **Type:** metabolite-suffix
