@@ -826,6 +826,8 @@ navbar:
         href: articles/Boucher_2018_naproxen_mbma.html
       - text: "Necitumumab (Long 2017)"
         href: articles/Long_2017_necitumumab.html
+      - text: "Nelfinavir (Hirt 2006)"
+        href: articles/Hirt_2006_nelfinavir.html
       - text: "Nevirapine (Bienczak 2016)"
         href: articles/Bienczak_2016_nevirapine.html
       - text: "Nevirapine (Schipani 2011)"
@@ -1792,8 +1794,7 @@ articles:
   - articles/Heuberger_2018_salbutamol
   - articles/Hietala_2010_artemether_lumefantrine_malaria
   - articles/HillMcManus_2017_febuxostat_lesinurad
-  - articles/Hirt_2009_didanosine
-  - articles/Hirt_2009_efavirenz
+  - articles/Hirt_2006_nelfinavir
   - articles/Hodiamont_2017_gentamicin
   - articles/Hoglund_2012_piperaquine
   - articles/Hoglund_2017_piperaquine

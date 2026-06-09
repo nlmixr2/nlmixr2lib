@@ -3704,6 +3704,17 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Example models:** `Tikiso_2021_abacavir.R` (multiplicative effect on apparent oral clearance: `cl *= (1 + 0.120 * CONMED_EFV)`; +12.0% relative to the LPV/r 4:1 reference).
 - **Notes:** Specific scope because the comparator regimen (LPV/r 4:1 in Tikiso 2021) is paper-defined; future ART population-PK models that test EFV-vs-other contrasts should extend the example list when the comparator matches, or register a finer-grained sibling indicator otherwise.
 
+### CONMED_NNRTI_IND (**canonical for concomitant enzyme-inducing NNRTI indicator**)
+- **Description:** 1 = subject is coadministered an enzyme-inducing non-nucleoside reverse transcriptase inhibitor (efavirenz or nevirapine) at the observation, 0 = no concomitant enzyme-inducing NNRTI. Both efavirenz and nevirapine are CYP3A4 inducers; this pooled indicator collapses their effects on metabolite elimination of co-administered antiretrovirals into a single binary covariate.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (no enzyme-inducing NNRTI; subject on NRTI-only or PI-based backbone).
+- **Source aliases:**
+  - `NNI` -- used in `Hirt_2006_nelfinavir.R` (paper's pooled "nonnucleosidic inhibitor" indicator: 1 if EFV or NVP, 0 otherwise; pooling justified by the paper's finding that the two drugs' inducer effects on M8 elimination were not significantly different and the two were never administered simultaneously in the cohort).
+- **Example models:** `Hirt_2006_nelfinavir.R` (additive-form multiplicative effect on M8 apparent elimination rate kel_m8: `kel_m8 *= (1 + 0.91 * CONMED_NNRTI_IND)`; KM0 is ~1.9-fold higher under EFV or NVP co-administration, consistent with CYP3A4 induction of M8 elimination).
+- **Notes:** Pooling the two named NNRTIs follows the precedent of `CONMED_EIAED` (any enzyme-inducing AED) and `CONMED_AZOLE` (any azole antifungal). Distinct from `CONMED_EFV` (efavirenz alone, founded by Tikiso 2021): the pooled `CONMED_NNRTI_IND` indicator is used when the source paper did not separately identify EFV vs NVP effects. A future paper that needs to distinguish them should use `CONMED_EFV` (and a future sibling `CONMED_NVP`) rather than this pooled indicator. The "inducer" qualifier excludes non-inducing NNRTIs (rilpivirine, doravirine, etravirine); record the per-paper list of pooled drugs in `covariateData[[CONMED_NNRTI_IND]]$notes`. Specific scope until a second model ratifies the convention; at that point promote to general. Ratified canonically on 2026-06-09 alongside the Hirt 2006 nelfinavir extraction.
+
 ### CONMED_EIAED (**canonical for concomitant enzyme-inducing antiepileptic drug indicator**)
 - **Description:** 1 = subject is taking at least one enzyme-inducing antiepileptic drug (EIAED) such as carbamazepine, phenobarbital, or phenytoin during the study; 0 = no EIAED coadministration. EIAEDs induce hepatic metabolism (CYP3A4/UGT-mediated pathways) and increase the clearance of co-administered antiepileptic drugs and their active metabolites.
 - **Units:** (binary)

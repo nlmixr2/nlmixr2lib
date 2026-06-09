@@ -2034,6 +2034,12 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Source aliases:** none.
 - **Example models:** `Svensson_2016_bedaquiline.R` (DDMODEL00000219).
 
+### m8 (**canonical hydroxy-tert-butylamide (M8) suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Hydroxy-tert-butylamide (M8) active metabolite of nelfinavir; formed by CYP2C19-mediated hydroxylation of nelfinavir and eliminated by CYP3A4. Equipotent to the parent drug against HIV-1 protease.
+- **Source aliases:** none.
+- **Example models:** `Hirt_2006_nelfinavir.R`.
+
 ### endx (**canonical endoxifen suffix**)
 - **Type:** metabolite-suffix
 - **Role:** Endoxifen (4-hydroxy-N-desmethyltamoxifen), major active metabolite of tamoxifen.
