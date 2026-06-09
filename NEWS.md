@@ -2,7 +2,8 @@
 
 # development version
 
-* Add Han 2013 fluconazole ([doi:10.1128/AAC.01372-12](https://doi.org/10.1128/AAC.01372-12)) -- adult burn-ICU patients with suspected or confirmed Candida infection (ratifies new `DIS_SEPSIS`, `DIS_EDEMA`, and `DIS_BURN_RECENT` covariate canonicals).
+* Add Veinstein 2013 gentamicin ([doi:10.1128/AAC.01762-12](https://doi.org/10.1128/AAC.01762-12)) -- critically ill adult ICU patients on 4-h intermittent hemodialysis; ratifies new `lcl_hemodialysis` parameter canonical and renames the prior `DIAL` covariate canonical to `HEMODIALYSIS` (Liesenfeld 2013 dabigatran and Jacobs 2016 colistin updated to follow).
+* Add Berges 2007 enoxaparin ([doi:10.1111/j.1365-2125.2007.02920.x](https://doi.org/10.1111/j.1365-2125.2007.02920.x)) -- elderly inpatients (>75 years) on prophylactic subcutaneous enoxaparin 4000 IU once daily for VTE prophylaxis (PROPHRE.75 study).
 * Add Padoin 1998 cephalexin ([doi:10.1128/aac.42.6.1463](https://doi.org/10.1128/aac.42.6.1463)) -- preclinical male Wistar rats with a cephalexin / quinapril oral coadministration DDI (ratifies new `CONMED_QPRL_ORAL` covariate canonical).
 * Add van Rongen 2018 metformin ([doi:10.1007/s40272-018-0293-1](https://doi.org/10.1007/s40272-018-0293-1)) -- overweight and obese Caucasian adolescents.
 * Add Tarning 2012 artemether and dihydroartemisinin ([doi:10.1186/1475-2875-11-293](https://doi.org/10.1186/1475-2875-11-293)) -- pregnant women with uncomplicated Plasmodium falciparum malaria in Uganda (joint parent + DHA popPK with zero-order dissolution and 6-compartment transit absorption).

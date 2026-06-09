@@ -1,5 +1,5 @@
 Jacobs_2016_colistin <- function() {
-  description <- "Two-state parent-metabolite population PK model for colistimethate sodium (CMS, prodrug) and colistin (active polymyxin) in critically ill ICU patients with acute renal failure requiring intermittent hemodialysis (n=8). One compartment each for CMS and colistin. CMS renal clearance is structurally fixed at 0 (anuric HD population); the estimated CMS clearance is therefore nonrenal (CL_NRCMS). Colistin disposition is parameterised in apparent units (V_col/f_m and CL_col/f_m) because the fraction f_m of nonrenally cleared CMS that becomes colistin is not separately identifiable from plasma data. Hemodialysis clearances of CMS (90 mL/min) and colistin (137 mL/min) are fixed experimental constants from Marchand 2010 (ref 7 of Jacobs 2016) and are gated on/off by the time-varying DIAL covariate; PK sampling in the source study was conducted between HD sessions, so DIAL = 0 over the model-fit data."
+  description <- "Two-state parent-metabolite population PK model for colistimethate sodium (CMS, prodrug) and colistin (active polymyxin) in critically ill ICU patients with acute renal failure requiring intermittent hemodialysis (n=8). One compartment each for CMS and colistin. CMS renal clearance is structurally fixed at 0 (anuric HD population); the estimated CMS clearance is therefore nonrenal (CL_NRCMS). Colistin disposition is parameterised in apparent units (V_col/f_m and CL_col/f_m) because the fraction f_m of nonrenally cleared CMS that becomes colistin is not separately identifiable from plasma data. Hemodialysis clearances of CMS (90 mL/min) and colistin (137 mL/min) are fixed experimental constants from Marchand 2010 (ref 7 of Jacobs 2016) and are gated on/off by the time-varying HEMODIALYSIS covariate; PK sampling in the source study was conducted between HD sessions, so HEMODIALYSIS = 0 over the model-fit data."
   reference <- paste(
     "Jacobs M, Gregoire N, Megarbane B, Gobin P, Balayn D, Marchand S, Mimoz O,",
     "Couet W. Population pharmacokinetics of colistin methanesulfonate and",
@@ -11,12 +11,12 @@ Jacobs_2016_colistin <- function() {
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
-    DIAL = list(
+    HEMODIALYSIS = list(
       description        = "Hemodialysis-active indicator (1 during a dialysis session, 0 otherwise)",
       units              = "(binary)",
       type               = "binary",
       reference_category = "0 (interdialytic / no dialysis running)",
-      notes              = "Time-varying within subject. Gates the fixed hemodialysis-clearance contributions for CMS (90 mL/min) and colistin (137 mL/min) -- those terms are zero when DIAL = 0. The Jacobs 2016 PK sampling was performed between HD sessions, so DIAL = 0 throughout the data the model was fit to (Methods, Sample collection); HD-active dynamics are exercised in the paper's HD simulation scenarios (Methods, Simulations; Figure 4) where 4-h sessions are imposed at user-chosen times. For non-HD patients leave DIAL = 0 throughout.",
+      notes              = "Time-varying within subject. Gates the fixed hemodialysis-clearance contributions for CMS (90 mL/min) and colistin (137 mL/min) -- those terms are zero when HEMODIALYSIS = 0. The Jacobs 2016 PK sampling was performed between HD sessions, so HEMODIALYSIS = 0 throughout the data the model was fit to (Methods, Sample collection); HD-active dynamics are exercised in the paper's HD simulation scenarios (Methods, Simulations; Figure 4) where 4-h sessions are imposed at user-chosen times. For non-HD patients leave HEMODIALYSIS = 0 throughout. The source paper's data column was named `DIAL`; renamed to the canonical `HEMODIALYSIS` per inst/references/covariate-columns.md.",
       source_name        = "DIAL"
     )
   )
@@ -113,12 +113,13 @@ Jacobs_2016_colistin <- function() {
     vc_col  <- exp(lvc_col + etalvc_col)
     cl_col  <- exp(lcl_col + etalcl_col)
 
-    # Total clearances. The HD contribution is gated by DIAL (1 during an active
-    # intermittent-HD session, 0 otherwise). Colistin formation from CMS is driven
-    # by the NONRENAL CMS-clearance arm only (cl, not cl_tot): CMS removed by
-    # dialysis leaves the body in the dialysate and does not become colistin.
-    cl_tot      <- cl     + DIAL * cl_hd_cms
-    cl_col_tot  <- cl_col + DIAL * cl_hd_col
+    # Total clearances. The HD contribution is gated by HEMODIALYSIS (1 during
+    # an active intermittent-HD session, 0 otherwise). Colistin formation from
+    # CMS is driven by the NONRENAL CMS-clearance arm only (cl, not cl_tot):
+    # CMS removed by dialysis leaves the body in the dialysate and does not
+    # become colistin.
+    cl_tot      <- cl     + HEMODIALYSIS * cl_hd_cms
+    cl_col_tot  <- cl_col + HEMODIALYSIS * cl_hd_col
 
     # Parent CMS and apparent colistin compartments. The colistin state is the
     # "apparent" mass = A_col / f_m, where f_m is the unknown CMS-to-colistin

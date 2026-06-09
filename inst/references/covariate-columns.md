@@ -467,7 +467,7 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Source aliases:**
   - `RRT` -- used in `Shekar_2014_meropenem.R` (binary indicator selecting between the RRT-fixed-CL term and the CrCL-driven non-RRT CL term in a 2-compartment meropenem popPK model). Shekar 2014 Methods describes the RRT cohort as mixed CVVH (control RRT subjects, true CRRT) and EDD-f (ECMO RRT subjects, extended daily diafiltration; pharmacokinetically CRRT-like for slow-clearance solutes such as meropenem) and the model treats the modalities as a single binary covariate without distinguishing them.
 - **Example models:** `Shekar_2014_meropenem.R` (piecewise CL: `TVCL = exp(lcl) * CRRT_STATUS + e_crcl_cl * CRCL_in_Lh * (1 - CRRT_STATUS)`, with CRCL in raw Cockcroft-Gault mL/min converted to L/h inside `model()`; 5/11 ECMO patients and 5/10 controls were on RRT).
-- **Notes:** Distinct from `HEMODIAL` (intermittent hemodialysis IHD only) and from `DIAL` (per-time-point session gate in within-subject time-varying dialysis-clearance models such as Liesenfeld 2013 dabigatran). Anticipated as a future canonical in the `HEMODIAL` register entry alongside `PERIT_DIAL` for peritoneal dialysis. Shekar 2014 ratification uses a mixed CVVH + EDD-f cohort because the source paper treats them identically as a single binary RRT covariate; a future paper that retains modality as a separate covariate (e.g. CVVH vs SLED vs CVVHDF) would either reuse `CRRT_STATUS` with finer per-modality columns layered on top, or warrant its own modality-specific canonical (`CVVH_STATUS`, `SLED_STATUS`, etc.). When pairing `CRRT_STATUS` with `CRCL`, note that Cockcroft-Gault CrCL is conventionally not defined / not reported for RRT-dependent subjects; Shekar 2014 records CrCL only for non-RRT subjects and the model formula switches off the CrCL term when `CRRT_STATUS = 1`. Ratified canonically on 2026-05-18 alongside the Shekar 2014 meropenem extraction.
+- **Notes:** Distinct from `HEMODIAL` (intermittent hemodialysis IHD only) and from `HEMODIALYSIS` (per-time-point session gate in within-subject time-varying dialysis-clearance models such as Liesenfeld 2013 dabigatran, Jacobs 2016 colistin, and Veinstein 2013 gentamicin). Anticipated as a future canonical in the `HEMODIAL` register entry alongside `PERIT_DIAL` for peritoneal dialysis. Shekar 2014 ratification uses a mixed CVVH + EDD-f cohort because the source paper treats them identically as a single binary RRT covariate; a future paper that retains modality as a separate covariate (e.g. CVVH vs SLED vs CVVHDF) would either reuse `CRRT_STATUS` with finer per-modality columns layered on top, or warrant its own modality-specific canonical (`CVVH_STATUS`, `SLED_STATUS`, etc.). When pairing `CRRT_STATUS` with `CRCL`, note that Cockcroft-Gault CrCL is conventionally not defined / not reported for RRT-dependent subjects; Shekar 2014 records CrCL only for non-RRT subjects and the model formula switches off the CrCL term when `CRRT_STATUS = 1`. Ratified canonically on 2026-05-18 alongside the Shekar 2014 meropenem extraction.
 
 ### ALB (**canonical for serum albumin**)
 - **Description:** Serum albumin concentration.
@@ -706,35 +706,40 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Yang_2024_axatilimab.R` (baseline-only covariate on baseline NCMC concentration `BL_NCMC` with power exponent 0.376; reference 63 U/L).
 - **Notes:** Muscle-origin enzyme distinct from `AST` / `ALT` (hepatic) and `LDH` (general tissue turnover). Yang 2024 uses CPK alongside `AST` and `LDH` as tracked safety biomarkers. Per-model `covariateData[[CPK]]$notes` should document baseline-vs-time-varying status and the clinical interpretation in the source population (skeletal-muscle injury, macrophage-clearance surrogate, or both). Distinct from any model state variable representing CPK time-course dynamics -- covariate column is the pre-dose laboratory observation.
 
-### DIAL (**canonical for hemodialysis-active indicator (time-varying)**)
+### HEMODIALYSIS (**canonical for hemodialysis-active indicator (time-varying)**)
 - **Description:** Within-subject time-varying indicator for whether an extracorporeal renal-replacement-therapy session (intermittent hemodialysis, hemofiltration, or hemodiafiltration) is currently running. 1 during the session; 0 in the interdialytic interval and in non-dialysed subjects.
 - **Units:** (binary)
 - **Type:** binary
 - **Scope:** general
-- **Reference category:** 0 (no dialysis running). Models that compose an additional `CL_dialysis` term should gate it by `DIAL = 1` so that the interdialytic clearance reduces to the intrinsic body clearance.
-- **Source aliases:** none known; the source paper for the ratification model uses `DIAL` as the data column name directly (Liesenfeld 2013 Methods).
-- **Example models:** `Liesenfeld_2013_dabigatran.R` (Michaels-equation gate; `cl_total <- cl + DIAL * Michaels(BFR, DFR, KoA)`).
-- **Notes:** Distinct from a renal-impairment indicator (subject-level baseline class) and from a renal-replacement-therapy modality indicator (categorical: IHD vs CRRT vs SLED) -- `DIAL` is the per-time-point gate that turns the dialysis-clearance term on and off. Pair with `BFR` and `DFR` when the dialysis clearance depends on flow rates; pair with a filter-specific mass-transfer coefficient (estimated `lkoa` in the model, not a covariate) when the Michaels parameterisation is used. Ratified canonically on 2026-05-16 alongside the Liesenfeld 2013 dabigatran extraction.
+- **Reference category:** 0 (no dialysis running). Models that compose an additional `cl_hemodialysis` term should gate it by `HEMODIALYSIS = 1` so that the interdialytic clearance reduces to the intrinsic body clearance.
+- **Source aliases:**
+  - `DIAL` -- legacy form (used in Liesenfeld 2013, Jacobs 2016, Veinstein 2013 prior to the 2026-06-09 rename to the more explicit `HEMODIALYSIS`).
+  - `IHD_ON`, `HD_ACTIVE`, `RRT_ACTIVE` -- variant abbreviations used in adjacent ESRD / CRRT popPK literature.
+- **Example models:**
+  - `Liesenfeld_2013_dabigatran.R` (Michaels-equation gate; `cl_total <- cl + HEMODIALYSIS * Michaels(BFR, DFR, KoA)`; the dialysis arm is derived from blood flow rate, dialysate flow rate, and a hemodialyzer mass-transfer-area coefficient).
+  - `Jacobs_2016_colistin.R` (additive on/off gate of fixed device-level hemodialysis-clearance constants for CMS and colistin; `cl_tot <- cl + HEMODIALYSIS * cl_hd_cms`).
+  - `Veinstein_2013_gentamicin.R` (additive arm with an estimated primary `ini()` parameter; `cl_total <- cl + HEMODIALYSIS * cl_hemodialysis`).
+- **Notes:** Distinct from a renal-impairment indicator (subject-level baseline class) and from a renal-replacement-therapy modality indicator (categorical: IHD vs CRRT vs SLED) -- `HEMODIALYSIS` is the per-time-point gate that turns the dialysis-clearance term on and off. Pair with `BFR` and `DFR` when the dialysis clearance depends on flow rates; pair with a filter-specific mass-transfer coefficient (estimated `lkoa` in the model, not a covariate) when the Michaels parameterisation is used. Pair with `lcl_hemodialysis` (canonical) when the dialysis arm is a primary estimated structural parameter rather than a derived expression. Ratified canonically on 2026-05-16 (as `DIAL`) and renamed to the more explicit `HEMODIALYSIS` on 2026-06-09 alongside the Veinstein 2013 gentamicin extraction.
 
 ### BFR (**canonical for blood flow rate through the extracorporeal circuit during dialysis**)
-- **Description:** Instantaneous blood flow rate through the extracorporeal circuit during an active dialysis session. Time-varying within subject; meaningful only when `DIAL = 1` -- in the interdialytic period the value is sentinel and the Michaels-equation term is gated off by `DIAL`.
+- **Description:** Instantaneous blood flow rate through the extracorporeal circuit during an active dialysis session. Time-varying within subject; meaningful only when `HEMODIALYSIS = 1` -- in the interdialytic period the value is sentinel and the Michaels-equation term is gated off by `HEMODIALYSIS`.
 - **Units:** mL/min
 - **Type:** continuous
 - **Scope:** general
 - **Reference category:** n/a -- enters the Michaels equation together with `DFR` and a hemodialyzer mass-transfer-area coefficient. Values investigated in the ratification source were 200, 300, and 400 mL/min (Liesenfeld 2013 Methods, Study Design; Table 1).
 - **Source aliases:** none known.
 - **Example models:** `Liesenfeld_2013_dabigatran.R`.
-- **Notes:** Pairs with `DIAL` (binary on/off gate) and `DFR` (dialysate flow rate). Ratified canonically on 2026-05-16 alongside the Liesenfeld 2013 dabigatran extraction.
+- **Notes:** Pairs with `HEMODIALYSIS` (binary on/off gate) and `DFR` (dialysate flow rate). Ratified canonically on 2026-05-16 alongside the Liesenfeld 2013 dabigatran extraction.
 
 ### DFR (**canonical for dialysate flow rate through the extracorporeal circuit during dialysis**)
-- **Description:** Instantaneous dialysate flow rate through the extracorporeal circuit during an active dialysis session. Time-varying within subject; meaningful only when `DIAL = 1`.
+- **Description:** Instantaneous dialysate flow rate through the extracorporeal circuit during an active dialysis session. Time-varying within subject; meaningful only when `HEMODIALYSIS = 1`.
 - **Units:** mL/min
 - **Type:** continuous
 - **Scope:** general
 - **Reference category:** n/a -- enters the Michaels equation together with `BFR`. The ratification source fixed DFR at 700 mL/min throughout (Liesenfeld 2013 Methods, Study Design) and additionally simulated 500 mL/min (Methods, Simulations).
 - **Source aliases:** none known.
 - **Example models:** `Liesenfeld_2013_dabigatran.R`.
-- **Notes:** Pairs with `DIAL` and `BFR`. Ratified canonically on 2026-05-16 alongside the Liesenfeld 2013 dabigatran extraction.
+- **Notes:** Pairs with `HEMODIALYSIS` and `BFR`. Ratified canonically on 2026-05-16 alongside the Liesenfeld 2013 dabigatran extraction.
 
 ### FILT_AGE_HI (**canonical for dialysis-filter-age above-48-hour indicator**)
 - **Description:** Binary indicator that the in-use extracorporeal renal-replacement-therapy (CVVHDF / CVVH / SLED / EDD-f / IHD) hemofilter or dialyser membrane has been in continuous use for more than 48 hours at the time of dosing / sampling. 1 = filter is older than 48 h; 0 = filter is within the first 48 h of use (the fresh-filter reference). Subject-level binary in the source data (Patel 2011 had 1 of 10 patients on a > 48 h filter at the start of CVVHDF treatment; the rest had fresh filters), but the covariate is naturally time-varying within subject as the filter ages and is replaced -- record the per-model time resolution in `covariateData[[FILT_AGE_HI]]$notes`.

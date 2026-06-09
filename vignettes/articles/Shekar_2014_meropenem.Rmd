@@ -498,7 +498,7 @@ Cmin of 4.9 mg/L.
 
 - **New canonical `CRRT_STATUS` ratified alongside this extraction.** The
   existing `HEMODIAL` canonical (intermittent-hemodialysis-only) and
-  `DIAL` canonical (per-time-point session gate, time-varying) do not
+  `HEMODIALYSIS` canonical (per-time-point session gate, time-varying) do not
   fit the Shekar 2014 RRT covariate: the cohort mixes CVVHF (continuous
   venovenous hemofiltration; true CRRT) and EDD-f (extended daily
   diafiltration; pharmacokinetically CRRT-like for slow-clearance solutes
