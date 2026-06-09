@@ -2758,46 +2758,38 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Example models:** `Okada_2025_rocatinlimab.R` (multiplicative shift `1 - 0.372` on linear CL when 1; reference complement is the pooled atopic dermatitis + ulcerative colitis + healthy-volunteer cohort).
 - **Notes:** Used when a population PK model pools plaque-psoriasis patients with a non-psoriasis reference population and psoriasis disease status is retained as a covariate. Scope: specific because the disease-pooling reference category is paper-defined. Ratified canonically on 2026-04-27.
 
-### DIS_RA (**canonical for rheumatoid arthritis disease-state indicator**)
-- **Description:** 1 = adult rheumatoid arthritis patient, 0 = non-RA subject (e.g., healthy volunteer, Crohn's disease, systemic lupus erythematosus, or other indication). Time-fixed per subject.
+### DIS_SEPSIS (**canonical for active-sepsis co-condition indicator**)
+- **Description:** 1 = active sepsis / septic syndrome at the start of (or during) the modeled PK interval, 0 = no sepsis. Time-fixed per subject for the typical popPK use-case (Han 2013), although time-varying use is permitted; document per-model in `covariateData[[DIS_SEPSIS]]$notes` whether the indicator is fixed at PK-sampling onset or updated dynamically over the observation period. Used as a binary co-condition indicator on PK parameters (clearance, volume) when a study population pools septic and non-septic subjects, typically in ICU / burn-ICU / critically ill cohorts.
 - **Units:** (binary)
 - **Type:** binary
-- **Scope:** specific
-- **Reference category:** 0 (non-RA subject; the complement group is paper-defined -- the union of other cohorts pooled in the source analysis).
-- **Source aliases:** none known; source NONMEM control streams typically derive the indicator from a `POPULATION` / `STUDY` categorical alongside other `DIS_*` indicators.
-- **Example models:** `Li_2018_PF04236921.R` (log-shift `e_ra_cl = log(0.00588 / 0.00546) = 0.0741` on linear CL, log-shifts on baseline CRP / IC50 / logit-Imax; one of three orthogonal indicators (DIS_RA / DIS_CD / DIS_SLE) decomposing the four-level HV / RA / CD / SLE cohort with HV as the reference category).
-- **Notes:** Use when a population PK model pools adult RA patients with a non-RA reference population and RA disease status is retained as a covariate distinct from CD / SLE / other indications. Distinct from `DIS_PJIA` (polyarticular juvenile idiopathic arthritis, a pediatric-cohort sibling indicator). Scope: specific because the disease-pooling reference category is paper-defined. Ratified canonically on 2026-06-01 alongside the Li 2018 PF-04236921 extraction.
-
-### DIS_CD (**canonical for Crohn's disease state indicator (multi-indication pooled analyses)**)
-- **Description:** 1 = Crohn's disease patient, 0 = non-CD subject (e.g., healthy volunteer, rheumatoid arthritis, systemic lupus erythematosus, or other indication). Time-fixed per subject. Distinct from `IBD_CD`, which is a pooled-UC+CD discriminator with UC as the reference category; `DIS_CD` is used when the complement group is a heterogeneous non-IBD cohort rather than UC specifically.
-- **Units:** (binary)
-- **Type:** binary
-- **Scope:** specific
-- **Reference category:** 0 (non-CD subject; the complement group is paper-defined -- the union of other cohorts pooled in the source analysis).
-- **Source aliases:** none known; source NONMEM control streams typically derive the indicator from a `POPULATION` / `STUDY` categorical alongside other `DIS_*` indicators.
-- **Example models:** `Li_2018_PF04236921.R` (log-shift `e_cd_cl = log(0.00946 / 0.00546) = 0.5499` on linear CL -- a 73 percent higher typical CL in CD vs the HV reference, consistent with the paper's reported 60 percent higher CL in CD when other covariates are held at reference; also log-shifts on baseline CRP, IC50, and logit-Imax).
-- **Notes:** Use when a population PK model pools CD patients with a non-IBD reference population and Crohn's disease status is retained as a covariate. When the analysis pools CD with UC only (and tests CD-vs-UC as a discriminator), use `IBD_CD` instead. Scope: specific because the disease-pooling reference category is paper-defined. Ratified canonically on 2026-06-01 alongside the Li 2018 PF-04236921 extraction.
-
-### DIS_SLE (**canonical for systemic lupus erythematosus disease-state indicator**)
-- **Description:** 1 = systemic lupus erythematosus patient, 0 = non-SLE subject (e.g., healthy volunteer, rheumatoid arthritis, Crohn's disease, or other indication). Time-fixed per subject.
-- **Units:** (binary)
-- **Type:** binary
-- **Scope:** specific
-- **Reference category:** 0 (non-SLE subject; the complement group is paper-defined -- the union of other cohorts pooled in the source analysis).
-- **Source aliases:** none known; source NONMEM control streams typically derive the indicator from a `POPULATION` / `STUDY` categorical alongside other `DIS_*` indicators.
-- **Example models:** `Li_2018_PF04236921.R` (log-shift `e_sle_cl = log(0.00643 / 0.00546) = 0.1632` on linear CL, log-shifts on baseline CRP / IC50 / logit-Imax, and a Hill coefficient effect `e_sle_gamma = log(1.55) = 0.4383` shifting gamma from 1 in the HV/RA/CD reference to 1.55 in SLE).
-- **Notes:** Use when a population PK model pools SLE patients with a non-SLE reference population and SLE disease status is retained as a covariate. Future SLE-anchored extractions (e.g., anifrolumab, belimumab) that include SLE as a covariate against a non-SLE comparator should extend the example list. Distinct from `BGENE21` / `BGENE21_HIGH` (continuous / binary IFN-21-gene scores within an SLE cohort) -- those operate within an SLE-only population whereas `DIS_SLE` is the across-cohort disease-state flag. Scope: specific because the disease-pooling reference category is paper-defined. Ratified canonically on 2026-06-01 alongside the Li 2018 PF-04236921 extraction.
-
-### DIS_INFECT_CSSSI_SEV (**canonical for complicated skin and skin-structure infection severity indicator**)
-- **Description:** 1 = severe complicated skin and skin-structure infection (cSSSI), 0 = not severe cSSSI. Within-cohort severity indicator: stratifies severity inside an already-defined cSSSI / acute bacterial skin and skin-structure infection (ABSSSI) population, not a disease-vs-non-disease cohort indicator. Time-fixed per subject in the source analysis. The exact clinical criteria that classify a patient as severe vs not severe are protocol-defined within the trial dataset and may differ across antimicrobial development programs; per-model `covariateData[[DIS_INFECT_CSSSI_SEV]]$notes` should document the underlying definition when the source paper provides one.
-- **Units:** (binary)
-- **Type:** binary
-- **Scope:** specific
-- **Reference category:** 0 (not severe cSSSI).
+- **Scope:** general
+- **Reference category:** 0 (no sepsis).
 - **Source aliases:**
-  - `SOI` (severity-of-infection indicator; same orientation, 1 = severe / 0 = not severe) -- used in `Lodise_2018_iclaprim.R` (ASSIST-1 / ASSIST-2 phase 3 cSSSI trials).
-- **Example models:** `Lodise_2018_iclaprim.R` (additive-linear shift on inter-compartmental clearance Q: `q_typ = exp(lq) + e_infect_csssi_sev_q * DIS_INFECT_CSSSI_SEV` with `e_infect_csssi_sev_q = +13.5 L/h`, so severe-cSSSI patients have Q rise from 1.85 L/h to 15.35 L/h relative to non-severe patients).
-- **Notes:** Specific scope because the "severe cSSSI" definition is protocol-defined; future antimicrobial popPK papers that test a severity-of-infection contrast in a different infection class (pneumonia, HABP/VABP, bloodstream infection, bone and joint infection) should register sibling canonicals (e.g., `DIS_INFECT_PNEUM_SEV`, `DIS_INFECT_HABP_SEV`) rather than overloading this entry. Distinct from `DIS_SASTHMA` and other disease-state indicators (which contrast a disease cohort with a non-disease reference) -- `DIS_INFECT_CSSSI_SEV` operates *within* an already-cSSSI cohort. The covariate-effect parameter naming drops the `DIS_` prefix per the existing `DIS_CANCER` -> `e_cancer_*` / `DIS_CANCER_PED` -> `e_cancer_ped_*` convention; here that gives `e_infect_csssi_sev_<param>`. Ratified canonically on 2026-05-30 alongside the Lodise 2018 iclaprim extraction.
+  - `SEPS` -- used in `Han_2013_fluconazole.R` (Han 2013 Methods / Table 1 covariate with values 0 = no sepsis, 1 = sepsis; same orientation as the canonical).
+- **Example models:** `Han_2013_fluconazole.R` (additive shift on the non-RRT CL arm: `CL_norrt = theta1 + (CLCR/120)*theta4 + TBI*theta7 + SEPS*theta9` with `theta9 = -0.369 L/h` -- septic patients have about 0.37 L/h lower CL in the non-RRT arm).
+- **Notes:** Distinct from chronic disease-state indicators (e.g., `DIS_UC`, `DIS_HAE`) -- sepsis is an acute / transient co-condition rather than a chronic indication label. Distinct from `CRP` / `IL6` / `SAPS_II`, which are biomarker / severity-score columns that may co-vary with clinical sepsis but are conceptually distinct from a binary clinical-sepsis diagnostic flag. Ratified canonically on 2026-06-09 alongside the Han 2013 fluconazole extraction.
+
+### DIS_EDEMA (**canonical for clinical edema presence indicator**)
+- **Description:** 1 = clinical edema present (typical clinical definition: puffy face and/or pitting peripheral edema), 0 = no clinical edema. Time-fixed per subject in the typical popPK use-case (Han 2013), although time-varying use is permitted; document per-model in `covariateData[[DIS_EDEMA]]$notes` whether the indicator is fixed at PK-sampling onset or updated dynamically. Used as a binary co-condition indicator on PK volume (most commonly) when third-space / extravascular fluid expansion is expected to alter drug distribution.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no clinical edema).
+- **Source aliases:**
+  - `EDEM` -- used in `Han_2013_fluconazole.R` (Han 2013 Methods / Table 1 covariate with values 0 = no edema, 1 = clinical edema by the paper's puffy-face and leg-pitting criterion; same orientation as the canonical).
+- **Example models:** `Han_2013_fluconazole.R` (additive shift on V: `V = (WT/65)*theta5 + EDEM*theta6 + TBI*theta8` with `theta6 = 13.6 L` -- edematous patients have about 13.6 L larger V).
+- **Notes:** Conceptually distinct from `DIS_HAE` (hereditary angioedema disease-state indicator) -- `DIS_EDEMA` is a generic clinical-sign flag (e.g., burn-related capillary leak, congestive heart failure, hypoalbuminemia) rather than a disease classification. Distinct from a continuous fluid-balance / weight-gain column. Ratified canonically on 2026-06-09 alongside the Han 2013 fluconazole extraction.
+
+### DIS_BURN_RECENT (**canonical for recent-postburn-injury hypermetabolic-phase indicator**)
+- **Description:** 1 = within the paper-defined recent-postburn window (i.e., the acute hypermetabolic phase shortly after burn injury), 0 = beyond the window. Time-varying within a subject is permitted as time since injury crosses the cutoff; in Han 2013 the cutoff is 30 days postburn (the hypermetabolic response is maximized between days 7-17 and substantially resolved by day 30; the binary recoding captures patients whose physiology is dominated by the hypermetabolic period). The exact recency threshold is paper-specific -- document the threshold in each model's `covariateData[[DIS_BURN_RECENT]]$notes`. Used as a piecewise covariate on PK parameters (CL and / or V) that change during the acute hypermetabolic phase.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (beyond the recent-postburn window; i.e., resolved hypermetabolic phase).
+- **Source aliases:**
+  - `TBI` -- used in `Han_2013_fluconazole.R` (Han 2013 Methods / Tables 2 and 3 covariate with values 1 = within 30 days of burn injury, 0 = at least 30 days postburn; same orientation as the canonical, with the recency threshold = 30 days documented per-model). NOTE: `TBI` in this register is a recoded binary covariate; it does NOT denote traumatic brain injury (the common medical abbreviation) and is NOT a continuous time-from-burn-injury value.
+- **Example models:** `Han_2013_fluconazole.R` (recency threshold = 30 days; additive shifts on both CL and V: `CL_norrt += TBI*theta7` with `theta7 = 0.504 L/h` and `V += TBI*theta8` with `theta8 = 9.61 L` -- recent-postburn patients have about 0.5 L/h higher CL and 9.6 L larger V relative to the resolved-phase reference).
+- **Notes:** Generalised binary recoding rather than a continuous time-from-burn-injury column. A future paper that uses a continuous days-from-burn-injury covariate (analogous to `TPP` for time-postpartum) would warrant its own canonical (suggested name: `POSTBURN_DAYS`); `DIS_BURN_RECENT` is reserved for binary phase indicators. The paper's source-column name `TBI` is preserved as a documented alias even though it collides with the medical abbreviation for traumatic brain injury -- this is the author's chosen column name and the canonical avoids the collision. Ratified canonically on 2026-06-09 alongside the Han 2013 fluconazole extraction.
 
 ### CARRAGEENAN (**canonical for intraplantar-carrageenan inflammatory-challenge indicator**)
 - **Description:** Binary indicator for intraplantar injection of carrageenan suspension as an experimental inflammatory / hyperalgesic challenge. 1 = subject received an intraplantar carrageenan injection at the start of the experiment (the carrageenan-induced peripheral inflammation / thermal-hyperalgesia paradigm); 0 = subject received an intraplantar saline injection (sham control). Time-fixed per subject within an experiment.
