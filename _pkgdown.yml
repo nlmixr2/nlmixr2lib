@@ -968,6 +968,8 @@ navbar:
         href: articles/Sheng_2016_quinine_rat.html
       - text: "Radiation radiosensitizer mouse (Cardilin 2018)"
         href: articles/Cardilin_2018_radiation_radiosensitizer_mouse.html
+      - text: "Raltegravir (ArabAlameddine 2012)"
+        href: articles/ArabAlameddine_2012_raltegravir.html
       - text: "Raltegravir (Lee 2016)"
         href: articles/Lee_2016_raltegravir.html
       - text: "Raltegravir (Wang 2011)"
@@ -1514,6 +1516,7 @@ articles:
   - articles/Angeli_2016_iron_hepcidin
   - articles/Aouri_2017_rilpivirine
   - articles/Aoyama_2012_sepantronium
+  - articles/ArabAlameddine_2012_raltegravir
   - articles/Archary_2018_lopinavir
   - articles/Archary_2019_abacavir
   - articles/Archary_2019_lamivudine
