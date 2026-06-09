@@ -94,6 +94,8 @@ navbar:
         href: articles/Kotani_2022_astegolimab.html
       - text: "Asundexian (Yassen 2025)"
         href: articles/Yassen_2025_asundexian.html
+      - text: "Atazanavir (Colombo 2006)"
+        href: articles/Colombo_2006_atazanavir.html
       - text: "Atazanavir (Dickinson 2009)"
         href: articles/Dickinson_2009_atazanavir.html
       - text: "Atazanavir ritonavir (Schipani 2013)"
@@ -1204,6 +1206,7 @@ articles:
   - articles/Clewe_2018_TB_MTP_GPDI_invitro
   - articles/Clewe_2018_rifampicin
   - articles/Clinckers_2008_MHD_rat
+  - articles/Colombo_2006_atazanavir
   - articles/Conrado_2014_alzheimer
   - articles/Cook_2016_paracetamol
   - articles/Danielak_2017_clopidogrel
