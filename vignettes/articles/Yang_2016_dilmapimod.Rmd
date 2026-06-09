@@ -316,7 +316,7 @@ the cited primary clinical paper (Christie et al., reference [10]).
 # First-dose interval: 22 - 46 h since injury. Shift the time origin to t = 22
 # so PKNCA sees a clean post-dose window starting at zero.
 first_dose <- sim |>
-  dplyr::filter(time >= 22, time <= 46, !is.na(Cc), Cc >= 0) |>
+  dplyr::filter(time >= 22, time <= 46, !is.na(Cc)) |>
   dplyr::mutate(time_post_dose = time - 22)
 
 dose_first <- events |>

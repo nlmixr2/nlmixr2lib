@@ -204,7 +204,7 @@ against the paper's typical values.
 
 ```{r pknca}
 sim_nca <- sim |>
-  dplyr::filter(!is.na(Cc), time > 0) |>
+  dplyr::filter(!is.na(Cc)) |>
   dplyr::select(id, time, Cc, treatment)
 
 conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | treatment + id)
@@ -239,7 +239,7 @@ against the simulated cohort:
 nca_typical <- PKNCA::pk.nca(PKNCA::PKNCAdata(
   PKNCA::PKNCAconc(
     sim_typical |>
-      dplyr::filter(!is.na(Cc), time > 0) |>
+      dplyr::filter(!is.na(Cc)) |>
       dplyr::mutate(treatment = scenario) |>
       dplyr::distinct(id, time, treatment, .keep_all = TRUE) |>
       dplyr::select(id, time, Cc, treatment),

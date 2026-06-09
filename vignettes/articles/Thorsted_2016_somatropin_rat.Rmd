@@ -225,7 +225,7 @@ concentration range sampled.
 
 ```{r pknca-iv}
 sim_nca <- sim_typ |>
-  dplyr::filter(time > 0, grepl("^IV ", cohort)) |>
+  dplyr::filter(grepl("^IV ", cohort)) |>
   dplyr::select(id, time, Cc, cohort)
 
 dose_df <- events |>

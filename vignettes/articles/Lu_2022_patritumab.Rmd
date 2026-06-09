@@ -360,7 +360,7 @@ Cmax, and Ctrough per cycle per subject.
 
 ```{r pknca-adc}
 adc_nca <- pop_sim |>
-  filter(!is.na(Cc), time > 0) |>
+  filter(!is.na(Cc)) |>
   mutate(cycle = pmax(1L, as.integer(floor((time - 1e-9) / cycle_dy) + 1L)),
          time_in_cycle = time - (cycle - 1) * cycle_dy) |>
   filter(cycle <= n_cycles) |>
@@ -394,7 +394,7 @@ adc_summary
 
 ```{r pknca-dxd}
 dxd_nca <- pop_sim |>
-  filter(!is.na(Cc_dxd), time > 0) |>
+  filter(!is.na(Cc_dxd)) |>
   mutate(cycle = pmax(1L, as.integer(floor((time - 1e-9) / cycle_dy) + 1L)),
          time_in_cycle = time - (cycle - 1) * cycle_dy) |>
   filter(cycle <= n_cycles) |>

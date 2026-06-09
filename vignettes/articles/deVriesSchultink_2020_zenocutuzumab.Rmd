@@ -292,7 +292,7 @@ by `dose_mg` so per-group medians can be compared to de Vries Schultink
 
 ```{r pknca-setup}
 sim_nca <- sim |>
-  dplyr::filter(!is.na(Cc), Cc > 0, time > 0, time <= 504) |>
+  dplyr::filter(!is.na(Cc), time <= 504) |>
   dplyr::transmute(id, time, Cc, dose_mg)
 
 dose_nca <- events |>

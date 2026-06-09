@@ -279,7 +279,7 @@ results can be compared with the paper-reported summary metrics.
 
 ```{r pknca-parent}
 nca_input <- sim_panel |>
-  filter(time > 0, !is.na(Cc_ng_per_mL)) |>
+  filter(!is.na(Cc_ng_per_mL)) |>
   mutate(id = as.integer(factor(dose_mg_per_kg)),
          treatment = paste0(dose_mg_per_kg, " mg/kg SC")) |>
   select(id, time, Cc_ng_per_mL, Cc_asn1_ng_per_mL, treatment)

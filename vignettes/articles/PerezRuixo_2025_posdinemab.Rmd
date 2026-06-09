@@ -322,7 +322,7 @@ We perform a self-consistency NCA on a typical-value single-dose simulation.
 ```{r pknca}
 # Use the SAD 30 mg/kg simulation already run above.
 nca_conc <- sim_hv30 |>
-  filter(time > 0, Cc > 0) |>
+  filter(!is.na(Cc)) |>
   transmute(id = 1L, time = time, Cc,
             treatment = "30 mg/kg IV SD, healthy, 80 kg")
 

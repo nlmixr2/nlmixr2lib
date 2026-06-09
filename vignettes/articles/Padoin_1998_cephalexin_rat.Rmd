@@ -216,7 +216,7 @@ and 2.
 
 ```{r pknca}
 sim_nca <- sim_typical |>
-  dplyr::filter(!is.na(Cc), Cc > 0, time > 0) |>
+  dplyr::filter(!is.na(Cc)) |>
   dplyr::select(id, time, Cc, scenario)
 
 conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | scenario + id)

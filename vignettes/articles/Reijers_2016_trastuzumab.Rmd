@@ -283,7 +283,7 @@ through `keep` so the per-arm summaries are directly comparable.
 
 ```{r pknca}
 sim_nca <- sim |>
-  dplyr::filter(time > 0, !is.na(Cc), Cc > 0) |>
+  dplyr::filter(!is.na(Cc)) |>
   dplyr::select(id, time, Cc, arm)
 
 dose_df <- events |>

@@ -299,7 +299,7 @@ ggplot(fig5, aes(month, value, linetype = regimen, colour = regimen)) +
 # Concentrations for NCA -- take the 2 mg/kg Q2W cohort, sample at
 # Ait-Oudhia-relevant times, and feed Cc to PKNCA.
 sim_nca <- sim_fig4 |>
-  dplyr::filter(regimen == "2 mg/kg Q2W", !is.na(Cc), Cc > 0) |>
+  dplyr::filter(regimen == "2 mg/kg Q2W", !is.na(Cc)) |>
   dplyr::select(id, time, Cc, regimen)
 
 conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | regimen + id)

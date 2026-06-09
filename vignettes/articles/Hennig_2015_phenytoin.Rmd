@@ -298,7 +298,7 @@ comparison.
 
 ```{r pknca-cu}
 nca_input <- sim_po |>
-  dplyr::filter(time > 0, !is.na(Cu), !is.na(Cb)) |>
+  dplyr::filter(!is.na(Cu), !is.na(Cb)) |>
   dplyr::select(id, time, Cu, Cb, band)
 
 dose_df <- events_po |>

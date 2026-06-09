@@ -215,7 +215,7 @@ and q24h dosing, the first-dose profile is operationally at steady state.
 
 ```{r pknca}
 sim_nca <- sim_24h |>
-  filter(!is.na(Cc), time > 0) |>
+  filter(!is.na(Cc)) |>
   select(id, time, Cc, treatment)
 
 dose_df <- events_24h |>

@@ -314,7 +314,7 @@ sim_nca_raw <- rxode2::rxSolve(mod_typical, events = events_nca,
 sim_nca <- sim_nca_raw |>
   dplyr::filter(time >= 12 * 26, time <= 12 * 27) |>
   dplyr::mutate(time = time - 12 * 26) |>
-  dplyr::filter(!is.na(Cc), Cc > 0) |>
+  dplyr::filter(!is.na(Cc)) |>
   dplyr::select(id, time, Cc, regimen)
 
 conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | regimen + id)

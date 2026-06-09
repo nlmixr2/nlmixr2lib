@@ -240,7 +240,7 @@ paper.
 
 ```{r pknca}
 cycle1_conc <- sim_q3w |>
-  dplyr::filter(time > 0, time <= cycle_days, !is.na(Cc), Cc > 0) |>
+  dplyr::filter(time <= cycle_days, !is.na(Cc)) |>
   dplyr::transmute(ID = id, time_rel = time, Cc, treatment = "TDM1_3p6_q3w")
 
 cycle1_dose <- pop |>

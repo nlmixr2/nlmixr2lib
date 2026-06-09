@@ -353,7 +353,7 @@ half-life on the order of weeks at supra-saturation doses).
 
 ```{r pknca}
 sad_nca_input <- sad_sim |>
-  dplyr::filter(!is.na(Cc), Cc > 0)
+  dplyr::filter(!is.na(Cc))
 
 conc_obj <- PKNCA::PKNCAconc(
   sad_nca_input,

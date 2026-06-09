@@ -207,7 +207,7 @@ sim_typ <- rxode2::rxSolve(mod_typical, events = single_events,
 ```{r pknca-typical}
 conc_obj <- PKNCA::PKNCAconc(
   sim_typ |>
-    dplyr::filter(!is.na(Cc), time > 0) |>
+    dplyr::filter(!is.na(Cc)) |>
     dplyr::select(id, time, Cc, quintile),
   Cc ~ time | quintile + id,
   concu = "ng/mL", timeu = "hour"

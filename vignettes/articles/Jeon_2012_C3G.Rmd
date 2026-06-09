@@ -250,7 +250,7 @@ comparison.
 
 ```{r pknca}
 sim_nca <- sim |>
-  dplyr::filter(!is.na(Cc), Cc > 0) |>
+  dplyr::filter(!is.na(Cc)) |>
   dplyr::mutate(
     tad = ifelse(treatment == "Day 14 (multi-dose)", time - 24 * 13, time)
   ) |>
@@ -296,12 +296,30 @@ knitr::kable(
 
 ## Comparison against published Table 2 (noncompartmental)
 
-| Quantity (mean +/- SD)   | Day 1 observed (Table 2) | Day 14 observed (Table 2) | Day 1 simulated | Day 14 simulated |
-|--------------------------|--------------------------|---------------------------|-----------------|-------------------|
-| Cmax (ng/mL)             | 2.10 +/- 0.60            | 2.17 +/- 0.68             | see PKNCA chunk | see PKNCA chunk  |
-| Tmax (h)                 | 0.73 +/- 0.29            | 0.75 +/- 0.34             | see PKNCA chunk | see PKNCA chunk  |
-| AUClast (ng*h/mL)        | 4.26 +/- 1.40            | 4.85 +/- 1.65             | see PKNCA chunk | see PKNCA chunk  |
-| Terminal half-life (h)   | 1.58 +/- 0.33            | 1.47 +/- 0.29             | see PKNCA chunk | see PKNCA chunk  |
+```{r nca_compare}
+reference <- tibble::tribble(
+  ~treatment,            ~cmax, ~tmax, ~auclast, ~half.life,
+  "Day 1 (single dose)",  2.10,  0.73,     4.26,       1.58,
+  "Day 14 (multi-dose)",  2.17,  0.75,     4.85,       1.47
+)
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated     = nca_res,
+  reference     = reference,
+  by            = "treatment",
+  params        = c("cmax", "tmax", "auclast", "half.life"),
+  units         = c(cmax = "ng/mL", tmax = "h",
+                    auclast = "ng*h/mL", half.life = "h"),
+  tolerance_pct = 20
+)
+knitr::kable(
+  cmp,
+  caption = paste(
+    "C3G NCA: simulated (median across n =", n_per_arm, "per arm) vs.",
+    "Jeon 2012 Table 2 (paper mean +/- SD). * differs from reference",
+    "by >20%."
+  )
+)
+```
 
 The simulated Day 1 and Day 14 PK characteristics should agree with the
 published noncompartmental analysis within the expected sampling variability

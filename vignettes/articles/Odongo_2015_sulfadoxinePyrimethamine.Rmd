@@ -228,7 +228,7 @@ Odongo 2015 Table 3.
 
 ```{r pknca-sulfa}
 sulfa_conc <- sim_typical |>
-  filter(time > 0, !is.na(Cc), Cc > 0) |>
+  filter(!is.na(Cc)) |>
   transmute(id = id, time = time, Cc = Cc, cohort = cohort) |>
   distinct(id, time, cohort, .keep_all = TRUE)
 
@@ -268,7 +268,7 @@ knitr::kable(
 
 ```{r pknca-pyra}
 pyra_conc <- sim_typical |>
-  filter(time > 0, !is.na(Cc_pyra), Cc_pyra > 0) |>
+  filter(!is.na(Cc_pyra)) |>
   transmute(id = id, time = time, Cc = Cc_pyra, cohort = cohort) |>
   distinct(id, time, cohort, .keep_all = TRUE)
 

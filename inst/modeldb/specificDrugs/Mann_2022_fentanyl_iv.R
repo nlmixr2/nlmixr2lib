@@ -53,6 +53,28 @@ Mann_2022_fentanyl_iv <- function() {
         "paragraph)."
       ),
       source_name        = "weight"
+    ),
+    Q_TOTAL_LPM = list(
+      description        = "Total cardiac output Qb + Qt feeding the FDA delaymymod.c lines 358-368 shock-state Q_Scale feedback that concentrates the opioid in the central / biophase compartment as hyperperfusion drives Q above baseline.",
+      units              = "L/min",
+      type               = "continuous",
+      reference_category = "4.87 (baseline, gives Q_Scale ~ 1, no amplification)",
+      notes              = paste(
+        "When this PK layer runs standalone (no downstream physiology),",
+        "leave Q_TOTAL_LPM at the baseline 4.87 L/min reference so",
+        "Q_Scale = 1 + 1 / (1 + exp((1.6 - Q_TOTAL_LPM / 4.87) / 0.05))",
+        "evaluates to ~1 and the effective central volume is unchanged.",
+        "When this PK layer is composed with",
+        "Mann_2022_respiratory_physiology, pass that model's Q_total",
+        "(qb + qt) as Q_TOTAL_LPM so that the FDA shock-state feedback",
+        "engages during overdose-induced chemoreflex hyperperfusion -",
+        "during which Q rises to roughly 1.7-2 x baseline and Q_Scale",
+        "saturates at the 2 x cap, effectively halving the apparent",
+        "central volume and doubling the effect-site concentration.",
+        "Source: FDA delaymymod.c Q_0 = 4.87/60 L/s baseline (line 353)",
+        "and Q_Scale sigmoid (lines 358-368)."
+      ),
+      source_name        = "(none; new canonical covariate registered for this model)"
     )
   )
 
@@ -150,13 +172,28 @@ Mann_2022_fentanyl_iv <- function() {
     # input numerically consistent.
     fentanyl_mw_g_mol <- 336.4
 
-    # Three-compartment IV disposition with biophase effect compartment
+    # FDA delaymymod.c shock-state PK amplification (lines 358-368).
+    # Q_TOTAL_LPM is supplied as a covariate; standalone use leaves it
+    # at baseline 4.87 L/min so q_scale collapses to ~1 (no
+    # amplification). When composed with Mann_2022_respiratory_physiology
+    # the hyperperfusion-driven Q rises above baseline during overdose,
+    # q_scale saturates toward 2, vc_eff = vc / q_scale halves, and the
+    # effect-site concentration doubles.
+    q_scale_raw <- 1 + 1 / (1 + exp((1.6 - Q_TOTAL_LPM / 4.87) / 0.05))
+    q_scale <- (q_scale_raw < 1) * 1 + (q_scale_raw > 2) * 2 +
+               (q_scale_raw >= 1) * (q_scale_raw <= 2) * q_scale_raw
+    vc_eff <- vc / q_scale
+
+    # Three-compartment IV disposition with biophase effect compartment.
+    # The disposition (central + peripherals + clearance) keeps the
+    # nominal vc; only the effect-site equation uses vc_eff per FDA
+    # delaymymod.c line 594.
     d/dt(central)     <- -(cl + q + q2) / vc * central +
                           q  / vp  * peripheral1 +
                           q2 / vp2 * peripheral2
     d/dt(peripheral1) <-  q  / vc * central - q  / vp  * peripheral1
     d/dt(peripheral2) <-  q2 / vc * central - q2 / vp2 * peripheral2
-    d/dt(effect)      <-  k1 * (central / vc - effect)
+    d/dt(effect)      <-  k1 * (central / vc_eff - effect)
 
     # Outputs
     Cc    <- (central / vc) * 1000                                          # plasma fentanyl (ng/mL) = (mg/L) * 1000

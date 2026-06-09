@@ -227,7 +227,7 @@ for the 3,4-DAP parent and the 3-Ac DAP metabolite.
 
 ```{r pknca-parent}
 sim_nca_parent <- sim_single |>
-  filter(!is.na(Cc), time > 0) |>
+  filter(!is.na(Cc)) |>
   select(id, time, Cc, cohort)
 
 dose_df <- events_single |>
@@ -264,7 +264,7 @@ knitr::kable(as.data.frame(summary(nca_parent)),
 
 ```{r pknca-metabolite}
 sim_nca_metab <- sim_single |>
-  filter(!is.na(Cc_acdap), time > 0) |>
+  filter(!is.na(Cc_acdap)) |>
   select(id, time, Cc_acdap, cohort) |>
   rename(Cc = Cc_acdap)
 

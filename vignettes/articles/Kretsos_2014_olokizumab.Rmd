@@ -290,7 +290,7 @@ than a side-by-side comparison with published numbers.
 
 ```{r pknca}
 sim_nca <- sim_cc |>
-  dplyr::filter(time > 0, !is.na(Cc), Cc > 0) |>
+  dplyr::filter(!is.na(Cc)) |>
   dplyr::select(id, time, Cc, treatment)
 conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | treatment + id)
 

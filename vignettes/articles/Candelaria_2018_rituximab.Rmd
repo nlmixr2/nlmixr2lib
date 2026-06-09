@@ -225,7 +225,7 @@ up per cycle for direct comparison to the paper.
 ```{r nca}
 # Cycle-1 window: from t = 0 to the next dose at day 21.
 c1 <- sim |>
-  filter(time >= 0, time <= 21, Cc > 0) |>
+  filter(time <= 21) |>
   rename(ID = id) |>
   mutate(treatment = "cycle1") |>
   select(ID, time, Cc, treatment)
@@ -233,7 +233,7 @@ c1 <- sim |>
 # Cycle-6 window: from the cycle-6 dose at day 105 to the next nominal
 # 21-day interval end. This is the AUC0-tau at steady state.
 c6 <- sim |>
-  filter(time >= 105, time <= 126, Cc > 0) |>
+  filter(time >= 105, time <= 126) |>
   rename(ID = id) |>
   mutate(treatment = "cycle6", time = time - 105) |>
   select(ID, time, Cc, treatment)

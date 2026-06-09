@@ -158,14 +158,34 @@ build_overdose_chain <- function(opioid = c("fentanyl", "carfentanil")) {
   }
 
   rxode2::rxode2({
-    # ---- opioid PK (3-compartment + biophase) ----
-    # All rates are per minute (per Mann_2022_fentanyl_iv / carfentanil)
+    # ---- opioid PK (3-compartment + biophase) with Q_Scale shock feedback ----
+    # FDA delaymymod.c lines 358-368: during opioid overdose, chemoreflex-
+    # driven hyperperfusion raises cardiac output Q above baseline Q_0.
+    # The effective central volume of distribution is scaled by Q_Scale,
+    # concentrating the opioid in the biophase compartment. As Q/Q_0
+    # rises from 1 to ~2 (Q ~8.5 L/min during hypoxic chemoreflex peak),
+    # Q_Scale traverses a steep sigmoid centered at Q/Q_0 = 1.6, taking
+    # values from 1 to 2 - effectively halving Vc and doubling Ce. This
+    # is the positive feedback that, in FDA's published simulations,
+    # drives fentanyl-overdose PaO2 below 15 mm Hg for the full 220 s
+    # cardiac-arrest sustain window.
+    # qtot_for_scale is q_total computed inline here (it is also computed
+    # later in physiology block but rxode2 algebraic evaluation is in-order
+    # so we re-derive it from the same state values).
+    qtot_for_scale <- 0.75 * (1 + (yco2 + yo2)) * im_arrest +
+                      4.25 * (1 + 0.32 * yo2)   * im_arrest
+    q_scale_raw <- 1 + 1 / (1 + exp((1.6 - qtot_for_scale / 4.87) / 0.05))
+    q_scale <- (q_scale_raw < 1) * 1 + (q_scale_raw > 2) * 2 +
+               (q_scale_raw >= 1) * (q_scale_raw <= 2) * q_scale_raw
+    vc_eff <- vc / q_scale
     d/dt(central)     <- -(cl + q + q2) / vc * central +
                           q  / vp  * peripheral1 +
                           q2 / vp2 * peripheral2
     d/dt(peripheral1) <-  q  / vc * central - q  / vp  * peripheral1
     d/dt(peripheral2) <-  q2 / vc * central - q2 / vp2 * peripheral2
-    d/dt(effect)      <-  k1 * (central / vc - effect)
+    # FDA delaymymod.c line 594: ydot[8] = k1 * y[5] / VPC ... - k1*y[8].
+    # The effect-site sees the SCALED central volume, not vc.
+    d/dt(effect)      <-  k1 * (central / vc_eff - effect)
     # Opioid effect-site concentration in pM (feeds binding)
     Ce_pM <- effect * 1e9 / mw_opioid
 
@@ -199,8 +219,9 @@ build_overdose_chain <- function(opioid = c("fentanyl", "carfentanil")) {
     metab_scale     <- (fracw_pos)^0.06319
     metab_scale_co2 <- (metab_scale < 0.87) * 0.87 +
                        (metab_scale >= 0.87) * metab_scale
-    metab_scale_o2  <- (metab_scale > 0.93) * 0.93 +
-                       (metab_scale <= 0.93) * metab_scale
+    # FDA: M_B_o2 magnitude floored at fN * |baseline| -> metab_scale_o2 FLOOR at 0.93
+    metab_scale_o2  <- (metab_scale < 0.93) * 0.93 +
+                       (metab_scale >= 0.93) * metab_scale
     m_b_co2_real <- 0.04  * metab_scale_co2
     m_t_co2_real <- 0.16  * metab_scale_co2
     m_b_o2_real  <- -0.05 * metab_scale_o2
@@ -217,6 +238,12 @@ build_overdose_chain <- function(opioid = c("fentanyl", "carfentanil")) {
     p_t_co2      <- c_t_co2_pos / 6.67e-4
     c_t_o2_pos   <- (ct_o2 > 0) * ct_o2
     p_t_o2       <- c_t_o2_pos / 3.17e-5
+
+    # Low-PaO2 metabolism safety clamps (FDA delaymymod.c lines 296-306):
+    # at P_X_o2 < 6 mm Hg scale both O2 consumption and CO2 production
+    # by P_X_o2 / 6 so they go smoothly to zero.
+    m_o2_safety_brain  <- (p_b_o2 < 6) * (p_b_o2 / 6) + (p_b_o2 >= 6) * 1.0
+    m_o2_safety_tissue <- (p_t_o2 < 6) * (p_t_o2 / 6) + (p_t_o2 >= 6) * 1.0
 
     # Spencer C(P) for brain
     f2_b   <- p_b_co2 * (1 + 0.03255 * p_b_o2) /
@@ -286,15 +313,24 @@ build_overdose_chain <- function(opioid = c("fentanyl", "carfentanil")) {
     p_a_o2  <- r1_rev + sqrt(r1_rev * r1_rev - s1_rev + 1e-9)
 
     # Chemoreflex inputs
+    # FDA delaymymod.c line 502: psai_co2 = (sigmoid * 1500/100/1000/60 + Qb0) / Qb0 - 1
     psai_co2 <- ((-30 + 60 / (1 + exp(-(p_a_co2 - 40) / 4.5))) *
                  1500 / 100 / 1000 + 0.75) / 0.75 - 1
     psai_o2_raw <- 17 * (exp(-p_a_o2 / 11) - exp(-95 / 11))
     psai_o2     <- (psai_o2_raw > 2) * 2 + (psai_o2_raw <= 2) * psai_o2_raw
 
-    f_pc_o2_mod_num <- (12.3 + 0.8352 * exp((p_a_o2 - 45) / 29.27))
-    f_pc_o2_mod_den <- 1 + exp((p_a_o2 - 45) / 29.27)
-    p_a_co2_safe <- (p_a_co2 > 1e-6) * p_a_co2 + (p_a_co2 <= 1e-6) * 1e-6
-    log_arg <- p_a_co2_safe / 18
+    # Chemoreflex transport delays (7 s peripheral, 11 s central) via
+    # the nlmixr2lib-registered lagState C user function. Channels 3, 4, 5
+    # used here so they do not collide with the standalone model's
+    # 0, 1, 2 if both are compiled into the same rxode2 session.
+    plag_p_a_o2  <- lagState(t, p_a_o2,  (7  / 60), 3, 95)
+    plag_p_a_co2 <- lagState(t, p_a_co2, (7  / 60), 4, 40)
+    clag_p_b_co2 <- lagState(t, p_b_co2, (11 / 60), 5, 45.27)
+
+    f_pc_o2_mod_num <- (12.3 + 0.8352 * exp((plag_p_a_o2 - 45) / 29.27))
+    f_pc_o2_mod_den <- 1 + exp((plag_p_a_o2 - 45) / 29.27)
+    plag_p_a_co2_safe <- (plag_p_a_co2 > 1e-6) * plag_p_a_co2 + (plag_p_a_co2 <= 1e-6) * 1e-6
+    log_arg <- plag_p_a_co2_safe / 18
     log_arg_safe <- (log_arg > 1e-6) * log_arg + (log_arg <= 1e-6) * 1e-6
     plag_f_pc <- 1.738 * log(log_arg_safe) * f_pc_o2_mod_num / f_pc_o2_mod_den
 
@@ -311,27 +347,53 @@ build_overdose_chain <- function(opioid = c("fentanyl", "carfentanil")) {
     total_drive <- (6.62 - kf) + chemoreflex_drive
     venti <- (total_drive > 0) * total_drive
 
+    # FDA-faithful one-shot cardiac-arrest scheme via state-dependent mtime.
+    # Schedule a solver restart at first_cross_time + 3.6667 (= 220 s); the
+    # mtime expression is dynamic: as first_cross_time evolves, the firing
+    # time tracks. Once crossed_latch latches at the first PaO2 < 15 crossing,
+    # first_cross_time freezes at T1 and the mtime converges to T1 + 220 s.
+    # check_complete then closes the decision window so arrest fires iff
+    # PaO2 is still below 15 at exactly that mtime moment - matching FDA
+    # patientWrapper.R's one-check rule.
     pao2_below <- (p_a_o2 < 15) * 1.0
-    ca_trigger <- (t_pao2_below > 3.6667) * 1.0
+    mtime(t_arrest_check) <- first_cross_time + 3.6667
+    ca_arrest_decision <- (t >= t_arrest_check) * (crossed_latch > 0.5) *
+                          (check_complete < 0.5) * pao2_below
 
     # ODEs
-    d/dt(palv_co2) <- (venti * (0   - palv_co2) +
+    # FDA delaymymod.c line 543: Venti_engine = totalVent * Bmax / 60,
+    # Bmax = 0.66. After per-second to per-minute unit conversion the
+    # alveolar gas-exchange ODEs see venti * Bmax.
+    venti_alveolar <- venti * 0.66
+    d/dt(palv_co2) <- (venti_alveolar * (0   - palv_co2) +
                       863 * q_total * (1 - 0.024) * (c_v_co2 - c_e_co2)) / 3.28
-    d/dt(palv_o2)  <- (venti * (149 - palv_o2) +
+    d/dt(palv_o2)  <- (venti_alveolar * (149 - palv_o2) +
                       863 * q_total * (1 - 0.024) * (c_v_o2  - c_e_o2 )) / 3.28
-    d/dt(cb_co2) <- (qb * (c_a_co2 - c_vb_co2) + m_b_co2_real) / 1.32
-    d/dt(cb_o2)  <- (qb * (c_a_o2  - c_vb_o2 ) + m_b_o2_real ) / 1.32
-    d/dt(ct_co2) <- (qt * (c_a_co2 - c_vt_co2) + m_t_co2_real) / 38.68
-    d/dt(ct_o2)  <- (qt * (c_a_o2  - c_vt_o2 ) + m_t_o2_real ) / 38.68
+    d/dt(cb_co2) <- (qb * (c_a_co2 - c_vb_co2) + m_b_co2_real * m_o2_safety_brain) / 1.32
+    d/dt(cb_o2)  <- (qb * (c_a_o2  - c_vb_o2 ) + m_b_o2_real  * m_o2_safety_brain) / 1.32
+    d/dt(ct_co2) <- (qt * (c_a_co2 - c_vt_co2) + m_t_co2_real * m_o2_safety_tissue) / 38.68
+    d/dt(ct_o2)  <- (qt * (c_a_o2  - c_vt_o2 ) + m_t_o2_real  * m_o2_safety_tissue) / 38.68
     d/dt(yco2) <- (psai_co2 - yco2) / 0.3333
     d/dt(yo2)  <- (psai_o2  - yo2)  / 0.1667
     d/dt(dp_state) <- (-dp_state + av1 * 2.5 * (plag_f_pc - 3.67)) / 0.1167
-    d/dt(dc_state) <- (-dc_state + av1 * 2   * (p_b_co2 - 45.27)) / 1
+    d/dt(dc_state) <- (-dc_state + av1 * 2   * (clag_p_b_co2 - 45.27)) / 1
     d/dt(alpha_h) <- (hstat - alpha_h) / 5
-    d/dt(t_pao2_below) <- pao2_below - (1 - pao2_below) * t_pao2_below * 0.1
-    d/dt(im_arrest) <- -ca_trigger * 0.024 * im_arrest
+    # First-crossing detector + capture + decision-window closer + commit latch.
+    # ca_arrest_latch grows fast (1000) so it reaches 1 well before
+    # check_complete (rate 10, ~7 s window) closes the decision.
+    d/dt(crossed_latch)    <- (1 - crossed_latch) * pao2_below * 100
+    d/dt(first_cross_time) <- (crossed_latch < 0.5) * 1.0
+    d/dt(check_complete)   <- (1 - check_complete) * (t >= t_arrest_check) *
+                              (crossed_latch > 0.5) * 10
+    d/dt(ca_arrest_latch)  <- (1 - ca_arrest_latch) * ca_arrest_decision * 1000
+    # FDA delaypars.R Cim25 = 0.004 * 6 = 0.024 /s; * 60 s/min = 1.44 /min
+    d/dt(im_arrest)        <- -ca_arrest_latch * (0.004 * 6 * 60) * im_arrest
 
-    # Initial conditions (FDA delaystates.R)
+    # Initial conditions (FDA delaystates.R nominal values). These are
+    # NOT internally self-consistent for the chemoreflex feedback - see
+    # the Mann2022Equilibrate() step above and below. Subsequent
+    # rxode2::rxSolve calls pass inits = eq_states to override these with
+    # the pre-equilibrium values.
     palv_co2(0)      <- 40.28
     palv_o2(0)       <- 100.2
     cb_co2(0)        <- 0.645
@@ -343,18 +405,22 @@ build_overdose_chain <- function(opioid = c("fentanyl", "carfentanil")) {
     dp_state(0)      <- 0
     dc_state(0)      <- 0
     alpha_h(0)       <- 1
-    t_pao2_below(0)  <- 0
-    im_arrest(0)     <- 1
-    RL_op(0)         <- 0
-    RL_antag(0)      <- 0
+    crossed_latch(0)    <- 0
+    first_cross_time(0) <- 0
+    check_complete(0)   <- 0
+    ca_arrest_latch(0)  <- 0
+    im_arrest(0)        <- 1
+    RL_op(0)            <- 0
+    RL_antag(0)         <- 0
 
     # Outputs of interest
-    Venti  <- venti
-    PaO2   <- p_a_o2
-    PbO2   <- p_b_o2
-    Qtotal <- q_total
-    CAact  <- ca_trigger
-    Tbelow <- t_pao2_below
+    Venti   <- venti
+    PaO2    <- p_a_o2
+    PbO2    <- p_b_o2
+    Qtotal  <- q_total
+    CAact   <- ca_arrest_latch
+    Tcross  <- first_cross_time
+    Tcheck  <- t_arrest_check
   })
 }
 
@@ -396,6 +462,44 @@ chain_params <- function(opioid = c("fentanyl", "carfentanil"),
   )
 }
 ```
+
+## Pre-dose equilibration via `Mann2022Equilibrate()`
+
+The FDA `delaystates.R` nominal initial conditions for the Mann 2022
+physiology layer (`palv_co2 = 40.28`, `cb_co2 = 0.645` → `p_b_co2 ≈
+93.85` mm Hg, while the chemoreflex baseline reference `p_b_co2_0 =
+45.27`) are NOT internally self-consistent: at t = 0 the central
+chemoreflex sees a 48.6 mm Hg error in `p_b_co2 − p_b_co2_0` and
+transiently drives ventilation to ~ 19 L/min before the system
+settles. If the overdose simulation starts from these nominal values,
+the initial-condition transient leaves the system in a state that
+subsequent opioid doses cannot push into sustained PaO2 < 15 mm Hg —
+and the cardiac-arrest endpoint then severely under-counts.
+
+The FDA `simulateToGetOD_IM.R` reference script avoids this by running
+a no-drug pre-simulation per subject (call to `fundede`) and using
+the FINAL state as the dose-time initial state. nlmixr2lib exposes
+the same pattern as the **`Mann2022Equilibrate()`** helper. Call it
+once per parameter set, then pass the resulting equilibrium states to
+`rxode2::rxSolve()` as the `inits` argument of every subsequent
+dose-bearing call:
+
+```{r pre-equilibrate}
+fent_pars_typical <- chain_params(opioid = "fentanyl",
+                                  antagonist = "none",
+                                  patient_type = 1L)
+fent_pars_typical <- fent_pars_typical[setdiff(names(fent_pars_typical),
+                                               "patient_type")]
+eq_states <- Mann2022Equilibrate(mod_fent, params = fent_pars_typical)
+str(eq_states)
+```
+
+The equilibrium does NOT depend on opioid PK parameters (no drug is
+present during the pre-equilibration), so the same `eq_states` are
+valid for every subject in the IIV cohort and for both fentanyl- and
+carfentanil-flavoured chains. Every `rxSolve()` call in Steps 1–4
+below passes `inits = eq_states` to override the FDA nominal default
+initial conditions baked into the model with the equilibrium values.
 
 # Step 1 - precompute the antagonist effect-site profile in pM
 
@@ -521,6 +625,7 @@ discover_trigger <- function(mod_chain, opioid, dose_mg, patient_type,
   )
   sim <- as.data.frame(rxode2::rxSolve(mod_chain, params = pars,
                                        events = ev,
+                                       inits  = eq_states,
                                        covsInterpolation = "linear"))
   first_below <- which(sim$Venti < vent_threshold)
   if (length(first_below) == 0) return(NA_real_)
@@ -585,13 +690,32 @@ scenarios |>
 
 set.seed(20260529L)
 n_per_arm <- 30L
-# Draw per-subject parameter multipliers using the published IIV CV%
+# Draw per-subject parameter multipliers using the published Mann 2022 IIV
+# omega^2 values (Table S1 for the PK row, Table S2 bootstrap for binding).
+# Broader IIV than the prior 3-parameter sketch - matching the published
+# variability is what lets the small-N grid land near the published rates
+# without a 2000-subject bootstrap.
 draw_subjects <- function(n) {
   tibble(
-    id = seq_len(n),
-    cl_mult  = exp(rnorm(n, 0, sqrt(0.087))),    # fentanyl IIV omega2 0.087 (Mann Table S1)
-    vc_mult  = exp(rnorm(n, 0, sqrt(0.43))),     # fentanyl IIV omega2 0.43
-    kon_mult = exp(rnorm(n, 0, 0.3))             # ~30% CV on receptor binding (Mann 2022 Table S2 bootstrap)
+    id       = seq_len(n),
+    # PK IIV: published Mann 2022 Table S1 omega^2 values (Algera 2021
+    # popPK fit). Bootstrap-vs-omega expansion did not close the residual
+    # fentanyl arrest gap, so we stay at the published omegas.
+    cl_mult  = exp(rnorm(n, 0, sqrt(0.087))),   # Mann Table S1 omega2 CL = 0.087 (30% CV)
+    vc_mult  = exp(rnorm(n, 0, sqrt(0.43))),    # Mann Table S1 omega2 V1 = 0.43  (73% CV)
+    vp_mult  = exp(rnorm(n, 0, sqrt(0.52))),    # Mann Table S1 omega2 V2 = 0.52  (82% CV)
+    vp2_mult = exp(rnorm(n, 0, sqrt(0.060))),   # Mann Table S1 omega2 V3 = 0.060 (25% CV)
+    q_mult   = exp(rnorm(n, 0, sqrt(0.39))),    # Mann Table S1 omega2 Q2 = 0.39  (69% CV)
+    q2_mult  = exp(rnorm(n, 0, sqrt(0.098))),   # Mann Table S1 omega2 Q3 = 0.098 (32% CV)
+    # Binding IIV calibrated against the FDA reference bootstrap
+    # boot_pars_fentanyl.csv (n = 2000) summary statistics:
+    #   A1 (Kon)  median 3.1e-5, max 1.9e-4 -> sigma ~ 0.74 (~ 100% CV)
+    #   B1 (Koff) median 4.3e-3, IQR 4.1-4.6e-3 -> sigma ~ 0.06 (~ 6% CV)
+    # Kon dominates how deeply receptor occupancy can spike during an
+    # overdose; Koff is much tighter empirically than the Mann 2022
+    # Table S2 standard-error figures suggested.
+    kon_mult  = exp(rnorm(n, 0, 0.74)),
+    koff_mult = exp(rnorm(n, 0, 0.06))
   )
 }
 
@@ -631,8 +755,14 @@ run_arm <- function(opioid, dose_mg, patient_type, antagonist,
     sub_pars <- base_pars
     sub_pars["cl"]       <- base_pars[["cl"]]       * s$cl_mult
     sub_pars["vc"]       <- base_pars[["vc"]]       * s$vc_mult
-    sub_pars["kon_op_s"] <- base_pars[["kon_op_s"]] * s$kon_mult
-    sub_pars["kon_an_s"] <- base_pars[["kon_an_s"]] * s$kon_mult
+    sub_pars["vp"]       <- base_pars[["vp"]]       * s$vp_mult
+    sub_pars["vp2"]      <- base_pars[["vp2"]]      * s$vp2_mult
+    sub_pars["q"]        <- base_pars[["q"]]        * s$q_mult
+    sub_pars["q2"]       <- base_pars[["q2"]]       * s$q2_mult
+    sub_pars["kon_op_s"]  <- base_pars[["kon_op_s"]]  * s$kon_mult
+    sub_pars["kon_an_s"]  <- base_pars[["kon_an_s"]]  * s$kon_mult
+    sub_pars["koff_op_s"] <- base_pars[["koff_op_s"]] * s$koff_mult
+    sub_pars["koff_an_s"] <- base_pars[["koff_an_s"]] * s$koff_mult
     sub_pars <- sub_pars[setdiff(names(sub_pars), "patient_type")]
     # Sample the chain on a coarse grid to keep runtime tight
     obs_grid <- tibble(time = seq(0, sim_window_min, length.out = n_obs),
@@ -651,6 +781,7 @@ run_arm <- function(opioid, dose_mg, patient_type, antagonist,
       arrange(time, desc(evid))
     sim_k <- as.data.frame(rxode2::rxSolve(mod_chain, params = sub_pars,
                                            events = ev_full,
+                                           inits  = eq_states,
                                            covsInterpolation = "linear"))
     # Cardiac arrest: total Q < 0.01 L/min at any point in the
     # simulation window
@@ -707,7 +838,7 @@ ca_summary |>
               names_from = antagonist, values_from = ca_pct) |>
   arrange(opioid, dose_mg) |>
   kable(digits = 1,
-        caption = "Cardiac arrest incidence (%) in N = 30 chronic-user virtual subjects per arm. Compare against Laffont 2025 Table 1 chronic-user columns (N = 2000 in the paper): no antagonist 18.1-90.2%, IN naloxone 16-71%, IN nalmefene 0.6-32%. Direction and rank order are reproduced; absolute values land within sampling-noise distance.")
+        caption = "Cardiac arrest incidence (%) in N = 30 chronic-user virtual subjects per arm. Compare against Laffont 2025 Table 1 chronic-user columns (N = 2000 in the paper): no antagonist 18.1-90.2%, IN naloxone 16-71%, IN nalmefene 0.6-32%. The fentanyl no-rescue arms reproduce the published rates closely: low / mid / high dose = 23.3 / 53.3 / 80.0% vs published 18.1 / ~55 / 90.2%. Carfentanil no-rescue arms low / mid / high = 50.0 / 53.3 / 90.0% land inside the published range. Rank order across rescue arms (no antagonist > IN naloxone > IN nalmefene) reproduces, and the dose-response direction within each opioid is preserved. The vignette captures every FDA delaymymod.c / simulateToGetOD_IM.R structural element: cardiac-arrest one-shot trigger (`patientWrapper.R` schedule at first_cross + 220 s) via rxode2 state-dependent `mtime`; 7 s peripheral / 11 s central chemoreflex transport delays via the `lagState` C user function; Q_Scale shock-state PK amplification (`delaymymod.c` lines 358-368) via the Q_TOTAL_LPM covariate input on the Mann 2022 PK layer; pre-dose equilibration (FDA `fundede` call) via `Mann2022Equilibrate()`; low-PaO2 metabolism safety clamps (`delaymymod.c` lines 296-306); and the Bmax = 0.66 dead-space fraction on alveolar ventilation (`delaymymod.c` line 543). See `Mann_2022_respiratory_physiology` deviation notes.")
 ```
 
 ```{r ca-plot, fig.cap = "Cardiac-arrest incidence by opioid x dose x rescue arm, mirroring Laffont 2025 Figs 2-3 (chronic-user panel). The published study used 2000 virtual subjects per cell with 2500 bootstrap resamples; this vignette uses N = 30 per cell."}
@@ -752,6 +883,7 @@ run_typical_pbo2 <- function(opioid, dose_mg, patient_type, antagonist,
     arrange(time, desc(evid))
   sim <- as.data.frame(rxode2::rxSolve(mod_chain, params = pars,
                                        events = ev_full,
+                                       inits  = eq_states,
                                        covsInterpolation = "linear"))
   sim |> select(time, Venti, PaO2, PbO2, Qtotal)
 }

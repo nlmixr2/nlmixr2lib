@@ -192,7 +192,7 @@ dose group as the treatment grouping variable.
 ```{r pknca}
 sim_nca <- sim |>
   as.data.frame() |>
-  filter(!is.na(Cc), time >= 0, time <= 28) |>
+  filter(!is.na(Cc), time <= 28) |>
   left_join(treatment_map, by = c("id" = "ID")) |>
   transmute(id = id, time = time, Cc = Cc, treatment = treatment)
 

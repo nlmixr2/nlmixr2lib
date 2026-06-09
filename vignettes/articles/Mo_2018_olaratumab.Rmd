@@ -308,7 +308,7 @@ terminal half-life of approximately 11 days.
 
 ```{r nca}
 sim_nca <- sim |>
-  dplyr::filter(!is.na(Cc), Cc > 0, time >= 0, time <= cycle_h_21) |>
+  dplyr::filter(!is.na(Cc), time <= cycle_h_21) |>
   dplyr::rename(treatment = cohort) |>
   dplyr::select(id, time, Cc, treatment)
 

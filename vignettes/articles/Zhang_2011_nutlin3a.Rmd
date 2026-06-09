@@ -278,7 +278,7 @@ side-by-side observed-vs-simulated audit.
 
 ```{r pknca}
 sim_nca <- sim |>
-  dplyr::filter(time > 0, time <= 48, !is.na(Cc)) |>
+  dplyr::filter(time <= 48, !is.na(Cc)) |>
   dplyr::select(id, time, Cc, treatment)
 
 conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | treatment + id)

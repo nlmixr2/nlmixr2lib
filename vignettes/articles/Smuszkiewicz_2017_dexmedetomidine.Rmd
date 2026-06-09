@@ -201,7 +201,7 @@ in adults is around 2-3 h; the simulated value should match.
 
 ```{r pknca}
 sim_nca <- sim |>
-  dplyr::filter(!is.na(Cc), Cc > 0) |>
+  dplyr::filter(!is.na(Cc)) |>
   dplyr::select(id, time, Cc, group)
 
 dose_nca <- events |>

@@ -320,9 +320,7 @@ expected mAb-like half-life (~2-4 weeks) on log-linear terminal decline.
 first_interval_end <- 14
 
 sim_nca <- sim |>
-  dplyr::filter(!is.na(Cc),
-                time >= 0,
-                time <= first_interval_end) |>
+  dplyr::filter(!is.na(Cc), time <= first_interval_end) |>
   dplyr::select(id, treatment, time, Cc)
 
 dose_df <- events |>

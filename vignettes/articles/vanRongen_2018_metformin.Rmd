@@ -201,7 +201,7 @@ dose-standardised (1000 mg) NCA summary in Table 3 of van Rongen 2018.
 
 ```{r pknca}
 sim_nca <- sim |>
-  dplyr::filter(!is.na(Cc), Cc > 0) |>
+  dplyr::filter(!is.na(Cc)) |>
   dplyr::select(id, time, Cc, cohort)
 
 conc_obj <- PKNCA::PKNCAconc(

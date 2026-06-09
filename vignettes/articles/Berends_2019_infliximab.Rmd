@@ -286,7 +286,7 @@ sim_sd <- rxode2::rxSolve(mod_typical, ev_sd, iCov = icov_sd,
 sim_sd <- sim_sd[!duplicated(sim_sd$time), ]
 
 nca_conc <- sim_sd |>
-  filter(time > 0, Cc > 0) |>
+  filter(!is.na(Cc)) |>
   transmute(id = 1L, time, Cc,
             treatment = "5 mg/kg IV SD, ADA-, ALB 38")
 

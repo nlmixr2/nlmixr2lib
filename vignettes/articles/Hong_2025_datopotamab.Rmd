@@ -339,7 +339,6 @@ cycle-3 *ratio* and the qualitative ordering between cycles.
 
 ```{r pknca-typical}
 typ_nca_input <- typ_sim |>
-  filter(time > 0) |>
   mutate(
     cycle         = pmax(1L, as.integer(floor((time - 1e-9) / cycle_dy) + 1L)),
     time_in_cycle = time - (cycle - 1) * cycle_dy

@@ -279,7 +279,7 @@ NCA tables were available.
 
 ```{r pknca-plasma}
 sim_nca_plasma <- sim |>
-  dplyr::filter(!is.na(Cc), time > 0) |>
+  dplyr::filter(!is.na(Cc)) |>
   dplyr::transmute(id = id, time = time, Cc = Cc,
                    treatment = "meropenem 1g q8h IV (SS)")
 
@@ -311,7 +311,7 @@ knitr::kable(summary(nca_plasma),
 
 ```{r pknca-elf}
 sim_nca_elf <- sim |>
-  dplyr::filter(!is.na(Celf), time > 0) |>
+  dplyr::filter(!is.na(Celf)) |>
   dplyr::transmute(id = id, time = time, Celf = Celf,
                    treatment = "meropenem 1g q8h IV (SS)")
 

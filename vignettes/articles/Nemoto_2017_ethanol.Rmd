@@ -270,7 +270,7 @@ reported here -- the Nemoto 2017 paper itself does not report NCA parameters.
 
 ```{r pknca}
 sim_nca <- sim |>
-  filter(!is.na(Cc), time > 0) |>
+  filter(!is.na(Cc)) |>
   mutate(treatment = "14 g ethanol oral") |>
   select(id, time, Cc, treatment)
 

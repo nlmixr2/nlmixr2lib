@@ -197,7 +197,7 @@ formula so per-dose summaries can be compared to the paper.
 
 ```{r pknca}
 sim_nca <- sim |>
-  filter(!is.na(Cc), Cc > 0) |>
+  filter(!is.na(Cc)) |>
   select(id, time, Cc, treatment)
 
 conc_obj <- PKNCA::PKNCAconc(as.data.frame(sim_nca), Cc ~ time | treatment + id)

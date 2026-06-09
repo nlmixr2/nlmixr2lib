@@ -17,7 +17,34 @@
 .nlmixr2libConventionsStatic <- list(
   pkParams = c(
     "lka", "lcl", "lvc", "lvp", "lvp2", "lq", "lq2", "lfdepot",
-    "lvmax", "lcl_ss", "lcl_time", "lcl_renal", "lcl_nonren"
+    "lvmax", "lcl_ss", "lcl_time", "lcl_renal", "lcl_nonren",
+    # K-PD / single-rate-constant elimination (primary `ini()` form
+    # used when no explicit `vc` is estimated). Canonical lkel adopted
+    # 2026-05-28 per the naming audit (replaces `lke`).
+    "lkel",
+    # Rate-constant-only multi-compartment parameterisation (primary
+    # `ini()` form when the dependent variable is an amount rather than
+    # a concentration, so volumes of distribution are not identifiable
+    # and the inter-compartmental rate constants are the primary
+    # quantities). NONMEM ADVAN4 / ADVAN11 papers report these as
+    # k_23 / k_32 / k_24 / k_42 under the depot=1, central=2,
+    # peripherals=3/4 numbering; the canonical nlmixr2 names treat
+    # central as 1 and peripherals as 2/3 after the depot is split out.
+    # Founding example: Marier_2002_tobramycin_rat_liposomal /
+    # Marier_2002_tobramycin_rat_conventional (intratracheal tobramycin
+    # in rats; central state carries amount in ug because the lung-
+    # tissue assay output is an amount, not a concentration).
+    "lk12", "lk21", "lk13", "lk31",
+    # Canonical lag-time name. Replaces the legacy `lalag`, `llag`,
+    # `ltz` forms per the 2026-05-28 naming audit.
+    "ltlag",
+    # Influx (plasma -> tissue ECF/CSF) and efflux (tissue -> plasma)
+    # clearances used by physiological CNS-distribution popPK models
+    # in which the brain/tumor extracellular fluid is parameterised as
+    # a separate compartment connected to plasma central via two
+    # asymmetric clearances driven by unbound drug. Used in Campagne
+    # 2019 cyclophosphamide mouse CNS penetration popPK.
+    "lclin", "lclef"
   ),
   pkBareParams = c(
     "ka", "cl", "vc", "vp", "vp2", "q", "q2", "kel",
@@ -83,19 +110,23 @@
     # capillary release term setting the lower physiological limit).
     # State holds a concentration (mmol/L) rather than an amount.
     "nefa",
-    # Viral-dynamics compartments used by Neumann-style biphasic-decline
-    # PK/VD models for hepatitis C and other viral-replication mechanisms
-    # (Wang 2018 daclatasvir/asunaprevir HCV PK/VD MBMA; Neumann et al
-    # 1998 baseline framework). `infected` = productively infected cells
-    # (state I in the source paper); `virus` = free virus (state V); the
-    # paper's uninfected target cells (T) re-use the canonical `target`
-    # compartment (HCV target cells are hepatocytes, not the TMDD soluble
-    # / membrane-bound receptor target that `target` was originally
-    # registered for, but the semantic role - the unbound, drug-naive
-    # species the virus / drug acts on - is the same). State holds a
-    # concentration (cells/mL for `infected`, IU/mL or virion-copies/mL
-    # for `virus`) rather than an amount.
-    "infected", "virus"
+    # Purine metabolism PD compartments used by semi-mechanistic
+    # xanthine / uric-acid turnover models (Hill-McManus 2017
+    # doi:10.1111/bcp.13427). `xanthine` and `urate` hold serum amounts
+    # (mg); `xanthine_urine` and `urate_urine` hold cumulative urinary
+    # excretion amounts (mg) integrated from CLX / CLUA renal-clearance
+    # outflows for direct comparison with 24-h urinary collection data.
+    "xanthine", "urate", "xanthine_urine", "urate_urine",
+    # Kinetic-pharmacodynamic (K-PD) body amount compartment used when
+    # the source paper drives a PD response from a dose-to-effect K-PD
+    # construct rather than from measured plasma concentrations. Drug
+    # amount accumulates from each dose event and decays first-order at
+    # rate `kel`; the canonical PK-elimination parameter `lkel` is
+    # reused (no parallel `lke_kpd`). Suffix `_kpd` disambiguates from
+    # the absorption `depot`. Founding example:
+    # deVriesSchultink_2018_anthracycline_troponinT (anthracycline
+    # K-PD driving the troponin T direct-effect equation).
+    "depot_kpd"
   ),
   # Bare numbered chains (transit / effect / precursor / lat / dar /
   # depot) and metabolite-suffixed compartments are validated
@@ -168,6 +199,11 @@
     # N-desmethyl-bedaquiline metabolite (M2) of bedaquiline
     # (Svensson 2016 DDMODEL00000219).
     "m2",
+    # G-037720 metabolite (M1) of ipatasertib, formed mainly by
+    # CYP3A4-mediated metabolism and pharmacologically active (2- to
+    # 4-fold less potent than the parent). Used in parent + metabolite
+    # joint popPK extractions (Yoshida 2021 doi:10.1002/jcph.1942).
+    "m1",
     # Endoxifen (4-hydroxy-N-desmethyltamoxifen), the major active
     # metabolite of tamoxifen -- Ter Heine 2014.
     "endx",
@@ -197,6 +233,11 @@
     # Dihydroartemisinin, the active metabolite of artesunate
     # (Birgersson 2019 DDMODEL00000297).
     "dha",
+    # Desethylamodiaquine (DEAQ), the principal CYP2C8-derived
+    # antimalarial-active metabolite of amodiaquine. Used as a
+    # metabolite suffix in joint parent-plus-metabolite popPK models
+    # (Ali 2018 doi:10.1128/AAC.02193-17).
+    "deaq",
     # Hydroxy-itraconazole (OH-ITZ), the major active metabolite of
     # itraconazole produced by CYP3A4 hydroxylation. Used as a metabolite
     # suffix in parent + metabolite simultaneous popPK models
@@ -312,6 +353,12 @@
     # (depot_asv, central_asv, peripheral1_asv, effect_asv, Cc_asv,
     # lka_asv, lcl_asv, etc.).
     "asv",
+    # Oseltamivir carboxylate (OC), the active metabolite of oseltamivir
+    # formed by hepatic carboxylesterase 1 (HCE1) hydrolysis of the
+    # inactive ethyl-ester prodrug. Used as a metabolite suffix in
+    # parent-prodrug oseltamivir + active-metabolite OC popPK models
+    # (Kamal 2013 doi:10.1128/AAC.02438-12).
+    "oc",
     # CDB-4453, the active monodemethylated metabolite of telapristone
     # (CDB-4124) formed by N-demethylation on the C-17 side chain. Used
     # in the Morris 2011 parent (telapristone) + metabolite (CDB-4453)

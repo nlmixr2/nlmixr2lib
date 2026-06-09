@@ -22,7 +22,7 @@ Imports:
     cli,
     methods,
     nlmixr2est,
-    rxode2 (>= 2.0.12)
+    rxode2 (>= 5.0.2)
 License: GPL (>= 2)
 LazyData: true
 VignetteBuilder: knitr

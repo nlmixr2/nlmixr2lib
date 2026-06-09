@@ -246,7 +246,7 @@ half-life by WT bin.
 
 ```{r pknca}
 sim_nca <- sim |>
-  dplyr::filter(!is.na(Cc), time > 0) |>
+  dplyr::filter(!is.na(Cc)) |>
   dplyr::transmute(id, time, Cc, treatment, WT)
 
 dose_df <- events |>

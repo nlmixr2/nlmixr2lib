@@ -275,7 +275,7 @@ monotherapy vs combination) can be compared against Dorlo 2017 Table 3.
 
 ```{r pknca}
 sim_nca <- sim %>%
-  filter(!is.na(Cc), Cc > 0) %>%
+  filter(!is.na(Cc)) %>%
   transmute(id, regimen, age_group, time, Cc, FFM)
 
 dose_nca <- events %>%

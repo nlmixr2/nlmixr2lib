@@ -291,7 +291,7 @@ regimens (A, B) and on the final 2-week dosing interval for the SC regimens
 
 ```{r pknca-prep}
 sim_nca <- sim |>
-  dplyr::filter(!is.na(Cc), time > 0) |>
+  dplyr::filter(!is.na(Cc)) |>
   dplyr::select(id, time, Cc, regimen)
 
 dose_df <- events |>

@@ -69,6 +69,8 @@ Do not silently resolve ambiguity. Do not tune parameters to make a validation o
 - [ ] Running `readModelDb("<model>")` returns without error.
 - [ ] `rxode2::rxSolve(mod, events)` produces non-NaN, non-negative concentrations across the relevant time window.
 - [ ] Simulated Cmax, AUC, and half-life are within ~20% of published values for a typical dose in a typical subject. Larger discrepancies: investigate, don't tune. **Skip this check** when the source publication does not report NCA values (count / Markov / IRT / dropout / TTE modalities, or endogenous models — see § F.1).
+- [ ] Rendered vignette contains **no** `Requesting an AUC range starting (0) before the first measurement` warning. If it does, the PKNCA input filter is dropping the time-zero row (commonly `time > 0` or `Cc > 0`); see `pknca-recipes.md` § "Time-zero records (mandatory)" for the fix.
+- [ ] The published-vs-simulated comparison is a single combined kable built via `nlmixr2lib::ncaComparisonTable()`; the parameter column header is `NCA parameter`; cells contain friendly labels (`Cmax`, `AUC0-∞ (obs)`, `t½`, …) not raw PKNCA codes (`cmax`, `aucinf.obs`, `half.life`); no "see above" cross-references appear anywhere in the comparison section.
 - [ ] A simulated VPC visually resembles the paper's VPC (dose-proportional scaling, right terminal slope, reasonable spread). Skip when the publication has no VPC figure to compare against.
 - [ ] If the event table was built from multiple cohorts via `bind_rows()`, ID ranges are disjoint (`anyDuplicated(events[, c("id","time","evid")]) == 0`). See `vignette-template.md`'s `make_cohort(..., id_offset = )` snippet for the pattern.
 

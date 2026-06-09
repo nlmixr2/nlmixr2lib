@@ -247,7 +247,7 @@ bracket this typical value.
 treatment_label <- "5 g/m^2 24h IV"
 
 sim_nca <- sim |>
-  dplyr::filter(!is.na(Cc), Cc >= 0) |>
+  dplyr::filter(!is.na(Cc)) |>
   dplyr::mutate(treatment = treatment_label)
 
 dose_df <- events |>
