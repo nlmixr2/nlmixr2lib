@@ -2567,6 +2567,17 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Example models:** `Okada_2025_rocatinlimab.R` (multiplicative shift `1 - 0.372` on linear CL when 1; reference complement is the pooled atopic dermatitis + ulcerative colitis + healthy-volunteer cohort).
 - **Notes:** Used when a population PK model pools plaque-psoriasis patients with a non-psoriasis reference population and psoriasis disease status is retained as a covariate. Scope: specific because the disease-pooling reference category is paper-defined. Ratified canonically on 2026-04-27.
 
+### DIS_SEPSIS (**canonical for active-sepsis co-condition indicator**)
+- **Description:** 1 = active sepsis / septic syndrome at the start of (or during) the modeled PK sampling window, 0 = no sepsis. Time-fixed per subject in the typical popPK use-case (Jeon 2014); time-varying use is permitted, in which case document per-model in `covariateData[[DIS_SEPSIS]]$notes` whether the indicator is fixed at PK-sampling onset or updated dynamically over the observation period. Used as a binary co-condition indicator on PK parameters (clearance, volume) when a study population pools septic and non-septic subjects, typically in ICU / burn-ICU / critically ill cohorts.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (no sepsis).
+- **Source aliases:**
+  - `sepsis` -- used in `Jeon_2014_piperacillin.R` (Jeon 2014 Methods / Table 1 covariate with values 0 = absence, 1 = presence of sepsis; same orientation as the canonical).
+- **Example models:** `Jeon_2014_piperacillin.R` (additive shift on central volume V1: `TVV1 = exp(lvc) + e_sepsis_vc * DIS_SEPSIS` with `e_sepsis_vc = 14.8 L` -- septic patients have V1 = 25.3 + 14.8 = 40.1 L versus 25.3 L in non-septic patients, consistent with capillary leakage and interstitial edema in sepsis).
+- **Notes:** Distinct from chronic disease-state indicators (e.g., `DIS_UC`, `DIS_HAE`) -- sepsis is an acute / transient co-condition rather than a chronic indication label. Distinct from `CRP` / `IL6` / `SAPS_II`, which are biomarker / severity-score columns that may co-vary with clinical sepsis but are conceptually distinct from a binary clinical-sepsis diagnostic flag. Scope: specific per the operator-resolved sidecar response (2026-06-07) for the Jeon 2014 piperacillin extraction, pending confirmation when a second ICU / burn-ICU sepsis-aware popPK model ratifies the canonical. Ratified canonically on 2026-06-09 alongside the Jeon 2014 piperacillin extraction.
+
 ### CARRAGEENAN (**canonical for intraplantar-carrageenan inflammatory-challenge indicator**)
 - **Description:** Binary indicator for intraplantar injection of carrageenan suspension as an experimental inflammatory / hyperalgesic challenge. 1 = subject received an intraplantar carrageenan injection at the start of the experiment (the carrageenan-induced peripheral inflammation / thermal-hyperalgesia paradigm); 0 = subject received an intraplantar saline injection (sham control). Time-fixed per subject within an experiment.
 - **Units:** (binary)
