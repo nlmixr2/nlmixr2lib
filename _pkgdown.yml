@@ -930,6 +930,8 @@ navbar:
         href: articles/Ahamadi_2017_pembrolizumab.html
       - text: "Pembrolizumab (Elassaiss-Schaap 2017)"
         href: articles/Elassaiss-Schaap_2017_pembrolizumab.html
+      - text: "Pembrolizumab (Lindauer 2017)"
+        href: articles/Lindauer_2017_pembrolizumab.html
       - text: "Penicillin G (Padari 2018)"
         href: articles/Padari_2018_penicillin_G.html
       - text: "Pertuzumab (Garg 2014)"
@@ -1913,6 +1915,7 @@ articles:
   - articles/Lin_2018_voriconazole
   - articles/Lin_2024_casirivimab
   - articles/Lin_2024_pozelimab
+  - articles/Lindauer_2017_pembrolizumab
   - articles/Livio_2014_tobramycin
   - articles/Llanos-Paez_2017_gentamicin
   - articles/Llanos-Paez_2020_gentamicin
