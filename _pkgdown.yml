@@ -194,6 +194,8 @@ navbar:
         href: articles/Wade_2015_certolizumab.html
       - text: "Chloroquine (Simpson 2013)"
         href: articles/Simpson_2013_chloroquine.html
+      - text: "Ciclosporin (Ni 2013)"
+        href: articles/Ni_2013_ciclosporin.html
       - text: "Ciprofloxacin (Thuo 2011)"
         href: articles/Thuo_2011_ciprofloxacin.html
       - text: "Cladribine (Savic 2017)"
@@ -1437,6 +1439,7 @@ articles:
   - articles/Netterberg_2017_docetaxel
   - articles/Ngamprasertwong_2016_propofol_sheep
   - articles/Ngo_2020_HL2351
+  - articles/Ni_2013_ciclosporin
   - articles/Nikanjam_2019_siltuximab
   - articles/Novakovic_2017_cladribine
   - articles/Odongo_2015_sulfadoxinePyrimethamine
