@@ -2596,6 +2596,17 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Example models:** `Lahu_2010_roflumilast.R` (linear additive effects on roflumilast parent CL (-39.4%) and V1 (+184%) and on roflumilast N-oxide CL (-7.9%) and Vd (-21.4%); reference category 0 = pooled phase I healthy volunteers, 1 = pooled phase II/III moderate-to-severe COPD patient).
 - **Notes:** Used when a population PK/PD model pools healthy volunteers with COPD patients and the COPD-vs-HV contrast is retained as a covariate on PK parameters. Scope: specific because the complement reference category and the COPD-severity inclusion criteria are paper-defined.
 
+### DIS_CHF (**canonical for compensated congestive heart failure indicator**)
+- **Description:** 1 = subject has compensated congestive heart failure (chronic CHF stabilised on diuretics, cardiac glycosides, or other background therapy; NYHA class typically not stratified at this level), 0 = no diagnosed CHF. Time-fixed per subject in popPK / popPK-PD analyses that include CHF as a baseline disease-state covariate.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no CHF).
+- **Source aliases:**
+  - `chf` -- used in `Thomson_1989_lisinopril.R` (Thomson 1989 Table 2 cardiac-failure indicator; treated as a multiplicative factor 0.645 raised to `chf` on CL/F so the unaffected reference group keeps factor 1).
+- **Example models:** `Thomson_1989_lisinopril.R` (multiplicative power-form effect on CL/F: `e_chf_cl^DIS_CHF` with `e_chf_cl = 0.645`; ~35% lower apparent clearance with compensated cardiac failure).
+- **Notes:** Use this canonical when the source paper tests a binary cardiac-failure indicator (compensated, stable, on background therapy) as a structural covariate on PK parameters. Distinct from concomitant-medication indicators such as `CONMED_SPIRON` (which captures the diuretic / aldosterone-antagonist effect typically given alongside CHF therapy) and from haemodynamic / autonomic covariates such as `HR` and the blood-pressure outputs. For papers that decompose CHF severity into NYHA classes, prefer a per-class encoding (e.g., `DIS_CHF_NYHA3`, `DIS_CHF_NYHA4`) when the strata are retained in the final model. The covariate-effect parameter form is `e_chf_<param>` (drops the `DIS_` prefix per the existing `DIS_CANCER -> e_cancer_<param>` precedent). Ratified canonically on 2026-06-10 alongside the Thomson 1989 lisinopril extraction.
+
 ### DIS_OBESE_MORBID (**canonical for morbidly obese cohort indicator**)
 - **Description:** 1 = morbidly obese patient (BMI > 40 kg/m^2 in the canonical definition; typical pooled-analysis enrollment criterion is bariatric-surgery patients), 0 = non-obese subject (typically healthy volunteer pooled in the source analysis). Time-fixed per subject.
 - **Units:** (binary)
