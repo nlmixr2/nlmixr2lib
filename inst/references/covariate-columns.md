@@ -5551,6 +5551,17 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Example models:** `Clegg_2024_nirsevimab.R`.
 - **Notes:** Study-specific but semantically general (second-exposure indicator). Promote to general if a second RSV-season model adopts the same semantics.
 
+### SEMESTER (**canonical for paired-season indicator (winter or spring vs summer or fall)**)
+- **Description:** Calendar paired-season indicator: 1 = winter or spring (December 21 to June 19), 0 = summer or fall (June 20 to December 20). Time-fixed per subject (or per simulation) based on the calendar date at which the observation occurred.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (summer or fall)
+- **Source aliases:**
+  - `SEMESTER1` -- used in Gonzalez-Sales 2015 testosterone circadian model with the same encoding (winter or spring = 1, summer or fall = 0).
+- **Example models:** `GonzalezSales_2015_testosterone.R` (+8.09% multiplicative effect on Base; Table III).
+- **Notes:** Gonzalez-Sales 2015 split season into a paired `SEMESTER1` / `SEMESTER2` covariate (`SEMESTER1 = 1` if winter or spring; `SEMESTER2 = 1` if fall or winter), keeping only `SEMESTER1` in the final model. The canonical column omits the `1` suffix because the second indicator was not retained; the source-paper naming is recorded as a source alias. Calendar boundaries are reported verbatim in the paper Methods (winter: Dec 21 - Mar 19; spring: Mar 20 - Jun 19; summer: Jun 20 - Sep 21; fall: Sep 22 - Dec 20). Scope: specific until a second endogenous-rhythm model adopts the same encoding; at that point promote to `general`. Distinct from `SEASON2` (RSV-second-exposure indicator) which has different semantics.
+
 ### COHDOSE (**canonical for randomized dose cohort (mg/kg)**)
 - **Description:** Randomized dose cohort expressed in mg/kg. Subject-level (time-fixed) covariate carrying the per-subject cohort dose in a study where each subject remained on a single escalating-cohort dose for the full dosing period.
 - **Units:** mg/kg
