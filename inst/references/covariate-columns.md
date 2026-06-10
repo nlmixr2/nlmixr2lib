@@ -3041,6 +3041,19 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Example models:** `Lin_2024_casirivimab.R` (multiplicative fractional change on CL; +38.0%).
 - **Notes:** Companion indicator to `OXYSUP_LOW`. In Lin 2024 the rare mechanical-ventilation cases were pooled into the high-flow indicator (n = 24 across the 7598-subject dataset).
 
+### CD4_ABS (**canonical for absolute CD4+ T-lymphocyte count**)
+- **Description:** Absolute peripheral-blood CD4+ T-lymphocyte count. Baseline or time-varying; document the time resolution per model via `covariateData[[CD4_ABS]]$notes`. Used as a continuous disease-severity / immunosuppression-depth biomarker in HIV / AIDS popPK models and as a covariate on clearance for drugs whose disposition is altered by advanced HIV immunosuppression.
+- **Units:** cells/mm^3 (equivalently cells/uL; the two labels are numerically equivalent).
+- **Type:** continuous
+- **Scope:** general -- the absolute CD4 count is a textbook HIV-severity covariate that future popPK extractions in HIV / AIDS cohorts are expected to reuse.
+- **Reference category:** n/a -- enters either as a raw additive linear slope (McLachlan 1996, `CL = exp(lcl) + e_crcl_cl * CRCL + e_cd4_abs_cl * CD4_ABS`; coefficient in L/h per cell/mm^3) or as a centred linear / power term `(CD4_ABS / ref)^exponent` against a population reference (typical reference 50 or 200 cells/mm^3 in HIV cohorts). Document the form and reference value in each model's `covariateData[[CD4_ABS]]$notes`.
+- **Source aliases:**
+  - `CD4` -- bare-name source-paper column; common in clinical-PK papers (McLachlan 1996 prints "CD4 cell count" in the abstract and "CD4+ T-lymphocyte count" in the Methods).
+  - `CD4_COUNT` -- explicit-suffix variant.
+  - `CD4_T_COUNT` -- verbatim "CD4+ T-lymphocyte count" form used in some clinical-PK papers.
+- **Example models:** `McLachlan_1996_fluconazole.R` (raw additive linear slope on the CL covariate model: 0.00068 L/h per cell/mm^3; cohort mean 69 cells/mm^3 with 97 of 109 covariate-evaluable subjects below 200 cells/mm^3 per Table 3; entered as `e_cd4_abs_cl * CD4_ABS` in the additive intercept-plus-slopes CL regression alongside `e_crcl_cl * CRCL`).
+- **Notes:** Distinct from the CD4 z-score family (e.g., the age-standardised z-score modelled by `Majekodunmi_2017_HIV_HCV_CD4_recovery.R`), which is a paediatric-recovery standardised metric on the natural-z-score scale and is not directly interchangeable with the absolute count. Distinct from CD4 percentage (CD4_PCT, the proportion of total lymphocytes that are CD4+; commonly reported in paediatric HIV studies and not yet registered) -- register CD4_PCT separately if a future paper retains it. Distinct from `HIV_POS` (the binary serostatus indicator), which captures HIV-positive-vs-negative rather than the depth of immunosuppression within an HIV-positive cohort. The two can be paired in a single model when an HIV-positive subset is further stratified by CD4 count, but most HIV-popPK papers focus on either the comorbidity flag (mixed HIV+/HIV- cohort) or the absolute count (HIV+-only cohort), not both. Ratified canonically on 2026-06-10 alongside the McLachlan 1996 fluconazole extraction.
+
 ### HIV_POS (**canonical for HIV-positive comorbidity indicator**)
 - **Description:** 1 = HIV-1 antibody positive at study entry, 0 = HIV-negative. Time-fixed per subject. Used as a binary comorbidity indicator on PK parameters (typically bioavailability or clearance) when a study population pools HIV-positive and HIV-negative subjects on a non-HIV primary indication (tuberculosis treatment, hepatitis treatment, etc.).
 - **Units:** (binary)
