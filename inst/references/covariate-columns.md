@@ -5712,3 +5712,14 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Source aliases:** none.
 - **Example models:** `Mann_2022_respiratory_physiology.R`.
 - **Notes:** Scope: specific because the two parameter sets are tied to the Mann 2022 chronic-vs-naive opioid pharmacology calibration. A future model that captures a graded tolerance (e.g., a continuous "tolerance index") rather than a two-class binary should register a separate continuous canonical. Ratified canonically on 2026-05-29 alongside the Mann 2022 translational-model extraction.
+
+### DOSE_AGT_UG (**canonical for per-observation angiotensin challenge dose in ug of angiotensin II equivalents**)
+- **Description:** Per-observation intravenous-bolus dose of exogenous angiotensin administered as a pharmacologic probe during an angiotensin-challenge phase I protocol, expressed as ug of angiotensin II equivalents. For an angiotensin II bolus this is the literal injected mass; for an angiotensin I bolus, multiply by Q = 0.78 (molar-weight ratio between angiotensin I and angiotensin II) before populating this column. Each row in the event table carries the dose given immediately before the observed BP peak was sampled.
+- **Units:** ug (Ang II equivalents)
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** none (continuous).
+- **Source aliases:**
+  - `D x Q` -- used in `BuchwalderCsajka_1999_angiotensin.R` (Buchwalder-Csajka 1999 Table 1 row 5 column header, where `D` is the raw angiotensin dose in ug and `Q` is the molar-weight conversion factor).
+- **Example models:** `BuchwalderCsajka_1999_angiotensin.R` (drives the algebraic Emax dose-response `E = Emax * DOSE_AGT_UG / (DOSE_AGT_UG + ED50)` separately for SBP and DBP).
+- **Notes:** Per-observation challenge-dose column for the algebraic Emax angiotensin-challenge PD model. Differs from the standard rxode2 `AMT` / `EVID = 1` dosing column because the model is purely algebraic (no PK, no ODEs); the dose enters the model() block as a covariate symbol rather than via a dosing event. Specific scope because the column's semantics (Q-corrected angiotensin dose) are tied to angiotensin-challenge protocols; future angiotensin-challenge extractions may reuse this canonical. Ratified canonically on 2026-06-10 alongside the Buchwalder-Csajka 1999 extraction.
