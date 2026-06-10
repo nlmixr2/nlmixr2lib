@@ -2411,6 +2411,18 @@ Per-paper metabolite / sibling-drug suffix additions discovered during the 2026-
 - **Source aliases:** none.
 - **Example models:** `Schindler_2017_imatinib.R`.
 
+### m1trans (**canonical M1-trans rolofylline metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** M1-trans active hydroxyl metabolite of rolofylline. CYP3A4-mediated hydroxylation of the parent adenosine A1 receptor antagonist generates a diastereomeric pair of M1 metabolites; M1-trans is the (trans-) stereoisomer tracked alongside the parent and the M1-cis stereoisomer in the Stroh 2013 simultaneous PK model. Drives `central_m1trans` / `peripheral1_m1trans` and the `propSd_m1trans` / `addSd_m1trans` residuals.
+- **Source aliases:** none.
+- **Example models:** `Stroh_2013_rolofylline.R` (doi:10.1208/s12248-012-9443-5).
+
+### m1cis (**canonical M1-cis rolofylline metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** M1-cis active hydroxyl metabolite of rolofylline. Co-eluting (cis-) stereoisomer of the CYP3A4 hydroxylation pair; formed both directly from the parent (fraction FM) and via unidirectional stereochemical interconversion from M1-trans. Drives `central_m1cis` and the `propSd_m1cis` / `addSd_m1cis` residuals.
+- **Source aliases:** none.
+- **Example models:** `Stroh_2013_rolofylline.R` (doi:10.1208/s12248-012-9443-5).
+
 ---
 
 ## TB-treatment drug suffixes (combination antibiotic)
