@@ -556,8 +556,8 @@ navbar:
         href: articles/Cheng_2026_immunoglobulin.html
       - text: "Indacaterol (Renard 2011)"
         href: articles/Renard_2011_indacaterol.html
-      - text: "Indinavir (Csajka 2004)"
-        href: articles/Csajka_2004_indinavir.html
+      - text: "Indinavir (Kappelhoff 2005)"
+        href: articles/Kappelhoff_2005_indinavir.html
       - text: "Infliximab (Berends 2019)"
         href: articles/Berends_2019_infliximab.html
       - text: "Infliximab (Faelens 2021)"
@@ -838,8 +838,6 @@ navbar:
         href: articles/Berges_2015_ozanezumab.html
       - text: "Ozoralizumab (Takeuchi 2023)"
         href: articles/Takeuchi_2023_ozoralizumab.html
-      - text: "Paclitaxel myelosuppression (Wahlby 2004)"
-        href: articles/Wahlby_2004_time_varying_covariates.html
       - text: "Palivizumab (Robbie 2012)"
         href: articles/Robbie_2012_palivizumab.html
       - text: "PAmAb (Cao 2013)"
@@ -1778,7 +1776,7 @@ articles:
   - articles/Jonckheere_2019_cefepime
   - articles/Jonsson_2005_disufenton
   - articles/Jonsson_2011_ethambutol
-  - articles/Jonsson_2011_ethambutol_ddmore
+  - articles/Kappelhoff_2005_indinavir
   - articles/Kawamura_2018_eribulin
   - articles/Kelman_1984_gentamicin
   - articles/Khan_2015_ciprofloxacin
