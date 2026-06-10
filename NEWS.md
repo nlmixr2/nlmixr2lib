@@ -2,6 +2,7 @@
 
 # development version
 
+* Add Wahlby 2004 time-varying covariate models ([doi:10.1111/j.1365-2125.2004.02170.x](https://doi.org/10.1111/j.1365-2125.2004.02170.x)) -- methodology paper applying BCOV/DCOV and IIV-in-covariate-coefficient extensions to four previously-analyzed cohorts (gentamicin in cancer adults; pefloxacin in critically ill adults; voriconazole in pediatric patients; paclitaxel myelosuppression in cancer adults); ratifies new `WT_BASE`, `BSA_BASE`, `CRCL_BASE`, `TBILI_BASE`, `ALP_BASE`, `CYP2C19_NON_EM`, and `CEN` covariate canonicals.
 * Add Padoin 1998 cephalexin ([doi:10.1128/aac.42.6.1463](https://doi.org/10.1128/aac.42.6.1463)) -- preclinical male Wistar rats with a cephalexin / quinapril oral coadministration DDI (ratifies new `CONMED_QPRL_ORAL` covariate canonical).
 * Add van Rongen 2018 metformin ([doi:10.1007/s40272-018-0293-1](https://doi.org/10.1007/s40272-018-0293-1)) -- overweight and obese Caucasian adolescents.
 * Add Tarning 2012 artemether and dihydroartemisinin ([doi:10.1186/1475-2875-11-293](https://doi.org/10.1186/1475-2875-11-293)) -- pregnant women with uncomplicated Plasmodium falciparum malaria in Uganda (joint parent + DHA popPK with zero-order dissolution and 6-compartment transit absorption).
