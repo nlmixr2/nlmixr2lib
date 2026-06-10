@@ -48,11 +48,21 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Units:** kg
 - **Type:** continuous
 - **Scope:** general
-- **Reference category:** n/a -- used with allometric scaling `(WT / ref_wt)^exponent`. Reference weights observed: 70 kg (adults), 75 kg, 84.8 kg, 56 kg (Kloprogge 2014 quinine cohort typical), 5 kg (infants), 25 kg (Wang 2012 Chinese pediatric epilepsy cohort median).
-- **Source aliases:**
-  - `WEIG` -- weight column abbreviation used by Wang 2012 (Acta Pharmacol Sin 33:845-851); same biological quantity in kg, no value transformation. Used in `Wang_2012_levetiracetam.R`.
-- **Example models:** `Clegg_2024_nirsevimab.R`, `Hu_2026_clesrovimab.R`, `Zhu_2017_lebrikizumab.R`, `Kovalenko_2020_dupilumab.R`, `CarlssonPetri_2021_liraglutide.R`, `Cirincione_2017_exenatide.R`, `Grimm_2023_gantenerumab.R`, `Grimm_2023_trontinemab.R`, `Kyhl_2016_nalmefene.R`, `Soehoel_2022_tralokinumab.R`, `Xie_2019_agomelatine.R`, `PK_2cmt_mAb_Davda_2014.R`, `phenylalanine_charbonneau_2021.R`, `Chua_2025_mirikizumab.R`, `Jackson_2022_ixekizumab.R`, `Kotani_2022_astegolimab.R`, `Ma_2020_sarilumab_anc.R`, `Ma_2020_sarilumab_das28crp.R`, `Moein_2022_etrolizumab.R`, `Tiraboschi_2025_amlitelimab.R`, `Robbie_2012_palivizumab.R`, `Bajaj_2017_nivolumab.R`, `Quartino_2019_trastuzumab.R`, `Wang_2020_ontamalimab.R`, `Fau_2020_isatuximab.R`, `Okada_2025_rocatinlimab.R`, `Kunisawa_2014_olprinone.R`, `Xu_2020_daratumumab.R` (reference 78.6 kg; power exponents 0.451 on linear CL and 0.375 on V1), `Struemper_2017_belimumab.R` (reference 67 kg; fixed allometric exponents 0.75 on CL and Q, 1.00 on Vc, 0.8 on Vp; baseline-only, source column BWT), `MedellinGaribay_2015_gentamicin.R` (linear (not allometric) weight scaling on both CL and Vc: CL = theta1 * BW + theta5 * (CRCL/75), Vc = theta2 * BW; no reference weight used because the scaling is linear, not divisive; source column BW; cohort mean 6.4 +/- 2.2 kg, infants 1-24 months).
+- **Reference category:** n/a -- used with allometric scaling `(WT / ref_wt)^exponent`. Reference weights observed: 70 kg (adults), 75 kg, 84.8 kg, 56 kg (Kloprogge 2014 quinine cohort typical), 5 kg (infants).
+- **Source aliases:** none known.
+- **Example models:** `Clegg_2024_nirsevimab.R`, `Hu_2026_clesrovimab.R`, `Zhu_2017_lebrikizumab.R`, `Kovalenko_2020_dupilumab.R`, `CarlssonPetri_2021_liraglutide.R`, `Cirincione_2017_exenatide.R`, `Grimm_2023_gantenerumab.R`, `Grimm_2023_trontinemab.R`, `Kyhl_2016_nalmefene.R`, `Soehoel_2022_tralokinumab.R`, `Xie_2019_agomelatine.R`, `PK_2cmt_mAb_Davda_2014.R`, `phenylalanine_charbonneau_2021.R`, `Chua_2025_mirikizumab.R`, `Jackson_2022_ixekizumab.R`, `Kotani_2022_astegolimab.R`, `Ma_2020_sarilumab_anc.R`, `Ma_2020_sarilumab_das28crp.R`, `Moein_2022_etrolizumab.R`, `Tiraboschi_2025_amlitelimab.R`, `Robbie_2012_palivizumab.R`, `Bajaj_2017_nivolumab.R`, `Quartino_2019_trastuzumab.R`, `Wang_2020_ontamalimab.R`, `Fau_2020_isatuximab.R`, `Okada_2025_rocatinlimab.R`, `Kunisawa_2014_olprinone.R`, `Xu_2020_daratumumab.R` (reference 78.6 kg; power exponents 0.451 on linear CL and 0.375 on V1), `Struemper_2017_belimumab.R` (reference 67 kg; fixed allometric exponents 0.75 on CL and Q, 1.00 on Vc, 0.8 on Vp; baseline-only, source column BWT), `Wahlby_2004_pefloxacin.R` (time-varying; reference 65 kg; linear-exp form on V with coefficient 0.014).
 - **Notes:** Universal. Verify time-varying vs. baseline-only against the source paper.
+
+### WT_BASE (**canonical for per-subject baseline body weight (time-fixed, paired with time-varying WT)**)
+- **Description:** Per-subject baseline body weight, time-fixed. Used when a source paper applies Wahlby 2004's extended covariate-model split (Br J Clin Pharmacol 2004;58(4):367-377) and the data column carries the subject's baseline weight as a constant alongside a time-varying `WT` column. Operationally, `WT_BASE` is equal to `WT` at the subject's first observation and remains constant for all subsequent records; the within-subject delta is computed in `model()` as `(WT - WT_BASE)`.
+- **Units:** kg
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- typically used as `(WT_BASE - ref)` in an exponential or linear-deviation effect on a structural parameter, where `ref` is the cohort median baseline weight.
+- **Source aliases:**
+  - `BWT` (baseline weight) -- Wahlby 2004 source-column convention; used in `Wahlby_2004_pefloxacin.R`.
+- **Example models:** `Wahlby_2004_pefloxacin.R` (reference 65 kg; saturating "up to median WT" qualifier from Wahlby 2004 Methods plateaus the effect above 65 kg, encoded as `min(WT_BASE, 65) - 65`).
+- **Notes:** Specific scope because the BCOV/DCOV decomposition pattern is paper-defined: `WT_BASE` exists conceptually as a per-subject snapshot of baseline weight that the original modeller chose to enter separately from the time-varying weight column. Promote to `general` if a second paper ratifies the same baseline-weight column with consistent semantics. Distinct from time-fixed adult-cohort weight (where the per-subject weight is just constant by data design); use `WT_BASE` only when the source paper deliberately separates the BCOV from the time-varying COV. Ratified canonically alongside the Wahlby 2004 extraction.
 
 ### AGE (**canonical for subject age**)
 - **Description:** Subject age in years.
@@ -139,6 +149,17 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Source aliases:** none.
 - **Example models:** `Yamada_2025_zolbetuximab.R` (reference 1.70 m^2; exponents 1.06 on clearances and 0.968 on volumes).
 - **Notes:** Oncology mAbs dosed by BSA (mg/m^2) often use BSA in place of body weight for allometric-style scaling. Document the BSA computation formula (DuBois / Mosteller / Haycock) the source paper used; if unstated, record "unspecified."
+
+### BSA_BASE (**canonical for per-subject baseline body surface area (time-fixed)**)
+- **Description:** Per-subject baseline body surface area, time-fixed. Used when a source paper enters the subject's baseline BSA as a constant alongside a time-varying BSA column under Wahlby 2004's extended covariate-model decomposition (Br J Clin Pharmacol 2004;58(4):367-377). Time-fixed at the subject's first observation.
+- **Units:** m^2
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- typically used as a linear scaling factor on a volume parameter.
+- **Source aliases:**
+  - `BBSA` (baseline BSA) -- Wahlby 2004 source-column convention; used in `Wahlby_2004_gentamicin.R`.
+- **Example models:** `Wahlby_2004_gentamicin.R` (replaces time-varying BSA in the final-model V1 equation V1 = 8.63 * BSA_BASE * (ALB/34)^-0.41 because BBSA was the better predictor than time-varying BSA, RSE 2.5% vs 110% on delta-BSA).
+- **Notes:** Specific scope because the BCOV/DCOV split is a paper-defined modelling choice (Wahlby 2004 demonstrated that BBSA was the relevant predictor for gentamicin V1 because delta-BSA was uninformative). Promote to `general` if a second paper ratifies the baseline-BSA column with consistent semantics. Ratified canonically alongside the Wahlby 2004 extraction.
 
 ### BMI (**canonical for body mass index**)
 - **Description:** Body mass index at baseline.
@@ -434,6 +455,17 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Cirincione_2017_exenatide.R` (MDRD eGFR), `Xu_2019_sarilumab.R` (measured CrCl BSA-normalized), `Kotani_2022_astegolimab.R` (MDRD eGFR), `Li_2019_abatacept.R` (cGFR), `Bajaj_2017_nivolumab.R` (CKD-EPI eGFR, reference 90 mL/min/1.73 m^2), `NA_NA_lidocaine.R` (DDMODEL00000281; binary stratification at threshold 52.7 mL/min adding -0.319 to the GX rate constant K30 in the CRCL <= 52.7 cohort; the source `.ctl` does not state the BSA-normalisation method), `Delattre_2010_amikacin.R` (raw Cockcroft-Gault mL/min, NOT BSA-normalized; reference 55.5 mL/min population median; additive linear effect 1.42 L/h per (CRCL/55.5) on CL), `MedellinGaribay_2015_gentamicin.R` (Schwartz BSA-normalized CLCR; reference 75 mL/min/1.73 m^2 (population mean 76.7); additive linear effect 0.06 L/h per (CRCL/75) on CL in infants 1-24 months), `Georges_2009_ceftazidime.R` (raw MDRD-eGFR mL/min, NOT BSA-normalized; mean 121 mL/min; additive linear effect 0.024 L/h per mL/min on CL, no centering).
 - **Notes:** The two estimation methods (MDRD/CKD-EPI vs measured CrCl) produce values in the same units and are operationally interchangeable as a covariate on clearance. Document the method explicitly in each model's `covariateData[[CRCL]]$description` so future reviewers can trace the source assay.
 
+### CRCL_BASE (**canonical for per-subject baseline creatinine clearance (time-fixed)**)
+- **Description:** Per-subject baseline creatinine clearance, time-fixed. Used when a source paper enters the subject's baseline CRCL as a separate constant column alongside a time-varying `CRCL` column under Wahlby 2004's extended covariate-model decomposition (Br J Clin Pharmacol 2004;58(4):367-377). The within-subject delta is computed in `model()` as `(CRCL - CRCL_BASE)`.
+- **Units:** mL/min or mL/min/1.73 m^2 -- match the units of the paired `CRCL` column and document per-model via `covariateData[[CRCL_BASE]]$units`.
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- typically used as `(CRCL_BASE - ref)` in a linear or linear-exp effect, where `ref` is the cohort median baseline CRCL.
+- **Source aliases:**
+  - `BCLC` (baseline creatinine clearance) -- Wahlby 2004 source-column convention; used in `Wahlby_2004_gentamicin.R` (raw mL/min) and `Wahlby_2004_pefloxacin.R` (concept tested but not retained in final model).
+- **Example models:** `Wahlby_2004_gentamicin.R` (raw mL/min; reference 71.7 mL/min = BCLC median; coefficient 0.0098 per mL/min on CL alongside paired DCLC effect 0.0068 per mL/min).
+- **Notes:** Specific scope because the BCOV/DCOV decomposition is paper-defined. Promote to `general` if a second paper ratifies the baseline-CRCL column with consistent semantics. Distinct from time-fixed adult-cohort CRCL (where per-subject CRCL is just constant by data design); use `CRCL_BASE` only when the source paper deliberately separates the BCOV from the time-varying COV. Ratified canonically alongside the Wahlby 2004 extraction.
+
 ### CREAT (**canonical for serum creatinine**)
 - **Description:** Serum creatinine concentration (baseline or time-varying).
 - **Units:** umol/L or mg/dL -- document the unit used in each model via `covariateData[[CREAT]]$units`.
@@ -573,6 +605,17 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Yamada_2025_zolbetuximab.R` (mg/dL, reference 0.38; small positive exponent 0.0347 on V1), `NA_NA_lidocaine.R` (mg/dL, source column `BIL`; binary effect at threshold 0.53 mg/dL on the GX elimination rate constant K30), `Urien_2005_capecitabine.R` (umol/L, reference 8.8; source column `BILT`; positive exponent +0.32 on capecitabine non-transformation CL10 and negative exponent -0.36 on the 5'-DFUR -> 5-FU rate constant K34).
 - **Notes:** Hepatic-function marker. Unit varies by paper (US convention mg/dL, SI convention umol/L; 1 mg/dL ~= 17.1 umol/L). The per-model `covariateData[[TBILI]]$units` field is load-bearing.
 
+### TBILI_BASE (**canonical for per-subject baseline total bilirubin (time-fixed)**)
+- **Description:** Per-subject baseline total serum bilirubin, time-fixed. Used when a source paper enters the subject's baseline TBILI as a constant column alongside the time-varying `TBILI` column under Wahlby 2004's extended covariate-model decomposition (Br J Clin Pharmacol 2004;58(4):367-377). The within-subject delta is computed in `model()` as `(TBILI - TBILI_BASE)`.
+- **Units:** mg/dL or umol/L -- match the units of the paired `TBILI` column and document per-model via `covariateData[[TBILI_BASE]]$units`.
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- typically used as `(TBILI_BASE - ref)` in a linear or linear-exp effect.
+- **Source aliases:**
+  - `BBIL` (baseline total bilirubin) -- Wahlby 2004 source-column convention; used in `Wahlby_2004_pefloxacin.R` and `Wahlby_2004_paclitaxel_myelosuppression.R`.
+- **Example models:** `Wahlby_2004_pefloxacin.R` (umol/L; centered at 25 umol/L; coefficient -0.0068 per umol/L on CL via exp[e * (TBILI_BASE - 25)]), `Wahlby_2004_paclitaxel_myelosuppression.R` (umol/L; used together with TBILI as the within-subject delta TBILI - TBILI_BASE entering the Slope-DBIL effect).
+- **Notes:** Specific scope because the BCOV/DCOV decomposition is paper-defined. Promote to `general` if a second paper ratifies. Distinct from `DBIL` (direct/conjugated bilirubin, a clinical-chemistry concept) -- TBILI_BASE is a methodologic baseline-snapshot column, not a separate biomarker. Ratified canonically alongside the Wahlby 2004 extraction.
+
 ### DBIL (**canonical for direct (conjugated) bilirubin**)
 - **Description:** Direct (conjugated) serum bilirubin concentration. Distinct from `TBILI`: direct bilirubin is the water-soluble glucuronide-conjugated fraction processed by hepatocytes and excreted in bile, so a rise in DBIL specifically flags impaired biliary excretion / cholestasis or intrahepatic shunting, whereas total bilirubin also captures unconjugated (indirect) hyperbilirubinaemia from haemolysis or Gilbert-type conjugation defects.
 - **Units:** mg/dL or umol/L -- document the unit used in each model via `covariateData[[DBIL]]$units`.
@@ -614,6 +657,17 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Source aliases:** none known.
 - **Example models:** `Gupta_2016_lenvatinib.R` (binarized inline as `alp_high <- (ALP > 120)`; the source paper enters `ALP` as a 0/1 NONMEM indicator with `ALP = 1` when the ratio ALP/ULN > 1; multiplicative effect on CL/F: `0.883^alp_high`).
 - **Notes:** Liver-function / cholestasis marker; routine clinical-chemistry covariate. Commonly tested alongside `ALT` / `AST` / `GGT` / `TBILI`. Ratified canonically alongside the Gupta 2016 lenvatinib extraction.
+
+### ALP_BASE (**canonical for per-subject baseline alkaline phosphatase (time-fixed)**)
+- **Description:** Per-subject baseline serum alkaline phosphatase, time-fixed. Used when a source paper enters the subject's baseline ALP as a constant column alongside the time-varying `ALP` column under Wahlby 2004's extended covariate-model decomposition (Br J Clin Pharmacol 2004;58(4):367-377). The within-subject delta (or log-ratio) is computed in `model()` from `ALP` and `ALP_BASE`.
+- **Units:** U/L (IU/L; interchangeable). Match the units of the paired `ALP` column and document per-model via `covariateData[[ALP_BASE]]$units`.
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- typically used inside a log-ratio `log(ALP / ALP_BASE)` or a linear delta `(ALP - ALP_BASE)`.
+- **Source aliases:**
+  - `BALKP` (baseline alkaline phosphatase) -- Wahlby 2004 source-column convention; used in `Wahlby_2004_voriconazole.R`.
+- **Example models:** `Wahlby_2004_voriconazole.R` (IU/L; population median 136 IU/L; paired with time-varying ALP to form log(ALP/ALP_BASE), the paper's log(DALKP) term, with coefficient 0.59 on CL inside Eq 7 Final-Model column).
+- **Notes:** Specific scope because the BCOV/DCOV decomposition is paper-defined. Promote to `general` if a second paper ratifies. Ratified canonically alongside the Wahlby 2004 extraction.
 
 ### GGT (**canonical for gamma-glutamyltransferase**)
 - **Description:** Serum gamma-glutamyltransferase activity (baseline or time-varying); hepatic / cholestatic biliary-enzyme marker.
@@ -1528,7 +1582,7 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Scope:** specific
 - **Reference category:** n/a -- used directly inside `model()` as `CL_INDIV` in place of an estimated `cl <- exp(lcl + etalcl)`.
 - **Source aliases:** `CLI` -- used in `Friberg_2002_paclitaxel.R` (NM-TRAN data column for per-subject paclitaxel CL).
-- **Example models:** `Friberg_2002_paclitaxel.R`.
+- **Example models:** `Friberg_2002_paclitaxel.R`, `Wahlby_2004_paclitaxel_myelosuppression.R` (per-subject paclitaxel CL EBE supplied as a covariate column following the Friberg 2002 convention; the Wahlby 2004 PD model layers BIL and DBIL covariate effects on top of the Friberg-Karlsson chain).
 - **Notes:** Specific scope because the value is intrinsically tied to the modelled drug -- there is no shared meaning across drugs. Each model's `covariateData[[CL_INDIV]]$notes` should state which upstream popPK source the EBE values come from (e.g., Henningsson 2001 paclitaxel popPK, fixed in the DDMORE encoding) and whether placebo periods are present. Companion volumes are registered as `VC_INDIV` and `VP_INDIV`.
 
 ### CMAX_M1 (**canonical for maximum drug plasma concentration during month 1**)
@@ -1549,7 +1603,7 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Scope:** specific
 - **Reference category:** n/a -- used directly inside `model()` as `VC_INDIV` in place of an estimated `vc <- exp(lvc + etalvc)`.
 - **Source aliases:** `V1I` -- used in `Friberg_2002_paclitaxel.R` (NM-TRAN data column for per-subject paclitaxel V1).
-- **Example models:** `Friberg_2002_paclitaxel.R`.
+- **Example models:** `Friberg_2002_paclitaxel.R`, `Wahlby_2004_paclitaxel_myelosuppression.R` (per-subject paclitaxel V1 EBE following the Friberg 2002 convention).
 - **Notes:** See `CL_INDIV` notes for the broader convention.
 
 ### VP_INDIV (**canonical for per-subject empirical-Bayes peripheral volume of distribution**)
@@ -1559,7 +1613,7 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Scope:** specific
 - **Reference category:** n/a -- used directly inside `model()` as `VP_INDIV` in place of an estimated `vp <- exp(lvp + etalvp)`.
 - **Source aliases:** `V2I` -- used in `Friberg_2002_paclitaxel.R` (NM-TRAN data column for per-subject paclitaxel V2).
-- **Example models:** `Friberg_2002_paclitaxel.R`.
+- **Example models:** `Friberg_2002_paclitaxel.R`, `Wahlby_2004_paclitaxel_myelosuppression.R` (per-subject paclitaxel V2 EBE following the Friberg 2002 convention).
 - **Notes:** See `CL_INDIV` notes for the broader convention. For models requiring a second peripheral compartment, register `VP2_INDIV` (and add a follow-on entry to this register) when a second model legitimately needs it.
 
 ### BAS_SVEGFR3 (**canonical for individual posthoc baseline soluble VEGFR-3 concentration from an upstream PD fit**)
@@ -5183,6 +5237,17 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Example models:** `Zhao_2018_omeprazole.R` (power-of-binary-indicator multiplicative factor on CLOMZ-M1 formation clearance: `e_cyp2c19_im_kmet_5oh ^ CYP2C19_IM` with `e_cyp2c19_im_kmet_5oh = 0.449`; IM subjects have ~55% lower formation clearance of 5-hydroxy-omeprazole than the EM/UM reference; Zhao 2018 Table 2).
 - **Notes:** Follows the `CYP2B6_IM` / `CYP2B6_SM` / `CYP2B6_USM` three-binary precedent for multi-level metabolizer phenotypes. The Zhao 2018 cohort pooled extensive (EM, `*1/*1`) and ultrarapid (UM, `*1/*17`, `*17/*17`) metabolizers into a single reference because the typical-value clearance of 5-hydroxy-omeprazole formation was indistinguishable between the two strata in n = 38 EM/UM subjects (Zhao 2018 Methods 'Population pharmacokinetic-pharmacogenetic modelling'). Future extractions that fit a separate UM coefficient should register a paired `CYP2C19_UM` companion indicator following this pattern. Distinct from `CYP2C19_S2_CARRIER` (binary `*2`-allele carrier indicator used by Danielak 2017 clopidogrel) -- `CYP2C19_S2_CARRIER` pools heterozygous and homozygous `*2` carriers into a single 0/1 contrast, while `CYP2C19_IM` resolves the heterozygous `*2` (IM) stratum separately from the homozygous `*2/*2` (PM) stratum that `CYP2C19_PM` flags. Ratified canonically on 2026-05-25 alongside the Zhao 2018 omeprazole extraction.
 
+### CYP2C19_NON_EM (**canonical for composite CYP2C19 non-homozygous-extensive-metabolizer indicator**)
+- **Description:** 1 = subject is genotyped as a CYP2C19 poor metabolizer (homozygous loss-of-function, e.g. *2/*2, *2/*3, *3/*3) OR a heterozygous-extensive metabolizer (one functional allele and one loss-of-function allele, e.g. *1/*2, *1/*3); 0 = subject is genotyped as a homozygous extensive metabolizer (both alleles functional, *1/*1). Distinct from `CYP2C19_PM` (strict homozygous-PM only) and from `CYP2C19_IM` (intermediate-metabolizer-only); CYP2C19_NON_EM is a paper-defined composite of PM + IM that the source paper used as a single multiplicative covariate on clearance.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (homozygous extensive metabolizer; both *1 alleles).
+- **Source aliases:**
+  - `PM` (Wahlby 2004 / Walsh 2004 voriconazole source-column convention) -- used in `Wahlby_2004_voriconazole.R`. Note that the column name `PM` in this paper denotes the composite non-EM group, not the strict CYP2C19_PM phenotype; users converting from the source paper's data should not collapse `PM` to canonical `CYP2C19_PM` without re-checking the genotype-to-indicator mapping.
+- **Example models:** `Wahlby_2004_voriconazole.R` (multiplicative effect on CL: `(1 - 0.46 * CYP2C19_NON_EM)`, so a non-EM subject has 46 percent lower CL than a homozygous-EM subject).
+- **Notes:** Specific scope because the PM+IM composite grouping is paper-defined; future papers that report PM and IM separately should use the strict `CYP2C19_PM` and `CYP2C19_IM` canonicals instead. The Wahlby 2004 / Walsh 2004 voriconazole encoding has been retained because the source paper does not provide separate per-genotype coefficient estimates. Ratified canonically alongside the Wahlby 2004 extraction.
+
 ### CYP2C19_PM (**canonical for CYP2C19 poor-metabolizer phenotype indicator**)
 - **Description:** 1 = subject is a CYP2C19 poor metabolizer (two loss-of-function alleles, e.g., `*2/*2`); 0 = any other CYP2C19 phenotype (EM, UM, IM, or RM). Time-fixed per subject (germline genotype-derived phenotype). Paired with `CYP2C19_IM` to encode the three-level EM/UM (reference) / IM / PM phenotype with two binary indicators.
 - **Units:** (binary)
@@ -5389,6 +5454,17 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Source aliases:** paper narrative "arm" / "abdomen" subgroup labels driving site-specific ka in Diep 2022.
 - **Example models:** `Diep_2022_eplontersen.R` (additive log-shift `e_injsite_arm_ka = log(ka_arm / ka_ab)` on the typical absorption rate constant: ka_arm = 0.217 1/h vs ka_ab = 0.282 1/h, ~30% higher ka for abdomen; INJSITE_ARM = 1 selects the arm typical value), `Diep_2026_donidalorsen.R` (Phoenix linear-effect `(1 + e_injsite_arm_ka * INJSITE_ARM)` on the typical absorption rate constant with theta = -0.338 -> multiplier 0.662 for arm; the paper's reference category is "abdomen or thigh" rather than "abdomen" alone, but is consistent with the canonical reference because abdomen is the universal SC reference site and the thigh effect is pooled into the reference category by the Diep 2026 model).
 - **Notes:** Specific scope because the arm-vs-abdomen contrast is paper-specific. Sister canonical to `INJSITE_THIGH` (thigh-vs-abdomen indicator anticipated for future SC-route models with thigh-specific absorption). Per-administration rather than per-subject -- a subject in a multi-dose simulation can switch SC injection sites between doses; supply the indicator on each dose record. Distinct from `ROUTE_IV` (IV vs SC route, not within-SC site) and from `DEVICE_AI` (autoinjector vs prefilled syringe, device rather than anatomical site).
+
+### CEN (**canonical for Wahlby 2004 pefloxacin study-centre indicator**)
+- **Description:** Binary study-centre indicator carried over from the Karlsson MO, Sheiner LB 1993 (J Pharmacokin Biopharm 21(6):735-750) pefloxacin analysis that Wahlby 2004 re-fit. The source paper does not specify which of the two recruiting centres corresponds to CEN = 1 vs CEN = 0; the indicator captures an unexplained between-centre shift in clearance.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (one of the two recruiting centres; the source paper does not state which).
+- **Source aliases:**
+  - `CEN` -- Wahlby 2004 source-column convention; used in `Wahlby_2004_pefloxacin.R`.
+- **Example models:** `Wahlby_2004_pefloxacin.R` (multiplicative effect on CL via exp[0.19 * CEN]; CEN = 1 increases CL by ~21 percent relative to CEN = 0).
+- **Notes:** Specific scope; the underlying centre identity is paper-defined and not generalisable. Users assembling a virtual cohort should treat CEN as a sensitivity covariate or fix it at 0 (the reference centre) when between-centre exploration is not relevant. Ratified canonically alongside the Wahlby 2004 extraction.
 
 ### STUDY_APLIOS (**canonical for APLIOS bioequivalence study indicator**)
 - **Description:** 1 = subject enrolled in the APLIOS bioequivalence study (NCT03560739; phase 2; ofatumumab AI vs PFS in RMS), 0 = other study in the Yu 2022 pooled analysis.

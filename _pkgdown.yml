@@ -512,12 +512,8 @@ navbar:
         href: articles/Llanos-Paez_2017_gentamicin.html
       - text: "Gentamicin (Llanos-Paez 2020)"
         href: articles/Llanos-Paez_2020_gentamicin.html
-      - text: "Gentamicin glasgow (Kelman 1984)"
-        href: articles/Kelman_1984_gentamicin.html
-      - text: "Gentamicin manchester1 (Kelman 1984)"
-        href: articles/Kelman_1984_gentamicin.html
-      - text: "Gentamicin manchester2 (Kelman 1984)"
-        href: articles/Kelman_1984_gentamicin.html
+      - text: "Gentamicin (Wahlby 2004)"
+        href: articles/Wahlby_2004_time_varying_covariates.html
       - text: "Gevokizumab (Cao 2013)"
         href: articles/Cao_2013_gevokizumab.html
       - text: "Givosiran (Ayyar 2024)"
@@ -842,6 +838,8 @@ navbar:
         href: articles/Berges_2015_ozanezumab.html
       - text: "Ozoralizumab (Takeuchi 2023)"
         href: articles/Takeuchi_2023_ozoralizumab.html
+      - text: "Paclitaxel myelosuppression (Wahlby 2004)"
+        href: articles/Wahlby_2004_time_varying_covariates.html
       - text: "Palivizumab (Robbie 2012)"
         href: articles/Robbie_2012_palivizumab.html
       - text: "PAmAb (Cao 2013)"
@@ -858,6 +856,8 @@ navbar:
         href: articles/Ouerdani_2015_pazopanib.html
       - text: "Pazopanib mouse (Ouerdani 2015)"
         href: articles/Ouerdani_2015_pazopanib_mouse.html
+      - text: "Pefloxacin (Wahlby 2004)"
+        href: articles/Wahlby_2004_time_varying_covariates.html
       - text: "Pegfilgrastim (Brekkan 2018)"
         href: articles/Brekkan_2018_pegfilgrastim.html
       - text: "Peginesatide (Naik 2013)"
@@ -1304,8 +1304,8 @@ navbar:
         href: articles/Karlsson_2009_voriconazole.html
       - text: "Voriconazole (Lin 2018)"
         href: articles/Lin_2018_voriconazole.html
-      - text: "Voriconazole (Muto 2015)"
-        href: articles/Muto_2015_voriconazole.html
+      - text: "Voriconazole (Wahlby 2004)"
+        href: articles/Wahlby_2004_time_varying_covariates.html
       - text: "Vortioxetine (Naik 2016)"
         href: articles/Naik_2016_vortioxetine.html
       - text: "Vrc01 (Huang 2017)"
@@ -2130,9 +2130,7 @@ articles:
   - articles/Voller_2017_phenobarbital
   - articles/Wade_2008_fluconazole
   - articles/Wade_2015_certolizumab
-  - articles/Wang_2010_romiplostim
-  - articles/Wang_2011_raltegravir
-  - articles/Wang_2012_levetiracetam
+  - articles/Wahlby_2004_time_varying_covariates
   - articles/Wang_2012_propofol
   - articles/Wang_2013_morphine
   - articles/Wang_2015_rucaparib
