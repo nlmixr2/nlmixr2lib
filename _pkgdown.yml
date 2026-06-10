@@ -1214,10 +1214,8 @@ navbar:
         href: articles/Frey_2010_tocilizumab.html
       - text: "Tocilizumab (Frey 2013)"
         href: articles/Frey_2013_tocilizumab.html
-      - text: "Tolcapone fluctuators (Jorga 2000)"
-        href: articles/Jorga_2000_tolcapone.html
-      - text: "Tolcapone nonfluctuators (Jorga 2000)"
-        href: articles/Jorga_2000_tolcapone.html
+      - text: "Topotecan (Leger 2004)"
+        href: articles/Leger_2004_topotecan.html
       - text: "Topotecan (Roberts 2016)"
         href: articles/Roberts_2016_topotecan.html
       - text: "Torsemide (Jeong 2022)"
@@ -1841,10 +1839,7 @@ articles:
   - articles/Le_2015_lampalizumab
   - articles/Lee_2015_sumatriptan
   - articles/Lee_2016_raltegravir
-  - articles/Lee_2017_doripenem
-  - articles/Lehr_2010_tesofensine
-  - articles/LeJouan_2005_quinine
-  - articles/Leroux_2016_cefotaxime
+  - articles/Leger_2004_topotecan
   - articles/Leshinsky_2017_caspofungin_cat
   - articles/Lestini_2015_tgfbinhibitor
   - articles/LeTilly_2021_trastuzumab

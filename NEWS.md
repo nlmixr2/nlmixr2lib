@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Stricker 2013 epsilon-aminocaproic acid ([doi:10.1093/bja/aes507](https://doi.org/10.1093/bja/aes507)) -- infants 2-24 months undergoing craniofacial reconstruction surgery; ratifies new `INTRAOP` covariate canonical for the intra-operative period indicator.
+* Add Leger 2004 topotecan ([doi:10.1038/sj.bjc.6601469](https://doi.org/10.1038/sj.bjc.6601469)) -- adult cancer patients receiving oral or IV topotecan (ratifies new `WHO_PS` covariate canonical for ordinal-numeric WHO / ECOG performance status).
 * Add Padoin 1998 cephalexin ([doi:10.1128/aac.42.6.1463](https://doi.org/10.1128/aac.42.6.1463)) -- preclinical male Wistar rats with a cephalexin / quinapril oral coadministration DDI (ratifies new `CONMED_QPRL_ORAL` covariate canonical).
 * Add van Rongen 2018 metformin ([doi:10.1007/s40272-018-0293-1](https://doi.org/10.1007/s40272-018-0293-1)) -- overweight and obese Caucasian adolescents.
 * Add Tarning 2012 artemether and dihydroartemisinin ([doi:10.1186/1475-2875-11-293](https://doi.org/10.1186/1475-2875-11-293)) -- pregnant women with uncomplicated Plasmodium falciparum malaria in Uganda (joint parent + DHA popPK with zero-order dissolution and 6-compartment transit absorption).
