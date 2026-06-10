@@ -728,6 +728,8 @@ navbar:
         href: articles/Easterling_2018_magnesium_sulfate.html
       - text: "MagnesiumSulfate (Salinger 2013)"
         href: articles/Salinger_2013_magnesiumSulfate.html
+      - text: "Maraviroc (Davis 2008)"
+        href: articles/Davis_2008_maraviroc.html
       - text: "Matuzumab (Kuester 2008)"
         href: articles/Kuester_2008_matuzumab.html
       - text: "Mavrilimumab (Stein 2018)"
@@ -1669,6 +1671,7 @@ articles:
   - articles/Danielak_2017_clopidogrel
   - articles/Danielak_2017_treosulfan
   - articles/Dao_2020_sultiame
+  - articles/Davis_2008_maraviroc
   - articles/Debord_2001_cyclosporin
   - articles/DelFrari_2018_propranolol
   - articles/Delattre_2010_amikacin

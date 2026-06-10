@@ -2,6 +2,7 @@
 
 # development version
 
+* Add Davis 2008 maraviroc ([doi:10.1111/j.1365-2125.2008.03138.x](https://doi.org/10.1111/j.1365-2125.2008.03138.x)) -- healthy adult volunteers (concentration-QT regression model; ratifies new `CP_MVC_NGML` and `RR` covariate canonicals).
 * Add Berges 2007 enoxaparin ([doi:10.1111/j.1365-2125.2007.02920.x](https://doi.org/10.1111/j.1365-2125.2007.02920.x)) -- elderly inpatients (>75 years) on prophylactic subcutaneous enoxaparin 4000 IU once daily for VTE prophylaxis (PROPHRE.75 study).
 * Add Padoin 1998 cephalexin ([doi:10.1128/aac.42.6.1463](https://doi.org/10.1128/aac.42.6.1463)) -- preclinical male Wistar rats with a cephalexin / quinapril oral coadministration DDI (ratifies new `CONMED_QPRL_ORAL` covariate canonical).
 * Add van Rongen 2018 metformin ([doi:10.1007/s40272-018-0293-1](https://doi.org/10.1007/s40272-018-0293-1)) -- overweight and obese Caucasian adolescents.
