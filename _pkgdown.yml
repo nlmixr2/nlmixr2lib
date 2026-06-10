@@ -256,8 +256,8 @@ navbar:
         href: articles/Wade_2015_certolizumab.html
       - text: "Chloroquine (Simpson 2013)"
         href: articles/Simpson_2013_chloroquine.html
-      - text: "Ciprofloxacin (Schaefer 1996)"
-        href: articles/Schaefer_1996_ciprofloxacin.html
+      - text: "Ciclosporin (Ni 2013)"
+        href: articles/Ni_2013_ciclosporin.html
       - text: "Ciprofloxacin (Thuo 2011)"
         href: articles/Thuo_2011_ciprofloxacin.html
       - text: "Ciprofloxacin (Zhao 2014)"
@@ -1994,8 +1994,7 @@ articles:
   - articles/Ng_2018_exendin939
   - articles/Ngamprasertwong_2016_propofol_sheep
   - articles/Ngo_2020_HL2351
-  - articles/Nichols_2016_piperacillin_tazobactam
-  - articles/Nielsen_2011_antibacterial_efficacy
+  - articles/Ni_2013_ciclosporin
   - articles/Nikanjam_2019_siltuximab
   - articles/Novakovic_2017_cladribine
   - articles/ObrinkHansen_2015_piperacillin

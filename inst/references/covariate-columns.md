@@ -4176,6 +4176,17 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Example models:** `Zhou_2010_digoxin.R` (multiplicative linear-deviation form on Cl/F: `cl *= (1 - 0.412 * CONMED_SPIRON)`, i.e. ~41% lower Cl/F with concomitant spironolactone in the older Chinese CHF cohort; Zhou 2010 Table 7).
 - **Notes:** 32 of 119 subjects (27%) in Zhou 2010 were coadministered spironolactone. The clinical rationale (Zhou 2010 Discussion) is that spironolactone inhibits the renal-tubular secretion of digoxin via competition for the renal P-glycoprotein transporter, raising digoxin steady-state concentration. Promote to general scope if a second popPK paper reports a spironolactone-coadministration covariate with comparable encoding. Ratified canonically on 2026-05-21 alongside the Zhou 2010 digoxin extraction.
 
+### CONMED_STANOZOLOL (**canonical for concomitant stanozolol coadministration indicator**)
+- **Description:** 1 = subject is coadministered the anabolic-androgenic steroid stanozolol at the observation, 0 = not. Stanozolol is a synthetic 17-alpha-alkylated androgen used in aplastic anemia to stimulate erythropoiesis; it inhibits CYP3A4-mediated metabolism of ciclosporin (and several other CYP3A4 substrates). In Ni 2013 stanozolol coadministration was time-fixed per subject (78 of 102 children remained on stanozolol throughout the TDM observation window).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (no stanozolol coadministration).
+- **Source aliases:**
+  - `stanozolol` indicator (no specific NONMEM column name reported in Ni 2013) -- used in `Ni_2013_ciclosporin.R`.
+- **Example models:** `Ni_2013_ciclosporin.R` (multiplicative power-of-binary effect on CL/F: `cl *= e_conmed_stanozolol_cl ^ CONMED_STANOZOLOL` with `e_conmed_stanozolol_cl = 0.83`, i.e. ~17% lower CL/F when stanozolol is coadministered relative to the no-stanozolol reference; Ni 2013 Table 2 'F comedication').
+- **Notes:** Anabolic-androgenic 17-alpha-alkylated steroid; mechanistically distinct from glucocorticoid corticosteroids (do not reuse [[CONMED_STEROID]]). Ni 2013 tested both prednisone and stanozolol in forward covariate selection and retained only stanozolol after backward elimination -- the clinically relevant mechanism is CYP3A4 inhibition (Ni 2013 Discussion paragraph 5). A future popPK paper that tests stanozolol or related 17-alpha-alkylated anabolic androgens (oxandrolone, oxymetholone, danazol) as covariates would either ratify this canonical (promoting to general scope) or warrant a family-level canonical (e.g. `CONMED_ANDROGEN`) -- defer that decision until a second paper appears. Ratified canonically on 2026-06-07 alongside the Ni 2013 ciclosporin paediatric aplastic-anemia extraction (sidecar request-001, response Option A).
+
 ### CONMED_STATIN (**canonical for concomitant conmed_statin (HMG-CoA reductase inhibitor) therapy**)
 - **Description:** 1 = patient coadministered a conmed_statin (HMG-CoA reductase inhibitor) during the study, 0 = no conmed_statin coadministration.
 - **Units:** (binary)
