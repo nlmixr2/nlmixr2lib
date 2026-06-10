@@ -3687,6 +3687,17 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Example models:** `Rosario_2015_vedolizumab.R` (power-form on CLL: `CLL * 0.983^CONMED_MTX`).
 - **Notes:** Immunomodulator used especially in CD maintenance. Generic concomitant-MTX indicator that may also appear in non-IBD models; start as scope: general.
 
+### CONMED_NNRTI (**canonical for concomitant NNRTI (any non-nucleoside reverse transcriptase inhibitor) co-administration indicator**)
+- **Description:** 1 = subject is on at least one concomitant non-nucleoside reverse transcriptase inhibitor (NNRTI) -- typically efavirenz, nevirapine, etravirine, rilpivirine, doravirine, or delavirdine -- at the PK observation; 0 = no concomitant NNRTI. A pooled class indicator used in popPK analyses of CYP3A4 substrates (such as HIV protease inhibitors) where the source paper does not separate the individual NNRTI effects because the included NNRTIs are both PXR-mediated CYP3A4 inducers with a similar net effect on CYP3A4 substrate clearance.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no concomitant NNRTI).
+- **Source aliases:**
+  - `NNRTI` -- used in `Kappelhoff_2005_indinavir.R` (Kappelhoff 2005 Table 2 footnote: "NNRTI is 1 when efavirenz or nevirapine are administered and 0 when they are not"). Kappelhoff 2005 specifically pooled efavirenz and nevirapine because "inclusion of separate effects for each drug did not improve goodness-of-fit."
+- **Example models:** `Kappelhoff_2005_indinavir.R` (multiplicative power-form effect on CL/F: `cl *= 1.41^CONMED_NNRTI`; concomitant NNRTI use increases indinavir apparent CL by 41%).
+- **Notes:** Distinct from the per-drug indicator `CONMED_EFV` (efavirenz only) -- use `CONMED_EFV` when the source paper estimates the efavirenz effect alone and `CONMED_NNRTI` when the source paper pools the class. Per-model `covariateData[[CONMED_NNRTI]]$notes` should list which specific NNRTIs are counted as "1" in the dataset (Kappelhoff 2005: efavirenz and nevirapine; future extractions including rilpivirine / doravirine / etravirine / delavirdine should document each one). Ratified canonically on 2026-06-10 alongside the Kappelhoff 2005 indinavir extraction.
+
 ### CONMED_NSAID (**canonical for concomitant NSAID use**)
 - **Description:** 1 = on concomitant non-steroidal anti-inflammatory drug (NSAID) therapy at baseline, 0 = not.
 - **Units:** (binary)
@@ -3818,6 +3829,17 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
   - `RITUX` -- used in `Wu_2024_inotuzumab.R`.
 - **Example models:** `Wu_2024_inotuzumab.R` (additive fractional change on CL1: `CL1 * (1 + (-0.132) * CONMED_RITUX)` ~= 13% lower CL1 with concomitant rituximab).
 - **Notes:** Wu 2024 Table 3 footnote b explicitly flips the reference category vs. the predecessor Garrett 2019 adult model: in Garrett 2019 the reference was "with rituximab" (RITUX = 0 meant on-rituximab), whereas in Wu 2024 the reference is "without rituximab" (RITUX = 0 means no concomitant rituximab). Future models that pool an analogous rituximab-combination cohort with a single-agent reference should use this canonical with the Wu 2024 sign convention; if a paper retains the Garrett 2019 reverse-coded convention, document the value transformation in `covariateData[[CONMED_RITUX]]$notes` (`CONMED_RITUX = 1 - source$RITUX`) rather than registering a second canonical. Ratified canonically on 2026-04-26.
+
+### CONMED_RTV (**canonical for concomitant ritonavir co-administration indicator**)
+- **Description:** 1 = subject is receiving concomitant ritonavir co-administration (typically at low pharmacokinetic-booster doses of 100-400 mg) during the dosing interval / occasion; 0 = no concomitant ritonavir. Ritonavir at booster doses inhibits intestinal and hepatic CYP3A4 (and also inhibits P-glycoprotein and modulates other transporters) and is widely used to elevate plasma concentrations of co-administered HIV protease inhibitors and select integrase inhibitors.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no concomitant ritonavir).
+- **Source aliases:**
+  - `RTV` -- used in `Kappelhoff_2005_indinavir.R` (Kappelhoff 2005 Table 2 footnote: "RTV is 1 when ritonavir is administered and 0 when it is not"). All ritonavir doses in the source dataset (100, 200, 400 mg) are pooled because the data supported maximal inhibition of indinavir CL at the lowest clinical dose.
+- **Example models:** `Kappelhoff_2005_indinavir.R` (multiplicative power-form effect on CL/F: `cl *= 0.354^CONMED_RTV`; ritonavir co-administration reduces indinavir apparent CL by 64.6% and increases the elimination half-life from 1.2 h to 3.4 h).
+- **Notes:** Distinct from `AUC_RTV` (continuous exposure metric, used when ritonavir's effect on a co-administered drug is modelled as a function of the ritonavir AUC over the dosing interval rather than a binary presence/absence). Most popPK models of HIV protease inhibitors and select kinase inhibitors include a ritonavir-boost indicator; future extractions of ritonavir-boosted regimens should reuse this canonical. Ratified canonically on 2026-06-10 alongside the Kappelhoff 2005 indinavir extraction.
 
 ### CONMED_SPART (**canonical for spartalizumab (PDR001, anti-PD-1) coadministration indicator**)
 - **Description:** 1 = the analyzed therapeutic mAb is coadministered with spartalizumab (PDR001, anti-PD-1 IgG4), 0 = no spartalizumab coadministration. Time-fixed per subject in source analyses to date.
