@@ -289,6 +289,17 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `deKock_2017_sulfadoxinePyrimethamine.R` (sigmoidal effect on sulfadoxine CL with asymptotic fractional change -0.757, T50 = 6.35 weeks, gamma = 4.90; the sigmoid approaches its asymptote ~13 weeks postpartum, consistent with the literature for return of GFR and renal blood flow to prepregnant values within 6-12 weeks postpartum).
 - **Notes:** Paired with `PREG` (pregnancy status indicator) when the source paper models pregnancy as a step contrast on one PK parameter and as a sigmoidal time-decay on another. During pregnancy `TPP = 0`; after delivery `TPP > 0`. Document the postpartum sampling window in `covariateData[[TPP]]$notes` per model. Distinct from `T_NUT_SUPP` (time on nutritional supplementation, days) and `GA` (gestational age at birth, weeks) -- those are different timescale covariates anchored to different events. Ratified canonically on 2026-05-18 alongside the de Kock 2017 sulfadoxine/pyrimethamine extraction.
 
+### DAY_DELIVERY (**canonical for day-of-delivery indicator**)
+- **Description:** Binary indicator that the PK sample was collected on the day of delivery (the labour-and-childbirth occasion). `1` = sample taken on the day of delivery; `0` = otherwise (pregnant non-delivery, or non-pregnant). In Hirt 2007 the indicator is mutually exclusive with `PREG = 1`: per the paper, on the day of delivery the coding was `PREG = 0` and `DAY_DELIVERY = 1`, so the two indicators jointly partition women into non-pregnant (PREG = 0, DAY_DELIVERY = 0), pregnant non-delivery (PREG = 1, DAY_DELIVERY = 0), and delivery (PREG = 0, DAY_DELIVERY = 1) cohorts. Time-fixed per sampling occasion.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (not day of delivery).
+- **Source aliases:**
+  - `DEL` -- Hirt 2007 NONMEM symbol for the day-of-delivery indicator; same orientation, no value transformation.
+- **Example models:** `Hirt_2007_nelfinavir.R` (multiplicative effect `1 + 1.92 * DAY_DELIVERY` applied to both maternal nelfinavir clearance `CL_Nm_No` and distribution volume `V`; gates a body-weight power effect `(WT/73)^2.81` on `CL_Nm_No` within the delivery cohort only).
+- **Notes:** Distinct from `PREG` (pregnant non-delivery, 1 = pregnant; see entry above), `TPP` (time postpartum, a continuous time-since-delivery covariate for postpartum recovery), and `TERM_BIRTH` (term-vs-preterm birth at any postnatal time). Use `DAY_DELIVERY` when the source paper carries a contrasted day-of-delivery cohort against pregnant non-delivery women in the same PK analysis (placental-transfer / labour-PK studies). Specific scope until a second model ratifies the name; promote to general when a future placental-transfer or labour-PK paper uses the same indicator. Ratified canonically alongside the Hirt 2007 nelfinavir extraction.
+
 ### TERM_BIRTH (**canonical for term-vs-preterm birth indicator**)
 - **Description:** Binary indicator of term-vs-preterm birth status; `1` = term birth (>= 37 weeks gestation), `0` = preterm birth (< 37 weeks gestation). Time-fixed per subject. In Allegaert 2015 (paracetamol PK in young women) the indicator is used to select between two typical-value clearances for the sulphate-formation pathway.
 - **Units:** (binary)
@@ -3854,6 +3865,17 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Source aliases:** `MTX` -- used in `Rosario_2015_vedolizumab.R`.
 - **Example models:** `Rosario_2015_vedolizumab.R` (power-form on CLL: `CLL * 0.983^CONMED_MTX`).
 - **Notes:** Immunomodulator used especially in CD maintenance. Generic concomitant-MTX indicator that may also appear in non-IBD models; start as scope: general.
+
+### CONMED_NNRTI (**canonical for concomitant non-nucleoside reverse-transcriptase inhibitor indicator**)
+- **Description:** Binary indicator of concomitant non-nucleoside reverse-transcriptase inhibitor (NNRTI) coadministration. `1` = subject is on any NNRTI (efavirenz, nevirapine, delavirdine, etravirine, or rilpivirine) during the sampling period; `0` = no NNRTI coadministration. NNRTIs are inducers of CYP3A4 and several UGT isoforms; their coadministration commonly increases clearance of co-administered drugs metabolised by these pathways.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (no concomitant NNRTI).
+- **Source aliases:**
+  - `NNRTI` -- Hirt 2007 NONMEM symbol for the class indicator; same orientation, no value transformation.
+- **Example models:** `Hirt_2007_nelfinavir.R` (multiplicative effect `1 + 1.48 * CONMED_NNRTI` on the maternal M8 elimination rate `k_M8m_M8o`; 148 percent higher M8 elimination in NNRTI-exposed women, attributed to CYP / UGT induction).
+- **Notes:** Class-level indicator pooling all NNRTIs. Use this canonical when the source paper carries a class indicator rather than a single-drug binary; for an efavirenz-specific or nevirapine-specific indicator, register / use `CONMED_EFV` (already canonical) or a `CONMED_NVP` analogue. Sits alongside `CONMED_EFV`, `CONMED_RIF`, `CONMED_EIAED`, and `CONMED_CBZ` in the CYP / UGT inducer family of CONMED indicators. Specific scope until a second model ratifies the broader class indicator; promote to general when a future HIV-PK / antiretroviral-coadministration paper uses the same pooled NNRTI indicator. Ratified canonically alongside the Hirt 2007 nelfinavir extraction.
 
 ### CONMED_NSAID (**canonical for concomitant NSAID use**)
 - **Description:** 1 = on concomitant non-steroidal anti-inflammatory drug (NSAID) therapy at baseline, 0 = not.
