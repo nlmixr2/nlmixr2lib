@@ -884,6 +884,12 @@ Each entry below is a paper-mechanistic PD endpoint registered as a canonical co
 - **Source aliases:** none.
 - **Example models:** Alzheimer's PD models.
 
+### deltaUPDRS (**canonical change-from-baseline total UPDRS score**)
+- **Type:** compartment
+- **Role:** Change-from-baseline in total Unified Parkinson's Disease Rating Scale (UPDRS) score PD output, used as the modelled endpoint in algebraic Parkinson's disease-progression models that combine a linear disease-progression slope with an asymptotic short-term symptomatic-effect component.
+- **Source aliases:** `Delta UPDRS`, the Lee 2011 paper's `Delta_UPDRS_it` notation.
+- **Example models:** `Lee_2011_parkinson_progression.R`.
+
 ### tumor_vol (**canonical TGI tumour-volume output state**)
 - **Type:** compartment
 - **Role:** Tumour volume output state in TGI models.
