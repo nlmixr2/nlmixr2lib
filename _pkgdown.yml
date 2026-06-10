@@ -76,12 +76,8 @@ navbar:
         href: articles/Ali_2018_amodiaquine.html
       - text: "Amoxicillin (Tang 2019)"
         href: articles/Tang_2019_amoxicillin.html
-      - text: "AmphotericinB liposomal (Hong 2006)"
-        href: articles/Hong_2006_amphotericinB_liposomal.html
-      - text: "Ampicillin (Tremoulet 2014)"
-        href: articles/Tremoulet_2014_ampicillin.html
-      - text: "Anakinra (Urien 2013)"
-        href: articles/Urien_2013_anakinra.html
+      - text: "Angiotensin (BuchwalderCsajka 1999)"
+        href: articles/BuchwalderCsajka_1999_angiotensin.html
       - text: "Anifrolumab (Almquist 2022)"
         href: articles/Almquist_2022_anifrolumab.html
       - text: "Anrukinzumab (Hua 2015)"
@@ -1609,6 +1605,7 @@ articles:
   - articles/Brown_2017_osimertinib
   - articles/Bruno_2005_trastuzumab
   - articles/Brussee_2018_midazolam_pbpk
+  - articles/BuchwalderCsajka_1999_angiotensin
   - articles/Budha_2023_tislelizumab
   - articles/Buelga_2005_vancomycin
   - articles/Buil-Bruna_2015_lanreotide
