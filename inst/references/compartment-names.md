@@ -2518,11 +2518,17 @@ Per-paper metabolite / sibling-drug suffix additions discovered during the 2026-
 - **Source aliases:** none.
 - **Example models:** `Schindler_2017_imatinib.R`.
 
-### s35424 (**canonical S35424 antipsychotic-metabolite suffix**)
+### m1trans (**canonical M1-trans rolofylline metabolite suffix**)
 - **Type:** metabolite-suffix
-- **Role:** S35424, the active metabolite of Servier's investigational antipsychotic S33138 (D3 / D2 receptor antagonist). Formed from S33138 by N-demethylation; reversible interconversion (back-transformation of S35424 to S33138) is confirmed by the Bertrand 2011 microdose study. S33138 MW 319.4 g/mol, S35424 MW 361.4 g/mol.
+- **Role:** M1-trans active hydroxyl metabolite of rolofylline. CYP3A4-mediated hydroxylation of the parent adenosine A1 receptor antagonist generates a diastereomeric pair of M1 metabolites; M1-trans is the (trans-) stereoisomer tracked alongside the parent and the M1-cis stereoisomer in the Stroh 2013 simultaneous PK model. Drives `central_m1trans` / `peripheral1_m1trans` and the `propSd_m1trans` / `addSd_m1trans` residuals.
 - **Source aliases:** none.
-- **Example models:** `Bertrand_2011_S33138.R` (doi:10.1208/s12248-011-9282-9).
+- **Example models:** `Stroh_2013_rolofylline.R` (doi:10.1208/s12248-012-9443-5).
+
+### m1cis (**canonical M1-cis rolofylline metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** M1-cis active hydroxyl metabolite of rolofylline. Co-eluting (cis-) stereoisomer of the CYP3A4 hydroxylation pair; formed both directly from the parent (fraction FM) and via unidirectional stereochemical interconversion from M1-trans. Drives `central_m1cis` and the `propSd_m1cis` / `addSd_m1cis` residuals.
+- **Source aliases:** none.
+- **Example models:** `Stroh_2013_rolofylline.R` (doi:10.1208/s12248-012-9443-5).
 
 ---
 
