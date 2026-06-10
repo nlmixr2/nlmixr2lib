@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Grzesk 2016 m-3M3FBS ([doi:10.3892/br.2015.543](https://doi.org/10.3892/br.2015.543)) -- ex-vivo male Wistar rat tail artery; sigmoidal Emax CRC model for phenylephrine, arg-vasopressin, mastoparan-7, and Bay K8644 with/without m-3M3FBS phospholipase-C-activator pretreatment (ratifies new `AGONIST_CODE`, `M3M3FBS_PRESENT`, and `CONC_AGONIST_M` covariate canonicals).
+* Pre-register `CARDIAC_OUTPUT` covariate canonical (cardiac output, L/min; scope general) in `inst/references/covariate-columns.md`, ahead of Hendrickx 2006 ([doi:10.1186/1471-2253-6-7](https://doi.org/10.1186/1471-2253-6-7)) inhaled-anesthetic extraction. The Hendrickx 2006 model files were not built because the source data are simulated by the Gas Man(R) physiological model rather than measured in real patients; the canonical is registered so future real-patient hemodynamic / inhaled-anesthetic popPK papers can use it.
 * Add Padoin 1998 cephalexin ([doi:10.1128/aac.42.6.1463](https://doi.org/10.1128/aac.42.6.1463)) -- preclinical male Wistar rats with a cephalexin / quinapril oral coadministration DDI (ratifies new `CONMED_QPRL_ORAL` covariate canonical).
 * Add van Rongen 2018 metformin ([doi:10.1007/s40272-018-0293-1](https://doi.org/10.1007/s40272-018-0293-1)) -- overweight and obese Caucasian adolescents.
 * Add Tarning 2012 artemether and dihydroartemisinin ([doi:10.1186/1475-2875-11-293](https://doi.org/10.1186/1475-2875-11-293)) -- pregnant women with uncomplicated Plasmodium falciparum malaria in Uganda (joint parent + DHA popPK with zero-order dissolution and 6-compartment transit absorption).
