@@ -777,6 +777,17 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Lin_2024_casirivimab.R` (time-varying; reference 2.11; small positive exponent +0.029 on CL).
 - **Notes:** Document baseline-vs-time-varying status in `covariateData[[NLR]]$notes`. Although it derives from `WBC` differential counts, register it as its own canonical because the ratio (not the absolute counts) is what the model uses.
 
+### RBC (**canonical for red blood cell (erythrocyte) count**)
+- **Description:** Red blood cell (erythrocyte) count (baseline or time-varying).
+- **Units:** 10^12 cells/L (clinical reporting convention; equivalent to 10^6 cells/uL). Document per-model via `covariateData[[RBC]]$units`.
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- used with linear-deviation `(RBC - ref)` or power scaling `(RBC / ref)^exponent`. Reference values observed: 4.40 x 10^12/L (Zhang 2012 healthy Chinese adult cohort median across the four dosing groups in Table 1).
+- **Source aliases:**
+  - `RBC*` -- used in `Zhang_2012_bivalirudin.R` (the asterisk in Zhang 2012 Table 1 denotes the per-subject baseline demographic value).
+- **Example models:** `Zhang_2012_bivalirudin.R` (linear-deviation effect on EC50: `EC50_i = theta_EC50 * exp(eta_EC50) * (1 + 1.70 * (RBC - 4.40))`).
+- **Notes:** Universal CBC component, distinct from `HGB` (hemoglobin mass concentration), `HCT` (hematocrit volume fraction), and `WBC` (white blood cell count). Document time-varying-vs-baseline-only status in `covariateData[[RBC]]$notes`. RBC and HCT correlate via mean corpuscular volume (HCT ~ RBC * MCV / 10); models that retain both should record the dependency in `notes`.
+
 ### HCT (**canonical for hematocrit**)
 - **Description:** Hematocrit -- packed red blood cell volume fraction (baseline or time-varying).
 - **Units:** % (volume fraction times 100). Document per-model via `covariateData[[HCT]]$units`.
