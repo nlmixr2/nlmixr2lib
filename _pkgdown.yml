@@ -292,6 +292,8 @@ navbar:
         href: articles/Yuan_2019_concizumab.html
       - text: "Crisantaspase (Sassen 2017)"
         href: articles/Sassen_2017_crisantaspase.html
+      - text: "CyaaE7 (ParraGuillen 2013)"
+        href: articles/ParraGuillen_2013_tumor_immunotherapy.html
       - text: "Cyclophosphamide mouse (Campagne 2019)"
         href: articles/Campagne_2019_cyclophosphamide_mouse.html
       - text: "Cyclosporin (Debord 2001)"
@@ -572,12 +574,8 @@ navbar:
         href: articles/Royer_2010_HuHMFG1.html
       - text: "Hydroxyurea (Paule 2011)"
         href: articles/Paule_2011_hydroxyurea.html
-      - text: "Iclaprim (Lodise 2018)"
-        href: articles/Lodise_2018_iclaprim.html
-      - text: "Ifosfamide (Kerbusch 2000)"
-        href: articles/Kerbusch_2000_ifosfamide.html
-      - text: "Iloperidone (Pei 2016)"
-        href: articles/Pei_2016_iloperidone.html
+      - text: "Il12 (ParraGuillen 2013)"
+        href: articles/ParraGuillen_2013_tumor_immunotherapy.html
       - text: "Imatinib (Chien 2022)"
         href: articles/Chien_2022_imatinib.html
       - text: "Imatinib (Schindler 2017)"
@@ -2025,7 +2023,7 @@ articles:
   - articles/Parhiz_2024_mRNALNP
   - articles/Park_2001_ketoprofen
   - articles/Park_2014_SKL10406
-  - articles/Park_2014_triflusal
+  - articles/ParraGuillen_2013_tumor_immunotherapy
   - articles/Passey_2011_tacrolimus
   - articles/Patel_2011_fluconazole
   - articles/Patel_2017_selumetinib

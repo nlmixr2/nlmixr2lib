@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Ezzati 2014 dexmedetomidine ([doi:10.1111/aas.12318](https://doi.org/10.1111/aas.12318)) -- preclinical newborn piglets in a perinatal-asphyxia model with therapeutic hypothermia (ratifies new `HIE_POST` covariate canonical).
+* Add Parra-Guillen 2013 CyaA-E7 cancer vaccine and IL-12 ([doi:10.1208/s12248-013-9483-5](https://doi.org/10.1208/s12248-013-9483-5)) -- preclinical female C57BL/6 mice (TC1 and MC38 subcutaneous tumor xenografts; semi-mechanistic K-PD tumor-growth-dynamics model with a Hill-regulator vaccine-resistance term and a cure-vs-relapse mixture model; ratifies new `MIX_VAC_RELAPSE` covariate canonical).
 * Add Padoin 1998 cephalexin ([doi:10.1128/aac.42.6.1463](https://doi.org/10.1128/aac.42.6.1463)) -- preclinical male Wistar rats with a cephalexin / quinapril oral coadministration DDI (ratifies new `CONMED_QPRL_ORAL` covariate canonical).
 * Add van Rongen 2018 metformin ([doi:10.1007/s40272-018-0293-1](https://doi.org/10.1007/s40272-018-0293-1)) -- overweight and obese Caucasian adolescents.
 * Add Tarning 2012 artemether and dihydroartemisinin ([doi:10.1186/1475-2875-11-293](https://doi.org/10.1186/1475-2875-11-293)) -- pregnant women with uncomplicated Plasmodium falciparum malaria in Uganda (joint parent + DHA popPK with zero-order dissolution and 6-compartment transit absorption).
