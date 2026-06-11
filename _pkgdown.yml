@@ -402,10 +402,8 @@ navbar:
         href: articles/Luo_2016_efavirenz.html
       - text: "Efavirenz (Olagunju 2018)"
         href: articles/Olagunju_2018_efavirenz.html
-      - text: "Efavirenz (Salem 2014)"
-        href: articles/Salem_2014_efavirenz.html
-      - text: "EGF IFN chimera (DoldanMartelli 2013)"
-        href: articles/DoldanMartelli_2013_EGF_IFN_chimera.html
+      - text: "Eflornithine rat (Jansson 2008)"
+        href: articles/Jansson_2008_eflornithine.html
       - text: "Elotuzumab (Ide 2020)"
         href: articles/Ide_2020_elotuzumab.html
       - text: "Emfilermin (Goggin 2004)"
@@ -1820,7 +1818,7 @@ articles:
   - articles/Jackson_2022_ixekizumab
   - articles/Jacobs_2016_colistin
   - articles/Jager_2011_gemtuzumab
-  - articles/Janssen_2017_cabazitaxel_phenotyping
+  - articles/Jansson_2008_eflornithine
   - articles/Jelliffe_2014_digoxin
   - articles/Jeon_2012_C3G
   - articles/Jeon_2013_interferonAlfa2a

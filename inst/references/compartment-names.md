@@ -2632,3 +2632,29 @@ PBPK organ sub-compartment suffixes used by Ayyar 2024 givosiran whole-organ ext
 - **Role:** Vascular pool inside the named organ, alongside the existing `vp_<organ>` membrane-limited form.
 - **Source aliases:** none.
 - **Example models:** `Ayyar_2024_givosiran.R`.
+
+---
+
+## Stereoisomer / enantiomer suffixes (Jansson 2008 eflornithine)
+
+L- and D-enantiomer suffixes for stereoselective popPK models that simultaneously track both isomers of a racemic drug. The `_l` and `_d` suffixes attach to canonical compartments (`depot_l`, `central_d`, `peripheral1_l`, etc.), canonical parameters (`lcl_l`, `lvc_d`, `ltmax_abs_l`, etc.), and observation outputs (`Cc_l`, `Cc_d`). The `_rac` suffix denotes the racemic-sum observation output `Cc_rac = Cc_l + Cc_d` and its residual SD; it has no associated state compartment.
+
+### l (**canonical L-enantiomer suffix**)
+- **Type:** metabolite-suffix
+- **Role:** L-isomer (levorotatory / S-isomer) of a racemic drug, tracked alongside the D-isomer in a stereoselective popPK model.
+- **Source aliases:** none.
+- **Example models:** `Jansson_2008_eflornithine_rat.R`.
+- **Notes:** Although enantiomers are not metabolites, the registered metabolite-suffix machinery handles the same `<canonical>_<token>` shape. Paired with `d` for the D-isomer and `rac` for the racemic sum. Future papers using R/S, +/-, or E/Z stereodescriptors should register separate suffixes if their notation differs.
+
+### d (**canonical D-enantiomer suffix**)
+- **Type:** metabolite-suffix
+- **Role:** D-isomer (dextrorotatory / R-isomer) of a racemic drug, tracked alongside the L-isomer in a stereoselective popPK model.
+- **Source aliases:** none.
+- **Example models:** `Jansson_2008_eflornithine_rat.R`.
+
+### rac (**canonical racemic-sum output suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Racemic-sum observation output in a stereoselective popPK model: `Cc_rac = Cc_l + Cc_d` (and `propSd_Cc_rac` for the racemic-output residual SD).
+- **Source aliases:** none.
+- **Example models:** `Jansson_2008_eflornithine_rat.R`.
+- **Notes:** Algebraic sum only; no `central_rac`, `peripheral1_rac`, or `depot_rac` compartment exists.
