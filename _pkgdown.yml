@@ -346,6 +346,8 @@ navbar:
         href: articles/Smuszkiewicz_2017_dexmedetomidine.html
       - text: "Dexmedetomidine (Talke 2018)"
         href: articles/Talke_2018_dexmedetomidine.html
+      - text: "Dexmedetomidine piglet (Ezzati 2014)"
+        href: articles/Ezzati_2014_dexmedetomidine_piglet.html
       - text: "Diazepam (Ku 2018)"
         href: articles/Ku_2018_diazepam.html
       - text: "Didanosine (Hirt 2009)"
@@ -1718,6 +1720,7 @@ articles:
   - articles/Elishmereni_2011_il21
   - articles/Elkomy_2015_morphine
   - articles/Eugene_2016_metoprolol
+  - articles/Ezzati_2014_dexmedetomidine_piglet
   - articles/Faelens_2021_infliximab
   - articles/Fang_2010_etanercept
   - articles/Farrell_2012_farletuzumab
