@@ -1034,6 +1034,12 @@ navbar:
         href: articles/Schmidt_2009_oxazolidinones.html
       - text: "S ketamine (Flint 2017)"
         href: articles/Flint_2017_s_ketamine.html
+      - text: "S33138 (Bertrand 2011)"
+        href: articles/Bertrand_2011_S33138.html
+      - text: "SAL003 (Peng 2024)"
+        href: articles/Peng_2024_SAL003.html
+      - text: "SKL10406 (Park 2014)"
+        href: articles/Park_2014_SKL10406.html
       - text: "Sacituzumab (Sathe 2024)"
         href: articles/Sathe_2024_sacituzumab.html
       - text: "SAL003 (Peng 2024)"
@@ -1538,6 +1544,7 @@ articles:
   - articles/Berges_2007_enoxaparin
   - articles/Berges_2015_ozanezumab
   - articles/Bergmann_2014_tacrolimus
+  - articles/Bertrand_2011_S33138
   - articles/Bi_2017_peginterferon_alfa_2a
   - articles/Bienczak_2016_nevirapine
   - articles/Bienczak_2025_ligelizumab

@@ -2505,17 +2505,11 @@ Per-paper metabolite / sibling-drug suffix additions discovered during the 2026-
 - **Source aliases:** none.
 - **Example models:** `Schindler_2017_imatinib.R`.
 
-### caf (**canonical caffeine sibling-drug suffix**)
+### s35424 (**canonical S35424 antipsychotic-metabolite suffix**)
 - **Type:** metabolite-suffix
-- **Role:** Caffeine sibling-drug suffix for combination / drug-drug-interaction models where caffeine is co-administered alongside another primary drug (e.g., caffeine-ephedrine herbal-formulation interactions). Used on `depot_caf` / `central_caf` PK compartments and the paired `Cc_caf` observation variable.
+- **Role:** S35424, the active metabolite of Servier's investigational antipsychotic S33138 (D3 / D2 receptor antagonist). Formed from S33138 by N-demethylation; reversible interconversion (back-transformation of S35424 to S33138) is confirmed by the Bertrand 2011 microdose study. S33138 MW 319.4 g/mol, S35424 MW 361.4 g/mol.
 - **Source aliases:** none.
-- **Example models:** `Csajka_2005_ephedrine_caffeine.R`.
-
-### neph (**canonical norephedrine metabolite suffix**)
-- **Type:** metabolite-suffix
-- **Role:** Norephedrine metabolite suffix. Norephedrine is the N-demethylation metabolite of ephedrine. Used on the `central_neph` plasma compartment and the paired `Cc_neph` observation variable in mechanistic ephedrine / norephedrine PK models with Michaelis-Menten conversion.
-- **Source aliases:** none.
-- **Example models:** `Csajka_2005_ephedrine_caffeine.R`.
+- **Example models:** `Bertrand_2011_S33138.R` (doi:10.1208/s12248-011-9282-9).
 
 ---
 
