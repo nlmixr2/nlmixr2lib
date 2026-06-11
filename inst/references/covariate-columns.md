@@ -84,6 +84,16 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Zhou_2021_belimumab.R` (reference 40.69 kg; exponents 0.673 on CL and 0.891 on V1), `Aguiar_2021_ustekinumab.R` (reference 45 kg; power exponents 0.598 on CL, 0.590 on Vc, 0.586 on Vp).
 - **Notes:** Distinct from `LBM` (lean body mass) which is sometimes computed by the Boer or Hume formulae. When the source paper reports the body-composition formula it used (e.g., Janmahasatian for FFM), record it in `covariateData[[FFM]]$notes`. FFM is preferred over total body weight when scaling monoclonal-antibody PK because mAb distribution is largely confined to extracellular fluid; muscle / lean tissue tracks extracellular volume better than total weight in heavier patients.
 
+### FM (**canonical for fat mass**)
+- **Description:** Fat mass in kg derived as the complement of fat-free mass, FM = TBW - FFM, where FFM is computed by the Janmahasatian et al. (2005) formula (or, equivalently, by direct measurement via bioelectrical-impedance analysis / DXA when the source paper specifies it). Time-fixed at baseline.
+- **Units:** kg
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- used with power scaling `(FM / ref)^exponent`. Reference values observed: 19 kg (Robarge 2017 efavirenz; cohort median calculated FM).
+- **Source aliases:** `FAT`, `FATMASS`.
+- **Example models:** `Robarge_2017_efavirenz.R` (reference 19 kg; exponent 1 fixed on V_p/F).
+- **Notes:** Natural complement of `FFM`. Use both in the same model when the paper scales different disposition parameters by FFM vs FM (e.g., Robarge 2017 efavirenz: CL/F by FFM, V_p/F by FM, motivated by lipophilic partitioning into adipose tissue). When the source paper reports the body-composition formula it used (Janmahasatian for FFM is the most common; direct DXA / BIA also acceptable), record it in `covariateData[[FM]]$notes`.
+
 ### IBW (**canonical for ideal body weight**)
 - **Description:** Ideal body weight in kg, typically derived from height and sex using the Devine formula or its variants. Time-fixed at baseline unless the source paper states otherwise. Used in size-normalisation of clearance / dose-rate in adult popPK models where the source paper reports IBW as the preferred size descriptor over total body weight (e.g., when overweight subjects pull clearance scaling away from the typical pattern), or in combination with total body weight to derive an obesity flag.
 - **Units:** kg

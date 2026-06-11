@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Brussee 2016 L-arginine ([doi:10.1128/AAC.01479-15](https://doi.org/10.1128/AAC.01479-15)) -- adults with moderately severe Plasmodium falciparum malaria; PKPD model linking IV L-arginine to exhaled NO and RH-PAT endothelial function (ratifies new `RACE_PAPUAN` covariate canonical at general scope).
+* Add Robarge 2017 efavirenz ([doi:10.1128/AAC.01813-16](https://doi.org/10.1128/AAC.01813-16)) -- HIV-seronegative adult volunteers after a single 600 mg oral dose; ratifies new `FM` (fat mass) covariate canonical paired with the existing `FFM`.
 * Add Padoin 1998 cephalexin ([doi:10.1128/aac.42.6.1463](https://doi.org/10.1128/aac.42.6.1463)) -- preclinical male Wistar rats with a cephalexin / quinapril oral coadministration DDI (ratifies new `CONMED_QPRL_ORAL` covariate canonical).
 * Add van Rongen 2018 metformin ([doi:10.1007/s40272-018-0293-1](https://doi.org/10.1007/s40272-018-0293-1)) -- overweight and obese Caucasian adolescents.
 * Add Tarning 2012 artemether and dihydroartemisinin ([doi:10.1186/1475-2875-11-293](https://doi.org/10.1186/1475-2875-11-293)) -- pregnant women with uncomplicated Plasmodium falciparum malaria in Uganda (joint parent + DHA popPK with zero-order dissolution and 6-compartment transit absorption).
