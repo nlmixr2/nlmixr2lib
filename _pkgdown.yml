@@ -808,6 +808,8 @@ navbar:
         href: articles/Attarwala_2023_mRNA3927.html
       - text: "Mu receptor binding (Mann 2022)"
         href: articles/Laffont_2025_opioid_overdose_reversal_simulation.html
+      - text: "Mycophenolic acid (Yu 2017)"
+        href: articles/Yu_2017_mycophenolic_acid.html
       - text: "Mycophenolic acid (deWinter 2009)"
         href: articles/deWinter_2009_mycophenolic_acid.html
       - text: "Nab paclitaxel (Chen 2014)"
@@ -2251,11 +2253,7 @@ articles:
   - articles/Ye_2017_ethaselen
   - articles/Yin_2021_trastuzumabDeruxtecan
   - articles/Yoneyama_2017_emicizumab
-  - articles/Yoshida_2018_coproporphyrin_I_GDC0810
-  - articles/Yoshida_2018_coproporphyrin_I_rifampin
-  - articles/Yoshida_2021_ipatasertib
-  - articles/Yoshioka_2018_FXa_inhibitors_mbma
-  - articles/You_2013_hCG_GTN
+  - articles/Yu_2017_mycophenolic_acid
   - articles/Yu_2022_ofatumumab
   - articles/Yuan_2019_concizumab
   - articles/Yukawa_1990_phenytoin

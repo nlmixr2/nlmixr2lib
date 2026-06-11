@@ -54,8 +54,8 @@ To add transit compartments to the model
 readModelDb("PK_1cmt_des") |> addTransit(3)
 }
 \seealso{
-Other absorption:
-\code{\link[=addWeibullAbs]{addWeibullAbs()}},
-\code{\link[=removeTransit]{removeTransit()}}
+Other absorption: 
+\code{\link{addWeibullAbs}()},
+\code{\link{removeTransit}()}
 }
 \concept{absorption}

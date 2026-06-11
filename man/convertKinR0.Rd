@@ -29,9 +29,9 @@ parameterization
 addIndirect(stim = "in") |> convertKinR0()
 }
 \seealso{
-Other Indirect response:
-\code{\link[=addIndirect]{addIndirect()}},
-\code{\link[=addIndirectLin]{addIndirectLin()}}
+Other Indirect response: 
+\code{\link{addIndirect}()},
+\code{\link{addIndirectLin}()}
 }
 \author{
 Matthew L. Fidler

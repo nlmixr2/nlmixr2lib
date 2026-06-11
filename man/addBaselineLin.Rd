@@ -28,14 +28,14 @@ readModelDb("PK_2cmt_no_depot") |>
   addBaselineLin()
 }
 \seealso{
-Other PD:
-\code{\link[=addBaseline1exp]{addBaseline1exp()}},
-\code{\link[=addBaselineConst]{addBaselineConst()}},
-\code{\link[=addBaselineExp]{addBaselineExp()}},
-\code{\link[=addDirectLin]{addDirectLin()}},
-\code{\link[=convertEmax]{convertEmax()}},
-\code{\link[=convertLogLin]{convertLogLin()}},
-\code{\link[=convertQuad]{convertQuad()}}
+Other PD: 
+\code{\link{addBaseline1exp}()},
+\code{\link{addBaselineConst}()},
+\code{\link{addBaselineExp}()},
+\code{\link{addDirectLin}()},
+\code{\link{convertEmax}()},
+\code{\link{convertLogLin}()},
+\code{\link{convertQuad}()}
 }
 \author{
 Matthew L. Fidler
