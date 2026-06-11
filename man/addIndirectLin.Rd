@@ -67,9 +67,9 @@ readModelDb("PK_2cmt_no_depot") |> addIndirectLin(inhib = "out")
 
 }
 \seealso{
-Other Indirect response:
-\code{\link[=addIndirect]{addIndirect()}},
-\code{\link[=convertKinR0]{convertKinR0()}}
+Other Indirect response: 
+\code{\link{addIndirect}()},
+\code{\link{convertKinR0}()}
 }
 \author{
 Matthew L. Fidler

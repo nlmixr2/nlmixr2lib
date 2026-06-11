@@ -4289,6 +4289,39 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Example models:** `Oniki_2018_nafld_risk.R` (multiplicative factor 0.592 on the (BMI50 - 17) half-saturation offset of the logit-of-NAFLD sigmoid for G/G homozygotes vs the C/C reference, Oniki 2018 Eq. 4 / Figure 2c).
 - **Notes:** General scope. Companion homozygote indicator to `PNPLA3_CG`; see `PNPLA3_CG` notes for the joint three-level usage and reference category. Ratified canonically alongside the Oniki 2018 NAFLD-risk extraction.
 
+### UGT2B7_211GG (**canonical for UGT2B7 211G>T (rs7438135 / UGT2B7*2 Ala71Ser) homozygous G/G genotype indicator**)
+- **Description:** 1 = subject is homozygous for the wild-type (ancestral) guanine at nucleotide 211 of the UGT2B7 gene, corresponding to alanine at amino-acid position 71 (Ala71/Ala71) in the substrate-binding N-terminal half of the UGT2B7 enzyme; 0 = otherwise (211GT heterozygote or 211TT homozygote). Encoded by the UGT2B7 211G>T single-nucleotide polymorphism (rs7438135, also referred to as the UGT2B7*2 variant). Time-fixed per subject (germline genotype).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (any non-G/G genotype: 211GT or 211TT).
+- **Source aliases:**
+  - `UGT2B7 211GG` / `UGT2B7-211GG` / `211GG` -- used in `Yu_2017_mycophenolic_acid.R` (paper Table 5 column headers; one of three binary group-membership indicators reconstructed from the paper's ordinal column "UGT2B7 genotype").
+- **Example models:** `Yu_2017_mycophenolic_acid.R` (one of three UGT2B7-211 binary indicators that reconstruct the paper's ordinal column `UGT2B7 genotype` in {GT=1, GG=2, TT=3}; the model() block computes `ugt2b7_211_code = UGT2B7_211GT * 1 + UGT2B7_211GG * 2 + UGT2B7_211TT * 3` and applies V1/F = 14.7 + 7.72 * ugt2b7_211_code per Yu 2017 Table 3 / page 1574 final-model formula).
+- **Notes:** rs7438135 (UGT2B7 c.211G>T, p.Ala71Ser) is a coding-region SNP in the UGT2B7 N-terminal substrate-binding half; the T (Ser71) allele is the variant. Allele frequencies vary by ethnicity (the T allele is most common in Asian populations in Yu 2017's Chinese renal-transplant cohort: 51/101 GT + 8/101 TT = 59/101 PK evaluations carrying at least one T allele). Future papers that use a dominant (any-G vs T/T) or recessive (G/G vs any-T) grouping should still register the same three binary canonicals UGT2B7_211GG / UGT2B7_211GT / UGT2B7_211TT in the input data so that downstream simulations can reconstruct the paper's chosen grouping. Distinct from UGT1A9 promoter / 5'-UTR variants (Yu 2017 also genotyped UGT1A9*22 but did not find it significant; no UGT1A9 canonical is being proposed here). Ratified canonically on 2026-06-03 alongside the Yu 2017 mycophenolic acid extraction.
+
+### UGT2B7_211GT (**canonical for UGT2B7 211G>T (rs7438135 / UGT2B7*2 Ala71Ser) heterozygous G/T genotype indicator**)
+- **Description:** 1 = subject is heterozygous at nucleotide 211 of the UGT2B7 gene, carrying one wild-type G allele (Ala71) and one variant T allele (Ser71); 0 = otherwise (211GG homozygote or 211TT homozygote). Encoded by the UGT2B7 211G>T single-nucleotide polymorphism (rs7438135, also referred to as the UGT2B7*2 variant). Time-fixed per subject (germline genotype).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (any non-G/T genotype: 211GG or 211TT).
+- **Source aliases:**
+  - `UGT2B7 211GT` / `UGT2B7-211GT` / `211GT` -- used in `Yu_2017_mycophenolic_acid.R` (paper Table 5).
+- **Example models:** `Yu_2017_mycophenolic_acid.R` (one of three UGT2B7-211 binary indicators; see `UGT2B7_211GG` notes for the paper's ordinal-code reconstruction).
+- **Notes:** Companion canonical to `UGT2B7_211GG` and `UGT2B7_211TT`; see `UGT2B7_211GG` notes for variant biology and allele-frequency context. Ratified canonically on 2026-06-03 alongside the Yu 2017 mycophenolic acid extraction.
+
+### UGT2B7_211TT (**canonical for UGT2B7 211G>T (rs7438135 / UGT2B7*2 Ala71Ser) homozygous T/T genotype indicator**)
+- **Description:** 1 = subject is homozygous for the variant thymine at nucleotide 211 of the UGT2B7 gene, corresponding to serine at amino-acid position 71 (Ser71/Ser71); 0 = otherwise (211GG homozygote or 211GT heterozygote). Encoded by the UGT2B7 211G>T single-nucleotide polymorphism (rs7438135, UGT2B7*2 variant). Time-fixed per subject (germline genotype).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (any non-T/T genotype: 211GG or 211GT).
+- **Source aliases:**
+  - `UGT2B7 211TT` / `UGT2B7-211TT` / `211TT` -- used in `Yu_2017_mycophenolic_acid.R` (paper Table 5).
+- **Example models:** `Yu_2017_mycophenolic_acid.R` (one of three UGT2B7-211 binary indicators; see `UGT2B7_211GG` notes for the paper's ordinal-code reconstruction).
+- **Notes:** Companion canonical to `UGT2B7_211GG` and `UGT2B7_211GT`; see `UGT2B7_211GG` notes for variant biology and allele-frequency context. Ratified canonically on 2026-06-03 alongside the Yu 2017 mycophenolic acid extraction.
+
 ## Immunogenicity
 
 ### ADA_POS (**canonical for anti-drug antibody positive status indicator**)

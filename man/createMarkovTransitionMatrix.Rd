@@ -34,11 +34,11 @@ A square matrix with row and column names for each state where
 Create a Markov transition matrix with probabilities of transitioning between every state
 }
 \seealso{
-Other Markov models:
-\code{\link[=createMarkovModel]{createMarkovModel()}},
-\code{\link[=createMarkovModelDataset]{createMarkovModelDataset()}},
-\code{\link[=createMarkovModelFromSingleState]{createMarkovModelFromSingleState()}},
-\code{\link[=simMarkov]{simMarkov()}},
-\code{\link[=simMarkovId]{simMarkovId()}}
+Other Markov models: 
+\code{\link{createMarkovModel}()},
+\code{\link{createMarkovModelDataset}()},
+\code{\link{createMarkovModelFromSingleState}()},
+\code{\link{simMarkov}()},
+\code{\link{simMarkovId}()}
 }
 \concept{Markov models}

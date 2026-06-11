@@ -54,11 +54,11 @@ data.frame
 createMarkovModelDataset(c(1, 2, 1), colCur = c(1, 2, 3))
 }
 \seealso{
-Other Markov models:
-\code{\link[=createMarkovModel]{createMarkovModel()}},
-\code{\link[=createMarkovModelFromSingleState]{createMarkovModelFromSingleState()}},
-\code{\link[=createMarkovTransitionMatrix]{createMarkovTransitionMatrix()}},
-\code{\link[=simMarkov]{simMarkov()}},
-\code{\link[=simMarkovId]{simMarkovId()}}
+Other Markov models: 
+\code{\link{createMarkovModel}()},
+\code{\link{createMarkovModelFromSingleState}()},
+\code{\link{createMarkovTransitionMatrix}()},
+\code{\link{simMarkov}()},
+\code{\link{simMarkovId}()}
 }
 \concept{Markov models}
