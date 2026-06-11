@@ -5364,6 +5364,16 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Example models:** `Kotani_2022_astegolimab.R`.
 - **Notes:** Zenyatta-study categorical covariate flagging the 70 mg group (lowest dose), modeled as a -15.3% relative change on relative bioavailability. Modeled by Kotani 2022 as `70 mg vs {210 mg, 490 mg}` combined reference.
 
+### DOSE_HIGH_EFL (**canonical for high-dose eflornithine indicator**)
+- **Description:** 1 = dose record is at the highest oral eflornithine dose level (>= 3000 mg/kg in the Jansson 2008 Sprague-Dawley rat single-dose study), 0 = oral dose at the lower levels (750, 1500, 2000 mg/kg) or any IV dose.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (750-2000 mg/kg oral, or IV at 375 / 1000 mg/kg).
+- **Source aliases:** derived per dose record from the administered amount and route. Jansson 2008 modeled it as a categorical indicator on bioavailability for both enantiomers (Results paragraph; OFV drop -11.4).
+- **Example models:** `Jansson_2008_eflornithine_rat.R`.
+- **Notes:** Specific scope because the threshold (3000 mg/kg of body weight) and the bioavailability shifts (+14.6% for L-eflornithine, +32.8% for D-eflornithine relative to the 750-2000 mg/kg reference) are intrinsically tied to the Jansson 2008 dose-design and are not transferable to other drugs. Encoded as a binary because the paper's prose explicitly states linear and power dose-F relationships did not improve the fit. Per-subject indicator in the source data (each rat received exactly one oral dose); for multi-dose simulation, set the indicator per dose record.
+
 ### DOSE_50MG (**canonical for 50 mg dose administration indicator**)
 - **Description:** 1 = dose record is a 50 mg SC administration, 0 = all other SC doses (100, 150, 200, 300 mg) and all IV doses.
 - **Units:** (binary)

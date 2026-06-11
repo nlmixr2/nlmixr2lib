@@ -107,6 +107,22 @@ The `l<base>` convention denotes a population mean estimated on the log scale (`
 - **Example models:** TMDD models, saturable-elimination popPK extractions.
 - **Notes:** Replaces the deprecated `vm` / `lvm` names (see `deprecatedVmaxNames`).
 
+### ltmax_abs (**canonical log-transformed saturable absorption Vmax**)
+- **Type:** log-transformed-pk
+- **Role:** Log-scale maximum rate of saturable Michaelis-Menten ABSORPTION from the depot / absorption compartment into central (amount / time). Distinct from `lvmax`, which is MM ELIMINATION from central.
+- **Source aliases:**
+  - `Tmax` -- used in `Jansson_2008_eflornithine_rat.R` for the saturable-absorption Vmax. The paper symbol Tmax is not a time-to-Cmax descriptor but the maximum absorption rate.
+- **Example models:** `Jansson_2008_eflornithine_rat.R`.
+- **Notes:** Paired with `lkt_abs` (half-saturation amount). The `_abs` suffix disambiguates from `lvmax` (MM elimination).
+
+### lkt_abs (**canonical log-transformed saturable absorption half-saturation amount**)
+- **Type:** log-transformed-pk
+- **Role:** Log-scale amount of drug in the depot / absorption compartment at which the saturable absorption rate equals half its maximum (amount). Functionally a Km but expressed in amount-in-compartment units rather than concentration.
+- **Source aliases:**
+  - `Kt` -- used in `Jansson_2008_eflornithine_rat.R`.
+- **Example models:** `Jansson_2008_eflornithine_rat.R`.
+- **Notes:** Paired with `ltmax_abs`. The amount-in-compartment formulation differs from a concentration Km because the absorption compartment may not have a well-defined volume.
+
 ### lcl_ss (**canonical log-transformed steady-state clearance arm**)
 - **Type:** log-transformed-pk
 - **Role:** Steady-state component of a time-varying clearance decomposition `CL_total(t) = CL_ss + CL_time(t)`.
@@ -266,6 +282,18 @@ The bare counterparts of the log-transformed parameters above. Used when the sou
 - **Source aliases:** none.
 - **Example models:** TMDD and saturable-elimination popPK extractions.
 - **Notes:** Replaces the deprecated `vm` name.
+
+### tmax_abs (**canonical bare saturable absorption Vmax**)
+- **Type:** bare-pk
+- **Role:** Bare counterpart of `ltmax_abs`. Maximum rate of saturable Michaelis-Menten absorption from depot / absorption compartment into central (amount / time).
+- **Source aliases:** none.
+- **Example models:** `Jansson_2008_eflornithine_rat.R`.
+
+### kt_abs (**canonical bare saturable absorption half-saturation amount**)
+- **Type:** bare-pk
+- **Role:** Bare counterpart of `lkt_abs`. Amount of drug in the depot / absorption compartment at which the saturable absorption rate is half-max (amount).
+- **Source aliases:** none.
+- **Example models:** `Jansson_2008_eflornithine_rat.R`.
 
 ### cl_ss (**canonical bare steady-state clearance arm**)
 - **Type:** bare-pk
