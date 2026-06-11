@@ -2411,6 +2411,12 @@ Per-paper metabolite / sibling-drug suffix additions discovered during the 2026-
 - **Source aliases:** none.
 - **Example models:** `Schindler_2017_imatinib.R`.
 
+### s35424 (**canonical S35424 antipsychotic-metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** S35424, the active metabolite of Servier's investigational antipsychotic S33138 (D3 / D2 receptor antagonist). Formed from S33138 by N-demethylation; reversible interconversion (back-transformation of S35424 to S33138) is confirmed by the Bertrand 2011 microdose study. S33138 MW 319.4 g/mol, S35424 MW 361.4 g/mol.
+- **Source aliases:** none.
+- **Example models:** `Bertrand_2011_S33138.R` (doi:10.1208/s12248-011-9282-9).
+
 ---
 
 ## TB-treatment drug suffixes (combination antibiotic)
