@@ -357,9 +357,16 @@ The Cao 2013 mAb mPBPK family uses paper-anatomical compartment names that are a
 
 ### glucose (**canonical plasma glucose**)
 - **Type:** compartment
-- **Role:** Endogenous plasma glucose used by glucose / lactate turnover sub-models with drug-stimulated production. State holds a concentration (mmol/L), mirroring the source paper's mass-balance parameterisation.
+- **Role:** Endogenous plasma glucose used by glucose / lactate turnover sub-models with drug-stimulated production. State holds a concentration (mmol/L), mirroring the source paper's mass-balance parameterisation. Also used by integrated glucose-insulin homeostasis models (e.g., Silber 2007 framework, Hong 2013 HGC / MTT models) as the dynamic-state glucose amount or concentration; per-model `units` field documents which.
 - **Source aliases:** none.
-- **Example models:** `Oualha_2014_epinephrine.R`.
+- **Example models:** `Oualha_2014_epinephrine.R`, `Hong_2013_glucose_insulin_HGC.R`, `Hong_2013_glucose_insulin_MTT.R`.
+
+### insulin (**canonical plasma insulin compartment**)
+- **Type:** compartment
+- **Role:** Endogenous plasma insulin used by integrated glucose-insulin homeostasis models (Silber 2007 framework, Jauslin 2007 OGTT framework, Hong 2013 HGC / MTT models). State holds insulin amount (mU) or concentration (mU/L or pmol/L) consistent with the paper's mass-balance parameterisation; the per-model `units` field documents which. Distinct from the existing `INS` (time-varying plasma-insulin regressor covariate) and `INS_BL` (baseline plasma-insulin covariate) -- those are exogenous inputs that drive other models; `insulin` is the dynamic state when insulin is itself a modelled quantity with its own ODE (production / secretion plus elimination).
+- **Source aliases:** none.
+- **Example models:** `Hong_2013_glucose_insulin_HGC.R` (founding example; insulin amount mU, dynamic state with Gaussian first-phase plus linear second-phase secretion and first-order CLI/VI elimination), `Hong_2013_glucose_insulin_MTT.R` (insulin amount mU, dynamic state with power-function + Emax-incretin-stimulated secretion and first-order CLI/VI elimination).
+- **Notes:** Companion canonical to the existing `glucose` (plasma glucose; Oualha 2014 epinephrine), `igf1` (IGF-1 plasma biomarker; somatropin / GH PK-PD), `prolactin`, `nefa`, and `lactate` plasma-biomarker compartments. Adding `insulin` as canonical (rather than declaring it via `paper_specific_compartments`) reflects its high generalisability -- any integrated glucose-insulin model will need a dynamic-state `insulin` compartment, in the same way that `glucose` is canonical rather than paper-specific. The Bizzotto 2016 glucose-kinetics model uses INS as a regressor (no `insulin` state) and so does not exercise this canonical. `NA_NA_paracetamol.R` uses INS as a regressor too but declares `effect_ins` as a paper-specific effect compartment for insulin's delayed action on glucose elimination -- distinct from the dynamic-state-as-`insulin` use here.
 
 ### lactate (**canonical plasma lactate**)
 - **Type:** compartment
