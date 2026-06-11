@@ -2,7 +2,8 @@
 
 # development version
 
-* Add Jansson 2008 eflornithine ([doi:10.1128/aac.00050-08](https://doi.org/10.1128/aac.00050-08)) -- preclinical stereoselective two-enantiomer popPK in male Sprague-Dawley rats with saturable Michaelis-Menten oral absorption (ratifies new `_l`/`_d`/`_rac` enantiomer-suffix tokens, new `ltmax_abs`/`lkt_abs` canonicals, and new `DOSE_HIGH_EFL` covariate canonical).
+* Add Georges 2009 ceftazidime ([doi:10.1128/AAC.00430-09](https://doi.org/10.1128/AAC.00430-09)) -- adult ICU patients with *P. aeruginosa* nosocomial pneumonia or bacteraemia; ratifies new `MECH_VENT`, `ICU_ADM_POLYTRAUMA`, `ICU_ADM_POSTSURG`, and `ICU_ADM_MEDICAL` covariate canonicals.
+* Add Berges 2007 enoxaparin ([doi:10.1111/j.1365-2125.2007.02920.x](https://doi.org/10.1111/j.1365-2125.2007.02920.x)) -- elderly inpatients (>75 years) on prophylactic subcutaneous enoxaparin 4000 IU once daily for VTE prophylaxis (PROPHRE.75 study).
 * Add Padoin 1998 cephalexin ([doi:10.1128/aac.42.6.1463](https://doi.org/10.1128/aac.42.6.1463)) -- preclinical male Wistar rats with a cephalexin / quinapril oral coadministration DDI (ratifies new `CONMED_QPRL_ORAL` covariate canonical).
 * Add van Rongen 2018 metformin ([doi:10.1007/s40272-018-0293-1](https://doi.org/10.1007/s40272-018-0293-1)) -- overweight and obese Caucasian adolescents.
 * Add Tarning 2012 artemether and dihydroartemisinin ([doi:10.1186/1475-2875-11-293](https://doi.org/10.1186/1475-2875-11-293)) -- pregnant women with uncomplicated Plasmodium falciparum malaria in Uganda (joint parent + DHA popPK with zero-order dissolution and 6-compartment transit absorption).

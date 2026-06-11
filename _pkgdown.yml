@@ -242,6 +242,8 @@ navbar:
         href: articles/Leroux_2016_cefotaxime.html
       - text: "Ceftazidime (Bulitta 2010)"
         href: articles/Bulitta_2010_ceftazidime.html
+      - text: "Ceftazidime (Georges 2009)"
+        href: articles/Georges_2009_ceftazidime.html
       - text: "Ceftazidime (Shi 2018)"
         href: articles/Shi_2018_ceftazidime.html
       - text: "Cefuroxime (Alqahtani 2018)"
@@ -402,8 +404,10 @@ navbar:
         href: articles/Luo_2016_efavirenz.html
       - text: "Efavirenz (Olagunju 2018)"
         href: articles/Olagunju_2018_efavirenz.html
-      - text: "Eflornithine rat (Jansson 2008)"
-        href: articles/Jansson_2008_eflornithine.html
+      - text: "Efavirenz (Salem 2014)"
+        href: articles/Salem_2014_efavirenz.html
+      - text: "EGF IFN chimera (DoldanMartelli 2013)"
+        href: articles/DoldanMartelli_2013_EGF_IFN_chimera.html
       - text: "Elotuzumab (Ide 2020)"
         href: articles/Ide_2020_elotuzumab.html
       - text: "Emfilermin (Goggin 2004)"
@@ -2171,7 +2175,14 @@ articles:
   - articles/Valenzuela_2025_nipocalimab
   - articles/Valitalo_2017_ketorolac
   - articles/Valitalo_2017_morphine
-  - articles/VanWart_2004_garenoxacin
+  - articles/Valle_2005_exemestane
+  - articles/vanderWalt_2013_dapagliflozin
+  - articles/vanHasselt_2015_eribulin
+  - articles/vanRongen_2016_acetaminophen
+  - articles/vanRongen_2017_midazolam
+  - articles/vanRongen_2018_metformin
+  - articles/vanRongen_2018_midazolam
+  - articles/vanWijk_2019_paracetamol
   - articles/Varatharajan_2016_daunorubicin
   - articles/Vargo_2014_statins_ezetimibe_mbma
   - articles/VasquezBahena_2009_lumiracoxib_rat
