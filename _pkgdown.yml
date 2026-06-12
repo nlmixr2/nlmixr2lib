@@ -220,6 +220,8 @@ navbar:
         href: articles/Diao_2016_daclizumab_cd56bright.html
       - text: "Daclizumab treg (Diao 2016)"
         href: articles/Diao_2016_daclizumab_treg.html
+      - text: "Dalteparin (Schoemaker 1996)"
+        href: articles/Schoemaker_1996_low_molecular_weight_heparin_modeling.html
       - text: "Dapagliflozin (vanderWalt 2013)"
         href: articles/vanderWalt_2013_dapagliflozin.html
       - text: "Dapsone (Hall 2017)"
@@ -278,6 +280,8 @@ navbar:
         href: articles/Ide_2020_elotuzumab.html
       - text: "Emicizumab (Yoneyama 2017)"
         href: articles/Yoneyama_2017_emicizumab.html
+      - text: "Enoxaparin (Schoemaker 1996)"
+        href: articles/Schoemaker_1996_low_molecular_weight_heparin_modeling.html
       - text: "Epinephrine (Abboud 2009)"
         href: articles/Abboud_2009_epinephrine.html
       - text: "Epinephrine (Oualha 2014)"
@@ -1504,6 +1508,7 @@ articles:
   - articles/Schipani_2011_nevirapine
   - articles/Schipani_2013_atazanavir_ritonavir
   - articles/Schmitt_2018_vinflunine
+  - articles/Schoemaker_1996_low_molecular_weight_heparin_modeling
   - articles/Schoemaker_2017_brivaracetam
   - articles/Schoemaker_2018_levetiracetam
   - articles/Schoenmakers_2025_betamethasone
