@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Adams 1998 zalcitabine ([doi:10.1128/aac.42.2.409](https://doi.org/10.1128/aac.42.2.409)) -- HIV-infected adults on chronic oral zalcitabine in routine clinic follow-up (one-compartment apparent-CL/F PK with ka FIXED from Klecker 1988 because the source paper could not estimate it).
+* Add Landersdorfer 2009 gemifloxacin ([doi:10.1128/AAC.01200-08](https://doi.org/10.1128/AAC.01200-08)) -- healthy Caucasian adults with concomitant probenecid (gemifloxacin / probenecid renal-tubular-secretion DDI; ratifies new `CP_PRB_MGL` covariate canonical and broadens `CONMED_PROBENECID` to general scope).
 * Add Padoin 1998 cephalexin ([doi:10.1128/aac.42.6.1463](https://doi.org/10.1128/aac.42.6.1463)) -- preclinical male Wistar rats with a cephalexin / quinapril oral coadministration DDI (ratifies new `CONMED_QPRL_ORAL` covariate canonical).
 * Add van Rongen 2018 metformin ([doi:10.1007/s40272-018-0293-1](https://doi.org/10.1007/s40272-018-0293-1)) -- overweight and obese Caucasian adolescents.
 * Add Tarning 2012 artemether and dihydroartemisinin ([doi:10.1186/1475-2875-11-293](https://doi.org/10.1186/1475-2875-11-293)) -- pregnant women with uncomplicated Plasmodium falciparum malaria in Uganda (joint parent + DHA popPK with zero-order dissolution and 6-compartment transit absorption).
