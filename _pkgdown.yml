@@ -324,6 +324,8 @@ navbar:
         href: articles/Garonzik_2016_daptomycin.html
       - text: "Daratumumab (Xu 2020)"
         href: articles/Xu_2020_daratumumab.html
+      - text: "Darbepoetin (Takama 2007)"
+        href: articles/Takama_2007_darbepoetin.html
       - text: "Datopotamab (Hong 2025)"
         href: articles/Hong_2025_datopotamab.html
       - text: "Daunorubicin (Varatharajan 2016)"
@@ -2118,6 +2120,7 @@ articles:
   - articles/Syvanen_2011_verapamil_rat
   - articles/Tadayasu_2014_linagliptin
   - articles/Takahashi_2023_abatacept
+  - articles/Takama_2007_darbepoetin
   - articles/Takechi_2018_propranolol
   - articles/Takeuchi_2023_ozoralizumab
   - articles/Talke_2018_dexmedetomidine
