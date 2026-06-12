@@ -356,6 +356,8 @@ navbar:
         href: articles/Koloskoff_2025_ganciclovir.html
       - text: "Gantenerumab (Grimm 2023)"
         href: articles/Grimm_2023.html
+      - text: "Gemifloxacin (Landersdorfer 2009)"
+        href: articles/Landersdorfer_2009_gemifloxacin.html
       - text: "Gentamicin (Hodiamont 2017)"
         href: articles/Hodiamont_2017_gentamicin.html
       - text: "Gentamicin (Llanos 2017)"
@@ -1364,6 +1366,7 @@ articles:
   - articles/Laffont_2024_naloxone
   - articles/Laffont_2025_opioid_overdose_reversal_simulation
   - articles/Lahu_2010_roflumilast
+  - articles/Landersdorfer_2009_gemifloxacin
   - articles/Landersdorfer_2018_imipenem_tobramycin
   - articles/Laouenan_2015_ribavirin
   - articles/Lawson_2022_busulfan
