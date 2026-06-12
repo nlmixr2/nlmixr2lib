@@ -960,6 +960,8 @@ navbar:
         href: articles/Xia_2024_warfarin.html
       - text: "Warfarin vk2 (Zhou 2016)"
         href: articles/Zhou_2016_warfarin_vk2.html
+      - text: "Zalcitabine (Adams 1998)"
+        href: articles/Adams_1998_zalcitabine.html
       - text: "Zenocutuzumab (deVriesSchultink 2020)"
         href: articles/deVriesSchultink_2020_zenocutuzumab.html
       - text: "Zolbetuximab (Yamada 2025)"
@@ -1109,6 +1111,7 @@ articles:
   desc: Drug-specific validation vignettes. They are reached from the Specific drug models and DDMoRe models navbar dropdowns; this group hides them from the main Articles index.
   contents:
   - articles/Abboud_2009_epinephrine
+  - articles/Adams_1998_zalcitabine
   - articles/Aguiar_2021_ustekinumab
   - articles/Ahamadi_2017_pembrolizumab
   - articles/Ahlstrom_2010_nicotinicAcid_rat
