@@ -1186,8 +1186,8 @@ navbar:
         href: articles/Rovei_1982_theophylline.html
       - text: "Theophylline (Suda 2008)"
         href: articles/Suda_2008_theophylline.html
-      - text: "Theophylline pediatric asthma (elDesoky 1997)"
-        href: articles/elDesoky_1997_theophylline_pediatric_asthma.html
+      - text: "Theophylline (Yano 1993)"
+        href: articles/Yano_1993_theophylline.html
       - text: "Ticagrelor (Almquist 2016)"
         href: articles/Almquist_2016_ticagrelor.html
       - text: "Tisagenlecleucel (Stein 2019)"
@@ -2178,6 +2178,7 @@ articles:
   - articles/Yang_2017_remifentanil
   - articles/Yang_2021_cemiplimab
   - articles/Yang_2024_axatilimab
+  - articles/Yano_1993_theophylline
   - articles/Yao_2018_guselkumab
   - articles/Yassen_2025_asundexian
   - articles/Ye_2017_ethaselen
