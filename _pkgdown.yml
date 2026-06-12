@@ -196,6 +196,8 @@ navbar:
         href: articles/Simpson_2013_chloroquine.html
       - text: "Ciprofloxacin (Thuo 2011)"
         href: articles/Thuo_2011_ciprofloxacin.html
+      - text: "Cisplatin (Urien 2004)"
+        href: articles/Urien_2004_cisplatin.html
       - text: "Cladribine (Savic 2017)"
         href: articles/Savic_2017_cladribine.html
       - text: "Clesrovimab (Hu 2026)"
@@ -1571,6 +1573,7 @@ articles:
   - articles/Tortorici_2017_a1pi
   - articles/Toukam_2025_biib107
   - articles/Tsuji_2017_linezolid
+  - articles/Urien_2004_cisplatin
   - articles/Urien_2005_capecitabine
   - articles/Valenzuela_2025_nipocalimab
   - articles/Valitalo_2017_ketorolac
