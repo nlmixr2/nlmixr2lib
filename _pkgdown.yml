@@ -552,14 +552,12 @@ navbar:
         href: articles/Llanos-Paez_2017_gentamicin.html
       - text: "Gentamicin (Llanos-Paez 2020)"
         href: articles/Llanos-Paez_2020_gentamicin.html
-      - text: "Gentamicin (MedellinGaribay 2015)"
-        href: articles/MedellinGaribay_2015_gentamicin.html
-      - text: "Gentamicin (Mohamed 2012)"
-        href: articles/Mohamed_2012_gentamicin.html
-      - text: "Gentamicin (Thomson 2003)"
-        href: articles/Thomson_2003_gentamicin.html
-      - text: "Gentamicin (Veinstein 2013)"
-        href: articles/Veinstein_2013_gentamicin.html
+      - text: "Gentamicin glasgow (Kelman 1984)"
+        href: articles/Kelman_1984_gentamicin.html
+      - text: "Gentamicin manchester1 (Kelman 1984)"
+        href: articles/Kelman_1984_gentamicin.html
+      - text: "Gentamicin manchester2 (Kelman 1984)"
+        href: articles/Kelman_1984_gentamicin.html
       - text: "Gevokizumab (Cao 2013)"
         href: articles/Cao_2013_gevokizumab.html
       - text: "Givosiran (Ayyar 2024)"
@@ -1852,8 +1850,7 @@ articles:
   - articles/Jonsson_2011_ethambutol
   - articles/Jonsson_2011_ethambutol_ddmore
   - articles/Kawamura_2018_eribulin
-  - articles/Keizer_2011_E7820
-  - articles/Kerbusch_2000_ifosfamide
+  - articles/Kelman_1984_gentamicin
   - articles/Khan_2015_ciprofloxacin
   - articles/Kielbasa_2020_galcanezumab
   - articles/Kim_2015_paroxetine
