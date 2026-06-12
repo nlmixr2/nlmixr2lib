@@ -1,0 +1,440 @@
+---
+title: "FEV1 in childhood asthma (Wu 2014)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{FEV1 in childhood asthma (Wu 2014)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Wu_2014_FEV1_asthma"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Wu_2014_FEV1_asthma"))$description`
+* Article: <https://doi.org/10.1164/rccm.201403-0460OC>
+
+# Population
+
+Wu 2014 developed the longitudinal FEV1 model from the n = 1,041 children with
+mild to moderate persistent asthma enrolled in the Childhood Asthma Management
+Program (CAMP) randomized controlled trial (NEJM 2000;343:1054-1063). The
+trial used three arms with stratified randomization: placebo (n = 418),
+inhaled nedocromil 8 mg twice daily (n = 312), and inhaled budesonide 200
+microg twice daily (n = 311). FEV1 was measured every 2-4 months before
+bronchodilator administration over up to 4 years of follow-up. Mean
+(SD) age at enrolment was ~9 (2) years; ~40% of subjects were female; the
+self-reported race distribution was 68.4% White, 13.3% Black / African
+American, 9.4% Mexican American, and 8.9% Other (computed by pooling the
+per-arm counts from Table 1 of Wu 2014). The trial was conducted at eight
+clinical sites in the United States.
+
+The same information is available programmatically via
+`readModelDb("Wu_2014_FEV1_asthma")$population` after the model is loaded.
+
+# Source trace
+
+The structural model is paper Equation 3 with an additive treatment-arm term
+on linear-scale FEV1:
+
+$$
+\mathrm{FEV1}(t) \;=\; \exp(\theta_{\mathrm{age}} \cdot \mathrm{AGE} \;+\; \theta_{\mathrm{ht}} \cdot \mathrm{HT} \;-\; \theta_{\mathrm{int}}) \;+\; \theta_{\mathrm{drug}} \cdot \mathbb{1}\{\mathrm{arm} = \mathrm{budesonide}\}
+$$
+
+The race-stratified intercept (paper Table 2 reports three values: 1.89 for
+White / Mexican American, 2.04 for African American, 1.95 for Other) is
+re-parameterised in the model file as one reference intercept (`theta_int =
+1.89`, White / Mexican American as reference) plus two additive race deltas
+(`e_race_black_int = 0.15`, `e_race_other_int = 0.06`). This is an exact
+algebraic reparameterisation -- summing reference + delta returns the
+paper's three published values.
+
+| Equation / parameter | Value | Source location |
+|----------------------|------:|-----------------|
+| `theta_age` (rate of change with AGE) | 0.0137 1/year | Table 2 NONMEM final (theta1; RSE 16.1%) |
+| `theta_ht` (rate of change with HT) | 0.0169 1/cm | Table 2 NONMEM final (theta2; RSE 2.20%) |
+| `theta_int` (reference intercept, White / Mexican American) | 1.89 | Table 2 NONMEM final (theta3 White/Mexican; RSE 1.78%) |
+| `e_race_black_int` (additive delta for RACE_BLACK = 1) | 0.15 | Table 2: 2.04 (African American) - 1.89 (White/Mexican); paper Results "the FEV1 level ... was significantly lower in African American children with asthma" |
+| `e_race_other_int` (additive delta for RACE_OTHER = 1) | 0.06 | Table 2: 1.95 (Others) - 1.89 (White/Mexican) |
+| `e_conmed_budesonide_fev1` (additive budesonide effect on FEV1) | 0.103 L | Table 2 NONMEM final (theta_drugeffect; RSE 14.1%); paper Results "FEV1 with long-term treatment of budesonide was predicted to be 0.103 +/- 0.129 higher" |
+| IIV SD on `theta_age` (`etatheta_age`) | 0.00722 | Table 2 NONMEM final (shrinkage 32.9%); variance 5.21e-5 |
+| IIV SD on `theta_int` (`etatheta_int`) | 0.0912 | Table 2 NONMEM final (shrinkage 26.4%); variance 8.32e-3 |
+| IIV SD on `e_conmed_budesonide_fev1` | 0.129 L | Table 2 NONMEM final (shrinkage 67.3%); variance 1.66e-2 |
+| IIV on `theta_ht` (theta2) | fixed to 0 | Paper Results: "theta2's interindividual variability was very small (less than 10^-6) ... fixed to zero" |
+| Proportional residual CV | 5.91% | Table 2 NONMEM final intraindividual variability proportional (shrinkage 4.52%) |
+| Additive residual SD | 0.0863 L | Table 2 NONMEM final intraindividual variability additive (shrinkage 4.52%) |
+| Exponential structural model selected over linear | n/a | Methods: "The best prediction for FEV1 was achieved by an exponential function of age and height"; Table E1 (supplementary) reports the AIC comparison favouring the exponential form |
+| Race retained as the only categorical covariate | n/a | Results: "only race was found to be a key covariate"; sex, BMI, body weight rejected by Delta-OFV < 3.84 |
+| Nedocromil pooled into the placebo reference | n/a | Results: "Nedocromil did not show any significant effect on FEV1 when compared with the placebo group" |
+
+# Errata
+
+No published erratum or corrigendum was found for this paper as of the model
+extraction date (2026-06-12).
+
+One notational caveat is worth flagging for readers: paper Table 1 reports a
+mean (SD) "Height" of 55.3 (28.8) cm, 56.0 (28.7) cm, and 56.8 (28.0) cm
+across the placebo / nedocromil / budesonide arms. These values are
+implausibly low for 9-year-old children (typical standing height ~125 to 135
+cm at age 9 per WHO 2007 references) and the SD is too large to be a
+unit-conversion artefact alone -- the values appear to be either centred
+deviations or a column-labelling error in the published Table 1. The
+structural model itself uses HT in cm at the per-observation level and the
+fitted `theta_ht = 0.0169 1/cm` is consistent with the published model
+predictions in Figures 1 and 2, so this vignette assumes the model is to be
+applied with absolute standing height in cm (the convention assumed in
+paediatric spirometry references such as Hankinson 1999) and treats Table 1's
+"Height" entries as a transcription anomaly, not as the units the model
+consumes.
+
+# Virtual cohort
+
+Original individual-level FEV1 data from CAMP are not directly redistributable
+without dbGaP access (the paper uses dbGaP accession phs000424.v3.p1.c1).
+The simulations below use a virtual cohort whose covariate distributions
+approximate Table 1 of Wu 2014: ages drawn approximately uniformly across the
+5-13 year observed range, height drawn from a normal distribution centred on a
+WHO-typical mid-cohort value (130 cm at age 9; SD = 12 cm to reflect the
+within-age variation across the 5-13 year span actually present in CAMP),
+race indicators drawn from a multinomial distribution matching the pooled
+Table 1 race fractions (68.4% White, 13.3% African American, 9.4% Mexican
+American, 8.9% Other), and treatment-arm indicator drawn from a multinomial
+matching the trial randomisation fractions (40.2% placebo, 30.0% nedocromil,
+29.9% budesonide). The placebo and nedocromil arms are pooled into the
+reference (`CONMED_BUDESONIDE = 0`).
+
+```{r cohort}
+set.seed(20260612)
+
+n_subj <- 400L
+
+cohort <- tibble::tibble(
+  id  = seq_len(n_subj),
+  AGE = runif(n_subj, min = 5, max = 13),       # years (CAMP enrolment + follow-up span)
+  HT  = pmax(80, rnorm(n_subj, mean = 130, sd = 12))  # cm (absolute standing height; clamped low to keep physically plausible)
+)
+
+# Race assignment matching pooled Table 1 fractions: pool White and Mexican
+# American into the reference group (theta_int = 1.89), per the published
+# parameterisation. RACE_BLACK and RACE_OTHER are the modelled indicators.
+race_group <- sample(
+  c("WhiteMex", "Black", "Other"),
+  size    = n_subj,
+  replace = TRUE,
+  prob    = c(0.778, 0.133, 0.089)              # 0.684 + 0.094 = 0.778 (pooled White/Mexican); 0.133 Black; 0.089 Other
+)
+cohort$RACE_BLACK <- as.integer(race_group == "Black")
+cohort$RACE_OTHER <- as.integer(race_group == "Other")
+
+# Treatment-arm assignment matching trial randomisation. Pool placebo and
+# nedocromil into the reference (CONMED_BUDESONIDE = 0) per the paper's
+# finding of no significant nedocromil effect.
+arm <- sample(
+  c("placebo", "nedocromil", "budesonide"),
+  size    = n_subj,
+  replace = TRUE,
+  prob    = c(418, 312, 311) / 1041
+)
+cohort$CONMED_BUDESONIDE <- as.integer(arm == "budesonide")
+cohort$arm <- arm
+
+cat(sprintf(
+  "Cohort: n = %d; AGE range = %.1f to %.1f y; HT range = %.0f to %.0f cm\n",
+  n_subj, min(cohort$AGE), max(cohort$AGE), min(cohort$HT), max(cohort$HT)
+))
+cat(sprintf(
+  "Race: WhiteMex = %d (%.1f%%); Black = %d (%.1f%%); Other = %d (%.1f%%)\n",
+  sum(race_group == "WhiteMex"), 100 * mean(race_group == "WhiteMex"),
+  sum(race_group == "Black"),    100 * mean(race_group == "Black"),
+  sum(race_group == "Other"),    100 * mean(race_group == "Other")
+))
+cat(sprintf(
+  "Arms: placebo = %d; nedocromil = %d; budesonide = %d\n",
+  sum(arm == "placebo"), sum(arm == "nedocromil"), sum(arm == "budesonide")
+))
+```
+
+# Simulation
+
+The model has no PK dose events. The dataset's `time` column carries each
+subject's age in years directly; the observation `fev1` is evaluated at
+the supplied age. Build a one-observation-per-subject event table at each
+subject's covariate point (the simulations below are interested in the
+typical-value FEV1 at the subject's own age) and a separate per-subject
+age-sweep table for the longitudinal trajectory.
+
+```{r simulate}
+mod <- readModelDb("Wu_2014_FEV1_asthma")
+
+# Per-subject typical-value FEV1 at the assigned (AGE, HT, race, arm).
+events_per_subj <- cohort |>
+  dplyr::transmute(
+    id, time = AGE, evid = 0L, amt = 0,
+    HT, RACE_BLACK, RACE_OTHER, CONMED_BUDESONIDE
+  )
+
+sim_per_subj <- rxode2::rxSolve(
+  rxode2::zeroRe(mod),                          # typical-value (no IIV) per subject
+  events = events_per_subj,
+  keep   = c("HT", "RACE_BLACK", "RACE_OTHER", "CONMED_BUDESONIDE")
+) |>
+  as.data.frame() |>
+  dplyr::left_join(cohort |> dplyr::select(id, arm), by = "id")
+```
+
+# Replicate published figures
+
+## Figure 2-like: typical-value FEV1 trajectory by treatment arm
+
+Paper Figure 2 shows a visual predictive check of the final model: observed
+FEV1 against age, with the median and 5th / 95th prediction-interval lines
+superimposed, split into two panels -- (A) placebo + nedocromil pooled and
+(B) budesonide. The paper-reported behaviour is a steady rise of FEV1 with
+age, with the budesonide arm sitting ~0.10 L above the placebo arm at every
+age. We reproduce the typical-value backbone of that VPC (the deterministic
+expectation across the median height-for-age curve of the cohort) below.
+
+```{r figure-2-typical, fig.cap = "Typical-value FEV1 vs age for the budesonide arm and the pooled placebo + nedocromil arm (median-height-for-age curve)."}
+# Build a smooth age sweep at the cohort-median height for each arm. The
+# paper's Figure 2 is a function of age alone (height co-varies with age in
+# children), so we approximate the median-height-for-age relationship by
+# linearly interpolating cohort height over the 5 to 13 year range.
+ht_smoother <- with(cohort, approxfun(AGE, HT, ties = list("ordered", mean)))
+
+age_grid <- seq(5, 13, by = 0.1)
+trajectory <- tidyr::expand_grid(
+  AGE = age_grid,
+  arm = c("placebo+nedocromil", "budesonide")
+) |>
+  dplyr::mutate(
+    id                = dplyr::row_number(),
+    HT                = ht_smoother(AGE),
+    RACE_BLACK        = 0L,
+    RACE_OTHER        = 0L,
+    CONMED_BUDESONIDE = as.integer(arm == "budesonide")
+  )
+
+events_traj <- trajectory |>
+  dplyr::transmute(id, time = AGE, evid = 0L, amt = 0,
+                   HT, RACE_BLACK, RACE_OTHER, CONMED_BUDESONIDE)
+
+sim_traj <- rxode2::rxSolve(
+  rxode2::zeroRe(mod),
+  events = events_traj,
+  keep   = c("HT", "RACE_BLACK", "RACE_OTHER", "CONMED_BUDESONIDE")
+) |>
+  as.data.frame() |>
+  dplyr::left_join(trajectory |> dplyr::select(id, arm), by = "id")
+
+ggplot(sim_traj, aes(x = time, y = fev1, colour = arm)) +
+  geom_line(linewidth = 0.9) +
+  scale_colour_manual(values = c("placebo+nedocromil" = "steelblue",
+                                 "budesonide"         = "darkorange")) +
+  labs(
+    x = "Age (years)",
+    y = "FEV1 (L), typical value",
+    colour = "Treatment arm",
+    title  = "Typical-value FEV1 vs age",
+    caption = paste0("Replicates the median-trajectory backbone of Figure 2 of Wu 2014.\n",
+                     "Race set to the White / Mexican American reference; HT taken from the cohort age-height curve.")
+  ) +
+  theme_bw()
+```
+
+## Figure 2-like with IIV: percentile envelope by treatment arm
+
+The same simulation with the published between-subject variability turned
+back on gives a percentile envelope analogous to the VPC. The simulation
+below draws subject-level etas at each age grid point separately (so the
+envelope at each age is a marginal distribution over IIV draws, matching
+the cohort-aggregate interpretation of Figure 2).
+
+```{r figure-2-vpc, fig.cap = "Typical-value FEV1 median and 5th / 95th percentile envelope vs age, by treatment arm. Replicates the VPC envelope of Figure 2 of Wu 2014 to first order."}
+n_draws <- 250L
+
+events_vpc <- tidyr::expand_grid(
+  draw = seq_len(n_draws),
+  AGE  = age_grid,
+  arm  = c("placebo+nedocromil", "budesonide")
+) |>
+  dplyr::mutate(
+    id                = dplyr::row_number(),
+    HT                = ht_smoother(AGE),
+    RACE_BLACK        = 0L,
+    RACE_OTHER        = 0L,
+    CONMED_BUDESONIDE = as.integer(arm == "budesonide")
+  )
+
+events_vpc_et <- events_vpc |>
+  dplyr::transmute(id, time = AGE, evid = 0L, amt = 0,
+                   HT, RACE_BLACK, RACE_OTHER, CONMED_BUDESONIDE)
+
+sim_vpc <- rxode2::rxSolve(
+  mod,                                          # with IIV
+  events = events_vpc_et,
+  keep   = c("HT", "RACE_BLACK", "RACE_OTHER", "CONMED_BUDESONIDE")
+) |>
+  as.data.frame() |>
+  dplyr::left_join(events_vpc |> dplyr::select(id, arm, draw), by = "id")
+
+envelope <- sim_vpc |>
+  dplyr::group_by(arm, time) |>
+  dplyr::summarise(
+    Q05 = stats::quantile(fev1, 0.05, na.rm = TRUE),
+    Q50 = stats::quantile(fev1, 0.50, na.rm = TRUE),
+    Q95 = stats::quantile(fev1, 0.95, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+ggplot(envelope, aes(x = time, fill = arm, colour = arm)) +
+  geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.20, linewidth = 0) +
+  geom_line(aes(y = Q50), linewidth = 0.9) +
+  scale_colour_manual(values = c("placebo+nedocromil" = "steelblue",
+                                 "budesonide"         = "darkorange")) +
+  scale_fill_manual(values   = c("placebo+nedocromil" = "steelblue",
+                                 "budesonide"         = "darkorange")) +
+  labs(
+    x       = "Age (years)",
+    y       = "FEV1 (L)",
+    colour  = "Treatment arm",
+    fill    = "Treatment arm",
+    title   = "FEV1 median + 5th / 95th percentile envelope vs age",
+    caption = "Median trajectory + 5th / 95th percentile envelope from n = 250 IIV draws per age and arm."
+  ) +
+  theme_bw()
+```
+
+# Analytic spot-check against the published equation
+
+This model is a closed-form algebraic prediction (no ODE, no dosing); a
+direct numerical comparison against the published Equation 3 with the
+Table 2 parameter values is the strongest validation we can run. At a
+9-year-old White / Mexican American non-budesonide subject with height
+130 cm:
+
+$$
+\mathrm{FEV1} \;=\; \exp(0.0137 \times 9 + 0.0169 \times 130 - 1.89) \;=\; \exp(0.4427) \;=\; 1.557~\mathrm{L}.
+$$
+
+At the same subject but in the budesonide arm:
+
+$$
+\mathrm{FEV1} \;=\; 1.557 \;+\; 0.103 \;=\; 1.660~\mathrm{L}.
+$$
+
+```{r spot-check}
+spot <- tibble::tibble(
+  AGE               = c(9, 9, 9, 9),
+  HT                = c(130, 130, 130, 130),
+  RACE_BLACK        = c(0L, 0L, 1L, 0L),
+  RACE_OTHER        = c(0L, 0L, 0L, 0L),
+  CONMED_BUDESONIDE = c(0L, 1L, 0L, 0L),
+  arm_label         = c("ref",                      # White/Mex, non-bud
+                        "ref + budesonide",
+                        "African American, non-bud",
+                        "ref, non-bud (repeat)")
+)
+spot$id <- seq_len(nrow(spot))
+
+events_spot <- spot |>
+  dplyr::transmute(id, time = AGE, evid = 0L, amt = 0,
+                   HT, RACE_BLACK, RACE_OTHER, CONMED_BUDESONIDE)
+
+sim_spot <- rxode2::rxSolve(
+  rxode2::zeroRe(mod),
+  events = events_spot
+) |>
+  as.data.frame()
+
+expected <- tibble::tibble(
+  arm_label = spot$arm_label,
+  expected_L = c(
+    exp(0.0137 * 9 + 0.0169 * 130 - 1.89),               # White/Mex ref
+    exp(0.0137 * 9 + 0.0169 * 130 - 1.89) + 0.103,       # ref + budesonide additive
+    exp(0.0137 * 9 + 0.0169 * 130 - (1.89 + 0.15)),      # African American
+    exp(0.0137 * 9 + 0.0169 * 130 - 1.89)                # repeat
+  )
+)
+
+knitr::kable(
+  tibble::tibble(
+    case       = spot$arm_label,
+    AGE        = spot$AGE,
+    HT_cm      = spot$HT,
+    expected_L = expected$expected_L,
+    actual_L   = sim_spot$fev1[match(spot$id, sim_spot$id)]
+  ),
+  digits  = 4,
+  caption = "Typical-value FEV1 at age 9 with HT = 130 cm: analytic Eq. 3 vs nlmixr2lib model."
+)
+```
+
+The analytic and simulated values agree to numerical precision, confirming
+the model file reproduces paper Equation 3 with the Table 2 parameter
+values exactly.
+
+# Assumptions and deviations
+
+- **Race-stratified intercept reparameterisation.** The paper estimates
+  three independent thetas for the race-stratified intercept (Table 2:
+  1.89 for White / Mexican American, 2.04 for African American, 1.95 for
+  Other). The model file re-parameterises this as one reference intercept
+  (`theta_int = 1.89`, White / Mexican American reference) plus two
+  additive race deltas (`e_race_black_int = 0.15`, `e_race_other_int =
+  0.06`). This is an exact algebraic reparameterisation: at any subject's
+  (RACE_BLACK, RACE_OTHER) covariate setting, summing the reference
+  intercept plus the indicator-weighted deltas reproduces the paper's
+  three published intercept values. The deltas inherit no separate IIV
+  (the IIV is on `theta_int` itself).
+- **Nedocromil pooled into the placebo reference.** The paper found no
+  significant FEV1 effect for nedocromil and pooled it with placebo for
+  the treatment-arm covariate. The model file follows that pooling:
+  `CONMED_BUDESONIDE = 0` covers both placebo and nedocromil arms; the
+  estimated treatment effect (`e_conmed_budesonide_fev1 = 0.103 L`)
+  applies only to budesonide-arm subjects.
+- **`theta_ht` IIV fixed to 0.** The paper reports the inter-individual
+  variability of theta2 (rate of change with height) as "very small
+  (less than 10^-6)" and fixed it to zero in the final model. The model
+  file does not declare an `etatheta_ht`; only the three estimated IIVs
+  (on `theta_age`, `theta_int`, `e_conmed_budesonide_fev1`) appear in
+  `ini()`.
+- **Table 1 height values treated as a transcription anomaly.** Paper
+  Table 1 reports mean (SD) height values around 55-57 (~28) cm across
+  the three arms, which are implausibly low for 9-year-old children
+  (~125 to 135 cm at age 9 per WHO 2007 references). The structural
+  model itself uses HT in cm at the per-observation level and the
+  fitted `theta_ht = 0.0169 1/cm` is consistent with the published
+  Figures 1 and 2, so the model file (and this vignette) assume absolute
+  standing height in cm. Treat Table 1's "Height" column as a probable
+  baseline-deviation or unit-label anomaly, not as the units the model
+  consumes.
+- **CAMP individual-level data not redistributable.** Direct VPC overlays
+  against the paper's Figure 2 cannot be reproduced here because CAMP's
+  per-subject FEV1 measurements are gated behind dbGaP accession
+  phs000424.v3.p1.c1. The vignette therefore validates the model by
+  spot-checking the closed-form equation against `rxSolve` output and
+  by reproducing the typical-value trajectory + IIV envelope of Figure 2.
+- **GWAS and post-hoc covariate findings not encoded.** The paper's GWAS
+  step uses individual-level theta1 and theta3 estimates (EBEs) as the
+  phenotype for SNP association; the seven SNPs identified
+  (rs347412, rs238349, rs559389, rs9366309, rs6763931, rs2304725,
+  rs17161791) are downstream associations rather than covariates that
+  enter the longitudinal model. They are not encoded in `covariateData`
+  because they do not modify any structural parameter in the published
+  fit.
+- **Supplementary Tables E1 to E4 not on disk.** Supplements were not
+  available during extraction (Phase 1 step 7 sidecar review). The
+  cited supplementary tables (E1: AIC model comparison; E2: alternative
+  theta3 definition; E3: DGKH tissue expression; E4: NHGRI-catalog
+  lung-function SNPs) describe model-selection rationale and downstream
+  GWAS material rather than parameter values used in the final model;
+  every final-model estimate this file consumes is in the main paper
+  Table 2.
