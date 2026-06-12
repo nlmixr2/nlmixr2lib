@@ -260,10 +260,8 @@ navbar:
         href: articles/Ni_2013_ciclosporin.html
       - text: "Ciprofloxacin (Thuo 2011)"
         href: articles/Thuo_2011_ciprofloxacin.html
-      - text: "Ciprofloxacin (Zhao 2014)"
-        href: articles/Zhao_2014_ciprofloxacin.html
-      - text: "Cisplatin (Boer 2015)"
-        href: articles/Boer_2015_cisplatin.html
+      - text: "Cisplatin (Urien 2004)"
+        href: articles/Urien_2004_cisplatin.html
       - text: "Cladribine (Savic 2017)"
         href: articles/Savic_2017_cladribine.html
       - text: "Clarithromycin (Abduljalil 2009)"
@@ -2160,7 +2158,7 @@ articles:
   - articles/Toukam_2025_biib107
   - articles/Tremoulet_2014_ampicillin
   - articles/Tsuji_2017_linezolid
-  - articles/Ueshima_2018_apixaban
+  - articles/Urien_2004_cisplatin
   - articles/Urien_2005_capecitabine
   - articles/Urien_2013_anakinra
   - articles/Valade_2015_emtricitabine
