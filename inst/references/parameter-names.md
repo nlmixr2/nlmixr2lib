@@ -510,3 +510,27 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
 - **Source aliases:** none.
 - **Example models:** `Campagne_2019_cyclophosphamide_mouse.R`.
 - **Notes:** Usually held fixed at the in-vitro equilibrium-dialysis-derived value. The BBB transfer term is `CLin * fu * Cp`.
+
+### sg (**canonical glucose effectiveness (Bergman minimal model)**)
+- **Type:** paper-named-param
+- **Role:** Insulin-independent glucose disappearance rate constant in the Bergman glucose minimal model (1 / time). Drives the basal-glucose self-regulation arm `-sg * (G - Gb)` of the glucose ODE.
+- **Source aliases:**
+  - `SG` -- universal symbol in the IVGTT minimal-model literature (Bergman 1979, Bergman 1981, Pacini 1986). Case-only difference from the canonical lowercase form.
+- **Example models:** `Denti_2010_glucoseMinimal.R` (introduces canonical; reference 0.0192 1/min in healthy adults).
+- **Notes:** Paper-mechanistic Bergman-minimal-model parameter family (sg, si, p2). Always log-transformed for estimation (`lsg <- log(...)` in `ini()`, `sg <- exp(lsg + etalsg)` in `model()`) because the minimal-model literature uniformly assumes log-normal IIV.
+
+### si (**canonical insulin sensitivity (Bergman minimal model)**)
+- **Type:** paper-named-param
+- **Role:** Insulin sensitivity in the Bergman glucose minimal model (volume / time / insulin-concentration). Couples the insulin-action state X to the deviation of plasma insulin from basal: `dX/dt = -p2 * X + p2 * si * (I - Ib)`. Reports the steady-state increase in fractional glucose clearance per unit increase in plasma insulin above basal.
+- **Source aliases:**
+  - `SI` -- universal symbol in the IVGTT minimal-model literature. Case-only difference from the canonical lowercase form.
+- **Example models:** `Denti_2010_glucoseMinimal.R` (introduces canonical; reference 5.83e-5 L/(min*pmol) in healthy adults).
+- **Notes:** Paper-mechanistic Bergman-minimal-model parameter family (sg, si, p2). Always log-transformed (`lsi`). Units depend on the units chosen for plasma insulin in `model()`; the canonical units are L/(min*pmol) when I is in pmol/L, or mL/(min*pmol) when I is in pmol/mL. Document the per-model insulin units in the model file's `units` block or `covariateData[[INS]]$units`.
+
+### p2 (**canonical insulin-action rate constant (Bergman minimal model)**)
+- **Type:** paper-named-param
+- **Role:** First-order rate constant for the insulin-action state X in the Bergman glucose minimal model (1 / time). Sets the speed at which X equilibrates to its insulin-driven steady-state value: small p2 implies a slow delay between plasma-insulin rise and glucose-clearance increase.
+- **Source aliases:**
+  - `P2` -- universal symbol in the IVGTT minimal-model literature. Case-only difference from the canonical lowercase form.
+- **Example models:** `Denti_2010_glucoseMinimal.R` (introduces canonical; reference 0.0254 1/min in healthy adults).
+- **Notes:** Paper-mechanistic Bergman-minimal-model parameter family (sg, si, p2). Always log-transformed (`lp2`). In the Bergman parameterisation X is the insulin-action variable (units 1/time, conceptually `si * (I - Ib)` at steady state); see also the `vd` paper-named-param entry for the apparent glucose volume per body mass.

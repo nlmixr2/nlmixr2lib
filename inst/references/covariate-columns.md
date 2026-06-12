@@ -83,6 +83,29 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Zhou_2021_belimumab.R` (reference 40.69 kg; exponents 0.673 on CL and 0.891 on V1), `Aguiar_2021_ustekinumab.R` (reference 45 kg; power exponents 0.598 on CL, 0.590 on Vc, 0.586 on Vp).
 - **Notes:** Distinct from `LBM` (lean body mass) which is sometimes computed by the Boer or Hume formulae. When the source paper reports the body-composition formula it used (e.g., Janmahasatian for FFM), record it in `covariateData[[FFM]]$notes`. FFM is preferred over total body weight when scaling monoclonal-antibody PK because mAb distribution is largely confined to extracellular fluid; muscle / lean tissue tracks extracellular volume better than total weight in heavier patients.
 
+### VISCERAL_ABDOMINAL_FAT (**canonical for visceral abdominal fat area from imaging**)
+- **Description:** Visceral abdominal fat area measured from a single computed-tomographic (CT) slice at the L2 / L3 vertebral level (standard IVGTT / metabolic-imaging protocol; Jensen et al. 1995). Captures the metabolically active visceral adipose-tissue depot that drives insulin resistance independently of subcutaneous fat. Time-fixed at baseline.
+- **Units:** cm^2 (single CT slice). Document per-model via `covariateData[[VISCERAL_ABDOMINAL_FAT]]$units` when a paper uses a different anatomical level (L3 / L4, L4 / L5) or a different summary form (volumetric L1-L5 cm^3, MRI-derived).
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- used with mean-centred linear-in-log form `log(SI) = log(SI_ref) + theta * (VISCERAL_ABDOMINAL_FAT - ref)`. Reference values observed: 141.8 cm^2 / CT-slice (Denti 2010 Table 1 pooled-population mean across 204 healthy adults aged 18-87).
+- **Source aliases:**
+  - `VAF` -- universal abbreviation in the IVGTT / glucose-metabolism literature (Denti 2010, Basu 2003, Basu 2006). The canonical column is `VISCERAL_ABDOMINAL_FAT`; the source paper's column name is recorded in `covariateData[[VISCERAL_ABDOMINAL_FAT]]$source_name`.
+- **Example models:** `Denti_2010_glucoseMinimal.R` (introduces canonical; reference 141.8 cm^2 / CT-slice; linear-in-log effect coefficient -0.00208 per cm^2 deviation on insulin sensitivity `lsi`).
+- **Notes:** Specific scope because the value reported is tied to the imaging modality (single-slice CT at L2 / L3 in the founding example). Volumetric CT, multi-slice averages, and MRI-derived volumetric adiposity from future papers can ratify under the same canonical with the assay method and units recorded per-model in `covariateData[[VISCERAL_ABDOMINAL_FAT]]$notes`. Distinct from `BODYFAT_PCT` (whole-body adiposity fraction by DEXA) and from `FFM` / `LBM` (fat-free mass / lean body mass). The H3-name uses underscores to preserve readability; future authors may abbreviate the source column as `VAF` in their own datasets and declare `source_name = "VAF"`. Operator-ratified 2026-06-07 via the Denti 2010 extraction sidecar.
+
+### BODYFAT_PCT (**canonical for percent total body fat (whole-body adiposity fraction)**)
+- **Description:** Percent total body fat, measured as the fraction of total body mass classified as fat tissue by an imaging assay (typically dual-energy X-ray absorptiometry, DEXA). Expressed as a percentage (0-100). Time-fixed at baseline unless the source paper states otherwise. Captures whole-body adiposity, distinct from regional adiposity (visceral, abdominal, subcutaneous) and from fat-free mass.
+- **Units:** % (percent; 0 = no body fat, 100 = all body fat). Document per-model via `covariateData[[BODYFAT_PCT]]$units` when a paper uses a fractional 0-1 scale.
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- used with mean-centred linear-in-log form `log(VD) = log(VD_ref) + theta * (BODYFAT_PCT - ref)`. Reference values observed: 32.39 % (Denti 2010 Table 1 pooled-population mean across 204 healthy adults).
+- **Source aliases:**
+  - `%TBF` -- paper symbol in the IVGTT / glucose-metabolism literature (Denti 2010, Basu 2003). The leading `%` character is dataset-incompatible (NMTRAN / R column-name rules); the canonical column is `BODYFAT_PCT` and the paper's symbol is recorded in `covariateData[[BODYFAT_PCT]]$source_name`.
+  - `PTBF` -- numeric-safe rendering of the paper symbol used in some derived datasets.
+- **Example models:** `Denti_2010_glucoseMinimal.R` (introduces canonical; reference 32.39 %; linear-in-log effect coefficient -0.0101 per percentage-point deviation on glucose distribution volume `lvd`).
+- **Notes:** Specific scope because the value reported is tied to the body-composition assay (DEXA in the founding example). Bioimpedance- or skinfold-derived `%BF` from future papers can ratify under the same canonical with the assay method recorded per-model in `covariateData[[BODYFAT_PCT]]$notes`. Distinct from `FFM` (fat-free mass in kg) and from `VISCERAL_ABDOMINAL_FAT` (regional visceral adiposity in cm^2 / CT slice). The negative effect coefficient on glucose distribution volume captures the physiological observation that glucose distributes preferentially into lean rather than adipose tissue, so per-kg distribution volume decreases as fat fraction rises. Operator-ratified 2026-06-07 via the Denti 2010 extraction sidecar.
+
 ### IBW (**canonical for ideal body weight**)
 - **Description:** Ideal body weight in kg, typically derived from height and sex using the Devine formula or its variants. Time-fixed at baseline unless the source paper states otherwise. Used in size-normalisation of clearance / dose-rate in adult popPK models where the source paper reports IBW as the preferred size descriptor over total body weight (e.g., when overweight subjects pull clearance scaling away from the typical pattern).
 - **Units:** kg
@@ -1673,7 +1696,7 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Source aliases:**
   - `iins` (insulin at the current row time) -- used in the DDMORE bundle's `Simulated_glucoseKinetics.csv` for `DDMODEL00000227`. Rename `iins` -> `INS` before passing to `rxSolve`.
   - `INSU` -- used in the DDMORE bundle's `Simulated_ddmoremockdata2.txt` for `DDMODEL00000228`. Rename `INSU` -> `INS` before passing to `rxSolve`.
-- **Example models:** `Bizzotto_2016_glucose.R` (driving regressor for the insulin-at-site-of-action delay), `NA_NA_paracetamol.R` (DDMODEL00000228 OGTT model: drives the insulin-on-glucose-elimination first-order effect compartment via `kie * (INS / 6.945 - effect_ins)`).
+- **Example models:** `Bizzotto_2016_glucose.R` (driving regressor for the insulin-at-site-of-action delay), `NA_NA_paracetamol.R` (DDMODEL00000228 OGTT model: drives the insulin-on-glucose-elimination first-order effect compartment via `kie * (INS / 6.945 - effect_ins)`), `Denti_2010_glucoseMinimal.R` (Bergman minimal-model insulin forcing function entering the insulin-action ODE as `p2 * si * (INS - INS_BL)`; units pmol/L; supplied via `linear(INS)`).
 - **Notes:** Specific scope because `INS` is meaningful only for glucose-kinetics or insulin-PD models that take plasma insulin as an exogenous regressor. For drugs that *modify* circulating insulin as a downstream effect, use a different mechanism-specific name. The DDMORE bundle's hand-rolled piecewise-linear interpolation (`I = (t-T1)/(TOBS-T1)*(INS-INS1)+INS1` with bracketing columns `iins / insn / td / tn`) is replaced in nlmixr2 by `linear(INS)` declared in `model()`; the bracketing columns are not required.
 
 ### INS_BL (**canonical for baseline (fasting) plasma insulin concentration**)
@@ -1684,7 +1707,7 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Reference category:** n/a.
 - **Source aliases:**
   - `BASI` (baseline insulin) -- used in the DDMORE bundle's `Simulated_ddmoremockdata2.txt` for `DDMODEL00000228`. Rename `BASI` -> `INS_BL` before passing to `rxSolve`.
-- **Example models:** `NA_NA_paracetamol.R` (DDMODEL00000228 OGTT model: initialises the insulin-on-elimination effect compartment `effect_ins(0) = INS_BL / 6.945` and feeds the steady-state baseline-glucose-production rate `gpro = gss * (kg + kgi * INS_BL / 6.945) * vg * 180 / 1000`).
+- **Example models:** `NA_NA_paracetamol.R` (DDMODEL00000228 OGTT model: initialises the insulin-on-elimination effect compartment `effect_ins(0) = INS_BL / 6.945` and feeds the steady-state baseline-glucose-production rate `gpro = gss * (kg + kgi * INS_BL / 6.945) * vg * 180 / 1000`), `Denti_2010_glucoseMinimal.R` (Bergman minimal-model basal-insulin anchor; covariate effect on `lsi` (-0.0282 per pmol/L) and `lp2` (-0.0150 per pmol/L), and Ib in the insulin-action ODE `p2 * si * (INS - INS_BL)`; units pmol/L despite the source paper's apparent 'pmol/ml' table label, which is documented as an apparent typo).
 - **Notes:** Distinct from `INS` (time-varying regressor); `INS_BL` is a per-subject baseline-state anchor used in initial conditions and steady-state derived quantities, not the dynamic regressor itself. Specific scope because the conversion factor (1/6.945) and the rescaled-units interpretation are paper-specific; future extractions that report baseline insulin in mIU/L or pmol/L directly without rescaling can ratify the same canonical and document the per-model units / conversion in `covariateData[[INS_BL]]$units` / `notes`. Companion concept to `FPG` (baseline fasting plasma glucose).
 
 ### CINH (**canonical for plasma SGLT-inhibitor concentration time-course regressor**)
