@@ -758,6 +758,10 @@ navbar:
         href: articles/Ruhs_2012_methotrexate.html
       - text: "Methotrexate (Taylor 2020)"
         href: articles/Taylor_2020_methotrexate.html
+      - text: "Methoxsalen blood (Billard 1995)"
+        href: articles/Billard_1995_methoxsalen.html
+      - text: "Methoxsalen plasma (Billard 1995)"
+        href: articles/Billard_1995_methoxsalen.html
       - text: "Methylphenidate (Teuscher 2015)"
         href: articles/Teuscher_2015_methylphenidate.html
       - text: "Metoprolol (Eugene 2016)"
@@ -1585,6 +1589,7 @@ articles:
   - articles/Bienczak_2016_nevirapine
   - articles/Bienczak_2025_ligelizumab
   - articles/Bijleveld_2017_gentamicin
+  - articles/Billard_1995_methoxsalen
   - articles/Birgersson_2016_artemisinin
   - articles/Birgersson_2019_artesunate
   - articles/Bisaso_2014_albumin
