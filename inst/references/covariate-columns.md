@@ -2280,6 +2280,28 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 
 ## Disease state (cross-population indicators)
 
+### DIS_SCOL_IDIO (**canonical for idiopathic-scoliosis aetiology indicator**)
+- **Description:** 1 = subject has idiopathic scoliosis (no underlying systemic / syndromic cause; classic adolescent idiopathic scoliosis or idiopathic kyphoscoliosis), 0 = otherwise (subject is in either the non-idiopathic-scoliosis cohort or the reference complement cohort). Time-fixed per subject. Used as a binary cohort indicator in popPK / popPD models that pool an adolescent scoliosis population with another paediatric surgical reference cohort and the scoliosis-aetiology effect on PK is retained as a covariate.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (not idiopathic-scoliosis; the complement reference is paper-defined -- in Stricker 2015 the implicit reference cohort is the pooled infant craniofacial-reconstruction cohort from the earlier Stricker 2013 BJA paper).
+- **Source aliases:**
+  - paper narrative `idiopathic scoliosis` / `idiopathic kyphoscoliosis` diagnosis labels in Stricker 2015 Table 1, decomposed from a 3-level diagnosis categorical {craniofacial, idiopathic scoliosis, non-idiopathic scoliosis} into binary DIS_SCOL_IDIO with value 1 for the idiopathic-scoliosis cohort.
+- **Example models:** `Stricker_2015_aminocaproic_acid.R` (multiplicative power-form effect on CL: `cl *= 1.10^DIS_SCOL_IDIO`; idiopathic-scoliosis adolescents have ~10% higher CL than the craniofacial-cohort reference at the same body weight and post-natal age, after allometric scaling; Stricker 2015 Table 5 'Impact of idiopathic spines' = 1.10; effect retained for magnitude / precision reporting even though the authors note it is not clinically meaningful).
+- **Notes:** Specific scope because the reference complement (infant craniofacial reconstruction cohort) is paper-defined. Pairs with `DIS_SCOL_NONIDIO` in the Stricker 2015 three-level surgical-cohort stratification {craniofacial reference, idiopathic scoliosis, non-idiopathic scoliosis}; both = 0 selects the craniofacial reference. Distinct from `ADOLESCENT` (pure age-cohort indicator independent of aetiology) and from `CHILD` (broader paediatric age-cohort indicator). Ratified canonically on 2026-06-12 alongside the Stricker 2015 epsilon-aminocaproic acid extraction.
+
+### DIS_SCOL_NONIDIO (**canonical for non-idiopathic / syndromic scoliosis aetiology indicator**)
+- **Description:** 1 = subject has non-idiopathic / syndromic scoliosis (cerebral palsy, Marfan syndrome, Ehlers-Danlos syndrome, neurofibromatosis type 1, spina bifida, congenital neuromuscular scoliosis, syringomyelia, 22q deletion, cortical dysgenesis, and similar systemic / syndromic aetiologies), 0 = otherwise. Time-fixed per subject. Used as a binary cohort indicator in popPK / popPD models that pool a syndromic-scoliosis paediatric population with another paediatric surgical reference cohort and the scoliosis-aetiology effect on PK is retained as a covariate.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (not non-idiopathic-scoliosis; the complement reference is paper-defined -- in Stricker 2015 the implicit reference cohort is the pooled infant craniofacial-reconstruction cohort from the earlier Stricker 2013 BJA paper).
+- **Source aliases:**
+  - paper narrative diagnosis labels in Stricker 2015 Table 1 (cerebral palsy, Marfan, Ehlers-Danlos, neurofibromatosis, spina bifida, congenital neuromuscular scoliosis, syringomyelia, 22q deletion, cortical dysgenesis), decomposed from the 3-level diagnosis categorical {craniofacial, idiopathic scoliosis, non-idiopathic scoliosis} into binary DIS_SCOL_NONIDIO with value 1 for any of the syndromic-scoliosis aetiologies.
+- **Example models:** `Stricker_2015_aminocaproic_acid.R` (multiplicative power-form effect on CL: `cl *= 0.97^DIS_SCOL_NONIDIO`; non-idiopathic-scoliosis adolescents have ~3% lower CL than the craniofacial-cohort reference at the same body weight and post-natal age, after allometric scaling; Stricker 2015 Table 5 'Impact of non-idiopathic spines' = 0.97; the authors describe this effect as not clinically meaningful but retain it in the final model for precision estimation).
+- **Notes:** Specific scope because the reference complement (infant craniofacial reconstruction cohort) is paper-defined and because the non-idiopathic class pools many aetiologically heterogeneous syndromes (cerebral palsy, connective-tissue disorders, neuromuscular disorders, neurocutaneous disorders, etc.) that future papers may want to resolve into separate sub-cohort indicators. Pairs with `DIS_SCOL_IDIO` in the Stricker 2015 three-level surgical-cohort stratification {craniofacial reference, idiopathic scoliosis, non-idiopathic scoliosis}; both = 0 selects the craniofacial reference. Ratified canonically on 2026-06-12 alongside the Stricker 2015 epsilon-aminocaproic acid extraction.
+
 ### DIS_UC (**canonical for ulcerative colitis disease-state indicator**)
 - **Description:** 1 = ulcerative colitis patient, 0 = non-UC (e.g., healthy volunteer or non-IBD indication). Time-fixed per subject.
 - **Units:** (binary)

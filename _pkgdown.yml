@@ -64,6 +64,8 @@ navbar:
         href: articles/Delattre_2010_amikacin.html
       - text: "Amikacin (Tod 1998)"
         href: articles/Tod_1998_amikacin.html
+      - text: "Aminocaproic acid (Stricker 2015)"
+        href: articles/Stricker_2015_aminocaproic_acid.html
       - text: "Amlitelimab (Tiraboschi 2025)"
         href: articles/Tiraboschi_2025_amlitelimab.html
       - text: "Amoxicillin (Tang 2019)"
@@ -1530,6 +1532,7 @@ articles:
   - articles/Stein_2019_Tisagenlecleucel
   - articles/Stevens_2012_remoxipride
   - articles/Storset_2014_tacrolimus
+  - articles/Stricker_2015_aminocaproic_acid
   - articles/Struemper_2017_belimumab
   - articles/Suda_2008_theophylline
   - articles/Suleiman_2019_risankizumab
