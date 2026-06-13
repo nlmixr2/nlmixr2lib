@@ -842,8 +842,8 @@ navbar:
         href: articles/Attarwala_2023_mRNA3927.html
       - text: "Mu receptor binding (Mann 2022)"
         href: articles/Laffont_2025_opioid_overdose_reversal_simulation.html
-      - text: "Mycophenolic acid (Barau 2012)"
-        href: articles/Barau_2012_mycophenolic_acid.html
+      - text: "Mycophenolic acid (Frymoyer 2013)"
+        href: articles/Frymoyer_2013_mycophenolic_acid.html
       - text: "Mycophenolic acid (deWinter 2009)"
         href: articles/deWinter_2009_mycophenolic_acid.html
       - text: "Mycophenolic acid (Jiao 2008)"
@@ -1820,6 +1820,7 @@ articles:
   - articles/Frey_2013_tocilizumab
   - articles/Friberg_2002_paclitaxel
   - articles/Friberg_2012_voriconazole
+  - articles/Frymoyer_2013_mycophenolic_acid
   - articles/Frymoyer_2017_infliximab
   - articles/Fung_2008_butanediol_rat
   - articles/Gandhi_2021_abatacept
