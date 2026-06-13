@@ -574,6 +574,8 @@ navbar:
         href: articles/Royer_2010_HuHMFG1.html
       - text: "Hydroxyurea (Paule 2011)"
         href: articles/Paule_2011_hydroxyurea.html
+      - text: "Ibuprofen (Hirt 2008)"
+        href: articles/Hirt_2008_ibuprofen.html
       - text: "Iclaprim (Lodise 2018)"
         href: articles/Lodise_2018_iclaprim.html
       - text: "Ifosfamide (Kerbusch 2000)"
@@ -1776,6 +1778,7 @@ articles:
   - articles/Heuberger_2018_salbutamol
   - articles/Hietala_2010_artemether_lumefantrine_malaria
   - articles/HillMcManus_2017_febuxostat_lesinurad
+  - articles/Hirt_2008_ibuprofen
   - articles/Hirt_2009_didanosine
   - articles/Hirt_2009_efavirenz
   - articles/Hodiamont_2017_gentamicin
