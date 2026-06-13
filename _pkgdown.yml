@@ -1248,6 +1248,8 @@ navbar:
         href: articles/Charles_2007_tafenoquine.html
       - text: "Tafenoquine (Edstein 2001)"
         href: articles/Edstein_2001_tafenoquine.html
+      - text: "Tamsulosin (Tsuda 2010)"
+        href: articles/Tsuda_2010_tamsulosin.html
       - text: "Taranabant (Li 2010)"
         href: articles/Li_2010_taranabant.html
       - text: "Taspoglutide mbma (Li 2015)"
@@ -2227,6 +2229,7 @@ articles:
   - articles/Tortorici_2017_a1pi
   - articles/Toukam_2025_biib107
   - articles/Tremoulet_2014_ampicillin
+  - articles/Tsuda_2010_tamsulosin
   - articles/Tsuji_2017_linezolid
   - articles/Urien_2004_cisplatin
   - articles/Urien_2005_capecitabine
