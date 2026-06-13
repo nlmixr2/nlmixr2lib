@@ -798,6 +798,8 @@ navbar:
         href: articles/Yu_2017_mycophenolic_acid.html
       - text: "Mycophenolic acid (deWinter 2009)"
         href: articles/deWinter_2009_mycophenolic_acid.html
+      - text: "Mycophenolic acid (Jiao 2008)"
+        href: articles/Jiao_2008_mycophenolic_acid.html
       - text: "Nab paclitaxel (Chen 2014)"
         href: articles/Chen_2014_nab_paclitaxel.html
       - text: "Nalmefene (Kyhl 2016)"
@@ -1834,6 +1836,7 @@ articles:
   - articles/Ji_2017_vancomycin
   - articles/Ji_2018_tacrolimus
   - articles/Jia_2015_unfractionatedHeparin
+  - articles/Jiao_2008_mycophenolic_acid
   - articles/Jin_2014_simvastatin
   - articles/Johnson_2011_olanzapine_rat
   - articles/Jonckheere_2019_cefepime

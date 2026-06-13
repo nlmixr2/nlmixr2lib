@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Iida 2008 nicorandil ([doi:10.1111/j.1365-2125.2008.03257.x](https://doi.org/10.1111/j.1365-2125.2008.03257.x)) -- pooled healthy adult volunteers and patients with acute heart failure (NYHA II-IV), with pulmonary artery wedge pressure as the haemodynamic biomarker (joint two-compartment IV PK plus inhibitory Emax PD plus asymptotic-exponential disease-progression model).
+* Add Jiao 2008 mycophenolic acid ([doi:10.1111/j.1365-2125.2008.03109.x](https://doi.org/10.1111/j.1365-2125.2008.03109.x)) -- healthy Chinese adult male volunteers; enterohepatic circulation model for MPA and its glucuronide metabolite MPAG after single oral MMF.
 * Add Berges 2007 enoxaparin ([doi:10.1111/j.1365-2125.2007.02920.x](https://doi.org/10.1111/j.1365-2125.2007.02920.x)) -- elderly inpatients (>75 years) on prophylactic subcutaneous enoxaparin 4000 IU once daily for VTE prophylaxis (PROPHRE.75 study).
 * Add Padoin 1998 cephalexin ([doi:10.1128/aac.42.6.1463](https://doi.org/10.1128/aac.42.6.1463)) -- preclinical male Wistar rats with a cephalexin / quinapril oral coadministration DDI (ratifies new `CONMED_QPRL_ORAL` covariate canonical).
 * Add van Rongen 2018 metformin ([doi:10.1007/s40272-018-0293-1](https://doi.org/10.1007/s40272-018-0293-1)) -- overweight and obese Caucasian adolescents.
