@@ -1280,6 +1280,8 @@ navbar:
         href: articles/Budha_2023_tislelizumab.html
       - text: "Tobra (Hennig 2013)"
         href: articles/Hennig_2013_tobra.html
+      - text: "Tobramycin (Conil 2010)"
+        href: articles/Conil_2010_tobramycin.html
       - text: "Tobramycin (Hennig 2008)"
         href: articles/Hennig_2008_tobramycin.html
       - text: "Tobramycin (Livio 2014)"
@@ -1708,7 +1710,9 @@ articles:
   - articles/Clewe_2018_rifampicin
   - articles/Clewe_2018_TB_MTP_GPDI_invitro
   - articles/Clinckers_2008_MHD_rat
-  - articles/Colombo_2006_atazanavir
+  - articles/CohenWolkowiez_2012_metronidazole
+  - articles/CohenWolkowiez_2014_piperacillin_tazobactam
+  - articles/Conil_2010_tobramycin
   - articles/Conrado_2014_alzheimer
   - articles/Cook_2016_paracetamol
   - articles/Csajka_2004_indinavir
