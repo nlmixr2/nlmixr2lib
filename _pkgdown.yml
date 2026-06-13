@@ -808,6 +808,8 @@ navbar:
         href: articles/Nielsen_2011_antibacterial_efficacy.html
       - text: "Mu receptor binding (Mann 2022)"
         href: articles/Laffont_2025_opioid_overdose_reversal_simulation.html
+      - text: "Mycophenolic acid (Barau 2012)"
+        href: articles/Barau_2012_mycophenolic_acid.html
       - text: "Mycophenolic acid (deWinter 2009)"
         href: articles/deWinter_2009_mycophenolic_acid.html
       - text: "Nab paclitaxel (Chen 2014)"
@@ -1566,6 +1568,7 @@ articles:
   - articles/Baheti_2011_tenofovir
   - articles/Bajaj_2017_nivolumab
   - articles/Bajaj_2017_nivolumab_ddmore
+  - articles/Barau_2012_mycophenolic_acid
   - articles/Barnett_2018_coproporphyrin_I
   - articles/Barnett_2018_rifampicin
   - articles/Barnett_2018_rosuvastatin
