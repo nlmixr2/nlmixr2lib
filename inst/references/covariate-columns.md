@@ -3327,6 +3327,28 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Example models:** `Sanghavi_2020_ipilimumab.R` (additive effect -0.202 on the Emax parameter of the time-varying CL function).
 - **Notes:** Distinct from the per-regimen `NIVO_1Q3W` / `NIVO_3Q2W` indicators on baseline CL: `COMBO_NIVO` aggregates across all nivolumab regimens and acts on the time-varying-CL Emax parameter, whereas the per-regimen indicators act on baseline (time-zero) CL.
 
+### GEMOX (**canonical for gemcitabine-then-oxaliplatin sequence indicator**)
+- **Description:** 1 = gemcitabine 30-min IV infusion administered first, immediately followed by oxaliplatin 120-min IV infusion on the same study day; 0 = otherwise (gemcitabine alone or oxaliplatin-then-gemcitabine). Time-fixed per cycle.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 = gemcitabine monotherapy when paired with `OXGEM = 0`; the combination-vs-monotherapy reference is encoded jointly with `OXGEM`.
+- **Source aliases:**
+  - `GEMOX` -- used in `Jiang_2008_gemcitabine.R`.
+- **Example models:** `Jiang_2008_gemcitabine.R` (multiplicative factor 0.65 on apparent dFdU central volume V_C,dFdU/F when GEMOX = 1; Jiang 2008 page 330 covariate equation: `0.65^GEMOX`).
+- **Notes:** Paired with `OXGEM` as the second arm of a 3-level oxaliplatin-coadministration-sequence categorical decomposition (gem-alone / gem-then-ox / ox-then-gem). The two indicators are mutually exclusive: `GEMOX + OXGEM <= 1`. Follows the `NIVO_1Q3W` / `NIVO_3Q2W` decomposition pattern. Scope: specific because the sequence-specific effect is tied to Jiang's gemcitabine + oxaliplatin study design; promote to general if a second paper retains the same pair of indicators.
+
+### OXGEM (**canonical for oxaliplatin-then-gemcitabine sequence indicator**)
+- **Description:** 1 = oxaliplatin 120-min IV infusion administered first, immediately followed by gemcitabine 30-min IV infusion on the same study day; 0 = otherwise (gemcitabine alone or gemcitabine-then-oxaliplatin). Time-fixed per cycle.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 = gemcitabine monotherapy when paired with `GEMOX = 0`.
+- **Source aliases:**
+  - `OXGEM` -- used in `Jiang_2008_gemcitabine.R`.
+- **Example models:** `Jiang_2008_gemcitabine.R` (multiplicative factor 0.54 on apparent dFdU central volume V_C,dFdU/F when OXGEM = 1; Jiang 2008 page 330 covariate equation: `0.54^OXGEM`).
+- **Notes:** Paired with `GEMOX` (see that entry for the joint encoding). The Jiang 2008 cohort distribution is gem-alone n=31, gem-then-ox n=38, ox-then-gem n=25; the larger V_C,dFdU/F reduction observed for ox-then-gem (factor 0.54) vs gem-then-ox (factor 0.65) is hypothesised by the authors to reflect order-dependent tissue-uptake effects of dFdU.
+
 ### BLSTABL (**canonical for baseline absolute blast counts in peripheral blood**)
 - **Description:** Baseline absolute count of blasts (immature lymphoid/myeloid precursor cells) circulating in peripheral blood. Time-fixed baseline value.
 - **Units:** 10^9 counts/L (equivalently 10^9 counts; reported as "x 10^9 counts" in Wu 2024 Table 2).

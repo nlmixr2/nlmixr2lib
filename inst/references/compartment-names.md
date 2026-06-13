@@ -2173,6 +2173,12 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Source aliases:** none.
 - **Example models:** `Ayyar_2024_givosiran.R` (doi:10.1016/j.xphs.2023.10.026).
 
+### dfdu (**canonical 2',2'-difluorodeoxyuridine gemcitabine metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** 2',2'-difluorodeoxyuridine (dFdU), the principal inactive plasma metabolite of gemcitabine produced by cytidine deaminase in liver, kidney, blood, and other tissues; about 99% of dFdU is renally excreted (Abbruzzese 1991). In NONMEM ADVAN6 parent-metabolite popPK models dFdU parameters are reported as apparent values (CL_dFdU/F, Q_dFdU/F, V_C,dFdU/F, V_P,dFdU/F) because the fraction of gemcitabine converted to dFdU is not separately identifiable.
+- **Source aliases:** none.
+- **Example models:** `Jiang_2008_gemcitabine.R` (doi:10.1111/j.1365-2125.2007.03040.x).
+
 ### mhd (**canonical 10-monohydroxy oxcarbazepine suffix**)
 - **Type:** metabolite-suffix
 - **Role:** 10-monohydroxy derivative (MHD, "10-hydroxy-carbazepine"), primary active metabolite of oxcarbazepine produced by cytosolic arylketone reductases.
