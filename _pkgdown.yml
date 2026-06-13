@@ -846,6 +846,8 @@ navbar:
         href: articles/Laffont_2024_naloxone.html
       - text: "Naltrexone bupropion (Sharma 2018)"
         href: articles/Sharma_2018_naltrexone_bupropion.html
+      - text: "Naproxcinod (Bjornsson 2011)"
+        href: articles/Bjornsson_2011_naproxcinod.html
       - text: "Naproxen mbma (Boucher 2018)"
         href: articles/Boucher_2018_naproxen_mbma.html
       - text: "Necitumumab (Long 2017)"
@@ -1646,6 +1648,7 @@ articles:
   - articles/Bisaso_2014_albumin
   - articles/Bista_2015_fentanyl
   - articles/Bizzotto_2016_glucose
+  - articles/Bjornsson_2011_naproxcinod
   - articles/Blair_2004_raltitrexed
   - articles/Boer_2015_cisplatin
   - articles/Boer-Perez_2026_piperacillin
