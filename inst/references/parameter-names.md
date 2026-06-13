@@ -625,10 +625,9 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
 - **Example models:** `Campagne_2019_cyclophosphamide_mouse.R`.
 - **Notes:** Usually held fixed at the in-vitro equilibrium-dialysis-derived value. The BBB transfer term is `CLin * fu * Cp`.
 
-### t50 (**canonical half-effect / half-decline time**)
+### eh (**canonical hepatic extraction ratio**)
 - **Type:** paper-named-param
-- **Role:** Time at which a time-varying effect (clearance decline, Imax-type CL change, gastric-emptying onset, etc.) has reached half of its asymptotic value. Together with an optional Hill / steepness exponent it parameterises the Emax-type time decay `CL(t) = CL0 / (1 + (t / T50)^beta)` and related sigmoidal time-course functions. Time units match the paper's t.
-- **Source aliases:**
-  - `T50` -- common paper notation (e.g., Gupta 2006, Masters 2022, Melhem 2022, Kuchimanchi 2024, Sanghavi 2020, Zhang 2019, Wang 2024, Lu 2019).
-- **Example models:** `Gupta_2006_peginterferon_alfa_2b.R`, `Masters_2022_avelumab.R`, `Melhem_2022_dostarlimab.R`, `Kuchimanchi_2024_dostarlimab.R`, `Sanghavi_2020_ipilimumab.R`, `Zhang_2019_nivolumab.R`, `Wang_2024_sugemalimab.R`, `Lu_2019_polatuzumab.R` (as `lt50_mo` for months-input variant), `Guiastrennec_2016_gastric_emptying.R` (as suffixed `lt50ogtt` / `lt50fat` for two-arm half-onset times).
-- **Notes:** Registered to formalise an already widespread convention. Use the log-transformed `lt50` as the `ini()` parameter and exponentiate inside `model()` (`t50 <- exp(lt50 + etalt50)`). When two or more `T50`-style parameters coexist in the same model, suffix the canonical with a paper-meaningful disambiguator (`lt50ogtt`, `lt50_mo`).
+- **Role:** Hepatic extraction ratio in the well-stirred liver model (`CL_H = FQ * eh`, `F_HEP = 1 - eh`). Unitless, bounded in [0, 1]. Use whenever a paper parameterises hepatic clearance through the extraction-ratio physiology rather than through `lcl` / `lcl_nonren` directly. The companion log-transform prefix is `logiteh` (logit-scale `ini()` typical value) because the linear-scale `eh` is bounded; logit-additive eta on `logiteh` keeps every individual `eh_i` inside the (0, 1) box.
+- **Source aliases:** `EH` -- used in `Chan_2008_maraviroc.R` and Brussee 2018 mAb PBPK (the latter as a derived `model()`-block quantity rather than an `ini()` parameter, so the canonical applies to the `ini()` use case introduced by Chan 2008).
+- **Example models:** `Chan_2008_maraviroc.R` (estimated `logiteh = logit(0.662)` with logit-additive IIV per Chan 2008 Eq 9; downstream `eh` enters `clh = fq * eh` and `fhep = 1 - eh`).
+- **Notes:** Paired with the canonical compartment / pseudo-parameter `fq` (hepatic plasma flow, fixed at a literature value) and the canonical `clr` (renal clearance, often fixed) when the paper decomposes total CL into renal + hepatic with hepatic-extraction physiology. Distinct from `lcl_nonren` (additive renal + non-renal CL decomposition without an explicit extraction-ratio bound): use `eh` only when the source paper writes hepatic clearance as `CL_H = FQ * E_H` and constrains E_H in [0, 1] (e.g., via a logit-form IIV transformation).
