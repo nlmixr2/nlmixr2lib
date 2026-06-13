@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Mukonzo 2009 efavirenz ([doi:10.1111/j.1365-2125.2009.03516.x](https://doi.org/10.1111/j.1365-2125.2009.03516.x)) -- healthy Ugandan adults receiving a single 600 mg oral dose (ratifies new `SNP_CYP2B6_RS35303484_G_COUNT` and `SNP_ABCB1_RS3842` covariate canonicals).
+* Add Ogungbenro 2009 penciclovir / famciclovir ([doi:10.1111/j.1365-2125.2009.03479.x](https://doi.org/10.1111/j.1365-2125.2009.03479.x)) -- pooled adults and children (2-63 years) receiving oral famciclovir prodrug or intravenous penciclovir across six clinical trials.
 * Add Berges 2007 enoxaparin ([doi:10.1111/j.1365-2125.2007.02920.x](https://doi.org/10.1111/j.1365-2125.2007.02920.x)) -- elderly inpatients (>75 years) on prophylactic subcutaneous enoxaparin 4000 IU once daily for VTE prophylaxis (PROPHRE.75 study).
 * Add Padoin 1998 cephalexin ([doi:10.1128/aac.42.6.1463](https://doi.org/10.1128/aac.42.6.1463)) -- preclinical male Wistar rats with a cephalexin / quinapril oral coadministration DDI (ratifies new `CONMED_QPRL_ORAL` covariate canonical).
 * Add van Rongen 2018 metformin ([doi:10.1007/s40272-018-0293-1](https://doi.org/10.1007/s40272-018-0293-1)) -- overweight and obese Caucasian adolescents.

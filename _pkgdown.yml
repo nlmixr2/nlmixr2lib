@@ -946,8 +946,8 @@ navbar:
         href: articles/Ahamadi_2017_pembrolizumab.html
       - text: "Pembrolizumab (Elassaiss-Schaap 2017)"
         href: articles/Elassaiss-Schaap_2017_pembrolizumab.html
-      - text: "Pembrolizumab (Lindauer 2017)"
-        href: articles/Lindauer_2017_pembrolizumab.html
+      - text: "Penciclovir (Ogungbenro 2009)"
+        href: articles/Ogungbenro_2009_penciclovir.html
       - text: "Penicillin G (Padari 2018)"
         href: articles/Padari_2018_penicillin_G.html
       - text: "Pertuzumab (Garg 2014)"
@@ -2024,6 +2024,7 @@ articles:
   - articles/ObrinkHansen_2015_piperacillin
   - articles/Odongo_2015_sulfadoxinePyrimethamine
   - articles/Ogasawara_2020_durvalumab
+  - articles/Ogungbenro_2009_penciclovir
   - articles/Okada_2025_rocatinlimab
   - articles/Olagunju_2018_efavirenz
   - articles/Oniki_2018_BMI_NAFLD
