@@ -210,6 +210,8 @@ navbar:
         href: articles/AitOudhia_2012_canakinumab.html
       - text: "Canakinumab (Chakraborty 2012)"
         href: articles/Chakraborty_2012_canakinumab.html
+      - text: "Canrenone (Suyagh 2012)"
+        href: articles/Suyagh_2012_canrenone.html
       - text: "Capecitabine (Urien 2005)"
         href: articles/Urien_2005_capecitabine.html
       - text: "Carboplatin (Ekhart 2008)"
@@ -2109,6 +2111,7 @@ articles:
   - articles/Suda_2008_theophylline
   - articles/Suleiman_2019_risankizumab
   - articles/Suri_2018_brentuximab
+  - articles/Suyagh_2012_canrenone
   - articles/Svensson_2014_bedaquiline
   - articles/Svensson_2016_bedaquiline
   - articles/Svensson_2016_rifampicin
