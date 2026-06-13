@@ -1190,8 +1190,8 @@ navbar:
         href: articles/Thorsted_2016_somatropin_rat.html
       - text: "Sonidegib (Goel 2016)"
         href: articles/Goel_2016_Sonidegib.html
-      - text: "Sorafenib (Jain 2011)"
-        href: articles/Jain_2011_sorafenib.html
+      - text: "Sugammadex rocuronium (Kleijn 2011)"
+        href: articles/Kleijn_2011_sugammadex_rocuronium.html
       - text: "Sugemalimab (Wang 2024)"
         href: articles/Wang_2024_sugemalimab.html
       - text: "Sulfadoxine (Karunajeewa 2009)"
@@ -1928,6 +1928,7 @@ articles:
   - articles/Kirubakaran_2022_tacrolimus
   - articles/Kleideiter_2017_cebranopadol
   - articles/Kleideiter_2018_cebranopadol
+  - articles/Kleijn_2011_sugammadex_rocuronium
   - articles/Kloft_2004_sibrotuzumab
   - articles/Kloprogge_2013_lumefantrine
   - articles/Kloprogge_2014_quinine

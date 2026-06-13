@@ -476,6 +476,65 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
 - **Source aliases:** none.
 - **Example models:** time-varying TMDD / receptor-occupancy models.
 
+### k1 (**canonical association rate constant in reversible binding**)
+- **Type:** paper-named-param
+- **Role:** Second-order association (forward / on) rate constant for reversible drug-target or drug-drug complex formation, with units of (1 / (concentration * time)). The paired dissociation rate constant is `k2` and the equilibrium dissociation constant is `kd = k2 / k1`. Used by mechanistic 2-drug interaction models that need separate on / off rates rather than a single steady-state `kd`. When `kd` is fixed from an external (in-vitro) source and `k2` is estimated, `k1 = k2 / kd` is derived inside `model()` rather than estimated directly.
+- **Source aliases:**
+  - `k_on`, `kon` -- general kinetics notation.
+- **Example models:** `Kleijn_2011_sugammadex_rocuronium.R` (sugammadex-rocuronium dynamic interaction: `kd` fixed at 0.0559 uM from in-vitro, `log(k2)` estimated, `k1 = k2 / kd = 0.61 1/(min*uM)` derived).
+- **Notes:** Distinct from `kss` (the quasi-steady-state binding parameter used in QSS-TMDD approximations) and from `kd` (the equilibrium dissociation constant). Use the `k1` / `k2` / `kd` triple when the source paper reports the full dynamic-interaction kinetics; use `kss` alone for QSS-TMDD shortcuts.
+
+### k2 (**canonical dissociation rate constant in reversible binding**)
+- **Type:** paper-named-param
+- **Role:** First-order dissociation (reverse / off) rate constant for reversible drug-target or drug-drug complex formation (1 / time). Paired with `k1` (association) and `kd = k2 / k1` (equilibrium dissociation). Inside `model()` the bare name `k2` is the rate constant; the log-transformed `lk2` form is used in `ini()` whenever the source paper reports `log_e(k2)` directly.
+- **Source aliases:**
+  - `k_off`, `koff` -- general kinetics notation.
+- **Example models:** `Kleijn_2011_sugammadex_rocuronium.R` (sugammadex-rocuronium dynamic interaction: `lk2 = -3.38`, giving `k2 = 0.034 1/min`, RSE 16.5%; paired with the fixed `kd` and the derived `k1`).
+- **Notes:** Pairs with `k1` (association). The paper-numerical convention `k_d = k_2 / k_1` should be encoded explicitly in `model()` so the dimensionally-correct relationship is visible at the call site.
+
+### ks (**canonical drug-mediated effect-compartment elimination rate**)
+- **Type:** paper-named-param
+- **Role:** Second-order rate constant for one drug's modulation of another drug's elimination from an effect compartment, with units of (1 / (concentration * time)). Used in two-drug PK-PD interaction models where the modulating drug's plasma concentration multiplies a target drug's effect-compartment amount to drive an additional elimination route (mechanistic abstraction for site-of-action drug-drug interaction such as the sugammadex-mediated rocuronium reversal). Inside `model()` the bare name is `ks`; the log-transformed `lks` form is used in `ini()` when the source paper reports `log_e(ks)`.
+- **Source aliases:** none.
+- **Example models:** `Kleijn_2011_sugammadex_rocuronium.R` (`lks = -3.43`, giving `ks = 0.033 1/(min*uM)`, RSE 0.222%; modulates rocuronium effect-compartment elimination by sugammadex plasma concentration: `d/dt(effect_roc) = ... - ks * csug * effect_roc`).
+- **Notes:** Mechanistically distinct from `kel` / `kdeg` (single-drug elimination rates) and from `kint` (target-mediated internalisation). The second drug's plasma concentration provides the multiplier; the parameter encodes the rate at which the modulating drug consumes the target drug at its site of action.
+
+### ke0 (**canonical effect-compartment equilibration rate constant**)
+- **Type:** paper-named-param
+- **Role:** First-order rate constant for equilibration between the central plasma concentration and the effect-compartment concentration (1 / time), used by standard hysteresis effect-compartment PK-PD models: `d Ce / dt = ke0 * (Cc - Ce)`. The corresponding equilibration half-life is `log(2) / ke0`. Inside `model()` the bare name is `ke0`; the log-transformed `lke0` form is used in `ini()` when the source paper reports `log_e(ke0)` or uses an exponential typical-value form.
+- **Source aliases:**
+  - `keo`, `Keo` -- equivalent paper notation; both spellings (`keo` and `ke0`) appear in the literature.
+- **Example models:** `Kleijn_2011_sugammadex_rocuronium.R` (`lke0 = log(0.134) = -2.01`, giving `ke0 = 0.134 1/min` for the rocuronium effect-compartment equilibration; allometric scaling `(BW/70)^-0.25`).
+- **Notes:** Distinct from `lke_kpd` (which is K-PD elimination rate and was deprecated in favour of the canonical `lkel`). `lke0` is specifically the effect-compartment equilibration parameter for hysteresis PK-PD modelling.
+
+### lec50 (**canonical log-transformed effect-compartment EC50**)
+- **Type:** paper-named-param
+- **Role:** Log-transformed concentration producing half-maximal effect in sigmoid Emax / Imax PD models (concentration units). Inside `model()` the bare name is `ec50`.
+- **Source aliases:**
+  - `lEC50`, `lec_50` -- equivalent paper notation.
+- **Example models:** `deVriesSchultink_2018_trastuzumab_LVEF.R`, `Kleijn_2011_sugammadex_rocuronium.R`, `Zhang_2022_ormutivimab.R`, and many sigmoid-Emax PD extractions.
+- **Notes:** Pairs with `lhill` (Hill exponent). The bare name `ec50` is for use in `model()` derivations.
+
+### ec50 (**canonical bare effect-compartment EC50**)
+- **Type:** paper-named-param
+- **Role:** Bare counterpart of `lec50`; the half-maximal effect concentration on the linear scale.
+- **Source aliases:** none.
+- **Example models:** widespread sigmoid-Emax PD extractions.
+
+### le0 (**canonical log-transformed PD baseline parameter**)
+- **Type:** paper-named-param
+- **Role:** Log-transformed baseline (drug-free) value of a PD response, e.g., baseline T4/T1 twitch ratio in neuromuscular blockade PK-PD models (`E0 = exp(le0)`). Distinct from `lrbase`, which is the log-transformed steady-state baseline for indirect-response / turnover models with explicit `kin` / `kout`. Use `le0` when the source paper reports a non-turnover PD baseline (a typical T4/T1 ratio, a typical pre-treatment biomarker level) that enters the sigmoid Emax expression as an additive baseline plus the maximum-effect-bounded modulation. Inside `model()` the bare name is `e0`.
+- **Source aliases:**
+  - `lE0`, `lTOF0` -- equivalent paper notation.
+- **Example models:** `Kleijn_2011_sugammadex_rocuronium.R` (`le0 = log(104)` for typical baseline T4/T1 x 100; Emax of the sigmoid is forced equal to E0 so the per-subject baseline shape of the readout is preserved).
+- **Notes:** Distinct from `lrbase` (turnover-state steady-state baseline). When `Emax = E0` is forced in the sigmoid (the standard NMB parameterisation), the readout decreases monotonically from `E0` toward 0 as the effect-compartment concentration rises.
+
+### e0 (**canonical bare PD baseline parameter**)
+- **Type:** paper-named-param
+- **Role:** Bare counterpart of `le0`; the baseline (drug-free) PD response value used inside `model()`.
+- **Source aliases:** none.
+- **Example models:** `Kleijn_2011_sugammadex_rocuronium.R`.
+
 ### kdes (**canonical desensitisation rate**)
 - **Type:** paper-named-param
 - **Role:** Receptor / target desensitisation rate constant (1 / time).

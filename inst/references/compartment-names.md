@@ -2358,6 +2358,18 @@ Sibling-drug suffixes for the Hill-McManus 2017 dual-urate-lowering-therapy PKPD
 
 ---
 
+## Neuromuscular-blocking-agent / reversal-agent sibling-drug suffixes
+
+Sibling-drug suffix for the Kleijn 2011 sugammadex-mediated reversal of rocuronium-induced neuromuscular blockade PK-PD model, where sugammadex (the reversal agent, mentioned first in the paper title) is the unsuffixed parent and rocuronium (the substrate aminosteroid NMBA) carries the `roc` suffix throughout. The model also uses the existing `complex` registered suffix for the sugammadex-rocuronium inclusion complex compartments (with PK set equal to free sugammadex), so all three species coexist as separate compartment chains.
+
+### roc (**canonical rocuronium sibling-drug suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Rocuronium (aminosteroid neuromuscular blocking agent) sibling-drug suffix, paired with sugammadex as the unsuffixed parent in the Kleijn 2011 reversal PK-PD model. Drives `central_roc` / `peripheral1_roc` / `effect_roc` compartments, `lcl_roc` / `lvc_roc` / `lq_roc` / `lvp_roc` PK parameters, and the `propSd_roc` residual on total rocuronium plasma concentration. The effect compartment carries the rocuronium concentration at the neuromuscular junction that drives the sigmoid-Emax NMB readout; sugammadex itself has no effect compartment because its NMB-reversal action enters the model as an extra elimination route on `effect_roc`.
+- **Source aliases:** none.
+- **Example models:** `Kleijn_2011_sugammadex_rocuronium.R` (doi:10.1111/j.1365-2125.2011.04000.x).
+
+---
+
 ## Combination antimalarial / antibiotic sibling-drug suffixes
 
 ### pyra (**canonical pyrimethamine sibling-drug suffix**)
