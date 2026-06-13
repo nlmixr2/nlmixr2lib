@@ -1384,6 +1384,8 @@ navbar:
         href: articles/Moore_2016_vancomycin.html
       - text: "Vancomycin (Nielsen 2011)"
         href: articles/Nielsen_2011_antibacterial_efficacy.html
+      - text: "Vancomycin (Revilla 2010)"
+        href: articles/Revilla_2010_vancomycin.html
       - text: "Vancomycin (Roberts 2011)"
         href: articles/Roberts_2011_vancomycin.html
       - text: "Vancomycin (Zhao 2014)"
@@ -2113,7 +2115,7 @@ articles:
   - articles/Rekic_2011_atazanavir
   - articles/Renard_2011_indacaterol
   - articles/Retlich_2015_linagliptin
-  - articles/Robarge_2017_efavirenz
+  - articles/Revilla_2010_vancomycin
   - articles/Robbie_2012_palivizumab
   - articles/Roberts_2011_vancomycin
   - articles/Roberts_2016_topotecan
