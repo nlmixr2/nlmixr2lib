@@ -408,6 +408,8 @@ navbar:
         href: articles/Hirt_2009_efavirenz.html
       - text: "Efavirenz (Luo 2016)"
         href: articles/Luo_2016_efavirenz.html
+      - text: "Efavirenz (Mukonzo 2009)"
+        href: articles/Mukonzo_2009_efavirenz.html
       - text: "Efavirenz (Olagunju 2018)"
         href: articles/Olagunju_2018_efavirenz.html
       - text: "Efavirenz (Salem 2014)"
@@ -1993,6 +1995,7 @@ articles:
   - articles/Mosha_2014_artemether_lumefantrine
   - articles/Mould_2007_alemtuzumab
   - articles/Mukai_2019_mogamulizumab
+  - articles/Mukonzo_2009_efavirenz
   - articles/Muller_2010_clindamycin
   - articles/Mulyukov_2018_ranibizumab
   - articles/Muntau_2017_sapropterin
