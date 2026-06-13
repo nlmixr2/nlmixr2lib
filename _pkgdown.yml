@@ -242,6 +242,8 @@ navbar:
         href: articles/Bulitta_2010_ceftazidime.html
       - text: "Ceftazidime (Shi 2018)"
         href: articles/Shi_2018_ceftazidime.html
+      - text: "Ceftriaxone (Garot 2011)"
+        href: articles/Garot_2011_ceftriaxone.html
       - text: "Cefuroxime (Alqahtani 2018)"
         href: articles/Alqahtani_2018_cefuroxime.html
       - text: "Cefuroxime (Nielsen 2011)"
@@ -1726,6 +1728,7 @@ articles:
   - articles/Garg_2014_pertuzumab
   - articles/Garmann_2017_BAY81_8973
   - articles/Garonzik_2016_daptomycin
+  - articles/Garot_2011_ceftriaxone
   - articles/Gatti_1996_dapsone
   - articles/Germovsek_2016_gentamicin
   - articles/Germovsek_2018_meropenem
