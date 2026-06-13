@@ -970,8 +970,16 @@ navbar:
         href: articles/Yukawa_1990_phenytoin.html
       - text: "Piperacillin (Boer-Perez 2026)"
         href: articles/Boer-Perez_2026_piperacillin.html
-      - text: "Piperacillin (Jeon 2014)"
-        href: articles/Jeon_2014_piperacillin.html
+      - text: "Piperacillin (Bulitta 2010)"
+        href: articles/Bulitta_2010_piperacillin.html
+      - text: "Piperacillin (CohenWolkowiez 2014)"
+        href: articles/CohenWolkowiez_2014_piperacillin_tazobactam.html
+      - text: "Piperacillin (Landersdorfer 2012)"
+        href: articles/Landersdorfer_2012_piperacillin.html
+      - text: "Piperacillin (Nichols 2016)"
+        href: articles/Nichols_2016_piperacillin_tazobactam.html
+      - text: "Piperacillin (ObrinkHansen 2015)"
+        href: articles/ObrinkHansen_2015_piperacillin.html
       - text: "Piperaquine (Hoglund 2012)"
         href: articles/Hoglund_2012_piperaquine.html
       - text: "Piperaquine (Hoglund 2017)"
@@ -1648,6 +1656,7 @@ articles:
   - articles/Bulitta_2009_cefuroxime_axetil
   - articles/Bulitta_2010_ceftazidime
   - articles/Bulitta_2010_colistin
+  - articles/Bulitta_2010_piperacillin
   - articles/Caldes_2009_ganciclovir
   - articles/Campagne_2019_cyclophosphamide_mouse
   - articles/Candelaria_2018_rituximab
