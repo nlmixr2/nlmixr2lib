@@ -746,6 +746,10 @@ navbar:
         href: articles/Hoglund_2018_mefloquine.html
       - text: "Mefloquine (Simpson 2013)"
         href: articles/Simpson_2013_mefloquine.html
+      - text: "Melphalan total (Nath 2010)"
+        href: articles/Nath_2010_melphalan.html
+      - text: "Melphalan unbound (Nath 2010)"
+        href: articles/Nath_2010_melphalan.html
       - text: "Mepolizumab (Cao 2013)"
         href: articles/Cao_2013_mepolizumab.html
       - text: "Meropenem (Bergen 2017)"
@@ -2036,6 +2040,7 @@ articles:
   - articles/Naik_2016_vortioxetine
   - articles/Nanga_2019_tacrolimus_metaanalysis
   - articles/Narwal_2013_sifalimumab
+  - articles/Nath_2010_melphalan
   - articles/Nemoto_2017_ethanol
   - articles/Nestorov_2014_factorviii
   - articles/Netterberg_2017_docetaxel
