@@ -52,6 +52,8 @@ navbar:
         href: articles/Marquez-Megias_2023_adalimumab.html
       - text: "Adecatumumab (Cao 2013)"
         href: articles/Cao_2013_adecatumumab.html
+      - text: "Aflibercept (Thai 2011)"
+        href: articles/Thai_2011_aflibercept.html
       - text: "Agomelatine (Xie 2019)"
         href: articles/Xie_2019_agomelatine.html
       - text: "Alemtuzumab (Mould 2007)"
@@ -2231,6 +2233,7 @@ articles:
   - articles/Terranova_2018_paclitaxel
   - articles/Tetschke_2018_erythropoiesis
   - articles/Teuscher_2015_methylphenidate
+  - articles/Thai_2011_aflibercept
   - articles/Thakkar_2017_amifampridine
   - articles/Thakre_2022_risankizumab
   - articles/Themans_2019_meropenem
