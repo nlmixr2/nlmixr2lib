@@ -1188,6 +1188,8 @@ navbar:
         href: articles/Thorsted_2016_somatropin_rat.html
       - text: "Sonidegib (Goel 2016)"
         href: articles/Goel_2016_Sonidegib.html
+      - text: "Sorafenib (Jain 2011)"
+        href: articles/Jain_2011_sorafenib.html
       - text: "Sugemalimab (Wang 2024)"
         href: articles/Wang_2024_sugemalimab.html
       - text: "Sulfadoxine (Karunajeewa 2009)"
@@ -1657,7 +1659,7 @@ articles:
   - articles/Bjornsson_2011_naproxcinod
   - articles/Blair_2004_raltitrexed
   - articles/Boer_2015_cisplatin
-  - articles/Bogason_2011_daunorubicin
+  - articles/Boer-Perez_2026_piperacillin
   - articles/Bonate_2004_apomine
   - articles/Bouazza_2010_lamivudine
   - articles/Bouazza_2011_lamivudine
