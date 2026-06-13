@@ -1360,8 +1360,14 @@ navbar:
         href: articles/Li_2018_vancomycin.html
       - text: "Vancomycin (Moore 2016)"
         href: articles/Moore_2016_vancomycin.html
-      - text: "Vancomycin (Staatz 2005)"
-        href: articles/Staatz_2005_gentamicin_vancomycin.html
+      - text: "Vancomycin (Nielsen 2011)"
+        href: articles/Nielsen_2011_antibacterial_efficacy.html
+      - text: "Vancomycin (Roberts 2011)"
+        href: articles/Roberts_2011_vancomycin.html
+      - text: "Vancomycin (Zhao 2014)"
+        href: articles/Zhao_2014_vancomycin.html
+      - text: "Varenicline (Ravva 2009)"
+        href: articles/Ravva_2009_varenicline.html
       - text: "Vedolizumab (Rosario 2015)"
         href: articles/Rosario_2015_vedolizumab.html
       - text: "Verapamil rat (Syvanen 2011)"
@@ -2073,6 +2079,7 @@ articles:
   - articles/Quartino_2016_trastuzumab
   - articles/Quartino_2019_trastuzumab
   - articles/Rambiritch_2016_glibenclamide
+  - articles/Ravva_2009_varenicline
   - articles/Rees_2018_meropenem_ciprofloxacin
   - articles/Reijers_2016_trastuzumab
   - articles/Rekic_2011_atazanavir
