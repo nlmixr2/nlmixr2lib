@@ -2,6 +2,7 @@
 
 # development version
 
+* Add Othman 2013 ABT-102 ([doi:10.1111/j.1365-2125.2012.04405.x](https://doi.org/10.1111/j.1365-2125.2012.04405.x)) -- healthy adult volunteers; population PK/PD model of body-temperature effects of the TRPV1 antagonist ABT-102 with time-driven exponential tolerance.
 * Add Berges 2007 enoxaparin ([doi:10.1111/j.1365-2125.2007.02920.x](https://doi.org/10.1111/j.1365-2125.2007.02920.x)) -- elderly inpatients (>75 years) on prophylactic subcutaneous enoxaparin 4000 IU once daily for VTE prophylaxis (PROPHRE.75 study).
 * Add Padoin 1998 cephalexin ([doi:10.1128/aac.42.6.1463](https://doi.org/10.1128/aac.42.6.1463)) -- preclinical male Wistar rats with a cephalexin / quinapril oral coadministration DDI (ratifies new `CONMED_QPRL_ORAL` covariate canonical).
 * Add van Rongen 2018 metformin ([doi:10.1007/s40272-018-0293-1](https://doi.org/10.1007/s40272-018-0293-1)) -- overweight and obese Caucasian adolescents.
