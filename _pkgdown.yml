@@ -1042,6 +1042,8 @@ navbar:
         href: articles/Suleiman_2019_risankizumab.html
       - text: "Risankizumab (Thakre 2022)"
         href: articles/Thakre_2022_risankizumab.html
+      - text: "Risperidone (Feng 2008)"
+        href: articles/Feng_2008_risperidone.html
       - text: "Risperidone (Sherwin 2012)"
         href: articles/Sherwin_2012_risperidone.html
       - text: "Ritonavir (Kappelhoff 2005)"
@@ -1716,6 +1718,7 @@ articles:
   - articles/Fauchet_2015_lopinavir
   - articles/FehlingKaschek_2019_trastuzumab_skbr3
   - articles/Feng_2006_enoxaparin
+  - articles/Feng_2008_risperidone
   - articles/Feng_2012_higenamine
   - articles/Ferron_2013_cabazitaxel
   - articles/Fiedler-Kelly_2019_fremanezumab

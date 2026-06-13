@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Chan 2008 maraviroc ([doi:10.1111/j.1365-2125.2008.03139.x](https://doi.org/10.1111/j.1365-2125.2008.03139.x)) -- pooled healthy volunteers and asymptomatic HIV-infected adults (17 Pfizer Phase 1 / 2a studies; ratifies new `eh` canonical parameter for hepatic extraction ratio).
+* Add Feng 2008 risperidone ([doi:10.1111/j.1365-2125.2008.03276.x](https://doi.org/10.1111/j.1365-2125.2008.03276.x)) -- adults pooled from CATIE-AD (Alzheimer disease) and CATIE-SZ (schizophrenia) on oral risperidone (one-compartment parent + 9-OH-risperidone mixture model over three CYP2D6 metabolizer subpopulations).
 * Add Berges 2007 enoxaparin ([doi:10.1111/j.1365-2125.2007.02920.x](https://doi.org/10.1111/j.1365-2125.2007.02920.x)) -- elderly inpatients (>75 years) on prophylactic subcutaneous enoxaparin 4000 IU once daily for VTE prophylaxis (PROPHRE.75 study).
 * Add Padoin 1998 cephalexin ([doi:10.1128/aac.42.6.1463](https://doi.org/10.1128/aac.42.6.1463)) -- preclinical male Wistar rats with a cephalexin / quinapril oral coadministration DDI (ratifies new `CONMED_QPRL_ORAL` covariate canonical).
 * Add van Rongen 2018 metformin ([doi:10.1007/s40272-018-0293-1](https://doi.org/10.1007/s40272-018-0293-1)) -- overweight and obese Caucasian adolescents.
