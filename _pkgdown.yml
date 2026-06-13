@@ -970,6 +970,8 @@ navbar:
         href: articles/Lin_2024_pozelimab.html
       - text: "Pravastatin (Ide 2009)"
         href: articles/Ide_2009_pravastatin.html
+      - text: "Pregabalin (Shoji 2011)"
+        href: articles/Shoji_2011_pregabalin.html
       - text: "Pregabalin rat binary (Bender 2009)"
         href: articles/Bender_2009_pregabalin_rat.html
       - text: "Pregabalin rat smetab (Bender 2009)"
@@ -2084,6 +2086,7 @@ articles:
   - articles/Shi_2018_ceftazidime
   - articles/Shin_2014_sevoflurane
   - articles/Shin_2017_levetiracetam
+  - articles/Shoji_2011_pregabalin
   - articles/Shoji_2017_fosdagrocorat_oc
   - articles/Shoji_2017_fosdagrocorat_p1np
   - articles/Sidhu_1998_artemisinin
