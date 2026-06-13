@@ -260,8 +260,8 @@ navbar:
         href: articles/Wade_2015_certolizumab.html
       - text: "Chloroquine (Simpson 2013)"
         href: articles/Simpson_2013_chloroquine.html
-      - text: "Cilostazol (Yoo 2009)"
-        href: articles/Yoo_2009_cilostazol.html
+      - text: "Ciclosporin (Wilhelm 2012)"
+        href: articles/Wilhelm_2012_ciclosporin.html
       - text: "Ciprofloxacin (Schaefer 1996)"
         href: articles/Schaefer_1996_ciprofloxacin.html
       - text: "Ciprofloxacin (Thuo 2011)"
@@ -2298,6 +2298,7 @@ articles:
   - articles/Wicha_2018_rifampicin
   - articles/Wilbaux_2014_ovarianCancer_ca125
   - articles/Wilbaux_2015_prostate
+  - articles/Wilhelm_2012_ciclosporin
   - articles/Wilkins_2008_rifampicin
   - articles/Willemze_2008_ciclosporin
   - articles/Wilson_2015_sunitinib_irinotecan_mouse
