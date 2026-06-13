@@ -808,6 +808,8 @@ navbar:
         href: articles/Nielsen_2011_antibacterial_efficacy.html
       - text: "Mu receptor binding (Mann 2022)"
         href: articles/Laffont_2025_opioid_overdose_reversal_simulation.html
+      - text: "Mycophenolic acid (Frymoyer 2013)"
+        href: articles/Frymoyer_2013_mycophenolic_acid.html
       - text: "Mycophenolic acid (deWinter 2009)"
         href: articles/deWinter_2009_mycophenolic_acid.html
       - text: "Nab paclitaxel (Chen 2014)"
@@ -1721,6 +1723,7 @@ articles:
   - articles/Frey_2013_tocilizumab
   - articles/Friberg_2002_paclitaxel
   - articles/Friberg_2012_voriconazole
+  - articles/Frymoyer_2013_mycophenolic_acid
   - articles/Frymoyer_2017_infliximab
   - articles/Gandhi_2021_abatacept
   - articles/Garg_2014_pertuzumab
