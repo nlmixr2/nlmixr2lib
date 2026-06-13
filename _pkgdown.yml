@@ -774,6 +774,8 @@ navbar:
         href: articles/Shekar_2014_meropenem.html
       - text: "Meropenem ciprofloxacin (Rees 2018)"
         href: articles/Rees_2018_meropenem_ciprofloxacin.html
+      - text: "Metformin (Chae 2012)"
+        href: articles/Chae_2012_metformin.html
       - text: "Metformin (Choi 2018)"
         href: articles/Choi_2018_metformin.html
       - text: "Metformin (vanRongen 2018)"
@@ -1716,6 +1718,7 @@ articles:
   - articles/CarlssonPetri_2021_liraglutide
   - articles/Castro-Surez_2020_nimotuzumab
   - articles/Catalan-Latorre_2018_taurine_rat
+  - articles/Chae_2012_metformin
   - articles/Chakraborty_2012_canakinumab
   - articles/Chan_2008_maraviroc
   - articles/Chang_2011_PF04455242_prolactin
@@ -1757,7 +1760,7 @@ articles:
   - articles/Danielak_2017_clopidogrel
   - articles/Danielak_2017_treosulfan
   - articles/Dao_2020_sultiame
-  - articles/DeCock_2012_propyleneGlycol
+  - articles/deAlwis_1998_ondansetron
   - articles/Debord_2001_cyclosporin
   - articles/deHoogd_2017_morphine
   - articles/deJonge_2005_paclitaxel
