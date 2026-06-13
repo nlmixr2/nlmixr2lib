@@ -256,8 +256,8 @@ navbar:
         href: articles/Wade_2015_certolizumab.html
       - text: "Chloroquine (Simpson 2013)"
         href: articles/Simpson_2013_chloroquine.html
-      - text: "Ciclosporin (Willemze 2008)"
-        href: articles/Willemze_2008_ciclosporin.html
+      - text: "Cilostazol (Yoo 2009)"
+        href: articles/Yoo_2009_cilostazol.html
       - text: "Ciprofloxacin (Schaefer 1996)"
         href: articles/Schaefer_1996_ciprofloxacin.html
       - text: "Ciprofloxacin (Thuo 2011)"
@@ -2309,7 +2309,12 @@ articles:
   - articles/Ye_2017_ethaselen
   - articles/Yin_2021_trastuzumabDeruxtecan
   - articles/Yoneyama_2017_emicizumab
-  - articles/Yu_2017_mycophenolic_acid
+  - articles/Yoo_2009_cilostazol
+  - articles/Yoshida_2018_coproporphyrin_I_GDC0810
+  - articles/Yoshida_2018_coproporphyrin_I_rifampin
+  - articles/Yoshida_2021_ipatasertib
+  - articles/Yoshioka_2018_FXa_inhibitors_mbma
+  - articles/You_2013_hCG_GTN
   - articles/Yu_2022_ofatumumab
   - articles/Yuan_2019_concizumab
   - articles/Yukawa_1990_phenytoin
