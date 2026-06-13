@@ -82,6 +82,13 @@ The `l<base>` convention denotes a population mean estimated on the log scale (`
 - **Example models:** any 3-compartment popPK extraction.
 - **Notes:** Pairs with `peripheral2` compartment and inter-compartmental clearance `lq2`.
 
+### lvp3 (**canonical log-transformed third peripheral volume**)
+- **Type:** log-transformed-pk
+- **Role:** Apparent volume of the third peripheral compartment in 4-compartment models (volume).
+- **Source aliases:** none.
+- **Example models:** `Schmitt_2018_vinflunine.R`, `Li_2017_brentuximab.R`, `Weatherley_2009_maraviroc_iv.R`.
+- **Notes:** Pairs with `peripheral3` compartment and inter-compartmental clearance `lq3`.
+
 ### lq (**canonical log-transformed first inter-compartmental clearance**)
 - **Type:** log-transformed-pk
 - **Role:** Inter-compartmental clearance between central and first peripheral compartment (volume / time).
@@ -93,6 +100,13 @@ The `l<base>` convention denotes a population mean estimated on the log scale (`
 - **Role:** Inter-compartmental clearance between central and second peripheral compartment (volume / time).
 - **Source aliases:** none.
 - **Example models:** 3-compartment popPK extractions.
+
+### lq3 (**canonical log-transformed third inter-compartmental clearance**)
+- **Type:** log-transformed-pk
+- **Role:** Inter-compartmental clearance between central and third peripheral compartment (volume / time) in 4-compartment models.
+- **Source aliases:** none.
+- **Example models:** `Schmitt_2018_vinflunine.R`, `Li_2017_brentuximab.R`, `Weatherley_2009_maraviroc_iv.R`.
+- **Notes:** Pairs with `peripheral3` and `lvp3`.
 
 ### lfdepot (**canonical log-transformed depot fraction**)
 - **Type:** log-transformed-pk
@@ -271,6 +285,12 @@ The bare counterparts of the log-transformed parameters above. Used when the sou
 - **Source aliases:** none.
 - **Example models:** universal in 3-compartment popPK extractions.
 
+### vp3 (**canonical bare third peripheral volume**)
+- **Type:** bare-pk
+- **Role:** Apparent third-peripheral volume in 4-compartment popPK models (volume).
+- **Source aliases:** none.
+- **Example models:** `Schmitt_2018_vinflunine.R`, `Li_2017_brentuximab.R`, `Weatherley_2009_maraviroc_iv.R`.
+
 ### q (**canonical bare first inter-compartmental clearance**)
 - **Type:** bare-pk
 - **Role:** Inter-compartmental clearance between central and `peripheral1` (volume / time).
@@ -282,6 +302,12 @@ The bare counterparts of the log-transformed parameters above. Used when the sou
 - **Role:** Inter-compartmental clearance between central and `peripheral2` (volume / time).
 - **Source aliases:** none.
 - **Example models:** universal in 3-compartment popPK extractions.
+
+### q3 (**canonical bare third inter-compartmental clearance**)
+- **Type:** bare-pk
+- **Role:** Inter-compartmental clearance between central and `peripheral3` (volume / time) in 4-compartment popPK models.
+- **Source aliases:** none.
+- **Example models:** `Schmitt_2018_vinflunine.R`, `Li_2017_brentuximab.R`, `Weatherley_2009_maraviroc_iv.R`.
 
 ### kel (**canonical bare elimination rate constant (K-PD)**)
 - **Type:** bare-pk
