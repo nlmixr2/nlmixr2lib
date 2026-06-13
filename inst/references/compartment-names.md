@@ -2252,6 +2252,18 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Source aliases:** none.
 - **Example models:** `Wang_2018_daclatasvir_asunaprevir.R` (doi:10.1038/aps.2017.84).
 
+### tgn (**canonical 6-thioguanine nucleotide suffix**)
+- **Type:** metabolite-suffix
+- **Role:** 6-thioguanine nucleotides (6-TGNs), the cytotoxic intracellular active metabolites of 6-mercaptopurine / azathioprine measured in red blood cells. 6-TGNs are formed downstream of HPRT-mediated activation and incorporate into DNA / RNA to drive antiproliferative effects in lymphoblasts. Drives `central_tgn` and the `addSd_tgn` residual. The apparent metabolite distribution volume is typically not identifiable (only an apparent clearance is reported) and is fixed to 1 L by NONMEM ADVAN6 convention -- the `lvc_tgn` entry is fixed in the model file and documented in the vignette Errata.
+- **Source aliases:** none. The paper symbol `6-TGNs` (and the molecular abbreviation `TGN`) translate silently to the canonical lowercase suffix.
+- **Example models:** `Hawwa_2008_mercaptopurine.R` (doi:10.1111/j.1365-2125.2008.03281.x).
+
+### mmpn (**canonical 6-methylmercaptopurine nucleotide suffix**)
+- **Type:** metabolite-suffix
+- **Role:** 6-methylmercaptopurine nucleotides (6-mMPNs), the methylated intracellular metabolites of 6-mercaptopurine / azathioprine measured in red blood cells. 6-mMPNs are formed by TPMT-mediated methylation of 6-MP and the corresponding thioinosine 5'-monophosphate; they are associated with hepatotoxicity rather than antileukaemic efficacy. Drives `central_mmpn` and the `addSd_mmpn` residual. The apparent metabolite distribution volume is typically not identifiable (only an apparent clearance is reported) and is fixed to 1 L by NONMEM ADVAN6 convention -- the `lvc_mmpn` entry is fixed in the model file and documented in the vignette Errata.
+- **Source aliases:** none. The paper symbol `6-mMPNs` (and the molecular abbreviation `mMPN`) translate silently to the canonical lowercase suffix.
+- **Example models:** `Hawwa_2008_mercaptopurine.R` (doi:10.1111/j.1365-2125.2008.03281.x).
+
 ---
 
 ## Cell-type suffixes (Friberg multi-cell-type chains)
