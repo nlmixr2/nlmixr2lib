@@ -830,8 +830,8 @@ navbar:
         href: articles/Attarwala_2023_mRNA3927.html
       - text: "Mu receptor binding (Mann 2022)"
         href: articles/Laffont_2025_opioid_overdose_reversal_simulation.html
-      - text: "Mycophenolic acid (Yu 2017)"
-        href: articles/Yu_2017_mycophenolic_acid.html
+      - text: "Mycophenolic acid (Zhao 2010)"
+        href: articles/Zhao_2010_mycophenolic_acid.html
       - text: "Mycophenolic acid (deWinter 2009)"
         href: articles/deWinter_2009_mycophenolic_acid.html
       - text: "Mycophenolic acid (Jiao 2008)"
@@ -2328,7 +2328,7 @@ articles:
   - articles/Zhang_2019_nivolumab
   - articles/Zhang_2021_dupilumab
   - articles/Zhang_2022_ormutivimab
-  - articles/Zhao_2014_ciprofloxacin
+  - articles/Zhao_2010_mycophenolic_acid
   - articles/Zhao_2014_vancomycin
   - articles/Zhao_2018_omeprazole
   - articles/Zheng_2014_azithromycin
