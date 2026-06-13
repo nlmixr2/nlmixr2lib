@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Barras 2009 enoxaparin ([doi:10.1111/j.1365-2125.2009.03518.x](https://doi.org/10.1111/j.1365-2125.2009.03518.x)) -- adults with thromboembolic disease (PE / DVT / ACS / atrial fibrillation) receiving subcutaneous enoxaparin treatment doses; PK-only encoding (proportional-odds bleeding / bruising PD layer reproduced in the vignette).
+* Add Rosario 2008 maraviroc ([doi:10.1111/j.1365-2125.2008.03140.x](https://doi.org/10.1111/j.1365-2125.2008.03140.x)) -- healthy adults and asymptomatic HIV-1-positive patients on multiple-dose oral maraviroc (3-600 mg) with a direct-Emax CCR5 receptor occupancy model.
 * Add Berges 2007 enoxaparin ([doi:10.1111/j.1365-2125.2007.02920.x](https://doi.org/10.1111/j.1365-2125.2007.02920.x)) -- elderly inpatients (>75 years) on prophylactic subcutaneous enoxaparin 4000 IU once daily for VTE prophylaxis (PROPHRE.75 study).
 * Add Padoin 1998 cephalexin ([doi:10.1128/aac.42.6.1463](https://doi.org/10.1128/aac.42.6.1463)) -- preclinical male Wistar rats with a cephalexin / quinapril oral coadministration DDI (ratifies new `CONMED_QPRL_ORAL` covariate canonical).
 * Add van Rongen 2018 metformin ([doi:10.1007/s40272-018-0293-1](https://doi.org/10.1007/s40272-018-0293-1)) -- overweight and obese Caucasian adolescents.

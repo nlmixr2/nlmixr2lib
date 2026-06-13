@@ -724,8 +724,8 @@ navbar:
         href: articles/Easterling_2018_magnesium_sulfate.html
       - text: "MagnesiumSulfate (Salinger 2013)"
         href: articles/Salinger_2013_magnesiumSulfate.html
-      - text: "Maraviroc (Chan 2008)"
-        href: articles/Chan_2008_maraviroc.html
+      - text: "Maraviroc (Rosario 2008)"
+        href: articles/Rosario_2008_maraviroc.html
       - text: "Matuzumab (Kuester 2008)"
         href: articles/Kuester_2008_matuzumab.html
       - text: "Mavrilimumab (Stein 2018)"
@@ -2079,6 +2079,7 @@ articles:
   - articles/Roberts_2011_vancomycin
   - articles/Roberts_2016_topotecan
   - articles/Rodrigues_2017_oxcarbazepine
+  - articles/Rosario_2008_maraviroc
   - articles/Rosario_2015_vedolizumab
   - articles/Rose_2016_follitropin_delta
   - articles/Rovei_1982_theophylline
