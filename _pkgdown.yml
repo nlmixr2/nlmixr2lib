@@ -276,6 +276,8 @@ navbar:
         href: articles/Abduljalil_2009_clarithromycin.html
       - text: "Clesrovimab (Hu 2026)"
         href: articles/Hu_2026_clesrovimab.html
+      - text: "Clindamycin (Bouazza 2012)"
+        href: articles/Bouazza_2012_clindamycin.html
       - text: "Clindamycin (Muller 2010)"
         href: articles/Muller_2010_clindamycin.html
       - text: "Clindamycin (Smith 2017)"
@@ -1674,6 +1676,7 @@ articles:
   - articles/Bonate_2004_apomine
   - articles/Bouazza_2010_lamivudine
   - articles/Bouazza_2011_lamivudine
+  - articles/Bouazza_2012_clindamycin
   - articles/Boucher_2018_naproxen_mbma
   - articles/Brain_2008_ifosfamide
   - articles/Brill_2014_midazolam
