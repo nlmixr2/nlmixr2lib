@@ -368,6 +368,8 @@ navbar:
         href: articles/Tarning_2012_dihydroartemisinin_piperaquine.html
       - text: "Dilmapimod (Yang 2016)"
         href: articles/Yang_2016_dilmapimod.html
+      - text: "Docetaxel (Koolen 2010)"
+        href: articles/Koolen_2010_docetaxel.html
       - text: "Docetaxel (Ozawa 2007)"
         href: articles/Ozawa_2007_docetaxel.html
       - text: "Domagrozumab (Wojciechowski 2022)"
@@ -1912,6 +1914,7 @@ articles:
   - articles/Knibbe_2009_morphine
   - articles/Knights_2015_aripiprazole
   - articles/Koloskoff_2025_ganciclovir
+  - articles/Koolen_2010_docetaxel
   - articles/Koopman_2023_factorix
   - articles/Kotani_2022_astegolimab
   - articles/Koue_2007_aripiprazole
