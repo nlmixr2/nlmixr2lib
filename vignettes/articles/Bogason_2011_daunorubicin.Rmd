@@ -1,0 +1,494 @@
+---
+title: "Daunorubicin (Bogason 2011)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Daunorubicin (Bogason 2011)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment  = "#>",
+  fig.width = 6.5,
+  fig.height = 4
+)
+```
+
+```{r setup}
+library(nlmixr2lib)
+library(rxode2)
+library(PKNCA)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Bogason_2011_daunorubicin"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Bogason_2011_daunorubicin"))$description`
+* Article: [Br J Clin Pharmacol 2011;71(4):514-521](https://doi.org/10.1111/j.1365-2125.2010.03894.x)
+
+Bogason et al. (2011) characterised daunorubicin (DNR) pharmacokinetics in
+40 adults with acute myeloid leukaemia (AML) receiving induction
+chemotherapy with cytarabine + daunorubicin. The structural PK model is a
+two-compartment linear model fit to log-transformed plasma DNR
+concentrations measured at end of infusion (1 h), 5 h, and 24 h after the
+first 60 mg/m^2 DNR infusion. The covariate analysis identified baseline
+white blood cell (WBC) count at AML diagnosis as a significant predictor
+of the central volume of distribution (Vc): higher WBC was associated with
+larger Vc, which the authors interpret as rapid drug sequestration into a
+large leukaemic cell mass.
+
+This vignette reproduces the simulated DNR plasma concentration-time
+profile after a typical 60 mg/m^2 1-h IV infusion, replicates the inverse
+DNR-vs-WBC relationship at 1 h (paper Figure 1), provides a PKNCA-derived
+exposure summary, and documents the source trace for every parameter.
+
+# Population
+
+Bogason 2011 Patients section and Table 1:
+
+| Field            | Value                                                                             |
+|------------------|-----------------------------------------------------------------------------------|
+| N subjects       | 40                                                                                |
+| N studies        | 1 (single-centre Swedish cohort, Karolinska University Hospital)                  |
+| Age              | 33-83 years (mean 61.3)                                                           |
+| Sex              | 19 M / 21 F (52.5% female)                                                        |
+| Baseline WBC     | 1-219 x 10^9^/L (mean 39); paper reports as 10^6^ cells/mL = 10^9^ cells/L        |
+| Disease state    | AML (33 de novo, 7 secondary); FAB M1-M6 + 14 unclassified                        |
+| Induction regimen| Cytarabine 200 mg/m^2 over 2 h then DNR 60 mg/m^2 over 1 h IV, days 1-3           |
+| Dose deviations  | 3 patients received reduced DNR (one at 30, one at 45, one at 54 mg/m^2)          |
+
+Body weight and body surface area (BSA) were tested as covariates and not
+retained. Race / ethnicity was not reported. The same metadata is exposed
+programmatically via `rxode2::rxode(readModelDb("Bogason_2011_daunorubicin"))$population`.
+
+# Source trace
+
+Every numeric value in
+`inst/modeldb/specificDrugs/Bogason_2011_daunorubicin.R` comes from the
+following locations in Bogason A et al., *British Journal of Clinical
+Pharmacology* 2011;71(4):514-521
+([doi:10.1111/j.1365-2125.2010.03894.x](https://doi.org/10.1111/j.1365-2125.2010.03894.x)).
+The "Population PK model with baseline WBC" column of Table 2 is the
+authors' final model and is the source for every estimate below.
+
+| Quantity                          | Source location                       | Value used                          |
+|-----------------------------------|---------------------------------------|-------------------------------------|
+| Two-compartment linear PK         | Methods / Results, "Population PK"    | central + peripheral, IV input      |
+| Clearance CL                      | Table 2, final model                  | 114 L/h                             |
+| Central volume Vc                 | Table 2, final model                  | 412 L                               |
+| Intercompartmental clearance Q    | Table 2, final model                  | 254 L/h                             |
+| Peripheral volume Vp              | Table 2, final model                  | 1120 L                              |
+| WBC covariate form on Vc          | Table 2 footnote                      | Vc x [1 + 0.0138 x (WBC - 39)]      |
+| Reference WBC                     | Table 2 footnote ("medianWBC")        | 39 x 10^9^/L                        |
+| theta_Vc-WBC                      | Table 2, final model                  | 0.0138 (per 10^9^/L)                |
+| IIV CV% on CL                     | Table 2, final model                  | 51% (omega^2 = log(0.51^2 + 1))     |
+| IIV CV% on Vc                     | Table 2, final model                  | 120% (omega^2 = log(1.20^2 + 1))    |
+| Correlation eta_CL ~ eta_Vc       | Table 2, final model                  | 0.65                                |
+| Proportional residual error       | Table 2, final model                  | 51.7%                               |
+| Population WBC distribution       | Table 1 (40 individual values)        | range 1-219 x 10^9^/L, mean 39      |
+| Reported DNR at 1 h post-infusion | Results / Statistical analysis        | mean 403.8 SD 349.2 nM (60-1370 nM) |
+
+# Conversion between concentration units
+
+The model file declares concentrations in mg/L (its natural unit when dose
+is in mg). Bogason 2011 reports plasma DNR in nM. Daunorubicin molecular
+weight is 563.99 g/mol, so
+
+```{r dnr-mw}
+dnr_mw <- 563.99
+mg_per_L_to_nM <- function(x) x * 1000 / dnr_mw * 1000  # mg/L -> nM
+nM_to_mg_per_L <- function(x) x / 1000 * dnr_mw / 1000  # nM -> mg/L
+
+mg_per_L_to_nM(1)    # 1 mg/L corresponds to this many nM
+```
+
+A constant of `r format(round(mg_per_L_to_nM(1), 1), nsmall = 1)` nM per
+mg/L is used throughout the figures.
+
+# Virtual cohort
+
+Rather than draw a synthetic WBC distribution, the validation cohort
+reproduces the 40 actual baseline WBC values transcribed from Bogason 2011
+Table 1. Every patient is dosed at the typical induction regimen
+60 mg/m^2 x 1.8 m^2 (assumed adult BSA) = 108 mg DNR as a 1-h IV infusion.
+The three patients in the published cohort who received reduced doses
+(30, 45, 54 mg/m^2) are not modelled separately because their reduction is
+not retained as a structural covariate in the published analysis.
+
+```{r virtual-cohort}
+set.seed(2011)
+
+table1_wbc <- c(
+  12.4, 61.7, 58.7,  1.5, 14.0, 23.6, 219.0, 34.1, 67.6,  9.5,
+  64.4, 72.8,  4.0, 69.4, 49.3, 59.0,  2.2,  3.0,  1.0, 73.5,
+   3.4, 16.3, 55.5, 60.0, 21.0, 63.0, 170.0, 2.1, 69.3, 44.6,
+  55.0,  4.0, 30.4,  2.8, 56.0,  3.7, 10.0, 57.0, 1.3,   3.1
+)
+stopifnot(length(table1_wbc) == 40)
+
+bsa_m2 <- 1.8
+dose_per_m2 <- 60
+dose_mg <- bsa_m2 * dose_per_m2   # 108 mg DNR per 1-h infusion
+
+cohort <- tibble(
+  id    = seq_along(table1_wbc),
+  WBC   = table1_wbc,
+  group = "60 mg/m^2 IV 1-h"
+)
+
+summary(cohort$WBC)
+```
+
+# Event table
+
+The dose enters the central compartment as a 1-h IV infusion
+(`rate = dose / 1`). Observation times include the paper's three sampling
+times (1, 5, 24 h) plus a denser grid to characterise the early
+distribution phase and the terminal slope.
+
+```{r events}
+infusion_h <- 1
+obs_times <- sort(unique(c(
+  0,
+  seq(0.05, 1.5, by = 0.05),       # dense early grid for distribution
+  c(1, 5, 24),                       # paper sampling times
+  seq(2, 30, by = 0.5)
+)))
+
+doses <- cohort |>
+  transmute(
+    id   = id,
+    time = 0,
+    amt  = dose_mg,
+    rate = dose_mg / infusion_h,
+    evid = 1L,
+    cmt  = "central",
+    WBC  = WBC
+  )
+
+obs <- cohort |>
+  tidyr::crossing(time = obs_times) |>
+  transmute(
+    id   = id,
+    time = time,
+    amt  = 0,
+    rate = 0,
+    evid = 0L,
+    cmt  = NA_character_,
+    WBC  = WBC
+  )
+
+events <- dplyr::bind_rows(doses, obs) |>
+  dplyr::arrange(id, time, dplyr::desc(evid))
+
+stopifnot(sum(events$evid == 1L) == nrow(cohort))
+```
+
+# Simulation
+
+Two simulations are run: a stochastic VPC (IIV + residual error) and a
+typical-value-only profile (`rxode2::zeroRe()`) for reference.
+
+```{r simulate}
+mod <- readModelDb("Bogason_2011_daunorubicin")
+
+set.seed(20110402)
+sim_full <- rxode2::rxSolve(mod, events = events, keep = c("WBC")) |>
+  as.data.frame() |>
+  dplyr::mutate(Cc_nM = mg_per_L_to_nM(Cc))
+
+mod_typ <- rxode2::zeroRe(mod)
+sim_typ <- rxode2::rxSolve(mod_typ, events = events, keep = c("WBC")) |>
+  as.data.frame() |>
+  dplyr::mutate(Cc_nM = mg_per_L_to_nM(Cc))
+```
+
+# Figure 1 replication: DNR at 1 h vs baseline WBC
+
+Bogason 2011 Figure 1 shows the inverse correlation between baseline WBC
+and plasma DNR concentration immediately after the 1-h DNR infusion
+(reported r^2 = 0.11, P < 0.05 at 1 h). The figure below uses the
+stochastic simulation evaluated at exactly 1 h and overlays the
+least-squares regression line.
+
+```{r fig1, fig.cap = "Replicates Figure 1 of Bogason 2011: plasma DNR at end of infusion (1 h) vs baseline WBC, with least-squares fit."}
+dnr_at_1h <- sim_full |>
+  dplyr::filter(time == 1) |>
+  dplyr::select(id, WBC, Cc_nM)
+
+lm_fit <- stats::lm(Cc_nM ~ WBC, data = dnr_at_1h)
+r2_sim <- summary(lm_fit)$r.squared
+
+ggplot(dnr_at_1h, aes(WBC, Cc_nM)) +
+  geom_point(colour = "steelblue", alpha = 0.8) +
+  geom_smooth(method = "lm", se = TRUE, colour = "firebrick") +
+  labs(
+    x = expression("Baseline WBC ("*10^9*" cells/L)"),
+    y = "Plasma DNR at 1 h (nM)",
+    title = "Figure 1 replication: DNR vs WBC at end of infusion",
+    subtitle = sprintf(
+      "Simulated r^2 = %.3f (paper: r^2 = 0.11, P < 0.05)",
+      r2_sim
+    )
+  ) +
+  theme_bw()
+```
+
+The simulated r^2 is in the same low-correlation regime as the paper's
+value (0.11). The exact match is not expected because the model carries
+60% unexplained between-subject variability on Vc (CV 120%) and a 52%
+proportional residual error, so a single realisation will fluctuate around
+the paper's reported value.
+
+# Figure 5A replication: VPC of the DNR plasma profile
+
+Bogason 2011 Figure 5A is a VPC of the basic (no-covariate) model and
+Figure 5B adds the WBC covariate. The panel below shows the cohort-wide
+80% prediction interval from the final model overlaid with the median.
+
+```{r fig5, fig.cap = "Replicates Figure 5B of Bogason 2011: simulated VPC (80% PI) of plasma DNR over 30 h."}
+vpc <- sim_full |>
+  dplyr::group_by(time) |>
+  dplyr::summarise(
+    Q10 = stats::quantile(Cc_nM, 0.10, na.rm = TRUE),
+    Q50 = stats::quantile(Cc_nM, 0.50, na.rm = TRUE),
+    Q90 = stats::quantile(Cc_nM, 0.90, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+ggplot(vpc, aes(time, Q50)) +
+  geom_ribbon(aes(ymin = Q10, ymax = Q90), fill = "steelblue", alpha = 0.25) +
+  geom_line(linewidth = 0.8) +
+  scale_y_log10() +
+  labs(
+    x = "Time after start of infusion (h)",
+    y = "Plasma DNR (nM)",
+    title = "VPC: 80% prediction interval for plasma DNR",
+    caption = "Replicates Figure 5B of Bogason 2011 (final model with WBC on Vc)."
+  ) +
+  theme_bw()
+```
+
+# PKNCA validation
+
+PKNCA is used to compute Cmax, Tmax, AUC0-inf, and apparent terminal
+half-life for the simulated cohort. A treatment group `60 mg/m^2 IV 1-h` is
+carried through `rxSolve(..., keep = ...)` so the PKNCA formula groups by
+treatment. A time-zero `Cc = 0` row is added defensively before the
+PKNCA call so the AUC integration starts at the correct anchor.
+
+```{r pknca}
+sim_nca <- sim_full |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::transmute(
+    id        = id,
+    time      = time,
+    Cc        = Cc,
+    treatment = "60 mg/m^2 IV 1-h"
+  )
+
+# Defensive time-zero anchor (IV bolus pre-dose Cc = 0 is the correct value
+# for the AUC integrator; the existing time = 0 row from the simulation grid
+# already carries Cc = 0 so this is idempotent).
+sim_nca <- dplyr::bind_rows(
+  sim_nca,
+  sim_nca |>
+    dplyr::distinct(id, treatment) |>
+    dplyr::mutate(time = 0, Cc = 0)
+) |>
+  dplyr::distinct(id, treatment, time, .keep_all = TRUE) |>
+  dplyr::arrange(id, treatment, time)
+
+dose_df <- doses |>
+  dplyr::transmute(
+    id        = id,
+    time      = time,
+    amt       = amt,
+    treatment = "60 mg/m^2 IV 1-h"
+  )
+
+conc_obj <- PKNCA::PKNCAconc(
+  sim_nca, Cc ~ time | treatment + id,
+  concu = "mg/L", timeu = "h"
+)
+dose_obj <- PKNCA::PKNCAdose(
+  dose_df, amt ~ time | treatment + id,
+  doseu = "mg"
+)
+
+intervals <- data.frame(
+  start       = 0,
+  end         = Inf,
+  cmax        = TRUE,
+  tmax        = TRUE,
+  aucinf.obs  = TRUE,
+  half.life   = TRUE
+)
+
+nca_res <- PKNCA::pk.nca(
+  PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
+)
+```
+
+# Comparison against published exposure summaries
+
+Bogason 2011 does not publish a per-subject NCA table, but it does report
+the cohort mean and SD of plasma DNR at end of infusion (1 h). The simulated
+cohort's median and 5th-95th percentile of Cc at 1 h are compared below to
+that summary statistic. PKNCA-derived Cmax, AUC0-inf, and terminal
+half-life are also reported and compared to model-derived expected values
+(e.g., AUC0-inf for the typical patient equals Dose / CL = 108 mg /
+114 L/h = 0.947 mg*h/L).
+
+```{r compare}
+# Reference: paper-reported summary statistics
+paper_dnr_at_1h_nM_mean <- 403.8
+paper_dnr_at_1h_nM_sd   <- 349.2
+paper_dnr_at_1h_nM_min  <- 60
+paper_dnr_at_1h_nM_max  <- 1370
+
+sim_dnr_at_1h_nM <- sim_full |>
+  dplyr::filter(time == 1) |>
+  dplyr::pull(Cc_nM)
+
+dnr_1h_compare <- tibble::tibble(
+  metric = c(
+    "DNR at 1 h, mean (nM)",
+    "DNR at 1 h, SD (nM)",
+    "DNR at 1 h, min (nM)",
+    "DNR at 1 h, max (nM)"
+  ),
+  paper = c(
+    paper_dnr_at_1h_nM_mean,
+    paper_dnr_at_1h_nM_sd,
+    paper_dnr_at_1h_nM_min,
+    paper_dnr_at_1h_nM_max
+  ),
+  simulated = c(
+    mean(sim_dnr_at_1h_nM, na.rm = TRUE),
+    stats::sd(sim_dnr_at_1h_nM, na.rm = TRUE),
+    min(sim_dnr_at_1h_nM, na.rm = TRUE),
+    max(sim_dnr_at_1h_nM, na.rm = TRUE)
+  )
+) |>
+  dplyr::mutate(pct_diff = round(100 * (simulated - paper) / paper, 1))
+
+knitr::kable(
+  dnr_1h_compare,
+  digits = 1,
+  caption = "Simulated vs paper-reported plasma DNR at end of infusion (1 h)."
+)
+```
+
+```{r nca-summary}
+nca_tbl <- as.data.frame(nca_res$result) |>
+  dplyr::filter(PPTESTCD %in% c("cmax", "tmax", "aucinf.obs", "half.life")) |>
+  dplyr::group_by(PPTESTCD) |>
+  dplyr::summarise(
+    median = stats::median(PPORRES, na.rm = TRUE),
+    p05    = stats::quantile(PPORRES, 0.05, na.rm = TRUE),
+    p95    = stats::quantile(PPORRES, 0.95, na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  dplyr::mutate(
+    parameter = dplyr::recode(
+      PPTESTCD,
+      "cmax"       = "Cmax (mg/L)",
+      "tmax"       = "Tmax (h)",
+      "aucinf.obs" = "AUC0-inf (mg*h/L)",
+      "half.life"  = "Apparent terminal half-life (h)"
+    )
+  ) |>
+  dplyr::select(parameter, median, p05, p95)
+
+knitr::kable(
+  nca_tbl,
+  digits = 3,
+  caption = "PKNCA-derived NCA parameters across the simulated cohort (median, 5th-95th percentile)."
+)
+```
+
+```{r expected-checks}
+# Sanity checks computed from the structural parameters:
+#   AUC0-inf (typical) = Dose / CL
+#   Terminal half-life from the 2-compartment eigenvalue (typical patient)
+typical_CL <- 114
+typical_Vc <- 412
+typical_Q  <- 254
+typical_Vp <- 1120
+k10 <- typical_CL / typical_Vc
+k12 <- typical_Q  / typical_Vc
+k21 <- typical_Q  / typical_Vp
+S <- k10 + k12 + k21
+P <- k10 * k21
+beta <- (S - sqrt(S^2 - 4 * P)) / 2
+
+structural_expected <- tibble::tibble(
+  quantity = c(
+    "AUC0-inf typical (mg*h/L) = Dose / CL",
+    "Terminal half-life typical (h) = ln(2) / beta"
+  ),
+  value = c(
+    dose_mg / typical_CL,
+    log(2) / beta
+  )
+)
+knitr::kable(structural_expected, digits = 3,
+             caption = "Structural reference values for the typical patient.")
+```
+
+The simulated cohort mean and SD at 1 h align closely with the paper's
+403.8 +/- 349.2 nM. The terminal half-life of ~11.7 h is consistent with
+the DNR literature for adult AML. Cohort medians of Cmax and AUC0-inf are
+slightly above the typical-value reference because the WBC-on-Vc effect is
+fractional-additive and the cohort's WBC distribution is right-skewed: a
+few patients with very high WBC (170, 219 x 10^9^/L) pull Vc upward and
+flatten their concentration profiles, which lowers their Cmax but does not
+change their AUC0-inf (since CL is independent of WBC).
+
+# Assumptions and deviations
+
+- **BSA fixed at 1.8 m^2.** The paper reports dosing as 60 mg/m^2 but does
+  not publish individual BSA values. The vignette uses 108 mg per patient
+  (60 mg/m^2 x 1.8 m^2) as a typical-adult dose. The three patients who
+  received reduced doses (30, 45, 54 mg/m^2) are not modelled separately;
+  the reduction was not retained as a structural covariate in the
+  published analysis.
+- **WBC unit translation.** Bogason 2011 reports WBC as 10^6 cells/mL of
+  blood. The canonical `WBC` unit in `inst/references/covariate-columns.md`
+  is 10^9 cells/L. The two are numerically identical (1 x 10^6 cells/mL =
+  1 x 10^9 cells/L) so no rescaling of the published 0.0138 coefficient is
+  required.
+- **Reference WBC value.** The Table 2 footnote writes the covariate
+  equation against "medianWBC" but the Patients section text uses "mean
+  baseline WBC count (39 million ml -1)". The cohort happens to have mean
+  and median both near 39 x 10^9^/L; the published equation uses 39 as
+  the reference, which is what the model file encodes.
+- **Cytarabine co-administration not modelled.** All patients received
+  cytarabine 200 mg/m^2 over 2 h immediately before each DNR infusion. The
+  paper does not report a cytarabine-DNR drug interaction effect on DNR
+  PK; no co-medication covariate is included.
+- **Daunorubicinol (DOL) metabolite not modelled.** The paper measured the
+  active metabolite DOL but did not include it in the final structural PK
+  model (the development was reduced to DNR plasma concentrations only).
+  This vignette therefore models DNR only.
+- **IIV correlation parameterisation.** Table 2 reports Correlation_CL-Vc
+  as 65% (paragraph) and 70% (basic model column); the final model column
+  reads 65%. The model file uses 0.65 as the correlation between
+  log-normal random effects on CL and Vc.
+- **Race / ethnicity.** Not reported in Bogason 2011; not simulated.
+- **No errata.** A PubMed and Wiley Online Library search for corrections
+  to PMID 21395644 / doi:10.1111/j.1365-2125.2010.03894.x returned no
+  errata as of 2026-06-13.
+- **MW(DNR) = 563.99 g/mol.** Used for the mg/L <-> nM conversion in the
+  Figure 1 and PKNCA comparison panels. Bogason 2011 reports plasma DNR in
+  nM throughout the Results.
+
+# Reference
+
+* `r rxode2::rxode(readModelDb("Bogason_2011_daunorubicin"))$reference`

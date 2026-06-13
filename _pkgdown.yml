@@ -332,6 +332,8 @@ navbar:
         href: articles/Takama_2007_darbepoetin.html
       - text: "Datopotamab (Hong 2025)"
         href: articles/Hong_2025_datopotamab.html
+      - text: "Daunorubicin (Bogason 2011)"
+        href: articles/Bogason_2011_daunorubicin.html
       - text: "Daunorubicin (Varatharajan 2016)"
         href: articles/Varatharajan_2016_daunorubicin.html
       - text: "Daunorubicin liposomal (Hempel 2003)"
@@ -1653,7 +1655,7 @@ articles:
   - articles/Bjornsson_2011_naproxcinod
   - articles/Blair_2004_raltitrexed
   - articles/Boer_2015_cisplatin
-  - articles/Boer-Perez_2026_piperacillin
+  - articles/Bogason_2011_daunorubicin
   - articles/Bonate_2004_apomine
   - articles/Bouazza_2010_lamivudine
   - articles/Bouazza_2011_lamivudine
