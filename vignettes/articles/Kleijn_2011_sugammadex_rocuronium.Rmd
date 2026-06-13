@@ -1,0 +1,498 @@
+---
+title: "Sugammadex-mediated reversal of rocuronium NMB (Kleijn 2011)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Sugammadex-mediated reversal of rocuronium NMB (Kleijn 2011)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Kleijn_2011_sugammadex_rocuronium"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Kleijn_2011_sugammadex_rocuronium"))$description`
+* Article: <https://doi.org/10.1111/j.1365-2125.2011.04000.x>
+
+# Population
+
+The Kleijn 2011 cohort pooled 446 subjects across eight clinical trials of
+sugammadex-mediated reversal of rocuronium-induced neuromuscular blockade
+(NMB): healthy male volunteers, adult patients undergoing general anaesthesia,
+a Japanese vs Caucasian sub-cohort, renally impaired adults, elderly patients,
+and a paediatric cohort spanning infants through adolescents (Table 1 of the
+paper). Age ranged from 1 to 91 years (median 43), body weight from 9.60 to
+139 kg (median 74.5), and creatinine clearance from 4.3 to 239 mL/min (median
+119). 53 of 446 subjects were Asian (study 19.4.208 Part A; primarily
+Japanese). Rocuronium IV bolus doses spanned 0.6 to 1.2 mg/kg; sugammadex IV
+bolus doses spanned 0.1 to 16 mg/kg (with placebo arms in some studies).
+Sugammadex was given either at a fixed time (3 min, 5 min, 15 min) after
+rocuronium or at reappearance of T2 in the train-of-four. The same metadata
+are available programmatically via
+`readModelDb("Kleijn_2011_sugammadex_rocuronium")$population`.
+
+# Source trace
+
+Per-parameter origin is recorded as an in-file comment alongside every
+`ini()` entry in
+`inst/modeldb/specificDrugs/Kleijn_2011_sugammadex_rocuronium.R`. The table
+below consolidates these for review. All values come from Kleijn 2011 Table 4
+(the final integrated PK-PD model column).
+
+| Equation / parameter                              | Value                       | Source location                                        |
+|---------------------------------------------------|-----------------------------|--------------------------------------------------------|
+| Sugammadex CL (CRCL = 119 mL/min, BW = 74.5 kg)   | 0.093 L/min                 | Table 4 sugammadex, CL                                 |
+| Sugammadex V1 (BW = 70 kg, non-Asian)             | 4.42 L                      | Table 4 sugammadex, V1                                 |
+| Sugammadex Q2 (BW = 70 kg)                        | 0.206 L/min                 | Table 4 sugammadex, Q2                                 |
+| Sugammadex V2 (BW = 70 kg, CRCL = 119 mL/min)     | 6.35 L                      | Table 4 sugammadex, V2                                 |
+| Sugammadex CL renal-function exponent             | 1.29                        | Table 4 sugammadex, REN power exponent                 |
+| Sugammadex CL BW slope (per kg from 74.5)         | 0.00378                     | Table 4 sugammadex, CL_BW                              |
+| Sugammadex V1 BW slope (per kg from 74.5)         | -0.00354                    | Table 4 sugammadex, V1_BW                              |
+| Sugammadex V1 Asian effect                        | -0.16                       | Table 4 sugammadex, V1_RAC (Asian)                     |
+| Sugammadex V2 CRCL slope (per mL/min from 119)    | -0.00305                    | Table 4 sugammadex, V2_CR                              |
+| Rocuronium CL (AGE = 43 y, BW = 70 kg)            | 0.269 L/min                 | Table 4 rocuronium, CL                                 |
+| Rocuronium V1 (BW = 70 kg, CRCL = 119 mL/min)     | 4.73 L                      | Table 4 rocuronium, V1                                 |
+| Rocuronium Q2 (BW = 70 kg, non-Asian)             | 0.279 L/min                 | Table 4 rocuronium, Q2                                 |
+| Rocuronium V2 (BW = 70 kg, AGE = 43 y)            | 6.76 L                      | Table 4 rocuronium, V2                                 |
+| Rocuronium CL AGE slope (per year from 43)        | -0.00678                    | Table 4 rocuronium, CL_AGE                             |
+| Rocuronium V1 CRCL slope (per mL/min from 119)    | -0.00143                    | Table 4 rocuronium, V1_CR                              |
+| Rocuronium Q2 Asian effect                        | -0.212                      | Table 4 rocuronium, Q2_RAC (Asian)                     |
+| Rocuronium V2 AGE slope (per year from 43)        | 0.00613                     | Table 4 rocuronium, V2_AGE                             |
+| Complex equilibrium dissociation kd (FIXED)       | 0.0559 uM                   | Table 4 complex, kd; Bom 2002 in vitro                 |
+| Complex dissociation log_e(k2)                    | -3.38 (k2 = 0.034 1/min)    | Table 4 complex, log_e(k2)                             |
+| Rocuronium effect-cmt keo                         | 0.134 1/min                 | Table 4 rocuronium PD, keo                             |
+| Sevoflurane multiplicative effect on keo          | -0.567                      | Table 4 rocuronium PD, keo_SEV                         |
+| Rocuronium NMB EC50                               | 1.62 uM                     | Table 4 rocuronium PD, EC50                            |
+| Sevoflurane multiplicative effect on EC50         | -0.395                      | Table 4 rocuronium PD, EC50_SEV                        |
+| Hill exponent of NMB sigmoid                      | 7.52                        | Table 4 rocuronium PD, Hill                            |
+| Typical T4/T1 x 100 baseline E0                   | 104 (theta = 1.04, x 100)   | Table 4 rocuronium PD, E0                              |
+| Sugammadex-mediated reversal log_e(ks)            | -3.43 (ks = 0.033 1/(min*uM)) | Table 4 sugammadex PD, log_e(ks)                     |
+| IIV CL sugammadex                                 | 22.4% CV                    | Table 4 sugammadex, IIV CL                             |
+| IIV CL / V1 / V2 rocuronium                       | 32.4 / 23.8 / 32.2% CV      | Table 4 rocuronium, IIV CL / V1 / V2                   |
+| IIV keo / EC50 rocuronium (with r = 0.37)         | 41.7 / 24.9% CV             | Table 4 rocuronium PD, IIV keo / EC50; r = 0.37        |
+| IIV Hill / E0 rocuronium                          | 41.1 / 11.1% CV             | Table 4 rocuronium PD, IIV Hill / E0                   |
+| IIV ks sugammadex                                 | 114% CV                     | Table 4 sugammadex PD, IIV ks                          |
+| Proportional residual on sugammadex Cc            | 36.3%                       | Table 4 sugammadex, residual error (log-additive)      |
+| Proportional residual on rocuronium Cc            | 20.0%                       | Table 4 rocuronium, residual error (log-additive)      |
+| Additive residual on NMB (T4/T1 x 100)            | 3.24                        | Table 4 sugammadex PD, residual error (T4/T1 x 100)    |
+| Allometric exponents on V, CL, rate constants     | 1, 0.75, -0.25 (FIXED)      | Methods, "Size effects"                                |
+| Sugammadex CL NOT allometrically scaled           | n/a                         | Methods, "Renal function"                              |
+| Two-compartment PK for sug, roc, complex          | n/a                         | Methods, "Pharmacokinetic model development"           |
+| Complex PK = sugammadex PK                        | n/a                         | Methods, "Pharmacokinetic model development"           |
+| Sigmoid Emax NMB with Emax = E0                   | n/a                         | Methods, "PK-PD model development"                     |
+| Sugammadex reversal via ks on effect_roc          | n/a                         | Methods, "PK-PD model development"                     |
+| Cc and Cc_roc = free + complex (total)            | n/a                         | Methods, "Rocuronium and sugammadex plasma concs."     |
+
+# Virtual cohort
+
+Original observed data are not publicly available. The virtual subjects below
+mirror the five typical-subject definitions in Kleijn 2011 Table 3 (infant 1
+year, child 7 years, adolescent 15 years, adult 40 years, elderly 75 years)
+at normal renal function. Doses are converted from mg to umol using the
+molecular weights rocuronium MW = 529.78 g/mol and sugammadex sodium MW =
+2178.01 g/mol.
+
+```{r cohort-definition}
+MW_ROC <- 529.78     # g/mol
+MW_SUG <- 2178.01    # g/mol (octasodium salt; the form used in clinical product)
+
+# Per-paper typical subjects (Table 3). RACE_ASIAN = 0 throughout.
+typical <- tibble::tribble(
+  ~cohort,             ~WT,   ~AGE, ~CRCL, ~RACE_ASIAN, ~CONMED_SEVO,
+  "Infant 1 y",        10.3,  1,    25.7,  0,            0,
+  "Child 7 y",         23.0,  7,    51.2,  0,            0,
+  "Adolescent 15 y",   56.2,  15,   95.3,  0,            0,
+  "Adult 40 y",        75.0,  40,   100,   0,            0,
+  "Elderly 75 y",      75.0,  75,   80,    0,            0
+)
+knitr::kable(typical, caption = "Typical subjects from Kleijn 2011 Table 3 (normal renal function row).")
+```
+
+# Simulation
+
+```{r load-model}
+mod <- readModelDb("Kleijn_2011_sugammadex_rocuronium")
+mod_typical <- rxode2::zeroRe(mod)
+```
+
+We simulate three canonical reversal scenarios per typical subject:
+
+1. **Immediate reversal**: rocuronium 1.2 mg/kg at t = 0, sugammadex 16 mg/kg
+   at t = 3 min.
+2. **Deep blockade reversal**: rocuronium 0.6 mg/kg at t = 0, sugammadex 4
+   mg/kg at t = 15 min.
+3. **Moderate blockade reversal**: rocuronium 0.6 mg/kg at t = 0, sugammadex
+   2 mg/kg at the model-predicted T2 reappearance.
+
+Reversal time is the time from the sugammadex dose to recovery of NMB to 90
+(TOF90) or 70 (TOF70) on the T4/T1 x 100 scale.
+
+```{r simulate-scenarios}
+# Helper: build event table for one subject and one scenario. When
+# sug_mgkg == 0 (spontaneous-recovery scenario) the sugammadex dose row
+# is omitted entirely.
+make_events <- function(WT, AGE, CRCL, RACE_ASIAN, CONMED_SEVO,
+                        roc_mgkg, sug_mgkg, t_sug,
+                        t_end, dt = 0.1) {
+  amt_roc <- WT * roc_mgkg / MW_ROC * 1000   # umol
+  obs_times <- seq(0, t_end, by = dt)
+  if (sug_mgkg > 0) {
+    amt_sug <- WT * sug_mgkg / MW_SUG * 1000  # umol
+    dose_rows <- tibble::tibble(
+      id = 1L,
+      time = c(0, t_sug),
+      evid = c(1L, 1L),
+      amt  = c(amt_roc, amt_sug),
+      cmt  = c("central_roc", "central")
+    )
+  } else {
+    dose_rows <- tibble::tibble(
+      id = 1L, time = 0, evid = 1L,
+      amt = amt_roc, cmt = "central_roc"
+    )
+  }
+  obs_rows <- tibble::tibble(
+    id = 1L, time = obs_times, evid = 0L, amt = 0,
+    cmt = "NMB"
+  )
+  ev <- dplyr::bind_rows(dose_rows, obs_rows) |>
+    dplyr::arrange(id, time, evid)
+  ev$WT <- WT; ev$AGE <- AGE; ev$CRCL <- CRCL
+  ev$RACE_ASIAN <- RACE_ASIAN; ev$CONMED_SEVO <- CONMED_SEVO
+  ev
+}
+
+# Helper: compute reversal time from a sim trace.
+reversal_time <- function(sim_df, t_sug, target_nmb) {
+  post <- sim_df |> dplyr::filter(time >= t_sug)
+  hit <- which(post$NMB >= target_nmb)
+  if (length(hit) == 0) return(NA_real_)
+  post$time[hit[1]] - t_sug
+}
+
+# Find T2 reappearance: first time after the rocuronium-induced deep
+# block (NMB < 1) that NMB rises above 1 again. Using NMB = 1 on the
+# 0-100 scale as a proxy: the train-of-four T2 first becomes detectable
+# when the block lifts above zero. We require that NMB has BEEN below 1
+# (i.e., the deep block established) before counting the upward
+# crossing as "reappearance".
+t2_reappearance <- function(sim_df) {
+  # Skip the baseline (NMB ~ E0) by waiting for NMB to drop below 1
+  # first, then finding the next upward crossing of 1.
+  was_blocked <- sim_df$NMB < 1
+  if (!any(was_blocked)) return(NA_real_)
+  first_block <- which(was_blocked)[1]
+  recovery_idx <- which(sim_df$NMB >= 1 & seq_along(sim_df$NMB) > first_block)
+  if (length(recovery_idx) == 0) return(NA_real_)
+  sim_df$time[recovery_idx[1]]
+}
+```
+
+```{r run-scenarios, message=FALSE}
+results <- list()
+sim_traces <- list()
+for (i in seq_len(nrow(typical))) {
+  s <- typical[i, ]
+
+  # Scenario 1: Immediate reversal (1.2 mg/kg roc, 16 mg/kg sug at 3 min)
+  ev1 <- make_events(s$WT, s$AGE, s$CRCL, s$RACE_ASIAN, s$CONMED_SEVO,
+                     roc_mgkg = 1.2, sug_mgkg = 16, t_sug = 3, t_end = 60)
+  sim1 <- as.data.frame(rxode2::rxSolve(mod_typical, ev1))
+  t90_1 <- reversal_time(sim1, 3, 90)
+
+  # Scenario 2: Deep blockade reversal (0.6 mg/kg roc, 4 mg/kg sug at 15 min)
+  ev2 <- make_events(s$WT, s$AGE, s$CRCL, s$RACE_ASIAN, s$CONMED_SEVO,
+                     roc_mgkg = 0.6, sug_mgkg = 4, t_sug = 15, t_end = 80)
+  sim2 <- as.data.frame(rxode2::rxSolve(mod_typical, ev2))
+  t90_2 <- reversal_time(sim2, 15, 90)
+
+  # Scenario 3: Moderate blockade reversal (0.6 mg/kg roc, sug 2 mg/kg at
+  # T2 reappearance). First find T2 reappearance under spontaneous
+  # recovery, then re-simulate with sug at that time.
+  ev3_spontaneous <- make_events(s$WT, s$AGE, s$CRCL, s$RACE_ASIAN, s$CONMED_SEVO,
+                                 roc_mgkg = 0.6, sug_mgkg = 0,
+                                 t_sug = 0, t_end = 200)
+  sim3_spont <- as.data.frame(rxode2::rxSolve(mod_typical, ev3_spontaneous))
+  t_T2 <- t2_reappearance(sim3_spont)
+  ev3 <- make_events(s$WT, s$AGE, s$CRCL, s$RACE_ASIAN, s$CONMED_SEVO,
+                     roc_mgkg = 0.6, sug_mgkg = 2, t_sug = t_T2,
+                     t_end = t_T2 + 30)
+  sim3 <- as.data.frame(rxode2::rxSolve(mod_typical, ev3))
+  t90_3 <- reversal_time(sim3, t_T2, 90)
+
+  results[[i]] <- data.frame(
+    cohort = s$cohort,
+    `Immediate (16 mg/kg)` = t90_1,
+    `Deep (4 mg/kg)`       = t90_2,
+    `Moderate (2 mg/kg, at T2)` = t90_3,
+    check.names = FALSE
+  )
+
+  sim_traces[[paste0(s$cohort, "_immediate")]]  <- dplyr::mutate(sim1, scenario = "Immediate",      cohort = s$cohort, t_sug = 3)
+  sim_traces[[paste0(s$cohort, "_deep")]]       <- dplyr::mutate(sim2, scenario = "Deep blockade",  cohort = s$cohort, t_sug = 15)
+  sim_traces[[paste0(s$cohort, "_moderate")]]   <- dplyr::mutate(sim3, scenario = "Moderate blockade", cohort = s$cohort, t_sug = t_T2)
+}
+reversal_table <- dplyr::bind_rows(results) |>
+  dplyr::mutate(dplyr::across(-cohort, ~ round(.x, 2)))
+knitr::kable(reversal_table,
+             caption = "Simulated reversal times (min) to TOF90 for typical subjects (Kleijn 2011 Table 6, normal renal function, no sevoflurane).")
+```
+
+# Replicate published figures
+
+## Figure 5 style: rocuronium NMB recovery profiles (no sugammadex)
+
+The next chunk plots spontaneous T4/T1 recovery after rocuronium 0.6 mg/kg or
+1.2 mg/kg (no sugammadex) for the adult 40 y typical subject, with and without
+sevoflurane. This mirrors the upper panels of Figure 5 of the paper.
+
+```{r figure-5}
+fig5_scenarios <- tibble::tribble(
+  ~label,                                 ~roc_mgkg, ~CONMED_SEVO,
+  "0.6 mg/kg roc, no sevoflurane",        0.6,       0,
+  "1.2 mg/kg roc, no sevoflurane",        1.2,       0,
+  "0.6 mg/kg roc, sevoflurane",           0.6,       1
+)
+
+adult <- typical[typical$cohort == "Adult 40 y", ]
+fig5_data <- purrr::map_dfr(seq_len(nrow(fig5_scenarios)), function(k) {
+  r <- fig5_scenarios[k, ]
+  ev <- make_events(adult$WT, adult$AGE, adult$CRCL, adult$RACE_ASIAN, r$CONMED_SEVO,
+                    roc_mgkg = r$roc_mgkg, sug_mgkg = 0, t_sug = 0,
+                    t_end = 200, dt = 1)
+  sim <- as.data.frame(rxode2::rxSolve(mod_typical, ev))
+  dplyr::mutate(sim, scenario = r$label)
+})
+
+ggplot(fig5_data, aes(time, NMB, colour = scenario)) +
+  geom_line() +
+  geom_hline(yintercept = c(70, 90), linetype = "dashed", colour = "grey50") +
+  labs(x = "Time after rocuronium dose (min)",
+       y = "T4/T1 twitch ratio x 100",
+       title = "Figure 5 (style): spontaneous rocuronium NMB recovery",
+       caption = "Replicates upper panels of Figure 5 of Kleijn 2011 (T4/T1 vs. time after rocuronium).")
+```
+
+## Table 6 style: reversal-time cross-tabulation
+
+The reversal_table above reproduces the structure of Kleijn 2011 Table 6
+(typical reversal times by age cohort and scenario, normal renal function,
+non-Asian, no sevoflurane). The paper's published medians for the adult
+40-year reference cohort are:
+
+* Immediate reversal (16 mg/kg sug at 3 min after 1.2 mg/kg roc): 0.8 min
+* Deep blockade reversal (4 mg/kg sug at 15 min after 0.6 mg/kg roc): 1.5 min
+* Moderate blockade reversal (2 mg/kg sug at T2 reappearance): 1.4 min
+
+Simulated typical-subject reversal times should be close to these (within
+the simulated time-step resolution and the t2_reappearance proxy used for the
+moderate scenario). Larger discrepancies in the simulated TOF90 for the
+moderate scenario reflect the difference between the paper's T2-reappearance
+trigger (the train-of-four T2 first becoming visible on accelerography) and
+our NMB-rises-above-1 proxy; both are first-recovery markers but their exact
+timing differs.
+
+## Sugammadex plasma profile (Figure 2 style)
+
+```{r figure-2}
+adult <- typical[typical$cohort == "Adult 40 y", ]
+sug_doses_mgkg <- c(0.5, 1, 2, 4, 8, 16)
+fig2 <- purrr::map_dfr(sug_doses_mgkg, function(d) {
+  ev <- make_events(adult$WT, adult$AGE, adult$CRCL, adult$RACE_ASIAN, adult$CONMED_SEVO,
+                    roc_mgkg = 0.6, sug_mgkg = d, t_sug = 15, t_end = 600,
+                    dt = 1)
+  # Add observations for Cc as well (re-route to Cc cmt)
+  obs_cc <- tibble::tibble(id = 1L,
+                          time = seq(15, 600, by = 1),
+                          evid = 0L, amt = 0, cmt = "Cc",
+                          WT = adult$WT, AGE = adult$AGE, CRCL = adult$CRCL,
+                          RACE_ASIAN = adult$RACE_ASIAN, CONMED_SEVO = adult$CONMED_SEVO)
+  ev2 <- dplyr::bind_rows(ev, obs_cc) |> dplyr::arrange(id, time, evid)
+  sim <- as.data.frame(rxode2::rxSolve(mod_typical, ev2))
+  sim |>
+    dplyr::filter(time >= 15) |>
+    dplyr::mutate(dose_mgkg = d,
+                  t_post_sug = time - 15,
+                  # Convert uM to ug/mL for plotting (uM * MW / 1000)
+                  Cc_ugmL = Cc * MW_SUG / 1000)
+})
+
+# Plot sugammadex plasma concentration (total = free + complex) by dose.
+ggplot(fig2 |> dplyr::filter(t_post_sug > 0), aes(t_post_sug, Cc_ugmL, colour = factor(dose_mgkg))) +
+  geom_line() +
+  scale_y_log10() +
+  labs(x = "Time after sugammadex dose (min)",
+       y = "Total sugammadex (ug/mL)",
+       colour = "Dose (mg/kg)",
+       title = "Figure 2 (style): typical adult sugammadex plasma profile",
+       caption = "Replicates the typical-value panel of Figure 2 of Kleijn 2011.")
+```
+
+# PKNCA validation
+
+We compute non-compartmental Cmax, Tmax, AUC0-inf, and t1/2 for a typical
+adult given a sugammadex 4 mg/kg IV bolus (no rocuronium) and a separate
+rocuronium 0.6 mg/kg IV bolus (no sugammadex). Without the complex-formation
+pathway, the model reduces to two independent 2-compartment IV-bolus PK
+subsystems, and the simulated NCA parameters should match the analytical
+values derived from the structural parameters.
+
+```{r pknca-sug}
+adult <- typical[typical$cohort == "Adult 40 y", ]
+amt_sug <- adult$WT * 4 / MW_SUG * 1000  # umol from 4 mg/kg
+
+# Sugammadex-only event table with explicit time-zero Cc record so PKNCA
+# does not warn about an AUC range starting before the first measurement.
+times_sug <- c(0, seq(0.1, 1, by = 0.1), seq(2, 30, by = 1),
+               seq(40, 240, by = 10), seq(300, 1440, by = 60))
+ev_sug <- dplyr::bind_rows(
+  tibble::tibble(id = 1L, time = 0, evid = 1L, amt = amt_sug, cmt = "central"),
+  tibble::tibble(id = 1L, time = times_sug, evid = 0L, amt = 0, cmt = "Cc")
+)
+ev_sug$WT <- adult$WT; ev_sug$AGE <- adult$AGE
+ev_sug$CRCL <- adult$CRCL; ev_sug$RACE_ASIAN <- adult$RACE_ASIAN
+ev_sug$CONMED_SEVO <- adult$CONMED_SEVO
+sim_sug <- as.data.frame(rxode2::rxSolve(mod_typical, ev_sug))
+
+conc_sug <- sim_sug |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::transmute(id = 1L, time = time,
+                   Cc_ugmL = Cc * MW_SUG / 1000)
+dose_df_sug <- tibble::tibble(id = 1L, time = 0,
+                              amt = adult$WT * 4)  # mg
+pknca_sug <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(conc_sug, Cc_ugmL ~ time | id),
+  PKNCA::PKNCAdose(dose_df_sug, amt ~ time | id),
+  intervals = data.frame(start = 0, end = Inf,
+                         cmax = TRUE, tmax = TRUE,
+                         aucinf.obs = TRUE, half.life = TRUE)
+))
+nca_sug_df <- as.data.frame(pknca_sug$result) |>
+  dplyr::select(PPTESTCD, PPORRES) |>
+  dplyr::mutate(PPORRES = signif(PPORRES, 4))
+knitr::kable(nca_sug_df,
+             caption = "Simulated sugammadex NCA for adult 40 y, 4 mg/kg IV bolus.")
+```
+
+```{r pknca-roc}
+amt_roc <- adult$WT * 0.6 / MW_ROC * 1000  # umol from 0.6 mg/kg
+
+times_roc <- c(0, seq(0.1, 1, by = 0.1), seq(2, 30, by = 1),
+               seq(40, 240, by = 10))
+ev_roc <- dplyr::bind_rows(
+  tibble::tibble(id = 1L, time = 0, evid = 1L, amt = amt_roc, cmt = "central_roc"),
+  tibble::tibble(id = 1L, time = times_roc, evid = 0L, amt = 0, cmt = "Cc_roc")
+)
+ev_roc$WT <- adult$WT; ev_roc$AGE <- adult$AGE
+ev_roc$CRCL <- adult$CRCL; ev_roc$RACE_ASIAN <- adult$RACE_ASIAN
+ev_roc$CONMED_SEVO <- adult$CONMED_SEVO
+sim_roc <- as.data.frame(rxode2::rxSolve(mod_typical, ev_roc))
+
+conc_roc <- sim_roc |>
+  dplyr::filter(!is.na(Cc_roc)) |>
+  dplyr::transmute(id = 1L, time = time,
+                   Cc_roc_ngmL = Cc_roc * MW_ROC)  # uM -> ng/mL
+dose_df_roc <- tibble::tibble(id = 1L, time = 0,
+                              amt = adult$WT * 0.6)  # mg
+pknca_roc <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(conc_roc, Cc_roc_ngmL ~ time | id),
+  PKNCA::PKNCAdose(dose_df_roc, amt ~ time | id),
+  intervals = data.frame(start = 0, end = Inf,
+                         cmax = TRUE, tmax = TRUE,
+                         aucinf.obs = TRUE, half.life = TRUE)
+))
+nca_roc_df <- as.data.frame(pknca_roc$result) |>
+  dplyr::select(PPTESTCD, PPORRES) |>
+  dplyr::mutate(PPORRES = signif(PPORRES, 4))
+knitr::kable(nca_roc_df,
+             caption = "Simulated rocuronium NCA for adult 40 y, 0.6 mg/kg IV bolus.")
+```
+
+## Comparison against published values
+
+The paper does not tabulate per-subject NCA, but several derived quantities
+are reported in the Results / Discussion:
+
+* **Sugammadex elimination half-life** in plasma is reported as ~ 2 h (120
+  min) in healthy subjects (Discussion); rises to ~ 20 h (1200 min) in
+  severe renal impairment.
+* **Rocuronium effect-compartment half-life** at baseline (no sugammadex) is
+  log(2) / keo = log(2) / 0.134 = 5.17 min (Methods, "PK-PD analysis").
+* **Rocuronium effect-compartment half-life with 4 mg/kg sugammadex** is
+  reported as 0.71 min immediately after the dose (Methods: "Immediately
+  after administration of sugammadex 2 or 4 mg/kg, the rocuronium
+  elimination half-life from the effect compartment was calculated to be
+  1.43 and 0.71 min, respectively").
+* **Complex association / dissociation half-lives**: 1.1 min and 20.4 min
+  respectively (Results).
+
+The simulated sugammadex t1/2 (from PKNCA above) should be on the order of
+60-120 min for the normal-renal-function adult. The simulated rocuronium NCA
+t1/2 should be on the order of 60-90 min (terminal elimination phase, in the
+absence of sugammadex).
+
+# Assumptions and deviations
+
+- **All units are molar inside the model.** Concentrations are in uM
+  (umol/L); doses must be supplied in umol. The vignette converts mg-doses
+  to umol using rocuronium MW = 529.78 g/mol and sugammadex MW = 2178.01
+  g/mol (the octasodium salt form used in the marketed product). Users who
+  prefer to dose in mg should add an `f(central) <- 1 / MW_SUG * 1000` and
+  similar bioavailability factors at the model layer, or pre-convert at the
+  event-table layer (as we do here).
+- **Sugammadex CL is NOT allometrically scaled** by body weight (in contrast
+  to all other PK parameters and rate constants). Kleijn 2011 Methods,
+  "Renal function": "As size effects were already included in creatinine
+  clearance, clearance of sugammadex was not allometrically scaled".
+- **Allometric exponents are FIXED** at 0.75 / 1 / -0.25 (Methods, "Size
+  effects"). Not estimated.
+- **kd is FIXED** at 0.0559 uM from in-vitro (Methods, citing Bom 2002); only
+  the dissociation rate k2 is estimated. The association rate is derived as
+  k1 = k2 / kd = 0.61 1/(min*uM).
+- **The complex has its own PK (= sugammadex PK)** -- not separately
+  estimated. The dosing into `central_complex` is zero; the compartment is
+  populated only by the complexation flux.
+- **Total drug = free + complex** in the assay (Methods, "Rocuronium and
+  sugammadex plasma concentrations"); `Cc` and `Cc_roc` therefore return
+  total drug.
+- **Sugammadex-mediated reversal acts on the effect compartment**, not on the
+  central rocuronium compartment (Methods, "PK-PD model development"). The
+  mass balance is therefore not strictly conservative for free rocuronium
+  (some "rocuronium" leaves the effect compartment without returning to
+  central), but this is a faithful reproduction of the paper's mechanistic
+  abstraction: ks represents sugammadex consumption of rocuronium at the
+  neuromuscular-junction site of action.
+- **NMB readout is on the T4/T1 x 100 scale.** Baseline `E0` is ~ 104; full
+  block reaches ~ 0. Reversal-time endpoints TOF90 (recovery to 90) and TOF70
+  (recovery to 70) are read off the simulated trace as the first time after
+  the sugammadex dose at which NMB rises above the target.
+- **Two PD residual errors are reported** in the paper (2.70 from the
+  rocuronium-PD fit on placebo patients; 3.24 from the sugammadex-PD fit on
+  combined data). The model uses 3.24 (the larger combined-data residual) as
+  `addSd_NMB` because the primary use of this library is forward simulation
+  of reversal scenarios under both drugs; the rocuronium-only residual 2.70
+  is documented in the source-trace comment.
+- **Sevoflurane is encoded as a binary indicator** `CONMED_SEVO`, in line
+  with the paper's per-subject treatment of "sevoflurane anaesthesia used".
+  An end-tidal-concentration-driven continuous model (Shin 2014 style, via
+  the canonical `ETSEVO` covariate) would require time-resolved sevoflurane
+  concentrations that Kleijn 2011 did not collect.
+- **Race is a binary Asian-vs-non-Asian indicator** (`RACE_ASIAN`). The
+  paper's Asian sub-cohort came primarily from study 19.4.208 Part A
+  (Japanese subjects); the same fixed effect would apply to any subject
+  marked RACE_ASIAN = 1.
+- **Reversal-time simulations use a typical-subject proxy for T2
+  reappearance** (the first time after rocuronium that NMB rises above 1 on
+  the 0-100 scale). The paper's external-validation simulations used a
+  matched dosing schedule taken from the trial; we use the model-predicted
+  T2 reappearance because the underlying trial-by-trial dosing data are not
+  publicly available.

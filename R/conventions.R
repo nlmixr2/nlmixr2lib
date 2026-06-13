@@ -358,7 +358,23 @@
     # inactive ethyl-ester prodrug. Used as a metabolite suffix in
     # parent-prodrug oseltamivir + active-metabolite OC popPK models
     # (Kamal 2013 doi:10.1128/AAC.02438-12).
-    "oc"
+    "oc",
+    # Rocuronium, the aminosteroid neuromuscular blocking agent
+    # paired with sugammadex (the reversal agent / parent) in the
+    # Kleijn 2011 sugammadex-mediated reversal PK-PD model. Neither
+    # drug is a metabolite of the other; the suffix marks rocuronium
+    # as the non-parent species under the same multi-drug naming
+    # convention used by deKock 2017 sulfadoxine + pyrimethamine
+    # (where pyrimethamine carries `pyra`) and Wang 2018 daclatasvir
+    # + asunaprevir (where asunaprevir carries `asv`). Sugammadex is
+    # the unsuffixed parent (mentioned first in the paper title,
+    # the focal investigational drug) and rocuronium gets `_roc`
+    # everywhere (central_roc, peripheral1_roc, effect_roc, lcl_roc,
+    # lvc_roc, lq_roc, lvp_roc, Cc_roc, propSd_roc, etc.). The model
+    # also uses the existing `complex` suffix for the sugammadex-
+    # rocuronium inclusion complex; Kleijn 2011
+    # doi:10.1111/j.1365-2125.2011.04000.x.
+    "roc"
   ),
   # Suffixes allowed for multi-component CL parameters. `_ss` denotes
   # the steady-state arm; `_time` the time-varying decay arm; `_renal`
