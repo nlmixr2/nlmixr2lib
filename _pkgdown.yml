@@ -32,6 +32,8 @@ navbar:
         href: articles/Jullien_2005_abacavir.html
       - text: "Abacavir (Tikiso 2021)"
         href: articles/Tikiso_2021_abacavir.html
+      - text: "Abacavir (Zhao 2012)"
+        href: articles/Zhao_2012_abacavir.html
       - text: "Abatacept (Gandhi 2021)"
         href: articles/Gandhi_2021_abatacept.html
       - text: "Abatacept (Li 2019)"
@@ -2353,7 +2355,7 @@ articles:
   - articles/Zhang_2019_nivolumab
   - articles/Zhang_2021_dupilumab
   - articles/Zhang_2022_ormutivimab
-  - articles/Zhao_2010_mycophenolic_acid
+  - articles/Zhao_2012_abacavir
   - articles/Zhao_2014_vancomycin
   - articles/Zhao_2018_omeprazole
   - articles/Zheng_2014_azithromycin
