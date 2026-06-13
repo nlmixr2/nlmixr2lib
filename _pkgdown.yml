@@ -1044,6 +1044,8 @@ navbar:
         href: articles/DelFrari_2018_propranolol.html
       - text: "Propranolol (Takechi 2018)"
         href: articles/Takechi_2018_propranolol.html
+      - text: "PropyleneGlycol (DeCock 2012)"
+        href: articles/DeCock_2012_propyleneGlycol.html
       - text: "Pyrazinamide (Alsultan 2017)"
         href: articles/Alsultan_2017_pyrazinamide.html
       - text: "Pyrazinamide (Chirehwa 2017)"
@@ -1755,7 +1757,7 @@ articles:
   - articles/Danielak_2017_clopidogrel
   - articles/Danielak_2017_treosulfan
   - articles/Dao_2020_sultiame
-  - articles/deAlwis_1998_ondansetron
+  - articles/DeCock_2012_propyleneGlycol
   - articles/Debord_2001_cyclosporin
   - articles/deHoogd_2017_morphine
   - articles/deJonge_2005_paclitaxel
