@@ -26,6 +26,8 @@ navbar:
       text: Specific drug models
       menu:
       # AUTOGEN:specific_drugs:BEGIN
+      - text: "ABT 102 (Othman 2013)"
+        href: articles/Othman_2013_ABT_102.html
       - text: "Abacavir (Archary 2019)"
         href: articles/Archary_2019_abacavir.html
       - text: "Abacavir (Jullien 2005)"
@@ -2096,6 +2098,7 @@ articles:
   - articles/Oniki_2018_BMI_NAFLD
   - articles/Oosten_2016_fentanyl
   - articles/Othman_2007_carvedilol
+  - articles/Othman_2013_ABT_102
   - articles/Othman_2014_daclizumab
   - articles/Oualha_2014_epinephrine
   - articles/Oualha_2018_enoxaparin
