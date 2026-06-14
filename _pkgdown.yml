@@ -882,8 +882,8 @@ navbar:
         href: articles/Bienczak_2016_nevirapine.html
       - text: "Nevirapine (Schipani 2011)"
         href: articles/Schipani_2011_nevirapine.html
-      - text: "Nicorandil (Iida 2008)"
-        href: articles/Iida_2008_nicorandil.html
+      - text: "Nevirapine (Svensson 2012)"
+        href: articles/Svensson_2012_nevirapine.html
       - text: "NicotinicAcid rat (Ahlstrom 2010)"
         href: articles/Ahlstrom_2010_nicotinicAcid_rat.html
       - text: "Nimotuzumab (Castro-Surez 2020)"
@@ -2232,6 +2232,7 @@ articles:
   - articles/Suda_2008_theophylline
   - articles/Suleiman_2019_risankizumab
   - articles/Suri_2018_brentuximab
+  - articles/Svensson_2012_nevirapine
   - articles/Svensson_2014_bedaquiline
   - articles/Svensson_2016_bedaquiline
   - articles/Svensson_2016_rifampicin
