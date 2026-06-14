@@ -722,8 +722,16 @@ navbar:
         href: articles/Thomson_1989_lisinopril.html
       - text: "Lopinavir (Archary 2018)"
         href: articles/Archary_2018_lopinavir.html
-      - text: "Lopinavir (Crommentuyn 2005)"
-        href: articles/Crommentuyn_2005_lopinavir.html
+      - text: "Lopinavir (Jullien 2006)"
+        href: articles/Jullien_2006_lopinavir.html
+      - text: "Lopinavir placental (Fauchet 2015)"
+        href: articles/Fauchet_2015_lopinavir.html
+      - text: "Lopinavir ritonavir (Zhang 2012)"
+        href: articles/Zhang_2012_lopinavir_ritonavir.html
+      - text: "Lopinavir unbound (Fauchet 2015)"
+        href: articles/Fauchet_2015_lopinavir.html
+      - text: "Lumefantrine (Hietala 2010)"
+        href: articles/Hietala_2010_artemether_lumefantrine_malaria.html
       - text: "Lumefantrine (Kloprogge 2013)"
         href: articles/Kloprogge_2013_lumefantrine.html
       - text: "Lumefantrine (Kloprogge 2018)"
@@ -2364,7 +2372,7 @@ articles:
   - articles/Zeng_2009_acyclovir
   - articles/Zeng_2010_mycophenolic_acid
   - articles/Zhang_2011_nutlin3a
-  - articles/Zhang_2012_bivalirudin
+  - articles/Zhang_2012_lopinavir_ritonavir
   - articles/Zhang_2016_rilotumumab
   - articles/Zhang_2018_flurbiprofen
   - articles/Zhang_2019_nivolumab

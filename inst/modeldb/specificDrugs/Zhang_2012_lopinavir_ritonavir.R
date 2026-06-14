@@ -1,378 +1,341 @@
 Zhang_2012_lopinavir_ritonavir <- function() {
   description <- paste(
-    "Integrated one-compartment popPK model for oral lopinavir (LPV) and",
-    "ritonavir (RTV) in 74 HIV-infected children (6 months to 4.5 years)",
-    "treated with LPV/r oral solution with or without concomitant",
-    "rifampicin-based antitubercular treatment (Zhang 2012). LPV uses a",
-    "one-compartment model with first-order absorption; RTV uses a one-",
-    "compartment model with a Savic-style 10-transit-compartment",
-    "absorption chain followed by a separate first-order absorption step",
-    "from the last transit to central. Apparent CL/F and V/F are",
-    "allometrically scaled to the cohort median 10 kg with fixed exponents",
-    "0.75 / 1. The dynamic LPV-RTV interaction is encoded as direct",
-    "sigmoid-Emax inhibition of LPV apparent clearance by RTV plasma",
-    "concentration (Emax = 0.9 fixed, EC50 = 0.0519 mg/L). Lopinavir",
-    "bioavailability is modulated by concomitant rifampicin-based",
-    "antitubercular treatment (-83.2% at the no-extra-ritonavir reference)",
-    "and by the concomitant ritonavir dose in mg/kg (+2.1% per mg/kg",
-    "above the 3 mg/kg reference). Ritonavir apparent clearance is",
-    "+50% in subjects on rifampicin-based antitubercular treatment.",
-    "Both drugs share random effects modelled as log-normal between-",
-    "subject variability with selected inter-occasion variabilities",
-    "folded in as BSV-equivalent (see vignette Assumptions and",
-    "deviations). Residual error is proportional on the linear scale",
-    "(implemented via NONMEM exponential error on log-transformed data)."
+    "Simultaneous integrated population pharmacokinetic model of oral",
+    "lopinavir (LPV, parent) and ritonavir (RTV, sibling-drug suffix _rtv)",
+    "in 21 HIV-infected South African adults with and without concomitant",
+    "antitubercular rifampicin (Zhang 2012). Structure: LPV one-compartment",
+    "with first-order absorption (ka 0.991 1/h) and LPV CL/F dynamically",
+    "inhibited by RTV plasma concentration via a sigmoid Imax (Imax = 0.953,",
+    "IC50 = 0.0351 mg/L); RTV two-compartment with a Savic transit-",
+    "compartment absorption chain (NN = 2.03, MTT = 1.44 h) feeding RTV",
+    "depot at rate ktr = (NN+1)/MTT and absorbed to RTV central at ka_rtv",
+    "= 3.28 1/h. Allometric scaling fixed at the Holford / Anderson",
+    "literature values: fat-free mass (Janmahasatian) drives CL/F (exponent",
+    "0.75) and total body weight drives Vc/F and Vp/F (exponent 1.0).",
+    "Rifampicin (CONMED_RIF) increases LPV CL/F by 71.0% and RTV CL/F by",
+    "36.0%, reduces LPV F by 20.0% and RTV F by 45.0% (at the 100 mg",
+    "reference RTV dose), and the RTV F when on rifampicin scales upward",
+    "with RTV dose at 8.1% per 10 mg above the 100 mg reference (saturation",
+    "of first-pass metabolism / P-gp self-inhibition; identifiable only",
+    "within the RIF-coadministered arm of the source study). Diurnal",
+    "variation is encoded via the simulation convention t = clock-hours-",
+    "from-midnight: doses given during the overnight window (clock 20:00 to",
+    "08:00) carry +42.0% (LPV) and +45.0% (RTV) relative bioavailability",
+    "vs morning doses, and oral CL/F of both drugs is reduced by 32.7%",
+    "overnight."
   )
   reference <- paste(
-    "Zhang C, McIlleron H, Ren Y, van der Walt JS, Karlsson MO,",
-    "Simonsson USH, Denti P.",
-    "Population pharmacokinetics of lopinavir and ritonavir in combination",
-    "with rifampicin-based antitubercular treatment in HIV-infected children.",
-    "Antivir Ther. 2012;17(1):25-33.",
-    "doi:10.3851/IMP1915.",
-    sep = " "
+    "Zhang C, Denti P, Decloedt E, Maartens G, Karlsson MO, Simonsson USH,",
+    "McIlleron H. Model-based approach to dose optimization of",
+    "lopinavir/ritonavir when co-administered with rifampicin.",
+    "Br J Clin Pharmacol. 2012;73(5):758-767.",
+    "doi:10.1111/j.1365-2125.2011.04154.x."
   )
   vignette <- "Zhang_2012_lopinavir_ritonavir"
   units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
-      reference_category = NULL,
-      notes              = paste(
-        "Used for allometric scaling at the cohort median 10 kg",
-        "(Zhang 2012 Methods Equations 1 and 2 / Results 'Patients and",
-        "data description' / Table 1: median body weight 10.2 kg, range",
-        "5-17 kg). Exponent 0.75 on apparent CL/F (both LPV and RTV),",
-        "exponent 1.0 on apparent V/F (both LPV and RTV). The Methods",
-        "section 'Population pharmacokinetic analysis' paragraph 4",
-        "states 'In order to account for size differences, allometric",
-        "scaling based on the median body weight was tested and applied",
-        "to apparent clearance (CL/F) and volume of distribution (V/F)'",
-        "with the 10 kg reference appearing as the denominator of the",
-        "weight ratio in Equations 1 and 2."
-      ),
-      source_name        = "WT"
+      description       = "Total body weight (baseline or per-record).",
+      units             = "kg",
+      type              = "continuous",
+      notes             = "Allometric scaling of LPV / RTV central and peripheral volumes (V/F) referenced to 70 kg with exponent fixed at 1.0 per Holford / Anderson convention (Zhang 2012 Methods: 'allometric scaling was applied to ... volume of distribution (V/F) ... as described by Holford et al.'). The paper does not explicitly state the reference weight; 70 kg is the Holford-school convention and is documented in the vignette Assumptions and deviations section.",
+      source_name       = "WT"
+    ),
+    FFM = list(
+      description       = "Fat-free mass derived from total body weight, height, and sex via the Janmahasatian formula.",
+      units             = "kg",
+      type              = "continuous",
+      notes             = "Allometric scaling of LPV / RTV apparent clearance (CL/F) referenced to 50 kg with exponent fixed at 0.75 per Holford / Anderson convention (Zhang 2012 Methods: 'fat free mass ... as described by Holford et al.'; Janmahasatian 2005 formula referenced for FFM derivation). The paper does not explicitly state the reference FFM; 50 kg is the Holford-school convention (approximate FFM of a 70 kg adult male) and is documented in the vignette Assumptions and deviations section. Users supply FFM directly; the Janmahasatian formula is FFM_M = 9.27e3 * WT / (6.68e3 + 216 * BMI) for males and FFM_F = 9.27e3 * WT / (8.78e3 + 244 * BMI) for females, with BMI = WT / (HT/100)^2.",
+      source_name       = "FFM"
     ),
     CONMED_RIF = list(
-      description        = "Concomitant rifampicin-based antitubercular treatment indicator",
-      units              = "(binary)",
-      type               = "binary",
-      reference_category = "0 (no rifampicin-based antitubercular treatment)",
-      notes              = paste(
-        "1 = subject on rifampicin-based antitubercular treatment;",
-        "0 = subject not on rifampicin. Set per occasion. Two effects",
-        "in this model: (1) multiplicative -83.2% reduction in lopinavir",
-        "relative bioavailability via the linear formula",
-        "F_LPV = 1 - 0.832 * CONMED_RIF + 0.021 * (DOSE_RTV_MGKG - 3)",
-        "(Zhang 2012 Equation 4 and Results 'Model description'",
-        "paragraph 2); (2) +50% increase in ritonavir apparent clearance",
-        "(12.8 L/h without rifampicin vs 19.1 L/h with rifampicin per",
-        "Table 2 row 'Ritonavir CL/F'). The paper assumes the",
-        "rifampicin enzyme-induction effect on CYP3A is at steady state",
-        "after at least 2 weeks of co-administration so the indicator",
-        "is treated as a steady-state binary switch with no induction",
-        "lag (Methods 'Population pharmacokinetic analysis' paragraph 5:",
-        "'the effect of rifampicin on enzyme induction could be assumed",
-        "to be at steady state and within-day change could be",
-        "neglected')."
-      ),
-      source_name        = "RIF"
+      description       = "Binary indicator of concomitant rifampicin co-administration (chronic 600 mg once daily for >=7 days, post-induction steady state).",
+      units             = "(binary)",
+      type              = "binary",
+      reference_category = "0 (no rifampicin)",
+      notes             = "Set to 1 for the rifampicin co-administration arms (PK2, PK3, PK4 in Zhang 2012); set to 0 for the baseline arm (PK1: LPV/r 400/100 mg twice daily without rifampicin). The paper assumes full CYP3A4 induction is reached 1 week after starting daily 600 mg rifampicin (Methods Discussion). The indicator drives the multiplicative effects on LPV CL/F (+71.0%), RTV CL/F (+36.0%), LPV F (-20.0%), RTV F (-45.0% at the 100 mg reference RTV dose), and gates the RTV dose-dependent F effect (active only when CONMED_RIF = 1).",
+      source_name       = "RIF"
     ),
-    DOSE_RTV_MGKG = list(
-      description        = "Concomitant ritonavir per-administration dose per kg body weight",
-      units              = "mg/kg",
-      type               = "continuous",
-      reference_category = NULL,
-      notes              = paste(
-        "Per-dose ritonavir mg/kg given concomitantly with the lopinavir",
-        "dose. Enters lopinavir bioavailability via the linear-shift",
-        "regressor of Zhang 2012 Equation 4:",
-        "F_LPV = 1 - 0.832 * CONMED_RIF + 0.021 * (DOSE_RTV_MGKG - 3)",
-        "with DOSE_RTV_STD = 3 mg/kg (the median ritonavir dose in the",
-        "no-rifampicin standard-LPV/r 4:1 reference arm, per the",
-        "Methods 'Population pharmacokinetic analysis' paragraph 5).",
-        "The standard 4:1 LPV/r at the median 11.6 mg/kg LPV dose",
-        "(Table 1) gives DOSE_RTV_MGKG = 2.9 (~ 3 mg/kg reference,",
-        "yielding F_LPV ~ 1). The super-boosted 1:1 LPV/r at the",
-        "median 14 mg/kg LPV dose gives DOSE_RTV_MGKG = 14 and",
-        "F_LPV = 0.40 (cohort estimate 40.5%, Table 2). The",
-        "double-dose 4:1 LPV/r at the median 23 mg/kg LPV dose gives",
-        "DOSE_RTV_MGKG = 5.75 and F_LPV = 0.23 (cohort estimate 22.6%,",
-        "Table 2). The linear approximation is valid only inside the",
-        "cohort-tested ritonavir-dose range of 2.9-14 mg/kg",
-        "(Discussion paragraph 3: 'the relationship between ritonavir",
-        "dose and bioavailability is probably quite complicated, in",
-        "our model it was described using a linear proportionality.",
-        "This choice was compelled by the limited range of ritonavir",
-        "doses available in the dataset, and should not be used too",
-        "far outside the tested range.')."
-      ),
-      source_name        = "DoseRTV"
+    DOSE = list(
+      description       = "Per-record ritonavir dose level in mg used by the RTV-bioavailability dose-effect term.",
+      units             = "mg",
+      type              = "continuous",
+      notes             = "Anchored at 100 mg (reference). The 8.1% multiplicative increment per 10 mg of RTV dose is applied only when CONMED_RIF = 1 (the dose-by-bioavailability interaction was identified only within the rifampicin-coadministered arm of the source study; Zhang 2012 Results 'Model description' paragraph 5). Set DOSE = 100 mg for the standard 400/100 mg LPV/r regimen, 150 mg for 600/150 mg LPV/r, 200 mg for 800/200 mg LPV/r. Outside the 100-200 mg range the linear extrapolation is unvalidated and may produce non-physiological F values.",
+      source_name       = "(per-protocol RTV dose level; not explicitly tabulated in the source)"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 74L,
-    n_studies      = 2L,
-    age_range      = "6 months to 4.5 years (paediatric)",
-    age_median     = "21 months",
-    weight_range   = "5-17 kg",
-    weight_median  = "10.2 kg (cohort) / 10 kg (allometric-scaling reference, Zhang 2012 Methods Equations 1 and 2)",
-    sex_female_pct = 22.7,
-    race_ethnicity = "South African paediatric HIV cohort (not further detailed in the paper).",
-    disease_state  = "HIV-1 infection on lopinavir/ritonavir-based combination antiretroviral therapy (paediatric). Three sub-cohorts: 39 children without tuberculosis receiving standard LPV/r 4:1 oral solution every 12 h (median LPV dose 11.6 mg/kg); 15 children with HIV-associated tuberculosis receiving 'super-boosted' LPV (LPV/r 1:1 with extra ritonavir added to the standard LPV/r 4:1) plus rifampicin-based antitubercular treatment; 20 children with HIV-associated tuberculosis receiving doubled standard LPV/r 4:1 dose every 12 h plus rifampicin-based antitubercular treatment; 11 of the 'double-dose' children were re-sampled at least 4 weeks after completion of antitubercular treatment on standard LPV/r doses (counted within the 39-without-tuberculosis sample because no rifampicin was active at that occasion).",
-    dose_range     = "LPV/r oral solution 230/57.5 mg/m^2 every 12 h in the standard reference cohort (median LPV dose 11.6 mg/kg, range 9.4-16.0; Table 1). Super-boosted cohort: extra ritonavir added to standard 4:1 LPV/r to a 1:1 ratio (median LPV 14.0 mg/kg, range 10.7-18.0). Double-dose cohort: double the standard LPV/r every 12 h (median LPV 23.0 mg/kg, range 13.8-29.5). Antituberculous regimen contained rifampicin 10 mg/kg/day. Simulation-based proposed dose recommendations during rifampicin co-treatment are 27 / 21 / 20 / 18 mg/kg every 8 h in the WHO weight bands 3-5.9 / 6-9.9 / 10-13.9 / 14-19.9 kg (Discussion paragraph 4 and Table 3).",
-    regions        = "Cape Town, Stellenbosch, and Witwatersrand catchments (South Africa).",
-    notes          = paste(
-      "Pooled cohort from three antiretroviral clinics in South Africa.",
-      "All samples were taken after at least 2 weeks of concurrent",
-      "antitubercular and antiretroviral therapy to ensure pharmacokinetic",
-      "steady state. About 5% of LPV/RTV samples were below the lower",
-      "limit of quantification (LPV LLOQ 0.05 mg/L, RTV LLOQ 0.025 mg/L)",
-      "and excluded; care was taken to ensure model predictions for the",
-      "excluded samples were compatibly low. A total of 216 + 120 + 96 =",
-      "432 LPV and RTV concentration measurements were available across",
-      "the standard, super-boosted, and double-dose cohorts respectively.",
-      "Baseline demographics from Zhang 2012 Table 1: median age 21 months",
-      "(6 months to 4.5 years), median body weight 10.2 kg (5-17 kg),",
-      "gender 34 males / 10 females (sex-female pct calculated as 10/44 =",
-      "22.7%; Table 1 reports 34/10 across the included demographic table",
-      "rows -- the 30 remaining children of the 74 total are not",
-      "disaggregated by sex in the paper). Median height 79 cm",
-      "(58-103 cm), median BSA 0.48 m^2 (0.28-0.69 m^2), median",
-      "haemoglobin 10.7 g/L (5.7-29.7 g/L; the upper value is most likely",
-      "a typo or unit ambiguity in the source PDF -- see vignette",
-      "Assumptions and deviations), median albumin 38 g/L (29-47 g/L)."
+    species          = "human",
+    n_subjects       = 21L,
+    n_studies        = 1L,
+    n_observations   = 800L,
+    age_range        = "26-58 years",
+    age_median       = "36 years",
+    weight_range     = "43.0-110.0 kg",
+    weight_median    = "64.5 kg",
+    height_range     = "148.0-186.5 cm",
+    height_median    = "160.5 cm",
+    bmi_range        = "17.4-41.4 kg/m^2",
+    bmi_median       = "26.7 kg/m^2",
+    ffm_range        = "30.6-65.9 kg",
+    ffm_median       = "39.5 kg",
+    sex_female_pct   = 85.7,
+    race_ethnicity   = "South African adults; specific race / ethnicity composition not separately reported by Zhang 2012",
+    disease_state    = "HIV-1 infection without active tuberculosis; protease-inhibitor-naive and virologically suppressed on LPV/r plus two NRTIs at study entry (Zhang 2012 Methods 'Study design and drug analysis').",
+    dose_range       = paste(
+      "Four sequential treatment conditions tested:",
+      "(PK1) LPV/r 400/100 mg twice daily without rifampicin (reference);",
+      "(PK2) LPV/r 400/100 mg twice daily + rifampicin 600 mg once daily;",
+      "(PK3) LPV/r 600/150 mg twice daily + rifampicin 600 mg once daily;",
+      "(PK4) LPV/r 800/200 mg twice daily + rifampicin 600 mg once daily.",
+      "Morning doses given after overnight fast; evening doses given with a meal.",
+      "Intensive sampling at 0 (pre-dose), 1.5, 2, 2.5, 3, 4, 5, 6, 8, 12 h after morning dose,",
+      "one week after each dose adjustment."
+    ),
+    regions          = "South Africa (Cape Town, University of Cape Town)",
+    notes            = paste(
+      "Three patients withdrew before completing all four occasions (two transaminitis, one nausea);",
+      "partial data retained. All patients had 100% pill-count adherence. Lopinavir LLOQ 0.05 mg/L,",
+      "ritonavir LLOQ 0.025 mg/L; values below LLOQ (1% LPV, 2% RTV) set to LLOQ/2 in the model build.",
+      "Bootstrap confidence intervals based on 10 samples only owing to model complexity; CIs reported",
+      "in Table 2 are illustrative rather than precise. The model has no IIV on the lopinavir-ritonavir",
+      "interaction parameters (Imax, IC50) because the dynamic perpetrator-substrate relationship is",
+      "shared at the population typical-value level. The reference body weight (70 kg) and reference",
+      "fat-free mass (50 kg) are Holford / Anderson convention defaults; the source paper does not",
+      "explicitly state either reference."
     )
   )
 
   ini({
-    # =====================================================================
-    # Lopinavir (LPV, parent / substrate) structural parameters
-    # Zhang 2012 Table 2 'Population pharmacokinetic parameter estimates'
-    # column 'Final model estimates'. Values reported at the cohort median
-    # 10 kg per Methods Equations 1 and 2.
-    # =====================================================================
-    lcl    <- log(4.18)
-    label("LPV typical apparent clearance CL0/F at the 10 kg reference, without ritonavir (L/h)")  # Zhang 2012 Table 2 row 'Lopinavir CL/F = 4.18'; note Results 'Model description' paragraph 3: 'the typical clearance of LPV without ritonavir was 4.18 l/h, it should be kept in mind that this value is an extrapolation, since LPV was never given without ritonavir'
-    lvc    <- log(11.6)
-    label("LPV typical apparent volume of distribution V/F at the 10 kg reference (L)")            # Zhang 2012 Table 2 row 'Lopinavir V/F = 11.6'
-    lka    <- log(0.74)
-    label("LPV first-order absorption rate constant ka (1/h)")                                     # Zhang 2012 Table 2 row 'Lopinavir ka = 0.74'
-    lfdepot <- fixed(log(1))
-    label("LPV bioavailability anchor at the standard 4:1 LPV/r no-rifampicin reference (unitless, FIXED)")  # Standard 4:1 LPV/r at the median 3 mg/kg ritonavir without rifampicin co-administration is the F = 1 reference per Zhang 2012 Methods 'Population pharmacokinetic analysis' paragraph 5: 'The relative bioavailability in the control group (standard LPV/r dose, no rifampicin) was assumed as a reference (100%)'.
+    # ==========================================================================
+    # LOPINAVIR (LPV, parent) structural parameters
+    # ----- Zhang 2012 Table 2 'Lopinavir Estimates' column -----
+    # LPV: one-compartment open model with first-order absorption.
+    # ==========================================================================
+    lka <- log(0.991);   label("Lopinavir absorption rate constant ka (1/h)")                                 # Table 2 LPV ka = 0.991 h^-1 (95% CI 0.63-1.43)
+    lcl <- log(37.9);    label("Lopinavir baseline apparent clearance CL/F when no ritonavir effect (L/h)")   # Table 2 LPV CL/F = 37.9 L/h (95% CI 28.5-52.1); footnote dagger: CL/F of lopinavir without ritonavir
+    lvc <- log(54.7);    label("Lopinavir apparent central volume of distribution Vc/F (L)")                  # Table 2 LPV Vc/F = 54.7 L (95% CI 50.5-64.7)
+    lfdepot <- fixed(log(1));  label("Lopinavir reference relative bioavailability F (unitless, fixed at 1)") # Table 2 footnote: relative bioavailability of standard dose LPV/r without rifampicin assumed 100% reference
 
-    # =====================================================================
-    # Ritonavir (RTV, sibling-drug / perpetrator) structural parameters
-    # Zhang 2012 Table 2 'Population pharmacokinetic parameter estimates'
-    # column 'Final model estimates'. Values reported at the cohort median
-    # 10 kg per Methods Equations 1 and 2. RTV CL/F differs by rifampicin
-    # co-administration status (no-TB / after-TB vs with-TB).
-    # =====================================================================
-    lcl_rtv      <- log(12.8)
-    label("RTV typical apparent clearance CL/F at the 10 kg reference, no rifampicin co-administration (L/h)")  # Zhang 2012 Table 2 row 'Ritonavir CL/F, No TB and after TB = 12.8'
-    lcl_rtv_rif  <- log(19.1)
-    label("RTV typical apparent clearance CL/F at the 10 kg reference, with rifampicin co-administration (L/h)")  # Zhang 2012 Table 2 row 'Ritonavir CL/F, With TB = 19.1'
-    lvc_rtv      <- log(105)
-    label("RTV typical apparent volume of distribution V/F at the 10 kg reference (L)")            # Zhang 2012 Table 2 row 'Ritonavir V/F = 105'
-    lka_rtv      <- log(2.31)
-    label("RTV first-order absorption rate constant ka from the final transit compartment to central (1/h)")    # Zhang 2012 Table 2 row 'Ritonavir ka = 2.31'
-    lmtt_rtv     <- log(1.28)
-    label("RTV mean transit time MTT through the 10-compartment Savic transit chain (h)")          # Zhang 2012 Table 2 row 'Ritonavir MTT = 1.28'
-    nn_rtv       <- fixed(10)
-    label("RTV number of Savic-style transit compartments (integer, unitless, FIXED)")             # Zhang 2012 Results 'Model description' paragraph 1: 'the absorption phase displayed more complex pharmacokinetics which was described best by a series of 10 transit compartments'; the paper does not state whether the chain length was estimated or fixed before the final fit, but Table 2 does not list NN as an estimated parameter; treated as fixed here
+    # ==========================================================================
+    # RITONAVIR (RTV, sibling-drug suffix _rtv) structural parameters
+    # ----- Zhang 2012 Table 2 'Ritonavir Estimates' column -----
+    # RTV: two-compartment open model with Savic-style transit-compartment
+    # absorption (NN = 2.03 transit compartments, continuous-valued) feeding a
+    # central first-order absorption ka_rtv = 3.28 1/h. NN is non-integer; the
+    # rxode2 built-in transit() function accepts the continuous parameterisation
+    # via the closed-form gamma-PDF input rate (Savic 2007).
+    # ==========================================================================
+    lka_rtv <- log(3.28);    label("Ritonavir absorption rate constant ka (1/h)")                                # Table 2 RTV ka = 3.28 h^-1 (95% CI 2.90-3.38)
+    lcl_rtv <- log(19.2);    label("Ritonavir apparent oral clearance CL/F (L/h)")                               # Table 2 RTV CL/F = 19.2 L/h (95% CI 18.4-22.2)
+    lvc_rtv <- log(22.6);    label("Ritonavir apparent central volume of distribution Vc/F (L)")                 # Table 2 RTV Vc/F = 22.6 L (95% CI 21.9-24.6)
+    lq_rtv  <- log(31.0);    label("Ritonavir intercompartmental clearance Q/F (L/h)")                           # Table 2 RTV Q/F = 31.0 L/h (95% CI 25.7-34.7)
+    lvp_rtv <- log(56.6);    label("Ritonavir peripheral volume of distribution Vp/F (L)")                       # Table 2 RTV Vp/F = 56.6 L (95% CI 50.8-66.0)
+    lmtt_rtv <- log(1.44);   label("Ritonavir mean transit time MTT through the absorption chain (h)")           # Table 2 RTV MTT = 1.44 h (95% CI 1.39-1.53)
+    lnn_rtv  <- log(2.03);   label("Ritonavir number of Savic-style transit compartments NN (unitless)")         # Table 2 RTV NN = 2.03 (95% CI 1.83-2.37); continuous parameter, supports non-integer values
+    lfdepot_rtv <- fixed(log(1));  label("Ritonavir reference relative bioavailability F (unitless, fixed at 1)") # Table 2 footnote: relative bioavailability of standard dose LPV/r without rifampicin assumed 100% reference
 
-    # =====================================================================
-    # Allometric exponents. The paper Methods 'Population pharmacokinetic
-    # analysis' paragraph 4 / Equations 1 and 2 applies allometric scaling
-    # at the 10 kg median body weight to apparent clearance and volume of
-    # distribution of both drugs. The exponents are not separately listed
-    # with bootstrap CIs in Table 2; they are the canonical 0.75 / 1
-    # carried from Holford 1996 (Zhang 2012 references 10, 11), and treated
-    # as fixed structural choices here.
-    # =====================================================================
-    e_wt_cl <- fixed(0.75)
-    label("Allometric exponent on apparent CL/F for both LPV and RTV (unitless)")                  # Zhang 2012 Methods Equations 1 and 2, refs 10 and 11 (Holford / Anderson-Holford allometry)
-    e_wt_vc <- fixed(1.0)
-    label("Allometric exponent on apparent V/F for both LPV and RTV (unitless)")                   # Zhang 2012 Methods Equations 1 and 2, refs 10 and 11
+    # ==========================================================================
+    # Drug-drug interaction: dynamic sigmoidal Imax inhibition of LPV CL/F by
+    # RTV plasma concentration (Zhang 2012 Methods 'Population pharmacokinetic
+    # analysis' equation; Table 2 'Lopinavir-ritonavir interaction' block).
+    #     CL/F_LPV(t) = CL0/F_LPV * (1 - Imax * C_RTV(t) / (IC50 + C_RTV(t)))
+    # Bare names imax / ic50 (linear scale) follow the Schipani 2013
+    # atazanavir + ritonavir precedent (Schipani_2013_atazanavir_ritonavir.R).
+    # ==========================================================================
+    imax <- 0.953;       label("Maximum fractional inhibition of LPV CL/F by RTV (unitless, bounded [0,1])")    # Table 2 LPV-RTV interaction Emax = 95.3% (95% CI 94.5%-96.3%)
+    ic50 <- 0.0351;      label("Ritonavir plasma concentration producing 50% of Imax on LPV CL/F (mg/L)")       # Table 2 LPV-RTV interaction EC50 = 0.0351 mg/L (95% CI 0.0194-0.0438)
 
-    # =====================================================================
-    # Lopinavir bioavailability covariate model (Zhang 2012 Equation 4):
-    #   F_LPV = 1 - RIF * CONMED_RIF + SLP * (DOSE_RTV_MGKG - DOSE_RTV_STD)
-    # with DOSE_RTV_STD = 3 mg/kg (median RTV dose in the standard-arm
-    # reference). The reference is the standard 4:1 LPV/r at the median
-    # RTV dose with no rifampicin: F_LPV = 1. Rifampicin alone (no extra
-    # ritonavir) would give F_LPV = 1 - 0.832 = 0.168 (Discussion
-    # paragraph 3: 'exposure to LPV would drop by 83.2% if antitubercular
-    # treatment was concomitantly given without any further dose
-    # adjustments').
-    # =====================================================================
-    e_rif_lpv <- 0.832
-    label("Multiplicative -83.2% reduction in LPV relative bioavailability under rifampicin co-administration at the median 3 mg/kg ritonavir reference (unitless)")  # Zhang 2012 Table 2 row 'Lopinavir RIF on F = 0.832'; equation 4 coefficient 'RIF'
-    e_dose_rtv_lpv <- 0.021
-    label("Linear slope of LPV relative bioavailability on per-administration ritonavir dose in mg/kg (1/(mg/kg))")  # Zhang 2012 Table 2 row 'Lopinavir Slope = 0.021'; equation 4 coefficient 'SLP'
+    # ==========================================================================
+    # Allometric scaling exponents -- fixed at the Holford / Anderson convention
+    # (Zhang 2012 Methods 'Population pharmacokinetic analysis' paragraph 4:
+    # 'allometric scaling was applied to apparent clearance (CL/F) and volume
+    # of distribution (V/F) ... as described by Holford et al.'). The paper
+    # reports that 'fat free mass was more appropriate for the scaling of
+    # clearances' and 'total body weight was found to be appropriate for
+    # allometric scaling of central and peripheral volumes' (Results 'Model
+    # description' paragraph 4).
+    # ==========================================================================
+    e_ffm_cl <- fixed(0.75);  label("Allometric exponent of FFM on CL/F for both LPV and RTV (unitless, fixed at Holford convention)")
+    e_wt_vc  <- fixed(1.0);   label("Allometric exponent of WT on Vc/F for both LPV and RTV (unitless, fixed at Holford convention)")
+    e_wt_vp  <- fixed(1.0);   label("Allometric exponent of WT on Vp/F for RTV (unitless, fixed at Holford convention)")
 
-    # =====================================================================
-    # LPV-RTV interaction: direct sigmoid-Emax inhibition of LPV apparent
-    # clearance by ritonavir plasma concentration (Zhang 2012 Equation 3):
-    #   CL_LPV(t) = CL0_LPV * (1 - Emax * C_RTV / (EC50 + C_RTV))
-    # Emax was fixed at 0.9 because of numerical instability when all
-    # interaction parameters were simultaneously estimated (Results
-    # 'Model description' paragraph 4: 'the Emax was fixed to 0.9. This
-    # value was estimated when ritonavir parameters were fixed and only
-    # LPV parameters estimated').
-    # =====================================================================
-    emax_lpv <- fixed(0.9)
-    label("Maximum fractional inhibition of LPV CL/F by ritonavir concentration (unitless, FIXED)")  # Zhang 2012 Table 2 row 'Lopinavir-ritonavir interaction Emax = 0.9 (fix)'
-    ec50_lpv <- 0.0519
-    label("Ritonavir plasma concentration producing 50% of Emax on LPV CL/F (mg/L)")                # Zhang 2012 Table 2 row 'Lopinavir-ritonavir interaction EC50 = 0.0519 mg/l'
+    # ==========================================================================
+    # Concomitant rifampicin (CONMED_RIF) effects (Zhang 2012 Table 2 rows
+    # 'RIF on CL/F (+)' and 'Relative bioavailability when given with RIF').
+    # Implemented as multiplicative perturbations gated by the binary
+    # CONMED_RIF indicator.
+    # ==========================================================================
+    e_rif_cl     <- 0.710;  label("Multiplicative effect of CONMED_RIF on LPV CL/F (fraction increase)")                         # Table 2 RIF on LPV CL/F (+) = 71.0% (95% CI 65.7%-75.4%)
+    e_rif_cl_rtv <- 0.360;  label("Multiplicative effect of CONMED_RIF on RTV CL/F (fraction increase)")                         # Table 2 RIF on RTV CL/F (+) = 36.0% (95% CI 35.2%-40.0%)
+    e_rif_f      <- -0.20;  label("Multiplicative effect of CONMED_RIF on LPV F (fraction change)")                              # Table 2 LPV Relative F with RIF = 0.80 (95% CI 0.76-0.85); -20% vs no-RIF reference
+    e_rif_f_rtv  <- -0.45;  label("Multiplicative effect of CONMED_RIF on RTV F at the 100 mg reference RTV dose (fraction change)") # Table 2 RTV Relative F with RIF = 0.55 (95% CI 0.54-0.59) at standard 100 mg RTV dose; -45% vs no-RIF reference; the dose-dependent boost (e_dose_f_rtv) is applied multiplicatively on top of this RIF reduction
+    e_dose_f_rtv <- 0.0081; label("Multiplicative effect on RTV F per mg of RTV dose above the 100 mg reference (fraction per mg, active only when CONMED_RIF = 1)") # Table 2 RTV 'Bioavailability/10 mg ritonavir (+)' = 8.1% (95% CI 5.7%-11.2%); per-10-mg coefficient -> 0.081/10 = 0.0081 per mg; reproduces Results 'Model description' paragraph 5: RTV F with RIF at 100 mg = 0.55, at 150 mg = 0.77, at 200 mg = 0.996
 
-    # =====================================================================
-    # Inter-individual variability (Zhang 2012 Table 2 BSV/IOV rows).
-    # IIV reported on the SD scale as approximate %CV; nlmixr2lib uses
-    # variances on the log scale via omega^2 = log(1 + CV^2).
-    #
-    # LPV: only BSV on V (56.6%); IOV ka (76.2%) and IOV F (51.8%) are
-    # folded in as BSV-equivalent following the Bienczak 2016 nevirapine
-    # precedent (no separate BSV reported on the same parameters).
-    # =====================================================================
-    etalvc      ~ 0.27406   # Zhang 2012 Table 2 IIV V LPV = 56.6%; omega^2 = log(1 + 0.566^2) = 0.27406
-    etalka      ~ 0.45078   # Zhang 2012 Table 2 IOV ka LPV = 76.2% folded in as BSV-equivalent; omega^2 = log(1 + 0.762^2) = 0.45078 (no separate BSV on LPV ka reported)
-    etalfdepot  ~ 0.23475   # Zhang 2012 Table 2 IOV F LPV  = 51.8% folded in as BSV-equivalent; omega^2 = log(1 + 0.518^2) = 0.23475 (no separate BSV on LPV F reported)
+    # ==========================================================================
+    # Diurnal variation (Zhang 2012 Results 'Model description' paragraph 6 and
+    # Table 2 rows 'Evening effect on bioavailability (+)' and 'Evening effect
+    # on CL/F (-)'). Encoded via the simulation convention t = clock-hours-
+    # from-midnight: the overnight indicator is 1 during the 20:00-08:00 window
+    # (post-evening dose + pre-morning dose) and 0 during the daytime 08:00-
+    # 20:00 window. The same evening / overnight indicator drives the dose-time
+    # bioavailability boost (+42.0% LPV, +45.0% RTV) and the time-varying CL/F
+    # reduction (-32.7% for both drugs).
+    # ==========================================================================
+    e_eve_f        <-  0.420;  label("Multiplicative effect of evening-window dose on LPV F (fraction increase)")        # Table 2 Evening on LPV F (+) = 42.0% (95% CI 38.0%-48.2%)
+    e_eve_f_rtv    <-  0.450;  label("Multiplicative effect of evening-window dose on RTV F (fraction increase)")        # Table 2 Evening on RTV F (+) = 45.0% (95% CI 41.4%-53.6%)
+    e_overnight_cl <- -0.327;  label("Multiplicative effect of the overnight window on LPV and RTV CL/F (fraction change)") # Table 2 Evening on CL/F (-) = 32.7% (95% CI 29.6%-38.4%); shared between LPV and RTV per paper
 
-    # =====================================================================
-    # RTV: paper Results 'Model description' paragraph 1 reports 'A similar
-    # solution was used for IIV in oral clearance and volume of
-    # distribution of ritonavir' as for the ka_LPV / ka_RTV pair, i.e. the
-    # two IIVs were estimated as proportional (high positive correlation).
-    # Encoded here as a correlated IIV block with rho = 0.99 approximating
-    # the perfect-proportionality assumption (see vignette Assumptions and
-    # deviations). IOV CL RTV (41.6%) dropped because BSV is reported on
-    # the same parameter (Bienczak 2016 precedent). IOV MTT and IOV ka of
-    # RTV folded in as BSV-equivalent.
-    # =====================================================================
-    # Block entries below come from Zhang 2012 Table 2:
-    #   var_cl_rtv = log(1 + 0.728^2) = 0.41888 (IIV CL RTV = 72.8%)
-    #   var_vc_rtv = log(1 + 0.433^2) = 0.16758 (IIV V  RTV = 43.3%)
-    #   cov_cl_vc  = rho * sqrt(var_cl_rtv * var_vc_rtv) with rho = 0.99
-    #   approximating the paper's 'proportional' description of IIV CL_RTV
-    #   and V_RTV (Results 'Model description' paragraph 1).
-    etalcl_rtv + etalvc_rtv ~ c(
-      0.41888,
-      0.99 * sqrt(0.41888 * 0.16758),
-      0.16758
-    )
-    etalmtt_rtv ~ 0.09128   # Zhang 2012 Table 2 IOV MTT RTV = 31.1% folded in as BSV-equivalent; omega^2 = log(1 + 0.311^2) = 0.09128 (no separate BSV on RTV MTT reported)
-    etalka_rtv  ~ 0.65979   # Zhang 2012 Table 2 IOV ka  RTV = 98.1% folded in as BSV-equivalent; omega^2 = log(1 + 0.981^2) = 0.65979 (no separate BSV on RTV ka reported)
+    # ==========================================================================
+    # Inter-individual variability (Zhang 2012 Table 2 rows 'IIV CL/F (%CV)',
+    # 'IIV V/F (%CV)', 'IIV F (%CV)' and 'IOV ...' for ka / F / CL/F / MTT /
+    # RUV). The paper reports both IIV (between-subject) and IOV (inter-
+    # occasion) variability separately. Per the nlmixr2lib convention used in
+    # Bienczak_2016_nevirapine.R, Chirehwa_2017_pyrazinamide.R, and
+    # Svensson_2014_bedaquiline.R: BOV is dropped where a BSV term is reported
+    # on the same parameter, and BOV is folded in as a BSV-equivalent where
+    # only BOV is reported. The IOV on residual unexplained variability (17.1%
+    # for LPV) cannot be straightforwardly encoded as a BSV-equivalent on a
+    # residual-error magnitude and is dropped with a note in the vignette.
+    # omega^2 = log(1 + CV^2) converts the CV%-on-SD scale to the log-scale
+    # variance.
+    # ==========================================================================
+    etalcl     ~ 0.04004    # Table 2 LPV IIV CL/F = 20.2% (95% CI 12.7%-25.1%); IOV CL/F 11.8% dropped per convention; omega^2 = log(1 + 0.202^2) = 0.04004
+    etalvc     ~ 0.07113    # Table 2 LPV IIV Vc/F = 27.2% (95% CI 10.3%-41.4%); omega^2 = log(1 + 0.272^2) = 0.07113
+    etalka     ~ 0.63100    # Table 2 LPV IOV ka  = 94.2% (95% CI 46.5%-150.1%) folded in as BSV-equivalent (no separate BSV reported); omega^2 = log(1 + 0.942^2) = 0.63100
+    etalfdepot ~ 0.04692    # Table 2 LPV IOV F   = 21.9% (95% CI 17.1%-24.0%) folded in as BSV-equivalent (no separate BSV reported); omega^2 = log(1 + 0.219^2) = 0.04692
 
-    # =====================================================================
-    # Residual error. Zhang 2012 Methods 'Population pharmacokinetic
-    # analysis' paragraph 3: 'The exponential error model was implemented
-    # in NONMEM by log-transforming the data. Hence, using a first-order
-    # approximation, the variability of the exponential model can be
-    # considered as proportional to the observed value.' Encoded as
-    # proportional on the linear scale per the paper's interpretation.
-    # =====================================================================
-    propSd     <- 0.304
-    label("LPV proportional residual error on the linear scale (fraction)")                        # Zhang 2012 Table 2 row 'Lopinavir RUV = 0.304' (exponential error on log-data, equivalent to proportional on the linear scale)
-    propSd_rtv <- 0.339
-    label("RTV proportional residual error on the linear scale (fraction)")                        # Zhang 2012 Table 2 row 'Ritonavir RUV = 0.339' (exponential error on log-data, equivalent to proportional on the linear scale)
+    etalcl_rtv     ~ 0.04525  # Table 2 RTV IIV CL/F = 21.5% (95% CI 11.5%-31.7%); IOV CL/F 20.4% dropped per convention; omega^2 = log(1 + 0.215^2) = 0.04525
+    etalvc_rtv     ~ 0.01035  # Table 2 RTV IIV Vc/F = 10.2% (95% CI 9.85%-10.5%); omega^2 = log(1 + 0.102^2) = 0.01035
+    etalfdepot_rtv ~ 0.08731  # Table 2 RTV IIV F   = 30.3% (95% CI 17.4%-49.6%); IOV F 30.3% dropped per convention; omega^2 = log(1 + 0.303^2) = 0.08731
+    etalmtt_rtv    ~ 0.07480  # Table 2 RTV IOV MTT = 27.9% (95% CI 19.6%-38.2%) folded in as BSV-equivalent (no separate BSV reported); omega^2 = log(1 + 0.279^2) = 0.07480
+
+    # ==========================================================================
+    # Residual error (Zhang 2012 Table 2 rows 'Residual variability
+    # (proportional %)'). Proportional-only structure for both LPV and RTV;
+    # the IOV on LPV residual variability (17.1% CV) is dropped with a note
+    # in the vignette Assumptions and deviations section.
+    # ==========================================================================
+    propSd     <- 0.127;  label("Lopinavir proportional residual error (fraction)")  # Table 2 LPV Residual variability proportional = 12.7% (95% CI 11.6%-13.6%)
+    propSd_rtv <- 0.188;  label("Ritonavir proportional residual error (fraction)")  # Table 2 RTV Residual variability proportional = 18.8% (95% CI 17.1%-20.3%)
   })
 
   model({
-    # ----------------------------------------------------------------------
-    # 1. Individual ritonavir PK parameters (compute first so the RTV
-    #    plasma concentration is available for the LPV CL inhibition term).
-    # ----------------------------------------------------------------------
-    # RTV typical CL/F depends on rifampicin status: the paper Table 2
-    # reports two separate typical values (12.8 L/h no rifampicin, 19.1 L/h
-    # with rifampicin). Encoded as a binary switch on the typical value
-    # rather than a multiplicative coefficient on a baseline because the
-    # paper does so (Results 'Model description' paragraph 2: 'different
-    # typical values of clearance were estimated for the subjects with
-    # and without antitubercular treatment'). Allometric scaling at 10 kg.
-    cl_rtv_typ <- exp(lcl_rtv     + etalcl_rtv) * (1 - CONMED_RIF) +
-                  exp(lcl_rtv_rif + etalcl_rtv) * CONMED_RIF
-    cl_rtv     <- cl_rtv_typ * (WT / 10)^e_wt_cl
-    vc_rtv     <- exp(lvc_rtv + etalvc_rtv) * (WT / 10)^e_wt_vc
-    ka_rtv     <- exp(lka_rtv + etalka_rtv)
-    mtt_rtv    <- exp(lmtt_rtv + etalmtt_rtv)
-    ktr_rtv    <- nn_rtv / mtt_rtv      # transit-chain inter-compartment rate; Bienczak 2016 nevirapine precedent (depot -> transit_1 -> ... -> transit_NN with rate ktr; transit_NN -> central with rate ka)
+    # ------------------------------------------------------------------------
+    # 1. Time-of-day diurnal indicator. Simulation convention: t is in hours,
+    #    anchored to clock midnight (t = 0 -> 00:00). The morning dose is
+    #    administered at clock 08:00 (t = 8 modulo 24) and the evening dose
+    #    at clock 20:00 (t = 20 modulo 24). The overnight window covers
+    #    clock 20:00-08:00 (= hod in [20, 24) U [0, 8)).
+    #    Same convention as Bienczak_2016_nevirapine.R; documented in the
+    #    vignette Assumptions and deviations section.
+    # ------------------------------------------------------------------------
+    hod       <- t - floor(t / 24) * 24
+    overnight <- (hod >= 20) + (hod < 8)
 
-    # ----------------------------------------------------------------------
-    # 2. Sigmoid-Emax inhibition of LPV CL/F by ritonavir plasma
-    #    concentration (Zhang 2012 Equation 3). When no ritonavir is
-    #    present (Crtv = 0) the inhibition evaluates to zero and CL_LPV
-    #    equals exp(lcl) = 4.18 L/h (the extrapolated no-RTV typical value).
-    # ----------------------------------------------------------------------
+    # ------------------------------------------------------------------------
+    # 2. Allometric scaling factors (Holford / Anderson convention; reference
+    #    WT = 70 kg, reference FFM = 50 kg). The reference values are not
+    #    explicitly stated by Zhang 2012; the 70 / 50 kg defaults follow the
+    #    most common Holford-school convention.
+    # ------------------------------------------------------------------------
+    all_cl <- (FFM / 50)^e_ffm_cl
+    all_vc <- (WT  / 70)^e_wt_vc
+    all_vp <- (WT  / 70)^e_wt_vp
+
+    # ------------------------------------------------------------------------
+    # 3. Ritonavir individual PK parameters. Computed first so that the RTV
+    #    plasma concentration C_RTV is available for the dynamic LPV CL/F
+    #    inhibition term below.
+    # ------------------------------------------------------------------------
+    ka_rtv  <- exp(lka_rtv)
+    mtt_rtv <- exp(lmtt_rtv + etalmtt_rtv)
+    nn_rtv  <- exp(lnn_rtv)
+    vc_rtv  <- exp(lvc_rtv + etalvc_rtv) * all_vc
+    vp_rtv  <- exp(lvp_rtv)              * all_vp
+    q_rtv   <- exp(lq_rtv)               * all_cl
+    cl_rtv  <- exp(lcl_rtv + etalcl_rtv) * all_cl *
+               (1 + e_rif_cl_rtv * CONMED_RIF) *
+               (1 + e_overnight_cl * overnight)
+
+    # ------------------------------------------------------------------------
+    # 4. Ritonavir bioavailability. Composition (gated by the binary
+    #    CONMED_RIF indicator on the rifampicin co-administration arm):
+    #      Without RIF: F = 1 (reference).
+    #      With RIF:    F = (1 + e_rif_f_rtv) * (1 + e_dose_f_rtv * (DOSE-100))
+    #                     = 0.55 at DOSE = 100 mg, 0.773 at 150 mg, 0.996 at 200 mg
+    #                     (Zhang 2012 Results 'Model description' paragraph 5).
+    #    On top of this, the evening-dose window applies a +45% multiplier
+    #    and the IIV / fixed F-anchor enters via exp(lfdepot_rtv +
+    #    etalfdepot_rtv).
+    # ------------------------------------------------------------------------
+    fdepot_rtv <- ((1 - CONMED_RIF) +
+                   CONMED_RIF * (1 + e_rif_f_rtv) * (1 + e_dose_f_rtv * (DOSE - 100))) *
+                  (1 + e_eve_f_rtv * overnight) *
+                  exp(lfdepot_rtv + etalfdepot_rtv)
+
+    # ------------------------------------------------------------------------
+    # 5. Dynamic sigmoidal Imax inhibition of LPV CL/F by ritonavir plasma
+    #    concentration (Zhang 2012 Methods 'Population pharmacokinetic
+    #    analysis' equation):
+    #      CL/F_LPV(t) = CL0/F_LPV * (1 - Imax * C_RTV / (IC50 + C_RTV))
+    # ------------------------------------------------------------------------
     crtv  <- central_rtv / vc_rtv
-    inhib <- emax_lpv * crtv / (ec50_lpv + crtv)
+    inhib <- imax * crtv / (ic50 + crtv)
 
-    # ----------------------------------------------------------------------
-    # 3. Individual lopinavir PK parameters (CL/F inhibited by the
-    #    ritonavir-driven sigmoid; allometric scaling at 10 kg).
-    # ----------------------------------------------------------------------
-    cl <- exp(lcl) * (WT / 10)^e_wt_cl * (1 - inhib)           # Zhang 2012 Table 2 reports no BSV on LPV CL/F (no etalcl term)
-    vc <- exp(lvc + etalvc) * (WT / 10)^e_wt_vc
-    ka <- exp(lka + etalka)
+    # ------------------------------------------------------------------------
+    # 6. Lopinavir individual PK parameters.
+    # ------------------------------------------------------------------------
+    ka_lpv <- exp(lka + etalka)
+    vc_lpv <- exp(lvc + etalvc) * all_vc
+    cl_lpv <- exp(lcl + etalcl) * all_cl *
+              (1 + e_rif_cl * CONMED_RIF) *
+              (1 - inhib) *
+              (1 + e_overnight_cl * overnight)
 
-    # ----------------------------------------------------------------------
-    # 4. Lopinavir bioavailability (Zhang 2012 Equation 4). Linear shift
-    #    in DOSE_RTV_MGKG above the 3 mg/kg reference plus a -83.2%
-    #    multiplicative reduction under rifampicin co-administration.
-    #    Random effect on F (etalfdepot) carries the IOV-equivalent BSV
-    #    folded in above; the random effect is on the log-multiplier of
-    #    the typical bioavailability so it preserves the bounded-on-[0,1]
-    #    behaviour reasonably in the simulated range.
-    # ----------------------------------------------------------------------
-    f_lpv_typ <- exp(lfdepot) *
-                 (1 - e_rif_lpv * CONMED_RIF +
-                      e_dose_rtv_lpv * (DOSE_RTV_MGKG - 3))
-    f_lpv     <- f_lpv_typ * exp(etalfdepot)
+    # ------------------------------------------------------------------------
+    # 7. Lopinavir bioavailability. Composition: CONMED_RIF reduces F by 20%,
+    #    evening-window dose adds +42%, and the fixed F = 1 anchor plus IIV
+    #    enter via exp(lfdepot + etalfdepot).
+    # ------------------------------------------------------------------------
+    fdepot_lpv <- (1 + e_rif_f * CONMED_RIF) *
+                  (1 + e_eve_f * overnight) *
+                  exp(lfdepot + etalfdepot)
 
-    # ----------------------------------------------------------------------
-    # 5. ODE system. Lopinavir: depot -> central with first-order ka and
-    #    first-order systemic elimination CL/Vc. Ritonavir: depot_rtv ->
-    #    transit1_rtv -> ... -> transit10_rtv -> central_rtv with shared
-    #    transit-chain rate ktr_rtv on the depot-to-transit and inter-
-    #    transit steps and a separate ka_rtv from the last transit into
-    #    central_rtv (Bienczak 2016 nevirapine precedent for the
-    #    Savic-style transit chain with a separate final ka). Apparent
-    #    clearance CL/Vc for both drugs.
-    # ----------------------------------------------------------------------
-    d/dt(depot)         <- -ka * depot
-    d/dt(central)       <-  ka * depot - (cl / vc) * central
+    # ------------------------------------------------------------------------
+    # 8. ODE system. LPV occupies a single depot + central pair with classical
+    #    first-order absorption. RTV uses Savic's analytical transit-chain
+    #    input via rxode2's transit(nn, mtt, bio) built-in (bio = fdepot_rtv),
+    #    with the bolus content into depot_rtv suppressed (f(depot_rtv) <- 0)
+    #    so the transit chain alone delivers the dose smoothly. RTV central
+    #    has two-compartment disposition with linear elimination.
+    # ------------------------------------------------------------------------
+    d/dt(depot)            <- -ka_lpv * depot
+    d/dt(central)          <-  ka_lpv * depot - cl_lpv / vc_lpv * central
 
-    d/dt(depot_rtv)     <- -ktr_rtv * depot_rtv
-    d/dt(transit1_rtv)  <-  ktr_rtv * depot_rtv     - ktr_rtv * transit1_rtv
-    d/dt(transit2_rtv)  <-  ktr_rtv * transit1_rtv  - ktr_rtv * transit2_rtv
-    d/dt(transit3_rtv)  <-  ktr_rtv * transit2_rtv  - ktr_rtv * transit3_rtv
-    d/dt(transit4_rtv)  <-  ktr_rtv * transit3_rtv  - ktr_rtv * transit4_rtv
-    d/dt(transit5_rtv)  <-  ktr_rtv * transit4_rtv  - ktr_rtv * transit5_rtv
-    d/dt(transit6_rtv)  <-  ktr_rtv * transit5_rtv  - ktr_rtv * transit6_rtv
-    d/dt(transit7_rtv)  <-  ktr_rtv * transit6_rtv  - ktr_rtv * transit7_rtv
-    d/dt(transit8_rtv)  <-  ktr_rtv * transit7_rtv  - ktr_rtv * transit8_rtv
-    d/dt(transit9_rtv)  <-  ktr_rtv * transit8_rtv  - ktr_rtv * transit9_rtv
-    d/dt(transit10_rtv) <-  ktr_rtv * transit9_rtv  - ka_rtv  * transit10_rtv
-    d/dt(central_rtv)   <-  ka_rtv  * transit10_rtv - (cl_rtv / vc_rtv) * central_rtv
+    d/dt(depot_rtv)        <-  transit(nn_rtv, mtt_rtv, fdepot_rtv) - ka_rtv * depot_rtv
+    d/dt(central_rtv)      <-  ka_rtv * depot_rtv -
+                               cl_rtv / vc_rtv * central_rtv -
+                               q_rtv  / vc_rtv * central_rtv +
+                               q_rtv  / vp_rtv * peripheral1_rtv
+    d/dt(peripheral1_rtv)  <-  q_rtv  / vc_rtv * central_rtv -
+                               q_rtv  / vp_rtv * peripheral1_rtv
 
-    # ----------------------------------------------------------------------
-    # 6. Bioavailability on the LPV depot. RTV bioavailability is the
-    #    apparent F embedded in the CL/F and V/F estimates (the paper
-    #    fits CL/F and V/F, not separate CL and V).
-    # ----------------------------------------------------------------------
-    f(depot) <- f_lpv
+    # ------------------------------------------------------------------------
+    # 9. Bioavailability hooks. LPV uses the standard f(depot) <- fdepot_lpv
+    #    bolus-scaling hook; RTV suppresses the bolus contribution so the
+    #    transit() chain alone provides the input.
+    # ------------------------------------------------------------------------
+    f(depot)     <- fdepot_lpv
+    f(depot_rtv) <- 0
 
-    # ----------------------------------------------------------------------
-    # 7. Observation variables and proportional residual error.
-    #    Cc     = LPV plasma concentration (mg/L)
-    #    Cc_rtv = RTV plasma concentration (mg/L)
-    # ----------------------------------------------------------------------
-    Cc     <- central     / vc
+    # ------------------------------------------------------------------------
+    # 10. Observation variables and residual error. Cc = LPV plasma
+    #     concentration (mg/L); Cc_rtv = RTV plasma concentration (mg/L).
+    # ------------------------------------------------------------------------
+    Cc     <- central     / vc_lpv
     Cc_rtv <- central_rtv / vc_rtv
 
     Cc     ~ prop(propSd)

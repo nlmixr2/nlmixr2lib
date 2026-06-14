@@ -1,439 +1,608 @@
 ---
-title: "Lopinavir and ritonavir in HIV/TB-coinfected children (Zhang 2012)"
+title: "Lopinavir + Ritonavir with rifampicin (Zhang 2012)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Lopinavir and ritonavir in HIV/TB-coinfected children (Zhang 2012)}
+  %\VignetteIndexEntry{Lopinavir + Ritonavir with rifampicin (Zhang 2012)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
 ```{r setup, include = FALSE}
-knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
-options(rxode2.units = "no")
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 5)
 library(nlmixr2lib)
 library(PKNCA)
 library(rxode2)
 library(dplyr)
 library(tidyr)
 library(ggplot2)
-library(purrr)
-library(tibble)
 ```
 
 # Model and source
 
-* Citation: Zhang C, McIlleron H, Ren Y, van der Walt JS, Karlsson MO,
-  Simonsson USH, Denti P. Population pharmacokinetics of lopinavir and
-  ritonavir in combination with rifampicin-based antitubercular treatment
-  in HIV-infected children. *Antivir Ther.* 2012;17(1):25-33.
-* Article: <https://doi.org/10.3851/IMP1915>
-* Description: Integrated one-compartment popPK model for oral lopinavir
-  (LPV) and ritonavir (RTV) in 74 HIV-infected children (6 months to 4.5
-  years) treated with LPV/r oral solution with or without concomitant
-  rifampicin-based antitubercular treatment. LPV: one-compartment with
-  first-order absorption. RTV: one-compartment with a Savic-style
-  10-transit-compartment absorption chain followed by a separate
-  first-order absorption step from the last transit to central.
-  Allometric scaling at the 10 kg cohort median. Dynamic LPV-RTV
-  interaction encoded as sigmoid-Emax inhibition of LPV CL/F by RTV
-  plasma concentration (Emax = 0.9 fixed, EC50 = 0.0519 mg/L).
-  Rifampicin co-administration reduces LPV bioavailability and
-  increases RTV CL/F.
+* Citation: `r readModelDb("Zhang_2012_lopinavir_ritonavir")()$meta$reference`
+* Description: `r readModelDb("Zhang_2012_lopinavir_ritonavir")()$meta$description`
+* Article: <https://doi.org/10.1111/j.1365-2125.2011.04154.x>
 
 # Population
 
-The cohort comprised 74 HIV-infected South African children aged 6 months
-to 4.5 years (median 21 months; median weight 10.2 kg, range 5-17 kg)
-enrolled at three antiretroviral clinics. Three sub-cohorts were pooled
-in the integrated fit: 39 children without tuberculosis on standard
-LPV/r 4:1 oral solution every 12 h (median LPV dose 11.6 mg/kg); 15
-children with HIV-associated tuberculosis on "super-boosted" LPV
-(LPV/r 1:1) plus rifampicin-based antitubercular treatment; and 20
-children with HIV-associated tuberculosis on doubled standard LPV/r
-4:1 plus rifampicin-based antitubercular treatment. 11 of the
-double-dose children were re-sampled at least 4 weeks after completion
-of antitubercular treatment, again on standard LPV/r. Demographics
-from Zhang 2012 Table 1; the same information is available
-programmatically via `readModelDb("Zhang_2012_lopinavir_ritonavir")$population`.
+Zhang 2012 enrolled 21 South African HIV-infected adults (18 female, 3
+male; median age 36 years, range 26-58; median body weight 64.5 kg,
+range 43.0-110.0; median fat-free mass 39.5 kg, range 30.6-65.9) at the
+University of Cape Town. All subjects were virologically suppressed on
+lopinavir/ritonavir (LPV/r) plus two NRTIs at study entry and were
+protease-inhibitor-naive (Zhang 2012 Methods 'Study design and drug
+analysis'; Table 1). The study evaluated four sequential treatment
+conditions one week apart:
+
+| Occasion | LPV / RTV (twice daily) | Rifampicin     |
+|----------|-------------------------|----------------|
+| PK1      | 400 / 100 mg            | none           |
+| PK2      | 400 / 100 mg            | 600 mg daily   |
+| PK3      | 600 / 150 mg            | 600 mg daily   |
+| PK4      | 800 / 200 mg            | 600 mg daily   |
+
+Intensive pharmacokinetic sampling was performed 1 week after each dose
+adjustment (pre-dose plus 1.5, 2, 2.5, 3, 4, 5, 6, 8 and 12 h after the
+morning dose). Morning doses were administered after an overnight fast;
+evening doses were given with a meal. Three of the 21 subjects withdrew
+before completing all four occasions (two with grade 3-4 transaminitis,
+one with grade 2 nausea); partial data were retained.
+
+Demographic covariates (age, sex) and body-size descriptors (total body
+weight, normal fat weight, fat-free mass) were tested via Holford-style
+allometric scaling on CL/F and V/F (Zhang 2012 Methods 'Population
+pharmacokinetic analysis' paragraph 4). Fat-free mass (Janmahasatian
+formula) was retained for CL/F; total body weight was retained for the
+volumes of distribution. Sex did not explain residual variability
+beyond fat-free mass and was not retained (Zhang 2012 Discussion
+paragraph 4).
+
+The same information is available programmatically via
+`readModelDb("Zhang_2012_lopinavir_ritonavir")()$meta$population`.
 
 # Source trace
 
-The per-parameter origin is recorded as an in-file comment next to each
+Per-parameter origin is recorded as an in-file comment next to each
 `ini()` entry in
-`inst/modeldb/specificDrugs/Zhang_2012_lopinavir_ritonavir.R`. The table
-below collects the values in one place for review.
+`inst/modeldb/specificDrugs/Zhang_2012_lopinavir_ritonavir.R`. The
+table below collects every typical-value parameter, every IIV / IOV
+parameter, and every covariate / interaction effect in one place for
+review.
 
-| Equation / parameter      | Value          | Source location                                                  |
-|---------------------------|----------------|-------------------------------------------------------------------|
-| LPV CL/F (no RTV)         | 4.18 L/h       | Table 2, Lopinavir CL/F                                           |
-| LPV V/F                   | 11.6 L         | Table 2, Lopinavir V/F                                            |
-| LPV ka                    | 0.74 1/h       | Table 2, Lopinavir ka                                             |
-| LPV F anchor              | 1 (FIXED)      | Methods 'Population pharmacokinetic analysis' paragraph 5 (control = 100%) |
-| LPV SLP                   | 0.021 / mg/kg  | Table 2, Lopinavir Slope; Equation 4                              |
-| LPV RIF coefficient       | 0.832          | Table 2, Lopinavir RIF on F; Equation 4                           |
-| LPV-RTV Emax              | 0.9 (FIXED)    | Table 2, interaction Emax (fix); Equation 3                       |
-| LPV-RTV EC50              | 0.0519 mg/L    | Table 2, interaction EC50; Equation 3                             |
-| RTV CL/F (no rifampicin)  | 12.8 L/h       | Table 2, Ritonavir CL/F (no TB and after TB)                      |
-| RTV CL/F (with rifampicin)| 19.1 L/h       | Table 2, Ritonavir CL/F (with TB)                                 |
-| RTV V/F                   | 105 L          | Table 2, Ritonavir V/F                                            |
-| RTV ka                    | 2.31 1/h       | Table 2, Ritonavir ka                                             |
-| RTV MTT                   | 1.28 h         | Table 2, Ritonavir MTT                                            |
-| RTV NTRANS                | 10 (FIXED)     | Results 'Model description' paragraph 1                           |
-| WT reference              | 10 kg          | Methods Equations 1-2                                             |
-| Allometric exponents      | 0.75 / 1 (FIXED) | Methods Equations 1-2, Holford 1996 refs 10/11                  |
-| LPV proportional RUV      | 0.304          | Table 2, Lopinavir RUV (exponential on log data)                  |
-| RTV proportional RUV      | 0.339          | Table 2, Ritonavir RUV (exponential on log data)                  |
-| IIV LPV V (CV)            | 56.6%          | Table 2, IIV V Lopinavir                                          |
-| IOV LPV ka (CV) [BSV-equiv] | 76.2%        | Table 2, IOV ka Lopinavir; folded as BSV-equivalent               |
-| IOV LPV F (CV) [BSV-equiv]  | 51.8%        | Table 2, IOV F  Lopinavir; folded as BSV-equivalent               |
-| IIV RTV CL (CV)           | 72.8%          | Table 2, IIV CL Ritonavir                                         |
-| IIV RTV V (CV)            | 43.3%          | Table 2, IIV V  Ritonavir                                         |
-| Corr RTV CL/V (proportional, rho ~= 0.99) | log-block | Results 'Model description' paragraph 1; encoded approximation |
-| IOV RTV MTT (CV) [BSV-equiv] | 31.1%       | Table 2, IOV MTT Ritonavir; folded as BSV-equivalent              |
-| IOV RTV ka (CV)  [BSV-equiv] | 98.1%       | Table 2, IOV ka  Ritonavir; folded as BSV-equivalent              |
-| ODE structure (LPV)       | n/a            | Figure 1; Methods 'Population pharmacokinetic analysis' paragraph 4 |
-| ODE structure (RTV transit) | n/a          | Results 'Model description' paragraph 1                           |
-| Equation 1 (allometric CL/F) | n/a         | Methods Equation 1                                                |
-| Equation 2 (allometric V/F)  | n/a         | Methods Equation 2                                                |
-| Equation 3 (sigmoid Emax)    | n/a         | Methods Equation 3                                                |
-| Equation 4 (linear F shift)  | n/a         | Methods Equation 4                                                |
+| Equation / parameter                                   | Value          | Source location |
+|--------------------------------------------------------|----------------|-----------------|
+| Lopinavir CL/F (without ritonavir)                     | 37.9 L/h       | Table 2 (footnote dagger) |
+| Lopinavir Vc/F                                         | 54.7 L         | Table 2 |
+| Lopinavir ka                                           | 0.991 1/h      | Table 2 |
+| Lopinavir relative F with RIF                          | 0.80           | Table 2 ('Relative bioavailability when given with RIF') |
+| RIF effect on Lopinavir CL/F                           | +71.0%         | Table 2 ('RIF on CL/F (+)') |
+| Lopinavir proportional residual error                  | 12.7%          | Table 2 ('Residual variability (proportional %)') |
+| Evening effect on Lopinavir F                          | +42.0%         | Table 2 ('Evening effect on bioavailability (+)') |
+| Evening effect on CL/F (both drugs)                    | -32.7%         | Table 2 ('Evening effect on CL/F (-)') |
+| Lopinavir IIV CL/F                                     | 20.2% CV       | Table 2 |
+| Lopinavir IIV Vc/F                                     | 27.2% CV       | Table 2 |
+| Lopinavir IOV F (folded into BSV-equivalent)           | 21.9% CV       | Table 2 |
+| Lopinavir IOV ka (folded into BSV-equivalent)          | 94.2% CV       | Table 2 |
+| Ritonavir CL/F                                         | 19.2 L/h       | Table 2 |
+| Ritonavir Vc/F                                         | 22.6 L         | Table 2 |
+| Ritonavir ka                                           | 3.28 1/h       | Table 2 |
+| Ritonavir intercompartmental clearance Q/F             | 31.0 L/h       | Table 2 |
+| Ritonavir Vp/F                                         | 56.6 L         | Table 2 |
+| Ritonavir mean transit time MTT                        | 1.44 h         | Table 2 |
+| Ritonavir number of transit compartments NN            | 2.03           | Table 2 |
+| Ritonavir relative F with RIF (at 100 mg reference)    | 0.55           | Table 2 |
+| RIF effect on Ritonavir CL/F                           | +36.0%         | Table 2 |
+| Ritonavir proportional residual error                  | 18.8%          | Table 2 |
+| Evening effect on Ritonavir F                          | +45.0%         | Table 2 |
+| Bioavailability/10 mg ritonavir (RIF arm only)         | +8.1%          | Table 2 (footnote c) |
+| Ritonavir IIV CL/F                                     | 21.5% CV       | Table 2 |
+| Ritonavir IIV Vc/F                                     | 10.2% CV       | Table 2 |
+| Ritonavir IIV F                                        | 30.3% CV       | Table 2 |
+| Ritonavir IOV MTT (folded into BSV-equivalent)         | 27.9% CV       | Table 2 |
+| Maximum LPV CL/F inhibition by RTV (Imax)              | 95.3%          | Table 2 ('Lopinavir-ritonavir interaction', E max) |
+| IC50 of RTV inhibition on LPV CL/F                     | 0.0351 mg/L    | Table 2 ('Lopinavir-ritonavir interaction', E C 50) |
+| Allometric exponent FFM on CL/F                        | 0.75 (fixed)   | Methods 'Population pharmacokinetic analysis' paragraph 4 (Holford convention) |
+| Allometric exponent WT on Vc/F and Vp/F                | 1.0 (fixed)    | Methods 'Population pharmacokinetic analysis' paragraph 4 (Holford convention) |
+| Dynamic LPV CL/F inhibition equation                   | `CL_LPV(t) = CL0_LPV * (1 - Imax * C_RTV / (IC50 + C_RTV))` | Methods 'Population pharmacokinetic analysis' equation |
+| Savic transit-chain input rate (RTV)                   | `rate = bio * dose * (ktr*t)^NN * exp(-ktr*t) / Gamma(NN+1)` with `ktr = (NN+1)/MTT` | Methods 'Population pharmacokinetic analysis' paragraph 2 (citing Savic et al.) |
 
 # Virtual cohort
 
-Three regimens are simulated: standard 4:1 LPV/r without rifampicin
-(the no-TB reference cohort), super-boosted 1:1 LPV/r with rifampicin,
-and double-dose 4:1 LPV/r with rifampicin. All three are 12-hourly
-dosing at the cohort median weight (10.2 kg) over a 7-day window to
-reach pharmacokinetic steady state. Cohort doses are taken from
-Zhang 2012 Table 1 medians.
+Original observed data are not publicly available. The simulations
+below build a virtual cohort of 100 subjects per occasion mirroring the
+four treatment conditions evaluated in the paper. Each subject receives
+twice-daily LPV/r doses (morning at clock 08:00, evening at clock
+20:00) for 7 days, matching the paper's intensive-sampling design (1
+week after each dose adjustment so the diurnal pattern and the
+rifampicin-induction equilibrium are both stable). The covariates WT
+and FFM are drawn from log-normal distributions whose medians and
+ranges approximate Table 1 of the source paper.
 
 ```{r cohort}
-set.seed(2026L)
+set.seed(20260614)
 
-build_events <- function(cohort, wt, lpv_mgkg, rtv_mgkg, conmed_rif,
-                         tau_h = 12, days = 7, id_int = 1L) {
-  amt_lpv <- lpv_mgkg * wt
-  amt_rtv <- rtv_mgkg * wt
-  n_doses <- days * 24 / tau_h
-  ev <- rxode2::et()
-  ev <- rxode2::et(ev, amt = amt_lpv, addl = n_doses - 1L, ii = tau_h,
-                   time = 0, cmt = "depot")
-  ev <- rxode2::et(ev, amt = amt_rtv, addl = n_doses - 1L, ii = tau_h,
-                   time = 0, cmt = "depot_rtv")
-  ev <- rxode2::et(ev, seq(0, days * 24, by = 0.5), cmt = "Cc")
-  df <- as.data.frame(ev)
-  df$id <- id_int
-  df$WT <- wt
-  df$CONMED_RIF <- conmed_rif
-  df$DOSE_RTV_MGKG <- rtv_mgkg
-  df$cohort <- cohort
-  df
+n_per_arm  <- 100L
+tau        <- 12        # twice-daily dose interval (h)
+n_doses    <- 14L       # 7 days of twice-daily dosing -> steady-state by day 7
+day_of_obs <- 7         # sample the final 24-h dosing-day at steady state
+
+# Morning and evening dose times in clock-hours from midnight. The model uses
+# the simulation convention t = clock-hours-from-midnight (see Assumptions and
+# deviations); morning at clock 08:00 -> t = 8, evening at clock 20:00 -> t = 20.
+dose_morning_hod <- 8
+dose_evening_hod <- 20
+
+dose_times <- sort(c(
+  dose_morning_hod + 24 * (0:(n_doses / 2 - 1)),
+  dose_evening_hod + 24 * (0:(n_doses / 2 - 1))
+))
+
+obs_times <- sort(unique(c(
+  dose_morning_hod + (day_of_obs - 1) * 24 +
+    c(0, 0.5, 1, 1.5, 2, 2.5, 3, 4, 5, 6, 8, 10, 12,
+      12.5, 13, 14, 16, 18, 20, 22, 24)
+)))
+
+regimens <- tibble::tribble(
+  ~regimen,           ~lpv_mg, ~rtv_mg, ~rif,
+  "PK1: 400/100 noRIF",   400,     100,    0,
+  "PK2: 400/100 +RIF",    400,     100,    1,
+  "PK3: 600/150 +RIF",    600,     150,    1,
+  "PK4: 800/200 +RIF",    800,     200,    1
+)
+
+make_cohort <- function(n, lpv_mg, rtv_mg, rif, regimen, id_offset) {
+  ids <- id_offset + seq_len(n)
+  # Sample WT and FFM from log-normal distributions whose median and range
+  # approximate Zhang 2012 Table 1.
+  wt  <- exp(rnorm(n, mean = log(64.5), sd = 0.25))
+  ffm <- exp(rnorm(n, mean = log(39.5), sd = 0.15))
+
+  subj <- tibble(id = ids, WT = wt, FFM = ffm, CONMED_RIF = rif, DOSE = rtv_mg)
+
+  dose_lpv <- tidyr::expand_grid(id = ids, time = dose_times) |>
+    dplyr::mutate(amt = lpv_mg, cmt = "depot",     evid = 1L)
+  dose_rtv <- tidyr::expand_grid(id = ids, time = dose_times) |>
+    dplyr::mutate(amt = rtv_mg, cmt = "depot_rtv", evid = 1L)
+  obs <- tidyr::expand_grid(id = ids, time = obs_times,
+                            cmt = c("Cc", "Cc_rtv")) |>
+    dplyr::mutate(amt = 0, evid = 0L)
+
+  dplyr::bind_rows(dose_lpv, dose_rtv, obs) |>
+    dplyr::left_join(subj, by = "id") |>
+    dplyr::mutate(regimen = regimen) |>
+    dplyr::arrange(id, time, evid)
 }
 
-events <- dplyr::bind_rows(
-  build_events("Standard 4:1, no RIF",    wt = 10.2, lpv_mgkg = 11.6,
-               rtv_mgkg = 2.9,  conmed_rif = 0L, id_int = 1L),
-  build_events("Super-boosted 1:1 + RIF", wt = 10.2, lpv_mgkg = 14.0,
-               rtv_mgkg = 14.0, conmed_rif = 1L, id_int = 2L),
-  build_events("Double 4:1 + RIF",        wt = 10.2, lpv_mgkg = 23.0,
-               rtv_mgkg = 5.75, conmed_rif = 1L, id_int = 3L)
-)
-stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
-table(events$cohort, events$evid)
+id_seed <- 0L
+events_list <- list()
+for (i in seq_len(nrow(regimens))) {
+  r <- regimens[i, ]
+  events_list[[i]] <- make_cohort(n_per_arm, r$lpv_mg, r$rtv_mg,
+                                  r$rif, r$regimen, id_offset = id_seed)
+  id_seed <- id_seed + n_per_arm
+}
+events <- dplyr::bind_rows(events_list)
+stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid", "cmt")])))
 ```
 
 # Simulation
 
-We replicate Zhang 2012's typical-value (no IIV / IOV) trajectories by
-zeroing the random effects. The Population PK paper's Figures 2-4 and the
-dose-recommendation Table 3 are based on typical-subject (median weight
-10.2 kg) simulations with the published point estimates.
-
-```{r simulate-typical}
+```{r simulate}
 mod <- readModelDb("Zhang_2012_lopinavir_ritonavir")
+
+# Stochastic VPC with the published IIV.
+sim <- rxode2::rxSolve(mod, events = events,
+                       keep = c("regimen", "WT", "FFM", "CONMED_RIF", "DOSE")) |>
+  as.data.frame()
+
+# Deterministic (typical-value) curves for Figure 3 replication.
 mod_typical <- rxode2::zeroRe(mod)
 sim_typical <- rxode2::rxSolve(mod_typical, events = events,
-                               keep = c("cohort"))
-sim_typical <- as.data.frame(sim_typical)
-range(sim_typical$Cc, na.rm = TRUE)
-range(sim_typical$Cc_rtv, na.rm = TRUE)
+                               keep = c("regimen", "WT", "FFM",
+                                        "CONMED_RIF", "DOSE")) |>
+  as.data.frame()
 ```
 
 # Replicate published figures
 
-## Figure 2 - Dynamic LPV-RTV interaction (sigmoid Emax)
+## Figure 1 -- morning vs evening trough concentrations
 
-Zhang 2012 Figure 2 shows the change of LPV oral clearance as a function
-of ritonavir concentration over the dosing interval, predicted by the
-final combined model. Below we plot LPV apparent CL/F vs. ritonavir
-concentration (the model's `cl` and `Cc_rtv` outputs at steady state)
-for each of the three cohorts.
+Zhang 2012 Figure 1 plots the distribution of observed morning trough
+(C0, just before the morning dose) and evening trough (C12, just before
+the evening dose) concentrations of lopinavir and ritonavir across the
+four occasions. The key qualitative finding -- morning C0 higher than
+evening C12 across all occasions -- is reproduced below from the
+simulated steady-state day-7 cohort.
 
-```{r figure-2-emax-curve}
-# The Emax sigmoid in the model is CL(C) = CL0 * (1 - 0.9 * C / (0.0519 + C)),
-# allometrically scaled to 10 kg in the typical-value run.
-emax_curve <- tibble(
-  crtv_mgL = 10 ^ seq(-3, log10(2), length.out = 200)
-) |>
-  mutate(
-    inhib = 0.9 * crtv_mgL / (0.0519 + crtv_mgL),
-    cl_lpv = 4.18 * (1 - inhib)
+```{r figure-1}
+# Day-7 morning trough = the observation immediately before the morning dose at
+# time (day-1) * 24 + 8. Day-7 evening trough = observation immediately before
+# the evening dose at (day-1) * 24 + 20. With our 30-minute sampling grid both
+# samples fall exactly on the dose times.
+day_start <- (day_of_obs - 1) * 24
+t_C0_morning_d8 <- day_start + 24 + dose_morning_hod  # day 8 morning trough -> just before next morning dose
+t_C12_evening_d7 <- day_start + dose_evening_hod      # day 7 evening trough -> just before evening dose
+
+troughs <- sim |>
+  dplyr::filter(time %in% c(t_C0_morning_d8, t_C12_evening_d7)) |>
+  dplyr::mutate(trough_type = ifelse(time == t_C0_morning_d8,
+                                     "C0 (morning)", "C12 (evening)"),
+                trough_type = factor(trough_type,
+                                     levels = c("C0 (morning)",
+                                                "C12 (evening)"))) |>
+  dplyr::select(regimen, id, trough_type, Cc, Cc_rtv) |>
+  tidyr::pivot_longer(cols = c("Cc", "Cc_rtv"),
+                      names_to = "analyte", values_to = "conc_mgL") |>
+  dplyr::mutate(analyte = ifelse(analyte == "Cc", "Lopinavir", "Ritonavir"))
+
+ggplot(troughs, aes(x = regimen, y = conc_mgL,
+                    colour = trough_type, fill = trough_type)) +
+  geom_boxplot(alpha = 0.30, outlier.size = 0.7) +
+  facet_wrap(~ analyte, scales = "free_y") +
+  scale_y_log10() +
+  labs(x = NULL, y = "Plasma concentration (mg/L)",
+       title = "Figure 1 -- morning (C0) vs evening (C12) trough concentrations",
+       caption = paste0("Replicates Figure 1 of Zhang 2012. n = ",
+                        n_per_arm, " per regimen.")) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 30, hjust = 1),
+        legend.position = "bottom",
+        legend.title = element_blank())
+```
+
+## Figure 3 -- dynamic LPV CL/F inhibition by ritonavir
+
+Zhang 2012 Figure 3 plots a typical-patient ritonavir concentration vs
+the resulting lopinavir CL/F over 24 h, for three regimens with
+rifampicin (400/100, 600/150, 800/200 mg) plus the no-rifampicin
+reference. The Imax = 0.953 / IC50 = 0.0351 mg/L sigmoid produces a
+strong CL/F suppression even at modest ritonavir concentrations,
+explaining why lopinavir trough concentrations are clinically rescuable
+with dose escalation despite rifampicin induction.
+
+```{r figure-3, fig.height = 6}
+fig3 <- sim_typical |>
+  dplyr::filter(time >= (day_of_obs - 1) * 24 + dose_morning_hod,
+                time <= (day_of_obs - 1) * 24 + dose_morning_hod + 24) |>
+  dplyr::mutate(t_h = time - ((day_of_obs - 1) * 24 + dose_morning_hod)) |>
+  dplyr::distinct(regimen, t_h, .keep_all = TRUE)
+
+p_a <- ggplot(fig3, aes(t_h, Cc_rtv, colour = regimen)) +
+  geom_line(linewidth = 0.9) +
+  labs(x = "Time after morning dose (h)",
+       y = "Ritonavir plasma conc. (mg/L)",
+       title = "(A) Ritonavir concentration -- driver of LPV CL/F inhibition") +
+  theme_bw() + theme(legend.position = "none")
+
+p_b <- ggplot(fig3, aes(t_h, cl_lpv, colour = regimen)) +
+  geom_line(linewidth = 0.9) +
+  geom_hline(yintercept = 37.9, linetype = "dashed", colour = "grey50") +
+  annotate("text", x = 1, y = 37.9, label = "CL0 = 37.9 L/h",
+           vjust = -0.4, size = 3, colour = "grey30") +
+  labs(x = "Time after morning dose (h)",
+       y = "Lopinavir CL/F (L/h)",
+       title = "(B) Lopinavir CL/F -- response to dynamic RTV inhibition",
+       colour = NULL,
+       caption = paste0("Replicates Figure 3 of Zhang 2012. ",
+                        "Dashed line: lopinavir CL0/F = 37.9 L/h (no ",
+                        "ritonavir effect). Typical 70 kg / 50 kg FFM ",
+                        "subject; no IIV.")) +
+  theme_bw() +
+  theme(legend.position = "bottom") +
+  guides(colour = guide_legend(nrow = 2))
+
+cowplot_available <- requireNamespace("patchwork", quietly = TRUE)
+if (cowplot_available) {
+  patchwork::wrap_plots(p_a, p_b, ncol = 1, heights = c(1, 1.1))
+} else {
+  print(p_a); print(p_b)
+}
+```
+
+## Figure 4 -- VPC by occasion
+
+Zhang 2012 Figure 4 plots a visual predictive check for lopinavir (A)
+and ritonavir (B) stratified by occasion. The simulated 5th / 50th /
+95th percentiles below are computed from the steady-state day-7 dosing
+interval (12 h covering the morning dose 08:00-20:00, then 12 h
+covering the evening dose 20:00-08:00).
+
+```{r figure-4, fig.height = 6}
+vpc_window <- sim |>
+  dplyr::filter(time >= (day_of_obs - 1) * 24 + dose_morning_hod,
+                time <= (day_of_obs - 1) * 24 + dose_morning_hod + 24) |>
+  dplyr::mutate(t_h = time - ((day_of_obs - 1) * 24 + dose_morning_hod))
+
+vpc_lpv <- vpc_window |>
+  dplyr::group_by(regimen, t_h) |>
+  dplyr::summarise(
+    Q05 = quantile(Cc, 0.05, na.rm = TRUE),
+    Q50 = quantile(Cc, 0.50, na.rm = TRUE),
+    Q95 = quantile(Cc, 0.95, na.rm = TRUE),
+    .groups = "drop"
   )
 
-ggplot(emax_curve, aes(crtv_mgL, cl_lpv)) +
-  geom_line(linewidth = 1) +
-  geom_hline(yintercept = 4.18, linetype = "dashed", colour = "grey60") +
-  geom_vline(xintercept = 0.0519, linetype = "dotted", colour = "grey60") +
-  scale_x_log10() +
-  labs(x = "Ritonavir concentration (mg/L, log scale)",
-       y = "LPV typical apparent CL/F (L/h)",
-       title = "Figure 2 - Sigmoid Emax inhibition of LPV CL/F by ritonavir",
-       caption = "Replicates Figure 2 of Zhang 2012. CL0 = 4.18 L/h, Emax = 0.9 (fixed), EC50 = 0.0519 mg/L.")
-```
+vpc_rtv <- vpc_window |>
+  dplyr::group_by(regimen, t_h) |>
+  dplyr::summarise(
+    Q05 = quantile(Cc_rtv, 0.05, na.rm = TRUE),
+    Q50 = quantile(Cc_rtv, 0.50, na.rm = TRUE),
+    Q95 = quantile(Cc_rtv, 0.95, na.rm = TRUE),
+    .groups = "drop"
+  )
 
-## Figure 3 - Typical-value LPV and RTV profiles by regimen
-
-Zhang 2012 Figure 3 stratifies the final model VPC by regimen (standard,
-super-boosted, double-dose). The replication below restricts to the
-typical-value (no-IIV) trajectory at the median 10.2 kg cohort weight
-over the final steady-state interval (h 156-168 in our 7-day simulation).
-
-```{r figure-3-typical}
-sim_ss <- sim_typical |>
-  dplyr::filter(time >= 144, time <= 168) |>
-  dplyr::mutate(tau_h = time - 144) |>
-  tidyr::pivot_longer(c(Cc, Cc_rtv), names_to = "drug", values_to = "conc") |>
-  dplyr::mutate(drug = dplyr::recode(drug,
-                                     Cc = "Lopinavir",
-                                     Cc_rtv = "Ritonavir"))
-
-ggplot(sim_ss, aes(tau_h, conc, colour = cohort)) +
-  geom_line(linewidth = 0.8) +
-  facet_wrap(~drug, scales = "free_y") +
+p_lpv <- ggplot(vpc_lpv, aes(t_h)) +
+  geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.25, fill = "#3366cc") +
+  geom_line(aes(y = Q50), colour = "#3366cc", linewidth = 0.6) +
+  facet_wrap(~ regimen, ncol = 4) +
   scale_y_log10() +
-  labs(x = "Time within dosing interval (h)",
-       y = "Concentration (mg/L, log scale)",
-       title = "Figure 3 - Typical-value steady-state profiles by regimen",
-       caption = "Replicates Figure 3 of Zhang 2012 (typical-value version, no IIV / IOV).")
+  labs(x = NULL, y = "Lopinavir conc. (mg/L)",
+       title = "(A) Lopinavir VPC by occasion") +
+  theme_bw()
+
+p_rtv <- ggplot(vpc_rtv, aes(t_h)) +
+  geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.25, fill = "#cc6633") +
+  geom_line(aes(y = Q50), colour = "#cc6633", linewidth = 0.6) +
+  facet_wrap(~ regimen, ncol = 4) +
+  scale_y_log10() +
+  labs(x = "Time after morning dose (h)", y = "Ritonavir conc. (mg/L)",
+       title = "(B) Ritonavir VPC by occasion",
+       caption = "Replicates Figure 4 of Zhang 2012.") +
+  theme_bw()
+
+if (cowplot_available) {
+  patchwork::wrap_plots(p_lpv, p_rtv, ncol = 1)
+} else {
+  print(p_lpv); print(p_rtv)
+}
 ```
 
-## Figure 4 - Proposed 8-hourly dosing
+## Dose-rescue prediction at PK4
 
-Zhang 2012 Figure 4 plots the 5th percentile of LPV concentrations for a
-typical patient (median age and weight) under the original 12-hourly and
-the proposed 8-hourly regimens, with a 1 mg/L target line. The
-typical-value 8-hourly regimens for the four WHO weight bands are
-implemented below.
+Zhang 2012 Results (final two paragraphs of 'Model evaluation and
+simulation') reports that 99.5% of subjects given 800/200 mg LPV/r
+during rifampicin co-administration would achieve the lopinavir target
+of C0 >= 1 mg/L, but only 77.9% would achieve C12 >= 1 mg/L. The
+simulated cohort below reproduces the headline finding.
 
-```{r figure-4-q8h-typical}
-band_doses <- tribble(
-  ~cohort,                        ~wt, ~lpv_mgkg, ~rtv_mgkg,
-  "8h 27 mg/kg (3.0-5.9 kg band, RIF)",  4.5, 27.0, 6.75,
-  "8h 21 mg/kg (6.0-9.9 kg band, RIF)",  8.0, 21.0, 5.25,
-  "8h 20 mg/kg (10.0-13.9 kg band, RIF)", 12.0, 20.0, 5.00,
-  "8h 18 mg/kg (14.0-19.9 kg band, RIF)", 17.0, 18.0, 4.50
+```{r dose-rescue}
+target_mgL <- 1.0
+
+rescue_summary <- troughs |>
+  dplyr::filter(analyte == "Lopinavir") |>
+  dplyr::group_by(regimen, trough_type) |>
+  dplyr::summarise(
+    median_mgL          = median(conc_mgL, na.rm = TRUE),
+    pct_above_target    = 100 * mean(conc_mgL >= target_mgL, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+knitr::kable(
+  rescue_summary,
+  digits   = 2,
+  caption  = paste0("Simulated lopinavir morning (C0) and evening (C12) ",
+                    "trough summary at steady state by regimen. ",
+                    "Target = 1 mg/L. Zhang 2012 reports 99.5% above target ",
+                    "for C0 at PK4 (800/200 mg + RIF) and 77.9% above target ",
+                    "for C12 at the same regimen.")
 )
-
-ev_q8h <- purrr::pmap_dfr(band_doses, function(cohort, wt, lpv_mgkg, rtv_mgkg) {
-  build_events(cohort, wt = wt, lpv_mgkg = lpv_mgkg, rtv_mgkg = rtv_mgkg,
-               conmed_rif = 1L, tau_h = 8, days = 7,
-               id_int = 10L + match(cohort, band_doses$cohort))
-})
-
-sim_q8h <- rxode2::rxSolve(mod_typical, events = ev_q8h,
-                           keep = c("cohort")) |>
-  as.data.frame()
-sim_q8h_ss <- sim_q8h |>
-  dplyr::filter(time >= 144, time <= 168) |>
-  dplyr::mutate(tau_h = time - 144)
-
-ggplot(sim_q8h_ss, aes(tau_h, Cc, colour = cohort)) +
-  geom_line(linewidth = 0.8) +
-  geom_hline(yintercept = 1, linetype = "dashed", colour = "red") +
-  scale_y_log10() +
-  labs(x = "Time within 8 h dosing interval",
-       y = "LPV concentration (mg/L, log scale)",
-       title = "Figure 4 - LPV under the proposed 8-hourly dosing during rifampicin",
-       caption = "Replicates Figure 4 of Zhang 2012 (typical-value version). Dashed: 1 mg/L target.")
 ```
 
 # PKNCA validation
 
-Steady-state NCA computed over the last full 12 h dosing interval (h
-156-168) of the 7-day simulation. PKNCA returns separate per-cohort
-summaries via the `cohort + id` grouping formula. Concentrations are
-in mg/L and times in h; we use the no-IIV typical-value trajectory so
-each cohort reduces to one subject (one id per cohort).
+PKNCA computes steady-state non-compartmental Cmax, Cmin, AUC0-tau,
+and Tmax over the day-7 morning dose interval (12 h) for lopinavir and
+ritonavir, stratified by regimen. The 12-h interval was chosen to
+match the paper's twice-daily-dosing convention; the evening-dose
+interval has different bioavailability and clearance multipliers per
+the diurnal pattern and is summarised separately in the dose-rescue
+table above.
 
 ```{r pknca-lpv}
-tau_h <- 12
-end_ss <- 168
-start_ss <- end_ss - tau_h
+nca_t_start <- (day_of_obs - 1) * 24 + dose_morning_hod
+nca_t_end   <- nca_t_start + tau
 
-sim_nca <- sim_typical |>
-  dplyr::filter(!is.na(Cc), time >= start_ss, time <= end_ss) |>
-  dplyr::select(id, time, Cc, cohort)
+nca_window_lpv <- sim |>
+  dplyr::filter(time >= nca_t_start, time <= nca_t_end) |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::distinct(id, time, regimen, .keep_all = TRUE) |>
+  dplyr::select(id, time, Cc, regimen)
 
-dose_df <- events |>
-  dplyr::filter(evid == 1, cmt == "depot") |>
-  dplyr::transmute(
-    id    = id,
-    time  = time,
-    amt   = amt,
-    cohort = cohort
-  ) |>
-  dplyr::group_by(id, cohort) |>
-  dplyr::slice_max(time, n = 1L, with_ties = FALSE) |>
-  dplyr::ungroup()
+# Guarantee a time = nca_t_start (= concentration at dose time) row per
+# (id, regimen) so PKNCA can anchor AUC0-tau without the
+# "Requesting an AUC range starting (X) before the first measurement" warning.
+nca_window_lpv <- dplyr::bind_rows(
+  nca_window_lpv,
+  nca_window_lpv |> dplyr::distinct(id, regimen) |>
+    dplyr::mutate(time = nca_t_start, Cc = 0)
+) |>
+  dplyr::distinct(id, regimen, time, .keep_all = TRUE) |>
+  dplyr::arrange(id, regimen, time)
 
-conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | cohort + id,
+dose_df_lpv <- events |>
+  dplyr::filter(evid == 1L, cmt == "depot", time == nca_t_start) |>
+  dplyr::distinct(id, time, amt, regimen)
+
+conc_lpv <- PKNCA::PKNCAconc(nca_window_lpv,
+                             Cc ~ time | regimen + id,
                              concu = "mg/L", timeu = "h")
-dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | cohort + id,
+dose_lpv <- PKNCA::PKNCAdose(dose_df_lpv, amt ~ time | regimen + id,
                              doseu = "mg")
 
-intervals <- data.frame(
-  start    = start_ss,
-  end      = end_ss,
+intervals_ss <- data.frame(
+  start    = nca_t_start,
+  end      = nca_t_end,
   cmax     = TRUE,
   cmin     = TRUE,
   tmax     = TRUE,
-  auclast  = TRUE,
-  cav      = TRUE,
-  ctrough  = TRUE
+  auclast  = TRUE
 )
 
-nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
-nca_lpv  <- PKNCA::pk.nca(nca_data)
-knitr::kable(summary(nca_lpv),
-             caption = "Simulated LPV steady-state NCA over the last 12 h interval, by regimen.")
+nca_res_lpv <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_lpv, dose_lpv,
+                                              intervals = intervals_ss))
+nca_summary_lpv <- as.data.frame(summary(nca_res_lpv))
+knitr::kable(nca_summary_lpv,
+             caption = paste0("Simulated steady-state NCA -- lopinavir, ",
+                              "morning dose interval (12 h), by regimen."))
 ```
 
 ```{r pknca-rtv}
-sim_nca_rtv <- sim_typical |>
-  dplyr::filter(!is.na(Cc_rtv), time >= start_ss, time <= end_ss) |>
-  dplyr::transmute(id = id, time = time, Cc = Cc_rtv, cohort = cohort)
+nca_window_rtv <- sim |>
+  dplyr::filter(time >= nca_t_start, time <= nca_t_end) |>
+  dplyr::filter(!is.na(Cc_rtv)) |>
+  dplyr::distinct(id, time, regimen, .keep_all = TRUE) |>
+  dplyr::select(id, time, Cc_rtv, regimen)
 
-dose_rtv <- events |>
-  dplyr::filter(evid == 1, cmt == "depot_rtv") |>
-  dplyr::transmute(id = id, time = time, amt = amt, cohort = cohort) |>
-  dplyr::group_by(id, cohort) |>
-  dplyr::slice_max(time, n = 1L, with_ties = FALSE) |>
-  dplyr::ungroup()
+nca_window_rtv <- dplyr::bind_rows(
+  nca_window_rtv,
+  nca_window_rtv |> dplyr::distinct(id, regimen) |>
+    dplyr::mutate(time = nca_t_start, Cc_rtv = 0)
+) |>
+  dplyr::distinct(id, regimen, time, .keep_all = TRUE) |>
+  dplyr::arrange(id, regimen, time)
 
-conc_rtv <- PKNCA::PKNCAconc(sim_nca_rtv, Cc ~ time | cohort + id,
+dose_df_rtv <- events |>
+  dplyr::filter(evid == 1L, cmt == "depot_rtv", time == nca_t_start) |>
+  dplyr::distinct(id, time, amt, regimen)
+
+conc_rtv <- PKNCA::PKNCAconc(nca_window_rtv,
+                             Cc_rtv ~ time | regimen + id,
                              concu = "mg/L", timeu = "h")
-dose_rtv_obj <- PKNCA::PKNCAdose(dose_rtv, amt ~ time | cohort + id,
-                                 doseu = "mg")
-nca_data_rtv <- PKNCA::PKNCAdata(conc_rtv, dose_rtv_obj, intervals = intervals)
-nca_rtv <- PKNCA::pk.nca(nca_data_rtv)
-knitr::kable(summary(nca_rtv),
-             caption = "Simulated RTV steady-state NCA over the last 12 h interval, by regimen.")
+dose_rtv <- PKNCA::PKNCAdose(dose_df_rtv, amt ~ time | regimen + id,
+                             doseu = "mg")
+
+nca_res_rtv <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_rtv, dose_rtv,
+                                              intervals = intervals_ss))
+nca_summary_rtv <- as.data.frame(summary(nca_res_rtv))
+knitr::kable(nca_summary_rtv,
+             caption = paste0("Simulated steady-state NCA -- ritonavir, ",
+                              "morning dose interval (12 h), by regimen."))
 ```
 
-## Comparison against published trough concentrations
+## Comparison against the paper's reported simulation findings
 
-Zhang 2012 reports that the standard 4:1 LPV/r without rifampicin in the
-control cohort achieves trough LPV > 1 mg/L; the super-boosted 1:1 with
-rifampicin "almost always" achieves > 1 mg/L; and the doubled 4:1 with
-rifampicin "failed" to maintain trough > 1 mg/L in the targeted 95th
-percentile (Discussion paragraph 2). The typical-value trough under
-each regimen is the relevant comparison here:
+Zhang 2012 does not tabulate NCA values directly, but reports several
+quantitative simulation findings in the Results section. The
+comparison below tests the model against those text-quoted predictions
+using the same simulated cohort.
 
-```{r trough-table}
-sim_typical |>
-  dplyr::filter(time >= start_ss, time <= end_ss) |>
-  dplyr::group_by(cohort) |>
+```{r model-text-comparison}
+# Paper reported: at PK4 (800/200 + RIF), C0 target (>= 1 mg/L) achieved by
+# 99.5% of subjects; C12 target achieved by 77.9%.
+pk4_summary <- troughs |>
+  dplyr::filter(regimen == "PK4: 800/200 +RIF", analyte == "Lopinavir") |>
+  dplyr::group_by(trough_type) |>
   dplyr::summarise(
-    `LPV trough (mg/L)` = round(min(Cc),     3),
-    `LPV peak (mg/L)`   = round(max(Cc),     3),
-    `RTV trough (mg/L)` = round(min(Cc_rtv), 3),
-    `RTV peak (mg/L)`   = round(max(Cc_rtv), 3),
+    simulated_pct_above_1mgL = 100 * mean(conc_mgL >= 1.0, na.rm = TRUE),
     .groups = "drop"
   ) |>
-  knitr::kable(caption = "Typical-value LPV and RTV steady-state metrics by regimen.")
-```
+  dplyr::mutate(
+    paper_pct_above_1mgL = c(99.5, 77.9)[
+      match(trough_type, c("C0 (morning)", "C12 (evening)"))
+    ]
+  )
 
-The typical-value double-dose trough sits above 1 mg/L but is the lowest
-of the three regimens, consistent with the paper's narrative that the
-doubled-dose strategy reduces the safety margin and "fails" once IIV is
-re-introduced (95th percentile of the simulated cohort falls below 1
-mg/L). The super-boosted trough recovers to the standard-cohort level,
-consistent with the paper's finding that "super-boosted LPV almost
-always achieved adequate trough concentrations of LPV."
+knitr::kable(
+  pk4_summary,
+  digits  = 1,
+  caption = paste0("Lopinavir target achievement at PK4 (800/200 mg + RIF). ",
+                   "Paper Results 'Model evaluation and simulation' ",
+                   "paragraph 3.")
+)
+
+# Paper reported: RTV F with RIF at 100 mg = 0.55, at 150 mg = 0.77 (1.5x),
+# at 200 mg = 0.996 (2x). Zhang 2012 Discussion 'Results' section.
+rtv_f_with_rif <- tibble::tibble(
+  rtv_mg            = c(100, 150, 200),
+  paper_F_with_RIF  = c(0.550, 0.773, 0.996),
+  formula_F_with_RIF = 0.55 * (1 + 0.0081 * (c(100, 150, 200) - 100))
+)
+knitr::kable(
+  rtv_f_with_rif,
+  digits  = 3,
+  caption = paste0("Ritonavir relative bioavailability with rifampicin, by ",
+                   "RTV dose level. Paper Discussion paragraph 4.")
+)
+```
 
 # Assumptions and deviations
 
-- **Transit-chain parameterization.** The paper reports both `MTT = 1.28
-  h` and `ka = 2.31 1/h` for the ritonavir absorption phase. The
-  implementation follows the Bienczak 2016 nevirapine precedent in
-  `Bienczak_2016_nevirapine.R`: 10 transit compartments (depot ->
-  transit1 -> ... -> transit10) with shared inter-transit rate
-  `ktr = NTRANS / MTT = 10 / 1.28 = 7.81 1/h` and a separate first-order
-  absorption rate `ka = 2.31 1/h` from transit10 to central. The paper
-  does not state explicitly whether `MTT` covers the transit chain only
-  or the whole depot-to-central absorption time; the implementation uses
-  the transit-chain-only convention since that is the only choice that
-  reconciles the reported `MTT = 1.28 h` with the separately reported
-  `ka = 2.31 1/h` (otherwise `MTT` would absorb the entire 1/ka step).
-- **`NTRANS = 10` (FIXED).** The paper reports 10 transit compartments
-  ("absorption phase displayed more complex pharmacokinetics which was
-  described best by a series of 10 transit compartments", Results
-  'Model description' paragraph 1) but does not state whether `NTRANS`
-  was estimated as a free parameter or fixed during the final fit. We
-  treat it as a fixed structural choice (`fixed(10)`).
-- **Allometric exponents.** The Methods Equations 1-2 apply allometric
-  scaling on `CL/F` and `V/F` to the 10 kg median body weight with
-  exponents not separately reported in Table 2. The canonical Holford
-  exponents 0.75 (CL/F) and 1.0 (V/F) from refs 10-11 of the source
-  paper are used here, treated as fixed structural choices.
-- **`Emax = 0.9` fixed.** The paper states "the Emax was fixed to 0.9.
-  This value was estimated when ritonavir parameters were fixed and only
-  LPV parameters estimated" (Results 'Model description' paragraph 4).
-  Encoded as `fixed(0.9)`.
-- **IIV CL_RTV and V_RTV "proportional" interpretation.** The Results
-  paragraph 1 says "A similar solution was used for IIV in oral
-  clearance and volume of distribution of ritonavir" (mirroring the
-  perfectly-correlated ka_LPV / ka_RTV pair). This is encoded here as a
-  correlated IIV block with `rho = 0.99` approximating perfect
-  proportionality; using `rho = 1.0` exactly would produce a singular
-  covariance matrix and prevent fitting / VPC use, but the simulated
-  realisations under `rho = 0.99` are visually indistinguishable from
-  `rho = 1`.
-- **Inter-occasion variability (IOV) folded as BSV-equivalent.**
-  nlmixr2lib has no idiomatic encoding for IOV separate from BSV in this
-  domain. Per the convention used in `Bienczak_2016_nevirapine.R`,
-  `Svensson_2016_rifampicin.R`, and other rifampicin / antiretroviral
-  popPK extractions, IOV is folded in as BSV-equivalent on parameters
-  where no separate BSV is reported (LPV `ka`, LPV `F`, RTV `MTT`,
-  RTV `ka`); IOV on a parameter that already carries a BSV term is
-  dropped (RTV `CL/F`, which has both `IIV = 72.8%` and `IOV = 41.6%`
-  in Table 2; only the IIV term is retained).
-- **No covariates on LPV or RTV beyond WT and rifampicin status.** The
-  paper tested gender, age, and haemoglobin and retained none (Methods
-  'Population pharmacokinetic analysis' paragraph 6 / Results 'Model
-  description' paragraph 1: "the age range in our dataset (6 months to
-  4.5 years) might explain why age and gender were not significant
-  covariates in our model"). Allometric scaling on WT, the binary
-  `CONMED_RIF` covariate on `F_LPV` and `CL_RTV`, and the continuous
-  `DOSE_RTV_MGKG` covariate on `F_LPV` are the only retained covariate
-  effects.
-- **Below-the-limit-of-quantification samples.** About 5% of the LPV
-  and RTV concentrations were below LLOQ (Methods 'Population
-  pharmacokinetic analysis' paragraph 1) and excluded from the original
-  fit; the published parameter estimates that this model file uses
-  reflect that exclusion. Steady-state typical-value simulations stay
-  above LLOQ for both drugs across all three regimens; LLOQ-driven
-  censoring is not encoded.
-- **Median haemoglobin upper bound.** Table 1 reports median haemoglobin
-  10.7 g/L (range 5.7-29.7 g/L). The upper value is biologically
-  implausible for paediatric haemoglobin in g/L (an adult reference is
-  120-180 g/L; paediatric values track a few units lower). The range
-  reads as either a typo (perhaps 9.7-15.7 g/dL transcribed into the
-  table's g/L column) or an unannotated unit ambiguity in the source
-  PDF. Haemoglobin is not retained as a model covariate, so the
-  ambiguity does not affect the implementation here.
-- **Erratum search.** A PubMed and journal-landing-page search for
-  corrections / errata to Zhang 2012 *Antivir Ther* 17(1):25-33
-  (PMID 22267467) at extraction time (2026-06-10) returned no published
-  corrections; the values used in this model file are the values
-  reported in the main publication.
+- **Reference body weight and fat-free mass for allometric scaling are
+  not stated in the paper.** The model uses 70 kg (total body weight)
+  and 50 kg (fat-free mass) per the Holford / Anderson convention
+  cited by the paper. Users who prefer a study-median anchor
+  (WT = 64.5 kg, FFM = 39.5 kg from Table 1) can re-scale the typical-
+  value parameters by multiplying by `(50 / 39.5)^0.75 = 1.20` (CL/F)
+  or `(70 / 64.5)^1.0 = 1.085` (V/F).
+- **Inter-occasion variability (IOV) folded into BSV-equivalent where
+  no between-subject term was reported.** Following the nlmixr2lib
+  convention used in `Bienczak_2016_nevirapine.R`,
+  `Chirehwa_2017_pyrazinamide.R`, and `Svensson_2014_bedaquiline.R`:
+  BOV is dropped where a BSV term is reported on the same parameter,
+  and BOV is folded in as a BSV-equivalent where only BOV is reported.
+  The encoded folded-in terms are LPV ka (94.2% CV), LPV F (21.9% CV),
+  and RTV MTT (27.9% CV). The dropped-because-BSV-also-reported terms
+  are LPV CL/F (IOV 11.8%), RTV CL/F (IOV 20.4%), and RTV F (IOV
+  30.3%). For single-occasion simulation this convention yields a
+  conservative envelope (it does not double-count BSV + BOV where both
+  were reported) while preserving the full population variability
+  where only BOV was reported.
+- **Inter-occasion residual variability on lopinavir (IOV RUV 17.1%
+  CV) is dropped** with no straightforward way to encode it as a BSV-
+  equivalent on a residual-error magnitude. The reported typical-
+  occasion lopinavir proportional residual (12.7% CV) is used as the
+  marginal residual error. This deviation is small in magnitude for
+  the model's intended use as a simulation backbone for dose-rescue
+  scenarios.
+- **Simulation time convention: t is in hours, anchored to clock
+  midnight.** Morning dose at clock 08:00 (t = 8) and evening dose at
+  clock 20:00 (t = 20) reproduce the paper's protocol. The overnight
+  indicator inside `model()` switches on for the 20:00-08:00 window
+  (= hod in [20, 24) U [0, 8)) so the same indicator drives the dose-
+  time bioavailability boost (+42% LPV, +45% RTV) at evening dose
+  times AND the time-varying CL/F reduction (-32.7%) throughout the
+  overnight interval. Users who simulate at different clock times
+  (e.g., morning dose at 07:00 instead of 08:00) need to shift t so
+  the overnight window aligns with their protocol; the paper's
+  morning-evening contrast is the physiological convention, not the
+  literal clock 08:00 / 20:00 numbers.
+- **Ritonavir dose-dependent bioavailability is identifiable only
+  within the rifampicin-coadministered arm.** Zhang 2012 Results
+  'Model description' paragraph 5: 'the relative bioavailability of
+  ritonavir increased by 8.1% for each 10 mg increment of dose' (in
+  the RIF arm only). The model encodes this as a CONMED_RIF-gated
+  multiplier on RTV F (active only when CONMED_RIF = 1). Outside the
+  100-200 mg RTV dose range the linear extrapolation is unvalidated
+  and may produce non-physiological F values; document the DOSE
+  covariate in the per-record sense for any extrapolated simulation.
+- **Rifampicin full-induction lag** is assumed to be complete in the
+  CONMED_RIF arm (the paper sampled 1 week after starting daily
+  rifampicin per Methods 'Population pharmacokinetic analysis'
+  paragraph 3). The packaged model treats CONMED_RIF as a binary
+  step indicator without a within-window induction trajectory; simulate
+  CONMED_RIF = 1 only for windows that include at least 7-14 days of
+  daily 600 mg rifampicin run-in. The paper itself acknowledges that
+  autoinduction of rifampicin may continue to ~2 weeks (Zhang 2012
+  Discussion paragraph 3) so simulated effect sizes after only 1 week
+  of run-in may slightly underestimate the steady-state induction by
+  about 15% per the paper's Discussion.
+- **Bootstrap confidence intervals in Table 2 are from only 10
+  samples** owing to model complexity (Zhang 2012 Methods 'Population
+  pharmacokinetic analysis' final paragraph). The CIs are illustrative
+  of imprecision direction rather than a precise statistical interval.
+  The packaged model uses only the point estimates.
+- **Lopinavir-ritonavir interaction parameters (Imax, IC50) carry no
+  IIV.** Zhang 2012 Table 2 reports them as typical-value-only fits
+  with no between-subject variance term. The packaged model preserves
+  this; the dynamic perpetrator-substrate relationship is shared at
+  the population typical-value level and any between-subject spread in
+  the simulated LPV CL/F arises from RTV PK variability propagating
+  through the sigmoid inhibition term.
+- **No errata or corrigenda were located.** A search of the publisher
+  landing page, the journal's corrections feed, and PubMed for
+  corrections of doi 10.1111/j.1365-2125.2011.04154.x returned no
+  results as of the extraction date. If a future correction supersedes
+  any Table 2 value the model file's `reference` field should be
+  updated to cite the erratum and the relevant `ini()` source-trace
+  comments amended.
