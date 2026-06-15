@@ -1428,6 +1428,8 @@ navbar:
         href: articles/Rosario_2015_vedolizumab.html
       - text: "Verapamil rat (Syvanen 2011)"
         href: articles/Syvanen_2011_verapamil_rat.html
+      - text: "Vildagliptin (Landersdorfer 2012)"
+        href: articles/Landersdorfer_2012_vildagliptin.html
       - text: "Vinflunine (Schmitt 2018)"
         href: articles/Schmitt_2018_vinflunine.html
       - text: "Visilizumab (Cao 2013)"
@@ -1990,7 +1992,13 @@ articles:
   - articles/Laffont_2024_naloxone
   - articles/Laffont_2025_opioid_overdose_reversal_simulation
   - articles/Lahu_2010_roflumilast
-  - articles/Landersdorfer_2009_gemifloxacin
+  - articles/Lakota_2018_ertapenem
+  - articles/Lamoth_2009_imipenem
+  - articles/Landersdorfer_2007_flucloxacillin
+  - articles/Landersdorfer_2009_moxifloxacin
+  - articles/Landersdorfer_2012_piperacillin
+  - articles/Landersdorfer_2012_vildagliptin
+  - articles/Landersdorfer_2013_nisin_amikacin_linezolid
   - articles/Landersdorfer_2018_imipenem_tobramycin
   - articles/Laouenan_2015_ribavirin
   - articles/Lawson_2022_busulfan

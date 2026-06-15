@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Frobel 2013 ciclosporin ([doi:10.1111/bcp.12121](https://doi.org/10.1111/bcp.12121)) -- paediatric kidney transplant recipients on oral ciclosporin A (parametric time-to-event model for the first acute rejection event; five-interval step-function exponential baseline hazard, no retained covariates).
+* Add Landersdorfer 2012 vildagliptin ([doi:10.1111/j.1365-2125.2011.04108.x](https://doi.org/10.1111/j.1365-2125.2011.04108.x)) -- 13 patients with type 2 diabetes (mechanism-based PK plus DPP-4 activity TMDD model with slow-tight binding in plasma and tissue).
 * Add Berges 2007 enoxaparin ([doi:10.1111/j.1365-2125.2007.02920.x](https://doi.org/10.1111/j.1365-2125.2007.02920.x)) -- elderly inpatients (>75 years) on prophylactic subcutaneous enoxaparin 4000 IU once daily for VTE prophylaxis (PROPHRE.75 study).
 * Add Padoin 1998 cephalexin ([doi:10.1128/aac.42.6.1463](https://doi.org/10.1128/aac.42.6.1463)) -- preclinical male Wistar rats with a cephalexin / quinapril oral coadministration DDI (ratifies new `CONMED_QPRL_ORAL` covariate canonical).
 * Add van Rongen 2018 metformin ([doi:10.1007/s40272-018-0293-1](https://doi.org/10.1007/s40272-018-0293-1)) -- overweight and obese Caucasian adolescents.
