@@ -264,8 +264,8 @@ navbar:
         href: articles/Wade_2015_certolizumab.html
       - text: "Chloroquine (Simpson 2013)"
         href: articles/Simpson_2013_chloroquine.html
-      - text: "Ciclosporin (Wilhelm 2012)"
-        href: articles/Wilhelm_2012_ciclosporin.html
+      - text: "Ciclosporin (Frobel 2013)"
+        href: articles/Frobel_2013_ciclosporin.html
       - text: "Ciprofloxacin (Schaefer 1996)"
         href: articles/Schaefer_1996_ciprofloxacin.html
       - text: "Ciprofloxacin (Thuo 2011)"
@@ -1833,7 +1833,7 @@ articles:
   - articles/Frey_2013_tocilizumab
   - articles/Friberg_2002_paclitaxel
   - articles/Friberg_2012_voriconazole
-  - articles/Frymoyer_2013_mycophenolic_acid
+  - articles/Frobel_2013_ciclosporin
   - articles/Frymoyer_2017_infliximab
   - articles/Fung_2008_butanediol_rat
   - articles/Gandhi_2021_abatacept

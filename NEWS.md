@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Svensson 2012 nevirapine ([doi:10.1111/j.1365-2125.2012.04205.x](https://doi.org/10.1111/j.1365-2125.2012.04205.x)) -- HIV-infected South African adults on 200 mg twice-daily nevirapine, pooled across three studies (mega-model with mixture on CL/F, fed/fasted on MTT, rifampicin-TB-treatment effect on F; ratifies new `MIX_SLOW_ELIM_NVP` covariate canonical).
+* Add Frobel 2013 ciclosporin ([doi:10.1111/bcp.12121](https://doi.org/10.1111/bcp.12121)) -- paediatric kidney transplant recipients on oral ciclosporin A (parametric time-to-event model for the first acute rejection event; five-interval step-function exponential baseline hazard, no retained covariates).
 * Add Berges 2007 enoxaparin ([doi:10.1111/j.1365-2125.2007.02920.x](https://doi.org/10.1111/j.1365-2125.2007.02920.x)) -- elderly inpatients (>75 years) on prophylactic subcutaneous enoxaparin 4000 IU once daily for VTE prophylaxis (PROPHRE.75 study).
 * Add Padoin 1998 cephalexin ([doi:10.1128/aac.42.6.1463](https://doi.org/10.1128/aac.42.6.1463)) -- preclinical male Wistar rats with a cephalexin / quinapril oral coadministration DDI (ratifies new `CONMED_QPRL_ORAL` covariate canonical).
 * Add van Rongen 2018 metformin ([doi:10.1007/s40272-018-0293-1](https://doi.org/10.1007/s40272-018-0293-1)) -- overweight and obese Caucasian adolescents.
