@@ -856,8 +856,8 @@ navbar:
         href: articles/Attarwala_2023_mRNA3927.html
       - text: "Mu receptor binding (Mann 2022)"
         href: articles/Laffont_2025_opioid_overdose_reversal_simulation.html
-      - text: "Mycophenolic acid (Frymoyer 2013)"
-        href: articles/Frymoyer_2013_mycophenolic_acid.html
+      - text: "Mycophenolic acid (Sherwin 2012)"
+        href: articles/Sherwin_2012_mycophenolic_acid.html
       - text: "Mycophenolic acid (deWinter 2009)"
         href: articles/deWinter_2009_mycophenolic_acid.html
       - text: "Mycophenolic acid (Jiao 2008)"
@@ -2213,6 +2213,7 @@ articles:
   - articles/Sheng_2013_ABPM
   - articles/Sheng_2016_quinine_rat
   - articles/Sherer_2012_AAA
+  - articles/Sherwin_2012_mycophenolic_acid
   - articles/Sherwin_2012_risperidone
   - articles/Shi_2018_ceftazidime
   - articles/Shin_2006_quinidine_QT
