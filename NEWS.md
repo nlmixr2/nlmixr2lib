@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Abdel Jalil 2013 tacrolimus ([doi:10.1111/bcp.12174](https://doi.org/10.1111/bcp.12174)) -- paediatric liver transplant recipients aged 0.65-17.56 years (median weight 13.2 kg) with CYP3A5 expresser-status and time-post-transplantation effects on apparent oral clearance.
+* Add Zhao 2013 abacavir ([doi:10.1111/bcp.12024](https://doi.org/10.1111/bcp.12024)) -- HIV-infected paediatric patients pooled across PENTA 13, PENTA 15, and the ARROW substudy (infants, toddlers, and children aged 0.42-12.84 years).
 * Add Berges 2007 enoxaparin ([doi:10.1111/j.1365-2125.2007.02920.x](https://doi.org/10.1111/j.1365-2125.2007.02920.x)) -- elderly inpatients (>75 years) on prophylactic subcutaneous enoxaparin 4000 IU once daily for VTE prophylaxis (PROPHRE.75 study).
 * Add Padoin 1998 cephalexin ([doi:10.1128/aac.42.6.1463](https://doi.org/10.1128/aac.42.6.1463)) -- preclinical male Wistar rats with a cephalexin / quinapril oral coadministration DDI (ratifies new `CONMED_QPRL_ORAL` covariate canonical).
 * Add van Rongen 2018 metformin ([doi:10.1007/s40272-018-0293-1](https://doi.org/10.1007/s40272-018-0293-1)) -- overweight and obese Caucasian adolescents.
