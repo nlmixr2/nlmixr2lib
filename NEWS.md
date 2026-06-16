@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Zhao 2013 abacavir ([doi:10.1111/bcp.12024](https://doi.org/10.1111/bcp.12024)) -- HIV-infected paediatric patients pooled across PENTA 13, PENTA 15, and the ARROW substudy (infants, toddlers, and children aged 0.42-12.84 years).
+* Add Bellanti 2014 deferiprone ([doi:10.1111/bcp.12473](https://doi.org/10.1111/bcp.12473)) -- adult healthy subjects (single 1500 mg oral dose; one-compartment first-order absorption with lag time and a binary sex effect on V/F).
 * Add Berges 2007 enoxaparin ([doi:10.1111/j.1365-2125.2007.02920.x](https://doi.org/10.1111/j.1365-2125.2007.02920.x)) -- elderly inpatients (>75 years) on prophylactic subcutaneous enoxaparin 4000 IU once daily for VTE prophylaxis (PROPHRE.75 study).
 * Add Padoin 1998 cephalexin ([doi:10.1128/aac.42.6.1463](https://doi.org/10.1128/aac.42.6.1463)) -- preclinical male Wistar rats with a cephalexin / quinapril oral coadministration DDI (ratifies new `CONMED_QPRL_ORAL` covariate canonical).
 * Add van Rongen 2018 metformin ([doi:10.1007/s40272-018-0293-1](https://doi.org/10.1007/s40272-018-0293-1)) -- overweight and obese Caucasian adolescents.
