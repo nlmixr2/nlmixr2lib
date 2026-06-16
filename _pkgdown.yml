@@ -850,6 +850,10 @@ navbar:
         href: articles/Franken_2015_morphine.html
       - text: "Morphine (Pierre 2017)"
         href: articles/Pierre_2017_morphine.html
+      - text: "Morphine (deHoogd 2017)"
+        href: articles/deHoogd_2017_morphine.html
+      - text: "Moxifloxacin (Colin 2014)"
+        href: articles/Colin_2014_moxifloxacin.html
       - text: "Moxifloxacin (Hong 2015)"
         href: articles/Hong_2015_moxifloxacin.html
       - text: "Moxifloxacin (Landersdorfer 2009)"
@@ -1777,7 +1781,7 @@ articles:
   - articles/Clinckers_2008_MHD_rat
   - articles/CohenWolkowiez_2012_metronidazole
   - articles/CohenWolkowiez_2014_piperacillin_tazobactam
-  - articles/Conil_2010_tobramycin
+  - articles/Colin_2014_moxifloxacin
   - articles/Conrado_2014_alzheimer
   - articles/Cook_2016_paracetamol
   - articles/Csajka_2004_indinavir
