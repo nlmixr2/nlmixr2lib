@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Colin 2014 moxifloxacin ([doi:10.1111/bcp.12302](https://doi.org/10.1111/bcp.12302)) -- post-bariatric (roux-en-y gastric bypass) volunteers receiving paired 400 mg oral and 400 mg IV doses.
+* Add Couffignal 2014 imipenem ([doi:10.1111/bcp.12435](https://doi.org/10.1111/bcp.12435)) -- critically ill adult ICU patients with suspected ventilator-associated pneumonia.
 * Add Berges 2007 enoxaparin ([doi:10.1111/j.1365-2125.2007.02920.x](https://doi.org/10.1111/j.1365-2125.2007.02920.x)) -- elderly inpatients (>75 years) on prophylactic subcutaneous enoxaparin 4000 IU once daily for VTE prophylaxis (PROPHRE.75 study).
 * Add Padoin 1998 cephalexin ([doi:10.1128/aac.42.6.1463](https://doi.org/10.1128/aac.42.6.1463)) -- preclinical male Wistar rats with a cephalexin / quinapril oral coadministration DDI (ratifies new `CONMED_QPRL_ORAL` covariate canonical).
 * Add van Rongen 2018 metformin ([doi:10.1007/s40272-018-0293-1](https://doi.org/10.1007/s40272-018-0293-1)) -- overweight and obese Caucasian adolescents.

@@ -616,6 +616,8 @@ navbar:
         href: articles/Chien_2022_imatinib.html
       - text: "Imatinib (Schindler 2017)"
         href: articles/Schindler_2017_imatinib.html
+      - text: "Imipenem (Couffignal 2014)"
+        href: articles/Couffignal_2014_imipenem.html
       - text: "Imipenem (Lamoth 2009)"
         href: articles/Lamoth_2009_imipenem.html
       - text: "Imipenem amikacin PA001 (Yadav 2017)"
@@ -1784,6 +1786,7 @@ articles:
   - articles/Colin_2014_moxifloxacin
   - articles/Conrado_2014_alzheimer
   - articles/Cook_2016_paracetamol
+  - articles/Couffignal_2014_imipenem
   - articles/Csajka_2004_indinavir
   - articles/Csajka_2005_ephedrine_caffeine
   - articles/Danielak_2017_clopidogrel
