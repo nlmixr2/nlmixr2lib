@@ -4122,12 +4122,13 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Description:** 1 = patient is taking ezetimibe (with or without other lipid-lowering comedication), 0 = not on ezetimibe.
 - **Units:** (binary)
 - **Type:** binary
-- **Scope:** specific
+- **Scope:** general
 - **Reference category:** 0 (not on ezetimibe).
 - **Source aliases:**
+  - `Ezetimibe` -- used in `Kakara_2014_atorvastatin.R`, `Kakara_2014_pitavastatin.R`, `Kakara_2014_rosuvastatin.R` (binary 0/1 indicator for ezetimibe coadministration during the statin treatment, derived from electronic medical record prescription data; Kakara 2014 Methods, "Population pharmacodynamic analysis").
   - Derived from an ezetimibe-identifier column in the source.
-- **Example models:** `Kuchimanchi_2018_evolocumab.R` (multiplicative effect 1.20 on Vmax: `Vmax * 1.20^CONMED_EZE`; labeled "Statin + ezetimibe exponent" in Kuchimanchi 2018 Table 3 because ~99% of ezetimibe users in the dataset were also on a conmed_statin, so the effect effectively captures combination therapy).
-- **Notes:** Scope: specific because Kuchimanchi 2018 interprets the ezetimibe indicator as a combination-therapy marker rather than a pure ezetimibe effect. Future popPK/PD models with cleaner ezetimibe separation should add themselves here or register a more specific canonical.
+- **Example models:** `Kuchimanchi_2018_evolocumab.R` (multiplicative effect 1.20 on Vmax: `Vmax * 1.20^CONMED_EZE`; labeled "Statin + ezetimibe exponent" in Kuchimanchi 2018 Table 3 because ~99% of ezetimibe users in the dataset were also on a conmed_statin, so the effect effectively captures combination therapy). `Kakara_2014_atorvastatin.R`, `Kakara_2014_pitavastatin.R`, `Kakara_2014_rosuvastatin.R` (additive +0.109 contribution to the indirect-response Imax inhibition fraction INH on the LDL-C synthesis rate Kin: `INH = Imax * DOSE / (ID50 + DOSE) + 0.109 * CONMED_EZE`; Kakara 2014 Table 2 INH_EZT). The Kakara 2014 dataset isolates the ezetimibe effect cleanly (12 rosuvastatin patients received ezetimibe alongside no other lipid-lowering comedication), so the Kakara extractions interpret the indicator as a clean ezetimibe effect rather than a combination-therapy marker.
+- **Notes:** Scope promoted from specific to general on 2026-06-17 alongside the Kakara 2014 extractions, which use the indicator with a clean ezetimibe interpretation (additive 10.9% reduction of LDL-C synthesis rate Kin via the INH function) distinct from the Kuchimanchi 2018 combination-therapy interpretation (multiplicative 1.20-fold change of Vmax on PCSK9-mediated evolocumab clearance). Per-model `covariateData[[CONMED_EZE]]$notes` must document whether the indicator is being used as a clean ezetimibe effect (Kakara 2014 pattern) or as a combination-therapy proxy (Kuchimanchi 2018 pattern). Models that need a strict statin+ezetimibe combination marker can register a sibling canonical (e.g. `CONMED_STATIN_EZE`) rather than overloading `CONMED_EZE`.
 
 ### CONMED_H2RA (**canonical for concomitant H2-receptor-antagonist use**)
 - **Description:** 1 = patient on concomitant histamine H2-receptor-antagonist therapy (e.g., ranitidine, famotidine), 0 = no CONMED_H2RA use. Captures another class of gastric-pH-modifying co-medication that may reduce bioavailability of pH-sensitive orally administered drugs.

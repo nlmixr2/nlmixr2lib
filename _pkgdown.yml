@@ -130,6 +130,8 @@ navbar:
         href: articles/Rekic_2011_atazanavir.html
       - text: "Atazanavir ritonavir (Schipani 2013)"
         href: articles/Schipani_2013_atazanavir_ritonavir.html
+      - text: "Atorvastatin (Kakara 2014)"
+        href: articles/Kakara_2014_statins_LDLC.html
       - text: "Avelumab (Masters 2022)"
         href: articles/Masters_2022_avelumab.html
       - text: "Axatilimab (Yang 2024)"
@@ -1034,6 +1036,8 @@ navbar:
         href: articles/Tarning_2012_dihydroartemisinin_piperaquine.html
       - text: "Piperaquine (Tarning 2014)"
         href: articles/Tarning_2014_piperaquine.html
+      - text: "Pitavastatin (Kakara 2014)"
+        href: articles/Kakara_2014_statins_LDLC.html
       - text: "Polatuzumab (Lu 2019)"
         href: articles/Lu_2019_polatuzumab.html
       - text: "Posdinemab (PerezRuixo 2025)"
@@ -1154,6 +1158,8 @@ navbar:
         href: articles/Stein_2018_mAb_nonlinear_PK.html
       - text: "Rosuvastatin (Barnett 2018)"
         href: articles/Barnett_2018_rosuvastatin.html
+      - text: "Rosuvastatin (Kakara 2014)"
+        href: articles/Kakara_2014_statins_LDLC.html
       - text: "Rosuvastatin (Macpherson 2015)"
         href: articles/Macpherson_2015_rosuvastatin.html
       - text: "Rosuvastatin mbma (Yang 2010)"
@@ -1964,7 +1970,16 @@ articles:
   - articles/Jones_2011_PF04878691_HCV
   - articles/Jonsson_2005_disufenton
   - articles/Jonsson_2011_ethambutol
-  - articles/Kappelhoff_2005_indinavir
+  - articles/Jorga_2000_tolcapone
+  - articles/Jullien_2005_abacavir
+  - articles/Jullien_2006_lopinavir
+  - articles/Kakara_2014_statins_LDLC
+  - articles/Kamal_2013_oseltamivir
+  - articles/Kamal_2015_oseltamivir
+  - articles/Kappelhoff_2005_ritonavir
+  - articles/Karaiskos_2015_colistin
+  - articles/Karlsson_2009_voriconazole
+  - articles/Karunajeewa_2009_sulfadoxinePyrimethamine
   - articles/Kawamura_2018_eribulin
   - articles/Kelman_1984_gentamicin
   - articles/Khan_2015_ciprofloxacin
