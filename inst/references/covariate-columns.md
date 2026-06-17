@@ -4030,6 +4030,17 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Example models:** `Zhang_2019_nivolumab.R` (exponential effect on baseline CL: `exp(-0.104)` ~= 0.90 fold, i.e. ~9.7% lower CL relative to monotherapy), `Kuchimanchi_2024_dostarlimab.R` (multiplicative effect on baseline CL: `1 - 0.0779` = 0.922, i.e. 7.79% lower CL on dostarlimab + carboplatin/paclitaxel relative to dostarlimab monotherapy).
 - **Notes:** Promoted from specific to general scope on 2026-04-27 after the Kuchimanchi 2024 dostarlimab + carboplatin/paclitaxel analysis ratified the same pooling convention (any chemotherapy backbone collapsed into a single binary indicator). The two papers use different functional forms for the effect on CL -- Zhang 2019 uses `exp(theta * CONMED_CHEMO)` (exponential) and Kuchimanchi 2024 uses `(1 + theta * CONMED_CHEMO)` (multiplicative); these are different parameterisations of the same underlying study-design indicator and the canonical column meaning is unchanged. Document the per-model functional form in `covariateData[[CONMED_CHEMO]]$notes`.
 
+### CONMED_DOPA (**canonical for concomitant dopamine (inotrope) coadministration indicator**)
+- **Description:** 1 = subject is receiving dopamine (an inotropic agent used in critically ill neonates and infants for haemodynamic support) at the PK observation; 0 = no concomitant dopamine. Treated as time-varying per observation in the source paper (each PK record carries the dopamine flag corresponding to the dosing window).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (no concomitant dopamine).
+- **Source aliases:**
+  - `DOPA` -- used in `Fuchs_2014_gentamicin.R` (paper covariate name in Table 2; same orientation as the canonical, 1 = on dopamine, 0 = otherwise).
+- **Example models:** `Fuchs_2014_gentamicin.R` (multiplicative linear effect on CL: `1 + (-0.120) * CONMED_DOPA`, i.e. 12% lower CL on dopamine-coadministered neonates relative to no-dopamine reference; Fuchs 2014 Table 2 theta_CL_DOPA = -0.120, SE 22%).
+- **Notes:** Specific scope until a second model legitimately reuses the indicator. Fuchs 2014 Discussion notes that the effect "might principally reflect cardiovascular instability in critically ill newborns" -- so the dopamine flag is partly a marker of disease severity rather than a clean drug-drug-interaction effect. The mechanism on glomerular filtration in neonates remains debated (Fuchs 2014 Discussion citations [57-59]).
+
 ### CONMED_DOXORUBICIN (**canonical for concomitant doxorubicin (anthracycline) chemotherapy backbone indicator**)
 - **Description:** 1 = subject is receiving (or has received during the relevant observation window) doxorubicin as the anthracycline component of an adjuvant or neoadjuvant chemotherapy regimen; 0 = subject is receiving a different anthracycline (or no anthracycline at all). Used in cardiac-biomarker PD models to differentiate doxorubicin-driven myocardial damage from epirubicin-driven damage (doxorubicin has approximately twice the per-mg cardiotoxic effect of epirubicin at clinically equivalent oncologic exposures).
 - **Units:** (binary)

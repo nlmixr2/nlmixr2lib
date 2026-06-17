@@ -576,6 +576,8 @@ navbar:
         href: articles/Jiang_2008_gemcitabine.html
       - text: "Gentamicin (Bijleveld 2017)"
         href: articles/Bijleveld_2017_gentamicin.html
+      - text: "Gentamicin (Fuchs 2014)"
+        href: articles/Fuchs_2014_gentamicin.html
       - text: "Gentamicin (Hodiamont 2017)"
         href: articles/Hodiamont_2017_gentamicin.html
       - text: "Gentamicin (Llanos 2017)"
@@ -852,10 +854,6 @@ navbar:
         href: articles/Franken_2015_morphine.html
       - text: "Morphine (Pierre 2017)"
         href: articles/Pierre_2017_morphine.html
-      - text: "Morphine (deHoogd 2017)"
-        href: articles/deHoogd_2017_morphine.html
-      - text: "Moxifloxacin (Colin 2014)"
-        href: articles/Colin_2014_moxifloxacin.html
       - text: "Moxifloxacin (Hong 2015)"
         href: articles/Hong_2015_moxifloxacin.html
       - text: "Moxifloxacin (Landersdorfer 2009)"
@@ -1858,7 +1856,7 @@ articles:
   - articles/Friberg_2012_voriconazole
   - articles/Frobel_2013_ciclosporin
   - articles/Frymoyer_2017_infliximab
-  - articles/Fung_2008_butanediol_rat
+  - articles/Fuchs_2014_gentamicin
   - articles/Gandhi_2021_abatacept
   - articles/Garg_2014_pertuzumab
   - articles/Garmann_2017_BAY81_8973
