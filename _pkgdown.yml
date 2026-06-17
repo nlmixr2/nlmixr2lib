@@ -1240,6 +1240,8 @@ navbar:
         href: articles/Rovei_1982_theophylline.html
       - text: "Theophylline (Suda 2008)"
         href: articles/Suda_2008_theophylline.html
+      - text: "Theophylline pediatric asthma (elDesoky 1997)"
+        href: articles/elDesoky_1997_theophylline_pediatric_asthma.html
       - text: "Ticagrelor (Almquist 2016)"
         href: articles/Almquist_2016_ticagrelor.html
       - text: "Tisagenlecleucel (Stein 2019)"
@@ -2272,6 +2274,7 @@ articles:
   - articles/deVriesSchultink_2020_zenocutuzumab
   - articles/deWinter_2009_mycophenolic_acid
   - articles/deWit_2016_everolimus
+  - articles/elDesoky_1997_theophylline_pediatric_asthma
   - articles/vanHasselt_2015_eribulin
   - articles/vanRongen_2016_acetaminophen
   - articles/vanRongen_2017_midazolam
