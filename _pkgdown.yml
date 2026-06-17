@@ -444,6 +444,8 @@ navbar:
         href: articles/Lakota_2018_ertapenem.html
       - text: "Erythromycin (Nielsen 2011)"
         href: articles/Nielsen_2011_antibacterial_efficacy.html
+      - text: "Esketamine (PerezRuixo 2020)"
+        href: articles/PerezRuixo_2020_esketamine.html
       - text: "Etanercept (Fang 2010)"
         href: articles/Fang_2010_etanercept.html
       - text: "Ethambutol (Horita 2018)"
@@ -2020,6 +2022,7 @@ articles:
   - articles/Pei_2016_iloperidone
   - articles/Peng_2024_SAL003
   - articles/Perez-Guille_2018_dexmedetomidine
+  - articles/PerezRuixo_2020_esketamine
   - articles/PerezRuixo_2025_posdinemab
   - articles/Petrov_2024_romiplostim
   - articles/Philippe_2015_cyclosporine

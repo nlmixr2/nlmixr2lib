@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Lindauer 2017 pembrolizumab ([doi:10.1002/psp4.12130](https://doi.org/10.1002/psp4.12130)) -- translational mouse-to-human PK/PD/TGI model for the anti-PD-1 antibody pembrolizumab in advanced melanoma (Shah-Betts mini-PBPK tumor compartment + mechanistic PD-1 binding + indirect-response PD-1 upregulation + Simeoni-style tumor growth).
+* Add Perez-Ruixo 2020 esketamine + noresketamine ([doi:10.1007/s40262-020-00953-4](https://doi.org/10.1007/s40262-020-00953-4)) -- healthy volunteers and patients with treatment-resistant depression receiving intranasal, IV, or oral esketamine; joint parent + apparent-metabolite popPK with hepato-portal first-pass.
 * Add Berges 2007 enoxaparin ([doi:10.1111/j.1365-2125.2007.02920.x](https://doi.org/10.1111/j.1365-2125.2007.02920.x)) -- elderly inpatients (>75 years) on prophylactic subcutaneous enoxaparin 4000 IU once daily for VTE prophylaxis (PROPHRE.75 study).
 * Add Padoin 1998 cephalexin ([doi:10.1128/aac.42.6.1463](https://doi.org/10.1128/aac.42.6.1463)) -- preclinical male Wistar rats with a cephalexin / quinapril oral coadministration DDI (ratifies new `CONMED_QPRL_ORAL` covariate canonical).
 * Add van Rongen 2018 metformin ([doi:10.1007/s40272-018-0293-1](https://doi.org/10.1007/s40272-018-0293-1)) -- overweight and obese Caucasian adolescents.
