@@ -1288,11 +1288,11 @@ dosing interval (t = 144-156 h) and on the oral day-14 dosing interval
 <span>         cyp_group <span class="op">=</span> <span class="fu">if_else</span><span class="op">(</span><span class="va">cyp_phen</span> <span class="op">==</span> <span class="st">"EM"</span>, <span class="st">"EM"</span>, <span class="st">"HEM/PM"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">select</span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="va">amt</span>, <span class="va">cyp_group</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">conc_obj_iv</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/PKNCAconc.html" class="external-link">PKNCAconc</a></span><span class="op">(</span></span>
+<span><span class="va">conc_obj_iv</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="https://humanpred.github.io/pknca/reference/PKNCAconc.html" class="external-link">PKNCAconc</a></span><span class="op">(</span></span>
 <span>  <span class="va">conc_iv</span>, <span class="va">Cc</span> <span class="op">~</span> <span class="va">time</span> <span class="op">|</span> <span class="va">cyp_group</span> <span class="op">+</span> <span class="va">id</span>,</span>
 <span>  concu <span class="op">=</span> <span class="st">"ug/mL"</span>, timeu <span class="op">=</span> <span class="st">"h"</span></span>
 <span><span class="op">)</span></span>
-<span><span class="va">dose_obj_iv</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/PKNCAdose.html" class="external-link">PKNCAdose</a></span><span class="op">(</span></span>
+<span><span class="va">dose_obj_iv</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="https://humanpred.github.io/pknca/reference/PKNCAdose.html" class="external-link">PKNCAdose</a></span><span class="op">(</span></span>
 <span>  <span class="va">dose_iv</span>, <span class="va">amt</span> <span class="op">~</span> <span class="va">time</span> <span class="op">|</span> <span class="va">cyp_group</span> <span class="op">+</span> <span class="va">id</span>,</span>
 <span>  doseu <span class="op">=</span> <span class="st">"mg"</span></span>
 <span><span class="op">)</span></span>
@@ -1308,8 +1308,8 @@ dosing interval (t = 144-156 h) and on the oral day-14 dosing interval
 <span>  ctrough  <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">res_iv</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/pk.nca.html" class="external-link">pk.nca</a></span><span class="op">(</span></span>
-<span>  <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/PKNCAdata.html" class="external-link">PKNCAdata</a></span><span class="op">(</span><span class="va">conc_obj_iv</span>, <span class="va">dose_obj_iv</span>, intervals <span class="op">=</span> <span class="va">intervals_ss</span><span class="op">)</span></span>
+<span><span class="va">res_iv</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="https://humanpred.github.io/pknca/reference/pk.nca.html" class="external-link">pk.nca</a></span><span class="op">(</span></span>
+<span>  <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="https://humanpred.github.io/pknca/reference/PKNCAdata.html" class="external-link">PKNCAdata</a></span><span class="op">(</span><span class="va">conc_obj_iv</span>, <span class="va">dose_obj_iv</span>, intervals <span class="op">=</span> <span class="va">intervals_ss</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span><span class="va">summary_iv</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">res_iv</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
@@ -1387,11 +1387,11 @@ stratified by CYP2C19 status.</caption>
 <span>         cyp_group <span class="op">=</span> <span class="fu">if_else</span><span class="op">(</span><span class="va">cyp_phen</span> <span class="op">==</span> <span class="st">"EM"</span>, <span class="st">"EM"</span>, <span class="st">"HEM/PM"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">select</span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="va">amt</span>, <span class="va">cyp_group</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">conc_obj_po</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/PKNCAconc.html" class="external-link">PKNCAconc</a></span><span class="op">(</span></span>
+<span><span class="va">conc_obj_po</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="https://humanpred.github.io/pknca/reference/PKNCAconc.html" class="external-link">PKNCAconc</a></span><span class="op">(</span></span>
 <span>  <span class="va">conc_po</span>, <span class="va">Cc</span> <span class="op">~</span> <span class="va">time</span> <span class="op">|</span> <span class="va">cyp_group</span> <span class="op">+</span> <span class="va">id</span>,</span>
 <span>  concu <span class="op">=</span> <span class="st">"ug/mL"</span>, timeu <span class="op">=</span> <span class="st">"h"</span></span>
 <span><span class="op">)</span></span>
-<span><span class="va">dose_obj_po</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/PKNCAdose.html" class="external-link">PKNCAdose</a></span><span class="op">(</span></span>
+<span><span class="va">dose_obj_po</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="https://humanpred.github.io/pknca/reference/PKNCAdose.html" class="external-link">PKNCAdose</a></span><span class="op">(</span></span>
 <span>  <span class="va">dose_po</span>, <span class="va">amt</span> <span class="op">~</span> <span class="va">time</span> <span class="op">|</span> <span class="va">cyp_group</span> <span class="op">+</span> <span class="va">id</span>,</span>
 <span>  doseu <span class="op">=</span> <span class="st">"mg"</span></span>
 <span><span class="op">)</span></span>
@@ -1407,8 +1407,8 @@ stratified by CYP2C19 status.</caption>
 <span>  ctrough  <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">res_po</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/pk.nca.html" class="external-link">pk.nca</a></span><span class="op">(</span></span>
-<span>  <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/PKNCAdata.html" class="external-link">PKNCAdata</a></span><span class="op">(</span><span class="va">conc_obj_po</span>, <span class="va">dose_obj_po</span>, intervals <span class="op">=</span> <span class="va">intervals_po</span><span class="op">)</span></span>
+<span><span class="va">res_po</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="https://humanpred.github.io/pknca/reference/pk.nca.html" class="external-link">pk.nca</a></span><span class="op">(</span></span>
+<span>  <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="https://humanpred.github.io/pknca/reference/PKNCAdata.html" class="external-link">PKNCAdata</a></span><span class="op">(</span><span class="va">conc_obj_po</span>, <span class="va">dose_obj_po</span>, intervals <span class="op">=</span> <span class="va">intervals_po</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span><span class="va">summary_po</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">res_po</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>

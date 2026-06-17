@@ -421,7 +421,7 @@ participant; serum posdinemab in pmol/L). {.table}
 
 | Quantity | Paper value | Model-derived value | Notes |
 |----|----|----|----|
-| Serum α-phase half-life | 38.2 hours (Discussion) | (PKNCA reports terminal slope only) | α/β decomposition not exposed by [`pk.nca()`](http://humanpred.github.io/pknca/reference/pk.nca.md) half-life calc. |
+| Serum α-phase half-life | 38.2 hours (Discussion) | (PKNCA reports terminal slope only) | α/β decomposition not exposed by [`pk.nca()`](https://humanpred.github.io/pknca/reference/pk.nca.html) half-life calc. |
 | Serum terminal half-life | 20.6 days = 494 h (Discussion) | See PKNCA `half.life` row in pmol/L table | Should match within typical-value rounding. |
 | `kd` (CSF binding affinity) | 848.5 pmol/L (Discussion: `koff/kon`) | 0.224 / 2.64e-4 = 848.5 pmol/L | Direct algebraic check against ini values. |
 | `kss` (steady-state binding constant) | 1981 pmol/L (Discussion: `kd + kint/kon`) | 848.5 + 0.299/2.64e-4 = 1981 pmol/L | Direct algebraic check. |

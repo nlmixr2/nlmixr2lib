@@ -270,120 +270,6 @@ sim_vpc <- rxSolve(mod, ev_one, nSub = n_subj, returnType = "data.frame")
 #> intdy -- t = 18 illegal. t not in interval tcur - _rxC(hu) to tcur
 #> intdy -- t = 20 illegal. t not in interval tcur - _rxC(hu) to tcur
 #> intdy -- t = 21 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 2 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 4 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 6 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 8 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 10 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 12 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 14 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 16 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 18 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 20 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 21 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 22 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 24 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 26 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 28 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 30 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 32 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 34 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 36 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 38 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 40 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 42 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 44 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 46 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 48 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 50 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 52 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 54 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 56 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 58 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 60 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 62 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 63 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 64 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 66 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 68 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 70 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 72 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 74 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 76 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 78 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 80 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 82 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 84 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 86 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 88 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 90 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 92 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 94 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 96 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 98 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 100 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 102 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 104 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 105 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 106 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 108 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 110 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 112 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 114 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 116 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 118 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 120 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 122 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 124 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 126 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 128 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 130 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 132 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 134 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 136 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 138 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 140 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 142 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 144 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 146 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 148 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 150 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 152 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 154 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 156 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 158 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 160 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 162 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 164 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 166 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 168 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 170 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 172 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 174 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 176 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 178 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 180 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 182 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 184 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 186 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 188 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 190 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 192 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 194 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 196 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 198 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 200 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 2 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 4 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 6 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 8 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 10 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 12 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 14 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 16 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 18 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 20 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 21 illegal. t not in interval tcur - _rxC(hu) to tcur
 #> intdy -- t = 22 illegal. t not in interval tcur - _rxC(hu) to tcur
 #> intdy -- t = 24 illegal. t not in interval tcur - _rxC(hu) to tcur
 #> intdy -- t = 26 illegal. t not in interval tcur - _rxC(hu) to tcur
@@ -672,14 +558,14 @@ sessionInfo()
 #>  [1] gtable_0.3.6          xfun_0.58             bslib_0.11.0         
 #>  [4] lattice_0.22-9        vctrs_0.7.3           tools_4.6.0          
 #>  [7] generics_0.1.4        parallel_4.6.0        tibble_3.3.1         
-#> [10] symengine_0.2.11      pkgconfig_2.0.3       data.table_1.18.4    
+#> [10] symengine_0.2.13      pkgconfig_2.0.3       data.table_1.18.4    
 #> [13] checkmate_2.3.4       RColorBrewer_1.1-3    S7_0.2.2             
 #> [16] desc_1.4.3            RcppParallel_5.1.11-2 lifecycle_1.0.5      
 #> [19] compiler_4.6.0        farver_2.1.2          textshaping_1.0.5    
 #> [22] fontawesome_0.5.3     htmltools_0.5.9       sys_3.4.3            
 #> [25] sass_0.4.10           yaml_2.3.12           crayon_1.5.3         
 #> [28] pillar_1.11.1         pkgdown_2.2.0         jquerylib_0.1.4      
-#> [31] whisker_0.4.1         openssl_2.4.1         cachem_1.1.0         
+#> [31] whisker_0.4.1         openssl_2.4.2         cachem_1.1.0         
 #> [34] nlme_3.1-169          qs2_0.2.2             tidyselect_1.2.1     
 #> [37] digest_0.6.39         lotri_1.0.4           purrr_1.2.2          
 #> [40] labeling_0.4.3        rxode2ll_2.0.14       fastmap_1.2.0        

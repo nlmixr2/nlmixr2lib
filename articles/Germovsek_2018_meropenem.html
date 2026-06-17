@@ -1357,13 +1357,13 @@ straightforward.</p>
 <span></span>
 <span><span class="va">last_dose_time_pk</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">last_dose_idx</span> <span class="op">-</span> <span class="fl">1L</span><span class="op">)</span> <span class="op">*</span> <span class="fl">8</span></span>
 <span></span>
-<span><span class="va">conc_obj_plasma</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/PKNCAconc.html" class="external-link">PKNCAconc</a></span><span class="op">(</span></span>
+<span><span class="va">conc_obj_plasma</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="https://humanpred.github.io/pknca/reference/PKNCAconc.html" class="external-link">PKNCAconc</a></span><span class="op">(</span></span>
 <span>  data    <span class="op">=</span> <span class="va">nca_input_plasma</span>,</span>
 <span>  formula <span class="op">=</span> <span class="va">Cc</span> <span class="op">~</span> <span class="va">time</span> <span class="op">|</span> <span class="va">stratum</span> <span class="op">+</span> <span class="va">id</span>,</span>
 <span>  concu   <span class="op">=</span> <span class="st">"mg/L"</span>,</span>
 <span>  timeu   <span class="op">=</span> <span class="st">"hr"</span></span>
 <span><span class="op">)</span></span>
-<span><span class="va">dose_obj_pk</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/PKNCAdose.html" class="external-link">PKNCAdose</a></span><span class="op">(</span></span>
+<span><span class="va">dose_obj_pk</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="https://humanpred.github.io/pknca/reference/PKNCAdose.html" class="external-link">PKNCAdose</a></span><span class="op">(</span></span>
 <span>  data    <span class="op">=</span> <span class="va">dose_pk</span>,</span>
 <span>  formula <span class="op">=</span> <span class="va">amt</span> <span class="op">~</span> <span class="va">time</span> <span class="op">|</span> <span class="va">stratum</span> <span class="op">+</span> <span class="va">id</span>,</span>
 <span>  doseu   <span class="op">=</span> <span class="st">"mg"</span></span>
@@ -1379,9 +1379,9 @@ straightforward.</p>
 <span>  cav      <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">nca_data_plasma</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/PKNCAdata.html" class="external-link">PKNCAdata</a></span><span class="op">(</span><span class="va">conc_obj_plasma</span>, <span class="va">dose_obj_pk</span>,</span>
+<span><span class="va">nca_data_plasma</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="https://humanpred.github.io/pknca/reference/PKNCAdata.html" class="external-link">PKNCAdata</a></span><span class="op">(</span><span class="va">conc_obj_plasma</span>, <span class="va">dose_obj_pk</span>,</span>
 <span>                                    intervals <span class="op">=</span> <span class="va">intervals_ss</span><span class="op">)</span></span>
-<span><span class="va">nca_res_plasma</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/warning.html" class="external-link">suppressWarnings</a></span><span class="op">(</span><span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/pk.nca.html" class="external-link">pk.nca</a></span><span class="op">(</span><span class="va">nca_data_plasma</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">nca_res_plasma</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/warning.html" class="external-link">suppressWarnings</a></span><span class="op">(</span><span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="https://humanpred.github.io/pknca/reference/pk.nca.html" class="external-link">pk.nca</a></span><span class="op">(</span><span class="va">nca_data_plasma</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">nca_res_plasma</span><span class="op">)</span>,</span>
@@ -1430,16 +1430,16 @@ mg/kg q8h, CSF protein 1.2 g/L).</caption>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">stratum</span> <span class="op">==</span> <span class="st">"&gt;=32 GA / &gt;=2 PNA wk"</span>, <span class="va">CSF_TPRO</span> <span class="op">==</span> <span class="fl">1.2</span>, <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Ccsf</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="va">Ccsf</span>, <span class="va">stratum</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">conc_obj_csf</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/PKNCAconc.html" class="external-link">PKNCAconc</a></span><span class="op">(</span></span>
+<span><span class="va">conc_obj_csf</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="https://humanpred.github.io/pknca/reference/PKNCAconc.html" class="external-link">PKNCAconc</a></span><span class="op">(</span></span>
 <span>  data    <span class="op">=</span> <span class="va">nca_input_csf</span>,</span>
 <span>  formula <span class="op">=</span> <span class="va">Ccsf</span> <span class="op">~</span> <span class="va">time</span> <span class="op">|</span> <span class="va">stratum</span> <span class="op">+</span> <span class="va">id</span>,</span>
 <span>  concu   <span class="op">=</span> <span class="st">"mg/L"</span>,</span>
 <span>  timeu   <span class="op">=</span> <span class="st">"hr"</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">nca_data_csf</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/PKNCAdata.html" class="external-link">PKNCAdata</a></span><span class="op">(</span><span class="va">conc_obj_csf</span>, <span class="va">dose_obj_pk</span>,</span>
+<span><span class="va">nca_data_csf</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="https://humanpred.github.io/pknca/reference/PKNCAdata.html" class="external-link">PKNCAdata</a></span><span class="op">(</span><span class="va">conc_obj_csf</span>, <span class="va">dose_obj_pk</span>,</span>
 <span>                                 intervals <span class="op">=</span> <span class="va">intervals_ss</span><span class="op">)</span></span>
-<span><span class="va">nca_res_csf</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/warning.html" class="external-link">suppressWarnings</a></span><span class="op">(</span><span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/pk.nca.html" class="external-link">pk.nca</a></span><span class="op">(</span><span class="va">nca_data_csf</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">nca_res_csf</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/warning.html" class="external-link">suppressWarnings</a></span><span class="op">(</span><span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="https://humanpred.github.io/pknca/reference/pk.nca.html" class="external-link">pk.nca</a></span><span class="op">(</span><span class="va">nca_data_csf</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">nca_res_csf</span><span class="op">)</span>,</span>

@@ -1151,11 +1151,11 @@ simulated cohort median should fall close to that value.</p>
 <span>  <span class="fu">mutate</span><span class="op">(</span>time <span class="op">=</span> <span class="fl">0</span>, amt <span class="op">=</span> <span class="fl">300</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">select</span><span class="op">(</span>id <span class="op">=</span> <span class="va">ID</span>, <span class="va">time</span>, <span class="va">amt</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">conc_obj</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/PKNCAconc.html" class="external-link">PKNCAconc</a></span><span class="op">(</span></span>
+<span><span class="va">conc_obj</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="https://humanpred.github.io/pknca/reference/PKNCAconc.html" class="external-link">PKNCAconc</a></span><span class="op">(</span></span>
 <span>  <span class="va">nca_concs</span>, <span class="va">ipredSim</span> <span class="op">~</span> <span class="va">t_in_interval</span> <span class="op">|</span> <span class="va">id</span>,</span>
 <span>  concu <span class="op">=</span> <span class="st">"mg/L"</span>, timeu <span class="op">=</span> <span class="st">"h"</span></span>
 <span><span class="op">)</span></span>
-<span><span class="va">dose_obj</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/PKNCAdose.html" class="external-link">PKNCAdose</a></span><span class="op">(</span></span>
+<span><span class="va">dose_obj</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="https://humanpred.github.io/pknca/reference/PKNCAdose.html" class="external-link">PKNCAdose</a></span><span class="op">(</span></span>
 <span>  <span class="va">dose_records</span>, <span class="va">amt</span> <span class="op">~</span> <span class="va">time</span> <span class="op">|</span> <span class="va">id</span>,</span>
 <span>  doseu <span class="op">=</span> <span class="st">"mg"</span></span>
 <span><span class="op">)</span></span>
@@ -1170,8 +1170,8 @@ simulated cohort median should fall close to that value.</p>
 <span>  cav      <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">nca_data</span>    <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/PKNCAdata.html" class="external-link">PKNCAdata</a></span><span class="op">(</span><span class="va">conc_obj</span>, <span class="va">dose_obj</span>, intervals <span class="op">=</span> <span class="va">intervals</span><span class="op">)</span></span>
-<span><span class="va">nca_results</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/pk.nca.html" class="external-link">pk.nca</a></span><span class="op">(</span><span class="va">nca_data</span><span class="op">)</span></span>
+<span><span class="va">nca_data</span>    <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="https://humanpred.github.io/pknca/reference/PKNCAdata.html" class="external-link">PKNCAdata</a></span><span class="op">(</span><span class="va">conc_obj</span>, <span class="va">dose_obj</span>, intervals <span class="op">=</span> <span class="va">intervals</span><span class="op">)</span></span>
+<span><span class="va">nca_results</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="https://humanpred.github.io/pknca/reference/pk.nca.html" class="external-link">pk.nca</a></span><span class="op">(</span><span class="va">nca_data</span><span class="op">)</span></span>
 <span><span class="va">nca_df</span>      <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">nca_results</span><span class="op">$</span><span class="va">result</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">nca_summary</span> <span class="op">&lt;-</span> <span class="va">nca_df</span> <span class="op">|&gt;</span></span>

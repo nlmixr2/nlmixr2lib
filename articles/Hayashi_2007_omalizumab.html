@@ -1280,8 +1280,8 @@ those two values.</p>
 <span>                             levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">study_1101_doses</span>, <span class="st">" mg"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="va">amt</span>, <span class="va">dose_label</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">conc_obj</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/PKNCAconc.html" class="external-link">PKNCAconc</a></span><span class="op">(</span><span class="va">sim_nca</span>, <span class="va">Cc</span> <span class="op">~</span> <span class="va">time</span> <span class="op">|</span> <span class="va">dose_label</span> <span class="op">+</span> <span class="va">id</span><span class="op">)</span></span>
-<span><span class="va">dose_obj</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/PKNCAdose.html" class="external-link">PKNCAdose</a></span><span class="op">(</span><span class="va">dose_df</span>, <span class="va">amt</span> <span class="op">~</span> <span class="va">time</span> <span class="op">|</span> <span class="va">dose_label</span> <span class="op">+</span> <span class="va">id</span><span class="op">)</span></span>
+<span><span class="va">conc_obj</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="https://humanpred.github.io/pknca/reference/PKNCAconc.html" class="external-link">PKNCAconc</a></span><span class="op">(</span><span class="va">sim_nca</span>, <span class="va">Cc</span> <span class="op">~</span> <span class="va">time</span> <span class="op">|</span> <span class="va">dose_label</span> <span class="op">+</span> <span class="va">id</span><span class="op">)</span></span>
+<span><span class="va">dose_obj</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="https://humanpred.github.io/pknca/reference/PKNCAdose.html" class="external-link">PKNCAdose</a></span><span class="op">(</span><span class="va">dose_df</span>, <span class="va">amt</span> <span class="op">~</span> <span class="va">time</span> <span class="op">|</span> <span class="va">dose_label</span> <span class="op">+</span> <span class="va">id</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">intervals</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  start      <span class="op">=</span> <span class="fl">0</span>,</span>
@@ -1292,8 +1292,8 @@ those two values.</p>
 <span>  half.life  <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">nca_data</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/PKNCAdata.html" class="external-link">PKNCAdata</a></span><span class="op">(</span><span class="va">conc_obj</span>, <span class="va">dose_obj</span>, intervals <span class="op">=</span> <span class="va">intervals</span><span class="op">)</span></span>
-<span><span class="va">nca_res</span>  <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/pk.nca.html" class="external-link">pk.nca</a></span><span class="op">(</span><span class="va">nca_data</span><span class="op">)</span></span>
+<span><span class="va">nca_data</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="https://humanpred.github.io/pknca/reference/PKNCAdata.html" class="external-link">PKNCAdata</a></span><span class="op">(</span><span class="va">conc_obj</span>, <span class="va">dose_obj</span>, intervals <span class="op">=</span> <span class="va">intervals</span><span class="op">)</span></span>
+<span><span class="va">nca_res</span>  <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="https://humanpred.github.io/pknca/reference/pk.nca.html" class="external-link">pk.nca</a></span><span class="op">(</span><span class="va">nca_data</span><span class="op">)</span></span>
 <span><span class="va">nca_summary</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">nca_res</span><span class="op">)</span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">nca_summary</span>, caption <span class="op">=</span> <span class="st">"Simulated NCA parameters by single-dose group (study 1101)."</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
@@ -1511,14 +1511,14 @@ computing <code>p_ige</code>, <code>cl_ige</code>, and
 <span><span class="co">#&gt;  [1] gtable_0.3.6          xfun_0.58             bslib_0.11.0         </span></span>
 <span><span class="co">#&gt;  [4] lattice_0.22-9        vctrs_0.7.3           tools_4.6.0          </span></span>
 <span><span class="co">#&gt;  [7] generics_0.1.4        parallel_4.6.0        tibble_3.3.1         </span></span>
-<span><span class="co">#&gt; [10] symengine_0.2.11      pkgconfig_2.0.3       data.table_1.18.4    </span></span>
+<span><span class="co">#&gt; [10] symengine_0.2.13      pkgconfig_2.0.3       data.table_1.18.4    </span></span>
 <span><span class="co">#&gt; [13] checkmate_2.3.4       RColorBrewer_1.1-3    S7_0.2.2             </span></span>
 <span><span class="co">#&gt; [16] desc_1.4.3            RcppParallel_5.1.11-2 lifecycle_1.0.5      </span></span>
 <span><span class="co">#&gt; [19] compiler_4.6.0        farver_2.1.2          textshaping_1.0.5    </span></span>
 <span><span class="co">#&gt; [22] fontawesome_0.5.3     htmltools_0.5.9       sys_3.4.3            </span></span>
 <span><span class="co">#&gt; [25] sass_0.4.10           yaml_2.3.12           crayon_1.5.3         </span></span>
 <span><span class="co">#&gt; [28] pillar_1.11.1         pkgdown_2.2.0         jquerylib_0.1.4      </span></span>
-<span><span class="co">#&gt; [31] whisker_0.4.1         openssl_2.4.1         cachem_1.1.0         </span></span>
+<span><span class="co">#&gt; [31] whisker_0.4.1         openssl_2.4.2         cachem_1.1.0         </span></span>
 <span><span class="co">#&gt; [34] nlme_3.1-169          qs2_0.2.2             tidyselect_1.2.1     </span></span>
 <span><span class="co">#&gt; [37] digest_0.6.39         lotri_1.0.4           purrr_1.2.2          </span></span>
 <span><span class="co">#&gt; [40] labeling_0.4.3        rxode2ll_2.0.14       fastmap_1.2.0        </span></span>

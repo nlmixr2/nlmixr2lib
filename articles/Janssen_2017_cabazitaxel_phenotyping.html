@@ -1065,11 +1065,11 @@ variability in midazolam exposure.</p>
 <span>  <span class="fu">select</span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="va">amt</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">mutate</span><span class="op">(</span>arm <span class="op">=</span> <span class="st">"midazolam_2.5_mg_iv"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">conc_obj_mdz</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/PKNCAconc.html" class="external-link">PKNCAconc</a></span><span class="op">(</span></span>
+<span><span class="va">conc_obj_mdz</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="https://humanpred.github.io/pknca/reference/PKNCAconc.html" class="external-link">PKNCAconc</a></span><span class="op">(</span></span>
 <span>  <span class="va">sim_nca_mdz</span>, <span class="va">Cc</span> <span class="op">~</span> <span class="va">time</span> <span class="op">|</span> <span class="va">arm</span> <span class="op">+</span> <span class="va">id</span>,</span>
 <span>  concu <span class="op">=</span> <span class="st">"mg/L"</span>, timeu <span class="op">=</span> <span class="st">"h"</span></span>
 <span><span class="op">)</span></span>
-<span><span class="va">dose_obj_mdz</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/PKNCAdose.html" class="external-link">PKNCAdose</a></span><span class="op">(</span></span>
+<span><span class="va">dose_obj_mdz</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="https://humanpred.github.io/pknca/reference/PKNCAdose.html" class="external-link">PKNCAdose</a></span><span class="op">(</span></span>
 <span>  <span class="va">dose_mdz</span>, <span class="va">amt</span> <span class="op">~</span> <span class="va">time</span> <span class="op">|</span> <span class="va">arm</span> <span class="op">+</span> <span class="va">id</span>, doseu <span class="op">=</span> <span class="st">"mg"</span></span>
 <span><span class="op">)</span></span>
 <span><span class="va">intervals_mdz</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
@@ -1081,7 +1081,7 @@ variability in midazolam exposure.</p>
 <span>  cl.obs      <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  vss.obs     <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span>
-<span><span class="va">nca_mdz</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/pk.nca.html" class="external-link">pk.nca</a></span><span class="op">(</span><span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/PKNCAdata.html" class="external-link">PKNCAdata</a></span><span class="op">(</span></span>
+<span><span class="va">nca_mdz</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="https://humanpred.github.io/pknca/reference/pk.nca.html" class="external-link">pk.nca</a></span><span class="op">(</span><span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="https://humanpred.github.io/pknca/reference/PKNCAdata.html" class="external-link">PKNCAdata</a></span><span class="op">(</span></span>
 <span>  <span class="va">conc_obj_mdz</span>, <span class="va">dose_obj_mdz</span>, intervals <span class="op">=</span> <span class="va">intervals_mdz</span></span>
 <span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (0.5) is not allowed</span></span>
@@ -1646,11 +1646,11 @@ CL<a class="anchor" aria-label="anchor" href="#quantify-the-covariate-sensitivit
 <span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">evid</span> <span class="op">==</span> <span class="fl">1L</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">select</span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="va">amt</span>, <span class="va">scenario</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">conc_obj_cbz</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/PKNCAconc.html" class="external-link">PKNCAconc</a></span><span class="op">(</span></span>
+<span><span class="va">conc_obj_cbz</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="https://humanpred.github.io/pknca/reference/PKNCAconc.html" class="external-link">PKNCAconc</a></span><span class="op">(</span></span>
 <span>  <span class="va">sim_nca_cbz</span>, <span class="va">Cc</span> <span class="op">~</span> <span class="va">time</span> <span class="op">|</span> <span class="va">scenario</span> <span class="op">+</span> <span class="va">id</span>,</span>
 <span>  concu <span class="op">=</span> <span class="st">"mg/L"</span>, timeu <span class="op">=</span> <span class="st">"h"</span></span>
 <span><span class="op">)</span></span>
-<span><span class="va">dose_obj_cbz</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/PKNCAdose.html" class="external-link">PKNCAdose</a></span><span class="op">(</span></span>
+<span><span class="va">dose_obj_cbz</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="https://humanpred.github.io/pknca/reference/PKNCAdose.html" class="external-link">PKNCAdose</a></span><span class="op">(</span></span>
 <span>  <span class="va">dose_cbz</span>, <span class="va">amt</span> <span class="op">~</span> <span class="va">time</span> <span class="op">|</span> <span class="va">scenario</span> <span class="op">+</span> <span class="va">id</span>, doseu <span class="op">=</span> <span class="st">"mg"</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -1663,7 +1663,7 @@ CL<a class="anchor" aria-label="anchor" href="#quantify-the-covariate-sensitivit
 <span>  cl.obs      <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">nca_cbz</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/pk.nca.html" class="external-link">pk.nca</a></span><span class="op">(</span><span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/PKNCAdata.html" class="external-link">PKNCAdata</a></span><span class="op">(</span></span>
+<span><span class="va">nca_cbz</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="https://humanpred.github.io/pknca/reference/pk.nca.html" class="external-link">pk.nca</a></span><span class="op">(</span><span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="https://humanpred.github.io/pknca/reference/PKNCAdata.html" class="external-link">PKNCAdata</a></span><span class="op">(</span></span>
 <span>  <span class="va">conc_obj_cbz</span>, <span class="va">dose_obj_cbz</span>, intervals <span class="op">=</span> <span class="va">intervals_cbz</span></span>
 <span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
