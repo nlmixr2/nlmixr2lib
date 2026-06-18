@@ -1598,6 +1598,8 @@ navbar:
         href: articles/Zhao_2014_vancomycin.html
       - text: "Varenicline (Ravva 2009)"
         href: articles/Ravva_2009_varenicline.html
+      - text: "Vatalanib (Wang 2014)"
+        href: articles/Wang_2014_vatalanib.html
       - text: "Vedolizumab (Rosario 2015)"
         href: articles/Rosario_2015_vedolizumab.html
       - text: "Verapamil rat (Syvanen 2011)"
@@ -2555,6 +2557,7 @@ articles:
   - articles/Wang_2012_levetiracetam
   - articles/Wang_2012_propofol
   - articles/Wang_2013_morphine
+  - articles/Wang_2014_vatalanib
   - articles/Wang_2015_rucaparib
   - articles/Wang_2017_benralizumab
   - articles/Wang_2018_daclatasvir_asunaprevir
