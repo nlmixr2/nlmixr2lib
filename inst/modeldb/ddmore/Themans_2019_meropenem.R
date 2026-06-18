@@ -115,17 +115,6 @@ Themans_2019_meropenem <- function() {
     propSd_Celf <- sqrt(0.404);  label("Proportional residual error on ELF concentration Celf (fraction)")   # DDMODEL00000301 .lst FINAL SIGMA EPS3 (variance)
   })
   model({
-    # Declare named compartments for both ODE states and the algebraic
-    # PK / ELF observables (Cc, Celf) so event tables can reference
-    # them by name or by the numeric slot positions 4 and 5; without
-    # this, rxode2's cmt->slot lookup only finds the ODE states and
-    # fails on cmt = 4L / cmt = 5L observation rows.
-    cmt(central)
-    cmt(peripheral1)
-    cmt(peripheral2)
-    cmt(Cc)
-    cmt(Celf)
-
     # Individual PK parameters with power-form covariate effects (per DDMODEL00000301 $PK block:
     #   TVCL = THETA(1) * (GFR/65)^THETA(2)
     #   TVV1 = THETA(3) * (WT/75)^THETA(4)

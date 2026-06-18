@@ -64,15 +64,6 @@ Jelliffe_2014_digoxin <- function() {
   })
 
   model({
-    # Declare named compartments for both ODE states and the algebraic
-    # PK observable (Cc) so event tables can reference them by name;
-    # without this, rxode2's auto-injected cmt(Cc) shifts state ordering
-    # and the solver complains "peripheral1 is required for solving".
-    cmt(depot)
-    cmt(central)
-    cmt(peripheral1)
-    cmt(Cc)
-
     # Individual PK parameters
     ka  <- exp(lka  + etalka)
     vc  <- exp(lvc  + etalvc) * WT

@@ -133,16 +133,6 @@ Germovsek_2018_meropenem <- function() {
   })
 
   model({
-    # Declare named compartments for both ODE states and the algebraic
-    # PK observables (Cc, Ccsf) so event tables can reference them by
-    # name; without this, rxode2's auto-injected cmt(Cc)/cmt(Ccsf) push
-    # central/csf into observation slots and the solver complains
-    # "csf is required for solving".
-    cmt(central)
-    cmt(csf)
-    cmt(Cc)
-    cmt(Ccsf)
-
     # Renal-function maturation (Rhodin et al. 2009 Hill function on PMA).
     fmat <- PAGE^hill_mat / (tmat50^hill_mat + PAGE^hill_mat)
 

@@ -129,6 +129,12 @@ weight_min <- 12.7
 weight_max <- 56
 weight_med <- 23
 
+# Observe at the ODE state `central` with dvid = 1L. The model body has
+# two algebraic observables (Cc from central, Cc_mhd from the
+# central_mhd state) in residual tildes; rxUi auto-injects compartment
+# slots for them after the ODE-state slots, so `cmt = "Cc"` would
+# target an injected slot rather than the ODE state. rxSolve still
+# returns both Cc and Cc_mhd as columns on every observation row.
 make_cohort <- function(n, dose_mg_per_kg, eiaed_prevalence,
                         regimen, id_offset = 0L) {
   weights <- pmin(pmax(exp(rnorm(n, mean = log(weight_med), sd = 0.35)),
@@ -141,12 +147,13 @@ make_cohort <- function(n, dose_mg_per_kg, eiaed_prevalence,
                  amt_per_dose = doses_mg,
                  regimen = regimen)
   doses <- base |>
-    mutate(time = 0, evid = 1L, cmt = "depot", amt = amt_per_dose)
+    mutate(time = 0, evid = 1L, cmt = "depot", amt = amt_per_dose,
+           dvid = NA_integer_)
   obs_grid <- seq(0.25, 48, length.out = 96)
   obs <- base |>
     select(id, WT, CONMED_EIAED, regimen) |>
     tidyr::crossing(time = obs_grid) |>
-    mutate(evid = 0L, cmt = "Cc", amt = NA_real_)
+    mutate(evid = 0L, cmt = "central", amt = NA_real_, dvid = 1L)
   bind_rows(doses, obs) |>
     arrange(id, time, desc(evid))
 }
@@ -167,11 +174,16 @@ stopifnot(!anyDuplicated(unique(events_sd[, c("id", "time", "evid")])))
 # Simulation
 
 ```{r simulate}
+# useLinCmt = FALSE because rxSolve's automatic ODE -> linCmt conversion
+# corrupts the auto-injected dvid mapping for parent-metabolite models
+# (the converted form does not preserve all ODE states; auto-injection
+# lands on the wrong slots). The ODE-solve path is correct.
 sim_sd <- rxode2::rxSolve(
   object  = mod,
   events  = events_sd,
   keep    = c("WT", "CONMED_EIAED", "regimen"),
-  returnType = "data.frame"
+  returnType = "data.frame",
+  useLinCmt = FALSE
 ) |>
   filter(time > 0)
 ```
@@ -184,7 +196,8 @@ sim_sd_typical <- rxode2::rxSolve(
   object  = rxode2::zeroRe(mod),
   events  = events_sd,
   keep    = c("WT", "CONMED_EIAED", "regimen"),
-  returnType = "data.frame"
+  returnType = "data.frame",
+  useLinCmt = FALSE
 ) |>
   filter(time > 0)
 ```
@@ -201,15 +214,18 @@ child with EIAED comedication, at the two trial dose levels.
 ```{r typical-profiles, fig.width = 7.5, fig.height = 4.5}
 ev_typ <- bind_rows(
   tibble(id = 1L, time = 0, amt = 23 * 5,  evid = 1L, cmt = "depot",
-         WT = 23, CONMED_EIAED = 1L, regimen = "5 mg/kg"),
+         WT = 23, CONMED_EIAED = 1L, regimen = "5 mg/kg",
+         dvid = NA_integer_),
   tibble(id = 2L, time = 0, amt = 23 * 15, evid = 1L, cmt = "depot",
-         WT = 23, CONMED_EIAED = 1L, regimen = "15 mg/kg")
+         WT = 23, CONMED_EIAED = 1L, regimen = "15 mg/kg",
+         dvid = NA_integer_)
 ) |>
   bind_rows(
     tidyr::crossing(id = c(1L, 2L), time = seq(0.05, 48, length.out = 240)) |>
-      mutate(evid = 0L, cmt = "Cc", amt = NA_real_,
+      mutate(evid = 0L, cmt = "central", amt = NA_real_,
              WT = 23, CONMED_EIAED = 1L,
-             regimen = ifelse(id == 1L, "5 mg/kg", "15 mg/kg"))
+             regimen = ifelse(id == 1L, "5 mg/kg", "15 mg/kg"),
+             dvid = 1L)
   ) |>
   arrange(id, time, desc(evid))
 
@@ -217,7 +233,8 @@ sim_typ <- rxode2::rxSolve(
   object  = rxode2::zeroRe(mod),
   events  = ev_typ,
   keep    = c("WT", "CONMED_EIAED", "regimen"),
-  returnType = "data.frame"
+  returnType = "data.frame",
+  useLinCmt = FALSE
 ) |>
   filter(time > 0)
 
@@ -381,11 +398,11 @@ build_ss_events <- function(wt, eiaed, dose_mg_per_kg_per_day,
                                ifelse(eiaed == 1, "EIAED+", "EIAED-")))
   doses <- tidyr::crossing(id = ids, dose_idx = seq_len(n_doses)) |>
     mutate(time = (dose_idx - 1) * tau, amt = per_dose,
-           evid = 1L, cmt = "depot") |>
+           evid = 1L, cmt = "depot", dvid = NA_integer_) |>
     left_join(base, by = "id")
   obs_grid <- seq((n_doses - 1) * tau + 0.25, n_doses * tau, by = 0.5)
   obs <- tidyr::crossing(id = ids, time = obs_grid) |>
-    mutate(evid = 0L, cmt = "Cc", amt = NA_real_) |>
+    mutate(evid = 0L, cmt = "central", amt = NA_real_, dvid = 1L) |>
     left_join(base, by = "id")
   bind_rows(doses, obs) |>
     arrange(id, time, desc(evid))
@@ -413,7 +430,8 @@ stopifnot(!anyDuplicated(unique(ev_ss[, c("id", "time", "evid")])))
 sim_ss <- rxode2::rxSolve(
   object = mod, events = ev_ss,
   keep   = c("WT", "CONMED_EIAED", "cell", "dose_per_kg_day"),
-  returnType = "data.frame"
+  returnType = "data.frame",
+  useLinCmt = FALSE
 ) |>
   dplyr::filter(time > 0)
 

@@ -119,15 +119,18 @@ dose_rows <- cohort |>
                 cmt  = "central",
                 evid = 1L)
 
-obs_cc  <- cohort |> tidyr::crossing(time = dense_grid_h) |>
-  dplyr::mutate(amt = 0, dur = NA_real_, cmt = "Cc",  evid = 0L)
-obs_hr  <- cohort |> tidyr::crossing(time = dense_grid_h) |>
-  dplyr::mutate(amt = 0, dur = NA_real_, cmt = "HR",  evid = 0L)
-obs_map <- cohort |> tidyr::crossing(time = dense_grid_h) |>
-  dplyr::mutate(amt = 0, dur = NA_real_, cmt = "MAP", evid = 0L)
+obs <- cohort |> tidyr::crossing(time = dense_grid_h) |>
+  dplyr::mutate(amt = 0, dur = NA_real_, cmt = "central", evid = 0L,
+                dvid = 1L)
 
-events <- dplyr::bind_rows(dose_rows, obs_cc, obs_hr, obs_map) |>
-  dplyr::select(id, time, amt, dur, cmt, evid, WT, treatment) |>
+# `dvid = 1L` satisfies rxode2's dvid->cmt translation check for the
+# multi-output PD model (Cc, HR, MAP are 3 algebraic observables sharing
+# the same `central` compartment). The output dataframe carries all
+# three observables as columns regardless of which dvid is selected.
+dose_rows <- dose_rows |> dplyr::mutate(dvid = NA_integer_)
+
+events <- dplyr::bind_rows(dose_rows, obs) |>
+  dplyr::select(id, time, amt, dur, cmt, evid, dvid, WT, treatment) |>
   dplyr::arrange(id, time, dplyr::desc(evid))
 
 stopifnot(!anyDuplicated(unique(events[, c("id", "time", "cmt", "evid")])))
@@ -145,14 +148,14 @@ sim <- rxode2::rxSolve(
   returnType = "data.frame"
 )
 
-# Multi-output: rxode2 emits one row per (id, time, cmt) where cmt was
-# requested in events. The CMT integer column identifies the active
-# observation variable. Compartments are ordered after the d/dt() and
-# observation declarations in model(): central=1, peripheral1=2, Cc=3,
-# HR=4, MAP=5.
-sim_cc  <- sim |> dplyr::filter(CMT == 3)
-sim_hr  <- sim |> dplyr::filter(CMT == 4)
-sim_map <- sim |> dplyr::filter(CMT == 5)
+# Single observation per time point at cmt = "central"; rxode2 returns
+# every algebraic observable (Cc, HR, MAP) as its own column on each
+# observation row, so the multi-output PD time-courses are accessed
+# directly without filtering by an auto-injected CMT slot. sim_hr /
+# sim_map kept as aliases in case downstream chunks want to label them.
+sim_cc  <- sim
+sim_hr  <- sim
+sim_map <- sim
 ```
 
 # Replicate published figures
@@ -176,25 +179,21 @@ typical_cohort <- tibble(
 )
 typical_dose <- typical_cohort |>
   dplyr::mutate(time = 0, amt = 0.7 * WT, dur = infusion_h,
-                cmt = "central", evid = 1L)
-typical_obs_cc <- typical_cohort |> tidyr::crossing(time = dense_grid_h) |>
-  dplyr::mutate(amt = 0, dur = NA_real_, cmt = "Cc",  evid = 0L)
-typical_obs_hr <- typical_cohort |> tidyr::crossing(time = dense_grid_h) |>
-  dplyr::mutate(amt = 0, dur = NA_real_, cmt = "HR",  evid = 0L)
-typical_obs_map <- typical_cohort |> tidyr::crossing(time = dense_grid_h) |>
-  dplyr::mutate(amt = 0, dur = NA_real_, cmt = "MAP", evid = 0L)
-typical_events <- dplyr::bind_rows(typical_dose, typical_obs_cc,
-                                   typical_obs_hr, typical_obs_map) |>
-  dplyr::select(id, time, amt, dur, cmt, evid, WT, treatment) |>
+                cmt = "central", evid = 1L, dvid = NA_integer_)
+typical_obs <- typical_cohort |> tidyr::crossing(time = dense_grid_h) |>
+  dplyr::mutate(amt = 0, dur = NA_real_, cmt = "central", evid = 0L,
+                dvid = 1L)
+typical_events <- dplyr::bind_rows(typical_dose, typical_obs) |>
+  dplyr::select(id, time, amt, dur, cmt, evid, dvid, WT, treatment) |>
   dplyr::arrange(id, time, dplyr::desc(evid))
 
 sim_typical <- rxode2::rxSolve(
   mod_typical, events = typical_events,
   keep = c("WT", "treatment"), returnType = "data.frame"
 )
-sim_typical_cc  <- sim_typical |> dplyr::filter(CMT == 3)
-sim_typical_hr  <- sim_typical |> dplyr::filter(CMT == 4)
-sim_typical_map <- sim_typical |> dplyr::filter(CMT == 5)
+sim_typical_cc  <- sim_typical
+sim_typical_hr  <- sim_typical
+sim_typical_map <- sim_typical
 
 sim_typical_cc |>
   ggplot(aes(time * 60, Cc)) +

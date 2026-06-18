@@ -98,19 +98,24 @@ make_cohort <- function(n, dose_mg, dose_times, route = c("SC", "IV"), regimen, 
     regimen = regimen
   )
 
+  # Observe at the ODE state `central` with dvid = 1L. The model body
+  # has two algebraic observables (Cc from central, a4sat = E0 + Emax
+  # chain on Cc) in residual tildes; rxUi auto-injects compartment
+  # slots for them after the ODE-state slots, so `cmt = "Cc"` or
+  # `cmt = "a4sat"` would target injected slots rather than the ODE
+  # state. rxSolve still returns both Cc and a4sat as columns on every
+  # observation row, so a single anchor sample per time covers both
+  # endpoints.
   dose_rows <- subjects |>
     tidyr::expand_grid(time = dose_times) |>
-    dplyr::mutate(amt = dose_mg, evid = 1L, cmt = cmt_dose)
+    dplyr::mutate(amt = dose_mg, evid = 1L, cmt = cmt_dose,
+                  dvid = NA_integer_)
 
-  obs_rows_cc <- subjects |>
+  obs_rows <- subjects |>
     tidyr::expand_grid(time = obs_times) |>
-    dplyr::mutate(amt = 0, evid = 0L, cmt = "Cc")
+    dplyr::mutate(amt = 0, evid = 0L, cmt = "central", dvid = 1L)
 
-  obs_rows_a4 <- subjects |>
-    tidyr::expand_grid(time = obs_times) |>
-    dplyr::mutate(amt = 0, evid = 0L, cmt = "a4sat")
-
-  dplyr::bind_rows(dose_rows, obs_rows_cc, obs_rows_a4) |>
+  dplyr::bind_rows(dose_rows, obs_rows) |>
     dplyr::arrange(id, time, dplyr::desc(evid))
 }
 

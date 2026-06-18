@@ -107,21 +107,22 @@ Fanta_2007_ciclosporin <- function() {
 
     # Inter-individual variability. Fanta 2007 Table 2 reports CV% on the
     # log-normal scale; convert to variance via omega^2 = log(CV^2 + 1).
-    # V2, Q4, V4 share a single eta with different magnitudes per Fanta 2007
-    # Results 'Structural and stochastic models' paragraph 1; encoded here as a
-    # 3x3 fully positively-correlated block (the published prose says
-    # "complete positive OR negative correlation" without specifying signs).
-    # See vignette Assumptions and deviations.
-    # Shared standardized random effect for the V2 / Q4 / V4 block.
-    # Fanta 2007 Results 'Structural and stochastic models' paragraph 1
-    # reports a perfectly-correlated 3-eta block for V2, Q4, V4 (the
+    # V2, Q4, V4 form a perfectly-correlated 3-eta block per Fanta 2007
+    # Results 'Structural and stochastic models' paragraph 1 (the
     # published prose: "complete positive OR negative correlation"). A
     # full 3x3 covariance with r = +1 between every pair is rank-1 and
     # singular, so rxode2's Cholesky-based simulator cannot decompose
-    # it. Encoded here as one shared standardized eta scaled by the
-    # per-parameter sqrt(variance) in model() — mathematically identical
-    # to the published rank-1 block but numerically well-conditioned.
-    eta_v2q4v4 ~ 1.0  # standardized shared eta for the V2/Q4/V4 perfect-correlation block
+    # it. Encoded here with r = 0.999 (still numerically "complete
+    # positive correlation" in the qualitative sense the paper uses)
+    # so the matrix is strictly positive-definite. Off-diagonals =
+    # 0.999 * sqrt(var_i * var_j). Smallest eigenvalue of the
+    # equicorrelation r = 0.999 form scales as (1 - r) = 0.001, which
+    # is safely above the Cholesky decomposition floor.
+    etalvc + etalq2 + etalvp2 ~ c(
+      0.014297,
+      0.044939, 0.141562,
+      0.029413, 0.092544, 0.060625
+    )  # Fanta 2007 Table 2: IIV V2 (CV 12%), IIV Q4 (CV 39%), IIV V4 (CV 25%); off-diagonals = 0.999 * sqrt(var_i * var_j) for strict PD-ness while preserving the published complete-positive-correlation structure
     etalcl     ~ 0.028501  # Fanta 2007 Table 2: IIV CL  CV 17% -> log(1 + 0.17^2)
     etalq      ~ 0.091705  # Fanta 2007 Table 2: IIV Q3  CV 31% -> log(1 + 0.31^2)
     etalvp     ~ 0.162519  # Fanta 2007 Table 2: IIV V3  CV 42% -> log(1 + 0.42^2)
@@ -146,15 +147,6 @@ Fanta_2007_ciclosporin <- function() {
     # 13 kg per the Table 2 footnote).
     allom_cl <- (WT / 13)^e_wt_cl
     allom_v  <- (WT / 13)^e_wt_vc
-
-    # Per-parameter scaling of the shared standardized V2/Q4/V4 eta.
-    # Variances and CVs are unchanged vs. the published rank-1 block:
-    # var(etalvc) = (sqrt(0.014297))^2 = 0.014297 -> CV 12% on V2
-    # var(etalq2) = (sqrt(0.141562))^2 = 0.141562 -> CV 39% on Q4
-    # var(etalvp2) = (sqrt(0.060625))^2 = 0.060625 -> CV 25% on V4
-    etalvc  <- 0.119571 * eta_v2q4v4  # sqrt(0.014297)
-    etalq2  <- 0.376247 * eta_v2q4v4  # sqrt(0.141562)
-    etalvp2 <- 0.246222 * eta_v2q4v4  # sqrt(0.060625)
 
     # Individual parameters
     ka      <- exp(lka  + etalka)

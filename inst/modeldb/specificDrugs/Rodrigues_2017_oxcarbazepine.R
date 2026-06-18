@@ -107,18 +107,6 @@ Rodrigues_2017_oxcarbazepine <- function() {
   })
 
   model({
-    # Declare named compartments for both ODE states and the algebraic
-    # PK observables (Cc, Cc_mhd) so event tables can reference them
-    # by name; without this, rxode2's auto-injected cmt(Cc)/cmt(Cc_mhd)
-    # shifts state ordering and the solver complains "central_mhd is
-    # required for solving".
-    cmt(depot)
-    cmt(central)
-    cmt(peripheral1)
-    cmt(central_mhd)
-    cmt(Cc)
-    cmt(Cc_mhd)
-
     # Reference body weight for empirical allometric scaling (Rodrigues 2017
     # Methods Eq. 2: cov_median fixed to standard adult value of 70 kg).
     ref_wt <- 70

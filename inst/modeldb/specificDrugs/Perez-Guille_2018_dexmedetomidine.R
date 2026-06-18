@@ -111,16 +111,6 @@
   })
 
   model({
-    # Declare named compartments for both ODE states and the algebraic
-    # PK/PD observables (Cc, HR, MAP) so event tables can reference them
-    # by name; without this, rxode2's cmt->slot lookup only finds the
-    # ODE states and fails on cmt = "Cc" / cmt = "HR" / cmt = "MAP".
-    cmt(central)
-    cmt(peripheral1)
-    cmt(Cc)
-    cmt(HR)
-    cmt(MAP)
-
     # 1. Individual PK parameters with a priori allometric weight scaling (reference 70 kg)
     cl <- exp(lcl + etalcl) * (WT / 70)^e_wt_cl
     vc <- exp(lvc + etalvc) * (WT / 70)^e_wt_vc
