@@ -928,6 +928,8 @@ navbar:
         href: articles/Brill_2014_midazolam.html
       - text: "Midazolam (Janssen 2017)"
         href: articles/Janssen_2017_cabazitaxel_phenotyping.html
+      - text: "Midazolam (vanRongen 2015)"
+        href: articles/vanRongen_2015_midazolam.html
       - text: "Midazolam (vanRongen 2017)"
         href: articles/vanRongen_2017_midazolam.html
       - text: "Midazolam pbpk (Brussee 2018)"
@@ -2659,6 +2661,7 @@ articles:
   - articles/deWit_2016_everolimus
   - articles/elDesoky_1997_theophylline_pediatric_asthma
   - articles/vanHasselt_2015_eribulin
+  - articles/vanRongen_2015_midazolam
   - articles/vanRongen_2016_acetaminophen
   - articles/vanRongen_2017_midazolam
   - articles/vanRongen_2018_metformin

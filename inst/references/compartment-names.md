@@ -2561,6 +2561,12 @@ Per-paper metabolite / sibling-drug suffix additions discovered during the 2026-
 - **Source aliases:** none.
 - **Example models:** `Stroh_2013_rolofylline.R` (doi:10.1208/s12248-012-9443-5).
 
+### 1ohmg (**canonical 1'-hydroxymidazolam glucuronide suffix**)
+- **Type:** metabolite-suffix
+- **Role:** 1'-hydroxymidazolam glucuronide, the phase-II UDP-glucuronosyltransferase conjugation product of `1ohm` (1'-hydroxymidazolam). Tracked downstream of the parent (midazolam) and the primary CYP3A oxidative metabolite (1'-hydroxymidazolam) in joint parent + sequential-metabolite popPK models. Drives `central_1ohmg` / `peripheral1_1ohmg` and the `propSd_1ohmg` residual. The name follows the established drug-glucuronide pattern (`mpag`, `acmpag`, `m3g`, `m6g`, `apapg`, `d3og`) where the parent-species suffix is followed by a terminal `g` for the glucuronide conjugate.
+- **Source aliases:** none.
+- **Example models:** `vanRongen_2015_midazolam.R` (doi:10.1111/bcp.12693).
+
 ---
 
 ## TB-treatment drug suffixes (combination antibiotic)
