@@ -772,6 +772,10 @@ navbar:
         href: articles/Janssen_2017_cabazitaxel_phenotyping.html
       - text: "Midazolam (vanRongen 2017)"
         href: articles/vanRongen_2017_midazolam.html
+      - text: "Midazolam children adolescents (Cella 2012)"
+        href: articles/Cella_2012_midazolam_paediatric_scaling.html
+      - text: "Midazolam infants adults (Cella 2012)"
+        href: articles/Cella_2012_midazolam_paediatric_scaling.html
       - text: "Midazolam pbpk (Brussee 2018)"
         href: articles/Brussee_2018_midazolam_pbpk.html
       - text: "Miltefosine (Dorlo 2008)"
@@ -1630,6 +1634,7 @@ articles:
   - articles/CarlssonPetri_2021_liraglutide
   - articles/Castro-Surez_2020_nimotuzumab
   - articles/Catalan-Latorre_2018_taurine_rat
+  - articles/Cella_2012_midazolam_paediatric_scaling
   - articles/Chakraborty_2012_canakinumab
   - articles/Chang_2011_PF04455242_prolactin
   - articles/Charles_2007_tafenoquine
