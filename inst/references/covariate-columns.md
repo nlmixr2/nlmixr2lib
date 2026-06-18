@@ -3605,6 +3605,17 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Example models:** `Rosario_2015_vedolizumab.R` (power-form on CLL: `CLL * 1.02^CONMED_AMINO`).
 - **Notes:** Covers the full aminosalicylate class (5-ASA is the single active moiety shared by most agents); use `CONMED_AMINO` rather than `CONMED_5ASA` unless the source paper explicitly restricts the indicator to 5-ASA monotherapy.
 
+### CONMED_AMOXCLAV (**canonical for concomitant amoxicillin-clavulanic acid coadministration indicator**)
+- **Description:** 1 = subject is coadministered amoxicillin-clavulanic acid (a fixed-dose combination beta-lactam antibiotic; clavulanic acid is the beta-lactamase inhibitor inseparable from amoxicillin in this combination product) during the observation interval, 0 = no concomitant amoxicillin-clavulanic acid. Time-fixed in the Marques-Minana 2010 source dataset (one indicator per subject's vancomycin course); the indicator can be encoded time-varying when a paper captures coadministration start / stop events.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no concomitant amoxicillin-clavulanic acid).
+- **Source aliases:**
+  - `AMX` -- used in `MarquesMinana_2010_vancomycin.R` (Marques-Minana 2010 Table 3 legend column abbreviation for amoxicillin-clavulanic acid).
+- **Example models:** `MarquesMinana_2010_vancomycin.R` (multiplicative deviation on vancomycin CL: `cl *= (1 + 0.650 * CONMED_AMOXCLAV)`, i.e. +65% CL when amoxicillin-clavulanic acid is coadministered in this 70-neonate cohort, Marques-Minana 2010 Table 3 theta2).
+- **Notes:** Combination product (amoxicillin + clavulanic acid given together at a fixed dose ratio); the indicator captures the combined coadministration, not amoxicillin or clavulanic acid alone. Mechanistic rationale per Marques-Minana 2010 Discussion: amoxicillin is a substrate of the renal peptide transporters hPepT1 / hPepT2 (Li et al. 2006); since vancomycin undergoes tubular reabsorption, amoxicillin may competitively inhibit that reabsorption and thereby increase vancomycin renal clearance. Ratified canonically on 2026-06-17 alongside the Marques-Minana 2010 vancomycin extraction.
+
 ### CONMED_AVD (**canonical for brentuximab vedotin + AVD (adriamycin/doxorubicin, vinblastine, dacarbazine) combination indicator**)
 - **Description:** 1 = subject is receiving brentuximab vedotin in combination with the AVD chemotherapy backbone (adriamycin a.k.a. doxorubicin, vinblastine, dacarbazine) for newly diagnosed advanced-stage Hodgkin lymphoma; 0 = otherwise (single-agent brentuximab vedotin). Encodes the A+AVD frontline regimen as a study-design covariate on ADC clearance.
 - **Units:** (binary)
@@ -4025,12 +4036,12 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Description:** 1 = subject is coadministered spironolactone (aldosterone-receptor antagonist; potassium-sparing diuretic; renal P-glycoprotein / OATP inhibitor at the digoxin tubular-secretion site) during the study, 0 = no concomitant spironolactone. Spironolactone is widely combined with digoxin in CHF therapy and inhibits digoxin renal tubular excretion, raising digoxin serum concentration.
 - **Units:** (binary)
 - **Type:** binary
-- **Scope:** specific
+- **Scope:** general
 - **Reference category:** 0 (no concomitant spironolactone).
 - **Source aliases:**
-  - `SPI` -- used in `Zhou_2010_digoxin.R` (Zhou 2010 Table 1 and Table 7 column label).
-- **Example models:** `Zhou_2010_digoxin.R` (multiplicative linear-deviation form on Cl/F: `cl *= (1 - 0.412 * CONMED_SPIRON)`, i.e. ~41% lower Cl/F with concomitant spironolactone in the older Chinese CHF cohort; Zhou 2010 Table 7).
-- **Notes:** 32 of 119 subjects (27%) in Zhou 2010 were coadministered spironolactone. The clinical rationale (Zhou 2010 Discussion) is that spironolactone inhibits the renal-tubular secretion of digoxin via competition for the renal P-glycoprotein transporter, raising digoxin steady-state concentration. Promote to general scope if a second popPK paper reports a spironolactone-coadministration covariate with comparable encoding. Ratified canonically on 2026-05-21 alongside the Zhou 2010 digoxin extraction.
+  - `SPI` -- used in `Zhou_2010_digoxin.R` (Zhou 2010 Table 1 and Table 7 column label) and `MarquesMinana_2010_vancomycin.R` (Marques-Minana 2010 Table 3 legend column abbreviation for spironolactone).
+- **Example models:** `Zhou_2010_digoxin.R` (multiplicative linear-deviation form on Cl/F: `cl *= (1 - 0.412 * CONMED_SPIRON)`, i.e. ~41% lower Cl/F with concomitant spironolactone in the older Chinese CHF cohort; Zhou 2010 Table 7), `MarquesMinana_2010_vancomycin.R` (multiplicative linear-deviation form on weight-normalised V_d: `vc *= (1 - 0.344 * CONMED_SPIRON)`, i.e. ~34% smaller V_d with concomitant spironolactone in the 70-neonate Marques-Minana 2010 cohort; Table 3 theta4).
+- **Notes:** 32 of 119 subjects (27%) in Zhou 2010 were coadministered spironolactone; Marques-Minana 2010 does not tabulate population prevalence. The clinical rationale differs by drug: in Zhou 2010 (adult digoxin), spironolactone inhibits renal-tubular secretion of digoxin via competition for the renal P-glycoprotein transporter, raising digoxin steady-state concentration. In Marques-Minana 2010 (neonatal vancomycin), spironolactone is hypothesised to reduce total body water and extracellular fluid volume, shrinking the V_d of a hydrophilic antibiotic like vancomycin. The shared canonical encoding is justified by both papers using a `(1 - theta * CONMED_SPIRON)` multiplicative-decrease form on a PK parameter (CL in Zhou 2010, V_d in Marques-Minana 2010); the per-model `covariateData[[CONMED_SPIRON]]$notes` should document the affected parameter and mechanism. Ratified canonically on 2026-05-21 alongside the Zhou 2010 digoxin extraction; promoted to general scope on 2026-06-17 alongside the Marques-Minana 2010 vancomycin extraction (second model use).
 
 ### CONMED_STATIN (**canonical for concomitant conmed_statin (HMG-CoA reductase inhibitor) therapy**)
 - **Description:** 1 = patient coadministered a conmed_statin (HMG-CoA reductase inhibitor) during the study, 0 = no conmed_statin coadministration.
