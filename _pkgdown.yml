@@ -974,6 +974,8 @@ navbar:
         href: articles/Bender_2009_pregabalin_rat.html
       - text: "Pregabalin rat smetab (Bender 2009)"
         href: articles/Bender_2009_pregabalin_rat.html
+      - text: "Propofol (Chi 2018)"
+        href: articles/Chi_2018_propofol.html
       - text: "Propofol (Diepstraten 2013)"
         href: articles/Diepstraten_2013_propofol.html
       - text: "Propofol (Przybylowski 2015)"
@@ -1644,6 +1646,7 @@ articles:
   - articles/Chen_2021_ganciclovir
   - articles/Chen_2022_guselkumab
   - articles/Cheng_2026_immunoglobulin
+  - articles/Chi_2018_propofol
   - articles/Chien_2022_imatinib
   - articles/Chigutsa_2012_ofloxacin
   - articles/Chirehwa_2017_pyrazinamide
