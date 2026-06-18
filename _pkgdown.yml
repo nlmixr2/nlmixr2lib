@@ -768,6 +768,8 @@ navbar:
         href: articles/Hennig_2006_itraconazole.html
       - text: "Itraconazole (Hennig 2007)"
         href: articles/Hennig_2007_itraconazole.html
+      - text: "Ixazomib (Gupta 2015)"
+        href: articles/Gupta_2015_ixazomib.html
       - text: "Ixazomib (Gupta 2017)"
         href: articles/Gupta_2017_ixazomib.html
       - text: "Ixekizumab (Jackson 2022)"
@@ -2055,6 +2057,7 @@ articles:
   - articles/Guiastrennec_2016_gastric_emptying
   - articles/Guo_2022_PF_06939999
   - articles/Gupta_2006_peginterferon_alfa_2b
+  - articles/Gupta_2015_ixazomib
   - articles/Gupta_2016_amatuximab
   - articles/Gupta_2016_lenvatinib
   - articles/Gupta_2017_ixazomib
