@@ -964,6 +964,8 @@ navbar:
         href: articles/Tarning_2014_piperaquine.html
       - text: "Polatuzumab (Lu 2019)"
         href: articles/Lu_2019_polatuzumab.html
+      - text: "Posaconazole (Kohl 2010)"
+        href: articles/Kohl_2010_posaconazole.html
       - text: "Posdinemab (PerezRuixo 2025)"
         href: articles/PerezRuixo_2025_posdinemab.html
       - text: "Pozelimab (Lin 2024)"
@@ -1853,6 +1855,7 @@ articles:
   - articles/Knibbe_2005_propofol
   - articles/Knibbe_2009_morphine
   - articles/Knights_2015_aripiprazole
+  - articles/Kohl_2010_posaconazole
   - articles/Koloskoff_2025_ganciclovir
   - articles/Koopman_2023_factorix
   - articles/Kotani_2022_astegolimab
