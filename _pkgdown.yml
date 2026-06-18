@@ -240,6 +240,8 @@ navbar:
         href: articles/Leroux_2016_cefotaxime.html
       - text: "Ceftazidime (Bulitta 2010)"
         href: articles/Bulitta_2010_ceftazidime.html
+      - text: "Ceftazidime (Conil 2007)"
+        href: articles/Conil_2007_ceftazidime.html
       - text: "Ceftazidime (Shi 2018)"
         href: articles/Shi_2018_ceftazidime.html
       - text: "Cefuroxime (Alqahtani 2018)"
@@ -1662,6 +1664,7 @@ articles:
   - articles/Clinckers_2008_MHD_rat
   - articles/CohenWolkowiez_2012_metronidazole
   - articles/CohenWolkowiez_2014_piperacillin_tazobactam
+  - articles/Conil_2007_ceftazidime
   - articles/Conrado_2014_alzheimer
   - articles/Cook_2016_paracetamol
   - articles/Csajka_2004_indinavir
