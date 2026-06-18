@@ -114,7 +114,7 @@ reference (`CONMED_BUDESONIDE = 0`).
 ```{r cohort}
 set.seed(20260612)
 
-n_subj <- 400L
+n_subj <- 200L   # virtual subjects for the covariate-distribution summary + height-for-age smoother
 
 cohort <- tibble::tibble(
   id  = seq_len(n_subj),
@@ -258,7 +258,7 @@ envelope at each age is a marginal distribution over IIV draws, matching
 the cohort-aggregate interpretation of Figure 2).
 
 ```{r figure-2-vpc, fig.cap = "Typical-value FEV1 median and 5th / 95th percentile envelope vs age, by treatment arm. Replicates the VPC envelope of Figure 2 of Wu 2014 to first order."}
-n_draws <- 250L
+n_draws <- 100L   # IIV draws per age grid point per arm (VPC envelope)
 
 events_vpc <- tidyr::expand_grid(
   draw = seq_len(n_draws),
@@ -307,7 +307,7 @@ ggplot(envelope, aes(x = time, fill = arm, colour = arm)) +
     colour  = "Treatment arm",
     fill    = "Treatment arm",
     title   = "FEV1 median + 5th / 95th percentile envelope vs age",
-    caption = "Median trajectory + 5th / 95th percentile envelope from n = 250 IIV draws per age and arm."
+    caption = "Median trajectory + 5th / 95th percentile envelope from n = 100 IIV draws per age and arm."
   ) +
   theme_bw()
 ```

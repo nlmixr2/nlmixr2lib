@@ -124,7 +124,7 @@ make_cohort <- function(spec, n, id_offset = 0L) {
   dplyr::bind_rows(lapply(seq_len(n), per_id))
 }
 
-n_per_cohort <- 200L
+n_per_cohort <- 80L   # virtual subjects per dose group (VPC-band cohort)
 
 events <- dplyr::bind_rows(
   make_cohort(cohort_specs[1, ], n_per_cohort, id_offset =   0L),
@@ -208,7 +208,7 @@ sim_plasma_vpc |>
   ggplot2::labs(x = "Time from start of infusion (min)",
                 y = "Plasma 8-MOP (ng/mL, log scale)",
                 title = "Plasma VPC: 5th / 50th / 95th percentiles",
-                caption = "Includes published IIV from Billard 1995 Table 5 (plasma fit). 200 simulated subjects per dose group.")
+                caption = "Includes published IIV from Billard 1995 Table 5 (plasma fit). 80 simulated subjects per dose group.")
 ```
 
 # PKNCA validation against Tables 3 and 4
