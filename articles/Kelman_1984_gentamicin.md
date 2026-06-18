@@ -1,0 +1,762 @@
+# Gentamicin (Kelman 1984)
+
+## Model and source
+
+- Citation: Kelman AW, Thomson AH, Whiting B, Bryson SM, Steedman DA,
+  Mawer GE, Samba-Donga LA. Estimation of gentamicin clearance and
+  volume of distribution in neonates and young children. *Br J Clin
+  Pharmacol* 1984;18:685-692.
+- Article: <https://doi.org/10.1111/j.1365-2125.1984.tb02530.x>
+
+Kelman et al. fit a one-compartment population PK model for gentamicin
+to three independent paediatric cohorts collected at two centres, then
+validated the prediction error in a held-out group of Glasgow infants.
+Each cohort produced its own NONMEM fit; the package therefore exposes
+three model files that share the same structural form but carry the
+cohort-specific parameter values from Tables 2-4 of the paper.
+
+``` r
+
+mod_glasgow_meta <- rxode2::rxode(readModelDb("Kelman_1984_gentamicin_glasgow"))
+#> ℹ parameter labels from comments will be replaced by 'label()'
+mod_glasgow_meta$description
+#> [1] "One-compartment population PK model for gentamicin in neonates and very young infants (Kelman 1984, Glasgow I cohort; n=43, postnatal age 2-120 days, body weight 0.8-3.7 kg). Clearance is a linear-additive function of body weight, postnatal age, and serum creatinine (paper Equation 4, Model 1: CL = theta1*WT + theta2*AGE + theta3*CREAT); volume of distribution is proportional to body weight (Equation 5: V = theta4*WT). Encoded from Kelman 1984 Table 2 Model 1 (FULL model, paper's best by NONMEM objective function)."
+```
+
+## Population
+
+Kelman 1984 pooled gentamicin therapeutic-drug-monitoring data from two
+centres (Table 1):
+
+| Cohort | n | Age range | Weight (kg) | Creatinine (umol/L) | Data points |
+|----|---:|----|----|----|---:|
+| Glasgow I | 43 | 2-120 days | 0.8-3.7 | 39-120 | 82 |
+| Manchester I | 32 | 1-153 days | 1.6-9.1 | 26-165 | 128 |
+| Manchester II | 68 | 6 months-15 years | 5.7-62 | 26-121 | 272 |
+| Glasgow II | 26 | 2-70 days | 0.8-3.1 | 30-126 | 50 (held out) |
+
+The Glasgow I subjects were collected specifically for this analysis at
+Stobhill General Hospital, with gestational ages of 26-39 weeks; the
+Manchester data had been collected previously by Ashurst et al. (1977)
+and Samba-Donga (1977). The Manchester children were arbitrarily divided
+into two groups at the 6-month age boundary because preliminary analyses
+indicated that age-related changes in clearance and volume of
+distribution were too large to pool across the entire 1 day - 15 year
+span (paper Methods, page 686). The Glasgow II dataset was reserved as a
+validation set and was not used to fit any of the models below.
+
+Thirty-nine of the Glasgow subjects received gentamicin as an IV bolus
+over 1-2 minutes; four were dosed intramuscularly. Forty-nine of the
+Manchester subjects received gentamicin by IV bolus over 1-2 minutes and
+51 received gentamicin intramuscularly. All subjects had been treated
+for at least two days before sampling and were considered at steady
+state. Peak (1 hour after a dose) and trough (immediately before the
+next dose) concentrations were measured by enzyme immunoassay in Glasgow
+(typical CV 5-7%) and by plate diffusion against *Klebsiella pneumoniae*
+in Manchester (CV 15%).
+
+The same information is available programmatically via each model’s
+`population` metadata field (e.g.,
+`readModelDb("Kelman_1984_gentamicin_glasgow")$population`).
+
+## Structural model
+
+The paper assumes the time course of plasma gentamicin can be adequately
+described by a one-compartment model and, for IM doses, assumes rapid
+absorption equivalent to IV bolus input. At steady state with dosing
+interval `tau` (paper Equations 1-3):
+
+``` math
+C_{1\mathrm{h}} = \frac{\text{Dose}}{V} \cdot \frac{e^{-k}}{1 - e^{-k\tau}}, \quad C_{\text{trough}} = \frac{\text{Dose}}{V} \cdot \frac{e^{-k\tau}}{1 - e^{-k\tau}}, \quad k = \frac{CL}{V}.
+```
+
+Five candidate covariate models (paper Methods, page 687) were tested in
+each cohort by NONMEM objective function:
+
+- **Model 1** (FULL): `CL = theta1*WT + theta2*AGE + theta3*CREAT`;
+  `V = theta4*WT`
+- **Model 2**: `CL = theta1*WT + theta2*AGE`; `V = theta4*WT`
+- **Model 3**: `CL = theta1*WT + theta3*CREAT`; `V = theta4*WT`
+- **Model 4**: `CL = theta1*WT`; `V = theta4*WT`
+- **Model 5**: `CL = theta1`; `V = theta4` (no covariates)
+
+Model 1 was identified as best in all three cohorts. The package
+extracts Model 1 for each cohort; Models 2-5 are sensitivity-analysis
+reductions and are not packaged. For the Glasgow I infants the paper
+also notes Model 4 was “as efficient as” Model 1 when combined with one
+Bayesian feedback concentration measurement (page 688) and used Model 4
+to construct the clinical dosing nomogram in Figure 3.
+
+## Source trace
+
+| Equation / parameter | Glasgow I (Table 2) | Manchester I (Table 3) | Manchester II (Table 4) |
+|----|----|----|----|
+| `e_wt_cl` – theta1, L/h per kg | 0.057 | 0.089 | 0.19 |
+| `e_pna_cl` / `e_age_cl` – theta2 | 0.00074 L/h/day (= 0.02252 L/h/month PNA) | 0.0013 L/h/day (= 0.03957 L/h/month PNA) | -0.13 L/h/year AGE |
+| `e_creat_cl` – theta3, L/h per umol/L | -0.00019 | -0.001 | -0.009 |
+| `e_wt_vc` – theta4, L per kg | 0.46 | 0.41 | 0.28 |
+| VAR(eta1) | 2.5e-5 | 2.4e-5 | 5.5e-3 |
+| VAR(eta2) | 6.6e-7 (per day^2) | 6.0e-6 (per day^2) | indeterminate |
+| VAR(eta3) | 1.1e-8 | indeterminate | 3.5e-5 |
+| VAR(eta4) | indeterminate | 1.6e-2 | 6.9e-3 |
+| VAR(eps) (residual variance, mg/L)^2 | 0.88 | 0.53 | 0.31 |
+| NONMEM OBJ | 111 | 134 | 200 |
+| 1-compartment PK ODE structure | n/a – paper Methods page 687 (“the one compartment open model”) | n/a | n/a |
+| Equations 1-3 (SS peak / trough closed-form) | n/a – paper page 687 | n/a | n/a |
+| Equation 6 (`theta_i,r = theta_i + eta_i,r`, additive IIV per slope) | n/a – paper page 687 | n/a | n/a |
+| Equation 7 (`C_jr = F(...) + eps_jr`, additive residual) | n/a – paper page 687 | n/a | n/a |
+
+## Virtual cohorts
+
+The original observed concentrations are not publicly available. We
+construct three virtual cohorts whose covariate distributions
+approximate the published Table 1 demographics, then simulate each
+against its matching model.
+
+``` r
+
+set.seed(19840601)
+
+# Each cohort gets disjoint subject IDs so they can be combined in plots
+# without colliding (multi-cohort rxSolve safety).
+n_per_cohort <- 100L
+
+build_events <- function(cov, dose_per_subject, tau, n_doses, regimen, age_var) {
+  doses <- cov |>
+    dplyr::mutate(amt = dose_per_subject, regimen = regimen) |>
+    tidyr::crossing(dose_num = seq.int(0L, n_doses - 1L)) |>
+    dplyr::mutate(time = dose_num * tau, evid = 1L, cmt = "central") |>
+    dplyr::select(-dose_num)
+  obs_times <- seq(0, n_doses * tau, length.out = 121L)
+  obs <- cov |>
+    dplyr::mutate(regimen = regimen, amt = 0, evid = 0L, cmt = "central") |>
+    tidyr::crossing(time = obs_times)
+  dplyr::bind_rows(doses, obs) |> dplyr::arrange(id, time, dplyr::desc(evid))
+}
+
+# ---- Glasgow I: neonates (PNA in months), 2.5 mg q12h per Figure 3
+glasgow_cov <- dplyr::tibble(
+  id    = seq_len(n_per_cohort),
+  WT    = runif(n_per_cohort, 0.8, 3.7),
+  PNA   = runif(n_per_cohort, 2/30.4375, 120/30.4375),
+  CREAT = runif(n_per_cohort, 39, 120)
+)
+tau_glasgow <- 12
+events_glasgow <- build_events(
+  glasgow_cov,
+  dose_per_subject = 2.5 * glasgow_cov$WT / 1.2,
+  tau = tau_glasgow, n_doses = 14L,
+  regimen = "Glasgow I 2.5 mg/1.2-kg q12h (Figure 3)"
+)
+
+# ---- Manchester I: infants (PNA in months), 2.5 mg/kg q8h
+manchester1_cov <- dplyr::tibble(
+  id    = n_per_cohort + seq_len(n_per_cohort),
+  WT    = runif(n_per_cohort, 1.6, 9.1),
+  PNA   = runif(n_per_cohort, 1/30.4375, 153/30.4375),
+  CREAT = runif(n_per_cohort, 26, 165)
+)
+tau_m1 <- 8
+events_m1 <- build_events(
+  manchester1_cov,
+  dose_per_subject = 2.5 * manchester1_cov$WT,
+  tau = tau_m1, n_doses = 21L,
+  regimen = "Manchester I 2.5 mg/kg q8h"
+)
+
+# ---- Manchester II: children (AGE in years), 2.5 mg/kg q8h
+manchester2_cov <- dplyr::tibble(
+  id    = 2 * n_per_cohort + seq_len(n_per_cohort),
+  WT    = runif(n_per_cohort, 5.7, 62),
+  AGE   = runif(n_per_cohort, 0.5, 15),
+  CREAT = runif(n_per_cohort, 26, 121)
+)
+tau_m2 <- 8
+events_m2 <- build_events(
+  manchester2_cov,
+  dose_per_subject = 2.5 * manchester2_cov$WT,
+  tau = tau_m2, n_doses = 21L,
+  regimen = "Manchester II 2.5 mg/kg q8h"
+)
+
+stopifnot(length(intersect(events_glasgow$id, events_m1$id)) == 0)
+stopifnot(length(intersect(events_m1$id, events_m2$id)) == 0)
+```
+
+## Simulation
+
+``` r
+
+mod_glasgow <- readModelDb("Kelman_1984_gentamicin_glasgow")
+mod_m1      <- readModelDb("Kelman_1984_gentamicin_manchester1")
+mod_m2      <- readModelDb("Kelman_1984_gentamicin_manchester2")
+
+sim_glasgow <- rxode2::rxSolve(mod_glasgow, events = events_glasgow,
+                               keep = c("regimen", "WT", "PNA", "CREAT"))
+#> ℹ parameter labels from comments will be replaced by 'label()'
+sim_m1      <- rxode2::rxSolve(mod_m1,      events = events_m1,
+                               keep = c("regimen", "WT", "PNA", "CREAT"))
+#> ℹ parameter labels from comments will be replaced by 'label()'
+sim_m2      <- rxode2::rxSolve(mod_m2,      events = events_m2,
+                               keep = c("regimen", "WT", "AGE", "CREAT"))
+#> ℹ parameter labels from comments will be replaced by 'label()'
+```
+
+## Predicted concentration-time profiles
+
+The figure replicates the *shape* of the steady-state concentration-time
+profile that underlies the paper’s Figure 3 dosage nomogram (one cohort
+per panel).
+
+``` r
+
+sim_all <- dplyr::bind_rows(
+  as.data.frame(sim_glasgow) |> dplyr::mutate(cohort = "Glasgow I (neonates)"),
+  as.data.frame(sim_m1)      |> dplyr::mutate(cohort = "Manchester I (infants)"),
+  as.data.frame(sim_m2)      |> dplyr::mutate(cohort = "Manchester II (children)")
+)
+
+sim_all |>
+  dplyr::group_by(cohort, time) |>
+  dplyr::summarise(
+    Q05 = quantile(Cc, 0.05, na.rm = TRUE),
+    Q50 = quantile(Cc, 0.50, na.rm = TRUE),
+    Q95 = quantile(Cc, 0.95, na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(time, Q50)) +
+  geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.25) +
+  geom_line() +
+  facet_wrap(~ cohort, ncol = 1, scales = "free") +
+  labs(x = "Time (h)", y = "Gentamicin concentration (mg/L)",
+       title = "Simulated gentamicin steady-state profiles by cohort",
+       caption = "Median and 90% prediction interval across 100 virtual subjects per cohort.")
+```
+
+![](Kelman_1984_gentamicin_files/figure-html/ct-profile-1.png)
+
+## Replicate Figure 3 nomogram example
+
+The paper’s Figure 3 dosage nomogram (built from the Glasgow I cohort
+Model 4) gives a worked example on page 688: *“for a weight of 1.2 kg
+and a dosing interval of 12 h, a dose of 2.5 mg will achieve a Cpeak of
+5.5 ug/mL and a dose of 3 mg will achieve a Cpeak of 6.5 ug/mL”*. We
+reproduce this with the Glasgow I Model 1 implementation (per the paper,
+Model 1 and Model 4 give similar predictions in this cohort).
+
+``` r
+
+fig3 <- tibble::tribble(
+  ~regimen,            ~WT,  ~dose_mg, ~tau, ~pub_peak,
+  "1.2 kg, 2.5 mg",    1.2,  2.5,       12,   5.5,
+  "1.2 kg, 3.0 mg",    1.2,  3.0,       12,   6.5
+)
+
+fig3_events <- fig3 |>
+  dplyr::mutate(id = seq_len(dplyr::n()), PNA = 1, CREAT = 60,
+                amt_dose = dose_mg) |>
+  tidyr::crossing(dose_num = 0:10) |>
+  dplyr::mutate(time = dose_num * tau, evid = 1L, cmt = "central",
+                amt = amt_dose) |>
+  dplyr::select(id, time, amt, evid, cmt, regimen, WT, PNA, CREAT, tau)
+
+fig3_obs <- fig3 |>
+  dplyr::mutate(id = seq_len(dplyr::n()), PNA = 1, CREAT = 60) |>
+  tidyr::crossing(time = c(seq(0, 10 * 12, length.out = 121L))) |>
+  dplyr::mutate(amt = 0, evid = 0L, cmt = "central")
+
+fig3_all <- dplyr::bind_rows(fig3_events, fig3_obs) |>
+  dplyr::arrange(id, time, dplyr::desc(evid))
+
+# Suppress IIV for the typical-value figure (paper Figure 3 nomogram is a
+# typical-value device, not a VPC)
+sim_fig3 <- rxode2::rxSolve(rxode2::zeroRe(mod_glasgow),
+                            events = fig3_all,
+                            keep   = c("regimen"))
+#> ℹ parameter labels from comments will be replaced by 'label()'
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc'
+#> Warning: multi-subject simulation without without 'omega'
+
+# 1 h post-dose peak at steady state (last dosing interval)
+peaks <- as.data.frame(sim_fig3) |>
+  dplyr::filter(time >= 9 * 12, time <= 10 * 12) |>
+  dplyr::group_by(id, regimen) |>
+  dplyr::filter(time == (9 * 12 + 1)) |>
+  dplyr::ungroup() |>
+  dplyr::transmute(regimen, sim_peak = Cc)
+
+fig3_compare <- fig3 |>
+  dplyr::left_join(peaks, by = "regimen") |>
+  dplyr::transmute(regimen, dose_mg, tau,
+                   `Published Cpeak (mg/L)` = pub_peak,
+                   `Simulated Cpeak (mg/L)` = round(sim_peak, 2),
+                   `% diff` = round(100 * (sim_peak - pub_peak) / pub_peak, 1))
+
+knitr::kable(fig3_compare, caption = "Glasgow I Model 1 simulated steady-state peak vs Figure 3 nomogram worked example (1.2 kg, q12h).")
+```
+
+| regimen | dose_mg | tau | Published Cpeak (mg/L) | Simulated Cpeak (mg/L) | % diff |
+|:---|---:|---:|---:|---:|---:|
+| 1.2 kg, 2.5 mg | 2.5 | 12 | 5.5 | 4.77 | -13.3 |
+| 1.2 kg, 3.0 mg | 3.0 | 12 | 6.5 | 5.72 | -12.0 |
+
+Glasgow I Model 1 simulated steady-state peak vs Figure 3 nomogram
+worked example (1.2 kg, q12h). {.table}
+
+## PKNCA validation
+
+We compute steady-state Cmax, Cmin (trough), and AUC0-tau on the last
+simulated dosing interval. The treatment grouping is the cohort +
+regimen (`regimen`) so the PKNCA summary stratifies by cohort, matching
+the paper’s per-cohort analysis.
+
+``` r
+
+sim_all_clean <- sim_all |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::select(id, time, Cc, regimen) |>
+  dplyr::distinct(id, time, regimen, .keep_all = TRUE)
+
+# Guarantee a time = 0 anchor per (id, regimen) for PKNCA; Cc = 0 is correct
+# pre-dose for IV bolus input to the empty central compartment.
+sim_all_clean <- dplyr::bind_rows(
+  sim_all_clean,
+  sim_all_clean |> dplyr::distinct(id, regimen) |>
+    dplyr::mutate(time = 0, Cc = 0)
+) |>
+  dplyr::distinct(id, regimen, time, .keep_all = TRUE) |>
+  dplyr::arrange(id, regimen, time)
+
+conc_obj <- PKNCA::PKNCAconc(sim_all_clean, Cc ~ time | regimen + id,
+                             concu = "mg/L", timeu = "h")
+
+dose_all <- dplyr::bind_rows(
+  events_glasgow |> dplyr::filter(evid == 1L) |> dplyr::select(id, time, amt, regimen),
+  events_m1      |> dplyr::filter(evid == 1L) |> dplyr::select(id, time, amt, regimen),
+  events_m2      |> dplyr::filter(evid == 1L) |> dplyr::select(id, time, amt, regimen)
+)
+
+dose_obj <- PKNCA::PKNCAdose(dose_all, amt ~ time | regimen + id,
+                             doseu = "mg")
+
+# Steady-state interval = the last dosing interval per regimen
+intervals <- dplyr::bind_rows(
+  data.frame(regimen = "Glasgow I 2.5 mg/1.2-kg q12h (Figure 3)",
+             start = 13 * 12, end = 14 * 12, cmax = TRUE, cmin = TRUE,
+             auclast = TRUE, tmax = TRUE),
+  data.frame(regimen = "Manchester I 2.5 mg/kg q8h",
+             start = 20 * 8,  end = 21 * 8,  cmax = TRUE, cmin = TRUE,
+             auclast = TRUE, tmax = TRUE),
+  data.frame(regimen = "Manchester II 2.5 mg/kg q8h",
+             start = 20 * 8,  end = 21 * 8,  cmax = TRUE, cmin = TRUE,
+             auclast = TRUE, tmax = TRUE)
+)
+
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+#> Warning: Requesting an AUC range starting (0) before the first measurement (0.8) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.8) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.8) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.8) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.8) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.8) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.8) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.8) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.8) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.8) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.8) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.8) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.8) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.8) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.8) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.8) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.8) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.8) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.8) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.8) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.8) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.8) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.8) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.8) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.8) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.8) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.8) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.8) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.8) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.8) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.8) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.8) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.8) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.8) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.8) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.8) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.8) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.8) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.8) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.8) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.8) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.8) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.8) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.8) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.8) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.8) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.8) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.8) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.8) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.8) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.8) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.8) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.8) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.8) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.8) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.8) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.8) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.8) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.8) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.8) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.8) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.8) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.8) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.8) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.8) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.8) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.8) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.8) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.8) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.8) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.8) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.8) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.8) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.8) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.8) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.8) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.8) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.8) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.8) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.8) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.8) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.8) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.8) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.8) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.8) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.8) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.8) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.8) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.8) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.8) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.8) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.8) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.8) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.8) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.8) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.8) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.8) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.8) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.8) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.8) is not allowed
+#> Warning: Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+nca_summary <- as.data.frame(nca_res$result) |>
+  dplyr::group_by(regimen, PPTESTCD) |>
+  dplyr::summarise(median = stats::median(PPORRES, na.rm = TRUE),
+                   p05    = stats::quantile(PPORRES, 0.05, na.rm = TRUE),
+                   p95    = stats::quantile(PPORRES, 0.95, na.rm = TRUE),
+                   .groups = "drop")
+
+knitr::kable(nca_summary,
+             caption = "Simulated steady-state NCA (median, 5th, 95th percentile) per cohort regimen.")
+```
+
+| regimen | PPTESTCD | median | p05 | p95 |
+|:---|:---|---:|---:|---:|
+| Glasgow I 2.5 mg/1.2-kg q12h (Figure 3) | auclast | NA | NA | NA |
+| Glasgow I 2.5 mg/1.2-kg q12h (Figure 3) | cmax | 4.7087173 | 3.8239015 | 6.188164e+00 |
+| Glasgow I 2.5 mg/1.2-kg q12h (Figure 3) | cmin | 0.8264226 | 0.2316143 | 2.035012e+00 |
+| Glasgow I 2.5 mg/1.2-kg q12h (Figure 3) | tmax | 0.8000000 | 0.8000000 | 8.000000e-01 |
+| Manchester I 2.5 mg/kg q8h | auclast | NA | NA | NA |
+| Manchester I 2.5 mg/kg q8h | cmax | 5.9279032 | 3.5954260 | 8.990839e+00 |
+| Manchester I 2.5 mg/kg q8h | cmin | 1.0166826 | 0.1197493 | 4.128844e+00 |
+| Manchester I 2.5 mg/kg q8h | tmax | 1.0000000 | 1.0000000 | 1.000000e+00 |
+| Manchester II 2.5 mg/kg q8h | auclast | NA | NA | NA |
+| Manchester II 2.5 mg/kg q8h | cmax | 5.8266729 | 2.7937539 | 3.502798e+13 |
+| Manchester II 2.5 mg/kg q8h | cmin | 0.1649464 | 0.0019258 | 9.341961e+12 |
+| Manchester II 2.5 mg/kg q8h | tmax | 1.0000000 | 1.0000000 | 8.000000e+00 |
+
+Simulated steady-state NCA (median, 5th, 95th percentile) per cohort
+regimen. {.table}
+
+The Glasgow I row should produce a median Cmax close to the 4.6-5.5 mg/L
+range of the paper’s Figure 3 worked example (1.2 kg infant, 2.5 mg
+q12h). The Manchester I and II rows simulate a more standard 2.5 mg/kg
+q8h regimen typical of paediatric clinical practice; the absolute values
+depend on the random covariate sampling and are reported here as a
+sanity check that the cohort-specific parameter sets produce physically
+plausible steady-state exposures (peak generally 4-12 mg/L, trough
+generally \< 2 mg/L for therapeutic regimens).
+
+## Assumptions and deviations
+
+- **Linear-additive covariate effects encoded with the canonical
+  `e_<cov>_<param>` prefix.** Kelman 1984 Equations 4-5 give CL and V as
+  LINEAR functions of the covariates (CL = theta1*WT + theta2*AGE +
+  theta3*CREAT; V = theta4*WT), not the multiplicative power-law form
+  for which nlmixr2lib’s `e_<cov>_<param>` parameter names were
+  primarily designed. The model files encode the slopes under those
+  names but the `model()` block applies them additively. This is
+  documented inline in each `ini()` block and via the `description`
+  strings.
+
+- **Log-normal IIV approximating per-slope additive variances.** Paper
+  Equation 6 places eta additively on each slope coefficient
+  (`theta_i,r = theta_i + eta_i,r`), producing a heteroscedastic IIV
+  whose absolute magnitude scales with covariate values. The packaged
+  models collapse this to a homoscedastic log-normal IIV on the derived
+  CL and V, with omega^2 chosen so that the implied CV at the cohort’s
+  typical covariate values matches the variance arithmetic of the
+  paper’s per-slope etas. The derivations are recorded as comments next
+  to `etalcl` and `etalvc` in each model file. The cohort-specific
+  values are:
+
+  - Glasgow I: `etalcl ~ 0.0469`, `etalvc ~ 0.01` (VAR(theta4)
+    indeterminate in the paper; placeholder used)
+  - Manchester I: `etalcl ~ 0.148`, `etalvc ~ 0.0902` (VAR(eta3)
+    indeterminate in the paper; contribution dropped)
+  - Manchester II:`etalcl ~ 0.296`, `etalvc ~ 0.0843` (VAR(eta2)
+    indeterminate in the paper; contribution dropped) For applications
+    where the per-slope additive IIV structure is load-bearing (e.g.,
+    reproducing the paper’s individual prediction errors against the
+    Glasgow II held-out cohort), the exact additive form must be
+    hand-coded.
+
+- **Age units shift across cohorts.** The paper’s theta2 coefficient is
+  implicitly in L/h per day-of-age in Glasgow I and Manchester I (where
+  the cohorts are \< 6 months old) and in L/h per year-of-age in
+  Manchester II (where the cohort spans 6 months to 15 years). This
+  change is not stated explicitly in the paper but is the only
+  interpretation consistent with the order-of-magnitude differences
+  between the three theta2 values (0.00074, 0.0013, -0.13). The Glasgow
+  I and Manchester I model files use the canonical `PNA` (postnatal age
+  in months) covariate and convert the slope to L/h per month-of-PNA;
+  the Manchester II file uses the canonical `AGE` (age in years)
+  covariate.
+
+- **Reduced models 2-5 not extracted.** The paper compares Models 1-5 in
+  each cohort and concludes Model 1 is best by NONMEM OBJ in all three.
+  The reduced Models 2-5 are sensitivity-analysis variants and are not
+  packaged. The paper also notes (page 688) that the simpler Model 4 was
+  “as efficient as” Model 1 in the Glasgow I cohort when combined with
+  one Bayesian feedback concentration and was the basis for the clinical
+  Figure 3 nomogram; Model 4 is recoverable from the packaged Model 1 by
+  setting `e_pna_cl` and `e_creat_cl` to 0 in a downstream simulation.
+
+- **Held-out Glasgow II validation cohort not encoded.** Paper Figures
+  1-2 and Table 5 report prediction errors for the four Models against
+  an independent Glasgow II dataset (n=26, 50 datapoints). The held-out
+  cohort is not encoded as a separate model file; reproducing those
+  prediction errors would require the original individual-subject data
+  (not publicly available).
+
+- **Indeterminate parameter variances.** Several VAR(theta_k) entries
+  are reported as “-” (indeterminate) in the paper Tables (VAR(theta4)
+  in Glasgow I, VAR(theta3) in Manchester I, VAR(theta2) in Manchester
+  II). The log-normal-IIV approximation absorbs these by dropping the
+  corresponding contribution from the variance arithmetic; the implied
+  CV on the derived CL or V is therefore a lower bound for the paper’s
+  true (additive-IIV) per-subject spread.

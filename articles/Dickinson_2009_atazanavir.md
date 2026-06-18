@@ -81,7 +81,7 @@ below collects them in one place for review.
 Covariate equation (paper Results page 1236, with Table 3 row 1
 reporting the estimate):
 
-    CL/F_i = exp(lcl + etalcl_i) * (AUC_RTV_i / 7.52)^(-0.8)
+    CL/F_i = exp(lcl + etalcl_i) * (CONMED_RTV_AUC_i / 7.52)^(-0.8)
 
 ODE structure: one-compartment first-order absorption from `depot` to
 `central`, with an absorption lag-time `tlag` applied to `depot`. The
@@ -113,7 +113,7 @@ ev_ss <- rxode2::et(
 ) |>
   rxode2::et(seq(0, n_doses * ii, by = 0.25)) |>
   rxode2::et(id = 1)
-ev_ss$AUC_RTV <- 7.52
+ev_ss$CONMED_RTV_AUC <- 7.52
 
 sim_ss <- rxode2::rxSolve(mod_typical, ev_ss)
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalka'
@@ -123,7 +123,7 @@ ggplot(as.data.frame(sim_ss), aes(time / 24, Cc)) +
   labs(
     x = "Time (days)",
     y = "Atazanavir concentration (mg/L)",
-    title = "Typical-value 14-day once-daily 300/100 mg ATV/RTV profile (AUC_RTV = 7.52 mg*h/L)"
+    title = "Typical-value 14-day once-daily 300/100 mg ATV/RTV profile (CONMED_RTV_AUC = 7.52 mg*h/L)"
   ) +
   theme_bw()
 ```
@@ -166,13 +166,13 @@ n_subj <- 80L
 # spanning the Table 1 range (2.41-22.05).
 log_med   <- log(7.52)
 log_sd    <- 0.45
-AUC_RTV   <- pmin(22.05, pmax(2.41, exp(rnorm(n_subj, log_med, log_sd))))
+CONMED_RTV_AUC   <- pmin(22.05, pmax(2.41, exp(rnorm(n_subj, log_med, log_sd))))
 
 cohort <- data.frame(
   ID      = seq_len(n_subj),
-  AUC_RTV = AUC_RTV
+  CONMED_RTV_AUC = CONMED_RTV_AUC
 )
-summary(cohort$AUC_RTV)
+summary(cohort$CONMED_RTV_AUC)
 #>    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 #>   2.509   5.613   7.148   8.112   9.861  22.050
 ```
@@ -193,13 +193,13 @@ build_subject_events <- function(id, auc_rtv) {
     rxode2::et(c(seq(0, 24, by = 0.5), seq(13 * 24, 14 * 24, by = 0.5))) |>
     rxode2::et(id = id)
   df <- as.data.frame(ev)
-  df$AUC_RTV <- auc_rtv
+  df$CONMED_RTV_AUC <- auc_rtv
   df
 }
 
 ev_all <- do.call(
   rbind,
-  Map(build_subject_events, cohort$ID, cohort$AUC_RTV)
+  Map(build_subject_events, cohort$ID, cohort$CONMED_RTV_AUC)
 )
 
 set.seed(2009)

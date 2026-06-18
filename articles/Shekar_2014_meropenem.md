@@ -561,10 +561,10 @@ observed Cmin of 4.9 mg/L.
 
 - **New canonical `CRRT_STATUS` ratified alongside this extraction.**
   The existing `HEMODIAL` canonical (intermittent-hemodialysis-only) and
-  `DIAL` canonical (per-time-point session gate, time-varying) do not
-  fit the Shekar 2014 RRT covariate: the cohort mixes CVVHF (continuous
-  venovenous hemofiltration; true CRRT) and EDD-f (extended daily
-  diafiltration; pharmacokinetically CRRT-like for slow-clearance
+  `HEMODIALYSIS` canonical (per-time-point session gate, time-varying)
+  do not fit the Shekar 2014 RRT covariate: the cohort mixes CVVHF
+  (continuous venovenous hemofiltration; true CRRT) and EDD-f (extended
+  daily diafiltration; pharmacokinetically CRRT-like for slow-clearance
   solutes such as meropenem), treated as a single binary subject-level
   indicator. The `HEMODIAL` register entry explicitly anticipates a
   `CRRT_STATUS` canonical as a future extension; this extraction

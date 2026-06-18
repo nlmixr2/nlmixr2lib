@@ -1,0 +1,394 @@
+# Ganciclovir (Perrottet 2009)
+
+## Model and source
+
+- Citation: Perrottet N, Csajka C, Pascual M, Manuel O, Lamoth F, Meylan
+  P, Aubert JD, Venetz JP, Soccal P, Decosterd LA, Biollaz J, Buclin T.
+  Population pharmacokinetics of ganciclovir in solid-organ transplant
+  recipients receiving oral valganciclovir. Antimicrob Agents Chemother.
+  2009;53(7):3017-3023. <doi:10.1128/AAC.00836-08>
+- Description: Two-compartment population PK model for ganciclovir
+  (administered as oral valganciclovir prodrug) in adult solid-organ
+  transplant recipients (Perrottet 2009)
+- Article: <https://doi.org/10.1128/AAC.00836-08>
+
+## Population
+
+Perrottet 2009 enrolled 65 adult solid-organ transplant recipients at
+the University Hospitals of Lausanne and Geneva (November 2005 - January
+2008); 437 ganciclovir (GCV) plasma samples were collected, including
+four full profiles from two kidney recipients (rich data). The cohort
+was 69% male, with median age 55 years (range 18-70), median body weight
+72 kg (range 46-115), median serum creatinine 108 umol/L (range 29-691),
+and a wide range of renal function (Cockroft-Gault GFR 10-170 mL/min).
+Graft type distribution: kidney 41 (63%), heart 10 (15%), lung 12 (18%),
+liver 2 (3%). Dosing was oral valganciclovir (VGC, the L-valyl ester
+prodrug of GCV) at 450 mg or 900 mg once daily for prophylaxis
+(renal-function adjusted) or 900 mg twice daily for treatment; two
+patients received intravenous GCV at 5 mg/kg every 12 h. See Perrottet
+2009 Table 1 for the full baseline demographics.
+
+The same information is available programmatically via
+`readModelDb("Perrottet_2009_ganciclovir")$population`.
+
+## Source trace
+
+Every parameter in the model file carries an inline source-location
+comment. The table below collects the entries in one place.
+
+| Equation / parameter | Value | Source location |
+|----|----|----|
+| `lka` (ka) | 0.56 1/h | Table 3, ka row |
+| `lcl` (CL slope on GFR, male kidney reference) | 1.68 L/h per L/h | Table 3, theta_kidney row |
+| `e_tx_heart_cl` (heart vs kidney multiplier on CL) | log(0.86/1.68) | Table 3, theta_heart row |
+| `e_tx_lungliver_cl` (lung-or-liver vs kidney multiplier on CL) | log(1.17/1.68) | Table 3, theta_lung/liver row |
+| `e_sexf_cl` (female vs male multiplier on CL) | log(1.21) | Table 3, theta_female on CL row |
+| `lvc` (V1 at 70-kg male reference) | 24 L | Table 3, theta_BW row |
+| `e_sexf_vc` (female vs male multiplier on V1) | log(0.78) | Table 3, theta_female on V1 row |
+| `lq` (Q) | 4.1 L/h | Table 3, Q row |
+| `lvp` (V2) | 22 L | Table 3, V2 row |
+| `lfdepot` (F, fixed) | 0.6 | Methods (Structural model): fixed per refs 6, 10, 19, 24 |
+| `etalcl` (IIV CL, variance log(0.26^2 + 1)) | 26% CV | Table 3, interpatient CL row |
+| `etalvc` (IIV V1, variance log(0.20^2 + 1)) | 20% CV | Table 3, interpatient V1 row |
+| Interoccasion variability on CL (documented, not modelled here) | 12% CV | Table 3, IOV row |
+| `propSd` (proportional residual error) | 21% CV | Table 3, sigma_prop row |
+| Two-compartment model with first-order absorption from depot | – | Methods (Structural model); Results (Population pharmacokinetic analyses) |
+| CL covariate form: `CL = theta_graft * GFR_MDRD * theta_female^SEXF` | – | Table 3 footnote (a) and Results (Population pharmacokinetic analyses) |
+| V1 covariate form: `V1 = theta_BW * (BW/70) * theta_female^SEXF` | – | Table 3 footnote (a) and Table 2 V1 covariate rows |
+
+The four-variable MDRD formula
+`GFR_MDRD = 175 * (Crs/88.4)^-1.154 * age^-0.203 * 0.742^SEXF` (Methods)
+returns mL/min/1.73 m^2; the model de-indexes to L/h inside `model()`
+using each subject’s BSA via `gfr_lh = CRCL * BSA / 1.73 * 60 / 1000`.
+For BSA = 1.73 m^2 this reduces to `CRCL * 0.06`.
+
+## Virtual cohort
+
+The trial-level patient data are not openly available. The virtual
+cohort below mirrors the demographics in Perrottet 2009 Table 1 (median
+72 kg, 69% male, median creatinine 108 umol/L) with two strata that
+match the paper’s main organ-type contrasts: kidney recipients and heart
+recipients.
+
+``` r
+
+set.seed(20090101)
+
+n_per_organ <- 200L
+
+make_cohort <- function(n, tx_heart, tx_lung, tx_liver, label, id_offset = 0L) {
+  female <- rbinom(n, 1L, prob = 0.31)
+  wt <- pmax(pmin(rlnorm(n, log(72), 0.20), 115), 46)
+  # BSA via Mosteller approximation using a typical height for the sex
+  # (172 cm male median, 162 cm female median from Perrottet Table 1
+  # 147-192 cm range with median 172 cm overall).
+  ht <- ifelse(female == 1L,
+               pmax(pmin(rnorm(n, mean = 162, sd = 6), 178), 147),
+               pmax(pmin(rnorm(n, mean = 174, sd = 7), 192), 155))
+  bsa <- sqrt(ht * wt / 3600)
+  # Renal function: skewed toward impaired with a long upper tail
+  # (cohort Cockroft-Gault GFR range 10-170 mL/min). Reported median
+  # GFR_MDRD is not in the paper directly; we anchor the typical
+  # cohort patient at 50 mL/min/1.73 m^2 per the paper's simulation
+  # cohort and let the tail extend to 170.
+  crcl <- pmax(pmin(rlnorm(n, log(55), 0.50), 170), 10)
+
+  data.frame(
+    id        = id_offset + seq_len(n),
+    WT        = wt,
+    BSA       = bsa,
+    CRCL      = crcl,
+    SEXF      = female,
+    TX_HEART  = tx_heart,
+    TX_LUNG   = tx_lung,
+    TX_LIVER  = tx_liver,
+    cohort    = label
+  )
+}
+
+cohort <- bind_rows(
+  make_cohort(n_per_organ, 0L, 0L, 0L, "kidney", id_offset = 0L),
+  make_cohort(n_per_organ, 1L, 0L, 0L, "heart",  id_offset = n_per_organ)
+)
+
+# Expand into dose + observation rows: 450 mg oral VGC at time 0,
+# observations from 0 to 36 h on a 0.5 h grid.
+event_times <- seq(0, 36, by = 0.5)
+
+events <- cohort %>%
+  group_by(id) %>%
+  do({
+    base <- .
+    rbind(
+      data.frame(
+        id    = base$id, time = 0, amt = 450, evid = 1L, cmt = "depot",
+        WT = base$WT, BSA = base$BSA, CRCL = base$CRCL,
+        SEXF = base$SEXF, TX_HEART = base$TX_HEART,
+        TX_LUNG = base$TX_LUNG, TX_LIVER = base$TX_LIVER,
+        cohort = base$cohort
+      ),
+      data.frame(
+        id    = base$id, time = event_times, amt = 0, evid = 0L,
+        cmt = "central",
+        WT = base$WT, BSA = base$BSA, CRCL = base$CRCL,
+        SEXF = base$SEXF, TX_HEART = base$TX_HEART,
+        TX_LUNG = base$TX_LUNG, TX_LIVER = base$TX_LIVER,
+        cohort = base$cohort
+      )
+    )
+  }) %>%
+  ungroup() %>%
+  as.data.frame()
+
+stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
+```
+
+## Simulation
+
+``` r
+
+mod <- readModelDb("Perrottet_2009_ganciclovir")
+sim <- rxode2::rxSolve(mod, events = events, keep = c("cohort"))
+#> ℹ parameter labels from comments will be replaced by 'label()'
+```
+
+For deterministic typical-value replication (no between-subject
+variability), zero out the random effects:
+
+``` r
+
+mod_typical <- rxode2::zeroRe(mod)
+#> ℹ parameter labels from comments will be replaced by 'label()'
+
+# Typical kidney male, 70 kg, GFR_MDRD = 50 mL/min/1.73 m^2, BSA = 1.73
+# (matches the Perrottet 2009 Figure 1F simulation cohort).
+typ_events <- data.frame(
+  id        = c(1L, 1L),
+  time      = c(0, 0),
+  amt       = c(450, 0),
+  evid      = c(1L, 0L),
+  cmt       = c("depot", "central"),
+  WT        = 70, BSA = 1.73, CRCL = 50, SEXF = 0L,
+  TX_HEART  = 0L, TX_LUNG = 0L, TX_LIVER = 0L
+)
+typ_events <- bind_rows(
+  typ_events[1, , drop = FALSE],
+  data.frame(
+    id        = 1L,
+    time      = seq(0, 48, by = 0.25),
+    amt       = 0,
+    evid      = 0L,
+    cmt       = "central",
+    WT = 70, BSA = 1.73, CRCL = 50, SEXF = 0L,
+    TX_HEART = 0L, TX_LUNG = 0L, TX_LIVER = 0L
+  )
+)
+sim_typ <- rxode2::rxSolve(mod_typical, events = typ_events)
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc'
+```
+
+## Replicate published figures
+
+``` r
+
+# Replicates Figure 1F of Perrottet 2009: GCV profile in 36 kidney
+# transplant recipients under VGC 450 mg QD with the typical-value
+# population prediction and 90% prediction interval.
+vpc <- sim %>%
+  filter(cohort == "kidney") %>%
+  group_by(time) %>%
+  summarise(
+    Q05 = quantile(Cc, 0.05, na.rm = TRUE),
+    Q50 = quantile(Cc, 0.50, na.rm = TRUE),
+    Q95 = quantile(Cc, 0.95, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+ggplot(vpc, aes(time, Q50)) +
+  geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.20, fill = "steelblue") +
+  geom_line(colour = "steelblue", linewidth = 0.8) +
+  geom_line(data = sim_typ, aes(time, Cc), colour = "black", linewidth = 0.7,
+            linetype = "dashed") +
+  scale_y_log10(limits = c(0.05, 20)) +
+  labs(
+    x = "Time after dose (h)",
+    y = "Plasma GCV (mg/L)",
+    title = "GCV plasma concentration after oral VGC 450 mg QD (kidney recipients)",
+    caption = "Solid line + ribbon: simulated median and 90% prediction interval (n = 200, kidney recipients).\nDashed line: typical-value prediction (70-kg male, GFR_MDRD = 50 mL/min/1.73 m^2). Replicates Figure 1F of Perrottet 2009."
+  )
+#> Warning in scale_y_log10(limits = c(0.05, 20)): log-10 transformation introduced infinite values.
+#> log-10 transformation introduced infinite values.
+#> log-10 transformation introduced infinite values.
+#> log-10 transformation introduced infinite values.
+#> log-10 transformation introduced infinite values.
+#> Warning: Removed 32 rows containing missing values or values outside the scale range
+#> (`geom_ribbon()`).
+```
+
+![](Perrottet_2009_ganciclovir_files/figure-html/figure-1f-1.png)
+
+``` r
+
+# Side-by-side typical CL by graft type and sex (matches Table 3
+# theta_graft and theta_female on CL).
+typ_grid <- expand.grid(
+  cohort  = c("kidney", "heart", "lung_or_liver"),
+  SEXF    = c(0L, 1L)
+) %>%
+  mutate(
+    TX_HEART  = as.integer(cohort == "heart"),
+    TX_LUNG   = as.integer(cohort == "lung_or_liver"),
+    TX_LIVER  = 0L,
+    id        = seq_len(n()),
+    WT = 70, BSA = 1.73, CRCL = 50
+  )
+
+# One row per id, both a dose and an observation at t = 0
+typ_grid_events <- bind_rows(
+  typ_grid %>% mutate(time = 0, amt = 450, evid = 1L, cmt = "depot"),
+  typ_grid %>% mutate(time = 0.001, amt = 0, evid = 0L, cmt = "central")
+) %>%
+  arrange(id, time)
+
+cov_sim <- rxode2::rxSolve(mod_typical, events = typ_grid_events,
+                           keep = c("cohort", "SEXF"))
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc'
+#> Warning: multi-subject simulation without without 'omega'
+
+cov_sim %>%
+  group_by(id) %>%
+  slice(1) %>%
+  ungroup() %>%
+  transmute(
+    Graft = factor(cohort, levels = c("kidney", "heart", "lung_or_liver")),
+    Sex   = ifelse(SEXF == 1L, "female", "male"),
+    `CL (L/h)`   = round(cl, 3),
+    `V1 (L)`     = round(vc, 3)
+  ) %>%
+  arrange(Graft, Sex) %>%
+  knitr::kable(caption =
+    "Typical CL and V1 by graft type and sex for a 70-kg patient with GFR_MDRD = 50 mL/min/1.73 m^2 (BSA = 1.73 m^2). The lung_or_liver row applies to either a lung or a liver recipient (pooled per Perrottet 2009).")
+```
+
+| Graft         | Sex    | CL (L/h) | V1 (L) |
+|:--------------|:-------|---------:|-------:|
+| kidney        | female |    6.098 |  18.72 |
+| kidney        | male   |    5.040 |  24.00 |
+| heart         | female |    3.122 |  18.72 |
+| heart         | male   |    2.580 |  24.00 |
+| lung_or_liver | female |    4.247 |  18.72 |
+| lung_or_liver | male   |    3.510 |  24.00 |
+
+Typical CL and V1 by graft type and sex for a 70-kg patient with
+GFR_MDRD = 50 mL/min/1.73 m^2 (BSA = 1.73 m^2). The lung_or_liver row
+applies to either a lung or a liver recipient (pooled per Perrottet
+2009). {.table}
+
+## PKNCA validation
+
+``` r
+
+sim_nca <- sim %>%
+  filter(!is.na(Cc), Cc > 0) %>%
+  select(id, time, Cc, cohort) %>%
+  as.data.frame()
+
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | cohort + id)
+
+dose_df <- events %>%
+  filter(evid == 1L) %>%
+  select(id, time, amt, cohort) %>%
+  as.data.frame()
+
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | cohort + id)
+
+intervals <- data.frame(
+  start       = 0,
+  end         = 24,
+  cmax        = TRUE,
+  tmax        = TRUE,
+  aucinf.obs  = TRUE,
+  half.life   = TRUE
+)
+
+nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
+nca_res  <- suppressWarnings(PKNCA::pk.nca(nca_data))
+
+nca_summary <- summary(nca_res)
+knitr::kable(nca_summary,
+             caption = "Simulated NCA parameters (median [5th, 95th percentile]) by graft cohort after a single 450 mg oral VGC dose.")
+```
+
+| start | end | cohort | N   | cmax          | tmax                | half.life     | aucinf.obs |
+|------:|----:|:-------|:----|:--------------|:--------------------|:--------------|:-----------|
+|     0 |  24 | heart  | 200 | 5.79 \[21.8\] | 2.50 \[1.50, 3.50\] | 13.9 \[6.75\] | NC         |
+|     0 |  24 | kidney | 200 | 4.83 \[26.9\] | 2.00 \[1.00, 3.50\] | 7.92 \[3.02\] | NC         |
+
+Simulated NCA parameters (median \[5th, 95th percentile\]) by graft
+cohort after a single 450 mg oral VGC dose. {.table}
+
+### Comparison against published values
+
+Perrottet 2009 reports an absorption half-life
+`t_1/2a = ln(2)/ka = 1.2 h` and a median elimination half-life
+`t_1/2_beta = 8 h` (range 5-68 h) in the discussion of the final-model
+derived parameters. The cohort shows a wide range because the cohort
+spans a wide range of renal function (GFR 10-170 mL/min).
+
+| Quantity | Perrottet 2009 (reported) | Simulated (kidney cohort, this vignette) |
+|----|----|----|
+| Absorption half-life t_1/2a | 1.2 h | 1.24 h (derived from ka = 0.56 1/h) |
+| Elimination half-life t_1/2_beta | 8 h (median, range 5-68) | See PKNCA table above (`half.life` column) |
+
+The published paper does not report Cmax / AUC point estimates by graft
+type, so the PKNCA table above is the most-granular available
+comparison. The typical kidney recipient at the simulation reference
+condition has CL = 1.68 x 3 L/h = 5.04 L/h, which combined with the
+fixed F = 0.6 gives `AUC_inf = 450 * 0.6 / 5.04 = 53.6 mg*h/L` – in the
+right order of magnitude for the simulated cohort given the spread of
+CRCL values in the virtual population.
+
+## Assumptions and deviations
+
+- **Bioavailability F = 0.6 fixed.** Perrottet 2009 fixed F based on
+  prior studies (refs 6, 10, 19, 24) because GCV was administered
+  intravenously in only two patients in the present cohort. The fixed
+  value is used here without modification. F is encoded as
+  `lfdepot <- fixed(log(0.6))` so a downstream user can see the fix and
+  replace it for a study with explicit IV/PO bioavailability data.
+
+- **Interoccasion variability (IOV) on CL = 12% CV documented but not
+  modelled as a separate eta.** Perrottet 2009 retained an IOV term on
+  CL accounting for three operationally defined post-transplant
+  occasions (up to month 1, up to month 2, up to month 6 or more). This
+  nlmixr2lib model exposes the interpatient component
+  (`etalcl ~ 0.06544` = 26% CV per Table 3) but does not carry the IOV
+  decomposition because IOV requires a per-event occasion index that is
+  dataset-specific. A user wanting the full Perrottet 2009
+  within-subject variability can add a second `etalcl_iov ~ 0.01441` (=
+  log(0.12^2 + 1)) keyed on occasion in a downstream extension.
+
+- **MDRD-eGFR de-indexing inside `model()`.** The four-variable MDRD
+  formula returns GFR in mL/min/1.73 m^2; the canonical `CRCL` covariate
+  carries those units. The model de-indexes to L/h via the patient’s
+  BSA: `gfr_lh = CRCL * BSA / 1.73 * 60 / 1000`. The Perrottet 2009
+  simulation cohort uses BSA = 1.73 m^2, so the conversion reduces to
+  `CRCL * 0.06` for that reference patient. Datasets that supply only
+  `CRCL` should also supply `BSA`; if BSA is missing, setting
+  `BSA = 1.73 m^2` recovers the simplified form.
+
+- **Graft type encoded as three binary indicators (TX_HEART, TX_LUNG,
+  TX_LIVER).** Perrottet 2009 pools lung and liver under a single CL
+  slope; the model applies a shared multiplicative effect via
+  `(TX_LUNG + TX_LIVER)`. Future models that estimate distinct
+  lung-vs-liver effects should reuse the same indicators with separate
+  `e_tx_lung_cl` / `e_tx_liver_cl` coefficients.
+
+- **Virtual cohort demographics.** Body weight, height, and renal
+  function for the virtual cohort were sampled from log-normal
+  distributions anchored to the cohort medians in Perrottet 2009 Table 1
+  (WT 72 kg, HT 172 cm, GFR centered slightly below the median to
+  capture the cohort’s predominantly impaired-renal function). BSA was
+  computed from the Mosteller formula (`sqrt(HT * WT / 3600)`). These
+  cohort-level choices are vignette-only – the model file does not
+  depend on them.

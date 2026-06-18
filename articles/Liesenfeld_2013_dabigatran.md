@@ -55,7 +55,7 @@ beside the value in the model file):
 | `etalfdepot` (IOV F recast as IIV) | log(0.48^2 + 1) | Table 2 (48.0% CV) |
 | `propSd` (PRV) | 0.085 | Table 2 (8.5% CV) |
 | Michaels equation for CLdialysis/F | – | Equation 1 |
-| Dialysis clearance gated by DIAL | – | Methods, Data Analysis |
+| Dialysis clearance gated by HEMODIALYSIS | – | Methods, Data Analysis |
 
 ## Load the model
 
@@ -183,7 +183,7 @@ per_subject_dial <- function(id) {
     amt  = 0,
     evid = 2L,                       # other-event row (not a dose, not an obs)
     cmt  = "central",
-    DIAL = c(1L, 0L, 1L, 0L),
+    HEMODIALYSIS = c(1L, 0L, 1L, 0L),
     BFR  = c(200, 0, 200, 0),
     DFR  = c(700, 0, 700, 0)
   )
@@ -195,9 +195,9 @@ events <- dplyr::bind_rows(
   lapply(seq_len(n_subj), per_subject_dial)
 ) |>
   dplyr::mutate(
-    DIAL = ifelse(is.na(DIAL), 0L, DIAL),
-    BFR  = ifelse(is.na(BFR),  0,  BFR),
-    DFR  = ifelse(is.na(DFR),  0,  DFR)
+    HEMODIALYSIS = ifelse(is.na(HEMODIALYSIS), 0L, HEMODIALYSIS),
+    BFR          = ifelse(is.na(BFR),  0,  BFR),
+    DFR          = ifelse(is.na(DFR),  0,  DFR)
   ) |>
   dplyr::arrange(id, time, dplyr::desc(evid))
 ```

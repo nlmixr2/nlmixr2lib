@@ -62,7 +62,7 @@ are converted from mL/min (paper units) to L/h by x60/1000.
 | ODE: `d/dt(central)` | n/a | Methods, Population PK modeling (CMS 1-compartment model with CL_RCMS = 0) |
 | ODE: `d/dt(central_col)` | n/a | Methods, Population PK modeling (colistin 1-compartment apparent model; formation = CL_NRCMS x Ccms) |
 | Combined residual error | n/a | Methods, Population PK modeling: “The residual variability was modeled as combined (additive and proportional) for CMS and colistin plasma concentrations” |
-| DIAL gating of HD clearance | n/a | Methods, Simulations second item; Figure 4 (HD-active scenarios) |
+| HEMODIALYSIS gating of HD clearance | n/a | Methods, Simulations second item; Figure 4 (HD-active scenarios) |
 
 ## Virtual cohort
 
@@ -70,9 +70,9 @@ The original observed data are not publicly available. The figures below
 use a virtual cohort that replicates the paper’s central simulation
 scenario: a single 3 MIU IV dose of CMS administered over 1 h to a
 typical ICU-HD patient (Methods, Simulations first item; Figure 3). The
-reference scenario holds DIAL = 0 throughout (no HD session) so the
-simulated profile matches the paper’s left-most “single dose without HD”
-curve.
+reference scenario holds HEMODIALYSIS = 0 throughout (no HD session) so
+the simulated profile matches the paper’s left-most “single dose without
+HD” curve.
 
 `1 MIU` of CMS sodium is 80 mg (Jacobs 2016 Results). A 3 MIU dose
 therefore corresponds to 240 mg of CMS sodium; this is the `amt` we
@@ -105,7 +105,7 @@ make_cohort <- function(n, dial = 0L, id_offset = 0L) {
                cmt = "Cc", evid = 0L)
   }))
   ev <- dplyr::bind_rows(doses, obs)
-  ev$DIAL <- dial
+  ev$HEMODIALYSIS <- dial
   ev[order(ev$id, ev$time, ev$evid), ]
 }
 
@@ -119,7 +119,7 @@ stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
 
 mod <- rxode2::rxode(readModelDb("Jacobs_2016_colistin"))
 #> ℹ parameter labels from comments will be replaced by 'label()'
-sim <- rxode2::rxSolve(mod, events = events, keep = "DIAL") |>
+sim <- rxode2::rxSolve(mod, events = events, keep = "HEMODIALYSIS") |>
   as.data.frame()
 ```
 
@@ -210,10 +210,10 @@ sim |>
 
 Jacobs 2016 Figure 4 simulates intermittent multiple-dose CMS regimens
 with HD sessions imposed at user-chosen times. The simulation below
-illustrates the same DIAL-gated HD behaviour at the single-dose level:
-imposing a 4-h HD session starting at t = 8 h on a typical patient
-receiving a 1.5 MIU q12h maintenance regimen with a 1.5 MIU reloading
-dose just after the HD session.
+illustrates the same HEMODIALYSIS-gated HD behaviour at the single-dose
+level: imposing a 4-h HD session starting at t = 8 h on a typical
+patient receiving a 1.5 MIU q12h maintenance regimen with a 1.5 MIU
+reloading dose just after the HD session.
 
 ``` r
 
@@ -241,10 +241,10 @@ obs <- data.frame(
   cmt = "Cc", evid = 0L
 )
 events_hd <- dplyr::bind_rows(doses, obs)
-events_hd$DIAL <- as.integer(events_hd$time >= hd_start & events_hd$time < hd_end)
+events_hd$HEMODIALYSIS <- as.integer(events_hd$time >= hd_start & events_hd$time < hd_end)
 events_hd <- events_hd[order(events_hd$id, events_hd$time, events_hd$evid), ]
 
-sim_hd <- rxode2::rxSolve(mod_typical, events = events_hd, keep = "DIAL") |>
+sim_hd <- rxode2::rxSolve(mod_typical, events = events_hd, keep = "HEMODIALYSIS") |>
   as.data.frame()
 #> ℹ omega/sigma items treated as zero: 'etalvc', 'etalcl', 'etalvc_col', 'etalcl_col'
 ```
@@ -267,7 +267,7 @@ sim_hd |>
   facet_wrap(~species_label, scales = "free_y") +
   labs(x = "Time (h)", y = "Plasma concentration (mg/L)",
        title = "HD-gated typical trajectory - 1.5 MIU q12h with 4-h HD at t = 8-12 h",
-       caption = "Shaded grey band marks the HD session (DIAL = 1).")
+       caption = "Shaded grey band marks the HD session (HEMODIALYSIS = 1).")
 ```
 
 ![](Jacobs_2016_colistin_files/figure-html/figure-hd-1.png)
@@ -471,9 +471,9 @@ be summarised for a direct distributional comparison against the paper.
   from Marchand 2010 (ref 7), determined with the same CMS brand and the
   same dialysis apparatus. These are device/experimental constants in
   the base model; they are encoded as numeric constants inside `model()`
-  (not in `ini()`) and gated on/off by the `DIAL` covariate. Users who
-  want to explore alternative dialyser performance can override
-  `cl_hd_cms` and `cl_hd_col` in a forked copy of the model.
+  (not in `ini()`) and gated on/off by the `HEMODIALYSIS` covariate.
+  Users who want to explore alternative dialyser performance can
+  override `cl_hd_cms` and `cl_hd_col` in a forked copy of the model.
 - **CMS renal clearance structurally fixed at zero.** Per the paper’s
   methodology, CL_RCMS was fixed to 0 because the eight subjects were
   anuric HD patients. The model file does not carry a separate
