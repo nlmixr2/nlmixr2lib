@@ -308,6 +308,8 @@ navbar:
         href: articles/Wilhelm_2012_ciclosporin.html
       - text: "Ciclosporin (Willemze 2008)"
         href: articles/Willemze_2008_ciclosporin.html
+      - text: "Ciclosporin (Woillard 2014)"
+        href: articles/Woillard_2014_ciclosporin.html
       - text: "Cilostazol (Yoo 2009)"
         href: articles/Yoo_2009_cilostazol.html
       - text: "Ciprofloxacin (Schaefer 1996)"
@@ -2576,6 +2578,7 @@ articles:
   - articles/Willemze_2008_ciclosporin
   - articles/Wilson_2015_sunitinib_irinotecan_mouse
   - articles/Woillard_2011_tacrolimus
+  - articles/Woillard_2014_ciclosporin
   - articles/Wojciechowski_2022_domagrozumab
   - articles/Wu_2012_sirolimus
   - articles/Wu_2014_FEV1_asthma
