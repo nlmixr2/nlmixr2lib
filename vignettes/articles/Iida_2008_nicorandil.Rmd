@@ -103,7 +103,7 @@ bolus (for comparison with paper Figure 2 left upper panel).
 ```{r cohort}
 set.seed(20260613L)
 
-n_ahf <- 200L
+n_ahf <- 80L       # virtual subjects per regimen arm (VPC-band cohort)
 typical_wt <- 60   # kg, AHF cohort mean (Table 1)
 
 make_ahf_cohort <- function(n, regimen, id_offset = 0L) {
@@ -219,7 +219,7 @@ Iida 2008 Figure 2 left upper panel shows individual plasma nicorandil
 concentration vs time after IV bolus doses of 4, 8, 12, and 18 mg in AHF
 patients. Concentrations decline rapidly within 1-2 h. Below we replicate
 the 12 mg bolus arm as a population-VPC band (median and 5th-95th
-percentile of the 200-subject virtual cohort) plus the typical-value
+percentile of the 80-subject virtual cohort) plus the typical-value
 trajectory.
 
 ```{r figure-2, fig.width = 7, fig.height = 4}

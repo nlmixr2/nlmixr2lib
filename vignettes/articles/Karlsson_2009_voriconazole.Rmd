@@ -113,15 +113,15 @@ knitr::kable(distribution_check, digits = 2,
 
 The original observed concentration data are not publicly available. The
 simulations below use a virtual cohort whose covariate distributions approximate
-the Karlsson 2009 study population: 82 subjects, body weight 10.8-54.9 kg
-(distribution skewed toward smaller children), ALT log-normally distributed
-around the published mean, and CYP2C19 metabolizer distribution matched to the
-70.7 / 25.6 / 3.7 percent EM / HEM / PM split.
+the Karlsson 2009 study population (82 patients): a 48-subject virtual cohort
+with body weight 10.8-54.9 kg (distribution skewed toward smaller children),
+ALT log-normally distributed around the published mean, and CYP2C19 metabolizer
+distribution matched to the 70.7 / 25.6 / 3.7 percent EM / HEM / PM split.
 
 ```{r cohort}
 set.seed(20090301)
 
-n_subj <- 82L
+n_subj <- 48L   # virtual cohort (trial enrolled 82); sized for a smooth VPC/NCA-by-stratum
 
 # Weight: log-normal centered at the mean 22.8 kg, range 10.8-54.9 kg.
 wt_log_sd <- 0.45  # picked to span the observed range with 95 percent coverage
@@ -134,8 +134,8 @@ alt_log_sd <- 0.7
 alts <- 26.5 * exp(rnorm(n_subj, mean = 0, sd = alt_log_sd))
 alts <- pmin(pmax(alts, 7), 242)
 
-# CYP2C19 phenotype: 58 EM / 21 HEM / 3 PM.
-cyp_pheno <- sample(rep(c("EM", "HEM", "PM"), c(58L, 21L, 3L)))
+# CYP2C19 phenotype: 34 EM / 12 HEM / 2 PM (matches trial 70.7 / 25.6 / 3.7 percent at n = 48).
+cyp_pheno <- sample(rep(c("EM", "HEM", "PM"), c(34L, 12L, 2L)))
 cyp2c19_im <- as.integer(cyp_pheno == "HEM")
 cyp2c19_pm <- as.integer(cyp_pheno == "PM")
 
@@ -324,7 +324,7 @@ nca_summary <- nca_tbl |>
   dplyr::arrange(PPTESTCD, cyp2c19_pheno)
 
 knitr::kable(nca_summary, digits = 2,
-             caption = "Day-14 steady-state NCA summary by CYP2C19 group for 7 mg/kg BID i.v. (virtual cohort, n=82).")
+             caption = "Day-14 steady-state NCA summary by CYP2C19 group for 7 mg/kg BID i.v. (virtual cohort, n=48).")
 ```
 
 ## Comparison against published expectations
