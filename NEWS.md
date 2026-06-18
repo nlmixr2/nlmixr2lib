@@ -2,6 +2,7 @@
 
 # development version
 
+* Add Gonzalez-Sales 2024 imetelstat ([doi:10.1002/psp4.13160](https://doi.org/10.1002/psp4.13160)) -- adults with hematologic malignancies (lower-risk MDS, myelofibrosis, multiple myeloma, ET/PV, CLD) or solid tumors; ratifies new `DIS_MF` and `SPLV` covariate canonicals and new `kon`, `koff`, `kback`, `bmax`, `t50_cl_time` paper-named-parameter canonicals.
 * Add Berges 2007 enoxaparin ([doi:10.1111/j.1365-2125.2007.02920.x](https://doi.org/10.1111/j.1365-2125.2007.02920.x)) -- elderly inpatients (>75 years) on prophylactic subcutaneous enoxaparin 4000 IU once daily for VTE prophylaxis (PROPHRE.75 study).
 * Add Padoin 1998 cephalexin ([doi:10.1128/aac.42.6.1463](https://doi.org/10.1128/aac.42.6.1463)) -- preclinical male Wistar rats with a cephalexin / quinapril oral coadministration DDI (ratifies new `CONMED_QPRL_ORAL` covariate canonical).
 * Add van Rongen 2018 metformin ([doi:10.1007/s40272-018-0293-1](https://doi.org/10.1007/s40272-018-0293-1)) -- overweight and obese Caucasian adolescents.
