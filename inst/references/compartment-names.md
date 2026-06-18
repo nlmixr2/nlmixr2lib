@@ -2303,6 +2303,24 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Example models:** `Morris_2011_telapristone.R` (doi:10.1208/s12248-011-9304-7).
 - **Notes:** The Morris 2011 model fixes the metabolite apparent volume V3/F to 1 L for identifiability (Fmet not separately identifiable from V3), so the estimated `fmetest` (= Fmet / V3_metab, units 1/L) numerically equals Fmet under that constraint. The metabolite compartment `central_cdb4453` therefore numerically equals the metabolite concentration (nmol/L) when V3 = 1 L. Ratified canonically on 2026-06-09 alongside the Morris 2011 telapristone extraction.
 
+### dxor (**canonical dextrorphan suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Dextrorphan (3-hydroxy-17-methylmorphinan), the major CYP2D6-mediated O-demethylation metabolite of dextromethorphan. Drives `central_dxor`, the `Cc_dxor` observation, and the `propSd_dxor` residual.
+- **Source aliases:** none (the paper uses "dextrorphan" and the symbol DXO).
+- **Example models:** `TerHeine_2014_dextromethorphan.R` (doi:10.1111/bcp.12388).
+
+### 3mm (**canonical 3-methoxymorphinan suffix**)
+- **Type:** metabolite-suffix
+- **Role:** 3-Methoxymorphinan (3-methoxy-morphinan), the CYP3A-mediated N-demethylation metabolite of dextromethorphan. Drives `central_3mm`, `peripheral1_3mm`, the `Cc_3mm` observation, and the `propSd_3mm` residual. Suffix begins with a digit, which is permitted under the same rule that already allows `3oh` / `7dm` / `5fu`.
+- **Source aliases:** "3-MM" (paper text); "3-methoxymorphinan" (figure captions).
+- **Example models:** `TerHeine_2014_dextromethorphan.R` (doi:10.1111/bcp.12388).
+
+### 3hm (**canonical 3-hydroxymorphinan suffix**)
+- **Type:** metabolite-suffix
+- **Role:** 3-Hydroxymorphinan (the doubly-demethylated terminal metabolite of dextromethorphan, formed from either dextrorphan via CYP3A or 3-methoxymorphinan via CYP2D6). Drives `central_3hm`, `peripheral1_3hm`, the `Cc_3hm` observation, and the `propSd_3hm` residual.
+- **Source aliases:** "3-HM" (paper text); "3-hydroxymorphinan" (figure captions).
+- **Example models:** `TerHeine_2014_dextromethorphan.R` (doi:10.1111/bcp.12388).
+
 ---
 
 ## Cell-type suffixes (Friberg multi-cell-type chains)
