@@ -357,9 +357,16 @@ The Cao 2013 mAb mPBPK family uses paper-anatomical compartment names that are a
 
 ### glucose (**canonical plasma glucose**)
 - **Type:** compartment
-- **Role:** Endogenous plasma glucose used by glucose / lactate turnover sub-models with drug-stimulated production. State holds a concentration (mmol/L), mirroring the source paper's mass-balance parameterisation.
+- **Role:** Endogenous plasma glucose used by glucose / lactate turnover sub-models with drug-stimulated production. State holds a concentration (mmol/L), mirroring the source paper's mass-balance parameterisation. Also used by integrated glucose-insulin homeostasis models (e.g., Silber 2007 framework, Hong 2013 HGC / MTT models) as the dynamic-state glucose amount or concentration; per-model `units` field documents which.
 - **Source aliases:** none.
-- **Example models:** `Oualha_2014_epinephrine.R`.
+- **Example models:** `Oualha_2014_epinephrine.R`, `Hong_2013_glucose_insulin_HGC.R`, `Hong_2013_glucose_insulin_MTT.R`.
+
+### insulin (**canonical plasma insulin compartment**)
+- **Type:** compartment
+- **Role:** Endogenous plasma insulin used by integrated glucose-insulin homeostasis models (Silber 2007 framework, Jauslin 2007 OGTT framework, Hong 2013 HGC / MTT models). State holds insulin amount (mU) or concentration (mU/L or pmol/L) consistent with the paper's mass-balance parameterisation; the per-model `units` field documents which. Distinct from the existing `INS` (time-varying plasma-insulin regressor covariate) and `INS_BL` (baseline plasma-insulin covariate) -- those are exogenous inputs that drive other models; `insulin` is the dynamic state when insulin is itself a modelled quantity with its own ODE (production / secretion plus elimination).
+- **Source aliases:** none.
+- **Example models:** `Hong_2013_glucose_insulin_HGC.R` (founding example; insulin amount mU, dynamic state with Gaussian first-phase plus linear second-phase secretion and first-order CLI/VI elimination), `Hong_2013_glucose_insulin_MTT.R` (insulin amount mU, dynamic state with power-function + Emax-incretin-stimulated secretion and first-order CLI/VI elimination).
+- **Notes:** Companion canonical to the existing `glucose` (plasma glucose; Oualha 2014 epinephrine), `igf1` (IGF-1 plasma biomarker; somatropin / GH PK-PD), `prolactin`, `nefa`, and `lactate` plasma-biomarker compartments. Adding `insulin` as canonical (rather than declaring it via `paper_specific_compartments`) reflects its high generalisability -- any integrated glucose-insulin model will need a dynamic-state `insulin` compartment, in the same way that `glucose` is canonical rather than paper-specific. The Bizzotto 2016 glucose-kinetics model uses INS as a regressor (no `insulin` state) and so does not exercise this canonical. `NA_NA_paracetamol.R` uses INS as a regressor too but declares `effect_ins` as a paper-specific effect compartment for insulin's delayed action on glucose elimination -- distinct from the dynamic-state-as-`insulin` use here.
 
 ### lactate (**canonical plasma lactate**)
 - **Type:** compartment
@@ -843,6 +850,12 @@ These are internationally standardised clinical abbreviations registered as cano
 - **Source aliases:** none.
 - **Example models:** endocrinology / coagulation PD models.
 
+### QTc (**canonical heart-rate-corrected QT interval**)
+- **Type:** compartment
+- **Role:** Heart-rate-corrected QT interval (electrocardiographic PD endpoint), typically expressed in ms. Used as the observation variable in direct-effect Emax models of drug-induced QT prolongation (cardiac-safety / thorough-QT studies, e.g. quinidine, moxifloxacin, sotalol). The choice of correction formula (Bazett, Fridericia, individual-correction) is paper-dependent and recorded in `description`; the canonical name covers the corrected-interval output regardless of which correction was applied.
+- **Source aliases:** `QTcB` (Bazett), `QTcF` (Fridericia), `QTcI` (individual correction) — translate to `QTc` and record the correction in the model file's description / vignette.
+- **Example models:** `Shin_2006_quinidine_QT.R` (Bazett-corrected QT interval; founding example).
+
 ---
 
 ## Bacterial-count PD outputs
@@ -889,6 +902,12 @@ Each entry below is a paper-mechanistic PD endpoint registered as a canonical co
 - **Role:** Clinical Dementia Rating mixture-of-progression-rates output.
 - **Source aliases:** none.
 - **Example models:** Alzheimer's PD models.
+
+### deltaUPDRS (**canonical change-from-baseline total UPDRS score**)
+- **Type:** compartment
+- **Role:** Change-from-baseline in total Unified Parkinson's Disease Rating Scale (UPDRS) score PD output, used as the modelled endpoint in algebraic Parkinson's disease-progression models that combine a linear disease-progression slope with an asymptotic short-term symptomatic-effect component.
+- **Source aliases:** `Delta UPDRS`, the Lee 2011 paper's `Delta_UPDRS_it` notation.
+- **Example models:** `Lee_2011_parkinson_progression.R`.
 
 ### tumor_vol (**canonical TGI tumour-volume output state**)
 - **Type:** compartment
@@ -2032,7 +2051,20 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Type:** metabolite-suffix
 - **Role:** N-desmethyl-bedaquiline (M2) metabolite of bedaquiline.
 - **Source aliases:** none.
-- **Example models:** `Svensson_2016_bedaquiline.R` (DDMODEL00000219).
+- **Example models:** `Svensson_2013_bedaquiline.R`, `Svensson_2016_bedaquiline.R` (DDMODEL00000219).
+
+### m3 (**canonical N,N-bis-desmethyl-bedaquiline (M3) suffix**)
+- **Type:** metabolite-suffix
+- **Role:** N,N-bis-desmethyl-bedaquiline (M3) metabolite of bedaquiline; the downstream demethylation product of M2 (responsible enzyme(s) not identified in vitro but suspected CYP3A4-mediated demethylation by analogy with the BDQ -> M2 step).
+- **Source aliases:** none.
+- **Example models:** `Svensson_2013_bedaquiline.R`.
+- **Notes:** Distinct from `m3g` (morphine-3-glucuronide) — the suffix matcher uses `endsWith(name, "_m3")` vs `endsWith(name, "_m3g")` and these do not collide. Registered alongside the Svensson 2013 bedaquiline extraction (the first BDQ paper to model the M3 metabolite).
+
+### m8 (**canonical hydroxy-tert-butylamide (M8) suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Hydroxy-tert-butylamide (M8) active metabolite of nelfinavir; formed by CYP2C19-mediated hydroxylation of nelfinavir and eliminated by CYP3A4. Equipotent to the parent drug against HIV-1 protease.
+- **Source aliases:** none.
+- **Example models:** `Hirt_2006_nelfinavir.R`.
 
 ### endx (**canonical endoxifen suffix**)
 - **Type:** metabolite-suffix
@@ -2137,6 +2169,12 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Source aliases:** none.
 - **Example models:** `Hennig_2015_rifabutin.R` (doi:10.1128/AAC.01195-15).
 
+### desrpt (**canonical 25-O-desacetyl rifapentine suffix**)
+- **Type:** metabolite-suffix
+- **Role:** 25-O-desacetyl rifapentine (25-DRFP), primary active metabolite of rifapentine, formed by enzymatic deacetylation; microbiologically active against Mycobacterium tuberculosis. Parallel naming to the registered `desrbn` (25-O-desacetyl rifabutin) suffix.
+- **Source aliases:** `25-DRFP` / `25DRFP` / `metabolite_M` (paper narrative in Zvada 2010 Methods and Figure 1 caption).
+- **Example models:** `Zvada_2010_rifapentine.R` (doi:10.1128/AAC.00345-10).
+
 ### az5104 (**canonical AZ5104 osimertinib metabolite suffix**)
 - **Type:** metabolite-suffix
 - **Role:** AZ5104 (N-desmethyl osimertinib), active EGFR-inhibitor metabolite of osimertinib formed predominantly via CYP3A4/5.
@@ -2172,6 +2210,12 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Role:** AS(N-1)3' truncated antisense strand of GalNAc-conjugated siRNAs (givosiran and similar). Treated as the active metabolite equipotent with the parent for RISC loading and target mRNA silencing.
 - **Source aliases:** none.
 - **Example models:** `Ayyar_2024_givosiran.R` (doi:10.1016/j.xphs.2023.10.026).
+
+### dfdu (**canonical 2',2'-difluorodeoxyuridine gemcitabine metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** 2',2'-difluorodeoxyuridine (dFdU), the principal inactive plasma metabolite of gemcitabine produced by cytidine deaminase in liver, kidney, blood, and other tissues; about 99% of dFdU is renally excreted (Abbruzzese 1991). In NONMEM ADVAN6 parent-metabolite popPK models dFdU parameters are reported as apparent values (CL_dFdU/F, Q_dFdU/F, V_C,dFdU/F, V_P,dFdU/F) because the fraction of gemcitabine converted to dFdU is not separately identifiable.
+- **Source aliases:** none.
+- **Example models:** `Jiang_2008_gemcitabine.R` (doi:10.1111/j.1365-2125.2007.03040.x).
 
 ### mhd (**canonical 10-monohydroxy oxcarbazepine suffix**)
 - **Type:** metabolite-suffix
@@ -2252,6 +2296,13 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Source aliases:** none.
 - **Example models:** `Wang_2018_daclatasvir_asunaprevir.R` (doi:10.1038/aps.2017.84).
 
+### cdb4453 (**canonical CDB-4453 monodemethylated-telapristone metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Active monodemethylated metabolite of telapristone (CDB-4124). Removal of one N-methyl group on the C-17 side chain produces CDB-4453, a more polar (smaller apparent volume of distribution) metabolite with possible equipotent antiprogestational activity in vivo (Morris 2011 Discussion). Drives `central_cdb4453` and the `propSd_cdb4453` residual; the parent-side parameters use the canonical unsuffixed names (`lcl_pop1` / `lcl_pop2` / `lvc` / `lvp` / `lq` / `lka`).
+- **Source aliases:** none (the paper uses the compound code CDB-4453 throughout).
+- **Example models:** `Morris_2011_telapristone.R` (doi:10.1208/s12248-011-9304-7).
+- **Notes:** The Morris 2011 model fixes the metabolite apparent volume V3/F to 1 L for identifiability (Fmet not separately identifiable from V3), so the estimated `fmetest` (= Fmet / V3_metab, units 1/L) numerically equals Fmet under that constraint. The metabolite compartment `central_cdb4453` therefore numerically equals the metabolite concentration (nmol/L) when V3 = 1 L. Ratified canonically on 2026-06-09 alongside the Morris 2011 telapristone extraction.
+
 ---
 
 ## Cell-type suffixes (Friberg multi-cell-type chains)
@@ -2311,6 +2362,18 @@ Sibling-drug suffixes for the Hill-McManus 2017 dual-urate-lowering-therapy PKPD
 - **Role:** Lesinurad (URAT1 uricosuric) sibling-drug suffix.
 - **Source aliases:** none.
 - **Example models:** `Hill-McManus_2017_uricLT.R`.
+
+---
+
+## Neuromuscular-blocking-agent / reversal-agent sibling-drug suffixes
+
+Sibling-drug suffix for the Kleijn 2011 sugammadex-mediated reversal of rocuronium-induced neuromuscular blockade PK-PD model, where sugammadex (the reversal agent, mentioned first in the paper title) is the unsuffixed parent and rocuronium (the substrate aminosteroid NMBA) carries the `roc` suffix throughout. The model also uses the existing `complex` registered suffix for the sugammadex-rocuronium inclusion complex compartments (with PK set equal to free sugammadex), so all three species coexist as separate compartment chains.
+
+### roc (**canonical rocuronium sibling-drug suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Rocuronium (aminosteroid neuromuscular blocking agent) sibling-drug suffix, paired with sugammadex as the unsuffixed parent in the Kleijn 2011 reversal PK-PD model. Drives `central_roc` / `peripheral1_roc` / `effect_roc` compartments, `lcl_roc` / `lvc_roc` / `lq_roc` / `lvp_roc` PK parameters, and the `propSd_roc` residual on total rocuronium plasma concentration. The effect compartment carries the rocuronium concentration at the neuromuscular junction that drives the sigmoid-Emax NMB readout; sugammadex itself has no effect compartment because its NMB-reversal action enters the model as an extra elimination route on `effect_roc`.
+- **Source aliases:** none.
+- **Example models:** `Kleijn_2011_sugammadex_rocuronium.R` (doi:10.1111/j.1365-2125.2011.04000.x).
 
 ---
 
@@ -2455,6 +2518,13 @@ Per-paper metabolite / sibling-drug suffix additions discovered during the 2026-
 - **Source aliases:** none.
 - **Example models:** `Ait-Oudhia_2016_sunitinib.R`.
 
+### dact (**canonical desacetylcefotaxime metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Desacetylcefotaxime (DACT), the major active metabolite of cefotaxime (CTX) formed by hepatic deacetylation. Used as a metabolite suffix in parent + metabolite simultaneous popPK models where CTX and DACT are fitted jointly with the conventional 1:1 (CTX-equivalent) mass-balance assumption FDACT/CTX = 1.
+- **Source aliases:**
+  - `DACT` -- used in `Ahsman_2010_cefotaxime.R` (paper notation).
+- **Example models:** `Ahsman_2010_cefotaxime.R`.
+
 ### tam (**canonical tamoxifen tracking-species suffix**)
 - **Type:** metabolite-suffix
 - **Role:** Tamoxifen tracking species suffix (documented as the ticagrelor-paired tracking species in Almquist 2016).
@@ -2479,17 +2549,17 @@ Per-paper metabolite / sibling-drug suffix additions discovered during the 2026-
 - **Source aliases:** none.
 - **Example models:** `Schindler_2017_imatinib.R`.
 
-### caf (**canonical caffeine sibling-drug suffix**)
+### m1trans (**canonical M1-trans rolofylline metabolite suffix**)
 - **Type:** metabolite-suffix
-- **Role:** Caffeine sibling-drug suffix for combination / drug-drug-interaction models where caffeine is co-administered alongside another primary drug (e.g., caffeine-ephedrine herbal-formulation interactions). Used on `depot_caf` / `central_caf` PK compartments and the paired `Cc_caf` observation variable.
+- **Role:** M1-trans active hydroxyl metabolite of rolofylline. CYP3A4-mediated hydroxylation of the parent adenosine A1 receptor antagonist generates a diastereomeric pair of M1 metabolites; M1-trans is the (trans-) stereoisomer tracked alongside the parent and the M1-cis stereoisomer in the Stroh 2013 simultaneous PK model. Drives `central_m1trans` / `peripheral1_m1trans` and the `propSd_m1trans` / `addSd_m1trans` residuals.
 - **Source aliases:** none.
-- **Example models:** `Csajka_2005_ephedrine_caffeine.R`.
+- **Example models:** `Stroh_2013_rolofylline.R` (doi:10.1208/s12248-012-9443-5).
 
-### neph (**canonical norephedrine metabolite suffix**)
+### m1cis (**canonical M1-cis rolofylline metabolite suffix**)
 - **Type:** metabolite-suffix
-- **Role:** Norephedrine metabolite suffix. Norephedrine is the N-demethylation metabolite of ephedrine. Used on the `central_neph` plasma compartment and the paired `Cc_neph` observation variable in mechanistic ephedrine / norephedrine PK models with Michaelis-Menten conversion.
+- **Role:** M1-cis active hydroxyl metabolite of rolofylline. Co-eluting (cis-) stereoisomer of the CYP3A4 hydroxylation pair; formed both directly from the parent (fraction FM) and via unidirectional stereochemical interconversion from M1-trans. Drives `central_m1cis` and the `propSd_m1cis` / `addSd_m1cis` residuals.
 - **Source aliases:** none.
-- **Example models:** `Csajka_2005_ephedrine_caffeine.R`.
+- **Example models:** `Stroh_2013_rolofylline.R` (doi:10.1208/s12248-012-9443-5).
 
 ---
 
@@ -2626,3 +2696,29 @@ PBPK organ sub-compartment suffixes used by Ayyar 2024 givosiran whole-organ ext
 - **Role:** Vascular pool inside the named organ, alongside the existing `vp_<organ>` membrane-limited form.
 - **Source aliases:** none.
 - **Example models:** `Ayyar_2024_givosiran.R`.
+
+---
+
+## Stereoisomer / enantiomer suffixes (Jansson 2008 eflornithine)
+
+L- and D-enantiomer suffixes for stereoselective popPK models that simultaneously track both isomers of a racemic drug. The `_l` and `_d` suffixes attach to canonical compartments (`depot_l`, `central_d`, `peripheral1_l`, etc.), canonical parameters (`lcl_l`, `lvc_d`, `ltmax_abs_l`, etc.), and observation outputs (`Cc_l`, `Cc_d`). The `_rac` suffix denotes the racemic-sum observation output `Cc_rac = Cc_l + Cc_d` and its residual SD; it has no associated state compartment.
+
+### l (**canonical L-enantiomer suffix**)
+- **Type:** metabolite-suffix
+- **Role:** L-isomer (levorotatory / S-isomer) of a racemic drug, tracked alongside the D-isomer in a stereoselective popPK model.
+- **Source aliases:** none.
+- **Example models:** `Jansson_2008_eflornithine_rat.R`.
+- **Notes:** Although enantiomers are not metabolites, the registered metabolite-suffix machinery handles the same `<canonical>_<token>` shape. Paired with `d` for the D-isomer and `rac` for the racemic sum. Future papers using R/S, +/-, or E/Z stereodescriptors should register separate suffixes if their notation differs.
+
+### d (**canonical D-enantiomer suffix**)
+- **Type:** metabolite-suffix
+- **Role:** D-isomer (dextrorotatory / R-isomer) of a racemic drug, tracked alongside the L-isomer in a stereoselective popPK model.
+- **Source aliases:** none.
+- **Example models:** `Jansson_2008_eflornithine_rat.R`.
+
+### rac (**canonical racemic-sum output suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Racemic-sum observation output in a stereoselective popPK model: `Cc_rac = Cc_l + Cc_d` (and `propSd_Cc_rac` for the racemic-output residual SD).
+- **Source aliases:** none.
+- **Example models:** `Jansson_2008_eflornithine_rat.R`.
+- **Notes:** Algebraic sum only; no `central_rac`, `peripheral1_rac`, or `depot_rac` compartment exists.

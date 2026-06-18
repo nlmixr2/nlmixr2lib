@@ -82,6 +82,13 @@ The `l<base>` convention denotes a population mean estimated on the log scale (`
 - **Example models:** any 3-compartment popPK extraction.
 - **Notes:** Pairs with `peripheral2` compartment and inter-compartmental clearance `lq2`.
 
+### lvp3 (**canonical log-transformed third peripheral volume**)
+- **Type:** log-transformed-pk
+- **Role:** Apparent volume of the third peripheral compartment in 4-compartment models (volume).
+- **Source aliases:** none.
+- **Example models:** `Schmitt_2018_vinflunine.R`, `Li_2017_brentuximab.R`, `Weatherley_2009_maraviroc_iv.R`.
+- **Notes:** Pairs with `peripheral3` compartment and inter-compartmental clearance `lq3`.
+
 ### lq (**canonical log-transformed first inter-compartmental clearance**)
 - **Type:** log-transformed-pk
 - **Role:** Inter-compartmental clearance between central and first peripheral compartment (volume / time).
@@ -93,6 +100,13 @@ The `l<base>` convention denotes a population mean estimated on the log scale (`
 - **Role:** Inter-compartmental clearance between central and second peripheral compartment (volume / time).
 - **Source aliases:** none.
 - **Example models:** 3-compartment popPK extractions.
+
+### lq3 (**canonical log-transformed third inter-compartmental clearance**)
+- **Type:** log-transformed-pk
+- **Role:** Inter-compartmental clearance between central and third peripheral compartment (volume / time) in 4-compartment models.
+- **Source aliases:** none.
+- **Example models:** `Schmitt_2018_vinflunine.R`, `Li_2017_brentuximab.R`, `Weatherley_2009_maraviroc_iv.R`.
+- **Notes:** Pairs with `peripheral3` and `lvp3`.
 
 ### lfdepot (**canonical log-transformed depot fraction**)
 - **Type:** log-transformed-pk
@@ -106,6 +120,22 @@ The `l<base>` convention denotes a population mean estimated on the log scale (`
 - **Source aliases:** none.
 - **Example models:** TMDD models, saturable-elimination popPK extractions.
 - **Notes:** Replaces the deprecated `vm` / `lvm` names (see `deprecatedVmaxNames`).
+
+### ltmax_abs (**canonical log-transformed saturable absorption Vmax**)
+- **Type:** log-transformed-pk
+- **Role:** Log-scale maximum rate of saturable Michaelis-Menten ABSORPTION from the depot / absorption compartment into central (amount / time). Distinct from `lvmax`, which is MM ELIMINATION from central.
+- **Source aliases:**
+  - `Tmax` -- used in `Jansson_2008_eflornithine_rat.R` for the saturable-absorption Vmax. The paper symbol Tmax is not a time-to-Cmax descriptor but the maximum absorption rate.
+- **Example models:** `Jansson_2008_eflornithine_rat.R`.
+- **Notes:** Paired with `lkt_abs` (half-saturation amount). The `_abs` suffix disambiguates from `lvmax` (MM elimination).
+
+### lkt_abs (**canonical log-transformed saturable absorption half-saturation amount**)
+- **Type:** log-transformed-pk
+- **Role:** Log-scale amount of drug in the depot / absorption compartment at which the saturable absorption rate equals half its maximum (amount). Functionally a Km but expressed in amount-in-compartment units rather than concentration.
+- **Source aliases:**
+  - `Kt` -- used in `Jansson_2008_eflornithine_rat.R`.
+- **Example models:** `Jansson_2008_eflornithine_rat.R`.
+- **Notes:** Paired with `ltmax_abs`. The amount-in-compartment formulation differs from a concentration Km because the absorption compartment may not have a well-defined volume.
 
 ### lcl_ss (**canonical log-transformed steady-state clearance arm**)
 - **Type:** log-transformed-pk
@@ -130,6 +160,15 @@ The `l<base>` convention denotes a population mean estimated on the log scale (`
 - **Role:** Non-renal (hepatic / metabolic / extra-renal) component of an additive renal + non-renal clearance decomposition.
 - **Source aliases:** none.
 - **Example models:** `Jonckheere_2019_cefepime.R` and similar.
+
+### lcl_hemodialysis (**canonical log-transformed dialysis-active clearance arm**)
+- **Type:** log-transformed-pk
+- **Role:** Extracorporeal renal-replacement-therapy clearance arm contributed by an active hemodialysis (or hemofiltration / hemodiafiltration) session. Paired with the canonical body-CL parameter `lcl` (and the per-time-point `HEMODIALYSIS` covariate) to express total apparent clearance as `cl_total <- cl + HEMODIALYSIS * cl_hemodialysis`. The `cl_hemodialysis` arm is added to the body baseline only while a session is running.
+- **Source aliases:**
+  - `CL_HD` -- Veinstein 2013 paper notation (the hemodialysis-arm clearance estimated as a primary structural THETA with its own IIV; gated by the per-time-point hemodialysis-active indicator).
+  - `CLHD`, `CL_HF`, `CL_HDF`, `CL_dialysis` -- variant abbreviations used in adjacent ESRD / CRRT popPK literature.
+- **Example models:** `Veinstein_2013_gentamicin.R` (primary `ini()` parameter with IIV; the dialysis arm is estimated as a structural THETA gated by `HEMODIALYSIS`).
+- **Notes:** Distinct from `lcl_renal` (= residual renal CL, an intrinsic-body component) and `lcl_nonren` (= non-renal intrinsic-body CL). `Liesenfeld_2013_dabigatran.R` derives an equivalent dialysis-arm quantity from the Michaels equation (a function of blood flow rate, dialysate flow rate, and a hemodialyzer mass-transfer-area coefficient) as a derived `cl_dialysis` expression in `model()` rather than a primary `ini()` parameter, so its file does not include `lcl_hemodialysis`. Covariate-effect names on this arm follow the standard shape `e_<cov>_cl_hemodialysis`.
 
 ### lcl_met (**canonical log-transformed metabolic-formation clearance arm**)
 - **Type:** log-transformed-pk
@@ -185,6 +224,30 @@ The `l<base>` convention denotes a population mean estimated on the log scale (`
 - **Source aliases:** none.
 - **Example models:** `Campagne_2019_cyclophosphamide_mouse.R`.
 
+### lkamax (**canonical log-transformed Weibull-absorption asymptotic maximum rate constant**)
+- **Type:** log-transformed-pk
+- **Role:** Log of the maximum / asymptotic first-order absorption rate constant in a Piotrovskij-style time-dependent (Weibull) absorption model `ka(t) = kamax * (1 - exp(-(ra * tad)^gam1))` (1 / time). The bare counterpart inside `model()` is `kamax`.
+- **Source aliases:**
+  - `KAMAX` -- NONMEM `$THETA` convention used in NONMEM 7-era Weibull-absorption control streams.
+- **Example models:** `Desai_2016_isavuconazole.R` (founding example).
+- **Notes:** Distinct from `lka` (the single first-order rate constant of the simple zero-shape absorption model). Used together with `lra` and `lgam1` to parameterize Weibull / Piotrovskij time-dependent absorption. Ratified canonically alongside the Desai 2016 isavuconazole extraction.
+
+### lra (**canonical log-transformed Weibull-absorption rate-scaling parameter**)
+- **Type:** log-transformed-pk
+- **Role:** Log of the rate-scaling parameter inside a Piotrovskij-style Weibull time-dependent ka (1 / time). The product `(ra * tad)^gam1` drives the time-dependence of ka; larger `ra` shifts the ka rise earlier. The bare counterpart inside `model()` is `ra`.
+- **Source aliases:**
+  - `RA` -- NONMEM `$THETA` convention used in Weibull-absorption control streams.
+- **Example models:** `Desai_2016_isavuconazole.R` (founding example).
+- **Notes:** Distinct from `lka` (simple first-order absorption) and from any infusion-rate parameter. Used together with `lkamax` and `lgam1`. Ratified canonically alongside the Desai 2016 isavuconazole extraction.
+
+### lgam1 (**canonical log-transformed Weibull-absorption shape parameter**)
+- **Type:** log-transformed-pk
+- **Role:** Log of the unitless Weibull shape (sigmoidicity) parameter inside a Piotrovskij-style time-dependent ka. Larger values make the ka rise more abruptly; `gam1 = 1` reduces the Weibull form to a simple saturating exponential. The bare counterpart inside `model()` is `gam1`.
+- **Source aliases:**
+  - `GAM1` / `GAMMA1` -- NONMEM `$THETA` convention used in Weibull-absorption control streams.
+- **Example models:** `Desai_2016_isavuconazole.R` (founding example).
+- **Notes:** Distinct from `lhill` (sigmoidal Emax / Imax exponent) and from `lgamma` (Friberg myelosuppression feedback / TGI growth exponents). The `gam1` suffix follows the NONMEM convention for Weibull-absorption sigmoidicity. Ratified canonically alongside the Desai 2016 isavuconazole extraction.
+
 ---
 
 ## Bare structural PK parameters
@@ -222,6 +285,12 @@ The bare counterparts of the log-transformed parameters above. Used when the sou
 - **Source aliases:** none.
 - **Example models:** universal in 3-compartment popPK extractions.
 
+### vp3 (**canonical bare third peripheral volume**)
+- **Type:** bare-pk
+- **Role:** Apparent third-peripheral volume in 4-compartment popPK models (volume).
+- **Source aliases:** none.
+- **Example models:** `Schmitt_2018_vinflunine.R`, `Li_2017_brentuximab.R`, `Weatherley_2009_maraviroc_iv.R`.
+
 ### q (**canonical bare first inter-compartmental clearance**)
 - **Type:** bare-pk
 - **Role:** Inter-compartmental clearance between central and `peripheral1` (volume / time).
@@ -233,6 +302,12 @@ The bare counterparts of the log-transformed parameters above. Used when the sou
 - **Role:** Inter-compartmental clearance between central and `peripheral2` (volume / time).
 - **Source aliases:** none.
 - **Example models:** universal in 3-compartment popPK extractions.
+
+### q3 (**canonical bare third inter-compartmental clearance**)
+- **Type:** bare-pk
+- **Role:** Inter-compartmental clearance between central and `peripheral3` (volume / time) in 4-compartment popPK models.
+- **Source aliases:** none.
+- **Example models:** `Schmitt_2018_vinflunine.R`, `Li_2017_brentuximab.R`, `Weatherley_2009_maraviroc_iv.R`.
 
 ### kel (**canonical bare elimination rate constant (K-PD)**)
 - **Type:** bare-pk
@@ -281,6 +356,18 @@ The bare counterparts of the log-transformed parameters above. Used when the sou
 - **Example models:** TMDD and saturable-elimination popPK extractions.
 - **Notes:** Replaces the deprecated `vm` name.
 
+### tmax_abs (**canonical bare saturable absorption Vmax**)
+- **Type:** bare-pk
+- **Role:** Bare counterpart of `ltmax_abs`. Maximum rate of saturable Michaelis-Menten absorption from depot / absorption compartment into central (amount / time).
+- **Source aliases:** none.
+- **Example models:** `Jansson_2008_eflornithine_rat.R`.
+
+### kt_abs (**canonical bare saturable absorption half-saturation amount**)
+- **Type:** bare-pk
+- **Role:** Bare counterpart of `lkt_abs`. Amount of drug in the depot / absorption compartment at which the saturable absorption rate is half-max (amount).
+- **Source aliases:** none.
+- **Example models:** `Jansson_2008_eflornithine_rat.R`.
+
 ### cl_ss (**canonical bare steady-state clearance arm**)
 - **Type:** bare-pk
 - **Role:** Bare counterpart of `lcl_ss`. Steady-state component of a time-varying clearance decomposition.
@@ -304,6 +391,12 @@ The bare counterparts of the log-transformed parameters above. Used when the sou
 - **Role:** Bare counterpart of `lcl_nonren`. Non-renal component of an additive renal + non-renal clearance decomposition.
 - **Source aliases:** none.
 - **Example models:** `Jonckheere_2019_cefepime.R`.
+
+### cl_hemodialysis (**canonical bare dialysis-active clearance arm**)
+- **Type:** bare-pk
+- **Role:** Bare counterpart of `lcl_hemodialysis`. Extracorporeal renal-replacement-therapy clearance arm; added to the body baseline `cl` only when the time-varying `HEMODIALYSIS` covariate is 1.
+- **Source aliases:** `CL_HD`, `CLHD`, `CL_HF`, `CL_HDF`.
+- **Example models:** `Veinstein_2013_gentamicin.R`.
 
 ### cl_met (**canonical bare metabolic-formation clearance arm**)
 - **Type:** bare-pk
@@ -343,6 +436,27 @@ The bare counterparts of the log-transformed parameters above. Used when the sou
 - **Source aliases:** none.
 - **Example models:** `Campagne_2019_cyclophosphamide_mouse.R`.
 
+### kamax (**canonical bare Weibull-absorption asymptotic maximum rate constant**)
+- **Type:** bare-pk
+- **Role:** Bare counterpart of `lkamax`. Maximum / asymptotic first-order absorption rate constant in a Piotrovskij-style time-dependent (Weibull) absorption model (1 / time).
+- **Source aliases:**
+  - `KAMAX` -- NONMEM convention.
+- **Example models:** `Desai_2016_isavuconazole.R` (founding example).
+
+### ra (**canonical bare Weibull-absorption rate-scaling parameter**)
+- **Type:** bare-pk
+- **Role:** Bare counterpart of `lra`. Rate-scaling parameter inside a Piotrovskij-style Weibull time-dependent ka (1 / time).
+- **Source aliases:**
+  - `RA` -- NONMEM convention.
+- **Example models:** `Desai_2016_isavuconazole.R` (founding example).
+
+### gam1 (**canonical bare Weibull-absorption shape parameter**)
+- **Type:** bare-pk
+- **Role:** Bare counterpart of `lgam1`. Unitless Weibull shape (sigmoidicity) parameter inside a Piotrovskij-style time-dependent ka.
+- **Source aliases:**
+  - `GAM1` / `GAMMA1` -- NONMEM convention.
+- **Example models:** `Desai_2016_isavuconazole.R` (founding example).
+
 ---
 
 ## Paper-named mechanistic parameters
@@ -361,6 +475,65 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
 - **Role:** Baseline / initial value of a time-varying dissociation parameter.
 - **Source aliases:** none.
 - **Example models:** time-varying TMDD / receptor-occupancy models.
+
+### k1 (**canonical association rate constant in reversible binding**)
+- **Type:** paper-named-param
+- **Role:** Second-order association (forward / on) rate constant for reversible drug-target or drug-drug complex formation, with units of (1 / (concentration * time)). The paired dissociation rate constant is `k2` and the equilibrium dissociation constant is `kd = k2 / k1`. Used by mechanistic 2-drug interaction models that need separate on / off rates rather than a single steady-state `kd`. When `kd` is fixed from an external (in-vitro) source and `k2` is estimated, `k1 = k2 / kd` is derived inside `model()` rather than estimated directly.
+- **Source aliases:**
+  - `k_on`, `kon` -- general kinetics notation.
+- **Example models:** `Kleijn_2011_sugammadex_rocuronium.R` (sugammadex-rocuronium dynamic interaction: `kd` fixed at 0.0559 uM from in-vitro, `log(k2)` estimated, `k1 = k2 / kd = 0.61 1/(min*uM)` derived).
+- **Notes:** Distinct from `kss` (the quasi-steady-state binding parameter used in QSS-TMDD approximations) and from `kd` (the equilibrium dissociation constant). Use the `k1` / `k2` / `kd` triple when the source paper reports the full dynamic-interaction kinetics; use `kss` alone for QSS-TMDD shortcuts.
+
+### k2 (**canonical dissociation rate constant in reversible binding**)
+- **Type:** paper-named-param
+- **Role:** First-order dissociation (reverse / off) rate constant for reversible drug-target or drug-drug complex formation (1 / time). Paired with `k1` (association) and `kd = k2 / k1` (equilibrium dissociation). Inside `model()` the bare name `k2` is the rate constant; the log-transformed `lk2` form is used in `ini()` whenever the source paper reports `log_e(k2)` directly.
+- **Source aliases:**
+  - `k_off`, `koff` -- general kinetics notation.
+- **Example models:** `Kleijn_2011_sugammadex_rocuronium.R` (sugammadex-rocuronium dynamic interaction: `lk2 = -3.38`, giving `k2 = 0.034 1/min`, RSE 16.5%; paired with the fixed `kd` and the derived `k1`).
+- **Notes:** Pairs with `k1` (association). The paper-numerical convention `k_d = k_2 / k_1` should be encoded explicitly in `model()` so the dimensionally-correct relationship is visible at the call site.
+
+### ks (**canonical drug-mediated effect-compartment elimination rate**)
+- **Type:** paper-named-param
+- **Role:** Second-order rate constant for one drug's modulation of another drug's elimination from an effect compartment, with units of (1 / (concentration * time)). Used in two-drug PK-PD interaction models where the modulating drug's plasma concentration multiplies a target drug's effect-compartment amount to drive an additional elimination route (mechanistic abstraction for site-of-action drug-drug interaction such as the sugammadex-mediated rocuronium reversal). Inside `model()` the bare name is `ks`; the log-transformed `lks` form is used in `ini()` when the source paper reports `log_e(ks)`.
+- **Source aliases:** none.
+- **Example models:** `Kleijn_2011_sugammadex_rocuronium.R` (`lks = -3.43`, giving `ks = 0.033 1/(min*uM)`, RSE 0.222%; modulates rocuronium effect-compartment elimination by sugammadex plasma concentration: `d/dt(effect_roc) = ... - ks * csug * effect_roc`).
+- **Notes:** Mechanistically distinct from `kel` / `kdeg` (single-drug elimination rates) and from `kint` (target-mediated internalisation). The second drug's plasma concentration provides the multiplier; the parameter encodes the rate at which the modulating drug consumes the target drug at its site of action.
+
+### ke0 (**canonical effect-compartment equilibration rate constant**)
+- **Type:** paper-named-param
+- **Role:** First-order rate constant for equilibration between the central plasma concentration and the effect-compartment concentration (1 / time), used by standard hysteresis effect-compartment PK-PD models: `d Ce / dt = ke0 * (Cc - Ce)`. The corresponding equilibration half-life is `log(2) / ke0`. Inside `model()` the bare name is `ke0`; the log-transformed `lke0` form is used in `ini()` when the source paper reports `log_e(ke0)` or uses an exponential typical-value form.
+- **Source aliases:**
+  - `keo`, `Keo` -- equivalent paper notation; both spellings (`keo` and `ke0`) appear in the literature.
+- **Example models:** `Kleijn_2011_sugammadex_rocuronium.R` (`lke0 = log(0.134) = -2.01`, giving `ke0 = 0.134 1/min` for the rocuronium effect-compartment equilibration; allometric scaling `(BW/70)^-0.25`).
+- **Notes:** Distinct from `lke_kpd` (which is K-PD elimination rate and was deprecated in favour of the canonical `lkel`). `lke0` is specifically the effect-compartment equilibration parameter for hysteresis PK-PD modelling.
+
+### lec50 (**canonical log-transformed effect-compartment EC50**)
+- **Type:** paper-named-param
+- **Role:** Log-transformed concentration producing half-maximal effect in sigmoid Emax / Imax PD models (concentration units). Inside `model()` the bare name is `ec50`.
+- **Source aliases:**
+  - `lEC50`, `lec_50` -- equivalent paper notation.
+- **Example models:** `deVriesSchultink_2018_trastuzumab_LVEF.R`, `Kleijn_2011_sugammadex_rocuronium.R`, `Zhang_2022_ormutivimab.R`, and many sigmoid-Emax PD extractions.
+- **Notes:** Pairs with `lhill` (Hill exponent). The bare name `ec50` is for use in `model()` derivations.
+
+### ec50 (**canonical bare effect-compartment EC50**)
+- **Type:** paper-named-param
+- **Role:** Bare counterpart of `lec50`; the half-maximal effect concentration on the linear scale.
+- **Source aliases:** none.
+- **Example models:** widespread sigmoid-Emax PD extractions.
+
+### le0 (**canonical log-transformed PD baseline parameter**)
+- **Type:** paper-named-param
+- **Role:** Log-transformed baseline (drug-free) value of a PD response, e.g., baseline T4/T1 twitch ratio in neuromuscular blockade PK-PD models (`E0 = exp(le0)`). Distinct from `lrbase`, which is the log-transformed steady-state baseline for indirect-response / turnover models with explicit `kin` / `kout`. Use `le0` when the source paper reports a non-turnover PD baseline (a typical T4/T1 ratio, a typical pre-treatment biomarker level) that enters the sigmoid Emax expression as an additive baseline plus the maximum-effect-bounded modulation. Inside `model()` the bare name is `e0`.
+- **Source aliases:**
+  - `lE0`, `lTOF0` -- equivalent paper notation.
+- **Example models:** `Kleijn_2011_sugammadex_rocuronium.R` (`le0 = log(104)` for typical baseline T4/T1 x 100; Emax of the sigmoid is forced equal to E0 so the per-subject baseline shape of the readout is preserved).
+- **Notes:** Distinct from `lrbase` (turnover-state steady-state baseline). When `Emax = E0` is forced in the sigmoid (the standard NMB parameterisation), the readout decreases monotonically from `E0` toward 0 as the effect-compartment concentration rises.
+
+### e0 (**canonical bare PD baseline parameter**)
+- **Type:** paper-named-param
+- **Role:** Bare counterpart of `le0`; the baseline (drug-free) PD response value used inside `model()`.
+- **Source aliases:** none.
+- **Example models:** `Kleijn_2011_sugammadex_rocuronium.R`.
 
 ### kdes (**canonical desensitisation rate**)
 - **Type:** paper-named-param
@@ -536,3 +709,10 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
 - **Source aliases:** none.
 - **Example models:** `Campagne_2019_cyclophosphamide_mouse.R`.
 - **Notes:** Usually held fixed at the in-vitro equilibrium-dialysis-derived value. The BBB transfer term is `CLin * fu * Cp`.
+
+### eh (**canonical hepatic extraction ratio**)
+- **Type:** paper-named-param
+- **Role:** Hepatic extraction ratio in the well-stirred liver model (`CL_H = FQ * eh`, `F_HEP = 1 - eh`). Unitless, bounded in [0, 1]. Use whenever a paper parameterises hepatic clearance through the extraction-ratio physiology rather than through `lcl` / `lcl_nonren` directly. The companion log-transform prefix is `logiteh` (logit-scale `ini()` typical value) because the linear-scale `eh` is bounded; logit-additive eta on `logiteh` keeps every individual `eh_i` inside the (0, 1) box.
+- **Source aliases:** `EH` -- used in `Chan_2008_maraviroc.R` and Brussee 2018 mAb PBPK (the latter as a derived `model()`-block quantity rather than an `ini()` parameter, so the canonical applies to the `ini()` use case introduced by Chan 2008).
+- **Example models:** `Chan_2008_maraviroc.R` (estimated `logiteh = logit(0.662)` with logit-additive IIV per Chan 2008 Eq 9; downstream `eh` enters `clh = fq * eh` and `fhep = 1 - eh`).
+- **Notes:** Paired with the canonical compartment / pseudo-parameter `fq` (hepatic plasma flow, fixed at a literature value) and the canonical `clr` (renal clearance, often fixed) when the paper decomposes total CL into renal + hepatic with hepatic-extraction physiology. Distinct from `lcl_nonren` (additive renal + non-renal CL decomposition without an explicit extraction-ratio bound): use `eh` only when the source paper writes hepatic clearance as `CL_H = FQ * E_H` and constrains E_H in [0, 1] (e.g., via a logit-form IIV transformation).

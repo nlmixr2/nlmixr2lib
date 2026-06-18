@@ -353,19 +353,21 @@
     # (depot_asv, central_asv, peripheral1_asv, effect_asv, Cc_asv,
     # lka_asv, lcl_asv, etc.).
     "asv",
-    # Oseltamivir carboxylate (OC), the active metabolite of oseltamivir
-    # formed by hepatic carboxylesterase 1 (HCE1) hydrolysis of the
-    # inactive ethyl-ester prodrug. Used as a metabolite suffix in
-    # parent-prodrug oseltamivir + active-metabolite OC popPK models
-    # (Kamal 2013 doi:10.1128/AAC.02438-12).
-    "oc"
+    # CDB-4453, the active monodemethylated metabolite of telapristone
+    # (CDB-4124) formed by N-demethylation on the C-17 side chain. Used
+    # in the Morris 2011 parent (telapristone) + metabolite (CDB-4453)
+    # popPK model where the metabolite apparent volume V3/F is fixed
+    # to 1 L for identifiability (Morris 2011 doi:10.1208/s12248-011-9304-7).
+    "cdb4453"
   ),
   # Suffixes allowed for multi-component CL parameters. `_ss` denotes
   # the steady-state arm; `_time` the time-varying decay arm; `_renal`
   # the glomerular-filtration / tubular-secretion arm; `_nonren` the
   # non-renal (hepatic / metabolic / extra-renal) arm (e.g. Jonckheere
-  # 2019 cefepime: CL_total = CL_renal + CL_nonren).
-  clComponents = c("ss", "time", "renal", "nonren"),
+  # 2019 cefepime: CL_total = CL_renal + CL_nonren); `_hemodialysis`
+  # the dialysis-active extracorporeal arm gated by the HEMODIALYSIS
+  # covariate (e.g. Veinstein 2013 gentamicin: CL_total = CL + CL_HD).
+  clComponents = c("ss", "time", "renal", "nonren", "hemodialysis"),
   requiredUnits = c("time", "dosing", "concentration"),
   requiredMetadata = c("description", "reference", "units"),
   deprecatedResidualError = c(

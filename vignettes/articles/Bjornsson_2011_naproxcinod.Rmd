@@ -1,0 +1,436 @@
+---
+title: "Naproxcinod (Bjornsson 2011)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Naproxcinod (Bjornsson 2011)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>",
+                      fig.width = 7, fig.height = 4.5, dpi = 90)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Bjornsson_2011_naproxcinod"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Bjornsson_2011_naproxcinod"))$description`
+* Article: <https://doi.org/10.1111/j.1365-2125.2011.03924.x>
+
+The model is a joint population PK / pain intensity (PI) / informative-dropout
+analysis of a randomized, double-blind, placebo-controlled, single-dose
+dental-pain study after wisdom-tooth extraction. Patients received either
+naproxcinod (a naproxen nitrate ester prodrug; 375, 750, 1500, or 2250 mg),
+naproxen (500 mg), or placebo. The PK of unbound naproxen is described by a
+one-compartment disposition with parallel Savic transit-compartment absorption
+chains for naproxcinod and naproxen feeding a shared central compartment, and
+total naproxen is derived from unbound through a saturable albumin-binding
+equation. Pain intensity on a 100-mm VAS is modelled by a multiplicative
+placebo + drug-effect model on baseline PI, with placebo onset described by
+an exponential and the drug effect by a sigmoid Emax in unbound naproxen.
+Rescue-medication request is described by a Weibull time-to-event hazard
+with log-linear covariate effects of PI(t) and baseline PI deviation from the
+cohort median (55 mm).
+
+# Population
+
+The dataset is the single-dose, single-centre wisdom-tooth-extraction trial of
+Bjornsson 2011 Table 1: **242 patients** (48% male, 52% female), age 19-38
+years, BMI 18-31 kg/m^2, randomized between naproxcinod 375, 750, 1500, and
+2250 mg (n = 41, 37, 42, 41), naproxen 500 mg (n = 39), and placebo (n = 42).
+Baseline pain intensity ranged 7-100 mm on a 100-mm VAS (entry criterion: PI
+>= 40 mm within 6 h of local anaesthetic). The trial was performed at the
+Eastman International Centre for Excellence in Dentistry (London, UK), under
+ICH GCP and sponsored by AstraZeneca.
+
+PK samples were collected in roughly one-third of patients (15, 12, 18, 15,
+and 16 patients in the naproxcinod 375 / 750 / 1500 / 2250 mg and naproxen
+500 mg arms respectively) at 0.5, 1, 1.5, 2, 2.5, 3, 4, 5, 6, 7, and 8 h
+post-dose. Total naproxen concentrations were measured throughout; unbound
+concentrations were measured by ultrafiltration at 1, 3, and 8 h. Three
+subjects who took rescue medication before 1.5 h were excluded from the
+dropout analysis.
+
+The same metadata is available programmatically:
+
+```{r population-meta}
+mod <- rxode2::rxode(readModelDb("Bjornsson_2011_naproxcinod"))
+str(mod$population, max.level = 1)
+```
+
+# Source trace
+
+Per-parameter origins are recorded as inline comments next to each `ini()`
+entry in `inst/modeldb/specificDrugs/Bjornsson_2011_naproxcinod.R`. The
+table below collects them in one place for review.
+
+| nlmixr2 parameter        | Value | Source location |
+|--------------------------|-------|-----------------|
+| `lcl`                    | log(515)    | Table 2, CL_u/F = 515 L/h |
+| `lvc`                    | log(4290)   | Table 2, V_u/F = 4290 L |
+| `lmtt_naproxcinod`       | log(1.77)   | Table 2, MTT_naproxcinod = 1.77 h |
+| `lnn_naproxcinod`        | log(3.58)   | Table 2, NN_naproxcinod = 3.58 |
+| `lmtt_naproxen`          | log(0.500)  | Table 2, MTT_naproxen = 0.500 h |
+| `lnn_naproxen`           | log(4.23)   | Table 2, NN_naproxen = 4.23 |
+| `lbmax`                  | log(643)    | Table 2, Bmax = 643 umol/L |
+| `lkm`                    | log(0.549)  | Table 2, Km = 0.549 umol/L |
+| `lfdepot_naproxcinod`    | log(0.597)  | Table 2, F_rel = 59.7% |
+| `etalcl`                 | log(1 + 0.25^2)   | Table 2, IIV CL_u/F = 25% |
+| `etalvc`                 | log(1 + 0.44^2)   | Table 2, IIV V_u/F = 44% |
+| `etalbmax`               | log(1 + 0.17^2)   | Table 2, IIV Bmax = 17% |
+| `etalmtt_naproxcinod`/`etalnn_naproxcinod` block | rho = -0.52 | Table 2, IIV MTT_NC / NN_NC = 58% / 58%; Corr(MTT_NC, NN_NC) = -52% |
+| `etalmtt_naproxen`       | log(1 + 1.00^2)   | Table 2, IIV MTT_naproxen = 100% |
+| `etalnn_naproxen`        | log(1 + 0.64^2)   | Table 2, IIV NN_naproxen = 64% |
+| `addSd`                  | 6.19              | Table 2, sigma_T,add = 6.19 umol/L |
+| `propSd`                 | 0.0843            | Table 2, sigma_T,prop = 8.43% |
+| `propSd_Cc_unbound`      | 0.186             | Table 2, sigma_U,prop = 18.6% |
+| `lrbase`                 | log(52.7)         | Table 3, PI_baseline = 52.7 mm |
+| `pmax`                   | 0.202             | Table 3, P_max = 20.2% (fractional decrease) |
+| `lkpl`                   | log(0.237)        | Table 3, k_pl = 0.237 /h |
+| `lemax`                  | fixed(log(1))     | Methods + Table 3: Emax fixed at 1 |
+| `lec50`                  | log(0.135)        | Table 3, EC50 = 0.135 umol/L |
+| `lhill`                  | log(1.61)         | Table 3, gamma = 1.61 |
+| `etalrbase`              | log(1 + 0.32^2)   | Table 3, IIV PI_baseline = 32% |
+| `etapmax`                | (1.20 * 0.202)^2  | Table 3, IIV P_max = 120% (additive) |
+| `etalkpl`                | log(1 + 0.43^2)   | Table 3, IIV k_pl = 43% |
+| `etalec50`               | log(1 + 1.20^2)   | Table 3, IIV EC50 = 120% |
+| `addSd_PI`               | 7.82              | Table 3, sigma_PI = 7.82 mm |
+| `llambda_haz`            | log(0.00999)      | Table 3, lambda = 0.00999 |
+| `lalpha_haz`             | log(0.729)        | Table 3, alpha = 0.729 |
+| `e_pi_haz`               | 0.0782            | Table 3, q_PI = 0.0782 |
+| `e_pibase_haz`           | -0.00261          | Table 3, q_baseline = -0.00261 |
+| Saturable binding `Ctot = Cu + Bmax * Cu / (Km + Cu)` | (equation) | Methods, "Pharmacokinetic model" |
+| Sigmoid Emax drug effect | (equation) | Methods, "Model for PI" |
+| Multiplicative PI combination | (equation, image-encoded) | Methods, "Model for PI" |
+| Weibull hazard with log-linear COV term | (equation, image-encoded) | Methods, "Model for request of rescue medication" |
+| 1.5 h rescue-medication abstention window | (logic) | Methods, "Model for request of rescue medication" |
+
+# Mechanistic structure
+
+The PK of unbound naproxen is one-compartmental with apparent unbound
+clearance CL_u/F = 515 L/h and apparent unbound volume V_u/F = 4290 L. Two
+parallel transit-compartment absorption chains feed a shared central
+compartment: naproxcinod (MTT 1.77 h, NN 3.58) acts as a prodrug for naproxen
+with relative bioavailability F_rel = 59.7%, and naproxen (MTT 0.500 h,
+NN 4.23) has reference bioavailability of 1. Total naproxen is derived from
+unbound by the saturable albumin-binding model
+
+$$
+C_\mathrm{tot} = C_u + \frac{B_\mathrm{max} \cdot C_u}{K_m + C_u}
+$$
+
+with B_max = 643 umol/L and K_m = 0.549 umol/L. The Bmax corresponds to
+approximately one binding site per albumin molecule.
+
+Pain intensity is modelled by
+
+$$
+\mathrm{PI}(t) = \mathrm{PI}_{\mathrm{baseline}} \cdot \big(1 - \mathrm{placebo}(t)\big) \cdot \big(1 - \mathrm{drug}(t)\big)
+$$
+
+with placebo(t) = P_max * (1 - exp(-k_pl * t)) (P_max = 0.202, k_pl = 0.237 /h)
+and drug(t) = E_max * Cu^gamma / (EC50^gamma + Cu^gamma) (E_max fixed at 1,
+EC50 = 0.135 umol/L, gamma = 1.61). PI is clamped to [0, 100] mm. The IIV
+on P_max is additive (P_max_i = P_max + eta_pmax) so the individual placebo
+effect can cross zero.
+
+Rescue-medication time-to-event is a Weibull baseline hazard with log-linear
+covariate effects:
+
+$$
+h(t) = \big[\lambda \cdot \alpha \cdot (\lambda \cdot (t - 1.5))^{\alpha - 1}\big] \cdot \exp\Big(\big[q_{PI} + q_{\mathrm{baseline}} \cdot (\mathrm{PI}_{\mathrm{baseline}} - 55)\big] \cdot \mathrm{PI}(t)\Big)
+$$
+
+for t >= 1.5 h (the protocol's rescue-medication abstention window) and zero
+for t < 1.5 h. The baseline-PI modulator captures the paper's clinical
+finding that subjects entering the study with a high baseline PI have a
+lower hazard at a given current PI than those entering with a low baseline.
+
+# Virtual cohort
+
+The figures below use typical-value (no between-subject variability)
+simulations for each treatment arm at the protocol's PI / PK sampling grid
+(0, 0.5, 1, 1.5, 2, 2.5, 3, 4, 5, 6, 7, 8 h). Doses are entered in **micromoles
+of the parent compound** dosed (naproxcinod or naproxen). The molecular
+weights used for the mg-to-umol conversion are 317.30 g/mol (naproxcinod)
+and 230.26 g/mol (naproxen), giving the dose conversions tabulated below.
+
+```{r dose-table}
+arms <- tibble::tribble(
+  ~arm,                   ~depot,                  ~mg,    ~mw,    ~umol,
+  "placebo",              "depot_naproxen",        0,      230.26, 0,
+  "naproxen 500 mg",      "depot_naproxen",        500,    230.26, 500 / 230.26 * 1000,
+  "naproxcinod 375 mg",   "depot_naproxcinod",     375,    317.30, 375 / 317.30 * 1000,
+  "naproxcinod 750 mg",   "depot_naproxcinod",     750,    317.30, 750 / 317.30 * 1000,
+  "naproxcinod 1500 mg",  "depot_naproxcinod",     1500,   317.30, 1500 / 317.30 * 1000,
+  "naproxcinod 2250 mg",  "depot_naproxcinod",     2250,   317.30, 2250 / 317.30 * 1000
+)
+arms$umol <- round(arms$umol, 0)
+knitr::kable(arms,
+             col.names = c("Arm", "Depot cmt", "Dose (mg)",
+                           "MW (g/mol)", "Dose (umol)"),
+             caption = "Six arms of Bjornsson 2011 single-dose dental-pain trial.")
+```
+
+The PI / PK observation grid mirrors the protocol:
+
+```{r obs-grid}
+obs_times <- c(0, 0.5, 1, 1.5, 2, 2.5, 3, 4, 5, 6, 7, 8)
+obs_times
+```
+
+# Simulation
+
+Each arm is simulated as a single typical-value subject. Doses target the
+arm-specific depot (`depot_naproxcinod` or `depot_naproxen`), and the placebo
+arm has no dosing event but is solved on the same observation grid. Each
+subject has a unique ID so a `bind_rows()`-ed multi-arm table satisfies the
+`rxSolve` per-ID disjointness rule. The PK / PD parameters are taken at their
+population-typical values via `zeroRe()`.
+
+```{r simulate-typical}
+mod_typical <- rxode2::zeroRe(mod)
+
+# One typical-value subject per arm. A token `evid = 1, amt = 0` event at
+# t = 0 on `depot_naproxen` for the placebo arm primes the transit() reader
+# so the rxode2 solver evaluates podo()/tad() on a defined compartment;
+# this avoids transient NaN in derived variables when no dose is present.
+build_events <- function(arm_row, id) {
+  if (arm_row$umol == 0) {
+    et <- rxode2::et(amt = 0, cmt = "depot_naproxen", time = 0, evid = 1)
+  } else {
+    et <- rxode2::et(amt = arm_row$umol, cmt = arm_row$depot, time = 0)
+  }
+  et <- et |> rxode2::et(obs_times, cmt = "Cc")
+  ev_df <- as.data.frame(et)
+  ev_df$id  <- id
+  ev_df$arm <- arm_row$arm
+  ev_df
+}
+
+events_all <- dplyr::bind_rows(lapply(seq_len(nrow(arms)),
+                                      function(i) build_events(arms[i, ], id = i)))
+stopifnot(!anyDuplicated(unique(events_all[, c("id", "time", "evid")])))
+
+sim_typical <- rxode2::rxSolve(
+  mod_typical,
+  events = events_all,
+  keep   = "arm"
+) |> as.data.frame()
+
+# Drop time-0 row for plotting only when needed (concentrations are 0 there).
+head(sim_typical, 12)
+```
+
+# Replicate published figures
+
+## Figure 1 -- VPC of total and unbound naproxen concentrations
+
+Bjornsson 2011 Figure 1 shows VPC of total (top row) and unbound (bottom row)
+naproxen concentrations after each PK-sampled arm (naproxcinod 375 / 750 /
+1500 / 2250 mg and naproxen 500 mg). Reproduction is via typical-value
+simulation here; published VPCs additionally overlay observed quantiles
+which are not available without the underlying trial data.
+
+```{r figure-1}
+pk_arms <- c("naproxcinod 375 mg", "naproxcinod 750 mg",
+             "naproxcinod 1500 mg", "naproxcinod 2250 mg",
+             "naproxen 500 mg")
+
+pk_long <- sim_typical |>
+  dplyr::filter(arm %in% pk_arms) |>
+  tidyr::pivot_longer(c(Cc, Cc_unbound),
+                      names_to = "fraction", values_to = "conc") |>
+  dplyr::mutate(
+    fraction = dplyr::recode(fraction,
+                             "Cc" = "Total naproxen",
+                             "Cc_unbound" = "Unbound naproxen"),
+    arm = factor(arm, levels = pk_arms)
+  )
+
+ggplot(pk_long, aes(time, conc, colour = arm)) +
+  geom_line(linewidth = 1) +
+  facet_wrap(~fraction, scales = "free_y") +
+  labs(x = "Time (h)", y = "Concentration (umol/L)",
+       title = "Figure 1 -- Typical-value total and unbound naproxen",
+       caption = "Replicates the structure of Figure 1 of Bjornsson 2011 (VPC layout simplified to typical-value lines).") +
+  theme(legend.position = "bottom")
+```
+
+## Figure 2 -- Pain intensity vs. time
+
+Bjornsson 2011 Figure 2 shows VPCs of PI by arm without (top row) and with
+(bottom row) informative dropout. The typical-value PI trajectory below
+illustrates how the placebo + drug effect combination produces the
+arm-specific PI time course; the dropout (and thus the observation-conditional
+PI) is captured by the survival curve in Figure 3.
+
+```{r figure-2}
+ggplot(sim_typical, aes(time, PI, colour = arm)) +
+  geom_line(linewidth = 1) +
+  geom_point(size = 1.5) +
+  scale_y_continuous(limits = c(0, 100), breaks = seq(0, 100, 20)) +
+  labs(x = "Time (h)", y = "Pain intensity (mm on 100-mm VAS)",
+       title = "Figure 2 -- Typical-value pain intensity by treatment arm",
+       caption = "Replicates the structure of Figure 2 of Bjornsson 2011 (VPC layout simplified to typical-value lines).") +
+  theme(legend.position = "bottom")
+```
+
+## Figure 3 -- Survival (Kaplan-Meier surrogate) for rescue medication
+
+Bjornsson 2011 Figure 3 shows Kaplan-Meier survival for time-to-rescue per
+arm. With typical-value simulation, the model produces a single deterministic
+S(t) = exp(-cumulative_hazard(t)) per arm. The hazard is zero for t < 1.5 h
+(per protocol), then follows the Weibull baseline modulated by exp(slope *
+PI(t)).
+
+```{r figure-3}
+ggplot(sim_typical, aes(time, sur, colour = arm)) +
+  geom_line(linewidth = 1) +
+  geom_point(size = 1.5) +
+  scale_y_continuous(limits = c(0, 1), breaks = seq(0, 1, 0.2)) +
+  labs(x = "Time (h)", y = "Survival probability S(t)",
+       title = "Figure 3 -- Typical-value survival of rescue-medication request",
+       caption = "Replicates the structure of Figure 3 of Bjornsson 2011 (Kaplan-Meier curves simplified to typical-value S(t) trajectories).") +
+  theme(legend.position = "bottom")
+```
+
+# PKNCA validation
+
+We run a non-compartmental analysis on the simulated **total naproxen**
+concentrations for the five active PK arms (the placebo arm has Cc = 0
+throughout and is excluded). PKNCA returns Cmax, Tmax, AUC0-8, and the
+terminal half-life per arm. The paper does not tabulate NCA values directly
+(only the parametric estimates in Table 2), so the table below is a forward
+NCA derived from the packaged model rather than a comparison against
+published NCA quantities.
+
+```{r pknca}
+sim_nca <- sim_typical |>
+  dplyr::filter(arm %in% pk_arms, !is.na(Cc)) |>
+  dplyr::select(id, time, Cc, arm)
+
+# Guarantee a time=0 record per (id, arm); for extravascular dosing this is
+# the correct pre-dose baseline (Cc = 0).
+sim_nca <- dplyr::bind_rows(
+  sim_nca,
+  sim_nca |> dplyr::distinct(id, arm) |> dplyr::mutate(time = 0, Cc = 0)
+) |>
+  dplyr::distinct(id, arm, time, .keep_all = TRUE) |>
+  dplyr::arrange(id, arm, time)
+
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | arm + id)
+
+dose_df <- events_all |>
+  dplyr::filter(evid == 1, amt > 0) |>
+  dplyr::select(id, time, amt, arm)
+
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | arm + id)
+
+intervals <- data.frame(
+  start         = 0,
+  end           = 8,
+  cmax          = TRUE,
+  tmax          = TRUE,
+  auclast       = TRUE,
+  half.life     = TRUE
+)
+
+nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
+nca_res  <- PKNCA::pk.nca(nca_data)
+
+nca_summary <- as.data.frame(nca_res$result) |>
+  dplyr::select(arm, PPTESTCD, PPORRES) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES)
+
+knitr::kable(nca_summary,
+             digits = 2,
+             caption = paste("Typical-value NCA of total naproxen (umol/L)",
+                             "over 0-8 h per dose arm."))
+```
+
+The Cmax and AUC0-8 scale roughly proportionally with naproxen-equivalent
+dose, modulated by the saturable albumin binding (higher doses push the
+binding closer to saturation, increasing the apparent free fraction and the
+total Cmax slightly less than dose-proportionally) and the slower
+naproxcinod transit-absorption chain (MTT 1.77 h vs 0.500 h for naproxen
+directly). The 8-hour observation window truncates the terminal phase of
+naproxen (literature half-life ~14 h), so the PKNCA half-life column reflects
+the slope over 6-8 h only and should not be compared against the full
+absorption-and-elimination terminal half-life.
+
+# Assumptions and deviations
+
+- **Functional forms image-encoded in the paper.** The PI combination
+  formula (paper Methods, "Model for PI", first display equation) and the
+  hazard COV form (paper Methods, "Model for request of rescue medication",
+  display equation following "h(t) = h0(t) * exp(COV)") are both rendered
+  as figure images in the PDF and were not recoverable from the trimmed
+  text. The packaged model implements the most-common NONMEM conventions
+  consistent with the surrounding paper prose: multiplicative combination
+  `PI = PI_baseline * (1 - placebo) * (1 - drug)` for the PI sub-model
+  (placebo expressed as a fractional reduction, drug as a sigmoid Emax
+  fractional reduction, both clamped through PI's [0, 100] bounds), and
+  log-linear `exp(slope_pi * PI(t))` for the hazard's covariate term
+  (with `slope_pi = q_PI + q_baseline * (PI_baseline - 55)`). If the
+  paper's original NONMEM control stream surfaces, this should be
+  reaffirmed or corrected.
+- **Additive IIV on P_max -- variance interpretation.** Table 3 reports
+  "IIV 120%" for P_max with the footnote "in % of the parameter estimate"
+  and the prose "for Pmax where an additive model was used". The packaged
+  model interprets this as SD(eta_pmax) = 1.20 * P_max = 1.20 * 0.202 =
+  0.2424 and therefore omega^2 = SD^2 = 0.05876, treating "120%" as a
+  ratio of SD-on-the-additive-scale to the typical-value estimate (the
+  natural reading of an additive-IIV percentage). The alternative reading
+  -- SD(eta_pmax) = 1.20 directly -- would give omega^2 = 1.44 and is
+  inconsistent with the additive-IIV convention.
+- **Transit-chain depot-drain rate.** The paper reports MTT and NN per
+  formulation but does not separately report a depot-drain absorption rate
+  constant (typical k_a). The packaged model uses the canonical Savic 2007
+  parameterisation in which the depot drains at k_tr = (NN + 1) / MTT,
+  consistent with rxode2's `transit(n, mtt, bio)` analytical input rate
+  combined with a matched `k_tr` first-order drain.
+- **Dose unit convention.** The packaged model expects dose amounts in
+  micromoles of the parent compound dosed (naproxcinod or naproxen). The
+  paper does not explicitly state the NONMEM control stream's dose unit;
+  this convention preserves the molar-balance interpretation of F_rel =
+  59.7% (the fraction of administered naproxcinod-molecules that yield
+  unbound naproxen-equivalents in central). Users dosing in mg should
+  convert using MW(naproxcinod) = 317.30 g/mol or MW(naproxen) = 230.26
+  g/mol before passing through.
+- **No demographic covariates retained in the final model.** The trial
+  recorded sex, age, BMI, and baseline PI (Bjornsson 2011 Table 1), but
+  none of these (except baseline PI, which enters the hazard via the
+  q_baseline modulator) was retained on PK or PD parameters in the
+  published model. These covariates are documented in
+  `covariatesDataExcluded` for provenance but are not referenced in
+  `model()`.
+- **Body weight not reported.** Table 1 reports BMI ranges only; body
+  weight is not transcribed in the publication. Allometric scaling is
+  therefore not implemented and CL_u/F / V_u/F are taken at their
+  population-typical values as published.
+- **Cc_unbound non-negative clamp.** Inside `model()`, `cu_pos <-
+  ifelse(Cc_unbound < 0, 0, Cc_unbound)` is used before raising to the
+  Hill exponent in the drug-effect term. rxode2's stiff solver can
+  return numerical-noise-sized negative values (~1e-18) on the placebo
+  arm where central is identically zero; raising a slightly negative
+  base to a fractional power returns NaN and would poison the entire
+  downstream PI / hazard / survival chain. This is a numerical guard,
+  not a structural deviation.
+- **`Cu` not observed at every PK time-point in the trial.** The trial
+  measured unbound concentrations at only 1, 3, and 8 h post-dose
+  (paper Methods, "Study design"). The packaged model exposes
+  `Cc_unbound` as a continuous output for downstream simulation and
+  validation regardless of the original observation cadence.
+- **NCA against paper -- no comparison table.** Bjornsson 2011 does not
+  tabulate NCA quantities (Cmax, AUC, half-life) in the published paper;
+  parametric estimates only. The PKNCA section therefore reports forward
+  NCA on the packaged-model typical-value simulation, not a side-by-side
+  comparison with published values.

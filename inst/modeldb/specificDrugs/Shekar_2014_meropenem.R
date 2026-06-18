@@ -18,7 +18,7 @@ Shekar_2014_meropenem <- function() {
       units              = "(binary)",
       type               = "binary",
       reference_category = 0,
-      notes              = "Source column RRT. 1 = subject was on continuous venovenous hemofiltration (CVVHF, control cohort) or extended daily diafiltration (EDD-f, ECMO cohort); 0 = no RRT. The Shekar 2014 cohort mixes CVVH and EDD-f and the published model treats them identically as a single binary covariate. Stored under the canonical CRRT_STATUS column per inst/references/covariate-columns.md (distinct from HEMODIAL = intermittent-hemodialysis-only and from DIAL = per-time-point session gate). 5/11 ECMO and 5/10 controls were on RRT. Treated as time-fixed at the subject level (all RRT patients were continuously / daily on RRT during sampling; the indicator does not resolve session timing).",
+      notes              = "Source column RRT. 1 = subject was on continuous venovenous hemofiltration (CVVHF, control cohort) or extended daily diafiltration (EDD-f, ECMO cohort); 0 = no RRT. The Shekar 2014 cohort mixes CVVH and EDD-f and the published model treats them identically as a single binary covariate. Stored under the canonical CRRT_STATUS column per inst/references/covariate-columns.md (distinct from HEMODIAL = intermittent-hemodialysis-only and from HEMODIALYSIS = per-time-point session gate). 5/11 ECMO and 5/10 controls were on RRT. Treated as time-fixed at the subject level (all RRT patients were continuously / daily on RRT during sampling; the indicator does not resolve session timing).",
       source_name        = "RRT"
     )
   )

@@ -82,6 +82,15 @@ Papachristos_2020_bevacizumab_pkpd <- function() {
     propSd_E  <- 0.264; label("Proportional residual error for free VEGF-A (fraction)")   # Table 3 row sigma_VEGF
   })
   model({
+    # Declare named compartments for both ODE states and the algebraic
+    # PK/PD observables (Cc, E) so event tables can reference them by
+    # name; without this, rxode2's cmt->slot lookup only finds the ODE
+    # states and fails on cmt = "Cc" / cmt = "E" observation rows.
+    cmt(central)
+    cmt(peripheral1)
+    cmt(Cc)
+    cmt(E)
+
     # Individual PK parameters (paper formulas, sec. 2.4)
     cl  <- exp(lcl + e_wt_cl * log(WT / 70) + e_icam1_rs1799969_cl * SNP_ICAM1_RS1799969 + etalcl)
     vc  <- exp(lvc + etalvc)

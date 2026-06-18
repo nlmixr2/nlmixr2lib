@@ -198,6 +198,7 @@ double lagState(double t, double val, double lag, double channel, double init_va
 #' @return Named list of physiology equilibrium state values, suitable
 #'   for passing as the `inits` argument to `rxode2::rxSolve` on
 #'   subsequent dose-bearing simulations.
+#' @importFrom stats setNames
 #' @export
 Mann2022Equilibrate <- function(model, params = NULL, duration_min = 90) {
   ev <- data.frame(
