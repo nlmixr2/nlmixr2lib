@@ -2331,6 +2331,16 @@ Sibling-drug suffixes for the Hill-McManus 2017 dual-urate-lowering-therapy PKPD
 
 ---
 
+## Ramharter 2019 mefloquine metabolite suffix
+
+### cmq (**canonical carboxymefloquine suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Carboxymefloquine, the principal carboxylic-acid metabolite of mefloquine produced in vivo by oxidative metabolism of the piperidine-2-methanol substituent on the parent quinoline scaffold. CMQ has no antimalarial activity but is a clinically meaningful inducer of pregnane-X-receptor-mediated drug metabolism (comparable to rifampicin) and autoinduces its own clearance via a two-stage RNA + enzyme-pool turnover in the Ramharter 2019 model. Drives `central_cmq` / `peripheral1_cmq` PK subsystem alongside parent-enantiomer subsystems with `_r` / `_s` suffixes.
+- **Source aliases:** none.
+- **Example models:** `Ramharter_2019_mefloquine.R` (doi:10.1128/AAC.01113-18).
+
+---
+
 ## Zurlinden 2016 paracetamol PBPK metabolite suffixes
 
 Zurlinden 2016 paracetamol PBPK metabolite shorthand. Registered as separate suffixes (alongside the Cook 2016 `apapg` / `apaps`) so the Zurlinden `a_<organ>_as` / `a_<organ>_ag` compartment names pass the metabolite-suffix check without rewriting the source-paper notation.

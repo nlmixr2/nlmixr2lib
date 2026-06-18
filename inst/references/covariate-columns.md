@@ -5058,6 +5058,17 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Example models:** `Girard_2012_pimasertib.R` (additive shift on the cumulative-logit AE-score model: `theta_bid * REGI_BID`; -0.399 logit units for BID vs QD).
 - **Notes:** Specific scope because the QD-vs-BID contrast is study-specific; future regimen-comparison models that contrast different schedules should either extend this entry's example list (when QD is the reference) or register a sibling indicator (`REGI_TID`, `REGI_QW`) following the same pattern. Distinct from `DOSE` (dose level in mg) and from total-daily-dose aggregates: a 60 mg/day cohort can include either a 60 mg QD subgroup or a 30 mg BID subgroup, and both share the same `DOSE = 60` while differing in `REGI_BID`.
 
+### REGIMEN_SPLIT (**canonical for split-dose-vs-single-dose regimen indicator**)
+- **Description:** 1 = subject received the per-administration total dose divided across 2+ consecutive administrations (split-dose regimen); 0 = subject received the per-administration total dose given as a single administration (single-dose regimen). Time-fixed per subject. Captures the within-drug schedule contrast where a single high dose may saturate intestinal / hepatic absorption-uptake pathways relative to an equivalent dose split across consecutive days.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (single-dose regimen: total per-administration dose given as one administration).
+- **Source aliases:**
+  - `SPLIT` -- used in `Ramharter_2019_mefloquine.R` for the MIPPAD trial single-dose (15 mg/kg on day 1) vs split-dose (7.5 mg/kg on day 1 + 7.5 mg/kg on day 2) regimen contrast.
+- **Example models:** `Ramharter_2019_mefloquine.R` (multiplicative +5% bioavailability increment under split-dose: `(1 + e_regimen_split_fdepot * REGIMEN_SPLIT)` with `e_regimen_split_fdepot = 0.05`; applied uniformly to both parent enantiomer depots).
+- **Notes:** Per-model `covariateData[[REGIMEN_SPLIT]]$notes` must document the specific regimen pair (e.g. "7.5 mg/kg x 2 vs 15 mg/kg x 1") and the per-administration total dose held constant between arms. The effect coefficient is typically small (Ramharter 2019: ~5% on F, attributed to saturation of intestinal / hepatic uptake processes in the single-dose arm). Distinct from `REGI_BID` (within-drug QD vs BID schedule contrast where the per-dose amount differs as well as the schedule) and from `CONMED_*` / `COMBO_*` (co-administered-drug indicators rather than within-drug schedule contrasts). Future popPK papers comparing split-dose vs single-dose regimens for the same drug and same per-administration total dose can reuse this canonical and extend the example list.
+
 ### MIL_REGIMEN (**canonical for miltefosine monotherapy vs combination-with-LAmB regimen indicator**)
 - **Description:** Per-subject (time-fixed) binary indicator carrying the visceral-leishmaniasis miltefosine treatment-arm assignment in the Dorlo 2017 Eastern African LEAP-0208 study. 1 = monotherapy arm (28 days oral miltefosine 2.5 mg/kg/day, maximum 150 mg/day); 0 = combination arm (single IV liposomal amphotericin B 10 mg/kg on day 1 plus 10 days oral miltefosine 2.5 mg/kg/day, maximum 150 mg/day). Used to select the duration of the initial reduced-bioavailability window: 7 days for monotherapy, 1 day for the combination arm (Dorlo 2017 Table 2 footnote d).
 - **Units:** (binary)
