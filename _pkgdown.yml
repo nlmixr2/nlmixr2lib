@@ -696,6 +696,8 @@ navbar:
         href: articles/Jullien_2006_lopinavir.html
       - text: "Lopinavir placental (Fauchet 2015)"
         href: articles/Fauchet_2015_lopinavir.html
+      - text: "Lopinavir ritonavir (Zhang 2013)"
+        href: articles/Zhang_2013_lopinavir_ritonavir.html
       - text: "Lopinavir unbound (Fauchet 2015)"
         href: articles/Fauchet_2015_lopinavir.html
       - text: "Lumefantrine (Hietala 2010)"
@@ -2234,6 +2236,7 @@ articles:
   - articles/Zecchin_2016_tumorovarian
   - articles/Zeng_2009_acyclovir
   - articles/Zhang_2011_nutlin3a
+  - articles/Zhang_2013_lopinavir_ritonavir
   - articles/Zhang_2016_rilotumumab
   - articles/Zhang_2018_flurbiprofen
   - articles/Zhang_2019_nivolumab

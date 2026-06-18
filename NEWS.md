@@ -2,6 +2,7 @@
 
 # development version
 
+* Add Zhang 2013 lopinavir + ritonavir ([doi:10.1111/bcp.12101](https://doi.org/10.1111/bcp.12101)) -- HIV-infected adults and children with or without rifampicin-based antitubercular treatment (joint LPV + RTV popPK with sigmoidal-Emax DDI, ritonavir-dose-on-bioavailability effect, and overnight diurnal CL / F shifts; ratifies new `DOSE_RTV_MGKG` covariate canonical and extends `CONMED_RIF` to its first joint-substrate-perpetrator HIV / TB extraction).
 * Add Berges 2007 enoxaparin ([doi:10.1111/j.1365-2125.2007.02920.x](https://doi.org/10.1111/j.1365-2125.2007.02920.x)) -- elderly inpatients (>75 years) on prophylactic subcutaneous enoxaparin 4000 IU once daily for VTE prophylaxis (PROPHRE.75 study).
 * Add Padoin 1998 cephalexin ([doi:10.1128/aac.42.6.1463](https://doi.org/10.1128/aac.42.6.1463)) -- preclinical male Wistar rats with a cephalexin / quinapril oral coadministration DDI (ratifies new `CONMED_QPRL_ORAL` covariate canonical).
 * Add van Rongen 2018 metformin ([doi:10.1007/s40272-018-0293-1](https://doi.org/10.1007/s40272-018-0293-1)) -- overweight and obese Caucasian adolescents.
