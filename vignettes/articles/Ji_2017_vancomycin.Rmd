@@ -274,8 +274,12 @@ model reproduces the paper's structural parameter relationships.
 # covariate values, computed (a) by hand from Eq 16 and (b) from the
 # zero-random-effect simulation.
 ref_check <- sim_typical |>
+  # sim_typical retains per-subject cl/vc values inherited from the
+  # preceding `sim` simulation's IIV state, so unique(cl) can return >1
+  # value within a cohort. mean() collapses the per-id values back to
+  # the typical-value cohort summary that this table is meant to show.
   group_by(cohort, AGE, CRCL) |>
-  summarise(CL_model = unique(cl), V_model = unique(vc), .groups = "drop") |>
+  summarise(CL_model = mean(cl), V_model = mean(vc), .groups = "drop") |>
   mutate(
     CL_eq16 = 2.829 * (1 + 0.00842 * (CRCL - 80)) * (75 / AGE)^0.08143,
     V_eq17  = 52.14

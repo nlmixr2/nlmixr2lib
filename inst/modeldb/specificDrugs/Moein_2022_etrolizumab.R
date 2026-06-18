@@ -124,6 +124,16 @@ Moein_2022_etrolizumab <- function() {
   })
 
   model({
+    # Declare named compartments for both ODE states and the algebraic
+    # PK observable (Cc) so event tables can reference them by name and
+    # so tad(depot) resolves at observation rows; without an explicit
+    # cmt(depot) the rxUi auto-injected cmt(Cc) breaks tad(depot) and
+    # leaves tdose / cl / Cc NA at every observation row.
+    cmt(depot)
+    cmt(central)
+    cmt(peripheral1)
+    cmt(Cc)
+
     # Time-dependent CL (Equation 1 of Moein 2022):
     #   CL_TSFD,j = CL_TSFD=0 * (1 - Maxred * (1 - exp(-log(2) / (Onset * 7) * (TSFD_j - TAD_j))))
     # TSFD_j - TAD_j is the administration time of the most-recent SC dose, relative to the first dose.

@@ -216,10 +216,11 @@ concentration.
 
 ```{r ss-cohort, results = "hide"}
 # Population simulation. The full Morris 2011 simulation used 500 subjects per
-# mixture class; this vignette uses 100 per group to keep the pkgdown render
-# budget under 5 minutes. Sample-size noise relative to the published
-# medians is expected at this scale and discussed below.
-n_per_group <- 100L
+# mixture class; this vignette uses 50 per group to keep the pkgdown render
+# under the 10-min per-vignette ceiling even under heavy parallel build
+# contention. Sample-size noise relative to the published medians is
+# expected at this scale and discussed below.
+n_per_group <- 50L
 tau         <- 24
 n_dose      <- 10L  # ~7 terminal half-lives for the slow group (~35 h) -- fully SS
 dt_ss       <- 0.5
