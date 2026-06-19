@@ -174,16 +174,11 @@ stopifnot(!anyDuplicated(unique(events_sd[, c("id", "time", "evid")])))
 # Simulation
 
 ```{r simulate}
-# useLinCmt = FALSE because rxSolve's automatic ODE -> linCmt conversion
-# corrupts the auto-injected dvid mapping for parent-metabolite models
-# (the converted form does not preserve all ODE states; auto-injection
-# lands on the wrong slots). The ODE-solve path is correct.
 sim_sd <- rxode2::rxSolve(
   object  = mod,
   events  = events_sd,
   keep    = c("WT", "CONMED_EIAED", "regimen"),
-  returnType = "data.frame",
-  useLinCmt = FALSE
+  returnType = "data.frame"
 ) |>
   filter(time > 0)
 ```
@@ -196,8 +191,7 @@ sim_sd_typical <- rxode2::rxSolve(
   object  = rxode2::zeroRe(mod),
   events  = events_sd,
   keep    = c("WT", "CONMED_EIAED", "regimen"),
-  returnType = "data.frame",
-  useLinCmt = FALSE
+  returnType = "data.frame"
 ) |>
   filter(time > 0)
 ```
@@ -233,8 +227,7 @@ sim_typ <- rxode2::rxSolve(
   object  = rxode2::zeroRe(mod),
   events  = ev_typ,
   keep    = c("WT", "CONMED_EIAED", "regimen"),
-  returnType = "data.frame",
-  useLinCmt = FALSE
+  returnType = "data.frame"
 ) |>
   filter(time > 0)
 
@@ -430,8 +423,7 @@ stopifnot(!anyDuplicated(unique(ev_ss[, c("id", "time", "evid")])))
 sim_ss <- rxode2::rxSolve(
   object = mod, events = ev_ss,
   keep   = c("WT", "CONMED_EIAED", "cell", "dose_per_kg_day"),
-  returnType = "data.frame",
-  useLinCmt = FALSE
+  returnType = "data.frame"
 ) |>
   dplyr::filter(time > 0)
 

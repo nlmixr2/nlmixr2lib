@@ -149,16 +149,10 @@ events <- dplyr::bind_rows(dose_rows, obs_rows) |>
 ```{r simulate}
 mod <- rxode2::rxode2(readModelDb("Themans_2019_meropenem"))
 
-# useLinCmt = FALSE because rxSolve's automatic ODE -> linCmt conversion
-# corrupts the auto-injected dvid mapping for this 3-compartment model
-# (the linCmt rewrite renumbers ODE-state slots, breaking the
-# `cmt = "Cc"` -> auto-injected slot lookup). The ODE-solve path is
-# correct.
 sim <- rxode2::rxSolve(
   mod,
   events = events,
-  keep   = c("WT", "CRCL"),
-  useLinCmt = FALSE
+  keep   = c("WT", "CRCL")
 ) |>
   as.data.frame()
 
@@ -170,8 +164,7 @@ random effects:
 
 ```{r simulate-typical}
 mod_typ <- rxode2::zeroRe(mod)
-sim_typ <- rxode2::rxSolve(mod_typ, events = events, keep = c("WT", "CRCL"),
-                           useLinCmt = FALSE) |>
+sim_typ <- rxode2::rxSolve(mod_typ, events = events, keep = c("WT", "CRCL")) |>
   as.data.frame()
 ```
 
@@ -200,8 +193,7 @@ ref_events <- dplyr::bind_rows(
 ) |>
   dplyr::arrange(id, time, evid)
 
-ref_sim <- rxode2::rxSolve(mod_typ, events = ref_events,
-                           useLinCmt = FALSE) |> as.data.frame()
+ref_sim <- rxode2::rxSolve(mod_typ, events = ref_events) |> as.data.frame()
 
 ref_long <- ref_sim |>
   dplyr::select(time, Cc, Celf) |>
@@ -265,8 +257,7 @@ selfcheck_events <- dplyr::bind_rows(
 selfcheck_sim <- rxode2::rxSolve(mod_typ,
                                   events = selfcheck_events |>
                                     dplyr::select(-DV_observed),
-                                  keep = c("WT", "CRCL"),
-                                  useLinCmt = FALSE) |>
+                                  keep = c("WT", "CRCL")) |>
   as.data.frame()
 
 # Pair each observed DV with the typical-value Celf at the same id/time.

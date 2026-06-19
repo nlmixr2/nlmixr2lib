@@ -248,15 +248,10 @@ rounding, confirming the structural model and parameter encoding.
 # Use rxode2::zeroRe to remove IIV; the validation here is the
 # typical-value behavior across age strata and across CSF protein levels.
 mod_typical <- rxode2::zeroRe(mod)
-# useLinCmt = FALSE because rxSolve's automatic ODE -> linCmt conversion
-# corrupts the auto-injected dvid mapping for this two-state model
-# (auto-injected `dvid(2,3)` collides with ODE state slot 2 = csf).
-# The default useLinCmt = TRUE path triggers the bug; ODE solve works.
 sim <- rxode2::rxSolve(
   object = mod_typical, events = events,
   keep   = c("cohort", "stratum", "dose_mg", "q_h", "WT", "PAGE",
-             "CREAT", "CREAT_REF", "CSF_TPRO"),
-  useLinCmt = FALSE
+             "CREAT", "CREAT_REF", "CSF_TPRO")
 ) |>
   as.data.frame()
 ```

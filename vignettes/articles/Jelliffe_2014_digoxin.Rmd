@@ -164,8 +164,7 @@ mod_typical <- rxode2::zeroRe(mod)
 sim_typical <- rxode2::rxSolve(
   mod_typical,
   events = events,
-  keep   = c("cohort", "WT", "CRCL"),
-  useLinCmt = FALSE   # rxode2's ODE->linCmt auto-conversion breaks dvid mapping for this model
+  keep   = c("cohort", "WT", "CRCL")
 ) |>
   as.data.frame()
 ```
@@ -309,8 +308,7 @@ single_dose_evt$cohort <- "single 250 ug oral, CCr 69"
 sim_single <- rxode2::rxSolve(
   rxode2::zeroRe(mod),
   events = single_dose_evt,
-  keep   = c("cohort", "WT", "CRCL"),
-  useLinCmt = FALSE   # rxode2's ODE->linCmt auto-conversion breaks dvid mapping for this model
+  keep   = c("cohort", "WT", "CRCL")
 ) |>
   as.data.frame()
 
