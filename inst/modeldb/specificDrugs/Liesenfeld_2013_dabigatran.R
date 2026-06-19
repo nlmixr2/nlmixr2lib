@@ -5,12 +5,12 @@ Liesenfeld_2013_dabigatran <- function() {
   units <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
 
   covariateData <- list(
-    HEMODIALYSIS = list(
+    RRT_HEMODIAL_ACTIVE = list(
       description        = "Hemodialysis-active indicator (1 during a dialysis session, 0 otherwise)",
       units              = "(binary)",
       type               = "binary",
       reference_category = "0 (interdialytic / no dialysis running)",
-      notes              = "Time-varying within subject. Gates the Michaels-equation apparent dialysis clearance: CLdialysis/F is added to CL/F only when HEMODIALYSIS = 1. The source paper reports four-hour intermittent hemodialysis sessions on Days 1, 3, and 5 of each study period (Methods, Study Design). For non-ESRD patients with no dialysis, set HEMODIALYSIS = 0 throughout. The source paper's data column was named `DIAL`; renamed to the canonical `HEMODIALYSIS` per inst/references/covariate-columns.md.",
+      notes              = "Time-varying within subject. Gates the Michaels-equation apparent dialysis clearance: CLdialysis/F is added to CL/F only when RRT_HEMODIAL_ACTIVE = 1. The source paper reports four-hour intermittent hemodialysis sessions on Days 1, 3, and 5 of each study period (Methods, Study Design). For non-ESRD patients with no dialysis, set RRT_HEMODIAL_ACTIVE = 0 throughout. The source paper's data column was named `DIAL`; renamed to the canonical `RRT_HEMODIAL_ACTIVE` per inst/references/covariate-columns.md.",
       source_name        = "DIAL"
     ),
     BFR = list(
@@ -18,7 +18,7 @@ Liesenfeld_2013_dabigatran <- function() {
       units              = "mL/min",
       type               = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying within subject. Enters the Michaels equation together with DFR and KoA to compute the apparent dialysis clearance. Values investigated in the source study were 200, 300, and 400 mL/min (Methods, Study Design; Table 1). Should be 0 (or any sentinel) when HEMODIALYSIS = 0 since the Michaels term is gated off.",
+      notes              = "Time-varying within subject. Enters the Michaels equation together with DFR and KoA to compute the apparent dialysis clearance. Values investigated in the source study were 200, 300, and 400 mL/min (Methods, Study Design; Table 1). Should be 0 (or any sentinel) when RRT_HEMODIAL_ACTIVE = 0 since the Michaels term is gated off.",
       source_name        = "BFR"
     ),
     DFR = list(
@@ -26,7 +26,7 @@ Liesenfeld_2013_dabigatran <- function() {
       units              = "mL/min",
       type               = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying within subject. Enters the Michaels equation together with BFR and KoA. The source study fixed DFR at 700 mL/min throughout (Methods, Study Design); the simulation scenarios also examined 500 mL/min (Methods, Simulations). Should be 0 (or any sentinel) when HEMODIALYSIS = 0.",
+      notes              = "Time-varying within subject. Enters the Michaels equation together with BFR and KoA. The source study fixed DFR at 700 mL/min throughout (Methods, Study Design); the simulation scenarios also examined 500 mL/min (Methods, Simulations). Should be 0 (or any sentinel) when RRT_HEMODIAL_ACTIVE = 0.",
       source_name        = "DFR"
     )
   )
@@ -104,16 +104,16 @@ Liesenfeld_2013_dabigatran <- function() {
     # actual reporting bridge (60/1000/0.06 = 1).
     #
     # bfr_safe / dfr_safe guard against the BFR = 0 / DFR = 0 condition that
-    # holds in the interdialytic period: when HEMODIALYSIS = 0 the safe
+    # holds in the interdialytic period: when RRT_HEMODIAL_ACTIVE = 0 the safe
     # values fall back to 1 mL/min so the rational expression evaluates
     # without divide-by-zero, then the entire term is gated to zero by
-    # the leading HEMODIALYSIS multiplier.
-    bfr_safe         <- BFR * HEMODIALYSIS + (1 - HEMODIALYSIS)
-    dfr_safe         <- DFR * HEMODIALYSIS + (1 - HEMODIALYSIS)
+    # the leading RRT_HEMODIAL_ACTIVE multiplier.
+    bfr_safe         <- BFR * RRT_HEMODIAL_ACTIVE + (1 - RRT_HEMODIAL_ACTIVE)
+    dfr_safe         <- DFR * RRT_HEMODIAL_ACTIVE + (1 - RRT_HEMODIAL_ACTIVE)
     michaels_arg     <- -koa * (dfr_safe - bfr_safe) / (bfr_safe * dfr_safe)
     michaels_exp     <- exp(michaels_arg)
     cl_dialysis_raw  <- bfr_safe * (1 - michaels_exp) / (1 - (bfr_safe / dfr_safe) * michaels_exp)
-    cl_dialysis      <- HEMODIALYSIS * cl_dialysis_raw
+    cl_dialysis      <- RRT_HEMODIAL_ACTIVE * cl_dialysis_raw
 
     # Total apparent clearance during the active session is CL/F + CLdialysis/F
     # (Liesenfeld 2013 Results, Table 1 reports the sum as CLtotal/F).

@@ -1,16 +1,16 @@
 Chatelut_1999_interferon_alfa_2b <- function() {
-  description <- "One-compartment population PK model for subcutaneous alpha-2b interferon (Intron A) in adults with chronic hepatitis C virus infection (Chatelut 1999), with sequential zero-order then first-order absorption (a fraction Fz of the bioavailable dose is absorbed at zero-order over duration tk0, the remaining (1 - Fz) is absorbed at first-order rate ka after tk0) and first-order elimination. Apparent oral clearance CL/F is reduced by 63.8% in chronic-haemodialysis patients relative to patients with normal renal function (HEMODIAL = 1 vs 0); apparent central volume of distribution V/F scales linearly with body surface area (BSA). Proportional residual error."
+  description <- "One-compartment population PK model for subcutaneous alpha-2b interferon (Intron A) in adults with chronic hepatitis C virus infection (Chatelut 1999), with sequential zero-order then first-order absorption (a fraction Fz of the bioavailable dose is absorbed at zero-order over duration tk0, the remaining (1 - Fz) is absorbed at first-order rate ka after tk0) and first-order elimination. Apparent oral clearance CL/F is reduced by 63.8% in chronic-haemodialysis patients relative to patients with normal renal function (RRT_HEMODIAL_STATUS = 1 vs 0); apparent central volume of distribution V/F scales linearly with body surface area (BSA). Proportional residual error."
   reference <- "Chatelut E, Rostaing L, Gregoire N, Payen JL, Pujol A, Izopet J, Houin G, Canal P. A pharmacokinetic model for alpha interferon administered subcutaneously. Br J Clin Pharmacol. 1999 Apr;47(4):365-71. doi:10.1046/j.1365-2125.1999.00912.x"
   vignette <- "Chatelut_1999_interferon_alfa_2b"
   units <- list(time = "hour", dosing = "ng", concentration = "pg/mL")
 
   covariateData <- list(
-    HEMODIAL = list(
+    RRT_HEMODIAL_STATUS = list(
       description        = "Chronic intermittent haemodialysis treatment-status indicator (1 = chronic haemodialysis patient; 0 = patient with normal renal function).",
       units              = "(binary)",
       type               = "binary",
       reference_category = "0 (normal renal function)",
-      notes              = "Chatelut 1999 Methods/Results uses the symbol DIA (1 if dialysis, 0 otherwise) as a multiplicative covariate on apparent oral clearance: CL/F = theta1 * (1 - theta2 * DIA). The 17 chronic-haemodialysis patients had been on dialysis for more than 4 years; the PK study at the first interferon-alfa-2b dose was performed 8 h after the last dialysis session, and the subsequent dialysis session never occurred before the last blood sample was taken, so for the modelled period the indicator is time-fixed at the subject level. Maps directly to the canonical HEMODIAL covariate (paper symbol DIA).",
+      notes              = "Chatelut 1999 Methods/Results uses the symbol DIA (1 if dialysis, 0 otherwise) as a multiplicative covariate on apparent oral clearance: CL/F = theta1 * (1 - theta2 * DIA). The 17 chronic-haemodialysis patients had been on dialysis for more than 4 years; the PK study at the first interferon-alfa-2b dose was performed 8 h after the last dialysis session, and the subsequent dialysis session never occurred before the last blood sample was taken, so for the modelled period the indicator is time-fixed at the subject level. Maps directly to the canonical RRT_HEMODIAL_STATUS covariate (paper symbol DIA).",
       source_name        = "DIA"
     ),
     BSA = list(
@@ -87,8 +87,8 @@ Chatelut_1999_interferon_alfa_2b <- function() {
     # the structural form V/F = theta * BSA has an implicit exponent of 1).
     vc    <- exp(lvc + etalvc) * BSA
 
-    # CL/F = theta1 * (1 - theta2 * HEMODIAL) (Chatelut 1999 Results, paragraph 2).
-    cl    <- exp(lcl + etalcl) * (1 - e_hemodial_cl * HEMODIAL)
+    # CL/F = theta1 * (1 - theta2 * RRT_HEMODIAL_STATUS) (Chatelut 1999 Results, paragraph 2).
+    cl    <- exp(lcl + etalcl) * (1 - e_hemodial_cl * RRT_HEMODIAL_STATUS)
 
     kel <- cl / vc
 

@@ -50,15 +50,15 @@ Naik_2013_peginesatide <- function() {
       units              = "mg/dL",
       type               = "continuous",
       reference_category = NULL,
-      notes              = "Linear-deviation covariate on Ka, applied only in non-dialysis subjects via the (1 - HEMODIAL) gate (reference 3.3 mg/dL; Naik 2013 eq 13). Source column CR renamed to canonical CREAT.",
+      notes              = "Linear-deviation covariate on Ka, applied only in non-dialysis subjects via the (1 - RRT_HEMODIAL_STATUS) gate (reference 3.3 mg/dL; Naik 2013 eq 13). Source column CR renamed to canonical CREAT.",
       source_name        = "CR"
     ),
-    HEMODIAL = list(
+    RRT_HEMODIAL_STATUS = list(
       description        = "Hemodialysis-treatment-status indicator at baseline",
       units              = "(binary)",
       type               = "binary",
       reference_category = "0 (not on hemodialysis)",
-      notes              = "1 = subject on hemodialysis (89.6% of PK population per Table 2). Used to gate the CREAT effect on Ka: the CREAT slope applies only when HEMODIAL = 0, matching the paper PDIA indicator (PDIA = 1 - HEMODIAL). Source column PDIA renamed to canonical HEMODIAL with value inversion (HEMODIAL = 1 - PDIA).",
+      notes              = "1 = subject on hemodialysis (89.6% of PK population per Table 2). Used to gate the CREAT effect on Ka: the CREAT slope applies only when RRT_HEMODIAL_STATUS = 0, matching the paper PDIA indicator (PDIA = 1 - RRT_HEMODIAL_STATUS). Source column PDIA renamed to canonical RRT_HEMODIAL_STATUS with value inversion (RRT_HEMODIAL_STATUS = 1 - PDIA).",
       source_name        = "PDIA"
     ),
     RACE_HISPANIC = list(
@@ -164,10 +164,10 @@ Naik_2013_peginesatide <- function() {
     # Individual Ka (Naik 2013 eq 13): linear / additive covariates on the bare
     # parameter, then multiplicative IIV on the typical value. The paper's PDIA
     # indicator equals 1 for non-dialysis subjects, so the CREAT slope is gated
-    # by (1 - HEMODIAL). The paper's ETHN indicator equals 1 for non-Hispanic;
+    # by (1 - RRT_HEMODIAL_STATUS). The paper's ETHN indicator equals 1 for non-Hispanic;
     # the (1 - ETHN) shift maps to + e_race_hispanic_ka * RACE_HISPANIC.
     ka_tv <- exp(lka) +
-             e_creat_ka * (CREAT - 3.3) * (1 - HEMODIAL) +
+             e_creat_ka * (CREAT - 3.3) * (1 - RRT_HEMODIAL_STATUS) +
              e_race_hispanic_ka * RACE_HISPANIC
     ka    <- ka_tv * exp(etalka)
 

@@ -1,5 +1,5 @@
 Veinstein_2013_gentamicin <- function() {
-  description <- "One-compartment population PK model for intravenous gentamicin in critically ill adult ICU patients with acute kidney injury undergoing 4-hour intermittent hemodialysis (n=10, all male; 6 mg/kg infused over 30 min, with hemodialysis starting 30 min after the end of the infusion; Veinstein 2013). Disposition is parameterised in terms of non-hemodialysis (interdialytic body) clearance, an additive hemodialysis-arm clearance, and volume of distribution. The dialysis arm is gated on/off by the time-varying HEMODIALYSIS covariate. Body weight enters the model as a linear (exponent = 1) structural scaler on all three parameters because the published Table 4 estimates are reported per kg; weight was tested as an explicit covariate on V and not retained."
+  description <- "One-compartment population PK model for intravenous gentamicin in critically ill adult ICU patients with acute kidney injury undergoing 4-hour intermittent hemodialysis (n=10, all male; 6 mg/kg infused over 30 min, with hemodialysis starting 30 min after the end of the infusion; Veinstein 2013). Disposition is parameterised in terms of non-hemodialysis (interdialytic body) clearance, an additive hemodialysis-arm clearance, and volume of distribution. The dialysis arm is gated on/off by the time-varying RRT_HEMODIAL_ACTIVE covariate. Body weight enters the model as a linear (exponent = 1) structural scaler on all three parameters because the published Table 4 estimates are reported per kg; weight was tested as an explicit covariate on V and not retained."
   reference <- "Veinstein A, Venisse N, Badin J, Pinsard M, Robert R, Dupuis A. Gentamicin in hemodialyzed critical care patients: early dialysis after administration of a high dose should be considered. Antimicrob Agents Chemother. 2013;57(2):977-982. doi:10.1128/AAC.01762-12"
   vignette <- "Veinstein_2013_gentamicin"
   units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
@@ -13,12 +13,12 @@ Veinstein_2013_gentamicin <- function() {
       notes              = "Veinstein 2013 Table 3: actual body weight 54.5-102 kg (mean 75.6 +/- 15.8 across the 10 subjects). Used as a linear (exponent = 1) structural scaler on CL_NHD, CL_HD, and V because the paper reports the population typical values in per-kg units (Table 4 footnotes a and b). The exponent is fixed at 1 because the paper's parameterisation literally normalises by body weight; the typical-value form lcl <- log(per-kg-value) plus cl <- exp(lcl + etalcl) * WT reproduces Table 4 exactly. Weight as an estimable covariate effect on V was tested in the model-building step and not retained (Results, Population PK/PD analysis: 'including weight or ideal body weight in the model combined as factors influencing V did not improve the model fit').",
       source_name        = "WT"
     ),
-    HEMODIALYSIS = list(
+    RRT_HEMODIAL_ACTIVE = list(
       description        = "Hemodialysis-active indicator (1 during a dialysis session, 0 otherwise)",
       units              = "(binary)",
       type               = "binary",
       reference_category = "0 (interdialytic / no dialysis running)",
-      notes              = "Time-varying within subject. Gates the additive hemodialysis-arm clearance cl_hemodialysis: the dialyzer contribution is added to the interdialytic body clearance only while a session is running. Veinstein 2013 protocol (Methods, Experimental design): a 4-h intermittent-hemodialysis session was started 30 min after the end of the 30-min 6 mg/kg gentamicin infusion, so HEMODIALYSIS = 1 from t = 1 h to t = 5 h after the start of the infusion. The hemodialysis apparatus was a Gambro AK 200 Ultra S with a Toray B3 polymethylmethacrylate dialyzer, blood flow 200-300 mL/min, mean session length 236 +/- 13 min. The estimated typical-value cl_hemodialysis lumps the dialyzer-mediated clearance into a single THETA rather than parameterising it as a Michaels-equation function of blood and dialysate flow rates (cf. Liesenfeld 2013 dabigatran).",
+      notes              = "Time-varying within subject. Gates the additive hemodialysis-arm clearance cl_hemodialysis: the dialyzer contribution is added to the interdialytic body clearance only while a session is running. Veinstein 2013 protocol (Methods, Experimental design): a 4-h intermittent-hemodialysis session was started 30 min after the end of the 30-min 6 mg/kg gentamicin infusion, so RRT_HEMODIAL_ACTIVE = 1 from t = 1 h to t = 5 h after the start of the infusion. The hemodialysis apparatus was a Gambro AK 200 Ultra S with a Toray B3 polymethylmethacrylate dialyzer, blood flow 200-300 mL/min, mean session length 236 +/- 13 min. The estimated typical-value cl_hemodialysis lumps the dialyzer-mediated clearance into a single THETA rather than parameterising it as a Michaels-equation function of blood and dialysate flow rates (cf. Liesenfeld 2013 dabigatran).",
       source_name        = "DIAL"
     )
   )
@@ -81,8 +81,8 @@ Veinstein_2013_gentamicin <- function() {
     # dialysis session, reducing to dC/dt = R0/V - [CL_NHD/V] * C
     # interdialytically). The dialysis arm cl_hemodialysis is added to the
     # body baseline cl only while a hemodialysis session is running,
-    # encoded via the HEMODIALYSIS time-varying covariate.
-    cl_total <- cl + HEMODIALYSIS * cl_hemodialysis
+    # encoded via the RRT_HEMODIAL_ACTIVE time-varying covariate.
+    cl_total <- cl + RRT_HEMODIAL_ACTIVE * cl_hemodialysis
 
     kel <- cl_total / vc
 
