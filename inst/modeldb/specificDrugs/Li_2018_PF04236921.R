@@ -23,7 +23,7 @@ Li_2018_PF04236921 <- function() {
     ),
     ALB = list(
       description        = "Serum albumin concentration (baseline)",
-      units              = "g/dL",
+      units = "g/L",
       type               = "continuous",
       reference_category = NULL,
       notes              = "Power effect on linear CL with reference 4.0 g/dL per the Li 2018 final-model equation on p2064 (alongside the BWT/ALB/CRCL/CRP/SEX covariate block). Also a power effect on baseline CRP and on the logit-scale Imax parameter with the same reference 4.0 g/dL (paper Eq. for BLCRP and Imax_prime on p2066). The reference 4.0 g/dL is the pooled-cohort median (Table 2 medians 4.5/4.5/4.2/4.0/3.9 g/dL for HV_IV/HV_SC/RA/CD/SLE).",
@@ -259,6 +259,11 @@ Li_2018_PF04236921 <- function() {
   })
 
   model({
+    # SI -> US-convention unit conversion (canonical ALB is in SI g/L per the
+    # 2026-06-19 register standardization audit; the original calibration
+    # used the g/dL reference value, so convert inline here).
+    alb_gdL <- ALB * 0.1  # SI g/L -> US-convention g/dL (factor 0.1)
+
     # =====================================================================
     # Disease-cohort log-shift adjustments. Healthy-volunteer cohort is the
     # reference (all three DIS_* indicators = 0).
@@ -269,7 +274,7 @@ Li_2018_PF04236921 <- function() {
     lgamma_cohort <- lgamma + e_sle_gamma * DIS_SLE
 
     # Logit-Imax cohort-typical value built multiplicatively per Li 2018
-    # paper Eq. (p2066): theta_prime_Imax = theta_Imax * (ALB/4)^theta_ALB.
+    # paper Eq. (p2066): theta_prime_Imax = theta_Imax * (alb_gdL/4)^theta_ALB.
     # Disease shifts enter as exponentials so logitimax_cohort scales the
     # HV reference logit by the cohort-specific ratio.
     logitimax_cohort <- logitimax *
@@ -284,7 +289,7 @@ Li_2018_PF04236921 <- function() {
     # =====================================================================
     cl <- exp(lcl_cohort + etalcl) *
           (WT / 72)^e_wt_cl *
-          (ALB / 4.0)^e_alb_cl *
+          (alb_gdL / 4.0)^e_alb_cl *
           (CRCL / 113)^e_crcl_cl *
           (CRP / 7.6)^e_crp_cl *
           (e_sex_cl)^SEXF
@@ -320,8 +325,8 @@ Li_2018_PF04236921 <- function() {
     #   effect(0)    = BLCRP, Kin = Kout * BLCRP (steady-state pre-dose)
     # The state `effect` carries CRP in mg/L (paper Eq. on p2062-2066).
     # =====================================================================
-    base <- exp(lbase_cohort + etalbase) * (ALB / 4.0)^e_alb_base
-    logitimax_prime <- logitimax_cohort * (ALB / 4.0)^e_alb_logitimax
+    base <- exp(lbase_cohort + etalbase) * (alb_gdL / 4.0)^e_alb_base
+    logitimax_prime <- logitimax_cohort * (alb_gdL / 4.0)^e_alb_logitimax
     imax <- exp(logitimax_prime + etalogitimax) /
             (1 + exp(logitimax_prime + etalogitimax))
     ic50 <- exp(lic50_cohort + etalic50)
