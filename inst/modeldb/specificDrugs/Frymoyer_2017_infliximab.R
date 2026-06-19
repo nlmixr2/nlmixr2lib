@@ -29,7 +29,7 @@ Frymoyer_2017_infliximab <- function() {
     ),
     ALB = list(
       description        = "Serum albumin (baseline; treated as static covariate in Frymoyer 2017)",
-      units              = "g/dL",
+      units = "g/L",
       type               = "continuous",
       reference_category = NULL,
       notes              = "Power effect on CL; normalized as ALB/4.1 per Frymoyer 2017 Methods equation. Reference value 4.1 g/dL. Unit g/dL (US convention) -- distinct from g/L used by other infliximab popPK papers (Hanzel 2021).",
@@ -129,10 +129,15 @@ Frymoyer_2017_infliximab <- function() {
     addSd  <- 0.371;  label("Additive residual error (ug/mL)")          # Frymoyer 2017 Methods
   })
   model({
-    # Individual PK parameters. Reference subject: WT = 65 kg, ALB = 4.1 g/dL,
+    # SI -> US-convention unit conversion (canonical ALB is in SI g/L per the
+    # 2026-06-19 register standardization audit; the original calibration
+    # used the g/dL reference value, so convert inline here).
+    alb_gdL <- ALB * 0.1  # SI g/L -> US-convention g/dL (factor 0.1)
+
+    # Individual PK parameters. Reference subject: WT = 65 kg, alb_gdL = 4.1 g/dL,
     # ADA-negative, no concomitant immunomodulator. Covariate forms per
     # Frymoyer 2017 Methods (Model Evaluation):
-    #   CL (mL/kg/day) = 5.42 * (WT/65)^0.313 * (ALB/4.1)^(-0.855)
+    #   CL (mL/kg/day) = 5.42 * (WT/65)^0.313 * (alb_gdL/4.1)^(-0.855)
     #                       * 0.863^IMM * 1.292^ATI
     #   Vc (mL/kg)     = 52.4 * (WT/65)^0.233
     #   Vp (mL/kg)     = 19.6 * (WT/65)^0.588
@@ -140,14 +145,14 @@ Frymoyer_2017_infliximab <- function() {
     # Converting per-kg parameters to totals by multiplying by WT (i.e. carrying
     # the implicit allometric exponent of +1 on each parameter), the model
     # becomes:
-    #   CL (L/day) = CL_typ * (WT/65)^(1 + e_wt_cl) * (ALB/4.1)^e_alb_cl
+    #   CL (L/day) = CL_typ * (WT/65)^(1 + e_wt_cl) * (alb_gdL/4.1)^e_alb_cl
     #                  * e_imm_cl^IMM * e_ada_cl^ADA_POS
     #   Vc (L)     = Vc_typ * (WT/65)^(1 + e_wt_vc)
     #   Vp (L)     = Vp_typ * (WT/65)^(1 + e_wt_vp)
     #   Q  (L/day) = Q_typ  * (WT/65)
     cl <- exp(lcl + etalcl) *
       (WT / 65)^(1 + e_wt_cl) *
-      (ALB / 4.1)^e_alb_cl *
+      (alb_gdL / 4.1)^e_alb_cl *
       e_imm_cl^CONMED_IMMUNOMOD *
       e_ada_cl^ADA_POS
     vc <- exp(lvc + etalvc) * (WT / 65)^(1 + e_wt_vc)
