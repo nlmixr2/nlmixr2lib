@@ -122,20 +122,25 @@ interval to support PKNCA. Plasma observations live on compartment `Cc`
 obs_t <- c(seq(0, 1, by = 0.1), seq(1.5, 8, by = 0.5))
 n_obs <- length(obs_t)
 
+# Use cmt = "Cc" on observation rows. rxUi auto-injects compartment
+# slots for the algebraic observables (Cc, Celf) after the ODE-state
+# slots. Referencing by name (cmt = "Cc") resolves to that auto-
+# injected slot; rxSolve still returns both Cc and Celf as columns on
+# every observation row regardless of which observable is targeted.
+# The previous integer indices (cmt = 1L, cmt = 4L, cmt = 5L) relied
+# on knowing slot positions that shift when the model body is purged
+# of explicit cmt() declarations.
 dose_rows <- cohort |>
   transmute(id = id, time = 0, evid = 1L, amt = 1000, rate = 2000,
-            cmt = 1L, ss = 1L, ii = 8, WT = WT, CRCL = CRCL)
+            cmt = "central", ss = 1L, ii = 8, WT = WT, CRCL = CRCL)
 
 obs_rows <- cohort |>
   tidyr::crossing(time = obs_t) |>
   transmute(id = id, time = time, evid = 0L, amt = 0, rate = 0,
-            cmt = 4L, ss = 0L, ii = 0, WT = WT, CRCL = CRCL)
+            cmt = "Cc", ss = 0L, ii = 0, WT = WT, CRCL = CRCL)
 
-# A single observation row per (id, time) is sufficient because both Cc and
-# Celf are computed algebraically every time the integrator stops; rxSolve
-# returns both columns for every observation row regardless of `cmt`.
 events <- dplyr::bind_rows(dose_rows, obs_rows) |>
-  dplyr::arrange(id, time, evid, cmt)
+  dplyr::arrange(id, time, evid)
 ```
 
 ## Simulation
@@ -194,11 +199,11 @@ kinds of sanity check:
 
 ref_events <- dplyr::bind_rows(
   tibble(id = 1L, time = 0, evid = 1L, amt = 1000, rate = 2000,
-         cmt = 1L, ss = 1L, ii = 8, WT = 75, CRCL = 65),
+         cmt = "central", ss = 1L, ii = 8, WT = 75, CRCL = 65),
   tibble(id = 1L, time = obs_t, evid = 0L, amt = 0, rate = 0,
-         cmt = 4L, ss = 0L, ii = 0, WT = 75, CRCL = 65)
+         cmt = "Cc", ss = 0L, ii = 0, WT = 75, CRCL = 65)
 ) |>
-  dplyr::arrange(id, time, evid, cmt)
+  dplyr::arrange(id, time, evid)
 
 ref_sim <- rxode2::rxSolve(mod_typ, events = ref_events) |> as.data.frame()
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalq2'
@@ -242,16 +247,20 @@ elf_obs <- ddmore |>
   dplyr::filter(CMT == 2, MDV == 0, EVID == 0)
 
 # Build a single combined event table: one dose row per source ID at SS,
-# plus one observation row per ELF observation in the bundle.
+# plus one observation row per ELF observation in the bundle. Observe
+# at the algebraic name `Celf` (cmt = "Celf") -- rxUi auto-injects the
+# compartment slot for it after the ODE-state slots, and referencing by
+# name resolves to the correct slot regardless of how cmt() shuffling
+# would otherwise renumber things.
 selfcheck_dose <- elf_obs |>
   dplyr::distinct(ID, WT, CRCL) |>
   dplyr::transmute(id = ID, time = 0, evid = 1L,
-                   amt = 1000, rate = 2000, cmt = 1L,
+                   amt = 1000, rate = 2000, cmt = "central",
                    ss = 1L, ii = 8, WT = WT, CRCL = CRCL)
 
 selfcheck_obs <- elf_obs |>
   dplyr::transmute(id = ID, time = TIME, evid = 0L,
-                   amt = 0, rate = 0, cmt = 5L,
+                   amt = 0, rate = 0, cmt = "Celf",
                    ss = 0L, ii = 0, WT = WT, CRCL = CRCL,
                    DV_observed = DV)
 

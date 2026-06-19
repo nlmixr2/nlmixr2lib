@@ -153,8 +153,6 @@ sim <- rxode2::rxSolve(mod, events = events,
                        keep = c("occ", "WT")) |>
   as.data.frame()
 #> ℹ parameter labels from comments will be replaced by 'label()'
-#> Warning: some etas defaulted to non-mu referenced, possible parsing error: eta_v2q4v4
-#> as a work-around try putting the mu-referenced expression on a simple line
 ```
 
 For deterministic replication (typical-value Figure 2 reproduction),
@@ -164,15 +162,11 @@ zero out the random effects.
 
 mod_typ <- rxode2::zeroRe(mod)
 #> ℹ parameter labels from comments will be replaced by 'label()'
-#> Warning: some etas defaulted to non-mu referenced, possible parsing error: eta_v2q4v4
-#> as a work-around try putting the mu-referenced expression on a simple line
 #> Warning: No sigma parameters in the model
-#> Warning: some etas defaulted to non-mu referenced, possible parsing error: eta_v2q4v4
-#> as a work-around try putting the mu-referenced expression on a simple line
 sim_typ <- rxode2::rxSolve(mod_typ, events = events,
                            keep = c("occ", "WT")) |>
   as.data.frame()
-#> ℹ omega/sigma items treated as zero: 'eta_v2q4v4', 'etalcl', 'etalq', 'etalvp', 'etalka', 'etalfdepot'
+#> ℹ omega/sigma items treated as zero: 'etalvc', 'etalq2', 'etalvp2', 'etalcl', 'etalq', 'etalvp', 'etalka', 'etalfdepot'
 #> Warning: multi-subject simulation without without 'omega'
 ```
 
@@ -348,8 +342,8 @@ knitr::kable(
 
 | occ | Cmax (ug/L) | Tmax (h) | AUCinf (ug\*h/L) | t1/2 (h) | CL/BW (L/h/kg) | Vz/BW (L/kg) |
 |:----|------------:|---------:|-----------------:|---------:|---------------:|-------------:|
-| IV  |      1356.4 |        4 |             7021 |     7.95 |              0 |         0.00 |
-| PO  |      2136.4 |        1 |             9788 |     8.19 |              0 |         0.01 |
+| IV  |      1387.2 |        4 |             7608 |     8.13 |              0 |         0.00 |
+| PO  |      2250.5 |        1 |            10890 |     7.41 |              0 |         0.01 |
 
 Simulated NCA summary (virtual cohort medians). Paediatric EBE reference
 per Fanta 2007 Results: CL/BW 0.44 +/- 0.09 L/h/kg, V/BW 2.35 +/- 0.65

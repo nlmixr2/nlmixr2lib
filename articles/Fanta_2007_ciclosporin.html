@@ -1246,23 +1246,17 @@ paper’s two-arm pretransplantation study design.</p>
 <span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod</span>, events <span class="op">=</span> <span class="va">events</span>,</span>
 <span>                       keep <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"occ"</span>, <span class="st">"WT"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ℹ parameter labels from comments will be replaced by 'label()'</span></span>
-<span><span class="co">#&gt; Warning: some etas defaulted to non-mu referenced, possible parsing error: eta_v2q4v4</span></span>
-<span><span class="co">#&gt; as a work-around try putting the mu-referenced expression on a simple line</span></span></code></pre></div>
+<span><span class="co">#&gt; ℹ parameter labels from comments will be replaced by 'label()'</span></span></code></pre></div>
 <p>For deterministic replication (typical-value Figure 2 reproduction),
 zero out the random effects.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mod_typ</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/zeroRe.html" class="external-link">zeroRe</a></span><span class="op">(</span><span class="va">mod</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ℹ parameter labels from comments will be replaced by 'label()'</span></span>
-<span><span class="co">#&gt; Warning: some etas defaulted to non-mu referenced, possible parsing error: eta_v2q4v4</span></span>
-<span><span class="co">#&gt; as a work-around try putting the mu-referenced expression on a simple line</span></span>
 <span><span class="co">#&gt; Warning: No sigma parameters in the model</span></span>
-<span><span class="co">#&gt; Warning: some etas defaulted to non-mu referenced, possible parsing error: eta_v2q4v4</span></span>
-<span><span class="co">#&gt; as a work-around try putting the mu-referenced expression on a simple line</span></span>
 <span><span class="va">sim_typ</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod_typ</span>, events <span class="op">=</span> <span class="va">events</span>,</span>
 <span>                           keep <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"occ"</span>, <span class="st">"WT"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'eta_v2q4v4', 'etalcl', 'etalq', 'etalvp', 'etalka', 'etalfdepot'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalvc', 'etalq2', 'etalvp2', 'etalcl', 'etalq', 'etalvp', 'etalka', 'etalfdepot'</span></span>
 <span><span class="co">#&gt; Warning: multi-subject simulation without without 'omega'</span></span></code></pre></div>
 </div>
 <div class="section level2">
@@ -1452,19 +1446,19 @@ reference per Fanta 2007 Results: CL/BW 0.44 +/- 0.09 L/h/kg, V/BW 2.35
 <tbody>
 <tr class="odd">
 <td align="left">IV</td>
-<td align="right">1356.4</td>
+<td align="right">1387.2</td>
 <td align="right">4</td>
-<td align="right">7021</td>
-<td align="right">7.95</td>
+<td align="right">7608</td>
+<td align="right">8.13</td>
 <td align="right">0</td>
 <td align="right">0.00</td>
 </tr>
 <tr class="even">
 <td align="left">PO</td>
-<td align="right">2136.4</td>
+<td align="right">2250.5</td>
 <td align="right">1</td>
-<td align="right">9788</td>
-<td align="right">8.19</td>
+<td align="right">10890</td>
+<td align="right">7.41</td>
 <td align="right">0</td>
 <td align="right">0.01</td>
 </tr>

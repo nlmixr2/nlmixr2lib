@@ -101,15 +101,21 @@ inf2_amt_mg  <- inf2_rate_mg * 90            # mg total over 60-150 min
 
 obs_times <- c(0, 5, 15, 25, 60, 75, 100, 110, 150, 180)
 
+# Observe at the ODE state `central` with dvid = 1L. The model body has
+# two algebraic observables (Cc from central, Cfetus from the fetus
+# state) in residual tildes; rxUi auto-injects compartment slots for
+# them after the ODE-state slots, so `cmt = "Cc"` would target an
+# injected slot rather than an ODE state. rxSolve still returns both Cc
+# and Cfetus as columns on every observation row.
 events <- dplyr::bind_rows(
   data.frame(id = 1L, time = 0L,  evid = 1L, amt = bolus_mg,    rate = 0,
-             cmt  = "central", HR = HR0),
+             cmt  = "central", HR = HR0, dvid = NA_integer_),
   data.frame(id = 1L, time = 0L,  evid = 1L, amt = inf1_amt_mg, rate = inf1_rate_mg,
-             cmt  = "central", HR = HR0),
+             cmt  = "central", HR = HR0, dvid = NA_integer_),
   data.frame(id = 1L, time = 60L, evid = 1L, amt = inf2_amt_mg, rate = inf2_rate_mg,
-             cmt  = "central", HR = HR0),
+             cmt  = "central", HR = HR0, dvid = NA_integer_),
   data.frame(id = 1L, time = obs_times, evid = 0L, amt = 0, rate = 0,
-             cmt = "Cc", HR = HR0)
+             cmt = "central", HR = HR0, dvid = 1L)
 ) |>
   dplyr::arrange(id, time, dplyr::desc(evid))
 ```
@@ -236,19 +242,20 @@ set.seed(295L)
 n_sim <- 50L
 events_cohort <- purrr::map_dfr(seq_len(n_sim), function(i) {
   data.frame(id = i, time = 0L,  evid = 1L, amt = bolus_mg,    rate = 0,
-             cmt = "central", HR = HR0, treatment = "ewe") |>
+             cmt = "central", HR = HR0, treatment = "ewe", dvid = NA_integer_) |>
     dplyr::bind_rows(
       data.frame(id = i, time = 0L,  evid = 1L, amt = inf1_amt_mg, rate = inf1_rate_mg,
-                 cmt = "central", HR = HR0, treatment = "ewe"),
+                 cmt = "central", HR = HR0, treatment = "ewe", dvid = NA_integer_),
       data.frame(id = i, time = 60L, evid = 1L, amt = inf2_amt_mg, rate = inf2_rate_mg,
-                 cmt = "central", HR = HR0, treatment = "ewe"),
+                 cmt = "central", HR = HR0, treatment = "ewe", dvid = NA_integer_),
       data.frame(id = i, time = c(0, seq(2, 180, by = 2)), evid = 0L, amt = 0, rate = 0,
-                 cmt = "Cc", HR = HR0, treatment = "ewe")
+                 cmt = "central", HR = HR0, treatment = "ewe", dvid = 1L)
     )
 }) |>
   dplyr::arrange(id, time, dplyr::desc(evid))
 
-sim_cohort <- rxode2::rxSolve(mod, events = events_cohort, keep = c("HR", "treatment")) |>
+sim_cohort <- rxode2::rxSolve(mod, events = events_cohort,
+                              keep = c("HR", "treatment")) |>
   as.data.frame()
 
 # Maternal Cc NCA: AUClast over 0-180 min (the observation window) plus

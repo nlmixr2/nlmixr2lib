@@ -141,19 +141,24 @@ make_cohort <- function(n, dose_mg, dose_times, route = c("SC", "IV"), regimen, 
     regimen = regimen
   )
 
+  # Observe at the ODE state `central` with dvid = 1L. The model body
+  # has two algebraic observables (Cc from central, a4sat = E0 + Emax
+  # chain on Cc) in residual tildes; rxUi auto-injects compartment
+  # slots for them after the ODE-state slots, so `cmt = "Cc"` or
+  # `cmt = "a4sat"` would target injected slots rather than the ODE
+  # state. rxSolve still returns both Cc and a4sat as columns on every
+  # observation row, so a single anchor sample per time covers both
+  # endpoints.
   dose_rows <- subjects |>
     tidyr::expand_grid(time = dose_times) |>
-    dplyr::mutate(amt = dose_mg, evid = 1L, cmt = cmt_dose)
+    dplyr::mutate(amt = dose_mg, evid = 1L, cmt = cmt_dose,
+                  dvid = NA_integer_)
 
-  obs_rows_cc <- subjects |>
+  obs_rows <- subjects |>
     tidyr::expand_grid(time = obs_times) |>
-    dplyr::mutate(amt = 0, evid = 0L, cmt = "Cc")
+    dplyr::mutate(amt = 0, evid = 0L, cmt = "central", dvid = 1L)
 
-  obs_rows_a4 <- subjects |>
-    tidyr::expand_grid(time = obs_times) |>
-    dplyr::mutate(amt = 0, evid = 0L, cmt = "a4sat")
-
-  dplyr::bind_rows(dose_rows, obs_rows_cc, obs_rows_a4) |>
+  dplyr::bind_rows(dose_rows, obs_rows) |>
     dplyr::arrange(id, time, dplyr::desc(evid))
 }
 
@@ -353,8 +358,8 @@ knitr::kable(nca_tbl,
 | 360 mg IV SD | cmax                |      106.783 |   61.867 |  191.855 |
 | 360 mg IV SD | half.life           |        2.732 |    0.359 |    8.618 |
 | 360 mg IV SD | lambda.z            |        0.254 |    0.080 |    1.933 |
-| 360 mg IV SD | lambda.z.n.points   |        3.000 |    3.000 |   12.000 |
-| 360 mg IV SD | lambda.z.time.first |       54.000 |   45.000 |   54.000 |
+| 360 mg IV SD | lambda.z.n.points   |        3.000 |    3.000 |   11.050 |
+| 360 mg IV SD | lambda.z.time.first |       54.000 |   45.950 |   54.000 |
 | 360 mg IV SD | lambda.z.time.last  |       56.000 |   56.000 |   56.000 |
 | 360 mg IV SD | r.squared           |        0.999 |    0.865 |    1.000 |
 | 360 mg IV SD | span.ratio          |        0.888 |    0.249 |   10.709 |
@@ -390,13 +395,13 @@ knitr::kable(nca_tbl,
 | 72 mg SC SD  | auclast             |       70.843 |   45.402 |  100.538 |
 | 72 mg SC SD  | clast.pred          |        0.000 |    0.000 |    0.000 |
 | 72 mg SC SD  | cmax                |        6.241 |    3.309 |   10.387 |
-| 72 mg SC SD  | half.life           |        2.818 |    2.646 |    4.371 |
+| 72 mg SC SD  | half.life           |        2.817 |    2.646 |    4.371 |
 | 72 mg SC SD  | lambda.z            |        0.246 |    0.159 |    0.262 |
 | 72 mg SC SD  | lambda.z.n.points   |       33.000 |   14.000 |   35.000 |
 | 72 mg SC SD  | lambda.z.time.first |       24.000 |   22.000 |   43.000 |
 | 72 mg SC SD  | lambda.z.time.last  |       56.000 |   56.000 |   56.000 |
 | 72 mg SC SD  | r.squared           |        1.000 |    1.000 |    1.000 |
-| 72 mg SC SD  | span.ratio          |       11.370 |    3.012 |   12.739 |
+| 72 mg SC SD  | span.ratio          |       11.371 |    3.012 |   12.739 |
 | 72 mg SC SD  | tlast               |       56.000 |   56.000 |   56.000 |
 | 72 mg SC SD  | tmax                |        5.000 |    3.950 |    7.000 |
 
@@ -434,7 +439,7 @@ nca_tbl |>
 | 360 mg SC SD | tmax      |        6.000 | 4.000 |  9.050 |
 | 600 mg SC SD | half.life |        5.465 | 1.380 | 14.128 |
 | 600 mg SC SD | tmax      |        6.000 | 4.000 | 10.050 |
-| 72 mg SC SD  | half.life |        2.818 | 2.646 |  4.371 |
+| 72 mg SC SD  | half.life |        2.817 | 2.646 |  4.371 |
 | 72 mg SC SD  | tmax      |        5.000 | 3.950 |  7.000 |
 
 Simulated Tmax and observed terminal half-life by regimen. {.table}

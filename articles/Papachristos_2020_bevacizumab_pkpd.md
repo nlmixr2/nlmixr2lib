@@ -136,22 +136,25 @@ sim_horizon <- 84                  # 12 weeks total follow-up
 dose_times  <- seq(0, by = 14, length.out = n_doses_q2w)
 obs_times   <- sort(unique(c(0, seq(0.05, sim_horizon, by = 0.5))))
 
+# Observe at the ODE state `central` with dvid = 1L. The model body has
+# two algebraic observables (Cc from central, E = E0 * Imax chain from
+# Cc) in residual tildes; rxUi auto-injects compartment slots for them
+# after the ODE-state slots, so `cmt = "Cc"` or `cmt = "E"` would target
+# injected slots rather than the ODE state. rxSolve still returns both
+# Cc and E as columns on every observation row, so a single anchor
+# sample per time covers both endpoints.
 build_events <- function(pop, mgkg, dose_times, regimen_label) {
   amt_per_subject <- pop$WT * mgkg
   d_dose <- pop |>
     dplyr::mutate(amt = amt_per_subject) |>
     tidyr::crossing(time = dose_times) |>
     dplyr::mutate(evid = 1L, cmt = "central", dur = inf_dur,
-                  treatment = regimen_label)
-  d_obs_cc <- pop |>
+                  treatment = regimen_label, dvid = NA_integer_)
+  d_obs <- pop |>
     tidyr::crossing(time = obs_times) |>
-    dplyr::mutate(amt = 0, evid = 0L, cmt = "Cc", dur = NA_real_,
-                  treatment = regimen_label)
-  d_obs_e <- pop |>
-    tidyr::crossing(time = obs_times) |>
-    dplyr::mutate(amt = 0, evid = 0L, cmt = "E", dur = NA_real_,
-                  treatment = regimen_label)
-  dplyr::bind_rows(d_dose, d_obs_cc, d_obs_e) |>
+    dplyr::mutate(amt = 0, evid = 0L, cmt = "central", dur = NA_real_,
+                  treatment = regimen_label, dvid = 1L)
+  dplyr::bind_rows(d_dose, d_obs) |>
     dplyr::rename(id = ID) |>
     dplyr::arrange(id, time, dplyr::desc(evid)) |>
     as.data.frame()
@@ -171,9 +174,12 @@ sim <- rxode2::rxSolve(mod, events = events,
                        keep = c("treatment"),
                        returnType = "data.frame")
 
-# Endpoint compartments after 2 ODE states: Cc -> CMT 3, E -> CMT 4
-sim_cc <- sim |> dplyr::filter(CMT == 3)
-sim_e  <- sim |> dplyr::filter(CMT == 4)
+# A single observation per time point at cmt = "central" yields one row
+# per (id, time); both algebraic observables Cc and E are emitted as
+# their own columns on that row. The sim_cc / sim_e aliases are kept
+# for downstream chunks that label them separately.
+sim_cc <- sim
+sim_e  <- sim
 ```
 
 ## Replicate published figures
