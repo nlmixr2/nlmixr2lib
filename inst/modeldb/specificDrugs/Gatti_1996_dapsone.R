@@ -64,7 +64,7 @@ Gatti_1996_dapsone <- function() {
         "upper limit of the normal range); the cohort median was 0.7",
         "mg/dL."
       ),
-      units              = "mg/dL",
+      units = "umol/L",
       type               = "continuous",
       reference_category = NULL,
       notes              = paste(
@@ -196,6 +196,11 @@ Gatti_1996_dapsone <- function() {
   })
 
   model({
+    # SI -> US-convention unit conversion (canonical TBILI is in SI umol/L per
+    # the 2026-06-19 register standardization audit; the original calibration
+    # used the mg/dL reference value, so convert inline here).
+    tbili_mgdL <- TBILI / 17.1  # SI umol/L -> US-convention mg/dL (1 mg/dL = 17.1 umol/L)
+
     # ============================================================
     # Individual PK parameters with multiplicative covariate effects.
     # The rifampin form matches the explicit equation in Gatti 1996
@@ -204,7 +209,7 @@ Gatti_1996_dapsone <- function() {
     # ============================================================
     cl <- exp(lcl + etalcl) * (1 + e_rif_cl_vc * CONMED_RIF)
     vc <- exp(lvc) * (1 + e_rif_cl_vc * CONMED_RIF)
-    ka <- exp(lka + etalka) * (1 + e_tbili_ka * TBILI)
+    ka <- exp(lka + etalka) * (1 + e_tbili_ka * tbili_mgdL)
 
     kel <- cl / vc
 
