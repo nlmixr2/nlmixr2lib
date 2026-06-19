@@ -29,12 +29,12 @@ Sathe_2024_sacituzumab <- function() {
       notes              = "Source paper analysis dataset uses SEXF directly. Effect applies on tAB V1 only: V1 is +12.1% in males (SEXF = 0) relative to females (the reference). Effect coded as `1 + e_sex_vc_tab * (1 - SEXF)` to match the source's male-deviation parameterization.",
       source_name        = "SEXF"
     ),
-    TUMTP_OTH = list(
+    TUMTP_OTHER = list(
       description        = "Tumor-type indicator: 1 = 'Other' epithelial cancer (NSCLC, SCLC, colorectal, esophageal, pancreatic ductal adenocarcinoma, etc.); 0 = mTNBC, mUC, or HR+/HER2- mBC",
       units              = "(binary)",
       type               = "binary",
       reference_category = "0 (mTNBC, mUC, or HR+/HER2- mBC)",
-      notes              = "Effect on tAB CL only: -13.4% CL when TUMTP_OTH = 1 (Sathe 2024 Table 3). Source column PAT2 takes integer levels (1 = mTNBC, 2 = mUC or HR+/HER2- mBC, 4 = Other) and the source NONMEM control stream collapses PAT2 = 1 and PAT2 = 2 into the reference (no effect). Composition of 'Other' in this analysis = small-cell lung cancer, non-small-cell lung cancer, colorectal cancer, esophageal cancer, pancreatic ductal adenocarcinoma, etc. (Sathe 2024 Methods 2.4 and Table S2). Scope is paper-specific: a different paper's 'Other' tumor pool is not interchangeable.",
+      notes              = "Effect on tAB CL only: -13.4% CL when TUMTP_OTHER = 1 (Sathe 2024 Table 3). Source column PAT2 takes integer levels (1 = mTNBC, 2 = mUC or HR+/HER2- mBC, 4 = Other) and the source NONMEM control stream collapses PAT2 = 1 and PAT2 = 2 into the reference (no effect). Composition of 'Other' in this analysis = small-cell lung cancer, non-small-cell lung cancer, colorectal cancer, esophageal cancer, pancreatic ductal adenocarcinoma, etc. (Sathe 2024 Methods 2.4 and Table S2). Scope is paper-specific: a different paper's 'Other' tumor pool is not interchangeable.",
       source_name        = "PAT2 (recoded: 4 -> 1, 1/2 -> 0)"
     )
   )
@@ -167,7 +167,7 @@ Sathe_2024_sacituzumab <- function() {
     bwt_cl_tab_factor <- (WT / 70) ^ e_wt_cl_q_tab
     bwt_v_tab_factor  <- (WT / 70) ^ e_wt_vc_vp_tab
     alb_cl_tab_factor <- (ALB / 38) ^ e_alb_cl_tab
-    tumor_cl_tab_factor <- 1 + e_tumor_cl_tab * TUMTP_OTH
+    tumor_cl_tab_factor <- 1 + e_tumor_cl_tab * TUMTP_OTHER
     sex_vc_tab_factor    <- 1 + e_sex_vc_tab    * (1 - SEXF)
     td_cl_tab_factor    <- 1 - (maxRed_tab / 100) * (1 - exp(-keff_tab * t))
 

@@ -61,21 +61,21 @@ Zhu_2017_lebrikizumab <- function() {
       notes              = "Power-style multiplicative effect on CL.",
       source_name        = "RACE_OTHER"
     ),
-    FORM_NS0 = list(
+    FORM_LEB_NS0 = list(
       description        = "NS0 cell-line formulation indicator",
       units              = "(binary)",
       type               = "binary",
       reference_category = "0 (reference CHO formulation)",
       notes              = "Typically 0 in routine use; affects ka and bioavailability.",
-      source_name        = "FORM_NS0"
+      source_name        = "FORM_LEB_NS0"
     ),
-    FORM_CHO_PHASE2 = list(
+    FORM_LEB_CHO_PHASE2 = list(
       description        = "CHO Phase 2 formulation indicator",
       units              = "(binary)",
       type               = "binary",
       reference_category = "0 (reference formulation)",
       notes              = "Typically 0 in routine use; affects ka and bioavailability.",
-      source_name        = "FORM_CHO_PHASE2"
+      source_name        = "FORM_LEB_CHO_PHASE2"
     )
   )
 
@@ -92,7 +92,7 @@ Zhu_2017_lebrikizumab <- function() {
     disease_state  = "Pooled analysis across 6 studies: 2 Phase I studies in healthy volunteers (n=114), 1 Phase II study in asthma, 1 Phase II study in atopic dermatitis, 1 Phase II study in idiopathic pulmonary fibrosis, and the Phase III MILLY program in moderate-to-severe asthma.",
     dose_range     = "37.5-250 mg SC (pooled analysis also included some IV data from the Phase I studies).",
     regions        = "Multi-regional (not reported in detail in Zhu 2017).",
-    notes          = "Reference covariate values are WT = 70 kg and AGE = 40 years (Table 3 footnote). Three formulations were evaluated: the reference CHO formulation used in late development, an early-development NS0 formulation, and an interim CHO formulation used in Phase 2 ('CHO Phase 2'); indicator covariates FORM_NS0 and FORM_CHO_PHASE2 are both 0 for the reference formulation."
+    notes          = "Reference covariate values are WT = 70 kg and AGE = 40 years (Table 3 footnote). Three formulations were evaluated: the reference CHO formulation used in late development, an early-development NS0 formulation, and an interim CHO formulation used in Phase 2 ('CHO Phase 2'); indicator covariates FORM_LEB_NS0 and FORM_LEB_CHO_PHASE2 are both 0 for the reference formulation."
   )
 
   ini({
@@ -147,8 +147,8 @@ Zhu_2017_lebrikizumab <- function() {
     vc <- exp(lvc + etalvc) * WTNORM^e_wt_vc
     vp <- exp(lvp) * WTNORM^e_wt_vp
     q <- exp(lq) * WTNORM^e_wt_q
-    ka <- exp(lka + etalka) * e_form_ns0_ka^FORM_NS0 * e_form_cho_phase2_ka^FORM_CHO_PHASE2
-    fdepot <- exp(lfdepot) * e_form_ns0_fdepot^FORM_NS0 * e_form_cho_phase2_fdepot^FORM_CHO_PHASE2
+    ka <- exp(lka + etalka) * e_form_ns0_ka^FORM_LEB_NS0 * e_form_cho_phase2_ka^FORM_LEB_CHO_PHASE2
+    fdepot <- exp(lfdepot) * e_form_ns0_fdepot^FORM_LEB_NS0 * e_form_cho_phase2_fdepot^FORM_LEB_CHO_PHASE2
     Cc <- linCmt()
     f(depot) <- fdepot
     Cc ~ add(addSd) + prop(propSd)

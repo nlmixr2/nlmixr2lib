@@ -34,7 +34,7 @@ Hopkins_2017_doxycycline <- function() {
       notes              = "Reduces relative bioavailability by 10.5% irrespective of formulation (Table 3 COVFEDF = 0.105 with the paper-reported -10.5% effect direction). Adds 0.203 h to the absorption lag (Table 3 FTLAG2). Reduces KTR by 20.9% for Doryx tablet / Doryx capsule (Table 3 COVFED = -0.209) and by 54.9% for Doryx MPC (Table 3 COVFED2 = -0.549).",
       source_name        = "Fed status"
     ),
-    FORM_DORYX_MPC = list(
+    FORM_DOX_DORYX_MPC = list(
       description        = "Doryx MPC delayed-release tablet formulation indicator (1 = Doryx MPC, 0 = Doryx tablet / Doryx capsule).",
       units              = "(binary)",
       type               = "binary",
@@ -156,10 +156,10 @@ Hopkins_2017_doxycycline <- function() {
     # 2. Transit-absorption rate with formulation-dependent food effect.
     #    KTR is reduced by 20.9% in fed state for Doryx tablet / Doryx
     #    capsule (e_fed_ktr_tab) and by 54.9% for Doryx MPC
-    #    (e_fed_ktr_mpc). Using FORM_DORYX_MPC as the selector keeps the
-    #    encoding unambiguous: when FORM_DORYX_MPC = 1 only the MPC effect
+    #    (e_fed_ktr_mpc). Using FORM_DOX_DORYX_MPC as the selector keeps the
+    #    encoding unambiguous: when FORM_DOX_DORYX_MPC = 1 only the MPC effect
     #    fires, otherwise only the tablet/capsule effect fires.
-    ktr_fed_effect <- e_fed_ktr_tab * (1 - FORM_DORYX_MPC) + e_fed_ktr_mpc * FORM_DORYX_MPC
+    ktr_fed_effect <- e_fed_ktr_tab * (1 - FORM_DOX_DORYX_MPC) + e_fed_ktr_mpc * FORM_DOX_DORYX_MPC
     ktr <- exp(lktr + etalktr) * (1 + ktr_fed_effect * FED)
 
     # 3. Two-compartment disposition with two-transit absorption chain
@@ -177,13 +177,13 @@ Hopkins_2017_doxycycline <- function() {
     # 4. Bioavailability: Doryx tablet anchored at F = 1; Doryx MPC and
     #    Doryx capsule shift F via log-multiplicative terms; food applies
     #    a -10.5% shift on top, irrespective of formulation.
-    f(depot) <- exp(lf1mpc * FORM_DORYX_MPC + lf1cap * FORM_CAPSULE) * (1 - e_fed_relf * FED)
+    f(depot) <- exp(lf1mpc * FORM_DOX_DORYX_MPC + lf1cap * FORM_CAPSULE) * (1 - e_fed_relf * FED)
 
     # 5. Absorption lag on the depot compartment. ALAG1 = 0.115 h adds
     #    whenever the formulation is Doryx MPC or Doryx capsule (the two
     #    indicators are mutually exclusive). FTLAG2 = 0.203 h adds in the
     #    fed state regardless of formulation. The two lags are additive.
-    alag(depot) <- e_alag1 * (FORM_DORYX_MPC + FORM_CAPSULE) + e_ftlag2 * FED
+    alag(depot) <- e_alag1 * (FORM_DOX_DORYX_MPC + FORM_CAPSULE) + e_ftlag2 * FED
 
     # 6. Observation in micrograms per liter (= ng/mL).
     Cc <- 1000 * central / vc

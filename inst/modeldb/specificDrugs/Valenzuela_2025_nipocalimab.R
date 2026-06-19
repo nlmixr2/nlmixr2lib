@@ -37,13 +37,13 @@ Valenzuela_2025_nipocalimab <- function() {
       notes              = "Scales IgG baseline by FRIgG0_M281_004 = 0.777 for MOM-M281-004 participants; IgG baseline is equal to IgG0 (typical 11.4 g/L) for other studies.",
       source_name        = "M281_004"
     ),
-    MGADL = list(
+    SCORE_MGADL = list(
       description        = "Baseline Myasthenia Gravis Activities of Daily Living score (0-24; higher = more severe)",
       units              = "(score)",
       type               = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed (baseline); power-form effect (MGADL/7)^E_IgG on sigg and (MGADL/7)^E_ADL on IDec_placebo. Set MGADL = 0 for healthy participants so that MG-ADL response predictions collapse to 0. Vivacity-MG participants ranged 6-24 points (mean 9.8).",
-      source_name        = "MGADL"
+      notes              = "Time-fixed (baseline); power-form effect (SCORE_MGADL/7)^E_IgG on sigg and (SCORE_MGADL/7)^E_ADL on IDec_placebo. Set SCORE_MGADL = 0 for healthy participants so that MG-ADL response predictions collapse to 0. Vivacity-MG participants ranged 6-24 points (mean 9.8).",
+      source_name        = "SCORE_MGADL"
     )
   )
 
@@ -174,7 +174,7 @@ Valenzuela_2025_nipocalimab <- function() {
 
     # ---- Individual MG-ADL parameters ----
     ke0         <- exp(lke0)
-    idec_i      <- (idecplacebo + etaidecplacebo) * (MGADL / 7)^EADL
+    idec_i      <- (idecplacebo + etaidecplacebo) * (SCORE_MGADL / 7)^EADL
     sigg_i      <- (sigg + etasigg)
     splacebo_i  <- (splacebo + etasplacebo)
 
@@ -226,7 +226,7 @@ Valenzuela_2025_nipocalimab <- function() {
     # (t > 0 gate). IgG-driven effect: S_IgG is reported per 10% IgG reduction; multiply by 10
     # to convert the fractional effect-compartment output to "number of 10% reductions".
     placebo_cfb <- (t > 0) * (idec_i + splacebo_i * t / 7)
-    igg_cfb     <- 10 * sigg_i * effect * (MGADL / 7)^EIgG
+    igg_cfb     <- 10 * sigg_i * effect * (SCORE_MGADL / 7)^EIgG
     dMGADL      <- placebo_cfb + igg_cfb
 
     # ---- Residual-error models (per-assay / per-phase switches on PK; single form on others) ----

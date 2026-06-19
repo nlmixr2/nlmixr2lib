@@ -41,7 +41,7 @@ Soehoel_2022_tralokinumab <- function() {
     weight_median  = "74.5 kg",
     sex_female_pct = 44.9,
     race_ethnicity = "White 1721 (67%), Asian 560 (22%), Black/African American 183 (7%), Other 4%; Hispanic/Latino 222 (8.7%), Not Hispanic/Latino 2339 (91%)",
-    disease_state  = "Pooled across indications: atopic dermatitis 2066 (81%), asthma 441 (17%), healthy 54 (2%); baseline EASI median 27.5 (range 12-72) in AD subjects",
+    disease_state  = "Pooled across indications: atopic dermatitis 2066 (81%), asthma 441 (17%), healthy 54 (2%); baseline SCORE_EASI median 27.5 (range 12-72) in AD subjects",
     dose_range     = "Single-dose phase 1 through multi-dose phase 3; labelled AD regimen is a 600 mg SC loading dose followed by 300 mg SC every 2 weeks (Q4W extensions evaluated)",
     regions        = "Not explicitly stated in Soehoel 2022 Table 1; pooled from 10 multinational trials (3 phase 3 ECZTRA, 4 phase 2, 3 phase 1)",
     notes          = "Demographics from Soehoel 2022 Table 1 (pooled analysis population, n=2561). 2204 subjects (86%) enrolled in ECZTRA phase 3 atopic-dermatitis trials; 49 subjects (2%) received diluted drug product in study D2213C00001."
