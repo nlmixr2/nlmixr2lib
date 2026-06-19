@@ -1388,6 +1388,8 @@ navbar:
         href: articles/Lee_2015_sumatriptan.html
       - text: "Sunitinib (Ait-Oudhia 2016)"
         href: articles/Ait-Oudhia_2016_sunitinib.html
+      - text: "Sunitinib (Yu 2015)"
+        href: articles/Yu_2015_sunitinib.html
       - text: "Sunitinib irinotecan mouse (Wilson 2015)"
         href: articles/Wilson_2015_sunitinib_irinotecan_mouse.html
       - text: "TF 505 (Matsumoto 2005)"
@@ -2609,6 +2611,7 @@ articles:
   - articles/Yoshida_2021_ipatasertib
   - articles/Yoshioka_2018_FXa_inhibitors_mbma
   - articles/You_2013_hCG_GTN
+  - articles/Yu_2015_sunitinib
   - articles/Yu_2017_mycophenolic_acid
   - articles/Yu_2022_ofatumumab
   - articles/Yuan_2019_concizumab
