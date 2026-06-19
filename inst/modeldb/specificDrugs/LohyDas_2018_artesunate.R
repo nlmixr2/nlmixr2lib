@@ -121,10 +121,10 @@ LohyDas_2018_artesunate <- function() {
     lvc     <- log(1300)
     label("Apparent artesunate central volume of distribution, V_ARS/F at WT = 50 kg (L)")  # Lohy Das 2018 Table 2: V_ARS/F = 1300 L (%RSE 12.6, 95% CI 1110-1660)
 
-    lcl_dha <- log(76.7)
+    lcl_dihydroart <- log(76.7)
     label("Apparent dihydroartemisinin elimination clearance, CL_DHA/F at WT = 50 kg (L/h)")  # Lohy Das 2018 Table 2: CL_DHA/F = 76.7 L/h (%RSE 6.99, 95% CI 69.9-87.8)
 
-    lvc_dha <- log(102)
+    lvc_dihydroart <- log(102)
     label("Apparent dihydroartemisinin central volume of distribution, V_DHA/F at WT = 50 kg (L)")  # Lohy Das 2018 Table 2: V_DHA/F = 102 L (%RSE 8.95, 95% CI 89.5-119.0)
 
     # Allometric exponents. Lohy Das 2018 Methods p.4: 'Clearance and
@@ -151,8 +151,8 @@ LohyDas_2018_artesunate <- function() {
     etalmtt    ~ 0.5468   # Lohy Das 2018 Table 2: BSV MTT = 85.3% (%RSE 24.9); variance = log(1 + 0.853^2) = 0.5468
     etalcl     ~ 0.0693   # Lohy Das 2018 Table 2: BSV CL_ARS = 26.8% (%RSE 44.3); variance = log(1 + 0.268^2) = 0.0693
     etalvc     ~ 0.4434   # Lohy Das 2018 Table 2: BSV V_ARS = 74.7% (%RSE 27.3); variance = log(1 + 0.747^2) = 0.4434
-    etalcl_dha ~ 0.0444   # Lohy Das 2018 Table 2: BSV CL_DHA = 21.3% (%RSE 30.3); variance = log(1 + 0.213^2) = 0.0444
-    etalvc_dha ~ 0.0953   # Lohy Das 2018 Table 2: BSV V_DHA = 31.6% (%RSE 40.5); variance = log(1 + 0.316^2) = 0.0953
+    etalcl_dihydroart ~ 0.0444   # Lohy Das 2018 Table 2: BSV CL_DHA = 21.3% (%RSE 30.3); variance = log(1 + 0.213^2) = 0.0444
+    etalvc_dihydroart ~ 0.0953   # Lohy Das 2018 Table 2: BSV V_DHA = 31.6% (%RSE 40.5); variance = log(1 + 0.316^2) = 0.0953
 
     # Residual error. Lohy Das 2018 Methods p.4: 'unexplained residual
     # variability (RUV) was estimated by separate additive error models
@@ -166,7 +166,7 @@ LohyDas_2018_artesunate <- function() {
     # value is used here directly as propSd on the decimal scale.
     propSd     <- 0.732
     label("Proportional residual SD for artesunate plasma concentration (CV in linear space, equivalent to SD on log scale)")  # Lohy Das 2018 Table 2: RUV ARS = 73.2% (%RSE 3.95)
-    propSd_dha <- 0.585
+    propSd_dihydroart <- 0.585
     label("Proportional residual SD for dihydroartemisinin plasma concentration (CV in linear space, equivalent to SD on log scale)")  # Lohy Das 2018 Table 2: RUV DHA = 58.5% (%RSE 3.34)
   })
 
@@ -176,8 +176,8 @@ LohyDas_2018_artesunate <- function() {
     # cohort median WT = 50 kg (Lohy Das 2018 Methods p.4, Results p.5).
     cl     <- exp(lcl     + etalcl)     * (WT / 50)^e_wt_cl
     vc     <- exp(lvc     + etalvc)     * (WT / 50)^e_wt_vc
-    cl_dha <- exp(lcl_dha + etalcl_dha) * (WT / 50)^e_wt_cl
-    vc_dha <- exp(lvc_dha + etalvc_dha) * (WT / 50)^e_wt_vc
+    cl_dihydroart <- exp(lcl_dihydroart + etalcl_dihydroart) * (WT / 50)^e_wt_cl
+    vc_dihydroart <- exp(lvc_dihydroart + etalvc_dihydroart) * (WT / 50)^e_wt_vc
     mtt    <- exp(lmtt    + etalmtt)
 
     # Transit-absorption chain rate (Savic 2007 parameterisation, also
@@ -192,13 +192,13 @@ LohyDas_2018_artesunate <- function() {
     # assumption of complete in-vivo conversion of ARS to DHA (Methods
     # p.4: 'Complete metabolic in vivo conversion of ARS into DHA was
     # assumed throughout modelling'), all ARS clearance is metabolic
-    # conversion, so the rate from central -> central_dha is cl/vc. DHA
-    # is then eliminated linearly at cl_dha/vc_dha. Doses and
+    # conversion, so the rate from central -> central_dihydroart is cl/vc. DHA
+    # is then eliminated linearly at cl_dihydroart/vc_dihydroart. Doses and
     # concentrations are tracked on a molar basis (nmol / nmol/L), so no
     # molecular-weight conversion is needed at the parent-to-metabolite
     # transfer step (the paper modelled on the same molar basis).
     kel_ars <- cl     / vc
-    kel_dha <- cl_dha / vc_dha
+    kel_dihydroart <- cl_dihydroart / vc_dihydroart
 
     # ODE system: oral depot -> 3 transit compartments -> ARS central ->
     # DHA central -> elimination. The same first-order rate ktr governs
@@ -212,7 +212,7 @@ LohyDas_2018_artesunate <- function() {
     d/dt(transit2)     <-  ktr * transit1 - ktr * transit2
     d/dt(transit3)     <-  ktr * transit2 - ktr * transit3
     d/dt(central)      <-  ktr * transit3 - kel_ars * central
-    d/dt(central_dha)  <-  kel_ars * central - kel_dha * central_dha
+    d/dt(central_dihydroart)  <-  kel_ars * central - kel_dihydroart * central_dihydroart
 
     # Bioavailability on the depot compartment. lfdepot is fixed at
     # log(1) (F = 100% fix in Table 2) so exp(lfdepot) = 1 at the
@@ -221,11 +221,11 @@ LohyDas_2018_artesunate <- function() {
 
     # Plasma concentrations in nmol/L (dose in nmol, V in L).
     Cc     <- central     / vc
-    Cc_dha <- central_dha / vc_dha
+    Cc_dihydroart <- central_dihydroart / vc_dihydroart
 
     # Residual error: NONMEM additive-on-log-scale maps to nlmixr2
     # proportional in linear space (see ini() comments).
     Cc     ~ prop(propSd)
-    Cc_dha ~ prop(propSd_dha)
+    Cc_dihydroart ~ prop(propSd_dihydroart)
   })
 }

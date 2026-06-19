@@ -78,21 +78,21 @@ Valitalo_2017_ketorolac <- function() {
   ini({
     # R-ketorolac structural parameters (Valitalo 2017 Table 2 final model column,
     # typical values for a 71-kg nonpregnant female: WAD = 0, MS = 0).
-    lcl_r  <- log(1.12)  ; label("R-ketorolac clearance for a 71-kg nonpregnant female (CL_R, L/h)")        # Valitalo 2017 Table 2 final, CL_R = 1.12 (RSE 5.95%)
-    lvc_r  <- log(3.4)   ; label("R-ketorolac central volume for a 71-kg nonpregnant female (V1_R, L)")     # Valitalo 2017 Table 2 final, V1_R = 3.4 (RSE 5.99%)
-    lq_r   <- log(3.86)  ; label("R-ketorolac shallow inter-compartmental clearance (Q1_R, L/h)")            # Valitalo 2017 Table 2 final, Q1_R = 3.86 (RSE 9.94%)
-    lvp_r  <- log(2.29)  ; label("R-ketorolac shallow peripheral volume for a 71-kg nonpregnant female (V2_R, L)")  # Valitalo 2017 Table 2 final, V2_R = 2.29 (RSE 9.09%)
-    lq2_r  <- log(0.58)  ; label("R-ketorolac deep inter-compartmental clearance (Q2_R, L/h)")               # Valitalo 2017 Table 2 final, Q2_R = 0.58 (RSE 11.8%)
-    lvp2_r <- log(4.88)  ; label("R-ketorolac deep peripheral volume for a 71-kg nonpregnant female (V3_R, L)")  # Valitalo 2017 Table 2 final, V3_R = 4.88 (RSE 20.1%)
+    lcl_r_enant  <- log(1.12)  ; label("R-ketorolac clearance for a 71-kg nonpregnant female (CL_R, L/h)")        # Valitalo 2017 Table 2 final, CL_R = 1.12 (RSE 5.95%)
+    lvc_r_enant  <- log(3.4)   ; label("R-ketorolac central volume for a 71-kg nonpregnant female (V1_R, L)")     # Valitalo 2017 Table 2 final, V1_R = 3.4 (RSE 5.99%)
+    lq_r_enant   <- log(3.86)  ; label("R-ketorolac shallow inter-compartmental clearance (Q1_R, L/h)")            # Valitalo 2017 Table 2 final, Q1_R = 3.86 (RSE 9.94%)
+    lvp_r_enant  <- log(2.29)  ; label("R-ketorolac shallow peripheral volume for a 71-kg nonpregnant female (V2_R, L)")  # Valitalo 2017 Table 2 final, V2_R = 2.29 (RSE 9.09%)
+    lq2_r_enant  <- log(0.58)  ; label("R-ketorolac deep inter-compartmental clearance (Q2_R, L/h)")               # Valitalo 2017 Table 2 final, Q2_R = 0.58 (RSE 11.8%)
+    lvp2_r_enant <- log(4.88)  ; label("R-ketorolac deep peripheral volume for a 71-kg nonpregnant female (V3_R, L)")  # Valitalo 2017 Table 2 final, V3_R = 4.88 (RSE 20.1%)
 
     # S-ketorolac structural parameters (Valitalo 2017 Table 2 final model column,
     # typical values for a 71-kg nonpregnant female).
-    lcl_s  <- log(3.96)  ; label("S-ketorolac clearance for a 71-kg nonpregnant female (CL_S, L/h)")        # Valitalo 2017 Table 2 final, CL_S = 3.96 (RSE 5.7%)
-    lvc_s  <- log(3.74)  ; label("S-ketorolac central volume for a 71-kg nonpregnant female (V1_S, L)")     # Valitalo 2017 Table 2 final, V1_S = 3.74 (RSE 6.95%)
-    lq_s   <- log(20)    ; label("S-ketorolac shallow inter-compartmental clearance (Q1_S, L/h)")            # Valitalo 2017 Table 2 final, Q1_S = 20 (RSE 10.7%)
-    lvp_s  <- log(3.86)  ; label("S-ketorolac shallow peripheral volume for a 71-kg nonpregnant female (V2_S, L)")  # Valitalo 2017 Table 2 final, V2_S = 3.86 (RSE 8.62%)
-    lq2_s  <- log(1.3)   ; label("S-ketorolac deep inter-compartmental clearance (Q2_S, L/h)")               # Valitalo 2017 Table 2 final, Q2_S = 1.3 (RSE 20.5%)
-    lvp2_s <- log(3.3)   ; label("S-ketorolac deep peripheral volume for a 71-kg nonpregnant female (V3_S, L)")  # Valitalo 2017 Table 2 final, V3_S = 3.3 (RSE 9.71%)
+    lcl_s_enant  <- log(3.96)  ; label("S-ketorolac clearance for a 71-kg nonpregnant female (CL_S, L/h)")        # Valitalo 2017 Table 2 final, CL_S = 3.96 (RSE 5.7%)
+    lvc_s_enant  <- log(3.74)  ; label("S-ketorolac central volume for a 71-kg nonpregnant female (V1_S, L)")     # Valitalo 2017 Table 2 final, V1_S = 3.74 (RSE 6.95%)
+    lq_s_enant   <- log(20)    ; label("S-ketorolac shallow inter-compartmental clearance (Q1_S, L/h)")            # Valitalo 2017 Table 2 final, Q1_S = 20 (RSE 10.7%)
+    lvp_s_enant  <- log(3.86)  ; label("S-ketorolac shallow peripheral volume for a 71-kg nonpregnant female (V2_S, L)")  # Valitalo 2017 Table 2 final, V2_S = 3.86 (RSE 8.62%)
+    lq2_s_enant  <- log(1.3)   ; label("S-ketorolac deep inter-compartmental clearance (Q2_S, L/h)")               # Valitalo 2017 Table 2 final, Q2_S = 1.3 (RSE 20.5%)
+    lvp2_s_enant <- log(3.3)   ; label("S-ketorolac deep peripheral volume for a 71-kg nonpregnant female (V3_S, L)")  # Valitalo 2017 Table 2 final, V3_S = 3.3 (RSE 9.71%)
 
     # Allometric weight exponents (estimated; identical for both enantiomers).
     e_wt_cl    <- 0.536  ; label("Body-weight allometric exponent on CL (shared between R- and S-enantiomers)")  # Valitalo 2017 Table 2 final, WT_CL = 0.536 (RSE 36.5%)
@@ -109,10 +109,10 @@ Valitalo_2017_ketorolac <- function() {
     # clearances, and jointly for central and peripheral volumes of distribution
     # (one random effect affecting multiple parameters). Separate random effects
     # were estimated for each enantiomer."
-    etalcl_r ~ 0.083521  # 0.289^2; Valitalo 2017 Table 2 final omega(CL_R) = 0.289
-    etalvc_r ~ 0.051529  # 0.227^2; Valitalo 2017 Table 2 final omega(V_R) = 0.227 (shared across V1_R, V2_R, V3_R)
-    etalcl_s ~ 0.053824  # 0.232^2; Valitalo 2017 Table 2 final omega(CL_S) = 0.232
-    etalvc_s ~ 0.056644  # 0.238^2; Valitalo 2017 Table 2 final omega(V_S) = 0.238 (shared across V1_S, V2_S, V3_S)
+    etalcl_r_enant ~ 0.083521  # 0.289^2; Valitalo 2017 Table 2 final omega(CL_R) = 0.289
+    etalvc_r_enant ~ 0.051529  # 0.227^2; Valitalo 2017 Table 2 final omega(V_R) = 0.227 (shared across V1_R, V2_R, V3_R)
+    etalcl_s_enant ~ 0.053824  # 0.232^2; Valitalo 2017 Table 2 final omega(CL_S) = 0.232
+    etalvc_s_enant ~ 0.056644  # 0.238^2; Valitalo 2017 Table 2 final omega(V_S) = 0.238 (shared across V1_S, V2_S, V3_S)
 
     # Residual error: combined proportional + additive model derived from the
     # Valitalo 2017 paper's joint residual structure (equations 2-4):
@@ -124,10 +124,10 @@ Valitalo_2017_ketorolac <- function() {
     # postpartum data) and document the Helsinki values in the validation
     # vignette.
     # propSd = sigma * sqrt(f_prop), addSd = sigma * sqrt(1 - f_prop).
-    propSd_r <- 0.0791  ; label("R-ketorolac proportional residual SD (fraction)")      # 0.0794 * sqrt(0.9939); Valitalo 2017 Table 2 sigma(Leuven, R) = 0.0794 (RSE 8.5%)
-    addSd_r  <- 0.00618 ; label("R-ketorolac additive residual SD (mg/L)")              # 0.0794 * sqrt(0.00606)
-    propSd_s <- 0.1097  ; label("S-ketorolac proportional residual SD (fraction)")      # 0.110 * sqrt(0.9939); Valitalo 2017 Table 2 sigma(Leuven, S) = 0.110 (RSE 20.5%)
-    addSd_s  <- 0.00857 ; label("S-ketorolac additive residual SD (mg/L)")              # 0.110 * sqrt(0.00606)
+    propSd_r_enant <- 0.0791  ; label("R-ketorolac proportional residual SD (fraction)")      # 0.0794 * sqrt(0.9939); Valitalo 2017 Table 2 sigma(Leuven, R) = 0.0794 (RSE 8.5%)
+    addSd_r_enant  <- 0.00618 ; label("R-ketorolac additive residual SD (mg/L)")              # 0.0794 * sqrt(0.00606)
+    propSd_s_enant <- 0.1097  ; label("S-ketorolac proportional residual SD (fraction)")      # 0.110 * sqrt(0.9939); Valitalo 2017 Table 2 sigma(Leuven, S) = 0.110 (RSE 20.5%)
+    addSd_s_enant  <- 0.00857 ; label("S-ketorolac additive residual SD (mg/L)")              # 0.110 * sqrt(0.00606)
   })
 
   model({
@@ -145,57 +145,57 @@ Valitalo_2017_ketorolac <- function() {
     cov_cat_cl   <- (1 + e_preg_cl    * PREG) * (1 + e_sexf_cl * (1 - SEXF))
     cov_cat_v    <- (1 + e_preg_vc_vp * PREG)
 
-    # R-ketorolac individual parameters. The single eta on volumes (etalvc_r)
-    # is reused across vc_r, vp_r, vp2_r per Methods (joint volume IIV).
-    cl_r  <- exp(lcl_r  + etalcl_r) * cov_wt_cl    * cov_cat_cl
-    vc_r  <- exp(lvc_r  + etalvc_r) * cov_wt_vc_vp * cov_cat_v
-    q_r   <- exp(lq_r)
-    vp_r  <- exp(lvp_r  + etalvc_r) * cov_wt_vc_vp * cov_cat_v
-    q2_r  <- exp(lq2_r)
-    vp2_r <- exp(lvp2_r + etalvc_r) * cov_wt_vc_vp * cov_cat_v
+    # R-ketorolac individual parameters. The single eta on volumes (etalvc_r_enant)
+    # is reused across vc_r_enant, vp_r_enant, vp2_r_enant per Methods (joint volume IIV).
+    cl_r_enant  <- exp(lcl_r_enant  + etalcl_r_enant) * cov_wt_cl    * cov_cat_cl
+    vc_r_enant  <- exp(lvc_r_enant  + etalvc_r_enant) * cov_wt_vc_vp * cov_cat_v
+    q_r_enant   <- exp(lq_r_enant)
+    vp_r_enant  <- exp(lvp_r_enant  + etalvc_r_enant) * cov_wt_vc_vp * cov_cat_v
+    q2_r_enant  <- exp(lq2_r_enant)
+    vp2_r_enant <- exp(lvp2_r_enant + etalvc_r_enant) * cov_wt_vc_vp * cov_cat_v
 
     # S-ketorolac individual parameters (same covariate structure, separate etas).
-    cl_s  <- exp(lcl_s  + etalcl_s) * cov_wt_cl    * cov_cat_cl
-    vc_s  <- exp(lvc_s  + etalvc_s) * cov_wt_vc_vp * cov_cat_v
-    q_s   <- exp(lq_s)
-    vp_s  <- exp(lvp_s  + etalvc_s) * cov_wt_vc_vp * cov_cat_v
-    q2_s  <- exp(lq2_s)
-    vp2_s <- exp(lvp2_s + etalvc_s) * cov_wt_vc_vp * cov_cat_v
+    cl_s_enant  <- exp(lcl_s_enant  + etalcl_s_enant) * cov_wt_cl    * cov_cat_cl
+    vc_s_enant  <- exp(lvc_s_enant  + etalvc_s_enant) * cov_wt_vc_vp * cov_cat_v
+    q_s_enant   <- exp(lq_s_enant)
+    vp_s_enant  <- exp(lvp_s_enant  + etalvc_s_enant) * cov_wt_vc_vp * cov_cat_v
+    q2_s_enant  <- exp(lq2_s_enant)
+    vp2_s_enant <- exp(lvp2_s_enant + etalvc_s_enant) * cov_wt_vc_vp * cov_cat_v
 
     # R-ketorolac micro-constants and three-compartment IV ODEs.
-    kel_r <- cl_r / vc_r
-    k12_r <- q_r  / vc_r
-    k21_r <- q_r  / vp_r
-    k13_r <- q2_r / vc_r
-    k31_r <- q2_r / vp2_r
+    kel_r_enant <- cl_r_enant / vc_r_enant
+    k12_r_enant <- q_r_enant  / vc_r_enant
+    k21_r_enant <- q_r_enant  / vp_r_enant
+    k13_r_enant <- q2_r_enant / vc_r_enant
+    k31_r_enant <- q2_r_enant / vp2_r_enant
 
-    d/dt(central_r)     <- -kel_r * central_r -
-                            k12_r * central_r + k21_r * peripheral1_r -
-                            k13_r * central_r + k31_r * peripheral2_r
-    d/dt(peripheral1_r) <-  k12_r * central_r - k21_r * peripheral1_r
-    d/dt(peripheral2_r) <-  k13_r * central_r - k31_r * peripheral2_r
+    d/dt(central_r_enant)     <- -kel_r_enant * central_r_enant -
+                            k12_r_enant * central_r_enant + k21_r_enant * peripheral1_r_enant -
+                            k13_r_enant * central_r_enant + k31_r_enant * peripheral2_r_enant
+    d/dt(peripheral1_r_enant) <-  k12_r_enant * central_r_enant - k21_r_enant * peripheral1_r_enant
+    d/dt(peripheral2_r_enant) <-  k13_r_enant * central_r_enant - k31_r_enant * peripheral2_r_enant
 
     # S-ketorolac micro-constants and three-compartment IV ODEs.
-    kel_s <- cl_s / vc_s
-    k12_s <- q_s  / vc_s
-    k21_s <- q_s  / vp_s
-    k13_s <- q2_s / vc_s
-    k31_s <- q2_s / vp2_s
+    kel_s_enant <- cl_s_enant / vc_s_enant
+    k12_s_enant <- q_s_enant  / vc_s_enant
+    k21_s_enant <- q_s_enant  / vp_s_enant
+    k13_s_enant <- q2_s_enant / vc_s_enant
+    k31_s_enant <- q2_s_enant / vp2_s_enant
 
-    d/dt(central_s)     <- -kel_s * central_s -
-                            k12_s * central_s + k21_s * peripheral1_s -
-                            k13_s * central_s + k31_s * peripheral2_s
-    d/dt(peripheral1_s) <-  k12_s * central_s - k21_s * peripheral1_s
-    d/dt(peripheral2_s) <-  k13_s * central_s - k31_s * peripheral2_s
+    d/dt(central_s_enant)     <- -kel_s_enant * central_s_enant -
+                            k12_s_enant * central_s_enant + k21_s_enant * peripheral1_s_enant -
+                            k13_s_enant * central_s_enant + k31_s_enant * peripheral2_s_enant
+    d/dt(peripheral1_s_enant) <-  k12_s_enant * central_s_enant - k21_s_enant * peripheral1_s_enant
+    d/dt(peripheral2_s_enant) <-  k13_s_enant * central_s_enant - k31_s_enant * peripheral2_s_enant
 
     # Plasma concentrations. Each enantiomer is dosed by half of the racemic
     # IV bolus into its own central compartment (no interconversion modelled);
     # the user supplies two dose records per administration with cmt =
-    # central_r / central_s and amt = 0.5 * total racemic-ketorolac dose.
-    Cc_r <- central_r / vc_r
-    Cc_s <- central_s / vc_s
+    # central_r_enant / central_s_enant and amt = 0.5 * total racemic-ketorolac dose.
+    Cc_r_enant <- central_r_enant / vc_r_enant
+    Cc_s_enant <- central_s_enant / vc_s_enant
 
-    Cc_r ~ prop(propSd_r) + add(addSd_r)
-    Cc_s ~ prop(propSd_s) + add(addSd_s)
+    Cc_r_enant ~ prop(propSd_r_enant) + add(addSd_r_enant)
+    Cc_s_enant ~ prop(propSd_s_enant) + add(addSd_s_enant)
   })
 }

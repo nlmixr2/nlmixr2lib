@@ -114,18 +114,18 @@ Patel_2017_selumetinib <- function() {
     e_alt_cl   <- 0.187 ; label("Magnitude of ALT power exponent on selumetinib CL/F (unitless; applied with negative sign)") # Patel 2017 Table 2 theta14
 
     # N-desmethyl-selumetinib (metabolite) population parameters from Patel 2017
-    # Table 2. The metabolite central volume Vc_ndsel is fixed equal to
+    # Table 2. The metabolite central volume Vc_ndmsel is fixed equal to
     # selumetinib Vc/F (V2/F) per Patel 2017 Methods, "volumes of the central
     # compartment for selumetinib and N-desmethyl-selumetinib were assumed equal
     # to avoid identifiability problem". Fm is reported as a single-dose
     # estimate that decreases by ~27.4% at steady-state (theta19), not modeled
     # here as a regime-switching effect -- see vignette Assumptions and
     # deviations. Fm > 1 is acknowledged in the paper Discussion to reflect a
-    # likely V_ndsel < V_parent rather than a true >1 fractional conversion.
+    # likely V_ndmsel < V_parent rather than a true >1 fractional conversion.
     lfm        <- log(1.37)  ; label("Selumetinib-to-N-desmethyl-selumetinib molar conversion coefficient at single dose (FM, unitless)") # Patel 2017 Table 2 theta15
-    lcl_ndsel  <- log(240)   ; label("Apparent N-desmethyl-selumetinib clearance from central compartment at the reference covariate set (CL_Meta/F, L/h)") # Patel 2017 Table 2 theta16
-    lq_ndsel   <- log(49.5)  ; label("Apparent N-desmethyl-selumetinib inter-compartmental clearance (Q_Meta/F, L/h)") # Patel 2017 Table 2 theta17
-    lvp_ndsel  <- log(413)   ; label("Apparent N-desmethyl-selumetinib peripheral volume of distribution (V5/F, L)") # Patel 2017 Table 2 theta18
+    lcl_ndmsel  <- log(240)   ; label("Apparent N-desmethyl-selumetinib clearance from central compartment at the reference covariate set (CL_Meta/F, L/h)") # Patel 2017 Table 2 theta16
+    lq_ndmsel   <- log(49.5)  ; label("Apparent N-desmethyl-selumetinib inter-compartmental clearance (Q_Meta/F, L/h)") # Patel 2017 Table 2 theta17
+    lvp_ndmsel  <- log(413)   ; label("Apparent N-desmethyl-selumetinib peripheral volume of distribution (V5/F, L)") # Patel 2017 Table 2 theta18
 
     # N-desmethyl-selumetinib covariate effects.
     e_bsa_fm  <- 0.908  ; label("Magnitude of BSA power exponent on Fm (unitless; applied with negative sign)") # Patel 2017 Table 2 theta20
@@ -155,7 +155,7 @@ Patel_2017_selumetinib <- function() {
     # Metabolite block {Fm, CL_Meta}:
     #   variances: omega^2_Fm = 0.162, omega^2_CL_Meta = 0.152.
     #   covariance: cov(Fm, CL_Meta) = 0.105 * sqrt(0.162 * 0.152) = 0.01648
-    etalfm + etalcl_ndsel ~ c(0.162, 0.01648, 0.152)                                                              # Patel 2017 Table 2 IIV block on {Fm, CL_Meta}
+    etalfm + etalcl_ndmsel ~ c(0.162, 0.01648, 0.152)                                                              # Patel 2017 Table 2 IIV block on {Fm, CL_Meta}
 
     # Residual error. Patel 2017 Table 2 reports the combined additive +
     # proportional error variances on the linear-concentration scale (nmol/L).
@@ -163,13 +163,13 @@ Patel_2017_selumetinib <- function() {
     # nmol/L (FIX per paper). The model file converts the additive component to
     # ng/mL via the published selumetinib molecular weight 457.68 g/mol and the
     # N-desmethyl-selumetinib molecular weight 443.65 g/mol so the residuals
-    # apply on the same ng/mL scale as the Cc / Cc_ndsel observations:
+    # apply on the same ng/mL scale as the Cc / Cc_ndmsel observations:
     #   addSd (ng/mL)        = 0.794 nM * 457.68 g/mol / 1000 = 0.3634 ng/mL
-    #   addSd_ndsel (ng/mL)  = 0.794 nM * 443.65 g/mol / 1000 = 0.3523 ng/mL
+    #   addSd_ndmsel (ng/mL)  = 0.794 nM * 443.65 g/mol / 1000 = 0.3523 ng/mL
     propSd       <- 0.3521 ; label("Proportional residual error on selumetinib (fraction; sqrt(0.124))")           # Patel 2017 Table 2 sigma^2_prop selumetinib = 0.124
     addSd        <- fixed(0.3634) ; label("Additive residual error on selumetinib (ng/mL; 0.794 nmol/L FIX * MW)") # Patel 2017 Table 2 sigma^2_add = 0.63 FIX
-    propSd_ndsel <- 0.5367 ; label("Proportional residual error on N-desmethyl-selumetinib (fraction; sqrt(0.288))") # Patel 2017 Table 2 sigma^2_prop metabolite = 0.288
-    addSd_ndsel  <- fixed(0.3523) ; label("Additive residual error on N-desmethyl-selumetinib (ng/mL; 0.794 nmol/L FIX * MW_ndsel)") # Patel 2017 Table 2 sigma^2_add = 0.63 FIX
+    propSd_ndmsel <- 0.5367 ; label("Proportional residual error on N-desmethyl-selumetinib (fraction; sqrt(0.288))") # Patel 2017 Table 2 sigma^2_prop metabolite = 0.288
+    addSd_ndmsel  <- fixed(0.3523) ; label("Additive residual error on N-desmethyl-selumetinib (ng/mL; 0.794 nmol/L FIX * MW_ndmsel)") # Patel 2017 Table 2 sigma^2_add = 0.63 FIX
   })
 
   model({
@@ -186,11 +186,11 @@ Patel_2017_selumetinib <- function() {
     # flux. Selumetinib molecular formula C17H15BrClFN4O3, MW 457.68 g/mol
     # (PubChem CID 10127622). N-desmethyl-selumetinib molecular formula
     # C16H13BrClFN4O3, MW 443.65 g/mol (PubChem CID 11355684). The mass-
-    # transfer factor (mw_ndsel / mw_parent) = 0.9694 converts the mass-based
+    # transfer factor (mw_ndmsel / mw_parent) = 0.9694 converts the mass-based
     # parent-elimination flux into the mass-based metabolite-formation flux
     # so the molar 1:1 stoichiometry is preserved at the mass level.
     mw_parent <- 457.68
-    mw_ndsel  <- 443.65
+    mw_ndmsel  <- 443.65
 
     # Individual selumetinib disposition parameters with covariate effects.
     # Power-form effects use the Patel 2017 sign convention documented in the
@@ -231,34 +231,34 @@ Patel_2017_selumetinib <- function() {
     # text "BSA as a significant covariate on Fm with a negative correlation".
     fm        <- exp(lfm + etalfm) *
                  (BSA / ref_bsa)^(-e_bsa_fm)
-    cl_ndsel  <- exp(lcl_ndsel + etalcl_ndsel)
-    vp_ndsel  <- exp(lvp_ndsel)
-    q_ndsel   <- exp(lq_ndsel)
-    vc_ndsel  <- vc
+    cl_ndmsel  <- exp(lcl_ndmsel + etalcl_ndmsel)
+    vp_ndmsel  <- exp(lvp_ndmsel)
+    q_ndmsel   <- exp(lq_ndmsel)
+    vc_ndmsel  <- vc
 
     # Micro-constants for the explicit ODE system.
     kel       <- cl / vc
     k23       <- q  / vc
     k32       <- q  / vp
-    kel_ndsel <- cl_ndsel / vc_ndsel
-    k45       <- q_ndsel  / vc_ndsel
-    k54       <- q_ndsel  / vp_ndsel
+    kel_ndmsel <- cl_ndmsel / vc_ndmsel
+    k45       <- q_ndmsel  / vc_ndmsel
+    k54       <- q_ndmsel  / vp_ndmsel
 
     # ODE system (compartment amounts in mg). Selumetinib enters depot, is
     # absorbed first-order into central, distributes to peripheral1, and
     # eliminates from central at rate kel; the molar Fm fraction of the
     # parent elimination flux feeds the metabolite central compartment with
-    # a mass-conserving (mw_ndsel / mw_parent) correction so that 1 mol
+    # a mass-conserving (mw_ndmsel / mw_parent) correction so that 1 mol
     # selumetinib eliminated produces Fm mol N-desmethyl-selumetinib at the
-    # mass level. The metabolite then distributes between central_ndsel and
-    # peripheral1_ndsel and eliminates from central_ndsel at rate kel_ndsel.
+    # mass level. The metabolite then distributes between central_ndmsel and
+    # peripheral1_ndmsel and eliminates from central_ndmsel at rate kel_ndmsel.
     d/dt(depot)             <- -ka * depot
     d/dt(central)           <-  ka * depot - kel * central - k23 * central + k32 * peripheral1
     d/dt(peripheral1)       <-  k23 * central - k32 * peripheral1
-    d/dt(central_ndsel)     <-  fm * kel * central * (mw_ndsel / mw_parent) -
-                                kel_ndsel * central_ndsel -
-                                k45 * central_ndsel + k54 * peripheral1_ndsel
-    d/dt(peripheral1_ndsel) <-  k45 * central_ndsel - k54 * peripheral1_ndsel
+    d/dt(central_ndmsel)     <-  fm * kel * central * (mw_ndmsel / mw_parent) -
+                                kel_ndmsel * central_ndmsel -
+                                k45 * central_ndmsel + k54 * peripheral1_ndmsel
+    d/dt(peripheral1_ndmsel) <-  k45 * central_ndmsel - k54 * peripheral1_ndmsel
 
     # Sequential zero-order release + first-order absorption: rxode2 infuses
     # the dose into depot over duration `dur(depot) = d1` starting at lag
@@ -273,9 +273,9 @@ Patel_2017_selumetinib <- function() {
     # The Patel 2017 paper reports concentrations in nmol/L; the validation
     # vignette includes the conversion ng/mL = nmol/L * (MW / 1000).
     Cc       <- central       / vc       * 1000
-    Cc_ndsel <- central_ndsel / vc_ndsel * 1000
+    Cc_ndmsel <- central_ndmsel / vc_ndmsel * 1000
 
     Cc       ~ prop(propSd)       + add(addSd)
-    Cc_ndsel ~ prop(propSd_ndsel) + add(addSd_ndsel)
+    Cc_ndmsel ~ prop(propSd_ndmsel) + add(addSd_ndmsel)
   })
 }

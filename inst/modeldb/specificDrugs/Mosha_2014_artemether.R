@@ -45,7 +45,7 @@ Mosha_2014_artemether <- function() {
     n_pregnant      = 33L,
     n_nonpregnant   = 22L,
     n_observations_am  = 146L,
-    n_observations_dha = 98L,
+    n_observations_dihydroart = 98L,
     age_range       = "18-41 years (pregnant median 25; non-pregnant median 21.5; Table 1)",
     weight_range    = "40-80 kg (pregnant median 52; non-pregnant median 48.5; Table 1)",
     sex_female_pct  = 100,
@@ -90,13 +90,13 @@ Mosha_2014_artemether <- function() {
     logitfdepot <- 1.4                ; label("Logit-transformed fraction of AM dose entering AM central, logit(F1); 1 - F1 = presystemic AM-to-DHA fraction")  # Mosha 2014 Table 3: Logit F1 = 1.4 (RSE 27%; bootstrap 1.5, 95% CI 0.7 to 2.6); F1 = expit(1.4) = 0.802
     lka     <- fixed(log(0.70))       ; label("Absorption rate constant, ka (1/h); fixed")                            # Mosha 2014 Table 3: Ka fixed at 0.70 1/h (Methods: "the absorption rate constants ... were thus fixed ... to achieve peak plasma AM and LF concentrations, respectively, 2 h and 6 to 8 h after drug intake")
     lk23    <- log(0.084)             ; label("AM-to-DHA formation rate constant, K23 (1/h)")                         # Mosha 2014 Table 3: K23 = 0.084 (bootstrap 0.088, 95% CI 0.05-0.16)
-    lcl_dha <- log(71)                ; label("Apparent dihydroartemisinin elimination clearance, CL_met/F (L/h)")    # Mosha 2014 Table 3: CL_met = 71 (RSE 46%; bootstrap 69, 95% CI 38-136)
+    lcl_dihydroart <- log(71)                ; label("Apparent dihydroartemisinin elimination clearance, CL_met/F (L/h)")    # Mosha 2014 Table 3: CL_met = 71 (RSE 46%; bootstrap 69, 95% CI 38-136)
 
     # DHA central volume Vm is fixed equal to AM Vc in the source paper
     # ("Owing to identification problems, the volume of distributions of
     # DLF and DHA could not be estimated and were assumed to be equal to
     # those of LF and AM, respectively"). Encoded inside model() by
-    # setting vc_dha <- vc; no separate ini() parameter is declared.
+    # setting vc_dihydroart <- vc; no separate ini() parameter is declared.
 
     # IIV. Mosha 2014 reports IIV as %CV (Table 3 column "IIV (%)").
     # The internal variances are recovered by omega^2 = log((CV/100)^2 + 1):
@@ -116,7 +116,7 @@ Mosha_2014_artemether <- function() {
     # proportional error model with 53% CV.
     propSd     <- 0.72    ; label("Proportional residual SD for AM plasma concentration (fraction)")    # Mosha 2014 Table 3: sigma_prop,AM = 72% CV (RSE 26%; bootstrap 69%, 95% CI 49-87)
     addSd      <- 38.792  ; label("Additive residual SD for AM plasma concentration (ng/mL)")           # Mosha 2014 Table 3: sigma_add,AM = 0.13 umol/L * 298.4 g/mol = 38.79 ng/mL (RSE 7%; bootstrap 0.13, 95% CI 0.03-0.20 umol/L)
-    propSd_dha <- 0.53    ; label("Proportional residual SD for DHA plasma concentration (fraction)")   # Mosha 2014 Table 3: sigma_prop,DHA = 53% CV (RSE 14%; bootstrap 51%, 95% CI 44-59)
+    propSd_dihydroart <- 0.53    ; label("Proportional residual SD for DHA plasma concentration (fraction)")   # Mosha 2014 Table 3: sigma_prop,DHA = 53% CV (RSE 14%; bootstrap 51%, 95% CI 44-59)
   })
 
   model({
@@ -127,55 +127,55 @@ Mosha_2014_artemether <- function() {
     # systemic AM-to-DHA formation step under the assumption of 1:1 molar
     # conversion.
     mw_arm <- 298.4
-    mw_dha <- 284.36
+    mw_dihydroart <- 284.36
 
     # Individual PK parameters. Only AM CL carries IIV; ka is fixed; Vc,
     # K23, CL_met, and logit(F1) are point estimates with no eta.
     ka      <- exp(lka)
     cl      <- exp(lcl + etalcl)
     vc      <- exp(lvc)
-    vc_dha  <- vc                          # Vm = Vc, fixed structurally
-    cl_dha  <- exp(lcl_dha)
+    vc_dihydroart  <- vc                          # Vm = Vc, fixed structurally
+    cl_dihydroart  <- exp(lcl_dihydroart)
     k23     <- exp(lk23)
 
     # Fraction of AM dose entering AM central via the logit-transformed F1.
     # f1 is unitless on (0, 1); (1 - f1) of the dose bypasses AM central
-    # and feeds directly into central_dha with AM-to-DHA molar conversion.
+    # and feeds directly into central_dihydroart with AM-to-DHA molar conversion.
     f1      <- expit(logitfdepot)
 
     # Elimination rate constants. AM is eliminated at kel = cl / vc
-    # (apparent total clearance), and DHA is eliminated at kel_dha =
-    # cl_dha / vc_dha. K23 is the formation-rate constant feeding DHA from
+    # (apparent total clearance), and DHA is eliminated at kel_dihydroart =
+    # cl_dihydroart / vc_dihydroart. K23 is the formation-rate constant feeding DHA from
     # AM central; it is reported alongside CL as a separate parameter in
     # Mosha 2014 Table 3 and is interpreted here as the AM-to-DHA flux
     # constant rather than as the AM elimination rate (which is fully
     # captured by cl / vc).
     kel     <- cl     / vc
-    kel_dha <- cl_dha / vc_dha
+    kel_dihydroart <- cl_dihydroart / vc_dihydroart
 
     # ODE system: first-order absorption from depot with F1-fraction
     # routing into AM central (mass units mg) and (1 - F1)-fraction
     # routing into DHA central (mass units mg, converted from AM mass via
     # the MW ratio). Systemic AM is eliminated at kel; DHA is fed by both
     # the presystemic-conversion arm and the systemic K23 arm and is
-    # eliminated at kel_dha.
+    # eliminated at kel_dihydroart.
     d/dt(depot)       <- -ka * depot
     d/dt(central)     <-  f1       * ka * depot                            - kel * central
-    d/dt(central_dha) <-  (1 - f1) * ka * depot * (mw_dha / mw_arm) +
-                          k23       * central   * (mw_dha / mw_arm) -
-                          kel_dha   * central_dha
+    d/dt(central_dihydroart) <-  (1 - f1) * ka * depot * (mw_dihydroart / mw_arm) +
+                          k23       * central   * (mw_dihydroart / mw_arm) -
+                          kel_dihydroart   * central_dihydroart
 
     # Plasma concentrations in ng/mL. With doses in mg and volumes in L,
     # central / vc has units mg/L = ug/mL; multiplying by 1000 yields
     # ng/mL, the unit the paper reports (e.g. Mosha 2014 Figure 2A).
     Cc     <- 1000 * central     / vc
-    Cc_dha <- 1000 * central_dha / vc_dha
+    Cc_dihydroart <- 1000 * central_dihydroart / vc_dihydroart
 
     # Residual error. AM observation: combined proportional + additive on
     # linear-concentration scale (Results, "A mixed-error model best
     # described residual intrapatient variability for AM"). DHA
     # observation: pure proportional ("A ... proportional one for DHA").
     Cc     ~ add(addSd) + prop(propSd)
-    Cc_dha ~ prop(propSd_dha)
+    Cc_dihydroart ~ prop(propSd_dihydroart)
   })
 }

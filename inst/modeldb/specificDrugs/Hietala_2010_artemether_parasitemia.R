@@ -136,8 +136,8 @@ Hietala_2010_artemether_parasitemia <- function() {
     lvc      <- log(5.2)         ; label("Apparent artemether central volume Vc/F_ARM (L/kg)")        # Hietala 2010 Table 1: Vc/F_ARM = 5.2 (95% CI 3.5-7.1)
     lq       <- log(1.4)         ; label("Apparent artemether intercompartmental clearance Q/F_ARM (L/h/kg)") # Hietala 2010 Table 1: Q_ARM = 1.4 (95% CI 1.1-1.8); see Hietala_2010_artemether comment on the Table caption unit typo
     lvp      <- log(41.4)        ; label("Apparent artemether peripheral volume Vp/F_ARM (L/kg)")     # Hietala 2010 Table 1: Vp/F_ARM = 41.4 (95% CI 29.0-58.1)
-    lcl_dha  <- log(6.8)         ; label("Apparent DHA metabolite clearance CL/F_DHA (L/h/kg); F_DHA fixed to 1") # Hietala 2010 Table 1: CL/F_DHA = 6.8 (95% CI 5.8-8.0)
-    lvc_dha  <- log(3.7)         ; label("Apparent DHA metabolite volume V/F_DHA (L/kg); F_DHA fixed to 1")      # Hietala 2010 Table 1: V/F_DHA = 3.7 (95% CI 2.3-8.7)
+    lcl_dihydroart  <- log(6.8)         ; label("Apparent DHA metabolite clearance CL/F_DHA (L/h/kg); F_DHA fixed to 1") # Hietala 2010 Table 1: CL/F_DHA = 6.8 (95% CI 5.8-8.0)
+    lvc_dihydroart  <- log(3.7)         ; label("Apparent DHA metabolite volume V/F_DHA (L/kg); F_DHA fixed to 1")      # Hietala 2010 Table 1: V/F_DHA = 3.7 (95% CI 2.3-8.7)
 
     # === PD parameters (Hietala 2010 Table 3, symptomatic-patient column) ===
     # P_init: per-individual initial parasitemia introduced into the tiny-ring
@@ -185,7 +185,7 @@ Hietala_2010_artemether_parasitemia <- function() {
 
     # === PK IIV (Hietala 2010 Table 1) ===
     etalcl     ~ 0.155649    # Hietala 2010 Table 1: IIV on CL/F_ARM = 41% CV; omega^2 = log(0.41^2 + 1)
-    etalcl_dha ~ 0.198101    # Hietala 2010 Table 1: IIV on CL/F_DHA = 47% CV; omega^2 = log(0.47^2 + 1)
+    etalcl_dihydroart ~ 0.198101    # Hietala 2010 Table 1: IIV on CL/F_DHA = 47% CV; omega^2 = log(0.47^2 + 1)
 
     # === PD IIV (Hietala 2010 Table 3) ===
     # P_init carries the only PD-side IIV; CV = 119.2% -> omega^2 = log(1.192^2 + 1).
@@ -196,8 +196,8 @@ Hietala_2010_artemether_parasitemia <- function() {
     # the additive components fixed (Table 1).
     propSd     <- 0.61                                                                                 ; label("Proportional residual SD for artemether plasma concentration (fraction)") # Hietala 2010 Table 1: sigma_prop_ARM = 61%
     addSd      <- fixed(2)                                                                             ; label("Additive residual SD for artemether plasma concentration (nM); fixed")    # Hietala 2010 Table 1: sigma_add_ARM = 2 nM (fixed)
-    propSd_dha <- 0.82                                                                                 ; label("Proportional residual SD for DHA plasma concentration (fraction)")       # Hietala 2010 Table 1: sigma_prop_DHA = 82%
-    addSd_dha  <- fixed(3)                                                                             ; label("Additive residual SD for DHA plasma concentration (nM); fixed")          # Hietala 2010 Table 1: sigma_add_DHA = 3 nM (fixed)
+    propSd_dihydroart <- 0.82                                                                                 ; label("Proportional residual SD for DHA plasma concentration (fraction)")       # Hietala 2010 Table 1: sigma_prop_DHA = 82%
+    addSd_dihydroart  <- fixed(3)                                                                             ; label("Additive residual SD for DHA plasma concentration (nM); fixed")          # Hietala 2010 Table 1: sigma_add_DHA = 3 nM (fixed)
 
     # Parasitemia residual error. Table 3 reports sigma = 138% as a
     # proportional residual on the log-transformed parasite-density
@@ -210,7 +210,7 @@ Hietala_2010_artemether_parasitemia <- function() {
   model({
     # === ARM + DHA PK structure (identical to Hietala_2010_artemether) ===
     mw_arm <- 298.4   # g/mol
-    mw_dha <- 284.3   # g/mol
+    mw_dihydroart <- 284.3   # g/mol
 
     # Time-dependent CL/F_ARM via the OCC dose-occasion covariate
     # (CL/F_ARM = theta1 * (1 + theta2 * (OCC - 1)) * exp(eta)). All
@@ -220,22 +220,22 @@ Hietala_2010_artemether_parasitemia <- function() {
     vc     <-  exp(lvc)                                                * WT
     q      <-  exp(lq)                                                 * WT
     vp     <-  exp(lvp)                                                * WT
-    cl_dha <-  exp(lcl_dha + etalcl_dha)                               * WT
-    vc_dha <-  exp(lvc_dha)                                            * WT
+    cl_dihydroart <-  exp(lcl_dihydroart + etalcl_dihydroart)                               * WT
+    vc_dihydroart <-  exp(lvc_dihydroart)                                            * WT
 
     kel     <- cl     / vc
     k12     <- q      / vc
     k21     <- q      / vp
-    kel_dha <- cl_dha / vc_dha
+    kel_dihydroart <- cl_dihydroart / vc_dihydroart
 
     d/dt(depot)       <- -ka * depot
     d/dt(central)     <-  ka * depot - kel * central - k12 * central + k21 * peripheral1
     d/dt(peripheral1) <-                              k12 * central - k21 * peripheral1
-    d/dt(central_dha) <-  kel * central * (mw_dha / mw_arm) - kel_dha * central_dha
+    d/dt(central_dihydroart) <-  kel * central * (mw_dihydroart / mw_arm) - kel_dihydroart * central_dihydroart
 
     # Plasma concentrations in nM
     Cc     <- 1e6 * central     / vc     / mw_arm
-    Cc_dha <- 1e6 * central_dha / vc_dha / mw_dha
+    Cc_dihydroart <- 1e6 * central_dihydroart / vc_dihydroart / mw_dihydroart
 
     # === PD: parasite life-cycle structure ===
     # Per-individual P_init (with log-normal IIV) and back-transformed PD
@@ -266,7 +266,7 @@ Hietala_2010_artemether_parasitemia <- function() {
     # the published equation simulator-safe; the choice is documented in
     # the vignette's Assumptions and deviations section.
     k_arm <- (Cc     > 1) * s_armdha * log(Cc     + (Cc     <= 1))
-    k_dha <- (Cc_dha > 1) * s_armdha * log(Cc_dha + (Cc_dha <= 1))
+    k_dihydroart <- (Cc_dihydroart > 1) * s_armdha * log(Cc_dihydroart + (Cc_dihydroart <= 1))
 
     # Sine modulation on the PMT -> PTR feedback. With amp fixed to 0 for
     # symptomatic patients the factor collapses to unity; the algebraic
@@ -276,7 +276,7 @@ Hietala_2010_artemether_parasitemia <- function() {
 
     # Visible-stage decay rate, common to PTR, PSR, PLR (Methods: drug-
     # induced killing acts on all visible developmental stages).
-    decay_visible <- k_vpt + k_arm + k_dha
+    decay_visible <- k_vpt + k_arm + k_dihydroart
 
     # Five-compartment parasite life cycle (Equations 1-5 of the paper).
     # PTR is fed by sequestered PMT cells released at rate k_IPT and
@@ -284,8 +284,8 @@ Hietala_2010_artemether_parasitemia <- function() {
     d/dt(parasite_tinyrings)       <-  k_ipt * parasite_matureschizonts * repl * sin_mod - decay_visible * parasite_tinyrings
     d/dt(parasite_smallrings)      <-  k_vpt * parasite_tinyrings                        - decay_visible * parasite_smallrings
     d/dt(parasite_largerings)      <-  k_vpt * parasite_smallrings                       - decay_visible * parasite_largerings
-    d/dt(parasite_matureschizonts) <-  k_vpt * parasite_largerings                       - parasite_matureschizonts * (k_ipt * sin_mod + k_arm + k_dha)
-    d/dt(parasite_spleen)          <- (k_arm + k_dha) * (parasite_tinyrings + parasite_smallrings + parasite_largerings + parasite_matureschizonts) - kspleen * parasite_spleen
+    d/dt(parasite_matureschizonts) <-  k_vpt * parasite_largerings                       - parasite_matureschizonts * (k_ipt * sin_mod + k_arm + k_dihydroart)
+    d/dt(parasite_spleen)          <- (k_arm + k_dihydroart) * (parasite_tinyrings + parasite_smallrings + parasite_largerings + parasite_matureschizonts) - kspleen * parasite_spleen
 
     # Initial condition: per-individual P_init parasites/microL placed in the
     # tiny-ring compartment at simulation start (Results: 'PD model ... is
@@ -305,7 +305,7 @@ Hietala_2010_artemether_parasitemia <- function() {
 
     # Residual error
     Cc                 ~ add(addSd)     + prop(propSd)
-    Cc_dha             ~ add(addSd_dha) + prop(propSd_dha)
+    Cc_dihydroart             ~ add(addSd_dihydroart) + prop(propSd_dihydroart)
     visibleParasitemia ~ prop(propSd_visibleParasitemia)
   })
 }

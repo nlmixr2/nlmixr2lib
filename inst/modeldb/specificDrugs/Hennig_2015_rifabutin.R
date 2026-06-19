@@ -60,9 +60,9 @@ Hennig_2015_rifabutin <- function() {
     # Vp/F. Apparent clearance Cl/F here represents the
     # non-metabolic-formation arm of rifabutin elimination from the
     # central compartment; the formation clearance to the
-    # 25-desacetyl rifabutin metabolite (lcl_form_desrbn) is a
+    # 25-desacetyl rifabutin metabolite (lcl_form_desacetylrbn) is a
     # separate parallel rifabutin-elimination arm so the total
-    # rifabutin elimination clearance is (cl + cl_form_desrbn).
+    # rifabutin elimination clearance is (cl + cl_form_desacetylrbn).
     # This matches the JAC 2016 Hennig pooled-rifabutin DDI control
     # stream parameterization (DADT(2) = ... - K20*A2 - K24*A2 with
     # K20 = CL/V and K24 = CLe/V).
@@ -72,7 +72,7 @@ Hennig_2015_rifabutin <- function() {
     lvc  <- log(117.8);  label("Rifabutin apparent central volume V/F (L per 70 kg)")                # Hennig 2015 Table 2 (Final model row 'Central volume of distribution V/F (L/70kg)')
     lq   <- log(123.8);  label("Rifabutin apparent inter-compartmental clearance Q/F (L/h per 70 kg)") # Hennig 2015 Table 2 (Final model row 'Q/F (L/h/70 kg)')
     lvp  <- log(4897.8); label("Rifabutin apparent peripheral volume Vp/F (L per 70 kg)")             # Hennig 2015 Table 2 (Final model row 'Vpe/F (L/70kg)')
-    lcl_form_desrbn <- log(21.2); label("Rifabutin-to-des-rifabutin apparent formation clearance Cle/F (L/h per 70 kg)") # Hennig 2015 Table 2 (Final model row 'Cle/F (metabolism of RBN to des-RBN)') ; allometrically weight-scaled per Hennig 2015 Methods/Results lines 100-102 and 127-128.
+    lcl_form_desacetylrbn <- log(21.2); label("Rifabutin-to-des-rifabutin apparent formation clearance Cle/F (L/h per 70 kg)") # Hennig 2015 Table 2 (Final model row 'Cle/F (metabolism of RBN to des-RBN)') ; allometrically weight-scaled per Hennig 2015 Methods/Results lines 100-102 and 127-128.
     ltlag <- log(1.6);   label("Rifabutin absorption lag time (h)")                                   # Hennig 2015 Table 2 (Final model row 'Lag time (h)')
     lfdepot <- fixed(log(1)); label("Rifabutin bioavailability F (typical value FIXED to 1)")         # Hennig 2015 Table 2 (Final model row 'Bioavailability F (Fixed)') ; fixed at population value 1 because absolute F is not identifiable from oral-only data.
 
@@ -87,7 +87,7 @@ Hennig_2015_rifabutin <- function() {
     e_snp_slco1b1_rs11045819_fdepot <- 0.304; label("Fractional increase in rifabutin bioavailability F for SLCO1B1 rs11045819 AC carriers relative to CC reference (unitless)") # Hennig 2015 Table 2 'Increase in bioavailability F (percent) for rs11045819 genotype = 30.4'.
 
     # ============================================================
-    # 25-O-desacetyl rifabutin (metabolite, suffix '_desrbn')
+    # 25-O-desacetyl rifabutin (metabolite, suffix '_desacetylrbn')
     # 2-compartment with first-order elimination from the metabolite
     # central compartment. Metabolite parameters are apparent (i.e.,
     # with respect to the unidentifiable parent-F and
@@ -95,10 +95,10 @@ Hennig_2015_rifabutin <- function() {
     # scaled in the source model. Qm/F and Vmper/F were FIXED in
     # Hennig 2015 (Table 2 marks both as 'Fixed').
     # ============================================================
-    lcl_desrbn <- log(196.7); label("Des-rifabutin apparent elimination clearance Clm/F (L/h)")        # Hennig 2015 Table 2 (Final model row 'Clm/F (L/h)' under 'des-Rifabutin parameters')
-    lvc_desrbn <- log(3.9);   label("Des-rifabutin apparent central volume Vm/F (L)")                  # Hennig 2015 Table 2 (Final model row 'Vm/F (L)' under 'des-Rifabutin parameters')
-    lq_desrbn  <- fixed(log(0.15));   label("Des-rifabutin apparent inter-compartmental clearance Qm/F (L/h; FIXED)")  # Hennig 2015 Table 2 'Qm/F (L/h) (Fixed)'
-    lvp_desrbn <- fixed(log(536.8));  label("Des-rifabutin apparent peripheral volume Vm-per/F (L; FIXED)")           # Hennig 2015 Table 2 'Vm-per/F (L) (Fixed)'
+    lcl_desacetylrbn <- log(196.7); label("Des-rifabutin apparent elimination clearance Clm/F (L/h)")        # Hennig 2015 Table 2 (Final model row 'Clm/F (L/h)' under 'des-Rifabutin parameters')
+    lvc_desacetylrbn <- log(3.9);   label("Des-rifabutin apparent central volume Vm/F (L)")                  # Hennig 2015 Table 2 (Final model row 'Vm/F (L)' under 'des-Rifabutin parameters')
+    lq_desacetylrbn  <- fixed(log(0.15));   label("Des-rifabutin apparent inter-compartmental clearance Qm/F (L/h; FIXED)")  # Hennig 2015 Table 2 'Qm/F (L/h) (Fixed)'
+    lvp_desacetylrbn <- fixed(log(536.8));  label("Des-rifabutin apparent peripheral volume Vm-per/F (L; FIXED)")           # Hennig 2015 Table 2 'Vm-per/F (L) (Fixed)'
 
     # ============================================================
     # Inter-individual variability (between-subject variability,
@@ -110,7 +110,7 @@ Hennig_2015_rifabutin <- function() {
     etalka  ~ 0.05557                                                          # BSV 23.9 percent on ka (Hennig 2015 Table 2); omega^2 = log(1 + 0.239^2) = 0.05557
     etaltlag ~ 0.05923                                                         # BSV 24.7 percent on Lag time (Hennig 2015 Table 2); omega^2 = log(1 + 0.247^2) = 0.05923
     etalfdepot ~ 0.10336                                                       # BSV 33.0 percent on bioavailability F (Hennig 2015 Table 2 'F (Fixed)' BSV column); omega^2 = log(1 + 0.33^2) = 0.10336
-    etalcl_desrbn ~ 0.08618                                                    # BSV 30.0 percent on des-rifabutin Clm/F (Hennig 2015 Table 2 des-Rifabutin BSV); omega^2 = log(1 + 0.30^2) = 0.08618
+    etalcl_desacetylrbn ~ 0.08618                                                    # BSV 30.0 percent on des-rifabutin Clm/F (Hennig 2015 Table 2 des-Rifabutin BSV); omega^2 = log(1 + 0.30^2) = 0.08618
 
     # ============================================================
     # Residual error - combined additive + proportional on each
@@ -120,8 +120,8 @@ Hennig_2015_rifabutin <- function() {
     # ============================================================
     propSd <- 0.346; label("Rifabutin proportional residual SD (fraction)")              # Hennig 2015 Table 2 'Proportional error rifabutin (percent) = 34.6'
     addSd  <- 14.0;  label("Rifabutin additive residual SD (ng/mL)")                     # Hennig 2015 Table 2 'Additive error rifabutin (ng/mL) = 14.0'
-    propSd_desrbn <- 0.346; label("Des-rifabutin proportional residual SD (fraction)")   # Hennig 2015 Table 2 'Proportional error des-rifabutin (percent) = 34.6'
-    addSd_desrbn  <- 1.2;   label("Des-rifabutin additive residual SD (ng/mL)")          # Hennig 2015 Table 2 'Additive error des-rifabutin (ng/mL) = 1.2'
+    propSd_desacetylrbn <- 0.346; label("Des-rifabutin proportional residual SD (fraction)")   # Hennig 2015 Table 2 'Proportional error des-rifabutin (percent) = 34.6'
+    addSd_desacetylrbn  <- 1.2;   label("Des-rifabutin additive residual SD (ng/mL)")          # Hennig 2015 Table 2 'Additive error des-rifabutin (ng/mL) = 1.2'
   })
 
   model({
@@ -151,7 +151,7 @@ Hennig_2015_rifabutin <- function() {
     vc  <- exp(lvc  + etalvc)            * bw_v * sex_vc_factor
     q   <- exp(lq)                        * bw_cl
     vp  <- exp(lvp)                       * bw_v
-    cl_form_desrbn <- exp(lcl_form_desrbn) * bw_cl
+    cl_form_desacetylrbn <- exp(lcl_form_desacetylrbn) * bw_cl
     tlag <- exp(ltlag + etaltlag)
     fdepot <- exp(lfdepot + etalfdepot) * snp_fdepot_factor
 
@@ -159,36 +159,36 @@ Hennig_2015_rifabutin <- function() {
     # Individual des-rifabutin parameters (NOT allometric weight-scaled
     # per Hennig 2015 Methods/Results; Qm/F and Vmper/F FIXED).
     # ----------------------------------------------------------------
-    cl_desrbn <- exp(lcl_desrbn + etalcl_desrbn)
-    vc_desrbn <- exp(lvc_desrbn)
-    q_desrbn  <- exp(lq_desrbn)
-    vp_desrbn <- exp(lvp_desrbn)
+    cl_desacetylrbn <- exp(lcl_desacetylrbn + etalcl_desacetylrbn)
+    vc_desacetylrbn <- exp(lvc_desacetylrbn)
+    q_desacetylrbn  <- exp(lq_desacetylrbn)
+    vp_desacetylrbn <- exp(lvp_desacetylrbn)
 
     # ----------------------------------------------------------------
     # ODE system. Compartments: depot (oral dosing), central +
-    # peripheral1 (rifabutin), central_desrbn + peripheral1_desrbn
+    # peripheral1 (rifabutin), central_desacetylrbn + peripheral1_desacetylrbn
     # (25-desacetyl rifabutin metabolite). The metabolite formation
-    # term cl_form_desrbn / vc * central is a parallel elimination
+    # term cl_form_desacetylrbn / vc * central is a parallel elimination
     # arm on rifabutin central and a generation source on
-    # central_desrbn (mass moves from parent into metabolite at rate
+    # central_desacetylrbn (mass moves from parent into metabolite at rate
     # CLe * Cp_parent; the apparent metabolite parameters absorb the
     # unidentifiable molecular-weight ratio and metabolite-F factors).
     # ----------------------------------------------------------------
     d/dt(depot)              <- -ka * depot
     d/dt(central)            <-  ka * depot -
                                  (cl / vc) * central -
-                                 (cl_form_desrbn / vc) * central -
+                                 (cl_form_desacetylrbn / vc) * central -
                                  (q  / vc) * central +
                                  (q  / vp) * peripheral1
     d/dt(peripheral1)        <-  (q  / vc) * central -
                                  (q  / vp) * peripheral1
 
-    d/dt(central_desrbn)     <-  (cl_form_desrbn / vc) * central -
-                                 (cl_desrbn / vc_desrbn) * central_desrbn -
-                                 (q_desrbn  / vc_desrbn) * central_desrbn +
-                                 (q_desrbn  / vp_desrbn) * peripheral1_desrbn
-    d/dt(peripheral1_desrbn) <-  (q_desrbn  / vc_desrbn) * central_desrbn -
-                                 (q_desrbn  / vp_desrbn) * peripheral1_desrbn
+    d/dt(central_desacetylrbn)     <-  (cl_form_desacetylrbn / vc) * central -
+                                 (cl_desacetylrbn / vc_desacetylrbn) * central_desacetylrbn -
+                                 (q_desacetylrbn  / vc_desacetylrbn) * central_desacetylrbn +
+                                 (q_desacetylrbn  / vp_desacetylrbn) * peripheral1_desacetylrbn
+    d/dt(peripheral1_desacetylrbn) <-  (q_desacetylrbn  / vc_desacetylrbn) * central_desacetylrbn -
+                                 (q_desacetylrbn  / vp_desacetylrbn) * peripheral1_desacetylrbn
 
     # ----------------------------------------------------------------
     # Bioavailability and absorption lag on the depot compartment.
@@ -201,12 +201,12 @@ Hennig_2015_rifabutin <- function() {
     # when dose is in mg and vc is in L; multiply by 1000 to convert
     # to ng/mL so that the proportional and additive residual-error
     # parameters (reported in ng/mL by Hennig 2015 Table 2) match the
-    # output Cc and Cc_desrbn directly.
+    # output Cc and Cc_desacetylrbn directly.
     # ----------------------------------------------------------------
     Cc        <- (central        / vc)        * 1000
-    Cc_desrbn <- (central_desrbn / vc_desrbn) * 1000
+    Cc_desacetylrbn <- (central_desacetylrbn / vc_desacetylrbn) * 1000
 
     Cc        ~ add(addSd)        + prop(propSd)
-    Cc_desrbn ~ add(addSd_desrbn) + prop(propSd_desrbn)
+    Cc_desacetylrbn ~ add(addSd_desacetylrbn) + prop(propSd_desacetylrbn)
   })
 }

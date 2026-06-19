@@ -31,8 +31,8 @@ Morris_2011_artesunate <- function() {
       notes              = paste(
         "1 = pregnant (second trimester 22-26 weeks gestation or third trimester",
         "32-36 weeks); 0 = non-pregnant control. Time-fixed per subject. Acts as",
-        "a proportional effect on DHA apparent clearance via cl_dha = cl_dha_typ",
-        "* (1 + e_preg_cl_dha * PREG); the structural CLM/F = 64.0 L/h is the",
+        "a proportional effect on DHA apparent clearance via cl_dihydroart = cl_dihydroart_typ",
+        "* (1 + e_preg_cl_dihydroart * PREG); the structural CLM/F = 64.0 L/h is the",
         "non-pregnant reference and pregnant women have approximately 42.3%",
         "higher CLM (Morris 2011 Table 2). Postpartum data could not be",
         "characterised by any tested structural model (Results, p.123 of the",
@@ -94,17 +94,17 @@ Morris_2011_artesunate <- function() {
     lvc     <- log(195)
     label("Apparent AS central volume of distribution V2/F (L)")  # Morris 2011 Table 2: V2/F = 195 L (%RSE 16.4)
 
-    lcl_dha <- log(64.0)
-    label("Apparent DHA elimination clearance CLM/F in non-pregnant women (L/h); pregnant women have CLM scaled by (1 + e_preg_cl_dha)")  # Morris 2011 Table 2: CLM/F = 64.0 L/h (%RSE 6.53), non-pregnant reference
+    lcl_dihydroart <- log(64.0)
+    label("Apparent DHA elimination clearance CLM/F in non-pregnant women (L/h); pregnant women have CLM scaled by (1 + e_preg_cl_dihydroart)")  # Morris 2011 Table 2: CLM/F = 64.0 L/h (%RSE 6.53), non-pregnant reference
 
-    lvc_dha <- log(91.4)
+    lvc_dihydroart <- log(91.4)
     label("Apparent DHA central volume of distribution V3/F (L)")  # Morris 2011 Table 2: V3/F = 91.4 L (%RSE 6.15)
 
     # Covariate effect: pregnancy on DHA apparent clearance. Encoded as a
     # proportional effect so the structural CLM/F at the reference category
     # PREG = 0 (non-pregnant) is preserved verbatim from Table 2.
-    e_preg_cl_dha <- 0.423
-    label("Proportional effect of pregnancy on DHA apparent clearance (unitless); cl_dha = cl_dha_typ * (1 + e_preg_cl_dha * PREG), so pregnant women have approximately 42.3% higher DHA CL/F than non-pregnant controls")  # Morris 2011 Table 2: PREG on CLM/F = 0.423 (%RSE 30.3)
+    e_preg_cl_dihydroart <- 0.423
+    label("Proportional effect of pregnancy on DHA apparent clearance (unitless); cl_dihydroart = cl_dihydroart_typ * (1 + e_preg_cl_dihydroart * PREG), so pregnant women have approximately 42.3% higher DHA CL/F than non-pregnant controls")  # Morris 2011 Table 2: PREG on CLM/F = 0.423 (%RSE 30.3)
 
     # Inter-individual variability (log-normal). Morris 2011 Table 2 reports
     # variances on the log scale; the listed "%CV" is sqrt(variance) * 100,
@@ -121,8 +121,8 @@ Morris_2011_artesunate <- function() {
     etaldur    ~ 1.33    # Morris 2011 Table 2: var(eta_D2) = 1.33 (%RSE 22.9; reported as 115 %CV)
     etallagt   ~ 0.573   # Morris 2011 Table 2: var(eta_ALAG) = 0.573 (%RSE 20.8; reported as 75.7 %CV)
     etalvc     ~ 0.604   # Morris 2011 Table 2: var(eta_V2/F) = 0.604 (%RSE 30.1; reported as 77.7 %CV)
-    etalcl_dha ~ 0.0802  # Morris 2011 Table 2: var(eta_CLM/F) = 0.0802 (%RSE 24.9; reported as 28.3 %CV)
-    etalvc_dha ~ 0.0790  # Morris 2011 Table 2: var(eta_V3/F) = 0.0790 (%RSE 34.7; reported as 28.1 %CV)
+    etalcl_dihydroart ~ 0.0802  # Morris 2011 Table 2: var(eta_CLM/F) = 0.0802 (%RSE 24.9; reported as 28.3 %CV)
+    etalvc_dihydroart ~ 0.0790  # Morris 2011 Table 2: var(eta_V3/F) = 0.0790 (%RSE 34.7; reported as 28.1 %CV)
 
     # Residual error. Morris 2011 modelled the natural-log-transformed AS
     # and DHA plasma concentrations with additive residual error on the
@@ -135,7 +135,7 @@ Morris_2011_artesunate <- function() {
     # (sqrt of the variance reported in Table 2).
     propSd     <- sqrt(0.696)
     label("Proportional residual SD for artesunate plasma concentration (SD on the log scale)")  # Morris 2011 Table 2: var_RV(AS) = 0.696 (%RSE 11.6); SD = sqrt(0.696) ~= 0.834
-    propSd_dha <- sqrt(0.174)
+    propSd_dihydroart <- sqrt(0.174)
     label("Proportional residual SD for DHA plasma concentration (SD on the log scale)")  # Morris 2011 Table 2: var_RV(DHA) = 0.174 (%RSE 9.94); SD = sqrt(0.174) ~= 0.417
   })
 
@@ -151,18 +151,18 @@ Morris_2011_artesunate <- function() {
     fr_fo  <- exp(lfdepot)
     cl     <- exp(lcl)
     vc     <- exp(lvc     + etalvc)
-    cl_dha <- exp(lcl_dha + etalcl_dha) * (1 + e_preg_cl_dha * PREG)
-    vc_dha <- exp(lvc_dha + etalvc_dha)
+    cl_dihydroart <- exp(lcl_dihydroart + etalcl_dihydroart) * (1 + e_preg_cl_dihydroart * PREG)
+    vc_dihydroart <- exp(lvc_dihydroart + etalvc_dihydroart)
 
     # Micro-constants. Under the source paper's assumption of complete,
     # irreversible in-vivo conversion of AS to DHA, all AS clearance is
     # metabolic conversion: kel = cl/vc transfers AS central -> DHA
-    # central. DHA is eliminated linearly at kel_dha = cl_dha/vc_dha.
+    # central. DHA is eliminated linearly at kel_dihydroart = cl_dihydroart/vc_dihydroart.
     # Doses and concentrations are tracked on a molar basis (nmol /
     # nmol/L) so no molecular-weight conversion is needed at the
     # parent-to-metabolite step.
     kel     <- cl     / vc
-    kel_dha <- cl_dha / vc_dha
+    kel_dihydroart <- cl_dihydroart / vc_dihydroart
 
     # ODE system. Mixed zero-order plus lagged first-order absorption of
     # AS uses two dose records per administration: a fraction fr_fo
@@ -175,7 +175,7 @@ Morris_2011_artesunate <- function() {
     # duration D2), CMT 3 = DHA central.
     d/dt(depot)       <- -ka * depot
     d/dt(central)     <-  ka * depot - kel * central
-    d/dt(central_dha) <-  kel * central - kel_dha * central_dha
+    d/dt(central_dihydroart) <-  kel * central - kel_dihydroart * central_dihydroart
 
     # Bioavailability and timing for the two parallel absorption arms.
     # rxode2 applies f(), alag(), and dur() to whichever compartment a
@@ -191,9 +191,9 @@ Morris_2011_artesunate <- function() {
 
     # Plasma concentrations (nmol/L; molar dose in nmol; volumes in L).
     Cc     <- central     / vc
-    Cc_dha <- central_dha / vc_dha
+    Cc_dihydroart <- central_dihydroart / vc_dihydroart
 
     Cc     ~ prop(propSd)
-    Cc_dha ~ prop(propSd_dha)
+    Cc_dihydroart ~ prop(propSd_dihydroart)
   })
 }
