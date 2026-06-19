@@ -106,7 +106,7 @@ pop <- data.frame(
   BSA      = pmin(pmax(rnorm(n_subj, 1.70, 0.18), 1.20), 2.40),
   ALB      = pmin(pmax(rnorm(n_subj, 39.1, 4.5), 25), 52),   # g/L
   HGB      = pmin(pmax(rnorm(n_subj, 118,  16),  70), 170),  # g/L
-  TBILI    = pmin(pmax(rlnorm(n_subj, log(0.45), 0.45), 0.10), 2.00), # mg/dL
+  TBILI    = pmin(pmax(rlnorm(n_subj, log( 7.695),  7.695),   1.71),   34.2), # mg/dL
   SEXF     = rbinom(n_subj, 1, 0.34),          # ~34% female in phase 3 SPOTLIGHT/GLOW
   PRIOR_GAST     = rbinom(n_subj, 1, 0.30),          # ~30% prior gastrectomy
   CONMED_EOX = rbinom(n_subj, 1, 0.04)           # EOX used in a small subset

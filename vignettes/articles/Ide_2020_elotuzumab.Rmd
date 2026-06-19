@@ -176,7 +176,7 @@ ref_pt <- list(
   RACE_ASIAN  = 0,    # non-Asian
   CRCL        = 100,  # mL/min/1.73 m^2
   LDH         = 200,  # U/L
-  ALB         = 3.5,  # g/dL
+  ALB         = 35,  # g/dL
   B2M         = 1.0,  # < 2.0 mg/L (reference; paper uses thresholded indicators)
   HEPIMP      = 0,    # normal liver function
   ECOG_GE1    = 0,    # ECOG = 0
@@ -206,7 +206,7 @@ cohort <- tibble::tibble(
   # LDH skewed (Table 1: median 194 << mean 239; SD 146); use a log-normal
   # parametrized by log-mean = log(239) - 0.5*sigma^2 with CV ~ 0.6
   LDH        = pmin(pmax(rlnorm(n_sub, log(194), 0.5), 54), 1900),
-  ALB        = pmin(pmax(rnorm(n_sub, 3.78, 0.581), 1.9), 5.0),
+  ALB        = pmin(pmax(rnorm(n_sub,   37.8,   5.81), 19), 50),
   # B2M reported in Table 1 in mg/dL; convert to mg/L for the canonical column
   B2M        = pmin(pmax(rlnorm(n_sub, log(0.330), 0.6) * 10, 0.4), 35),
   HEPIMP     = rbinom(n_sub, 1, 0.086),

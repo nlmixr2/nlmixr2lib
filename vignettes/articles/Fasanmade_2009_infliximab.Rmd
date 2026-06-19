@@ -65,11 +65,11 @@ n_subj <- 500
 pop <- data.frame(
   ID      = seq_len(n_subj),
   WT      = rlnorm(n_subj, log(77), 0.22),   # Median 77 kg, range ~40-177
-  ALB     = rnorm(n_subj, 4.1, 0.4),         # Mean 4.1, SD 0.4 g/dL
+  ALB     = rnorm(n_subj, 41, 4),         # Mean 41, SD 4 g/dL
   SEXF    = rbinom(n_subj, 1, 0.392),        # 39.2% female
   ADA_POS = rbinom(n_subj, 1, 0.068)         # 6.8% ADA-positive
 )
-pop$ALB <- pmax(2.0, pmin(pop$ALB, 5.5))
+pop$ALB <- pmax(20, pmin(pop$ALB, 55))
 ```
 
 ## Dosing dataset

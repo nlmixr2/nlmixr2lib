@@ -152,7 +152,7 @@ ss_events <- data.frame(
   evid  = 0L,
   amt   = 0,
   cmt   = NA_character_,
-  WT    = 60, ALB = 3.9, ALP = 132, TBILI = 0.5, NEUT = 3200
+  WT    = 60, ALB = 39, ALP = 132, TBILI =   85.5, NEUT = 3200
 )
 ss_sim <- as.data.frame(rxode2::rxSolve(mod_typical, events = ss_events))
 cat(sprintf("Baseline ANC drift over 21 days (no drug): min %0.0f / max %0.0f / target 3200 cells/uL\n",
@@ -165,7 +165,7 @@ ggplot(ss_sim, aes(time / 24, ANC)) +
   geom_line() +
   scale_x_continuous("Time (days)", breaks = c(0, 7, 14, 21)) +
   scale_y_continuous("ANC (cells/uL)") +
-  labs(title = "No-drug ANC trajectory at NEUT = 3200, ALB = 3.9 (typical)",
+  labs(title = "No-drug ANC trajectory at NEUT = 3200, ALB = 39 (typical)",
        caption = "Dotted line: target baseline NEUT = 3200. Drift reflects the published Kprol != Ktr != Kout parameterisation; not a transcription error.") +
   theme_minimal(base_size = 11)
 ```
@@ -192,7 +192,7 @@ fig3a <- purrr::map_dfr(seq_along(scenarios), function(i_scen) {
   purrr::map_dfr(seq_along(albumin_levels), function(i_alb) {
     alb_label <- names(albumin_levels)[i_alb]
     alb_val   <- albumin_levels[i_alb]
-    cov_df <- tibble(WT = 60, ALB = alb_val, ALP = 132, TBILI = 0.5, NEUT = 3200)
+    cov_df <- tibble(WT = 60, ALB = alb_val, ALP = 132, TBILI =   85.5, NEUT = 3200)
     evt <- make_cohort_events(cov_df,
                               dose_times_h = d_times,
                               dose_mg      = dose_mg_free_base(1.4, bsa),
@@ -229,7 +229,7 @@ fig3b <- purrr::map_dfr(seq_along(scenarios), function(i_scen) {
   purrr::map_dfr(seq_along(bneu_levels), function(i_b) {
     b_label <- names(bneu_levels)[i_b]
     b_val   <- bneu_levels[i_b]
-    cov_df <- tibble(WT = 60, ALB = 3.9, ALP = 132, TBILI = 0.5, NEUT = b_val)
+    cov_df <- tibble(WT = 60, ALB = 39, ALP = 132, TBILI =   85.5, NEUT = b_val)
     evt <- make_cohort_events(cov_df,
                               dose_times_h = d_times,
                               dose_mg      = dose_mg_free_base(1.4, bsa),
@@ -282,7 +282,7 @@ sample_cohort <- function(n, id_offset = 0L) {
     WT    = 60,
     ALB   = alb,
     ALP   = 132,
-    TBILI = 0.5,
+    TBILI =   8.55,
     NEUT  = neut
   )
 }
@@ -390,7 +390,7 @@ knitr::kable(comparison,
 The PD model uses the upstream Majid 2014 popPK as a deterministic input, so PKNCA on the central-compartment output should approximate the Majid 2014 typical-value exposure (CL = 3.11 L/h, V1 = 4.06 L for a 68.7 kg reference subject). We supply a single typical-subject single-dose event and read off the implied Cmax, AUCinf, and half-life.
 
 ```{r pknca}
-nca_cov <- tibble(id = 1L, WT = 68.7, ALB = 4.0, ALP = 132, TBILI = 0.5, NEUT = 3200)
+nca_cov <- tibble(id = 1L, WT = 68.7, ALB = 40, ALP = 132, TBILI =   85.5, NEUT = 3200)
 nca_evt <- make_cohort_events(
   cov_df       = nca_cov,
   dose_times_h = 0,

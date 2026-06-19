@@ -122,7 +122,7 @@ n_subj <- 400
 pop <- tibble(
   ID  = seq_len(n_subj),
   WT  = rlnorm(n_subj, log(81.3), 0.22),               # median 81.3, SD ~20
-  ALB = pmax(2.8, pmin(rnorm(n_subj, 4.3, 0.4), 5.5))  # mean 4.3, SD 0.4 g/dL
+  ALB = pmax(28, pmin(rnorm(n_subj, 43, 4), 55))  # mean 43, SD 4 g/dL
 )
 
 # Disease-state assignment matching Hua 2015 Table 2 proportions.
@@ -220,7 +220,7 @@ n_iv <- 100
 pop_uc <- tibble(
   ID  = seq_len(n_iv),
   WT  = rlnorm(n_iv, log(75), 0.18),
-  ALB = pmax(2.8, pmin(rnorm(n_iv, 4.3, 0.3), 5.5))
+  ALB = pmax(28, pmin(rnorm(n_iv, 43, 3), 55))
 ) %>%
   crossing(group = c("non-UC", "UC")) %>%
   mutate(

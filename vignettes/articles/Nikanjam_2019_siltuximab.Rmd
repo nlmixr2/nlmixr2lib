@@ -128,7 +128,7 @@ make_cohort <- function(n, hv = 0L, cd = 0L, smm = 0L,
     id  = id_offset + seq_len(n),
     cohort = cohort_label,
     WT  = rlnorm(n, meanlog = log(73), sdlog = 0.20),       # ~73 kg, range ~40-170
-    ALB = pmax(2.0, pmin(rnorm(n, 4.1, 0.4), 5.2)),         # 4.1 g/dL, clip to study range
+    ALB = pmax(20, pmin(rnorm(n, 41, 4), 52)),         # 41 g/dL, clip to study range
     ALT = pmax(4,   pmin(rlnorm(n, log(19), 0.45), 96)),    # 19 U/L, log-normal in study range
     CREAT = pmax(0.4, pmin(rlnorm(n, log(0.9), 0.20), 2.4)),# 0.9 mg/dL, log-normal in study range
     DIS_HEALTHY        = hv,

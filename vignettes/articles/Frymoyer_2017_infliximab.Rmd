@@ -144,7 +144,7 @@ n_sub <- 200L
 cohort <- tibble(
   ID      = seq_len(n_sub),
   WT      = pmax(22, pmin(rlnorm(n_sub, log(53), 0.30), 120)),
-  ALB     = pmax(3.4, pmin(rnorm(n_sub, 4.3, 0.35), 4.8)),
+  ALB     = pmax(34, pmin(rnorm(n_sub, 43,    3.5), 48)),
   ADA_POS = rbinom(n_sub, 1, 0.12),
   CONMED_IMMUNOMOD = rbinom(n_sub, 1, 0.44)
 )
@@ -326,7 +326,7 @@ alb_quartile <- function(alb) cut(alb, breaks = quantile(alb, c(0, 0.25, 0.50, 0
 pop_pknca <- tibble(
   ID      = 9000L + seq_len(n_pknca),
   WT      = pmax(22, pmin(rlnorm(n_pknca, log(53), 0.30), 120)),
-  ALB     = pmax(3.4, pmin(rnorm(n_pknca, 4.3, 0.35), 4.8)),
+  ALB     = pmax(34, pmin(rnorm(n_pknca, 43,    3.5), 48)),
   ADA_POS = 0L,
   CONMED_IMMUNOMOD = 0L
 ) |>

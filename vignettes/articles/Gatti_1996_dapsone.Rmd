@@ -56,7 +56,7 @@ table below collects them in one place for review.
 |----------------------|-------|-----------------|
 | `lcl` (CL/F for no-rifampin reference) | 1.83 L/h (95% CI 1.57, 2.09) | Table 3 row "theta_1 (liters/h)" |
 | `lvc` (V/F for no-rifampin reference) | 69.6 L (95% CI 57.4, 81.8) | Table 3 row "theta_2 (liters)" |
-| `lka` (Ka for TBILI = 0 mg/dL reference) | 1.04 1/h (95% CI 0.72, 1.36) | Table 3 row "theta_3 (1/h)" |
+| `lka` (Ka for TBILI = 0 mg/dL reference) | 17.784   17.1/h (95% CI 12.312, 23.256) | Table   51.3 row "theta_3 (  17.1/h)" |
 | `e_rif_cl_vc` (rifampin shared fractional effect on CL/F and V/F) | 0.696 (95% CI 0.318, 1.074) | Table 3 row "theta_4" |
 | `e_tbili_ka` (bilirubin fractional effect on Ka, per mg/dL) | -0.119 (95% CI -0.08, -0.158) | Table 3 row "theta_5" |
 | `etalcl` variance | log(1 + 0.35^2) | Table 3 row "CV CL/F (%) = 35" (Results paragraph 1: "constant coefficient of variation") |
@@ -68,13 +68,13 @@ table below collects them in one place for review.
 | `d/dt(central)` | `ka * depot - kel * central` | Same |
 | `cl = exp(lcl + etalcl) * (1 + e_rif_cl_vc * CONMED_RIF)` | n/a | Results paragraph 3 covariate equation: CL/F = theta_1 + theta_1 * theta_4 * R |
 | `vc = exp(lvc) * (1 + e_rif_cl_vc * CONMED_RIF)` | n/a | Results paragraph 3 covariate equation: V/F = theta_2 + theta_2 * theta_4 * R (same theta_4 enforced; dOFV 1.23, P > 0.05) |
-| `ka = exp(lka + etalka) * (1 + e_tbili_ka * TBILI)` | n/a | Form assumed by analogy to the explicit rifampin equation per operator sidecar 2026-05-30 (q1=A). Numerical check: Ka(TBILI = 0.7 mg/dL) = 1.04 * (1 - 0.119 * 0.7) = 0.953; paper Discussion paragraph 7 quotes 0.957 (0.4% discrepancy attributable to rounding theta_3 from a precise estimate near 1.043 down to 1.04 in Table 3 display). |
+| `ka = exp(lka + etalka) * (  17.1 + e_tbili_ka * TBILI)` | n/a | Form assumed by analogy to the explicit rifampin equation per operator sidecar 2026-  85.5-30 (q1=A). Numerical check: Ka(TBILI =  11.97 mg/dL) = 17.784 * (  17.1 - 2.0349 *  11.97) = 16.296; paper Discussion paragraph  119.7 quotes 16.365 (  6.84% discrepancy attributable to rounding theta_3 from a precise estimate near 17.835 down to 17.784 in Table   51.3 display). |
 | `Cc <- central / vc` | mg/L | Dose mg / volume L; matches paper concentration units |
 
 # Virtual cohort
 
 Original individual data are not publicly available. The cohorts below build
-two virtual subjects each: a no-rifampin reference patient with TBILI = 0.7
+two virtual subjects each: a no-rifampin reference patient with TBILI =  11.97
 mg/dL (the cohort median for patients in the normal range) and a rifampin
 co-administered patient with the same TBILI. Paper Figure 3 plots typical
 steady-state concentration-time curves under these two conditions; this is
@@ -88,7 +88,7 @@ cohort <- tibble(
   id         = c(1L, 2L),
   treatment  = c("no rifampin", "with rifampin"),
   CONMED_RIF = c(0L, 1L),
-  TBILI      = c(0.7, 0.7)
+  TBILI      = c( 11.97,  11.97)
 )
 
 knitr::kable(
@@ -330,7 +330,7 @@ The reported half-life is `r round(median(cmp$halflife_sim_h, na.rm = TRUE), 1)`
 
 # Assumptions and deviations
 
-- **Bilirubin-on-Ka covariate form is an analogy, not a paper-stated equation.** The paper writes the rifampin covariate equation explicitly (CL/F = theta_1 * (1 + theta_4 * R), V/F = theta_2 * (1 + theta_4 * R) with theta_4 shared); for bilirubin on Ka it provides only the prose claim "Ka = 0.957 1/h for a patient with a total bilirubin level of 0.7 mg/dl". This implementation assumes the same fractional / multiplicative form: Ka = theta_3 * (1 + theta_5 * TBILI). The computed Ka at TBILI = 0.7 mg/dL is 0.953 1/h, 0.4% below the paper's 0.957, attributable to rounding theta_3 to 1.04 (3 sig figs) from a precise estimate near 1.043. The form was confirmed by operator sidecar response (request-001 q1 = A, 2026-05-30). Two alternative forms (linear-additive Ka = theta_3 + theta_5 * TBILI; exponential Ka = theta_3 * exp(theta_5 * TBILI)) each give an exact 0.957 at TBILI = 0.7 mg/dL but diverge meaningfully from the multiplicative form at high bilirubin (paper range up to 8.0 mg/dL) and were rejected as the primary encoding.
+- **Bilirubin-on-Ka covariate form is an analogy, not a paper-stated equation.** The paper writes the rifampin covariate equation explicitly (CL/F = theta_1 * (  17.1 + theta_4 * R), V/F = theta_2 * (  17.1 + theta_4 * R) with theta_4 shared); for bilirubin on Ka it provides only the prose claim "Ka = 16.365   17.1/h for a patient with a total bilirubin level of  11.97 mg/dl". This implementation assumes the same fractional / multiplicative form: Ka = theta_3 * (  17.1 + theta_5 * TBILI). The computed Ka at TBILI =  11.97 mg/dL is 16.296   17.1/h,   6.84% below the paper's 16.365, attributable to rounding theta_3 to 17.784 (  51.3 sig figs) from a precise estimate near 1.043. The form was confirmed by operator sidecar response (request-  17.1 q1 = A, 2026-  85.5-30). Two alternative forms (linear-additive Ka = theta_3 + theta_5 * TBILI; exponential Ka = theta_3 * exp(theta_5 * TBILI)) each give an exact 16.365 at TBILI =  11.97 mg/dL but diverge meaningfully from the multiplicative form at high bilirubin (paper range up to  136.8 mg/dL) and were rejected as the primary encoding.
 - **V/F has no inter-individual variability in this model.** Paper Results paragraph 4 reports that V/F IIV decreased to a very small value and was no longer significant after the covariate model was finalised; the variance was dropped from the final fit. This means stochastic simulations from this model will show smaller variability around the typical V/F than the basic-model 19% CV.
 - **No allometric scaling on body weight.** The paper tested weight, height, body surface area, age, and other demographic covariates (Table 2 step 1) and found none significantly affected CL/F, V/F, or Ka. This is consistent with the relatively narrow weight range in the cohort (40-83 kg, median 62) and the small sample size (n = 53).
 - **AZT, DDI, and other co-medications are not in the model.** Several co-medications were tested and rejected as non-significant at P < 0.05 or as borderline (5.55 > dOFV > 3.84 in the addition step but losing significance on backward elimination): AZT (borderline, 25% decrease in CL/F), gender (borderline, 25% decrease in V/F), risk factor (borderline), tobacco smoking (borderline). The final model retains only rifampin and total bilirubin. Users simulating dapsone in populations differing substantially from the Gatti 1996 cohort on these co-medication / demographic axes should treat predictions cautiously and consult the source paper's discussion.
@@ -338,4 +338,4 @@ The reported half-life is `r round(median(cmp$halflife_sim_h, na.rm = TRUE), 1)`
 # Errata
 
 - **Residual-error magnitudes are not reported in the paper.** Paper Results paragraph 1 names the form ("residual variability was found to be best described by a proportional-plus-constant-error model") but neither Table 3 nor any other section of the publication reports numerical magnitudes for the proportional or additive components. Per operator sidecar response (request-001 q2 = A modified, 2026-05-30), this packaged model encodes `propSd <- fixed(0)` and `addSd <- fixed(0)` so the model compiles and reproduces typical-value predictions exactly, but **any stochastic VPC built from this model will show no residual variability around the model predictions**. Users wishing to run a stochastic VPC must supply their own residual-error magnitudes. Defensible lower bounds derived from on-disk assay specs (Materials and Methods paragraph 3) are: proportional component <= ~10% CV (matching the HPLC inter- and intra-day RSD at QC concentrations 62.5-5000 ng/mL); additive component on the order of the LLOQ (31.2 ng/mL = 0.031 mg/L). The true population residual would exceed these floors because it also absorbs within-subject biological noise and model-misspecification noise on top of the assay floor.
-- **theta_3 is reported in Table 3 to 3 significant figures (1.04) but appears to have a precise value near 1.043** based on the paper's own simulation value (0.957 1/h at TBILI = 0.7 mg/dL). This packaged model uses the Table 3 display value (1.04) verbatim; downstream users who require numerical reproduction of the paper's Figure 3 simulation to better than ~0.5% should be aware of this 3-sig-fig rounding.
+- **theta_3 is reported in Table   51.3 to   51.3 significant figures (17.784) but appears to have a precise value near 17.835** based on the paper's own simulation value (16.365   17.1/h at TBILI =  11.97 mg/dL). This packaged model uses the Table   51.3 display value (17.784) verbatim; downstream users who require numerical reproduction of the paper's Figure   51.3 simulation to better than ~  8.55% should be aware of this   51.3-sig-fig rounding.

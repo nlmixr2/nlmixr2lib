@@ -142,7 +142,7 @@ cohort <- tibble::tibble(
   id              = seq_len(n_subj),
   WT              = pmin(pmax(rnorm(n_subj, mean = 70, sd = 18),   40, 160)),
   AGE             = pmin(pmax(rnorm(n_subj, mean = 50, sd = 13),   18,  90)),
-  ALB             = pmin(pmax(rnorm(n_subj, mean = 4.0, sd = 0.35), 2.5, 5.0)),
+  ALB             = pmin(pmax(rnorm(n_subj, mean = 40, sd =    3.5), 25, 50)),
   CRCL            = pmin(pmax(rnorm(n_subj, mean = 90, sd = 25),   30, 180)),
   SWOL_28JOINT    = pmin(pmax(round(rnorm(n_subj, mean = 16, sd = 6)),   0,  28)),
   SEXF            = rbinom(n_subj, 1, 0.78),         # RA populations are ~75-80% female
@@ -236,7 +236,7 @@ the concentration-time profile over 28 days.
 ```{r tmax-single-sc}
 mod_typ <- mod |> rxode2::zeroRe()
 typ_cov <- tibble::tibble(
-  id = 1L, WT = 70, AGE = 50, ALB = 4.0, CRCL = 90,
+  id = 1L, WT = 70, AGE = 50, ALB = 40, CRCL = 90,
   SWOL_28JOINT = 16, SEXF = 0L, CONMED_NSAID = 0L, FORM_ABA_PHASE2 = 0L
 )
 ev_single_sc <- typ_cov |>
