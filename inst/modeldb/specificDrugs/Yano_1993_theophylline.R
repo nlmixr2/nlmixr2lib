@@ -46,7 +46,7 @@ Yano_1993_theophylline <- function() {
     ),
     ALB = list(
       description = "Serum albumin",
-      units       = "g/dL",
+      units = "g/L",
       type        = "continuous",
       notes       = "Yano 1993 Alb column. Screened on both CL and Vd at the first selection step (Table II); not significant on either. Cohort mean 4.2 +/- 0.5 g/dL, range 3.1-5.1 (Table I)."
     ),
