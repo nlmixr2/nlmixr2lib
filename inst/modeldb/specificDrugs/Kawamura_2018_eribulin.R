@@ -39,7 +39,7 @@ Kawamura_2018_eribulin <- function() {
     ),
     ALB = list(
       description        = "Serum albumin at baseline.",
-      units              = "g/dL",
+      units = "g/L",
       type               = "continuous",
       reference_category = NULL,
       notes              = "Reference 4.0 g/dL on both the Majid 2014 PK CL term (positive exponent 0.946, Kawamura 2018 section 2.3) and the Kawamura 2018 PD Kprol/MTT/Kout terms (Kawamura 2018 Table 2 footnote: MTT = tvMTT * (ALB/4)^thetaALBMTT; Kprol = tvKprol * (ALB/4)^thetaALBKprol * (1 + BNEU3 * thetaBNEU3Kprol); Kout = tvKout * (ALB/4)^thetaALBKout). Cohort median 3.9 g/dL, range 1.3-5.1 g/dL (Table 1).",
@@ -153,8 +153,13 @@ Kawamura_2018_eribulin <- function() {
   })
 
   model({
+    # SI -> US-convention unit conversion (canonical ALB is in SI g/L per the
+    # 2026-06-19 register standardization audit; the original calibration
+    # used the g/dL reference value, so convert inline here).
+    alb_gdL <- ALB * 0.1  # SI g/L -> US-convention g/dL (factor 0.1)
+
     # ---- PK individual parameters (typical-value only; all theta FIXED from Majid 2014) ----
-    cl   <- exp(lcl)  * (WT/68.7)^e_wt_cl * (ALB/4.0)^e_alb_cl * (ALP/132)^e_alp_cl * (TBILI/0.5)^e_tbili_cl
+    cl   <- exp(lcl)  * (WT/68.7)^e_wt_cl * (alb_gdL/4.0)^e_alb_cl * (ALP/132)^e_alp_cl * (TBILI/0.5)^e_tbili_cl
     vc   <- exp(lvc)  * (WT/68.7)^e_wt_vc
     q    <- exp(lq)   * (WT/68.7)^e_wt_q
     vp   <- exp(lvp)  * (WT/68.7)^e_wt_vp
@@ -170,9 +175,9 @@ Kawamura_2018_eribulin <- function() {
     # ---- PD individual parameters with covariate effects ----
     # BNEU3 binary indicator: 1 if baseline NEUT below the 3000 cells/uL threshold, else 0.
     bneu3  <- (NEUT < 3000)
-    kprol  <- exp(lkprol + etalkprol) * (ALB/4)^e_alb_kprol * (1 + bneu3 * e_bneu3_kprol)
-    mtt    <- exp(lmtt)               * (ALB/4)^e_alb_mtt
-    kout   <- exp(lkout  + etalkout)  * (ALB/4)^e_alb_kout
+    kprol  <- exp(lkprol + etalkprol) * (alb_gdL/4)^e_alb_kprol * (1 + bneu3 * e_bneu3_kprol)
+    mtt    <- exp(lmtt)               * (alb_gdL/4)^e_alb_mtt
+    kout   <- exp(lkout  + etalkout)  * (alb_gdL/4)^e_alb_kout
     gamma  <- exp(lgamma)
     slope  <- exp(lslope + etalslope)
     ktr    <- 4 / mtt
