@@ -40,7 +40,7 @@ Hendriksen_2013_artesunate <- function() {
       units              = "g/dL",
       type               = "continuous",
       reference_category = NULL,
-      notes              = "Linear-deviation effect on DHA apparent clearance, centred on the reference hemoglobin 7.1 g/dL (Hendriksen 2013 Table 2 footnote a): cl_dha = cl_dha_typ * (1 + e_hgb_cl_dha * (HGB - 7.1)) with e_hgb_cl_dha = -0.102, i.e. DHA clearance increases 10.2% per g/dL decrease in hemoglobin (Results, p.445). Source paper reports hemoglobin in g/dL; multiply g/L values by 0.1 if simulating from SI inputs.",
+      notes              = "Linear-deviation effect on DHA apparent clearance, centred on the reference hemoglobin 7.1 g/dL (Hendriksen 2013 Table 2 footnote a): cl_dihydroart = cl_dihydroart_typ * (1 + e_hgb_cl_dihydroart * (HGB - 7.1)) with e_hgb_cl_dihydroart = -0.102, i.e. DHA clearance increases 10.2% per g/dL decrease in hemoglobin (Results, p.445). Source paper reports hemoglobin in g/dL; multiply g/L values by 0.1 if simulating from SI inputs.",
       source_name        = "HGB"
     )
   )
@@ -67,16 +67,16 @@ Hendriksen_2013_artesunate <- function() {
     # Structural parameters (Hendriksen 2013 Table 2, "Population estimate" column).
     # Typical values are reported for a patient with WT = 10.9 kg and HGB =
     # 7.1 g/dL (Table 2 footnote a). The allometric / hemoglobin scaling in
-    # model() centres these covariates so that exp(lcl) / exp(lvc) / exp(lcl_dha)
-    # / exp(lvc_dha) reproduce the published typical values exactly when WT =
+    # model() centres these covariates so that exp(lcl) / exp(lvc) / exp(lcl_dihydroart)
+    # / exp(lvc_dihydroart) reproduce the published typical values exactly when WT =
     # 10.9 and HGB = 7.1.
     lcl     <- log(45.8)
     label("Apparent artesunate elimination clearance at WT = 10.9 kg, CL/F (L/h)")  # Hendriksen 2013 Table 2: CL/F ARS = 45.8 L/h (%RSE 8.10)
     lvc     <- log(28.2)
     label("Apparent artesunate central volume at WT = 10.9 kg, V/F (L)")  # Hendriksen 2013 Table 2: V/F ARS = 28.2 L (%RSE 11.4)
-    lcl_dha <- log(22.4)
+    lcl_dihydroart <- log(22.4)
     label("Apparent DHA elimination clearance at WT = 10.9 kg and HGB = 7.1 g/dL, CL_DHA/F (L/h)")  # Hendriksen 2013 Table 2: CL/F DHA = 22.4 L/h (%RSE 8.40)
-    lvc_dha <- log(13.5)
+    lvc_dihydroart <- log(13.5)
     label("Apparent DHA central volume at WT = 10.9 kg, V_DHA/F (L)")  # Hendriksen 2013 Table 2: V/F DHA = 13.5 L (%RSE 9.69)
 
     # Zero-order IM input duration, fixed at 1 min = 1/60 h in the source
@@ -94,9 +94,9 @@ Hendriksen_2013_artesunate <- function() {
     label("Allometric WT exponent on artesunate CL/F (unitless)")  # Hendriksen 2013 Results p.444
     e_wt_vc     <- fixed(1.00)
     label("Allometric WT exponent on artesunate V/F (unitless)")  # Hendriksen 2013 Results p.444
-    e_wt_cl_dha <- fixed(0.75)
+    e_wt_cl_dihydroart <- fixed(0.75)
     label("Allometric WT exponent on DHA CL/F (unitless)")  # Hendriksen 2013 Results p.444
-    e_wt_vc_dha <- fixed(1.00)
+    e_wt_vc_dihydroart <- fixed(1.00)
     label("Allometric WT exponent on DHA V/F (unitless)")  # Hendriksen 2013 Results p.444
 
     # Hemoglobin effect on DHA clearance. Paper text (Results p.445):
@@ -104,9 +104,9 @@ Hendriksen_2013_artesunate <- function() {
     # hemoglobin." Encoded as a linear-deviation effect centred on
     # HGB_ref = 7.1 g/dL (Table 2 footnote a) so a negative coefficient
     # corresponds to higher CL at lower HGB:
-    #   cl_dha = cl_dha_typ * (1 + e_hgb_cl_dha * (HGB - 7.1))
+    #   cl_dihydroart = cl_dihydroart_typ * (1 + e_hgb_cl_dihydroart * (HGB - 7.1))
     # At HGB = 6.1, multiplier = 1 + (-0.102) * (-1) = 1.102 (10.2% increase).
-    e_hgb_cl_dha <- -0.102
+    e_hgb_cl_dihydroart <- -0.102
     label("Effect of HGB on DHA CL/F (per g/dL above 7.1)")  # Hendriksen 2013 Table 2: covariate effect "Negative effect of hemoglobin on CL/F DHA (%)" = 10.2 (%RSE 14.9); paper sign convention: increase per g/dL decrease in HGB
 
     # Inter-individual variability. Hendriksen 2013 Table 2 reports
@@ -120,7 +120,7 @@ Hendriksen_2013_artesunate <- function() {
     # correlation reading).
     etalcl + etalvc ~ c(0.415,
                         0.2640, 0.680)  # Hendriksen 2013 Table 2: var(eta_CL_ARS) = 0.415, var(eta_V_ARS) = 0.680, corr = 0.497
-    etalcl_dha     ~ 0.306  # Hendriksen 2013 Table 2: var(eta_CL_DHA) = 0.306 (%RSE 37.9)
+    etalcl_dihydroart     ~ 0.306  # Hendriksen 2013 Table 2: var(eta_CL_DHA) = 0.306 (%RSE 37.9)
 
     # Residual error. The source paper modelled log-natural plasma
     # concentrations with additive residual on the log scale (NONMEM
@@ -132,7 +132,7 @@ Hendriksen_2013_artesunate <- function() {
     # order.
     propSd     <- sqrt(0.0942)
     label("Proportional residual SD for artesunate plasma concentration (SD on log scale)")  # Hendriksen 2013 Table 2: sigma ARS = 0.0942 (variance, %RSE 29.2); SD = sqrt(0.0942) = 0.307
-    propSd_dha <- sqrt(0.211)
+    propSd_dihydroart <- sqrt(0.211)
     label("Proportional residual SD for DHA plasma concentration (SD on log scale)")  # Hendriksen 2013 Table 2: sigma DHA = 0.211 (variance, %RSE 12.5); SD = sqrt(0.211) = 0.459
   })
 
@@ -143,7 +143,7 @@ Hendriksen_2013_artesunate <- function() {
     # in clinical mg/kg units, applying the mole-for-mole conversion via
     # the MW ratio at the metabolite-formation step.
     mw_ars <- 384.42  # artesunate, C19H28O8
-    mw_dha <- 284.35  # dihydroartemisinin, C15H24O5
+    mw_dihydroart <- 284.35  # dihydroartemisinin, C15H24O5
 
     # Individual PK parameters (Hendriksen 2013 Results p.444). Allometric
     # scaling on CL with exponent 0.75 and on V with exponent 1, centred
@@ -151,26 +151,26 @@ Hendriksen_2013_artesunate <- function() {
     # DHA CL/F centred on HGB = 7.1 g/dL.
     cl     <- exp(lcl     + etalcl)     * (WT / 10.9)^e_wt_cl
     vc     <- exp(lvc     + etalvc)     * (WT / 10.9)^e_wt_vc
-    cl_dha <- exp(lcl_dha + etalcl_dha) * (WT / 10.9)^e_wt_cl_dha *
-              (1 + e_hgb_cl_dha * (HGB - 7.1))
-    vc_dha <- exp(lvc_dha)              * (WT / 10.9)^e_wt_vc_dha
+    cl_dihydroart <- exp(lcl_dihydroart + etalcl_dihydroart) * (WT / 10.9)^e_wt_cl_dihydroart *
+              (1 + e_hgb_cl_dihydroart * (HGB - 7.1))
+    vc_dihydroart <- exp(lvc_dihydroart)              * (WT / 10.9)^e_wt_vc_dihydroart
 
     # Micro-constants. Under the paper's assumption of complete in-vivo
     # conversion of ARS to DHA, all artesunate clearance is metabolic
-    # conversion, so the rate from central -> central_dha is kel_ars =
-    # cl/vc. DHA is eliminated linearly at kel_dha = cl_dha/vc_dha.
+    # conversion, so the rate from central -> central_dihydroart is kel_ars =
+    # cl/vc. DHA is eliminated linearly at kel_dihydroart = cl_dihydroart/vc_dihydroart.
     kel     <- cl     / vc
-    kel_dha <- cl_dha / vc_dha
+    kel_dihydroart <- cl_dihydroart / vc_dihydroart
 
     # Zero-order IM input duration (fixed at 1 min).
     dur_im <- exp(ldur)
 
     # ODE system. Dose records target central with dur(central) <- dur_im
     # for zero-order delivery; ARS is then converted mole-for-mole to DHA
-    # (mass-rate factor mw_dha / mw_ars).
+    # (mass-rate factor mw_dihydroart / mw_ars).
     d/dt(central)     <- -kel * central
-    d/dt(central_dha) <-  kel * central * (mw_dha / mw_ars) -
-                          kel_dha * central_dha
+    d/dt(central_dihydroart) <-  kel * central * (mw_dihydroart / mw_ars) -
+                          kel_dihydroart * central_dihydroart
 
     dur(central) <- dur_im
 
@@ -180,9 +180,9 @@ Hendriksen_2013_artesunate <- function() {
     # (Cmax_ARS = 943 ng/mL, AUC_ARS = 570 ng*h/mL, Cmax_DHA = 547 ng/mL,
     # AUC_DHA = 890 ng*h/mL).
     Cc     <- central     / vc
-    Cc_dha <- central_dha / vc_dha
+    Cc_dihydroart <- central_dihydroart / vc_dihydroart
 
     Cc     ~ prop(propSd)
-    Cc_dha ~ prop(propSd_dha)
+    Cc_dihydroart ~ prop(propSd_dihydroart)
   })
 }

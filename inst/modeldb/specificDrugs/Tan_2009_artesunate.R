@@ -34,8 +34,8 @@ Tan_2009_artesunate <- function() {
       notes              = paste(
         "Linear-deviation effect on DHA apparent clearance, centred on the",
         "reference weight 61.5 kg (the combined-cohort median; Tan 2009",
-        "Results p.7 / Table 1): cl_dha_typ = exp(lcl_dha) + e_wt_cl_dha *",
-        "(WT - 61.5), with e_wt_cl_dha = 1.9 L/h per kg (Table 2).",
+        "Results p.7 / Table 1): cl_dihydroart_typ = exp(lcl_dihydroart) + e_wt_cl_dihydroart *",
+        "(WT - 61.5), with e_wt_cl_dihydroart = 1.9 L/h per kg (Table 2).",
         "Time-fixed at baseline in the source analysis."
       ),
       source_name        = "WT"
@@ -95,20 +95,20 @@ Tan_2009_artesunate <- function() {
     # between mass and molar amount, so the published L and L/h values
     # apply directly when this model file tracks amounts in mg. The
     # mole-for-mole AS -> DHA conversion enters as a mass-rate factor
-    # mw_dha / mw_ars at the metabolite-formation step (see model()).
+    # mw_dihydroart / mw_ars at the metabolite-formation step (see model()).
     lka     <- log(3.85)
     label("Apparent first-order absorption rate constant for AS, Ka (1/h)")  # Tan 2009 Table 2: Ka = 3.85 1/h (%RSE 3.61) -- typical value at FED = 0
     lcl     <- log(1190)
     label("Apparent artesunate elimination clearance, CL/F (L/h)")  # Tan 2009 Table 2: CL/F = 1190 L/h (%RSE 4.20)
     lvc     <- log(1210)
     label("Apparent artesunate central volume of distribution, V2/F (L)")  # Tan 2009 Table 2: V2/F = 1210 L (%RSE 5.77)
-    lcl_dha <- log(93.7)
+    lcl_dihydroart <- log(93.7)
     label("Apparent DHA elimination clearance from DHA central at WT = 61.5 kg, CLM/F (L/h)")  # Tan 2009 Table 2: CLM/F = 93.7 L/h (%RSE 3.30) -- typical value at the 61.5 kg reference weight
-    lvc_dha <- log(97.1)
+    lvc_dihydroart <- log(97.1)
     label("Apparent DHA central volume of distribution, V3/F (L)")  # Tan 2009 Table 2: V3/F = 97.1 L (%RSE 4.85)
-    lq_dha  <- log(5.74)
+    lq_dihydroart  <- log(5.74)
     label("Apparent DHA inter-compartmental clearance, Q/F (L/h)")  # Tan 2009 Table 2: Q/F = 5.74 L/h (%RSE 12.8)
-    lvp_dha <- log(18.5)
+    lvp_dihydroart <- log(18.5)
     label("Apparent DHA peripheral volume of distribution, V4/F (L)")  # Tan 2009 Table 2: V4/F = 18.5 L (%RSE 10.6)
 
     # Covariate effects (Tan 2009 Results p.7).
@@ -129,10 +129,10 @@ Tan_2009_artesunate <- function() {
     # i.e. an absolute (linear) shift in L/h per kg of body weight
     # deviation from the 61.5 kg reference, not a power or multiplicative
     # effect. Encoded as:
-    #   cl_dha_typ = exp(lcl_dha) + e_wt_cl_dha * (WT - 61.5)
-    # so e_wt_cl_dha carries units of L/h per kg (= 1.9). For a 70 kg
-    # subject, cl_dha_typ = 93.7 + 1.9 * 8.5 = 109.9 L/h.
-    e_wt_cl_dha <- 1.9
+    #   cl_dihydroart_typ = exp(lcl_dihydroart) + e_wt_cl_dihydroart * (WT - 61.5)
+    # so e_wt_cl_dihydroart carries units of L/h per kg (= 1.9). For a 70 kg
+    # subject, cl_dihydroart_typ = 93.7 + 1.9 * 8.5 = 109.9 L/h.
+    e_wt_cl_dihydroart <- 1.9
     label("Linear effect of WT on DHA CL/F (L/h per kg above 61.5 kg reference)")  # Tan 2009 Table 2: theta_WT-CLM/F = 1.90 (%RSE 16.3); Results p.7
 
     # Inter-individual variability (Tan 2009 Table 2 "Estimate" column).
@@ -149,12 +149,12 @@ Tan_2009_artesunate <- function() {
     # implementation of a full variance-covariance matrix"); Q/F and
     # V4/F had no estimable IIV (Results p.7: "Fixing the variance of
     # the random effects for Q/F and V4/F to zero had little influence
-    # on the OFV"), so etalq_dha and etalvp_dha are absent.
+    # on the OFV"), so etalq_dihydroart and etalvp_dihydroart are absent.
     etalcl     ~ 0.131    # Tan 2009 Table 2: var(eta_CL_AS) = 0.131 (CV 36.2%, %RSE 17.8)
     etalvc     ~ 0.330    # Tan 2009 Table 2: var(eta_V2_AS) = 0.330 (CV 57.4%, %RSE 20.9)
     etalka     ~ 1.26     # Tan 2009 Table 2: var(eta_Ka) = 1.26 (CV 112%, %RSE 15.4)
-    etalcl_dha ~ 0.0786   # Tan 2009 Table 2: var(eta_CL_DHA) = 0.0786 (CV 28.0%, %RSE 22.5)
-    etalvc_dha ~ 0.0901   # Tan 2009 Table 2: var(eta_V3_DHA) = 0.0901 (CV 30.0%, %RSE 36.0)
+    etalcl_dihydroart ~ 0.0786   # Tan 2009 Table 2: var(eta_CL_DHA) = 0.0786 (CV 28.0%, %RSE 22.5)
+    etalvc_dihydroart ~ 0.0901   # Tan 2009 Table 2: var(eta_V3_DHA) = 0.0901 (CV 30.0%, %RSE 36.0)
 
     # Residual error. The source paper modelled natural-log plasma
     # concentrations with additive residual on the log scale (Methods
@@ -168,7 +168,7 @@ Tan_2009_artesunate <- function() {
     # the corresponding log-scale variances 0.141 and 0.080.
     propSd     <- 0.375
     label("Proportional residual SD for artesunate plasma concentration")  # Tan 2009 Table 2: RV AS = 37.5% (variance 0.141, %RSE 9.73)
-    propSd_dha <- 0.282
+    propSd_dihydroart <- 0.282
     label("Proportional residual SD for DHA plasma concentration")  # Tan 2009 Table 2: RV DHA = 28.2% (variance 0.080, %RSE 11.2)
   })
 
@@ -180,7 +180,7 @@ Tan_2009_artesunate <- function() {
     # tracks amounts in mg (oral mg/kg dosing) while the source paper
     # fit on molar amounts (nmol).
     mw_ars <- 384.4  # artesunate
-    mw_dha <- 284.9  # dihydroartemisinin
+    mw_dihydroart <- 284.9  # dihydroartemisinin
 
     # Individual PK parameters with covariate effects.
     # AS Ka is multiplicatively reduced by 84% under a high-fat meal;
@@ -189,40 +189,40 @@ Tan_2009_artesunate <- function() {
     ka     <- exp(lka + etalka) * (1 + e_fed_ka * FED)
     cl     <- exp(lcl     + etalcl)
     vc     <- exp(lvc     + etalvc)
-    cl_dha <- (exp(lcl_dha) + e_wt_cl_dha * (WT - 61.5)) * exp(etalcl_dha)
-    vc_dha <- exp(lvc_dha + etalvc_dha)
-    q_dha  <- exp(lq_dha)
-    vp_dha <- exp(lvp_dha)
+    cl_dihydroart <- (exp(lcl_dihydroart) + e_wt_cl_dihydroart * (WT - 61.5)) * exp(etalcl_dihydroart)
+    vc_dihydroart <- exp(lvc_dihydroart + etalvc_dihydroart)
+    q_dihydroart  <- exp(lq_dihydroart)
+    vp_dihydroart <- exp(lvp_dihydroart)
 
     # Micro-constants. Under the paper's assumption of complete in-vivo
     # conversion of AS to DHA, the only elimination of AS is conversion
     # to DHA, so kel_AS = cl/vc. DHA is eliminated linearly from its
     # central compartment.
     kel     <- cl     / vc
-    kel_dha <- cl_dha / vc_dha
-    k12_dha <- q_dha  / vc_dha
-    k21_dha <- q_dha  / vp_dha
+    kel_dihydroart <- cl_dihydroart / vc_dihydroart
+    k12_dihydroart <- q_dihydroart  / vc_dihydroart
+    k21_dihydroart <- q_dihydroart  / vp_dihydroart
 
     # ODE system. Oral dose targets depot. AS in central is converted
     # mole-for-mole to DHA central via the MW ratio (so a mg of AS
-    # eliminated produces (mw_dha / mw_ars) = 0.7411 mg of DHA).
+    # eliminated produces (mw_dihydroart / mw_ars) = 0.7411 mg of DHA).
     d/dt(depot)            <- -ka * depot
     d/dt(central)          <-  ka * depot - kel * central
-    d/dt(central_dha)      <-  kel * central * (mw_dha / mw_ars) -
-                               kel_dha * central_dha -
-                               k12_dha * central_dha +
-                               k21_dha * peripheral1_dha
-    d/dt(peripheral1_dha)  <-  k12_dha * central_dha -
-                               k21_dha * peripheral1_dha
+    d/dt(central_dihydroart)      <-  kel * central * (mw_dihydroart / mw_ars) -
+                               kel_dihydroart * central_dihydroart -
+                               k12_dihydroart * central_dihydroart +
+                               k21_dihydroart * peripheral1_dihydroart
+    d/dt(peripheral1_dihydroart)  <-  k12_dihydroart * central_dihydroart -
+                               k21_dihydroart * peripheral1_dihydroart
 
     # Plasma concentrations. With dose in mg and volumes in L, central
     # / vc is mg/L (numerically equal to ug/mL); multiply by 1000 for
     # ng/mL when comparing against the paper's reported concentration
     # ranges (LLOQ 1 ng/mL for both species per Methods p.3).
     Cc     <- central     / vc
-    Cc_dha <- central_dha / vc_dha
+    Cc_dihydroart <- central_dihydroart / vc_dihydroart
 
     Cc     ~ prop(propSd)
-    Cc_dha ~ prop(propSd_dha)
+    Cc_dihydroart ~ prop(propSd_dihydroart)
   })
 }

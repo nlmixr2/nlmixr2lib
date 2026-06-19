@@ -123,12 +123,13 @@ The following pattern constants remain hard-coded in `R/conventions.R::.nlmixr2l
   - `kid` -- deprecated.
 - **Example models:** `Ayyar_2024_givosiran.R`, `Gilkey_2015_DiRnanoparticle.R`.
 
-### cumhaz (**canonical cumulative-hazard state**)
+### cumhaz (**canonical cumulative-hazard state, single-hazard models**)
 - **Type:** compartment
-- **Role:** Cumulative-hazard state for time-to-event / dropout sub-models. Integrates instantaneous hazard so that `survival = exp(-cumhaz)`.
-- **Source aliases:** none.
-- **Example models:** `Girard_2012_pimasertib.R`.
-- **Notes:** Source NONMEM idiom is `$MODEL COMP=(CUMHAZ)` with `DADT(<cumhaz>) = HAZARD`.
+- **Role:** Cumulative-hazard state for time-to-event / dropout sub-models. Integrates instantaneous hazard so that `survival = exp(-cumhaz)`. Use the bare `cumhaz` name when a model has only one hazard; reserve `cumhaz_<type>` (e.g., `cumhaz_os`, `cumhaz_drop`) for multi-hazard models that need to disambiguate.
+- **Source aliases:**
+  - `cumHazard` -- prior canonical name for the generic single-hazard form used in `Zecchin_2016.R` (pre-2026-06-19 lowercase + drop-suffix standardization).
+- **Example models:** `Girard_2012_pimasertib.R`, `Zecchin_2016.R`.
+- **Notes:** Source NONMEM idiom is `$MODEL COMP=(CUMHAZ)` with `DADT(<cumhaz>) = HAZARD`. The pre-2026-06-19 register carried a separate `cumHazard` canonical for single-hazard models (used in `Zecchin_2016.R`); the 2026-06-19 audit collapsed it into this entry under the operator's rule that single-hazard models drop any suffix and that all cumulative-hazard compartment names are uniformly lowercase.
 
 ### renal_cortex (**canonical renal-cortex accumulation compartment**)
 - **Type:** compartment
@@ -1796,23 +1797,21 @@ The Ait-Oudhia 2012 canakinumab IL-1beta -> CRP transit cascade: `crp1` / `crp2`
 
 ## Survival / dropout cumulative-hazard compartments
 
-### cumHaz_os (**canonical overall-survival cumulative-hazard**)
+### cumhaz_os (**canonical overall-survival cumulative-hazard**)
 - **Type:** compartment
 - **Role:** Overall-survival cumulative-hazard state in oncology TTE sub-models.
-- **Source aliases:** none.
+- **Source aliases:**
+  - `cumHaz_os` -- prior canonical name (pre-2026-06-19 lowercase standardization).
 - **Example models:** `Schindler_2016_sunitinib.R`.
+- **Notes:** Renamed from `cumHaz_os` to `cumhaz_os` on 2026-06-19 per the canonical-register standardization audit (operator decision: compartment names follow the all-lowercase nlmixr2 convention; the cumulative-hazard family is now uniformly lowercase across `cumhaz`, `cumhaz_os`, `cumhaz_drop`).
 
-### cumHaz_drop (**canonical dropout cumulative-hazard**)
+### cumhaz_drop (**canonical dropout cumulative-hazard**)
 - **Type:** compartment
 - **Role:** Dropout cumulative-hazard state.
-- **Source aliases:** none.
+- **Source aliases:**
+  - `cumHaz_drop` -- prior canonical name (pre-2026-06-19 lowercase standardization).
 - **Example models:** `Schindler_2016_sunitinib.R`.
-
-### cumHazard (**canonical generic cumulative-hazard**)
-- **Type:** compartment
-- **Role:** Generic cumulative-hazard state.
-- **Source aliases:** none.
-- **Example models:** `Zecchin_2016.R`.
+- **Notes:** Renamed from `cumHaz_drop` to `cumhaz_drop` on 2026-06-19 per the canonical-register standardization audit (lowercase compartment-name standardization).
 
 ---
 
@@ -2066,11 +2065,13 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Source aliases:** none.
 - **Example models:** `Hirt_2006_nelfinavir.R`.
 
-### endx (**canonical endoxifen suffix**)
+### endox (**canonical endoxifen suffix**)
 - **Type:** metabolite-suffix
 - **Role:** Endoxifen (4-hydroxy-N-desmethyltamoxifen), major active metabolite of tamoxifen.
-- **Source aliases:** none.
+- **Source aliases:**
+  - `endx` -- prior canonical name (pre-2026-06-19 readability standardization).
 - **Example models:** `TerHeine_2014_tamoxifen.R`.
+- **Notes:** Renamed from `endx` to `endox` on 2026-06-19 per the canonical-register standardization audit (operator decision: keep the contracted form but include the "o" so the suffix is readable as "endox" without vowel-stripping; `endx` was an opaque consonant cluster).
 
 ### megx (**canonical MEGX lidocaine metabolite suffix**)
 - **Type:** metabolite-suffix
@@ -2114,17 +2115,21 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Source aliases:** none.
 - **Example models:** `Allegaert_2015_paracetamol.R` (DDMODEL00000267).
 
-### apapg (**canonical APAP-glucuronide suffix (Cook notation)**)
+### apapg (**canonical APAP-glucuronide suffix**)
 - **Type:** metabolite-suffix
-- **Role:** Paracetamol (APAP) phase-II glucuronide metabolite (Cook notation).
-- **Source aliases:** none.
-- **Example models:** `Cook_2016_paracetamol.R` (DDMODEL00000271).
+- **Role:** Paracetamol (APAP) phase-II glucuronide metabolite. Used across all paracetamol PBPK / popPK models for the glucuronide species, regardless of source-paper notation.
+- **Source aliases:**
+  - `ag` -- deprecated Zurlinden 2016 shorthand (collides with silver chemistry symbol); migrated to `apapg` on 2026-06-19.
+- **Example models:** `Cook_2016_paracetamol.R` (DDMODEL00000271), `Zurlinden_2016_paracetamol.R` (migrated from `ag` to `apapg` on 2026-06-19).
+- **Notes:** On 2026-06-19 the Zurlinden 2016 paracetamol PBPK model was migrated from its prior `ag` shorthand to this canonical, per the canonical-register standardization audit (chemistry-symbol collision fix: `Ag` = silver).
 
-### apaps (**canonical APAP-sulphate suffix (Cook notation)**)
+### apaps (**canonical APAP-sulphate suffix**)
 - **Type:** metabolite-suffix
-- **Role:** Paracetamol (APAP) phase-II sulphate metabolite (Cook notation).
-- **Source aliases:** none.
-- **Example models:** `Cook_2016_paracetamol.R` (DDMODEL00000271).
+- **Role:** Paracetamol (APAP) phase-II sulphate metabolite. Used across all paracetamol PBPK / popPK models for the sulphate species, regardless of source-paper notation.
+- **Source aliases:**
+  - `as` -- deprecated Zurlinden 2016 shorthand (collides with R reserved word `as.numeric` etc.); migrated to `apaps` on 2026-06-19.
+- **Example models:** `Cook_2016_paracetamol.R` (DDMODEL00000271), `Zurlinden_2016_paracetamol.R` (migrated from `as` to `apaps` on 2026-06-19).
+- **Notes:** On 2026-06-19 the Zurlinden 2016 paracetamol PBPK model was migrated from its prior `as` shorthand to this canonical, per the canonical-register standardization audit (R-reserved-word collision fix: bare `as` clashes with `as.numeric`, `as.integer`, `as.character`, etc.).
 
 ### col (**canonical colistin metabolite suffix**)
 - **Type:** metabolite-suffix
@@ -2133,11 +2138,13 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Example models:** `LeuppiTaegtmeyer_2019_CMS.R` (DDMODEL00000295).
 - **Notes:** Same token as the bare `col` drug-state compartment; both Types co-exist for the same canonical name.
 
-### dha (**canonical dihydroartemisinin suffix**)
+### dihydroart (**canonical dihydroartemisinin suffix**)
 - **Type:** metabolite-suffix
 - **Role:** Dihydroartemisinin, active metabolite of artesunate.
-- **Source aliases:** none.
+- **Source aliases:**
+  - `dha` -- prior canonical name (pre-2026-06-19 readability standardization).
 - **Example models:** `Birgersson_2019_artesunate.R` (DDMODEL00000297).
+- **Notes:** Renamed from `dha` to `dihydroart` on 2026-06-19 per the canonical-register standardization audit (operator decision: the three-letter abbreviation is widely used in the malaria literature but is ambiguous - `DHA` collides with docosahexaenoic acid in nutrition contexts; `dihydroart` is unambiguous while still contracted relative to the full "dihydroartemisinin" spelling).
 
 ### ohi (**canonical hydroxy-itraconazole suffix**)
 - **Type:** metabolite-suffix
@@ -2163,11 +2170,13 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Source aliases:** none.
 - **Example models:** `Varatharajan_2016_daunorubicin.R` (doi:10.1007/s00280-016-3166-8).
 
-### desrbn (**canonical 25-O-desacetyl rifabutin suffix**)
+### desacetylrbn (**canonical 25-O-desacetyl rifabutin suffix**)
 - **Type:** metabolite-suffix
 - **Role:** 25-O-desacetyl rifabutin, primary active metabolite of rifabutin formed by arylacetamide deacetylase.
-- **Source aliases:** none.
+- **Source aliases:**
+  - `desrbn` -- prior canonical name (pre-2026-06-19 readability standardization).
 - **Example models:** `Hennig_2015_rifabutin.R` (doi:10.1128/AAC.01195-15).
+- **Notes:** Renamed from `desrbn` to `desacetylrbn` on 2026-06-19 per the canonical-register standardization audit (operator decision: spell out the `desacetyl` chemical descriptor rather than the opaque `des` abbreviation; the parallel `desacetylrpt` form would similarly replace `desrpt` if a future audit extends the rule).
 
 ### desrpt (**canonical 25-O-desacetyl rifapentine suffix**)
 - **Type:** metabolite-suffix
@@ -2181,11 +2190,13 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Source aliases:** none.
 - **Example models:** `Brown_2017_osimertinib.R` (doi:10.1111/bcp.13223).
 
-### ndsel (**canonical N-desmethyl-selumetinib suffix**)
+### ndmsel (**canonical N-desmethyl-selumetinib suffix**)
 - **Type:** metabolite-suffix
 - **Role:** N-desmethyl-selumetinib, active selumetinib metabolite (~3-5-fold more potent for MEK1 inhibition than parent), formed by oxidative N-demethylation.
-- **Source aliases:** none.
+- **Source aliases:**
+  - `ndsel` -- prior canonical name (pre-2026-06-19 readability standardization).
 - **Example models:** `Patel_2017_selumetinib.R` (doi:10.1002/psp4.12175).
+- **Notes:** Renamed from `ndsel` to `ndmsel` on 2026-06-19 per the canonical-register standardization audit (operator decision: insert `m` so the contracted form reads as `n-desmethyl-sel` rather than `n-des-sel`; matches the N-desmethyl-`<drug>` pattern used by other contracted suffixes).
 
 ### dfcr (**canonical 5'-DFCR capecitabine metabolite suffix**)
 - **Type:** metabolite-suffix
@@ -2223,18 +2234,21 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Source aliases:** none.
 - **Example models:** `Rodrigues_2017_oxcarbazepine.R` (doi:10.1111/bcp.13392).
 
-### r (**canonical R-enantiomer suffix**)
+### r_enant (**canonical R-enantiomer suffix**)
 - **Type:** metabolite-suffix
 - **Role:** R-enantiomer suffix for enantiomer-resolved popPK models in which both enantiomers are followed in plasma but no interconversion is modelled.
-- **Source aliases:** none.
+- **Source aliases:**
+  - `r` -- prior canonical name (pre-2026-06-19 disambiguation standardization).
 - **Example models:** `Valitalo_2017_ketorolac.R` (doi:10.1111/bcp.13311).
-- **Notes:** Treated as a "non-parent analyte" suffix; neither enantiomer is the parent.
+- **Notes:** Treated as a "non-parent analyte" suffix; neither enantiomer is the parent. Renamed from bare `r` to `r_enant` on 2026-06-19 per the canonical-register standardization audit (operator decision: a single-letter `r` is too easy to collide with an unrelated short identifier or with R-language conventions; the `_enant` suffix makes the enantiomer meaning explicit and matches the `_enant` form used in similar metabolite-suffix registries).
 
-### s (**canonical S-enantiomer suffix**)
+### s_enant (**canonical S-enantiomer suffix**)
 - **Type:** metabolite-suffix
 - **Role:** S-enantiomer suffix for enantiomer-resolved popPK models.
-- **Source aliases:** none.
+- **Source aliases:**
+  - `s` -- prior canonical name (pre-2026-06-19 disambiguation standardization).
 - **Example models:** `Valitalo_2017_ketorolac.R`.
+- **Notes:** Renamed from bare `s` to `s_enant` on 2026-06-19 per the canonical-register standardization audit (operator decision: a single-letter `s` is too easy to collide with an unrelated short identifier; the `_enant` suffix makes the enantiomer meaning explicit and matches sibling `r_enant`).
 
 ### noxide (**canonical roflumilast N-oxide suffix**)
 - **Type:** metabolite-suffix
@@ -2394,21 +2408,25 @@ Sibling-drug suffix for the Kleijn 2011 sugammadex-mediated reversal of rocuroni
 
 ---
 
-## Zurlinden 2016 paracetamol PBPK metabolite suffixes
+## Deprecated Zurlinden 2016 paracetamol PBPK metabolite suffixes (subsumed into Cook 2016 forms)
 
-Zurlinden 2016 paracetamol PBPK metabolite shorthand. Registered as separate suffixes (alongside the Cook 2016 `apapg` / `apaps`) so the Zurlinden `a_<organ>_as` / `a_<organ>_ag` compartment names pass the metabolite-suffix check without rewriting the source-paper notation.
+Zurlinden 2016 paracetamol PBPK shorthand suffixes `as` and `ag` were deprecated on 2026-06-19 because they collide with R reserved words (`as.numeric`, `as.integer`, `as.character`, etc.) and chemistry symbols (Ag = silver). The Zurlinden 2016 paracetamol PBPK model is migrated to use the existing Cook 2016 `apaps` / `apapg` canonicals for the same chemical species. See the `apaps` / `apapg` entries above for the canonical names.
 
-### as (**canonical APAP-sulfate suffix (Zurlinden notation)**)
-- **Type:** metabolite-suffix
-- **Role:** APAP-sulfate metabolite suffix (Zurlinden notation; same chemical species as the Cook 2016 `apaps`).
-- **Source aliases:** none.
-- **Example models:** `Zurlinden_2016_paracetamol.R`.
+### as (**DEPRECATED -- use `apaps` instead**)
+- **Type:** metabolite-suffix (deprecated)
+- **Role:** Formerly APAP-sulfate suffix (Zurlinden notation). Same chemical species as `apaps` (Cook 2016 notation). Deprecated on 2026-06-19 because the bare `as` token collides with R reserved words (`as.numeric`, `as.integer`, etc.).
+- **Source aliases:**
+  - `as` -- deprecated canonical name used in `Zurlinden_2016_paracetamol.R` prior to the 2026-06-19 audit.
+- **Example models:** (formerly `Zurlinden_2016_paracetamol.R`; migrated to use `apaps` in the same paper.)
+- **Notes:** Do not use for new models. The Zurlinden 2016 paracetamol PBPK model was migrated to `apaps` on 2026-06-19 per the canonical-register standardization audit (R-reserved-word collision fix).
 
-### ag (**canonical APAP-glucuronide suffix (Zurlinden notation)**)
-- **Type:** metabolite-suffix
-- **Role:** APAP-glucuronide metabolite suffix (Zurlinden notation; same chemical species as the Cook 2016 `apapg`).
-- **Source aliases:** none.
-- **Example models:** `Zurlinden_2016_paracetamol.R`.
+### ag (**DEPRECATED -- use `apapg` instead**)
+- **Type:** metabolite-suffix (deprecated)
+- **Role:** Formerly APAP-glucuronide suffix (Zurlinden notation). Same chemical species as `apapg` (Cook 2016 notation). Deprecated on 2026-06-19 because the bare `ag` token collides with the silver chemical symbol (Ag).
+- **Source aliases:**
+  - `ag` -- deprecated canonical name used in `Zurlinden_2016_paracetamol.R` prior to the 2026-06-19 audit.
+- **Example models:** (formerly `Zurlinden_2016_paracetamol.R`; migrated to use `apapg` in the same paper.)
+- **Notes:** Do not use for new models. The Zurlinden 2016 paracetamol PBPK model was migrated to `apapg` on 2026-06-19 per the canonical-register standardization audit (chemistry-symbol collision fix).
 
 ---
 
