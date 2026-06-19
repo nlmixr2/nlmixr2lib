@@ -23,7 +23,7 @@ Gandhi_2021_abatacept <- function() {
     ),
     ALB = list(
       description        = "Baseline serum albumin",
-      units              = "g/dL",
+      units = "g/L",
       type               = "continuous",
       reference_category = NULL,
       notes              = "Reference 4.1 g/dL (Gandhi 2021 Figure 1 caption). Power effect on CL (exp -0.722).",
@@ -134,13 +134,18 @@ Gandhi_2021_abatacept <- function() {
   })
 
   model({
+    # SI -> US-convention unit conversion (canonical ALB is in SI g/L per the
+    # 2026-06-19 register standardization audit; the original calibration
+    # used the g/dL reference value, so convert inline here).
+    alb_gdL <- ALB * 0.1  # SI g/L -> US-convention g/dL (factor 0.1)
+
     # Individual PK parameters with Gandhi 2021 final-model covariate equations
-    # (Table 2). Reference subject: 49-year-old male, BWT 68 kg, ALB 4.1 g/dL,
+    # (Table 2). Reference subject: 49-year-old male, BWT 68 kg, alb_gdL 4.1 g/dL,
     # cGFR 99.18 mL/min/1.73 m^2, swollen joint count 15, not on NSAIDs, RA
     # (DIS_PJIA = 0).
     cl <- exp(lcl + etalcl) *
           (WT / 68)^e_wt_cl *
-          (ALB / 4.1)^e_alb_cl *
+          (alb_gdL / 4.1)^e_alb_cl *
           (CRCL / 99.18)^e_crcl_cl *
           ((SWOL_28JOINT + 1) / (15 + 1))^e_swol_cl *
           exp(SEXF * e_sexf_cl + CONMED_NSAID * e_nsaid_cl)
