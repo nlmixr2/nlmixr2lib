@@ -13,12 +13,12 @@ Farrell_2012_farletuzumab <- function() {
       notes              = "Time-fixed (baseline) body weight used with power scaling on CL and Vc. Reference weight 66.2 kg is the overall median body weight in the analysis cohort (Farrell 2012 Table 1).",
       source_name        = "WT"
     ),
-    PHASE2 = list(
+    STUDY_FARLETUZUMAB_PHASE2 = list(
       description        = "Indicator for the Phase II study (MORAb-003-002) of the Farrell 2012 pooled analysis",
       units              = "(binary)",
       type               = "binary",
       reference_category = "0 (Phase I study, MORAb-003-001)",
-      notes              = "Switches the residual-error model between the Phase I proportional-only and the Phase II combined additive + proportional error reported in Farrell 2012 Table 3. Derived from the trial identifier.",
+      notes              = "Switches the residual-error model between the Phase I proportional-only and the Phase II combined additive + proportional error reported in Farrell 2012 Table 3. Derived from the trial identifier. Renamed from generic canonical PHASE2 to paper-specific STUDY_FARLETUZUMAB_PHASE2 on 2026-06-19 per the canonical-register standardization audit (operator decision: the generic PHASE2 token collided with Valenzuela 2025's PHASE1 canonical that picks the opposite reference category).",
       source_name        = "STUDY"
     )
   )
@@ -87,10 +87,10 @@ Farrell_2012_farletuzumab <- function() {
     # Concentration: dose in mg, volume in L -> mg/L = ug/mL
     Cc <- central / vc
 
-    # Study-dependent residual error: PHASE2 = 1 selects Phase II (combined add + prop);
-    # PHASE2 = 0 selects Phase I (proportional only; addSd collapses to 0).
-    propSd <- propSdPh1 * (1 - PHASE2) + propSdPh2 * PHASE2
-    addSd  <- addSdPh2 * PHASE2
+    # Study-dependent residual error: STUDY_FARLETUZUMAB_PHASE2 = 1 selects Phase II (combined add + prop);
+    # STUDY_FARLETUZUMAB_PHASE2 = 0 selects Phase I (proportional only; addSd collapses to 0).
+    propSd <- propSdPh1 * (1 - STUDY_FARLETUZUMAB_PHASE2) + propSdPh2 * STUDY_FARLETUZUMAB_PHASE2
+    addSd  <- addSdPh2 * STUDY_FARLETUZUMAB_PHASE2
     Cc ~ add(addSd) + prop(propSd)
   })
 }

@@ -2374,16 +2374,17 @@ readable.
 - **Example models:** `Brown_2017_osimertinib.R` (paper's "Asian (not Japanese or Chinese)" composite indicator with linear effect on apparent clearance of the AZ5104 metabolite; reference category Caucasian).
 - **Notes:** Distinct from `RACE_ASIAN_AMIND_MULTI` (a 4-way composite of Asian + American Indian + Multiple Races), `RACE_ASIAN_AMIND_OTH` (a 3-way Asian + AmInd + Other composite against a White+Black reference, used in Frey 2013), and `RACE_BLACK_OTH` (different composite). `RACE_ASIAN_OTH` is a within-Asian-population sub-indicator, not a multi-race composite. Operator decision (2026-04-28): kept separate from `RACE_ASIAN` because the paper's "Other Asian" category is its own grouping, not an alias of "Asian (any)". Brown 2017 uses Caucasian (not Chinese) as the dominant reference.
 
-### RACE_NEAS (**canonical for North East Asian composite race indicator**)
+### RACE_ASIAN_NORTHEAST (**canonical for North East Asian composite race indicator**)
 - **Description:** 1 = North East Asian heritage (worldwide Chinese, Japanese, or Korean), 0 = non-North East Asian. Composite indicator analogous to `RACE_ASIAN` but specifically restricted to the East Asian subgroup most-relevant to ICH E5 ethnic-sensitivity / Asian-region bridging analyses.
 - **Units:** (binary)
 - **Type:** binary
 - **Scope:** specific
 - **Reference category:** 0 (any non-North East Asian race, including South / Southeast Asian, White, Black, etc.).
 - **Source aliases:**
+  - `RACE_NEAS` -- prior canonical name (pre-2026-06-19 readability standardization).
   - `RAC4` -- used in `Zhou_2021_belimumab.R` (Zhou 2021 Table 2 footnote d).
 - **Example models:** `Zhou_2021_belimumab.R` (multiplicative factor 1.07 on V1).
-- **Notes:** Distinct from the broader `RACE_ASIAN` (which can include South / Southeast Asian populations) because Zhou 2021 specifically tested whether Chinese/Japanese/Korean patients had different PK from the rest of the dataset; the analysis explicitly compared `RAC4` (North East Asian) against alternative race definitions and chose `RAC4` by AIC.
+- **Notes:** Distinct from the broader `RACE_ASIAN` (which can include South / Southeast Asian populations) because Zhou 2021 specifically tested whether Chinese/Japanese/Korean patients had different PK from the rest of the dataset; the analysis explicitly compared `RAC4` (North East Asian) against alternative race definitions and chose `RAC4` by AIC. Renamed from `RACE_NEAS` to `RACE_ASIAN_NORTHEAST` on 2026-06-19 per the canonical-register standardization audit (operator decision: spell out "Northeast" rather than the opaque `NEAS` abbreviation; consistent with `RACE_<region>` rather than `RACE_<abbreviation>`).
 
 ### RACE_MULTI (**canonical for multiracial indicator**)
 - **Description:** 1 = multiracial, 0 = other.
@@ -5089,25 +5090,29 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Example models:** `Bienczak_2016_nevirapine.R` (multiplicative log-additive effect on CLint: `cl_meta <- exp(e_cyp2b6_im_cl * CYP2B6_IM + e_cyp2b6_sm_cl * CYP2B6_SM + e_cyp2b6_usm_cl * CYP2B6_USM)`, with `e_cyp2b6_usm_cl = log(1 - 0.68) = -1.139`, giving the 68% lower CLint reported in Bienczak 2016 Table 3 / Results 'Population pharmacokinetics' paragraph 3).
 - **Notes:** Sibling indicators `CYP2B6_IM` and `CYP2B6_SM` together encode the four-level EM / IM / SM / USM phenotype with three binary columns (EM = all three zero). Bienczak 2016 is the first study to quantify the USM phenotype on nevirapine clearance (cohort prevalence 0.6%; Table 2 row 4); the rs28399499 (983T>C) loss-of-function allele is essentially absent from European-ancestry populations but reaches appreciable frequency in sub-Saharan African cohorts, so models on European or East Asian populations may report only EM / IM / SM (with `CYP2B6_USM` identically zero across the dataset). See `CYP2B6_IM` Notes for the SNP-vector pooling rationale. Ratified canonically on 2026-05-21 alongside the Bienczak 2016 nevirapine extraction.
 
-### CYP3A4_INH (**canonical for concomitant CYP3A4 inhibitor coadministration indicator**)
-- **Description:** 1 = subject coadministered any CYP3A4 inhibitor during the study, 0 = no concomitant CYP3A4 inhibitor. Distinct from the `CYP3A4` continuous-activity-score canonical above: `CYP3A4_INH` captures concomitant-medication exposure (a drug-drug-interaction indicator), not intrinsic enzyme activity. Use this canonical when the source paper enters CYP3A4-inhibitor coadministration into the popPK model as a binary indicator, regardless of which inhibitor strengths (strong / moderate / weak) the paper pools into the `1` category.
+### CONMED_CYP3A4_INH (**canonical for concomitant CYP3A4 inhibitor coadministration indicator**)
+- **Description:** 1 = subject coadministered any CYP3A4 inhibitor during the study, 0 = no concomitant CYP3A4 inhibitor. Distinct from the `CYP3A4` continuous-activity-score canonical above: `CONMED_CYP3A4_INH` captures concomitant-medication exposure (a drug-drug-interaction indicator), not intrinsic enzyme activity. Use this canonical when the source paper enters CYP3A4-inhibitor coadministration into the popPK model as a binary indicator, regardless of which inhibitor strengths (strong / moderate / weak) the paper pools into the `1` category.
 - **Units:** (binary)
 - **Type:** binary
 - **Scope:** general
 - **Reference category:** 0 (no CYP3A4 inhibitor coadministration).
-- **Source aliases:** none standardized; source datasets typically encode the column as `CYP3AI`, `CYP3A4I`, `CYP3AINH`, or a free-text concomitant-medication indicator. Document the source-column name per-model in `covariateData[[CYP3A4_INH]]$source_name`.
-- **Example models:** `Yassen_2025_asundexian.R` (proportional-shift effect on CL/F: `(1 + e_cyp3a4_inh_cl * CYP3A4_INH)` with `e_cyp3a4_inh_cl = -0.0531`; the asundexian dataset pools weak + moderate CYP3A4 inhibitors into the `CYP3A4_INH = 1` category because strong inhibitors were a Phase II exclusion criterion).
-- **Notes:** Per-model `covariateData[[CYP3A4_INH]]$notes` must document which inhibitor strengths (strong / moderate / weak) and which specific drug examples are pooled into the `CYP3A4_INH = 1` category, since inclusion criteria vary by study. Future models that need stratified encoding (separate strong / moderate / weak indicators) should register companion canonicals (e.g. `CYP3A4_INH_STRONG`, `CYP3A4_INH_MOD`, `CYP3A4_INH_WEAK`) rather than overloading `CYP3A4_INH`. The complementary CYP3A4-inducer indicator should follow the same pattern as a separate canonical (`CYP3A4_IND`) when first needed. Ratified canonically on 2026-05-08 alongside the Yassen 2025 asundexian extraction.
+- **Source aliases:**
+  - `CYP3A4_INH` -- prior canonical name (pre-2026-06-19 CONMED_ prefix standardization).
+  - Other source-dataset column names typically: `CYP3AI`, `CYP3A4I`, `CYP3AINH`, or a free-text concomitant-medication indicator. Document the source-column name per-model in `covariateData[[CONMED_CYP3A4_INH]]$source_name`.
+- **Example models:** `Yassen_2025_asundexian.R` (proportional-shift effect on CL/F: `(1 + e_cyp3a4_inh_cl * CONMED_CYP3A4_INH)` with `e_cyp3a4_inh_cl = -0.0531`; the asundexian dataset pools weak + moderate CYP3A4 inhibitors into the `CONMED_CYP3A4_INH = 1` category because strong inhibitors were a Phase II exclusion criterion).
+- **Notes:** Per-model `covariateData[[CONMED_CYP3A4_INH]]$notes` must document which inhibitor strengths (strong / moderate / weak) and which specific drug examples are pooled into the `CONMED_CYP3A4_INH = 1` category, since inclusion criteria vary by study. Future models that need stratified encoding (separate strong / moderate / weak indicators) should register companion canonicals (e.g. `CONMED_CYP3A4_INH_STRONG`, `CONMED_CYP3A4_INH_MOD`, `CONMED_CYP3A4_INH_WEAK`) rather than overloading `CONMED_CYP3A4_INH`. The complementary CYP3A4-inducer indicator follows the same pattern as `CONMED_CYP3A4_IND`. Ratified canonically on 2026-05-08 alongside the Yassen 2025 asundexian extraction. Renamed from `CYP3A4_INH` to `CONMED_CYP3A4_INH` on 2026-06-19 per the canonical-register standardization audit (operator decision: the indicator captures a concomitant medication, so it belongs in the `CONMED_<concept>` family alongside `CONMED_PROBENECID`, `CONMED_AZOLE`, etc.).
 
-### CYP3A4_IND (**canonical for concomitant CYP3A4 inducer coadministration indicator**)
-- **Description:** 1 = subject coadministered any CYP3A4 inducer during the study, 0 = no concomitant CYP3A4 inducer. Sibling indicator to `CYP3A4_INH`; both capture concomitant-medication exposure (a drug-drug-interaction indicator), not intrinsic enzyme activity (distinct from the `CYP3A4` continuous-activity-score canonical above). Use this canonical when the source paper enters CYP3A4-inducer coadministration into the popPK model as a binary indicator, regardless of which inducer strengths (strong / moderate / weak) the paper pools into the `1` category.
+### CONMED_CYP3A4_IND (**canonical for concomitant CYP3A4 inducer coadministration indicator**)
+- **Description:** 1 = subject coadministered any CYP3A4 inducer during the study, 0 = no concomitant CYP3A4 inducer. Sibling indicator to `CONMED_CYP3A4_INH`; both capture concomitant-medication exposure (a drug-drug-interaction indicator), not intrinsic enzyme activity (distinct from the `CYP3A4` continuous-activity-score canonical above). Use this canonical when the source paper enters CYP3A4-inducer coadministration into the popPK model as a binary indicator, regardless of which inducer strengths (strong / moderate / weak) the paper pools into the `1` category.
 - **Units:** (binary)
 - **Type:** binary
 - **Scope:** general
 - **Reference category:** 0 (no CYP3A4 inducer coadministration).
-- **Source aliases:** none standardized; source datasets typically encode the column as `CYP3AIND`, `CYP3A4IND`, `INDU`, `INDUCER`, or a free-text concomitant-medication indicator. Document the source-column name per-model in `covariateData[[CYP3A4_IND]]$source_name`.
-- **Example models:** `Gupta_2016_lenvatinib.R` (multiplicative power-form effect on CL/F: `1.30^CYP3A4_IND` with `e_cyp3a4_ind_cl = log(1.30) ~ 0.262`; the Gupta dataset pools any concomitant CYP3A4 inducer reported in the per-subject medication log into the `CYP3A4_IND = 1` category, with `n = 19` (2.4%) of the 779-subject pooled cohort flagged positive).
-- **Notes:** Per-model `covariateData[[CYP3A4_IND]]$notes` must document which inducer strengths (strong / moderate / weak) and which specific drug examples are pooled into the `CYP3A4_IND = 1` category, since inclusion criteria vary by study. Future models that need stratified encoding (separate strong / moderate / weak indicators) should register companion canonicals (e.g. `CYP3A4_IND_STRONG`, `CYP3A4_IND_MOD`, `CYP3A4_IND_WEAK`) rather than overloading `CYP3A4_IND`. Sibling canonical to `CYP3A4_INH` (anticipated by that entry's notes). Ratified canonically alongside the Gupta 2016 lenvatinib extraction.
+- **Source aliases:**
+  - `CYP3A4_IND` -- prior canonical name (pre-2026-06-19 CONMED_ prefix standardization).
+  - Other source-dataset column names typically: `CYP3AIND`, `CYP3A4IND`, `INDU`, `INDUCER`, or a free-text concomitant-medication indicator. Document the source-column name per-model in `covariateData[[CONMED_CYP3A4_IND]]$source_name`.
+- **Example models:** `Gupta_2016_lenvatinib.R` (multiplicative power-form effect on CL/F: `1.30^CONMED_CYP3A4_IND` with `e_cyp3a4_ind_cl = log(1.30) ~ 0.262`; the Gupta dataset pools any concomitant CYP3A4 inducer reported in the per-subject medication log into the `CONMED_CYP3A4_IND = 1` category, with `n = 19` (2.4%) of the 779-subject pooled cohort flagged positive).
+- **Notes:** Per-model `covariateData[[CONMED_CYP3A4_IND]]$notes` must document which inducer strengths (strong / moderate / weak) and which specific drug examples are pooled into the `CONMED_CYP3A4_IND = 1` category, since inclusion criteria vary by study. Future models that need stratified encoding (separate strong / moderate / weak indicators) should register companion canonicals (e.g. `CONMED_CYP3A4_IND_STRONG`, `CONMED_CYP3A4_IND_MOD`, `CONMED_CYP3A4_IND_WEAK`) rather than overloading `CONMED_CYP3A4_IND`. Sibling canonical to `CONMED_CYP3A4_INH`. Ratified canonically alongside the Gupta 2016 lenvatinib extraction. Renamed from `CYP3A4_IND` to `CONMED_CYP3A4_IND` on 2026-06-19 per the canonical-register standardization audit (operator decision: the indicator captures a concomitant medication, so it belongs in the `CONMED_<concept>` family).
 
 ### APOE4_COUNT (**canonical for APOE-epsilon4 allele count**)
 - **Description:** Continuous individual-level APOE-epsilon4 allele count: 0 = non-carrier, 1 = heterozygous (one epsilon4 allele), 2 = homozygous (two epsilon4 alleles). Time-invariant (germline genotype). Models in the Alzheimer's-disease-progression literature treat the 0 / 1 / 2 count as a continuous effect on baseline cognitive score and / or disease-progression slope, with the population-mean carrier-allele count used as the centring value (e.g., 0.72 in the Conrado 2014 CAMD cohort).
@@ -6456,25 +6461,29 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Example models:** `Qi_2014_sapropterin.R`.
 - **Notes:** Qi 2014 Table 3 reports separate residual-error estimates for the two studies -- PKU-004 = 21.1% CV, PKU-015 = 30.2% CV under the LTBS approach. The `STUDY_PKU015` indicator selects between them. Specific scope because the indicator is tied to the BioMarin sapropterin clinical-development program (PKU-004 = phase 3b extension, PKU-015 = phase 3b pediatric).
 
-### PHASE2 (**canonical for Phase II study cohort indicator**)
-- **Description:** 1 = subject enrolled in the Phase II study (MORAb-003-002) of the Farrell 2012 pooled analysis; 0 = Phase I study (MORAb-003-001). Used to switch the residual-error magnitude per study.
+### STUDY_FARLETUZUMAB_PHASE2 (**canonical for Phase II study cohort indicator in the Farrell 2012 farletuzumab pooled analysis**)
+- **Description:** 1 = subject enrolled in the Phase II study (MORAb-003-002) of the Farrell 2012 pooled farletuzumab analysis; 0 = Phase I study (MORAb-003-001). Used to switch the residual-error magnitude per study.
 - **Units:** (binary)
 - **Type:** binary
 - **Scope:** specific
 - **Reference category:** 0 (Phase I).
-- **Source aliases:** derived per subject from the trial identifier (`MORAb-003-001` -> 0, `MORAb-003-002` -> 1).
+- **Source aliases:**
+  - `PHASE2` -- prior canonical name (pre-2026-06-19 paper-specific-disambiguation standardization). Generic single-token name collided with the parallel `PHASE1` canonical from Valenzuela 2025 that picks the opposite reference category.
+  - Derived per subject from the trial identifier (`MORAb-003-001` -> 0, `MORAb-003-002` -> 1).
 - **Example models:** `Farrell_2012_farletuzumab.R`.
-- **Notes:** Farrell 2012 Table 3 reports separate residual-error estimates for the two studies -- Phase I uses a proportional-only model (sigma = 20.5%); Phase II uses a combined additive + proportional model (sigma_prop = 34.9%, sigma_add = 7.94 ug/mL). The `PHASE2` indicator selects between them.
+- **Notes:** Farrell 2012 Table 3 reports separate residual-error estimates for the two studies -- Phase I uses a proportional-only model (sigma = 20.5%); Phase II uses a combined additive + proportional model (sigma_prop = 34.9%, sigma_add = 7.94 ug/mL). The `STUDY_FARLETUZUMAB_PHASE2` indicator selects between them. Renamed from generic `PHASE2` to paper-specific `STUDY_FARLETUZUMAB_PHASE2` on 2026-06-19 per the canonical-register standardization audit (operator decision: study-phase indicators must be paper-specific because two papers can pick opposite reference categories - Farrell 2012 picks Phase II as 1-level while Valenzuela 2025 picks Phase I as 1-level - and a generic "PHASE2" canonical conflates the two encodings).
 
-### PHASE1 (**canonical for Phase I study cohort indicator**)
-- **Description:** 1 = subject enrolled in a Phase 1 study of the Valenzuela 2025 pooled analysis (MOM-M281-001, MOM-M281-007, MOM-M281-010, EDI1001, EDI1002 -- healthy participants); 0 = Phase 2 study (MOM-M281-004 / Vivacity-MG -- participants with gMG). Used to switch the proportional PK residual-error magnitude per study phase.
+### STUDY_NIPOCALIMAB_PHASE1 (**canonical for Phase I study cohort indicator in the Valenzuela 2025 nipocalimab pooled analysis**)
+- **Description:** 1 = subject enrolled in a Phase 1 study of the Valenzuela 2025 pooled nipocalimab analysis (MOM-M281-001, MOM-M281-007, MOM-M281-010, EDI1001, EDI1002 -- healthy participants); 0 = Phase 2 study (MOM-M281-004 / Vivacity-MG -- participants with gMG). Used to switch the proportional PK residual-error magnitude per study phase.
 - **Units:** (binary)
 - **Type:** binary
 - **Scope:** specific
 - **Reference category:** 0 (Phase 2).
-- **Source aliases:** derived per subject from the trial identifier (Phase 1 protocols -> 1, `NCT03772587` Vivacity-MG -> 0).
+- **Source aliases:**
+  - `PHASE1` -- prior canonical name (pre-2026-06-19 paper-specific-disambiguation standardization). Generic single-token name collided with the parallel `PHASE2` canonical from Farrell 2012 that picks the opposite reference category.
+  - Derived per subject from the trial identifier (Phase 1 protocols -> 1, `NCT03772587` Vivacity-MG -> 0).
 - **Example models:** `Valenzuela_2025_nipocalimab.R`.
-- **Notes:** Valenzuela 2025 Table 3 reports proportional PK residual 0.0834 (Phase 1) vs 0.367 (Phase 2). Distinct from Farrell 2012 `PHASE2` -- the reference category is inverted (Valenzuela 2025 picks Phase 1 as the 1-level).
+- **Notes:** Valenzuela 2025 Table 3 reports proportional PK residual 0.0834 (Phase 1) vs 0.367 (Phase 2). Distinct from Farrell 2012 `STUDY_FARLETUZUMAB_PHASE2` -- the reference category is inverted (Valenzuela 2025 picks Phase 1 as the 1-level). Renamed from generic `PHASE1` to paper-specific `STUDY_NIPOCALIMAB_PHASE1` on 2026-06-19 per the canonical-register standardization audit (operator decision: study-phase indicators must be paper-specific because two papers can pick opposite reference categories, and a generic "PHASE1" canonical conflates the encodings).
 
 ### STUDY_C2201 (**canonical for Bienczak 2025 ligelizumab study C2201 cohort indicator**)
 - **Description:** 1 = subject enrolled in study C2201 (NCT02477332; Novartis Phase 2b ligelizumab dose-finding study in adult CSU patients) of the Bienczak 2025 pooled ligelizumab PopPK analysis; 0 = any other study in the pool (A2103, C2101, C2202, C2302, or C2303). Used to switch the typical CL/F magnitude in study C2201.
@@ -6495,17 +6504,19 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Source aliases:**
   - `INDR` -- used in `Zhou_2021_belimumab.R` (Zhou 2021 Table 2 footnote: study indicator).
 - **Example models:** `Zhou_2021_belimumab.R` (multiplicative factors 1.63 on CL and 1.26 on V1 when STUDY_LBSL = 1).
-- **Notes:** Conceptually similar to `STUDY1` / `PHASE2` / `ELISA` / `PHASE1` (per-study switches) but specific to the belimumab program. Subject-level (time-fixed); set from the trial identifier on each subject record.
+- **Notes:** Conceptually similar to `STUDY1` / `STUDY_FARLETUZUMAB_PHASE2` / `ELISA` / `STUDY_NIPOCALIMAB_PHASE1` (per-study switches) but specific to the belimumab program. Subject-level (time-fixed); set from the trial identifier on each subject record.
 
-### STDY_VORI (**canonical for Friberg 2012 voriconazole pooled-analysis study indicator**)
+### STUDY_VORI (**canonical for Friberg 2012 voriconazole pooled-analysis study indicator**)
 - **Description:** Integer-valued (1-5) subject-level identifier of which of the five pooled PK studies of the Friberg 2012 voriconazole integrated population PK analysis a subject belongs to. 1 / 2 / 3 = immunocompromised children (2 to <12 years; Friberg 2012 Table 1 studies 1-3); 4 = immunocompromised adolescents (12 to <17 years; study 4); 5 = healthy adults (22-55 years; study 5). Time-fixed per subject.
 - **Units:** (integer 1-5)
 - **Type:** categorical
 - **Scope:** specific
 - **Reference category:** 5 (healthy adult study; the typical-value reference for ka, Alag, Q, F1 IIV, CL IIV, and residual error).
-- **Source aliases:** derived per subject from the Friberg 2012 dataset's `STUDY` / `STDY` identifier column.
+- **Source aliases:**
+  - `STDY_VORI` -- prior canonical name (pre-2026-06-19 typo correction); a missing-vowel abbreviation of `STUDY_VORI`.
+  - Derived per subject from the Friberg 2012 dataset's `STUDY` / `STDY` identifier column.
 - **Example models:** `Friberg_2012_voriconazole.R` (drives several effects: -0.382 Study-1 pediatric modifier on Km and Vmax,1; non-adult uplift on Q (+0.637); adolescent ka modifier; non-adult CL IIV scaling (+1.70); F1 IIV magnitude switching between adult and non-adult; per-study residual-error switching across the four levels Study 1, Study 2, Studies 3+4, Study 5).
-- **Notes:** Departs from the binary `STUDY1` / `STUDY5` / `STUDY_PKU015` precedent because the Friberg 2012 analysis uses five distinct studies and four of them carry distinct typical-value or residual-error coefficients (Studies 3 and 4 share one residual-error magnitude). Encoding as a single integer column avoids registering five paired binary indicators; the model file derives `(STDY_VORI == 1)` style indicators inline.
+- **Notes:** Departs from the binary `STUDY1` / `STUDY5` / `STUDY_PKU015` precedent because the Friberg 2012 analysis uses five distinct studies and four of them carry distinct typical-value or residual-error coefficients (Studies 3 and 4 share one residual-error magnitude). Encoding as a single integer column avoids registering five paired binary indicators; the model file derives `(STUDY_VORI == 1)` style indicators inline. Renamed from `STDY_VORI` to `STUDY_VORI` on 2026-06-19 per the canonical-register standardization audit (operator decision: typo correction - `STDY` was a missing-vowel abbreviation of `STUDY`).
 
 ### ORAL_VORI (**canonical for Friberg 2012 voriconazole observation-during-oral-dose-phase indicator**)
 - **Description:** 1 = observation collected when the most recent administered voriconazole dose was oral (powder for oral suspension or tablet); 0 = observation collected when the most recent administered dose was IV. Per-observation (record-level) indicator.
