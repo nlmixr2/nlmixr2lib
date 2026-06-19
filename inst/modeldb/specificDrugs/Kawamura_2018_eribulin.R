@@ -55,7 +55,7 @@ Kawamura_2018_eribulin <- function() {
     ),
     TBILI = list(
       description        = "Total serum bilirubin at baseline.",
-      units              = "mg/dL",
+      units = "umol/L",
       type               = "continuous",
       reference_category = NULL,
       notes              = "Reference 0.5 mg/dL on the Majid 2014 PK CL term (negative exponent -0.180, Kawamura 2018 section 2.3). Source column name in Kawamura 2018 is BILI; the canonical register uses TBILI. The Kawamura paper does not tabulate the cohort distribution for total bilirubin.",
@@ -153,13 +153,18 @@ Kawamura_2018_eribulin <- function() {
   })
 
   model({
+    # SI -> US-convention unit conversion (canonical TBILI is in SI umol/L per
+    # the 2026-06-19 register standardization audit; the original calibration
+    # used the mg/dL reference value, so convert inline here).
+    tbili_mgdL <- TBILI / 17.1  # SI umol/L -> US-convention mg/dL (1 mg/dL = 17.1 umol/L)
+
     # SI -> US-convention unit conversion (canonical ALB is in SI g/L per the
     # 2026-06-19 register standardization audit; the original calibration
     # used the g/dL reference value, so convert inline here).
     alb_gdL <- ALB * 0.1  # SI g/L -> US-convention g/dL (factor 0.1)
 
     # ---- PK individual parameters (typical-value only; all theta FIXED from Majid 2014) ----
-    cl   <- exp(lcl)  * (WT/68.7)^e_wt_cl * (alb_gdL/4.0)^e_alb_cl * (ALP/132)^e_alp_cl * (TBILI/0.5)^e_tbili_cl
+    cl   <- exp(lcl)  * (WT/68.7)^e_wt_cl * (alb_gdL/4.0)^e_alb_cl * (ALP/132)^e_alp_cl * (tbili_mgdL/0.5)^e_tbili_cl
     vc   <- exp(lvc)  * (WT/68.7)^e_wt_vc
     q    <- exp(lq)   * (WT/68.7)^e_wt_q
     vp   <- exp(lvp)  * (WT/68.7)^e_wt_vp
