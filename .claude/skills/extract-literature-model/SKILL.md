@@ -22,6 +22,7 @@ Each reference is loaded just in time. Most tasks load only the "Always" set plu
 - `references/compartment-names.md`, `references/parameter-names.md`, `inst/references/covariate-columns.md`, `references/model-file-template.md` — Phase 3 (drafting the model file). `parameter-names.md` is also the canonical home for author-surname normalization and fixed-parameter encoding rules. `inst/references/covariate-columns.md` is installed with the package so `checkModelConventions()` parses it at runtime.
 - `references/verification-checklist.md` — Phase 4 (verifying the first-pass implementation).
 - `references/vignette-template.md` — Phase 5 (drafting the validation vignette).
+- `references/known-vignette-failure-patterns.md` — Phase 5 step 2 (before running the render gate). Catalogue of the recurring vignette-render failures that have shipped because the gate was skipped, fabricated, or run with events too simple to exercise the failure. Read this before your render, not after CI fails.
 
 **Conditional — load only when the model class applies:**
 - `references/nonmem-translation.md` — NONMEM → nlmixr2 syntax conversion. Load when the source is a NONMEM control stream (`.mod` / `.ctl`, supplement with `$PK` / `$DES` / `$THETA` blocks).
@@ -271,6 +272,10 @@ For papers that describe endogenous turnover, steady-state-balance, or mechanist
 1. Re-confirm the branch is on top of fresh `origin/main` (`git fetch origin && git rebase origin/main` if needed).
 
 2. **Render the vignette locally and verify it completes without error in under 5 minutes of wall-clock time. This is the single highest-value pre-push gate.** Run this BEFORE `buildModelDb()`, BEFORE the convention lint, BEFORE any `git add` of the model file or vignette — if the render is broken, fixing it is the only thing that matters. The gate catches the failure modes pkgdown CI surfaces (missing data columns, time-varying covariates assigned to rxEt objects that get silently dropped, PKNCA formulas referencing absent columns, simulation crashes, named-scalar arguments to `rxode2::et()`, vignettes exceeding the time budget) and surfaces them in seconds.
+
+   **Before you run the gate, read `references/known-vignette-failure-patterns.md`.** Those are the recurring shapes that have shipped broken because the gate was skipped, fabricated, or run with events too simple to exercise the failure: singular OMEGA (`chol(): decomposition failed`), missing explicit `cmt()` declarations when the model has algebraic observables and the vignette references them on observation rows (12-of-15 failures in the 2026-06-17 consolidation), dplyr `unique()` on a varying column, PKNCA zero-row filters, callr timeouts under parallel build. Scan that doc, apply the prophylactic fixes, then render. The consolidation merge (`runner-merge-claude-branches`) re-runs every vignette in parallel as a HARD gate — anything you ship broken WILL be caught there, but the cost of un-stacking a fix from a 130-branch merge is much higher than fixing it in your one-paper worktree right now.
+
+   **Cover the failure modes in your event table, not just the dose path.** A render that only doses (no observations) or only observes with `cmt = NA_character_` will pass the gate and still ship a broken vignette. Make sure your event table includes observation rows with `cmt = "<observable-name>"` for each algebraic observable in the model — that's the only way the gate exercises the slot-renumbering path that breaks 80% of these vignettes.
 
    Run the command, capture stdout/stderr to a log file, then check BOTH the exit code AND the HTML byte size:
 
