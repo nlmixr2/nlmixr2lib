@@ -21,12 +21,12 @@ Goti_2018_vancomycin <- function() {
       notes              = "Goti 2018 Methods: Cockcroft-Gault creatinine clearance with the following preprocessing rules applied upstream of the model (a) values greater than 150 mL/min were truncated to 150 mL/min; (b) for subjects older than 60 years, serum creatinine values below 1 mg/dL were truncated to 1 mg/dL before computing CrCL (correction for falsely depressed SCr in elderly with low muscle mass). Reference value 120 mL/min (Table 2 covariate-relationship row: TVCL = theta1 * (CRCL/120)^theta2 * theta3^DIAL). Population median was 62 mL/min (Table 1, range 4-150 mL/min after truncation). Stored under the canonical CRCL column per inst/references/covariate-columns.md (CRCL accepts raw mL/min when the source paper does not apply BSA normalization, with the per-model description recording the assay form).",
       source_name        = "CrCL"
     ),
-    HEMODIAL = list(
+    RRT_HEMODIAL_STATUS = list(
       description        = "Intermittent-hemodialysis treatment-status indicator (1 = subject on intermittent hemodialysis during the admission, 0 = not)",
       units              = "(binary)",
       type               = "binary",
       reference_category = "0 (no intermittent hemodialysis)",
-      notes              = "Goti 2018 Methods: all hemodialysis procedures were intermittent and used high-flux membranes. 336 of 1812 subjects (18.5%) were on hemodialysis. Time-fixed per subject in the source data because actual hemodialysis-session timestamps were not used (the paper notes documentation limitations prevented per-session timing). Enters the structural model as multiplicative factors theta3^DIAL on CL (theta3 = 0.7) and theta5^DIAL on Vc (theta5 = 0.5), so dialysis subjects have 30% lower CL and 50% lower Vc than non-dialysis subjects.",
+      notes              = "Goti 2018 Methods: all hemodialysis procedures were intermittent and used high-flux membranes. 336 of 1812 subjects (18.5%) were on hemodialysis. Time-fixed per subject in the source data because actual hemodialysis-session timestamps were not used (the paper notes documentation limitations prevented per-session timing). Enters the structural model as multiplicative factors theta3^DIAL on CL (theta3 = 0.7) and theta5^DIAL on Vc (theta5 = 0.5), so dialysis subjects have 30% lower CL and 50% lower Vc than non-dialysis subjects. Renamed from canonical HEMODIAL to RRT_HEMODIAL_STATUS on 2026-06-19 per the canonical-register standardization audit (RRT family normalization).",
       source_name        = "DIAL"
     )
   )
@@ -62,8 +62,8 @@ Goti_2018_vancomycin <- function() {
     #   TVCL = theta1 * (CRCL/120)^theta2 * theta3^DIAL
     #   TVVc = theta4 * (WT/70)        * theta5^DIAL
     e_crcl_cl     <- 0.8; label("Power exponent on (CRCL/120) for CL")           # Goti 2018 Table 2: CrCL on CL = 0.8
-    e_hemodial_cl <- 0.7; label("Multiplicative factor on CL when HEMODIAL = 1") # Goti 2018 Table 2: DIAL on CL = 0.7
-    e_hemodial_vc <- 0.5; label("Multiplicative factor on Vc when HEMODIAL = 1") # Goti 2018 Table 2: DIAL on Vc = 0.5
+    e_hemodial_cl <- 0.7; label("Multiplicative factor on CL when RRT_HEMODIAL_STATUS = 1") # Goti 2018 Table 2: DIAL on CL = 0.7
+    e_hemodial_vc <- 0.5; label("Multiplicative factor on Vc when RRT_HEMODIAL_STATUS = 1") # Goti 2018 Table 2: DIAL on Vc = 0.5
 
     # Inter-individual variability (Goti 2018 Table 2 final-model %CV rows);
     # omega^2 = log(CV^2 + 1) for log-normal etas.
@@ -76,12 +76,12 @@ Goti_2018_vancomycin <- function() {
     propSd <- 0.227; label("Proportional residual error (fraction)")       # Goti 2018 Table 2: proportional error CV = 22.7%
   })
   model({
-    # Individual PK parameters. CL scales by (CRCL/120)^0.8 and by 0.7^HEMODIAL;
-    # Vc scales by (WT/70) and by 0.5^HEMODIAL; Vp scales by (WT/70) per the
+    # Individual PK parameters. CL scales by (CRCL/120)^0.8 and by 0.7^RRT_HEMODIAL_STATUS;
+    # Vc scales by (WT/70) and by 0.5^RRT_HEMODIAL_STATUS; Vp scales by (WT/70) per the
     # Methods statement that volume parameters were normalized to a 70-kg
     # individual; Q has no covariates.
-    cl <- exp(lcl + etalcl) * (CRCL / 120)^e_crcl_cl * e_hemodial_cl^HEMODIAL
-    vc <- exp(lvc + etalvc) * (WT / 70) * e_hemodial_vc^HEMODIAL
+    cl <- exp(lcl + etalcl) * (CRCL / 120)^e_crcl_cl * e_hemodial_cl^RRT_HEMODIAL_STATUS
+    vc <- exp(lvc + etalvc) * (WT / 70) * e_hemodial_vc^RRT_HEMODIAL_STATUS
     vp <- exp(lvp + etalvp) * (WT / 70)
     q  <- exp(lq)
 

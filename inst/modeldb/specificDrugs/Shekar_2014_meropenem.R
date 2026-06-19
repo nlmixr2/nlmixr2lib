@@ -10,15 +10,15 @@ Shekar_2014_meropenem <- function() {
       units              = "mL/min",
       type               = "continuous",
       reference_category = NULL,
-      notes              = "Source column CrCL. Computed by the Cockcroft-Gault equation in raw mL/min (NOT BSA-normalized to mL/min/1.73 m^2). Stored under the canonical CRCL column per inst/references/covariate-columns.md (CRCL accepts raw mL/min when the source paper does not apply BSA normalization, with the per-model description recording the assay form; precedent: Delattre 2010 amikacin). Cockcroft-Gault CrCL is conventionally not defined for RRT-dependent subjects; Shekar 2014 reports CrCL only for non-RRT subjects (Table 1: 106 mL/min IQR 98-127 in controls, 108 mL/min IQR 65-183 in ECMO) and the model's CL formula switches off the CrCL-driven term when CRRT_STATUS = 1. Inside model() the column is converted from mL/min to L/h via the factor 60/1000 = 0.06 to match the L/h units of the structural CL parameter; the published clearance coefficient (CL_CRCL = 1.89) is then dimensionless.",
+      notes              = "Source column CrCL. Computed by the Cockcroft-Gault equation in raw mL/min (NOT BSA-normalized to mL/min/1.73 m^2). Stored under the canonical CRCL column per inst/references/covariate-columns.md (CRCL accepts raw mL/min when the source paper does not apply BSA normalization, with the per-model description recording the assay form; precedent: Delattre 2010 amikacin). Cockcroft-Gault CrCL is conventionally not defined for RRT-dependent subjects; Shekar 2014 reports CrCL only for non-RRT subjects (Table 1: 106 mL/min IQR 98-127 in controls, 108 mL/min IQR 65-183 in ECMO) and the model's CL formula switches off the CrCL-driven term when RRT_CRRT_STATUS = 1. Inside model() the column is converted from mL/min to L/h via the factor 60/1000 = 0.06 to match the L/h units of the structural CL parameter; the published clearance coefficient (CL_CRCL = 1.89) is then dimensionless.",
       source_name        = "CrCL"
     ),
-    CRRT_STATUS = list(
+    RRT_CRRT_STATUS = list(
       description        = "Subject-level binary indicator for continuous or extended-session renal replacement therapy active during the PK sampling period",
       units              = "(binary)",
       type               = "binary",
       reference_category = 0,
-      notes              = "Source column RRT. 1 = subject was on continuous venovenous hemofiltration (CVVHF, control cohort) or extended daily diafiltration (EDD-f, ECMO cohort); 0 = no RRT. The Shekar 2014 cohort mixes CVVH and EDD-f and the published model treats them identically as a single binary covariate. Stored under the canonical CRRT_STATUS column per inst/references/covariate-columns.md (distinct from HEMODIAL = intermittent-hemodialysis-only and from HEMODIALYSIS = per-time-point session gate). 5/11 ECMO and 5/10 controls were on RRT. Treated as time-fixed at the subject level (all RRT patients were continuously / daily on RRT during sampling; the indicator does not resolve session timing).",
+      notes              = "Source column RRT. 1 = subject was on continuous venovenous hemofiltration (CVVHF, control cohort) or extended daily diafiltration (EDD-f, ECMO cohort); 0 = no RRT. The Shekar 2014 cohort mixes CVVH and EDD-f and the published model treats them identically as a single binary covariate. Stored under the canonical RRT_CRRT_STATUS column per inst/references/covariate-columns.md (distinct from HEMODIAL = intermittent-hemodialysis-only and from HEMODIALYSIS = per-time-point session gate). 5/11 ECMO and 5/10 controls were on RRT. Treated as time-fixed at the subject level (all RRT patients were continuously / daily on RRT during sampling; the indicator does not resolve session timing).",
       source_name        = "RRT"
     )
   )
@@ -44,15 +44,15 @@ Shekar_2014_meropenem <- function() {
 
   ini({
     # Structural fixed-effect parameters from Shekar 2014 Table 2 (final covariate model column).
-    # The published covariate model on CL is piecewise on CRRT_STATUS:
+    # The published covariate model on CL is piecewise on RRT_CRRT_STATUS:
     #   TVCL = theta_CL * I(RRT) + theta_CL_CRCL * CrCL_in_Lh * I(not RRT)
     # The paper's printed equation on page 5 (TVCL = theta_1 * (CL_RRT) + theta_1 * (CL_NORRT * CrCL))
     # collapses both thetas onto a single subscript, but the parameter table reports two distinct
     # fixed effects (CL = 5.1 L/h and CL_CRCL = 1.89) and the Table 3 Monte-Carlo trough simulations
     # at CrCL = 20 / 50 / 80 / 120 / 180 mL/min only reproduce when the second theta is the CL_CRCL
     # slope of 1.89, not theta_1 = 5.1. See vignette Assumptions and deviations for the cross-check.
-    lcl       <- log(5.1);  label("Typical CL on RRT (L/h)")              # Shekar 2014 Table 2: CL = 5.1 L/h (model mean) -- applies when CRRT_STATUS = 1
-    e_crcl_cl <- 1.89;      label("CrCL slope on CL off RRT (unitless)")  # Shekar 2014 Table 2: CL_CRCL = 1.89 -- slope applied to (CrCL in L/h) when CRRT_STATUS = 0
+    lcl       <- log(5.1);  label("Typical CL on RRT (L/h)")              # Shekar 2014 Table 2: CL = 5.1 L/h (model mean) -- applies when RRT_CRRT_STATUS = 1
+    e_crcl_cl <- 1.89;      label("CrCL slope on CL off RRT (unitless)")  # Shekar 2014 Table 2: CL_CRCL = 1.89 -- slope applied to (CrCL in L/h) when RRT_CRRT_STATUS = 0
     lvc       <- log(18.7); label("Central volume Vc (L)")                # Shekar 2014 Table 2: Vc = 18.7 L
     lvp       <- log(13.2); label("Peripheral volume Vp (L)")             # Shekar 2014 Table 2: Vp = 13.2 L
     lq        <- log(21.0); label("Intercompartmental clearance Q (L/h)") # Shekar 2014 Table 2: Q = 21.0 L/h
@@ -73,8 +73,8 @@ Shekar_2014_meropenem <- function() {
     # published slope CL_CRCL = 1.89 is applied as a dimensionless multiplier.
     crcl_Lh <- CRCL * 0.06
 
-    # Piecewise typical CL: fixed RRT-cohort value when CRRT_STATUS = 1; CrCL-driven value when 0.
-    tvcl <- exp(lcl) * CRRT_STATUS + e_crcl_cl * crcl_Lh * (1 - CRRT_STATUS)
+    # Piecewise typical CL: fixed RRT-cohort value when RRT_CRRT_STATUS = 1; CrCL-driven value when 0.
+    tvcl <- exp(lcl) * RRT_CRRT_STATUS + e_crcl_cl * crcl_Lh * (1 - RRT_CRRT_STATUS)
 
     # Individual PK parameters with log-normal IIV.
     cl <- tvcl * exp(etalcl)

@@ -20,15 +20,15 @@ Han_2013_fluconazole <- function() {
       units              = "mL/min",
       type               = "continuous",
       reference_category = NULL,
-      notes              = "Source column CLCR. Computed by the Cockcroft-Gault equation in raw mL/min (NOT BSA-normalized to mL/min/1.73 m^2). Stored under the canonical CRCL column per inst/references/covariate-columns.md (CRCL accepts raw mL/min when the source paper does not apply BSA normalization, with the per-model description recording the assay form; precedent: Delattre 2010 amikacin, Shekar 2014 meropenem). Han 2013 cohort median is 123.5 mL/min (range 21.6-282.7); the model normalises CLCR to 120 mL/min inside the CL formula so the coefficient theta4 = 0.557 L/h has units of L/h per unit of (CLCR/120). CLCR is conventionally not defined for CRRT-dependent subjects; in Han 2013 the model formula switches off the CLCR-driven term when CRRT_STATUS = 1 (the CRRT arm uses a fixed CL = theta3 = 1.85 L/h).",
+      notes              = "Source column CLCR. Computed by the Cockcroft-Gault equation in raw mL/min (NOT BSA-normalized to mL/min/1.73 m^2). Stored under the canonical CRCL column per inst/references/covariate-columns.md (CRCL accepts raw mL/min when the source paper does not apply BSA normalization, with the per-model description recording the assay form; precedent: Delattre 2010 amikacin, Shekar 2014 meropenem). Han 2013 cohort median is 123.5 mL/min (range 21.6-282.7); the model normalises CLCR to 120 mL/min inside the CL formula so the coefficient theta4 = 0.557 L/h has units of L/h per unit of (CLCR/120). CLCR is conventionally not defined for CRRT-dependent subjects; in Han 2013 the model formula switches off the CLCR-driven term when RRT_CRRT_STATUS = 1 (the CRRT arm uses a fixed CL = theta3 = 1.85 L/h).",
       source_name        = "CLCR"
     ),
-    CRRT_STATUS = list(
+    RRT_CRRT_STATUS = list(
       description        = "Continuous renal replacement therapy status indicator",
       units              = "(binary)",
       type               = "binary",
       reference_category = 0,
-      notes              = "Source column CRRT. 1 = subject was receiving continuous renal replacement therapy (CRRT) during the modeled PK sampling period; 0 = no CRRT. 15/60 patients were on CRRT in the Han 2013 cohort. Stored under the canonical CRRT_STATUS column per inst/references/covariate-columns.md (precedent: Shekar 2014 meropenem). The indicator is treated as time-fixed at the subject level; the model uses CRRT_STATUS as a switch between the non-RRT additive CL formula and the fixed CRRT-cohort CL theta3.",
+      notes              = "Source column CRRT. 1 = subject was receiving continuous renal replacement therapy (CRRT) during the modeled PK sampling period; 0 = no CRRT. 15/60 patients were on CRRT in the Han 2013 cohort. Stored under the canonical RRT_CRRT_STATUS column per inst/references/covariate-columns.md (precedent: Shekar 2014 meropenem). The indicator is treated as time-fixed at the subject level; the model uses RRT_CRRT_STATUS as a switch between the non-RRT additive CL formula and the fixed CRRT-cohort CL theta3.",
       source_name        = "CRRT"
     ),
     DIS_SEPSIS = list(
@@ -131,7 +131,7 @@ Han_2013_fluconazole <- function() {
                    e_dis_burn_recent_cl * DIS_BURN_RECENT +
                    e_dis_sepsis_cl      * DIS_SEPSIS) * exp(etalcl)
     cl_rrt   <- exp(lcl_rrt) * exp(etalcl_rrt)
-    cl       <- (1 - CRRT_STATUS) * cl_norrt + CRRT_STATUS * cl_rrt
+    cl       <- (1 - RRT_CRRT_STATUS) * cl_norrt + RRT_CRRT_STATUS * cl_rrt
 
     # Additive covariate model on V (theta2 intercept dropped per Han 2013
     # Table 3 footnote b -- not estimable in the full model). Multiplicative

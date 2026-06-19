@@ -45,16 +45,16 @@ Lu_2022_patritumab <- function() {
       description        = "Mild hepatic impairment indicator (NCI ODWG group 2)",
       units              = "(binary)",
       type               = "binary",
-      reference_category = "0 (normal hepatic function, NCI ODWG group 1; mutually exclusive with HEPIMP_MOD_MISSING).",
+      reference_category = "0 (normal hepatic function, NCI ODWG group 1; mutually exclusive with HEPIMP_MOD_OR_MISSING).",
       notes              = "Time-fixed. Multiplicative fractional effect e_hepmild_cl_dxd on CLDXd of unconjugated DXd applied as (1 + e_hepmild_cl_dxd * HEPIMP_MILD); HEPIMP_MILD = 1 yields the paper-reported 0.706 multiplier (e_hepmild_cl_dxd = -0.294). Lu 2022 Table 3 reports 'Hepatic impairment mild-CLDXd = 0.706'. Categorization per the National Cancer Institute Organ Dysfunction Working Group: mild = total bilirubin <= ULN with AST > ULN, OR total bilirubin > 1.0 to 1.5 x ULN with any AST.",
       source_name        = "Hepatic function (mild impairment)"
     ),
-    HEPIMP_MOD_MISSING = list(
+    HEPIMP_MOD_OR_MISSING = list(
       description        = "Composite moderate-hepatic-impairment-or-data-missing indicator (paper-specific)",
       units              = "(binary)",
       type               = "binary",
       reference_category = "0 (normal hepatic function or mild impairment; mutually exclusive with HEPIMP_MILD when both indicators are zero, the patient is in the normal-function reference).",
-      notes              = "Time-fixed. Multiplicative fractional effect e_hepmod_cl_dxd on CLDXd of unconjugated DXd applied as (1 + e_hepmod_cl_dxd * HEPIMP_MOD_MISSING); HEPIMP_MOD_MISSING = 1 yields the paper-reported 0.532 multiplier (e_hepmod_cl_dxd = -0.468). Lu 2022 Table 3 reports 'Hepatic impairment moderate/data missing-CLDXd = 0.532' as a single pooled coefficient because the moderate-impairment subgroup (n = 6 per Lu 2022 Table S5) and the missing/unknown subgroup (n = 6 per Table S5) were both individually too small to estimate as separate effects. Lu 2022 Discussion notes that 'the effect of moderate hepatic function was not estimated, as the relevant data were too limited (n = 6) for the evaluation to be reliable using the population PK approach' - the reported 0.532 effect is therefore not a moderate-only estimate but a moderate-plus-missing composite.",
+      notes              = "Time-fixed. Multiplicative fractional effect e_hepmod_cl_dxd on CLDXd of unconjugated DXd applied as (1 + e_hepmod_cl_dxd * HEPIMP_MOD_OR_MISSING); HEPIMP_MOD_OR_MISSING = 1 yields the paper-reported 0.532 multiplier (e_hepmod_cl_dxd = -0.468). Lu 2022 Table 3 reports 'Hepatic impairment moderate/data missing-CLDXd = 0.532' as a single pooled coefficient because the moderate-impairment subgroup (n = 6 per Lu 2022 Table S5) and the missing/unknown subgroup (n = 6 per Table S5) were both individually too small to estimate as separate effects. Lu 2022 Discussion notes that 'the effect of moderate hepatic function was not estimated, as the relevant data were too limited (n = 6) for the evaluation to be reliable using the population PK approach' - the reported 0.532 effect is therefore not a moderate-only estimate but a moderate-plus-missing composite.",
       source_name        = "Hepatic function (moderate impairment OR data missing)"
     ),
     CYCLE = list(
@@ -196,7 +196,7 @@ Lu_2022_patritumab <- function() {
     krel  <- exp(lkrel  + etalkrel) * (WT / 60)^e_wt_krel
     cl_dxd <- exp(lcl_dxd + etalcl_dxd) *
       (1 + e_hepmild_cl_dxd * HEPIMP_MILD) *
-      (1 + e_hepmod_cl_dxd  * HEPIMP_MOD_MISSING)
+      (1 + e_hepmod_cl_dxd  * HEPIMP_MOD_OR_MISSING)
     theta_factor1 <- exp(ltheta)
     beta_pir      <- exp(lbeta)
 
