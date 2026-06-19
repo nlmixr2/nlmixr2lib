@@ -47,7 +47,7 @@ Yamada_2025_zolbetuximab <- function() {
     ),
     TBILI = list(
       description        = "Baseline total bilirubin",
-      units              = "mg/dL",
+      units = "umol/L",
       type               = "continuous",
       reference_category = NULL,
       notes              = "Time-fixed baseline value. Power effect on V1 (exponent 0.0347); reference 0.38 mg/dL per the Yamada 2025 Figure 1 reference population.",
@@ -128,8 +128,13 @@ Yamada_2025_zolbetuximab <- function() {
     addSd  <- 4.03;        label("Additive residual error (ug/mL)")              # Yamada 2025 Table 1
   })
   model({
+    # SI -> US-convention unit conversion (canonical TBILI is in SI umol/L per
+    # the 2026-06-19 register standardization audit; the original calibration
+    # used the mg/dL reference value, so convert inline here).
+    tbili_mgdL <- TBILI / 17.1  # SI umol/L -> US-convention mg/dL (1 mg/dL = 17.1 umol/L)
+
     # Individual PK parameters. Reference subject (Yamada 2025 Figure 1):
-    # BSA = 1.70 m^2, ALB = 39.1 g/L, HGB = 118 g/L, TBILI = 0.38 mg/dL, male,
+    # BSA = 1.70 m^2, ALB = 39.1 g/L, HGB = 118 g/L, tbili_mgdL = 0.38 mg/dL, male,
     # no prior gastrectomy, non-EOX chemotherapy backbone.
     cl <- exp(lcl + etalcl) *
       (BSA / 1.70)^e_bsa_cl *
@@ -147,7 +152,7 @@ Yamada_2025_zolbetuximab <- function() {
     vc <- exp(lvc + etalvc) *
       (BSA / 1.70)^e_bsa_vc_vp *
       (HGB / 118)^e_hgb_vc *
-      (TBILI / 0.38)^e_tbili_vc *
+      (tbili_mgdL / 0.38)^e_tbili_vc *
       (1 + e_prior_gast_vc * PRIOR_GAST) *
       (1 + e_sexf_vc * SEXF) *
       (1 + e_conmed_eox_vc * CONMED_EOX)
