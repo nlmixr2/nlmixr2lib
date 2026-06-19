@@ -15,7 +15,7 @@ Hua_2015_anrukinzumab <- function() {
     ),
     ALB = list(
       description        = "Baseline serum albumin",
-      units              = "g/dL",
+      units = "g/L",
       type               = "continuous",
       reference_category = NULL,
       notes              = "Power effect on CL: (ALB/4.3)^theta_albumin with theta_albumin = -1.07 (Hua 2015 Table 3). Reference 4.3 g/dL per Table 3. Albumin units inferred as g/dL from Figure 1 covariate-plot axis range (3.0-5.0) which is consistent with US-convention reporting.",
@@ -90,8 +90,13 @@ Hua_2015_anrukinzumab <- function() {
     propSd <- 0.235; label("Proportional residual error (fraction)")                                           # Hua 2015 Table 3: residual variability = 23.5%
   })
   model({
+    # SI -> US-convention unit conversion (canonical ALB is in SI g/L per the
+    # 2026-06-19 register standardization audit; the original calibration
+    # used the g/dL reference value, so convert inline here).
+    alb_gdL <- ALB * 0.1  # SI g/L -> US-convention g/dL (factor 0.1)
+
     # Covariate model (Hua 2015 Table 3 Final model equations, reproduced in full):
-    #   CL = CL_pop * (WT/75)^0.75 * (ALB/4.3)^theta_albumin * (1 + theta_UC * DIS_UC)
+    #   CL = CL_pop * (WT/75)^0.75 * (alb_gdL/4.3)^theta_albumin * (1 + theta_UC * DIS_UC)
     #   Vc = Vc_pop * (WT/75)^theta_WT_V
     #   Vp = Vp_pop * (WT/75)^theta_WT_V          # same eta as Vc (full correlation)
     #   Q  = Q_pop
@@ -100,7 +105,7 @@ Hua_2015_anrukinzumab <- function() {
     ka <- exp(lka + etalka)
     cl <- exp(lcl + etalcl) *
       (WT / 75)^e_wt_cl *
-      (ALB / 4.3)^e_alb_cl *
+      (alb_gdL / 4.3)^e_alb_cl *
       (1 + e_uc_cl * DIS_UC)
     vc <- exp(lvc + etalvc) * (WT / 75)^e_wt_vc_vp
     vp <- exp(lvp + etalvc) * (WT / 75)^e_wt_vc_vp
