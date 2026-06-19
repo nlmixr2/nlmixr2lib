@@ -274,6 +274,8 @@ navbar:
         href: articles/Leroux_2016_cefotaxime.html
       - text: "Cefpirome (Bulitta 2011)"
         href: articles/Bulitta_2011_cefpirome.html
+      - text: "Cefpirome (Kang 2020)"
+        href: articles/Kang_2020_cefpirome.html
       - text: "Ceftazidime (Bulitta 2010)"
         href: articles/Bulitta_2010_ceftazidime.html
       - text: "Ceftazidime (Georges 2009)"
@@ -2152,6 +2154,7 @@ articles:
   - articles/Kakara_2014_statins_LDLC
   - articles/Kamal_2013_oseltamivir
   - articles/Kamal_2015_oseltamivir
+  - articles/Kang_2020_cefpirome
   - articles/Kappelhoff_2005_indinavir
   - articles/Kappelhoff_2005_ritonavir
   - articles/Karaiskos_2015_colistin
