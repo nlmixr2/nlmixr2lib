@@ -133,7 +133,7 @@ make_cohort <- function(n, dose_mg, route, id_offset = 0L) {
     TBILI         = pmax(2, rnorm(n, mean = 9, sd = 4)),
     ALP           = pmax(30, rnorm(n, mean = 110, sd = 90)),
     CREAT         = pmax(1.3, rnorm(n, mean = 8.7, sd = 3)),
-    HEMODIAL      = 1L,
+    RRT_HEMODIAL_STATUS      = 1L,
     RACE_HISPANIC = rbinom(n, 1, 0.147),
     ESAD          = pmax(0, rnorm(n, mean = 11030, sd = 11000)),
     dose_mg       = dose_mg,
@@ -175,7 +175,7 @@ make_cohort <- function(n, dose_mg, route, id_offset = 0L) {
   bind_rows(dose_rows, obs_rows) |>
     arrange(id, time, evid) |>
     select(id, time, amt, evid, cmt, DV,
-           WT, AGE, BMI, TBILI, ALP, CREAT, HEMODIAL, RACE_HISPANIC, ESAD,
+           WT, AGE, BMI, TBILI, ALP, CREAT, RRT_HEMODIAL_STATUS, RACE_HISPANIC, ESAD,
            dose_mg, route)
 }
 

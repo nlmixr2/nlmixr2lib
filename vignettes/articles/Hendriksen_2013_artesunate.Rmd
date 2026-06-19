@@ -80,20 +80,20 @@ collects them in one place for review.
 | One-compartment DHA disposition; complete in-vivo conversion of ARS to DHA | structural | Results p.444; Methods p.447 ("a drug-metabolite model with complete in vivo conversion of ARS into DHA") |
 | `lcl` -> CL/F ARS = 45.8 L/h | 45.8 | Table 2 (Population estimate, %RSE 8.10) |
 | `lvc` -> V/F ARS = 28.2 L | 28.2 | Table 2 (%RSE 11.4) |
-| `lcl_dha` -> CL/F DHA = 22.4 L/h | 22.4 | Table 2 (%RSE 8.40) |
-| `lvc_dha` -> V/F DHA = 13.5 L | 13.5 | Table 2 (%RSE 9.69) |
+| `lcl_dihydroart` -> CL/F DHA = 22.4 L/h | 22.4 | Table 2 (%RSE 8.40) |
+| `lvc_dihydroart` -> V/F DHA = 13.5 L | 13.5 | Table 2 (%RSE 9.69) |
 | `ldur` -> DUR = 1.00 min, FIXED | 1/60 h | Table 2 ("DUR (min) 1.00 (fixed)"); Results p.444 ("the absorption rate was therefore fixed") |
 | Allometric exponents: 0.75 on CL, 1.0 on Vc (both species), FIXED | 0.75 / 1.0 | Results p.444 ("body weight was used as a fixed allometric function on all elimination clearance (power of 0.75) and apparent volume of distribution (power of 1) parameters") |
 | Reference body weight | 10.9 kg | Table 2 footnote a |
 | Reference hemoglobin | 7.1 g/dL | Table 2 footnote a |
-| `e_hgb_cl_dha` -> -10.2% on DHA CL per g/dL increase in HGB | -0.102 | Table 2 ("Negative effect of hemoglobin on CL/F DHA (%) 10.2", %RSE 14.9); Results p.445 ("DHA clearance increased 10.2% per unit (g/dl) of decrease of hemoglobin") |
+| `e_hgb_cl_dihydroart` -> -10.2% on DHA CL per g/dL increase in HGB | -0.102 | Table 2 ("Negative effect of hemoglobin on CL/F DHA (%) 10.2", %RSE 14.9); Results p.445 ("DHA clearance increased 10.2% per unit (g/dl) of decrease of hemoglobin") |
 | IIV `var(etalcl)` | 0.415 | Table 2 (eta CL/F ARS, %RSE 45.3) |
 | IIV `var(etalvc)` | 0.680 | Table 2 (eta V/F ARS, %RSE 54.6) |
 | Correlation `corr(etalcl, etalvc)` | 0.497 | Table 2 (eta CL/F ARS ~ eta V/F ARS, %RSE 52.3; footnote: "correlation of random effects on CL/F and V/F") |
 | Resulting covariance `cov(etalcl, etalvc)` | 0.2640 | derived: 0.497 * sqrt(0.415 * 0.680) |
-| IIV `var(etalcl_dha)` | 0.306 | Table 2 (eta CL/F DHA, %RSE 37.9) |
+| IIV `var(etalcl_dihydroart)` | 0.306 | Table 2 (eta CL/F DHA, %RSE 37.9) |
 | Residual `propSd` (ARS) | sqrt(0.0942) = 0.307 | Table 2 (sigma ARS = 0.0942 variance on log scale, %RSE 29.2; concentrations modeled as natural logarithms per Methods p.447) |
-| Residual `propSd_dha` | sqrt(0.211) = 0.459 | Table 2 (sigma DHA = 0.211 variance on log scale, %RSE 12.5) |
+| Residual `propSd_dihydroart` | sqrt(0.211) = 0.459 | Table 2 (sigma DHA = 0.211 variance on log scale, %RSE 12.5) |
 
 # Virtual cohort
 
@@ -188,7 +188,7 @@ sim <- rxode2::rxSolve(
 sim <- sim |>
   dplyr::mutate(
     Cc_ng_per_mL     = Cc * 1000,
-    Cc_dha_ng_per_mL = Cc_dha * 1000
+    Cc_dha_ng_per_mL = Cc_dihydroart * 1000
   )
 ```
 
@@ -212,7 +212,7 @@ sim_typical <- rxode2::rxSolve(
   as.data.frame() |>
   dplyr::mutate(
     Cc_ng_per_mL     = Cc * 1000,
-    Cc_dha_ng_per_mL = Cc_dha * 1000
+    Cc_dha_ng_per_mL = Cc_dihydroart * 1000
   )
 ```
 
@@ -234,9 +234,9 @@ vpc_df <- sim |>
     Q05_ars = stats::quantile(Cc_ng_per_mL,     0.05, na.rm = TRUE),
     Q50_ars = stats::quantile(Cc_ng_per_mL,     0.50, na.rm = TRUE),
     Q95_ars = stats::quantile(Cc_ng_per_mL,     0.95, na.rm = TRUE),
-    Q05_dha = stats::quantile(Cc_dha_ng_per_mL, 0.05, na.rm = TRUE),
-    Q50_dha = stats::quantile(Cc_dha_ng_per_mL, 0.50, na.rm = TRUE),
-    Q95_dha = stats::quantile(Cc_dha_ng_per_mL, 0.95, na.rm = TRUE),
+    Q05_dihydroart = stats::quantile(Cc_dha_ng_per_mL, 0.05, na.rm = TRUE),
+    Q50_dihydroart = stats::quantile(Cc_dha_ng_per_mL, 0.50, na.rm = TRUE),
+    Q95_dihydroart = stats::quantile(Cc_dha_ng_per_mL, 0.95, na.rm = TRUE),
     .groups = "drop"
   )
 
@@ -246,7 +246,7 @@ vpc_long <- dplyr::bind_rows(
                      Q05 = Q05_ars, Q50 = Q50_ars, Q95 = Q95_ars),
   vpc_df |>
     dplyr::transmute(time, species = "Dihydroartemisinin (DHA)",
-                     Q05 = Q05_dha, Q50 = Q50_dha, Q95 = Q95_dha)
+                     Q05 = Q05_dihydroart, Q50 = Q50_dihydroart, Q95 = Q95_dihydroart)
 )
 
 ggplot(vpc_long, aes(time, Q50)) +
@@ -348,7 +348,7 @@ sim_hgb <- rxode2::rxSolve(
   keep   = c("band", "WT", "HGB")
 ) |>
   as.data.frame() |>
-  dplyr::mutate(Cc_dha_ng_per_mL = Cc_dha * 1000)
+  dplyr::mutate(Cc_dha_ng_per_mL = Cc_dihydroart * 1000)
 
 auc_hgb <- sim_hgb |>
   dplyr::group_by(id, HGB) |>
@@ -406,19 +406,19 @@ knitr::kable(
 ```
 
 ```{r pknca-dha}
-sim_nca_dha <- sim |>
-  dplyr::filter(!is.na(Cc_dha)) |>
-  dplyr::select(id, time, Cc_dha = Cc_dha_ng_per_mL, band)
+sim_nca_dihydroart <- sim |>
+  dplyr::filter(!is.na(Cc_dihydroart)) |>
+  dplyr::select(id, time, Cc_dihydroart = Cc_dha_ng_per_mL, band)
 
-conc_obj_dha <- PKNCA::PKNCAconc(sim_nca_dha, Cc_dha ~ time | band + id,
+conc_obj_dihydroart <- PKNCA::PKNCAconc(sim_nca_dihydroart, Cc_dihydroart ~ time | band + id,
                                  concu = "ng/mL", timeu = "h")
 
-nca_data_dha <- PKNCA::PKNCAdata(conc_obj_dha, dose_obj, intervals = intervals)
-nca_res_dha  <- PKNCA::pk.nca(nca_data_dha)
+nca_data_dihydroart <- PKNCA::PKNCAdata(conc_obj_dihydroart, dose_obj, intervals = intervals)
+nca_res_dihydroart  <- PKNCA::pk.nca(nca_data_dihydroart)
 
-nca_summary_dha <- summary(nca_res_dha)
+nca_summary_dihydroart <- summary(nca_res_dihydroart)
 knitr::kable(
-  nca_summary_dha,
+  nca_summary_dihydroart,
   caption = "Simulated NCA parameters (DHA) by weight band, 2.4 mg/kg IM."
 )
 ```
@@ -483,9 +483,9 @@ itself (rounding in the published estimates and the use of the band midpoint
   concentration in mg/L (numerically equal to ug/mL). The paper modeled both
   species on a molar basis (nmol/L) with complete 1:1 in-vivo conversion of
   ARS to DHA; this implementation tracks amounts in mass units and applies
-  the mole-for-mole conversion as the MW ratio (`mw_dha / mw_ars =
+  the mole-for-mole conversion as the MW ratio (`mw_dihydroart / mw_ars =
   284.35 / 384.42 = 0.7397`) at the metabolite-formation step. Multiplying
-  `Cc` and `Cc_dha` by 1000 gives ng/mL, which is what Hendriksen 2013
+  `Cc` and `Cc_dihydroart` by 1000 gives ng/mL, which is what Hendriksen 2013
   Table 2 reports for Cmax and AUC.
 
 * **Time-varying covariates.** WT and HGB are treated as time-fixed at

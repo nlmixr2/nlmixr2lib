@@ -266,8 +266,8 @@ Schindler_2016_sunitinib <- function() {
     # With ALPHH = ALPHD = 1 the Weibull instantaneous hazard reduces to
     # a constant baseline (* exp(theta_pred * RCFB1MAX) for OS), so the
     # cumulative hazards are linear in time.
-    d/dt(cumHaz_os)   <- lambh * alphh * (t + 1e-16)^(alphh - 1) * exp(theta_pred * RCFB1MAX)
-    d/dt(cumHaz_drop) <- lambd * alphd * (t + 1e-16)^(alphd - 1)
+    d/dt(cumhaz_os)   <- lambh * alphh * (t + 1e-16)^(alphh - 1) * exp(theta_pred * RCFB1MAX)
+    d/dt(cumhaz_drop) <- lambd * alphd * (t + 1e-16)^(alphd - 1)
 
     # ============================================================
     # 5. Observation model

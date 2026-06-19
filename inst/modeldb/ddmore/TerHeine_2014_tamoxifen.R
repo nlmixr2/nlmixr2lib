@@ -25,7 +25,7 @@ TerHeine_2014_tamoxifen <- function() {
       units              = "ng/L",
       type               = "continuous",
       reference_category = NULL,
-      notes              = "Time-invariant per-subject covariate. Centered on the population median 1560 ng/L (.mdl GROUP_VARIABLES). Applied as `(CYP2D6 / 1560)^e_cyp2d6_cl_endx` on the endoxifen-formation clearance. Source: a separate dextromethorphan-probe popPK study run on the same patients (DDMORE RDF: 'CYP2D6 and CYP3A4/5 phenotypes (dextromethorphan model-based individual CL values)').",
+      notes              = "Time-invariant per-subject covariate. Centered on the population median 1560 ng/L (.mdl GROUP_VARIABLES). Applied as `(CYP2D6 / 1560)^e_cyp2d6_cl_endox` on the endoxifen-formation clearance. Source: a separate dextromethorphan-probe popPK study run on the same patients (DDMORE RDF: 'CYP2D6 and CYP3A4/5 phenotypes (dextromethorphan model-based individual CL values)').",
       source_name        = "CYP2D6"
     ),
     CYP3A4 = list(
@@ -33,7 +33,7 @@ TerHeine_2014_tamoxifen <- function() {
       units              = "ng/L",
       type               = "continuous",
       reference_category = NULL,
-      notes              = "Time-invariant per-subject covariate. Centered on the population median 44.7 ng/L (.mdl GROUP_VARIABLES). Applied as `(CYP3A4 / 44.7)^e_cyp3a4_cl_endx` on the endoxifen-formation clearance. The probe (dextromethorphan N-demethylation) cannot separate CYP3A4 from CYP3A5, so the column carries the combined CYP3A4 + CYP3A5 activity. The DDMORE source-data column name is `CYP3A4`; the source publication describes the same column as `CYP3A4/5`.",
+      notes              = "Time-invariant per-subject covariate. Centered on the population median 44.7 ng/L (.mdl GROUP_VARIABLES). Applied as `(CYP3A4 / 44.7)^e_cyp3a4_cl_endox` on the endoxifen-formation clearance. The probe (dextromethorphan N-demethylation) cannot separate CYP3A4 from CYP3A5, so the column carries the combined CYP3A4 + CYP3A5 activity. The DDMORE source-data column name is `CYP3A4`; the source publication describes the same column as `CYP3A4/5`.",
       source_name        = "CYP3A4"
     )
   )
@@ -71,14 +71,14 @@ TerHeine_2014_tamoxifen <- function() {
     lq <- log(61.8)
     label("Apparent hepatic flow Q connecting tamoxifen central and the algebraic hepatic compartment, Q/F (L/h)")
     # PDF Table 2: Q/F = 61.8 L/h, RSE 65.4%
-    lcl_endx <- log(0.324)
+    lcl_endox <- log(0.324)
     label("Apparent formation clearance of endoxifen from tamoxifen, CL23/F (L/h)")
     # PDF Table 2: CL23/F = 0.324 L/h, RSE 17.0%
 
-    e_cyp2d6_cl_endx <- 0.262
+    e_cyp2d6_cl_endox <- 0.262
     label("CYP2D6 power-law effect on endoxifen formation clearance (unitless)")
     # PDF Table 2: theta_CYP2D6 = 0.262, RSE 14.0%
-    e_cyp3a4_cl_endx <- 0.157
+    e_cyp3a4_cl_endox <- 0.157
     label("CYP3A4/5 power-law effect on endoxifen formation clearance (unitless)")
     # PDF Table 2: theta_CYP3A4/5 = 0.157, RSE 72.0%
 
@@ -88,7 +88,7 @@ TerHeine_2014_tamoxifen <- function() {
     # rho * sqrt(var_cl * var_vc) = 0.613 * sqrt(0.1336 * 0.0683) = 0.0586.
     etalcl + etalvc ~ c(0.1336, 0.0586, 0.0683)
     # PDF Table 2: omega CL20/F %CV = 37.8%, omega V2/F %CV = 26.6%, rho = 61.3%
-    etalcl_endx ~ 0.0630
+    etalcl_endox ~ 0.0630
     # PDF Table 2: omega CL23/F %CV = 25.5%; var = log(1 + 0.255^2) = 0.0630
 
     # Residual error - proportional only. The original publication included a
@@ -101,7 +101,7 @@ TerHeine_2014_tamoxifen <- function() {
     propSd <- 0.138
     label("Proportional residual SD for tamoxifen plasma concentration (fraction)")
     # PDF Table 2: sigma_TAM %CV = 13.8%, RSE 11.3%
-    propSd_endx <- 0.189
+    propSd_endox <- 0.189
     label("Proportional residual SD for endoxifen plasma concentration (fraction)")
     # PDF Table 2: sigma_ENDX %CV = 18.9%, RSE 10.1%
   })
@@ -117,17 +117,17 @@ TerHeine_2014_tamoxifen <- function() {
     cl <- exp(lcl + etalcl)
     vc <- exp(lvc + etalvc)
     q <- exp(lq)
-    cl_endx_form <- exp(lcl_endx + etalcl_endx +
-                          e_cyp2d6_cl_endx * log_pheno_cyp2d6 +
-                          e_cyp3a4_cl_endx * log_pheno_cyp3a4)
+    cl_endx_form <- exp(lcl_endox + etalcl_endox +
+                          e_cyp2d6_cl_endox * log_pheno_cyp2d6 +
+                          e_cyp3a4_cl_endox * log_pheno_cyp3a4)
 
     # Fixed literature constants for endoxifen disposition. Source: Ahmad et
     # al. (2010) Clin Pharmacol Ther 88(6):814-817, doi:10.1038/clpt.2010.222
     # — cited in the .mdl GROUP_VARIABLES block as `Ahmad et al, CPT Vol 88,
     # 2010`.
     cl_endx_elim <- 5.1
-    vc_endx <- 400
-    kel_endx <- cl_endx_elim / vc_endx
+    vc_endox <- 400
+    kel_endox <- cl_endx_elim / vc_endox
     # Molar masses for the compartment-mass-to-plasma-nM unit conversion. The
     # model tracks endoxifen amount in tamoxifen-mass-equivalents and converts
     # to nM via Mendx; because Mtam ~= Mendx within ~0.5%, the implicit
@@ -149,7 +149,7 @@ TerHeine_2014_tamoxifen <- function() {
 
     d/dt(depot) <- -ratein
     d/dt(central) <- q * c_hep - q * c2 - cl * c2
-    d/dt(central_endx) <- cl_endx_form * c_hep - kel_endx * central_endx
+    d/dt(central_endox) <- cl_endx_form * c_hep - kel_endox * central_endox
 
     # Standard NONMEM ALAG mechanism on the depot. The DDMORE-converted .mdl
     # implements the lag inside $DES via an `IF (T >= ALAG1)` switch which
@@ -163,9 +163,9 @@ TerHeine_2014_tamoxifen <- function() {
     #   nM = (mg/L) * 1e6 / Mw,
     # so the scale factor is V * Mw / 1e6.
     Cc <- central / (vc * mtam / 1e6)
-    Cc_endx <- central_endx / (vc_endx * mendx / 1e6)
+    Cc_endox <- central_endox / (vc_endox * mendx / 1e6)
 
     Cc ~ prop(propSd)
-    Cc_endx ~ prop(propSd_endx)
+    Cc_endox ~ prop(propSd_endox)
   })
 }

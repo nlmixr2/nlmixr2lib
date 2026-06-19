@@ -33,11 +33,11 @@ Angeli_2016_iron_hepcidin <- function() {
       notes              = "Per-subject 'reference value' taken as the concentration at the last-cycle visit (Angeli 2016 Methods p. 492-493); analysed centrally at the Rennes hospital laboratory for assay consistency. Range: 10th-90th percentile 12.5-14.6 g/dL (Table V); mean 13.48 (Table I).",
       source_name        = "Haemoglobin (baseline; last-visit value)"
     ),
-    HIGHAM = list(
+    SCORE_HIGHAM = list(
       description        = "Higham's pictorial blood-loss assessment chart (PBAC) score; semi-quantitative measure of menstrual blood loss.",
       units              = "(score; unitless)",
       type               = "continuous",
-      reference_category = "n/a -- enters as the power-law multiplier `(HIGHAM / tHIGHAM)^e_higham_<param>` on hepcidin synthesis (`ksyn_hep`) and elimination (`kout_hep`) rate constants, with `tHIGHAM = 96.6` (a set value at the population mean / median; Angeli 2016 Table I).",
+      reference_category = "n/a -- enters as the power-law multiplier `(SCORE_HIGHAM / tHIGHAM)^e_higham_<param>` on hepcidin synthesis (`ksyn_hep`) and elimination (`kout_hep`) rate constants, with `tHIGHAM = 96.6` (a set value at the population mean / median; Angeli 2016 Table I).",
       notes              = "Per-subject mean of the three most recent menstrual cycles' Higham scores (Angeli 2016 Methods p. 491). Higham score >= 100 is the clinical threshold for menorrhagia (Higham 1990 BJOG). Range: 10th-90th percentile 38.2-160.2 (Angeli 2016 Table V); mean 96.6 with SD 60.5 (Table I).",
       source_name        = "HiS (Higham's score)"
     ),
@@ -156,8 +156,8 @@ Angeli_2016_iron_hepcidin <- function() {
     krel_iron_typ <- exp(lkrel_iron + etalkrel_iron) * (BMI / tBMI)^e_bmi_krel_iron * (HGB / tHGB)^e_hgb_krel_iron
     kloss_typ     <- exp(lkloss + etalkloss)
 
-    ksyn_hep_typ <- exp(lksyn_hep + etalksyn_hep) * (HIGHAM / tHIGHAM)^e_higham_ksyn_hep
-    kout_hep_typ <- exp(lkout_hep + etalkout_hep) * (HIGHAM / tHIGHAM)^e_higham_kout_hep * (FERRITIN_BL / tFERRITIN)^e_ferritin_bl_kout_hep
+    ksyn_hep_typ <- exp(lksyn_hep + etalksyn_hep) * (SCORE_HIGHAM / tHIGHAM)^e_higham_ksyn_hep
+    kout_hep_typ <- exp(lkout_hep + etalkout_hep) * (SCORE_HIGHAM / tHIGHAM)^e_higham_kout_hep * (FERRITIN_BL / tFERRITIN)^e_ferritin_bl_kout_hep
     krel_hep_typ <- exp(lkrel_hep + etalkrel_hep) * (HT / tHT)^e_ht_krel_hep * (FERRITIN_BL / tFERRITIN)^e_ferritin_bl_krel_hep
 
     drel_typ  <- exp(ldrel)

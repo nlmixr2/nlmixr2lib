@@ -8,7 +8,7 @@ Choy_2016_T2DM_WHIG <- function() {
     "quadratic). FPG and an additional postprandial-glucose contribution ",
     "feed a three-compartment transit chain producing total HbA1c. Built ",
     "from the placebo arm of NCT00236600 (181 obese newly-diagnosed adults ",
-    "with T2DM on diet+exercise for 67 weeks)."
+    "with DIS_DIAB on diet+exercise for 67 weeks)."
   )
   reference <- paste(
     "Choy S, Kjellsson MC, Karlsson MO, de Winter W.",
@@ -52,7 +52,7 @@ Choy_2016_T2DM_WHIG <- function() {
     ),
     regions        = "Sweden",
     notes          = paste0(
-      "Placebo arm of NCT00236600 (topiramate T2DM weight-loss study). ",
+      "Placebo arm of NCT00236600 (topiramate DIS_DIAB weight-loss study). ",
       "Mean weight change at end of study -4.1 kg; baseline beta-cell ",
       "function 61% of normal; baseline insulin sensitivity 25% of normal."
     )

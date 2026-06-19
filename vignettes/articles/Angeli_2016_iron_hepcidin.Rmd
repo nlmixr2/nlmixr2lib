@@ -107,7 +107,7 @@ typical <- tibble::tibble(
   CONMED_BIRTHCONTROL = 1L,         # majority (61%) on oral contraception
   BMI                 = 22,         # tBMI reference (close to median 22.6)
   HGB                 = 13.5,       # tHGB reference (close to median 13.48 g/dL)
-  HIGHAM              = 96.6,       # tHIGHAM reference (= cohort mean)
+  SCORE_HIGHAM              = 96.6,       # tHIGHAM reference (= cohort mean)
   FERRITIN_BL         = 53,         # tFERRITIN reference (close to median 53.14 ug/L)
   HT                  = 165,        # tHT reference (close to median 165.4 cm)
   DLOSS               = 4           # mid-range menses length (3-5 day inclusion window)
@@ -138,7 +138,7 @@ make_events <- function(cov_row, times = seq(0, 29, by = 0.25)) {
     evid = 0L,
     cmt  = "Iron"
   )
-  for (cov in c("CONMED_BIRTHCONTROL","BMI","HGB","HIGHAM","FERRITIN_BL","HT","DLOSS")) {
+  for (cov in c("CONMED_BIRTHCONTROL","BMI","HGB","SCORE_HIGHAM","FERRITIN_BL","HT","DLOSS")) {
     ev[[cov]] <- cov_row[[cov]]
   }
   ev
@@ -292,7 +292,7 @@ higham_grid <- c(40, 96.6, 160)
 
 higham_sims <- lapply(higham_grid, function(h) {
   ev_h <- ev_typ
-  ev_h$HIGHAM <- h
+  ev_h$SCORE_HIGHAM <- h
   rxode2::rxSolve(mod_typical, events = ev_h, returnType = "data.frame") |>
     dplyr::mutate(higham = h)
 }) |> dplyr::bind_rows()
@@ -324,7 +324,7 @@ ev_cohort <- expand.grid(id = seq_len(n_sub), time = times_vpc)
 ev_cohort$amt  <- 0
 ev_cohort$evid <- 0L
 ev_cohort$cmt  <- "Iron"
-for (cov in c("CONMED_BIRTHCONTROL","BMI","HGB","HIGHAM","FERRITIN_BL","HT","DLOSS")) {
+for (cov in c("CONMED_BIRTHCONTROL","BMI","HGB","SCORE_HIGHAM","FERRITIN_BL","HT","DLOSS")) {
   ev_cohort[[cov]] <- typical[[cov]]
 }
 

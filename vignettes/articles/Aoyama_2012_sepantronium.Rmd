@@ -496,7 +496,7 @@ knitr::kable(
 - **Two new canonical covariate columns registered alongside this
   extraction.** `TUMTP_HRPC` (hormone-refractory prostate cancer; modern
   term castration-resistant prostate cancer / CRPC) and `TUMTP_MEL`
-  (melanoma) follow the existing `TUMTP_NSCLC` / `TUMTP_GC` /
+  (melanoma) follow the existing `TUMTP_NSCLC` / `TUMTP_GASTRIC` /
   `TUMTP_SCLC` decomposition pattern. The melanoma indicator uses
   `MEL` (not `MM`) to disambiguate from the existing canonical `MM`
   column for active multiple myeloma; the Aoyama 2012 paper's `MM`

@@ -57,7 +57,7 @@ Per-parameter origins are recorded as in-file comments next to each `ini()` entr
 | (omitted)         | `THETA(10)` EMAX2 FIX 0 | TH 10 = 0     | source IF(PREVSCOR.GE.3) branch is `;`-commented out |
 | `led50` (7.69)    | `THETA(11)` LNED50   | TH 11 = 7.69E+00 | log ED50 (K-PD exposure units)       |
 | (omitted)         | `THETA(12)` CL exponent FIX 0 | TH 12 = 0 | source `(CL_IND/39.4)^THETA(12)` term collapses to 1 |
-| `e_hypert_logit` (0.539)   | `THETA(13)` Cov11_MHHY  | TH 13 = 5.39E-01  | logit shift, MHHY -> HYPERT |
+| `e_hypert_logit` (0.539)   | `THETA(13)` Cov11_MHHY  | TH 13 = 5.39E-01  | logit shift, MHHY -> DIS_HYPERT |
 | `e_regi_bid_logit` (-0.399)| `THETA(14)` Cov13_BID   | TH 14 = -3.99E-01 | logit shift, BID -> REGI_BID |
 | `e_cmax_m1_logit` (0.000902)| `THETA(15)` COV17_CMAXM1 | TH 15 = 9.02E-04 | logit shift / (ng/mL), CMAXM1 -> CMAX_M1 |
 | `llambda` (-3.32) | `THETA(16)` LNLAMBDA | TH 16 = -3.32E+00 | log Weibull baseline-hazard scale    |
@@ -97,7 +97,7 @@ mod0 <- rxode2::zeroRe(mod)  # IIV (etalogit) zeroed for typical-value path
 # weekly AUC dose into central, then dense observation grid 0..12 weeks
 events <- rxode2::et(amt = 20000, time = 0, addl = 11, ii = 1, evid = 1) |>
   rxode2::et(seq(0, 12, by = 0.05))
-events$HYPERT        <- 0
+events$DIS_HYPERT        <- 0
 events$REGI_BID      <- 0     # QD (reference regimen)
 events$CMAX_M1       <- 300   # ng/mL, near the simulated-dataset CMAXM1 for ID=1 (292.15)
 events$DOSE          <- 60    # mg/day
@@ -128,7 +128,7 @@ ggplot(prob_long, aes(time, prob, colour = category)) +
        y = "Probability",
        colour = NULL,
        title = "Typical-value AE-grade probabilities under weekly AUC dosing",
-       subtitle = "DOSE = 60 mg/day, AMT = 20000 weekly AUC, HYPERT = 0, REGI_BID = 0, PREV_AE_SCORE = 0")
+       subtitle = "DOSE = 60 mg/day, AMT = 20000 weekly AUC, DIS_HYPERT = 0, REGI_BID = 0, PREV_AE_SCORE = 0")
 ```
 
 The probability of any AE (P1 + P2) oscillates with the weekly dose pulse -- at the time of dose the K-PD exposure spikes to 20000 + the residual, and the EFF term saturates close to `emax0 = 4.04` (since `exp(led50) ~= 2188 << 20000`); between doses the exposure decays toward zero and EFF collapses. The asymptotic between-dose (long after a single 20000 dose) probability of any AE is `1 - expit(b01) = 1 - expit(-6.12) ~= 0.0022`.
@@ -216,7 +216,7 @@ prev_grid$p1  <- prev_grid$pc1 - prev_grid$pc2
 prev_grid$p0  <- 1 - prev_grid$pc1
 
 knitr::kable(prev_grid[, c("prev", "p0", "p1", "p2")], digits = 4,
-             caption = "Markov-state conditioning: per-grade probabilities at exposure = 6900 (typical mid-week), HYPERT = 0, REGI_BID = 0, CMAX_M1 = 0.")
+             caption = "Markov-state conditioning: per-grade probabilities at exposure = 6900 (typical mid-week), DIS_HYPERT = 0, REGI_BID = 0, CMAX_M1 = 0.")
 ```
 
 The previous-grade conditioning is the dominant Markov effect: a patient who had a grade 1-2 AE at the previous visit (PREV = 1 or 2) is far more likely to have AE >= 1 at the current visit than a previously-grade-0 patient, but the gap to grade >= 3 (P2) collapses sharply because `b12 = -7.65` is much more negative than `b02 = -3.20`.
@@ -263,7 +263,7 @@ cohorts$id_offset <- seq_len(nrow(cohorts))
 simulate_cohort <- function(row) {
   ev <- rxode2::et(amt = 20000, time = 0, addl = 11, ii = 1, evid = 1) |>
     rxode2::et(seq(0, 12, by = 0.5))
-  ev$HYPERT        <- 0
+  ev$DIS_HYPERT        <- 0
   ev$REGI_BID      <- row$REGI_BID
   ev$CMAX_M1       <- 300
   ev$DOSE          <- row$DOSE
@@ -302,5 +302,5 @@ All six cohorts produce finite, monotone-survival, bounded-in-[0, 1] probability
 - **`AMT` column carries pimasertib AUC (K-PD), not a mass dose.** The source `$INPUT` rename `AMT=AMTAUC` declares the dose-amount column to be the per-week AUC of pimasertib (computed from the upstream popPK model). The K-PD compartment `central` is therefore dosed in AUC units, and `expo = central` is an AUC-decaying exposure proxy with units of `ng*h/mL` (or paper equivalent). `units$concentration` in the model file is set to a free-text K-PD descriptor rather than a `mass/volume` form, which `nlmixr2lib::checkModelConventions()` flags as a warning.
 - **Three documented `checkModelConventions()` warnings.** (a) `etalogit` has no matching fixed-effect parameter `logit` -- by construction, the IIV is a shared additive shift across both cumulative-logit thresholds and across all FPS strata; no single fixed-effect counterpart exists. (b) `aescore` is the single observation variable, not `Cc` -- the model's observation is an expected ordinal AE score, not a concentration. (c) `units$concentration` does not contain `/` -- same root cause as the K-PD AUC dosing convention. All three are justified deviations for a non-PK Markov / TTE DDMORE-source model.
 - **`cumhaz` registered as a canonical compartment.** Added to `R/conventions.R::compartments` alongside `liver` (Xie 2019 first-pass) so that future TTE / dropout DDMORE-source extractions can use the standard NONMEM `$MODEL COMP=(CUMHAZ)` idiom without per-model whitelisting. Pure additive change; no existing model is affected.
-- **`HYPERT`, `REGI_BID`, `CMAX_M1`, and `PREV_AE_SCORE` newly registered.** No prior nlmixr2lib model carried any of these covariates; all four were registered in `inst/references/covariate-columns.md` alongside this extraction (HYPERT alongside DIAB under "Comorbidities"; REGI_BID under "Formulation / assay / study"; CMAX_M1 alongside CAV under "Drug exposure metrics"; PREV_AE_SCORE under "Disease severity scores"). `DOSE` (already canonical, scope: specific) was extended with this model in its example list; the binary-or-continuous-dose semantics align with the existing entry.
+- **`DIS_HYPERT`, `REGI_BID`, `CMAX_M1`, and `PREV_AE_SCORE` newly registered.** No prior nlmixr2lib model carried any of these covariates; all four were registered in `inst/references/covariate-columns.md` alongside this extraction (DIS_HYPERT alongside DIS_DIAB under "Comorbidities"; REGI_BID under "Formulation / assay / study"; CMAX_M1 alongside CAV under "Drug exposure metrics"; PREV_AE_SCORE under "Disease severity scores"). `DOSE` (already canonical, scope: specific) was extended with this model in its example list; the binary-or-continuous-dose semantics align with the existing entry.
 - **No errata / corrigenda for a PAGE conference abstract.** PAGE meeting abstracts are not peer-reviewed publications and do not have an erratum mechanism; no correction search was performed.

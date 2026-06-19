@@ -24,7 +24,7 @@ Guiastrennec_2016_gastric_emptying <- function() {
     "reading of Figure 1; the joint-topology choice is documented in the",
     "validation vignette's Errata). CCKF and CCKL are encoded as paired",
     "precursor + plasma indirect-response models (KRF stimulated by",
-    "duodenal-signal Emax; KRL stimulated by jejunal-signal linear; T2DM",
+    "duodenal-signal Emax; KRL stimulated by jejunal-signal linear; DIS_DIAB",
     "depresses carbohydrate potency POTcarbC by -81.1%). GBE is an",
     "indirect-response model where the duodenal-nutrient signal increases",
     "the gallbladder release rate KRB (Emax with S50_BILE_eff that",
@@ -79,11 +79,11 @@ Guiastrennec_2016_gastric_emptying <- function() {
       notes              = "Paper uses an FEM flag with FEM = 1 for females; the canonical alias is SEXF.",
       source_name        = "FEM"
     ),
-    T2DM = list(
-      description        = "Type-2-diabetes-mellitus indicator (1 = T2DM patient, 0 = nondiabetic control). Multiplicative -81.1% depression of POTcarbC (the carbohydrate potency on CCK release): POTcarbC_eff = POTcarbC * (1 - 0.811 * T2DM). All other parameters are common between cohorts.",
+    DIS_DIAB = list(
+      description        = "Type-2-diabetes-mellitus indicator (1 = DIS_DIAB patient, 0 = nondiabetic control). Multiplicative -81.1% depression of POTcarbC (the carbohydrate potency on CCK release): POTcarbC_eff = POTcarbC * (1 - 0.811 * DIS_DIAB). All other parameters are common between cohorts.",
       units              = "(binary)",
       type               = "binary",
-      reference_category = "T2DM = 0 (nondiabetic control)",
+      reference_category = "DIS_DIAB = 0 (nondiabetic control)",
       notes              = "Same canonical name as NA_NA_paracetamol.R. Paper uses a flag set to 1 for T2D and 0 for matched controls.",
       source_name        = "T2D"
     ),
@@ -168,7 +168,7 @@ Guiastrennec_2016_gastric_emptying <- function() {
     # under stimulation by the duodenal-nutrient and jejunal-nutrient
     # signals respectively. KDJ and KJI are fixed to the literature
     # values cited in the paper (Hens et al. 24, the glucose-absorption
-    # reference). T2DM enters only on POTcarbC via a -81.1% depression.
+    # reference). DIS_DIAB enters only on POTcarbC via a -81.1% depression.
     # POTfatC is fixed to 100% as the per-paper reference; POTprotC is
     # fixed to 0% (the paper found no statistical support for a protein
     # potency on the fast CCK release).
@@ -187,7 +187,7 @@ Guiastrennec_2016_gastric_emptying <- function() {
     potfatc     <- fixed(100)       ; label("Fat potency on CCK release POTfatC (%; FIXED reference)")      # Table 3 CCK column: POT_fatC = 100 fixed
     potprotc    <- fixed(0)         ; label("Protein potency on CCK release POTprotC (%; FIXED at 0, not supported)")  # Table 3 CCK column: POT_protC = 0 fixed
     potcarbc    <- 10.1             ; label("Carbohydrate potency on CCK release POTcarbC (%)")             # Table 3 CCK column: POT_carbC = 1.01E+01
-    e_t2dm_potcarbc <- -0.811       ; label("T2DM effect on POTcarbC (multiplicative -81.1%)")              # Table 3 CCK column: T2D-POT_carbC = 2 8.11E-01
+    e_t2dm_potcarbc <- -0.811       ; label("DIS_DIAB effect on POTcarbC (multiplicative -81.1%)")              # Table 3 CCK column: T2D-POT_carbC = 2 8.11E-01
 
     # ---------------------------------------------------------------------
     # Gallbladder emptying (GBE) sub-model. Paper Table 3 "Gallbladder
@@ -274,7 +274,7 @@ Guiastrennec_2016_gastric_emptying <- function() {
     s50_cckf   <- exp(ls50_cckf)
     kdj        <- exp(lkdj)
     kji        <- exp(lkji)
-    potcarbc_i <- potcarbc * (1 + e_t2dm_potcarbc * T2DM)
+    potcarbc_i <- potcarbc * (1 + e_t2dm_potcarbc * DIS_DIAB)
 
     # Derived CCK rates (paper Table 3 footnote b: "derived from other
     # estimated parameters" -- RprodF = BASE_CCKF * KoutF, KRF = RprodF

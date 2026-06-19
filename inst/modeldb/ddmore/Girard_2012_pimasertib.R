@@ -20,7 +20,7 @@ Girard_2012_pimasertib <- function() {
   replicate_of <- NULL
 
   covariateData <- list(
-    HYPERT = list(
+    DIS_HYPERT = list(
       description        = "History of hypertension comorbidity (binary; 1 = prior or current hypertension, 0 = none)",
       units              = "(binary)",
       type               = "binary",
@@ -137,7 +137,7 @@ Girard_2012_pimasertib <- function() {
     # and ED50 reduces to exp(led50).
 
     e_hypert_logit <- 0.539
-    label("Additive shift on the AE-score cumulative logit when HYPERT = 1 (logit units)")
+    label("Additive shift on the AE-score cumulative logit when DIS_HYPERT = 1 (logit units)")
     # .lst TH13 = 5.39E-01 (Cov11_MHHY). Source: ALL2 += COV11 * TCOV11 with COV11 = MHHY.
 
     e_regi_bid_logit <- -0.399
@@ -198,7 +198,7 @@ Girard_2012_pimasertib <- function() {
 
     # 6. Continuous-covariate logit shift (centred at 0 ng/mL for CMAX_M1 per
     #    source MED17 = 0).
-    cov_logit <- e_hypert_logit * HYPERT + e_regi_bid_logit * REGI_BID + e_cmax_m1_logit * CMAX_M1
+    cov_logit <- e_hypert_logit * DIS_HYPERT + e_regi_bid_logit * REGI_BID + e_cmax_m1_logit * CMAX_M1
 
     # 7. Cumulative-logit linear predictors (with shared eta on both thresholds).
     aa1 <- a1 + etalogit + eff + cov_logit

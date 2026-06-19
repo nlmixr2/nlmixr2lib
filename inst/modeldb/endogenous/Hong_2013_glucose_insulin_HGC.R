@@ -5,8 +5,8 @@ Hong_2013_glucose_insulin_HGC <- function() {
     "mellitus (Hong 2013). Built on the Silber 2007 glucose-insulin framework",
     "with two modifications: (1) endogenous glucose production GP is constant",
     "and derived at steady state from baseline glucose (GCss) and insulin",
-    "(ICss) so that feedback control of GP is suppressed in T2DM (Silber's",
-    "GP-feedback estimate was close to zero in T2DM); (2) the first-phase",
+    "(ICss) so that feedback control of GP is suppressed in DIS_DIAB (Silber's",
+    "GP-feedback estimate was close to zero in DIS_DIAB); (2) the first-phase",
     "insulin response is captured by an empirical Gaussian secretion pulse",
     "(amplitude Amplitude, peak time Tsec fixed at 3.54 min, width Tdur fixed",
     "at 1.76 min) rather than a NONMEM bolus. The second-phase insulin",
@@ -20,7 +20,7 @@ Hong_2013_glucose_insulin_HGC <- function() {
     "meaningful effect on insulin secretion or sensitivity, so the published",
     "final estimates set the palosuran treatment effect to zero -- the",
     "structural model below is the drug-free glucose-insulin homeostasis",
-    "model in T2DM. VI is fixed at 6.09 L (Silber 2007 T2DM literature",
+    "model in DIS_DIAB. VI is fixed at 6.09 L (Silber 2007 DIS_DIAB literature",
     "value) because the within-study estimate (0.52 L) was not",
     "physiologically meaningful and biased CLI."
   )
@@ -44,10 +44,10 @@ Hong_2013_glucose_insulin_HGC <- function() {
   covariateData <- list(
     FPG = list(
       description        = "Baseline fasting plasma glucose concentration (GCss in the paper notation). Used to derive the constant endogenous glucose production rate GP at steady state via GP = GCss * (CLG + CLGI_HGC * ICss). Time-fixed per subject.",
-      units              = "mg/L (paper reports baseline glucose in mg/dL with range 110-180 mg/dL across the T2DM cohort; multiply by 10 to convert to the mg/L scale used internally by the ODEs)",
+      units              = "mg/L (paper reports baseline glucose in mg/dL with range 110-180 mg/dL across the DIS_DIAB cohort; multiply by 10 to convert to the mg/L scale used internally by the ODEs)",
       type               = "continuous",
       reference_category = NULL,
-      notes              = "Default reference value 1300 mg/L (= 130 mg/dL, mid-range for the Hong 2013 cohort of T2DM patients with fasting plasma glucose 110-180 mg/dL). Supply per-subject baseline glucose via this column to anchor each subject's drug-free steady state.",
+      notes              = "Default reference value 1300 mg/L (= 130 mg/dL, mid-range for the Hong 2013 cohort of DIS_DIAB patients with fasting plasma glucose 110-180 mg/dL). Supply per-subject baseline glucose via this column to anchor each subject's drug-free steady state.",
       source_name        = "GCss"
     ),
     INS_BL = list(
@@ -55,7 +55,7 @@ Hong_2013_glucose_insulin_HGC <- function() {
       units              = "mU/L (paper internal units)",
       type               = "continuous",
       reference_category = NULL,
-      notes              = "Default reference value 13 mU/L (representative T2DM fasting insulin; paper does not report a single typical value because subject-level baseline insulin was used as a per-subject covariate). Companion canonical to FPG. NA_NA_paracetamol's INS_BL is in pmol/L with a 1/6.945 rescale; Hong 2013 uses mU/L directly so no rescaling is applied here.",
+      notes              = "Default reference value 13 mU/L (representative DIS_DIAB fasting insulin; paper does not report a single typical value because subject-level baseline insulin was used as a per-subject covariate). Companion canonical to FPG. NA_NA_paracetamol's INS_BL is in pmol/L with a 1/6.945 rescale; Hong 2013 uses mU/L directly so no rescaling is applied here.",
       source_name        = "ICss"
     )
   )
@@ -67,16 +67,16 @@ Hong_2013_glucose_insulin_HGC <- function() {
     age_range      = "40-65 years (mean 53.7, SD 7.3)",
     weight_range   = NA_character_,
     sex_female_pct = 20,
-    disease_state  = "Type 2 diabetes mellitus (T2DM) managed by diet only. Fasting blood glucose 110-180 mg/dL; HbA1c 5.4-8.3% (mean 6.4%, SD 0.8%). Patients excluded if treated with an antidiabetic drug in the 2 months prior to screening or with severe diabetes complications.",
+    disease_state  = "Type 2 diabetes mellitus (DIS_DIAB) managed by diet only. Fasting blood glucose 110-180 mg/dL; HbA1c 5.4-8.3% (mean 6.4%, SD 0.8%). Patients excluded if treated with an antidiabetic drug in the 2 months prior to screening or with severe diabetes complications.",
     dose_range     = "Hyperglycemic clamp procedure: intravenous glucose loading dose 150 mg/kg followed by a Biostator-controlled 20% glucose infusion regulated to clamp blood glucose at 240 mg/dL for 120 min. Palosuran 125 mg b.i.d. (or placebo) was administered orally twice daily for 4 weeks and the HGC was performed 1 h after drug administration on day 29 of each treatment period; palosuran had no clinically meaningful effect and is set to zero in the published final model.",
     regions        = "Germany (Ethikkommission der Aerztekammer Nordrhein, Germany).",
-    notes          = "Subject demographics from Hong 2013 Methods 'Patients and Study Design'. Two-way crossover design (palosuran vs placebo) with 4-week treatment periods and 4-week washout; MTT performed on day 28 and HGC on day 29 of each period. Subject-level palosuran treatment effects (theta_pal in Eqs 8-9) were estimated as -0.122 with 95% CI including zero and -7.44% on glucose elimination (not clinically relevant), so the published final estimates fix the palosuran effect to zero. Glucose volume of distribution VI was fixed to 6.09 L from the Silber 2007 T2DM literature value because the within-study estimate (0.52 L) was not physiologically meaningful."
+    notes          = "Subject demographics from Hong 2013 Methods 'Patients and Study Design'. Two-way crossover design (palosuran vs placebo) with 4-week treatment periods and 4-week washout; MTT performed on day 28 and HGC on day 29 of each period. Subject-level palosuran treatment effects (theta_pal in Eqs 8-9) were estimated as -0.122 with 95% CI including zero and -7.44% on glucose elimination (not clinically relevant), so the published final estimates fix the palosuran effect to zero. Glucose volume of distribution VI was fixed to 6.09 L from the Silber 2007 DIS_DIAB literature value because the within-study estimate (0.52 L) was not physiologically meaningful."
   )
 
   ini({
     # ---------------------------------------------------------------------
     # Structural parameters (Hong 2013 Table I, Original-data Estimate
-    # column). VI is fixed to the Silber 2007 T2DM literature value
+    # column). VI is fixed to the Silber 2007 DIS_DIAB literature value
     # (6.09 L) because the within-study estimate was not physiologically
     # meaningful; Tsec and Tdur are fixed to literature values from
     # reference 16 (Lima 2010 / Mari 2003 first-phase secretion-pulse
@@ -90,7 +90,7 @@ Hong_2013_glucose_insulin_HGC <- function() {
     lgamma     <- log(0.000431)         ; label("Second-phase insulin-secretion slope gamma (mU/(min^2*(mg/L)))")             # Hong 2013 Table I: gamma = 0.000431
     lamplitude <- log(32.2)             ; label("Amplitude of the Gaussian first-phase insulin pulse (mU)")                    # Hong 2013 Table I: Amplitude = 32.2
     lcli       <- log(1.54)             ; label("Insulin clearance CLI (L/min)")                                              # Hong 2013 Table I: CL_I = 1.54
-    lvi        <- fixed(log(6.09))      ; label("Insulin volume of distribution VI (L; FIXED to Silber 2007 T2DM)")           # Hong 2013 Table I: V_I = 6.09 (FIXED, footnote a)
+    lvi        <- fixed(log(6.09))      ; label("Insulin volume of distribution VI (L; FIXED to Silber 2007 DIS_DIAB)")           # Hong 2013 Table I: V_I = 6.09 (FIXED, footnote a)
     lkie       <- log(0.00291)          ; label("Insulin effect-compartment equilibration rate kIE (1/min)")                  # Hong 2013 Table I: k_IE = 0.00291
     ltsec      <- fixed(log(3.54))      ; label("Time of peak first-phase insulin secretion Tsec (min; FIXED to lit value)")  # Hong 2013 Results: Tsec FIXED at 3.54 (ref 16)
     ltdur      <- fixed(log(1.76))      ; label("Width of the Gaussian first-phase pulse Tdur (min; FIXED to lit value)")     # Hong 2013 Results: Tdur FIXED at 1.76 (ref 16)

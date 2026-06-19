@@ -1,5 +1,5 @@
 Zecchin_2016_survival <- function() {
-  description <- "Time-to-event model for overall survival (OS) in advanced epithelial ovarian cancer (Zecchin 2016 / DDMODEL00000218): Weibull baseline hazard with covariate effects of normalised baseline SLD (TUM_SLD / 70 mm), tumour-size-ratio TSR(t) capped at week 12, time-varying new-lesion indicator (NWLS), and binary ECOG performance status, with the underlying SLD trajectory (subject-specific tumour-growth and drug-cytotoxicity rate constants from the upstream Zecchin 2016 SLD model) integrated inline."
+  description <- "Time-to-event model for overall survival (OS) in advanced epithelial ovarian cancer (Zecchin 2016 / DDMODEL00000218): Weibull baseline hazard with covariate effects of normalised baseline SLD (TUM_SLD / 70 mm), tumour-size-ratio TSR(t) capped at week 12, time-varying new-lesion indicator (NEW_LESION), and binary ECOG performance status, with the underlying SLD trajectory (subject-specific tumour-growth and drug-cytotoxicity rate constants from the upstream Zecchin 2016 SLD model) integrated inline."
   reference <- paste(
     "Zecchin C, Gueorguieva I, Enas NH, Friberg LE.",
     "Models for change in tumour size, appearance of new lesions",
@@ -74,13 +74,13 @@ Zecchin_2016_survival <- function() {
       notes              = "Time-varying. Held step-wise constant within each chemotherapy cycle and reset at the start of the next cycle. Set to 0 in carboplatin-monotherapy cycles. The DDMORE bundle's Simulated_OS.csv encodes this column as `AUC1`; the source `$INPUT` NM-TRAN column is `G`.",
       source_name        = "G"
     ),
-    NWLS = list(
-      description        = "Time-varying binary indicator of whether a new (non-target) RECIST lesion has appeared since enrolment. 1 = new lesion present at the current observation time; 0 = no new lesion as of the current time. Once `NWLS` flips to 1 it stays 1 for subsequent times in that subject.",
+    NEW_LESION = list(
+      description        = "Time-varying binary indicator of whether a new (non-target) RECIST lesion has appeared since enrolment. 1 = new lesion present at the current observation time; 0 = no new lesion as of the current time. Once `NEW_LESION` flips to 1 it stays 1 for subsequent times in that subject.",
       units              = "(binary)",
       type               = "binary",
       reference_category = "0 (no new lesion appeared as of the current time)",
-      notes              = "Step-function flag, not a transient pulse. The bundle's Simulated_OS.csv encodes this column as `NWLSCOV`; the source `$INPUT` column is `NWLS`. Hazard effect: multiplicative `exp(e_nwls_haz * NWLS)` with `e_nwls_haz = 1.23` (Output_real_OS.lst FINAL TH5 / Zecchin 2016 Table 2 gamma_NewLes(t) = 1.23).",
-      source_name        = "NWLS"
+      notes              = "Step-function flag, not a transient pulse. The bundle's Simulated_OS.csv encodes this column as `NWLSCOV`; the source `$INPUT` column is `NEW_LESION`. Hazard effect: multiplicative `exp(e_nwls_haz * NEW_LESION)` with `e_nwls_haz = 1.23` (Output_real_OS.lst FINAL TH5 / Zecchin 2016 Table 2 gamma_NewLes(t) = 1.23).",
+      source_name        = "NEW_LESION"
     ),
     TUM_SLD = list(
       description        = "Measured baseline sum of longest diameters (SLD) at enrolment per RECIST 1.1.",
@@ -122,7 +122,7 @@ Zecchin_2016_survival <- function() {
     lalfa_haz <- log(2.004);    label("Weibull baseline-hazard shape parameter, alpha_OS (unitless)") # Output_real_OS.lst FINAL TH2 = 2.00E+00; Zecchin 2016 Table 2 alpha_OS = 1.99
     e_sld0_haz <- 0.2084;       label("Hazard log-linear coefficient on baseline SLD/70 (unitless)")  # Output_real_OS.lst FINAL TH3 = 2.08E-01; Zecchin 2016 Table 2 gamma_SLD0 = 0.189 (small rounding)
     e_tsr_haz  <- 0.9036;       label("Hazard log-linear coefficient on tumour-size ratio TSR(t) capped at week 12 (unitless)") # Output_real_OS.lst FINAL TH4 = 9.04E-01; Zecchin 2016 Table 2 gamma_TSR = 0.893
-    e_nwls_haz <- 1.230;        label("Hazard log-linear coefficient on new-lesion indicator NWLS (unitless)") # Output_real_OS.lst FINAL TH5 = 1.23E+00; Zecchin 2016 Table 2 gamma_NewLes = 1.23
+    e_nwls_haz <- 1.230;        label("Hazard log-linear coefficient on new-lesion indicator NEW_LESION (unitless)") # Output_real_OS.lst FINAL TH5 = 1.23E+00; Zecchin 2016 Table 2 gamma_NewLes = 1.23
     e_ecog_haz <- 0.5162;       label("Hazard log-linear coefficient on binary ECOG_GE1 indicator (unitless)") # Output_real_OS.lst FINAL TH6 = 5.16E-01; Zecchin 2016 Table 2 gamma_ECOG = 0.518
 
     # IIV. Source NONMEM run wires ETA(1) on LAM with $OMEGA 0 FIX
@@ -174,11 +174,11 @@ Zecchin_2016_survival <- function() {
     del <- 1e-6
     hazard <- lam_haz * alfa_haz * (lam_haz * (t + del))^(alfa_haz - 1) *
       exp(e_sld0_haz * nsld0 + e_tsr_haz * wts +
-          e_nwls_haz * NWLS + e_ecog_haz * ECOG_GE1)
+          e_nwls_haz * NEW_LESION + e_ecog_haz * ECOG_GE1)
 
     # Cumulative hazard and survival probability
-    d/dt(cumHazard) <- hazard
-    cumHazard(0) <- 0
-    sur <- exp(-cumHazard)
+    d/dt(cumhaz) <- hazard
+    cumhaz(0) <- 0
+    sur <- exp(-cumhaz)
   })
 }

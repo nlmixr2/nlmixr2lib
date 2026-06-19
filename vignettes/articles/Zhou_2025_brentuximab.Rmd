@@ -164,7 +164,7 @@ make_cohort <- function(n, dose_mg, cycle_h, n_cycles, regimen,
     ALB         = alb,
     CREAT       = creat,
     TUMSZ       = tumsz,
-    TUMTP_CHL   = as.integer(tumtp_chl),
+    TUMTP_HODGKIN_CLASSICAL   = as.integer(tumtp_chl),
     ADA_POS     = as.integer(ada_pos),
     CONMED_AVD = as.integer(conmed_avd)
   )
@@ -415,8 +415,8 @@ quirks in the source documentation that needed re-derivation.
   column through `covariateData[[CONMED_AVD]]$source_name`.
 * **MMAE central-volume reference category.** The Non-HL effect on MMAE
   central volume VM has multiplier 0.296 with reference 1 = HL. The
-  canonical `TUMTP_CHL` register entry encodes 1 = HL, so the model
-  applies the effect as `e_nonhl_vc_mmae^(1 - TUMTP_CHL)` to keep the
+  canonical `TUMTP_HODGKIN_CLASSICAL` register entry encodes 1 = HL, so the model
+  applies the effect as `e_nonhl_vc_mmae^(1 - TUMTP_HODGKIN_CLASSICAL)` to keep the
   paper's reference (HL) at multiplier 1 while preserving the canonical
   column meaning.
 * **Cycle-4 NCA.** The PKNCA validation block computes Cmax / Tmax /

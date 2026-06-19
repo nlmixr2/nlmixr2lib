@@ -1,5 +1,5 @@
 NA_NA_miridesap <- function() {
-  description <- "Population PK/PD model for CPHPC (miridesap, GSK2315698, Ro 63-8695) and serum amyloid P (SAP) in healthy volunteers (CPH113776) and patients with systemic amyloidosis (CPH114527). Two-compartment PK for CPHPC (with first-order subcutaneous absorption from a depot in addition to IV infusion); two-compartment turnover model for SAP with first-order endogenous production and elimination; bimolecular CPHPC + free SAP -> complex binding (treated as effectively irreversible because internalization is fast relative to dissociation) followed by complex internalization. Final-model covariates from Sahota 2015 Eq. 1 and Eq. 2: creatinine clearance (CRCL) modifies CPHPC clearance below an 80 mL/min threshold, hepatic amyloid involvement (AMLIVER) multiplies SAP intercompartmental clearance Q4, whole-body amyloid load (AMLOAD: 0-3) multiplies SAP peripheral volume V4 in two categorical steps, and biological sex (SEXF) multiplies baseline plasma SAP. Distributed in the DDMORE Foundation Model Repository as DDMODEL00000262."
+  description <- "Population PK/PD model for CPHPC (miridesap, GSK2315698, Ro 63-8695) and serum amyloid P (SAP) in healthy volunteers (CPH113776) and patients with systemic amyloidosis (CPH114527). Two-compartment PK for CPHPC (with first-order subcutaneous absorption from a depot in addition to IV infusion); two-compartment turnover model for SAP with first-order endogenous production and elimination; bimolecular CPHPC + free SAP -> complex binding (treated as effectively irreversible because internalization is fast relative to dissociation) followed by complex internalization. Final-model covariates from Sahota 2015 Eq. 1 and Eq. 2: creatinine clearance (CRCL) modifies CPHPC clearance below an 80 mL/min threshold, hepatic amyloid involvement (DIS_AMYLOID_LIVER) multiplies SAP intercompartmental clearance Q4, whole-body amyloid load (DIS_AMYLOID_LOAD: 0-3) multiplies SAP peripheral volume V4 in two categorical steps, and biological sex (SEXF) multiplies baseline plasma SAP. Distributed in the DDMORE Foundation Model Repository as DDMODEL00000262."
   reference <- "Sahota T, Berges A, Barton S, Cookson L, Zamuner S, Richards D. Target Mediated Drug Disposition Model of CPHPC in Patients With Systemic Amyloidosis. CPT Pharmacometrics Syst Pharmacol. 2015;4(2):e15. doi:10.1002/psp4.15. Companion DDMORE Foundation Model Repository entry: DDMODEL00000262."
   vignette <- "NA_NA_miridesap"
   units <- list(
@@ -20,21 +20,21 @@ NA_NA_miridesap <- function() {
       notes              = "Sahota 2015 Eq. 1: cl_effect = 1 + e_crcl_cl * (min(CRCL, 80) - 80); the covariate saturates at CRCL >= 80 mL/min (multiplier = 1, no further effect) and reduces CL linearly with declining renal function below 80. Output_real_CPHPC.lst THETA(15) = 0.0153 (paper Table 2 reports 0.015, RSE 5%). Source column 'CRCL' in Simulated_CPHPC_dataset.csv.",
       source_name        = "CRCL"
     ),
-    AMLIVER = list(
+    DIS_AMYLOID_LIVER = list(
       description        = "Hepatic amyloid involvement indicator (0 = no liver amyloid, 1 = liver amyloid present).",
       units              = "(binary)",
       type               = "binary",
       reference_category = 0,
-      notes              = "Sahota 2015 Eq. 2: Q4_amliver = 1 + e_amliver_q4 * AMLIVER; multiplies the typical SAP intercompartmental clearance. Patients with hepatic amyloid have a ~5-fold higher Q4 (1 + 4.01). Source column 'AMLIVER' in Simulated_CPHPC_dataset.csv. Baseline-only; not time-varying.",
-      source_name        = "AMLIVER"
+      notes              = "Sahota 2015 Eq. 2: Q4_amliver = 1 + e_amliver_q4 * DIS_AMYLOID_LIVER; multiplies the typical SAP intercompartmental clearance. Patients with hepatic amyloid have a ~5-fold higher Q4 (1 + 4.01). Source column 'DIS_AMYLOID_LIVER' in Simulated_CPHPC_dataset.csv. Baseline-only; not time-varying.",
+      source_name        = "DIS_AMYLOID_LIVER"
     ),
-    AMLOAD = list(
+    DIS_AMYLOID_LOAD = list(
       description        = "Whole-body amyloid load categorical score (0 = no amyloid in healthy volunteers; 1 = small; 2 = moderate; 3 = large).",
       units              = "(categorical 0-3)",
       type               = "categorical",
       reference_category = 0,
-      notes              = "Sahota 2015 Methods: the score combines organ-by-organ amyloid presence into a single ordinal grade. Eq. 2 collapses categories 0 and 1 into the reference (V4 multiplier = 1); category 2 adds e_amload2_vp_sap; category 3 adds e_amload2_vp_sap + e_amload3_vp_sap. The cumulative additive parameterisation enforces monotonicity. Paper reports moderate = 6.39 (RSE 39%) and large = 26.39 (RSE 26%), matching Output_real_CPHPC.lst TH20 / TH21. Source column 'AMLOAD' in Simulated_CPHPC_dataset.csv.",
-      source_name        = "AMLOAD"
+      notes              = "Sahota 2015 Methods: the score combines organ-by-organ amyloid presence into a single ordinal grade. Eq. 2 collapses categories 0 and 1 into the reference (V4 multiplier = 1); category 2 adds e_amload2_vp_sap; category 3 adds e_amload2_vp_sap + e_amload3_vp_sap. The cumulative additive parameterisation enforces monotonicity. Paper reports moderate = 6.39 (RSE 39%) and large = 26.39 (RSE 26%), matching Output_real_CPHPC.lst TH20 / TH21. Source column 'DIS_AMYLOID_LOAD' in Simulated_CPHPC_dataset.csv.",
+      source_name        = "DIS_AMYLOID_LOAD"
     ),
     SEXF = list(
       description        = "Biological sex indicator (1 = female, 0 = male). Source data encode SEX as 1 = male, 2 = female (Sahota 2015 NONMEM convention); derive SEXF = as.integer(SEX == 2) when feeding the bundle's Simulated_CPHPC_dataset.csv into this model.",
@@ -92,14 +92,14 @@ NA_NA_miridesap <- function() {
     # SAP turnover and distribution
     lkout    <- -3.07          ; label("Log endogenous SAP elimination rate (log 1/h); kout = exp(lkout) = 0.0464 1/h (Sahota 2015 Table 2: 0.046)")   # THETA(1)
     lsap0    <- 3.44           ; label("Log baseline plasma SAP concentration in males (log mg/L); sap0 = exp(lsap0) = 31.19 mg/L (Sahota 2015: 31.10)") # THETA(6)
-    lvp_sap  <- 2.50           ; label("Log SAP peripheral volume at AMLOAD <= 1 (log L); Vp_sap_ref = exp(lvp_sap) = 12.18 L (Sahota 2015 Table 2: 12.15)") # THETA(16)
-    lq_sap   <- 1.05           ; label("Log SAP inter-compartmental clearance at AMLIVER = 0 (log L/h); Q_sap_ref = exp(lq_sap) = 2.86 L/h (Sahota 2015: 2.84)") # THETA(17)
+    lvp_sap  <- 2.50           ; label("Log SAP peripheral volume at DIS_AMYLOID_LOAD <= 1 (log L); Vp_sap_ref = exp(lvp_sap) = 12.18 L (Sahota 2015 Table 2: 12.15)") # THETA(16)
+    lq_sap   <- 1.05           ; label("Log SAP inter-compartmental clearance at DIS_AMYLOID_LIVER = 0 (log L/h); Q_sap_ref = exp(lq_sap) = 2.86 L/h (Sahota 2015: 2.84)") # THETA(17)
 
     # SAP covariate effects (Sahota 2015 Eq. 2)
-    e_amliver_q4      <- 4.01  ; label("AMLIVER multiplicative effect on SAP Q4 (Q4 = Q4_ref * (1 + e_amliver_q4 * AMLIVER)); ~5x increase when liver amyloid present") # THETA(18)
+    e_amliver_q4      <- 4.01  ; label("DIS_AMYLOID_LIVER multiplicative effect on SAP Q4 (Q4 = Q4_ref * (1 + e_amliver_q4 * DIS_AMYLOID_LIVER)); ~5x increase when liver amyloid present") # THETA(18)
     e_sexf_sap0       <- -0.30 ; label("SEXF (female) multiplicative effect on SAP baseline (SAP_BASE = SAP_BASE_ref * (1 + e_sexf_sap0 * SEXF)); ~30% lower in females") # THETA(19)
-    e_amload2_vp_sap  <- 6.39  ; label("AMLOAD step-2 multiplicative effect on SAP V4 (V4 = V4_ref * (1 + e_amload2_vp_sap)) for AMLOAD >= 2; ~7.4x V4 in moderate amyloid load") # THETA(20)
-    e_amload3_vp_sap  <- 26.4  ; label("AMLOAD step-3 additional multiplicative effect on V4 (V4 = V4_ref * (1 + e_amload2_vp_sap + e_amload3_vp_sap)) for AMLOAD = 3; ~33.8x V4 in large amyloid load") # THETA(21)
+    e_amload2_vp_sap  <- 6.39  ; label("DIS_AMYLOID_LOAD step-2 multiplicative effect on SAP V4 (V4 = V4_ref * (1 + e_amload2_vp_sap)) for DIS_AMYLOID_LOAD >= 2; ~7.4x V4 in moderate amyloid load") # THETA(20)
+    e_amload3_vp_sap  <- 26.4  ; label("DIS_AMYLOID_LOAD step-3 additional multiplicative effect on V4 (V4 = V4_ref * (1 + e_amload2_vp_sap + e_amload3_vp_sap)) for DIS_AMYLOID_LOAD = 3; ~33.8x V4 in large amyloid load") # THETA(21)
 
     # CPHPC + free SAP <-> complex binding kinetics
     lkon    <- 14.5            ; label("Log SAP-CPHPC binding on-rate (log L/(mol h)); kon = exp(lkon) = 1.98e6 L/(mol h) (Sahota 2015 Table 2: 1.94e6)") # THETA(7)
@@ -151,14 +151,14 @@ NA_NA_miridesap <- function() {
     crcl_capped <- (CRCL < 80) * CRCL + (CRCL >= 80) * 80
     crcl_effect <- 1 + e_crcl_cl * (crcl_capped - 80)
 
-    # AMLIVER effect on SAP Q4 (Sahota 2015 Eq. 2; AMLIVER is binary 0/1)
-    q4_amliver_factor <- 1 + e_amliver_q4 * AMLIVER
+    # DIS_AMYLOID_LIVER effect on SAP Q4 (Sahota 2015 Eq. 2; DIS_AMYLOID_LIVER is binary 0/1)
+    q4_amliver_factor <- 1 + e_amliver_q4 * DIS_AMYLOID_LIVER
 
-    # AMLOAD effect on SAP V4 (Sahota 2015 Eq. 2; ordinal 0-3 with
+    # DIS_AMYLOID_LOAD effect on SAP V4 (Sahota 2015 Eq. 2; ordinal 0-3 with
     # categories 0 and 1 sharing the reference). Encoded as cumulative
     # indicators to enforce monotonicity.
-    amload_ge_2 <- (AMLOAD >= 2) * 1.0
-    amload_ge_3 <- (AMLOAD >= 3) * 1.0
+    amload_ge_2 <- (DIS_AMYLOID_LOAD >= 2) * 1.0
+    amload_ge_3 <- (DIS_AMYLOID_LOAD >= 3) * 1.0
     v4_amload_factor <- 1 + e_amload2_vp_sap * amload_ge_2 + e_amload3_vp_sap * amload_ge_3
 
     # SEXF effect on SAP baseline (Sahota 2015 Eq. 2; SEXF is binary 0=male, 1=female)

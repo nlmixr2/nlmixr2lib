@@ -1,8 +1,8 @@
 ---
-title: "Glucose-insulin dynamics in T2DM (Hong 2013)"
+title: "Glucose-insulin dynamics in DIS_DIAB (Hong 2013)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Glucose-insulin dynamics in T2DM (Hong 2013)}
+  %\VignetteIndexEntry{Glucose-insulin dynamics in DIS_DIAB (Hong 2013)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -22,23 +22,23 @@ library(ggplot2)
 * DOI: <https://doi.org/10.1208/s12248-013-9512-4>
 * PubMed: PMID 23913136; PMCID PMC3787234.
 
-Hong 2013 develops an integrated population PD model of glucose and insulin homeostasis in 20 adults with type 2 diabetes mellitus (T2DM) under two perturbation conditions:
+Hong 2013 develops an integrated population PD model of glucose and insulin homeostasis in 20 adults with type 2 diabetes mellitus (DIS_DIAB) under two perturbation conditions:
 
 * **Hyperglycemic glucose clamp (HGC)** -- intravenous glucose loading dose plus Biostator-controlled infusion clamping blood glucose at 240 mg/dL for 120 min.
 * **Meal tolerance test (MTT)** -- standardised oral breakfast (approximately 618 kcal) after an overnight fast, observed for 4 h.
 
 The paper extends the Silber 2007 integrated glucose-insulin framework with two modifications:
 
-1. Endogenous glucose production GP is constant (the feedback term that Silber estimated was close to zero in T2DM).
+1. Endogenous glucose production GP is constant (the feedback term that Silber estimated was close to zero in DIS_DIAB).
 2. The HGC first-phase insulin response is captured by an empirical Gaussian secretion pulse (amplitude `Amplitude`, peak time `Tsec` fixed at 3.54 min, width `Tdur` fixed at 1.76 min) rather than a NONMEM bolus.
 
-Palosuran 125 mg b.i.d. was the investigational drug; the paper concludes it has no clinically meaningful effect on insulin secretion or sensitivity, so the published final estimates fix the palosuran effect to zero and the structural model is essentially a drug-free glucose-insulin homeostasis model in T2DM.
+Palosuran 125 mg b.i.d. was the investigational drug; the paper concludes it has no clinically meaningful effect on insulin secretion or sensitivity, so the published final estimates fix the palosuran effect to zero and the structural model is essentially a drug-free glucose-insulin homeostasis model in DIS_DIAB.
 
 The paper produces two distinct dynamical systems (HGC and MTT) that share the glucose-disposition and effect-compartment structure but differ in the glucose input arm (IV clamp vs. transit-absorbed meal) and the insulin secretion equation (biphasic Gaussian + linear vs. power + incretin Emax). Per the replicate-author-structure policy, this paper contributes two model files (`Hong_2013_glucose_insulin_HGC.R` and `Hong_2013_glucose_insulin_MTT.R`) and one shared vignette (this article).
 
 # Population
 
-The model was fit to 20 adults with T2DM treated by diet only (16 male, 4 female; mean age 53.7 y, range 40-65; fasting blood glucose 110-180 mg/dL; HbA1c 5.4-8.3%, mean 6.4%). The study was a double-blind, placebo-controlled, randomised, two-way crossover trial of palosuran 125 mg b.i.d. for 4 weeks against placebo with a 4-week washout (Ethikkommission der Aerztekammer Nordrhein, Germany). MTT was performed on day 28 and HGC on day 29 of each treatment period.
+The model was fit to 20 adults with DIS_DIAB treated by diet only (16 male, 4 female; mean age 53.7 y, range 40-65; fasting blood glucose 110-180 mg/dL; HbA1c 5.4-8.3%, mean 6.4%). The study was a double-blind, placebo-controlled, randomised, two-way crossover trial of palosuran 125 mg b.i.d. for 4 weeks against placebo with a 4-week washout (Ethikkommission der Aerztekammer Nordrhein, Germany). MTT was performed on day 28 and HGC on day 29 of each treatment period.
 
 # Source trace
 
@@ -57,7 +57,7 @@ The per-parameter origin is recorded in the in-file comments next to each `ini()
 | `gamma`        | 0.000431 mU/(min^2*(mg/L))             | Table I                                                                         |
 | `Amplitude`    | 32.2 mU                                | Table I                                                                         |
 | `CLI`          | 1.54 L/min                             | Table I                                                                         |
-| `VI`           | 6.09 L (FIXED, Silber 2007 T2DM lit)   | Table I footnote a                                                              |
+| `VI`           | 6.09 L (FIXED, Silber 2007 DIS_DIAB lit)   | Table I footnote a                                                              |
 | `kIE`          | 0.00291 1/min                          | Table I                                                                         |
 | `Tsec`         | 3.54 min (FIXED, lit value ref 16)     | Hong 2013 Results section                                                       |
 | `Tdur`         | 1.76 min (FIXED, lit value ref 16)     | Hong 2013 Results section                                                       |
@@ -328,8 +328,8 @@ ggplot(mtt_pop_summary, aes(time)) +
 
 # Assumptions and deviations
 
-- **Palosuran treatment effect fixed at zero.** Hong 2013 quantified palosuran's effect on insulin secretion (theta_pal = -0.122 with 95% CI including zero) and on glucose elimination (-7.44%, not clinically meaningful) and concluded that "palosuran did not influence insulin secretion or sensitivity." The published final estimates reported in Tables I and II were re-fit with the palosuran treatment effect set to zero, and the same convention is used here -- the structural model below is the drug-free glucose-insulin homeostasis model in T2DM.
-- **VI fixed to 6.09 L (Silber 2007 T2DM literature value).** The within-study estimate of VI was 0.52 L with very high IIV (variance 7.22) and produced a biased CLI (0.0593 L/min, 20-fold lower than literature). The paper fixed VI to 6.09 L, the Silber 2007 T2DM estimate, to obtain a stable fit with CLI in agreement with the literature.
+- **Palosuran treatment effect fixed at zero.** Hong 2013 quantified palosuran's effect on insulin secretion (theta_pal = -0.122 with 95% CI including zero) and on glucose elimination (-7.44%, not clinically meaningful) and concluded that "palosuran did not influence insulin secretion or sensitivity." The published final estimates reported in Tables I and II were re-fit with the palosuran treatment effect set to zero, and the same convention is used here -- the structural model below is the drug-free glucose-insulin homeostasis model in DIS_DIAB.
+- **VI fixed to 6.09 L (Silber 2007 DIS_DIAB literature value).** The within-study estimate of VI was 0.52 L with very high IIV (variance 7.22) and produced a biased CLI (0.0593 L/min, 20-fold lower than literature). The paper fixed VI to 6.09 L, the Silber 2007 DIS_DIAB estimate, to obtain a stable fit with CLI in agreement with the literature.
 - **Tsec and Tdur fixed to literature values (3.54 min and 1.76 min from Lima 2010 / Mari 2003).** The within-study estimates (3.27 and 0.98 min) were too narrow relative to the 120-min HGC time-span and produced a variance-covariance abort during fitting.
 - **ABSG50 fixed to 14.8 mg/min (Jauslin 2007 literature value).** Emax and ABSG50 in the MTT model were correlated and only their product was identifiable; the paper fixed ABSG50 to the Jauslin 2007 OGTT value. The paper reports a sensitivity analysis: fixing ABSG50 to 0.148 mg/min (100x lower than the literature value) does not change the fixed and random effects parameter estimates by more than 25% except for `n` (1.42 vs 0.781) and MTT (44.2 vs 62.5 min) -- so this calibration is an identifiability convention rather than a load-bearing assumption.
 - **MTT disposition parameters fixed from HGC.** The MTT model takes CLG / VG / CLI / VI / kIE at their HGC Table I point estimates per the paper's Results section: "The population parameters including CLG, VG, CLI, VI, and kIE were fixed to those estimated from the HGC model with the assumption that these disposition parameters should not markedly differ between HGC and MTT after the incretin effect had been taken into account."
