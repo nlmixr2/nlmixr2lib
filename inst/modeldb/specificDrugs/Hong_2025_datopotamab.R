@@ -51,7 +51,7 @@ Hong_2025_datopotamab <- function() {
     ),
     TBILI = list(
       description        = "Baseline total serum bilirubin",
-      units              = "mg/dL",
+      units = "umol/L",
       type               = "continuous",
       reference_category = NULL,
       notes              = "Time-fixed baseline value (US units; 1 mg/dL ~= 17.1 umol/L). Power effect on DXd CL (exponent -0.139; Hong 2025 Table 2 / Eq. 14). Reference 0.4 mg/dL (Hong 2025 reference subject).",
@@ -183,6 +183,11 @@ Hong_2025_datopotamab <- function() {
     propSd_dxd   <- 0.283;  label("Proportional residual error on DXd Cc_dxd (fraction)")   # Hong 2025 Table 2: additive RUV on log scale, CV 0.283
   })
   model({
+    # SI -> US-convention unit conversion (canonical TBILI is in SI umol/L per
+    # the 2026-06-19 register standardization audit; the original calibration
+    # used the mg/dL reference value, so convert inline here).
+    tbili_mgdL <- TBILI / 17.1  # SI umol/L -> US-convention mg/dL (1 mg/dL = 17.1 umol/L)
+
     # ----- Individual Dato-DXd parameters (Hong 2025 Eq. 8-12). Continuous
     # covariates are normalized to the reference values 66 kg / 62 yr / 38 g/L
     # and enter as power terms; categorical covariates (Japan, female) enter
@@ -210,7 +215,7 @@ Hong_2025_datopotamab <- function() {
       (WT    / 66)^e_wt_cl_dxd *
       (ALB   / 38)^e_alb_cl_dxd *
       (AST   / 22)^e_ast_cl_dxd *
-      (TBILI / 0.4)^e_tbili_cl_dxd *
+      (tbili_mgdL / 0.4)^e_tbili_cl_dxd *
       (1 + e_eu_cl_dxd  * REGION_EUROPE +
            e_row_cl_dxd * REGION_ROW)
     vc_dxd <- exp(lvc_dxd + etalvc_dxd) *
