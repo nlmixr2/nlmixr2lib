@@ -15,7 +15,7 @@ Nikanjam_2019_siltuximab <- function() {
     ),
     ALB = list(
       description        = "Serum albumin",
-      units              = "g/dL",
+      units = "g/L",
       type               = "continuous",
       reference_category = NULL,
       notes              = "Power effects on CL and on V1/V2; normalized as ALB/4.1 per Nikanjam 2019 (reference: 4.1 g/dL, overall median from Table 1).",
@@ -113,27 +113,32 @@ Nikanjam_2019_siltuximab <- function() {
     addSd  <- 0.0217; label("Additive residual error (ug/mL)")                # Nikanjam 2019 Table 2: 0.0217
   })
   model({
+    # SI -> US-convention unit conversion (canonical ALB is in SI g/L per the
+    # 2026-06-19 register standardization audit; the original calibration
+    # used the g/dL reference value, so convert inline here).
+    alb_gdL <- ALB * 0.1  # SI g/L -> US-convention g/dL (factor 0.1)
+
     # Individual PK parameters. Reference subject: 73-kg patient with
-    # ALB 4.1 g/dL, ALT 19 U/L, CREAT 0.9 mg/dL, and a non-HV, non-Castleman,
+    # alb_gdL 4.1 g/dL, ALT 19 U/L, CREAT 0.9 mg/dL, and a non-HV, non-Castleman,
     # non-SMM oncology indication. Continuous covariates enter as power-form
     # effects normalized to the population medians; disease-state indicators
     # enter as multiplicative scalars raised to the binary indicator.
     cl <- exp(lcl + etalcl) *
-      (ALB / 4.1)^e_alb_cl *
+      (alb_gdL / 4.1)^e_alb_cl *
       (ALT / 19)^e_alt_cl *
       e_healthy_cl^DIS_HEALTHY *
       e_cd_cl^DIS_CASTLEMAN
 
     vc <- exp(lvc + etalvc) *
       (WT  / 73)^e_wt_vc_vp *
-      (ALB / 4.1)^e_alb_vc_vp *
+      (alb_gdL / 4.1)^e_alb_vc_vp *
       (CREAT / 0.9)^e_creat_vc_vp *
       e_healthy_vc_vp^DIS_HEALTHY *
       e_smm_vc_vp^DIS_SMM
 
     vp <- exp(lvp + etalvc) *
       (WT  / 73)^e_wt_vc_vp *
-      (ALB / 4.1)^e_alb_vc_vp *
+      (alb_gdL / 4.1)^e_alb_vc_vp *
       (CREAT / 0.9)^e_creat_vc_vp *
       e_healthy_vc_vp^DIS_HEALTHY *
       e_smm_vc_vp^DIS_SMM
