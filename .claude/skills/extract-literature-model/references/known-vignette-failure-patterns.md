@@ -24,7 +24,7 @@ off-diagonals = `sqrt(var_i * var_j)` gives a rank-1 matrix
 a singular matrix. Tiny rounding noise in the off-diagonals can also
 flip the matrix to mildly indefinite.
 
-**Wrong:**
+**Wrong** (singular OMEGA — `chol()` fails):
 ```r
 ini({
   # ...
@@ -34,35 +34,34 @@ ini({
     0.029444, 0.092639, 0.060625
   )
 })
-model({
-  vc  <- exp(lvc  + etalvc)  * allom_v * cov_factor
-  q2  <- exp(lq2  + etalq2)  * allom_cl * cov_factor
-  vp2 <- exp(lvp2 + etalvp2) * allom_v * cov_factor
-})
 ```
+Every pair has correlation exactly 1, so the block is rank-1: its determinant is 0 (and rounding can tip it mildly negative), and the Cholesky sampler cannot decompose it.
 
-**Right** (mathematically equivalent; well-conditioned):
+**Right** — keep the IIV in `ini()` and nudge the matrix positive definite. Scale the **off-diagonals** by 0.99 (correlation 1.00 -> 0.99); the diagonal variances — the published CVs — are kept exactly, so this is the smallest change that makes OMEGA positive definite. **Do not move the IIV into `model()`.**
 ```r
 ini({
   # ...
-  # Shared standardized eta for the V2/Q4/V4 perfect-correlation block.
-  # Per-parameter scaling lives in model() below.
-  eta_v2q4v4 ~ 1.0
+  # Paper reports "perfect (+1) correlation" across the V2/Q4/V4 block, which
+  # is exactly singular. Nudge each correlation to 0.99 by scaling the
+  # off-diagonals by 0.99; variances (the published CVs) are unchanged.
+  # (If chol() still fails on a given matrix, drop the factor a little more,
+  # e.g. 0.95.)
+  etalvc + etalq2 + etalvp2 ~ c(
+    0.014297,
+    0.99 * 0.044990, 0.141562,
+    0.99 * 0.029444, 0.99 * 0.092639, 0.060625
+  )
 })
 model({
-  # var(etalvc)  = (sqrt(0.014297))^2  = 0.014297 -> CV 12% on V2
-  # var(etalq2)  = (sqrt(0.141562))^2  = 0.141562 -> CV 39% on Q4
-  # var(etalvp2) = (sqrt(0.060625))^2  = 0.060625 -> CV 25% on V4
-  etalvc  <- 0.119571 * eta_v2q4v4
-  etalq2  <- 0.376247 * eta_v2q4v4
-  etalvp2 <- 0.246222 * eta_v2q4v4
-  vc  <- exp(lvc  + etalvc)  * allom_v * cov_factor
+  # model() is UNCHANGED — structure only, no eta bookkeeping:
+  vc  <- exp(lvc  + etalvc)  * allom_v  * cov_factor
   q2  <- exp(lq2  + etalq2)  * allom_cl * cov_factor
-  vp2 <- exp(lvp2 + etalvp2) * allom_v * cov_factor
+  vp2 <- exp(lvp2 + etalvp2) * allom_v  * cov_factor
 })
 ```
+Inline arithmetic in the `c(...)` is valid — rxode2 evaluates it, so the `0.99 *` nudge stays visible in the source trace. The nudge perturbs only the idealized "perfect" correlation, never the reported variances, and leaves `model()` for ODE structure and algebra.
 
-See `inst/modeldb/specificDrugs/Fanta_2007_ciclosporin.R` for the canonical example. The published CVs and correlation structure are preserved exactly; only the encoding changes.
+**Do not** instead introduce a shared standardized eta (`eta_v2q4v4 ~ 1.0`) and scale it per parameter inside `model()` (`etalvc <- 0.119571 * eta_v2q4v4`, ...). That is mathematically equivalent but pushes covariance bookkeeping into the model body, which is reserved for structure. `inst/modeldb/specificDrugs/Fanta_2007_ciclosporin.R` currently uses that older `model()`-scaling form and is a candidate to migrate to the `ini()`-nudge above.
 
 ## 2. `'cmt' on observation record ... undefined compartment` OR `The following parameter(s) are required for solving: <state>`
 
