@@ -21,7 +21,7 @@ Chen_2014_nab_paclitaxel <- function() {
   covariateData <- list(
     ALB = list(
       description        = "Serum albumin concentration (baseline).",
-      units              = "g/dL",
+      units = "g/L",
       type               = "continuous",
       reference_category = NULL,
       notes              = "Enters two parameters as a power-form effect centred on the population median (Chen 2014 Methods, 'Continuous covariates were centered to their median values and included as power models'). On VMEL the reference value is the PK-population median 3.9 g/dL (Table 1, N = 150): VMEL_i = VMEL * (ALB/3.9)^0.554. On baseline ANC the reference value is the PD-population median 4.0 g/dL (Table 1, N = 125): BASE_i = BASE * (ALB/4.0)^(-0.998). The two power exponents and reference values come from the final PK and PD models in Table 2. The paper notes (Results, Population PD Model -> Covariate analysis) that the physiological and clinical relevance of the baseline-ANC / albumin correlation is unclear but the covariate improved the goodness-of-fit (P < 0.001) and was retained in the final model. Cohort range 2.1-4.7 g/dL.",
@@ -135,6 +135,11 @@ Chen_2014_nab_paclitaxel <- function() {
   })
 
   model({
+    # SI -> US-convention unit conversion (canonical ALB is in SI g/L per the
+    # 2026-06-19 register standardization audit; the original calibration
+    # used the g/dL reference value, so convert inline here).
+    alb_gdL <- ALB * 0.1  # SI g/L -> US-convention g/dL (factor 0.1)
+
     # ---- Derived dichotomous covariate ----
     # Chen 2014 dichotomised AGE at 65 years for the Slope covariate; the canonical AGE column
     # is continuous and the binary indicator is derived inline (see Robbie_2012_palivizumab.R
@@ -148,7 +153,7 @@ Chen_2014_nab_paclitaxel <- function() {
     q2   <- exp(lq2)
     vmtr <- exp(lvmtr + etalvmtr)
     kmtr <- exp(lkmtr)
-    vmax <- exp(lvmax + etalvmax) * (ALB / 3.9)^e_alb_vmax
+    vmax <- exp(lvmax + etalvmax) * (alb_gdL / 3.9)^e_alb_vmax
     kmel <- exp(lkmel)
 
     # Concentrations driving the saturable processes (ug/L = ng/mL)
@@ -176,7 +181,7 @@ Chen_2014_nab_paclitaxel <- function() {
     # ---- Individual PD parameters ----
     mtt   <- exp(lmtt   + etalmtt)
     slope <- exp(lslope + etalslope) * (1 + e_age_slope * age_gte65)
-    rbase  <- exp(lrbase  + etalrbase)  * (ALB / 4.0)^e_alb_rbase
+    rbase  <- exp(lrbase  + etalrbase)  * (alb_gdL / 4.0)^e_alb_rbase
     gamma <- exp(lgamma)
 
     # Transit-rate constant for the Friberg chain: KTR = (n + 1) / MTT with n = 3
