@@ -55,7 +55,7 @@ Ide_2020_elotuzumab <- function() {
     ),
     ALB = list(
       description        = "Baseline serum albumin",
-      units              = "g/dL",
+      units = "g/L",
       type               = "continuous",
       reference_category = NULL,
       notes              = "Power scaling on CL with reference 3.5 g/dL (Ide 2020 supplement S2 reference patient).",
@@ -236,6 +236,11 @@ Ide_2020_elotuzumab <- function() {
   })
 
   model({
+    # SI -> US-convention unit conversion (canonical ALB is in SI g/L per the
+    # 2026-06-19 register standardization audit; the original calibration
+    # used the g/dL reference value, so convert inline here).
+    alb_gdL <- ALB * 0.1  # SI g/L -> US-convention g/dL (factor 0.1)
+
     # ---- Derived binary indicators from the canonical continuous B2M -------
     # Ide 2020 supplement 7 NONMEM control stream (PMID_32656777_supplement_7_trimmed.md):
     #   B2MICG1 = 0; IF(B2MICG.GE.0.2) B2MICG1 = 1   ; threshold 0.2 mg/dL = 2.0 mg/L
@@ -253,7 +258,7 @@ Ide_2020_elotuzumab <- function() {
       (AGE  / 65)^e_age_cl *
       (CRCL / 100)^e_crcl_cl *
       (LDH  / 200)^e_ldh_cl *
-      (ALB  / 3.5)^e_alb_cl *
+      (alb_gdL  / 3.5)^e_alb_cl *
       exp(e_combo_len_dex_cl   * (COMBO_LEN_DEX - 1)) *
       exp(e_sexf_cl       * SEXF) *
       exp(e_race_asian_cl * RACE_ASIAN) *
