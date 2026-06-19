@@ -1412,6 +1412,8 @@ navbar:
         href: articles/Grover_2011_tacrolimus.html
       - text: "Tacrolimus (Hao 2018)"
         href: articles/Hao_2018_tacrolimus.html
+      - text: "Tacrolimus (JacoboCabral 2015)"
+        href: articles/JacoboCabral_2015_tacrolimus.html
       - text: "Tacrolimus (Ji 2018)"
         href: articles/Ji_2018_tacrolimus.html
       - text: "Tacrolimus (Kim 2018)"
@@ -2124,6 +2126,7 @@ articles:
   - articles/Ide_2020_elotuzumab
   - articles/Iida_2008_nicorandil
   - articles/Jackson_2022_ixekizumab
+  - articles/JacoboCabral_2015_tacrolimus
   - articles/Jacobs_2016_colistin
   - articles/Jager_2011_gemtuzumab
   - articles/Jain_2011_sorafenib
