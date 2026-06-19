@@ -98,16 +98,6 @@ Diao_2016_daclizumab_treg <- function() {
   })
 
   model({
-    # Declare named compartments for both ODE states and the algebraic
-    # PK/PD observables (Cc, treg) so event tables can reference them
-    # by name; without this, rxode2's cmt->slot lookup only finds the
-    # ODE states and fails on cmt = "Cc" / cmt = "treg" observation rows.
-    cmt(depot)
-    cmt(central)
-    cmt(peripheral1)
-    cmt(Cc)
-    cmt(treg)
-
     # ------------------------------------------------------------------
     # 1. Individual PK parameters (Othman 2014 PK backbone).
     # ------------------------------------------------------------------

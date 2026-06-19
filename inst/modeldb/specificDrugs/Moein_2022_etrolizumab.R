@@ -124,22 +124,15 @@ Moein_2022_etrolizumab <- function() {
   })
 
   model({
-    # Declare named compartments for both ODE states and the algebraic
-    # PK observable (Cc) so event tables can reference them by name and
-    # so tad(depot) resolves at observation rows; without an explicit
-    # cmt(depot) the rxUi auto-injected cmt(Cc) breaks tad(depot) and
-    # leaves tdose / cl / Cc NA at every observation row.
-    cmt(depot)
-    cmt(central)
-    cmt(peripheral1)
-    cmt(Cc)
-
     # Time-dependent CL (Equation 1 of Moein 2022):
     #   CL_TSFD,j = CL_TSFD=0 * (1 - Maxred * (1 - exp(-log(2) / (Onset * 7) * (TSFD_j - TAD_j))))
     # TSFD_j - TAD_j is the administration time of the most-recent SC dose, relative to the first dose.
-    # The model assumes SC dosing into depot; with tad(depot), t_since_first_dose = time in an rxode2 simulation
-    # that starts at the first dose (time = 0), and time - tad(depot) gives the time of the most-recent dose.
-    tdose        <- time - tad(depot)
+    # Uses the no-argument form `tad()` (time since most-recent dose anywhere) rather than `tad(depot)`:
+    # rxUi auto-injects a cmt() slot for `Cc ~ prop(...)` after the ODE states, which renumbers slot
+    # indices and breaks the argumented `tad(<state>)` lookup (returns NA). The no-arg form bypasses
+    # the slot lookup. Equivalent here because the model has only depot dosing — every dose IS a
+    # depot dose, so tad() == tad(depot) by construction.
+    tdose        <- time - tad()
     maxred       <- expit(logitmaxred + etalogitmaxred)
     onset        <- exp(lonset)
     td_cl_factor <- 1 - maxred * (1 - exp(-log(2) / (onset * 7) * tdose))

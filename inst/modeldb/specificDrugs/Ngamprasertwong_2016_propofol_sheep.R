@@ -85,17 +85,6 @@ Ngamprasertwong_2016_propofol_sheep <- function() {
     propSd_Cfetus <- 0.218;  label("Proportional residual SD for fetal Cfetus (fraction)")       # Table 2: sigma^2 prop fetus = 21.8 %CV (RSE 32.1 percent)
   })
   model({
-    # Declare named compartments for both ODE states and the algebraic
-    # PK observables (Cc, Cfetus) so event tables can reference them
-    # by name; without this, rxode2's auto-injected cmt(Cc)/cmt(Cfetus)
-    # shifts state ordering and the solver complains "fetus is required
-    # for solving".
-    cmt(central)
-    cmt(peripheral1)
-    cmt(fetus)
-    cmt(Cc)
-    cmt(Cfetus)
-
     # Individual parameters. Maternal clearance follows the Table 2
     # normalised power covariate model; the remaining structural
     # parameters carry no covariate effect (their %CV IIVs were fixed

@@ -121,11 +121,20 @@ dose_times <- seq(0, 140, by = 28)               # 6 doses Q4W
 obs_times  <- sort(unique(c(0, 8/24, 1, 3, 5, 7, 14, 21,
                             seq(28, 350, by = 7))))
 
+# Observe at the ODE state `central` (not the algebraic observable `Cc`)
+# and tag observation rows with dvid = 1L. This keeps the model body
+# clean of explicit `cmt()` declarations -- rxUi auto-injects compartment
+# slots for any algebraic observable that appears in a residual tilde
+# (here both `Cc` and `cd25`), so referencing `cmt = "Cc"` would target
+# an injected slot rather than the ODE state. rxSolve returns every
+# algebraic observable as its own column on each observation row, so
+# both `Cc` and `cd25` time courses come back from a single sampling
+# per time point.
 sim_one <- function(sub) {
   ev <- rxode2::et(amt = sub$dose_mg, time = dose_times, cmt = "depot") |>
-    rxode2::et(obs_times, cmt = "Cc") |>
-    rxode2::et(obs_times, cmt = "cd25")
+    rxode2::et(obs_times, cmt = "central")
   ev_df <- as.data.frame(ev)
+  ev_df$dvid      <- ifelse(ev_df$evid == 0L, 1L, NA_integer_)
   ev_df$id        <- sub$id
   ev_df$WT        <- sub$WT
   ev_df$DOSE_50MG <- sub$DOSE_50MG

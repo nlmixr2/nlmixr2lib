@@ -133,12 +133,18 @@ make_cohort <- function(stratum, wt_kg, pma_wks, creat_umol, creat_ref_umol,
   last_t     <- dose_times[last_dose_idx]
   obs_times  <- last_t + sample_grid_h
 
-  # rxode2 multi-output (Cc + Ccsf) needs explicit cmt on observation rows.
-  # cmt = "Cc" on every observation row; rxSolve still emits Ccsf alongside.
+  # Observe at the ODE state `central` with dvid = 1L. The model body
+  # has two algebraic observables (Cc from central, Ccsf from the csf
+  # state) in residual tildes; rxUi auto-injects compartment slots for
+  # them after the ODE-state slots, so `cmt = "Cc"` would target an
+  # injected slot rather than an ODE state. rxSolve still returns both
+  # Cc and Ccsf as columns on every observation row, so a single anchor
+  # sample per time covers both endpoints.
   one_subject <- rxode2::et(amt = dose_mg, rate = dose_mg / infusion_h,
                             time = dose_times, cmt = "central")
-  one_subject <- rxode2::et(one_subject, obs_times, cmt = "Cc")
+  one_subject <- rxode2::et(one_subject, obs_times, cmt = "central")
   one_df      <- as.data.frame(one_subject)
+  one_df$dvid <- ifelse(one_df$evid == 0L, 1L, NA_integer_)
 
   # Expand to n_per_combo subjects with disjoint IDs
   ev <- do.call(rbind, lapply(ids, function(i) {

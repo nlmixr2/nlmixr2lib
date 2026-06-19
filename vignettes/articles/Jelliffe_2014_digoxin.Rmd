@@ -100,7 +100,7 @@ make_cohort <- function(label, WT, CRCL,
   for (tt in maint_times) {
     ev <- rxode2::et(ev, amt = maint_amt, time = tt, cmt = "depot")
   }
-  ev <- rxode2::et(ev, obs_times)
+  ev <- rxode2::et(ev, obs_times, cmt = "central")
   dat <- as.data.frame(ev)
   dat$id <- id_offset + 1L
   dat$WT <- WT
@@ -298,7 +298,7 @@ a published-value comparison.
 
 ```{r pknca}
 single_dose_evt <- rxode2::et(amt = 250, cmt = "depot") |>
-  rxode2::et(seq(0, 96, by = 0.25))
+  rxode2::et(seq(0, 96, by = 0.25), cmt = "central")
 single_dose_evt <- as.data.frame(single_dose_evt)
 single_dose_evt$id   <- 1L
 single_dose_evt$WT   <- 70

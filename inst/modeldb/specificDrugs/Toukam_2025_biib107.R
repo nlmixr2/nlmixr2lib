@@ -100,16 +100,6 @@ Toukam_2025_biib107 <- function() {
   })
 
   model({
-    # Declare named compartments for both ODE states and the algebraic
-    # PK/PD observables (Cc, a4sat) so event tables can reference them
-    # by name; without this, rxode2's cmt->slot lookup only finds the
-    # ODE states and fails on cmt = "Cc" / cmt = "a4sat" observation rows.
-    cmt(depot)
-    cmt(central)
-    cmt(peripheral1)
-    cmt(Cc)
-    cmt(a4sat)
-
     # ------------------------------------------------------------------
     # Individual PK parameters with weight-based allometric scaling
     # relative to a 70 kg reference. Vmax is NOT weight-scaled in the
