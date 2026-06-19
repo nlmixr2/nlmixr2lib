@@ -1204,7 +1204,7 @@ comparison.</p>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/do.call.html" class="external-link">do.call</a></span><span class="op">(</span><span class="va">rbind</span>, <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">cov</span><span class="op">)</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">i</span><span class="op">)</span> <span class="fu">build_one</span><span class="op">(</span><span class="va">cov</span><span class="op">[</span><span class="va">i</span>, <span class="op">]</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
-<span><span class="va">n_per</span> <span class="op">&lt;-</span> <span class="fl">200L</span></span>
+<span><span class="va">n_per</span> <span class="op">&lt;-</span> <span class="fl">80L</span>   <span class="co"># virtual subjects per route (oral / iv) for the simulation cohort</span></span>
 <span><span class="va">events</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span></span>
 <span>  <span class="fu">make_cohort</span><span class="op">(</span><span class="va">n_per</span>, route <span class="op">=</span> <span class="st">"oral"</span>, mmf_mg <span class="op">=</span> <span class="fl">1000</span>, ii_h <span class="op">=</span> <span class="fl">12</span>,</span>
 <span>              id_offset <span class="op">=</span> <span class="fl">0L</span><span class="op">)</span>,</span>
@@ -1452,19 +1452,19 @@ g MMF q12h cohorts. AUC unit ng<em>h/mL; Cmax unit ng/mL; Tmax unit h.
 <tr class="odd">
 <td align="left">IV MMF 1 g q12h</td>
 <td align="right">822</td>
-<td align="right">831.19</td>
-<td align="right">1.12</td>
+<td align="right">797.70</td>
+<td align="right">-2.96</td>
 <td align="left"></td>
-<td align="right">156.91</td>
+<td align="right">156.57</td>
 <td align="right">14</td>
 </tr>
 <tr class="even">
 <td align="left">ORAL MMF 1 g q12h</td>
 <td align="right">517</td>
-<td align="right">509.14</td>
-<td align="right">-1.52</td>
+<td align="right">462.87</td>
+<td align="right">-10.47</td>
 <td align="left"></td>
-<td align="right">52.01</td>
+<td align="right">49.08</td>
 <td align="right">13</td>
 </tr>
 </tbody>

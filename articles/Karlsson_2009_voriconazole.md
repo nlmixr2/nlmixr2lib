@@ -120,17 +120,17 @@ Distribution parameters at 22.8 kg, CYP2C19 EM, ALT 26.5 IU/L. {.table}
 
 The original observed concentration data are not publicly available. The
 simulations below use a virtual cohort whose covariate distributions
-approximate the Karlsson 2009 study population: 82 subjects, body weight
-10.8-54.9 kg (distribution skewed toward smaller children), ALT
-log-normally distributed around the published mean, and CYP2C19
-metabolizer distribution matched to the 70.7 / 25.6 / 3.7 percent EM /
-HEM / PM split.
+approximate the Karlsson 2009 study population (82 patients): a
+48-subject virtual cohort with body weight 10.8-54.9 kg (distribution
+skewed toward smaller children), ALT log-normally distributed around the
+published mean, and CYP2C19 metabolizer distribution matched to the 70.7
+/ 25.6 / 3.7 percent EM / HEM / PM split.
 
 ``` r
 
 set.seed(20090301)
 
-n_subj <- 82L
+n_subj <- 48L   # virtual cohort (trial enrolled 82); sized for a smooth VPC/NCA-by-stratum
 
 # Weight: log-normal centered at the mean 22.8 kg, range 10.8-54.9 kg.
 wt_log_sd <- 0.45  # picked to span the observed range with 95 percent coverage
@@ -143,8 +143,8 @@ alt_log_sd <- 0.7
 alts <- 26.5 * exp(rnorm(n_subj, mean = 0, sd = alt_log_sd))
 alts <- pmin(pmax(alts, 7), 242)
 
-# CYP2C19 phenotype: 58 EM / 21 HEM / 3 PM.
-cyp_pheno <- sample(rep(c("EM", "HEM", "PM"), c(58L, 21L, 3L)))
+# CYP2C19 phenotype: 34 EM / 12 HEM / 2 PM (matches trial 70.7 / 25.6 / 3.7 percent at n = 48).
+cyp_pheno <- sample(rep(c("EM", "HEM", "PM"), c(34L, 12L, 2L)))
 cyp2c19_im <- as.integer(cyp_pheno == "HEM")
 cyp2c19_pm <- as.integer(cyp_pheno == "PM")
 
@@ -179,14 +179,14 @@ knitr::kable(
 
 | measure          | cohort    | paper     |
 |:-----------------|:----------|:----------|
-| N                | 82        | 82        |
-| WT mean (kg)     | 26.1      | 22.8      |
-| WT range (kg)    | 10.8-54.9 | 10.8-54.9 |
-| ALT mean (IU/L)  | 38.0      | 40.7      |
+| N                | 48        | 82        |
+| WT mean (kg)     | 25.6      | 22.8      |
+| WT range (kg)    | 10.9-49.0 | 10.8-54.9 |
+| ALT mean (IU/L)  | 43.9      | 40.7      |
 | ALT range (IU/L) | 7.0-224.1 | 7-242     |
-| EM (percent)     | 70.7      | 70.7      |
-| HEM (percent)    | 25.6      | 25.6      |
-| PM (percent)     | 3.7       | 3.7       |
+| EM (percent)     | 70.8      | 70.7      |
+| HEM (percent)    | 25.0      | 25.6      |
+| PM (percent)     | 4.2       | 3.7       |
 
 Virtual cohort vs Karlsson 2009 reported baseline characteristics.
 {.table}
@@ -261,10 +261,10 @@ sim_iv <- suppressMessages(rxode2::rxSolve(
 # 12-h interval for NCA.
 ss_window <- subset(sim_iv, time >= (n_dose - 1) * tau & time <= n_dose * tau)
 cat("Steady-state interval rows:", nrow(ss_window), "\n")
-#> Steady-state interval rows: 4018
+#> Steady-state interval rows: 2352
 cat("Cc range over the day-14 SS interval:",
     sprintf("%.2f-%.2f ug/mL\n", min(ss_window$Cc), max(ss_window$Cc)))
-#> Cc range over the day-14 SS interval: 0.08-30.23 ug/mL
+#> Cc range over the day-14 SS interval: 0.15-49.52 ug/mL
 ```
 
 ## Replicate Figure 4 (typical AUC by dose)
@@ -367,29 +367,29 @@ nca_summary <- nca_tbl |>
   dplyr::arrange(PPTESTCD, cyp2c19_pheno)
 
 knitr::kable(nca_summary, digits = 2,
-             caption = "Day-14 steady-state NCA summary by CYP2C19 group for 7 mg/kg BID i.v. (virtual cohort, n=82).")
+             caption = "Day-14 steady-state NCA summary by CYP2C19 group for 7 mg/kg BID i.v. (virtual cohort, n=48).")
 ```
 
 | cyp2c19_pheno | PPTESTCD | median |   p05 |    p95 |
 |:--------------|:---------|-------:|------:|-------:|
-| EM            | auclast  |  27.81 | 10.83 | 116.95 |
-| HEM           | auclast  |  44.60 | 19.44 | 215.77 |
-| PM            | auclast  |  57.19 | 45.26 |  59.02 |
-| EM            | cav      |   2.32 |  0.90 |   9.75 |
-| HEM           | cav      |   3.72 |  1.62 |  17.98 |
-| PM            | cav      |   4.77 |  3.77 |   4.92 |
-| EM            | cmax     |   6.82 |  5.22 |  14.20 |
-| HEM           | cmax     |   8.23 |  5.95 |  22.27 |
-| PM            | cmax     |   9.26 |  8.29 |   9.41 |
-| EM            | cmin     |   1.06 |  0.12 |   8.12 |
-| HEM           | cmin     |   2.29 |  0.62 |  16.13 |
-| PM            | cmin     |   3.40 |  2.34 |   3.55 |
+| EM            | auclast  |  27.73 | 16.30 | 138.05 |
+| HEM           | auclast  |  48.51 | 23.44 | 419.81 |
+| PM            | auclast  |  67.77 | 42.06 |  93.49 |
+| EM            | cav      |   2.31 |  1.36 |  11.50 |
+| HEM           | cav      |   4.04 |  1.95 |  34.98 |
+| PM            | cav      |   5.65 |  3.50 |   7.79 |
+| EM            | cmax     |   6.82 |  5.93 |  15.94 |
+| HEM           | cmax     |   8.56 |  6.45 |  39.02 |
+| PM            | cmax     |  10.16 |  8.02 |  12.29 |
+| EM            | cmin     |   1.05 |  0.24 |   9.86 |
+| HEM           | cmin     |   2.61 |  0.77 |  32.83 |
+| PM            | cmin     |   4.18 |  2.10 |   6.25 |
 | EM            | tmax     |   1.00 |  1.00 |   1.00 |
 | HEM           | tmax     |   1.00 |  1.00 |   1.00 |
 | PM            | tmax     |   1.00 |  1.00 |   1.00 |
 
 Day-14 steady-state NCA summary by CYP2C19 group for 7 mg/kg BID i.v.
-(virtual cohort, n=82). {.table}
+(virtual cohort, n=48). {.table}
 
 ### Comparison against published expectations
 
@@ -419,7 +419,7 @@ tibble::tibble(
 
 | comparison                          | value |
 |:------------------------------------|------:|
-| AUC0-tau HEM / EM (median)          | 1.604 |
+| AUC0-tau HEM / EM (median)          | 1.749 |
 | Linear-PK lower bound (1/(1-0.355)) | 1.550 |
 
 HEM-to-EM AUC0-tau ratio. The Karlsson final model has Michaelis-Menten

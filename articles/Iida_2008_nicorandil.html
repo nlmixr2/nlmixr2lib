@@ -1179,7 +1179,7 @@ paper Figure 2 left upper panel).</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">20260613L</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">n_ahf</span> <span class="op">&lt;-</span> <span class="fl">200L</span></span>
+<span><span class="va">n_ahf</span> <span class="op">&lt;-</span> <span class="fl">80L</span>       <span class="co"># virtual subjects per regimen arm (VPC-band cohort)</span></span>
 <span><span class="va">typical_wt</span> <span class="op">&lt;-</span> <span class="fl">60</span>   <span class="co"># kg, AHF cohort mean (Table 1)</span></span>
 <span></span>
 <span><span class="va">make_ahf_cohort</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">n</span>, <span class="va">regimen</span>, <span class="va">id_offset</span> <span class="op">=</span> <span class="fl">0L</span><span class="op">)</span> <span class="op">{</span></span>
@@ -1296,7 +1296,7 @@ regimen)<a class="anchor" aria-label="anchor" href="#figure-2-concentration-prof
 nicorandil concentration vs time after IV bolus doses of 4, 8, 12, and
 18 mg in AHF patients. Concentrations decline rapidly within 1-2 h.
 Below we replicate the 12 mg bolus arm as a population-VPC band (median
-and 5th-95th percentile of the 200-subject virtual cohort) plus the
+and 5th-95th percentile of the 80-subject virtual cohort) plus the
 typical-value trajectory.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim_bolus_vpc</span> <span class="op">&lt;-</span> <span class="va">sim</span> <span class="op">|&gt;</span></span>
@@ -1461,8 +1461,8 @@ prediction by &gt;20%.</caption>
 <td align="left">Cmax (ng/mL)</td>
 <td align="left">12 mg bolus</td>
 <td align="right">556</td>
-<td align="right">550</td>
-<td align="right">-1.1%</td>
+<td align="right">603</td>
+<td align="right">+8.4%</td>
 </tr>
 <tr class="even">
 <td align="left">Tmax (h)</td>
@@ -1475,7 +1475,7 @@ prediction by &gt;20%.</caption>
 <td align="left">AUClast (ng*h/mL)</td>
 <td align="left">12 mg bolus</td>
 <td align="right">—</td>
-<td align="right">248</td>
+<td align="right">213</td>
 <td align="right">—</td>
 </tr>
 </tbody>

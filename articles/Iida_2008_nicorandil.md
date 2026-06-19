@@ -90,7 +90,7 @@ panel).
 
 set.seed(20260613L)
 
-n_ahf <- 200L
+n_ahf <- 80L       # virtual subjects per regimen arm (VPC-band cohort)
 typical_wt <- 60   # kg, AHF cohort mean (Table 1)
 
 make_ahf_cohort <- function(n, regimen, id_offset = 0L) {
@@ -210,7 +210,7 @@ Iida 2008 Figure 2 left upper panel shows individual plasma nicorandil
 concentration vs time after IV bolus doses of 4, 8, 12, and 18 mg in AHF
 patients. Concentrations decline rapidly within 1-2 h. Below we
 replicate the 12 mg bolus arm as a population-VPC band (median and
-5th-95th percentile of the 200-subject virtual cohort) plus the
+5th-95th percentile of the 80-subject virtual cohort) plus the
 typical-value trajectory.
 
 ``` r
@@ -373,9 +373,9 @@ knitr::kable(
 
 | NCA parameter      | regimen     | Reference | Simulated | % diff |
 |:-------------------|:------------|----------:|----------:|-------:|
-| Cmax (ng/mL)       | 12 mg bolus |       556 |       550 |  -1.1% |
+| Cmax (ng/mL)       | 12 mg bolus |       556 |       603 |  +8.4% |
 | Tmax (h)           | 12 mg bolus |         0 |         0 |      — |
-| AUClast (ng\*h/mL) | 12 mg bolus |         — |       248 |      — |
+| AUClast (ng\*h/mL) | 12 mg bolus |         — |       213 |      — |
 
 Simulated vs closed-form predicted NCA. \* differs from prediction by
 \>20%. {.table}

@@ -285,8 +285,10 @@ vpc <- scenarios |>
 #> intdy -- t = 693 illegal. t not in interval tcur - _rxC(hu) to tcur
 #> intdy -- t = 714 illegal. t not in interval tcur - _rxC(hu) to tcur
 #> intdy -- t = 735 illegal. t not in interval tcur - _rxC(hu) to tcur
+#> intdy -- t = 651 illegal. t not in interval tcur - _rxC(hu) to tcur
+#> intdy -- t = 672 illegal. t not in interval tcur - _rxC(hu) to tcur
+#> intdy -- t = 693 illegal. t not in interval tcur - _rxC(hu) to tcur
 #> intdy -- t = 714 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 735 illegal. t not in interval tcur - _rxC(hu) to tcur
 #> intdy -- t = 735 illegal. t not in interval tcur - _rxC(hu) to tcur
 #> intdy -- t = 567 illegal. t not in interval tcur - _rxC(hu) to tcur
 #> intdy -- t = 588 illegal. t not in interval tcur - _rxC(hu) to tcur

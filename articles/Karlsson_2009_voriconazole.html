@@ -1197,15 +1197,15 @@ IU/L.</caption>
 </h2>
 <p>The original observed concentration data are not publicly available.
 The simulations below use a virtual cohort whose covariate distributions
-approximate the Karlsson 2009 study population: 82 subjects, body weight
-10.8-54.9 kg (distribution skewed toward smaller children), ALT
-log-normally distributed around the published mean, and CYP2C19
-metabolizer distribution matched to the 70.7 / 25.6 / 3.7 percent EM /
-HEM / PM split.</p>
+approximate the Karlsson 2009 study population (82 patients): a
+48-subject virtual cohort with body weight 10.8-54.9 kg (distribution
+skewed toward smaller children), ALT log-normally distributed around the
+published mean, and CYP2C19 metabolizer distribution matched to the 70.7
+/ 25.6 / 3.7 percent EM / HEM / PM split.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">20090301</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">n_subj</span> <span class="op">&lt;-</span> <span class="fl">82L</span></span>
+<span><span class="va">n_subj</span> <span class="op">&lt;-</span> <span class="fl">48L</span>   <span class="co"># virtual cohort (trial enrolled 82); sized for a smooth VPC/NCA-by-stratum</span></span>
 <span></span>
 <span><span class="co"># Weight: log-normal centered at the mean 22.8 kg, range 10.8-54.9 kg.</span></span>
 <span><span class="va">wt_log_sd</span> <span class="op">&lt;-</span> <span class="fl">0.45</span>  <span class="co"># picked to span the observed range with 95 percent coverage</span></span>
@@ -1218,8 +1218,8 @@ HEM / PM split.</p>
 <span><span class="va">alts</span> <span class="op">&lt;-</span> <span class="fl">26.5</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n_subj</span>, mean <span class="op">=</span> <span class="fl">0</span>, sd <span class="op">=</span> <span class="va">alt_log_sd</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">alts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmin</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span><span class="va">alts</span>, <span class="fl">7</span><span class="op">)</span>, <span class="fl">242</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># CYP2C19 phenotype: 58 EM / 21 HEM / 3 PM.</span></span>
-<span><span class="va">cyp_pheno</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"EM"</span>, <span class="st">"HEM"</span>, <span class="st">"PM"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">58L</span>, <span class="fl">21L</span>, <span class="fl">3L</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co"># CYP2C19 phenotype: 34 EM / 12 HEM / 2 PM (matches trial 70.7 / 25.6 / 3.7 percent at n = 48).</span></span>
+<span><span class="va">cyp_pheno</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"EM"</span>, <span class="st">"HEM"</span>, <span class="st">"PM"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">34L</span>, <span class="fl">12L</span>, <span class="fl">2L</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">cyp2c19_im</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">cyp_pheno</span> <span class="op">==</span> <span class="st">"HEM"</span><span class="op">)</span></span>
 <span><span class="va">cyp2c19_pm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">cyp_pheno</span> <span class="op">==</span> <span class="st">"PM"</span><span class="op">)</span></span>
 <span></span>
@@ -1261,22 +1261,22 @@ characteristics.</caption>
 <tbody>
 <tr class="odd">
 <td align="left">N</td>
-<td align="left">82</td>
+<td align="left">48</td>
 <td align="left">82</td>
 </tr>
 <tr class="even">
 <td align="left">WT mean (kg)</td>
-<td align="left">26.1</td>
+<td align="left">25.6</td>
 <td align="left">22.8</td>
 </tr>
 <tr class="odd">
 <td align="left">WT range (kg)</td>
-<td align="left">10.8-54.9</td>
+<td align="left">10.9-49.0</td>
 <td align="left">10.8-54.9</td>
 </tr>
 <tr class="even">
 <td align="left">ALT mean (IU/L)</td>
-<td align="left">38.0</td>
+<td align="left">43.9</td>
 <td align="left">40.7</td>
 </tr>
 <tr class="odd">
@@ -1286,17 +1286,17 @@ characteristics.</caption>
 </tr>
 <tr class="even">
 <td align="left">EM (percent)</td>
-<td align="left">70.7</td>
+<td align="left">70.8</td>
 <td align="left">70.7</td>
 </tr>
 <tr class="odd">
 <td align="left">HEM (percent)</td>
-<td align="left">25.6</td>
+<td align="left">25.0</td>
 <td align="left">25.6</td>
 </tr>
 <tr class="even">
 <td align="left">PM (percent)</td>
-<td align="left">3.7</td>
+<td align="left">4.2</td>
 <td align="left">3.7</td>
 </tr>
 </tbody>
@@ -1370,10 +1370,10 @@ AUC at day 14 across CYP2C19 metabolizer groups.</p>
 <span><span class="co"># 12-h interval for NCA.</span></span>
 <span><span class="va">ss_window</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">sim_iv</span>, <span class="va">time</span> <span class="op">&gt;=</span> <span class="op">(</span><span class="va">n_dose</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span> <span class="op">*</span> <span class="va">tau</span> <span class="op">&amp;</span> <span class="va">time</span> <span class="op">&lt;=</span> <span class="va">n_dose</span> <span class="op">*</span> <span class="va">tau</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Steady-state interval rows:"</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">ss_window</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Steady-state interval rows: 4018</span></span>
+<span><span class="co">#&gt; Steady-state interval rows: 2352</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Cc range over the day-14 SS interval:"</span>,</span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"%.2f-%.2f ug/mL\n"</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">ss_window</span><span class="op">$</span><span class="va">Cc</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">ss_window</span><span class="op">$</span><span class="va">Cc</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Cc range over the day-14 SS interval: 0.08-30.23 ug/mL</span></span></code></pre></div>
+<span><span class="co">#&gt; Cc range over the day-14 SS interval: 0.15-49.52 ug/mL</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="replicate-figure-4-typical-auc-by-dose">Replicate Figure 4 (typical AUC by dose)<a class="anchor" aria-label="anchor" href="#replicate-figure-4-typical-auc-by-dose"></a>
@@ -1499,10 +1499,10 @@ closest median exposure to adult 4 mg/kg BID i.v.</caption>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">PPTESTCD</span>, <span class="va">cyp2c19_pheno</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">nca_summary</span>, digits <span class="op">=</span> <span class="fl">2</span>,</span>
-<span>             caption <span class="op">=</span> <span class="st">"Day-14 steady-state NCA summary by CYP2C19 group for 7 mg/kg BID i.v. (virtual cohort, n=82)."</span><span class="op">)</span></span></code></pre></div>
+<span>             caption <span class="op">=</span> <span class="st">"Day-14 steady-state NCA summary by CYP2C19 group for 7 mg/kg BID i.v. (virtual cohort, n=48)."</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <caption>Day-14 steady-state NCA summary by CYP2C19 group for 7 mg/kg
-BID i.v. (virtual cohort, n=82).</caption>
+BID i.v. (virtual cohort, n=48).</caption>
 <thead><tr class="header">
 <th align="left">cyp2c19_pheno</th>
 <th align="left">PPTESTCD</th>
@@ -1514,86 +1514,86 @@ BID i.v. (virtual cohort, n=82).</caption>
 <tr class="odd">
 <td align="left">EM</td>
 <td align="left">auclast</td>
-<td align="right">27.81</td>
-<td align="right">10.83</td>
-<td align="right">116.95</td>
+<td align="right">27.73</td>
+<td align="right">16.30</td>
+<td align="right">138.05</td>
 </tr>
 <tr class="even">
 <td align="left">HEM</td>
 <td align="left">auclast</td>
-<td align="right">44.60</td>
-<td align="right">19.44</td>
-<td align="right">215.77</td>
+<td align="right">48.51</td>
+<td align="right">23.44</td>
+<td align="right">419.81</td>
 </tr>
 <tr class="odd">
 <td align="left">PM</td>
 <td align="left">auclast</td>
-<td align="right">57.19</td>
-<td align="right">45.26</td>
-<td align="right">59.02</td>
+<td align="right">67.77</td>
+<td align="right">42.06</td>
+<td align="right">93.49</td>
 </tr>
 <tr class="even">
 <td align="left">EM</td>
 <td align="left">cav</td>
-<td align="right">2.32</td>
-<td align="right">0.90</td>
-<td align="right">9.75</td>
+<td align="right">2.31</td>
+<td align="right">1.36</td>
+<td align="right">11.50</td>
 </tr>
 <tr class="odd">
 <td align="left">HEM</td>
 <td align="left">cav</td>
-<td align="right">3.72</td>
-<td align="right">1.62</td>
-<td align="right">17.98</td>
+<td align="right">4.04</td>
+<td align="right">1.95</td>
+<td align="right">34.98</td>
 </tr>
 <tr class="even">
 <td align="left">PM</td>
 <td align="left">cav</td>
-<td align="right">4.77</td>
-<td align="right">3.77</td>
-<td align="right">4.92</td>
+<td align="right">5.65</td>
+<td align="right">3.50</td>
+<td align="right">7.79</td>
 </tr>
 <tr class="odd">
 <td align="left">EM</td>
 <td align="left">cmax</td>
 <td align="right">6.82</td>
-<td align="right">5.22</td>
-<td align="right">14.20</td>
+<td align="right">5.93</td>
+<td align="right">15.94</td>
 </tr>
 <tr class="even">
 <td align="left">HEM</td>
 <td align="left">cmax</td>
-<td align="right">8.23</td>
-<td align="right">5.95</td>
-<td align="right">22.27</td>
+<td align="right">8.56</td>
+<td align="right">6.45</td>
+<td align="right">39.02</td>
 </tr>
 <tr class="odd">
 <td align="left">PM</td>
 <td align="left">cmax</td>
-<td align="right">9.26</td>
-<td align="right">8.29</td>
-<td align="right">9.41</td>
+<td align="right">10.16</td>
+<td align="right">8.02</td>
+<td align="right">12.29</td>
 </tr>
 <tr class="even">
 <td align="left">EM</td>
 <td align="left">cmin</td>
-<td align="right">1.06</td>
-<td align="right">0.12</td>
-<td align="right">8.12</td>
+<td align="right">1.05</td>
+<td align="right">0.24</td>
+<td align="right">9.86</td>
 </tr>
 <tr class="odd">
 <td align="left">HEM</td>
 <td align="left">cmin</td>
-<td align="right">2.29</td>
-<td align="right">0.62</td>
-<td align="right">16.13</td>
+<td align="right">2.61</td>
+<td align="right">0.77</td>
+<td align="right">32.83</td>
 </tr>
 <tr class="even">
 <td align="left">PM</td>
 <td align="left">cmin</td>
-<td align="right">3.40</td>
-<td align="right">2.34</td>
-<td align="right">3.55</td>
+<td align="right">4.18</td>
+<td align="right">2.10</td>
+<td align="right">6.25</td>
 </tr>
 <tr class="odd">
 <td align="left">EM</td>
@@ -1655,7 +1655,7 @@ CL.</caption>
 <tbody>
 <tr class="odd">
 <td align="left">AUC0-tau HEM / EM (median)</td>
-<td align="right">1.604</td>
+<td align="right">1.749</td>
 </tr>
 <tr class="even">
 <td align="left">Linear-PK lower bound (1/(1-0.355))</td>

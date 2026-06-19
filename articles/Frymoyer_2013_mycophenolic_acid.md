@@ -145,7 +145,7 @@ make_cohort <- function(n,
   do.call(rbind, lapply(seq_len(nrow(cov)), function(i) build_one(cov[i, ])))
 }
 
-n_per <- 200L
+n_per <- 80L   # virtual subjects per route (oral / iv) for the simulation cohort
 events <- dplyr::bind_rows(
   make_cohort(n_per, route = "oral", mmf_mg = 1000, ii_h = 12,
               id_offset = 0L),
@@ -381,8 +381,8 @@ knitr::kable(
 
 | Cohort | Reference AUC(0,24h) | Simulated AUC(0,24h) | % diff vs ref | Flag | Simulated Cmax | Simulated Tmax |
 |:---|---:|---:|---:|:---|---:|---:|
-| IV MMF 1 g q12h | 822 | 831.19 | 1.12 |  | 156.91 | 14 |
-| ORAL MMF 1 g q12h | 517 | 509.14 | -1.52 |  | 52.01 | 13 |
+| IV MMF 1 g q12h | 822 | 797.70 | -2.96 |  | 156.57 | 14 |
+| ORAL MMF 1 g q12h | 517 | 462.87 | -10.47 |  | 49.08 | 13 |
 
 Simulated vs. published 24-h AUC at steady state for the two 1 g MMF
 q12h cohorts. AUC unit ng*h/mL; Cmax unit ng/mL; Tmax unit h.* differs
