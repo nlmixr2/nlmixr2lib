@@ -566,7 +566,7 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 
 ### ALB (**canonical for serum albumin**)
 - **Description:** Serum albumin concentration.
-- **Units:** g/dL or g/L -- document the unit used in each model via `covariateData[[ALB]]$units`.
+- **Units:** **g/L** (SI; canonical as of 2026-06-19). US-convention papers report in g/dL; convert via `ALB_gL = ALB_gdL * 10` on data ingestion. Models calibrated to g/dL values must apply an inline conversion in `model()` (e.g., `alb_gdL <- ALB * 0.1  # SI g/L -> US-convention g/dL`) so the structural coefficients stay aligned with their original calibration.
 - **Type:** continuous
 - **Scope:** general
 - **Reference category:** n/a -- used with power scaling `(ALB / ref)^exponent`.
@@ -574,11 +574,11 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
   - `BALB` (baseline albumin) -- used in `Zhou_2021_belimumab.R`. Maps directly to `ALB`; baseline-vs-time-varying status documented in per-model notes.
   - `HSA` (human serum albumin) -- used in `Fauchet_2015_lopinavir_unbound.R` where the column name follows the paper's protein-binding-equation notation distinguishing serum albumin from alpha-1 acid glycoprotein. Maps directly to canonical `ALB`; no value transformation. Reported in g/L; converted to umol/L inside `model()` via molecular weight 66500 g/mol for the K_HSA linear-binding term.
 - **Example models:** `Fasanmade_2009_infliximab.R` (g/dL, reference 4.1), `Thakre_2022_risankizumab.R` (g/L, reference 45), `Chua_2025_mirikizumab.R`, `Moein_2022_etrolizumab.R`, `Tiraboschi_2025_amlitelimab.R`, `Yamada_2025_zolbetuximab.R`, `Li_2019_abatacept.R` (g/dL, reference 4.0; the Li 2019 Methods states 'mg/dL' which is a publication typo -- see the model's `covariateData[[ALB]]$notes`), `Quartino_2019_trastuzumab.R` (g/dL, reference 4; source column `ALBU`; negative exponent -0.998 on linear CL), `Wang_2020_ontamalimab.R` (g/L, reference 39), `Zhou_2021_belimumab.R` (g/L, reference 40; baseline-only, source column `BALB`), `Okada_2025_rocatinlimab.R` (g/L, reference 44; source column `ALBU`; power exponent -1.30 on linear CL), `Xu_2020_daratumumab.R` (g/L, reference 37.0; power exponent -1.149 on linear CL), `Struemper_2017_belimumab.R` (g/L, reference 41; baseline-only, source column `BALB`; power exponent -0.736 on linear CL), `Fauchet_2015_lopinavir_unbound.R` (g/L; source column `HSA`; enters the saturable-binding submodel via a linear K_HSA * [ALB] * Cunbound term with K_HSA = 0.036 L/umol, not as a power scaling on CL).
-- **Notes:** Ratified canonically on 2026-04-19 after cross-model review. Unit varies by paper (g/dL in US-convention papers, g/L in SI-convention papers); the per-model `covariateData[[ALB]]$units` field is load-bearing. Effect-coefficient magnitude is meaningless without the unit.
+- **Notes:** Ratified canonically on 2026-04-19 after cross-model review. Canonical units standardized to **g/L (SI)** on 2026-06-19 per the canonical-register standardization audit. The per-model `covariateData[[ALB]]$units` field is load-bearing for model-file source-trace; effect-coefficient magnitude is meaningless without the unit. Per-model conversion to US-convention g/dL (where the structural coefficients were calibrated) is required in `model()` via an inline `alb_gdL <- ALB * 0.1` line - see the per-model `notes` for the conversion factor used. Conversion factor: 1 g/dL = 10 g/L.
 
 ### TPRO (**canonical for total serum protein**)
 - **Description:** Total serum protein concentration (sum of albumin + globulins; baseline or time-varying).
-- **Units:** g/L or g/dL -- document the unit used in each model via `covariateData[[TPRO]]$units` (1 g/dL = 10 g/L).
+- **Units:** **g/L** (SI; canonical as of 2026-06-19). US-convention papers report in g/dL; convert via `TPRO_gL = TPRO_gdL * 10` on data ingestion. Models calibrated to g/dL must apply an inline conversion in `model()` (e.g., `tpro_gdL <- TPRO * 0.1`). 1 g/dL = 10 g/L.
 - **Type:** continuous
 - **Scope:** general
 - **Reference category:** n/a -- used with power scaling `(TPRO / ref)^exponent`. Reference value observed: 74 g/L (Frey 2010 pooled-cohort median).
@@ -590,7 +590,7 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 
 ### CSF_TPRO (**canonical for cerebrospinal-fluid total protein**)
 - **Description:** Total protein concentration measured in cerebrospinal fluid (baseline or time-varying). CNS-compartment analogue of `TPRO`; used in popPK models of CSF-penetrating drugs as a surrogate for blood-brain-barrier integrity (elevated CSF protein indicates inflammation or barrier breakdown and typically correlates with increased CNS penetration of small-molecule drugs).
-- **Units:** g/L (most common in popPK papers); occasionally mg/dL (1 g/L = 100 mg/dL). Document per-model via `covariateData[[CSF_TPRO]]$units`.
+- **Units:** **g/L** (SI; canonical as of 2026-06-19). US-convention reporting in mg/dL converts via `CSF_TPRO_gL = CSF_TPRO_mgdL * 0.01`. 1 g/L = 100 mg/dL.
 - **Type:** continuous
 - **Scope:** general
 - **Reference category:** n/a -- enters either as an additive term on the logit-scale CSF uptake / barrier parameter, or as a power scaling `(CSF_TPRO / ref)^exponent` on a penetration fraction. Reference value observed: 1.2 g/L (Germovsek 2018 typical-infant value; sick-neonate cohort median).
@@ -602,7 +602,7 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 
 ### IGG (**canonical for serum immunoglobulin G**)
 - **Description:** Serum total immunoglobulin G concentration (baseline or time-varying). Used in mAb PK analyses as a competition-for-FcRn-recycling covariate on therapeutic-mAb clearance -- high endogenous IgG is hypothesized to displace the therapeutic mAb from FcRn salvage and increase its catabolic clearance.
-- **Units:** g/L (typical in SI-convention papers); also reported as mg/dL in US-convention papers -- document the unit used in each model via `covariateData[[IGG]]$units`.
+- **Units:** **g/L** (SI; canonical as of 2026-06-19). US-convention papers report in mg/dL; convert via `IGG_gL = IGG_mgdL * 0.01` on data ingestion. 1 g/L = 100 mg/dL. Models calibrated to mg/dL must apply an inline conversion in `model()` (e.g., `igg_mgdL <- IGG * 100`).
 - **Type:** continuous
 - **Scope:** general
 - **Reference category:** n/a -- used with power scaling `(IGG / ref)^exponent`. Reference values observed: 14.8 g/L (Zhou 2021), 9.65 g/L (Yang 2021).
@@ -614,7 +614,7 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 
 ### IGM (**canonical for serum immunoglobulin M**)
 - **Description:** Serum total immunoglobulin M (IgM) concentration (baseline). Used in IgRT population-PK analyses as a proxy for B-cell antibody-producing capacity / humoral function -- IgM is the first antibody produced after B-cell activation, so circulating IgM reflects ongoing B-cell activity prior to class-switching to IgG.
-- **Units:** g/L (typical SI-convention reporting); also reported as mg/dL in US-convention papers -- document the unit used in each model via `covariateData[[IGM]]$units`.
+- **Units:** **g/L** (SI; canonical as of 2026-06-19). US-convention reporting in mg/dL converts via `IGM_gL = IGM_mgdL * 0.01`. 1 g/L = 100 mg/dL.
 - **Type:** continuous
 - **Scope:** specific
 - **Reference category:** n/a -- used with power scaling `(IGM / ref)^exponent`. Reference values observed: 0.21 g/L (Cheng 2026, pooled PID + SAD pediatric cohort median).
@@ -624,7 +624,7 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 
 ### TBILI (**canonical for total bilirubin**)
 - **Description:** Total serum bilirubin concentration.
-- **Units:** mg/dL or umol/L -- document the unit used in each model via `covariateData[[TBILI]]$units`.
+- **Units:** **umol/L** (SI; canonical as of 2026-06-19). US-convention papers report in mg/dL; convert via `TBILI_umolL = TBILI_mgdL * 17.1` on data ingestion. 1 mg/dL = 17.1 umol/L. Models calibrated to mg/dL must apply an inline conversion in `model()` (e.g., `tbili_mgdL <- TBILI / 17.1  # SI umol/L -> US-convention mg/dL`).
 - **Type:** continuous
 - **Scope:** general
 - **Reference category:** n/a -- used with power scaling `(TBILI / ref)^exponent`.
@@ -636,7 +636,7 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 
 ### DBIL (**canonical for direct (conjugated) bilirubin**)
 - **Description:** Direct (conjugated) serum bilirubin concentration. Distinct from `TBILI`: direct bilirubin is the water-soluble glucuronide-conjugated fraction processed by hepatocytes and excreted in bile, so a rise in DBIL specifically flags impaired biliary excretion / cholestasis or intrahepatic shunting, whereas total bilirubin also captures unconjugated (indirect) hyperbilirubinaemia from haemolysis or Gilbert-type conjugation defects.
-- **Units:** mg/dL or umol/L -- document the unit used in each model via `covariateData[[DBIL]]$units`.
+- **Units:** **umol/L** (SI; canonical as of 2026-06-19). US-convention papers report in mg/dL; convert via `DBIL_umolL = DBIL_mgdL * 17.1` on data ingestion. 1 mg/dL = 17.1 umol/L. Models calibrated to mg/dL must apply an inline conversion in `model()` (e.g., `dbil_mgdL <- DBIL / 17.1`).
 - **Type:** continuous
 - **Scope:** specific
 - **Reference category:** n/a -- used with power scaling `(DBIL / ref)^exponent`. Reference values observed: 2.6 umol/L (Chen 2015 voriconazole Chinese ICU cohort population median).
@@ -646,7 +646,7 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 
 ### AST (**canonical for aspartate aminotransferase**)
 - **Description:** Serum aspartate aminotransferase activity (baseline or time-varying).
-- **Units:** U/L (IU/L; the two labels are used interchangeably in the clinical-PK literature). Document per-model via `covariateData[[AST]]$units`.
+- **Units:** **U/L** (SI; canonical as of 2026-06-19; IU/L is used interchangeably). Document per-model via `covariateData[[AST]]$units`.
 - **Type:** continuous
 - **Scope:** general
 - **Reference category:** n/a -- used with power scaling `(AST / ref)^exponent`.
@@ -657,7 +657,7 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 
 ### ALT (**canonical for alanine aminotransferase**)
 - **Description:** Serum alanine aminotransferase activity (baseline or time-varying).
-- **Units:** U/L (IU/L; the two labels are used interchangeably in the clinical-PK literature). Document per-model via `covariateData[[ALT]]$units`.
+- **Units:** **U/L** (SI; canonical as of 2026-06-19; IU/L is used interchangeably). Document per-model via `covariateData[[ALT]]$units`.
 - **Type:** continuous
 - **Scope:** general
 - **Reference category:** n/a -- used with power scaling `(ALT / ref)^exponent`.
@@ -668,7 +668,7 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 
 ### ALP (**canonical for alkaline phosphatase**)
 - **Description:** Serum alkaline phosphatase activity (baseline or time-varying). Liver-function / cholestasis marker; often used in popPK covariate models either as a continuous concentration with power scaling or as a binary above/below upper-limit-of-normal (ULN) indicator. When binarized inline, document the ULN threshold used (typically ~120 U/L for adults; varies by lab, age, and sex).
-- **Units:** U/L (IU/L; the two labels are used interchangeably in the clinical-PK literature). Document per-model via `covariateData[[ALP]]$units`.
+- **Units:** **U/L** (SI; canonical as of 2026-06-19; IU/L is used interchangeably). Document per-model via `covariateData[[ALP]]$units`.
 - **Type:** continuous
 - **Scope:** general
 - **Reference category:** n/a -- used with power scaling `(ALP / ref)^exponent`, with a linear-deviation form, or binarized inline as `alp_high <- (ALP > uln)` for a binary >ULN indicator.
@@ -678,7 +678,7 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 
 ### GGT (**canonical for gamma-glutamyltransferase**)
 - **Description:** Serum gamma-glutamyltransferase activity (baseline or time-varying); hepatic / cholestatic biliary-enzyme marker.
-- **Units:** U/L (IU/L; the two labels are used interchangeably in the clinical-PK literature). Document per-model via `covariateData[[GGT]]$units`.
+- **Units:** **U/L** (SI; canonical as of 2026-06-19; IU/L is used interchangeably). Document per-model via `covariateData[[GGT]]$units`.
 - **Type:** continuous
 - **Scope:** general
 - **Reference category:** n/a -- used with linear-deviation form `1 + theta * (GGT - ref)` or power scaling `(GGT / ref)^exponent`. Reference values observed: 33 U/L (Retlich 2015 popPK linagliptin median), 32.3 U/L (Retlich 2015 popPK/PD linagliptin median).
@@ -688,7 +688,7 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 
 ### LDH (**canonical for serum lactate dehydrogenase**)
 - **Description:** Serum lactate dehydrogenase activity (baseline or time-varying). General-purpose marker of tissue / cellular turnover; in oncology PK analyses it is interpreted as a disease-burden / cell-turnover proxy.
-- **Units:** U/L (IU/L; interchangeable). Document per-model via `covariateData[[LDH]]$units`.
+- **Units:** **U/L** (SI; canonical as of 2026-06-19; IU/L is used interchangeably). Document per-model via `covariateData[[LDH]]$units`.
 - **Type:** continuous
 - **Scope:** general
 - **Reference category:** n/a -- used with power scaling `(LDH / ref)^exponent` or with an additive linear-on-log form `exp(coef * (log(LDH) - log(ref)))` (algebraically equivalent to `(log(LDH) / log(ref))^coef`). Reference values observed: 217 U/L (Sanghavi 2020).
@@ -805,7 +805,7 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 
 ### CPK (**canonical for serum creatine phosphokinase / creatine kinase**)
 - **Description:** Serum creatine phosphokinase (also called creatine kinase, CK) activity (baseline or time-varying). Skeletal-muscle / cardiac-muscle injury and turnover marker; in macrophage-targeted PK/PD analyses (axatilimab, anti-CSF-1R) it is interpreted as a Kupffer-cell / tissue-macrophage clearance surrogate because Kupffer cells participate in the elimination of circulating muscle-derived enzymes.
-- **Units:** U/L (IU/L; interchangeable). Document per-model via `covariateData[[CPK]]$units`.
+- **Units:** **U/L** (SI; canonical as of 2026-06-19; IU/L is used interchangeably). Document per-model via `covariateData[[CPK]]$units`.
 - **Type:** continuous
 - **Scope:** general
 - **Reference category:** n/a -- used with power scaling `(CPK / ref)^exponent`. Reference values observed: 63 U/L (Yang 2024 axatilimab; pooled-cohort median).
