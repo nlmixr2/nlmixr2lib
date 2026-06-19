@@ -1245,25 +1245,27 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `FiedlerKelly_2020_fremanezumab_em.R` (slope 0.438 d/d, episodic migraine), `FiedlerKelly_2020_fremanezumab_cm.R` (slope 0.460 d/d, chronic migraine).
 - **Notes:** Specific scope because the variable is migraine-domain-bound. Time-fixed per subject (baseline-only). When future migraine E-R models register additional aliases or alternative breakpoints, document them per-model and consider promoting to `general`.
 
-### AMLOAD (**canonical for systemic-amyloidosis whole-body amyloid load grade**)
+### DIS_AMYLOID_LOAD (**canonical for systemic-amyloidosis whole-body amyloid load grade**)
 - **Description:** Ordinal whole-body amyloid load score in patients with systemic amyloidosis. Integer 0-3: 0 = no amyloid (healthy volunteers), 1 = small amyloid load, 2 = moderate amyloid load, 3 = large amyloid load. The grading combines organ-by-organ amyloid presence (liver, spleen, bone, adrenals, gut, heart) and SAP-scintigraphy uptake into a single per-patient severity grade at baseline. Time-fixed per subject.
 - **Units:** (categorical 0-3)
 - **Type:** categorical
 - **Scope:** specific
 - **Reference category:** 0 (no amyloid). Sahota 2015 Eq. 2 also treats category 1 as part of the reference for the V4 effect (categories 0 and 1 share a V4 multiplier of 1); only categories 2 and 3 carry a non-zero effect via the cumulative parameters `e_amload2_vp_sap` and `e_amload2_vp_sap + e_amload3_vp_sap` respectively.
-- **Source aliases:** none beyond the source-paper `AMLOAD` column.
-- **Example models:** `NA_NA_miridesap.R` (DDMODEL00000262; Sahota 2015 Eq. 2 multiplicative effect on SAP peripheral volume V4: V4 = V4_ref * (1 + e_amload2_vp_sap * I(AMLOAD>=2) + e_amload3_vp_sap * I(AMLOAD>=3)); reported effects e_amload2_vp_sap = 6.39 / e_amload3_vp_sap = 26.39 yielding ~7.4x V4 at moderate load and ~33.8x at large load), `Sahota_2015_miridesap.R` (paper-only extraction of the same Sahota 2015 final model with identical Eq. 2 effect on V4; values 6.39 / 26.39 taken from Table 2).
-- **Notes:** Scope: specific because the grading scheme is amyloidosis-specific (Sahota 2015 Methods: "The whole body amyloid load covariate, AMLOAD, was a categorical score: 0 for no amyloid in healthy volunteers, 1 for small, 2 for moderate, and 3 for large"). The cumulative monotonic parameterisation in Sahota 2015 Eq. 2 encodes a positive-only step at each grade increment. Co-used with `AMLIVER` for the binary hepatic-involvement modifier. Ratified canonically on 2026-05-15 alongside the DDMODEL00000262 / Sahota 2015 extraction.
+- **Source aliases:**
+  - `AMLOAD` -- prior canonical name (pre-2026-06-19 DIS_ prefix standardization) and source-paper column in `Sahota_2015_miridesap.R`.
+- **Example models:** `NA_NA_miridesap.R` (DDMODEL00000262; Sahota 2015 Eq. 2 multiplicative effect on SAP peripheral volume V4: V4 = V4_ref * (1 + e_amload2_vp_sap * I(DIS_AMYLOID_LOAD>=2) + e_amload3_vp_sap * I(DIS_AMYLOID_LOAD>=3)); reported effects e_amload2_vp_sap = 6.39 / e_amload3_vp_sap = 26.39 yielding ~7.4x V4 at moderate load and ~33.8x at large load), `Sahota_2015_miridesap.R` (paper-only extraction of the same Sahota 2015 final model with identical Eq. 2 effect on V4; values 6.39 / 26.39 taken from Table 2).
+- **Notes:** Scope: specific because the grading scheme is amyloidosis-specific (Sahota 2015 Methods: "The whole body amyloid load covariate, AMLOAD, was a categorical score: 0 for no amyloid in healthy volunteers, 1 for small, 2 for moderate, and 3 for large"). The cumulative monotonic parameterisation in Sahota 2015 Eq. 2 encodes a positive-only step at each grade increment. Co-used with `DIS_AMYLOID_LIVER` for the binary hepatic-involvement modifier. Ratified canonically on 2026-05-15 alongside the DDMODEL00000262 / Sahota 2015 extraction. Renamed from `AMLOAD` to `DIS_AMYLOID_LOAD` on 2026-06-19 per the canonical-register standardization audit (operator decision to apply the `DIS_<concept>` prefix uniformly to disease-state indicators and to spell out amyloidosis rather than the shortened `AM` prefix that collides with chemistry symbols).
 
-### AMLIVER (**canonical for hepatic amyloid involvement indicator**)
+### DIS_AMYLOID_LIVER (**canonical for hepatic amyloid involvement indicator**)
 - **Description:** Binary indicator for the presence of amyloid in the liver as a separate organ involvement from the overall whole-body amyloid load. 1 = liver amyloid present at baseline; 0 = no liver amyloid. Time-fixed per subject.
 - **Units:** (binary)
 - **Type:** binary
 - **Scope:** specific
 - **Reference category:** 0 (no liver amyloid).
-- **Source aliases:** none beyond the source-paper `AMLIVER` column.
-- **Example models:** `NA_NA_miridesap.R` (DDMODEL00000262; Sahota 2015 Eq. 2 multiplicative effect on SAP intercompartmental clearance Q4: Q4 = Q4_ref * (1 + e_amliver_q4 * AMLIVER); reported effect 4.01, yielding ~5x Q4 in patients with hepatic amyloid), `Sahota_2015_miridesap.R` (paper-only extraction of the same Sahota 2015 final model with identical Eq. 2 effect on Q4; value 4.01 from Table 2).
-- **Notes:** Scope: specific because the covariate is amyloidosis-specific (Sahota 2015 Methods names AMLIVER alongside AMSPLEEN / AMHEART as organ-specific amyloid-involvement binary indicators; only AMLIVER was retained as a covariate in the final model). Used in combination with the global `AMLOAD` grade so the model can express both general amyloid burden and the specific hepatic-clearance modifier (the SAP-CPHPC complex is cleared by the liver, motivating the hepatic-amyloid-specific Q4 effect). Ratified canonically on 2026-05-15 alongside the DDMODEL00000262 / Sahota 2015 extraction.
+- **Source aliases:**
+  - `AMLIVER` -- prior canonical name (pre-2026-06-19 DIS_ prefix standardization) and source-paper column in `Sahota_2015_miridesap.R`.
+- **Example models:** `NA_NA_miridesap.R` (DDMODEL00000262; Sahota 2015 Eq. 2 multiplicative effect on SAP intercompartmental clearance Q4: Q4 = Q4_ref * (1 + e_amliver_q4 * DIS_AMYLOID_LIVER); reported effect 4.01, yielding ~5x Q4 in patients with hepatic amyloid), `Sahota_2015_miridesap.R` (paper-only extraction of the same Sahota 2015 final model with identical Eq. 2 effect on Q4; value 4.01 from Table 2).
+- **Notes:** Scope: specific because the covariate is amyloidosis-specific (Sahota 2015 Methods names AMLIVER alongside AMSPLEEN / AMHEART as organ-specific amyloid-involvement binary indicators; only AMLIVER was retained as a covariate in the final model). Used in combination with the global `DIS_AMYLOID_LOAD` grade so the model can express both general amyloid burden and the specific hepatic-clearance modifier (the SAP-CPHPC complex is cleared by the liver, motivating the hepatic-amyloid-specific Q4 effect). Ratified canonically on 2026-05-15 alongside the DDMODEL00000262 / Sahota 2015 extraction. Renamed from `AMLIVER` to `DIS_AMYLOID_LIVER` on 2026-06-19 per the canonical-register standardization audit (operator decision to apply the `DIS_<concept>` prefix uniformly to disease-state indicators and to spell out amyloidosis rather than the shortened `AM` prefix that collides with chemistry symbols).
 
 ## Critical-illness severity
 
@@ -2593,61 +2595,56 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 
 ## Pediatric comorbidities
 
-### CLD_PREM (**canonical for chronic lung disease of prematurity**)
+### DIS_CLD_PREM (**canonical for chronic lung disease of prematurity**)
 - **Description:** 1 = chronic lung disease of prematurity (bronchopulmonary dysplasia, BPD), 0 = no CLD. Time-fixed per subject (diagnosis at study entry).
 - **Units:** (binary)
 - **Type:** binary
 - **Scope:** general
 - **Reference category:** 0 (no CLD of prematurity).
 - **Source aliases:**
+  - `CLD_PREM` -- prior canonical name used in `Robbie_2012_palivizumab.R` prior to the 2026-06-19 DIS_ prefix standardization.
   - `CLD` -- used in `Robbie_2012_palivizumab.R`.
   - `BPD` -- bronchopulmonary-dysplasia shorthand.
 - **Example models:** `Robbie_2012_palivizumab.R` (fractional +20% effect on CL).
-- **Notes:** Standard pediatric / neonatology comorbidity flag; ties to palivizumab's label population (high-risk preterm infants) and may re-appear in future pediatric mAb PK analyses (RSV, parenteral nutrition, etc.).
+- **Notes:** Standard pediatric / neonatology comorbidity flag; ties to palivizumab's label population (high-risk preterm infants) and may re-appear in future pediatric mAb PK analyses (RSV, parenteral nutrition, etc.). Renamed from `CLD_PREM` to `DIS_CLD_PREM` on 2026-06-19 per the canonical-register standardization audit (operator decision to apply the `DIS_<concept>` prefix uniformly to disease-state indicators).
 
 ## Comorbidities
 
-### DIAB (**canonical for diabetes-mellitus comorbidity indicator**)
-- **Description:** 1 = patient has diabetes mellitus comorbidity (Type 1 or Type 2 not distinguished), 0 = no diabetes comorbidity. Time-fixed at study entry per subject.
+### DIS_DIAB (**canonical for diabetes-mellitus comorbidity indicator**)
+- **Description:** 1 = patient has diabetes mellitus comorbidity, 0 = no diabetes comorbidity. Time-fixed at study entry per subject. Type 1 vs Type 2 are pooled at the column level; record the per-model Type-2-specific detail (if any) in the per-model `covariateData[[DIS_DIAB]]$source_name` / `notes` fields rather than maintaining a parallel canonical.
 - **Units:** (binary)
 - **Type:** binary
 - **Scope:** general
 - **Reference category:** 0 (no diabetes comorbidity).
 - **Source aliases:**
-  - `DIAB` -- used in `Chen_2022_guselkumab.R`.
+  - `DIAB` -- prior canonical name (pre-2026-06-19 DIS_ prefix standardization) used in `Chen_2022_guselkumab.R`, `Yao_2018_guselkumab.R`, `Overgaard_2019_semaglutide.R`.
+  - `T2DM` -- prior parallel canonical (merged into `DIS_DIAB` on 2026-06-19) used in `NA_NA_paracetamol.R` (DDMODEL00000228), `Lu_2014_sglt_qsp.R`, `Sharma_2018_naltrexone_bupropion.R`.
   - `Diabetes` -- used in `Sherer_2012_AAA.R` (Sherer 2012 Methods page 2 symbol "Diabetes").
-- **Example models:** `Chen_2022_guselkumab.R` (multiplicative effect on CL/F: 1.15^DIAB, +15% in patients with diabetes).
-  - `Chen_2022_guselkumab.R` (multiplicative effect on CL/F: 1.15^DIAB, +15% in patients with diabetes).
-  - `Sherer_2012_AAA.R` (additive shift on the first derivative of AAA growth rate with size beta2: `e_diab_b2 = -0.32/year` for diabetics; cohort prevalence 14%).
-- **Notes:** Captures pre-existing diabetes mellitus as a comorbidity in non-diabetes-primary indications (e.g., psoriatic arthritis, psoriasis, vascular disease). Distinct from a primary disease-state indicator like `DIS_UC`. Type 1 vs Type 2 mellitus is not separated unless the source paper distinguishes them; in pooled-population PK analyses, the covariate is typically a single binary flag derived from medical history. Diabetic patients tend to have higher inflammation and altered IgG turnover, which can manifest as modest changes in monoclonal-antibody clearance. In vascular populations (Sherer 2012) diabetes is associated with slower AAA growth, possibly via aberrant monocyte-matrix interactions (Golledge 2008 mechanism cited in Sherer 2012 Discussion).
-
-### T2DM (**canonical for type-2-diabetes-mellitus-specific indicator**)
-- **Description:** 1 = patient has Type-2 diabetes mellitus specifically; 0 = normal-glucose-tolerance control (or other reference cohort pooled in the source analysis). Time-fixed at study entry per subject.
-- **Units:** (binary)
-- **Type:** binary
-- **Scope:** specific
-- **Reference category:** 0 (normal-glucose-tolerance control).
-- **Source aliases:**
-  - `T2DM` -- used in `NA_NA_paracetamol.R` (DDMODEL00000228).
   - `T2D` -- used in `Guiastrennec_2016_gastric_emptying.R` (matched-cohort flag, 1 = T2D patient vs 0 = matched nondiabetic control).
-  - `ZDF` -- used in `Han_2018_methionineMetabolismCycle.R` (Zucker Diabetic Fatty rat as T2DM animal model; ZDF/Gmi fa/fa coded T2DM = 1 vs ZDF/Gmi fa/? non-diabetic littermate control coded T2DM = 0).
-- **Example models:** `NA_NA_paracetamol.R` (DDMODEL00000228).
+  - `ZDF` -- used in `Han_2018_methionineMetabolismCycle.R` (Zucker Diabetic Fatty rat as T2DM animal model; ZDF/Gmi fa/fa coded as DIS_DIAB = 1 vs ZDF/Gmi fa/? non-diabetic littermate control coded as DIS_DIAB = 0).
+- **Example models:**
+  - `Chen_2022_guselkumab.R` (multiplicative effect on CL/F: 1.15^DIS_DIAB, +15% in patients with diabetes).
+  - `Yao_2018_guselkumab.R` (multiplicative effect on CL/F: 1.12^DIS_DIAB, +12% in patients with diabetes).
+  - `Overgaard_2019_semaglutide.R` (multiplicative effects 1.12 on CL and 0.544 on ka per Overgaard 2019 Table 4; T2D-vs-normoglycaemic stratification).
+  - `Sherer_2012_AAA.R` (additive shift on the first derivative of AAA growth rate with size beta2: `e_diab_b2 = -0.32/year` for diabetics; cohort prevalence 14%).
+  - `Sharma_2018_naltrexone_bupropion.R` (Type-2 diabetes mellitus stratifier on Emax, kout, kpro, baseline BW; from Sharma 2018 study 6, NB-304).
+  - `Lu_2014_sglt_qsp.R` (multiplicative +17.6% shift on the typical-value Vmax2 of SGLT2 in the renal-glucose-reabsorption QSP model: Vmax2_DIS_DIAB = 110 mmol/h vs Vmax2_healthy = 93.5 mmol/h per Lu 2014 Table 2 calibration).
   - `NA_NA_paracetamol.R` (DDMODEL00000228).
   - `Guiastrennec_2016_gastric_emptying.R` (multiplicative -81.1% depression of POTcarbC, the carbohydrate potency on CCK release; all other parameters are common across cohorts).
-  - `Lu_2014_sglt_qsp.R` (multiplicative +17.6% shift on the typical-value Vmax2 of SGLT2 in the renal-glucose-reabsorption QSP model: Vmax2_T2DM = 110 mmol/h vs Vmax2_healthy = 93.5 mmol/h per Lu 2014 Table 2 calibration; coded for the Lu 2014 evaluation cohort, where the pre-modern-classification 'diabetics' of Mogensen 1971 are also coded T2DM = 1).
-  - `Han_2018_methionineMetabolismCycle.R` (preclinical rat MMC model; multiplicative-on-log-scale T2DM effects on five rate constants K_SH (+16 %), K_HM (-92 %), K_HC (-95 %), K_HP (-86 %), K_PH (-99 %) derived from Han 2018 Table 1 ZDF/control ratios; all other rate constants and Vc common across cohorts per Han 2018 Results paragraph 1).
-- **Notes:** Distinct from the existing `DIAB` canonical (which deliberately does not distinguish Type 1 vs Type 2). Specific scope because the reference cohort is study-specific and the mechanism in the example models is a Type-2-versus-healthy stratification of OGTT or SGLT response; a future T2DM-specific study (e.g., a popPK/PD analysis stratifying by HbA1c level) can ratify the same canonical and document the reference cohort in `covariateData[[T2DM]]$notes`.
+  - `Han_2018_methionineMetabolismCycle.R` (preclinical rat MMC model; multiplicative-on-log-scale T2DM effects on five rate constants K_SH (+16 %), K_HM (-92 %), K_HC (-95 %), K_HP (-86 %), K_PH (-99 %) derived from Han 2018 Table 1 ZDF/control ratios).
+- **Notes:** Captures pre-existing diabetes mellitus as a comorbidity in non-diabetes-primary indications (e.g., psoriatic arthritis, psoriasis, vascular disease) AND as a primary stratifier in diabetes-population studies (semaglutide, SGLT-QSP, naltrexone-bupropion T2DM substudies). Distinct from a primary disease-state indicator like `DIS_UC`. Type 1 vs Type 2 mellitus are pooled onto the single `DIS_DIAB` column; if a paper distinguishes them, record "T2DM" or "Type 2" in the per-model `covariateData[[DIS_DIAB]]$source_name` notes, and if a future paper genuinely needs a binary Type-2-vs-Type-1 split (e.g., a popPK/PD analysis stratifying by HbA1c level), register `DIS_DIAB_TYPE2` at that point. Diabetic patients tend to have higher inflammation and altered IgG turnover, which can manifest as modest changes in monoclonal-antibody clearance. In vascular populations (Sherer 2012) diabetes is associated with slower AAA growth, possibly via aberrant monocyte-matrix interactions (Golledge 2008 mechanism cited in Sherer 2012 Discussion). Renamed from `DIAB` to `DIS_DIAB` and merged the prior `T2DM` canonical into it on 2026-06-19 per the canonical-register standardization audit (operator decision: apply the `DIS_<concept>` prefix uniformly to disease-state indicators; pool T1/T2 at the column level and record the Type-2 detail per-model rather than maintaining a parallel T2DM canonical).
 
-### HYPERT (**canonical for hypertension comorbidity / medical-history indicator**)
+### DIS_HYPERT (**canonical for hypertension comorbidity / medical-history indicator**)
 - **Description:** 1 = patient has a history of (or current) hypertension as a comorbidity; 0 = no hypertension. Time-fixed at study entry per subject (medical-history flag rather than time-varying blood-pressure measurement).
 - **Units:** (binary)
 - **Type:** binary
 - **Scope:** general
 - **Reference category:** 0 (no hypertension comorbidity).
 - **Source aliases:**
+  - `HYPERT` -- prior canonical name used in `Girard_2012_pimasertib.R` prior to the 2026-06-19 DIS_ prefix standardization.
   - `MHHY` (medical history of hypertension) -- used in `Girard_2012_pimasertib.R`.
-- **Example models:** `Girard_2012_pimasertib.R` (additive shift on the cumulative-logit AE-score model: `theta_mhhy * HYPERT`; +0.539 logit units in patients with prior hypertension).
-- **Notes:** Companion to `DIAB` (diabetes-mellitus comorbidity); both are baseline binary medical-history flags collected from clinical-history forms. Captures any prior or current hypertension diagnosis, regardless of treatment status; if a future model needs to separate treated vs untreated hypertension, register a refinement (`HYPERT_TREATED`).
+- **Example models:** `Girard_2012_pimasertib.R` (additive shift on the cumulative-logit AE-score model: `theta_mhhy * DIS_HYPERT`; +0.539 logit units in patients with prior hypertension).
+- **Notes:** Companion to `DIS_DIAB` (diabetes-mellitus comorbidity); both are baseline binary medical-history flags collected from clinical-history forms. Captures any prior or current hypertension diagnosis, regardless of treatment status; if a future model needs to separate treated vs untreated hypertension, register a refinement (`DIS_HYPERT_TREATED`). Renamed from `HYPERT` to `DIS_HYPERT` on 2026-06-19 per the canonical-register standardization audit (operator decision to apply the `DIS_<concept>` prefix uniformly to disease-state indicators).
 
 ## Surgical history / disease state
 
@@ -2839,7 +2836,7 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Source aliases:**
   - `DIS` -- Kleideiter 2017 (paper Table 13 categorical disease status decomposed to binary `DIS_DPN`).
 - **Example models:** `Kleideiter_2017_cebranopadol.R` (multiplicative effect on bioavailability: `f_disease *= 1.132` for DPN patients relative to the LBP/OA nociceptive-pain reference; the value 1.132 reflects the 2018 erratum correction in which Table 13 rows 27-28 for bunionectomy and DPN were swapped), `Kleideiter_2018_cebranopadol.R` (DPN-vs-LBP/OA bioavailability ratio 1.132 applied as `ratio^DIS_DPN`; one level of the four-level disease-status stratification {LBP/OA reference, healthy, DPN, bunionectomy}, Kleideiter 2018 Table 13 erratum-corrected).
-- **Notes:** Used when a population PK model pools DPN patients with a non-DPN reference cohort (typically the chronic-pain `LBP/OA` reference plus other strata) and DPN disease status is retained as a covariate. Pairs with `DIS_HEALTHY` and `DIS_BUNIONECTOMY` in the Kleideiter four-level disease-status stratification (LBP/OA reference, healthy, DPN, bunionectomy). Distinct from the existing `DIAB` canonical (binary type-1-or-type-2 diabetes-mellitus comorbidity indicator) and the `T2DM` canonical (type-2-specific) because `DIS_DPN` flags the specific painful-polyneuropathy complication of diabetes used as a chronic-pain clinical-trial enrollment category (cebranopadol phase IIa trials 10 and 12; phase II trial 14). Distinct from the `DIS_HEALTHY` canonical because both indicators may be 0 simultaneously in a pooled chronic-pain analysis where DIS_HEALTHY = 0 means 'patient' but `DIS_DPN = 0` may still mean 'non-DPN patient' (e.g., LBP / OA or bunionectomy patients). Scope: specific because the disease-pooling reference category is paper-defined. Ratified canonically on 2026-05-25 alongside the Kleideiter 2017 cebranopadol extraction.
+- **Notes:** Used when a population PK model pools DPN patients with a non-DPN reference cohort (typically the chronic-pain `LBP/OA` reference plus other strata) and DPN disease status is retained as a covariate. Pairs with `DIS_HEALTHY` and `DIS_BUNIONECTOMY` in the Kleideiter four-level disease-status stratification (LBP/OA reference, healthy, DPN, bunionectomy). Distinct from the existing `DIS_DIAB` canonical (binary type-1-or-type-2 diabetes-mellitus comorbidity indicator; pre-2026-06-19 names `DIAB` and `T2DM` were merged into `DIS_DIAB`) because `DIS_DPN` flags the specific painful-polyneuropathy complication of diabetes used as a chronic-pain clinical-trial enrollment category (cebranopadol phase IIa trials 10 and 12; phase II trial 14). Distinct from the `DIS_HEALTHY` canonical because both indicators may be 0 simultaneously in a pooled chronic-pain analysis where DIS_HEALTHY = 0 means 'patient' but `DIS_DPN = 0` may still mean 'non-DPN patient' (e.g., LBP / OA or bunionectomy patients). Scope: specific because the disease-pooling reference category is paper-defined. Ratified canonically on 2026-05-25 alongside the Kleideiter 2017 cebranopadol extraction.
 
 ### DIS_BUNIONECTOMY (**canonical for post-bunionectomy acute-pain cohort indicator**)
 - **Description:** 1 = patient with moderate-to-severe acute pain following primary unilateral first-metatarsal bunionectomy surgery, 0 = non-bunionectomy subject (e.g., chronic low back pain, osteoarthritis, painful diabetic polyneuropathy, or healthy volunteer). Time-fixed per subject within the postoperative analgesic-dosing window.
@@ -2913,8 +2910,16 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Example models:** `Nikanjam_2019_siltuximab.R` (multiplicative -23% effect on Vss; no CL effect).
 - **Notes:** Smoldering multiple myeloma is an asymptomatic plasma-cell disorder distinct from active multiple myeloma; pooled with the Nikanjam 2019 cohort that also included MGUS, multiple myeloma, RCC, ovarian, and other tumor types. Scope: specific because the disease-pooling reference category is paper-defined. Ratified canonically on 2026-04-24.
 
-### MM (**canonical for active multiple myeloma disease indicator**)
+### DIS_MM (**canonical for active multiple myeloma disease indicator**)
 - **Description:** 1 = active (non-smoldering) multiple myeloma, 0 = other hematologic malignancy or reference group. Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (non-MM subject; the complement group is defined per-model -- in Ogasawara 2020 the reference is the union of MDS, AML, and non-Hodgkin lymphoma cohorts).
+- **Source aliases:**
+  - `MM` -- prior canonical name (pre-2026-06-19 DIS_ prefix standardization) and source-paper column in `Ogasawara_2020_durvalumab.R`. The short `MM` token also collides with the SI unit millimolar (used in `STIM_*_MM` in-vitro stimulus concentrations and `RIC50` in mM) and with the melanoma abbreviation in some oncology datasets (e.g., `TUMTP == "MM"` in Aoyama 2012 where MM means malignant melanoma); the `DIS_MM` form disambiguates.
+- **Example models:** `Ogasawara_2020_durvalumab.R` (multiplicative factor 0.820 on Vc per Ogasawara 2020 Table 3 footnote c; active (non-smoldering) multiple myeloma cohort from studies MEDI4736-MM-002 and -MM-005).
+- **Notes:** Renamed from `MM` to `DIS_MM` on 2026-06-19 per the canonical-register standardization audit (operator decision to apply the `DIS_<concept>` prefix uniformly to disease-state indicators; the bare `MM` token clashed with the millimolar SI unit and with the TUMTP "MM = malignant melanoma" usage). Distinct from `DIS_SMM` (smoldering multiple myeloma) and `MM_NIGG` (the immunoglobulin-subtype stratifier within multiple myeloma cohorts).
 
 ### DIS_PNH (**canonical for paroxysmal nocturnal hemoglobinuria indicator**)
 - **Description:** 1 = paroxysmal nocturnal hemoglobinuria (PNH) patient, 0 = non-PNH subject (healthy volunteer or another indication pooled in the source analysis). Time-fixed per subject.
@@ -2926,15 +2931,16 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Example models:** `Lin_2024_pozelimab.R` (additive-fractional +34.07% effect on Vc; no CL or Vp effect; reference category pools healthy volunteers and CHAPLE patients).
 - **Notes:** Paroxysmal nocturnal hemoglobinuria is a rare hematological disease characterized by uncontrolled complement activation on red blood cells; treated with C5-targeted complement inhibitors (eculizumab, ravulizumab, pozelimab). Scope: specific because the disease-pooling reference category is paper-defined. Ratified canonically on 2026-04-27.
 
-### MDSAML (**canonical for MDS or AML disease-type indicator**)
+### DIS_MDS_AML (**canonical for MDS or AML disease-type indicator**)
 - **Description:** 1 = patient with myelodysplastic syndrome (MDS) or acute myeloid leukemia (AML), 0 = other hematologic malignancy or reference group. Time-fixed per subject.
 - **Units:** (binary)
 - **Type:** binary
 - **Scope:** specific
 - **Reference category:** 0 (non-MDS/AML subjects; the complement group is defined per-model -- typically multiple myeloma and non-Hodgkin lymphoma in Ogasawara 2020).
-- **Source aliases:** none; `MDSAML` is the combined indicator used directly in source analyses.
+- **Source aliases:**
+  - `MDSAML` -- prior canonical name (pre-2026-06-19 DIS_ prefix standardization) and combined indicator used directly in source analyses; `MDSAML` is the column name in `Ogasawara_2020_durvalumab.R`.
 - **Example models:** `Ogasawara_2020_durvalumab.R` (multiplicative factor 1.26 on CL; reference group is the union of MM and NHL subjects).
-- **Notes:** Use `MDSAML` as a combined MDS+AML indicator when the source paper collapses the two diagnoses into one covariate. If a future paper separates MDS and AML as distinct indicators, register `DIS_MDS` and `DIS_AML` separately. Scope: specific because the reference category is paper-defined. Ratified canonically on 2026-04-26.
+- **Notes:** Use `DIS_MDS_AML` as a combined MDS+AML indicator when the source paper collapses the two diagnoses into one covariate. If a future paper separates MDS and AML as distinct indicators, register `DIS_MDS` and `DIS_AML` separately. Scope: specific because the reference category is paper-defined. Ratified canonically on 2026-04-26. Renamed from `MDSAML` to `DIS_MDS_AML` on 2026-06-19 per the canonical-register standardization audit (operator decision to apply the `DIS_<concept>` prefix uniformly to disease-state indicators and to insert the underscore so the combined indicator matches the sibling `DIS_MDS` / `DIS_AML` shape).
 
 ### DIS_AML (**canonical for acute myeloid leukemia disease-state indicator**)
 - **Description:** 1 = patient with acute myeloid leukemia (AML), 0 = non-AML subject (the complement group in a pooled multi-indication PK analysis). Time-fixed per subject.
@@ -2945,7 +2951,7 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Source aliases:**
   - `DISEASE_abb == "AML"` -- used in `Xu_2023_MBG453.R` (the Monolix supplement Appendix S2 encodes disease as the categorical column `DISEASE_abb` with categories `{AML, CMML, MDS, Solid_Tumor}` and reference `Solid_Tumor`; the canonical column carries the binary `as.integer(DISEASE_abb == "AML")`).
 - **Example models:** `Xu_2023_MBG453.R` (exponential effect on CL: `exp(-0.0146 * DIS_AML)`; not statistically significant in the full covariate model but retained because Xu 2023 used the full-covariate-model approach).
-- **Notes:** Use `DIS_AML` (rather than the combined `MDSAML`) when the source paper separates AML from MDS as distinct indicators. Scope: specific because the disease-pooling reference category is paper-defined.
+- **Notes:** Use `DIS_AML` (rather than the combined `DIS_MDS_AML`) when the source paper separates AML from MDS as distinct indicators. Scope: specific because the disease-pooling reference category is paper-defined.
 
 ### DIS_MDS (**canonical for myelodysplastic syndrome disease-state indicator**)
 - **Description:** 1 = patient with myelodysplastic syndrome (MDS), 0 = non-MDS subject (the complement group in a pooled multi-indication PK analysis). Time-fixed per subject.
@@ -2956,7 +2962,7 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Source aliases:**
   - `DISEASE_abb == "MDS"` -- used in `Xu_2023_MBG453.R` (Monolix supplement Appendix S2 categorical column; reference category `Solid_Tumor`).
 - **Example models:** `Xu_2023_MBG453.R` (exponential effect on CL: `exp(-0.149 * DIS_MDS)`; statistically significant, p = 0.021 -- patients with MDS have ~14% lower CL than the solid-tumor reference).
-- **Notes:** Use `DIS_MDS` (rather than the combined `MDSAML`) when the source paper separates MDS from AML as distinct indicators. Scope: specific because the disease-pooling reference category is paper-defined.
+- **Notes:** Use `DIS_MDS` (rather than the combined `DIS_MDS_AML`) when the source paper separates MDS from AML as distinct indicators. Scope: specific because the disease-pooling reference category is paper-defined.
 
 ### DIS_CMML (**canonical for chronic myelomonocytic leukemia disease-state indicator**)
 - **Description:** 1 = patient with chronic myelomonocytic leukemia (CMML), 0 = non-CMML subject (the complement group in a pooled multi-indication PK analysis). Time-fixed per subject.
@@ -3759,7 +3765,7 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Source aliases:**
   - Categorical column "type of cancer" with level "Leukemia" -- decompose into `TUMTP_LEUK = as.integer(cancer_type == "Leukemia")`. Implicit reference category in `Akbar_2025_voriconazole.R` (so the model file does not consume this column directly; it is registered for future heterogeneous-cancer-cohort analyses).
 - **Example models:** `Akbar_2025_voriconazole.R`.
-- **Notes:** Distinct from the more specific `DIS_AML`, `DIS_BCPALL`, `DIS_CMML`, `MDSAML` entries -- those are for leukemia-only or leukemia-vs-leukemia contrasts; `TUMTP_LEUK` is for heterogeneous-cancer pooled cohorts where leukemia is one of several tumor types and the analysis treats `cancer type` as a many-level categorical. Akbar 2025 had leukemia as 56.8% of the cohort and used it as the reference category. Scope: specific because the reference category in any source paper is paper-defined. Ratified canonically on 2026-05-09.
+- **Notes:** Distinct from the more specific `DIS_AML`, `DIS_BCPALL`, `DIS_CMML`, `DIS_MDS_AML` entries -- those are for leukemia-only or leukemia-vs-leukemia contrasts; `TUMTP_LEUK` is for heterogeneous-cancer pooled cohorts where leukemia is one of several tumor types and the analysis treats `cancer type` as a many-level categorical. Akbar 2025 had leukemia as 56.8% of the cohort and used it as the reference category. Scope: specific because the reference category in any source paper is paper-defined. Ratified canonically on 2026-05-09.
 
 ### TUMTP_BCL (**canonical for B-cell lymphoma (pooled residual) tumor-type indicator**)
 - **Description:** 1 = B-cell lymphoma (BCL), 0 = other tumor types. Time-fixed per subject. In Gibiansky 2014 the BCL category is a pooled residual indolent-B-cell-lymphoma group that includes follicular lymphoma (FL was the primary indication in GAUDI; the four-level DIS column in the NONMEM control stream splits B-cell histologies into CLL = 1, BCL = 2 (residual indolent B-cell-lymphoma pool including FL), DLBCL = 3, MCL = 4).
@@ -3939,16 +3945,16 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Example models:** `Zecchin_2016_survival.R` (Zecchin 2016 OS model, DDMODEL00000218).
 - **Notes:** Distinct from the canonical `TUM_SLD` column. `TUM_SLD` carries the *measured* baseline tumour size in mm (used to compute the time-fixed `NSLD0 = TUM_SLD / 70` covariate term in the Zecchin 2016 OS hazard), whereas `IBASE` carries the empirical-Bayes *fitted* baseline from the upstream SLD model (used to initialise the integrated SLD trajectory and to define the time-varying TSR(t) reference). The two are correlated but not equal because the upstream IPP fit smooths measurement noise away from the observed SLD0. Specific scope because the column is the empirical-Bayes output of a specific upstream model fit and the internal `*1000` unit-conversion is tied to the source NONMEM coding convention.
 
-### NWLS (**canonical for time-varying new-lesion appearance indicator**)
-- **Description:** Time-varying binary indicator of whether a new (non-target) RECIST lesion has appeared since enrolment. 1 = new lesion present at the current observation time; 0 = no new lesion as of the current observation time. Once `NWLS` flips to 1 it stays 1 for subsequent observation times in that subject (a step-function flag, not a transient pulse).
+### NEW_LESION (**canonical for time-varying new-lesion appearance indicator**)
+- **Description:** Time-varying binary indicator of whether a new (non-target) RECIST lesion has appeared since enrolment. 1 = new lesion present at the current observation time; 0 = no new lesion as of the current observation time. Once `NEW_LESION` flips to 1 it stays 1 for subsequent observation times in that subject (a step-function flag, not a transient pulse).
 - **Units:** (binary)
 - **Type:** binary
 - **Scope:** specific
 - **Reference category:** 0 (no new lesion appeared as of the current time).
 - **Source aliases:**
-  - `NWLS` (NONMEM `$INPUT` column in DDMODEL00000218); the bundle's Simulated_OS.csv re-labels the same column `NWLSCOV`. Downstream consumers should map `NWLSCOV` -> `NWLS`.
-- **Example models:** `Zecchin_2016_survival.R` (Zecchin 2016 OS model, DDMODEL00000218; multiplicative effect on the Weibull hazard via `exp(e_nwls_haz * NWLS)` with `e_nwls_haz = 1.23` per Output_real_OS.lst FINAL TH5 / Table 2 of Zecchin 2016).
-- **Notes:** Specific scope because the column encodes a per-paper RECIST-style binary that is supplied by the dataset; it is not a generic "any new lesion" indicator the user can populate from routine clinical data without an explicit lesion-appearance imaging schedule. The Zecchin 2016 OS model uses `NWLS` directly (no time-gating), which is faithful to the simulated dataset shipped in the DDMORE bundle. The source `Output_real_OS.lst` (the listing on the original real dataset) gates the indicator with an additional `TNWLS` (lesion-appearance-time) column not shipped in the bundle's simulated dataset; the two encodings are functionally equivalent when the dataset's `NWLS` column is constructed as a 0/1 step that flips at the lesion-appearance time. The bundle's simulated dataset uses the simpler step-function form, and that is the form the nlmixr2lib model expects.
+  - `NWLS` -- prior canonical name (pre-2026-06-19 readability standardization) and NONMEM `$INPUT` column in DDMODEL00000218; the bundle's Simulated_OS.csv re-labels the same column `NWLSCOV`. Downstream consumers should map `NWLSCOV` -> `NEW_LESION`.
+- **Example models:** `Zecchin_2016_survival.R` (Zecchin 2016 OS model, DDMODEL00000218; multiplicative effect on the Weibull hazard via `exp(e_nwls_haz * NEW_LESION)` with `e_nwls_haz = 1.23` per Output_real_OS.lst FINAL TH5 / Table 2 of Zecchin 2016).
+- **Notes:** Specific scope because the column encodes a per-paper RECIST-style binary that is supplied by the dataset; it is not a generic "any new lesion" indicator the user can populate from routine clinical data without an explicit lesion-appearance imaging schedule. The Zecchin 2016 OS model uses `NEW_LESION` directly (no time-gating), which is faithful to the simulated dataset shipped in the DDMORE bundle. The source `Output_real_OS.lst` (the listing on the original real dataset) gates the indicator with an additional `TNWLS` (lesion-appearance-time) column not shipped in the bundle's simulated dataset; the two encodings are functionally equivalent when the dataset's `NEW_LESION` column is constructed as a 0/1 step that flips at the lesion-appearance time. The bundle's simulated dataset uses the simpler step-function form, and that is the form the nlmixr2lib model expects. Renamed from `NWLS` to `NEW_LESION` on 2026-06-19 per the canonical-register standardization audit (operator decision: readability over abbreviation, since `NWLS` is opaque and not a universally-recognized clinical-trial term; no DIS_ prefix because this is a RECIST-imaging event indicator rather than a disease-state indicator).
 
 ### MM_NIGG (**canonical for non-IgG multiple myeloma immunoglobulin-type indicator**)
 - **Description:** 1 = patient with non-IgG-secreting multiple myeloma (e.g., IgA, IgD, IgE, IgM, light-chain-only / Bence Jones, or non-secretory MM), 0 = patient with IgG-secreting multiple myeloma.
@@ -4669,7 +4675,7 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
   - `DOSE_NAL_MGD` (`NAL`, Sharma 2018 Eq. 4 daily naltrexone dose in mg) -- earlier `DOSE_<drug>_<unit>` form used in `Sharma_2018_naltrexone_bupropion.R` before the `CONMED_<drug>_DOSE` rename. Maps to `CONMED_NAL_DOSE`.
   - `DOSE_BUP_MGD` (`BUP`, Sharma 2018 Eq. 4 daily bupropion dose in mg) -- earlier `DOSE_<drug>_<unit>` form used in `Sharma_2018_naltrexone_bupropion.R` before the rename. Maps to `CONMED_BUP_DOSE`.
 - **Example models:** `Sharma_2018_naltrexone_bupropion.R` (each daily-dose covariate enters the combined dose- and time-dependent Emax drug effect on body-weight kout: `drug_term = CONMED_NAL_DOSE / (ed50nal + CONMED_NAL_DOSE) + CONMED_BUP_DOSE / (ed50bup + CONMED_BUP_DOSE)`, Sharma 2018 Eq. 4).
-- **Notes:** Specific scope because the dose-effect amplitudes are tied to the Sharma 2018 naltrexone/bupropion DTPD body-weight analysis. Members of the `CONMED_<drug>_DOSE` daily-dose family (siblings `CONMED_ATV_DOSE`, `CONMED_INH_DOSE`, etc.); the `CONMED_<drug>_DOSE` shape replaces the earlier `DOSE_<drug>` / `DOSE_<drug>_<unit>` names (which conflated a covariate with a dose-amount column) per the naming audit. Companion to `T2DM` (the diabetes covariate in the same model). Ratified canonically alongside the Sharma 2018 naltrexone/bupropion extraction.
+- **Notes:** Specific scope because the dose-effect amplitudes are tied to the Sharma 2018 naltrexone/bupropion DTPD body-weight analysis. Members of the `CONMED_<drug>_DOSE` daily-dose family (siblings `CONMED_ATV_DOSE`, `CONMED_INH_DOSE`, etc.); the `CONMED_<drug>_DOSE` shape replaces the earlier `DOSE_<drug>` / `DOSE_<drug>_<unit>` names (which conflated a covariate with a dose-amount column) per the naming audit. Companion to `DIS_DIAB` (the diabetes covariate in the same model; pre-2026-06-19 canonical name `T2DM`). Ratified canonically alongside the Sharma 2018 naltrexone/bupropion extraction.
 
 ### PRICORT (**canonical for prior corticosteroid use indicator**)
 - **Description:** 1 = patient received systemic corticosteroid treatment prior to study entry, 0 = no prior corticosteroid use. Time-fixed per subject.
