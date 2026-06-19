@@ -23,7 +23,7 @@ Quartino_2019_trastuzumab <- function() {
     ),
     ALB = list(
       description        = "Baseline serum albumin concentration",
-      units              = "g/dL",
+      units = "g/L",
       type               = "continuous",
       reference_category = NULL,
       notes              = "Time-fixed baseline value (US convention, g/dL). Power effect on linear CL (exponent -0.998, i.e. approximately inversely proportional); reference 4 g/dL per Quartino 2019 CL covariate equation (typical patient). Source column 'ALBU' maps to the canonical ALB covariate.",
@@ -129,6 +129,11 @@ Quartino_2019_trastuzumab <- function() {
   })
 
   model({
+    # SI -> US-convention unit conversion (canonical ALB is in SI g/L per the
+    # 2026-06-19 register standardization audit; the original calibration
+    # used the g/dL reference value, so convert inline here).
+    alb_gdL <- ALB * 0.1  # SI g/L -> US-convention g/dL (factor 0.1)
+
     # Per-subject typical linear CL by tumor-type group (Quartino 2019 CL
     # covariate equation in Results). TUMTP_GASTRIC = 1 picks the AGC typical CL;
     # TUMTP_OTHER = 1 picks the Others typical CL; both zero = MBC/EBC/HV
@@ -146,7 +151,7 @@ Quartino_2019_trastuzumab <- function() {
     cl <- exp(lcl_typ + etalcl) *
       (WT  / 66)^e_wt_cl *
       (AST / 24)^e_ast_cl *
-      (ALB /  4)^e_alb_cl *
+      (alb_gdL /  4)^e_alb_cl *
       exp(e_lmet_cl * LMET)
 
     vc   <- exp(lvc_typ + etalvc)
