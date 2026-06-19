@@ -54,15 +54,15 @@ table below collects them in one place for review.
 | `lcl` (CL20/F, L/h)  | 9.34  | PDF Table 2 (RSE 6.20%) |
 | `lvc` (V2/F, L)      | 753   | PDF Table 2 (RSE 9.00%) |
 | `lq`  (Q/F, L/h)     | 61.8  | PDF Table 2 (RSE 65.4%) |
-| `lcl_endx` (CL23/F, L/h) | 0.324 | PDF Table 2 (RSE 17.0%) |
-| `e_cyp2d6_cl_endx`   | 0.262 | PDF Table 2 (RSE 14.0%) |
-| `e_cyp3a4_cl_endx`   | 0.157 | PDF Table 2 (RSE 72.0%) |
+| `lcl_endox` (CL23/F, L/h) | 0.324 | PDF Table 2 (RSE 17.0%) |
+| `e_cyp2d6_cl_endox`   | 0.262 | PDF Table 2 (RSE 14.0%) |
+| `e_cyp3a4_cl_endox`   | 0.157 | PDF Table 2 (RSE 72.0%) |
 | `etalcl` (ω CL20/F)  | %CV 37.8 → log-variance 0.1336 | PDF Table 2 (RSE 19.2%) |
 | `etalvc` (ω V2/F)    | %CV 26.6 → log-variance 0.0683 | PDF Table 2 (RSE 53.9%) |
-| `etalcl_endx` (ω CL23/F) | %CV 25.5 → log-variance 0.0630 | PDF Table 2 (RSE 19.3%) |
+| `etalcl_endox` (ω CL23/F) | %CV 25.5 → log-variance 0.0630 | PDF Table 2 (RSE 19.3%) |
 | ρ(CL20-V2/F) → block covariance | 0.613 → 0.0586 | PDF Table 2 (RSE 31.2%) |
 | `propSd` (σ_TAM)     | 0.138 | PDF Table 2 (RSE 11.3%) |
-| `propSd_endx` (σ_ENDX) | 0.189 | PDF Table 2 (RSE 10.1%) |
+| `propSd_endox` (σ_ENDX) | 0.189 | PDF Table 2 (RSE 10.1%) |
 | Endoxifen Vc (fixed, L) | 400 | `.mdl` GROUP_VARIABLES; cite Ahmad et al. CPT 88(6):814-817 (2010) |
 | Endoxifen CL (fixed, L/h) | 5.1 | `.mdl` GROUP_VARIABLES; cite Ahmad et al. CPT 88(6):814-817 (2010) |
 | Tamoxifen MW (g/mol) | 371.51456 | `.mdl` GROUP_VARIABLES |
@@ -116,11 +116,11 @@ build_events <- function(scenarios) {
       id = i, time = obs_t, evid = 0, amt = 0, cmt = 4L, ii = 0, ss = 0,
       scenario = sc$scenario, CYP2D6 = sc$CYP2D6, CYP3A4 = sc$CYP3A4
     )
-    obs_endx <- data.frame(
+    obs_endox <- data.frame(
       id = i, time = obs_t, evid = 0, amt = 0, cmt = 5L, ii = 0, ss = 0,
       scenario = sc$scenario, CYP2D6 = sc$CYP2D6, CYP3A4 = sc$CYP3A4
     )
-    out[[i]] <- rbind(dose_row, obs_tam, obs_endx)
+    out[[i]] <- rbind(dose_row, obs_tam, obs_endox)
   }
   dplyr::bind_rows(out)
 }
@@ -172,11 +172,11 @@ ggplot(sim_tam, aes(time, Cc, colour = scenario)) +
 ```
 
 ```{r profile-endx, fig.width=7, fig.height=4}
-sim_endx <- sim |>
+sim_endox <- sim |>
   dplyr::filter(CMT == 5) |>
-  dplyr::select(id, time, scenario, Cc_endx)
+  dplyr::select(id, time, scenario, Cc_endox)
 
-ggplot(sim_endx, aes(time, Cc_endx, colour = scenario)) +
+ggplot(sim_endox, aes(time, Cc_endox, colour = scenario)) +
   geom_line(linewidth = 0.8) +
   labs(x = "Time after dose (h)", y = "Endoxifen Cc (nmol/L)",
        colour = "scenario",
@@ -232,24 +232,24 @@ knitr::kable(
 ```
 
 ```{r pknca-endx}
-sim_nca_endx <- sim |>
-  dplyr::filter(CMT == 5, !is.na(Cc_endx)) |>
-  dplyr::select(id, time, Cc_endx, scenario) |>
-  dplyr::rename(Cc = Cc_endx)
+sim_nca_endox <- sim |>
+  dplyr::filter(CMT == 5, !is.na(Cc_endox)) |>
+  dplyr::select(id, time, Cc_endox, scenario) |>
+  dplyr::rename(Cc = Cc_endox)
 
-conc_obj_endx <- PKNCA::PKNCAconc(
-  sim_nca_endx, Cc ~ time | scenario + id,
+conc_obj_endox <- PKNCA::PKNCAconc(
+  sim_nca_endox, Cc ~ time | scenario + id,
   concu = "nmol/L", timeu = "h"
 )
 
-nca_endx <- PKNCA::pk.nca(PKNCA::PKNCAdata(
-  conc_obj_endx, dose_obj, intervals = intervals_ss
+nca_endox <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  conc_obj_endox, dose_obj, intervals = intervals_ss
 ))
 knitr::kable(
-  as.data.frame(nca_endx$result) |>
+  as.data.frame(nca_endox$result) |>
     dplyr::select(scenario, id, PPTESTCD, PPORRES) |>
     tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES),
-  caption = "Steady-state NCA — endoxifen (Cc_endx) by CYP-phenotype scenario"
+  caption = "Steady-state NCA — endoxifen (Cc_endox) by CYP-phenotype scenario"
 )
 ```
 
@@ -342,8 +342,8 @@ tamoxifen in adult breast-cancer patients.
 
 - **Implicit mass-conserving parent-to-metabolite conversion.** The
   source `.mdl` tracks the metabolite compartment in tamoxifen-mass
-  equivalents (i.e., `d/dt(central_endx) = cl_endx_form * c_hep -
-  kel_endx * central_endx` with no molar-mass scaling on the formation
+  equivalents (i.e., `d/dt(central_endox) = cl_endx_form * c_hep -
+  kel_endox * central_endox` with no molar-mass scaling on the formation
   flux), then converts the compartment mass to plasma concentration via
   the metabolite's own MW (`Mendx`). This is dimensionally consistent
   only if `Mtam ≈ Mendx`; here `Mtam = 371.515` and `Mendx = 373.487`
