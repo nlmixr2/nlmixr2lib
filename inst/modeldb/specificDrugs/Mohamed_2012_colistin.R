@@ -86,7 +86,7 @@ Mohamed_2012_colistin <- function() {
     ),
     ALB = list(
       description        = "Serum albumin",
-      units              = "g/dL",
+      units = "g/L",
       type               = "continuous",
       reference_category = NULL,
       notes              = "Screened in SCM; not retained. Baseline albumin 1.9-3.8 g/dL (Table 1).",
