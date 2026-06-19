@@ -53,20 +53,20 @@ Budha_2023_tislelizumab <- function() {
       notes              = "Exponential effect on CL for ADA-positive patients (Budha 2023 Equation 5). Renamed from source column ADA to the canonical ADA_POS per covariate-columns.md.",
       source_name        = "ADA"
     ),
-    TUMTP_CHL = list(
+    TUMTP_HODGKIN_CLASSICAL = list(
       description        = "Tumor-type indicator for classical Hodgkin lymphoma",
       units              = "(binary)",
       type               = "binary",
       reference_category = "0 (all other tumor types: NSCLC, EC, HCC, UC, GC, CRC, NPC, OC, Other)",
-      notes              = "Exponential effect on CL for cHL patients (Budha 2023 Equation 5). Derived from the source categorical column TUMTP as TUMTP_CHL = as.integer(TUMTP == 'cHL').",
+      notes              = "Exponential effect on CL for cHL patients (Budha 2023 Equation 5). Derived from the source categorical column TUMTP as TUMTP_HODGKIN_CLASSICAL = as.integer(TUMTP == 'cHL').",
       source_name        = "TUMTP"
     ),
-    TUMTP_GC = list(
+    TUMTP_GASTRIC = list(
       description        = "Tumor-type indicator for gastric cancer",
       units              = "(binary)",
       type               = "binary",
       reference_category = "0 (all other tumor types)",
-      notes              = "Exponential effect on CL for GC patients (Budha 2023 Equation 5). Derived from the source categorical column TUMTP as TUMTP_GC = as.integer(TUMTP == 'GC').",
+      notes              = "Exponential effect on CL for GC patients (Budha 2023 Equation 5). Derived from the source categorical column TUMTP as TUMTP_GASTRIC = as.integer(TUMTP == 'GC').",
       source_name        = "TUMTP"
     )
   )
@@ -130,8 +130,8 @@ Budha_2023_tislelizumab <- function() {
       (ALB   / 41)^e_alb_cl *
       (TUMSZ / 63)^e_tumsz_cl *
       exp(e_ada_cl       * ADA_POS) *
-      exp(e_tumtp_gc_cl  * TUMTP_GC) *
-      exp(e_tumtp_chl_cl * TUMTP_CHL)
+      exp(e_tumtp_gc_cl  * TUMTP_GASTRIC) *
+      exp(e_tumtp_chl_cl * TUMTP_HODGKIN_CLASSICAL)
 
     vc <- exp(lvc + etalvc) *
       (WT  / 65)^e_wt_vc *

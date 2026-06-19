@@ -13,12 +13,12 @@ Ferron_2013_cabazitaxel <- function() {
       notes              = "Linear scaling on CL with reference 1.84 m^2 (median of pooled cohort, Ferron 2013 Table 3 footnote and Equation 9). Ferron 2013 does not report which BSA formula was used; assume DuBois (commonly applied in oncology).",
       source_name        = "BSA"
     ),
-    TUMTP_BC = list(
+    TUMTP_BREAST = list(
       description        = "Tumor-type indicator for breast cancer (TT1 in the source)",
       units              = "(binary)",
       type               = "binary",
       reference_category = "0 (all other tumor types: prostate, gastrointestinal, other)",
-      notes              = "Multiplicative reduction on CL for breast-cancer patients (Ferron 2013 Equation 9: CL = 48.5 * BSA/1.84 * (1 - 0.543 * TT1)). Source column TT1 is renamed to canonical TUMTP_BC per inst/references/covariate-columns.md. The breast-cancer effect is confounded with study (34 of 37 breast-cancer patients came from a single Phase II study, ARD6191); see vignette Assumptions and deviations.",
+      notes              = "Multiplicative reduction on CL for breast-cancer patients (Ferron 2013 Equation 9: CL = 48.5 * BSA/1.84 * (1 - 0.543 * TT1)). Source column TT1 is renamed to canonical TUMTP_BREAST per inst/references/covariate-columns.md. The breast-cancer effect is confounded with study (34 of 37 breast-cancer patients came from a single Phase II study, ARD6191); see vignette Assumptions and deviations.",
       source_name        = "TT1"
     )
   )
@@ -58,7 +58,7 @@ Ferron_2013_cabazitaxel <- function() {
     lk13 <- log(4.84);   label("Rate constant central -> peripheral2 (K13, 1/h)")           # Ferron 2013 Table 4, theta5
     lk31 <- log(0.0266); label("Rate constant peripheral2 -> central (K31, 1/h)")           # Ferron 2013 Table 4, theta6
 
-    # Covariate effect on CL: CL = TVCL * BSA/1.84 * (1 - 0.543 * TUMTP_BC)
+    # Covariate effect on CL: CL = TVCL * BSA/1.84 * (1 - 0.543 * TUMTP_BREAST)
     # The 95% CI on the breast-cancer fractional reduction was 0.217-0.869
     # (Ferron 2013 Table 4, theta7); the authors note this finding is
     # confounded with study because 34 of 37 breast-cancer patients came
@@ -78,7 +78,7 @@ Ferron_2013_cabazitaxel <- function() {
   })
   model({
     # Individual PK parameters (Ferron 2013 Eq. 9 for CL covariate effect)
-    cl  <- exp(lcl + etalcl) * (BSA / 1.84) * (1 - e_tumtp_bc_cl * TUMTP_BC)
+    cl  <- exp(lcl + etalcl) * (BSA / 1.84) * (1 - e_tumtp_bc_cl * TUMTP_BREAST)
     vc  <- exp(lvc + etalvc)
     k12 <- exp(lk12 + etalk12)
     k21 <- exp(lk21)

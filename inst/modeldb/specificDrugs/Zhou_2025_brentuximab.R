@@ -43,12 +43,12 @@ Zhou_2025_brentuximab <- function() {
       notes              = "Time-fixed baseline. Power effect on ADC CL only (exponent 0.12). Reference 41 mm (NONMEM normalization NLDIAM = LDIAM / 41 from Zhou 2025 supplement control stream). Distinct from the 'sum of tumor area, mm^2' column in Zhou 2025 Table 1 (median 1581-1639 mm^2 for the sum-of-areas convention).",
       source_name        = "LDIAM"
     ),
-    TUMTP_CHL = list(
+    TUMTP_HODGKIN_CLASSICAL = list(
       description        = "Classical Hodgkin lymphoma tumor-type indicator (1 = HL, 0 = non-HL)",
       units              = "(binary)",
       type               = "binary",
       reference_category = 1,
-      notes              = "Time-fixed. Used via the derived NONHL = 1 - TUMTP_CHL indicator in the model: multiplicative effect 0.509 on ADC Q2 for non-HL patients (~50% reduction relative to HL); multiplicative effect 0.296 on MMAE central volume VM for non-HL; multiplicative effect 0.884 on the ADC->MMAE conversion-decay rate ALFM for non-HL. Reference category here is HL (TUMTP_CHL = 1) because that is the more common group in this pediatric cohort and the paper anchors typical-value parameters to HL patients. Non-HL in Zhou 2025 = systemic anaplastic large-cell lymphoma (sALCL).",
+      notes              = "Time-fixed. Used via the derived NONHL = 1 - TUMTP_HODGKIN_CLASSICAL indicator in the model: multiplicative effect 0.509 on ADC Q2 for non-HL patients (~50% reduction relative to HL); multiplicative effect 0.296 on MMAE central volume VM for non-HL; multiplicative effect 0.884 on the ADC->MMAE conversion-decay rate ALFM for non-HL. Reference category here is HL (TUMTP_HODGKIN_CLASSICAL = 1) because that is the more common group in this pediatric cohort and the paper anchors typical-value parameters to HL patients. Non-HL in Zhou 2025 = systemic anaplastic large-cell lymphoma (sALCL).",
       source_name        = "DIS"
     ),
     ADA_POS = list(
@@ -85,7 +85,7 @@ Zhou_2025_brentuximab <- function() {
     regions        = "United States (children's hospital network).",
     study_phase    = "Two open-label phase I/II studies (NCT01492088 single-agent dose escalation; NCT02979522 BSA-based BV + AVD).",
     n_observations = "9479 ADC + MMAE concentration records (2608 from study 1, 6871 from study 2).",
-    reference_subject = "BSA 1.8 m^2, ALB 40 g/L, CREAT 45.689 umol/L, LDIAM 41 mm, TUMTP_CHL 1 (HL), ADA_POS 0, CONMED_AVD 0.",
+    reference_subject = "BSA 1.8 m^2, ALB 40 g/L, CREAT 45.689 umol/L, LDIAM 41 mm, TUMTP_HODGKIN_CLASSICAL 1 (HL), ADA_POS 0, CONMED_AVD 0.",
     notes          = "Baseline characteristics from Zhou 2025 Table 1 (per-study); pooled n = 95 patients. Albumin range 23-51 g/L (median 39-40); creatinine clearance Cockcroft 85.5-301.4 mL/min (median 132.3-165.3); sum-of-tumor-area median 1581-1639 mm^2. The NONMEM reference values 1.8 m^2 (BSA) and 40 g/L (ALB) are adult/normal-range anchors rather than pediatric medians."
   )
 
@@ -104,7 +104,7 @@ Zhou_2025_brentuximab <- function() {
     e_bsa_cl    <- 1.38;   label("Power exponent of (BSA/1.8) on ADC CL (unitless)")               # Zhou 2025 Table S1: 1.38 (23.2% RSE)
     e_alb_cl    <- -0.776; label("Power exponent of (ALB/40) on ADC CL (unitless)")                # Zhou 2025 Table S1: -0.776 (12.3% RSE)
     e_tumsz_cl  <- 0.12;   label("Power exponent of (TUMSZ/41) on ADC CL (unitless)")              # Zhou 2025 Table S1: 0.12 (17.3% RSE)
-    e_nonhl_q2  <- 0.509;  label("Power-form multiplier of non-HL on ADC Q2: q2 *= e_nonhl_q2^(1 - TUMTP_CHL)") # Zhou 2025 Table S1: 0.509 (32.2% RSE)
+    e_nonhl_q2  <- 0.509;  label("Power-form multiplier of non-HL on ADC Q2: q2 *= e_nonhl_q2^(1 - TUMTP_HODGKIN_CLASSICAL)") # Zhou 2025 Table S1: 0.509 (32.2% RSE)
     e_bsa_vp2   <- 1.96;   label("Power exponent of (BSA/1.8) on ADC V3 = vp2 (unitless)")         # Zhou 2025 Table S1: 1.96 (20.8% RSE)
     e_ada_cl    <- 2.6;    label("Power-form multiplier of ADA positivity on ADC CL: cl *= e_ada_cl^ADA_POS") # Zhou 2025 Table S1: 2.6 (6.4% RSE)
     e_avd_cl    <- 2.12;   label("Power-form multiplier of A+AVD coadministration on ADC CL: cl *= e_avd_cl^CONMED_AVD") # Zhou 2025 Table S1: 2.12 (18.7% RSE) — supplement table label of 'theta13' for this row is a typo (control stream confirms theta14)
@@ -128,9 +128,9 @@ Zhou_2025_brentuximab <- function() {
     e_alb_cl_mmae      <- -0.0805; label("Power exponent of (ALB/40) on MMAE CL (unitless)")                # Zhou 2025 Table S2: -0.0805 (27.5% RSE)
     e_bsa_cl_mmae      <- 0.772;   label("Power exponent of (BSA/1.8) on MMAE CL (unitless)")               # Zhou 2025 Table S2: 0.772 (8.4% RSE)
     e_ada_cl_mmae      <- 0.696;   label("Power-form multiplier of ADA positivity on MMAE CL: clm *= e_ada_cl_mmae^ADA_POS") # Zhou 2025 Table S2: 0.696 (5.3% RSE)
-    e_nonhl_vc_mmae    <- 0.296;   label("Power-form multiplier of non-HL on MMAE VM: vcm *= e_nonhl_vc_mmae^(1 - TUMTP_CHL)") # Zhou 2025 Table S2: 0.296 (15.1% RSE)
+    e_nonhl_vc_mmae    <- 0.296;   label("Power-form multiplier of non-HL on MMAE VM: vcm *= e_nonhl_vc_mmae^(1 - TUMTP_HODGKIN_CLASSICAL)") # Zhou 2025 Table S2: 0.296 (15.1% RSE)
     e_bsa_vc_mmae      <- 0.546;   label("Power exponent of (BSA/1.8) on MMAE VM (unitless)")               # Zhou 2025 Table S2: 0.546 (9.7% RSE)
-    e_nonhl_alfm_mmae  <- 0.884;   label("Power-form multiplier of non-HL on ALFM: alfm *= e_nonhl_alfm_mmae^(1 - TUMTP_CHL)") # Zhou 2025 Table S2: 0.884 (17.7% RSE)
+    e_nonhl_alfm_mmae  <- 0.884;   label("Power-form multiplier of non-HL on ALFM: alfm *= e_nonhl_alfm_mmae^(1 - TUMTP_HODGKIN_CLASSICAL)") # Zhou 2025 Table S2: 0.884 (17.7% RSE)
     e_alb_kd_mmae      <- -4.11;   label("Power exponent of (ALB/40) on MMAE Kd (unitless)")                # Zhou 2025 Table S2: -4.11 (3.3% RSE)
 
     # IIV (log-normal). %CV from Zhou 2025 Tables S1 and S2; converted via
@@ -158,13 +158,13 @@ Zhou_2025_brentuximab <- function() {
   model({
     # 1. Derived covariate terms. Reference values: BSA 1.8 m^2, ALB 40 g/L,
     # CREAT 45.689 umol/L, TUMSZ 41 mm (from Zhou 2025 supplement NONMEM
-    # control stream). NONHL = 1 - TUMTP_CHL puts HL patients in the
+    # control stream). NONHL = 1 - TUMTP_HODGKIN_CLASSICAL puts HL patients in the
     # reference (effect = 1) and non-HL (sALCL) patients on the multiplier.
     nbsa   <- BSA / 1.8
     nalb   <- ALB / 40
     ncreat <- CREAT / 45.689
     ntumsz <- TUMSZ / 41
-    nonhl  <- 1 - TUMTP_CHL
+    nonhl  <- 1 - TUMTP_HODGKIN_CLASSICAL
 
     # 2. Individual ADC parameters
     cl_adc <- exp(lcl + etalcl) *

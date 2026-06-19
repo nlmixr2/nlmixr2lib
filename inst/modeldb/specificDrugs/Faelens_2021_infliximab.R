@@ -5,7 +5,7 @@ Faelens_2021_infliximab <- function() {
   units <- list(time = "day", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
-    MAYO_E = list(
+    SCORE_MAYO_E = list(
       description        = "Mayo endoscopic subscore at baseline (1, 2, or 3)",
       units              = "(score, 1-3)",
       type               = "categorical",
@@ -108,7 +108,7 @@ Faelens_2021_infliximab <- function() {
     # Categorical effect of baseline Mayo endoscopic subscore on CL.
     # Source uses a 4-way categorical lookup on KE for MPRE in {1, 2, 3, missing};
     # this implementation supports MPRE in {1, 2, 3}, with Mayo 2 as reference.
-    mayo_cl <- exp(e_mayo1_cl * (MAYO_E == 1) + e_mayo3_cl * (MAYO_E == 3))
+    mayo_cl <- exp(e_mayo1_cl * (SCORE_MAYO_E == 1) + e_mayo3_cl * (SCORE_MAYO_E == 3))
 
     # Covariate effects on Vc (and propagated to CL since CL = KE * V).
     cov_vc <- (e_conmed_steroid_vc^CONMED_STEROID) * ((FFM / 52)^e_ffm_vc) * (e_disext_ep_vc^DISEXT_EP)

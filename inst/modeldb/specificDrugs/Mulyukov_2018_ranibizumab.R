@@ -1,8 +1,8 @@
 Mulyukov_2018_ranibizumab <- function() {
-  description <- "Indirect-response PK/PD model of intravitreal ranibizumab on best-corrected visual acuity (BCVA, ETDRS letters) in anti-VEGF-naive adults with neovascular age-related macular degeneration (Mulyukov 2018). BCVA is driven by an indirect-response ODE in which drug concentration stimulates the BCVA production rate (kin) through a Michaelis-Menten-like term with a time-dependent maximum effect emax(t) = emax_ss + demax_0 * exp(-kemax * t). The PK is a fixed first-order vitreous-elimination placeholder (kel = 0.077/day, vitreous volume = 4 mL, no IIV) borrowed from a previous population PK analysis (reference 20 of the paper) because vitreous PK data were not collected in the development studies."
+  description <- "Indirect-response PK/PD model of intravitreal ranibizumab on best-corrected visual acuity (SCORE_BCVA, ETDRS letters) in anti-VEGF-naive adults with neovascular age-related macular degeneration (Mulyukov 2018). SCORE_BCVA is driven by an indirect-response ODE in which drug concentration stimulates the SCORE_BCVA production rate (kin) through a Michaelis-Menten-like term with a time-dependent maximum effect emax(t) = emax_ss + demax_0 * exp(-kemax * t). The PK is a fixed first-order vitreous-elimination placeholder (kel = 0.077/day, vitreous volume = 4 mL, no IIV) borrowed from a previous population PK analysis (reference 20 of the paper) because vitreous PK data were not collected in the development studies."
   reference <- "Mulyukov Z, Weber S, Pigeolet E, Clemens A, Lehr T, Racine A. Neovascular Age-Related Macular Degeneration: A Visual Acuity Model of Natural Disease Progression and Ranibizumab Treatment Effect. CPT Pharmacometrics Syst Pharmacol. 2018;7(10):660-669. doi:10.1002/psp4.12322. PMID: 30043524."
   vignette <- "Mulyukov_2018_ranibizumab"
-  units <- list(time = "day", dosing = "mg", concentration = "mg/L (equivalent to ug/mL)", response = "BCVA (ETDRS letters, 0-100)")
+  units <- list(time = "day", dosing = "mg", concentration = "mg/L (equivalent to ug/mL)", response = "SCORE_BCVA (ETDRS letters, 0-100)")
 
   covariateData <- list(
     AGE = list(
@@ -10,15 +10,15 @@ Mulyukov_2018_ranibizumab <- function() {
       units              = "years",
       type               = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject. Power-form effect on steady-state drug effect emax_ss normalized as (AGE/77)^beta_emax_ss,AGE (Mulyukov 2018 Eq. 3, Table 2). Reference 77 years is the study-population mean baseline age. Paper narrative: a 4 ETDRS letter reduction in 12-month BCVA improvement is expected for an 85-year-old vs a 65-year-old patient.",
+      notes              = "Time-fixed per subject. Power-form effect on steady-state drug effect emax_ss normalized as (AGE/77)^beta_emax_ss,AGE (Mulyukov 2018 Eq. 3, Table 2). Reference 77 years is the study-population mean baseline age. Paper narrative: a 4 ETDRS letter reduction in 12-month SCORE_BCVA improvement is expected for an 85-year-old vs a 65-year-old patient.",
       source_name        = "AGE"
     ),
-    BCVA = list(
+    SCORE_BCVA = list(
       description        = "Observed baseline best-corrected visual acuity",
       units              = "ETDRS letters (0-100)",
       type               = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject. Used as the per-subject center for the baseline BCVA initial condition g0_i = BVA_i + eta_{1,i} (Mulyukov 2018 Methods, paragraph above Eq. 3: 'We modeled baseline VA as normally distributed around observed value BVA'). Canonical register alias: source column 'BVA' in Mulyukov 2018. Study-population baseline mean (SD) = 54 (13) letters across the four development datasets.",
+      notes              = "Time-fixed per subject. Used as the per-subject center for the baseline SCORE_BCVA initial condition g0_i = BVA_i + eta_{1,i} (Mulyukov 2018 Methods, paragraph above Eq. 3: 'We modeled baseline VA as normally distributed around observed value BVA'). Canonical register alias: source column 'BVA' in Mulyukov 2018. Study-population baseline mean (SD) = 54 (13) letters across the four development datasets.",
       source_name        = "BVA"
     )
   )
@@ -55,14 +55,14 @@ Mulyukov_2018_ranibizumab <- function() {
     lvvit <- fixed(log(0.004));   label("Vitreous volume of distribution (L)")                          # Mulyukov 2018 Methods (Model development): vitreous volume 4 mL = 0.004 L, fixed
 
     # ------------------------------------------------------------------------
-    # BCVA indirect-response PD model (Mulyukov 2018 Eq. 1, Table 2).
+    # SCORE_BCVA indirect-response PD model (Mulyukov 2018 Eq. 1, Table 2).
     # Natural-progression steady state g_ss = kin/kout (paper Methods, paragraph
-    # after Eq. 1). With no treatment, the BCVA state decays from the observed
+    # after Eq. 1). With no treatment, the SCORE_BCVA state decays from the observed
     # baseline g0 toward g_ss at rate kout.
     # ------------------------------------------------------------------------
-    lgss       <- log(11);          label("Equilibrium BCVA under natural disease progression g_ss (ETDRS letters)")  # Mulyukov 2018 Table 2: g_ss 11 letters (RSE 5%)
-    lkout      <- log(0.19 / 365.25); label("BCVA deterioration rate constant kout (1/day)")                          # Mulyukov 2018 Table 2: k_out 0.19/year (t1/2 = 3.6 years); converted to 1/day by /365.25
-    lemaxss    <- log(6.1);         label("Steady-state maximum drug effect emax_ss on BCVA kin (unitless)")          # Mulyukov 2018 Table 2: emax_ss 6.1 (RSE 7%)
+    lgss       <- log(11);          label("Equilibrium SCORE_BCVA under natural disease progression g_ss (ETDRS letters)")  # Mulyukov 2018 Table 2: g_ss 11 letters (RSE 5%)
+    lkout      <- log(0.19 / 365.25); label("SCORE_BCVA deterioration rate constant kout (1/day)")                          # Mulyukov 2018 Table 2: k_out 0.19/year (t1/2 = 3.6 years); converted to 1/day by /365.25
+    lemaxss    <- log(6.1);         label("Steady-state maximum drug effect emax_ss on SCORE_BCVA kin (unitless)")          # Mulyukov 2018 Table 2: emax_ss 6.1 (RSE 7%)
     ldemax0    <- log(41);          label("Additional drug effect at treatment onset demax_0 (unitless)")             # Mulyukov 2018 Table 2: demax_0 41 (RSE 12%)
     lkemax     <- fixed(log(0.046));label("Rate of emax decay kemax (1/day)")                                         # Mulyukov 2018 Table 2: k_emax 0.046/day (t1/2 = 15 days), fixed
     lec50      <- log(2.1);         label("Drug concentration at half-maximum effect ec50 (mg/L = ug/mL)")            # Mulyukov 2018 Table 2: ec50 2.1 ug/mL (= mg/L) (RSE 35%)
@@ -75,19 +75,19 @@ Mulyukov_2018_ranibizumab <- function() {
     e_age_emaxss <- -1.4;           label("Power exponent of AGE/77 on emax_ss (unitless)")                           # Mulyukov 2018 Table 2: beta_emax_ss,AGE -1.4 (RSE 18%)
 
     # ------------------------------------------------------------------------
-    # Typical-value placeholder for the additive random effect on baseline BCVA.
+    # Typical-value placeholder for the additive random effect on baseline SCORE_BCVA.
     # Paper's parameterization g_{i,0} = BVA_i + eta_{1,i} has no typical-value
     # theta for the baseline (BVA is subject-level data, not a population
     # parameter). g0res is a fixed(0) theta kept only to pair naming-wise with
     # etag0res per the nlmixr2lib convention (eta<x> must pair with theta <x>).
     # ------------------------------------------------------------------------
-    g0res <- fixed(0); label("Typical additive residual on baseline BCVA around the observed value (ETDRS letters); paper Eq. g_{i,0} = BVA_i + eta_{1,i}, so typical value is 0")  # Mulyukov 2018 Methods (paragraph above Eq. 3): baseline modelled as normally distributed around observed value with additive random effect
+    g0res <- fixed(0); label("Typical additive residual on baseline SCORE_BCVA around the observed value (ETDRS letters); paper Eq. g_{i,0} = BVA_i + eta_{1,i}, so typical value is 0")  # Mulyukov 2018 Methods (paragraph above Eq. 3): baseline modelled as normally distributed around observed value with additive random effect
 
     # ------------------------------------------------------------------------
     # Inter-individual variability: full 4x4 covariance (Mulyukov 2018 Table 2
     # diagonal + Table S1 off-diagonal correlations).
     #
-    # Baseline BCVA uses an ADDITIVE per-subject random effect in letters
+    # Baseline SCORE_BCVA uses an ADDITIVE per-subject random effect in letters
     # (paper Eq. g_{i,0} = BVA_i + eta_{1,i}; Table 2 reports an SD, not a CV).
     # The other three PD parameters (k_out, Emax_ss, dEmax_0) use log-normal
     # IIV with large CV%; convert each to log-scale variance via
@@ -141,7 +141,7 @@ Mulyukov_2018_ranibizumab <- function() {
     # ranibizumab simulation); the sham-arm value is documented in the
     # vignette's Assumptions and deviations.
     # ------------------------------------------------------------------------
-    addSd_bcva  <- 5; label("Additive residual error on BCVA for treated subjects (ETDRS letters)")  # Mulyukov 2018 Table 2: sigma_treatment 5 letters (RSE 0.5%)
+    addSd_bcva  <- 5; label("Additive residual error on SCORE_BCVA for treated subjects (ETDRS letters)")  # Mulyukov 2018 Table 2: sigma_treatment 5 letters (RSE 0.5%)
   })
 
   model({
@@ -163,9 +163,9 @@ Mulyukov_2018_ranibizumab <- function() {
     kemax  <- exp(lkemax)
     ec50   <- exp(lec50)
 
-    # Baseline BCVA: additive IIV around the observed per-subject value.
+    # Baseline SCORE_BCVA: additive IIV around the observed per-subject value.
     # Paper: g_{i,0} = BVA_i + eta_{1,i}; typical-value theta g0res fixed(0).
-    g0  <- BCVA + g0res + etag0res
+    g0  <- SCORE_BCVA + g0res + etag0res
 
     # Natural-progression mass balance: kin chosen so untreated steady state
     # equals gss (paper: g_ss = kin / kout).
@@ -187,7 +187,7 @@ Mulyukov_2018_ranibizumab <- function() {
     d/dt(central) <- -kel * central
 
     # ------------------------------------------------------------------
-    # PD ODE: indirect response on BCVA with stimulation of kin.
+    # PD ODE: indirect response on SCORE_BCVA with stimulation of kin.
     # Paper (Results - Model development): "Stimulation of kin rather than
     # suppression of kout was selected to describe the drug effect as it led
     # to better stability of model fit with no other significant differences."

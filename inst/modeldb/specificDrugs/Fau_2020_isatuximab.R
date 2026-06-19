@@ -29,7 +29,7 @@ Fau_2020_isatuximab <- function() {
       notes              = "Exponential effect on both CLinf (-0.751) and KCL (-0.931). Patients secreting non-IgG monoclonal protein have lower linear clearance and a faster transition to steady-state CL than IgG-secretors; the mechanism proposed by Fau 2020 is that endogenous IgG M-protein in IgG-MM patients competes with the therapeutic mAb for FcRn-mediated salvage, increasing isatuximab clearance. Source column 'Ig_type' takes the value 1 for non-IgG MM and 0 for IgG MM.",
       source_name        = "Ig_type"
     ),
-    FORM_P2F2 = list(
+    FORM_ISA_P2F2 = list(
       description        = "Drug-material indicator: 1 = P2F2 (phase III / commercial-bound material), 0 = P1F1 (early-phase material)",
       units              = "(binary)",
       type               = "binary",
@@ -161,7 +161,7 @@ Fau_2020_isatuximab <- function() {
 
     vc <- exp(lvc + etalvc) *
           (WT / 75.6)^e_wt_vc *
-          exp(e_p2f2_vc  * FORM_P2F2) *
+          exp(e_p2f2_vc  * FORM_ISA_P2F2) *
           exp(e_asian_vc * RACE_ASIAN) *
           exp(e_sexf_vc  * SEXF)
 

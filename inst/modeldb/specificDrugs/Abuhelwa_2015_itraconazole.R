@@ -30,7 +30,7 @@ Abuhelwa_2015_itraconazole <- function() {
       notes              = "Per-dose-record indicator from the Abuhelwa 2015 crossover trials. Multiplicative effects on KTR (FEDKTR = -0.583, i.e. KTR_fed = 0.417 x KTR_fasted) and on relative bioavailability (FEDF = -0.269, i.e. F_fed = 0.731 x F_fasted), independent of formulation; see Abuhelwa 2015 Table 3 rows FEDKTR and FEDF.",
       source_name        = "FED"
     ),
-    FORM_SUBA = list(
+    FORM_ITR_SUBA = list(
       description        = "SUBA-itraconazole vs Sporanox capsule formulation indicator. 1 = SUBA-itraconazole (solid dispersion in a pH-dependent polymeric matrix); 0 = Sporanox capsule (innovator product, the structural reference with relative bioavailability fixed to 1).",
       units              = "(binary)",
       type               = "binary",
@@ -70,18 +70,18 @@ Abuhelwa_2015_itraconazole <- function() {
     # ========================================================================
     # Formulation effect on bioavailability (Sporanox is the structural
     # reference with F = 1; SUBA-itraconazole has 1 + FORMF = 1.729 relative
-    # bioavailability). The covariate FORM_SUBA = 1 selects the SUBA arm; for
-    # Sporanox FORM_SUBA = 0 and the F factor degenerates to 1.
+    # bioavailability). The covariate FORM_ITR_SUBA = 1 selects the SUBA arm; for
+    # Sporanox FORM_ITR_SUBA = 0 and the F factor degenerates to 1.
     # ========================================================================
-    e_suba_f <- 0.729;  label("Multiplicative effect of SUBA-itraconazole vs Sporanox on relative bioavailability (unitless; F = 1 + e_suba_f x FORM_SUBA)")  # Abuhelwa 2015 Table 3 row 'FORMF = 0.729'; reported as 'SUBA-itraconazole had a relative bioavailability of 173% compared to that of Sporanox' (Results paragraph after Table 3)
+    e_suba_f <- 0.729;  label("Multiplicative effect of SUBA-itraconazole vs Sporanox on relative bioavailability (unitless; F = 1 + e_suba_f x FORM_ITR_SUBA)")  # Abuhelwa 2015 Table 3 row 'FORMF = 0.729'; reported as 'SUBA-itraconazole had a relative bioavailability of 173% compared to that of Sporanox' (Results paragraph after Table 3)
 
     # ========================================================================
     # ETASCALE: SUBA-itraconazole has 1 + ETASCALE = 0.787 less F variability
     # than Sporanox (i.e. 21.3% less variable per the published Abstract). The
     # scaling enters the random effect on F as exp(etafvar * etascale_eff)
-    # with etascale_eff = 1 + e_suba_etafvar x FORM_SUBA.
+    # with etascale_eff = 1 + e_suba_etafvar x FORM_ITR_SUBA.
     # ========================================================================
-    e_suba_etafvar <- -0.213;  label("Multiplicative scaling of the FVAR random effect for SUBA vs Sporanox (unitless; etascale = 1 + e_suba_etafvar x FORM_SUBA)")  # Abuhelwa 2015 Table 3 row 'ETASCALE = -0.213'; corresponds to 21.3% reduced F variability for SUBA per Abstract ('the bioavailability was 21% less variable between subjects')
+    e_suba_etafvar <- -0.213;  label("Multiplicative scaling of the FVAR random effect for SUBA vs Sporanox (unitless; etascale = 1 + e_suba_etafvar x FORM_ITR_SUBA)")  # Abuhelwa 2015 Table 3 row 'ETASCALE = -0.213'; corresponds to 21.3% reduced F variability for SUBA per Abstract ('the bioavailability was 21% less variable between subjects')
 
     # ========================================================================
     # Fed-state effects (FED = 1 in fed periods, 0 in fasted periods). Both
@@ -151,7 +151,7 @@ Abuhelwa_2015_itraconazole <- function() {
     # ----- 1. Derived covariate-effect terms ----------------------------------
     # Formulation effect on the typical-value relative bioavailability:
     #     F1_TV = 1 for Sporanox, = 1 + e_suba_f = 1.729 for SUBA-itraconazole.
-    drugf_eff <- 1 + e_suba_f * FORM_SUBA
+    drugf_eff <- 1 + e_suba_f * FORM_ITR_SUBA
 
     # Fed-state effects on F and on KTR:
     #     fedf_eff   = 1 for fasted, = 1 + e_fed_f   = 0.731 for fed.
@@ -160,7 +160,7 @@ Abuhelwa_2015_itraconazole <- function() {
     fedktr_eff <- 1 + e_fed_ktr * FED
 
     # FVAR random-effect scaling: ETASCALE = 1 for Sporanox, = 1 + e_suba_etafvar = 0.787 for SUBA.
-    etascale_eff <- 1 + e_suba_etafvar * FORM_SUBA
+    etascale_eff <- 1 + e_suba_etafvar * FORM_ITR_SUBA
 
     # ----- 2. Individual PK parameters ---------------------------------------
     # Parent disposition.

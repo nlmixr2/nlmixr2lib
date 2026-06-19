@@ -37,20 +37,20 @@ Quartino_2019_trastuzumab <- function() {
       notes              = "Time-fixed baseline indicator. Exponential effect on linear CL (coefficient 0.152, i.e. a ~16.4% CL increase for LMET-positive subjects). Reference LMET = 0 per Quartino 2019 CL covariate equation. Source column 'LMET' maps directly to the canonical LMET covariate.",
       source_name        = "LMET"
     ),
-    TUMTP_GC = list(
+    TUMTP_GASTRIC = list(
       description        = "Tumor-type indicator for advanced gastric cancer",
       units              = "(binary)",
       type               = "binary",
       reference_category = "0 (MBC, EBC, HV, or 'Others' group)",
-      notes              = "Quartino 2019 decomposes primary tumor type (TTYPE) into three linear-CL groups (MBC/EBC/HV reference, AGC, Others) and two Vc groups (non-AGC reference, AGC). The AGC indicator enters as a per-group typical-value switch on both linear CL and Vc (different typical values selected by indicator, not a multiplicative exponential / power effect). Derived from the source categorical column TTYPE as TUMTP_GC = as.integer(TTYPE == 'AGC').",
+      notes              = "Quartino 2019 decomposes primary tumor type (TTYPE) into three linear-CL groups (MBC/EBC/HV reference, AGC, Others) and two Vc groups (non-AGC reference, AGC). The AGC indicator enters as a per-group typical-value switch on both linear CL and Vc (different typical values selected by indicator, not a multiplicative exponential / power effect). Derived from the source categorical column TTYPE as TUMTP_GASTRIC = as.integer(TTYPE == 'AGC').",
       source_name        = "TTYPE"
     ),
-    TUMTP_OTH = list(
+    TUMTP_OTHER = list(
       description        = "Tumor-type indicator for 'Others' group (NSCLC and other non-breast, non-gastric solid tumors pooled in Quartino 2019)",
       units              = "(binary)",
       type               = "binary",
       reference_category = "0 (MBC, EBC, HV, or AGC)",
-      notes              = "Quartino 2019 pools 107/1582 patients with NSCLC, prostate, ovarian, and other miscellaneous solid tumors into a single 'Others' category for linear CL (distinct typical value theta8 = 0.148 L/day). No Vc effect. Derived from the source categorical column TTYPE as TUMTP_OTH = as.integer(TTYPE == 'Others'). A subject has at most one of TUMTP_GC / TUMTP_OTH set to 1; both zero = MBC/EBC/HV reference.",
+      notes              = "Quartino 2019 pools 107/1582 patients with NSCLC, prostate, ovarian, and other miscellaneous solid tumors into a single 'Others' category for linear CL (distinct typical value theta8 = 0.148 L/day). No Vc effect. Derived from the source categorical column TTYPE as TUMTP_OTHER = as.integer(TTYPE == 'Others'). A subject has at most one of TUMTP_GASTRIC / TUMTP_OTHER set to 1; both zero = MBC/EBC/HV reference.",
       source_name        = "TTYPE"
     )
   )
@@ -130,16 +130,16 @@ Quartino_2019_trastuzumab <- function() {
 
   model({
     # Per-subject typical linear CL by tumor-type group (Quartino 2019 CL
-    # covariate equation in Results). TUMTP_GC = 1 picks the AGC typical CL;
-    # TUMTP_OTH = 1 picks the Others typical CL; both zero = MBC/EBC/HV
+    # covariate equation in Results). TUMTP_GASTRIC = 1 picks the AGC typical CL;
+    # TUMTP_OTHER = 1 picks the Others typical CL; both zero = MBC/EBC/HV
     # reference. A subject has at most one indicator set to 1.
     lcl_typ <- lcl +
-      (lcl_agc - lcl) * TUMTP_GC +
-      (lcl_oth - lcl) * TUMTP_OTH
+      (lcl_agc - lcl) * TUMTP_GASTRIC +
+      (lcl_oth - lcl) * TUMTP_OTHER
 
     # Per-subject typical central volume (Quartino 2019 Vc covariate equation).
     # Only AGC receives a distinct typical Vc; all non-AGC groups share theta2.
-    lvc_typ <- lvc + (lvc_agc - lvc) * TUMTP_GC
+    lvc_typ <- lvc + (lvc_agc - lvc) * TUMTP_GASTRIC
 
     # Individual linear CL with weight, AST, and albumin power effects plus a
     # liver-metastases exponential effect (Quartino 2019 CL covariate equation).
