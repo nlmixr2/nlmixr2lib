@@ -7,7 +7,7 @@
   covariateData <- list(
     ALB = list(
       description        = "Serum albumin (time-varying)",
-      units              = "g/dL",
+      units = "g/L",
       type               = "continuous",
       reference_category = NULL,
       notes              = "Power effect on CL/F using mean-normalization (ALB/3.77)^e_alb_cl per Marquez-Megias 2023 Equation (3) and supplementary Figure S1. Reference 3.77 g/dL is the mean albumin in the studied population (paper text following Equation (3); Table 1 reports the median 3.86 g/dL). Time-varying per Methods (missing values imputed with the patient's own mean).",
@@ -74,16 +74,21 @@
   })
 
   model({
+    # SI -> US-convention unit conversion (canonical ALB is in SI g/L per the
+    # 2026-06-19 register standardization audit; the original calibration
+    # used the g/dL reference value, so convert inline here).
+    alb_gdL <- ALB * 0.1  # SI g/L -> US-convention g/dL (factor 0.1)
+
     # Individual PK parameters for the reference patient (mean albumin
     # 3.77 g/dL, AAA-negative). Covariate forms per Equation (3) of
     # Marquez-Megias 2023 / supplementary Figure S1 Monolix code:
-    #   CL/F = CL/F_pop * (1 + AAA * e_ada_cl) * (ALB / 3.77)^e_alb_cl
+    #   CL/F = CL/F_pop * (1 + AAA * e_ada_cl) * (alb_gdL / 3.77)^e_alb_cl
     #   V/F  = V/F_pop
     #   ka   = ka_pop
     ka <- exp(lka)
     cl <- exp(lcl + etalcl) *
       (1 + ADA_POS * e_ada_cl) *
-      (ALB / 3.77)^e_alb_cl
+      (alb_gdL / 3.77)^e_alb_cl
     vc <- exp(lvc + etalvc)
 
     kel <- cl / vc
