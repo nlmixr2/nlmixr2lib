@@ -2139,6 +2139,12 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Source aliases:** none.
 - **Example models:** `Birgersson_2019_artesunate.R` (DDMODEL00000297).
 
+### desbutlum (**canonical desbutyl-lumefantrine suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Desbutyl-lumefantrine, the principal oxidative metabolite of lumefantrine formed by CYP3A4-mediated N-debutylation. Desbutyl-lumefantrine is approximately 5- to 9-fold more potent than the parent lumefantrine in vitro against Plasmodium falciparum and contributes to the antimalarial pharmacodynamics of the artemether-lumefantrine combination. Used as the metabolite suffix in parent + metabolite simultaneous popPK models (compartments `central_desbutlum`, parameters `lcl_desbutlum` / `lvc_desbutlum`, residual `propSd_desbutlum`, output `Cc_desbutlum`).
+- **Source aliases:** none.
+- **Example models:** `Hoglund_2015_lumefantrine.R` (doi:10.1111/bcp.12529; 1-compartment desbutyl-lumefantrine disposition with full LF-to-desbutyl-lumefantrine conversion; the joint LF/desbutyl-lumefantrine model reports a LOP/r DDI effect of +392 % on apparent desbutyl-lumefantrine clearance).
+
 ### ohi (**canonical hydroxy-itraconazole suffix**)
 - **Type:** metabolite-suffix
 - **Role:** Hydroxy-itraconazole (OH-ITZ), major active metabolite of itraconazole produced by CYP3A4 hydroxylation.
