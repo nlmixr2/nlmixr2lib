@@ -468,6 +468,8 @@ navbar:
         href: articles/Keizer_2011_E7820.html
       - text: "EGF IFN chimera (DoldanMartelli 2013)"
         href: articles/DoldanMartelli_2013_EGF_IFN_chimera.html
+      - text: "Edoxaban (Niebecker 2015)"
+        href: articles/Niebecker_2015_edoxaban.html
       - text: "Efalizumab (Stein 2018)"
         href: articles/Stein_2018_mAb_nonlinear_PK.html
       - text: "Efavirenz (Dhoro 2015)"
@@ -2323,6 +2325,7 @@ articles:
   - articles/Ngo_2020_HL2351
   - articles/Ni_2013_ciclosporin
   - articles/Nichols_2016_piperacillin_tazobactam
+  - articles/Niebecker_2015_edoxaban
   - articles/Nielsen_2011_antibacterial_efficacy
   - articles/Nikanjam_2019_siltuximab
   - articles/Novakovic_2017_cladribine
