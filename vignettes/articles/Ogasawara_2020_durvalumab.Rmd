@@ -60,12 +60,12 @@ pop <- data.frame(
   SPDL1  = rlnorm(n_subj, log(173.8), 0.8),  # Median 173.8 pg/mL (Table 2)
   LDH    = rlnorm(n_subj, log(216), 0.4),    # Median 216 U/L (Table 2)
   SEXF   = rbinom(n_subj, 1, 0.352),          # 35.2% female (Table 2)
-  MDSAML = rbinom(n_subj, 1, 0.37),           # 37% MDS/AML (Table 2)
-  MM     = 0
+  DIS_MDS_AML = rbinom(n_subj, 1, 0.37),           # 37% MDS/AML (Table 2)
+  DIS_MM = 0
 )
 pop$ALB <- pmax(20, pmin(pop$ALB, 55))
-# MM is complement of MDSAML (simplified: NHL excluded)
-pop$MM <- ifelse(pop$MDSAML == 0, rbinom(n_subj, 1, 0.73), 0)
+# MM is complement of DIS_MDS_AML (simplified: NHL excluded)
+pop$DIS_MM <- ifelse(pop$DIS_MDS_AML == 0, rbinom(n_subj, 1, 0.73), 0)
 ```
 
 ## Dosing dataset
@@ -132,10 +132,10 @@ ggplot(sim_summary, aes(x = time / (24 * 7))) +
 ## PK by disease type
 
 ```{r disease-stratified, fig.width = 7, fig.height = 5}
-# The rxSolve output carries covariates through, so MDSAML is already in sim
+# The rxSolve output carries covariates through, so DIS_MDS_AML is already in sim
 sim_df_disease <- as.data.frame(sim)
 sim_df_disease <- sim_df_disease[sim_df_disease$time > 0, ]
-sim_df_disease$Disease <- ifelse(sim_df_disease$MDSAML == 1, "MDS/AML", "Other")
+sim_df_disease$Disease <- ifelse(sim_df_disease$DIS_MDS_AML == 1, "MDS/AML", "Other")
 
 sim_disease_summary <- sim_df_disease %>%
   group_by(time, Disease) %>%
@@ -167,7 +167,7 @@ if (all(c("sim.id", "id") %in% names(sim_df))) {
 } else {
   sim_df$subject <- sim_df$sim.id
 }
-sim_df$Disease <- ifelse(sim_df$MDSAML == 1, "MDS/AML", "Other")
+sim_df$Disease <- ifelse(sim_df$DIS_MDS_AML == 1, "MDS/AML", "Other")
 nca_data <- data.frame(
   subject  = sim_df$subject,
   Disease  = sim_df$Disease,

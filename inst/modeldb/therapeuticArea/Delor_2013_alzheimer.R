@@ -1,5 +1,5 @@
 Delor_2013_alzheimer <- function() {
-  description <- "Disease-progression model (no drug input) for Alzheimer's disease (AD) progression on the Clinical Dementia Rating scale - Sum of Boxes (CDR-SOB, 0-18 score) over time, fit by Delor et al. (2013) to 2,700 CDR-SOB observations from 380 mild cognitive impairment (MCI) plus 180 AD patients in the Alzheimer's Disease Neuroimaging Initiative (ADNI) database with up to 4 years of follow-up. The model embeds an individual disease-onset time (DOT) and a logit-domain disease trajectory A(1) with a smooth-step activation (T^30 / (DOT^30 + T^30)) that turns the disease progression on at the subject's DOT; a two-component mixture model assigns each subject to either a fast-progression branch (rate plus accelerating term alpha*A(1)) or a slow-progression branch (rate alone, alpha = 0). A study-entry 'placebo' term PL*(1 - exp(-KPL*(t - T_ENTRY))) captures an early drop or delay observed after enrollment. Baseline CDR-SOB and ADAS-cog explain most of the DOT variability; baseline MMSE modifies alpha; baseline CDR-SOB, FAQ, and normalized hippocampal volume (RHPNM) modify the mixture probability. The published mixture probability and the residual-error scale-domain choice are clarified in the validation vignette's Assumptions and deviations section. No drug input is dosed in this model."
+  description <- "Disease-progression model (no drug input) for Alzheimer's disease (AD) progression on the Clinical Dementia Rating scale - Sum of Boxes (CDR-SOB, 0-18 score) over time, fit by Delor et al. (2013) to 2,700 CDR-SOB observations from 380 mild cognitive impairment (MCI) plus 180 AD patients in the Alzheimer's Disease Neuroimaging Initiative (ADNI) database with up to 4 years of follow-up. The model embeds an individual disease-onset time (DOT) and a logit-domain disease trajectory A(1) with a smooth-step activation (T^30 / (DOT^30 + T^30)) that turns the disease progression on at the subject's DOT; a two-component mixture model assigns each subject to either a fast-progression branch (rate plus accelerating term alpha*A(1)) or a slow-progression branch (rate alone, alpha = 0). A study-entry 'placebo' term PL*(1 - exp(-KPL*(t - T_ENTRY))) captures an early drop or delay observed after enrollment. Baseline CDR-SOB and ADAS-cog explain most of the DOT variability; baseline SCORE_MMSE modifies alpha; baseline CDR-SOB, SCORE_FAQ, and normalized hippocampal volume (SCORE_RHPNM) modify the mixture probability. The published mixture probability and the residual-error scale-domain choice are clarified in the validation vignette's Assumptions and deviations section. No drug input is dosed in this model."
   reference <- paste(
     "Delor I, Charoin J-E, Gieschke R, Retout S, Jacqmin P;",
     "for the Alzheimer's Disease Neuroimaging Initiative. (2013).",
@@ -17,45 +17,45 @@ Delor_2013_alzheimer <- function() {
   )
 
   covariateData <- list(
-    CDR_SOB = list(
-      description        = "Clinical Dementia Rating scale - Sum of Boxes score (0-18; integer-valued with half-unit increments in ADNI). Used here as a time-fixed baseline covariate (the source paper's CDR_bsl column). Drives both the per-subject disease-onset time (multiplicative power form, centred on CDR_SOB = 2) and the per-subject slow-progression-subpopulation probability (logit-additive shift, centred on CDR_SOB = 1).",
+    SCORE_CDR_SOB = list(
+      description        = "Clinical Dementia Rating scale - Sum of Boxes score (0-18; integer-valued with half-unit increments in ADNI). Used here as a time-fixed baseline covariate (the source paper's CDR_bsl column). Drives both the per-subject disease-onset time (multiplicative power form, centred on SCORE_CDR_SOB = 2) and the per-subject slow-progression-subpopulation probability (logit-additive shift, centred on SCORE_CDR_SOB = 1).",
       units              = "(CDR-SOB units, 0-18 score)",
       type               = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed at the baseline value per subject in this model (source column CDR_bsl). Centring values come from the source paper (CDR_SOB/2 on DOT per Table 1 Part I; CDR_SOB - 1 on the mixture-logit per Table 1 Part II). Higher baseline score implies an earlier disease onset and a higher probability of being in the fast-progressing subpopulation.",
+      notes              = "Time-fixed at the baseline value per subject in this model (source column CDR_bsl). Centring values come from the source paper (SCORE_CDR_SOB/2 on DOT per Table 1 Part I; SCORE_CDR_SOB - 1 on the mixture-logit per Table 1 Part II). Higher baseline score implies an earlier disease onset and a higher probability of being in the fast-progressing subpopulation.",
       source_name        = "CDR_bsl"
     ),
-    ADAS_COG = list(
-      description        = "Alzheimer's Disease Assessment Scale - cognitive subscale (ADAS-cog total 11) score. Used here as a time-fixed baseline covariate (the source paper's ADAS_bsl column). Drives the per-subject disease-onset time via a multiplicative power form centred on ADAS_COG = 12.67 (the dataset median per the source paper Table 1 Part I).",
+    SCORE_ADAS_COG = list(
+      description        = "Alzheimer's Disease Assessment Scale - cognitive subscale (ADAS-cog total 11) score. Used here as a time-fixed baseline covariate (the source paper's ADAS_bsl column). Drives the per-subject disease-onset time via a multiplicative power form centred on SCORE_ADAS_COG = 12.67 (the dataset median per the source paper Table 1 Part I).",
       units              = "(ADAS-cog total 11 units, 0-70 score)",
       type               = "continuous",
       reference_category = NULL,
       notes              = "Time-fixed at the baseline value per subject in this model (source column ADAS_bsl). The ADAS-cog total-11 form (not the modernized ADAS-cog 13) is used here per the source paper; this matches the ADNI total-11 score available in 2011. Centring value 12.67 is the dataset median.",
       source_name        = "ADAS_bsl"
     ),
-    MMSE = list(
-      description        = "Mini Mental State Examination score (0-30; higher = better). Used here as a time-fixed baseline covariate (the source paper's MMSE_bsl column). Modifies the per-subject disease-progression acceleration parameter alpha via a multiplicative power form centred on MMSE = 26 (Table 1 Part III).",
-      units              = "(MMSE units, 0-30 score)",
+    SCORE_MMSE = list(
+      description        = "Mini Mental State Examination score (0-30; higher = better). Used here as a time-fixed baseline covariate (the source paper's MMSE_bsl column). Modifies the per-subject disease-progression acceleration parameter alpha via a multiplicative power form centred on SCORE_MMSE = 26 (Table 1 Part III).",
+      units              = "(SCORE_MMSE units, 0-30 score)",
       type               = "continuous",
       reference_category = NULL,
       notes              = "Time-fixed at the baseline value per subject in this model (source column MMSE_bsl). Centring value 26 is the dataset median per the source.",
       source_name        = "MMSE_bsl"
     ),
-    FAQ = list(
-      description        = "Functional Assessment Questionnaire score (0-30 range commonly; higher = more functional impairment). Used here as a time-fixed baseline covariate (the source paper's FAQ_bsl column). Modifies the per-subject slow-progression-subpopulation probability via a logit-additive shift centred on FAQ = 1 (Table 1 Part II).",
-      units              = "(FAQ units)",
+    SCORE_FAQ = list(
+      description        = "Functional Assessment Questionnaire score (0-30 range commonly; higher = more functional impairment). Used here as a time-fixed baseline covariate (the source paper's FAQ_bsl column). Modifies the per-subject slow-progression-subpopulation probability via a logit-additive shift centred on SCORE_FAQ = 1 (Table 1 Part II).",
+      units              = "(SCORE_FAQ units)",
       type               = "continuous",
       reference_category = NULL,
       notes              = "Time-fixed at the baseline value per subject in this model (source column FAQ_bsl). Centring value 1 is the dataset median per the source Table 1 Part II.",
       source_name        = "FAQ_bsl"
     ),
-    RHPNM = list(
-      description        = "Normalized hippocampal volume: the subject's average left+right hippocampal volume divided by the value expected for a healthy subject with the same age and estimated intracranial volume (head size). 1.0 corresponds to a healthy reference; values below 1.0 indicate atrophy. Used here as a time-fixed baseline covariate (the source paper's RHPNM column). Drives a logit-additive shift on the slow-progression-subpopulation probability centred on RHPNM = 1 (Table 1 Part II).",
+    SCORE_RHPNM = list(
+      description        = "Normalized hippocampal volume: the subject's average left+right hippocampal volume divided by the value expected for a healthy subject with the same age and estimated intracranial volume (head size). 1.0 corresponds to a healthy reference; values below 1.0 indicate atrophy. Used here as a time-fixed baseline covariate (the source paper's SCORE_RHPNM column). Drives a logit-additive shift on the slow-progression-subpopulation probability centred on SCORE_RHPNM = 1 (Table 1 Part II).",
       units              = "(unitless ratio; 1.0 = healthy reference)",
       type               = "continuous",
       reference_category = NULL,
       notes              = "Time-fixed at the baseline value per subject in this model. Derived in the source paper from the regression HPNMbsl_i = Age_i * (-26.6268 + EICVbsl_i * 0.0016 + 3340.4395) computed on healthy subjects, with RHPNMbsl_i = HIPVbsl_i / HPNMbsl_i. Source paper section 'ADNI data extraction and assembly'. Centring value 1 = healthy reference.",
-      source_name        = "RHPNM"
+      source_name        = "SCORE_RHPNM"
     ),
     T_ENTRY = list(
       description        = "Per-subject time of study entry on the same global disease-time axis the model is integrated on (years). The dataset's TIME column represents global disease time (with TIME = 0 the integration origin and the activation function turning on around the subject's individual DOT). Observations occur at TIME = T_ENTRY to T_ENTRY + study_duration; the placebo term uses (TIME - T_ENTRY) as its clock.",
@@ -99,11 +99,11 @@ Delor_2013_alzheimer <- function() {
     ldot <- log(16.1); label("Log typical disease onset time (years, global disease-time axis)")
     # Delor 2013 Table 2 final 'DOT, year' = 16.1.
 
-    e_cdr_sob_dot <- -0.072; label("Power exponent for baseline CDR-SOB on DOT (DOT scales as (CDR_SOB/2)^e_cdr_sob_dot)")
+    e_cdr_sob_dot <- -0.072; label("Power exponent for baseline CDR-SOB on DOT (DOT scales as (SCORE_CDR_SOB/2)^e_cdr_sob_dot)")
     # Delor 2013 Table 2 final 'COV CDR-SOB on DOT' = -0.072. Centring 2 per
     # Table 1 Part I Start-model row.
 
-    e_adas_cog_dot <- -0.0439; label("Power exponent for baseline ADAS-cog on DOT (DOT scales as (ADAS_COG/12.67)^e_adas_cog_dot)")
+    e_adas_cog_dot <- -0.0439; label("Power exponent for baseline ADAS-cog on DOT (DOT scales as (SCORE_ADAS_COG/12.67)^e_adas_cog_dot)")
     # Delor 2013 Table 2 final 'COV ADAS on DOT' = -0.0439. Centring 12.67
     # per Table 1 Part I 'Base' row.
 
@@ -112,8 +112,8 @@ Delor_2013_alzheimer <- function() {
     lalpha <- log(0.0499); label("Log of typical multiplicative disease-progression acceleration alpha (1/year, fast branch only)")
     # Delor 2013 Table 2 final 'Multiplicative term (alpha)' = 0.0499.
 
-    e_mmse_alpha <- -2.01; label("Power exponent for baseline MMSE on alpha (alpha scales as (MMSE/26)^e_mmse_alpha)")
-    # Delor 2013 Table 2 final 'COV MMSE on alpha' = -2.01. Centring 26 per
+    e_mmse_alpha <- -2.01; label("Power exponent for baseline SCORE_MMSE on alpha (alpha scales as (SCORE_MMSE/26)^e_mmse_alpha)")
+    # Delor 2013 Table 2 final 'COV SCORE_MMSE on alpha' = -2.01. Centring 26 per
     # Table 1 Part III 'Final' row. (The estimated effect was tested last by
     # the source authors via GAM-selected covariates; numerically unstable
     # alpha-covariate runs were excluded in Table 1 Part III.)
@@ -147,19 +147,19 @@ Delor_2013_alzheimer <- function() {
     # the three mixture covariates. See vignette Errata for the rationale and
     # for the alternative defaults (overall-cohort 0.31, AD-cohort 0.03)
     # implied by the source paper's reported MCI/AD slow breakdown.
-    logit_p_slow <- log(0.44 / (1 - 0.44)); label("Logit of typical slow-progression-subpopulation probability at median covariate values (CDR_SOB = 1, FAQ = 1, RHPNM = 1)")
+    logit_p_slow <- log(0.44 / (1 - 0.44)); label("Logit of typical slow-progression-subpopulation probability at median covariate values (SCORE_CDR_SOB = 1, SCORE_FAQ = 1, SCORE_RHPNM = 1)")
     # Delor 2013: typical theta_5 not directly tabulated; imputed from the
     # MCI slow fraction (44/3 per Table 2 final 'MCI/AD slow (alpha = 0)' row).
     # See vignette Assumptions and deviations / Errata.
 
-    e_cdr_sob_slow <- -1.27; label("Logit-additive effect of (CDR_SOB - 1) on slow-subpopulation probability")
+    e_cdr_sob_slow <- -1.27; label("Logit-additive effect of (SCORE_CDR_SOB - 1) on slow-subpopulation probability")
     # Delor 2013 Table 2 final 'COV CDR-SOB on $MIX' = -1.27.
 
-    e_faq_slow <- -0.341; label("Logit-additive effect of (FAQ - 1) on slow-subpopulation probability")
-    # Delor 2013 Table 2 final 'COV FAQ on $MIX' = -0.341.
+    e_faq_slow <- -0.341; label("Logit-additive effect of (SCORE_FAQ - 1) on slow-subpopulation probability")
+    # Delor 2013 Table 2 final 'COV SCORE_FAQ on $MIX' = -0.341.
 
-    e_rhpnm_slow <- 7.5; label("Logit-additive effect of (RHPNM - 1) on slow-subpopulation probability")
-    # Delor 2013 Table 2 final 'COV RHPNM on $MIX' = 7.5.
+    e_rhpnm_slow <- 7.5; label("Logit-additive effect of (SCORE_RHPNM - 1) on slow-subpopulation probability")
+    # Delor 2013 Table 2 final 'COV SCORE_RHPNM on $MIX' = 7.5.
 
     # Inter-individual variability. The source paper reports IIV as a percent
     # CV (paper Table 2 column 'IIV (%)' with footnote b 'Interindividual
@@ -201,10 +201,10 @@ Delor_2013_alzheimer <- function() {
     # source paper's Table 1 covariate relationships verbatim, with the
     # canonical covariate column names from inst/references/covariate-columns.md.
     dot_indiv <- exp(ldot + etaldot) *
-                 (CDR_SOB / 2)^e_cdr_sob_dot *
-                 (ADAS_COG / 12.67)^e_adas_cog_dot
+                 (SCORE_CDR_SOB / 2)^e_cdr_sob_dot *
+                 (SCORE_ADAS_COG / 12.67)^e_adas_cog_dot
     alpha_indiv <- exp(lalpha + etalalpha) *
-                   (MMSE / 26)^e_mmse_alpha
+                   (SCORE_MMSE / 26)^e_mmse_alpha
     pl_indiv  <- exp(lpl + etalpl)
     kpl_indiv <- exp(lkpl)
     rate_fast <- exp(lrate_fast)
@@ -217,9 +217,9 @@ Delor_2013_alzheimer <- function() {
     # user can simulate from both branches and combine the predictions with
     # the source-paper weights (see vignette).
     logit_p_slow_indiv <- logit_p_slow +
-                          e_cdr_sob_slow * (CDR_SOB - 1) +
-                          e_faq_slow     * (FAQ     - 1) +
-                          e_rhpnm_slow   * (RHPNM   - 1)
+                          e_cdr_sob_slow * (SCORE_CDR_SOB - 1) +
+                          e_faq_slow     * (SCORE_FAQ     - 1) +
+                          e_rhpnm_slow   * (SCORE_RHPNM   - 1)
     p_slow_indiv <- 1 / (1 + exp(-logit_p_slow_indiv))
     p_fast_indiv <- 1 - p_slow_indiv
 

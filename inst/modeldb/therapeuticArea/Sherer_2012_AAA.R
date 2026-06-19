@@ -32,7 +32,7 @@ Sherer_2012_AAA <- function() {
       notes              = "Time-fixed per subject (single measurement at follow-up rather than at AAA-screening baseline; Sherer 2012 Discussion explicitly flags this as a limitation). Enters the typical-value regressions as the proportional term log10(DDIMER) / log10(326), where 326 ng/mL is the cohort median D-dimer (Sherer 2012 Table 1) and log10(326) approx 2.513. The cohort interquartile range is 142-785 ng/mL; the model was developed against this range and extrapolation outside it is not validated.",
       source_name        = "C^(D-dimer)"
     ),
-    DIAB = list(
+    DIS_DIAB = list(
       description        = "Diabetes-mellitus comorbidity indicator (Type 1 or Type 2 not distinguished). 1 = patient has diabetes; 0 = no diabetes.",
       units              = "(binary)",
       type               = "binary",
@@ -63,7 +63,7 @@ Sherer_2012_AAA <- function() {
     smoke_prev_pct = 84.0,
     followup_dur   = "median 5.5 years (q1 5, q3 6)",
     n_observations = "1,732 AAA size measurements (median 6 per patient; q1 6, q3 7)",
-    notes          = "Subset of 875 men diagnosed with small AAA during the Western Australia HIMS screening study who had both serial diameter measurements and a D-dimer measurement (Sherer 2012 Results). Demographics, medical conditions, and blood biochemistry summarised in Sherer 2012 Table 1; the model file's covariate set keeps the three covariates retained in the final model (AAA_DIAM, DDIMER, DIAB)."
+    notes          = "Subset of 875 men diagnosed with small AAA during the Western Australia HIMS screening study who had both serial diameter measurements and a D-dimer measurement (Sherer 2012 Results). Demographics, medical conditions, and blood biochemistry summarised in Sherer 2012 Table 1; the model file's covariate set keeps the three covariates retained in the final model (AAA_DIAM, DDIMER, DIS_DIAB)."
   )
 
   ini({
@@ -111,7 +111,7 @@ Sherer_2012_AAA <- function() {
     b2_int        <- -1.05 ; label("Beta2 offset from covariate effects (1/year)")                        # Table 3 row 5 (median -1.05, 95% CrI -1.52, -0.53)
     e_aaadiam_b2  <-  0.59 ; label("Beta2 effect of (Y(0)/median Y(0)) (1/year)")                         # Table 3 row 6 (median 0.59, 95% CrI 0.11, 1.03)
     e_ddimer_b2   <-  0.37 ; label("Beta2 effect of (log10 D-dimer / median log10 D-dimer) (1/year)")     # Table 3 row 7 (median 0.37, 95% CrI 0.13, 0.62)
-    e_diab_b2     <- -0.32 ; label("Beta2 effect for diabetes (DIAB = 1) (1/year)")                       # Table 3 row 8 (median -0.32, 95% CrI -0.45, -0.18)
+    e_diab_b2     <- -0.32 ; label("Beta2 effect for diabetes (DIS_DIAB = 1) (1/year)")                       # Table 3 row 8 (median -0.32, 95% CrI -0.45, -0.18)
 
     # ---------------- Random effects ------------------------------
     # MVN(0, Sigma) on the additive deviations of (beta0, beta1,
@@ -159,7 +159,7 @@ Sherer_2012_AAA <- function() {
     # whose name it shares for convention-pairing purposes.
     beta0 <- e_aaadiam_b0 * aaadiam_norm + etae_aaadiam_b0
     beta1 <- b1_int + e_aaadiam_b1 * aaadiam_norm + e_ddimer_b1 * ddimer_norm + etab1_int
-    beta2 <- b2_int + e_aaadiam_b2 * aaadiam_norm + e_ddimer_b2 * ddimer_norm + e_diab_b2 * DIAB + etab2_int
+    beta2 <- b2_int + e_aaadiam_b2 * aaadiam_norm + e_ddimer_b2 * ddimer_norm + e_diab_b2 * DIS_DIAB + etab2_int
 
     # ----- AAA growth ODE (Sherer 2012 Methods page 7,
     # 'First derivative of AAA growth rate with size is constant').

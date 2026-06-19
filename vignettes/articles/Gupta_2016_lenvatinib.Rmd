@@ -144,8 +144,8 @@ make_cohort <- function(n, dose_mg, id_offset = 0L) {
     WT           = wt_kg,
     ALB          = alb_gL,
     ALP          = alp_uL,
-    CYP3A4_IND   = cyp_ind,
-    CYP3A4_INH   = cyp_inh,
+    CONMED_CYP3A4_IND   = cyp_ind,
+    CONMED_CYP3A4_INH   = cyp_inh,
     DIS_HEALTHY  = 0L,
     FORM_CAPSULE = 0L,
     treatment    = sprintf("%d mg QD", dose_mg)
@@ -180,8 +180,8 @@ stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid", "cmt")])))
 mod <- readModelDb("Gupta_2016_lenvatinib")
 sim <- rxode2::rxSolve(
   mod, events = events,
-  keep = c("treatment", "WT", "ALB", "ALP", "CYP3A4_IND",
-           "CYP3A4_INH", "DIS_HEALTHY", "FORM_CAPSULE")
+  keep = c("treatment", "WT", "ALB", "ALP", "CONMED_CYP3A4_IND",
+           "CONMED_CYP3A4_INH", "DIS_HEALTHY", "FORM_CAPSULE")
 ) |>
   as.data.frame()
 ```
@@ -202,7 +202,7 @@ sd_events <- tibble::tibble(
   WT = pmin(pmax(rnorm(150, 76.7, 19.4), 32.6), 177.5),
   ALB = pmin(pmax(rnorm(150, 39.8, 5.1), 19), 52),
   ALP = pmin(pmax(rlnorm(150, log(77), 0.7), 19), 752),
-  CYP3A4_IND = 0L, CYP3A4_INH = 0L,
+  CONMED_CYP3A4_IND = 0L, CONMED_CYP3A4_INH = 0L,
   DIS_HEALTHY = 1L,    # healthy subjects per Figure 1A
   FORM_CAPSULE = 0L
 )
@@ -258,11 +258,11 @@ typical-value steady-state Cmax,ss and AUCss ratios for the same
 covariates (etas zeroed).
 
 ```{r figure-2-forest}
-make_typical_subject <- function(WT, ALB, ALP, CYP3A4_IND, CYP3A4_INH,
+make_typical_subject <- function(WT, ALB, ALP, CONMED_CYP3A4_IND, CONMED_CYP3A4_INH,
                                  DIS_HEALTHY, FORM_CAPSULE, label) {
   tibble::tibble(
     id = 1L, WT = WT, ALB = ALB, ALP = ALP,
-    CYP3A4_IND = CYP3A4_IND, CYP3A4_INH = CYP3A4_INH,
+    CONMED_CYP3A4_IND = CONMED_CYP3A4_IND, CONMED_CYP3A4_INH = CONMED_CYP3A4_INH,
     DIS_HEALTHY = DIS_HEALTHY, FORM_CAPSULE = FORM_CAPSULE,
     label = label
   )
@@ -293,7 +293,7 @@ obs_grid <- sort(unique(obs_grid))
 build_typical_events <- function(cov_row, dose_mg = 24) {
   dose_d <- tibble::tibble(
     id = 1L, WT = cov_row$WT, ALB = cov_row$ALB, ALP = cov_row$ALP,
-    CYP3A4_IND = cov_row$CYP3A4_IND, CYP3A4_INH = cov_row$CYP3A4_INH,
+    CONMED_CYP3A4_IND = cov_row$CONMED_CYP3A4_IND, CONMED_CYP3A4_INH = cov_row$CONMED_CYP3A4_INH,
     DIS_HEALTHY = cov_row$DIS_HEALTHY, FORM_CAPSULE = cov_row$FORM_CAPSULE,
     time = (seq_len(n_doses) - 1L) * tau,
     evid = 1L, amt = dose_mg, cmt = "depot", dur = NA_real_
@@ -301,7 +301,7 @@ build_typical_events <- function(cov_row, dose_mg = 24) {
   dose_c <- dose_d |> dplyr::mutate(cmt = "central", dur = 1.22)
   obs_rows <- tibble::tibble(
     id = 1L, WT = cov_row$WT, ALB = cov_row$ALB, ALP = cov_row$ALP,
-    CYP3A4_IND = cov_row$CYP3A4_IND, CYP3A4_INH = cov_row$CYP3A4_INH,
+    CONMED_CYP3A4_IND = cov_row$CONMED_CYP3A4_IND, CONMED_CYP3A4_INH = cov_row$CONMED_CYP3A4_INH,
     DIS_HEALTHY = cov_row$DIS_HEALTHY, FORM_CAPSULE = cov_row$FORM_CAPSULE,
     time = obs_grid,
     evid = 0L, amt = 0, cmt = "central", dur = NA_real_
@@ -550,7 +550,7 @@ covariate set.
 * **New canonicals introduced by this extraction.** Two new entries are
   proposed in `inst/references/covariate-columns.md`: `ALP` (general
   scope; alkaline phosphatase continuous concentration) and
-  `CYP3A4_IND` (general scope; concomitant CYP3A4 inducer indicator,
-  sibling to the existing `CYP3A4_INH`). The `FORM_CAPSULE` entry is
+  `CONMED_CYP3A4_IND` (general scope; concomitant CYP3A4 inducer indicator,
+  sibling to the existing `CONMED_CYP3A4_INH`). The `FORM_CAPSULE` entry is
   extended to acknowledge tablet as a per-paper non-capsule reference
   (the prior Hennig 2006/2007 entries used solution as the reference).

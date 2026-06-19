@@ -26,7 +26,7 @@ Hong_2013_glucose_insulin_MTT <- function() {
     "drug and was found to have no clinically meaningful effect, so the",
     "published final estimates set the palosuran treatment effect to zero",
     "-- the structural model below is the drug-free glucose-insulin",
-    "homeostasis model in T2DM under MTT conditions."
+    "homeostasis model in DIS_DIAB under MTT conditions."
   )
   reference <- paste(
     "Hong Y, Dingemanse J, Sidharta P, Mager DE (2013).",
@@ -48,10 +48,10 @@ Hong_2013_glucose_insulin_MTT <- function() {
   covariateData <- list(
     FPG = list(
       description        = "Baseline fasting plasma glucose concentration (GCss in the paper notation). Used to derive the constant endogenous glucose production rate GP at steady state and to set the reference glucose for the power-function second-phase insulin secretion (G/(VG*GCss))^IPRG. Time-fixed per subject.",
-      units              = "mg/L (paper reports baseline glucose in mg/dL with range 110-180 mg/dL across the T2DM cohort; multiply by 10 to convert to the mg/L scale used internally by the ODEs)",
+      units              = "mg/L (paper reports baseline glucose in mg/dL with range 110-180 mg/dL across the DIS_DIAB cohort; multiply by 10 to convert to the mg/L scale used internally by the ODEs)",
       type               = "continuous",
       reference_category = NULL,
-      notes              = "Default reference value 1300 mg/L (= 130 mg/dL, mid-range for the Hong 2013 T2DM cohort with fasting plasma glucose 110-180 mg/dL).",
+      notes              = "Default reference value 1300 mg/L (= 130 mg/dL, mid-range for the Hong 2013 DIS_DIAB cohort with fasting plasma glucose 110-180 mg/dL).",
       source_name        = "GCss"
     ),
     INS_BL = list(
@@ -59,7 +59,7 @@ Hong_2013_glucose_insulin_MTT <- function() {
       units              = "mU/L (paper internal units)",
       type               = "continuous",
       reference_category = NULL,
-      notes              = "Default reference value 13 mU/L (representative T2DM fasting insulin). Companion canonical to FPG.",
+      notes              = "Default reference value 13 mU/L (representative DIS_DIAB fasting insulin). Companion canonical to FPG.",
       source_name        = "ICss"
     )
   )
@@ -71,7 +71,7 @@ Hong_2013_glucose_insulin_MTT <- function() {
     age_range      = "40-65 years (mean 53.7, SD 7.3)",
     weight_range   = NA_character_,
     sex_female_pct = 20,
-    disease_state  = "Type 2 diabetes mellitus (T2DM) managed by diet only. Fasting blood glucose 110-180 mg/dL; HbA1c 5.4-8.3% (mean 6.4%, SD 0.8%). Patients excluded if treated with an antidiabetic drug in the 2 months prior to screening or with severe diabetes complications.",
+    disease_state  = "Type 2 diabetes mellitus (DIS_DIAB) managed by diet only. Fasting blood glucose 110-180 mg/dL; HbA1c 5.4-8.3% (mean 6.4%, SD 0.8%). Patients excluded if treated with an antidiabetic drug in the 2 months prior to screening or with severe diabetes complications.",
     dose_range     = "Meal tolerance test: standardised breakfast approximately 618 kcal (65% carbohydrates, 17% proteins, 18% lipids) given after an overnight fast; modelled as a dummy oral dose of 100 g glucose into the gut absorbed via the Savic transit chain (n / MTT / BIO). Palosuran 125 mg b.i.d. (or placebo) was administered orally twice daily for 4 weeks and the MTT was performed 1 h after drug administration on day 28 of each treatment period; palosuran had no clinically meaningful effect and is set to zero in the published final model.",
     regions        = "Germany (Ethikkommission der Aerztekammer Nordrhein, Germany).",
     notes          = "Subject demographics from Hong 2013 Methods 'Patients and Study Design'. Two-way crossover design (palosuran vs placebo) with 4-week treatment periods and 4-week washout; MTT performed on day 28 and HGC on day 29 of each period. Published final estimates re-fit the MTT after fixing palosuran effect to zero; CLG / VG / CLI / VI / kIE are FIXED to the HGC point estimates from Table I. The MTT IOV table reflects intra-individual variability across the four MTT occasions (two periods x palosuran/placebo). ABSG50 was fixed to 14.8 mg/min (Jauslin 2007 lit value) because Emax / ABSG50 were correlated; sensitivity analysis fixing ABSG50 to 0.148 mg/min did not materially change estimates except for n (1.42 vs 0.781) and MTT (44.2 vs 62.5)."

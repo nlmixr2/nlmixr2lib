@@ -39,12 +39,12 @@ NA_NA_paracetamol <- function() {
     "from each small-intestine segment is Michaelis-Menten in segment amount",
     "(KMG, RAMAXD / RAMAXJ / RAMAXI). Plasma insulin (INS) is a time-varying",
     "regressor that enters the central glucose compartment through a one-",
-    "compartment effect delay (KIE). Type 2 diabetes mellitus (T2DM) is",
+    "compartment effect delay (KIE). Type 2 diabetes mellitus (DIS_DIAB) is",
     "encoded as a binary indicator switching the glucose baseline (GSSH /",
     "GSSD), glucose clearance (CLGH / CLGD), insulin-dependent glucose",
     "clearance (CLGIH / CLGID), glucose bioavailability (FPGH / FPGD), and",
     "the empirical glucose-on-production exponent (GPRG = -2.79 healthy, 0",
-    "T2DM). Body weight (WT) scales the central glucose volume linearly",
+    "DIS_DIAB). Body weight (WT) scales the central glucose volume linearly",
     "(VG * WT / 70). Outputs are observed on the linear scale: paracetamol",
     "concentration plus baseline noise (Cc, uM), glucose concentration",
     "(Cglu, mM), GLP-1 concentration (CGLP1), and GIP concentration (CGIP).",
@@ -82,13 +82,13 @@ NA_NA_paracetamol <- function() {
       notes              = "The bundle's `Simulated_ddmoremockdata2.txt` records per-subject WT in the BW column at approximately 87.9 kg (single representative subject in the simulated dataset; the real-data fit used 16 subjects with WT not echoed in the bundle).",
       source_name        = "BW"
     ),
-    T2DM = list(
-      description        = "Type-2-diabetes-mellitus indicator (1 = T2DM patient, 0 = normal-glucose-tolerance control). Switches the glucose baseline (GSSH vs GSSD), glucose clearance (CLGH vs CLGD), insulin-dependent glucose clearance (CLGIH vs CLGID), glucose bioavailability into central (FPGH = 0.909 vs FPGD = 1 FIXED), and the empirical glucose-on-production exponent (GPRG = -2.79 healthy, 0 T2DM).",
+    DIS_DIAB = list(
+      description        = "Type-2-diabetes-mellitus indicator (1 = DIS_DIAB patient, 0 = normal-glucose-tolerance control). Switches the glucose baseline (GSSH vs GSSD), glucose clearance (CLGH vs CLGD), insulin-dependent glucose clearance (CLGIH vs CLGID), glucose bioavailability into central (FPGH = 0.909 vs FPGD = 1 FIXED), and the empirical glucose-on-production exponent (GPRG = -2.79 healthy, 0 DIS_DIAB).",
       units              = "(binary)",
       type               = "binary",
-      reference_category = "T2DM = 0 (normal-glucose-tolerance control)",
-      notes              = "Distinct from the existing `DIAB` canonical (which does not distinguish Type 1 vs Type 2) because this model is specifically a Type-2-versus-healthy stratification of OGTT response. Carried per subject (time-fixed in the bundle's simulated dataset).",
-      source_name        = "T2DM"
+      reference_category = "DIS_DIAB = 0 (normal-glucose-tolerance control)",
+      notes              = "Distinct from the existing `DIS_DIAB` canonical (which does not distinguish Type 1 vs Type 2) because this model is specifically a Type-2-versus-healthy stratification of OGTT response. Carried per subject (time-fixed in the bundle's simulated dataset).",
+      source_name        = "DIS_DIAB"
     ),
     INS = list(
       description        = "Plasma insulin concentration as a time-varying regressor input. Drives the insulin-on-glucose-elimination effect compartment through a first-order delay (KIE); the conversion factor 1/6.945 turns the bundle's pmol/L scale into the uU/mL scale used inside the model.",
@@ -115,7 +115,7 @@ NA_NA_paracetamol <- function() {
     age_range      = NA_character_,
     weight_range   = NA_character_,
     sex_female_pct = NA_real_,
-    disease_state  = "Mixed normal-glucose-tolerance and T2DM adults pooled from three studies of an OGTT challenge. Paracetamol (1500 mg / 25 mg infusion over 5 min at t = 15 min in the bundle's simulated dataset) is co-administered as a gastric-emptying tracer alongside an oral 75 g glucose load. Subject-level T2DM status is carried in the T2DM column (0/1); the simulated representative subject ships as T2DM = 0 (healthy control).",
+    disease_state  = "Mixed normal-glucose-tolerance and DIS_DIAB adults pooled from three studies of an OGTT challenge. Paracetamol (1500 mg / 25 mg infusion over 5 min at t = 15 min in the bundle's simulated dataset) is co-administered as a gastric-emptying tracer alongside an oral 75 g glucose load. Subject-level DIS_DIAB status is carried in the DIS_DIAB column (0/1); the simulated representative subject ships as DIS_DIAB = 0 (healthy control).",
     dose_range     = "Paracetamol (1500 mg oral, infused as zero-order over ~5 min in the bundle's simulated dataset). Oral glucose load (~25 g into stomach compartment 5 in the bundle's simulated dataset, though clinical OGTT protocols typically use 75 g).",
     regions        = NA_character_,
     notes          = "Subject count and study count from the `Output_real_run126c.lst` listing's `TOT. NO. OF INDIVIDUALS: 16` line and the three STUDY levels (1, 2, 3) referenced by the `IF(STUDY.EQ.n)` switches on APAPBL and T50 in `Executable_run126h.mod`. Demographic detail (age, sex, region, race, exact study identities) is not recoverable from the on-disk bundle; the linked publication is not on disk to consult."
@@ -148,7 +148,7 @@ NA_NA_paracetamol <- function() {
     # 165-173.
     # ---------------------------------------------------------------------
     lgss_h    <- log(5.27)           ; label("Glucose baseline (healthy) GSSH (mM)")                  # `.lst` FINAL TH 7 = 5.27E+00
-    lgss_d    <- log(7.48)           ; label("Glucose baseline (T2DM) GSSD (mM)")                     # `.lst` FINAL TH 8 = 7.48E+00
+    lgss_d    <- log(7.48)           ; label("Glucose baseline (DIS_DIAB) GSSD (mM)")                     # `.lst` FINAL TH 8 = 7.48E+00
     lvg       <- fixed(log(9.33))    ; label("Glucose central volume VG (L) - FIXED")                 # `.lst` FINAL TH 9 = 9.33E+00 (FIX)
     lclg_h    <- fixed(log(0.0894))  ; label("Glucose insulin-independent clearance (healthy) CLGH (L/min) - FIXED")  # `.lst` FINAL TH 10 = 8.94E-02 (FIX)
     lclgi_h   <- log(0.00663)        ; label("Glucose insulin-dependent clearance (healthy) CLGIH (L/min/(uU/mL))")    # `.lst` FINAL TH 11 = 6.63E-03 (bounded at upper 8.3E-03)
@@ -156,10 +156,10 @@ NA_NA_paracetamol <- function() {
     lvp_g     <- fixed(log(8.56))    ; label("Glucose peripheral volume VP (L) - FIXED")              # `.lst` FINAL TH 13 = 8.56E+00 (FIX)
     lkge1     <- fixed(log(0.0573))  ; label("Glucose-on-production effect rate KGE1 (1/min) - FIXED") # `.lst` FINAL TH 14 = 5.73E-02 (FIX)
     lkie      <- fixed(log(0.0213))  ; label("Insulin-on-elimination effect rate KIE (1/min) - FIXED") # `.lst` FINAL TH 15 = 2.13E-02 (FIX)
-    lclg_d    <- fixed(log(0.0287))  ; label("Glucose insulin-independent clearance (T2DM) CLGD (L/min) - FIXED")  # `.lst` FINAL TH 16 = 2.87E-02 (FIX)
-    lclgi_d   <- log(0.00547)        ; label("Glucose insulin-dependent clearance (T2DM) CLGID (L/min/(uU/mL))")    # `.lst` FINAL TH 17 = 5.47E-03 (bounded at upper 8.3E-03)
+    lclg_d    <- fixed(log(0.0287))  ; label("Glucose insulin-independent clearance (DIS_DIAB) CLGD (L/min) - FIXED")  # `.lst` FINAL TH 16 = 2.87E-02 (FIX)
+    lclgi_d   <- log(0.00547)        ; label("Glucose insulin-dependent clearance (DIS_DIAB) CLGID (L/min/(uU/mL))")    # `.lst` FINAL TH 17 = 5.47E-03 (bounded at upper 8.3E-03)
     fpg_h     <- 0.909               ; label("Glucose bioavailability into central (healthy) FPGH (fraction, bounded [0,1])")  # `.lst` FINAL TH 18 = 9.09E-01 (bounded at upper 1)
-    fpg_d     <- fixed(1)            ; label("Glucose bioavailability into central (T2DM) FPGD (fraction) - FIXED at 1")  # `.lst` FINAL TH 19 = 1.00E+00 (FIX)
+    fpg_d     <- fixed(1)            ; label("Glucose bioavailability into central (DIS_DIAB) FPGD (fraction) - FIXED at 1")  # `.lst` FINAL TH 19 = 1.00E+00 (FIX)
     lramax_d  <- log(0.576)          ; label("Glucose duodenal-segment max absorption rate RAMAXD (g/min)")  # `.lst` FINAL TH 20 = 5.76E-01
     lramax_j  <- log(2.06)           ; label("Glucose jejunal-segment max absorption rate RAMAXJ (g/min)")   # `.lst` FINAL TH 21 = 2.06E+00
     lramax_i  <- log(1.33)           ; label("Glucose ileal-segment max absorption rate RAMAXI (g/min)")     # `.lst` FINAL TH 22 = 1.33E+00
@@ -301,16 +301,16 @@ NA_NA_paracetamol <- function() {
     keglp1   <- log(2) / 1.5      # GLP-1 half-life 1.5 min
 
     # -------------------------------------------------------------------
-    # T2DM stratification of glucose-arm parameters
-    # (`Executable_run126h.mod` $PK lines 61-70). T2DM = 1 selects the
+    # DIS_DIAB stratification of glucose-arm parameters
+    # (`Executable_run126h.mod` $PK lines 61-70). DIS_DIAB = 1 selects the
     # diabetic baseline / clearance / bioavailability / production-
-    # exponent; T2DM = 0 selects the healthy values.
+    # exponent; DIS_DIAB = 0 selects the healthy values.
     # -------------------------------------------------------------------
-    gss      <- gss_h   * (1 - T2DM) + gss_d   * T2DM
-    clg      <- clg_h   * (1 - T2DM) + clg_d   * T2DM
-    clgi     <- clgi_h  * (1 - T2DM) + clgi_d  * T2DM
-    fpg      <- fpg_h   * (1 - T2DM) + fpg_d   * T2DM
-    gprg     <- -2.79   * (1 - T2DM) + 0       * T2DM      # `.mod` $PK lines 67-68
+    gss      <- gss_h   * (1 - DIS_DIAB) + gss_d   * DIS_DIAB
+    clg      <- clg_h   * (1 - DIS_DIAB) + clg_d   * DIS_DIAB
+    clgi     <- clgi_h  * (1 - DIS_DIAB) + clgi_d  * DIS_DIAB
+    fpg      <- fpg_h   * (1 - DIS_DIAB) + fpg_d   * DIS_DIAB
+    gprg     <- -2.79   * (1 - DIS_DIAB) + 0       * DIS_DIAB      # `.mod` $PK lines 67-68
 
     # -------------------------------------------------------------------
     # Baseline-state derivations

@@ -40,12 +40,12 @@ both glucose and inhibitor.
 # Population
 
 Lu 2014 calibrated the model against mean urinary-glucose-excretion
-(UGE) data from DeFronzo et al. (2013, 12 healthy adults + 12 T2DM
+(UGE) data from DeFronzo et al. (2013, 12 healthy adults + 12 DIS_DIAB
 subjects, stepped hyperglycemic clamp before and after 10 mg/day
 dapagliflozin for 7 days) and evaluated it against Polidori et al.
-(2013, 28 T2DM, 100 mg/day canagliflozin for 8 days), Mogensen (1971,
+(2013, 28 DIS_DIAB, 100 mg/day canagliflozin for 8 days), Mogensen (1971,
 9 healthy + 10 diabetic, glucose infusion to over 650 mg/dL), and
-Wolf et al. (2009, 22 T2DM, stepped hyperglycemic clamp). The Lu 2014
+Wolf et al. (2009, 22 DIS_DIAB, stepped hyperglycemic clamp). The Lu 2014
 main text does not reproduce per-study demographic tables, so the
 model's `population` metadata records the pooled study counts but
 leaves age, weight, sex, and race / ethnicity as `NA`; the primary
@@ -102,7 +102,7 @@ follows the endogenous-validation pattern (skill reference
    inhibitor; replicate the qualitative shape of Lu 2014 Figure 5A
    (SGLT1 saturates more steeply than SGLT2).
 3. **SGLT2 inhibition (Figure 2).** Reproduce the dapagliflozin
-   inhibition of glucose reabsorption in a T2DM subject under the
+   inhibition of glucose reabsorption in a DIS_DIAB subject under the
    stepped hyperglycemic-clamp procedure (qualitative Figure 2 D
    shape with elevated UGE post-dose).
 4. **Loss-of-function-mutation simulation (Figure 6A).** Reduce
@@ -134,7 +134,7 @@ about 20% for SGLT1 per Lu 2014 Figure 5A at 100 mg/dL).
 ev_baseline <- rxode2::et(seq(0, 0.5, by = 0.005))
 ev_baseline$GLU  <- 5.5
 ev_baseline$CINH <- 0
-ev_baseline$T2DM <- 0
+ev_baseline$DIS_DIAB <- 0
 
 sim_baseline <- rxode2::rxSolve(mod, ev_baseline) |>
   as.data.frame()
@@ -167,7 +167,7 @@ sweep_one <- function(mgdl, t2dm = 0, cinh = 0) {
   ev <- rxode2::et(seq(0, 0.5, by = 0.05))
   ev$GLU  <- mgdl_to_mM(mgdl)
   ev$CINH <- cinh
-  ev$T2DM <- t2dm
+  ev$DIS_DIAB <- t2dm
   sim <- rxode2::rxSolve(mod, ev) |> as.data.frame()
   tail(sim, 1)
 }
@@ -204,7 +204,7 @@ fig5a |>
 
 # 3. Dapagliflozin inhibition under the stepped hyperglycemic clamp (Figure 2)
 
-Simulate the DeFronzo et al. (2013) procedure in a T2DM subject:
+Simulate the DeFronzo et al. (2013) procedure in a DIS_DIAB subject:
 plasma glucose escalates from 100 to 550 mg/dL in nine steps of
 30 minutes each, first at baseline (no inhibitor) and then with a
 constant 10 mg/L plasma dapagliflozin concentration approximating
@@ -212,7 +212,7 @@ the post-dose mean exposure on day 7 (DeFronzo et al. observed
 mean concentrations in the 50-150 ng/mL range; about 120 nmol/L at the MW
 of 409 g/mol). The model is solved in two scenarios and the
 step-wise UGE rates are tabulated -- qualitatively replicating
-Lu 2014 Figure 2D (T2DM, after-treatment).
+Lu 2014 Figure 2D (DIS_DIAB, after-treatment).
 
 ```{r figure-2}
 build_shc_events <- function(cinh_const) {
@@ -226,7 +226,7 @@ build_shc_events <- function(cinh_const) {
   ev <- rxode2::et(times)
   ev$GLU  <- glu_mM
   ev$CINH <- cinh_const
-  ev$T2DM <- 1
+  ev$DIS_DIAB <- 1
   ev
 }
 
@@ -242,7 +242,7 @@ ggplot(sim_shc, aes(time, uge_rate, colour = treatment)) +
   labs(
     x = "Time (h)",
     y = "UGE rate (mmol/h)",
-    title = "Figure 2 -- UGE rate during stepped hyperglycemic clamp, T2DM",
+    title = "Figure 2 -- UGE rate during stepped hyperglycemic clamp, DIS_DIAB",
     caption = "Replicates Lu 2014 Figure 2D shape."
   )
 ```
@@ -263,7 +263,7 @@ sim_shc |>
     values_from = mean_uge_rate_mmolh
   ) |>
   knitr::kable(
-    caption = "Mean UGE rate per SHC step; T2DM."
+    caption = "Mean UGE rate per SHC step; DIS_DIAB."
   )
 ```
 
@@ -283,7 +283,7 @@ sweep_lof <- function(retained_fraction) {
   ev <- rxode2::et(seq(0, 24, by = 0.5))
   ev$GLU  <- mgdl_to_mM(90)
   ev$CINH <- 0
-  ev$T2DM <- 0
+  ev$DIS_DIAB <- 0
   # Override the model's vmax2 by editing the typical value.
   # rxode2 exposes parameters via the params argument of rxSolve.
   sim <- rxode2::rxSolve(
@@ -353,11 +353,11 @@ ggplot(fig6a, aes(loss_of_function_pct, daily_uge_g)) +
   time-varying GFR (clamp procedures with measured iohexol clearance
   changing over the visit), an upstream extension would add `GFR` as
   a regressor; not implemented here.
-* **T2DM vs healthy Vmax2.** The typical-value Vmax2 in `ini()` is
-  the calibrated healthy value (93.5 mmol/h); the T2DM = 1 cohort
+* **DIS_DIAB vs healthy Vmax2.** The typical-value Vmax2 in `ini()` is
+  the calibrated healthy value (93.5 mmol/h); the DIS_DIAB = 1 cohort
   uses Vmax2_TYP * (1 + 0.176) = 110 mmol/h via the covariate effect
   `e_t2dm_vmax2`. All other SGLT-kinetics parameters (Vmax1, Km1,
-  Km2, Ki1, Ki2) are held common between T2DM and healthy per Lu
+  Km2, Ki1, Ki2) are held common between DIS_DIAB and healthy per Lu
   2014 Methods.
 * **Dapagliflozin defaults in `ini()`.** `lki1`, `lki2`, and `lfup`
   default to the dapagliflozin values from Lu 2014 Table 3. To

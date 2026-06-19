@@ -93,18 +93,18 @@ collects them in one place for review.
 | `lfdepot` -> F1 = 0.864 | 0.864 | Table 2 (%RSE 1.56) |
 | `lcl` -> CL/F (AS) = 895 L/h | 895 | Table 2 (%RSE 5.9) |
 | `lvc` -> V2/F (AS) = 195 L | 195 | Table 2 (%RSE 16.4) |
-| `lcl_dha` -> CLM/F (DHA, non-pregnant reference) = 64.0 L/h | 64.0 | Table 2 (%RSE 6.53) |
-| `lvc_dha` -> V3/F (DHA) = 91.4 L | 91.4 | Table 2 (%RSE 6.15) |
-| `e_preg_cl_dha` -> proportional pregnancy effect on DHA CL/F = +42.3% | +0.423 | Table 2 (%RSE 30.3) |
+| `lcl_dihydroart` -> CLM/F (DHA, non-pregnant reference) = 64.0 L/h | 64.0 | Table 2 (%RSE 6.53) |
+| `lvc_dihydroart` -> V3/F (DHA) = 91.4 L | 91.4 | Table 2 (%RSE 6.15) |
+| `e_preg_cl_dihydroart` -> proportional pregnancy effect on DHA CL/F = +42.3% | +0.423 | Table 2 (%RSE 30.3) |
 | IIV `var(etalka)` | 1.84 | Table 2 (%RSE 25.3; reported as 136 %CV = 100 * sqrt(1.84)) |
 | IIV `var(etaldur)` | 1.33 | Table 2 (%RSE 22.9; 115 %CV) |
 | IIV `var(etallagt)` | 0.573 | Table 2 (%RSE 20.8; 75.7 %CV) |
 | IIV `var(etalvc)` | 0.604 | Table 2 (%RSE 30.1; 77.7 %CV) |
-| IIV `var(etalcl_dha)` | 0.0802 | Table 2 (%RSE 24.9; 28.3 %CV) |
-| IIV `var(etalvc_dha)` | 0.0790 | Table 2 (%RSE 34.7; 28.1 %CV) |
+| IIV `var(etalcl_dihydroart)` | 0.0802 | Table 2 (%RSE 24.9; 28.3 %CV) |
+| IIV `var(etalvc_dihydroart)` | 0.0790 | Table 2 (%RSE 34.7; 28.1 %CV) |
 | IIV on CL/F (AS) and F1: removed from final model | 0 (fixed) | Results, Model development ("the IIV values associated with CL/F and F1 were fixed after conclusion of covariate model building due to poor precision in omega estimates") |
 | Residual `propSd` (AS) | sqrt(0.696) = 0.834 | Table 2 (%RSE 11.6); residual error modelled as additive on the log scale per Methods ("Residual variability (RV) was modelled with an additive model for log-transformed data") |
-| Residual `propSd_dha` | sqrt(0.174) = 0.417 | Table 2 (%RSE 9.94) |
+| Residual `propSd_dihydroart` | sqrt(0.174) = 0.417 | Table 2 (%RSE 9.94) |
 | Dose units: nmol; concentration units: nmol/L (200 mg AS = ~520,264 nmol via MW = 384.42 g/mol) | -- | Methods, Population pharmacokinetic analysis ("Prior to modelling, AS and DHA concentrations were converted from ng/mL to nmol/L values using the compounds respective molecular weights; the concentrations were then natural log-transformed. The 200 mg AS dose was similarly converted to the appropriate value in nmols") |
 
 # Virtual cohort
@@ -126,8 +126,8 @@ n_per_arm <- 100L
 # inst/modeldb/specificDrugs/Morris_2011_artesunate.R):
 #   1 = depot         (first-order absorption arm, with lag)
 #   2 = central       (AS central; also zero-order arm input target)
-#   3 = central_dha   (DHA central)
-# rxSolve returns Cc and Cc_dha as columns in the output regardless of
+#   3 = central_dihydroart   (DHA central)
+# rxSolve returns Cc and Cc_dihydroart as columns in the output regardless of
 # the observation-row cmt label, so a single observation row per (id,
 # time) is sufficient -- we pick cmt = "Cc" for traceability.
 cmt_depot   <- 1L
@@ -194,7 +194,7 @@ sim <- rxode2::rxSolve(
   as.data.frame() |>
   dplyr::mutate(
     Cc_ng_per_mL     = Cc * 384.42 / 1000,
-    Cc_dha_ng_per_mL = Cc_dha * 284.35 / 1000
+    Cc_dha_ng_per_mL = Cc_dihydroart * 284.35 / 1000
   )
 ```
 
@@ -218,7 +218,7 @@ sim_typical <- rxode2::rxSolve(
   as.data.frame() |>
   dplyr::mutate(
     Cc_ng_per_mL     = Cc * 384.42 / 1000,
-    Cc_dha_ng_per_mL = Cc_dha * 284.35 / 1000
+    Cc_dha_ng_per_mL = Cc_dihydroart * 284.35 / 1000
   )
 ```
 
@@ -269,9 +269,9 @@ vpc_df <- sim |>
     Q05_as  = stats::quantile(Cc_ng_per_mL,     0.05, na.rm = TRUE),
     Q50_as  = stats::quantile(Cc_ng_per_mL,     0.50, na.rm = TRUE),
     Q95_as  = stats::quantile(Cc_ng_per_mL,     0.95, na.rm = TRUE),
-    Q05_dha = stats::quantile(Cc_dha_ng_per_mL, 0.05, na.rm = TRUE),
-    Q50_dha = stats::quantile(Cc_dha_ng_per_mL, 0.50, na.rm = TRUE),
-    Q95_dha = stats::quantile(Cc_dha_ng_per_mL, 0.95, na.rm = TRUE),
+    Q05_dihydroart = stats::quantile(Cc_dha_ng_per_mL, 0.05, na.rm = TRUE),
+    Q50_dihydroart = stats::quantile(Cc_dha_ng_per_mL, 0.50, na.rm = TRUE),
+    Q95_dihydroart = stats::quantile(Cc_dha_ng_per_mL, 0.95, na.rm = TRUE),
     .groups = "drop"
   )
 
@@ -281,7 +281,7 @@ vpc_long <- dplyr::bind_rows(
                      Q05 = Q05_as,  Q50 = Q50_as,  Q95 = Q95_as),
   vpc_df |>
     dplyr::transmute(time, treatment, species = "Dihydroartemisinin (DHA)",
-                     Q05 = Q05_dha, Q50 = Q50_dha, Q95 = Q95_dha)
+                     Q05 = Q05_dihydroart, Q50 = Q50_dihydroart, Q95 = Q95_dihydroart)
 )
 
 ggplot(vpc_long, aes(time, Q50, colour = treatment, fill = treatment)) +
@@ -309,7 +309,7 @@ pregnancy status so per-arm Cmax / AUC / half-life can be compared
 against the published apparent-clearance values.
 
 ```{r pknca-dha}
-sim_nca_dha <- sim |>
+sim_nca_dihydroart <- sim |>
   dplyr::filter(!is.na(Cc_dha_ng_per_mL)) |>
   dplyr::select(id, time, Cc = Cc_dha_ng_per_mL, treatment)
 
@@ -318,21 +318,21 @@ sim_nca_dha <- sim |>
 # 200 mg AS * (MW_DHA / MW_AS) = 200 * 284.35 / 384.42 = 147.94 mg DHA.
 dose_dha_mg <- 200 * 284.35 / 384.42
 
-dose_df_dha <- events |>
+dose_df_dihydroart <- events |>
   dplyr::filter(evid == 1L, cmt == "central") |>
   dplyr::mutate(amt = dose_dha_mg) |>
   dplyr::select(id, time, amt, treatment)
 
-conc_obj_dha <- PKNCA::PKNCAconc(
-  sim_nca_dha, Cc ~ time | treatment + id,
+conc_obj_dihydroart <- PKNCA::PKNCAconc(
+  sim_nca_dihydroart, Cc ~ time | treatment + id,
   concu = "ng/mL", timeu = "h"
 )
-dose_obj_dha <- PKNCA::PKNCAdose(
-  dose_df_dha, amt ~ time | treatment + id,
+dose_obj_dihydroart <- PKNCA::PKNCAdose(
+  dose_df_dihydroart, amt ~ time | treatment + id,
   doseu = "mg"
 )
 
-intervals_dha <- data.frame(
+intervals_dihydroart <- data.frame(
   start      = 0,
   end        = 12,
   cmax       = TRUE,
@@ -343,12 +343,12 @@ intervals_dha <- data.frame(
   cl.last    = TRUE
 )
 
-nca_data_dha <- PKNCA::PKNCAdata(conc_obj_dha, dose_obj_dha,
-                                  intervals = intervals_dha)
-nca_res_dha  <- PKNCA::pk.nca(nca_data_dha)
+nca_data_dihydroart <- PKNCA::PKNCAdata(conc_obj_dihydroart, dose_obj_dihydroart,
+                                  intervals = intervals_dihydroart)
+nca_res_dihydroart  <- PKNCA::pk.nca(nca_data_dihydroart)
 
 knitr::kable(
-  as.data.frame(summary(nca_res_dha)),
+  as.data.frame(summary(nca_res_dihydroart)),
   caption = "Simulated DHA NCA parameters by pregnancy status."
 )
 ```
@@ -408,10 +408,10 @@ auc_dha_np_predicted_mg <- 147.94 / 64.0          # mg*h/L
 auc_dha_p_predicted_mg  <- 147.94 / (64.0 * 1.423)  # mg*h/L
 
 # Pull simulated per-arm median AUClast (from PKNCA result above, DHA, ng*h/mL)
-nca_df <- as.data.frame(nca_res_dha$result) |>
+nca_df <- as.data.frame(nca_res_dihydroart$result) |>
   dplyr::filter(PPTESTCD %in% c("auclast", "aucinf.obs", "half.life",
                                 "cmax", "tmax", "cl.last"))
-median_auc_inf_dha <- nca_df |>
+median_auc_inf_dihydroart <- nca_df |>
   dplyr::filter(PPTESTCD == "aucinf.obs") |>
   dplyr::group_by(treatment) |>
   dplyr::summarise(med = stats::median(PPORRES, na.rm = TRUE), .groups = "drop")
@@ -436,12 +436,12 @@ comparison <- data.frame(
     sprintf("%.1f (typical-value structural)", t12_dha_np_sim),
     sprintf("%.1f (typical-value structural)", t12_dha_p_sim),
     sprintf("%.0f (median across cohort)",
-            median_auc_inf_dha$med[median_auc_inf_dha$treatment == "Non-pregnant"]),
+            median_auc_inf_dihydroart$med[median_auc_inf_dihydroart$treatment == "Non-pregnant"]),
     sprintf("%.0f (median across cohort)",
-            median_auc_inf_dha$med[median_auc_inf_dha$treatment == "Pregnant"]),
+            median_auc_inf_dihydroart$med[median_auc_inf_dihydroart$treatment == "Pregnant"]),
     sprintf("%.3f",
-            median_auc_inf_dha$med[median_auc_inf_dha$treatment == "Pregnant"] /
-              median_auc_inf_dha$med[median_auc_inf_dha$treatment == "Non-pregnant"])
+            median_auc_inf_dihydroart$med[median_auc_inf_dihydroart$treatment == "Pregnant"] /
+              median_auc_inf_dihydroart$med[median_auc_inf_dihydroart$treatment == "Non-pregnant"])
   )
 )
 
@@ -493,7 +493,7 @@ AUCinf ratio reproduces the 1/1.423 = 0.703 pregnancy effect exactly.
   (Methods, "Residual variability (RV) was modelled with an additive
   model for log-transformed data"). This maps to proportional residual
   error in nlmixr2's linear space per the package convention; `propSd`
-  and `propSd_dha` are the SD on the log scale (sqrt of the variances
+  and `propSd_dihydroart` are the SD on the log scale (sqrt of the variances
   in Table 2). Sibling models `Hendriksen_2013_artesunate` and
   `Birgersson_2019_artesunate` apply the same translation.
 * **Molar simulation; no MW conversion at AS to DHA step.** The source
@@ -504,7 +504,7 @@ AUCinf ratio reproduces the 1/1.423 = 0.703 pregnancy effect exactly.
   convert to nmol using AS MW = 384.42 g/mol; the vignette helper
   `dose_nmol <- 200e-3 / 384.42 * 1e9` shows the calculation. For
   display, simulated nmol/L concentrations are converted to ng/mL via
-  `Cc * 384.42 / 1000` (AS) and `Cc_dha * 284.35 / 1000` (DHA).
+  `Cc * 384.42 / 1000` (AS) and `Cc_dihydroart * 284.35 / 1000` (DHA).
 * **Weight not in the final model.** Morris 2011 tested weight on V2/F,
   CLM/F, and V3/F during covariate model building but did not retain
   any weight effect at the p < 0.001 backward-elimination threshold

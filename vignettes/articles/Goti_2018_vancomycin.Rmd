@@ -92,7 +92,7 @@ build_arm <- function(label, hemodial, crcl, id_offset) {
     cmt  = "central",
     rate = dose_amt_mg / 1,   # 1-hour infusion
     cohort   = label,
-    HEMODIAL = hemodial,
+    RRT_HEMODIAL_STATUS = hemodial,
     CRCL     = crcl,
     WT       = weight_kg
   )
@@ -105,7 +105,7 @@ build_arm <- function(label, hemodial, crcl, id_offset) {
       cmt      = NA_character_,
       rate     = 0,
       cohort   = label,
-      HEMODIAL = hemodial,
+      RRT_HEMODIAL_STATUS = hemodial,
       CRCL     = crcl,
       WT       = weight_kg
     )
@@ -130,7 +130,7 @@ mod <- readModelDb("Goti_2018_vancomycin")
 sim <- rxode2::rxSolve(
   mod,
   events = events,
-  keep   = c("cohort", "HEMODIAL", "CRCL", "WT")
+  keep   = c("cohort", "RRT_HEMODIAL_STATUS", "CRCL", "WT")
 ) |> as.data.frame()
 ```
 
@@ -142,7 +142,7 @@ mod_typical <- mod |> rxode2::zeroRe()
 sim_typical <- rxode2::rxSolve(
   mod_typical,
   events = events,
-  keep   = c("cohort", "HEMODIAL", "CRCL", "WT")
+  keep   = c("cohort", "RRT_HEMODIAL_STATUS", "CRCL", "WT")
 ) |> as.data.frame()
 ```
 
@@ -246,7 +246,7 @@ knitr::kable(vss_check, caption = "Vss = (Vc + Vp) / WT at WT = 70 kg vs Goti 20
   so the packaged model applies the same fixed-linear (WT/70) factor to
   Vp. Removing the Vp WT scaling has a small numerical effect on Vss
   at non-median weights but matches the prose less faithfully.
-- **HEMODIAL is time-fixed.** Goti 2018 used DIAL as a subject-level
+- **RRT_HEMODIAL_STATUS is time-fixed.** Goti 2018 used DIAL as a subject-level
   binary indicator because actual hemodialysis-session timestamps were
   not used (per Discussion limitations: "Limitations in the
   documentation prevented the usage of actual hemodialysis times").
