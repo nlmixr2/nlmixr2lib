@@ -694,6 +694,8 @@ navbar:
         href: articles/Feng_2012_higenamine.html
       - text: "HuHMFG1 (Royer 2010)"
         href: articles/Royer_2010_HuHMFG1.html
+      - text: "Hydroxyurea (Dong 2016)"
+        href: articles/Dong_2016_hydroxyurea.html
       - text: "Hydroxyurea (Paule 2011)"
         href: articles/Paule_2011_hydroxyurea.html
       - text: "Iclaprim (Lodise 2018)"
@@ -1984,6 +1986,7 @@ articles:
   - articles/Dodds_2005_rfxiii_cyno
   - articles/Dogterom_2018_asenapine
   - articles/DoldanMartelli_2013_EGF_IFN_chimera
+  - articles/Dong_2016_hydroxyurea
   - articles/Dorlo_2008_miltefosine
   - articles/Dorlo_2017_miltefosine
   - articles/Drweesh_2026_adalimumab
