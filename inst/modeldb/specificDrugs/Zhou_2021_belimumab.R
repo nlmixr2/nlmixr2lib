@@ -37,12 +37,12 @@ Zhou_2021_belimumab <- function() {
       notes              = "Saturable maturation effect on V1: factor AGE/(AGE+1.58). Approaches 1 in adults, ~0.79 in 6-year-olds (Zhou 2021 Table 2).",
       source_name        = "AGE"
     ),
-    RACE_NEAS = list(
+    RACE_ASIAN_NORTHEAST = list(
       description        = "North East Asian race indicator (Chinese, Japanese, or Korean heritage)",
       units              = "(binary)",
       type               = "binary",
       reference_category = "0 (non-North East Asian)",
-      notes              = "Multiplicative effect on V1 (factor 1.07) when RACE_NEAS = 1. Source column RAC4 (Zhou 2021 Table 2 footnote d).",
+      notes              = "Multiplicative effect on V1 (factor 1.07) when RACE_ASIAN_NORTHEAST = 1. Source column RAC4 (Zhou 2021 Table 2 footnote d). Renamed from canonical RACE_NEAS to RACE_ASIAN_NORTHEAST on 2026-06-19 per the canonical-register standardization audit (operator decision: spell out 'Northeast' rather than the opaque NEAS abbreviation).",
       source_name        = "RAC4"
     ),
     STUDY_LBSL = list(
@@ -91,7 +91,7 @@ Zhou_2021_belimumab <- function() {
     # Covariate effects on V1 (Zhou 2021 Table 2)
     e_ffm_vc  <-  0.891; label("FFM power exponent on V1 (reference FFM 40.69 kg)")               # Table 2: theta8
     e_stdy_vc <-  1.26;  label("Multiplicative factor on V1 when STUDY_LBSL = 1 (LBSL01/02)")      # Table 2: theta12
-    e_neas_vc <-  1.07;  label("Multiplicative factor on V1 when RACE_NEAS = 1 (North East Asian)") # Table 2: theta13 (printed as theta12 due to a labelling typo)
+    e_neas_vc <-  1.07;  label("Multiplicative factor on V1 when RACE_ASIAN_NORTHEAST = 1 (North East Asian)") # Table 2: theta13 (printed as theta12 due to a labelling typo)
     age50_vc  <-  1.58;  label("Age (years) at half-maximal V1 in the saturable AGE/(AGE+age50_vc) maturation term") # Table 2: theta14
 
     # IIV (omega^2 from Table 2; CL and V2 correlated, no IIV on Q)
@@ -112,7 +112,7 @@ Zhou_2021_belimumab <- function() {
 
     ffm_vc  <- (FFM / 40.69)^e_ffm_vc
     stdy_vc <- e_stdy_vc^STUDY_LBSL
-    neas_vc <- e_neas_vc^RACE_NEAS
+    neas_vc <- e_neas_vc^RACE_ASIAN_NORTHEAST
     age_vc  <- AGE / (AGE + age50_vc)
 
     # PK parameters

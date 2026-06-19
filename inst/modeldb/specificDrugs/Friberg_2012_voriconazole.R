@@ -20,7 +20,7 @@ Friberg_2012_voriconazole <- function() {
       units              = "years",
       type               = "continuous",
       reference_category = NULL,
-      notes              = "Used to derive a logit-scale shift on Vmax,inh for subjects under 12 years old (the AGE < 12 covariate of Table 3). The age 12 cutoff also matches the pediatric / adolescent population boundary used by the paper. Adult (study 5) status is derived from STDY_VORI rather than AGE because the paper uses study membership rather than an age boundary for adult-only effects.",
+      notes              = "Used to derive a logit-scale shift on Vmax,inh for subjects under 12 years old (the AGE < 12 covariate of Table 3). The age 12 cutoff also matches the pediatric / adolescent population boundary used by the paper. Adult (study 5) status is derived from STUDY_VORI rather than AGE because the paper uses study membership rather than an age boundary for adult-only effects.",
       source_name        = "AGE"
     ),
     CYP2C19_IM = list(
@@ -28,7 +28,7 @@ Friberg_2012_voriconazole <- function() {
       units              = "(binary)",
       type               = "binary",
       reference_category = "0 (CYP2C19 EM or UM)",
-      notes              = "1 = subject is a CYP2C19 heterozygous extensive metabolizer in the paper's nomenclature (modern intermediate metabolizer). The paper grouped HEM with PM because PM exposures in children and adolescents were not outliers relative to other subjects in studies 2-4. In adults (STDY_VORI == 5) the combined HEM-or-PM indicator forces Vmax,inh to 100% (fully blocked nonlinear clearance). Source 'CYP2C19 status' column with categories UM / EM / HEM / PM (Table 2); HEM maps to CYP2C19_IM = 1. Four children in study 3 and two adolescents in study 4 with missing CYP2C19 data were assumed to be EM (CYP2C19_IM = CYP2C19_PM = 0) per Table 2 footnote d.",
+      notes              = "1 = subject is a CYP2C19 heterozygous extensive metabolizer in the paper's nomenclature (modern intermediate metabolizer). The paper grouped HEM with PM because PM exposures in children and adolescents were not outliers relative to other subjects in studies 2-4. In adults (STUDY_VORI == 5) the combined HEM-or-PM indicator forces Vmax,inh to 100% (fully blocked nonlinear clearance). Source 'CYP2C19 status' column with categories UM / EM / HEM / PM (Table 2); HEM maps to CYP2C19_IM = 1. Four children in study 3 and two adolescents in study 4 with missing CYP2C19 data were assumed to be EM (CYP2C19_IM = CYP2C19_PM = 0) per Table 2 footnote d.",
       source_name        = "CYP2C19 status (HEM level)"
     ),
     CYP2C19_PM = list(
@@ -36,15 +36,15 @@ Friberg_2012_voriconazole <- function() {
       units              = "(binary)",
       type               = "binary",
       reference_category = "0 (CYP2C19 EM, UM, or IM)",
-      notes              = "1 = subject is a CYP2C19 poor metabolizer (two loss-of-function alleles). Combined with CYP2C19_IM in adults (STDY_VORI == 5) to force Vmax,inh = 100% (fully blocked nonlinear clearance). Source 'CYP2C19 status' column with categories UM / EM / HEM / PM (Table 2); PM maps to CYP2C19_PM = 1.",
+      notes              = "1 = subject is a CYP2C19 poor metabolizer (two loss-of-function alleles). Combined with CYP2C19_IM in adults (STUDY_VORI == 5) to force Vmax,inh = 100% (fully blocked nonlinear clearance). Source 'CYP2C19 status' column with categories UM / EM / HEM / PM (Table 2); PM maps to CYP2C19_PM = 1.",
       source_name        = "CYP2C19 status (PM level)"
     ),
-    STDY_VORI = list(
+    STUDY_VORI = list(
       description        = "Friberg 2012 voriconazole study indicator (integer 1-5)",
       units              = "(integer 1-5)",
       type               = "categorical",
       reference_category = "5 (healthy adult study)",
-      notes              = "Subject-level integer identifying which of the five pooled PK studies a subject belongs to: 1 / 2 / 3 = immunocompromised children (2 to <12 y), 4 = immunocompromised adolescents (12 to <17 y), 5 = healthy adults (22-55 y). Drives (i) the Study 1 pediatric typical-value modifier on Km and Vmax,1 (-0.382), (ii) the population-specific ka and Alag, (iii) the non-adult uplift on Q (+0.637), (iv) the F1 IIV magnitude (paper estimates separate omegas for adult vs non-adult), (v) the residual-error magnitude per study (with studies 3 and 4 sharing one magnitude), and (vi) the CL IIV scaling multiplier in non-adult studies (1 + 1.70). Each subject is assigned exactly one study; the value is fixed per subject. Population strata (child / adolescent / adult) are aligned with study membership (no crossovers between populations).",
+      notes              = "Subject-level integer identifying which of the five pooled PK studies a subject belongs to: 1 / 2 / 3 = immunocompromised children (2 to <12 y), 4 = immunocompromised adolescents (12 to <17 y), 5 = healthy adults (22-55 y). Drives (i) the Study 1 pediatric typical-value modifier on Km and Vmax,1 (-0.382), (ii) the population-specific ka and Alag, (iii) the non-adult uplift on Q (+0.637), (iv) the F1 IIV magnitude (paper estimates separate omegas for adult vs non-adult), (v) the residual-error magnitude per study (with studies 3 and 4 sharing one magnitude), and (vi) the CL IIV scaling multiplier in non-adult studies (1 + 1.70). Each subject is assigned exactly one study; the value is fixed per subject. Population strata (child / adolescent / adult) are aligned with study membership (no crossovers between populations). Renamed from canonical STDY_VORI to STUDY_VORI on 2026-06-19 per the canonical-register standardization audit (typo correction: STDY was a missing-vowel abbreviation of STUDY).",
       source_name        = "Study"
     ),
     ORAL_VORI = list(
@@ -52,7 +52,7 @@ Friberg_2012_voriconazole <- function() {
       units              = "(binary)",
       type               = "binary",
       reference_category = "0 (observation during IV phase or no dosing yet)",
-      notes              = "1 = observation collected when the most recent administered dose was oral (powder for oral suspension or tablet); 0 = observation collected when the most recent administered dose was IV. Per-observation (record-level) indicator. Used only in adults (STDY_VORI == 5) to switch the residual-error magnitude between IV-only (sigma_iv = 0.0912) and oral (sqrt(sigma_iv^2 + sigma_oral_extra^2) = sqrt(0.0912^2 + 0.132^2) = 0.160). Crossover studies (e.g. study 3 IV-then-oral) have ORAL_VORI = 0 on records during the IV period and ORAL_VORI = 1 on records during the oral period for the same subject; in studies that combine both arms the indicator is set per record from the most recent dose's route.",
+      notes              = "1 = observation collected when the most recent administered dose was oral (powder for oral suspension or tablet); 0 = observation collected when the most recent administered dose was IV. Per-observation (record-level) indicator. Used only in adults (STUDY_VORI == 5) to switch the residual-error magnitude between IV-only (sigma_iv = 0.0912) and oral (sqrt(sigma_iv^2 + sigma_oral_extra^2) = sqrt(0.0912^2 + 0.132^2) = 0.160). Crossover studies (e.g. study 3 IV-then-oral) have ORAL_VORI = 0 on records during the IV period and ORAL_VORI = 1 on records during the oral period for the same subject; in studies that combine both arms the indicator is set per record from the most recent dose's route.",
       source_name        = "Route (IV vs PO/POS)"
     )
   )
@@ -173,11 +173,11 @@ Friberg_2012_voriconazole <- function() {
   model({
     # ---- 1. Derived population and study indicators ----
     is_child           <- (AGE < 12)
-    is_stdy1_ped       <- (STDY_VORI == 1)
-    is_stdy4_adol      <- (STDY_VORI == 4)
-    is_stdy5_adult     <- (STDY_VORI == 5)
+    is_stdy1_ped       <- (STUDY_VORI == 1)
+    is_stdy4_adol      <- (STUDY_VORI == 4)
+    is_stdy5_adult     <- (STUDY_VORI == 5)
     is_not_stdy5       <- 1.0 - is_stdy5_adult
-    is_pediatric       <- (STDY_VORI <= 3) * 1.0
+    is_pediatric       <- (STUDY_VORI <= 3) * 1.0
     is_hem_or_pm_adult <- is_stdy5_adult * (CYP2C19_IM + CYP2C19_PM)
 
     # ---- 2. Vmax,inh (typical and HEM/PM-adult override) ----
@@ -253,9 +253,9 @@ Friberg_2012_voriconazole <- function() {
 
     expSdStdy5Combined <- sqrt(expSdStdy5Iv^2 + expSdStdy5Oral^2 * ORAL_VORI)
     w_typical <-
-      expSdStdy1         * (STDY_VORI == 1) +
-      expSdStdy2         * (STDY_VORI == 2) +
-      expSdStdy34        * ((STDY_VORI == 3) + (STDY_VORI == 4)) +
+      expSdStdy1         * (STUDY_VORI == 1) +
+      expSdStdy2         * (STUDY_VORI == 2) +
+      expSdStdy34        * ((STUDY_VORI == 3) + (STUDY_VORI == 4)) +
       expSdStdy5Combined * is_stdy5_adult
     w_indiv <- w_typical * exp(eta_re_nonadult * is_not_stdy5)
 

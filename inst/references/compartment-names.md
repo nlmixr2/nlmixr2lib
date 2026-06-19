@@ -1556,11 +1556,13 @@ Standard clinical-biomarker / endogenous-output compartments. Widely-recognised 
 - **Source aliases:** none.
 - **Example models:** `Kim_2006_igg_model.R`.
 
-### total_IgG (**canonical total serum IgG compartment**)
+### total_igg (**canonical total serum IgG compartment**)
 - **Type:** compartment
 - **Role:** Total serum IgG PD output.
-- **Source aliases:** none.
+- **Source aliases:**
+  - `total_IgG` -- prior canonical name (pre-2026-06-19 case standardization).
 - **Example models:** `Valenzuela_2025_nipocalimab.R`.
+- **Notes:** Renamed from `total_IgG` to `total_igg` on 2026-06-19 per the canonical-register standardization audit (operator decision: compartment names follow the all-lowercase nlmixr2 convention; the mixed-case `total_IgG` was an outlier).
 
 ### phe (**canonical phenylalanine PD output**)
 - **Type:** compartment
