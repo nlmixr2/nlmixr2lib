@@ -13,12 +13,12 @@ Chen_2022_guselkumab <- function() {
       notes              = "Power effect on CL/F and V/F per Chen 2022 Table 1 footnotes f and g; reference value 84 kg (median of pooled DISCOVER-1 + DISCOVER-2 PK analysis population). Time-fixed at baseline.",
       source_name        = "BWT"
     ),
-    DIAB = list(
+    DIS_DIAB = list(
       description        = "Diabetes mellitus comorbidity at baseline",
       units              = "(binary)",
       type               = "binary",
       reference_category = "0 (no diabetes mellitus comorbidity)",
-      notes              = "Multiplicative effect on CL/F per Chen 2022 Table 1 footnote f: CL/F = 0.596 * (BWT/84)^0.926 * 1.15^DIAB. With DIAB=1, CL/F is 15% higher than the non-diabetic reference (Results section, page 752, and Table 1). Diabetes-mellitus-positive comorbidity prevalence in the analysis population was approximately 9% (Results section).",
+      notes              = "Multiplicative effect on CL/F per Chen 2022 Table 1 footnote f: CL/F = 0.596 * (BWT/84)^0.926 * 1.15^DIS_DIAB. With DIS_DIAB=1, CL/F is 15% higher than the non-diabetic reference (Results section, page 752, and Table 1). Diabetes-mellitus-positive comorbidity prevalence in the analysis population was approximately 9% (Results section). Renamed from canonical DIAB to DIS_DIAB on 2026-06-19 per the canonical-register standardization audit.",
       source_name        = "DIAB"
     )
   )
@@ -43,17 +43,17 @@ Chen_2022_guselkumab <- function() {
   ini({
     # Structural parameters from Chen 2022 Table 1 (final population PK model).
     # Typical values are for the reference subject: 84 kg body weight (median),
-    # no diabetes comorbidity (DIAB = 0).
+    # no diabetes comorbidity (DIS_DIAB = 0).
     lcl <- log(0.596); label("Apparent clearance at reference covariates (CL/F, L/day)")               # Chen 2022 Table 1 (CL/F = 0.596 L/day for 84 kg, non-diabetic)
     lvc <- log(15.5);  label("Apparent central volume of distribution at reference covariates (V/F, L)") # Chen 2022 Table 1 (V/F = 15.5 L for 84 kg)
     lka <- log(0.572); label("First-order SC absorption rate constant (Ka, 1/day)")                    # Chen 2022 Table 1 (Ka = 0.572 1/day)
 
     # Covariate effect exponents and multipliers (Chen 2022 Table 1 / Table 1 footnotes f-g):
-    #   CL/F = 0.596 * (BWT/84)^0.926 * 1.15^DIAB
+    #   CL/F = 0.596 * (BWT/84)^0.926 * 1.15^DIS_DIAB
     #   V/F  = 15.5  * (BWT/84)^0.861
     e_wt_cl   <- 0.926; label("Power exponent of body weight on CL/F (unitless)")             # Chen 2022 Table 1 (BWT on CL/F)
     e_wt_vc   <- 0.861; label("Power exponent of body weight on V/F (unitless)")              # Chen 2022 Table 1 (BWT on V/F)
-    e_diab_cl <- 1.15;  label("Multiplier on CL/F for diabetes comorbidity (1.15^DIAB)")      # Chen 2022 Table 1 (Diabetes on CL/F = 1.15)
+    e_diab_cl <- 1.15;  label("Multiplier on CL/F for diabetes comorbidity (1.15^DIS_DIAB)")  # Chen 2022 Table 1 (Diabetes on CL/F = 1.15)
 
     # IIV. Table 1 reports IIV as %CV (linear scale) for log-normal IIV
     # entries; convert with omega^2 = log(CV^2 + 1).
@@ -77,9 +77,9 @@ Chen_2022_guselkumab <- function() {
     # Individual PK parameters. Reference subject: 84 kg body weight, no
     # diabetes comorbidity. Covariate forms per Chen 2022 Table 1
     # footnotes f (CL/F) and g (V/F):
-    #   CL/F_i = 0.596 * (BWT/84)^0.926 * 1.15^DIAB * exp(eta_CL)
-    #   V/F_i  = 15.5  * (BWT/84)^0.861             * exp(eta_V)
-    cl <- exp(lcl + etalcl) * (WT / 84)^e_wt_cl * e_diab_cl^DIAB
+    #   CL/F_i = 0.596 * (BWT/84)^0.926 * 1.15^DIS_DIAB * exp(eta_CL)
+    #   V/F_i  = 15.5  * (BWT/84)^0.861                 * exp(eta_V)
+    cl <- exp(lcl + etalcl) * (WT / 84)^e_wt_cl * e_diab_cl^DIS_DIAB
     vc <- exp(lvc + etalvc) * (WT / 84)^e_wt_vc
     ka <- exp(lka + etalka)
 

@@ -9,12 +9,12 @@ Sharma_2018_naltrexone_bupropion <- function() {
   )
 
   covariateData <- list(
-    T2DM = list(
+    DIS_DIAB = list(
       description = "Type-2 diabetes mellitus comorbidity indicator at study entry",
       units = "(binary)",
       type = "binary",
       reference_category = 0,
-      notes = "1 = obese subject with type-2 diabetes mellitus (from Sharma 2018 study 6, NB-304, which was the only included trial enrolling T2DM subjects -- 10.9% of the pooled 4591-subject analysis population); 0 = obese subject without diabetes (studies 1-5). Time-fixed per subject. Diabetes was implemented as a fixed covariate on Emax, kout, kpro, and baseline BW per Sharma 2018 Results (Covariate Analysis).",
+      notes = "1 = obese subject with type-2 diabetes mellitus (from Sharma 2018 study 6, NB-304, which was the only included trial enrolling T2DM subjects -- 10.9% of the pooled 4591-subject analysis population); 0 = obese subject without diabetes (studies 1-5). Time-fixed per subject. Diabetes was implemented as a fixed covariate on Emax, kout, kpro, and baseline BW per Sharma 2018 Results (Covariate Analysis). Source paper column name is T2DM (type-2-specific); ingested into the canonical DIS_DIAB column per the 2026-06-19 register standardization that merged the prior parallel T2DM canonical into DIS_DIAB.",
       source_name = "T2DM"
     ),
     RACE_BLACK = list(
@@ -163,18 +163,18 @@ Sharma_2018_naltrexone_bupropion <- function() {
     weeks_per_year <- 365.25 / 7   # 52.1786 weeks/year
 
     # ----- Typical-value parameters with covariate modulation (linear-fraction multiplicative) -----
-    kout_tv   <- exp(lkout)  * (1 + e_t2dm_kout * T2DM)
+    kout_tv   <- exp(lkout)  * (1 + e_t2dm_kout * DIS_DIAB)
     krel_tv   <- exp(lkrel)
     kde_tv    <- exp(lkde)
     dstim_tv  <- exp(ldstim) * (1 + e_race_black_dstim * RACE_BLACK) *
                                (1 + e_race_other_dstim * RACE_OTHER)
-    emax_tv   <- exp(lemax)  * (1 + e_t2dm_emax * T2DM)
+    emax_tv   <- exp(lemax)  * (1 + e_t2dm_emax * DIS_DIAB)
     et50_tv   <- exp(let50)
     ed50nal_tv <- exp(led50_nal)
     ed50bup_tv <- exp(led50_bup)
-    bw0_tv    <- exp(lbw0)   * (1 + e_t2dm_bw0 * T2DM)
+    bw0_tv    <- exp(lbw0)   * (1 + e_t2dm_bw0 * DIS_DIAB)
     # kpro is stored in kg/year and converted to kg/week for use with the per-week time axis.
-    kpro_kgwk_tv <- exp(lkpro_kgy) * (1 + e_t2dm_kpro * T2DM) / weeks_per_year
+    kpro_kgwk_tv <- exp(lkpro_kgy) * (1 + e_t2dm_kpro * DIS_DIAB) / weeks_per_year
 
     # ----- Individual parameters (log-normal IIV; kde and kpro carry no eta per the source) -----
     kout    <- kout_tv    * exp(etalkout)

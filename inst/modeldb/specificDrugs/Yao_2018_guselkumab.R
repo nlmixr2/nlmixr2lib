@@ -13,12 +13,12 @@ Yao_2018_guselkumab <- function() {
       notes              = "Power effect on CL/F and V/F per Yao 2018 Table 4 footnotes b and c; reference value 87.1 kg (median of pooled X-PLORE + VOYAGE 1 + VOYAGE 2 PopPK analysis population, Table 2). Time-fixed at baseline.",
       source_name        = "BWT"
     ),
-    DIAB = list(
+    DIS_DIAB = list(
       description        = "Past or current diabetes mellitus comorbidity",
       units              = "(binary)",
       type               = "binary",
       reference_category = "0 (no diabetes mellitus)",
-      notes              = "Multiplicative effect on CL/F per Yao 2018 Table 4 footnote b: CL/F = 0.516 * (BWT/87.1)^0.998 * 1.12^DIAB * 1.11^RACE. With DIAB=1, CL/F is 12% higher than the non-diabetic reference (Results section, page 622, and Table 4). Diabetes prevalence in the analysis population was 8.9% (Table 3).",
+      notes              = "Multiplicative effect on CL/F per Yao 2018 Table 4 footnote b: CL/F = 0.516 * (BWT/87.1)^0.998 * 1.12^DIS_DIAB * 1.11^RACE. With DIS_DIAB=1, CL/F is 12% higher than the non-diabetic reference (Results section, page 622, and Table 4). Diabetes prevalence in the analysis population was 8.9% (Table 3). Renamed from canonical DIAB to DIS_DIAB on 2026-06-19 per the canonical-register standardization audit.",
       source_name        = "DIAB"
     ),
     RACE_WHITE = list(
@@ -52,17 +52,17 @@ Yao_2018_guselkumab <- function() {
   ini({
     # Structural parameters from Yao 2018 Table 4 (final reduced PopPK model).
     # Typical values are for the reference subject: 87.1 kg body weight (median),
-    # no diabetes (DIAB = 0), White (RACE_WHITE = 1, equivalently source RACE = 0).
+    # no diabetes (DIS_DIAB = 0), White (RACE_WHITE = 1, equivalently source RACE = 0).
     lcl <- log(0.516); label("Apparent clearance at reference covariates (CL/F, L/day)")  # Yao 2018 Table 4 (CL/F = 0.516 L/day for 87.1 kg, non-diabetic, White)
     lvc <- log(13.5);  label("Apparent volume of distribution at reference covariates (V/F, L)")  # Yao 2018 Table 4 (V/F = 13.5 L for 87.1 kg)
     lka <- log(1.11);  label("First-order SC absorption rate constant (Ka, 1/day)")  # Yao 2018 Table 4 (Ka = 1.11 1/day)
 
     # Covariate effect exponents and multipliers (Yao 2018 Table 4 footnotes b and c):
-    #   CL/F = 0.516 * (BWT/87.1)^0.998 * 1.12^DIAB * 1.11^RACE       (RACE = 1 for non-White)
+    #   CL/F = 0.516 * (BWT/87.1)^0.998 * 1.12^DIS_DIAB * 1.11^RACE       (RACE = 1 for non-White)
     #   V/F  = 13.5  * (BWT/87.1)^0.829
     e_wt_cl   <- 0.998; label("Power exponent of body weight on CL/F (unitless)")  # Yao 2018 Table 4 footnote b
     e_wt_vc   <- 0.829; label("Power exponent of body weight on V/F (unitless)")   # Yao 2018 Table 4 footnote c
-    e_diab_cl <- 1.12;  label("Multiplier on CL/F for diabetes (1.12^DIAB)")        # Yao 2018 Table 4 footnote b
+    e_diab_cl <- 1.12;  label("Multiplier on CL/F for diabetes (1.12^DIS_DIAB)")    # Yao 2018 Table 4 footnote b
     e_race_cl <- 1.11;  label("Multiplier on CL/F for non-White race (1.11^(1-RACE_WHITE))")  # Yao 2018 Table 4 footnote b
 
     # IIV. Yao 2018 Table 4 reports IIV as %CV with explicit footnote
@@ -88,11 +88,11 @@ Yao_2018_guselkumab <- function() {
   model({
     # Individual PK parameters. Reference subject: 87.1 kg, no diabetes, White.
     # Covariate forms per Yao 2018 Table 4 footnotes b (CL/F) and c (V/F):
-    #   CL/F_i = 0.516 * (BWT/87.1)^0.998 * 1.12^DIAB * 1.11^(1 - RACE_WHITE) * exp(eta_CL)
-    #   V/F_i  = 13.5  * (BWT/87.1)^0.829                                    * exp(eta_V)
+    #   CL/F_i = 0.516 * (BWT/87.1)^0.998 * 1.12^DIS_DIAB * 1.11^(1 - RACE_WHITE) * exp(eta_CL)
+    #   V/F_i  = 13.5  * (BWT/87.1)^0.829                                        * exp(eta_V)
     # The race factor uses (1 - RACE_WHITE) because the canonical RACE_WHITE
     # column inverts Yao's source RACE encoding (see covariateData notes).
-    cl <- exp(lcl + etalcl) * (WT / 87.1)^e_wt_cl * e_diab_cl^DIAB * e_race_cl^(1 - RACE_WHITE)
+    cl <- exp(lcl + etalcl) * (WT / 87.1)^e_wt_cl * e_diab_cl^DIS_DIAB * e_race_cl^(1 - RACE_WHITE)
     vc <- exp(lvc + etalvc) * (WT / 87.1)^e_wt_vc
     ka <- exp(lka + etalka)
 
