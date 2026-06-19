@@ -7,7 +7,7 @@ Mukai_2019_mogamulizumab <- function() {
   covariateData <- list(
     ALB = list(
       description        = "Serum albumin concentration",
-      units              = "g/dL",
+      units = "g/L",
       type               = "continuous",
       reference_category = NULL,
       notes              = "Baseline or time-varying. Inversely related to CL and V2. Reference value 4.0 g/dL.",
@@ -100,18 +100,23 @@ Mukai_2019_mogamulizumab <- function() {
   })
 
   model({
+    # SI -> US-convention unit conversion (canonical ALB is in SI g/L per the
+    # 2026-06-19 register standardization audit; the original calibration
+    # used the g/dL reference value, so convert inline here).
+    alb_gdL <- ALB * 0.1  # SI g/L -> US-convention g/dL (factor 0.1)
+
     # Reference covariate values (Table 6)
     alb_ref <- 4.0   # g/dL
     ast_ref <- 24    # U/L
     bsa_ref <- 1.82  # m^2
 
     # Covariate effects
-    alb_cl_effect    <- (ALB / alb_ref)^e_alb_cl
+    alb_cl_effect    <- (alb_gdL / alb_ref)^e_alb_cl
     ast_cl_effect    <- (AST / ast_ref)^e_ast_cl
     hepimp_cl_effect <- 1 + (e_hepimp - 1) * HEPIMP  # 1 when HEPIMP=0, 1.14 when HEPIMP=1
     sex_cl_effect    <- 1 + (e_sexf - 1) * SEXF      # 1 when SEXF=0 (male), 0.768 when SEXF=1 (female)
     bsa_vc_effect    <- (BSA / bsa_ref)^e_bsa_vc
-    alb_vp_effect    <- (ALB / alb_ref)^e_alb_vp
+    alb_vp_effect    <- (alb_gdL / alb_ref)^e_alb_vp
 
     # Individual PK parameters
     cl <- exp(lcl + etalcl) * alb_cl_effect * ast_cl_effect * hepimp_cl_effect * sex_cl_effect
