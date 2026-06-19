@@ -42,7 +42,7 @@ Billard_1995_methoxsalen_blood <- function() {
     ),
     ALB = list(
       description = "Serum albumin",
-      units       = "g/dL",
+      units = "g/L",
       type        = "continuous",
       notes       = "Screened (Methods: Compartmental analysis paragraph) but not retained."
     )
