@@ -916,6 +916,8 @@ navbar:
         href: articles/Zhang_2012_lopinavir_ritonavir.html
       - text: "Lopinavir ritonavir (Zhang 2013)"
         href: articles/Zhang_2013_lopinavir_ritonavir.html
+      - text: "Lopinavir ritonavir pedi (Zhang 2012)"
+        href: articles/Zhang_2012_lopinavir_ritonavir_pedi.html
       - text: "Lopinavir unbound (Fauchet 2015)"
         href: articles/Fauchet_2015_lopinavir.html
       - text: "LorenzosOil (Ahmed 2016)"
@@ -2893,6 +2895,7 @@ articles:
   - articles/Zhang_2011_nutlin3a
   - articles/Zhang_2012_bivalirudin
   - articles/Zhang_2012_lopinavir_ritonavir
+  - articles/Zhang_2012_lopinavir_ritonavir_pedi
   - articles/Zhang_2013_lopinavir_ritonavir
   - articles/Zhang_2016_rilotumumab
   - articles/Zhang_2018_flurbiprofen

@@ -248,20 +248,10 @@ rounding, confirming the structural model and parameter encoding.
 # Use rxode2::zeroRe to remove IIV; the validation here is the
 # typical-value behavior across age strata and across CSF protein levels.
 mod_typical <- rxode2::zeroRe(mod)
-# useLinCmt = FALSE forces the ODE-solve path. This model has two ODE
-# states (central, csf) plus an algebraic observable Ccsf <- csf / vcsf.
-# rxode2's automatic ODE -> linCmt optimisation collapses the `central`
-# sub-system into an analytic linCmtA() solution; the secondary state
-# `csf` is then no longer a solved state and its reference inside the
-# Ccsf observable is demoted to a required input parameter, which makes
-# rxSolve abort with "parameter(s) required for solving: csf". Solving
-# the ODE system directly keeps `csf` as a state and returns both Cc and
-# Ccsf columns on every observation row.
 sim <- rxode2::rxSolve(
   object = mod_typical, events = events,
   keep   = c("cohort", "stratum", "dose_mg", "q_h", "WT", "PAGE",
-             "CREAT", "CREAT_REF", "CSF_TPRO"),
-  useLinCmt = FALSE
+             "CREAT", "CREAT_REF", "CSF_TPRO")
 ) |>
   as.data.frame()
 ```

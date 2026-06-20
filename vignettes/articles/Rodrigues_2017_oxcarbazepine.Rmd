@@ -129,18 +129,12 @@ weight_min <- 12.7
 weight_max <- 56
 weight_med <- 23
 
-# Dose at the ODE state `depot` and observe at `central` (their
-# `d/dt(...)` names), never at an algebraic observable (`Cc`, `Cc_mhd`).
-# Every rxSolve below is called with `useLinCmt = FALSE`: the parent
-# depot + central + peripheral1 chain matches a standard
-# absorption/2-compartment pattern, so rxode2 would otherwise
-# auto-convert it to the analytic `linCmt()` solution and drop `central`
-# as an explicit ODE state -- but the metabolite compartment depends on
-# `central` (`d/dt(central_mhd) <- kel*central - ...`), so the conversion
-# breaks `central_mhd` ("parameter(s) required for solving:
-# central_mhd"). Forcing full ODE solving keeps `central` explicit.
-# rxSolve still returns both Cc and Cc_mhd as columns on every
-# observation row.
+# Observe at the ODE state `central` with dvid = 1L. The model body has
+# two algebraic observables (Cc from central, Cc_mhd from the
+# central_mhd state) in residual tildes; rxUi auto-injects compartment
+# slots for them after the ODE-state slots, so `cmt = "Cc"` would
+# target an injected slot rather than the ODE state. rxSolve still
+# returns both Cc and Cc_mhd as columns on every observation row.
 make_cohort <- function(n, dose_mg_per_kg, eiaed_prevalence,
                         regimen, id_offset = 0L) {
   weights <- pmin(pmax(exp(rnorm(n, mean = log(weight_med), sd = 0.35)),
@@ -184,7 +178,6 @@ sim_sd <- rxode2::rxSolve(
   object  = mod,
   events  = events_sd,
   keep    = c("WT", "CONMED_EIAED", "regimen"),
-  useLinCmt = FALSE,
   returnType = "data.frame"
 ) |>
   filter(time > 0)
@@ -198,7 +191,6 @@ sim_sd_typical <- rxode2::rxSolve(
   object  = rxode2::zeroRe(mod),
   events  = events_sd,
   keep    = c("WT", "CONMED_EIAED", "regimen"),
-  useLinCmt = FALSE,
   returnType = "data.frame"
 ) |>
   filter(time > 0)
@@ -235,7 +227,6 @@ sim_typ <- rxode2::rxSolve(
   object  = rxode2::zeroRe(mod),
   events  = ev_typ,
   keep    = c("WT", "CONMED_EIAED", "regimen"),
-  useLinCmt = FALSE,
   returnType = "data.frame"
 ) |>
   filter(time > 0)
@@ -432,7 +423,6 @@ stopifnot(!anyDuplicated(unique(ev_ss[, c("id", "time", "evid")])))
 sim_ss <- rxode2::rxSolve(
   object = mod, events = ev_ss,
   keep   = c("WT", "CONMED_EIAED", "cell", "dose_per_kg_day"),
-  useLinCmt = FALSE,
   returnType = "data.frame"
 ) |>
   dplyr::filter(time > 0)

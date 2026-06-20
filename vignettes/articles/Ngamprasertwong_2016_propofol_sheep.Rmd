@@ -96,16 +96,12 @@ inf2_amt_mg  <- inf2_rate_mg * 90            # mg total over 60-150 min
 
 obs_times <- c(0, 5, 15, 25, 60, 75, 100, 110, 150, 180)
 
-# Dose and observe at the ODE state `central` (its `d/dt(central)`
-# name), never at an algebraic observable (`Cc`, `Cfetus`). rxSolve is
-# called below with `useLinCmt = FALSE`: the maternal central +
-# peripheral1 pair matches a standard 2-compartment pattern, so rxode2
-# would otherwise auto-convert it to the analytic `linCmt()` solution
-# and drop `central` as an explicit ODE state -- but the `fetus`
-# compartment depends on `central` (`d/dt(fetus) <- k1f*central - ...`),
-# so the conversion breaks `fetus` ("parameter(s) required for solving:
-# fetus"). Forcing full ODE solving keeps `central` explicit. rxSolve
-# still returns both Cc and Cfetus as columns on every observation row.
+# Observe at the ODE state `central` with dvid = 1L. The model body has
+# two algebraic observables (Cc from central, Cfetus from the fetus
+# state) in residual tildes; rxUi auto-injects compartment slots for
+# them after the ODE-state slots, so `cmt = "Cc"` would target an
+# injected slot rather than an ODE state. rxSolve still returns both Cc
+# and Cfetus as columns on every observation row.
 events <- dplyr::bind_rows(
   data.frame(id = 1L, time = 0L,  evid = 1L, amt = bolus_mg,    rate = 0,
              cmt  = "central", HR = HR0, dvid = NA_integer_),
@@ -127,8 +123,7 @@ mod <- readModelDb("Ngamprasertwong_2016_propofol_sheep") |> rxode2::rxode()
 # Typical-subject simulation: zero out random effects to reproduce the
 # cohort-mean concentration time course shown in Table 1 / Fig 2.
 mod_typ <- rxode2::zeroRe(mod)
-sim_typ <- rxode2::rxSolve(mod_typ, events = events, keep = "HR",
-                           useLinCmt = FALSE) |>
+sim_typ <- rxode2::rxSolve(mod_typ, events = events, keep = "HR") |>
   as.data.frame()
 ```
 
@@ -230,8 +225,7 @@ events_cohort <- purrr::map_dfr(seq_len(n_sim), function(i) {
   dplyr::arrange(id, time, dplyr::desc(evid))
 
 sim_cohort <- rxode2::rxSolve(mod, events = events_cohort,
-                              keep = c("HR", "treatment"),
-                              useLinCmt = FALSE) |>
+                              keep = c("HR", "treatment")) |>
   as.data.frame()
 
 # Maternal Cc NCA: AUClast over 0-180 min (the observation window) plus
