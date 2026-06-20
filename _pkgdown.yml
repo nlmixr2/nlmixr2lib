@@ -484,6 +484,8 @@ navbar:
         href: articles/Robarge_2017_efavirenz.html
       - text: "Efavirenz (Salem 2014)"
         href: articles/Salem_2014_efavirenz.html
+      - text: "Efavirenz (Sanchez 2011)"
+        href: articles/Sanchez_2011_efavirenz.html
       - text: "Eflornithine rat (Jansson 2008)"
         href: articles/Jansson_2008_eflornithine.html
       - text: "EGF IFN chimera (DoldanMartelli 2013)"
@@ -2442,6 +2444,7 @@ articles:
   - articles/Salinger_2013_magnesiumSulfate
   - articles/Sampson_2014_azithromycin
   - articles/SanchezPena_2005_enoxaparin
+  - articles/Sanchez_2011_efavirenz
   - articles/Sanghavi_2020_ipilimumab
   - articles/Sanhajariya_2018_snake_venom
   - articles/Sarashina_2005_epinastine
