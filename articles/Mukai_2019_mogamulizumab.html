@@ -1131,7 +1131,7 @@ published trial demographics (Table 2).</p>
 <span>  id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">n_subjects</span><span class="op">)</span>,</span>
 <span>  <span class="co"># Demographics from Table 2</span></span>
 <span>  WT <span class="op">=</span> <span class="fu">rtnorm</span><span class="op">(</span><span class="va">n_subjects</span>, mean <span class="op">=</span> <span class="fl">73.6</span>, sd <span class="op">=</span> <span class="fl">18.5</span>, lower <span class="op">=</span> <span class="fl">36.0</span>, upper <span class="op">=</span> <span class="fl">149.7</span><span class="op">)</span>,</span>
-<span>  ALB <span class="op">=</span> <span class="fu">rtnorm</span><span class="op">(</span><span class="va">n_subjects</span>, mean <span class="op">=</span> <span class="fl">3.9</span>, sd <span class="op">=</span> <span class="fl">0.5</span>, lower <span class="op">=</span> <span class="fl">1.7</span>, upper <span class="op">=</span> <span class="fl">5.2</span><span class="op">)</span>,</span>
+<span>  ALB <span class="op">=</span> <span class="fu">rtnorm</span><span class="op">(</span><span class="va">n_subjects</span>, mean <span class="op">=</span> <span class="fl">39</span>, sd <span class="op">=</span> <span class="fl">5</span>, lower <span class="op">=</span> <span class="fl">17</span>, upper <span class="op">=</span> <span class="fl">52</span><span class="op">)</span>,</span>
 <span>  AST <span class="op">=</span> <span class="fu">rtnorm</span><span class="op">(</span><span class="va">n_subjects</span>, mean <span class="op">=</span> <span class="fl">28.9</span>, sd <span class="op">=</span> <span class="fl">18.6</span>, lower <span class="op">=</span> <span class="fl">8.0</span>, upper <span class="op">=</span> <span class="fl">199.0</span><span class="op">)</span>,</span>
 <span>  BSA <span class="op">=</span> <span class="fu">rtnorm</span><span class="op">(</span><span class="va">n_subjects</span>, mean <span class="op">=</span> <span class="fl">1.83</span>, sd <span class="op">=</span> <span class="fl">0.27</span>, lower <span class="op">=</span> <span class="fl">1.19</span>, upper <span class="op">=</span> <span class="fl">2.72</span><span class="op">)</span>,</span>
 <span>  SEXF <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html" class="external-link">rbinom</a></span><span class="op">(</span><span class="va">n_subjects</span>, <span class="fl">1</span>, prob <span class="op">=</span> <span class="fl">0.459</span><span class="op">)</span>,</span>
@@ -1193,7 +1193,7 @@ published trial demographics (Table 2).</p>
 <span><span class="va">events_typical</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="op">(</span></span>
 <span>  id <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  WT <span class="op">=</span> <span class="fl">73.6</span>,</span>
-<span>  ALB <span class="op">=</span> <span class="fl">4.0</span>,</span>
+<span>  ALB <span class="op">=</span> <span class="fl">40</span>,</span>
 <span>  AST <span class="op">=</span> <span class="fl">24</span>,</span>
 <span>  BSA <span class="op">=</span> <span class="fl">1.82</span>,</span>
 <span>  SEXF <span class="op">=</span> <span class="fl">0</span>,</span>
@@ -1271,7 +1271,7 @@ Cmax 43 µg/mL, half-life 17.5 days (page 59, Introduction).</p>
 <span><span class="va">events_sd</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="op">(</span></span>
 <span>  id <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  WT <span class="op">=</span> <span class="fl">73.6</span>,</span>
-<span>  ALB <span class="op">=</span> <span class="fl">4.0</span>,</span>
+<span>  ALB <span class="op">=</span> <span class="fl">40</span>,</span>
 <span>  AST <span class="op">=</span> <span class="fl">24</span>,</span>
 <span>  BSA <span class="op">=</span> <span class="fl">1.82</span>,</span>
 <span>  SEXF <span class="op">=</span> <span class="fl">0</span>,</span>

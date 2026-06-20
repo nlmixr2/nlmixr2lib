@@ -1192,7 +1192,7 @@ subject.</p>
 <span>  BSA      <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmin</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n_subj</span>, <span class="fl">1.70</span>, <span class="fl">0.18</span><span class="op">)</span>, <span class="fl">1.20</span><span class="op">)</span>, <span class="fl">2.40</span><span class="op">)</span>,</span>
 <span>  ALB      <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmin</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n_subj</span>, <span class="fl">39.1</span>, <span class="fl">4.5</span><span class="op">)</span>, <span class="fl">25</span><span class="op">)</span>, <span class="fl">52</span><span class="op">)</span>,   <span class="co"># g/L</span></span>
 <span>  HGB      <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmin</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n_subj</span>, <span class="fl">118</span>,  <span class="fl">16</span><span class="op">)</span>,  <span class="fl">70</span><span class="op">)</span>, <span class="fl">170</span><span class="op">)</span>,  <span class="co"># g/L</span></span>
-<span>  TBILI    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmin</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Lognormal.html" class="external-link">rlnorm</a></span><span class="op">(</span><span class="va">n_subj</span>, <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fl">0.45</span><span class="op">)</span>, <span class="fl">0.45</span><span class="op">)</span>, <span class="fl">0.10</span><span class="op">)</span>, <span class="fl">2.00</span><span class="op">)</span>, <span class="co"># mg/dL</span></span>
+<span>  TBILI    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmin</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Lognormal.html" class="external-link">rlnorm</a></span><span class="op">(</span><span class="va">n_subj</span>, <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span> <span class="fl">7.695</span><span class="op">)</span>,  <span class="fl">7.695</span><span class="op">)</span>,   <span class="fl">1.71</span><span class="op">)</span>,   <span class="fl">34.2</span><span class="op">)</span>, <span class="co"># mg/dL</span></span>
 <span>  SEXF     <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html" class="external-link">rbinom</a></span><span class="op">(</span><span class="va">n_subj</span>, <span class="fl">1</span>, <span class="fl">0.34</span><span class="op">)</span>,          <span class="co"># ~34% female in phase 3 SPOTLIGHT/GLOW</span></span>
 <span>  PRIOR_GAST     <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html" class="external-link">rbinom</a></span><span class="op">(</span><span class="va">n_subj</span>, <span class="fl">1</span>, <span class="fl">0.30</span><span class="op">)</span>,          <span class="co"># ~30% prior gastrectomy</span></span>
 <span>  CONMED_EOX <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html" class="external-link">rbinom</a></span><span class="op">(</span><span class="va">n_subj</span>, <span class="fl">1</span>, <span class="fl">0.04</span><span class="op">)</span>           <span class="co"># EOX used in a small subset</span></span>
@@ -1400,7 +1400,7 @@ Cmin, AUClast ratios (Q2W / Q3W) against Yamada 2025 Table 2 GMRs
 <td align="left">100</td>
 <td align="left">6160 [39.0]</td>
 <td align="left">234 [26.1]</td>
-<td align="left">87.6 [60.4]</td>
+<td align="left">87.6 [60.3]</td>
 <td align="left">30.0 [30.0, 30.0]</td>
 </tr>
 <tr class="even">
@@ -1409,8 +1409,8 @@ Cmin, AUClast ratios (Q2W / Q3W) against Yamada 2025 Table 2 GMRs
 <td align="left">Q3W_800_600</td>
 <td align="left">100</td>
 <td align="left">5920 [37.2]</td>
-<td align="left">326 [19.5]</td>
-<td align="left">59.7 [77.3]</td>
+<td align="left">326 [19.8]</td>
+<td align="left">59.7 [76.9]</td>
 <td align="left">22.0 [22.0, 22.0]</td>
 </tr>
 </tbody>
@@ -1469,7 +1469,7 @@ Cmin, AUClast ratios (Q2W / Q3W) against Yamada 2025 Table 2 GMRs
 </tr>
 <tr class="even">
 <td align="left">Cmin (Ctrough)</td>
-<td align="right">1.342</td>
+<td align="right">1.341</td>
 <td align="right">1.192</td>
 </tr>
 <tr class="odd">

@@ -135,7 +135,7 @@ cohort <- tibble(
   id = seq_len(n_sub),
   # Albumin (g/dL): Table 1 median 3.9 g/dL, range 2.1-4.7. Use a truncated normal
   # sampler tuned to the cohort.
-  ALB = pmin(pmax(rnorm(n_sub, mean = 3.9, sd = 0.45), 2.1), 4.7),
+  ALB = pmin(pmax(rnorm(n_sub, mean = 39, sd =    4.5), 21), 47),
   # Age (years): Table 1 median 57 years, range 24-85.
   AGE = pmin(pmax(round(rnorm(n_sub, mean = 57, sd = 12)), 24), 85),
   # BSA (m^2): Table 1 median 1.9 m^2, range 1.3-2.4. Used to convert
@@ -156,7 +156,7 @@ knitr::kable(
 
 | Covariate   | Median |   Min |  Max |
 |:------------|-------:|------:|-----:|
-| ALB (g/dL)  |   3.89 |  2.66 |  4.7 |
+| ALB (g/dL)  |  38.85 | 26.55 | 47.0 |
 | AGE (years) |  59.00 | 25.00 | 85.0 |
 | BSA (m^2)   |   1.89 |  1.30 |  2.4 |
 

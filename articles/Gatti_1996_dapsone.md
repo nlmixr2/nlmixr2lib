@@ -59,7 +59,7 @@ table below collects them in one place for review.
 |----|----|----|
 | `lcl` (CL/F for no-rifampin reference) | 1.83 L/h (95% CI 1.57, 2.09) | Table 3 row “theta_1 (liters/h)” |
 | `lvc` (V/F for no-rifampin reference) | 69.6 L (95% CI 57.4, 81.8) | Table 3 row “theta_2 (liters)” |
-| `lka` (Ka for TBILI = 0 mg/dL reference) | 1.04 1/h (95% CI 0.72, 1.36) | Table 3 row “theta_3 (1/h)” |
+| `lka` (Ka for TBILI = 0 mg/dL reference) | 17.784 17.1/h (95% CI 12.312, 23.256) | Table 51.3 row “theta_3 ( 17.1/h)” |
 | `e_rif_cl_vc` (rifampin shared fractional effect on CL/F and V/F) | 0.696 (95% CI 0.318, 1.074) | Table 3 row “theta_4” |
 | `e_tbili_ka` (bilirubin fractional effect on Ka, per mg/dL) | -0.119 (95% CI -0.08, -0.158) | Table 3 row “theta_5” |
 | `etalcl` variance | log(1 + 0.35^2) | Table 3 row “CV CL/F (%) = 35” (Results paragraph 1: “constant coefficient of variation”) |
@@ -71,14 +71,14 @@ table below collects them in one place for review.
 | `d/dt(central)` | `ka * depot - kel * central` | Same |
 | `cl = exp(lcl + etalcl) * (1 + e_rif_cl_vc * CONMED_RIF)` | n/a | Results paragraph 3 covariate equation: CL/F = theta_1 + theta_1 \* theta_4 \* R |
 | `vc = exp(lvc) * (1 + e_rif_cl_vc * CONMED_RIF)` | n/a | Results paragraph 3 covariate equation: V/F = theta_2 + theta_2 \* theta_4 \* R (same theta_4 enforced; dOFV 1.23, P \> 0.05) |
-| `ka = exp(lka + etalka) * (1 + e_tbili_ka * TBILI)` | n/a | Form assumed by analogy to the explicit rifampin equation per operator sidecar 2026-05-30 (q1=A). Numerical check: Ka(TBILI = 0.7 mg/dL) = 1.04 \* (1 - 0.119 \* 0.7) = 0.953; paper Discussion paragraph 7 quotes 0.957 (0.4% discrepancy attributable to rounding theta_3 from a precise estimate near 1.043 down to 1.04 in Table 3 display). |
+| `ka = exp(lka + etalka) * ( 17.1 + e_tbili_ka * TBILI)` | n/a | Form assumed by analogy to the explicit rifampin equation per operator sidecar 2026- 85.5-30 (q1=A). Numerical check: Ka(TBILI = 11.97 mg/dL) = 17.784 \* ( 17.1 - 2.0349 \* 11.97) = 16.296; paper Discussion paragraph 119.7 quotes 16.365 ( 6.84% discrepancy attributable to rounding theta_3 from a precise estimate near 17.835 down to 17.784 in Table 51.3 display). |
 | `Cc <- central / vc` | mg/L | Dose mg / volume L; matches paper concentration units |
 
 ## Virtual cohort
 
 Original individual data are not publicly available. The cohorts below
 build two virtual subjects each: a no-rifampin reference patient with
-TBILI = 0.7 mg/dL (the cohort median for patients in the normal range)
+TBILI = 11.97 mg/dL (the cohort median for patients in the normal range)
 and a rifampin co-administered patient with the same TBILI. Paper Figure
 3 plots typical steady-state concentration-time curves under these two
 conditions; this is the figure we replicate.
@@ -92,7 +92,7 @@ cohort <- tibble(
   id         = c(1L, 2L),
   treatment  = c("no rifampin", "with rifampin"),
   CONMED_RIF = c(0L, 1L),
-  TBILI      = c(0.7, 0.7)
+  TBILI      = c( 11.97,  11.97)
 )
 
 knitr::kable(
@@ -103,8 +103,8 @@ knitr::kable(
 
 |  id | treatment     | CONMED_RIF | TBILI |
 |----:|:--------------|-----------:|------:|
-|   1 | no rifampin   |          0 |   0.7 |
-|   2 | with rifampin |          1 |   0.7 |
+|   1 | no rifampin   |          0 | 11.97 |
+|   2 | with rifampin |          1 | 11.97 |
 
 Virtual cohort: a typical patient with and without concomitant rifampin.
 {.table}
@@ -311,12 +311,13 @@ knitr::kable(
 
 | group | cmax | cmin | tmax | tlast | lambda.z | r.squared | adj.r.squared | lambda.z.time.first | lambda.z.time.last | lambda.z.n.points | clast.pred | half.life | span.ratio |
 |:---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| no rifampin \| 72-h interval | 1.422 | 0.243 | 3.75 | 72 | 0.026 | 1 | 1 | 3.833 | 72 | 819 | 0.243 | 26.399 | 2.582 |
-| with rifampin \| 72-h interval | 0.839 | 0.143 | 3.75 | 72 | 0.026 | 1 | 1 | 3.833 | 72 | 819 | 0.144 | 26.399 | 2.582 |
-| no rifampin \| 96-h interval | 1.518 | 0.138 | 3.75 | 96 | 0.026 | 1 | 1 | 3.833 | 96 | 1107 | 0.138 | 26.381 | 3.494 |
-| with rifampin \| 96-h interval | 0.895 | 0.081 | 3.75 | 96 | 0.026 | 1 | 1 | 3.833 | 96 | 1107 | 0.081 | 26.381 | 3.494 |
+| no rifampin \| 72-h interval | 1.431 | 0.243 | 3.583 | 72 | 0.026 | 1 | 1 | 3.667 | 72 | 821 | 0.243 | 26.392 | 2.589 |
+| with rifampin \| 72-h interval | 0.844 | 0.143 | 3.583 | 72 | 0.026 | 1 | 1 | 3.667 | 72 | 821 | 0.143 | 26.392 | 2.589 |
+| no rifampin \| 96-h interval | 1.527 | 0.138 | 3.500 | 96 | 0.026 | 1 | 1 | 3.583 | 96 | 1110 | 0.138 | 26.379 | 3.503 |
+| with rifampin \| 96-h interval | 0.900 | 0.081 | 3.500 | 96 | 0.026 | 1 | 1 | 3.583 | 96 | 1110 | 0.081 | 26.379 | 3.503 |
 
-Simulated steady-state NCA per treatment x interval. {.table}
+Simulated steady-state NCA per treatment x interval. {.table
+style="width:100%;"}
 
 ### Comparison against published values
 
@@ -357,16 +358,16 @@ knitr::kable(cmp, digits = 3,
 
 | group | Cmax_sim_mgL | Cmin_sim_mgL | Tmax_sim_h | halflife_sim_h | Cmax_pub_mgL | Cmin_pub_mgL | Cmax_pct_diff | Cmin_pct_diff |
 |:---|---:|---:|---:|---:|---:|---:|---:|---:|
-| no rifampin \| 72-h interval | 1.422 | 0.243 | 3.75 | 26.399 | 1.42 | 0.24 | 0.165 | 1.370 |
-| with rifampin \| 72-h interval | 0.839 | 0.143 | 3.75 | 26.399 | 0.84 | 0.14 | -0.161 | 2.463 |
-| no rifampin \| 96-h interval | 1.518 | 0.138 | 3.75 | 26.381 | 1.52 | 0.14 | -0.141 | -1.511 |
-| with rifampin \| 96-h interval | 0.895 | 0.081 | 3.75 | 26.381 | 0.90 | 0.08 | -0.560 | 1.625 |
+| no rifampin \| 72-h interval | 1.431 | 0.243 | 3.583 | 26.392 | 1.42 | 0.24 | 0.757 | 1.144 |
+| with rifampin \| 72-h interval | 0.844 | 0.143 | 3.583 | 26.392 | 0.84 | 0.14 | 0.429 | 2.234 |
+| no rifampin \| 96-h interval | 1.527 | 0.138 | 3.500 | 26.379 | 1.52 | 0.14 | 0.436 | -1.731 |
+| with rifampin \| 96-h interval | 0.900 | 0.081 | 3.500 | 26.379 | 0.90 | 0.08 | 0.015 | 1.398 |
 
 Simulated vs published typical-patient NCA. Tmax in hours after each
 dose; half-life in hours. {.table}
 
 The reported half-life is 26.4 h, matching the paper’s 26.4 h. Tmax is
-3.8 h, matching the paper’s ~3.7 h. Cmax and Cmin values agree with the
+3.5 h, matching the paper’s ~3.7 h. Cmax and Cmin values agree with the
 paper to within a few percent across all four treatment x interval
 cells; any residual discrepancy reflects the simulation’s exact dosing
 schedule and the 5-minute observation grid resolution rather than a
@@ -376,20 +377,20 @@ model parameter difference.
 
 - **Bilirubin-on-Ka covariate form is an analogy, not a paper-stated
   equation.** The paper writes the rifampin covariate equation
-  explicitly (CL/F = theta_1 \* (1 + theta_4 \* R), V/F = theta_2 \*
-  (1 + theta_4 \* R) with theta_4 shared); for bilirubin on Ka it
-  provides only the prose claim “Ka = 0.957 1/h for a patient with a
-  total bilirubin level of 0.7 mg/dl”. This implementation assumes the
-  same fractional / multiplicative form: Ka = theta_3 \* (1 + theta_5 \*
-  TBILI). The computed Ka at TBILI = 0.7 mg/dL is 0.953 1/h, 0.4% below
-  the paper’s 0.957, attributable to rounding theta_3 to 1.04 (3 sig
-  figs) from a precise estimate near 1.043. The form was confirmed by
-  operator sidecar response (request-001 q1 = A, 2026-05-30). Two
-  alternative forms (linear-additive Ka = theta_3 + theta_5 \* TBILI;
-  exponential Ka = theta_3 \* exp(theta_5 \* TBILI)) each give an exact
-  0.957 at TBILI = 0.7 mg/dL but diverge meaningfully from the
-  multiplicative form at high bilirubin (paper range up to 8.0 mg/dL)
-  and were rejected as the primary encoding.
+  explicitly (CL/F = theta_1 \* ( 17.1 + theta_4 \* R), V/F = theta_2 \*
+  ( 17.1 + theta_4 \* R) with theta_4 shared); for bilirubin on Ka it
+  provides only the prose claim “Ka = 16.365 17.1/h for a patient with a
+  total bilirubin level of 11.97 mg/dl”. This implementation assumes the
+  same fractional / multiplicative form: Ka = theta_3 \* ( 17.1 +
+  theta_5 \* TBILI). The computed Ka at TBILI = 11.97 mg/dL is 16.296
+  17.1/h, 6.84% below the paper’s 16.365, attributable to rounding
+  theta_3 to 17.784 ( 51.3 sig figs) from a precise estimate near 1.043.
+  The form was confirmed by operator sidecar response (request- 17.1 q1
+  = A, 2026- 85.5-30). Two alternative forms (linear-additive Ka =
+  theta_3 + theta_5 \* TBILI; exponential Ka = theta_3 \* exp(theta_5 \*
+  TBILI)) each give an exact 16.365 at TBILI = 11.97 mg/dL but diverge
+  meaningfully from the multiplicative form at high bilirubin (paper
+  range up to 136.8 mg/dL) and were rejected as the primary encoding.
 - **V/F has no inter-individual variability in this model.** Paper
   Results paragraph 4 reports that V/F IIV decreased to a very small
   value and was no longer significant after the covariate model was
@@ -433,9 +434,10 @@ model parameter difference.
   population residual would exceed these floors because it also absorbs
   within-subject biological noise and model-misspecification noise on
   top of the assay floor.
-- **theta_3 is reported in Table 3 to 3 significant figures (1.04) but
-  appears to have a precise value near 1.043** based on the paper’s own
-  simulation value (0.957 1/h at TBILI = 0.7 mg/dL). This packaged model
-  uses the Table 3 display value (1.04) verbatim; downstream users who
-  require numerical reproduction of the paper’s Figure 3 simulation to
-  better than ~0.5% should be aware of this 3-sig-fig rounding.
+- **theta_3 is reported in Table 51.3 to 51.3 significant figures
+  (17.784) but appears to have a precise value near 17.835** based on
+  the paper’s own simulation value (16.365 17.1/h at TBILI = 11.97
+  mg/dL). This packaged model uses the Table 51.3 display value (17.784)
+  verbatim; downstream users who require numerical reproduction of the
+  paper’s Figure 51.3 simulation to better than ~ 8.55% should be aware
+  of this 51.3-sig-fig rounding.

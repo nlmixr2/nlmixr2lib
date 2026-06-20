@@ -107,7 +107,7 @@ pop <- data.frame(
   BSA      = pmin(pmax(rnorm(n_subj, 1.70, 0.18), 1.20), 2.40),
   ALB      = pmin(pmax(rnorm(n_subj, 39.1, 4.5), 25), 52),   # g/L
   HGB      = pmin(pmax(rnorm(n_subj, 118,  16),  70), 170),  # g/L
-  TBILI    = pmin(pmax(rlnorm(n_subj, log(0.45), 0.45), 0.10), 2.00), # mg/dL
+  TBILI    = pmin(pmax(rlnorm(n_subj, log( 7.695),  7.695),   1.71),   34.2), # mg/dL
   SEXF     = rbinom(n_subj, 1, 0.34),          # ~34% female in phase 3 SPOTLIGHT/GLOW
   PRIOR_GAST     = rbinom(n_subj, 1, 0.30),          # ~30% prior gastrectomy
   CONMED_EOX = rbinom(n_subj, 1, 0.04)           # EOX used in a small subset
@@ -297,8 +297,8 @@ knitr::kable(
 
 | start | end | treatment | N | auclast | cmax | cmin | tmax |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | 42 | Q2W_800_400 | 100 | 6160 \[39.0\] | 234 \[26.1\] | 87.6 \[60.4\] | 30.0 \[30.0, 30.0\] |
-| 0 | 42 | Q3W_800_600 | 100 | 5920 \[37.2\] | 326 \[19.5\] | 59.7 \[77.3\] | 22.0 \[22.0, 22.0\] |
+| 0 | 42 | Q2W_800_400 | 100 | 6160 \[39.0\] | 234 \[26.1\] | 87.6 \[60.3\] | 30.0 \[30.0, 30.0\] |
+| 0 | 42 | Q3W_800_600 | 100 | 5920 \[37.2\] | 326 \[19.8\] | 59.7 \[76.9\] | 22.0 \[22.0, 22.0\] |
 
 PKNCA summary for the steady-state 42-day window. Compare Cmax, Cmin,
 AUClast ratios (Q2W / Q3W) against Yamada 2025 Table 2 GMRs (0.792,
@@ -347,7 +347,7 @@ knitr::kable(comparison, digits = 3,
 | Parameter      | GMR (sim) | GMR (Yamada 2025 Table 2) |
 |:---------------|----------:|--------------------------:|
 | Cmax           |     0.718 |                     0.792 |
-| Cmin (Ctrough) |     1.342 |                     1.192 |
+| Cmin (Ctrough) |     1.341 |                     1.192 |
 | AUC42d         |     1.039 |                     1.000 |
 
 Simulated vs. published GMRs (Q2W relative to Q3W, steady-state 42-day

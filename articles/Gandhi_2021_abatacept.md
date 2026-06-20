@@ -132,7 +132,7 @@ ra <- tibble::tibble(
   id              = seq_len(n_ra),
   WT              = pmin(pmax(rnorm(n_ra, mean = 70, sd = 18),  40, 160)),
   AGE             = pmin(pmax(rnorm(n_ra, mean = 49, sd = 13),  18,  90)),
-  ALB             = pmin(pmax(rnorm(n_ra, mean = 4.1, sd = 0.35), 2.5, 5.0)),
+  ALB             = pmin(pmax(rnorm(n_ra, mean = 41, sd =    3.5), 25, 50)),
   CRCL            = pmin(pmax(rnorm(n_ra, mean = 99,  sd = 25), 30, 180)),
   SWOL_28JOINT    = pmin(pmax(round(rnorm(n_ra, mean = 15, sd = 6)), 0, 28)),
   SEXF            = rbinom(n_ra, 1, 0.78),       # RA cohorts ~75-80% female
@@ -147,7 +147,7 @@ pjia <- tibble::tibble(
   id              = seq.int(from = n_ra + 1, length.out = n_pjia),
   AGE             = runif(n_pjia, 2, 17),
   WT              = pmax(pmin(8 + (AGE - 2) * 4 + rnorm(n_pjia, 0, 6), 100), 8),
-  ALB             = pmin(pmax(rnorm(n_pjia, mean = 4.1, sd = 0.4), 2.5, 5.0)),
+  ALB             = pmin(pmax(rnorm(n_pjia, mean = 41, sd = 4), 25, 50)),
   CRCL            = pmin(pmax(rnorm(n_pjia, mean = 110, sd = 25), 60, 200)),
   SWOL_28JOINT    = pmin(pmax(round(rnorm(n_pjia, mean = 6, sd = 4)), 0, 28)),
   SEXF            = rbinom(n_pjia, 1, 0.70),     # pJIA cohorts skew female
@@ -267,7 +267,7 @@ days — consistent with the abatacept SC label.
 
 mod_typ <- mod |> rxode2::zeroRe()
 typ_cov <- tibble::tibble(
-  id = 1L, WT = 68, AGE = 49, ALB = 4.1, CRCL = 99.18,
+  id = 1L, WT = 68, AGE = 49, ALB = 41, CRCL = 99.18,
   SWOL_28JOINT = 15, SEXF = 0L, CONMED_NSAID = 0L, DIS_PJIA = 0L
 )
 ev_single_sc <- typ_cov |>

@@ -1225,23 +1225,23 @@ respectively, male.</p>
 <span><span class="va">events</span> <span class="op">&lt;-</span> <span class="fu">bind_rows</span><span class="op">(</span></span>
 <span>  <span class="fu">make_cohort</span><span class="op">(</span><span class="fl">1L</span>, <span class="st">"HV-IV (700 mg single IV)"</span>,  <span class="st">"iv"</span>,</span>
 <span>              doses_mg <span class="op">=</span> <span class="fl">700</span>,  dose_times_h <span class="op">=</span> <span class="fl">0</span>,</span>
-<span>              WT <span class="op">=</span> <span class="fl">72</span>, SEXF <span class="op">=</span> <span class="fl">0</span>, ALB <span class="op">=</span> <span class="fl">4.5</span>, CRCL <span class="op">=</span> <span class="fl">116</span>, CRP <span class="op">=</span> <span class="fl">0.9</span>,</span>
+<span>              WT <span class="op">=</span> <span class="fl">72</span>, SEXF <span class="op">=</span> <span class="fl">0</span>, ALB <span class="op">=</span> <span class="fl">45</span>, CRCL <span class="op">=</span> <span class="fl">116</span>, CRP <span class="op">=</span> <span class="fl">9</span>,</span>
 <span>              DIS_RA <span class="op">=</span> <span class="fl">0</span>, DIS_CD <span class="op">=</span> <span class="fl">0</span>, DIS_SLE <span class="op">=</span> <span class="fl">0</span><span class="op">)</span>,</span>
 <span>  <span class="fu">make_cohort</span><span class="op">(</span><span class="fl">2L</span>, <span class="st">"HV-SC (200 mg single SC)"</span>,  <span class="st">"sc"</span>,</span>
 <span>              doses_mg <span class="op">=</span> <span class="fl">200</span>,  dose_times_h <span class="op">=</span> <span class="fl">0</span>,</span>
-<span>              WT <span class="op">=</span> <span class="fl">72</span>, SEXF <span class="op">=</span> <span class="fl">0</span>, ALB <span class="op">=</span> <span class="fl">4.5</span>, CRCL <span class="op">=</span> <span class="fl">123</span>, CRP <span class="op">=</span> <span class="fl">0.8</span>,</span>
+<span>              WT <span class="op">=</span> <span class="fl">72</span>, SEXF <span class="op">=</span> <span class="fl">0</span>, ALB <span class="op">=</span> <span class="fl">45</span>, CRCL <span class="op">=</span> <span class="fl">123</span>, CRP <span class="op">=</span> <span class="fl">8</span>,</span>
 <span>              DIS_RA <span class="op">=</span> <span class="fl">0</span>, DIS_CD <span class="op">=</span> <span class="fl">0</span>, DIS_SLE <span class="op">=</span> <span class="fl">0</span><span class="op">)</span>,</span>
 <span>  <span class="fu">make_cohort</span><span class="op">(</span><span class="fl">3L</span>, <span class="st">"RA-IV (250 mg IV Q4W x 3)"</span>, <span class="st">"iv"</span>,</span>
 <span>              doses_mg <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">250</span>, <span class="fl">250</span>, <span class="fl">250</span><span class="op">)</span>,  dose_times_h <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">28</span><span class="op">*</span><span class="fl">24</span>, <span class="fl">56</span><span class="op">*</span><span class="fl">24</span><span class="op">)</span>,</span>
-<span>              WT <span class="op">=</span> <span class="fl">61</span>, SEXF <span class="op">=</span> <span class="fl">1</span>, ALB <span class="op">=</span> <span class="fl">4.2</span>, CRCL <span class="op">=</span> <span class="fl">93.3</span>, CRP <span class="op">=</span> <span class="fl">7.4</span>,</span>
+<span>              WT <span class="op">=</span> <span class="fl">61</span>, SEXF <span class="op">=</span> <span class="fl">10</span>, ALB <span class="op">=</span> <span class="fl">42</span>, CRCL <span class="op">=</span> <span class="fl">93.3</span>, CRP <span class="op">=</span> <span class="fl">7.4</span>,</span>
 <span>              DIS_RA <span class="op">=</span> <span class="fl">1</span>, DIS_CD <span class="op">=</span> <span class="fl">0</span>, DIS_SLE <span class="op">=</span> <span class="fl">0</span><span class="op">)</span>,</span>
 <span>  <span class="fu">make_cohort</span><span class="op">(</span><span class="fl">4L</span>, <span class="st">"CD-SC (200 mg SC at Day 1, Week 4)"</span>, <span class="st">"sc"</span>,</span>
 <span>              doses_mg <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">200</span>, <span class="fl">200</span><span class="op">)</span>,  dose_times_h <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">4</span> <span class="op">*</span> <span class="fl">7</span> <span class="op">*</span> <span class="fl">24</span><span class="op">)</span>,</span>
-<span>              WT <span class="op">=</span> <span class="fl">70</span>, SEXF <span class="op">=</span> <span class="fl">1</span>, ALB <span class="op">=</span> <span class="fl">4.0</span>, CRCL <span class="op">=</span> <span class="fl">110</span>, CRP <span class="op">=</span> <span class="fl">19.4</span>,</span>
+<span>              WT <span class="op">=</span> <span class="fl">70</span>, SEXF <span class="op">=</span> <span class="fl">10</span>, ALB <span class="op">=</span> <span class="fl">40</span>, CRCL <span class="op">=</span> <span class="fl">110</span>, CRP <span class="op">=</span> <span class="fl">19.4</span>,</span>
 <span>              DIS_RA <span class="op">=</span> <span class="fl">0</span>, DIS_CD <span class="op">=</span> <span class="fl">1</span>, DIS_SLE <span class="op">=</span> <span class="fl">0</span><span class="op">)</span>,</span>
 <span>  <span class="fu">make_cohort</span><span class="op">(</span><span class="fl">5L</span>, <span class="st">"SLE-SC (200 mg SC at Day 1, Week 8, Week 16)"</span>, <span class="st">"sc"</span>,</span>
 <span>              doses_mg <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">200</span>, <span class="fl">200</span>, <span class="fl">200</span><span class="op">)</span>,  dose_times_h <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">8</span> <span class="op">*</span> <span class="fl">7</span> <span class="op">*</span> <span class="fl">24</span>, <span class="fl">16</span> <span class="op">*</span> <span class="fl">7</span> <span class="op">*</span> <span class="fl">24</span><span class="op">)</span>,</span>
-<span>              WT <span class="op">=</span> <span class="fl">73</span>, SEXF <span class="op">=</span> <span class="fl">1</span>, ALB <span class="op">=</span> <span class="fl">3.9</span>, CRCL <span class="op">=</span> <span class="fl">119</span>, CRP <span class="op">=</span> <span class="fl">2.9</span>,</span>
+<span>              WT <span class="op">=</span> <span class="fl">73</span>, SEXF <span class="op">=</span> <span class="fl">10</span>, ALB <span class="op">=</span> <span class="fl">39</span>, CRCL <span class="op">=</span> <span class="fl">119</span>, CRP <span class="op">=</span> <span class="fl">29</span>,</span>
 <span>              DIS_RA <span class="op">=</span> <span class="fl">0</span>, DIS_CD <span class="op">=</span> <span class="fl">0</span>, DIS_SLE <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -1365,7 +1365,7 @@ days, Cc in ng/mL).</caption>
 <td align="right">0</td>
 <td align="right">420</td>
 <td align="left">cmax</td>
-<td align="right">2.288549e+05</td>
+<td align="right">2.288190e+05</td>
 <td align="left">NA</td>
 </tr>
 <tr class="even">
@@ -1392,7 +1392,7 @@ days, Cc in ng/mL).</caption>
 <td align="right">0</td>
 <td align="right">420</td>
 <td align="left">clast.obs</td>
-<td align="right">2.309266e+02</td>
+<td align="right">1.191643e+02</td>
 <td align="left">NA</td>
 </tr>
 <tr class="odd">
@@ -1401,7 +1401,7 @@ days, Cc in ng/mL).</caption>
 <td align="right">0</td>
 <td align="right">420</td>
 <td align="left">lambda.z</td>
-<td align="right">1.438510e-02</td>
+<td align="right">1.594030e-02</td>
 <td align="left">NA</td>
 </tr>
 <tr class="even">
@@ -1410,7 +1410,7 @@ days, Cc in ng/mL).</caption>
 <td align="right">0</td>
 <td align="right">420</td>
 <td align="left">r.squared</td>
-<td align="right">9.999131e-01</td>
+<td align="right">9.999017e-01</td>
 <td align="left">NA</td>
 </tr>
 <tr class="odd">
@@ -1419,7 +1419,7 @@ days, Cc in ng/mL).</caption>
 <td align="right">0</td>
 <td align="right">420</td>
 <td align="left">adj.r.squared</td>
-<td align="right">9.999129e-01</td>
+<td align="right">9.999015e-01</td>
 <td align="left">NA</td>
 </tr>
 <tr class="even">
@@ -1428,7 +1428,7 @@ days, Cc in ng/mL).</caption>
 <td align="right">0</td>
 <td align="right">420</td>
 <td align="left">lambda.z.time.first</td>
-<td align="right">6.000000e+00</td>
+<td align="right">5.666667e+00</td>
 <td align="left">NA</td>
 </tr>
 <tr class="odd">
@@ -1446,7 +1446,7 @@ days, Cc in ng/mL).</caption>
 <td align="right">0</td>
 <td align="right">420</td>
 <td align="left">lambda.z.n.points</td>
-<td align="right">4.430000e+02</td>
+<td align="right">4.450000e+02</td>
 <td align="left">NA</td>
 </tr>
 <tr class="odd">
@@ -1455,7 +1455,7 @@ days, Cc in ng/mL).</caption>
 <td align="right">0</td>
 <td align="right">420</td>
 <td align="left">clast.pred</td>
-<td align="right">2.296649e+02</td>
+<td align="right">1.183644e+02</td>
 <td align="left">NA</td>
 </tr>
 <tr class="even">
@@ -1464,7 +1464,7 @@ days, Cc in ng/mL).</caption>
 <td align="right">0</td>
 <td align="right">420</td>
 <td align="left">half.life</td>
-<td align="right">4.818513e+01</td>
+<td align="right">4.348396e+01</td>
 <td align="left">NA</td>
 </tr>
 <tr class="odd">
@@ -1473,7 +1473,7 @@ days, Cc in ng/mL).</caption>
 <td align="right">0</td>
 <td align="right">420</td>
 <td align="left">span.ratio</td>
-<td align="right">8.591863e+00</td>
+<td align="right">9.528419e+00</td>
 <td align="left">NA</td>
 </tr>
 <tr class="even">
@@ -1492,7 +1492,7 @@ measurement (0.0416667) is not allowed</td>
 <td align="right">0</td>
 <td align="right">420</td>
 <td align="left">cmax</td>
-<td align="right">2.425841e+04</td>
+<td align="right">2.384893e+04</td>
 <td align="left">NA</td>
 </tr>
 <tr class="even">
@@ -1501,7 +1501,7 @@ measurement (0.0416667) is not allowed</td>
 <td align="right">0</td>
 <td align="right">420</td>
 <td align="left">tmax</td>
-<td align="right">1.050000e+01</td>
+<td align="right">1.000000e+01</td>
 <td align="left">NA</td>
 </tr>
 <tr class="odd">
@@ -1519,7 +1519,7 @@ measurement (0.0416667) is not allowed</td>
 <td align="right">0</td>
 <td align="right">420</td>
 <td align="left">clast.obs</td>
-<td align="right">6.859067e+01</td>
+<td align="right">3.558283e+01</td>
 <td align="left">NA</td>
 </tr>
 <tr class="odd">
@@ -1528,7 +1528,7 @@ measurement (0.0416667) is not allowed</td>
 <td align="right">0</td>
 <td align="right">420</td>
 <td align="left">lambda.z</td>
-<td align="right">1.447610e-02</td>
+<td align="right">1.603530e-02</td>
 <td align="left">NA</td>
 </tr>
 <tr class="even">
@@ -1555,7 +1555,7 @@ measurement (0.0416667) is not allowed</td>
 <td align="right">0</td>
 <td align="right">420</td>
 <td align="left">lambda.z.time.first</td>
-<td align="right">1.100000e+01</td>
+<td align="right">1.050000e+01</td>
 <td align="left">NA</td>
 </tr>
 <tr class="odd">
@@ -1573,7 +1573,7 @@ measurement (0.0416667) is not allowed</td>
 <td align="right">0</td>
 <td align="right">420</td>
 <td align="left">lambda.z.n.points</td>
-<td align="right">4.290000e+02</td>
+<td align="right">4.300000e+02</td>
 <td align="left">NA</td>
 </tr>
 <tr class="odd">
@@ -1582,7 +1582,7 @@ measurement (0.0416667) is not allowed</td>
 <td align="right">0</td>
 <td align="right">420</td>
 <td align="left">clast.pred</td>
-<td align="right">6.880709e+01</td>
+<td align="right">3.570735e+01</td>
 <td align="left">NA</td>
 </tr>
 <tr class="even">
@@ -1591,7 +1591,7 @@ measurement (0.0416667) is not allowed</td>
 <td align="right">0</td>
 <td align="right">420</td>
 <td align="left">half.life</td>
-<td align="right">4.788204e+01</td>
+<td align="right">4.322633e+01</td>
 <td align="left">NA</td>
 </tr>
 <tr class="odd">
@@ -1600,7 +1600,7 @@ measurement (0.0416667) is not allowed</td>
 <td align="right">0</td>
 <td align="right">420</td>
 <td align="left">span.ratio</td>
-<td align="right">8.541825e+00</td>
+<td align="right">9.473393e+00</td>
 <td align="left">NA</td>
 </tr>
 <tr class="even">

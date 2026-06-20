@@ -140,7 +140,7 @@ smoke_status <- sample(
 cohort <- tibble(
   ID            = seq_len(n_subj),
   WT            = pmin(pmax(rlnorm(n_subj, log(73.3) - 0.5 * 0.249^2, 0.249), 37.4), 154),
-  ALB           = pmin(pmax(rnorm(n_subj, 3.76, 0.507), 1.80), 4.90),
+  ALB           = pmin(pmax(rnorm(n_subj,   37.6,   5.07), 18), 49),
   SEXF          = rbinom(n_subj, 1, 0.369),
   SMOKE_CURRENT = as.integer(smoke_status == "current"),
   SMOKE_NEVER   = as.integer(smoke_status == "never")
@@ -285,7 +285,7 @@ eval_steady_state <- function(WT, ALB, SEXF, SMOKE_CURRENT, SMOKE_NEVER,
   )
 }
 
-ref <- eval_steady_state(WT = 70.6, ALB = 3.80, SEXF = 0,
+ref <- eval_steady_state(WT = 70.6, ALB = 38, SEXF = 0,
                          SMOKE_CURRENT = 0, SMOKE_NEVER = 0)
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp'
 
@@ -293,8 +293,8 @@ scenarios <- tibble::tribble(
   ~scenario,                  ~WT,   ~ALB, ~SEXF, ~SMOKE_CURRENT, ~SMOKE_NEVER,
   "WT = 49.1 kg (5th pctl)",  49.1,  3.80, 0,     0,              0,
   "WT = 108 kg (95th pctl)",  108,   3.80, 0,     0,              0,
-  "ALB = 2.8 g/dL (5th pctl)",70.6,  2.8,  0,     0,              0,
-  "ALB = 4.6 g/dL (95th pctl)",70.6, 4.6,  0,     0,              0,
+  "ALB = 28 g/dL (5th pctl)",70.6,  28,  0,     0,              0,
+  "ALB = 46 g/dL (95th pctl)",70.6, 46,  0,     0,              0,
   "Female",                   70.6,  3.80, 1,     0,              0,
   "Current smoker",           70.6,  3.80, 0,     1,              0,
   "Never smoker",             70.6,  3.80, 0,     0,              1
@@ -327,13 +327,13 @@ knitr::kable(
 
 | Scenario vs. typical (70.6 kg, 3.80 g/dL, male, former smoker) | AUC change (%) | Cmax change (%) |
 |:---|---:|---:|
-| WT = 49.1 kg (5th pctl) | 22.2 | 20.6 |
-| WT = 108 kg (95th pctl) | -21.6 | -20.2 |
-| ALB = 2.8 g/dL (5th pctl) | -28.3 | -20.5 |
-| ALB = 4.6 g/dL (95th pctl) | 21.0 | 14.8 |
-| Female | -0.8 | -4.2 |
-| Current smoker | -0.3 | -1.9 |
-| Never smoker | 0.8 | 6.4 |
+| WT = 49.1 kg (5th pctl) | -93.2 | -76.3 |
+| WT = 108 kg (95th pctl) | -96.0 | -84.5 |
+| ALB = 28 g/dL (5th pctl) | -28.3 | -20.5 |
+| ALB = 46 g/dL (95th pctl) | 21.0 | 14.8 |
+| Female | -94.5 | -81.3 |
+| Current smoker | -94.6 | -80.9 |
+| Never smoker | -94.9 | -79.5 |
 
 Replicates Figure 4 of Hwang 2023: steady-state AUC and Cmax sensitivity
 to baseline covariates. {.table}

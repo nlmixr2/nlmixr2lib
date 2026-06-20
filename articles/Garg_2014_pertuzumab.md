@@ -128,7 +128,7 @@ make_cohort <- function(n, regimen, id_offset = 0L) {
     id      = id_offset + seq_len(n),
     regimen = regimen,
     LBM     = pmin(pmax(rnorm(n, 48, 9),  30), 80),    # kg; centred at 48 kg (reference)
-    ALB     = pmin(pmax(rnorm(n, 3.9, 0.45), 2.5), 5.2) # g/dL; centred at 3.9 g/dL (reference)
+    ALB     = pmin(pmax(rnorm(n, 39,    4.5), 25), 52) # g/dL; centred at 39 g/dL (reference)
   )
 }
 
@@ -276,7 +276,7 @@ ref_events <- dplyr::bind_rows(
              time = seq(0, 21 * 7, length.out = 200),
              amt  = 0, cmt = NA_character_, evid = 0, ii = 0, addl = 0)
 ) |>
-  dplyr::mutate(LBM = 48, ALB = 3.9, regimen = "840/420 mg q3w")
+  dplyr::mutate(LBM = 48, ALB = 39, regimen = "840/420 mg q3w")
 
 sim_ref <- rxode2::rxSolve(mod_typical, events = ref_events,
                            keep = c("regimen")) |> as.data.frame()
@@ -931,7 +931,7 @@ q <- list(
   e_lbw_vc = 0.747, e_lbw_vp = 0.83
 )
 
-cl_typ <- function(LBW = 48, ALB = 3.9) {
+cl_typ <- function(LBW = 48, ALB = 39) {
   q$cl * (LBW / 48)^q$e_lbw_cl * (ALB / 3.9)^q$e_alb_cl
 }
 vc_typ <- function(LBW = 48) q$vc * (LBW / 48)^q$e_lbw_vc
@@ -940,8 +940,8 @@ vp_typ <- function(LBW = 48) q$vp * (LBW / 48)^q$e_lbw_vp
 sensitivity <- tibble::tribble(
   ~Scenario,                              ~`Simulated CL (L/day)`, ~`Paper target`,
   "Reference (48 kg LBW, 3.9 g/dL ALB)",  cl_typ(),                "0.235 L/day (Table 1, theta1)",
-  "Low ALB (2.9 g/dL, 5th percentile)",   cl_typ(ALB = 2.9),       "Cmin,SS -39.1% (Figure 3a)",
-  "High ALB (4.6 g/dL, 95th percentile)", cl_typ(ALB = 4.6),       "Cmin,SS +30.8% (Figure 3a)",
+  "Low ALB (29 g/dL, 5th percentile)",   cl_typ(ALB = 29),       "Cmin,SS -39.1% (Figure 3a)",
+  "High ALB (46 g/dL, 95th percentile)", cl_typ(ALB = 46),       "Cmin,SS +30.8% (Figure 3a)",
   "Low LBW (39 kg, 5th percentile)",      cl_typ(LBW = 39),        "Cmin,SS  +9.3% (Figure 3a)",
   "High LBW (69 kg, 95th percentile)",    cl_typ(LBW = 69),        "Cmin,SS -15.6% (Figure 3a)"
 ) |>
@@ -955,11 +955,11 @@ knitr::kable(sensitivity, digits = 3,
 
 | Scenario | Simulated CL (L/day) | Paper target | Ratio to reference CL |
 |:---|---:|:---|---:|
-| Reference (48 kg LBW, 3.9 g/dL ALB) | 0.235 | 0.235 L/day (Table 1, theta1) | 1.000 |
-| Low ALB (2.9 g/dL, 5th percentile) | 0.322 | Cmin,SS -39.1% (Figure 3a) | 1.369 |
-| High ALB (4.6 g/dL, 95th percentile) | 0.197 | Cmin,SS +30.8% (Figure 3a) | 0.839 |
-| Low LBW (39 kg, 5th percentile) | 0.211 | Cmin,SS +9.3% (Figure 3a) | 0.898 |
-| High LBW (69 kg, 95th percentile) | 0.283 | Cmin,SS -15.6% (Figure 3a) | 1.206 |
+| Reference (48 kg LBW, 3.9 g/dL ALB) | 0.020 | 0.235 L/day (Table 1, theta1) | 1.000 |
+| Low ALB (29 g/dL, 5th percentile) | 0.028 | Cmin,SS -39.1% (Figure 3a) | 1.369 |
+| High ALB (46 g/dL, 95th percentile) | 0.017 | Cmin,SS +30.8% (Figure 3a) | 0.839 |
+| Low LBW (39 kg, 5th percentile) | 0.018 | Cmin,SS +9.3% (Figure 3a) | 0.898 |
+| High LBW (69 kg, 95th percentile) | 0.025 | Cmin,SS -15.6% (Figure 3a) | 1.206 |
 
 Typical CL sensitivities reproduced from packaged parameters. {.table}
 

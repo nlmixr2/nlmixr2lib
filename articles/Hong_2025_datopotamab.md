@@ -243,7 +243,7 @@ typ_events$AGE           <- 62
 typ_events$SEXF          <- 0
 typ_events$ALB           <- 38
 typ_events$AST           <- 22
-typ_events$TBILI         <- 0.4
+typ_events$TBILI         <-   6.84
 typ_events$TUMSZ         <- 66
 typ_events$REGION_JAPAN  <- 0
 typ_events$REGION_EUROPE <- 0
@@ -579,7 +579,7 @@ simulate_typ_wt <- function(wt_kg) {
   ev$SEXF          <- 0
   ev$ALB           <- 38
   ev$AST           <- 22
-  ev$TBILI         <- 0.4
+  ev$TBILI         <-   6.84
   ev$TUMSZ         <- 66
   ev$REGION_JAPAN  <- 0
   ev$REGION_EUROPE <- 0

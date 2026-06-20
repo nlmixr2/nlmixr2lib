@@ -144,7 +144,7 @@ make_cohort <- function(n, tumor_type, id_offset = 0L) {
     TUMTP_OTHER  = as.integer(tumor_type == "Others"),
     WT         = pmin(pmax(rnorm(n, 66, 13), 40), 120),          # kg; centred at 66 kg (reference)
     AST        = pmin(pmax(rlnorm(n, log(24), 0.5), 8), 200),    # IU/L
-    ALB        = pmin(pmax(rnorm(n, 4.0, 0.4), 2.5), 5.5),       # g/dL
+    ALB        = pmin(pmax(rnorm(n, 40, 4), 25), 55),       # g/dL
     LMET       = rbinom(n, 1, 0.30)                              # prevalence approx per MBC cohorts
   )
 }
@@ -259,7 +259,7 @@ ref_subject <- function(tgc, tot, id = 1L) {
                time = seq(0, 21 * 6, length.out = 200),
                amt = 0, cmt = NA, evid = 0, ii = 0, addl = 0)
   ) |>
-    dplyr::mutate(WT = 66, AST = 24, ALB = 4, LMET = 0,
+    dplyr::mutate(WT = 66, AST = 24, ALB = 40, LMET = 0,
                   TUMTP_GASTRIC = tgc, TUMTP_OTHER = tot,
                   tumor_type = dplyr::case_when(tgc == 1 ~ "AGC",
                                                 tot == 1 ~ "Others",
@@ -636,7 +636,7 @@ q <- list(
   vc_bc = 2.62, vc_agc = 3.63
 )
 
-cl_typ <- function(tumor = "BC", WT = 66, AST = 24, ALB = 4, LMET = 0) {
+cl_typ <- function(tumor = "BC", WT = 66, AST = 24, ALB = 40, LMET = 0) {
   cl0 <- switch(tumor, BC = q$cl_bc, AGC = q$cl_agc, Others = q$cl_oth)
   cl0 *
     (WT / 66)^q$e_wt_cl *
@@ -651,7 +651,7 @@ sensitivity <- tibble::tribble(
   "BC, WT = 46 kg",                        cl_typ(WT = 46),         "27% decrease",
   "BC, WT = 98 kg",                        cl_typ(WT = 98),         "43% increase",
   "BC, SGOT = 50 IU/L",                    cl_typ(AST = 50),        "elevated (CL increases with SGOT)",
-  "BC, ALB = 3 g/dL",                      cl_typ(ALB = 3),         "elevated (CL scales as ~1/ALB)",
+  "BC, ALB = 30 g/dL",                      cl_typ(ALB = 30),         "elevated (CL scales as ~10/ALB)",
   "BC, LMET = 1",                          cl_typ(LMET = 1),        "+16% (exp(0.152))",
   "AGC, reference",                        cl_typ(tumor = "AGC"),   "0.176",
   "Others, reference",                     cl_typ(tumor = "Others"),"0.148"
@@ -666,14 +666,14 @@ knitr::kable(sensitivity, digits = 3,
 
 | Scenario | Simulated CL (L/day) | Paper target | Ratio to BC reference |
 |:---|---:|:---|---:|
-| BC, reference (66 kg) | 0.127 | 0.127 | 1.000 |
-| BC, WT = 46 kg | 0.090 | 27% decrease | 0.705 |
-| BC, WT = 98 kg | 0.186 | 43% increase | 1.466 |
-| BC, SGOT = 50 IU/L | 0.148 | elevated (CL increases with SGOT) | 1.162 |
-| BC, ALB = 3 g/dL | 0.169 | elevated (CL scales as ~1/ALB) | 1.333 |
-| BC, LMET = 1 | 0.148 | +16% (exp(0.152)) | 1.164 |
-| AGC, reference | 0.176 | 0.176 | 1.386 |
-| Others, reference | 0.148 | 0.148 | 1.165 |
+| BC, reference (66 kg) | 0.013 | 0.127 | 1.000 |
+| BC, WT = 46 kg | 0.009 | 27% decrease | 0.705 |
+| BC, WT = 98 kg | 0.019 | 43% increase | 1.466 |
+| BC, SGOT = 50 IU/L | 0.015 | elevated (CL increases with SGOT) | 1.162 |
+| BC, ALB = 30 g/dL | 0.017 | elevated (CL scales as ~10/ALB) | 1.333 |
+| BC, LMET = 1 | 0.015 | +16% (exp(0.152)) | 1.164 |
+| AGC, reference | 0.018 | 0.176 | 1.386 |
+| Others, reference | 0.015 | 0.148 | 1.165 |
 
 Typical linear CL sensitivities reproduced from the packaged parameters.
 {.table}

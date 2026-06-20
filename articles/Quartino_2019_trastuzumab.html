@@ -1237,7 +1237,7 @@ reference-subject predictions reproduce the Table 1 typical values.</p>
 <span>    TUMTP_OTHER  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">tumor_type</span> <span class="op">==</span> <span class="st">"Others"</span><span class="op">)</span>,</span>
 <span>    WT         <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmin</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n</span>, <span class="fl">66</span>, <span class="fl">13</span><span class="op">)</span>, <span class="fl">40</span><span class="op">)</span>, <span class="fl">120</span><span class="op">)</span>,          <span class="co"># kg; centred at 66 kg (reference)</span></span>
 <span>    AST        <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmin</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Lognormal.html" class="external-link">rlnorm</a></span><span class="op">(</span><span class="va">n</span>, <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fl">24</span><span class="op">)</span>, <span class="fl">0.5</span><span class="op">)</span>, <span class="fl">8</span><span class="op">)</span>, <span class="fl">200</span><span class="op">)</span>,    <span class="co"># IU/L</span></span>
-<span>    ALB        <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmin</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n</span>, <span class="fl">4.0</span>, <span class="fl">0.4</span><span class="op">)</span>, <span class="fl">2.5</span><span class="op">)</span>, <span class="fl">5.5</span><span class="op">)</span>,       <span class="co"># g/dL</span></span>
+<span>    ALB        <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmin</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n</span>, <span class="fl">40</span>, <span class="fl">4</span><span class="op">)</span>, <span class="fl">25</span><span class="op">)</span>, <span class="fl">55</span><span class="op">)</span>,       <span class="co"># g/dL</span></span>
 <span>    LMET       <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html" class="external-link">rbinom</a></span><span class="op">(</span><span class="va">n</span>, <span class="fl">1</span>, <span class="fl">0.30</span><span class="op">)</span>                              <span class="co"># prevalence approx per MBC cohorts</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">}</span></span>
@@ -1348,7 +1348,7 @@ suppress between-subject variability.</p>
 <span>               time <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">21</span> <span class="op">*</span> <span class="fl">6</span>, length.out <span class="op">=</span> <span class="fl">200</span><span class="op">)</span>,</span>
 <span>               amt <span class="op">=</span> <span class="fl">0</span>, cmt <span class="op">=</span> <span class="cn">NA</span>, evid <span class="op">=</span> <span class="fl">0</span>, ii <span class="op">=</span> <span class="fl">0</span>, addl <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>
 <span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>WT <span class="op">=</span> <span class="fl">66</span>, AST <span class="op">=</span> <span class="fl">24</span>, ALB <span class="op">=</span> <span class="fl">4</span>, LMET <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>WT <span class="op">=</span> <span class="fl">66</span>, AST <span class="op">=</span> <span class="fl">24</span>, ALB <span class="op">=</span> <span class="fl">40</span>, LMET <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>                  TUMTP_GASTRIC <span class="op">=</span> <span class="va">tgc</span>, TUMTP_OTHER <span class="op">=</span> <span class="va">tot</span>,</span>
 <span>                  tumor_type <span class="op">=</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/case-and-replace-when.html" class="external-link">case_when</a></span><span class="op">(</span><span class="va">tgc</span> <span class="op">==</span> <span class="fl">1</span> <span class="op">~</span> <span class="st">"AGC"</span>,</span>
 <span>                                                <span class="va">tot</span> <span class="op">==</span> <span class="fl">1</span> <span class="op">~</span> <span class="st">"Others"</span>,</span>
@@ -1881,7 +1881,7 @@ sensitivity numbers from the packaged coefficients.</p>
 <span>  vc_bc <span class="op">=</span> <span class="fl">2.62</span>, vc_agc <span class="op">=</span> <span class="fl">3.63</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">cl_typ</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">tumor</span> <span class="op">=</span> <span class="st">"BC"</span>, <span class="va">WT</span> <span class="op">=</span> <span class="fl">66</span>, <span class="va">AST</span> <span class="op">=</span> <span class="fl">24</span>, <span class="va">ALB</span> <span class="op">=</span> <span class="fl">4</span>, <span class="va">LMET</span> <span class="op">=</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span><span class="va">cl_typ</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">tumor</span> <span class="op">=</span> <span class="st">"BC"</span>, <span class="va">WT</span> <span class="op">=</span> <span class="fl">66</span>, <span class="va">AST</span> <span class="op">=</span> <span class="fl">24</span>, <span class="va">ALB</span> <span class="op">=</span> <span class="fl">40</span>, <span class="va">LMET</span> <span class="op">=</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">cl0</span> <span class="op">&lt;-</span> <span class="kw"><a href="https://rdrr.io/r/base/switch.html" class="external-link">switch</a></span><span class="op">(</span><span class="va">tumor</span>, BC <span class="op">=</span> <span class="va">q</span><span class="op">$</span><span class="va">cl_bc</span>, AGC <span class="op">=</span> <span class="va">q</span><span class="op">$</span><span class="va">cl_agc</span>, Others <span class="op">=</span> <span class="va">q</span><span class="op">$</span><span class="va">cl_oth</span><span class="op">)</span></span>
 <span>  <span class="va">cl0</span> <span class="op">*</span></span>
 <span>    <span class="op">(</span><span class="va">WT</span> <span class="op">/</span> <span class="fl">66</span><span class="op">)</span><span class="op">^</span><span class="va">q</span><span class="op">$</span><span class="va">e_wt_cl</span> <span class="op">*</span></span>
@@ -1896,7 +1896,7 @@ sensitivity numbers from the packaged coefficients.</p>
 <span>  <span class="st">"BC, WT = 46 kg"</span>,                        <span class="fu">cl_typ</span><span class="op">(</span>WT <span class="op">=</span> <span class="fl">46</span><span class="op">)</span>,         <span class="st">"27% decrease"</span>,</span>
 <span>  <span class="st">"BC, WT = 98 kg"</span>,                        <span class="fu">cl_typ</span><span class="op">(</span>WT <span class="op">=</span> <span class="fl">98</span><span class="op">)</span>,         <span class="st">"43% increase"</span>,</span>
 <span>  <span class="st">"BC, SGOT = 50 IU/L"</span>,                    <span class="fu">cl_typ</span><span class="op">(</span>AST <span class="op">=</span> <span class="fl">50</span><span class="op">)</span>,        <span class="st">"elevated (CL increases with SGOT)"</span>,</span>
-<span>  <span class="st">"BC, ALB = 3 g/dL"</span>,                      <span class="fu">cl_typ</span><span class="op">(</span>ALB <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>,         <span class="st">"elevated (CL scales as ~1/ALB)"</span>,</span>
+<span>  <span class="st">"BC, ALB = 30 g/dL"</span>,                      <span class="fu">cl_typ</span><span class="op">(</span>ALB <span class="op">=</span> <span class="fl">30</span><span class="op">)</span>,         <span class="st">"elevated (CL scales as ~10/ALB)"</span>,</span>
 <span>  <span class="st">"BC, LMET = 1"</span>,                          <span class="fu">cl_typ</span><span class="op">(</span>LMET <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,        <span class="st">"+16% (exp(0.152))"</span>,</span>
 <span>  <span class="st">"AGC, reference"</span>,                        <span class="fu">cl_typ</span><span class="op">(</span>tumor <span class="op">=</span> <span class="st">"AGC"</span><span class="op">)</span>,   <span class="st">"0.176"</span>,</span>
 <span>  <span class="st">"Others, reference"</span>,                     <span class="fu">cl_typ</span><span class="op">(</span>tumor <span class="op">=</span> <span class="st">"Others"</span><span class="op">)</span>,<span class="st">"0.148"</span></span>
@@ -1925,49 +1925,49 @@ parameters.</caption>
 <tbody>
 <tr class="odd">
 <td align="left">BC, reference (66 kg)</td>
-<td align="right">0.127</td>
+<td align="right">0.013</td>
 <td align="left">0.127</td>
 <td align="right">1.000</td>
 </tr>
 <tr class="even">
 <td align="left">BC, WT = 46 kg</td>
-<td align="right">0.090</td>
+<td align="right">0.009</td>
 <td align="left">27% decrease</td>
 <td align="right">0.705</td>
 </tr>
 <tr class="odd">
 <td align="left">BC, WT = 98 kg</td>
-<td align="right">0.186</td>
+<td align="right">0.019</td>
 <td align="left">43% increase</td>
 <td align="right">1.466</td>
 </tr>
 <tr class="even">
 <td align="left">BC, SGOT = 50 IU/L</td>
-<td align="right">0.148</td>
+<td align="right">0.015</td>
 <td align="left">elevated (CL increases with SGOT)</td>
 <td align="right">1.162</td>
 </tr>
 <tr class="odd">
-<td align="left">BC, ALB = 3 g/dL</td>
-<td align="right">0.169</td>
-<td align="left">elevated (CL scales as ~1/ALB)</td>
+<td align="left">BC, ALB = 30 g/dL</td>
+<td align="right">0.017</td>
+<td align="left">elevated (CL scales as ~10/ALB)</td>
 <td align="right">1.333</td>
 </tr>
 <tr class="even">
 <td align="left">BC, LMET = 1</td>
-<td align="right">0.148</td>
+<td align="right">0.015</td>
 <td align="left">+16% (exp(0.152))</td>
 <td align="right">1.164</td>
 </tr>
 <tr class="odd">
 <td align="left">AGC, reference</td>
-<td align="right">0.176</td>
+<td align="right">0.018</td>
 <td align="left">0.176</td>
 <td align="right">1.386</td>
 </tr>
 <tr class="even">
 <td align="left">Others, reference</td>
-<td align="right">0.148</td>
+<td align="right">0.015</td>
 <td align="left">0.148</td>
 <td align="right">1.165</td>
 </tr>

@@ -132,7 +132,7 @@ make_cohort <- function(n,
   # Baseline covariates approximating Rosario 2015 Table 1
   WT      <- pmax(30, pmin(160, rlnorm(n, log(70), 0.22)))
   AGE     <- pmax(18, pmin(80,  rnorm(n, 39, 13)))
-  ALB     <- pmax(2.0, pmin(5.5, rnorm(n, 4.0, 0.4)))        # g/dL
+  ALB     <- pmax(20, pmin(55, rnorm(n, 40, 4)))        # g/dL
   SCORE_CALPRO  <- pmax(10,  exp(rnorm(n, log(700), 1.1)))         # mg/kg
   IBD_CD  <- rbinom(n, 1, ibd_cd_prob)
   # Disease-activity scores: supply SCORE_CDAI for CD, SCORE_PMAYO for UC; the gating in
@@ -336,7 +336,7 @@ events_single <- make_cohort(
                         42, 56, 70, 84, 112, 140, 168)
 ) |>
   mutate(
-    WT = 70, AGE = 40, ALB = 4, SCORE_CALPRO = 700,
+    WT = 70, AGE = 40, ALB = 40, SCORE_CALPRO = 700,
     SCORE_CDAI = 300, SCORE_PMAYO = 6, IBD_CD = 0,
     PRIOR_TNF = 0, ADA_POS = 0,
     CONMED_AZA = 0, CONMED_MP = 0, CONMED_MTX = 0, CONMED_AMINO = 0
@@ -408,7 +408,7 @@ events_ss_base <- make_cohort(
   dosing_interval_days = 56
 ) |>
   mutate(
-    WT = 70, AGE = 40, ALB = 4, SCORE_CALPRO = 700,
+    WT = 70, AGE = 40, ALB = 40, SCORE_CALPRO = 700,
     SCORE_CDAI = 300, SCORE_PMAYO = 6, IBD_CD = 0,
     PRIOR_TNF = 0, ADA_POS = 0,
     CONMED_AZA = 0, CONMED_MP = 0, CONMED_MTX = 0, CONMED_AMINO = 0
@@ -419,7 +419,7 @@ extra_obs <- data.frame(
   ID = 1L,
   TIME = final_dose_day + c(70, 84, 112, 140, 168),
   AMT = 0, EVID = 0, CMT = "central", RATE = 0, DV = NA_real_,
-  WT = 70, AGE = 40, ALB = 4, SCORE_CALPRO = 700,
+  WT = 70, AGE = 40, ALB = 40, SCORE_CALPRO = 700,
   SCORE_CDAI = 300, SCORE_PMAYO = 6, IBD_CD = 0,
   PRIOR_TNF = 0, ADA_POS = 0,
   CONMED_AZA = 0, CONMED_MP = 0, CONMED_MTX = 0, CONMED_AMINO = 0

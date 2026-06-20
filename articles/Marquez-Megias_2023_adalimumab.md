@@ -96,8 +96,9 @@ n_sub <- 200L
 # median near 3.86 and a heavier left tail (matching IBD populations where
 # active disease pulls albumin downward).
 alb_sample <- function(n) {
-  # Beta(5, 2) rescaled has median ~ 3.85 g/dL on (1.97, 4.96).
-  pmin(pmax(1.97 + (4.96 - 1.97) * rbeta(n, shape1 = 5, shape2 = 2), 1.97), 4.96)
+  # Beta(5, 2) rescaled has median ~ 38.5 g/L on (19.7, 49.6) (SI; equivalent
+  # to a median 3.85 g/dL on the 1.97-4.96 g/dL range used by the source paper).
+  pmin(pmax(19.7 + (49.6 - 19.7) * rbeta(n, shape1 = 5, shape2 = 2), 19.7), 49.6)
 }
 
 cohort <- tibble::tibble(
@@ -109,7 +110,7 @@ cohort <- tibble::tibble(
 
 summary(cohort$ALB)
 #>    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-#>   2.690   3.790   4.176   4.114   4.493   4.922
+#>   26.90   37.90   41.76   41.14   44.93   49.22
 mean(cohort$ADA_POS)
 #> [1] 0.21
 ```

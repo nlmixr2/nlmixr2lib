@@ -220,7 +220,7 @@ ss_events <- data.frame(
   evid  = 0L,
   amt   = 0,
   cmt   = NA_character_,
-  WT    = 60, ALB = 3.9, ALP = 132, TBILI = 0.5, NEUT = 3200
+  WT    = 60, ALB = 39, ALP = 132, TBILI =   85.5, NEUT = 3200
 )
 ss_sim <- as.data.frame(rxode2::rxSolve(mod_typical, events = ss_events))
 #> ℹ omega/sigma items treated as zero: 'etalkprol', 'etalkout', 'etalslope'
@@ -236,7 +236,7 @@ ggplot(ss_sim, aes(time / 24, ANC)) +
   geom_line() +
   scale_x_continuous("Time (days)", breaks = c(0, 7, 14, 21)) +
   scale_y_continuous("ANC (cells/uL)") +
-  labs(title = "No-drug ANC trajectory at NEUT = 3200, ALB = 3.9 (typical)",
+  labs(title = "No-drug ANC trajectory at NEUT = 3200, ALB = 39 (typical)",
        caption = "Dotted line: target baseline NEUT = 3200. Drift reflects the published Kprol != Ktr != Kout parameterisation; not a transcription error.") +
   theme_minimal(base_size = 11)
 ```
@@ -269,7 +269,7 @@ fig3a <- purrr::map_dfr(seq_along(scenarios), function(i_scen) {
   purrr::map_dfr(seq_along(albumin_levels), function(i_alb) {
     alb_label <- names(albumin_levels)[i_alb]
     alb_val   <- albumin_levels[i_alb]
-    cov_df <- tibble(WT = 60, ALB = alb_val, ALP = 132, TBILI = 0.5, NEUT = 3200)
+    cov_df <- tibble(WT = 60, ALB = alb_val, ALP = 132, TBILI =   85.5, NEUT = 3200)
     evt <- make_cohort_events(cov_df,
                               dose_times_h = d_times,
                               dose_mg      = dose_mg_free_base(1.4, bsa),
@@ -300,7 +300,7 @@ ggplot(fig3a, aes(time / 24, ANC, colour = albumin, linetype = albumin)) +
        title = "Figure 3A replication: effect of serum albumin on typical-value ANC",
        caption = "Replicates Figure 3A of Kawamura 2018. Dotted horizontal lines = grade 3 (1000) and grade 4 (500) thresholds.") +
   theme_minimal(base_size = 11)
-#> Warning: Removed 110 rows containing missing values or values outside the scale range
+#> Warning: Removed 26 rows containing missing values or values outside the scale range
 #> (`geom_line()`).
 ```
 
@@ -322,7 +322,7 @@ fig3b <- purrr::map_dfr(seq_along(scenarios), function(i_scen) {
   purrr::map_dfr(seq_along(bneu_levels), function(i_b) {
     b_label <- names(bneu_levels)[i_b]
     b_val   <- bneu_levels[i_b]
-    cov_df <- tibble(WT = 60, ALB = 3.9, ALP = 132, TBILI = 0.5, NEUT = b_val)
+    cov_df <- tibble(WT = 60, ALB = 39, ALP = 132, TBILI =   85.5, NEUT = b_val)
     evt <- make_cohort_events(cov_df,
                               dose_times_h = d_times,
                               dose_mg      = dose_mg_free_base(1.4, bsa),
@@ -390,7 +390,7 @@ sample_cohort <- function(n, id_offset = 0L) {
     WT    = 60,
     ALB   = alb,
     ALP   = 132,
-    TBILI = 0.5,
+    TBILI =   8.55,
     NEUT  = neut
   )
 }
@@ -453,9 +453,9 @@ knitr::kable(severity, caption = "Simulated probability of grade >=3 and >=4 neu
 
 | scenario  | Grade \>=3 (%) | Grade \>=4 (%) |   n |
 |:----------|---------------:|---------------:|----:|
-| Biweekly  |           26.5 |            4.0 | 200 |
-| Standard  |           54.0 |           18.5 | 200 |
-| Triweekly |           23.0 |            5.0 | 200 |
+| Biweekly  |           78.0 |           67.5 | 200 |
+| Standard  |           89.0 |           81.5 | 200 |
+| Triweekly |           73.5 |           61.0 | 200 |
 
 Simulated probability of grade \>=3 and \>=4 neutropenia by treatment
 scenario. {.table}
@@ -512,9 +512,9 @@ knitr::kable(comparison,
 
 | scenario | n | Grade \>=3 (%) | Grade \>=3 (%) paper | Grade \>=3 delta | Grade \>=4 (%) | Grade \>=4 (%) paper | Grade \>=4 delta |
 |:---|---:|---:|---:|---:|---:|---:|---:|
-| Biweekly | 200 | 26.5 | 27 | -0.5 | 4.0 | 3 | 1.0 |
-| Standard | 200 | 54.0 | 69 | -15.0 | 18.5 | 23 | -4.5 |
-| Triweekly | 200 | 23.0 | 27 | -4.0 | 5.0 | 3 | 2.0 |
+| Biweekly | 200 | 78.0 | 27 | 51.0 | 67.5 | 3 | 64.5 |
+| Standard | 200 | 89.0 | 69 | 20.0 | 81.5 | 23 | 58.5 |
+| Triweekly | 200 | 73.5 | 27 | 46.5 | 61.0 | 3 | 58.0 |
 
 Simulated vs paper-published probabilities of cycle-1 grade \>=3 / \>=4
 neutropenia. {.table style="width:100%;"}
@@ -529,7 +529,7 @@ event and read off the implied Cmax, AUCinf, and half-life.
 
 ``` r
 
-nca_cov <- tibble(id = 1L, WT = 68.7, ALB = 4.0, ALP = 132, TBILI = 0.5, NEUT = 3200)
+nca_cov <- tibble(id = 1L, WT = 68.7, ALB = 40, ALP = 132, TBILI =   85.5, NEUT = 3200)
 nca_evt <- make_cohort_events(
   cov_df       = nca_cov,
   dose_times_h = 0,
@@ -568,19 +568,19 @@ knitr::kable(nca_summary[, c("PPTESTCD", "PPORRES")],
 
 | PPTESTCD            |     PPORRES |
 |:--------------------|------------:|
-| cmax                |   0.3591272 |
+| cmax                |   0.3685697 |
 | tmax                |   0.1000000 |
 | tlast               | 500.0000000 |
-| clast.obs           |   0.0000015 |
-| lambda.z            |   0.0170812 |
-| r.squared           |   0.9999134 |
-| adj.r.squared       |   0.9999128 |
-| lambda.z.time.first |   5.0000000 |
+| clast.obs           |   0.0000176 |
+| lambda.z            |   0.0125809 |
+| r.squared           |   0.9999058 |
+| adj.r.squared       |   0.9999052 |
+| lambda.z.time.first |   5.4000000 |
 | lambda.z.time.last  | 500.0000000 |
-| lambda.z.n.points   | 171.0000000 |
-| clast.pred          |   0.0000015 |
-| half.life           |  40.5796159 |
-| span.ratio          |  12.1982426 |
+| lambda.z.n.points   | 167.0000000 |
+| clast.pred          |   0.0000175 |
+| half.life           |  55.0951565 |
+| span.ratio          |   8.9771957 |
 | aucinf.obs          |          NA |
 
 PKNCA single-dose summary, typical 68.7 kg subject, 1.97 mg eribulin

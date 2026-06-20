@@ -1393,7 +1393,7 @@ eribulin dosing).</p>
 <span>  evid  <span class="op">=</span> <span class="fl">0L</span>,</span>
 <span>  amt   <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  cmt   <span class="op">=</span> <span class="cn">NA_character_</span>,</span>
-<span>  WT    <span class="op">=</span> <span class="fl">60</span>, ALB <span class="op">=</span> <span class="fl">3.9</span>, ALP <span class="op">=</span> <span class="fl">132</span>, TBILI <span class="op">=</span> <span class="fl">0.5</span>, NEUT <span class="op">=</span> <span class="fl">3200</span></span>
+<span>  WT    <span class="op">=</span> <span class="fl">60</span>, ALB <span class="op">=</span> <span class="fl">39</span>, ALP <span class="op">=</span> <span class="fl">132</span>, TBILI <span class="op">=</span>   <span class="fl">85.5</span>, NEUT <span class="op">=</span> <span class="fl">3200</span></span>
 <span><span class="op">)</span></span>
 <span><span class="va">ss_sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod_typical</span>, events <span class="op">=</span> <span class="va">ss_events</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalkprol', 'etalkout', 'etalslope'</span></span>
@@ -1409,7 +1409,7 @@ eribulin dosing).</p>
 <span>  <span class="fu">geom_line</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">scale_x_continuous</span><span class="op">(</span><span class="st">"Time (days)"</span>, breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">7</span>, <span class="fl">14</span>, <span class="fl">21</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">scale_y_continuous</span><span class="op">(</span><span class="st">"ANC (cells/uL)"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">labs</span><span class="op">(</span>title <span class="op">=</span> <span class="st">"No-drug ANC trajectory at NEUT = 3200, ALB = 3.9 (typical)"</span>,</span>
+<span>  <span class="fu">labs</span><span class="op">(</span>title <span class="op">=</span> <span class="st">"No-drug ANC trajectory at NEUT = 3200, ALB = 39 (typical)"</span>,</span>
 <span>       caption <span class="op">=</span> <span class="st">"Dotted line: target baseline NEUT = 3200. Drift reflects the published Kprol != Ktr != Kout parameterisation; not a transcription error."</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">theme_minimal</span><span class="op">(</span>base_size <span class="op">=</span> <span class="fl">11</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Kawamura_2018_eribulin_files/figure-html/ss-check-1.png" class="r-plt" alt="" width="672"></p>
@@ -1440,7 +1440,7 @@ scenarios.</p>
 <span>  <span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map_dfr.html" class="external-link">map_dfr</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_along</a></span><span class="op">(</span><span class="va">albumin_levels</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">i_alb</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="va">alb_label</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">albumin_levels</span><span class="op">)</span><span class="op">[</span><span class="va">i_alb</span><span class="op">]</span></span>
 <span>    <span class="va">alb_val</span>   <span class="op">&lt;-</span> <span class="va">albumin_levels</span><span class="op">[</span><span class="va">i_alb</span><span class="op">]</span></span>
-<span>    <span class="va">cov_df</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="op">(</span>WT <span class="op">=</span> <span class="fl">60</span>, ALB <span class="op">=</span> <span class="va">alb_val</span>, ALP <span class="op">=</span> <span class="fl">132</span>, TBILI <span class="op">=</span> <span class="fl">0.5</span>, NEUT <span class="op">=</span> <span class="fl">3200</span><span class="op">)</span></span>
+<span>    <span class="va">cov_df</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="op">(</span>WT <span class="op">=</span> <span class="fl">60</span>, ALB <span class="op">=</span> <span class="va">alb_val</span>, ALP <span class="op">=</span> <span class="fl">132</span>, TBILI <span class="op">=</span>   <span class="fl">85.5</span>, NEUT <span class="op">=</span> <span class="fl">3200</span><span class="op">)</span></span>
 <span>    <span class="va">evt</span> <span class="op">&lt;-</span> <span class="fu">make_cohort_events</span><span class="op">(</span><span class="va">cov_df</span>,</span>
 <span>                              dose_times_h <span class="op">=</span> <span class="va">d_times</span>,</span>
 <span>                              dose_mg      <span class="op">=</span> <span class="fu">dose_mg_free_base</span><span class="op">(</span><span class="fl">1.4</span>, <span class="va">bsa</span><span class="op">)</span>,</span>
@@ -1471,7 +1471,7 @@ scenarios.</p>
 <span>       title <span class="op">=</span> <span class="st">"Figure 3A replication: effect of serum albumin on typical-value ANC"</span>,</span>
 <span>       caption <span class="op">=</span> <span class="st">"Replicates Figure 3A of Kawamura 2018. Dotted horizontal lines = grade 3 (1000) and grade 4 (500) thresholds."</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">theme_minimal</span><span class="op">(</span>base_size <span class="op">=</span> <span class="fl">11</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Removed 110 rows containing missing values or values outside the scale range</span></span>
+<span><span class="co">#&gt; Warning: Removed 26 rows containing missing values or values outside the scale range</span></span>
 <span><span class="co">#&gt; (`geom_line()`).</span></span></code></pre></div>
 <p><img src="Kawamura_2018_eribulin_files/figure-html/fig3a-1.png" class="r-plt" alt="" width="672"></p>
 </div>
@@ -1490,7 +1490,7 @@ two baseline neutrophil levels (normal 3200 cells/uL, severely reduced
 <span>  <span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map_dfr.html" class="external-link">map_dfr</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_along</a></span><span class="op">(</span><span class="va">bneu_levels</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">i_b</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="va">b_label</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">bneu_levels</span><span class="op">)</span><span class="op">[</span><span class="va">i_b</span><span class="op">]</span></span>
 <span>    <span class="va">b_val</span>   <span class="op">&lt;-</span> <span class="va">bneu_levels</span><span class="op">[</span><span class="va">i_b</span><span class="op">]</span></span>
-<span>    <span class="va">cov_df</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="op">(</span>WT <span class="op">=</span> <span class="fl">60</span>, ALB <span class="op">=</span> <span class="fl">3.9</span>, ALP <span class="op">=</span> <span class="fl">132</span>, TBILI <span class="op">=</span> <span class="fl">0.5</span>, NEUT <span class="op">=</span> <span class="va">b_val</span><span class="op">)</span></span>
+<span>    <span class="va">cov_df</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="op">(</span>WT <span class="op">=</span> <span class="fl">60</span>, ALB <span class="op">=</span> <span class="fl">39</span>, ALP <span class="op">=</span> <span class="fl">132</span>, TBILI <span class="op">=</span>   <span class="fl">85.5</span>, NEUT <span class="op">=</span> <span class="va">b_val</span><span class="op">)</span></span>
 <span>    <span class="va">evt</span> <span class="op">&lt;-</span> <span class="fu">make_cohort_events</span><span class="op">(</span><span class="va">cov_df</span>,</span>
 <span>                              dose_times_h <span class="op">=</span> <span class="va">d_times</span>,</span>
 <span>                              dose_mg      <span class="op">=</span> <span class="fu">dose_mg_free_base</span><span class="op">(</span><span class="fl">1.4</span>, <span class="va">bsa</span><span class="op">)</span>,</span>
@@ -1574,7 +1574,7 @@ covariate distribution.</p>
 <span>    WT    <span class="op">=</span> <span class="fl">60</span>,</span>
 <span>    ALB   <span class="op">=</span> <span class="va">alb</span>,</span>
 <span>    ALP   <span class="op">=</span> <span class="fl">132</span>,</span>
-<span>    TBILI <span class="op">=</span> <span class="fl">0.5</span>,</span>
+<span>    TBILI <span class="op">=</span>   <span class="fl">8.55</span>,</span>
 <span>    NEUT  <span class="op">=</span> <span class="va">neut</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">}</span></span>
@@ -1639,20 +1639,20 @@ treatment scenario.</caption>
 <tbody>
 <tr class="odd">
 <td align="left">Biweekly</td>
-<td align="right">26.5</td>
-<td align="right">4.0</td>
+<td align="right">78.0</td>
+<td align="right">67.5</td>
 <td align="right">200</td>
 </tr>
 <tr class="even">
 <td align="left">Standard</td>
-<td align="right">54.0</td>
-<td align="right">18.5</td>
+<td align="right">89.0</td>
+<td align="right">81.5</td>
 <td align="right">200</td>
 </tr>
 <tr class="odd">
 <td align="left">Triweekly</td>
-<td align="right">23.0</td>
-<td align="right">5.0</td>
+<td align="right">73.5</td>
+<td align="right">61.0</td>
 <td align="right">200</td>
 </tr>
 </tbody>
@@ -1728,32 +1728,32 @@ Kawamura 2018 Figure 4 values:</p>
 <tr class="odd">
 <td align="left">Biweekly</td>
 <td align="right">200</td>
-<td align="right">26.5</td>
+<td align="right">78.0</td>
 <td align="right">27</td>
-<td align="right">-0.5</td>
-<td align="right">4.0</td>
+<td align="right">51.0</td>
+<td align="right">67.5</td>
 <td align="right">3</td>
-<td align="right">1.0</td>
+<td align="right">64.5</td>
 </tr>
 <tr class="even">
 <td align="left">Standard</td>
 <td align="right">200</td>
-<td align="right">54.0</td>
+<td align="right">89.0</td>
 <td align="right">69</td>
-<td align="right">-15.0</td>
-<td align="right">18.5</td>
+<td align="right">20.0</td>
+<td align="right">81.5</td>
 <td align="right">23</td>
-<td align="right">-4.5</td>
+<td align="right">58.5</td>
 </tr>
 <tr class="odd">
 <td align="left">Triweekly</td>
 <td align="right">200</td>
-<td align="right">23.0</td>
+<td align="right">73.5</td>
 <td align="right">27</td>
-<td align="right">-4.0</td>
-<td align="right">5.0</td>
+<td align="right">46.5</td>
+<td align="right">61.0</td>
 <td align="right">3</td>
-<td align="right">2.0</td>
+<td align="right">58.0</td>
 </tr>
 </tbody>
 </table>
@@ -1767,7 +1767,7 @@ Majid 2014 typical-value exposure (CL = 3.11 L/h, V1 = 4.06 L for a 68.7
 kg reference subject). We supply a single typical-subject single-dose
 event and read off the implied Cmax, AUCinf, and half-life.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">nca_cov</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="op">(</span>id <span class="op">=</span> <span class="fl">1L</span>, WT <span class="op">=</span> <span class="fl">68.7</span>, ALB <span class="op">=</span> <span class="fl">4.0</span>, ALP <span class="op">=</span> <span class="fl">132</span>, TBILI <span class="op">=</span> <span class="fl">0.5</span>, NEUT <span class="op">=</span> <span class="fl">3200</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">nca_cov</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="op">(</span>id <span class="op">=</span> <span class="fl">1L</span>, WT <span class="op">=</span> <span class="fl">68.7</span>, ALB <span class="op">=</span> <span class="fl">40</span>, ALP <span class="op">=</span> <span class="fl">132</span>, TBILI <span class="op">=</span>   <span class="fl">85.5</span>, NEUT <span class="op">=</span> <span class="fl">3200</span><span class="op">)</span></span>
 <span><span class="va">nca_evt</span> <span class="op">&lt;-</span> <span class="fu">make_cohort_events</span><span class="op">(</span></span>
 <span>  cov_df       <span class="op">=</span> <span class="va">nca_cov</span>,</span>
 <span>  dose_times_h <span class="op">=</span> <span class="fl">0</span>,</span>
@@ -1812,7 +1812,7 @@ eribulin free base IV (~1.4 mg/m^2 mesilate, 1.6 m^2 BSA).</caption>
 <tbody>
 <tr class="odd">
 <td align="left">cmax</td>
-<td align="right">0.3591272</td>
+<td align="right">0.3685697</td>
 </tr>
 <tr class="even">
 <td align="left">tmax</td>
@@ -1824,23 +1824,23 @@ eribulin free base IV (~1.4 mg/m^2 mesilate, 1.6 m^2 BSA).</caption>
 </tr>
 <tr class="even">
 <td align="left">clast.obs</td>
-<td align="right">0.0000015</td>
+<td align="right">0.0000176</td>
 </tr>
 <tr class="odd">
 <td align="left">lambda.z</td>
-<td align="right">0.0170812</td>
+<td align="right">0.0125809</td>
 </tr>
 <tr class="even">
 <td align="left">r.squared</td>
-<td align="right">0.9999134</td>
+<td align="right">0.9999058</td>
 </tr>
 <tr class="odd">
 <td align="left">adj.r.squared</td>
-<td align="right">0.9999128</td>
+<td align="right">0.9999052</td>
 </tr>
 <tr class="even">
 <td align="left">lambda.z.time.first</td>
-<td align="right">5.0000000</td>
+<td align="right">5.4000000</td>
 </tr>
 <tr class="odd">
 <td align="left">lambda.z.time.last</td>
@@ -1848,19 +1848,19 @@ eribulin free base IV (~1.4 mg/m^2 mesilate, 1.6 m^2 BSA).</caption>
 </tr>
 <tr class="even">
 <td align="left">lambda.z.n.points</td>
-<td align="right">171.0000000</td>
+<td align="right">167.0000000</td>
 </tr>
 <tr class="odd">
 <td align="left">clast.pred</td>
-<td align="right">0.0000015</td>
+<td align="right">0.0000175</td>
 </tr>
 <tr class="even">
 <td align="left">half.life</td>
-<td align="right">40.5796159</td>
+<td align="right">55.0951565</td>
 </tr>
 <tr class="odd">
 <td align="left">span.ratio</td>
-<td align="right">12.1982426</td>
+<td align="right">8.9771957</td>
 </tr>
 <tr class="even">
 <td align="left">aucinf.obs</td>

@@ -1118,8 +1118,9 @@ Final Model column of Marquez-Megias 2023 Table 1.</p>
 <span><span class="co"># median near 3.86 and a heavier left tail (matching IBD populations where</span></span>
 <span><span class="co"># active disease pulls albumin downward).</span></span>
 <span><span class="va">alb_sample</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">n</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="co"># Beta(5, 2) rescaled has median ~ 3.85 g/dL on (1.97, 4.96).</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmin</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span><span class="fl">1.97</span> <span class="op">+</span> <span class="op">(</span><span class="fl">4.96</span> <span class="op">-</span> <span class="fl">1.97</span><span class="op">)</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/stats/Beta.html" class="external-link">rbeta</a></span><span class="op">(</span><span class="va">n</span>, shape1 <span class="op">=</span> <span class="fl">5</span>, shape2 <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>, <span class="fl">1.97</span><span class="op">)</span>, <span class="fl">4.96</span><span class="op">)</span></span>
+<span>  <span class="co"># Beta(5, 2) rescaled has median ~ 38.5 g/L on (19.7, 49.6) (SI; equivalent</span></span>
+<span>  <span class="co"># to a median 3.85 g/dL on the 1.97-4.96 g/dL range used by the source paper).</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmin</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span><span class="fl">19.7</span> <span class="op">+</span> <span class="op">(</span><span class="fl">49.6</span> <span class="op">-</span> <span class="fl">19.7</span><span class="op">)</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/stats/Beta.html" class="external-link">rbeta</a></span><span class="op">(</span><span class="va">n</span>, shape1 <span class="op">=</span> <span class="fl">5</span>, shape2 <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>, <span class="fl">19.7</span><span class="op">)</span>, <span class="fl">49.6</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="va">cohort</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
@@ -1131,7 +1132,7 @@ Final Model column of Marquez-Megias 2023 Table 1.</p>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">cohort</span><span class="op">$</span><span class="va">ALB</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. </span></span>
-<span><span class="co">#&gt;   2.690   3.790   4.176   4.114   4.493   4.922</span></span>
+<span><span class="co">#&gt;   26.90   37.90   41.76   41.14   44.93   49.22</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">cohort</span><span class="op">$</span><span class="va">ADA_POS</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 0.21</span></span></code></pre></div>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">

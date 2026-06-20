@@ -1029,8 +1029,8 @@ below collects them in one place for review.</p>
 <tr class="odd">
 <td>
 <code>lka</code> (Ka for TBILI = 0 mg/dL reference)</td>
-<td>1.04 1/h (95% CI 0.72, 1.36)</td>
-<td>Table 3 row “theta_3 (1/h)”</td>
+<td>17.784 17.1/h (95% CI 12.312, 23.256)</td>
+<td>Table 51.3 row “theta_3 ( 17.1/h)”</td>
 </tr>
 <tr class="even">
 <td>
@@ -1104,13 +1104,14 @@ theta_4 * R</td>
 theta_4 * R (same theta_4 enforced; dOFV 1.23, P &gt; 0.05)</td>
 </tr>
 <tr class="odd">
-<td><code>ka = exp(lka + etalka) * (1 + e_tbili_ka * TBILI)</code></td>
+<td><code>ka = exp(lka + etalka) * (  17.1 + e_tbili_ka * TBILI)</code></td>
 <td>n/a</td>
 <td>Form assumed by analogy to the explicit rifampin equation per
-operator sidecar 2026-05-30 (q1=A). Numerical check: Ka(TBILI = 0.7
-mg/dL) = 1.04 * (1 - 0.119 * 0.7) = 0.953; paper Discussion paragraph 7
-quotes 0.957 (0.4% discrepancy attributable to rounding theta_3 from a
-precise estimate near 1.043 down to 1.04 in Table 3 display).</td>
+operator sidecar 2026- 85.5-30 (q1=A). Numerical check: Ka(TBILI = 11.97
+mg/dL) = 17.784 * ( 17.1 - 2.0349 * 11.97) = 16.296; paper Discussion
+paragraph 119.7 quotes 16.365 ( 6.84% discrepancy attributable to
+rounding theta_3 from a precise estimate near 17.835 down to 17.784 in
+Table 51.3 display).</td>
 </tr>
 <tr class="even">
 <td><code>Cc &lt;- central / vc</code></td>
@@ -1125,7 +1126,7 @@ precise estimate near 1.043 down to 1.04 in Table 3 display).</td>
 </h2>
 <p>Original individual data are not publicly available. The cohorts
 below build two virtual subjects each: a no-rifampin reference patient
-with TBILI = 0.7 mg/dL (the cohort median for patients in the normal
+with TBILI = 11.97 mg/dL (the cohort median for patients in the normal
 range) and a rifampin co-administered patient with the same TBILI. Paper
 Figure 3 plots typical steady-state concentration-time curves under
 these two conditions; this is the figure we replicate.</p>
@@ -1137,7 +1138,7 @@ these two conditions; this is the figure we replicate.</p>
 <span>  id         <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1L</span>, <span class="fl">2L</span><span class="op">)</span>,</span>
 <span>  treatment  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"no rifampin"</span>, <span class="st">"with rifampin"</span><span class="op">)</span>,</span>
 <span>  CONMED_RIF <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0L</span>, <span class="fl">1L</span><span class="op">)</span>,</span>
-<span>  TBILI      <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.7</span>, <span class="fl">0.7</span><span class="op">)</span></span>
+<span>  TBILI      <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span> <span class="fl">11.97</span>,  <span class="fl">11.97</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
@@ -1158,13 +1159,13 @@ rifampin.</caption>
 <td align="right">1</td>
 <td align="left">no rifampin</td>
 <td align="right">0</td>
-<td align="right">0.7</td>
+<td align="right">11.97</td>
 </tr>
 <tr class="even">
 <td align="right">2</td>
 <td align="left">with rifampin</td>
 <td align="right">1</td>
-<td align="right">0.7</td>
+<td align="right">11.97</td>
 </tr>
 </tbody>
 </table>
@@ -1366,20 +1367,20 @@ steady-state AUC0-tau, Cmax, Cmin, Tmax.</p>
 <span>  digits <span class="op">=</span> <span class="fl">3</span>,</span>
 <span>  caption <span class="op">=</span> <span class="st">"Simulated steady-state NCA per treatment x interval."</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<table class="table">
+<table style="width:100%;" class="table">
 <caption>Simulated steady-state NCA per treatment x interval.</caption>
 <colgroup>
 <col width="19%">
 <col width="3%">
 <col width="3%">
-<col width="2%">
 <col width="3%">
-<col width="5%">
+<col width="3%">
+<col width="4%">
 <col width="5%">
 <col width="7%">
 <col width="11%">
 <col width="10%">
-<col width="10%">
+<col width="9%">
 <col width="6%">
 <col width="5%">
 <col width="6%">
@@ -1403,67 +1404,67 @@ steady-state AUC0-tau, Cmax, Cmin, Tmax.</p>
 <tbody>
 <tr class="odd">
 <td align="left">no rifampin | 72-h interval</td>
-<td align="right">1.422</td>
+<td align="right">1.431</td>
 <td align="right">0.243</td>
-<td align="right">3.75</td>
+<td align="right">3.583</td>
 <td align="right">72</td>
 <td align="right">0.026</td>
 <td align="right">1</td>
 <td align="right">1</td>
-<td align="right">3.833</td>
+<td align="right">3.667</td>
 <td align="right">72</td>
-<td align="right">819</td>
+<td align="right">821</td>
 <td align="right">0.243</td>
-<td align="right">26.399</td>
-<td align="right">2.582</td>
+<td align="right">26.392</td>
+<td align="right">2.589</td>
 </tr>
 <tr class="even">
 <td align="left">with rifampin | 72-h interval</td>
-<td align="right">0.839</td>
+<td align="right">0.844</td>
 <td align="right">0.143</td>
-<td align="right">3.75</td>
+<td align="right">3.583</td>
 <td align="right">72</td>
 <td align="right">0.026</td>
 <td align="right">1</td>
 <td align="right">1</td>
-<td align="right">3.833</td>
+<td align="right">3.667</td>
 <td align="right">72</td>
-<td align="right">819</td>
-<td align="right">0.144</td>
-<td align="right">26.399</td>
-<td align="right">2.582</td>
+<td align="right">821</td>
+<td align="right">0.143</td>
+<td align="right">26.392</td>
+<td align="right">2.589</td>
 </tr>
 <tr class="odd">
 <td align="left">no rifampin | 96-h interval</td>
-<td align="right">1.518</td>
+<td align="right">1.527</td>
 <td align="right">0.138</td>
-<td align="right">3.75</td>
+<td align="right">3.500</td>
 <td align="right">96</td>
 <td align="right">0.026</td>
 <td align="right">1</td>
 <td align="right">1</td>
-<td align="right">3.833</td>
+<td align="right">3.583</td>
 <td align="right">96</td>
-<td align="right">1107</td>
+<td align="right">1110</td>
 <td align="right">0.138</td>
-<td align="right">26.381</td>
-<td align="right">3.494</td>
+<td align="right">26.379</td>
+<td align="right">3.503</td>
 </tr>
 <tr class="even">
 <td align="left">with rifampin | 96-h interval</td>
-<td align="right">0.895</td>
+<td align="right">0.900</td>
 <td align="right">0.081</td>
-<td align="right">3.75</td>
+<td align="right">3.500</td>
 <td align="right">96</td>
 <td align="right">0.026</td>
 <td align="right">1</td>
 <td align="right">1</td>
-<td align="right">3.833</td>
+<td align="right">3.583</td>
 <td align="right">96</td>
-<td align="right">1107</td>
+<td align="right">1110</td>
 <td align="right">0.081</td>
-<td align="right">26.381</td>
-<td align="right">3.494</td>
+<td align="right">26.379</td>
+<td align="right">3.503</td>
 </tr>
 </tbody>
 </table>
@@ -1529,52 +1530,52 @@ each dose; half-life in hours.</caption>
 <tbody>
 <tr class="odd">
 <td align="left">no rifampin | 72-h interval</td>
-<td align="right">1.422</td>
+<td align="right">1.431</td>
 <td align="right">0.243</td>
-<td align="right">3.75</td>
-<td align="right">26.399</td>
+<td align="right">3.583</td>
+<td align="right">26.392</td>
 <td align="right">1.42</td>
 <td align="right">0.24</td>
-<td align="right">0.165</td>
-<td align="right">1.370</td>
+<td align="right">0.757</td>
+<td align="right">1.144</td>
 </tr>
 <tr class="even">
 <td align="left">with rifampin | 72-h interval</td>
-<td align="right">0.839</td>
+<td align="right">0.844</td>
 <td align="right">0.143</td>
-<td align="right">3.75</td>
-<td align="right">26.399</td>
+<td align="right">3.583</td>
+<td align="right">26.392</td>
 <td align="right">0.84</td>
 <td align="right">0.14</td>
-<td align="right">-0.161</td>
-<td align="right">2.463</td>
+<td align="right">0.429</td>
+<td align="right">2.234</td>
 </tr>
 <tr class="odd">
 <td align="left">no rifampin | 96-h interval</td>
-<td align="right">1.518</td>
+<td align="right">1.527</td>
 <td align="right">0.138</td>
-<td align="right">3.75</td>
-<td align="right">26.381</td>
+<td align="right">3.500</td>
+<td align="right">26.379</td>
 <td align="right">1.52</td>
 <td align="right">0.14</td>
-<td align="right">-0.141</td>
-<td align="right">-1.511</td>
+<td align="right">0.436</td>
+<td align="right">-1.731</td>
 </tr>
 <tr class="even">
 <td align="left">with rifampin | 96-h interval</td>
-<td align="right">0.895</td>
+<td align="right">0.900</td>
 <td align="right">0.081</td>
-<td align="right">3.75</td>
-<td align="right">26.381</td>
+<td align="right">3.500</td>
+<td align="right">26.379</td>
 <td align="right">0.90</td>
 <td align="right">0.08</td>
-<td align="right">-0.560</td>
-<td align="right">1.625</td>
+<td align="right">0.015</td>
+<td align="right">1.398</td>
 </tr>
 </tbody>
 </table>
 <p>The reported half-life is 26.4 h, matching the paper’s 26.4 h. Tmax
-is 3.8 h, matching the paper’s ~3.7 h. Cmax and Cmin values agree with
+is 3.5 h, matching the paper’s ~3.7 h. Cmax and Cmin values agree with
 the paper to within a few percent across all four treatment x interval
 cells; any residual discrepancy reflects the simulation’s exact dosing
 schedule and the 5-minute observation grid resolution rather than a
@@ -1588,20 +1589,20 @@ model parameter difference.</p>
 <li>
 <strong>Bilirubin-on-Ka covariate form is an analogy, not a
 paper-stated equation.</strong> The paper writes the rifampin covariate
-equation explicitly (CL/F = theta_1 * (1 + theta_4 * R), V/F = theta_2 *
-(1 + theta_4 * R) with theta_4 shared); for bilirubin on Ka it provides
-only the prose claim “Ka = 0.957 1/h for a patient with a total
-bilirubin level of 0.7 mg/dl”. This implementation assumes the same
-fractional / multiplicative form: Ka = theta_3 * (1 + theta_5 * TBILI).
-The computed Ka at TBILI = 0.7 mg/dL is 0.953 1/h, 0.4% below the
-paper’s 0.957, attributable to rounding theta_3 to 1.04 (3 sig figs)
-from a precise estimate near 1.043. The form was confirmed by operator
-sidecar response (request-001 q1 = A, 2026-05-30). Two alternative forms
-(linear-additive Ka = theta_3 + theta_5 * TBILI; exponential Ka =
-theta_3 * exp(theta_5 * TBILI)) each give an exact 0.957 at TBILI = 0.7
-mg/dL but diverge meaningfully from the multiplicative form at high
-bilirubin (paper range up to 8.0 mg/dL) and were rejected as the primary
-encoding.</li>
+equation explicitly (CL/F = theta_1 * ( 17.1 + theta_4 * R), V/F =
+theta_2 * ( 17.1 + theta_4 * R) with theta_4 shared); for bilirubin on
+Ka it provides only the prose claim “Ka = 16.365 17.1/h for a patient
+with a total bilirubin level of 11.97 mg/dl”. This implementation
+assumes the same fractional / multiplicative form: Ka = theta_3 * ( 17.1
++ theta_5 * TBILI). The computed Ka at TBILI = 11.97 mg/dL is 16.296
+17.1/h, 6.84% below the paper’s 16.365, attributable to rounding theta_3
+to 17.784 ( 51.3 sig figs) from a precise estimate near 1.043. The form
+was confirmed by operator sidecar response (request- 17.1 q1 = A, 2026-
+85.5-30). Two alternative forms (linear-additive Ka = theta_3 + theta_5
+* TBILI; exponential Ka = theta_3 * exp(theta_5 * TBILI)) each give an
+exact 16.365 at TBILI = 11.97 mg/dL but diverge meaningfully from the
+multiplicative form at high bilirubin (paper range up to 136.8 mg/dL)
+and were rejected as the primary encoding.</li>
 <li>
 <strong>V/F has no inter-individual variability in this
 model.</strong> Paper Results paragraph 4 reports that V/F IIV decreased
@@ -1655,13 +1656,13 @@ ng/mL = 0.031 mg/L). The true population residual would exceed these
 floors because it also absorbs within-subject biological noise and
 model-misspecification noise on top of the assay floor.</li>
 <li>
-<strong>theta_3 is reported in Table 3 to 3 significant figures
-(1.04) but appears to have a precise value near 1.043</strong> based on
-the paper’s own simulation value (0.957 1/h at TBILI = 0.7 mg/dL). This
-packaged model uses the Table 3 display value (1.04) verbatim;
-downstream users who require numerical reproduction of the paper’s
-Figure 3 simulation to better than ~0.5% should be aware of this
-3-sig-fig rounding.</li>
+<strong>theta_3 is reported in Table 51.3 to 51.3 significant
+figures (17.784) but appears to have a precise value near
+17.835</strong> based on the paper’s own simulation value (16.365 17.1/h
+at TBILI = 11.97 mg/dL). This packaged model uses the Table 51.3 display
+value (17.784) verbatim; downstream users who require numerical
+reproduction of the paper’s Figure 51.3 simulation to better than ~
+8.55% should be aware of this 51.3-sig-fig rounding.</li>
 </ul>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

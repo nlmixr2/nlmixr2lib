@@ -156,7 +156,7 @@ make_cohort <- function(n, csa, id_offset = 0L) {
     id     = id_offset + seq_len(n),
     arm    = if (csa == 1) "Cyclosporine" else "Tacrolimus",
     CRCL   = 50,
-    ALB    = 0.5,
+    ALB    = 33.25,  # SI g/L (= 0.5 mmol/L * 66.5 g/mmol)
     CONMED_CSA = csa
   )
 }
@@ -329,7 +329,7 @@ higher total concentrations at constant unbound clearance.
 
 ``` r
 
-alb_levels <- c(0.4, 0.5, 0.6)
+alb_levels <- c(26.6, 33.25, 39.9)  # SI g/L (= 0.4, 0.5, 0.6 mmol/L * 66.5 g/mmol)
 # downsampled from 25 to 12 per-ALB for vignette build budget; typical-value lines unaffected
 make_alb_cohort <- function(alb, id_offset) {
   data.frame(id = id_offset + seq_len(12L),
@@ -373,7 +373,7 @@ sim_alb_typ |>
   dplyr::mutate(analyte = factor(analyte,
     levels = c("Cc", "fMPA", "Cc_mpag", "fMPAG"),
     labels = c("tMPA", "fMPA", "tMPAG", "fMPAG")),
-    ALB_label = sprintf("ALB = %.1f mmol/L", ALB)) |>
+    ALB_label = sprintf("ALB = %.2f mmol/L", ALB / 66.5)) |>
   ggplot(aes(tpost, conc, colour = ALB_label, group = ALB_label)) +
   geom_line(linewidth = 0.9) +
   facet_wrap(~analyte, scales = "free_y") +
@@ -416,7 +416,7 @@ arms <- c("Tacrolimus", "Cyclosporine")
 # downsampled from 25 to 12 per-CRCL/arm for vignette build budget; typical-value lines unaffected
 make_crcl_cohort <- function(crcl, arm, id_offset) {
   data.frame(id = id_offset + seq_len(12L),
-             arm = arm, CRCL = crcl, ALB = 0.5,
+             arm = arm, CRCL = crcl, ALB = 33.25,  # SI g/L (= 0.5 mmol/L * 66.5)
              CONMED_CSA = ifelse(arm == "Cyclosporine", 1L, 0L))
 }
 crcl_cohorts <- bind_rows(lapply(seq_along(crcl_levels), function(i) {
