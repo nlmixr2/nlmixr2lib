@@ -380,8 +380,8 @@ navbar:
         href: articles/Garonzik_2016_daptomycin.html
       - text: "Daratumumab (Xu 2020)"
         href: articles/Xu_2020_daratumumab.html
-      - text: "Darbepoetin (Takama 2007)"
-        href: articles/Takama_2007_darbepoetin.html
+      - text: "Darbepoetin alfa (Agoram 2006)"
+        href: articles/Agoram_2006_darbepoetin_alfa.html
       - text: "Datopotamab (Hong 2025)"
         href: articles/Hong_2025_datopotamab.html
       - text: "Daunorubicin (Bogason 2011)"
@@ -1749,12 +1749,7 @@ articles:
   desc: Drug-specific validation vignettes. They are reached from the Specific drug models and DDMoRe models navbar dropdowns; this group hides them from the main Articles index.
   contents:
   - articles/Abboud_2009_epinephrine
-  - articles/AbdelJalil_2013_tacrolimus
-  - articles/AbdulAziz_2016_doripenem
-  - articles/Abduljalil_2009_clarithromycin
-  - articles/Abuhelwa_2015_itraconazole
-  - articles/Adams_1998_zalcitabine
-  - articles/Agerso_2004_desmopressin
+  - articles/Agoram_2006_darbepoetin_alfa
   - articles/Aguiar_2021_ustekinumab
   - articles/Ahamadi_2017_pembrolizumab
   - articles/Ahlstrom_2010_nicotinicAcid_rat
