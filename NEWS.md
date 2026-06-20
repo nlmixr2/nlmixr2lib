@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Franken 2017 midazolam ([doi:10.1111/bcp.13259](https://doi.org/10.1111/bcp.13259)) -- terminally ill adult palliative-care patients (joint parent + 1-OH-M + 1-OH-MG popPK with serum albumin on midazolam CL and eGFR on 1-OH-MG CL; ratifies new `1ohmg` registered metabolite suffix).
+* Add Mensing 2017 paritaprevir, ombitasvir, dasabuvir, ritonavir, and ribavirin ([doi:10.1111/bcp.13138](https://doi.org/10.1111/bcp.13138)) -- adults with chronic hepatitis C virus genotype 1 infection on the 3D (paritaprevir/ritonavir + ombitasvir + dasabuvir) +/- ribavirin regimen across one phase II and six phase III trials.
 * Add Morris 2011 telapristone ([doi:10.1208/s12248-011-9304-7](https://doi.org/10.1208/s12248-011-9304-7)) -- adult women with single-dose telapristone-acetate phase I/II PK studies; ratifies new `cdb4453` metabolite suffix, `MIX_FAST_ELIM`, and `RENALIMP_MOD` covariate canonicals.
 * Add Padoin 1998 cephalexin ([doi:10.1128/aac.42.6.1463](https://doi.org/10.1128/aac.42.6.1463)) -- preclinical male Wistar rats with a cephalexin / quinapril oral coadministration DDI (ratifies new `CONMED_QPRL_ORAL` covariate canonical).
 * Add van Rongen 2018 metformin ([doi:10.1007/s40272-018-0293-1](https://doi.org/10.1007/s40272-018-0293-1)) -- overweight and obese Caucasian adolescents.

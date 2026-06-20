@@ -406,8 +406,10 @@ navbar:
         href: articles/Garonzik_2016_daptomycin.html
       - text: "Daratumumab (Xu 2020)"
         href: articles/Xu_2020_daratumumab.html
-      - text: "Darbepoetin alfa (Agoram 2006)"
-        href: articles/Agoram_2006_darbepoetin_alfa.html
+      - text: "Darbepoetin (Takama 2007)"
+        href: articles/Takama_2007_darbepoetin.html
+      - text: "Dasabuvir (Mensing 2017)"
+        href: articles/Mensing_2017_3D_HCV_regimen.html
       - text: "Datopotamab (Hong 2025)"
         href: articles/Hong_2025_datopotamab.html
       - text: "Daunorubicin (Bogason 2011)"
@@ -1124,6 +1126,8 @@ navbar:
         href: articles/Hayashi_2007_omalizumab.html
       - text: "Omalizumab (Lowe 2009)"
         href: articles/Lowe_2009_omalizumab.html
+      - text: "Ombitasvir (Mensing 2017)"
+        href: articles/Mensing_2017_3D_HCV_regimen.html
       - text: "Omeprazole (Zhao 2018)"
         href: articles/Zhao_2018_omeprazole.html
       - text: "Ondansetron (deAlwis 1998)"
@@ -1166,6 +1170,8 @@ navbar:
         href: articles/Krekels_2015_paracetamol.html
       - text: "Paracetamol (Wattanakul 2016)"
         href: articles/Wattanakul_2016_paracetamol.html
+      - text: "Paritaprevir (Mensing 2017)"
+        href: articles/Mensing_2017_3D_HCV_regimen.html
       - text: "Paroxetine (Kim 2015)"
         href: articles/Kim_2015_paroxetine.html
       - text: "Patritumab (Lu 2022)"
@@ -1330,6 +1336,8 @@ navbar:
         href: articles/Diao_2014_rFIXFc.html
       - text: "Rfxiii cyno (Dodds 2005)"
         href: articles/Dodds_2005_rfxiii_cyno.html
+      - text: "Ribavirin (Mensing 2017)"
+        href: articles/Mensing_2017_3D_HCV_regimen.html
       - text: "Rifabutin (Hennig 2015)"
         href: articles/Hennig_2015_rifabutin.html
       - text: "Rifampicin (Barnett 2018)"
@@ -1366,6 +1374,8 @@ navbar:
         href: articles/Sherwin_2012_risperidone.html
       - text: "Ritonavir (Kappelhoff 2005)"
         href: articles/Kappelhoff_2005_ritonavir.html
+      - text: "Ritonavir (Mensing 2017)"
+        href: articles/Mensing_2017_3D_HCV_regimen.html
       - text: "Rituximab (Candelaria 2018)"
         href: articles/Candelaria_2018_rituximab.html
       - text: "Rivipansel (Tammara 2017)"
@@ -2437,6 +2447,7 @@ articles:
   - articles/McLaughlin_2024_tld_1
   - articles/MedellinGaribay_2015_gentamicin
   - articles/Melhem_2022_dostarlimab
+  - articles/Mensing_2017_3D_HCV_regimen
   - articles/Merchan_2015_azithromycin
   - articles/Mo_2018_olaratumab
   - articles/Moein_2022_etrolizumab
