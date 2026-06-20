@@ -161,10 +161,21 @@ single-dose simulation with full IIV is used in the PKNCA section.
 mod <- readModelDb("Jelliffe_2014_digoxin")
 mod_typical <- rxode2::zeroRe(mod)
 
+# useLinCmt = FALSE forces the ODE-solve path. This model has three ODE
+# states (depot, central, peripheral1) plus an algebraic observable
+# Cp_ugkg <- peripheral1 / WT. rxode2's automatic ODE -> linCmt
+# optimisation collapses the depot/central/peripheral system into an
+# analytic linCmtA() solution, after which the `peripheral1` state is no
+# longer solved and its reference inside the Cp_ugkg observable is
+# demoted to a required input parameter -- rxSolve then aborts with
+# "parameter(s) required for solving: peripheral1". Solving the ODE
+# system directly keeps `peripheral1` as a state and returns both Cc and
+# Cp_ugkg columns.
 sim_typical <- rxode2::rxSolve(
   mod_typical,
   events = events,
-  keep   = c("cohort", "WT", "CRCL")
+  keep   = c("cohort", "WT", "CRCL"),
+  useLinCmt = FALSE
 ) |>
   as.data.frame()
 ```
@@ -308,7 +319,8 @@ single_dose_evt$cohort <- "single 250 ug oral, CCr 69"
 sim_single <- rxode2::rxSolve(
   rxode2::zeroRe(mod),
   events = single_dose_evt,
-  keep   = c("cohort", "WT", "CRCL")
+  keep   = c("cohort", "WT", "CRCL"),
+  useLinCmt = FALSE   # ODE-solve path; keeps peripheral1 a state (see simulate-typical chunk)
 ) |>
   as.data.frame()
 
