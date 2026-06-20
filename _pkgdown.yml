@@ -148,6 +148,8 @@ navbar:
         href: articles/Dickinson_2009_atazanavir.html
       - text: "Atazanavir (Rekic 2011)"
         href: articles/Rekic_2011_atazanavir.html
+      - text: "Atazanavir ritonavir (Molto 2016)"
+        href: articles/Molto_2016_atazanavir_ritonavir.html
       - text: "Atazanavir ritonavir (Schipani 2013)"
         href: articles/Schipani_2013_atazanavir_ritonavir.html
       - text: "Atorvastatin (Kakara 2014)"
@@ -2289,6 +2291,7 @@ articles:
   - articles/Mohamed_2012_colistin
   - articles/Mohamed_2012_gentamicin
   - articles/Mohamed_2016_colistin_meropenem
+  - articles/Molto_2016_atazanavir_ritonavir
   - articles/Momper_2016_fluconazole
   - articles/Moore_1999_lamivudine
   - articles/Moore_2016_vancomycin
