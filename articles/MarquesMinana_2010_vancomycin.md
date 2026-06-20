@@ -1,0 +1,1220 @@
+# Vancomycin (Marques-Minana 2010)
+
+## Model and source
+
+- Citation: Marques-Minana M-R, Saadeddin A, Peris J-E. Population
+  pharmacokinetic analysis of vancomycin in neonates. A new proposal of
+  initial dosage guideline. Br J Clin Pharmacol. 2010;70(5):713-722.
+  <doi:10.1111/j.1365-2125.2010.03736.x>
+- Description: One-compartment IV-infusion population PK model for
+  vancomycin in neonates (Marques-Minana 2010). Developed from 70 NICU
+  neonates (postmenstrual age 25.1-48.1 weeks; weight 0.7-3.7 kg).
+  Weight-normalized clearance is linear in postmenstrual age and
+  increased by concomitant amoxicillin-clavulanic acid;
+  weight-normalized volume of distribution is decreased by concomitant
+  spironolactone. Additive interindividual variability on CL and V per
+  the paper’s Step 4 error-model selection; additive residual error.
+- Article: [Br J Clin Pharmacol
+  2010;70(5):713-722](https://doi.org/10.1111/j.1365-2125.2010.03736.x)
+
+## Population
+
+The model was developed from 70 neonates in the neonatal intensive care
+unit at “Hospital La Fe” (Valencia, Spain), with two serum vancomycin
+samples per patient drawn around the third dose: a peak 3 h after the
+1-h IV infusion completed, and a trough just before the next dose.
+Postmenstrual age (PMA) ranged 25.1-48.1 weeks (mean 34.6), body weight
+0.7-3.7 kg (mean 1.7), gestational age 24-42 weeks (mean 32.2), and
+postnatal age 4-63 days (mean 16.9); 53% were female (Marques-Minana
+2010 Table 2 “Original” group). A separate validation group of 41
+neonates with similar demographics (Table 2 “Validation” group) was used
+to evaluate predictive performance via external mean prediction error
+and root mean squared prediction error; the validation group did not
+contribute to model estimation. Race / ethnicity were not tabulated; the
+cohort is recorded as a single-site Spanish NICU population.
+
+The same information is available programmatically via
+`readModelDb("MarquesMinana_2010_vancomycin")$population`.
+
+## Source trace
+
+Every numeric value in `ini()` carries an in-file comment pointing to
+the Marques-Minana 2010 source location. The table below collects them
+in one place for review.
+
+| Equation / parameter | Value | Source location |
+|----|----|----|
+| `lcl` (theta1, CL coefficient on PMA\*wt) | log(1.92e-3) | Table 3 theta1 = 1.92e-3 L/h/kg/(week of PMA); 95% CI 1.72e-3, 2.12e-3 |
+| `lvc` (theta3, V_d per kg) | log(0.572) | Table 3 theta3 = 0.572 L/kg; 95% CI 0.505, 0.639 |
+| `e_amx_cl` (theta2, AMX effect on CL) | 0.650 | Table 3 theta2 = 0.650; 95% CI 0.391, 0.909 |
+| `e_spi_vc` (theta4, SPI effect on V_d) | 0.344 | Table 3 theta4 = 0.344; 95% CI 0.242, 0.446 |
+| `etalcl` (35.6% CV additive IIV on CL, applied as cl = exp(lcl)\*… + etalcl) | 1.616e-3 (L/h)^2 | Table 3 w_CL (CV%) = 35.6; converted as SD = 0.356 \* typical CL (0.1129 L/h) = 0.0402 L/h, variance = SD^2 |
+| `etalvc` (19.3% CV additive IIV on V_d, applied as vc = exp(lvc)\*… + etalvc) | 3.522e-2 L^2 | Table 3 w_V_d (CV%) = 19.3; converted as SD = 0.193 \* typical V (0.9724 L) = 0.1877 L, variance = SD^2 |
+| `addSd` (additive residual SD) | 2.69 mg/L | Table 3 sigma = 2.69 microgram/mL; 95% CI 0.73, 3.73 |
+| One-compartment IV-infusion structure | n/a | Methods “Pharmacokinetic analysis” Step 1: NONMEM PREDPP ADVAN1 / TRANS2 |
+| TVCL = (theta1 \* PMA \* (1 + theta2 \* AMX)) \* wt | n/a | Table 3 footnote |
+| TVV = (theta3 \* (1 - theta4 \* SPI)) \* wt | n/a | Table 3 footnote |
+| Additive interindividual error model | n/a | Methods Step 4 / Results paragraph 2: “an additive interindividual error model was selected” |
+| Cohort mean (PMA, weight, GA, PNA) | 34.6 wk, 1.7 kg, 32.2 wk, 16.9 d | Table 2 “Original (n = 70)” mean row |
+| Target Cmax / Cmin used for dose design | 20.5 / 7.5 mg/L | Results paragraph 5; Figure 3; Table 5 footnote |
+
+## Virtual cohort
+
+Original observed data are not publicly available. The cohorts below
+sample three regimens drawn from Marques-Minana 2010 Table 5 to exercise
+the model’s PMA term and both covariate effects:
+
+- **typical_q12h** – the typical neonate from Results paragraph 5 (PMA =
+  34.6 weeks, weight = 1.7 kg) dosed 12.5 mg/kg every 12 h with a 1-h
+  infusion (Table 5 PMA = 34 row). This is the cohort whose Cmax / Cmin
+  the paper specifically targeted (Figure 3, Results paragraph 5).
+- **typical_amx_q8h** – the same typical patient but coadministered
+  amoxicillin-clavulanic acid, dosed 13.0 mg/kg every 8 h (Table 5 PMA =
+  34 + amoxicillin-clavulanic acid row). Exercises the +65% CL effect
+  with `CONMED_AMOXCLAV = 1`.
+- **typical_spi_q8h** – the same typical patient coadministered
+  spironolactone, dosed 8.0 mg/kg every 8 h (Table 5 PMA = 34 +
+  spironolactone row). Exercises the -34% V_d effect with
+  `CONMED_SPIRON = 1`.
+
+The PAGE column carries the canonical postmenstrual age in months
+(`PAGE = PMA_weeks / 4.35`); the model `model()` block converts back to
+weeks internally.
+
+``` r
+
+set.seed(20100913)
+
+n_sub <- 60L
+
+make_cohort <- function(label, pma_wk, wt_kg, amx, spi,
+                        dose_mg_kg, tau_h, id_offset) {
+  ids         <- id_offset + seq_len(n_sub)
+  dose_amt_mg <- dose_mg_kg * wt_kg
+  infusion_h  <- 1
+  n_doses     <- 14  # 7 days of dosing at q12h, ~5 days at q8h -- both reach steady state given t1/2 ~ 6 h
+  dose_times  <- seq(0, by = tau_h, length.out = n_doses)
+
+  dose_rows <- tidyr::expand_grid(id = ids, time = dose_times) |>
+    dplyr::mutate(
+      evid             = 1L,
+      amt              = dose_amt_mg,
+      cmt              = "central",
+      rate             = dose_amt_mg / infusion_h,
+      cohort           = label,
+      WT               = wt_kg,
+      PAGE             = pma_wk / 4.35,
+      CONMED_AMOXCLAV  = amx,
+      CONMED_SPIRON    = spi
+    )
+
+  # Coarse buildup grid + dense final-interval grid for Cmax / Cmin resolution.
+  last_dose_t <- max(dose_times)
+  obs_times <- sort(unique(c(
+    seq(0, infusion_h * 2,            by = 0.25),
+    seq(0, last_dose_t,               by = 1),
+    seq(last_dose_t, last_dose_t + tau_h, by = 0.1)
+  )))
+  obs_rows <- tidyr::expand_grid(id = ids, time = obs_times) |>
+    dplyr::mutate(
+      evid             = 0L,
+      amt              = 0,
+      cmt              = NA_character_,
+      rate             = 0,
+      cohort           = label,
+      WT               = wt_kg,
+      PAGE             = pma_wk / 4.35,
+      CONMED_AMOXCLAV  = amx,
+      CONMED_SPIRON    = spi
+    )
+
+  dplyr::bind_rows(dose_rows, obs_rows) |>
+    dplyr::arrange(id, time, dplyr::desc(evid))
+}
+
+events <- dplyr::bind_rows(
+  make_cohort("typical_q12h",     pma_wk = 34.6, wt_kg = 1.7,
+              amx = 0, spi = 0, dose_mg_kg = 12.5, tau_h = 12, id_offset =    0L),
+  make_cohort("typical_amx_q8h",  pma_wk = 34.6, wt_kg = 1.7,
+              amx = 1, spi = 0, dose_mg_kg = 13.0, tau_h =  8, id_offset = 1000L),
+  make_cohort("typical_spi_q8h",  pma_wk = 34.6, wt_kg = 1.7,
+              amx = 0, spi = 1, dose_mg_kg =  8.0, tau_h =  8, id_offset = 2000L)
+)
+
+stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
+```
+
+## Simulation
+
+``` r
+
+mod <- readModelDb("MarquesMinana_2010_vancomycin")
+
+sim <- rxode2::rxSolve(
+  mod,
+  events = events,
+  keep   = c("cohort", "WT", "PAGE", "CONMED_AMOXCLAV", "CONMED_SPIRON")
+) |> as.data.frame()
+#> ℹ parameter labels from comments will be replaced by 'label()'
+```
+
+For the Figure 3 typical-value replication and the dose-design tables in
+Marques-Minana 2010 Table 5 / Results paragraph 5, also simulate with
+the random effects forced to zero. We use the
+`params = c(etalcl = 0, etalvc = 0)` override (rather than
+[`rxode2::zeroRe()`](https://nlmixr2.github.io/rxode2/reference/zeroRe.html))
+because for this model’s additive-IIV encoding the two approaches
+diverge after a prior stochastic `rxSolve` on `mod`: `zeroRe()` modifies
+the model’s `ini()` omega entries but the already-cached compiled-solver
+state on `mod` keeps drawing the original etas, so subsequent
+typical-value calls inherit the same between-subject variability as the
+stochastic run. Setting the eta parameters directly via `params =`
+bypasses the cached omega entirely and produces the typical-value
+trajectory the paper’s Figure 3 / Table 5 design targets are stated
+against.
+
+``` r
+
+sim_typical <- rxode2::rxSolve(
+  mod,
+  events = events,
+  params = c(etalcl = 0, etalvc = 0),
+  keep   = c("cohort", "WT", "PAGE", "CONMED_AMOXCLAV", "CONMED_SPIRON")
+) |> as.data.frame()
+#> ℹ parameter labels from comments will be replaced by 'label()'
+#> Warning: multi-subject simulation without without 'omega'
+```
+
+## Replicate published figures
+
+### Figure 3 – typical concentration-time profile, PMA = 34.6 wk, 12.5 mg/kg q12h
+
+Marques-Minana 2010 Figure 3 shows the simulated concentration-time
+profile for a typical individual in the cohort (PMA = 34.6 weeks, weight
+= 1.7 kg) dosed at 12.5 mg/kg every 12 h with a 1-h IV infusion,
+alongside the 90% prediction interval and the time-of-Cmax and
+time-of-Cmin sampling points. The Results paragraph 5 reports predicted
+Cmin near 7.5 mg/L and Cmax not exceeding 20.5 mg/L for this regimen.
+
+The replication below shows the final steady-state dosing interval with
+the typical-value line overlaid on the inter-individual 90% interval
+(5th-95th percentiles) computed from the stochastic simulation. Vertical
+guides mark the peak sampling time (1-h infusion end + 3 h delay = 4 h
+post-dose) and the trough sampling time (just before the next dose).
+
+``` r
+
+ss_window_start <- max(events$time[events$evid == 1 & events$cohort == "typical_q12h"])
+tau_h           <- 12
+ss_window_end   <- ss_window_start + tau_h
+
+stochastic_ribbon <- sim |>
+  dplyr::filter(cohort == "typical_q12h",
+                time >= ss_window_start,
+                time <= ss_window_end) |>
+  dplyr::mutate(time_in_tau = time - ss_window_start) |>
+  dplyr::group_by(time_in_tau) |>
+  dplyr::summarise(
+    q05 = quantile(Cc, 0.05, na.rm = TRUE),
+    q50 = quantile(Cc, 0.50, na.rm = TRUE),
+    q95 = quantile(Cc, 0.95, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+typical_line <- sim_typical |>
+  dplyr::filter(cohort == "typical_q12h",
+                time >= ss_window_start,
+                time <= ss_window_end) |>
+  dplyr::mutate(time_in_tau = time - ss_window_start)
+
+ggplot() +
+  geom_ribbon(data = stochastic_ribbon,
+              aes(x = time_in_tau, ymin = q05, ymax = q95),
+              alpha = 0.20, fill = "steelblue") +
+  geom_line(data = typical_line,
+            aes(x = time_in_tau, y = Cc),
+            colour = "steelblue", linewidth = 0.9) +
+  geom_vline(xintercept = 4,    linetype = "dashed", colour = "grey50") +
+  geom_vline(xintercept = tau_h, linetype = "dashed", colour = "grey50") +
+  geom_hline(yintercept = 7.5,  linetype = "dotted", colour = "grey30") +
+  geom_hline(yintercept = 20.0, linetype = "dotted", colour = "grey30") +
+  labs(
+    x       = "Time within steady-state dosing interval (h)",
+    y       = "Vancomycin concentration (mg/L)",
+    title   = "Figure 3 replication",
+    caption = paste(
+      "Typical 1.7-kg neonate, PMA = 34.6 wk, 12.5 mg/kg q12h IV (1 h infusion).",
+      "Ribbon = 90% inter-individual interval (5th-95th).",
+      "Vertical dashes mark Cmax-sampling time (4 h post-dose) and Cmin time (12 h).",
+      "Horizontal dots = paper's Cmin / Cmax targets (7.5 / 20 mg/L).",
+      sep = "\n"
+    )
+  )
+```
+
+![](MarquesMinana_2010_vancomycin_files/figure-html/figure-3-1.png)
+
+### Covariate-effect overlay – typical q12h vs. typical + AMX q8h vs. typical + SPI q8h
+
+The Marques-Minana 2010 dosing recommendation in Table 5 keeps the
+trough near 7.5 mg/L and the peak below 20 mg/L across all three
+regimens by adjusting both the dose and the interval to absorb the
+covariate effects (amoxicillin-clavulanic acid raises CL, requiring
+shorter intervals; spironolactone shrinks V_d, requiring a smaller dose
+to avoid Cmax overshoot). The panel below overlays the typical
+steady-state profile for each cohort across one dosing interval, so the
+model’s reproduction of that nomogram can be inspected at a glance.
+
+``` r
+
+cohort_tau <- c(typical_q12h = 12, typical_amx_q8h = 8, typical_spi_q8h = 8)
+
+typ_overlay <- sim_typical |>
+  dplyr::group_by(cohort) |>
+  dplyr::mutate(
+    last_dose_t = max(events$time[events$evid == 1 & events$cohort == dplyr::first(cohort)])
+  ) |>
+  dplyr::ungroup() |>
+  dplyr::filter(time >= last_dose_t,
+                time <= last_dose_t + cohort_tau[cohort]) |>
+  dplyr::mutate(time_in_tau = time - last_dose_t)
+
+ggplot(typ_overlay, aes(time_in_tau, Cc, colour = cohort)) +
+  geom_line(linewidth = 0.9) +
+  geom_hline(yintercept = 7.5,  linetype = "dotted", colour = "grey30") +
+  geom_hline(yintercept = 20.0, linetype = "dotted", colour = "grey30") +
+  scale_colour_manual(
+    values = c(typical_q12h    = "steelblue",
+               typical_amx_q8h = "firebrick",
+               typical_spi_q8h = "darkgreen")
+  ) +
+  labs(
+    x       = "Time within steady-state dosing interval (h)",
+    y       = "Vancomycin concentration (mg/L)",
+    colour  = "Cohort (Table 5)",
+    title   = "Typical-individual steady-state profiles across Table 5 regimens",
+    caption = "Horizontal dots = paper's Cmin / Cmax targets (7.5 / 20 mg/L)."
+  )
+```
+
+![](MarquesMinana_2010_vancomycin_files/figure-html/covariate-overlay-1.png)
+
+## PKNCA validation
+
+The block below computes per-cohort steady-state Cmax, Tmax, Cmin, and
+average concentration over the final dosing interval. The PKNCA formula
+is grouped by `cohort + id` so per-regimen NCA values are emitted
+directly. The expected targets from Marques-Minana 2010 Results
+paragraph 5 are a peak below 20 mg/L and a trough near 7.5 mg/L for each
+cohort (the paper’s dose-design objective).
+
+``` r
+
+# Per-cohort steady-state window (last dose to last dose + tau).
+ss_windows <- events |>
+  dplyr::filter(evid == 1) |>
+  dplyr::group_by(cohort) |>
+  dplyr::summarise(
+    start_ss = max(time),
+    tau      = max(time) - sort(unique(time), decreasing = TRUE)[2],
+    .groups  = "drop"
+  ) |>
+  dplyr::mutate(end_ss = start_ss + tau)
+
+sim_nca <- sim |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::inner_join(ss_windows |> dplyr::select(cohort, start_ss, end_ss),
+                    by = "cohort") |>
+  dplyr::filter(time >= start_ss, time <= end_ss) |>
+  dplyr::select(id, time, Cc, cohort)
+
+dose_df <- events |>
+  dplyr::filter(evid == 1) |>
+  dplyr::inner_join(ss_windows |> dplyr::select(cohort, start_ss),
+                    by = "cohort") |>
+  dplyr::filter(time == start_ss) |>
+  dplyr::select(id, time, amt, cohort)
+
+conc_obj <- PKNCA::PKNCAconc(
+  sim_nca,
+  Cc ~ time | cohort + id,
+  concu = "mg/L", timeu = "hr"
+)
+dose_obj <- PKNCA::PKNCAdose(
+  dose_df,
+  amt ~ time | cohort + id,
+  doseu = "mg"
+)
+
+intervals <- ss_windows |>
+  dplyr::mutate(
+    start   = start_ss,
+    end     = end_ss,
+    cmax    = TRUE,
+    tmax    = TRUE,
+    cmin    = TRUE,
+    auclast = TRUE,
+    cav     = TRUE
+  ) |>
+  dplyr::select(start, end, cmax, tmax, cmin, auclast, cav)
+
+nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj,
+                             intervals = as.data.frame(intervals))
+nca_res  <- PKNCA::pk.nca(nca_data)
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=104, end=112: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+#> Warning in .f(data_conc = .l[[1L]][[i]], data_dose = .l[[2L]][[i]],
+#> data_intervals = .l[[3L]][[i]], : Error with interval start=156, end=168: No
+#> data for interval
+```
+
+### Comparison against the paper’s published design targets
+
+Marques-Minana 2010 designed Table 5 by simulating the model with the
+final parameters and selecting per-PMA / per-coadministration doses that
+produced a trough vancomycin serum concentration close to 7.5 mg/L
+without exceeding a peak of 20.0 mg/L (Results paragraph 5; Table 5
+caption). For each cohort the reference Cmin and Cmax come directly from
+that design target. The simulated typical-value Cmax (sampled at 4 h
+post-dose, matching the paper’s Cmax sampling protocol) and Cmin (the
+value at the end of the dosing interval) are tabulated alongside.
+
+``` r
+
+typ_summary <- sim_typical |>
+  dplyr::inner_join(ss_windows, by = "cohort") |>
+  dplyr::filter(time >= start_ss, time <= end_ss) |>
+  dplyr::mutate(time_in_tau = time - start_ss) |>
+  dplyr::group_by(cohort) |>
+  dplyr::summarise(
+    cmax = Cc[which.min(abs(time_in_tau - 4))],
+    cmin = min(Cc, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+published <- tibble::tribble(
+  ~cohort,            ~cmax, ~cmin,
+  "typical_q12h",      20.5,   7.5,
+  "typical_amx_q8h",   20.0,   7.5,
+  "typical_spi_q8h",   20.0,   7.5
+)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = typ_summary,
+  reference = published,
+  by        = "cohort",
+  units     = c(cmax = "mg/L", cmin = "mg/L"),
+  tolerance_pct = 20
+)
+
+knitr::kable(
+  cmp,
+  caption = "Simulated typical-value steady-state Cmax (4 h post-dose) and Cmin vs. the Marques-Minana 2010 Table 5 design targets. * differs from reference by >20%."
+)
+```
+
+| NCA parameter | cohort          | Reference | Simulated | % diff   |
+|:--------------|:----------------|:----------|:----------|:---------|
+| Cmax (mg/L)   | typical_q12h    | 20.5      | 19.4      | -5.5%    |
+| Cmax (mg/L)   | typical_amx_q8h | 20        | 14.8      | -25.8%\* |
+| Cmax (mg/L)   | typical_spi_q8h | 20        | 15.2      | -24.2%\* |
+| Cmin (mg/L)   | typical_q12h    | 7.5       | 7.65      | +2.0%    |
+| Cmin (mg/L)   | typical_amx_q8h | 7.5       | 6.9       | -8.0%    |
+| Cmin (mg/L)   | typical_spi_q8h | 7.5       | 7.47      | -0.4%    |
+
+Simulated typical-value steady-state Cmax (4 h post-dose) and Cmin
+vs. the Marques-Minana 2010 Table 5 design targets. \* differs from
+reference by \>20%. {.table}
+
+Flag any starred rows in the narrative. The `typical_q12h` row is the
+specific cohort the paper modelled in Figure 3 (Results paragraph 5
+reports peak below 20.5 and trough near 7.5 mg/L); the other two rows
+are derived from Table 5 entries that were selected against the same
+design targets. Discrepancies should be interpreted against the paper’s
+stated objective (`<= 20 / ~ 7.5` mg/L) rather than against a single
+published estimate.
+
+## Assumptions and deviations
+
+- **Additive interindividual variability on linear-scale parameters.**
+  Marques-Minana 2010 selected an additive interindividual error model
+  in Step 4 of model building (Methods “Pharmacokinetic analysis”;
+  Results paragraph 2). The packaged model preserves that choice by
+  adding the etas directly to the linear-scale `cl` and `vc` outside the
+  [`exp()`](https://rdrr.io/r/base/Log.html) wrapper (i.e.,
+  `cl = exp(lcl) * ... + etalcl`), with variances derived from the
+  paper’s published `w_CL (CV%) = 35.6` and `w_V_d (CV%) = 19.3`
+  interpreted as SD divided by the typical-individual TVP. The eta names
+  carry the canonical `l` prefix to match the parameter names (the
+  IIV-name convention pairs `lcl` with `etalcl`), but the etas
+  themselves are applied additively on the linear scale rather than the
+  more common multiplicative form `exp(lcl + etalcl)` that maps
+  log-scale etas back to lognormal IIV. A reader inspecting the model()
+  block should focus on the `+ etalcl` placement OUTSIDE the
+  [`exp()`](https://rdrr.io/r/base/Log.html) as the indicator of
+  additive application. A consequence is that very large negative eta
+  draws can produce non-physical negative individual CL or V draws; in
+  practice the SDs are small enough relative to the typical values
+  (35.6% and 19.3%) that this is rare in the simulated cohort.
+- **PMA covariate via the canonical PAGE (months) column.** The source
+  paper carries PMA in weeks and the Table 3 theta1 coefficient applies
+  to PMA-weeks directly. The packaged model uses the canonical PAGE
+  column (in months, per `inst/references/covariate-columns.md`) and
+  converts back to weeks inside `model()` via `pma_wk = PAGE * 4.35`.
+  Numerically equivalent.
+- **No allometric exponent on weight.** Marques-Minana 2010 publishes
+  the CL and V equations with WT entering linearly (TVCL = theta1 \* PMA
+  \* (1 + theta2 \* AMX) \* wt; TVV = theta3 \* (1 - theta4 \* SPI) \*
+  wt), with no separately estimated allometric exponent. The packaged
+  model retains the linear form exactly. Step 3 evaluated both linear
+  and non-linear covariate forms for the continuous demographic
+  predictors; the linear PMA term was selected.
+- **Other demographic covariates not retained.** The paper screened nine
+  demographic predictors (gestational age, postnatal age, postmenstrual
+  age, weight, birth weight, height, body surface area, urine output,
+  sex) and 21 coadministered drugs as covariates of CL and V. After
+  incorporation of postmenstrual age as a CL covariate, the remaining
+  demographic predictors were correlated with PMA and fell out of the
+  model (Discussion paragraph 4). The only drug effects retained were
+  amoxicillin-clavulanic acid on CL and spironolactone on V. Serum
+  creatinine was not screened because in neonates serum creatinine
+  reflects maternal more than neonatal renal function in the first weeks
+  of life (Discussion paragraph 6, citing Guignard & Drukker 1999 and
+  Anderson et al. 2006).
+- **Validation cohort (n = 41) not used for estimation.** An external
+  validation set of 41 neonates with similar demographics was used to
+  evaluate the model via mean prediction error and root mean squared
+  prediction error (Table 4 column “Final”). The validation set did not
+  contribute to the parameter estimates carried in the packaged `ini()`
+  block; only the 70-patient development set did.
+- **Reference Cmax / Cmin from the paper’s design target, not from
+  observed data.** Marques-Minana 2010 designed the Table 5 dosing
+  nomogram by simulating the model under each PMA / coadministration
+  combination and selecting doses that produced a trough close to 7.5
+  mg/L and a peak below 20 mg/L (Results paragraph 5; Table 5 caption).
+  The “published” Cmax / Cmin used in the comparison table above are
+  therefore the design targets the paper aimed at, not independent
+  observations. For the typical_q12h cohort, Figure 3 and Results
+  paragraph 5 separately confirm that the simulated Cmax did not exceed
+  20.5 mg/L and the simulated Cmin was near 7.5 mg/L, which is the
+  closest the paper comes to an observed-vs-predicted check for this
+  regimen.
+- **Race / ethnicity.** Marques-Minana 2010 enrolled patients at a
+  single-site Spanish NICU and did not tabulate race or ethnicity. The
+  packaged model does not include race as a covariate; the population
+  metadata records the cohort as not reported.

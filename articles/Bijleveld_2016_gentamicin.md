@@ -1,0 +1,582 @@
+# Gentamicin in hypothermic neonates (Bijleveld 2016)
+
+## Model and source
+
+- Citation: Bijleveld YA, de Haan TR, van der Lee HJH, Groenendaal F,
+  Dijk PH, van Heijst A, de Jonge RCJ, Dijkman KP, van Straaten HLM,
+  Rijken M, Zonnenberg IA, Cools F, Zecic A, Nuytemans DHGM, van Kaam
+  AH, Mathot RAA; PharmaCool study group. Altered gentamicin
+  pharmacokinetics in term neonates undergoing controlled hypothermia.
+  Br J Clin Pharmacol. 2016;81(6):1067-1077.
+- Article: <https://doi.org/10.1111/bcp.12883>
+
+``` r
+
+mod_meta <- rxode2::rxode(readModelDb("Bijleveld_2016_gentamicin"))
+#> ℹ parameter labels from comments will be replaced by 'label()'
+mod_meta$description
+#> [1] "Two-compartment population PK model of intravenous gentamicin in term neonates with hypoxic-ischaemic encephalopathy undergoing controlled hypothermia (Bijleveld 2016), with fixed allometric body-weight scaling (exponents 0.75 on CL and Q, 1 on Vc and Vp), an estimated gestational-age power effect on CL, and a categorical post-rewarming (study-day-5, > 96 h PNA) multiplicative increase in CL."
+mod_meta$reference
+#> [1] "Bijleveld YA, de Haan TR, van der Lee HJH, Groenendaal F, Dijk PH, van Heijst A, de Jonge RCJ, Dijkman KP, van Straaten HLM, Rijken M, Zonnenberg IA, Cools F, Zecic A, Nuytemans DHGM, van Kaam AH, Mathot RAA; PharmaCool study group. Altered gentamicin pharmacokinetics in term neonates undergoing controlled hypothermia. Br J Clin Pharmacol. 2016;81(6):1067-1077. doi:10.1111/bcp.12883."
+mod_meta$units
+#> $time
+#> [1] "hour"
+#> 
+#> $dosing
+#> [1] "mg"
+#> 
+#> $concentration
+#> [1] "mg/L"
+```
+
+## Population
+
+Bijleveld 2016 developed a two-compartment allometric population PK
+model for intravenous gentamicin in 47 term newborns enrolled in the
+multicentre PharmaCool Study and treated with controlled whole-body
+hypothermia after perinatal asphyxia and hypoxic-ischaemic
+encephalopathy (HIE). Demographics from Table 1 of the source paper:
+gestational age (GA) median 40 weeks (range 36-42), birth weight median
+3.40 kg (range 2.09-5.07), 58.7% male, postnatal age (PNA) at end of
+study median 4.7 days (range 2.3-5.2). Serum creatinine had a median of
+49 micromol/L (range 26-114), 40.4% of patients had multi-organ failure,
+and 63.8% received inotropic support. The cooling protocol held subjects
+at a core temperature of 33.5 degC for 72 hours after birth, followed by
+8 hours of rewarming to 36.5 degC and then normothermia.
+
+A total of 612 gentamicin samples were available for the PK analysis,
+collected at fixed times during the hypothermic phase (day 2 / day 3),
+rewarming (day 4), and normothermic phase (day 5). 70% of subjects
+received 4 mg/kg every 24 h, 17% every 36 h, 6% every 48 h, and the
+remainder higher doses. The final model included allometric body-weight
+scaling (fixed exponents 0.75 on CL and Q, 1 on Vc and Vp), a power
+covariate of (GA/40 weeks) on CL with exponent 3.00, and a categorical
++29% multiplicative increase in CL when PNA exceeded 96 hours
+(post-rewarming normothermic phase, denoted “study day 5” / SD5 in the
+paper). All values were estimated in NONMEM 7.2 with FOCE-I.
+
+The same metadata is available programmatically via
+`readModelDb("Bijleveld_2016_gentamicin")$population`.
+
+## Source trace
+
+The per-parameter origin is recorded as an in-file comment next to each
+`ini()` entry in
+`inst/modeldb/specificDrugs/Bijleveld_2016_gentamicin.R`. The table
+below collects them in one place for review.
+
+| Equation / parameter | Value | Source location |
+|----|----|----|
+| `lcl` (log CL per 70 kg) | log(1.89) | Bijleveld 2016 Table 2 Final Model column |
+| `lvc` (log Vc per 70 kg) | log(32.5) | Bijleveld 2016 Table 2 Final Model column |
+| `lq` (log Q per 70 kg) | log(2.01) | Bijleveld 2016 Table 2 Final Model column |
+| `lvp` (log Vp per 70 kg) | log(30.3) | Bijleveld 2016 Table 2 Final Model column |
+| `e_wt_cl_q` (allometric exp on CL, Q) | 0.75 (fixed) | Bijleveld 2016 Methods ‘Structural model’ (3/4 power, West allometry) |
+| `e_wt_vc_vp` (allometric exp on Vc, Vp) | 1.00 (fixed) | Bijleveld 2016 Methods ‘Structural model’ |
+| `e_ga_cl` (power exp of GA/40 on CL) | 3.00 (theta_CLGA) | Bijleveld 2016 Table 2 Final Model footer |
+| `e_sd5_cl` (CL multiplier for PNA \> 96 h) | 1.29 (theta_SD5) | Bijleveld 2016 Table 2 Final Model footer; Results “Pharmacokinetic model building” |
+| IIV CL (omega^2 = log(1 + 0.266^2)) | 0.06837 (26.6% CV) | Bijleveld 2016 Table 2 Final Model column |
+| IIV Vc (omega^2 = log(1 + 0.408^2)) | 0.15399 (40.8% CV) | Bijleveld 2016 Table 2 Final Model column |
+| IIV Vp (omega^2 = log(1 + 0.533^2)) | 0.25022 (53.3% CV) | Bijleveld 2016 Table 2 Final Model column |
+| Cor(IIV CL, IIV Vc) -\> covariance | 0.81 \* sqrt(0.06837 \* 0.15399) = 0.08316 | Bijleveld 2016 Results “Pharmacokinetic model building” |
+| `expSd` (lognormal residual SD) | 0.15 | Bijleveld 2016 Table 2 Final Model column (additive on log-transformed data) |
+| Two-compartment IV PK ODE structure | n/a | Bijleveld 2016 Results “Pharmacokinetic model building” (allometric 2-compartment) |
+| Reference body weight 70 kg | n/a | Bijleveld 2016 Methods ‘Structural model’ (BW/70 normalisation) |
+| Reference GA 40 weeks | n/a | Bijleveld 2016 Table 1 (cohort median GA) |
+| SD5 threshold 96 h PNA | n/a | Bijleveld 2016 Methods ‘Covariate model’ (CL per study day 1-5 categorical) |
+
+## Virtual cohort
+
+Original observed data are not publicly available. The vignette draws
+six virtual cohorts that span the GA / dose / interval combinations in
+the recommended dosing regimens of Bijleveld 2016 Table 3 and Figure 5:
+GA 36, 40, and 42 weeks combined with 4 mg/kg q24h, 5 mg/kg q24h, and 5
+mg/kg q36h. Body weight is held at 3 kg (the typical patient defined in
+the paper Abstract); the paper’s own Monte Carlo Table 3 sampled
+patients with varying BW from the original database, so the simulated
+distributions here will be tighter than the published interquartile
+ranges (see Errata).
+
+Postnatal age is supplied at every observation row so the SD5 indicator
+advances correctly: the simulation starts at PNA = 0 hours and runs for
+7 days, with the SD5 (CL +29%) step firing at t = 96 hours (end of the
+rewarming phase). The model’s internal conversion is
+`PNA_hours = PNA * 24 * 30.4375` where canonical PNA is in months; the
+cohort table below supplies PNA in canonical month units.
+
+``` r
+
+set.seed(20260619)
+
+n_subjects <- 100L
+infusion_h <- 0.5     # 30 min infusion (Bijleveld 2016 reports infusions in the source paper)
+duration_h <- 7 * 24  # 7-day simulation window per paper Methods 'Model evaluation and simulation'
+
+# Six anchor scenarios spanning the Bijleveld 2016 Table 3 grid.
+regimens <- tibble::tribble(
+  ~regimen,                  ~ga_weeks, ~dose_mg_per_kg, ~interval_h,
+  "GA 36 wk, 4 mg/kg q24h",  36,        4,               24,
+  "GA 36 wk, 5 mg/kg q36h",  36,        5,               36,
+  "GA 40 wk, 4 mg/kg q24h",  40,        4,               24,
+  "GA 40 wk, 5 mg/kg q24h",  40,        5,               24,
+  "GA 40 wk, 5 mg/kg q36h",  40,        5,               36,
+  "GA 42 wk, 5 mg/kg q24h",  42,        5,               24
+)
+
+wt_kg_typical <- 3.0  # paper Abstract: typical patient is 3 kg, 40 weeks GA, 2 days PNA
+
+# Hourly observation grid, with a denser grid around expected peaks
+obs_grid <- sort(unique(c(
+  seq(0, 2, by = 0.1),                       # peri-peak resolution
+  seq(2, duration_h, by = 1)                 # hourly through 7 days
+)))
+
+# Hour -> canonical PNA (months) conversion factor (1 month = 30.4375 days = 730.5 h)
+HOURS_PER_MONTH <- 24 * 30.4375
+
+make_cohort <- function(n, regimen, ga_weeks, dose_mg_per_kg,
+                        interval_h, id_offset = 0L) {
+  ids        <- id_offset + seq_len(n)
+  amt_mg     <- wt_kg_typical * dose_mg_per_kg
+  dose_times <- seq(0, duration_h - 1, by = interval_h)
+
+  dose_rows <- tidyr::expand_grid(id = ids, time = dose_times) |>
+    dplyr::mutate(
+      evid    = 1L,
+      cmt     = "central",
+      amt     = amt_mg,
+      rate    = amt_mg / infusion_h,
+      WT      = wt_kg_typical,
+      GA      = ga_weeks,
+      PNA     = time / HOURS_PER_MONTH,  # PNA advances from 0 with simulation time
+      regimen = regimen
+    )
+
+  obs_rows <- tidyr::expand_grid(id = ids, time = obs_grid) |>
+    dplyr::mutate(
+      evid    = 0L,
+      cmt     = "central",
+      amt     = 0,
+      rate    = 0,
+      WT      = wt_kg_typical,
+      GA      = ga_weeks,
+      PNA     = time / HOURS_PER_MONTH,
+      regimen = regimen
+    )
+
+  dplyr::bind_rows(dose_rows, obs_rows) |>
+    dplyr::arrange(id, time, dplyr::desc(evid))
+}
+
+events <- dplyr::bind_rows(
+  Map(function(r, i) make_cohort(
+        n_subjects, regimens$regimen[i], regimens$ga_weeks[i],
+        regimens$dose_mg_per_kg[i], regimens$interval_h[i],
+        id_offset = (i - 1L) * 1000L
+      ),
+      regimens$regimen, seq_len(nrow(regimens)))
+)
+
+stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
+
+cat(
+  "Dose rows:", sum(events$evid == 1L),
+  " | Obs rows:", sum(events$evid == 0L),
+  " | Subjects:", n_subjects * nrow(regimens), "\n"
+)
+#> Dose rows: 3800  | Obs rows: 112200  | Subjects: 600
+```
+
+## Simulation
+
+``` r
+
+mod <- readModelDb("Bijleveld_2016_gentamicin")
+sim <- rxode2::rxSolve(
+  mod,
+  events = events,
+  keep   = c("regimen", "WT", "GA", "PNA")
+) |>
+  as.data.frame()
+#> ℹ parameter labels from comments will be replaced by 'label()'
+```
+
+## Replicate published figures
+
+### Figure 5 – Concentration-time profiles for the recommended dosing
+
+Bijleveld 2016 Figure 5 shows the median and 5th-95th percentile
+concentration-time profiles for the recommended regimens (5 mg/kg q36h
+for GA 36-40 wk, 5 mg/kg q24h for GA 42 wk), highlighting the 8-12 mg/L
+peak target band and the 1 mg/L trough ceiling. The chunk below renders
+the same panels across the virtual cohorts. The visual “step” in the
+concentration envelope at 96 h reflects the model’s SD5 covariate step
+(CL +29% in the post-rewarming normothermic phase).
+
+``` r
+
+ribbon_df <- sim |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::group_by(regimen, time) |>
+  dplyr::summarise(
+    Q05 = quantile(Cc, 0.05, na.rm = TRUE),
+    Q50 = quantile(Cc, 0.50, na.rm = TRUE),
+    Q95 = quantile(Cc, 0.95, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+ggplot(ribbon_df, aes(time, Q50)) +
+  annotate("rect", xmin = -Inf, xmax = Inf, ymin = 8, ymax = 12,
+           alpha = 0.15, fill = "steelblue") +
+  geom_hline(yintercept = 1, linetype = "dashed", colour = "firebrick") +
+  geom_vline(xintercept = 96, linetype = "dotted", colour = "darkgreen") +
+  geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.30) +
+  geom_line() +
+  facet_wrap(~regimen, ncol = 2) +
+  scale_x_continuous(breaks = seq(0, 168, 24)) +
+  labs(
+    x       = "Time after first dose (h)",
+    y       = "Gentamicin Cc (mg/L)",
+    title   = "Replicates Figure 5 of Bijleveld 2016",
+    caption = paste0(
+      "Median (solid) and 5th-95th percentile (shaded) gentamicin profiles ",
+      "across ", n_subjects, " virtual subjects per cohort. ",
+      "Light blue band = 8-12 mg/L peak target. ",
+      "Dashed line = 1 mg/L trough ceiling. ",
+      "Dotted green line at 96 h = SD5 (post-rewarming normothermia) onset, ",
+      "at which CL increases by 29%."
+    )
+  )
+```
+
+![](Bijleveld_2016_gentamicin_files/figure-html/figure-5-1.png)
+
+## PKNCA validation
+
+Compute Cmax (peak) and Cmin (trough) per subject over the final dosing
+interval in the simulation using PKNCA, grouped by `regimen`. The paper
+defines peak as the concentration shortly after the end of the infusion
+and trough as the concentration just before the next dose; PKNCA’s
+`cmax` over the closed interval matches this definition because the
+simulated peak occurs at end-of-infusion.
+
+``` r
+
+# Take the most recent fully-completed dosing interval per regimen so
+# the NCA window straddles a single dose -> next dose pair.
+last_dose_start <- vapply(regimens$interval_h, function(int) {
+  starts <- seq(0, duration_h - 1, by = int)
+  max(starts[starts + int <= duration_h])
+}, numeric(1))
+names(last_dose_start) <- regimens$regimen
+last_dose_end <- last_dose_start + regimens$interval_h
+names(last_dose_end) <- regimens$regimen
+
+sim_nca <- sim |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::group_by(regimen) |>
+  dplyr::mutate(
+    interval_start = last_dose_start[as.character(regimen)],
+    interval_end   = last_dose_end[as.character(regimen)]
+  ) |>
+  dplyr::filter(time >= interval_start, time <= interval_end) |>
+  dplyr::mutate(time_in_interval = time - interval_start) |>
+  dplyr::ungroup() |>
+  dplyr::select(id, time_in_interval, Cc, regimen)
+
+# Guarantee a time=0 row per (id, regimen). At the start of the last
+# dosing interval the concentration is the trough from the previous
+# interval, but we recompute from the simulation rather than setting 0.
+existing_t0 <- sim_nca |>
+  dplyr::filter(time_in_interval == 0) |>
+  dplyr::distinct(id, regimen)
+
+# At any time t the concentration of the LAST interval starts at the
+# trough of the prior interval, never zero, so do not synthesise zeros;
+# the simulation grid already supplies a t=0 row (since interval_start
+# is an integer in the hourly grid).
+
+conc_obj <- PKNCA::PKNCAconc(
+  sim_nca, Cc ~ time_in_interval | regimen + id,
+  concu = "mg/L", timeu = "h"
+)
+
+dose_amt <- wt_kg_typical * regimens$dose_mg_per_kg
+names(dose_amt) <- regimens$regimen
+
+dose_df <- sim_nca |>
+  dplyr::distinct(id, regimen) |>
+  dplyr::mutate(
+    time_in_interval = 0,
+    amt              = dose_amt[as.character(regimen)]
+  )
+
+dose_obj <- PKNCA::PKNCAdose(
+  dose_df, amt ~ time_in_interval | regimen + id,
+  doseu = "mg"
+)
+
+intervals <- data.frame(
+  start    = 0,
+  end      = max(regimens$interval_h),
+  cmax     = TRUE,
+  cmin     = TRUE,
+  tmax     = TRUE,
+  auclast  = TRUE
+)
+
+nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
+nca_res  <- PKNCA::pk.nca(nca_data)
+res_tbl  <- as.data.frame(nca_res$result)
+```
+
+### Comparison against Bijleveld 2016 Table 3
+
+Bijleveld 2016 Table 3 reports simulated median trough and peak
+concentrations (with IQR) for each GA / dose / interval combination,
+pooling peak and trough samples from every dosing interval in the 7-day
+simulation. The chunk below recomputes those statistics from the
+packaged model and renders them side-by-side with the published values.
+Peak is computed as the concentration 30 minutes after the end of each
+30-minute infusion (1 hour after dose start); trough is the
+concentration immediately before the next dose. Both are pooled across
+all complete dosing intervals in the 7-day window.
+
+``` r
+
+peak_offset_h   <- 1.0
+trough_offset_h <- 0   # treated as: just before the next dose, i.e. at
+                       # time = dose_start + interval_h - epsilon
+
+# For every (id, regimen) construct the list of complete dosing intervals
+make_interval_grid <- function(reg) {
+  this_reg     <- regimens[regimens$regimen == reg, ]
+  starts       <- seq(0, duration_h - this_reg$interval_h, by = this_reg$interval_h)
+  trough_times <- starts + this_reg$interval_h - 1e-6
+  peak_times   <- starts + peak_offset_h
+  list(peaks = peak_times, troughs = trough_times)
+}
+
+sim_lookup <- sim |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::select(id, regimen, time, Cc)
+
+# Snap a target time to the nearest simulated time within a small
+# tolerance (1 h max) for the trough; for the peak we know t = 1 h is
+# in the dense pre-2 h grid (0.1 h resolution).
+snap_value <- function(reg_df, target_times) {
+  reg_df |>
+    dplyr::mutate(idx = sapply(time, function(t) which.min(abs(target_times - t)))) |>
+    dplyr::mutate(target_t = target_times[idx],
+                  dt       = abs(time - target_t)) |>
+    dplyr::group_by(id, target_t) |>
+    dplyr::slice_min(dt, n = 1, with_ties = FALSE) |>
+    dplyr::ungroup()
+}
+
+peak_trough_long <- dplyr::bind_rows(lapply(regimens$regimen, function(reg) {
+  grids <- make_interval_grid(reg)
+  reg_df <- sim_lookup |> dplyr::filter(regimen == reg)
+
+  peaks <- snap_value(reg_df, grids$peaks) |>
+    dplyr::filter(dt < 0.1) |>
+    dplyr::transmute(id, regimen, kind = "peak", value = Cc)
+  troughs <- snap_value(reg_df, grids$troughs) |>
+    dplyr::filter(dt < 1.0) |>
+    dplyr::transmute(id, regimen, kind = "trough", value = Cc)
+
+  dplyr::bind_rows(peaks, troughs)
+}))
+
+simulated_summary <- peak_trough_long |>
+  dplyr::group_by(regimen, kind) |>
+  dplyr::summarise(
+    median_sim = median(value, na.rm = TRUE),
+    iqr_sim    = sprintf("%.2f-%.2f",
+                         quantile(value, 0.25, na.rm = TRUE),
+                         quantile(value, 0.75, na.rm = TRUE)),
+    .groups    = "drop"
+  ) |>
+  tidyr::pivot_wider(
+    names_from  = kind,
+    values_from = c(median_sim, iqr_sim)
+  )
+
+# Published values transcribed from Bijleveld 2016 Table 3.
+published <- tibble::tribble(
+  ~regimen,                  ~median_trough_pub, ~iqr_trough_pub, ~median_peak_pub, ~iqr_peak_pub,
+  "GA 36 wk, 4 mg/kg q24h",  1.4,                "1.1-1.8",        2.7,              "2.1-3.5",
+  "GA 36 wk, 5 mg/kg q36h",  0.7,                "0.5-1.0",        9.5,              "7.5-11.9",
+  "GA 40 wk, 4 mg/kg q24h",  0.8,                "0.6-1.1",        7.9,              "6.2-9.8",
+  "GA 40 wk, 5 mg/kg q24h",  1.0,                "0.7-1.4",        9.8,              "7.8-12.2",
+  "GA 40 wk, 5 mg/kg q36h",  0.4,                "0.2-0.6",        9.2,              "7.3-11.6",
+  "GA 42 wk, 5 mg/kg q24h",  0.7,                "0.5-1.1",        9.4,              "7.5-11.7"
+)
+
+comparison <- published |>
+  dplyr::left_join(simulated_summary, by = "regimen") |>
+  dplyr::transmute(
+    regimen,
+    median_trough_pub,
+    median_trough_sim = median_sim_trough,
+    iqr_trough_pub,
+    iqr_trough_sim    = iqr_sim_trough,
+    median_peak_pub,
+    median_peak_sim   = median_sim_peak,
+    iqr_peak_pub,
+    iqr_peak_sim      = iqr_sim_peak
+  )
+
+knitr::kable(
+  comparison,
+  digits  = 2,
+  caption = paste("Comparison of simulated median (and IQR, mg/L) trough and",
+                  "peak concentrations against Bijleveld 2016 Table 3.",
+                  "Peaks are taken 1 h after each dose start; troughs are taken",
+                  "immediately before each subsequent dose; both are pooled across",
+                  "every complete dosing interval in the 7-day simulation. The",
+                  "vignette fixes BW at 3 kg (typical patient); the paper sampled",
+                  "BW from the cohort, so simulated IQRs are tighter than published.")
+)
+```
+
+| regimen | median_trough_pub | median_trough_sim | iqr_trough_pub | iqr_trough_sim | median_peak_pub | median_peak_sim | iqr_peak_pub | iqr_peak_sim |
+|:---|---:|---:|:---|:---|---:|---:|:---|:---|
+| GA 36 wk, 4 mg/kg q24h | 1.4 | 1.44 | 1.1-1.8 | 1.13-1.85 | 2.7 | 8.80 | 2.1-3.5 | 7.06-10.57 |
+| GA 36 wk, 5 mg/kg q36h | 0.7 | 0.94 | 0.5-1.0 | 0.67-1.24 | 9.5 | 10.25 | 7.5-11.9 | 7.69-13.08 |
+| GA 40 wk, 4 mg/kg q24h | 0.8 | 0.85 | 0.6-1.1 | 0.61-1.10 | 7.9 | 8.12 | 6.2-9.8 | 6.61-10.09 |
+| GA 40 wk, 5 mg/kg q24h | 1.0 | 0.94 | 0.7-1.4 | 0.68-1.26 | 9.8 | 9.43 | 7.8-12.2 | 7.48-11.91 |
+| GA 40 wk, 5 mg/kg q36h | 0.4 | 0.43 | 0.2-0.6 | 0.29-0.63 | 9.2 | 8.77 | 7.3-11.6 | 7.03-11.43 |
+| GA 42 wk, 5 mg/kg q24h | 0.7 | 0.76 | 0.5-1.1 | 0.55-1.04 | 9.4 | 8.96 | 7.5-11.7 | 7.04-11.63 |
+
+Comparison of simulated median (and IQR, mg/L) trough and peak
+concentrations against Bijleveld 2016 Table 3. Peaks are taken 1 h after
+each dose start; troughs are taken immediately before each subsequent
+dose; both are pooled across every complete dosing interval in the 7-day
+simulation. The vignette fixes BW at 3 kg (typical patient); the paper
+sampled BW from the cohort, so simulated IQRs are tighter than
+published. {.table}
+
+``` r
+
+knitr::kable(
+  utils::head(res_tbl[, c("start", "end", "regimen", "PPTESTCD", "PPORRES")], 24),
+  caption = "Per-subject PKNCA NCA parameters by regimen (long form, first 24 rows shown).",
+  digits  = 3,
+  row.names = FALSE
+)
+```
+
+| start | end | regimen                | PPTESTCD | PPORRES |
+|------:|----:|:-----------------------|:---------|--------:|
+|     0 |  36 | GA 36 wk, 4 mg/kg q24h | auclast  | 100.154 |
+|     0 |  36 | GA 36 wk, 4 mg/kg q24h | cmax     |  12.232 |
+|     0 |  36 | GA 36 wk, 4 mg/kg q24h | cmin     |   1.879 |
+|     0 |  36 | GA 36 wk, 4 mg/kg q24h | tmax     |   1.000 |
+|     0 |  36 | GA 36 wk, 4 mg/kg q24h | auclast  |  50.124 |
+|     0 |  36 | GA 36 wk, 4 mg/kg q24h | cmax     |   5.774 |
+|     0 |  36 | GA 36 wk, 4 mg/kg q24h | cmin     |   0.796 |
+|     0 |  36 | GA 36 wk, 4 mg/kg q24h | tmax     |   1.000 |
+|     0 |  36 | GA 36 wk, 4 mg/kg q24h | auclast  |  80.594 |
+|     0 |  36 | GA 36 wk, 4 mg/kg q24h | cmax     |   8.354 |
+|     0 |  36 | GA 36 wk, 4 mg/kg q24h | cmin     |   1.874 |
+|     0 |  36 | GA 36 wk, 4 mg/kg q24h | tmax     |   1.000 |
+|     0 |  36 | GA 36 wk, 4 mg/kg q24h | auclast  |  73.108 |
+|     0 |  36 | GA 36 wk, 4 mg/kg q24h | cmax     |   9.387 |
+|     0 |  36 | GA 36 wk, 4 mg/kg q24h | cmin     |   0.833 |
+|     0 |  36 | GA 36 wk, 4 mg/kg q24h | tmax     |   1.000 |
+|     0 |  36 | GA 36 wk, 4 mg/kg q24h | auclast  |  71.689 |
+|     0 |  36 | GA 36 wk, 4 mg/kg q24h | cmax     |   8.481 |
+|     0 |  36 | GA 36 wk, 4 mg/kg q24h | cmin     |   1.101 |
+|     0 |  36 | GA 36 wk, 4 mg/kg q24h | tmax     |   1.000 |
+|     0 |  36 | GA 36 wk, 4 mg/kg q24h | auclast  |  62.699 |
+|     0 |  36 | GA 36 wk, 4 mg/kg q24h | cmax     |   8.392 |
+|     0 |  36 | GA 36 wk, 4 mg/kg q24h | cmin     |   1.113 |
+|     0 |  36 | GA 36 wk, 4 mg/kg q24h | tmax     |   1.000 |
+
+Per-subject PKNCA NCA parameters by regimen (long form, first 24 rows
+shown). {.table}
+
+## Assumptions and deviations
+
+- **Body weight held at 3 kg (typical patient) per cohort.** Bijleveld
+  2016 Table 3 sampled patients with varying GA and BW from the original
+  cohort database. The vignette fixes BW at 3 kg (the typical patient
+  defined in the Abstract: 3 kg, 40 weeks GA, 2 days PNA), so simulated
+  medians should match the paper but the simulated IQRs will be tighter
+  than the published ones (the paper’s IQR reflects between-subject BW
+  variability in addition to model IIV). Users who want the full Table 3
+  reproduction can sample BW from a GA-stratified distribution and rerun
+  the cohort builder.
+- **Postnatal age set time-varying from PNA = 0.** Bijleveld 2016
+  defines SD5 as PNA \> 96 h after birth (i.e. after the 72 h
+  hypothermia + 8 h rewarming + 16 h post-rewarming buffer). The
+  vignette starts each virtual subject at PNA = 0 hours on the first
+  dose, so the SD5 step fires at simulation time t = 96 h. In clinical
+  reality the first gentamicin dose is given within a few hours of
+  birth; users simulating a delayed first dose should shift the PNA
+  baseline accordingly.
+- **Body weight held constant per cohort over 7 days.** The paper
+  applies allometric scaling to baseline body weight; the 7-day window
+  is short enough that weight gain in term newborns does not materially
+  change CL or Vc. Users simulating longer windows or preterm cohorts
+  should encode WT as a time-varying covariate.
+- **Covariates screened-but-not-retained are documented in
+  `covariatesDataExcluded`, not `covariateData`.** The paper tested sex,
+  body temperature, cooling on/off, inotropic co-medication, multi-organ
+  failure, serum creatinine, urea, ASAT, ALAT, daily urine output, PNA
+  (continuous), and PMA on CL and Vc; none were retained in the final
+  model. They are listed in the model’s `covariatesDataExcluded` for
+  provenance but do not participate in any model equation.
+- **Inter-individual variability on residual error not encoded.**
+  Bijleveld 2016 Table 2 reports a 50.2% IIV on the additive residual
+  error itself (subject-level scaling of the residual magnitude) in
+  addition to the population residual SD of 0.15. The packaged model
+  retains only the population residual (encoded as `lnorm(expSd)` with
+  `expSd = 0.15`); the second-level IIV-on-residual structure is not
+  encoded because it complicates simulation use and the population SD is
+  the load-bearing quantity for typical-VPC comparisons. Users who need
+  the full residual structure can extend the model with an `eta_resid`
+  on `expSd`.
+- **Variable bioavailability of the assumed pre-study dose not
+  encoded.** The paper assumed a virtual 4 mg/kg pre-study dose with F =
+  142% (IIV 75.4%) to extrapolate the pre-study time profile because the
+  timing and amount of the initial dose was not reliably documented for
+  the outborn neonates. This is a data-handling construct specific to
+  the original fit, not a property of gentamicin in vivo, and is omitted
+  from the packaged model. Users supply observed doses directly in their
+  event tables.
+- **Residual error encoded as lognormal (`lnorm(expSd)`) with sigma =
+  0.15.** The paper estimates the residual variability on
+  log-transformed observations as additive with sigma = 0.15 (Table 2
+  Final Model column). The log-additive NONMEM pattern (log(Cobs) =
+  log(Cpred) + eps, eps ~ N(0, sigma^2)) maps directly to nlmixr2’s
+  `lnorm()` residual with `expSd = sigma`.
+- **Infusion duration set by the event table.** The model does not
+  hard-code an infusion duration. The vignette uses `rate = amt / 0.5`
+  to deliver each dose over 30 minutes, matching the paper’s text and
+  the standard NICU gentamicin protocol.
+- **Allometric exponents fixed.** Bijleveld 2016 Methods report the
+  body-weight exponents as 0.75 (CL, Q) and 1 (Vc, Vp), fixed at the 3/4
+  power rule per West et al.; the paper also tested estimating them and
+  reported no improvement. These are wrapped in `fixed()` in the
+  packaged model. The GA power exponent on CL (theta_CLGA = 3.00) and
+  the SD5 multiplier (theta_SD5 = 1.29) are reported with CV 16% and
+  12%, respectively (indicating estimation), and are left free.
+- **Suspected typo in Bijleveld 2016 Table 3, GA 36 wk + 4 mg/kg q24h
+  row.** The published Table 3 reports a peak of 2.7 mg/L (IQR 2.1-3.5)
+  for GA 36 wk + 4 mg/kg q24h, starred as “outside reference range.”
+  This value is internally inconsistent with the rest of the column (GA
+  38: 8.2; GA 40: 7.9; GA 42: 7.5; same dose / interval) – lower GA
+  should give a slightly HIGHER peak via the (GA/40)^3 covariate on CL,
+  not a 3x lower one. The packaged model reproduces the GA 38 / 40 / 42
+  rows of that column closely (8.12 at GA 40 in the simulated table
+  above) and predicts ~8.8 mg/L at GA 36. We have left the published
+  value verbatim in the comparison table and flag it here as a probable
+  transcription typo in the original publication. No erratum revising
+  this row could be located at extraction time.
+- **Errata not located.** A targeted search of the journal landing page
+  and Google Scholar at extraction time did not turn up an erratum for
+  this article. If one is later identified that revises a Table 2
+  estimate or the SD5 / GA covariate forms, the packaged values should
+  be refreshed accordingly.

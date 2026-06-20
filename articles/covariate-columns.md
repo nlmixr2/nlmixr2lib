@@ -3763,7 +3763,12 @@ release cycle.
     – used in `Abboud_2009_epinephrine.R`.
 - **Example models:** `Abboud_2009_epinephrine.R` (power exponent -0.67
   on epinephrine CL with reference 50; higher SAPS II is associated with
-  lower clearance).
+  lower clearance), `Polito_2016_fludrocortisone.R` (power exponents
+  +0.019 on apparent oral fludrocortisone CL/F and +0.036 on the
+  absorption lag time Tlag, both with reference 53 = the cohort median
+  SAPS II among the 14 patients with detectable plasma concentrations;
+  higher SAPS II is associated with longer absorption lag and faster
+  apparent oral clearance).
 - **Notes:** Specific scope because the column is
   critical-care-population-bound (adult ICU) and the score’s clinical
   meaning depends on the SAPS-II derivation rules; future ICU models
@@ -5584,7 +5589,12 @@ release cycle.
   on the proliferation rate of the Friberg myelosuppression chain:
   `(1 - SL * CP_MGL)` with `SL = 19.27 (mg/L)^-1` after Kloft 2006’s
   `THETA(3)/808*1000` MW-808 conversion; CP_MGL supplied per event row
-  from an upstream docetaxel popPK simulation).
+  from an upstream docetaxel popPK simulation),
+  `Puisset_2007_docetaxel.R` (linear drug effect `Slope * CP_MGL` on the
+  proliferating compartment of the Friberg myelosuppression chain; the
+  upstream docetaxel PK in Puisset 2007 was Baille 1997 / Bruno 1996
+  individual Bayesian posthoc profiles supplied externally and not
+  encoded in the model file).
 - **Notes:** Specific scope because the covariate’s mechanistic meaning
   is bound to the modeled drug and the source paper’s chosen PK input
   (e.g., a Bruno 1996/1998 docetaxel popPK trajectory for Netterberg
@@ -8447,7 +8457,14 @@ serve other parameters that do separate that group.
   `etalrbase_hv` (12.7% CV) and DIS_HEALTHY = 0 selects
   `lrbase_hae = log(0.176)` with `etalrbase_hae` (54.4% CV); reference
   complement is the pooled adolescent / adult HAE-patient cohort from
-  Studies C1 1101-01 / 1202-01 / 1203-01 / 1205-01 / 1304-01).
+  Studies C1 1101-01 / 1202-01 / 1203-01 / 1205-01 / 1304-01),
+  `PerezRuixo_2006_tipifarnib.R` (ratio-form multiplicative effects on
+  five structural parameters: CL ratio 1.21, V2 ratio 0.55, Q4 ratio
+  8.83, V4 ratio 2.66, and Ka ratio 2.31 applied as `ratio^DIS_HEALTHY`;
+  reference category is the pooled adult-cancer cohort across 14 phase
+  1, 2, and 3 studies; healthy subjects show +21 percent CL and
+  2.31-fold higher Ka than cancer patients, while V2 is 0.55-fold
+  smaller).
 - **Notes:** Used when a population PK model pools healthy participants
   with patients across heterogeneous indications and the
   healthy-vs-patient contrast is retained as a covariate. Scope:
@@ -12588,7 +12605,15 @@ serve other parameters that do separate that group.
   on apparent CL_BDQ and CL_M2: `cl_eff = cl_base * 2.07^CONMED_EFV` and
   on apparent CL_M3: `cl_eff = cl_base * 1.12^CONMED_EFV`;
   healthy-volunteer DDI study with no-co-medication reference and 1-week
-  onset lag from start of 600 mg once-nightly EFV).
+  onset lag from start of 600 mg once-nightly EFV),
+  `Hoglund_2015_lumefantrine.R` (multiplicative linear-deviation effect
+  on lumefantrine apparent CL/F: `cl *= (1 + 0.726 * CONMED_EFV)`;
+  +72.6% relative to the no-ART reference in HIV-infected Ugandan
+  adults, Hoglund 2015 Table 2 attributing the effect to CYP3A4
+  induction), `Hoglund_2015_artemether.R` (multiplicative
+  linear-deviation effect on artemether relative bioavailability F:
+  `fdepot_typ *= (1 + (-0.715) * CONMED_EFV)`; -71.5% relative to the
+  no-ART reference, Hoglund 2015 Table 3).
 - **Notes:** Specific scope because the comparator regimen (LPV/r 4:1 in
   Tikiso 2021) is paper-defined; future ART population-PK models that
   test EFV-vs-other contrasts should extend the example list when the
@@ -12890,7 +12915,18 @@ serve other parameters that do separate that group.
 - **Example models:** `Kappelhoff_2005_ritonavir.R` (multiplicative
   power-form effect on apparent oral ritonavir CL/F:
   `cl = exp(lcl + etalcl) * e_lpv_cl^CONMED_LPV` with `e_lpv_cl = 2.72`;
-  36 of 186 subjects on LPV/r in the source cohort).
+  36 of 186 subjects on LPV/r in the source cohort),
+  `Hoglund_2015_lumefantrine.R` (TWO independent linear-deviation
+  effects: on lumefantrine apparent CL/F
+  `cl *= (1 + (-0.621) * CONMED_LPV)` (-62.1 %, CYP3A4 inhibition by
+  ritonavir) and on desbutyl-lumefantrine apparent CL/F
+  `cl_desbutlum *= (1 + 3.92 * CONMED_LPV)` (+392 %; mechanism unknown,
+  Hoglund 2015 Discussion); Table 2), `Hoglund_2015_artemether.R` (TWO
+  independent linear-deviation effects: on artemether apparent CL/F
+  `cl *= (1 + 0.328 * CONMED_LPV)` (+32.8 %) and on dihydroartemisinin
+  apparent CL/F `cl_dha *= (1 + 1.43 * CONMED_LPV)` (+143 %; attributed
+  to CYP2B6 / 2C induction by lopinavir, Hoglund 2015 Discussion); Table
+  3).
 - **Notes:** Follows the `CONMED_*` concomitant-medication pattern
   (`CONMED_AZA`, `CONMED_RIF`, `CONMED_EFV`, `CONMED_CBZ`,
   `CONMED_AMIO`, etc.). The Kappelhoff 2005 cohort tested concomitant
@@ -12997,7 +13033,15 @@ serve other parameters that do separate that group.
     transformation.
 - **Example models:** `Jullien_2006_lopinavir.R` (exponential effect on
   CL/F: `cl *= exp(log(1.34) * CONMED_NVP)`; +34% CL/F when nevirapine
-  is coadministered).
+  is coadministered), `Hoglund_2015_lumefantrine.R` (multiplicative
+  linear-deviation effect on lumefantrine relative bioavailability F:
+  `fdepot_typ *= (1 + (-0.248) * CONMED_NVP)`; -24.8% relative to the
+  no-ART reference in HIV-infected Ugandan adults, Hoglund 2015 Table
+  2), `Hoglund_2015_artemether.R` (two independent linear-deviation
+  effects: on artemether relative bioavailability F
+  `fdepot_typ *= (1 + (-0.663) * CONMED_NVP)` (-66.3 %) and on apparent
+  dihydroartemisinin CL/F `cl_dha *= (1 + (-0.445) * CONMED_NVP)` (-44.5
+  %); Hoglund 2015 Table 3).
 - **Notes:** Specific scope until a second model ratifies the name;
   sister indicator to the registered `CONMED_EFV` (efavirenz) entry,
   applying to the second commonly co-administered NNRTI. Future ART
@@ -13183,7 +13227,19 @@ serve other parameters that do separate that group.
   absorption lag (Tlag 0.223 -\> 0.129 h; -42%), and non-renal clearance
   (CL_NR 25.2 -\> 21.0 L/h; -16.7%); the mechanism-specific competitive
   inhibition of renal tubular secretion is encoded separately via the
-  time-varying `CP_PRB_MGL` covariate).
+  time-varying `CP_PRB_MGL` covariate), `Hamren_2008_tesaglitazar.R`
+  (multiplicative effect on parent CLrt and metabolite Vmax under
+  probenecid co-administration: `(1 - 0.75 * CONMED_PROBENECID)` reduces
+  both by 75% during the three-dose probenecid window in four
+  healthy-control subjects; the shared estimate is encoded as two
+  canonical-named parameters `e_probenecid_cl_renal` and
+  `e_probenecid_vmax_gluc` to keep each effect’s naming canonical),
+  `Stocker_2012_oxypurinol.R` (multiplicative linear-deviation effect on
+  apparent CL/Fm: `cl *= (1 + 0.383 * CONMED_PROBENECID)`, i.e. +38.3%
+  apparent oxypurinol clearance with concomitant probenecid in adults
+  with gout, consistent with the paper’s mechanism narrative of
+  probenecid inhibiting renal tubular reabsorption of oxypurinol;
+  Stocker 2012 Table 3 theta8).
 - **Notes:** Scope: specific because the only on-disk source is a
   preclinical microdialysis rat BBB-transport paper (Xie 2000) and the
   column meaning is intrinsically tied to the day-2 probenecid
@@ -13232,7 +13288,7 @@ serve other parameters that do separate that group.
   effect was found significant only in the oral-cephalexin +
   oral-quinapril group (paper found no DDI on CL when cephalexin was
   given intra-arterially, attributed to higher cephalexin renal
-  concentrations outcompeting quinapril at the carrier)…
+  concentrations outcompeting quinapril at the carrier)….
 - **Notes:** Scope: specific because the only on-disk source is a single
   preclinical rat popPK paper (Padoin 1998) and the column meaning is
   intrinsically tied to the oral cephalexin + oral quinapril DDI design
@@ -13312,7 +13368,12 @@ serve other parameters that do separate that group.
   `(1 + e_rif_* * CONMED_RIF)` encoding; the CONMED_RIF flag also gates
   the secondary dose-dependent boost on RTV F
   (`(1 + e_dose_f_rtv * (DOSE - 100))`) so the dose-effect is
-  identifiable only within the rifampicin-coadministered arm).
+  identifiable only within the rifampicin-coadministered arm),
+  `Zhang_2013_lopinavir_ritonavir.R` (per-population multiplicative
+  shifts on apparent CL of LPV adults +58% / children +48% and RTV
+  adults +34% / children +22%, and per-population log-additive shifts on
+  relative bioavailability of LPV and RTV with separate adult-only and
+  child-only RIF effects).
 - **Notes:** Distinct from `CONMED_RIF_LPVR4` (which is a compound
   indicator for rifampicin + super-boosted LPV/r 4:4 used by Tikiso 2021
   pediatric abacavir popPK and carries a non-CL effect). The
@@ -13499,7 +13560,11 @@ serve other parameters that do separate that group.
 - **Example models:** `Zhou_2010_digoxin.R` (multiplicative
   linear-deviation form on Cl/F: `cl *= (1 - 0.412 * CONMED_SPIRON)`,
   i.e. ~41% lower Cl/F with concomitant spironolactone in the older
-  Chinese CHF cohort; Zhou 2010 Table 7).
+  Chinese CHF cohort; Zhou 2010 Table 7),
+  `MarquesMinana_2010_vancomycin.R` (multiplicative linear-deviation
+  form on weight-normalised V_d: `vc *= (1 - 0.344 * CONMED_SPIRON)`,
+  i.e. ~34% smaller V_d with concomitant spironolactone in the
+  70-neonate Marques-Minana 2010 cohort; Table 3 theta4).
 - **Notes:** 32 of 119 subjects (27%) in Zhou 2010 were coadministered
   spironolactone. The clinical rationale (Zhou 2010 Discussion) is that
   spironolactone inhibits the renal-tubular secretion of digoxin via
@@ -14057,7 +14122,13 @@ serve other parameters that do separate that group.
   `e_atazanavir_fdepot = 0.39`; atazanavir-coadministered patients have
   ~39% higher relative bioavailability than non-atazanavir reference,
   consistent with ATV-mediated UGT1A1 inhibition of raltegravir
-  glucuronidation).
+  glucuronidation), `vonHentig_2009_saquinavir.R` (power-of-binary
+  multiplier on saquinavir CL/F:
+  `cl *= e_atazanavir_cl^CONMED_ATAZANAVIR` with
+  `e_atazanavir_cl = 0.703`, i.e. saquinavir CL/F is reduced to 70.3%
+  when atazanavir 300 mg QD is coadministered, attributed to
+  ATV-mediated CYP3A inhibition; von Hentig 2009 Table 2 full-model
+  column).
 - **Notes:** Specific scope because the indicator is paper-defined as
   the presence of atazanavir within an HIV ART regimen; the comparator
   (no-atazanavir) pools all other backbones (PI without ATV,
@@ -14274,7 +14345,13 @@ serve other parameters that do separate that group.
 - **Example models:** `Crommentuyn_2005_lopinavir.R` (lopinavir CL/F
   inverse-saturable dependence on CONMED_RTV_AUC_12h:
   `cl = exp(lcl) * (auc50 / (auc50 + CONMED_RTV_AUC_12h)) * IND` with
-  `auc50 = 2.26 mg*h/L` and `IND = 1 + 0.39 * CONMED_NNRTI`).
+  `auc50 = 2.26 mg*h/L` and `IND = 1 + 0.39 * CONMED_NNRTI`),
+  `vonHentig_2009_saquinavir.R` (saquinavir CL/F centred power
+  dependence on CONMED_RTV_AUC_12h:
+  `cl = exp(lcl) * e_atazanavir_cl^CONMED_ATAZANAVIR * (CONMED_RTV_AUC_12h / 6.70355)^e_rtv_auc_12h_cl`
+  with `e_rtv_auc_12h_cl = -0.403`; centred at the cohort median 6.70355
+  mg\*h/L so saquinavir CL/F equals the typical 60.4 L/h at the median
+  ritonavir exposure when atazanavir is absent).
 - **Notes:** Specific scope – column meaning is tied to ritonavir as the
   booster drug AND to the q12h-BID dosing-interval AUC convention.
   Sibling of `AUC_RTV` (which is the q24h once-daily form, Dickinson
@@ -17555,7 +17632,13 @@ name alone.
   `e_healthy_fast_f ^ (DIS_HEALTHY * (1 - FED))`; cancer-patient records
   have FED = 1, healthy-fasted-arm records have FED = 0, high-fat-meal
   arm records have FED = 1 and the additional FED_HIGHFAT = 1
-  indicator).
+  indicator), `Niebecker_2015_edoxaban.R` (the Niebecker 2015 “study 6”
+  indicator is encoded via FED – study 6 was the only Fed-state phase 1
+  study in the pooled analysis; all 12 other phase 1 studies and the
+  Hokusai-VTE phase 3 study were overnight-fast. Two multiplicative
+  effects: ka \* (1 + (-0.690) \* FED) for the -69% absorption slowdown
+  and CLnr/F \* (1 + 0.204 \* FED) for the +20.4% non-renal CL with
+  food).
 
 ### FED_HIGHFAT (**canonical for high-fat-meal-at-dosing indicator**)
 
@@ -17784,7 +17867,16 @@ name alone.
   (two-level oral-solution vs solid-dispersion comparator for the TRPV1
   antagonist ABT-102; solution-vs-solid-dispersion-reference effects per
   Othman 2013 PK/PD-model Results paragraph 1 are 0.40 multiplicative on
-  bioavailability F and 0.5 multiplicative on absorption lag time).
+  bioavailability F and 0.5 multiplicative on absorption lag time),
+  `PerezRuixo_2006_tipifarnib.R` (oral-solution-vs-solid (capsule or
+  tablet) absorption-effect indicator; ratio-form multiplicative effects
+  on D1 (0.348), Ka (2.07), and tlag (0.183) applied as
+  `ratio^FORM_SOLUTION`; reference category is the solid oral form –
+  Perez-Ruixo 2006 found the absorption profile statistically
+  indistinguishable between capsule and tablet, so the two solid forms
+  are pooled as the reference, and the solution shows ~3-fold faster
+  zero-order release, 2-fold higher Ka, and a 5.5-fold shorter lag time
+  relative to the solid reference).
 - **Notes:** Scoped specific because the complement reference category
   is paper-defined. Third member of the oral solid-dosage `FORM_*`
   family alongside `FORM_TABLET` (tablet vs solution) and `FORM_CAPSULE`
@@ -17985,7 +18077,12 @@ name alone.
   first-order absorption rate constant Ka: powder-in-bottle Ka = 0.933
   1/h vs tablet formulation 2 reference Ka = 0.441 1/h; the tablet
   formulation 1 comparator is captured by the sibling canonical
-  `FORM_LINAG_TAB1`).
+  `FORM_LINAG_TAB1`), `Hong_2011_atazanavir.R` (multiplicative
+  linear-deviation effect on relative bioavailability:
+  `fdepot *= (1 + e_form_powder_frel * FORM_POWDER)` with
+  `e_form_powder_frel = -0.355`, i.e. the pediatric atazanavir oral
+  powder has 35.5% lower bioavailability than the capsule reference;
+  Hong 2011 Table 4).
 - **Notes:** Specific scope because the “powder vs tablet” contrast is
   tied to a particular drug-product manufacturing comparison (Yukawa
   1990 contrasts Aleviatin brand phenytoin powder with Aleviatin
@@ -20334,7 +20431,12 @@ name alone.
   telapristone CL/F typical value between the high-CL anchor
   `exp(lcl_pop1) = 11.6 L/h` and the low-CL anchor
   `exp(lcl_pop2) = 3.34 L/h`; the shared IIV `etalcl ~ 0.200` is applied
-  multiplicatively to whichever typical the mixture-class selects).
+  multiplicatively to whichever typical the mixture-class selects),
+  `Wilkins_2011_isoniazid.R` (gates the typical apparent CL/F via the
+  power-form covariate effect `e_mix_fast_elim_cl` on CL/F:
+  `cl = exp(lcl + e_mix_fast_elim_cl * MIX_FAST_ELIM + etalcl) * (WT/70)^0.75 * (1 + e_hiv_pos_cl * HIV_POS)`
+  with `lcl = log(9.70)` (slow-eliminator reference) and
+  `e_mix_fast_elim_cl = log(21.6/9.70) approx 0.8005`).
 - **Notes:** Pre-named by the `MIX_PDI` register entry’s Notes block
   (“mixture indicators from unrelated dichotomies should register a new
   canonical name (e.g., `MIX_FAST_ELIM` for a fast/slow eliminator

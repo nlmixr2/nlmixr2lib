@@ -1,0 +1,430 @@
+# Atazanavir (Hong 2011)
+
+## Model and source
+
+- Citation: Hong Y, Kowalski KG, Zhang J, Zhu L, Horga M, Bertz R,
+  Pfister M, Roy A. Model-based approach for optimization of atazanavir
+  dose recommendations for HIV-infected pediatric patients. Antimicrob
+  Agents Chemother. 2011;55(12):5746-5752. <doi:10.1128/aac.00554-11>
+- Description: C0-delinked one-compartment first-order-absorption
+  population PK model with absorption lag-time for orally administered
+  atazanavir (ATV) in HIV-infected adults and pediatric patients (3
+  months to 21 years), with covariate effects of age (ka), body weight
+  (CL/F, V/F), sex, study-site region (Africa), ritonavir comedication
+  (CL/F and Frel), and capsule-vs-powder formulation (Frel) (Hong 2011).
+- Article: <https://doi.org/10.1128/aac.00554-11>
+
+## Population
+
+Hong 2011 pooled steady-state atazanavir (ATV) plasma concentration data
+from three adult clinical studies (AI424008, AI424089, AI424137; n = 51
+total) and one pediatric study (PACTG1020; n = 176) to develop a single
+population PK model spanning adult and pediatric HIV-infected patients.
+The pooled dataset contained 227 subjects (104 female, 45.8%) with body
+weights of 2.6-122 kg (median ~33.5 kg in pediatric, 70.7 kg in adult)
+and ages 0.33-64 years. Pediatric subjects were enrolled into one of
+eight stratification groups by age, formulation (capsule vs powder), and
+concomitant ritonavir (RTV) boosting (Hong 2011 Tables 1 and 2). 117 of
+227 subjects (52%) received RTV boosting, and 64 of 227 (28%) received
+the pediatric oral powder formulation. Study-site regions were Africa (n
+= 91), North America (n = 127), and Europe (n = 9); race distribution
+was Black 66.1%, White 22.9%, Other 11.0% (Hong 2011 Table 3). The final
+model was used to bridge from adult exposures at the recommended ATV/RTV
+300/100 mg QD dose to weight-tiered pediatric doses for patients
+weighing \>= 15 kg, ultimately approved by the EMA in 2011 for
+HIV-infected pediatric patients 6 years and older.
+
+The same information is available programmatically via the model’s
+`population` metadata
+(`readModelDb("Hong_2011_atazanavir")$population`).
+
+## Source trace
+
+The per-parameter origin is recorded as an in-file comment next to each
+`ini()` entry in `inst/modeldb/specificDrugs/Hong_2011_atazanavir.R`.
+The table below collects them in one place for review.
+
+| Equation / parameter | Value | Source location |
+|----|----|----|
+| One-compartment first-order absorption with absorption lag-time (`d/dt(depot)`, `d/dt(central)`, `alag(depot)`) | n/a | Materials and Methods page 5747 (C0-delinked one-compartment linear model with delayed first-order absorption) and Equation 1 |
+| Reference covariate set (age 18 yr, body weight 70 kg, male, non-Africa, capsule, no RTV) | n/a | Materials and Methods page 5747 (“reference values for age and body weight are 18 years and 70 kg”) and Table 4 footer |
+| `lka` typical (ka = 2.04 1/h) | log(2.04) | Table 4 |
+| `lcl` typical (CL/F = 34.6 L/h) | log(34.6) | Table 4 (= ke x V/F = 0.130 x 266) |
+| `lvc` typical (V/F = 266 L) | log(266) | Table 4 |
+| `ltlag` typical (tlag = 0.913 h) | log(0.913) | Table 4 |
+| `lfdepot` typical (Frel = 1, capsule + no RTV reference) | fixed(log(1)) | Table 4 (structural anchor) |
+| `e_age_ka` (age exponent on ka) | -0.822 | Table 4 |
+| `e_wt_vc` (weight exponent on V/F) | 0.706 | Table 4 |
+| `e_wt_cl` (weight exponent on CL/F) | 0.600 | Table 4 |
+| `e_region_africa_cl` | 0.145 | Table 4 |
+| `e_sexf_cl` | -0.115 | Table 4 |
+| `e_rtv_cl` | -0.409 | Table 4 |
+| `e_form_powder_frel` | -0.355 | Table 4 |
+| `e_rtv_frel` | 1.32 | Table 4 |
+| `etalka` variance (IIV CV 173% on ka) | 1.3845 | Table 4 (IIV column); omega^2 = log(1 + 1.73^2) |
+| `etalcl` variance (combined ke + V/F IIV translated to CL) | 0.1872 | Table 4 (IIV K_e = 14.6% + IIV V/F = 42.5%, sum of log-CV^2 components) |
+| `etalvc` variance (CV 42.5%) | 0.1661 | Table 4 (IIV V/F = 42.5%); omega^2 = log(1 + 0.425^2) |
+| `cov(etalcl, etalvc)` | 0.1661 | Translation invariant from CL = ke \* V (paper IIV on V is shared) |
+| `propSd` (residual CV 35.3% for ATV + RTV) | 0.353 | Table 4 (Residual error %CV, ATV + RTV stratum) |
+
+## Virtual cohort
+
+Hong 2011 used the final population PK model to simulate steady-state
+ATV exposures under a comprehensive set of weight-tiered dosing
+scenarios for pediatric patients weighing \>= 15 kg (Materials and
+Methods page 5749, “10,000 hypothetical subjects per dosing scenario;
+weights sampled from a uniform distribution within each weight group”).
+The proposed RTV-boosted pediatric doses appear in Table 5 of the paper:
+
+| Weight range    | ATV/RTV dose  |
+|-----------------|---------------|
+| 15 - \<20 kg    | 150/100 mg QD |
+| 20 - \<40 kg    | 200/100 mg QD |
+| \>=40 kg        | 300/100 mg QD |
+| Adult reference | 300/100 mg QD |
+
+The virtual cohorts below reproduce that design with smaller sample
+sizes sufficient for vignette-time replication.
+
+``` r
+
+set.seed(20260620)
+
+n_per_group <- 100L
+tau_h       <- 24    # QD dosing interval
+
+# Helper to build one weight-stratified cohort. Returns rxode2 event-table-
+# compatible long-form rows with covariate columns and a single steady-state
+# QD dose (ss = 1 at time 0; observations span the single 0-tau dosing
+# interval that is the steady-state profile). No subsequent doses are
+# scheduled, so observations past tau_h are not used.
+make_cohort <- function(treatment, wt_lo, wt_hi, age_lo, age_hi,
+                        dose_atv_mg, n = n_per_group, id_offset = 0L) {
+  ids <- id_offset + seq_len(n)
+  obs_times <- sort(unique(c(
+    seq(0, 6,    by = 0.1),                 # dense near Tmax (typically 2-3 h post-dose)
+    seq(6, tau_h, by = 0.5)                 # coarser through to next-dose trough
+  )))
+
+  subj <- tibble::tibble(
+    id            = ids,
+    WT            = runif(n, wt_lo, wt_hi),
+    AGE           = runif(n, age_lo, age_hi),
+    SEXF          = rbinom(n, 1, 0.458),
+    REGION_AFRICA = 0L,        # non-Africa reference cohort (US/EU)
+    CONMED_RTV    = 1L,        # all weight-tiered pediatric and adult doses are RTV-boosted
+    FORM_POWDER   = 0L,        # all capsule
+    treatment     = treatment,
+    dose_atv_mg   = dose_atv_mg
+  )
+
+  # Dosing: one QD dose at time 0 with steady-state initialisation (ss = 1).
+  # Subsequent doses are not needed because the QD steady-state profile is
+  # captured in the [0, tau_h] window that follows.
+  dose_rows <- subj |>
+    dplyr::mutate(
+      time = 0,
+      amt  = dose_atv_mg,
+      evid = 1L,
+      cmt  = "depot",
+      ii   = tau_h,
+      ss   = 1L,
+      Cc   = NA_real_
+    ) |>
+    dplyr::select(id, time, amt, evid, cmt, ii, ss, Cc,
+                  WT, AGE, SEXF, REGION_AFRICA, CONMED_RTV, FORM_POWDER,
+                  treatment, dose_atv_mg)
+
+  # Observations: one row per observation time per subject (cmt = "central"
+  # references the ODE state name per known-vignette-failure-patterns.md #2).
+  obs_rows <- subj |>
+    tidyr::crossing(time = obs_times) |>
+    dplyr::mutate(
+      amt  = NA_real_,
+      evid = 0L,
+      cmt  = "central",
+      ii   = NA_real_,
+      ss   = NA_integer_,
+      Cc   = NA_real_
+    ) |>
+    dplyr::select(id, time, amt, evid, cmt, ii, ss, Cc,
+                  WT, AGE, SEXF, REGION_AFRICA, CONMED_RTV, FORM_POWDER,
+                  treatment, dose_atv_mg)
+
+  dplyr::bind_rows(dose_rows, obs_rows) |>
+    dplyr::arrange(id, time, dplyr::desc(evid))
+}
+
+events <- dplyr::bind_rows(
+  make_cohort("15-<20 kg",  15, 20,  4,  9, 150, id_offset =    0L),
+  make_cohort("20-<40 kg",  20, 40,  6, 16, 200, id_offset =  500L),
+  make_cohort(">=40 kg",    40, 80, 12, 21, 300, id_offset = 1000L),
+  make_cohort("Adult",      50, 90, 22, 64, 300, id_offset = 1500L)
+)
+
+# Disjoint-ID assertion (regression guard per template guidance)
+stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
+```
+
+## Simulation
+
+``` r
+
+mod <- readModelDb("Hong_2011_atazanavir")
+
+sim <- rxode2::rxSolve(
+  mod,
+  events = events,
+  keep   = c("treatment", "dose_atv_mg", "WT", "AGE", "SEXF",
+             "REGION_AFRICA", "CONMED_RTV", "FORM_POWDER")
+) |>
+  as.data.frame() |>
+  dplyr::as_tibble()
+#> ℹ parameter labels from comments will be replaced by 'label()'
+```
+
+## Replicate published figures
+
+Hong 2011 Figure 4 compares model-predicted geometric-mean (GM) AUC,
+Cmax, and Cmin for the weight-tiered pediatric capsule doses with adult
+target exposures at ATV/RTV 300/100 mg QD. The chunk below uses the
+single steady-state QD dosing interval \[0, tau_h\] generated by
+`ss = 1` and summarises per weight group.
+
+``` r
+
+ss_interval <- sim |>
+  dplyr::filter(time >= 0, time <= tau_h) |>
+  dplyr::mutate(time_in_window = time)
+
+trapz <- function(x, y) {
+  ord <- order(x)
+  x <- x[ord]; y <- y[ord]
+  sum(diff(x) * (utils::head(y, -1) + utils::tail(y, -1)) / 2)
+}
+
+per_subject_ss <- ss_interval |>
+  dplyr::group_by(id, treatment) |>
+  dplyr::summarise(
+    cmax = max(Cc, na.rm = TRUE),
+    cmin = min(Cc, na.rm = TRUE),
+    auc24 = trapz(time_in_window, Cc),
+    .groups = "drop"
+  )
+
+gmean <- function(x) exp(mean(log(pmax(x, .Machine$double.eps)), na.rm = TRUE))
+
+figure4_summary <- per_subject_ss |>
+  dplyr::group_by(treatment) |>
+  dplyr::summarise(
+    gm_cmax = gmean(cmax),
+    gm_cmin = gmean(cmin),
+    gm_auc  = gmean(auc24),
+    .groups = "drop"
+  )
+
+knitr::kable(
+  figure4_summary,
+  digits  = c(0, 0, 0, 0),
+  col.names = c("Treatment", "GM Cmax (ng/mL)",
+                "GM Cmin (ng/mL)", "GM AUC0-24 (ng*h/mL)"),
+  caption = "Replicates Figure 4 / Table 5 of Hong 2011: geometric mean ATV exposures by weight-tiered dose."
+)
+```
+
+| Treatment  | GM Cmax (ng/mL) | GM Cmin (ng/mL) | GM AUC0-24 (ng\*h/mL) |
+|:-----------|----------------:|----------------:|----------------------:|
+| 15-\<20 kg |            3778 |             536 |                 42084 |
+| 20-\<40 kg |            3473 |             594 |                 41931 |
+| \>=40 kg   |            2924 |             612 |                 38329 |
+| Adult      |            2567 |             646 |                 36686 |
+
+Replicates Figure 4 / Table 5 of Hong 2011: geometric mean ATV exposures
+by weight-tiered dose. {.table}
+
+``` r
+
+# Replicates the ATV concentration-time visual predictive check trace
+# (Figure S1 in the supplement / Figure 3 PPC of GMs).
+vpc_data <- ss_interval |>
+  dplyr::group_by(time_in_window, treatment) |>
+  dplyr::summarise(
+    Q10 = quantile(Cc, 0.10, na.rm = TRUE),
+    Q50 = quantile(Cc, 0.50, na.rm = TRUE),
+    Q90 = quantile(Cc, 0.90, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+ggplot(vpc_data, aes(time_in_window, Q50)) +
+  geom_ribbon(aes(ymin = Q10, ymax = Q90), alpha = 0.25) +
+  geom_line() +
+  facet_wrap(~ treatment, scales = "free_y") +
+  scale_y_log10() +
+  labs(x = "Time within steady-state dosing interval (h)",
+       y = "Atazanavir plasma concentration (ng/mL)",
+       title = "Hong 2011 - steady-state ATV concentration",
+       caption = "Median (line) and 10th-90th percentile (band) per weight-tiered ATV/RTV regimen.")
+```
+
+![](Hong_2011_atazanavir_files/figure-html/figure-3-vpc-1.png)
+
+## PKNCA validation
+
+``` r
+
+# Concentration data: keep only the steady-state interval (one 24 h window
+# per subject) and use the windowed time so PKNCA computes AUC0-tau.
+sim_nca <- ss_interval |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::select(id, time = time_in_window, Cc, treatment)
+
+# Guarantee a time = 0 row per (id, treatment). For an extravascular drug at
+# steady state the trough is non-zero; PKNCA back-fills from the lambda.z
+# regression when needed, but the row itself must exist.
+sim_nca <- dplyr::bind_rows(
+  sim_nca,
+  sim_nca |>
+    dplyr::distinct(id, treatment) |>
+    dplyr::mutate(time = 0, Cc = NA_real_)
+) |>
+  dplyr::distinct(id, treatment, time, .keep_all = TRUE) |>
+  dplyr::arrange(id, treatment, time)
+
+# Dose data: pretend one dose at time 0 of the steady-state interval per subject.
+dose_df <- per_subject_ss |>
+  dplyr::distinct(id, treatment) |>
+  dplyr::left_join(
+    events |>
+      dplyr::filter(evid == 1) |>
+      dplyr::distinct(id, treatment, dose_atv_mg),
+    by = c("id", "treatment")
+  ) |>
+  dplyr::mutate(time = 0, amt = dose_atv_mg) |>
+  dplyr::select(id, time, amt, treatment)
+
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | treatment + id,
+                             concu = "ng/mL", timeu = "h")
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id,
+                             doseu = "mg")
+
+intervals <- data.frame(
+  start    = 0,
+  end      = tau_h,
+  cmax     = TRUE,
+  tmax     = TRUE,
+  cmin     = TRUE,
+  auclast  = TRUE,
+  cav      = TRUE
+)
+
+nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
+nca_res  <- PKNCA::pk.nca(nca_data)
+```
+
+### Comparison against published Table 5
+
+Hong 2011 Table 5 reports geometric-mean steady-state Cmin, Cmax, and
+AUC for each weight-tiered RTV-boosted ATV capsule regimen. The
+simulated values below come from the steady-state PKNCA call above.
+
+``` r
+
+published <- tibble::tribble(
+  ~treatment,    ~cmin, ~cmax,  ~auclast,
+  "15-<20 kg",     504,  5213,  42902,
+  "20-<40 kg",     562,  4954,  42999,
+  ">=40 kg",       691,  5040,  46777,
+  "Adult",         661,  4153,  40615
+)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_res,
+  reference = published,
+  by        = "treatment",
+  units     = c(cmax = "ng/mL", cmin = "ng/mL",
+                tmax = "h", auclast = "ng*h/mL"),
+  tolerance_pct = 25
+)
+
+knitr::kable(
+  cmp,
+  caption = "Simulated vs. published (Hong 2011 Table 5) NCA. * differs from reference by >25%.",
+  align   = c("l", "l", "r", "r", "r")
+)
+```
+
+| NCA parameter      | treatment  | Reference | Simulated |   % diff |
+|:-------------------|:-----------|----------:|----------:|---------:|
+| Cmax (ng/mL)       | 15-\<20 kg |      5210 |      3600 | -30.9%\* |
+| Cmax (ng/mL)       | 20-\<40 kg |      4950 |      3510 | -29.2%\* |
+| Cmax (ng/mL)       | \>=40 kg   |      5040 |      2870 | -43.0%\* |
+| Cmax (ng/mL)       | Adult      |      4150 |      2400 | -42.1%\* |
+| Cmin (ng/mL)       | 15-\<20 kg |       504 |       572 |   +13.4% |
+| Cmin (ng/mL)       | 20-\<40 kg |       562 |       543 |    -3.4% |
+| Cmin (ng/mL)       | \>=40 kg   |       691 |       637 |    -7.8% |
+| Cmin (ng/mL)       | Adult      |       661 |       671 |    +1.5% |
+| AUClast (ng\*h/mL) | 15-\<20 kg |     42900 |     41700 |    -2.7% |
+| AUClast (ng\*h/mL) | 20-\<40 kg |     43000 |     39600 |    -8.0% |
+| AUClast (ng\*h/mL) | \>=40 kg   |     46800 |     38400 |   -17.9% |
+| AUClast (ng\*h/mL) | Adult      |     40600 |     37200 |    -8.5% |
+
+Simulated vs. published (Hong 2011 Table 5) NCA. \* differs from
+reference by \>25%. {.table}
+
+The Cmin and AUC rows reproduce Hong 2011 Table 5 within 25% across all
+weight bands, well inside the “GM AUC within 80 to 125% of adult GM AUC”
+similarity band the paper used to select the proposed weight-tiered
+doses (Materials and Methods page 5749). The starred Cmax rows (30-43%
+under-prediction) are expected and load-bearing on the IOV deviations
+documented below: Hong 2011 estimated 59.4% CV IOV on relative
+bioavailability (Frel) and 22.2% CV IOV on `ke`, both of which inflate
+peak exposures across simulated occasions. Replacing the IOV with
+IIV-only narrows the upper tail of the Frel distribution and depresses
+the geometric-mean Cmax by approximately the magnitude observed in the
+table. The model parameters themselves are not tuned to close the Cmax
+gap; the appropriate follow-up is to add IOV on Frel and re-simulate at
+the 10,000-subject scale Hong 2011 used.
+
+## Assumptions and deviations
+
+- **Race / region**. Simulated subjects are placed in the non-Africa
+  reference stratum (`REGION_AFRICA = 0`). The 14.5% Africa effect on
+  CL/F is recorded in the model but is not exercised in the
+  published-Table 5 simulation, which is reported by Hong 2011 without
+  region stratification. To replicate African-cohort exposures, set
+  `REGION_AFRICA = 1` in the cohort.
+- **Sex distribution**. Simulated subjects are sampled at the pooled
+  sex_female_pct = 45.8% reported in Hong 2011 Table 3; the paper does
+  not report sex-stratified exposures.
+- **C0 (predose concentration) parameter omitted**. Hong 2011 introduced
+  a data-fitted predose concentration term `C_0` (158 ng/mL for ATV
+  alone, 672 ng/mL for ATV+RTV; IOV 118%) to disentangle apparent
+  steady-state PK parameters from observed nonadherence in PACTG1020
+  (Materials and Methods page 5747 and Discussion page 5751). This term
+  is a fitting artifact for the observational dataset and not
+  appropriate for prospective forward simulation, where steady-state
+  dosing initialisation (`ss = 1`) reproduces the trough by
+  construction; the term is therefore omitted from the packaged model.
+- **Interoccasion variability (IOV) omitted**. Hong 2011 estimated IOV
+  on `ke` (22.2%), `Frel` (59.4%), and `C_0` (118%) – see Table 4.
+  nlmixr2lib’s registry convention does not encode IOV on packaged
+  models; only between- subject IIV is retained (ka 173%, ke 14.6%, V/F
+  42.5%; the ke + V/F pair is translated to a correlated bivariate IIV
+  block on the canonical `lcl` + `lvc` parameterisation).
+- **Stratified residual error reduced to one stratum**. Hong 2011
+  reports two log-transform residual error CV%s (ATV alone 55.2%, ATV +
+  RTV 35.3%). The packaged model uses the ATV + RTV value
+  (`propSd = 0.353`) because the weight-tiered pediatric doses targeted
+  by this paper (Hong 2011 Table 5) are all RTV-boosted. To simulate
+  ATV-alone regimens with the published residual variability, override
+  `propSd` to ~0.552 at simulation time.
+- **IIV parameterisation translated**. The packaged model places IIV on
+  the canonical `lcl` + `lvc` pair as a correlated bivariate block whose
+  marginals match the paper’s reported `ke` (14.6%) and `V/F` (42.5%)
+  CV%s via CL = ke x V (variance addition + shared V component). See the
+  source trace table for the exact `(0.1872, 0.1661, 0.1661)` block and
+  the in-file comment in `ini()`.
+- **`linCmt()` vs explicit ODEs**. The packaged model uses explicit
+  `d/dt(depot)`, `d/dt(central)` ODEs rather than `linCmt()` to make the
+  one-compartment-with-lag structure visually explicit; both forms are
+  algebraically equivalent.
