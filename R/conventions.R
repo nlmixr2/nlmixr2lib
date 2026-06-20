@@ -365,9 +365,12 @@
   # the glomerular-filtration / tubular-secretion arm; `_nonren` the
   # non-renal (hepatic / metabolic / extra-renal) arm (e.g. Jonckheere
   # 2019 cefepime: CL_total = CL_renal + CL_nonren); `_hemodialysis`
-  # the dialysis-active extracorporeal arm gated by the HEMODIALYSIS
-  # covariate (e.g. Veinstein 2013 gentamicin: CL_total = CL + CL_HD).
-  clComponents = c("ss", "time", "renal", "nonren", "hemodialysis"),
+  # the intermittent-hemodialysis extracorporeal arm gated by the
+  # HEMODIALYSIS covariate (e.g. Veinstein 2013 gentamicin: CL_total =
+  # CL + CL_HD); `_dialysis` the broader continuous / general dialysis
+  # extracorporeal arm (e.g. Eyler 2014 ertapenem: CL_total = CLS +
+  # DIAL * CLdial for CVVHD/CVVHDF).
+  clComponents = c("ss", "time", "renal", "nonren", "hemodialysis", "dialysis"),
   requiredUnits = c("time", "dosing", "concentration"),
   requiredMetadata = c("description", "reference", "units"),
   deprecatedResidualError = c(
