@@ -580,40 +580,21 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
 - **Source aliases:** none.
 - **Example models:** TMDD models with explicit complex internalisation.
 
-### kon (**canonical second-order binding rate constant**)
+### kbm (**canonical biliary-metabolite excretion rate**)
 - **Type:** paper-named-param
-- **Role:** Second-order rate constant for reversible binding of free drug to free target sites in explicit-binding TMDD and Snoeck-style saturable-distribution models. Drives the forward binding flux `kon * C_drug * (Bmax - complex)`. Units: 1 / (concentration * time) (e.g., L / (umol * h) or 1 / (uM * h)).
-- **Source aliases:** none.
-- **Example models:** `GonzalezSales_2024_imetelstat.R` (forward binding of imetelstat to peripheral target sites in the Snoeck 1999 / Peletier 2017 saturable-distribution model).
-- **Notes:** Paired with `koff` for the dissociation flux; the equilibrium dissociation constant is `Kd = koff / kon`. Use `kon` only when the source paper estimates the binding rate constant directly; for QSS-TMDD approximations that collapse kon / koff into a single binding constant, use `kss` instead.
+- **Role:** First-order rate constant for biliary excretion of a drug or metabolite from a plasma / central compartment into a downstream gut / bile compartment (1 / time). Used in enterohepatic-recirculation and interconversion submodels where the source paper carries biliary transport as a separate ODE flux (distinct from the drug's total clearance terms).
+- **Source aliases:**
+  - `k_bm` -- Hamren 2008 paper notation.
+- **Example models:** `Hamren_2008_tesaglitazar.R` (kbm = 11.7 1/h: rate at which the acyl glucuronide metabolite is biliary-secreted from the metabolite plasma compartment into the gut compartment, where it then undergoes interconversion back to parent tesaglitazar; founding example).
+- **Notes:** Ratified canonically on 2026-06-17 alongside the Hamren 2008 tesaglitazar extraction (per operator decision in sidecar request 001). Distinct from a generic intercompartmental clearance `lq` because biliary excretion in interconversion models is one-way (drug leaves the plasma compartment for the gut and does not return via the same route -- the return path is via a separate hydrolysis / reabsorption process parameterised by `kicv`).
 
-### koff (**canonical first-order dissociation rate constant**)
+### kicv (**canonical interconversion rate constant for metabolite-to-parent reverse-metabolism**)
 - **Type:** paper-named-param
-- **Role:** First-order rate constant for dissociation of a drug-target complex back to free drug and free target sites in explicit-binding TMDD and Snoeck-style saturable-distribution models. Units: 1 / time.
-- **Source aliases:** none.
-- **Example models:** `GonzalezSales_2024_imetelstat.R` (dissociation of imetelstat-target complex back to free imetelstat in the Snoeck 1999 / Peletier 2017 saturable-distribution model).
-- **Notes:** Paired with `kon` for the forward binding flux. Use `koff` only when the source paper estimates the dissociation rate constant directly; for QSS-TMDD approximations that collapse kon / koff into a single binding constant, use `kss` instead.
-
-### kback (**canonical return / back-transfer rate constant**)
-- **Type:** paper-named-param
-- **Role:** First-order rate constant for return of drug from a deep peripheral / tissue compartment back to the central compartment in Snoeck-style saturable-distribution models. Drives the flux `kback * peripheral1`. Units: 1 / time.
-- **Source aliases:** none.
-- **Example models:** `GonzalezSales_2024_imetelstat.R` (return of internalised imetelstat from peripheral tissue to central in the Snoeck 1999 / Peletier 2017 saturable-distribution model).
-- **Notes:** Mechanistically the "return" leg of a binding-internalisation-return cycle: free drug in central binds to target with `kon`, the complex internalises into a deep peripheral pool with `kint`, and free drug returns from that pool to central with `kback`. Distinct from a classical inter-compartmental clearance `q` because `kback` is a first-order rate (not a flow); the upstream "outbound" flux to peripheral is the internalisation `kint * complex`, not a symmetric `q * Cc` distribution.
-
-### bmax (**canonical maximum target / binding-site concentration**)
-- **Type:** paper-named-param
-- **Role:** Total concentration of target binding sites available for reversible binding in explicit-binding TMDD and Snoeck-style saturable-distribution models. Sets the saturation ceiling of the binding flux: free target = `bmax - complex`. Units: concentration (e.g., umol/L or nmol/L).
-- **Source aliases:** none.
-- **Example models:** `GonzalezSales_2024_imetelstat.R` (total target concentration `Bmax = 15.0 umol/L` in the Snoeck 1999 / Peletier 2017 saturable-distribution model; covariate effects of MF malignancy and baseline spleen volume apply to `bmax`).
-- **Notes:** When a paper reports binding capacity as `Bmax` (concentration) and the model carries a `complex` state, `bmax - complex` is the free-target concentration that drives the forward binding flux. Distinct from `rbase` (baseline turnover-pool value): `bmax` is the saturation ceiling of a static binding pool, while `rbase` is the equilibrium synthesis-degradation set-point of a dynamic turnover pool.
-
-### t50_cl_time (**canonical half-time of a hyperbolic time-on-CL effect**)
-- **Type:** paper-named-param
-- **Role:** Characteristic half-time of a hyperbolic decay multiplier on CL of the form `f_time_cl(t) = t50_cl_time / (t + t50_cl_time)`. At t = 0 the multiplier is 1 (baseline CL); at t = t50_cl_time it is 1/2 (half of baseline); in the limit t -> Inf it approaches 0. Units: time.
-- **Source aliases:** none.
-- **Example models:** `GonzalezSales_2024_imetelstat.R` (t50_cl_time = 5880 hours; baseline imetelstat CL decreases hyperbolically over the treatment course; mechanistic basis unknown per the source-paper Discussion -- possibly disease modification, possibly model-fit artefact).
-- **Notes:** Distinct from the sigmoid-Emax-on-time parameterisation used by some other time-varying CL models (e.g., Bajaj 2017 nivolumab uses `t50` + `cl_hill` for a Hill-shaped time effect). Use `t50_cl_time` when the source NONMEM stream encodes the time effect as a literal `T50 / (T50 + TIME)` term (hyperbolic decay, Hill = 1, asymptote = 0) and does not estimate a Hill exponent or an Emax asymptote.
+- **Role:** First-order rate constant for interconversion of a metabolite back to its parent drug (1 / time). Used for acyl-glucuronide-style reverse-metabolism mechanisms where the gut microbial / brush-border beta-glucuronidases hydrolyse a biliary-excreted conjugated metabolite back to the parent aglycone, which is then reabsorbed into systemic circulation. The single rate constant subsumes both the hydrolysis step and the reabsorption step (the source paper typically reports them as a single first-order process because the underlying gut microflora kinetics and intestinal-uptake kinetics cannot be separated from oral PK data alone).
+- **Source aliases:**
+  - `k_int` -- Hamren 2008 paper notation (the paper writes `kint` for interconversion; this naming clashes with the canonical `kint` for TMDD complex internalisation, so the canonical here is `kicv` to preserve semantic disambiguation).
+- **Example models:** `Hamren_2008_tesaglitazar.R` (kicv = 0.79 1/h: rate at which acyl glucuronide accumulated in the gut compartment is hydrolysed and reabsorbed as parent tesaglitazar into the parent's central plasma compartment; founding example).
+- **Notes:** Ratified canonically on 2026-06-17 alongside the Hamren 2008 tesaglitazar extraction (per operator decision in sidecar request 001). The canonical name `kicv` was chosen specifically to disambiguate from the TMDD `kint` canonical -- the two mechanisms (drug-target complex internalisation vs. metabolite-to-parent interconversion via gut hydrolysis) are semantically distinct, and reusing the same name with paper-specific meaning would create a latent reader-confusion failure mode. Paper-numbered alternatives (`k57`, `k72`-style as in deWinter 2009 MPA / MPAG) are discouraged for new extractions because the numbering is non-portable across papers; prefer the role-based `kbm` / `kicv` pair for any future interconversion popPK model.
 
 ### frac (**canonical fraction parameter**)
 - **Type:** paper-named-param
