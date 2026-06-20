@@ -2431,6 +2431,13 @@ Sibling-drug suffix for the Kleijn 2011 sugammadex-mediated reversal of rocuroni
 - **Example models:** `Sadouki_2025_meropenem.R`, `Wicha_2017_linezolid_meropenem_vancomycin.R`.
 - **Notes:** Same token as the bare `mer` drug-state compartment; both Types co-exist for the same canonical name.
 
+### sbt (**canonical sulbactam sibling-drug suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Sulbactam (beta-lactamase inhibitor) sibling-drug suffix, paired with ampicillin as the unsuffixed parent in the Soto 2014 joint two-compartment PK model. Drives `central_sbt` / `peripheral1_sbt` compartments, `lcl_sbt` / `lvc_sbt` / `lq_sbt` / `lvp_sbt` structural parameters, the `etalcl_sbt` / `etalvp_sbt` IIV etas (with eta_CL correlated across drugs via the shared `etalcl + etalcl_sbt` block), and the `propSd_sbt` residual on sulbactam plasma concentration. Ampicillin is selected as the unsuffixed parent because it is the antibacterial drug named first in the fixed 2:1 ampicillin/sulbactam combination and the paper's primary PK / PD efficacy endpoint (f *t > MIC) is measured on ampicillin.
+- **Source aliases:** none.
+- **Example models:** `Soto_2014_ampicillin_sulbactam.R` (doi:10.1111/bcp.12232).
+- **Notes:** `sbt` matches the clinical-pharmacology and CLSI-microbiology shorthand for sulbactam (e.g., AMP/SBT for the ampicillin-sulbactam combination). Disjoint from the existing `sulf` metabolite suffix (paracetamol-sulphate, Allegaert 2015) to avoid lexical confusion between the inhibitor drug and the phase-II sulphate conjugate of paracetamol.
+
 ---
 
 ## Ramharter 2019 mefloquine metabolite suffix

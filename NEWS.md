@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Wang 2014 vatalanib ([doi:10.1111/bcp.12427](https://doi.org/10.1111/bcp.12427)) -- adults with myelodysplastic syndrome (CALGB 10105 Alliance phase II; one-compartment oral PK with lagged first-order absorption and first-order auto-induction of clearance).
+* Add Soto 2014 ampicillin/sulbactam ([doi:10.1111/bcp.12232](https://doi.org/10.1111/bcp.12232)) -- Japanese adults with community-acquired pneumonia (joint two-compartment popPK of ampicillin + sulbactam with shared Cockcroft-Gault CLcr effect and cross-drug CL eta correlation; ratifies new `sbt` sibling-drug suffix).
 * Add Morris 2011 telapristone ([doi:10.1208/s12248-011-9304-7](https://doi.org/10.1208/s12248-011-9304-7)) -- adult women with single-dose telapristone-acetate phase I/II PK studies; ratifies new `cdb4453` metabolite suffix, `MIX_FAST_ELIM`, and `RENALIMP_MOD` covariate canonicals.
 * Add Padoin 1998 cephalexin ([doi:10.1128/aac.42.6.1463](https://doi.org/10.1128/aac.42.6.1463)) -- preclinical male Wistar rats with a cephalexin / quinapril oral coadministration DDI (ratifies new `CONMED_QPRL_ORAL` covariate canonical).
 * Add van Rongen 2018 metformin ([doi:10.1007/s40272-018-0293-1](https://doi.org/10.1007/s40272-018-0293-1)) -- overweight and obese Caucasian adolescents.
