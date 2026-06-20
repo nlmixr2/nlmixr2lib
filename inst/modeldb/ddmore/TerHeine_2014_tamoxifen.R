@@ -39,37 +39,15 @@ TerHeine_2014_tamoxifen <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 39L,
-    n_studies      = 1L,
-    age_range      = "22 - 71 years",
-    age_median     = "53 years",
-    weight_range   = "48.5 - 114 kg",
-    weight_median  = "72.7 kg",
-    height_range   = "1.56 - 1.79 m",
-    height_median  = "1.69 m",
+    n_subjects     = 40,
+    n_studies      = 1,
+    age_range      = "TODO: full Ter Heine 2014 publication not on disk during extraction; the DDMORE bundle ships only the Table 2 of final estimates as a one-page PDF",
+    weight_range   = "TODO: see age_range note",
     sex_female_pct = 100,
-    disease_state  = paste(
-      "Hormone-receptor-positive breast cancer on chronic oral tamoxifen at",
-      "steady state. Patients on moderate or strong CYP3A inhibitors /",
-      "inducers or ABCB1 / ABCG2 modulators were excluded."
-    ),
-    dose_range     = paste(
-      "Tamoxifen 20 mg orally once daily in 70% of subjects and 40 mg",
-      "orally once daily in 30% (Table 1 of the source publication;",
-      "11 of 39 evaluable subjects on the 40 mg regimen). 349 tamoxifen",
-      "and 331 endoxifen concentrations available."
-    ),
-    regions        = "The Netherlands (Erasmus MC Cancer Institute, Rotterdam; single-center)",
-    notes          = paste(
-      "Demographics from Table 1 of the source publication, which is now",
-      "on disk (the earlier TODO markers from the DDMORE-only extraction",
-      "have been resolved against the full PDF). 40 patients enrolled,",
-      "1 dropped due to obstruction of a venous cannula; n = 39 evaluable.",
-      "Cohort sex is 100% female because the indication is hormone-",
-      "receptor-positive breast cancer on tamoxifen. Dutch Trial Registry",
-      "NTR1751."
-    )
+    disease_state  = "Hormone-receptor-positive breast cancer on chronic oral tamoxifen at steady state",
+    dose_range     = "20 mg PO QD at steady state (the dose used in the DDMORE-shipped simulated dataset; the source publication may include other regimens that were not captured because the full PDF was not on disk)",
+    regions        = "Netherlands (Erasmus MC), single-center",
+    notes          = "Demographics fields marked TODO because the source publication PDF was not on disk during the DDMORE extraction; only the Table 2 final-estimates summary was available. Cohort sex is encoded as 100% female because the indication (breast cancer on tamoxifen) was overwhelmingly female in the published cohort. n_subjects = 40 is the published Ter Heine 2014 cohort size; the DDMORE simulated dataset re-simulates 100 hypothetical subjects."
   )
 
   ini({
@@ -145,7 +123,7 @@ TerHeine_2014_tamoxifen <- function() {
 
     # Fixed literature constants for endoxifen disposition. Source: Ahmad et
     # al. (2010) Clin Pharmacol Ther 88(6):814-817, doi:10.1038/clpt.2010.222
-    # -- cited in the .mdl GROUP_VARIABLES block as `Ahmad et al, CPT Vol 88,
+    # — cited in the .mdl GROUP_VARIABLES block as `Ahmad et al, CPT Vol 88,
     # 2010`.
     cl_endx_elim <- 5.1
     vc_endox <- 400
