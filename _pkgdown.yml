@@ -1100,8 +1100,6 @@ navbar:
         href: articles/Robbie_2012_palivizumab.html
       - text: "PAmAb (Cao 2013)"
         href: articles/Cao_2013_PAmAb.html
-      - text: "Pantoprazole (Pettersen 2009)"
-        href: articles/Pettersen_2009_pantoprazole.html
       - text: "Paracetamol (Anderson 1998)"
         href: articles/Anderson_1998_paracetamol.html
       - text: "Paracetamol (Krekels 2015)"
@@ -1144,6 +1142,10 @@ navbar:
         href: articles/Wang_2021_pertuzumab.html
       - text: "PF 06939999 (Guo 2022)"
         href: articles/Guo_2022_PF_06939999.html
+      - text: "PF00821385 dog (Langdon 2010)"
+        href: articles/Langdon_2010_PF00821385.html
+      - text: "PF00821385 human (Langdon 2010)"
+        href: articles/Langdon_2010_PF00821385.html
       - text: "PF04236921 (Li 2018)"
         href: articles/Li_2018_PF04236921.html
       - text: "PF04455242 human (Chang 2011)"
