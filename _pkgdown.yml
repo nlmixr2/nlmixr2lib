@@ -170,6 +170,8 @@ navbar:
         href: articles/Yang_2024_axatilimab.html
       - text: "Axitinib (Garrett 2014)"
         href: articles/Garrett_2014_axitinib.html
+      - text: "Axomadol (MangasSanjuan 2016)"
+        href: articles/MangasSanjuan_2016_axomadol.html
       - text: "Azithromycin (Merchan 2015)"
         href: articles/Merchan_2015_azithromycin.html
       - text: "Azithromycin (Sampson 2014)"
@@ -2410,6 +2412,7 @@ articles:
   - articles/Ma_2020_sarilumab_das28crp
   - articles/Macpherson_2015_rosuvastatin
   - articles/Majekodunmi_2017_HIV_HCV_CD4_recovery
+  - articles/MangasSanjuan_2016_axomadol
   - articles/Marier_2002_tobramycin_rat_conventional
   - articles/Marier_2002_tobramycin_rat_liposomal
   - articles/MarquesMinana_2010_vancomycin
