@@ -698,6 +698,8 @@ navbar:
         href: articles/Royer_2010_HuHMFG1.html
       - text: "Hydroxyurea (Paule 2011)"
         href: articles/Paule_2011_hydroxyurea.html
+      - text: "Ibandronate (Pillai 2004)"
+        href: articles/Pillai_2004_ibandronate.html
       - text: "Iclaprim (Lodise 2018)"
         href: articles/Lodise_2018_iclaprim.html
       - text: "Ifosfamide (Brain 2008)"
@@ -2415,7 +2417,7 @@ articles:
   - articles/Petrov_2024_romiplostim
   - articles/Philippe_2015_cyclosporine
   - articles/Pierre_2017_morphine
-  - articles/PiresdeMello_2018_zika_FAV_HFIM
+  - articles/Pillai_2004_ibandronate
   - articles/PiresdeMello_2018_zika_FAV_IFN_RBV
   - articles/Plachouras_2009_colistin
   - articles/Plan_2012_pain
