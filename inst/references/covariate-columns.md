@@ -2691,6 +2691,18 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Example models:** `Girard_2012_pimasertib.R` (additive shift on the cumulative-logit AE-score model: `theta_mhhy * DIS_HYPERT`; +0.539 logit units in patients with prior hypertension).
 - **Notes:** Companion to `DIS_DIAB` (diabetes-mellitus comorbidity); both are baseline binary medical-history flags collected from clinical-history forms. Captures any prior or current hypertension diagnosis, regardless of treatment status; if a future model needs to separate treated vs untreated hypertension, register a refinement (`DIS_HYPERT_TREATED`). Renamed from `HYPERT` to `DIS_HYPERT` on 2026-06-19 per the canonical-register standardization audit (operator decision to apply the `DIS_<concept>` prefix uniformly to disease-state indicators).
 
+### DIARRHEA (**canonical for concurrent-diarrhea clinical-condition indicator**)
+- **Description:** 1 = subject has clinical diarrhea concurrent with the PK observation period; 0 = no diarrhea. Subject-level when the source paper aggregates per-period diarrhea status into a single per-subject flag (e.g. Kohl 2010 records diarrhea as a yes/no patient attribute over the TDM window); time-varying when a future paper records per-day or per-occasion status. Mechanism: shorter gastrointestinal residence time and accelerated luminal clearance reduce apparent oral bioavailability F of GI-absorbed drugs.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no diarrhea).
+- **Source aliases:**
+  - `Di` -- used in `Kohl_2010_posaconazole.R` (Kohl 2010 Table 3 model equation symbol).
+  - `Diarrhea` -- used in `Kohl_2010_posaconazole.R` (Kohl 2010 Table 1 row label).
+- **Example models:** `Kohl_2010_posaconazole.R` (multiplicative factor `exp(lthetaDi * DIARRHEA)` simultaneously on apparent CL/F and apparent V/F; theta_Di ~= 1.69, so diarrhea raises both apparent parameters by ~69% relative to the no-diarrhea reference, equivalent to a 59% reduction in oral bioavailability F per Kohl 2010 abstract and Discussion).
+- **Notes:** Captures concurrent clinical diarrhea as a per-subject (or per-occasion when available) binary covariate on oral-drug PK parameters. Mechanism is shorter GI transit / accelerated luminal clearance lowering apparent oral bioavailability F. When a paper attributes the effect via simultaneous and equal-magnitude multiplicative changes on apparent CL/F and apparent V/F (so that the algebraic interpretation is a change in F rather than independent CL and V perturbations), document the equivalent F interpretation in `covariateData[[DIARRHEA]]$notes`. Distinct from `MAL_NOURISH` (broader malnutrition / nutritional-state indicator -- diarrhea is a transient GI symptom, not a chronic nutritional state) and from `PRIOR_GAST` (anatomical / prior-gastrectomy surgical-history indicator -- diarrhea is a functional clinical condition, not a surgical change). Ratified canonically on 2026-06-17 alongside the Kohl 2010 posaconazole extraction.
+
 ## Surgical history / disease state
 
 ### POD (**canonical for post-operative day**)

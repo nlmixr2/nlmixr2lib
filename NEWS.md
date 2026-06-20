@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Ramharter 2019 mefloquine ([doi:10.1128/AAC.01113-18](https://doi.org/10.1128/AAC.01113-18)) -- pregnant African women receiving intermittent preventive treatment for malaria in Gabon (MIPPAD trial; joint (+)- / (-)-mefloquine + carboxymefloquine popPK with two-stage enzyme-pool autoinduction; ratifies new `_cmq` metabolite suffix and `REGIMEN_SPLIT` covariate canonical).
+* Add Kohl 2010 posaconazole ([doi:10.1128/AAC.01027-09](https://doi.org/10.1128/AAC.01027-09)) -- adult allogeneic stem cell transplant recipients with hematological malignancies on prophylactic oral posaconazole; ratifies new `DIARRHEA` covariate canonical.
 * Add Berges 2007 enoxaparin ([doi:10.1111/j.1365-2125.2007.02920.x](https://doi.org/10.1111/j.1365-2125.2007.02920.x)) -- elderly inpatients (>75 years) on prophylactic subcutaneous enoxaparin 4000 IU once daily for VTE prophylaxis (PROPHRE.75 study).
 * Add Padoin 1998 cephalexin ([doi:10.1128/aac.42.6.1463](https://doi.org/10.1128/aac.42.6.1463)) -- preclinical male Wistar rats with a cephalexin / quinapril oral coadministration DDI (ratifies new `CONMED_QPRL_ORAL` covariate canonical).
 * Add van Rongen 2018 metformin ([doi:10.1007/s40272-018-0293-1](https://doi.org/10.1007/s40272-018-0293-1)) -- overweight and obese Caucasian adolescents.
