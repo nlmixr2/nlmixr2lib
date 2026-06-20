@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Wittau 2015 meropenem ([doi:10.1128/AAC.00259-15](https://doi.org/10.1128/AAC.00259-15)) -- morbidly obese adults undergoing laparoscopic intraperitoneal surgery (allometric scaling on fat-free mass; subcutaneous-tissue and peritoneal-fluid penetration scaled from plasma).
+* Add Wi 2017 teicoplanin ([doi:10.1128/AAC.01015-17](https://doi.org/10.1128/AAC.01015-17)) -- critically ill adults on venoarterial extracorporeal membrane oxygenation (VA-ECMO) for cardiogenic shock; second user of the `ECMO_STATUS` covariate canonical (within-subject crossover).
 * Add Morris 2011 telapristone ([doi:10.1208/s12248-011-9304-7](https://doi.org/10.1208/s12248-011-9304-7)) -- adult women with single-dose telapristone-acetate phase I/II PK studies; ratifies new `cdb4453` metabolite suffix, `MIX_FAST_ELIM`, and `RENALIMP_MOD` covariate canonicals.
 * Add Padoin 1998 cephalexin ([doi:10.1128/aac.42.6.1463](https://doi.org/10.1128/aac.42.6.1463)) -- preclinical male Wistar rats with a cephalexin / quinapril oral coadministration DDI (ratifies new `CONMED_QPRL_ORAL` covariate canonical).
 * Add van Rongen 2018 metformin ([doi:10.1007/s40272-018-0293-1](https://doi.org/10.1007/s40272-018-0293-1)) -- overweight and obese Caucasian adolescents.

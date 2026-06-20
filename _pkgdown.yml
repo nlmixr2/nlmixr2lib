@@ -1480,6 +1480,8 @@ navbar:
         href: articles/Nichols_2016_piperacillin_tazobactam.html
       - text: "Tefibazumab (Cao 2013)"
         href: articles/Cao_2013_tefibazumab.html
+      - text: "Teicoplanin (Wi 2017)"
+        href: articles/Wi_2017_teicoplanin.html
       - text: "Telapristone (Morris 2011)"
         href: articles/Morris_2011_telapristone.html
       - text: "Temozolomide (Mazzocco 2015)"
@@ -2616,6 +2618,7 @@ articles:
   - articles/Weatherley_2018_fosdagrocorat
   - articles/Weber_1993_remikiren
   - articles/Weber_2015_fluticasone_inhaled
+  - articles/Wi_2017_teicoplanin
   - articles/Wicha_2017_linezolid_meropenem_vancomycin
   - articles/Wicha_2018_rifampicin
   - articles/Wilbaux_2014_ovarianCancer_ca125
