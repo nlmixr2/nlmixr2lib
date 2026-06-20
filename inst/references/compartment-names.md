@@ -2486,7 +2486,13 @@ Per-paper metabolite / sibling-drug suffix additions discovered during the 2026-
 - **Type:** metabolite-suffix
 - **Role:** 1'-hydroxymidazolam metabolite of midazolam.
 - **Source aliases:** none.
-- **Example models:** `Brussee_2018_midazolam_PBPK.R`.
+- **Example models:** `Brussee_2018_midazolam_PBPK.R`, `Franken_2017_midazolam.R`.
+
+### 1ohmg (**canonical 1'-hydroxymidazolam-glucuronide suffix**)
+- **Type:** metabolite-suffix
+- **Role:** 1'-hydroxymidazolam-glucuronide phase II metabolite of midazolam (downstream of `1ohm`; renally cleared end metabolite). Paired with `1ohm` analogously to morphine's `m3g` / `m6g` glucuronide pair.
+- **Source aliases:** none.
+- **Example models:** `Franken_2017_midazolam.R`.
 
 ### 4ohctx (**canonical 4-hydroxycyclophosphamide suffix**)
 - **Type:** metabolite-suffix
