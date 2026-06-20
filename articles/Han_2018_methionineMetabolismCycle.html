@@ -949,7 +949,7 @@
 <ul>
 <li>Citation: Han N, Chae JW, Jeon J, Lee J, Back HM, Song B, Kwon KI,
 Kim SK, Yun HY. Prediction of Methionine and Homocysteine levels in
-Zucker diabetic fatty (ZDF) rats as a T2DM animal model after
+Zucker diabetic fatty (ZDF) rats as a DIS_DIAB animal model after
 consumption of a Methionine-rich diet. Nutr Metab (Lond). 2018;15:14. <a href="doi:10.1186/s12986-018-0247-1" class="uri">doi:10.1186/s12986-018-0247-1</a>
 </li>
 <li>Description: Preclinical (rat). Seven-compartment mechanistic
@@ -964,7 +964,7 @@ representation of the <strong>methionine metabolism cycle (MMC)</strong>
 in rats. The model was fit to plasma methionine and plasma homocysteine
 concentrations measured after a single intravenous bolus of methionine
 in Zucker-Diabetic-Fatty (ZDF/Gmi fa/fa) rats – a widely used Type-2
-diabetes mellitus (T2DM) animal model – and their non-diabetic
+diabetes mellitus (DIS_DIAB) animal model – and their non-diabetic
 littermate controls (ZDF/Gmi fa/?). The fitted model is then used to
 predict accumulation of methionine and homocysteine under a 60-day
 methionine-rich diet.</p>
@@ -1148,10 +1148,10 @@ the corresponding <code>ini()</code> line in
 <h2 id="virtual-cohort">Virtual cohort<a class="anchor" aria-label="anchor" href="#virtual-cohort"></a>
 </h2>
 <p>The vignette compares two cohorts of identical typical-value rats,
-one coded T2DM = 1 (ZDF/Gmi fa/fa diabetic) and one coded T2DM = 0
-(ZDF/Gmi fa/? non-diabetic control). All other covariate columns are
+one coded DIS_DIAB = 1 (ZDF/Gmi fa/fa diabetic) and one coded DIS_DIAB =
+0 (ZDF/Gmi fa/? non-diabetic control). All other covariate columns are
 identical between cohorts; the only structural change between them is
-the multiplicative log-scale T2DM effects on the five rate constants
+the multiplicative log-scale DIS_DIAB effects on the five rate constants
 K_SH, K_HM, K_HC, K_HP, K_PH (Han 2018 Eqs 8-11).</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">20180101</span><span class="op">)</span></span>
@@ -1168,13 +1168,13 @@ K_SH, K_HM, K_HC, K_HP, K_PH (Han 2018 Eqs 8-11).</p>
 <span>    evid <span class="op">=</span> <span class="fl">1L</span>,</span>
 <span>    amt  <span class="op">=</span> <span class="va">dose_mmol_per_kg</span>,</span>
 <span>    cmt  <span class="op">=</span> <span class="st">"met"</span>,</span>
-<span>    T2DM <span class="op">=</span> <span class="va">t2dm</span></span>
+<span>    DIS_DIAB <span class="op">=</span> <span class="va">t2dm</span></span>
 <span>  <span class="op">)</span></span>
 <span>  <span class="va">obs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/expand.grid.html" class="external-link">expand.grid</a></span><span class="op">(</span>id <span class="op">=</span> <span class="va">ids</span>, time <span class="op">=</span> <span class="va">obs_times_h</span>, KEEP.OUT.ATTRS <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span>  <span class="va">obs</span><span class="op">$</span><span class="va">evid</span> <span class="op">&lt;-</span> <span class="fl">0L</span></span>
 <span>  <span class="va">obs</span><span class="op">$</span><span class="va">amt</span>  <span class="op">&lt;-</span> <span class="fl">0</span></span>
 <span>  <span class="va">obs</span><span class="op">$</span><span class="va">cmt</span>  <span class="op">&lt;-</span> <span class="cn">NA_character_</span></span>
-<span>  <span class="va">obs</span><span class="op">$</span><span class="va">T2DM</span> <span class="op">&lt;-</span> <span class="va">t2dm</span></span>
+<span>  <span class="va">obs</span><span class="op">$</span><span class="va">DIS_DIAB</span> <span class="op">&lt;-</span> <span class="va">t2dm</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="va">dosing</span>, <span class="va">obs</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
@@ -1195,7 +1195,7 @@ K_SH, K_HM, K_HC, K_HP, K_PH (Han 2018 Eqs 8-11).</p>
 <span><span class="va">sim_singledose</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span></span>
 <span>  <span class="va">mod_typical</span>,</span>
 <span>  events <span class="op">=</span> <span class="va">events_singledose</span>,</span>
-<span>  keep   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cohort"</span>, <span class="st">"T2DM"</span><span class="op">)</span>,</span>
+<span>  keep   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cohort"</span>, <span class="st">"DIS_DIAB"</span><span class="op">)</span>,</span>
 <span>  returnType <span class="op">=</span> <span class="st">"data.frame"</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalkhm', 'etalkhp'</span></span>
@@ -1215,13 +1215,13 @@ K_SH, K_HM, K_HC, K_HP, K_PH (Han 2018 Eqs 8-11).</p>
 <span><span class="co">#&gt; 4 4.698822 0.07181726 0.7048233 0.06856771 1.288046e-05 0.0033607464</span></span>
 <span><span class="co">#&gt; 5 4.160141 0.18008622 0.6240212 0.10064571 1.890884e-05 0.0051423317</span></span>
 <span><span class="co">#&gt; 6 3.487629 0.28218817 0.5231443 0.12057949 2.265510e-05 0.0062575140</span></span>
-<span><span class="co">#&gt;         hcyhep          cys          hcy T2DM  cohort</span></span>
-<span><span class="co">#&gt; 1 0.000000e+00 0.000000e+00 0.0000000000    0 control</span></span>
-<span><span class="co">#&gt; 2 3.434196e-05 2.238143e-05 0.0002331285    0 control</span></span>
-<span><span class="co">#&gt; 3 1.984898e-04 4.313181e-04 0.0030649149    0 control</span></span>
-<span><span class="co">#&gt; 4 5.093277e-04 2.383616e-03 0.0107725893    0 control</span></span>
-<span><span class="co">#&gt; 5 1.075908e-03 1.133399e-02 0.0270129336    0 control</span></span>
-<span><span class="co">#&gt; 6 1.575217e-03 3.396870e-02 0.0423282256    0 control</span></span></code></pre></div>
+<span><span class="co">#&gt;         hcyhep          cys          hcy DIS_DIAB  cohort</span></span>
+<span><span class="co">#&gt; 1 0.000000e+00 0.000000e+00 0.0000000000        0 control</span></span>
+<span><span class="co">#&gt; 2 3.434196e-05 2.238143e-05 0.0002331285        0 control</span></span>
+<span><span class="co">#&gt; 3 1.984898e-04 4.313181e-04 0.0030649149        0 control</span></span>
+<span><span class="co">#&gt; 4 5.093277e-04 2.383616e-03 0.0107725893        0 control</span></span>
+<span><span class="co">#&gt; 5 1.075908e-03 1.133399e-02 0.0270129336        0 control</span></span>
+<span><span class="co">#&gt; 6 1.575217e-03 3.396870e-02 0.0423282256        0 control</span></span></code></pre></div>
 <div class="section level3">
 <h3 id="plasma-methionine-and-homocysteine-after-a-single-0-8-mmolkg-iv-bolus">Plasma methionine and homocysteine after a single 0.8 mmol/kg IV
 bolus<a class="anchor" aria-label="anchor" href="#plasma-methionine-and-homocysteine-after-a-single-0-8-mmolkg-iv-bolus"></a>
@@ -1270,7 +1270,7 @@ against published NCA</em> below).</p>
 <span>    evid <span class="op">=</span> <span class="fl">1L</span>,</span>
 <span>    amt  <span class="op">=</span> <span class="va">dose_mmol_per_kg</span>,</span>
 <span>    cmt  <span class="op">=</span> <span class="st">"met"</span>,</span>
-<span>    T2DM <span class="op">=</span> <span class="va">t2dm</span></span>
+<span>    DIS_DIAB <span class="op">=</span> <span class="va">t2dm</span></span>
 <span>  <span class="op">)</span></span>
 <span>  <span class="va">obs_times</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">total_days</span> <span class="op">*</span> <span class="fl">24</span>, by <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span>  <span class="va">obs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
@@ -1279,7 +1279,7 @@ against published NCA</em> below).</p>
 <span>    evid <span class="op">=</span> <span class="fl">0L</span>,</span>
 <span>    amt  <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>    cmt  <span class="op">=</span> <span class="cn">NA_character_</span>,</span>
-<span>    T2DM <span class="op">=</span> <span class="va">t2dm</span></span>
+<span>    DIS_DIAB <span class="op">=</span> <span class="va">t2dm</span></span>
 <span>  <span class="op">)</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="va">dosing</span>, <span class="va">obs</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
@@ -1292,7 +1292,7 @@ against published NCA</em> below).</p>
 <span><span class="va">sim_multidose</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span></span>
 <span>  <span class="va">mod_typical</span>,</span>
 <span>  events <span class="op">=</span> <span class="va">events_multidose</span>,</span>
-<span>  keep   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cohort"</span>, <span class="st">"T2DM"</span><span class="op">)</span>,</span>
+<span>  keep   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cohort"</span>, <span class="st">"DIS_DIAB"</span><span class="op">)</span>,</span>
 <span>  returnType <span class="op">=</span> <span class="st">"data.frame"</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalkhm', 'etalkhp'</span></span></code></pre></div>
@@ -1523,14 +1523,14 @@ any other state, the correction does not affect predictions for the
 observed methionine or homocysteine compartments. The cysteine state is
 retained for mass-balance documentation.</p></li>
 <li><p><strong>Eq 10 / Eq 11 covariate parameterisation.</strong> Han
-2018 publishes four covariate equations (Eqs 8-11) for the T2DM (ZDF)
-effect on individual rate constants. Eq 8 (K_HM with IIV) and Eq 9 (K_HP
-with IIV) are unambiguous; the printed subscript of Eq 11 in the source
-PDF was illegible to the OCR pipeline. Han 2018 Table 1 reports separate
-control / ZDF point estimates for five rate constants (K_SH, K_HM, K_HC,
-K_HP, K_PH), so Eqs 10-11 cover the three rate constants that lack IIV.
-The packaged model derives each T2DM log-scale coefficient from the
-Table 1 control / ZDF point-estimate ratio
+2018 publishes four covariate equations (Eqs 8-11) for the DIS_DIAB
+(ZDF) effect on individual rate constants. Eq 8 (K_HM with IIV) and Eq 9
+(K_HP with IIV) are unambiguous; the printed subscript of Eq 11 in the
+source PDF was illegible to the OCR pipeline. Han 2018 Table 1 reports
+separate control / ZDF point estimates for five rate constants (K_SH,
+K_HM, K_HC, K_HP, K_PH), so Eqs 10-11 cover the three rate constants
+that lack IIV. The packaged model derives each DIS_DIAB log-scale
+coefficient from the Table 1 control / ZDF point-estimate ratio
 (<code>theta_T2DM_X = log(K_X_ZDF / K_X_control)</code>); this matches
 whichever subscript Eq 11 carries in the source typesetting because the
 underlying numerical values are the same.</p></li>

@@ -14,11 +14,11 @@
   end of the infusion; Veinstein 2013). Disposition is parameterised in
   terms of non-hemodialysis (interdialytic body) clearance, an additive
   hemodialysis-arm clearance, and volume of distribution. The dialysis
-  arm is gated on/off by the time-varying HEMODIALYSIS covariate. Body
-  weight enters the model as a linear (exponent = 1) structural scaler
-  on all three parameters because the published Table 4 estimates are
-  reported per kg; weight was tested as an explicit covariate on V and
-  not retained.
+  arm is gated on/off by the time-varying RRT_HEMODIAL_ACTIVE covariate.
+  Body weight enters the model as a linear (exponent = 1) structural
+  scaler on all three parameters because the published Table 4 estimates
+  are reported per kg; weight was tested as an explicit covariate on V
+  and not retained.
 - Article: <https://doi.org/10.1128/AAC.01762-12>
 
 Veinstein 2013 administered a 6 mg/kg gentamicin infusion (over 30 min)
@@ -66,7 +66,7 @@ below collects them in one place.
 | `etalvc` (IIV V, omega^2) | `log(0.35^2 + 1)` | Table 4: 35% CV (RSE 59%) |
 | `propSd` (proportional residual) | `0.11` | Table 4: 11% CV residual (RSE 40%) |
 | Weight as linear (exp 1) structural scaler | n/a | Table 4 footnotes a, b (units mL/min/kg, L/kg) |
-| HEMODIALYSIS gating of dialysis-arm CL | n/a | Methods, Population PK modeling (HD-on/HD-off equation) |
+| RRT_HEMODIAL_ACTIVE gating of dialysis-arm CL | n/a | Methods, Population PK modeling (HD-on/HD-off equation) |
 
 ## Virtual cohort
 
@@ -111,7 +111,7 @@ make_cohort <- function(wt_vec, treatment_label,
       evid = c(1L, rep(0L, length(obs_t))),
       cmt  = "central",
       WT   = wt,
-      HEMODIALYSIS = as.integer(c(0, obs_t) >= hd_start &
+      RRT_HEMODIAL_ACTIVE = as.integer(c(0, obs_t) >= hd_start &
                                 c(0, obs_t) <  hd_end),
       treatment = treatment_label
     )
@@ -131,7 +131,7 @@ mod <- readModelDb("Veinstein_2013_gentamicin")
 
 # Population (VPC) simulation with IIV.
 sim <- rxode2::rxSolve(mod, events = events,
-                       keep = c("WT", "treatment", "HEMODIALYSIS")) |>
+                       keep = c("WT", "treatment", "RRT_HEMODIAL_ACTIVE")) |>
   as.data.frame()
 #> ℹ parameter labels from comments will be replaced by 'label()'
 ```
@@ -146,7 +146,7 @@ mod_typical <- rxode2::zeroRe(mod)
 typical_wt  <- 70
 typ_events  <- make_cohort(typical_wt, treatment_label = "typical 70 kg")
 sim_typical <- rxode2::rxSolve(mod_typical, events = typ_events,
-                               keep = c("WT", "treatment", "HEMODIALYSIS")) |>
+                               keep = c("WT", "treatment", "RRT_HEMODIAL_ACTIVE")) |>
   as.data.frame()
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalcl_hemodialysis', 'etalvc'
 ```
@@ -178,7 +178,7 @@ ggplot(sim_typical, aes(time, Cc)) +
   labs(x = "Time after start of infusion (h)",
        y = "Plasma gentamicin (mg/L)",
        title = "Typical 70 kg patient: 6 mg/kg gentamicin pre-hemodialysis",
-       caption = "Shaded band marks the 4-h hemodialysis session (HEMODIALYSIS = 1). Replicates Figure 3 bold line of Veinstein 2013.")
+       caption = "Shaded band marks the 4-h hemodialysis session (RRT_HEMODIAL_ACTIVE = 1). Replicates Figure 3 bold line of Veinstein 2013.")
 #> Warning in scale_y_log10(limits = c(0.1, NA), breaks = c(0.1, 0.3, 1, 2, : log-10 transformation introduced infinite values.
 #> log-10 transformation introduced infinite values.
 ```
@@ -251,7 +251,7 @@ fda_events <- make_cohort(
 )
 
 sim_fda <- rxode2::rxSolve(mod_typical, events = fda_events,
-                           keep = c("WT", "treatment", "HEMODIALYSIS")) |>
+                           keep = c("WT", "treatment", "RRT_HEMODIAL_ACTIVE")) |>
   as.data.frame()
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalcl_hemodialysis', 'etalvc'
 
@@ -423,8 +423,9 @@ compared with the Veinstein 2013 Table 3 cohort means. {.table}
   factors influencing V did not improve the model fit”); the per-kg
   parameterisation is therefore structural rather than empirically
   estimated.
-- **HEMODIALYSIS gating is a simple binary additive arm.** The packaged
-  model uses `cl_total <- cl + HEMODIALYSIS * cl_hemodialysis`, where
+- **RRT_HEMODIAL_ACTIVE gating is a simple binary additive arm.** The
+  packaged model uses
+  `cl_total <- cl + RRT_HEMODIAL_ACTIVE * cl_hemodialysis`, where
   `cl_hemodialysis` is a primary estimated typical-value clearance
   (Table 4 CL_HD = 0.955 mL/min/kg). The packaged model does not
   parameterise the dialyzer clearance as a Michaels-equation function of

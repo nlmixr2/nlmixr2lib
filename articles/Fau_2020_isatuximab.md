@@ -146,7 +146,7 @@ and “Covariates PopPK model”):
 - `KCL_i = 1055 · exp(-0.931·MM_NIGG) · exp(η_KCL)`
 - `CLm_i = 0.664 + η_CLm` (additive normal)
 - `γ_i = 3.91 · exp(η_γ)`
-- `Vc_i = 5.13 · (WT/75.6)^0.472 · exp(-0.137·FORM_P2F2 - 0.275·RACE_ASIAN - 0.126·SEXF) · exp(η_Vc)`
+- `Vc_i = 5.13 · (WT/75.6)^0.472 · exp(-0.137·FORM_ISA_P2F2 - 0.275·RACE_ASIAN - 0.126·SEXF) · exp(η_Vc)`
 - `Vp_i = 3.62 · (WT/75.6)^0.719 · exp(η_Vp)`
 - `Q_i = 0.0432 · (WT/75.6)^0.477 · exp(η_Q)`
 - `CLlin(t) = CLinf_i · exp(CLm_i · (1 − t^γ / (KCL^γ + t^γ)))`
@@ -174,7 +174,7 @@ make_cohort <- function(n, mm_nigg_label, id_offset = 0L) {
     WT         = pmin(pmax(rlnorm(n, log(75.6), 0.21), 51.3), 110),
     B2M        = pmin(pmax(rlnorm(n, log(3.90), 0.55), 1.87), 12.0),
     MM_NIGG    = if (mm_nigg_label == "IgG MM") 0L else 1L,
-    FORM_P2F2  = 1L,            # commercial-bound material
+    FORM_ISA_P2F2  = 1L,            # commercial-bound material
     RACE_ASIAN = 0L,            # non-Asian reference
     SEXF       = 0L,            # male reference
     treatment  = mm_nigg_label
@@ -213,7 +213,7 @@ make_arm <- function(pop, regimen_name, id_offset = 0L) {
            DUR = NA_real_, DV = NA_real_)
   bind_rows(d_dose, d_obs) |>
     select(ID, TIME, EVID, AMT, CMT, DUR, DV,
-           WT, B2M, MM_NIGG, FORM_P2F2, RACE_ASIAN, SEXF, treatment) |>
+           WT, B2M, MM_NIGG, FORM_ISA_P2F2, RACE_ASIAN, SEXF, treatment) |>
     arrange(ID, TIME, desc(EVID)) |>
     as.data.frame()
 }
@@ -262,7 +262,7 @@ make_typical_arm <- function(mm_nigg) {
     DUR  = c(rep(1, length(dose_t)),          rep(NA_real_, length(obs_t))),
     DV   = NA_real_,
     WT = 75.6, B2M = 3.90, MM_NIGG = mm_nigg,
-    FORM_P2F2 = 1L, RACE_ASIAN = 0L, SEXF = 0L
+    FORM_ISA_P2F2 = 1L, RACE_ASIAN = 0L, SEXF = 0L
   ) |> arrange(TIME, desc(EVID))
   res <- rxode2::rxSolve(mod_typical, events = ev, returnType = "data.frame")
   res$treatment <- if (mm_nigg == 0L) "IgG MM (reference)" else "Non-IgG MM"
@@ -520,7 +520,7 @@ The simulated typical-patient half-lives agree with the paper to within
   (translated to nlmixr2 variances via `omega² = log(CV² + 1)`); for the
   normally distributed `CLm`, the variance is `(CLm × CV)²`. This is the
   convention recorded in Table S3’s footnote.
-- **Drug-material indicator (`FORM_P2F2`)** is a phase-specific
+- **Drug-material indicator (`FORM_ISA_P2F2`)** is a phase-specific
   formulation flag; for routine simulation of the marketed product set
   it to 1 (commercial-bound material).
 - **Combination-therapy effect** with pomalidomide-dexamethasone was

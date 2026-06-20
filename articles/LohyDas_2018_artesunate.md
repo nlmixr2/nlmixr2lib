@@ -78,16 +78,16 @@ collects them in one place for review.
 | `lmtt` -\> MTT = 1.34 h | 1.34 | Table 2 (MTT, %RSE 18.8, 95% CI 1.04-1.96) |
 | `lcl` -\> CL_ARS/F = 1750 L/h at WT = 50 kg | 1750 | Table 2 (CL_ARS/F, %RSE 8.55, 95% CI 1570-2090) |
 | `lvc` -\> V_ARS/F = 1300 L at WT = 50 kg | 1300 | Table 2 (V_ARS/F, %RSE 12.6, 95% CI 1110-1660) |
-| `lcl_dha` -\> CL_DHA/F = 76.7 L/h at WT = 50 kg | 76.7 | Table 2 (CL_DHA/F, %RSE 6.99, 95% CI 69.9-87.8) |
-| `lvc_dha` -\> V_DHA/F = 102 L at WT = 50 kg | 102 | Table 2 (V_DHA/F, %RSE 8.95, 95% CI 89.5-119.0) |
+| `lcl_dihydroart` -\> CL_DHA/F = 76.7 L/h at WT = 50 kg | 76.7 | Table 2 (CL_DHA/F, %RSE 6.99, 95% CI 69.9-87.8) |
+| `lvc_dihydroart` -\> V_DHA/F = 102 L at WT = 50 kg | 102 | Table 2 (V_DHA/F, %RSE 8.95, 95% CI 89.5-119.0) |
 | IIV `var(etalfdepot)` (from BSV F = 31.2%) | 0.0929 | Table 2 (%CV 31.2, %RSE 29.4); derived as log(1 + 0.312^2) per Table 2 footnote |
 | IIV `var(etalmtt)` (from BSV MTT = 85.3%) | 0.5468 | Table 2 (%CV 85.3, %RSE 24.9) |
 | IIV `var(etalcl)` (from BSV CL_ARS = 26.8%) | 0.0693 | Table 2 (%CV 26.8, %RSE 44.3) |
 | IIV `var(etalvc)` (from BSV V_ARS = 74.7%) | 0.4434 | Table 2 (%CV 74.7, %RSE 27.3) |
-| IIV `var(etalcl_dha)` (from BSV CL_DHA = 21.3%) | 0.0444 | Table 2 (%CV 21.3, %RSE 30.3) |
-| IIV `var(etalvc_dha)` (from BSV V_DHA = 31.6%) | 0.0953 | Table 2 (%CV 31.6, %RSE 40.5) |
+| IIV `var(etalcl_dihydroart)` (from BSV CL_DHA = 21.3%) | 0.0444 | Table 2 (%CV 21.3, %RSE 30.3) |
+| IIV `var(etalvc_dihydroart)` (from BSV V_DHA = 31.6%) | 0.0953 | Table 2 (%CV 31.6, %RSE 40.5) |
 | Residual `propSd` (ARS) (from RUV ARS = 73.2%) | 0.732 | Table 2 (%RSE 3.95) |
-| Residual `propSd_dha` (from RUV DHA = 58.5%) | 0.585 | Table 2 (%RSE 3.34) |
+| Residual `propSd_dihydroart` (from RUV DHA = 58.5%) | 0.585 | Table 2 (%RSE 3.34) |
 
 ## Virtual cohort
 
@@ -165,7 +165,7 @@ sim <- rxode2::rxSolve(
   as.data.frame() |>
   dplyr::mutate(
     Cc_nM     = Cc,
-    Cc_dha_nM = Cc_dha
+    Cc_dha_nM = Cc_dihydroart
   )
 ```
 
@@ -184,9 +184,9 @@ sim_typical <- rxode2::rxSolve(
   as.data.frame() |>
   dplyr::mutate(
     Cc_nM     = Cc,
-    Cc_dha_nM = Cc_dha
+    Cc_dha_nM = Cc_dihydroart
   )
-#> ℹ omega/sigma items treated as zero: 'etalfdepot', 'etalmtt', 'etalcl', 'etalvc', 'etalcl_dha', 'etalvc_dha'
+#> ℹ omega/sigma items treated as zero: 'etalfdepot', 'etalmtt', 'etalcl', 'etalvc', 'etalcl_dihydroart', 'etalvc_dihydroart'
 ```
 
 ## Replicate published figures
@@ -209,9 +209,9 @@ vpc_df <- sim |>
     Q05_ars = stats::quantile(Cc_nM,     0.05, na.rm = TRUE),
     Q50_ars = stats::quantile(Cc_nM,     0.50, na.rm = TRUE),
     Q95_ars = stats::quantile(Cc_nM,     0.95, na.rm = TRUE),
-    Q05_dha = stats::quantile(Cc_dha_nM, 0.05, na.rm = TRUE),
-    Q50_dha = stats::quantile(Cc_dha_nM, 0.50, na.rm = TRUE),
-    Q95_dha = stats::quantile(Cc_dha_nM, 0.95, na.rm = TRUE),
+    Q05_dihydroart = stats::quantile(Cc_dha_nM, 0.05, na.rm = TRUE),
+    Q50_dihydroart = stats::quantile(Cc_dha_nM, 0.50, na.rm = TRUE),
+    Q95_dihydroart = stats::quantile(Cc_dha_nM, 0.95, na.rm = TRUE),
     .groups = "drop"
   )
 
@@ -221,7 +221,7 @@ vpc_long <- dplyr::bind_rows(
                      Q05 = Q05_ars, Q50 = Q50_ars, Q95 = Q95_ars),
   vpc_df |>
     dplyr::transmute(time, species = "Dihydroartemisinin (DHA)",
-                     Q05 = Q05_dha, Q50 = Q50_dha, Q95 = Q95_dha)
+                     Q05 = Q05_dihydroart, Q50 = Q50_dihydroart, Q95 = Q95_dihydroart)
 )
 
 ggplot(vpc_long, aes(time, Q50)) +
@@ -585,20 +585,20 @@ Simulated NCA parameters (ARS) by weight band, single 4 mg/kg oral dose.
 
 ``` r
 
-sim_nca_dha <- sim |>
-  dplyr::filter(!is.na(Cc_dha), time > 0) |>
+sim_nca_dihydroart <- sim |>
+  dplyr::filter(!is.na(Cc_dihydroart), time > 0) |>
   dplyr::mutate(
     band = cut(WT,
                breaks = c(40, 47, 53, 60),
                labels = c("40-47", "47-53", "53-60"),
                include.lowest = TRUE)
   ) |>
-  dplyr::select(id, time, Cc_dha = Cc_dha_nM, band)
+  dplyr::select(id, time, Cc_dihydroart = Cc_dha_nM, band)
 
-conc_obj_dha <- PKNCA::PKNCAconc(sim_nca_dha, Cc_dha ~ time | band + id,
+conc_obj_dihydroart <- PKNCA::PKNCAconc(sim_nca_dihydroart, Cc_dihydroart ~ time | band + id,
                                  concu = "nmol/L", timeu = "h")
-nca_data_dha <- PKNCA::PKNCAdata(conc_obj_dha, dose_obj, intervals = intervals)
-nca_res_dha  <- PKNCA::pk.nca(nca_data_dha)
+nca_data_dihydroart <- PKNCA::PKNCAdata(conc_obj_dihydroart, dose_obj, intervals = intervals)
+nca_res_dihydroart  <- PKNCA::pk.nca(nca_data_dihydroart)
 #> Warning: Requesting an AUC range starting (0) before the first measurement (0.05) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.05) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.05) is not allowed
@@ -808,9 +808,9 @@ nca_res_dha  <- PKNCA::pk.nca(nca_data_dha)
 #> Warning: Requesting an AUC range starting (0) before the first measurement (0.05) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.05) is not allowed
 
-nca_summary_dha <- summary(nca_res_dha)
+nca_summary_dihydroart <- summary(nca_res_dihydroart)
 knitr::kable(
-  nca_summary_dha,
+  nca_summary_dihydroart,
   caption = "Simulated NCA parameters (DHA) by weight band, single 4 mg/kg oral dose."
 )
 ```

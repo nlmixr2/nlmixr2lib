@@ -10,10 +10,10 @@
 - Open access (Creative Commons Attribution-NonCommercial).
 
 The WHIG model is a semi-mechanistic disease-progression model for type
-2 diabetes mellitus (T2DM). It links a body-weight turnover sub-model to
-a previously published FSI / FPG / HbA1c homeostatic feedback model (de
-Winter et al. 2006) by routing absolute weight change through insulin
-sensitivity. The full structure (Choy 2016 Figure 1) is:
+2 diabetes mellitus (DIS_DIAB). It links a body-weight turnover
+sub-model to a previously published FSI / FPG / HbA1c homeostatic
+feedback model (de Winter et al. 2006) by routing absolute weight change
+through insulin sensitivity. The full structure (Choy 2016 Figure 1) is:
 
 - **Weight**: turnover compartment with a single half-life. The input is
   multiplicatively driven by a normalised net effect `EFW`, which
@@ -42,9 +42,9 @@ sensitivity. The full structure (Choy 2016 Figure 1) is:
 
 Model parameters were estimated from the placebo arm of a randomised,
 double-blind, placebo-controlled, multicentre, parallel-group study of
-topiramate for weight loss in T2DM (ClinicalTrials.gov identifier
+topiramate for weight loss in DIS_DIAB (ClinicalTrials.gov identifier
 NCT00236600). Choy 2016 used 181 obese (BMI 27 to 50 kg/m^2), Swedish,
-newly diagnosed, treatment-naive T2DM patients (67 men, 114 women;
+newly diagnosed, treatment-naive DIS_DIAB patients (67 men, 114 women;
 baseline median weight 104 kg, range 72 to 159 kg; baseline median FSI
 17.8 uIU/mL; baseline median FPG 7.6 mmol/L; baseline median HbA1c
 6.7%). Subjects underwent a 6-week placebo run-in followed by a 60-week

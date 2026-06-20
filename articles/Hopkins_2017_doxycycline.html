@@ -1148,7 +1148,7 @@ omega.</p>
 <span>    FFM  <span class="op">=</span> <span class="va">ffm_kg</span>,</span>
 <span>    SEXF <span class="op">=</span> <span class="va">sexf</span>,</span>
 <span>    FED  <span class="op">=</span> <span class="va">fed</span>,</span>
-<span>    FORM_DORYX_MPC <span class="op">=</span> <span class="kw">if</span> <span class="op">(</span><span class="va">formulation</span> <span class="op">==</span> <span class="st">"MPC"</span><span class="op">)</span> <span class="fl">1L</span> <span class="kw">else</span> <span class="fl">0L</span>,</span>
+<span>    FORM_DOX_DORYX_MPC <span class="op">=</span> <span class="kw">if</span> <span class="op">(</span><span class="va">formulation</span> <span class="op">==</span> <span class="st">"MPC"</span><span class="op">)</span> <span class="fl">1L</span> <span class="kw">else</span> <span class="fl">0L</span>,</span>
 <span>    FORM_CAPSULE   <span class="op">=</span> <span class="kw">if</span> <span class="op">(</span><span class="va">formulation</span> <span class="op">==</span> <span class="st">"capsule"</span><span class="op">)</span> <span class="fl">1L</span> <span class="kw">else</span> <span class="fl">0L</span>,</span>
 <span>    dose <span class="op">=</span> <span class="va">dose_mg</span></span>
 <span>  <span class="op">)</span></span>
@@ -1195,7 +1195,7 @@ omega.</p>
 <span>    <span class="va">rows</span><span class="op">$</span><span class="va">FFM</span>  <span class="op">&lt;-</span> <span class="va">row1</span><span class="op">$</span><span class="va">FFM</span></span>
 <span>    <span class="va">rows</span><span class="op">$</span><span class="va">SEXF</span> <span class="op">&lt;-</span> <span class="va">row1</span><span class="op">$</span><span class="va">SEXF</span></span>
 <span>    <span class="va">rows</span><span class="op">$</span><span class="va">FED</span>  <span class="op">&lt;-</span> <span class="va">row1</span><span class="op">$</span><span class="va">FED</span></span>
-<span>    <span class="va">rows</span><span class="op">$</span><span class="va">FORM_DORYX_MPC</span> <span class="op">&lt;-</span> <span class="va">row1</span><span class="op">$</span><span class="va">FORM_DORYX_MPC</span></span>
+<span>    <span class="va">rows</span><span class="op">$</span><span class="va">FORM_DOX_DORYX_MPC</span> <span class="op">&lt;-</span> <span class="va">row1</span><span class="op">$</span><span class="va">FORM_DOX_DORYX_MPC</span></span>
 <span>    <span class="va">rows</span><span class="op">$</span><span class="va">FORM_CAPSULE</span>   <span class="op">&lt;-</span> <span class="va">row1</span><span class="op">$</span><span class="va">FORM_CAPSULE</span></span>
 <span>    <span class="va">rows</span></span>
 <span>  <span class="op">}</span><span class="op">)</span><span class="op">)</span></span>
@@ -1215,7 +1215,7 @@ omega.</p>
 <span><span class="va">sim_typical</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span></span>
 <span>  <span class="va">mod_typical</span>,</span>
 <span>  events <span class="op">=</span> <span class="va">events</span>,</span>
-<span>  keep   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"arm"</span>, <span class="st">"FED"</span>, <span class="st">"FORM_DORYX_MPC"</span>, <span class="st">"FORM_CAPSULE"</span><span class="op">)</span></span>
+<span>  keep   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"arm"</span>, <span class="st">"FED"</span>, <span class="st">"FORM_DOX_DORYX_MPC"</span>, <span class="st">"FORM_CAPSULE"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl', 'etalktr', 'etalvp', 'etalvc'</span></span>
 <span><span class="co">#&gt; Warning: multi-subject simulation without without 'omega'</span></span>
@@ -1223,7 +1223,7 @@ omega.</p>
 <span><span class="va">sim_stoch</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span></span>
 <span>  <span class="va">mod</span>,</span>
 <span>  events <span class="op">=</span> <span class="va">events</span>,</span>
-<span>  keep   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"arm"</span>, <span class="st">"FED"</span>, <span class="st">"FORM_DORYX_MPC"</span>, <span class="st">"FORM_CAPSULE"</span><span class="op">)</span></span>
+<span>  keep   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"arm"</span>, <span class="st">"FED"</span>, <span class="st">"FORM_DOX_DORYX_MPC"</span>, <span class="st">"FORM_CAPSULE"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; ℹ parameter labels from comments will be replaced by 'label()'</span></span></code></pre></div>
 <p><code>sim_typical</code> carries the typical-value (zero

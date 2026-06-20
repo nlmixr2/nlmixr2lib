@@ -98,7 +98,7 @@ make_arm <- function(n, label, formulation, fed, dose_mg, id_offset) {
     FFM  = ffm_kg,
     SEXF = sexf,
     FED  = fed,
-    FORM_DORYX_MPC = if (formulation == "MPC") 1L else 0L,
+    FORM_DOX_DORYX_MPC = if (formulation == "MPC") 1L else 0L,
     FORM_CAPSULE   = if (formulation == "capsule") 1L else 0L,
     dose = dose_mg
   )
@@ -145,7 +145,7 @@ build_events <- function(df) {
     rows$FFM  <- row1$FFM
     rows$SEXF <- row1$SEXF
     rows$FED  <- row1$FED
-    rows$FORM_DORYX_MPC <- row1$FORM_DORYX_MPC
+    rows$FORM_DOX_DORYX_MPC <- row1$FORM_DOX_DORYX_MPC
     rows$FORM_CAPSULE   <- row1$FORM_CAPSULE
     rows
   }))
@@ -166,7 +166,7 @@ mod_typical <- rxode2::zeroRe(mod)
 sim_typical <- rxode2::rxSolve(
   mod_typical,
   events = events,
-  keep   = c("arm", "FED", "FORM_DORYX_MPC", "FORM_CAPSULE")
+  keep   = c("arm", "FED", "FORM_DOX_DORYX_MPC", "FORM_CAPSULE")
 )
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalktr', 'etalvp', 'etalvc'
 #> Warning: multi-subject simulation without without 'omega'
@@ -174,7 +174,7 @@ sim_typical <- rxode2::rxSolve(
 sim_stoch <- rxode2::rxSolve(
   mod,
   events = events,
-  keep   = c("arm", "FED", "FORM_DORYX_MPC", "FORM_CAPSULE")
+  keep   = c("arm", "FED", "FORM_DOX_DORYX_MPC", "FORM_CAPSULE")
 )
 #> ℹ parameter labels from comments will be replaced by 'label()'
 ```

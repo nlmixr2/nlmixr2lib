@@ -959,9 +959,10 @@ absorption (a fraction Fz of the bioavailable dose is absorbed at
 zero-order over duration tk0, the remaining (1 - Fz) is absorbed at
 first-order rate ka after tk0) and first-order elimination. Apparent
 oral clearance CL/F is reduced by 63.8% in chronic-haemodialysis
-patients relative to patients with normal renal function (HEMODIAL = 1
-vs 0); apparent central volume of distribution V/F scales linearly with
-body surface area (BSA). Proportional residual error.</li>
+patients relative to patients with normal renal function
+(RRT_HEMODIAL_STATUS = 1 vs 0); apparent central volume of distribution
+V/F scales linearly with body surface area (BSA). Proportional residual
+error.</li>
 <li>Article: <a href="https://doi.org/10.1046/j.1365-2125.1999.00912.x" class="external-link uri">https://doi.org/10.1046/j.1365-2125.1999.00912.x</a>
 </li>
 </ul>
@@ -1054,7 +1055,8 @@ SC absorption</td>
 <td>Table 3</td>
 </tr>
 <tr class="even">
-<td>HEMODIAL effect (theta2 in CL/F = theta1 * (1 - theta2 * DIA))</td>
+<td>RRT_HEMODIAL_STATUS effect (theta2 in CL/F = theta1 * (1 - theta2 *
+DIA))</td>
 <td>0.638 (95% CI 0.568-0.708)</td>
 <td>Results “Structural and covariate models” paragraph 2</td>
 </tr>
@@ -1102,9 +1104,10 @@ SC absorption</td>
 <p>Original observed concentration data are not publicly available. The
 figures below use a virtual two-cohort population reflecting the
 Chatelut 1999 Table 1 baseline-demographics distribution: 17 dialysis
-patients (HEMODIAL = 1, BSA approximately 1.69 m^2) and 10 patients with
-normal renal function (HEMODIAL = 0, BSA approximately 1.75 m^2). Each
-subject receives the single 15,000 ng SC dose used in the study.</p>
+patients (RRT_HEMODIAL_STATUS = 1, BSA approximately 1.69 m^2) and 10
+patients with normal renal function (RRT_HEMODIAL_STATUS = 0, BSA
+approximately 1.75 m^2). Each subject receives the single 15,000 ng SC
+dose used in the study.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">19990401</span><span class="op">)</span></span>
 <span></span>
@@ -1118,7 +1121,7 @@ subject receives the single 15,000 ng SC dose used in the study.</p>
 <span>  <span class="va">ids</span> <span class="op">&lt;-</span> <span class="va">id_offset</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span></span>
 <span>  <span class="va">per_subject</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
 <span>    id       <span class="op">=</span> <span class="va">ids</span>,</span>
-<span>    HEMODIAL <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">hemodial</span><span class="op">)</span>,</span>
+<span>    RRT_HEMODIAL_STATUS <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">hemodial</span><span class="op">)</span>,</span>
 <span>    BSA      <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n</span>, mean <span class="op">=</span> <span class="va">bsa_median</span>, sd <span class="op">=</span> <span class="va">bsa_sd</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>    cohort   <span class="op">=</span> <span class="va">cohort_label</span></span>
 <span>  <span class="op">)</span></span>
@@ -1126,7 +1129,7 @@ subject receives the single 15,000 ng SC dose used in the study.</p>
 <span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>time <span class="op">=</span> <span class="fl">0</span>, amt <span class="op">=</span> <span class="va">dose_ng</span>, evid <span class="op">=</span> <span class="fl">1L</span>,</span>
 <span>                  cmt <span class="op">=</span> <span class="st">"depot"</span><span class="op">)</span></span>
 <span>  <span class="va">obs_rows</span>  <span class="op">&lt;-</span> <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/expand_grid.html" class="external-link">expand_grid</a></span><span class="op">(</span></span>
-<span>    <span class="va">per_subject</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">HEMODIAL</span>, <span class="va">BSA</span>, <span class="va">cohort</span><span class="op">)</span>,</span>
+<span>    <span class="va">per_subject</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">RRT_HEMODIAL_STATUS</span>, <span class="va">BSA</span>, <span class="va">cohort</span><span class="op">)</span>,</span>
 <span>    time <span class="op">=</span> <span class="va">obs_times</span></span>
 <span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>amt <span class="op">=</span> <span class="fl">0</span>, evid <span class="op">=</span> <span class="fl">0L</span>, cmt <span class="op">=</span> <span class="cn">NA_character_</span><span class="op">)</span></span>
@@ -1148,7 +1151,7 @@ subject receives the single 15,000 ng SC dose used in the study.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/readModelDb.html">readModelDb</a></span><span class="op">(</span><span class="st">"Chatelut_1999_interferon_alfa_2b"</span><span class="op">)</span></span>
 <span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod</span>, events <span class="op">=</span> <span class="va">events</span>,</span>
-<span>                       keep <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cohort"</span>, <span class="st">"HEMODIAL"</span>, <span class="st">"BSA"</span><span class="op">)</span><span class="op">)</span></span>
+<span>                       keep <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cohort"</span>, <span class="st">"RRT_HEMODIAL_STATUS"</span>, <span class="st">"BSA"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ℹ parameter labels from comments will be replaced by 'label()'</span></span>
 <span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span></code></pre></div>
 <p>For deterministic replication of typical-value curves (no
@@ -1158,23 +1161,23 @@ between-subject variability), zero out the random effects:</p>
 <span><span class="co">#&gt; ℹ parameter labels from comments will be replaced by 'label()'</span></span>
 <span><span class="va">events_typical</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span></span>
 <span>  <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fl">1L</span>, time <span class="op">=</span> <span class="fl">0</span>, amt <span class="op">=</span> <span class="va">dose_ng</span>, evid <span class="op">=</span> <span class="fl">1L</span>,</span>
-<span>                 cmt <span class="op">=</span> <span class="st">"depot"</span>, HEMODIAL <span class="op">=</span> <span class="fl">0L</span>, BSA <span class="op">=</span> <span class="fl">1.75</span>,</span>
+<span>                 cmt <span class="op">=</span> <span class="st">"depot"</span>, RRT_HEMODIAL_STATUS <span class="op">=</span> <span class="fl">0L</span>, BSA <span class="op">=</span> <span class="fl">1.75</span>,</span>
 <span>                 cohort <span class="op">=</span> <span class="st">"normal renal (typical)"</span><span class="op">)</span>,</span>
 <span>  <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fl">1L</span>, time <span class="op">=</span> <span class="va">obs_times</span>, amt <span class="op">=</span> <span class="fl">0</span>, evid <span class="op">=</span> <span class="fl">0L</span>,</span>
-<span>                 cmt <span class="op">=</span> <span class="cn">NA_character_</span>, HEMODIAL <span class="op">=</span> <span class="fl">0L</span>, BSA <span class="op">=</span> <span class="fl">1.75</span>,</span>
+<span>                 cmt <span class="op">=</span> <span class="cn">NA_character_</span>, RRT_HEMODIAL_STATUS <span class="op">=</span> <span class="fl">0L</span>, BSA <span class="op">=</span> <span class="fl">1.75</span>,</span>
 <span>                 cohort <span class="op">=</span> <span class="st">"normal renal (typical)"</span><span class="op">)</span>,</span>
 <span>  <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fl">2L</span>, time <span class="op">=</span> <span class="fl">0</span>, amt <span class="op">=</span> <span class="va">dose_ng</span>, evid <span class="op">=</span> <span class="fl">1L</span>,</span>
-<span>                 cmt <span class="op">=</span> <span class="st">"depot"</span>, HEMODIAL <span class="op">=</span> <span class="fl">1L</span>, BSA <span class="op">=</span> <span class="fl">1.69</span>,</span>
+<span>                 cmt <span class="op">=</span> <span class="st">"depot"</span>, RRT_HEMODIAL_STATUS <span class="op">=</span> <span class="fl">1L</span>, BSA <span class="op">=</span> <span class="fl">1.69</span>,</span>
 <span>                 cohort <span class="op">=</span> <span class="st">"dialysis (typical)"</span><span class="op">)</span>,</span>
 <span>  <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fl">2L</span>, time <span class="op">=</span> <span class="va">obs_times</span>, amt <span class="op">=</span> <span class="fl">0</span>, evid <span class="op">=</span> <span class="fl">0L</span>,</span>
-<span>                 cmt <span class="op">=</span> <span class="cn">NA_character_</span>, HEMODIAL <span class="op">=</span> <span class="fl">1L</span>, BSA <span class="op">=</span> <span class="fl">1.69</span>,</span>
+<span>                 cmt <span class="op">=</span> <span class="cn">NA_character_</span>, RRT_HEMODIAL_STATUS <span class="op">=</span> <span class="fl">1L</span>, BSA <span class="op">=</span> <span class="fl">1.69</span>,</span>
 <span>                 cohort <span class="op">=</span> <span class="st">"dialysis (typical)"</span><span class="op">)</span></span>
 <span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html" class="external-link">desc</a></span><span class="op">(</span><span class="va">evid</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">sim_typical</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span></span>
 <span>  <span class="va">mod_typical</span>, events <span class="op">=</span> <span class="va">events_typical</span>,</span>
-<span>  keep <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cohort"</span>, <span class="st">"HEMODIAL"</span>, <span class="st">"BSA"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span>  keep <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cohort"</span>, <span class="st">"RRT_HEMODIAL_STATUS"</span>, <span class="st">"BSA"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalfr_zo', 'etaltk0', 'etalka', 'etalvc', 'etalcl'</span></span>
 <span><span class="co">#&gt; Warning: multi-subject simulation without without 'omega'</span></span></code></pre></div>
 </div>

@@ -211,8 +211,8 @@ glimpse(sim_stage1)
 #> $ suv4        <dbl> 7.588660, 7.506310, 7.303497, 7.033815, 6.734994, 6.431882…
 #> $ suv5        <dbl> 7.588660, 7.506310, 7.303497, 7.033815, 6.734994, 6.431882…
 #> $ sld         <dbl> 263.0640, 263.3650, 263.5168, 263.5623, 263.5322, 263.4486…
-#> $ cumHaz_os   <dbl> 0.000000000, 0.002718571, 0.005437143, 0.008155714, 0.0108…
-#> $ cumHaz_drop <dbl> 0.000000000, 0.002846286, 0.005692571, 0.008538857, 0.0113…
+#> $ cumhaz_os   <dbl> 0.000000000, 0.002718571, 0.005437143, 0.008155714, 0.0108…
+#> $ cumhaz_drop <dbl> 0.000000000, 0.002846286, 0.005692571, 0.008538857, 0.0113…
 #> $ DOSE        <dbl> 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 0,…
 #> $ CMT         <dbl> 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2…
 #> $ CLI         <dbl> 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50…
@@ -326,7 +326,7 @@ p_sld <- sim_stage2 |>
        caption = "Replicates qualitative shape of Schindler 2016 Figure 3 (SLD VPC).")
 
 p_haz <- sim_stage2 |>
-  select(id, time, cumHaz_os, cumHaz_drop) |>
+  select(id, time, cumhaz_os, cumhaz_drop) |>
   pivot_longer(cols = starts_with("cumHaz"), names_to = "endpoint", values_to = "cum_hazard") |>
   group_by(time, endpoint) |>
   summarise(med = median(cum_hazard),
@@ -401,8 +401,8 @@ t0_row <- sim_typical |> filter(time == 0)
 #  - Cumulative hazards are non-negative and monotone non-decreasing.
 stopifnot(abs(t0_row$suv1 - exp(log(7.58866))) < 1e-6)
 stopifnot(abs(t0_row$sld  - 263.064)            < 1e-3)
-stopifnot(all(diff(sim_typical$cumHaz_os)   >= -1e-12))
-stopifnot(all(diff(sim_typical$cumHaz_drop) >= -1e-12))
+stopifnot(all(diff(sim_typical$cumhaz_os)   >= -1e-12))
+stopifnot(all(diff(sim_typical$cumhaz_drop) >= -1e-12))
 
 structural_summary <- tibble(
   endpoint = c("SUVmax (lesion 1) at t=0",
@@ -412,8 +412,8 @@ structural_summary <- tibble(
                "Final cumulative dropout hazard"),
   simulated_typical = c(
     t0_row$suv1, t0_row$suv5, t0_row$sld,
-    tail(sim_typical$cumHaz_os, 1),
-    tail(sim_typical$cumHaz_drop, 1)
+    tail(sim_typical$cumhaz_os, 1),
+    tail(sim_typical$cumhaz_drop, 1)
   ),
   expected = c(7.58866, 7.58866, 263.064, NA_real_, NA_real_),
   source = c(

@@ -435,5 +435,5 @@ source paper (Yang 2010 Figure 3 / Tables 1, 2, and 4).
   The canonical column `RACE_ASIAN` in
   `inst/references/covariate-columns.md` maps to this composite without
   modification; finer race indicators (`RACE_CHINESE`, `RACE_JAPANESE`,
-  `RACE_NEAS`) are not used by this model because the source paper did
-  not stratify Asian subjects further.
+  `RACE_ASIAN_NORTHEAST`) are not used by this model because the source
+  paper did not stratify Asian subjects further.

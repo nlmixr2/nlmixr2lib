@@ -1273,7 +1273,7 @@ constant covariates.</p>
 <span>  <span class="va">ev_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">ev</span><span class="op">)</span></span>
 <span>  <span class="va">ev_df</span><span class="op">$</span><span class="va">WT</span>          <span class="op">&lt;-</span> <span class="va">wt_kg</span></span>
 <span>  <span class="va">ev_df</span><span class="op">$</span><span class="va">AGE</span>         <span class="op">&lt;-</span> <span class="va">age_yr</span></span>
-<span>  <span class="va">ev_df</span><span class="op">$</span><span class="va">STDY_VORI</span>   <span class="op">&lt;-</span> <span class="va">stdy_vori</span></span>
+<span>  <span class="va">ev_df</span><span class="op">$</span><span class="va">STUDY_VORI</span>   <span class="op">&lt;-</span> <span class="va">stdy_vori</span></span>
 <span>  <span class="va">ev_df</span><span class="op">$</span><span class="va">CYP2C19_IM</span>  <span class="op">&lt;-</span> <span class="va">cyp_im</span></span>
 <span>  <span class="va">ev_df</span><span class="op">$</span><span class="va">CYP2C19_PM</span>  <span class="op">&lt;-</span> <span class="va">cyp_pm</span></span>
 <span>  <span class="va">ev_df</span><span class="op">$</span><span class="va">ORAL_VORI</span>   <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">route</span> <span class="op">==</span> <span class="st">"oral"</span><span class="op">)</span></span>
@@ -1731,12 +1731,12 @@ both IV and oral phases for a study-5 subject must set
 and 0 on observation rows during the IV phase.</li>
 <li>
 <strong>Study assignment is subject-level.</strong> The
-<code>STDY_VORI</code> covariate is fixed per subject because population
-(child / adolescent / adult) and protocol arm are aligned in the paper’s
-pooled dataset (no crossovers between populations). Users simulating new
-dosing scenarios should set <code>STDY_VORI</code> consistently with
-<code>AGE</code> and with the residual-error / IIV structure they want
-to reproduce.</li>
+<code>STUDY_VORI</code> covariate is fixed per subject because
+population (child / adolescent / adult) and protocol arm are aligned in
+the paper’s pooled dataset (no crossovers between populations). Users
+simulating new dosing scenarios should set <code>STUDY_VORI</code>
+consistently with <code>AGE</code> and with the residual-error / IIV
+structure they want to reproduce.</li>
 <li>
 <strong>Time variable <code>t</code> is time since start of
 dosing.</strong> The time-dependent Vmax inhibition function is
@@ -1760,7 +1760,7 @@ pediatric / adolescent PMs had AUC0-12 values within the rest of the
 cohort. The model encodes this as
 <code>is_hem_or_pm_adult &lt;- is_stdy5_adult * (CYP2C19_IM + CYP2C19_PM)</code>;
 for simulation of an adult PM or HEM subject set either or both
-indicators to 1 along with <code>STDY_VORI = 5</code>.</li>
+indicators to 1 along with <code>STUDY_VORI = 5</code>.</li>
 </ul>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

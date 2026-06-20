@@ -174,8 +174,8 @@ ev_q2w <- et(ev_q2w, time = obs_times, cmt = "IgG_obs",           id = 1)
 ev_q2w <- et(ev_q2w, time = obs_times, cmt = "dMGADL",            id = 1)
 
 icov_gmg <- data.frame(
-  id = 1, WT = wt_kg, ELISA = 0, PHASE1 = 0,
-  STUDY_M281_004 = 1, MGADL = mgadl_bl
+  id = 1, WT = wt_kg, ELISA = 0, STUDY_NIPOCALIMAB_PHASE1 = 0,
+  STUDY_M281_004 = 1, SCORE_MGADL = mgadl_bl
 )
 
 sim_q2w <- rxode2::rxSolve(mod_typical, ev_q2w, iCov = icov_gmg,
@@ -214,8 +214,8 @@ a steady-state mean IgG CFB of approximately −70 % for 15 mg/kg Q2W.
 baseline_igg_gmg <- 11.4 * 0.777  # IgG0 * FRIgG0_M281_004
 
 igg_df <- bind_rows(
-  sim_q2w  |> transmute(time, IgG = total_IgG, regimen = "15 mg/kg Q2W"),
-  sim_load |> transmute(time, IgG = total_IgG, regimen = "30 mg/kg load -> 15 mg/kg Q2W")
+  sim_q2w  |> transmute(time, IgG = total_igg, regimen = "15 mg/kg Q2W"),
+  sim_load |> transmute(time, IgG = total_igg, regimen = "30 mg/kg load -> 15 mg/kg Q2W")
 ) |>
   mutate(IgG_CFB_pct = 100 * (IgG - baseline_igg_gmg) / baseline_igg_gmg)
 
@@ -245,7 +245,7 @@ gMG participant on 15 mg/kg Q2W (without loading dose).
 # Cc is already in ug/mL (model concentration unit).
 sim_plot <- sim_q2w |>
   mutate(pctRO        = 100 - pctUnoccupiedFcRn,
-         IgG_CFB_pct  = 100 * (total_IgG - baseline_igg_gmg) / baseline_igg_gmg)
+         IgG_CFB_pct  = 100 * (total_igg - baseline_igg_gmg) / baseline_igg_gmg)
 
 p_pk <- ggplot(sim_plot, aes(time, Cc)) +
   geom_line(colour = "steelblue", linewidth = 0.7) +
@@ -297,8 +297,8 @@ ev_sd <- et(id = 1) |>
   et(time = nca_times, cmt = "Cc", id = 1)
 
 icov_hv <- data.frame(
-  id = 1, WT = wt_kg, ELISA = 1, PHASE1 = 1,
-  STUDY_M281_004 = 0, MGADL = 0
+  id = 1, WT = wt_kg, ELISA = 1, STUDY_NIPOCALIMAB_PHASE1 = 1,
+  STUDY_M281_004 = 0, SCORE_MGADL = 0
 )
 
 sim_sd <- rxode2::rxSolve(mod_typical, ev_sd, iCov = icov_hv,
@@ -375,7 +375,7 @@ simulation). {.table}
 
 ss_mean_igg_cfb <- sim_q2w |>
   filter(time >= 84, time <= 112) |>
-  summarise(mean_cfb_pct = mean(100 * (total_IgG - baseline_igg_gmg) / baseline_igg_gmg))
+  summarise(mean_cfb_pct = mean(100 * (total_igg - baseline_igg_gmg) / baseline_igg_gmg))
 ss_mean_igg_cfb
 #>   mean_cfb_pct
 #> 1    -72.48007
@@ -406,8 +406,8 @@ is fixed at 9.8 points for the representative subject.
   directly.
 - **Assay selection.** `ELISA = 1` is the Phase 1 healthy-participant
   default (studies MOM-M281-001, MOM-M281-007, MOM-M281-010).
-  `ELISA = 0` with `PHASE1 = 0` and `STUDY_M281_004 = 1` is the
-  Vivacity-MG gMG default.
+  `ELISA = 0` with `STUDY_NIPOCALIMAB_PHASE1 = 0` and
+  `STUDY_M281_004 = 1` is the Vivacity-MG gMG default.
 - **MG-ADL additive IIV encoding.** Table 3 reports three values under
   the “IIV, CV %” column (1.89, 3.76, 0.125) for the MG-ADL additive
   etas. The “CV %” header is inherited from log-normal rows; for
@@ -430,7 +430,7 @@ is fixed at 9.8 points for the representative subject.
   activated only for `t > 0`; a subject with a baseline observation at
   negative time gets 0 placebo effect in the prediction, consistent with
   Supplement Equation 6 (`TSFD ≤ 0` branch).
-- **Healthy participants and MG-ADL.** `MGADL = 0` for healthy
+- **Healthy participants and MG-ADL.** `SCORE_MGADL = 0` for healthy
   participants collapses the MG-ADL response to the placebo slope × time
   term; healthy cohorts did not contribute MG-ADL observations in the
   paper’s analysis.

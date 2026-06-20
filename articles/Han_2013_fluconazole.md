@@ -31,8 +31,8 @@ model encodes the piecewise CL covariate structure of Han 2013 Table 3,
 in which a fixed CRRT-cohort CL (`theta3 = 1.85 L/h`) substitutes for
 the additive non-CRRT formula
 (`theta1 + (CLCR/120)*theta4 + TBI*theta7 + SEPS*theta9`) whenever
-`CRRT_STATUS = 1`, and an additive WT / edema / postburn-recency formula
-on V (`theta5*WT/65 + theta6*EDEM + theta8*TBI`) without the
+`RRT_CRRT_STATUS = 1`, and an additive WT / edema / postburn-recency
+formula on V (`theta5*WT/65 + theta6*EDEM + theta8*TBI`) without the
 not-estimable `theta2` intercept.
 
 ## Population
@@ -104,7 +104,7 @@ The table below collects them in one place; all values come from Han
 | `propSd <- 0.3332` | `sqrt(0.111)` | Table 3 row `sigma1^2` = 0.111 (proportional variance) |
 | `cl_norrt <- (exp(lcl) + e_crcl_cl*(CRCL/120) + e_dis_burn_recent_cl*DIS_BURN_RECENT + e_dis_sepsis_cl*DIS_SEPSIS) * exp(etalcl)` | n/a | Table 3 caption: `CL = (1 - CRRT)*(theta1 + CLCR*theta4 + TBI*theta7 + SEPS*theta9) + CRRT*theta3`; Table 3 `theta4` description “Proportionality constant between CL and CLCR/120” fixes the (CLCR/120) normalisation. |
 | `cl_rrt <- exp(lcl_rrt) * exp(etalcl_rrt)` | n/a | Table 3 caption: `+ CRRT*theta3` |
-| `cl <- (1 - CRRT_STATUS)*cl_norrt + CRRT_STATUS*cl_rrt` | n/a | Table 3 caption |
+| `cl <- (1 - RRT_CRRT_STATUS)*cl_norrt + RRT_CRRT_STATUS*cl_rrt` | n/a | Table 3 caption |
 | `vc <- ((WT/65)*exp(lvc) + e_dis_edema_vc*DIS_EDEMA + e_dis_burn_recent_vc*DIS_BURN_RECENT) * exp(etalvc)` | n/a | Table 3 caption: `V = theta2 + (WT/65)*theta5 + EDEM*theta6 + TBI*theta8`; Table 3 footnote b: theta2 “not successfully estimated” -\> dropped |
 | `d/dt(central) <- -kel*central` | n/a | Han 2013 Results, “one-compartment first-order elimination model” |
 | `Cc ~ prop(propSd)` | n/a | Han 2013 Results, “proportional residual error was chosen as the base PK model” |
@@ -180,7 +180,7 @@ draw_covariates <- function(n, id_offset = 0L) {
     id              = id_offset + seq_len(n),
     WT              = wt,
     CRCL            = crcl,
-    CRRT_STATUS     = crrt,
+    RRT_CRRT_STATUS     = crrt,
     DIS_SEPSIS      = sepsis,
     DIS_EDEMA       = edema,
     DIS_BURN_RECENT = burn_recent
@@ -232,7 +232,7 @@ mod <- readModelDb("Han_2013_fluconazole")
 
 sim <- rxode2::rxSolve(
   object = mod, events = events,
-  keep   = c("cohort", "dose_mg", "WT", "CRCL", "CRRT_STATUS",
+  keep   = c("cohort", "dose_mg", "WT", "CRCL", "RRT_CRRT_STATUS",
              "DIS_SEPSIS", "DIS_EDEMA", "DIS_BURN_RECENT")
 ) |>
   as.data.frame()
@@ -310,8 +310,8 @@ CLCR (123.5 mL/min) and median WT (65 kg).
 # each patient profile and compute AUC = daily_dose / CL_i for each draw.
 
 draw_cl <- function(n, profile, dose_mg) {
-  # profile is a list with WT, CRCL, CRRT_STATUS, DIS_SEPSIS, DIS_EDEMA, DIS_BURN_RECENT
-  if (profile$CRRT_STATUS == 1L) {
+  # profile is a list with WT, CRCL, RRT_CRRT_STATUS, DIS_SEPSIS, DIS_EDEMA, DIS_BURN_RECENT
+  if (profile$RRT_CRRT_STATUS == 1L) {
     eta <- rnorm(n, 0, sqrt(0.02559))
     cl_typ <- 1.85
   } else {
@@ -333,15 +333,15 @@ pta_one <- function(dose_mg, profile, target, mics, n_draws = 10000L) {
 
 profiles <- list(
   "CRRT (1g equivalent)" = list(
-    WT = 65, CRCL = 0, CRRT_STATUS = 1L,
+    WT = 65, CRCL = 0, RRT_CRRT_STATUS = 1L,
     DIS_SEPSIS = 0L, DIS_EDEMA = 0L, DIS_BURN_RECENT = 0L
   ),
   "non-CRRT, septic, recent burn" = list(
-    WT = 65, CRCL = 123.5, CRRT_STATUS = 0L,
+    WT = 65, CRCL = 123.5, RRT_CRRT_STATUS = 0L,
     DIS_SEPSIS = 1L, DIS_EDEMA = 0L, DIS_BURN_RECENT = 1L
   ),
   "non-CRRT, no sepsis, resolved" = list(
-    WT = 65, CRCL = 123.5, CRRT_STATUS = 0L,
+    WT = 65, CRCL = 123.5, RRT_CRRT_STATUS = 0L,
     DIS_SEPSIS = 0L, DIS_EDEMA = 0L, DIS_BURN_RECENT = 0L
   )
 )

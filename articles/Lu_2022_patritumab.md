@@ -209,7 +209,7 @@ alb   <- pmin(pmax(rnorm(n_subj, mean = 38.3, sd = 4.8), 17), 48)
 sexf  <- rbinom(n_subj, 1, 0.753)
 
 # Tumor type: NSCLC 50.8%, BC 39.8%, CRC 9.4% (Lu 2022 Table S5). The
-# canonical TUMTP_BC indicator is 1 for breast cancer and 0 for NSCLC or
+# canonical TUMTP_BREAST indicator is 1 for breast cancer and 0 for NSCLC or
 # CRC (CRC is pooled into the NSCLC reference because its CLlin effect was
 # insignificant).
 tum_type <- sample(c("NSCLC", "BC", "CRC"),
@@ -219,7 +219,7 @@ tumtp_bc <- as.integer(tum_type == "BC")
 
 # Hepatic function: 71.8% normal, 25.4% mild, 1.4% moderate, 1.4% missing.
 # Decompose into the two paper-encoded indicators HEPIMP_MILD and
-# HEPIMP_MOD_MISSING. A given subject has at most one indicator = 1.
+# HEPIMP_MOD_OR_MISSING. A given subject has at most one indicator = 1.
 hep_state <- sample(c("normal", "mild", "mod", "missing"),
                     size = n_subj, replace = TRUE,
                     prob = c(0.718, 0.254, 0.014, 0.014))
@@ -253,9 +253,9 @@ make_subject <- function(id, wt_kg, alb_gL, sexf_ind, tumtp_bc_ind,
   ev$WT  <- wt_kg
   ev$ALB <- alb_gL
   ev$SEXF <- sexf_ind
-  ev$TUMTP_BC <- tumtp_bc_ind
+  ev$TUMTP_BREAST <- tumtp_bc_ind
   ev$HEPIMP_MILD <- hep_mild_ind
-  ev$HEPIMP_MOD_MISSING <- hep_mod_m_ind
+  ev$HEPIMP_MOD_OR_MISSING <- hep_mod_m_ind
   # CYCLE assumes Q3W dosing starting at t = 0; supplied per row.
   ev$CYCLE <- pmax(1L, as.integer(floor(ev$time / cycle_dy) + 1L))
   ev$dose_mg <- dose_mg
@@ -294,9 +294,9 @@ typ_events <- rxode2::et() |>
 typ_events$WT  <- ref_wt
 typ_events$ALB <- 39
 typ_events$SEXF <- 0
-typ_events$TUMTP_BC <- 0
+typ_events$TUMTP_BREAST <- 0
 typ_events$HEPIMP_MILD <- 0
-typ_events$HEPIMP_MOD_MISSING <- 0
+typ_events$HEPIMP_MOD_OR_MISSING <- 0
 typ_events$CYCLE <- pmax(1L,
                          as.integer(floor(typ_events$time / cycle_dy) + 1L))
 
@@ -381,8 +381,8 @@ mod <- rxode2::rxode(readModelDb("Lu_2022_patritumab"))
 #> ℹ parameter labels from comments will be replaced by 'label()'
 pop_sim <- rxode2::rxSolve(
   mod, events,
-  keep = c("WT", "ALB", "SEXF", "TUMTP_BC",
-           "HEPIMP_MILD", "HEPIMP_MOD_MISSING", "CYCLE", "dose_mg"),
+  keep = c("WT", "ALB", "SEXF", "TUMTP_BREAST",
+           "HEPIMP_MILD", "HEPIMP_MOD_OR_MISSING", "CYCLE", "dose_mg"),
   returnType = "data.frame"
 )
 ```
@@ -1496,15 +1496,15 @@ below for the full V_DXd discussion.
   2022 Methods state NSCLC is the reference and CRC was tested but found
   insignificant (Results: ‘the colorectal cancer effect was
   insignificant relative to the reference NSCLC’). The model encodes
-  only the breast- cancer indicator (`TUMTP_BC = 1` for BC, `0` for
-  NSCLC or CRC) and applies multiplier `0.811` when `TUMTP_BC = 1`.
+  only the breast- cancer indicator (`TUMTP_BREAST = 1` for BC, `0` for
+  NSCLC or CRC) and applies multiplier `0.811` when `TUMTP_BREAST = 1`.
 - **Hepatic function: paired indicators.** Lu 2022 Table 3 reports two
   hepatic-function effects on `CLDXd`: a mild-impairment effect (0.706)
   and a composite moderate-or-data-missing effect (0.532). The two
   indicators are mutually exclusive (a patient is in at most one of the
   elevated groups) and both default to 0 for the normal-function
   reference. See `inst/references/covariate-columns.md` `HEPIMP_MILD`
-  and `HEPIMP_MOD_MISSING`.
+  and `HEPIMP_MOD_OR_MISSING`.
 - **`CYCLE` covariate.** Lu 2022 Eqs. 5 and 7 require a cycle-1-vs-later
   indicator. The model takes `CYCLE` as an integer count covariate
   (`CYCLE = 1` for the first dosing cycle, `2` for the second, …) so the
@@ -1587,7 +1587,7 @@ unconjugated-DXd ODE can be integrated.
     missing/unknown patients (Table S5) into a single coefficient
     because each subgroup is individually too small to estimate. The
     model captures this composite as a paper-specific canonical
-    `HEPIMP_MOD_MISSING` indicator paired with `HEPIMP_MILD`. Lu 2022
+    `HEPIMP_MOD_OR_MISSING` indicator paired with `HEPIMP_MILD`. Lu 2022
     Discussion explicitly flags the limitation: ‘the effect of moderate
     hepatic function was not estimated, as the relevant data were too
     limited (n = 6) for the evaluation to be reliable using the

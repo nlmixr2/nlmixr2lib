@@ -105,13 +105,13 @@ non-metabolic and `K24 = CLe/V` for metabolic-formation arms).
 | `lvc` (rifabutin V/F, L/70 kg) | log(117.8) | Hennig 2015 Table 2 ‘Central volume of distribution V/F’ |
 | `lq` (rifabutin Q/F, L/h/70 kg) | log(123.8) | Hennig 2015 Table 2 ‘Q/F’ |
 | `lvp` (rifabutin Vp/F, L/70 kg) | log(4897.8) | Hennig 2015 Table 2 ‘Vpe/F’ |
-| `lcl_form_desrbn` (Cle/F formation, L/h/70 kg) | log(21.2) | Hennig 2015 Table 2 ‘Cle/F (metabolism of RBN to des-RBN)’ |
+| `lcl_form_desacetylrbn` (Cle/F formation, L/h/70 kg) | log(21.2) | Hennig 2015 Table 2 ‘Cle/F (metabolism of RBN to des-RBN)’ |
 | `ltlag` (lag time, h) | log(1.6) | Hennig 2015 Table 2 ‘Lag time’ |
 | `lfdepot` (rifabutin F) | fixed(log(1)) | Hennig 2015 Table 2 ‘Bioavailability F (Fixed)’ |
-| `lcl_desrbn` (des-rifabutin Clm/F, L/h) | log(196.7) | Hennig 2015 Table 2 ‘Clm/F’ under des-Rifabutin parameters |
-| `lvc_desrbn` (des-rifabutin Vm/F, L) | log(3.9) | Hennig 2015 Table 2 ‘Vm/F’ under des-Rifabutin parameters |
-| `lq_desrbn` (des-rifabutin Qm/F, L/h, FIXED) | fixed(log(0.15)) | Hennig 2015 Table 2 ‘Qm/F (Fixed)’ |
-| `lvp_desrbn` (des-rifabutin Vm-per/F, L, FIXED) | fixed(log(536.8)) | Hennig 2015 Table 2 ‘Vm-per/F (Fixed)’ |
+| `lcl_desacetylrbn` (des-rifabutin Clm/F, L/h) | log(196.7) | Hennig 2015 Table 2 ‘Clm/F’ under des-Rifabutin parameters |
+| `lvc_desacetylrbn` (des-rifabutin Vm/F, L) | log(3.9) | Hennig 2015 Table 2 ‘Vm/F’ under des-Rifabutin parameters |
+| `lq_desacetylrbn` (des-rifabutin Qm/F, L/h, FIXED) | fixed(log(0.15)) | Hennig 2015 Table 2 ‘Qm/F (Fixed)’ |
+| `lvp_desacetylrbn` (des-rifabutin Vm-per/F, L, FIXED) | fixed(log(536.8)) | Hennig 2015 Table 2 ‘Vm-per/F (Fixed)’ |
 | `e_sex_vc` (males +84% on V/F) | 0.84 | Hennig 2015 Discussion (‘1.84 times higher’); Table 2 covariate-effects block |
 | `e_snp_slco1b1_rs11045819_fdepot` (AC carriers +30.4% on F) | 0.304 | Hennig 2015 Table 2 covariate-effects block |
 | `etalcl ~ 0.0143` | BSV 12.0% | Hennig 2015 Table 2 BSV column; omega^2 = log(1 + 0.12^2) |
@@ -119,13 +119,13 @@ non-metabolic and `K24 = CLe/V` for metabolic-formation arms).
 | `etalka ~ 0.0556` | BSV 23.9% | Hennig 2015 Table 2 BSV column; omega^2 = log(1 + 0.239^2) |
 | `etaltlag ~ 0.0592` | BSV 24.7% | Hennig 2015 Table 2 BSV column; omega^2 = log(1 + 0.247^2) |
 | `etalfdepot ~ 0.1034` | BSV 33.0% | Hennig 2015 Table 2 BSV column; omega^2 = log(1 + 0.33^2) |
-| `etalcl_desrbn ~ 0.0862` | BSV 30.0% | Hennig 2015 Table 2 BSV column; omega^2 = log(1 + 0.30^2) |
+| `etalcl_desacetylrbn ~ 0.0862` | BSV 30.0% | Hennig 2015 Table 2 BSV column; omega^2 = log(1 + 0.30^2) |
 | `propSd / addSd` (rifabutin) | 0.346 / 14.0 | Hennig 2015 Table 2 ‘Residual error’ (proportional + additive ng/mL) |
-| `propSd_desrbn / addSd_desrbn` | 0.346 / 1.2 | Hennig 2015 Table 2 ‘Residual error’ (proportional + additive ng/mL) |
+| `propSd_desacetylrbn / addSd_desacetylrbn` | 0.346 / 1.2 | Hennig 2015 Table 2 ‘Residual error’ (proportional + additive ng/mL) |
 | ODE for `central` (rifabutin) | n/a | Hennig 2015 Methods + Results: 2-cmt, 1st-order absorption with lag, 1st-order elimination + parallel formation arm to des-rifabutin |
 | ODE for `peripheral1` | n/a | Hennig 2015 Results: 2-cmt rifabutin |
-| ODE for `central_desrbn` | n/a | Hennig 2015 Results: metabolite formed by 1st-order process from rifabutin central; metabolite described by 2-cmt with linear elimination from central |
-| ODE for `peripheral1_desrbn` | n/a | Hennig 2015 Results: 2-cmt metabolite |
+| ODE for `central_desacetylrbn` | n/a | Hennig 2015 Results: metabolite formed by 1st-order process from rifabutin central; metabolite described by 2-cmt with linear elimination from central |
+| ODE for `peripheral1_desacetylrbn` | n/a | Hennig 2015 Results: 2-cmt metabolite |
 | Body weight allometric (CL exp 0.75, V exp 1, ref 70 kg) on rifabutin parameters | a priori | Hennig 2015 Methods ‘allometric scaling a priori (20)’ (ref. 20 = Anderson and Holford 2008); Table 2 footer ‘weight allometricaly scaled on CL/F, V/F, Q/F and Vpe/F’ (final model adds Cle/F per Results paragraph 3) |
 
 ## Virtual cohort
@@ -208,7 +208,7 @@ events <- cohort |>
       cmt  = "depot"
     )
     # One observation row per (id, time); rxSolve returns both Cc and
-    # Cc_desrbn columns regardless of which cmt is specified for the
+    # Cc_desacetylrbn columns regardless of which cmt is specified for the
     # observation. Using two observation cmts here would silently
     # duplicate (id, time) pairs and break PKNCA downstream.
     obs_rows <- tibble::tibble(
@@ -260,22 +260,22 @@ trajectories for rifabutin and des-rifabutin overlay the 5th, 50th, and
 plot_typ <- sim_typ |>
   mutate(tad = time - last_dose_t) |>
   filter(tad >= 0, tad <= 24) |>
-  pivot_longer(cols = c(Cc, Cc_desrbn),
+  pivot_longer(cols = c(Cc, Cc_desacetylrbn),
                names_to = "analyte", values_to = "conc") |>
   mutate(analyte = recode(analyte,
                           Cc = "Rifabutin",
-                          Cc_desrbn = "des-Rifabutin")) |>
+                          Cc_desacetylrbn = "des-Rifabutin")) |>
   group_by(time, tad, analyte) |>
   summarise(conc = mean(conc, na.rm = TRUE), .groups = "drop")
 
 plot_vpc <- sim_vpc |>
   mutate(tad = time - last_dose_t) |>
   filter(tad >= 0, tad <= 24) |>
-  pivot_longer(cols = c(Cc, Cc_desrbn),
+  pivot_longer(cols = c(Cc, Cc_desacetylrbn),
                names_to = "analyte", values_to = "conc") |>
   mutate(analyte = recode(analyte,
                           Cc = "Rifabutin",
-                          Cc_desrbn = "des-Rifabutin")) |>
+                          Cc_desacetylrbn = "des-Rifabutin")) |>
   group_by(tad, analyte) |>
   summarise(
     Q05 = quantile(conc, 0.05, na.rm = TRUE),
@@ -356,11 +356,11 @@ sim_strata <- rxode2::rxSolve(
 
 sim_strata |>
   filter(tad >= 0, tad <= 24) |>
-  pivot_longer(cols = c(Cc, Cc_desrbn),
+  pivot_longer(cols = c(Cc, Cc_desacetylrbn),
                names_to = "analyte", values_to = "conc") |>
   mutate(analyte = recode(analyte,
                           Cc = "Rifabutin",
-                          Cc_desrbn = "des-Rifabutin")) |>
+                          Cc_desacetylrbn = "des-Rifabutin")) |>
   ggplot(aes(tad, conc, color = label, linetype = label)) +
   geom_line(linewidth = 0.8) +
   facet_wrap(~analyte, scales = "free_y") +
@@ -407,7 +407,7 @@ nca_res_rfb <- PKNCA::pk.nca(nca_dat_rfb)
 ``` r
 
 nca_in_des <- sim_for_nca |>
-  select(id, time = tad, conc = Cc_desrbn) |>
+  select(id, time = tad, conc = Cc_desacetylrbn) |>
   filter(!is.na(conc))
 conc_obj_des <- PKNCA::PKNCAconc(nca_in_des, conc ~ time | id)
 nca_dat_des  <- PKNCA::PKNCAdata(conc_obj_des, dose_obj,

@@ -29,9 +29,9 @@ and 361 with moderate-to-severe atopic dermatitis). The structural model
 is a two-compartment disposition with first-order subcutaneous
 absorption, an absorption lag, and parallel linear and Michaelis-Menten
 (target-mediated) elimination from the central compartment. Allometric
-body-weight scaling acts on linear CL, V1, and V2; baseline EASI adds to
-linear CL additively, and baseline serum albumin modifies subcutaneous
-bioavailability (additive on the linear scale before logit
+body-weight scaling acts on linear CL, V1, and V2; baseline SCORE_EASI
+adds to linear CL additively, and baseline serum albumin modifies
+subcutaneous bioavailability (additive on the linear scale before logit
 transformation).
 
 This vignette simulates the labelled STREAM-AD regimen (250 mg SC Q4W
@@ -60,10 +60,10 @@ n_subj <- 300
 wt_draw <- exp(rnorm(n_subj, log(74.5), 0.22))
 WT <- pmin(pmax(wt_draw, 40.5), 148)
 
-# Baseline EASI: mean 29.7, SD 11.3 in AD subjects (Table S1);
-# truncated at EASI >= 6 (moderate threshold for STREAM-AD eligibility)
+# Baseline SCORE_EASI: mean 29.7, SD 11.3 in AD subjects (Table S1);
+# truncated at SCORE_EASI >= 6 (moderate threshold for STREAM-AD eligibility)
 # and <= 72 (the maximum possible score).
-EASI <- pmin(pmax(rnorm(n_subj, 29.7, 11.3), 6), 72)
+SCORE_EASI <- pmin(pmax(rnorm(n_subj, 29.7, 11.3), 6), 72)
 
 # Baseline serum albumin: mean 46.4 g/L, SD 3.5 g/L, truncated to [37, 57].
 ALB <- pmin(pmax(rnorm(n_subj, 46.4, 3.5), 37), 57)
@@ -71,7 +71,7 @@ ALB <- pmin(pmax(rnorm(n_subj, 46.4, 3.5), 37), 57)
 pop <- data.frame(
   ID   = seq_len(n_subj),
   WT   = WT,
-  EASI = EASI,
+  SCORE_EASI = SCORE_EASI,
   ALB  = ALB
 )
 
@@ -116,7 +116,7 @@ d_obs <- pop[rep(seq_len(n_subj), each = length(obs_times_day)), ] |>
 
 d_sim <- bind_rows(d_dose, d_obs) |>
   arrange(ID, TIME, desc(EVID)) |>
-  select(ID, TIME, AMT, EVID, CMT, DV, WT, EASI, ALB, wt_group)
+  select(ID, TIME, AMT, EVID, CMT, DV, WT, SCORE_EASI, ALB, wt_group)
 ```
 
 ### Load model and simulate
@@ -201,14 +201,14 @@ ggplot(d_wt, aes(x = time, y = Q50, colour = wt_group, fill = wt_group)) +
 ### Covariate sensitivity — Table S3 replication
 
 Compare steady-state week-24 exposure (AUC over the 4-week dosing
-interval, AUC4W) against the reference AD patient (75 kg, EASI 27.5,
-albumin 47 g/L) receiving 62.5 mg Q4W. Table S3 reports AUC4W changes of
-+72%, +44%, -24%, and -51% for 40, 50, 100, and 150 kg participants
-respectively.
+interval, AUC4W) against the reference AD patient (75 kg, SCORE_EASI
+27.5, albumin 47 g/L) receiving 62.5 mg Q4W. Table S3 reports AUC4W
+changes of +72%, +44%, -24%, and -51% for 40, 50, 100, and 150 kg
+participants respectively.
 
 ``` r
 
-ref <- data.frame(ID = 1, WT = 75, EASI = 27.5, ALB = 47)
+ref <- data.frame(ID = 1, WT = 75, SCORE_EASI = 27.5, ALB = 47)
 
 typ_pop <- rbind(
   transform(ref, ID = 1, WT =  40),
@@ -240,7 +240,7 @@ typ_obs <- typ_pop[rep(seq_len(nrow(typ_pop)), each = length(typ_obs_times)), ] 
 
 typ_ev <- bind_rows(typ_dose, typ_obs) |>
   arrange(ID, TIME, desc(EVID)) |>
-  select(ID, TIME, AMT, EVID, CMT, DV, WT, EASI, ALB)
+  select(ID, TIME, AMT, EVID, CMT, DV, WT, SCORE_EASI, ALB)
 
 typ_sim <- rxode2::rxSolve(mod, events = typ_ev, omega = NA, sigma = NA)
 #> ℹ parameter labels from comments will be replaced by 'label()'
@@ -301,11 +301,11 @@ components, reproducing Figure 3.
 
 cc_grid    <- 10^seq(log10(0.01), log10(100), length.out = 200)
 tvcll      <- 0.115            # unit: L/day (TVCLL at 75 kg ref)
-e_easi_cl  <- 0.00111          # unit: L/day per EASI unit
+e_easi_cl  <- 0.00111          # unit: L/day per SCORE_EASI unit
 vmax_mgday <- 0.0362           # unit: mg/day (TVVM; label typo "ug/day" in Table S2)
 km_ugmL    <- 0.0783           # unit: ug/mL (equivalently mg/L)
 
-cl_linear <- tvcll + e_easi_cl * 27.5                 # CL for 75 kg, EASI 27.5
+cl_linear <- tvcll + e_easi_cl * 27.5                 # CL for 75 kg, SCORE_EASI 27.5
 cl_tmdd   <- vmax_mgday / (km_ugmL + cc_grid)         # unit: L/day (since VM is mg/day, KM+C in mg/L)
 cl_total  <- cl_linear + cl_tmdd
 
@@ -326,7 +326,7 @@ ggplot(df_cl, aes(x = Cc_ugmL, y = clearance, colour = component, linetype = com
     y        = "Clearance (L/day)",
     colour   = "Component",
     linetype = "Component",
-    title    = "Typical AD patient: linear vs TMDD clearance\n(75 kg, EASI 27.5)"
+    title    = "Typical AD patient: linear vs TMDD clearance\n(75 kg, SCORE_EASI 27.5)"
   ) +
   theme_bw()
 ```
@@ -373,8 +373,8 @@ cat(sprintf("Typical terminal half-life (linear range) = %.1f days\n", t_half_da
 
 ### Notes on the simulation
 
-- **Virtual population**: 300 AD patients with body weight, EASI, and
-  albumin drawn from the Tiraboschi 2025 Table S1 distributions,
+- **Virtual population**: 300 AD patients with body weight, SCORE_EASI,
+  and albumin drawn from the Tiraboschi 2025 Table S1 distributions,
   truncated to the study ranges.
 - **Regimen**: STREAM-AD labelled adult dosing - 500 mg SC loading dose,
   then 250 mg SC every 4 weeks through week 24.

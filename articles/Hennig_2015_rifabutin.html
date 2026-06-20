@@ -1085,7 +1085,7 @@ for metabolic-formation arms).</p>
 </tr>
 <tr class="even">
 <td>
-<code>lcl_form_desrbn</code> (Cle/F formation, L/h/70 kg)</td>
+<code>lcl_form_desacetylrbn</code> (Cle/F formation, L/h/70 kg)</td>
 <td>log(21.2)</td>
 <td>Hennig 2015 Table 2 ‘Cle/F (metabolism of RBN to des-RBN)’</td>
 </tr>
@@ -1103,25 +1103,26 @@ for metabolic-formation arms).</p>
 </tr>
 <tr class="odd">
 <td>
-<code>lcl_desrbn</code> (des-rifabutin Clm/F, L/h)</td>
+<code>lcl_desacetylrbn</code> (des-rifabutin Clm/F, L/h)</td>
 <td>log(196.7)</td>
 <td>Hennig 2015 Table 2 ‘Clm/F’ under des-Rifabutin parameters</td>
 </tr>
 <tr class="even">
 <td>
-<code>lvc_desrbn</code> (des-rifabutin Vm/F, L)</td>
+<code>lvc_desacetylrbn</code> (des-rifabutin Vm/F, L)</td>
 <td>log(3.9)</td>
 <td>Hennig 2015 Table 2 ‘Vm/F’ under des-Rifabutin parameters</td>
 </tr>
 <tr class="odd">
 <td>
-<code>lq_desrbn</code> (des-rifabutin Qm/F, L/h, FIXED)</td>
+<code>lq_desacetylrbn</code> (des-rifabutin Qm/F, L/h, FIXED)</td>
 <td>fixed(log(0.15))</td>
 <td>Hennig 2015 Table 2 ‘Qm/F (Fixed)’</td>
 </tr>
 <tr class="even">
 <td>
-<code>lvp_desrbn</code> (des-rifabutin Vm-per/F, L, FIXED)</td>
+<code>lvp_desacetylrbn</code> (des-rifabutin Vm-per/F, L,
+FIXED)</td>
 <td>fixed(log(536.8))</td>
 <td>Hennig 2015 Table 2 ‘Vm-per/F (Fixed)’</td>
 </tr>
@@ -1165,7 +1166,7 @@ F)</td>
 <td>Hennig 2015 Table 2 BSV column; omega^2 = log(1 + 0.33^2)</td>
 </tr>
 <tr class="even">
-<td><code>etalcl_desrbn ~ 0.0862</code></td>
+<td><code>etalcl_desacetylrbn ~ 0.0862</code></td>
 <td>BSV 30.0%</td>
 <td>Hennig 2015 Table 2 BSV column; omega^2 = log(1 + 0.30^2)</td>
 </tr>
@@ -1177,7 +1178,7 @@ F)</td>
 ng/mL)</td>
 </tr>
 <tr class="even">
-<td><code>propSd_desrbn / addSd_desrbn</code></td>
+<td><code>propSd_desacetylrbn / addSd_desacetylrbn</code></td>
 <td>0.346 / 1.2</td>
 <td>Hennig 2015 Table 2 ‘Residual error’ (proportional + additive
 ng/mL)</td>
@@ -1195,7 +1196,7 @@ ng/mL)</td>
 <td>Hennig 2015 Results: 2-cmt rifabutin</td>
 </tr>
 <tr class="odd">
-<td>ODE for <code>central_desrbn</code>
+<td>ODE for <code>central_desacetylrbn</code>
 </td>
 <td>n/a</td>
 <td>Hennig 2015 Results: metabolite formed by 1st-order process from
@@ -1203,7 +1204,7 @@ rifabutin central; metabolite described by 2-cmt with linear elimination
 from central</td>
 </tr>
 <tr class="even">
-<td>ODE for <code>peripheral1_desrbn</code>
+<td>ODE for <code>peripheral1_desacetylrbn</code>
 </td>
 <td>n/a</td>
 <td>Hennig 2015 Results: 2-cmt metabolite</td>
@@ -1308,7 +1309,7 @@ plotting.</p>
 <span>      cmt  <span class="op">=</span> <span class="st">"depot"</span></span>
 <span>    <span class="op">)</span></span>
 <span>    <span class="co"># One observation row per (id, time); rxSolve returns both Cc and</span></span>
-<span>    <span class="co"># Cc_desrbn columns regardless of which cmt is specified for the</span></span>
+<span>    <span class="co"># Cc_desacetylrbn columns regardless of which cmt is specified for the</span></span>
 <span>    <span class="co"># observation. Using two observation cmts here would silently</span></span>
 <span>    <span class="co"># duplicate (id, time) pairs and break PKNCA downstream.</span></span>
 <span>    <span class="va">obs_rows</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
@@ -1352,22 +1353,22 @@ trajectories for rifabutin and des-rifabutin overlay the 5th, 50th, and
 <code class="sourceCode R"><span><span class="va">plot_typ</span> <span class="op">&lt;-</span> <span class="va">sim_typ</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">mutate</span><span class="op">(</span>tad <span class="op">=</span> <span class="va">time</span> <span class="op">-</span> <span class="va">last_dose_t</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">tad</span> <span class="op">&gt;=</span> <span class="fl">0</span>, <span class="va">tad</span> <span class="op">&lt;=</span> <span class="fl">24</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">pivot_longer</span><span class="op">(</span>cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">Cc</span>, <span class="va">Cc_desrbn</span><span class="op">)</span>,</span>
+<span>  <span class="fu">pivot_longer</span><span class="op">(</span>cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">Cc</span>, <span class="va">Cc_desacetylrbn</span><span class="op">)</span>,</span>
 <span>               names_to <span class="op">=</span> <span class="st">"analyte"</span>, values_to <span class="op">=</span> <span class="st">"conc"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">mutate</span><span class="op">(</span>analyte <span class="op">=</span> <span class="fu">recode</span><span class="op">(</span><span class="va">analyte</span>,</span>
 <span>                          Cc <span class="op">=</span> <span class="st">"Rifabutin"</span>,</span>
-<span>                          Cc_desrbn <span class="op">=</span> <span class="st">"des-Rifabutin"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>                          Cc_desacetylrbn <span class="op">=</span> <span class="st">"des-Rifabutin"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">group_by</span><span class="op">(</span><span class="va">time</span>, <span class="va">tad</span>, <span class="va">analyte</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">summarise</span><span class="op">(</span>conc <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">conc</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>, .groups <span class="op">=</span> <span class="st">"drop"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">plot_vpc</span> <span class="op">&lt;-</span> <span class="va">sim_vpc</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">mutate</span><span class="op">(</span>tad <span class="op">=</span> <span class="va">time</span> <span class="op">-</span> <span class="va">last_dose_t</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">tad</span> <span class="op">&gt;=</span> <span class="fl">0</span>, <span class="va">tad</span> <span class="op">&lt;=</span> <span class="fl">24</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">pivot_longer</span><span class="op">(</span>cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">Cc</span>, <span class="va">Cc_desrbn</span><span class="op">)</span>,</span>
+<span>  <span class="fu">pivot_longer</span><span class="op">(</span>cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">Cc</span>, <span class="va">Cc_desacetylrbn</span><span class="op">)</span>,</span>
 <span>               names_to <span class="op">=</span> <span class="st">"analyte"</span>, values_to <span class="op">=</span> <span class="st">"conc"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">mutate</span><span class="op">(</span>analyte <span class="op">=</span> <span class="fu">recode</span><span class="op">(</span><span class="va">analyte</span>,</span>
 <span>                          Cc <span class="op">=</span> <span class="st">"Rifabutin"</span>,</span>
-<span>                          Cc_desrbn <span class="op">=</span> <span class="st">"des-Rifabutin"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>                          Cc_desacetylrbn <span class="op">=</span> <span class="st">"des-Rifabutin"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">group_by</span><span class="op">(</span><span class="va">tad</span>, <span class="va">analyte</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">summarise</span><span class="op">(</span></span>
 <span>    Q05 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">conc</span>, <span class="fl">0.05</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
@@ -1446,11 +1447,11 @@ directionality.</p>
 <span></span>
 <span><span class="va">sim_strata</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">tad</span> <span class="op">&gt;=</span> <span class="fl">0</span>, <span class="va">tad</span> <span class="op">&lt;=</span> <span class="fl">24</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">pivot_longer</span><span class="op">(</span>cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">Cc</span>, <span class="va">Cc_desrbn</span><span class="op">)</span>,</span>
+<span>  <span class="fu">pivot_longer</span><span class="op">(</span>cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">Cc</span>, <span class="va">Cc_desacetylrbn</span><span class="op">)</span>,</span>
 <span>               names_to <span class="op">=</span> <span class="st">"analyte"</span>, values_to <span class="op">=</span> <span class="st">"conc"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">mutate</span><span class="op">(</span>analyte <span class="op">=</span> <span class="fu">recode</span><span class="op">(</span><span class="va">analyte</span>,</span>
 <span>                          Cc <span class="op">=</span> <span class="st">"Rifabutin"</span>,</span>
-<span>                          Cc_desrbn <span class="op">=</span> <span class="st">"des-Rifabutin"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>                          Cc_desacetylrbn <span class="op">=</span> <span class="st">"des-Rifabutin"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span><span class="va">tad</span>, <span class="va">conc</span>, color <span class="op">=</span> <span class="va">label</span>, linetype <span class="op">=</span> <span class="va">label</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">geom_line</span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">facet_wrap</span><span class="op">(</span><span class="op">~</span><span class="va">analyte</span>, scales <span class="op">=</span> <span class="st">"free_y"</span><span class="op">)</span> <span class="op">+</span></span>
@@ -1491,7 +1492,7 @@ next-scheduled dose under tau = 24 h dosing).</p>
 <span><span class="va">nca_res_rfb</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="https://humanpred.github.io/pknca/reference/pk.nca.html" class="external-link">pk.nca</a></span><span class="op">(</span><span class="va">nca_dat_rfb</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">nca_in_des</span> <span class="op">&lt;-</span> <span class="va">sim_for_nca</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">select</span><span class="op">(</span><span class="va">id</span>, time <span class="op">=</span> <span class="va">tad</span>, conc <span class="op">=</span> <span class="va">Cc_desrbn</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">select</span><span class="op">(</span><span class="va">id</span>, time <span class="op">=</span> <span class="va">tad</span>, conc <span class="op">=</span> <span class="va">Cc_desacetylrbn</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">conc</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">conc_obj_des</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="https://humanpred.github.io/pknca/reference/PKNCAconc.html" class="external-link">PKNCAconc</a></span><span class="op">(</span><span class="va">nca_in_des</span>, <span class="va">conc</span> <span class="op">~</span> <span class="va">time</span> <span class="op">|</span> <span class="va">id</span><span class="op">)</span></span>
 <span><span class="va">nca_dat_des</span>  <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="https://humanpred.github.io/pknca/reference/PKNCAdata.html" class="external-link">PKNCAdata</a></span><span class="op">(</span><span class="va">conc_obj_des</span>, <span class="va">dose_obj</span>,</span>

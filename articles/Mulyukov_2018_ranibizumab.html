@@ -975,21 +975,22 @@ of Natural Disease Progression and Ranibizumab Treatment Effect. CPT
 Pharmacometrics Syst Pharmacol. 2018;7(10):660-669. <a href="doi:10.1002/psp4.12322" class="uri">doi:10.1002/psp4.12322</a>.
 PMID: 30043524.</li>
 <li>Description: Indirect-response PK/PD model of intravitreal
-ranibizumab on best-corrected visual acuity (BCVA, ETDRS letters) in
-anti-VEGF-naive adults with neovascular age-related macular degeneration
-(Mulyukov 2018). BCVA is driven by an indirect-response ODE in which
-drug concentration stimulates the BCVA production rate (kin) through a
-Michaelis-Menten-like term with a time-dependent maximum effect emax(t)
-= emax_ss + demax_0 * exp(-kemax * t). The PK is a fixed first-order
-vitreous-elimination placeholder (kel = 0.077/day, vitreous volume = 4
-mL, no IIV) borrowed from a previous population PK analysis (reference
-20 of the paper) because vitreous PK data were not collected in the
-development studies.</li>
+ranibizumab on best-corrected visual acuity (SCORE_BCVA, ETDRS letters)
+in anti-VEGF-naive adults with neovascular age-related macular
+degeneration (Mulyukov 2018). SCORE_BCVA is driven by an
+indirect-response ODE in which drug concentration stimulates the
+SCORE_BCVA production rate (kin) through a Michaelis-Menten-like term
+with a time-dependent maximum effect emax(t) = emax_ss + demax_0 *
+exp(-kemax * t). The PK is a fixed first-order vitreous-elimination
+placeholder (kel = 0.077/day, vitreous volume = 4 mL, no IIV) borrowed
+from a previous population PK analysis (reference 20 of the paper)
+because vitreous PK data were not collected in the development
+studies.</li>
 <li>Article: <a href="https://doi.org/10.1002/psp4.12322" class="external-link uri">https://doi.org/10.1002/psp4.12322</a>
 </li>
 </ul>
 <p>Mulyukov 2018 develops an indirect-response nonlinear mixed-effects
-model of best-corrected visual acuity (BCVA; ETDRS letters) under
+model of best-corrected visual acuity (SCORE_BCVA; ETDRS letters) under
 ranibizumab treatment in anti-VEGF-naive neovascular age-related macular
 degeneration (nAMD). The dynamics are governed by</p>
 <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mfrac><mrow><mi>d</mi><msub><mi>g</mi><mi>i</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo></mrow><mrow><mi>d</mi><mi>t</mi></mrow></mfrac><mo>=</mo><msub><mi>k</mi><mrow><mtext mathvariant="normal">in</mtext><mo>,</mo><mi>i</mi></mrow></msub><mrow><mo stretchy="true" form="prefix">[</mo><mn>1</mn><mo>+</mo><msub><mi>E</mi><mrow><mrow><mi mathvariant="normal">max</mi><mo>⁡</mo></mrow><mo>,</mo><mi>i</mi></mrow></msub><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo><mspace width="0.167em"></mspace><mfrac><mrow><msub><mi>C</mi><mi>i</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo></mrow><mrow><mi>E</mi><msub><mi>C</mi><mn>50</mn></msub><mo>+</mo><msub><mi>C</mi><mi>i</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo></mrow></mfrac><mo stretchy="true" form="postfix">]</mo></mrow><mo>−</mo><msub><mi>k</mi><mrow><mtext mathvariant="normal">out</mtext><mo>,</mo><mi>i</mi></mrow></msub><mspace width="0.167em"></mspace><msub><mi>g</mi><mi>i</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\frac{dg_i(t)}{dt} = k_{\text{in},i}\left[1 + E_{\max,i}(t)\,\frac{C_i(t)}{EC_{50} + C_i(t)}\right] - k_{\text{out},i}\,g_i(t)</annotation></semantics></math></p>
@@ -1012,19 +1013,20 @@ studies.</p>
 <p>The model was developed on pooled individual data from four phase-III
 ranibizumab clinical studies — ANCHOR, MARINA, PIER, and EXCITE —
 totalling <strong>1,524 treatment-naive patients</strong> and
-<strong>29,754 BCVA observations</strong>. Inclusion criteria common to
-all four studies: age ≥ 50 years with a study-eye BCVA of 25–70 ETDRS
-letters (nAMD of any lesion type across the pool). Baseline BCVA across
-studies was 54 ± 13 letters (range 3–84); baseline age 77 ± 7.5 years
-(range 52–96); ~40% male. Dosing regimens in the development dataset
-include 0.3 mg and 0.5 mg intravitreal ranibizumab, monthly (q4w) or
-quarterly (q12w) after three monthly loading injections, along with sham
-comparator arms. The PDT (verteporfin) control arm of ANCHOR and the
-year-2 PIER data were excluded from the modelled dataset (see Mulyukov
-2018 Methods — Clinical studies and Table 1 for full study-level
-demographics). An external HARBOR cohort (ranibizumab 0.5 mg and 2.0 mg
-q4w, summary data only) was used as a predictive check and is
-<strong>not</strong> part of the fitted data.</p>
+<strong>29,754 SCORE_BCVA observations</strong>. Inclusion criteria
+common to all four studies: age ≥ 50 years with a study-eye SCORE_BCVA
+of 25–70 ETDRS letters (nAMD of any lesion type across the pool).
+Baseline SCORE_BCVA across studies was 54 ± 13 letters (range 3–84);
+baseline age 77 ± 7.5 years (range 52–96); ~40% male. Dosing regimens in
+the development dataset include 0.3 mg and 0.5 mg intravitreal
+ranibizumab, monthly (q4w) or quarterly (q12w) after three monthly
+loading injections, along with sham comparator arms. The PDT
+(verteporfin) control arm of ANCHOR and the year-2 PIER data were
+excluded from the modelled dataset (see Mulyukov 2018 Methods — Clinical
+studies and Table 1 for full study-level demographics). An external
+HARBOR cohort (ranibizumab 0.5 mg and 2.0 mg q4w, summary data only) was
+used as a predictive check and is <strong>not</strong> part of the
+fitted data.</p>
 <p>The same information is available programmatically via the model’s
 <code>population</code> metadata:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
@@ -1224,24 +1226,25 @@ paper’s published trough concentrations to &lt; 1 %.</p>
 <div class="section level2">
 <h2 id="virtual-cohort">Virtual cohort<a class="anchor" aria-label="anchor" href="#virtual-cohort"></a>
 </h2>
-<p>The original BCVA dataset is not publicly available. For validation
-we construct a virtual cohort that matches the pooled baseline
-demographics (mean age 77 years; mean baseline BCVA 54 letters) and also
-match the HARBOR 0.5 mg q4w cohort used as the paper’s external
-validation (mean age 78.8 years; mean baseline BCVA 54.2 letters, Table
-1). Figures 3 and 4 of the paper depict mean predictions over simulated
-populations, so we run <strong>both</strong> a typical-value (zero-IIV)
-trajectory and a stochastic cohort of 1,000 subjects and average.</p>
+<p>The original SCORE_BCVA dataset is not publicly available. For
+validation we construct a virtual cohort that matches the pooled
+baseline demographics (mean age 77 years; mean baseline SCORE_BCVA 54
+letters) and also match the HARBOR 0.5 mg q4w cohort used as the paper’s
+external validation (mean age 78.8 years; mean baseline SCORE_BCVA 54.2
+letters, Table 1). Figures 3 and 4 of the paper depict mean predictions
+over simulated populations, so we run <strong>both</strong> a
+typical-value (zero-IIV) trajectory and a stochastic cohort of 1,000
+subjects and average.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">20260424</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">n_cohort</span> <span class="op">&lt;-</span> <span class="fl">1000L</span></span>
 <span></span>
-<span><span class="co"># Pooled-demographics cohort (paper Results paragraph: mean age 77, mean baseline BCVA 54)</span></span>
+<span><span class="co"># Pooled-demographics cohort (paper Results paragraph: mean age 77, mean baseline SCORE_BCVA 54)</span></span>
 <span><span class="va">pooled_cohort</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
 <span>  id   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">n_cohort</span><span class="op">)</span>,</span>
 <span>  AGE  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span><span class="fl">50</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmin</a></span><span class="op">(</span><span class="fl">96</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n_cohort</span>, mean <span class="op">=</span> <span class="fl">77.0</span>, sd <span class="op">=</span> <span class="fl">7.5</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  BCVA <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span> <span class="fl">3</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmin</a></span><span class="op">(</span><span class="fl">84</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n_cohort</span>, mean <span class="op">=</span> <span class="fl">54.0</span>, sd <span class="op">=</span> <span class="fl">13.0</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  SCORE_BCVA <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span> <span class="fl">3</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmin</a></span><span class="op">(</span><span class="fl">84</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n_cohort</span>, mean <span class="op">=</span> <span class="fl">54.0</span>, sd <span class="op">=</span> <span class="fl">13.0</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  cohort <span class="op">=</span> <span class="st">"Pooled (ANCHOR/MARINA/PIER/EXCITE)"</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -1249,7 +1252,7 @@ trajectory and a stochastic cohort of 1,000 subjects and average.</p>
 <span><span class="va">harbor_05_cohort</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
 <span>  id   <span class="op">=</span> <span class="va">n_cohort</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">n_cohort</span><span class="op">)</span>,</span>
 <span>  AGE  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span><span class="fl">50</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmin</a></span><span class="op">(</span><span class="fl">96</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n_cohort</span>, mean <span class="op">=</span> <span class="fl">78.8</span>, sd <span class="op">=</span> <span class="fl">8.4</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  BCVA <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span> <span class="fl">3</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmin</a></span><span class="op">(</span><span class="fl">84</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n_cohort</span>, mean <span class="op">=</span> <span class="fl">54.2</span>, sd <span class="op">=</span> <span class="fl">13.3</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  SCORE_BCVA <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span> <span class="fl">3</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmin</a></span><span class="op">(</span><span class="fl">84</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n_cohort</span>, mean <span class="op">=</span> <span class="fl">54.2</span>, sd <span class="op">=</span> <span class="fl">13.3</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  cohort <span class="op">=</span> <span class="st">"HARBOR 0.5 mg q4w"</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -1257,11 +1260,11 @@ trajectory and a stochastic cohort of 1,000 subjects and average.</p>
 <span><span class="va">harbor_20_cohort</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
 <span>  id   <span class="op">=</span> <span class="fl">2L</span> <span class="op">*</span> <span class="va">n_cohort</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">n_cohort</span><span class="op">)</span>,</span>
 <span>  AGE  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span><span class="fl">50</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmin</a></span><span class="op">(</span><span class="fl">96</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n_cohort</span>, mean <span class="op">=</span> <span class="fl">79.3</span>, sd <span class="op">=</span> <span class="fl">8.3</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  BCVA <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span> <span class="fl">3</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmin</a></span><span class="op">(</span><span class="fl">84</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n_cohort</span>, mean <span class="op">=</span> <span class="fl">53.5</span>, sd <span class="op">=</span> <span class="fl">13.1</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  SCORE_BCVA <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span> <span class="fl">3</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmin</a></span><span class="op">(</span><span class="fl">84</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n_cohort</span>, mean <span class="op">=</span> <span class="fl">53.5</span>, sd <span class="op">=</span> <span class="fl">13.1</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  cohort <span class="op">=</span> <span class="st">"HARBOR 2.0 mg q4w"</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Event-table helper: 12 monthly doses (day 0, 28, 56, ..., 308) + monthly BCVA obs.</span></span>
+<span><span class="co"># Event-table helper: 12 monthly doses (day 0, 28, 56, ..., 308) + monthly SCORE_BCVA obs.</span></span>
 <span><span class="va">make_events</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">cov_df</span>, <span class="va">dose_mg</span>, <span class="va">obs_days</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">336</span>, by <span class="op">=</span> <span class="fl">7</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">ids</span>  <span class="op">&lt;-</span> <span class="va">cov_df</span><span class="op">$</span><span class="va">id</span></span>
 <span>  <span class="va">dose_times</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, by <span class="op">=</span> <span class="fl">28</span>, length.out <span class="op">=</span> <span class="fl">12</span><span class="op">)</span></span>
@@ -1339,7 +1342,7 @@ borrowed PK model:
 <span>  evid <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>,</span>
 <span>  amt  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>,</span>
 <span>  cmt  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"central"</span>, <span class="st">"bcva"</span>, <span class="st">"bcva"</span>, <span class="st">"bcva"</span><span class="op">)</span>,</span>
-<span>  AGE <span class="op">=</span> <span class="fl">77</span>, BCVA <span class="op">=</span> <span class="fl">55</span></span>
+<span>  AGE <span class="op">=</span> <span class="fl">77</span>, SCORE_BCVA <span class="op">=</span> <span class="fl">55</span></span>
 <span><span class="op">)</span></span>
 <span><span class="va">sim_single</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod_typical</span>, events <span class="op">=</span> <span class="va">ev_single</span>, returnType <span class="op">=</span> <span class="st">"data.frame"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etag0res', 'etalkout', 'etalemaxss', 'etaldemax0'</span></span>
@@ -1384,8 +1387,8 @@ injection, simulated vs. paper Methods.</caption>
 </table>
 </div>
 <div class="section level3">
-<h3 id="figure-2-analogue-typical-value-bcva-trajectory-under-0-5-mg-q4w-harbor-covariates">Figure 2 analogue — typical-value BCVA trajectory under 0.5 mg q4w
-(HARBOR covariates)<a class="anchor" aria-label="anchor" href="#figure-2-analogue-typical-value-bcva-trajectory-under-0-5-mg-q4w-harbor-covariates"></a>
+<h3 id="figure-2-analogue-typical-value-score_bcva-trajectory-under-0-5-mg-q4w-harbor-covariates">Figure 2 analogue — typical-value SCORE_BCVA trajectory under 0.5 mg
+q4w (HARBOR covariates)<a class="anchor" aria-label="anchor" href="#figure-2-analogue-typical-value-score_bcva-trajectory-under-0-5-mg-q4w-harbor-covariates"></a>
 </h3>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim_pooled_summary</span> <span class="op">&lt;-</span> <span class="va">sim_pooled</span> <span class="op">|&gt;</span></span>
@@ -1403,8 +1406,8 @@ injection, simulated vs. paper Methods.</caption>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">bcva_mean</span><span class="op">)</span>, colour <span class="op">=</span> <span class="st">"steelblue"</span>, linewidth <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
-<span>    x <span class="op">=</span> <span class="st">"Time (day)"</span>, y <span class="op">=</span> <span class="st">"BCVA (ETDRS letters)"</span>,</span>
-<span>    title <span class="op">=</span> <span class="st">"Simulated BCVA trajectory — ranibizumab 0.5 mg q4w, pooled-demographics cohort"</span>,</span>
+<span>    x <span class="op">=</span> <span class="st">"Time (day)"</span>, y <span class="op">=</span> <span class="st">"SCORE_BCVA (ETDRS letters)"</span>,</span>
+<span>    title <span class="op">=</span> <span class="st">"Simulated SCORE_BCVA trajectory — ranibizumab 0.5 mg q4w, pooled-demographics cohort"</span>,</span>
 <span>    caption <span class="op">=</span> <span class="st">"Median (black) and 5th-95th percentile envelope from 1,000 simulated subjects; mean overlaid in blue. Replicates the treated-arm panels of Figure 2 of Mulyukov 2018."</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
 <p><img src="Mulyukov_2018_ranibizumab_files/figure-html/figure-2-1.png" class="r-plt" alt="" width="672"></p>
@@ -1413,9 +1416,9 @@ injection, simulated vs. paper Methods.</caption>
 <h3 id="figure-3-harbor-external-validation-at-12-months">Figure 3 — HARBOR external validation at 12 months<a class="anchor" aria-label="anchor" href="#figure-3-harbor-external-validation-at-12-months"></a>
 </h3>
 <p>The paper reports (Results — Model evaluation) observed HARBOR
-12-month mean BCVA changes of approximately +10 and +9 ETDRS letters for
-the 0.5 mg and 2.0 mg q4w arms, with model-predicted +8.5 and +9.2
-letters respectively.</p>
+12-month mean SCORE_BCVA changes of approximately +10 and +9 ETDRS
+letters for the 0.5 mg and 2.0 mg q4w arms, with model-predicted +8.5
+and +9.2 letters respectively.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cfb_12mo</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span></span>
 <span>  <span class="va">sim_harbor_05</span> <span class="op">|&gt;</span></span>
@@ -1444,11 +1447,11 @@ letters respectively.</p>
 <span>  <span class="op">)</span></span>
 <span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">cfb_summary</span>, digits <span class="op">=</span> <span class="fl">2</span>,</span>
-<span>  caption <span class="op">=</span> <span class="st">"Simulated vs. published BCVA change from baseline at 12 months (ranibizumab HARBOR arms). Paper values from Results — Model evaluation and simulations and Table 1."</span><span class="op">)</span></span></code></pre></div>
+<span>  caption <span class="op">=</span> <span class="st">"Simulated vs. published SCORE_BCVA change from baseline at 12 months (ranibizumab HARBOR arms). Paper values from Results — Model evaluation and simulations and Table 1."</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
-<caption>Simulated vs. published BCVA change from baseline at 12 months
-(ranibizumab HARBOR arms). Paper values from Results — Model evaluation
-and simulations and Table 1.</caption>
+<caption>Simulated vs. published SCORE_BCVA change from baseline at 12
+months (ranibizumab HARBOR arms). Paper values from Results — Model
+evaluation and simulations and Table 1.</caption>
 <colgroup>
 <col width="17%">
 <col width="10%">
@@ -1490,45 +1493,47 @@ and simulations and Table 1.</caption>
 </table>
 </div>
 <div class="section level3">
-<h3 id="figure-4a-analogue-dependence-of-12-month-bcva-change-on-baseline-bcva">Figure 4a analogue — dependence of 12-month BCVA change on baseline
-BCVA<a class="anchor" aria-label="anchor" href="#figure-4a-analogue-dependence-of-12-month-bcva-change-on-baseline-bcva"></a>
+<h3 id="figure-4a-analogue-dependence-of-12-month-score_bcva-change-on-baseline-score_bcva">Figure 4a analogue — dependence of 12-month SCORE_BCVA change on
+baseline SCORE_BCVA<a class="anchor" aria-label="anchor" href="#figure-4a-analogue-dependence-of-12-month-score_bcva-change-on-baseline-score_bcva"></a>
 </h3>
-<p>Replicates Figure 4a of Mulyukov 2018: mean 12-month BCVA change
-decreases linearly with baseline BCVA (“for every 10 letters of lower
-baseline BCVA there are 3 letter gains in BCVA improvement”).</p>
+<p>Replicates Figure 4a of Mulyukov 2018: mean 12-month SCORE_BCVA
+change decreases linearly with baseline SCORE_BCVA (“for every 10
+letters of lower baseline SCORE_BCVA there are 3 letter gains in
+SCORE_BCVA improvement”).</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cfb_baseline</span> <span class="op">&lt;-</span> <span class="va">sim_pooled</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">id</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span>bcva_0 <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/nth.html" class="external-link">first</a></span><span class="op">(</span><span class="va">bcva</span><span class="op">)</span>, bcva_12 <span class="op">=</span> <span class="va">bcva</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.min.html" class="external-link">which.min</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">time</span> <span class="op">-</span> <span class="fl">336</span><span class="op">)</span><span class="op">)</span><span class="op">]</span>,</span>
-<span>            BCVA   <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/nth.html" class="external-link">first</a></span><span class="op">(</span><span class="va">BCVA</span><span class="op">)</span>, AGE <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/nth.html" class="external-link">first</a></span><span class="op">(</span><span class="va">AGE</span><span class="op">)</span>, .groups <span class="op">=</span> <span class="st">"drop"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>            SCORE_BCVA   <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/nth.html" class="external-link">first</a></span><span class="op">(</span><span class="va">SCORE_BCVA</span><span class="op">)</span>, AGE <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/nth.html" class="external-link">first</a></span><span class="op">(</span><span class="va">AGE</span><span class="op">)</span>, .groups <span class="op">=</span> <span class="st">"drop"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>delta_bcva_12 <span class="op">=</span> <span class="va">bcva_12</span> <span class="op">-</span> <span class="va">bcva_0</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">bcva_bins</span> <span class="op">&lt;-</span> <span class="va">cfb_baseline</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>bcva_bin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/cut.html" class="external-link">cut</a></span><span class="op">(</span><span class="va">BCVA</span>, breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">90</span>, by <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>, include.lowest <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>bcva_bin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/cut.html" class="external-link">cut</a></span><span class="op">(</span><span class="va">SCORE_BCVA</span>, breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">90</span>, by <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>, include.lowest <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">bcva_bin</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span>mean_BCVA <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">BCVA</span><span class="op">)</span>, mean_delta <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">delta_bcva_12</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span>mean_BCVA <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">SCORE_BCVA</span><span class="op">)</span>, mean_delta <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">delta_bcva_12</span><span class="op">)</span>,</span>
 <span>            n <span class="op">=</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html" class="external-link">n</a></span><span class="op">(</span><span class="op">)</span>, .groups <span class="op">=</span> <span class="st">"drop"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">n</span> <span class="op">&gt;=</span> <span class="fl">5</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">cfb_baseline</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">BCVA</span>, <span class="va">delta_bcva_12</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">cfb_baseline</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">SCORE_BCVA</span>, <span class="va">delta_bcva_12</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span>alpha <span class="op">=</span> <span class="fl">0.12</span>, size <span class="op">=</span> <span class="fl">0.6</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_smooth.html" class="external-link">geom_smooth</a></span><span class="op">(</span>method <span class="op">=</span> <span class="st">"lm"</span>, formula <span class="op">=</span> <span class="va">y</span> <span class="op">~</span> <span class="va">x</span>, se <span class="op">=</span> <span class="cn">FALSE</span>, colour <span class="op">=</span> <span class="st">"steelblue"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">bcva_bins</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">mean_BCVA</span>, <span class="va">mean_delta</span><span class="op">)</span>,</span>
 <span>             colour <span class="op">=</span> <span class="st">"firebrick"</span>, size <span class="op">=</span> <span class="fl">2.5</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
-<span>    x <span class="op">=</span> <span class="st">"Baseline BCVA (ETDRS letters)"</span>,</span>
-<span>    y <span class="op">=</span> <span class="st">"BCVA change at month 12 (ETDRS letters)"</span>,</span>
-<span>    title <span class="op">=</span> <span class="st">"Figure 4a analogue — BCVA change vs. baseline BCVA (pooled cohort)"</span>,</span>
+<span>    x <span class="op">=</span> <span class="st">"Baseline SCORE_BCVA (ETDRS letters)"</span>,</span>
+<span>    y <span class="op">=</span> <span class="st">"SCORE_BCVA change at month 12 (ETDRS letters)"</span>,</span>
+<span>    title <span class="op">=</span> <span class="st">"Figure 4a analogue — SCORE_BCVA change vs. baseline SCORE_BCVA (pooled cohort)"</span>,</span>
 <span>    caption <span class="op">=</span> <span class="st">"Blue line = linear fit. Red points = per-10-letter-bin means. Replicates Figure 4a of Mulyukov 2018."</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
 <p><img src="Mulyukov_2018_ranibizumab_files/figure-html/figure-4a-1.png" class="r-plt" alt="" width="672"></p>
 </div>
 <div class="section level3">
-<h3 id="figure-4b-analogue-dependence-of-12-month-bcva-change-on-age">Figure 4b analogue — dependence of 12-month BCVA change on age<a class="anchor" aria-label="anchor" href="#figure-4b-analogue-dependence-of-12-month-bcva-change-on-age"></a>
+<h3 id="figure-4b-analogue-dependence-of-12-month-score_bcva-change-on-age">Figure 4b analogue — dependence of 12-month SCORE_BCVA change on
+age<a class="anchor" aria-label="anchor" href="#figure-4b-analogue-dependence-of-12-month-score_bcva-change-on-age"></a>
 </h3>
 <p>Replicates Figure 4b of Mulyukov 2018: older patients show smaller
-BCVA gains (≈ 4-letter reduction from age 65 to 85 at the reference
-baseline BCVA).</p>
+SCORE_BCVA gains (≈ 4-letter reduction from age 65 to 85 at the
+reference baseline SCORE_BCVA).</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">age_bins</span> <span class="op">&lt;-</span> <span class="va">cfb_baseline</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>age_bin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/cut.html" class="external-link">cut</a></span><span class="op">(</span><span class="va">AGE</span>, breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">50</span>, <span class="fl">100</span>, by <span class="op">=</span> <span class="fl">5</span><span class="op">)</span>, include.lowest <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -1544,8 +1549,8 @@ baseline BCVA).</p>
 <span>             colour <span class="op">=</span> <span class="st">"firebrick"</span>, size <span class="op">=</span> <span class="fl">2.5</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
 <span>    x <span class="op">=</span> <span class="st">"Age (years)"</span>,</span>
-<span>    y <span class="op">=</span> <span class="st">"BCVA change at month 12 (ETDRS letters)"</span>,</span>
-<span>    title <span class="op">=</span> <span class="st">"Figure 4b analogue — BCVA change vs. age (pooled cohort)"</span>,</span>
+<span>    y <span class="op">=</span> <span class="st">"SCORE_BCVA change at month 12 (ETDRS letters)"</span>,</span>
+<span>    title <span class="op">=</span> <span class="st">"Figure 4b analogue — SCORE_BCVA change vs. age (pooled cohort)"</span>,</span>
 <span>    caption <span class="op">=</span> <span class="st">"Blue line = linear fit. Red points = per-5-year-bin means. Replicates Figure 4b of Mulyukov 2018."</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
 <p><img src="Mulyukov_2018_ranibizumab_files/figure-html/figure-4b-1.png" class="r-plt" alt="" width="672"></p>
@@ -1554,8 +1559,8 @@ baseline BCVA).</p>
 <h3 id="natural-progression-check-untreated-decay-toward-gss">Natural-progression check — untreated decay toward
 <code>gss</code><a class="anchor" aria-label="anchor" href="#natural-progression-check-untreated-decay-toward-gss"></a>
 </h3>
-<p>No-dose simulation confirms the Methods-stated behaviour: BCVA decays
-from the observed baseline toward the steady-state value
+<p>No-dose simulation confirms the Methods-stated behaviour: SCORE_BCVA
+decays from the observed baseline toward the steady-state value
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>g</mi><mrow><mi>s</mi><mi>s</mi></mrow></msub><mo>≈</mo><mn>11</mn></mrow><annotation encoding="application/x-tex">g_{ss} \approx 11</annotation></semantics></math>
 ETDRS letters at rate
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>k</mi><mrow><mi>o</mi><mi>u</mi><mi>t</mi></mrow></msub><mo>=</mo><mn>0.19</mn></mrow><annotation encoding="application/x-tex">k_{out} = 0.19</annotation></semantics></math>/year
@@ -1566,7 +1571,7 @@ gss).</p>
 <code class="sourceCode R"><span><span class="va">ev_natural</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  id <span class="op">=</span> <span class="fl">1L</span>, time <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">365</span><span class="op">*</span><span class="fl">4</span>, length.out <span class="op">=</span> <span class="fl">100</span><span class="op">)</span>,</span>
 <span>  evid <span class="op">=</span> <span class="fl">0L</span>, amt <span class="op">=</span> <span class="fl">0</span>, cmt <span class="op">=</span> <span class="st">"bcva"</span>,</span>
-<span>  AGE <span class="op">=</span> <span class="fl">77</span>, BCVA <span class="op">=</span> <span class="fl">55</span></span>
+<span>  AGE <span class="op">=</span> <span class="fl">77</span>, SCORE_BCVA <span class="op">=</span> <span class="fl">55</span></span>
 <span><span class="op">)</span></span>
 <span><span class="va">sim_natural</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod_typical</span>, events <span class="op">=</span> <span class="va">ev_natural</span>, returnType <span class="op">=</span> <span class="st">"data.frame"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etag0res', 'etalkout', 'etalemaxss', 'etaldemax0'</span></span>
@@ -1574,10 +1579,10 @@ gss).</p>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">time</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">365</span>, <span class="fl">365</span><span class="op">*</span><span class="fl">2</span>, <span class="fl">365</span><span class="op">*</span><span class="fl">3</span>, <span class="fl">365</span><span class="op">*</span><span class="fl">4</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/transmute.html" class="external-link">transmute</a></span><span class="op">(</span>year <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">time</span> <span class="op">/</span> <span class="fl">365</span>, <span class="fl">1</span><span class="op">)</span>, bcva_predicted <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">bcva</span>, <span class="fl">2</span><span class="op">)</span>,</span>
 <span>            expected_decay_fraction <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="op">-</span><span class="fl">0.19</span> <span class="op">*</span> <span class="op">(</span><span class="va">time</span><span class="op">/</span><span class="fl">365</span><span class="op">)</span><span class="op">)</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span>caption <span class="op">=</span> <span class="st">"Untreated BCVA trajectory from baseline 55 toward gss = 11 letters."</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span>caption <span class="op">=</span> <span class="st">"Untreated SCORE_BCVA trajectory from baseline 55 toward gss = 11 letters."</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
-<caption>Untreated BCVA trajectory from baseline 55 toward gss = 11
-letters.</caption>
+<caption>Untreated SCORE_BCVA trajectory from baseline 55 toward gss =
+11 letters.</caption>
 <thead><tr class="header">
 <th align="right">year</th>
 <th align="right">bcva_predicted</th>
@@ -1614,7 +1619,7 @@ regimen.</p>
 <span>    evid <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">200</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>    amt <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">200</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>    cmt <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"central"</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"bcva"</span>, <span class="fl">200</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>    AGE <span class="op">=</span> <span class="fl">77</span>, BCVA <span class="op">=</span> <span class="fl">55</span>,</span>
+<span>    AGE <span class="op">=</span> <span class="fl">77</span>, SCORE_BCVA <span class="op">=</span> <span class="fl">55</span>,</span>
 <span>    dose_group <span class="op">=</span> <span class="st">"0.5 mg IVT single"</span></span>
 <span>  <span class="op">)</span>,</span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
@@ -1622,7 +1627,7 @@ regimen.</p>
 <span>    evid <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">200</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>    amt <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2.0</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">200</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>    cmt <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"central"</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"bcva"</span>, <span class="fl">200</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>    AGE <span class="op">=</span> <span class="fl">77</span>, BCVA <span class="op">=</span> <span class="fl">55</span>,</span>
+<span>    AGE <span class="op">=</span> <span class="fl">77</span>, SCORE_BCVA <span class="op">=</span> <span class="fl">55</span>,</span>
 <span>    dose_group <span class="op">=</span> <span class="st">"2.0 mg IVT single"</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">)</span></span>
@@ -1693,7 +1698,7 @@ summary above.</li>
 <ul>
 <li>
 <strong>Single residual-error SD is exposed.</strong> The paper
-reports two additive residual-error SDs on BCVA in Table 2 —
+reports two additive residual-error SDs on SCORE_BCVA in Table 2 —
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>σ</mi><mrow><mi>t</mi><mi>r</mi><mi>e</mi><mi>a</mi><mi>t</mi><mi>m</mi><mi>e</mi><mi>n</mi><mi>t</mi></mrow></msub><mo>=</mo><mn>5</mn></mrow><annotation encoding="application/x-tex">\sigma_{treatment} = 5</annotation></semantics></math>
 letters for treated arms and
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>σ</mi><mrow><mi>s</mi><mi>h</mi><mi>a</mi><mi>m</mi></mrow></msub><mo>=</mo><mn>7</mn></mrow><annotation encoding="application/x-tex">\sigma_{sham} = 7</annotation></semantics></math>
@@ -1705,8 +1710,8 @@ arm with the paper’s residual error, override <code>addSd_bcva</code> to
 <code>7</code> after loading the model. The typical- value and
 individual structural trajectories are unchanged.</li>
 <li>
-<strong>Baseline BCVA treated as a covariate.</strong> The paper
-writes
+<strong>Baseline SCORE_BCVA treated as a covariate.</strong> The
+paper writes
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>g</mi><mrow><mi>i</mi><mo>,</mo><mn>0</mn></mrow></msub><mo>=</mo><mi>B</mi><mi>V</mi><msub><mi>A</mi><mi>i</mi></msub><mo>+</mo><msub><mi>η</mi><mrow><mn>1</mn><mo>,</mo><mi>i</mi></mrow></msub></mrow><annotation encoding="application/x-tex">g_{i,0} = BVA_i + \eta_{1,i}</annotation></semantics></math>
 where
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>B</mi><mi>V</mi><msub><mi>A</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">BVA_i</annotation></semantics></math>
@@ -1714,11 +1719,11 @@ is the observed baseline VA for subject
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math>.
 We expose
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>B</mi><mi>V</mi><msub><mi>A</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">BVA_i</annotation></semantics></math>
-as the canonical covariate column <code>BCVA</code> and pair it with an
-additive typical-value theta <code>g0res = fixed(0)</code> so the eta
-pairing satisfies the <code>eta&lt;x&gt;</code>-pairs-with-
+as the canonical covariate column <code>SCORE_BCVA</code> and pair it
+with an additive typical-value theta <code>g0res = fixed(0)</code> so
+the eta pairing satisfies the <code>eta&lt;x&gt;</code>-pairs-with-
 <code>&lt;x&gt;</code> library convention. Users must supply per-subject
-<code>BCVA</code> at the time of the first dose (time 0).</li>
+<code>SCORE_BCVA</code> at the time of the first dose (time 0).</li>
 <li>
 <strong><code>kEmax</code> taken from Table 2 (0.046/day; t½ = 15
 days), not from the Methods text (log(2)/14 = 0.0495/day; t½ = 14
@@ -1748,8 +1753,8 @@ diagonal (independent) IIV; the upgrade preserves the marginal SDs / CVs
 and adds the published correlations, the strongest of which is
 r(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>k</mi><mrow><mi>o</mi><mi>u</mi><mi>t</mi></mrow></msub><annotation encoding="application/x-tex">k_{out}</annotation></semantics></math>,
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">Δ</mi><msubsup><mi>E</mi><mrow><mi mathvariant="normal">max</mi><mo>⁡</mo></mrow><mn>0</mn></msubsup></mrow><annotation encoding="application/x-tex">\Delta E_{\max}^0</annotation></semantics></math>)
-= −0.89 (a patient with a faster natural BCVA decline tends to start
-with a larger acute treatment effect).</li>
+= −0.89 (a patient with a faster natural SCORE_BCVA decline tends to
+start with a larger acute treatment effect).</li>
 <li>
 <strong>Log-normal mean ≠ typical value.</strong> The paper reports
 extremely large CVs on the PD parameters (CV% 730 for
@@ -1759,7 +1764,7 @@ extremely large CVs on the PD parameters (CV% 730 for
 Because
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>E</mi><mo stretchy="false" form="prefix">[</mo><mrow><mi mathvariant="normal">exp</mi><mo>⁡</mo></mrow><mo stretchy="false" form="prefix">(</mo><mi>η</mi><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="postfix">]</mo><mo>=</mo><mrow><mi mathvariant="normal">exp</mi><mo>⁡</mo></mrow><mo stretchy="false" form="prefix">(</mo><msup><mi>ω</mi><mn>2</mn></msup><mi>/</mi><mn>2</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">E[\exp(\eta)] = \exp(\omega^2/2)</annotation></semantics></math>,
 the population mean of a simulation with full IIV is materially larger
-than the typical-value trajectory. The mean BCVA-change curve in a
+than the typical-value trajectory. The mean SCORE_BCVA-change curve in a
 1,000-subject simulation of the HARBOR 0.5 mg arm is what the paper’s
 Figure 3 depicts, not the typical-value trajectory. The
 <code>cohort</code> summary table above includes the mean delta
@@ -1778,8 +1783,8 @@ ETDRS letters, not a concentration — the <code>Cc</code> convention
 <strong>Race-ethnicity and body-weight distributions not
 simulated.</strong> Table 1 of the paper does not report race or
 body-weight breakdowns, so the virtual cohorts use only age and baseline
-BCVA. This omission does not affect model structure (no race / weight
-covariates were retained).</li>
+SCORE_BCVA. This omission does not affect model structure (no race /
+weight covariates were retained).</li>
 <li>
 <strong>No errata found.</strong> A search of the journal landing
 page and a PubMed/Google Scholar query (“Mulyukov 2018 ranibizumab

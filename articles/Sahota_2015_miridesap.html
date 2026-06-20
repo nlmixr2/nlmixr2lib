@@ -1200,40 +1200,40 @@ strata described in Sahota 2015 Table 1.</p>
 <span>  <span class="va">out</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">dose_rows</span>, <span class="va">obs_rows</span><span class="op">)</span></span>
 <span>  <span class="va">out</span><span class="op">$</span><span class="va">CRCL</span>    <span class="op">&lt;-</span> <span class="va">crcl</span></span>
 <span>  <span class="va">out</span><span class="op">$</span><span class="va">SEXF</span>    <span class="op">&lt;-</span> <span class="va">sexf</span></span>
-<span>  <span class="va">out</span><span class="op">$</span><span class="va">AMLOAD</span>  <span class="op">&lt;-</span> <span class="va">amload</span></span>
-<span>  <span class="va">out</span><span class="op">$</span><span class="va">AMLIVER</span> <span class="op">&lt;-</span> <span class="va">amliver</span></span>
+<span>  <span class="va">out</span><span class="op">$</span><span class="va">DIS_AMYLOID_LOAD</span>  <span class="op">&lt;-</span> <span class="va">amload</span></span>
+<span>  <span class="va">out</span><span class="op">$</span><span class="va">DIS_AMYLOID_LIVER</span> <span class="op">&lt;-</span> <span class="va">amliver</span></span>
 <span>  <span class="va">out</span><span class="op">$</span><span class="va">cohort</span>  <span class="op">&lt;-</span> <span class="va">cohort_label</span></span>
 <span>  <span class="va">out</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="va">out</span><span class="op">$</span><span class="va">id</span>, <span class="va">out</span><span class="op">$</span><span class="va">time</span>, <span class="op">-</span><span class="va">out</span><span class="op">$</span><span class="va">evid</span><span class="op">)</span>, <span class="op">]</span></span>
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="co"># Replicate the Figure 5 left-column scenarios: a typical male, 20 mg/h</span></span>
 <span><span class="co"># IV infusion for 48 h followed by three 60 mg SC doses every 8 h, with</span></span>
-<span><span class="co"># AMLOAD swept across 0 (no amyloid), 1 (small), 2 (moderate), and 3</span></span>
-<span><span class="co"># (large) and AMLIVER fixed at 0 for these AMLOAD-sweep panels.</span></span>
+<span><span class="co"># DIS_AMYLOID_LOAD swept across 0 (no amyloid), 1 (small), 2 (moderate), and 3</span></span>
+<span><span class="co"># (large) and DIS_AMYLOID_LIVER fixed at 0 for these DIS_AMYLOID_LOAD-sweep panels.</span></span>
 <span><span class="va">sample_grid</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">80</span>, by <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">81</span>, <span class="fl">720</span>, by <span class="op">=</span> <span class="fl">4</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">events_amload</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span></span>
 <span>  <span class="fu">make_cohort</span><span class="op">(</span><span class="fl">1L</span>, crcl <span class="op">=</span> <span class="fl">90</span>, sexf <span class="op">=</span> <span class="fl">0</span>, amload <span class="op">=</span> <span class="fl">0</span>, amliver <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>              dose_mg <span class="op">=</span> <span class="fl">20</span> <span class="op">*</span> <span class="fl">48</span>, infusion_dur_h <span class="op">=</span> <span class="fl">48</span>,</span>
-<span>              sample_grid <span class="op">=</span> <span class="va">sample_grid</span>, cohort_label <span class="op">=</span> <span class="st">"AMLOAD = 0 (healthy)"</span>,</span>
+<span>              sample_grid <span class="op">=</span> <span class="va">sample_grid</span>, cohort_label <span class="op">=</span> <span class="st">"DIS_AMYLOID_LOAD = 0 (healthy)"</span>,</span>
 <span>              id_offset <span class="op">=</span> <span class="fl">0L</span><span class="op">)</span>,</span>
 <span>  <span class="fu">make_cohort</span><span class="op">(</span><span class="fl">1L</span>, crcl <span class="op">=</span> <span class="fl">90</span>, sexf <span class="op">=</span> <span class="fl">0</span>, amload <span class="op">=</span> <span class="fl">1</span>, amliver <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>              dose_mg <span class="op">=</span> <span class="fl">20</span> <span class="op">*</span> <span class="fl">48</span>, infusion_dur_h <span class="op">=</span> <span class="fl">48</span>,</span>
-<span>              sample_grid <span class="op">=</span> <span class="va">sample_grid</span>, cohort_label <span class="op">=</span> <span class="st">"AMLOAD = 1 (small)"</span>,</span>
+<span>              sample_grid <span class="op">=</span> <span class="va">sample_grid</span>, cohort_label <span class="op">=</span> <span class="st">"DIS_AMYLOID_LOAD = 1 (small)"</span>,</span>
 <span>              id_offset <span class="op">=</span> <span class="fl">1L</span><span class="op">)</span>,</span>
 <span>  <span class="fu">make_cohort</span><span class="op">(</span><span class="fl">1L</span>, crcl <span class="op">=</span> <span class="fl">90</span>, sexf <span class="op">=</span> <span class="fl">0</span>, amload <span class="op">=</span> <span class="fl">2</span>, amliver <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>              dose_mg <span class="op">=</span> <span class="fl">20</span> <span class="op">*</span> <span class="fl">48</span>, infusion_dur_h <span class="op">=</span> <span class="fl">48</span>,</span>
-<span>              sample_grid <span class="op">=</span> <span class="va">sample_grid</span>, cohort_label <span class="op">=</span> <span class="st">"AMLOAD = 2 (moderate)"</span>,</span>
+<span>              sample_grid <span class="op">=</span> <span class="va">sample_grid</span>, cohort_label <span class="op">=</span> <span class="st">"DIS_AMYLOID_LOAD = 2 (moderate)"</span>,</span>
 <span>              id_offset <span class="op">=</span> <span class="fl">2L</span><span class="op">)</span>,</span>
 <span>  <span class="fu">make_cohort</span><span class="op">(</span><span class="fl">1L</span>, crcl <span class="op">=</span> <span class="fl">90</span>, sexf <span class="op">=</span> <span class="fl">0</span>, amload <span class="op">=</span> <span class="fl">3</span>, amliver <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>              dose_mg <span class="op">=</span> <span class="fl">20</span> <span class="op">*</span> <span class="fl">48</span>, infusion_dur_h <span class="op">=</span> <span class="fl">48</span>,</span>
-<span>              sample_grid <span class="op">=</span> <span class="va">sample_grid</span>, cohort_label <span class="op">=</span> <span class="st">"AMLOAD = 3 (large)"</span>,</span>
+<span>              sample_grid <span class="op">=</span> <span class="va">sample_grid</span>, cohort_label <span class="op">=</span> <span class="st">"DIS_AMYLOID_LOAD = 3 (large)"</span>,</span>
 <span>              id_offset <span class="op">=</span> <span class="fl">3L</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/duplicated.html" class="external-link">anyDuplicated</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">events_amload</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"id"</span>, <span class="st">"time"</span>, <span class="st">"evid"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Replicate the Figure 5 right-column scenarios: AMLOAD fixed at 2</span></span>
-<span><span class="co"># (moderate), AMLIVER fixed at 0, CRCL swept from severe impairment (15)</span></span>
+<span><span class="co"># Replicate the Figure 5 right-column scenarios: DIS_AMYLOID_LOAD fixed at 2</span></span>
+<span><span class="co"># (moderate), DIS_AMYLOID_LIVER fixed at 0, CRCL swept from severe impairment (15)</span></span>
 <span><span class="co"># to normal (90) so the renal effect on CPHPC PK is visible.</span></span>
 <span><span class="va">events_crcl</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span></span>
 <span>  <span class="fu">make_cohort</span><span class="op">(</span><span class="fl">1L</span>, crcl <span class="op">=</span> <span class="fl">15</span>, sexf <span class="op">=</span> <span class="fl">0</span>, amload <span class="op">=</span> <span class="fl">2</span>, amliver <span class="op">=</span> <span class="fl">0</span>,</span>
@@ -1276,7 +1276,7 @@ strata described in Sahota 2015 Table 1.</p>
 </h2>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Replicates the top-left panel of Sahota 2015 Figure 5: typical-value</span></span>
-<span><span class="co"># CPHPC plasma profile across amyloid loads. AMLOAD does not enter the</span></span>
+<span><span class="co"># CPHPC plasma profile across amyloid loads. DIS_AMYLOID_LOAD does not enter the</span></span>
 <span><span class="co"># CPHPC PK pathway, so the four traces overlay -- consistent with the</span></span>
 <span><span class="co"># paper's Discussion ("the amyloid load, however, had no effect on the</span></span>
 <span><span class="co"># PK profile of CPHPC").</span></span>
@@ -1292,7 +1292,7 @@ strata described in Sahota 2015 Table 1.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Replicates the middle-left panel of Sahota 2015 Figure 5: SAP profile</span></span>
 <span><span class="co"># over the first 80 h. The depletion nadir deepens to ~0.5 mg/L in</span></span>
-<span><span class="co"># AMLOAD = 0/1 subjects and is shallower in AMLOAD = 2/3 because the</span></span>
+<span><span class="co"># DIS_AMYLOID_LOAD = 0/1 subjects and is shallower in DIS_AMYLOID_LOAD = 2/3 because the</span></span>
 <span><span class="co"># amyloid load increases the peripheral SAP volume V4, releasing</span></span>
 <span><span class="co"># additional SAP into circulation.</span></span>
 <span><span class="va">sim_amload</span> <span class="op">|&gt;</span></span>
@@ -1307,7 +1307,7 @@ strata described in Sahota 2015 Table 1.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Replicates the bottom-left panel of Sahota 2015 Figure 5: SAP profile</span></span>
 <span><span class="co"># across the full 0-720 h horizon. Recovery to baseline takes ~200 h in</span></span>
-<span><span class="co"># AMLOAD = 0/1 and extends well past 600 h in AMLOAD = 3, mirroring the</span></span>
+<span><span class="co"># DIS_AMYLOID_LOAD = 0/1 and extends well past 600 h in DIS_AMYLOID_LOAD = 3, mirroring the</span></span>
 <span><span class="co"># paper's narrative ("the plasma SAP concentration in this patient</span></span>
 <span><span class="co"># returned to its baseline value after more than 600 hours compared</span></span>
 <span><span class="co"># with 200 hours in a patient with no/small amyloid load").</span></span>
@@ -1340,10 +1340,10 @@ strata described in Sahota 2015 Table 1.</p>
 </h2>
 <p>Sahota 2015 does not tabulate NCA parameters in the main paper, so
 the PKNCA block below computes them on the simulated CPHPC profiles for
-the AMLOAD-sweep cohort only (the SAP output is a PD response of total
-plasma SAP rather than a classic concentration-time profile, and the
-paper’s clinical objective is SAP depletion, not exposure). The
-treatment grouping uses the AMLOAD-derived cohort label so the
+the DIS_AMYLOID_LOAD-sweep cohort only (the SAP output is a PD response
+of total plasma SAP rather than a classic concentration-time profile,
+and the paper’s clinical objective is SAP depletion, not exposure). The
+treatment grouping uses the DIS_AMYLOID_LOAD-derived cohort label so the
 single-row reference summary matches the figure replicates above.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim_nca</span> <span class="op">&lt;-</span> <span class="va">sim_amload</span> <span class="op">|&gt;</span></span>
@@ -1370,19 +1370,19 @@ single-row reference summary matches the figure replicates above.</p>
 <span><span class="va">nca_res</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/warning.html" class="external-link">suppressWarnings</a></span><span class="op">(</span><span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="https://humanpred.github.io/pknca/reference/pk.nca.html" class="external-link">pk.nca</a></span><span class="op">(</span><span class="va">nca_data</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">nca_summary</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">nca_res</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">nca_summary</span>,</span>
-<span>             caption <span class="op">=</span> <span class="st">"Simulated CPHPC NCA parameters by AMLOAD-sweep cohort (typical-value subject; 20 mg/h IV infusion x 48 h)."</span><span class="op">)</span></span></code></pre></div>
-<table class="table">
-<caption>Simulated CPHPC NCA parameters by AMLOAD-sweep cohort
+<span>             caption <span class="op">=</span> <span class="st">"Simulated CPHPC NCA parameters by DIS_AMYLOID_LOAD-sweep cohort (typical-value subject; 20 mg/h IV infusion x 48 h)."</span><span class="op">)</span></span></code></pre></div>
+<table style="width:100%;" class="table">
+<caption>Simulated CPHPC NCA parameters by DIS_AMYLOID_LOAD-sweep cohort
 (typical-value subject; 20 mg/h IV infusion x 48 h).</caption>
 <colgroup>
-<col width="9%">
+<col width="7%">
+<col width="5%">
+<col width="42%">
+<col width="3%">
 <col width="6%">
-<col width="33%">
-<col width="4%">
-<col width="7%">
-<col width="7%">
-<col width="15%">
-<col width="16%">
+<col width="6%">
+<col width="13%">
+<col width="14%">
 </colgroup>
 <thead><tr class="header">
 <th align="right">start</th>
@@ -1398,7 +1398,7 @@ single-row reference summary matches the figure replicates above.</p>
 <tr class="odd">
 <td align="right">0</td>
 <td align="right">Inf</td>
-<td align="left">AMLOAD = 0 (healthy)</td>
+<td align="left">DIS_AMYLOID_LOAD = 0 (healthy)</td>
 <td align="left">1</td>
 <td align="left">2890</td>
 <td align="left">48.0</td>
@@ -1408,7 +1408,7 @@ single-row reference summary matches the figure replicates above.</p>
 <tr class="even">
 <td align="right">0</td>
 <td align="right">Inf</td>
-<td align="left">AMLOAD = 1 (small)</td>
+<td align="left">DIS_AMYLOID_LOAD = 1 (small)</td>
 <td align="left">1</td>
 <td align="left">2890</td>
 <td align="left">48.0</td>
@@ -1418,7 +1418,7 @@ single-row reference summary matches the figure replicates above.</p>
 <tr class="odd">
 <td align="right">0</td>
 <td align="right">Inf</td>
-<td align="left">AMLOAD = 2 (moderate)</td>
+<td align="left">DIS_AMYLOID_LOAD = 2 (moderate)</td>
 <td align="left">1</td>
 <td align="left">2880</td>
 <td align="left">48.0</td>
@@ -1428,7 +1428,7 @@ single-row reference summary matches the figure replicates above.</p>
 <tr class="even">
 <td align="right">0</td>
 <td align="right">Inf</td>
-<td align="left">AMLOAD = 3 (large)</td>
+<td align="left">DIS_AMYLOID_LOAD = 3 (large)</td>
 <td align="left">1</td>
 <td align="left">2870</td>
 <td align="left">48.0</td>

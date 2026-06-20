@@ -29,7 +29,7 @@ library(ggplot2)
 
 - Citation: Okada H, Liao S, Khouri L, Liao L, Hruska MW, Nagata Y,
   Hasegawa M, Gewitz A, Marsteller D. Continuous-Time Markov Population
-  PK/PD Modeling of Longitudinal EASI Categorical Score in Atopic
+  PK/PD Modeling of Longitudinal SCORE_EASI Categorical Score in Atopic
   Dermatitis Treated With Rocatinlimab, an Anti-OX40 Monoclonal
   Antibody. CPT Pharmacometrics Syst Pharmacol. 2025;14(10):1587-1597.
   <doi:10.1002/psp4.70069>
@@ -53,8 +53,8 @@ enters allometrically on CL, V1, and Vmax; serum albumin acts as a
 power-law covariate on CL; plaque psoriasis shifts CL multiplicatively;
 and healthy-volunteer status shifts Vmax multiplicatively.
 
-The continuous-time Markov PK/PD component for EASI categorical response
-— the main contribution of the paper — is **not** part of this
+The continuous-time Markov PK/PD component for SCORE_EASI categorical
+response — the main contribution of the paper — is **not** part of this
 nlmixr2lib model; only the population PK structure is packaged here.
 
 ## Population
@@ -492,7 +492,8 @@ ggplot(typ_check, aes(x = time_d, y = nl_pct)) +
   matching the NONMEM control-stream formulation. Align datasets so the
   first rocatinlimab dose is at `t = 0` to reproduce the supplement’s
   published profile.
-- The continuous-time Markov PK/PD model on EASI categorical scores
-  (Okada 2025 main contribution) is **not** packaged here. nlmixr2lib
-  focuses on PK structures; the categorical-response component would
-  need a separate handling and a different validation strategy.
+- The continuous-time Markov PK/PD model on SCORE_EASI categorical
+  scores (Okada 2025 main contribution) is **not** packaged here.
+  nlmixr2lib focuses on PK structures; the categorical-response
+  component would need a separate handling and a different validation
+  strategy.

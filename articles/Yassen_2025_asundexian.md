@@ -126,7 +126,7 @@ make_cohort <- function(n, dose_mg, id_offset = 0L) {
     WT         = wt_kg,
     SEXF       = sexf,
     CRCL       = egfr,
-    CYP3A4_INH = cyp3a4_inh,
+    CONMED_CYP3A4_INH = cyp3a4_inh,
     treatment  = sprintf("%d mg OD", dose_mg)
   )
 
@@ -162,7 +162,7 @@ stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
 mod <- readModelDb("Yassen_2025_asundexian")
 sim <- rxode2::rxSolve(
   mod, events = events,
-  keep = c("treatment", "AGE", "WT", "SEXF", "CRCL", "CYP3A4_INH")
+  keep = c("treatment", "AGE", "WT", "SEXF", "CRCL", "CONMED_CYP3A4_INH")
 ) |>
   as.data.frame()
 #> ℹ parameter labels from comments will be replaced by 'label()'
@@ -223,10 +223,10 @@ and CYP3A4 inhibitor coadministration.
 
 ``` r
 
-make_typical_subject <- function(AGE, WT, SEXF, CRCL, CYP3A4_INH, label) {
+make_typical_subject <- function(AGE, WT, SEXF, CRCL, CONMED_CYP3A4_INH, label) {
   tibble::tibble(
     id = 1L, AGE = AGE, WT = WT, SEXF = SEXF, CRCL = CRCL,
-    CYP3A4_INH = CYP3A4_INH, label = label
+    CONMED_CYP3A4_INH = CONMED_CYP3A4_INH, label = label
   )
 }
 
@@ -257,13 +257,13 @@ obs_grid <- sort(unique(obs_grid))
 build_typical_events <- function(cov_row) {
   dose_rows <- tibble::tibble(
     id = 1L, AGE = cov_row$AGE, WT = cov_row$WT, SEXF = cov_row$SEXF,
-    CRCL = cov_row$CRCL, CYP3A4_INH = cov_row$CYP3A4_INH,
+    CRCL = cov_row$CRCL, CONMED_CYP3A4_INH = cov_row$CONMED_CYP3A4_INH,
     time = (seq_len(n_doses) - 1L) * tau,
     evid = 1L, amt = dose_mg, cmt = "depot"
   )
   obs_rows <- tibble::tibble(
     id = 1L, AGE = cov_row$AGE, WT = cov_row$WT, SEXF = cov_row$SEXF,
-    CRCL = cov_row$CRCL, CYP3A4_INH = cov_row$CYP3A4_INH,
+    CRCL = cov_row$CRCL, CONMED_CYP3A4_INH = cov_row$CONMED_CYP3A4_INH,
     time = obs_grid,
     evid = 0L, amt = 0, cmt = "central"
   )
@@ -455,7 +455,7 @@ is structural in the linear PK model.
 - **Concomitant CYP3A4 inhibitor pooling.** Yassen 2025 reports that
   76.6% of PACIFIC-STROKE participants had any concomitant CYP3A4
   inhibitor; the weak / moderate / strong split is reported separately
-  (Table 3). The simulation samples a single binary `CYP3A4_INH`
+  (Table 3). The simulation samples a single binary `CONMED_CYP3A4_INH`
   indicator at the pooled 76.6% rate, matching the model’s covariate
   definition.
 - **Race distribution and ethnicity.** Race was tested but not retained
@@ -474,9 +474,9 @@ is structural in the linear PK model.
 - **Residual error encoding.** NONMEM “additive on log scale” with
   sigma^2 = 0.0619 maps to nlmixr2’s `Cc ~ prop(propSd)` with propSd =
   sqrt(0.0619) ~ 0.2488 in the linear-concentration space.
-- **CYP3A4_INH canonical proposal.** The covariate column `CYP3A4_INH`
-  is proposed in this extraction as a new canonical for binary
-  CYP3A4-inhibitor coadministration; see
+- **CONMED_CYP3A4_INH canonical proposal.** The covariate column
+  `CONMED_CYP3A4_INH` is proposed in this extraction as a new canonical
+  for binary CYP3A4-inhibitor coadministration; see
   `inst/references/covariate-columns.md`.
 - **New canonical naming.** The simulation uses `CRCL` for CKD-EPI eGFR
   (canonical name in `inst/references/covariate-columns.md`); the source

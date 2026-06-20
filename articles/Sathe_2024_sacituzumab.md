@@ -139,7 +139,7 @@ make_cohort <- function(n) {
     WT        = wt,
     ALB       = alb,
     SEXF      = sexf,
-    TUMTP_OTH = tumor_oth,
+    TUMTP_OTHER = tumor_oth,
     cohort    = "10 mg/kg q1q8 of 21-day cycle"
   )
 }
@@ -174,7 +174,7 @@ events <- cov_df |>
     out$WT        <- rows$WT
     out$ALB       <- rows$ALB
     out$SEXF      <- rows$SEXF
-    out$TUMTP_OTH <- rows$TUMTP_OTH
+    out$TUMTP_OTHER <- rows$TUMTP_OTHER
     out$cohort    <- rows$cohort
     out
   }) |>
@@ -199,7 +199,7 @@ per-figure medians:
 mod_typical <- mod |> rxode2::zeroRe()
 
 typical_cov <- data.frame(
-  id = 1, WT = 70, ALB = 38, SEXF = 1, TUMTP_OTH = 0
+  id = 1, WT = 70, ALB = 38, SEXF = 1, TUMTP_OTHER = 0
 )
 typical_events <- expand.grid(
   time = dose_times_h, cmt = c("central", "central_tab"),
@@ -218,7 +218,7 @@ typical_events <- dplyr::bind_rows(typical_events, typical_obs)
 typical_events$WT        <- 70
 typical_events$ALB       <- 38
 typical_events$SEXF      <- 1
-typical_events$TUMTP_OTH <- 0
+typical_events$TUMTP_OTHER <- 0
 
 sim_typical <- rxode2::rxSolve(mod_typical, events = typical_events)
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalkrel', 'etalcl_sn38', 'etalcl_tab', 'etalvc_tab'
@@ -334,7 +334,7 @@ out_bw <- lapply(bw_grid, function(wt) {
   obs <- data.frame(id = 1, time = c(0.001, seq(0.5, 21 * 24, length.out = 250)),
                     cmt = "Cc", amt = NA_real_, rate = NA_real_, evid = 0)
   ev <- bind_rows(ev, obs)
-  ev$WT <- wt; ev$ALB <- 38; ev$SEXF <- 1; ev$TUMTP_OTH <- 0
+  ev$WT <- wt; ev$ALB <- 38; ev$SEXF <- 1; ev$TUMTP_OTHER <- 0
   s <- rxode2::rxSolve(mod_typical, events = ev)
   data.frame(WT = wt, time = s$time, Cc = s$Cc, Cc_tab = s$Cc_tab)
 })

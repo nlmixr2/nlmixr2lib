@@ -73,7 +73,7 @@ estimates as its initial values.
 | (omitted) | `THETA(10)` EMAX2 FIX 0 | TH 10 = 0 | source IF(PREVSCOR.GE.3) branch is `;`-commented out |
 | `led50` (7.69) | `THETA(11)` LNED50 | TH 11 = 7.69E+00 | log ED50 (K-PD exposure units) |
 | (omitted) | `THETA(12)` CL exponent FIX 0 | TH 12 = 0 | source `(CL_IND/39.4)^THETA(12)` term collapses to 1 |
-| `e_hypert_logit` (0.539) | `THETA(13)` Cov11_MHHY | TH 13 = 5.39E-01 | logit shift, MHHY -\> HYPERT |
+| `e_hypert_logit` (0.539) | `THETA(13)` Cov11_MHHY | TH 13 = 5.39E-01 | logit shift, MHHY -\> DIS_HYPERT |
 | `e_regi_bid_logit` (-0.399) | `THETA(14)` Cov13_BID | TH 14 = -3.99E-01 | logit shift, BID -\> REGI_BID |
 | `e_cmax_m1_logit` (0.000902) | `THETA(15)` COV17_CMAXM1 | TH 15 = 9.02E-04 | logit shift / (ng/mL), CMAXM1 -\> CMAX_M1 |
 | `llambda` (-3.32) | `THETA(16)` LNLAMBDA | TH 16 = -3.32E+00 | log Weibull baseline-hazard scale |
@@ -137,7 +137,7 @@ mod0 <- rxode2::zeroRe(mod)  # IIV (etalogit) zeroed for typical-value path
 # weekly AUC dose into central, then dense observation grid 0..12 weeks
 events <- rxode2::et(amt = 20000, time = 0, addl = 11, ii = 1, evid = 1) |>
   rxode2::et(seq(0, 12, by = 0.05))
-events$HYPERT        <- 0
+events$DIS_HYPERT        <- 0
 events$REGI_BID      <- 0     # QD (reference regimen)
 events$CMAX_M1       <- 300   # ng/mL, near the simulated-dataset CMAXM1 for ID=1 (292.15)
 events$DOSE          <- 60    # mg/day
@@ -171,7 +171,7 @@ ggplot(prob_long, aes(time, prob, colour = category)) +
        y = "Probability",
        colour = NULL,
        title = "Typical-value AE-grade probabilities under weekly AUC dosing",
-       subtitle = "DOSE = 60 mg/day, AMT = 20000 weekly AUC, HYPERT = 0, REGI_BID = 0, PREV_AE_SCORE = 0")
+       subtitle = "DOSE = 60 mg/day, AMT = 20000 weekly AUC, DIS_HYPERT = 0, REGI_BID = 0, PREV_AE_SCORE = 0")
 ```
 
 ![](Girard_2012_pimasertib_files/figure-html/prob-trajectory-1.png)
@@ -295,7 +295,7 @@ prev_grid$p1  <- prev_grid$pc1 - prev_grid$pc2
 prev_grid$p0  <- 1 - prev_grid$pc1
 
 knitr::kable(prev_grid[, c("prev", "p0", "p1", "p2")], digits = 4,
-             caption = "Markov-state conditioning: per-grade probabilities at exposure = 6900 (typical mid-week), HYPERT = 0, REGI_BID = 0, CMAX_M1 = 0.")
+             caption = "Markov-state conditioning: per-grade probabilities at exposure = 6900 (typical mid-week), DIS_HYPERT = 0, REGI_BID = 0, CMAX_M1 = 0.")
 ```
 
 | prev |     p0 |     p1 |     p2 |
@@ -306,7 +306,7 @@ knitr::kable(prev_grid[, c("prev", "p0", "p1", "p2")], digits = 4,
 |    3 | 0.2274 | 0.0398 | 0.7329 |
 
 Markov-state conditioning: per-grade probabilities at exposure = 6900
-(typical mid-week), HYPERT = 0, REGI_BID = 0, CMAX_M1 = 0. {.table}
+(typical mid-week), DIS_HYPERT = 0, REGI_BID = 0, CMAX_M1 = 0. {.table}
 
 The previous-grade conditioning is the dominant Markov effect: a patient
 who had a grade 1-2 AE at the previous visit (PREV = 1 or 2) is far more
@@ -366,7 +366,7 @@ cohorts$id_offset <- seq_len(nrow(cohorts))
 simulate_cohort <- function(row) {
   ev <- rxode2::et(amt = 20000, time = 0, addl = 11, ii = 1, evid = 1) |>
     rxode2::et(seq(0, 12, by = 0.5))
-  ev$HYPERT        <- 0
+  ev$DIS_HYPERT        <- 0
   ev$REGI_BID      <- row$REGI_BID
   ev$CMAX_M1       <- 300
   ev$DOSE          <- row$DOSE
@@ -505,11 +505,11 @@ not on the Weibull hazard.
   first-pass) so that future TTE / dropout DDMORE-source extractions can
   use the standard NONMEM `$MODEL COMP=(CUMHAZ)` idiom without per-model
   whitelisting. Pure additive change; no existing model is affected.
-- **`HYPERT`, `REGI_BID`, `CMAX_M1`, and `PREV_AE_SCORE` newly
+- **`DIS_HYPERT`, `REGI_BID`, `CMAX_M1`, and `PREV_AE_SCORE` newly
   registered.** No prior nlmixr2lib model carried any of these
   covariates; all four were registered in
   `inst/references/covariate-columns.md` alongside this extraction
-  (HYPERT alongside DIAB under “Comorbidities”; REGI_BID under
+  (DIS_HYPERT alongside DIS_DIAB under “Comorbidities”; REGI_BID under
   “Formulation / assay / study”; CMAX_M1 alongside CAV under “Drug
   exposure metrics”; PREV_AE_SCORE under “Disease severity scores”).
   `DOSE` (already canonical, scope: specific) was extended with this

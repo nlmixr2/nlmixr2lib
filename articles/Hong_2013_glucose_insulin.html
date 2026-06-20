@@ -5,12 +5,12 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Glucose-insulin dynamics in T2DM (Hong 2013) • nlmixr2lib</title>
+<title>Glucose-insulin dynamics in DIS_DIAB (Hong 2013) • nlmixr2lib</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Glucose-insulin dynamics in T2DM (Hong 2013)">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Glucose-insulin dynamics in DIS_DIAB (Hong 2013)">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -934,7 +934,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
 
-      <h1>Glucose-insulin dynamics in T2DM (Hong 2013)</h1>
+      <h1>Glucose-insulin dynamics in DIS_DIAB (Hong 2013)</h1>
             
       
       <small class="dont-index">Source: <a href="https://github.com/nlmixr2/nlmixr2lib/blob/main/vignettes/articles/Hong_2013_glucose_insulin.Rmd" class="external-link"><code>vignettes/articles/Hong_2013_glucose_insulin.Rmd</code></a></small>
@@ -956,8 +956,8 @@ in Patients with Type 2 Diabetes Mellitus. <em>The AAPS Journal</em>
 <li>PubMed: PMID 23913136; PMCID PMC3787234.</li>
 </ul>
 <p>Hong 2013 develops an integrated population PD model of glucose and
-insulin homeostasis in 20 adults with type 2 diabetes mellitus (T2DM)
-under two perturbation conditions:</p>
+insulin homeostasis in 20 adults with type 2 diabetes mellitus
+(DIS_DIAB) under two perturbation conditions:</p>
 <ul>
 <li>
 <strong>Hyperglycemic glucose clamp (HGC)</strong> – intravenous
@@ -972,7 +972,7 @@ breakfast (approximately 618 kcal) after an overnight fast, observed for
 framework with two modifications:</p>
 <ol style="list-style-type: decimal">
 <li>Endogenous glucose production GP is constant (the feedback term that
-Silber estimated was close to zero in T2DM).</li>
+Silber estimated was close to zero in DIS_DIAB).</li>
 <li>The HGC first-phase insulin response is captured by an empirical
 Gaussian secretion pulse (amplitude <code>Amplitude</code>, peak time
 <code>Tsec</code> fixed at 3.54 min, width <code>Tdur</code> fixed at
@@ -982,7 +982,7 @@ Gaussian secretion pulse (amplitude <code>Amplitude</code>, peak time
 concludes it has no clinically meaningful effect on insulin secretion or
 sensitivity, so the published final estimates fix the palosuran effect
 to zero and the structural model is essentially a drug-free
-glucose-insulin homeostasis model in T2DM.</p>
+glucose-insulin homeostasis model in DIS_DIAB.</p>
 <p>The paper produces two distinct dynamical systems (HGC and MTT) that
 share the glucose-disposition and effect-compartment structure but
 differ in the glucose input arm (IV clamp vs. transit-absorbed meal) and
@@ -996,7 +996,7 @@ contributes two model files
 <div class="section level2">
 <h2 id="population">Population<a class="anchor" aria-label="anchor" href="#population"></a>
 </h2>
-<p>The model was fit to 20 adults with T2DM treated by diet only (16
+<p>The model was fit to 20 adults with DIS_DIAB treated by diet only (16
 male, 4 female; mean age 53.7 y, range 40-65; fasting blood glucose
 110-180 mg/dL; HbA1c 5.4-8.3%, mean 6.4%). The study was a double-blind,
 placebo-controlled, randomised, two-way crossover trial of palosuran 125
@@ -1074,7 +1074,7 @@ them in one place.</p>
 </tr>
 <tr class="even">
 <td><code>VI</code></td>
-<td>6.09 L (FIXED, Silber 2007 T2DM lit)</td>
+<td>6.09 L (FIXED, Silber 2007 DIS_DIAB lit)</td>
 <td>Table I footnote a</td>
 </tr>
 <tr class="odd">
@@ -1565,14 +1565,14 @@ insulin secretion or sensitivity.” The published final estimates
 reported in Tables I and II were re-fit with the palosuran treatment
 effect set to zero, and the same convention is used here – the
 structural model below is the drug-free glucose-insulin homeostasis
-model in T2DM.</li>
+model in DIS_DIAB.</li>
 <li>
-<strong>VI fixed to 6.09 L (Silber 2007 T2DM literature
+<strong>VI fixed to 6.09 L (Silber 2007 DIS_DIAB literature
 value).</strong> The within-study estimate of VI was 0.52 L with very
 high IIV (variance 7.22) and produced a biased CLI (0.0593 L/min,
 20-fold lower than literature). The paper fixed VI to 6.09 L, the Silber
-2007 T2DM estimate, to obtain a stable fit with CLI in agreement with
-the literature.</li>
+2007 DIS_DIAB estimate, to obtain a stable fit with CLI in agreement
+with the literature.</li>
 <li>
 <strong>Tsec and Tdur fixed to literature values (3.54 min and 1.76
 min from Lima 2010 / Mari 2003).</strong> The within-study estimates

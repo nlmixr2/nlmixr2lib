@@ -104,7 +104,7 @@ make_cohort <- function(n, cancer_label, id_offset) {
     CRCL         = crcl,
     TUMTP_LYMPH  = as.integer(cancer_label == "Lymphoma"),
     TUMTP_SARC   = as.integer(cancer_label == "Sarcoma"),
-    TUMTP_BC     = as.integer(cancer_label == "BreastCancer"),
+    TUMTP_BREAST     = as.integer(cancer_label == "BreastCancer"),
     TUMTP_MYELO  = as.integer(cancer_label == "Myeloma"),
     TUMTP_GLIO   = as.integer(cancer_label == "Glioma"),
     cohort       = cancer_label
@@ -150,7 +150,7 @@ build_events <- function(demo, sim_hours = 120) {
            addl = n_loading_doses - 1L,
            time = 0) |>
     select(id, time, amt, evid, cmt, ii, addl, cohort, WT, CRCL,
-           TUMTP_LYMPH, TUMTP_SARC, TUMTP_BC, TUMTP_MYELO, TUMTP_GLIO)
+           TUMTP_LYMPH, TUMTP_SARC, TUMTP_BREAST, TUMTP_MYELO, TUMTP_GLIO)
 
   maintenance <- demo |>
     mutate(amt  = round(maintenance_dose_per_kg * WT, 1),
@@ -160,13 +160,13 @@ build_events <- function(demo, sim_hours = 120) {
            addl = n_maint_doses - 1L,
            time = 24) |>
     select(id, time, amt, evid, cmt, ii, addl, cohort, WT, CRCL,
-           TUMTP_LYMPH, TUMTP_SARC, TUMTP_BC, TUMTP_MYELO, TUMTP_GLIO)
+           TUMTP_LYMPH, TUMTP_SARC, TUMTP_BREAST, TUMTP_MYELO, TUMTP_GLIO)
 
   obs_times <- sort(unique(c(seq(0,  24, by = 1),
                              seq(96, sim_hours, by = 0.5))))
   obs <- demo |>
     select(id, cohort, WT, CRCL,
-           TUMTP_LYMPH, TUMTP_SARC, TUMTP_BC, TUMTP_MYELO, TUMTP_GLIO) |>
+           TUMTP_LYMPH, TUMTP_SARC, TUMTP_BREAST, TUMTP_MYELO, TUMTP_GLIO) |>
     tidyr::crossing(time = obs_times) |>
     mutate(amt  = NA_real_,
            evid = 0L,

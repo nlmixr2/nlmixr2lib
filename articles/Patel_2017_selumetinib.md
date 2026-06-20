@@ -17,8 +17,8 @@ Selumetinib disposition uses sequential zero-order (release into the gut
 compartment over duration D1 with lag ALAG1) and first-order (rate Ka)
 absorption, and the metabolite is fed from the parent at rate Fm \* CL
 \* Cc with the metabolite central volume fixed equal to the parent
-central volume (`Vc_ndsel = V2`) to resolve a structural identifiability
-problem (Patel 2017 Methods).
+central volume (`Vc_ndmsel = V2`) to resolve a structural
+identifiability problem (Patel 2017 Methods).
 
 ## Population
 
@@ -240,7 +240,7 @@ mod_typical <- mod |> rxode2::zeroRe()
 sim_typical <- rxode2::rxSolve(
   mod_typical, events = events, keep = c("regimen")
 ) |> as.data.frame()
-#> ℹ omega/sigma items treated as zero: 'etalcl_ndsel', 'etalfm', 'etalq', 'etalvp', 'etaltlag', 'etald1', 'etalvc', 'etalcl'
+#> ℹ omega/sigma items treated as zero: 'etalcl_ndmsel', 'etalfm', 'etalq', 'etalvp', 'etaltlag', 'etald1', 'etalvc', 'etalcl'
 #> Warning: multi-subject simulation without without 'omega'
 
 # Stochastic replication for the VPC overlay; uses the published omega block
@@ -267,16 +267,16 @@ adult_typ <- sim_typical |>
   dplyr::group_by(time, regimen) |>
   dplyr::summarise(
     Cc       = mean(Cc, na.rm = TRUE),
-    Cc_ndsel = mean(Cc_ndsel, na.rm = TRUE),
+    Cc_ndmsel = mean(Cc_ndmsel, na.rm = TRUE),
     .groups  = "drop"
   ) |>
-  tidyr::pivot_longer(c(Cc, Cc_ndsel), names_to = "analyte", values_to = "Conc")
+  tidyr::pivot_longer(c(Cc, Cc_ndmsel), names_to = "analyte", values_to = "Conc")
 
 ggplot(adult_typ, aes(time, Conc, colour = regimen)) +
   geom_line() +
   facet_wrap(~analyte, ncol = 1, scales = "free_y",
              labeller = as_labeller(c(Cc = "Selumetinib",
-                                       Cc_ndsel = "N-desmethyl-selumetinib"))) +
+                                       Cc_ndmsel = "N-desmethyl-selumetinib"))) +
   labs(x = "Time after single 75 mg oral dose (h)",
        y = "Plasma concentration (ng/mL)",
        colour = NULL,
@@ -324,7 +324,7 @@ ref_events <- tibble::tibble(
 ref_sim <- rxode2::rxSolve(
   mod_typical, events = ref_events, keep = c("regimen")
 ) |> as.data.frame()
-#> ℹ omega/sigma items treated as zero: 'etalcl_ndsel', 'etalfm', 'etalq', 'etalvp', 'etaltlag', 'etald1', 'etalvc', 'etalcl'
+#> ℹ omega/sigma items treated as zero: 'etalcl_ndmsel', 'etalfm', 'etalq', 'etalvp', 'etaltlag', 'etald1', 'etalvc', 'etalcl'
 #> Warning: multi-subject simulation without without 'omega'
 
 trap_auc <- function(t, c) sum(diff(t) * (head(c, -1) + tail(c, -1)) / 2)
@@ -335,8 +335,8 @@ ref_summary <- ref_sim |>
     tmax_h_parent       = time[which.max(Cc)],
     cmax_ng_ml_parent   = max(Cc),
     auc0_24_parent      = trap_auc(time, Cc),
-    cmax_ng_ml_ndsel    = max(Cc_ndsel),
-    auc0_24_ndsel       = trap_auc(time, Cc_ndsel),
+    cmax_ng_ml_ndmsel    = max(Cc_ndmsel),
+    auc0_24_ndmsel       = trap_auc(time, Cc_ndmsel),
     .groups = "drop"
   )
 
@@ -347,7 +347,7 @@ knitr::kable(
 )
 ```
 
-| regimen | tmax_h_parent | cmax_ng_ml_parent | auc0_24_parent | cmax_ng_ml_ndsel | auc0_24_ndsel |
+| regimen | tmax_h_parent | cmax_ng_ml_parent | auc0_24_parent | cmax_ng_ml_ndmsel | auc0_24_ndmsel |
 |:---|---:|---:|---:|---:|---:|
 | Fasted | 1.25 | 1527.1 | 5170 | 93.6 | 373 |
 | Fed | 5.40 | 670.3 | 4486 | 43.4 | 322 |
@@ -362,8 +362,8 @@ fed_vs_fasted <- ref_summary |>
   dplyr::summarise(
     cmax_parent_ratio  = cmax_ng_ml_parent[regimen == "Fed"]  / cmax_ng_ml_parent[regimen == "Fasted"],
     auc_parent_ratio   = auc0_24_parent[regimen == "Fed"]     / auc0_24_parent[regimen == "Fasted"],
-    cmax_ndsel_ratio   = cmax_ng_ml_ndsel[regimen == "Fed"]   / cmax_ng_ml_ndsel[regimen == "Fasted"],
-    auc_ndsel_ratio    = auc0_24_ndsel[regimen == "Fed"]      / auc0_24_ndsel[regimen == "Fasted"]
+    cmax_ndsel_ratio   = cmax_ng_ml_ndmsel[regimen == "Fed"]   / cmax_ng_ml_ndmsel[regimen == "Fasted"],
+    auc_ndsel_ratio    = auc0_24_ndmsel[regimen == "Fed"]      / auc0_24_ndmsel[regimen == "Fasted"]
   )
 
 knitr::kable(
@@ -423,14 +423,14 @@ stochastic simulation). {.table}
 
 ``` r
 
-sim_ndsel <- sim_vpc |>
-  dplyr::select(id, time, Cc_ndsel, regimen) |>
-  dplyr::filter(!is.na(Cc_ndsel)) |>
+sim_ndmsel <- sim_vpc |>
+  dplyr::select(id, time, Cc_ndmsel, regimen) |>
+  dplyr::filter(!is.na(Cc_ndmsel)) |>
   dplyr::group_by(id, time, regimen) |>
-  dplyr::summarise(Cc_ndsel = dplyr::first(Cc_ndsel), .groups = "drop") |>
-  dplyr::rename(Cc = Cc_ndsel)
+  dplyr::summarise(Cc_ndmsel = dplyr::first(Cc_ndmsel), .groups = "drop") |>
+  dplyr::rename(Cc = Cc_ndmsel)
 
-conc_obj_m <- PKNCA::PKNCAconc(sim_ndsel, Cc ~ time | regimen + id)
+conc_obj_m <- PKNCA::PKNCAconc(sim_ndmsel, Cc ~ time | regimen + id)
 nca_data_m <- PKNCA::PKNCAdata(conc_obj_m, dose_obj, intervals = intervals)
 nca_res_m  <- PKNCA::pk.nca(nca_data_m)
 
@@ -506,7 +506,7 @@ covariates for the reference simulation.
   (yielding `lfm_SS = log(0.994)`). Note that Fm \> 1 in the original
   fit is acknowledged in the paper Discussion as a model-fitting
   artefact reflecting that the metabolite central volume is likely
-  smaller than the imposed equality `Vc_ndsel = V2_parent`.
+  smaller than the imposed equality `Vc_ndmsel = V2_parent`.
 
 - **Inter-occasion variability (IOV) is not implemented.** Patel 2017
   Table 2 reports IOV variances for D1, ALAG1, CL, V2 (selumetinib), and

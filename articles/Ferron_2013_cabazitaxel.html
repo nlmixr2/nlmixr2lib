@@ -977,7 +977,7 @@ infusion every 7 or 21 days.</p>
 <p>The structural model is a linear three-compartment IV model with
 first-order elimination. Final covariates are body surface area (BSA, on
 CL via linear scaling normalised to median 1.84 m^2) and a breast-cancer
-tumor-type indicator (TUMTP_BC; multiplicative reduction in CL).
+tumor-type indicator (TUMTP_BREAST; multiplicative reduction in CL).
 Concentrations are reported in ng/mL.</p>
 <div class="section level3">
 <h3 id="source-trace">Source trace<a class="anchor" aria-label="anchor" href="#source-trace"></a>
@@ -1027,7 +1027,7 @@ Concentrations are reported in ng/mL.</p>
 <tr class="odd">
 <td>Breast cancer effect on CL</td>
 <td>Ferron 2013 Table 4, theta7; Eq. 9</td>
-<td>CL multiplied by (1 - 0.543 * TUMTP_BC)</td>
+<td>CL multiplied by (1 - 0.543 * TUMTP_BREAST)</td>
 </tr>
 <tr class="even">
 <td>BSA effect on CL</td>
@@ -1078,7 +1078,7 @@ footer).</p>
 <td>
 <code>TT1</code> (1 = breast cancer, 0 = other)</td>
 <td>
-<code>TUMTP_BC</code> (1 = breast cancer, 0 = other)</td>
+<code>TUMTP_BREAST</code> (1 = breast cancer, 0 = other)</td>
 </tr>
 </tbody>
 </table>
@@ -1102,12 +1102,12 @@ values or correlations.</p>
 <span><span class="co"># GI 13.5%, other 19.4%).</span></span>
 <span><span class="va">tumtp_p</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>prostate <span class="op">=</span> <span class="fl">0.453</span>, breast <span class="op">=</span> <span class="fl">0.218</span>, GI <span class="op">=</span> <span class="fl">0.135</span>, other <span class="op">=</span> <span class="fl">0.194</span><span class="op">)</span></span>
 <span><span class="va">TUMTP</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">tumtp_p</span><span class="op">)</span>, <span class="va">n_subj</span>, replace <span class="op">=</span> <span class="cn">TRUE</span>, prob <span class="op">=</span> <span class="va">tumtp_p</span><span class="op">)</span></span>
-<span><span class="va">TUMTP_BC</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">TUMTP</span> <span class="op">==</span> <span class="st">"breast"</span><span class="op">)</span></span>
+<span><span class="va">TUMTP_BREAST</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">TUMTP</span> <span class="op">==</span> <span class="st">"breast"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">pop</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  ID        <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">n_subj</span><span class="op">)</span>,</span>
-<span>  <span class="va">BSA</span>, <span class="va">TUMTP</span>, <span class="va">TUMTP_BC</span>,</span>
-<span>  treatment <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">TUMTP_BC</span> <span class="op">==</span> <span class="fl">1</span>, <span class="st">"breast cancer"</span>, <span class="st">"non-breast cancer"</span><span class="op">)</span></span>
+<span>  <span class="va">BSA</span>, <span class="va">TUMTP</span>, <span class="va">TUMTP_BREAST</span>,</span>
+<span>  treatment <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">TUMTP_BREAST</span> <span class="op">==</span> <span class="fl">1</span>, <span class="st">"breast cancer"</span>, <span class="st">"non-breast cancer"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
@@ -1218,7 +1218,7 @@ trajectories for breast vs non-breast at BSA 1.84 m^2.</p>
 <span></span>
 <span><span class="va">typ_pop</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  ID <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1L</span>, <span class="fl">2L</span><span class="op">)</span>, BSA <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.84</span>, <span class="fl">1.84</span><span class="op">)</span>,</span>
-<span>  TUMTP_BC <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0L</span>, <span class="fl">1L</span><span class="op">)</span>,</span>
+<span>  TUMTP_BREAST <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0L</span>, <span class="fl">1L</span><span class="op">)</span>,</span>
 <span>  treatment <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"non-breast cancer"</span>, <span class="st">"breast cancer"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -1237,7 +1237,7 @@ trajectories for breast vs non-breast at BSA 1.84 m^2.</p>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">typ_sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod_typical</span>, <span class="va">typ_d</span>, returnType <span class="op">=</span> <span class="st">"data.frame"</span>,</span>
-<span>                   keep <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"treatment"</span>, <span class="st">"TUMTP_BC"</span><span class="op">)</span><span class="op">)</span></span>
+<span>                   keep <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"treatment"</span>, <span class="st">"TUMTP_BREAST"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalk12', 'etalk13', 'etalk31'</span></span>
 <span><span class="co">#&gt; Warning: multi-subject simulation without without 'omega'</span></span>
 <span></span>
@@ -1524,7 +1524,7 @@ median 1.84 m^2, clipped to the observed range 1.30-2.53 m^2.</li>
 <strong>Tumor-type mix</strong>: sampled independently from the
 pooled Table 3 proportions (prostate 45.3%, breast 21.8%, GI 13.5%,
 other 19.4%). Only the breast-cancer indicator enters the model; the
-other three groups collapse into the reference TUMTP_BC = 0.</li>
+other three groups collapse into the reference TUMTP_BREAST = 0.</li>
 <li>
 <strong>No covariate correlations</strong> are imposed (paper does
 not report them).</li>
@@ -1580,16 +1580,16 @@ paper as confounded with study (34 of 37 breast-cancer patients came
 from a single Phase II study, ARD6191). The paper’s Discussion concludes
 the signal is most likely a study effect rather than a true tumor-type
 effect. Implementations that disagree with this assessment should reset
-TUMTP_BC = 0 across the cohort.</li>
+TUMTP_BREAST = 0 across the cohort.</li>
 <li>
 <strong>Cabazitaxel is dosed by BSA</strong> in clinical practice
 (mg/m^2 doses). The BSA effect on CL is therefore already accounted for
 in dose calculation; in simulation the per-subject mg dose is
 <code>25 * BSA</code>.</li>
 <li>
-<strong>Reference category</strong> for TUMTP_BC = 0 is “all other
-tumor types” (prostate, gastrointestinal, other). The paper does not
-split by these individual non-breast types.</li>
+<strong>Reference category</strong> for TUMTP_BREAST = 0 is “all
+other tumor types” (prostate, gastrointestinal, other). The paper does
+not split by these individual non-breast types.</li>
 </ul>
 </div>
 <div class="section level3">

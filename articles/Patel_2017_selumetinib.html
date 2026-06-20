@@ -963,7 +963,7 @@ Selumetinib disposition uses sequential zero-order (release into the gut
 compartment over duration D1 with lag ALAG1) and first-order (rate Ka)
 absorption, and the metabolite is fed from the parent at rate Fm * CL *
 Cc with the metabolite central volume fixed equal to the parent central
-volume (<code>Vc_ndsel = V2</code>) to resolve a structural
+volume (<code>Vc_ndmsel = V2</code>) to resolve a structural
 identifiability problem (Patel 2017 Methods).</p>
 </div>
 <div class="section level2">
@@ -1315,7 +1315,7 @@ Assumptions).</p>
 <span><span class="va">sim_typical</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span></span>
 <span>  <span class="va">mod_typical</span>, events <span class="op">=</span> <span class="va">events</span>, keep <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"regimen"</span><span class="op">)</span></span>
 <span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl_ndsel', 'etalfm', 'etalq', 'etalvp', 'etaltlag', 'etald1', 'etalvc', 'etalcl'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl_ndmsel', 'etalfm', 'etalq', 'etalvp', 'etaltlag', 'etald1', 'etalvc', 'etalcl'</span></span>
 <span><span class="co">#&gt; Warning: multi-subject simulation without without 'omega'</span></span>
 <span></span>
 <span><span class="co"># Stochastic replication for the VPC overlay; uses the published omega block</span></span>
@@ -1341,16 +1341,16 @@ and the parent / metabolite kinetics.</p>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">regimen</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span></span>
 <span>    Cc       <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">Cc</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
-<span>    Cc_ndsel <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">Cc_ndsel</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
+<span>    Cc_ndmsel <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">Cc_ndmsel</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
 <span>    .groups  <span class="op">=</span> <span class="st">"drop"</span></span>
 <span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html" class="external-link">pivot_longer</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">Cc</span>, <span class="va">Cc_ndsel</span><span class="op">)</span>, names_to <span class="op">=</span> <span class="st">"analyte"</span>, values_to <span class="op">=</span> <span class="st">"Conc"</span><span class="op">)</span></span>
+<span>  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html" class="external-link">pivot_longer</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">Cc</span>, <span class="va">Cc_ndmsel</span><span class="op">)</span>, names_to <span class="op">=</span> <span class="st">"analyte"</span>, values_to <span class="op">=</span> <span class="st">"Conc"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">ggplot</span><span class="op">(</span><span class="va">adult_typ</span>, <span class="fu">aes</span><span class="op">(</span><span class="va">time</span>, <span class="va">Conc</span>, colour <span class="op">=</span> <span class="va">regimen</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">geom_line</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">facet_wrap</span><span class="op">(</span><span class="op">~</span><span class="va">analyte</span>, ncol <span class="op">=</span> <span class="fl">1</span>, scales <span class="op">=</span> <span class="st">"free_y"</span>,</span>
 <span>             labeller <span class="op">=</span> <span class="fu">as_labeller</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>Cc <span class="op">=</span> <span class="st">"Selumetinib"</span>,</span>
-<span>                                       Cc_ndsel <span class="op">=</span> <span class="st">"N-desmethyl-selumetinib"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>                                       Cc_ndmsel <span class="op">=</span> <span class="st">"N-desmethyl-selumetinib"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">labs</span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Time after single 75 mg oral dose (h)"</span>,</span>
 <span>       y <span class="op">=</span> <span class="st">"Plasma concentration (ng/mL)"</span>,</span>
 <span>       colour <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -1396,7 +1396,7 @@ regimen.</p>
 <span><span class="va">ref_sim</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span></span>
 <span>  <span class="va">mod_typical</span>, events <span class="op">=</span> <span class="va">ref_events</span>, keep <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"regimen"</span><span class="op">)</span></span>
 <span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl_ndsel', 'etalfm', 'etalq', 'etalvp', 'etaltlag', 'etald1', 'etalvc', 'etalcl'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl_ndmsel', 'etalfm', 'etalq', 'etalvp', 'etaltlag', 'etald1', 'etalvc', 'etalcl'</span></span>
 <span><span class="co">#&gt; Warning: multi-subject simulation without without 'omega'</span></span>
 <span></span>
 <span><span class="va">trap_auc</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">t</span>, <span class="va">c</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/diff.html" class="external-link">diff</a></span><span class="op">(</span><span class="va">t</span><span class="op">)</span> <span class="op">*</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">c</span>, <span class="op">-</span><span class="fl">1</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">tail</a></span><span class="op">(</span><span class="va">c</span>, <span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op">/</span> <span class="fl">2</span><span class="op">)</span></span>
@@ -1407,8 +1407,8 @@ regimen.</p>
 <span>    tmax_h_parent       <span class="op">=</span> <span class="va">time</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.min.html" class="external-link">which.max</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span><span class="op">]</span>,</span>
 <span>    cmax_ng_ml_parent   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span>,</span>
 <span>    auc0_24_parent      <span class="op">=</span> <span class="fu">trap_auc</span><span class="op">(</span><span class="va">time</span>, <span class="va">Cc</span><span class="op">)</span>,</span>
-<span>    cmax_ng_ml_ndsel    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">Cc_ndsel</span><span class="op">)</span>,</span>
-<span>    auc0_24_ndsel       <span class="op">=</span> <span class="fu">trap_auc</span><span class="op">(</span><span class="va">time</span>, <span class="va">Cc_ndsel</span><span class="op">)</span>,</span>
+<span>    cmax_ng_ml_ndmsel    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">Cc_ndmsel</span><span class="op">)</span>,</span>
+<span>    auc0_24_ndmsel       <span class="op">=</span> <span class="fu">trap_auc</span><span class="op">(</span><span class="va">time</span>, <span class="va">Cc_ndmsel</span><span class="op">)</span>,</span>
 <span>    .groups <span class="op">=</span> <span class="st">"drop"</span></span>
 <span>  <span class="op">)</span></span>
 <span></span>
@@ -1422,19 +1422,19 @@ regimen.</p>
 high-fat-meal conditions.</caption>
 <colgroup>
 <col width="9%">
-<col width="16%">
+<col width="15%">
 <col width="20%">
 <col width="17%">
-<col width="19%">
-<col width="16%">
+<col width="20%">
+<col width="17%">
 </colgroup>
 <thead><tr class="header">
 <th align="left">regimen</th>
 <th align="right">tmax_h_parent</th>
 <th align="right">cmax_ng_ml_parent</th>
 <th align="right">auc0_24_parent</th>
-<th align="right">cmax_ng_ml_ndsel</th>
-<th align="right">auc0_24_ndsel</th>
+<th align="right">cmax_ng_ml_ndmsel</th>
+<th align="right">auc0_24_ndmsel</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
@@ -1461,8 +1461,8 @@ high-fat-meal conditions.</caption>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span></span>
 <span>    cmax_parent_ratio  <span class="op">=</span> <span class="va">cmax_ng_ml_parent</span><span class="op">[</span><span class="va">regimen</span> <span class="op">==</span> <span class="st">"Fed"</span><span class="op">]</span>  <span class="op">/</span> <span class="va">cmax_ng_ml_parent</span><span class="op">[</span><span class="va">regimen</span> <span class="op">==</span> <span class="st">"Fasted"</span><span class="op">]</span>,</span>
 <span>    auc_parent_ratio   <span class="op">=</span> <span class="va">auc0_24_parent</span><span class="op">[</span><span class="va">regimen</span> <span class="op">==</span> <span class="st">"Fed"</span><span class="op">]</span>     <span class="op">/</span> <span class="va">auc0_24_parent</span><span class="op">[</span><span class="va">regimen</span> <span class="op">==</span> <span class="st">"Fasted"</span><span class="op">]</span>,</span>
-<span>    cmax_ndsel_ratio   <span class="op">=</span> <span class="va">cmax_ng_ml_ndsel</span><span class="op">[</span><span class="va">regimen</span> <span class="op">==</span> <span class="st">"Fed"</span><span class="op">]</span>   <span class="op">/</span> <span class="va">cmax_ng_ml_ndsel</span><span class="op">[</span><span class="va">regimen</span> <span class="op">==</span> <span class="st">"Fasted"</span><span class="op">]</span>,</span>
-<span>    auc_ndsel_ratio    <span class="op">=</span> <span class="va">auc0_24_ndsel</span><span class="op">[</span><span class="va">regimen</span> <span class="op">==</span> <span class="st">"Fed"</span><span class="op">]</span>      <span class="op">/</span> <span class="va">auc0_24_ndsel</span><span class="op">[</span><span class="va">regimen</span> <span class="op">==</span> <span class="st">"Fasted"</span><span class="op">]</span></span>
+<span>    cmax_ndsel_ratio   <span class="op">=</span> <span class="va">cmax_ng_ml_ndmsel</span><span class="op">[</span><span class="va">regimen</span> <span class="op">==</span> <span class="st">"Fed"</span><span class="op">]</span>   <span class="op">/</span> <span class="va">cmax_ng_ml_ndmsel</span><span class="op">[</span><span class="va">regimen</span> <span class="op">==</span> <span class="st">"Fasted"</span><span class="op">]</span>,</span>
+<span>    auc_ndsel_ratio    <span class="op">=</span> <span class="va">auc0_24_ndmsel</span><span class="op">[</span><span class="va">regimen</span> <span class="op">==</span> <span class="st">"Fed"</span><span class="op">]</span>      <span class="op">/</span> <span class="va">auc0_24_ndmsel</span><span class="op">[</span><span class="va">regimen</span> <span class="op">==</span> <span class="st">"Fasted"</span><span class="op">]</span></span>
 <span>  <span class="op">)</span></span>
 <span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
@@ -1581,14 +1581,14 @@ the stochastic simulation).</caption>
 </tbody>
 </table>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">sim_ndsel</span> <span class="op">&lt;-</span> <span class="va">sim_vpc</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="va">Cc_ndsel</span>, <span class="va">regimen</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc_ndsel</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<code class="sourceCode R"><span><span class="va">sim_ndmsel</span> <span class="op">&lt;-</span> <span class="va">sim_vpc</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="va">Cc_ndmsel</span>, <span class="va">regimen</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc_ndmsel</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="va">regimen</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span>Cc_ndsel <span class="op">=</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/nth.html" class="external-link">first</a></span><span class="op">(</span><span class="va">Cc_ndsel</span><span class="op">)</span>, .groups <span class="op">=</span> <span class="st">"drop"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span>Cc <span class="op">=</span> <span class="va">Cc_ndsel</span><span class="op">)</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span>Cc_ndmsel <span class="op">=</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/nth.html" class="external-link">first</a></span><span class="op">(</span><span class="va">Cc_ndmsel</span><span class="op">)</span>, .groups <span class="op">=</span> <span class="st">"drop"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span>Cc <span class="op">=</span> <span class="va">Cc_ndmsel</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">conc_obj_m</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="https://humanpred.github.io/pknca/reference/PKNCAconc.html" class="external-link">PKNCAconc</a></span><span class="op">(</span><span class="va">sim_ndsel</span>, <span class="va">Cc</span> <span class="op">~</span> <span class="va">time</span> <span class="op">|</span> <span class="va">regimen</span> <span class="op">+</span> <span class="va">id</span><span class="op">)</span></span>
+<span><span class="va">conc_obj_m</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="https://humanpred.github.io/pknca/reference/PKNCAconc.html" class="external-link">PKNCAconc</a></span><span class="op">(</span><span class="va">sim_ndmsel</span>, <span class="va">Cc</span> <span class="op">~</span> <span class="va">time</span> <span class="op">|</span> <span class="va">regimen</span> <span class="op">+</span> <span class="va">id</span><span class="op">)</span></span>
 <span><span class="va">nca_data_m</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="https://humanpred.github.io/pknca/reference/PKNCAdata.html" class="external-link">PKNCAdata</a></span><span class="op">(</span><span class="va">conc_obj_m</span>, <span class="va">dose_obj</span>, intervals <span class="op">=</span> <span class="va">intervals</span><span class="op">)</span></span>
 <span><span class="va">nca_res_m</span>  <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="https://humanpred.github.io/pknca/reference/pk.nca.html" class="external-link">pk.nca</a></span><span class="op">(</span><span class="va">nca_data_m</span><span class="op">)</span></span>
 <span></span>
@@ -1748,7 +1748,7 @@ kinetics can multiply <code>lfm</code> by
 (yielding <code>lfm_SS = log(0.994)</code>). Note that Fm &gt; 1 in the
 original fit is acknowledged in the paper Discussion as a model-fitting
 artefact reflecting that the metabolite central volume is likely smaller
-than the imposed equality <code>Vc_ndsel = V2_parent</code>.</p></li>
+than the imposed equality <code>Vc_ndmsel = V2_parent</code>.</p></li>
 <li><p><strong>Inter-occasion variability (IOV) is not
 implemented.</strong> Patel 2017 Table 2 reports IOV variances for D1,
 ALAG1, CL, V2 (selumetinib), and Fm (N-desmethyl-selumetinib). The

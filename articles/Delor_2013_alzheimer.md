@@ -35,7 +35,8 @@ Key features:
     **slow-progression branch** (rate alone, alpha = 0) and a
     **fast-progression branch** (rate plus accelerating term
     `alpha * A(1)`). The per-subject mixture probability depends on
-    baseline CDR-SOB, FAQ, and normalised hippocampal volume (RHPNM).
+    baseline CDR-SOB, SCORE_FAQ, and normalised hippocampal volume
+    (SCORE_RHPNM).
 5.  **Study-entry placebo term.** `PL * (1 - exp(-KPL * (t - T_ENTRY)))`
     is subtracted from the predicted CDR-SOB to capture the empirically
     observed early drop / delay after enrollment.
@@ -76,14 +77,14 @@ The table below collects them in one place.
 | `e_cdr_sob_dot` | -0.072 | Table 2 final ‘COV CDR-SOB on DOT’ |
 | `e_adas_cog_dot` | -0.0439 | Table 2 final ‘COV ADAS on DOT’ |
 | `lalpha` | `log(0.0499)` | Table 2 final ‘Multiplicative term (alpha)’ = 0.0499 |
-| `e_mmse_alpha` | -2.01 | Table 2 final ‘COV MMSE on alpha’ |
+| `e_mmse_alpha` | -2.01 | Table 2 final ‘COV SCORE_MMSE on alpha’ |
 | `blc` | 4.48 | Table 2 final ‘Baseline correction (BLC)’ = 4.48 |
 | `lpl` | `log(0.434)` | Table 2 final ‘Placebo magnitude (PL)’ = 0.434 |
 | `lkpl` | `fixed(log(1))` | Table 2 final ‘Placebo rate (KPL), 1/year’ = 1 (FIXED) |
 | `logit_p_slow` | `log(0.44/0.56)` | imputed from Table 2 ‘MCI/AD slow’ = 44/3 (see Errata) |
 | `e_cdr_sob_slow` | -1.27 | Table 2 final ‘COV CDR-SOB on \$MIX’ |
-| `e_faq_slow` | -0.341 | Table 2 final ‘COV FAQ on \$MIX’ |
-| `e_rhpnm_slow` | 7.5 | Table 2 final ‘COV RHPNM on \$MIX’ |
+| `e_faq_slow` | -0.341 | Table 2 final ‘COV SCORE_FAQ on \$MIX’ |
+| `e_rhpnm_slow` | 7.5 | Table 2 final ‘COV SCORE_RHPNM on \$MIX’ |
 | `etaldot` | omega^2 = 0.000225 | Table 2 final IIV(DOT) = 1.5% |
 | `etalalpha` | omega^2 = 0.3434 | Table 2 final IIV(alpha) = 64% |
 | `etalpl` | omega^2 = 0.5535 | Table 2 final IIV(PL) = 86% |
@@ -92,7 +93,7 @@ The table below collects them in one place.
 | alpha power form | n/a | Table 1 Part III: `alpha = theta3 * (MMSE_bsl/26)^theta14` |
 | Mixture-logit form | n/a | Table 1 Part II: `P1 = exp(P1phi + COV)/(1 + exp(P1phi + COV))` |
 | Disease-progression ODE | n/a | Equation 1: `dA(1)/dT = (RATE + A(1)*alpha) * T^30/(DOT^30+T^30)` |
-| Placebo term | n/a | Equation 2: `CDR_SOB - PL*(1 - exp(-KPL*T))` |
+| Placebo term | n/a | Equation 2: `SCORE_CDR_SOB - PL*(1 - exp(-KPL*T))` |
 
 ## Mechanistic structure
 
@@ -116,7 +117,7 @@ The observed CDR-SOB is
 ```
 
 with `BLC = 4.48` chosen so the floor of the score (`A(1) = 0`) maps to
-`CDR_SOB ~= 0.2` and `KPL = 1 / year` (fixed) so the placebo term
+`SCORE_CDR_SOB ~= 0.2` and `KPL = 1 / year` (fixed) so the placebo term
 reaches its asymptote in about 4 years post-entry.
 
 Per-subject covariate effects:
@@ -126,11 +127,11 @@ Per-subject covariate effects:
 ```
 
 ``` math
-\alpha_i = \exp(l_\alpha + \eta_\alpha) \cdot \left(\tfrac{\text{MMSE}_i}{26}\right)^{-2.01}
+\alpha_i = \exp(l_\alpha + \eta_\alpha) \cdot \left(\tfrac{\text{SCORE_MMSE}_i}{26}\right)^{-2.01}
 ```
 
 ``` math
-\text{logit}(P_\text{slow}^i) = \text{logit}(\theta_5) - 1.27\,(\text{CDR\_SOB}_i - 1) - 0.341\,(\text{FAQ}_i - 1) + 7.5\,(\text{RHPNM}_i - 1)
+\text{logit}(P_\text{slow}^i) = \text{logit}(\theta_5) - 1.27\,(\text{CDR\_SOB}_i - 1) - 0.341\,(\text{SCORE_FAQ}_i - 1) + 7.5\,(\text{SCORE_RHPNM}_i - 1)
 ```
 
 where `theta_5 = 0.44` is imputed (see Errata).
@@ -154,7 +155,7 @@ mod0 <- rxode2::zeroRe(mod)
 # published baseline distributions; T_ENTRY is set to a few years past each
 # subject's DOT so the patient is observed during active disease progression.
 scenarios <- tibble::tribble(
-  ~scenario,                             ~CDR_SOB, ~ADAS_COG, ~MMSE, ~FAQ, ~RHPNM,
+  ~scenario,                             ~SCORE_CDR_SOB, ~SCORE_ADAS_COG, ~SCORE_MMSE, ~SCORE_FAQ, ~SCORE_RHPNM,
   "Advanced AD (high CDR, severe ADAS)",    5.0,    25.0,    20.0,  15.0,  0.70,
   "Moderate AD (median AD baseline)",       4.0,    20.0,    23.0,  12.0,  0.80,
   "Intermediate MCI->AD",                   2.5,    15.0,    25.0,   6.0,  0.90,
@@ -164,13 +165,13 @@ scenarios <- tibble::tribble(
 
 # Compute the typical DOT for each scenario from the source paper covariate
 # form, then set T_ENTRY to DOT + 4 years (well past the activation function)
-# so the patient is observed during disease progression. Cap CDR_SOB at 0.5
-# in the DOT formula to avoid divide-by-zero on the (CDR_SOB/2)^-0.072 form.
+# so the patient is observed during disease progression. Cap SCORE_CDR_SOB at 0.5
+# in the DOT formula to avoid divide-by-zero on the (SCORE_CDR_SOB/2)^-0.072 form.
 scenarios <- scenarios |>
   dplyr::mutate(
     dot_typ = 16.1 *
-              (pmax(CDR_SOB, 0.5) / 2)^(-0.072) *
-              (ADAS_COG / 12.67)^(-0.0439),
+              (pmax(SCORE_CDR_SOB, 0.5) / 2)^(-0.072) *
+              (SCORE_ADAS_COG / 12.67)^(-0.0439),
     T_ENTRY = dot_typ + 4.0
   )
 
@@ -178,7 +179,7 @@ knitr::kable(scenarios, digits = 3,
              caption = "Virtual-cohort covariates with the implied typical DOT and the study-entry time T_ENTRY used for plotting.")
 ```
 
-| scenario | CDR_SOB | ADAS_COG | MMSE | FAQ | RHPNM | dot_typ | T_ENTRY |
+| scenario | SCORE_CDR_SOB | SCORE_ADAS_COG | SCORE_MMSE | SCORE_FAQ | SCORE_RHPNM | dot_typ | T_ENTRY |
 |:---|---:|---:|---:|---:|---:|---:|---:|
 | Advanced AD (high CDR, severe ADAS) | 5.0 | 25 | 20 | 15 | 0.70 | 14.629 | 18.629 |
 | Moderate AD (median AD baseline) | 4.0 | 20 | 23 | 12 | 0.80 | 15.012 | 19.012 |
@@ -207,11 +208,11 @@ simulate_one <- function(s) {
     time     = times,
     evid     = 0L,
     amt      = 0,
-    CDR_SOB  = s$CDR_SOB,
-    ADAS_COG = s$ADAS_COG,
-    MMSE     = s$MMSE,
-    FAQ      = s$FAQ,
-    RHPNM    = s$RHPNM,
+    SCORE_CDR_SOB  = s$SCORE_CDR_SOB,
+    SCORE_ADAS_COG = s$SCORE_ADAS_COG,
+    SCORE_MMSE     = s$SCORE_MMSE,
+    SCORE_FAQ      = s$SCORE_FAQ,
+    SCORE_RHPNM    = s$SCORE_RHPNM,
     T_ENTRY  = s$T_ENTRY
   )
   sim <- rxode2::rxSolve(mod0, events = ev, returnType = "data.frame")
@@ -279,12 +280,12 @@ make_cohort <- function(n, label, cdr, adas, mmse, faq, rhpnm, dot_offset = 4, i
   tibble::tibble(
     id = id_offset + seq_len(n),
     scenario = label,
-    CDR_SOB = cdr, ADAS_COG = adas, MMSE = mmse, FAQ = faq, RHPNM = rhpnm
+    SCORE_CDR_SOB = cdr, SCORE_ADAS_COG = adas, SCORE_MMSE = mmse, SCORE_FAQ = faq, SCORE_RHPNM = rhpnm
   ) |>
     dplyr::mutate(
       dot_typ = 16.1 *
-                (pmax(CDR_SOB, 0.5) / 2)^(-0.072) *
-                (ADAS_COG / 12.67)^(-0.0439),
+                (pmax(SCORE_CDR_SOB, 0.5) / 2)^(-0.072) *
+                (SCORE_ADAS_COG / 12.67)^(-0.0439),
       T_ENTRY = dot_typ + dot_offset
     )
 }
@@ -302,11 +303,11 @@ sim_vpc <- lapply(seq_len(nrow(cohort)), function(i) {
     time     = times,
     evid     = 0L,
     amt      = 0,
-    CDR_SOB  = s$CDR_SOB,
-    ADAS_COG = s$ADAS_COG,
-    MMSE     = s$MMSE,
-    FAQ      = s$FAQ,
-    RHPNM    = s$RHPNM,
+    SCORE_CDR_SOB  = s$SCORE_CDR_SOB,
+    SCORE_ADAS_COG = s$SCORE_ADAS_COG,
+    SCORE_MMSE     = s$SCORE_MMSE,
+    SCORE_FAQ      = s$SCORE_FAQ,
+    SCORE_RHPNM    = s$SCORE_RHPNM,
     T_ENTRY  = s$T_ENTRY
   )
   out <- rxode2::rxSolve(mod, events = ev, returnType = "data.frame")
@@ -350,38 +351,38 @@ ggplot(vpc_summary, aes(years_post_round, Q50, colour = scenario, fill = scenari
 ## Sanity check: mixture-probability surface across baseline scores
 
 The mixture-probability model
-`P_slow = inv_logit(logit_p_slow - 1.27*(CDR-1) - 0.341*(FAQ-1) + 7.5*(RHPNM-1))`
+`P_slow = inv_logit(logit_p_slow - 1.27*(CDR-1) - 0.341*(SCORE_FAQ-1) + 7.5*(SCORE_RHPNM-1))`
 predicts that:
 
 - Higher baseline CDR-SOB -\> lower slow-progression probability (more
   severe -\> faster progression).
-- Higher baseline FAQ -\> lower slow-progression probability.
-- Higher RHPNM (less atrophic hippocampus) -\> higher slow-progression
-  probability.
+- Higher baseline SCORE_FAQ -\> lower slow-progression probability.
+- Higher SCORE_RHPNM (less atrophic hippocampus) -\> higher
+  slow-progression probability.
 
 ``` r
 
 grid <- tidyr::expand_grid(
-  CDR_SOB = seq(0, 6, by = 0.5),
-  RHPNM   = c(0.7, 0.85, 1.0)
+  SCORE_CDR_SOB = seq(0, 6, by = 0.5),
+  SCORE_RHPNM   = c(0.7, 0.85, 1.0)
 ) |>
-  dplyr::mutate(FAQ = 1) |>  # hold FAQ at the centring value
+  dplyr::mutate(SCORE_FAQ = 1) |>  # hold SCORE_FAQ at the centring value
   dplyr::mutate(
     logit_p = log(0.44/(1-0.44)) +
-              (-1.27) * (CDR_SOB - 1) +
-              (-0.341) * (FAQ - 1) +
-              ( 7.5  ) * (RHPNM - 1),
+              (-1.27) * (SCORE_CDR_SOB - 1) +
+              (-0.341) * (SCORE_FAQ - 1) +
+              ( 7.5  ) * (SCORE_RHPNM - 1),
     p_slow = 1/(1 + exp(-logit_p))
   )
 
-ggplot(grid, aes(CDR_SOB, p_slow, colour = factor(RHPNM))) +
+ggplot(grid, aes(SCORE_CDR_SOB, p_slow, colour = factor(SCORE_RHPNM))) +
   geom_line(linewidth = 0.7) +
   scale_y_continuous(limits = c(0, 1)) +
   labs(x = "Baseline CDR-SOB",
        y = "Probability of being in the slow-progression subpopulation",
-       colour = "RHPNM",
+       colour = "SCORE_RHPNM",
        title = "Mixture probability of slow progression vs baseline CDR-SOB",
-       caption = "FAQ held at median value 1. RHPNM = 1 = healthy reference hippocampal volume; 0.7 = ~30% atrophy.") +
+       caption = "SCORE_FAQ held at median value 1. SCORE_RHPNM = 1 = healthy reference hippocampal volume; 0.7 = ~30% atrophy.") +
   theme_minimal()
 ```
 
@@ -402,14 +403,14 @@ extraction time. The following choices were made:
 
 1.  **Typical mixture probability (`theta_5`).** Table 2 of the source
     paper tabulates the three covariate coefficients on the
-    mixture-logit (`COV CDR-SOB on $MIX`, `COV FAQ on $MIX`,
-    `COV RHPNM on $MIX`) but **not** the typical / intercept value
+    mixture-logit (`COV CDR-SOB on $MIX`, `COV SCORE_FAQ on $MIX`,
+    `COV SCORE_RHPNM on $MIX`) but **not** the typical / intercept value
     `theta_5`. The model file imputes `theta_5 = 0.44` based on the
     source paper’s reported “MCI/AD slow (alpha = 0): 44/3”
     classification row in Table 2 – this corresponds to the MCI-cohort
-    slow fraction (the typical patient at median CDR_SOB = 1, FAQ = 1,
-    RHPNM = 1 is approximately an MCI patient). Alternative defaults the
-    operator might prefer:
+    slow fraction (the typical patient at median SCORE_CDR_SOB = 1,
+    SCORE_FAQ = 1, SCORE_RHPNM = 1 is approximately an MCI patient).
+    Alternative defaults the operator might prefer:
 
     - Overall slow fraction across MCI + AD cohorts: about 0.31
       (computed as `(0.44 * 380 + 0.03 * 180) / 560`).

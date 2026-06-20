@@ -97,7 +97,7 @@ below collects the mapping in one place for reviewer audit.
 | `SGOT` | `AST` (IU/L) | Serum glutamic-oxaloacetic transaminase is the legacy name for aspartate aminotransferase; identical values and units. Reference 24 IU/L. |
 | `ALBU` | `ALB` (g/dL) | Baseline serum albumin in US conventional units (g/dL, not g/L). Reference 4 g/dL. |
 | `LMET` | `LMET` (binary) | Baseline presence of liver metastases (new canonical entry in the covariate register). |
-| `TTYPE` | `TUMTP_GC` / `TUMTP_OTH` (binary) | Categorical primary tumor type with levels `MBC`, `EBC`, `HV`, `AGC`, `Others` is decomposed into two binary indicators: `TUMTP_GC = as.integer(TTYPE == "AGC")` and `TUMTP_OTH = as.integer(TTYPE == "Others")`. Both zero = MBC / EBC / HV reference group. |
+| `TTYPE` | `TUMTP_GASTRIC` / `TUMTP_OTHER` (binary) | Categorical primary tumor type with levels `MBC`, `EBC`, `HV`, `AGC`, `Others` is decomposed into two binary indicators: `TUMTP_GASTRIC = as.integer(TTYPE == "AGC")` and `TUMTP_OTHER = as.integer(TTYPE == "Others")`. Both zero = MBC / EBC / HV reference group. |
 
 ### Population
 
@@ -140,8 +140,8 @@ make_cohort <- function(n, tumor_type, id_offset = 0L) {
   tibble::tibble(
     id         = id_offset + seq_len(n),
     tumor_type = tumor_type,
-    TUMTP_GC   = as.integer(tumor_type == "AGC"),
-    TUMTP_OTH  = as.integer(tumor_type == "Others"),
+    TUMTP_GASTRIC   = as.integer(tumor_type == "AGC"),
+    TUMTP_OTHER  = as.integer(tumor_type == "Others"),
     WT         = pmin(pmax(rnorm(n, 66, 13), 40), 120),          # kg; centred at 66 kg (reference)
     AST        = pmin(pmax(rlnorm(n, log(24), 0.5), 8), 200),    # IU/L
     ALB        = pmin(pmax(rnorm(n, 4.0, 0.4), 2.5), 5.5),       # g/dL
@@ -215,7 +215,7 @@ events_q3w <- make_events_q3w(cohort)
 # Attach covariates (keyed by id)
 events_q3w_cov <- dplyr::left_join(
   events_q3w,
-  cohort |> dplyr::select(id, tumor_type, TUMTP_GC, TUMTP_OTH, WT, AST, ALB, LMET),
+  cohort |> dplyr::select(id, tumor_type, TUMTP_GASTRIC, TUMTP_OTHER, WT, AST, ALB, LMET),
   by = "id"
 )
 ```
@@ -260,7 +260,7 @@ ref_subject <- function(tgc, tot, id = 1L) {
                amt = 0, cmt = NA, evid = 0, ii = 0, addl = 0)
   ) |>
     dplyr::mutate(WT = 66, AST = 24, ALB = 4, LMET = 0,
-                  TUMTP_GC = tgc, TUMTP_OTH = tot,
+                  TUMTP_GASTRIC = tgc, TUMTP_OTHER = tot,
                   tumor_type = dplyr::case_when(tgc == 1 ~ "AGC",
                                                 tot == 1 ~ "Others",
                                                 TRUE     ~ "BC"))

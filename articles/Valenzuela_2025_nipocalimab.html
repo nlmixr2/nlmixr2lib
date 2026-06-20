@@ -1244,8 +1244,8 @@ variability via <code><a href="https://nlmixr2.github.io/rxode2/reference/zeroRe
 <span><span class="va">ev_q2w</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/et.html" class="external-link">et</a></span><span class="op">(</span><span class="va">ev_q2w</span>, time <span class="op">=</span> <span class="va">obs_times</span>, cmt <span class="op">=</span> <span class="st">"dMGADL"</span>,            id <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">icov_gmg</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
-<span>  id <span class="op">=</span> <span class="fl">1</span>, WT <span class="op">=</span> <span class="va">wt_kg</span>, ELISA <span class="op">=</span> <span class="fl">0</span>, PHASE1 <span class="op">=</span> <span class="fl">0</span>,</span>
-<span>  STUDY_M281_004 <span class="op">=</span> <span class="fl">1</span>, MGADL <span class="op">=</span> <span class="va">mgadl_bl</span></span>
+<span>  id <span class="op">=</span> <span class="fl">1</span>, WT <span class="op">=</span> <span class="va">wt_kg</span>, ELISA <span class="op">=</span> <span class="fl">0</span>, STUDY_NIPOCALIMAB_PHASE1 <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  STUDY_M281_004 <span class="op">=</span> <span class="fl">1</span>, SCORE_MGADL <span class="op">=</span> <span class="va">mgadl_bl</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">sim_q2w</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod_typical</span>, <span class="va">ev_q2w</span>, iCov <span class="op">=</span> <span class="va">icov_gmg</span>,</span>
@@ -1285,8 +1285,8 @@ Q2W.</p>
 <code class="sourceCode R"><span><span class="va">baseline_igg_gmg</span> <span class="op">&lt;-</span> <span class="fl">11.4</span> <span class="op">*</span> <span class="fl">0.777</span>  <span class="co"># IgG0 * FRIgG0_M281_004</span></span>
 <span></span>
 <span><span class="va">igg_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span></span>
-<span>  <span class="va">sim_q2w</span>  <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/transmute.html" class="external-link">transmute</a></span><span class="op">(</span><span class="va">time</span>, IgG <span class="op">=</span> <span class="va">total_IgG</span>, regimen <span class="op">=</span> <span class="st">"15 mg/kg Q2W"</span><span class="op">)</span>,</span>
-<span>  <span class="va">sim_load</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/transmute.html" class="external-link">transmute</a></span><span class="op">(</span><span class="va">time</span>, IgG <span class="op">=</span> <span class="va">total_IgG</span>, regimen <span class="op">=</span> <span class="st">"30 mg/kg load -&gt; 15 mg/kg Q2W"</span><span class="op">)</span></span>
+<span>  <span class="va">sim_q2w</span>  <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/transmute.html" class="external-link">transmute</a></span><span class="op">(</span><span class="va">time</span>, IgG <span class="op">=</span> <span class="va">total_igg</span>, regimen <span class="op">=</span> <span class="st">"15 mg/kg Q2W"</span><span class="op">)</span>,</span>
+<span>  <span class="va">sim_load</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/transmute.html" class="external-link">transmute</a></span><span class="op">(</span><span class="va">time</span>, IgG <span class="op">=</span> <span class="va">total_igg</span>, regimen <span class="op">=</span> <span class="st">"30 mg/kg load -&gt; 15 mg/kg Q2W"</span><span class="op">)</span></span>
 <span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>IgG_CFB_pct <span class="op">=</span> <span class="fl">100</span> <span class="op">*</span> <span class="op">(</span><span class="va">IgG</span> <span class="op">-</span> <span class="va">baseline_igg_gmg</span><span class="op">)</span> <span class="op">/</span> <span class="va">baseline_igg_gmg</span><span class="op">)</span></span>
 <span></span>
@@ -1314,7 +1314,7 @@ gMG participant on 15 mg/kg Q2W (without loading dose).</p>
 <code class="sourceCode R"><span><span class="co"># Cc is already in ug/mL (model concentration unit).</span></span>
 <span><span class="va">sim_plot</span> <span class="op">&lt;-</span> <span class="va">sim_q2w</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>pctRO        <span class="op">=</span> <span class="fl">100</span> <span class="op">-</span> <span class="va">pctUnoccupiedFcRn</span>,</span>
-<span>         IgG_CFB_pct  <span class="op">=</span> <span class="fl">100</span> <span class="op">*</span> <span class="op">(</span><span class="va">total_IgG</span> <span class="op">-</span> <span class="va">baseline_igg_gmg</span><span class="op">)</span> <span class="op">/</span> <span class="va">baseline_igg_gmg</span><span class="op">)</span></span>
+<span>         IgG_CFB_pct  <span class="op">=</span> <span class="fl">100</span> <span class="op">*</span> <span class="op">(</span><span class="va">total_igg</span> <span class="op">-</span> <span class="va">baseline_igg_gmg</span><span class="op">)</span> <span class="op">/</span> <span class="va">baseline_igg_gmg</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">p_pk</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">sim_plot</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">Cc</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>colour <span class="op">=</span> <span class="st">"steelblue"</span>, linewidth <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span> <span class="op">+</span></span>
@@ -1364,8 +1364,8 @@ linear-CL range, before the target-mediated component fully engages.</p>
 <span>  <span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/et.html" class="external-link">et</a></span><span class="op">(</span>time <span class="op">=</span> <span class="va">nca_times</span>, cmt <span class="op">=</span> <span class="st">"Cc"</span>, id <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">icov_hv</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
-<span>  id <span class="op">=</span> <span class="fl">1</span>, WT <span class="op">=</span> <span class="va">wt_kg</span>, ELISA <span class="op">=</span> <span class="fl">1</span>, PHASE1 <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>  STUDY_M281_004 <span class="op">=</span> <span class="fl">0</span>, MGADL <span class="op">=</span> <span class="fl">0</span></span>
+<span>  id <span class="op">=</span> <span class="fl">1</span>, WT <span class="op">=</span> <span class="va">wt_kg</span>, ELISA <span class="op">=</span> <span class="fl">1</span>, STUDY_NIPOCALIMAB_PHASE1 <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  STUDY_M281_004 <span class="op">=</span> <span class="fl">0</span>, SCORE_MGADL <span class="op">=</span> <span class="fl">0</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">sim_sd</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod_typical</span>, <span class="va">ev_sd</span>, iCov <span class="op">=</span> <span class="va">icov_hv</span>,</span>
@@ -1575,7 +1575,7 @@ typical-value simulation gives:</li>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ss_mean_igg_cfb</span> <span class="op">&lt;-</span> <span class="va">sim_q2w</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">time</span> <span class="op">&gt;=</span> <span class="fl">84</span>, <span class="va">time</span> <span class="op">&lt;=</span> <span class="fl">112</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span>mean_cfb_pct <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="fl">100</span> <span class="op">*</span> <span class="op">(</span><span class="va">total_IgG</span> <span class="op">-</span> <span class="va">baseline_igg_gmg</span><span class="op">)</span> <span class="op">/</span> <span class="va">baseline_igg_gmg</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span>mean_cfb_pct <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="fl">100</span> <span class="op">*</span> <span class="op">(</span><span class="va">total_igg</span> <span class="op">-</span> <span class="va">baseline_igg_gmg</span><span class="op">)</span> <span class="op">/</span> <span class="va">baseline_igg_gmg</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">ss_mean_igg_cfb</span></span>
 <span><span class="co">#&gt;   mean_cfb_pct</span></span>
 <span><span class="co">#&gt; 1    -72.48007</span></span></code></pre></div>
@@ -1639,7 +1639,8 @@ used directly.</li>
 <li>
 <strong>Assay selection.</strong> <code>ELISA = 1</code> is the
 Phase 1 healthy-participant default (studies MOM-M281-001, MOM-M281-007,
-MOM-M281-010). <code>ELISA = 0</code> with <code>PHASE1 = 0</code> and
+MOM-M281-010). <code>ELISA = 0</code> with
+<code>STUDY_NIPOCALIMAB_PHASE1 = 0</code> and
 <code>STUDY_M281_004 = 1</code> is the Vivacity-MG gMG default.</li>
 <li>
 <strong>MG-ADL additive IIV encoding.</strong> Table 3 reports three
@@ -1669,9 +1670,9 @@ prediction, consistent with Supplement Equation 6 (<code>TSFD ≤ 0</code>
 branch).</li>
 <li>
 <strong>Healthy participants and MG-ADL.</strong>
-<code>MGADL = 0</code> for healthy participants collapses the MG-ADL
-response to the placebo slope × time term; healthy cohorts did not
-contribute MG-ADL observations in the paper’s analysis.</li>
+<code>SCORE_MGADL = 0</code> for healthy participants collapses the
+MG-ADL response to the placebo slope × time term; healthy cohorts did
+not contribute MG-ADL observations in the paper’s analysis.</li>
 </ul>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

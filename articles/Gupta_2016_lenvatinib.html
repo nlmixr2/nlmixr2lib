@@ -1216,8 +1216,8 @@ whose first two moments match the pooled baseline summary in Table
 <span>    WT           <span class="op">=</span> <span class="va">wt_kg</span>,</span>
 <span>    ALB          <span class="op">=</span> <span class="va">alb_gL</span>,</span>
 <span>    ALP          <span class="op">=</span> <span class="va">alp_uL</span>,</span>
-<span>    CYP3A4_IND   <span class="op">=</span> <span class="va">cyp_ind</span>,</span>
-<span>    CYP3A4_INH   <span class="op">=</span> <span class="va">cyp_inh</span>,</span>
+<span>    CONMED_CYP3A4_IND   <span class="op">=</span> <span class="va">cyp_ind</span>,</span>
+<span>    CONMED_CYP3A4_INH   <span class="op">=</span> <span class="va">cyp_inh</span>,</span>
 <span>    DIS_HEALTHY  <span class="op">=</span> <span class="fl">0L</span>,</span>
 <span>    FORM_CAPSULE <span class="op">=</span> <span class="fl">0L</span>,</span>
 <span>    treatment    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"%d mg QD"</span>, <span class="va">dose_mg</span><span class="op">)</span></span>
@@ -1252,8 +1252,8 @@ whose first two moments match the pooled baseline summary in Table
 <code class="sourceCode R"><span><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/readModelDb.html">readModelDb</a></span><span class="op">(</span><span class="st">"Gupta_2016_lenvatinib"</span><span class="op">)</span></span>
 <span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span></span>
 <span>  <span class="va">mod</span>, events <span class="op">=</span> <span class="va">events</span>,</span>
-<span>  keep <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"treatment"</span>, <span class="st">"WT"</span>, <span class="st">"ALB"</span>, <span class="st">"ALP"</span>, <span class="st">"CYP3A4_IND"</span>,</span>
-<span>           <span class="st">"CYP3A4_INH"</span>, <span class="st">"DIS_HEALTHY"</span>, <span class="st">"FORM_CAPSULE"</span><span class="op">)</span></span>
+<span>  keep <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"treatment"</span>, <span class="st">"WT"</span>, <span class="st">"ALB"</span>, <span class="st">"ALP"</span>, <span class="st">"CONMED_CYP3A4_IND"</span>,</span>
+<span>           <span class="st">"CONMED_CYP3A4_INH"</span>, <span class="st">"DIS_HEALTHY"</span>, <span class="st">"FORM_CAPSULE"</span><span class="op">)</span></span>
 <span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ℹ parameter labels from comments will be replaced by 'label()'</span></span>
@@ -1278,7 +1278,7 @@ elimination phases of Figure 1A.</p>
 <span>  WT <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmin</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">150</span>, <span class="fl">76.7</span>, <span class="fl">19.4</span><span class="op">)</span>, <span class="fl">32.6</span><span class="op">)</span>, <span class="fl">177.5</span><span class="op">)</span>,</span>
 <span>  ALB <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmin</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">150</span>, <span class="fl">39.8</span>, <span class="fl">5.1</span><span class="op">)</span>, <span class="fl">19</span><span class="op">)</span>, <span class="fl">52</span><span class="op">)</span>,</span>
 <span>  ALP <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmin</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Lognormal.html" class="external-link">rlnorm</a></span><span class="op">(</span><span class="fl">150</span>, <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fl">77</span><span class="op">)</span>, <span class="fl">0.7</span><span class="op">)</span>, <span class="fl">19</span><span class="op">)</span>, <span class="fl">752</span><span class="op">)</span>,</span>
-<span>  CYP3A4_IND <span class="op">=</span> <span class="fl">0L</span>, CYP3A4_INH <span class="op">=</span> <span class="fl">0L</span>,</span>
+<span>  CONMED_CYP3A4_IND <span class="op">=</span> <span class="fl">0L</span>, CONMED_CYP3A4_INH <span class="op">=</span> <span class="fl">0L</span>,</span>
 <span>  DIS_HEALTHY <span class="op">=</span> <span class="fl">1L</span>,    <span class="co"># healthy subjects per Figure 1A</span></span>
 <span>  FORM_CAPSULE <span class="op">=</span> <span class="fl">0L</span></span>
 <span><span class="op">)</span></span>
@@ -1337,11 +1337,11 @@ inducer coadministration; low albumin; high ALP). The plot below
 regenerates the typical-value steady-state Cmax,ss and AUCss ratios for
 the same covariates (etas zeroed).</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">make_typical_subject</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">WT</span>, <span class="va">ALB</span>, <span class="va">ALP</span>, <span class="va">CYP3A4_IND</span>, <span class="va">CYP3A4_INH</span>,</span>
+<code class="sourceCode R"><span><span class="va">make_typical_subject</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">WT</span>, <span class="va">ALB</span>, <span class="va">ALP</span>, <span class="va">CONMED_CYP3A4_IND</span>, <span class="va">CONMED_CYP3A4_INH</span>,</span>
 <span>                                 <span class="va">DIS_HEALTHY</span>, <span class="va">FORM_CAPSULE</span>, <span class="va">label</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
 <span>    id <span class="op">=</span> <span class="fl">1L</span>, WT <span class="op">=</span> <span class="va">WT</span>, ALB <span class="op">=</span> <span class="va">ALB</span>, ALP <span class="op">=</span> <span class="va">ALP</span>,</span>
-<span>    CYP3A4_IND <span class="op">=</span> <span class="va">CYP3A4_IND</span>, CYP3A4_INH <span class="op">=</span> <span class="va">CYP3A4_INH</span>,</span>
+<span>    CONMED_CYP3A4_IND <span class="op">=</span> <span class="va">CONMED_CYP3A4_IND</span>, CONMED_CYP3A4_INH <span class="op">=</span> <span class="va">CONMED_CYP3A4_INH</span>,</span>
 <span>    DIS_HEALTHY <span class="op">=</span> <span class="va">DIS_HEALTHY</span>, FORM_CAPSULE <span class="op">=</span> <span class="va">FORM_CAPSULE</span>,</span>
 <span>    label <span class="op">=</span> <span class="va">label</span></span>
 <span>  <span class="op">)</span></span>
@@ -1372,7 +1372,7 @@ the same covariates (etas zeroed).</p>
 <span><span class="va">build_typical_events</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">cov_row</span>, <span class="va">dose_mg</span> <span class="op">=</span> <span class="fl">24</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">dose_d</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
 <span>    id <span class="op">=</span> <span class="fl">1L</span>, WT <span class="op">=</span> <span class="va">cov_row</span><span class="op">$</span><span class="va">WT</span>, ALB <span class="op">=</span> <span class="va">cov_row</span><span class="op">$</span><span class="va">ALB</span>, ALP <span class="op">=</span> <span class="va">cov_row</span><span class="op">$</span><span class="va">ALP</span>,</span>
-<span>    CYP3A4_IND <span class="op">=</span> <span class="va">cov_row</span><span class="op">$</span><span class="va">CYP3A4_IND</span>, CYP3A4_INH <span class="op">=</span> <span class="va">cov_row</span><span class="op">$</span><span class="va">CYP3A4_INH</span>,</span>
+<span>    CONMED_CYP3A4_IND <span class="op">=</span> <span class="va">cov_row</span><span class="op">$</span><span class="va">CONMED_CYP3A4_IND</span>, CONMED_CYP3A4_INH <span class="op">=</span> <span class="va">cov_row</span><span class="op">$</span><span class="va">CONMED_CYP3A4_INH</span>,</span>
 <span>    DIS_HEALTHY <span class="op">=</span> <span class="va">cov_row</span><span class="op">$</span><span class="va">DIS_HEALTHY</span>, FORM_CAPSULE <span class="op">=</span> <span class="va">cov_row</span><span class="op">$</span><span class="va">FORM_CAPSULE</span>,</span>
 <span>    time <span class="op">=</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">n_doses</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1L</span><span class="op">)</span> <span class="op">*</span> <span class="va">tau</span>,</span>
 <span>    evid <span class="op">=</span> <span class="fl">1L</span>, amt <span class="op">=</span> <span class="va">dose_mg</span>, cmt <span class="op">=</span> <span class="st">"depot"</span>, dur <span class="op">=</span> <span class="cn">NA_real_</span></span>
@@ -1380,7 +1380,7 @@ the same covariates (etas zeroed).</p>
 <span>  <span class="va">dose_c</span> <span class="op">&lt;-</span> <span class="va">dose_d</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>cmt <span class="op">=</span> <span class="st">"central"</span>, dur <span class="op">=</span> <span class="fl">1.22</span><span class="op">)</span></span>
 <span>  <span class="va">obs_rows</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
 <span>    id <span class="op">=</span> <span class="fl">1L</span>, WT <span class="op">=</span> <span class="va">cov_row</span><span class="op">$</span><span class="va">WT</span>, ALB <span class="op">=</span> <span class="va">cov_row</span><span class="op">$</span><span class="va">ALB</span>, ALP <span class="op">=</span> <span class="va">cov_row</span><span class="op">$</span><span class="va">ALP</span>,</span>
-<span>    CYP3A4_IND <span class="op">=</span> <span class="va">cov_row</span><span class="op">$</span><span class="va">CYP3A4_IND</span>, CYP3A4_INH <span class="op">=</span> <span class="va">cov_row</span><span class="op">$</span><span class="va">CYP3A4_INH</span>,</span>
+<span>    CONMED_CYP3A4_IND <span class="op">=</span> <span class="va">cov_row</span><span class="op">$</span><span class="va">CONMED_CYP3A4_IND</span>, CONMED_CYP3A4_INH <span class="op">=</span> <span class="va">cov_row</span><span class="op">$</span><span class="va">CONMED_CYP3A4_INH</span>,</span>
 <span>    DIS_HEALTHY <span class="op">=</span> <span class="va">cov_row</span><span class="op">$</span><span class="va">DIS_HEALTHY</span>, FORM_CAPSULE <span class="op">=</span> <span class="va">cov_row</span><span class="op">$</span><span class="va">FORM_CAPSULE</span>,</span>
 <span>    time <span class="op">=</span> <span class="va">obs_grid</span>,</span>
 <span>    evid <span class="op">=</span> <span class="fl">0L</span>, amt <span class="op">=</span> <span class="fl">0</span>, cmt <span class="op">=</span> <span class="st">"central"</span>, dur <span class="op">=</span> <span class="cn">NA_real_</span></span>
@@ -1984,11 +1984,11 @@ correspond to a covariate-matched mix.</li>
 new entries are proposed in
 <code>inst/references/covariate-columns.md</code>: <code>ALP</code>
 (general scope; alkaline phosphatase continuous concentration) and
-<code>CYP3A4_IND</code> (general scope; concomitant CYP3A4 inducer
-indicator, sibling to the existing <code>CYP3A4_INH</code>). The
-<code>FORM_CAPSULE</code> entry is extended to acknowledge tablet as a
-per-paper non-capsule reference (the prior Hennig 2006/2007 entries used
-solution as the reference).</li>
+<code>CONMED_CYP3A4_IND</code> (general scope; concomitant CYP3A4
+inducer indicator, sibling to the existing
+<code>CONMED_CYP3A4_INH</code>). The <code>FORM_CAPSULE</code> entry is
+extended to acknowledge tablet as a per-paper non-capsule reference (the
+prior Hennig 2006/2007 entries used solution as the reference).</li>
 </ul>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

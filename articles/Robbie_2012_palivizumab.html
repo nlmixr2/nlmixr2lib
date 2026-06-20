@@ -1168,7 +1168,7 @@ yield the published per-subject CL, Vc, Vp, Q at each reference.</p>
 <span>    DV <span class="op">=</span> <span class="cn">NA</span>,</span>
 <span>    WT <span class="op">=</span> <span class="va">WT</span>, PAGE <span class="op">=</span> <span class="va">PAGE</span>,</span>
 <span>    RACE_BLACK <span class="op">=</span> <span class="fl">0</span>, RACE_HISPANIC <span class="op">=</span> <span class="fl">0</span>, RACE_ASIAN <span class="op">=</span> <span class="fl">0</span>, RACE_OTHER <span class="op">=</span> <span class="fl">0</span>,</span>
-<span>    CLD_PREM <span class="op">=</span> <span class="fl">0</span>, ADA_TITER <span class="op">=</span> <span class="fl">0</span></span>
+<span>    DIS_CLD_PREM <span class="op">=</span> <span class="fl">0</span>, ADA_TITER <span class="op">=</span> <span class="fl">0</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
@@ -1259,7 +1259,7 @@ PAGE.</p>
 <span>  <span class="va">PNA_0</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">n</span>, <span class="va">pna0_range</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, <span class="va">pna0_range</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span></span>
 <span>  <span class="va">wt_z</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span><span class="op">-</span><span class="fl">2</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmin</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n</span>, <span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="va">WT_0</span> <span class="op">&lt;-</span> <span class="fu">who_weight</span><span class="op">(</span><span class="va">PNA_0</span>, <span class="va">wt_z</span><span class="op">)</span></span>
-<span>  <span class="va">CLD_PREM</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span> <span class="op">&lt;</span> <span class="va">cld_prob</span><span class="op">)</span></span>
+<span>  <span class="va">DIS_CLD_PREM</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span> <span class="op">&lt;</span> <span class="va">cld_prob</span><span class="op">)</span></span>
 <span>  <span class="va">ADA_T</span> <span class="op">&lt;-</span> <span class="fu">ada_titer_fn</span><span class="op">(</span><span class="va">n</span><span class="op">)</span></span>
 <span>  <span class="va">race</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">race_probs</span><span class="op">)</span>, <span class="va">n</span>, replace <span class="op">=</span> <span class="cn">TRUE</span>, prob <span class="op">=</span> <span class="va">race_probs</span><span class="op">)</span></span>
 <span></span>
@@ -1269,7 +1269,7 @@ PAGE.</p>
 <span>    RACE_HISPANIC <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">race</span> <span class="op">==</span> <span class="st">"Hispanic"</span><span class="op">)</span>,</span>
 <span>    RACE_ASIAN    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">race</span> <span class="op">==</span> <span class="st">"Asian"</span><span class="op">)</span>,</span>
 <span>    RACE_OTHER    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">race</span> <span class="op">==</span> <span class="st">"Other"</span><span class="op">)</span>,</span>
-<span>    CLD_PREM <span class="op">=</span> <span class="va">CLD_PREM</span>, ADA_TITER <span class="op">=</span> <span class="va">ADA_T</span></span>
+<span>    DIS_CLD_PREM <span class="op">=</span> <span class="va">DIS_CLD_PREM</span>, ADA_TITER <span class="op">=</span> <span class="va">ADA_T</span></span>
 <span>  <span class="op">)</span></span>
 <span></span>
 <span>  <span class="co"># Dose records: n_doses at 30-day intervals, 15 mg/kg of current weight</span></span>
@@ -1298,7 +1298,7 @@ PAGE.</p>
 <span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">ID</span>, <span class="va">TIME</span>, <span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html" class="external-link">desc</a></span><span class="op">(</span><span class="va">EVID</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">ID</span>, <span class="va">TIME</span>, <span class="va">AMT</span>, <span class="va">EVID</span>, <span class="va">CMT</span>, <span class="va">DV</span>, <span class="va">WT</span>, <span class="va">PAGE</span>,</span>
 <span>      <span class="va">RACE_BLACK</span>, <span class="va">RACE_HISPANIC</span>, <span class="va">RACE_ASIAN</span>, <span class="va">RACE_OTHER</span>,</span>
-<span>      <span class="va">CLD_PREM</span>, <span class="va">ADA_TITER</span>, <span class="va">WT_0</span>, <span class="va">GA</span>, <span class="va">PNA_0</span><span class="op">)</span></span>
+<span>      <span class="va">DIS_CLD_PREM</span>, <span class="va">ADA_TITER</span>, <span class="va">WT_0</span>, <span class="va">GA</span>, <span class="va">PNA_0</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
 </div>
 <div class="section level3">

@@ -59,23 +59,23 @@ final estimates carried verbatim (the listing’s
 |----|----|----|
 | `lcl = log(3570)` (CLP, L/h) | 3570 | `Executable_run1.mod` `$THETA TH 1` (CLP) |
 | `lvc = log(1700)` (V2, L) | 1700 | `Executable_run1.mod` `$THETA TH 2` (V2) |
-| `lcl_dha = log(190)` (CLM, L/h) | 190 | `Executable_run1.mod` `$THETA TH 3` (CLM) |
-| `lvc_dha = log(267)` (V3, L) | 267 | `Executable_run1.mod` `$THETA TH 4` (V3) |
+| `lcl_dihydroart = log(190)` (CLM, L/h) | 190 | `Executable_run1.mod` `$THETA TH 3` (CLM) |
+| `lvc_dihydroart = log(267)` (V3, L) | 267 | `Executable_run1.mod` `$THETA TH 4` (V3) |
 | `lmtt = log(0.832)` (MTT, h) | 0.832 | `Executable_run1.mod` `$THETA TH 5` (MTT) |
 | `lfdepot = fixed(log(1))` (F1) | 1 (fixed) | `Executable_run1.mod` `$THETA TH 6` `1 FIX` |
-| `e_preg_cl_dha` | -0.214 | `Executable_run1.mod` `$THETA TH 7` (CLMPREG1) |
+| `e_preg_cl_dihydroart` | -0.214 | `Executable_run1.mod` `$THETA TH 7` (CLMPREG1) |
 | `e_alt_fdepot` | +0.0215 | `Executable_run1.mod` `$THETA TH 8` (F1ALT1) |
 | `e_lnpc_fdepot` | +0.138 | `Executable_run1.mod` `$THETA TH 9` (F1LNPC1) |
 | `etalcl ~ 0.0672` | 0.0672 (variance, log-scale) | `Executable_run1.mod` `$OMEGA(1,1)` (1.CL) |
-| `etalcl_dha ~ 0.00809` | 0.00809 | `Executable_run1.mod` `$OMEGA(3,3)` (3.CLM\_) |
+| `etalcl_dihydroart ~ 0.00809` | 0.00809 | `Executable_run1.mod` `$OMEGA(3,3)` (3.CLM\_) |
 | `etalmtt ~ 0.32` | 0.32 | `Executable_run1.mod` `$OMEGA(5,5)` (5.MTT\_) |
 | `etalfdepot ~ 0.0887` | 0.0887 | `Executable_run1.mod` `$OMEGA(6,6)` (8.F1) |
 | `propSd = sqrt(0.892)` | sqrt(0.892) ~= 0.945 | `Executable_run1.mod` `$SIGMA(1,1)` (RUV_ARS) |
-| `propSd_dha = sqrt(0.66)` | sqrt(0.66) ~= 0.812 | `Executable_run1.mod` `$SIGMA(2,2)` (RUV_DHA) |
+| `propSd_dihydroart = sqrt(0.66)` | sqrt(0.66) ~= 0.812 | `Executable_run1.mod` `$SIGMA(2,2)` (RUV_DHA) |
 | Allometric scaling (CL exponent 0.75, V exponent 1, ref 52 kg) | – | `Executable_run1.mod` `$PK` block (`TVCLP = THETA(1)*((WT/52)**0.75)`, etc.) |
 | 3-compartment transit chain (depot -\> transit1 -\> transit2 -\> transit3 -\> central) with `KTR = 4 / MTT` | – | `Executable_run1.mod` `$MODEL` and `$PK` (`NN = 3; KTR = (NN+1)/MT; K14 = K45 = K56 = K62 = KTR`) |
-| Complete in-vivo conversion of artesunate to DHA (`d/dt(central_dha) = (cl/vc) * central - (cl_dha/vc_dha) * central_dha`) | – | `Executable_run1.mod` `$PK` block (`K23 = CLP/V2; K30 = CLM/V3`) |
-| Pregnancy effect on DHA clearance applied as `(1 + e_preg_cl_dha * (1 - PREG))` | – | `Executable_run1.mod` `$PK` block (`IF (PREG.EQ.1) CLMPREG = 1; IF (PREG.EQ.0) CLMPREG = (1 + THETA(7))`) |
+| Complete in-vivo conversion of artesunate to DHA (`d/dt(central_dihydroart) = (cl/vc) * central - (cl_dihydroart/vc_dihydroart) * central_dihydroart`) | – | `Executable_run1.mod` `$PK` block (`K23 = CLP/V2; K30 = CLM/V3`) |
+| Pregnancy effect on DHA clearance applied as `(1 + e_preg_cl_dihydroart * (1 - PREG))` | – | `Executable_run1.mod` `$PK` block (`IF (PREG.EQ.1) CLMPREG = 1; IF (PREG.EQ.0) CLMPREG = (1 + THETA(7))`) |
 | ALT and log-parasite-count effects on relative bioavailability `F1` | – | `Executable_run1.mod` `$PK` block (`F1ALT = 1 + THETA(8)*(ALT - 20.75); F1LNPC = 1 + THETA(9)*(LNPC - 5.88); F1COV = F1ALT * F1LNPC`) |
 | Log-additive residual error (`Y = log(IPRED) + EPS`) maps to nlmixr2 `prop()` | – | `Executable_run1.mod` `$ERROR` block; convention rule from `references/naming-conventions.md` |
 
@@ -129,12 +129,12 @@ build_events <- function(subjects, obs_times, dose_amt) {
       treatment = s$treatment, WT = s$WT, PREG = s$PREG,
       ALT = s$ALT, LNPC = s$LNPC
     )
-    obs_dha <- data.frame(
+    obs_dihydroart <- data.frame(
       id = s$id, time = obs_times, evid = 0L, amt = 0, cmt = 8L,
       treatment = s$treatment, WT = s$WT, PREG = s$PREG,
       ALT = s$ALT, LNPC = s$LNPC
     )
-    out[[i]] <- rbind(dose_row, obs_art, obs_dha)
+    out[[i]] <- rbind(dose_row, obs_art, obs_dihydroart)
   }
   events <- dplyr::bind_rows(out)
   events <- events[order(events$id, events$time, -events$evid, events$cmt),]
@@ -183,7 +183,7 @@ sim_typical <- rxode2::rxSolve(
   keep   = c("treatment", "WT", "PREG", "ALT", "LNPC")
 ) |>
   as.data.frame()
-#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalcl_dha', 'etalmtt', 'etalfdepot'
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalcl_dihydroart', 'etalmtt', 'etalfdepot'
 #> Warning: multi-subject simulation without without 'omega'
 ```
 
@@ -199,11 +199,11 @@ follow-up edit when the PDF is available.
 ``` r
 
 sim_typical |>
-  tidyr::pivot_longer(c(Cc, Cc_dha), names_to = "analyte",
+  tidyr::pivot_longer(c(Cc, Cc_dihydroart), names_to = "analyte",
                       values_to = "conc_nM") |>
   dplyr::mutate(analyte = dplyr::recode(analyte,
                                         Cc     = "Artesunate",
-                                        Cc_dha = "Dihydroartemisinin")) |>
+                                        Cc_dihydroart = "Dihydroartemisinin")) |>
   dplyr::filter(time > 0, conc_nM > 0) |>
   ggplot(aes(time, conc_nM, colour = treatment, linetype = analyte)) +
   geom_line(linewidth = 0.8) +
@@ -223,11 +223,11 @@ sim_typical |>
 ``` r
 
 sim |>
-  tidyr::pivot_longer(c(Cc, Cc_dha), names_to = "analyte",
+  tidyr::pivot_longer(c(Cc, Cc_dihydroart), names_to = "analyte",
                       values_to = "conc_nM") |>
   dplyr::mutate(analyte = dplyr::recode(analyte,
                                         Cc     = "Artesunate",
-                                        Cc_dha = "Dihydroartemisinin")) |>
+                                        Cc_dihydroart = "Dihydroartemisinin")) |>
   dplyr::filter(time > 0, conc_nM > 0) |>
   dplyr::group_by(time, treatment, analyte) |>
   dplyr::summarise(
@@ -254,7 +254,7 @@ Single-dose, dense-sampling NCA per the recipe in
 `references/pknca-recipes.md`. The treatment grouping variable carries
 the pregnancy strata so the per-arm Cmax / Tmax / AUC can be summarized
 side-by-side. Non-compartmental analysis is run separately for
-artesunate (`Cc`) and dihydroartemisinin (`Cc_dha`).
+artesunate (`Cc`) and dihydroartemisinin (`Cc_dihydroart`).
 
 ``` r
 
@@ -723,15 +723,15 @@ nca_art <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj_art, dose_obj,
 
 ``` r
 
-sim_nca_dha <- sim |>
-  dplyr::filter(!is.na(Cc_dha)) |>
-  dplyr::select(id, time, Cc_dha, treatment) |>
+sim_nca_dihydroart <- sim |>
+  dplyr::filter(!is.na(Cc_dihydroart)) |>
+  dplyr::select(id, time, Cc_dihydroart, treatment) |>
   dplyr::group_by(id, time, treatment) |>
-  dplyr::summarise(Cc_dha = mean(Cc_dha), .groups = "drop")
+  dplyr::summarise(Cc_dihydroart = mean(Cc_dihydroart), .groups = "drop")
 
-conc_obj_dha <- PKNCA::PKNCAconc(sim_nca_dha, Cc_dha ~ time | treatment + id,
+conc_obj_dihydroart <- PKNCA::PKNCAconc(sim_nca_dihydroart, Cc_dihydroart ~ time | treatment + id,
                                  concu = "nmol/L", timeu = "h")
-nca_dha <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj_dha, dose_obj,
+nca_dihydroart <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj_dihydroart, dose_obj,
                                           intervals = intervals))
 ```
 
@@ -768,7 +768,7 @@ status (median \[5%-95%\]). {.table}
 
 ``` r
 
-nca_dha_df <- as.data.frame(nca_dha$result)
+nca_dha_df <- as.data.frame(nca_dihydroart$result)
 dha_summary <- nca_dha_df |>
   dplyr::filter(PPTESTCD %in% c("cmax", "tmax", "auclast",
                                 "aucinf.obs", "half.life")) |>
@@ -782,7 +782,7 @@ dha_summary <- nca_dha_df |>
   tidyr::pivot_wider(names_from = treatment,
                      values_from = c(median, p05, p95))
 knitr::kable(dha_summary,
-             caption = "Simulated NCA -- dihydroartemisinin (Cc_dha), single oral 200 mg dose, by pregnancy status (median [5%-95%]).",
+             caption = "Simulated NCA -- dihydroartemisinin (Cc_dihydroart), single oral 200 mg dose, by pregnancy status (median [5%-95%]).",
              digits = 3)
 ```
 
@@ -794,8 +794,8 @@ knitr::kable(dha_summary,
 | half.life | 1.233 | 0.993 | 1.095 | 0.880 | 1.410 | 1.135 |
 | tmax | 2.000 | 2.000 | 1.500 | 1.000 | 2.925 | 3.850 |
 
-Simulated NCA – dihydroartemisinin (Cc_dha), single oral 200 mg dose, by
-pregnancy status (median \[5%-95%\]). {.table}
+Simulated NCA – dihydroartemisinin (Cc_dihydroart), single oral 200 mg
+dose, by pregnancy status (median \[5%-95%\]). {.table}
 
 ### Comparison against published NCA
 
@@ -845,7 +845,7 @@ bundle_events <- build_events(bundle_subject, seq(0, 24, by = 0.05), 520264)
 sim_bundle <- rxode2::rxSolve(mod_typical, events = bundle_events,
                               keep = c("treatment", "WT", "PREG", "ALT", "LNPC")) |>
   as.data.frame()
-#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalcl_dha', 'etalmtt', 'etalfdepot'
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalcl_dihydroart', 'etalmtt', 'etalfdepot'
 
 trapezoid <- function(x, y) {
   ok <- !is.na(x) & !is.na(y)
@@ -855,20 +855,20 @@ trapezoid <- function(x, y) {
 }
 
 auc_art <- trapezoid(sim_bundle$time, sim_bundle$Cc)
-auc_dha <- trapezoid(sim_bundle$time, sim_bundle$Cc_dha)
+auc_dihydroart <- trapezoid(sim_bundle$time, sim_bundle$Cc_dihydroart)
 
 # Closed-form expectations (under complete in-vivo conversion of artesunate to
 # DHA and a fixed F = 1 with admission ALT = 20.3 ~= 20.75 and LNPC = 6.697):
 F_admin   <- (1 + 0.0215 * (20.3   - 20.75)) * (1 + 0.138 * (6.697 - 5.88))
 cl_art    <- 3570 * (51.5 / 52)^0.75            # pregnant -> no PREG factor on artesunate CL
-cl_dha    <- 190  * (51.5 / 52)^0.75            # pregnant reference (PREG = 1)
+cl_dihydroart    <- 190  * (51.5 / 52)^0.75            # pregnant reference (PREG = 1)
 auc_art_pred <- F_admin * 520264 / cl_art
-auc_dha_pred <- F_admin * 520264 / cl_dha
+auc_dha_pred <- F_admin * 520264 / cl_dihydroart
 
 cat(sprintf(
   "Bundle subject (PREG=1, WT=51.5 kg, ALT=20.3 U/L, LNPC=6.697)\n  AUC0-24  artesunate: simulated %.0f vs closed-form %.0f nmol*h/L (%.1f%% diff)\n  AUC0-24  DHA       : simulated %.0f vs closed-form %.0f nmol*h/L (%.1f%% diff)\n",
   auc_art, auc_art_pred, 100 * (auc_art - auc_art_pred) / auc_art_pred,
-  auc_dha, auc_dha_pred, 100 * (auc_dha - auc_dha_pred) / auc_dha_pred
+  auc_dihydroart, auc_dha_pred, 100 * (auc_dihydroart - auc_dha_pred) / auc_dha_pred
 ))
 #> Bundle subject (PREG=1, WT=51.5 kg, ALT=20.3 U/L, LNPC=6.697)
 #>   AUC0-24  artesunate: simulated 162 vs closed-form 162 nmol*h/L (0.0% diff)
@@ -908,10 +908,10 @@ structural ODE chain implements the published algebraic relationship
   pharmacology default, but this model preserves the source paper’s
   structural value verbatim by applying the effect coefficient via
   `(1 - PREG)` in the `model()` block:
-  `cl_dha <- ... * (1 + e_preg_cl_dha * (1 - PREG))` with
-  `e_preg_cl_dha = -0.214`. Pregnant simulations match the published 190
-  L/h structural value; non-pregnant simulations apply the 0.786
-  multiplier.
+  `cl_dihydroart <- ... * (1 + e_preg_cl_dihydroart * (1 - PREG))` with
+  `e_preg_cl_dihydroart = -0.214`. Pregnant simulations match the
+  published 190 L/h structural value; non-pregnant simulations apply the
+  0.786 multiplier.
 - **Log-additive residual error mapped to nlmixr2 `prop()`.** The source
   `.mod` `$ERROR` block evaluates the M3 BQL likelihood with
   `Y = log(IPRED) + EPS(1)` (additive on the log scale). Per the
@@ -925,8 +925,8 @@ structural ODE chain implements the published algebraic relationship
 - **No IIV on artesunate or DHA volume of distribution.** The source
   `.mod` declares `$OMEGA(2,2) 0 FIX` and `$OMEGA(4,4) 0 FIX` (IIV on V2
   and V3 fixed at zero). Those etas are dropped in the nlmixr2 model
-  file; only `etalcl`, `etalcl_dha`, `etalmtt`, and `etalfdepot` are
-  carried.
+  file; only `etalcl`, `etalcl_dihydroart`, `etalmtt`, and `etalfdepot`
+  are carried.
 - **PREG and LNPC are newly registered covariate canonicals.** The
   covariate-columns register did not previously contain a pregnancy or
   log-parasite-count entry; both are added in this PR (scope: general

@@ -1035,8 +1035,8 @@ absorption and elimination)</td>
 </tr>
 <tr class="even">
 <td>Diabetes on CL/F</td>
-<td>1.15^DIAB</td>
-<td>Table 1 footnote f (multiplier 1.15 for DIAB = 1)</td>
+<td>1.15^DIS_DIAB</td>
+<td>Table 1 footnote f (multiplier 1.15 for DIS_DIAB = 1)</td>
 </tr>
 <tr class="odd">
 <td>BWT on V/F</td>
@@ -1117,9 +1117,9 @@ absorption and elimination)</td>
 </tr>
 <tr class="even">
 <td>
-<code>DIAB</code> (binary 0/1)</td>
+<code>DIS_DIAB</code> (binary 0/1)</td>
 <td>
-<code>DIAB</code> (binary; canonical general; new entry, see
+<code>DIS_DIAB</code> (binary; canonical general; new entry, see
 <code>inst/references/covariate-columns.md</code>)</td>
 </tr>
 </tbody>
@@ -1159,7 +1159,7 @@ sized at 500 subjects to make per-time-point quantiles smooth.</p>
 <span><span class="va">pop</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
 <span>  ID   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">n_subj</span><span class="op">)</span>,</span>
 <span>  WT   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmin</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Lognormal.html" class="external-link">rlnorm</a></span><span class="op">(</span><span class="va">n_subj</span>, <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fl">84</span><span class="op">)</span>, <span class="fl">0.20</span><span class="op">)</span>, <span class="fl">45</span><span class="op">)</span>, <span class="fl">200</span><span class="op">)</span>,  <span class="co"># kg, clipped to a plausible adult range</span></span>
-<span>  DIAB <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html" class="external-link">rbinom</a></span><span class="op">(</span><span class="va">n_subj</span>, <span class="fl">1</span>, <span class="fl">0.09</span><span class="op">)</span><span class="op">)</span>                   <span class="co"># ~9% diabetic per Results</span></span>
+<span>  DIS_DIAB <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html" class="external-link">rbinom</a></span><span class="op">(</span><span class="va">n_subj</span>, <span class="fl">1</span>, <span class="fl">0.09</span><span class="op">)</span><span class="op">)</span>                   <span class="co"># ~9% diabetic per Results</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
@@ -1214,7 +1214,7 @@ compartment (<code>cmt = 2</code>).</p>
 </h3>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/readModelDb.html">readModelDb</a></span><span class="op">(</span><span class="st">"Chen_2022_guselkumab"</span><span class="op">)</span></span>
-<span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod</span>, <span class="va">events</span>, returnType <span class="op">=</span> <span class="st">"data.frame"</span>, keep <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"regimen"</span>, <span class="st">"WT"</span>, <span class="st">"DIAB"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod</span>, <span class="va">events</span>, returnType <span class="op">=</span> <span class="st">"data.frame"</span>, keep <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"regimen"</span>, <span class="st">"WT"</span>, <span class="st">"DIS_DIAB"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ℹ parameter labels from comments will be replaced by 'label()'</span></span></code></pre></div>
 </div>
 <div class="section level3">
@@ -1417,7 +1417,7 @@ the packaged model with between-subject variability zeroed out:</p>
 <span><span class="va">typ_pop</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
 <span>  ID   <span class="op">=</span> <span class="fl">1L</span>,</span>
 <span>  WT   <span class="op">=</span> <span class="fl">84</span>,</span>
-<span>  DIAB <span class="op">=</span> <span class="fl">0L</span></span>
+<span>  DIS_DIAB <span class="op">=</span> <span class="fl">0L</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">typ_dose</span> <span class="op">&lt;-</span> <span class="va">typ_pop</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
@@ -1486,7 +1486,7 @@ contrast uses 95 kg vs. 80 kg as round-number representatives that
 straddle the 90 kg cutoff used in the paper.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">typ_eval</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">WT_val</span>, <span class="va">DIAB_val</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="va">pop1</span>   <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span>ID <span class="op">=</span> <span class="fl">1L</span>, WT <span class="op">=</span> <span class="va">WT_val</span>, DIAB <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">DIAB_val</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="va">pop1</span>   <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span>ID <span class="op">=</span> <span class="fl">1L</span>, WT <span class="op">=</span> <span class="va">WT_val</span>, DIS_DIAB <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">DIAB_val</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="va">d_dose</span> <span class="op">&lt;-</span> <span class="va">pop1</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://tidyr.tidyverse.org/reference/expand.html" class="external-link">crossing</a></span><span class="op">(</span>TIME <span class="op">=</span> <span class="va">dose_times_q8w</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>AMT <span class="op">=</span> <span class="fl">100</span>, EVID <span class="op">=</span> <span class="fl">1</span>, CMT <span class="op">=</span> <span class="fl">1</span>, DV <span class="op">=</span> <span class="cn">NA_real_</span><span class="op">)</span></span>
 <span>  <span class="va">d_obs</span>  <span class="op">&lt;-</span> <span class="va">pop1</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://tidyr.tidyverse.org/reference/expand.html" class="external-link">crossing</a></span><span class="op">(</span>TIME <span class="op">=</span> <span class="va">obs_times</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>

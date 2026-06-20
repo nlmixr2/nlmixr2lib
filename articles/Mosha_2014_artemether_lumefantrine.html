@@ -1045,13 +1045,13 @@ fixed’</td>
 </tr>
 <tr class="even">
 <td>
-<code>lcl_dha = log(71)</code> (CL_met/F, L/h)</td>
+<code>lcl_dihydroart = log(71)</code> (CL_met/F, L/h)</td>
 <td>71</td>
 <td>Table 3 ‘CL_met’ (RSE 46%; bootstrap 69, 95% CI 38-136)</td>
 </tr>
 <tr class="odd">
 <td>
-<code>vc_dha  = vc</code> (V_M = Vc, fixed)</td>
+<code>vc_dihydroart  = vc</code> (V_M = Vc, fixed)</td>
 <td>n/a</td>
 <td>Table 3 ‘V_M Fixed to Vc’; Methods ‘volume of distributions of DLF
 and DHA … assumed to be equal to those of LF and AM’</td>
@@ -1078,7 +1078,7 @@ and DHA … assumed to be equal to those of LF and AM’</td>
 </tr>
 <tr class="odd">
 <td>
-<code>propSd_dha = 0.53</code> (DHA proportional)</td>
+<code>propSd_dihydroart = 0.53</code> (DHA proportional)</td>
 <td>CV 53%</td>
 <td>Table 3 sigma_prop,DHA (RSE 14%; bootstrap 51%, 95% CI 44-59)</td>
 </tr>
@@ -1356,9 +1356,9 @@ a short observation tail).</p>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">time</span> <span class="op">&gt;</span> <span class="fl">0</span>, <span class="va">time</span> <span class="op">&lt;=</span> <span class="fl">70</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">time</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span></span>
-<span>    p025 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">Cc_dha</span>, <span class="fl">0.025</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
-<span>    p50  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">Cc_dha</span>, <span class="fl">0.50</span>,  na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
-<span>    p975 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">Cc_dha</span>, <span class="fl">0.975</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
+<span>    p025 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">Cc_dihydroart</span>, <span class="fl">0.025</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
+<span>    p50  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">Cc_dihydroart</span>, <span class="fl">0.50</span>,  na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
+<span>    p975 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">Cc_dihydroart</span>, <span class="fl">0.975</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
 <span>    .groups <span class="op">=</span> <span class="st">"drop"</span></span>
 <span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">p50</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -1728,15 +1728,15 @@ status, matching the published primary covariate.</p>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.5) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.5) is not allowed</span></span></code></pre></div>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">sim_nca_dha</span> <span class="op">&lt;-</span> <span class="va">sim_am</span> <span class="op">|&gt;</span></span>
+<code class="sourceCode R"><span><span class="va">sim_nca_dihydroart</span> <span class="op">&lt;-</span> <span class="va">sim_am</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>time_after_last <span class="op">=</span> <span class="va">time</span> <span class="op">-</span> <span class="fl">60</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc_dha</span><span class="op">)</span>, <span class="va">time_after_last</span> <span class="op">&gt;</span> <span class="fl">0</span>, <span class="va">time_after_last</span> <span class="op">&lt;=</span> <span class="fl">10</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/transmute.html" class="external-link">transmute</a></span><span class="op">(</span><span class="va">id</span>, time <span class="op">=</span> <span class="va">time_after_last</span>, Cc <span class="op">=</span> <span class="va">Cc_dha</span>, group <span class="op">=</span> <span class="st">"All women"</span><span class="op">)</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc_dihydroart</span><span class="op">)</span>, <span class="va">time_after_last</span> <span class="op">&gt;</span> <span class="fl">0</span>, <span class="va">time_after_last</span> <span class="op">&lt;=</span> <span class="fl">10</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/transmute.html" class="external-link">transmute</a></span><span class="op">(</span><span class="va">id</span>, time <span class="op">=</span> <span class="va">time_after_last</span>, Cc <span class="op">=</span> <span class="va">Cc_dihydroart</span>, group <span class="op">=</span> <span class="st">"All women"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">conc_obj_dha</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="https://humanpred.github.io/pknca/reference/PKNCAconc.html" class="external-link">PKNCAconc</a></span><span class="op">(</span><span class="va">sim_nca_dha</span>, <span class="va">Cc</span> <span class="op">~</span> <span class="va">time</span> <span class="op">|</span> <span class="va">group</span> <span class="op">+</span> <span class="va">id</span>,</span>
+<span><span class="va">conc_obj_dihydroart</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="https://humanpred.github.io/pknca/reference/PKNCAconc.html" class="external-link">PKNCAconc</a></span><span class="op">(</span><span class="va">sim_nca_dihydroart</span>, <span class="va">Cc</span> <span class="op">~</span> <span class="va">time</span> <span class="op">|</span> <span class="va">group</span> <span class="op">+</span> <span class="va">id</span>,</span>
 <span>                                 concu <span class="op">=</span> <span class="st">"ng/mL"</span>, timeu <span class="op">=</span> <span class="st">"h"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">intervals_dha</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span><span class="va">intervals_dihydroart</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  start    <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  end      <span class="op">=</span> <span class="fl">10</span>,</span>
 <span>  cmax     <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -1744,8 +1744,8 @@ status, matching the published primary covariate.</p>
 <span>  auclast  <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">nca_dha</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="https://humanpred.github.io/pknca/reference/pk.nca.html" class="external-link">pk.nca</a></span><span class="op">(</span></span>
-<span>  <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="https://humanpred.github.io/pknca/reference/PKNCAdata.html" class="external-link">PKNCAdata</a></span><span class="op">(</span><span class="va">conc_obj_dha</span>, <span class="va">dose_obj_am</span>, intervals <span class="op">=</span> <span class="va">intervals_dha</span><span class="op">)</span></span>
+<span><span class="va">nca_dihydroart</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="https://humanpred.github.io/pknca/reference/pk.nca.html" class="external-link">pk.nca</a></span><span class="op">(</span></span>
+<span>  <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="https://humanpred.github.io/pknca/reference/PKNCAdata.html" class="external-link">PKNCAdata</a></span><span class="op">(</span><span class="va">conc_obj_dihydroart</span>, <span class="va">dose_obj_am</span>, intervals <span class="op">=</span> <span class="va">intervals_dihydroart</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (0.5) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.5) is not allowed</span></span>
@@ -2125,8 +2125,8 @@ artemether total clearance CL = 98 L/h and a formation-rate constant K23
 alongside the presystemic conversion fraction (1 - F1) = 0.198. The
 package encoding interprets CL as the total AM elimination
 (<code>d/dt(central) &lt;- ... - (cl/vc) * central</code>) and K23 as
-the DHA formation flux into central_dha
-(<code>d/dt(central_dha) &lt;- ... + k23 * central * (mw_dha / mw_arm) - ...</code>).
+the DHA formation flux into central_dihydroart
+(<code>d/dt(central_dihydroart) &lt;- ... + k23 * central * (mw_dihydroart / mw_arm) - ...</code>).
 This avoids double-counting AM elimination via CL and K23 paths. The
 NONMEM control stream was not on disk for this extraction; this
 interpretation is the operator’s best reading of the published parameter
@@ -2140,13 +2140,13 @@ g/mol (C16H26O5) and DHA = 284.36 g/mol (C15H24O5); these are the
 canonical IUPAC compound database values and match those used elsewhere
 in nlmixr2lib (<code>Tarning_2012_artemether</code>,
 <code>Birgersson_2019_artesunate</code>).</p></li>
-<li><p><strong>DHA volume Vc_dha = Vc_am (fixed) per the source
+<li><p><strong>DHA volume Vc_dihydroart = Vc_am (fixed) per the source
 paper</strong> (“Owing to identification problems, the volume of
 distributions of DLF and DHA could not be estimated and were assumed to
 be equal to those of LF and AM, respectively”). Encoded inside
 <code>model()</code> of <code>Mosha_2014_artemether</code> as
-<code>vc_dha &lt;- vc</code>; no separate <code>lvc_dha</code> ini
-parameter is declared.</p></li>
+<code>vc_dihydroart &lt;- vc</code>; no separate
+<code>lvc_dihydroart</code> ini parameter is declared.</p></li>
 <li><p><strong>No allometric body-weight scaling.</strong> Mosha 2014
 retained no body-weight covariate on either the AM or LF model (Methods
 explicitly tested linear and allometric WT effects; Results “None of the

@@ -1127,7 +1127,7 @@ convention is that the .mod carries the publication’s
 <td>
 <code>THETA(13)</code> Cov11_MHHY</td>
 <td>TH 13 = 5.39E-01</td>
-<td>logit shift, MHHY -&gt; HYPERT</td>
+<td>logit shift, MHHY -&gt; DIS_HYPERT</td>
 </tr>
 <tr class="even">
 <td>
@@ -1282,7 +1282,7 @@ weekly with a representative AUC value (<code>AMT = 20000</code> ng*h/mL
 <span><span class="co"># weekly AUC dose into central, then dense observation grid 0..12 weeks</span></span>
 <span><span class="va">events</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/et.html" class="external-link">et</a></span><span class="op">(</span>amt <span class="op">=</span> <span class="fl">20000</span>, time <span class="op">=</span> <span class="fl">0</span>, addl <span class="op">=</span> <span class="fl">11</span>, ii <span class="op">=</span> <span class="fl">1</span>, evid <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/et.html" class="external-link">et</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">12</span>, by <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">events</span><span class="op">$</span><span class="va">HYPERT</span>        <span class="op">&lt;-</span> <span class="fl">0</span></span>
+<span><span class="va">events</span><span class="op">$</span><span class="va">DIS_HYPERT</span>        <span class="op">&lt;-</span> <span class="fl">0</span></span>
 <span><span class="va">events</span><span class="op">$</span><span class="va">REGI_BID</span>      <span class="op">&lt;-</span> <span class="fl">0</span>     <span class="co"># QD (reference regimen)</span></span>
 <span><span class="va">events</span><span class="op">$</span><span class="va">CMAX_M1</span>       <span class="op">&lt;-</span> <span class="fl">300</span>   <span class="co"># ng/mL, near the simulated-dataset CMAXM1 for ID=1 (292.15)</span></span>
 <span><span class="va">events</span><span class="op">$</span><span class="va">DOSE</span>          <span class="op">&lt;-</span> <span class="fl">60</span>    <span class="co"># mg/day</span></span>
@@ -1314,7 +1314,7 @@ weekly with a representative AUC value (<code>AMT = 20000</code> ng*h/mL
 <span>       y <span class="op">=</span> <span class="st">"Probability"</span>,</span>
 <span>       colour <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>       title <span class="op">=</span> <span class="st">"Typical-value AE-grade probabilities under weekly AUC dosing"</span>,</span>
-<span>       subtitle <span class="op">=</span> <span class="st">"DOSE = 60 mg/day, AMT = 20000 weekly AUC, HYPERT = 0, REGI_BID = 0, PREV_AE_SCORE = 0"</span><span class="op">)</span></span></code></pre></div>
+<span>       subtitle <span class="op">=</span> <span class="st">"DOSE = 60 mg/day, AMT = 20000 weekly AUC, DIS_HYPERT = 0, REGI_BID = 0, PREV_AE_SCORE = 0"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Girard_2012_pimasertib_files/figure-html/prob-trajectory-1.png" class="r-plt" alt="" width="630"></p>
 <p>The probability of any AE (P1 + P2) oscillates with the weekly dose
 pulse – at the time of dose the K-PD exposure spikes to 20000 + the
@@ -1463,10 +1463,10 @@ b01+b21+b02+b22). The Emax level also shifts (emax0 vs emax1).</p>
 <span><span class="va">prev_grid</span><span class="op">$</span><span class="va">p0</span>  <span class="op">&lt;-</span> <span class="fl">1</span> <span class="op">-</span> <span class="va">prev_grid</span><span class="op">$</span><span class="va">pc1</span></span>
 <span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">prev_grid</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"prev"</span>, <span class="st">"p0"</span>, <span class="st">"p1"</span>, <span class="st">"p2"</span><span class="op">)</span><span class="op">]</span>, digits <span class="op">=</span> <span class="fl">4</span>,</span>
-<span>             caption <span class="op">=</span> <span class="st">"Markov-state conditioning: per-grade probabilities at exposure = 6900 (typical mid-week), HYPERT = 0, REGI_BID = 0, CMAX_M1 = 0."</span><span class="op">)</span></span></code></pre></div>
+<span>             caption <span class="op">=</span> <span class="st">"Markov-state conditioning: per-grade probabilities at exposure = 6900 (typical mid-week), DIS_HYPERT = 0, REGI_BID = 0, CMAX_M1 = 0."</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <caption>Markov-state conditioning: per-grade probabilities at exposure
-= 6900 (typical mid-week), HYPERT = 0, REGI_BID = 0, CMAX_M1 =
+= 6900 (typical mid-week), DIS_HYPERT = 0, REGI_BID = 0, CMAX_M1 =
 0.</caption>
 <thead><tr class="header">
 <th align="right">prev</th>
@@ -1559,7 +1559,7 @@ deterministic.</p>
 <span><span class="va">simulate_cohort</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">row</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">ev</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/et.html" class="external-link">et</a></span><span class="op">(</span>amt <span class="op">=</span> <span class="fl">20000</span>, time <span class="op">=</span> <span class="fl">0</span>, addl <span class="op">=</span> <span class="fl">11</span>, ii <span class="op">=</span> <span class="fl">1</span>, evid <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/et.html" class="external-link">et</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">12</span>, by <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span><span class="op">)</span></span>
-<span>  <span class="va">ev</span><span class="op">$</span><span class="va">HYPERT</span>        <span class="op">&lt;-</span> <span class="fl">0</span></span>
+<span>  <span class="va">ev</span><span class="op">$</span><span class="va">DIS_HYPERT</span>        <span class="op">&lt;-</span> <span class="fl">0</span></span>
 <span>  <span class="va">ev</span><span class="op">$</span><span class="va">REGI_BID</span>      <span class="op">&lt;-</span> <span class="va">row</span><span class="op">$</span><span class="va">REGI_BID</span></span>
 <span>  <span class="va">ev</span><span class="op">$</span><span class="va">CMAX_M1</span>       <span class="op">&lt;-</span> <span class="fl">300</span></span>
 <span>  <span class="va">ev</span><span class="op">$</span><span class="va">DOSE</span>          <span class="op">&lt;-</span> <span class="va">row</span><span class="op">$</span><span class="va">DOSE</span></span>
@@ -1770,17 +1770,17 @@ extractions can use the standard NONMEM
 <code>$MODEL COMP=(CUMHAZ)</code> idiom without per-model whitelisting.
 Pure additive change; no existing model is affected.</li>
 <li>
-<strong><code>HYPERT</code>, <code>REGI_BID</code>,
+<strong><code>DIS_HYPERT</code>, <code>REGI_BID</code>,
 <code>CMAX_M1</code>, and <code>PREV_AE_SCORE</code> newly
 registered.</strong> No prior nlmixr2lib model carried any of these
 covariates; all four were registered in
 <code>inst/references/covariate-columns.md</code> alongside this
-extraction (HYPERT alongside DIAB under “Comorbidities”; REGI_BID under
-“Formulation / assay / study”; CMAX_M1 alongside CAV under “Drug
-exposure metrics”; PREV_AE_SCORE under “Disease severity scores”).
-<code>DOSE</code> (already canonical, scope: specific) was extended with
-this model in its example list; the binary-or-continuous-dose semantics
-align with the existing entry.</li>
+extraction (DIS_HYPERT alongside DIS_DIAB under “Comorbidities”;
+REGI_BID under “Formulation / assay / study”; CMAX_M1 alongside CAV
+under “Drug exposure metrics”; PREV_AE_SCORE under “Disease severity
+scores”). <code>DOSE</code> (already canonical, scope: specific) was
+extended with this model in its example list; the
+binary-or-continuous-dose semantics align with the existing entry.</li>
 <li>
 <strong>No errata / corrigenda for a PAGE conference
 abstract.</strong> PAGE meeting abstracts are not peer-reviewed

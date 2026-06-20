@@ -4,8 +4,8 @@
 
 - Citation: Han N, Chae JW, Jeon J, Lee J, Back HM, Song B, Kwon KI, Kim
   SK, Yun HY. Prediction of Methionine and Homocysteine levels in Zucker
-  diabetic fatty (ZDF) rats as a T2DM animal model after consumption of
-  a Methionine-rich diet. Nutr Metab (Lond). 2018;15:14.
+  diabetic fatty (ZDF) rats as a DIS_DIAB animal model after consumption
+  of a Methionine-rich diet. Nutr Metab (Lond). 2018;15:14.
   <doi:10.1186/s12986-018-0247-1>
 - Description: Preclinical (rat). Seven-compartment mechanistic
   methionine metabolism cycle (MMC) model in Zucker Diabetic Fatty (ZDF)
@@ -19,7 +19,7 @@ representation of the **methionine metabolism cycle (MMC)** in rats. The
 model was fit to plasma methionine and plasma homocysteine
 concentrations measured after a single intravenous bolus of methionine
 in Zucker-Diabetic-Fatty (ZDF/Gmi fa/fa) rats – a widely used Type-2
-diabetes mellitus (T2DM) animal model – and their non-diabetic
+diabetes mellitus (DIS_DIAB) animal model – and their non-diabetic
 littermate controls (ZDF/Gmi fa/?). The fitted model is then used to
 predict accumulation of methionine and homocysteine under a 60-day
 methionine-rich diet.
@@ -79,11 +79,11 @@ corresponding `ini()` line in
 ## Virtual cohort
 
 The vignette compares two cohorts of identical typical-value rats, one
-coded T2DM = 1 (ZDF/Gmi fa/fa diabetic) and one coded T2DM = 0 (ZDF/Gmi
-fa/? non-diabetic control). All other covariate columns are identical
-between cohorts; the only structural change between them is the
-multiplicative log-scale T2DM effects on the five rate constants K_SH,
-K_HM, K_HC, K_HP, K_PH (Han 2018 Eqs 8-11).
+coded DIS_DIAB = 1 (ZDF/Gmi fa/fa diabetic) and one coded DIS_DIAB = 0
+(ZDF/Gmi fa/? non-diabetic control). All other covariate columns are
+identical between cohorts; the only structural change between them is
+the multiplicative log-scale DIS_DIAB effects on the five rate constants
+K_SH, K_HM, K_HC, K_HP, K_PH (Han 2018 Eqs 8-11).
 
 ``` r
 
@@ -101,13 +101,13 @@ make_cohort <- function(n, t2dm, id_offset = 0L,
     evid = 1L,
     amt  = dose_mmol_per_kg,
     cmt  = "met",
-    T2DM = t2dm
+    DIS_DIAB = t2dm
   )
   obs <- expand.grid(id = ids, time = obs_times_h, KEEP.OUT.ATTRS = FALSE)
   obs$evid <- 0L
   obs$amt  <- 0
   obs$cmt  <- NA_character_
-  obs$T2DM <- t2dm
+  obs$DIS_DIAB <- t2dm
   rbind(dosing, obs)
 }
 
@@ -129,7 +129,7 @@ mod_typical  <- mod |> rxode2::zeroRe()
 sim_singledose <- rxode2::rxSolve(
   mod_typical,
   events = events_singledose,
-  keep   = c("cohort", "T2DM"),
+  keep   = c("cohort", "DIS_DIAB"),
   returnType = "data.frame"
 )
 #> ℹ omega/sigma items treated as zero: 'etalkhm', 'etalkhp'
@@ -149,13 +149,13 @@ head(sim_singledose)
 #> 4 4.698822 0.07181726 0.7048233 0.06856771 1.288046e-05 0.0033607464
 #> 5 4.160141 0.18008622 0.6240212 0.10064571 1.890884e-05 0.0051423317
 #> 6 3.487629 0.28218817 0.5231443 0.12057949 2.265510e-05 0.0062575140
-#>         hcyhep          cys          hcy T2DM  cohort
-#> 1 0.000000e+00 0.000000e+00 0.0000000000    0 control
-#> 2 3.434196e-05 2.238143e-05 0.0002331285    0 control
-#> 3 1.984898e-04 4.313181e-04 0.0030649149    0 control
-#> 4 5.093277e-04 2.383616e-03 0.0107725893    0 control
-#> 5 1.075908e-03 1.133399e-02 0.0270129336    0 control
-#> 6 1.575217e-03 3.396870e-02 0.0423282256    0 control
+#>         hcyhep          cys          hcy DIS_DIAB  cohort
+#> 1 0.000000e+00 0.000000e+00 0.0000000000        0 control
+#> 2 3.434196e-05 2.238143e-05 0.0002331285        0 control
+#> 3 1.984898e-04 4.313181e-04 0.0030649149        0 control
+#> 4 5.093277e-04 2.383616e-03 0.0107725893        0 control
+#> 5 1.075908e-03 1.133399e-02 0.0270129336        0 control
+#> 6 1.575217e-03 3.396870e-02 0.0423282256        0 control
 ```
 
 ### Plasma methionine and homocysteine after a single 0.8 mmol/kg IV bolus
@@ -212,7 +212,7 @@ make_repeated_dose <- function(t2dm, id, total_days = 60,
     evid = 1L,
     amt  = dose_mmol_per_kg,
     cmt  = "met",
-    T2DM = t2dm
+    DIS_DIAB = t2dm
   )
   obs_times <- seq(0, total_days * 24, by = 1)
   obs <- data.frame(
@@ -221,7 +221,7 @@ make_repeated_dose <- function(t2dm, id, total_days = 60,
     evid = 0L,
     amt  = 0,
     cmt  = NA_character_,
-    T2DM = t2dm
+    DIS_DIAB = t2dm
   )
   rbind(dosing, obs)
 }
@@ -234,7 +234,7 @@ events_multidose <- dplyr::bind_rows(
 sim_multidose <- rxode2::rxSolve(
   mod_typical,
   events = events_multidose,
-  keep   = c("cohort", "T2DM"),
+  keep   = c("cohort", "DIS_DIAB"),
   returnType = "data.frame"
 )
 #> ℹ omega/sigma items treated as zero: 'etalkhm', 'etalkhp'
@@ -407,14 +407,14 @@ sprintf("Simulated ZDF / control AUC8h ratio: %.2f; paper-reported ratio: ~3.08"
   retained for mass-balance documentation.
 
 - **Eq 10 / Eq 11 covariate parameterisation.** Han 2018 publishes four
-  covariate equations (Eqs 8-11) for the T2DM (ZDF) effect on individual
-  rate constants. Eq 8 (K_HM with IIV) and Eq 9 (K_HP with IIV) are
-  unambiguous; the printed subscript of Eq 11 in the source PDF was
-  illegible to the OCR pipeline. Han 2018 Table 1 reports separate
+  covariate equations (Eqs 8-11) for the DIS_DIAB (ZDF) effect on
+  individual rate constants. Eq 8 (K_HM with IIV) and Eq 9 (K_HP with
+  IIV) are unambiguous; the printed subscript of Eq 11 in the source PDF
+  was illegible to the OCR pipeline. Han 2018 Table 1 reports separate
   control / ZDF point estimates for five rate constants (K_SH, K_HM,
   K_HC, K_HP, K_PH), so Eqs 10-11 cover the three rate constants that
-  lack IIV. The packaged model derives each T2DM log-scale coefficient
-  from the Table 1 control / ZDF point-estimate ratio
+  lack IIV. The packaged model derives each DIS_DIAB log-scale
+  coefficient from the Table 1 control / ZDF point-estimate ratio
   (`theta_T2DM_X = log(K_X_ZDF / K_X_control)`); this matches whichever
   subscript Eq 11 carries in the source typesetting because the
   underlying numerical values are the same.

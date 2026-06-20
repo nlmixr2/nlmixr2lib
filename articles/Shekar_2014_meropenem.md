@@ -50,7 +50,7 @@ minutes. Blood sampling in ECMO patients was performed at pre-dose, 15,
 30, 45, 60, 120, 180, 360, and 480 minutes; control sampling schedules
 varied by sub-study (see Methods). The HPLC assay had a lower limit of
 quantification of 1.0 mg/L. The two RRT modalities (CVVHF in controls;
-EDD-f in ECMO patients) are treated as a single binary `CRRT_STATUS`
+EDD-f in ECMO patients) are treated as a single binary `RRT_CRRT_STATUS`
 covariate in the published model.
 
 The same information is available programmatically via the model’s
@@ -97,7 +97,7 @@ Table 2 final covariate-model column (the “Model Mean” column).
 | `etalvp ~ 0.07916` | log(0.287^2 + 1) | Table 2 row “Vp (L) BSV (% CV)” = 28.7 |
 | `propSd <- 0.137` | 0.137 | Table 2 row “RUV (% CV)” = 13.7 |
 | `addSd <- 2.3` | 2.3 mg/L | Table 2 row “RUV (SD, mg/L)” = 2.3 |
-| `tvcl <- exp(lcl)*CRRT_STATUS + e_crcl_cl*crcl_Lh*(1-CRRT_STATUS)` | n/a | Methods page 5 covariate equation (operator-resolved interpretation; see Assumptions) |
+| `tvcl <- exp(lcl)*RRT_CRRT_STATUS + e_crcl_cl*crcl_Lh*(1-RRT_CRRT_STATUS)` | n/a | Methods page 5 covariate equation (operator-resolved interpretation; see Assumptions) |
 | `d/dt(central) ... d/dt(peripheral1)` | n/a | Methods “Two-compartment linear model with combined residual error and BSV on Vc, Vp and CL. Zero order input of drug into the central compartment.” |
 | `Cc ~ add(addSd) + prop(propSd)` | n/a | Methods “Residual unexplained variability (RUV) was modeled using a combined exponential and additive random error model.” |
 
@@ -108,7 +108,7 @@ cohort below reproduces the Monte-Carlo simulation design described in
 Shekar 2014 Methods (“Dosing simulations”): a 50-year-old, 80 kg male on
 ECMO at five CrCL levels (20, 50, 80, 120, 180 mL/min) and three dose
 regimens (500 mg, 1 g, 2 g IV q8h, each over 30 minutes). All five CrCL
-simulations correspond to non-RRT patients (`CRRT_STATUS = 0`); the
+simulations correspond to non-RRT patients (`RRT_CRRT_STATUS = 0`); the
 model’s RRT branch uses the fixed `TVCL = 5.1 L/h` and so is simulated
 separately below. The published simulations used n = 1,000 per
 condition; the vignette uses n = 100 per condition to stay inside the
@@ -164,7 +164,7 @@ make_cohort <- function(crcl_mL_min, dose_mg, cohort_idx, id_offset) {
 
   out <- rbind(doses, obs)
   out$CRCL        <- crcl_mL_min
-  out$CRRT_STATUS <- 0L
+  out$RRT_CRRT_STATUS <- 0L
   out$cohort      <- sprintf("CrCL %d / %s mg q8h", crcl_mL_min, dose_mg)
   out$crcl_mL_min <- crcl_mL_min
   out$dose_mg     <- dose_mg
@@ -182,7 +182,7 @@ for (i in seq_len(nrow(cohort_grid))) {
 }
 events <- dplyr::bind_rows(events_list)
 
-# RRT cohort: CRRT_STATUS = 1, CRCL = 0 (not used inside model when on RRT),
+# RRT cohort: RRT_CRRT_STATUS = 1, CRCL = 0 (not used inside model when on RRT),
 # 1 g q8h (the standard regimen given to RRT patients in Shekar 2014).
 rrt_cohort <- make_cohort(
   crcl_mL_min = 0,    # unused on RRT branch
@@ -190,7 +190,7 @@ rrt_cohort <- make_cohort(
   cohort_idx  = nrow(cohort_grid) + 1L,
   id_offset   = nrow(cohort_grid) * n_per_combo
 )
-rrt_cohort$CRRT_STATUS <- 1L
+rrt_cohort$RRT_CRRT_STATUS <- 1L
 rrt_cohort$cohort      <- "RRT / 1000 mg q8h"
 
 events <- dplyr::bind_rows(events, rrt_cohort)
@@ -206,7 +206,7 @@ mod <- readModelDb("Shekar_2014_meropenem")
 
 sim <- rxode2::rxSolve(
   object = mod, events = events,
-  keep   = c("cohort", "crcl_mL_min", "dose_mg", "CRCL", "CRRT_STATUS")
+  keep   = c("cohort", "crcl_mL_min", "dose_mg", "CRCL", "RRT_CRRT_STATUS")
 ) |>
   as.data.frame()
 #> ℹ parameter labels from comments will be replaced by 'label()'
@@ -224,7 +224,7 @@ of each line is the trough that appears in Table 3.
 ``` r
 
 nonrrt <- sim |>
-  dplyr::filter(CRRT_STATUS == 0L, time >= last_dose_time) |>
+  dplyr::filter(RRT_CRRT_STATUS == 0L, time >= last_dose_time) |>
   dplyr::mutate(time_h_post_last_dose = time - last_dose_time)
 
 nonrrt_summary <- nonrrt |>
@@ -275,7 +275,7 @@ condition.
 ``` r
 
 trough <- sim |>
-  dplyr::filter(CRRT_STATUS == 0L,
+  dplyr::filter(RRT_CRRT_STATUS == 0L,
                 time == last_dose_time + dose_interval_h)
 
 table3_sim <- trough |>
@@ -373,7 +373,7 @@ follow the same pattern.
 
 ### RRT branch – typical-value steady-state profile
 
-When `CRRT_STATUS = 1`, the model’s CL collapses to a fixed
+When `RRT_CRRT_STATUS = 1`, the model’s CL collapses to a fixed
 `TVCL = exp(lcl_rrt) = 5.1 L/h`, independent of CrCL. Shekar 2014 does
 not include this branch in Figure 2 / Table 3 (the published simulations
 correspond to non-RRT patients across a range of CrCL), but the RRT
@@ -383,7 +383,7 @@ completeness.
 ``` r
 
 rrt_summary <- sim |>
-  dplyr::filter(CRRT_STATUS == 1L, time >= last_dose_time) |>
+  dplyr::filter(RRT_CRRT_STATUS == 1L, time >= last_dose_time) |>
   dplyr::mutate(time_h_post_last_dose = time - last_dose_time) |>
   dplyr::group_by(time_h_post_last_dose) |>
   dplyr::summarise(
@@ -402,7 +402,7 @@ ggplot(rrt_summary, aes(time_h_post_last_dose, p50)) +
   labs(
     x = "Time after last dose (hours)",
     y = "Meropenem concentration (mg/L, log scale)",
-    title    = "RRT branch -- 1 g q8h, CRRT_STATUS = 1, TVCL = 5.1 L/h",
+    title    = "RRT branch -- 1 g q8h, RRT_CRRT_STATUS = 1, TVCL = 5.1 L/h",
     subtitle = paste0("Median (line) and 10th-90th percentile band (ribbon); ",
                       "n = ", n_per_combo, " virtual subjects")
   ) +
@@ -426,10 +426,10 @@ per-CrCL Cmax and AUC are comparable across the renal-function spectrum.
 ``` r
 
 pk_cohort <- sim |>
-  dplyr::filter(CRRT_STATUS == 0L, dose_mg == 1000L, time >= last_dose_time, !is.na(Cc))
+  dplyr::filter(RRT_CRRT_STATUS == 0L, dose_mg == 1000L, time >= last_dose_time, !is.na(Cc))
 
 dose_pk <- events |>
-  dplyr::filter(CRRT_STATUS == 0L, dose_mg == 1000L,
+  dplyr::filter(RRT_CRRT_STATUS == 0L, dose_mg == 1000L,
                 evid == 1L,
                 time >= last_dose_time, time < last_dose_time + dose_interval_h)
 
@@ -499,9 +499,9 @@ observed Cmin of 4.9 mg/L.
 
 ## Assumptions and deviations
 
-- **CL covariate equation – piecewise on CRRT_STATUS, with the second
-  theta interpreted as `CL_CRCL = 1.89`, not `theta_1 = 5.1`.** Shekar
-  2014 Methods page 5 prints the equation
+- **CL covariate equation – piecewise on RRT_CRRT_STATUS, with the
+  second theta interpreted as `CL_CRCL = 1.89`, not `theta_1 = 5.1`.**
+  Shekar 2014 Methods page 5 prints the equation
 
   > `TVCL = theta_1 * (CL_RRT) + theta_1 * (CL_NORRT * CrCL)`
 
@@ -516,9 +516,10 @@ observed Cmin of 4.9 mg/L.
   the second theta as the Table 2 parameter `CL_CRCL = 1.89` (and the
   first theta as the Table 2 parameter `CL = 5.1`), giving
 
-  > `TVCL = exp(lcl) * CRRT_STATUS + e_crcl_cl * CrCL_in_Lh * (1 - CRRT_STATUS)`
+  > `TVCL = exp(lcl) * RRT_CRRT_STATUS + e_crcl_cl * CrCL_in_Lh * (1 - RRT_CRRT_STATUS)`
   >
-  > = `5.1 * CRRT_STATUS + 1.89 * CrCL_in_Lh * (1 - CRRT_STATUS)`
+  > =
+  > `5.1 * RRT_CRRT_STATUS + 1.89 * CrCL_in_Lh * (1 - RRT_CRRT_STATUS)`
 
   which reproduces:
 
@@ -559,16 +560,17 @@ observed Cmin of 4.9 mg/L.
   magnitude of `e_crcl_cl = 1.89` against BSA-normalized reference
   values listed in the canonical entry – the units differ.
 
-- **New canonical `CRRT_STATUS` ratified alongside this extraction.**
-  The existing `HEMODIAL` canonical (intermittent-hemodialysis-only) and
-  `HEMODIALYSIS` canonical (per-time-point session gate, time-varying)
-  do not fit the Shekar 2014 RRT covariate: the cohort mixes CVVHF
-  (continuous venovenous hemofiltration; true CRRT) and EDD-f (extended
-  daily diafiltration; pharmacokinetically CRRT-like for slow-clearance
-  solutes such as meropenem), treated as a single binary subject-level
-  indicator. The `HEMODIAL` register entry explicitly anticipates a
-  `CRRT_STATUS` canonical as a future extension; this extraction
-  ratifies it. The per-model `covariateData[[CRRT_STATUS]]$notes`
+- **New canonical `RRT_CRRT_STATUS` ratified alongside this
+  extraction.** The existing `RRT_HEMODIAL_STATUS` canonical
+  (intermittent-hemodialysis-only) and `RRT_HEMODIAL_ACTIVE` canonical
+  (per-time-point session gate, time-varying) do not fit the Shekar 2014
+  RRT covariate: the cohort mixes CVVHF (continuous venovenous
+  hemofiltration; true CRRT) and EDD-f (extended daily diafiltration;
+  pharmacokinetically CRRT-like for slow-clearance solutes such as
+  meropenem), treated as a single binary subject-level indicator. The
+  `RRT_HEMODIAL_STATUS` register entry explicitly anticipates a
+  `RRT_CRRT_STATUS` canonical as a future extension; this extraction
+  ratifies it. The per-model `covariateData[[RRT_CRRT_STATUS]]$notes`
   documents the mixed CVVH + EDD-f scope.
 
 - **Independent (diagonal) IIV between CL, Vc, and Vp; no IIV on Q.**
@@ -625,10 +627,10 @@ observed Cmin of 4.9 mg/L.
   Cross-check against Table 1 observations: the packaged model predicts
   a steady-state trough of approximately 2.2 mg/L for non-RRT patients
   at CrCL = 106 mL/min (Table 1 controls no-RRT subgroup, n = 5) on 1 g
-  q8h, and approximately 12.9 mg/L for the RRT branch (CRRT_STATUS = 1).
-  The observed Cmin medians (IQR) from Table 1 are: controls no-RRT 0
-  mg/L (0-2), controls RRT 7.5 mg/L (5-18), ECMO no-RRT 4.9 mg/L (2-10),
-  ECMO RRT 18 mg/L (7-43). The model predictions fall inside the
+  q8h, and approximately 12.9 mg/L for the RRT branch (RRT_CRRT_STATUS =
+  1). The observed Cmin medians (IQR) from Table 1 are: controls no-RRT
+  0 mg/L (0-2), controls RRT 7.5 mg/L (5-18), ECMO no-RRT 4.9 mg/L
+  (2-10), ECMO RRT 18 mg/L (7-43). The model predictions fall inside the
   observed IQRs for all four subgroups, which would not be the case if
   the much-higher Table 3 simulation pattern (e.g. ~15 mg/L median
   trough at CrCL = 80, 1 g q8h) had been used to set the parameter

@@ -1071,21 +1071,21 @@ of AS to DHA was assumed for all models”)</td>
 </tr>
 <tr class="odd">
 <td>
-<code>lcl_dha</code> -&gt; CLM/F (DHA, non-pregnant reference) =
-64.0 L/h</td>
+<code>lcl_dihydroart</code> -&gt; CLM/F (DHA, non-pregnant
+reference) = 64.0 L/h</td>
 <td>64.0</td>
 <td>Table 2 (%RSE 6.53)</td>
 </tr>
 <tr class="even">
 <td>
-<code>lvc_dha</code> -&gt; V3/F (DHA) = 91.4 L</td>
+<code>lvc_dihydroart</code> -&gt; V3/F (DHA) = 91.4 L</td>
 <td>91.4</td>
 <td>Table 2 (%RSE 6.15)</td>
 </tr>
 <tr class="odd">
 <td>
-<code>e_preg_cl_dha</code> -&gt; proportional pregnancy effect on
-DHA CL/F = +42.3%</td>
+<code>e_preg_cl_dihydroart</code> -&gt; proportional pregnancy
+effect on DHA CL/F = +42.3%</td>
 <td>+0.423</td>
 <td>Table 2 (%RSE 30.3)</td>
 </tr>
@@ -1114,13 +1114,13 @@ DHA CL/F = +42.3%</td>
 <td>Table 2 (%RSE 30.1; 77.7 %CV)</td>
 </tr>
 <tr class="even">
-<td>IIV <code>var(etalcl_dha)</code>
+<td>IIV <code>var(etalcl_dihydroart)</code>
 </td>
 <td>0.0802</td>
 <td>Table 2 (%RSE 24.9; 28.3 %CV)</td>
 </tr>
 <tr class="odd">
-<td>IIV <code>var(etalvc_dha)</code>
+<td>IIV <code>var(etalvc_dihydroart)</code>
 </td>
 <td>0.0790</td>
 <td>Table 2 (%RSE 34.7; 28.1 %CV)</td>
@@ -1140,7 +1140,7 @@ scale per Methods (“Residual variability (RV) was modelled with an
 additive model for log-transformed data”)</td>
 </tr>
 <tr class="even">
-<td>Residual <code>propSd_dha</code>
+<td>Residual <code>propSd_dihydroart</code>
 </td>
 <td>sqrt(0.174) = 0.417</td>
 <td>Table 2 (%RSE 9.94)</td>
@@ -1177,8 +1177,8 @@ final model and is therefore not carried as a structural covariate.</p>
 <span><span class="co"># inst/modeldb/specificDrugs/Morris_2011_artesunate.R):</span></span>
 <span><span class="co">#   1 = depot         (first-order absorption arm, with lag)</span></span>
 <span><span class="co">#   2 = central       (AS central; also zero-order arm input target)</span></span>
-<span><span class="co">#   3 = central_dha   (DHA central)</span></span>
-<span><span class="co"># rxSolve returns Cc and Cc_dha as columns in the output regardless of</span></span>
+<span><span class="co">#   3 = central_dihydroart   (DHA central)</span></span>
+<span><span class="co"># rxSolve returns Cc and Cc_dihydroart as columns in the output regardless of</span></span>
 <span><span class="co"># the observation-row cmt label, so a single observation row per (id,</span></span>
 <span><span class="co"># time) is sufficient -- we pick cmt = "Cc" for traceability.</span></span>
 <span><span class="va">cmt_depot</span>   <span class="op">&lt;-</span> <span class="fl">1L</span></span>
@@ -1249,7 +1249,7 @@ plots and PKNCA:</p>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
 <span>    Cc_ng_per_mL     <span class="op">=</span> <span class="va">Cc</span> <span class="op">*</span> <span class="fl">384.42</span> <span class="op">/</span> <span class="fl">1000</span>,</span>
-<span>    Cc_dha_ng_per_mL <span class="op">=</span> <span class="va">Cc_dha</span> <span class="op">*</span> <span class="fl">284.35</span> <span class="op">/</span> <span class="fl">1000</span></span>
+<span>    Cc_dha_ng_per_mL <span class="op">=</span> <span class="va">Cc_dihydroart</span> <span class="op">*</span> <span class="fl">284.35</span> <span class="op">/</span> <span class="fl">1000</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
 <p>Typical-value (omega / sigma zeroed) simulation for direct comparison
 against the published typical concentration-time profiles in Morris 2011
@@ -1270,9 +1270,9 @@ Figure 2:</p>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
 <span>    Cc_ng_per_mL     <span class="op">=</span> <span class="va">Cc</span> <span class="op">*</span> <span class="fl">384.42</span> <span class="op">/</span> <span class="fl">1000</span>,</span>
-<span>    Cc_dha_ng_per_mL <span class="op">=</span> <span class="va">Cc_dha</span> <span class="op">*</span> <span class="fl">284.35</span> <span class="op">/</span> <span class="fl">1000</span></span>
+<span>    Cc_dha_ng_per_mL <span class="op">=</span> <span class="va">Cc_dihydroart</span> <span class="op">*</span> <span class="fl">284.35</span> <span class="op">/</span> <span class="fl">1000</span></span>
 <span>  <span class="op">)</span></span>
-<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalka', 'etaldur', 'etallagt', 'etalvc', 'etalcl_dha', 'etalvc_dha'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalka', 'etaldur', 'etallagt', 'etalvc', 'etalcl_dihydroart', 'etalvc_dihydroart'</span></span>
 <span><span class="co">#&gt; Warning: multi-subject simulation without without 'omega'</span></span></code></pre></div>
 </div>
 <div class="section level2">
@@ -1329,9 +1329,9 @@ subjects per arm.</p>
 <span>    Q05_as  <span class="op">=</span> <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">Cc_ng_per_mL</span>,     <span class="fl">0.05</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
 <span>    Q50_as  <span class="op">=</span> <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">Cc_ng_per_mL</span>,     <span class="fl">0.50</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
 <span>    Q95_as  <span class="op">=</span> <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">Cc_ng_per_mL</span>,     <span class="fl">0.95</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
-<span>    Q05_dha <span class="op">=</span> <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">Cc_dha_ng_per_mL</span>, <span class="fl">0.05</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
-<span>    Q50_dha <span class="op">=</span> <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">Cc_dha_ng_per_mL</span>, <span class="fl">0.50</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
-<span>    Q95_dha <span class="op">=</span> <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">Cc_dha_ng_per_mL</span>, <span class="fl">0.95</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
+<span>    Q05_dihydroart <span class="op">=</span> <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">Cc_dha_ng_per_mL</span>, <span class="fl">0.05</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
+<span>    Q50_dihydroart <span class="op">=</span> <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">Cc_dha_ng_per_mL</span>, <span class="fl">0.50</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
+<span>    Q95_dihydroart <span class="op">=</span> <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">Cc_dha_ng_per_mL</span>, <span class="fl">0.95</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
 <span>    .groups <span class="op">=</span> <span class="st">"drop"</span></span>
 <span>  <span class="op">)</span></span>
 <span></span>
@@ -1341,7 +1341,7 @@ subjects per arm.</p>
 <span>                     Q05 <span class="op">=</span> <span class="va">Q05_as</span>,  Q50 <span class="op">=</span> <span class="va">Q50_as</span>,  Q95 <span class="op">=</span> <span class="va">Q95_as</span><span class="op">)</span>,</span>
 <span>  <span class="va">vpc_df</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/transmute.html" class="external-link">transmute</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">treatment</span>, species <span class="op">=</span> <span class="st">"Dihydroartemisinin (DHA)"</span>,</span>
-<span>                     Q05 <span class="op">=</span> <span class="va">Q05_dha</span>, Q50 <span class="op">=</span> <span class="va">Q50_dha</span>, Q95 <span class="op">=</span> <span class="va">Q95_dha</span><span class="op">)</span></span>
+<span>                     Q05 <span class="op">=</span> <span class="va">Q05_dihydroart</span>, Q50 <span class="op">=</span> <span class="va">Q50_dihydroart</span>, Q95 <span class="op">=</span> <span class="va">Q95_dihydroart</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">ggplot</span><span class="op">(</span><span class="va">vpc_long</span>, <span class="fu">aes</span><span class="op">(</span><span class="va">time</span>, <span class="va">Q50</span>, colour <span class="op">=</span> <span class="va">treatment</span>, fill <span class="op">=</span> <span class="va">treatment</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
@@ -1370,7 +1370,7 @@ subjects per arm.</p>
 pregnancy status so per-arm Cmax / AUC / half-life can be compared
 against the published apparent-clearance values.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">sim_nca_dha</span> <span class="op">&lt;-</span> <span class="va">sim</span> <span class="op">|&gt;</span></span>
+<code class="sourceCode R"><span><span class="va">sim_nca_dihydroart</span> <span class="op">&lt;-</span> <span class="va">sim</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc_dha_ng_per_mL</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, Cc <span class="op">=</span> <span class="va">Cc_dha_ng_per_mL</span>, <span class="va">treatment</span><span class="op">)</span></span>
 <span></span>
@@ -1379,21 +1379,21 @@ against the published apparent-clearance values.</p>
 <span><span class="co"># 200 mg AS * (MW_DHA / MW_AS) = 200 * 284.35 / 384.42 = 147.94 mg DHA.</span></span>
 <span><span class="va">dose_dha_mg</span> <span class="op">&lt;-</span> <span class="fl">200</span> <span class="op">*</span> <span class="fl">284.35</span> <span class="op">/</span> <span class="fl">384.42</span></span>
 <span></span>
-<span><span class="va">dose_df_dha</span> <span class="op">&lt;-</span> <span class="va">events</span> <span class="op">|&gt;</span></span>
+<span><span class="va">dose_df_dihydroart</span> <span class="op">&lt;-</span> <span class="va">events</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">evid</span> <span class="op">==</span> <span class="fl">1L</span>, <span class="va">cmt</span> <span class="op">==</span> <span class="st">"central"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>amt <span class="op">=</span> <span class="va">dose_dha_mg</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="va">amt</span>, <span class="va">treatment</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">conc_obj_dha</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="https://humanpred.github.io/pknca/reference/PKNCAconc.html" class="external-link">PKNCAconc</a></span><span class="op">(</span></span>
-<span>  <span class="va">sim_nca_dha</span>, <span class="va">Cc</span> <span class="op">~</span> <span class="va">time</span> <span class="op">|</span> <span class="va">treatment</span> <span class="op">+</span> <span class="va">id</span>,</span>
+<span><span class="va">conc_obj_dihydroart</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="https://humanpred.github.io/pknca/reference/PKNCAconc.html" class="external-link">PKNCAconc</a></span><span class="op">(</span></span>
+<span>  <span class="va">sim_nca_dihydroart</span>, <span class="va">Cc</span> <span class="op">~</span> <span class="va">time</span> <span class="op">|</span> <span class="va">treatment</span> <span class="op">+</span> <span class="va">id</span>,</span>
 <span>  concu <span class="op">=</span> <span class="st">"ng/mL"</span>, timeu <span class="op">=</span> <span class="st">"h"</span></span>
 <span><span class="op">)</span></span>
-<span><span class="va">dose_obj_dha</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="https://humanpred.github.io/pknca/reference/PKNCAdose.html" class="external-link">PKNCAdose</a></span><span class="op">(</span></span>
-<span>  <span class="va">dose_df_dha</span>, <span class="va">amt</span> <span class="op">~</span> <span class="va">time</span> <span class="op">|</span> <span class="va">treatment</span> <span class="op">+</span> <span class="va">id</span>,</span>
+<span><span class="va">dose_obj_dihydroart</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="https://humanpred.github.io/pknca/reference/PKNCAdose.html" class="external-link">PKNCAdose</a></span><span class="op">(</span></span>
+<span>  <span class="va">dose_df_dihydroart</span>, <span class="va">amt</span> <span class="op">~</span> <span class="va">time</span> <span class="op">|</span> <span class="va">treatment</span> <span class="op">+</span> <span class="va">id</span>,</span>
 <span>  doseu <span class="op">=</span> <span class="st">"mg"</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">intervals_dha</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span><span class="va">intervals_dihydroart</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  start      <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  end        <span class="op">=</span> <span class="fl">12</span>,</span>
 <span>  cmax       <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -1404,9 +1404,9 @@ against the published apparent-clearance values.</p>
 <span>  cl.last    <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">nca_data_dha</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="https://humanpred.github.io/pknca/reference/PKNCAdata.html" class="external-link">PKNCAdata</a></span><span class="op">(</span><span class="va">conc_obj_dha</span>, <span class="va">dose_obj_dha</span>,</span>
-<span>                                  intervals <span class="op">=</span> <span class="va">intervals_dha</span><span class="op">)</span></span>
-<span><span class="va">nca_res_dha</span>  <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="https://humanpred.github.io/pknca/reference/pk.nca.html" class="external-link">pk.nca</a></span><span class="op">(</span><span class="va">nca_data_dha</span><span class="op">)</span></span>
+<span><span class="va">nca_data_dihydroart</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="https://humanpred.github.io/pknca/reference/PKNCAdata.html" class="external-link">PKNCAdata</a></span><span class="op">(</span><span class="va">conc_obj_dihydroart</span>, <span class="va">dose_obj_dihydroart</span>,</span>
+<span>                                  intervals <span class="op">=</span> <span class="va">intervals_dihydroart</span><span class="op">)</span></span>
+<span><span class="va">nca_res_dihydroart</span>  <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="https://humanpred.github.io/pknca/reference/pk.nca.html" class="external-link">pk.nca</a></span><span class="op">(</span><span class="va">nca_data_dihydroart</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (0.05) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.05) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.05) is not allowed</span></span>
@@ -1809,7 +1809,7 @@ against the published apparent-clearance values.</p>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.05) is not allowed</span></span>
 <span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">nca_res_dha</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">nca_res_dihydroart</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  caption <span class="op">=</span> <span class="st">"Simulated DHA NCA parameters by pregnancy status."</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <table class="table">
@@ -2197,10 +2197,10 @@ half-lives and clearances that the simulation should reproduce:</p>
 <span><span class="va">auc_dha_p_predicted_mg</span>  <span class="op">&lt;-</span> <span class="fl">147.94</span> <span class="op">/</span> <span class="op">(</span><span class="fl">64.0</span> <span class="op">*</span> <span class="fl">1.423</span><span class="op">)</span>  <span class="co"># mg*h/L</span></span>
 <span></span>
 <span><span class="co"># Pull simulated per-arm median AUClast (from PKNCA result above, DHA, ng*h/mL)</span></span>
-<span><span class="va">nca_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">nca_res_dha</span><span class="op">$</span><span class="va">result</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span><span class="va">nca_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">nca_res_dihydroart</span><span class="op">$</span><span class="va">result</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">PPTESTCD</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"auclast"</span>, <span class="st">"aucinf.obs"</span>, <span class="st">"half.life"</span>,</span>
 <span>                                <span class="st">"cmax"</span>, <span class="st">"tmax"</span>, <span class="st">"cl.last"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">median_auc_inf_dha</span> <span class="op">&lt;-</span> <span class="va">nca_df</span> <span class="op">|&gt;</span></span>
+<span><span class="va">median_auc_inf_dihydroart</span> <span class="op">&lt;-</span> <span class="va">nca_df</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">PPTESTCD</span> <span class="op">==</span> <span class="st">"aucinf.obs"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">treatment</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span>med <span class="op">=</span> <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/median.html" class="external-link">median</a></span><span class="op">(</span><span class="va">PPORRES</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>, .groups <span class="op">=</span> <span class="st">"drop"</span><span class="op">)</span></span>
@@ -2225,12 +2225,12 @@ half-lives and clearances that the simulation should reproduce:</p>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"%.1f (typical-value structural)"</span>, <span class="va">t12_dha_np_sim</span><span class="op">)</span>,</span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"%.1f (typical-value structural)"</span>, <span class="va">t12_dha_p_sim</span><span class="op">)</span>,</span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"%.0f (median across cohort)"</span>,</span>
-<span>            <span class="va">median_auc_inf_dha</span><span class="op">$</span><span class="va">med</span><span class="op">[</span><span class="va">median_auc_inf_dha</span><span class="op">$</span><span class="va">treatment</span> <span class="op">==</span> <span class="st">"Non-pregnant"</span><span class="op">]</span><span class="op">)</span>,</span>
+<span>            <span class="va">median_auc_inf_dihydroart</span><span class="op">$</span><span class="va">med</span><span class="op">[</span><span class="va">median_auc_inf_dihydroart</span><span class="op">$</span><span class="va">treatment</span> <span class="op">==</span> <span class="st">"Non-pregnant"</span><span class="op">]</span><span class="op">)</span>,</span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"%.0f (median across cohort)"</span>,</span>
-<span>            <span class="va">median_auc_inf_dha</span><span class="op">$</span><span class="va">med</span><span class="op">[</span><span class="va">median_auc_inf_dha</span><span class="op">$</span><span class="va">treatment</span> <span class="op">==</span> <span class="st">"Pregnant"</span><span class="op">]</span><span class="op">)</span>,</span>
+<span>            <span class="va">median_auc_inf_dihydroart</span><span class="op">$</span><span class="va">med</span><span class="op">[</span><span class="va">median_auc_inf_dihydroart</span><span class="op">$</span><span class="va">treatment</span> <span class="op">==</span> <span class="st">"Pregnant"</span><span class="op">]</span><span class="op">)</span>,</span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"%.3f"</span>,</span>
-<span>            <span class="va">median_auc_inf_dha</span><span class="op">$</span><span class="va">med</span><span class="op">[</span><span class="va">median_auc_inf_dha</span><span class="op">$</span><span class="va">treatment</span> <span class="op">==</span> <span class="st">"Pregnant"</span><span class="op">]</span> <span class="op">/</span></span>
-<span>              <span class="va">median_auc_inf_dha</span><span class="op">$</span><span class="va">med</span><span class="op">[</span><span class="va">median_auc_inf_dha</span><span class="op">$</span><span class="va">treatment</span> <span class="op">==</span> <span class="st">"Non-pregnant"</span><span class="op">]</span><span class="op">)</span></span>
+<span>            <span class="va">median_auc_inf_dihydroart</span><span class="op">$</span><span class="va">med</span><span class="op">[</span><span class="va">median_auc_inf_dihydroart</span><span class="op">$</span><span class="va">treatment</span> <span class="op">==</span> <span class="st">"Pregnant"</span><span class="op">]</span> <span class="op">/</span></span>
+<span>              <span class="va">median_auc_inf_dihydroart</span><span class="op">$</span><span class="va">med</span><span class="op">[</span><span class="va">median_auc_inf_dihydroart</span><span class="op">$</span><span class="va">treatment</span> <span class="op">==</span> <span class="st">"Non-pregnant"</span><span class="op">]</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -2337,9 +2337,9 @@ natural-log-transformed AS and DHA plasma concentrations with additive
 residual error on the log scale (Methods, “Residual variability (RV) was
 modelled with an additive model for log-transformed data”). This maps to
 proportional residual error in nlmixr2’s linear space per the package
-convention; <code>propSd</code> and <code>propSd_dha</code> are the SD
-on the log scale (sqrt of the variances in Table 2). Sibling models
-<code>Hendriksen_2013_artesunate</code> and
+convention; <code>propSd</code> and <code>propSd_dihydroart</code> are
+the SD on the log scale (sqrt of the variances in Table 2). Sibling
+models <code>Hendriksen_2013_artesunate</code> and
 <code>Birgersson_2019_artesunate</code> apply the same translation.</li>
 <li>
 <strong>Molar simulation; no MW conversion at AS to DHA
@@ -2352,7 +2352,7 @@ g/mol; the vignette helper
 <code>dose_nmol &lt;- 200e-3 / 384.42 * 1e9</code> shows the
 calculation. For display, simulated nmol/L concentrations are converted
 to ng/mL via <code>Cc * 384.42 / 1000</code> (AS) and
-<code>Cc_dha * 284.35 / 1000</code> (DHA).</li>
+<code>Cc_dihydroart * 284.35 / 1000</code> (DHA).</li>
 <li>
 <strong>Weight not in the final model.</strong> Morris 2011 tested
 weight on V2/F, CLM/F, and V3/F during covariate model building but did

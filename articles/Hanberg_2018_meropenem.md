@@ -744,16 +744,16 @@ would require the individual NONMEM EBEs.
   CRRT.** 9 of 10 patients in the Hanberg 2018 cohort were on continuous
   renal replacement therapy (CRRT) concurrent with meropenem. Hanberg
   2018 fits the population CL covariate model as
-  `CL_i = CLfrac * eCLCr_i` directly, without a separate `CRRT_STATUS`
-  indicator (contrast with `Shekar_2014_meropenem.R` which uses a
-  piecewise model with a fixed RRT-cohort CL). The Discussion notes
-  this: “the eCLCr recorded in 9 of the 10 included patients is, to a
-  certain extent, a reflection of the CRRT. As such, the proportionality
-  between clearance and individual eCLCr should not be directly
-  extrapolated or employed in settings other than that described in this
-  study.” The packaged model preserves the paper’s fit and inherits the
-  same restriction on extrapolation; the Population metadata
-  `renal_function` field flags it explicitly.
+  `CL_i = CLfrac * eCLCr_i` directly, without a separate
+  `RRT_CRRT_STATUS` indicator (contrast with `Shekar_2014_meropenem.R`
+  which uses a piecewise model with a fixed RRT-cohort CL). The
+  Discussion notes this: “the eCLCr recorded in 9 of the 10 included
+  patients is, to a certain extent, a reflection of the CRRT. As such,
+  the proportionality between clearance and individual eCLCr should not
+  be directly extrapolated or employed in settings other than that
+  described in this study.” The packaged model preserves the paper’s fit
+  and inherits the same restriction on extrapolation; the Population
+  metadata `renal_function` field flags it explicitly.
 
 - **No allometric scaling on weight.** Hanberg 2018 Methods describes
   testing eCLCr on CL and weight on PK parameters as initial covariate

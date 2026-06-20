@@ -23,7 +23,7 @@ for 3 days.
 ``` r
 
 mod_pip <- nlmixr2lib::readModelDb("Tarning_2012_piperaquine")
-mod_dha <- nlmixr2lib::readModelDb("Tarning_2012_dihydroartemisinin")
+mod_dihydroart <- nlmixr2lib::readModelDb("Tarning_2012_dihydroartemisinin")
 ```
 
 ## Population
@@ -102,7 +102,7 @@ set.seed(2012)
 
 n_per_arm <- 100L
 
-build_one <- function(id, wt, preg, para, dose_mg_dha, dose_mg_pip,
+build_one <- function(id, wt, preg, para, dose_mg_dihydroart, dose_mg_pip,
                       tobs, cohort_label) {
   occ_for_time <- function(t) pmin(3L, as.integer(floor(t / 24)) + 1L)
   ev <- rxode2::et(amt = dose_mg_pip, ii = 24, until = 48, cmt = "depot") |>
@@ -114,7 +114,7 @@ build_one <- function(id, wt, preg, para, dose_mg_dha, dose_mg_pip,
   ev$PARA  <- para
   ev$OCC   <- occ_for_time(ev$time)
   ev$cohort <- cohort_label
-  ev$dose_dha_mg <- dose_mg_dha
+  ev$dose_dha_mg <- dose_mg_dihydroart
   ev$dose_pip_mg <- dose_mg_pip
   ev
 }
@@ -151,7 +151,7 @@ events_pip <- dplyr::bind_rows(
 )
 stopifnot(!anyDuplicated(unique(events_pip[, c("id", "time", "evid")])))
 
-events_dha <- dplyr::bind_rows(
+events_dihydroart <- dplyr::bind_rows(
   make_cohort(n_per_arm, wt_med = 51, wt_sd = 5,
               preg = 1, para_med = 6780, para_gsd = 6,
               dose_pip_mgkg = 30.8, dose_dha_mgkg = 6.67,
@@ -161,14 +161,14 @@ events_dha <- dplyr::bind_rows(
               dose_pip_mgkg = 29.0, dose_dha_mgkg = 6.28,
               tobs = tobs_short, cohort_label = "Non-pregnant", id_offset = n_per_arm)
 )
-stopifnot(!anyDuplicated(unique(events_dha[, c("id", "time", "evid")])))
+stopifnot(!anyDuplicated(unique(events_dihydroart[, c("id", "time", "evid")])))
 
 # For DHA, dose amounts must reflect the dihydroartemisinin dose, not the
 # piperaquine base dose (the event tables above default amt to dose_mg_pip);
 # overwrite the dose rows with DHA-specific amounts before passing to the
 # DHA model.
-events_dha$amt[events_dha$evid == 1L] <-
-  events_dha$dose_dha_mg[events_dha$evid == 1L]
+events_dihydroart$amt[events_dihydroart$evid == 1L] <-
+  events_dihydroart$dose_dha_mg[events_dihydroart$evid == 1L]
 ```
 
 ## Simulation
@@ -186,9 +186,9 @@ sim_pip_typ <- rxode2::rxSolve(
   keep = c("cohort", "PREG", "WT", "PARA", "OCC")
 ) |> as.data.frame()
 
-mod_dha_typ <- rxode2::zeroRe(mod_dha())
+mod_dha_typ <- rxode2::zeroRe(mod_dihydroart())
 sim_dha_typ <- rxode2::rxSolve(
-  mod_dha_typ, events = events_dha,
+  mod_dha_typ, events = events_dihydroart,
   keep = c("cohort", "PREG", "WT", "PARA", "OCC")
 ) |> as.data.frame()
 
@@ -199,7 +199,7 @@ sim_pip_sto <- rxode2::rxSolve(
 ) |> as.data.frame()
 
 sim_dha_sto <- rxode2::rxSolve(
-  mod_dha(), events = events_dha,
+  mod_dihydroart(), events = events_dihydroart,
   keep = c("cohort", "PREG", "WT", "PARA", "OCC")
 ) |> as.data.frame()
 ```
@@ -259,28 +259,28 @@ simulated window.
 
 ``` r
 
-sim_nca_dha <- sim_dha_sto |>
+sim_nca_dihydroart <- sim_dha_sto |>
   dplyr::filter(!is.na(Cc), time <= 24) |>
   dplyr::select(id, time, Cc, cohort)
 
-dose_df_dha <- events_dha |>
+dose_df_dihydroart <- events_dihydroart |>
   dplyr::filter(evid == 1L, time == 0) |>
   dplyr::select(id, time, amt, cohort)
 
-conc_obj_dha <- PKNCA::PKNCAconc(sim_nca_dha,
+conc_obj_dihydroart <- PKNCA::PKNCAconc(sim_nca_dihydroart,
                                  Cc ~ time | cohort + id,
                                  concu = "ng/mL", timeu = "h")
-dose_obj_dha <- PKNCA::PKNCAdose(dose_df_dha,
+dose_obj_dihydroart <- PKNCA::PKNCAdose(dose_df_dihydroart,
                                  amt ~ time | cohort + id,
                                  doseu = "mg")
 
-intervals_dha <- data.frame(start = 0, end = 24, cmax = TRUE,
+intervals_dihydroart <- data.frame(start = 0, end = 24, cmax = TRUE,
                             tmax = TRUE, auclast = TRUE,
                             half.life = TRUE)
-nca_dha <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj_dha, dose_obj_dha,
-                                          intervals = intervals_dha))
+nca_dihydroart <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj_dihydroart, dose_obj_dihydroart,
+                                          intervals = intervals_dihydroart))
 
-nca_dha_tab <- as.data.frame(nca_dha$result) |>
+nca_dha_tab <- as.data.frame(nca_dihydroart$result) |>
   dplyr::group_by(cohort, PPTESTCD) |>
   dplyr::summarise(median = stats::median(PPORRES, na.rm = TRUE),
                    q25    = stats::quantile(PPORRES, 0.25, na.rm = TRUE),

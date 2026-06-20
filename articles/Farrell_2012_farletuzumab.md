@@ -64,10 +64,10 @@ below collects them for review.
 Original observed data are not publicly available. The cohort below
 approximates the Table 1 overall demographics: body weights in the
 44.5–118.2 kg range drawn from a truncated distribution around the 66.2
-kg median, and every patient assigned `PHASE2 = 1` (Phase II residual
-error — the larger study and the one with combined additive +
-proportional error). Dosing is 100 mg/m² weekly IV infusion over 1 hour
-for 8 weeks, matching the primary Phase II dosing schedule.
+kg median, and every patient assigned `STUDY_FARLETUZUMAB_PHASE2 = 1`
+(Phase II residual error — the larger study and the one with combined
+additive + proportional error). Dosing is 100 mg/m² weekly IV infusion
+over 1 hour for 8 weeks, matching the primary Phase II dosing schedule.
 
 ``` r
 
@@ -85,7 +85,7 @@ cohort <- tibble::tibble(
   id = seq_len(n_subj),
   WT = wt_draws,
   BSA = bsa_draws,
-  PHASE2 = 1L,
+  STUDY_FARLETUZUMAB_PHASE2 = 1L,
   dose_mgm2 = 100,
   dose_mg = 100 * bsa_draws  # mg/m^2 x m^2 = mg
 )
@@ -107,7 +107,7 @@ doses <- cohort |>
     cmt = "central",
     evid = 1L
   ) |>
-  dplyr::select(id, time, amt, rate, cmt, evid, WT, PHASE2, treatment)
+  dplyr::select(id, time, amt, rate, cmt, evid, WT, STUDY_FARLETUZUMAB_PHASE2, treatment)
 
 # Observation grid: dense during the first week, then per-week troughs, and
 # one long post-last-dose tail for terminal-phase characterization.
@@ -121,7 +121,7 @@ obs_times <- sort(unique(c(
 obs <- cohort |>
   tidyr::crossing(time = obs_times) |>
   dplyr::mutate(amt = 0, rate = 0, cmt = NA_character_, evid = 0L) |>
-  dplyr::select(id, time, amt, rate, cmt, evid, WT, PHASE2, treatment)
+  dplyr::select(id, time, amt, rate, cmt, evid, WT, STUDY_FARLETUZUMAB_PHASE2, treatment)
 
 events <- dplyr::bind_rows(doses, obs) |>
   dplyr::arrange(id, time, dplyr::desc(evid))
@@ -137,7 +137,7 @@ mod <- rxode2::rxode2(readModelDb("Farrell_2012_farletuzumab"))
 sim <- rxode2::rxSolve(
   mod,
   events = events,
-  keep = c("WT", "PHASE2", "treatment")
+  keep = c("WT", "STUDY_FARLETUZUMAB_PHASE2", "treatment")
 )
 ```
 
@@ -151,24 +151,24 @@ mod_typical <- mod |> rxode2::zeroRe()
 #> Warning: No sigma parameters in the model
 
 typical_cohort <- tibble::tibble(
-  id = 1L, WT = 66.2, PHASE2 = 1L, treatment = "100 mg/m2 weekly (typical)"
+  id = 1L, WT = 66.2, STUDY_FARLETUZUMAB_PHASE2 = 1L, treatment = "100 mg/m2 weekly (typical)"
 )
 
 typical_doses <- typical_cohort |>
   tidyr::crossing(time = dose_times) |>
   dplyr::mutate(amt = 170, rate = 170, cmt = "central", evid = 1L) |>
-  dplyr::select(id, time, amt, rate, cmt, evid, WT, PHASE2, treatment)
+  dplyr::select(id, time, amt, rate, cmt, evid, WT, STUDY_FARLETUZUMAB_PHASE2, treatment)
 
 typical_obs <- typical_cohort |>
   tidyr::crossing(time = obs_times) |>
   dplyr::mutate(amt = 0, rate = 0, cmt = NA_character_, evid = 0L) |>
-  dplyr::select(id, time, amt, rate, cmt, evid, WT, PHASE2, treatment)
+  dplyr::select(id, time, amt, rate, cmt, evid, WT, STUDY_FARLETUZUMAB_PHASE2, treatment)
 
 typical_events <- dplyr::bind_rows(typical_doses, typical_obs) |>
   dplyr::arrange(id, time, dplyr::desc(evid))
 
 sim_typical <- rxode2::rxSolve(
-  mod_typical, events = typical_events, keep = c("WT", "PHASE2", "treatment")
+  mod_typical, events = typical_events, keep = c("WT", "STUDY_FARLETUZUMAB_PHASE2", "treatment")
 )
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp'
 ```
@@ -235,9 +235,9 @@ make_regimen <- function(amt, tau, n_doses, label) {
   )))
   dplyr::bind_rows(
     tibble::tibble(id = 1L, time = dt,   amt = amt, rate = amt,
-      cmt = "central", evid = 1L, WT = wt_ref, PHASE2 = 1L, treatment = label),
+      cmt = "central", evid = 1L, WT = wt_ref, STUDY_FARLETUZUMAB_PHASE2 = 1L, treatment = label),
     tibble::tibble(id = 1L, time = obs_t, amt = 0, rate = 0,
-      cmt = NA_character_, evid = 0L, WT = wt_ref, PHASE2 = 1L, treatment = label)
+      cmt = NA_character_, evid = 0L, WT = wt_ref, STUDY_FARLETUZUMAB_PHASE2 = 1L, treatment = label)
   ) |> dplyr::arrange(time, dplyr::desc(evid))
 }
 
@@ -250,7 +250,7 @@ regimen_events <- dplyr::bind_rows(
 )
 
 sim_regimens <- rxode2::rxSolve(
-  mod_typical, events = regimen_events, keep = c("WT", "PHASE2", "treatment")
+  mod_typical, events = regimen_events, keep = c("WT", "STUDY_FARLETUZUMAB_PHASE2", "treatment")
 )
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp'
 #> Warning: multi-subject simulation without without 'omega'
@@ -474,12 +474,13 @@ published IgG-class monoclonal antibody half-lives (multi-week).
   published.
 - **Per-study residual error.** The paper reports separate
   residual-error estimates for the Phase I and Phase II studies (Table
-  3). A new binary `PHASE2` indicator (0 = Phase I, 1 = Phase II)
-  selects between them in the model, following the same pattern used by
-  `Cirincione_2017_exenatide.R` with `STUDY1` / `STUDY5`. The virtual
-  cohort sets `PHASE2 = 1` because the Phase II study is the larger
-  cohort (1,750 of 2,472 samples) and drives the weekly weekly / Q3W
-  comparison explored in Figure 3.
+  3). A new binary `STUDY_FARLETUZUMAB_PHASE2` indicator (0 = Phase I, 1
+  = Phase II) selects between them in the model, following the same
+  pattern used by `Cirincione_2017_exenatide.R` with `STUDY1` /
+  `STUDY5`. The virtual cohort sets `STUDY_FARLETUZUMAB_PHASE2 = 1`
+  because the Phase II study is the larger cohort (1,750 of 2,472
+  samples) and drives the weekly weekly / Q3W comparison explored in
+  Figure 3.
 - **Reference weight.** The paper specifies `COV_ST` as the median
   covariate value in the study population. The Table 1 overall median
   weight of 66.2 kg is used; a within-final-dataset median (after

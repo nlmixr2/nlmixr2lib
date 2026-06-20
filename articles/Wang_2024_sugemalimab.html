@@ -1135,13 +1135,13 @@ table below collects them in one place for review.</p>
 </tr>
 <tr class="even">
 <td>
-<code>e_oth_cl</code> (TUMTP_OTH on CL)</td>
+<code>e_oth_cl</code> (TUMTP_OTHER on CL)</td>
 <td>log(0.885) = -0.1222</td>
 <td>Wang 2024 Table 3: exp(theta16) = 0.885</td>
 </tr>
 <tr class="odd">
 <td>
-<code>e_gc_cl</code> (TUMTP_GC on CL)</td>
+<code>e_gc_cl</code> (TUMTP_GASTRIC on CL)</td>
 <td>log(1.13) = 0.1222</td>
 <td>Wang 2024 Table 3: exp(theta17) = 1.13</td>
 </tr>
@@ -1159,13 +1159,13 @@ table below collects them in one place for review.</p>
 </tr>
 <tr class="even">
 <td>
-<code>e_oth_vc</code> (TUMTP_OTH on Vc)</td>
+<code>e_oth_vc</code> (TUMTP_OTHER on Vc)</td>
 <td>log(0.926) = -0.0769</td>
 <td>Wang 2024 Table 3: exp(theta20) = 0.926</td>
 </tr>
 <tr class="odd">
 <td>
-<code>e_gc_vc</code> (TUMTP_GC on Vc)</td>
+<code>e_gc_vc</code> (TUMTP_GASTRIC on Vc)</td>
 <td>log(1.14) = 0.1310</td>
 <td>Wang 2024 Table 3: exp(theta21) = 1.14</td>
 </tr>
@@ -1288,13 +1288,13 @@ model)</td>
 <tr class="odd">
 <td>
 <code>TTYPE3</code> (1 = “other” tumour type)</td>
-<td><code>TUMTP_OTH</code></td>
+<td><code>TUMTP_OTHER</code></td>
 </tr>
 <tr class="even">
 <td>
 <code>TTYPE4</code> (1 = GCGEJ adenocarcinoma)</td>
 <td>
-<code>TUMTP_GC</code> (Wang 2024 GEJ inclusion documented in
+<code>TUMTP_GASTRIC</code> (Wang 2024 GEJ inclusion documented in
 canonical)</td>
 </tr>
 <tr class="odd">
@@ -1351,15 +1351,15 @@ published).</p>
 <span><span class="va">ttype</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">ttype_mix</span><span class="op">)</span>, <span class="va">n_subj</span>, replace <span class="op">=</span> <span class="cn">TRUE</span>, prob <span class="op">=</span> <span class="va">ttype_mix</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">TUMTP_LYMPH</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">ttype</span> <span class="op">==</span> <span class="st">"LYMPH"</span><span class="op">)</span></span>
-<span><span class="va">TUMTP_OTH</span>   <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">ttype</span> <span class="op">==</span> <span class="st">"OTH"</span><span class="op">)</span></span>
-<span><span class="va">TUMTP_GC</span>    <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">ttype</span> <span class="op">==</span> <span class="st">"GC"</span><span class="op">)</span></span>
+<span><span class="va">TUMTP_OTHER</span>   <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">ttype</span> <span class="op">==</span> <span class="st">"OTH"</span><span class="op">)</span></span>
+<span><span class="va">TUMTP_GASTRIC</span>    <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">ttype</span> <span class="op">==</span> <span class="st">"GC"</span><span class="op">)</span></span>
 <span><span class="va">TUMTP_ESCC</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">ttype</span> <span class="op">==</span> <span class="st">"ESCC"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">pop</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  ID <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">n_subj</span><span class="op">)</span>,</span>
 <span>  <span class="va">WT</span>, <span class="va">ALB</span>, <span class="va">TUMSZ</span>,</span>
 <span>  <span class="va">SEXF</span>, <span class="va">ADA_POS</span>,</span>
-<span>  <span class="va">TUMTP_LYMPH</span>, <span class="va">TUMTP_OTH</span>, <span class="va">TUMTP_GC</span>, <span class="va">TUMTP_ESCC</span>,</span>
+<span>  <span class="va">TUMTP_LYMPH</span>, <span class="va">TUMTP_OTHER</span>, <span class="va">TUMTP_GASTRIC</span>, <span class="va">TUMTP_ESCC</span>,</span>
 <span>  ttype <span class="op">=</span> <span class="va">ttype</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 </div>

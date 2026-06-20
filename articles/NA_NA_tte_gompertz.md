@@ -288,9 +288,9 @@ redistributed. A user wanting to exercise the check should:
 2.  Pass the per-record `AGE` and `NEUT` covariates to `rxSolve(m, ...)`
     with the typical-value parameters (this nlmixr2lib model has no IIV,
     so no `zeroRe()` is needed).
-3.  Compare the simulated `sur`, `cumHazard`, `hazard` outputs against
-    the .res `$TABLE`’s `SURV`, `CHAZ`, `HAZNOW` columns. Differences
-    beyond floating-point should be investigated, not tuned.
+3.  Compare the simulated `sur`, `cumhaz`, `hazard` outputs against the
+    .res `$TABLE`’s `SURV`, `CHAZ`, `HAZNOW` columns. Differences beyond
+    floating-point should be investigated, not tuned.
 
 The cohort built above (50 subjects, weekly observations to day 540) is
 a faithful smaller-scale analogue.

@@ -70,10 +70,10 @@ best-fit form of all the structural alternatives tested in Sharma 2018
 (Results “Population Dose- and Time-Dependent Pharmacodynamic Model”).
 
 Covariates retained in the final DTPD model are **diabetes mellitus
-(T2DM)** as a fixed covariate on `Emax`, `kout`, `kpro`, and baseline
-body weight, and **race** as a covariate on `DSTIM` (White and Asian
-merged as the reference because of the small Asian subgroup, n = 49;
-Black and a paper-pooled “Other” category as separate indicators).
+(DIS_DIAB)** as a fixed covariate on `Emax`, `kout`, `kpro`, and
+baseline body weight, and **race** as a covariate on `DSTIM` (White and
+Asian merged as the reference because of the small Asian subgroup, n =
+49; Black and a paper-pooled “Other” category as separate indicators).
 Inter-individual variability is on all parameters except `kde` and
 `kpro` (per Sharma 2018 Results: “no IIV was tested statistically
 significant on these parameters”). Residual error is additive on body
@@ -99,12 +99,13 @@ received lifestyle intervention (hypocaloric diet of -500 to -1500
 kcal/day and \>= 30-minute walk three times per week).
 
 Study 6 (NB-304) was the only included trial enrolling obese subjects
-with type-2 diabetes mellitus (T2DM; 501 subjects, 10.9% of the pooled
-analysis population). All other studies enrolled obese non-diabetic
-subjects with or without other comorbidities (dyslipidemia, controlled
-hypertension). Subjects were categorised by BMI into overweight (BMI
-25-29.9, 2.4%), class-I obesity (BMI 30-34.9, 38.0%), class-II obesity
-(BMI 35-39.9, 36.2%), and class-III obesity (BMI \>= 40, 23.3%).
+with type-2 diabetes mellitus (DIS_DIAB; 501 subjects, 10.9% of the
+pooled analysis population). All other studies enrolled obese
+non-diabetic subjects with or without other comorbidities (dyslipidemia,
+controlled hypertension). Subjects were categorised by BMI into
+overweight (BMI 25-29.9, 2.4%), class-I obesity (BMI 30-34.9, 38.0%),
+class-II obesity (BMI 35-39.9, 36.2%), and class-III obesity (BMI \>=
+40, 23.3%).
 
 For the model-development phase, five trials (1, 2, 4, 5, 6) were used.
 Trial NB-301 (study 3, n = 1586) was held out as the external evaluation
@@ -135,7 +136,7 @@ table below collects them in one place for review.
 | `led50_nal` -\> `ED50_NAL` | 54.6 (mg) | Sharma 2018 Table 2 DTPD column “ED50, NAL” |
 | `led50_bup` -\> `ED50_BUP` | 645 (mg) | Sharma 2018 Table 2 DTPD column “ED50, BUP” |
 | `lbw0` -\> `BW0` (nondiabetic ref) | 98.4 (kg) | Sharma 2018 Table 2 DTPD column “Baseline BW (kg)” nondiabetic |
-| `lkpro_kgy` (nondiabetic, FIXED) | 0.7 (kg/year) | Sharma 2018 Table 2 DTPD column “kpro (kg/y) 0.7 \[FIXED\]” + Methods: “kpro was fixed to 0.7 kg per year for subjects without T2DM” (NHANES literature value) |
+| `lkpro_kgy` (nondiabetic, FIXED) | 0.7 (kg/year) | Sharma 2018 Table 2 DTPD column “kpro (kg/y) 0.7 \[FIXED\]” + Methods: “kpro was fixed to 0.7 kg per year for subjects without DIS_DIAB” (NHANES literature value) |
 | `e_race_black_dstim` | -0.411 = 0.109/0.185 - 1 | Sharma 2018 Table 2 DTPD column “DSTIM (%) Black = 10.9%” vs ref 18.5% |
 | `e_race_other_dstim` | -0.474 = 0.0973/0.185 - 1 | Sharma 2018 Table 2 DTPD column “DSTIM (%) Other = 9.73%” vs ref 18.5% |
 | `e_t2dm_emax` | -0.203 = 3.74/4.69 - 1 | Sharma 2018 Table 2 DTPD column “Emax (kg) Diabetic = 3.74” vs nondiabetic 4.69 |
@@ -211,7 +212,7 @@ point.
 Individual subject-level data from the six Contrave trials are not
 publicly distributed. The simulations below build virtual cohorts whose
 covariate distributions match the Sharma 2018 Table 1 baseline
-demographics for each cohort (non-diabetic vs T2DM), assigning the
+demographics for each cohort (non-diabetic vs DIS_DIAB), assigning the
 paper-pooled race indicators consistent with the pooled Table 1
 percentages (77.2% White / 1.1% Asian merged as the White-Asian
 reference, 18.5% Black, 3.3% Other).
@@ -233,7 +234,7 @@ make_cohort <- function(n, t2dm, treated, id_offset = 0L) {
   )
   per_subject <- tibble::tibble(
     id        = ids,
-    T2DM      = as.integer(t2dm),
+    DIS_DIAB      = as.integer(t2dm),
     RACE_BLACK = as.integer(race_draw == "B"),
     RACE_OTHER = as.integer(race_draw == "O"),
     treated   = as.integer(treated)
@@ -265,27 +266,27 @@ make_cohort <- function(n, t2dm, treated, id_offset = 0L) {
                                     ),
                                     0)
     ) |>
-    dplyr::select(id, time, evid, amt, cmt, T2DM, RACE_BLACK, RACE_OTHER,
+    dplyr::select(id, time, evid, amt, cmt, DIS_DIAB, RACE_BLACK, RACE_OTHER,
                   CONMED_NAL_DOSE, CONMED_BUP_DOSE, treated)
 }
 
-n_per_cell <- 250L  # 250 subjects per (T2DM, treated) cell -> 1000 subjects total
+n_per_cell <- 250L  # 250 subjects per (DIS_DIAB, treated) cell -> 1000 subjects total
 events <- dplyr::bind_rows(
   make_cohort(n_per_cell, t2dm = 0L, treated = 0L, id_offset =                 0L) |>
     dplyr::mutate(cohort = "nondiabetic placebo"),
   make_cohort(n_per_cell, t2dm = 0L, treated = 1L, id_offset = 1L * n_per_cell) |>
     dplyr::mutate(cohort = "nondiabetic Contrave"),
   make_cohort(n_per_cell, t2dm = 1L, treated = 0L, id_offset = 2L * n_per_cell) |>
-    dplyr::mutate(cohort = "T2DM placebo"),
+    dplyr::mutate(cohort = "DIS_DIAB placebo"),
   make_cohort(n_per_cell, t2dm = 1L, treated = 1L, id_offset = 3L * n_per_cell) |>
-    dplyr::mutate(cohort = "T2DM Contrave")
+    dplyr::mutate(cohort = "DIS_DIAB Contrave")
 )
 stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
 table(events$cohort) / 57L  # subjects per cohort
 #> 
-#> nondiabetic Contrave  nondiabetic placebo        T2DM Contrave 
+#>    DIS_DIAB Contrave     DIS_DIAB placebo nondiabetic Contrave 
 #>                  250                  250                  250 
-#>         T2DM placebo 
+#>  nondiabetic placebo 
 #>                  250
 ```
 
@@ -298,7 +299,7 @@ mod <- readModelDb("Sharma_2018_naltrexone_bupropion")
 # Stochastic VPC-style simulation (with between-subject variability).
 sim_vpc <- rxode2::rxSolve(
   mod, events = events,
-  keep = c("cohort", "T2DM", "RACE_BLACK", "RACE_OTHER", "treated")
+  keep = c("cohort", "DIS_DIAB", "RACE_BLACK", "RACE_OTHER", "treated")
 ) |>
   as.data.frame()
 #> ℹ parameter labels from comments will be replaced by 'label()'
@@ -308,7 +309,7 @@ mod_typ <- rxode2::zeroRe(mod)
 #> ℹ parameter labels from comments will be replaced by 'label()'
 sim_typ <- rxode2::rxSolve(
   mod_typ, events = events,
-  keep = c("cohort", "T2DM", "RACE_BLACK", "RACE_OTHER", "treated")
+  keep = c("cohort", "DIS_DIAB", "RACE_BLACK", "RACE_OTHER", "treated")
 ) |>
   as.data.frame()
 #> ℹ omega/sigma items treated as zero: 'etalkout', 'etalkrel', 'etaldstim', 'etalemax', 'etalet50', 'etaled50_nal', 'etaled50_bup', 'etalbw0'
@@ -318,26 +319,26 @@ sim_typ <- rxode2::rxSolve(
 ## Replicate Figure 3 (typical-value body-weight change over 56 weeks)
 
 Sharma 2018 Figure 3 panels (a) and (b) overlay typical-value
-body-weight trajectories over 56 weeks for the four (T2DM x treatment)
-cells. The DTPD-model panel (a) is what we reproduce here using
-`zeroRe()`; the PPPD panel (b) is out of scope. Each typical-value
+body-weight trajectories over 56 weeks for the four (DIS_DIAB x
+treatment) cells. The DTPD-model panel (a) is what we reproduce here
+using `zeroRe()`; the PPPD panel (b) is out of scope. Each typical-value
 trajectory uses a single representative race indicator (here, the White
 / Asian reference: RACE_BLACK = 0, RACE_OTHER = 0).
 
 ``` r
 
-# One representative White/Asian subject per (T2DM, treated) cell.
+# One representative White/Asian subject per (DIS_DIAB, treated) cell.
 fig3_events <- bind_rows(
   make_cohort(1L, t2dm = 0L, treated = 0L, id_offset = 0L)   |> mutate(cohort = "Nondiabetic placebo"),
   make_cohort(1L, t2dm = 0L, treated = 1L, id_offset = 1L)   |> mutate(cohort = "Nondiabetic Contrave"),
-  make_cohort(1L, t2dm = 1L, treated = 0L, id_offset = 2L)   |> mutate(cohort = "T2DM placebo"),
-  make_cohort(1L, t2dm = 1L, treated = 1L, id_offset = 3L)   |> mutate(cohort = "T2DM Contrave")
+  make_cohort(1L, t2dm = 1L, treated = 0L, id_offset = 2L)   |> mutate(cohort = "DIS_DIAB placebo"),
+  make_cohort(1L, t2dm = 1L, treated = 1L, id_offset = 3L)   |> mutate(cohort = "DIS_DIAB Contrave")
 ) |>
   mutate(RACE_BLACK = 0L, RACE_OTHER = 0L)  # force the White/Asian reference
 
 fig3 <- rxode2::rxSolve(
   mod_typ, events = fig3_events,
-  keep = c("cohort", "T2DM", "treated")
+  keep = c("cohort", "DIS_DIAB", "treated")
 ) |>
   as.data.frame() |>
   group_by(id) |>
@@ -346,8 +347,8 @@ fig3 <- rxode2::rxSolve(
   mutate(
     treatment = factor(ifelse(treated == 1L, "Contrave", "placebo"),
                        levels = c("placebo", "Contrave")),
-    diab      = factor(ifelse(T2DM == 1L, "T2DM obese", "nondiabetic obese"),
-                       levels = c("nondiabetic obese", "T2DM obese"))
+    diab      = factor(ifelse(DIS_DIAB == 1L, "DIS_DIAB obese", "nondiabetic obese"),
+                       levels = c("nondiabetic obese", "DIS_DIAB obese"))
   )
 #> ℹ omega/sigma items treated as zero: 'etalkout', 'etalkrel', 'etaldstim', 'etalemax', 'etalet50', 'etaled50_nal', 'etaled50_bup', 'etalbw0'
 #> Warning: multi-subject simulation without without 'omega'
@@ -396,7 +397,7 @@ sim_outcomes <- sim_vpc |>
     bw0              = Cc[time == 0]
   ) |>
   ungroup() |>
-  group_by(id, cohort, treated, T2DM) |>
+  group_by(id, cohort, treated, DIS_DIAB) |>
   summarise(
     pct_change_56wk  = pct_change[time == 56],
     pct_change_min   = min(pct_change),
@@ -428,8 +429,8 @@ knitr::kable(
 
 | cohort | n | median_pct_change_56wk | median_pct_change_min | median_time_of_min | pct_responder_5pct |
 |:---|---:|---:|---:|---:|---:|
-| T2DM Contrave | 250 | -6.26 | -7.23 | 39 | 62.8 |
-| T2DM placebo | 250 | -3.31 | -4.24 | 35 | 30.4 |
+| DIS_DIAB Contrave | 250 | -6.26 | -7.23 | 39 | 62.8 |
+| DIS_DIAB placebo | 250 | -3.31 | -4.24 | 35 | 30.4 |
 | nondiabetic Contrave | 250 | -7.60 | -8.45 | 37 | 73.6 |
 | nondiabetic placebo | 250 | -4.68 | -5.85 | 36 | 46.4 |
 
@@ -447,13 +448,13 @@ Contrave trial outcomes:
 - **Nondiabetic placebo** – modest LSI-driven BW loss that partially
   regains by week 56 as the inverse-Bateman LSI dissipates; median
   56-week loss within the published 1-5% placebo range.
-- **T2DM Contrave** – smaller magnitude of BW loss than the nondiabetic
-  arm, reflecting the diabetes-driven multiplicative shifts on `Emax`
-  (-20.3%) and `kout` (-29.8%) and the much higher `kpro` (+286%) in the
-  diabetic subgroup, which together attenuate both the lifestyle and the
-  drug-driven body-weight loss; the paper’s Results notes that diabetic
-  obese subjects had “smaller BW reduction in either the treatment or
-  the placebo arm by 2% to 3%.”
+- **DIS_DIAB Contrave** – smaller magnitude of BW loss than the
+  nondiabetic arm, reflecting the diabetes-driven multiplicative shifts
+  on `Emax` (-20.3%) and `kout` (-29.8%) and the much higher `kpro`
+  (+286%) in the diabetic subgroup, which together attenuate both the
+  lifestyle and the drug-driven body-weight loss; the paper’s Results
+  notes that diabetic obese subjects had “smaller BW reduction in either
+  the treatment or the placebo arm by 2% to 3%.”
 - **5%-responder rate at 56 weeks** – within the published ranges for
   both the treated (42-57%) and placebo (17-43%) arms, with the wide
   responder distribution driven by the very high IIVs on `ED50,NAL` (CV
@@ -505,10 +506,10 @@ Contrave trial outcomes:
 - **`kpro` for diabetic subjects: estimated, not fixed.** The packaged
   file encodes `lkpro_kgy` (nondiabetic baseline value) as
   `fixed(log(0.7))` because Sharma 2018 Methods explicitly states “kpro
-  was fixed to 0.7 kg per year for subjects without T2DM”; the diabetic
-  `kpro` value of 2.7 kg/year is estimated (Table 2 RSE 11%) and is
-  encoded via the `e_t2dm_kpro` multiplicative shift, which is *not*
-  wrapped in `fixed()`.
+  was fixed to 0.7 kg per year for subjects without DIS_DIAB”; the
+  diabetic `kpro` value of 2.7 kg/year is estimated (Table 2 RSE 11%)
+  and is encoded via the `e_t2dm_kpro` multiplicative shift, which is
+  *not* wrapped in `fixed()`.
 - **`kde` and `kpro` have no IIV.** Per Sharma 2018 Results “Population
   Dose- and Time-Dependent Pharmacodynamic Model”: “IIV was added
   exponentially on all final model parameter estimates except on kde and

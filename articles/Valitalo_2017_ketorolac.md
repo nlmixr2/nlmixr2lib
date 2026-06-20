@@ -93,18 +93,18 @@ column).
 | 3-compartment IV structural model for each enantiomer | – | Methods, page 1967: “A three-compartment structural model was selected for both enantiomers.” |
 | No interconversion between R- and S-enantiomers | – | Methods, page 1968: “No interconversion between ketorolac enantiomers was assumed because conversion from S to R has been reported to be minimal (6.5%), and conversion from R to S is non-existent.” |
 | Half of racemic dose into each enantiomer compartment | – | Methods, page 1968: “The data were modelled based on administering half of the racemic ketorolac dose as the R-enantiomer and half as the S-enantiomer.” |
-| `lcl_r = log(1.12)` (L/h) | 1.12 | Table 2 final, CL_R (RSE 5.95%) |
-| `lvc_r = log(3.4)` (L) | 3.4 | Table 2 final, V1_R (RSE 5.99%) |
-| `lq_r = log(3.86)` (L/h) | 3.86 | Table 2 final, Q1_R (RSE 9.94%) |
-| `lvp_r = log(2.29)` (L) | 2.29 | Table 2 final, V2_R (RSE 9.09%) |
-| `lq2_r = log(0.58)` (L/h) | 0.58 | Table 2 final, Q2_R (RSE 11.8%) |
-| `lvp2_r = log(4.88)` (L) | 4.88 | Table 2 final, V3_R (RSE 20.1%) |
-| `lcl_s = log(3.96)` (L/h) | 3.96 | Table 2 final, CL_S (RSE 5.7%) |
-| `lvc_s = log(3.74)` (L) | 3.74 | Table 2 final, V1_S (RSE 6.95%) |
-| `lq_s = log(20)` (L/h) | 20 | Table 2 final, Q1_S (RSE 10.7%) |
-| `lvp_s = log(3.86)` (L) | 3.86 | Table 2 final, V2_S (RSE 8.62%) |
-| `lq2_s = log(1.3)` (L/h) | 1.3 | Table 2 final, Q2_S (RSE 20.5%) |
-| `lvp2_s = log(3.3)` (L) | 3.3 | Table 2 final, V3_S (RSE 9.71%) |
+| `lcl_r_enant = log(1.12)` (L/h) | 1.12 | Table 2 final, CL_R (RSE 5.95%) |
+| `lvc_r_enant = log(3.4)` (L) | 3.4 | Table 2 final, V1_R (RSE 5.99%) |
+| `lq_r_enant = log(3.86)` (L/h) | 3.86 | Table 2 final, Q1_R (RSE 9.94%) |
+| `lvp_r_enant = log(2.29)` (L) | 2.29 | Table 2 final, V2_R (RSE 9.09%) |
+| `lq2_r_enant = log(0.58)` (L/h) | 0.58 | Table 2 final, Q2_R (RSE 11.8%) |
+| `lvp2_r_enant = log(4.88)` (L) | 4.88 | Table 2 final, V3_R (RSE 20.1%) |
+| `lcl_s_enant = log(3.96)` (L/h) | 3.96 | Table 2 final, CL_S (RSE 5.7%) |
+| `lvc_s_enant = log(3.74)` (L) | 3.74 | Table 2 final, V1_S (RSE 6.95%) |
+| `lq_s_enant = log(20)` (L/h) | 20 | Table 2 final, Q1_S (RSE 10.7%) |
+| `lvp_s_enant = log(3.86)` (L) | 3.86 | Table 2 final, V2_S (RSE 8.62%) |
+| `lq2_s_enant = log(1.3)` (L/h) | 1.3 | Table 2 final, Q2_S (RSE 20.5%) |
+| `lvp2_s_enant = log(3.3)` (L) | 3.3 | Table 2 final, V3_S (RSE 9.71%) |
 | `e_wt_cl = 0.536` (allometric) | 0.536 | Table 2 final, WT_CL (RSE 36.5%) |
 | `e_wt_vc_vp = 0.807` (allometric, applied to V1, V2, V3) | 0.807 | Table 2 final, WT_V (RSE 20.1%) |
 | `e_preg_cl = 0.554` (proportional) | 0.554 | Table 2 final, WAD_CL (RSE 20.4%) |
@@ -112,13 +112,13 @@ column).
 | `e_preg_vc_vp = 0.273` (proportional, applied to V1, V2, V3) | 0.273 | Table 2 final, WAD_V (RSE 35.6%) |
 | Reference body weight 71 kg | 71 | Table 2 footnotes a-d: “weight/71” |
 | Allometric and categorical covariate equations | – | Equations 5 and 6, page 1969 (power form for continuous, linear-in-indicator for categorical) |
-| `etalcl_r ~ 0.289^2 = 0.0835` | omega 0.289 | Table 2 final, omega(CL_R) |
-| `etalvc_r ~ 0.227^2 = 0.0515` (shared across V1_R, V2_R, V3_R) | omega 0.227 | Table 2 final, omega(V_R); Methods page 1968: “jointly for central and peripheral volumes of distribution (one random effect affecting multiple parameters)” |
-| `etalcl_s ~ 0.232^2 = 0.0538` | omega 0.232 | Table 2 final, omega(CL_S) |
-| `etalvc_s ~ 0.238^2 = 0.0566` (shared across V1_S, V2_S, V3_S) | omega 0.238 | Table 2 final, omega(V_S) |
+| `etalcl_r_enant ~ 0.289^2 = 0.0835` | omega 0.289 | Table 2 final, omega(CL_R) |
+| `etalvc_r_enant ~ 0.227^2 = 0.0515` (shared across V1_R, V2_R, V3_R) | omega 0.227 | Table 2 final, omega(V_R); Methods page 1968: “jointly for central and peripheral volumes of distribution (one random effect affecting multiple parameters)” |
+| `etalcl_s_enant ~ 0.232^2 = 0.0538` | omega 0.232 | Table 2 final, omega(CL_S) |
+| `etalvc_s_enant ~ 0.238^2 = 0.0566` (shared across V1_S, V2_S, V3_S) | omega 0.238 | Table 2 final, omega(V_S) |
 | Combined proportional + additive residual error | – | Methods equations 2-4, page 1968; theta_scale = 5.1 -\> f_prop = exp(5.1)/(1+exp(5.1)) ~= 0.9939 |
-| `propSd_r = 0.0791`, `addSd_r = 0.00618` | Leuven sigma_R = 0.0794 | Table 2 final, sigma(Leuven, R); split via f_prop |
-| `propSd_s = 0.1097`, `addSd_s = 0.00857` | Leuven sigma_S = 0.110 | Table 2 final, sigma(Leuven, S); split via f_prop |
+| `propSd_r_enant = 0.0791`, `addSd_r_enant = 0.00618` | Leuven sigma_R = 0.0794 | Table 2 final, sigma(Leuven, R); split via f_prop |
+| `propSd_s_enant = 0.1097`, `addSd_s_enant = 0.00857` | Leuven sigma_S = 0.110 | Table 2 final, sigma(Leuven, S); split via f_prop |
 
 ## Virtual cohort
 
@@ -128,7 +128,7 @@ per-subject indicators (PREG, SEXF, WT). Each cohort holds 30 simulated
 subjects with weight drawn uniformly across the cohort’s Table 1 range.
 Each subject receives a single 30 mg racemic IV bolus, modelled as two
 simultaneous IV-bolus dose records of 15 mg each (half the racemic dose)
-targeting `central_r` and `central_s` respectively.
+targeting `central_r_enant` and `central_s_enant` respectively.
 
 ``` r
 
@@ -144,23 +144,23 @@ build_cohort <- function(label, n, wt_low, wt_high, preg, sexf,
   wt  <- runif(n, wt_low, wt_high)
 
   # Two simultaneous IV bolus dose records per administration: half the
-  # racemic dose targeted at central_r and half at central_s. Use the
+  # racemic dose targeted at central_r_enant and half at central_s_enant. Use the
   # compartment names rather than numeric indices so the data is robust
   # to ODE-declaration reordering.
-  dose_rows_r <- data.frame(
+  dose_rows_r_enant <- data.frame(
     id        = ids,
     time      = 0,
     evid      = 1L,
     amt       = dose_total_mg / 2,
-    cmt       = "central_r",
+    cmt       = "central_r_enant",
     treatment = label,
     PREG      = preg,
     SEXF      = sexf,
     WT        = wt,
     stringsAsFactors = FALSE
   )
-  dose_rows_s <- dose_rows_r
-  dose_rows_s$cmt <- "central_s"
+  dose_rows_s_enant <- dose_rows_r_enant
+  dose_rows_s_enant$cmt <- "central_s_enant"
 
   obs_rows <- expand.grid(
     id   = ids,
@@ -169,13 +169,13 @@ build_cohort <- function(label, n, wt_low, wt_high, preg, sexf,
   )
   obs_rows$evid      <- 0L
   obs_rows$amt       <- 0
-  obs_rows$cmt       <- "Cc_r"   # rxSolve still returns both Cc_r and Cc_s columns
+  obs_rows$cmt       <- "Cc_r_enant"   # rxSolve still returns both Cc_r_enant and Cc_s_enant columns
   obs_rows$treatment <- label
   obs_rows$PREG      <- rep(preg, each = length(obs_times))
   obs_rows$SEXF      <- rep(sexf, each = length(obs_times))
   obs_rows$WT        <- rep(wt,   each = length(obs_times))
 
-  out <- rbind(dose_rows_r, dose_rows_s, obs_rows)
+  out <- rbind(dose_rows_r_enant, dose_rows_s_enant, obs_rows)
   out[order(out$id, out$time, -out$evid), ]
 }
 
@@ -213,7 +213,7 @@ sim_typical <- rxode2::rxSolve(
   keep   = c("treatment", "PREG", "SEXF", "WT")
 ) |>
   as.data.frame()
-#> ℹ omega/sigma items treated as zero: 'etalcl_r', 'etalvc_r', 'etalcl_s', 'etalvc_s'
+#> ℹ omega/sigma items treated as zero: 'etalcl_r_enant', 'etalvc_r_enant', 'etalcl_s_enant', 'etalvc_s_enant'
 #> Warning: multi-subject simulation without without 'omega'
 ```
 
@@ -241,12 +241,12 @@ unobscured by between-subject variability.
 ``` r
 
 sim_typical |>
-  tidyr::pivot_longer(c(Cc_r, Cc_s), names_to = "enantiomer",
+  tidyr::pivot_longer(c(Cc_r_enant, Cc_s_enant), names_to = "enantiomer",
                       values_to = "conc_mgL") |>
   dplyr::mutate(
     enantiomer = dplyr::recode(enantiomer,
-                               Cc_r = "R-ketorolac",
-                               Cc_s = "S-ketorolac")
+                               Cc_r_enant = "R-ketorolac",
+                               Cc_s_enant = "S-ketorolac")
   ) |>
   dplyr::filter(time > 0, conc_mgL > 0) |>
   dplyr::group_by(time, treatment, enantiomer) |>
@@ -278,12 +278,12 @@ sim_typical |>
 ``` r
 
 sim_vpc <- sim |>
-  tidyr::pivot_longer(c(Cc_r, Cc_s), names_to = "enantiomer",
+  tidyr::pivot_longer(c(Cc_r_enant, Cc_s_enant), names_to = "enantiomer",
                       values_to = "conc_mgL") |>
   dplyr::mutate(
     enantiomer = dplyr::recode(enantiomer,
-                               Cc_r = "R-ketorolac",
-                               Cc_s = "S-ketorolac")
+                               Cc_r_enant = "R-ketorolac",
+                               Cc_s_enant = "S-ketorolac")
   ) |>
   dplyr::filter(time > 0, conc_mgL > 0) |>
   dplyr::group_by(time, treatment, enantiomer) |>
@@ -331,30 +331,30 @@ mdose_dose_times <- c(0, seq(6, 96, by = 6))   # 10 mg load, 20 mg q6h to 96 h
 mdose_obs_times  <- seq(0, 102, by = 0.25)
 
 build_mdose_subject <- function(label, preg, sexf, wt, id) {
-  load_r <- data.frame(id = id, time = 0, evid = 1L, amt = 5,
-                       cmt = "central_r", treatment = label,
+  load_r_enant <- data.frame(id = id, time = 0, evid = 1L, amt = 5,
+                       cmt = "central_r_enant", treatment = label,
                        PREG = preg, SEXF = sexf, WT = wt,
                        stringsAsFactors = FALSE)
-  load_s <- load_r;  load_s$cmt <- "central_s"
-  maint_r <- data.frame(id = id, time = mdose_dose_times[-1], evid = 1L,
-                        amt = 10, cmt = "central_r", treatment = label,
+  load_s_enant <- load_r_enant;  load_s_enant$cmt <- "central_s_enant"
+  maint_r_enant <- data.frame(id = id, time = mdose_dose_times[-1], evid = 1L,
+                        amt = 10, cmt = "central_r_enant", treatment = label,
                         PREG = preg, SEXF = sexf, WT = wt,
                         stringsAsFactors = FALSE)
-  maint_s <- maint_r;  maint_s$cmt <- "central_s"
+  maint_s_enant <- maint_r_enant;  maint_s_enant$cmt <- "central_s_enant"
 
   obs <- data.frame(
     id   = id,
     time = mdose_obs_times,
     evid = 0L,
     amt  = 0,
-    cmt  = "Cc_r",
+    cmt  = "Cc_r_enant",
     treatment = label,
     PREG = preg,
     SEXF = sexf,
     WT   = wt,
     stringsAsFactors = FALSE
   )
-  out <- rbind(load_r, load_s, maint_r, maint_s, obs)
+  out <- rbind(load_r_enant, load_s_enant, maint_r_enant, maint_s_enant, obs)
   out[order(out$id, out$time, -out$evid), ]
 }
 
@@ -371,19 +371,19 @@ mdose_sim <- rxode2::rxSolve(
   keep   = c("treatment", "PREG", "SEXF", "WT")
 ) |>
   as.data.frame()
-#> ℹ omega/sigma items treated as zero: 'etalcl_r', 'etalvc_r', 'etalcl_s', 'etalvc_s'
+#> ℹ omega/sigma items treated as zero: 'etalcl_r_enant', 'etalvc_r_enant', 'etalcl_s_enant', 'etalvc_s_enant'
 #> Warning: multi-subject simulation without without 'omega'
 ```
 
 ``` r
 
 mdose_sim |>
-  tidyr::pivot_longer(c(Cc_r, Cc_s), names_to = "enantiomer",
+  tidyr::pivot_longer(c(Cc_r_enant, Cc_s_enant), names_to = "enantiomer",
                       values_to = "conc_mgL") |>
   dplyr::mutate(
     enantiomer = dplyr::recode(enantiomer,
-                               Cc_r = "R-ketorolac",
-                               Cc_s = "S-ketorolac")
+                               Cc_r_enant = "R-ketorolac",
+                               Cc_s_enant = "S-ketorolac")
   ) |>
   dplyr::filter(time > 0, conc_mgL > 0) |>
   ggplot(aes(time, conc_mgL, colour = treatment)) +
@@ -409,25 +409,25 @@ mdose_sim |>
 
 Single-dose, 24-hour NCA per the recipe in
 `references/pknca-recipes.md`. NCA is run separately for R-ketorolac
-(`Cc_r`) and S-ketorolac (`Cc_s`); the cohort label (“Women at
-delivery”, “Postpartum”, “Nonpregnant female”, “Male”) is the treatment
-grouping variable. The PKNCAdose object carries the half-of-racemic dose
-(15 mg) targeted at the relevant enantiomer compartment, so AUC / dose
-has units of mg\*h/L per 15 mg of enantiomer.
+(`Cc_r_enant`) and S-ketorolac (`Cc_s_enant`); the cohort label (“Women
+at delivery”, “Postpartum”, “Nonpregnant female”, “Male”) is the
+treatment grouping variable. The PKNCAdose object carries the
+half-of-racemic dose (15 mg) targeted at the relevant enantiomer
+compartment, so AUC / dose has units of mg\*h/L per 15 mg of enantiomer.
 
 ``` r
 
-sim_nca_r <- sim |>
-  dplyr::filter(!is.na(Cc_r)) |>
-  dplyr::select(id, time, Cc_r, treatment)
+sim_nca_r_enant <- sim |>
+  dplyr::filter(!is.na(Cc_r_enant)) |>
+  dplyr::select(id, time, Cc_r_enant, treatment)
 
-dose_df_r <- events |>
-  dplyr::filter(evid == 1, cmt == "central_r") |>
+dose_df_r_enant <- events |>
+  dplyr::filter(evid == 1, cmt == "central_r_enant") |>
   dplyr::select(id, time, amt, treatment)
 
-conc_obj_r <- PKNCA::PKNCAconc(sim_nca_r, Cc_r ~ time | treatment + id,
+conc_obj_r_enant <- PKNCA::PKNCAconc(sim_nca_r_enant, Cc_r_enant ~ time | treatment + id,
                                concu = "mg/L", timeu = "h")
-dose_obj_r <- PKNCA::PKNCAdose(dose_df_r, amt ~ time | treatment + id,
+dose_obj_r_enant <- PKNCA::PKNCAdose(dose_df_r_enant, amt ~ time | treatment + id,
                                doseu = "mg")
 
 intervals <- data.frame(
@@ -440,32 +440,32 @@ intervals <- data.frame(
   half.life   = TRUE
 )
 
-nca_r <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj_r, dose_obj_r,
+nca_r_enant <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj_r_enant, dose_obj_r_enant,
                                         intervals = intervals))
 ```
 
 ``` r
 
-sim_nca_s <- sim |>
-  dplyr::filter(!is.na(Cc_s)) |>
-  dplyr::select(id, time, Cc_s, treatment)
+sim_nca_s_enant <- sim |>
+  dplyr::filter(!is.na(Cc_s_enant)) |>
+  dplyr::select(id, time, Cc_s_enant, treatment)
 
-dose_df_s <- events |>
-  dplyr::filter(evid == 1, cmt == "central_s") |>
+dose_df_s_enant <- events |>
+  dplyr::filter(evid == 1, cmt == "central_s_enant") |>
   dplyr::select(id, time, amt, treatment)
 
-conc_obj_s <- PKNCA::PKNCAconc(sim_nca_s, Cc_s ~ time | treatment + id,
+conc_obj_s_enant <- PKNCA::PKNCAconc(sim_nca_s_enant, Cc_s_enant ~ time | treatment + id,
                                concu = "mg/L", timeu = "h")
-dose_obj_s <- PKNCA::PKNCAdose(dose_df_s, amt ~ time | treatment + id,
+dose_obj_s_enant <- PKNCA::PKNCAdose(dose_df_s_enant, amt ~ time | treatment + id,
                                doseu = "mg")
 
-nca_s <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj_s, dose_obj_s,
+nca_s_enant <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj_s_enant, dose_obj_s_enant,
                                         intervals = intervals))
 ```
 
 ``` r
 
-nca_r_df <- as.data.frame(nca_r$result)
+nca_r_df <- as.data.frame(nca_r_enant$result)
 r_summary <- nca_r_df |>
   dplyr::filter(PPTESTCD %in% c("cmax", "tmax", "auclast",
                                 "aucinf.obs", "half.life")) |>
@@ -513,7 +513,7 @@ racemic), by cohort (median \[5%-95%\]). {.table}
 
 ``` r
 
-nca_s_df <- as.data.frame(nca_s$result)
+nca_s_df <- as.data.frame(nca_s_enant$result)
 s_summary <- nca_s_df |>
   dplyr::filter(PPTESTCD %in% c("cmax", "tmax", "auclast",
                                 "aucinf.obs", "half.life")) |>
@@ -574,23 +574,23 @@ ref_label <- "Nonpregnant female"
 aucinf_r_by_cohort <- nca_r_df |>
   dplyr::filter(PPTESTCD == "aucinf.obs") |>
   dplyr::group_by(treatment) |>
-  dplyr::summarise(median_auc_r = median(PPORRES, na.rm = TRUE),
+  dplyr::summarise(median_auc_r_enant = median(PPORRES, na.rm = TRUE),
                    .groups = "drop")
 
 aucinf_s_by_cohort <- nca_s_df |>
   dplyr::filter(PPTESTCD == "aucinf.obs") |>
   dplyr::group_by(treatment) |>
-  dplyr::summarise(median_auc_s = median(PPORRES, na.rm = TRUE),
+  dplyr::summarise(median_auc_s_enant = median(PPORRES, na.rm = TRUE),
                    .groups = "drop")
 
 ratios <- aucinf_r_by_cohort |>
   dplyr::left_join(aucinf_s_by_cohort, by = "treatment") |>
   dplyr::mutate(
-    ratio_r_vs_ref = median_auc_r /
-      median_auc_r[treatment == ref_label],
-    ratio_s_vs_ref = median_auc_s /
-      median_auc_s[treatment == ref_label],
-    auc_s_over_r   = median_auc_s / median_auc_r
+    ratio_r_vs_ref = median_auc_r_enant /
+      median_auc_r_enant[treatment == ref_label],
+    ratio_s_vs_ref = median_auc_s_enant /
+      median_auc_s_enant[treatment == ref_label],
+    auc_s_over_r_enant   = median_auc_s_enant / median_auc_r_enant
   )
 
 knitr::kable(
@@ -607,7 +607,7 @@ knitr::kable(
 )
 ```
 
-| treatment | median_auc_r | median_auc_s | ratio_r_vs_ref | ratio_s_vs_ref | auc_s_over_r |
+| treatment | median_auc_r_enant | median_auc_s_enant | ratio_r_vs_ref | ratio_s_vs_ref | auc_s_over_r_enant |
 |:---|---:|---:|---:|---:|---:|
 | Male | 7.880 | 2.728 | 0.484 | 0.685 | 0.346 |
 | Nonpregnant female | 16.286 | 3.983 | 1.000 | 1.000 | 0.245 |
@@ -663,11 +663,11 @@ on CL are shared between enantiomers.
   clearances, and jointly for central and peripheral volumes of
   distribution (one random effect affecting multiple parameters).
   Separate random effects were estimated for each enantiomer.” We encode
-  this as `etalvc_r` and `etalvc_s`, each added once to all three
-  volumes (vc, vp, vp2) of the corresponding enantiomer. The shared-eta
-  naming uses the canonical “central volume” eta name (`etalvc_*`) per
-  `references/naming-conventions.md`; the application to vp / vp2 is
-  done in `model()`.
+  this as `etalvc_r_enant` and `etalvc_s_enant`, each added once to all
+  three volumes (vc, vp, vp2) of the corresponding enantiomer. The
+  shared-eta naming uses the canonical “central volume” eta name
+  (`etalvc_*`) per `references/naming-conventions.md`; the application
+  to vp / vp2 is done in `model()`.
 
 - **WAD covariate renamed to canonical PREG.** The source NONMEM column
   is `WAD` (women at delivery, 1 = at delivery). Per
@@ -698,12 +698,13 @@ on CL are shared between enantiomers.
 - **No depot compartment; user splits the racemic dose 50/50.** The
   paper treats half the racemic dose as R and half as S directly in the
   dataset (Methods, page 1968), and the package model file exposes two
-  parallel central compartments (`central_r`, `central_s`) without a
-  shared depot. Users of this model must supply two simultaneous
-  IV-bolus dose records per administration – one with `cmt = central_r`
-  and amt = `0.5 * total racemic mass`, and one with `cmt = central_s`
-  at the same amount and time – as demonstrated in the `build_cohort()`
-  helper in the Virtual cohort section.
+  parallel central compartments (`central_r_enant`, `central_s_enant`)
+  without a shared depot. Users of this model must supply two
+  simultaneous IV-bolus dose records per administration – one with
+  `cmt = central_r_enant` and amt = `0.5 * total racemic mass`, and one
+  with `cmt = central_s_enant` at the same amount and time – as
+  demonstrated in the `build_cohort()` helper in the Virtual cohort
+  section.
 
 - **No race / ethnicity in the population metadata.** Valitalo 2017
   Table 1 does not report race or ethnicity composition, so the

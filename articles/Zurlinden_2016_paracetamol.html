@@ -1539,9 +1539,9 @@ loss.</p>
 <span>  <span class="fu">transmute</span><span class="op">(</span></span>
 <span>    time_h         <span class="op">=</span> <span class="va">time</span>,</span>
 <span>    APAP_urine_pct <span class="op">=</span> <span class="fl">100</span> <span class="op">*</span> <span class="va">a_urine_apap</span> <span class="op">/</span> <span class="va">true_dose</span>,</span>
-<span>    AG_urine_pct   <span class="op">=</span> <span class="fl">100</span> <span class="op">*</span> <span class="va">a_urine_ag</span>   <span class="op">/</span> <span class="va">true_dose</span>,</span>
-<span>    AS_urine_pct   <span class="op">=</span> <span class="fl">100</span> <span class="op">*</span> <span class="va">a_urine_as</span>   <span class="op">/</span> <span class="va">true_dose</span>,</span>
-<span>    cumulative_pct <span class="op">=</span> <span class="fl">100</span> <span class="op">*</span> <span class="op">(</span><span class="va">a_urine_apap</span> <span class="op">+</span> <span class="va">a_urine_ag</span> <span class="op">+</span> <span class="va">a_urine_as</span><span class="op">)</span> <span class="op">/</span> <span class="va">true_dose</span></span>
+<span>    AG_urine_pct   <span class="op">=</span> <span class="fl">100</span> <span class="op">*</span> <span class="va">a_urine_apapg</span>   <span class="op">/</span> <span class="va">true_dose</span>,</span>
+<span>    AS_urine_pct   <span class="op">=</span> <span class="fl">100</span> <span class="op">*</span> <span class="va">a_urine_apaps</span>   <span class="op">/</span> <span class="va">true_dose</span>,</span>
+<span>    cumulative_pct <span class="op">=</span> <span class="fl">100</span> <span class="op">*</span> <span class="op">(</span><span class="va">a_urine_apap</span> <span class="op">+</span> <span class="va">a_urine_apapg</span> <span class="op">+</span> <span class="va">a_urine_apaps</span><span class="op">)</span> <span class="op">/</span> <span class="va">true_dose</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">mass_check_tbl</span>, digits <span class="op">=</span> <span class="fl">2</span>,</span>
 <span>             caption <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span></span>
@@ -1700,10 +1700,10 @@ states (<code>a_fat_apap</code>, <code>a_kidney_apap</code>,
 <code>a_muscle_apap</code>, <code>a_rapidly_perfused_apap</code>,
 <code>a_slowly_perfused_apap</code>, <code>a_liver_apap</code>,
 <code>a_arterial_apap</code>, <code>a_venous_apap</code>,
-<code>a_urine_apap</code>; same for <code>_ag</code> and
-<code>_as</code>; plus <code>a_hepatic_ag</code>,
-<code>a_hepatic_as</code>, <code>a_paps</code>, <code>a_ga</code>) use
-snake-case PBPK-organ names rather than the canonical
+<code>a_urine_apap</code>; same for <code>_apapg</code> and
+<code>_apaps</code>; plus <code>a_hepatic_apapg</code>,
+<code>a_hepatic_apaps</code>, <code>a_paps</code>, <code>a_ga</code>)
+use snake-case PBPK-organ names rather than the canonical
 <code>central</code> / <code>peripheral1</code> / <code>liver</code> /
 metabolite-suffix scheme. The canonical scheme is designed for
 compartmental popPK / popPD models with a unique central compartment;

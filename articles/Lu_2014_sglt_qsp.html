@@ -982,16 +982,17 @@ sinks for both glucose and inhibitor.</p>
 <h2 id="population">Population<a class="anchor" aria-label="anchor" href="#population"></a>
 </h2>
 <p>Lu 2014 calibrated the model against mean urinary-glucose-excretion
-(UGE) data from DeFronzo et al. (2013, 12 healthy adults + 12 T2DM
+(UGE) data from DeFronzo et al. (2013, 12 healthy adults + 12 DIS_DIAB
 subjects, stepped hyperglycemic clamp before and after 10 mg/day
 dapagliflozin for 7 days) and evaluated it against Polidori et al.
-(2013, 28 T2DM, 100 mg/day canagliflozin for 8 days), Mogensen (1971, 9
-healthy + 10 diabetic, glucose infusion to over 650 mg/dL), and Wolf et
-al. (2009, 22 T2DM, stepped hyperglycemic clamp). The Lu 2014 main text
-does not reproduce per-study demographic tables, so the model’s
-<code>population</code> metadata records the pooled study counts but
-leaves age, weight, sex, and race / ethnicity as <code>NA</code>; the
-primary publications carry those details for readers who need them.</p>
+(2013, 28 DIS_DIAB, 100 mg/day canagliflozin for 8 days), Mogensen
+(1971, 9 healthy + 10 diabetic, glucose infusion to over 650 mg/dL), and
+Wolf et al. (2009, 22 DIS_DIAB, stepped hyperglycemic clamp). The Lu
+2014 main text does not reproduce per-study demographic tables, so the
+model’s <code>population</code> metadata records the pooled study counts
+but leaves age, weight, sex, and race / ethnicity as <code>NA</code>;
+the primary publications carry those details for readers who need
+them.</p>
 </div>
 <div class="section level2">
 <h2 id="source-trace">Source trace<a class="anchor" aria-label="anchor" href="#source-trace"></a>
@@ -1157,9 +1158,9 @@ inhibitor; replicate the qualitative shape of Lu 2014 Figure 5A (SGLT1
 saturates more steeply than SGLT2).</li>
 <li>
 <strong>SGLT2 inhibition (Figure 2).</strong> Reproduce the
-dapagliflozin inhibition of glucose reabsorption in a T2DM subject under
-the stepped hyperglycemic-clamp procedure (qualitative Figure 2 D shape
-with elevated UGE post-dose).</li>
+dapagliflozin inhibition of glucose reabsorption in a DIS_DIAB subject
+under the stepped hyperglycemic-clamp procedure (qualitative Figure 2 D
+shape with elevated UGE post-dose).</li>
 <li>
 <strong>Loss-of-function-mutation simulation (Figure 6A).</strong>
 Reduce <code>vmax2</code> to zero in steps and verify that the simulated
@@ -1190,7 +1191,7 @@ about 20% for SGLT1 per Lu 2014 Figure 5A at 100 mg/dL).</p>
 <code class="sourceCode R"><span><span class="va">ev_baseline</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/et.html" class="external-link">et</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.5</span>, by <span class="op">=</span> <span class="fl">0.005</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">ev_baseline</span><span class="op">$</span><span class="va">GLU</span>  <span class="op">&lt;-</span> <span class="fl">5.5</span></span>
 <span><span class="va">ev_baseline</span><span class="op">$</span><span class="va">CINH</span> <span class="op">&lt;-</span> <span class="fl">0</span></span>
-<span><span class="va">ev_baseline</span><span class="op">$</span><span class="va">T2DM</span> <span class="op">&lt;-</span> <span class="fl">0</span></span>
+<span><span class="va">ev_baseline</span><span class="op">$</span><span class="va">DIS_DIAB</span> <span class="op">&lt;-</span> <span class="fl">0</span></span>
 <span></span>
 <span><span class="va">sim_baseline</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod</span>, <span class="va">ev_baseline</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
@@ -1256,7 +1257,7 @@ final-time efficiency is reported.</p>
 <span>  <span class="va">ev</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/et.html" class="external-link">et</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.5</span>, by <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="va">ev</span><span class="op">$</span><span class="va">GLU</span>  <span class="op">&lt;-</span> <span class="fu">mgdl_to_mM</span><span class="op">(</span><span class="va">mgdl</span><span class="op">)</span></span>
 <span>  <span class="va">ev</span><span class="op">$</span><span class="va">CINH</span> <span class="op">&lt;-</span> <span class="va">cinh</span></span>
-<span>  <span class="va">ev</span><span class="op">$</span><span class="va">T2DM</span> <span class="op">&lt;-</span> <span class="va">t2dm</span></span>
+<span>  <span class="va">ev</span><span class="op">$</span><span class="va">DIS_DIAB</span> <span class="op">&lt;-</span> <span class="va">t2dm</span></span>
 <span>  <span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod</span>, <span class="va">ev</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">tail</a></span><span class="op">(</span><span class="va">sim</span>, <span class="fl">1</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
@@ -1390,14 +1391,14 @@ inhibitor.</caption>
 <h2 id="dapagliflozin-inhibition-under-the-stepped-hyperglycemic-clamp-figure-2">3. Dapagliflozin inhibition under the stepped hyperglycemic clamp
 (Figure 2)<a class="anchor" aria-label="anchor" href="#dapagliflozin-inhibition-under-the-stepped-hyperglycemic-clamp-figure-2"></a>
 </h2>
-<p>Simulate the DeFronzo et al. (2013) procedure in a T2DM subject:
+<p>Simulate the DeFronzo et al. (2013) procedure in a DIS_DIAB subject:
 plasma glucose escalates from 100 to 550 mg/dL in nine steps of 30
 minutes each, first at baseline (no inhibitor) and then with a constant
 10 mg/L plasma dapagliflozin concentration approximating the post-dose
 mean exposure on day 7 (DeFronzo et al. observed mean concentrations in
 the 50-150 ng/mL range; about 120 nmol/L at the MW of 409 g/mol). The
 model is solved in two scenarios and the step-wise UGE rates are
-tabulated – qualitatively replicating Lu 2014 Figure 2D (T2DM,
+tabulated – qualitatively replicating Lu 2014 Figure 2D (DIS_DIAB,
 after-treatment).</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">build_shc_events</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">cinh_const</span><span class="op">)</span> <span class="op">{</span></span>
@@ -1411,7 +1412,7 @@ after-treatment).</p>
 <span>  <span class="va">ev</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/et.html" class="external-link">et</a></span><span class="op">(</span><span class="va">times</span><span class="op">)</span></span>
 <span>  <span class="va">ev</span><span class="op">$</span><span class="va">GLU</span>  <span class="op">&lt;-</span> <span class="va">glu_mM</span></span>
 <span>  <span class="va">ev</span><span class="op">$</span><span class="va">CINH</span> <span class="op">&lt;-</span> <span class="va">cinh_const</span></span>
-<span>  <span class="va">ev</span><span class="op">$</span><span class="va">T2DM</span> <span class="op">&lt;-</span> <span class="fl">1</span></span>
+<span>  <span class="va">ev</span><span class="op">$</span><span class="va">DIS_DIAB</span> <span class="op">&lt;-</span> <span class="fl">1</span></span>
 <span>  <span class="va">ev</span></span>
 <span><span class="op">}</span></span>
 <span></span>
@@ -1427,7 +1428,7 @@ after-treatment).</p>
 <span>  <span class="fu">labs</span><span class="op">(</span></span>
 <span>    x <span class="op">=</span> <span class="st">"Time (h)"</span>,</span>
 <span>    y <span class="op">=</span> <span class="st">"UGE rate (mmol/h)"</span>,</span>
-<span>    title <span class="op">=</span> <span class="st">"Figure 2 -- UGE rate during stepped hyperglycemic clamp, T2DM"</span>,</span>
+<span>    title <span class="op">=</span> <span class="st">"Figure 2 -- UGE rate during stepped hyperglycemic clamp, DIS_DIAB"</span>,</span>
 <span>    caption <span class="op">=</span> <span class="st">"Replicates Lu 2014 Figure 2D shape."</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
 <p><img src="Lu_2014_sglt_qsp_files/figure-html/figure-2-1.png" class="r-plt" alt="" width="672"></p>
@@ -1446,10 +1447,10 @@ after-treatment).</p>
 <span>    values_from <span class="op">=</span> <span class="va">mean_uge_rate_mmolh</span></span>
 <span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
-<span>    caption <span class="op">=</span> <span class="st">"Mean UGE rate per SHC step; T2DM."</span></span>
+<span>    caption <span class="op">=</span> <span class="st">"Mean UGE rate per SHC step; DIS_DIAB."</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
 <table class="table">
-<caption>Mean UGE rate per SHC step; T2DM.</caption>
+<caption>Mean UGE rate per SHC step; DIS_DIAB.</caption>
 <thead><tr class="header">
 <th align="right">step</th>
 <th align="right">glucose_mgdl</th>
@@ -1537,7 +1538,7 @@ shape.</p>
 <span>  <span class="va">ev</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/et.html" class="external-link">et</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">24</span>, by <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="va">ev</span><span class="op">$</span><span class="va">GLU</span>  <span class="op">&lt;-</span> <span class="fu">mgdl_to_mM</span><span class="op">(</span><span class="fl">90</span><span class="op">)</span></span>
 <span>  <span class="va">ev</span><span class="op">$</span><span class="va">CINH</span> <span class="op">&lt;-</span> <span class="fl">0</span></span>
-<span>  <span class="va">ev</span><span class="op">$</span><span class="va">T2DM</span> <span class="op">&lt;-</span> <span class="fl">0</span></span>
+<span>  <span class="va">ev</span><span class="op">$</span><span class="va">DIS_DIAB</span> <span class="op">&lt;-</span> <span class="fl">0</span></span>
 <span>  <span class="co"># Override the model's vmax2 by editing the typical value.</span></span>
 <span>  <span class="co"># rxode2 exposes parameters via the params argument of rxSolve.</span></span>
 <span>  <span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span></span>
@@ -1674,12 +1675,12 @@ measured iohexol clearance changing over the visit), an upstream
 extension would add <code>GFR</code> as a regressor; not implemented
 here.</li>
 <li>
-<strong>T2DM vs healthy Vmax2.</strong> The typical-value Vmax2 in
-<code>ini()</code> is the calibrated healthy value (93.5 mmol/h); the
-T2DM = 1 cohort uses Vmax2_TYP * (1 + 0.176) = 110 mmol/h via the
+<strong>DIS_DIAB vs healthy Vmax2.</strong> The typical-value Vmax2
+in <code>ini()</code> is the calibrated healthy value (93.5 mmol/h); the
+DIS_DIAB = 1 cohort uses Vmax2_TYP * (1 + 0.176) = 110 mmol/h via the
 covariate effect <code>e_t2dm_vmax2</code>. All other SGLT-kinetics
-parameters (Vmax1, Km1, Km2, Ki1, Ki2) are held common between T2DM and
-healthy per Lu 2014 Methods.</li>
+parameters (Vmax1, Km1, Km2, Ki1, Ki2) are held common between DIS_DIAB
+and healthy per Lu 2014 Methods.</li>
 <li>
 <strong>Dapagliflozin defaults in <code>ini()</code>.</strong>
 <code>lki1</code>, <code>lki2</code>, and <code>lfup</code> default to

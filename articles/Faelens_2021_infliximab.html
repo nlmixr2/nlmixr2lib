@@ -971,8 +971,8 @@ simulated under 10 mg/kg dosing and MIPD are not biased by
 dose-dependent feedback through acute-phase proteins. The baseline
 covariates retained in the adapted model are:</p>
 <ul>
-<li>baseline Mayo endoscopic subscore (<code>MAYO_E</code>, levels 1 / 2
-/ 3),</li>
+<li>baseline Mayo endoscopic subscore (<code>SCORE_MAYO_E</code>, levels
+1 / 2 / 3),</li>
 <li>baseline corticosteroid use (<code>CONMED_STEROID</code>, 0/1),</li>
 <li>extensive colitis at baseline (<code>DISEXT_EP</code>, 0/1),</li>
 <li>fat-free mass (<code>FFM</code>, kg).</li>
@@ -1119,7 +1119,7 @@ lists each assumption.</p>
 <span>    WT          <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmin</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Lognormal.html" class="external-link">rlnorm</a></span><span class="op">(</span><span class="va">n</span>, <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fl">70</span><span class="op">)</span>, <span class="fl">0.20</span><span class="op">)</span>, <span class="fl">45</span><span class="op">)</span>, <span class="fl">130</span><span class="op">)</span>,</span>
 <span>    HT_M        <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmin</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n</span>, mean <span class="op">=</span> <span class="fl">1.72</span> <span class="op">-</span> <span class="fl">0.13</span> <span class="op">*</span> <span class="va">SEXF</span>, sd <span class="op">=</span> <span class="fl">0.08</span><span class="op">)</span>, <span class="fl">1.50</span><span class="op">)</span>, <span class="fl">1.95</span><span class="op">)</span>,</span>
 <span>    FFM         <span class="op">=</span> <span class="fu">janmahasatian_ffm</span><span class="op">(</span><span class="va">WT</span>, <span class="va">HT_M</span>, <span class="va">SEXF</span><span class="op">)</span>,</span>
-<span>    MAYO_E      <span class="op">=</span> <span class="va">mayo_level</span>,</span>
+<span>    SCORE_MAYO_E      <span class="op">=</span> <span class="va">mayo_level</span>,</span>
 <span>    CONMED_STEROID     <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html" class="external-link">rbinom</a></span><span class="op">(</span><span class="va">n</span>, <span class="fl">1</span>, <span class="fl">0.50</span><span class="op">)</span>,</span>
 <span>    DISEXT_EP   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html" class="external-link">rbinom</a></span><span class="op">(</span><span class="va">n</span>, <span class="fl">1</span>, <span class="fl">0.40</span><span class="op">)</span>,</span>
 <span>    treatment   <span class="op">=</span> <span class="va">treatment</span>,</span>
@@ -1144,7 +1144,7 @@ lists each assumption.</p>
 <span>    <span class="fu">mutate</span><span class="op">(</span>amt <span class="op">=</span> <span class="cn">NA_real_</span>, evid <span class="op">=</span> <span class="fl">0</span>, cmt <span class="op">=</span> <span class="st">"central"</span>, Cc <span class="op">=</span> <span class="cn">NA_real_</span><span class="op">)</span></span>
 <span>  <span class="fu">bind_rows</span><span class="op">(</span><span class="va">d_dose</span>, <span class="va">d_obs</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
 <span>    <span class="fu">arrange</span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="fu">desc</span><span class="op">(</span><span class="va">evid</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
-<span>    <span class="fu">select</span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="va">amt</span>, <span class="va">evid</span>, <span class="va">cmt</span>, <span class="va">Cc</span>, <span class="va">MAYO_E</span>, <span class="va">CONMED_STEROID</span>, <span class="va">DISEXT_EP</span>, <span class="va">FFM</span>,</span>
+<span>    <span class="fu">select</span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="va">amt</span>, <span class="va">evid</span>, <span class="va">cmt</span>, <span class="va">Cc</span>, <span class="va">SCORE_MAYO_E</span>, <span class="va">CONMED_STEROID</span>, <span class="va">DISEXT_EP</span>, <span class="va">FFM</span>,</span>
 <span>           <span class="va">treatment</span>, <span class="va">dose_per_kg</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
@@ -1171,7 +1171,7 @@ lists each assumption.</p>
 <span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span></span>
 <span>  <span class="va">mod</span>,</span>
 <span>  events <span class="op">=</span> <span class="va">events</span>,</span>
-<span>  keep <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"treatment"</span>, <span class="st">"MAYO_E"</span>, <span class="st">"dose_per_kg"</span><span class="op">)</span></span>
+<span>  keep <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"treatment"</span>, <span class="st">"SCORE_MAYO_E"</span>, <span class="st">"dose_per_kg"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; ℹ parameter labels from comments will be replaced by 'label()'</span></span></code></pre></div>
 </div>
@@ -1181,7 +1181,7 @@ lists each assumption.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">auc_d84</span> <span class="op">&lt;-</span> <span class="va">sim</span> <span class="op">%&gt;%</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">time</span> <span class="op">&lt;=</span> <span class="fl">84</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
-<span>  <span class="fu">group_by</span><span class="op">(</span><span class="va">id</span>, <span class="va">treatment</span>, <span class="va">MAYO_E</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>  <span class="fu">group_by</span><span class="op">(</span><span class="va">id</span>, <span class="va">treatment</span>, <span class="va">SCORE_MAYO_E</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
 <span>  <span class="fu">arrange</span><span class="op">(</span><span class="va">time</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
 <span>  <span class="fu">summarise</span><span class="op">(</span></span>
 <span>    AUCd84 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/diff.html" class="external-link">diff</a></span><span class="op">(</span><span class="va">time</span><span class="op">)</span> <span class="op">*</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">Cc</span>, <span class="op">-</span><span class="fl">1</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">tail</a></span><span class="op">(</span><span class="va">Cc</span>, <span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op">/</span> <span class="fl">2</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
@@ -1190,7 +1190,7 @@ lists each assumption.</p>
 <span></span>
 <span><span class="fu">ggplot</span><span class="op">(</span><span class="va">auc_d84</span>, <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">AUCd84</span>, fill <span class="op">=</span> <span class="va">treatment</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">geom_density</span><span class="op">(</span>alpha <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">facet_wrap</span><span class="op">(</span><span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Baseline Mayo "</span>, <span class="va">MAYO_E</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">facet_wrap</span><span class="op">(</span><span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Baseline Mayo "</span>, <span class="va">SCORE_MAYO_E</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">scale_x_log10</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">labs</span><span class="op">(</span></span>
 <span>    x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/expression.html" class="external-link">expression</a></span><span class="op">(</span><span class="va">AUC</span><span class="op">[</span><span class="va">d84</span><span class="op">]</span> <span class="op">~</span> <span class="st">"(mg"</span> <span class="op">%.%</span> <span class="st">"day/L, log scale)"</span><span class="op">)</span>,</span>
@@ -1236,12 +1236,12 @@ subscore.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim_nca</span> <span class="op">&lt;-</span> <span class="va">sim</span> <span class="op">%&gt;%</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span>, <span class="va">time</span> <span class="op">&lt;=</span> <span class="fl">84</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
-<span>  <span class="fu">mutate</span><span class="op">(</span>treatment_mayo <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">treatment</span>, <span class="st">", Mayo "</span>, <span class="va">MAYO_E</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>  <span class="fu">mutate</span><span class="op">(</span>treatment_mayo <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">treatment</span>, <span class="st">", Mayo "</span>, <span class="va">SCORE_MAYO_E</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
 <span>  <span class="fu">select</span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="va">Cc</span>, <span class="va">treatment_mayo</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">dose_df</span> <span class="op">&lt;-</span> <span class="va">events</span> <span class="op">%&gt;%</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">evid</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
-<span>  <span class="fu">mutate</span><span class="op">(</span>treatment_mayo <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">treatment</span>, <span class="st">", Mayo "</span>, <span class="va">MAYO_E</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>  <span class="fu">mutate</span><span class="op">(</span>treatment_mayo <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">treatment</span>, <span class="st">", Mayo "</span>, <span class="va">SCORE_MAYO_E</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
 <span>  <span class="fu">select</span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="va">amt</span>, <span class="va">treatment_mayo</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">conc_obj</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="https://humanpred.github.io/pknca/reference/PKNCAconc.html" class="external-link">PKNCAconc</a></span><span class="op">(</span></span>
@@ -1344,7 +1344,7 @@ expected when our covariate distributions differ materially from the
 source dataset.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">auc_simulated</span> <span class="op">&lt;-</span> <span class="va">auc_d84</span> <span class="op">%&gt;%</span></span>
-<span>  <span class="fu">group_by</span><span class="op">(</span><span class="va">treatment</span>, <span class="va">MAYO_E</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>  <span class="fu">group_by</span><span class="op">(</span><span class="va">treatment</span>, <span class="va">SCORE_MAYO_E</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
 <span>  <span class="fu">summarise</span><span class="op">(</span></span>
 <span>    median_sim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/median.html" class="external-link">median</a></span><span class="op">(</span><span class="va">AUCd84</span><span class="op">)</span>,</span>
 <span>    q05_sim    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">AUCd84</span>, <span class="fl">0.05</span><span class="op">)</span>,</span>
@@ -1353,7 +1353,7 @@ source dataset.</p>
 <span>  <span class="op">)</span></span>
 <span></span>
 <span><span class="va">published_table1</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tribble.html" class="external-link">tribble</a></span><span class="op">(</span></span>
-<span>  <span class="op">~</span><span class="va">treatment</span>, <span class="op">~</span><span class="va">MAYO_E</span>, <span class="op">~</span><span class="va">median_pub</span>, <span class="op">~</span><span class="va">q05_pub</span>, <span class="op">~</span><span class="va">q95_pub</span>,</span>
+<span>  <span class="op">~</span><span class="va">treatment</span>, <span class="op">~</span><span class="va">SCORE_MAYO_E</span>, <span class="op">~</span><span class="va">median_pub</span>, <span class="op">~</span><span class="va">q05_pub</span>, <span class="op">~</span><span class="va">q95_pub</span>,</span>
 <span>  <span class="st">"5 mg/kg"</span>,        <span class="fl">2L</span>,     <span class="fl">2455</span>,     <span class="fl">1215</span>,     <span class="fl">4805</span>,</span>
 <span>  <span class="st">"5 mg/kg"</span>,        <span class="fl">3L</span>,     <span class="fl">1979</span>,      <span class="fl">953</span>,     <span class="fl">3990</span>,</span>
 <span>  <span class="st">"10 mg/kg"</span>,       <span class="fl">2L</span>,     <span class="fl">4910</span>,     <span class="fl">2431</span>,     <span class="fl">9609</span>,</span>
@@ -1361,7 +1361,7 @@ source dataset.</p>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">comparison</span> <span class="op">&lt;-</span> <span class="va">published_table1</span> <span class="op">%&gt;%</span></span>
-<span>  <span class="fu">left_join</span><span class="op">(</span><span class="va">auc_simulated</span>, by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"treatment"</span>, <span class="st">"MAYO_E"</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>  <span class="fu">left_join</span><span class="op">(</span><span class="va">auc_simulated</span>, by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"treatment"</span>, <span class="st">"SCORE_MAYO_E"</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
 <span>  <span class="fu">mutate</span><span class="op">(</span></span>
 <span>    pct_diff_median <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fl">100</span> <span class="op">*</span> <span class="op">(</span><span class="va">median_sim</span> <span class="op">-</span> <span class="va">median_pub</span><span class="op">)</span> <span class="op">/</span> <span class="va">median_pub</span>, <span class="fl">1</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
@@ -1371,24 +1371,24 @@ source dataset.</p>
 <span>  digits  <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  caption <span class="op">=</span> <span class="st">"Simulated vs. published AUCd84 (mg*day/L), by dose and baseline Mayo subscore (Faelens 2021 Table 1, 'pub' = published median + 90% PI)."</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<table class="table">
+<table style="width:100%;" class="table">
 <caption>Simulated vs. published AUCd84 (mg*day/L), by dose and baseline
 Mayo subscore (Faelens 2021 Table 1, ‘pub’ = published median + 90%
 PI).</caption>
 <colgroup>
+<col width="10%">
+<col width="13%">
 <col width="11%">
 <col width="8%">
-<col width="12%">
-<col width="9%">
-<col width="9%">
-<col width="12%">
-<col width="9%">
-<col width="9%">
-<col width="18%">
+<col width="8%">
+<col width="11%">
+<col width="8%">
+<col width="8%">
+<col width="17%">
 </colgroup>
 <thead><tr class="header">
 <th align="left">treatment</th>
-<th align="right">MAYO_E</th>
+<th align="right">SCORE_MAYO_E</th>
 <th align="right">median_pub</th>
 <th align="right">q05_pub</th>
 <th align="right">q95_pub</th>
@@ -1480,8 +1480,8 @@ simulation paper does not state the prevalence in the virtual
 cohort.</li>
 <li>
 <strong>Baseline Mayo endoscopic subscore
-(<code>MAYO_E</code>):</strong> fixed per cohort (Mayo 2 or Mayo 3) per
-the Faelens 2021 stratified reporting convention. Mayo 1 patients
+(<code>SCORE_MAYO_E</code>):</strong> fixed per cohort (Mayo 2 or Mayo
+3) per the Faelens 2021 stratified reporting convention. Mayo 1 patients
 existed in the Dreesen 2019 dataset and the source paper’s KE parameter
 for them is in the model, but Faelens 2021 only reports Mayo 2 and Mayo
 3 simulation results.</li>

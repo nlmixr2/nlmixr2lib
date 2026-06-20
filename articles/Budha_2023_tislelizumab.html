@@ -1021,12 +1021,12 @@ approved dose is 200 mg IV every 3 weeks.</p>
 <tr class="even">
 <td>TUMTP=GC on CL</td>
 <td>Budha 2023 Eq. 5 / Table 3 (theta14)</td>
-<td>Exponential: exp(0.069 * TUMTP_GC)</td>
+<td>Exponential: exp(0.069 * TUMTP_GASTRIC)</td>
 </tr>
 <tr class="odd">
 <td>TUMTP=cHL on CL</td>
 <td>Budha 2023 Eq. 5 / Table 3 (theta15)</td>
-<td>Exponential: exp(-0.216 * TUMTP_CHL)</td>
+<td>Exponential: exp(-0.216 * TUMTP_HODGKIN_CLASSICAL)</td>
 </tr>
 <tr class="even">
 <td>WT on Vc</td>
@@ -1094,8 +1094,9 @@ approved dose is 200 mg IV every 3 weeks.</p>
 <tr class="odd">
 <td>
 <code>TUMTP</code> (categorical: cHL, GC, NSCLC, …)</td>
-<td>split into <code>TUMTP_CHL</code> and <code>TUMTP_GC</code>
-indicators; reference = all other tumor types</td>
+<td>split into <code>TUMTP_HODGKIN_CLASSICAL</code> and
+<code>TUMTP_GASTRIC</code> indicators; reference = all other tumor
+types</td>
 </tr>
 <tr class="even">
 <td><code>TUMSZ</code></td>
@@ -1147,14 +1148,14 @@ publish individual covariates or covariate correlations).</p>
 <span>  Other <span class="op">=</span> <span class="fl">0.108</span></span>
 <span><span class="op">)</span></span>
 <span><span class="va">TUMTP</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">tumtp_p</span><span class="op">)</span>, <span class="va">n_subj</span>, replace <span class="op">=</span> <span class="cn">TRUE</span>, prob <span class="op">=</span> <span class="va">tumtp_p</span><span class="op">)</span></span>
-<span><span class="va">TUMTP_CHL</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">TUMTP</span> <span class="op">==</span> <span class="st">"cHL"</span><span class="op">)</span></span>
-<span><span class="va">TUMTP_GC</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">TUMTP</span> <span class="op">==</span> <span class="st">"GC"</span><span class="op">)</span></span>
+<span><span class="va">TUMTP_HODGKIN_CLASSICAL</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">TUMTP</span> <span class="op">==</span> <span class="st">"cHL"</span><span class="op">)</span></span>
+<span><span class="va">TUMTP_GASTRIC</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">TUMTP</span> <span class="op">==</span> <span class="st">"GC"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">pop</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  ID        <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">n_subj</span><span class="op">)</span>,</span>
 <span>  <span class="va">WT</span>, <span class="va">AGE</span>, <span class="va">ALB</span>, <span class="va">TUMSZ</span>,</span>
 <span>  <span class="va">SEXF</span>, <span class="va">ADA_POS</span>,</span>
-<span>  <span class="va">TUMTP</span>, <span class="va">TUMTP_CHL</span>, <span class="va">TUMTP_GC</span>,</span>
+<span>  <span class="va">TUMTP</span>, <span class="va">TUMTP_HODGKIN_CLASSICAL</span>, <span class="va">TUMTP_GASTRIC</span>,</span>
 <span>  <span class="co"># Per-subject grouping label carried through to rxSolve via `keep`</span></span>
 <span>  treatment <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">ADA_POS</span> <span class="op">==</span> <span class="fl">1</span>, <span class="st">"ADA-positive"</span>, <span class="st">"ADA-negative"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>

@@ -26,12 +26,12 @@ patients dosed at 30 or 80 mg every 4 weeks for up to 52 weeks.
 Baseline demographics (Table 2): mean age 56 (SD 12, range 21-84) years,
 76% female, mean body weight 59 (SD 13, range 35-112) kg, mean baseline
 albumin 3.9 (SD 0.3) g/dL, mean baseline eGFR 88 (SD 20, range 35-174)
-mL/min/1.73 m^2 (Japanese formula), mean CDAI 32 (SD 11), mean hs-CRP
-1.6 (SD 2.0) mg/dL. 363 of 494 patients (74%) received concomitant
-methotrexate; 185 of 494 (37%) developed antidrug antibodies. The
-final-model equation centres body weight at 56.65 kg and eGFR at 85.95
-mL/min/1.73 m^2 — the population medians, which sit below the
-right-skewed means.
+mL/min/1.73 m^2 (Japanese formula), mean SCORE_CDAI 32 (SD 11), mean
+hs-CRP 1.6 (SD 2.0) mg/dL. 363 of 494 patients (74%) received
+concomitant methotrexate; 185 of 494 (37%) developed antidrug
+antibodies. The final-model equation centres body weight at 56.65 kg and
+eGFR at 85.95 mL/min/1.73 m^2 — the population medians, which sit below
+the right-skewed means.
 
 The same information is available programmatically via
 `readModelDb("Takeuchi_2023_ozoralizumab")$population`.

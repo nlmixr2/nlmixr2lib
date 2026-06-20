@@ -52,9 +52,9 @@ samples per subject; range 1 to 17). Baseline demographics from Wade
 55.5% female. Race composition: 1964 White (91.1%), 89 Japanese (4.1%),
 42 Other (1.9%), 29 Black (1.3%), 17 Indian (0.8%), 11 Asian (0.5%), 5
 Hispanic (0.2%). Baseline laboratory medians: albumin 41 g/L, CRP 8
-mg/L, lymphocyte count 1.5 x 10^9/L, CDAI 290. Immunosuppressant use at
-baseline in 889/2157 subjects (41.2%). Anti-CZP antibodies (ADA) were
-detected in 139 subjects (6.4%), contributing 270 ADA-positive
+mg/L, lymphocyte count 1.5 x 10^9/L, SCORE_CDAI 290. Immunosuppressant
+use at baseline in 889/2157 subjects (41.2%). Anti-CZP antibodies (ADA)
+were detected in 139 subjects (6.4%), contributing 270 ADA-positive
 concentrations (2.0% of the total observations). Dosing regimens pooled
 into the analysis included 100, 200, or 400 mg SC Q2W or Q4W.
 

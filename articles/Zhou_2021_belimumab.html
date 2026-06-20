@@ -1111,7 +1111,7 @@ TRANS4)</td>
 </tr>
 <tr class="even">
 <td>
-<code>e_neas_vc</code> (RACE_NEAS multiplier on V1)</td>
+<code>e_neas_vc</code> (RACE_ASIAN_NORTHEAST multiplier on V1)</td>
 <td>1.07</td>
 <td>Table 2: row “Race (RAC4)” — the printed θ index “θ12” is a
 labelling typo (it is the next-distinct theta, equivalent to θ13)</td>
@@ -1180,7 +1180,7 @@ the rest of studies”</td>
 </tr>
 <tr class="odd">
 <td>
-<code>RACE_NEAS</code> semantics</td>
+<code>RACE_ASIAN_NORTHEAST</code> semantics</td>
 <td>RAC4 = 1 for North East Asian (Chinese / Japanese / Korean)</td>
 <td>Table 2 footnote d: “RAC4 = 1 for North East Asian population and
 RAC4 = 0 for other populations”</td>
@@ -1238,7 +1238,7 @@ compared against Zhou 2021 Table 3.</p>
 <span>    IGG       <span class="op">=</span> <span class="va">IGG</span>,</span>
 <span>    ALB       <span class="op">=</span> <span class="va">ALB</span>,</span>
 <span>    SEXF      <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span> <span class="op">&lt;</span> <span class="va">sex_female_pct</span> <span class="op">/</span> <span class="fl">100</span><span class="op">)</span>,</span>
-<span>    RACE_NEAS <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span> <span class="op">&lt;</span> <span class="va">race_neas_pct</span> <span class="op">/</span> <span class="fl">100</span><span class="op">)</span>,</span>
+<span>    RACE_ASIAN_NORTHEAST <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span> <span class="op">&lt;</span> <span class="va">race_neas_pct</span> <span class="op">/</span> <span class="fl">100</span><span class="op">)</span>,</span>
 <span>    STUDY_LBSL <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span> <span class="op">&lt;</span> <span class="va">stdy_lbsl_pct</span> <span class="op">/</span> <span class="fl">100</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">}</span></span>
@@ -1547,11 +1547,11 @@ g/L, truncated to [20, 55] g/L. The paper reports only median and range,
 so the parametric form is a working assumption.</li>
 <li>
 <strong>Race and study-indicator distributions</strong> —
-<code>RACE_NEAS</code> and <code>STUDY_LBSL</code> sampled as Bernoulli
-at the published prevalences; <code>STUDY_LBSL</code> defaults to 0 %
-for the validation cohort because the 10 mg/kg Q4W exposure-comparison
-analysis (Zhou 2021 Table 3) is driven by the later, primary-assay
-studies.</li>
+<code>RACE_ASIAN_NORTHEAST</code> and <code>STUDY_LBSL</code> sampled as
+Bernoulli at the published prevalences; <code>STUDY_LBSL</code> defaults
+to 0 % for the validation cohort because the 10 mg/kg Q4W
+exposure-comparison analysis (Zhou 2021 Table 3) is driven by the later,
+primary-assay studies.</li>
 <li>
 <strong>No IIV on residual error</strong> — Zhou 2021 Table 2
 reports an inter-individual variance of 0.186 on the proportional

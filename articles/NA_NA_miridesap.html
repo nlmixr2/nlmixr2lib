@@ -963,11 +963,11 @@ effectively irreversible because internalization is fast relative to
 dissociation) followed by complex internalization. Final-model
 covariates from Sahota 2015 Eq. 1 and Eq. 2: creatinine clearance (CRCL)
 modifies CPHPC clearance below an 80 mL/min threshold, hepatic amyloid
-involvement (AMLIVER) multiplies SAP intercompartmental clearance Q4,
-whole-body amyloid load (AMLOAD: 0-3) multiplies SAP peripheral volume
-V4 in two categorical steps, and biological sex (SEXF) multiplies
-baseline plasma SAP. Distributed in the DDMORE Foundation Model
-Repository as DDMODEL00000262.</li>
+involvement (DIS_AMYLOID_LIVER) multiplies SAP intercompartmental
+clearance Q4, whole-body amyloid load (DIS_AMYLOID_LOAD: 0-3) multiplies
+SAP peripheral volume V4 in two categorical steps, and biological sex
+(SEXF) multiplies baseline plasma SAP. Distributed in the DDMORE
+Foundation Model Repository as DDMODEL00000262.</li>
 <li>DDMORE Foundation Model Repository entry: <a href="https://repository.ddmore.foundation/model/DDMODEL00000262" class="external-link">DDMODEL00000262</a>
 </li>
 <li>Linked publication: Sahota T, Berges A, Barton S, Cookson L, Zamuner
@@ -1007,14 +1007,15 @@ for the base model.</li>
 <li>
 <code>Output_real_CPHPC.lst</code> – listing for the FINAL MODEL fit
 to the real CPHPC + SAP data from the two studies (21 THETAs, adding the
-AMLIVER / AMLOAD / SEX covariate effects of Sahota 2015 Eq. 2 on top of
-the base structural model). This <code>.lst</code> provides the
-authoritative source for the final parameter estimates used in this
-implementation.</li>
+DIS_AMYLOID_LIVER / DIS_AMYLOID_LOAD / SEX covariate effects of Sahota
+2015 Eq. 2 on top of the base structural model). This <code>.lst</code>
+provides the authoritative source for the final parameter estimates used
+in this implementation.</li>
 <li>
 <code>Simulated_CPHPC_dataset.csv</code> – a 38-subject simulated
-dataset with CRCL, AMLOAD, AMLIVER, SEX, and STUD columns that exercises
-the covariate decomposition the final model uses.</li>
+dataset with CRCL, DIS_AMYLOID_LOAD, DIS_AMYLOID_LIVER, SEX, and STUD
+columns that exercises the covariate decomposition the final model
+uses.</li>
 <li>
 <code>DDMODEL00000262.rdf</code> – RDF metadata (a PK/PD model
 <code>pkpd_0000036</code> linking CPHPC exposure to plasma SAP; names
@@ -1037,7 +1038,7 @@ source-trace table below).</p>
 <ul>
 <li>
 <strong>CPH113776:</strong> healthy volunteers with normal renal
-function and no amyloid (AMLOAD = 0).</li>
+function and no amyloid (DIS_AMYLOID_LOAD = 0).</li>
 <li>
 <strong>CPH114527:</strong> patients with systemic amyloidosis
 stratified into four cohorts:
@@ -1385,22 +1386,22 @@ name: see <a href="#errata">Errata</a>.</p>
 </h2>
 <p>The bundle’s <code>Simulated_CPHPC_dataset.csv</code> carries 38
 simulated subjects across both studies with the full covariate panel
-(CRCL, AMLOAD, AMLIVER, SEX = 1 male / 2 female). To exercise the
-structural model and the three SAP covariate effects, we build a small
-representative virtual cohort that spans the cohort space from Sahota
-2015 Table 1.</p>
+(CRCL, DIS_AMYLOID_LOAD, DIS_AMYLOID_LIVER, SEX = 1 male / 2 female). To
+exercise the structural model and the three SAP covariate effects, we
+build a small representative virtual cohort that spans the cohort space
+from Sahota 2015 Table 1.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">20260515</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Six subjects spanning the cohort space:</span></span>
-<span><span class="co">#   1  Healthy volunteer male, CRCL 100, AMLOAD 0, AMLIVER 0 (CPH113776 reference)</span></span>
+<span><span class="co">#   1  Healthy volunteer male, CRCL 100, DIS_AMYLOID_LOAD 0, DIS_AMYLOID_LIVER 0 (CPH113776 reference)</span></span>
 <span><span class="co">#   2  Same but female (test SEX -&gt; SAP_BASE effect)</span></span>
-<span><span class="co">#   3  Cohort 1 (small amyloid, no liver)         CRCL 100, AMLOAD 1, AMLIVER 0</span></span>
-<span><span class="co">#   4  Cohort 2 (moderate amyloid, liver)         CRCL 100, AMLOAD 2, AMLIVER 1</span></span>
-<span><span class="co">#   5  Cohort 3 (small amyloid, renal impairment) CRCL 50,  AMLOAD 1, AMLIVER 0</span></span>
-<span><span class="co">#   6  Cohort 4 (large amyloid, severe renal)     CRCL 30,  AMLOAD 3, AMLIVER 1</span></span>
+<span><span class="co">#   3  Cohort 1 (small amyloid, no liver)         CRCL 100, DIS_AMYLOID_LOAD 1, DIS_AMYLOID_LIVER 0</span></span>
+<span><span class="co">#   4  Cohort 2 (moderate amyloid, liver)         CRCL 100, DIS_AMYLOID_LOAD 2, DIS_AMYLOID_LIVER 1</span></span>
+<span><span class="co">#   5  Cohort 3 (small amyloid, renal impairment) CRCL 50,  DIS_AMYLOID_LOAD 1, DIS_AMYLOID_LIVER 0</span></span>
+<span><span class="co">#   6  Cohort 4 (large amyloid, severe renal)     CRCL 30,  DIS_AMYLOID_LOAD 3, DIS_AMYLOID_LIVER 1</span></span>
 <span><span class="va">subjects</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tribble.html" class="external-link">tribble</a></span><span class="op">(</span></span>
-<span>  <span class="op">~</span><span class="va">id</span>, <span class="op">~</span><span class="va">CRCL</span>, <span class="op">~</span><span class="va">AMLOAD</span>, <span class="op">~</span><span class="va">AMLIVER</span>, <span class="op">~</span><span class="va">SEXF</span>, <span class="op">~</span><span class="va">scenario</span>,</span>
+<span>  <span class="op">~</span><span class="va">id</span>, <span class="op">~</span><span class="va">CRCL</span>, <span class="op">~</span><span class="va">DIS_AMYLOID_LOAD</span>, <span class="op">~</span><span class="va">DIS_AMYLOID_LIVER</span>, <span class="op">~</span><span class="va">SEXF</span>, <span class="op">~</span><span class="va">scenario</span>,</span>
 <span>  <span class="fl">1L</span>,  <span class="fl">100</span>,   <span class="fl">0L</span>,      <span class="fl">0L</span>,       <span class="fl">0L</span>,    <span class="st">"Healthy volunteer (M), CRCL 100"</span>,</span>
 <span>  <span class="fl">2L</span>,  <span class="fl">100</span>,   <span class="fl">0L</span>,      <span class="fl">0L</span>,       <span class="fl">1L</span>,    <span class="st">"Healthy volunteer (F), CRCL 100"</span>,</span>
 <span>  <span class="fl">3L</span>,  <span class="fl">100</span>,   <span class="fl">1L</span>,      <span class="fl">0L</span>,       <span class="fl">0L</span>,    <span class="st">"Cohort 1: small amyloid, CRCL 100"</span>,</span>
@@ -1424,8 +1425,8 @@ representative virtual cohort that spans the cohort space from Sahota
 <span>    <span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">ev</span><span class="op">)</span></span>
 <span>    <span class="va">df</span><span class="op">$</span><span class="va">id</span>      <span class="op">&lt;-</span> <span class="va">id_offset</span> <span class="op">+</span> <span class="va">s</span><span class="op">$</span><span class="va">id</span></span>
 <span>    <span class="va">df</span><span class="op">$</span><span class="va">CRCL</span>    <span class="op">&lt;-</span> <span class="va">s</span><span class="op">$</span><span class="va">CRCL</span></span>
-<span>    <span class="va">df</span><span class="op">$</span><span class="va">AMLOAD</span>  <span class="op">&lt;-</span> <span class="va">s</span><span class="op">$</span><span class="va">AMLOAD</span></span>
-<span>    <span class="va">df</span><span class="op">$</span><span class="va">AMLIVER</span> <span class="op">&lt;-</span> <span class="va">s</span><span class="op">$</span><span class="va">AMLIVER</span></span>
+<span>    <span class="va">df</span><span class="op">$</span><span class="va">DIS_AMYLOID_LOAD</span>  <span class="op">&lt;-</span> <span class="va">s</span><span class="op">$</span><span class="va">DIS_AMYLOID_LOAD</span></span>
+<span>    <span class="va">df</span><span class="op">$</span><span class="va">DIS_AMYLOID_LIVER</span> <span class="op">&lt;-</span> <span class="va">s</span><span class="op">$</span><span class="va">DIS_AMYLOID_LIVER</span></span>
 <span>    <span class="va">df</span><span class="op">$</span><span class="va">SEXF</span>    <span class="op">&lt;-</span> <span class="va">s</span><span class="op">$</span><span class="va">SEXF</span></span>
 <span>    <span class="va">df</span><span class="op">$</span><span class="va">scenario</span> <span class="op">&lt;-</span> <span class="va">s</span><span class="op">$</span><span class="va">scenario</span></span>
 <span>    <span class="va">out</span><span class="op">[[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span>   <span class="op">&lt;-</span> <span class="va">df</span></span>
@@ -1447,7 +1448,7 @@ representative virtual cohort that spans the cohort space from Sahota
 <span></span>
 <span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span></span>
 <span>  <span class="va">mod</span>, events <span class="op">=</span> <span class="va">events</span>,</span>
-<span>  keep <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CRCL"</span>, <span class="st">"AMLOAD"</span>, <span class="st">"AMLIVER"</span>, <span class="st">"SEXF"</span>, <span class="st">"scenario"</span><span class="op">)</span>,</span>
+<span>  keep <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CRCL"</span>, <span class="st">"DIS_AMYLOID_LOAD"</span>, <span class="st">"DIS_AMYLOID_LIVER"</span>, <span class="st">"SEXF"</span>, <span class="st">"scenario"</span><span class="op">)</span>,</span>
 <span>  returnType <span class="op">=</span> <span class="st">"data.frame"</span>, addDosing <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">time</span><span class="op">)</span><span class="op">)</span></span>
@@ -1464,15 +1465,15 @@ function, no liver involvement).</p>
 <span>  <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
 <span>    id       <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">n_vpc</span><span class="op">)</span>,</span>
 <span>    CRCL     <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">100</span>, <span class="va">n_vpc</span><span class="op">)</span>,</span>
-<span>    AMLOAD   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1L</span>, <span class="va">n_vpc</span><span class="op">)</span>,</span>
-<span>    AMLIVER  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0L</span>, <span class="va">n_vpc</span><span class="op">)</span>,</span>
+<span>    DIS_AMYLOID_LOAD   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1L</span>, <span class="va">n_vpc</span><span class="op">)</span>,</span>
+<span>    DIS_AMYLOID_LIVER  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0L</span>, <span class="va">n_vpc</span><span class="op">)</span>,</span>
 <span>    SEXF     <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0L</span>, <span class="va">n_vpc</span><span class="op">)</span>,</span>
-<span>    scenario <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"VPC: Cohort 1 (n=50 males, AMLOAD 1)"</span>, <span class="va">n_vpc</span><span class="op">)</span></span>
+<span>    scenario <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"VPC: Cohort 1 (n=50 males, DIS_AMYLOID_LOAD 1)"</span>, <span class="va">n_vpc</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span><span class="va">sim_vpc</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span></span>
 <span>  <span class="va">mod_iiv</span>, events <span class="op">=</span> <span class="va">vpc_events</span>, nSub <span class="op">=</span> <span class="fl">1L</span>,</span>
-<span>  keep <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CRCL"</span>, <span class="st">"AMLOAD"</span>, <span class="st">"AMLIVER"</span>, <span class="st">"SEXF"</span>, <span class="st">"scenario"</span><span class="op">)</span>,</span>
+<span>  keep <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CRCL"</span>, <span class="st">"DIS_AMYLOID_LOAD"</span>, <span class="st">"DIS_AMYLOID_LIVER"</span>, <span class="st">"SEXF"</span>, <span class="st">"scenario"</span><span class="op">)</span>,</span>
 <span>  returnType <span class="op">=</span> <span class="st">"data.frame"</span>, addDosing <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">time</span><span class="op">)</span><span class="op">)</span></span>
@@ -1496,10 +1497,11 @@ top-right panel.</li>
 <li>
 <strong>Plasma SAP:</strong> drops by ~1-2 orders of magnitude
 during sustained CPHPC dosing (the published clinical mechanism), with
-depth and recovery pace modulated by AMLOAD (larger amyloid load -&gt;
-larger V4 -&gt; slower recovery) and AMLIVER (liver-amyloid involvement
--&gt; higher Q4 -&gt; faster equilibration with peripheral amyloid pool)
-– replicates Sahota 2015 Fig. 5 middle-left and bottom-left panels.</li>
+depth and recovery pace modulated by DIS_AMYLOID_LOAD (larger amyloid
+load -&gt; larger V4 -&gt; slower recovery) and DIS_AMYLOID_LIVER
+(liver-amyloid involvement -&gt; higher Q4 -&gt; faster equilibration
+with peripheral amyloid pool) – replicates Sahota 2015 Fig. 5
+middle-left and bottom-left panels.</li>
 <li>
 <strong>Sex effect on baseline:</strong> females start at ~70% of
 male baseline
@@ -1558,7 +1560,7 @@ this ~30% reduction is consistent with Nelson et al. (1992).</li>
 <span>    x <span class="op">=</span> <span class="st">"Time (h)"</span>, y <span class="op">=</span> <span class="st">"Plasma SAP (mg/L)"</span>,</span>
 <span>    title <span class="op">=</span> <span class="st">"Stochastic VPC: plasma SAP under 24-h IV at 10 mg/h, Cohort 1"</span>,</span>
 <span>    caption <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span></span>
-<span>      <span class="st">"n = %d male subjects, CRCL = 100, AMLOAD = 1, AMLIVER = 0. Median + 90%% prediction interval."</span>,</span>
+<span>      <span class="st">"n = %d male subjects, CRCL = 100, DIS_AMYLOID_LOAD = 1, DIS_AMYLOID_LIVER = 0. Median + 90%% prediction interval."</span>,</span>
 <span>      <span class="va">n_vpc</span></span>
 <span>    <span class="op">)</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
@@ -1677,12 +1679,13 @@ exposure.</caption>
 <ul>
 <li>Male healthy-volunteer baseline SAP = 31.2 mg/L; female = 31.2 x
 0.70 = 21.8 mg/L (sex covariate working).</li>
-<li>Cohort 2 vs Cohort 1: same renal function, but Cohort 2 has AMLOAD =
-2 (V4 multiplier 1 + 6.39 = 7.39) and AMLIVER = 1 (Q4 multiplier 1 +
-4.01 = 5.01). The larger V4 stores more SAP- equivalent in the
-peripheral pool, slowing recovery.</li>
-<li>Cohort 6 (AMLOAD = 3): V4 multiplier = 1 + 6.39 + 26.4 = 33.79,
-matching Sahota 2015 Discussion (“33.78-fold”).</li>
+<li>Cohort 2 vs Cohort 1: same renal function, but Cohort 2 has
+DIS_AMYLOID_LOAD = 2 (V4 multiplier 1 + 6.39 = 7.39) and
+DIS_AMYLOID_LIVER = 1 (Q4 multiplier 1 + 4.01 = 5.01). The larger V4
+stores more SAP- equivalent in the peripheral pool, slowing
+recovery.</li>
+<li>Cohort 6 (DIS_AMYLOID_LOAD = 3): V4 multiplier = 1 + 6.39 + 26.4 =
+33.79, matching Sahota 2015 Discussion (“33.78-fold”).</li>
 <li>Cohort 5 (CRCL = 50): CPHPC peak exposure ~ 1.85x relative to CRCL =
 100 due to the piecewise-linear CL effect:
 <code>crcl_effect(50) = 1 + 0.0153 * (50 - 80) = 0.541</code>, so CL is
@@ -1732,27 +1735,27 @@ rounding in all 21 THETAs and 11 OMEGAs. Notable cell-level matches:</p>
 <td>31.10 mg/L</td>
 </tr>
 <tr class="even">
-<td>Vp_sap (AMLOAD &lt;= 1)</td>
+<td>Vp_sap (DIS_AMYLOID_LOAD &lt;= 1)</td>
 <td>exp(2.50) = 12.18 L</td>
 <td>12.15 L</td>
 </tr>
 <tr class="odd">
-<td>Q_sap (AMLIVER = 0)</td>
+<td>Q_sap (DIS_AMYLOID_LIVER = 0)</td>
 <td>exp(1.05) = 2.86 L/h</td>
 <td>2.84 L/h</td>
 </tr>
 <tr class="even">
-<td>AMLIVER -&gt; Q4 coef</td>
+<td>DIS_AMYLOID_LIVER -&gt; Q4 coef</td>
 <td>4.01</td>
 <td>4.01</td>
 </tr>
 <tr class="odd">
-<td>AMLOAD=2 -&gt; V4 coef</td>
+<td>DIS_AMYLOID_LOAD=2 -&gt; V4 coef</td>
 <td>6.39</td>
 <td>6.39</td>
 </tr>
 <tr class="even">
-<td>AMLOAD=3 -&gt; V4 (additional) coef</td>
+<td>DIS_AMYLOID_LOAD=3 -&gt; V4 (additional) coef</td>
 <td>26.4</td>
 <td>26.39</td>
 </tr>
@@ -1797,22 +1800,23 @@ source of truth.</li>
 equations.</strong> The <code>.ctl</code> shipped in the DDMORE bundle
 is the 17-THETA base model with only the CRCL covariate; the real-data
 <code>.lst</code> has 21 THETAs covering the four covariate effects from
-Sahota 2015 Eq. 2 (AMLIVER -&gt; Q4, AMLOAD -&gt; V4 in two cumulative
-steps, SEX -&gt; SAP_BASE) plus the base CRCL -&gt; CL effect. The
-structural code for the four additional THETAs is not in the bundle, so
-this implementation reconstructs the equations from the paper’s Eq. 2
-narrative. The per-parameter inline comments in
+Sahota 2015 Eq. 2 (DIS_AMYLOID_LIVER -&gt; Q4, DIS_AMYLOID_LOAD -&gt; V4
+in two cumulative steps, SEX -&gt; SAP_BASE) plus the base CRCL -&gt; CL
+effect. The structural code for the four additional THETAs is not in the
+bundle, so this implementation reconstructs the equations from the
+paper’s Eq. 2 narrative. The per-parameter inline comments in
 <code>inst/modeldb/ddmore/NA_NA_miridesap.R</code> show that the
 resulting typical values match Sahota 2015 Table 2 cell-by-cell.</li>
 <li>
-<strong>AMLOAD encoding.</strong> The paper uses an ordinal 0/1/2/3
-grade with categories 0 and 1 sharing the same V4 multiplier (1). The
-model file encodes this via cumulative indicators
-<code>amload_ge_2 = (AMLOAD &gt;= 2)</code> and
-<code>amload_ge_3 = (AMLOAD &gt;= 3)</code>, matching the source NONMEM
-<code>IF (AMLOAD .EQ. n) ...</code> decomposition in Sahota 2015 Eq. 2.
-The cumulative parameterisation enforces monotonicity: only positive
-additions are admitted at each grade increment.</li>
+<strong>DIS_AMYLOID_LOAD encoding.</strong> The paper uses an
+ordinal 0/1/2/3 grade with categories 0 and 1 sharing the same V4
+multiplier (1). The model file encodes this via cumulative indicators
+<code>amload_ge_2 = (DIS_AMYLOID_LOAD &gt;= 2)</code> and
+<code>amload_ge_3 = (DIS_AMYLOID_LOAD &gt;= 3)</code>, matching the
+source NONMEM <code>IF (DIS_AMYLOID_LOAD .EQ. n) ...</code>
+decomposition in Sahota 2015 Eq. 2. The cumulative parameterisation
+enforces monotonicity: only positive additions are admitted at each
+grade increment.</li>
 <li>
 <strong>SEX source encoding.</strong> The bundle’s
 <code>Simulated_CPHPC_dataset.csv</code> encodes SEX as 1 = male, 2 =

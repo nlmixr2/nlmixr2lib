@@ -1110,7 +1110,7 @@ modeled as combined (additive and proportional) for CMS and colistin
 plasma concentrations”</td>
 </tr>
 <tr class="odd">
-<td>HEMODIALYSIS gating of HD clearance</td>
+<td>RRT_HEMODIAL_ACTIVE gating of HD clearance</td>
 <td>n/a</td>
 <td>Methods, Simulations second item; Figure 4 (HD-active
 scenarios)</td>
@@ -1125,9 +1125,9 @@ scenarios)</td>
 below use a virtual cohort that replicates the paper’s central
 simulation scenario: a single 3 MIU IV dose of CMS administered over 1 h
 to a typical ICU-HD patient (Methods, Simulations first item; Figure 3).
-The reference scenario holds HEMODIALYSIS = 0 throughout (no HD session)
-so the simulated profile matches the paper’s left-most “single dose
-without HD” curve.</p>
+The reference scenario holds RRT_HEMODIAL_ACTIVE = 0 throughout (no HD
+session) so the simulated profile matches the paper’s left-most “single
+dose without HD” curve.</p>
 <p><code>1 MIU</code> of CMS sodium is 80 mg (Jacobs 2016 Results). A 3
 MIU dose therefore corresponds to 240 mg of CMS sodium; this is the
 <code>amt</code> we supply.</p>
@@ -1157,7 +1157,7 @@ MIU dose therefore corresponds to 240 mg of CMS sodium; this is the
 <span>               cmt <span class="op">=</span> <span class="st">"Cc"</span>, evid <span class="op">=</span> <span class="fl">0L</span><span class="op">)</span></span>
 <span>  <span class="op">}</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="va">ev</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">doses</span>, <span class="va">obs</span><span class="op">)</span></span>
-<span>  <span class="va">ev</span><span class="op">$</span><span class="va">HEMODIALYSIS</span> <span class="op">&lt;-</span> <span class="va">dial</span></span>
+<span>  <span class="va">ev</span><span class="op">$</span><span class="va">RRT_HEMODIAL_ACTIVE</span> <span class="op">&lt;-</span> <span class="va">dial</span></span>
 <span>  <span class="va">ev</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="va">ev</span><span class="op">$</span><span class="va">id</span>, <span class="va">ev</span><span class="op">$</span><span class="va">time</span>, <span class="va">ev</span><span class="op">$</span><span class="va">evid</span><span class="op">)</span>, <span class="op">]</span></span>
 <span><span class="op">}</span></span>
 <span></span>
@@ -1170,7 +1170,7 @@ MIU dose therefore corresponds to 240 mg of CMS sodium; this is the
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxode2.html" class="external-link">rxode</a></span><span class="op">(</span><span class="fu"><a href="../reference/readModelDb.html">readModelDb</a></span><span class="op">(</span><span class="st">"Jacobs_2016_colistin"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ℹ parameter labels from comments will be replaced by 'label()'</span></span>
-<span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod</span>, events <span class="op">=</span> <span class="va">events</span>, keep <span class="op">=</span> <span class="st">"HEMODIALYSIS"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod</span>, events <span class="op">=</span> <span class="va">events</span>, keep <span class="op">=</span> <span class="st">"RRT_HEMODIAL_ACTIVE"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>For the figure that reproduces the paper’s typical-value curves we
 also generate a deterministic trajectory using
@@ -1249,7 +1249,7 @@ model encoded here). The reported AUC values are 33.0 mg-h/L for CMS and
 </h2>
 <p>Jacobs 2016 Figure 4 simulates intermittent multiple-dose CMS
 regimens with HD sessions imposed at user-chosen times. The simulation
-below illustrates the same HEMODIALYSIS-gated HD behaviour at the
+below illustrates the same RRT_HEMODIAL_ACTIVE-gated HD behaviour at the
 single-dose level: imposing a 4-h HD session starting at t = 8 h on a
 typical patient receiving a 1.5 MIU q12h maintenance regimen with a 1.5
 MIU reloading dose just after the HD session.</p>
@@ -1278,10 +1278,10 @@ MIU reloading dose just after the HD session.</p>
 <span>  cmt <span class="op">=</span> <span class="st">"Cc"</span>, evid <span class="op">=</span> <span class="fl">0L</span></span>
 <span><span class="op">)</span></span>
 <span><span class="va">events_hd</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">doses</span>, <span class="va">obs</span><span class="op">)</span></span>
-<span><span class="va">events_hd</span><span class="op">$</span><span class="va">HEMODIALYSIS</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">events_hd</span><span class="op">$</span><span class="va">time</span> <span class="op">&gt;=</span> <span class="va">hd_start</span> <span class="op">&amp;</span> <span class="va">events_hd</span><span class="op">$</span><span class="va">time</span> <span class="op">&lt;</span> <span class="va">hd_end</span><span class="op">)</span></span>
+<span><span class="va">events_hd</span><span class="op">$</span><span class="va">RRT_HEMODIAL_ACTIVE</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">events_hd</span><span class="op">$</span><span class="va">time</span> <span class="op">&gt;=</span> <span class="va">hd_start</span> <span class="op">&amp;</span> <span class="va">events_hd</span><span class="op">$</span><span class="va">time</span> <span class="op">&lt;</span> <span class="va">hd_end</span><span class="op">)</span></span>
 <span><span class="va">events_hd</span> <span class="op">&lt;-</span> <span class="va">events_hd</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="va">events_hd</span><span class="op">$</span><span class="va">id</span>, <span class="va">events_hd</span><span class="op">$</span><span class="va">time</span>, <span class="va">events_hd</span><span class="op">$</span><span class="va">evid</span><span class="op">)</span>, <span class="op">]</span></span>
 <span></span>
-<span><span class="va">sim_hd</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod_typical</span>, events <span class="op">=</span> <span class="va">events_hd</span>, keep <span class="op">=</span> <span class="st">"HEMODIALYSIS"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span><span class="va">sim_hd</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod_typical</span>, events <span class="op">=</span> <span class="va">events_hd</span>, keep <span class="op">=</span> <span class="st">"RRT_HEMODIAL_ACTIVE"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalvc', 'etalcl', 'etalvc_col', 'etalcl_col'</span></span></code></pre></div>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
@@ -1301,7 +1301,7 @@ MIU reloading dose just after the HD session.</p>
 <span>  <span class="fu">facet_wrap</span><span class="op">(</span><span class="op">~</span><span class="va">species_label</span>, scales <span class="op">=</span> <span class="st">"free_y"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">labs</span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Time (h)"</span>, y <span class="op">=</span> <span class="st">"Plasma concentration (mg/L)"</span>,</span>
 <span>       title <span class="op">=</span> <span class="st">"HD-gated typical trajectory - 1.5 MIU q12h with 4-h HD at t = 8-12 h"</span>,</span>
-<span>       caption <span class="op">=</span> <span class="st">"Shaded grey band marks the HD session (HEMODIALYSIS = 1)."</span><span class="op">)</span></span></code></pre></div>
+<span>       caption <span class="op">=</span> <span class="st">"Shaded grey band marks the HD session (RRT_HEMODIAL_ACTIVE = 1)."</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Jacobs_2016_colistin_files/figure-html/figure-hd-1.png" class="r-plt" alt="" width="624"></p>
 </div>
 <div class="section level2">
@@ -1522,9 +1522,10 @@ mL/min colistin) from Marchand 2010 (ref 7), determined with the same
 CMS brand and the same dialysis apparatus. These are device/experimental
 constants in the base model; they are encoded as numeric constants
 inside <code>model()</code> (not in <code>ini()</code>) and gated on/off
-by the <code>HEMODIALYSIS</code> covariate. Users who want to explore
-alternative dialyser performance can override <code>cl_hd_cms</code> and
-<code>cl_hd_col</code> in a forked copy of the model.</li>
+by the <code>RRT_HEMODIAL_ACTIVE</code> covariate. Users who want to
+explore alternative dialyser performance can override
+<code>cl_hd_cms</code> and <code>cl_hd_col</code> in a forked copy of
+the model.</li>
 <li>
 <strong>CMS renal clearance structurally fixed at zero.</strong> Per
 the paper’s methodology, CL_RCMS was fixed to 0 because the eight

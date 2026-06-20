@@ -1127,7 +1127,7 @@ Table 1, pooled across studies).</p>
 <span>    ALB         <span class="op">=</span> <span class="va">alb</span>,</span>
 <span>    CREAT       <span class="op">=</span> <span class="va">creat</span>,</span>
 <span>    TUMSZ       <span class="op">=</span> <span class="va">tumsz</span>,</span>
-<span>    TUMTP_CHL   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">tumtp_chl</span><span class="op">)</span>,</span>
+<span>    TUMTP_HODGKIN_CLASSICAL   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">tumtp_chl</span><span class="op">)</span>,</span>
 <span>    ADA_POS     <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">ada_pos</span><span class="op">)</span>,</span>
 <span>    CONMED_AVD <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">conmed_avd</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
@@ -1999,11 +1999,11 @@ routes the source <code>DOX</code> column through
 <li>
 <strong>MMAE central-volume reference category.</strong> The Non-HL
 effect on MMAE central volume VM has multiplier 0.296 with reference 1 =
-HL. The canonical <code>TUMTP_CHL</code> register entry encodes 1 = HL,
-so the model applies the effect as
-<code>e_nonhl_vc_mmae^(1 - TUMTP_CHL)</code> to keep the paper’s
-reference (HL) at multiplier 1 while preserving the canonical column
-meaning.</li>
+HL. The canonical <code>TUMTP_HODGKIN_CLASSICAL</code> register entry
+encodes 1 = HL, so the model applies the effect as
+<code>e_nonhl_vc_mmae^(1 - TUMTP_HODGKIN_CLASSICAL)</code> to keep the
+paper’s reference (HL) at multiplier 1 while preserving the canonical
+column meaning.</li>
 <li>
 <strong>Cycle-4 NCA.</strong> The PKNCA validation block computes
 Cmax / Tmax / AUC over a single dosing interval at steady state (cycle

@@ -128,8 +128,8 @@ distributions approximate the published Table 1 characteristics:
 - `DDIMER` plasma D-dimer drawn from a log-normal distribution with
   median 326 ng/mL and IQR 142 to 786 ng/mL (Table 1 reported median and
   quartiles).
-- `DIAB` diabetes status drawn from Bernoulli with p = 0.14 (Table 1: 42
-  of 299 men).
+- `DIS_DIAB` diabetes status drawn from Bernoulli with p = 0.14 (Table
+  1: 42 of 299 men).
 
 ``` r
 
@@ -142,29 +142,29 @@ cohort <- tibble::tibble(
   AAA_DIAM = pmin(pmax(round(rnorm(n_subj, mean = 33.4, sd = 4.0), 1),
                        30.0), 49.0),
   DDIMER   = exp(rnorm(n_subj, mean = log(326), sd = 0.95)),
-  DIAB     = rbinom(n_subj, 1, 0.14)
+  DIS_DIAB     = rbinom(n_subj, 1, 0.14)
 )
 
 cat(sprintf(
-  "Cohort summary: n=%d, AAA_DIAM median=%.1f mm (q1 %.1f, q3 %.1f); DDIMER median=%.0f ng/mL (q1 %.0f, q3 %.0f); DIAB=%d (%.1f%%)\n",
+  "Cohort summary: n=%d, AAA_DIAM median=%.1f mm (q1 %.1f, q3 %.1f); DDIMER median=%.0f ng/mL (q1 %.0f, q3 %.0f); DIS_DIAB=%d (%.1f%%)\n",
   n_subj,
   median(cohort$AAA_DIAM),
   quantile(cohort$AAA_DIAM, 0.25), quantile(cohort$AAA_DIAM, 0.75),
   median(cohort$DDIMER),
   quantile(cohort$DDIMER,   0.25), quantile(cohort$DDIMER,   0.75),
-  sum(cohort$DIAB), 100 * mean(cohort$DIAB)
+  sum(cohort$DIS_DIAB), 100 * mean(cohort$DIS_DIAB)
 ))
-#> Cohort summary: n=200, AAA_DIAM median=33.1 mm (q1 30.9, q3 36.2); DDIMER median=305 ng/mL (q1 179, q3 601); DIAB=27 (13.5%)
+#> Cohort summary: n=200, AAA_DIAM median=33.1 mm (q1 30.9, q3 36.2); DDIMER median=305 ng/mL (q1 179, q3 601); DIS_DIAB=27 (13.5%)
 ```
 
 ## Replication: typical-value growth curve at median covariates
 
 We first reproduce the typical-value AAA-growth trajectory (no IIV, no
 residual error, all covariates at the cohort median: AAA_DIAM = 32.7 mm,
-DDIMER = 326 ng/mL, DIAB = 0). At t = 0 the typical AAA diameter equals
-`e_aaadiam_b0 = 32.6 mm` (the regression-typical value when Y(0) sits
-exactly at the cohort median). The typical baseline growth rate is 1.32
-mm/year and the typical first-derivative-with-size parameter is
+DDIMER = 326 ng/mL, DIS_DIAB = 0). At t = 0 the typical AAA diameter
+equals `e_aaadiam_b0 = 32.6 mm` (the regression-typical value when Y(0)
+sits exactly at the cohort median). The typical baseline growth rate is
+1.32 mm/year and the typical first-derivative-with-size parameter is
 `b2_int + e_aaadiam_b2 + e_ddimer_b2 = -0.09/year` (slightly negative,
 so the growth rate decelerates modestly as the AAA enlarges).
 
@@ -182,7 +182,7 @@ ev_typical <- data.frame(
   evid     = 0L,
   AAA_DIAM = 32.7,
   DDIMER   = 326,
-  DIAB     = 0L
+  DIS_DIAB     = 0L
 )
 
 sim_typical <- rxode2::rxSolve(mod_fixed, events = ev_typical) |>
@@ -200,7 +200,7 @@ ggplot(sim_typical, aes(x = time, y = aaaSize)) +
     y = "AAA diameter (mm)",
     title = "Typical-value AAA-growth trajectory at cohort-median covariates",
     caption = paste(
-      "Reference covariate values: AAA_DIAM = 32.7 mm (median), DDIMER = 326 ng/mL (median), DIAB = 0.",
+      "Reference covariate values: AAA_DIAM = 32.7 mm (median), DDIMER = 326 ng/mL (median), DIS_DIAB = 0.",
       "Dotted line: 40 mm (surveillance interval reduced from 12 to 6 months).",
       "Dashed line: 50 mm (surgical-referral threshold).",
       sep = "\n"
@@ -262,20 +262,20 @@ stopifnot(max(abs(actual - checkpoints$expected)) < 0.05)
 The covariate effects in Table 3 are most easily understood by
 overlaying typical-value trajectories for several covariate corners:
 
-- **reference** – AAA_DIAM = 32.7, DDIMER = 326, DIAB = 0
-- **larger baseline AAA** – AAA_DIAM = 45, DDIMER = 326, DIAB = 0
-- **high D-dimer** – AAA_DIAM = 32.7, DDIMER = 1500, DIAB = 0
-- **diabetic** – AAA_DIAM = 32.7, DDIMER = 326, DIAB = 1
+- **reference** – AAA_DIAM = 32.7, DDIMER = 326, DIS_DIAB = 0
+- **larger baseline AAA** – AAA_DIAM = 45, DDIMER = 326, DIS_DIAB = 0
+- **high D-dimer** – AAA_DIAM = 32.7, DDIMER = 1500, DIS_DIAB = 0
+- **diabetic** – AAA_DIAM = 32.7, DDIMER = 326, DIS_DIAB = 1
 - **large + high D-dimer + non-diabetic** (fastest-growing combination)
 
 ``` r
 
 scenarios <- tibble::tribble(
-  ~label,                                  ~AAA_DIAM, ~DDIMER, ~DIAB,
-  "reference (32.7 mm, 326 ng/mL, DIAB=0)",     32.7,     326,     0L,
+  ~label,                                  ~AAA_DIAM, ~DDIMER, ~DIS_DIAB,
+  "reference (32.7 mm, 326 ng/mL, DIS_DIAB=0)",     32.7,     326,     0L,
   "larger baseline AAA (45 mm)",                45.0,     326,     0L,
   "high D-dimer (1500 ng/mL)",                  32.7,    1500,     0L,
-  "diabetic (DIAB=1)",                          32.7,     326,     1L,
+  "diabetic (DIS_DIAB=1)",                          32.7,     326,     1L,
   "large + high D-dimer + non-diabetic",        45.0,    1500,     0L
 )
 
@@ -288,7 +288,7 @@ scenario_df <- bind_rows(lapply(seq_len(nrow(scenarios)), function(i) {
     evid     = 0L,
     AAA_DIAM = s$AAA_DIAM,
     DDIMER   = s$DDIMER,
-    DIAB     = s$DIAB,
+    DIS_DIAB     = s$DIS_DIAB,
     label    = s$label,
     stringsAsFactors = FALSE
   )
@@ -495,11 +495,12 @@ implements the published ODE correctly.
 - **Covariate names.** Three covariates are used: `AAA_DIAM` (baseline
   AAA diameter, mm; new canonical registered in
   `inst/references/covariate-columns.md`), `DDIMER` (plasma D-dimer
-  concentration, ng/mL; new canonical), and `DIAB` (diabetes-mellitus
-  comorbidity indicator; existing canonical). The Sherer 2012 paper
-  refers to the same quantities as `Y(0)`, `C^(D-dimer)`, and `Diabetes`
-  respectively; these names are recorded as source aliases in the
-  register and in `covariateData[[name]]$source_name` per model.
+  concentration, ng/mL; new canonical), and `DIS_DIAB`
+  (diabetes-mellitus comorbidity indicator; existing canonical). The
+  Sherer 2012 paper refers to the same quantities as `Y(0)`,
+  `C^(D-dimer)`, and `Diabetes` respectively; these names are recorded
+  as source aliases in the register and in
+  `covariateData[[name]]$source_name` per model.
 
 - **Median-centring constants.** The typical-value regression equations
   divide the raw covariate by its cohort median, so `AAA_DIAM / 32.7`

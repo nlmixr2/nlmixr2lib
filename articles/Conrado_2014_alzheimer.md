@@ -572,7 +572,7 @@ deviations listed below to fit nlmixr2’s modelling frame.
 
 - **Demographic detail not extracted.** The source bundle does not ship
   demographic summary statistics for the 4,494-subject CAMD cohort (only
-  the per-subject covariates AGE, SEX, APOE4C, COMED2, MMSE in the
+  the per-subject covariates AGE, SEX, APOE4C, COMED2, SCORE_MMSE in the
   simulated dataset). Age range / median, weight range / median, sex
   distribution, and regional breakdown are described in the Conrado 2014
   publication’s Methods / Tables but were not available on disk; the

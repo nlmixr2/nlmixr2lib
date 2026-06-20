@@ -139,7 +139,7 @@ ref_ev <- function(WT, PAGE) {
     DV = NA,
     WT = WT, PAGE = PAGE,
     RACE_BLACK = 0, RACE_HISPANIC = 0, RACE_ASIAN = 0, RACE_OTHER = 0,
-    CLD_PREM = 0, ADA_TITER = 0
+    DIS_CLD_PREM = 0, ADA_TITER = 0
   )
 }
 
@@ -194,7 +194,7 @@ make_cohort <- function(n, ga_range, pna0_range, max_day,
   PNA_0 <- runif(n, pna0_range[1], pna0_range[2])
   wt_z <- pmax(-2, pmin(2, rnorm(n, 0, 1)))
   WT_0 <- who_weight(PNA_0, wt_z)
-  CLD_PREM <- as.integer(runif(n) < cld_prob)
+  DIS_CLD_PREM <- as.integer(runif(n) < cld_prob)
   ADA_T <- ada_titer_fn(n)
   race <- sample(names(race_probs), n, replace = TRUE, prob = race_probs)
 
@@ -204,7 +204,7 @@ make_cohort <- function(n, ga_range, pna0_range, max_day,
     RACE_HISPANIC = as.integer(race == "Hispanic"),
     RACE_ASIAN    = as.integer(race == "Asian"),
     RACE_OTHER    = as.integer(race == "Other"),
-    CLD_PREM = CLD_PREM, ADA_TITER = ADA_T
+    DIS_CLD_PREM = DIS_CLD_PREM, ADA_TITER = ADA_T
   )
 
   # Dose records: n_doses at 30-day intervals, 15 mg/kg of current weight
@@ -233,7 +233,7 @@ make_cohort <- function(n, ga_range, pna0_range, max_day,
     arrange(ID, TIME, desc(EVID)) |>
     select(ID, TIME, AMT, EVID, CMT, DV, WT, PAGE,
       RACE_BLACK, RACE_HISPANIC, RACE_ASIAN, RACE_OTHER,
-      CLD_PREM, ADA_TITER, WT_0, GA, PNA_0)
+      DIS_CLD_PREM, ADA_TITER, WT_0, GA, PNA_0)
 }
 ```
 

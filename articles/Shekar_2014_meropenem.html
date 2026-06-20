@@ -996,7 +996,7 @@ minutes. Blood sampling in ECMO patients was performed at pre-dose, 15,
 varied by sub-study (see Methods). The HPLC assay had a lower limit of
 quantification of 1.0 mg/L. The two RRT modalities (CVVHF in controls;
 EDD-f in ECMO patients) are treated as a single binary
-<code>CRRT_STATUS</code> covariate in the published model.</p>
+<code>RRT_CRRT_STATUS</code> covariate in the published model.</p>
 <p>The same information is available programmatically via the model’s
 <code>population</code> metadata:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
@@ -1095,7 +1095,7 @@ Table 2 final covariate-model column (the “Model Mean” column).</p>
 <td>Table 2 row “RUV (SD, mg/L)” = 2.3</td>
 </tr>
 <tr class="odd">
-<td><code>tvcl &lt;- exp(lcl)*CRRT_STATUS + e_crcl_cl*crcl_Lh*(1-CRRT_STATUS)</code></td>
+<td><code>tvcl &lt;- exp(lcl)*RRT_CRRT_STATUS + e_crcl_cl*crcl_Lh*(1-RRT_CRRT_STATUS)</code></td>
 <td>n/a</td>
 <td>Methods page 5 covariate equation (operator-resolved interpretation;
 see Assumptions)</td>
@@ -1125,11 +1125,12 @@ described in Shekar 2014 Methods (“Dosing simulations”): a 50-year-old,
 80 kg male on ECMO at five CrCL levels (20, 50, 80, 120, 180 mL/min) and
 three dose regimens (500 mg, 1 g, 2 g IV q8h, each over 30 minutes). All
 five CrCL simulations correspond to non-RRT patients
-(<code>CRRT_STATUS = 0</code>); the model’s RRT branch uses the fixed
-<code>TVCL = 5.1 L/h</code> and so is simulated separately below. The
-published simulations used n = 1,000 per condition; the vignette uses n
-= 100 per condition to stay inside the 5-minute pkgdown render budget
-while still resolving the median and 10th-percentile reliably.</p>
+(<code>RRT_CRRT_STATUS = 0</code>); the model’s RRT branch uses the
+fixed <code>TVCL = 5.1 L/h</code> and so is simulated separately below.
+The published simulations used n = 1,000 per condition; the vignette
+uses n = 100 per condition to stay inside the 5-minute pkgdown render
+budget while still resolving the median and 10th-percentile
+reliably.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">20260518</span><span class="op">)</span></span>
 <span></span>
@@ -1178,7 +1179,7 @@ while still resolving the median and 10th-percentile reliably.</p>
 <span></span>
 <span>  <span class="va">out</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="va">doses</span>, <span class="va">obs</span><span class="op">)</span></span>
 <span>  <span class="va">out</span><span class="op">$</span><span class="va">CRCL</span>        <span class="op">&lt;-</span> <span class="va">crcl_mL_min</span></span>
-<span>  <span class="va">out</span><span class="op">$</span><span class="va">CRRT_STATUS</span> <span class="op">&lt;-</span> <span class="fl">0L</span></span>
+<span>  <span class="va">out</span><span class="op">$</span><span class="va">RRT_CRRT_STATUS</span> <span class="op">&lt;-</span> <span class="fl">0L</span></span>
 <span>  <span class="va">out</span><span class="op">$</span><span class="va">cohort</span>      <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"CrCL %d / %s mg q8h"</span>, <span class="va">crcl_mL_min</span>, <span class="va">dose_mg</span><span class="op">)</span></span>
 <span>  <span class="va">out</span><span class="op">$</span><span class="va">crcl_mL_min</span> <span class="op">&lt;-</span> <span class="va">crcl_mL_min</span></span>
 <span>  <span class="va">out</span><span class="op">$</span><span class="va">dose_mg</span>     <span class="op">&lt;-</span> <span class="va">dose_mg</span></span>
@@ -1196,7 +1197,7 @@ while still resolving the median and 10th-percentile reliably.</p>
 <span><span class="op">}</span></span>
 <span><span class="va">events</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">events_list</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># RRT cohort: CRRT_STATUS = 1, CRCL = 0 (not used inside model when on RRT),</span></span>
+<span><span class="co"># RRT cohort: RRT_CRRT_STATUS = 1, CRCL = 0 (not used inside model when on RRT),</span></span>
 <span><span class="co"># 1 g q8h (the standard regimen given to RRT patients in Shekar 2014).</span></span>
 <span><span class="va">rrt_cohort</span> <span class="op">&lt;-</span> <span class="fu">make_cohort</span><span class="op">(</span></span>
 <span>  crcl_mL_min <span class="op">=</span> <span class="fl">0</span>,    <span class="co"># unused on RRT branch</span></span>
@@ -1204,7 +1205,7 @@ while still resolving the median and 10th-percentile reliably.</p>
 <span>  cohort_idx  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">cohort_grid</span><span class="op">)</span> <span class="op">+</span> <span class="fl">1L</span>,</span>
 <span>  id_offset   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">cohort_grid</span><span class="op">)</span> <span class="op">*</span> <span class="va">n_per_combo</span></span>
 <span><span class="op">)</span></span>
-<span><span class="va">rrt_cohort</span><span class="op">$</span><span class="va">CRRT_STATUS</span> <span class="op">&lt;-</span> <span class="fl">1L</span></span>
+<span><span class="va">rrt_cohort</span><span class="op">$</span><span class="va">RRT_CRRT_STATUS</span> <span class="op">&lt;-</span> <span class="fl">1L</span></span>
 <span><span class="va">rrt_cohort</span><span class="op">$</span><span class="va">cohort</span>      <span class="op">&lt;-</span> <span class="st">"RRT / 1000 mg q8h"</span></span>
 <span></span>
 <span><span class="va">events</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">events</span>, <span class="va">rrt_cohort</span><span class="op">)</span></span>
@@ -1219,7 +1220,7 @@ while still resolving the median and 10th-percentile reliably.</p>
 <span></span>
 <span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span></span>
 <span>  object <span class="op">=</span> <span class="va">mod</span>, events <span class="op">=</span> <span class="va">events</span>,</span>
-<span>  keep   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cohort"</span>, <span class="st">"crcl_mL_min"</span>, <span class="st">"dose_mg"</span>, <span class="st">"CRCL"</span>, <span class="st">"CRRT_STATUS"</span><span class="op">)</span></span>
+<span>  keep   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cohort"</span>, <span class="st">"crcl_mL_min"</span>, <span class="st">"dose_mg"</span>, <span class="st">"CRCL"</span>, <span class="st">"RRT_CRRT_STATUS"</span><span class="op">)</span></span>
 <span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ℹ parameter labels from comments will be replaced by 'label()'</span></span></code></pre></div>
@@ -1236,7 +1237,7 @@ been reached, for 500 mg, 1 g, and 2 g 8-hourly. The 8 h post-dose value
 of each line is the trough that appears in Table 3.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">nonrrt</span> <span class="op">&lt;-</span> <span class="va">sim</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">CRRT_STATUS</span> <span class="op">==</span> <span class="fl">0L</span>, <span class="va">time</span> <span class="op">&gt;=</span> <span class="va">last_dose_time</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">RRT_CRRT_STATUS</span> <span class="op">==</span> <span class="fl">0L</span>, <span class="va">time</span> <span class="op">&gt;=</span> <span class="va">last_dose_time</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>time_h_post_last_dose <span class="op">=</span> <span class="va">time</span> <span class="op">-</span> <span class="va">last_dose_time</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">nonrrt_summary</span> <span class="op">&lt;-</span> <span class="va">nonrrt</span> <span class="op">|&gt;</span></span>
@@ -1284,7 +1285,7 @@ meropenem concentrations from 1,000 simulated patients per CrCL / dose
 condition.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">trough</span> <span class="op">&lt;-</span> <span class="va">sim</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">CRRT_STATUS</span> <span class="op">==</span> <span class="fl">0L</span>,</span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">RRT_CRRT_STATUS</span> <span class="op">==</span> <span class="fl">0L</span>,</span>
 <span>                <span class="va">time</span> <span class="op">==</span> <span class="va">last_dose_time</span> <span class="op">+</span> <span class="va">dose_interval_h</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">table3_sim</span> <span class="op">&lt;-</span> <span class="va">trough</span> <span class="op">|&gt;</span></span>
@@ -1504,7 +1505,7 @@ follow the same pattern.</p>
 <div class="section level3">
 <h3 id="rrt-branch-typical-value-steady-state-profile">RRT branch – typical-value steady-state profile<a class="anchor" aria-label="anchor" href="#rrt-branch-typical-value-steady-state-profile"></a>
 </h3>
-<p>When <code>CRRT_STATUS = 1</code>, the model’s CL collapses to a
+<p>When <code>RRT_CRRT_STATUS = 1</code>, the model’s CL collapses to a
 fixed <code>TVCL = exp(lcl_rrt) = 5.1 L/h</code>, independent of CrCL.
 Shekar 2014 does not include this branch in Figure 2 / Table 3 (the
 published simulations correspond to non-RRT patients across a range of
@@ -1512,7 +1513,7 @@ CrCL), but the RRT branch is part of the structural model and is
 exercised here for completeness.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">rrt_summary</span> <span class="op">&lt;-</span> <span class="va">sim</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">CRRT_STATUS</span> <span class="op">==</span> <span class="fl">1L</span>, <span class="va">time</span> <span class="op">&gt;=</span> <span class="va">last_dose_time</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">RRT_CRRT_STATUS</span> <span class="op">==</span> <span class="fl">1L</span>, <span class="va">time</span> <span class="op">&gt;=</span> <span class="va">last_dose_time</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>time_h_post_last_dose <span class="op">=</span> <span class="va">time</span> <span class="op">-</span> <span class="va">last_dose_time</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">time_h_post_last_dose</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span></span>
@@ -1531,7 +1532,7 @@ exercised here for completeness.</p>
 <span>  <span class="fu">labs</span><span class="op">(</span></span>
 <span>    x <span class="op">=</span> <span class="st">"Time after last dose (hours)"</span>,</span>
 <span>    y <span class="op">=</span> <span class="st">"Meropenem concentration (mg/L, log scale)"</span>,</span>
-<span>    title    <span class="op">=</span> <span class="st">"RRT branch -- 1 g q8h, CRRT_STATUS = 1, TVCL = 5.1 L/h"</span>,</span>
+<span>    title    <span class="op">=</span> <span class="st">"RRT branch -- 1 g q8h, RRT_CRRT_STATUS = 1, TVCL = 5.1 L/h"</span>,</span>
 <span>    subtitle <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Median (line) and 10th-90th percentile band (ribbon); "</span>,</span>
 <span>                      <span class="st">"n = "</span>, <span class="va">n_per_combo</span>, <span class="st">" virtual subjects"</span><span class="op">)</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
@@ -1554,10 +1555,10 @@ per-CrCL Cmax and AUC are comparable across the renal-function
 spectrum.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pk_cohort</span> <span class="op">&lt;-</span> <span class="va">sim</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">CRRT_STATUS</span> <span class="op">==</span> <span class="fl">0L</span>, <span class="va">dose_mg</span> <span class="op">==</span> <span class="fl">1000L</span>, <span class="va">time</span> <span class="op">&gt;=</span> <span class="va">last_dose_time</span>, <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">RRT_CRRT_STATUS</span> <span class="op">==</span> <span class="fl">0L</span>, <span class="va">dose_mg</span> <span class="op">==</span> <span class="fl">1000L</span>, <span class="va">time</span> <span class="op">&gt;=</span> <span class="va">last_dose_time</span>, <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">dose_pk</span> <span class="op">&lt;-</span> <span class="va">events</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">CRRT_STATUS</span> <span class="op">==</span> <span class="fl">0L</span>, <span class="va">dose_mg</span> <span class="op">==</span> <span class="fl">1000L</span>,</span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">RRT_CRRT_STATUS</span> <span class="op">==</span> <span class="fl">0L</span>, <span class="va">dose_mg</span> <span class="op">==</span> <span class="fl">1000L</span>,</span>
 <span>                <span class="va">evid</span> <span class="op">==</span> <span class="fl">1L</span>,</span>
 <span>                <span class="va">time</span> <span class="op">&gt;=</span> <span class="va">last_dose_time</span>, <span class="va">time</span> <span class="op">&lt;</span> <span class="va">last_dose_time</span> <span class="op">+</span> <span class="va">dose_interval_h</span><span class="op">)</span></span>
 <span></span>
@@ -1716,8 +1717,8 @@ observed Cmin of 4.9 mg/L.</p>
 </h2>
 <ul>
 <li>
-<p><strong>CL covariate equation – piecewise on CRRT_STATUS, with
-the second theta interpreted as <code>CL_CRCL = 1.89</code>, not
+<p><strong>CL covariate equation – piecewise on RRT_CRRT_STATUS,
+with the second theta interpreted as <code>CL_CRCL = 1.89</code>, not
 <code>theta_1 = 5.1</code>.</strong> Shekar 2014 Methods page 5 prints
 the equation</p>
 <blockquote>
@@ -1736,9 +1737,9 @@ second theta as the Table 2 parameter <code>CL_CRCL = 1.89</code> (and
 the first theta as the Table 2 parameter <code>CL = 5.1</code>),
 giving</p>
 <blockquote>
-<p><code>TVCL = exp(lcl) * CRRT_STATUS + e_crcl_cl * CrCL_in_Lh * (1 - CRRT_STATUS)</code></p>
+<p><code>TVCL = exp(lcl) * RRT_CRRT_STATUS + e_crcl_cl * CrCL_in_Lh * (1 - RRT_CRRT_STATUS)</code></p>
 <p>=
-<code>5.1 * CRRT_STATUS + 1.89 * CrCL_in_Lh * (1 - CRRT_STATUS)</code></p>
+<code>5.1 * RRT_CRRT_STATUS + 1.89 * CrCL_in_Lh * (1 - RRT_CRRT_STATUS)</code></p>
 </blockquote>
 <p>which reproduces:</p>
 <ul>
@@ -1786,19 +1787,20 @@ in the per-model <code>covariateData[[CRCL]]$units</code> and
 <code>notes</code> fields. Do not compare the magnitude of
 <code>e_crcl_cl = 1.89</code> against BSA-normalized reference values
 listed in the canonical entry – the units differ.</p></li>
-<li><p><strong>New canonical <code>CRRT_STATUS</code> ratified alongside
-this extraction.</strong> The existing <code>HEMODIAL</code> canonical
-(intermittent-hemodialysis-only) and <code>HEMODIALYSIS</code> canonical
-(per-time-point session gate, time-varying) do not fit the Shekar 2014
-RRT covariate: the cohort mixes CVVHF (continuous venovenous
+<li><p><strong>New canonical <code>RRT_CRRT_STATUS</code> ratified
+alongside this extraction.</strong> The existing
+<code>RRT_HEMODIAL_STATUS</code> canonical
+(intermittent-hemodialysis-only) and <code>RRT_HEMODIAL_ACTIVE</code>
+canonical (per-time-point session gate, time-varying) do not fit the
+Shekar 2014 RRT covariate: the cohort mixes CVVHF (continuous venovenous
 hemofiltration; true CRRT) and EDD-f (extended daily diafiltration;
 pharmacokinetically CRRT-like for slow-clearance solutes such as
 meropenem), treated as a single binary subject-level indicator. The
-<code>HEMODIAL</code> register entry explicitly anticipates a
-<code>CRRT_STATUS</code> canonical as a future extension; this
+<code>RRT_HEMODIAL_STATUS</code> register entry explicitly anticipates a
+<code>RRT_CRRT_STATUS</code> canonical as a future extension; this
 extraction ratifies it. The per-model
-<code>covariateData[[CRRT_STATUS]]$notes</code> documents the mixed CVVH
-+ EDD-f scope.</p></li>
+<code>covariateData[[RRT_CRRT_STATUS]]$notes</code> documents the mixed
+CVVH + EDD-f scope.</p></li>
 <li><p><strong>Independent (diagonal) IIV between CL, Vc, and Vp; no IIV
 on Q.</strong> Shekar 2014 Table 2 reports a single CV per parameter
 under “Random effects BSV (% CV)” with rows for CL, Vc, and Vp (not Q).
@@ -1852,8 +1854,8 @@ therefore qualitative (correct gradient direction) but not quantitative
 <p>Cross-check against Table 1 observations: the packaged model predicts
 a steady-state trough of approximately 2.2 mg/L for non-RRT patients at
 CrCL = 106 mL/min (Table 1 controls no-RRT subgroup, n = 5) on 1 g q8h,
-and approximately 12.9 mg/L for the RRT branch (CRRT_STATUS = 1). The
-observed Cmin medians (IQR) from Table 1 are: controls no-RRT 0 mg/L
+and approximately 12.9 mg/L for the RRT branch (RRT_CRRT_STATUS = 1).
+The observed Cmin medians (IQR) from Table 1 are: controls no-RRT 0 mg/L
 (0-2), controls RRT 7.5 mg/L (5-18), ECMO no-RRT 4.9 mg/L (2-10), ECMO
 RRT 18 mg/L (7-43). The model predictions fall inside the observed IQRs
 for all four subgroups, which would not be the case if the much-higher

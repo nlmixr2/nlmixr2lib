@@ -63,12 +63,12 @@ The same metadata are available programmatically via
 | `logitfdepot = 1.4` (logit F1) | 1.4 -\> F1 = 0.802 | Table 3 ‘Logit F1’ (RSE 27%; bootstrap 1.5, 95% CI 0.7-2.6) |
 | `lka = fixed(log(0.70))` (ka, 1/h) | 0.70 (fixed) | Table 3 ‘Ka fixed at 0.70’; Methods ‘absorption rate constants … fixed’ |
 | `lk23 = log(0.084)` (K23, 1/h) | 0.084 | Table 3 (bootstrap 0.088, 95% CI 0.05-0.16) |
-| `lcl_dha = log(71)` (CL_met/F, L/h) | 71 | Table 3 ‘CL_met’ (RSE 46%; bootstrap 69, 95% CI 38-136) |
-| `vc_dha = vc` (V_M = Vc, fixed) | n/a | Table 3 ‘V_M Fixed to Vc’; Methods ‘volume of distributions of DLF and DHA … assumed to be equal to those of LF and AM’ |
+| `lcl_dihydroart = log(71)` (CL_met/F, L/h) | 71 | Table 3 ‘CL_met’ (RSE 46%; bootstrap 69, 95% CI 38-136) |
+| `vc_dihydroart = vc` (V_M = Vc, fixed) | n/a | Table 3 ‘V_M Fixed to Vc’; Methods ‘volume of distributions of DLF and DHA … assumed to be equal to those of LF and AM’ |
 | `etalcl ~ 0.68273` (var, log-scale) | CV 99% | Table 3 BSV on CL (RSE 65%; bootstrap 93%, 95% CI 66-120); variance = log(0.99^2 + 1) |
 | `propSd = 0.72` (AM proportional) | CV 72% | Table 3 sigma_prop,AM (RSE 26%; bootstrap 69%, 95% CI 49-87) |
 | `addSd = 38.792` (AM additive, ng/mL) | 0.13 umol/L \* 298.4 g/mol | Table 3 sigma_add,AM (RSE 7%; bootstrap 0.13 umol/L, 95% CI 0.03-0.20) |
-| `propSd_dha = 0.53` (DHA proportional) | CV 53% | Table 3 sigma_prop,DHA (RSE 14%; bootstrap 51%, 95% CI 44-59) |
+| `propSd_dihydroart = 0.53` (DHA proportional) | CV 53% | Table 3 sigma_prop,DHA (RSE 14%; bootstrap 51%, 95% CI 44-59) |
 | One-compartment AM and DHA disposition with first-order absorption and presystemic AM-to-DHA conversion | – | Results ‘AM and DHA pharmacokinetics were best described using a one-compartment model with first-order absorption … including presystemic conversion into the metabolite’; 21% of AM dose presystemically converted to DHA (= 1 - expit(1.4)) |
 | No covariates retained on AM or DHA | – | Results ‘None of the available covariates significantly affected AM or DHA pharmacokinetics’ |
 
@@ -283,9 +283,9 @@ sim_am |>
   dplyr::filter(time > 0, time <= 70) |>
   dplyr::group_by(time) |>
   dplyr::summarise(
-    p025 = quantile(Cc_dha, 0.025, na.rm = TRUE),
-    p50  = quantile(Cc_dha, 0.50,  na.rm = TRUE),
-    p975 = quantile(Cc_dha, 0.975, na.rm = TRUE),
+    p025 = quantile(Cc_dihydroart, 0.025, na.rm = TRUE),
+    p50  = quantile(Cc_dihydroart, 0.50,  na.rm = TRUE),
+    p975 = quantile(Cc_dihydroart, 0.975, na.rm = TRUE),
     .groups = "drop"
   ) |>
   dplyr::filter(p50 > 0) |>
@@ -625,15 +625,15 @@ nca_am <- PKNCA::pk.nca(
 
 ``` r
 
-sim_nca_dha <- sim_am |>
+sim_nca_dihydroart <- sim_am |>
   dplyr::mutate(time_after_last = time - 60) |>
-  dplyr::filter(!is.na(Cc_dha), time_after_last > 0, time_after_last <= 10) |>
-  dplyr::transmute(id, time = time_after_last, Cc = Cc_dha, group = "All women")
+  dplyr::filter(!is.na(Cc_dihydroart), time_after_last > 0, time_after_last <= 10) |>
+  dplyr::transmute(id, time = time_after_last, Cc = Cc_dihydroart, group = "All women")
 
-conc_obj_dha <- PKNCA::PKNCAconc(sim_nca_dha, Cc ~ time | group + id,
+conc_obj_dihydroart <- PKNCA::PKNCAconc(sim_nca_dihydroart, Cc ~ time | group + id,
                                  concu = "ng/mL", timeu = "h")
 
-intervals_dha <- data.frame(
+intervals_dihydroart <- data.frame(
   start    = 0,
   end      = 10,
   cmax     = TRUE,
@@ -641,8 +641,8 @@ intervals_dha <- data.frame(
   auclast  = TRUE
 )
 
-nca_dha <- PKNCA::pk.nca(
-  PKNCA::PKNCAdata(conc_obj_dha, dose_obj_am, intervals = intervals_dha)
+nca_dihydroart <- PKNCA::pk.nca(
+  PKNCA::PKNCAdata(conc_obj_dihydroart, dose_obj_am, intervals = intervals_dihydroart)
 )
 #> Warning: Requesting an AUC range starting (0) before the first measurement (0.5) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.5) is not allowed
@@ -990,8 +990,8 @@ to match.
   presystemic conversion fraction (1 - F1) = 0.198. The package encoding
   interprets CL as the total AM elimination
   (`d/dt(central) <- ... - (cl/vc) * central`) and K23 as the DHA
-  formation flux into central_dha
-  (`d/dt(central_dha) <- ... + k23 * central * (mw_dha / mw_arm) - ...`).
+  formation flux into central_dihydroart
+  (`d/dt(central_dihydroart) <- ... + k23 * central * (mw_dihydroart / mw_arm) - ...`).
   This avoids double-counting AM elimination via CL and K23 paths. The
   NONMEM control stream was not on disk for this extraction; this
   interpretation is the operator’s best reading of the published
@@ -1006,12 +1006,12 @@ to match.
   database values and match those used elsewhere in nlmixr2lib
   (`Tarning_2012_artemether`, `Birgersson_2019_artesunate`).
 
-- **DHA volume Vc_dha = Vc_am (fixed) per the source paper** (“Owing to
-  identification problems, the volume of distributions of DLF and DHA
-  could not be estimated and were assumed to be equal to those of LF and
-  AM, respectively”). Encoded inside `model()` of
-  `Mosha_2014_artemether` as `vc_dha <- vc`; no separate `lvc_dha` ini
-  parameter is declared.
+- **DHA volume Vc_dihydroart = Vc_am (fixed) per the source paper**
+  (“Owing to identification problems, the volume of distributions of DLF
+  and DHA could not be estimated and were assumed to be equal to those
+  of LF and AM, respectively”). Encoded inside `model()` of
+  `Mosha_2014_artemether` as `vc_dihydroart <- vc`; no separate
+  `lvc_dihydroart` ini parameter is declared.
 
 - **No allometric body-weight scaling.** Mosha 2014 retained no
   body-weight covariate on either the AM or LF model (Methods explicitly

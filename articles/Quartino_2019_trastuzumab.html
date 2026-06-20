@@ -1185,13 +1185,13 @@ covariate register).</td>
 <tr class="odd">
 <td><code>TTYPE</code></td>
 <td>
-<code>TUMTP_GC</code> / <code>TUMTP_OTH</code> (binary)</td>
+<code>TUMTP_GASTRIC</code> / <code>TUMTP_OTHER</code> (binary)</td>
 <td>Categorical primary tumor type with levels <code>MBC</code>,
 <code>EBC</code>, <code>HV</code>, <code>AGC</code>, <code>Others</code>
 is decomposed into two binary indicators:
-<code>TUMTP_GC = as.integer(TTYPE == "AGC")</code> and
-<code>TUMTP_OTH = as.integer(TTYPE == "Others")</code>. Both zero = MBC
-/ EBC / HV reference group.</td>
+<code>TUMTP_GASTRIC = as.integer(TTYPE == "AGC")</code> and
+<code>TUMTP_OTHER = as.integer(TTYPE == "Others")</code>. Both zero =
+MBC / EBC / HV reference group.</td>
 </tr>
 </tbody>
 </table>
@@ -1233,8 +1233,8 @@ reference-subject predictions reproduce the Table 1 typical values.</p>
 <span>  <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
 <span>    id         <span class="op">=</span> <span class="va">id_offset</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span>,</span>
 <span>    tumor_type <span class="op">=</span> <span class="va">tumor_type</span>,</span>
-<span>    TUMTP_GC   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">tumor_type</span> <span class="op">==</span> <span class="st">"AGC"</span><span class="op">)</span>,</span>
-<span>    TUMTP_OTH  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">tumor_type</span> <span class="op">==</span> <span class="st">"Others"</span><span class="op">)</span>,</span>
+<span>    TUMTP_GASTRIC   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">tumor_type</span> <span class="op">==</span> <span class="st">"AGC"</span><span class="op">)</span>,</span>
+<span>    TUMTP_OTHER  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">tumor_type</span> <span class="op">==</span> <span class="st">"Others"</span><span class="op">)</span>,</span>
 <span>    WT         <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmin</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n</span>, <span class="fl">66</span>, <span class="fl">13</span><span class="op">)</span>, <span class="fl">40</span><span class="op">)</span>, <span class="fl">120</span><span class="op">)</span>,          <span class="co"># kg; centred at 66 kg (reference)</span></span>
 <span>    AST        <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmin</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Lognormal.html" class="external-link">rlnorm</a></span><span class="op">(</span><span class="va">n</span>, <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fl">24</span><span class="op">)</span>, <span class="fl">0.5</span><span class="op">)</span>, <span class="fl">8</span><span class="op">)</span>, <span class="fl">200</span><span class="op">)</span>,    <span class="co"># IU/L</span></span>
 <span>    ALB        <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmin</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n</span>, <span class="fl">4.0</span>, <span class="fl">0.4</span><span class="op">)</span>, <span class="fl">2.5</span><span class="op">)</span>, <span class="fl">5.5</span><span class="op">)</span>,       <span class="co"># g/dL</span></span>
@@ -1309,7 +1309,7 @@ interval.</p>
 <span><span class="co"># Attach covariates (keyed by id)</span></span>
 <span><span class="va">events_q3w_cov</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span></span>
 <span>  <span class="va">events_q3w</span>,</span>
-<span>  <span class="va">cohort</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">tumor_type</span>, <span class="va">TUMTP_GC</span>, <span class="va">TUMTP_OTH</span>, <span class="va">WT</span>, <span class="va">AST</span>, <span class="va">ALB</span>, <span class="va">LMET</span><span class="op">)</span>,</span>
+<span>  <span class="va">cohort</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">tumor_type</span>, <span class="va">TUMTP_GASTRIC</span>, <span class="va">TUMTP_OTHER</span>, <span class="va">WT</span>, <span class="va">AST</span>, <span class="va">ALB</span>, <span class="va">LMET</span><span class="op">)</span>,</span>
 <span>  by <span class="op">=</span> <span class="st">"id"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -1349,7 +1349,7 @@ suppress between-subject variability.</p>
 <span>               amt <span class="op">=</span> <span class="fl">0</span>, cmt <span class="op">=</span> <span class="cn">NA</span>, evid <span class="op">=</span> <span class="fl">0</span>, ii <span class="op">=</span> <span class="fl">0</span>, addl <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>
 <span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>WT <span class="op">=</span> <span class="fl">66</span>, AST <span class="op">=</span> <span class="fl">24</span>, ALB <span class="op">=</span> <span class="fl">4</span>, LMET <span class="op">=</span> <span class="fl">0</span>,</span>
-<span>                  TUMTP_GC <span class="op">=</span> <span class="va">tgc</span>, TUMTP_OTH <span class="op">=</span> <span class="va">tot</span>,</span>
+<span>                  TUMTP_GASTRIC <span class="op">=</span> <span class="va">tgc</span>, TUMTP_OTHER <span class="op">=</span> <span class="va">tot</span>,</span>
 <span>                  tumor_type <span class="op">=</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/case-and-replace-when.html" class="external-link">case_when</a></span><span class="op">(</span><span class="va">tgc</span> <span class="op">==</span> <span class="fl">1</span> <span class="op">~</span> <span class="st">"AGC"</span>,</span>
 <span>                                                <span class="va">tot</span> <span class="op">==</span> <span class="fl">1</span> <span class="op">~</span> <span class="st">"Others"</span>,</span>
 <span>                                                <span class="cn">TRUE</span>     <span class="op">~</span> <span class="st">"BC"</span><span class="op">)</span><span class="op">)</span></span>

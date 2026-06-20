@@ -140,19 +140,19 @@ make_arm <- function(n, dose_mg, fed, form_suba, id_offset = 0L) {
   base <- tibble(
     id        = id_offset + seq_len(n),
     FED       = as.integer(fed),
-    FORM_SUBA = as.integer(form_suba),
+    FORM_ITR_SUBA = as.integer(form_suba),
     amt       = dose_mg
   )
   doses <- base |>
     mutate(time = 0, evid = 1L, cmt = "depot")
   obs <- base |>
-    select(id, FED, FORM_SUBA) |>
+    select(id, FED, FORM_ITR_SUBA) |>
     tidyr::crossing(time = obs_grid) |>
     mutate(evid = 0L, cmt = "Cc", amt = NA_real_)
   bind_rows(doses, obs) |>
     arrange(id, time, desc(evid)) |>
     mutate(
-      formulation = ifelse(FORM_SUBA == 1L, "SUBA-itraconazole", "Sporanox"),
+      formulation = ifelse(FORM_ITR_SUBA == 1L, "SUBA-itraconazole", "Sporanox"),
       fed_status  = ifelse(FED == 1L, "Fed", "Fasted"),
       treatment   = paste0(formulation, " - ", fed_status)
     )
@@ -177,7 +177,7 @@ published variance components.
 sim <- rxode2::rxSolve(
   object     = mod,
   events     = events,
-  keep       = c("FED", "FORM_SUBA", "formulation", "fed_status", "treatment"),
+  keep       = c("FED", "FORM_ITR_SUBA", "formulation", "fed_status", "treatment"),
   returnType = "data.frame"
 ) |>
   filter(time > 0)
@@ -193,7 +193,7 @@ between-subject random effects.
 sim_typ <- rxode2::rxSolve(
   object     = rxode2::zeroRe(mod),
   events     = events,
-  keep       = c("FED", "FORM_SUBA", "formulation", "fed_status", "treatment"),
+  keep       = c("FED", "FORM_ITR_SUBA", "formulation", "fed_status", "treatment"),
   returnType = "data.frame"
 ) |>
   filter(time > 0)

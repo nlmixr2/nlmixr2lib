@@ -1010,7 +1010,7 @@ several weeks. The combined <code>Emax</code> (not separate
 of all the structural alternatives tested in Sharma 2018 (Results
 “Population Dose- and Time-Dependent Pharmacodynamic Model”).</p>
 <p>Covariates retained in the final DTPD model are <strong>diabetes
-mellitus (T2DM)</strong> as a fixed covariate on <code>Emax</code>,
+mellitus (DIS_DIAB)</strong> as a fixed covariate on <code>Emax</code>,
 <code>kout</code>, <code>kpro</code>, and baseline body weight, and
 <strong>race</strong> as a covariate on <code>DSTIM</code> (White and
 Asian merged as the reference because of the small Asian subgroup, n =
@@ -1039,12 +1039,13 @@ estimation per Sharma 2018 Methods “Covariate Analysis”). All subjects
 received lifestyle intervention (hypocaloric diet of -500 to -1500
 kcal/day and &gt;= 30-minute walk three times per week).</p>
 <p>Study 6 (NB-304) was the only included trial enrolling obese subjects
-with type-2 diabetes mellitus (T2DM; 501 subjects, 10.9% of the pooled
-analysis population). All other studies enrolled obese non-diabetic
-subjects with or without other comorbidities (dyslipidemia, controlled
-hypertension). Subjects were categorised by BMI into overweight (BMI
-25-29.9, 2.4%), class-I obesity (BMI 30-34.9, 38.0%), class-II obesity
-(BMI 35-39.9, 36.2%), and class-III obesity (BMI &gt;= 40, 23.3%).</p>
+with type-2 diabetes mellitus (DIS_DIAB; 501 subjects, 10.9% of the
+pooled analysis population). All other studies enrolled obese
+non-diabetic subjects with or without other comorbidities (dyslipidemia,
+controlled hypertension). Subjects were categorised by BMI into
+overweight (BMI 25-29.9, 2.4%), class-I obesity (BMI 30-34.9, 38.0%),
+class-II obesity (BMI 35-39.9, 36.2%), and class-III obesity (BMI &gt;=
+40, 23.3%).</p>
 <p>For the model-development phase, five trials (1, 2, 4, 5, 6) were
 used. Trial NB-301 (study 3, n = 1586) was held out as the external
 evaluation dataset (Sharma 2018 Methods “Study Design”: “data from study
@@ -1159,8 +1160,8 @@ krel / kde rows mechanically)</td>
 <code>lkpro_kgy</code> (nondiabetic, FIXED)</td>
 <td>0.7 (kg/year)</td>
 <td>Sharma 2018 Table 2 DTPD column “kpro (kg/y) 0.7 [FIXED]” + Methods:
-“kpro was fixed to 0.7 kg per year for subjects without T2DM” (NHANES
-literature value)</td>
+“kpro was fixed to 0.7 kg per year for subjects without DIS_DIAB”
+(NHANES literature value)</td>
 </tr>
 <tr class="odd">
 <td><code>e_race_black_dstim</code></td>
@@ -1362,7 +1363,7 @@ the trivial fixed point.</p>
 <p>Individual subject-level data from the six Contrave trials are not
 publicly distributed. The simulations below build virtual cohorts whose
 covariate distributions match the Sharma 2018 Table 1 baseline
-demographics for each cohort (non-diabetic vs T2DM), assigning the
+demographics for each cohort (non-diabetic vs DIS_DIAB), assigning the
 paper-pooled race indicators consistent with the pooled Table 1
 percentages (77.2% White / 1.1% Asian merged as the White-Asian
 reference, 18.5% Black, 3.3% Other).</p>
@@ -1382,7 +1383,7 @@ reference, 18.5% Black, 3.3% Other).</p>
 <span>  <span class="op">)</span></span>
 <span>  <span class="va">per_subject</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
 <span>    id        <span class="op">=</span> <span class="va">ids</span>,</span>
-<span>    T2DM      <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">t2dm</span><span class="op">)</span>,</span>
+<span>    DIS_DIAB      <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">t2dm</span><span class="op">)</span>,</span>
 <span>    RACE_BLACK <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">race_draw</span> <span class="op">==</span> <span class="st">"B"</span><span class="op">)</span>,</span>
 <span>    RACE_OTHER <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">race_draw</span> <span class="op">==</span> <span class="st">"O"</span><span class="op">)</span>,</span>
 <span>    treated   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">treated</span><span class="op">)</span></span>
@@ -1414,27 +1415,27 @@ reference, 18.5% Black, 3.3% Other).</p>
 <span>                                    <span class="op">)</span>,</span>
 <span>                                    <span class="fl">0</span><span class="op">)</span></span>
 <span>    <span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="va">evid</span>, <span class="va">amt</span>, <span class="va">cmt</span>, <span class="va">T2DM</span>, <span class="va">RACE_BLACK</span>, <span class="va">RACE_OTHER</span>,</span>
+<span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="va">evid</span>, <span class="va">amt</span>, <span class="va">cmt</span>, <span class="va">DIS_DIAB</span>, <span class="va">RACE_BLACK</span>, <span class="va">RACE_OTHER</span>,</span>
 <span>                  <span class="va">CONMED_NAL_DOSE</span>, <span class="va">CONMED_BUP_DOSE</span>, <span class="va">treated</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
-<span><span class="va">n_per_cell</span> <span class="op">&lt;-</span> <span class="fl">250L</span>  <span class="co"># 250 subjects per (T2DM, treated) cell -&gt; 1000 subjects total</span></span>
+<span><span class="va">n_per_cell</span> <span class="op">&lt;-</span> <span class="fl">250L</span>  <span class="co"># 250 subjects per (DIS_DIAB, treated) cell -&gt; 1000 subjects total</span></span>
 <span><span class="va">events</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span></span>
 <span>  <span class="fu">make_cohort</span><span class="op">(</span><span class="va">n_per_cell</span>, t2dm <span class="op">=</span> <span class="fl">0L</span>, treated <span class="op">=</span> <span class="fl">0L</span>, id_offset <span class="op">=</span>                 <span class="fl">0L</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>cohort <span class="op">=</span> <span class="st">"nondiabetic placebo"</span><span class="op">)</span>,</span>
 <span>  <span class="fu">make_cohort</span><span class="op">(</span><span class="va">n_per_cell</span>, t2dm <span class="op">=</span> <span class="fl">0L</span>, treated <span class="op">=</span> <span class="fl">1L</span>, id_offset <span class="op">=</span> <span class="fl">1L</span> <span class="op">*</span> <span class="va">n_per_cell</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>cohort <span class="op">=</span> <span class="st">"nondiabetic Contrave"</span><span class="op">)</span>,</span>
 <span>  <span class="fu">make_cohort</span><span class="op">(</span><span class="va">n_per_cell</span>, t2dm <span class="op">=</span> <span class="fl">1L</span>, treated <span class="op">=</span> <span class="fl">0L</span>, id_offset <span class="op">=</span> <span class="fl">2L</span> <span class="op">*</span> <span class="va">n_per_cell</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>cohort <span class="op">=</span> <span class="st">"T2DM placebo"</span><span class="op">)</span>,</span>
+<span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>cohort <span class="op">=</span> <span class="st">"DIS_DIAB placebo"</span><span class="op">)</span>,</span>
 <span>  <span class="fu">make_cohort</span><span class="op">(</span><span class="va">n_per_cell</span>, t2dm <span class="op">=</span> <span class="fl">1L</span>, treated <span class="op">=</span> <span class="fl">1L</span>, id_offset <span class="op">=</span> <span class="fl">3L</span> <span class="op">*</span> <span class="va">n_per_cell</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>cohort <span class="op">=</span> <span class="st">"T2DM Contrave"</span><span class="op">)</span></span>
+<span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>cohort <span class="op">=</span> <span class="st">"DIS_DIAB Contrave"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/duplicated.html" class="external-link">anyDuplicated</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">events</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"id"</span>, <span class="st">"time"</span>, <span class="st">"evid"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">events</span><span class="op">$</span><span class="va">cohort</span><span class="op">)</span> <span class="op">/</span> <span class="fl">57L</span>  <span class="co"># subjects per cohort</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; nondiabetic Contrave  nondiabetic placebo        T2DM Contrave </span></span>
+<span><span class="co">#&gt;    DIS_DIAB Contrave     DIS_DIAB placebo nondiabetic Contrave </span></span>
 <span><span class="co">#&gt;                  250                  250                  250 </span></span>
-<span><span class="co">#&gt;         T2DM placebo </span></span>
+<span><span class="co">#&gt;  nondiabetic placebo </span></span>
 <span><span class="co">#&gt;                  250</span></span></code></pre></div>
 </div>
 <div class="section level2">
@@ -1446,7 +1447,7 @@ reference, 18.5% Black, 3.3% Other).</p>
 <span><span class="co"># Stochastic VPC-style simulation (with between-subject variability).</span></span>
 <span><span class="va">sim_vpc</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span></span>
 <span>  <span class="va">mod</span>, events <span class="op">=</span> <span class="va">events</span>,</span>
-<span>  keep <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cohort"</span>, <span class="st">"T2DM"</span>, <span class="st">"RACE_BLACK"</span>, <span class="st">"RACE_OTHER"</span>, <span class="st">"treated"</span><span class="op">)</span></span>
+<span>  keep <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cohort"</span>, <span class="st">"DIS_DIAB"</span>, <span class="st">"RACE_BLACK"</span>, <span class="st">"RACE_OTHER"</span>, <span class="st">"treated"</span><span class="op">)</span></span>
 <span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ℹ parameter labels from comments will be replaced by 'label()'</span></span>
@@ -1456,7 +1457,7 @@ reference, 18.5% Black, 3.3% Other).</p>
 <span><span class="co">#&gt; ℹ parameter labels from comments will be replaced by 'label()'</span></span>
 <span><span class="va">sim_typ</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span></span>
 <span>  <span class="va">mod_typ</span>, events <span class="op">=</span> <span class="va">events</span>,</span>
-<span>  keep <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cohort"</span>, <span class="st">"T2DM"</span>, <span class="st">"RACE_BLACK"</span>, <span class="st">"RACE_OTHER"</span>, <span class="st">"treated"</span><span class="op">)</span></span>
+<span>  keep <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cohort"</span>, <span class="st">"DIS_DIAB"</span>, <span class="st">"RACE_BLACK"</span>, <span class="st">"RACE_OTHER"</span>, <span class="st">"treated"</span><span class="op">)</span></span>
 <span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalkout', 'etalkrel', 'etaldstim', 'etalemax', 'etalet50', 'etaled50_nal', 'etaled50_bup', 'etalbw0'</span></span>
@@ -1467,24 +1468,24 @@ reference, 18.5% Black, 3.3% Other).</p>
 weeks)<a class="anchor" aria-label="anchor" href="#replicate-figure-3-typical-value-body-weight-change-over-56-weeks"></a>
 </h2>
 <p>Sharma 2018 Figure 3 panels (a) and (b) overlay typical-value
-body-weight trajectories over 56 weeks for the four (T2DM x treatment)
-cells. The DTPD-model panel (a) is what we reproduce here using
-<code>zeroRe()</code>; the PPPD panel (b) is out of scope. Each
+body-weight trajectories over 56 weeks for the four (DIS_DIAB x
+treatment) cells. The DTPD-model panel (a) is what we reproduce here
+using <code>zeroRe()</code>; the PPPD panel (b) is out of scope. Each
 typical-value trajectory uses a single representative race indicator
 (here, the White / Asian reference: RACE_BLACK = 0, RACE_OTHER = 0).</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># One representative White/Asian subject per (T2DM, treated) cell.</span></span>
+<code class="sourceCode R"><span><span class="co"># One representative White/Asian subject per (DIS_DIAB, treated) cell.</span></span>
 <span><span class="va">fig3_events</span> <span class="op">&lt;-</span> <span class="fu">bind_rows</span><span class="op">(</span></span>
 <span>  <span class="fu">make_cohort</span><span class="op">(</span><span class="fl">1L</span>, t2dm <span class="op">=</span> <span class="fl">0L</span>, treated <span class="op">=</span> <span class="fl">0L</span>, id_offset <span class="op">=</span> <span class="fl">0L</span><span class="op">)</span>   <span class="op">|&gt;</span> <span class="fu">mutate</span><span class="op">(</span>cohort <span class="op">=</span> <span class="st">"Nondiabetic placebo"</span><span class="op">)</span>,</span>
 <span>  <span class="fu">make_cohort</span><span class="op">(</span><span class="fl">1L</span>, t2dm <span class="op">=</span> <span class="fl">0L</span>, treated <span class="op">=</span> <span class="fl">1L</span>, id_offset <span class="op">=</span> <span class="fl">1L</span><span class="op">)</span>   <span class="op">|&gt;</span> <span class="fu">mutate</span><span class="op">(</span>cohort <span class="op">=</span> <span class="st">"Nondiabetic Contrave"</span><span class="op">)</span>,</span>
-<span>  <span class="fu">make_cohort</span><span class="op">(</span><span class="fl">1L</span>, t2dm <span class="op">=</span> <span class="fl">1L</span>, treated <span class="op">=</span> <span class="fl">0L</span>, id_offset <span class="op">=</span> <span class="fl">2L</span><span class="op">)</span>   <span class="op">|&gt;</span> <span class="fu">mutate</span><span class="op">(</span>cohort <span class="op">=</span> <span class="st">"T2DM placebo"</span><span class="op">)</span>,</span>
-<span>  <span class="fu">make_cohort</span><span class="op">(</span><span class="fl">1L</span>, t2dm <span class="op">=</span> <span class="fl">1L</span>, treated <span class="op">=</span> <span class="fl">1L</span>, id_offset <span class="op">=</span> <span class="fl">3L</span><span class="op">)</span>   <span class="op">|&gt;</span> <span class="fu">mutate</span><span class="op">(</span>cohort <span class="op">=</span> <span class="st">"T2DM Contrave"</span><span class="op">)</span></span>
+<span>  <span class="fu">make_cohort</span><span class="op">(</span><span class="fl">1L</span>, t2dm <span class="op">=</span> <span class="fl">1L</span>, treated <span class="op">=</span> <span class="fl">0L</span>, id_offset <span class="op">=</span> <span class="fl">2L</span><span class="op">)</span>   <span class="op">|&gt;</span> <span class="fu">mutate</span><span class="op">(</span>cohort <span class="op">=</span> <span class="st">"DIS_DIAB placebo"</span><span class="op">)</span>,</span>
+<span>  <span class="fu">make_cohort</span><span class="op">(</span><span class="fl">1L</span>, t2dm <span class="op">=</span> <span class="fl">1L</span>, treated <span class="op">=</span> <span class="fl">1L</span>, id_offset <span class="op">=</span> <span class="fl">3L</span><span class="op">)</span>   <span class="op">|&gt;</span> <span class="fu">mutate</span><span class="op">(</span>cohort <span class="op">=</span> <span class="st">"DIS_DIAB Contrave"</span><span class="op">)</span></span>
 <span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">mutate</span><span class="op">(</span>RACE_BLACK <span class="op">=</span> <span class="fl">0L</span>, RACE_OTHER <span class="op">=</span> <span class="fl">0L</span><span class="op">)</span>  <span class="co"># force the White/Asian reference</span></span>
 <span></span>
 <span><span class="va">fig3</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span></span>
 <span>  <span class="va">mod_typ</span>, events <span class="op">=</span> <span class="va">fig3_events</span>,</span>
-<span>  keep <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cohort"</span>, <span class="st">"T2DM"</span>, <span class="st">"treated"</span><span class="op">)</span></span>
+<span>  keep <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cohort"</span>, <span class="st">"DIS_DIAB"</span>, <span class="st">"treated"</span><span class="op">)</span></span>
 <span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">group_by</span><span class="op">(</span><span class="va">id</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -1493,8 +1494,8 @@ typical-value trajectory uses a single representative race indicator
 <span>  <span class="fu">mutate</span><span class="op">(</span></span>
 <span>    treatment <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">treated</span> <span class="op">==</span> <span class="fl">1L</span>, <span class="st">"Contrave"</span>, <span class="st">"placebo"</span><span class="op">)</span>,</span>
 <span>                       levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"placebo"</span>, <span class="st">"Contrave"</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>    diab      <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">T2DM</span> <span class="op">==</span> <span class="fl">1L</span>, <span class="st">"T2DM obese"</span>, <span class="st">"nondiabetic obese"</span><span class="op">)</span>,</span>
-<span>                       levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"nondiabetic obese"</span>, <span class="st">"T2DM obese"</span><span class="op">)</span><span class="op">)</span></span>
+<span>    diab      <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">DIS_DIAB</span> <span class="op">==</span> <span class="fl">1L</span>, <span class="st">"DIS_DIAB obese"</span>, <span class="st">"nondiabetic obese"</span><span class="op">)</span>,</span>
+<span>                       levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"nondiabetic obese"</span>, <span class="st">"DIS_DIAB obese"</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalkout', 'etalkrel', 'etaldstim', 'etalemax', 'etalet50', 'etaled50_nal', 'etaled50_bup', 'etalbw0'</span></span>
 <span><span class="co">#&gt; Warning: multi-subject simulation without without 'omega'</span></span>
@@ -1539,7 +1540,7 @@ benchmarks.</p>
 <span>    bw0              <span class="op">=</span> <span class="va">Cc</span><span class="op">[</span><span class="va">time</span> <span class="op">==</span> <span class="fl">0</span><span class="op">]</span></span>
 <span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">ungroup</span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">group_by</span><span class="op">(</span><span class="va">id</span>, <span class="va">cohort</span>, <span class="va">treated</span>, <span class="va">T2DM</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">group_by</span><span class="op">(</span><span class="va">id</span>, <span class="va">cohort</span>, <span class="va">treated</span>, <span class="va">DIS_DIAB</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">summarise</span><span class="op">(</span></span>
 <span>    pct_change_56wk  <span class="op">=</span> <span class="va">pct_change</span><span class="op">[</span><span class="va">time</span> <span class="op">==</span> <span class="fl">56</span><span class="op">]</span>,</span>
 <span>    pct_change_min   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">pct_change</span><span class="op">)</span>,</span>
@@ -1590,7 +1591,7 @@ threshold (17-43% in placebo).</caption>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td align="left">T2DM Contrave</td>
+<td align="left">DIS_DIAB Contrave</td>
 <td align="right">250</td>
 <td align="right">-6.26</td>
 <td align="right">-7.23</td>
@@ -1598,7 +1599,7 @@ threshold (17-43% in placebo).</caption>
 <td align="right">62.8</td>
 </tr>
 <tr class="even">
-<td align="left">T2DM placebo</td>
+<td align="left">DIS_DIAB placebo</td>
 <td align="right">250</td>
 <td align="right">-3.31</td>
 <td align="right">-4.24</td>
@@ -1635,8 +1636,8 @@ near the high end of the published 5-8% loss range; nadir around weeks
 that partially regains by week 56 as the inverse-Bateman LSI dissipates;
 median 56-week loss within the published 1-5% placebo range.</li>
 <li>
-<strong>T2DM Contrave</strong> – smaller magnitude of BW loss than
-the nondiabetic arm, reflecting the diabetes-driven multiplicative
+<strong>DIS_DIAB Contrave</strong> – smaller magnitude of BW loss
+than the nondiabetic arm, reflecting the diabetes-driven multiplicative
 shifts on <code>Emax</code> (-20.3%) and <code>kout</code> (-29.8%) and
 the much higher <code>kpro</code> (+286%) in the diabetic subgroup,
 which together attenuate both the lifestyle and the drug-driven
@@ -1709,8 +1710,8 @@ explicit definition).</li>
 fixed.</strong> The packaged file encodes <code>lkpro_kgy</code>
 (nondiabetic baseline value) as <code>fixed(log(0.7))</code> because
 Sharma 2018 Methods explicitly states “kpro was fixed to 0.7 kg per year
-for subjects without T2DM”; the diabetic <code>kpro</code> value of 2.7
-kg/year is estimated (Table 2 RSE 11%) and is encoded via the
+for subjects without DIS_DIAB”; the diabetic <code>kpro</code> value of
+2.7 kg/year is estimated (Table 2 RSE 11%) and is encoded via the
 <code>e_t2dm_kpro</code> multiplicative shift, which is <em>not</em>
 wrapped in <code>fixed()</code>.</li>
 <li>

@@ -1234,13 +1234,13 @@ of Lacy 2018).</li>
 <span>      SEXF      <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html" class="external-link">rbinom</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html" class="external-link">n</a></span><span class="op">(</span><span class="op">)</span>, <span class="fl">1</span>, <span class="fl">0.5</span><span class="op">)</span>,</span>
 <span>      RACE_BLACK    <span class="op">=</span> <span class="fl">0L</span>, RACE_ASIAN <span class="op">=</span> <span class="fl">0L</span>, RACE_OTHER <span class="op">=</span> <span class="fl">0L</span>,</span>
 <span>      TUMTP_RCC     <span class="op">=</span> <span class="fl">0L</span>, TUMTP_HRPC <span class="op">=</span> <span class="fl">0L</span>, TUMTP_MTC  <span class="op">=</span> <span class="fl">0L</span>,</span>
-<span>      TUMTP_GLIO    <span class="op">=</span> <span class="fl">0L</span>, TUMTP_OTH  <span class="op">=</span> <span class="fl">0L</span>,</span>
+<span>      TUMTP_GLIO    <span class="op">=</span> <span class="fl">0L</span>, TUMTP_OTHER  <span class="op">=</span> <span class="fl">0L</span>,</span>
 <span>      FORM_CAPSULE  <span class="op">=</span> <span class="fl">0L</span>,</span>
 <span>      DOSE          <span class="op">=</span> <span class="va">dose_mg</span></span>
 <span>    <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">treatment</span>, <span class="va">dose_mg</span>,</span>
 <span>                  <span class="va">AGE</span>, <span class="va">WT</span>, <span class="va">SEXF</span>, <span class="va">RACE_BLACK</span>, <span class="va">RACE_ASIAN</span>, <span class="va">RACE_OTHER</span>,</span>
-<span>                  <span class="va">TUMTP_RCC</span>, <span class="va">TUMTP_HRPC</span>, <span class="va">TUMTP_MTC</span>, <span class="va">TUMTP_GLIO</span>, <span class="va">TUMTP_OTH</span>,</span>
+<span>                  <span class="va">TUMTP_RCC</span>, <span class="va">TUMTP_HRPC</span>, <span class="va">TUMTP_MTC</span>, <span class="va">TUMTP_GLIO</span>, <span class="va">TUMTP_OTHER</span>,</span>
 <span>                  <span class="va">FORM_CAPSULE</span>, <span class="va">DOSE</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
@@ -1266,12 +1266,12 @@ of Lacy 2018).</li>
 <span>      WT        <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span><span class="fl">50</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmin</a></span><span class="op">(</span><span class="fl">140</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html" class="external-link">n</a></span><span class="op">(</span><span class="op">)</span>, <span class="fl">82</span>, <span class="fl">17</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>      SEXF      <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html" class="external-link">rbinom</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html" class="external-link">n</a></span><span class="op">(</span><span class="op">)</span>, <span class="fl">1</span>, <span class="fl">0.25</span><span class="op">)</span>,</span>
 <span>      RACE_BLACK    <span class="op">=</span> <span class="fl">0L</span>, RACE_ASIAN <span class="op">=</span> <span class="fl">0L</span>, RACE_OTHER <span class="op">=</span> <span class="fl">0L</span>,</span>
-<span>      TUMTP_HRPC    <span class="op">=</span> <span class="fl">0L</span>, TUMTP_GLIO <span class="op">=</span> <span class="fl">0L</span>, TUMTP_OTH  <span class="op">=</span> <span class="fl">0L</span>,</span>
+<span>      TUMTP_HRPC    <span class="op">=</span> <span class="fl">0L</span>, TUMTP_GLIO <span class="op">=</span> <span class="fl">0L</span>, TUMTP_OTHER  <span class="op">=</span> <span class="fl">0L</span>,</span>
 <span>      DOSE          <span class="op">=</span> <span class="va">dose_mg</span></span>
 <span>    <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">treatment</span>, <span class="va">dose_mg</span>,</span>
 <span>                  <span class="va">AGE</span>, <span class="va">WT</span>, <span class="va">SEXF</span>, <span class="va">RACE_BLACK</span>, <span class="va">RACE_ASIAN</span>, <span class="va">RACE_OTHER</span>,</span>
-<span>                  <span class="va">TUMTP_RCC</span>, <span class="va">TUMTP_HRPC</span>, <span class="va">TUMTP_MTC</span>, <span class="va">TUMTP_GLIO</span>, <span class="va">TUMTP_OTH</span>,</span>
+<span>                  <span class="va">TUMTP_RCC</span>, <span class="va">TUMTP_HRPC</span>, <span class="va">TUMTP_MTC</span>, <span class="va">TUMTP_GLIO</span>, <span class="va">TUMTP_OTHER</span>,</span>
 <span>                  <span class="va">FORM_CAPSULE</span>, <span class="va">DOSE</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
@@ -1298,13 +1298,13 @@ of Lacy 2018).</li>
 <span>      WT        <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span><span class="fl">50</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmin</a></span><span class="op">(</span><span class="fl">140</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html" class="external-link">n</a></span><span class="op">(</span><span class="op">)</span>, <span class="fl">82</span>, <span class="fl">17</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>      SEXF      <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html" class="external-link">rbinom</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html" class="external-link">n</a></span><span class="op">(</span><span class="op">)</span>, <span class="fl">1</span>, <span class="fl">0.25</span><span class="op">)</span>,</span>
 <span>      RACE_BLACK    <span class="op">=</span> <span class="fl">0L</span>, RACE_ASIAN <span class="op">=</span> <span class="fl">0L</span>, RACE_OTHER <span class="op">=</span> <span class="fl">0L</span>,</span>
-<span>      TUMTP_RCC     <span class="op">=</span> <span class="fl">0L</span>, TUMTP_HRPC <span class="op">=</span> <span class="fl">0L</span>, TUMTP_GLIO <span class="op">=</span> <span class="fl">0L</span>, TUMTP_OTH <span class="op">=</span> <span class="fl">0L</span>,</span>
+<span>      TUMTP_RCC     <span class="op">=</span> <span class="fl">0L</span>, TUMTP_HRPC <span class="op">=</span> <span class="fl">0L</span>, TUMTP_GLIO <span class="op">=</span> <span class="fl">0L</span>, TUMTP_OTHER <span class="op">=</span> <span class="fl">0L</span>,</span>
 <span>      FORM_CAPSULE  <span class="op">=</span> <span class="fl">0L</span>,</span>
 <span>      DOSE          <span class="op">=</span> <span class="va">dose_mg</span></span>
 <span>    <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">treatment</span>, <span class="va">dose_mg</span>,</span>
 <span>                  <span class="va">AGE</span>, <span class="va">WT</span>, <span class="va">SEXF</span>, <span class="va">RACE_BLACK</span>, <span class="va">RACE_ASIAN</span>, <span class="va">RACE_OTHER</span>,</span>
-<span>                  <span class="va">TUMTP_RCC</span>, <span class="va">TUMTP_HRPC</span>, <span class="va">TUMTP_MTC</span>, <span class="va">TUMTP_GLIO</span>, <span class="va">TUMTP_OTH</span>,</span>
+<span>                  <span class="va">TUMTP_RCC</span>, <span class="va">TUMTP_HRPC</span>, <span class="va">TUMTP_MTC</span>, <span class="va">TUMTP_GLIO</span>, <span class="va">TUMTP_OTHER</span>,</span>
 <span>                  <span class="va">FORM_CAPSULE</span>, <span class="va">DOSE</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
@@ -1350,7 +1350,7 @@ of Lacy 2018).</li>
 <span>        TUMTP_HRPC   <span class="op">=</span> <span class="va">sub</span><span class="op">$</span><span class="va">TUMTP_HRPC</span>,</span>
 <span>        TUMTP_MTC    <span class="op">=</span> <span class="va">sub</span><span class="op">$</span><span class="va">TUMTP_MTC</span>,</span>
 <span>        TUMTP_GLIO   <span class="op">=</span> <span class="va">sub</span><span class="op">$</span><span class="va">TUMTP_GLIO</span>,</span>
-<span>        TUMTP_OTH    <span class="op">=</span> <span class="va">sub</span><span class="op">$</span><span class="va">TUMTP_OTH</span>,</span>
+<span>        TUMTP_OTHER    <span class="op">=</span> <span class="va">sub</span><span class="op">$</span><span class="va">TUMTP_OTHER</span>,</span>
 <span>        FORM_CAPSULE <span class="op">=</span> <span class="va">sub</span><span class="op">$</span><span class="va">FORM_CAPSULE</span>,</span>
 <span>        DOSE         <span class="op">=</span> <span class="va">sub</span><span class="op">$</span><span class="va">DOSE</span></span>
 <span>      <span class="op">)</span></span>
@@ -1382,7 +1382,7 @@ of Lacy 2018).</li>
 <span>        TUMTP_HRPC   <span class="op">=</span> <span class="va">sub</span><span class="op">$</span><span class="va">TUMTP_HRPC</span>,</span>
 <span>        TUMTP_MTC    <span class="op">=</span> <span class="va">sub</span><span class="op">$</span><span class="va">TUMTP_MTC</span>,</span>
 <span>        TUMTP_GLIO   <span class="op">=</span> <span class="va">sub</span><span class="op">$</span><span class="va">TUMTP_GLIO</span>,</span>
-<span>        TUMTP_OTH    <span class="op">=</span> <span class="va">sub</span><span class="op">$</span><span class="va">TUMTP_OTH</span>,</span>
+<span>        TUMTP_OTHER    <span class="op">=</span> <span class="va">sub</span><span class="op">$</span><span class="va">TUMTP_OTHER</span>,</span>
 <span>        FORM_CAPSULE <span class="op">=</span> <span class="va">sub</span><span class="op">$</span><span class="va">FORM_CAPSULE</span>,</span>
 <span>        DOSE         <span class="op">=</span> <span class="va">sub</span><span class="op">$</span><span class="va">DOSE</span></span>
 <span>      <span class="op">)</span></span>

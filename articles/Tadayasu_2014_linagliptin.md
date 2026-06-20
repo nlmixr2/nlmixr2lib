@@ -19,11 +19,11 @@
 ## Population
 
 Tadayasu 2014 analysed a single Phase II trial in Japanese patients with
-type 2 diabetes mellitus (T2DM). 72 patients were randomised to placebo,
-0.5 mg, 2.5 mg, or 10 mg linagliptin orally once daily for 28 days; the
-final population PK/PD model uses only the 2.5 mg and 10 mg arms (18
-patients each, n = 36 total), because the 0.5 mg arm violated the
-quasi-equilibrium assumption (Tadayasu 2014 Methods, Patient
+type 2 diabetes mellitus (DIS_DIAB). 72 patients were randomised to
+placebo, 0.5 mg, 2.5 mg, or 10 mg linagliptin orally once daily for 28
+days; the final population PK/PD model uses only the 2.5 mg and 10 mg
+arms (18 patients each, n = 36 total), because the 0.5 mg arm violated
+the quasi-equilibrium assumption (Tadayasu 2014 Methods, Patient
 population).
 
 Demographics in the modelled cohort (Tadayasu 2014 Methods):
@@ -380,10 +380,10 @@ AUC = more inhibition). {.table}
 - **No subject-level covariates.** The paper does not report covariate
   effects on any structural parameter (the Japanese cohort was
   demographically narrow: 100 % Japanese, 75 % male, age 40 - 69,
-  controlled T2DM). The packaged `covariateData` is therefore empty.
+  controlled DIS_DIAB). The packaged `covariateData` is therefore empty.
 - **Simulation scope.** The packaged model is suitable for simulating
-  Japanese T2DM patients at doses 2.5 - 10 mg linagliptin PO once daily.
-  Extrapolation to other ethnicities, doses \< 2.5 mg, paediatric
+  Japanese DIS_DIAB patients at doses 2.5 - 10 mg linagliptin PO once
+  daily. Extrapolation to other ethnicities, doses \< 2.5 mg, paediatric
   patients, or patients with renal or hepatic impairment is not
   supported by the source data; see `Retlich_2015_linagliptin` for the
   broader Caucasian / multi-region popPK/PD model with covariate

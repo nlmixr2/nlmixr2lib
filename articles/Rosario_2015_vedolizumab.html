@@ -1076,7 +1076,7 @@ table below collects them in one place.</p>
 <tr class="odd">
 <td><code>e_cdai_cl</code></td>
 <td><code>-0.0515</code></td>
-<td>Table S4: CDAI on CLL (CD-only)</td>
+<td>Table S4: SCORE_CDAI on CLL (CD-only)</td>
 </tr>
 <tr class="even">
 <td><code>e_pmayo_cl</code></td>
@@ -1190,9 +1190,9 @@ Michaelis-Menten elimination from the central compartment</td>
 </tbody>
 </table>
 <p>Reference patient (Rosario 2015 Table 2 footnote / Figure 5 caption):
-70 kg, 40 years old, albumin 4 g/dL, faecal calprotectin 700 mg/kg, CDAI
-300 (for CD), partial Mayo 6 (for UC), UC diagnosis for Vc, no
-concomitant therapy, ADA-negative, TNF-naive.</p>
+70 kg, 40 years old, albumin 4 g/dL, faecal calprotectin 700 mg/kg,
+SCORE_CDAI 300 (for CD), partial Mayo 6 (for UC), UC diagnosis for Vc,
+no concomitant therapy, ADA-negative, TNF-naive.</p>
 </div>
 <div class="section level2">
 <h2 id="virtual-cohort">Virtual cohort<a class="anchor" aria-label="anchor" href="#virtual-cohort"></a>
@@ -1215,16 +1215,16 @@ Table S1).</p>
 <span>  <span class="va">WT</span>      <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span><span class="fl">30</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmin</a></span><span class="op">(</span><span class="fl">160</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Lognormal.html" class="external-link">rlnorm</a></span><span class="op">(</span><span class="va">n</span>, <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fl">70</span><span class="op">)</span>, <span class="fl">0.22</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="va">AGE</span>     <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span><span class="fl">18</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmin</a></span><span class="op">(</span><span class="fl">80</span>,  <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n</span>, <span class="fl">39</span>, <span class="fl">13</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="va">ALB</span>     <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span><span class="fl">2.0</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmin</a></span><span class="op">(</span><span class="fl">5.5</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n</span>, <span class="fl">4.0</span>, <span class="fl">0.4</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>        <span class="co"># g/dL</span></span>
-<span>  <span class="va">CALPRO</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span><span class="fl">10</span>,  <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n</span>, <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fl">700</span><span class="op">)</span>, <span class="fl">1.1</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>         <span class="co"># mg/kg</span></span>
+<span>  <span class="va">SCORE_CALPRO</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span><span class="fl">10</span>,  <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n</span>, <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fl">700</span><span class="op">)</span>, <span class="fl">1.1</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>         <span class="co"># mg/kg</span></span>
 <span>  <span class="va">IBD_CD</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html" class="external-link">rbinom</a></span><span class="op">(</span><span class="va">n</span>, <span class="fl">1</span>, <span class="va">ibd_cd_prob</span><span class="op">)</span></span>
-<span>  <span class="co"># Disease-activity scores: supply CDAI for CD, PMAYO for UC; the gating in</span></span>
+<span>  <span class="co"># Disease-activity scores: supply SCORE_CDAI for CD, SCORE_PMAYO for UC; the gating in</span></span>
 <span>  <span class="co"># the model sets the unused score's exponent to zero, so the supplied value</span></span>
 <span>  <span class="co"># is irrelevant for the other cohort. We set them to the reference value to</span></span>
 <span>  <span class="co"># make the columns self-consistent.</span></span>
-<span>  <span class="va">CDAI</span>    <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">IBD_CD</span> <span class="op">==</span> <span class="fl">1</span>,</span>
+<span>  <span class="va">SCORE_CDAI</span>    <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">IBD_CD</span> <span class="op">==</span> <span class="fl">1</span>,</span>
 <span>                    <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span><span class="fl">150</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmin</a></span><span class="op">(</span><span class="fl">600</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n</span>, <span class="fl">300</span>, <span class="fl">75</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>                    <span class="fl">300</span><span class="op">)</span></span>
-<span>  <span class="va">PMAYO</span>   <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">IBD_CD</span> <span class="op">==</span> <span class="fl">0</span>,</span>
+<span>  <span class="va">SCORE_PMAYO</span>   <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">IBD_CD</span> <span class="op">==</span> <span class="fl">0</span>,</span>
 <span>                    <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmin</a></span><span class="op">(</span><span class="fl">9</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n</span>, <span class="fl">6</span>, <span class="fl">1.2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>                    <span class="fl">6</span><span class="op">)</span></span>
 <span>  <span class="va">PRIOR_TNF</span>    <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html" class="external-link">rbinom</a></span><span class="op">(</span><span class="va">n</span>, <span class="fl">1</span>, <span class="fl">0.50</span><span class="op">)</span></span>
@@ -1239,7 +1239,7 @@ Table S1).</p>
 <span></span>
 <span>  <span class="va">pop</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>    ID  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span>,</span>
-<span>    <span class="va">WT</span>, <span class="va">AGE</span>, <span class="va">ALB</span>, <span class="va">CALPRO</span>, <span class="va">CDAI</span>, <span class="va">PMAYO</span>, <span class="va">IBD_CD</span>,</span>
+<span>    <span class="va">WT</span>, <span class="va">AGE</span>, <span class="va">ALB</span>, <span class="va">SCORE_CALPRO</span>, <span class="va">SCORE_CDAI</span>, <span class="va">SCORE_PMAYO</span>, <span class="va">IBD_CD</span>,</span>
 <span>    <span class="va">PRIOR_TNF</span>, <span class="va">ADA_POS</span>, <span class="va">CONMED_AZA</span>, <span class="va">CONMED_MP</span>, <span class="va">CONMED_MTX</span>, <span class="va">CONMED_AMINO</span></span>
 <span>  <span class="op">)</span></span>
 <span></span>
@@ -1271,7 +1271,7 @@ Table S1).</p>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">d_dose</span>, <span class="va">d_obs</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">ID</span>, <span class="va">TIME</span>, <span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html" class="external-link">desc</a></span><span class="op">(</span><span class="va">EVID</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">ID</span>, <span class="va">TIME</span>, <span class="va">AMT</span>, <span class="va">EVID</span>, <span class="va">CMT</span>, <span class="va">RATE</span>, <span class="va">DV</span>,</span>
-<span>           <span class="va">WT</span>, <span class="va">AGE</span>, <span class="va">ALB</span>, <span class="va">CALPRO</span>, <span class="va">CDAI</span>, <span class="va">PMAYO</span>, <span class="va">IBD_CD</span>,</span>
+<span>           <span class="va">WT</span>, <span class="va">AGE</span>, <span class="va">ALB</span>, <span class="va">SCORE_CALPRO</span>, <span class="va">SCORE_CDAI</span>, <span class="va">SCORE_PMAYO</span>, <span class="va">IBD_CD</span>,</span>
 <span>           <span class="va">PRIOR_TNF</span>, <span class="va">ADA_POS</span>, <span class="va">CONMED_AZA</span>, <span class="va">CONMED_MP</span>, <span class="va">CONMED_MTX</span>, <span class="va">CONMED_AMINO</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
@@ -1340,7 +1340,7 @@ ratios from the model’s coefficients.</p>
 <span>  <span class="st">"Albumin (g/dL)"</span>,      <span class="fl">3.2</span>,    <span class="fl">4.0</span>,    <span class="fl">4.8</span>,    <span class="fu"><a href="https://rdrr.io/r/base/get.html" class="external-link">get</a></span><span class="op">(</span><span class="st">"e_alb_cl"</span><span class="op">)</span>,</span>
 <span>  <span class="st">"Calprotectin (mg/kg)"</span>, <span class="fl">50</span>,    <span class="fl">700</span>,    <span class="fl">5000</span>,   <span class="fu"><a href="https://rdrr.io/r/base/get.html" class="external-link">get</a></span><span class="op">(</span><span class="st">"e_calpro_cl"</span><span class="op">)</span>,</span>
 <span>  <span class="st">"Age (years)"</span>,         <span class="fl">22</span>,     <span class="fl">40</span>,     <span class="fl">68</span>,     <span class="fu"><a href="https://rdrr.io/r/base/get.html" class="external-link">get</a></span><span class="op">(</span><span class="st">"e_age_cl"</span><span class="op">)</span>,</span>
-<span>  <span class="st">"CDAI (CD only)"</span>,      <span class="fl">150</span>,    <span class="fl">300</span>,    <span class="fl">500</span>,    <span class="fu"><a href="https://rdrr.io/r/base/get.html" class="external-link">get</a></span><span class="op">(</span><span class="st">"e_cdai_cl"</span><span class="op">)</span>,</span>
+<span>  <span class="st">"SCORE_CDAI (CD only)"</span>,      <span class="fl">150</span>,    <span class="fl">300</span>,    <span class="fl">500</span>,    <span class="fu"><a href="https://rdrr.io/r/base/get.html" class="external-link">get</a></span><span class="op">(</span><span class="st">"e_cdai_cl"</span><span class="op">)</span>,</span>
 <span>  <span class="st">"Partial Mayo (UC only)"</span>, <span class="fl">3</span>,   <span class="fl">6</span>,      <span class="fl">9</span>,      <span class="fu"><a href="https://rdrr.io/r/base/get.html" class="external-link">get</a></span><span class="op">(</span><span class="st">"e_pmayo_cl"</span><span class="op">)</span></span>
 <span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
@@ -1409,8 +1409,8 @@ information derived from this model).</li>
 <span>                        <span class="fl">42</span>, <span class="fl">56</span>, <span class="fl">70</span>, <span class="fl">84</span>, <span class="fl">112</span>, <span class="fl">140</span>, <span class="fl">168</span><span class="op">)</span></span>
 <span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
-<span>    WT <span class="op">=</span> <span class="fl">70</span>, AGE <span class="op">=</span> <span class="fl">40</span>, ALB <span class="op">=</span> <span class="fl">4</span>, CALPRO <span class="op">=</span> <span class="fl">700</span>,</span>
-<span>    CDAI <span class="op">=</span> <span class="fl">300</span>, PMAYO <span class="op">=</span> <span class="fl">6</span>, IBD_CD <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>    WT <span class="op">=</span> <span class="fl">70</span>, AGE <span class="op">=</span> <span class="fl">40</span>, ALB <span class="op">=</span> <span class="fl">4</span>, SCORE_CALPRO <span class="op">=</span> <span class="fl">700</span>,</span>
+<span>    SCORE_CDAI <span class="op">=</span> <span class="fl">300</span>, SCORE_PMAYO <span class="op">=</span> <span class="fl">6</span>, IBD_CD <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>    PRIOR_TNF <span class="op">=</span> <span class="fl">0</span>, ADA_POS <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>    CONMED_AZA <span class="op">=</span> <span class="fl">0</span>, CONMED_MP <span class="op">=</span> <span class="fl">0</span>, CONMED_MTX <span class="op">=</span> <span class="fl">0</span>, CONMED_AMINO <span class="op">=</span> <span class="fl">0</span></span>
 <span>  <span class="op">)</span></span>
@@ -1610,8 +1610,8 @@ measurement (0.02) is not allowed</td>
 <span>  dosing_interval_days <span class="op">=</span> <span class="fl">56</span></span>
 <span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
-<span>    WT <span class="op">=</span> <span class="fl">70</span>, AGE <span class="op">=</span> <span class="fl">40</span>, ALB <span class="op">=</span> <span class="fl">4</span>, CALPRO <span class="op">=</span> <span class="fl">700</span>,</span>
-<span>    CDAI <span class="op">=</span> <span class="fl">300</span>, PMAYO <span class="op">=</span> <span class="fl">6</span>, IBD_CD <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>    WT <span class="op">=</span> <span class="fl">70</span>, AGE <span class="op">=</span> <span class="fl">40</span>, ALB <span class="op">=</span> <span class="fl">4</span>, SCORE_CALPRO <span class="op">=</span> <span class="fl">700</span>,</span>
+<span>    SCORE_CDAI <span class="op">=</span> <span class="fl">300</span>, SCORE_PMAYO <span class="op">=</span> <span class="fl">6</span>, IBD_CD <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>    PRIOR_TNF <span class="op">=</span> <span class="fl">0</span>, ADA_POS <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>    CONMED_AZA <span class="op">=</span> <span class="fl">0</span>, CONMED_MP <span class="op">=</span> <span class="fl">0</span>, CONMED_MTX <span class="op">=</span> <span class="fl">0</span>, CONMED_AMINO <span class="op">=</span> <span class="fl">0</span></span>
 <span>  <span class="op">)</span></span>
@@ -1621,8 +1621,8 @@ measurement (0.02) is not allowed</td>
 <span>  ID <span class="op">=</span> <span class="fl">1L</span>,</span>
 <span>  TIME <span class="op">=</span> <span class="va">final_dose_day</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">70</span>, <span class="fl">84</span>, <span class="fl">112</span>, <span class="fl">140</span>, <span class="fl">168</span><span class="op">)</span>,</span>
 <span>  AMT <span class="op">=</span> <span class="fl">0</span>, EVID <span class="op">=</span> <span class="fl">0</span>, CMT <span class="op">=</span> <span class="st">"central"</span>, RATE <span class="op">=</span> <span class="fl">0</span>, DV <span class="op">=</span> <span class="cn">NA_real_</span>,</span>
-<span>  WT <span class="op">=</span> <span class="fl">70</span>, AGE <span class="op">=</span> <span class="fl">40</span>, ALB <span class="op">=</span> <span class="fl">4</span>, CALPRO <span class="op">=</span> <span class="fl">700</span>,</span>
-<span>  CDAI <span class="op">=</span> <span class="fl">300</span>, PMAYO <span class="op">=</span> <span class="fl">6</span>, IBD_CD <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  WT <span class="op">=</span> <span class="fl">70</span>, AGE <span class="op">=</span> <span class="fl">40</span>, ALB <span class="op">=</span> <span class="fl">4</span>, SCORE_CALPRO <span class="op">=</span> <span class="fl">700</span>,</span>
+<span>  SCORE_CDAI <span class="op">=</span> <span class="fl">300</span>, SCORE_PMAYO <span class="op">=</span> <span class="fl">6</span>, IBD_CD <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  PRIOR_TNF <span class="op">=</span> <span class="fl">0</span>, ADA_POS <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  CONMED_AZA <span class="op">=</span> <span class="fl">0</span>, CONMED_MP <span class="op">=</span> <span class="fl">0</span>, CONMED_MTX <span class="op">=</span> <span class="fl">0</span>, CONMED_AMINO <span class="op">=</span> <span class="fl">0</span></span>
 <span><span class="op">)</span></span>
@@ -1877,12 +1877,13 @@ the published parameterisation; an alternative ratio form
 equivalent.</li>
 <li>
 <strong>Disease-activity gating.</strong> Partial Mayo score and
-CDAI appear in the final model only for the diagnoses they are defined
-for. We gate the power exponents by the <code>IBD_CD</code> indicator:
-<code>(PMAYO/6)^(e_pmayo_cl * (1 - IBD_CD))</code> and
-<code>(CDAI/300)^(e_cdai_cl * IBD_CD)</code>. This reduces to 1 for the
-other cohort irrespective of the supplied score. For convenience,
-simulations can fill the inactive column with the reference value.</li>
+SCORE_CDAI appear in the final model only for the diagnoses they are
+defined for. We gate the power exponents by the <code>IBD_CD</code>
+indicator: <code>(SCORE_PMAYO/6)^(e_pmayo_cl * (1 - IBD_CD))</code> and
+<code>(SCORE_CDAI/300)^(e_cdai_cl * IBD_CD)</code>. This reduces to 1
+for the other cohort irrespective of the supplied score. For
+convenience, simulations can fill the inactive column with the reference
+value.</li>
 <li>
 <strong>Time-varying ADA simplified to binary.</strong> Rosario 2015
 reports only 4% of the pool as ADA-positive at any time and used the
@@ -1906,8 +1907,8 @@ proportional-error form.</li>
 <strong>Virtual covariate distributions.</strong> Exact observed
 covariate distributions are not published. The demo cohort uses
 log-normal WT (median 70 kg, CV 22%), normal AGE (39 ± 13 y), normal ALB
-(4.0 ± 0.4 g/dL), log-normal CALPRO (median 700 mg/kg, log-SD 1.1),
-55%/45% CD/UC split, and binary probabilities for the concomitant-
+(4.0 ± 0.4 g/dL), log-normal SCORE_CALPRO (median 700 mg/kg, log-SD
+1.1), 55%/45% CD/UC split, and binary probabilities for the concomitant-
 medication and immunogenicity indicators approximately matching Rosario
 2015 Table 1.</li>
 </ul>

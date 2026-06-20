@@ -123,7 +123,7 @@ cohort <- tibble::tibble(
   WT       = pmin(pmax(rnorm(n_subj, mean = 71, sd = 17),   40, 165)),
   SEXF     = rbinom(n_subj, 1, 0.83),
   ADA_POS  = rbinom(n_subj, 1, 0.18),
-  FORM_DP2 = 0L,                          # commercial DP3 formulation for labelled regimen
+  FORM_SAR_DP2 = 0L,                          # commercial DP3 formulation for labelled regimen
   ALBR     = pmin(pmax(rnorm(n_subj, mean = 0.78, sd = 0.08), 0.50, 1.05)),
   CRCL = pmin(pmax(rnorm(n_subj, mean = 100,  sd = 25),   40,  200)),
   CRP    = pmax(rlnorm(n_subj, log(14.2) - 0.5 * 0.9^2, 0.9), 0.5)
@@ -179,7 +179,7 @@ build_events <- function(cohort, dose_amt, treatment) {
   dplyr::bind_rows(ev_dose, ev_obs) |>
     dplyr::arrange(id, time, dplyr::desc(evid)) |>
     dplyr::select(id, time, amt, cmt, evid, treatment,
-                  WT, SEXF, ADA_POS, FORM_DP2, ALBR, CRCL, CRP)
+                  WT, SEXF, ADA_POS, FORM_SAR_DP2, ALBR, CRCL, CRP)
 }
 
 events_200 <- build_events(cohort, 200, "200mg_Q2W")
@@ -194,7 +194,7 @@ events <- dplyr::bind_rows(events_200, events_150)
 mod <- rxode2::rxode2(readModelDb("Xu_2019_sarilumab"))
 #> ℹ parameter labels from comments will be replaced by 'label()'
 conc_unit <- mod$units[["concentration"]]
-keep_cols <- c("WT", "SEXF", "ADA_POS", "FORM_DP2",
+keep_cols <- c("WT", "SEXF", "ADA_POS", "FORM_SAR_DP2",
                "ALBR", "CRCL", "CRP", "treatment")
 
 sim <- lapply(split(events, events$treatment), function(ev) {
@@ -328,7 +328,7 @@ CRP = 14.2) and extracts Cmax, Ctrough, and AUC0-14d at steady state.
 mod_typical <- mod |> rxode2::zeroRe()
 
 typical_cov <- tibble::tibble(
-  id = 1L, WT = 71, SEXF = 1L, ADA_POS = 0L, FORM_DP2 = 0L,
+  id = 1L, WT = 71, SEXF = 1L, ADA_POS = 0L, FORM_SAR_DP2 = 0L,
   ALBR = 0.78, CRCL = 100, CRP = 14.2
 )
 
@@ -346,7 +346,7 @@ ev_typ <- function(dose) {
   dplyr::bind_rows(ev_dose, ev_obs) |>
     dplyr::arrange(id, time, dplyr::desc(evid)) |>
     dplyr::select(id, time, amt, cmt, evid,
-                  WT, SEXF, ADA_POS, FORM_DP2, ALBR, CRCL, CRP)
+                  WT, SEXF, ADA_POS, FORM_SAR_DP2, ALBR, CRCL, CRP)
 }
 
 sim_typ_200 <- as.data.frame(rxode2::rxSolve(mod_typical, events = ev_typ(200)))

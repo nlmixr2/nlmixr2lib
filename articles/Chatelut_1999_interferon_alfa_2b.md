@@ -14,9 +14,9 @@
   absorbed at first-order rate ka after tk0) and first-order
   elimination. Apparent oral clearance CL/F is reduced by 63.8% in
   chronic-haemodialysis patients relative to patients with normal renal
-  function (HEMODIAL = 1 vs 0); apparent central volume of distribution
-  V/F scales linearly with body surface area (BSA). Proportional
-  residual error.
+  function (RRT_HEMODIAL_STATUS = 1 vs 0); apparent central volume of
+  distribution V/F scales linearly with body surface area (BSA).
+  Proportional residual error.
 - Article: <https://doi.org/10.1046/j.1365-2125.1999.00912.x>
 
 ## Population
@@ -61,7 +61,7 @@ table below collects them in one place for review.
 | `V/F` (apparent central volume per m^2 BSA) | 91 L/m^2 (95% CI 72-110) | Table 3 |
 | `CL/F` typical, normal renal function | 36.5 L/h (95% CI 30.3-42.7) | Table 3 |
 | `CL/F` typical, chronic-haemodialysis | 13.2 L/h (95% CI 10.7-15.8) | Table 3 |
-| HEMODIAL effect (theta2 in CL/F = theta1 \* (1 - theta2 \* DIA)) | 0.638 (95% CI 0.568-0.708) | Results “Structural and covariate models” paragraph 2 |
+| RRT_HEMODIAL_STATUS effect (theta2 in CL/F = theta1 \* (1 - theta2 \* DIA)) | 0.638 (95% CI 0.568-0.708) | Results “Structural and covariate models” paragraph 2 |
 | BSA effect (linear, V/F = theta \* BSA) | exponent fixed at 1 | Table 3 (V/F reported in L/m^2) |
 | IIV on Fz, %CV | 33% (95% CI 0-55%) | Table 3 |
 | IIV on tk0, %CV | 33% (95% CI 4-46%) | Table 3 |
@@ -75,9 +75,10 @@ table below collects them in one place for review.
 Original observed concentration data are not publicly available. The
 figures below use a virtual two-cohort population reflecting the
 Chatelut 1999 Table 1 baseline-demographics distribution: 17 dialysis
-patients (HEMODIAL = 1, BSA approximately 1.69 m^2) and 10 patients with
-normal renal function (HEMODIAL = 0, BSA approximately 1.75 m^2). Each
-subject receives the single 15,000 ng SC dose used in the study.
+patients (RRT_HEMODIAL_STATUS = 1, BSA approximately 1.69 m^2) and 10
+patients with normal renal function (RRT_HEMODIAL_STATUS = 0, BSA
+approximately 1.75 m^2). Each subject receives the single 15,000 ng SC
+dose used in the study.
 
 ``` r
 
@@ -93,7 +94,7 @@ make_cohort <- function(n, hemodial, bsa_median, bsa_sd, cohort_label,
   ids <- id_offset + seq_len(n)
   per_subject <- tibble::tibble(
     id       = ids,
-    HEMODIAL = as.integer(hemodial),
+    RRT_HEMODIAL_STATUS = as.integer(hemodial),
     BSA      = pmax(0.5, rnorm(n, mean = bsa_median, sd = bsa_sd)),
     cohort   = cohort_label
   )
@@ -101,7 +102,7 @@ make_cohort <- function(n, hemodial, bsa_median, bsa_sd, cohort_label,
     dplyr::mutate(time = 0, amt = dose_ng, evid = 1L,
                   cmt = "depot")
   obs_rows  <- tidyr::expand_grid(
-    per_subject |> dplyr::select(id, HEMODIAL, BSA, cohort),
+    per_subject |> dplyr::select(id, RRT_HEMODIAL_STATUS, BSA, cohort),
     time = obs_times
   ) |>
     dplyr::mutate(amt = 0, evid = 0L, cmt = NA_character_)
@@ -124,7 +125,7 @@ stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
 
 mod <- readModelDb("Chatelut_1999_interferon_alfa_2b")
 sim <- rxode2::rxSolve(mod, events = events,
-                       keep = c("cohort", "HEMODIAL", "BSA"))
+                       keep = c("cohort", "RRT_HEMODIAL_STATUS", "BSA"))
 #> ℹ parameter labels from comments will be replaced by 'label()'
 sim <- as.data.frame(sim)
 ```
@@ -138,23 +139,23 @@ mod_typical <- rxode2::zeroRe(mod)
 #> ℹ parameter labels from comments will be replaced by 'label()'
 events_typical <- dplyr::bind_rows(
   tibble::tibble(id = 1L, time = 0, amt = dose_ng, evid = 1L,
-                 cmt = "depot", HEMODIAL = 0L, BSA = 1.75,
+                 cmt = "depot", RRT_HEMODIAL_STATUS = 0L, BSA = 1.75,
                  cohort = "normal renal (typical)"),
   tibble::tibble(id = 1L, time = obs_times, amt = 0, evid = 0L,
-                 cmt = NA_character_, HEMODIAL = 0L, BSA = 1.75,
+                 cmt = NA_character_, RRT_HEMODIAL_STATUS = 0L, BSA = 1.75,
                  cohort = "normal renal (typical)"),
   tibble::tibble(id = 2L, time = 0, amt = dose_ng, evid = 1L,
-                 cmt = "depot", HEMODIAL = 1L, BSA = 1.69,
+                 cmt = "depot", RRT_HEMODIAL_STATUS = 1L, BSA = 1.69,
                  cohort = "dialysis (typical)"),
   tibble::tibble(id = 2L, time = obs_times, amt = 0, evid = 0L,
-                 cmt = NA_character_, HEMODIAL = 1L, BSA = 1.69,
+                 cmt = NA_character_, RRT_HEMODIAL_STATUS = 1L, BSA = 1.69,
                  cohort = "dialysis (typical)")
 ) |>
   dplyr::arrange(id, time, dplyr::desc(evid))
 
 sim_typical <- as.data.frame(rxode2::rxSolve(
   mod_typical, events = events_typical,
-  keep = c("cohort", "HEMODIAL", "BSA")))
+  keep = c("cohort", "RRT_HEMODIAL_STATUS", "BSA")))
 #> ℹ omega/sigma items treated as zero: 'etalfr_zo', 'etaltk0', 'etalka', 'etalvc', 'etalcl'
 #> Warning: multi-subject simulation without without 'omega'
 ```

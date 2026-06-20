@@ -14,10 +14,10 @@
   epithelial ovarian cancer (Zecchin 2016 / DDMODEL00000218): Weibull
   baseline hazard with covariate effects of normalised baseline SLD
   (TUM_SLD / 70 mm), tumour-size-ratio TSR(t) capped at week 12,
-  time-varying new-lesion indicator (NWLS), and binary ECOG performance
-  status, with the underlying SLD trajectory (subject-specific
-  tumour-growth and drug-cytotoxicity rate constants from the upstream
-  Zecchin 2016 SLD model) integrated inline.
+  time-varying new-lesion indicator (NEW_LESION), and binary ECOG
+  performance status, with the underlying SLD trajectory
+  (subject-specific tumour-growth and drug-cytotoxicity rate constants
+  from the upstream Zecchin 2016 SLD model) integrated inline.
 - Article: <https://doi.org/10.1111/bcp.12994>
 - DDMORE Foundation Model Repository entry:
   [DDMODEL00000218](https://repository.ddmore.eu/model/DDMODEL00000218)
@@ -82,7 +82,7 @@ table below collects them in one place.
 | `alfa_haz` (Weibull shape) | exp-1 = 2.004 | Output_real_OS.lst FINAL TH2 = 2.00E+00; Table 2 α_OS = 1.99 |
 | `e_sld0_haz` (γ on SLD₀/70) | 0.2084 | Output_real_OS.lst FINAL TH3 = 2.08E-01; Table 2 γ_SLD0 = 0.189 (small rounding) |
 | `e_tsr_haz` (γ on TSR(t)) | 0.9036 | Output_real_OS.lst FINAL TH4 = 9.04E-01; Table 2 γ_TSR(t) = 0.893 |
-| `e_nwls_haz` (γ on NWLS) | 1.230 | Output_real_OS.lst FINAL TH5 = 1.23E+00; Table 2 γ_NewLes(t) = 1.23 |
+| `e_nwls_haz` (γ on NEW_LESION) | 1.230 | Output_real_OS.lst FINAL TH5 = 1.23E+00; Table 2 γ_NewLes(t) = 1.23 |
 | `e_ecog_haz` (γ on ECOG_GE1) | 0.5162 | Output_real_OS.lst FINAL TH6 = 5.16E-01; Table 2 γ_ECOG = 0.518 |
 | η on `LAM` (`OMEGA(1,1)`) | 0 FIXED | Output_real_OS.lst FINAL OMEGA(1,1) = 0.00E+00 (placeholder; no estimated IIV) |
 
@@ -134,7 +134,7 @@ make_subject <- function(id, arm) {
   )
 
   # Observation grid (daily) covering 0 to 1095 days (~3 years).
-  # NWLS = 0 throughout in this simplified cohort; the new-lesion submodel
+  # NEW_LESION = 0 throughout in this simplified cohort; the new-lesion submodel
   # is exercised separately in the "Sensitivity to covariates" section
   # below.
   obs_grid <- tibble(
@@ -156,7 +156,7 @@ make_subject <- function(id, arm) {
       IBASE     = IBASE,
       TUM_SLD   = TUM_SLD,
       ECOG_GE1  = ECOG_GE1,
-      NWLS      = 0L,
+      NEW_LESION      = 0L,
       arm       = arm
     )
   ev
@@ -257,7 +257,7 @@ ev_ref$KD1     <- 0.0164
 ev_ref$IBASE    <- 0.07
 ev_ref$TUM_SLD  <- 70
 ev_ref$ECOG_GE1 <- 0L
-ev_ref$NWLS     <- 0L
+ev_ref$NEW_LESION     <- 0L
 
 sim_ref <- rxode2::rxSolve(rxode2::zeroRe(m), events = ev_ref) |> as.data.frame()
 #> Warning: No omega parameters in the model
@@ -295,13 +295,13 @@ make_alt <- function(label, mutator) {
 }
 
 label_to_id <- function(x) match(x, c("baseline", "TUM_SLD = 140 mm",
-                                       "ECOG_GE1 = 1", "NWLS turns 1 at day 200"))
+                                       "ECOG_GE1 = 1", "NEW_LESION turns 1 at day 200"))
 
 scenarios <- bind_rows(
   make_alt("baseline",                function(d) d),
   make_alt("TUM_SLD = 140 mm",        function(d) {d$TUM_SLD <- 140; d}),
   make_alt("ECOG_GE1 = 1",            function(d) {d$ECOG_GE1 <- 1L; d}),
-  make_alt("NWLS turns 1 at day 200", function(d) {d$NWLS <- as.integer(d$time >= 200); d})
+  make_alt("NEW_LESION turns 1 at day 200", function(d) {d$NEW_LESION <- as.integer(d$time >= 200); d})
 )
 
 sim_scen <- rxode2::rxSolve(rxode2::zeroRe(m), events = scenarios, keep = c("arm")) |>
@@ -324,11 +324,11 @@ final_sur <- sim_scen |>
   filter(time == max(time)) |>
   select(arm, sur)
 print(final_sur)
-#>                       arm        sur
-#> 1                baseline 0.22810862
-#> 2        TUM_SLD = 140 mm 0.16196480
-#> 3            ECOG_GE1 = 1 0.08403746
-#> 4 NWLS turns 1 at day 200 0.00721743
+#>                             arm        sur
+#> 1                      baseline 0.22810862
+#> 2              TUM_SLD = 140 mm 0.16196480
+#> 3                  ECOG_GE1 = 1 0.08403746
+#> 4 NEW_LESION turns 1 at day 200 0.00721743
 
 baseline_sur <- final_sur$sur[final_sur$arm == "baseline"]
 non_baseline <- final_sur |> filter(arm != "baseline")
@@ -403,22 +403,23 @@ vignette.
   the publication’s Methods, to the run that produced the final
   estimates, and to the bundle’s simulated dataset.
 
-- **NWLS time gate (.lst-only).** The original `Output_real_OS.lst`
-  gates `INWLS` on a `TNWLS` (time-of-new-lesion) column not shipped
-  with the bundle’s simulated dataset (`Executable_OS.mod` uses a
-  NEWIND-based LOCF carry-forward instead). The nlmixr2lib model follows
-  the bundle’s executable: `NWLS` enters the hazard directly as the
-  time-varying covariate value at each observation. When the dataset’s
-  `NWLS` column is constructed as a 0/1 step that flips at the
-  lesion-appearance time (the bundle convention), the two encodings are
-  functionally equivalent.
+- **NEW_LESION time gate (.lst-only).** The original
+  `Output_real_OS.lst` gates `INWLS` on a `TNWLS` (time-of-new-lesion)
+  column not shipped with the bundle’s simulated dataset
+  (`Executable_OS.mod` uses a NEWIND-based LOCF carry-forward instead).
+  The nlmixr2lib model follows the bundle’s executable: `NEW_LESION`
+  enters the hazard directly as the time-varying covariate value at each
+  observation. When the dataset’s `NEW_LESION` column is constructed as
+  a 0/1 step that flips at the lesion-appearance time (the bundle
+  convention), the two encodings are functionally equivalent.
 
 - **No estimated IIV.** The source \$OMEGA is `0 FIX` (placeholder slot
   with no estimated random effect). The OS sub-model has no IIV in the
   Zecchin 2016 publication. All inter-subject variability in this OS
   model derives from the IPP covariates (`KG`, `KD0`, `KD1`, `IBASE`)
   carried in from the upstream SLD fit and the time-varying / fixed
-  covariates `AUC_CARBO`, `AUC_GEM`, `NWLS`, `TUM_SLD`, `ECOG_GE1`.
+  covariates `AUC_CARBO`, `AUC_GEM`, `NEW_LESION`, `TUM_SLD`,
+  `ECOG_GE1`.
 
 - **Lambda unit convention.** Zecchin 2016 Table 2 reports λ_OS = 0.036
   in 1/month (paper convention). The `Output_real_OS.lst` works in 1/day
@@ -434,10 +435,10 @@ vignette.
 - **Convention warnings.**
   [`nlmixr2lib::checkModelConventions()`](https://nlmixr2.github.io/nlmixr2lib/reference/checkModelConventions.md)
   flags three non-canonical compartment names (`tumorSize`, `wts`,
-  `cumHazard`) and a non-mass/volume `units$concentration` value. These
-  are intrinsic to a TTE model integrating an inline SLD ODE
-  (`tumorSize` is paper-named tumour-burden length, `wts` and
-  `cumHazard` are auxiliary states; the “concentration” output is a
-  survival probability). The same `tumorSize` warning applies to the
-  upstream `Zecchin_2016_tumorovarian` model and to every existing
-  tumour-size model in `inst/modeldb/therapeuticArea/oncology/`.
+  `cumhaz`) and a non-mass/volume `units$concentration` value. These are
+  intrinsic to a TTE model integrating an inline SLD ODE (`tumorSize` is
+  paper-named tumour-burden length, `wts` and `cumhaz` are auxiliary
+  states; the “concentration” output is a survival probability). The
+  same `tumorSize` warning applies to the upstream
+  `Zecchin_2016_tumorovarian` model and to every existing tumour-size
+  model in `inst/modeldb/therapeuticArea/oncology/`.

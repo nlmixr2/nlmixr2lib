@@ -1083,7 +1083,7 @@ as a comment beside the value in the model file):</p>
 <td>Equation 1</td>
 </tr>
 <tr class="odd">
-<td>Dialysis clearance gated by HEMODIALYSIS</td>
+<td>Dialysis clearance gated by RRT_HEMODIAL_ACTIVE</td>
 <td>–</td>
 <td>Methods, Data Analysis</td>
 </tr>
@@ -1234,7 +1234,7 @@ rate 200 mL/min in period 1 (default below).</p>
 <span>    amt  <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>    evid <span class="op">=</span> <span class="fl">2L</span>,                       <span class="co"># other-event row (not a dose, not an obs)</span></span>
 <span>    cmt  <span class="op">=</span> <span class="st">"central"</span>,</span>
-<span>    HEMODIALYSIS <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1L</span>, <span class="fl">0L</span>, <span class="fl">1L</span>, <span class="fl">0L</span><span class="op">)</span>,</span>
+<span>    RRT_HEMODIAL_ACTIVE <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1L</span>, <span class="fl">0L</span>, <span class="fl">1L</span>, <span class="fl">0L</span><span class="op">)</span>,</span>
 <span>    BFR  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">200</span>, <span class="fl">0</span>, <span class="fl">200</span>, <span class="fl">0</span><span class="op">)</span>,</span>
 <span>    DFR  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">700</span>, <span class="fl">0</span>, <span class="fl">700</span>, <span class="fl">0</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
@@ -1246,7 +1246,7 @@ rate 200 mL/min in period 1 (default below).</p>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">n_subj</span><span class="op">)</span>, <span class="va">per_subject_dial</span><span class="op">)</span></span>
 <span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
-<span>    HEMODIALYSIS <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">HEMODIALYSIS</span><span class="op">)</span>, <span class="fl">0L</span>, <span class="va">HEMODIALYSIS</span><span class="op">)</span>,</span>
+<span>    RRT_HEMODIAL_ACTIVE <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">RRT_HEMODIAL_ACTIVE</span><span class="op">)</span>, <span class="fl">0L</span>, <span class="va">RRT_HEMODIAL_ACTIVE</span><span class="op">)</span>,</span>
 <span>    BFR          <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">BFR</span><span class="op">)</span>,  <span class="fl">0</span>,  <span class="va">BFR</span><span class="op">)</span>,</span>
 <span>    DFR          <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">DFR</span><span class="op">)</span>,  <span class="fl">0</span>,  <span class="va">DFR</span><span class="op">)</span></span>
 <span>  <span class="op">)</span> <span class="op">|&gt;</span></span>

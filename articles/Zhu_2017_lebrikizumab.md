@@ -27,8 +27,8 @@ a distinct CL effect in the final covariate model). SC doses ranged from
 37.5 to 250 mg; some IV data from the Phase I studies were also
 included. Three formulations were evaluated: a reference CHO formulation
 used in late development, an early-development NS0 formulation, and an
-interim “CHO Phase 2” formulation; indicator covariates FORM_NS0 and
-FORM_CHO_PHASE2 are both zero for the reference formulation.
+interim “CHO Phase 2” formulation; indicator covariates FORM_LEB_NS0 and
+FORM_LEB_CHO_PHASE2 are both zero for the reference formulation.
 
 The same information is available programmatically via
 `readModelDb("Zhu_2017_lebrikizumab")$population`.
@@ -83,9 +83,10 @@ approximates Zhu 2017 Table 1: body weight drawn from a truncated normal
 centered at the reported median (77 kg, SD ~17 kg) with limits at 40 and
 165 kg; age uniform on 18-75 with median ~48; SEXF ~ 58% female; race
 distribution White-majority with Black, Asian, and Other minorities;
-ADA-negative and reference CHO formulation (FORM_NS0 = FORM_CHO_PHASE2 =
-0). The simulated regimen is 125 mg SC every 4 weeks (Q4W), the standard
-regimen studied in the MILLY program and the typical clinical dose.
+ADA-negative and reference CHO formulation (FORM_LEB_NS0 =
+FORM_LEB_CHO_PHASE2 = 0). The simulated regimen is 125 mg SC every 4
+weeks (Q4W), the standard regimen studied in the MILLY program and the
+typical clinical dose.
 
 ``` r
 
@@ -102,8 +103,8 @@ cohort <- tibble::tibble(
   SEXF = as.integer(runif(n_subj) < 0.58),
   race = sample(race_levels, n_subj, replace = TRUE, prob = race_probs),
   ADA_POS = 0L,
-  FORM_NS0 = 0L,
-  FORM_CHO_PHASE2 = 0L
+  FORM_LEB_NS0 = 0L,
+  FORM_LEB_CHO_PHASE2 = 0L
 ) |>
   dplyr::mutate(
     RACE_BLACK = as.integer(race == "black"),
@@ -134,7 +135,7 @@ events <- dplyr::bind_rows(ev_dose, ev_obs) |>
   dplyr::select(id, time, amt, cmt, evid,
     WT, AGE, SEXF, ADA_POS,
     RACE_BLACK, RACE_ASIAN, RACE_OTHER,
-    FORM_NS0, FORM_CHO_PHASE2)
+    FORM_LEB_NS0, FORM_LEB_CHO_PHASE2)
 ```
 
 ## Simulation
@@ -146,7 +147,7 @@ conc_unit <- mod$units[["concentration"]]
 sim <- rxode2::rxSolve(mod, events = events,
   keep = c("WT", "AGE", "SEXF",
     "RACE_BLACK", "RACE_ASIAN", "RACE_OTHER",
-    "ADA_POS", "FORM_NS0", "FORM_CHO_PHASE2"))
+    "ADA_POS", "FORM_LEB_NS0", "FORM_LEB_CHO_PHASE2"))
 ```
 
 ## Replicate published figures
@@ -271,7 +272,7 @@ mod_typ <- rxode2::zeroRe(mod)
 typ_cohort <- tibble::tibble(
   id = 1L, WT = 70, AGE = 40, SEXF = 0L,
   RACE_BLACK = 0L, RACE_ASIAN = 0L, RACE_OTHER = 0L,
-  ADA_POS = 0L, FORM_NS0 = 0L, FORM_CHO_PHASE2 = 0L
+  ADA_POS = 0L, FORM_LEB_NS0 = 0L, FORM_LEB_CHO_PHASE2 = 0L
 )
 ev_typ <- dplyr::bind_rows(
   typ_cohort |>
@@ -326,10 +327,10 @@ serves as the primary structural check.
   median, sex fraction, race bands). Joint dependencies (e.g., age by
   sex, race by region) are not preserved.
 - **Formulation fixed to reference CHO.**
-  `FORM_NS0 = FORM_CHO_PHASE2 = 0` for all simulated subjects so that
-  the vignette characterizes the commercial formulation; the NS0 and
-  CHO-Phase-2 effects are available in the model and could be activated
-  by setting the corresponding indicator to 1.
+  `FORM_LEB_NS0 = FORM_LEB_CHO_PHASE2 = 0` for all simulated subjects so
+  that the vignette characterizes the commercial formulation; the NS0
+  and CHO-Phase-2 effects are available in the model and could be
+  activated by setting the corresponding indicator to 1.
 - **ADA status fixed to negative.** ADA_POS = 0 for all subjects (ADA
   prevalence in the Zhu 2017 cohorts was low and time-varying); the CL
   effect of 1.04 can be activated by setting ADA_POS = 1 for an

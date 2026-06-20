@@ -133,13 +133,13 @@ make_hv_singledose <- function(n_per_dose,
       SEXF      = rbinom(dplyr::n(), 1, 0.5),
       RACE_BLACK    = 0L, RACE_ASIAN = 0L, RACE_OTHER = 0L,
       TUMTP_RCC     = 0L, TUMTP_HRPC = 0L, TUMTP_MTC  = 0L,
-      TUMTP_GLIO    = 0L, TUMTP_OTH  = 0L,
+      TUMTP_GLIO    = 0L, TUMTP_OTHER  = 0L,
       FORM_CAPSULE  = 0L,
       DOSE          = dose_mg
     ) |>
     dplyr::select(id, treatment, dose_mg,
                   AGE, WT, SEXF, RACE_BLACK, RACE_ASIAN, RACE_OTHER,
-                  TUMTP_RCC, TUMTP_HRPC, TUMTP_MTC, TUMTP_GLIO, TUMTP_OTH,
+                  TUMTP_RCC, TUMTP_HRPC, TUMTP_MTC, TUMTP_GLIO, TUMTP_OTHER,
                   FORM_CAPSULE, DOSE)
 }
 
@@ -165,12 +165,12 @@ make_form_compare <- function(n_per_arm, id_offset = 0L) {
       WT        = pmax(50, pmin(140, round(rnorm(dplyr::n(), 82, 17)))),
       SEXF      = rbinom(dplyr::n(), 1, 0.25),
       RACE_BLACK    = 0L, RACE_ASIAN = 0L, RACE_OTHER = 0L,
-      TUMTP_HRPC    = 0L, TUMTP_GLIO = 0L, TUMTP_OTH  = 0L,
+      TUMTP_HRPC    = 0L, TUMTP_GLIO = 0L, TUMTP_OTHER  = 0L,
       DOSE          = dose_mg
     ) |>
     dplyr::select(id, treatment, dose_mg,
                   AGE, WT, SEXF, RACE_BLACK, RACE_ASIAN, RACE_OTHER,
-                  TUMTP_RCC, TUMTP_HRPC, TUMTP_MTC, TUMTP_GLIO, TUMTP_OTH,
+                  TUMTP_RCC, TUMTP_HRPC, TUMTP_MTC, TUMTP_GLIO, TUMTP_OTHER,
                   FORM_CAPSULE, DOSE)
 }
 
@@ -197,13 +197,13 @@ make_hv_mtc <- function(n_per_arm, id_offset = 0L) {
       WT        = pmax(50, pmin(140, round(rnorm(dplyr::n(), 82, 17)))),
       SEXF      = rbinom(dplyr::n(), 1, 0.25),
       RACE_BLACK    = 0L, RACE_ASIAN = 0L, RACE_OTHER = 0L,
-      TUMTP_RCC     = 0L, TUMTP_HRPC = 0L, TUMTP_GLIO = 0L, TUMTP_OTH = 0L,
+      TUMTP_RCC     = 0L, TUMTP_HRPC = 0L, TUMTP_GLIO = 0L, TUMTP_OTHER = 0L,
       FORM_CAPSULE  = 0L,
       DOSE          = dose_mg
     ) |>
     dplyr::select(id, treatment, dose_mg,
                   AGE, WT, SEXF, RACE_BLACK, RACE_ASIAN, RACE_OTHER,
-                  TUMTP_RCC, TUMTP_HRPC, TUMTP_MTC, TUMTP_GLIO, TUMTP_OTH,
+                  TUMTP_RCC, TUMTP_HRPC, TUMTP_MTC, TUMTP_GLIO, TUMTP_OTHER,
                   FORM_CAPSULE, DOSE)
 }
 
@@ -249,7 +249,7 @@ build_dose_rows <- function(cohort_df, dose_times) {
         TUMTP_HRPC   = sub$TUMTP_HRPC,
         TUMTP_MTC    = sub$TUMTP_MTC,
         TUMTP_GLIO   = sub$TUMTP_GLIO,
-        TUMTP_OTH    = sub$TUMTP_OTH,
+        TUMTP_OTHER    = sub$TUMTP_OTHER,
         FORM_CAPSULE = sub$FORM_CAPSULE,
         DOSE         = sub$DOSE
       )
@@ -281,7 +281,7 @@ build_obs_rows <- function(cohort_df, obs_times) {
         TUMTP_HRPC   = sub$TUMTP_HRPC,
         TUMTP_MTC    = sub$TUMTP_MTC,
         TUMTP_GLIO   = sub$TUMTP_GLIO,
-        TUMTP_OTH    = sub$TUMTP_OTH,
+        TUMTP_OTHER    = sub$TUMTP_OTHER,
         FORM_CAPSULE = sub$FORM_CAPSULE,
         DOSE         = sub$DOSE
       )

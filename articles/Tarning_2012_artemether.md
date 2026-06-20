@@ -55,13 +55,13 @@ Per-parameter source locations are also recorded inline in
 |----|----|----|
 | `lcl = log(875)` (CL_ARM/F, L/h) | 875 | Table 2 ‘Population estimate’ (RSE 18.7%; 95% CI 625-1280) |
 | `lvc = log(2160)` (V_ARM/F, L) | 2160 | Table 2 (RSE 17.4%; 95% CI 1620-3100) |
-| `lcl_dha = log(468)` (CL_DHA/F, L/h) | 468 | Table 2 (RSE 10.2%; 95% CI 387-588) |
-| `lvc_dha = log(57.1)` (V_DHA/F, L) | 57.1 | Table 2 (RSE 20.1%; 95% CI 41.7-88.8) |
+| `lcl_dihydroart = log(468)` (CL_DHA/F, L/h) | 468 | Table 2 (RSE 10.2%; 95% CI 387-588) |
+| `lvc_dihydroart = log(57.1)` (V_DHA/F, L) | 57.1 | Table 2 (RSE 20.1%; 95% CI 41.7-88.8) |
 | `lmtt = log(0.274)` (MTT, h) | 0.274 | Table 2 (RSE 19.4%; 95% CI 0.174-0.378) |
 | `ldur = log(0.687)` (DUR, h) | 0.687 | Table 2 (RSE 25.5%; 95% CI 0.380-1.14) |
 | `lfdepot = fixed(log(1))` (F) | 1 (fixed) | Table 2 ‘F 1 (fixed)’ |
 | `etalcl ~ 0.07549` (var, log-scale) | CV 28.0% | Table 2 IIV CL_ARM (RSE 47.6%); variance = log(0.28^2 + 1) |
-| `etalcl_dha ~ 0.59716` | CV 90.4% | Table 2 IIV CL_DHA (RSE 39.0%) |
+| `etalcl_dihydroart ~ 0.59716` | CV 90.4% | Table 2 IIV CL_DHA (RSE 39.0%) |
 | `etalmtt ~ 0.44819` | CV 75.2% | Table 2 IIV MTT (RSE 39.6%) |
 | `etaldur ~ 1.18800` | CV 151% | Table 2 IIV DUR (RSE 24.1%) |
 | `etalfdepot ~ 0.54864` | CV 85.5% | Table 2 IIV F (RSE 24.8%) |
@@ -189,7 +189,7 @@ sim_typical <- rxode2::rxSolve(
   keep   = c("treatment", "WT_kg", "GA_weeks")
 ) |>
   as.data.frame()
-#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalcl_dha', 'etalmtt', 'etaldur', 'etalfdepot'
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalcl_dihydroart', 'etalmtt', 'etaldur', 'etalfdepot'
 ```
 
 ## Replicate published figures
@@ -243,9 +243,9 @@ sim |>
   dplyr::filter(time_after_last > 0, time_after_last <= 10) |>
   dplyr::group_by(time_after_last) |>
   dplyr::summarise(
-    p05 = quantile(Cc_dha, 0.05, na.rm = TRUE),
-    p50 = quantile(Cc_dha, 0.50, na.rm = TRUE),
-    p95 = quantile(Cc_dha, 0.95, na.rm = TRUE),
+    p05 = quantile(Cc_dihydroart, 0.05, na.rm = TRUE),
+    p50 = quantile(Cc_dihydroart, 0.50, na.rm = TRUE),
+    p95 = quantile(Cc_dihydroart, 0.95, na.rm = TRUE),
     .groups = "drop"
   ) |>
   dplyr::filter(p50 > 0) |>
@@ -273,7 +273,7 @@ sim |>
 sim_typical |>
   dplyr::mutate(time_after_last = time - 60) |>
   dplyr::filter(time_after_last >= 0, time_after_last <= 10) |>
-  dplyr::select(time_after_last, Artemether = Cc, DHA = Cc_dha) |>
+  dplyr::select(time_after_last, Artemether = Cc, DHA = Cc_dihydroart) |>
   tidyr::pivot_longer(c(Artemether, DHA),
                       names_to = "species", values_to = "conc") |>
   dplyr::filter(conc > 0) |>
@@ -398,19 +398,19 @@ nca_arm <- PKNCA::pk.nca(
 
 ``` r
 
-sim_nca_dha <- sim |>
+sim_nca_dihydroart <- sim |>
   dplyr::mutate(time_after_last = time - 60) |>
-  dplyr::filter(!is.na(Cc_dha), time_after_last > 0, time_after_last <= 10) |>
-  dplyr::select(id, time = time_after_last, conc_ng_mL = Cc_dha, treatment) |>
+  dplyr::filter(!is.na(Cc_dihydroart), time_after_last > 0, time_after_last <= 10) |>
+  dplyr::select(id, time = time_after_last, conc_ng_mL = Cc_dihydroart, treatment) |>
   dplyr::group_by(id, time, treatment) |>
   dplyr::summarise(conc_ng_mL = mean(conc_ng_mL), .groups = "drop")
 
-conc_obj_dha <- PKNCA::PKNCAconc(sim_nca_dha,
+conc_obj_dihydroart <- PKNCA::PKNCAconc(sim_nca_dihydroart,
                                  conc_ng_mL ~ time | treatment + id,
                                  concu = "ng/mL", timeu = "h")
 
-nca_dha <- PKNCA::pk.nca(
-  PKNCA::PKNCAdata(conc_obj_dha, dose_obj_arm, intervals = intervals)
+nca_dihydroart <- PKNCA::pk.nca(
+  PKNCA::PKNCAdata(conc_obj_dihydroart, dose_obj_arm, intervals = intervals)
 )
 #> Warning: Requesting an AUC range starting (0) before the first measurement (0.05) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.05) is not allowed
@@ -492,7 +492,7 @@ summarise_nca <- function(nca_res, species_label) {
 
 nca_summary <- dplyr::bind_rows(
   summarise_nca(nca_arm, "Artemether"),
-  summarise_nca(nca_dha, "Dihydroartemisinin")
+  summarise_nca(nca_dihydroart, "Dihydroartemisinin")
 ) |>
   dplyr::select(species, PPTESTCD, median, p05, p95)
 
@@ -564,8 +564,8 @@ half-life should use the NCA-derived value.
   dihydroartemisinin observations (“A combined additive error model for
   both the drug and the metabolite was sufficient”, Results). nlmixr2
   requires a distinct endpoint parameter per output, so the model file
-  declares `propSd` (for Cc) and `propSd_dha` (for Cc_dha) with
-  identical starting values `sqrt(0.166) ~= 0.407`. For forward
+  declares `propSd` (for Cc) and `propSd_dihydroart` (for Cc_dihydroart)
+  with identical starting values `sqrt(0.166) ~= 0.407`. For forward
   simulation this exactly reproduces the published combined-error
   behaviour because the two propSd values are equal; for any user
   re-fitting the model on real data, the two parameters would be
@@ -619,10 +619,10 @@ half-life should use the NCA-derived value.
   typical-value relative bioavailability at F = 1 (Table 2: “F 1
   (fixed)”) with the variability captured by `etalfdepot` (CV 85.5%).
   Absolute oral bioavailability of artemether in this population is not
-  identifiable from this dataset; the simulated `Cc` and `Cc_dha` should
-  be read as conditional on F = 1 typical, with population-mean Cmax and
-  AUC interpreted as relative-bioavailability-anchored values rather
-  than absolute exposures.
+  identifiable from this dataset; the simulated `Cc` and `Cc_dihydroart`
+  should be read as conditional on F = 1 typical, with population-mean
+  Cmax and AUC interpreted as relative-bioavailability-anchored values
+  rather than absolute exposures.
 - **Molar-to-mass unit choice.** Tarning 2012 modelled molar plasma
   concentrations internally in NONMEM. The package model uses mass units
   throughout (dose in mg, state amounts in mg, concentration in ng/mL)

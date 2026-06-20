@@ -96,7 +96,7 @@ noted.
 | `e_stdy_cl` (LBSL01/02 multiplier on CL) | 1.63 | Table 2: θ11 |
 | `e_ffm_vc` (FFM exponent on V1) | 0.891 | Table 2: θ8 |
 | `e_stdy_vc` (LBSL01/02 multiplier on V1) | 1.26 | Table 2: θ12 |
-| `e_neas_vc` (RACE_NEAS multiplier on V1) | 1.07 | Table 2: row “Race (RAC4)” — the printed θ index “θ12” is a labelling typo (it is the next-distinct theta, equivalent to θ13) |
+| `e_neas_vc` (RACE_ASIAN_NORTHEAST multiplier on V1) | 1.07 | Table 2: row “Race (RAC4)” — the printed θ index “θ12” is a labelling typo (it is the next-distinct theta, equivalent to θ13) |
 | `age50_vc` (V1 maturation half-saturation, years) | 1.58 | Table 2: row “AGE × AGE/(AGE + θ14)” — formula factor = AGE/(AGE + 1.58) |
 | `etalcl + etalvp` block (variances and covariance) | 0.0682, 0.0125, 0.0781 | Table 2: η1 var = 0.0682; η4 var = 0.0781; footnote c: Cov(CL, V2) = 0.0125 |
 | `etalvc` (V1 IIV variance) | 0.0079 | Table 2: η2 var = 0.0079 |
@@ -107,7 +107,7 @@ noted.
 | Reference baseline albumin | 40 g/L | Table 2: covariate normalisation `(BALB/40)` |
 | Reference baseline IgG | 14.8 g/L | Table 2: covariate normalisation `(BIGG/14.8)` |
 | `STUDY_LBSL` semantics | INDR = 1 for LBSL01 and LBSL02 only | Table 2 footnote: “INDR=1 for study LBSL01 and LBSL02, INDR=0 for the rest of studies” |
-| `RACE_NEAS` semantics | RAC4 = 1 for North East Asian (Chinese / Japanese / Korean) | Table 2 footnote d: “RAC4 = 1 for North East Asian population and RAC4 = 0 for other populations” |
+| `RACE_ASIAN_NORTHEAST` semantics | RAC4 = 1 for North East Asian (Chinese / Japanese / Korean) | Table 2 footnote d: “RAC4 = 1 for North East Asian population and RAC4 = 0 for other populations” |
 
 The published abstract reports a typical adult steady-state volume of
 distribution of 4915 mL = 4.915 L, which equals
@@ -161,7 +161,7 @@ make_cohort <- function(n,
     IGG       = IGG,
     ALB       = ALB,
     SEXF      = as.integer(runif(n) < sex_female_pct / 100),
-    RACE_NEAS = as.integer(runif(n) < race_neas_pct / 100),
+    RACE_ASIAN_NORTHEAST = as.integer(runif(n) < race_neas_pct / 100),
     STUDY_LBSL = as.integer(runif(n) < stdy_lbsl_pct / 100)
   )
 }
@@ -429,8 +429,8 @@ covariates were not available for replication).
   sampled as Normal centered on the published median with σ = 4 g/L,
   truncated to \[20, 55\] g/L. The paper reports only median and range,
   so the parametric form is a working assumption.
-- **Race and study-indicator distributions** — `RACE_NEAS` and
-  `STUDY_LBSL` sampled as Bernoulli at the published prevalences;
+- **Race and study-indicator distributions** — `RACE_ASIAN_NORTHEAST`
+  and `STUDY_LBSL` sampled as Bernoulli at the published prevalences;
   `STUDY_LBSL` defaults to 0 % for the validation cohort because the 10
   mg/kg Q4W exposure-comparison analysis (Zhou 2021 Table 3) is driven
   by the later, primary-assay studies.

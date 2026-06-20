@@ -92,7 +92,7 @@ file; the table below collects them in one place.
 | Ka (typical) | 1.11 1/day | Table 4, Final Reduced Model |
 | BWT on CL/F | (BWT/87.1)^0.998 | Table 4 footnote b |
 | BWT on V/F | (BWT/87.1)^0.829 | Table 4 footnote c |
-| Diabetes on CL/F | 1.12^DIAB | Table 4 footnote b |
+| Diabetes on CL/F | 1.12^DIS_DIAB | Table 4 footnote b |
 | Race on CL/F | 1.11^RACE (RACE = 1 for non-White) | Table 4 footnote b |
 | IIV CL/F | 35.6% (sqrt(variance)\*100) -\> omega^2 = 0.356^2 = 0.126736 | Table 4, footnote on IIV definition |
 | IIV V/F | 28.0% -\> omega^2 = 0.280^2 = 0.078400 | Table 4 |
@@ -117,7 +117,7 @@ papers that report a linear-scale CV (compare with
 | Source column | Canonical column used here |
 |----|----|
 | `BWT` (kg) | `WT` (kg; canonical general) |
-| `DIAB` (binary 0/1) | `DIAB` (binary; canonical general) |
+| `DIS_DIAB` (binary 0/1) | `DIS_DIAB` (binary; canonical general) |
 | `RACE` (binary 0/1; 1 = non-White, 0 = White; “Race (nonwhite)” row in Table 4) | `RACE_WHITE` (canonical; 1 = White, 0 = non-White) — values inverted: `RACE_WHITE = 1 - source RACE`. The race covariate effect is encoded as `1.11^(1 - RACE_WHITE)` so the multiplier is applied to non-White subjects, matching Yao 2018 Table 4 footnote b. |
 
 ### Population
@@ -162,7 +162,7 @@ n_subj <- 500L
 pop <- tibble(
   ID         = seq_len(n_subj),
   WT         = pmin(pmax(rlnorm(n_subj, log(87.1), 0.20), 45), 198),  # kg, clipped to Yao 2018 reported range
-  DIAB       = as.integer(rbinom(n_subj, 1, 0.089)),                   # ~8.9% diabetic per Table 3
+  DIS_DIAB       = as.integer(rbinom(n_subj, 1, 0.089)),                   # ~8.9% diabetic per Table 3
   RACE_WHITE = as.integer(rbinom(n_subj, 1, 0.838))                    # 83.8% White per Table 3
 )
 ```
@@ -213,7 +213,7 @@ stopifnot(!anyDuplicated(unique(events[, c("ID", "TIME", "EVID")])))
 
 mod <- readModelDb("Yao_2018_guselkumab")
 sim <- rxSolve(mod, events, returnType = "data.frame",
-               keep = c("regimen", "WT", "DIAB", "RACE_WHITE"))
+               keep = c("regimen", "WT", "DIS_DIAB", "RACE_WHITE"))
 #> ℹ parameter labels from comments will be replaced by 'label()'
 ```
 
@@ -267,7 +267,7 @@ mod_typ <- rxode2::zeroRe(mod)
 typ_pop <- tibble(
   ID         = 1L,
   WT         = 87.1,
-  DIAB       = 0L,
+  DIS_DIAB       = 0L,
   RACE_WHITE = 1L
 )
 
@@ -400,7 +400,7 @@ ss <- sim %>%
   arrange(id, time)
 
 per_id <- ss %>%
-  group_by(id, WT, DIAB, RACE_WHITE) %>%
+  group_by(id, WT, DIS_DIAB, RACE_WHITE) %>%
   summarise(
     Ctrough = Cc[which.max(time)],
     AUCtau  = sum(diff(time) * (head(Cc, -1) + tail(Cc, -1)) / 2),
@@ -414,10 +414,10 @@ subgroup_medians <- bind_rows(
   per_id %>% filter(WT >= 90)     %>% summarise(group = "Weight >= 90 kg",   n = n(),
                                                 Median_AUC     = median(AUCtau),
                                                 Median_Ctrough = median(Ctrough)),
-  per_id %>% filter(DIAB == 0)    %>% summarise(group = "No diabetes",       n = n(),
+  per_id %>% filter(DIS_DIAB == 0)    %>% summarise(group = "No diabetes",       n = n(),
                                                 Median_AUC     = median(AUCtau),
                                                 Median_Ctrough = median(Ctrough)),
-  per_id %>% filter(DIAB == 1)    %>% summarise(group = "Diabetes",          n = n(),
+  per_id %>% filter(DIS_DIAB == 1)    %>% summarise(group = "Diabetes",          n = n(),
                                                 Median_AUC     = median(AUCtau),
                                                 Median_Ctrough = median(Ctrough)),
   per_id %>% filter(RACE_WHITE == 1) %>% summarise(group = "White",          n = n(),
@@ -493,7 +493,7 @@ uses 95 kg vs. 80 kg as round-number representatives that straddle the
 ``` r
 
 typ_eval <- function(WT_val, DIAB_val, RW_val) {
-  pop1   <- tibble(ID = 1L, WT = WT_val, DIAB = as.integer(DIAB_val),
+  pop1   <- tibble(ID = 1L, WT = WT_val, DIS_DIAB = as.integer(DIAB_val),
                    RACE_WHITE = as.integer(RW_val))
   d_dose <- pop1 %>% crossing(TIME = dose_times_q8w) %>%
     mutate(AMT = 100, EVID = 1, CMT = 1, DV = NA_real_)
@@ -559,8 +559,8 @@ The body-weight contrast above is simulated at 95 vs. 80 kg
 median-of-each-subgroup the paper used to report Table 5’s subgroup
 medians, so a within-a-few-percent difference is expected. The diabetes
 and race contrasts at fixed 80 kg should reproduce the paper’s
-multipliers (1.12 for DIAB, 1.11 for non-White on CL/F) closely because
-those operate independently of body weight.
+multipliers (1.12 for DIS_DIAB, 1.11 for non-White on CL/F) closely
+because those operate independently of body weight.
 
 ### Errata
 

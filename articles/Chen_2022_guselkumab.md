@@ -60,7 +60,7 @@ file; the table below collects them in one place.
 | V/F (typical, 84 kg) | 15.5 L | Table 1 |
 | Ka (typical) | 0.572 1/day | Table 1 |
 | BWT on CL/F | (BWT/84)^0.926 | Table 1 footnote f |
-| Diabetes on CL/F | 1.15^DIAB | Table 1 footnote f (multiplier 1.15 for DIAB = 1) |
+| Diabetes on CL/F | 1.15^DIS_DIAB | Table 1 footnote f (multiplier 1.15 for DIS_DIAB = 1) |
 | BWT on V/F | (BWT/84)^0.861 | Table 1 footnote g |
 | IIV CL/F | 38.9% CV -\> omega^2 = log(1+0.389^2) = 0.14092 | Table 1 |
 | IIV V/F | 33.3% CV -\> omega^2 = log(1+0.333^2) = 0.10515 | Table 1 |
@@ -78,7 +78,7 @@ file; the table below collects them in one place.
 | Source column | Canonical column used here |
 |----|----|
 | `BWT` (kg) | `WT` (kg; canonical general) |
-| `DIAB` (binary 0/1) | `DIAB` (binary; canonical general; new entry, see `inst/references/covariate-columns.md`) |
+| `DIS_DIAB` (binary 0/1) | `DIS_DIAB` (binary; canonical general; new entry, see `inst/references/covariate-columns.md`) |
 
 ### Population
 
@@ -118,7 +118,7 @@ n_subj <- 500L
 pop <- tibble(
   ID   = seq_len(n_subj),
   WT   = pmin(pmax(rlnorm(n_subj, log(84), 0.20), 45), 200),  # kg, clipped to a plausible adult range
-  DIAB = as.integer(rbinom(n_subj, 1, 0.09))                   # ~9% diabetic per Results
+  DIS_DIAB = as.integer(rbinom(n_subj, 1, 0.09))                   # ~9% diabetic per Results
 )
 ```
 
@@ -172,7 +172,7 @@ stopifnot(!anyDuplicated(unique(events[, c("ID", "TIME", "EVID")])))
 ``` r
 
 mod <- readModelDb("Chen_2022_guselkumab")
-sim <- rxSolve(mod, events, returnType = "data.frame", keep = c("regimen", "WT", "DIAB"))
+sim <- rxSolve(mod, events, returnType = "data.frame", keep = c("regimen", "WT", "DIS_DIAB"))
 #> ℹ parameter labels from comments will be replaced by 'label()'
 ```
 
@@ -338,7 +338,7 @@ mod_typ <- rxode2::zeroRe(mod)
 typ_pop <- tibble(
   ID   = 1L,
   WT   = 84,
-  DIAB = 0L
+  DIS_DIAB = 0L
 )
 
 typ_dose <- typ_pop %>%
@@ -409,7 +409,7 @@ straddle the 90 kg cutoff used in the paper.
 ``` r
 
 typ_eval <- function(WT_val, DIAB_val) {
-  pop1   <- tibble(ID = 1L, WT = WT_val, DIAB = as.integer(DIAB_val))
+  pop1   <- tibble(ID = 1L, WT = WT_val, DIS_DIAB = as.integer(DIAB_val))
   d_dose <- pop1 %>% crossing(TIME = dose_times_q8w) %>%
     mutate(AMT = 100, EVID = 1, CMT = 1, DV = NA_real_)
   d_obs  <- pop1 %>% crossing(TIME = obs_times) %>%

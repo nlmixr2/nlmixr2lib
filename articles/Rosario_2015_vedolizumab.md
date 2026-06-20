@@ -83,7 +83,7 @@ collects them in one place.
 | `e_wt_cl` | `0.362` | Table S4: weight on CLL |
 | `e_alb_cl` | `-1.18` | Table S4: albumin on CLL |
 | `e_calpro_cl` | `0.0310` | Table S4: faecal calprotectin on CLL |
-| `e_cdai_cl` | `-0.0515` | Table S4: CDAI on CLL (CD-only) |
+| `e_cdai_cl` | `-0.0515` | Table S4: SCORE_CDAI on CLL (CD-only) |
 | `e_pmayo_cl` | `0.0408` | Table S4: partial Mayo on CLL (UC-only) |
 | `e_age_cl` | `-0.0346` | Table S4: age on CLL |
 | `e_wt_vc` | `0.467` | Table S4: weight on Vc |
@@ -107,9 +107,9 @@ collects them in one place.
 | Model structure | 2-cmt parallel linear + MM | Figure 2: two-compartment model with parallel linear + Michaelis-Menten elimination from the central compartment |
 
 Reference patient (Rosario 2015 Table 2 footnote / Figure 5 caption): 70
-kg, 40 years old, albumin 4 g/dL, faecal calprotectin 700 mg/kg, CDAI
-300 (for CD), partial Mayo 6 (for UC), UC diagnosis for Vc, no
-concomitant therapy, ADA-negative, TNF-naive.
+kg, 40 years old, albumin 4 g/dL, faecal calprotectin 700 mg/kg,
+SCORE_CDAI 300 (for CD), partial Mayo 6 (for UC), UC diagnosis for Vc,
+no concomitant therapy, ADA-negative, TNF-naive.
 
 ## Virtual cohort
 
@@ -133,16 +133,16 @@ make_cohort <- function(n,
   WT      <- pmax(30, pmin(160, rlnorm(n, log(70), 0.22)))
   AGE     <- pmax(18, pmin(80,  rnorm(n, 39, 13)))
   ALB     <- pmax(2.0, pmin(5.5, rnorm(n, 4.0, 0.4)))        # g/dL
-  CALPRO  <- pmax(10,  exp(rnorm(n, log(700), 1.1)))         # mg/kg
+  SCORE_CALPRO  <- pmax(10,  exp(rnorm(n, log(700), 1.1)))         # mg/kg
   IBD_CD  <- rbinom(n, 1, ibd_cd_prob)
-  # Disease-activity scores: supply CDAI for CD, PMAYO for UC; the gating in
+  # Disease-activity scores: supply SCORE_CDAI for CD, SCORE_PMAYO for UC; the gating in
   # the model sets the unused score's exponent to zero, so the supplied value
   # is irrelevant for the other cohort. We set them to the reference value to
   # make the columns self-consistent.
-  CDAI    <- ifelse(IBD_CD == 1,
+  SCORE_CDAI    <- ifelse(IBD_CD == 1,
                     pmax(150, pmin(600, rnorm(n, 300, 75))),
                     300)
-  PMAYO   <- ifelse(IBD_CD == 0,
+  SCORE_PMAYO   <- ifelse(IBD_CD == 0,
                     pmax(2, pmin(9, round(rnorm(n, 6, 1.2)))),
                     6)
   PRIOR_TNF    <- rbinom(n, 1, 0.50)
@@ -157,7 +157,7 @@ make_cohort <- function(n,
 
   pop <- data.frame(
     ID  = seq_len(n),
-    WT, AGE, ALB, CALPRO, CDAI, PMAYO, IBD_CD,
+    WT, AGE, ALB, SCORE_CALPRO, SCORE_CDAI, SCORE_PMAYO, IBD_CD,
     PRIOR_TNF, ADA_POS, CONMED_AZA, CONMED_MP, CONMED_MTX, CONMED_AMINO
   )
 
@@ -189,7 +189,7 @@ make_cohort <- function(n,
   bind_rows(d_dose, d_obs) |>
     arrange(ID, TIME, desc(EVID)) |>
     select(ID, TIME, AMT, EVID, CMT, RATE, DV,
-           WT, AGE, ALB, CALPRO, CDAI, PMAYO, IBD_CD,
+           WT, AGE, ALB, SCORE_CALPRO, SCORE_CDAI, SCORE_PMAYO, IBD_CD,
            PRIOR_TNF, ADA_POS, CONMED_AZA, CONMED_MP, CONMED_MTX, CONMED_AMINO)
 }
 ```
@@ -267,7 +267,7 @@ forest_cont <- tribble(
   "Albumin (g/dL)",      3.2,    4.0,    4.8,    get("e_alb_cl"),
   "Calprotectin (mg/kg)", 50,    700,    5000,   get("e_calpro_cl"),
   "Age (years)",         22,     40,     68,     get("e_age_cl"),
-  "CDAI (CD only)",      150,    300,    500,    get("e_cdai_cl"),
+  "SCORE_CDAI (CD only)",      150,    300,    500,    get("e_cdai_cl"),
   "Partial Mayo (UC only)", 3,   6,      9,      get("e_pmayo_cl")
 ) |>
   mutate(
@@ -336,8 +336,8 @@ events_single <- make_cohort(
                         42, 56, 70, 84, 112, 140, 168)
 ) |>
   mutate(
-    WT = 70, AGE = 40, ALB = 4, CALPRO = 700,
-    CDAI = 300, PMAYO = 6, IBD_CD = 0,
+    WT = 70, AGE = 40, ALB = 4, SCORE_CALPRO = 700,
+    SCORE_CDAI = 300, SCORE_PMAYO = 6, IBD_CD = 0,
     PRIOR_TNF = 0, ADA_POS = 0,
     CONMED_AZA = 0, CONMED_MP = 0, CONMED_MTX = 0, CONMED_AMINO = 0
   )
@@ -408,8 +408,8 @@ events_ss_base <- make_cohort(
   dosing_interval_days = 56
 ) |>
   mutate(
-    WT = 70, AGE = 40, ALB = 4, CALPRO = 700,
-    CDAI = 300, PMAYO = 6, IBD_CD = 0,
+    WT = 70, AGE = 40, ALB = 4, SCORE_CALPRO = 700,
+    SCORE_CDAI = 300, SCORE_PMAYO = 6, IBD_CD = 0,
     PRIOR_TNF = 0, ADA_POS = 0,
     CONMED_AZA = 0, CONMED_MP = 0, CONMED_MTX = 0, CONMED_AMINO = 0
   )
@@ -419,8 +419,8 @@ extra_obs <- data.frame(
   ID = 1L,
   TIME = final_dose_day + c(70, 84, 112, 140, 168),
   AMT = 0, EVID = 0, CMT = "central", RATE = 0, DV = NA_real_,
-  WT = 70, AGE = 40, ALB = 4, CALPRO = 700,
-  CDAI = 300, PMAYO = 6, IBD_CD = 0,
+  WT = 70, AGE = 40, ALB = 4, SCORE_CALPRO = 700,
+  SCORE_CDAI = 300, SCORE_PMAYO = 6, IBD_CD = 0,
   PRIOR_TNF = 0, ADA_POS = 0,
   CONMED_AZA = 0, CONMED_MP = 0, CONMED_MTX = 0, CONMED_AMINO = 0
 )
@@ -535,12 +535,12 @@ longer dominant.
   structure is the simplest faithful representation of the published
   parameterisation; an alternative ratio form
   (`exp(lcl) * (CLL_CD_ratio)^IBD_CD`) is numerically equivalent.
-- **Disease-activity gating.** Partial Mayo score and CDAI appear in the
-  final model only for the diagnoses they are defined for. We gate the
-  power exponents by the `IBD_CD` indicator:
-  `(PMAYO/6)^(e_pmayo_cl * (1 - IBD_CD))` and
-  `(CDAI/300)^(e_cdai_cl * IBD_CD)`. This reduces to 1 for the other
-  cohort irrespective of the supplied score. For convenience,
+- **Disease-activity gating.** Partial Mayo score and SCORE_CDAI appear
+  in the final model only for the diagnoses they are defined for. We
+  gate the power exponents by the `IBD_CD` indicator:
+  `(SCORE_PMAYO/6)^(e_pmayo_cl * (1 - IBD_CD))` and
+  `(SCORE_CDAI/300)^(e_cdai_cl * IBD_CD)`. This reduces to 1 for the
+  other cohort irrespective of the supplied score. For convenience,
   simulations can fill the inactive column with the reference value.
 - **Time-varying ADA simplified to binary.** Rosario 2015 reports only
   4% of the pool as ADA-positive at any time and used the binary
@@ -560,9 +560,10 @@ longer dominant.
 - **Virtual covariate distributions.** Exact observed covariate
   distributions are not published. The demo cohort uses log-normal WT
   (median 70 kg, CV 22%), normal AGE (39 ± 13 y), normal ALB (4.0 ± 0.4
-  g/dL), log-normal CALPRO (median 700 mg/kg, log-SD 1.1), 55%/45% CD/UC
-  split, and binary probabilities for the concomitant- medication and
-  immunogenicity indicators approximately matching Rosario 2015 Table 1.
+  g/dL), log-normal SCORE_CALPRO (median 700 mg/kg, log-SD 1.1), 55%/45%
+  CD/UC split, and binary probabilities for the concomitant- medication
+  and immunogenicity indicators approximately matching Rosario 2015
+  Table 1.
 
 ## Reference
 

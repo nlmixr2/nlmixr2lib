@@ -986,8 +986,8 @@ is triggered when global model time crosses DOT via the smooth-step
 divides patients into a <strong>slow-progression branch</strong> (rate
 alone, alpha = 0) and a <strong>fast-progression branch</strong> (rate
 plus accelerating term <code>alpha * A(1)</code>). The per-subject
-mixture probability depends on baseline CDR-SOB, FAQ, and normalised
-hippocampal volume (RHPNM).</li>
+mixture probability depends on baseline CDR-SOB, SCORE_FAQ, and
+normalised hippocampal volume (SCORE_RHPNM).</li>
 <li>
 <strong>Study-entry placebo term.</strong>
 <code>PL * (1 - exp(-KPL * (t - T_ENTRY)))</code> is subtracted from the
@@ -1079,7 +1079,7 @@ table below collects them in one place.</p>
 <tr class="odd">
 <td><code>e_mmse_alpha</code></td>
 <td>-2.01</td>
-<td>Table 2 final ‘COV MMSE on alpha’</td>
+<td>Table 2 final ‘COV SCORE_MMSE on alpha’</td>
 </tr>
 <tr class="even">
 <td><code>blc</code></td>
@@ -1109,12 +1109,12 @@ table below collects them in one place.</p>
 <tr class="odd">
 <td><code>e_faq_slow</code></td>
 <td>-0.341</td>
-<td>Table 2 final ‘COV FAQ on $MIX’</td>
+<td>Table 2 final ‘COV SCORE_FAQ on $MIX’</td>
 </tr>
 <tr class="even">
 <td><code>e_rhpnm_slow</code></td>
 <td>7.5</td>
-<td>Table 2 final ‘COV RHPNM on $MIX’</td>
+<td>Table 2 final ‘COV SCORE_RHPNM on $MIX’</td>
 </tr>
 <tr class="odd">
 <td><code>etaldot</code></td>
@@ -1167,7 +1167,7 @@ table below collects them in one place.</p>
 <tr class="odd">
 <td>Placebo term</td>
 <td>n/a</td>
-<td>Equation 2: <code>CDR_SOB - PL*(1 - exp(-KPL*T))</code>
+<td>Equation 2: <code>SCORE_CDR_SOB - PL*(1 - exp(-KPL*T))</code>
 </td>
 </tr>
 </tbody>
@@ -1191,18 +1191,18 @@ accelerates progression once <code>A(1)</code> has grown.</p>
 \text{CDR\_SOB}_\text{pred}(t) \;=\; \frac{18}{1 + \exp(\text{BLC} - A(1)(t))} \;-\; \text{PL} \cdot \bigl(1 - e^{-\text{KPL}\,(t - T_\text{ENTRY})}\bigr)\,\mathbb{1}\{t &gt; T_\text{ENTRY}\}
 </annotation></semantics></math></p>
 <p>with <code>BLC = 4.48</code> chosen so the floor of the score
-(<code>A(1) = 0</code>) maps to <code>CDR_SOB ~= 0.2</code> and
+(<code>A(1) = 0</code>) maps to <code>SCORE_CDR_SOB ~= 0.2</code> and
 <code>KPL = 1 / year</code> (fixed) so the placebo term reaches its
 asymptote in about 4 years post-entry.</p>
 <p>Per-subject covariate effects:</p>
 <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mtext mathvariant="normal">DOT</mtext><mi>i</mi></msub><mo>=</mo><mrow><mi mathvariant="normal">exp</mi><mo>⁡</mo></mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>l</mi><mtext mathvariant="normal">DOT</mtext></msub><mo>+</mo><msub><mi>η</mi><mtext mathvariant="normal">DOT</mtext></msub><mo stretchy="false" form="postfix">)</mo><mo>⋅</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><mstyle displaystyle="false"><mfrac><msub><mtext mathvariant="normal">CDR_SOB</mtext><mi>i</mi></msub><mn>2</mn></mfrac></mstyle><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mi>−</mi><mn>0.072</mn></mrow></msup><mo>⋅</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><mstyle displaystyle="false"><mfrac><msub><mtext mathvariant="normal">ADAS_COG</mtext><mi>i</mi></msub><mn>12.67</mn></mfrac></mstyle><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mi>−</mi><mn>0.0439</mn></mrow></msup></mrow><annotation encoding="application/x-tex">
 \text{DOT}_i = \exp(l_\text{DOT} + \eta_\text{DOT}) \cdot \left(\tfrac{\text{CDR\_SOB}_i}{2}\right)^{-0.072} \cdot \left(\tfrac{\text{ADAS\_COG}_i}{12.67}\right)^{-0.0439}
 </annotation></semantics></math></p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>α</mi><mi>i</mi></msub><mo>=</mo><mrow><mi mathvariant="normal">exp</mi><mo>⁡</mo></mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>l</mi><mi>α</mi></msub><mo>+</mo><msub><mi>η</mi><mi>α</mi></msub><mo stretchy="false" form="postfix">)</mo><mo>⋅</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><mstyle displaystyle="false"><mfrac><msub><mtext mathvariant="normal">MMSE</mtext><mi>i</mi></msub><mn>26</mn></mfrac></mstyle><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mi>−</mi><mn>2.01</mn></mrow></msup></mrow><annotation encoding="application/x-tex">
-\alpha_i = \exp(l_\alpha + \eta_\alpha) \cdot \left(\tfrac{\text{MMSE}_i}{26}\right)^{-2.01}
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>α</mi><mi>i</mi></msub><mo>=</mo><mrow><mi mathvariant="normal">exp</mi><mo>⁡</mo></mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>l</mi><mi>α</mi></msub><mo>+</mo><msub><mi>η</mi><mi>α</mi></msub><mo stretchy="false" form="postfix">)</mo><mo>⋅</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><mstyle displaystyle="false"><mfrac><msub><mtext mathvariant="normal">SCORE_MMSE</mtext><mi>i</mi></msub><mn>26</mn></mfrac></mstyle><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mi>−</mi><mn>2.01</mn></mrow></msup></mrow><annotation encoding="application/x-tex">
+\alpha_i = \exp(l_\alpha + \eta_\alpha) \cdot \left(\tfrac{\text{SCORE_MMSE}_i}{26}\right)^{-2.01}
 </annotation></semantics></math></p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="normal">logit</mtext><mo stretchy="false" form="prefix">(</mo><msubsup><mi>P</mi><mtext mathvariant="normal">slow</mtext><mi>i</mi></msubsup><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mtext mathvariant="normal">logit</mtext><mo stretchy="false" form="prefix">(</mo><msub><mi>θ</mi><mn>5</mn></msub><mo stretchy="false" form="postfix">)</mo><mo>−</mo><mn>1.27</mn><mspace width="0.167em"></mspace><mo stretchy="false" form="prefix">(</mo><msub><mtext mathvariant="normal">CDR_SOB</mtext><mi>i</mi></msub><mo>−</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo><mo>−</mo><mn>0.341</mn><mspace width="0.167em"></mspace><mo stretchy="false" form="prefix">(</mo><msub><mtext mathvariant="normal">FAQ</mtext><mi>i</mi></msub><mo>−</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo><mo>+</mo><mn>7.5</mn><mspace width="0.167em"></mspace><mo stretchy="false" form="prefix">(</mo><msub><mtext mathvariant="normal">RHPNM</mtext><mi>i</mi></msub><mo>−</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">
-\text{logit}(P_\text{slow}^i) = \text{logit}(\theta_5) - 1.27\,(\text{CDR\_SOB}_i - 1) - 0.341\,(\text{FAQ}_i - 1) + 7.5\,(\text{RHPNM}_i - 1)
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="normal">logit</mtext><mo stretchy="false" form="prefix">(</mo><msubsup><mi>P</mi><mtext mathvariant="normal">slow</mtext><mi>i</mi></msubsup><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mtext mathvariant="normal">logit</mtext><mo stretchy="false" form="prefix">(</mo><msub><mi>θ</mi><mn>5</mn></msub><mo stretchy="false" form="postfix">)</mo><mo>−</mo><mn>1.27</mn><mspace width="0.167em"></mspace><mo stretchy="false" form="prefix">(</mo><msub><mtext mathvariant="normal">CDR_SOB</mtext><mi>i</mi></msub><mo>−</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo><mo>−</mo><mn>0.341</mn><mspace width="0.167em"></mspace><mo stretchy="false" form="prefix">(</mo><msub><mtext mathvariant="normal">SCORE_FAQ</mtext><mi>i</mi></msub><mo>−</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo><mo>+</mo><mn>7.5</mn><mspace width="0.167em"></mspace><mo stretchy="false" form="prefix">(</mo><msub><mtext mathvariant="normal">SCORE_RHPNM</mtext><mi>i</mi></msub><mo>−</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">
+\text{logit}(P_\text{slow}^i) = \text{logit}(\theta_5) - 1.27\,(\text{CDR\_SOB}_i - 1) - 0.341\,(\text{SCORE_FAQ}_i - 1) + 7.5\,(\text{SCORE_RHPNM}_i - 1)
 </annotation></semantics></math></p>
 <p>where <code>theta_5 = 0.44</code> is imputed (see Errata).</p>
 </div>
@@ -1225,7 +1225,7 @@ observations.</p>
 <span><span class="co"># published baseline distributions; T_ENTRY is set to a few years past each</span></span>
 <span><span class="co"># subject's DOT so the patient is observed during active disease progression.</span></span>
 <span><span class="va">scenarios</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tribble.html" class="external-link">tribble</a></span><span class="op">(</span></span>
-<span>  <span class="op">~</span><span class="va">scenario</span>,                             <span class="op">~</span><span class="va">CDR_SOB</span>, <span class="op">~</span><span class="va">ADAS_COG</span>, <span class="op">~</span><span class="va">MMSE</span>, <span class="op">~</span><span class="va">FAQ</span>, <span class="op">~</span><span class="va">RHPNM</span>,</span>
+<span>  <span class="op">~</span><span class="va">scenario</span>,                             <span class="op">~</span><span class="va">SCORE_CDR_SOB</span>, <span class="op">~</span><span class="va">SCORE_ADAS_COG</span>, <span class="op">~</span><span class="va">SCORE_MMSE</span>, <span class="op">~</span><span class="va">SCORE_FAQ</span>, <span class="op">~</span><span class="va">SCORE_RHPNM</span>,</span>
 <span>  <span class="st">"Advanced AD (high CDR, severe ADAS)"</span>,    <span class="fl">5.0</span>,    <span class="fl">25.0</span>,    <span class="fl">20.0</span>,  <span class="fl">15.0</span>,  <span class="fl">0.70</span>,</span>
 <span>  <span class="st">"Moderate AD (median AD baseline)"</span>,       <span class="fl">4.0</span>,    <span class="fl">20.0</span>,    <span class="fl">23.0</span>,  <span class="fl">12.0</span>,  <span class="fl">0.80</span>,</span>
 <span>  <span class="st">"Intermediate MCI-&gt;AD"</span>,                   <span class="fl">2.5</span>,    <span class="fl">15.0</span>,    <span class="fl">25.0</span>,   <span class="fl">6.0</span>,  <span class="fl">0.90</span>,</span>
@@ -1235,13 +1235,13 @@ observations.</p>
 <span></span>
 <span><span class="co"># Compute the typical DOT for each scenario from the source paper covariate</span></span>
 <span><span class="co"># form, then set T_ENTRY to DOT + 4 years (well past the activation function)</span></span>
-<span><span class="co"># so the patient is observed during disease progression. Cap CDR_SOB at 0.5</span></span>
-<span><span class="co"># in the DOT formula to avoid divide-by-zero on the (CDR_SOB/2)^-0.072 form.</span></span>
+<span><span class="co"># so the patient is observed during disease progression. Cap SCORE_CDR_SOB at 0.5</span></span>
+<span><span class="co"># in the DOT formula to avoid divide-by-zero on the (SCORE_CDR_SOB/2)^-0.072 form.</span></span>
 <span><span class="va">scenarios</span> <span class="op">&lt;-</span> <span class="va">scenarios</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
 <span>    dot_typ <span class="op">=</span> <span class="fl">16.1</span> <span class="op">*</span></span>
-<span>              <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span><span class="va">CDR_SOB</span>, <span class="fl">0.5</span><span class="op">)</span> <span class="op">/</span> <span class="fl">2</span><span class="op">)</span><span class="op">^</span><span class="op">(</span><span class="op">-</span><span class="fl">0.072</span><span class="op">)</span> <span class="op">*</span></span>
-<span>              <span class="op">(</span><span class="va">ADAS_COG</span> <span class="op">/</span> <span class="fl">12.67</span><span class="op">)</span><span class="op">^</span><span class="op">(</span><span class="op">-</span><span class="fl">0.0439</span><span class="op">)</span>,</span>
+<span>              <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span><span class="va">SCORE_CDR_SOB</span>, <span class="fl">0.5</span><span class="op">)</span> <span class="op">/</span> <span class="fl">2</span><span class="op">)</span><span class="op">^</span><span class="op">(</span><span class="op">-</span><span class="fl">0.072</span><span class="op">)</span> <span class="op">*</span></span>
+<span>              <span class="op">(</span><span class="va">SCORE_ADAS_COG</span> <span class="op">/</span> <span class="fl">12.67</span><span class="op">)</span><span class="op">^</span><span class="op">(</span><span class="op">-</span><span class="fl">0.0439</span><span class="op">)</span>,</span>
 <span>    T_ENTRY <span class="op">=</span> <span class="va">dot_typ</span> <span class="op">+</span> <span class="fl">4.0</span></span>
 <span>  <span class="op">)</span></span>
 <span></span>
@@ -1251,22 +1251,22 @@ observations.</p>
 <caption>Virtual-cohort covariates with the implied typical DOT and the
 study-entry time T_ENTRY used for plotting.</caption>
 <colgroup>
-<col width="44%">
+<col width="32%">
+<col width="12%">
+<col width="12%">
 <col width="9%">
+<col width="8%">
 <col width="10%">
-<col width="5%">
-<col width="4%">
 <col width="6%">
-<col width="9%">
-<col width="9%">
+<col width="6%">
 </colgroup>
 <thead><tr class="header">
 <th align="left">scenario</th>
-<th align="right">CDR_SOB</th>
-<th align="right">ADAS_COG</th>
-<th align="right">MMSE</th>
-<th align="right">FAQ</th>
-<th align="right">RHPNM</th>
+<th align="right">SCORE_CDR_SOB</th>
+<th align="right">SCORE_ADAS_COG</th>
+<th align="right">SCORE_MMSE</th>
+<th align="right">SCORE_FAQ</th>
+<th align="right">SCORE_RHPNM</th>
 <th align="right">dot_typ</th>
 <th align="right">T_ENTRY</th>
 </tr></thead>
@@ -1341,11 +1341,11 @@ as <code>p_slow_indiv * cdr_slow + p_fast_indiv * cdr_fast</code>.</p>
 <span>    time     <span class="op">=</span> <span class="va">times</span>,</span>
 <span>    evid     <span class="op">=</span> <span class="fl">0L</span>,</span>
 <span>    amt      <span class="op">=</span> <span class="fl">0</span>,</span>
-<span>    CDR_SOB  <span class="op">=</span> <span class="va">s</span><span class="op">$</span><span class="va">CDR_SOB</span>,</span>
-<span>    ADAS_COG <span class="op">=</span> <span class="va">s</span><span class="op">$</span><span class="va">ADAS_COG</span>,</span>
-<span>    MMSE     <span class="op">=</span> <span class="va">s</span><span class="op">$</span><span class="va">MMSE</span>,</span>
-<span>    FAQ      <span class="op">=</span> <span class="va">s</span><span class="op">$</span><span class="va">FAQ</span>,</span>
-<span>    RHPNM    <span class="op">=</span> <span class="va">s</span><span class="op">$</span><span class="va">RHPNM</span>,</span>
+<span>    SCORE_CDR_SOB  <span class="op">=</span> <span class="va">s</span><span class="op">$</span><span class="va">SCORE_CDR_SOB</span>,</span>
+<span>    SCORE_ADAS_COG <span class="op">=</span> <span class="va">s</span><span class="op">$</span><span class="va">SCORE_ADAS_COG</span>,</span>
+<span>    SCORE_MMSE     <span class="op">=</span> <span class="va">s</span><span class="op">$</span><span class="va">SCORE_MMSE</span>,</span>
+<span>    SCORE_FAQ      <span class="op">=</span> <span class="va">s</span><span class="op">$</span><span class="va">SCORE_FAQ</span>,</span>
+<span>    SCORE_RHPNM    <span class="op">=</span> <span class="va">s</span><span class="op">$</span><span class="va">SCORE_RHPNM</span>,</span>
 <span>    T_ENTRY  <span class="op">=</span> <span class="va">s</span><span class="op">$</span><span class="va">T_ENTRY</span></span>
 <span>  <span class="op">)</span></span>
 <span>  <span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod0</span>, events <span class="op">=</span> <span class="va">ev</span>, returnType <span class="op">=</span> <span class="st">"data.frame"</span><span class="op">)</span></span>
@@ -1413,12 +1413,12 @@ patients, alongside a stochastic envelope from subject-level IIV.</p>
 <span>  <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
 <span>    id <span class="op">=</span> <span class="va">id_offset</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span>,</span>
 <span>    scenario <span class="op">=</span> <span class="va">label</span>,</span>
-<span>    CDR_SOB <span class="op">=</span> <span class="va">cdr</span>, ADAS_COG <span class="op">=</span> <span class="va">adas</span>, MMSE <span class="op">=</span> <span class="va">mmse</span>, FAQ <span class="op">=</span> <span class="va">faq</span>, RHPNM <span class="op">=</span> <span class="va">rhpnm</span></span>
+<span>    SCORE_CDR_SOB <span class="op">=</span> <span class="va">cdr</span>, SCORE_ADAS_COG <span class="op">=</span> <span class="va">adas</span>, SCORE_MMSE <span class="op">=</span> <span class="va">mmse</span>, SCORE_FAQ <span class="op">=</span> <span class="va">faq</span>, SCORE_RHPNM <span class="op">=</span> <span class="va">rhpnm</span></span>
 <span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
 <span>      dot_typ <span class="op">=</span> <span class="fl">16.1</span> <span class="op">*</span></span>
-<span>                <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span><span class="va">CDR_SOB</span>, <span class="fl">0.5</span><span class="op">)</span> <span class="op">/</span> <span class="fl">2</span><span class="op">)</span><span class="op">^</span><span class="op">(</span><span class="op">-</span><span class="fl">0.072</span><span class="op">)</span> <span class="op">*</span></span>
-<span>                <span class="op">(</span><span class="va">ADAS_COG</span> <span class="op">/</span> <span class="fl">12.67</span><span class="op">)</span><span class="op">^</span><span class="op">(</span><span class="op">-</span><span class="fl">0.0439</span><span class="op">)</span>,</span>
+<span>                <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span><span class="va">SCORE_CDR_SOB</span>, <span class="fl">0.5</span><span class="op">)</span> <span class="op">/</span> <span class="fl">2</span><span class="op">)</span><span class="op">^</span><span class="op">(</span><span class="op">-</span><span class="fl">0.072</span><span class="op">)</span> <span class="op">*</span></span>
+<span>                <span class="op">(</span><span class="va">SCORE_ADAS_COG</span> <span class="op">/</span> <span class="fl">12.67</span><span class="op">)</span><span class="op">^</span><span class="op">(</span><span class="op">-</span><span class="fl">0.0439</span><span class="op">)</span>,</span>
 <span>      T_ENTRY <span class="op">=</span> <span class="va">dot_typ</span> <span class="op">+</span> <span class="va">dot_offset</span></span>
 <span>    <span class="op">)</span></span>
 <span><span class="op">}</span></span>
@@ -1436,11 +1436,11 @@ patients, alongside a stochastic envelope from subject-level IIV.</p>
 <span>    time     <span class="op">=</span> <span class="va">times</span>,</span>
 <span>    evid     <span class="op">=</span> <span class="fl">0L</span>,</span>
 <span>    amt      <span class="op">=</span> <span class="fl">0</span>,</span>
-<span>    CDR_SOB  <span class="op">=</span> <span class="va">s</span><span class="op">$</span><span class="va">CDR_SOB</span>,</span>
-<span>    ADAS_COG <span class="op">=</span> <span class="va">s</span><span class="op">$</span><span class="va">ADAS_COG</span>,</span>
-<span>    MMSE     <span class="op">=</span> <span class="va">s</span><span class="op">$</span><span class="va">MMSE</span>,</span>
-<span>    FAQ      <span class="op">=</span> <span class="va">s</span><span class="op">$</span><span class="va">FAQ</span>,</span>
-<span>    RHPNM    <span class="op">=</span> <span class="va">s</span><span class="op">$</span><span class="va">RHPNM</span>,</span>
+<span>    SCORE_CDR_SOB  <span class="op">=</span> <span class="va">s</span><span class="op">$</span><span class="va">SCORE_CDR_SOB</span>,</span>
+<span>    SCORE_ADAS_COG <span class="op">=</span> <span class="va">s</span><span class="op">$</span><span class="va">SCORE_ADAS_COG</span>,</span>
+<span>    SCORE_MMSE     <span class="op">=</span> <span class="va">s</span><span class="op">$</span><span class="va">SCORE_MMSE</span>,</span>
+<span>    SCORE_FAQ      <span class="op">=</span> <span class="va">s</span><span class="op">$</span><span class="va">SCORE_FAQ</span>,</span>
+<span>    SCORE_RHPNM    <span class="op">=</span> <span class="va">s</span><span class="op">$</span><span class="va">SCORE_RHPNM</span>,</span>
 <span>    T_ENTRY  <span class="op">=</span> <span class="va">s</span><span class="op">$</span><span class="va">T_ENTRY</span></span>
 <span>  <span class="op">)</span></span>
 <span>  <span class="va">out</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod</span>, events <span class="op">=</span> <span class="va">ev</span>, returnType <span class="op">=</span> <span class="st">"data.frame"</span><span class="op">)</span></span>
@@ -1484,37 +1484,38 @@ patients, alongside a stochastic envelope from subject-level IIV.</p>
 scores<a class="anchor" aria-label="anchor" href="#sanity-check-mixture-probability-surface-across-baseline-scores"></a>
 </h2>
 <p>The mixture-probability model
-<code>P_slow = inv_logit(logit_p_slow - 1.27*(CDR-1) - 0.341*(FAQ-1) + 7.5*(RHPNM-1))</code>
+<code>P_slow = inv_logit(logit_p_slow - 1.27*(CDR-1) - 0.341*(SCORE_FAQ-1) + 7.5*(SCORE_RHPNM-1))</code>
 predicts that:</p>
 <ul>
 <li>Higher baseline CDR-SOB -&gt; lower slow-progression probability
 (more severe -&gt; faster progression).</li>
-<li>Higher baseline FAQ -&gt; lower slow-progression probability.</li>
-<li>Higher RHPNM (less atrophic hippocampus) -&gt; higher
+<li>Higher baseline SCORE_FAQ -&gt; lower slow-progression
+probability.</li>
+<li>Higher SCORE_RHPNM (less atrophic hippocampus) -&gt; higher
 slow-progression probability.</li>
 </ul>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">grid</span> <span class="op">&lt;-</span> <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/expand_grid.html" class="external-link">expand_grid</a></span><span class="op">(</span></span>
-<span>  CDR_SOB <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">6</span>, by <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span>,</span>
-<span>  RHPNM   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.7</span>, <span class="fl">0.85</span>, <span class="fl">1.0</span><span class="op">)</span></span>
+<span>  SCORE_CDR_SOB <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">6</span>, by <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span>,</span>
+<span>  SCORE_RHPNM   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.7</span>, <span class="fl">0.85</span>, <span class="fl">1.0</span><span class="op">)</span></span>
 <span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>FAQ <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">|&gt;</span>  <span class="co"># hold FAQ at the centring value</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>SCORE_FAQ <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">|&gt;</span>  <span class="co"># hold SCORE_FAQ at the centring value</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
 <span>    logit_p <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fl">0.44</span><span class="op">/</span><span class="op">(</span><span class="fl">1</span><span class="op">-</span><span class="fl">0.44</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>              <span class="op">(</span><span class="op">-</span><span class="fl">1.27</span><span class="op">)</span> <span class="op">*</span> <span class="op">(</span><span class="va">CDR_SOB</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
-<span>              <span class="op">(</span><span class="op">-</span><span class="fl">0.341</span><span class="op">)</span> <span class="op">*</span> <span class="op">(</span><span class="va">FAQ</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
-<span>              <span class="op">(</span> <span class="fl">7.5</span>  <span class="op">)</span> <span class="op">*</span> <span class="op">(</span><span class="va">RHPNM</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span>,</span>
+<span>              <span class="op">(</span><span class="op">-</span><span class="fl">1.27</span><span class="op">)</span> <span class="op">*</span> <span class="op">(</span><span class="va">SCORE_CDR_SOB</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
+<span>              <span class="op">(</span><span class="op">-</span><span class="fl">0.341</span><span class="op">)</span> <span class="op">*</span> <span class="op">(</span><span class="va">SCORE_FAQ</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
+<span>              <span class="op">(</span> <span class="fl">7.5</span>  <span class="op">)</span> <span class="op">*</span> <span class="op">(</span><span class="va">SCORE_RHPNM</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span>,</span>
 <span>    p_slow <span class="op">=</span> <span class="fl">1</span><span class="op">/</span><span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="op">-</span><span class="va">logit_p</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
 <span></span>
-<span><span class="fu">ggplot</span><span class="op">(</span><span class="va">grid</span>, <span class="fu">aes</span><span class="op">(</span><span class="va">CDR_SOB</span>, <span class="va">p_slow</span>, colour <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">RHPNM</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span><span class="fu">ggplot</span><span class="op">(</span><span class="va">grid</span>, <span class="fu">aes</span><span class="op">(</span><span class="va">SCORE_CDR_SOB</span>, <span class="va">p_slow</span>, colour <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">SCORE_RHPNM</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">geom_line</span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">scale_y_continuous</span><span class="op">(</span>limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">labs</span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Baseline CDR-SOB"</span>,</span>
 <span>       y <span class="op">=</span> <span class="st">"Probability of being in the slow-progression subpopulation"</span>,</span>
-<span>       colour <span class="op">=</span> <span class="st">"RHPNM"</span>,</span>
+<span>       colour <span class="op">=</span> <span class="st">"SCORE_RHPNM"</span>,</span>
 <span>       title <span class="op">=</span> <span class="st">"Mixture probability of slow progression vs baseline CDR-SOB"</span>,</span>
-<span>       caption <span class="op">=</span> <span class="st">"FAQ held at median value 1. RHPNM = 1 = healthy reference hippocampal volume; 0.7 = ~30% atrophy."</span><span class="op">)</span> <span class="op">+</span></span>
+<span>       caption <span class="op">=</span> <span class="st">"SCORE_FAQ held at median value 1. SCORE_RHPNM = 1 = healthy reference hippocampal volume; 0.7 = ~30% atrophy."</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">theme_minimal</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Delor_2013_alzheimer_files/figure-html/mixture-surface-1.png" class="r-plt" alt="" width="630"></p>
 <p>The figure replicates the qualitative finding in the source paper:
@@ -1535,14 +1536,14 @@ at extraction time. The following choices were made:</p>
 <p><strong>Typical mixture probability
 (<code>theta_5</code>).</strong> Table 2 of the source paper tabulates
 the three covariate coefficients on the mixture-logit
-(<code>COV CDR-SOB on $MIX</code>, <code>COV FAQ on $MIX</code>,
-<code>COV RHPNM on $MIX</code>) but <strong>not</strong> the typical /
-intercept value <code>theta_5</code>. The model file imputes
+(<code>COV CDR-SOB on $MIX</code>, <code>COV SCORE_FAQ on $MIX</code>,
+<code>COV SCORE_RHPNM on $MIX</code>) but <strong>not</strong> the
+typical / intercept value <code>theta_5</code>. The model file imputes
 <code>theta_5 = 0.44</code> based on the source paper’s reported “MCI/AD
 slow (alpha = 0): 44/3” classification row in Table 2 – this corresponds
-to the MCI-cohort slow fraction (the typical patient at median CDR_SOB =
-1, FAQ = 1, RHPNM = 1 is approximately an MCI patient). Alternative
-defaults the operator might prefer:</p>
+to the MCI-cohort slow fraction (the typical patient at median
+SCORE_CDR_SOB = 1, SCORE_FAQ = 1, SCORE_RHPNM = 1 is approximately an
+MCI patient). Alternative defaults the operator might prefer:</p>
 <ul>
 <li>Overall slow fraction across MCI + AD cohorts: about 0.31 (computed
 as <code>(0.44 * 380 + 0.03 * 180) / 560</code>).</li>

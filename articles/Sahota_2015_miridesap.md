@@ -129,40 +129,40 @@ make_cohort <- function(n, crcl, sexf, amload, amliver,
   out <- dplyr::bind_rows(dose_rows, obs_rows)
   out$CRCL    <- crcl
   out$SEXF    <- sexf
-  out$AMLOAD  <- amload
-  out$AMLIVER <- amliver
+  out$DIS_AMYLOID_LOAD  <- amload
+  out$DIS_AMYLOID_LIVER <- amliver
   out$cohort  <- cohort_label
   out[order(out$id, out$time, -out$evid), ]
 }
 
 # Replicate the Figure 5 left-column scenarios: a typical male, 20 mg/h
 # IV infusion for 48 h followed by three 60 mg SC doses every 8 h, with
-# AMLOAD swept across 0 (no amyloid), 1 (small), 2 (moderate), and 3
-# (large) and AMLIVER fixed at 0 for these AMLOAD-sweep panels.
+# DIS_AMYLOID_LOAD swept across 0 (no amyloid), 1 (small), 2 (moderate), and 3
+# (large) and DIS_AMYLOID_LIVER fixed at 0 for these DIS_AMYLOID_LOAD-sweep panels.
 sample_grid <- c(seq(0, 80, by = 0.5), seq(81, 720, by = 4))
 
 events_amload <- dplyr::bind_rows(
   make_cohort(1L, crcl = 90, sexf = 0, amload = 0, amliver = 0,
               dose_mg = 20 * 48, infusion_dur_h = 48,
-              sample_grid = sample_grid, cohort_label = "AMLOAD = 0 (healthy)",
+              sample_grid = sample_grid, cohort_label = "DIS_AMYLOID_LOAD = 0 (healthy)",
               id_offset = 0L),
   make_cohort(1L, crcl = 90, sexf = 0, amload = 1, amliver = 0,
               dose_mg = 20 * 48, infusion_dur_h = 48,
-              sample_grid = sample_grid, cohort_label = "AMLOAD = 1 (small)",
+              sample_grid = sample_grid, cohort_label = "DIS_AMYLOID_LOAD = 1 (small)",
               id_offset = 1L),
   make_cohort(1L, crcl = 90, sexf = 0, amload = 2, amliver = 0,
               dose_mg = 20 * 48, infusion_dur_h = 48,
-              sample_grid = sample_grid, cohort_label = "AMLOAD = 2 (moderate)",
+              sample_grid = sample_grid, cohort_label = "DIS_AMYLOID_LOAD = 2 (moderate)",
               id_offset = 2L),
   make_cohort(1L, crcl = 90, sexf = 0, amload = 3, amliver = 0,
               dose_mg = 20 * 48, infusion_dur_h = 48,
-              sample_grid = sample_grid, cohort_label = "AMLOAD = 3 (large)",
+              sample_grid = sample_grid, cohort_label = "DIS_AMYLOID_LOAD = 3 (large)",
               id_offset = 3L)
 )
 stopifnot(!anyDuplicated(unique(events_amload[, c("id", "time", "evid")])))
 
-# Replicate the Figure 5 right-column scenarios: AMLOAD fixed at 2
-# (moderate), AMLIVER fixed at 0, CRCL swept from severe impairment (15)
+# Replicate the Figure 5 right-column scenarios: DIS_AMYLOID_LOAD fixed at 2
+# (moderate), DIS_AMYLOID_LIVER fixed at 0, CRCL swept from severe impairment (15)
 # to normal (90) so the renal effect on CPHPC PK is visible.
 events_crcl <- dplyr::bind_rows(
   make_cohort(1L, crcl = 15, sexf = 0, amload = 2, amliver = 0,
@@ -207,7 +207,7 @@ sim_crcl <- rxode2::rxSolve(mod_typical, events = events_crcl,
 ``` r
 
 # Replicates the top-left panel of Sahota 2015 Figure 5: typical-value
-# CPHPC plasma profile across amyloid loads. AMLOAD does not enter the
+# CPHPC plasma profile across amyloid loads. DIS_AMYLOID_LOAD does not enter the
 # CPHPC PK pathway, so the four traces overlay -- consistent with the
 # paper's Discussion ("the amyloid load, however, had no effect on the
 # PK profile of CPHPC").
@@ -227,7 +227,7 @@ sim_amload |>
 
 # Replicates the middle-left panel of Sahota 2015 Figure 5: SAP profile
 # over the first 80 h. The depletion nadir deepens to ~0.5 mg/L in
-# AMLOAD = 0/1 subjects and is shallower in AMLOAD = 2/3 because the
+# DIS_AMYLOID_LOAD = 0/1 subjects and is shallower in DIS_AMYLOID_LOAD = 2/3 because the
 # amyloid load increases the peripheral SAP volume V4, releasing
 # additional SAP into circulation.
 sim_amload |>
@@ -246,7 +246,7 @@ sim_amload |>
 
 # Replicates the bottom-left panel of Sahota 2015 Figure 5: SAP profile
 # across the full 0-720 h horizon. Recovery to baseline takes ~200 h in
-# AMLOAD = 0/1 and extends well past 600 h in AMLOAD = 3, mirroring the
+# DIS_AMYLOID_LOAD = 0/1 and extends well past 600 h in DIS_AMYLOID_LOAD = 3, mirroring the
 # paper's narrative ("the plasma SAP concentration in this patient
 # returned to its baseline value after more than 600 hours compared
 # with 200 hours in a patient with no/small amyloid load").
@@ -284,10 +284,10 @@ sim_crcl |>
 
 Sahota 2015 does not tabulate NCA parameters in the main paper, so the
 PKNCA block below computes them on the simulated CPHPC profiles for the
-AMLOAD-sweep cohort only (the SAP output is a PD response of total
-plasma SAP rather than a classic concentration-time profile, and the
-paper’s clinical objective is SAP depletion, not exposure). The
-treatment grouping uses the AMLOAD-derived cohort label so the
+DIS_AMYLOID_LOAD-sweep cohort only (the SAP output is a PD response of
+total plasma SAP rather than a classic concentration-time profile, and
+the paper’s clinical objective is SAP depletion, not exposure). The
+treatment grouping uses the DIS_AMYLOID_LOAD-derived cohort label so the
 single-row reference summary matches the figure replicates above.
 
 ``` r
@@ -316,18 +316,19 @@ nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- suppressWarnings(PKNCA::pk.nca(nca_data))
 nca_summary <- as.data.frame(summary(nca_res))
 knitr::kable(nca_summary,
-             caption = "Simulated CPHPC NCA parameters by AMLOAD-sweep cohort (typical-value subject; 20 mg/h IV infusion x 48 h).")
+             caption = "Simulated CPHPC NCA parameters by DIS_AMYLOID_LOAD-sweep cohort (typical-value subject; 20 mg/h IV infusion x 48 h).")
 ```
 
-| start | end | cohort                | N   | cmax | tmax | half.life | aucinf.obs |
-|------:|----:|:----------------------|:----|:-----|:-----|:----------|:-----------|
-|     0 | Inf | AMLOAD = 0 (healthy)  | 1   | 2890 | 48.0 | 7.96      | 139000     |
-|     0 | Inf | AMLOAD = 1 (small)    | 1   | 2890 | 48.0 | 7.96      | 139000     |
-|     0 | Inf | AMLOAD = 2 (moderate) | 1   | 2880 | 48.0 | 8.31      | 138000     |
-|     0 | Inf | AMLOAD = 3 (large)    | 1   | 2870 | 48.0 | 8.02      | 137000     |
+| start | end | cohort                          | N   | cmax | tmax | half.life | aucinf.obs |
+|------:|----:|:--------------------------------|:----|:-----|:-----|:----------|:-----------|
+|     0 | Inf | DIS_AMYLOID_LOAD = 0 (healthy)  | 1   | 2890 | 48.0 | 7.96      | 139000     |
+|     0 | Inf | DIS_AMYLOID_LOAD = 1 (small)    | 1   | 2890 | 48.0 | 7.96      | 139000     |
+|     0 | Inf | DIS_AMYLOID_LOAD = 2 (moderate) | 1   | 2880 | 48.0 | 8.31      | 138000     |
+|     0 | Inf | DIS_AMYLOID_LOAD = 3 (large)    | 1   | 2870 | 48.0 | 8.02      | 137000     |
 
-Simulated CPHPC NCA parameters by AMLOAD-sweep cohort (typical-value
-subject; 20 mg/h IV infusion x 48 h). {.table}
+Simulated CPHPC NCA parameters by DIS_AMYLOID_LOAD-sweep cohort
+(typical-value subject; 20 mg/h IV infusion x 48 h). {.table
+style="width:100%;"}
 
 ## Assumptions and deviations
 

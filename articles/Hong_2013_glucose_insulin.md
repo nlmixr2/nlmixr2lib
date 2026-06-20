@@ -1,4 +1,4 @@
-# Glucose-insulin dynamics in T2DM (Hong 2013)
+# Glucose-insulin dynamics in DIS_DIAB (Hong 2013)
 
 ## Model and source
 
@@ -10,8 +10,8 @@
 - PubMed: PMID 23913136; PMCID PMC3787234.
 
 Hong 2013 develops an integrated population PD model of glucose and
-insulin homeostasis in 20 adults with type 2 diabetes mellitus (T2DM)
-under two perturbation conditions:
+insulin homeostasis in 20 adults with type 2 diabetes mellitus
+(DIS_DIAB) under two perturbation conditions:
 
 - **Hyperglycemic glucose clamp (HGC)** – intravenous glucose loading
   dose plus Biostator-controlled infusion clamping blood glucose at 240
@@ -23,7 +23,7 @@ The paper extends the Silber 2007 integrated glucose-insulin framework
 with two modifications:
 
 1.  Endogenous glucose production GP is constant (the feedback term that
-    Silber estimated was close to zero in T2DM).
+    Silber estimated was close to zero in DIS_DIAB).
 2.  The HGC first-phase insulin response is captured by an empirical
     Gaussian secretion pulse (amplitude `Amplitude`, peak time `Tsec`
     fixed at 3.54 min, width `Tdur` fixed at 1.76 min) rather than a
@@ -33,7 +33,7 @@ Palosuran 125 mg b.i.d. was the investigational drug; the paper
 concludes it has no clinically meaningful effect on insulin secretion or
 sensitivity, so the published final estimates fix the palosuran effect
 to zero and the structural model is essentially a drug-free
-glucose-insulin homeostasis model in T2DM.
+glucose-insulin homeostasis model in DIS_DIAB.
 
 The paper produces two distinct dynamical systems (HGC and MTT) that
 share the glucose-disposition and effect-compartment structure but
@@ -46,9 +46,9 @@ article).
 
 ## Population
 
-The model was fit to 20 adults with T2DM treated by diet only (16 male,
-4 female; mean age 53.7 y, range 40-65; fasting blood glucose 110-180
-mg/dL; HbA1c 5.4-8.3%, mean 6.4%). The study was a double-blind,
+The model was fit to 20 adults with DIS_DIAB treated by diet only (16
+male, 4 female; mean age 53.7 y, range 40-65; fasting blood glucose
+110-180 mg/dL; HbA1c 5.4-8.3%, mean 6.4%). The study was a double-blind,
 placebo-controlled, randomised, two-way crossover trial of palosuran 125
 mg b.i.d. for 4 weeks against placebo with a 4-week washout
 (Ethikkommission der Aerztekammer Nordrhein, Germany). MTT was performed
@@ -75,7 +75,7 @@ place.
 | `gamma` | 0.000431 mU/(min^2\*(mg/L)) | Table I |
 | `Amplitude` | 32.2 mU | Table I |
 | `CLI` | 1.54 L/min | Table I |
-| `VI` | 6.09 L (FIXED, Silber 2007 T2DM lit) | Table I footnote a |
+| `VI` | 6.09 L (FIXED, Silber 2007 DIS_DIAB lit) | Table I footnote a |
 | `kIE` | 0.00291 1/min | Table I |
 | `Tsec` | 3.54 min (FIXED, lit value ref 16) | Hong 2013 Results section |
 | `Tdur` | 1.76 min (FIXED, lit value ref 16) | Hong 2013 Results section |
@@ -447,11 +447,11 @@ ggplot(mtt_pop_summary, aes(time)) +
   secretion or sensitivity.” The published final estimates reported in
   Tables I and II were re-fit with the palosuran treatment effect set to
   zero, and the same convention is used here – the structural model
-  below is the drug-free glucose-insulin homeostasis model in T2DM.
-- **VI fixed to 6.09 L (Silber 2007 T2DM literature value).** The
+  below is the drug-free glucose-insulin homeostasis model in DIS_DIAB.
+- **VI fixed to 6.09 L (Silber 2007 DIS_DIAB literature value).** The
   within-study estimate of VI was 0.52 L with very high IIV (variance
   7.22) and produced a biased CLI (0.0593 L/min, 20-fold lower than
-  literature). The paper fixed VI to 6.09 L, the Silber 2007 T2DM
+  literature). The paper fixed VI to 6.09 L, the Silber 2007 DIS_DIAB
   estimate, to obtain a stable fit with CLI in agreement with the
   literature.
 - **Tsec and Tdur fixed to literature values (3.54 min and 1.76 min from

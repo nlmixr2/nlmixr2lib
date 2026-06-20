@@ -24,7 +24,7 @@ mg/kg dosing and MIPD are not biased by dose-dependent feedback through
 acute-phase proteins. The baseline covariates retained in the adapted
 model are:
 
-- baseline Mayo endoscopic subscore (`MAYO_E`, levels 1 / 2 / 3),
+- baseline Mayo endoscopic subscore (`SCORE_MAYO_E`, levels 1 / 2 / 3),
 - baseline corticosteroid use (`CONMED_STEROID`, 0/1),
 - extensive colitis at baseline (`DISEXT_EP`, 0/1),
 - fat-free mass (`FFM`, kg).
@@ -107,7 +107,7 @@ make_cohort <- function(n, mayo_level, dose_per_kg_mg, treatment, id_offset = 0L
     WT          = pmin(pmax(rlnorm(n, log(70), 0.20), 45), 130),
     HT_M        = pmin(pmax(rnorm(n, mean = 1.72 - 0.13 * SEXF, sd = 0.08), 1.50), 1.95),
     FFM         = janmahasatian_ffm(WT, HT_M, SEXF),
-    MAYO_E      = mayo_level,
+    SCORE_MAYO_E      = mayo_level,
     CONMED_STEROID     = rbinom(n, 1, 0.50),
     DISEXT_EP   = rbinom(n, 1, 0.40),
     treatment   = treatment,
@@ -132,7 +132,7 @@ build_events <- function(cohort) {
     mutate(amt = NA_real_, evid = 0, cmt = "central", Cc = NA_real_)
   bind_rows(d_dose, d_obs) %>%
     arrange(id, time, desc(evid)) %>%
-    select(id, time, amt, evid, cmt, Cc, MAYO_E, CONMED_STEROID, DISEXT_EP, FFM,
+    select(id, time, amt, evid, cmt, Cc, SCORE_MAYO_E, CONMED_STEROID, DISEXT_EP, FFM,
            treatment, dose_per_kg)
 }
 
@@ -160,7 +160,7 @@ mod <- readModelDb("Faelens_2021_infliximab")
 sim <- rxode2::rxSolve(
   mod,
   events = events,
-  keep = c("treatment", "MAYO_E", "dose_per_kg")
+  keep = c("treatment", "SCORE_MAYO_E", "dose_per_kg")
 )
 #> ℹ parameter labels from comments will be replaced by 'label()'
 ```
@@ -171,7 +171,7 @@ sim <- rxode2::rxSolve(
 
 auc_d84 <- sim %>%
   filter(time <= 84) %>%
-  group_by(id, treatment, MAYO_E) %>%
+  group_by(id, treatment, SCORE_MAYO_E) %>%
   arrange(time) %>%
   summarise(
     AUCd84 = sum(diff(time) * (head(Cc, -1) + tail(Cc, -1)) / 2, na.rm = TRUE),
@@ -180,7 +180,7 @@ auc_d84 <- sim %>%
 
 ggplot(auc_d84, aes(x = AUCd84, fill = treatment)) +
   geom_density(alpha = 0.5) +
-  facet_wrap(~ paste0("Baseline Mayo ", MAYO_E)) +
+  facet_wrap(~ paste0("Baseline Mayo ", SCORE_MAYO_E)) +
   scale_x_log10() +
   labs(
     x = expression(AUC[d84] ~ "(mg" %.% "day/L, log scale)"),
@@ -232,12 +232,12 @@ than classical single-dose AUCinf. Compute it via PKNCA on the \[0,
 
 sim_nca <- sim %>%
   filter(!is.na(Cc), time <= 84) %>%
-  mutate(treatment_mayo = paste0(treatment, ", Mayo ", MAYO_E)) %>%
+  mutate(treatment_mayo = paste0(treatment, ", Mayo ", SCORE_MAYO_E)) %>%
   select(id, time, Cc, treatment_mayo)
 
 dose_df <- events %>%
   filter(evid == 1) %>%
-  mutate(treatment_mayo = paste0(treatment, ", Mayo ", MAYO_E)) %>%
+  mutate(treatment_mayo = paste0(treatment, ", Mayo ", SCORE_MAYO_E)) %>%
   select(id, time, amt, treatment_mayo)
 
 conc_obj <- PKNCA::PKNCAconc(
@@ -287,7 +287,7 @@ source dataset.
 ``` r
 
 auc_simulated <- auc_d84 %>%
-  group_by(treatment, MAYO_E) %>%
+  group_by(treatment, SCORE_MAYO_E) %>%
   summarise(
     median_sim = median(AUCd84),
     q05_sim    = quantile(AUCd84, 0.05),
@@ -296,7 +296,7 @@ auc_simulated <- auc_d84 %>%
   )
 
 published_table1 <- tibble::tribble(
-  ~treatment, ~MAYO_E, ~median_pub, ~q05_pub, ~q95_pub,
+  ~treatment, ~SCORE_MAYO_E, ~median_pub, ~q05_pub, ~q95_pub,
   "5 mg/kg",        2L,     2455,     1215,     4805,
   "5 mg/kg",        3L,     1979,      953,     3990,
   "10 mg/kg",       2L,     4910,     2431,     9609,
@@ -304,7 +304,7 @@ published_table1 <- tibble::tribble(
 )
 
 comparison <- published_table1 %>%
-  left_join(auc_simulated, by = c("treatment", "MAYO_E")) %>%
+  left_join(auc_simulated, by = c("treatment", "SCORE_MAYO_E")) %>%
   mutate(
     pct_diff_median = round(100 * (median_sim - median_pub) / median_pub, 1)
   )
@@ -316,7 +316,7 @@ knitr::kable(
 )
 ```
 
-| treatment | MAYO_E | median_pub | q05_pub | q95_pub | median_sim | q05_sim | q95_sim | pct_diff_median |
+| treatment | SCORE_MAYO_E | median_pub | q05_pub | q95_pub | median_sim | q05_sim | q95_sim | pct_diff_median |
 |:---|---:|---:|---:|---:|---:|---:|---:|---:|
 | 5 mg/kg | 2 | 2455 | 1215 | 4805 | 2469 | 1278 | 4089 | 1 |
 | 5 mg/kg | 3 | 1979 | 953 | 3990 | 2056 | 972 | 3857 | 4 |
@@ -325,7 +325,7 @@ knitr::kable(
 
 Simulated vs. published AUCd84 (mg\*day/L), by dose and baseline Mayo
 subscore (Faelens 2021 Table 1, ‘pub’ = published median + 90% PI).
-{.table}
+{.table style="width:100%;"}
 
 ## Assumptions and deviations
 
@@ -350,8 +350,8 @@ Specifically:
 - **Extensive colitis at baseline (`DISEXT_EP`):** Bernoulli prevalence
   0.40. The simulation paper does not state the prevalence in the
   virtual cohort.
-- **Baseline Mayo endoscopic subscore (`MAYO_E`):** fixed per cohort
-  (Mayo 2 or Mayo 3) per the Faelens 2021 stratified reporting
+- **Baseline Mayo endoscopic subscore (`SCORE_MAYO_E`):** fixed per
+  cohort (Mayo 2 or Mayo 3) per the Faelens 2021 stratified reporting
   convention. Mayo 1 patients existed in the Dreesen 2019 dataset and
   the source paper’s KE parameter for them is in the model, but Faelens
   2021 only reports Mayo 2 and Mayo 3 simulation results.

@@ -24,7 +24,7 @@ D2213C00001), and 3 phase 1 trials, enrolling atopic-dermatitis patients
 median 38 years (range 18-92, 131 subjects \>= 65 years); body weight
 median 74.5 kg (range 36-165); 55% male / 45% female; race 67% White,
 22% Asian, 7% Black/African American; ethnicity 9% Hispanic/Latino.
-Baseline EASI score in AD subjects: median 27.5 (range 12-72).
+Baseline SCORE_EASI score in AD subjects: median 27.5 (range 12-72).
 Subcutaneous tralokinumab doses ranged from single-dose phase 1
 exposures up to the labelled atopic-dermatitis regimen of 600 mg SC
 loading followed by 300 mg SC every 2 weeks.

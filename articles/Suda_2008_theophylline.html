@@ -1107,7 +1107,7 @@ log-normal IIV per Methods Section 5 Eq. 1, so omega^2 = log(1 + 0.15^2)
 proportional residual per Methods Section 5 Eq. 2</td>
 </tr>
 <tr class="even">
-<td><code>cl = exp(lcl + etalcl) * (WT/1)^1.08 * (1 + e_form_apnecut_cl * FORM_APNECUT)</code></td>
+<td><code>cl = exp(lcl + etalcl) * (WT/1)^1.08 * (1 + e_form_apnecut_cl * FORM_THEO_APNECUT)</code></td>
 <td>n/a</td>
 <td>Suda 2008 final model equation, page 638</td>
 </tr>
@@ -1137,13 +1137,13 @@ algebraic Css = R / CL/F prediction of Suda 2008 Methods Section 5.</p>
 <span></span>
 <span><span class="va">grid</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/expand.grid.html" class="external-link">expand.grid</a></span><span class="op">(</span></span>
 <span>  WT_kg        <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.0</span>, <span class="fl">1.25</span>, <span class="fl">1.5</span>, <span class="fl">1.75</span>, <span class="fl">2.0</span>, <span class="fl">2.5</span><span class="op">)</span>,  <span class="co"># kg; spans 1000-2500 g</span></span>
-<span>  FORM_APNECUT <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0L</span>, <span class="fl">1L</span><span class="op">)</span>,                          <span class="co"># 0 = TA reference, 1 = APC</span></span>
+<span>  FORM_THEO_APNECUT <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0L</span>, <span class="fl">1L</span><span class="op">)</span>,                          <span class="co"># 0 = TA reference, 1 = APC</span></span>
 <span>  stringsAsFactors <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span>
 <span><span class="va">grid</span><span class="op">$</span><span class="va">id</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">grid</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">grid</span><span class="op">$</span><span class="va">dose_mg_per_kg_per_day</span> <span class="op">&lt;-</span> <span class="fl">4</span>              <span class="co"># paper's clinical target dose</span></span>
 <span><span class="va">grid</span><span class="op">$</span><span class="va">dose_mg</span> <span class="op">&lt;-</span> <span class="va">grid</span><span class="op">$</span><span class="va">WT_kg</span> <span class="op">*</span> <span class="va">grid</span><span class="op">$</span><span class="va">dose_mg_per_kg_per_day</span> <span class="op">/</span> <span class="fl">2</span>  <span class="co"># q12h, so per-dose = total/2</span></span>
-<span><span class="va">grid</span><span class="op">$</span><span class="va">treatment</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">grid</span><span class="op">$</span><span class="va">FORM_APNECUT</span> <span class="op">==</span> <span class="fl">1L</span>, <span class="st">"APC"</span>, <span class="st">"TA"</span><span class="op">)</span></span>
+<span><span class="va">grid</span><span class="op">$</span><span class="va">treatment</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">grid</span><span class="op">$</span><span class="va">FORM_THEO_APNECUT</span> <span class="op">==</span> <span class="fl">1L</span>, <span class="st">"APC"</span>, <span class="st">"TA"</span><span class="op">)</span></span>
 <span><span class="va">grid</span><span class="op">$</span><span class="va">scenario</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"%.2f kg %s"</span>, <span class="va">grid</span><span class="op">$</span><span class="va">WT_kg</span>, <span class="va">grid</span><span class="op">$</span><span class="va">treatment</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Dose q12h for 21 days to reach steady state for a drug with t1/2 ~ 22 h.</span></span>
@@ -1167,7 +1167,7 @@ algebraic Css = R / CL/F prediction of Suda 2008 Methods Section 5.</p>
 <span>    <span class="op">)</span></span>
 <span>    <span class="va">out</span><span class="op">$</span><span class="va">id</span>           <span class="op">&lt;-</span> <span class="va">g</span><span class="op">$</span><span class="va">id</span></span>
 <span>    <span class="va">out</span><span class="op">$</span><span class="va">WT</span>           <span class="op">&lt;-</span> <span class="va">g</span><span class="op">$</span><span class="va">WT_kg</span></span>
-<span>    <span class="va">out</span><span class="op">$</span><span class="va">FORM_APNECUT</span> <span class="op">&lt;-</span> <span class="va">g</span><span class="op">$</span><span class="va">FORM_APNECUT</span></span>
+<span>    <span class="va">out</span><span class="op">$</span><span class="va">FORM_THEO_APNECUT</span> <span class="op">&lt;-</span> <span class="va">g</span><span class="op">$</span><span class="va">FORM_THEO_APNECUT</span></span>
 <span>    <span class="va">out</span><span class="op">$</span><span class="va">treatment</span>    <span class="op">&lt;-</span> <span class="va">g</span><span class="op">$</span><span class="va">treatment</span></span>
 <span>    <span class="va">out</span><span class="op">$</span><span class="va">scenario</span>     <span class="op">&lt;-</span> <span class="va">g</span><span class="op">$</span><span class="va">scenario</span></span>
 <span>    <span class="va">out</span></span>
@@ -1193,7 +1193,7 @@ algebraic Css = R / CL/F solution.</p>
 <span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span></span>
 <span>  <span class="va">mod_typical</span>,</span>
 <span>  events <span class="op">=</span> <span class="va">events</span>,</span>
-<span>  keep   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"WT"</span>, <span class="st">"FORM_APNECUT"</span>, <span class="st">"treatment"</span>, <span class="st">"scenario"</span><span class="op">)</span></span>
+<span>  keep   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"WT"</span>, <span class="st">"FORM_THEO_APNECUT"</span>, <span class="st">"treatment"</span>, <span class="st">"scenario"</span><span class="op">)</span></span>
 <span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl'</span></span>
@@ -1207,13 +1207,13 @@ algebraic Css = R / CL/F solution.</p>
 <span><span class="co">#&gt; 4  1  483 0.0201 0.647 1.5 0.03106646 9.205648 9.205648 9.205648 0.022218029</span></span>
 <span><span class="co">#&gt; 5  1  484 0.0201 0.647 1.5 0.03106646 8.950227 8.950227 8.950227 0.004957506</span></span>
 <span><span class="co">#&gt; 6  1  485 0.0201 0.647 1.5 0.03106646 8.682289 8.682289 8.682289 0.001106167</span></span>
-<span><span class="co">#&gt;    central WT FORM_APNECUT   scenario treatment</span></span>
-<span><span class="co">#&gt; 1 4.520451  1            0 1.00 kg TA        TA</span></span>
-<span><span class="co">#&gt; 2 5.906302  1            0 1.00 kg TA        TA</span></span>
-<span><span class="co">#&gt; 3 6.065715  1            0 1.00 kg TA        TA</span></span>
-<span><span class="co">#&gt; 4 5.956054  1            0 1.00 kg TA        TA</span></span>
-<span><span class="co">#&gt; 5 5.790797  1            0 1.00 kg TA        TA</span></span>
-<span><span class="co">#&gt; 6 5.617441  1            0 1.00 kg TA        TA</span></span></code></pre></div>
+<span><span class="co">#&gt;    central WT FORM_THEO_APNECUT   scenario treatment</span></span>
+<span><span class="co">#&gt; 1 4.520451  1                 0 1.00 kg TA        TA</span></span>
+<span><span class="co">#&gt; 2 5.906302  1                 0 1.00 kg TA        TA</span></span>
+<span><span class="co">#&gt; 3 6.065715  1                 0 1.00 kg TA        TA</span></span>
+<span><span class="co">#&gt; 4 5.956054  1                 0 1.00 kg TA        TA</span></span>
+<span><span class="co">#&gt; 5 5.790797  1                 0 1.00 kg TA        TA</span></span>
+<span><span class="co">#&gt; 6 5.617441  1                 0 1.00 kg TA        TA</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="replicate-published-figures">Replicate published figures<a class="anchor" aria-label="anchor" href="#replicate-published-figures"></a>
@@ -1235,7 +1235,7 @@ should reproduce the paper’s reported per-kg values within rounding.</p>
 <span></span>
 <span><span class="va">per_kg_summary</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="op">(</span></span>
 <span>  formulation <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"TA (reference)"</span>, <span class="st">"APC"</span><span class="op">)</span>,</span>
-<span>  FORM_APNECUT <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0L</span>, <span class="fl">1L</span><span class="op">)</span>,</span>
+<span>  FORM_THEO_APNECUT <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0L</span>, <span class="fl">1L</span><span class="op">)</span>,</span>
 <span>  CL_F_at_1kg_Lh <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="va">lcl</span><span class="op">)</span>,</span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="va">lcl</span><span class="op">)</span> <span class="op">*</span> <span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="va">e_form_apnecut_cl</span><span class="op">)</span></span>
@@ -1258,15 +1258,15 @@ should reproduce the paper’s reported per-kg values within rounding.</p>
 kg). Paper-reported values (Discussion, page 640): TA = 0.0211 L/h/kg,
 APC = 0.0151 L/h/kg.</caption>
 <colgroup>
-<col width="19%">
-<col width="16%">
-<col width="19%">
-<col width="23%">
+<col width="18%">
 <col width="21%">
+<col width="18%">
+<col width="21%">
+<col width="20%">
 </colgroup>
 <thead><tr class="header">
 <th align="left">formulation</th>
-<th align="right">FORM_APNECUT</th>
+<th align="right">FORM_THEO_APNECUT</th>
 <th align="right">CL_F_at_1kg_Lh</th>
 <th align="right">CL_F_at_meanWT_Lh</th>
 <th align="right">CL_F_per_kg_LhKg</th>
@@ -1383,7 +1383,7 @@ of which the algebraic Css = R / CL/F relation predicts directly.</p>
 <code class="sourceCode R"><span><span class="va">algebraic</span> <span class="op">&lt;-</span> <span class="va">grid</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">mutate</span><span class="op">(</span></span>
 <span>    cl_F_Lh    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="va">lcl</span><span class="op">)</span> <span class="op">*</span> <span class="op">(</span><span class="va">WT_kg</span> <span class="op">/</span> <span class="fl">1</span><span class="op">)</span><span class="op">^</span><span class="va">e_wt_cl</span> <span class="op">*</span></span>
-<span>                 <span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="va">e_form_apnecut_cl</span> <span class="op">*</span> <span class="va">FORM_APNECUT</span><span class="op">)</span>,</span>
+<span>                 <span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="va">e_form_apnecut_cl</span> <span class="op">*</span> <span class="va">FORM_THEO_APNECUT</span><span class="op">)</span>,</span>
 <span>    dose_rate_mgPerH <span class="op">=</span> <span class="va">dose_mg_per_kg_per_day</span> <span class="op">*</span> <span class="va">WT_kg</span> <span class="op">/</span> <span class="fl">24</span>,    <span class="co"># mg per h, continuous-input</span></span>
 <span>    Css_alg_mgL <span class="op">=</span> <span class="va">dose_rate_mgPerH</span> <span class="op">/</span> <span class="va">cl_F_Lh</span>                   <span class="co"># mg/L</span></span>
 <span>  <span class="op">)</span></span>
@@ -1664,7 +1664,7 @@ directly identifiable from steady-state trough data; the same numerical
 Cav prediction follows whether the encoding is on F or on CL/F. The
 packaged model file preserves the published equation form (effect on
 CL/F) and notes the mechanistic interpretation in
-<code>covariateData[[FORM_APNECUT]]$notes</code>.</li>
+<code>covariateData[[FORM_THEO_APNECUT]]$notes</code>.</li>
 </ul>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

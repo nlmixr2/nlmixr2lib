@@ -21,7 +21,7 @@
 
 Retlich 2015 pooled data from four clinical trials of linagliptin: two
 phase 1 studies (12 days, 4 weeks; healthy-volunteer-style design but
-enrolling T2DM patients) and two phase 2b studies (12 weeks). The PK
+enrolling DIS_DIAB patients) and two phase 2b studies (12 weeks). The PK
 dataset includes 6,907 linagliptin plasma concentrations from 462
 patients with type 2 diabetes; the PK/PD dataset adds DPP-4-activity
 measurements and grows to 9,674 paired observations across 607 patients
@@ -32,8 +32,8 @@ Population characteristics (Retlich 2015 Table 3): age 30-78 years
 origin predominantly Caucasian (92%) with smaller subgroups of Black,
 Asian and Hispanic patients. Body-mass index ranged from 20.4 to 42.2
 kg/m^2. Baseline fasting plasma glucose 5.1-20.0 mmol/L (median 9.9
-mmol/L), reflecting a T2DM population with active disease. Patients were
-on linagliptin monotherapy (Studies 1-3) or as add-on to metformin
+mmol/L), reflecting a DIS_DIAB population with active disease. Patients
+were on linagliptin monotherapy (Studies 1-3) or as add-on to metformin
 (Study 4, 44% of the PK/PD cohort). All studies excluded subjects with
 moderate or severe renal impairment; hepatic function was normal at
 baseline.

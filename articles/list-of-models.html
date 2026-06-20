@@ -1074,11 +1074,12 @@ accelerating term alpha<em>A(1)) or a slow-progression branch (rate
 alone, alpha = 0). A study-entry ‘placebo’ term PL</em>(1 - exp(-KPL*(t
 - T_ENTRY))) captures an early drop or delay observed after enrollment.
 Baseline CDR-SOB and ADAS-cog explain most of the DOT variability;
-baseline MMSE modifies alpha; baseline CDR-SOB, FAQ, and normalized
-hippocampal volume (RHPNM) modify the mixture probability. The published
-mixture probability and the residual-error scale-domain choice are
-clarified in the validation vignette’s Assumptions and deviations
-section. No drug input is dosed in this model.
+baseline SCORE_MMSE modifies alpha; baseline CDR-SOB, SCORE_FAQ, and
+normalized hippocampal volume (SCORE_RHPNM) modify the mixture
+probability. The published mixture probability and the residual-error
+scale-domain choice are clarified in the validation vignette’s
+Assumptions and deviations section. No drug input is dosed in this
+model.
 </td>
 </tr>
 <tr>
@@ -1534,15 +1535,16 @@ single stomach (literal reading of Figure 1; the joint-topology choice
 is documented in the validation vignette’s Errata). CCKF and CCKL are
 encoded as paired precursor + plasma indirect-response models (KRF
 stimulated by duodenal-signal Emax; KRL stimulated by jejunal-signal
-linear; T2DM depresses carbohydrate potency POTcarbC by -81.1%). GBE is
-an indirect-response model where the duodenal-nutrient signal increases
-the gallbladder release rate KRB (Emax with S50_BILE_eff that scales
-positively with AGE at +2.15%/yr above reference 58 y, and a WT-driven
-baseline gallbladder volume BASEBILE_eff at +1.19%/kg above reference 88
-kg). No recirculation of emptied bile. Observed outputs are paracetamol
-plasma concentration (Cc, uM), total CCK plasma concentration (TCCK =
-CCKF + CCKL, pM), and gallbladder volume (GVol, mL); each carries its
-own residual-error component as reported in the paper’s Table 3.
+linear; DIS_DIAB depresses carbohydrate potency POTcarbC by -81.1%). GBE
+is an indirect-response model where the duodenal-nutrient signal
+increases the gallbladder release rate KRB (Emax with S50_BILE_eff that
+scales positively with AGE at +2.15%/yr above reference 58 y, and a
+WT-driven baseline gallbladder volume BASEBILE_eff at +1.19%/kg above
+reference 88 kg). No recirculation of emptied bile. Observed outputs are
+paracetamol plasma concentration (Cc, uM), total CCK plasma
+concentration (TCCK = CCKF + CCKL, pM), and gallbladder volume (GVol,
+mL); each carries its own residual-error component as reported in the
+paper’s Table 3.
 </td>
 </tr>
 <tr>
@@ -1556,24 +1558,24 @@ hyperglycemic glucose clamp (HGC) test in adults with type 2 diabetes
 mellitus (Hong 2013). Built on the Silber 2007 glucose-insulin framework
 with two modifications: (1) endogenous glucose production GP is constant
 and derived at steady state from baseline glucose (GCss) and insulin
-(ICss) so that feedback control of GP is suppressed in T2DM (Silber’s
-GP-feedback estimate was close to zero in T2DM); (2) the first-phase
-insulin response is captured by an empirical Gaussian secretion pulse
-(amplitude Amplitude, peak time Tsec fixed at 3.54 min, width Tdur fixed
-at 1.76 min) rather than a NONMEM bolus. The second-phase insulin
-response rises linearly with time through a constant gamma multiplied by
-the elevation of glucose above its steady state (rectified at zero).
-Glucose is eliminated via insulin-independent clearance (CLG) and
-insulin-dependent clearance (CLGI_HGC) gated by an effect-compartment
-insulin concentration ICE (rate constant kIE). Insulin follows
-first-order elimination (CLI / VI). Palosuran 125 mg b.i.d. was the
-investigational drug; the paper concludes it has no clinically
-meaningful effect on insulin secretion or sensitivity, so the published
-final estimates set the palosuran treatment effect to zero – the
-structural model below is the drug-free glucose-insulin homeostasis
-model in T2DM. VI is fixed at 6.09 L (Silber 2007 T2DM literature value)
-because the within-study estimate (0.52 L) was not physiologically
-meaningful and biased CLI.
+(ICss) so that feedback control of GP is suppressed in DIS_DIAB
+(Silber’s GP-feedback estimate was close to zero in DIS_DIAB); (2) the
+first-phase insulin response is captured by an empirical Gaussian
+secretion pulse (amplitude Amplitude, peak time Tsec fixed at 3.54 min,
+width Tdur fixed at 1.76 min) rather than a NONMEM bolus. The
+second-phase insulin response rises linearly with time through a
+constant gamma multiplied by the elevation of glucose above its steady
+state (rectified at zero). Glucose is eliminated via insulin-independent
+clearance (CLG) and insulin-dependent clearance (CLGI_HGC) gated by an
+effect-compartment insulin concentration ICE (rate constant kIE).
+Insulin follows first-order elimination (CLI / VI). Palosuran 125 mg
+b.i.d. was the investigational drug; the paper concludes it has no
+clinically meaningful effect on insulin secretion or sensitivity, so the
+published final estimates set the palosuran treatment effect to zero –
+the structural model below is the drug-free glucose-insulin homeostasis
+model in DIS_DIAB. VI is fixed at 6.09 L (Silber 2007 DIS_DIAB
+literature value) because the within-study estimate (0.52 L) was not
+physiologically meaningful and biased CLI.
 </td>
 </tr>
 <tr>
@@ -1607,7 +1609,7 @@ differ between HGC and MTT. Palosuran 125 mg b.i.d. was the
 investigational drug and was found to have no clinically meaningful
 effect, so the published final estimates set the palosuran treatment
 effect to zero – the structural model below is the drug-free
-glucose-insulin homeostasis model in T2DM under MTT conditions.
+glucose-insulin homeostasis model in DIS_DIAB under MTT conditions.
 </td>
 </tr>
 <tr>
@@ -2527,8 +2529,8 @@ with beta-cell function drives a fasting serum insulin (FSI) and fasting
 plasma glucose (FPG) homeostatic feedback (steady-state quadratic). FPG
 and an additional postprandial-glucose contribution feed a
 three-compartment transit chain producing total HbA1c. Built from the
-placebo arm of NCT00236600 (181 obese newly-diagnosed adults with T2DM
-on diet+exercise for 67 weeks).
+placebo arm of NCT00236600 (181 obese newly-diagnosed adults with
+DIS_DIAB on diet+exercise for 67 weeks).
 </td>
 </tr>
 <tr>
@@ -3132,7 +3134,7 @@ surgical fluid management. Parameter values from Stricker 2013 Table 4.
 Two-compartment population PK model for amlitelimab (anti-OX40L mAb) in
 adults, with parallel first-order and Michaelis-Menten (TMDD)
 elimination, SC absorption with lag time, allometric body-weight
-scaling, and EASI / albumin covariate effects (Tiraboschi 2025)
+scaling, and SCORE_EASI / albumin covariate effects (Tiraboschi 2025)
 </td>
 </tr>
 <tr>
@@ -5461,9 +5463,9 @@ CL_col/f_m) because the fraction f_m of nonrenally cleared CMS that
 becomes colistin is not separately identifiable from plasma data.
 Hemodialysis clearances of CMS (90 mL/min) and colistin (137 mL/min) are
 fixed experimental constants from Marchand 2010 (ref 7 of Jacobs 2016)
-and are gated on/off by the time-varying HEMODIALYSIS covariate; PK
-sampling in the source study was conducted between HD sessions, so
-HEMODIALYSIS = 0 over the model-fit data.
+and are gated on/off by the time-varying RRT_HEMODIAL_ACTIVE covariate;
+PK sampling in the source study was conducted between HD sessions, so
+RRT_HEMODIAL_ACTIVE = 0 over the model-fit data.
 </td>
 </tr>
 <tr>
@@ -8297,10 +8299,10 @@ critically ill adult ICU patients with acute kidney injury undergoing
 Veinstein 2013). Disposition is parameterised in terms of
 non-hemodialysis (interdialytic body) clearance, an additive
 hemodialysis-arm clearance, and volume of distribution. The dialysis arm
-is gated on/off by the time-varying HEMODIALYSIS covariate. Body weight
-enters the model as a linear (exponent = 1) structural scaler on all
-three parameters because the published Table 4 estimates are reported
-per kg; weight was tested as an explicit covariate on V and not
+is gated on/off by the time-varying RRT_HEMODIAL_ACTIVE covariate. Body
+weight enters the model as a linear (exponent = 1) structural scaler on
+all three parameters because the published Table 4 estimates are
+reported per kg; weight was tested as an explicit covariate on V and not
 retained.
 </td>
 </tr>
@@ -8964,9 +8966,9 @@ fraction Fz of the bioavailable dose is absorbed at zero-order over
 duration tk0, the remaining (1 - Fz) is absorbed at first-order rate ka
 after tk0) and first-order elimination. Apparent oral clearance CL/F is
 reduced by 63.8% in chronic-haemodialysis patients relative to patients
-with normal renal function (HEMODIAL = 1 vs 0); apparent central volume
-of distribution V/F scales linearly with body surface area (BSA).
-Proportional residual error.
+with normal renal function (RRT_HEMODIAL_STATUS = 1 vs 0); apparent
+central volume of distribution V/F scales linearly with body surface
+area (BSA). Proportional residual error.
 </td>
 </tr>
 <tr>
@@ -13498,16 +13500,16 @@ clearance on CL and of body weight and serum albumin on central volume
 </td>
 <td style="text-align:left;">
 Indirect-response PK/PD model of intravitreal ranibizumab on
-best-corrected visual acuity (BCVA, ETDRS letters) in anti-VEGF-naive
-adults with neovascular age-related macular degeneration (Mulyukov
-2018). BCVA is driven by an indirect-response ODE in which drug
-concentration stimulates the BCVA production rate (kin) through a
-Michaelis-Menten-like term with a time-dependent maximum effect emax(t)
-= emax_ss + demax_0 * exp(-kemax * t). The PK is a fixed first-order
-vitreous-elimination placeholder (kel = 0.077/day, vitreous volume = 4
-mL, no IIV) borrowed from a previous population PK analysis (reference
-20 of the paper) because vitreous PK data were not collected in the
-development studies.
+best-corrected visual acuity (SCORE_BCVA, ETDRS letters) in
+anti-VEGF-naive adults with neovascular age-related macular degeneration
+(Mulyukov 2018). SCORE_BCVA is driven by an indirect-response ODE in
+which drug concentration stimulates the SCORE_BCVA production rate (kin)
+through a Michaelis-Menten-like term with a time-dependent maximum
+effect emax(t) = emax_ss + demax_0 * exp(-kemax * t). The PK is a fixed
+first-order vitreous-elimination placeholder (kel = 0.077/day, vitreous
+volume = 4 mL, no IIV) borrowed from a previous population PK analysis
+(reference 20 of the paper) because vitreous PK data were not collected
+in the development studies.
 </td>
 </tr>
 <tr>
@@ -17335,11 +17337,12 @@ endogenous production and elimination; bimolecular CPHPC + free SAP
 internalization is fast relative to dissociation) followed by complex
 internalization. Final-model covariates from Sahota 2015 Eq. 1 and Eq.
 2: creatinine clearance (CRCL) modifies CPHPC clearance below an 80
-mL/min threshold, hepatic amyloid involvement (AMLIVER) multiplies SAP
-intercompartmental clearance Q4, whole-body amyloid load (AMLOAD: 0-3)
-multiplies SAP peripheral volume V4 in two categorical steps, and
-biological sex (SEXF) multiplies baseline plasma SAP. Distributed in the
-DDMORE Foundation Model Repository as DDMODEL00000262.
+mL/min threshold, hepatic amyloid involvement (DIS_AMYLOID_LIVER)
+multiplies SAP intercompartmental clearance Q4, whole-body amyloid load
+(DIS_AMYLOID_LOAD: 0-3) multiplies SAP peripheral volume V4 in two
+categorical steps, and biological sex (SEXF) multiplies baseline plasma
+SAP. Distributed in the DDMORE Foundation Model Repository as
+DDMODEL00000262.
 </td>
 </tr>
 <tr>
@@ -17362,13 +17365,13 @@ GAM) and gated by a logistic lag(T-T50) profile; glucose absorption from
 each small-intestine segment is Michaelis-Menten in segment amount (KMG,
 RAMAXD / RAMAXJ / RAMAXI). Plasma insulin (INS) is a time-varying
 regressor that enters the central glucose compartment through a one-
-compartment effect delay (KIE). Type 2 diabetes mellitus (T2DM) is
+compartment effect delay (KIE). Type 2 diabetes mellitus (DIS_DIAB) is
 encoded as a binary indicator switching the glucose baseline (GSSH /
 GSSD), glucose clearance (CLGH / CLGD), insulin-dependent glucose
 clearance (CLGIH / CLGID), glucose bioavailability (FPGH / FPGD), and
 the empirical glucose-on-production exponent (GPRG = -2.79 healthy, 0
-T2DM). Body weight (WT) scales the central glucose volume linearly (VG *
-WT / 70). Outputs are observed on the linear scale: paracetamol
+DIS_DIAB). Body weight (WT) scales the central glucose volume linearly
+(VG * WT / 70). Outputs are observed on the linear scale: paracetamol
 concentration plus baseline noise (Cc, uM), glucose concentration (Cglu,
 mM), GLP-1 concentration (CGLP1), and GIP concentration (CGIP). Source
 listing reports the FOCEI step terminated due to rounding errors (NSIG =
@@ -18207,7 +18210,7 @@ Time-to-event model for overall survival (OS) in advanced epithelial
 ovarian cancer (Zecchin 2016 / DDMODEL00000218): Weibull baseline hazard
 with covariate effects of normalised baseline SLD (TUM_SLD / 70 mm),
 tumour-size-ratio TSR(t) capped at week 12, time-varying new-lesion
-indicator (NWLS), and binary ECOG performance status, with the
+indicator (NEW_LESION), and binary ECOG performance status, with the
 underlying SLD trajectory (subject-specific tumour-growth and
 drug-cytotoxicity rate constants from the upstream Zecchin 2016 SLD
 model) integrated inline.

@@ -20,7 +20,7 @@ mod <- rxode2::rxode2(readModelDb("NA_NA_paracetamol"))
 #> ℹ parameter labels from comments will be replaced by 'label()'
 cat("Description:\n", mod$description, "\n", sep = "")
 #> Description:
-#> Mechanistic OGTT model from the DDMORE Foundation Model Repository (DDMODEL00000228) that uses paracetamol as a gastric-emptying tracer to drive a coupled paracetamol PK + glucose + GLP-1 + GIP system. Fifteen compartments span paracetamol stomach / intestine / central / peripheral (with saturable first-pass loss), glucose stomach / duodenum / jejunum / ileum / central / peripheral, two effect compartments for glucose-on- production and insulin-on-elimination delays, a cumulative first-pass- loss tally for paracetamol, and indirect-response states for the incretin hormones GLP-1 and GIP. The gastric-emptying rate KS is modulated downwards by duodenal glucose via a Hill function (IGD50 / GAM) and gated by a logistic lag(T-T50) profile; glucose absorption from each small-intestine segment is Michaelis-Menten in segment amount (KMG, RAMAXD / RAMAXJ / RAMAXI). Plasma insulin (INS) is a time-varying regressor that enters the central glucose compartment through a one- compartment effect delay (KIE). Type 2 diabetes mellitus (T2DM) is encoded as a binary indicator switching the glucose baseline (GSSH / GSSD), glucose clearance (CLGH / CLGD), insulin-dependent glucose clearance (CLGIH / CLGID), glucose bioavailability (FPGH / FPGD), and the empirical glucose-on-production exponent (GPRG = -2.79 healthy, 0 T2DM). Body weight (WT) scales the central glucose volume linearly (VG * WT / 70). Outputs are observed on the linear scale: paracetamol concentration plus baseline noise (Cc, uM), glucose concentration (Cglu, mM), GLP-1 concentration (CGLP1), and GIP concentration (CGIP). Source listing reports the FOCEI step terminated due to rounding errors (NSIG = 0.5); see vignette Errata for the implication on parameter-precision claims.
+#> Mechanistic OGTT model from the DDMORE Foundation Model Repository (DDMODEL00000228) that uses paracetamol as a gastric-emptying tracer to drive a coupled paracetamol PK + glucose + GLP-1 + GIP system. Fifteen compartments span paracetamol stomach / intestine / central / peripheral (with saturable first-pass loss), glucose stomach / duodenum / jejunum / ileum / central / peripheral, two effect compartments for glucose-on- production and insulin-on-elimination delays, a cumulative first-pass- loss tally for paracetamol, and indirect-response states for the incretin hormones GLP-1 and GIP. The gastric-emptying rate KS is modulated downwards by duodenal glucose via a Hill function (IGD50 / GAM) and gated by a logistic lag(T-T50) profile; glucose absorption from each small-intestine segment is Michaelis-Menten in segment amount (KMG, RAMAXD / RAMAXJ / RAMAXI). Plasma insulin (INS) is a time-varying regressor that enters the central glucose compartment through a one- compartment effect delay (KIE). Type 2 diabetes mellitus (DIS_DIAB) is encoded as a binary indicator switching the glucose baseline (GSSH / GSSD), glucose clearance (CLGH / CLGD), insulin-dependent glucose clearance (CLGIH / CLGID), glucose bioavailability (FPGH / FPGD), and the empirical glucose-on-production exponent (GPRG = -2.79 healthy, 0 DIS_DIAB). Body weight (WT) scales the central glucose volume linearly (VG * WT / 70). Outputs are observed on the linear scale: paracetamol concentration plus baseline noise (Cc, uM), glucose concentration (Cglu, mM), GLP-1 concentration (CGLP1), and GIP concentration (CGIP). Source listing reports the FOCEI step terminated due to rounding errors (NSIG = 0.5); see vignette Errata for the implication on parameter-precision claims.
 cat("\nReference:\n", mod$reference, "\n", sep = "")
 #> 
 #> Reference:
@@ -41,8 +41,8 @@ pooled studies (STUDY = 1, 2, 3 indexes inside the `.mod` \$PK block) of
 oral-glucose-tolerance-test (OGTT) challenge. Each subject is in exactly
 one study; the BLOCK(1) SAME omega-block on APAPBL and T50 (etas 3-5 and
 14-16) partitions a single eta across mutually exclusive STUDY cohorts.
-Subject-level T2DM status is carried in the T2DM column (0 = normal-
-glucose-tolerance, 1 = Type-2 diabetic); paracetamol (1500 mg
+Subject-level DIS_DIAB status is carried in the DIS_DIAB column (0 =
+normal- glucose-tolerance, 1 = Type-2 diabetic); paracetamol (1500 mg
 administered as a 5-minute zero-order infusion into the stomach
 compartment) is co-dosed alongside an oral glucose load (~25 g into the
 stomach compartment in the bundle’s representative dataset). Plasma
@@ -62,7 +62,7 @@ str(mod$population)
 #>  $ age_range     : chr NA
 #>  $ weight_range  : chr NA
 #>  $ sex_female_pct: num NA
-#>  $ disease_state : chr "Mixed normal-glucose-tolerance and T2DM adults pooled from three studies of an OGTT challenge. Paracetamol (150"| __truncated__
+#>  $ disease_state : chr "Mixed normal-glucose-tolerance and DIS_DIAB adults pooled from three studies of an OGTT challenge. Paracetamol "| __truncated__
 #>  $ dose_range    : chr "Paracetamol (1500 mg oral, infused as zero-order over ~5 min in the bundle's simulated dataset). Oral glucose l"| __truncated__
 #>  $ regions       : chr NA
 #>  $ notes         : chr "Subject count and study count from the `Output_real_run126c.lst` listing's `TOT. NO. OF INDIVIDUALS: 16` line a"| __truncated__
@@ -83,7 +83,7 @@ below collects them in one place.
 | Paracetamol KA (THETA 5, FIXED) | `.lst` FINAL TH 5 | 0.140 /min |
 | APAPBL paracetamol baseline noise (THETA 6) | `.lst` FINAL TH 6 | 6.54 uM |
 | Glucose GSSH healthy baseline (THETA 7) | `.lst` FINAL TH 7 | 5.27 mM |
-| Glucose GSSD T2DM baseline (THETA 8) | `.lst` FINAL TH 8 | 7.48 mM |
+| Glucose GSSD DIS_DIAB baseline (THETA 8) | `.lst` FINAL TH 8 | 7.48 mM |
 | Glucose VG (THETA 9, FIXED; scaled by WT/70) | `.lst` FINAL TH 9 | 9.33 L |
 | Glucose CLGH (THETA 10, FIXED) | `.lst` FINAL TH 10 | 0.0894 L/min |
 | Glucose CLGIH (THETA 11; bounded upper 0.0083) | `.lst` FINAL TH 11 | 0.00663 L/min/(uU/mL) |
@@ -140,10 +140,10 @@ Validation therefore relies on:
     the bundle’s representative simulated dataset within reasonable
     tolerance for a typical (no-IIV) prediction overlaid on noisy
     simulated observations.
-2.  **F.3 mechanistic-sanity checks**: T2DM versus healthy
+2.  **F.3 mechanistic-sanity checks**: DIS_DIAB versus healthy
     stratification reproduces the expected qualitative differences
     (higher fasting glucose, attenuated insulin-dependent clearance, no
-    glucose-on- production suppression in T2DM); steady-state hold
+    glucose-on- production suppression in DIS_DIAB); steady-state hold
     without dosing confirms initial conditions are at baseline;
     switching off the paracetamol dose alone does not perturb the
     glucose / incretin trajectories.
@@ -165,7 +165,7 @@ make_ogtt <- function(t2dm = 0, wt = 87.9, ins_bl = 47.75, ins = 100,
     et(amt = 25,   cmt = "stomach_glu",  time = 15, rate = 5) |>
     et(times,      cmt = "Cc")
   ev$WT     <- wt
-  ev$T2DM   <- t2dm
+  ev$DIS_DIAB   <- t2dm
   ev$INS_BL <- ins_bl
   ev$INS    <- ins
   ev
@@ -183,7 +183,7 @@ sim_healthy <- rxode2::rxSolve(mod_typical, ev_healthy, returnType = "tibble") |
   dplyr::mutate(group = "Healthy")
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalapapbl', 'etalgss_h', 'etalgss_d', 'etalclg_h', 'etalclgi_h', 'etalclg_d', 'etalclgi_d', 'etalkw', 'etaligd50', 'etalt50', 'etalbglp1', 'etalbgip'
 sim_t2dm    <- rxode2::rxSolve(mod_typical, ev_t2dm,    returnType = "tibble") |>
-  dplyr::mutate(group = "T2DM")
+  dplyr::mutate(group = "DIS_DIAB")
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalapapbl', 'etalgss_h', 'etalgss_d', 'etalclg_h', 'etalclgi_h', 'etalclg_d', 'etalclgi_d', 'etalkw', 'etaligd50', 'etalt50', 'etalbglp1', 'etalbgip'
 sim <- dplyr::bind_rows(sim_healthy, sim_t2dm)
 ```
@@ -197,7 +197,7 @@ ggplot(sim, aes(time, Cc, colour = group)) +
   labs(x = "Time (min)", y = "Paracetamol concentration (uM)",
        colour = NULL,
        title = "Paracetamol PK (typical-value)",
-       caption = "Mechanistic-sanity: paracetamol curve is roughly invariant to T2DM status (no T2DM term in the paracetamol PK arm).") +
+       caption = "Mechanistic-sanity: paracetamol curve is roughly invariant to DIS_DIAB status (no DIS_DIAB term in the paracetamol PK arm).") +
   theme_minimal()
 ```
 
@@ -210,7 +210,7 @@ ggplot(sim, aes(time, Cglu, colour = group)) +
   labs(x = "Time (min)", y = "Glucose concentration (mM)",
        colour = NULL,
        title = "Glucose response (typical-value)",
-       caption = "Mechanistic-sanity: T2DM baseline is elevated (7.48 mM vs 5.27 mM); post-load peak is larger and lasts longer.") +
+       caption = "Mechanistic-sanity: DIS_DIAB baseline is elevated (7.48 mM vs 5.27 mM); post-load peak is larger and lasts longer.") +
   theme_minimal()
 ```
 
@@ -243,7 +243,7 @@ ggplot(sim_long, aes(time, value, colour = group)) +
 ev_baseline <- et() |>
   et(seq(0, 240, by = 10), cmt = "Cc")
 ev_baseline$WT     <- 87.9
-ev_baseline$T2DM   <- 0
+ev_baseline$DIS_DIAB   <- 0
 ev_baseline$INS_BL <- 47.75
 ev_baseline$INS    <- 47.75
 
@@ -265,7 +265,7 @@ Each state should hold at its baseline: paracetamol Cc = 6.54 uM
 (APAPBL); glucose Cglu = 5.27 mM (GSSH); GLP-1 = 17.1 (BGLP1); GIP =
 8.03 (BGIP).
 
-### Healthy versus T2DM differences
+### Healthy versus DIS_DIAB differences
 
 ``` r
 
@@ -282,29 +282,30 @@ summarise_run <- function(df, group_label) {
 }
 sanity <- dplyr::bind_rows(
   summarise_run(sim_healthy, "Healthy"),
-  summarise_run(sim_t2dm,    "T2DM")
+  summarise_run(sim_t2dm,    "DIS_DIAB")
 )
 knitr::kable(sanity, digits = 2,
-             caption = "Typical-value summary statistics for healthy vs T2DM OGTT response.")
+             caption = "Typical-value summary statistics for healthy vs DIS_DIAB OGTT response.")
 ```
 
-| group   | Cc_max | Cglu_max | Cglu_t0 | Cglu_t120 | Cglp1_max | Cgip_max |
-|:--------|-------:|---------:|--------:|----------:|----------:|---------:|
-| Healthy | 159.05 |     9.53 |    5.27 |      6.06 |     39.44 |     84.8 |
-| T2DM    | 159.05 |    13.30 |    7.48 |     10.90 |     39.44 |     84.8 |
+| group    | Cc_max | Cglu_max | Cglu_t0 | Cglu_t120 | Cglp1_max | Cgip_max |
+|:---------|-------:|---------:|--------:|----------:|----------:|---------:|
+| Healthy  | 159.05 |     9.53 |    5.27 |      6.06 |     39.44 |     84.8 |
+| DIS_DIAB | 159.05 |    13.30 |    7.48 |     10.90 |     39.44 |     84.8 |
 
-Typical-value summary statistics for healthy vs T2DM OGTT response.
+Typical-value summary statistics for healthy vs DIS_DIAB OGTT response.
 {.table}
 
-Expected qualitative pattern (per the source’s `IF(T2DM.EQ.1)`
+Expected qualitative pattern (per the source’s `IF(DIS_DIAB.EQ.1)`
 switches):
 
-- `Cglu_t0` higher in T2DM (7.48 vs 5.27 mM baseline).
-- `Cglu_max` higher in T2DM and `Cglu_t120` slower to return to baseline
-  (insulin-dependent clearance CLGID \< CLGIH; first-pass glucose
-  bioavailability FPGD = 1 vs FPGH = 0.909; no glucose-on-production
-  suppression GPRG = 0 in T2DM vs -2.79 in healthy).
-- `Cc_max` should be similar across T2DM levels (no T2DM term in
+- `Cglu_t0` higher in DIS_DIAB (7.48 vs 5.27 mM baseline).
+- `Cglu_max` higher in DIS_DIAB and `Cglu_t120` slower to return to
+  baseline (insulin-dependent clearance CLGID \< CLGIH; first-pass
+  glucose bioavailability FPGD = 1 vs FPGH = 0.909; no
+  glucose-on-production suppression GPRG = 0 in DIS_DIAB vs -2.79 in
+  healthy).
+- `Cc_max` should be similar across DIS_DIAB levels (no DIS_DIAB term in
   paracetamol PK arm).
 
 ### F.2 self-consistency: representative subject from the bundle
@@ -314,9 +315,9 @@ representative DV trajectories on the log-transformed scale. Below we
 overlay the typical-value prediction (linear scale, transformed to log
 to align with the bundle’s storage convention) onto the bundle’s
 subject-1 observations as a coarse self-consistency check; the bundle’s
-ID = 1 representative is healthy (T2DM = 0), STUDY = 6, BW = 87.9 kg,
-BASI = 47.75 pmol/L (treated as the time-fixed baseline; the bundle’s
-INSU column is row-by-row time-varying and drives the insulin
+ID = 1 representative is healthy (DIS_DIAB = 0), STUDY = 6, BW = 87.9
+kg, BASI = 47.75 pmol/L (treated as the time-fixed baseline; the
+bundle’s INSU column is row-by-row time-varying and drives the insulin
 regressor).
 
 ``` r

@@ -282,9 +282,9 @@ mass_check_tbl <- mass_check |>
   transmute(
     time_h         = time,
     APAP_urine_pct = 100 * a_urine_apap / true_dose,
-    AG_urine_pct   = 100 * a_urine_ag   / true_dose,
-    AS_urine_pct   = 100 * a_urine_as   / true_dose,
-    cumulative_pct = 100 * (a_urine_apap + a_urine_ag + a_urine_as) / true_dose
+    AG_urine_pct   = 100 * a_urine_apapg   / true_dose,
+    AS_urine_pct   = 100 * a_urine_apaps   / true_dose,
+    cumulative_pct = 100 * (a_urine_apap + a_urine_apapg + a_urine_apaps) / true_dose
   )
 knitr::kable(mass_check_tbl, digits = 2,
              caption = paste0(
@@ -400,12 +400,12 @@ the verbatim PBPK extraction:
 - **31 compartment-naming warnings** – the model’s 31 ODE states
   (`a_fat_apap`, `a_kidney_apap`, `a_muscle_apap`,
   `a_rapidly_perfused_apap`, `a_slowly_perfused_apap`, `a_liver_apap`,
-  `a_arterial_apap`, `a_venous_apap`, `a_urine_apap`; same for `_ag` and
-  `_as`; plus `a_hepatic_ag`, `a_hepatic_as`, `a_paps`, `a_ga`) use
-  snake-case PBPK-organ names rather than the canonical `central` /
-  `peripheral1` / `liver` / metabolite-suffix scheme. The canonical
-  scheme is designed for compartmental popPK / popPD models with a
-  unique central compartment; whole-body PBPK models route every
+  `a_arterial_apap`, `a_venous_apap`, `a_urine_apap`; same for `_apapg`
+  and `_apaps`; plus `a_hepatic_apapg`, `a_hepatic_apaps`, `a_paps`,
+  `a_ga`) use snake-case PBPK-organ names rather than the canonical
+  `central` / `peripheral1` / `liver` / metabolite-suffix scheme. The
+  canonical scheme is designed for compartmental popPK / popPD models
+  with a unique central compartment; whole-body PBPK models route every
   chemical through nine flow-limited tissue compartments and a separate
   hepatocyte sub-compartment, which has no clean mapping onto `central`
   / `peripheral<n>`. Renaming `a_liver_apap` to `liver` would clash if

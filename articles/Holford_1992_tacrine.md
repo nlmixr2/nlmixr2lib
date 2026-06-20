@@ -543,7 +543,7 @@ dose-rate-scaling steps in `model()` were done correctly.
   cognitive endpoint is the ADAS-cog total score (0-70, unitless).
   Following the same paper-named-PD pattern used by
   `Conrado_2014_alzheimer` (`ADAS_NORM`) and `Delor_2013_alzheimer`
-  (`CDR_SOB`), the observation is kept as `ADAS_cog`. The
+  (`SCORE_CDR_SOB`), the observation is kept as `ADAS_cog`. The
   `units$concentration` field documents this as a unitless ADAS-cog
   score rather than a mass/volume concentration; the lint warning on the
   units field is the same downstream of that choice.

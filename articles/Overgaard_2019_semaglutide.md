@@ -69,8 +69,8 @@ Covariate-effect parameterization (Methods page 653, equations on page
 | Body weight on Q | (WT/85)^1.01 (shared exponent) | `(WT / 85)^e_wt_cl_q` |
 | Body weight on Vc | (WT/85)^0.923 | `(WT / 85)^e_wt_vc_vp` |
 | Body weight on Vp | (WT/85)^0.923 (shared exponent) | `(WT / 85)^e_wt_vc_vp` |
-| T2D on CL | 1.12^DIAB | `e_diab_cl^DIAB` |
-| T2D on ka | 0.544^DIAB | `e_diab_ka^DIAB` |
+| T2D on CL | 1.12^DIS_DIAB | `e_diab_cl^DIS_DIAB` |
+| T2D on ka | 0.544^DIS_DIAB | `e_diab_ka^DIS_DIAB` |
 | eta_CL shared between CL and Q | log-normal | `cl <- exp(lcl + etalcl) * ...; q <- exp(lq + etalcl) * ...` |
 | eta_V shared between Vc and Vp | log-normal | `vc <- exp(lvc + etalvc) * ...; vp <- exp(lvp + etalvc) * ...` |
 
@@ -89,7 +89,7 @@ n_subj <- 200L
 pop <- tibble(
   ID   = seq_len(n_subj),
   WT   = pmin(pmax(rnorm(n_subj, mean = 81.9, sd = 15.1), 50), 130), # kg, clipped to plausible adult range
-  DIAB = as.integer(rbinom(n_subj, 1, 76/353))                       # ~22% T2D per Table 3
+  DIS_DIAB = as.integer(rbinom(n_subj, 1, 76/353))                       # ~22% T2D per Table 3
 )
 ```
 
@@ -143,7 +143,7 @@ stopifnot(!anyDuplicated(unique(events[, c("ID", "TIME", "EVID")])))
 ``` r
 
 mod <- readModelDb("Overgaard_2019_semaglutide")
-sim <- rxSolve(mod, events, returnType = "data.frame", keep = c("WT", "DIAB"))
+sim <- rxSolve(mod, events, returnType = "data.frame", keep = c("WT", "DIS_DIAB"))
 #> ℹ parameter labels from comments will be replaced by 'label()'
 ```
 
@@ -154,9 +154,9 @@ mod_typ      <- rxode2::zeroRe(mod)
 typ_subjects <- tibble(
   ID   = c(1L, 2L),
   WT   = c(85, 85),
-  DIAB = c(0L, 1L)             # healthy reference vs T2D reference
+  DIS_DIAB = c(0L, 1L)             # healthy reference vs T2D reference
 ) %>%
-  mutate(LABEL = ifelse(DIAB == 1L, "T2D, 85 kg", "Healthy, 85 kg"))
+  mutate(LABEL = ifelse(DIS_DIAB == 1L, "T2D, 85 kg", "Healthy, 85 kg"))
 
 typ_events <- bind_rows(
   typ_subjects %>% crossing(TIME = dose_times) %>%
@@ -168,7 +168,7 @@ typ_events <- bind_rows(
   as.data.frame()
 
 sim_typ <- rxSolve(mod_typ, typ_events, returnType = "data.frame",
-                   keep = c("WT", "DIAB", "LABEL"))
+                   keep = c("WT", "DIS_DIAB", "LABEL"))
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalka'
 #> Warning: multi-subject simulation without without 'omega'
 ```

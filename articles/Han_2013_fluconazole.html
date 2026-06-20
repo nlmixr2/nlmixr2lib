@@ -975,7 +975,7 @@ piecewise CL covariate structure of Han 2013 Table 3, in which a fixed
 CRRT-cohort CL (<code>theta3 = 1.85 L/h</code>) substitutes for the
 additive non-CRRT formula
 (<code>theta1 + (CLCR/120)*theta4 + TBI*theta7 + SEPS*theta9</code>)
-whenever <code>CRRT_STATUS = 1</code>, and an additive WT / edema /
+whenever <code>RRT_CRRT_STATUS = 1</code>, and an additive WT / edema /
 postburn-recency formula on V
 (<code>theta5*WT/65 + theta6*EDEM + theta8*TBI</code>) without the
 not-estimable <code>theta2</code> intercept.</p>
@@ -1130,7 +1130,7 @@ between CL and CLCR/120” fixes the (CLCR/120) normalisation.</td>
 </td>
 </tr>
 <tr class="odd">
-<td><code>cl &lt;- (1 - CRRT_STATUS)*cl_norrt + CRRT_STATUS*cl_rrt</code></td>
+<td><code>cl &lt;- (1 - RRT_CRRT_STATUS)*cl_norrt + RRT_CRRT_STATUS*cl_rrt</code></td>
 <td>n/a</td>
 <td>Table 3 caption</td>
 </tr>
@@ -1228,7 +1228,7 @@ kg, and CLCR log-normally distributed around mean 123.5 mL/min
 <span>    id              <span class="op">=</span> <span class="va">id_offset</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span>,</span>
 <span>    WT              <span class="op">=</span> <span class="va">wt</span>,</span>
 <span>    CRCL            <span class="op">=</span> <span class="va">crcl</span>,</span>
-<span>    CRRT_STATUS     <span class="op">=</span> <span class="va">crrt</span>,</span>
+<span>    RRT_CRRT_STATUS     <span class="op">=</span> <span class="va">crrt</span>,</span>
 <span>    DIS_SEPSIS      <span class="op">=</span> <span class="va">sepsis</span>,</span>
 <span>    DIS_EDEMA       <span class="op">=</span> <span class="va">edema</span>,</span>
 <span>    DIS_BURN_RECENT <span class="op">=</span> <span class="va">burn_recent</span></span>
@@ -1279,7 +1279,7 @@ kg, and CLCR log-normally distributed around mean 123.5 mL/min
 <span></span>
 <span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span></span>
 <span>  object <span class="op">=</span> <span class="va">mod</span>, events <span class="op">=</span> <span class="va">events</span>,</span>
-<span>  keep   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cohort"</span>, <span class="st">"dose_mg"</span>, <span class="st">"WT"</span>, <span class="st">"CRCL"</span>, <span class="st">"CRRT_STATUS"</span>,</span>
+<span>  keep   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cohort"</span>, <span class="st">"dose_mg"</span>, <span class="st">"WT"</span>, <span class="st">"CRCL"</span>, <span class="st">"RRT_CRRT_STATUS"</span>,</span>
 <span>             <span class="st">"DIS_SEPSIS"</span>, <span class="st">"DIS_EDEMA"</span>, <span class="st">"DIS_BURN_RECENT"</span><span class="op">)</span></span>
 <span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
@@ -1353,8 +1353,8 @@ CLCR (123.5 mL/min) and median WT (65 kg).</p>
 <span><span class="co"># each patient profile and compute AUC = daily_dose / CL_i for each draw.</span></span>
 <span></span>
 <span><span class="va">draw_cl</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">n</span>, <span class="va">profile</span>, <span class="va">dose_mg</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="co"># profile is a list with WT, CRCL, CRRT_STATUS, DIS_SEPSIS, DIS_EDEMA, DIS_BURN_RECENT</span></span>
-<span>  <span class="kw">if</span> <span class="op">(</span><span class="va">profile</span><span class="op">$</span><span class="va">CRRT_STATUS</span> <span class="op">==</span> <span class="fl">1L</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="co"># profile is a list with WT, CRCL, RRT_CRRT_STATUS, DIS_SEPSIS, DIS_EDEMA, DIS_BURN_RECENT</span></span>
+<span>  <span class="kw">if</span> <span class="op">(</span><span class="va">profile</span><span class="op">$</span><span class="va">RRT_CRRT_STATUS</span> <span class="op">==</span> <span class="fl">1L</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="va">eta</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n</span>, <span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fl">0.02559</span><span class="op">)</span><span class="op">)</span></span>
 <span>    <span class="va">cl_typ</span> <span class="op">&lt;-</span> <span class="fl">1.85</span></span>
 <span>  <span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
@@ -1376,15 +1376,15 @@ CLCR (123.5 mL/min) and median WT (65 kg).</p>
 <span></span>
 <span><span class="va">profiles</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>  <span class="st">"CRRT (1g equivalent)"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>    WT <span class="op">=</span> <span class="fl">65</span>, CRCL <span class="op">=</span> <span class="fl">0</span>, CRRT_STATUS <span class="op">=</span> <span class="fl">1L</span>,</span>
+<span>    WT <span class="op">=</span> <span class="fl">65</span>, CRCL <span class="op">=</span> <span class="fl">0</span>, RRT_CRRT_STATUS <span class="op">=</span> <span class="fl">1L</span>,</span>
 <span>    DIS_SEPSIS <span class="op">=</span> <span class="fl">0L</span>, DIS_EDEMA <span class="op">=</span> <span class="fl">0L</span>, DIS_BURN_RECENT <span class="op">=</span> <span class="fl">0L</span></span>
 <span>  <span class="op">)</span>,</span>
 <span>  <span class="st">"non-CRRT, septic, recent burn"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>    WT <span class="op">=</span> <span class="fl">65</span>, CRCL <span class="op">=</span> <span class="fl">123.5</span>, CRRT_STATUS <span class="op">=</span> <span class="fl">0L</span>,</span>
+<span>    WT <span class="op">=</span> <span class="fl">65</span>, CRCL <span class="op">=</span> <span class="fl">123.5</span>, RRT_CRRT_STATUS <span class="op">=</span> <span class="fl">0L</span>,</span>
 <span>    DIS_SEPSIS <span class="op">=</span> <span class="fl">1L</span>, DIS_EDEMA <span class="op">=</span> <span class="fl">0L</span>, DIS_BURN_RECENT <span class="op">=</span> <span class="fl">1L</span></span>
 <span>  <span class="op">)</span>,</span>
 <span>  <span class="st">"non-CRRT, no sepsis, resolved"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>    WT <span class="op">=</span> <span class="fl">65</span>, CRCL <span class="op">=</span> <span class="fl">123.5</span>, CRRT_STATUS <span class="op">=</span> <span class="fl">0L</span>,</span>
+<span>    WT <span class="op">=</span> <span class="fl">65</span>, CRCL <span class="op">=</span> <span class="fl">123.5</span>, RRT_CRRT_STATUS <span class="op">=</span> <span class="fl">0L</span>,</span>
 <span>    DIS_SEPSIS <span class="op">=</span> <span class="fl">0L</span>, DIS_EDEMA <span class="op">=</span> <span class="fl">0L</span>, DIS_BURN_RECENT <span class="op">=</span> <span class="fl">0L</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">)</span></span>

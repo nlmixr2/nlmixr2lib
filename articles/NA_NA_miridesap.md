@@ -18,11 +18,12 @@
   dissociation) followed by complex internalization. Final-model
   covariates from Sahota 2015 Eq. 1 and Eq. 2: creatinine clearance
   (CRCL) modifies CPHPC clearance below an 80 mL/min threshold, hepatic
-  amyloid involvement (AMLIVER) multiplies SAP intercompartmental
-  clearance Q4, whole-body amyloid load (AMLOAD: 0-3) multiplies SAP
-  peripheral volume V4 in two categorical steps, and biological sex
-  (SEXF) multiplies baseline plasma SAP. Distributed in the DDMORE
-  Foundation Model Repository as DDMODEL00000262.
+  amyloid involvement (DIS_AMYLOID_LIVER) multiplies SAP
+  intercompartmental clearance Q4, whole-body amyloid load
+  (DIS_AMYLOID_LOAD: 0-3) multiplies SAP peripheral volume V4 in two
+  categorical steps, and biological sex (SEXF) multiplies baseline
+  plasma SAP. Distributed in the DDMORE Foundation Model Repository as
+  DDMODEL00000262.
 - DDMORE Foundation Model Repository entry:
   [DDMODEL00000262](https://repository.ddmore.foundation/model/DDMODEL00000262)
 - Linked publication: Sahota T, Berges A, Barton S, Cookson L, Zamuner
@@ -59,13 +60,14 @@ bundle for `DDMODEL00000262` (scraped to
 - `Output_simulated_CPHPC_dataset.lst` – companion listing for the base
   model.
 - `Output_real_CPHPC.lst` – listing for the FINAL MODEL fit to the real
-  CPHPC + SAP data from the two studies (21 THETAs, adding the AMLIVER /
-  AMLOAD / SEX covariate effects of Sahota 2015 Eq. 2 on top of the base
-  structural model). This `.lst` provides the authoritative source for
-  the final parameter estimates used in this implementation.
+  CPHPC + SAP data from the two studies (21 THETAs, adding the
+  DIS_AMYLOID_LIVER / DIS_AMYLOID_LOAD / SEX covariate effects of Sahota
+  2015 Eq. 2 on top of the base structural model). This `.lst` provides
+  the authoritative source for the final parameter estimates used in
+  this implementation.
 - `Simulated_CPHPC_dataset.csv` – a 38-subject simulated dataset with
-  CRCL, AMLOAD, AMLIVER, SEX, and STUD columns that exercises the
-  covariate decomposition the final model uses.
+  CRCL, DIS_AMYLOID_LOAD, DIS_AMYLOID_LIVER, SEX, and STUD columns that
+  exercises the covariate decomposition the final model uses.
 - `DDMODEL00000262.rdf` – RDF metadata (a PK/PD model `pkpd_0000036`
   linking CPHPC exposure to plasma SAP; names the two contributing
   studies CPH113776 and CPH114527).
@@ -83,7 +85,7 @@ source-trace table below).
 The Sahota 2015 Table 1 enumerates the two contributing studies:
 
 - **CPH113776:** healthy volunteers with normal renal function and no
-  amyloid (AMLOAD = 0).
+  amyloid (DIS_AMYLOID_LOAD = 0).
 - **CPH114527:** patients with systemic amyloidosis stratified into four
   cohorts:
   - Cohort 1: normal-or-mild renal impairment, small-to-moderate amyloid
@@ -159,24 +161,25 @@ Source-trace note on the `target_peripheral` compartment name: see
 ## Virtual cohort
 
 The bundle’s `Simulated_CPHPC_dataset.csv` carries 38 simulated subjects
-across both studies with the full covariate panel (CRCL, AMLOAD,
-AMLIVER, SEX = 1 male / 2 female). To exercise the structural model and
-the three SAP covariate effects, we build a small representative virtual
-cohort that spans the cohort space from Sahota 2015 Table 1.
+across both studies with the full covariate panel (CRCL,
+DIS_AMYLOID_LOAD, DIS_AMYLOID_LIVER, SEX = 1 male / 2 female). To
+exercise the structural model and the three SAP covariate effects, we
+build a small representative virtual cohort that spans the cohort space
+from Sahota 2015 Table 1.
 
 ``` r
 
 set.seed(20260515)
 
 # Six subjects spanning the cohort space:
-#   1  Healthy volunteer male, CRCL 100, AMLOAD 0, AMLIVER 0 (CPH113776 reference)
+#   1  Healthy volunteer male, CRCL 100, DIS_AMYLOID_LOAD 0, DIS_AMYLOID_LIVER 0 (CPH113776 reference)
 #   2  Same but female (test SEX -> SAP_BASE effect)
-#   3  Cohort 1 (small amyloid, no liver)         CRCL 100, AMLOAD 1, AMLIVER 0
-#   4  Cohort 2 (moderate amyloid, liver)         CRCL 100, AMLOAD 2, AMLIVER 1
-#   5  Cohort 3 (small amyloid, renal impairment) CRCL 50,  AMLOAD 1, AMLIVER 0
-#   6  Cohort 4 (large amyloid, severe renal)     CRCL 30,  AMLOAD 3, AMLIVER 1
+#   3  Cohort 1 (small amyloid, no liver)         CRCL 100, DIS_AMYLOID_LOAD 1, DIS_AMYLOID_LIVER 0
+#   4  Cohort 2 (moderate amyloid, liver)         CRCL 100, DIS_AMYLOID_LOAD 2, DIS_AMYLOID_LIVER 1
+#   5  Cohort 3 (small amyloid, renal impairment) CRCL 50,  DIS_AMYLOID_LOAD 1, DIS_AMYLOID_LIVER 0
+#   6  Cohort 4 (large amyloid, severe renal)     CRCL 30,  DIS_AMYLOID_LOAD 3, DIS_AMYLOID_LIVER 1
 subjects <- tibble::tribble(
-  ~id, ~CRCL, ~AMLOAD, ~AMLIVER, ~SEXF, ~scenario,
+  ~id, ~CRCL, ~DIS_AMYLOID_LOAD, ~DIS_AMYLOID_LIVER, ~SEXF, ~scenario,
   1L,  100,   0L,      0L,       0L,    "Healthy volunteer (M), CRCL 100",
   2L,  100,   0L,      0L,       1L,    "Healthy volunteer (F), CRCL 100",
   3L,  100,   1L,      0L,       0L,    "Cohort 1: small amyloid, CRCL 100",
@@ -200,8 +203,8 @@ make_cohort <- function(subjects, id_offset = 0L) {
     df <- as.data.frame(ev)
     df$id      <- id_offset + s$id
     df$CRCL    <- s$CRCL
-    df$AMLOAD  <- s$AMLOAD
-    df$AMLIVER <- s$AMLIVER
+    df$DIS_AMYLOID_LOAD  <- s$DIS_AMYLOID_LOAD
+    df$DIS_AMYLOID_LIVER <- s$DIS_AMYLOID_LIVER
     df$SEXF    <- s$SEXF
     df$scenario <- s$scenario
     out[[i]]   <- df
@@ -224,7 +227,7 @@ mod <- rxode2::zeroRe(readModelDb("NA_NA_miridesap"))
 
 sim <- rxode2::rxSolve(
   mod, events = events,
-  keep = c("CRCL", "AMLOAD", "AMLIVER", "SEXF", "scenario"),
+  keep = c("CRCL", "DIS_AMYLOID_LOAD", "DIS_AMYLOID_LIVER", "SEXF", "scenario"),
   returnType = "data.frame", addDosing = FALSE
 ) |>
   dplyr::filter(!is.na(time))
@@ -245,15 +248,15 @@ vpc_events <- make_cohort(
   tibble::tibble(
     id       = seq_len(n_vpc),
     CRCL     = rep(100, n_vpc),
-    AMLOAD   = rep(1L, n_vpc),
-    AMLIVER  = rep(0L, n_vpc),
+    DIS_AMYLOID_LOAD   = rep(1L, n_vpc),
+    DIS_AMYLOID_LIVER  = rep(0L, n_vpc),
     SEXF     = rep(0L, n_vpc),
-    scenario = rep("VPC: Cohort 1 (n=50 males, AMLOAD 1)", n_vpc)
+    scenario = rep("VPC: Cohort 1 (n=50 males, DIS_AMYLOID_LOAD 1)", n_vpc)
   )
 )
 sim_vpc <- rxode2::rxSolve(
   mod_iiv, events = vpc_events, nSub = 1L,
-  keep = c("CRCL", "AMLOAD", "AMLIVER", "SEXF", "scenario"),
+  keep = c("CRCL", "DIS_AMYLOID_LOAD", "DIS_AMYLOID_LIVER", "SEXF", "scenario"),
   returnType = "data.frame", addDosing = FALSE
 ) |>
   dplyr::filter(!is.na(time))
@@ -275,10 +278,11 @@ figure with typical-value simulations of the cohort defined above:
   panel.
 - **Plasma SAP:** drops by ~1-2 orders of magnitude during sustained
   CPHPC dosing (the published clinical mechanism), with depth and
-  recovery pace modulated by AMLOAD (larger amyloid load -\> larger V4
-  -\> slower recovery) and AMLIVER (liver-amyloid involvement -\> higher
-  Q4 -\> faster equilibration with peripheral amyloid pool) – replicates
-  Sahota 2015 Fig. 5 middle-left and bottom-left panels.
+  recovery pace modulated by DIS_AMYLOID_LOAD (larger amyloid load -\>
+  larger V4 -\> slower recovery) and DIS_AMYLOID_LIVER (liver-amyloid
+  involvement -\> higher Q4 -\> faster equilibration with peripheral
+  amyloid pool) – replicates Sahota 2015 Fig. 5 middle-left and
+  bottom-left panels.
 - **Sex effect on baseline:** females start at ~70% of male baseline
   (`SAP_BASE_female = 1 + (-0.30) = 0.70 x SAP_BASE_male`); both recover
   toward their own baseline. Sahota 2015 Discussion notes this ~30%
@@ -344,7 +348,7 @@ sim_vpc |>
     x = "Time (h)", y = "Plasma SAP (mg/L)",
     title = "Stochastic VPC: plasma SAP under 24-h IV at 10 mg/h, Cohort 1",
     caption = sprintf(
-      "n = %d male subjects, CRCL = 100, AMLOAD = 1, AMLIVER = 0. Median + 90%% prediction interval.",
+      "n = %d male subjects, CRCL = 100, DIS_AMYLOID_LOAD = 1, DIS_AMYLOID_LIVER = 0. Median + 90%% prediction interval.",
       n_vpc
     )
   ) +
@@ -410,12 +414,12 @@ Expected qualitative outcomes:
 
 - Male healthy-volunteer baseline SAP = 31.2 mg/L; female = 31.2 x 0.70
   = 21.8 mg/L (sex covariate working).
-- Cohort 2 vs Cohort 1: same renal function, but Cohort 2 has AMLOAD = 2
-  (V4 multiplier 1 + 6.39 = 7.39) and AMLIVER = 1 (Q4 multiplier 1 +
-  4.01 = 5.01). The larger V4 stores more SAP- equivalent in the
-  peripheral pool, slowing recovery.
-- Cohort 6 (AMLOAD = 3): V4 multiplier = 1 + 6.39 + 26.4 = 33.79,
-  matching Sahota 2015 Discussion (“33.78-fold”).
+- Cohort 2 vs Cohort 1: same renal function, but Cohort 2 has
+  DIS_AMYLOID_LOAD = 2 (V4 multiplier 1 + 6.39 = 7.39) and
+  DIS_AMYLOID_LIVER = 1 (Q4 multiplier 1 + 4.01 = 5.01). The larger V4
+  stores more SAP- equivalent in the peripheral pool, slowing recovery.
+- Cohort 6 (DIS_AMYLOID_LOAD = 3): V4 multiplier = 1 + 6.39 + 26.4 =
+  33.79, matching Sahota 2015 Discussion (“33.78-fold”).
 - Cohort 5 (CRCL = 50): CPHPC peak exposure ~ 1.85x relative to CRCL =
   100 due to the piecewise-linear CL effect:
   `crcl_effect(50) = 1 + 0.0153 * (50 - 80) = 0.541`, so CL is at 54% of
@@ -438,11 +442,11 @@ THETAs and 11 OMEGAs. Notable cell-level matches:
 | Q | exp(0.542) = 1.72 L/h | 1.72 L/h |
 | Vp | exp(2.87) = 17.64 L | 17.57 L |
 | SAP baseline (M) | exp(3.44) = 31.19 mg/L | 31.10 mg/L |
-| Vp_sap (AMLOAD \<= 1) | exp(2.50) = 12.18 L | 12.15 L |
-| Q_sap (AMLIVER = 0) | exp(1.05) = 2.86 L/h | 2.84 L/h |
-| AMLIVER -\> Q4 coef | 4.01 | 4.01 |
-| AMLOAD=2 -\> V4 coef | 6.39 | 6.39 |
-| AMLOAD=3 -\> V4 (additional) coef | 26.4 | 26.39 |
+| Vp_sap (DIS_AMYLOID_LOAD \<= 1) | exp(2.50) = 12.18 L | 12.15 L |
+| Q_sap (DIS_AMYLOID_LIVER = 0) | exp(1.05) = 2.86 L/h | 2.84 L/h |
+| DIS_AMYLOID_LIVER -\> Q4 coef | 4.01 | 4.01 |
+| DIS_AMYLOID_LOAD=2 -\> V4 coef | 6.39 | 6.39 |
+| DIS_AMYLOID_LOAD=3 -\> V4 (additional) coef | 26.4 | 26.39 |
 | Sex -\> SAP_BASE coef | -0.30 | -0.30 |
 | kon | exp(14.5) = 1.98e6 L/(M h) | 1.94e6 L/(M h) |
 | kint | 5.78 1/h | 5.78 1/h |
@@ -462,19 +466,20 @@ THETAs and 11 OMEGAs. Notable cell-level matches:
   equations.** The `.ctl` shipped in the DDMORE bundle is the 17-THETA
   base model with only the CRCL covariate; the real-data `.lst` has 21
   THETAs covering the four covariate effects from Sahota 2015 Eq. 2
-  (AMLIVER -\> Q4, AMLOAD -\> V4 in two cumulative steps, SEX -\>
-  SAP_BASE) plus the base CRCL -\> CL effect. The structural code for
-  the four additional THETAs is not in the bundle, so this
-  implementation reconstructs the equations from the paper’s Eq. 2
-  narrative. The per-parameter inline comments in
+  (DIS_AMYLOID_LIVER -\> Q4, DIS_AMYLOID_LOAD -\> V4 in two cumulative
+  steps, SEX -\> SAP_BASE) plus the base CRCL -\> CL effect. The
+  structural code for the four additional THETAs is not in the bundle,
+  so this implementation reconstructs the equations from the paper’s Eq.
+  2 narrative. The per-parameter inline comments in
   `inst/modeldb/ddmore/NA_NA_miridesap.R` show that the resulting
   typical values match Sahota 2015 Table 2 cell-by-cell.
-- **AMLOAD encoding.** The paper uses an ordinal 0/1/2/3 grade with
-  categories 0 and 1 sharing the same V4 multiplier (1). The model file
-  encodes this via cumulative indicators `amload_ge_2 = (AMLOAD >= 2)`
-  and `amload_ge_3 = (AMLOAD >= 3)`, matching the source NONMEM
-  `IF (AMLOAD .EQ. n) ...` decomposition in Sahota 2015 Eq. 2. The
-  cumulative parameterisation enforces monotonicity: only positive
+- **DIS_AMYLOID_LOAD encoding.** The paper uses an ordinal 0/1/2/3 grade
+  with categories 0 and 1 sharing the same V4 multiplier (1). The model
+  file encodes this via cumulative indicators
+  `amload_ge_2 = (DIS_AMYLOID_LOAD >= 2)` and
+  `amload_ge_3 = (DIS_AMYLOID_LOAD >= 3)`, matching the source NONMEM
+  `IF (DIS_AMYLOID_LOAD .EQ. n) ...` decomposition in Sahota 2015 Eq. 2.
+  The cumulative parameterisation enforces monotonicity: only positive
   additions are admitted at each grade increment.
 - **SEX source encoding.** The bundle’s `Simulated_CPHPC_dataset.csv`
   encodes SEX as 1 = male, 2 = female. The canonical SEXF column is 1 =

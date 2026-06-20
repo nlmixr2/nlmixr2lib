@@ -958,8 +958,8 @@ model (DDMODEL00000217; see modellib(‘Zecchin_2016_tumorovarian’)).</li>
 advanced epithelial ovarian cancer (Zecchin 2016 / DDMODEL00000218):
 Weibull baseline hazard with covariate effects of normalised baseline
 SLD (TUM_SLD / 70 mm), tumour-size-ratio TSR(t) capped at week 12,
-time-varying new-lesion indicator (NWLS), and binary ECOG performance
-status, with the underlying SLD trajectory (subject-specific
+time-varying new-lesion indicator (NEW_LESION), and binary ECOG
+performance status, with the underlying SLD trajectory (subject-specific
 tumour-growth and drug-cytotoxicity rate constants from the upstream
 Zecchin 2016 SLD model) integrated inline.</li>
 <li>Article: <a href="https://doi.org/10.1111/bcp.12994" class="external-link uri">https://doi.org/10.1111/bcp.12994</a>
@@ -1082,7 +1082,7 @@ Zecchin 2016 SLD model (Eq. 1-3 of the paper / DDMODEL00000217)</td>
 </tr>
 <tr class="even">
 <td>
-<code>e_nwls_haz</code> (γ on NWLS)</td>
+<code>e_nwls_haz</code> (γ on NEW_LESION)</td>
 <td>1.230</td>
 <td>Output_real_OS.lst FINAL TH5 = 1.23E+00; Table 2 γ_NewLes(t) =
 1.23</td>
@@ -1150,7 +1150,7 @@ are encoded as time-varying records updating <code>AUC_CARBO</code> and
 <span>  <span class="op">)</span></span>
 <span></span>
 <span>  <span class="co"># Observation grid (daily) covering 0 to 1095 days (~3 years).</span></span>
-<span>  <span class="co"># NWLS = 0 throughout in this simplified cohort; the new-lesion submodel</span></span>
+<span>  <span class="co"># NEW_LESION = 0 throughout in this simplified cohort; the new-lesion submodel</span></span>
 <span>  <span class="co"># is exercised separately in the "Sensitivity to covariates" section</span></span>
 <span>  <span class="co"># below.</span></span>
 <span>  <span class="va">obs_grid</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="op">(</span></span>
@@ -1172,7 +1172,7 @@ are encoded as time-varying records updating <code>AUC_CARBO</code> and
 <span>      IBASE     <span class="op">=</span> <span class="va">IBASE</span>,</span>
 <span>      TUM_SLD   <span class="op">=</span> <span class="va">TUM_SLD</span>,</span>
 <span>      ECOG_GE1  <span class="op">=</span> <span class="va">ECOG_GE1</span>,</span>
-<span>      NWLS      <span class="op">=</span> <span class="fl">0L</span>,</span>
+<span>      NEW_LESION      <span class="op">=</span> <span class="fl">0L</span>,</span>
 <span>      arm       <span class="op">=</span> <span class="va">arm</span></span>
 <span>    <span class="op">)</span></span>
 <span>  <span class="va">ev</span></span>
@@ -1265,7 +1265,7 @@ function is a right-shifted Weibull S(t) = exp(-(λt)^α).</p>
 <span><span class="va">ev_ref</span><span class="op">$</span><span class="va">IBASE</span>    <span class="op">&lt;-</span> <span class="fl">0.07</span></span>
 <span><span class="va">ev_ref</span><span class="op">$</span><span class="va">TUM_SLD</span>  <span class="op">&lt;-</span> <span class="fl">70</span></span>
 <span><span class="va">ev_ref</span><span class="op">$</span><span class="va">ECOG_GE1</span> <span class="op">&lt;-</span> <span class="fl">0L</span></span>
-<span><span class="va">ev_ref</span><span class="op">$</span><span class="va">NWLS</span>     <span class="op">&lt;-</span> <span class="fl">0L</span></span>
+<span><span class="va">ev_ref</span><span class="op">$</span><span class="va">NEW_LESION</span>     <span class="op">&lt;-</span> <span class="fl">0L</span></span>
 <span></span>
 <span><span class="va">sim_ref</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/zeroRe.html" class="external-link">zeroRe</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span>, events <span class="op">=</span> <span class="va">ev_ref</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning: No omega parameters in the model</span></span>
@@ -1298,13 +1298,13 @@ subject with one covariate toggled at a time.</p>
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="va">label_to_id</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/match.html" class="external-link">match</a></span><span class="op">(</span><span class="va">x</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"baseline"</span>, <span class="st">"TUM_SLD = 140 mm"</span>,</span>
-<span>                                       <span class="st">"ECOG_GE1 = 1"</span>, <span class="st">"NWLS turns 1 at day 200"</span><span class="op">)</span><span class="op">)</span></span>
+<span>                                       <span class="st">"ECOG_GE1 = 1"</span>, <span class="st">"NEW_LESION turns 1 at day 200"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">scenarios</span> <span class="op">&lt;-</span> <span class="fu">bind_rows</span><span class="op">(</span></span>
 <span>  <span class="fu">make_alt</span><span class="op">(</span><span class="st">"baseline"</span>,                <span class="kw">function</span><span class="op">(</span><span class="va">d</span><span class="op">)</span> <span class="va">d</span><span class="op">)</span>,</span>
 <span>  <span class="fu">make_alt</span><span class="op">(</span><span class="st">"TUM_SLD = 140 mm"</span>,        <span class="kw">function</span><span class="op">(</span><span class="va">d</span><span class="op">)</span> <span class="op">{</span><span class="va">d</span><span class="op">$</span><span class="va">TUM_SLD</span> <span class="op">&lt;-</span> <span class="fl">140</span>; <span class="va">d</span><span class="op">}</span><span class="op">)</span>,</span>
 <span>  <span class="fu">make_alt</span><span class="op">(</span><span class="st">"ECOG_GE1 = 1"</span>,            <span class="kw">function</span><span class="op">(</span><span class="va">d</span><span class="op">)</span> <span class="op">{</span><span class="va">d</span><span class="op">$</span><span class="va">ECOG_GE1</span> <span class="op">&lt;-</span> <span class="fl">1L</span>; <span class="va">d</span><span class="op">}</span><span class="op">)</span>,</span>
-<span>  <span class="fu">make_alt</span><span class="op">(</span><span class="st">"NWLS turns 1 at day 200"</span>, <span class="kw">function</span><span class="op">(</span><span class="va">d</span><span class="op">)</span> <span class="op">{</span><span class="va">d</span><span class="op">$</span><span class="va">NWLS</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">d</span><span class="op">$</span><span class="va">time</span> <span class="op">&gt;=</span> <span class="fl">200</span><span class="op">)</span>; <span class="va">d</span><span class="op">}</span><span class="op">)</span></span>
+<span>  <span class="fu">make_alt</span><span class="op">(</span><span class="st">"NEW_LESION turns 1 at day 200"</span>, <span class="kw">function</span><span class="op">(</span><span class="va">d</span><span class="op">)</span> <span class="op">{</span><span class="va">d</span><span class="op">$</span><span class="va">NEW_LESION</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">d</span><span class="op">$</span><span class="va">time</span> <span class="op">&gt;=</span> <span class="fl">200</span><span class="op">)</span>; <span class="va">d</span><span class="op">}</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">sim_scen</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/zeroRe.html" class="external-link">zeroRe</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span>, events <span class="op">=</span> <span class="va">scenarios</span>, keep <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"arm"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -1323,11 +1323,11 @@ subject with one covariate toggled at a time.</p>
 <span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">time</span> <span class="op">==</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">time</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">select</span><span class="op">(</span><span class="va">arm</span>, <span class="va">sur</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">final_sur</span><span class="op">)</span></span>
-<span><span class="co">#&gt;                       arm        sur</span></span>
-<span><span class="co">#&gt; 1                baseline 0.22810862</span></span>
-<span><span class="co">#&gt; 2        TUM_SLD = 140 mm 0.16196480</span></span>
-<span><span class="co">#&gt; 3            ECOG_GE1 = 1 0.08403746</span></span>
-<span><span class="co">#&gt; 4 NWLS turns 1 at day 200 0.00721743</span></span>
+<span><span class="co">#&gt;                             arm        sur</span></span>
+<span><span class="co">#&gt; 1                      baseline 0.22810862</span></span>
+<span><span class="co">#&gt; 2              TUM_SLD = 140 mm 0.16196480</span></span>
+<span><span class="co">#&gt; 3                  ECOG_GE1 = 1 0.08403746</span></span>
+<span><span class="co">#&gt; 4 NEW_LESION turns 1 at day 200 0.00721743</span></span>
 <span></span>
 <span><span class="va">baseline_sur</span> <span class="op">&lt;-</span> <span class="va">final_sur</span><span class="op">$</span><span class="va">sur</span><span class="op">[</span><span class="va">final_sur</span><span class="op">$</span><span class="va">arm</span> <span class="op">==</span> <span class="st">"baseline"</span><span class="op">]</span></span>
 <span><span class="va">non_baseline</span> <span class="op">&lt;-</span> <span class="va">final_sur</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">arm</span> <span class="op">!=</span> <span class="st">"baseline"</span><span class="op">)</span></span>
@@ -1401,16 +1401,16 @@ with values in {0, 1}. The nlmixr2lib model uses the explicit canonical
 <code>ECOG_GE1</code> covariate to make the dichotomization unambiguous;
 it is faithful to the publication’s Methods, to the run that produced
 the final estimates, and to the bundle’s simulated dataset.</p></li>
-<li><p><strong>NWLS time gate (.lst-only).</strong> The original
+<li><p><strong>NEW_LESION time gate (.lst-only).</strong> The original
 <code>Output_real_OS.lst</code> gates <code>INWLS</code> on a
 <code>TNWLS</code> (time-of-new-lesion) column not shipped with the
 bundle’s simulated dataset (<code>Executable_OS.mod</code> uses a
 NEWIND-based LOCF carry-forward instead). The nlmixr2lib model follows
-the bundle’s executable: <code>NWLS</code> enters the hazard directly as
-the time-varying covariate value at each observation. When the dataset’s
-<code>NWLS</code> column is constructed as a 0/1 step that flips at the
-lesion-appearance time (the bundle convention), the two encodings are
-functionally equivalent.</p></li>
+the bundle’s executable: <code>NEW_LESION</code> enters the hazard
+directly as the time-varying covariate value at each observation. When
+the dataset’s <code>NEW_LESION</code> column is constructed as a 0/1
+step that flips at the lesion-appearance time (the bundle convention),
+the two encodings are functionally equivalent.</p></li>
 <li><p><strong>No estimated IIV.</strong> The source $OMEGA is
 <code>0 FIX</code> (placeholder slot with no estimated random effect).
 The OS sub-model has no IIV in the Zecchin 2016 publication. All
@@ -1418,7 +1418,7 @@ inter-subject variability in this OS model derives from the IPP
 covariates (<code>KG</code>, <code>KD0</code>, <code>KD1</code>,
 <code>IBASE</code>) carried in from the upstream SLD fit and the
 time-varying / fixed covariates <code>AUC_CARBO</code>,
-<code>AUC_GEM</code>, <code>NWLS</code>, <code>TUM_SLD</code>,
+<code>AUC_GEM</code>, <code>NEW_LESION</code>, <code>TUM_SLD</code>,
 <code>ECOG_GE1</code>.</p></li>
 <li><p><strong>Lambda unit convention.</strong> Zecchin 2016 Table 2
 reports λ_OS = 0.036 in 1/month (paper convention). The
@@ -1434,14 +1434,14 @@ via WebFetch.</p></li>
 <li><p><strong>Convention warnings.</strong>
 <code><a href="../reference/checkModelConventions.html">nlmixr2lib::checkModelConventions()</a></code> flags three
 non-canonical compartment names (<code>tumorSize</code>,
-<code>wts</code>, <code>cumHazard</code>) and a non-mass/volume
+<code>wts</code>, <code>cumhaz</code>) and a non-mass/volume
 <code>units$concentration</code> value. These are intrinsic to a TTE
 model integrating an inline SLD ODE (<code>tumorSize</code> is
 paper-named tumour-burden length, <code>wts</code> and
-<code>cumHazard</code> are auxiliary states; the “concentration” output
-is a survival probability). The same <code>tumorSize</code> warning
-applies to the upstream <code>Zecchin_2016_tumorovarian</code> model and
-to every existing tumour-size model in
+<code>cumhaz</code> are auxiliary states; the “concentration” output is
+a survival probability). The same <code>tumorSize</code> warning applies
+to the upstream <code>Zecchin_2016_tumorovarian</code> model and to
+every existing tumour-size model in
 <code>inst/modeldb/therapeuticArea/oncology/</code>.</p></li>
 </ul>
 </div>

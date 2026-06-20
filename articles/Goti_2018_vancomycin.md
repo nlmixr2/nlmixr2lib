@@ -87,7 +87,7 @@ build_arm <- function(label, hemodial, crcl, id_offset) {
     cmt  = "central",
     rate = dose_amt_mg / 1,   # 1-hour infusion
     cohort   = label,
-    HEMODIAL = hemodial,
+    RRT_HEMODIAL_STATUS = hemodial,
     CRCL     = crcl,
     WT       = weight_kg
   )
@@ -100,7 +100,7 @@ build_arm <- function(label, hemodial, crcl, id_offset) {
       cmt      = NA_character_,
       rate     = 0,
       cohort   = label,
-      HEMODIAL = hemodial,
+      RRT_HEMODIAL_STATUS = hemodial,
       CRCL     = crcl,
       WT       = weight_kg
     )
@@ -126,7 +126,7 @@ mod <- readModelDb("Goti_2018_vancomycin")
 sim <- rxode2::rxSolve(
   mod,
   events = events,
-  keep   = c("cohort", "HEMODIAL", "CRCL", "WT")
+  keep   = c("cohort", "RRT_HEMODIAL_STATUS", "CRCL", "WT")
 ) |> as.data.frame()
 #> ℹ parameter labels from comments will be replaced by 'label()'
 ```
@@ -141,7 +141,7 @@ mod_typical <- mod |> rxode2::zeroRe()
 sim_typical <- rxode2::rxSolve(
   mod_typical,
   events = events,
-  keep   = c("cohort", "HEMODIAL", "CRCL", "WT")
+  keep   = c("cohort", "RRT_HEMODIAL_STATUS", "CRCL", "WT")
 ) |> as.data.frame()
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp'
 #> Warning: multi-subject simulation without without 'omega'
@@ -276,14 +276,14 @@ Vss = (Vc + Vp) / WT at WT = 70 kg vs Goti 2018 reported values.
   so the packaged model applies the same fixed-linear (WT/70) factor to
   Vp. Removing the Vp WT scaling has a small numerical effect on Vss at
   non-median weights but matches the prose less faithfully.
-- **HEMODIAL is time-fixed.** Goti 2018 used DIAL as a subject-level
-  binary indicator because actual hemodialysis-session timestamps were
-  not used (per Discussion limitations: “Limitations in the
-  documentation prevented the usage of actual hemodialysis times”). The
-  packaged model carries this assumption forward: drug removal during a
-  dialysis session is not represented; the indicator captures the bulk
-  PK shift in subjects who were chronically on intermittent hemodialysis
-  during the admission.
+- **RRT_HEMODIAL_STATUS is time-fixed.** Goti 2018 used DIAL as a
+  subject-level binary indicator because actual hemodialysis-session
+  timestamps were not used (per Discussion limitations: “Limitations in
+  the documentation prevented the usage of actual hemodialysis times”).
+  The packaged model carries this assumption forward: drug removal
+  during a dialysis session is not represented; the indicator captures
+  the bulk PK shift in subjects who were chronically on intermittent
+  hemodialysis during the admission.
 - **CRCL preprocessing rules apply upstream of the model.** Goti 2018
   truncated CRCL values \>150 mL/min to 150 and reset SCr \<1 mg/dL to 1
   for subjects older than 60 years before computing CrCL. The packaged

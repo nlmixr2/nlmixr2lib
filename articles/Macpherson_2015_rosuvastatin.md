@@ -345,9 +345,9 @@ would warrant investigation rather than parameter tuning.
   via the per-observation `SAMPLE_INTENSIVE` indicator, following the
   established pattern of per-record residual-error switches in
   nlmixr2lib (`STUDY1` / `STUDY5` in `Cirincione_2017_exenatide.R`,
-  `ELISA` in `Valenzuela_2025_nipocalimab.R`, `PHASE1` in the same). The
-  new entry is documented in `inst/references/covariate-columns.md` with
-  general scope.
+  `ELISA` in `Valenzuela_2025_nipocalimab.R`, `STUDY_NIPOCALIMAB_PHASE1`
+  in the same). The new entry is documented in
+  `inst/references/covariate-columns.md` with general scope.
 - **Vignette focuses on intensive single-dose sampling.** The intensive
   4522IL/0086 single-dose cohorts give the cleanest VPC comparison
   against Macpherson 2015 Figure 4b. CHARON sparse pre-dose troughs (the

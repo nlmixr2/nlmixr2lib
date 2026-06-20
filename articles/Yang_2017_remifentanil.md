@@ -397,8 +397,9 @@ equals the closed-form Css = (infusion rate) / CL_i. {.table}
 - **CRRT tested but not retained.** The source paper tested CRRT
   presence/absence (10/15 patients on CRRT during ECMO support) as a
   covariate and did not retain it in the final model. The library model
-  therefore does not include CRRT_STATUS as an effect; the population
-  metadata records the cohort CRRT prevalence (67%) for reference.
+  therefore does not include RRT_CRRT_STATUS as an effect; the
+  population metadata records the cohort CRRT prevalence (67%) for
+  reference.
 - **No bolus dosing.** The source cohort received remifentanil
   exclusively by continuous infusion (Methods, Study procedures: “no
   patients required the bolus injection of remifentanil during the

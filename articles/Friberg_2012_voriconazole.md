@@ -149,7 +149,7 @@ make_event_table <- function(wt_kg, age_yr, stdy_vori, cyp_im, cyp_pm,
   ev_df <- as.data.frame(ev)
   ev_df$WT          <- wt_kg
   ev_df$AGE         <- age_yr
-  ev_df$STDY_VORI   <- stdy_vori
+  ev_df$STUDY_VORI   <- stdy_vori
   ev_df$CYP2C19_IM  <- cyp_im
   ev_df$CYP2C19_PM  <- cyp_pm
   ev_df$ORAL_VORI   <- as.integer(route == "oral")
@@ -478,11 +478,11 @@ enough to characterise the post-dose decline.
   supplying an event table with both IV and oral phases for a study-5
   subject must set `ORAL_VORI` to 1 on observation rows during the oral
   phase and 0 on observation rows during the IV phase.
-- **Study assignment is subject-level.** The `STDY_VORI` covariate is
+- **Study assignment is subject-level.** The `STUDY_VORI` covariate is
   fixed per subject because population (child / adolescent / adult) and
   protocol arm are aligned in the paper’s pooled dataset (no crossovers
   between populations). Users simulating new dosing scenarios should set
-  `STDY_VORI` consistently with `AGE` and with the residual-error / IIV
+  `STUDY_VORI` consistently with `AGE` and with the residual-error / IIV
   structure they want to reproduce.
 - **Time variable `t` is time since start of dosing.** The
   time-dependent Vmax inhibition function is parameterised against time
@@ -503,4 +503,4 @@ enough to characterise the post-dose decline.
   model encodes this as
   `is_hem_or_pm_adult <- is_stdy5_adult * (CYP2C19_IM + CYP2C19_PM)`;
   for simulation of an adult PM or HEM subject set either or both
-  indicators to 1 along with `STDY_VORI = 5`.
+  indicators to 1 along with `STUDY_VORI = 5`.
