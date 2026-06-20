@@ -1604,6 +1604,8 @@ navbar:
         href: articles/Roberts_2016_topotecan.html
       - text: "Torsemide (Jeong 2022)"
         href: articles/Jeong_2022_torsemide.html
+      - text: "Tralokinumab (Baverel 2015)"
+        href: articles/Baverel_2015_tralokinumab.html
       - text: "Tralokinumab (Soehoel 2022)"
         href: articles/Soehoel_2022_tralokinumab.html
       - text: "TranexamicAcid (Dunn 2025)"
@@ -1934,6 +1936,7 @@ articles:
   - articles/Barnett_2018_rosuvastatin
   - articles/Barras_2009_enoxaparin
   - articles/Bastida_2018_tocilizumab
+  - articles/Baverel_2015_tralokinumab
   - articles/Bellanti_2014_deferiprone
   - articles/Bellanti_2015_deferoxamine
   - articles/Belldina_2003_cysteamine
