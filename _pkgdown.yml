@@ -1568,6 +1568,8 @@ navbar:
         href: articles/Vezina_2010_valganciclovir.html
       - text: "Valganciclovir (Vezina 2014)"
         href: articles/Vezina_2014_valganciclovir.html
+      - text: "Valproic acid pediatric (Williams 2012)"
+        href: articles/Williams_2012_valproic_acid_pediatric.html
       - text: "Valsartan (Kim 2015)"
         href: articles/Kim_2015_valsartan.html
       - text: "Vancomycin (Alqahtani 2018)"
@@ -2572,8 +2574,7 @@ articles:
   - articles/Wilbaux_2015_prostate
   - articles/Wilhelm_2012_ciclosporin
   - articles/Wilkins_2008_rifampicin
-  - articles/Wilkins_2011_isoniazid
-  - articles/Willemze_2008_ciclosporin
+  - articles/Williams_2012_valproic_acid_pediatric
   - articles/Wilson_2015_sunitinib_irinotecan_mouse
   - articles/Woillard_2011_tacrolimus
   - articles/Wojciechowski_2022_domagrozumab
