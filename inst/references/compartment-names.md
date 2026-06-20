@@ -2312,12 +2312,17 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Source aliases:** none.
 - **Example models:** `Wang_2018_daclatasvir_asunaprevir.R` (doi:10.1038/aps.2017.84).
 
-### cdb4453 (**canonical CDB-4453 monodemethylated-telapristone metabolite suffix**)
+### tgn (**canonical 6-thioguanine nucleotide suffix**)
 - **Type:** metabolite-suffix
-- **Role:** Active monodemethylated metabolite of telapristone (CDB-4124). Removal of one N-methyl group on the C-17 side chain produces CDB-4453, a more polar (smaller apparent volume of distribution) metabolite with possible equipotent antiprogestational activity in vivo (Morris 2011 Discussion). Drives `central_cdb4453` and the `propSd_cdb4453` residual; the parent-side parameters use the canonical unsuffixed names (`lcl_pop1` / `lcl_pop2` / `lvc` / `lvp` / `lq` / `lka`).
-- **Source aliases:** none (the paper uses the compound code CDB-4453 throughout).
-- **Example models:** `Morris_2011_telapristone.R` (doi:10.1208/s12248-011-9304-7).
-- **Notes:** The Morris 2011 model fixes the metabolite apparent volume V3/F to 1 L for identifiability (Fmet not separately identifiable from V3), so the estimated `fmetest` (= Fmet / V3_metab, units 1/L) numerically equals Fmet under that constraint. The metabolite compartment `central_cdb4453` therefore numerically equals the metabolite concentration (nmol/L) when V3 = 1 L. Ratified canonically on 2026-06-09 alongside the Morris 2011 telapristone extraction.
+- **Role:** 6-thioguanine nucleotides (6-TGNs), the cytotoxic intracellular active metabolites of 6-mercaptopurine / azathioprine measured in red blood cells. 6-TGNs are formed downstream of HPRT-mediated activation and incorporate into DNA / RNA to drive antiproliferative effects in lymphoblasts. Drives `central_tgn` and the `addSd_tgn` residual. The apparent metabolite distribution volume is typically not identifiable (only an apparent clearance is reported) and is fixed to 1 L by NONMEM ADVAN6 convention -- the `lvc_tgn` entry is fixed in the model file and documented in the vignette Errata.
+- **Source aliases:** none. The paper symbol `6-TGNs` (and the molecular abbreviation `TGN`) translate silently to the canonical lowercase suffix.
+- **Example models:** `Hawwa_2008_mercaptopurine.R` (doi:10.1111/j.1365-2125.2008.03281.x).
+
+### mmpn (**canonical 6-methylmercaptopurine nucleotide suffix**)
+- **Type:** metabolite-suffix
+- **Role:** 6-methylmercaptopurine nucleotides (6-mMPNs), the methylated intracellular metabolites of 6-mercaptopurine / azathioprine measured in red blood cells. 6-mMPNs are formed by TPMT-mediated methylation of 6-MP and the corresponding thioinosine 5'-monophosphate; they are associated with hepatotoxicity rather than antileukaemic efficacy. Drives `central_mmpn` and the `addSd_mmpn` residual. The apparent metabolite distribution volume is typically not identifiable (only an apparent clearance is reported) and is fixed to 1 L by NONMEM ADVAN6 convention -- the `lvc_mmpn` entry is fixed in the model file and documented in the vignette Errata.
+- **Source aliases:** none. The paper symbol `6-mMPNs` (and the molecular abbreviation `mMPN`) translate silently to the canonical lowercase suffix.
+- **Example models:** `Hawwa_2008_mercaptopurine.R` (doi:10.1111/j.1365-2125.2008.03281.x).
 
 ---
 

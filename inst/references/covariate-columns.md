@@ -5431,41 +5431,16 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Example models:** `Oniki_2018_nafld_risk.R` (multiplicative factor 0.592 on the (BMI50 - 17) half-saturation offset of the logit-of-NAFLD sigmoid for G/G homozygotes vs the C/C reference, Oniki 2018 Eq. 4 / Figure 2c).
 - **Notes:** General scope. Companion homozygote indicator to `PNPLA3_CG`; see `PNPLA3_CG` notes for the joint three-level usage and reference category. Ratified canonically alongside the Oniki 2018 NAFLD-risk extraction.
 
-### UGT2B7_211GG (**canonical for UGT2B7 211G>T (rs7438135 / UGT2B7*2 Ala71Ser) homozygous G/G genotype indicator**)
-- **Description:** 1 = subject is homozygous for the wild-type (ancestral) guanine at nucleotide 211 of the UGT2B7 gene, corresponding to alanine at amino-acid position 71 (Ala71/Ala71) in the substrate-binding N-terminal half of the UGT2B7 enzyme; 0 = otherwise (211GT heterozygote or 211TT homozygote). Encoded by the UGT2B7 211G>T single-nucleotide polymorphism (rs7438135, also referred to as the UGT2B7*2 variant). Time-fixed per subject (germline genotype).
+### TPMT_MUT (**canonical for thiopurine S-methyltransferase reduced-function variant carrier indicator**)
+- **Description:** Pooled binary indicator for the carriage of any reduced-function `TPMT` allele (thiopurine S-methyltransferase). 1 = subject carries at least one variant allele from the panel actually genotyped in the source study (typically `TPMT*2`, `TPMT*3A`, `TPMT*3B`, `TPMT*3C`; heterozygous or homozygous); 0 = wild-type (`TPMT*1/*1` across the genotyped panel). Time-fixed per subject (germline genotype). The pooling matches the convention used by the founding 6-mercaptopurine paediatric ALL paper, which combined all three `TPMT*3*` variants observed in its cohort into a single mutation-vs-wild-type indicator because the cohort was too small (n = 19; 3 heterozygote carriers) to estimate per-allele effects.
 - **Units:** (binary)
 - **Type:** binary
-- **Scope:** general
-- **Reference category:** 0 (any non-G/G genotype: 211GT or 211TT).
+- **Scope:** specific
+- **Reference category:** 0 (TPMT wild-type across the genotyped panel; full canonical TPMT activity).
 - **Source aliases:**
-  - `UGT2B7 211GG` / `UGT2B7-211GG` / `211GG` -- used in `Yu_2017_mycophenolic_acid.R` (paper Table 5 column headers; one of three binary group-membership indicators reconstructed from the paper's ordinal column "UGT2B7 genotype").
-- **Example models:** `Yu_2017_mycophenolic_acid.R` (one of three UGT2B7-211 binary indicators that reconstruct the paper's ordinal column `UGT2B7 genotype` in {GT=1, GG=2, TT=3}; the model() block computes `ugt2b7_211_code = UGT2B7_211GT * 1 + UGT2B7_211GG * 2 + UGT2B7_211TT * 3` and applies V1/F = 14.7 + 7.72 * ugt2b7_211_code per Yu 2017 Table 3 / page 1574 final-model formula).
-- **Notes:** rs7438135 (UGT2B7 c.211G>T, p.Ala71Ser) is a coding-region SNP in the UGT2B7 N-terminal substrate-binding half; the T (Ser71) allele is the variant. Allele frequencies vary by ethnicity (the T allele is most common in Asian populations in Yu 2017's Chinese renal-transplant cohort: 51/101 GT + 8/101 TT = 59/101 PK evaluations carrying at least one T allele). Future papers that use a dominant (any-G vs T/T) or recessive (G/G vs any-T) grouping should still register the same three binary canonicals UGT2B7_211GG / UGT2B7_211GT / UGT2B7_211TT in the input data so that downstream simulations can reconstruct the paper's chosen grouping. Distinct from UGT1A9 promoter / 5'-UTR variants (Yu 2017 also genotyped UGT1A9*22 but did not find it significant; no UGT1A9 canonical is being proposed here). Ratified canonically on 2026-06-03 alongside the Yu 2017 mycophenolic acid extraction.
-
-
-### UGT2B7_211GT (**canonical for UGT2B7 211G>T (rs7438135 / UGT2B7*2 Ala71Ser) heterozygous G/T genotype indicator**)
-- **Description:** 1 = subject is heterozygous at nucleotide 211 of the UGT2B7 gene, carrying one wild-type G allele (Ala71) and one variant T allele (Ser71); 0 = otherwise (211GG homozygote or 211TT homozygote). Encoded by the UGT2B7 211G>T single-nucleotide polymorphism (rs7438135, also referred to as the UGT2B7*2 variant). Time-fixed per subject (germline genotype).
-- **Units:** (binary)
-- **Type:** binary
-- **Scope:** general
-- **Reference category:** 0 (any non-G/T genotype: 211GG or 211TT).
-- **Source aliases:**
-  - `UGT2B7 211GT` / `UGT2B7-211GT` / `211GT` -- used in `Yu_2017_mycophenolic_acid.R` (paper Table 5).
-- **Example models:** `Yu_2017_mycophenolic_acid.R` (one of three UGT2B7-211 binary indicators; see `UGT2B7_211GG` notes for the paper's ordinal-code reconstruction).
-- **Notes:** Companion canonical to `UGT2B7_211GG` and `UGT2B7_211TT`; see `UGT2B7_211GG` notes for variant biology and allele-frequency context. Ratified canonically on 2026-06-03 alongside the Yu 2017 mycophenolic acid extraction.
-
-
-### UGT2B7_211TT (**canonical for UGT2B7 211G>T (rs7438135 / UGT2B7*2 Ala71Ser) homozygous T/T genotype indicator**)
-- **Description:** 1 = subject is homozygous for the variant thymine at nucleotide 211 of the UGT2B7 gene, corresponding to serine at amino-acid position 71 (Ser71/Ser71); 0 = otherwise (211GG homozygote or 211GT heterozygote). Encoded by the UGT2B7 211G>T single-nucleotide polymorphism (rs7438135, UGT2B7*2 variant). Time-fixed per subject (germline genotype).
-- **Units:** (binary)
-- **Type:** binary
-- **Scope:** general
-- **Reference category:** 0 (any non-T/T genotype: 211GG or 211GT).
-- **Source aliases:**
-  - `UGT2B7 211TT` / `UGT2B7-211TT` / `211TT` -- used in `Yu_2017_mycophenolic_acid.R` (paper Table 5).
-- **Example models:** `Yu_2017_mycophenolic_acid.R` (one of three UGT2B7-211 binary indicators; see `UGT2B7_211GG` notes for the paper's ordinal-code reconstruction).
-- **Notes:** Companion canonical to `UGT2B7_211GG` and `UGT2B7_211GT`; see `UGT2B7_211GG` notes for variant biology and allele-frequency context. Ratified canonically on 2026-06-03 alongside the Yu 2017 mycophenolic acid extraction.
-
+  - `TPMT` -- used in `Hawwa_2008_mercaptopurine.R` (Hawwa 2008 Table 4 final-model symbol "TPMT", defined in the table footer as `TPMT = 1 if the patient had any TPMT mutation, 0 otherwise`; cohort genotyped at `TPMT*3A`, `TPMT*3B`, `TPMT*3C`).
+- **Example models:** `Hawwa_2008_mercaptopurine.R` (power-of-binary multiplicative factor on the fractional metabolic transformation `FM3` of 6-mercaptopurine to 6-thioguanine nucleotides: `FM3 = TVFM3 * theta_TPMT^TPMT_MUT` with `theta_TPMT = 2.56`; TPMT-variant carriers have a 156% higher FM3 than wild-type subjects, consistent with shunting of 6-MP away from `mmpn` methylation towards the active `tgn` arm; Hawwa 2008 Table 4 final-model row "TPMT" theta = 2.56 with SE 35.9%).
+- **Notes:** TPMT poor / intermediate / extensive metabolizer phenotypes are well established in clinical pharmacogenomics but the canonical name uses the variant-carrier orientation (`1` = at least one reduced-function allele) rather than the metabolizer-phenotype orientation used by `CYP2D6_PM` / `CYP2C9_EM` because: (a) the founding source paper (Hawwa 2008) defines its binary in the variant-carrier direction directly; (b) subjects with two reduced-function alleles (TPMT*3*/3*) are extremely rare (homozygotes ~1/300 Europeans) and were not present in Hawwa 2008, so the heterozygote-vs-wild-type contrast is what was actually observable in the source data; (c) Hawwa's clinical interpretation is the shift in metabolite ratio with **any** loss of TPMT activity rather than a fully null phenotype. Specific scope until a second TPMT-aware paper extends usage; future extractions that distinguish heterozygous (intermediate-metabolizer) from homozygous-variant (poor-metabolizer) carriers should propose paired `TPMT_HET` / `TPMT_HOM` indicators on the `SLCO1B1_HAP15_HET` / `SLCO1B1_HAP15_HOM` precedent and document the genotyping panel in `covariateData[[TPMT_HET]]$notes`. Source-paper genotyping panels that test only a subset of the TPMT variant alleles (e.g., omit `TPMT*2`) must declare which alleles were assayed in `covariateData[[TPMT_MUT]]$notes` so downstream users can reconcile cohorts genotyped with different panels.
 
 ## Immunogenicity
 
