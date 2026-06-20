@@ -276,8 +276,8 @@ navbar:
         href: articles/Kang_2020_cefpirome.html
       - text: "Ceftazidime (Bulitta 2010)"
         href: articles/Bulitta_2010_ceftazidime.html
-      - text: "Ceftazidime (Georges 2009)"
-        href: articles/Georges_2009_ceftazidime.html
+      - text: "Ceftazidime (Conil 2007)"
+        href: articles/Conil_2007_ceftazidime.html
       - text: "Ceftazidime (Shi 2018)"
         href: articles/Shi_2018_ceftazidime.html
       - text: "Ceftriaxone (Garot 2011)"
@@ -1901,9 +1901,7 @@ articles:
   - articles/Clinckers_2008_MHD_rat
   - articles/CohenWolkowiez_2012_metronidazole
   - articles/CohenWolkowiez_2014_piperacillin_tazobactam
-  - articles/Colin_2014_moxifloxacin
-  - articles/Colombo_2006_atazanavir
-  - articles/Conil_2010_tobramycin
+  - articles/Conil_2007_ceftazidime
   - articles/Conrado_2014_alzheimer
   - articles/Cook_2016_paracetamol
   - articles/Couffignal_2014_imipenem
