@@ -2953,7 +2953,18 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Example models:** `Lin_2024_pozelimab.R` (additive-fractional +34.07% effect on Vc; no CL or Vp effect; reference category pools healthy volunteers and CHAPLE patients).
 - **Notes:** Paroxysmal nocturnal hemoglobinuria is a rare hematological disease characterized by uncontrolled complement activation on red blood cells; treated with C5-targeted complement inhibitors (eculizumab, ravulizumab, pozelimab). Scope: specific because the disease-pooling reference category is paper-defined. Ratified canonically on 2026-04-27.
 
-### DIS_MDS_AML (**canonical for MDS or AML disease-type indicator**)
+### DIS_MF (**canonical for myelofibrosis disease-state indicator**)
+- **Description:** 1 = patient with myelofibrosis (MF), 0 = non-MF subject (the complement group in a pooled multi-indication hematologic-oncology PK analysis). Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (non-MF subject; the complement group is paper-defined -- for Gonzalez-Sales 2024 the reference is the union of solid tumors, MDS, multiple myeloma, essential thrombocythemia / polycythemia vera, and chronic lymphoproliferative disease).
+- **Source aliases:**
+  - `MTYPE == 1` -- used in `GonzalezSales_2024_imetelstat.R` (the source NONMEM column `MTYPE` is a multi-level malignancy code with `1 = MF`; the canonical column carries the binary `as.integer(MTYPE == 1)`).
+- **Example models:** `GonzalezSales_2024_imetelstat.R` (exponential effects on CL `exp(0.511 * DIS_MF)` -- 1.67-fold higher CL in MF -- and on Bmax `exp(1.44 * DIS_MF)` -- 4.22-fold higher target capacity in MF; in addition, the SPLV power effect on Bmax is gated to MF subjects).
+- **Notes:** Myelofibrosis is a Philadelphia-chromosome-negative myeloproliferative neoplasm characterised by bone-marrow fibrosis and splenomegaly. The disease's enlarged spleen and elevated reticuloendothelial uptake capacity provide a mechanistic rationale for the increased CL and target-binding capacity observed for oligonucleotide therapeutics like imetelstat in MF cohorts relative to other hematologic malignancies (Gonzalez-Sales 2024 Discussion). Scope: specific because the disease-pooling reference category is paper-defined.
+
+### MDSAML (**canonical for MDS or AML disease-type indicator**)
 - **Description:** 1 = patient with myelodysplastic syndrome (MDS) or acute myeloid leukemia (AML), 0 = other hematologic malignancy or reference group. Time-fixed per subject.
 - **Units:** (binary)
 - **Type:** binary
@@ -3479,6 +3490,17 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
   - `SoL` / "sum of lesions" (de Vries Schultink 2020 zenocutuzumab) -- same construct, mm.
 - **Example models:** `deVriesSchultink_2020_zenocutuzumab.R` (reference 70.0 mm; power exponent 0.447 on Vmax of the parallel non-linear / Michaelis-Menten clearance).
 - **Notes:** Distinct from `TUMSZ` (pooled tumor-size canonical covering RECIST sum-of-diameters / SPPD / sum-of-linear-diameters); `TUM_SLD` is the precise RECIST 1.1 sum-of-longest-diameters metric. Ratified canonically on 2026-04-29 alongside the pilot bispecific extraction (de Vries Schultink 2020 zenocutuzumab). When the source paper reports tumor burden in cm, convert to mm (the canonical unit) on data ingestion and scale the per-model reference accordingly so `(TUM_SLD / ref)^exp` is numerically invariant. Also used as the per-subject initial-condition input for tumour-growth / angiogenesis-inhibition (TGI) ODE models where the source paper sets the SLD state at time zero from the observed baseline SLD rather than estimating a typical-value baseline (e.g., `Ouerdani_2015_pazopanib.R` uses `tumorSize(0) <- TUM_SLD`).
+
+### SPLV (**canonical for baseline spleen volume**)
+- **Description:** Baseline spleen volume measured by magnetic resonance imaging (MRI) or computed tomography (CT) volumetry, used as a per-subject continuous covariate in popPK / popPK-PD analyses of hematologic-oncology drugs whose disposition depends on splenic uptake or reticuloendothelial sequestration. Time-fixed per subject (measurement at study baseline / screening).
+- **Units:** `cm^3`
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- continuous; the per-model reference value enters as the denominator of a power covariate `(SPLV / SPLV_ref)^slp`. Per-model reference values are recorded under `covariateData[[SPLV]]$notes`.
+- **Source aliases:**
+  - `SPLV0` -- used in `GonzalezSales_2024_imetelstat.R` (the source NONMEM `SPLV0` carries the baseline-spleen-volume value in cm^3; the canonical column uses `SPLV` with the same numerical convention).
+- **Example models:** `GonzalezSales_2024_imetelstat.R` (power-form effect on Bmax centred at the MF-cohort median 3010 cm^3: `Bmax_i = Bmax * (SPLV / 3010)^0.772 * exp(1.44 * DIS_MF)`; the spleen-volume term is gated to MF subjects only -- non-MF subjects collapse the spleen term to 1).
+- **Notes:** Splenomegaly is a defining feature of myelofibrosis and a clinically important pharmacodynamic endpoint for JAK inhibitors and disease-modifying agents in myelofibrosis. Baseline spleen volume scales with reticuloendothelial uptake capacity, providing a mechanistic rationale for the increased target-binding capacity (Bmax) observed for oligonucleotide therapeutics in MF subjects with larger spleens (Gonzalez-Sales 2024 Discussion). General scope because baseline spleen volume is a recurring covariate in MF popPK / popPK-PD analyses across drug classes (JAK inhibitors, oligonucleotides, mAbs). When a paper reports spleen volume as a percentile change from baseline rather than a raw volume, use the raw baseline measurement under `SPLV` and document the change-from-baseline encoding under `covariateData[[SPLV]]$notes`.
 
 ### TUM_VOL (**canonical for caliper-measured baseline tumor volume in xenograft / preclinical studies**)
 - **Description:** Baseline tumor volume measured by handheld caliper in subcutaneous-xenograft preclinical studies and similar small-animal models, computed from longest length and orthogonal width via `volume = (length * width^2) / 2` (the standard ellipsoid-approximation formula used in xenograft pharmacology). Per-subject (per-animal) baseline measurement at randomisation into a dosing group. Used both as a covariate stratifier (size at randomisation) and as the per-subject initial-condition input for TGI ODE models where the source paper sets the tumor-volume state at time zero from the observed measurement rather than estimating a typical-value baseline.

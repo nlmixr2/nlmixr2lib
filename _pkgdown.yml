@@ -710,8 +710,8 @@ navbar:
         href: articles/Chien_2022_imatinib.html
       - text: "Imatinib (Schindler 2017)"
         href: articles/Schindler_2017_imatinib.html
-      - text: "Imipenem (Couffignal 2014)"
-        href: articles/Couffignal_2014_imipenem.html
+      - text: "Imetelstat (GonzalezSales 2024)"
+        href: articles/GonzalezSales_2024_imetelstat.html
       - text: "Imipenem (Lamoth 2009)"
         href: articles/Lamoth_2009_imipenem.html
       - text: "Imipenem amikacin PA001 (Yadav 2017)"
@@ -2048,7 +2048,7 @@ articles:
   - articles/Goel_2016_Sonidegib
   - articles/Goggin_2004_emfilermin
   - articles/Golubovic_2019_sirolimus
-  - articles/GonzalezSales_2015_testosterone
+  - articles/GonzalezSales_2024_imetelstat
   - articles/Goti_2018_vancomycin
   - articles/Green_2003_enoxaparin
   - articles/Green_2005_enoxaparin
