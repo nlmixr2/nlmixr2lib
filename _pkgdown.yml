@@ -1582,6 +1582,8 @@ navbar:
         href: articles/Jorga_2000_tolcapone.html
       - text: "Tolcapone nonfluctuators (Jorga 2000)"
         href: articles/Jorga_2000_tolcapone.html
+      - text: "Topiramate (Ahmed 2015)"
+        href: articles/Ahmed_2015_topiramate.html
       - text: "Topotecan (Leger 2004)"
         href: articles/Leger_2004_topotecan.html
       - text: "Topotecan (Roberts 2016)"
@@ -1877,6 +1879,7 @@ articles:
   - articles/Aguiar_2021_ustekinumab
   - articles/Ahamadi_2017_pembrolizumab
   - articles/Ahlstrom_2010_nicotinicAcid_rat
+  - articles/Ahmed_2015_topiramate
   - articles/Ahn_2014_parathyroidHormone
   - articles/Ahsman_2010_cefotaxime
   - articles/Ait-Oudhia_2016_sunitinib
