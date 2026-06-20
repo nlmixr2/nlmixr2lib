@@ -1059,6 +1059,12 @@ PBPK bare organ-amount compartments used by Zhang 2011 nutlin3a and similar full
 - **Source aliases:** none.
 - **Example models:** `Zhang_2011_nutlin3a.R`.
 
+### skin (**canonical bare skin compartment**)
+- **Type:** compartment
+- **Role:** Bare skin tissue compartment in full-body PBPK extractions. Total tissue (well-stirred) drug concentration in skin; paired with `lung`, `liver`, `kidney`, `spleen`, `heart`, `brain`, `muscle`, `bone`, `adipose` etc. in whole-body PBPK extractions that resolve skin as a distinct organ. The token `skin` already appears in the `vp_skin` canonical entry and in the `pbpkSubCompartmentRegex` valid-organ list, so this entry registers the bare-organ form for parity with the surrounding canonicals.
+- **Source aliases:** none.
+- **Example models:** `Gaohua_2012_pregnancy_pbpk_caffeine.R`, `Gaohua_2012_pregnancy_pbpk_metoprolol.R`, `Gaohua_2012_pregnancy_pbpk_midazolam.R`.
+
 ### retina (**canonical bare retina compartment**)
 - **Type:** compartment
 - **Role:** Bare retina compartment used in ocular PBPK extractions.
