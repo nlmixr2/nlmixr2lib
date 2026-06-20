@@ -764,6 +764,8 @@ navbar:
         href: articles/Jeon_2013_interferonAlfa2a.html
       - text: "Ipatasertib (Yoshida 2021)"
         href: articles/Yoshida_2021_ipatasertib.html
+      - text: "Ipilimumab (Feng 2014)"
+        href: articles/Feng_2014_ipilimumab.html
       - text: "Ipilimumab (Sanghavi 2020)"
         href: articles/Sanghavi_2020_ipilimumab.html
       - text: "Isatuximab (Brillac 2025)"
@@ -2080,6 +2082,7 @@ articles:
   - articles/Feng_2006_enoxaparin
   - articles/Feng_2008_risperidone
   - articles/Feng_2012_higenamine
+  - articles/Feng_2014_ipilimumab
   - articles/Ferron_2013_cabazitaxel
   - articles/Fiedler-Kelly_2019_fremanezumab
   - articles/FiedlerKelly_2020_fremanezumab_cm
