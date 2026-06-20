@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Hawwa 2013 ranitidine ([doi:10.1111/j.1365-2125.2012.04473.x](https://doi.org/10.1111/j.1365-2125.2012.04473.x)) -- critically ill children in paediatric intensive care (ratifies new `DIS_HF_OR_CARDSURG` covariate canonical for pooled cardiac failure or cardiac surgery indicator).
+* Add Suyagh 2012 canrenone ([doi:10.1111/j.1365-2125.2012.04257.x](https://doi.org/10.1111/j.1365-2125.2012.04257.x)) -- paediatric patients (2 days to 10 years; median 4 kg) receiving intravenous potassium canrenoate in the NICU / PICU for retained fluids or congestive heart failure.
 * Add Berges 2007 enoxaparin ([doi:10.1111/j.1365-2125.2007.02920.x](https://doi.org/10.1111/j.1365-2125.2007.02920.x)) -- elderly inpatients (>75 years) on prophylactic subcutaneous enoxaparin 4000 IU once daily for VTE prophylaxis (PROPHRE.75 study).
 * Add Padoin 1998 cephalexin ([doi:10.1128/aac.42.6.1463](https://doi.org/10.1128/aac.42.6.1463)) -- preclinical male Wistar rats with a cephalexin / quinapril oral coadministration DDI (ratifies new `CONMED_QPRL_ORAL` covariate canonical).
 * Add van Rongen 2018 metformin ([doi:10.1007/s40272-018-0293-1](https://doi.org/10.1007/s40272-018-0293-1)) -- overweight and obese Caucasian adolescents.
