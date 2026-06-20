@@ -358,7 +358,13 @@
     # in the Morris 2011 parent (telapristone) + metabolite (CDB-4453)
     # popPK model where the metabolite apparent volume V3/F is fixed
     # to 1 L for identifiability (Morris 2011 doi:10.1208/s12248-011-9304-7).
-    "cdb4453"
+    "cdb4453",
+    # Modafinil acid (2-[(diphenylmethyl)sulfonyl]acetic acid), the
+    # principal carboxylic-acid metabolite of modafinil formed via
+    # esterase / amidase hydrolysis. Used as a metabolite suffix in
+    # parent + metabolite simultaneous popPK models
+    # (Wu 2012 Acta Pharmacol Sin 33:1401-1408 doi:10.1038/aps.2012.124).
+    "mfa"
   ),
   # Suffixes allowed for multi-component CL parameters. `_ss` denotes
   # the steady-state arm; `_time` the time-varying decay arm; `_renal`

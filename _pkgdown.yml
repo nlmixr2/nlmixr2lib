@@ -952,10 +952,8 @@ navbar:
         href: articles/An_2012_mitoxantrone_pbpk.html
       - text: "Mizoribine (Honda 2006)"
         href: articles/Honda_2006_mizoribine.html
-      - text: "MK3577 (Peng 2014)"
-        href: articles/Peng_2014_MK3577.html
-      - text: "MK3577 t2dm (Peng 2014)"
-        href: articles/Peng_2014_MK3577.html
+      - text: "Modafinil (Wu 2012)"
+        href: articles/Wu_2012_modafinil.html
       - text: "Mogamulizumab (Mukai 2019)"
         href: articles/Mukai_2019_mogamulizumab.html
       - text: "Monalizumab (Hwang 2023)"
@@ -2635,6 +2633,7 @@ articles:
   - articles/Wittau_2015_meropenem
   - articles/Woillard_2011_tacrolimus
   - articles/Wojciechowski_2022_domagrozumab
+  - articles/Wu_2012_modafinil
   - articles/Wu_2012_sirolimus
   - articles/Wu_2014_FEV1_asthma
   - articles/Wu_2024_inotuzumab

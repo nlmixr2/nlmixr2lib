@@ -2715,6 +2715,12 @@ Antibiotic combination-PK drug suffixes (linezolid, vancomycin, meropenem long f
 - **Source aliases:** none.
 - **Example models:** `Standing_2012_oseltamivir.R`.
 
+### mfa (**canonical modafinil acid suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Modafinil acid (2-[(diphenylmethyl)sulfonyl]acetic acid), the principal carboxylic-acid metabolite of modafinil produced by esterase / amidase hydrolysis. Used as the metabolite suffix in parent + metabolite simultaneous popPK models of modafinil.
+- **Source aliases:** none.
+- **Example models:** `Wu_2012_modafinil.R` (joint parent + acid-metabolite 4-compartment popPK model in five Chinese ethnic groups; Wu 2012 doi:10.1038/aps.2012.124).
+
 ---
 
 ## PBPK organ sub-compartment suffixes (Ayyar 2024)

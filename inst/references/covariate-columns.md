@@ -2515,6 +2515,50 @@ readable.
 - **Example models:** `Brussee_2016_arginine.R` (multiplicative factor `f = 1.9` on L-arginine CL: `CL_i = CL * (WT/60)^k1 * f^RACE_PAPUAN` -- Papuan patients have ~1.9x higher arginine clearance than the non-Papuan reference).
 - **Notes:** Distinct from all existing `RACE_<GROUP>` indicators. Papuans are an indigenous Melanesian / Oceanic population genetically and culturally distinct from `RACE_ASIAN` (mainland-Indonesian transmigrants are typically Austronesian Asian by international population-genetics classification). The Brussee 2016 cohort was enrolled exclusively at the Mitra Masyarakat Hospital in Timika, Papua, so a paired `REGION_INDONESIA` indicator is not needed for that model -- future models that mix Papuan and non-Papuan Indonesian sites may need such a region indicator separately. Ratified canonically on 2026-06-09 (general scope; the Brussee 2016 L-arginine PKPD model is the second example following Yeo 2008 arginine, which also used the same indigenous Papuan vs non-Papuan stratification).
 
+### RACE_CN_MONGOLIAN (**canonical for PRC-internal Mongolian ethnic-minority indicator**)
+- **Description:** 1 = subject self-identifies as Mongolian (one of the 56 officially recognised ethnic groups of the People's Republic of China), 0 = otherwise. Used by Chinese popPK studies that stratify a PRC cohort by within-China ethnic-minority membership. The `CN_` infix marks this as a within-PRC ethnic-minority indicator, distinct from the global `RACE_NEAS` (North East Asian composite) and from any future indicator describing Mongolian nationals enrolled outside the PRC.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (typically Han, which is the dominant PRC ethnic group; the reference composition is documented per-model).
+- **Source aliases:**
+  - Wu 2012 Ethnicity column with the integer code 2 = Mongolian from Wu 2012 Table 1 ('Ethnicity (male/female) [classification]') -- used in `Wu_2012_modafinil.R` (encoded as the binary indicator RACE_CN_MONGOLIAN = (Ethnicity == 2)).
+- **Example models:** `Wu_2012_modafinil.R` (multiplicative factor 1.65 on V1/F1 of modafinil relative to the Han reference).
+- **Notes:** PRC nationals are typically simultaneously `RACE_CHINESE = 1` and `RACE_NEAS = 1` by global heritage; the within-PRC ethnic-minority dimension is orthogonal to those higher-level indicators. Han is the implicit reference (`RACE_CN_MONGOLIAN = RACE_CN_KOREAN = RACE_CN_UYGUR = RACE_CN_HUI = 0`). Ratified canonically on 2026-06-17.
+
+### RACE_CN_KOREAN (**canonical for PRC-internal Korean ethnic-minority indicator**)
+- **Description:** 1 = subject self-identifies as Korean (one of the 56 officially recognised ethnic groups of the People's Republic of China; Chinese-Korean / Chaoxianzu, primarily resident in northeast China), 0 = otherwise. Used by Chinese popPK studies that stratify a PRC cohort by within-China ethnic-minority membership. The `CN_` infix marks this as a within-PRC ethnic-minority indicator, distinct from any future indicator describing Korean nationals enrolled outside the PRC.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (typically Han, which is the dominant PRC ethnic group; the reference composition is documented per-model).
+- **Source aliases:**
+  - Wu 2012 Ethnicity column with the integer code 3 = Korean from Wu 2012 Table 1 ('Ethnicity (male/female) [classification]') -- used in `Wu_2012_modafinil.R` (encoded as the binary indicator RACE_CN_KOREAN = (Ethnicity == 3)).
+- **Example models:** `Wu_2012_modafinil.R` (multiplicative factor 0.86 on V1/F1 of modafinil shared with Hui, and multiplicative factor 1.25 on CL3/F1F2 of modafinil acid relative to the Han / Mongolian reference).
+- **Notes:** PRC nationals are typically simultaneously `RACE_CHINESE = 1` and `RACE_NEAS = 1` by global heritage; the within-PRC ethnic-minority dimension is orthogonal to those higher-level indicators. Han is the implicit reference. The Wu 2012 model combines Korean and Hui into a composite for the V1 covariate via OR-logic across the binaries (`RACE_CN_KOREAN + RACE_CN_HUI`) computed inside `model()`; the subject-level ethnicity is preserved in the data so different composites can be formed for different parameters. Ratified canonically on 2026-06-17.
+
+### RACE_CN_UYGUR (**canonical for PRC-internal Uygur ethnic-minority indicator**)
+- **Description:** 1 = subject self-identifies as Uygur / Uyghur (one of the 56 officially recognised ethnic groups of the People's Republic of China; a Turkic Muslim ethnic group primarily resident in the Xinjiang Uygur Autonomous Region), 0 = otherwise. Used by Chinese popPK studies that stratify a PRC cohort by within-China ethnic-minority membership.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (typically Han, which is the dominant PRC ethnic group; the reference composition is documented per-model).
+- **Source aliases:**
+  - Wu 2012 Ethnicity column with the integer code 4 = Uygur from Wu 2012 Table 1 ('Ethnicity (male/female) [classification]') -- used in `Wu_2012_modafinil.R` (encoded as the binary indicator RACE_CN_UYGUR = (Ethnicity == 4)).
+- **Example models:** `Wu_2012_modafinil.R` (multiplicative factor 1.33 on V1/F1 of modafinil, and multiplicative factor 1.15 on CL3/F1F2 of modafinil acid shared with Hui, relative to the Han reference).
+- **Notes:** PRC nationals are typically simultaneously `RACE_CHINESE = 1` and `RACE_NEAS = 1` by global heritage; the within-PRC ethnic-minority dimension is orthogonal to those higher-level indicators. Han is the implicit reference. Ratified canonically on 2026-06-17.
+
+### RACE_CN_HUI (**canonical for PRC-internal Hui ethnic-minority indicator**)
+- **Description:** 1 = subject self-identifies as Hui (one of the 56 officially recognised ethnic groups of the People's Republic of China; a Sinophone Muslim ethnic group widely distributed across northwestern China, with the largest concentration in the Ningxia Hui Autonomous Region), 0 = otherwise. Used by Chinese popPK studies that stratify a PRC cohort by within-China ethnic-minority membership.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (typically Han, which is the dominant PRC ethnic group; the reference composition is documented per-model).
+- **Source aliases:**
+  - Wu 2012 Ethnicity column with the integer code 5 = Hui from Wu 2012 Table 1 ('Ethnicity (male/female) [classification]') -- used in `Wu_2012_modafinil.R` (encoded as the binary indicator RACE_CN_HUI = (Ethnicity == 5)).
+- **Example models:** `Wu_2012_modafinil.R` (Hui shares the V1 multiplier 0.86 with Korean and the CL3 multiplier 1.15 with Uygur; both composites are computed in `model()` via OR-logic across `RACE_CN_KOREAN + RACE_CN_HUI` and `RACE_CN_UYGUR + RACE_CN_HUI`).
+- **Notes:** PRC nationals are typically simultaneously `RACE_CHINESE = 1` and `RACE_NEAS = 1` by global heritage; the within-PRC ethnic-minority dimension is orthogonal to those higher-level indicators. Han is the implicit reference. Hui Chinese culturally and historically descend from Sinophone Muslim communities and share language (Mandarin and regional Chinese dialects) with Han; the ethnic-minority identity is recognised at the state level and was used as a popPK stratifier in Wu 2012 because of its postulated association with esterase / amidase metabolism activity. Ratified canonically on 2026-06-17.
+
 
 ## Geographic / enrollment-country indicators
 
