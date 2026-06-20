@@ -952,6 +952,10 @@ navbar:
         href: articles/An_2012_mitoxantrone_pbpk.html
       - text: "Mizoribine (Honda 2006)"
         href: articles/Honda_2006_mizoribine.html
+      - text: "MK3577 (Peng 2014)"
+        href: articles/Peng_2014_MK3577.html
+      - text: "MK3577 t2dm (Peng 2014)"
+        href: articles/Peng_2014_MK3577.html
       - text: "Mogamulizumab (Mukai 2019)"
         href: articles/Mukai_2019_mogamulizumab.html
       - text: "Monalizumab (Hwang 2023)"
@@ -2402,6 +2406,7 @@ articles:
   - articles/Patel_2017_selumetinib
   - articles/Paule_2011_hydroxyurea
   - articles/Pei_2016_iloperidone
+  - articles/Peng_2014_MK3577
   - articles/Peng_2024_SAL003
   - articles/Perez-Guille_2018_dexmedetomidine
   - articles/PerezRuixo_2020_esketamine

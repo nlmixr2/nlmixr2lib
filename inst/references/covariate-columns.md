@@ -2278,6 +2278,18 @@ All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODA
 - **Notes:** Specific scope; remikiren-specific. The drug-specific naming follows the established `CP_<drug>_<units>` precedent (`CP_OXY_NGML`, `CP_FBX_NGML`, `CP_LSN_NGML`, `CP_MORPH_NGML`, `CP_RIF_UM`). Weber 1993 fit the PD model directly to observed plasma concentrations because no structural population PK model was estimated -- the paper characterised remikiren PK with model-independent NCA only. Users wishing to drive the PD model from a simulated PK source must supply their own concentration trajectory (the published single-dose Weber-group papers from the same series report compartmental PK in healthy volunteers but are not on disk in nlmixr2lib). Ratified canonically on 2026-06-10 alongside the Weber 1993 remikiren PD extraction.
 
 
+### CP_MK3577_NM (**canonical for instantaneous MK-3577 plasma concentration as a time-varying PD driver**)
+- **Description:** Instantaneous plasma concentration of MK-3577 (a Merck glucagon receptor antagonist for type 2 diabetes mellitus) supplied directly as a time-varying covariate column rather than computed from a coupled PK model. Used in PD-only semi-mechanistic glucose / glucagon / insulin homeostasis models that take MK-3577 exposure as an external input to the Imax inhibition of glucagon-driven glucose production and the Emax stimulation of glucagon secretion.
+- **Units:** nM
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters as Imax / Emax terms in the glucose-production inhibition and glucagon-secretion stimulation expressions `(1 - Imax,MK * CP_MK3577_NM / (IC50,MK + CP_MK3577_NM))` and `(1 + Emax,MK * CP_MK3577_NM / (EC50,MK + CP_MK3577_NM))`. Set to 0 outside the drug-exposure window (the inhibition factor then collapses to 1 and the stimulation factor to 1; the system reduces to no-drug baseline). Reference values observed: Peng 2014 Fig. 2a panels show MK-3577 concentrations rising into the 10-1000 nM range after single oral doses of 3-300 mg.
+- **Source aliases:**
+  - `CMK` (Peng 2014 Methods Eq. 2 and Eq. 6 NM-TRAN convention; values in nM) -- the MK-3577 central-compartment concentration in the original NONMEM model.
+- **Example models:** `Peng_2014_MK3577.R` (healthy male subjects undergoing a glucagon challenge; supplied per event row from an external MK-3577 PK source), `Peng_2014_MK3577_t2dm.R` (T2DM-patient adaptation sharing the same drug-effect parameters).
+- **Notes:** Specific scope; MK-3577-specific. The drug-specific naming follows the established `CP_<drug>_<units>` precedent (`CP_OXY_NGML`, `CP_FBX_NGML`, `CP_LSN_NGML`, `CP_MORPH_NGML`, `CP_RIF_UM`, `CP_REM_NGML`). The unit suffix is `_NM` rather than `_NGML` because Peng 2014 reports IC50,MK and EC50,MK in nM (matching the in-vitro glucagon-receptor IC50 of 8.3 nM in CHO cells reported in the Introduction); a future extraction that needs ng/mL can convert via the MK-3577 molecular weight when that value becomes available. The on-disk Peng 2014 PDF does not report the MK-3577 absorption rate ka, apparent volume V/F, or molecular weight needed to derive a mg-dose-to-nM-plasma profile internally, so the PK layer is not modeled in `Peng_2014_MK3577.R`; users supply the trajectory through this column. Ratified canonically on 2026-06-20 alongside the Peng 2014 MK-3577 PD extraction.
+
+
 ## Count / Markov-feedback PD covariates
 
 These columns are specific to count / Markov / time-to-event PD models that
