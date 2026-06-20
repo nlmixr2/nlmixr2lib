@@ -830,6 +830,8 @@ navbar:
         href: articles/Zhu_2017_lebrikizumab.html
       - text: "Lenvatinib (Gupta 2016)"
         href: articles/Gupta_2016_lenvatinib.html
+      - text: "Levamisole (KreeftmeijerVegter 2015)"
+        href: articles/KreeftmeijerVegter_2015_levamisole.html
       - text: "Levetiracetam (Shin 2017)"
         href: articles/Shin_2017_levetiracetam.html
       - text: "Levetiracetam (Wang 2012)"
@@ -2293,6 +2295,7 @@ articles:
   - articles/Kovalenko_2016_dupilumab_ddmore
   - articles/Kovalenko_2020_dupilumab
   - articles/Krause_2017_selexipag
+  - articles/KreeftmeijerVegter_2015_levamisole
   - articles/Krekels_2015_paracetamol
   - articles/Kretsos_2014_olokizumab
   - articles/Ku_2018_diazepam
