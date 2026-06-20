@@ -99,12 +99,12 @@ collects them in one place for review.
 | `e_sexf_vc` | log(0.866) = -0.1438 | Wang 2024 Table 3: exp(theta13) = 0.866 |
 | `e_ada_cl` | log(1.11) = 0.1044 | Wang 2024 Table 3: exp(theta14) = 1.11 |
 | `e_lymph_cl` (TUMTP_LYMPH on CL) | log(0.877) = -0.1313 | Wang 2024 Table 3: exp(theta15) = 0.877 |
-| `e_oth_cl` (TUMTP_OTH on CL) | log(0.885) = -0.1222 | Wang 2024 Table 3: exp(theta16) = 0.885 |
-| `e_gc_cl` (TUMTP_GC on CL) | log(1.13) = 0.1222 | Wang 2024 Table 3: exp(theta17) = 1.13 |
+| `e_oth_cl` (TUMTP_OTHER on CL) | log(0.885) = -0.1222 | Wang 2024 Table 3: exp(theta16) = 0.885 |
+| `e_gc_cl` (TUMTP_GASTRIC on CL) | log(1.13) = 0.1222 | Wang 2024 Table 3: exp(theta17) = 1.13 |
 | `e_escc_cl` (TUMTP_ESCC on CL) | log(0.99) = -0.01005 | Wang 2024 Table 3: exp(theta18) = 0.99 |
 | `e_lymph_vc` (TUMTP_LYMPH on Vc) | log(0.879) = -0.1290 | Wang 2024 Table 3: exp(theta19) = 0.879 |
-| `e_oth_vc` (TUMTP_OTH on Vc) | log(0.926) = -0.0769 | Wang 2024 Table 3: exp(theta20) = 0.926 |
-| `e_gc_vc` (TUMTP_GC on Vc) | log(1.14) = 0.1310 | Wang 2024 Table 3: exp(theta21) = 1.14 |
+| `e_oth_vc` (TUMTP_OTHER on Vc) | log(0.926) = -0.0769 | Wang 2024 Table 3: exp(theta20) = 0.926 |
+| `e_gc_vc` (TUMTP_GASTRIC on Vc) | log(1.14) = 0.1310 | Wang 2024 Table 3: exp(theta21) = 1.14 |
 | `e_escc_vc` (TUMTP_ESCC on Vc) | log(1.08) = 0.0770 | Wang 2024 Table 3: exp(theta22) = 1.08 |
 | `e_tumsz_cl` (tumour-burden on CL) | 0.0421 | Wang 2024 Table 3: theta23 = 0.0421 |
 | IIV CL (`etalcl`) | omega^2 = log(1 + 0.195^2) = 0.0373 | Wang 2024 Table 3: IIV CL 19.5 % CV |
@@ -134,8 +134,8 @@ Equation forms (Wang 2024 Table 3 footnote):
 | `SEX` (1 = female / 0 = male) | `SEXF` |
 | `ADA` (1 = positive / 0 = negative) | `ADA_POS` |
 | `TTYPE1` (1 = lymphoma) | `TUMTP_LYMPH` (new canonical, registered with this model) |
-| `TTYPE3` (1 = "other" tumour type) | `TUMTP_OTH` |
-| `TTYPE4` (1 = GCGEJ adenocarcinoma) | `TUMTP_GC` (Wang 2024 GEJ inclusion documented in canonical) |
+| `TTYPE3` (1 = "other" tumour type) | `TUMTP_OTHER` |
+| `TTYPE4` (1 = GCGEJ adenocarcinoma) | `TUMTP_GASTRIC` (Wang 2024 GEJ inclusion documented in canonical) |
 | `TTYPE5` (1 = ESCC) | `TUMTP_ESCC` (new canonical, registered with this model) |
 
 The canonical names follow the `TUMTP_<GROUP>` indicator-decomposition
@@ -181,15 +181,15 @@ ttype_mix <- c(LC = 0.377, LYMPH = 0.101, OTH = 0.107, GC = 0.169, ESCC = 0.246)
 ttype <- sample(names(ttype_mix), n_subj, replace = TRUE, prob = ttype_mix)
 
 TUMTP_LYMPH <- as.integer(ttype == "LYMPH")
-TUMTP_OTH   <- as.integer(ttype == "OTH")
-TUMTP_GC    <- as.integer(ttype == "GC")
+TUMTP_OTHER   <- as.integer(ttype == "OTH")
+TUMTP_GASTRIC    <- as.integer(ttype == "GC")
 TUMTP_ESCC  <- as.integer(ttype == "ESCC")
 
 pop <- data.frame(
   ID = seq_len(n_subj),
   WT, ALB, TUMSZ,
   SEXF, ADA_POS,
-  TUMTP_LYMPH, TUMTP_OTH, TUMTP_GC, TUMTP_ESCC,
+  TUMTP_LYMPH, TUMTP_OTHER, TUMTP_GASTRIC, TUMTP_ESCC,
   ttype = ttype
 )
 ```

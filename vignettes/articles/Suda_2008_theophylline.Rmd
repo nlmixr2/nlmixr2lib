@@ -96,7 +96,7 @@ collects the same information in one place for review.
 | `lka` (ka, 1/h; not from this paper) | 1.5 (fixed) | not estimated by Suda 2008; literature-typical theophylline oral absorption rate; required only for ODE-based simulation |
 | `etalcl` (omega^2, IIV CL/F) | 0.02226 | Suda 2008 final model: 15.0 percent CV inter-individual (page 638); log-normal IIV per Methods Section 5 Eq. 1, so omega^2 = log(1 + 0.15^2) = 0.02226 |
 | `propSd` (proportional residual SD on Cc) | 0.153 | Suda 2008 final model: 15.3 percent CV intra-individual (page 638); proportional residual per Methods Section 5 Eq. 2 |
-| `cl = exp(lcl + etalcl) * (WT/1)^1.08 * (1 + e_form_apnecut_cl * FORM_APNECUT)` | n/a | Suda 2008 final model equation, page 638 |
+| `cl = exp(lcl + etalcl) * (WT/1)^1.08 * (1 + e_form_apnecut_cl * FORM_THEO_APNECUT)` | n/a | Suda 2008 final model equation, page 638 |
 | ODE `d/dt(central) = ka * depot - kel * central`, `Cc = central / vc` | n/a | 1-compartment first-order absorption structure assumed (Methods Section 5, page 637) |
 
 # Virtual cohort
@@ -114,13 +114,13 @@ set.seed(20080430)
 
 grid <- expand.grid(
   WT_kg        = c(1.0, 1.25, 1.5, 1.75, 2.0, 2.5),  # kg; spans 1000-2500 g
-  FORM_APNECUT = c(0L, 1L),                          # 0 = TA reference, 1 = APC
+  FORM_THEO_APNECUT = c(0L, 1L),                          # 0 = TA reference, 1 = APC
   stringsAsFactors = FALSE
 )
 grid$id <- seq_len(nrow(grid))
 grid$dose_mg_per_kg_per_day <- 4              # paper's clinical target dose
 grid$dose_mg <- grid$WT_kg * grid$dose_mg_per_kg_per_day / 2  # q12h, so per-dose = total/2
-grid$treatment <- ifelse(grid$FORM_APNECUT == 1L, "APC", "TA")
+grid$treatment <- ifelse(grid$FORM_THEO_APNECUT == 1L, "APC", "TA")
 grid$scenario  <- sprintf("%.2f kg %s", grid$WT_kg, grid$treatment)
 
 # Dose q12h for 21 days to reach steady state for a drug with t1/2 ~ 22 h.
@@ -144,7 +144,7 @@ events <- grid |>
     )
     out$id           <- g$id
     out$WT           <- g$WT_kg
-    out$FORM_APNECUT <- g$FORM_APNECUT
+    out$FORM_THEO_APNECUT <- g$FORM_THEO_APNECUT
     out$treatment    <- g$treatment
     out$scenario     <- g$scenario
     out
@@ -170,7 +170,7 @@ mod_typical <- rxode2::zeroRe(mod)
 sim <- rxode2::rxSolve(
   mod_typical,
   events = events,
-  keep   = c("WT", "FORM_APNECUT", "treatment", "scenario")
+  keep   = c("WT", "FORM_THEO_APNECUT", "treatment", "scenario")
 ) |>
   as.data.frame()
 
@@ -195,7 +195,7 @@ mean_wt_kg         <- 1.465
 
 per_kg_summary <- tibble(
   formulation = c("TA (reference)", "APC"),
-  FORM_APNECUT = c(0L, 1L),
+  FORM_THEO_APNECUT = c(0L, 1L),
   CL_F_at_1kg_Lh = c(
     exp(lcl),
     exp(lcl) * (1 + e_form_apnecut_cl)
@@ -295,7 +295,7 @@ head(nca_tbl[, c("scenario", "id", "PPTESTCD", "PPORRES")], 12)
 algebraic <- grid |>
   mutate(
     cl_F_Lh    = exp(lcl) * (WT_kg / 1)^e_wt_cl *
-                 (1 + e_form_apnecut_cl * FORM_APNECUT),
+                 (1 + e_form_apnecut_cl * FORM_THEO_APNECUT),
     dose_rate_mgPerH = dose_mg_per_kg_per_day * WT_kg / 24,    # mg per h, continuous-input
     Css_alg_mgL = dose_rate_mgPerH / cl_F_Lh                   # mg/L
   )
@@ -423,4 +423,4 @@ sim |>
   trough data; the same numerical Cav prediction follows whether the
   encoding is on F or on CL/F. The packaged model file preserves the
   published equation form (effect on CL/F) and notes the mechanistic
-  interpretation in `covariateData[[FORM_APNECUT]]$notes`.
+  interpretation in `covariateData[[FORM_THEO_APNECUT]]$notes`.

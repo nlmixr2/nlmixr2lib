@@ -1,12 +1,12 @@
 Han_2018_methionineMetabolismCycle <- function() {
   description <- "Preclinical (rat). Seven-compartment mechanistic methionine metabolism cycle (MMC) model in Zucker Diabetic Fatty (ZDF) rats vs non-diabetic controls; predicts plasma methionine and homocysteine after IV methionine."
-  reference   <- "Han N, Chae JW, Jeon J, Lee J, Back HM, Song B, Kwon KI, Kim SK, Yun HY. Prediction of Methionine and Homocysteine levels in Zucker diabetic fatty (ZDF) rats as a T2DM animal model after consumption of a Methionine-rich diet. Nutr Metab (Lond). 2018;15:14. doi:10.1186/s12986-018-0247-1"
+  reference   <- "Han N, Chae JW, Jeon J, Lee J, Back HM, Song B, Kwon KI, Kim SK, Yun HY. Prediction of Methionine and Homocysteine levels in Zucker diabetic fatty (ZDF) rats as a DIS_DIAB animal model after consumption of a Methionine-rich diet. Nutr Metab (Lond). 2018;15:14. doi:10.1186/s12986-018-0247-1"
   vignette    <- "Han_2018_methionineMetabolismCycle"
   units       <- list(time = "hour", dosing = "mmol/kg", concentration = "mmol/L")
 
   covariateData <- list(
-    T2DM = list(
-      description        = "Type-2 diabetes mellitus indicator: 1 = Zucker Diabetic Fatty (ZDF/Gmi fa/fa) rat as T2DM model; 0 = non-diabetic control (ZDF/Gmi fa/?).",
+    DIS_DIAB = list(
+      description        = "Type-2 diabetes mellitus indicator: 1 = Zucker Diabetic Fatty (ZDF/Gmi fa/fa) rat as DIS_DIAB model; 0 = non-diabetic control (ZDF/Gmi fa/?).",
       units              = "(binary)",
       type               = "binary",
       reference_category = 0,
@@ -40,18 +40,18 @@ Han_2018_methionineMetabolismCycle <- function() {
     lkhp <- log(142);           label("Rate constant: homocysteine hepatic -> plasma (K_HP, 1/h)")    # Han 2018 Table 1 control (point estimate 142, RSE 18.5 %)
     lkph <- log(5.13);          label("Rate constant: homocysteine plasma -> hepatic (K_PH, 1/h)")    # Han 2018 Table 1 control (point estimate 5.13, RSE 10.4 %)
 
-    # T2DM (ZDF) covariate effects (multiplicative on log scale, Han 2018 Eqs 8-11).
-    # Coefficient = log(K_ZDF / K_control); ZDF cohort recovers when T2DM = 1.
+    # DIS_DIAB (ZDF) covariate effects (multiplicative on log scale, Han 2018 Eqs 8-11).
+    # Coefficient = log(K_ZDF / K_control); ZDF cohort recovers when DIS_DIAB = 1.
     # Han 2018 Eq 8 (K_HM) and Eq 9 (K_HP) combine the etas with the ZDF effect;
     # Eq 10 covers one of the remaining rate constants (printed as K_HC); the source's
     # Eq 11 is reproduced for the last cohort-different rate constant in Table 1.
     # The five coefficients below correspond, one-for-one, to the five Table 1 rate
     # constants whose point estimates differ between cohorts.
-    e_t2dm_ksh <- fixed(log(13.5 / 11.6));  label("T2DM (ZDF) log-scale effect on K_SH")  # log(13.5/11.6) = +0.1519; Han 2018 Table 1
-    e_t2dm_khm <- fixed(log(2.54 / 30.7));  label("T2DM (ZDF) log-scale effect on K_HM (Eq 8)")  # log(2.54/30.7) = -2.4910; Han 2018 Table 1
-    e_t2dm_khc <- fixed(log(0.52 / 11.1));  label("T2DM (ZDF) log-scale effect on K_HC (Eq 10)") # log(0.52/11.1) = -3.0606; Han 2018 Table 1
-    e_t2dm_khp <- fixed(log(20.4 / 142));   label("T2DM (ZDF) log-scale effect on K_HP (Eq 9)")  # log(20.4/142)  = -1.9405; Han 2018 Table 1
-    e_t2dm_kph <- fixed(log(0.032 / 5.13)); label("T2DM (ZDF) log-scale effect on K_PH")         # log(0.032/5.13)= -5.0760; Han 2018 Table 1
+    e_t2dm_ksh <- fixed(log(13.5 / 11.6));  label("DIS_DIAB (ZDF) log-scale effect on K_SH")  # log(13.5/11.6) = +0.1519; Han 2018 Table 1
+    e_t2dm_khm <- fixed(log(2.54 / 30.7));  label("DIS_DIAB (ZDF) log-scale effect on K_HM (Eq 8)")  # log(2.54/30.7) = -2.4910; Han 2018 Table 1
+    e_t2dm_khc <- fixed(log(0.52 / 11.1));  label("DIS_DIAB (ZDF) log-scale effect on K_HC (Eq 10)") # log(0.52/11.1) = -3.0606; Han 2018 Table 1
+    e_t2dm_khp <- fixed(log(20.4 / 142));   label("DIS_DIAB (ZDF) log-scale effect on K_HP (Eq 9)")  # log(20.4/142)  = -1.9405; Han 2018 Table 1
+    e_t2dm_kph <- fixed(log(0.032 / 5.13)); label("DIS_DIAB (ZDF) log-scale effect on K_PH")         # log(0.032/5.13)= -5.0760; Han 2018 Table 1
 
     # Inter-individual variability (Han 2018 Table 1 reports IIV as %; interpreted as CV%).
     # variance = log((CV/100)^2 + 1) for a log-normal random effect on the underlying rate constant.
@@ -73,12 +73,12 @@ Han_2018_methionineMetabolismCycle <- function() {
     kel <- exp(lkel)
     vc  <- exp(lvc)
 
-    # Cohort-stratified rate constants (T2DM = 0 -> control; T2DM = 1 -> ZDF).
-    ksh <- exp(lksh           + e_t2dm_ksh * T2DM)
-    khm <- exp(lkhm + etalkhm + e_t2dm_khm * T2DM)
-    khc <- exp(lkhc           + e_t2dm_khc * T2DM)
-    khp <- exp(lkhp + etalkhp + e_t2dm_khp * T2DM)
-    kph <- exp(lkph           + e_t2dm_kph * T2DM)
+    # Cohort-stratified rate constants (DIS_DIAB = 0 -> control; DIS_DIAB = 1 -> ZDF).
+    ksh <- exp(lksh           + e_t2dm_ksh * DIS_DIAB)
+    khm <- exp(lkhm + etalkhm + e_t2dm_khm * DIS_DIAB)
+    khc <- exp(lkhc           + e_t2dm_khc * DIS_DIAB)
+    khp <- exp(lkhp + etalkhp + e_t2dm_khp * DIS_DIAB)
+    kph <- exp(lkph           + e_t2dm_kph * DIS_DIAB)
 
     # ODE system (Han 2018 Eqs 1-7). Compartment paper-mapping:
     #   met    = A(1) methionine systemic circulation (plasma; observed)

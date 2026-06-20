@@ -53,12 +53,12 @@ Robbie_2012_palivizumab <- function() {
       notes              = "Multiplicative effect on CL; 95% CI included unity in the source analysis. Renamed from source column OTHER to canonical RACE_OTHER per covariate-columns.md.",
       source_name        = "OTHER"
     ),
-    CLD_PREM = list(
+    DIS_CLD_PREM = list(
       description        = "Chronic lung disease of prematurity (bronchopulmonary dysplasia).",
       units              = "(binary)",
       type               = "binary",
       reference_category = "0 = no CLD of prematurity.",
-      notes              = "Multiplicative +20% effect on CL (Robbie 2012 Table 2). Renamed from source column CLD to canonical CLD_PREM per covariate-columns.md.",
+      notes              = "Multiplicative +20% effect on CL (Robbie 2012 Table 2). Renamed from source column CLD to canonical DIS_CLD_PREM per covariate-columns.md (canonical CLD_PREM was renamed to DIS_CLD_PREM on 2026-06-19 per the canonical-register standardization audit).",
       source_name        = "CLD"
     ),
     ADA_TITER = list(
@@ -162,7 +162,7 @@ Robbie_2012_palivizumab <- function() {
     race_vc <- 1 + e_hispanic_vc * RACE_HISPANIC
 
     # CLD of prematurity effect on CL
-    cld_cl <- 1 + e_cld_cl * CLD_PREM
+    cld_cl <- 1 + e_cld_cl * DIS_CLD_PREM
 
     # ADA titer step-function effect on CL (four non-reference bins).
     # Bins: {10}, {20}, {40}, {>=80}; all other values (including 0) map to reference.

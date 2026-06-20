@@ -145,7 +145,7 @@ ind_draw <- function(n) {
 cov_tab <- tibble::tibble(
   id         = seq_len(n_total),
   WT         = wt_draw(n_total),
-  CYP3A4_IND = ind_draw(n_total)
+  CONMED_CYP3A4_IND = ind_draw(n_total)
 )
 
 # Infusion schedule in hours
@@ -207,7 +207,7 @@ make_subject <- function(idx, row) {
     dv   = NA_real_
   )
   bind_rows(doses, obs) |>
-    mutate(WT = row$WT, CYP3A4_IND = row$CYP3A4_IND) |>
+    mutate(WT = row$WT, CONMED_CYP3A4_IND = row$CONMED_CYP3A4_IND) |>
     arrange(time, desc(evid))
 }
 
@@ -226,13 +226,13 @@ mod_typical <- rxode2::zeroRe(mod)
 
 sim_typical <- rxode2::rxSolve(
   object = mod_typical, events = events,
-  keep   = c("WT", "CYP3A4_IND")
+  keep   = c("WT", "CONMED_CYP3A4_IND")
 ) |>
   as.data.frame()
 
 sim_stoch <- rxode2::rxSolve(
   object = mod, events = events,
-  keep   = c("WT", "CYP3A4_IND")
+  keep   = c("WT", "CONMED_CYP3A4_IND")
 ) |>
   as.data.frame()
 ```
@@ -251,7 +251,7 @@ near the 10 umol/L target during the phase-3 (8-24 h) maintenance.
 
 ```{r figure-1, fig.cap = "Figure 1 -- typical-individual clomethiazole concentration-time profile across the 24-h three-phase infusion. Replicates Zingmark 2003 Figure 1 (typical-individual curve). Dashed vertical lines mark the phase transitions at 0.25 h (load -> low-rate maintenance) and 8 h (low-rate maintenance -> higher steady-state-target maintenance); dotted horizontal line marks the paper's 10 umol/L target steady-state concentration."}
 sim_typical |>
-  filter(WT == cov_tab$WT[1L], CYP3A4_IND == 0L, time > 0, time <= 36) |>
+  filter(WT == cov_tab$WT[1L], CONMED_CYP3A4_IND == 0L, time > 0, time <= 36) |>
   ggplot(aes(time, Cc)) +
   geom_line(linewidth = 1) +
   geom_vline(xintercept = c(0.25, 8), linetype = "dashed", colour = "gray40") +
@@ -359,20 +359,20 @@ characteristics; the paper's exposure summary is a typical Css of
 internal sanity check on the simulation pipeline: per-subject Cmax (over
 the 0-24 h infusion), Tmax, AUC_0-24h, and the mean concentration over the
 phase-3 window (8-24 h, which approximates the steady-state target). The
-PKNCA formula carries the binary inducer indicator (`CYP3A4_IND`) as the
+PKNCA formula carries the binary inducer indicator (`CONMED_CYP3A4_IND`) as the
 grouping variable so per-cohort results separate the non-inducer reference
 arm from the smaller enzyme-inducer arm.
 
 ```{r pknca}
 sim_for_nca <- sim_stoch |>
   filter(!is.na(Cc), Cc > 0, time > 0, time <= 24) |>
-  mutate(inducer_arm = ifelse(CYP3A4_IND == 1L, "inducer", "no-inducer")) |>
+  mutate(inducer_arm = ifelse(CONMED_CYP3A4_IND == 1L, "inducer", "no-inducer")) |>
   select(id, time, Cc, inducer_arm) |>
   as.data.frame()
 
 doses_for_nca <- events |>
   filter(evid == 1L) |>
-  mutate(inducer_arm = ifelse(CYP3A4_IND == 1L, "inducer", "no-inducer")) |>
+  mutate(inducer_arm = ifelse(CONMED_CYP3A4_IND == 1L, "inducer", "no-inducer")) |>
   group_by(id, inducer_arm) |>
   summarise(time = min(time), amt = sum(amt), .groups = "drop") |>
   as.data.frame()
@@ -423,7 +423,7 @@ window stratified by inducer arm.
 ```{r typical-css}
 typical_css <- sim_typical |>
   filter(time >= 8, time <= 24) |>
-  mutate(inducer_arm = ifelse(CYP3A4_IND == 1L, "inducer", "no-inducer")) |>
+  mutate(inducer_arm = ifelse(CONMED_CYP3A4_IND == 1L, "inducer", "no-inducer")) |>
   group_by(inducer_arm) |>
   summarise(
     median_css = median(Cc, na.rm = TRUE),

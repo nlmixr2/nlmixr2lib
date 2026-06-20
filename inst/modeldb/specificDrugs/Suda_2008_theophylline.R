@@ -13,12 +13,12 @@ Suda_2008_theophylline <- function() {
       notes              = "Suda 2008 final model (page 638 / Table 3) scales CL/F as (BW(g)/1000)^1.08, i.e. body weight in grams divided by 1000. With WT expressed in kg in nlmixr2lib, this is equivalent to (WT/1)^1.08, so the implicit reference body weight is 1 kg (1000 g). The studied range is 841-2548 g (Table 1); simulations at weights well outside this range are an extrapolation.",
       source_name        = "BW"
     ),
-    FORM_APNECUT = list(
+    FORM_THEO_APNECUT = list(
       description        = "Binary indicator of the Apnecut oral theophylline product (Kowa Co., Ltd.); 1 = Apnecut (APC), 0 = theophylline alcohol (TA) in-house preparation reference",
       units              = "(binary)",
       type               = "binary",
       reference_category = "0 (TA in-house preparation, the registry reference)",
-      notes              = "Suda 2008 final model (page 638): CL/F is multiplied by (1 - 0.282 * AP) with AP = 1 for Apnecut and 0 for theophylline alcohol. Canonical FORM_APNECUT preserves the source orientation. The two formulations are both oral liquids: TA is an in-house theophylline-alcohol preparation (5 mg/mL, with ethanol final concentration 10 percent) compounded at the National Center for Child Health and Development; APC is the commercial Apnecut internal-use solution (4 mg/mL aqueous) from Kowa Co., Ltd. (Methods Section 3, page 637).",
+      notes              = "Suda 2008 final model (page 638): CL/F is multiplied by (1 - 0.282 * AP) with AP = 1 for Apnecut and 0 for theophylline alcohol. Canonical FORM_THEO_APNECUT preserves the source orientation. The two formulations are both oral liquids: TA is an in-house theophylline-alcohol preparation (5 mg/mL, with ethanol final concentration 10 percent) compounded at the National Center for Child Health and Development; APC is the commercial Apnecut internal-use solution (4 mg/mL aqueous) from Kowa Co., Ltd. (Methods Section 3, page 637).",
       source_name        = "AP"
     )
   )
@@ -80,7 +80,7 @@ Suda_2008_theophylline <- function() {
     # Individual oral clearance with allometric WT scaling and Apnecut-vs-TA formulation shift.
     # Suda 2008 final model: CL/F = 0.0201 * (BW(g)/1000)^1.08 * (1 - 0.282 * AP), reproduced
     # in nlmixr2lib's (WT(kg)/1)^exponent form because (BW(g)/1000) numerically equals WT(kg).
-    cl <- exp(lcl + etalcl) * (WT / 1)^e_wt_cl * (1 + e_form_apnecut_cl * FORM_APNECUT)
+    cl <- exp(lcl + etalcl) * (WT / 1)^e_wt_cl * (1 + e_form_apnecut_cl * FORM_THEO_APNECUT)
 
     # Apparent central volume scales with body weight allometrically (literature default
     # exponent 1 for theophylline distribution in neonates); ka is body-size-independent.

@@ -52,20 +52,20 @@ Ogasawara_2020_durvalumab <- function() {
       notes              = "Multiplicative effects on CL (factor 0.791) and Vc (factor 0.790) for females. Source column 'SEX' with 0 = male, 1 = female encoding matches the canonical SEXF orientation directly.",
       source_name        = "SEX"
     ),
-    MDSAML = list(
+    DIS_MDS_AML = list(
       description        = "MDS/AML disease-type indicator (1 = myelodysplastic syndrome or acute myeloid leukemia)",
       units              = "(binary)",
       type               = "binary",
       reference_category = "0 (non-MDS/AML; includes multiple myeloma and non-Hodgkin lymphoma)",
-      notes              = "Multiplicative effect on CL (factor 1.26). Captures the combined MDS and AML subpopulation from Ogasawara 2020 Table 1 (studies MEDI4736-MM-002 and -MDS-001).",
+      notes              = "Multiplicative effect on CL (factor 1.26). Captures the combined MDS and AML subpopulation from Ogasawara 2020 Table 1 (studies MEDI4736-MM-002 and -MDS-001). Renamed from canonical MDSAML to DIS_MDS_AML on 2026-06-19 per the canonical-register standardization audit.",
       source_name        = "MDSAML"
     ),
-    MM = list(
+    DIS_MM = list(
       description        = "Multiple myeloma disease indicator (1 = active multiple myeloma)",
       units              = "(binary)",
       type               = "binary",
       reference_category = "0 (non-MM; includes MDS, AML, and non-Hodgkin lymphoma)",
-      notes              = "Multiplicative effect on Vc (factor 0.820). Active (non-smoldering) multiple myeloma from studies MEDI4736-MM-002 and -MM-005 in Ogasawara 2020.",
+      notes              = "Multiplicative effect on Vc (factor 0.820). Active (non-smoldering) multiple myeloma from studies MEDI4736-MM-002 and -MM-005 in Ogasawara 2020. Renamed from canonical MM to DIS_MM on 2026-06-19 per the canonical-register standardization audit.",
       source_name        = "MM"
     )
   )
@@ -121,13 +121,13 @@ Ogasawara_2020_durvalumab <- function() {
       (LDH / 216)^e_ldh_cl *
       (WT / 74.7)^e_wt_cl *
       e_sex_cl^SEXF *
-      e_mdsaml_cl^MDSAML
+      e_mdsaml_cl^DIS_MDS_AML
 
     vc <- exp(lvc + etalvc) *
       (ALB / 40)^e_alb_vc *
       (WT / 74.7)^e_wt_vc *
       e_sex_vc^SEXF *
-      e_mm_vc^MM
+      e_mm_vc^DIS_MM
 
     q  <- exp(lq)
     vp <- exp(lvp)

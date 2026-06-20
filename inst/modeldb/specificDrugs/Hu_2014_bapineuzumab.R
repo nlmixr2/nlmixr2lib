@@ -30,7 +30,7 @@ Hu_2014_bapineuzumab <- function() {
     weight_range   = "Mean +/- SD 72.6 +/- 15.2 kg (Hu 2014 Table 1, overall)",
     sex_female_pct = 30.7,
     race_ethnicity = "Predominantly Caucasian (Study 301: 93.6% Caucasian per Hu 2014 Methods; Study 302 was similarly composed). Non-Caucasian subjects pooled into the model's non-Caucasian indicator.",
-    disease_state  = "Mild-to-moderate Alzheimer's disease (baseline MMSE 16-26)",
+    disease_state  = "Mild-to-moderate Alzheimer's disease (baseline SCORE_MMSE 16-26)",
     dose_range     = "0.5 or 1.0 mg/kg IV (1-hour infusion) every 13 weeks for up to six infusions; an additional 141 patients in Study 301 received 2.0 mg/kg before the protocol was amended and they were transitioned to 1.0 mg/kg",
     regions        = "Study 301 (APOE4 non-carriers) and Study 302 (APOE4 carriers); both Phase 3 multinational trials (ELN115727-301 and ELN115727-302).",
     apoe4_status   = "Study 301 enrolled APOE*E4 non-carriers; Study 302 enrolled APOE*E4 carriers. APOE*E4 carrier status was tested as a covariate and had no meaningful effect on PK.",

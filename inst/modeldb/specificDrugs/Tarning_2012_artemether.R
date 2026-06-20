@@ -75,9 +75,9 @@ Tarning_2012_artemether <- function() {
     label("Apparent artemether elimination clearance, CL_ARM/F (L/h)")  # Tarning 2012 Table 2: CL_ARM/F = 875 (RSE 18.7%; 95% CI 625-1280)
     lvc     <- log(2160)
     label("Apparent artemether central volume of distribution, V_ARM/F (L)")  # Tarning 2012 Table 2: V_ARM/F = 2160 (RSE 17.4%; 95% CI 1620-3100)
-    lcl_dha <- log(468)
+    lcl_dihydroart <- log(468)
     label("Apparent dihydroartemisinin elimination clearance, CL_DHA/F (L/h)")  # Tarning 2012 Table 2: CL_DHA/F = 468 (RSE 10.2%; 95% CI 387-588)
-    lvc_dha <- log(57.1)
+    lvc_dihydroart <- log(57.1)
     label("Apparent dihydroartemisinin central volume of distribution, V_DHA/F (L)")  # Tarning 2012 Table 2: V_DHA/F = 57.1 (RSE 20.1%; 95% CI 41.7-88.8)
 
     # Absorption: mean transit time of the 6-compartment transit chain and
@@ -116,9 +116,9 @@ Tarning_2012_artemether <- function() {
     # IIV on V_ARM and V_DHA was fixed to zero in the final model
     # ("IIV for the distribution volume of artemether and dihydroartemisinin
     # were fixed to zero because of poor precision (RSE > 50%)", Results,
-    # p.8) so etalvc and etalvc_dha are omitted.
+    # p.8) so etalvc and etalvc_dihydroart are omitted.
     etalcl     ~ 0.07549   # Tarning 2012 Table 2: BSV on CL_ARM/F = 28.0% CV (RSE 47.6%)
-    etalcl_dha ~ 0.59716   # Tarning 2012 Table 2: BSV on CL_DHA/F = 90.4% CV (RSE 39.0%)
+    etalcl_dihydroart ~ 0.59716   # Tarning 2012 Table 2: BSV on CL_DHA/F = 90.4% CV (RSE 39.0%)
     etalmtt    ~ 0.44819   # Tarning 2012 Table 2: BSV on MTT       = 75.2% CV (RSE 39.6%)
     etaldur    ~ 1.18800   # Tarning 2012 Table 2: BSV on DUR       = 151%  CV (RSE 24.1%)
     etalfdepot ~ 0.54864   # Tarning 2012 Table 2: BSV on F         = 85.5% CV (RSE 24.8%)
@@ -134,13 +134,13 @@ Tarning_2012_artemether <- function() {
     # the variance on the log scale as sigma = 0.166; the corresponding
     # SD is sqrt(0.166) = 0.4074. The source paper uses a single combined
     # sigma for both observations, but nlmixr2 requires a distinct
-    # endpoint parameter per output, so propSd and propSd_dha are
+    # endpoint parameter per output, so propSd and propSd_dihydroart are
     # declared here with the same starting value (the published sigma).
     # The 23.1% CV IIV on sigma reported in Table 2 is not encoded here
     # (see vignette Assumptions and deviations).
     propSd     <- sqrt(0.166)
     label("Proportional residual SD for artemether plasma concentration (SD on log scale; combined sigma shared with DHA per Table 2)")  # Tarning 2012 Table 2: sigma = 0.166 (variance, RSE 6.87%; 95% CI 0.130-0.221); combined additive-on-log residual for both species
-    propSd_dha <- sqrt(0.166)
+    propSd_dihydroart <- sqrt(0.166)
     label("Proportional residual SD for DHA plasma concentration (SD on log scale; combined sigma shared with artemether per Table 2)")  # Tarning 2012 Table 2: sigma = 0.166 (variance, RSE 6.87%; 95% CI 0.130-0.221); combined additive-on-log residual for both species
   })
 
@@ -150,10 +150,10 @@ Tarning_2012_artemether <- function() {
     # ARM -> DHA formation step to convert mass-rate of artemether
     # elimination to mass-rate of DHA formation under the source paper's
     # assumption of complete in-vivo 1:1 molar conversion. With doses in
-    # mg the state variables central and central_dha are mass amounts (mg);
+    # mg the state variables central and central_dihydroart are mass amounts (mg);
     # 1 mol ARM -> 1 mol DHA implies a mass-rate factor of MW_DHA / MW_ARM.
     mw_arm <- 298.4
-    mw_dha <- 284.3
+    mw_dihydroart <- 284.3
 
     # Individual PK parameters. No significant covariates were retained in
     # the final model (Results, "There were no statistically significant
@@ -162,8 +162,8 @@ Tarning_2012_artemether <- function() {
     # the source paper); only CL_ARM, CL_DHA, MTT, DUR, and F have etas.
     cl     <- exp(lcl     + etalcl)
     vc     <- exp(lvc)
-    cl_dha <- exp(lcl_dha + etalcl_dha)
-    vc_dha <- exp(lvc_dha)
+    cl_dihydroart <- exp(lcl_dihydroart + etalcl_dihydroart)
+    vc_dihydroart <- exp(lvc_dihydroart)
 
     # Absorption rate constants. NN = 6 transit compartments fixed by the
     # paper; with the absorption chain depot -> transit1 -> ... -> transit6
@@ -178,15 +178,15 @@ Tarning_2012_artemether <- function() {
     # Elimination micro-constants. Under the paper's assumption of complete
     # in-vivo 1:1 molar conversion of artemether to DHA, all artemether
     # clearance is metabolic conversion: kel = cl / vc carries artemether
-    # out of central and into central_dha (with the MW factor). DHA is
-    # then eliminated linearly at kel_dha = cl_dha / vc_dha.
+    # out of central and into central_dihydroart (with the MW factor). DHA is
+    # then eliminated linearly at kel_dihydroart = cl_dihydroart / vc_dihydroart.
     kel     <- cl     / vc
-    kel_dha <- cl_dha / vc_dha
+    kel_dihydroart <- cl_dihydroart / vc_dihydroart
 
     # ODE system: zero-order dose delivery into depot (duration dur_in),
     # six-compartment first-order transit chain at rate ktr, and two
     # parallel one-compartment disposition models for artemether (central)
-    # and dihydroartemisinin (central_dha). The dose record sets
+    # and dihydroartemisinin (central_dihydroart). The dose record sets
     # dur(depot) <- dur_in to produce the zero-order release; depot itself
     # then empties first-order at rate ktr into transit1.
     d/dt(depot)       <- -ktr * depot
@@ -197,8 +197,8 @@ Tarning_2012_artemether <- function() {
     d/dt(transit5)    <-  ktr * transit4 - ktr * transit5
     d/dt(transit6)    <-  ktr * transit5 - ktr * transit6
     d/dt(central)     <-  ktr * transit6 - kel * central
-    d/dt(central_dha) <-  kel * central * (mw_dha / mw_arm) -
-                          kel_dha * central_dha
+    d/dt(central_dihydroart) <-  kel * central * (mw_dihydroart / mw_arm) -
+                          kel_dihydroart * central_dihydroart
 
     # Zero-order dissolution: dose into depot is delivered over duration
     # dur_in (rxode2 reads dur() at solve time and converts a bolus dose
@@ -216,16 +216,16 @@ Tarning_2012_artemether <- function() {
     # 4, and 5 (Cmax_ARM = 32.9 ng/mL, Cmax_DHA = 45.2 ng/mL, AUC values
     # in ng*h/mL).
     Cc     <- 1000 * central     / vc
-    Cc_dha <- 1000 * central_dha / vc_dha
+    Cc_dihydroart <- 1000 * central_dihydroart / vc_dihydroart
 
     # Combined additive-on-log-scale residual maps to proportional residual
     # in nlmixr2's linear-concentration space. The source paper used a
     # single shared sigma for both observations ("combined additive error
     # model"); nlmixr2 requires distinct endpoint parameters per output,
-    # so propSd and propSd_dha are declared with the same initial value
+    # so propSd and propSd_dihydroart are declared with the same initial value
     # (sqrt(0.166)) in ini() to reproduce the published combined-error
     # behaviour for forward simulation.
     Cc     ~ prop(propSd)
-    Cc_dha ~ prop(propSd_dha)
+    Cc_dihydroart ~ prop(propSd_dihydroart)
   })
 }

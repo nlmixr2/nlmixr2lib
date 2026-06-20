@@ -34,7 +34,7 @@ received 10-30 mg/m^2 cabazitaxel as a 1-h IV infusion every 7 or 21 days.
 The structural model is a linear three-compartment IV model with
 first-order elimination. Final covariates are body surface area (BSA, on
 CL via linear scaling normalised to median 1.84 m^2) and a breast-cancer
-tumor-type indicator (TUMTP_BC; multiplicative reduction in CL).
+tumor-type indicator (TUMTP_BREAST; multiplicative reduction in CL).
 Concentrations are reported in ng/mL.
 
 ## Source trace
@@ -47,7 +47,7 @@ Concentrations are reported in ng/mL.
 | K21 | Ferron 2013 Table 4, theta4 | 0.604 1/h |
 | K13 | Ferron 2013 Table 4, theta5 | 4.84 1/h |
 | K31 | Ferron 2013 Table 4, theta6 | 0.0266 1/h |
-| Breast cancer effect on CL | Ferron 2013 Table 4, theta7; Eq. 9 | CL multiplied by (1 - 0.543 * TUMTP_BC) |
+| Breast cancer effect on CL | Ferron 2013 Table 4, theta7; Eq. 9 | CL multiplied by (1 - 0.543 * TUMTP_BREAST) |
 | BSA effect on CL | Ferron 2013 Eq. 9 | CL multiplied by BSA / 1.84 |
 | IIV CL, V1, K12, K13, K31 | Ferron 2013 Table 4 | 38.8%, 93.4%, 84.0%, 64.2%, 28.2% CV |
 | Residual error | Ferron 2013 Table 4; Eq. 2 | Proportional 27.8% CV |
@@ -62,7 +62,7 @@ t1/2 gamma = 95 h (Ferron 2013 Results paragraph 6 and Table 4 footer).
 | Source column | Canonical column used here |
 | --- | --- |
 | `BSA` (m^2) | `BSA` |
-| `TT1` (1 = breast cancer, 0 = other) | `TUMTP_BC` (1 = breast cancer, 0 = other) |
+| `TT1` (1 = breast cancer, 0 = other) | `TUMTP_BREAST` (1 = breast cancer, 0 = other) |
 
 See `inst/references/covariate-columns.md` for the canonical register.
 
@@ -83,12 +83,12 @@ BSA <- pmin(pmax(rlnorm(n_subj, log(1.84), 0.10), 1.30), 2.53)
 # GI 13.5%, other 19.4%).
 tumtp_p <- c(prostate = 0.453, breast = 0.218, GI = 0.135, other = 0.194)
 TUMTP <- sample(names(tumtp_p), n_subj, replace = TRUE, prob = tumtp_p)
-TUMTP_BC <- as.integer(TUMTP == "breast")
+TUMTP_BREAST <- as.integer(TUMTP == "breast")
 
 pop <- data.frame(
   ID        = seq_len(n_subj),
-  BSA, TUMTP, TUMTP_BC,
-  treatment = ifelse(TUMTP_BC == 1, "breast cancer", "non-breast cancer")
+  BSA, TUMTP, TUMTP_BREAST,
+  treatment = ifelse(TUMTP_BREAST == 1, "breast cancer", "non-breast cancer")
 )
 ```
 
@@ -199,7 +199,7 @@ mod_typical <- mod |> rxode2::zeroRe()
 
 typ_pop <- data.frame(
   ID = c(1L, 2L), BSA = c(1.84, 1.84),
-  TUMTP_BC = c(0L, 1L),
+  TUMTP_BREAST = c(0L, 1L),
   treatment = c("non-breast cancer", "breast cancer")
 )
 
@@ -218,7 +218,7 @@ typ_d <- dplyr::bind_rows(typ_dose, typ_obs) |>
   as.data.frame()
 
 typ_sim <- rxSolve(mod_typical, typ_d, returnType = "data.frame",
-                   keep = c("treatment", "TUMTP_BC"))
+                   keep = c("treatment", "TUMTP_BREAST"))
 
 ggplot(typ_sim |> dplyr::filter(time > 0),
        aes(x = time, y = Cc, color = treatment)) +
@@ -376,7 +376,7 @@ virtual population approximates Table 3 medians and ranges:
 - **Tumor-type mix**: sampled independently from the pooled Table 3
   proportions (prostate 45.3%, breast 21.8%, GI 13.5%, other 19.4%).
   Only the breast-cancer indicator enters the model; the other three
-  groups collapse into the reference TUMTP_BC = 0.
+  groups collapse into the reference TUMTP_BREAST = 0.
 - **No covariate correlations** are imposed (paper does not report them).
 - **Dose regimen** uses the approved TROPIC-label dose of 25 mg/m^2
   q3w (Ferron 2013 Methods and Discussion). The model is also valid over
@@ -419,11 +419,11 @@ virtual population approximates Table 3 medians and ranges:
   single Phase II study, ARD6191). The paper's Discussion concludes the
   signal is most likely a study effect rather than a true tumor-type
   effect. Implementations that disagree with this assessment should
-  reset TUMTP_BC = 0 across the cohort.
+  reset TUMTP_BREAST = 0 across the cohort.
 - **Cabazitaxel is dosed by BSA** in clinical practice (mg/m^2 doses).
   The BSA effect on CL is therefore already accounted for in dose
   calculation; in simulation the per-subject mg dose is `25 * BSA`.
-- **Reference category** for TUMTP_BC = 0 is "all other tumor types"
+- **Reference category** for TUMTP_BREAST = 0 is "all other tumor types"
   (prostate, gastrointestinal, other). The paper does not split by these
   individual non-breast types.
 

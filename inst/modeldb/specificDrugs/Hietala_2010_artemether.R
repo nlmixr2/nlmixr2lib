@@ -123,8 +123,8 @@ Hietala_2010_artemether <- function() {
     lvc      <- log(5.2)         ; label("Apparent artemether central volume Vc/F_ARM (L/kg)")           # Hietala 2010 Table 1: Vc/F_ARM = 5.2 (95% CI 3.5-7.1)
     lq       <- log(1.4)         ; label("Apparent artemether intercompartmental clearance Q/F_ARM (L/h/kg)") # Hietala 2010 Table 1: Q_ARM = 1.4 (95% CI 1.1-1.8); units L/h/kg per Discussion / Methods (Table caption omits '/h')
     lvp      <- log(41.4)        ; label("Apparent artemether peripheral volume Vp/F_ARM (L/kg)")        # Hietala 2010 Table 1: Vp/F_ARM = 41.4 (95% CI 29.0-58.1)
-    lcl_dha  <- log(6.8)         ; label("Apparent DHA metabolite clearance CL/F_DHA (L/h/kg); F_DHA fixed to 1") # Hietala 2010 Table 1: CL/F_DHA = 6.8 (95% CI 5.8-8.0)
-    lvc_dha  <- log(3.7)         ; label("Apparent DHA metabolite volume V/F_DHA (L/kg); F_DHA fixed to 1")      # Hietala 2010 Table 1: V/F_DHA = 3.7 (95% CI 2.3-8.7)
+    lcl_dihydroart  <- log(6.8)         ; label("Apparent DHA metabolite clearance CL/F_DHA (L/h/kg); F_DHA fixed to 1") # Hietala 2010 Table 1: CL/F_DHA = 6.8 (95% CI 5.8-8.0)
+    lvc_dihydroart  <- log(3.7)         ; label("Apparent DHA metabolite volume V/F_DHA (L/kg); F_DHA fixed to 1")      # Hietala 2010 Table 1: V/F_DHA = 3.7 (95% CI 2.3-8.7)
 
     # Inter-individual variability (IIV). Table 1 reports IIV as %CV per the
     # NONMEM log-normal convention; the corresponding internal variance is
@@ -134,7 +134,7 @@ Hietala_2010_artemether <- function() {
     # IIV on the other parameters (ka, Vc, Q, Vp, V_DHA) was not estimated
     # (Table 1 "NE" entries) and is therefore omitted here.
     etalcl     ~ 0.155649    # Hietala 2010 Table 1: IIV on CL/F_ARM = 41% CV (95% CI 37-50)
-    etalcl_dha ~ 0.198101    # Hietala 2010 Table 1: IIV on CL/F_DHA = 47% CV (95% CI 35-57)
+    etalcl_dihydroart ~ 0.198101    # Hietala 2010 Table 1: IIV on CL/F_DHA = 47% CV (95% CI 35-57)
 
     # Residual error. The paper reports separate proportional and additive
     # residual errors for ARM and DHA (Table 1). nlmixr2's combined error
@@ -144,8 +144,8 @@ Hietala_2010_artemether <- function() {
     # were fixed by the paper (Table 1 caption marks them "fixed").
     propSd     <- 0.61          ; label("Proportional residual SD for artemether plasma concentration (fraction)") # Hietala 2010 Table 1: sigma_prop_ARM = 61% (95% CI 54-67)
     addSd      <- fixed(2)      ; label("Additive residual SD for artemether plasma concentration (nM); fixed")    # Hietala 2010 Table 1: sigma_add_ARM = 2 nM (fixed)
-    propSd_dha <- 0.82          ; label("Proportional residual SD for DHA plasma concentration (fraction)")        # Hietala 2010 Table 1: sigma_prop_DHA = 82% (95% CI 73-90)
-    addSd_dha  <- fixed(3)      ; label("Additive residual SD for DHA plasma concentration (nM); fixed")           # Hietala 2010 Table 1: sigma_add_DHA = 3 nM (fixed)
+    propSd_dihydroart <- 0.82          ; label("Proportional residual SD for DHA plasma concentration (fraction)")        # Hietala 2010 Table 1: sigma_prop_DHA = 82% (95% CI 73-90)
+    addSd_dihydroart  <- fixed(3)      ; label("Additive residual SD for DHA plasma concentration (nM); fixed")           # Hietala 2010 Table 1: sigma_add_DHA = 3 nM (fixed)
   })
 
   model({
@@ -154,9 +154,9 @@ Hietala_2010_artemether <- function() {
     # elimination into mass-rate of DHA formation under the source paper's
     # assumption of complete in-vivo 1:1 molar conversion of ARM to DHA
     # (Results: "it was assumed that all ARM is eliminated via this pathway").
-    # With doses in mg, central and central_dha are mass amounts (mg).
+    # With doses in mg, central and central_dihydroart are mass amounts (mg).
     mw_arm <- 298.4
-    mw_dha <- 284.3
+    mw_dihydroart <- 284.3
 
     # Individual PK parameters with linear (per-kg) weight normalisation.
     # The time-dependent CL/F_ARM is modelled as
@@ -170,8 +170,8 @@ Hietala_2010_artemether <- function() {
     vc     <-  exp(lvc)                                                * WT
     q      <-  exp(lq)                                                 * WT
     vp     <-  exp(lvp)                                                * WT
-    cl_dha <-  exp(lcl_dha + etalcl_dha)                               * WT
-    vc_dha <-  exp(lvc_dha)                                            * WT
+    cl_dihydroart <-  exp(lcl_dihydroart + etalcl_dihydroart)                               * WT
+    vc_dihydroart <-  exp(lvc_dihydroart)                                            * WT
 
     # Two-compartment ARM disposition with first-order absorption from depot,
     # complete conversion to DHA at rate cl/vc * central (with stoichiometric
@@ -179,21 +179,21 @@ Hietala_2010_artemether <- function() {
     kel     <- cl     / vc
     k12     <- q      / vc
     k21     <- q      / vp
-    kel_dha <- cl_dha / vc_dha
+    kel_dihydroart <- cl_dihydroart / vc_dihydroart
 
     d/dt(depot)       <- -ka * depot
     d/dt(central)     <-  ka * depot - kel * central - k12 * central + k21 * peripheral1
     d/dt(peripheral1) <-                              k12 * central - k21 * peripheral1
-    d/dt(central_dha) <-  kel * central * (mw_dha / mw_arm) - kel_dha * central_dha
+    d/dt(central_dihydroart) <-  kel * central * (mw_dihydroart / mw_arm) - kel_dihydroart * central_dihydroart
 
     # Plasma concentrations in nM. Dose units mg; vc units L; central / vc has
     # units mg/L. Multiplication by 1e6 / MW converts mg/L to nmol/L = nM
     # (1 mg/L / (g/mol) = mmol/L; * 1e6 -> nmol/L).
     Cc     <- 1e6 * central     / vc     / mw_arm
-    Cc_dha <- 1e6 * central_dha / vc_dha / mw_dha
+    Cc_dihydroart <- 1e6 * central_dihydroart / vc_dihydroart / mw_dihydroart
 
     # Combined proportional + additive residual error on the linear-nM scale.
     Cc     ~ add(addSd)     + prop(propSd)
-    Cc_dha ~ add(addSd_dha) + prop(propSd_dha)
+    Cc_dihydroart ~ add(addSd_dihydroart) + prop(propSd_dihydroart)
   })
 }

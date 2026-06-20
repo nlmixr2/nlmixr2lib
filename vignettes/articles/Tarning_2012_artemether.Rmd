@@ -46,13 +46,13 @@ Every parameter and equation traces back to the Tarning 2012 publication; the fu
 |----------------------|-------|-----------------|
 | `lcl     = log(875)` (CL_ARM/F, L/h)   | 875   | Table 2 'Population estimate' (RSE 18.7%; 95% CI 625-1280) |
 | `lvc     = log(2160)` (V_ARM/F, L)     | 2160  | Table 2 (RSE 17.4%; 95% CI 1620-3100) |
-| `lcl_dha = log(468)` (CL_DHA/F, L/h)   | 468   | Table 2 (RSE 10.2%; 95% CI 387-588) |
-| `lvc_dha = log(57.1)` (V_DHA/F, L)     | 57.1  | Table 2 (RSE 20.1%; 95% CI 41.7-88.8) |
+| `lcl_dihydroart = log(468)` (CL_DHA/F, L/h)   | 468   | Table 2 (RSE 10.2%; 95% CI 387-588) |
+| `lvc_dihydroart = log(57.1)` (V_DHA/F, L)     | 57.1  | Table 2 (RSE 20.1%; 95% CI 41.7-88.8) |
 | `lmtt    = log(0.274)` (MTT, h)        | 0.274 | Table 2 (RSE 19.4%; 95% CI 0.174-0.378) |
 | `ldur    = log(0.687)` (DUR, h)        | 0.687 | Table 2 (RSE 25.5%; 95% CI 0.380-1.14) |
 | `lfdepot = fixed(log(1))` (F)          | 1 (fixed) | Table 2 'F 1 (fixed)' |
 | `etalcl     ~ 0.07549` (var, log-scale)| CV 28.0% | Table 2 IIV CL_ARM (RSE 47.6%); variance = log(0.28^2 + 1) |
-| `etalcl_dha ~ 0.59716`                 | CV 90.4% | Table 2 IIV CL_DHA (RSE 39.0%) |
+| `etalcl_dihydroart ~ 0.59716`                 | CV 90.4% | Table 2 IIV CL_DHA (RSE 39.0%) |
 | `etalmtt    ~ 0.44819`                 | CV 75.2% | Table 2 IIV MTT (RSE 39.6%) |
 | `etaldur    ~ 1.18800`                 | CV 151%  | Table 2 IIV DUR (RSE 24.1%) |
 | `etalfdepot ~ 0.54864`                 | CV 85.5% | Table 2 IIV F (RSE 24.8%) |
@@ -206,9 +206,9 @@ sim |>
   dplyr::filter(time_after_last > 0, time_after_last <= 10) |>
   dplyr::group_by(time_after_last) |>
   dplyr::summarise(
-    p05 = quantile(Cc_dha, 0.05, na.rm = TRUE),
-    p50 = quantile(Cc_dha, 0.50, na.rm = TRUE),
-    p95 = quantile(Cc_dha, 0.95, na.rm = TRUE),
+    p05 = quantile(Cc_dihydroart, 0.05, na.rm = TRUE),
+    p50 = quantile(Cc_dihydroart, 0.50, na.rm = TRUE),
+    p95 = quantile(Cc_dihydroart, 0.95, na.rm = TRUE),
     .groups = "drop"
   ) |>
   dplyr::filter(p50 > 0) |>
@@ -233,7 +233,7 @@ sim |>
 sim_typical |>
   dplyr::mutate(time_after_last = time - 60) |>
   dplyr::filter(time_after_last >= 0, time_after_last <= 10) |>
-  dplyr::select(time_after_last, Artemether = Cc, DHA = Cc_dha) |>
+  dplyr::select(time_after_last, Artemether = Cc, DHA = Cc_dihydroart) |>
   tidyr::pivot_longer(c(Artemether, DHA),
                       names_to = "species", values_to = "conc") |>
   dplyr::filter(conc > 0) |>
@@ -291,19 +291,19 @@ nca_arm <- PKNCA::pk.nca(
 ```
 
 ```{r pknca-dha}
-sim_nca_dha <- sim |>
+sim_nca_dihydroart <- sim |>
   dplyr::mutate(time_after_last = time - 60) |>
-  dplyr::filter(!is.na(Cc_dha), time_after_last > 0, time_after_last <= 10) |>
-  dplyr::select(id, time = time_after_last, conc_ng_mL = Cc_dha, treatment) |>
+  dplyr::filter(!is.na(Cc_dihydroart), time_after_last > 0, time_after_last <= 10) |>
+  dplyr::select(id, time = time_after_last, conc_ng_mL = Cc_dihydroart, treatment) |>
   dplyr::group_by(id, time, treatment) |>
   dplyr::summarise(conc_ng_mL = mean(conc_ng_mL), .groups = "drop")
 
-conc_obj_dha <- PKNCA::PKNCAconc(sim_nca_dha,
+conc_obj_dihydroart <- PKNCA::PKNCAconc(sim_nca_dihydroart,
                                  conc_ng_mL ~ time | treatment + id,
                                  concu = "ng/mL", timeu = "h")
 
-nca_dha <- PKNCA::pk.nca(
-  PKNCA::PKNCAdata(conc_obj_dha, dose_obj_arm, intervals = intervals)
+nca_dihydroart <- PKNCA::pk.nca(
+  PKNCA::PKNCAdata(conc_obj_dihydroart, dose_obj_arm, intervals = intervals)
 )
 ```
 
@@ -324,7 +324,7 @@ summarise_nca <- function(nca_res, species_label) {
 
 nca_summary <- dplyr::bind_rows(
   summarise_nca(nca_arm, "Artemether"),
-  summarise_nca(nca_dha, "Dihydroartemisinin")
+  summarise_nca(nca_dihydroart, "Dihydroartemisinin")
 ) |>
   dplyr::select(species, PPTESTCD, median, p05, p95)
 
@@ -355,11 +355,11 @@ The simulated DHA half-life from the compartmental model is shorter than the NCA
 
 # Assumptions and deviations
 
-* **Combined residual error split across two endpoint parameters.** Tarning 2012 Table 2 reports a single combined additive-on-log-scale residual variance `sigma = 0.166` shared by artemether and dihydroartemisinin observations ("A combined additive error model for both the drug and the metabolite was sufficient", Results). nlmixr2 requires a distinct endpoint parameter per output, so the model file declares `propSd` (for Cc) and `propSd_dha` (for Cc_dha) with identical starting values `sqrt(0.166) ~= 0.407`. For forward simulation this exactly reproduces the published combined-error behaviour because the two propSd values are equal; for any user re-fitting the model on real data, the two parameters would be estimated independently and could drift apart unless an explicit equality constraint is imposed.
+* **Combined residual error split across two endpoint parameters.** Tarning 2012 Table 2 reports a single combined additive-on-log-scale residual variance `sigma = 0.166` shared by artemether and dihydroartemisinin observations ("A combined additive error model for both the drug and the metabolite was sufficient", Results). nlmixr2 requires a distinct endpoint parameter per output, so the model file declares `propSd` (for Cc) and `propSd_dihydroart` (for Cc_dihydroart) with identical starting values `sqrt(0.166) ~= 0.407`. For forward simulation this exactly reproduces the published combined-error behaviour because the two propSd values are equal; for any user re-fitting the model on real data, the two parameters would be estimated independently and could drift apart unless an explicit equality constraint is imposed.
 * **IIV on the residual sigma not encoded.** Tarning 2012 Table 2 reports an IIV of CV 23.1% on the residual sigma itself (RSE 51.7%; 95% CI 8.35-35.2). Encoding inter-individual variability on residual-error magnitude is not standard in nlmixr2lib conventions; the IIV term is omitted. The expected effect on forward-simulated trajectories is small because (a) the IIV term is small relative to the magnitude of sigma (sigma_indiv would vary roughly +/- 23% around the typical value), (b) the IIV is estimated with high RSE (51.7%), and (c) the residual error is itself a within-subject term that only affects the observation-level noise, not the typical-value or VPC-percentile trajectories.
 * **No covariates retained in the final model.** The Tarning 2012 final model carries no covariates (Results: "There were no statistically significant covariates in this study"). The full-covariate exploratory model with estimated gestational age (EGA) on CL_ARM, V_ARM, CL_DHA, V_DHA, and MTT found EGA effects distributed -7.0% to +5.5% per week of gestation (95% CI; Figure 3 / Results paragraph 6). The package model preserves this null covariate structure; users simulating outside the gestational-age 13-36-week window should not extrapolate.
 * **No pre-systemic metabolism / enterohepatic recirculation.** Tarning 2012 evaluated and rejected a pre-systemic artemether elimination pathway (delta-OFV = -12.5 but unrealistic 48.8 h artemether half-life), enterohepatic recirculation, and the semi-mechanistic Gordi-et-al partial pre-systemic conversion model (Methods). The package model uses the final published structure with complete in-vivo 1:1 molar ARM-to-DHA conversion in the central compartment, no pre-systemic elimination, and no enterohepatic cycling.
 * **No auto-induction.** Sampling was performed only after the last dose (post-60h) so auto-induction across the three days of dosing could not be characterised (Discussion). The package model uses the post-last-dose final estimates as a single-dose-equivalent parameterisation. The paper notes that artemether CL was approximately 4.9-fold higher than in healthy Pakistani volunteers receiving a single dose (15.1 L/h/kg vs 3.11 L/h/kg) and interprets this as plausibly consistent with auto-induction; users simulating single-dose scenarios should be aware that the package values represent the *post-induction* CL, not the single-dose CL.
 * **DHA half-life reflects flip-flop kinetics.** As noted under "Comparison against published NCA", the compartmental model's DHA half-life does not correspond to its physiological elimination half-life because DHA elimination is formation-rate-limited. The NCA half-life from Table 5 (1.39 h) is the physiological reference; the model's apparent half-life is a model-fit artifact of the flip-flop and matches the source paper's structure.
-* **Bioavailability fixed at F = 1.** Tarning 2012 anchored the typical-value relative bioavailability at F = 1 (Table 2: "F 1 (fixed)") with the variability captured by `etalfdepot` (CV 85.5%). Absolute oral bioavailability of artemether in this population is not identifiable from this dataset; the simulated `Cc` and `Cc_dha` should be read as conditional on F = 1 typical, with population-mean Cmax and AUC interpreted as relative-bioavailability-anchored values rather than absolute exposures.
+* **Bioavailability fixed at F = 1.** Tarning 2012 anchored the typical-value relative bioavailability at F = 1 (Table 2: "F 1 (fixed)") with the variability captured by `etalfdepot` (CV 85.5%). Absolute oral bioavailability of artemether in this population is not identifiable from this dataset; the simulated `Cc` and `Cc_dihydroart` should be read as conditional on F = 1 typical, with population-mean Cmax and AUC interpreted as relative-bioavailability-anchored values rather than absolute exposures.
 * **Molar-to-mass unit choice.** Tarning 2012 modelled molar plasma concentrations internally in NONMEM. The package model uses mass units throughout (dose in mg, state amounts in mg, concentration in ng/mL) so users can dose in the standard clinical mg / kg units without molar conversion. The ARM-to-DHA formation step applies the molar-conversion factor explicitly (MW_DHA / MW_ARM = 284.3 / 298.4 = 0.953); this matches the literature-MW-ratio used in the paper's NCA reanalysis (Methods, Non-compartmental analysis section).

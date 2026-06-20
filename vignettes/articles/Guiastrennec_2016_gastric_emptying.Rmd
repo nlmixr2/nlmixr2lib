@@ -142,7 +142,7 @@ build_events <- function(label, dose_acet, dose_fat, dose_prot, dose_carb,
   ev$WT         <- wt
   ev$AGE        <- age
   ev$SEXF       <- sexf
-  ev$T2DM       <- t2dm
+  ev$DIS_DIAB       <- t2dm
   ev$DRINK_OGTT <- drink_ogtt
   ev$DRINK_FAT  <- drink_fat
   ev$cohort     <- label

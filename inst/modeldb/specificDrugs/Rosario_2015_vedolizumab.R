@@ -21,29 +21,29 @@ Rosario_2015_vedolizumab <- function() {
       notes              = "Power-form effect on CLL: (ALB / 4)^(-1.18). Reference 4 g/dL is the reference-patient albumin (Rosario 2015 Table 2 footnote and Figure 5 caption). US-convention g/dL matches the source paper.",
       source_name        = "ALB"
     ),
-    CALPRO = list(
+    SCORE_CALPRO = list(
       description        = "Baseline faecal calprotectin",
       units              = "mg/kg",
       type               = "continuous",
       reference_category = NULL,
-      notes              = "Power-form effect on CLL: (CALPRO / 700)^0.0310. Reference 700 mg/kg per Rosario 2015 Table 2 footnote (reference patient).",
-      source_name        = "CALPRO"
+      notes              = "Power-form effect on CLL: (SCORE_CALPRO / 700)^0.0310. Reference 700 mg/kg per Rosario 2015 Table 2 footnote (reference patient).",
+      source_name        = "SCORE_CALPRO"
     ),
-    CDAI = list(
+    SCORE_CDAI = list(
       description        = "Crohn's Disease Activity Index (CD patients only)",
       units              = "(score)",
       type               = "continuous",
       reference_category = NULL,
-      notes              = "Power-form effect on CLL for CD patients only: (CDAI / 300)^(-0.0515 * IBD_CD). Reference 300 per Rosario 2015 Table 2 footnote (reference CD patient). Gated by IBD_CD so the effect is identically 1 for UC patients; for CD patients supply the observed CDAI.",
-      source_name        = "CDAI"
+      notes              = "Power-form effect on CLL for CD patients only: (SCORE_CDAI / 300)^(-0.0515 * IBD_CD). Reference 300 per Rosario 2015 Table 2 footnote (reference CD patient). Gated by IBD_CD so the effect is identically 1 for UC patients; for CD patients supply the observed SCORE_CDAI.",
+      source_name        = "SCORE_CDAI"
     ),
-    PMAYO = list(
+    SCORE_PMAYO = list(
       description        = "Partial Mayo score (UC patients only)",
       units              = "(score 0-9)",
       type               = "continuous",
       reference_category = NULL,
-      notes              = "Power-form effect on CLL for UC patients only: (PMAYO / 6)^(0.0408 * (1 - IBD_CD)). Reference 6 per Rosario 2015 Table 2 footnote (reference UC patient). Gated by (1 - IBD_CD) so the effect is identically 1 for CD patients.",
-      source_name        = "PMAYO"
+      notes              = "Power-form effect on CLL for UC patients only: (SCORE_PMAYO / 6)^(0.0408 * (1 - IBD_CD)). Reference 6 per Rosario 2015 Table 2 footnote (reference UC patient). Gated by (1 - IBD_CD) so the effect is identically 1 for CD patients.",
+      source_name        = "SCORE_PMAYO"
     ),
     AGE = list(
       description        = "Subject age",
@@ -58,7 +58,7 @@ Rosario_2015_vedolizumab <- function() {
       units              = "(binary)",
       type               = "binary",
       reference_category = "0 (ulcerative colitis)",
-      notes              = "Switches the typical CLL between UC (0.159 L/day) and CD (0.155 L/day), gates the disease-activity covariates (PMAYO applies only when IBD_CD = 0; CDAI applies only when IBD_CD = 1), and drives a small multiplicative effect on Vc (1.01^IBD_CD). The reference patient for Vc is UC (IBD_CD = 0) per Rosario 2015 Table 2 footnote.",
+      notes              = "Switches the typical CLL between UC (0.159 L/day) and CD (0.155 L/day), gates the disease-activity covariates (SCORE_PMAYO applies only when IBD_CD = 0; SCORE_CDAI applies only when IBD_CD = 1), and drives a small multiplicative effect on Vc (1.01^IBD_CD). The reference patient for Vc is UC (IBD_CD = 0) per Rosario 2015 Table 2 footnote.",
       source_name        = "DX"
     ),
     PRIOR_TNF = list(
@@ -134,7 +134,7 @@ Rosario_2015_vedolizumab <- function() {
   ini({
     # Structural parameters -- Rosario 2015 Table 2 (final-model Bayesian medians
     # from 4 MCMC chains). Reference patient: 70 kg, 40 y, albumin 4 g/dL,
-    # faecal calprotectin 700 mg/kg, CDAI 300 (CD), partial Mayo 6 (UC),
+    # faecal calprotectin 700 mg/kg, SCORE_CDAI 300 (CD), partial Mayo 6 (UC),
     # UC diagnosis for Vc, no concomitant therapy, ADA-negative, TNF-naive.
     lcl    <- log(0.159);  label("Linear clearance CLL for the reference UC patient (L/day)")  # Table 2: CLL UC = 0.159 L/day
     lcl_cd <- log(0.155);  label("Linear clearance CLL for the reference CD patient (L/day)")  # Table 2: CLL CD = 0.155 L/day
@@ -148,7 +148,7 @@ Rosario_2015_vedolizumab <- function() {
     e_wt_cl     <-  0.362;  label("Weight exponent on CLL (unitless; reference 70 kg)")          # Table S4: weight on CLL = 0.362
     e_alb_cl    <- -1.18;   label("Albumin exponent on CLL (unitless; reference 4 g/dL)")        # Table S4: albumin on CLL = -1.18
     e_calpro_cl <-  0.0310; label("Faecal calprotectin exponent on CLL (unitless; reference 700 mg/kg)")  # Table S4: calprotectin on CLL = 0.0310
-    e_cdai_cl   <- -0.0515; label("CDAI exponent on CLL, CD patients only (unitless; reference 300)")      # Table S4: CDAI on CLL = -0.0515
+    e_cdai_cl   <- -0.0515; label("SCORE_CDAI exponent on CLL, CD patients only (unitless; reference 300)")      # Table S4: SCORE_CDAI on CLL = -0.0515
     e_pmayo_cl  <-  0.0408; label("Partial Mayo exponent on CLL, UC patients only (unitless; reference 6)")  # Table S4: pMayo on CLL = 0.0408
     e_age_cl    <- -0.0346; label("Age exponent on CLL (unitless; reference 40 years)")          # Table S4: age on CLL = -0.0346
     e_wt_vc     <-  0.467;  label("Weight exponent on Vc (unitless; reference 70 kg)")           # Table S4: weight on Vc = 0.467
@@ -191,14 +191,14 @@ Rosario_2015_vedolizumab <- function() {
     cl_typ <- exp(lcl) * (1 - IBD_CD) + exp(lcl_cd) * IBD_CD
 
     # Individual PK parameters. Reference 70 kg for allometric / power scaling on WT;
-    # reference 4 g/dL for ALB; reference 700 mg/kg for CALPRO; reference 300 for CDAI
-    # (CD only); reference 6 for PMAYO (UC only); reference 40 y for AGE.
+    # reference 4 g/dL for ALB; reference 700 mg/kg for SCORE_CALPRO; reference 300 for SCORE_CDAI
+    # (CD only); reference 6 for SCORE_PMAYO (UC only); reference 40 y for AGE.
     cl <- cl_typ * exp(etalcl) *
       (WT  / 70  )^e_wt_cl *
       (ALB / 4   )^e_alb_cl *
-      (CALPRO / 700)^e_calpro_cl *
-      (CDAI   / 300)^(e_cdai_cl  *      IBD_CD ) *
-      (PMAYO  / 6  )^(e_pmayo_cl * (1 - IBD_CD)) *
+      (SCORE_CALPRO / 700)^e_calpro_cl *
+      (SCORE_CDAI   / 300)^(e_cdai_cl  *      IBD_CD ) *
+      (SCORE_PMAYO  / 6  )^(e_pmayo_cl * (1 - IBD_CD)) *
       (AGE / 40  )^e_age_cl *
       e_priortnf_cl^PRIOR_TNF *
       e_ada_cl^ADA_POS *

@@ -37,7 +37,7 @@ Birgersson_2019_artesunate <- function() {
       units              = "(binary)",
       type               = "binary",
       reference_category = 0,
-      notes              = "1 = pregnant, 0 = non-pregnant. The Birgersson 2019 cohort consists of 24 pregnant women in their second or third trimester paired with 24 non-pregnant women, all with uncomplicated Plasmodium falciparum malaria. The source NONMEM .mod uses pregnant women as the within-paper reference (CLMPREG = 1 when PREG = 1; CLMPREG = 1 + THETA(7) when PREG = 0). Verbatim source values are preserved by applying the effect parameter via (1 - PREG) in the model code: structural TVCLM = 190 L/h corresponds to pregnant women, and non-pregnant women have CLM scaled by (1 + e_preg_cl_dha) = 0.786.",
+      notes              = "1 = pregnant, 0 = non-pregnant. The Birgersson 2019 cohort consists of 24 pregnant women in their second or third trimester paired with 24 non-pregnant women, all with uncomplicated Plasmodium falciparum malaria. The source NONMEM .mod uses pregnant women as the within-paper reference (CLMPREG = 1 when PREG = 1; CLMPREG = 1 + THETA(7) when PREG = 0). Verbatim source values are preserved by applying the effect parameter via (1 - PREG) in the model code: structural TVCLM = 190 L/h corresponds to pregnant women, and non-pregnant women have CLM scaled by (1 + e_preg_cl_dihydroart) = 0.786.",
       source_name        = "PREG"
     ),
     ALT = list(
@@ -84,13 +84,13 @@ Birgersson_2019_artesunate <- function() {
 
     lcl   <- log(3570)   ; label("Apparent artesunate elimination clearance, CLP/F at WT = 52 kg (L/h); equivalent to the artesunate-to-DHA conversion clearance under the source paper's assumption of complete in-vivo conversion")  # Executable_run1.mod $THETA TH 1 (CLP) = 3570 L/h
     lvc   <- log(1700)   ; label("Apparent artesunate central volume of distribution, V2/F at WT = 52 kg (L)")  # Executable_run1.mod $THETA TH 2 (V2) = 1700 L
-    lcl_dha <- log(190)  ; label("Apparent dihydroartemisinin elimination clearance, CLM/F at WT = 52 kg in pregnant women (L/h); non-pregnant women have CLM reduced via the e_preg_cl_dha covariate effect")  # Executable_run1.mod $THETA TH 3 (CLM) = 190 L/h
-    lvc_dha <- log(267)  ; label("Apparent dihydroartemisinin central volume of distribution, V3/F at WT = 52 kg (L)")  # Executable_run1.mod $THETA TH 4 (V3) = 267 L
+    lcl_dihydroart <- log(190)  ; label("Apparent dihydroartemisinin elimination clearance, CLM/F at WT = 52 kg in pregnant women (L/h); non-pregnant women have CLM reduced via the e_preg_cl_dihydroart covariate effect")  # Executable_run1.mod $THETA TH 3 (CLM) = 190 L/h
+    lvc_dihydroart <- log(267)  ; label("Apparent dihydroartemisinin central volume of distribution, V3/F at WT = 52 kg (L)")  # Executable_run1.mod $THETA TH 4 (V3) = 267 L
     lmtt  <- log(0.832)  ; label("Mean transit time of the 3-compartment transit-absorption chain, MTT (h)")  # Executable_run1.mod $THETA TH 5 (MTT) = 0.832 h
     lfdepot <- fixed(log(1))   ; label("Reference relative bioavailability of artesunate, F1 (unitless); fixed at 1 (the source paper estimates F1 only via covariate effects of ALT and parasitaemia, with no absolute reference)")  # Executable_run1.mod $THETA TH 6 (F1) = 1 FIX
 
     # Covariate effects
-    e_preg_cl_dha <- -0.214 ; label("Pregnancy-status effect on DHA elimination clearance, applied as (1 + e_preg_cl_dha * (1 - PREG)) so that pregnant women (PREG = 1) match the structural TVCLM = 190 L/h and non-pregnant women (PREG = 0) have CLM scaled by 0.786 (~21% lower CLM than pregnant women)")  # Executable_run1.mod $THETA TH 7 (CLMPREG1) = -0.214
+    e_preg_cl_dihydroart <- -0.214 ; label("Pregnancy-status effect on DHA elimination clearance, applied as (1 + e_preg_cl_dihydroart * (1 - PREG)) so that pregnant women (PREG = 1) match the structural TVCLM = 190 L/h and non-pregnant women (PREG = 0) have CLM scaled by 0.786 (~21% lower CLM than pregnant women)")  # Executable_run1.mod $THETA TH 7 (CLMPREG1) = -0.214
     e_alt_fdepot  <-  0.0215 ; label("Linear-deviation effect of admission ALT (centered at 20.75 U/L) on artesunate relative bioavailability, per U/L")  # Executable_run1.mod $THETA TH 8 (F1ALT1) = 0.0215
     e_lnpc_fdepot <-  0.138  ; label("Linear-deviation effect of admission log-asexual-parasite-count (centered at 5.88 log(parasites/uL)) on artesunate relative bioavailability, per log-unit")  # Executable_run1.mod $THETA TH 9 (F1LNPC1) = 0.138
 
@@ -98,7 +98,7 @@ Birgersson_2019_artesunate <- function() {
     # entries for V2 and V3 are 0 FIXED (no IIV on artesunate or DHA volume),
     # so only four etas are carried into the model file.
     etalcl     ~ 0.0672    # Executable_run1.mod $OMEGA(1,1) (1.CL) = 0.0672 (variance on log-scale)
-    etalcl_dha ~ 0.00809   # Executable_run1.mod $OMEGA(3,3) (3.CLM_) = 0.00809
+    etalcl_dihydroart ~ 0.00809   # Executable_run1.mod $OMEGA(3,3) (3.CLM_) = 0.00809
     etalmtt    ~ 0.32      # Executable_run1.mod $OMEGA(5,5) (5.MTT_) = 0.32
     etalfdepot ~ 0.0887    # Executable_run1.mod $OMEGA(6,6) (8.F1) = 0.0887
 
@@ -113,7 +113,7 @@ Birgersson_2019_artesunate <- function() {
     # forward-simulation / typical-value use, where the BQL handling does
     # not affect the trajectory.
     propSd     <- sqrt(0.892) ; label("Proportional residual SD for artesunate plasma concentration (SD on log scale)")  # Executable_run1.mod $SIGMA(1,1) (RUV_ARS) = 0.892 (variance); SD = sqrt(0.892) ~= 0.945
-    propSd_dha <- sqrt(0.66)  ; label("Proportional residual SD for dihydroartemisinin plasma concentration (SD on log scale)")  # Executable_run1.mod $SIGMA(2,2) (RUV_DHA) = 0.66 (variance); SD = sqrt(0.66) ~= 0.812
+    propSd_dihydroart <- sqrt(0.66)  ; label("Proportional residual SD for dihydroartemisinin plasma concentration (SD on log scale)")  # Executable_run1.mod $SIGMA(2,2) (RUV_DHA) = 0.66 (variance); SD = sqrt(0.66) ~= 0.812
   })
 
   model({
@@ -123,9 +123,9 @@ Birgersson_2019_artesunate <- function() {
     # etc.). Reference weight 52 kg is the cohort median.
     cl     <- exp(lcl     + etalcl)     * (WT / 52)^0.75
     vc     <- exp(lvc)                  * (WT / 52)
-    cl_dha <- exp(lcl_dha + etalcl_dha) * (WT / 52)^0.75 *
-              (1 + e_preg_cl_dha * (1 - PREG))
-    vc_dha <- exp(lvc_dha)              * (WT / 52)
+    cl_dihydroart <- exp(lcl_dihydroart + etalcl_dihydroart) * (WT / 52)^0.75 *
+              (1 + e_preg_cl_dihydroart * (1 - PREG))
+    vc_dihydroart <- exp(lvc_dihydroart)              * (WT / 52)
 
     # Mean transit time and chain rate. With NN = 3 transit compartments,
     # KTR = (NN + 1) / MTT = 4 / MTT (per the source NONMEM .mod $PK
@@ -138,14 +138,14 @@ Birgersson_2019_artesunate <- function() {
     # Conversion / elimination micro-constants. Under the source paper's
     # assumption of complete in-vivo conversion of artesunate to DHA, all
     # artesunate clearance is metabolic conversion, so the rate from
-    # central -> central_dha is cl/vc. DHA is then eliminated linearly at
-    # cl_dha/vc_dha.
+    # central -> central_dihydroart is cl/vc. DHA is then eliminated linearly at
+    # cl_dihydroart/vc_dihydroart.
     kel_art <- cl     / vc
-    kel_dha <- cl_dha / vc_dha
+    kel_dihydroart <- cl_dihydroart / vc_dihydroart
 
     # ODE system. Source NONMEM compartment indexing: 1 depot, 2 artesunate
     # central, 3 DHA central, 4-6 transit. Translated to canonical names
-    # depot, central (artesunate), central_dha (DHA), transit1, transit2,
+    # depot, central (artesunate), central_dihydroart (DHA), transit1, transit2,
     # transit3 with the same connectivity (K14, K45, K56, K62, K23, K30 in
     # the source .mod).
     d/dt(depot)        <- -ktr * depot
@@ -153,7 +153,7 @@ Birgersson_2019_artesunate <- function() {
     d/dt(transit2)     <-  ktr * transit1 - ktr * transit2
     d/dt(transit3)     <-  ktr * transit2 - ktr * transit3
     d/dt(central)      <-  ktr * transit3 - kel_art * central
-    d/dt(central_dha)  <-  kel_art * central - kel_dha * central_dha
+    d/dt(central_dihydroart)  <-  kel_art * central - kel_dihydroart * central_dihydroart
 
     # Bioavailability on the depot compartment. The source NONMEM .mod
     # parameterizes F1 = TVF1 * F1COV * EXP(ETA(6)) with TVF1 = 1 FIX and
@@ -166,14 +166,14 @@ Birgersson_2019_artesunate <- function() {
     # Plasma concentrations in nmol/L. Source data file comment:
     # "DOSE(NMOL)CP(NMOL/L)" -- doses in nmol, concentrations in nmol/L.
     # Because both species are tracked on a molar basis under complete 1:1
-    # conversion, no MW conversion is needed for the central -> central_dha
+    # conversion, no MW conversion is needed for the central -> central_dihydroart
     # transfer.
     Cc     <- central     / vc
-    Cc_dha <- central_dha / vc_dha
+    Cc_dihydroart <- central_dihydroart / vc_dihydroart
 
     # Residual error. NONMEM "additive on log scale" maps to proportional
     # error in linear space (see references/naming-conventions.md).
     Cc     ~ prop(propSd)
-    Cc_dha ~ prop(propSd_dha)
+    Cc_dihydroart ~ prop(propSd_dihydroart)
   })
 }

@@ -1,6 +1,6 @@
 Okada_2025_rocatinlimab <- function() {
   description <- "Two-compartment population PK model with parallel linear and time-dependent saturable (Michaelis-Menten) clearance and first-order subcutaneous absorption for rocatinlimab (anti-OX40 mAb) in adults; covariates body weight, albumin, plaque-psoriasis disease state, and healthy-volunteer cohort indicator (Okada 2025)"
-  reference <- "Okada H, Liao S, Khouri L, Liao L, Hruska MW, Nagata Y, Hasegawa M, Gewitz A, Marsteller D. Continuous-Time Markov Population PK/PD Modeling of Longitudinal EASI Categorical Score in Atopic Dermatitis Treated With Rocatinlimab, an Anti-OX40 Monoclonal Antibody. CPT Pharmacometrics Syst Pharmacol. 2025;14(10):1587-1597. doi:10.1002/psp4.70069"
+  reference <- "Okada H, Liao S, Khouri L, Liao L, Hruska MW, Nagata Y, Hasegawa M, Gewitz A, Marsteller D. Continuous-Time Markov Population PK/PD Modeling of Longitudinal SCORE_EASI Categorical Score in Atopic Dermatitis Treated With Rocatinlimab, an Anti-OX40 Monoclonal Antibody. CPT Pharmacometrics Syst Pharmacol. 2025;14(10):1587-1597. doi:10.1002/psp4.70069"
   vignette <- "Okada_2025_rocatinlimab"
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
 

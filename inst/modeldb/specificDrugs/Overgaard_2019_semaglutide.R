@@ -13,12 +13,12 @@ Overgaard_2019_semaglutide <- function() {
       notes              = "Power effect on CL and Q (shared exponent 1.01) and on Vc and Vp (shared exponent 0.923) per Overgaard 2019 Table 4. Reference weight 85 kg per Methods (reference subject profile). Time-fixed at baseline.",
       source_name        = "WT"
     ),
-    DIAB = list(
+    DIS_DIAB = list(
       description        = "Type 2 diabetes status (glycaemic status indicator)",
       units              = "(binary)",
       type               = "binary",
       reference_category = "0 (normoglycaemia / healthy volunteer)",
-      notes              = "Maps the glycaemic-status covariate of Overgaard 2019 (normoglycaemia vs T2D) onto the canonical DIAB binary indicator. 1 = type 2 diabetes; 0 = normoglycaemia (the reference subject profile is healthy). Multiplicative effects: 1.12 on CL and 0.544 on ka per Overgaard 2019 Table 4. The cohort comprised 277 normoglycaemic and 76 T2D subjects (Table 3); only T2D was distinguished, so the canonical DIAB (which does not separate Type 1 vs Type 2) is the appropriate column.",
+      notes              = "Maps the glycaemic-status covariate of Overgaard 2019 (normoglycaemia vs T2D) onto the canonical DIS_DIAB binary indicator. 1 = type 2 diabetes; 0 = normoglycaemia (the reference subject profile is healthy). Multiplicative effects: 1.12 on CL and 0.544 on ka per Overgaard 2019 Table 4. The cohort comprised 277 normoglycaemic and 76 T2D subjects (Table 3); only T2D was distinguished, so the canonical DIS_DIAB (which does not separate Type 1 vs Type 2) is the appropriate column. Renamed from canonical DIAB to DIS_DIAB on 2026-06-19 per the canonical-register standardization audit.",
       source_name        = "T2D"
     )
   )
@@ -46,7 +46,7 @@ Overgaard_2019_semaglutide <- function() {
 
   ini({
     # Structural parameters from Overgaard 2019 Table 4 (final two-compartment model). Reference
-    # subject: healthy (DIAB = 0), 85 kg body weight, abdomen injection site, 1.34 mg/mL product.
+    # subject: healthy (DIS_DIAB = 0), 85 kg body weight, abdomen injection site, 1.34 mg/mL product.
     lka     <- log(0.0253);  label("First-order SC absorption rate constant (1/hour)")             # Overgaard 2019 Table 4 (ka = 0.0253 1/h, 1.34 mg/mL)
     lcl     <- log(0.0348);  label("Clearance at reference covariates (L/hour)")                    # Overgaard 2019 Table 4 (CL = 0.0348 L/h, 85 kg, healthy)
     lvc     <- log(3.59);    label("Central volume of distribution at reference body weight (L)")   # Overgaard 2019 Table 4 (Vc = 3.59 L, 85 kg)
@@ -58,8 +58,8 @@ Overgaard_2019_semaglutide <- function() {
     # specification), and page 654 (covariate functional forms).
     e_wt_cl_q  <- 1.01;      label("Power exponent of body weight on CL and Q (shared)")           # Overgaard 2019 Table 4 (BW on CL/Q = 1.01)
     e_wt_vc_vp <- 0.923;     label("Power exponent of body weight on Vc and Vp (shared)")          # Overgaard 2019 Table 4 (BW on Vc/Vp = 0.923)
-    e_diab_cl  <- 1.12;      label("T2D-vs-healthy multiplier on CL (1.12^DIAB)")                  # Overgaard 2019 Table 4 (T2D on CL = 1.12)
-    e_diab_ka  <- 0.544;     label("T2D-vs-healthy multiplier on ka (0.544^DIAB)")                 # Overgaard 2019 Table 4 (T2D on ka = 0.544)
+    e_diab_cl  <- 1.12;      label("T2D-vs-healthy multiplier on CL (1.12^DIS_DIAB)")              # Overgaard 2019 Table 4 (T2D on CL = 1.12)
+    e_diab_ka  <- 0.544;     label("T2D-vs-healthy multiplier on ka (0.544^DIS_DIAB)")             # Overgaard 2019 Table 4 (T2D on ka = 0.544)
 
     # IIV from Overgaard 2019 Table 4 (CV%): omega^2 = log(1 + CV^2). Single eta on absorption (ka).
     # Correlated block on (CL, Vc) with shared etas: eta_CL also drives Q, eta_V also drives Vp
@@ -90,11 +90,11 @@ Overgaard_2019_semaglutide <- function() {
     # injection site, drug product strength) lie within the 80-125% equivalence interval and are
     # excluded from this model; see vignette Assumptions and deviations for the omitted
     # injection-site (thigh) and drug-product-strength (1, 3, 10 mg/mL) terms.
-    cl <- exp(lcl + etalcl) * (WT / 85)^e_wt_cl_q  * e_diab_cl^DIAB
+    cl <- exp(lcl + etalcl) * (WT / 85)^e_wt_cl_q  * e_diab_cl^DIS_DIAB
     q  <- exp(lq  + etalcl) * (WT / 85)^e_wt_cl_q
     vc <- exp(lvc + etalvc) * (WT / 85)^e_wt_vc_vp
     vp <- exp(lvp + etalvc) * (WT / 85)^e_wt_vc_vp
-    ka <- exp(lka + etalka) * e_diab_ka^DIAB
+    ka <- exp(lka + etalka) * e_diab_ka^DIS_DIAB
 
     # Micro-constants for the two-compartment ODE system
     kel <- cl / vc

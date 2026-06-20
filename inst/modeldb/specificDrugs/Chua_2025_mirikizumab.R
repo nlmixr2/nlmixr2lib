@@ -51,7 +51,7 @@ Chua_2025_mirikizumab <- function() {
     disease_state  = "Moderately-to-severely active Crohn's disease (SES-CD >= 7, or >= 4 with isolated ileal disease; inadequate response, loss of response, or intolerance to conventional or biologic therapies).",
     dose_range     = "Induction: 900 mg IV Q4W x 3 doses. Maintenance: 300 mg SC Q4W through Week 52. Also placebo and ustekinumab active-control arms (not used for PK modeling).",
     regions        = "Global, multi-regional",
-    notes          = "VIVID-1 (NCT03926130) phase 3 treat-through study, July 2019 - October 2023. PK dataset: 5318 observations from 711 patients (628 mirikizumab-treated during induction + 83 placebo non-responders who crossed over after Week 12). Baseline mean SES-CD 12.9 (3.3-35.5); baseline mean CDAI 319 (92.4-726.3). 62.4% had prior biologic therapy, 50.5% had failed prior biologic therapy (sic from Table 1; see source). Demographics from Chua 2025 Table 1."
+    notes          = "VIVID-1 (NCT03926130) phase 3 treat-through study, July 2019 - October 2023. PK dataset: 5318 observations from 711 patients (628 mirikizumab-treated during induction + 83 placebo non-responders who crossed over after Week 12). Baseline mean SES-CD 12.9 (3.3-35.5); baseline mean SCORE_CDAI 319 (92.4-726.3). 62.4% had prior biologic therapy, 50.5% had failed prior biologic therapy (sic from Table 1; see source). Demographics from Chua 2025 Table 1."
   )
 
   ini({

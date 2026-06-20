@@ -46,8 +46,8 @@ weeks.
 | ALB on CL | Budha 2023 Eq. 5 / Table 3 (theta10) | Power: (ALB/41)^-0.457 |
 | TUMSZ on CL | Budha 2023 Eq. 5 / Table 3 (theta11) | Power: (TUMSZ/63)^0.0735 |
 | ADA on CL | Budha 2023 Eq. 5 / Table 3 (theta13) | Exponential: exp(0.111 * ADA_POS) |
-| TUMTP=GC on CL | Budha 2023 Eq. 5 / Table 3 (theta14) | Exponential: exp(0.069 * TUMTP_GC) |
-| TUMTP=cHL on CL | Budha 2023 Eq. 5 / Table 3 (theta15) | Exponential: exp(-0.216 * TUMTP_CHL) |
+| TUMTP=GC on CL | Budha 2023 Eq. 5 / Table 3 (theta14) | Exponential: exp(0.069 * TUMTP_GASTRIC) |
+| TUMTP=cHL on CL | Budha 2023 Eq. 5 / Table 3 (theta15) | Exponential: exp(-0.216 * TUMTP_HODGKIN_CLASSICAL) |
 | WT on Vc | Budha 2023 Eq. 6 / Table 3 (theta8) | Power: (WT/65)^0.397 |
 | SEX on Vc | Budha 2023 Eq. 6 / Table 3 (theta9) | Exponential: exp(-0.116 * SEXF) |
 | AGE on Vc | Budha 2023 Eq. 6 / Table 3 (theta12) | Power: (AGE/60)^0.0966 |
@@ -62,7 +62,7 @@ weeks.
 | --- | --- |
 | `SEX` (character "Female" / "Male") | `SEXF` (1 = female, 0 = male) |
 | `ADA` (Positive / Negative) | `ADA_POS` (1 = ADA-positive, 0 = negative) |
-| `TUMTP` (categorical: cHL, GC, NSCLC, …) | split into `TUMTP_CHL` and `TUMTP_GC` indicators; reference = all other tumor types |
+| `TUMTP` (categorical: cHL, GC, NSCLC, …) | split into `TUMTP_HODGKIN_CLASSICAL` and `TUMTP_GASTRIC` indicators; reference = all other tumor types |
 | `TUMSZ` | `TUMSZ` (baseline tumor size, mm) |
 
 See `inst/references/covariate-columns.md` for the canonical register.
@@ -107,14 +107,14 @@ tumtp_p <- c(
   Other = 0.108
 )
 TUMTP <- sample(names(tumtp_p), n_subj, replace = TRUE, prob = tumtp_p)
-TUMTP_CHL <- as.integer(TUMTP == "cHL")
-TUMTP_GC  <- as.integer(TUMTP == "GC")
+TUMTP_HODGKIN_CLASSICAL <- as.integer(TUMTP == "cHL")
+TUMTP_GASTRIC  <- as.integer(TUMTP == "GC")
 
 pop <- data.frame(
   ID        = seq_len(n_subj),
   WT, AGE, ALB, TUMSZ,
   SEXF, ADA_POS,
-  TUMTP, TUMTP_CHL, TUMTP_GC,
+  TUMTP, TUMTP_HODGKIN_CLASSICAL, TUMTP_GASTRIC,
   # Per-subject grouping label carried through to rxSolve via `keep`
   treatment = ifelse(ADA_POS == 1, "ADA-positive", "ADA-negative")
 )

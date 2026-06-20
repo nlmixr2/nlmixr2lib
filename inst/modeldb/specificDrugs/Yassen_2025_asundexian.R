@@ -44,12 +44,12 @@ Yassen_2025_asundexian <- function() {
       notes              = "Power scaling on CL/F with reference 77 mL/min/1.73 m^2 (typical participant in PACIFIC-STROKE). Computed from serum creatinine via the CKD-EPI formula per the source paper.",
       source_name        = "EGFR"
     ),
-    CYP3A4_INH = list(
+    CONMED_CYP3A4_INH = list(
       description        = "Concomitant CYP3A4 inhibitor coadministration indicator (1 = on inhibitor, 0 = none)",
       units              = "(binary)",
       type               = "binary",
       reference_category = "0 (no CYP3A4 inhibitor coadministration)",
-      notes              = "Pools weak and moderate CYP3A4 inhibitors into the CYP3A4_INH = 1 category. Strong CYP3A4 inhibitors were a Phase II exclusion criterion; only 0.6% of participants received a strong inhibitor in Phase I, and the source paper combined all three strength tiers into a single covariate after testing weak / moderate alone showed no separable signal. Proportional-shift effect on CL/F (-5.3%) when CYP3A4_INH = 1.",
+      notes              = "Pools weak and moderate CYP3A4 inhibitors into the CONMED_CYP3A4_INH = 1 category. Strong CYP3A4 inhibitors were a Phase II exclusion criterion; only 0.6% of participants received a strong inhibitor in Phase I, and the source paper combined all three strength tiers into a single covariate after testing weak / moderate alone showed no separable signal. Proportional-shift effect on CL/F (-5.3%) when CONMED_CYP3A4_INH = 1. Renamed from canonical CYP3A4_INH to CONMED_CYP3A4_INH on 2026-06-19 per the canonical-register standardization audit.",
       source_name        = "CYP3AI"
     )
   )
@@ -118,7 +118,7 @@ Yassen_2025_asundexian <- function() {
           (WT   / ref_wt  )^e_wt_cl   *
           (1 + e_sexf_cl       * SEXF) *
           (CRCL / ref_crcl)^e_crcl_cl *
-          (1 + e_cyp3a4_inh_cl * CYP3A4_INH)
+          (1 + e_cyp3a4_inh_cl * CONMED_CYP3A4_INH)
     vc <- exp(lvc + etalvc) *
           (AGE / ref_age)^e_age_vc *
           (WT  / ref_wt )^e_wt_vc  *

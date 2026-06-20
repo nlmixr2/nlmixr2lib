@@ -74,7 +74,7 @@ Lu_2014_sglt_qsp <- function() {
       ),
       source_name        = "Plasma SGLT-inhibitor concentration"
     ),
-    T2DM = list(
+    DIS_DIAB = list(
       description        = "Type-2 diabetes mellitus indicator (1 = T2DM, 0 = healthy)",
       units              = "(binary)",
       type               = "binary",
@@ -88,12 +88,13 @@ Lu_2014_sglt_qsp <- function() {
         "2014 Methods 'Model Parameters and Calibration' section. All",
         "other SGLT-kinetics parameters (Vmax1, Km1, Km2, Ki1, Ki2) are",
         "held common between healthy and T2DM per the paper. The",
-        "canonical T2DM column carries 1 = T2DM patient, 0 = healthy",
-        "control (inst/references/covariate-columns.md). Healthy",
-        "subjects in DeFronzo et al. (2013) carry T2DM = 0; T2DM",
-        "subjects in DeFronzo, Polidori, and Wolf carry T2DM = 1;",
-        "Mogensen (1971) diabetics are coded as T2DM = 1 for this model",
-        "even though Mogensen pre-dates the modern T1DM/T2DM",
+        "canonical DIS_DIAB column carries 1 = T2DM patient, 0 = healthy",
+        "control (inst/references/covariate-columns.md; pre-2026-06-19",
+        "the parallel T2DM canonical was merged into DIS_DIAB). Healthy",
+        "subjects in DeFronzo et al. (2013) carry DIS_DIAB = 0; T2DM",
+        "subjects in DeFronzo, Polidori, and Wolf carry DIS_DIAB = 1;",
+        "Mogensen (1971) diabetics are coded as DIS_DIAB = 1 for this",
+        "model even though Mogensen pre-dates the modern T1DM/T2DM",
         "classification (Lu 2014 does not distinguish them for the",
         "purpose of Vmax2 scaling)."
       ),
@@ -247,7 +248,7 @@ Lu_2014_sglt_qsp <- function() {
     # ---------------------------------------------------------------------
     vmax1     <- exp(lvmax1)
     vmax2_typ <- exp(lvmax2)
-    vmax2     <- vmax2_typ * (1 + e_t2dm_vmax2 * T2DM)
+    vmax2     <- vmax2_typ * (1 + e_t2dm_vmax2 * DIS_DIAB)
     km1       <- exp(lkm1)
     km2       <- exp(lkm2)
     ki1       <- exp(lki1)

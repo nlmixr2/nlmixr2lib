@@ -29,7 +29,7 @@ Akbar_2025_voriconazole <- function() {
       notes              = "Additive-fractional +18.5% effect on CL (Eq 3 of Akbar 2025). Source category 'Sarcoma' (n = 9, 10.2% of cohort). The 95% CI on the coefficient spans zero (-0.403 to 2.01 per Table 2 bootstrap row labelled CL-DISEASE 3, where Table 2 footnotes 'd' and 'e' are mislabelled relative to the equation text -- see vignette Errata).",
       source_name        = "DISEASE == 'Sarcoma'"
     ),
-    TUMTP_BC = list(
+    TUMTP_BREAST = list(
       description        = "Breast-cancer indicator",
       units              = "(binary)",
       type               = "binary",
@@ -125,7 +125,7 @@ Akbar_2025_voriconazole <- function() {
     disease_factor <- 1 +
       e_lymph_cl * TUMTP_LYMPH +
       e_sarc_cl  * TUMTP_SARC +
-      e_bc_cl    * TUMTP_BC +
+      e_bc_cl    * TUMTP_BREAST +
       e_myelo_cl * TUMTP_MYELO +
       e_glio_cl  * TUMTP_GLIO
 

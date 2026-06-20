@@ -50,23 +50,23 @@ Every parameter and equation traces back to the DDMORE bundle for `DDMODEL000002
 |----------------------|-------|-----------------|
 | `lcl  = log(3570)` (CLP, L/h) | 3570 | `Executable_run1.mod` `$THETA TH 1` (CLP) |
 | `lvc  = log(1700)` (V2, L)    | 1700 | `Executable_run1.mod` `$THETA TH 2` (V2)  |
-| `lcl_dha = log(190)` (CLM, L/h) | 190 | `Executable_run1.mod` `$THETA TH 3` (CLM) |
-| `lvc_dha = log(267)` (V3, L) | 267  | `Executable_run1.mod` `$THETA TH 4` (V3)  |
+| `lcl_dihydroart = log(190)` (CLM, L/h) | 190 | `Executable_run1.mod` `$THETA TH 3` (CLM) |
+| `lvc_dihydroart = log(267)` (V3, L) | 267  | `Executable_run1.mod` `$THETA TH 4` (V3)  |
 | `lmtt = log(0.832)` (MTT, h) | 0.832 | `Executable_run1.mod` `$THETA TH 5` (MTT) |
 | `lfdepot = fixed(log(1))` (F1) | 1 (fixed) | `Executable_run1.mod` `$THETA TH 6` `1 FIX` |
-| `e_preg_cl_dha` | -0.214 | `Executable_run1.mod` `$THETA TH 7` (CLMPREG1) |
+| `e_preg_cl_dihydroart` | -0.214 | `Executable_run1.mod` `$THETA TH 7` (CLMPREG1) |
 | `e_alt_fdepot`  | +0.0215 | `Executable_run1.mod` `$THETA TH 8` (F1ALT1) |
 | `e_lnpc_fdepot` | +0.138 | `Executable_run1.mod` `$THETA TH 9` (F1LNPC1) |
 | `etalcl ~ 0.0672` | 0.0672 (variance, log-scale) | `Executable_run1.mod` `$OMEGA(1,1)` (1.CL) |
-| `etalcl_dha ~ 0.00809` | 0.00809 | `Executable_run1.mod` `$OMEGA(3,3)` (3.CLM_) |
+| `etalcl_dihydroart ~ 0.00809` | 0.00809 | `Executable_run1.mod` `$OMEGA(3,3)` (3.CLM_) |
 | `etalmtt ~ 0.32` | 0.32 | `Executable_run1.mod` `$OMEGA(5,5)` (5.MTT_) |
 | `etalfdepot ~ 0.0887` | 0.0887 | `Executable_run1.mod` `$OMEGA(6,6)` (8.F1) |
 | `propSd     = sqrt(0.892)` | sqrt(0.892) ~= 0.945 | `Executable_run1.mod` `$SIGMA(1,1)` (RUV_ARS) |
-| `propSd_dha = sqrt(0.66)`  | sqrt(0.66)  ~= 0.812 | `Executable_run1.mod` `$SIGMA(2,2)` (RUV_DHA) |
+| `propSd_dihydroart = sqrt(0.66)`  | sqrt(0.66)  ~= 0.812 | `Executable_run1.mod` `$SIGMA(2,2)` (RUV_DHA) |
 | Allometric scaling (CL exponent 0.75, V exponent 1, ref 52 kg) | -- | `Executable_run1.mod` `$PK` block (`TVCLP = THETA(1)*((WT/52)**0.75)`, etc.) |
 | 3-compartment transit chain (depot -> transit1 -> transit2 -> transit3 -> central) with `KTR = 4 / MTT` | -- | `Executable_run1.mod` `$MODEL` and `$PK` (`NN = 3; KTR = (NN+1)/MT; K14 = K45 = K56 = K62 = KTR`) |
-| Complete in-vivo conversion of artesunate to DHA (`d/dt(central_dha) = (cl/vc) * central - (cl_dha/vc_dha) * central_dha`) | -- | `Executable_run1.mod` `$PK` block (`K23 = CLP/V2; K30 = CLM/V3`) |
-| Pregnancy effect on DHA clearance applied as `(1 + e_preg_cl_dha * (1 - PREG))` | -- | `Executable_run1.mod` `$PK` block (`IF (PREG.EQ.1) CLMPREG = 1; IF (PREG.EQ.0) CLMPREG = (1 + THETA(7))`) |
+| Complete in-vivo conversion of artesunate to DHA (`d/dt(central_dihydroart) = (cl/vc) * central - (cl_dihydroart/vc_dihydroart) * central_dihydroart`) | -- | `Executable_run1.mod` `$PK` block (`K23 = CLP/V2; K30 = CLM/V3`) |
+| Pregnancy effect on DHA clearance applied as `(1 + e_preg_cl_dihydroart * (1 - PREG))` | -- | `Executable_run1.mod` `$PK` block (`IF (PREG.EQ.1) CLMPREG = 1; IF (PREG.EQ.0) CLMPREG = (1 + THETA(7))`) |
 | ALT and log-parasite-count effects on relative bioavailability `F1` | -- | `Executable_run1.mod` `$PK` block (`F1ALT = 1 + THETA(8)*(ALT - 20.75); F1LNPC = 1 + THETA(9)*(LNPC - 5.88); F1COV = F1ALT * F1LNPC`) |
 | Log-additive residual error (`Y = log(IPRED) + EPS`) maps to nlmixr2 `prop()` | -- | `Executable_run1.mod` `$ERROR` block; convention rule from `references/naming-conventions.md` |
 
@@ -114,12 +114,12 @@ build_events <- function(subjects, obs_times, dose_amt) {
       treatment = s$treatment, WT = s$WT, PREG = s$PREG,
       ALT = s$ALT, LNPC = s$LNPC
     )
-    obs_dha <- data.frame(
+    obs_dihydroart <- data.frame(
       id = s$id, time = obs_times, evid = 0L, amt = 0, cmt = 8L,
       treatment = s$treatment, WT = s$WT, PREG = s$PREG,
       ALT = s$ALT, LNPC = s$LNPC
     )
-    out[[i]] <- rbind(dose_row, obs_art, obs_dha)
+    out[[i]] <- rbind(dose_row, obs_art, obs_dihydroart)
   }
   events <- dplyr::bind_rows(out)
   events <- events[order(events$id, events$time, -events$evid, events$cmt),]
@@ -170,11 +170,11 @@ The Birgersson 2019 publication PDF is not on disk in this worktree; the figure 
 
 ```{r figure-typical-trajectories}
 sim_typical |>
-  tidyr::pivot_longer(c(Cc, Cc_dha), names_to = "analyte",
+  tidyr::pivot_longer(c(Cc, Cc_dihydroart), names_to = "analyte",
                       values_to = "conc_nM") |>
   dplyr::mutate(analyte = dplyr::recode(analyte,
                                         Cc     = "Artesunate",
-                                        Cc_dha = "Dihydroartemisinin")) |>
+                                        Cc_dihydroart = "Dihydroartemisinin")) |>
   dplyr::filter(time > 0, conc_nM > 0) |>
   ggplot(aes(time, conc_nM, colour = treatment, linetype = analyte)) +
   geom_line(linewidth = 0.8) +
@@ -191,11 +191,11 @@ sim_typical |>
 
 ```{r figure-stochastic}
 sim |>
-  tidyr::pivot_longer(c(Cc, Cc_dha), names_to = "analyte",
+  tidyr::pivot_longer(c(Cc, Cc_dihydroart), names_to = "analyte",
                       values_to = "conc_nM") |>
   dplyr::mutate(analyte = dplyr::recode(analyte,
                                         Cc     = "Artesunate",
-                                        Cc_dha = "Dihydroartemisinin")) |>
+                                        Cc_dihydroart = "Dihydroartemisinin")) |>
   dplyr::filter(time > 0, conc_nM > 0) |>
   dplyr::group_by(time, treatment, analyte) |>
   dplyr::summarise(
@@ -216,7 +216,7 @@ sim |>
 
 # PKNCA validation
 
-Single-dose, dense-sampling NCA per the recipe in `references/pknca-recipes.md`. The treatment grouping variable carries the pregnancy strata so the per-arm Cmax / Tmax / AUC can be summarized side-by-side. Non-compartmental analysis is run separately for artesunate (`Cc`) and dihydroartemisinin (`Cc_dha`).
+Single-dose, dense-sampling NCA per the recipe in `references/pknca-recipes.md`. The treatment grouping variable carries the pregnancy strata so the per-arm Cmax / Tmax / AUC can be summarized side-by-side. Non-compartmental analysis is run separately for artesunate (`Cc`) and dihydroartemisinin (`Cc_dihydroart`).
 
 ```{r pknca-art}
 sim_nca_art <- sim |>
@@ -249,15 +249,15 @@ nca_art <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj_art, dose_obj,
 ```
 
 ```{r pknca-dha}
-sim_nca_dha <- sim |>
-  dplyr::filter(!is.na(Cc_dha)) |>
-  dplyr::select(id, time, Cc_dha, treatment) |>
+sim_nca_dihydroart <- sim |>
+  dplyr::filter(!is.na(Cc_dihydroart)) |>
+  dplyr::select(id, time, Cc_dihydroart, treatment) |>
   dplyr::group_by(id, time, treatment) |>
-  dplyr::summarise(Cc_dha = mean(Cc_dha), .groups = "drop")
+  dplyr::summarise(Cc_dihydroart = mean(Cc_dihydroart), .groups = "drop")
 
-conc_obj_dha <- PKNCA::PKNCAconc(sim_nca_dha, Cc_dha ~ time | treatment + id,
+conc_obj_dihydroart <- PKNCA::PKNCAconc(sim_nca_dihydroart, Cc_dihydroart ~ time | treatment + id,
                                  concu = "nmol/L", timeu = "h")
-nca_dha <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj_dha, dose_obj,
+nca_dihydroart <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj_dihydroart, dose_obj,
                                           intervals = intervals))
 ```
 
@@ -281,7 +281,7 @@ knitr::kable(art_summary,
 ```
 
 ```{r pknca-summary-dha}
-nca_dha_df <- as.data.frame(nca_dha$result)
+nca_dha_df <- as.data.frame(nca_dihydroart$result)
 dha_summary <- nca_dha_df |>
   dplyr::filter(PPTESTCD %in% c("cmax", "tmax", "auclast",
                                 "aucinf.obs", "half.life")) |>
@@ -295,7 +295,7 @@ dha_summary <- nca_dha_df |>
   tidyr::pivot_wider(names_from = treatment,
                      values_from = c(median, p05, p95))
 knitr::kable(dha_summary,
-             caption = "Simulated NCA -- dihydroartemisinin (Cc_dha), single oral 200 mg dose, by pregnancy status (median [5%-95%]).",
+             caption = "Simulated NCA -- dihydroartemisinin (Cc_dihydroart), single oral 200 mg dose, by pregnancy status (median [5%-95%]).",
              digits = 3)
 ```
 
@@ -334,20 +334,20 @@ trapezoid <- function(x, y) {
 }
 
 auc_art <- trapezoid(sim_bundle$time, sim_bundle$Cc)
-auc_dha <- trapezoid(sim_bundle$time, sim_bundle$Cc_dha)
+auc_dihydroart <- trapezoid(sim_bundle$time, sim_bundle$Cc_dihydroart)
 
 # Closed-form expectations (under complete in-vivo conversion of artesunate to
 # DHA and a fixed F = 1 with admission ALT = 20.3 ~= 20.75 and LNPC = 6.697):
 F_admin   <- (1 + 0.0215 * (20.3   - 20.75)) * (1 + 0.138 * (6.697 - 5.88))
 cl_art    <- 3570 * (51.5 / 52)^0.75            # pregnant -> no PREG factor on artesunate CL
-cl_dha    <- 190  * (51.5 / 52)^0.75            # pregnant reference (PREG = 1)
+cl_dihydroart    <- 190  * (51.5 / 52)^0.75            # pregnant reference (PREG = 1)
 auc_art_pred <- F_admin * 520264 / cl_art
-auc_dha_pred <- F_admin * 520264 / cl_dha
+auc_dha_pred <- F_admin * 520264 / cl_dihydroart
 
 cat(sprintf(
   "Bundle subject (PREG=1, WT=51.5 kg, ALT=20.3 U/L, LNPC=6.697)\n  AUC0-24  artesunate: simulated %.0f vs closed-form %.0f nmol*h/L (%.1f%% diff)\n  AUC0-24  DHA       : simulated %.0f vs closed-form %.0f nmol*h/L (%.1f%% diff)\n",
   auc_art, auc_art_pred, 100 * (auc_art - auc_art_pred) / auc_art_pred,
-  auc_dha, auc_dha_pred, 100 * (auc_dha - auc_dha_pred) / auc_dha_pred
+  auc_dihydroart, auc_dha_pred, 100 * (auc_dihydroart - auc_dha_pred) / auc_dha_pred
 ))
 ```
 
@@ -358,8 +358,8 @@ The simulated AUCs match the closed-form expectations under the structural assum
 * **Source publication PDF not on disk.** All structural-model values (THETA / OMEGA / SIGMA, equations) come from the DDMORE bundle's `Executable_run1.mod`. Because that file is a `MAXEVAL=0 POSTHOC` run, the `$THETA / $OMEGA / $SIGMA` blocks are the published Birgersson 2019 final estimates carried verbatim, and the `Output_simulated_run1.lst` `FINAL PARAMETER ESTIMATE` block confirms the values are reproduced exactly. Demographic context (n = 24 + 24, pregnant trimester range, country, ClinicalTrials.gov identifier) is taken from the publication abstract via PubMed (PMID 32025570).
 * **No `Output_real_*.lst` shipped.** The DDMORE bundle ships only the simulated-data listing. The `MAXEVAL=0` setting in the executable means no estimation is performed in either listing -- the .mod's THETA / OMEGA / SIGMA blocks are the authoritative source.
 * **No `Model_Accomodations.text` file.** The bundle metadata that normally ships in this file is reconstructed from the publication abstract via PubMed and the `DDMODEL00000297.rdf` description string.
-* **Pregnancy reference category encoded source-faithfully.** The Birgersson 2019 source NONMEM `.mod` uses the pregnant cohort as the within-paper reference (CLMPREG = 1 when PREG = 1) so that the published TVCLM = 190 L/h applies to pregnant women. The package canonical for `PREG` (`inst/references/covariate-columns.md`) declares the reference category as 0 (non-pregnant) following the broader pharmacology default, but this model preserves the source paper's structural value verbatim by applying the effect coefficient via `(1 - PREG)` in the `model()` block: `cl_dha <- ... * (1 + e_preg_cl_dha * (1 - PREG))` with `e_preg_cl_dha = -0.214`. Pregnant simulations match the published 190 L/h structural value; non-pregnant simulations apply the 0.786 multiplier.
+* **Pregnancy reference category encoded source-faithfully.** The Birgersson 2019 source NONMEM `.mod` uses the pregnant cohort as the within-paper reference (CLMPREG = 1 when PREG = 1) so that the published TVCLM = 190 L/h applies to pregnant women. The package canonical for `PREG` (`inst/references/covariate-columns.md`) declares the reference category as 0 (non-pregnant) following the broader pharmacology default, but this model preserves the source paper's structural value verbatim by applying the effect coefficient via `(1 - PREG)` in the `model()` block: `cl_dihydroart <- ... * (1 + e_preg_cl_dihydroart * (1 - PREG))` with `e_preg_cl_dihydroart = -0.214`. Pregnant simulations match the published 190 L/h structural value; non-pregnant simulations apply the 0.786 multiplier.
 * **Log-additive residual error mapped to nlmixr2 `prop()`.** The source `.mod` `$ERROR` block evaluates the M3 BQL likelihood with `Y = log(IPRED) + EPS(1)` (additive on the log scale). Per the convention in `references/naming-conventions.md`, NONMEM additive-on-log-scale residual error maps to proportional residual error in nlmixr2's linear space. The `propSd` value is the SD on log scale, `sqrt(variance)`. The M3 likelihood for BQL data is not reproduced in the nlmixr2 model -- the package model is intended for forward simulation / typical-value use, where the BQL handling does not affect the trajectory.
-* **No IIV on artesunate or DHA volume of distribution.** The source `.mod` declares `$OMEGA(2,2) 0 FIX` and `$OMEGA(4,4) 0 FIX` (IIV on V2 and V3 fixed at zero). Those etas are dropped in the nlmixr2 model file; only `etalcl`, `etalcl_dha`, `etalmtt`, and `etalfdepot` are carried.
+* **No IIV on artesunate or DHA volume of distribution.** The source `.mod` declares `$OMEGA(2,2) 0 FIX` and `$OMEGA(4,4) 0 FIX` (IIV on V2 and V3 fixed at zero). Those etas are dropped in the nlmixr2 model file; only `etalcl`, `etalcl_dihydroart`, `etalmtt`, and `etalfdepot` are carried.
 * **PREG and LNPC are newly registered covariate canonicals.** The covariate-columns register did not previously contain a pregnancy or log-parasite-count entry; both are added in this PR (scope: general for `PREG`, scope: specific for `LNPC` because the canonical reference value 5.88 is the Birgersson 2019 cohort median).
 * **Simulated dataset cohort-median demographics are nominal.** The DDMORE-shipped `Simulated_run1.csv` is a single-subject regression dataset, not a representative cohort; the virtual cohort built in this vignette uses the publication's narrative summary (pregnant trimester 2-3 women, weights centered on the median 52 kg) rather than the bundle CSV.

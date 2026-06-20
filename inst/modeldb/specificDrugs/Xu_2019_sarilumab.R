@@ -29,7 +29,7 @@ Xu_2019_sarilumab <- function() {
       notes              = "Time-varying ADA indicator on CLO/F (primary covariate assessment in Xu 2019). The typical patient is ADA-negative.",
       source_name        = "ADA"
     ),
-    FORM_DP2 = list(
+    FORM_SAR_DP2 = list(
       description        = "Sarilumab drug product 2 indicator (DP2 formulation)",
       units              = "(binary)",
       type               = "binary",
@@ -133,9 +133,9 @@ Xu_2019_sarilumab <- function() {
     cl <- exp(lcl + etalcl) *
           (WT / 71)^e_wt_cl *
           e_ada_cl^ADA_POS *
-          e_dp2_cl^FORM_DP2 *
+          e_dp2_cl^FORM_SAR_DP2 *
           e_sexf_cl^SEXF
-    ka <- exp(lka + etalka) * e_dp2_ka^FORM_DP2
+    ka <- exp(lka + etalka) * e_dp2_ka^FORM_SAR_DP2
     q  <- exp(lq)
     vp <- exp(lvp)
 

@@ -88,22 +88,22 @@ collects them in one place for review.
 | `lka` -> Ka = 3.85 1/h | log(3.85) | Table 2 (%RSE 3.61, typical value at FED = 0) |
 | `lcl` -> CL/F = 1190 L/h | log(1190) | Table 2 (%RSE 4.20) |
 | `lvc` -> V2/F = 1210 L | log(1210) | Table 2 (%RSE 5.77) |
-| `lcl_dha` -> CLM/F = 93.7 L/h at WT = 61.5 kg | log(93.7) | Table 2 (%RSE 3.30) |
-| `lvc_dha` -> V3/F = 97.1 L | log(97.1) | Table 2 (%RSE 4.85) |
-| `lq_dha` -> Q/F = 5.74 L/h | log(5.74) | Table 2 (%RSE 12.8) |
-| `lvp_dha` -> V4/F = 18.5 L | log(18.5) | Table 2 (%RSE 10.6) |
+| `lcl_dihydroart` -> CLM/F = 93.7 L/h at WT = 61.5 kg | log(93.7) | Table 2 (%RSE 3.30) |
+| `lvc_dihydroart` -> V3/F = 97.1 L | log(97.1) | Table 2 (%RSE 4.85) |
+| `lq_dihydroart` -> Q/F = 5.74 L/h | log(5.74) | Table 2 (%RSE 12.8) |
+| `lvp_dihydroart` -> V4/F = 18.5 L | log(18.5) | Table 2 (%RSE 10.6) |
 | `e_fed_ka` -> -0.84 (multiplicative, fed reduces Ka 84%) | -0.84 | Table 2 (theta_FOOD-Ka, %RSE 2.32); Results p.7 (covariate equation Ka = 3.85 * (1 - 0.84 * FOOD)) |
-| `e_wt_cl_dha` -> 1.9 L/h per kg above 61.5 kg | 1.9 | Table 2 (theta_WT-CLM/F, %RSE 16.3); Results p.7 (CLM/F = 93.7 + 1.9 * (WT - 61.5)) |
+| `e_wt_cl_dihydroart` -> 1.9 L/h per kg above 61.5 kg | 1.9 | Table 2 (theta_WT-CLM/F, %RSE 16.3); Results p.7 (CLM/F = 93.7 + 1.9 * (WT - 61.5)) |
 | Reference body weight | 61.5 kg | Table 1 combined-cohort median; Results p.7 covariate centering |
 | IIV `var(etalcl)` | 0.131 (CV 36.2%) | Table 2 (eta_CL_AS, %RSE 17.8) |
 | IIV `var(etalvc)` | 0.330 (CV 57.4%) | Table 2 (eta_V2_AS, %RSE 20.9) |
 | IIV `var(etalka)` | 1.26 (CV 112%) | Table 2 (eta_Ka, %RSE 15.4) |
-| IIV `var(etalcl_dha)` | 0.0786 (CV 28.0%) | Table 2 (eta_CL_DHA, %RSE 22.5) |
-| IIV `var(etalvc_dha)` | 0.0901 (CV 30.0%) | Table 2 (eta_V3_DHA, %RSE 36.0) |
+| IIV `var(etalcl_dihydroart)` | 0.0786 (CV 28.0%) | Table 2 (eta_CL_DHA, %RSE 22.5) |
+| IIV `var(etalvc_dihydroart)` | 0.0901 (CV 30.0%) | Table 2 (eta_V3_DHA, %RSE 36.0) |
 | No IIV on Q/F or V4/F | n/a | Results p.7 ("Fixing the variance of the random effects for Q/F and V4/F to zero had little influence on the OFV") |
 | Diagonal Omega (no IIV correlations) | n/a | Methods p.4 ("A diagonal covariance matrix was modelled, as the data did not support the implementation of a full variance-covariance matrix") |
 | Residual `propSd` (AS) | 0.375 | Table 2 (RV AS = 37.5% CV, %RSE 9.73; log-additive in source -> proportional in linear nlmixr2) |
-| Residual `propSd_dha` | 0.282 | Table 2 (RV DHA = 28.2% CV, %RSE 11.2) |
+| Residual `propSd_dihydroart` | 0.282 | Table 2 (RV DHA = 28.2% CV, %RSE 11.2) |
 
 # Virtual cohort
 
@@ -183,7 +183,7 @@ sim <- rxode2::rxSolve(
   as.data.frame() |>
   dplyr::mutate(
     Cc_ng_per_mL     = Cc     * 1000,
-    Cc_dha_ng_per_mL = Cc_dha * 1000
+    Cc_dha_ng_per_mL = Cc_dihydroart * 1000
   )
 ```
 
@@ -209,7 +209,7 @@ sim_typical <- rxode2::rxSolve(
   as.data.frame() |>
   dplyr::mutate(
     Cc_ng_per_mL     = Cc     * 1000,
-    Cc_dha_ng_per_mL = Cc_dha * 1000
+    Cc_dha_ng_per_mL = Cc_dihydroart * 1000
   )
 ```
 
@@ -231,9 +231,9 @@ vpc_df <- sim |>
     Q05_as  = stats::quantile(Cc_ng_per_mL,     0.05, na.rm = TRUE),
     Q50_as  = stats::quantile(Cc_ng_per_mL,     0.50, na.rm = TRUE),
     Q95_as  = stats::quantile(Cc_ng_per_mL,     0.95, na.rm = TRUE),
-    Q05_dha = stats::quantile(Cc_dha_ng_per_mL, 0.05, na.rm = TRUE),
-    Q50_dha = stats::quantile(Cc_dha_ng_per_mL, 0.50, na.rm = TRUE),
-    Q95_dha = stats::quantile(Cc_dha_ng_per_mL, 0.95, na.rm = TRUE),
+    Q05_dihydroart = stats::quantile(Cc_dha_ng_per_mL, 0.05, na.rm = TRUE),
+    Q50_dihydroart = stats::quantile(Cc_dha_ng_per_mL, 0.50, na.rm = TRUE),
+    Q95_dihydroart = stats::quantile(Cc_dha_ng_per_mL, 0.95, na.rm = TRUE),
     .groups = "drop"
   )
 
@@ -243,7 +243,7 @@ vpc_long <- dplyr::bind_rows(
                      Q05 = Q05_as,  Q50 = Q50_as,  Q95 = Q95_as),
   vpc_df |>
     dplyr::transmute(time, species = "Dihydroartemisinin (DHA)",
-                     Q05 = Q05_dha, Q50 = Q50_dha, Q95 = Q95_dha)
+                     Q05 = Q05_dihydroart, Q50 = Q50_dihydroart, Q95 = Q95_dihydroart)
 )
 
 ggplot(vpc_long, aes(time, Q50)) +
@@ -329,7 +329,7 @@ sim_wt <- rxode2::rxSolve(
   keep   = c("cohort", "WT", "FED")
 ) |>
   as.data.frame() |>
-  dplyr::mutate(Cc_dha_ng_per_mL = Cc_dha * 1000)
+  dplyr::mutate(Cc_dha_ng_per_mL = Cc_dihydroart * 1000)
 
 ggplot(sim_wt |> dplyr::filter(time > 0),
        aes(time, Cc_dha_ng_per_mL, colour = cohort)) +
@@ -383,16 +383,16 @@ knitr::kable(
 ```
 
 ```{r pknca-dha}
-sim_nca_dha <- sim |>
-  dplyr::filter(!is.na(Cc_dha)) |>
-  dplyr::select(id, time, Cc_dha = Cc_dha_ng_per_mL, cohort)
+sim_nca_dihydroart <- sim |>
+  dplyr::filter(!is.na(Cc_dihydroart)) |>
+  dplyr::select(id, time, Cc_dihydroart = Cc_dha_ng_per_mL, cohort)
 
-conc_dha <- PKNCA::PKNCAconc(sim_nca_dha, Cc_dha ~ time | cohort + id,
+conc_dihydroart <- PKNCA::PKNCAconc(sim_nca_dihydroart, Cc_dihydroart ~ time | cohort + id,
                              concu = "ng/mL", timeu = "h")
-nca_data_dha <- PKNCA::PKNCAdata(conc_dha, dose_obj, intervals = intervals)
-nca_res_dha  <- PKNCA::pk.nca(nca_data_dha)
+nca_data_dihydroart <- PKNCA::PKNCAdata(conc_dihydroart, dose_obj, intervals = intervals)
+nca_res_dihydroart  <- PKNCA::pk.nca(nca_data_dihydroart)
 knitr::kable(
-  summary(nca_res_dha),
+  summary(nca_res_dihydroart),
   caption = "Simulated NCA parameters (DHA) by cohort."
 )
 ```
@@ -454,10 +454,10 @@ narrative checks exactly.
   with AS dose pre-converted to nmols (Methods p.4); this
   implementation tracks amounts in mass (mg) and applies the
   mole-for-mole AS -> DHA conversion as the MW ratio
-  (`mw_dha / mw_ars = 284.9 / 384.4 = 0.7411`) at the metabolite-
+  (`mw_dihydroart / mw_ars = 284.9 / 384.4 = 0.7411`) at the metabolite-
   formation step. Apparent volumes (L) and clearances (L/h) are
   unit-invariant between mass and molar amount, so the published
-  Table 2 values apply directly. Multiplying `Cc` and `Cc_dha` by
+  Table 2 values apply directly. Multiplying `Cc` and `Cc_dihydroart` by
   1000 gives ng/mL, which is the unit the paper uses in its narrative.
 
 * **Bioavailability.** The paper estimates apparent CL/F and V/F
@@ -487,7 +487,7 @@ narrative checks exactly.
   and that fixing them "had little influence on the OFV" and was
   "essential for the model to minimize successfully and to calculate
   the covariance matrix of the estimates" (Results p.7). The packaged
-  model accordingly omits `etalq_dha` and `etalvp_dha`.
+  model accordingly omits `etalq_dihydroart` and `etalvp_dihydroart`.
 
 * **Diagonal Omega.** The source paper used a diagonal IIV
   covariance matrix because "the data did not support the

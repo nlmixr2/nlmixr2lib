@@ -92,7 +92,7 @@ Lacy_2018_cabozantinib <- function() {
       notes              = "Time-fixed. Multiplicative fractional effect on CL/F (+0.216) and Vc/F (-0.569). Lacy 2018 Table 3. Reference = healthy volunteer. GB patients accounted for 39 / 1534 = 2.5% of the cohort (Study 201).",
       source_name        = "POP"
     ),
-    TUMTP_OTH = list(
+    TUMTP_OTHER = list(
       description        = "Heterogeneous 'other malignancy' pool indicator",
       units              = "(binary)",
       type               = "binary",
@@ -269,13 +269,13 @@ Lacy_2018_cabozantinib <- function() {
                 e_tumtp_hrpc_cl * TUMTP_HRPC +
                 e_tumtp_mtc_cl  * TUMTP_MTC  +
                 e_tumtp_glio_cl * TUMTP_GLIO +
-                e_tumtp_oth_cl  * TUMTP_OTH
+                e_tumtp_oth_cl  * TUMTP_OTHER
     vc_tumtp <- 1 +
                 e_tumtp_rcc_vc  * TUMTP_RCC  +
                 e_tumtp_hrpc_vc * TUMTP_HRPC +
                 e_tumtp_mtc_vc  * TUMTP_MTC  +
                 e_tumtp_glio_vc * TUMTP_GLIO +
-                e_tumtp_oth_vc  * TUMTP_OTH
+                e_tumtp_oth_vc  * TUMTP_OTHER
 
     ka_form  <- 1 + e_form_capsule_ka * FORM_CAPSULE
     f_form   <- 1 + e_form_capsule_f  * FORM_CAPSULE

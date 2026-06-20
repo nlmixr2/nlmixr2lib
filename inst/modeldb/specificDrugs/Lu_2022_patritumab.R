@@ -33,28 +33,28 @@ Lu_2022_patritumab <- function() {
       notes              = "Time-fixed. Multiplicative fractional effect e_female_cl on CLlin of DXd-conjugated antibody applied as (1 + e_female_cl * SEXF) so SEXF = 1 yields the paper-reported 0.865 multiplier (e_female_cl = -0.135) and SEXF = 0 yields multiplier 1 (male reference, unchanged). Lu 2022 Table 2 reports 'Female-CLlin = 0.865' (relative-to-reference female multiplier; Table S2 row Sex states the reference is male and the covariate function is PV = PVref * theta^i for indicator i).",
       source_name        = "Sex"
     ),
-    TUMTP_BC = list(
+    TUMTP_BREAST = list(
       description        = "Breast-cancer tumor-type indicator, 1 = breast cancer, 0 = NSCLC or colorectal cancer",
       units              = "(binary)",
       type               = "binary",
       reference_category = "0 = NSCLC or colorectal cancer pooled. NSCLC is the implicit reference category in Lu 2022; colorectal cancer was tested and found insignificant relative to NSCLC and is therefore pooled into the reference (Lu 2022 Results: 'the colorectal cancer effect was insignificant relative to the reference NSCLC').",
-      notes              = "Time-fixed. Multiplicative fractional effect e_bc_cl on CLlin of DXd-conjugated antibody applied as (1 + e_bc_cl * TUMTP_BC); TUMTP_BC = 1 yields the paper-reported 0.811 multiplier (e_bc_cl = -0.189) and TUMTP_BC = 0 yields multiplier 1. Lu 2022 Table 2 reports 'Breast cancer-CLlin = 0.811'. CRC was retained at the covariate-evaluation stage and dropped on backward elimination.",
+      notes              = "Time-fixed. Multiplicative fractional effect e_bc_cl on CLlin of DXd-conjugated antibody applied as (1 + e_bc_cl * TUMTP_BREAST); TUMTP_BREAST = 1 yields the paper-reported 0.811 multiplier (e_bc_cl = -0.189) and TUMTP_BREAST = 0 yields multiplier 1. Lu 2022 Table 2 reports 'Breast cancer-CLlin = 0.811'. CRC was retained at the covariate-evaluation stage and dropped on backward elimination.",
       source_name        = "Tumor type (breast cancer level)"
     ),
     HEPIMP_MILD = list(
       description        = "Mild hepatic impairment indicator (NCI ODWG group 2)",
       units              = "(binary)",
       type               = "binary",
-      reference_category = "0 (normal hepatic function, NCI ODWG group 1; mutually exclusive with HEPIMP_MOD_MISSING).",
+      reference_category = "0 (normal hepatic function, NCI ODWG group 1; mutually exclusive with HEPIMP_MOD_OR_MISSING).",
       notes              = "Time-fixed. Multiplicative fractional effect e_hepmild_cl_dxd on CLDXd of unconjugated DXd applied as (1 + e_hepmild_cl_dxd * HEPIMP_MILD); HEPIMP_MILD = 1 yields the paper-reported 0.706 multiplier (e_hepmild_cl_dxd = -0.294). Lu 2022 Table 3 reports 'Hepatic impairment mild-CLDXd = 0.706'. Categorization per the National Cancer Institute Organ Dysfunction Working Group: mild = total bilirubin <= ULN with AST > ULN, OR total bilirubin > 1.0 to 1.5 x ULN with any AST.",
       source_name        = "Hepatic function (mild impairment)"
     ),
-    HEPIMP_MOD_MISSING = list(
+    HEPIMP_MOD_OR_MISSING = list(
       description        = "Composite moderate-hepatic-impairment-or-data-missing indicator (paper-specific)",
       units              = "(binary)",
       type               = "binary",
       reference_category = "0 (normal hepatic function or mild impairment; mutually exclusive with HEPIMP_MILD when both indicators are zero, the patient is in the normal-function reference).",
-      notes              = "Time-fixed. Multiplicative fractional effect e_hepmod_cl_dxd on CLDXd of unconjugated DXd applied as (1 + e_hepmod_cl_dxd * HEPIMP_MOD_MISSING); HEPIMP_MOD_MISSING = 1 yields the paper-reported 0.532 multiplier (e_hepmod_cl_dxd = -0.468). Lu 2022 Table 3 reports 'Hepatic impairment moderate/data missing-CLDXd = 0.532' as a single pooled coefficient because the moderate-impairment subgroup (n = 6 per Lu 2022 Table S5) and the missing/unknown subgroup (n = 6 per Table S5) were both individually too small to estimate as separate effects. Lu 2022 Discussion notes that 'the effect of moderate hepatic function was not estimated, as the relevant data were too limited (n = 6) for the evaluation to be reliable using the population PK approach' - the reported 0.532 effect is therefore not a moderate-only estimate but a moderate-plus-missing composite.",
+      notes              = "Time-fixed. Multiplicative fractional effect e_hepmod_cl_dxd on CLDXd of unconjugated DXd applied as (1 + e_hepmod_cl_dxd * HEPIMP_MOD_OR_MISSING); HEPIMP_MOD_OR_MISSING = 1 yields the paper-reported 0.532 multiplier (e_hepmod_cl_dxd = -0.468). Lu 2022 Table 3 reports 'Hepatic impairment moderate/data missing-CLDXd = 0.532' as a single pooled coefficient because the moderate-impairment subgroup (n = 6 per Lu 2022 Table S5) and the missing/unknown subgroup (n = 6 per Table S5) were both individually too small to estimate as separate effects. Lu 2022 Discussion notes that 'the effect of moderate hepatic function was not estimated, as the relevant data were too limited (n = 6) for the evaluation to be reliable using the population PK approach' - the reported 0.532 effect is therefore not a moderate-only estimate but a moderate-plus-missing composite.",
       source_name        = "Hepatic function (moderate impairment OR data missing)"
     ),
     CYCLE = list(
@@ -92,7 +92,7 @@ Lu_2022_patritumab <- function() {
     # DXd-conjugated antibody (intact ADC) -- Lu 2022 Table 2
     # ============================================================
     # Reference subject for typical-value parameters: male (SEXF = 0),
-    # weight 60 kg, albumin 39 g/L, NSCLC (TUMTP_BC = 0). Time unit kept
+    # weight 60 kg, albumin 39 g/L, NSCLC (TUMTP_BREAST = 0). Time unit kept
     # as day to match the paper's L/d / ug/d tabulation.
     lcl   <- log(0.342);   label("Linear clearance of DXd-conjugated antibody CLlin at reference covariates (L/day)")  # Lu 2022 Table 2: CLlin = 0.342 L/d
     lvc   <- log(2.943);   label("Central volume of distribution of DXd-conjugated antibody Vc at reference (L)")     # Lu 2022 Table 2: Vc = 2.943 L
@@ -107,7 +107,7 @@ Lu_2022_patritumab <- function() {
     # categorical covariates use fractional multipliers (1 + theta * indicator)
     # so that e_female_cl = -0.135 reproduces the paper-reported 0.865
     # multiplier when SEXF = 1, and e_bc_cl = -0.189 reproduces the
-    # paper-reported 0.811 multiplier when TUMTP_BC = 1.
+    # paper-reported 0.811 multiplier when TUMTP_BREAST = 1.
     e_wt_cl     <-  0.911;  label("Power exponent of WT on CLlin (unitless)")                                       # Lu 2022 Table 2: Weight-CLlin = 0.911
     e_alb_cl    <- -0.795;  label("Power exponent of ALB on CLlin (unitless)")                                      # Lu 2022 Table 2: Albumin-CLlin = -0.795
     e_female_cl <- -0.135;  label("Fractional multiplicative effect of female sex on CLlin (unitless)")             # Lu 2022 Table 2: Female-CLlin = 0.865 -> multiplier (1 - 0.135) = 0.865
@@ -174,14 +174,14 @@ Lu_2022_patritumab <- function() {
     # Individual PK parameters for DXd-conjugated antibody
     # ============================================================
     # Reference covariates: WT 60 kg, ALB 39 g/L, SEXF = 0 (male),
-    # TUMTP_BC = 0 (NSCLC reference). Continuous covariates enter as
+    # TUMTP_BREAST = 0 (NSCLC reference). Continuous covariates enter as
     # power-of-ratio; categorical covariates enter as fractional
-    # multipliers so SEXF = 0 and TUMTP_BC = 0 yield multiplier 1.
+    # multipliers so SEXF = 0 and TUMTP_BREAST = 0 yield multiplier 1.
     cl <- exp(lcl + etalcl) *
       (WT  / 60)^e_wt_cl *
       (ALB / 39)^e_alb_cl *
       (1 + e_female_cl * SEXF) *
-      (1 + e_bc_cl     * TUMTP_BC)
+      (1 + e_bc_cl     * TUMTP_BREAST)
 
     vc <- exp(lvc + etalvc) * (WT / 60)^e_wt_vc
 
@@ -196,7 +196,7 @@ Lu_2022_patritumab <- function() {
     krel  <- exp(lkrel  + etalkrel) * (WT / 60)^e_wt_krel
     cl_dxd <- exp(lcl_dxd + etalcl_dxd) *
       (1 + e_hepmild_cl_dxd * HEPIMP_MILD) *
-      (1 + e_hepmod_cl_dxd  * HEPIMP_MOD_MISSING)
+      (1 + e_hepmod_cl_dxd  * HEPIMP_MOD_OR_MISSING)
     theta_factor1 <- exp(ltheta)
     beta_pir      <- exp(lbeta)
 

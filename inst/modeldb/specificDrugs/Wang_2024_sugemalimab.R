@@ -49,11 +49,11 @@ Wang_2024_sugemalimab <- function() {
       description        = "Lymphoma tumour-type indicator (heterogeneous lymphoma pool)",
       units              = "(binary)",
       type               = "binary",
-      reference_category = "0 (any non-lymphoma tumour type — when paired with TUMTP_OTH = TUMTP_GC = TUMTP_ESCC = 0, the reference is lung cancer / NSCLC)",
+      reference_category = "0 (any non-lymphoma tumour type — when paired with TUMTP_OTHER = TUMTP_GASTRIC = TUMTP_ESCC = 0, the reference is lung cancer / NSCLC)",
       notes              = "Exponential effect on baseline CL and on Vc. Wang 2024 pools two lymphoma histologies (extranodal NK/T-cell lymphoma from CS1001-201 / NCT03595657 and classical / relapsed-refractory Hodgkin lymphoma from CS1001-202 / NCT03505996) into a single indicator (n = 164 in the pooled dataset). Source column TTYPE level 1.",
       source_name        = "TTYPE1"
     ),
-    TUMTP_OTH = list(
+    TUMTP_OTHER = list(
       description        = "'Other' tumour-type residual indicator",
       units              = "(binary)",
       type               = "binary",
@@ -61,7 +61,7 @@ Wang_2024_sugemalimab <- function() {
       notes              = "Exponential effect on baseline CL and on Vc. Heterogeneous solid-tumour residual group spanning miscellaneous histologies not captured by the named groups (n = 174 in Wang 2024). Source column TTYPE level 3.",
       source_name        = "TTYPE3"
     ),
-    TUMTP_GC = list(
+    TUMTP_GASTRIC = list(
       description        = "Gastric / gastroesophageal-junction adenocarcinoma indicator (GCGEJ)",
       units              = "(binary)",
       type               = "binary",
@@ -183,8 +183,8 @@ Wang_2024_sugemalimab <- function() {
       exp(e_sexf_cl  * SEXF) *
       exp(e_ada_cl   * ADA_POS) *
       exp(e_lymph_cl * TUMTP_LYMPH) *
-      exp(e_oth_cl   * TUMTP_OTH) *
-      exp(e_gc_cl    * TUMTP_GC) *
+      exp(e_oth_cl   * TUMTP_OTHER) *
+      exp(e_gc_cl    * TUMTP_GASTRIC) *
       exp(e_escc_cl  * TUMTP_ESCC)
 
     vc <- exp(lvc + etalvc) *
@@ -192,8 +192,8 @@ Wang_2024_sugemalimab <- function() {
       (ALB / 41.5)^e_alb_vc *
       exp(e_sexf_vc  * SEXF) *
       exp(e_lymph_vc * TUMTP_LYMPH) *
-      exp(e_oth_vc   * TUMTP_OTH) *
-      exp(e_gc_vc    * TUMTP_GC) *
+      exp(e_oth_vc   * TUMTP_OTHER) *
+      exp(e_gc_vc    * TUMTP_GASTRIC) *
       exp(e_escc_vc  * TUMTP_ESCC)
 
     q  <- exp(lq)              # Q has no IIV in Wang 2024

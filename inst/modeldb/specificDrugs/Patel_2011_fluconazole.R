@@ -204,7 +204,7 @@ Patel_2011_fluconazole <- function() {
     # FILT_AGE_HI = 1 (e_filt_age_hi_cl_renal^FILT_AGE_HI evaluates to 1
     # when FILT_AGE_HI = 0 and to 0.368 when FILT_AGE_HI = 1; this is the
     # same power-encoding precedent used by Goti 2018 vancomycin for
-    # 0.7^HEMODIAL and 0.5^HEMODIAL).
+    # 0.7^RRT_HEMODIAL_STATUS and 0.5^RRT_HEMODIAL_STATUS).
     # -------------------------------------------------------------------
     cl_renal  <- exp(lcl_renal  + etalcl_renal)  * e_filt_age_hi_cl_renal^FILT_AGE_HI
     cl_nonren <- exp(lcl_nonren + etalcl_nonren)

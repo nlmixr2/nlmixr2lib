@@ -33,7 +33,7 @@ population was 16 female / 6 male, with mean age 14.5 years
 (range 11.1-17.5), mean total body weight 79.3 kg (range 54.7-104.9), mean
 BMI 29.1 kg/m^2 (range 22.9-39.3), and mean BMI-SDS 2.8 (range 1.7-4.0).
 Eligible patients were obese (BMI-SDS > 2.3) and insulin resistant
-(HOMA-IR >= 3.4); patients with T2DM, polycystic ovary syndrome, impaired
+(HOMA-IR >= 3.4); patients with DIS_DIAB, polycystic ovary syndrome, impaired
 renal function (eGFR < 80 ml/min), or impaired hepatic function were
 excluded. Patients had received metformin 500 mg (n = 3) or 1000 mg
 (n = 19) twice daily for 37 weeks before the PK sub-study; sampling

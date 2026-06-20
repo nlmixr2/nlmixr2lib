@@ -29,20 +29,20 @@ Gupta_2016_lenvatinib <- function() {
       notes              = "Binarized inline as alp_high <- (ALP > 120) per Gupta 2016 Table 2 footnote: ALP indicator = 0 if ALP/ULN <= 1, 1 if ALP/ULN > 1. Multiplicative power-form effect on CL/F: 0.883^alp_high (-11.7 percent when alp_high = 1). The 120 U/L ULN used here is a representative adult cutoff; downstream users should supply ALP_HIGH directly or adjust the inline threshold to match their site's ULN.",
       source_name        = "ALP"
     ),
-    CYP3A4_IND = list(
+    CONMED_CYP3A4_IND = list(
       description        = "Concomitant CYP3A4 inducer coadministration indicator (1 = any CYP3A4 inducer during the study; 0 = no concomitant CYP3A4 inducer).",
       units              = "(binary)",
       type               = "binary",
       reference_category = "0 (no CYP3A4 inducer).",
-      notes              = "Multiplicative power-form effect on CL/F: 1.30^CYP3A4_IND (+30 percent when 1). The Gupta dataset pools any concomitant CYP3A4 inducer reported in the per-subject medication log; 19 of 779 subjects (2.4 percent) were positive.",
+      notes              = "Multiplicative power-form effect on CL/F: 1.30^CONMED_CYP3A4_IND (+30 percent when 1). The Gupta dataset pools any concomitant CYP3A4 inducer reported in the per-subject medication log; 19 of 779 subjects (2.4 percent) were positive. Renamed from canonical CYP3A4_IND to CONMED_CYP3A4_IND on 2026-06-19 per the canonical-register standardization audit.",
       source_name        = "INDU"
     ),
-    CYP3A4_INH = list(
+    CONMED_CYP3A4_INH = list(
       description        = "Concomitant CYP3A4 inhibitor coadministration indicator (1 = any CYP3A4 inhibitor during the study; 0 = no concomitant CYP3A4 inhibitor).",
       units              = "(binary)",
       type               = "binary",
       reference_category = "0 (no CYP3A4 inhibitor).",
-      notes              = "Multiplicative power-form effect on CL/F: 0.922^CYP3A4_INH (-7.8 percent when 1). The Gupta dataset pools any concomitant CYP3A4 inhibitor reported in the per-subject medication log; 49 of 779 subjects (6.3 percent) were positive.",
+      notes              = "Multiplicative power-form effect on CL/F: 0.922^CONMED_CYP3A4_INH (-7.8 percent when 1). The Gupta dataset pools any concomitant CYP3A4 inhibitor reported in the per-subject medication log; 49 of 779 subjects (6.3 percent) were positive. Renamed from canonical CYP3A4_INH to CONMED_CYP3A4_INH on 2026-06-19 per the canonical-register standardization audit.",
       source_name        = "INHIB"
     ),
     DIS_HEALTHY = list(
@@ -155,8 +155,8 @@ Gupta_2016_lenvatinib <- function() {
 
     cl <- exp(lcl + etalcl) *
           (WT / ref_wt)^allo_cl *
-          exp(e_cyp3a4_ind_cl  * CYP3A4_IND) *
-          exp(e_cyp3a4_inh_cl  * CYP3A4_INH) *
+          exp(e_cyp3a4_ind_cl  * CONMED_CYP3A4_IND) *
+          exp(e_cyp3a4_inh_cl  * CONMED_CYP3A4_INH) *
           exp(e_alb_cl         * alb_low) *
           exp(e_alp_cl         * alp_high) *
           exp(e_dis_healthy_cl * DIS_HEALTHY)

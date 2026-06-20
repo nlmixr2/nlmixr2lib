@@ -62,7 +62,7 @@ Zingmark_2003_clomethiazole <- function() {
       ),
       source_name        = "WT"
     ),
-    CYP3A4_IND = list(
+    CONMED_CYP3A4_IND = list(
       description        = paste(
         "Concomitant 'liver enzyme inducing' drug indicator",
         "(binary; 1 = at least one of carbamazepine, phenytoin,",
@@ -79,20 +79,22 @@ Zingmark_2003_clomethiazole <- function() {
         "UGT inducers; clomethiazole is metabolised primarily by",
         "CYP2E1 but the pooled-inducer effect captures induction",
         "across the multiple CYP isoforms that contribute to its",
-        "clearance. The canonical CYP3A4_IND name is used here",
-        "because (a) all three of the paper's listed inducers are",
-        "CYP3A4 inducers, (b) the per-paper convention of pooling",
-        "broad-spectrum inducers under a single binary indicator",
-        "matches the canonical's documented usage pattern, and (c)",
-        "the canonical's notes explicitly anticipate per-paper",
-        "documentation of which inducer set is pooled. The effect",
-        "form combines an additive +39.9% shift on the population-",
-        "typical CL at WT = 75 kg AND a different (steeper) WT-on-",
-        "CL slope (1.3%/kg vs 0.9%/kg in non-inducer patients);",
-        "both effects are encoded inside model(). Prevalence in",
-        "the cohort: 100/1546 patients (~6.5%) per Zingmark 2003",
-        "Table 2 'Concomitant medication' row 'Liver enzyme",
-        "inducers'."
+        "clearance. The canonical CONMED_CYP3A4_IND name is used",
+        "here because (a) all three of the paper's listed inducers",
+        "are CYP3A4 inducers, (b) the per-paper convention of",
+        "pooling broad-spectrum inducers under a single binary",
+        "indicator matches the canonical's documented usage",
+        "pattern, and (c) the canonical's notes explicitly",
+        "anticipate per-paper documentation of which inducer set",
+        "is pooled. The effect form combines an additive +39.9%",
+        "shift on the population-typical CL at WT = 75 kg AND a",
+        "different (steeper) WT-on-CL slope (1.3%/kg vs 0.9%/kg",
+        "in non-inducer patients); both effects are encoded",
+        "inside model(). Prevalence in the cohort: 100/1546",
+        "patients (~6.5%) per Zingmark 2003 Table 2 'Concomitant",
+        "medication' row 'Liver enzyme inducers'. Renamed from",
+        "canonical CYP3A4_IND to CONMED_CYP3A4_IND on 2026-06-19",
+        "per the canonical-register standardization audit."
       ),
       source_name        = "Liver enzyme inducers (Table 2)"
     )
@@ -273,7 +275,7 @@ Zingmark_2003_clomethiazole <- function() {
     #    non-inducer patients have slope e_wt_cl_noind (0.9%/kg),
     #    inducer patients have slope e_wt_cl_ind (1.3%/kg).
     # ------------------------------------------------------------
-    slope_wt_cl <- e_wt_cl_noind * (1 - CYP3A4_IND) + e_wt_cl_ind * CYP3A4_IND
+    slope_wt_cl <- e_wt_cl_noind * (1 - CONMED_CYP3A4_IND) + e_wt_cl_ind * CONMED_CYP3A4_IND
 
     # ------------------------------------------------------------
     # 3. Individual PK parameters. Log-normal IIV via parameter-
@@ -282,7 +284,7 @@ Zingmark_2003_clomethiazole <- function() {
     #    clomethiazole adsorption to the infusion tubing).
     # ------------------------------------------------------------
     cl <- exp(lcl + etalcl) *
-      (1 + e_cyp3a4_ind_cl * CYP3A4_IND) *
+      (1 + e_cyp3a4_ind_cl * CONMED_CYP3A4_IND) *
       (1 + slope_wt_cl * (wt_eff - 75))
 
     vc <- exp(lvc + etalvc) *

@@ -17,20 +17,20 @@ Sahota_2015_miridesap <- function() {
       notes              = "Sahota 2015 Eq. 1: cl_effect = 1 + e_crcl_cl * (min(CRCL, 80) - 80); the covariate saturates at CRCL >= 80 mL/min (multiplier = 1) and linearly reduces CL with declining renal function below the 80 mL/min threshold. Reported clearance of 6.85 L/h applies at CRCL >= 80 (Sahota 2015 Table 2 footnote a). Baseline-only; not time-varying.",
       source_name        = "CRCL"
     ),
-    AMLIVER = list(
+    DIS_AMYLOID_LIVER = list(
       description        = "Hepatic amyloid involvement indicator (0 = no liver amyloid; 1 = liver amyloid present).",
       units              = "(binary)",
       type               = "binary",
       reference_category = 0,
-      notes              = "Sahota 2015 Eq. 2: Q4_amliver = 1 + e_amliver_q4 * AMLIVER multiplies the typical SAP intercompartmental clearance. Patients with hepatic amyloid have a roughly 5-fold higher Q4 (1 + 4.01). Baseline-only; not time-varying.",
+      notes              = "Sahota 2015 Eq. 2: Q4_amliver = 1 + e_amliver_q4 * DIS_AMYLOID_LIVER multiplies the typical SAP intercompartmental clearance. Patients with hepatic amyloid have a roughly 5-fold higher Q4 (1 + 4.01). Baseline-only; not time-varying. Renamed from canonical AMLIVER to DIS_AMYLOID_LIVER on 2026-06-19 per the canonical-register standardization audit.",
       source_name        = "AMLIVER"
     ),
-    AMLOAD = list(
+    DIS_AMYLOID_LOAD = list(
       description        = "Whole-body amyloid load ordinal score (0 = no amyloid in healthy volunteers; 1 = small; 2 = moderate; 3 = large).",
       units              = "(categorical 0-3)",
       type               = "categorical",
       reference_category = 0,
-      notes              = "Sahota 2015 Methods (Dataset production) defines the score; Eq. 2 collapses categories 0 and 1 into the reference (V4 multiplier = 1), then adds e_amload2_vp_sap once at AMLOAD>=2 and adds e_amload3_vp_sap again at AMLOAD=3 to enforce monotonicity. Final model yields V4 multipliers of 1, 1, 7.39, and 33.78 for AMLOAD 0, 1, 2, and 3 respectively (Sahota 2015 Results: V4 increased 7.4-fold and 33.78-fold in moderate and large amyloid loads relative to small/none). Baseline-only; not time-varying.",
+      notes              = "Sahota 2015 Methods (Dataset production) defines the score; Eq. 2 collapses categories 0 and 1 into the reference (V4 multiplier = 1), then adds e_amload2_vp_sap once at DIS_AMYLOID_LOAD>=2 and adds e_amload3_vp_sap again at DIS_AMYLOID_LOAD=3 to enforce monotonicity. Final model yields V4 multipliers of 1, 1, 7.39, and 33.78 for DIS_AMYLOID_LOAD 0, 1, 2, and 3 respectively (Sahota 2015 Results: V4 increased 7.4-fold and 33.78-fold in moderate and large amyloid loads relative to small/none). Baseline-only; not time-varying. Renamed from canonical AMLOAD to DIS_AMYLOID_LOAD on 2026-06-19 per the canonical-register standardization audit.",
       source_name        = "AMLOAD"
     ),
     SEXF = list(
@@ -86,14 +86,14 @@ Sahota_2015_miridesap <- function() {
     # V3 = V1 by structural constraint (Sahota 2015 Methods: 'complex formation
     # assumed to occur in well stirred conditions in a common central
     # compartment (V1 = V3)'); not a separately estimated parameter.
-    lvp_sap <- log(12.15) ; label("Log SAP peripheral volume at AMLOAD <= 1 (log L); V4 reference = 12.15 L")  # Sahota 2015 Table 2 (peripheral volume V4)
-    lq_sap  <- log(2.84)  ; label("Log SAP inter-compartmental clearance at AMLIVER = 0 (log L/h); Q4 reference = 2.84 L/h")  # Sahota 2015 Table 2 (intercompartmental clearance Q4)
+    lvp_sap <- log(12.15) ; label("Log SAP peripheral volume at DIS_AMYLOID_LOAD <= 1 (log L); V4 reference = 12.15 L")  # Sahota 2015 Table 2 (peripheral volume V4)
+    lq_sap  <- log(2.84)  ; label("Log SAP inter-compartmental clearance at DIS_AMYLOID_LIVER = 0 (log L/h); Q4 reference = 2.84 L/h")  # Sahota 2015 Table 2 (intercompartmental clearance Q4)
 
     # ---- SAP covariate effects (Sahota 2015 Eq. 2) -----------------------
-    e_amliver_q4     <- 4.01  ; label("AMLIVER multiplicative effect on SAP Q4 (Q4 = Q4_ref * (1 + e_amliver_q4 * AMLIVER)); ~5-fold increase when liver amyloid present")  # Sahota 2015 Table 2 (Amyloid liver x Q4); Eq. 2
+    e_amliver_q4     <- 4.01  ; label("DIS_AMYLOID_LIVER multiplicative effect on SAP Q4 (Q4 = Q4_ref * (1 + e_amliver_q4 * DIS_AMYLOID_LIVER)); ~5-fold increase when liver amyloid present")  # Sahota 2015 Table 2 (Amyloid liver x Q4); Eq. 2
     e_sexf_sap0      <- -0.30 ; label("SEXF (female) multiplicative effect on SAP baseline (SAP_BASE = SAP_BASE_ref * (1 + e_sexf_sap0 * SEXF)); ~30% lower in females")    # Sahota 2015 Table 2 (Gender x SAP baseline); Eq. 2
-    e_amload2_vp_sap <- 6.39  ; label("AMLOAD step at AMLOAD >= 2: V4 multiplier increment (V4 = V4_ref * (1 + e_amload2_vp_sap * I(AMLOAD>=2) + e_amload3_vp_sap * I(AMLOAD>=3)))")  # Sahota 2015 Table 2 (Amyloid load x V4, moderate); Eq. 2
-    e_amload3_vp_sap <- 26.39 ; label("AMLOAD additional step at AMLOAD = 3: V4 multiplier increment (large amyloid load adds on top of the AMLOAD>=2 step)")  # Sahota 2015 Table 2 (Amyloid load x V4, large); Eq. 2
+    e_amload2_vp_sap <- 6.39  ; label("DIS_AMYLOID_LOAD step at DIS_AMYLOID_LOAD >= 2: V4 multiplier increment (V4 = V4_ref * (1 + e_amload2_vp_sap * I(DIS_AMYLOID_LOAD>=2) + e_amload3_vp_sap * I(DIS_AMYLOID_LOAD>=3)))")  # Sahota 2015 Table 2 (Amyloid load x V4, moderate); Eq. 2
+    e_amload3_vp_sap <- 26.39 ; label("DIS_AMYLOID_LOAD additional step at DIS_AMYLOID_LOAD = 3: V4 multiplier increment (large amyloid load adds on top of the DIS_AMYLOID_LOAD>=2 step)")  # Sahota 2015 Table 2 (Amyloid load x V4, large); Eq. 2
 
     # ---- CPHPC + free SAP <-> complex binding ----------------------------
     lkon  <- log(1.94e6) ; label("Log SAP-CPHPC binding on-rate (log L/(mol h)); KON = 1.94e6 L/(mol h)")  # Sahota 2015 Table 2 (association rate KON)
@@ -142,15 +142,15 @@ Sahota_2015_miridesap <- function() {
     crcl_capped <- (CRCL < 80) * CRCL + (CRCL >= 80) * 80
     crcl_effect <- 1 + e_crcl_cl * (crcl_capped - 80)
 
-    # AMLIVER effect on SAP Q4 (Eq. 2; binary indicator)
-    q4_amliver_factor <- 1 + e_amliver_q4 * AMLIVER
+    # DIS_AMYLOID_LIVER effect on SAP Q4 (Eq. 2; binary indicator)
+    q4_amliver_factor <- 1 + e_amliver_q4 * DIS_AMYLOID_LIVER
 
-    # AMLOAD effect on SAP V4 (Eq. 2; cumulative indicators enforce
+    # DIS_AMYLOID_LOAD effect on SAP V4 (Eq. 2; cumulative indicators enforce
     # monotonicity. Categories 0 and 1 share the reference (multiplier = 1);
     # category 2 adds e_amload2_vp_sap; category 3 adds it again plus the
     # additional step e_amload3_vp_sap.)
-    amload_ge_2 <- (AMLOAD >= 2) * 1.0
-    amload_ge_3 <- (AMLOAD >= 3) * 1.0
+    amload_ge_2 <- (DIS_AMYLOID_LOAD >= 2) * 1.0
+    amload_ge_3 <- (DIS_AMYLOID_LOAD >= 3) * 1.0
     v4_amload_factor <- 1 + e_amload2_vp_sap * amload_ge_2 + e_amload3_vp_sap * amload_ge_3
 
     # SEXF effect on SAP baseline (Eq. 2)

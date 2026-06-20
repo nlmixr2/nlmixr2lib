@@ -59,12 +59,12 @@ Per-parameter source locations are recorded inline in each `inst/modeldb/specifi
 | `lvc <- log(5.2)` (Vc/F_ARM, L/kg)                              | 5.2   | Table 1 (95% CI 3.5-7.1) |
 | `lq <- log(1.4)` (Q/F_ARM, L/h/kg)                              | 1.4   | Table 1 (95% CI 1.1-1.8) |
 | `lvp <- log(41.4)` (Vp/F_ARM, L/kg)                             | 41.4  | Table 1 (95% CI 29.0-58.1) |
-| `lcl_dha <- log(6.8)` (CL/F_DHA, L/h/kg; F_DHA fixed to 1)      | 6.8   | Table 1 (95% CI 5.8-8.0) |
-| `lvc_dha <- log(3.7)` (V/F_DHA, L/kg)                           | 3.7   | Table 1 (95% CI 2.3-8.7) |
+| `lcl_dihydroart <- log(6.8)` (CL/F_DHA, L/h/kg; F_DHA fixed to 1)      | 6.8   | Table 1 (95% CI 5.8-8.0) |
+| `lvc_dihydroart <- log(3.7)` (V/F_DHA, L/kg)                           | 3.7   | Table 1 (95% CI 2.3-8.7) |
 | `etalcl ~ 0.155649` (CL/F_ARM IIV)                              | CV 41% | Table 1 (95% CI 37-50) -> omega^2 = log(0.41^2 + 1) |
-| `etalcl_dha ~ 0.198101` (CL/F_DHA IIV)                          | CV 47% | Table 1 (95% CI 35-57) -> omega^2 = log(0.47^2 + 1) |
+| `etalcl_dihydroart ~ 0.198101` (CL/F_DHA IIV)                          | CV 47% | Table 1 (95% CI 35-57) -> omega^2 = log(0.47^2 + 1) |
 | `propSd <- 0.61`, `addSd <- fixed(2)` (ARM residual)            | 61% prop, 2 nM add (fixed) | Table 1 |
-| `propSd_dha <- 0.82`, `addSd_dha <- fixed(3)` (DHA residual)    | 82% prop, 3 nM add (fixed) | Table 1 |
+| `propSd_dihydroart <- 0.82`, `addSd_dihydroart <- fixed(3)` (DHA residual)    | 82% prop, 3 nM add (fixed) | Table 1 |
 | 2-cmt ARM with first-order absorption; 1-cmt DHA via complete 1:1 molar conversion | -- | Results 'Pharmacokinetics of artemether, dihydroartemisinin, and lumefantrine'; mass factor MW_DHA / MW_ARM = 284.3 / 298.4 |
 | CL/F_ARM = theta1 * (1 + theta2 * (OCC - 1)) * exp(eta)         | -- | Results paragraph after Table 1 (delta-OFV = -167) |
 
@@ -194,9 +194,9 @@ Median (5th-95th simulated percentile) ARM and DHA plasma concentrations over 0-
 ```{r figure-1-arm-dha-vpc}
 sim_long <- sim_arm |>
   dplyr::filter(!is.na(Cc)) |>
-  dplyr::select(id, time, Cc, Cc_dha) |>
-  tidyr::pivot_longer(c(Cc, Cc_dha), names_to = "analyte", values_to = "value") |>
-  dplyr::mutate(analyte = dplyr::recode(analyte, Cc = "Artemether", Cc_dha = "DHA"))
+  dplyr::select(id, time, Cc, Cc_dihydroart) |>
+  tidyr::pivot_longer(c(Cc, Cc_dihydroart), names_to = "analyte", values_to = "value") |>
+  dplyr::mutate(analyte = dplyr::recode(analyte, Cc = "Artemether", Cc_dihydroart = "DHA"))
 
 sim_long |>
   dplyr::group_by(analyte, time) |>
@@ -421,8 +421,8 @@ sim_arm_nca <- sim_arm |>
   dplyr::filter(!is.na(Cc), time <= 8) |>
   dplyr::select(id, time, Cc, treatment)
 sim_dha_nca <- sim_arm |>
-  dplyr::filter(!is.na(Cc_dha), time <= 8) |>
-  dplyr::select(id, time, treatment, Cc = Cc_dha)
+  dplyr::filter(!is.na(Cc_dihydroart), time <= 8) |>
+  dplyr::select(id, time, treatment, Cc = Cc_dihydroart)
 
 dose_arm_nca <- events_arm |>
   dplyr::filter(evid == 1, time == 0) |>

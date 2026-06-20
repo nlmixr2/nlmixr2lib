@@ -21,12 +21,12 @@ Valenzuela_2025_nipocalimab <- function() {
       notes              = "Switches the additive PK residual magnitude. Assay is study-fixed: ELISA for studies MOM-M281-001, MOM-M281-007, MOM-M281-010; ECLIA for studies EDI1001, EDI1002, and MOM-M281-004 (Vivacity-MG).",
       source_name        = "ELISA"
     ),
-    PHASE1 = list(
+    STUDY_NIPOCALIMAB_PHASE1 = list(
       description        = "Study-phase indicator: 1 = Phase 1 study (healthy participants), 0 = Phase 2 Vivacity-MG study in gMG",
       units              = "(binary)",
       type               = "binary",
       reference_category = "0 (Phase 2 MOM-M281-004 / Vivacity-MG)",
-      notes              = "Switches the proportional PK residual magnitude (0.0834 for Phase 1 vs 0.367 for Phase 2).",
+      notes              = "Switches the proportional PK residual magnitude (0.0834 for Phase 1 vs 0.367 for Phase 2). Renamed from generic canonical PHASE1 to paper-specific STUDY_NIPOCALIMAB_PHASE1 on 2026-06-19 per the canonical-register standardization audit (operator decision: the generic PHASE1 token collided with Farrell 2012's PHASE2 canonical that picks the opposite reference category).",
       source_name        = "PHASE1"
     ),
     STUDY_M281_004 = list(
@@ -37,13 +37,13 @@ Valenzuela_2025_nipocalimab <- function() {
       notes              = "Scales IgG baseline by FRIgG0_M281_004 = 0.777 for MOM-M281-004 participants; IgG baseline is equal to IgG0 (typical 11.4 g/L) for other studies.",
       source_name        = "M281_004"
     ),
-    MGADL = list(
+    SCORE_MGADL = list(
       description        = "Baseline Myasthenia Gravis Activities of Daily Living score (0-24; higher = more severe)",
       units              = "(score)",
       type               = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed (baseline); power-form effect (MGADL/7)^E_IgG on sigg and (MGADL/7)^E_ADL on IDec_placebo. Set MGADL = 0 for healthy participants so that MG-ADL response predictions collapse to 0. Vivacity-MG participants ranged 6-24 points (mean 9.8).",
-      source_name        = "MGADL"
+      notes              = "Time-fixed (baseline); power-form effect (SCORE_MGADL/7)^E_IgG on sigg and (SCORE_MGADL/7)^E_ADL on IDec_placebo. Set SCORE_MGADL = 0 for healthy participants so that MG-ADL response predictions collapse to 0. Vivacity-MG participants ranged 6-24 points (mean 9.8).",
+      source_name        = "SCORE_MGADL"
     )
   )
 
@@ -174,7 +174,7 @@ Valenzuela_2025_nipocalimab <- function() {
 
     # ---- Individual MG-ADL parameters ----
     ke0         <- exp(lke0)
-    idec_i      <- (idecplacebo + etaidecplacebo) * (MGADL / 7)^EADL
+    idec_i      <- (idecplacebo + etaidecplacebo) * (SCORE_MGADL / 7)^EADL
     sigg_i      <- (sigg + etasigg)
     splacebo_i  <- (splacebo + etasplacebo)
 
@@ -185,7 +185,7 @@ Valenzuela_2025_nipocalimab <- function() {
     # Accessible FcRn pool at baseline (Eq. 2: Rtotal(time 0) = Rtotal,0 * FRmax):
     total_target(0) <- FcRn0 * FRmax
     # Total IgG at baseline:
-    total_IgG(0) <- IgG_BL
+    total_igg(0) <- IgG_BL
     # effect (IgG effect compartment for MG-ADL) starts at 0 (no IgG reduction yet).
     effect(0) <- 0
 
@@ -205,9 +205,9 @@ Valenzuela_2025_nipocalimab <- function() {
     d/dt(total_target) <-  ksyn - kdeg * total_target - (kint - kdeg) * complex
     # Total serum IgG (g/L). Eq. 4; F_free is the fraction of accessible FcRn still free vs baseline.
     f_free <- (total_target - complex) / (FcRn0 * FRmax)
-    d/dt(total_IgG)    <-  ksyn_IgG - (kdeg_IgG - krec_IgG * f_free) * total_IgG
+    d/dt(total_igg)    <-  ksyn_IgG - (kdeg_IgG - krec_IgG * f_free) * total_igg
     # IgG effect compartment (dimensionless fraction, 0 -> 1 at full blockade). Supplement Eq. 6.
-    d/dt(effect)       <-  ke0 * ((1 - total_IgG / IgG_BL) - effect)
+    d/dt(effect)       <-  ke0 * ((1 - total_igg / IgG_BL) - effect)
 
     # ---- Observation variables ----
     # Total nipocalimab concentration (ug/mL) -- ELISA/ECLIA assays measure total drug.
@@ -220,18 +220,18 @@ Valenzuela_2025_nipocalimab <- function() {
     pctUnoccupiedFcRn <- Rfree / FcRn0 * 100
 
     # Total serum IgG (g/L).
-    IgG_obs <- total_IgG
+    IgG_obs <- total_igg
 
     # MG-ADL absolute change from baseline (points). Placebo effect turns on after first dose
     # (t > 0 gate). IgG-driven effect: S_IgG is reported per 10% IgG reduction; multiply by 10
     # to convert the fractional effect-compartment output to "number of 10% reductions".
     placebo_cfb <- (t > 0) * (idec_i + splacebo_i * t / 7)
-    igg_cfb     <- 10 * sigg_i * effect * (MGADL / 7)^EIgG
+    igg_cfb     <- 10 * sigg_i * effect * (SCORE_MGADL / 7)^EIgG
     dMGADL      <- placebo_cfb + igg_cfb
 
     # ---- Residual-error models (per-assay / per-phase switches on PK; single form on others) ----
     addSd   <- addSdELISA   * ELISA  + addSdECLIA   * (1 - ELISA)
-    propSd  <- propSdPhase1 * PHASE1 + propSdPhase2 * (1 - PHASE1)
+    propSd  <- propSdPhase1 * STUDY_NIPOCALIMAB_PHASE1 + propSdPhase2 * (1 - STUDY_NIPOCALIMAB_PHASE1)
 
     Cc                ~ add(addSd) + prop(propSd)
     pctUnoccupiedFcRn ~ add(addSd_pctUnoccupiedFcRn) + prop(propSd_pctUnoccupiedFcRn)
