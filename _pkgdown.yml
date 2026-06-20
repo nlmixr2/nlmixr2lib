@@ -1378,6 +1378,8 @@ navbar:
         href: articles/Overgaard_2019_semaglutide.html
       - text: "Sepantronium (Aoyama 2012)"
         href: articles/Aoyama_2012_sepantronium.html
+      - text: "Sertraline (Cooper 2015)"
+        href: articles/Cooper_2015_sertraline.html
       - text: "Sevoflurane (Shin 2014)"
         href: articles/Shin_2014_sevoflurane.html
       - text: "Sglt qsp (Lu 2014)"
@@ -2014,8 +2016,7 @@ articles:
   - articles/Conil_2007_ceftazidime
   - articles/Conrado_2014_alzheimer
   - articles/Cook_2016_paracetamol
-  - articles/Couffignal_2014_imipenem
-  - articles/Crommentuyn_2005_lopinavir
+  - articles/Cooper_2015_sertraline
   - articles/Csajka_2004_indinavir
   - articles/Csajka_2005_ephedrine_caffeine
   - articles/Danielak_2017_clopidogrel
