@@ -874,6 +874,8 @@ navbar:
         href: articles/Zhang_2013_lopinavir_ritonavir.html
       - text: "Lopinavir unbound (Fauchet 2015)"
         href: articles/Fauchet_2015_lopinavir.html
+      - text: "LorenzosOil (Ahmed 2016)"
+        href: articles/Ahmed_2016_lorenzosOil.html
       - text: "Lumefantrine (Hietala 2010)"
         href: articles/Hietala_2010_artemether_lumefantrine_malaria.html
       - text: "Lumefantrine (Hoglund 2015)"
@@ -1899,7 +1901,7 @@ articles:
   - articles/Aguiar_2021_ustekinumab
   - articles/Ahamadi_2017_pembrolizumab
   - articles/Ahlstrom_2010_nicotinicAcid_rat
-  - articles/Ahmed_2015_topiramate
+  - articles/Ahmed_2016_lorenzosOil
   - articles/Ahn_2014_parathyroidHormone
   - articles/Ahsman_2010_cefotaxime
   - articles/Ait-Oudhia_2016_sunitinib
