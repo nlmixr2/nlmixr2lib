@@ -358,16 +358,25 @@
     # in the Morris 2011 parent (telapristone) + metabolite (CDB-4453)
     # popPK model where the metabolite apparent volume V3/F is fixed
     # to 1 L for identifiability (Morris 2011 doi:10.1208/s12248-011-9304-7).
-    "cdb4453"
+    "cdb4453",
+    # Modafinil acid (2-[(diphenylmethyl)sulfonyl]acetic acid), the
+    # principal carboxylic-acid metabolite of modafinil formed via
+    # esterase / amidase hydrolysis. Used as a metabolite suffix in
+    # parent + metabolite simultaneous popPK models
+    # (Wu 2012 Acta Pharmacol Sin 33:1401-1408 doi:10.1038/aps.2012.124).
+    "mfa"
   ),
   # Suffixes allowed for multi-component CL parameters. `_ss` denotes
   # the steady-state arm; `_time` the time-varying decay arm; `_renal`
   # the glomerular-filtration / tubular-secretion arm; `_nonren` the
   # non-renal (hepatic / metabolic / extra-renal) arm (e.g. Jonckheere
   # 2019 cefepime: CL_total = CL_renal + CL_nonren); `_hemodialysis`
-  # the dialysis-active extracorporeal arm gated by the HEMODIALYSIS
-  # covariate (e.g. Veinstein 2013 gentamicin: CL_total = CL + CL_HD).
-  clComponents = c("ss", "time", "renal", "nonren", "hemodialysis"),
+  # the intermittent-hemodialysis extracorporeal arm gated by the
+  # HEMODIALYSIS covariate (e.g. Veinstein 2013 gentamicin: CL_total =
+  # CL + CL_HD); `_dialysis` the broader continuous / general dialysis
+  # extracorporeal arm (e.g. Eyler 2014 ertapenem: CL_total = CLS +
+  # DIAL * CLdial for CVVHD/CVVHDF).
+  clComponents = c("ss", "time", "renal", "nonren", "hemodialysis", "dialysis"),
   requiredUnits = c("time", "dosing", "concentration"),
   requiredMetadata = c("description", "reference", "units"),
   deprecatedResidualError = c(

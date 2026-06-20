@@ -1,0 +1,493 @@
+---
+title: "Aripiprazole (Kim 2008)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Aripiprazole (Kim 2008)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: Kim J-R, Seo H-B, Cho J-Y, Kang D-H, Kim Y K, Bahk W-M, Yu K-S, Shin S-G, Kwon J S, Jang I-J (2008). Population pharmacokinetic modelling of aripiprazole and its active metabolite, dehydroaripiprazole, in psychiatric patients. Br J Clin Pharmacol 66(6):802-810.
+* Article: <https://doi.org/10.1111/j.1365-2125.2008.03223.x>
+
+```{r model_load}
+mod <- modellib("Kim_2008_aripiprazole")
+mod_meta <- readModelDb("Kim_2008_aripiprazole")
+```
+
+# Population
+
+The Kim 2008 cohort comprised 80 Korean psychiatric in- and out-patients with schizophrenia, schizophreniform disorder, or schizoaffective disorder enrolled at 30 sites (15 contributing) in a multicentre Phase IV trial. Mean age was 35.2 +/- 9.8 years (range 17-61); mean body weight 60.8 +/- 10.9 kg (range 38.0-95.0); 57.5% of subjects were female. The cohort was 100% Korean. Patients received oral aripiprazole 10-30 mg once daily (mean 24.3 +/- 6.7 mg) at steady state after up-titration from a 15 mg starting dose (Kim 2008 Table 1).
+
+CYP2D6 genotyping classified subjects into four genotype-based strata (Kim 2008 Table 2):
+
+| Stratum    | Definition                                            | n  | %     | CL/F (L/h) |
+|------------|-------------------------------------------------------|----|-------|------------|
+| Group I    | EM with 2 functional alleles (`*1`, `*2`)             | 15 | 18.8  | 3.15       |
+| Group II   | EM with 1 functional + 1 partially deficient allele   | 26 | 32.5  | 2.66       |
+| Group III  | EM with 1 functional + 1 null allele                  | 12 | 15.0  | 2.27       |
+| Group IV   | IM (partially deficient + null, no functional allele) | 27 | 33.8  | 1.83       |
+
+No CYP2D6 poor metabolizers (no subjects with two null alleles) and no ultra-rapid metabolizers were observed in the cohort. CYP3A5 expressers (Group A, `*1` carriers) made up 45.0% of the cohort and non-expressers (Group B, `*3/*3`) made up 55.0%; CYP3A5 was screened as a covariate but was not retained in the final model.
+
+The same information is available programmatically via the model's `population` metadata (`readModelDb("Kim_2008_aripiprazole")$population`).
+
+# Source trace
+
+Per-parameter origin is also recorded as an inline comment next to each `ini()` entry in `inst/modeldb/specificDrugs/Kim_2008_aripiprazole.R`.
+
+| Equation / parameter        | Value (final model) | Source location                                              |
+|-----------------------------|---------------------|--------------------------------------------------------------|
+| `lka` (ka, FIXED)           | 1.06 1/h            | Kim 2008 Table 3 row `k_a` (h-1) = 1.06 (FIXED)              |
+| `lcl_em_2func` (Group I CL/F) | 3.15 L/h          | Kim 2008 Table 3 row `CL/F I = 3.15 (SE 0.223)`              |
+| `lcl_em_1f1pd` (Group II CL/F) | 2.66 L/h         | Kim 2008 Table 3 row `CL/F II = 2.66 (SE 0.119)`             |
+| `lcl_em_1f1null` (Group III CL/F) | 2.27 L/h      | Kim 2008 Table 3 row `CL/F III = 2.27 (SE 0.123)`            |
+| `lcl_im` (Group IV CL/F)    | 1.83 L/h            | Kim 2008 Table 3 row `CL/F IV = 1.83 (SE 0.0715)`            |
+| `lvc` (V/F)                 | 193 L               | Kim 2008 Table 3 row `V/F = 193 (SE 11.7)`                   |
+| `lcl_dehyari` (CL(m)/fm)    | 8.02 L/h            | Kim 2008 Table 3 row `CL(m)/f_m = 8.02 (SE 0.317)`           |
+| `lvc_dehyari` (V(m)/fm)     | 587 L               | Kim 2008 Table 3 row `V(m)/f_m = 587 (SE 217)`               |
+| `etalcl` (omega^2 CL/F)     | 0.0930              | Kim 2008 Table 3 row `w^2 CL/F = 0.0930`; CV% = 30.5         |
+| `etalvc` (omega^2 V/F)      | 0.100               | Kim 2008 Table 3 row `w^2 V/F = 0.100`; CV% = 31.6           |
+| `etalcl_dehyari` (omega^2 CL(m)/fm) | 0.113       | Kim 2008 Table 3 row `w^2 CL(m)/f_m = 0.113`; CV% = 33.6     |
+| `propSd` (sigma^2 parent)   | sqrt(0.00264) ~ 0.0514 | Kim 2008 Table 3 row `s^2 = 0.00264`; CV% = 5.1           |
+| `propSd_dehyari` (sigma^2 metab) | sqrt(0.00507) ~ 0.0712 | Kim 2008 Table 3 row `s^2_m = 0.00507`; CV% = 7.1     |
+| `d/dt(depot)`               | -ka * depot         | Kim 2008 Methods 'Pharmacokinetic model and data analysis'   |
+| `d/dt(central)`             | ka * depot - (cl/vc) * central | Kim 2008 Methods Eq. for dA(p)/dt                  |
+| `d/dt(central_dehyari)`     | (cl/vc) * central - (cl_dehyari/vc_dehyari) * central_dehyari | Kim 2008 Methods Eq. for dA(m)/dt with fm=1 |
+
+# Virtual cohort
+
+Sparse observed data from the Kim 2008 trial are not publicly available. The figures below use virtual populations whose CYP2D6 genotype distribution matches the published Table 2 strata (no PMs in the cohort).
+
+```{r cohort}
+set.seed(20260620)
+
+# Helper: build one cohort as a self-contained event table for a single
+# CYP2D6 group at steady state with a 14-day daily-dosing run-in, followed
+# by dense sampling over the final 24-h interval.
+make_cohort <- function(n, group, dose_amt = 24.3, n_run_in_doses = 14,
+                        ii_h = 24, id_offset = 0L) {
+  cov <- switch(
+    group,
+    "Group I"   = list(CYP2D6_EM = 1L, CYP2D6_PM = 0L, CYP2D6_EM_1FUNC_1PD = 0L, CYP2D6_EM_1FUNC_1NULL = 0L),
+    "Group II"  = list(CYP2D6_EM = 1L, CYP2D6_PM = 0L, CYP2D6_EM_1FUNC_1PD = 1L, CYP2D6_EM_1FUNC_1NULL = 0L),
+    "Group III" = list(CYP2D6_EM = 1L, CYP2D6_PM = 0L, CYP2D6_EM_1FUNC_1PD = 0L, CYP2D6_EM_1FUNC_1NULL = 1L),
+    "Group IV"  = list(CYP2D6_EM = 0L, CYP2D6_PM = 0L, CYP2D6_EM_1FUNC_1PD = 0L, CYP2D6_EM_1FUNC_1NULL = 0L)
+  )
+  dose_times <- seq(0, (n_run_in_doses - 1) * ii_h, by = ii_h)
+  obs_start  <- max(dose_times)  # final dose time
+  obs_times  <- sort(unique(c(
+    seq(0, obs_start, by = ii_h),         # one pre-dose anchor per run-in day
+    obs_start + seq(0, ii_h, by = 0.5)    # 30-min grid over the final interval
+  )))
+  out <- vector("list", length = n)
+  for (i in seq_len(n)) {
+    subj_id <- id_offset + i
+    dose_rows <- data.frame(
+      id = subj_id, time = dose_times, evid = 1L,
+      amt = dose_amt, cmt = "depot", dvid = NA_integer_,
+      CYP2D6_EM = cov$CYP2D6_EM, CYP2D6_PM = cov$CYP2D6_PM,
+      CYP2D6_EM_1FUNC_1PD = cov$CYP2D6_EM_1FUNC_1PD,
+      CYP2D6_EM_1FUNC_1NULL = cov$CYP2D6_EM_1FUNC_1NULL,
+      group = group, stringsAsFactors = FALSE
+    )
+    obs_p <- data.frame(
+      id = subj_id, time = obs_times, evid = 0L,
+      amt = 0, cmt = "central", dvid = 1L,
+      CYP2D6_EM = cov$CYP2D6_EM, CYP2D6_PM = cov$CYP2D6_PM,
+      CYP2D6_EM_1FUNC_1PD = cov$CYP2D6_EM_1FUNC_1PD,
+      CYP2D6_EM_1FUNC_1NULL = cov$CYP2D6_EM_1FUNC_1NULL,
+      group = group, stringsAsFactors = FALSE
+    )
+    obs_m <- data.frame(
+      id = subj_id, time = obs_times, evid = 0L,
+      amt = 0, cmt = "central_dehyari", dvid = 2L,
+      CYP2D6_EM = cov$CYP2D6_EM, CYP2D6_PM = cov$CYP2D6_PM,
+      CYP2D6_EM_1FUNC_1PD = cov$CYP2D6_EM_1FUNC_1PD,
+      CYP2D6_EM_1FUNC_1NULL = cov$CYP2D6_EM_1FUNC_1NULL,
+      group = group, stringsAsFactors = FALSE
+    )
+    out[[i]] <- rbind(dose_rows, obs_p, obs_m)
+  }
+  ev <- dplyr::bind_rows(out)
+  ev[order(ev$id, ev$time, -ev$evid), ]
+}
+
+n_per_group <- 40L
+events <- dplyr::bind_rows(
+  make_cohort(n_per_group, "Group I",   id_offset =   0L),
+  make_cohort(n_per_group, "Group II",  id_offset = 100L),
+  make_cohort(n_per_group, "Group III", id_offset = 200L),
+  make_cohort(n_per_group, "Group IV",  id_offset = 300L)
+)
+stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
+```
+
+# Simulation
+
+Stochastic simulation carrying IIV on CL/F (shared across the four CYP2D6 strata), V/F, and CL(m)/fm. The covariance between etalcl and etalcl_dehyari is set to 0 in the package model (the paper estimated a non-zero covariance but did not report its numeric value; see Assumptions and deviations). Aripiprazole and dehydroaripiprazole are simulated jointly per subject via the parent-then-metabolite chain in the source ODEs (Kim 2008 Methods 'Pharmacokinetic model and data analysis').
+
+```{r simulate}
+sim <- rxode2::rxSolve(
+  mod, events = events,
+  keep = c("group")
+) |>
+  as.data.frame()
+
+# Steady-state window: the final dosing interval (24 h after final dose).
+final_dose_time <- 13 * 24
+sim_ss <- sim |>
+  dplyr::mutate(tad = time - final_dose_time) |>
+  dplyr::filter(tad >= 0, tad <= 24)
+```
+
+A typical-value (zeroRe; no IIV, no residual error) replication for each CYP2D6 group with a single subject per stratum at the cohort mean daily dose, useful for narrative comparison against the paper's reported point estimates.
+
+```{r simulate-typical}
+mod_typical <- rxode2::zeroRe(mod)
+events_typical <- dplyr::bind_rows(
+  make_cohort(1L, "Group I",   id_offset = 1000L),
+  make_cohort(1L, "Group II",  id_offset = 1001L),
+  make_cohort(1L, "Group III", id_offset = 1002L),
+  make_cohort(1L, "Group IV",  id_offset = 1003L)
+)
+sim_typ <- rxode2::rxSolve(
+  mod_typical, events = events_typical,
+  keep = c("group")
+) |>
+  as.data.frame() |>
+  dplyr::mutate(tad = time - final_dose_time)
+```
+
+# Replicate published profiles
+
+Kim 2008 does not publish a concentration-vs-time curve for the typical subject; its main figures are goodness-of-fit scatterplots (Figure 2) and per-subject concentration : dose ratios stratified by CYP2D6 group (Figure 3). The two figures below are the same conceptual quantities expressed as forward simulations from the packaged model.
+
+## Typical-value steady-state profile by CYP2D6 group
+
+```{r typical-profile-fig}
+sim_typ |>
+  dplyr::filter(tad >= 0, tad <= 24) |>
+  dplyr::select(tad, group,
+                Aripiprazole = Cc, Dehydroaripiprazole = Cc_dehyari) |>
+  tidyr::pivot_longer(c(Aripiprazole, Dehydroaripiprazole),
+                      names_to = "species", values_to = "conc") |>
+  dplyr::filter(conc > 0) |>
+  ggplot(aes(tad, conc, colour = group, linetype = species)) +
+  geom_line(linewidth = 0.7) +
+  scale_y_log10() +
+  labs(x = "Time after final dose (h)",
+       y = "Plasma concentration (ng/mL)",
+       colour = "CYP2D6 group", linetype = NULL,
+       title = "Typical-value steady-state profile by CYP2D6 group",
+       caption = paste(
+         "Reference subject: 24.3 mg/day QD for 14 days.",
+         "Groups I/II/III/IV per Kim 2008 Table 2."
+       ))
+```
+
+## Stochastic VPC over the final 24-h dosing interval
+
+```{r vpc-aripiprazole}
+sim_ss |>
+  dplyr::filter(tad > 0) |>
+  dplyr::group_by(group, tad) |>
+  dplyr::summarise(
+    p05 = quantile(Cc, 0.05, na.rm = TRUE),
+    p50 = quantile(Cc, 0.50, na.rm = TRUE),
+    p95 = quantile(Cc, 0.95, na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(tad, p50)) +
+  geom_ribbon(aes(ymin = p05, ymax = p95), alpha = 0.25) +
+  geom_line(linewidth = 0.6) +
+  facet_wrap(~group) +
+  labs(x = "Time after final dose (h)",
+       y = "Aripiprazole plasma concentration (ng/mL)",
+       title = "Stochastic VPC of aripiprazole at steady state",
+       caption = paste(
+         "Ribbon: 5th-95th simulated percentile; line: median.",
+         "40 subjects per stratum; 24.3 mg/day QD."
+       ))
+```
+
+```{r vpc-dehydroaripiprazole}
+sim_ss |>
+  dplyr::filter(tad > 0) |>
+  dplyr::group_by(group, tad) |>
+  dplyr::summarise(
+    p05 = quantile(Cc_dehyari, 0.05, na.rm = TRUE),
+    p50 = quantile(Cc_dehyari, 0.50, na.rm = TRUE),
+    p95 = quantile(Cc_dehyari, 0.95, na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(tad, p50)) +
+  geom_ribbon(aes(ymin = p05, ymax = p95), alpha = 0.25) +
+  geom_line(linewidth = 0.6) +
+  facet_wrap(~group) +
+  labs(x = "Time after final dose (h)",
+       y = "Dehydroaripiprazole plasma concentration (ng/mL)",
+       title = "Stochastic VPC of dehydroaripiprazole at steady state",
+       caption = paste(
+         "Ribbon: 5th-95th simulated percentile; line: median.",
+         "40 subjects per stratum; 24.3 mg/day QD."
+       ))
+```
+
+# PKNCA validation
+
+Steady-state NCA over the final 24-h dosing interval, stratified by CYP2D6 group, allows direct comparison of typical-value AUC and Cmax against the paper's reported point estimates. AUCss = Dose / CLss for a stable maintenance dose at steady state, so AUC_aripi_ss for each stratum is implied by the published CL/F values.
+
+```{r pknca-parent}
+nca_parent <- sim_ss |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::select(id, tad, Cc, group)
+
+# Guarantee a tad = 0 record per (id, group); for extravascular pre-dose the
+# steady-state trough Cc is the same as the simulated value at tad = 0.
+nca_parent <- dplyr::bind_rows(
+  nca_parent,
+  nca_parent |> dplyr::filter(tad == 0) |>
+    dplyr::distinct(id, group, .keep_all = TRUE) |>
+    dplyr::mutate(tad = 0)
+) |>
+  dplyr::distinct(id, group, tad, .keep_all = TRUE) |>
+  dplyr::arrange(id, group, tad)
+
+conc_parent <- PKNCA::PKNCAconc(
+  nca_parent,
+  Cc ~ tad | group + id,
+  concu = "ng/mL", timeu = "h"
+)
+
+dose_parent <- events |>
+  dplyr::filter(evid == 1L, time == final_dose_time) |>
+  dplyr::select(id, time, amt, group) |>
+  dplyr::mutate(time = 0)
+dose_parent_obj <- PKNCA::PKNCAdose(
+  dose_parent,
+  amt ~ time | group + id,
+  doseu = "mg"
+)
+
+intervals_parent <- data.frame(
+  start    = 0,
+  end      = 24,
+  cmax     = TRUE,
+  tmax     = TRUE,
+  cmin     = TRUE,
+  cav      = TRUE,
+  auclast  = TRUE
+)
+
+nca_parent_res <- PKNCA::pk.nca(
+  PKNCA::PKNCAdata(conc_parent, dose_parent_obj, intervals = intervals_parent)
+)
+```
+
+```{r pknca-metab}
+nca_metab <- sim_ss |>
+  dplyr::filter(!is.na(Cc_dehyari)) |>
+  dplyr::select(id, tad, Cc_dehyari, group) |>
+  dplyr::rename(Cm = Cc_dehyari)
+
+nca_metab <- dplyr::bind_rows(
+  nca_metab,
+  nca_metab |> dplyr::filter(tad == 0) |>
+    dplyr::distinct(id, group, .keep_all = TRUE)
+) |>
+  dplyr::distinct(id, group, tad, .keep_all = TRUE) |>
+  dplyr::arrange(id, group, tad)
+
+conc_metab <- PKNCA::PKNCAconc(
+  nca_metab,
+  Cm ~ tad | group + id,
+  concu = "ng/mL", timeu = "h"
+)
+dose_metab_obj <- PKNCA::PKNCAdose(
+  dose_parent,
+  amt ~ time | group + id,
+  doseu = "mg"
+)
+
+intervals_metab <- data.frame(
+  start    = 0,
+  end      = 24,
+  cmax     = TRUE,
+  tmax     = TRUE,
+  cmin     = TRUE,
+  cav      = TRUE,
+  auclast  = TRUE
+)
+
+nca_metab_res <- PKNCA::pk.nca(
+  PKNCA::PKNCAdata(conc_metab, dose_metab_obj, intervals = intervals_metab)
+)
+```
+
+## Comparison against published reference values
+
+Kim 2008 reports four quantitative outputs that the package model should reproduce:
+
+1. Apparent oral clearance CL/F per CYP2D6 group (Table 3 final model). Reproduced trivially because the model uses these as the structural parameters: at the cohort mean 24.3 mg daily dose, AUC0-24,ss = Dose / CL/F (with CL/F apparent and embedding F).
+2. The metabolic ratio MR (the AUC ratio of the metabolite to the parent) per CYP2D6 group (Kim 2008 Results: 0.34, 0.29, 0.25, 0.20 for Groups I-IV).
+3. The elimination half-life of aripiprazole 56.2 h and the elimination half-life of dehydroaripiprazole 83.4 h computed from the BASE model values (V/F = 192 L, CL/F = 2.37 L/h, V(m)/fm = 950 L, CL(m)/fm = 7.90 L/h).
+4. Median observed plasma concentrations (Table 1): aripiprazole 413 ng/mL, dehydroaripiprazole 120 ng/mL.
+
+```{r nca-summary}
+summarise_nca <- function(res, value_col) {
+  df <- as.data.frame(res$result)
+  df |>
+    dplyr::filter(PPTESTCD %in% c("cmax", "cmin", "cav", "tmax", "auclast")) |>
+    dplyr::group_by(group, PPTESTCD) |>
+    dplyr::summarise(
+      median = median(PPORRES, na.rm = TRUE),
+      .groups = "drop"
+    ) |>
+    tidyr::pivot_wider(names_from = PPTESTCD, values_from = median)
+}
+
+nca_parent_tab <- summarise_nca(nca_parent_res)
+nca_metab_tab  <- summarise_nca(nca_metab_res)
+
+# Implied AUC0-24,ss = Dose / CL/F per published CL/F (Kim 2008 Table 3 final model).
+dose_amt <- 24.3
+published_cl_f <- c("Group I" = 3.15, "Group II" = 2.66,
+                    "Group III" = 2.27, "Group IV" = 1.83)
+published_auc24 <- dose_amt / published_cl_f * 1000   # mg/(L/h)*h -> ng*h/mL
+
+simulated_auc24 <- nca_parent_tab$auclast
+names(simulated_auc24) <- nca_parent_tab$group
+
+cmp <- tibble::tibble(
+  Group = names(published_cl_f),
+  `CL/F (L/h)` = unname(published_cl_f),
+  `Implied AUC0-24,ss (ng*h/mL)` = round(unname(published_auc24), 0),
+  `Simulated AUC0-24,ss (ng*h/mL)` = round(unname(simulated_auc24[names(published_cl_f)]), 0),
+  `Simulated Cmax (ng/mL)` = round(nca_parent_tab$cmax[match(names(published_cl_f), nca_parent_tab$group)], 0),
+  `Simulated Cmin (ng/mL)` = round(nca_parent_tab$cmin[match(names(published_cl_f), nca_parent_tab$group)], 0),
+  `Simulated Cavg (ng/mL)` = round(nca_parent_tab$cav[match(names(published_cl_f), nca_parent_tab$group)], 0)
+)
+
+knitr::kable(cmp,
+             caption = paste(
+               "Aripiprazole steady-state NCA per CYP2D6 group at 24.3 mg/day.",
+               "Implied AUC = Dose / CL/F; simulated AUC is the median over",
+               "40 stochastic subjects per stratum. Tmax is fixed at 0 h (the",
+               "model has no absorption lag, and the dosing-interval Cmax for",
+               "ka = 1.06 1/h falls between 2-4 h post-dose)."
+             ),
+             align = "lrrrrrr")
+```
+
+```{r nca-metab-summary}
+metab_cmp <- tibble::tibble(
+  Group = nca_metab_tab$group,
+  `Simulated AUC0-24,ss metab (ng*h/mL)` = round(nca_metab_tab$auclast, 0),
+  `Simulated Cavg metab (ng/mL)` = round(nca_metab_tab$cav, 0),
+  `Simulated Cmax metab (ng/mL)` = round(nca_metab_tab$cmax, 0),
+  `Simulated Cmin metab (ng/mL)` = round(nca_metab_tab$cmin, 0)
+)
+knitr::kable(metab_cmp,
+             caption = paste(
+               "Dehydroaripiprazole steady-state NCA per CYP2D6 group at",
+               "24.3 mg/day. The metabolite parameters CL(m)/fm and V(m)/fm",
+               "are NOT estimated per group (fm = 1 assumed for",
+               "identifiability), so the dehydroaripiprazole AUC depends",
+               "on the parent CL/F only via the rate of metabolite formation."
+             ),
+             align = "lrrrr")
+```
+
+## Metabolic ratio (MR) per CYP2D6 group
+
+The paper's metabolic ratio formula (Kim 2008 Methods 'Pharmacokinetic model and data analysis') multiplies the AUC ratio by the oral bioavailability F = 0.87 from the prescribing information (Kim 2008 reference [2]):
+
+MR_paper = F * AUC_metabolite / AUC_aripiprazole
+
+This recovers the paper's reported MR (0.34, 0.29, 0.25, 0.20) from the simulated AUC ratio. The F factor enters because the apparent fm = 1 parameterisation in the source NONMEM model embeds the unknown F into the apparent metabolite clearance.
+
+```{r mr-comparison}
+mr_sim <- nca_metab_tab$auclast / nca_parent_tab$auclast[match(nca_metab_tab$group, nca_parent_tab$group)]
+mr_paper <- c("Group I" = 0.34, "Group II" = 0.29, "Group III" = 0.25, "Group IV" = 0.20)
+
+mr_cmp <- tibble::tibble(
+  Group = nca_metab_tab$group,
+  `Simulated AUC_m / AUC_p` = round(mr_sim, 3),
+  `Simulated MR (x F=0.87)` = round(mr_sim * 0.87, 3),
+  `Published MR (Kim 2008 Table)` = unname(mr_paper[nca_metab_tab$group])
+)
+
+knitr::kable(mr_cmp,
+             caption = paste(
+               "Metabolic ratio per CYP2D6 group. Simulated AUC ratio",
+               "(column 2) is (CL/F)/(CL(m)/fm) at steady state. Applying",
+               "the bioavailability factor F = 0.87 (Kim 2008 Discussion)",
+               "recovers the paper's reported MR within rounding."
+             ),
+             align = "lrrr")
+```
+
+## Elimination half-lives
+
+The published half-lives (56.2 h aripiprazole, 83.4 h dehydroaripiprazole) were computed from the BASE model values (CL/F = 2.37 L/h, V/F = 192 L; CL(m)/fm = 7.90 L/h, V(m)/fm = 950 L). At the final-model values used by the packaged model, the half-lives differ:
+
+```{r half-life-table}
+final_cl_f      <- published_cl_f
+final_v_f       <- 193
+final_cl_m      <- 8.02
+final_v_m       <- 587
+
+t12_p <- log(2) * final_v_f / final_cl_f
+t12_m <- log(2) * final_v_m / final_cl_m
+
+t12_tab <- tibble::tibble(
+  Group = names(final_cl_f),
+  `t1/2 aripi (h, final model)` = round(t12_p, 1),
+  `t1/2 dehydroaripi (h, final model)` = round(rep(t12_m, length(final_cl_f)), 1)
+)
+
+knitr::kable(t12_tab,
+             caption = paste(
+               "Apparent elimination half-lives at final-model parameter",
+               "values. Compare to the paper's reported 56.2 h aripiprazole",
+               "and 83.4 h dehydroaripiprazole (computed from base-model",
+               "values; Kim 2008 Results 'Pharmacokinetics'). The final-",
+               "model V(m)/fm = 587 L is markedly smaller and less precise",
+               "than the base-model 950 L (Kim 2008 Discussion suggests",
+               "bootstrapping might improve precision)."
+             ),
+             align = "lrr")
+```
+
+# Assumptions and deviations
+
+* **fm fixed at 1 with apparent metabolite CL and V.** The source paper sets the fraction of aripiprazole converted to dehydroaripiprazole to 1 for identifiability and reports CL(m) and V(m) as the apparent ratios CL(m)/fm and V(m)/fm (Kim 2008 Methods). The packaged model preserves this exactly: all parent that is eliminated forms metabolite in 1:1 stoichiometry. A side effect of the apparent parameterisation is that the simulated AUC ratio AUC_m / AUC_p equals (CL/F)/(CL(m)/fm), which is the F = 0.87 factor larger than the paper's reported MR. Applying F = 0.87 to the simulated AUC ratio recovers the paper's reported MR (see the metabolic-ratio table above).
+
+* **CL/F and CL(m)/fm IIV covariance not encoded.** Kim 2008 Results state that the final model included an estimated covariance between etalcl (CL/F) and etalcl_dehyari (CL(m)/fm) because the full variance-covariance matrix did not converge. The numeric value of the estimated covariance is not reported in Table 3 or in the text. The packaged model encodes the two IIVs as independent (off-diagonal covariance = 0) because the estimate is unrecoverable from the publication; a downstream user with access to the original NONMEM control stream may set the covariance manually.
+
+* **V(m)/fm in the final model is much smaller and less precise than the base-model estimate.** The base model fitted V(m)/fm = 950 L (SE 177); the final covariate model fitted V(m)/fm = 587 L (SE 217). Kim 2008 Discussion notes that the final-model value of V(m)/fm "might be too variable to represent the entire population" and suggests bootstrapping. The packaged model uses the final-model V(m)/fm because the skill standardises on final-model values; a downstream user simulating typical dehydroaripiprazole trajectories may substitute the base-model V(m)/fm = 950 L to recover the paper's reported 83.4 h half-life (the corresponding aripiprazole half-life shifts from final-model Group I 42.5 h to base-model 56.2 h).
+
+* **Ka FIXED at 1.06 1/h with no IIV.** Kim 2008 Results 'Pharmacokinetics' state that "Since the available data contained little information on the oral absorption of aripiprazole, ka could not be estimated properly and was fixed to 1.06 h-1 in accordance with previous population analysis." The packaged model preserves this. Kim 2008 Discussion notes that the early-after-administration concentrations were under-predicted by the final model "explained partly by model misspecification ... ka was predefined to a constant without IIV." Downstream users sensitive to absorption-phase behaviour should be aware that the model does not capture variability in the absorption rate constant.
+
+* **Inter-individual variability on V(m)/fm not estimated.** Kim 2008 Results state that "Sparse sampling design led to the incorporation of interindividual variability (IIV) only for CL/F, V/F, and CL(m)/fm. Moreover, the addition of IIV for V(m)/fm had no influence on OFV and resulted in an unstable fit." The packaged model has no etalvc_dehyari; simulated dehydroaripiprazole trajectories therefore exhibit no between-subject variability in the apparent metabolite volume of distribution.
+
+* **CYP2D6 strata are encoded with paired binary canonicals.** The model uses CYP2D6_EM and CYP2D6_PM (the existing nlmixr2lib canonical PM / EM / IM trichotomy) plus two new paired canonicals CYP2D6_EM_1FUNC_1PD and CYP2D6_EM_1FUNC_1NULL to encode Groups II and III as within-EM subdivisions of the EM-with-2-functional-alleles reference (Group I). Group IV (IM) is the implicit non-EM non-PM stratum. The Kim 2008 cohort contained no PMs; a downstream simulation that places subjects in the PM stratum will route them through the Group IV (IM) typical CL/F because the model has no PM-stratum CL/F estimate to draw on.
+
+* **CYP3A5 polymorphism screened but not retained.** Kim 2008 Results 'Covariates' and Table 4 show that CYP3A5 genetic polymorphisms on CL/F (dOFV -1.69, p = 0.194) and CL(m)/fm (dOFV -0.55, p = 0.458) were not statistically significant and were not retained in the final model. The CYP3A5 expresser indicator is documented in `covariatesDataExcluded` rather than `covariateData`.
+
+* **Age, body weight, and gender screened but not retained.** Kim 2008 Results 'Covariates' and Table 4 show non-significant effects of age (CL/F p = 0.632; CL(m)/fm p = 0.680), body weight (CL/F p = 0.186; CL(m)/fm p = 0.092; V/F p = 0.249), and gender (CL/F p = 0.791; CL(m)/fm p = 0.590). The paper notes (Discussion) that the weight range (CV 18%) was relatively narrow, limiting the power to detect a body-weight effect on apparent clearance. Subsequent aripiprazole popPK analyses (e.g., Knights 2015) do retain a body-weight effect on CL/F; the packaged model preserves the Kim 2008 final-model structure (no weight effect) and the documentation flags weight in `covariatesDataExcluded` with the screening dOFV values.
+
+* **Reported half-lives match the base model, not the final model.** Kim 2008 Results 'Pharmacokinetics' reports elimination half-lives of 56.2 h for aripiprazole and 83.4 h for dehydroaripiprazole, computed from the base-model parameter values (CL/F = 2.37 L/h, V/F = 192 L; CL(m)/fm = 7.90 L/h, V(m)/fm = 950 L). At the final-model values used by the packaged model the aripiprazole half-life varies by CYP2D6 group (Group I 42.5 h, Group II 50.3 h, Group III 58.9 h, Group IV 73.1 h) and the dehydroaripiprazole half-life is shorter (50.7 h vs the paper's 83.4 h). The shorter dehydroaripi half-life is driven by the final model's smaller V(m)/fm = 587 L; see the V(m)/fm bullet above.
