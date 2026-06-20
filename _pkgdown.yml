@@ -1094,6 +1094,8 @@ navbar:
         href: articles/Valenzuela_2011_oxaliplatin.html
       - text: "Oxcarbazepine (Rodrigues 2017)"
         href: articles/Rodrigues_2017_oxcarbazepine.html
+      - text: "Oxypurinol (Stocker 2012)"
+        href: articles/Stocker_2012_oxypurinol.html
       - text: "Ozanezumab (Berges 2015)"
         href: articles/Berges_2015_ozanezumab.html
       - text: "Ozoralizumab (Takeuchi 2023)"
@@ -2543,6 +2545,7 @@ articles:
   - articles/Stein_2018_mAb_nonlinear_PK
   - articles/Stein_2019_Tisagenlecleucel
   - articles/Stevens_2012_remoxipride
+  - articles/Stocker_2012_oxypurinol
   - articles/Storset_2014_tacrolimus
   - articles/Stricker_2013_aminocaproicAcid
   - articles/Stricker_2015_aminocaproic_acid
