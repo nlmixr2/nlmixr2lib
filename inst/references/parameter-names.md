@@ -36,7 +36,7 @@ The `Type:` field is the routing tag the runtime parser uses to assign the entry
 The following pattern constants remain hard-coded in `R/conventions.R::.nlmixr2libConventionsStatic` because they are structural regular expressions rather than name lists. They are documented here for cross-reference:
 
 - `covEffectPattern = "^e_[A-Za-z0-9]+(_[A-Za-z0-9]+){1,5}$"` — canonical shape of a covariate-effect parameter name: a leading `e_`, a covariate token, and one to five additional tokens (final token is the affected PK parameter, optional middle tokens carry metabolite / shared-exponent / CL-component context).
-- `clComponents = c("ss", "time", "renal", "nonren")` — suffix tokens permitted on multi-component CL parameters (e.g., `cl_renal + cl_nonren`).
+- `clComponents = c("ss", "time", "renal", "nonren", "hemodialysis", "dialysis")` — suffix tokens permitted on multi-component CL parameters (e.g., `cl_renal + cl_nonren`, `cl + cl_hemodialysis`, `cl + cl_dialysis`).
 - `transformPrefixes = c("l", "logit", "probit")` — accepted parameter-name transform prefixes.
 - `residualError = c("propSd", "addSd", "expSd")` — canonical residual-error SD names. `propSd` / `addSd` are the proportional and additive SDs for the standard `~ prop(...)`, `~ add(...)`, and combined `~ prop(...) + add(...)` forms. `expSd` is the log-scale residual SD used with `~ lnorm(...)`.
 - `deprecatedResidualError`, `deprecatedIivPrefixes`, `deprecatedVolumeNames`, `deprecatedVmaxNames`, `deprecatedParentSuffix` — deprecation lists also remain in R.
@@ -168,7 +168,16 @@ The `l<base>` convention denotes a population mean estimated on the log scale (`
   - `CL_HD` -- Veinstein 2013 paper notation (the hemodialysis-arm clearance estimated as a primary structural THETA with its own IIV; gated by the per-time-point hemodialysis-active indicator).
   - `CLHD`, `CL_HF`, `CL_HDF`, `CL_dialysis` -- variant abbreviations used in adjacent ESRD / CRRT popPK literature.
 - **Example models:** `Veinstein_2013_gentamicin.R` (primary `ini()` parameter with IIV; the dialysis arm is estimated as a structural THETA gated by `HEMODIALYSIS`).
-- **Notes:** Distinct from `lcl_renal` (= residual renal CL, an intrinsic-body component) and `lcl_nonren` (= non-renal intrinsic-body CL). `Liesenfeld_2013_dabigatran.R` derives an equivalent dialysis-arm quantity from the Michaels equation (a function of blood flow rate, dialysate flow rate, and a hemodialyzer mass-transfer-area coefficient) as a derived `cl_dialysis` expression in `model()` rather than a primary `ini()` parameter, so its file does not include `lcl_hemodialysis`. Covariate-effect names on this arm follow the standard shape `e_<cov>_cl_hemodialysis`.
+- **Notes:** Use `lcl_hemodialysis` for intermittent hemodialysis (IHD), where each dialysis session is bounded by a discrete start and end time within the modeled period. Use the broader `lcl_dialysis` (next entry) for continuous renal replacement therapy modalities (CVVH / CVVHD / CVVHDF / SLED) where the circuit runs continuously across the modeled period. Distinct from `lcl_renal` (= residual renal CL, an intrinsic-body component) and `lcl_nonren` (= non-renal intrinsic-body CL). `Liesenfeld_2013_dabigatran.R` derives an equivalent dialysis-arm quantity from the Michaels equation (a function of blood flow rate, dialysate flow rate, and a hemodialyzer mass-transfer-area coefficient) as a derived `cl_dialysis` expression in `model()` rather than a primary `ini()` parameter, so its file does not include `lcl_hemodialysis`. Covariate-effect names on this arm follow the standard shape `e_<cov>_cl_hemodialysis`.
+
+### lcl_dialysis (**canonical log-transformed continuous-dialysis clearance arm**)
+- **Type:** log-transformed-pk
+- **Role:** Extracorporeal renal-replacement-therapy clearance arm contributed by continuous (or extended / general) dialysis modalities -- continuous venovenous hemodialysis (CVVHD), continuous venovenous hemodiafiltration (CVVHDF), continuous venovenous hemofiltration (CVVH), sustained low-efficiency dialysis (SLED) -- where the dialysis circuit runs continuously over the modeled period. Paired with the canonical body-CL parameter `lcl` and the time-varying `HEMODIALYSIS` covariate (which gates the arm to 0 during any brief pauses for filter changes / off-floor procedures): `cl_total <- cl + HEMODIALYSIS * cl_dialysis`. Distinct from `lcl_hemodialysis`, which is reserved for intermittent hemodialysis sessions with discrete start/stop boundaries; future continuous-dialysis-cohort papers should reuse `lcl_dialysis`.
+- **Source aliases:**
+  - `CLdial` -- Eyler 2014 paper notation (the dialytic clearance estimated as a primary structural THETA with its own IIV; gated by the per-time-point CRRT-active indicator).
+  - `CL_CVVHD`, `CL_CVVHDF`, `CL_CRRT`, `CL_SLED` -- variant abbreviations used in adjacent CRRT popPK literature.
+- **Example models:** `Eyler_2014_ertapenem.R` (primary `ini()` parameter with IIV; CLdial = 36 mL/min added to body systemic CLS = 48 mL/min when CRRT is running, in critically ill adults receiving CVVHD or CVVHDF; cohort mean effluent rate 38 mL/h/kg).
+- **Notes:** The dialytic-arm magnitude depends on the cohort mean effluent rate (and the drug's sieving coefficient). Future continuous-dialysis extractions that retain effluent flow as a covariate may scale `cl_dialysis` by `(Q_EF / Q_EF_ref)^exponent` once a Q_EF canonical is ratified; for now (Eyler 2014 ratification), the pooled-cohort mean is absorbed into the typical-value `cl_dialysis` estimate. Covariate-effect names on this arm follow the standard shape `e_<cov>_cl_dialysis`. Ratified canonically on 2026-06-17 (operator response to sidecar 001 of the Eyler 2014 ertapenem extraction); use the full word `dialysis` rather than the abbreviation `dial` so the suffix is self-documenting.
 
 ### lcl_met (**canonical log-transformed metabolic-formation clearance arm**)
 - **Type:** log-transformed-pk
@@ -397,6 +406,12 @@ The bare counterparts of the log-transformed parameters above. Used when the sou
 - **Role:** Bare counterpart of `lcl_hemodialysis`. Extracorporeal renal-replacement-therapy clearance arm; added to the body baseline `cl` only when the time-varying `HEMODIALYSIS` covariate is 1.
 - **Source aliases:** `CL_HD`, `CLHD`, `CL_HF`, `CL_HDF`.
 - **Example models:** `Veinstein_2013_gentamicin.R`.
+
+### cl_dialysis (**canonical bare continuous-dialysis clearance arm**)
+- **Type:** bare-pk
+- **Role:** Bare counterpart of `lcl_dialysis`. Continuous renal-replacement-therapy clearance arm (CVVHD / CVVHDF / CVVH / SLED); added to the body baseline `cl` only when the time-varying `HEMODIALYSIS` covariate is 1.
+- **Source aliases:** `CLdial`, `CL_CVVHD`, `CL_CVVHDF`, `CL_CRRT`, `CL_SLED`.
+- **Example models:** `Eyler_2014_ertapenem.R`.
 
 ### cl_met (**canonical bare metabolic-formation clearance arm**)
 - **Type:** bare-pk
