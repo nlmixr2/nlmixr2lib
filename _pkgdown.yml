@@ -666,6 +666,8 @@ navbar:
         href: articles/Jiang_2008_gemcitabine.html
       - text: "Gemifloxacin (Landersdorfer 2009)"
         href: articles/Landersdorfer_2009_gemifloxacin.html
+      - text: "Gentamicin (Bijleveld 2016)"
+        href: articles/Bijleveld_2016_gentamicin.html
       - text: "Gentamicin (Bijleveld 2017)"
         href: articles/Bijleveld_2017_gentamicin.html
       - text: "Gentamicin (Fuchs 2014)"
@@ -1961,6 +1963,7 @@ articles:
   - articles/Bienczak_2016_efavirenz
   - articles/Bienczak_2016_nevirapine
   - articles/Bienczak_2025_ligelizumab
+  - articles/Bijleveld_2016_gentamicin
   - articles/Bijleveld_2017_gentamicin
   - articles/Billard_1995_methoxsalen
   - articles/Birgersson_2016_artemisinin
