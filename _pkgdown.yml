@@ -1488,6 +1488,8 @@ navbar:
         href: articles/Stein_2019_Tisagenlecleucel.html
       - text: "Tislelizumab (Budha 2023)"
         href: articles/Budha_2023_tislelizumab.html
+      - text: "Tld 1 (McLaughlin 2024)"
+        href: articles/McLaughlin_2024_tld_1.html
       - text: "Tobra (Hennig 2013)"
         href: articles/Hennig_2013_tobra.html
       - text: "Tobramycin (Conil 2010)"
@@ -2281,7 +2283,7 @@ articles:
   - articles/Masters_2022_avelumab
   - articles/Matsumoto_2005_TF_505
   - articles/Mazzocco_2015_temozolomide
-  - articles/McLachlan_1996_fluconazole
+  - articles/McLaughlin_2024_tld_1
   - articles/MedellinGaribay_2015_gentamicin
   - articles/Melhem_2022_dostarlimab
   - articles/Merchan_2015_azithromycin
