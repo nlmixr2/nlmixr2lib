@@ -282,7 +282,7 @@ The Cao 2013 mAb mPBPK family uses paper-anatomical compartment names that are a
 - **Type:** compartment
 - **Role:** Gallbladder / biliary recirculation compartment in enterohepatic-circulation (EHC) popPK models. Drug accumulates from central via biliary excretion (`k12`) and re-enters central after a delay (`k21` gated by gallbladder-emptying time `tg`), producing the characteristic second-peak phenomenon.
 - **Source aliases:** none.
-- **Example models:** `Ide_2009_pravastatin.R` and similar EHC models.
+- **Example models:** `Ide_2009_pravastatin.R`.
 
 ---
 
@@ -324,7 +324,7 @@ The Cao 2013 mAb mPBPK family uses paper-anatomical compartment names that are a
 - **Type:** compartment
 - **Role:** Gompertz / generalised-logistic ceiling `K` used alongside `tumor_size` in saturable-growth TGI variants.
 - **Source aliases:** none.
-- **Example models:** `tgi_sat_*.R` family.
+- **Example models:** `tgi_sat_*.R`.
 - **Notes:** Registered 2026-05-28 per the naming audit.
 
 ### cycling_cells (**canonical proliferating-cell pool**)
@@ -1495,13 +1495,13 @@ Population body-composition / disease-risk PD output states from the Oniki 2018 
 - **Type:** compartment
 - **Role:** Glucagon-like peptide 1 hormone PD output.
 - **Source aliases:** none.
-- **Example models:** `NA_NA_paracetamol.R` reference extraction.
+- **Example models:** `NA_NA_paracetamol.R`.
 
 ### gip (**canonical glucose-dependent insulinotropic polypeptide output**)
 - **Type:** compartment
 - **Role:** Glucose-dependent insulinotropic polypeptide PD output.
 - **Source aliases:** none.
-- **Example models:** `NA_NA_paracetamol.R` reference extraction.
+- **Example models:** `NA_NA_paracetamol.R`.
 
 ---
 
@@ -2329,7 +2329,7 @@ Cell-type suffixes used with Friberg-style `circ_<celltype>` myelosuppression co
 - **Type:** metabolite-suffix
 - **Role:** Absolute neutrophil count cell-type suffix.
 - **Source aliases:** none.
-- **Example models:** `Han_2015_decitabine.R` and similar.
+- **Example models:** `Han_2015_decitabine.R`.
 
 ### plt (**canonical platelet cell-type suffix**)
 - **Type:** metabolite-suffix
@@ -2419,7 +2419,7 @@ Zurlinden 2016 paracetamol PBPK shorthand suffixes `as` and `ag` were deprecated
 - **Role:** Formerly APAP-sulfate suffix (Zurlinden notation). Same chemical species as `apaps` (Cook 2016 notation). Deprecated on 2026-06-19 because the bare `as` token collides with R reserved words (`as.numeric`, `as.integer`, etc.).
 - **Source aliases:**
   - `as` -- deprecated canonical name used in `Zurlinden_2016_paracetamol.R` prior to the 2026-06-19 audit.
-- **Example models:** (formerly `Zurlinden_2016_paracetamol.R`; migrated to use `apaps` in the same paper.)
+- **Example models:** `Zurlinden_2016_paracetamol.R`.
 - **Notes:** Do not use for new models. The Zurlinden 2016 paracetamol PBPK model was migrated to `apaps` on 2026-06-19 per the canonical-register standardization audit (R-reserved-word collision fix).
 
 ### ag (**DEPRECATED -- use `apapg` instead**)
@@ -2427,7 +2427,7 @@ Zurlinden 2016 paracetamol PBPK shorthand suffixes `as` and `ag` were deprecated
 - **Role:** Formerly APAP-glucuronide suffix (Zurlinden notation). Same chemical species as `apapg` (Cook 2016 notation). Deprecated on 2026-06-19 because the bare `ag` token collides with the silver chemical symbol (Ag).
 - **Source aliases:**
   - `ag` -- deprecated canonical name used in `Zurlinden_2016_paracetamol.R` prior to the 2026-06-19 audit.
-- **Example models:** (formerly `Zurlinden_2016_paracetamol.R`; migrated to use `apapg` in the same paper.)
+- **Example models:** `Zurlinden_2016_paracetamol.R`.
 - **Notes:** Do not use for new models. The Zurlinden 2016 paracetamol PBPK model was migrated to `apapg` on 2026-06-19 per the canonical-register standardization audit (chemistry-symbol collision fix).
 
 ---
@@ -2440,7 +2440,7 @@ Per-paper metabolite / sibling-drug suffix additions discovered during the 2026-
 - **Type:** metabolite-suffix
 - **Role:** 1'-hydroxymidazolam metabolite of midazolam.
 - **Source aliases:** none.
-- **Example models:** `Brussee_2018_midazolam_PBPK.R`.
+- **Example models:** `Brussee_2018_midazolam_PBPK.R`, `Franken_2017_midazolam.R`.
 
 ### 4ohctx (**canonical 4-hydroxycyclophosphamide suffix**)
 - **Type:** metabolite-suffix

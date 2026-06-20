@@ -153,13 +153,13 @@ The `l<base>` convention denotes a population mean estimated on the log scale (`
 - **Type:** log-transformed-pk
 - **Role:** Renal (glomerular-filtration / tubular-secretion) component of an additive renal + non-renal clearance decomposition `CL_total = CL_renal + CL_nonren`.
 - **Source aliases:** none.
-- **Example models:** `Jonckheere_2019_cefepime.R` and similar renally cleared small-molecule popPK extractions.
+- **Example models:** `Jonckheere_2019_cefepime.R`.
 
 ### lcl_nonren (**canonical log-transformed non-renal clearance arm**)
 - **Type:** log-transformed-pk
 - **Role:** Non-renal (hepatic / metabolic / extra-renal) component of an additive renal + non-renal clearance decomposition.
 - **Source aliases:** none.
-- **Example models:** `Jonckheere_2019_cefepime.R` and similar.
+- **Example models:** `Jonckheere_2019_cefepime.R`.
 
 ### lcl_hemodialysis (**canonical log-transformed dialysis-active clearance arm**)
 - **Type:** log-transformed-pk
@@ -191,7 +191,7 @@ The `l<base>` convention denotes a population mean estimated on the log scale (`
   - `lke` -- legacy name; replaced 2026-05-28 by the naming audit.
   - `lkde` -- paper-named (Mazzocco 2015 / Shoji 2017 KDE) form; replaced 2026-05-30 by the K-PD canonical-name retrofit.
   - `lkp` -- paper-named (van Hasselt 2015 KP) form; replaced 2026-05-30 by the K-PD canonical-name retrofit.
-- **Example models:** `Mazzocco_2015_temozolomide.R`, `Shoji_2017_fosdagrocorat_oc.R`, `Shoji_2017_fosdagrocorat_p1np.R`, `vanHasselt_2015_eribulin.R`, K-PD templates. The drug-suffixed `lkel_<drug>` (Wilson 2015: `lkel_sunitinib`, `lkel_irinotecan`) carries the per-drug K-PD elimination rate in combination K-PD models.
+- **Example models:** `Mazzocco_2015_temozolomide.R`, `Shoji_2017_fosdagrocorat_oc.R`, `Shoji_2017_fosdagrocorat_p1np.R`, `vanHasselt_2015_eribulin.R`.
 - **Notes:** Canonical `lkel` adopted 2026-05-28 per the naming audit.
 
 ### ltlag (**canonical log-transformed absorption lag time**)
@@ -317,7 +317,7 @@ The bare counterparts of the log-transformed parameters above. Used when the sou
   - `kde` -- paper-named (Mazzocco 2015 / Shoji 2017 / Xia 2024 KDE) form; replaced 2026-05-30 by the K-PD canonical-name retrofit.
   - `kp` -- paper-named (van Hasselt 2015 KP) form; replaced 2026-05-30 by the K-PD canonical-name retrofit.
   - `ps_elim`, `pc_elim` -- paper-named (Wilson 2015 p_S / p_C) bare drug-specific K-PD elim rates; replaced 2026-05-30 by `kel_sunitinib` / `kel_irinotecan`.
-- **Example models:** K-PD templates plus `Mazzocco_2015_temozolomide.R`, `Shoji_2017_fosdagrocorat_oc.R`, `Shoji_2017_fosdagrocorat_p1np.R`, `vanHasselt_2015_eribulin.R`, `Wilson_2015_sunitinib_irinotecan_mouse.R` (bare drug-suffixed `kel_<drug>`), `Xia_2024_warfarin.R`.
+- **Example models:** `Mazzocco_2015_temozolomide.R`, `Shoji_2017_fosdagrocorat_oc.R`, `Shoji_2017_fosdagrocorat_p1np.R`, `vanHasselt_2015_eribulin.R`, `Wilson_2015_sunitinib_irinotecan_mouse.R` (bare drug-suffixed `kel_<drug>`), `Xia_2024_warfarin.R`.
 
 ### k12 (**canonical bare central-to-first-peripheral rate constant**)
 - **Type:** bare-pk
@@ -504,7 +504,7 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
 - **Role:** First-order rate constant for equilibration between the central plasma concentration and the effect-compartment concentration (1 / time), used by standard hysteresis effect-compartment PK-PD models: `d Ce / dt = ke0 * (Cc - Ce)`. The corresponding equilibration half-life is `log(2) / ke0`. Inside `model()` the bare name is `ke0`; the log-transformed `lke0` form is used in `ini()` when the source paper reports `log_e(ke0)` or uses an exponential typical-value form.
 - **Source aliases:**
   - `keo`, `Keo` -- equivalent paper notation; both spellings (`keo` and `ke0`) appear in the literature.
-- **Example models:** `Kleijn_2011_sugammadex_rocuronium.R` (`lke0 = log(0.134) = -2.01`, giving `ke0 = 0.134 1/min` for the rocuronium effect-compartment equilibration; allometric scaling `(BW/70)^-0.25`).
+- **Example models:** `Kleijn_2011_sugammadex_rocuronium.R` (`lke0 = log(0.134) = -2.01`, giving `ke0 = 0.134 1/min` for the rocuronium effect-compartment equilibration; allometric scaling `(BW/70)^-0.25`), `Savic_2010_warfarin.R` (founding registry example -- 1-compartment PK with effect-compartment-driven proportional-odds PD), `Schindler_2016_sunitinib.R` (effect-compartment equilibration with daily AUC at ln(2)/50 1/h).
 - **Notes:** Distinct from `lke_kpd` (which is K-PD elimination rate and was deprecated in favour of the canonical `lkel`). `lke0` is specifically the effect-compartment equilibration parameter for hysteresis PK-PD modelling.
 
 ### lec50 (**canonical log-transformed effect-compartment EC50**)
@@ -512,7 +512,7 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
 - **Role:** Log-transformed concentration producing half-maximal effect in sigmoid Emax / Imax PD models (concentration units). Inside `model()` the bare name is `ec50`.
 - **Source aliases:**
   - `lEC50`, `lec_50` -- equivalent paper notation.
-- **Example models:** `deVriesSchultink_2018_trastuzumab_LVEF.R`, `Kleijn_2011_sugammadex_rocuronium.R`, `Zhang_2022_ormutivimab.R`, and many sigmoid-Emax PD extractions.
+- **Example models:** `deVriesSchultink_2018_trastuzumab_LVEF.R`, `Kleijn_2011_sugammadex_rocuronium.R`, `Zhang_2022_ormutivimab.R`.
 - **Notes:** Pairs with `lhill` (Hill exponent). The bare name `ec50` is for use in `model()` derivations.
 
 ### ec50 (**canonical bare effect-compartment EC50**)
@@ -631,7 +631,7 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
 - **Type:** paper-named-param
 - **Role:** Fraction of mean absorption time accounted for by the transit-delay chain.
 - **Source aliases:** none.
-- **Example models:** `Svensson_2016_bedaquiline.R`, transit-absorption popPK extractions.
+- **Example models:** `Svensson_2016_bedaquiline.R`.
 
 ### ktr (**canonical transit-chain rate constant**)
 - **Type:** paper-named-param
