@@ -1,0 +1,440 @@
+---
+title: "Ixazomib (Gupta 2015)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Ixazomib (Gupta 2015)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+suppressPackageStartupMessages({
+  library(nlmixr2lib)
+  library(PKNCA)
+  library(rxode2)
+  library(dplyr)
+  library(tidyr)
+  library(ggplot2)
+})
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode2(readModelDb("Gupta_2015_ixazomib"))$reference`
+* Description: `r rxode2::rxode2(readModelDb("Gupta_2015_ixazomib"))$description`
+* Article (open access, CC-BY-NC-ND): <https://doi.org/10.1111/bcp.12542>
+
+Gupta 2015 is the first published population pharmacokinetic analysis
+of the investigational oral proteasome inhibitor ixazomib (MLN9708),
+pooling 226 adult patients with advanced multiple myeloma, lymphoma,
+or solid tumours across four phase I open-label dose-escalation
+studies (Gupta 2015 Table 1). Ixazomib disposition is described by
+a three-compartment model with first-order absorption and linear
+elimination from the central compartment, fit simultaneously to
+intravenous and oral data (NONMEM ADVAN12; TRANS4; Gupta 2015 Methods
+and Appendix 1). Body surface area on the second peripheral volume
+V4 is the only retained covariate; weight, age, gender, race,
+creatinine clearance, ALT, AST, albumin, and bilirubin had no
+clinically relevant effect on ixazomib pharmacokinetics (Gupta 2015
+Results and Discussion). This analysis was pivotal in transitioning
+the ixazomib clinical development program from BSA-based to fixed
+dosing.
+
+A subsequent labelling popPK analysis on a larger pooled dataset (755
+patients, including the phase III TOURMALINE-MM1 cohort) is packaged
+as `modellib("Gupta_2017_ixazomib")` (Gupta et al. 2017,
+doi:10.1007/s40262-017-0526-4).
+
+# Population
+
+The pooled analysis dataset (Gupta 2015 Tables 1 and 2) includes
+**226 adult patients** across four phase I trials:
+
+- 88 patients with advanced solid tumours (study C16001, intravenous
+  ixazomib 0.125-2.34 mg/m^2 twice weekly).
+- 30 patients with relapsed / refractory lymphoma (study C16002,
+  intravenous ixazomib 0.125-3.11 mg/m^2 weekly).
+- 53 patients with relapsed / refractory multiple myeloma (study
+  C16003, oral ixazomib 0.24-2.23 mg/m^2 twice weekly).
+- 55 patients with relapsed / refractory multiple myeloma (study
+  C16004, oral ixazomib 0.24-3.95 mg/m^2 weekly).
+
+Of the 226 patients, 108 received oral ixazomib and 118 received
+intravenous ixazomib; dosing was body-surface-area-based across all
+four phase I studies. Oral ixazomib was administered as capsules of
+0.2, 0.5, and 2 mg, with the BSA-based dose rounded up or down to the
+nearest available capsule strength.
+
+Baseline demographics (Gupta 2015 Table 2):
+
+- Median age 62.0 years (range 23-86); 42.5% female; 87% Caucasian
+  versus 13% other race.
+- Median body weight 78.0 kg (range 35.5-132.3); median BSA 1.9 m^2
+  (range 1.3-2.6).
+- Baseline labs (medians with full ranges): albumin 38.0 g/L (23-48);
+  ALT 20.0 U/L (7-100); AST 24.0 U/L (9-82); total bilirubin 7.0 uM
+  (1.7-39.3); creatinine clearance 88.0 mL/min (21.9-213.7,
+  Cockcroft-Gault).
+
+The full population metadata is available programmatically via
+`readModelDb("Gupta_2015_ixazomib")$population`. Covariates that
+were screened against ixazomib pharmacokinetics but not retained in
+the final model are documented in
+`readModelDb("Gupta_2015_ixazomib")$covariatesDataExcluded` (weight,
+age, sex, race, creatinine clearance, ALT, AST, albumin, bilirubin).
+
+# Source trace
+
+Per-parameter origin (recorded as in-file comments next to each
+`ini()` entry of
+`inst/modeldb/specificDrugs/Gupta_2015_ixazomib.R`). Final-model
+column of Gupta 2015 Table 3.
+
+| Equation / parameter         | Value      | Source location                                                         |
+|------------------------------|------------|-------------------------------------------------------------------------|
+| `lka`     (log Ka)           | log(0.5)   | Gupta 2015 Table 3: Ka = 0.5 1/h (RSE 7.4%)                             |
+| `lcl`     (log CL)           | log(2.0)   | Gupta 2015 Table 3: CL = 2.0 L/h (RSE 4.8%)                             |
+| `lvc`     (log V2 central)   | log(14.3)  | Gupta 2015 Table 3: V2 = 14.3 L (RSE 10.0%)                             |
+| `lq`      (log Q3)           | log(9.7)   | Gupta 2015 Table 3: Q3 = 9.7 L/h (RSE 15.3%)                            |
+| `lvp`     (log V3 periph1)   | log(412.0) | Gupta 2015 Table 3: V3 = 412 L (RSE 7.0%)                               |
+| `lq2`     (log Q4)           | log(22.3)  | Gupta 2015 Table 3: Q4 = 22.3 L/h (RSE 5.7%)                            |
+| `lvp2`    (log V4 periph2)   | log(83.4)  | Gupta 2015 Table 3: V4 = 83.4 L (RSE 17.7%); reference at BSA = 1.90 m^2 |
+| `lfdepot` (log F)            | log(0.6)   | Gupta 2015 Table 3: F = 0.6 (RSE 6.0%)                                  |
+| `e_bsa_vp2` (BSA-on-V4 exp.) | 2.3        | Gupta 2015 Table 3 BSA-on-V4 row: 2.3 (RSE 18.9%); Appendix 1 THETA(9)  |
+| `etalcl`  (IIV log CL)       | 0.1647     | Table 3 %BSV CL 42.3% -> omega^2 = log(1 + 0.423^2) = 0.1647            |
+| `etalvc`  (IIV log V2)       | 0.6981     | Table 3 %BSV V2 100.5% -> omega^2 = log(1 + 1.005^2) = 0.6981           |
+| `etalvp2` (IIV log V4)       | 0.1858     | Table 3 %BSV V4 45.2% -> omega^2 = log(1 + 0.452^2) = 0.1858            |
+| `etalka`  (IIV log Ka)       | 0.2912     | Table 3 %BSV Ka 58.1% -> omega^2 = log(1 + 0.581^2) = 0.2912            |
+| `etalfdepot` (IIV log F)     | 0.1660     | Table 3 %BSV F 42.5% -> omega^2 = log(1 + 0.425^2) = 0.1660             |
+| `propSd` (residual SD)       | sqrt(0.3)  | Table 3 Additive variance = 0.3 (RSE 6.1%) -> SD = sqrt(0.3) ~ 0.5477   |
+| `d/dt(depot, central, peripheral1, peripheral2)` | n/a | Gupta 2015 Appendix 1 NONMEM ADVAN12;TRANS4 (3-compartment + first-order absorption) |
+| `f(depot) <- fdepot`         | n/a        | Gupta 2015 Appendix 1: F1 = THETA(8) * EXP(ETA(8)) bioavailability on the depot |
+| `vp2 <- exp(lvp2 + etalvp2) * (BSA / 1.90)^e_bsa_vp2` | n/a | Gupta 2015 Appendix 1: V0 = (BSAC/1.90)**THETA(9); V4 = (THETA(6)*V0)*EXP(ETA(6)) |
+| `Cc = (central / vc) * 1000` | n/a        | Dose units mg, V in L gives mg/L; multiply by 1000 to express in ng/mL matching the LC-MS/MS assay output (Gupta 2015 Methods; LLOQ 0.5 ng/mL) |
+| `Cc ~ prop(propSd)`          | n/a        | Gupta 2015 Methods + Appendix 1: $ERROR Y = LOG(F) + ERR(1) (additive on log scale) -> nlmixr2 proportional in linear space |
+
+# Virtual cohort
+
+The original observed concentrations from the four phase I studies
+are not publicly distributed with the package. The cohort below
+mirrors the simulation strategy described in Gupta 2015 Methods
+("The final population PK model was used to simulate the ixazomib
+concentration-time profiles and exposure after BSA-based dosing
+(2.23 mg/m^2) and fixed dosing"). 1000 virtual subjects are drawn
+with BSA truncated to the observed range [1.3, 2.6] m^2 and centered
+on the mean BSA (1.86 m^2) reported by Gupta 2015 for the bortezomib
+multiple-myeloma cohort that the dosing comparison was anchored to.
+
+```{r cohort}
+set.seed(20150326L)
+
+n_subjects <- 1000L
+
+# BSA distribution: truncated normal centred at 1.86 m^2 (the mean BSA
+# of the bortezomib MM cohort used by Gupta 2015 to anchor the fixed-
+# dose comparison) with sd 0.25 m^2; bounded by the Table 2 observed
+# range (1.3-2.6 m^2). The paper does not report the BSA distribution
+# shape beyond mean + range; the simulated AUC distribution is
+# insensitive to this shape because BSA enters only as a power
+# covariate on V4 (no covariate on CL).
+bsa <- pmin(pmax(stats::rnorm(n_subjects, mean = 1.86, sd = 0.25), 1.3), 2.6)
+
+# Two cohorts: BSA-based dosing 2.23 mg/m^2 (per-subject dose scales
+# with BSA), and fixed 4 mg dosing. Both are single oral doses.
+# IDs must be disjoint across cohorts (rxSolve treats id as the
+# subject key; duplicate IDs across cohorts would be silently merged
+# into one Frankenstein subject).
+dose_bsa_amts <- 2.23 * bsa
+dose_fixed_amt <- 4.0
+
+# Observation grid: dense early to capture Cmax + Tmax + the absorption
+# peak (Ka = 0.5 1/h -> Tmax ~ 1.5-2 h post-dose), then a coarse log-
+# spaced grid out to 30 days (720 h) to capture the multi-exponential
+# elimination cleanly. Gupta 2015 reports an elimination t1/2 ~ several
+# days (Fig 1); 720 h ~ 5-6 half-lives is enough for AUC0-inf.
+obs_grid <- sort(unique(c(
+  seq(0,  4,   by = 0.25),
+  seq(4.5, 24, by = 0.5),
+  seq(26, 72,  by = 2),
+  seq(76, 168, by = 4),
+  seq(174, 720, by = 6)
+)))
+
+make_cohort <- function(amts, treatment, id_offset) {
+  doses <- tibble::tibble(
+    id   = id_offset + seq_len(n_subjects),
+    time = 0,
+    amt  = amts,
+    evid = 1L,
+    cmt  = "depot",
+    BSA  = bsa,
+    treatment = treatment
+  )
+  obs <- tibble::tibble(
+    id   = rep(id_offset + seq_len(n_subjects), each = length(obs_grid)),
+    time = rep(obs_grid, times = n_subjects),
+    amt  = 0,
+    evid = 0L,
+    cmt  = NA_character_,
+    BSA  = rep(bsa, each = length(obs_grid)),
+    treatment = treatment
+  )
+  dplyr::bind_rows(doses, obs) |>
+    dplyr::arrange(id, time, dplyr::desc(evid))
+}
+
+events <- dplyr::bind_rows(
+  make_cohort(dose_bsa_amts,  treatment = "BSA-based 2.23 mg/m^2", id_offset = 0L),
+  make_cohort(rep(dose_fixed_amt, n_subjects),
+                                treatment = "fixed 4 mg",            id_offset = n_subjects)
+)
+
+stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
+```
+
+# Simulation
+
+```{r simulate}
+mod <- rxode2::rxode2(readModelDb("Gupta_2015_ixazomib"))
+
+sim <- rxode2::rxSolve(mod, events = events, addDosing = FALSE,
+                        keep = c("treatment", "BSA")) |>
+  as.data.frame()
+```
+
+# Replicate Figure 5A
+
+Gupta 2015 Figure 5A shows the simulated AUC0-inf distributions for
+1000 virtual subjects after BSA-based dosing (2.23 mg/m^2) and fixed
+dosing (4 mg). The medians (5th, 95th percentiles) reported in the
+Results section are 1503 (492-3531) ng*h/mL and 1417 (479-3346)
+ng*h/mL respectively.
+
+Because ixazomib is fit with linear elimination from the central
+compartment, AUC0-inf is exactly Dose * F / CL per subject, so the
+typical-value AUC can be computed directly from the simulated CL and
+F samples without needing a PKNCA pass. (PKNCA-derived NCA on the
+same cohort is run further below.)
+
+```{r figure-5a, fig.height = 4.5}
+# One row per subject; CL and F from the simulated trajectories are
+# constant across time, so take the first time point per id.
+per_subject <- sim |>
+  dplyr::group_by(id, treatment) |>
+  dplyr::slice(1) |>
+  dplyr::ungroup() |>
+  dplyr::mutate(
+    dose_mg = ifelse(treatment == "fixed 4 mg", 4.0, 2.23 * BSA),
+    # AUC0-inf = F * dose / CL; sim CL is in L/h, dose in mg -> AUC in
+    # mg*h/L = ug*h/mL; multiply by 1000 to express in ng*h/mL matching
+    # the Gupta 2015 reporting units.
+    auc_ngh_mL = (fdepot * dose_mg / cl) * 1000
+  )
+
+auc_summary <- per_subject |>
+  dplyr::group_by(treatment) |>
+  dplyr::summarise(
+    median = stats::median(auc_ngh_mL),
+    q05    = stats::quantile(auc_ngh_mL, 0.05),
+    q95    = stats::quantile(auc_ngh_mL, 0.95),
+    n      = dplyr::n(),
+    .groups = "drop"
+  )
+
+knitr::kable(
+  auc_summary,
+  digits = 0,
+  caption = "Simulated AUC0-inf (ng*h/mL) after BSA-based (2.23 mg/m^2) and fixed (4 mg) single oral ixazomib dosing (n = 1000 virtual subjects each); compare to Gupta 2015 Figure 5A / Results section."
+)
+
+ggplot(per_subject, aes(x = auc_ngh_mL, fill = treatment)) +
+  geom_histogram(bins = 40, alpha = 0.6, position = "identity") +
+  scale_x_log10() +
+  scale_fill_manual(values = c("BSA-based 2.23 mg/m^2" = "steelblue",
+                                "fixed 4 mg"            = "darkorange")) +
+  labs(
+    x = "AUC0-inf (ng*h/mL, log10 scale)",
+    y = "Virtual subjects",
+    fill = NULL,
+    title = "Simulated AUC0-inf distribution: BSA-based vs fixed dosing",
+    caption = "Replicates Gupta 2015 Figure 5A. n = 1000 per arm."
+  ) +
+  theme(legend.position = "bottom")
+```
+
+# Replicate Figure 5B (no AUC-vs-BSA trend under fixed dosing)
+
+Gupta 2015 Figure 5B shows simulated AUC vs. BSA under fixed 4 mg
+dosing. The paper reports the slope of AUC on BSA is not significantly
+different from zero (P = 0.42, r^2 = 0.001), supporting the switch to
+fixed dosing.
+
+```{r figure-5b, fig.height = 4.5}
+fixed_dose <- per_subject |>
+  dplyr::filter(treatment == "fixed 4 mg")
+
+slope_test <- summary(stats::lm(auc_ngh_mL ~ BSA, data = fixed_dose))
+slope_p   <- stats::coef(slope_test)[2, 4]
+slope_r2  <- slope_test$r.squared
+
+ggplot(fixed_dose, aes(BSA, auc_ngh_mL)) +
+  geom_point(alpha = 0.25, colour = "darkorange") +
+  geom_smooth(method = "lm", se = FALSE, colour = "grey20",
+              formula = y ~ x) +
+  scale_y_log10() +
+  labs(
+    x = "BSA (m^2)",
+    y = "AUC0-inf (ng*h/mL, log10 scale)",
+    title = "Simulated AUC0-inf vs BSA under fixed 4 mg dosing",
+    caption = sprintf(
+      "Replicates Gupta 2015 Figure 5B. Linear regression slope p = %.2f, r^2 = %.3f (paper reports p = 0.42, r^2 = 0.001).",
+      slope_p, slope_r2
+    )
+  )
+```
+
+# PKNCA validation
+
+Gupta 2015 reports the simulated median AUC0-inf for fixed 4 mg
+dosing as 1417 ng*h/mL (5th-95th percentile 479-3346) for the full
+n = 1000 cohort, and 1223 ng*h/mL for the 107 oral-cohort subjects
+(C16003 + C16004) actually dosed orally in the source studies (Gupta
+2015 Results, Supplementary Figure 2). The typical-value AUC implied
+by the structural parameters is
+
+\[
+\mathrm{AUC}_{0-\infty}^{\mathrm{typ}}
+  = \frac{F \times \mathrm{Dose}}{\mathrm{CL}}
+  = \frac{0.6 \times 4\ \mathrm{mg}}{2.0\ \mathrm{L/h}}
+  = 1.2\ \mathrm{mg\cdot h / L}
+  = 1{,}200\ \mathrm{ng\cdot h / mL}.
+\]
+
+The PKNCA pass below derives Cmax, Tmax, AUC0-inf, and terminal
+half-life from the simulated concentrations for both cohorts.
+
+```{r pknca}
+sim_nca <- sim |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::select(id, time, Cc, treatment)
+
+# Guarantee a time = 0 row per (id, treatment); for extravascular
+# dosing the pre-dose Cc is 0.
+sim_nca <- dplyr::bind_rows(
+  sim_nca,
+  sim_nca |> dplyr::distinct(id, treatment) |>
+    dplyr::mutate(time = 0, Cc = 0)
+) |>
+  dplyr::distinct(id, treatment, time, .keep_all = TRUE) |>
+  dplyr::arrange(id, treatment, time)
+
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | treatment + id,
+                              concu = "ng/mL", timeu = "h")
+
+dose_df <- events |>
+  dplyr::filter(evid == 1) |>
+  dplyr::select(id, time, amt, treatment)
+
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id,
+                              doseu = "mg", route = "extravascular")
+
+intervals <- data.frame(
+  start       = 0,
+  end         = Inf,
+  cmax        = TRUE,
+  tmax        = TRUE,
+  aucinf.obs  = TRUE,
+  half.life   = TRUE
+)
+
+nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
+suppressWarnings(
+  nca_res <- PKNCA::pk.nca(nca_data)
+)
+
+nca_tbl <- as.data.frame(nca_res$result)
+
+nca_summary <- nca_tbl |>
+  dplyr::filter(PPTESTCD %in% c("cmax", "tmax", "aucinf.obs", "half.life")) |>
+  dplyr::group_by(treatment, PPTESTCD) |>
+  dplyr::summarise(
+    median = stats::median(PPORRES, na.rm = TRUE),
+    q05    = stats::quantile(PPORRES, 0.05, na.rm = TRUE),
+    q95    = stats::quantile(PPORRES, 0.95, na.rm = TRUE),
+    n      = sum(!is.na(PPORRES)),
+    .groups = "drop"
+  )
+
+knitr::kable(
+  nca_summary,
+  digits = 3,
+  caption = "Simulated NCA across the two dosing arms (n = 1000 each). Cmax in ng/mL; Tmax in h; AUC0-inf in ng*h/mL; half-life in h."
+)
+```
+
+## Comparison against Gupta 2015
+
+| Quantity        | Gupta 2015 (reported)                            | Simulated median (5th-95th)                                                                                                                                  | Notes                                                                                                                                              |
+|-----------------|--------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------|
+| AUC0-inf (BSA-based 2.23 mg/m^2) | 1503 (492-3531) ng*h/mL (n = 1000 simulated, Results section)            | `r round(nca_summary$median[nca_summary$treatment == "BSA-based 2.23 mg/m^2" & nca_summary$PPTESTCD == "aucinf.obs"])` (`r round(nca_summary$q05[nca_summary$treatment == "BSA-based 2.23 mg/m^2" & nca_summary$PPTESTCD == "aucinf.obs"])` - `r round(nca_summary$q95[nca_summary$treatment == "BSA-based 2.23 mg/m^2" & nca_summary$PPTESTCD == "aucinf.obs"])`) ng*h/mL | PKNCA-derived; the median should bracket the paper's 1503 ng*h/mL within ~20%.                                                                     |
+| AUC0-inf (fixed 4 mg)            | 1417 (479-3346) ng*h/mL (n = 1000 simulated, Results section)             | `r round(nca_summary$median[nca_summary$treatment == "fixed 4 mg" & nca_summary$PPTESTCD == "aucinf.obs"])` (`r round(nca_summary$q05[nca_summary$treatment == "fixed 4 mg" & nca_summary$PPTESTCD == "aucinf.obs"])` - `r round(nca_summary$q95[nca_summary$treatment == "fixed 4 mg" & nca_summary$PPTESTCD == "aucinf.obs"])`) ng*h/mL | Same as above.                                                                                                                                     |
+| AUC0-inf typical | F * Dose / CL = 0.6 * 4 / 2.0 = 1200 ng*h/mL     | (see fixed 4 mg row above)                                                                                                                                   | Derived directly from Table 3 final estimates.                                                                                                     |
+| Tmax            | Not tabulated; reported as ~1.5-2 h post-dose (Fig 1 / abstract Ka = 0.5/h)               | `r round(nca_summary$median[nca_summary$treatment == "fixed 4 mg" & nca_summary$PPTESTCD == "tmax"], 2)` h | Source-paper text only.                                                                                                                            |
+| Cmax (fixed 4 mg)               | Not tabulated as a labelled value                | `r round(nca_summary$median[nca_summary$treatment == "fixed 4 mg" & nca_summary$PPTESTCD == "cmax"], 2)` ng/mL | Shown for completeness; the paper does not report Cmax as a labelled point estimate.                                                               |
+| Terminal t1/2                   | Not tabulated; "tri-exponential disposition" stated qualitatively in Methods / Discussion | `r round(nca_summary$median[nca_summary$treatment == "fixed 4 mg" & nca_summary$PPTESTCD == "half.life"], 2)` h | Tri-exponential structure means the simulated PKNCA terminal t1/2 reflects the slowest disposition phase (peripheral2). |
+
+# Assumptions and deviations
+
+- **Variance-vs-SD reading of the residual error parameter.** Gupta
+  2015 Table 3 reports the residual additive error as a "Mean (%SE)"
+  of 0.3 (6.1%). Following the NONMEM default convention that
+  `$SIGMA` values are variances (the appendix lists $SIGMA 0.61 as
+  the initial value), the packaged model interprets 0.3 as the
+  variance of EPS(1) on the log-concentration scale and passes
+  `sqrt(0.3) ~ 0.5477` as the residual SD argument to nlmixr2's
+  `prop()`. If the paper instead intended 0.3 as the standard
+  deviation directly, the residual SD would be 0.3 (a 1.83-fold
+  reduction). The typical-value AUC and t1/2 are not affected by this
+  reading; only the simulated between-replicate spread of NCA
+  outputs differs. The packaged interpretation produces a 5th-95th
+  AUC interval consistent with Gupta 2015 Figure 5A.
+- **BSA distribution.** Gupta 2015 reports BSA median 1.9 m^2 and
+  range 1.3-2.6 m^2 in Table 2, and uses "mean BSA 1.86 m^2"
+  (derived from prior bortezomib MM cohorts) as the anchor for the
+  fixed-dose comparison. This vignette draws BSA from a truncated
+  normal centered at 1.86 m^2 with sd 0.25 m^2, bounded by the
+  observed range [1.3, 2.6] m^2. The simulated AUC distribution is
+  insensitive to this shape because BSA enters the model only as a
+  power covariate on V4 (no covariate on CL); the AUC = F * Dose /
+  CL relationship is therefore independent of BSA under both BSA-
+  based and fixed dosing.
+- **Reference BSA inside the V4 covariate.** Gupta 2015 Appendix 1's
+  NONMEM control stream hard-codes the BSA reference inside V0 =
+  (BSAC/1.90)^THETA(9) at 1.90 m^2 (a rounding of the Table 2 median
+  of 1.9 m^2). The model file uses 1.90 m^2 to reproduce the
+  parameter estimates exactly. The 0.04 m^2 difference between the
+  control-stream reference (1.90) and the simulation anchor (1.86)
+  is intentional and matches the paper.
+- **Race, age, sex, gender, baseline labs.** Gupta 2015 retained no
+  covariate effect on any structural PK parameter except BSA on V4;
+  weight, age, gender, race, creatinine clearance, ALT, AST,
+  albumin, and bilirubin were all screened and rejected (Results and
+  Discussion). The vignette therefore does not draw race, sex, or
+  age for the virtual cohort; these are documented in
+  `population` metadata for narrative purposes only and listed in
+  `covariatesDataExcluded` of the model file.
+- **Severe renal / hepatic impairment, severe organ dysfunction.**
+  The four phase I studies that fed Gupta 2015 enrolled patients with
+  creatinine clearance >= 22 mL/min (Table 2 range). Severe renal
+  impairment (CrCl < 30 mL/min) and moderate / severe hepatic
+  impairment were studied later in dedicated trials (e.g. Gupta 2016
+  Br J Haematol; Gupta 2017 ixazomib labelling popPK) and require a
+  reduced 3 mg dose; they are not represented in this packaged
+  model.
+- **Intra-cycle / multi-cycle dosing.** Gupta 2015 reports
+  steady-state-like accumulation across weekly oral cycles only
+  qualitatively (Figure 4). The vignette simulates single-dose PK
+  (consistent with the Figure 5 simulations the paper used to
+  support the BSA-versus-fixed decision); multi-cycle simulations
+  can be assembled by the user from the same `make_cohort` helper.
