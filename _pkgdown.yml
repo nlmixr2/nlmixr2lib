@@ -150,8 +150,8 @@ navbar:
         href: articles/Colombo_2006_atazanavir.html
       - text: "Atazanavir (Dickinson 2009)"
         href: articles/Dickinson_2009_atazanavir.html
-      - text: "Atazanavir (Hong 2011)"
-        href: articles/Hong_2011_atazanavir.html
+      - text: "Atazanavir (Foissac 2011)"
+        href: articles/Foissac_2011_atazanavir.html
       - text: "Atazanavir (Rekic 2011)"
         href: articles/Rekic_2011_atazanavir.html
       - text: "Atazanavir ritonavir (Schipani 2013)"
@@ -2073,6 +2073,7 @@ articles:
   - articles/FiedlerKelly_2020_fremanezumab_cm
   - articles/FiedlerKelly_2020_fremanezumab_em
   - articles/Flint_2017_s_ketamine
+  - articles/Foissac_2011_atazanavir
   - articles/Franken_2015_morphine
   - articles/Franken_2017_haloperidol
   - articles/Frey_2010_tocilizumab

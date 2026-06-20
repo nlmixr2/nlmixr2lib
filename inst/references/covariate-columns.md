@@ -7550,3 +7550,14 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
   - `D x Q` -- used in `BuchwalderCsajka_1999_angiotensin.R` (Buchwalder-Csajka 1999 Table 1 row 5 column header, where `D` is the raw angiotensin dose in ug and `Q` is the molar-weight conversion factor).
 - **Example models:** `BuchwalderCsajka_1999_angiotensin.R` (drives the algebraic Emax dose-response `E = Emax * DOSE_AGT_UG / (DOSE_AGT_UG + ED50)` separately for SBP and DBP).
 - **Notes:** Per-observation challenge-dose column for the algebraic Emax angiotensin-challenge PD model. Differs from the standard rxode2 `AMT` / `EVID = 1` dosing column because the model is purely algebraic (no PK, no ODEs); the dose enters the model() block as a covariate symbol rather than via a dosing event. Specific scope because the column's semantics (Q-corrected angiotensin dose) are tied to angiotensin-challenge protocols; future angiotensin-challenge extractions may reuse this canonical. Ratified canonically on 2026-06-10 alongside the Buchwalder-Csajka 1999 extraction.
+
+### CONMED_TDF (**canonical for concomitant tenofovir disoproxil fumarate (NRTI) coadministration indicator**)
+- **Description:** 1 = subject is receiving concomitant tenofovir disoproxil fumarate (TDF) as part of the NRTI backbone of a combination antiretroviral therapy regimen (usually 300 mg orally once daily); 0 = no TDF. TDF is a renally cleared nucleotide reverse-transcriptase inhibitor; in HIV PI-boosted regimens it is associated with a modest but reproducible decrease in atazanavir/ritonavir exposure (Foissac 2011 Table 2; Taburet 2004; Zhu 2006), most likely via a competing effect on intestinal P-glycoprotein-mediated absorption and/or modest induction of UGT1A1.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no concomitant TDF).
+- **Source aliases:**
+  - `TDF` -- used in `Foissac_2011_atazanavir.R` (Foissac 2011 Table 2 final-model covariate column; binary 1/0 indicator).
+- **Example models:** `Foissac_2011_atazanavir.R` (linear-deviation effect on apparent oral atazanavir clearance: `cl = exp(lcl) * (1 + e_tdf_cl * CONMED_TDF) * (1 + e_no_rtv_cl * (1 - CONMED_RTV)) * (WT/70)^0.75` with `e_tdf_cl = 0.25` so TDF increases ATV/r CL/F by 25% relative to the no-TDF reference; Foissac 2011 Table 2).
+- **Notes:** Follows the `CONMED_*` concomitant-medication pattern (AED / AMIO / AZA / AZOLE / CBZ / EFV / LPV / NVP / RIF / RTV / etc.). Use `CONMED_TDF` for the binary 'is TDF co-administered' question; for continuous TDF exposure (AUC, trough) future entries can introduce `AUC_TDF` analogous to `AUC_RTV` (Dickinson 2009 atazanavir). Distinct from a generic NRTI-backbone flag because the effect on PI exposure is TDF-specific; emtricitabine, lamivudine, and abacavir do not show the same effect. Ratified canonically on 2026-06-17 alongside the Foissac 2011 atazanavir paediatric extraction.
