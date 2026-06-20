@@ -2673,6 +2673,12 @@ Antibiotic combination-PK drug suffixes (linezolid, vancomycin, meropenem long f
 - **Source aliases:** none.
 - **Example models:** `Standing_2012_oseltamivir.R`.
 
+### da8164 (**canonical DA-8164 udenafil metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** DA-8164, the principal active metabolite of the phosphodiesterase-type-5 inhibitor udenafil, formed predominantly via hepatic metabolism. Used as a metabolite suffix in joint udenafil + DA-8164 parent-metabolite popPK models. MW(DA-8164) = 405.4 g/mol vs MW(udenafil) = 516.66 g/mol; the molecular-weight ratio is applied to the formation flux entering the metabolite central compartment so the simulated DA-8164 mass concentration is dimensionally consistent.
+- **Source aliases:** none.
+- **Example models:** `Kim_2016_udenafil.R`.
+
 ---
 
 ## PBPK organ sub-compartment suffixes (Ayyar 2024)

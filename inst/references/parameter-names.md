@@ -646,6 +646,34 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
 - **Example models:** `Krause_2017_selexipag.R` (parent -> ACT-333679 active metabolite).
 - **Notes:** Fraction-metabolised is implicit (`kmet * Vc_parent / CL_parent`) rather than estimated as `fm`.
 
+### clpm (**canonical apparent formation clearance to active metabolite**)
+- **Type:** paper-named-param
+- **Role:** Apparent (oral) parent-side clearance routed to formation of a single named active metabolite. Used when the source paper reports the formation pathway as a distinct clearance THETA rather than as a fraction-metabolised parameter (paper symbol `CLpm/F`). Paired with a separate non-metabolic parent clearance `clp` so the two parallel parent CL arms are encoded one-to-one with the paper's THETAs (including their independent RSEs and IIVs).
+- **Source aliases:**
+  - `CLpm` / `CLpm/F` -- Kim 2016 (udenafil -> DA-8164) symbol.
+- **Example models:** `Kim_2016_udenafil.R` (founding example).
+- **Notes:** Bare counterpart used inside `model()` as `clpm`; log-transformed form `lclpm` is the `ini()` typical-value entry. Distinct from `kmet` (rate constant, units 1/time) and from `fm` (unitless fraction of total parent CL). The `clpm` form is preferred when the paper directly identifies the formation-clearance THETA and reports a covariate effect or IIV on it (the Kim 2016 case: PT covariate on CLpm/F, omega CLpm/F estimated separately from omega CLp/F).
+
+### lclpm (**canonical log-transformed apparent formation clearance to active metabolite**)
+- **Type:** log-transformed-pk
+- **Role:** Log-transformed counterpart of `clpm` used in `ini()` blocks (`lclpm <- log(typical_value)`).
+- **Source aliases:** none.
+- **Example models:** `Kim_2016_udenafil.R`.
+
+### clp (**canonical apparent non-metabolic parent clearance (paired with clpm)**)
+- **Type:** paper-named-param
+- **Role:** Apparent (oral) parent-side clearance via routes OTHER than the named active-metabolite formation pathway. Used when the source paper reports the parent's total clearance as two parallel THETAs (`CLp` and `CLpm`) where `CLpm` is the formation clearance to a named active metabolite and `CLp` captures every other parent elimination pathway combined (renal, biliary, other minor metabolic, etc.) without further decomposition.
+- **Source aliases:**
+  - `CLp` / `CLp/F` -- Kim 2016 (udenafil) symbol.
+- **Example models:** `Kim_2016_udenafil.R` (founding example).
+- **Notes:** Distinct from `lcl_renal` / `lcl_nonren` (Pierre 2017 morphine pattern): `clp` is the named complement to `clpm` in a parent-formation parameterisation, and is NOT necessarily renal vs non-renal. Use `clp` + `clpm` when the source paper explicitly identifies the metabolite-formation arm as a separate clearance THETA; use `lcl_renal` + `lcl_nonren` when the source paper decomposes parent CL by elimination route. The bare form `clp` is used inside `model()`; the log-transformed `lclp` form is the `ini()` typical-value entry.
+
+### lclp (**canonical log-transformed apparent non-metabolic parent clearance**)
+- **Type:** log-transformed-pk
+- **Role:** Log-transformed counterpart of `clp` used in `ini()` blocks (`lclp <- log(typical_value)`).
+- **Source aliases:** none.
+- **Example models:** `Kim_2016_udenafil.R`.
+
 ### fm (**canonical fraction metabolised**)
 - **Type:** paper-named-param
 - **Role:** Fraction of parent clearance routed to an active metabolite, estimated as a structural parameter in parent-metabolite joint popPK models. Unitless, bounded in (0, 1].
