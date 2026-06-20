@@ -2,8 +2,8 @@
 
 # development version
 
-* Add Stocker 2012 oxypurinol ([doi:10.1111/j.1365-2125.2012.04207.x](https://doi.org/10.1111/j.1365-2125.2012.04207.x)) -- adults with gout on chronic allopurinol; ratifies new `CONMED_DIUR` composite multi-class diuretic indicator and promotes `CONMED_PROBENECID` to general scope.
-* Add Morris 2011 telapristone ([doi:10.1208/s12248-011-9304-7](https://doi.org/10.1208/s12248-011-9304-7)) -- adult women with single-dose telapristone-acetate phase I/II PK studies; ratifies new `cdb4453` metabolite suffix, `MIX_FAST_ELIM`, and `RENALIMP_MOD` covariate canonicals.
+* Add Zhang 2013 lopinavir + ritonavir ([doi:10.1111/bcp.12101](https://doi.org/10.1111/bcp.12101)) -- HIV-infected adults and children with or without rifampicin-based antitubercular treatment (joint LPV + RTV popPK with sigmoidal-Emax DDI, ritonavir-dose-on-bioavailability effect, and overnight diurnal CL / F shifts; ratifies new `DOSE_RTV_MGKG` covariate canonical and extends `CONMED_RIF` to its first joint-substrate-perpetrator HIV / TB extraction).
+* Add Berges 2007 enoxaparin ([doi:10.1111/j.1365-2125.2007.02920.x](https://doi.org/10.1111/j.1365-2125.2007.02920.x)) -- elderly inpatients (>75 years) on prophylactic subcutaneous enoxaparin 4000 IU once daily for VTE prophylaxis (PROPHRE.75 study).
 * Add Padoin 1998 cephalexin ([doi:10.1128/aac.42.6.1463](https://doi.org/10.1128/aac.42.6.1463)) -- preclinical male Wistar rats with a cephalexin / quinapril oral coadministration DDI (ratifies new `CONMED_QPRL_ORAL` covariate canonical).
 * Add van Rongen 2018 metformin ([doi:10.1007/s40272-018-0293-1](https://doi.org/10.1007/s40272-018-0293-1)) -- overweight and obese Caucasian adolescents.
 * Add Tarning 2012 artemether and dihydroartemisinin ([doi:10.1186/1475-2875-11-293](https://doi.org/10.1186/1475-2875-11-293)) -- pregnant women with uncomplicated Plasmodium falciparum malaria in Uganda (joint parent + DHA popPK with zero-order dissolution and 6-compartment transit absorption).
