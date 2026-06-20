@@ -468,6 +468,8 @@ navbar:
         href: articles/Melhem_2022_dostarlimab.html
       - text: "Doxorubicin (Kunarajah 2017)"
         href: articles/Kunarajah_2017_doxorubicin.html
+      - text: "Doxorubicin (PerezBlanco 2016)"
+        href: articles/PerezBlanco_2016_doxorubicin.html
       - text: "Doxycycline (Hopkins 2017)"
         href: articles/Hopkins_2017_doxycycline.html
       - text: "Droperidol (Foo 2016)"
@@ -2510,6 +2512,7 @@ articles:
   - articles/Peng_2014_MK3577
   - articles/Peng_2024_SAL003
   - articles/Perez-Guille_2018_dexmedetomidine
+  - articles/PerezBlanco_2016_doxorubicin
   - articles/PerezRuixo_2020_esketamine
   - articles/PerezRuixo_2025_posdinemab
   - articles/Perrottet_2009_ganciclovir
