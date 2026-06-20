@@ -624,8 +624,8 @@ navbar:
         href: articles/Patel_2011_fluconazole.html
       - text: "Fluconazole (Wade 2008)"
         href: articles/Wade_2008_fluconazole.html
-      - text: "Fluconazole (Watt 2015)"
-        href: articles/Watt_2015_fluconazole.html
+      - text: "Fludrocortisone (Polito 2016)"
+        href: articles/Polito_2016_fludrocortisone.html
       - text: "Flurbiprofen (Kumpulainen 2010)"
         href: articles/Kumpulainen_2010_flurbiprofen.html
       - text: "Flurbiprofen (Zhang 2018)"
@@ -2518,6 +2518,7 @@ articles:
   - articles/Plachouras_2009_colistin
   - articles/Plan_2012_pain
   - articles/Plock_2014_ferumoxytol
+  - articles/Polito_2016_fludrocortisone
   - articles/Pouzin_2022_tusamitamab
   - articles/Prytula_2016_tacrolimus
   - articles/Przybylowski_2015_propofol
