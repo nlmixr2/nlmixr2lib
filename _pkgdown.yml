@@ -1056,6 +1056,8 @@ navbar:
         href: articles/Bajaj_2017_nivolumab.html
       - text: "Nivolumab (Zhang 2019)"
         href: articles/Zhang_2019_nivolumab.html
+      - text: "Norepinephrine (Oualha 2014)"
+        href: articles/Oualha_2014_norepinephrine.html
       - text: "Nutlin3a (Zhang 2011)"
         href: articles/Zhang_2011_nutlin3a.html
       - text: "Obinutuzumab (Gibiansky 2014)"
@@ -2415,6 +2417,7 @@ articles:
   - articles/Othman_2013_ABT_102
   - articles/Othman_2014_daclizumab
   - articles/Oualha_2014_epinephrine
+  - articles/Oualha_2014_norepinephrine
   - articles/Oualha_2018_enoxaparin
   - articles/Ouerdani_2015_pazopanib
   - articles/Ouerdani_2015_pazopanib_mouse
