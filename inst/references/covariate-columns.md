@@ -844,6 +844,18 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Liesenfeld_2013_dabigatran.R`.
 - **Notes:** Pairs with `DIAL` and `BFR`. Ratified canonically on 2026-05-16 alongside the Liesenfeld 2013 dabigatran extraction.
 
+### ECMO_STATUS (**canonical for extracorporeal-membrane-oxygenation support-status indicator**)
+- **Description:** 1 = the subject was receiving extracorporeal membrane oxygenation (ECMO) support during the modelled period (any modality: VA-ECMO, VV-ECMO, or hybrid configurations); 0 = no ECMO support. Treatment-status flag rather than a measured physiological value; used as a multiplicative covariate on PK parameters that change with the addition of an extracorporeal circuit (typically volume of distribution, because the circuit prime volume adds to the patient's native blood volume). Per-subject indicator in the source data; in Watt 2015 it is treated as time-fixed at the subject level (the cohort either was or was not receiving ECMO during the modelled period). For drugs with measurable circuit adsorption (highly lipophilic drugs sequestering into the oxygenator membrane), `ECMO_STATUS` is the bulk effect indicator and the per-model `covariateData[[ECMO_STATUS]]$notes` would document any adsorption assumption.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no ECMO).
+- **Source aliases:**
+  - `ECMO` -- used in `Watt_2015_fluconazole.R` (Watt 2015 paper notation; multiplicative power factor on V: `V = 0.93 * WT * 1.39^ECMO`).
+  - `ECMO support` -- common clinical-PK / Methods-section phrase used in source papers (Watt 2015 Methods 'Population PK analysis' lists 'ECMO support' as one of the screened covariates).
+- **Example models:** `Watt_2015_fluconazole.R` (multiplicative power factor on central volume of distribution: `1.39^ECMO_STATUS`, so V increases 39% in subjects on ECMO support; 21 of 40 children were on ECMO in the source cohort, with the remaining 19 serving as matched non-ECMO controls).
+- **Notes:** Distinct from `ECMO_PUMP_SPEED` (continuous, centrifugal-pump RPM; Yang 2017 remifentanil). Distinct from `CRRT_STATUS` (continuous / extended renal-replacement-therapy treatment-status indicator). When an ECMO patient also has concomitant renal-replacement therapy delivered via a hemofiltration filter parallel to the ECMO circuit (CVVH / CVVHDF / EDD-f), record both `ECMO_STATUS = 1` AND `CRRT_STATUS = 1` -- the two indicators are independent. Distinct from `T_POST_ECMO` (time after decannulation; positive only after the patient comes off ECMO). Future models that resolve session-level on / off transitions during the modelled period would carry `ECMO_STATUS` as a time-varying covariate; per-model `covariateData[[ECMO_STATUS]]$notes` should document the time resolution used. Ratified canonically on 2026-06-20 alongside the Watt 2015 fluconazole extraction.
+
 ### ECMO_PUMP_SPEED (**canonical for extracorporeal-membrane-oxygenation centrifugal-pump rotational speed**)
 - **Description:** Rotational speed of the extracorporeal-membrane-oxygenation (ECMO) centrifugal blood pump during VA-ECMO or VV-ECMO support. Continuous covariate; treated as time-fixed per subject in Yang 2017 (the per-subject pump speed reported in the source data was the prevailing speed during the PK sampling window; pump-speed adjustments during sampling were not modelled as time-varying). For future models that resolve session-level changes in pump speed, the covariate is naturally time-varying and the per-model `covariateData[[ECMO_PUMP_SPEED]]$notes` should document the time resolution.
 - **Units:** RPM (revolutions per minute)
