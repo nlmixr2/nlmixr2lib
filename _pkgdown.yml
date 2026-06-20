@@ -120,6 +120,8 @@ navbar:
         href: articles/Koue_2007_aripiprazole.html
       - text: "Artemether (Hietala 2010)"
         href: articles/Hietala_2010_artemether_lumefantrine_malaria.html
+      - text: "Artemether (Hoglund 2015)"
+        href: articles/Hoglund_2015_artemether_lumefantrine.html
       - text: "Artemether (Mosha 2014)"
         href: articles/Mosha_2014_artemether_lumefantrine.html
       - text: "Artemether (Tarning 2012)"
@@ -868,6 +870,8 @@ navbar:
         href: articles/Fauchet_2015_lopinavir.html
       - text: "Lumefantrine (Hietala 2010)"
         href: articles/Hietala_2010_artemether_lumefantrine_malaria.html
+      - text: "Lumefantrine (Hoglund 2015)"
+        href: articles/Hoglund_2015_artemether_lumefantrine.html
       - text: "Lumefantrine (Kloprogge 2013)"
         href: articles/Kloprogge_2013_lumefantrine.html
       - text: "Lumefantrine (Kloprogge 2015)"
@@ -2184,6 +2188,7 @@ articles:
   - articles/Hirt_2009_efavirenz
   - articles/Hodiamont_2017_gentamicin
   - articles/Hoglund_2012_piperaquine
+  - articles/Hoglund_2015_artemether_lumefantrine
   - articles/Hoglund_2017_piperaquine
   - articles/Hoglund_2018_mefloquine
   - articles/Holford_1992_tacrine
