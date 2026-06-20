@@ -1540,8 +1540,8 @@ navbar:
         href: articles/Nichols_2016_piperacillin_tazobactam.html
       - text: "Tefibazumab (Cao 2013)"
         href: articles/Cao_2013_tefibazumab.html
-      - text: "Teicoplanin (Wi 2017)"
-        href: articles/Wi_2017_teicoplanin.html
+      - text: "Teicoplanin (Zhao 2015)"
+        href: articles/Zhao_2015_teicoplanin.html
       - text: "Telapristone (Morris 2011)"
         href: articles/Morris_2011_telapristone.html
       - text: "Temozolomide (Mazzocco 2015)"
@@ -2773,6 +2773,7 @@ articles:
   - articles/Zhao_2013_abacavir
   - articles/Zhao_2014_ciprofloxacin
   - articles/Zhao_2014_vancomycin
+  - articles/Zhao_2015_teicoplanin
   - articles/Zhao_2018_omeprazole
   - articles/Zheng_2014_azithromycin
   - articles/Zheng_2016_sifalimumab
