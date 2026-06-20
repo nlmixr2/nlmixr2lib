@@ -2609,6 +2609,18 @@ TB-treatment drug suffixes used in combination-antibiotic `central_<drug>` / `de
 - **Source aliases:** none.
 - **Example models:** `Chen_2017_TB_MTP_GPDI_mouse.R`.
 
+### acinh (**canonical acetylisoniazid metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Acetylisoniazid (AcINH, N-acetylisoniazid) suffix in isoniazid parent-and-metabolite popPK models. AcINH is the primary phase-II metabolite of isoniazid formed by N-acetyltransferase 2 (NAT2); downstream hydrolysis routes AcINH to isonicotinic acid (INA) and acetylhydrazine. Compartments: `central_acinh`, `peripheral1_acinh`. Plasma concentration output: `Cc_acinh`. Residual-error suffix: `expSd_acinh` / `propSd_acinh` / `addSd_acinh`.
+- **Source aliases:** none.
+- **Example models:** `Seng_2015_isoniazid.R`.
+
+### ina (**canonical isonicotinic acid metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Isonicotinic acid (INA) suffix in isoniazid parent-and-metabolite popPK models. INA is the terminal downstream metabolite of isoniazid formed both by direct hydrolysis (INH -> INA + hydrazine) and by acetylisoniazid hydrolysis (AcINH -> INA + acetylhydrazine). Compartments: `central_ina` (and `peripheral1_ina` if a paper resolves a peripheral INA compartment). Plasma concentration output: `Cc_ina`. Residual-error suffix: `expSd_ina` / `propSd_ina` / `addSd_ina`.
+- **Source aliases:** none.
+- **Example models:** `Seng_2015_isoniazid.R`.
+
 ### emb (**canonical ethambutol drug suffix**)
 - **Type:** metabolite-suffix
 - **Role:** Ethambutol drug suffix in combination TB models.

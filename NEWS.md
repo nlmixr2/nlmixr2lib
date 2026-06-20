@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Eyler 2014 ertapenem ([doi:10.1128/AAC.02090-12](https://doi.org/10.1128/AAC.02090-12)) -- critically ill adults with acute kidney injury receiving continuous venovenous hemodialysis or hemodiafiltration (ratifies new `lcl_dialysis` / `cl_dialysis` clearance-component canonical for continuous renal replacement therapy).
+* Add Seng 2015 isoniazid ([doi:10.1128/AAC.01244-15](https://doi.org/10.1128/AAC.01244-15)) -- healthy Asian adults (n = 33; single 300 mg oral isoniazid with paired acetylisoniazid and isonicotinic acid metabolites; ratifies new `acinh` / `ina` metabolite suffixes and the paired `NAT2_RAPID` covariate canonical).
 * Add Morris 2011 telapristone ([doi:10.1208/s12248-011-9304-7](https://doi.org/10.1208/s12248-011-9304-7)) -- adult women with single-dose telapristone-acetate phase I/II PK studies; ratifies new `cdb4453` metabolite suffix, `MIX_FAST_ELIM`, and `RENALIMP_MOD` covariate canonicals.
 * Add Padoin 1998 cephalexin ([doi:10.1128/aac.42.6.1463](https://doi.org/10.1128/aac.42.6.1463)) -- preclinical male Wistar rats with a cephalexin / quinapril oral coadministration DDI (ratifies new `CONMED_QPRL_ORAL` covariate canonical).
 * Add van Rongen 2018 metformin ([doi:10.1007/s40272-018-0293-1](https://doi.org/10.1007/s40272-018-0293-1)) -- overweight and obese Caucasian adolescents.
