@@ -1011,6 +1011,19 @@ All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODA
 - **Notes:** Use this column when a model dichotomizes moderate hepatic impairment as a separate indicator from milder or more-severe categories. The classification scheme (NCI ODWG vs Child-Pugh vs other) is paper-specific and must be documented per-model. Companion to `HEPIMP_MILD` (mild only) and `HEPIMP_SEV` (severe only). Distinct from `HEPIMP_MOD_OR_MISSING` (pools moderate cases with missing-data cases) and `HEPIMP_MODSEV` (pools moderate with severe). Anticipated by the `HEPIMP_MILD` entry's Notes: "For models that test moderate or severe as separate categories, register additional canonicals HEPIMP_MOD / HEPIMP_SEV rather than overloading this entry." HEPIMP_SEV was registered separately; HEPIMP_MOD completes the parallel.
 
 
+### HEPIMP_CP_SCORE (**canonical for Child-Pugh composite score (continuous)**)
+- **Description:** Child-Pugh composite score for chronic-liver-disease severity, integer in the range 5-15 (Class A = 5-6, Class B = 7-9, Class C = 10-15). The composite is the sum of five sub-scores (each 1-3): total bilirubin, serum albumin, INR, ascites, encephalopathy. Healthy subjects without CLD are assigned `HEPIMP_CP_SCORE = 0` by convention; the model gates the CP effect off when the score is zero. Time-fixed per subject within a single popPK analysis (baseline Child-Pugh score).
+- **Units:** (integer score, 5-15 for CLD; 0 by convention for healthy)
+- **Type:** count
+- **Scope:** general
+- **Reference category:** 0 (healthy). Reference CP score for the within-CLD linear-in-score effect (the multiplicative-factor anchor) is 5 (Class A bottom); per-unit change above 5 is captured by a separate paired-with-anchor covariate-effect parameter in the model file.
+- **Source aliases:**
+  - `CP score` / `Child-Pugh score` -- used in `Farrell_2014_eltrombopag.R` (Farrell 2014 Table 3 rows 'CL/F ~ CP Score 5' and 'CL/F ~ CP Score > 5' and the linear-in-score footnote).
+  - Child-Pugh Class label (A / B / C) -- decompose to the integer composite-score column when the source paper reports both class and score; if only the class is reported (no integer score), use a typical within-class score (e.g., Class A -> 5 or 6, Class B -> 7-9 midpoint, Class C -> 10) and document the choice in `covariateData[[HEPIMP_CP_SCORE]]$notes`.
+- **Example models:** `Farrell_2014_eltrombopag.R` (linear-in-score multiplier on CL/F: factor = 1 for healthy (score 0), factor = 0.536 * (1 - 0.113 * (CP - 5)) for CLD with score 5-9; gated by `if (HEPIMP_CP_SCORE > 0)` inside `model()`).
+- **Notes:** Continuous-score complement to the existing binary HEPIMP* indicators (`HEPIMP_MILD`, `HEPIMP_MOD`, `HEPIMP_SEV`, `HEPIMP_MOD_MISSING`, `HEPIMP_MODSEV`, `HEPIMP`). Use `HEPIMP_CP_SCORE` when the source paper fits a linear-in-CP-score covariate effect rather than binary class indicators; the binary HEPIMP* canonicals lose the within-class score gradation (CP = 5 vs CP = 6, CP = 7 vs 8 vs 9). Naming follows the operator decision (2026-06-17 sidecar response to `frompeople-921-farrell_2014_british_journal_of_clinical_ph`) to sibling-name the canonical under the existing `HEPIMP_*` family rather than as a free-standing `CP_SCORE`. Ratified canonically on 2026-06-17 alongside the Farrell 2014 eltrombopag extraction.
+
+
 ### RENALIMP_MOD (**canonical for moderate renal impairment indicator**)
 - **Description:** 1 = moderate renal impairment, 0 = normal renal function, mild renal impairment, or any non-moderate category. Binary categorical indicator used by source papers that test renal-impairment status as a discrete covariate rather than via continuous creatinine clearance (`CRCL`). The classification scheme that defines "moderate" is paper-specific and must be documented in per-model `covariateData[[RENALIMP_MOD]]$notes`. Two schemes are commonly encountered:
   - **Cockcroft-Gault CrCl 30-50 mL/min** (Morris 2011 ZP-006 study eligibility criteria).
@@ -2494,13 +2507,25 @@ readable.
 - **Description:** 1 = North East Asian heritage (worldwide Chinese, Japanese, or Korean), 0 = non-North East Asian. Composite indicator analogous to `RACE_ASIAN` but specifically restricted to the East Asian subgroup most-relevant to ICH E5 ethnic-sensitivity / Asian-region bridging analyses.
 - **Units:** (binary)
 - **Type:** binary
-- **Scope:** specific
+- **Scope:** general
 - **Reference category:** 0 (any non-North East Asian race, including South / Southeast Asian, White, Black, etc.).
 - **Source aliases:**
   - `RACE_NEAS` -- prior canonical name (pre-2026-06-19 readability standardization).
   - `RAC4` -- used in `Zhou_2021_belimumab.R` (Zhou 2021 Table 2 footnote d).
-- **Example models:** `Zhou_2021_belimumab.R` (multiplicative factor 1.07 on V1).
-- **Notes:** Distinct from the broader `RACE_ASIAN` (which can include South / Southeast Asian populations) because Zhou 2021 specifically tested whether Chinese/Japanese/Korean patients had different PK from the rest of the dataset; the analysis explicitly compared `RAC4` (North East Asian) against alternative race definitions and chose `RAC4` by AIC. Renamed from `RACE_NEAS` to `RACE_ASIAN_NORTHEAST` on 2026-06-19 per the canonical-register standardization audit (operator decision: spell out "Northeast" rather than the opaque `NEAS` abbreviation; consistent with `RACE_<region>` rather than `RACE_<abbreviation>`).
+  - `East Asian` -- used in `Farrell_2014_eltrombopag.R` (Farrell 2014 Table 3 race classification; East Asian = Chinese/Japanese/Korean, with this study's East Asian subgroup being 38 Japanese patients from Study 2 plus 7 East Asian patients from Study 3).
+- **Example models:** `Zhou_2021_belimumab.R` (multiplicative factor 1.07 on V1); `Farrell_2014_eltrombopag.R` (multiplicative factor 0.476 on CL/F and 0.660 on the linear platelet-precursor-stimulation slope SLOP).
+- **Notes:** Distinct from the broader `RACE_ASIAN` (which can include South / Southeast Asian populations) because the North East Asian subgroup has consistently shown distinct PK / PD characteristics in ICH E5 bridging analyses. Paired with the parallel `RACE_ASIAN_SOUTHCENTRAL` canonical for studies that distinguish Chinese / Japanese / Korean subjects from Indian / Pakistani / Bangladeshi / Central Asian subjects. Promoted from `Scope: specific` to `Scope: general` on 2026-06-20 when Farrell 2014 became the second registered example, per the rule that a canonical paired with another general-scope race indicator is itself general by construction.
+
+### RACE_ASIAN_SOUTHCENTRAL (**canonical for South / Central Asian race indicator**)
+- **Description:** 1 = South Asian (Indian, Pakistani, Bangladeshi, Sri Lankan, Nepali, Maldivian, Bhutanese) or Central Asian (Kazakh, Uzbek, Tajik, Turkmen, Kyrgyz) heritage; 0 = any other race. Subgroup indicator analogous to `RACE_NEAS` but restricted to the South/Central Asian populations. Distinct from the broader `RACE_ASIAN` (which can include any of East / South / Southeast / Central Asian heritage pooled into a single Asian-vs-other indicator). Used when a source paper separately distinguishes South/Central Asian subjects from East Asian subjects as their own race covariate.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (any non-South/Central-Asian race, including East Asian, White, Black, etc.).
+- **Source aliases:**
+  - `South/Central Asian` -- used in `Farrell_2014_eltrombopag.R` (Farrell 2014 Table 3 race classification).
+- **Example models:** `Farrell_2014_eltrombopag.R` (multiplicative factor 2.98 on Vc/F: South/Central Asian CLD patients have an apparent central volume of distribution approximately 3-fold higher than non-S/C-Asian patients; Farrell 2014 attributes this in part to lower mean serum albumin in this subgroup).
+- **Notes:** Distinct from `RACE_NEAS` (worldwide Chinese / Japanese / Korean), from the broader `RACE_ASIAN` (any Asian heritage including S/C and N-E Asian), and from `RACE_ASIAN_OTH` (paper-specific within-Asian sub-indicator used as a residual "other Asian" bucket). Paired with `RACE_NEAS` in the Farrell 2014 model to give a three-way breakdown of the Asian population. Naming follows the operator decision (2026-06-17 sidecar response to `frompeople-921-farrell_2014_british_journal_of_clinical_ph`) to prefer the fully-spelled regional descriptor `RACE_ASIAN_SOUTHCENTRAL` over the abbreviated `RACE_SCAS` form; the existing `RACE_NEAS` canonical may eventually be renamed to `RACE_ASIAN_NORTHEAST` for parallelism in a separate consolidation pass.
 
 ### RACE_MULTI (**canonical for multiracial indicator**)
 - **Description:** 1 = multiracial, 0 = other.

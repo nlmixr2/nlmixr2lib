@@ -494,6 +494,8 @@ navbar:
         href: articles/DoldanMartelli_2013_EGF_IFN_chimera.html
       - text: "Elotuzumab (Ide 2020)"
         href: articles/Ide_2020_elotuzumab.html
+      - text: "Eltrombopag (Farrell 2014)"
+        href: articles/Farrell_2014_eltrombopag.html
       - text: "Emfilermin (Goggin 2004)"
         href: articles/Goggin_2004_emfilermin.html
       - text: "Emicizumab (Yoneyama 2017)"
@@ -994,8 +996,8 @@ navbar:
         href: articles/Attarwala_2023_mRNA3927.html
       - text: "Mu receptor binding (Mann 2022)"
         href: articles/Laffont_2025_opioid_overdose_reversal_simulation.html
-      - text: "Mycophenolic acid (Dong 2014)"
-        href: articles/Dong_2014_mycophenolic_acid.html
+      - text: "Mycophenolic acid (Barau 2012)"
+        href: articles/Barau_2012_mycophenolic_acid.html
       - text: "Mycophenolic acid (deWinter 2009)"
         href: articles/deWinter_2009_mycophenolic_acid.html
       - text: "Mycophenolic acid (Frymoyer 2013)"
@@ -1150,10 +1152,6 @@ navbar:
         href: articles/Wang_2021_pertuzumab.html
       - text: "PF 06939999 (Guo 2022)"
         href: articles/Guo_2022_PF_06939999.html
-      - text: "PF00821385 dog (Langdon 2010)"
-        href: articles/Langdon_2010_PF00821385.html
-      - text: "PF00821385 human (Langdon 2010)"
-        href: articles/Langdon_2010_PF00821385.html
       - text: "PF04236921 (Li 2018)"
         href: articles/Li_2018_PF04236921.html
       - text: "PF04455242 human (Chang 2011)"
@@ -2070,6 +2068,7 @@ articles:
   - articles/Fanta_2007_ciclosporin
   - articles/Farrell_2012_farletuzumab
   - articles/Farrell_2013_conestatAlfa
+  - articles/Farrell_2014_eltrombopag
   - articles/Fasanmade_2009_infliximab
   - articles/Fattinger_1991_quinidine
   - articles/Fau_2020_isatuximab
