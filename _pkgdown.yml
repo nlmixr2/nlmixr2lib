@@ -436,6 +436,8 @@ navbar:
         href: articles/Koolen_2010_docetaxel.html
       - text: "Docetaxel (Ozawa 2007)"
         href: articles/Ozawa_2007_docetaxel.html
+      - text: "Docetaxel (Puisset 2007)"
+        href: articles/Puisset_2007_docetaxel.html
       - text: "Domagrozumab (Wojciechowski 2022)"
         href: articles/Wojciechowski_2022_domagrozumab.html
       - text: "Donidalorsen (Diep 2026)"
@@ -2377,6 +2379,7 @@ articles:
   - articles/Prytula_2016_tacrolimus
   - articles/Przybylowski_2015_propofol
   - articles/Pu_2021_evinacumab
+  - articles/Puisset_2007_docetaxel
   - articles/Qi_2014_sapropterin
   - articles/Quartino_2016_trastuzumab
   - articles/Quartino_2019_trastuzumab
