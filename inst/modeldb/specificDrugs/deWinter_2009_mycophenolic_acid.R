@@ -21,11 +21,11 @@ deWinter_2009_mycophenolic_acid <- function() {
       source_name        = "CrCL"
     ),
     ALB = list(
-      description        = "Plasma albumin concentration in mmol/L (molar concentration; multiply by albumin MW 66.5 kg/mol to obtain g/L).",
-      units              = "mmol/L",
+      description        = "Plasma albumin concentration (mass concentration; SI canonical g/L per the 2026-06-19 register standardization audit).",
+      units              = "g/L",
       type               = "continuous",
       reference_category = NULL,
-      notes              = "Source paper reports plasma albumin in mmol/L (Table 1 medians 0.51 mmol/L for both cyclosporine and tacrolimus cohorts; range 0.35-0.68 mmol/L). Used as a power-covariate on BMAX with reference 0.5 mmol/L. The Eq. 8 text of the paper writes the form as P_i = P_pop * exp(theta * (Alb - 0.5)) but the numerical predictions in the Results ('A decrease in albumin from 0.6 to 0.4 mmol/l resulted in a decrease in the number of binding sites from 45200 to 25700 l mol') match a power form P_i = P_pop * (Alb / 0.5)^theta with theta = 1.39 to three significant figures (45100 vs 45200 and 25800 vs 25700); the power form is the one implemented here. See vignette Errata.",
+      notes              = "Source paper reports plasma albumin in mmol/L (Table 1 medians 0.51 mmol/L for both cyclosporine and tacrolimus cohorts; range 0.35-0.68 mmol/L). Canonical column is now SI g/L per the 2026-06-19 register standardization audit; convert inline in model() via `alb_mmolL <- ALB / 66.5` (albumin MW 66.5 g/mmol) to recover the mmol/L value used in the de Winter 2009 calibration. Used as a power-covariate on BMAX with reference 0.5 mmol/L (= 33.25 g/L in SI). The Eq. 8 text of the paper writes the form as P_i = P_pop * exp(theta * (Alb - 0.5)) but the numerical predictions in the Results ('A decrease in albumin from 0.6 to 0.4 mmol/l resulted in a decrease in the number of binding sites from 45200 to 25700 l mol') match a power form P_i = P_pop * (Alb / 0.5)^theta with theta = 1.39 to three significant figures (45100 vs 45200 and 25800 vs 25700); the power form is the one implemented here. See vignette Errata.",
       source_name        = "Alb"
     ),
     CONMED_CSA = list(
@@ -184,6 +184,15 @@ deWinter_2009_mycophenolic_acid <- function() {
 
   model({
     # ------------------------------------------------------------------
+    # SI -> source-paper unit conversion. The canonical ALB column is in
+    # SI g/L per the 2026-06-19 register standardization audit; de Winter
+    # 2009 calibrated the BMAX power exponent against ALB in mmol/L
+    # (reference 0.5 mmol/L = 33.25 g/L). Convert inline so the Table 2
+    # exponent (1.39) and reference (0.5) stay load-bearing.
+    # ------------------------------------------------------------------
+    alb_mmolL <- ALB / 66.5  # SI g/L -> mmol/L (albumin MW 66.5 g/mmol)
+
+    # ------------------------------------------------------------------
     # Individual parameters. Inter-patient variability is log-normal
     # (exponential IIV); the dosing-interval-related parameters (tlag,
     # tgb) carry their etas through exp() / log-normal accordingly.
@@ -195,7 +204,7 @@ deWinter_2009_mycophenolic_acid <- function() {
     vp      <- exp(lvp)
     q       <- exp(lq)
     k24     <- exp(lk24)
-    bmax    <- exp(lbmax    + etalbmax) * (ALB / 0.5)^e_alb_bmax
+    bmax    <- exp(lbmax    + etalbmax) * (alb_mmolL / 0.5)^e_alb_bmax
     k42     <- exp(lk42)
     vc_mpag <- exp(lvc_mpag)
     k56     <- exp(lk56)

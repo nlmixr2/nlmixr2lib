@@ -79,7 +79,7 @@ cohort <- tibble(
   id = seq_len(n_subjects),
   # Demographics from Table 2
   WT = rtnorm(n_subjects, mean = 73.6, sd = 18.5, lower = 36.0, upper = 149.7),
-  ALB = rtnorm(n_subjects, mean = 3.9, sd = 0.5, lower = 1.7, upper = 5.2),
+  ALB = rtnorm(n_subjects, mean = 39, sd = 5, lower = 17, upper = 52),
   AST = rtnorm(n_subjects, mean = 28.9, sd = 18.6, lower = 8.0, upper = 199.0),
   BSA = rtnorm(n_subjects, mean = 1.83, sd = 0.27, lower = 1.19, upper = 2.72),
   SEXF = rbinom(n_subjects, 1, prob = 0.459),
@@ -140,7 +140,7 @@ sim <- rxode2::rxSolve(
 events_typical <- tibble(
   id = 1,
   WT = 73.6,
-  ALB = 4.0,
+  ALB = 40,
   AST = 24,
   BSA = 1.82,
   SEXF = 0,
@@ -212,7 +212,7 @@ Published PK parameters from phase 1 (study 0761-0501, Yamamoto 2010) after moga
 events_sd <- tibble(
   id = 1,
   WT = 73.6,
-  ALB = 4.0,
+  ALB = 40,
   AST = 24,
   BSA = 1.82,
   SEXF = 0,

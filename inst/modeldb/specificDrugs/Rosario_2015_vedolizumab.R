@@ -15,7 +15,7 @@ Rosario_2015_vedolizumab <- function() {
     ),
     ALB = list(
       description        = "Baseline serum albumin",
-      units              = "g/dL",
+      units = "g/L",
       type               = "continuous",
       reference_category = NULL,
       notes              = "Power-form effect on CLL: (ALB / 4)^(-1.18). Reference 4 g/dL is the reference-patient albumin (Rosario 2015 Table 2 footnote and Figure 5 caption). US-convention g/dL matches the source paper.",
@@ -187,15 +187,20 @@ Rosario_2015_vedolizumab <- function() {
   })
 
   model({
+    # SI -> US-convention unit conversion (canonical ALB is in SI g/L per the
+    # 2026-06-19 register standardization audit; the original calibration
+    # used the g/dL reference value, so convert inline here).
+    alb_gdL <- ALB * 0.1  # SI g/L -> US-convention g/dL (factor 0.1)
+
     # Two typical values for linear clearance, switched by the IBD diagnosis indicator.
     cl_typ <- exp(lcl) * (1 - IBD_CD) + exp(lcl_cd) * IBD_CD
 
     # Individual PK parameters. Reference 70 kg for allometric / power scaling on WT;
-    # reference 4 g/dL for ALB; reference 700 mg/kg for SCORE_CALPRO; reference 300 for SCORE_CDAI
+    # reference 4 g/dL for alb_gdL; reference 700 mg/kg for SCORE_CALPRO; reference 300 for SCORE_CDAI
     # (CD only); reference 6 for SCORE_PMAYO (UC only); reference 40 y for AGE.
     cl <- cl_typ * exp(etalcl) *
       (WT  / 70  )^e_wt_cl *
-      (ALB / 4   )^e_alb_cl *
+      (alb_gdL / 4   )^e_alb_cl *
       (SCORE_CALPRO / 700)^e_calpro_cl *
       (SCORE_CDAI   / 300)^(e_cdai_cl  *      IBD_CD ) *
       (SCORE_PMAYO  / 6  )^(e_pmayo_cl * (1 - IBD_CD)) *

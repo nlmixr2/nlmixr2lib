@@ -23,7 +23,7 @@ Smith_2017_clindamycin <- function() {
     ),
     ALB = list(
       description        = "Serum albumin",
-      units              = "g/dL",
+      units = "g/L",
       type               = "continuous",
       reference_category = NULL,
       notes              = "Time-varying or baseline (per source dataset). Reference 3.3 g/dL (Smith 2017 Methods Equation 5 typical value used in the V relationship). Power effect on V: (ALB/3.3)^(-0.83).",
@@ -83,6 +83,11 @@ Smith_2017_clindamycin <- function() {
     propSd <- 0.336; label("Proportional residual error (fraction)")  # Smith 2017 Table 2 (Prop. PTN POPS = 33.6%; representative value -- see vignette)
   })
   model({
+    # SI -> US-convention unit conversion (canonical ALB is in SI g/L per the
+    # 2026-06-19 register standardization audit; the original calibration
+    # used the g/dL reference value, so convert inline here).
+    alb_gdL <- ALB * 0.1  # SI g/L -> US-convention g/dL (factor 0.1)
+
     # Convert canonical PAGE (months) to postmenstrual age in weeks for the sigmoidal Hill
     # maturation equation (Smith 2017 reports TM50 in weeks).
     pma_wk <- PAGE * 4.345
@@ -91,7 +96,7 @@ Smith_2017_clindamycin <- function() {
     maturation_cl <- pma_wk^pma_hill / (pma_tm50^pma_hill + pma_wk^pma_hill)
 
     # Protein-binding multiplier on V (Smith 2017 Methods Equation 5)
-    pb_vc <- (ALB / 3.3)^e_alb_vc * (AAG / 2.4)^e_aag_vc
+    pb_vc <- (alb_gdL / 3.3)^e_alb_vc * (AAG / 2.4)^e_aag_vc
 
     # Individual PK parameters with allometric weight scaling (reference 70 kg)
     cl <- exp(lcl + etalcl) * (WT / 70)^e_wt_cl * maturation_cl

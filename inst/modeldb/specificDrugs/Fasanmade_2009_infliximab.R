@@ -15,10 +15,10 @@ Fasanmade_2009_infliximab <- function() {
     ),
     ALB = list(
       description        = "Serum albumin",
-      units              = "g/dL",
+      units              = "g/L",
       type               = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on CL; normalized as ALB/4.1 per Fasanmade 2009 (reference: 4.1 g/dL).",
+      notes              = "Power effect on CL; normalized as ALB/4.1 per Fasanmade 2009 (reference: 4.1 g/dL). Canonical input is SI g/L per the 2026-06-19 register standardization audit; converted inline in model() to g/dL via alb_gdL <- ALB * 0.1 so the Table 3 reference 4.1 g/dL stays load-bearing.",
       source_name        = "ALB"
     ),
     ADA_POS = list(
@@ -84,8 +84,14 @@ Fasanmade_2009_infliximab <- function() {
     #   - ALB on CL: power model (ALB/4.1)^e_alb_cl
     #   - ADA on CL, SEX on CL/Vc: multiplicative (1 + e * COV)
     #   - WT on Vc: power model (WT/77)^e_wt_vc
+
+    # SI -> US-convention unit conversion (canonical ALB is in SI g/L per the
+    # 2026-06-19 register standardization audit; Fasanmade 2009 Table 3 calibrated
+    # the power exponent against the reference 4.1 g/dL, so convert inline).
+    alb_gdL <- ALB * 0.1  # SI g/L -> US-convention g/dL (factor 0.1)
+
     cl <- exp(lcl + etalcl) *
-      (ALB / 4.1)^e_alb_cl *
+      (alb_gdL / 4.1)^e_alb_cl *
       (1 + e_ada_cl * ADA_POS) *
       (1 + e_sex_cl * SEXF)
 

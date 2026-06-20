@@ -15,7 +15,7 @@ Hwang_2023_monalizumab <- function() {
     ),
     ALB = list(
       description        = "Baseline serum albumin",
-      units              = "g/dL",
+      units = "g/L",
       type               = "continuous",
       reference_category = NULL,
       notes              = "Power-form effect on CL (exponent -1.20) and V1 (exponent -0.299) with reference 3.80 g/dL, the median of the pooled analysis population (Hwang 2023 Table 1, p. 821). Source column BALB (baseline albumin); Hwang 2023 reports albumin in g/dL throughout (Table 1, range 1.80-4.90 g/dL).",
@@ -122,12 +122,17 @@ Hwang_2023_monalizumab <- function() {
     addSd  <- sqrt(0.00766); label("Additive residual error SD (mg/L)")          # Hwang 2023 Table 2, p. 821: Variance of additive error    = 0.00766
   })
   model({
+    # SI -> US-convention unit conversion (canonical ALB is in SI g/L per the
+    # 2026-06-19 register standardization audit; the original calibration
+    # used the g/dL reference value, so convert inline here).
+    alb_gdL <- ALB * 0.1  # SI g/L -> US-convention g/dL (factor 0.1)
+
     # Covariate factors. Reference values are the population medians from
-    # Hwang 2023 Table 1 (p. 821): ALB = 3.80 g/dL, WT = 70.6 kg.
-    alb_cl <- (ALB / 3.80)^e_alb_cl
+    # Hwang 2023 Table 1 (p. 821): alb_gdL = 3.80 g/dL, WT = 70.6 kg.
+    alb_cl <- (alb_gdL / 3.80)^e_alb_cl
     wt_cl  <- (WT  / 70.6)^e_wt_cl
 
-    alb_vc           <- (ALB / 3.80)^e_alb_vc
+    alb_vc           <- (alb_gdL / 3.80)^e_alb_vc
     wt_vc            <- (WT  / 70.6)^e_wt_vc
     sexf_vc          <- (1 + e_sexf_vc)^SEXF
     smoke_current_vc <- (1 + e_smoke_current_vc)^SMOKE_CURRENT

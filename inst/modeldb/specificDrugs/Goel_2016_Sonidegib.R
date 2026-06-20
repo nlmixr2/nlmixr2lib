@@ -58,7 +58,7 @@ Goel_2016_Sonidegib <- function() {
       units              = "fraction of ULN",
       type               = "continuous",
       reference_category = NULL,
-      notes              = "Goel 2016 Methods: 'The values of total bilirubin and ALT levels were normalized to the upper limit of normal (ULN).' The pooled-cohort median normalized bilirubin (column BILN in the source NONMEM dataset) was 0.38 (Table 1), used here as the reference value. Values supplied in this canonical column should be ratios (raw bilirubin in mg/dL or umol/L divided by the assay's ULN), not raw concentrations. Power effect on CL/F (exponent 0.064).",
+      notes              = "Goel 2016 Methods: 'The values of total bilirubin and ALT levels were normalized to the upper limit of normal (ULN).' The pooled-cohort median normalized bilirubin (column BILN in the source NONMEM dataset) was 0.38 (Table 1), used here as the reference value. Values supplied in this canonical column should be ratios (raw bilirubin in mg/dL or umol/L divided by the assay's ULN), not raw concentrations. Power effect on CL/F (exponent 0.064). NOTE: this column's semantics depart from the SI canonical TBILI (umol/L); the 2026-06-19 register standardization audit did not register a separate `TBILI_FRAC_ULN` canonical, so this model file retains the `fraction of ULN` per-model unit and no inline SI->mg/dL conversion is applied (Goel 2016 calibration is already on the ULN-normalized ratio).",
       source_name        = "BILN"
     ),
     RACE_JAPANESE = list(

@@ -15,7 +15,7 @@ Garg_2014_pertuzumab <- function() {
     ),
     ALB = list(
       description        = "Baseline serum albumin concentration",
-      units              = "g/dL",
+      units = "g/L",
       type               = "continuous",
       reference_category = NULL,
       notes              = "Time-fixed baseline value (US convention, g/dL). Power effect on linear CL (exponent -1.06, i.e. approximately inversely proportional); reference 3.9 g/dL per Garg 2014 CL covariate equation (page 823, typical patient). Source column 'ALBU' maps to the canonical ALB covariate.",
@@ -83,9 +83,14 @@ Garg_2014_pertuzumab <- function() {
   })
 
   model({
+    # SI -> US-convention unit conversion (canonical ALB is in SI g/L per the
+    # 2026-06-19 register standardization audit; the original calibration
+    # used the g/dL reference value, so convert inline here).
+    alb_gdL <- ALB * 0.1  # SI g/L -> US-convention g/dL (factor 0.1)
+
     # Individual PK parameters with LBW power scaling (reference 48 kg) on
-    # CL / Vc / Vp and ALB power scaling (reference 3.9 g/dL) on CL.
-    cl <- exp(lcl + etalcl) * (LBM / 48)^e_lbw_cl * (ALB / 3.9)^e_alb_cl
+    # CL / Vc / Vp and alb_gdL power scaling (reference 3.9 g/dL) on CL.
+    cl <- exp(lcl + etalcl) * (LBM / 48)^e_lbw_cl * (alb_gdL / 3.9)^e_alb_cl
     vc <- exp(lvc + etalvc) * (LBM / 48)^e_lbw_vc
     q  <- exp(lq)
     vp <- exp(lvp + etalvp) * (LBM / 48)^e_lbw_vp

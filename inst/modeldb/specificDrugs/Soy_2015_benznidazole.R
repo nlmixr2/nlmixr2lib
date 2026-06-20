@@ -73,15 +73,15 @@ Soy_2015_benznidazole <- function() {
     ),
     TPRO = list(
       description        = "Total serum protein",
-      units              = "mg/dL",
+      units              = "g/L",
       type               = "continuous",
       reference_category = NULL,
-      notes              = "Screened on CL/F and V/F (Soy 2015 Results). Not retained.",
+      notes              = "Screened on CL/F and V/F (Soy 2015 Results). Not retained. Canonical input is SI g/L per the 2026-06-19 register standardization audit. (Soy 2015 reported in mg/dL; conversion: 1 mg/dL = 0.01 g/L, but TPRO is not used in equations so no inline conversion is added.)",
       source_name        = "TPRO"
     ),
     TBILI = list(
       description        = "Total bilirubin",
-      units              = "mg/dL",
+      units = "umol/L",
       type               = "continuous",
       reference_category = NULL,
       notes              = "Screened on CL/F and V/F (Soy 2015 Results). Not retained.",

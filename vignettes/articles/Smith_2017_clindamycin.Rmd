@@ -83,7 +83,7 @@ below uses two simulated cohorts:
 set.seed(20260602)
 
 # Helper to build a single-subject IV-infusion event table
-make_iv_events <- function(id, weight, page_months, alb = 3.3, aag = 2.4,
+make_iv_events <- function(id, weight, page_months, alb = 33, aag = 2.4,
                            dose_mg, dur_h = 0.5, tau_h = 8, n_doses = 10,
                            cohort_label, obs_grid = seq(0, 80, by = 0.25)) {
   rxode2::et(amt = dose_mg, dur = dur_h, ii = tau_h, addl = n_doses - 1L,

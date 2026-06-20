@@ -23,7 +23,7 @@ Li_2019_abatacept <- function() {
     ),
     ALB = list(
       description        = "Baseline serum albumin",
-      units              = "g/dL",
+      units = "g/L",
       type               = "continuous",
       reference_category = NULL,
       notes              = "Reference 4.0 g/dL. Li 2019 Methods states 'baseline albumin of 4.0 mg/dL' which is a publication unit typo (normal human albumin is ~4 g/dL; 4 mg/dL is physiologically impossible). Coded as 4.0 g/dL here; see vignette Errata. Power effect on CL (exp -0.687) per Li 2019 Table 1B.",
@@ -131,14 +131,19 @@ Li_2019_abatacept <- function() {
   })
 
   model({
+    # SI -> US-convention unit conversion (canonical ALB is in SI g/L per the
+    # 2026-06-19 register standardization audit; the original calibration
+    # used the g/dL reference value, so convert inline here).
+    alb_gdL <- ALB * 0.1  # SI g/L -> US-convention g/dL (factor 0.1)
+
     # Individual PK parameters with Li 2019 final-model covariate equations
     # (Methods text and Table 1B). Reference subject: 50-year-old male, BWT
-    # 70 kg, ALB 4.0 g/dL (paper typo 'mg/dL'), cGFR 90 mL/min/1.73 m^2,
+    # 70 kg, alb_gdL 4.0 g/dL (paper typo 'mg/dL'), cGFR 90 mL/min/1.73 m^2,
     # swollen joint count 16, not on NSAIDs, phase-3 SC formulation.
     cl <- exp(lcl + etalcl) *
           (WT / 70)^e_wt_cl *
           (AGE / 50)^e_age_cl *
-          (ALB / 4.0)^e_alb_cl *
+          (alb_gdL / 4.0)^e_alb_cl *
           (CRCL / 90)^e_crcl_cl *
           ((SWOL_28JOINT + 1) / (16 + 1))^e_swol_cl *
           exp(SEXF * e_sexf_cl + CONMED_NSAID * e_nsaid_cl)
