@@ -1060,12 +1060,6 @@ PBPK bare organ-amount compartments used by Zhang 2011 nutlin3a and similar full
 - **Source aliases:** none.
 - **Example models:** `Zhang_2011_nutlin3a.R`.
 
-### skin (**canonical bare skin compartment**)
-- **Type:** compartment
-- **Role:** Bare skin tissue compartment in full-body PBPK extractions. Total tissue (well-stirred) drug concentration in skin; paired with `lung`, `liver`, `kidney`, `spleen`, `heart`, `brain`, `muscle`, `bone`, `adipose` etc. in whole-body PBPK extractions that resolve skin as a distinct organ. The token `skin` already appears in the `vp_skin` canonical entry and in the `pbpkSubCompartmentRegex` valid-organ list, so this entry registers the bare-organ form for parity with the surrounding canonicals.
-- **Source aliases:** none.
-- **Example models:** `Gaohua_2012_pregnancy_pbpk_caffeine.R`, `Gaohua_2012_pregnancy_pbpk_metoprolol.R`, `Gaohua_2012_pregnancy_pbpk_midazolam.R`.
-
 ### retina (**canonical bare retina compartment**)
 - **Type:** compartment
 - **Role:** Bare retina compartment used in ocular PBPK extractions.
@@ -2154,12 +2148,6 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Example models:** `Birgersson_2019_artesunate.R` (DDMODEL00000297).
 - **Notes:** Renamed from `dha` to `dihydroart` on 2026-06-19 per the canonical-register standardization audit (operator decision: the three-letter abbreviation is widely used in the malaria literature but is ambiguous - `DHA` collides with docosahexaenoic acid in nutrition contexts; `dihydroart` is unambiguous while still contracted relative to the full "dihydroartemisinin" spelling).
 
-### desbutlum (**canonical desbutyl-lumefantrine suffix**)
-- **Type:** metabolite-suffix
-- **Role:** Desbutyl-lumefantrine, the principal oxidative metabolite of lumefantrine formed by CYP3A4-mediated N-debutylation. Desbutyl-lumefantrine is approximately 5- to 9-fold more potent than the parent lumefantrine in vitro against Plasmodium falciparum and contributes to the antimalarial pharmacodynamics of the artemether-lumefantrine combination. Used as the metabolite suffix in parent + metabolite simultaneous popPK models (compartments `central_desbutlum`, parameters `lcl_desbutlum` / `lvc_desbutlum`, residual `propSd_desbutlum`, output `Cc_desbutlum`).
-- **Source aliases:** none.
-- **Example models:** `Hoglund_2015_lumefantrine.R` (doi:10.1111/bcp.12529; 1-compartment desbutyl-lumefantrine disposition with full LF-to-desbutyl-lumefantrine conversion; the joint LF/desbutyl-lumefantrine model reports a LOP/r DDI effect of +392 % on apparent desbutyl-lumefantrine clearance).
-
 ### ohi (**canonical hydroxy-itraconazole suffix**)
 - **Type:** metabolite-suffix
 - **Role:** Hydroxy-itraconazole (OH-ITZ), major active metabolite of itraconazole produced by CYP3A4 hydroxylation.
@@ -2324,35 +2312,12 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Source aliases:** none.
 - **Example models:** `Wang_2018_daclatasvir_asunaprevir.R` (doi:10.1038/aps.2017.84).
 
-### tgn (**canonical 6-thioguanine nucleotide suffix**)
+### cdb4453 (**canonical CDB-4453 monodemethylated-telapristone metabolite suffix**)
 - **Type:** metabolite-suffix
-- **Role:** 6-thioguanine nucleotides (6-TGNs), the cytotoxic intracellular active metabolites of 6-mercaptopurine / azathioprine measured in red blood cells. 6-TGNs are formed downstream of HPRT-mediated activation and incorporate into DNA / RNA to drive antiproliferative effects in lymphoblasts. Drives `central_tgn` and the `addSd_tgn` residual. The apparent metabolite distribution volume is typically not identifiable (only an apparent clearance is reported) and is fixed to 1 L by NONMEM ADVAN6 convention -- the `lvc_tgn` entry is fixed in the model file and documented in the vignette Errata.
-- **Source aliases:** none. The paper symbol `6-TGNs` (and the molecular abbreviation `TGN`) translate silently to the canonical lowercase suffix.
-- **Example models:** `Hawwa_2008_mercaptopurine.R` (doi:10.1111/j.1365-2125.2008.03281.x).
-
-### mmpn (**canonical 6-methylmercaptopurine nucleotide suffix**)
-- **Type:** metabolite-suffix
-- **Role:** 6-methylmercaptopurine nucleotides (6-mMPNs), the methylated intracellular metabolites of 6-mercaptopurine / azathioprine measured in red blood cells. 6-mMPNs are formed by TPMT-mediated methylation of 6-MP and the corresponding thioinosine 5'-monophosphate; they are associated with hepatotoxicity rather than antileukaemic efficacy. Drives `central_mmpn` and the `addSd_mmpn` residual. The apparent metabolite distribution volume is typically not identifiable (only an apparent clearance is reported) and is fixed to 1 L by NONMEM ADVAN6 convention -- the `lvc_mmpn` entry is fixed in the model file and documented in the vignette Errata.
-- **Source aliases:** none. The paper symbol `6-mMPNs` (and the molecular abbreviation `mMPN`) translate silently to the canonical lowercase suffix.
-- **Example models:** `Hawwa_2008_mercaptopurine.R` (doi:10.1111/j.1365-2125.2008.03281.x).
-
-### dxor (**canonical dextrorphan suffix**)
-- **Type:** metabolite-suffix
-- **Role:** Dextrorphan (3-hydroxy-17-methylmorphinan), the major CYP2D6-mediated O-demethylation metabolite of dextromethorphan. Drives `central_dxor`, the `Cc_dxor` observation, and the `propSd_dxor` residual.
-- **Source aliases:** none (the paper uses "dextrorphan" and the symbol DXO).
-- **Example models:** `TerHeine_2014_dextromethorphan.R` (doi:10.1111/bcp.12388).
-
-### 3mm (**canonical 3-methoxymorphinan suffix**)
-- **Type:** metabolite-suffix
-- **Role:** 3-Methoxymorphinan (3-methoxy-morphinan), the CYP3A-mediated N-demethylation metabolite of dextromethorphan. Drives `central_3mm`, `peripheral1_3mm`, the `Cc_3mm` observation, and the `propSd_3mm` residual. Suffix begins with a digit, which is permitted under the same rule that already allows `3oh` / `7dm` / `5fu`.
-- **Source aliases:** "3-MM" (paper text); "3-methoxymorphinan" (figure captions).
-- **Example models:** `TerHeine_2014_dextromethorphan.R` (doi:10.1111/bcp.12388).
-
-### 3hm (**canonical 3-hydroxymorphinan suffix**)
-- **Type:** metabolite-suffix
-- **Role:** 3-Hydroxymorphinan (the doubly-demethylated terminal metabolite of dextromethorphan, formed from either dextrorphan via CYP3A or 3-methoxymorphinan via CYP2D6). Drives `central_3hm`, `peripheral1_3hm`, the `Cc_3hm` observation, and the `propSd_3hm` residual.
-- **Source aliases:** "3-HM" (paper text); "3-hydroxymorphinan" (figure captions).
-- **Example models:** `TerHeine_2014_dextromethorphan.R` (doi:10.1111/bcp.12388).
+- **Role:** Active monodemethylated metabolite of telapristone (CDB-4124). Removal of one N-methyl group on the C-17 side chain produces CDB-4453, a more polar (smaller apparent volume of distribution) metabolite with possible equipotent antiprogestational activity in vivo (Morris 2011 Discussion). Drives `central_cdb4453` and the `propSd_cdb4453` residual; the parent-side parameters use the canonical unsuffixed names (`lcl_pop1` / `lcl_pop2` / `lvc` / `lvp` / `lq` / `lka`).
+- **Source aliases:** none (the paper uses the compound code CDB-4453 throughout).
+- **Example models:** `Morris_2011_telapristone.R` (doi:10.1208/s12248-011-9304-7).
+- **Notes:** The Morris 2011 model fixes the metabolite apparent volume V3/F to 1 L for identifiability (Fmet not separately identifiable from V3), so the estimated `fmetest` (= Fmet / V3_metab, units 1/L) numerically equals Fmet under that constraint. The metabolite compartment `central_cdb4453` therefore numerically equals the metabolite concentration (nmol/L) when V3 = 1 L. Ratified canonically on 2026-06-09 alongside the Morris 2011 telapristone extraction.
 
 ---
 
@@ -2443,26 +2408,9 @@ Sibling-drug suffix for the Kleijn 2011 sugammadex-mediated reversal of rocuroni
 - **Example models:** `Sadouki_2025_meropenem.R`, `Wicha_2017_linezolid_meropenem_vancomycin.R`.
 - **Notes:** Same token as the bare `mer` drug-state compartment; both Types co-exist for the same canonical name.
 
-### sbt (**canonical sulbactam sibling-drug suffix**)
-- **Type:** metabolite-suffix
-- **Role:** Sulbactam (beta-lactamase inhibitor) sibling-drug suffix, paired with ampicillin as the unsuffixed parent in the Soto 2014 joint two-compartment PK model. Drives `central_sbt` / `peripheral1_sbt` compartments, `lcl_sbt` / `lvc_sbt` / `lq_sbt` / `lvp_sbt` structural parameters, the `etalcl_sbt` / `etalvp_sbt` IIV etas (with eta_CL correlated across drugs via the shared `etalcl + etalcl_sbt` block), and the `propSd_sbt` residual on sulbactam plasma concentration. Ampicillin is selected as the unsuffixed parent because it is the antibacterial drug named first in the fixed 2:1 ampicillin/sulbactam combination and the paper's primary PK / PD efficacy endpoint (f *t > MIC) is measured on ampicillin.
-- **Source aliases:** none.
-- **Example models:** `Soto_2014_ampicillin_sulbactam.R` (doi:10.1111/bcp.12232).
-- **Notes:** `sbt` matches the clinical-pharmacology and CLSI-microbiology shorthand for sulbactam (e.g., AMP/SBT for the ampicillin-sulbactam combination). Disjoint from the existing `sulf` metabolite suffix (paracetamol-sulphate, Allegaert 2015) to avoid lexical confusion between the inhibitor drug and the phase-II sulphate conjugate of paracetamol.
-
 ---
 
-## Ramharter 2019 mefloquine metabolite suffix
-
-### cmq (**canonical carboxymefloquine suffix**)
-- **Type:** metabolite-suffix
-- **Role:** Carboxymefloquine, the principal carboxylic-acid metabolite of mefloquine produced in vivo by oxidative metabolism of the piperidine-2-methanol substituent on the parent quinoline scaffold. CMQ has no antimalarial activity but is a clinically meaningful inducer of pregnane-X-receptor-mediated drug metabolism (comparable to rifampicin) and autoinduces its own clearance via a two-stage RNA + enzyme-pool turnover in the Ramharter 2019 model. Drives `central_cmq` / `peripheral1_cmq` PK subsystem alongside parent-enantiomer subsystems with `_r` / `_s` suffixes.
-- **Source aliases:** none.
-- **Example models:** `Ramharter_2019_mefloquine.R` (doi:10.1128/AAC.01113-18).
-
----
-
-## Zurlinden 2016 paracetamol PBPK metabolite suffixes
+## Deprecated Zurlinden 2016 paracetamol PBPK metabolite suffixes (subsumed into Cook 2016 forms)
 
 Zurlinden 2016 paracetamol PBPK shorthand suffixes `as` and `ag` were deprecated on 2026-06-19 because they collide with R reserved words (`as.numeric`, `as.integer`, `as.character`, etc.) and chemistry symbols (Ag = silver). The Zurlinden 2016 paracetamol PBPK model is migrated to use the existing Cook 2016 `apaps` / `apapg` canonicals for the same chemical species. See the `apaps` / `apapg` entries above for the canonical names.
 
@@ -2492,13 +2440,7 @@ Per-paper metabolite / sibling-drug suffix additions discovered during the 2026-
 - **Type:** metabolite-suffix
 - **Role:** 1'-hydroxymidazolam metabolite of midazolam.
 - **Source aliases:** none.
-- **Example models:** `Brussee_2018_midazolam_PBPK.R`, `Franken_2017_midazolam.R`.
-
-### 1ohmg (**canonical 1'-hydroxymidazolam-glucuronide suffix**)
-- **Type:** metabolite-suffix
-- **Role:** 1'-hydroxymidazolam-glucuronide phase II metabolite of midazolam (downstream of `1ohm`; renally cleared end metabolite). Paired with `1ohm` analogously to morphine's `m3g` / `m6g` glucuronide pair.
-- **Source aliases:** none.
-- **Example models:** `Franken_2017_midazolam.R`.
+- **Example models:** `Brussee_2018_midazolam_PBPK.R`.
 
 ### 4ohctx (**canonical 4-hydroxycyclophosphamide suffix**)
 - **Type:** metabolite-suffix
@@ -2572,12 +2514,6 @@ Per-paper metabolite / sibling-drug suffix additions discovered during the 2026-
 - **Source aliases:** none.
 - **Example models:** `Pei_2016_iloperidone.R`.
 
-### dehyari (**canonical dehydroaripiprazole suffix**)
-- **Type:** metabolite-suffix
-- **Role:** Dehydroaripiprazole, the major active CYP3A4-mediated metabolite of aripiprazole. Possesses pharmacological activity comparable to the parent at D2 / 5-HT1A receptors. Suffix used for joint parent-plus-metabolite popPK models in which aripiprazole and dehydroaripiprazole are fitted simultaneously. Compartments are named `central_dehyari` (and `peripheral1_dehyari` etc. when applicable); parameters take the `<base>_dehyari` form (e.g., `lcl_dehyari`, `lvc_dehyari`); observation variable is `Cc_dehyari`; per-output residual error is `propSd_dehyari` / `addSd_dehyari`.
-- **Source aliases:** none.
-- **Example models:** `Kim_2008_aripiprazole.R`.
-
 ### 5oh (**canonical 5-hydroxyomeprazole suffix**)
 - **Type:** metabolite-suffix
 - **Role:** 5-hydroxyomeprazole metabolite of omeprazole.
@@ -2645,12 +2581,6 @@ Per-paper metabolite / sibling-drug suffix additions discovered during the 2026-
 - **Source aliases:** none.
 - **Example models:** `Stroh_2013_rolofylline.R` (doi:10.1208/s12248-012-9443-5).
 
-### 1ohmg (**canonical 1'-hydroxymidazolam glucuronide suffix**)
-- **Type:** metabolite-suffix
-- **Role:** 1'-hydroxymidazolam glucuronide, the phase-II UDP-glucuronosyltransferase conjugation product of `1ohm` (1'-hydroxymidazolam). Tracked downstream of the parent (midazolam) and the primary CYP3A oxidative metabolite (1'-hydroxymidazolam) in joint parent + sequential-metabolite popPK models. Drives `central_1ohmg` / `peripheral1_1ohmg` and the `propSd_1ohmg` residual. The name follows the established drug-glucuronide pattern (`mpag`, `acmpag`, `m3g`, `m6g`, `apapg`, `d3og`) where the parent-species suffix is followed by a terminal `g` for the glucuronide conjugate.
-- **Source aliases:** none.
-- **Example models:** `vanRongen_2015_midazolam.R` (doi:10.1111/bcp.12693).
-
 ---
 
 ## TB-treatment drug suffixes (combination antibiotic)
@@ -2668,18 +2598,6 @@ TB-treatment drug suffixes used in combination-antibiotic `central_<drug>` / `de
 - **Role:** Isoniazid drug suffix in combination TB models.
 - **Source aliases:** none.
 - **Example models:** `Chen_2017_TB_MTP_GPDI_mouse.R`.
-
-### acinh (**canonical acetylisoniazid metabolite suffix**)
-- **Type:** metabolite-suffix
-- **Role:** Acetylisoniazid (AcINH, N-acetylisoniazid) suffix in isoniazid parent-and-metabolite popPK models. AcINH is the primary phase-II metabolite of isoniazid formed by N-acetyltransferase 2 (NAT2); downstream hydrolysis routes AcINH to isonicotinic acid (INA) and acetylhydrazine. Compartments: `central_acinh`, `peripheral1_acinh`. Plasma concentration output: `Cc_acinh`. Residual-error suffix: `expSd_acinh` / `propSd_acinh` / `addSd_acinh`.
-- **Source aliases:** none.
-- **Example models:** `Seng_2015_isoniazid.R`.
-
-### ina (**canonical isonicotinic acid metabolite suffix**)
-- **Type:** metabolite-suffix
-- **Role:** Isonicotinic acid (INA) suffix in isoniazid parent-and-metabolite popPK models. INA is the terminal downstream metabolite of isoniazid formed both by direct hydrolysis (INH -> INA + hydrazine) and by acetylisoniazid hydrolysis (AcINH -> INA + acetylhydrazine). Compartments: `central_ina` (and `peripheral1_ina` if a paper resolves a peripheral INA compartment). Plasma concentration output: `Cc_ina`. Residual-error suffix: `expSd_ina` / `propSd_ina` / `addSd_ina`.
-- **Source aliases:** none.
-- **Example models:** `Seng_2015_isoniazid.R`.
 
 ### emb (**canonical ethambutol drug suffix**)
 - **Type:** metabolite-suffix
@@ -2774,12 +2692,6 @@ Antibiotic combination-PK drug suffixes (linezolid, vancomycin, meropenem long f
 - **Role:** Oseltamivir carboxylate (OC), the active neuraminidase-inhibitor metabolite formed from the oseltamivir prodrug primarily via human carboxylesterase 1 (HCE1) in the liver.
 - **Source aliases:** none.
 - **Example models:** `Standing_2012_oseltamivir.R`.
-
-### da8164 (**canonical DA-8164 udenafil metabolite suffix**)
-- **Type:** metabolite-suffix
-- **Role:** DA-8164, the principal active metabolite of the phosphodiesterase-type-5 inhibitor udenafil, formed predominantly via hepatic metabolism. Used as a metabolite suffix in joint udenafil + DA-8164 parent-metabolite popPK models. MW(DA-8164) = 405.4 g/mol vs MW(udenafil) = 516.66 g/mol; the molecular-weight ratio is applied to the formation flux entering the metabolite central compartment so the simulated DA-8164 mass concentration is dimensionally consistent.
-- **Source aliases:** none.
-- **Example models:** `Kim_2016_udenafil.R`.
 
 ---
 

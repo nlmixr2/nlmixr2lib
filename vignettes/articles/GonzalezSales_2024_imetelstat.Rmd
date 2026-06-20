@@ -120,9 +120,9 @@ NONMEM supplement control stream (`PSP4-13-1264-s001.txt`).
 # Virtual cohort
 
 Original observed data are not publicly available. We simulate a virtual
-LR-MDS cohort (DIS_MF = 0, MM = 0) receiving the registered MDS3001 dose of
+LR-MDS cohort (DIS_MF = 0, DIS_MM = 0) receiving the registered MDS3001 dose of
 7.5 mg/kg IV over 2 hours every 4 weeks, and a virtual myelofibrosis cohort
-(DIS_MF = 1, MM = 0) receiving the registered MYF3001 dose of 9.4 mg/kg IV
+(DIS_MF = 1, DIS_MM = 0) receiving the registered MYF3001 dose of 9.4 mg/kg IV
 over 2 hours every 3 weeks. Body weight is drawn from a normal distribution
 centred at the pooled-cohort mean 77.2 kg with standard deviation 15 kg
 (approximating the published range 44-161 kg); sex is drawn binomially with
@@ -156,7 +156,7 @@ make_imetelstat_cohort <- function(n,
     WT     = wt,
     SEXF   = sexf,
     DIS_MF = as.integer(is_mf),
-    MM     = 0L,
+    DIS_MM = 0L,
     SPLV   = if (is_mf) 3010 else 3010,  # SPLV is gated by DIS_MF in the model
     DOSE   = amt_umol,
     amt_umol = amt_umol
@@ -195,7 +195,7 @@ make_imetelstat_cohort <- function(n,
   bind_rows(dose_df, obs_df) |>
     dplyr::arrange(id, time, dplyr::desc(evid)) |>
     dplyr::select(id, time, evid, amt, cmt, rate,
-                  WT, SEXF, DIS_MF, MM, SPLV, DOSE)
+                  WT, SEXF, DIS_MF, DIS_MM, SPLV, DOSE)
 }
 
 lrmds_events <- make_imetelstat_cohort(
@@ -297,7 +297,7 @@ build_sex_events <- function(sexf_value, id_value) {
   ev$WT     <- 70
   ev$SEXF   <- sexf_value
   ev$DIS_MF <- 0L
-  ev$MM     <- 0L
+  ev$DIS_MM <- 0L
   ev$SPLV   <- 3010
   ev$DOSE   <- dose_umol_sex
   ev$id     <- id_value

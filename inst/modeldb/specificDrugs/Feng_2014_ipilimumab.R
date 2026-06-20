@@ -15,10 +15,10 @@ Feng_2014_ipilimumab <- function() {
     ),
     LDH = list(
       description        = "Baseline serum lactate dehydrogenase",
-      units              = "IU/L",
+      units              = "U/L",
       type               = "continuous",
       reference_category = NULL,
-      notes              = "Effect on CL via the literal Feng 2014 form (log(LDH)/log(206))^CL_LDH -- a power of a ratio of logs, not the conventional (LDH/ref)^exponent. Feng 2014 Results state 'The value for LDH was log-transformed due to its right-skewed distribution'; reference LDH = 206 IU/L (Table 2 footnote). The same unusual literal form was carried forward by the same Bristol-Myers Squibb modeling group in the later ipilimumab popPK (Sanghavi 2020), giving a small (<20%) effect across the observed LDH range -- the conventional power-of-ratio form would inflate the effect well above the paper's narrative.",
+      notes              = "Canonical unit string is U/L per the 2026-06-19 SI register; the source paper reports IU/L, which is value-identical to U/L (same magnitude), so the covariate values and reference (206) are unchanged. Effect on CL via the literal Feng 2014 form (log(LDH)/log(206))^CL_LDH -- a power of a ratio of logs, not the conventional (LDH/ref)^exponent. Feng 2014 Results state 'The value for LDH was log-transformed due to its right-skewed distribution'; reference LDH = 206 U/L (Table 2 footnote). The same unusual literal form was carried forward by the same Bristol-Myers Squibb modeling group in the later ipilimumab popPK (Sanghavi 2020), giving a small (<20%) effect across the observed LDH range -- the conventional power-of-ratio form would inflate the effect well above the paper's narrative.",
       source_name        = "LDH"
     )
   )
@@ -40,18 +40,18 @@ Feng_2014_ipilimumab <- function() {
     hepatic_function = "Baseline total bilirubin mean 0.48 mg/dL; baseline direct bilirubin mean 0.16 mg/dL; ALT mean 23.65 IU/L (index dataset)",
     immunogenicity = "4.29% of index-dataset patients were ADA-positive at baseline or post-ipilimumab",
     co_medication = "Concomitant budesonide in 13.81% of index-dataset patients (CA184-007 prophylactic-toxicity sub-study)",
-    notes          = "Pooled index dataset of 1,767 ipilimumab serum concentrations from 420 patients in three phase II studies (CA184-007, CA184-008, CA184-022) plus an external validation dataset of 328 concentrations from 79 patients in CA184-004. Final parameter estimates were obtained from the combined analysis (index + external) dataset. Baseline LDH mean 326.74 (SD 375.19) IU/L; reference LDH 206 IU/L (approximate median; Table 2 footnote). Demographics from Feng 2014 Table 1; values are for the index dataset (n = 420) used for model development."
+    notes          = "Pooled index dataset of 1,767 ipilimumab serum concentrations from 420 patients in three phase II studies (CA184-007, CA184-008, CA184-022) plus an external validation dataset of 328 concentrations from 79 patients in CA184-004. Final parameter estimates were obtained from the combined analysis (index + external) dataset. Baseline LDH mean 326.74 (SD 375.19) U/L; reference LDH 206 U/L (approximate median; Table 2 footnote; source reports IU/L, value-identical to canonical U/L). Demographics from Feng 2014 Table 1; values are for the index dataset (n = 420) used for model development."
   )
 
   ini({
-    # Structural parameters at the reference patient: 80 kg BW and 206 IU/L
+    # Structural parameters at the reference patient: 80 kg BW and 206 U/L
     # LDH (Feng 2014 Table 2 footnote: reference values selected to
     # approximate the population medians).
     # CL and Q are reported in the source as L/h and converted to L/day
     # (L/h * 24 = L/day) so this model keeps time in days, matching the
     # convention of the later Bristol-Myers Squibb anti-CTLA-4 / anti-PD-1
     # extractions (Bajaj 2017 nivolumab, Sanghavi 2020 ipilimumab).
-    lcl <- log(0.0150 * 24); label("Reference clearance CL_REF at WT = 80 kg, LDH = 206 IU/L (L/day)") # Feng 2014 Table 2: CL_REF = 0.0150 L/h
+    lcl <- log(0.0150 * 24); label("Reference clearance CL_REF at WT = 80 kg, LDH = 206 U/L (L/day)") # Feng 2014 Table 2: CL_REF = 0.0150 L/h
     lvc <- log(4.15);        label("Reference central volume Vc_REF at WT = 80 kg (L)")               # Feng 2014 Table 2: Vc_REF = 4.15 L
     lq  <- log(0.0411 * 24); label("Reference intercompartmental clearance Q_REF (L/day)")            # Feng 2014 Table 2: Q_REF = 0.0411 L/h
     lvp <- log(3.11);        label("Reference peripheral volume Vp_REF (L)")                          # Feng 2014 Table 2: Vp_REF = 3.11 L

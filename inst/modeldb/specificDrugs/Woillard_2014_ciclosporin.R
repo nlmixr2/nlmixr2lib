@@ -44,15 +44,15 @@ Woillard_2014_ciclosporin <- function() {
     ),
     ALT = list(
       description = "Alanine aminotransferase (ALAT in the source paper).",
-      units       = "IU/L",
+      units       = "U/L",
       type        = "continuous",
-      notes       = "Tested but not retained. Median 35 IU/L (range 8-195) in the development cohort (Table 1). The source paper uses the European 'ALAT' abbreviation; the canonical nlmixr2lib name is ALT."
+      notes       = "Tested but not retained. Median 35 U/L (range 8-195) in the development cohort (Table 1; source paper reports IU/L, value-identical to the SI canonical U/L). The source paper uses the European 'ALAT' abbreviation; the canonical nlmixr2lib name is ALT and the canonical unit string is U/L per the 2026-06-19 SI register."
     ),
     AST = list(
       description = "Aspartate aminotransferase (ASAT in the source paper).",
-      units       = "IU/L",
+      units       = "U/L",
       type        = "continuous",
-      notes       = "Tested but not retained. Median 27 IU/L (range 10-146) in the development cohort (Table 1). The source paper uses the European 'ASAT' abbreviation; the canonical nlmixr2lib name is AST."
+      notes       = "Tested but not retained. Median 27 U/L (range 10-146) in the development cohort (Table 1; source paper reports IU/L, value-identical to the SI canonical U/L). The source paper uses the European 'ASAT' abbreviation; the canonical nlmixr2lib name is AST and the canonical unit string is U/L per the 2026-06-19 SI register."
     ),
     WT = list(
       description = "Body weight at the sampling occasion.",
@@ -81,7 +81,7 @@ Woillard_2014_ciclosporin <- function() {
     regions               = "France (single centre: Limoges University Hospital).",
     sampling_schedule     = "Per profile: 10 samples at pre-dose and 0.33, 0.66, 1, 2, 3, 4, 6, 8 and 12 hours post-dose. One patient had 4 sampling periods, 8 patients had 3, 21 had 2, and 17 had 1. Sampling periods spanned day 0 to day 100 post-transplant.",
     bioanalytical         = "Whole-blood ciclosporin quantified by turbulent-flow LC-MS/MS (Cyclone P online extraction, Propel MS C18 analytical column, TSQ Quantum Discovery MS/MS) with calibration over 10-2000 ug/L, LOD = 10 ug/L and LOQ = 20 ug/L. Inter-assay precision (RSD) -3.1 to 11.8 %, mean relative error 4.0 to 11.7 %.",
-    baseline_demographics = "Median (range) in the development cohort (Table 1): age 59 (24-67) years, weight 71 (47-101) kg, sex M/F 25/15, haematocrit 29 (23-43) %, haemoglobin 10.0 (8.2-14.8) g/dL, serum creatinine 77 (34-198) umol/L, total bilirubin 11 (4-74) umol/L, albumin 31.4 (18.8-55.1) g/L, ALAT 35 (8-195) IU/L, ASAT 27 (10-146) IU/L. Sampling time post-transplant median 4 days (range 0-99).",
+    baseline_demographics = "Median (range) in the development cohort (Table 1): age 59 (24-67) years, weight 71 (47-101) kg, sex M/F 25/15, haematocrit 29 (23-43) %, haemoglobin 10.0 (8.2-14.8) g/dL, serum creatinine 77 (34-198) umol/L, total bilirubin 11 (4-74) umol/L, albumin 31.4 (18.8-55.1) g/L, ALAT 35 (8-195) U/L, ASAT 27 (10-146) U/L. Sampling time post-transplant median 4 days (range 0-99).",
     notes                 = "Three independent modelling approaches (NONMEM, iterative two-stage ITS, non-parametric Pmetrics) were fit in parallel to compare Bayesian estimators of CsA AUC(0,12h) under a three-sample limited sampling strategy. The packaged model file encodes the NONMEM final model (Table 2) parameterised in standard CL/V/Q form. The ITS and Pmetrics fits used a gamma-law absorption with macro-constant disposition (FAIV, FBIV, alpha, beta in Table 3) and are not packaged here; see the vignette's Assumptions and deviations section for rationale."
   )
 

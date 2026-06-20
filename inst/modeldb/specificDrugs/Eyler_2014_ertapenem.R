@@ -1,17 +1,18 @@
 Eyler_2014_ertapenem <- function() {
-  description <- "Two-compartment population PK model for intravenous ertapenem in critically ill adults with acute kidney injury receiving continuous venovenous hemodialysis (CVVHD) or hemodiafiltration (CVVHDF). PK is parameterised on unbound drug; total serum concentrations are reconstructed via a single-site saturable albumin-binding equation Cb = Bmax * Cu / (KD + Cu). Systemic (body) clearance and a separate dialytic clearance arm are estimated as primary parameters; the dialytic arm is added to body clearance only while the CRRT circuit is running, gated by the time-varying HEMODIALYSIS covariate. Eyler 2014, n = 8 subjects, single 1 g IV dose over 30 min."
+  description <- "Two-compartment population PK model for intravenous ertapenem in critically ill adults with acute kidney injury receiving continuous venovenous hemodialysis (CVVHD) or hemodiafiltration (CVVHDF). PK is parameterised on unbound drug; total serum concentrations are reconstructed via a single-site saturable albumin-binding equation Cb = Bmax * Cu / (KD + Cu). Systemic (body) clearance and a separate dialytic clearance arm are estimated as primary parameters; the dialytic arm is added to body clearance only while the CRRT circuit is running, gated by the time-varying RRT_HEMODIAL_ACTIVE covariate. Eyler 2014, n = 8 subjects, single 1 g IV dose over 30 min."
   reference <- "Eyler RF, Vilay AM, Nader AM, Heung M, Pleva M, Sowinski KM, DePestel DD, Sorgel F, Kinzig M, Mueller BA. Pharmacokinetics of ertapenem in critically ill patients receiving continuous venovenous hemodialysis or hemodiafiltration. Antimicrob Agents Chemother. 2014;58(3):1320-1326. doi:10.1128/AAC.02090-12"
   vignette <- "Eyler_2014_ertapenem"
   units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
-    HEMODIALYSIS = list(
+    RRT_HEMODIAL_ACTIVE = list(
       description        = "CRRT-active indicator (1 while continuous venovenous hemodialysis or hemodiafiltration is running, 0 otherwise)",
       units              = "(binary)",
       type               = "binary",
       reference_category = "0 (CRRT circuit off / paused)",
-      notes              = "Time-varying within subject. Gates the additive dialytic-arm clearance cl_dialysis: the CRRT contribution is added to body systemic clearance only while the circuit is running (Eyler 2014 Methods, Pharmacokinetic analysis: 'An indicator variable, DIAL, with a value of 1 or 0, was used to turn the effluent compartment on and off, respectively, if the CVVHD/F was turned off for any reason'). Three of eight subjects had CRRT paused mid-sampling (135, 142, and 276 minutes; Results paragraph 1) for filter changes or an off-floor procedure; HEMODIALYSIS flips to 0 during those windows. For subjects whose circuit ran continuously across sampling, HEMODIALYSIS = 1 throughout. The paper does not distinguish CVVHD vs CVVHDF in the model: both modalities are encoded by HEMODIALYSIS = 1, with the dialytic-arm clearance (CLdial = 36 mL/min) reflecting the pooled-cohort mean of dialytic solute removal at the cohort mean effluent rate (38 ml/h/kg).",
-      source_name        = "DIAL"
+      notes              = "Time-varying within subject. Gates the additive dialytic-arm clearance cl_dialysis: the CRRT contribution is added to body systemic clearance only while the circuit is running (Eyler 2014 Methods, Pharmacokinetic analysis: 'An indicator variable, DIAL, with a value of 1 or 0, was used to turn the effluent compartment on and off, respectively, if the CVVHD/F was turned off for any reason'). Three of eight subjects had CRRT paused mid-sampling (135, 142, and 276 minutes; Results paragraph 1) for filter changes or an off-floor procedure; RRT_HEMODIAL_ACTIVE flips to 0 during those windows. For subjects whose circuit ran continuously across sampling, RRT_HEMODIAL_ACTIVE = 1 throughout. The paper does not distinguish CVVHD vs CVVHDF in the model: both modalities are encoded by RRT_HEMODIAL_ACTIVE = 1, with the dialytic-arm clearance (CLdial = 36 mL/min) reflecting the pooled-cohort mean of dialytic solute removal at the cohort mean effluent rate (38 ml/h/kg). This is the time-varying per-session dialysis gate (canonical RRT_HEMODIAL_ACTIVE), distinct from the static RRT_HEMODIAL_STATUS subject-level indicator.",
+      source_name        = "DIAL",
+      source_alias       = "HEMODIALYSIS (working column name before the 2026-06-19 canonical-register standardization; renamed to the time-varying gate canonical RRT_HEMODIAL_ACTIVE)"
     )
   )
 
@@ -47,7 +48,7 @@ Eyler_2014_ertapenem <- function() {
     disease_state    = "Critically ill adult ICU patients with acute kidney injury and suspected or confirmed Gram-negative infection, requiring continuous renal replacement therapy. Severity: APACHE III scores 63-123 (mean 83 +/- 19 for the 7 subjects with reported scores). Mean serum albumin 3.0 +/- 0.5 g/dL. Urine output minimal (< 50 mL / 24 h) in all subjects.",
     dose_range       = "Single 1 g ertapenem (Merck) as a 30-min IV infusion (clinical-care dose for empiric Gram-negative coverage).",
     regions          = "United States (single-centre, University of Michigan)",
-    renal_function   = "Acute kidney injury requiring continuous renal replacement therapy. Modalities: CVVHD (n=4, subjects 1-4 with low ultrafiltration) and CVVHDF (n=4, subjects 5-8). Mean blood flow rate 181 +/- 26 mL/min; mean dialysate flow rate 24 +/- 10 mL/h/kg; mean ultrafiltration rate 14 +/- 8 mL/h/kg; mean effluent rate (dialysate + ultrafiltrate) 38 +/- 10 mL/h/kg. Mean sieving coefficient (effluent / pre-filter serum) 0.21 +/- 0.06. Three of eight subjects had CRRT paused (135-276 minutes) during the 24 h sampling interval; the pauses are reflected by HEMODIALYSIS = 0 in those windows.",
+    renal_function   = "Acute kidney injury requiring continuous renal replacement therapy. Modalities: CVVHD (n=4, subjects 1-4 with low ultrafiltration) and CVVHDF (n=4, subjects 5-8). Mean blood flow rate 181 +/- 26 mL/min; mean dialysate flow rate 24 +/- 10 mL/h/kg; mean ultrafiltration rate 14 +/- 8 mL/h/kg; mean effluent rate (dialysate + ultrafiltrate) 38 +/- 10 mL/h/kg. Mean sieving coefficient (effluent / pre-filter serum) 0.21 +/- 0.06. Three of eight subjects had CRRT paused (135-276 minutes) during the 24 h sampling interval; the pauses are reflected by RRT_HEMODIAL_ACTIVE = 0 in those windows.",
     notes            = "ClinicalTrials.gov NCT00877370. Cohort enrolled April 2009 - March 2011. Bioanalytical: total ertapenem serum concentrations by HPLC-MS/MS at IBMP Nuernberg-Heroldsberg (Sorgel laboratory); unbound concentrations by equilibrium dialysis; effluent concentrations from CRRT effluent samples. LLOQ 0.5 ug/mL; inter- and intra-day precision < 12% across matrices. Pre-filter serum concentrations were adjusted for citrate dilution (Methods equation 1) before modeling."
   )
 
@@ -120,8 +121,8 @@ Eyler_2014_ertapenem <- function() {
     # dx(1)/dt = R0 - (CLS/VC)*X(1) - (CLD/VC)*X(1) + (CLD/VP)*X(2)
     #                                       - (CLdial/VC)*DIAL*X(1)).
     # The dialytic arm is added to the body baseline only when the
-    # HEMODIALYSIS covariate is 1 (CRRT circuit running).
-    cl_total <- cl + HEMODIALYSIS * cl_dialysis
+    # RRT_HEMODIAL_ACTIVE covariate is 1 (CRRT circuit running).
+    cl_total <- cl + RRT_HEMODIAL_ACTIVE * cl_dialysis
 
     # Rate-constant form of the two-compartment system.
     kel <- cl_total / vc

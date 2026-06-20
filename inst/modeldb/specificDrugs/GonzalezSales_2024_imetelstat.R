@@ -33,12 +33,13 @@ GonzalezSales_2024_imetelstat <- function() {
       notes              = "Derived from the source NONMEM column MTYPE (0=solid tumors, 1=MF, 2=MDS, 3=MM, 4=ET/PV, 5=CLD) as DIS_MF = as.integer(MTYPE == 1) (Gonzalez-Sales 2024 supplement S1, MTYPE definition). Categorical effect on CL and on Bmax (multiplicative, exp scale). For Bmax, an additional power-form spleen-volume covariate is applied only to MF subjects (gating via DIS_MF in the model).",
       source_name        = "MTYPE == 1"
     ),
-    MM = list(
+    DIS_MM = list(
       description        = "Active multiple myeloma disease-state indicator: 1 if active (non-smoldering) multiple myeloma, 0 otherwise.",
       units              = "(binary)",
       type               = "binary",
       reference_category = "0 = non-MM subject (the analysis-dataset complement is solid tumors, MF, MDS, ET/PV, or CLD).",
-      notes              = "Derived from the source NONMEM column MTYPE (0=solid tumors, 1=MF, 2=MDS, 3=MM, 4=ET/PV, 5=CLD) as MM = as.integer(MTYPE == 3) (Gonzalez-Sales 2024 supplement S1, MTYPE definition). Categorical effect on Vc only (multiplicative, exp scale).",
+      notes              = "Renamed from the working covariate name MM to the canonical disease-indicator DIS_MM per the 2026-06-19 canonical-register standardization audit (parallels DIS_MF). Derived from the source NONMEM column MTYPE (0=solid tumors, 1=MF, 2=MDS, 3=MM, 4=ET/PV, 5=CLD) as DIS_MM = as.integer(MTYPE == 3) (Gonzalez-Sales 2024 supplement S1, MTYPE definition). Categorical effect on Vc only (multiplicative, exp scale).",
+      source_alias       = "MM (working column name prior to the 2026-06-19 canonical rename)",
       source_name        = "MTYPE == 3"
     ),
     SPLV = list(
@@ -97,16 +98,17 @@ GonzalezSales_2024_imetelstat <- function() {
       notes       = "Screened but not retained in the final model. No effect of mild-to-moderate hepatic impairment on imetelstat PK was identified (Gonzalez-Sales 2024 Results, Discussion)."
     ),
     ALB = list(
-      description = "Serum albumin (g/dL).",
-      units       = "g/dL",
+      description = "Serum albumin.",
+      units       = "g/L",
       type        = "continuous",
-      notes       = "Screened but not retained in the final model."
+      notes       = "Screened but not retained in the final model. Canonical units standardized to SI g/L per the 2026-06-19 canonical-register audit; the source paper reports serum albumin in g/dL (1 g/dL = 10 g/L). No inline conversion is needed because ALB is an excluded covariate and is not referenced in model()/ini()."
     ),
-    BILI = list(
-      description = "Total bilirubin (mg/dL).",
-      units       = "mg/dL",
+    TBILI = list(
+      description = "Total bilirubin.",
+      units       = "umol/L",
       type        = "continuous",
-      notes       = "Screened but not retained in the final model."
+      notes       = "Screened but not retained in the final model. Renamed from the working covariate name BILI to the canonical TBILI and units standardized to SI umol/L per the 2026-06-19 canonical-register audit; the source paper reports total bilirubin in mg/dL (1 mg/dL = 17.1 umol/L). No inline conversion is needed because TBILI is an excluded covariate and is not referenced in model()/ini().",
+      source_alias = "BILI (working column name prior to the 2026-06-19 canonical rename)"
     ),
     AST = list(
       description = "Aspartate aminotransferase (U/L).",
@@ -171,7 +173,7 @@ GonzalezSales_2024_imetelstat <- function() {
     lt50_cl_time <- log(5880); label("Half-time of the time effect on CL (t50_cl_time, hours)")              # Table 2: 'Effect of time on CL' = 5880 h (RSE 6.37%)
 
     # Covariate effects on Vc (multiplicative; categorical effects via exp(coef * indicator)).
-    e_mm_vc    <- -0.233; label("Exponential coefficient of MM on Vc (unitless)")                            # Table 2: 'Effect of MM malignancy on Vc' = -0.233 (RSE 28.3%); MM patients have exp(-0.233) = 0.79-fold Vc
+    e_dis_mm_vc <- -0.233; label("Exponential coefficient of DIS_MM on Vc (unitless)")                       # Table 2: 'Effect of MM malignancy on Vc' = -0.233 (RSE 28.3%); MM patients have exp(-0.233) = 0.79-fold Vc
     e_sexf_vc  <- -0.122; label("Exponential coefficient of SEXF on Vc (unitless)")                          # Table 2: 'Effect of sex on Vc' = -0.122 (RSE 27.3%); females have exp(-0.122) = 0.89-fold Vc
 
     # Covariate effects on Bmax (continuous power form for SPLV, categorical exp form for DIS_MF).
@@ -203,8 +205,8 @@ GonzalezSales_2024_imetelstat <- function() {
   model({
     # ---- Disease-state indicators derived from MTYPE (covariate column) ----
     # The source NONMEM column MTYPE codes 0=solid tumors, 1=MF, 2=MDS, 3=MM, 4=ET/PV, 5=CLD.
-    # The covariate dataset is expected to carry canonical DIS_MF (1 = MF) and MM (1 = active MM)
-    # binary indicators derived from MTYPE: DIS_MF = (MTYPE == 1) and MM = (MTYPE == 3). The
+    # The covariate dataset is expected to carry canonical DIS_MF (1 = MF) and DIS_MM (1 = active MM)
+    # binary indicators derived from MTYPE: DIS_MF = (MTYPE == 1) and DIS_MM = (MTYPE == 3). The
     # spleen-volume effect on Bmax is gated to MF subjects via DIS_MF; non-MF subjects collapse
     # the spleen term to 1 regardless of their SPLV value.
 
@@ -230,9 +232,9 @@ GonzalezSales_2024_imetelstat <- function() {
              exp(e_sexf_cl   * SEXF)                                                       *
              f_time_cl
 
-    # Vc: log-typical * size scaling * MM effect (binary, exp) * sex effect (binary, exp).
+    # Vc: log-typical * size scaling * DIS_MM effect (binary, exp) * sex effect (binary, exp).
     vc    <- exp(lvc    + etalvc)  * (WT / 70)^e_wt_vc                                      *
-             exp(e_mm_vc   * MM)                                                            *
+             exp(e_dis_mm_vc * DIS_MM)                                                      *
              exp(e_sexf_vc * SEXF)
 
     # Kback: log-typical * size scaling (-0.25 exponent).

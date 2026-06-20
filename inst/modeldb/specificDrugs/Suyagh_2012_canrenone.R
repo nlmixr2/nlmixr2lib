@@ -72,9 +72,19 @@ Suyagh_2012_canrenone <- function() {
     ),
     ALB = list(
       description = "Serum albumin",
-      units       = "mg/dL",
+      units       = "g/L",
       type        = "continuous",
-      notes       = "Screened (Suyagh 2012 covariate screening); not retained in the final model."
+      notes       = paste(
+        "Screened (Suyagh 2012 covariate screening); not retained in the",
+        "final model. Canonical units standardized to SI g/L per the",
+        "2026-06-19 canonical-register audit. The prior covariateData entry",
+        "declared 'mg/dL', which is not a plausible reporting unit for serum",
+        "albumin (a typical value of ~4 g/dL = ~40 g/L would be ~4000 mg/dL);",
+        "this is read as a transcription error for the standard albumin unit",
+        "g/dL. Conversion to SI: g/L = g/dL x 10 (so a typical ~4 g/dL maps to",
+        "~40 g/L). No inline conversion is needed because ALB is an excluded",
+        "covariate and is not referenced in model()/ini()."
+      )
     ),
     HCT = list(
       description = "Haematocrit",

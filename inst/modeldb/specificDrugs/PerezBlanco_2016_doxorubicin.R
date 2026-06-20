@@ -107,12 +107,13 @@ PerezBlanco_2016_doxorubicin <- function() {
       reference_category = NULL,
       notes              = "Screened on PK parameters but not retained."
     ),
-    BILI = list(
-      description        = "Total bilirubin in mg/dL (mean 0.44, range 0.10-0.70).",
-      units              = "mg/dL",
+    TBILI = list(
+      description        = "Total bilirubin (source mean 0.44 mg/dL, range 0.10-0.70 mg/dL).",
+      units              = "umol/L",
       type               = "continuous",
       reference_category = NULL,
-      notes              = "Tested on CL and CLm; showed an influence on both, but the OFV decrease was not statistically significant and bilirubin was not retained in the final model."
+      notes              = "Tested on CL and CLm; showed an influence on both, but the OFV decrease was not statistically significant and bilirubin was not retained in the final model. Renamed from the working covariate name BILI to the canonical TBILI and units standardized to SI umol/L per the 2026-06-19 canonical-register audit; the source paper reports total bilirubin in mg/dL (1 mg/dL = 17.1 umol/L). No inline conversion is needed because TBILI is an excluded covariate and is not referenced in model()/ini().",
+      source_alias       = "BILI (working column name prior to the 2026-06-19 canonical rename)"
     ),
     ECOG = list(
       description        = "Eastern Cooperative Oncology Group performance status.",

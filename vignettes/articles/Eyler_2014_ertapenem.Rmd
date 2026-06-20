@@ -33,7 +33,7 @@ venovenous hemodiafiltration (CVVHDF, n = 4). The structural model
 parameterises PK on the unbound drug; total concentrations are
 reconstructed via a saturable single-site albumin-binding equation, and
 an additive dialytic clearance arm is gated on/off by the time-varying
-HEMODIALYSIS covariate. The packaged model reproduces (a) the published
+RRT_HEMODIAL_ACTIVE covariate. The packaged model reproduces (a) the published
 typical-patient concentration profile (Figure 1) and (b) the four
 dosing-regimen target-attainment simulations (Figure 4 / Table 3).
 
@@ -51,7 +51,7 @@ at 0, 0.5, 1, 2, 4, 8, 12, 18, and 24 h (one subject was truncated at
 received ~20% of a second dose at 16 h that was handled within the
 modeling procedure). Three subjects had CRRT paused mid-sampling
 (135, 142, and 276 min) for filter changes or an off-floor procedure;
-these pauses are reflected by HEMODIALYSIS = 0 during those windows.
+these pauses are reflected by RRT_HEMODIAL_ACTIVE = 0 during those windows.
 Demographics from Eyler 2014 Table 1.
 
 The same information is available programmatically via
@@ -85,14 +85,14 @@ The table below collects them in one place for review.
 | `etalbmax` variance                                        | `log(0.17^2 + 1)`    | Table 2: 17% CV |
 | `propSd` (proportional residual on total Cc)               | 0.20 (ASSUMED)       | Methods reports proportional error (equation 9) with separate terms for unbound, total, effluent; magnitudes NOT reported in Table 2 or anywhere else in the paper -- fixed at typical popPK value for the packaged model |
 | `propSd_Cunbound` (proportional residual on unbound)       | 0.20 (ASSUMED)       | As above |
-| HEMODIALYSIS time-varying gate on `cl_dialysis`            | n/a                  | Methods: "An indicator variable, DIAL, with a value of 1 or 0, was used to turn the effluent compartment on and off" |
+| RRT_HEMODIAL_ACTIVE time-varying gate on `cl_dialysis`     | n/a                  | Methods: "An indicator variable, DIAL, with a value of 1 or 0, was used to turn the effluent compartment on and off" |
 
 # Virtual cohort
 
 Eyler 2014's individual concentration observations are not publicly
 available. The simulations below use virtual cohorts that reproduce
 the published experimental design: a 1 g ertapenem 30-min IV infusion
-with continuous CRRT (HEMODIALYSIS = 1) across the sampling window.
+with continuous CRRT (RRT_HEMODIAL_ACTIVE = 1) across the sampling window.
 
 ```{r cohort}
 set.seed(20260620)
@@ -107,7 +107,7 @@ wts <- pmin(pmax(round(rnorm(n_subj, mean = 78.9, sd = 19.8)), 56), 120)
 
 # Helper: build one cohort as a self-contained event table. Each subject
 # receives doses on the specified schedule and observations on a dense grid;
-# HEMODIALYSIS = 1 throughout (continuous CRRT during PK sampling).
+# RRT_HEMODIAL_ACTIVE = 1 throughout (continuous CRRT during PK sampling).
 make_cohort <- function(wt_vec, treatment_label,
                         dose_mg_per_dose = dose_mg,
                         dose_times       = c(0),
@@ -127,7 +127,7 @@ make_cohort <- function(wt_vec, treatment_label,
       evid = 1L,
       cmt  = "central",
       WT   = wt,
-      HEMODIALYSIS = hemodialysis_on,
+      RRT_HEMODIAL_ACTIVE = hemodialysis_on,
       treatment = treatment_label
     )
     obs_rows <- data.frame(
@@ -138,7 +138,7 @@ make_cohort <- function(wt_vec, treatment_label,
       evid = 0L,
       cmt  = "Cc",
       WT   = wt,
-      HEMODIALYSIS = hemodialysis_on,
+      RRT_HEMODIAL_ACTIVE = hemodialysis_on,
       treatment = treatment_label
     )
     dplyr::bind_rows(dose_rows, obs_rows) |>
@@ -163,7 +163,7 @@ mod <- readModelDb("Eyler_2014_ertapenem")
 
 # Population (VPC) simulation with IIV across the 200-subject cohort.
 sim_fig1 <- rxode2::rxSolve(mod, events = events_fig1,
-                            keep = c("WT", "treatment", "HEMODIALYSIS")) |>
+                            keep = c("WT", "treatment", "RRT_HEMODIAL_ACTIVE")) |>
   as.data.frame()
 
 # Typical-patient deterministic simulation (no IIV) for the source-figure
@@ -171,7 +171,7 @@ sim_fig1 <- rxode2::rxSolve(mod, events = events_fig1,
 mod_typical    <- rxode2::zeroRe(mod)
 events_typical <- make_cohort(80, treatment_label = "typical 80 kg, 1 g")
 sim_typical    <- rxode2::rxSolve(mod_typical, events = events_typical,
-                                  keep = c("WT", "treatment", "HEMODIALYSIS")) |>
+                                  keep = c("WT", "treatment", "RRT_HEMODIAL_ACTIVE")) |>
   as.data.frame()
 ```
 
@@ -292,7 +292,7 @@ fig4_events <- dplyr::bind_rows(lapply(seq_along(regimens), function(j) {
 stopifnot(!anyDuplicated(unique(fig4_events[, c("id", "time", "evid")])))
 
 sim_fig4 <- rxode2::rxSolve(mod, events = fig4_events,
-                            keep = c("WT", "treatment", "HEMODIALYSIS")) |>
+                            keep = c("WT", "treatment", "RRT_HEMODIAL_ACTIVE")) |>
   as.data.frame()
 
 sim_fig4_summary <- sim_fig4 |>
@@ -513,7 +513,7 @@ on-CRRT total clearance reproduces the paper's analytic balance.
   simultaneously, treating the effluent as a separate measurement
   matrix with its own residual error. The packaged model retains the
   dialytic clearance parameter (`cl_dialysis`) as a structural arm
-  added to body clearance when HEMODIALYSIS = 1, but does not expose
+  added to body clearance when RRT_HEMODIAL_ACTIVE = 1, but does not expose
   the effluent concentration as a separate observable. The effluent
   prediction would require the per-patient effluent flow rate Qef
   (mL/h/kg) as an additional time-varying covariate (Cef = DIAL *
@@ -533,7 +533,7 @@ on-CRRT total clearance reproduces the paper's analytic balance.
   provenance.
 - **CVVHD vs CVVHDF modalities are pooled.** Four subjects received
   CVVHD (low-ultrafiltration) and four received CVVHDF; the paper
-  reports both modalities together via a single binary HEMODIALYSIS
+  reports both modalities together via a single binary RRT_HEMODIAL_ACTIVE
   indicator and a single typical-value `cl_dialysis = 36 mL/min`. The
   packaged model inherits this lumping; users simulating a specific
   modality or non-cohort-mean effluent rate would need to scale

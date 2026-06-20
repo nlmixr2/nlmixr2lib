@@ -55,11 +55,12 @@ Wang_2014_vatalanib <- function() {
       type        = "categorical",
       notes       = "Patient demographic characteristic assessed during covariate screening; not retained. 128 Caucasian / 9 Other (93.4% / 6.6%) in the analysis cohort."
     ),
-    TBIL = list(
+    TBILI = list(
       description = "Total bilirubin (liver function test)",
-      units       = "mg/dL",
+      units       = "umol/L",
       type        = "continuous",
-      notes       = "Screened on CL_induced/F; not retained. Cohort median 0.7 mg/dL (range 0.2-2.0)."
+      notes       = "Screened on CL_induced/F; not retained. Renamed from the working covariate name TBIL to the canonical TBILI and units standardized to SI umol/L per the 2026-06-19 canonical-register audit; the source paper reports total bilirubin in mg/dL (cohort median 0.7 mg/dL, range 0.2-2.0; 1 mg/dL = 17.1 umol/L). No inline conversion is needed because TBILI is an excluded covariate and is not referenced in model()/ini().",
+      source_alias = "TBIL (working column name prior to the 2026-06-19 canonical rename)"
     ),
     AST = list(
       description = "Aspartate aminotransferase (liver function test)",

@@ -21,13 +21,14 @@ Farrell_2014_eltrombopag <- function() {
       notes              = "Child-Pugh integer score (Class A = 5-6, Class B = 7-9, Class C = 10-15). Healthy subjects without CLD are assigned HEPIMP_CP_SCORE = 0 so the model gates the CP effect off (no CL/F reduction). Linear-in-score effect on CL/F for CLD patients: factor = e_cp_cl * (1 + e_cp_slope * (HEPIMP_CP_SCORE - 5)) = 0.536 * (1 - 0.113 * (CP - 5)) (Farrell 2014 Table 3 footnote and rows 'CL/F ~ CP Score 5' and 'CL/F ~ CP Score > 5'). CP Class A patients (score 5-6) have 46-59% lower CL/F than the healthy reference; Class B patients (score 7-9) have 59-71% lower CL/F (Farrell 2014 Results, paragraph after Table 3).",
       source_name        = "Child-Pugh score"
     ),
-    RACE_NEAS = list(
+    RACE_ASIAN_NORTHEAST = list(
       description        = "North East Asian race indicator (Chinese, Japanese, or Korean heritage)",
       units              = "(binary)",
       type               = "binary",
       reference_category = "0 (non-North East Asian: White, Black, South/Central Asian, Other)",
       notes              = "Carries TWO multiplicative fractional-change effects in this model: (1) CL/F: East Asians have 52% lower apparent clearance than non-East-Asians (Farrell 2014 Table 3: 'CL/F ~ East Asians' multiplier 0.476, 95% CI 0.395-0.557). (2) SLOP: in CLD patients, East Asians have 34% lower linear-slope drug-induced platelet-production effect (Farrell 2014 Table 6: 'SLOP ~ East Asians' multiplier 0.660, 95% CI 0.529-0.791). In the source data set the East Asian subgroup is exclusively Japanese (Study 2, n=38) plus n=7 East Asian patients from Study 3.",
-      source_name        = "East Asian"
+      source_name        = "East Asian",
+      source_alias       = "RACE_NEAS (working column name before the 2026-06-19 canonical-register standardization; renamed to RACE_ASIAN_NORTHEAST)"
     ),
     RACE_ASIAN_SOUTHCENTRAL = list(
       description        = "South / Central Asian race indicator (Indian, Pakistani, Bangladeshi, Sri Lankan, Nepali, or Central Asian heritage)",
@@ -58,7 +59,7 @@ Farrell_2014_eltrombopag <- function() {
   ini({
     # ---- PK structural parameters (Farrell 2014 Table 3, NONMEM point estimates) ----
     # Reference subject: White, male, healthy volunteer (HEPIMP_CP_SCORE = 0, SEXF = 0,
-    # RACE_NEAS = 0, RACE_ASIAN_SOUTHCENTRAL = 0).
+    # RACE_ASIAN_NORTHEAST = 0, RACE_ASIAN_SOUTHCENTRAL = 0).
     lcl    <- log(0.953); label("Apparent clearance CL/F (L/h) for the reference White male healthy volunteer")        # Farrell 2014 Table 3
     lvc    <- log(9.75);  label("Apparent central volume Vc/F (L) for non-South/Central-Asian subjects")               # Farrell 2014 Table 3
     lvp    <- log(9.41);  label("Apparent peripheral volume Vp/F (L)")                                                 # Farrell 2014 Table 3
@@ -73,7 +74,7 @@ Farrell_2014_eltrombopag <- function() {
     # Source paper reports the multiplicative factor m directly; here e = m - 1, so the factor at X = 1
     # reproduces the paper's m exactly.
     e_sexf_cl    <- -0.378; label("Fractional change in CL/F for SEXF = 1: factor = 1 + e_sexf_cl * SEXF = 0.622")                                  # Farrell 2014 Table 3 'CL/F ~ Females' multiplier 0.622
-    e_neas_cl    <- -0.524; label("Fractional change in CL/F for RACE_NEAS = 1: factor = 1 + e_neas_cl * RACE_NEAS = 0.476")                        # Farrell 2014 Table 3 'CL/F ~ East Asians' multiplier 0.476
+    e_neas_cl    <- -0.524; label("Fractional change in CL/F for RACE_ASIAN_NORTHEAST = 1: factor = 1 + e_neas_cl * RACE_ASIAN_NORTHEAST = 0.476")    # Farrell 2014 Table 3 'CL/F ~ East Asians' multiplier 0.476
     e_cp_cl      <-  0.536; label("CL/F multiplier anchor at HEPIMP_CP_SCORE = 5 (Child-Pugh Class A bottom); CLD-only effect")                     # Farrell 2014 Table 3 'CL/F ~ CP Score 5' multiplier 0.536
     e_cp_slope   <- -0.113; label("Per-unit fractional decrement on CL/F for each unit of HEPIMP_CP_SCORE above 5")                                 # Farrell 2014 Table 3 footnote, 'CL/F ~ CP Score > 5' coefficient
     e_scasian_vc <-  1.98;  label("Fractional change in Vc/F for RACE_ASIAN_SOUTHCENTRAL = 1: factor = 1 + e_scasian_vc * indicator = 2.98")        # Farrell 2014 Table 3 'Vc/F ~ South/Central Asians' multiplier 2.98
@@ -105,7 +106,7 @@ Farrell_2014_eltrombopag <- function() {
     lrbase <- log(41);     label("Typical baseline platelet count for CLD patients (Gi/L); kdeg is derived as kin/rbase") # Farrell 2014 Table 2 CLD median baseline platelet 41 Gi/L
 
     # ---- PD covariate effects (Farrell 2014 Table 6) ----
-    e_neas_slop <- -0.340; label("Fractional change in SLOP for RACE_NEAS = 1: factor = 1 + e_neas_slop * RACE_NEAS = 0.660") # Farrell 2014 Table 6 'SLOP ~ East Asians' multiplier 0.660
+    e_neas_slop <- -0.340; label("Fractional change in SLOP for RACE_ASIAN_NORTHEAST = 1: factor = 1 + e_neas_slop * RACE_ASIAN_NORTHEAST = 0.660") # Farrell 2014 Table 6 'SLOP ~ East Asians' multiplier 0.660
 
     # ---- PD IIV (Farrell 2014 Table 6) ----
     # No IIV reported on KIN. Diagonal block on SLOP and KT.
@@ -127,7 +128,7 @@ Farrell_2014_eltrombopag <- function() {
     # ---- Individual PK parameters ----
     cl  <- exp(lcl + etalcl) *
            (1 + e_sexf_cl * SEXF) *
-           (1 + e_neas_cl * RACE_NEAS) *
+           (1 + e_neas_cl * RACE_ASIAN_NORTHEAST) *
            cp_factor
     vc  <- exp(lvc + etalvc) * (1 + e_scasian_vc * RACE_ASIAN_SOUTHCENTRAL)
     vp  <- exp(lvp)
@@ -162,7 +163,7 @@ Farrell_2014_eltrombopag <- function() {
     Cc <- central / vc
 
     # ---- Individual PD parameters ----
-    slop  <- exp(lslop + etalslop) * (1 + e_neas_slop * RACE_NEAS)
+    slop  <- exp(lslop + etalslop) * (1 + e_neas_slop * RACE_ASIAN_NORTHEAST)
     kin   <- exp(lkin)
     kt    <- exp(lkt + etalkt)
     rbase <- exp(lrbase)

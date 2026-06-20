@@ -136,7 +136,7 @@ obs_times       <- sort(unique(c(obs_times_early, obs_times_late, 72)))
 
 # Build the four ECMO x CRRT scenarios.
 scenarios <- tibble::tribble(
-  ~scenario,             ~ECMO_STATUS, ~CRRT_STATUS,
+  ~scenario,             ~ECMO_STATUS, ~RRT_CRRT_STATUS,
   "ECMO+ / CRRT-",       1L,           0L,
   "ECMO+ / CRRT+",       1L,           1L,
   "ECMO- / CRRT-",       0L,           0L,
@@ -168,7 +168,7 @@ make_scenario <- function(i) {
   dplyr::bind_rows(doses, obs) |>
     dplyr::mutate(
       ECMO_STATUS = s$ECMO_STATUS,
-      CRRT_STATUS = s$CRRT_STATUS,
+      RRT_CRRT_STATUS = s$RRT_CRRT_STATUS,
       scenario    = s$scenario
     ) |>
     dplyr::arrange(id, time, -evid)
@@ -187,7 +187,7 @@ mod <- readModelDb("Wi_2017_teicoplanin")
 sim <- rxode2::rxSolve(
   object = mod,
   events = events,
-  keep   = c("scenario", "ECMO_STATUS", "CRRT_STATUS")
+  keep   = c("scenario", "ECMO_STATUS", "RRT_CRRT_STATUS")
 ) |>
   as.data.frame()
 ```
@@ -208,7 +208,7 @@ are not overlaid.
 ```{r figure-2}
 vpc_window <- sim |>
   dplyr::filter(time >= 48, time <= 168) |>
-  dplyr::group_by(scenario, ECMO_STATUS, CRRT_STATUS, time) |>
+  dplyr::group_by(scenario, ECMO_STATUS, RRT_CRRT_STATUS, time) |>
   dplyr::summarise(
     p05 = quantile(Cc, 0.05, na.rm = TRUE),
     p50 = quantile(Cc, 0.50, na.rm = TRUE),
@@ -221,7 +221,7 @@ vpc_window <- sim |>
       levels = c("On ECMO", "After ECMO")
     ),
     crrt_label = factor(
-      ifelse(CRRT_STATUS == 1L, "On CRRT", "No CRRT"),
+      ifelse(RRT_CRRT_STATUS == 1L, "On CRRT", "No CRRT"),
       levels = c("No CRRT", "On CRRT")
     )
   )
@@ -261,7 +261,7 @@ status. The vignette reproduces the PTA values for the standard regimen A
 ```{r table-3-pta}
 trough_72h <- sim |>
   dplyr::filter(dplyr::near(time, 72)) |>
-  dplyr::group_by(scenario, ECMO_STATUS, CRRT_STATUS) |>
+  dplyr::group_by(scenario, ECMO_STATUS, RRT_CRRT_STATUS) |>
   dplyr::summarise(
     n         = dplyr::n(),
     pta_10    = 100 * mean(Cc > 10, na.rm = TRUE),
@@ -270,7 +270,7 @@ trough_72h <- sim |>
     Cc_p10    = quantile(Cc, 0.10, na.rm = TRUE),
     .groups   = "drop"
   ) |>
-  dplyr::arrange(desc(ECMO_STATUS), CRRT_STATUS)
+  dplyr::arrange(desc(ECMO_STATUS), RRT_CRRT_STATUS)
 
 knitr::kable(
   trough_72h,
@@ -427,7 +427,7 @@ teicoplanin reported in the literature for adult ICU patients (typically
   same Prismaflex circuit and CVVHDF modality. The model's `e_crrt_vp`
   multiplier of 1.5 on V2 is therefore not generalisable to other CRRT
   modalities (e.g., CVVH, SLED, EDD-f) without further validation. This
-  is documented in the `covariateData[[CRRT_STATUS]]$notes` field.
+  is documented in the `covariateData[[RRT_CRRT_STATUS]]$notes` field.
 
 - **VA-ECMO cohort only; VV-ECMO not represented.** The Wi 2017 study
   cohort exclusively comprised VA-ECMO patients for cardiogenic shock.

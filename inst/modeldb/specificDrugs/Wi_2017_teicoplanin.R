@@ -13,13 +13,14 @@ Wi_2017_teicoplanin <- function() {
       notes              = "Source column ECMO. 1 = record sampled while the subject was on VA-ECMO; 0 = record sampled after the subject was weaned off VA-ECMO. Naturally time-varying: 4 of 10 study subjects survived ECMO and provided paired post-weaning samples that serve as their own controls (Wi 2017 Results, 'Patient characteristics'). Stored under the canonical ECMO_STATUS column per inst/references/covariate-columns.md. The cohort is exclusively VA-ECMO; the column does not distinguish VA from VV.",
       source_name        = "ECMO"
     ),
-    CRRT_STATUS = list(
+    RRT_CRRT_STATUS = list(
       description        = "Subject-level binary indicator for concomitant continuous renal replacement therapy (continuous venovenous hemodiafiltration via Prismaflex) during the teicoplanin sampling period",
       units              = "(binary)",
       type               = "binary",
       reference_category = 0,
-      notes              = "Source column CRRT. 1 = subject was concomitantly receiving continuous venovenous hemodiafiltration via Prismaflex; 0 = no CRRT (Wi 2017 Materials and Methods, 'Study procedures'). Treated as time-fixed at the subject level: 5 of 10 study patients received CRRT throughout the sampling window. Stored under the canonical CRRT_STATUS column per inst/references/covariate-columns.md (distinct from HEMODIAL which is intermittent-hemodialysis-only).",
-      source_name        = "CRRT"
+      notes              = "Source column CRRT. 1 = subject was concomitantly receiving continuous venovenous hemodiafiltration via Prismaflex; 0 = no CRRT (Wi 2017 Materials and Methods, 'Study procedures'). Treated as time-fixed at the subject level: 5 of 10 study patients received CRRT throughout the sampling window. Stored under the canonical RRT_CRRT_STATUS column per inst/references/covariate-columns.md (distinct from RRT_HEMODIAL_STATUS which is intermittent-hemodialysis-only).",
+      source_name        = "CRRT",
+      source_alias       = "CRRT_STATUS (working column name before the 2026-06-19 canonical-register standardization; renamed to RRT_CRRT_STATUS)"
     )
   )
 
@@ -84,7 +85,7 @@ Wi_2017_teicoplanin <- function() {
     cl <- exp(lcl + etalcl)
     vc <- exp(lvc + etalvc) * (1 - e_ecmo_vc * ECMO_STATUS)
     q  <- exp(lq  + etalq)  * (1 - e_ecmo_q  * ECMO_STATUS)
-    vp <- exp(lvp)          * e_crrt_vp^CRRT_STATUS
+    vp <- exp(lvp)          * e_crrt_vp^RRT_CRRT_STATUS
 
     # Micro-constants for the explicit two-compartment ODE.
     kel <- cl / vc

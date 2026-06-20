@@ -166,10 +166,16 @@ Dong_2016_hydroxyurea <- function() {
     ),
     TBILI = list(
       description        = "Total bilirubin at baseline",
-      units              = "mg/dL",
+      units              = "umol/L",
       type               = "continuous",
       reference_category = NULL,
-      notes              = "Screened but not retained.",
+      notes              = paste(
+        "Screened but not retained. Canonical units standardized to SI",
+        "umol/L per the 2026-06-19 canonical-register audit; the source",
+        "paper reports total bilirubin in mg/dL (1 mg/dL = 17.1 umol/L).",
+        "No inline conversion is needed because TBILI is an excluded",
+        "covariate and is not referenced in model()/ini()."
+      ),
       source_name        = "Bilirubin"
     ),
     BUN = list(

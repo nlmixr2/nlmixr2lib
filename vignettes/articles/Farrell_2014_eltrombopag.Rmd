@@ -97,7 +97,7 @@ set.seed(20140414)
 
 # Each scenario row gives one subject with a deterministic covariate vector.
 scenarios <- tibble::tribble(
-  ~treatment,                            ~SEXF, ~RACE_NEAS, ~RACE_ASIAN_SOUTHCENTRAL, ~HEPIMP_CP_SCORE,
+  ~treatment,                            ~SEXF, ~RACE_ASIAN_NORTHEAST, ~RACE_ASIAN_SOUTHCENTRAL, ~HEPIMP_CP_SCORE,
   "HV reference (White male, healthy)",   0,     0,          0,                        0,
   "CLD non-EA male, Class A (CP=5)",      0,     0,          0,                        5,
   "CLD non-EA female, Class A (CP=5)",    1,     0,          0,                        5,
@@ -133,7 +133,7 @@ pd_obs_rows <- scenarios |>
 events <- dplyr::bind_rows(dose_rows, pk_obs_rows, pd_obs_rows) |>
   dplyr::arrange(id, time, dplyr::desc(evid)) |>
   dplyr::select(id, time, evid, amt, cmt,
-                treatment, SEXF, RACE_NEAS,
+                treatment, SEXF, RACE_ASIAN_NORTHEAST,
                 RACE_ASIAN_SOUTHCENTRAL, HEPIMP_CP_SCORE)
 
 stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid", "cmt")])))
@@ -147,7 +147,7 @@ mod_typical <- rxode2::zeroRe(mod_fun)   # typical-value (median) simulation
 sim <- rxode2::rxSolve(
   mod_typical,
   events = events,
-  keep   = c("treatment", "SEXF", "RACE_NEAS",
+  keep   = c("treatment", "SEXF", "RACE_ASIAN_NORTHEAST",
              "RACE_ASIAN_SOUTHCENTRAL", "HEPIMP_CP_SCORE",
              "cmt"),
   returnType = "data.frame"
@@ -363,12 +363,12 @@ knitr::kable(
 - **Race-indicator encoding for the East Asian subgroup.** In the source data
   set the East Asian race indicator covers Chinese / Japanese / Korean
   heritage; all 38 Study 2 patients were Japanese and 7 of Study 3 PK
-  substudy patients were East Asian. The canonical `RACE_NEAS` indicator
+  substudy patients were East Asian. The canonical `RACE_ASIAN_NORTHEAST` indicator
   pools these subgroups, matching the source classification.
 
 - **New canonical covariate columns ratified in this PR.** Two canonical
   entries were added to `inst/references/covariate-columns.md` to support
   this model: `RACE_ASIAN_SOUTHCENTRAL` (binary indicator analogous to
-  `RACE_NEAS`) and `HEPIMP_CP_SCORE` (continuous integer Child-Pugh score,
+  `RACE_ASIAN_NORTHEAST`) and `HEPIMP_CP_SCORE` (continuous integer Child-Pugh score,
   complementing the existing binary `HEPIMP_*` family). Naming was
   ratified by operator response to a Phase 3 sidecar.

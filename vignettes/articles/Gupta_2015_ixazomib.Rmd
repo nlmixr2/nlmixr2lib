@@ -73,7 +73,7 @@ Baseline demographics (Gupta 2015 Table 2):
 - Median body weight 78.0 kg (range 35.5-132.3); median BSA 1.9 m^2
   (range 1.3-2.6).
 - Baseline labs (medians with full ranges): albumin 38.0 g/L (23-48);
-  ALT 20.0 U/L (7-100); AST 24.0 U/L (9-82); total bilirubin 7.0 uM
+  ALT 20.0 U/L (7-100); AST 24.0 U/L (9-82); total bilirubin 7.0 umol/L
   (1.7-39.3); creatinine clearance 88.0 mL/min (21.9-213.7,
   Cockcroft-Gault).
 

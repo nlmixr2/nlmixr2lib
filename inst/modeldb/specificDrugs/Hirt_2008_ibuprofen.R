@@ -65,12 +65,12 @@ Hirt_2008_ibuprofen <- function() {
       source_name        = "serum creatinine"
     ),
     ALB = list(
-      description        = "Serum albumin before treatment.",
-      units              = "g/dL",
+      description        = "Serum albumin before treatment (mass concentration; SI canonical g/L per the 2026-06-19 register standardization audit).",
+      units              = "g/L",
       type               = "continuous",
       reference_category = NULL,
-      notes              = "Tested on CL and V but not retained (Hirt 2008 Methods). Cohort median 1.9 g/dL (range 1.2-3.0).",
-      source_name        = "albumin"
+      notes              = "Source paper reports serum albumin in g/dL (cohort median 1.9 g/dL, range 1.2-3.0; = 19 g/L, range 12-30 g/L in SI). Canonical column is now SI g/L per the 2026-06-19 register standardization audit (1 g/dL = 10 g/L). Excluded covariate: tested on CL and V but not retained (Hirt 2008 Methods). Because ALB is not retained in the final model it is not referenced in model(); no inline g/L -> g/dL conversion is required.",
+      source_name        = "albumin (g/dL)"
     ),
     NAS = list(
       description        = "Serum sodium before treatment.",

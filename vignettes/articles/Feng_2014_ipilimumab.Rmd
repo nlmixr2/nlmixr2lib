@@ -69,7 +69,7 @@ validation (1 phase II study) cohorts. The index dataset alone
   weight mean 80.11 kg (SD 16.87); 37.4% female.
 - Disease / status: ECOG 0 in 65.0%, ECOG 1 in 34.5%, ECOG 2 in 0.5%;
   87.86% had prior systemic anticancer therapy.
-- Baseline laboratory: LDH mean 326.74 IU/L (SD 375.19, right-skewed);
+- Baseline laboratory: LDH mean 326.74 U/L (SD 375.19, right-skewed);
   ALT mean 23.65 IU/L; direct bilirubin mean 0.16 mg/dL; total
   bilirubin mean 0.48 mg/dL; eGFR (MDRD) mean 86.66 mL/min/1.73 m^2.
 - Co-medications: concomitant budesonide in 13.81% (CA184-007
@@ -117,7 +117,7 @@ Equations (from the paper's Results "PPK model development" section):
 Original observed data are not publicly available. The simulations below
 use a virtual melanoma cohort whose body-weight and baseline-LDH
 distributions approximate the published index-dataset summary
-(Feng 2014 Table 1; BW mean 80.11 kg SD 16.87, LDH mean 326.74 IU/L
+(Feng 2014 Table 1; BW mean 80.11 kg SD 16.87, LDH mean 326.74 U/L
 SD 375.19 with a right-skewed distribution). LDH is sampled from a
 log-normal with parameters chosen to match the published mean and SD on
 the natural scale.
@@ -186,7 +186,7 @@ sim <- rxode2::rxSolve(mod, events = events, returnType = "data.frame",
 ```
 
 For deterministic typical-value replication the model's random effects
-are zeroed below and a single reference subject (80 kg, LDH 206 IU/L)
+are zeroed below and a single reference subject (80 kg, LDH 206 U/L)
 is simulated for 168 days following four 3 mg/kg infusions.
 
 ```{r simulate-typical}
@@ -422,7 +422,7 @@ parameters.
 # Assumptions and deviations
 
 - **Reference covariates.** Feng 2014 Table 2 footnote specifies
-  BW = 80 kg and LDH = 206 IU/L as the reference values used to centre
+  BW = 80 kg and LDH = 206 U/L as the reference values used to centre
   the covariate model; these are hard-coded into the packaged model
   (`(WT/80)^e_wt_cl`, `(log(LDH)/log(206))^e_logldh_cl`). A user
   supplying a different cohort must keep these reference values when
@@ -457,7 +457,7 @@ parameters.
   normal(mean 80.11, sd 16.87) truncated to (40, 160) kg, and LDH
   from a log-normal whose method-of-moments parameters reproduce the
   published linear-scale mean (326.74) and SD (375.19), truncated to
-  (50, 3000) IU/L. The shape of the LDH distribution is right-skewed
+  (50, 3000) U/L. The shape of the LDH distribution is right-skewed
   by construction, matching the paper's note that LDH was
   log-transformed because of the right-skew.
 - **Observation grid simplification.** The simulation grid uses daily

@@ -60,10 +60,11 @@ Dong_2014_mycophenolic_acid <- function() {
       notes       = "Tested as a popPK covariate but not retained (Dong 2014 Methods 'Patients' and Results 'Population PK modelling'). PK study cohort range 20.5-228.3 mL/min/1.73 m^2, mean 118.1 (Dong 2014 Table 1)."
     ),
     ALB = list(
-      description = "Serum albumin",
-      units       = "g/dL",
+      description = "Serum albumin concentration (mass concentration; SI canonical g/L per the 2026-06-19 register standardization audit).",
+      units       = "g/L",
       type        = "continuous",
-      notes       = "Tested on CL/F (not significant) and on PD baseline IMPDH activity E0 (delta-OFV = -4.26, P > 0.01) but not retained because it did not meet the required significance threshold (Dong 2014 Results 'Population PK modelling' and 'Population PK-PD modelling')."
+      notes       = "Source paper reports serum albumin in g/dL (Dong 2014 Table 1). Canonical column is now SI g/L per the 2026-06-19 register standardization audit (1 g/dL = 10 g/L). Excluded covariate: tested on CL/F (not significant) and on PD baseline IMPDH activity E0 (delta-OFV = -4.26, P > 0.01) but not retained because it did not meet the required significance threshold (Dong 2014 Results 'Population PK modelling' and 'Population PK-PD modelling'). Because ALB is not retained in the final model it is not referenced in model(); no inline g/L -> g/dL conversion is required.",
+      source_name = "albumin (g/dL)"
     ),
     HGB = list(
       description = "Hemoglobin",

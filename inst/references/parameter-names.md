@@ -36,7 +36,7 @@ The `Type:` field is the routing tag the runtime parser uses to assign the entry
 The following pattern constants remain hard-coded in `R/conventions.R::.nlmixr2libConventionsStatic` because they are structural regular expressions rather than name lists. They are documented here for cross-reference:
 
 - `covEffectPattern = "^e_[A-Za-z0-9]+(_[A-Za-z0-9]+){1,5}$"` — canonical shape of a covariate-effect parameter name: a leading `e_`, a covariate token, and one to five additional tokens (final token is the affected PK parameter, optional middle tokens carry metabolite / shared-exponent / CL-component context).
-- `clComponents = c("ss", "time", "renal", "nonren", "hemodialysis", "dialysis")` — suffix tokens permitted on multi-component CL parameters (e.g., `cl_renal + cl_nonren`, `cl + cl_hemodialysis`, `cl + cl_dialysis`).
+- `clComponents = c("ss", "time", "renal", "nonren")` — suffix tokens permitted on multi-component CL parameters (e.g., `cl_renal + cl_nonren`).
 - `transformPrefixes = c("l", "logit", "probit")` — accepted parameter-name transform prefixes.
 - `residualError = c("propSd", "addSd", "expSd")` — canonical residual-error SD names. `propSd` / `addSd` are the proportional and additive SDs for the standard `~ prop(...)`, `~ add(...)`, and combined `~ prop(...) + add(...)` forms. `expSd` is the log-scale residual SD used with `~ lnorm(...)`.
 - `deprecatedResidualError`, `deprecatedIivPrefixes`, `deprecatedVolumeNames`, `deprecatedVmaxNames`, `deprecatedParentSuffix` — deprecation lists also remain in R.
@@ -168,16 +168,7 @@ The `l<base>` convention denotes a population mean estimated on the log scale (`
   - `CL_HD` -- Veinstein 2013 paper notation (the hemodialysis-arm clearance estimated as a primary structural THETA with its own IIV; gated by the per-time-point hemodialysis-active indicator).
   - `CLHD`, `CL_HF`, `CL_HDF`, `CL_dialysis` -- variant abbreviations used in adjacent ESRD / CRRT popPK literature.
 - **Example models:** `Veinstein_2013_gentamicin.R` (primary `ini()` parameter with IIV; the dialysis arm is estimated as a structural THETA gated by `HEMODIALYSIS`).
-- **Notes:** Use `lcl_hemodialysis` for intermittent hemodialysis (IHD), where each dialysis session is bounded by a discrete start and end time within the modeled period. Use the broader `lcl_dialysis` (next entry) for continuous renal replacement therapy modalities (CVVH / CVVHD / CVVHDF / SLED) where the circuit runs continuously across the modeled period. Distinct from `lcl_renal` (= residual renal CL, an intrinsic-body component) and `lcl_nonren` (= non-renal intrinsic-body CL). `Liesenfeld_2013_dabigatran.R` derives an equivalent dialysis-arm quantity from the Michaels equation (a function of blood flow rate, dialysate flow rate, and a hemodialyzer mass-transfer-area coefficient) as a derived `cl_dialysis` expression in `model()` rather than a primary `ini()` parameter, so its file does not include `lcl_hemodialysis`. Covariate-effect names on this arm follow the standard shape `e_<cov>_cl_hemodialysis`.
-
-### lcl_dialysis (**canonical log-transformed continuous-dialysis clearance arm**)
-- **Type:** log-transformed-pk
-- **Role:** Extracorporeal renal-replacement-therapy clearance arm contributed by continuous (or extended / general) dialysis modalities -- continuous venovenous hemodialysis (CVVHD), continuous venovenous hemodiafiltration (CVVHDF), continuous venovenous hemofiltration (CVVH), sustained low-efficiency dialysis (SLED) -- where the dialysis circuit runs continuously over the modeled period. Paired with the canonical body-CL parameter `lcl` and the time-varying `HEMODIALYSIS` covariate (which gates the arm to 0 during any brief pauses for filter changes / off-floor procedures): `cl_total <- cl + HEMODIALYSIS * cl_dialysis`. Distinct from `lcl_hemodialysis`, which is reserved for intermittent hemodialysis sessions with discrete start/stop boundaries; future continuous-dialysis-cohort papers should reuse `lcl_dialysis`.
-- **Source aliases:**
-  - `CLdial` -- Eyler 2014 paper notation (the dialytic clearance estimated as a primary structural THETA with its own IIV; gated by the per-time-point CRRT-active indicator).
-  - `CL_CVVHD`, `CL_CVVHDF`, `CL_CRRT`, `CL_SLED` -- variant abbreviations used in adjacent CRRT popPK literature.
-- **Example models:** `Eyler_2014_ertapenem.R` (primary `ini()` parameter with IIV; CLdial = 36 mL/min added to body systemic CLS = 48 mL/min when CRRT is running, in critically ill adults receiving CVVHD or CVVHDF; cohort mean effluent rate 38 mL/h/kg).
-- **Notes:** The dialytic-arm magnitude depends on the cohort mean effluent rate (and the drug's sieving coefficient). Future continuous-dialysis extractions that retain effluent flow as a covariate may scale `cl_dialysis` by `(Q_EF / Q_EF_ref)^exponent` once a Q_EF canonical is ratified; for now (Eyler 2014 ratification), the pooled-cohort mean is absorbed into the typical-value `cl_dialysis` estimate. Covariate-effect names on this arm follow the standard shape `e_<cov>_cl_dialysis`. Ratified canonically on 2026-06-17 (operator response to sidecar 001 of the Eyler 2014 ertapenem extraction); use the full word `dialysis` rather than the abbreviation `dial` so the suffix is self-documenting.
+- **Notes:** Distinct from `lcl_renal` (= residual renal CL, an intrinsic-body component) and `lcl_nonren` (= non-renal intrinsic-body CL). `Liesenfeld_2013_dabigatran.R` derives an equivalent dialysis-arm quantity from the Michaels equation (a function of blood flow rate, dialysate flow rate, and a hemodialyzer mass-transfer-area coefficient) as a derived `cl_dialysis` expression in `model()` rather than a primary `ini()` parameter, so its file does not include `lcl_hemodialysis`. Covariate-effect names on this arm follow the standard shape `e_<cov>_cl_hemodialysis`.
 
 ### lcl_met (**canonical log-transformed metabolic-formation clearance arm**)
 - **Type:** log-transformed-pk
@@ -407,12 +398,6 @@ The bare counterparts of the log-transformed parameters above. Used when the sou
 - **Source aliases:** `CL_HD`, `CLHD`, `CL_HF`, `CL_HDF`.
 - **Example models:** `Veinstein_2013_gentamicin.R`.
 
-### cl_dialysis (**canonical bare continuous-dialysis clearance arm**)
-- **Type:** bare-pk
-- **Role:** Bare counterpart of `lcl_dialysis`. Continuous renal-replacement-therapy clearance arm (CVVHD / CVVHDF / CVVH / SLED); added to the body baseline `cl` only when the time-varying `HEMODIALYSIS` covariate is 1.
-- **Source aliases:** `CLdial`, `CL_CVVHD`, `CL_CVVHDF`, `CL_CRRT`, `CL_SLED`.
-- **Example models:** `Eyler_2014_ertapenem.R`.
-
 ### cl_met (**canonical bare metabolic-formation clearance arm**)
 - **Type:** bare-pk
 - **Role:** Bare counterpart of `lcl_met`. Metabolite-formation component (parent-to-metabolite mass flux) of an additive metabolic + non-metabolic clearance decomposition.
@@ -580,22 +565,6 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
 - **Source aliases:** none.
 - **Example models:** TMDD models with explicit complex internalisation.
 
-### kbm (**canonical biliary-metabolite excretion rate**)
-- **Type:** paper-named-param
-- **Role:** First-order rate constant for biliary excretion of a drug or metabolite from a plasma / central compartment into a downstream gut / bile compartment (1 / time). Used in enterohepatic-recirculation and interconversion submodels where the source paper carries biliary transport as a separate ODE flux (distinct from the drug's total clearance terms).
-- **Source aliases:**
-  - `k_bm` -- Hamren 2008 paper notation.
-- **Example models:** `Hamren_2008_tesaglitazar.R` (kbm = 11.7 1/h: rate at which the acyl glucuronide metabolite is biliary-secreted from the metabolite plasma compartment into the gut compartment, where it then undergoes interconversion back to parent tesaglitazar; founding example).
-- **Notes:** Ratified canonically on 2026-06-17 alongside the Hamren 2008 tesaglitazar extraction (per operator decision in sidecar request 001). Distinct from a generic intercompartmental clearance `lq` because biliary excretion in interconversion models is one-way (drug leaves the plasma compartment for the gut and does not return via the same route -- the return path is via a separate hydrolysis / reabsorption process parameterised by `kicv`).
-
-### kicv (**canonical interconversion rate constant for metabolite-to-parent reverse-metabolism**)
-- **Type:** paper-named-param
-- **Role:** First-order rate constant for interconversion of a metabolite back to its parent drug (1 / time). Used for acyl-glucuronide-style reverse-metabolism mechanisms where the gut microbial / brush-border beta-glucuronidases hydrolyse a biliary-excreted conjugated metabolite back to the parent aglycone, which is then reabsorbed into systemic circulation. The single rate constant subsumes both the hydrolysis step and the reabsorption step (the source paper typically reports them as a single first-order process because the underlying gut microflora kinetics and intestinal-uptake kinetics cannot be separated from oral PK data alone).
-- **Source aliases:**
-  - `k_int` -- Hamren 2008 paper notation (the paper writes `kint` for interconversion; this naming clashes with the canonical `kint` for TMDD complex internalisation, so the canonical here is `kicv` to preserve semantic disambiguation).
-- **Example models:** `Hamren_2008_tesaglitazar.R` (kicv = 0.79 1/h: rate at which acyl glucuronide accumulated in the gut compartment is hydrolysed and reabsorbed as parent tesaglitazar into the parent's central plasma compartment; founding example).
-- **Notes:** Ratified canonically on 2026-06-17 alongside the Hamren 2008 tesaglitazar extraction (per operator decision in sidecar request 001). The canonical name `kicv` was chosen specifically to disambiguate from the TMDD `kint` canonical -- the two mechanisms (drug-target complex internalisation vs. metabolite-to-parent interconversion via gut hydrolysis) are semantically distinct, and reusing the same name with paper-specific meaning would create a latent reader-confusion failure mode. Paper-numbered alternatives (`k57`, `k72`-style as in deWinter 2009 MPA / MPAG) are discouraged for new extractions because the numbering is non-portable across papers; prefer the role-based `kbm` / `kicv` pair for any future interconversion popPK model.
-
 ### frac (**canonical fraction parameter**)
 - **Type:** paper-named-param
 - **Role:** Generic fraction (mixing weight, fraction-of-arm, etc.) bounded in (0, 1).
@@ -676,34 +645,6 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
 - **Source aliases:** none.
 - **Example models:** `Krause_2017_selexipag.R` (parent -> ACT-333679 active metabolite).
 - **Notes:** Fraction-metabolised is implicit (`kmet * Vc_parent / CL_parent`) rather than estimated as `fm`.
-
-### clpm (**canonical apparent formation clearance to active metabolite**)
-- **Type:** paper-named-param
-- **Role:** Apparent (oral) parent-side clearance routed to formation of a single named active metabolite. Used when the source paper reports the formation pathway as a distinct clearance THETA rather than as a fraction-metabolised parameter (paper symbol `CLpm/F`). Paired with a separate non-metabolic parent clearance `clp` so the two parallel parent CL arms are encoded one-to-one with the paper's THETAs (including their independent RSEs and IIVs).
-- **Source aliases:**
-  - `CLpm` / `CLpm/F` -- Kim 2016 (udenafil -> DA-8164) symbol.
-- **Example models:** `Kim_2016_udenafil.R` (founding example).
-- **Notes:** Bare counterpart used inside `model()` as `clpm`; log-transformed form `lclpm` is the `ini()` typical-value entry. Distinct from `kmet` (rate constant, units 1/time) and from `fm` (unitless fraction of total parent CL). The `clpm` form is preferred when the paper directly identifies the formation-clearance THETA and reports a covariate effect or IIV on it (the Kim 2016 case: PT covariate on CLpm/F, omega CLpm/F estimated separately from omega CLp/F).
-
-### lclpm (**canonical log-transformed apparent formation clearance to active metabolite**)
-- **Type:** log-transformed-pk
-- **Role:** Log-transformed counterpart of `clpm` used in `ini()` blocks (`lclpm <- log(typical_value)`).
-- **Source aliases:** none.
-- **Example models:** `Kim_2016_udenafil.R`.
-
-### clp (**canonical apparent non-metabolic parent clearance (paired with clpm)**)
-- **Type:** paper-named-param
-- **Role:** Apparent (oral) parent-side clearance via routes OTHER than the named active-metabolite formation pathway. Used when the source paper reports the parent's total clearance as two parallel THETAs (`CLp` and `CLpm`) where `CLpm` is the formation clearance to a named active metabolite and `CLp` captures every other parent elimination pathway combined (renal, biliary, other minor metabolic, etc.) without further decomposition.
-- **Source aliases:**
-  - `CLp` / `CLp/F` -- Kim 2016 (udenafil) symbol.
-- **Example models:** `Kim_2016_udenafil.R` (founding example).
-- **Notes:** Distinct from `lcl_renal` / `lcl_nonren` (Pierre 2017 morphine pattern): `clp` is the named complement to `clpm` in a parent-formation parameterisation, and is NOT necessarily renal vs non-renal. Use `clp` + `clpm` when the source paper explicitly identifies the metabolite-formation arm as a separate clearance THETA; use `lcl_renal` + `lcl_nonren` when the source paper decomposes parent CL by elimination route. The bare form `clp` is used inside `model()`; the log-transformed `lclp` form is the `ini()` typical-value entry.
-
-### lclp (**canonical log-transformed apparent non-metabolic parent clearance**)
-- **Type:** log-transformed-pk
-- **Role:** Log-transformed counterpart of `clp` used in `ini()` blocks (`lclp <- log(typical_value)`).
-- **Source aliases:** none.
-- **Example models:** `Kim_2016_udenafil.R`.
 
 ### fm (**canonical fraction metabolised**)
 - **Type:** paper-named-param

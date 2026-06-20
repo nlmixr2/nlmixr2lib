@@ -39,7 +39,7 @@ Gupta_2015_ixazomib <- function() {
     dose_range     = "Body-surface-area-based oral or intravenous dosing 0.125-3.95 mg/m^2 once or twice weekly. Per-study ranges (Gupta 2015 Table 1): C16001 0.125-2.34 mg/m^2 IV twice weekly; C16002 0.125-3.11 mg/m^2 IV weekly; C16003 0.24-2.23 mg/m^2 oral twice weekly; C16004 0.24-3.95 mg/m^2 oral weekly. Oral ixazomib capsule strengths were 0.2, 0.5, and 2 mg; BSA-based doses were rounded to the available capsule strengths.",
     regions        = "Not stated (four pooled phase I oncology trials).",
     studies        = "C16001 (n = 88), C16002 (n = 30), C16003 (n = 53), C16004 (n = 55) (Gupta 2015 Table 1).",
-    baseline_labs  = "Albumin 38.0 g/L (23-48); ALT 20.0 U/L (7-100); AST 24.0 U/L (9-82); bilirubin 7.0 uM (1.7-39.3); creatinine clearance 88.0 mL/min (21.9-213.7, Cockcroft-Gault). Median values with ranges per Gupta 2015 Table 2.",
+    baseline_labs  = "Albumin 38.0 g/L (23-48); ALT 20.0 U/L (7-100); AST 24.0 U/L (9-82); bilirubin 7.0 umol/L (1.7-39.3); creatinine clearance 88.0 mL/min (21.9-213.7, Cockcroft-Gault). Median values with ranges per Gupta 2015 Table 2.",
     notes          = "Demographics from Gupta 2015 Table 2. The four pooled phase I studies all used BSA-based dosing; this analysis showed that BSA does not influence ixazomib clearance and supported the transition to fixed (4 mg) dosing in subsequent phase III studies (e.g., TOURMALINE-MM1 NCT01564537, NCT01850524). A later popPK analysis (Gupta 2017, modellib('Gupta_2017_ixazomib')) refit the model on a larger combined phase I/II/III dataset (n = 755) including data from TOURMALINE-MM1; that analysis retained BSA on V4 with similar exponent magnitude but updated reference (1.87 m^2 vs 1.90 m^2 here)."
   )
 
@@ -92,11 +92,13 @@ Gupta_2015_ixazomib <- function() {
       type        = "continuous",
       notes       = "Screened; not retained."
     ),
-    BILI = list(
+    TBILI = list(
       description = "Total bilirubin; screened on CL with no clinically relevant effect (Gupta 2015 Results, narrative).",
-      units       = "uM",
+      units       = "umol/L",
       type        = "continuous",
-      notes       = "Screened; not retained."
+      notes       = "Screened; not retained. Renamed from source key BILI to the canonical TBILI per the 2026-06-19 SI register; source units 'uM' are micromol/L, normalized to the canonical SI string umol/L (value-identical).",
+      source_alias = "BILI",
+      source_name  = "BILI"
     )
   )
 

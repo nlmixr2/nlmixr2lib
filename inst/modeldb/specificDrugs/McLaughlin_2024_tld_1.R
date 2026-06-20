@@ -129,11 +129,12 @@ McLaughlin_2024_tld_1 <- function() {
       notes       = "Mc Laughlin 2024 Methods / Analysis dataset generation.",
       source_name = "ALP"
     ),
-    BILI = list(
+    TBILI = list(
       description = "Total bilirubin (screened, not retained).",
       units       = "umol/L",
       type        = "continuous",
-      notes       = "Mc Laughlin 2024 Methods / Analysis dataset generation.",
+      notes       = "Mc Laughlin 2024 Methods / Analysis dataset generation. Renamed from source key BILI to the canonical TBILI per the 2026-06-19 SI register; units already SI umol/L (unchanged).",
+      source_alias = "BILI",
       source_name = "BILI"
     ),
     SEXF = list(
