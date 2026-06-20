@@ -2324,6 +2324,24 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Source aliases:** none. The paper symbol `6-mMPNs` (and the molecular abbreviation `mMPN`) translate silently to the canonical lowercase suffix.
 - **Example models:** `Hawwa_2008_mercaptopurine.R` (doi:10.1111/j.1365-2125.2008.03281.x).
 
+### dxor (**canonical dextrorphan suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Dextrorphan (3-hydroxy-17-methylmorphinan), the major CYP2D6-mediated O-demethylation metabolite of dextromethorphan. Drives `central_dxor`, the `Cc_dxor` observation, and the `propSd_dxor` residual.
+- **Source aliases:** none (the paper uses "dextrorphan" and the symbol DXO).
+- **Example models:** `TerHeine_2014_dextromethorphan.R` (doi:10.1111/bcp.12388).
+
+### 3mm (**canonical 3-methoxymorphinan suffix**)
+- **Type:** metabolite-suffix
+- **Role:** 3-Methoxymorphinan (3-methoxy-morphinan), the CYP3A-mediated N-demethylation metabolite of dextromethorphan. Drives `central_3mm`, `peripheral1_3mm`, the `Cc_3mm` observation, and the `propSd_3mm` residual. Suffix begins with a digit, which is permitted under the same rule that already allows `3oh` / `7dm` / `5fu`.
+- **Source aliases:** "3-MM" (paper text); "3-methoxymorphinan" (figure captions).
+- **Example models:** `TerHeine_2014_dextromethorphan.R` (doi:10.1111/bcp.12388).
+
+### 3hm (**canonical 3-hydroxymorphinan suffix**)
+- **Type:** metabolite-suffix
+- **Role:** 3-Hydroxymorphinan (the doubly-demethylated terminal metabolite of dextromethorphan, formed from either dextrorphan via CYP3A or 3-methoxymorphinan via CYP2D6). Drives `central_3hm`, `peripheral1_3hm`, the `Cc_3hm` observation, and the `propSd_3hm` residual.
+- **Source aliases:** "3-HM" (paper text); "3-hydroxymorphinan" (figure captions).
+- **Example models:** `TerHeine_2014_dextromethorphan.R` (doi:10.1111/bcp.12388).
+
 ---
 
 ## Cell-type suffixes (Friberg multi-cell-type chains)
