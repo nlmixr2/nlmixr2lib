@@ -2494,6 +2494,12 @@ Per-paper metabolite / sibling-drug suffix additions discovered during the 2026-
 - **Source aliases:** none.
 - **Example models:** `Pei_2016_iloperidone.R`.
 
+### dehyari (**canonical dehydroaripiprazole suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Dehydroaripiprazole, the major active CYP3A4-mediated metabolite of aripiprazole. Possesses pharmacological activity comparable to the parent at D2 / 5-HT1A receptors. Suffix used for joint parent-plus-metabolite popPK models in which aripiprazole and dehydroaripiprazole are fitted simultaneously. Compartments are named `central_dehyari` (and `peripheral1_dehyari` etc. when applicable); parameters take the `<base>_dehyari` form (e.g., `lcl_dehyari`, `lvc_dehyari`); observation variable is `Cc_dehyari`; per-output residual error is `propSd_dehyari` / `addSd_dehyari`.
+- **Source aliases:** none.
+- **Example models:** `Kim_2008_aripiprazole.R`.
+
 ### 5oh (**canonical 5-hydroxyomeprazole suffix**)
 - **Type:** metabolite-suffix
 - **Role:** 5-hydroxyomeprazole metabolite of omeprazole.
