@@ -480,10 +480,6 @@ navbar:
         href: articles/Keizer_2011_E7820.html
       - text: "E7820 mouse (Keizer 2011)"
         href: articles/Keizer_2011_E7820.html
-      - text: "EGF IFN chimera (DoldanMartelli 2013)"
-        href: articles/DoldanMartelli_2013_EGF_IFN_chimera.html
-      - text: "Edoxaban (Niebecker 2015)"
-        href: articles/Niebecker_2015_edoxaban.html
       - text: "Efalizumab (Stein 2018)"
         href: articles/Stein_2018_mAb_nonlinear_PK.html
       - text: "Efavirenz (Dhoro 2015)"
@@ -1652,6 +1648,8 @@ navbar:
         href: articles/Pouzin_2022_tusamitamab.html
       - text: "UDCA (Zuo 2016)"
         href: articles/Zuo_2016_UDCA.html
+      - text: "UnfractionatedHeparin (AlSallami 2016)"
+        href: articles/AlSallami_2016_unfractionatedHeparin.html
       - text: "UnfractionatedHeparin (Jia 2015)"
         href: articles/Jia_2015_unfractionatedHeparin.html
       - text: "Upadacitinib (Klunder 2017)"
@@ -1914,6 +1912,7 @@ articles:
   - articles/Almquist_2022_anifrolumab
   - articles/Alqahtani_2018_cefuroxime
   - articles/Alqahtani_2018_vancomycin
+  - articles/AlSallami_2016_unfractionatedHeparin
   - articles/Alsultan_2017_pyrazinamide
   - articles/An_2012_mitoxantrone_pbpk
   - articles/Ande_2018_paclitaxel_everolimus_dasatinib
@@ -2793,22 +2792,5 @@ articles:
   - articles/Zuo_2016_UDCA
   - articles/Zurlinden_2016_paracetamol
   - articles/Zvada_2010_rifapentine
-  - articles/deAlwis_1998_ondansetron
-  - articles/deHoogd_2017_morphine
-  - articles/deJonge_2005_paclitaxel
-  - articles/deKock_2017_sulfadoxinePyrimethamine
-  - articles/deVriesSchultink_2018_cardiotoxicity
-  - articles/deVriesSchultink_2020_zenocutuzumab
-  - articles/deWinter_2009_mycophenolic_acid
-  - articles/deWit_2016_everolimus
-  - articles/elDesoky_1997_theophylline_pediatric_asthma
-  - articles/vanHasselt_2015_eribulin
-  - articles/vanRongen_2015_midazolam
-  - articles/vanRongen_2016_acetaminophen
-  - articles/vanRongen_2017_midazolam
-  - articles/vanRongen_2018_metformin
-  - articles/vanRongen_2018_midazolam
-  - articles/vanWijk_2019_paracetamol
-  - articles/vanderWalt_2013_dapagliflozin
   internal: true
 # AUTOGEN:articles:END
