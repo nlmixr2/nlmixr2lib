@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Borghardt 2016 olodaterol ([doi:10.1111/bcp.12780](https://doi.org/10.1111/bcp.12780)) -- healthy adult volunteers receiving intravenous infusion or inhaled (Respimat) olodaterol; 4-compartment systemic disposition with three parallel pulmonary first-order absorption depots and an active-smoking covariate.
+* Add Kim 2016 udenafil ([doi:10.1111/bcp.12977](https://doi.org/10.1111/bcp.12977)) -- Korean adults with mild and moderate hepatic impairment plus age- and weight-matched healthy controls; joint udenafil + DA-8164 parent-metabolite popPK with PT-as-INR covariate on the formation clearance. Ratifies new `da8164` metabolite suffix and paper-named `clp` / `clpm` clearance parameters; extends `INR_BASE` covariate scope to PT-as-INR continuous-covariate use.
 * Add Morris 2011 telapristone ([doi:10.1208/s12248-011-9304-7](https://doi.org/10.1208/s12248-011-9304-7)) -- adult women with single-dose telapristone-acetate phase I/II PK studies; ratifies new `cdb4453` metabolite suffix, `MIX_FAST_ELIM`, and `RENALIMP_MOD` covariate canonicals.
 * Add Padoin 1998 cephalexin ([doi:10.1128/aac.42.6.1463](https://doi.org/10.1128/aac.42.6.1463)) -- preclinical male Wistar rats with a cephalexin / quinapril oral coadministration DDI (ratifies new `CONMED_QPRL_ORAL` covariate canonical).
 * Add van Rongen 2018 metformin ([doi:10.1007/s40272-018-0293-1](https://doi.org/10.1007/s40272-018-0293-1)) -- overweight and obese Caucasian adolescents.

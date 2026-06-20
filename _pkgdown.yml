@@ -1660,8 +1660,8 @@ navbar:
         href: articles/Pouzin_2022_tusamitamab.html
       - text: "UDCA (Zuo 2016)"
         href: articles/Zuo_2016_UDCA.html
-      - text: "UnfractionatedHeparin (AlSallami 2016)"
-        href: articles/AlSallami_2016_unfractionatedHeparin.html
+      - text: "Udenafil (Kim 2016)"
+        href: articles/Kim_2016_udenafil.html
       - text: "UnfractionatedHeparin (Jia 2015)"
         href: articles/Jia_2015_unfractionatedHeparin.html
       - text: "Upadacitinib (Klunder 2017)"
@@ -2298,6 +2298,7 @@ articles:
   - articles/Kim_2008_aripiprazole
   - articles/Kim_2015_paroxetine
   - articles/Kim_2015_valsartan
+  - articles/Kim_2016_udenafil
   - articles/Kim_2017_fimasartan
   - articles/Kim_2018_tacrolimus
   - articles/Kimura_2023_glucarpidase

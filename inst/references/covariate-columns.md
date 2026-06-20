@@ -1174,15 +1174,18 @@ All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODA
 ## Coagulation / hemostasis biomarkers
 
 ### INR_BASE (**canonical for baseline international normalized ratio**)
-- **Description:** Pre-medication baseline INR (international normalized ratio of prothrombin time). Time-fixed per subject (measured once, before the first warfarin dose). Used directly in the warfarin K-PD INR equation as an additive constant (`INR = INR_BASE + inrmax * (1 - (coag_s3 + coag_l3)/2)` per Xia 2024 supplement Section 1.1) so the simulated INR returns to the subject-specific baseline when the drug is removed.
+- **Description:** Pre-dose baseline INR (international normalized ratio of prothrombin time), time-fixed per subject (measured once before the study drug). Used in two distinct roles across the registry: (1) as an additive structural anchor in warfarin K-PD INR observation equations (the founding Xia 2024 use case); and (2) as a continuous power covariate on hepatic-pathway clearance parameters when a popPK paper screens prothrombin time / INR as a marker of liver synthetic function (the Kim 2016 udenafil use case). Source papers often label this column `PT` when reporting "prothrombin time expressed as INR"; record the source label per-model in `covariateData[[INR_BASE]]$source_name`.
 - **Units:** (unitless ratio; INR has no units)
 - **Type:** continuous
 - **Scope:** general
-- **Reference category:** n/a -- subject-specific baseline. Default simulation value documented per-model in `covariateData[[INR_BASE]]$notes`; the Xia 2024 simulation uses the total-cohort mean of 1.13 (Table 1).
+- **Reference category:** n/a -- subject-specific baseline. Default simulation value documented per-model in `covariateData[[INR_BASE]]$notes` (Xia 2024 cohort mean 1.13; Kim 2016 cohort mean 1.14).
 - **Source aliases:**
-  - `INR_BASE`, `BL_INR`, `INRBASE` -- pre-medication INR column in NONMEM data sets; document the source-column name per-model in `covariateData[[INR_BASE]]$source_name`.
-- **Example models:** `Xia_2024_warfarin.R` (additive baseline in the INR observation equation; cohort mean 1.13, SD 0.59 per Xia 2024 Table 1).
-- **Notes:** Distinct from a time-varying INR observation (the model's observed `INR` variable). Healthy subjects with no anticoagulation typically have INR around 1.0; the Hamberg / Xia 2024 model treats deviations from 1.0 as a subject-specific covariate rather than an estimated parameter so the model returns to the observed baseline when warfarin is withdrawn. Ratified canonically on 2026-05-16 alongside the Xia 2024 warfarin extraction.
+  - `INR_BASE`, `BL_INR`, `INRBASE` -- pre-medication INR column in NONMEM data sets.
+  - `PT` -- used in Kim 2016 udenafil HI study (paper Methods: "prothrombin time and were expressed as international normalized ratio (PT)").
+- **Example models:**
+  - `Xia_2024_warfarin.R` (additive baseline in the INR observation equation; cohort mean 1.13, SD 0.59 per Xia 2024 Table 1).
+  - `Kim_2016_udenafil.R` (power covariate on apparent formation clearance CLpm/F; CLpm/F = theta1 * (INR_BASE / 1.13)^theta10 with theta10 = -1.65 and median PT 1.13).
+- **Notes:** Distinct from a time-varying INR observation (the model's observed `INR` variable). Healthy subjects with no anticoagulation typically have INR around 1.0; the Hamberg / Xia 2024 model treats deviations from 1.0 as a subject-specific covariate rather than an estimated parameter so the model returns to the observed baseline when warfarin is withdrawn. The Kim 2016 udenafil paper uses INR as a generic marker of hepatic synthetic function (not as an anticoagulation marker — the cohort had no anticoagulant exposure) and applies a power covariate effect on hepatic metabolic clearance. Ratified canonically on 2026-05-16 alongside the Xia 2024 warfarin extraction; scope generalised to PT-as-INR continuous-covariate use on 2026-06-20 alongside the Kim 2016 udenafil extraction.
 
 ### PTR (**canonical for prothrombin time ratio (PT relative to baseline)**)
 - **Description:** Prothrombin time ratio -- the ratio of measured prothrombin time to the pre-treatment baseline prothrombin time of the same subject (or trial-arm population mean). Unitless. Used as a time-varying input biomarker that drives downstream pharmacodynamic / event-rate models for direct oral factor-Xa inhibitors and related anticoagulant pharmacology.
