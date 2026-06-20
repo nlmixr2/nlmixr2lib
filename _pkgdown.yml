@@ -84,6 +84,8 @@ navbar:
         href: articles/Tiraboschi_2025_amlitelimab.html
       - text: "Amodiaquine (Ali 2018)"
         href: articles/Ali_2018_amodiaquine.html
+      - text: "Amoxicillin (Muller 2008)"
+        href: articles/Muller_2008_amoxicillin.html
       - text: "Amoxicillin (Tang 2019)"
         href: articles/Tang_2019_amoxicillin.html
       - text: "AmphotericinB liposomal (Hong 2006)"
@@ -2330,6 +2332,7 @@ articles:
   - articles/Mould_2007_alemtuzumab
   - articles/Mukai_2019_mogamulizumab
   - articles/Mukonzo_2009_efavirenz
+  - articles/Muller_2008_amoxicillin
   - articles/Muller_2010_clindamycin
   - articles/Mulyukov_2018_ranibizumab
   - articles/Muntau_2017_sapropterin
