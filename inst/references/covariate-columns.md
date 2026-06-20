@@ -360,6 +360,28 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Allegaert_2015_paracetamol.R`.
 - **Notes:** Distinct from `GA` (continuous gestational age in weeks): `TERM_BIRTH` is the binarized version with the conventional 37-week cutoff. Use `GA` when the source paper carries gestational age as a continuous covariate; use `TERM_BIRTH` only when the paper itself dichotomizes. Do not derive `TERM_BIRTH` from `GA` programmatically inside `model()` -- the term-cutoff convention belongs in data assembly, not the model file.
 
+### LABOR_ACTIVE (**canonical for active-labour indicator**)
+- **Description:** Binary indicator that the sample was collected while the subject is in active labour (uterine contractions resulting in progressive cervical dilatation); `1` = in active labour, `0` = otherwise. Time-varying within a single subject's PK study window as the subject transitions from before-labour through active labour to delivery. Used by perinatal popPK models that compare drug disposition across the labour transition.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (not in active labour; i.e., before the onset of labour OR after delivery -- the paired-indicator scheme uses `LABOR_POSTPARTUM` separately for the postpartum stratum).
+- **Source aliases:**
+  - `LABOUR` -- Muller 2008 narrative term (British spelling); same orientation, no transformation.
+- **Example models:** `Muller_2008_amoxicillin.R` (paired with `LABOR_POSTPARTUM`; additive-fractional effect on V2: `V2_indiv = TVV2 * (1 + e_labor_active_vp * LABOR_ACTIVE + e_labor_postpartum_vp * LABOR_POSTPARTUM)` with `e_labor_active_vp = -0.137` and `e_labor_postpartum_vp = -0.295`).
+- **Notes:** Paired with `LABOR_POSTPARTUM` in a 3-level categorical encoding scheme (`LABOR_ACTIVE = 0` and `LABOR_POSTPARTUM = 0` for before labour, `LABOR_ACTIVE = 1` and `LABOR_POSTPARTUM = 0` for during active labour, `LABOR_ACTIVE = 0` and `LABOR_POSTPARTUM = 1` for the immediate postpartum period; both = 1 is invalid). When the source paper uses a single time-postpartum continuous form (de Kock 2017 sigmoidal recovery), use `TPP` instead. The "active labour" clinical definition is uterine contractions with progressive cervical dilatation (ACOG / Friedman); document the source-paper threshold per model in `covariateData[[LABOR_ACTIVE]]$notes`. Distinct from `PREG` (pregnant vs non-pregnant), `TPP` (continuous weeks-postpartum), and `TERM_BIRTH` (neonate-flagged). The American spelling `labor` was chosen for the canonical to keep snake_case / ASCII consistency; the British spelling `labour` is recorded as a source alias. Ratified canonically on 2026-06-20 alongside the Muller 2008 amoxicillin extraction.
+
+### LABOR_POSTPARTUM (**canonical for immediate-postpartum indicator**)
+- **Description:** Binary indicator that the sample was collected in the immediate postpartum period (typically within hours-to-day of delivery, before the gradual multi-week recovery of pregnancy-induced physiology covered by `TPP`); `1` = immediate postpartum, `0` = otherwise. Time-varying within a single subject's PK study window. Used by perinatal popPK models that compare drug disposition across the labour transition.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (not in immediate postpartum; i.e., before-labour or during-labour samples).
+- **Source aliases:**
+  - `POSTPARTUM` / `PP` -- Muller 2008 narrative terms.
+- **Example models:** `Muller_2008_amoxicillin.R` (paired with `LABOR_ACTIVE`; immediate-postpartum samples were collected 1.5-3.8 h after child birth per Muller 2008 Results paragraph 1, within ~27 h of delivery).
+- **Notes:** Paired with `LABOR_ACTIVE`; reference state (both = 0) is "before labour". Distinct from `TPP` (continuous weeks-postpartum, used by sigmoidal-recovery models for the gradual return of GFR / renal blood flow to prepregnant values over 6-12 weeks). `LABOR_POSTPARTUM` captures the acute peri-delivery state (the first ~1-2 days post-delivery, before any meaningful `TPP`-modelled recovery has taken place); use `TPP` instead when the source paper models multi-week postpartum recovery rather than a binary peri-delivery stratifier. Ratified canonically on 2026-06-20 alongside the Muller 2008 amoxicillin extraction.
+
 ### CONMED_BIRTHCONTROL (**canonical for oral-contraceptive use indicator**)
 - **Description:** Binary indicator of oral hormonal contraceptive use; `1` = currently taking an oral contraceptive (estrogen-progestin or progestin-only pill), `0` = not on hormonal contraception. Time-varying as women cycle on/off contraception across study occasions.
 - **Units:** (binary)
