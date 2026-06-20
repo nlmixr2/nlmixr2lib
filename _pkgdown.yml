@@ -926,6 +926,8 @@ navbar:
         href: articles/Martial_2017_micafungin.html
       - text: "Midazolam (Brill 2014)"
         href: articles/Brill_2014_midazolam.html
+      - text: "Midazolam (Franken 2017)"
+        href: articles/Franken_2017_midazolam.html
       - text: "Midazolam (Janssen 2017)"
         href: articles/Janssen_2017_cabazitaxel_phenotyping.html
       - text: "Midazolam (vanRongen 2017)"
@@ -2018,6 +2020,7 @@ articles:
   - articles/Flint_2017_s_ketamine
   - articles/Franken_2015_morphine
   - articles/Franken_2017_haloperidol
+  - articles/Franken_2017_midazolam
   - articles/Frey_2010_tocilizumab
   - articles/Frey_2013_tocilizumab
   - articles/Friberg_2002_paclitaxel
