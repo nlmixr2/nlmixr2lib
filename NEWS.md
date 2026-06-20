@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Ivaturi 2017 RBP-7000 ([doi:10.1111/bcp.13246](https://doi.org/10.1111/bcp.13246)) -- adults with acute schizophrenia (joint risperidone + 9-OH-risperidone popPK and PANSS PK/PD model for the once-monthly long-acting subcutaneous Atrigel formulation; ratifies new `CYP2D6_IM` covariate canonical).
+* Add Gaohua 2012 pregnancy PBPK ([doi:10.1111/j.1365-2125.2012.04363.x](https://doi.org/10.1111/j.1365-2125.2012.04363.x)) -- healthy pregnant Caucasian women (14-compartment whole-body p-PBPK with GA-dependent maternal physiology, applied to caffeine [CYP1A2], metoprolol [CYP2D6], and midazolam [CYP3A4]); ratifies new canonical bare `skin` PBPK compartment.
 * Add Morris 2011 telapristone ([doi:10.1208/s12248-011-9304-7](https://doi.org/10.1208/s12248-011-9304-7)) -- adult women with single-dose telapristone-acetate phase I/II PK studies; ratifies new `cdb4453` metabolite suffix, `MIX_FAST_ELIM`, and `RENALIMP_MOD` covariate canonicals.
 * Add Padoin 1998 cephalexin ([doi:10.1128/aac.42.6.1463](https://doi.org/10.1128/aac.42.6.1463)) -- preclinical male Wistar rats with a cephalexin / quinapril oral coadministration DDI (ratifies new `CONMED_QPRL_ORAL` covariate canonical).
 * Add van Rongen 2018 metformin ([doi:10.1007/s40272-018-0293-1](https://doi.org/10.1007/s40272-018-0293-1)) -- overweight and obese Caucasian adolescents.
