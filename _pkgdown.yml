@@ -108,6 +108,8 @@ navbar:
         href: articles/Bonate_2004_apomine.html
       - text: "Arginine (Brussee 2016)"
         href: articles/Brussee_2016_arginine.html
+      - text: "Aripiprazole (Kim 2008)"
+        href: articles/Kim_2008_aripiprazole.html
       - text: "Aripiprazole (Knights 2015)"
         href: articles/Knights_2015_aripiprazole.html
       - text: "Aripiprazole (Koue 2007)"
@@ -2190,6 +2192,7 @@ articles:
   - articles/Kerbusch_2000_ifosfamide
   - articles/Khan_2015_ciprofloxacin
   - articles/Kielbasa_2020_galcanezumab
+  - articles/Kim_2008_aripiprazole
   - articles/Kim_2015_paroxetine
   - articles/Kim_2015_valsartan
   - articles/Kim_2017_fimasartan

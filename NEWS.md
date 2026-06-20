@@ -2,8 +2,8 @@
 
 # development version
 
-* Add Hirt 2008 ibuprofen ([doi:10.1111/j.1365-2125.2008.03118.x](https://doi.org/10.1111/j.1365-2125.2008.03118.x)) -- preterm neonates with patent ductus arteriosus on intravenous ibuprofen-lysine.
-* Add Berges 2007 enoxaparin ([doi:10.1111/j.1365-2125.2007.02920.x](https://doi.org/10.1111/j.1365-2125.2007.02920.x)) -- elderly inpatients (>75 years) on prophylactic subcutaneous enoxaparin 4000 IU once daily for VTE prophylaxis (PROPHRE.75 study).
+* Add Kim 2008 aripiprazole ([doi:10.1111/j.1365-2125.2008.03223.x](https://doi.org/10.1111/j.1365-2125.2008.03223.x)) -- 80 Korean psychiatric patients (schizophrenia / schizophreniform / schizoaffective) with joint parent + dehydroaripiprazole popPK and four-level CYP2D6 stratification; ratifies new `dehyari` metabolite suffix and new `CYP2D6_EM_1FUNC_1PD` / `CYP2D6_EM_1FUNC_1NULL` paired binary covariate canonicals for within-EM CYP2D6 subdivisions.
+* Add Morris 2011 telapristone ([doi:10.1208/s12248-011-9304-7](https://doi.org/10.1208/s12248-011-9304-7)) -- adult women with single-dose telapristone-acetate phase I/II PK studies; ratifies new `cdb4453` metabolite suffix, `MIX_FAST_ELIM`, and `RENALIMP_MOD` covariate canonicals.
 * Add Padoin 1998 cephalexin ([doi:10.1128/aac.42.6.1463](https://doi.org/10.1128/aac.42.6.1463)) -- preclinical male Wistar rats with a cephalexin / quinapril oral coadministration DDI (ratifies new `CONMED_QPRL_ORAL` covariate canonical).
 * Add van Rongen 2018 metformin ([doi:10.1007/s40272-018-0293-1](https://doi.org/10.1007/s40272-018-0293-1)) -- overweight and obese Caucasian adolescents.
 * Add Tarning 2012 artemether and dihydroartemisinin ([doi:10.1186/1475-2875-11-293](https://doi.org/10.1186/1475-2875-11-293)) -- pregnant women with uncomplicated Plasmodium falciparum malaria in Uganda (joint parent + DHA popPK with zero-order dissolution and 6-compartment transit absorption).
