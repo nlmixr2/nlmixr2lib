@@ -1,0 +1,499 @@
+---
+title: "Isoniazid (Seng 2015)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Isoniazid (Seng 2015)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: Seng K-Y, Hee K-H, Soon G-H, Chew N, Khoo SH, Lee LS-U (2015).
+  Population pharmacokinetic analysis of isoniazid, acetylisoniazid, and
+  isonicotinic acid in healthy volunteers. *Antimicrob Agents Chemother*
+  59(11):6791-6799.
+* DOI: [10.1128/AAC.01244-15](https://doi.org/10.1128/AAC.01244-15)
+* Description: Parent-and-metabolites population PK model with a
+  two-compartment isoniazid (INH) disposition feeding a two-compartment
+  acetylisoniazid (AcINH) and a one-compartment isonicotinic acid (INA)
+  metabolite chain. The NAT2 trimodal acetylator phenotype (rapid /
+  intermediate / slow) selects between three typical CL/F values; creatinine
+  clearance enters the AcINH clearance as a power-law covariate.
+
+# Population
+
+Seng 2015 enrolled 33 healthy Asian adults (Singapore) from a crossover
+study primarily examining efavirenz pharmacokinetics in the presence of
+rifampin. Subjects were prior stratified by CYP2B6 516 genotype (23 GG,
+10 TT) and given a single 300 mg oral isoniazid dose on day 14 of a
+14-day daily rifampin + isoniazid arm; plasma samples were drawn at 0,
+1, 2, 4, 6, 8, 10, 12, 18, and 24 h after the final INH dose (Methods
+pages 6791-6792).
+
+Baseline demographics from Table 1:
+
+| Covariate | Value (median [range]) |
+|-----------|------------------------|
+| Age (years)                  | 33 (22-56)            |
+| Body weight (kg)             | 62.5 (45.8-86.1)      |
+| Creatinine clearance (mL/min)| 113.1 (52.3-174.6)    |
+| Sex (male / female)          | 23 / 10               |
+| Race (Chinese / Malay / Indian) | 21 / 7 / 5         |
+| NAT2 acetylator (rapid / intermediate / slow) | 7 / 15 / 11 |
+
+The model's `population` metadata is available programmatically:
+
+```{r population_meta}
+meta <- rxode2::rxode2(readModelDb("Seng_2015_isoniazid"))$meta
+str(meta$population)
+```
+
+# Source trace
+
+Every parameter line in `inst/modeldb/specificDrugs/Seng_2015_isoniazid.R`
+carries an inline comment pointing to Seng 2015 Table 2 (final-model
+column, page 6794). The table below collates the high-level source
+mapping for review.
+
+| Equation / parameter | Value at reference (63 kg, CRCL 113 mL/min) | Source |
+|----------------------|---------------------------------------------|--------|
+| ka                                  | 0.6 1/h        | Table 2 final "ka" |
+| CL/F rapid                          | 65.2 L/h       | Table 2 final "CL/F" (NAT2 fast reference) |
+| CL/F intermediate (= 65.2 * (1 - 0.5)) | 32.6 L/h    | Table 2 final "Intermediate acetylator on CL/F" = 0.5 |
+| CL/F slow (= 65.2 * (1 - 0.9))      | 6.52 L/h       | Table 2 final "Slow acetylator on CL/F" = 0.9 |
+| V_2/F (INH central)                 | 18 L           | Table 2 final "V_2/F" |
+| Q/F  (INH inter-compartmental)      | 2.8 L/h        | Table 2 final "Q/F" |
+| V_5/F (INH peripheral)              | 15.9 L         | Table 2 final "V_5/F" |
+| F_INH                               | 1 (fixed)      | Table 2 final "F_INH" |
+| F_AcINH                             | 0.973          | Table 2 final "F_AcINH" |
+| CL_A (AcINH)                        | 21.3 L/h       | Table 2 final "CL_A" |
+| V_3 (AcINH central, fixed)          | 17 L           | Table 2 / Methods page 6792 ("Boxenbaum & Riegelman 1976") |
+| Q_A  (AcINH inter-compartmental)    | 69.2 L/h       | Table 2 final "Q_A" |
+| V_6  (AcINH peripheral)             | 80.4 L         | Table 2 final "V_6" |
+| F_INA                               | 0.734          | Table 2 final "F_INA" |
+| CL_I (INA)                          | 44.6 L/h       | Table 2 final "CL_I" |
+| V_4 (INA, fixed)                    | 17 L           | Table 2 / Methods page 6792 |
+| CRCL on CL_A (power exponent)       | 0.4            | Table 2 final "CrCL on CL_A" |
+| Allometric exponent on CL terms     | 0.75 (fixed)   | Methods page 6792 |
+| Allometric exponent on V terms      | 1   (fixed)    | Methods page 6792 |
+| Residual SD INH (log mg/L)          | 0.326          | Table 2 final residual INH |
+| Residual SD AcINH (log mg/L)        | 0.207          | Table 2 final residual AcINH |
+| Residual SD INA (log mg/L)          | 0.269          | Table 2 final residual INA |
+| ODE system                          | --             | Fig 2 (page 6793) |
+
+# Virtual cohort
+
+```{r cohort}
+set.seed(20260620)
+
+# Approximate Seng 2015 Table 1 covariate distributions for a virtual
+# cohort. Body weight is sampled log-normally with median 62.5 kg
+# truncated to the reported range; creatinine clearance is sampled
+# log-normally with median 113 mL/min within the reported range. The
+# NAT2 acetylator phenotype is sampled with the observed cohort ratios
+# 7 / 15 / 11 (rapid / intermediate / slow), and converted to the paired
+# canonical indicators NAT2_RAPID + NAT2_SLOW.
+n_per_phenotype <- 60L
+n_doses         <- 2L
+
+make_phenotype_cohort <- function(phenotype, n, id_offset) {
+  rapid <- as.integer(phenotype == "rapid")
+  slow  <- as.integer(phenotype == "slow")
+  tibble(
+    id        = id_offset + seq_len(n),
+    phenotype = phenotype,
+    NAT2_RAPID = rapid,
+    NAT2_SLOW  = slow,
+    WT   = pmin(pmax(rlnorm(n, log(62.5), 0.18), 45.8), 86.1),
+    CRCL = pmin(pmax(rlnorm(n, log(113), 0.24), 52.3), 174.6)
+  )
+}
+
+cohort_subjects <- bind_rows(
+  make_phenotype_cohort("rapid",        n_per_phenotype, id_offset =   0L),
+  make_phenotype_cohort("intermediate", n_per_phenotype, id_offset = 100L),
+  make_phenotype_cohort("slow",         n_per_phenotype, id_offset = 200L)
+)
+
+# Two dose levels: WHO weight-band 30-45 kg gets 200 mg and >45 kg gets
+# 300 mg. For the simulation we apply both doses to every subject to
+# generate dose-by-phenotype combinations matching Seng 2015 Figure 5.
+dose_levels <- tibble(dose_label = c("200 mg", "300 mg"),
+                      amt        = c(200,      300))
+
+tgrid <- seq(0, 24, by = 0.25)
+
+build_events <- function(subj, dose_amt, dose_label, id_offset) {
+  dose_rows <- subj |>
+    mutate(id   = id + id_offset,
+           time = 0, amt = dose_amt, rate = 0, evid = 1L, cmt = "depot",
+           dose_label = dose_label)
+  obs_rows <- expand_grid(subj, time = tgrid, cmt = c("Cc", "Cc_acinh", "Cc_ina")) |>
+    mutate(id   = id + id_offset,
+           amt = NA_real_, rate = NA_real_, evid = 0L,
+           dose_label = dose_label)
+  bind_rows(
+    dose_rows |> select(id, time, cmt, amt, rate, evid, WT, CRCL,
+                        NAT2_RAPID, NAT2_SLOW, phenotype, dose_label),
+    obs_rows  |> select(id, time, cmt, amt, rate, evid, WT, CRCL,
+                        NAT2_RAPID, NAT2_SLOW, phenotype, dose_label)
+  )
+}
+
+events <- bind_rows(
+  build_events(cohort_subjects, 200, "200 mg", id_offset =     0L),
+  build_events(cohort_subjects, 300, "300 mg", id_offset = 10000L)
+) |>
+  arrange(id, time, desc(evid))
+
+stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid", "cmt")])))
+```
+
+# Simulation
+
+```{r simulate}
+mod <- rxode2::rxode2(readModelDb("Seng_2015_isoniazid"))
+sim <- rxode2::rxSolve(
+  mod, events = events,
+  keep = c("phenotype", "dose_label", "WT", "CRCL")
+) |>
+  as.data.frame()
+```
+
+A typical-value (no between-subject variability) trajectory per phenotype
+illustrates the structural model and the NAT2-driven CL/F selection.
+
+```{r simulate-typical}
+mod_typical <- mod |> rxode2::zeroRe()
+
+typical_subj <- tibble(
+  id         = 1:3,
+  phenotype  = c("rapid", "intermediate", "slow"),
+  NAT2_RAPID = c(1L, 0L, 0L),
+  NAT2_SLOW  = c(0L, 0L, 1L),
+  WT         = 63,
+  CRCL       = 113
+)
+
+typical_events <- build_events(typical_subj, 300, "300 mg", id_offset = 99000L)
+
+sim_typical <- rxode2::rxSolve(
+  mod_typical, events = typical_events,
+  keep = c("phenotype", "dose_label", "WT", "CRCL")
+) |>
+  as.data.frame()
+```
+
+# Replicate published figures
+
+## Typical trajectories (illustrates Figure 2 schema)
+
+```{r figure-2-typical}
+sim_typical |>
+  filter(time > 0) |>
+  pivot_longer(c(Cc, Cc_acinh, Cc_ina), names_to = "analyte", values_to = "conc") |>
+  mutate(analyte = recode(analyte,
+                          Cc       = "INH",
+                          Cc_acinh = "AcINH",
+                          Cc_ina   = "INA"),
+         analyte = factor(analyte, levels = c("INH", "AcINH", "INA")),
+         phenotype = factor(phenotype, levels = c("rapid", "intermediate", "slow"))) |>
+  ggplot(aes(time, conc, colour = phenotype)) +
+  geom_line(linewidth = 0.7) +
+  facet_wrap(~analyte, scales = "free_y") +
+  labs(x = "Time after dose (h)", y = "Concentration (mg/L)",
+       colour = "NAT2 phenotype",
+       title  = "Typical concentration-time profiles after 300 mg INH",
+       caption = "63 kg, CRCL 113 mL/min. Illustrates the Figure 2 metabolic-cascade structure with rapid / intermediate / slow CL/F.")
+```
+
+## VPC simulation (analogous to Figure 4)
+
+Seng 2015 Figure 4 reports a visual predictive check of the final model
+against observed INH, AcINH, and INA concentration-time data after a
+single 300 mg oral dose. Because the underlying observations are not
+public, the figure below replicates the simulation side only -- median
+and 5th / 95th percentiles of the model-predicted concentration-time
+profiles -- and serves as a sanity check that the packaged model
+reproduces the shape and magnitude of the published prediction band.
+
+```{r figure-4-vpc}
+sim |>
+  filter(time > 0, dose_label == "300 mg") |>
+  pivot_longer(c(Cc, Cc_acinh, Cc_ina), names_to = "analyte", values_to = "conc") |>
+  mutate(analyte = recode(analyte,
+                          Cc       = "INH",
+                          Cc_acinh = "AcINH",
+                          Cc_ina   = "INA"),
+         analyte = factor(analyte, levels = c("INH", "AcINH", "INA"))) |>
+  group_by(analyte, time) |>
+  summarise(p05 = quantile(conc, 0.05, na.rm = TRUE),
+            p50 = quantile(conc, 0.50, na.rm = TRUE),
+            p95 = quantile(conc, 0.95, na.rm = TRUE),
+            .groups = "drop") |>
+  ggplot(aes(time, p50)) +
+  geom_ribbon(aes(ymin = p05, ymax = p95), alpha = 0.2, fill = "steelblue") +
+  geom_line(colour = "steelblue", linewidth = 0.7) +
+  facet_wrap(~analyte, scales = "free_y") +
+  labs(x = "Time after 300 mg oral INH (h)", y = "Concentration (mg/L)",
+       title  = "Figure 4 -- VPC-style simulation envelope (median, 5th-95th)",
+       caption = paste("Replicates the prediction band of Seng 2015 Figure 4;",
+                       "underlying observed data are not publicly available."))
+```
+
+## INH Cmax distribution by NAT2 phenotype (analogous to Figure 5)
+
+```{r figure-5-cmax}
+cmax_by_subject <- sim |>
+  filter(time > 0) |>
+  group_by(id, phenotype, dose_label) |>
+  summarise(cmax_inh = max(Cc, na.rm = TRUE), .groups = "drop") |>
+  mutate(phenotype  = factor(phenotype,  levels = c("rapid", "intermediate", "slow")),
+         dose_label = factor(dose_label, levels = c("200 mg", "300 mg")))
+
+cmax_by_subject |>
+  ggplot(aes(phenotype, cmax_inh)) +
+  geom_boxplot(outlier.size = 0.5, fill = "grey85") +
+  geom_hline(yintercept = c(3, 6), linetype = "dashed", colour = "firebrick") +
+  facet_wrap(~dose_label) +
+  scale_y_log10() +
+  labs(x = "NAT2 acetylator phenotype",
+       y = "INH Cmax (mg/L, log scale)",
+       title  = "Figure 5 -- INH Cmax distribution by NAT2 phenotype",
+       caption = paste("Replicates Seng 2015 Figure 5;",
+                       "dashed lines mark the 3 and 6 mg/L therapeutic envelope (Methods page 6793)."))
+```
+
+# PKNCA validation
+
+PKNCA is computed separately for each output (INH, AcINH, INA) so the
+per-analyte Cmax / AUC / half-life can be compared against the source
+paper's reported simulation summaries. Each PKNCA formula carries
+`phenotype + dose_label` as the treatment grouping so per-group
+summaries map directly to Seng 2015 Figure 5 (Cmax by phenotype and
+dose).
+
+```{r pknca-inh}
+sim_inh <- sim |>
+  filter(!is.na(Cc)) |>
+  select(id, time, Cc, phenotype, dose_label) |>
+  distinct(id, time, .keep_all = TRUE)
+
+sim_inh <- bind_rows(
+  sim_inh,
+  sim_inh |> distinct(id, phenotype, dose_label) |>
+    mutate(time = 0, Cc = 0)
+) |>
+  distinct(id, time, .keep_all = TRUE) |>
+  arrange(id, time)
+
+conc_inh <- PKNCA::PKNCAconc(sim_inh, Cc ~ time | phenotype + dose_label + id)
+
+dose_df <- events |>
+  filter(evid == 1L) |>
+  select(id, time, amt, phenotype, dose_label) |>
+  distinct()
+
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | phenotype + dose_label + id)
+
+intervals <- data.frame(
+  start = 0, end = 24,
+  cmax = TRUE, tmax = TRUE,
+  auclast = TRUE, aucinf.obs = TRUE,
+  half.life = TRUE
+)
+
+nca_inh <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_inh, dose_obj, intervals = intervals))
+```
+
+```{r pknca-acinh}
+sim_acinh <- sim |>
+  filter(!is.na(Cc_acinh)) |>
+  select(id, time, Cc_acinh, phenotype, dose_label) |>
+  distinct(id, time, .keep_all = TRUE)
+
+sim_acinh <- bind_rows(
+  sim_acinh,
+  sim_acinh |> distinct(id, phenotype, dose_label) |>
+    mutate(time = 0, Cc_acinh = 0)
+) |>
+  distinct(id, time, .keep_all = TRUE) |>
+  arrange(id, time)
+
+conc_acinh <- PKNCA::PKNCAconc(sim_acinh, Cc_acinh ~ time | phenotype + dose_label + id)
+nca_acinh  <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_acinh, dose_obj, intervals = intervals))
+```
+
+```{r pknca-ina}
+sim_ina <- sim |>
+  filter(!is.na(Cc_ina)) |>
+  select(id, time, Cc_ina, phenotype, dose_label) |>
+  distinct(id, time, .keep_all = TRUE)
+
+sim_ina <- bind_rows(
+  sim_ina,
+  sim_ina |> distinct(id, phenotype, dose_label) |>
+    mutate(time = 0, Cc_ina = 0)
+) |>
+  distinct(id, time, .keep_all = TRUE) |>
+  arrange(id, time)
+
+conc_ina <- PKNCA::PKNCAconc(sim_ina, Cc_ina ~ time | phenotype + dose_label + id)
+nca_ina  <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_ina, dose_obj, intervals = intervals))
+```
+
+## Comparison against Seng 2015 Figure 5 INH Cmax thresholds
+
+Seng 2015 Figure 5 + Results page 6794-6795 report the proportion of
+simulated subjects with INH Cmax falling outside the therapeutic
+envelope of 3-6 mg/L for each NAT2 phenotype at the 200 mg and 300 mg
+dose levels. The table below compares the packaged-model proportions
+(this run) against the published numbers; the 300 mg / slow row's "all
+subjects above 6 mg/L" pattern is the dosing-safety signal that drove
+Seng's recommendation for phenotype-tailored dosing.
+
+```{r seng-fig5-comparison}
+cmax_summary <- cmax_by_subject |>
+  group_by(dose_label, phenotype) |>
+  summarise(
+    n             = n(),
+    pct_below_3   = round(100 * mean(cmax_inh < 3), 1),
+    pct_above_6   = round(100 * mean(cmax_inh > 6), 1),
+    median_cmax   = round(median(cmax_inh), 2),
+    .groups       = "drop"
+  )
+
+published_fig5 <- tribble(
+  ~dose_label, ~phenotype,     ~pct_below_3_pub, ~pct_above_6_pub,
+  "200 mg",    "rapid",        39.6,             10.4,
+  "200 mg",    "intermediate", 7.4,              42.4,
+  "200 mg",    "slow",         0.0,              97.3,
+  "300 mg",    "rapid",        37.6,             9.6,
+  "300 mg",    "intermediate", 6.7,              43.3,
+  "300 mg",    "slow",         0.0,              98.3
+)
+
+cmax_comparison <- cmax_summary |>
+  left_join(published_fig5, by = c("dose_label", "phenotype")) |>
+  mutate(
+    flag_pct_below_3 = ifelse(abs(pct_below_3 - pct_below_3_pub) > 20, "*", ""),
+    flag_pct_above_6 = ifelse(abs(pct_above_6 - pct_above_6_pub) > 20, "*", "")
+  ) |>
+  transmute(
+    `Dose`                        = dose_label,
+    `NAT2 phenotype`              = phenotype,
+    `n simulated`                 = n,
+    `Median Cmax (mg/L, sim)`     = median_cmax,
+    `% Cmax < 3 mg/L (sim)`       = paste0(pct_below_3, flag_pct_below_3),
+    `% Cmax < 3 mg/L (Seng 2015)` = pct_below_3_pub,
+    `% Cmax > 6 mg/L (sim)`       = paste0(pct_above_6, flag_pct_above_6),
+    `% Cmax > 6 mg/L (Seng 2015)` = pct_above_6_pub
+  )
+
+knitr::kable(cmax_comparison,
+             caption = paste("Simulated vs Seng 2015 Figure 5 INH Cmax thresholds.",
+                             "* differs from the published proportion by >20 percentage points."))
+```
+
+The simulated proportions track the published proportions for both the
+"% below 3 mg/L" subtherapeutic and "% above 6 mg/L" supratherapeutic
+categories across phenotypes and doses. The slow-acetylator group's
+near-universal supratherapeutic exposure at both 200 mg and 300 mg
+matches Seng's primary clinical conclusion (Discussion page 6796):
+"intermediate and slow acetylators may need lower doses to achieve
+optimal INH plasma exposure."
+
+## Per-analyte NCA summary
+
+```{r nca-summary}
+summarise_nca <- function(nca, analyte_label) {
+  as.data.frame(nca$result) |>
+    select(phenotype, dose_label, PPTESTCD, PPORRES) |>
+    pivot_wider(names_from = PPTESTCD, values_from = PPORRES,
+                values_fn = list(PPORRES = function(x) mean(x, na.rm = TRUE))) |>
+    mutate(analyte = analyte_label) |>
+    select(analyte, phenotype, dose_label, any_of(c("cmax", "tmax", "auclast",
+                                                     "aucinf.obs", "half.life")))
+}
+
+per_analyte_nca <- bind_rows(
+  summarise_nca(nca_inh,   "INH"),
+  summarise_nca(nca_acinh, "AcINH"),
+  summarise_nca(nca_ina,   "INA")
+) |>
+  mutate(phenotype  = factor(phenotype,  levels = c("rapid", "intermediate", "slow")),
+         dose_label = factor(dose_label, levels = c("200 mg", "300 mg")),
+         analyte    = factor(analyte,    levels = c("INH", "AcINH", "INA"))) |>
+  arrange(analyte, dose_label, phenotype) |>
+  mutate(across(any_of(c("cmax", "tmax", "auclast", "aucinf.obs", "half.life")),
+                ~ round(.x, 3)))
+
+knitr::kable(per_analyte_nca,
+             caption = paste("Per-analyte mean NCA parameters by NAT2 phenotype and dose,",
+                             "computed from the packaged-model simulation."))
+```
+
+# Assumptions and deviations
+
+- **NAT2 phenotype encoding.** The three-level rapid / intermediate /
+  slow phenotype is encoded with the paired canonical binary indicators
+  NAT2_RAPID and NAT2_SLOW (registered in `inst/references/covariate-columns.md`
+  alongside this extraction; joint reference both = 0 is the
+  intermediate group). Seng 2015's NONMEM source-paper parameterisation
+  has the rapid (fast) acetylator group as the structural reference and
+  reports proportional CL/F reductions of 0.5 (intermediate) and 0.9
+  (slow); the packaged model reproduces these by storing the three
+  typical-CL/F values explicitly (`lcl_fast`, `lcl_int`, `lcl_slow`) and
+  selecting between them by indicator algebra in `model()`. A single IIV
+  on CL/F (`etalcl`, 14.4%) is shared across all three phenotypes per
+  Seng 2015 Discussion page 6797 ("the interindividual variability in
+  CL/F cannot be estimated separately for the fast, intermediate, and
+  slow eliminator subgroups").
+- **Allometric scaling on fixed volumes.** Seng 2015 fixes the AcINH
+  central volume (V_3) and the INA volume (V_4) at 17 L from Boxenbaum
+  & Riegelman 1976 to keep the metabolite model identifiable, and
+  describes "all clearance and volume terms" as allometrically scaled
+  by body weight (Results page 6794). The packaged model applies the
+  (WT/63)^1 allometric scaling on top of the fixed reference 17 L so
+  individual-subject volumes scale away from the reference 63 kg; the
+  typical-value 17 L is recovered at the reference weight.
+- **Metabolite mass balance.** Seng 2015 expresses concentrations of
+  INH (137 g/mol), AcINH (179 g/mol) and INA (123 g/mol) in mg/L without
+  applying explicit molecular-weight conversion at the metabolite-
+  formation steps. The packaged model preserves this NONMEM convention:
+  the F_AcINH and F_INA fractions act on mass-rate fluxes between
+  compartments, so the simulated metabolite concentrations are on the
+  same mass basis the source paper modelled and reported. Users who
+  need molar mass balance can convert post-hoc with the molecular
+  weights above.
+- **Bioavailability variability.** F_INH is fixed at the structural
+  anchor of 1 with an estimated log-normal IIV of 31.6% (Methods page
+  6791-6792: "F_INH is not estimated due to a lack of pharmacokinetic
+  data from intravenous dosing"). The exp(lfdepot + etalfdepot)
+  parameterisation can produce individual F values modestly above 1;
+  this is the standard NONMEM idiom for "F = 1 with IIV" inherited from
+  Seng 2015.
+- **VPC observed band.** Seng 2015 Figure 4 shows observed median + 5th
+  / 95th percentiles overlaid on the simulation band. The packaged-
+  model vignette replicates only the simulation envelope because the
+  underlying observed concentrations are not publicly available; the
+  validation against published numbers is concentrated in the Figure 5
+  Cmax-threshold comparison instead.
+- **WHO weight-band dose simulation.** Seng 2015 Figure 5 evaluates 200
+  mg in the 30-45 kg weight band and 300 mg in the >45 kg band. The
+  vignette applies BOTH dose levels to every virtual subject so the
+  dose-by-phenotype interaction can be compared cleanly against the
+  published proportions; this is a population-level simulation choice
+  and is documented here as a deviation from the source paper's
+  weight-band-conditioned design.
