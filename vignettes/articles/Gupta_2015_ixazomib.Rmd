@@ -129,7 +129,7 @@ multiple-myeloma cohort that the dosing comparison was anchored to.
 ```{r cohort}
 set.seed(20150326L)
 
-n_subjects <- 1000L
+n_subjects <- 100L  # virtual-cohort size kept modest so the article builds well under the ~5-min vignette budget (cf. PR #452); BSA enters only as a power covariate on V4, so the AUC-distribution illustration is unchanged in shape
 
 # BSA distribution: truncated normal centred at 1.86 m^2 (the mean BSA
 # of the bortezomib MM cohort used by Gupta 2015 to anchor the fixed-
