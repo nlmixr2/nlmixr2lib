@@ -142,8 +142,7 @@ Stochastic simulation carrying IIV on CL/F (shared across the four CYP2D6 strata
 ```{r simulate}
 sim <- rxode2::rxSolve(
   mod, events = events,
-  keep = c("group"),
-  useLinCmt = FALSE   # multi-output parent + metabolite; ODE rather than linCmt
+  keep = c("group")
 ) |>
   as.data.frame()
 
@@ -166,7 +165,7 @@ events_typical <- dplyr::bind_rows(
 )
 sim_typ <- rxode2::rxSolve(
   mod_typical, events = events_typical,
-  keep = c("group"), useLinCmt = FALSE
+  keep = c("group")
 ) |>
   as.data.frame() |>
   dplyr::mutate(tad = time - final_dose_time)

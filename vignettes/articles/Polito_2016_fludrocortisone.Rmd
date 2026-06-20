@@ -146,8 +146,7 @@ events <- dplyr::bind_rows(dose_rows, obs_rows) |>
 # explicit ODE solver so the lag time is honoured.
 sim <- rxode2::rxSolve(
   mod, events = events,
-  keep = c("SAPS_II", "treatment"),
-  useLinCmt = FALSE
+  keep = c("SAPS_II", "treatment")
 ) |>
   as.data.frame()
 
@@ -155,8 +154,7 @@ sim <- rxode2::rxSolve(
 mod_typical <- mod |> rxode2::zeroRe()
 sim_typical <- rxode2::rxSolve(
   mod_typical, events = events,
-  keep = c("SAPS_II", "treatment"),
-  useLinCmt = FALSE
+  keep = c("SAPS_II", "treatment")
 ) |>
   as.data.frame()
 ```

@@ -159,7 +159,7 @@ stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
 ```{r simulate}
 mod <- readModelDb("Zandvliet_2016_corifollitropin_alfa")
 
-# Stochastic VPC for the time-course plot. `useLinCmt = FALSE` keeps
+# Stochastic VPC for the time-course plot. `` keeps
 # rxode2 from auto-converting the ODE system to its linear-compartment
 # fast path, which silently breaks the multi-output dvid->cmt mapping
 # for models with two algebraic observables on different ODE-state
@@ -167,8 +167,7 @@ mod <- readModelDb("Zandvliet_2016_corifollitropin_alfa")
 sim_vpc <- rxode2::rxSolve(
   mod,
   events = events,
-  keep       = c("cohort", "WT", "BMI", "AGE", "RACE_ASIAN"),
-  useLinCmt  = FALSE
+  keep       = c("cohort", "WT", "BMI", "AGE", "RACE_ASIAN")
 ) |> as.data.frame()
 ```
 
@@ -185,8 +184,7 @@ events_typical <- events |>
 sim_typical <- rxode2::rxSolve(
   mod_typical,
   events    = events_typical,
-  keep      = c("cohort", "WT", "BMI", "AGE", "RACE_ASIAN"),
-  useLinCmt = FALSE
+  keep      = c("cohort", "WT", "BMI", "AGE", "RACE_ASIAN")
 ) |> as.data.frame()
 ```
 
@@ -333,8 +331,7 @@ events_wt <- bind_rows(
 sim_wt <- rxode2::rxSolve(
   rxode2::zeroRe(mod),
   events    = events_wt,
-  keep      = c("cohort", "WT"),
-  useLinCmt = FALSE
+  keep      = c("cohort", "WT")
 ) |> as.data.frame()
 
 sim_wt_nca <- sim_wt |>

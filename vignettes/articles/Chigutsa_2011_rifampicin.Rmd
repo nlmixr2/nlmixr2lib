@@ -190,7 +190,6 @@ events <- events |>
 ```{r simulate}
 mod <- readModelDb("Chigutsa_2011_rifampicin")
 
-# useLinCmt = FALSE - keep the explicit transit() + d/dt() ODE chain;
 # rxode2's default auto-conversion to linCmt would silently drop the
 # Savic transit-chain absorption (Erlang n = 19) and reduce the model
 # to first-order ka, which is the wrong dynamics for this paper.
@@ -199,7 +198,6 @@ sim <- rxode2::rxSolve(
   events = events,
   keep = c("WT", "SEXF", "SNP_SLCO1B1_RS4149032_COUNT",
            "DOSE", "dose_label", "snp_label", "treatment"),
-  useLinCmt = FALSE,
   cores = 1L
 ) |>
   as.data.frame()
@@ -256,7 +254,6 @@ mod_typical <- mod |> rxode2::zeroRe()
 sim_typical <- rxode2::rxSolve(
   mod_typical, events = typical_events,
   keep = c("WT", "SNP_SLCO1B1_RS4149032_COUNT", "DOSE", "label"),
-  useLinCmt = FALSE,
   cores = 1L
 ) |>
   as.data.frame() |>

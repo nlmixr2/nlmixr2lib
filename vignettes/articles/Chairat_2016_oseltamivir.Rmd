@@ -155,13 +155,13 @@ mod <- readModelDb("Chairat_2016_oseltamivir")
 
 # Stochastic simulation over the virtual cohort. Carry the treatment and
 # CRCL columns through via keep so they land aligned per row in the
-# rxSolve output. useLinCmt = FALSE works around rxode2's automatic
+# rxSolve output.  works around rxode2's automatic
 # ODE -> linCmt conversion, which corrupts the dvid -> cmt mapping for
 # multi-output models like this parent + metabolite system (see the
 # known-vignette-failure-patterns.md pattern #5b reference).
 sim <- rxode2::rxSolve(mod, events = events,
-                       keep = c("treatment", "CRCL"),
-                       useLinCmt = FALSE) |>
+                       keep = c("treatment", "CRCL")
+                       ) |>
   as.data.frame() |>
   dplyr::as_tibble()
 ```
@@ -187,8 +187,8 @@ typical_events <- dplyr::bind_rows(
 
 mod_typical <- mod |> rxode2::zeroRe()
 sim_typical <- rxode2::rxSolve(mod_typical, events = typical_events,
-                                keep = c("treatment", "CRCL"),
-                                useLinCmt = FALSE) |>
+                                keep = c("treatment", "CRCL")
+                                ) |>
   as.data.frame() |>
   dplyr::as_tibble()
 ```

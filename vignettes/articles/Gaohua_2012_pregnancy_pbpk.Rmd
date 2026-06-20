@@ -120,8 +120,8 @@ simulate_drug <- function(model_name, dose_amt, dose_cmt, tspan, GA_value,
     dplyr::mutate(id = subj_id, GA = GA_value)
   # Single-subject rxSolve does not return an `id` column; tag it
   # explicitly so downstream NCA grouping has a key.
-  rxode2::rxSolve(mod, events = ev, keep = c("GA"),
-                  useLinCmt = FALSE) |>
+  rxode2::rxSolve(mod, events = ev, keep = c("GA")
+                  ) |>
     as.data.frame() |>
     dplyr::mutate(id = subj_id,
                   scenario = ifelse(GA_value == 0,

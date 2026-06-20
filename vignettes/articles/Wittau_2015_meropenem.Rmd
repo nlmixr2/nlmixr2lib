@@ -116,11 +116,13 @@ make_cohort <- function(n, id_offset = 0L) {
       rate = NA_real_
     )
 
-  # Observation rows. For multi-endpoint models rxUi auto-allocates a slot
-  # for each observable (Cc, Csc, Cpf); reference each endpoint by name on
-  # its own observation rows so rxode2 can map them via dvid.
+  # Observation rows. This is a 3-endpoint model (Cc plasma, Csc subcutaneous,
+  # Cpf peritoneal fluid); address each endpoint by its dvid (1 = Cc, 2 = Csc,
+  # 3 = Cpf) rather than by the algebraic-observable name, so rxode2 maps each
+  # observation to its endpoint under the default solver. rxSolve returns the
+  # Cc/Csc/Cpf columns on every observation row regardless of dvid.
   obs_rows <- tidyr::expand_grid(id = ids, time = obs_grid,
-                                 cmt = c("Cc", "Csc", "Cpf")) |>
+                                 dvid = c(1L, 2L, 3L)) |>
     dplyr::mutate(
       amt  = NA_real_,
       evid = 0L,
@@ -142,9 +144,11 @@ stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
 
 # Simulation
 
-We use `useLinCmt = FALSE` because the model has multiple algebraic observables
-(Cc, Csc, Cpf) backed by the same ODE state, which is the multi-output pattern
-flagged in `references/known-vignette-failure-patterns.md` Section 5b.
+The model has three algebraic observables (Cc plasma, Csc subcutaneous, Cpf
+peritoneal fluid) backed by the two-compartment ODE state; observation rows are
+addressed by `dvid` endpoint id (1 = Cc, 2 = Csc, 3 = Cpf) so rxode2 maps each
+to its endpoint under the default solver (the multi-output pattern in
+`references/known-vignette-failure-patterns.md` Section 5b).
 
 ```{r simulate}
 mod <- readModelDb("Wittau_2015_meropenem")
@@ -152,8 +156,7 @@ mod <- readModelDb("Wittau_2015_meropenem")
 # Stochastic VPC simulation: keeps IIV, returns one trajectory per subject.
 sim_stoch <- rxode2::rxSolve(
   mod, events = events,
-  keep        = c("treatment", "FFM"),
-  useLinCmt   = FALSE
+  keep        = c("treatment", "FFM")
 ) |> as.data.frame()
 
 # Typical-value simulation (no IIV) for replicating Figure 1's individual fits.
@@ -162,8 +165,7 @@ events_typ <- make_cohort(1L) |>
   dplyr::mutate(FFM = ffm_mean)        # impose the cohort geometric mean exactly
 sim_typ <- rxode2::rxSolve(
   mod_typ, events = events_typ,
-  keep      = c("treatment", "FFM"),
-  useLinCmt = FALSE
+  keep      = c("treatment", "FFM")
 ) |> as.data.frame()
 ```
 

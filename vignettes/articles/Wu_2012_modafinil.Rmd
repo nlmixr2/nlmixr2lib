@@ -132,14 +132,12 @@ mod_typ <- rxode2::zeroRe(mod)
 
 sim_pop <- rxode2::rxSolve(
   mod, events,
-  keep = c("ethnicity", "sex_label"),
-  useLinCmt = FALSE
+  keep = c("ethnicity", "sex_label")
 ) |> as.data.frame()
 
 sim_typ <- rxode2::rxSolve(
   mod_typ, events,
-  keep = c("ethnicity", "sex_label"),
-  useLinCmt = FALSE
+  keep = c("ethnicity", "sex_label")
 ) |> as.data.frame()
 ```
 
