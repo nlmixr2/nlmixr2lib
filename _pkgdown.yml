@@ -26,6 +26,10 @@ navbar:
       text: Specific drug models
       menu:
       # AUTOGEN:specific_drugs:BEGIN
+      - text: "ABT 102 (Othman 2013)"
+        href: articles/Othman_2013_ABT_102.html
+      - text: "AT9283 (Duong 2017)"
+        href: articles/Duong_2017_AT9283.html
       - text: "Abacavir (Archary 2019)"
         href: articles/Archary_2019_abacavir.html
       - text: "Abacavir (Jullien 2005)"
@@ -2118,6 +2122,7 @@ articles:
   - articles/Drweesh_2026_adalimumab
   - articles/Dunlap_2025_tacrolimus
   - articles/Dunn_2025_tranexamicAcid
+  - articles/Duong_2017_AT9283
   - articles/Easterling_2018_magnesium_sulfate
   - articles/Edstein_2001_tafenoquine
   - articles/Ekhart_2008_carboplatin
