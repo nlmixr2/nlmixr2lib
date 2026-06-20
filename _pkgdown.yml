@@ -970,6 +970,8 @@ navbar:
         href: articles/Brill_2014_midazolam.html
       - text: "Midazolam (Janssen 2017)"
         href: articles/Janssen_2017_cabazitaxel_phenotyping.html
+      - text: "Midazolam (vanRongen 2015)"
+        href: articles/vanRongen_2015_midazolam.html
       - text: "Midazolam (vanRongen 2017)"
         href: articles/vanRongen_2017_midazolam.html
       - text: "Midazolam children adolescents (Cella 2012)"
@@ -2785,5 +2787,22 @@ articles:
   - articles/Zuo_2016_UDCA
   - articles/Zurlinden_2016_paracetamol
   - articles/Zvada_2010_rifapentine
+  - articles/deAlwis_1998_ondansetron
+  - articles/deHoogd_2017_morphine
+  - articles/deJonge_2005_paclitaxel
+  - articles/deKock_2017_sulfadoxinePyrimethamine
+  - articles/deVriesSchultink_2018_cardiotoxicity
+  - articles/deVriesSchultink_2020_zenocutuzumab
+  - articles/deWinter_2009_mycophenolic_acid
+  - articles/deWit_2016_everolimus
+  - articles/elDesoky_1997_theophylline_pediatric_asthma
+  - articles/vanHasselt_2015_eribulin
+  - articles/vanRongen_2015_midazolam
+  - articles/vanRongen_2016_acetaminophen
+  - articles/vanRongen_2017_midazolam
+  - articles/vanRongen_2018_metformin
+  - articles/vanRongen_2018_midazolam
+  - articles/vanWijk_2019_paracetamol
+  - articles/vanderWalt_2013_dapagliflozin
   internal: true
 # AUTOGEN:articles:END
