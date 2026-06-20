@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Muller 2008 amoxicillin ([doi:10.1111/j.1365-2125.2008.03292.x](https://doi.org/10.1111/j.1365-2125.2008.03292.x)) -- pregnant women receiving IV amoxicillin before, during and immediately after labour (ratifies new `LABOR_ACTIVE` and `LABOR_POSTPARTUM` paired binary covariate canonicals).
+* Add Jiao 2009 sirolimus ([doi:10.1111/j.1365-2125.2009.03392.x](https://doi.org/10.1111/j.1365-2125.2009.03392.x)) -- Chinese adult de novo renal transplant recipients; ratifies new `CP_CSA_NGML`, `CONMED_SILYMARIN`, and `CONMED_GLYCYRRHIZIN` covariate canonicals.
 * Add Morris 2011 telapristone ([doi:10.1208/s12248-011-9304-7](https://doi.org/10.1208/s12248-011-9304-7)) -- adult women with single-dose telapristone-acetate phase I/II PK studies; ratifies new `cdb4453` metabolite suffix, `MIX_FAST_ELIM`, and `RENALIMP_MOD` covariate canonicals.
 * Add Padoin 1998 cephalexin ([doi:10.1128/aac.42.6.1463](https://doi.org/10.1128/aac.42.6.1463)) -- preclinical male Wistar rats with a cephalexin / quinapril oral coadministration DDI (ratifies new `CONMED_QPRL_ORAL` covariate canonical).
 * Add van Rongen 2018 metformin ([doi:10.1007/s40272-018-0293-1](https://doi.org/10.1007/s40272-018-0293-1)) -- overweight and obese Caucasian adolescents.
