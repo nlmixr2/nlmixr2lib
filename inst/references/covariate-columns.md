@@ -1983,6 +1983,28 @@ All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODA
 - **Example models:** `Valitalo_2017_morphine.R` (linear morphine concentration-effect on the IRT latent pain variable; CP_MORPH_NGML supplied per event row from an upstream morphine popPK simulation, typically `Knibbe_2009_morphine.R`).
 - **Notes:** Specific scope; morphine-specific. The drug-specific naming follows the existing `CP_OXY_NGML` / `CP_FBX_NGML` / `CP_LSN_NGML` precedent established with Aksenov 2018. Distinct from the broader `CP_MGL` (mg/L PD-driver convention used in Netterberg 2017 docetaxel myelosuppression and similar) because the IRT PD models in this family use ng/mL natively. When a future morphine PD analysis uses mg/L, the conversion is `CP_MORPH_NGML = CP_MORPH_MGL * 1000`. Ratified canonically alongside the Valitalo 2017 morphine extraction (DDMODEL00000247).
 
+### CP_MVC_NGML (**canonical for instantaneous maraviroc plasma concentration as a time-varying PD driver**)
+- **Description:** Instantaneous plasma concentration of maraviroc (a CCR5 receptor antagonist) supplied directly as a time-varying covariate column rather than computed from a coupled PK model. Used in PD-only concentration-QT regression models that take maraviroc exposure as an external input to a linear concentration-effect term on the QT interval.
+- **Units:** ng/mL
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters as a linear term in the QT regression equation `QT = qt_intercept * (RR/1000)^brr + slpqt * CP_MVC_NGML` (Davis 2008). Set to 0 outside the maraviroc-exposure window (placebo periods, predose). Reference values observed: Davis 2008 Table 1 reports geometric-mean Cmax of 111 ng/mL (100 mg), 464 ng/mL (300 mg), and 1148 ng/mL (900 mg) after single oral doses in healthy adults; the full studied range was 0 to 2363 ng/mL.
+- **Source aliases:**
+  - `Cp` (Davis 2008 Methods 'Concentration-QT modelling - Base model' equation; values in ng/mL by direct assay) -- used in `Davis_2008_maraviroc.R`.
+- **Example models:** `Davis_2008_maraviroc.R` (linear concentration-QT slope `slpqt * CP_MVC_NGML` with `slpqt = 0.000970 ms/(ng/mL)`; placebo records have CP_MVC_NGML = 0).
+- **Notes:** Specific scope; maraviroc-specific. The drug-specific naming follows the established `CP_<drug>_<units>` precedent (`CP_OXY_NGML`, `CP_FBX_NGML`, `CP_LSN_NGML`, `CP_MORPH_NGML`). Davis 2008 does not develop a structural maraviroc popPK model -- the analysis uses observed concentrations from the same five-way crossover study, so downstream users simulating from `Davis_2008_maraviroc` must supply CP_MVC_NGML either from a separate maraviroc popPK source (e.g., Abel 2008 in the same supplement) or from an interpolated mean profile of Davis 2008 Figure 2. Ratified canonically on 2026-06-10 alongside the Davis 2008 maraviroc concentration-QT extraction.
+
+### RR (**canonical for ECG RR interval as a time-varying covariate**)
+- **Description:** Time-varying ECG RR interval (the elapsed time between successive R waves of the QRS complex), used as a time-varying covariate in heart-rate-aware ECG endpoint models (e.g., concentration-QT mixed-effects regressions that include a Fridericia-style `(RR/1000)^b` correction factor). RR is the inverse of instantaneous heart rate scaled by 60000: `RR (ms) = 60000 / HR (bpm)`. A typical resting adult at 60 bpm has RR = 1000 ms.
+- **Units:** ms
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- typically enters as a normalised power-form correction `(RR / 1000)^b` (so RR = 1000 ms corresponds to the model's correction-factor unity). Reference values observed: 1000 ms (60 bpm; the explicit normalising constant in the Davis 2008 QT/RR equation); typical observed RR ranges in healthy adults are 800-1200 ms.
+- **Source aliases:**
+  - `RR` (Davis 2008 Methods 'Concentration-QT modelling - Base model' equation; values in ms from the ECG recorder) -- used in `Davis_2008_maraviroc.R`.
+- **Example models:** `Davis_2008_maraviroc.R` (Fridericia-style correction factor `(RR/1000)^brr` with `brr = 0.324` driving the heart-rate adjustment of the modelled QT prediction; `qt_intercept * (RR/1000)^brr`).
+- **Notes:** General scope: RR interval has a stable, paper-independent biophysical meaning and is appropriate for any future model that needs a per-event-record cardiac-cycle length. Distinct from `HR` (heart rate in bpm) which is the inverse representation. When a model uses both representations, store the one the source paper writes into the equation and derive the other inside `model()` (`RR = 60000 / HR` or `HR = 60000 / RR`). Ratified canonically on 2026-06-10 alongside the Davis 2008 maraviroc concentration-QT extraction.
+
 ### CP_RIF_UM (**canonical for instantaneous rifampicin plasma concentration as a time-varying OATP1B-perpetrator covariate**)
 - **Description:** Instantaneous plasma concentration of rifampicin supplied directly as a time-varying covariate column rather than computed from a coupled PK model. Used as the perpetrator-drug input to a competitive OATP1B inhibition term in DDI popPK models for OATP1B substrates and endogenous OATP1B biomarkers (e.g., coproporphyrin I, rosuvastatin). Set to 0 outside the rifampicin co-administration window so the inhibition term collapses to the baseline form.
 - **Units:** umol/L (= uM; rifampicin MW = 822.94 g/mol so 1 umol/L = 0.823 mg/L = 823 ng/mL).
