@@ -1634,6 +1634,8 @@ navbar:
         href: articles/Ji_2017_vancomycin.html
       - text: "Vancomycin (Li 2018)"
         href: articles/Li_2018_vancomycin.html
+      - text: "Vancomycin (MarquesMinana 2010)"
+        href: articles/MarquesMinana_2010_vancomycin.html
       - text: "Vancomycin (Moore 2016)"
         href: articles/Moore_2016_vancomycin.html
       - text: "Vancomycin (Nielsen 2011)"
@@ -2335,6 +2337,7 @@ articles:
   - articles/Majekodunmi_2017_HIV_HCV_CD4_recovery
   - articles/Marier_2002_tobramycin_rat_conventional
   - articles/Marier_2002_tobramycin_rat_liposomal
+  - articles/MarquesMinana_2010_vancomycin
   - articles/Marquez-Megias_2023_adalimumab
   - articles/Martial_2017_micafungin
   - articles/Martinez_2019_alirocumab
