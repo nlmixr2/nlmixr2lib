@@ -7067,6 +7067,26 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Example models:** `Takahashi_2023_abatacept.R` (multiplicative `Ratio` factors on CL = 0.91 and on Vc = 1.32 vs the RA/JIA reference; values from Takahashi 2023 Supplemental Table 4).
 - **Notes:** Pairs with `STUDY_ABA2_HLA78`. At most one of the two indicators is 1 per subject; both 0 reproduces the RA/JIA reference. Scope: specific.
 
+### STUDY_06029 (**canonical for Zandvliet 2016 corifollitropin alfa trial 06029 indicator**)
+- **Description:** 1 = subject enrolled in trial 06029 (NCT01144416; "study reference 06029" in the Zandvliet 2016 integrated population PK analysis of corifollitropin alfa during controlled ovarian stimulation; phase III multiple-cycles non-inferiority trial with a single 150 ug SC dose per cycle); 0 = otherwise. Used as a multiplicative effect on the total FSH immunoreactivity prediction to account for unexplained between-trial differences in the FSH immunoreactivity assay (corifollitropin alfa concentrations themselves are unaffected).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (any non-06029 trial in the Zandvliet 2016 pool: trials 38826, 107012, 38819, or 38825).
+- **Source aliases:** derived per subject from the trial identifier (`06029` -> 1, else -> 0); recorded in the Zandvliet 2016 NONMEM dataset as a per-trial cohort indicator.
+- **Example models:** `Zandvliet_2016_corifollitropin_alfa.R` (Table 3 theta_14 = 1.26; the power-on-indicator form `e_study_06029_fshir^STUDY_06029` multiplies the FSH immunoreactivity prediction by 1.26 when the indicator is 1 and by 1 when 0).
+- **Notes:** Specific scope because the contrast is tied to the Merck / MSD corifollitropin alfa development program. Subject-level / time-fixed; set once from the trial identifier on each subject record. For general simulation use outside trial 06029, leave the indicator at 0 so the trial effect is off.
+
+### STUDY_38825 (**canonical for Zandvliet 2016 corifollitropin alfa trial 38825 indicator**)
+- **Description:** 1 = subject enrolled in trial 38825 (NCT00696878; "study reference 38825 (1st cycle)" in the Zandvliet 2016 integrated population PK analysis of corifollitropin alfa during controlled ovarian stimulation; phase III open-label uncontrolled repeated-cycle trial with up to 3 cycles of 150 ug SC corifollitropin alfa); 0 = otherwise. Used as a multiplicative effect on the total FSH immunoreactivity prediction to account for unexplained between-trial differences in the FSH immunoreactivity assay.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (any non-38825 trial in the Zandvliet 2016 pool: trials 38826, 107012, 38819, or 06029).
+- **Source aliases:** derived per subject from the trial identifier (`38825` -> 1, else -> 0); recorded in the Zandvliet 2016 NONMEM dataset as a per-trial cohort indicator.
+- **Example models:** `Zandvliet_2016_corifollitropin_alfa.R` (Table 3 theta_15 = 1.12; the power-on-indicator form `e_study_38825_fshir^STUDY_38825` multiplies the FSH immunoreactivity prediction by 1.12 when the indicator is 1 and by 1 when 0).
+- **Notes:** Specific scope because the contrast is tied to the Merck / MSD corifollitropin alfa development program. Subject-level / time-fixed; set once from the trial identifier on each subject record. Paired with `STUDY_06029` (no subject can be in both trials at once); both indicators 0 reproduces the pooled-trial typical-value FSH immunoreactivity prediction.
+
 ### STUDY_RIV201 (**canonical for Tammara 2017 rivipansel phase II SCD study indicator**)
 - **Description:** 1 = subject enrolled in the phase II rivipansel study (NCT01119833; "study 201" in the Tammara 2017 integrated population PK analysis; Telen 2015 Blood 125:2656-2664 reports the trial results); 0 = healthy adult volunteers from the three rivipansel phase I studies (studies 101, 102, and 103) pooled into the integrated dataset. Used both as an additive shift on typical clearance (interpreted by the authors as the SCD-hyperfiltration component, ~23%) and to switch the additive / proportional residual-error magnitudes between the two cohorts (Table 1).
 - **Units:** (binary)

@@ -362,6 +362,8 @@ navbar:
         href: articles/Yuan_2019_concizumab.html
       - text: "ConestatAlfa (Farrell 2013)"
         href: articles/Farrell_2013_conestatAlfa.html
+      - text: "Corifollitropin alfa (Zandvliet 2016)"
+        href: articles/Zandvliet_2016_corifollitropin_alfa.html
       - text: "Crisantaspase (Sassen 2017)"
         href: articles/Sassen_2017_crisantaspase.html
       - text: "CyaaE7 (ParraGuillen 2013)"
@@ -2784,6 +2786,7 @@ articles:
   - articles/Yu_2022_ofatumumab
   - articles/Yuan_2019_concizumab
   - articles/Yukawa_1990_phenytoin
+  - articles/Zandvliet_2016_corifollitropin_alfa
   - articles/Zecchin_2016_survival
   - articles/Zecchin_2016_tumorovarian
   - articles/Zeng_2009_acyclovir
