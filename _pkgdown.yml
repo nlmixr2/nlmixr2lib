@@ -1226,6 +1226,8 @@ navbar:
         href: articles/LeJouan_2005_quinine.html
       - text: "Quinine rat (Sheng 2016)"
         href: articles/Sheng_2016_quinine_rat.html
+      - text: "RBP 7000 (Ivaturi 2017)"
+        href: articles/Ivaturi_2017_RBP_7000.html
       - text: "RFIXFc (Diao 2014)"
         href: articles/Diao_2014_rFIXFc.html
       - text: "Radiation radiosensitizer mouse (Cardilin 2018)"
@@ -2123,6 +2125,7 @@ articles:
   - articles/Ide_2009_pravastatin
   - articles/Ide_2020_elotuzumab
   - articles/Iida_2008_nicorandil
+  - articles/Ivaturi_2017_RBP_7000
   - articles/Jackson_2022_ixekizumab
   - articles/Jacobs_2016_colistin
   - articles/Jager_2011_gemtuzumab
