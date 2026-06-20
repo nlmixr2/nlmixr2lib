@@ -146,6 +146,8 @@ navbar:
         href: articles/Colombo_2006_atazanavir.html
       - text: "Atazanavir (Dickinson 2009)"
         href: articles/Dickinson_2009_atazanavir.html
+      - text: "Atazanavir (Hong 2011)"
+        href: articles/Hong_2011_atazanavir.html
       - text: "Atazanavir (Rekic 2011)"
         href: articles/Rekic_2011_atazanavir.html
       - text: "Atazanavir ritonavir (Schipani 2013)"
@@ -2134,6 +2136,7 @@ articles:
   - articles/Honda_2005_carvedilol
   - articles/Honda_2006_mizoribine
   - articles/Hong_2006_amphotericinB_liposomal
+  - articles/Hong_2011_atazanavir
   - articles/Hong_2013_glucose_insulin
   - articles/Hong_2015_moxifloxacin
   - articles/Hong_2025_datopotamab
