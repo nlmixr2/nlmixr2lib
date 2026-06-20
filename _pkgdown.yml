@@ -482,6 +482,8 @@ navbar:
         href: articles/Keizer_2011_E7820.html
       - text: "Efalizumab (Stein 2018)"
         href: articles/Stein_2018_mAb_nonlinear_PK.html
+      - text: "Efavirenz (Bienczak 2016)"
+        href: articles/Bienczak_2016_efavirenz.html
       - text: "Efavirenz (Dhoro 2015)"
         href: articles/Dhoro_2015_efavirenz.html
       - text: "Efavirenz (Hirt 2009)"
@@ -1956,6 +1958,7 @@ articles:
   - articles/Bergmann_2014_tacrolimus
   - articles/Bertrand_2011_S33138
   - articles/Bi_2017_peginterferon_alfa_2a
+  - articles/Bienczak_2016_efavirenz
   - articles/Bienczak_2016_nevirapine
   - articles/Bienczak_2025_ligelizumab
   - articles/Bijleveld_2017_gentamicin
