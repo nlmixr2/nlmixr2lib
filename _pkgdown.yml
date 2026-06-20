@@ -466,6 +466,8 @@ navbar:
         href: articles/Kunarajah_2017_doxorubicin.html
       - text: "Doxycycline (Hopkins 2017)"
         href: articles/Hopkins_2017_doxycycline.html
+      - text: "Droperidol (Foo 2016)"
+        href: articles/Foo_2016_droperidol.html
       - text: "Dupilumab (Kovalenko 2016)"
         href: articles/Kovalenko_2016_dupilumab.html
       - text: "Dupilumab (Kovalenko 2020)"
@@ -2129,7 +2131,7 @@ articles:
   - articles/FiedlerKelly_2020_fremanezumab_cm
   - articles/FiedlerKelly_2020_fremanezumab_em
   - articles/Flint_2017_s_ketamine
-  - articles/Foissac_2011_atazanavir
+  - articles/Foo_2016_droperidol
   - articles/Franken_2015_morphine
   - articles/Franken_2017_haloperidol
   - articles/Frey_2010_tocilizumab
