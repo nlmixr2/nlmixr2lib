@@ -2,8 +2,8 @@
 
 # development version
 
-* Add Hamren 2008 tesaglitazar ([doi:10.1111/j.1365-2125.2008.03110.x](https://doi.org/10.1111/j.1365-2125.2008.03110.x)) -- adults with varying degrees of renal function (mechanistic parent + acyl-glucuronide popPK with biliary interconversion; ratifies new `FU` covariate canonical, broadens `CRCL` to cover tracer-measured GFR including iohexol/inulin/DTPA/EDTA, registers new `kbm` and `kicv` paper-mechanistic parameter canonicals).
-* Add Morris 2011 telapristone ([doi:10.1208/s12248-011-9304-7](https://doi.org/10.1208/s12248-011-9304-7)) -- adult women with single-dose telapristone-acetate phase I/II PK studies; ratifies new `cdb4453` metabolite suffix, `MIX_FAST_ELIM`, and `RENALIMP_MOD` covariate canonicals.
+* Add Tornoe 2006 triptorelin and degarelix HPG-axis PK/PD ([doi:10.1111/j.1365-2125.2006.02820.x](https://doi.org/10.1111/j.1365-2125.2006.02820.x)) -- healthy adult males (single 3.75 mg s.c. triptorelin) and prostate-cancer patients (repeated 120-320 mg s.c. degarelix).
+* Add Berges 2007 enoxaparin ([doi:10.1111/j.1365-2125.2007.02920.x](https://doi.org/10.1111/j.1365-2125.2007.02920.x)) -- elderly inpatients (>75 years) on prophylactic subcutaneous enoxaparin 4000 IU once daily for VTE prophylaxis (PROPHRE.75 study).
 * Add Padoin 1998 cephalexin ([doi:10.1128/aac.42.6.1463](https://doi.org/10.1128/aac.42.6.1463)) -- preclinical male Wistar rats with a cephalexin / quinapril oral coadministration DDI (ratifies new `CONMED_QPRL_ORAL` covariate canonical).
 * Add van Rongen 2018 metformin ([doi:10.1007/s40272-018-0293-1](https://doi.org/10.1007/s40272-018-0293-1)) -- overweight and obese Caucasian adolescents.
 * Add Tarning 2012 artemether and dihydroartemisinin ([doi:10.1186/1475-2875-11-293](https://doi.org/10.1186/1475-2875-11-293)) -- pregnant women with uncomplicated Plasmodium falciparum malaria in Uganda (joint parent + DHA popPK with zero-order dissolution and 6-compartment transit absorption).
