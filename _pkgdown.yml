@@ -382,6 +382,8 @@ navbar:
         href: articles/Zandvliet_2016_corifollitropin_alfa.html
       - text: "Crisantaspase (Sassen 2017)"
         href: articles/Sassen_2017_crisantaspase.html
+      - text: "Crizotinib mouse (Yamazaki 2008)"
+        href: articles/Yamazaki_2008_crizotinib_mouse.html
       - text: "CyaaE7 (ParraGuillen 2013)"
         href: articles/ParraGuillen_2013_tumor_immunotherapy.html
       - text: "Cyclophosphamide mouse (Campagne 2019)"
@@ -2865,6 +2867,7 @@ articles:
   - articles/Yadav_2017_imipenem_aminoglycoside_pseudomonas
   - articles/Yadav_2017_imipenem_tobramycin
   - articles/Yamada_2025_zolbetuximab
+  - articles/Yamazaki_2008_crizotinib_mouse
   - articles/Yang_2010_rosuvastatin_mbma
   - articles/Yang_2016_dilmapimod
   - articles/Yang_2017_remifentanil
