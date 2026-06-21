@@ -620,6 +620,8 @@ navbar:
         href: articles/Ng_2018_exendin939.html
       - text: "FXa inhibitors mbma (Yoshioka 2018)"
         href: articles/Yoshioka_2018_FXa_inhibitors_mbma.html
+      - text: "FactorIX (Brekkan 2016)"
+        href: articles/Brekkan_2016_factorIX.html
       - text: "Factorix (Koopman 2023)"
         href: articles/Koopman_2023_factorix.html
       - text: "Factorviii (Nestorov 2014)"
@@ -2083,6 +2085,7 @@ articles:
   - articles/Bouazza_2012_clindamycin
   - articles/Boucher_2018_naproxen_mbma
   - articles/Brain_2008_ifosfamide
+  - articles/Brekkan_2016_factorIX
   - articles/Brill_2014_midazolam
   - articles/Brillac_2025_isatuximab
   - articles/Brooks_2021_tacrolimus
