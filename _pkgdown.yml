@@ -1168,6 +1168,8 @@ navbar:
         href: articles/Lowe_2009_omalizumab.html
       - text: "Ombitasvir (Mensing 2017)"
         href: articles/Mensing_2017_3D_HCV_regimen.html
+      - text: "Omeprazole (Solana 2014)"
+        href: articles/Solana_2014_omeprazole.html
       - text: "Omeprazole (Zhao 2018)"
         href: articles/Zhao_2018_omeprazole.html
       - text: "Ondansetron (deAlwis 1998)"
@@ -2717,6 +2719,7 @@ articles:
   - articles/Smythe_2012_rifampicin
   - articles/Smythe_2013_gatifloxacin
   - articles/Soehoel_2022_tralokinumab
+  - articles/Solana_2014_omeprazole
   - articles/Soto_2014_ampicillin_sulbactam
   - articles/Soy_2015_benznidazole
   - articles/Staatz_2005_gentamicin_vancomycin
