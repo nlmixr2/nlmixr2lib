@@ -262,6 +262,8 @@ navbar:
         href: articles/Chakraborty_2012_canakinumab.html
       - text: "Canrenone (Suyagh 2012)"
         href: articles/Suyagh_2012_canrenone.html
+      - text: "Capecitabine (Blesch 2003)"
+        href: articles/Blesch_2003_capecitabine.html
       - text: "Capecitabine (Urien 2005)"
         href: articles/Urien_2005_capecitabine.html
       - text: "Carboplatin (Ekhart 2008)"
@@ -2073,6 +2075,7 @@ articles:
   - articles/Bizzotto_2016_glucose
   - articles/Bjornsson_2011_naproxcinod
   - articles/Blair_2004_raltitrexed
+  - articles/Blesch_2003_capecitabine
   - articles/Boer-Perez_2026_piperacillin
   - articles/Boer_2015_cisplatin
   - articles/Bogason_2011_daunorubicin

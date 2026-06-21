@@ -2216,7 +2216,13 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Type:** metabolite-suffix
 - **Role:** 5-fluorouracil (5-FU), formed from 5'-DFUR by thymidine phosphorylase preferentially in tumour tissue.
 - **Source aliases:** none.
-- **Example models:** `Urien_2005_capecitabine.R`.
+- **Example models:** `Urien_2005_capecitabine.R`, `Blesch_2003_capecitabine.R`.
+
+### fbal (**canonical alpha-fluoro-beta-alanine capecitabine catabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** alpha-fluoro-beta-alanine (FBAL), the terminal renally-excreted catabolite of 5-FU produced by the dihydropyrimidine-dehydrogenase / dihydropyrimidinase / beta-ureidopropionase cascade. Plasma FBAL is the most abundant capecitabine-derived species and tracks systemic catabolic capacity; its renal clearance is a function of creatinine clearance.
+- **Source aliases:** none.
+- **Example models:** `Blesch_2003_capecitabine.R`.
 
 ### asn1 (**canonical AS(N-1)3' siRNA truncated antisense suffix**)
 - **Type:** metabolite-suffix
