@@ -521,6 +521,21 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
 - **Source aliases:** none.
 - **Example models:** widespread sigmoid-Emax PD extractions.
 
+### lreg_qm (**canonical log-transformed once-monthly regimen EC50 multiplier**)
+- **Type:** paper-named-param
+- **Role:** Log-transformed multiplicative modifier applied to EC50 when a static Emax-on-AUC exposure-response model parameterised on an integrated-window AUC predictor (rather than an instantaneous concentration) needs to distinguish between dosing regimens whose AUCs encode different time-course profiles. Paired with the binary covariate `REGI_QM`: applied as `ec50_eff = ec50 * reg_qm^REGI_QM`, i.e., `ec50_eff = ec50` for Q2W (REGI_QM = 0) and `ec50_eff = ec50 * exp(lreg_qm)` for QM (REGI_QM = 1). Captures the "lack of kinetics" gap in static Emax-on-AUC models where two regimens that produce similar window-AUC values can still produce different effects because of differences in target-saturation time courses. Inside `model()` the bare name is `reg_qm`.
+- **Source aliases:**
+  - `REG` -- Kuchimanchi 2018 notation for the linear-scale multiplier (paper estimate 2.30, RSE 10.3%); the linear-scale form maps to `exp(lreg_qm)`.
+- **Example models:** `Kuchimanchi_2018_evolocumab_ldlc.R` (founding example; evolocumab exposure-response Emax on LDL-C with `reg_qm = 2.30` distinguishing 420 mg SC QM from 140 mg SC Q2W regimens).
+- **Notes:** Paired with the canonical covariate `REGI_QM`. Use only in static Emax-on-AUC exposure-response models that explicitly need a regimen-specific EC50; dynamic ODE-based PD models that resolve the concentration time course naturally do not need this parameter. Distinct from `lec50` (the half-maximal-effect concentration itself, with which `lreg_qm` is multiplicatively composed).
+
+### reg_qm (**canonical bare once-monthly regimen EC50 multiplier**)
+- **Type:** paper-named-param
+- **Role:** Bare counterpart of `lreg_qm`; the linear-scale multiplicative modifier on EC50 for once-monthly dosing regimens in static Emax-on-AUC exposure-response models. Applied as `ec50_eff = ec50 * reg_qm^REGI_QM` so that `reg_qm` acts as the EC50 multiplier when `REGI_QM = 1` and the EC50 is unchanged when `REGI_QM = 0`.
+- **Source aliases:**
+  - `REG` -- Kuchimanchi 2018 notation.
+- **Example models:** `Kuchimanchi_2018_evolocumab_ldlc.R`.
+
 ### le0 (**canonical log-transformed PD baseline parameter**)
 - **Type:** paper-named-param
 - **Role:** Log-transformed baseline (drug-free) value of a PD response, e.g., baseline T4/T1 twitch ratio in neuromuscular blockade PK-PD models (`E0 = exp(le0)`). Distinct from `lrbase`, which is the log-transformed steady-state baseline for indirect-response / turnover models with explicit `kin` / `kout`. Use `le0` when the source paper reports a non-turnover PD baseline (a typical T4/T1 ratio, a typical pre-treatment biomarker level) that enters the sigmoid Emax expression as an additive baseline plus the maximum-effect-bounded modulation. Inside `model()` the bare name is `e0`.
