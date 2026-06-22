@@ -958,6 +958,10 @@ navbar:
         href: articles/Peng_2014_MK3577.html
       - text: "MRNA3927 (Attarwala 2023)"
         href: articles/Attarwala_2023_mRNA3927.html
+      - text: "Mab mpbpk human (Muliaditan 2025)"
+        href: articles/Muliaditan_2025_mab_mpbpk.html
+      - text: "Mab mpbpk nhp (Muliaditan 2025)"
+        href: articles/Muliaditan_2025_mab_mpbpk.html
       - text: "Magnesium sulfate (Easterling 2018)"
         href: articles/Easterling_2018_magnesium_sulfate.html
       - text: "MagnesiumSulfate (Salinger 2013)"
@@ -2543,6 +2547,7 @@ articles:
   - articles/Mould_2007_alemtuzumab
   - articles/Mukai_2019_mogamulizumab
   - articles/Mukonzo_2009_efavirenz
+  - articles/Muliaditan_2025_mab_mpbpk
   - articles/Muller_2008_amoxicillin
   - articles/Muller_2010_clindamycin
   - articles/Mulyukov_2018_ranibizumab
