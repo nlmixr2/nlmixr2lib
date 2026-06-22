@@ -1394,6 +1394,8 @@ navbar:
         href: articles/Dodds_2005_rfxiii_cyno.html
       - text: "Ribavirin (Mensing 2017)"
         href: articles/Mensing_2017_3D_HCV_regimen.html
+      - text: "Ribavirin (Mulder 2025)"
+        href: articles/Mulder_2025_ribavirin.html
       - text: "Rifabutin (Hennig 2015)"
         href: articles/Hennig_2015_rifabutin.html
       - text: "Rifampicin (Barnett 2018)"
@@ -2543,6 +2545,7 @@ articles:
   - articles/Mould_2007_alemtuzumab
   - articles/Mukai_2019_mogamulizumab
   - articles/Mukonzo_2009_efavirenz
+  - articles/Mulder_2025_ribavirin
   - articles/Muller_2008_amoxicillin
   - articles/Muller_2010_clindamycin
   - articles/Mulyukov_2018_ranibizumab
