@@ -857,6 +857,12 @@ These are internationally standardised clinical abbreviations registered as cano
 - **Source aliases:** `QTcB` (Bazett), `QTcF` (Fridericia), `QTcI` (individual correction) — translate to `QTc` and record the correction in the model file's description / vignette.
 - **Example models:** `Shin_2006_quinidine_QT.R` (Bazett-corrected QT interval; founding example).
 
+### serumK (**canonical serum potassium**)
+- **Type:** compartment
+- **Role:** Serum potassium concentration PD output / turnover-state, in mmol/L. Used as the observation variable in indirect-response / turnover models of drug-induced potassium shifts (mineralocorticoid-receptor antagonists, potassium-sparing diuretics, RAAS inhibitors). Standard clinical-laboratory biomarker reported on essentially every comprehensive metabolic panel; KDIGO and ESC thresholds for hyperkalemia are at 5.5 and 6.0 mmol/L. Distinct from any drug-PK central compartment because the modelled species is the endogenous electrolyte rather than the dosed drug.
+- **Source aliases:** `K`, `K+`, `serum_K`, `POTAS` -- translate to `serumK` when assembling input data; document the source-paper symbol in the model file's `description`.
+- **Example models:** `Goulooze_2022_finerenone.R` (FIDELIO-DKD Phase III PKPD turnover model for finerenone effect on serum K; founding example).
+
 ---
 
 ## Bacterial-count PD outputs
