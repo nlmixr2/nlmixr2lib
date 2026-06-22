@@ -1309,26 +1309,29 @@ entries should default to all caps.
   semantics. The full-word canonical name was chosen over the bare `UF`
   source-data abbreviation for clarity in source traces.
 
-### CRCL (**canonical for creatinine-based renal function, BSA-normalized**)
+### CRCL (**canonical for BSA-normalized renal function (creatinine-based estimate OR tracer-measured GFR)**)
 
-- **Description:** Creatinine-based renal function expressed in
-  mL/min/1.73 m^2. Accepts either an MDRD-/CKD-EPI-estimated glomerular
-  filtration rate or a measured creatinine clearance that has been
-  BSA-normalized as `1.73 x CrCl / BSA`. The per-model
-  `covariateData[[CRCL]]$description` and `notes` must state which
-  method the source paper used.
+- **Description:** BSA-normalized renal function expressed in
+  mL/min/1.73 m^2. Accepts either (a) a creatinine-based estimate –
+  MDRD- or CKD-EPI-estimated glomerular filtration rate, or a measured
+  creatinine clearance that has been BSA-normalized as
+  `1.73 x CrCl / BSA` – or (b) a tracer-measured glomerular filtration
+  rate using an exogenous filtration marker (iohexol clearance, inulin
+  clearance, 99mTc-DTPA clearance, 51Cr-EDTA clearance), which is the
+  clinical gold standard for measured GFR. All variants enter popPK
+  models with the same operational role (a covariate on clearance) and
+  the same units; the per-model `covariateData[[CRCL]]$description` and
+  `notes` must state which assay the source paper used.
 - **Units:** mL/min/1.73 m^2
 - **Type:** continuous
 - **Scope:** general
 - **Reference category:** n/a – used with power scaling
-  `(CRCL / ref)^exponent`. Reference values observed: 80 mL/min/1.73 m^2
-  (Cirincione 2017, MDRD eGFR), 90 mL/min/1.73 m^2 (Li 2019, calculated
-  GFR), 100 mL/min/1.73 m^2 (Xu 2019, measured-CrCl BSA-normalized).
-- **Reference category:** n/a – used with power scaling
-  `(CRCL / ref)^exponent`. Reference values observed: 80 mL/min/1.73 m^2
-  (Cirincione 2017, MDRD eGFR), 100 mL/min/1.73 m^2 (Xu 2019,
-  measured-CrCl BSA-normalized), 90 mL/min/1.73 m^2 (Bajaj 2017, CKD-EPI
-  eGFR).
+  `(CRCL / ref)^exponent` or with linear centering
+  `(1 + slope * (CRCL - ref))`. Reference values observed: 76
+  mL/min/1.73 m^2 (Hamren 2008, iohexol-clearance-measured GFR), 80
+  mL/min/1.73 m^2 (Cirincione 2017, MDRD eGFR), 90 mL/min/1.73 m^2 (Li
+  2019, calculated GFR; Bajaj 2017, CKD-EPI eGFR), 100 mL/min/1.73 m^2
+  (Xu 2019, measured-CrCl BSA-normalized).
 - **Source aliases:**
   - `eGFR` – MDRD-estimated glomerular filtration rate; used in
     `Cirincione_2017_exenatide.R` and `Kotani_2022_astegolimab.R`.
@@ -1346,6 +1349,20 @@ entries should default to all caps.
     `CLCR = K * length / SCr` with K in {0.33, 0.45, 0.55},
     BSA-normalized to mL/min/1.73 m^2). Document the assay form per
     model in `covariateData[[CRCL]]$description`.
+  - `CLiohexol` – plasma iohexol clearance, the clinical gold-standard
+    tracer-measured glomerular filtration rate; used in
+    `Hamren_2008_tesaglitazar.R` (tesaglitazar / acyl glucuronide
+    interconversion popPK in subjects with varying renal function).
+    Iohexol is an exogenous contrast agent cleared exclusively by
+    glomerular filtration (no tubular secretion or reabsorption); its
+    clearance is a direct measurement of GFR.
+  - `CLinulin` – plasma inulin clearance, the historical gold standard
+    for measured GFR; analogous to iohexol clearance but requires
+    constant intravenous infusion of inulin.
+  - `CL_DTPA` – plasma 99mTc-DTPA clearance, a radiolabelled tracer of
+    glomerular filtration commonly used in clinical practice.
+  - `CL_EDTA` – plasma 51Cr-EDTA clearance, another radiolabelled
+    glomerular-filtration tracer.
 - **Example models:** `Cirincione_2017_exenatide.R` (MDRD eGFR),
   `Xu_2019_sarilumab.R` (measured CrCl BSA-normalized),
   `Kotani_2022_astegolimab.R` (MDRD eGFR), `Li_2019_abatacept.R` (cGFR),
@@ -1361,12 +1378,27 @@ entries should default to all caps.
   linear effect 0.06 L/h per (CRCL/75) on CL in infants 1-24 months),
   `Georges_2009_ceftazidime.R` (raw MDRD-eGFR mL/min, NOT
   BSA-normalized; mean 121 mL/min; additive linear effect 0.024 L/h per
-  mL/min on CL, no centering).
-- **Notes:** The two estimation methods (MDRD/CKD-EPI vs measured CrCl)
-  produce values in the same units and are operationally interchangeable
-  as a covariate on clearance. Document the method explicitly in each
-  model’s `covariateData[[CRCL]]$description` so future reviewers can
-  trace the source assay.
+  mL/min on CL, no centering), `Hamren_2008_tesaglitazar.R`
+  (iohexol-clearance-measured GFR; reference 76 mL/min/1.73 m^2; linear
+  centered slope 0.99 %/(mL/min/1.73 m^2) on renal clearance of parent
+  tesaglitazar AND simple linear normalised scaling `(CRCL / 76)` on the
+  saturable Michaelis-Menten Vmax of acyl-glucuronide renal elimination;
+  founding tracer-GFR example).
+- **Notes:** All estimation methods (creatinine-based MDRD / CKD-EPI /
+  measured CrCl, and tracer-based iohexol / inulin / DTPA / EDTA
+  clearance) produce values in the same units and are operationally
+  interchangeable as a covariate on clearance. Document the method
+  explicitly in each model’s `covariateData[[CRCL]]$description` so
+  future reviewers can trace the source assay; the assay choice affects
+  accuracy of the absolute GFR value but does not change the covariate’s
+  role as a linear / power scalar on renal clearance. Tracer-measured
+  GFR is the clinical gold standard (unaffected by muscle mass,
+  malnutrition, and tubular-secretion confounders that perturb
+  creatinine-based estimates) but is rarely available outside research
+  and renal-impairment-cohort studies; creatinine-based estimates
+  dominate routine clinical popPK datasets. Tracer-measured-GFR scope
+  codified on 2026-06-17 alongside the Hamren 2008 tesaglitazar
+  extraction (per operator decision in sidecar request 001).
 
 ### CREAT (**canonical for serum creatinine**)
 
@@ -1723,6 +1755,47 @@ release cycle.
   positive) and notes there is no clear mechanistic explanation; the
   joint effect may reflect serum-volume modifications. `TPRO` ratified
   canonically on 2026-04-28 alongside the Frey 2010 extraction.
+
+### FU (**canonical for per-subject measured fraction unbound of parent drug in plasma**)
+
+- **Description:** Individual subject’s measured fraction unbound of the
+  parent drug in plasma, typically determined by ultrafiltration of a
+  per-subject ex-vivo plasma sample (occasionally by equilibrium
+  dialysis). Per-subject value; the source paper documents whether the
+  measurement was at baseline, at steady state, or time-averaged.
+  Distinct from binding-protein concentrations (`ALB` / `AAG` / `TPRO`),
+  which would derive fu indirectly through a binding equation – `FU` is
+  the direct measurement.
+- **Units:** % (percent; e.g., 0.1 = 0.1% fraction unbound = 0.001
+  expressed as a fraction). The per-model `covariateData[[FU]]$units`
+  field documents whether the value is a percent or a unitless fraction;
+  effect-coefficient magnitudes are meaningless without the unit.
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a – used with linear centering
+  `(1 + slope * (FU - ref))` or with power scaling
+  `(FU / ref)^exponent`. Reference values observed: 0.1% (Hamren 2008
+  tesaglitazar cohort median imputed for three subjects with missing fu
+  measurements; range 0.06-0.2%).
+- **Source aliases:**
+  - `f_u` – Hamren 2008 paper notation (italicised `fu`).
+  - `FRAC_UNBOUND` – common NONMEM column-name form when the value is
+    reported as a unitless fraction.
+- **Example models:** `Hamren_2008_tesaglitazar.R` (%, reference 0.1%;
+  linear centered effect 555 %/unit fu on the parent metabolic clearance
+  CLmt – per-subject fu measurements at day 42 by ultrafiltration drive
+  the realised CLmt range from approximately 1.5 to 3.0 L/h across the
+  cohort fu range 0.06-0.2%; founding example).
+- **Notes:** Rare in popPK literature – only papers that bother to do
+  per-subject ultrafiltration measurements report this covariate. Most
+  popPK papers either (a) assume a fixed population-typical fu (in which
+  case use the parameter-side `fu` paper-named parameter, not this
+  covariate) or (b) parameterise the effect through measured
+  binding-protein concentrations (`ALB`, `AAG`, `TPRO`). Use `FU` only
+  when the source paper provides individual measured unbound fractions
+  and uses them as a covariate. Ratified canonically on 2026-06-17
+  alongside the Hamren 2008 tesaglitazar extraction (per operator
+  decision in sidecar request 001).
 
 ### CSF_TPRO (**canonical for cerebrospinal-fluid total protein**)
 
