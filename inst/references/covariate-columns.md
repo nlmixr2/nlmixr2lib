@@ -6401,12 +6401,13 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Description:** Randomized dose cohort expressed in mg/kg. Subject-level (time-fixed) covariate carrying the per-subject cohort dose in a study where each subject remained on a single escalating-cohort dose for the full dosing period.
 - **Units:** mg/kg
 - **Type:** continuous
-- **Scope:** specific
-- **Reference category:** n/a -- used with power scaling `(COHDOSE / ref)^exponent`. Reference value observed: 1 mg/kg in Narwal 2013.
+- **Scope:** general
+- **Reference category:** n/a -- used with power scaling `(COHDOSE / ref)^exponent`. Reference values observed: 1 mg/kg in Narwal 2013 (human IgG1), 3 mg/kg in Niloy 2026 (preclinical mouse small molecule).
 - **Source aliases:**
   - `DOSE` -- used in `Narwal_2013_sifalimumab.R` (the paper's Eq. 3 variable name; renamed to `COHDOSE` here to avoid colliding with the rxode2/nlmixr2 event-column convention where `DOSE` or `AMT` carries the administered dose).
-- **Example models:** `Narwal_2013_sifalimumab.R` (reference 1 mg/kg, exponent 0.0542 on CL).
-- **Notes:** Scope: specific because the interpretation depends on a study design where each subject stays on a single dose cohort. For fixed-dose simulations, set `COHDOSE = nominal_dose_mg / WT` per subject. When the subject receives a weight-based dose, `COHDOSE` is the mg/kg label (0.3, 1, 3, or 10 mg/kg for the MI-CP152 cohorts).
+  - `Dose_i` -- used in `Niloy_2026_MTMSATrp_mouse.R` (Niloy 2026 Methods Eq. 2 notation; the per-mouse mg/kg cohort dose).
+- **Example models:** `Narwal_2013_sifalimumab.R` (reference 1 mg/kg, exponent 0.0542 on CL), `Niloy_2026_MTMSATrp_mouse.R` (preclinical mouse; reference 3 mg/kg, exponent -0.30 on CL describing empirical dose-dependent CL over 0.3-10 mg/kg).
+- **Notes:** Scope promoted from specific to general on 2026-06-22 with the Niloy 2026 MTMSA-Trp extraction (second model ratifying the canonical, this time as a preclinical mouse small-molecule dose-cohort covariate with a negative exponent on CL describing decreasing apparent clearance with increasing dose -- complementing Narwal 2013's positive exponent in a Phase Ib human mAb context). The shared functional form `(COHDOSE / ref)^exponent` on apparent clearance and the shared escalating-cohort design (each subject on one dose for the full study) carry across drug class, species, and study size. For fixed-dose simulations in a weight-based-dosing paper, set `COHDOSE = nominal_dose_mg / WT` per subject. When the subject receives a per-kg dose label directly (preclinical mg/kg dosing or human mg/kg cohort labels like the MI-CP152 0.3 / 1 / 3 / 10 mg/kg arms), `COHDOSE` is the mg/kg label.
 
 ### DOSE (**canonical for current administered dose level supplied as a data column**)
 - **Description:** Continuous covariate carrying the administered dose level (in mg) as a per-record data column. Two complementary use cases share this canonical:

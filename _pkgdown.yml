@@ -958,6 +958,8 @@ navbar:
         href: articles/Peng_2014_MK3577.html
       - text: "MRNA3927 (Attarwala 2023)"
         href: articles/Attarwala_2023_mRNA3927.html
+      - text: "MTMSATrp mouse (Niloy 2026)"
+        href: articles/Niloy_2026_MTMSATrp_mouse.html
       - text: "Magnesium sulfate (Easterling 2018)"
         href: articles/Easterling_2018_magnesium_sulfate.html
       - text: "MagnesiumSulfate (Salinger 2013)"
@@ -2573,6 +2575,7 @@ articles:
   - articles/Niebecker_2015_edoxaban
   - articles/Nielsen_2011_antibacterial_efficacy
   - articles/Nikanjam_2019_siltuximab
+  - articles/Niloy_2026_MTMSATrp_mouse
   - articles/Novakovic_2017_cladribine
   - articles/ObrinkHansen_2015_piperacillin
   - articles/Odongo_2015_sulfadoxinePyrimethamine
