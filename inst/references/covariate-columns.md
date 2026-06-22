@@ -491,6 +491,7 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
   - `eGFR` -- MDRD-estimated glomerular filtration rate; used in `Cirincione_2017_exenatide.R` and `Kotani_2022_astegolimab.R`. `Bajaj_2017_nivolumab.R` uses the CKD-EPI variant.
   - `EGFR` -- all-caps variant.
   - `CRCL_BSA` -- BSA-normalized creatinine clearance (measured CrCl / BSA x 1.73); used in `Xu_2019_sarilumab.R`.
+  - `1.73*CrCl/BSA` -- the formula form appearing in Xu 2019 Eq. for Vm.
   - `cGFR` -- calculated/estimated GFR, BSA-normalized; used in `Li_2019_abatacept.R`.
   - `CLCR` -- source-paper column name; underlying assay form varies. Used in `Delattre_2010_amikacin.R` (raw Cockcroft-Gault, NOT BSA-normalized; median 55.5 mL/min in critically ill septic adults) and in `MedellinGaribay_2015_gentamicin.R` (Schwartz formula `CLCR = K * length / SCr` with K in {0.33, 0.45, 0.55}, BSA-normalized to mL/min/1.73 m^2). Document the assay form per model in `covariateData[[CRCL]]$description`.
   - `CLiohexol` -- plasma iohexol clearance, the clinical gold-standard tracer-measured glomerular filtration rate; used in `Hamren_2008_tesaglitazar.R` (tesaglitazar / acyl glucuronide interconversion popPK in subjects with varying renal function). Iohexol is an exogenous contrast agent cleared exclusively by glomerular filtration (no tubular secretion or reabsorption); its clearance is a direct measurement of GFR.
