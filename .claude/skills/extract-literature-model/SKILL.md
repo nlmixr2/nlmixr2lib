@@ -199,7 +199,14 @@ Follow `references/compartment-names.md` and `references/parameter-names.md` str
 - Do NOT pick a "seems obvious" extension silently (e.g., choosing `kel_distinct_<suffix>` when nothing in the registry uses that pattern, or registering `compartment_NN` numbered names instead of role-based names). Even when the new name looks like a natural extension of an existing one, file the sidecar so the operator can decide whether it's actually a new canonical or a synonym of something that already exists.
 - After the operator approves, the new entry is committed alongside the model file in the same PR (same convention as `covariate-columns.md`). Append the new name to the appropriate H2 section in the reference file with a one-paragraph description and a `Founding example: <Author_Year_drug.R>` citation. Do not add a change-log or history section — `git log` is the record.
 
-Covariate columns come from `inst/references/covariate-columns.md`. Before writing any covariate into the file:
+Covariate columns come from `inst/references/covariate-columns.md` (~1.1 MB ≈ 284k tokens — **do NOT `Read` it whole; one whole-file read can exhaust the task's token budget**). To check a canonical name, run the lookup tool, which returns only the matching register entries (a few KB):
+
+```bash
+Rscript --vanilla .claude/skills/extract-literature-model/scripts/lookup-canonical.R WT covariate
+# kinds: covariate | parameter | compartment   (parameter/compartment search their references/*.md)
+```
+
+It prints the matching entry, or a "this is a NEW canonical → stop-and-ask" hint when there is no match. Use it for parameter and compartment names too instead of reading those reference files in full. Before writing any covariate into the file:
 
 - If the canonical name exists, use it and record the source column name in `covariateData[[name]]$source_name`.
 - If the source name is an alias of an existing canonical name (e.g., source uses `SEXM`, canonical is `SEXF`), use the canonical name, note the required value transformation (`SEXF = 1 - SEXM`), and **ask the user to confirm the effect-coefficient sign and reference-category implications** before committing.
@@ -293,7 +300,11 @@ For papers that describe endogenous turnover, steady-state-balance, or mechanist
    HTML="vignettes/articles/${STEM}.html"
    BYTES=$(stat -c%s "$HTML" 2>/dev/null || echo MISSING)
    echo "RENDER_GATE stem=$STEM exit=$RC html_bytes=$BYTES"
+   Rscript --vanilla .claude/skills/extract-literature-model/scripts/filter-r-log.R "$LOG" > "${LOG%.log}.filt.log" 2>/dev/null
+   echo "RENDER_GATE_FILTERED=${LOG%.log}.filt.log"
    ```
+
+   **Read the filtered log (`${LOG%.log}.filt.log`), not the raw `$LOG`.** It compacts the render log to its errors/warnings/traceback (the raw log is often hundreds–thousands of lines that get re-read every turn of the fix loop). Open the raw `$LOG` only if the filtered view is insufficient.
 
    Interpret the printed `RENDER_GATE` line:
 
@@ -333,7 +344,14 @@ For papers that describe endogenous turnover, steady-state-balance, or mechanist
 
    See `references/verification-checklist.md` for the full ASCII substitution table when anything matches.
 
-6. Run `devtools::check()`. Vignettes must build cleanly.
+6. Run `devtools::check()`. Vignettes must build cleanly. Capture the output and read the **filtered** view — a full check log is ~1,000–5,000 lines and gets re-read every turn:
+
+   ```bash
+   Rscript --vanilla -e 'devtools::check(args = "--no-build-vignettes", error_on = "never")' 2>&1 | tee /tmp/check.log
+   Rscript --vanilla .claude/skills/extract-literature-model/scripts/filter-r-log.R /tmp/check.log
+   ```
+
+   Read the filtered errors/warnings/NOTEs; open `/tmp/check.log` only if the summary is insufficient.
 
    A C-level segfault (`*** caught segfault ***`) during `check()` or vignette rendering is a red flag — it indicates a broken R / rxode2 / nlmixr2 install in the environment, not a model-file problem. Stop, sidecar-ask the operator to investigate and fix the environment, and do not work around it with `--no-build-vignettes` or similar flags.
 7. Add a short, single-line `NEWS.md` entry under the current development
