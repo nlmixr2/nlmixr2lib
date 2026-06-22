@@ -574,6 +574,8 @@ navbar:
         href: articles/Oualha_2014_epinephrine.html
       - text: "Eplontersen (Diep 2022)"
         href: articles/Diep_2022_eplontersen.html
+      - text: "EpoetinAlfa (PerezRuixo 2008)"
+        href: articles/PerezRuixo_2008_epoetinAlfa.html
       - text: "EpoetinBeta (Hayashi 1998)"
         href: articles/Hayashi_1998_epoetinBeta.html
       - text: "Eribulin (Kawamura 2018)"
@@ -2614,6 +2616,7 @@ articles:
   - articles/Perez-Guille_2018_dexmedetomidine
   - articles/PerezBlanco_2016_doxorubicin
   - articles/PerezRuixo_2006_tipifarnib
+  - articles/PerezRuixo_2008_epoetinAlfa
   - articles/PerezRuixo_2020_esketamine
   - articles/PerezRuixo_2025_posdinemab
   - articles/Perrottet_2009_ganciclovir
