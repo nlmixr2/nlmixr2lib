@@ -476,6 +476,8 @@ navbar:
         href: articles/Ozawa_2007_docetaxel.html
       - text: "Docetaxel (Puisset 2007)"
         href: articles/Puisset_2007_docetaxel.html
+      - text: "Docetaxel (Rietveld 2025)"
+        href: articles/Rietveld_2025_docetaxel.html
       - text: "Domagrozumab (Wojciechowski 2022)"
         href: articles/Wojciechowski_2022_domagrozumab.html
       - text: "Donidalorsen (Diep 2026)"
@@ -2645,6 +2647,7 @@ articles:
   - articles/Renard_2011_indacaterol
   - articles/Retlich_2015_linagliptin
   - articles/Revilla_2010_vancomycin
+  - articles/Rietveld_2025_docetaxel
   - articles/Robarge_2017_efavirenz
   - articles/Robbie_2012_palivizumab
   - articles/Roberts_2011_vancomycin
