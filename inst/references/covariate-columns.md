@@ -2051,7 +2051,7 @@ All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODA
 - **Reference category:** n/a -- used as a time-varying regressor. The model declares `linear(GLU)` so rxode2 linearly interpolates `GLU` between dataset rows.
 - **Source aliases:**
   - `iglu` (glucose at the current row time) -- used in the DDMORE bundle's `Simulated_glucoseKinetics.csv` for `DDMODEL00000227`. Rename `iglu` -> `GLU` before passing to `rxSolve`.
-- **Example models:** `Bizzotto_2016_glucose.R` (driving regressor for the glucose-at-site-of-action delay), `Lu_2014_sglt_qsp.R` (drives the rate of glucose entry into PCT1 by glomerular filtration in the SGLT renal-glucose-reabsorption QSP model: filtered glucose load = GFR * GLU mmol/h).
+- **Example models:** `Bizzotto_2016_glucose.R` (driving regressor for the glucose-at-site-of-action delay), `Lu_2014_sglt_qsp.R` (drives the rate of glucose entry into PCT1 by glomerular filtration in the SGLT renal-glucose-reabsorption QSP model: filtered glucose load = GFR * GLU mmol/h), `Bosch_2025_glp1ra_hba1c.R` (drives the IGRH HbA1c sub-model: time-varying average daily glucose -> glycation flux KG*GLU_mgdl and glucose-dependent RBC life span (GLU_mgdl/149)^gamma_ls; internal conversion mmol/L -> mg/dL via factor 18.016).
 - **Notes:** Specific scope because `GLU` is meaningful only for glucose-kinetics or glucose-PD models that take plasma glucose as an exogenous regressor. The DDMORE bundle's hand-rolled piecewise-linear interpolation (`GL = (t-T1)/(TOBS-T1)*(GLU-GLU1)+GLU1` with bracketing columns `iglu / glun / td / tn`) is replaced in nlmixr2 by `linear(GLU)` declared in `model()`; the bracketing columns are not required.
 
 ### INS (**canonical for plasma insulin time-course regressor**)

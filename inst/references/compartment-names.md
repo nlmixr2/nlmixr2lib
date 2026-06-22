@@ -827,6 +827,14 @@ These are internationally standardised clinical abbreviations registered as cano
 - **Source aliases:** none.
 - **Example models:** anemia / EPO PD models.
 
+### Hba1c (**canonical glycated hemoglobin (HbA1c) PD output**)
+- **Type:** compartment
+- **Role:** Glycated hemoglobin (HbA1c, %) PD output state computed as the glycated-fraction percent of the total RBC pool in IGRH-style integrated glucose-RBC-HbA1c models. Counterpart to the existing `HBA1C` covariate canonical in `inst/references/covariate-columns.md`; the covariate represents the baseline / observed clinical measurement, and `Hba1c` is the modelled dynamic output state.
+- **Source aliases:**
+  - `HBA` -- Lledo-Garcia 2013 / Kjellsson 2015 / Bosch 2025 supplement S2 NONMEM `$ERROR HBA = GLY/TOT*100`.
+- **Example models:** `Bosch_2025_glp1ra_hba1c.R` (24-state IGRH transit-chain HbA1c sub-model; founding example).
+- **Notes:** Camel-case `Hba1c` matches the convention used by other mixed-case clinical-abbreviation PD-output canonicals in this register (`P1NP`, `QTc`, `aPTT`). Single PD output for IGRH-based HbA1c models.
+
 ### PSA (**canonical prostate-specific antigen**)
 - **Type:** compartment
 - **Role:** Prostate-specific antigen PD output (oncology).
