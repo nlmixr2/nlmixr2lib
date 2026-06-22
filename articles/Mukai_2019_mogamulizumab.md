@@ -420,7 +420,7 @@ sessionInfo()
 #> [4] rxode2_5.1.2          PKNCA_0.12.1          nlmixr2lib_0.3.2.9000
 #> 
 #> loaded via a namespace (and not attached):
-#>  [1] gtable_0.3.6          xfun_0.58             bslib_0.11.0         
+#>  [1] gtable_0.3.6          xfun_0.59             bslib_0.11.0         
 #>  [4] lattice_0.22-9        vctrs_0.7.3           tools_4.6.0          
 #>  [7] generics_0.1.4        parallel_4.6.0        tibble_3.3.1         
 #> [10] symengine_0.2.13      pkgconfig_2.0.3       data.table_1.18.4    
@@ -435,7 +435,7 @@ sessionInfo()
 #> [37] digest_0.6.39         lotri_1.0.4           purrr_1.2.2          
 #> [40] rxode2ll_2.0.14       fastmap_1.2.0         grid_4.6.0           
 #> [43] cli_3.6.6             dparser_1.3.1-13      magrittr_2.0.5       
-#> [46] withr_3.0.2           scales_1.4.0          backports_1.5.1      
+#> [46] withr_3.0.3           scales_1.4.0          backports_1.5.1      
 #> [49] rmarkdown_2.31        otel_0.2.0            askpass_1.2.1        
 #> [52] ragg_1.5.2            stringfish_0.19.0     memoise_2.0.1        
 #> [55] evaluate_1.0.5        knitr_1.51            rex_1.2.2            
