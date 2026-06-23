@@ -86,6 +86,11 @@ Original observed data are not publicly available. The figures below use virtual
 populations whose covariate distributions approximate the published trial
 demographics.
 
+**Cohort size: never simulate more than 200 participants per arm** (per
+treatment / dose / cohort group). 200/arm is ample for a VPC; larger cohorts add
+no validation value and are the top render-timeout and token-cost cause. The
+multi-cohort example below uses 200 per arm — do not exceed it.
+
 ```{r cohort}
 set.seed(<seed>)
 
@@ -104,8 +109,8 @@ make_cohort <- function(n, ..., id_offset = 0L) {
     ...
 }
 
-# Single-cohort case:
-events <- make_cohort(n = <integer>, ...)
+# Single-cohort case (n <= 200):
+events <- make_cohort(n = <integer, <= 200>, ...)
 
 # Multi-cohort case — pass distinct id_offset per call so IDs are disjoint:
 # events <- dplyr::bind_rows(
