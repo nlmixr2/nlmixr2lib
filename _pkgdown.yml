@@ -1238,6 +1238,8 @@ navbar:
         href: articles/Mensing_2017_3D_HCV_regimen.html
       - text: "Paroxetine (Kim 2015)"
         href: articles/Kim_2015_paroxetine.html
+      - text: "Patritumab (Lee 2023)"
+        href: articles/Lee_2023_patritumab.html
       - text: "Patritumab (Lu 2022)"
         href: articles/Lu_2022_patritumab.html
       - text: "Pazopanib (Ouerdani 2015)"
@@ -2464,6 +2466,7 @@ articles:
   - articles/Lee_2015_sumatriptan
   - articles/Lee_2016_raltegravir
   - articles/Lee_2017_doripenem
+  - articles/Lee_2023_patritumab
   - articles/Leger_2004_topotecan
   - articles/Lehr_2010_tesofensine
   - articles/Leroux_2016_cefotaxime
