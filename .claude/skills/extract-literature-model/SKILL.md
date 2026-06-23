@@ -28,10 +28,12 @@ result is empty the package is not installed — install it, then continue):
 NLI=$(Rscript -e 'cat(system.file("scripts", package="nlmixr2libingest"))')
 ```
 
-You will use `"$NLI/prebrief.R"` (Phase 3) and `"$NLI/validate.R"` (Phase 4).
-Both are **priors / assists** — they never gate what you read of the paper, and
-the quality firewall (source-trace every final value and any nonstandard
-equation against the source) is unchanged.
+You will use `"$NLI/prebrief.R"` (Phase 3), `"$NLI/validate.R"` (Phase 4
+source-trace pre-check, and Phase 6 as the combined per-iteration gate
+`validate.R … --model`), and `"$NLI/lint_vignette.R"` (Phase 6, a static
+pre-render lint). All are **priors / assists** — they never gate what you read of
+the paper, and the quality firewall (source-trace every final value and any
+nonstandard equation against the source) is unchanged.
 
 ## References
 
@@ -303,7 +305,7 @@ Use `references/vignette-template.md`. Required sections, in order:
 2. **Population** — narrative reproducing the `population` metadata; cite the source table listing baseline demographics.
 3. **Source trace** — a dedicated table listing the source location (page / table / equation / figure) for every model equation and every `ini()` parameter. This is in addition to the in-file comments; the vignette gives reviewers a single place to audit provenance.
 4. **Virtual cohort** — covariate distributions match the population metadata. Use WHO weight-for-age curves for pediatric models.
-5. **Simulation** — `rxode2::rxSolve(mod, events)` for stochastic VPCs; `rxode2::zeroRe()` + `rxSolve` for typical-value replications.
+5. **Simulation** — `rxode2::rxSolve(mod, events)` for stochastic VPCs; `rxode2::zeroRe()` + `rxSolve` for typical-value replications. **Keep cohorts small: never simulate more than 200 participants per arm** (per treatment / dose group). 200/arm is ample for a VPC; larger cohorts add no validation value and are the top render-timeout and token-cost cause. `references/vignette-template.md` defaults to this cap, and `lint_vignette.R` (Phase 6) flags any cohort over it.
 6. **Replicate published figures** — one code chunk per figure, caption linking to the source figure number ("Replicates Figure 4 of <Author Year>").
 7. **PKNCA validation** — required; no inline trapezoidal NCA. See `references/pknca-recipes.md`. The PKNCA formula **must include a treatment grouping variable** (`conc ~ time | id/treatment`) so per-group results can be compared against the paper. The PKNCA input filter must be `dplyr::filter(!is.na(Cc))` only — adding `time > 0` or `Cc > 0` drops the time-zero row and triggers the "Requesting an AUC range starting (0) before the first measurement" warning across every subject; if the simulation grid doesn't naturally produce a time-zero row, add one defensively (see `pknca-recipes.md` § "Time-zero records (mandatory)").
 8. **Comparison against published NCA** — if the source paper reports Cmax / Tmax / AUC / half-life, render **one** combined side-by-side table via `nlmixr2lib::ncaComparisonTable()` with header column `NCA parameter` and friendly parameter labels (`Cmax`, `AUC0-∞ (obs)`, `t½`, …). Do **not** split simulated and reference values across separate tables or use "see above" cross-references. Flag any starred (>20% difference) rows in the narrative and investigate the source — do not tune.
@@ -325,7 +327,21 @@ For papers that describe endogenous turnover, steady-state-balance, or mechanist
 
    **Before you run the gate, read `references/known-vignette-failure-patterns.md`.** Those are the recurring shapes that have shipped broken because the gate was skipped, fabricated, or run with events too simple to exercise the failure: singular OMEGA (`chol(): decomposition failed`), missing explicit `cmt()` declarations when the model has algebraic observables and the vignette references them on observation rows (12-of-15 failures in the 2026-06-17 consolidation), dplyr `unique()` on a varying column, PKNCA zero-row filters, callr timeouts under parallel build. Scan that doc, apply the prophylactic fixes, then render. The consolidation merge (`runner-merge-claude-branches`) re-runs every vignette in parallel as a HARD gate — anything you ship broken WILL be caught there, but the cost of un-stacking a fix from a 130-branch merge is much higher than fixing it in your one-paper worktree right now.
 
-   **Cover the failure modes in your event table, not just the dose path.** A render that only doses (no observations) or only observes with `cmt = NA_character_` will pass the gate and still ship a broken vignette. Make sure your event table includes observation rows with `cmt = "<observable-name>"` for each algebraic observable in the model — that's the only way the gate exercises the slot-renumbering path that breaks 80% of these vignettes.
+   **Cover the failure modes in your event table, not just the dose path.** A render that only doses (no observations) or only observes with `cmt = NA_character_` will pass the gate and still ship a broken vignette. Make sure your event table includes observation rows **on the relevant ODE state** (`cmt = "central"`, etc.) — rxode2 returns each algebraic observable (e.g. `Cc`) as a column at those rows, so observing the state exercises the observable-computation path. Do **NOT** write `cmt = "<observable-name>"` (e.g. `cmt = "Cc"`): referencing an observable as a compartment auto-injects a `cmt()` slot for it AFTER the ODE states and renumbers every compartment — that IS the slot-renumbering bug, not a way to test it (see `references/known-vignette-failure-patterns.md` patterns; `lint_vignette.R`, next paragraph, flags it).
+
+   **Pre-lint, then iterate with the combined gate — both before the evidence render below.** Two `nlmixr2libingest` helpers make the fix loop cheap:
+
+   - **Static pre-lint (milliseconds, no render).** Catches the most common render-killers up front — `cmt =` on an algebraic observable, a named-vector character subscript to `amt =`, a PKNCA `time > 0` / `Cc > 0` filter, and a cohort over the 200-per-arm cap:
+     ```bash
+     Rscript "$NLI/lint_vignette.R" vignettes/articles/${STEM}.Rmd inst/modeldb/<category>/${STEM}.R
+     ```
+     Fix what it flags. It is a pre-check, not a substitute — a clean lint does not guarantee a clean render.
+
+   - **Combined model-scoped gate (one turn, no whole-package check).** During the fix loop, run parse + `checkModelConventions()` + source-trace + `load_all` + the vignette render in a SINGLE call instead of separate render / convention-lint turns (each of which reloads the package in its own turn):
+     ```bash
+     Rscript "$NLI/validate.R" inst/modeldb/<category>/${STEM}.R <trimmed-paper.md> --model --pkg . --vignette vignettes/articles/${STEM}.Rmd
+     ```
+     It returns one terse Success / fix-list. When it finally reports Success, run the explicit `RENDER_GATE` command below **once** to capture the verbatim evidence line that step 9 requires (the combined gate is for iterating; the `RENDER_GATE` line is the PR evidence).
 
    **Run the render SYNCHRONOUSLY, in one tool call (as below). NEVER launch it with `run_in_background`, and NEVER poll a running render's log (`cat …log`, `tail -f`, repeated reads) across multiple tool calls.** Each poll re-reads the entire accumulated context, so waiting on a slow render costs far more in cache-read tokens than the extraction itself. (A single 3-model statin vignette did exactly this — one backgrounded render polled ~98 times across ~250 turns → 71M cache-read / ~$42 for one task, ~25× a normal extraction.) If the render is slow, **fix it** (timeout bullet below); do not wait on it.
 
@@ -356,7 +372,7 @@ For papers that describe endogenous turnover, steady-state-balance, or mechanist
    - **`exit=0` AND `html_bytes` is a number ≥ 1024** → gate passed; proceed to step 3.
    - **`exit` non-zero (R error)** → STOP. Do not `git add` anything. Read the traceback in `$LOG`; the most common causes are (a) a `select()` / PKNCA formula referencing a column that was never created (add it in the preceding `mutate()`), (b) a variable name used before it is defined (reorder chunks), (c) a simulation that errors because covariate values are out of range for the model, (d) `event_table$col <- vector` syntax against an `rxEt` object — rxode2 silently drops these assignments, so always materialize via `as.data.frame()` and add covariate columns there before passing to `rxSolve()`, (e) a named scalar passed as `amt =` to `rxode2::et()` (e.g. `doses["fbx"]` instead of `doses[["fbx"]]`) — rxode2 rejects names with `Assertion on 'amt' failed: May not have names.`. Fix the vignette, re-run this step, and only proceed when both `exit=0` and `html_bytes ≥ 1024` come back clean.
    - **PKNCA "Requesting an AUC range starting (0) before the first measurement" warning** in `$LOG` (often repeated once per subject) → the concentration frame passed to PKNCA has no `time = 0` row. Two causes: (1) the PKNCA input filter is too aggressive (typically `dplyr::filter(time > 0, ...)` or `Cc > 0`) — use only `!is.na(Cc)`; (2) the simulation grid never produced a time-zero observation — add one defensively via the bind_rows + distinct pattern in `pknca-recipes.md` § "Time-zero records (mandatory)". Render again until the warning is gone.
-   - **`exit=124` (timeout)** → the vignette exceeds 5 minutes. Reduce simulation size: cut `nSub` (stochastic VPC subjects), shorten the observation grid, or move expensive chunks behind `eval = FALSE` with a note. Do **not** skip the time budget — pkgdown CI has strict wall-time limits and a slow vignette breaks the build for everyone. **A timeout means SHRINK the simulation, never background-and-poll the render. For a multi-model (N-drug) vignette the combined cohort simulation is the usual culprit — cut the per-model cohort size first.** Re-run the gate synchronously after shrinking.
+   - **`exit=124` (timeout)** → the vignette exceeds 5 minutes. Reduce simulation size: cut `nSub` (stochastic VPC subjects) — **the cap is 200 participants per arm; if any cohort is above it, that is the first thing to cut** — shorten the observation grid, or move expensive chunks behind `eval = FALSE` with a note. Do **not** skip the time budget — pkgdown CI has strict wall-time limits and a slow vignette breaks the build for everyone. **A timeout means SHRINK the simulation, never background-and-poll the render. For a multi-model (N-drug) vignette the combined cohort simulation is the usual culprit — cut the per-model cohort size first.** Re-run the gate synchronously after shrinking.
    - **`html_bytes=MISSING`** → render exited but no HTML was written. Treat as a failure even if `exit=0`; pandoc may have aborted silently. Re-run with `quiet = FALSE` (already set above) and read the bottom of `$LOG`.
    - **C-level segfault (`*** caught segfault ***`)** → broken R / rxode2 / nlmixr2 install, not a model-file problem. Stop, sidecar-ask the operator to fix the environment; do not work around with `--no-build-vignettes`.
 

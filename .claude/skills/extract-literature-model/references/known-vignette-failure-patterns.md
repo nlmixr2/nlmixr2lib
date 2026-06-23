@@ -229,9 +229,13 @@ takes hours). **Fix them at the paper level, before you push the
 per-paper branch.**
 
 When you run Phase 5 step 2 (the per-paper RENDER_GATE), make sure
-your vignette events table contains the same shapes the failure
-patterns above need to exercise — at minimum, observation rows with
-`cmt = "<observable-name>"` for each algebraic observable in the
-model. A render that only doses (no observations) or that only
-observes with `cmt = NA_character_` will pass the gate and still
-ship a broken vignette.
+your vignette events table actually produces each algebraic
+observable — at minimum, observation rows **on the relevant ODE
+state** (`cmt = "central"`, etc.). rxode2 returns the observable
+(e.g. `Cc`) as a column at those rows, so this exercises the
+observable-computation path WITHOUT the slot-renumbering bug. Do
+NOT write `cmt = "<observable-name>"` (`cmt = "Cc"`) to "exercise"
+the pattern — that is the bug itself (pattern above). A render that
+only doses (no observations) or that only observes with
+`cmt = NA_character_` will pass the gate and still ship a broken
+vignette.
