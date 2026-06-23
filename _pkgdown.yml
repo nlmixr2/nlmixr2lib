@@ -1234,6 +1234,8 @@ navbar:
         href: articles/Krekels_2015_paracetamol.html
       - text: "Paracetamol (Wattanakul 2016)"
         href: articles/Wattanakul_2016_paracetamol.html
+      - text: "Paracetamol (Wu 2025)"
+        href: articles/Wu_2025_paracetamol.html
       - text: "Paritaprevir (Mensing 2017)"
         href: articles/Mensing_2017_3D_HCV_regimen.html
       - text: "Paroxetine (Kim 2015)"
@@ -2853,6 +2855,7 @@ articles:
   - articles/Wu_2012_sirolimus
   - articles/Wu_2014_FEV1_asthma
   - articles/Wu_2024_inotuzumab
+  - articles/Wu_2025_paracetamol
   - articles/Wurthwein_2013_caspofungin
   - articles/Xia_2024_warfarin
   - articles/Xiang_2018_baicalein

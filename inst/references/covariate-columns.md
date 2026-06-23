@@ -275,7 +275,8 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Reference category:** n/a -- used with linear-deviation `(1 + e * (WT_BIRTH - ref))` or power scaling. Reference value observed: 2.59 kg (Voller 2017 newborn cohort).
 - **Source aliases:**
   - `BWEIGHT` -- used in `Voller_2017_phenobarbital.R` (Voller 2017 source data column for birth weight in kg).
-- **Example models:** `Voller_2017_phenobarbital.R` (linear-deviation effect on CL: `clbw = 1 + 0.369 * (WT_BIRTH - 2.59)`).
+  - `Bwb` -- used in `Wu_2025_paracetamol.R` (Wu 2025 source-paper symbol for birth weight in kg; same biological quantity, no value transformation).
+- **Example models:** `Voller_2017_phenobarbital.R` (linear-deviation effect on CL: `clbw = 1 + 0.369 * (WT_BIRTH - 2.59)`), `Wu_2025_paracetamol.R` (power-law scaling of PTNA CL_birth and GFR_birth terms with reference 1.75 kg).
 - **Notes:** Time-fixed at birth; characterises pre-/term-newborn cohorts. Pairs with `GA` (gestational age at birth) when both are reported. The conventional clinical-PK abbreviation `BWT` is intentionally NOT used as the canonical name because it is already used across the codebase (Gandhi 2021, Li 2019, Chen 2022, Wojciechowski 2022, Lu 2019) as a source-name alias for body weight (`WT`). The `WT_BIRTH` form keeps the `WT` root consistent with the existing body-weight canonical and avoids the `BWT` ambiguity.
 
 ### AGE_DPF (**canonical for zebrafish-larval age in days post-fertilization**)
