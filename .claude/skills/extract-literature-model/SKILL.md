@@ -428,9 +428,28 @@ For papers that describe endogenous turnover, steady-state-balance, or mechanist
 
    The PR body MUST include the verbatim `RENDER_GATE stem=... exit=0 html_bytes=...` line printed by step 2 (and a matching line for any re-runs after edits). Reviewers use this line to confirm the gate actually ran on the file contents in the PR head — a missing or fabricated line is grounds for the reviewer to request a fresh render before merge.
 
+## Policy self-check — apply standing operator policies BEFORE filing any sidecar
+
+Most stop-and-ask triggers are already covered by a standing operator policy. **Before you file a sidecar (or `AskUserQuestion`), first resolve the question against the two layers below; if covered, apply the answer, record the decision in the vignette Assumptions/Errata, and CONTINUE — do not stop.** Filing a sidecar that a policy already answers wastes a stop/restart cycle. Only file for a question NO policy covers.
+
+**Layer 1 — structured matcher (fast pre-check).** Run the packaged matcher on the question you are about to ask; if it returns a high- or medium-confidence decision, apply that option and continue:
+
+```bash
+Rscript -e 'p <- nlmixr2libingest::sidecar_policy(); m <- nlmixr2libingest::sidecar_match(<your request: a list with $summary, $context, and $questions[[i]]$options>, p); print(m)'
+```
+
+**Layer 2 — standing operator policies (apply by rule; do NOT ask).** Operator-ratified; apply and document each in the vignette Errata:
+
+- **Acquisition / missing data** — any needed file/paper/supplement/upstream model, or a wrong-on-disk PDF → add it to `needs_acquisition.jsonl` and defer the task with a `depends_on` on it (try `scripts/acquire-paper.R` first; OA may auto-acquire). **Always acquire — never skip a genuine model for a missing file, never guess from the abstract when the full text isn't OA.** PK cited as "unpublished data on file" → reuse a published same-drug PK model as the PK layer.
+- **Skip** — review/systematic-review/meta-analysis with no original model → skip + queue cited primaries (UNLESS it tabulates the parameters → extract-from-review with a "re-extract when primary obtained" note); already-extracted duplicate → verify the existing extraction is complete (add any skipped PD/metabolite sub-model) then skip; non-ODE (NCA-only, bioanalytical/assay-validation, statistical/regression, group-based-trajectory/latent-class, software/tool) → skip; near-total reporting gap (the structural parameters themselves unreported) → skip.
+- **Scope / encoding** (always "+ note the assumption in vignette Errata") — scope question (which scales / endpoints / scenarios / sub-models / metabolites / components) → ALWAYS full fidelity = the MOST-inclusive option; unreported IIV/RUV (structural values present) → `fixed(0)` + erratum, or typical-value-only if no `fixed(0)` option — never invent variances; a deterministic/mechanistic model with no IIV → encode faithfully (no forced etas); ambiguous residual error (e.g. %σ + a fraction, no ERROR block) → encode BOTH proportional + additive; covariate equation absurd as printed → sensible centered/median-normalized interpretation; undefined reference/centering value → rounded standard (e.g. 70 kg); text vs printed-equation conflict → trust the EQUATION; range-only/figure-only parameters → digitize the figures for ALL needed point estimates; between-occasion variability (BOV) → implement as IOV via nlmixr2's native support.
+- **Naming / canonicals** — model file / drug-name / file-stem (incl. a journal name parsed into the drug field) → `author_year_drug` (+ species if relevant); generic INN over trade/dev-code; CamelCase multi-word INNs and author names; printable ASCII only (transliterate accents). Auto-approve well-formed members of these canonical families (no sidecar): `STUDY_<id>`, `DOSE_<drug>_<units>`, `FORM_<drug>_<formulation>`, `CONMED_<INN>`, `SNP_<GENE>_RS<rsid>`, `TUMTP_<type>`, `T_<event>`; effect-site PD driver → `CEFFECT`; a general high-dose switch → `DOSE_HIGH`; count covariate → decomposed binary indicators (not a single integer count); `working_dir: null` infra blocker → fill the standard worktree path and re-dispatch. A GENUINELY-new canonical concept — not a member of a family above and not an alias of an existing register entry (grep first via `scripts/lookup-canonical.R`) — DOES need judgment: file the sidecar.
+
+After both layers, file a sidecar ONLY for what remains: a genuine model-structure choice, an unresolvable value conflict, or a brand-new canonical concept.
+
 ## Stop-and-ask triggers
 
-The full consolidated list is in `references/pre-flight-checklist.md`. Review it once at dispatch (before starting Phase 1) so each trigger is visible up-front rather than discovered inline.
+The full consolidated list is in `references/pre-flight-checklist.md`. Review it once at dispatch (before starting Phase 1) so each trigger is visible up-front rather than discovered inline. **First apply the Policy self-check above — only the residue reaches these triggers.**
 
 Use this fixed format for any ambiguity:
 
