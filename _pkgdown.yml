@@ -644,6 +644,8 @@ navbar:
         href: articles/Kim_2017_fimasartan.html
       - text: "Finafloxacin (Taubert 2018)"
         href: articles/Taubert_2018_finafloxacin.html
+      - text: "Finerenone (vandenBerg 2021)"
+        href: articles/vandenBerg_2021_finerenone.html
       - text: "Flucloxacillin (Landersdorfer 2007)"
         href: articles/Landersdorfer_2007_flucloxacillin.html
       - text: "Fluconazole (Han 2013)"
@@ -2943,6 +2945,7 @@ articles:
   - articles/vanRongen_2018_metformin
   - articles/vanRongen_2018_midazolam
   - articles/vanWijk_2019_paracetamol
+  - articles/vandenBerg_2021_finerenone
   - articles/vanderWalt_2013_dapagliflozin
   - articles/vonHentig_2009_saquinavir
   internal: true
