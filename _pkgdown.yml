@@ -328,6 +328,8 @@ navbar:
         href: articles/Frobel_2013_ciclosporin.html
       - text: "Ciclosporin (Ni 2013)"
         href: articles/Ni_2013_ciclosporin.html
+      - text: "Ciclosporin (Press 2010)"
+        href: articles/Press_2010_ciclosporin.html
       - text: "Ciclosporin (Wilhelm 2012)"
         href: articles/Wilhelm_2012_ciclosporin.html
       - text: "Ciclosporin (Willemze 2008)"
@@ -2629,6 +2631,7 @@ articles:
   - articles/Plock_2014_ferumoxytol
   - articles/Polito_2016_fludrocortisone
   - articles/Pouzin_2022_tusamitamab
+  - articles/Press_2010_ciclosporin
   - articles/Prytula_2016_tacrolimus
   - articles/Przybylowski_2015_propofol
   - articles/Pu_2021_evinacumab
