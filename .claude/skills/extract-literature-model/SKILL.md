@@ -321,7 +321,9 @@ For papers that describe endogenous turnover, steady-state-balance, or mechanist
 
    **Record the result.** Copy the printed `RENDER_GATE stem=... exit=... html_bytes=...` line verbatim — it goes into the PR body in step 9 as evidence the gate actually ran on the final file contents.
 
-3. Run `nlmixr2lib::buildModelDb()` to regenerate `data/modeldb.rda` and `inst/modeldb.qs2`. Confirm the new model appears in `modellib()`. **When verifying in R, do `devtools::load_all(".")` first so `modellib()` reads the worktree's in-development package, not the stale system install** — see `references/verification-checklist.md` § "Verifying against the worktree's nlmixr2lib" for why a bare `library(nlmixr2lib)` can return a misleading `FALSE`.
+3. Run `nlmixr2lib::buildModelDb()` to regenerate `data/modeldb.rda` and `inst/modeldb.qs2`. Confirm the new model appears in `modellib()`. **When verifying in R, do `devtools::load_all(".")` first so `modellib()` reads the worktree's in-development package, not the stale system install** — see `references/verification-checklist.md` § "Verifying against the worktree's nlmixr2lib" for why a bare `library(nlmixr2lib)` can return a misleading `FALSE`. (`load_all()` is required in every fresh `Rscript` session for this reason; that is correct setup, not overhead.)
+
+   **Run `devtools::document()` at most once, at the very end** — after the model file and vignette are final, just before the final `devtools::check()`. Roxygen reprocesses the whole package on every call, so running it inside the edit/fix loop is wasted work; the model and vignette do not need re-documenting after each tweak.
 
 4. Run the convention lint and review the output:
 
