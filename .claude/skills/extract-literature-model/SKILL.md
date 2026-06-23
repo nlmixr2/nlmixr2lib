@@ -10,6 +10,29 @@ Output: a packaged nlmixr2lib model file under `inst/modeldb/`, a validation vig
 
 Work through the six phases below. Stop and ask the user at any of the decision points called out explicitly; ambiguity is the main failure mode for this workflow, and silent assumptions are what get shipped as bugs.
 
+## Tooling: `nlmixr2libingest` (assumed installed)
+
+This skill uses the helper package **`nlmixr2libingest`** for token-efficient
+canonical-name resolution (Phase 3) and a source-trace pre-check (Phase 4). It is
+assumed to be installed; install from
+<https://github.com/billdenney/nlmixr2libingest> if missing:
+
+```r
+remotes::install_github("billdenney/nlmixr2libingest")
+```
+
+Resolve its CLI directory **once** at the start of the task and reuse it (if the
+result is empty the package is not installed — install it, then continue):
+
+```bash
+NLI=$(Rscript -e 'cat(system.file("scripts", package="nlmixr2libingest"))')
+```
+
+You will use `"$NLI/prebrief.R"` (Phase 3) and `"$NLI/validate.R"` (Phase 4).
+Both are **priors / assists** — they never gate what you read of the paper, and
+the quality firewall (source-trace every final value and any nonstandard
+equation against the source) is unchanged.
+
 ## References
 
 Each reference is loaded just in time. Most tasks load only the "Always" set plus one or two conditionals.
@@ -199,14 +222,20 @@ Follow `references/compartment-names.md` and `references/parameter-names.md` str
 - Do NOT pick a "seems obvious" extension silently (e.g., choosing `kel_distinct_<suffix>` when nothing in the registry uses that pattern, or registering `compartment_NN` numbered names instead of role-based names). Even when the new name looks like a natural extension of an existing one, file the sidecar so the operator can decide whether it's actually a new canonical or a synonym of something that already exists.
 - After the operator approves, the new entry is committed alongside the model file in the same PR (same convention as `covariate-columns.md`). Append the new name to the appropriate H2 section in the reference file with a one-paragraph description and a `Founding example: <Author_Year_drug.R>` citation. Do not add a change-log or history section — `git log` is the record.
 
-Covariate columns come from `inst/references/covariate-columns.md` (~1.1 MB ≈ 284k tokens — **do NOT `Read` it whole; one whole-file read can exhaust the task's token budget**). To check a canonical name, run the lookup tool, which returns only the matching register entries (a few KB):
+Covariate columns must use the canonical names in `inst/references/covariate-columns.md` (~1.1 MB ≈ 284k tokens — **do NOT `Read` it whole; one whole-file read can exhaust the task's token budget**). While reading the paper you identified the covariates it uses; resolve them **all at once** in a single batched pre-brief rather than a lookup per name (resolve parameter and compartment names the same way, with `parameter` / `compartment`, instead of reading those reference files in full):
 
 ```bash
-Rscript --vanilla .claude/skills/extract-literature-model/scripts/lookup-canonical.R WT covariate
-# kinds: covariate | parameter | compartment   (parameter/compartment search their references/*.md)
+Rscript "$NLI/prebrief.R" covariate "body weight" "serum albumin" "creatinine clearance"
+# first arg = kind (covariate | parameter | compartment); the rest are the paper's terms (quote multi-word phrases)
 ```
 
-It prints the matching entry, or a "this is a NEW canonical → stop-and-ask" hint when there is no match. Use it for parameter and compartment names too instead of reading those reference files in full. Before writing any covariate into the file:
+It prints a `term -> CANONICAL [units, scope]` line per term, or `UNMATCHED` when a term has no canonical entry. Use the printed canonical names. For an `UNMATCHED` term (a possible NEW canonical → stop-and-ask), or to double-check a single name, fall back to the per-name lookup:
+
+```bash
+Rscript --vanilla "$NLI/lookup.R" "body weight" covariate
+```
+
+Before writing any covariate into the file:
 
 - If the canonical name exists, use it and record the source column name in `covariateData[[name]]$source_name`.
 - If the source name is an alias of an existing canonical name (e.g., source uses `SEXM`, canonical is `SEXF`), use the canonical name, note the required value transformation (`SEXF = 1 - SEXM`), and **ask the user to confirm the effect-coefficient sign and reference-category implications** before committing.
@@ -219,7 +248,21 @@ It prints the matching entry, or a "this is a NEW canonical → stop-and-ask" hi
 
 ## Phase 4 — Verification (re-read the source)
 
-After the first pass, re-read the source independently and walk through `references/verification-checklist.md`. Common pitfalls:
+First run the **source-trace pre-check** — it parses the model, runs
+`checkModelConventions()`, and flags every final `ini()` value with no supporting
+number anywhere in the paper (back-transform- and rounding-tolerant), plus the
+nonstandard `model()` equations and hardcoded constants to confirm:
+
+```bash
+Rscript "$NLI/validate.R" inst/modeldb/<category>/<Stem>.R <trimmed-paper.md>
+```
+
+Treat its output as a **worklist, not a verdict**: a "found" match can be
+coincidental, and an unverified flag can be a legitimate derived value (e.g. a
+unit conversion) — it focuses your manual source-trace, it does not replace it,
+and the firewall (every value and nonstandard equation traced to the source) is
+unchanged. Then re-read the source independently and walk through
+`references/verification-checklist.md`. Common pitfalls:
 
 - NONMEM THETA log-vs-linear reporting and `omega² = log(CV² + 1)` for log-normal variance.
 - NONMEM "additive on log-scale" ≡ proportional in nlmixr2's linear space.
