@@ -270,17 +270,6 @@ sim_vpc <- rxSolve(mod, ev_one, nSub = n_subj, returnType = "data.frame")
 #> intdy -- t = 18 illegal. t not in interval tcur - _rxC(hu) to tcur
 #> intdy -- t = 20 illegal. t not in interval tcur - _rxC(hu) to tcur
 #> intdy -- t = 21 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 2 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 4 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 6 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 8 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 10 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 12 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 14 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 16 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 18 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 20 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 21 illegal. t not in interval tcur - _rxC(hu) to tcur
 #> intdy -- t = 22 illegal. t not in interval tcur - _rxC(hu) to tcur
 #> intdy -- t = 24 illegal. t not in interval tcur - _rxC(hu) to tcur
 #> intdy -- t = 26 illegal. t not in interval tcur - _rxC(hu) to tcur

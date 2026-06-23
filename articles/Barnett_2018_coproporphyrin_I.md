@@ -196,6 +196,9 @@ ev_rif <- rxode2::et(amt = 600, cmt = "depot", time = 0) |>
   as.data.frame()
 ev_rif$OCC <- 1
 sim_rif <- rxode2::rxSolve(mod_rif, events = ev_rif) |> as.data.frame()
+#> rxode2 already building model, waiting for lock file removal
+#> lock file: "/tmp/RtmpnKmEMC/rxode2/rx_f7a5d9c94e1255eb731e568217fc0ab7__.rxd/rx_f7a5d9c94e1255eb731e568217fc0ab7_.c.lock"
+#> .
 #> ℹ omega/sigma items treated as zero: 'etalka', 'etalcl', 'etalvc', 'etalmtt', 'etalnn', 'etaiov_ka_1', 'etaiov_ka_2', 'etaiov_ka_3', 'etaiov_vc_1', 'etaiov_vc_2', 'etaiov_vc_3', 'etaiov_mtt_1', 'etaiov_mtt_2', 'etaiov_mtt_3'
 crif_fn <- approxfun(sim_rif$time, sim_rif$Cc, rule = 2, yleft = 0)
 
