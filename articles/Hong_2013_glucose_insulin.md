@@ -572,5 +572,5 @@ ggplot(mtt_pop_summary, aes(time)) +
     #> [55] memoise_2.0.1         evaluate_1.0.5        knitr_1.51           
     #> [58] rex_1.2.2             PreciseSums_0.7       rlang_1.2.0          
     #> [61] downlit_0.4.5         Rcpp_1.1.1-1.1        glue_1.8.1           
-    #> [64] xml2_1.5.2            jsonlite_2.0.0        R6_2.6.1             
+    #> [64] xml2_1.6.0            jsonlite_2.0.0        R6_2.6.1             
     #> [67] systemfonts_1.3.2     fs_2.1.0

@@ -1090,6 +1090,6 @@ sessionInfo()
 #> [55] memoise_2.0.1         evaluate_1.0.5        knitr_1.51           
 #> [58] rex_1.2.2             viridisLite_0.4.3     PreciseSums_0.7      
 #> [61] rlang_1.2.0           downlit_0.4.5         Rcpp_1.1.1-1.1       
-#> [64] glue_1.8.1            xml2_1.5.2            jsonlite_2.0.0       
+#> [64] glue_1.8.1            xml2_1.6.0            jsonlite_2.0.0       
 #> [67] R6_2.6.1              systemfonts_1.3.2     fs_2.1.0
 ```
