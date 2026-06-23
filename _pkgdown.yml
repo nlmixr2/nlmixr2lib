@@ -1556,6 +1556,8 @@ navbar:
         href: articles/Ait-Oudhia_2016_sunitinib.html
       - text: "Sunitinib (Yu 2015)"
         href: articles/Yu_2015_sunitinib.html
+      - text: "Sunitinib (vanErp 2010)"
+        href: articles/vanErp_2010_sunitinib.html
       - text: "Sunitinib irinotecan mouse (Wilson 2015)"
         href: articles/Wilson_2015_sunitinib_irinotecan_mouse.html
       - text: "TF 505 (Matsumoto 2005)"
@@ -2936,6 +2938,7 @@ articles:
   - articles/deWinter_2009_mycophenolic_acid
   - articles/deWit_2016_everolimus
   - articles/elDesoky_1997_theophylline_pediatric_asthma
+  - articles/vanErp_2010_sunitinib
   - articles/vanHasselt_2015_eribulin
   - articles/vanRongen_2015_midazolam
   - articles/vanRongen_2016_acetaminophen
