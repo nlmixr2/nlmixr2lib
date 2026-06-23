@@ -1434,6 +1434,8 @@ navbar:
         href: articles/Mensing_2017_3D_HCV_regimen.html
       - text: "Rituximab (Candelaria 2018)"
         href: articles/Candelaria_2018_rituximab.html
+      - text: "Rivaroxaban (Willmann 2021)"
+        href: articles/Willmann_2021_rivaroxaban.html
       - text: "Rivipansel (Tammara 2017)"
         href: articles/Tammara_2017_rivipansel.html
       - text: "Rocatinlimab (Okada 2025)"
@@ -2843,6 +2845,7 @@ articles:
   - articles/Wilkins_2011_isoniazid
   - articles/Willemze_2008_ciclosporin
   - articles/Williams_2012_valproic_acid_pediatric
+  - articles/Willmann_2021_rivaroxaban
   - articles/Wilson_2015_sunitinib_irinotecan_mouse
   - articles/Wittau_2015_meropenem
   - articles/Woillard_2011_tacrolimus
