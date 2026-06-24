@@ -2934,7 +2934,7 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Scope:** specific
 - **Reference category:** 0 (non-DMD subject; the complement group is the reference cohort the source analysis pools alongside the DMD population -- typically healthy adult volunteers).
 - **Source aliases:** `SPOP` (Wojciechowski 2022 study-population indicator with the same orientation: 1 = DMD pediatric patient, 0 = healthy adult volunteer).
-- **Example models:** `Wojciechowski_2022_domagrozumab.R` (additive `1 + theta` shift on baseline myostatin and on the joint kdeg/kint axis; theta_BASE = -0.641, theta_kdegkint = -0.900).
+- **Example models:** `Wojciechowski_2022_domagrozumab.R` (additive `1 + theta` shift on baseline myostatin and on the joint kdeg/kint axis; theta_BASE = -0.641, theta_kdegkint = -0.900); `Hajjar_2018_DMD_6MWT.R` (gates the latent-disease coefficients ALPHA and BETA -- both zero for DIS_DMD = 0 -- and scales the 6MWT production rate KIN by the multiplier KCOV = 0.63 for DMD subjects; reference cohort is the Henricson 2012 healthy-boy controls).
 - **Notes:** Used when a population PK/PD model pools DMD patients with a non-DMD reference population and DMD disease status is retained as a covariate. Scope: specific because the reference category is paper-defined. Ratified canonically on 2026-04-26.
 
 ### DIS_SMM (**canonical for smoldering multiple myeloma indicator**)
