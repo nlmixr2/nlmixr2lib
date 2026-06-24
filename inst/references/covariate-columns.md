@@ -7198,3 +7198,36 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
   - `D x Q` -- used in `BuchwalderCsajka_1999_angiotensin.R` (Buchwalder-Csajka 1999 Table 1 row 5 column header, where `D` is the raw angiotensin dose in ug and `Q` is the molar-weight conversion factor).
 - **Example models:** `BuchwalderCsajka_1999_angiotensin.R` (drives the algebraic Emax dose-response `E = Emax * DOSE_AGT_UG / (DOSE_AGT_UG + ED50)` separately for SBP and DBP).
 - **Notes:** Per-observation challenge-dose column for the algebraic Emax angiotensin-challenge PD model. Differs from the standard rxode2 `AMT` / `EVID = 1` dosing column because the model is purely algebraic (no PK, no ODEs); the dose enters the model() block as a covariate symbol rather than via a dosing event. Specific scope because the column's semantics (Q-corrected angiotensin dose) are tied to angiotensin-challenge protocols; future angiotensin-challenge extractions may reuse this canonical. Ratified canonically on 2026-06-10 alongside the Buchwalder-Csajka 1999 extraction.
+
+### AUC_EMPA (**canonical for per-subject steady-state AUC of empagliflozin**)
+- **Description:** Per-subject (time-fixed) steady-state AUC of empagliflozin over the q24h dosing interval, supplied as a static drug-exposure covariate to PD models that consume the upstream popPK without instantiating a PK ODE. The source authors generate AUCss values from individual empirical Bayes estimates of an upstream empagliflozin popPK analysis (Mondick 2018 plus additional EASE-2 / EASE-3 data on file in the M-EASE-2 application) and pass them as a static covariate column to the M-EASE-2 PD model.
+- **Units:** `nmol*h/L` (document per-model via `covariateData[[AUC_EMPA]]$units` if a different exposure unit is reported).
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters via direct Emax form `emax_i * AUC_EMPA / (auc50 + AUC_EMPA)` on the HbA1c drug-effect term. Set AUC_EMPA = 0 to recover the placebo arm (drug-effect term vanishes; HbA1c follows baseline + placebo drift only). Reference values observed: AUC50 = 498 nmol*h/L (Johnston 2019 Table 2 typical-value AUC at half-maximal effect; corresponds approximately to the simulated median AUCss for the 2.5 mg QD arm).
+- **Source aliases:**
+  - `AUCss` (or `AUCSS,i`) -- the printed variable name in Johnston 2019 Equation 1 (the individual steady-state AUC entering the Emax expression).
+- **Example models:** `Johnston_2019_empagliflozin.R` (M-EASE-2 exposure-response PD model for HbA1c in adults with type 1 diabetes; AUC_EMPA drives the direct Emax HbA1c-reduction term).
+- **Notes:** Specific scope because the column meaning is tied to empagliflozin and to a q24h steady-state AUC convention. Sibling drug-specific AUC canonicals (`AUC_CARBO`, `AUC_GEM`, `AUC_BAST_FW`, `AUC_PAZO`, `AUC_GCV`, `AUC_RTV`) follow the same `AUC_<DRUG>` naming pattern. A future PK/PD model that uses a different empagliflozin exposure metric (trough concentration, q12h-interval AUC) should register a parallel canonical rather than overload `AUC_EMPA`. Ratified canonically alongside the Johnston 2019 M-EASE-2 extraction.
+
+### INSDOSE_BL (**canonical for baseline total daily insulin dose per body weight**)
+- **Description:** Per-subject (time-fixed) total daily exogenous insulin dose at study baseline, normalised to body weight. Captures the insulin requirement of patients on background insulin therapy (a typical input covariate in T1DM / T2DM popPK/PD models where the empagliflozin / SGLT-2 inhibitor / GLP-1 analogue effect is layered on top of pre-existing insulin treatment). Distinct from `INS_BL` (baseline fasting plasma insulin concentration, a measured biomarker in pmol/L) -- `INSDOSE_BL` is the administered dose level, not the resulting plasma level.
+- **Units:** `U/kg/day` (international units of insulin per kilogram body weight per day). Document per-model via `covariateData[[INSDOSE_BL]]$units` if a paper reports total daily units without body-weight normalisation.
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters via power form `(INSDOSE_BL / ref)^e_insdose_bl_<param>`. Reference values observed: 0.660 U/kg/day (Johnston 2019 reference-patient description).
+- **Source aliases:**
+  - `IDB` -- "Insulin daily dose at Baseline" abbreviation used in Johnston 2019 Table 2.
+- **Example models:** `Johnston_2019_empagliflozin.R` (M-EASE-2 covariate effect on the typical baseline HbA1c and on Emax in T1DM patients with background insulin therapy; effect exponents 0.0141 on baseline HbA1c and 0.0552 on Emax, both with CIs that cross zero -- the covariate was retained as part of the full-random-effects covariate model rather than dropped).
+- **Notes:** Specific scope because the column meaning is tied to baseline total-daily-dose accounting in insulin-treated diabetes populations; future T1DM / T2DM popPK/PD extractions can reuse this canonical and document the per-model units / dose-counting convention in `covariateData[[INSDOSE_BL]]$notes`. A model that uses time-varying insulin dose (rather than baseline only) should register a parallel canonical (e.g., `INSDOSE`). Companion concept to `INS_BL` (plasma insulin concentration) and to `HBA1C` (glycemic control). Ratified canonically alongside the Johnston 2019 M-EASE-2 extraction.
+
+### INSDT_CSII (**canonical for binary CSII vs MDI insulin delivery type indicator**)
+- **Description:** Binary indicator for the subject's insulin delivery type at study entry. 1 = continuous subcutaneous insulin infusion (CSII; insulin pump therapy); 0 = multiple daily injections (MDI; subcutaneous injection regimen) reference. Per-subject and time-fixed within the analysis window (regimen switches during the study are not represented).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 = MDI (multiple daily injections).
+- **Source aliases:**
+  - `INSDT` -- "Insulin Dose Type" abbreviation used in Johnston 2019 Table 2 (the two-level categorical column decomposed into the binary CSII indicator with MDI as the reference category).
+- **Example models:** `Johnston_2019_empagliflozin.R` (M-EASE-2 covariate multiplier on baseline HbA1c, Emax, and placebo rate; CSII shifts placebo drift upward by a factor of 1.47 vs MDI -- a moderate effect on the placebo-adjusted HbA1c change).
+- **Notes:** Specific scope because the CSII-vs-MDI contrast and reference category are study-specific. Follows the `<COLUMN>_<LEVEL>` decomposition pattern used for `REGI_BID` / `TUMTP_GLIO`. A future paper that retains the same INSDT covariate but with more than two levels (e.g., CSII vs MDI vs continuous glucose monitoring + open-loop algorithm) would register sibling canonicals (e.g., `INSDT_CGM`) rather than overload this entry. Ratified canonically alongside the Johnston 2019 M-EASE-2 extraction.
