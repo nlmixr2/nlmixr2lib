@@ -2,6 +2,7 @@
 
 # development version
 
+* Add Heathman 2024 efavirenz ([doi:10.70534/pgia9927](https://doi.org/10.70534/pgia9927)) -- 135 healthy volunteers with single-plus-multiple-dose CYP2B6-genotype-stratified popPK of efavirenz and its 8-OH and 7-OH metabolites; ratifies new canonical `enzyme_2b6` / `enzyme_2a6` compartments, `8oh` / `7oh` metabolite suffixes, `lcl_2b6` / `lcl_2a6` / `lcl_ugt` CYP-isoenzyme clearance arms, and `ld1` zero-order absorption duration.
 * Add Gaohua 2012 pregnancy PBPK ([doi:10.1111/j.1365-2125.2012.04363.x](https://doi.org/10.1111/j.1365-2125.2012.04363.x)) -- healthy pregnant Caucasian women (14-compartment whole-body p-PBPK with GA-dependent maternal physiology, applied to caffeine [CYP1A2], metoprolol [CYP2D6], and midazolam [CYP3A4]); ratifies new canonical bare `skin` PBPK compartment.
 * Add Morris 2011 telapristone ([doi:10.1208/s12248-011-9304-7](https://doi.org/10.1208/s12248-011-9304-7)) -- adult women with single-dose telapristone-acetate phase I/II PK studies; ratifies new `cdb4453` metabolite suffix, `MIX_FAST_ELIM`, and `RENALIMP_MOD` covariate canonicals.
 * Add Padoin 1998 cephalexin ([doi:10.1128/aac.42.6.1463](https://doi.org/10.1128/aac.42.6.1463)) -- preclinical male Wistar rats with a cephalexin / quinapril oral coadministration DDI (ratifies new `CONMED_QPRL_ORAL` covariate canonical).
