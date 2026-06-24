@@ -1574,6 +1574,8 @@ navbar:
         href: articles/Brooks_2021_tacrolimus.html
       - text: "Tacrolimus (Chen 2017)"
         href: articles/Chen_2017_tacrolimus.html
+      - text: "Tacrolimus (CirrincioneDall 2011)"
+        href: articles/CirrincioneDall_2011_tacrolimus.html
       - text: "Tacrolimus (Dunlap 2025)"
         href: articles/Dunlap_2025_tacrolimus.html
       - text: "Tacrolimus (Grover 2011)"
@@ -2151,6 +2153,7 @@ articles:
   - articles/Chung_2013_vancomycin
   - articles/Cirincione_2017_exenatide
   - articles/Cirincione_2017_exenatide_er
+  - articles/CirrincioneDall_2011_tacrolimus
   - articles/Clegg_2024_nirsevimab
   - articles/Clewe_2015_rifampicin
   - articles/Clewe_2016_rifampicin
