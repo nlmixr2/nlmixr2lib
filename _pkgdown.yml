@@ -1270,6 +1270,8 @@ navbar:
         href: articles/Garg_2014_pertuzumab.html
       - text: "Pertuzumab (Wang 2021)"
         href: articles/Wang_2021_pertuzumab.html
+      - text: "Pexidartinib (Yin 2020)"
+        href: articles/Yin_2020_pexidartinib.html
       - text: "Phenytoin (Hennig 2015)"
         href: articles/Hennig_2015_phenytoin.html
       - text: "Phenytoin (Tanaka 2012)"
@@ -2874,6 +2876,7 @@ articles:
   - articles/Yao_2018_guselkumab
   - articles/Yassen_2025_asundexian
   - articles/Ye_2017_ethaselen
+  - articles/Yin_2020_pexidartinib
   - articles/Yin_2021_trastuzumabDeruxtecan
   - articles/Yoneyama_2017_emicizumab
   - articles/Yoo_2009_cilostazol
