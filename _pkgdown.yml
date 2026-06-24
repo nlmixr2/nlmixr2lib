@@ -336,6 +336,8 @@ navbar:
         href: articles/Woillard_2014_ciclosporin.html
       - text: "Cilostazol (Yoo 2009)"
         href: articles/Yoo_2009_cilostazol.html
+      - text: "Cipaglucosidase (Hajjar 2018)"
+        href: articles/Hajjar_2018_pompe_disease.html
       - text: "Ciprofloxacin (Schaefer 1996)"
         href: articles/Schaefer_1996_ciprofloxacin.html
       - text: "Ciprofloxacin (Thuo 2011)"
@@ -1042,6 +1044,8 @@ navbar:
         href: articles/Cella_2012_midazolam_paediatric_scaling.html
       - text: "Midazolam pbpk (Brussee 2018)"
         href: articles/Brussee_2018_midazolam_pbpk.html
+      - text: "Miglustat (Hajjar 2018)"
+        href: articles/Hajjar_2018_pompe_disease.html
       - text: "Miltefosine (Dorlo 2008)"
         href: articles/Dorlo_2008_miltefosine.html
       - text: "Miltefosine (Dorlo 2017)"
@@ -2281,6 +2285,7 @@ articles:
   - articles/Gupta_2016_amatuximab
   - articles/Gupta_2016_lenvatinib
   - articles/Gupta_2017_ixazomib
+  - articles/Hajjar_2018_pompe_disease
   - articles/Hall_2017_dapsone
   - articles/Hamren_2008_tesaglitazar
   - articles/Hamuro_2017_DMD_6MWT
