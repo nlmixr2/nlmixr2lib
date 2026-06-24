@@ -2257,6 +2257,18 @@ All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODA
 - **Notes:** Specific scope; remikiren-specific. The drug-specific naming follows the established `CP_<drug>_<units>` precedent (`CP_OXY_NGML`, `CP_FBX_NGML`, `CP_LSN_NGML`, `CP_MORPH_NGML`, `CP_RIF_UM`). Weber 1993 fit the PD model directly to observed plasma concentrations because no structural population PK model was estimated -- the paper characterised remikiren PK with model-independent NCA only. Users wishing to drive the PD model from a simulated PK source must supply their own concentration trajectory (the published single-dose Weber-group papers from the same series report compartmental PK in healthy volunteers but are not on disk in nlmixr2lib). Ratified canonically on 2026-06-10 alongside the Weber 1993 remikiren PD extraction.
 
 
+### CP_GLASDEGIB_NGML (**canonical for instantaneous glasdegib plasma concentration as a time-varying PD driver**)
+- **Description:** Instantaneous plasma concentration of glasdegib (PF-04449913; orally active Hedgehog pathway / Smoothened inhibitor) supplied directly as a time-varying covariate column rather than computed from a coupled PK model. Used in PD-only linear exposure-response models that take glasdegib exposure as an external input to a concentration-effect equation (e.g., concentration-QTc).
+- **Units:** ng/mL
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters as a linear-slope term in the concentration-QTc expression `QTcF = e0 + slope * (CP_GLASDEGIB_NGML / 1000)` (Fostvedt 2021; the in-model `/ 1000` converts the canonical ng/mL covariate to the paper's reported microgram-per-mL slope scaling). Set to 0 outside the drug-exposure window (the concentration-slope term then collapses to 0). Reference values observed: geometric-mean steady-state Cmax was 1137 ng/mL at 100 mg QD (therapeutic dose) and 2445 ng/mL at 200 mg QD (a 2-fold supratherapeutic exposure used in Fostvedt 2021's bootstrap predictions; see Fostvedt 2021 Methods 2.3 and Table 4).
+- **Source aliases:**
+  - `CONC` (Fostvedt 2021 Methods 2.2 and 2.3 'concentration-QTc modelling' equations; values in ng/mL but model fit with the slope reported per microgram-per-mL after a `CONC / 1000` rescaling internal to the estimation -- "The estimates are reported on the microgram scale as the scaling helped the estimation procedure", Fostvedt 2021 Table 3 footnote).
+- **Example models:** `Fostvedt_2021_glasdegib_QTcF.R` and `Fostvedt_2021_glasdegib_QTcS.R` (PD-only linear mixed-effects E-R model for QTcF / QTcS prolongation in patients with cancer; CP_GLASDEGIB_NGML is the observed or simulated plasma concentration supplied per event row).
+- **Notes:** Specific scope; glasdegib-specific. The drug-specific naming follows the established `CP_<drug>_<units>` precedent (`CP_OXY_NGML`, `CP_FBX_NGML`, `CP_LSN_NGML`, `CP_MORPH_NGML`, `CP_RIF_UM`, `CP_REM_NGML`). Fostvedt 2021 fit the PD model directly to observed plasma concentrations because no structural population PK model is published in the source paper -- the geometric-mean Cmax values used for the parametric-bootstrap QTcF predictions (Fostvedt 2021 Section 3.4; cited to reference [15] of the paper) come from a separate Pfizer phase 2 study in patients with hematologic malignancies, not from a parameterised popPK model included in this paper. Users wishing to drive the PD model from a simulated PK source must supply their own concentration trajectory; no glasdegib popPK model exists in the nlmixr2lib registry. Ratified canonically on 2026-06-24 alongside the Fostvedt 2021 glasdegib QTc extraction.
+
+
 ## Count / Markov-feedback PD covariates
 
 These columns are specific to count / Markov / time-to-event PD models that

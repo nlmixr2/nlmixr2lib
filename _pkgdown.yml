@@ -740,6 +740,10 @@ navbar:
         href: articles/Cao_2013_gevokizumab.html
       - text: "Givosiran (Ayyar 2024)"
         href: articles/Ayyar_2024_givosiran.html
+      - text: "Glasdegib QTcF (Fostvedt 2021)"
+        href: articles/Fostvedt_2021_glasdegib.html
+      - text: "Glasdegib QTcS (Fostvedt 2021)"
+        href: articles/Fostvedt_2021_glasdegib.html
       - text: "Glibenclamide (Rambiritch 2016)"
         href: articles/Rambiritch_2016_glibenclamide.html
       - text: "Glucarpidase (Kimura 2023)"
@@ -2235,6 +2239,7 @@ articles:
   - articles/Flint_2017_s_ketamine
   - articles/Foissac_2011_atazanavir
   - articles/Foo_2016_droperidol
+  - articles/Fostvedt_2021_glasdegib
   - articles/Franken_2015_morphine
   - articles/Franken_2017_haloperidol
   - articles/Franken_2017_midazolam
