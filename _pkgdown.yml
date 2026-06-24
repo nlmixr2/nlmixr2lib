@@ -544,6 +544,8 @@ navbar:
         href: articles/Goggin_2004_emfilermin.html
       - text: "Emicizumab (Yoneyama 2017)"
         href: articles/Yoneyama_2017_emicizumab.html
+      - text: "Empagliflozin (Baron 2016)"
+        href: articles/Baron_2016_empagliflozin.html
       - text: "Emtricitabine (Valade 2014)"
         href: articles/Valade_2014_emtricitabine.html
       - text: "Emtricitabine (Valade 2015)"
@@ -2042,6 +2044,7 @@ articles:
   - articles/Barnett_2018_coproporphyrin_I
   - articles/Barnett_2018_rifampicin
   - articles/Barnett_2018_rosuvastatin
+  - articles/Baron_2016_empagliflozin
   - articles/Barras_2009_enoxaparin
   - articles/Bastida_2018_tocilizumab
   - articles/Baverel_2015_tralokinumab
