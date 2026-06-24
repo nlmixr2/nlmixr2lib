@@ -1556,6 +1556,8 @@ navbar:
         href: articles/Ait-Oudhia_2016_sunitinib.html
       - text: "Sunitinib (Yu 2015)"
         href: articles/Yu_2015_sunitinib.html
+      - text: "Sunitinib OS (Hansson 2013)"
+        href: articles/Hansson_2013_sunitinib_OS.html
       - text: "Sunitinib irinotecan mouse (Wilson 2015)"
         href: articles/Wilson_2015_sunitinib_irinotecan_mouse.html
       - text: "TF 505 (Matsumoto 2005)"
@@ -2290,6 +2292,7 @@ articles:
   - articles/Han_2015_sibutramine
   - articles/Han_2018_methionineMetabolismCycle
   - articles/Hanberg_2018_meropenem
+  - articles/Hansson_2013_sunitinib_OS
   - articles/Hansson_2013a_sunitinib
   - articles/Hansson_2013b_sunitinib
   - articles/Hansson_2013c_sunitinib
