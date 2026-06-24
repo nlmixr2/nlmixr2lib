@@ -197,10 +197,40 @@ The `brain_<region>` namespace was adopted 2026-05-28 to disambiguate brain-anat
 
 ### brain_csf (**canonical brain CSF compartment**)
 - **Type:** compartment
-- **Role:** Brain cerebrospinal-fluid compartment for brain-PBPK models. Replaces the older `brain_ecf` for the cerebrospinal-fluid compartment per the 2026-05-28 naming audit.
-- **Source aliases:**
-  - `brain_ecf` -- deprecated; replaced by `brain_csf`.
-- **Example models:** `Grimm_2023_gantenerumab.R`, `Grimm_2023_trontinemab.R`.
+- **Role:** Brain cerebrospinal-fluid compartment for brain-PBPK and brain-distribution PK models. Use this name for the single lumped CSF compartment when a model does not need to resolve CSF anatomical subdivisions; use the `brain_csf_<location>` family below when a model distinguishes CSF subregions (LV / TFV / CM / SAS) mechanistically.
+- **Source aliases:** none.
+- **Example models:** `Grimm_2023_gantenerumab.R`, `Grimm_2023_trontinemab.R`, `Syvanen_2012_quinidine_rat.R` (where `brain_csf` carries the single brain extracellular sampling compartment in the absence of an ECF / CSF distinction).
+
+### brain_ecf (**canonical brain parenchymal extracellular-fluid compartment**)
+- **Type:** compartment
+- **Role:** Brain parenchymal extracellular fluid (interstitial fluid surrounding brain cells) in systems-based PK (SBPK) and mechanistic brain-distribution models that distinguish brain parenchymal ECF from CSF as separate mass-balance compartments. Drug enters via passive and / or transporter-mediated clearance from plasma and flows toward the CSF ventricular system at the physiological brain-ECF flow rate `Q_ECF` (rat: ~0.2 uL/min).
+- **Source aliases:** none.
+- **Example models:** `Westerhout_2013_quinidine.R` (founding example; rat SBPK model jointly fit to parenchymal brain ECF, four CSF subregions, and total brain).
+- **Notes:** Distinct from `brain_csf` (the cerebrospinal-fluid compartment) and from the bare `ecf` (the general brain / tumor extracellular-fluid compartment used by simpler microdialysis models without an explicit CSF compartment, e.g., `Campagne_2019_cyclophosphamide_mouse.R`). Pre-2026-06-24 `brain_ecf` was a deprecated alias of `brain_csf`; the operator restored the name 2026-06-24 (response to task 215 sidecar) under the role-based `brain_<region>` namespace so SBPK papers that distinguish parenchymal ECF from CSF can encode both. Existing pre-2026-06-24 models using `brain_csf` for the parenchymal extracellular compartment (e.g., Syvanen 2012) are NOT retrofitted.
+
+### brain_csf_lv (**canonical CSF lateral-ventricle compartment**)
+- **Type:** compartment
+- **Role:** Cerebrospinal-fluid compartment in the lateral ventricle, the first CSF compartment downstream of choroid-plexus secretion in the rat ventricular system. Used by mechanistic intra-brain SBPK models that resolve CSF anatomical subregions; drug enters via blood-CSF barrier transport from plasma and via parenchymal brain-ECF flow, and exits to `brain_csf_tfv` at the CSF flow rate `Q_CSF` (rat: ~2.2 uL/min).
+- **Source aliases:** none.
+- **Example models:** `Westerhout_2013_quinidine.R` (founding example; physiological volume `V_LV` = 50 uL in the rat).
+
+### brain_csf_tfv (**canonical CSF third + fourth ventricle compartment**)
+- **Type:** compartment
+- **Role:** Combined third and fourth ventricle CSF compartment in mechanistic intra-brain SBPK models. Receives CSF flow from `brain_csf_lv` and discharges into `brain_csf_cm` at `Q_CSF`. Drug enters via blood-CSF barrier transport from plasma.
+- **Source aliases:** none.
+- **Example models:** `Westerhout_2013_quinidine.R` (founding example; physiological volume `V_TFV` = 50 uL in the rat; in Westerhout 2013 the plasma-to-TFV transfer clearance was structurally assumed equal to the plasma-to-LV transfer clearance because no TFV microdialysis was performed).
+
+### brain_csf_cm (**canonical CSF cisterna-magna compartment**)
+- **Type:** compartment
+- **Role:** Cisterna-magna CSF compartment in mechanistic intra-brain SBPK models. Receives CSF flow from `brain_csf_tfv` and discharges into `brain_csf_sas` at `Q_CSF`. Drug enters via blood-CSF barrier transport from plasma; commonly the second microdialysis sampling site in multi-probe rat SBPK designs.
+- **Source aliases:** none.
+- **Example models:** `Westerhout_2013_quinidine.R` (founding example; physiological volume `V_CM` = 17 uL in the rat).
+
+### brain_csf_sas (**canonical CSF subarachnoid-space compartment**)
+- **Type:** compartment
+- **Role:** Subarachnoid-space CSF compartment (cranial + spinal SAS combined) in mechanistic intra-brain SBPK models. Terminal CSF compartment that returns drug to systemic plasma via arachnoid villi at `Q_CSF`.
+- **Source aliases:** none.
+- **Example models:** `Westerhout_2013_quinidine.R` (founding example; physiological volume `V_SAS` = 180 uL in the rat; this compartment closes the CSF loop by feeding back into the plasma mass balance).
 
 ### brain_deep (**canonical deep brain compartment**)
 - **Type:** compartment
