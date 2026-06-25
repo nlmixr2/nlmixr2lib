@@ -1306,6 +1306,8 @@ navbar:
         href: articles/Kakara_2014_statins_LDLC.html
       - text: "Polatuzumab (Lu 2019)"
         href: articles/Lu_2019_polatuzumab.html
+      - text: "Ponezumab (Nicholas 2009)"
+        href: articles/Nicholas_2009_ponezumab.html
       - text: "Posaconazole (Kohl 2010)"
         href: articles/Kohl_2010_posaconazole.html
       - text: "Posdinemab (PerezRuixo 2025)"
@@ -2569,6 +2571,7 @@ articles:
   - articles/Ngamprasertwong_2016_propofol_sheep
   - articles/Ngo_2020_HL2351
   - articles/Ni_2013_ciclosporin
+  - articles/Nicholas_2009_ponezumab
   - articles/Nichols_2016_piperacillin_tazobactam
   - articles/Niebecker_2015_edoxaban
   - articles/Nielsen_2011_antibacterial_efficacy
