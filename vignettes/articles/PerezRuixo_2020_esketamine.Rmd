@@ -51,7 +51,9 @@ dosing. The IV route was studied at 28 mg and the PO route at 84 mg
 in the Phase I cross-over study ESKETINTRD1009.
 
 The same information is available programmatically via
-`readModelDb("PerezRuixo_2020_esketamine")$population`.
+`readModelDb("PerezRuixo_2020_esketamine")()$population`. `readModelDb()`
+returns the model *function*; the trailing `()` evaluates it to the model
+object whose `$population` element holds this list.
 
 # Source trace
 
@@ -322,7 +324,7 @@ knitr::kable(
     "Noresk Cmax sim", "Noresk Cmax pub", "%pub",
     "Noresk AUC sim",  "Noresk AUC pub",  "%pub"
   ),
-  caption = "Table 4 reproduction. Cmax in ng/mL, AUC0-24 in ng*h/mL. Esket = esketamine, Noresk = noresketamine. The noresketamine AUC0-24 % column is consistently ~140% across all strata and doses; this is the 1.41 = 1/F_met algebraic discrepancy discussed in the Errata."
+  caption = "Table 4 reproduction. Cmax in ng/mL, AUC0-24 in ng*h/mL. Esket = esketamine, Noresk = noresketamine. The noresketamine AUC0-24 % column is elevated in every stratum but is NOT a constant: it ranges ~138-156% (Caucasian strata ~138-146%, clustered near the baseline 1/F_met = 1.41; Asian strata ~144-156%, higher). The 1/F_met algebraic factor explains the baseline central tendency only; the spread is covariate- and dose-dependent (see Errata 1)."
 )
 ```
 
@@ -413,6 +415,10 @@ nca_summary <- function(res, label) {
     dplyr::filter(PPTESTCD %in% c("cmax", "auclast")) |>
     dplyr::select(treatment, PPTESTCD, PPORRES) |>
     tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES) |>
+    # Select the analyte columns by NAME, not by pivot_wider's emission order:
+    # PKNCA returns auclast before cmax, so relying on positional order would
+    # transpose the Cmax / AUC0-24 labels in the kable below.
+    dplyr::select(treatment, cmax, auclast) |>
     dplyr::mutate(analyte = label)
 }
 
@@ -434,26 +440,48 @@ knitr::kable(
 The model file commits the **most literal reading of Table 3** of
 Perez-Ruixo 2020. Three items warrant explicit downstream attention:
 
-## 1. Noresketamine AUC0-24 over-prediction (1.41x = 1/F_met)
+## 1. Noresketamine AUC0-24 over-prediction (~1.4-1.6x; only partly 1/F_met)
 
 The model reproduces the published Table 4 esketamine Cmax and AUC0-24
 within ~4% and the noresketamine Cmax within ~2% across all 18 (race x
 age x dose) strata. The noresketamine AUC0-24, however, is
-**over-predicted by a factor of 1.41 in every stratum**. Numerically,
+**over-predicted in every stratum, by a factor that is not constant: it
+ranges ~1.38 to ~1.56** (mean ~1.48) across the 18 strata in the Table 4
+reproduction above. The non-Asian (Caucasian) strata cluster near
 
 ```
-1.41 = 1 / F_met = (k_el + k_met) / k_met = 3.88 / 2.77 = 1.4007
+1 / F_met = (k_el + k_met) / k_met = 3.88 / 2.77 = 1.4007
 ```
 
-This is a deterministic algebraic relationship, not a noise band -- the
-mismatch ratio is identical in every row of the Table 4 reproduction
-above. Mass balance was verified in the committed model: integrating
-`k_met * A_liver(t)` for a 28 mg IV esketamine dose yields 19.94 mg into
-the noresketamine pool, matching the expected `F_met * dose = 0.714 *
-28 = 19.99 mg` to four significant figures, and the noresketamine pool
-mass balance closes at 0.1%. The discrepancy is therefore not in the
-ODE evolution but in the convention by which the published `V_cn/F = 70
-L` maps onto an observed plasma concentration.
+(observed ~1.38-1.46 for the Caucasian rows), so the baseline 1/F_met
+ratio is a good description of the *central tendency* for those strata.
+But **1/F_met explains the discrepancy only partially**, for two reasons:
+
+- **F_met is covariate-dependent.** `k_el` carries the Asian-race effect
+  (`e_asian_kel = 0.36`, a 64% decrease), so for Asian subjects
+  `k_el = 1.11 * 0.36 = 0.40` and the algebraic `1/F_met` *falls* to
+  `(0.40 + 2.77)/2.77 = 1.14`. Yet the observed over-prediction for the
+  Asian strata is *higher*, ~1.44-1.56 -- i.e. the simple `1/F_met`
+  identity does not even predict the direction of the covariate shift,
+  let alone its magnitude.
+- **The ratio also moves with dose and age** within a race stratum
+  (e.g. the Caucasian rows span 1.38-1.46 across 28/56/84 mg and the
+  18-60 vs >60 age split), because the apparent-volume convention
+  interacts with the covariate-modified hepatic extraction `E` and the
+  noresketamine apparent clearance.
+
+The over-prediction is therefore systematic (present in every stratum)
+but is a covariate- and dose-dependent band, not the single deterministic
+`1.41` factor a literal `1/F_met` reading would imply. Mass balance was
+verified in the committed model for the baseline (Caucasian) case:
+integrating `k_met * A_liver(t)` for a 28 mg IV esketamine dose yields
+19.94 mg into the noresketamine pool, matching the expected
+`F_met * dose = 0.714 * 28 = 19.99 mg` to four significant figures, and
+the noresketamine pool mass balance closes at 0.1%. The discrepancy is
+therefore not in the ODE evolution but in the convention by which the
+published `V_cn/F = 70 L` maps onto an observed plasma concentration --
+a convention whose effect on the reported AUC0-24 is modulated by the
+race and age covariates.
 
 Independent reproduction attempts: Alan Maloney encountered exactly the
 same noresketamine AUC0-24 reproduction failure (and parent + metabolite
@@ -463,22 +491,27 @@ extraction task. Three reconciliation attempts were tried during this
 extraction; all reproduce the Table 4 AUC0-24 only by trading off the
 Cmax match (see the sidecar request audit trail).
 
-**Downstream usage advice.** Users who specifically need to reproduce
-the published noresketamine AUC0-24 can multiply `Cc_snk` by
-`F_met = k_met / (k_el + k_met) = 0.7139` in their downstream
-analysis:
+**Downstream usage advice.** Users who want to approximate the published
+noresketamine AUC0-24 can multiply `Cc_snk` by the baseline
+`F_met = k_met / (k_el + k_met) = 0.7139` in their downstream analysis:
 
 ```r
 sim_corrected <- sim |>
   dplyr::mutate(Cc_snk_corrected = Cc_snk * (2.77 / (1.11 + 2.77)))
 ```
 
-This is an EXPLICIT deviation from the most literal reading of the
-paper; it is NOT applied in the default model because doing so would
-under-predict the published noresketamine Cmax by the same 1.41 factor.
-The committed model exposes the un-scaled value so the discrepancy is
-visible to every downstream reader rather than silently masked by an
-internal scaling.
+This removes most of the over-prediction for the non-Asian strata but,
+because the true over-prediction is covariate- and dose-dependent
+(~1.38-1.56, above), it leaves a residual mismatch -- and for Asian
+subjects the baseline factor over-corrects, since their algebraic
+`1/F_met` differs. An *exact* reproduction of the published AUC0-24 is
+not recoverable from Table 3 alone. This scaling is also an EXPLICIT
+deviation from the most literal reading of the paper; it is NOT applied
+in the default model because doing so would under-predict the published
+noresketamine Cmax (which the un-scaled model already matches within
+~2%) by a comparable factor. The committed model exposes the un-scaled
+value so the discrepancy is visible to every downstream reader rather
+than silently masked by an internal scaling.
 
 **Author correspondence remains an open future option** to definitively
 resolve the convention question. The corresponding author is
