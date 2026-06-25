@@ -1392,6 +1392,8 @@ navbar:
         href: articles/Laffont_2025_opioid_overdose_reversal_simulation.html
       - text: "Rfxiii cyno (Dodds 2005)"
         href: articles/Dodds_2005_rfxiii_cyno.html
+      - text: "Rg7652 (Budha 2015)"
+        href: articles/Budha_2015_rg7652.html
       - text: "Ribavirin (Mensing 2017)"
         href: articles/Mensing_2017_3D_HCV_regimen.html
       - text: "Rifabutin (Hennig 2015)"
@@ -2091,6 +2093,7 @@ articles:
   - articles/Brussee_2016_arginine
   - articles/Brussee_2018_midazolam_pbpk
   - articles/BuchwalderCsajka_1999_angiotensin
+  - articles/Budha_2015_rg7652
   - articles/Budha_2023_tislelizumab
   - articles/Buelga_2005_vancomycin
   - articles/Buil-Bruna_2015_lanreotide
