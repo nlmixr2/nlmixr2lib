@@ -1618,6 +1618,30 @@ All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODA
 - **Example models:** `Oniki_2018_nafld_risk.R` (%, reference 5.88; power exponent -3.34 for `(HBA1C / 5.88)` on the (BMI50 - 17) half-saturation offset of the sigmoidal logit-of-NAFLD function, Oniki 2018 Eq. 4 / Figure 2c).
 - **Notes:** General scope because HbA1c is a routine, paper-independent glycemic-control laboratory measurement. Companion glycemic covariate to `FPG` (baseline fasting plasma glucose), which is routinely reported alongside HbA1c in T2DM / metabolic-syndrome populations. Distinct from `GLU` (time-varying within-subject glucose regressor). Ratified canonically alongside the Oniki 2018 NAFLD-risk extraction.
 
+## Bone biomarkers
+
+### TRACP5B_BL (**canonical for baseline serum tartrate-resistant acid phosphatase 5b concentration**)
+- **Description:** Pre-treatment serum tartrate-resistant acid phosphatase 5b (TRACP-5b) concentration, an osteoclast-derived bone-resorption biomarker. Time-fixed per subject. Used as the per-subject anchor for the steady-state marker pool in indirect-response bone-turnover models (`Kin = TRACP5B_BL * Kout`, `marker(0) <- TRACP5B_BL`) and as a continuous covariate on disease-progression and BMD-coupling parameters (power-model standardisation to the cohort median).
+- **Units:** mU/dL (clinical reporting convention used in Japanese osteoporosis cohorts and the Osteolinks TRACP-5b kit; document per-model via `covariateData[[TRACP5B_BL]]$units`). Some clinical contexts report TRACP-5b in U/L; 1 U/L = 100 mU/dL only if the assays are calibrated equivalently -- per-model unit documentation is load-bearing.
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- used with power scaling `(TRACP5B_BL / ref)^exponent`. Reference value observed: 400 mU/dL (Mori 2018 cohort -- mean baseline 401.1 mU/dL across N = 306 Japanese primary-osteoporosis patients; the paper says continuous covariates were standardised to their cohort median but the numeric median is not published, so the rounded cohort mean serves as the documented reference).
+- **Source aliases:**
+  - `TRACP-5b` -- text-form of the marker name used in Mori 2018; transliterated to `TRACP5B_BL` for the per-subject baseline canonical name.
+- **Example models:** `Mori_2018_zoledronicAcid.R` (mU/dL, reference 400; power exponents -1.534 on EKD50, -1.350 on Slope, -1.319 on T50; and -1.112 on Scale in the active-treatment arm only -- the Scale covariate is gated by `ON_TREATMENT`).
+- **Notes:** Specific scope because the cohort-median reference (400 mU/dL) is tied to the Mori 2018 Japanese primary-osteoporosis cohort and the Osteolinks assay; future bone-resorption-marker extractions using a different assay (different antibodies, different normalisation) should ratify the same canonical and document the per-model assay / reference in `covariateData[[TRACP5B_BL]]$notes`. Ratified canonically alongside the Mori 2018 zoledronic-acid BMD extraction. Distinct from any time-varying serum TRACP-5b state output (which would be a model output rather than a covariate column).
+
+### BMD_BL (**canonical for baseline lumbar-spine bone mineral density**)
+- **Description:** Pre-treatment lumbar-spine (L2-L4) bone mineral density measured by dual-energy X-ray absorptiometry (DXA). Time-fixed per subject. Used as the per-subject initial condition for a BMD state compartment (`bmd(0) <- BMD_BL`) and as the per-subject deviation reference inside the BMD effect-compartment ODE (`d/dt(bmd) <- Ke0 * [Scale * (marker - Marker0) - (bmd - BMD_BL)]`).
+- **Units:** g/cm^2 (the standard DXA areal-BMD unit; document per-model via `covariateData[[BMD_BL]]$units`). Some clinical contexts report BMD as the dimensionless T-score; the canonical column stores the raw areal density.
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- used as a per-subject anchor; no power-form covariate effect in the example model.
+- **Source aliases:**
+  - `BMD0` -- in-text mathematical symbol used by Mori 2018 for the baseline BMD value entering the BMD ODE; the covariate column name is `BMD_BL`.
+- **Example models:** `Mori_2018_zoledronicAcid.R` (g/cm^2, used as the initial condition `bmd(0) <- BMD_BL` and the deviation reference inside the BMD ODE; per-subject median 0.677 g/cm^2 across the Mori 2018 cohort).
+- **Notes:** Specific scope because the anatomical site (lumbar spine L2-L4) and the modality (DXA Hologic instrument) are tied to the Mori 2018 ZONE-study protocol; future BMD extractions from other anatomical sites (femoral neck, total hip, distal radius) should ratify a sibling canonical (e.g., `BMD_FN_BL`, `BMD_TH_BL`) rather than overloading this column. Ratified canonically alongside the Mori 2018 zoledronic-acid BMD extraction. Companion bone biomarker to `TRACP5B_BL`.
+
 ## Drug exposure metrics
 
 ### CAV (**canonical for average drug plasma concentration over a dosing interval**)
