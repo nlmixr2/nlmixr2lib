@@ -670,6 +670,8 @@ navbar:
         href: articles/Rose_2016_follitropin_delta.html
       - text: "Fondaparinux (Zufferey 2018)"
         href: articles/Zufferey_2018_fondaparinux.html
+      - text: "Fosamprenavir (Fisher 2008)"
+        href: articles/Fisher_2008_fosamprenavir.html
       - text: "Fosdagrocorat (Weatherley 2018)"
         href: articles/Weatherley_2018_fosdagrocorat.html
       - text: "Fosdagrocorat oc (Shoji 2017)"
@@ -2232,6 +2234,7 @@ articles:
   - articles/Fiedler-Kelly_2019_fremanezumab
   - articles/FiedlerKelly_2020_fremanezumab_cm
   - articles/FiedlerKelly_2020_fremanezumab_em
+  - articles/Fisher_2008_fosamprenavir
   - articles/Flint_2017_s_ketamine
   - articles/Foissac_2011_atazanavir
   - articles/Foo_2016_droperidol
