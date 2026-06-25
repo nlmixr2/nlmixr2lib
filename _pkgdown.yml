@@ -676,6 +676,8 @@ navbar:
         href: articles/Shoji_2017_fosdagrocorat_oc.html
       - text: "Fosdagrocorat p1np (Shoji 2017)"
         href: articles/Shoji_2017_fosdagrocorat_p1np.html
+      - text: "Fospropofol (Gibiansky 2005)"
+        href: articles/Gibiansky_2005_fospropofol.html
       - text: "Fremanezumab (Fiedler-Kelly 2019)"
         href: articles/Fiedler-Kelly_2019_fremanezumab.html
       - text: "Fremanezumab cm (FiedlerKelly 2020)"
@@ -2258,6 +2260,7 @@ articles:
   - articles/Georges_2009_ceftazidime
   - articles/Germovsek_2016_gentamicin
   - articles/Germovsek_2018_meropenem
+  - articles/Gibiansky_2005_fospropofol
   - articles/Gibiansky_2014_obinutuzumab
   - articles/Gilkey_2015_DiRnanoparticle
   - articles/Girard_2012_pimasertib
