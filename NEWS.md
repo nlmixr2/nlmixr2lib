@@ -2,6 +2,7 @@
 
 # development version
 
+* Add Frohlich 2018 mRNA translation ([doi:10.1038/s41540-018-0079-7](https://doi.org/10.1038/s41540-018-0079-7)) -- QSP mechanistic in-vitro single-cell ribosomal-translation model (model ii) fit to HuH7 cells transfected with eGFP / d2eGFP mRNA constructs (ratifies new canonical `mrna` / `gfp` / `ribo` / `logfluor` compartments and `STUDY_d2eGFP` covariate; final parameter values from the authors' Zenodo deposit doi:10.5281/zenodo.1228899).
 * Add Gaohua 2012 pregnancy PBPK ([doi:10.1111/j.1365-2125.2012.04363.x](https://doi.org/10.1111/j.1365-2125.2012.04363.x)) -- healthy pregnant Caucasian women (14-compartment whole-body p-PBPK with GA-dependent maternal physiology, applied to caffeine [CYP1A2], metoprolol [CYP2D6], and midazolam [CYP3A4]); ratifies new canonical bare `skin` PBPK compartment.
 * Add Morris 2011 telapristone ([doi:10.1208/s12248-011-9304-7](https://doi.org/10.1208/s12248-011-9304-7)) -- adult women with single-dose telapristone-acetate phase I/II PK studies; ratifies new `cdb4453` metabolite suffix, `MIX_FAST_ELIM`, and `RENALIMP_MOD` covariate canonicals.
 * Add Padoin 1998 cephalexin ([doi:10.1128/aac.42.6.1463](https://doi.org/10.1128/aac.42.6.1463)) -- preclinical male Wistar rats with a cephalexin / quinapril oral coadministration DDI (ratifies new `CONMED_QPRL_ORAL` covariate canonical).
