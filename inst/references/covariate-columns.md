@@ -6664,6 +6664,17 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Example models:** `Tammara_2017_rivipansel.R` (Table 1: additive effect 0.234 on CL via `1 + 0.234 * STUDY_RIV201`; selects the cohort-specific additive and proportional residual SDs in `model()`).
 - **Notes:** Specific scope because the contrast is tied to the rivipansel development program. The Tammara 2017 paper interprets the 23% CL increment as a putative hyperfiltration effect of SCD; in simulation use cases targeting the SCD population (the paper's stated goal) set `STUDY_RIV201 = 1` for every subject. Subject-level / time-fixed; set once from the trial identifier on each subject record.
 
+### STUDY_WAGH_2 (**canonical for Wagh 2021 spectinamide 1810 mouse TB study 2 indicator**)
+- **Description:** 1 = BALB/c mouse cohort enrolled in study 2 of the Wagh 2021 spectinamide 1810 dose ranging / dose fractionation efficacy program (Wagh 2021 Table 5: study 2 used 4-arm dosing regimens of 50 BID, 100 QD, 166 TIW, 200 BID, and 333 TIW with a 5.37 log CFU baseline at start of treatment); 0 = study 1 (Wagh 2021 Table 4: 24-arm dose-fractionation schedule with a 7.08 log CFU baseline at start of treatment). Used to switch K_kill_max from the study 1 typical value to the 1.15-fold higher study 2 value in the integrated PK/PD model.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (Wagh 2021 study 1: 7.08 log CFU initial bacterial load; the reference K_kill_max = 0.0374 1/h applies).
+- **Source aliases:**
+  - `STUDY` -- the Wagh 2021 NONMEM dataset's study identifier column (1 / 2 in the source; mapped to 0 / 1 in this binary indicator).
+- **Example models:** `Wagh_2021_spectinamide_1810_mouse.R` (Table 3: study-specific coefficient for K_kill_max = 1.15, RSE 4.0%; applied multiplicatively as `killmax = killmax_base * (1 + STUDY_WAGH_2 * (1.15 - 1))`).
+- **Notes:** Specific scope because the contrast is tied to the Wagh 2021 study 1 vs study 2 difference in inoculum-induced baseline bacterial load and a downstream effect on observed efficacy. Subject-level / time-fixed; set once per mouse from the source-study identifier on each animal record. Per the paper Discussion, the higher K_kill_max in study 2 (1.15x) is plausibly explained by the lower baseline bacterial load (5.37 vs 7.08 log CFU); see vignette Assumptions and deviations for the per-study residual-error treatment.
+
 ### DLVL (**canonical for source-protocol dose-level integer indicator**)
 - **Description:** Integer dose-level / protocol-arm indicator carried per subject in the DDMODEL00000281 lidocaine bundle's simulated dataset (`Simulated_Lid_B04_ddmore.csv`). Values 1-4 (or higher) flag distinct study-protocol dose / regimen tiers; the `NA_NA_lidocaine.R` model binarises as `DLVL > 2` to switch the typical-value baselines for both the GX elimination rate constant K30 and the lidocaine apparent central volume V1 between a "low" (DLVL <= 2) and a "high" (DLVL > 2) regimen.
 - **Units:** (integer-coded categorical)
