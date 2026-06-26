@@ -334,11 +334,15 @@ cmp <- tibble::tribble(
 ) |>
   mutate(sim_pct = sprintf("%+.1f%%", sim_pct))
 
-knitr::kable(cmp,
-             col.names = c("Scenario", "Paper-reported range / point",
-                           "Simulated typical-value change"),
-             align = c("l", "l", "r"),
-             caption = "Simulated typical-value uCTX change from baseline vs paper-reported response ranges.")
+cmp |>
+  dplyr::rename(
+    "Scenario"                       = scenario,
+    "Paper-reported range / point"   = paper_range_pct,
+    "Simulated typical-value change" = sim_pct
+  ) |>
+  knitr::kable(
+    align = c("l", "l", "r"),
+    caption = "Simulated typical-value uCTX change from baseline vs paper-reported response ranges.")
 ```
 
 The simulated typical-value changes fall within the paper-reported ranges

@@ -214,6 +214,17 @@ Flag any starred rows in the narrative; do not tune parameters to match.
 - **Renaming `Cc` to `conc`** — keep the column named `Cc` (same as the
   observation variable in the nlmixr2 model) rather than renaming it to
   `conc`. Same for dose: keep `amt`, not `dose`.
+- **Transposed table headers from `col.names`** — when you reshape PKNCA
+  results into a wide display table with
+  `tidyr::pivot_wider(names_from = PPTESTCD)`, the parameter columns come out
+  in **PKNCA's order — `auclast` before `cmax`**, not the order you wrote them
+  in the `intervals` data frame. Labeling them positionally with
+  `knitr::kable(..., col.names = c("...", "Cmax", "AUC0-24"))` therefore
+  silently swaps the Cmax and AUC headers. Always rename **by name** instead:
+  `dplyr::rename("Cmax (ng/mL)" = cmax, "AUC0-24 (ng*h/mL)" = auclast)` piped
+  before `kable()`. See `references/vignette-template.md` § "Table column
+  headers". (`nlmixr2lib::ncaComparisonTable()` already emits correctly-named
+  columns, so this only bites hand-rolled `pivot_wider` + `kable` tables.)
 - **Dose units ≠ concentration units** — PKNCA doesn't check. Confirm dose is
   in the same mass unit as `Cc × volume` implied by the model (e.g., mg vs.
   ng × L).

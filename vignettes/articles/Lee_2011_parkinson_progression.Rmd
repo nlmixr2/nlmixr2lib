@@ -143,9 +143,12 @@ end_of_study <- sim_typical |>
   dplyr::select(arm, deltaUPDRS) |>
   dplyr::mutate(deltaUPDRS = round(deltaUPDRS, 3))
 
-knitr::kable(
-  end_of_study,
-  col.names = c("Arm", "Predicted change from baseline UPDRS at week 26 (= 6.5 mo)"),
+end_of_study |>
+  dplyr::rename(
+    "Arm"                                                       = arm,
+    "Predicted change from baseline UPDRS at week 26 (= 6.5 mo)" = deltaUPDRS
+  ) |>
+  knitr::kable(
   caption = "Reproduction of Lee 2011 Results section anchor (placebo published as 3.62)."
 )
 ```
@@ -227,8 +230,14 @@ week26_distribution <- sim_vpc |>
     n_subjects      = dplyr::n(),
     .groups = "drop"
   )
-knitr::kable(week26_distribution,
-             col.names = c("Arm", "Mean delta-UPDRS at week 26", "SD", "N subjects"),
+week26_distribution |>
+  dplyr::rename(
+    "Arm"                         = arm,
+    "Mean delta-UPDRS at week 26" = mean_deltaUPDRS,
+    "SD"                          = sd_deltaUPDRS,
+    "N subjects"                  = n_subjects
+  ) |>
+  knitr::kable(
              caption = "Simulated population-mean change from baseline UPDRS at week 26 (4-week-month axis).")
 ```
 

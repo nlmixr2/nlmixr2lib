@@ -246,11 +246,16 @@ pknca_results <- pk.nca(pknca_data)
 pknca_summary <- summary(pknca_results)
 
 # Extract results for comparison (row 2 has the 0-Inf interval)
-knitr::kable(
-  pknca_summary[2, c("cmax", "tmax", "half.life", "aucinf.obs")],
+as.data.frame(pknca_summary[2, c("cmax", "tmax", "half.life", "aucinf.obs")]) |>
+  dplyr::rename(
+    "Cmax (µg/mL)"      = cmax,
+    "Tmax (hr)"         = tmax,
+    "Half-life (hr)"    = half.life,
+    "AUCinf (µg·hr/mL)" = aucinf.obs
+  ) |>
+  knitr::kable(
   caption = "NCA parameters for mogamulizumab 1.0 mg/kg IV (typical subject)",
-  digits = 1,
-  col.names = c("Cmax (µg/mL)", "Tmax (hr)", "Half-life (hr)", "AUCinf (µg·hr/mL)")
+  digits = 1
 )
 ```
 

@@ -314,18 +314,27 @@ cmp <- sim_metrics |>
   ) |>
   dplyr::arrange(stratum, dose_mg)
 
-knitr::kable(
-  cmp,
-  digits = c(rep(0, 2), 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0),
-  col.names = c(
-    "Stratum", "Dose (mg)",
-    "Esket Cmax sim", "Esket Cmax pub", "%pub",
-    "Esket AUC sim",  "Esket AUC pub",  "%pub",
-    "Noresk Cmax sim", "Noresk Cmax pub", "%pub",
-    "Noresk AUC sim",  "Noresk AUC pub",  "%pub"
-  ),
-  caption = "Table 4 reproduction. Cmax in ng/mL, AUC0-24 in ng*h/mL. Esket = esketamine, Noresk = noresketamine. The noresketamine AUC0-24 % column is elevated in every stratum but is NOT a constant: it ranges ~138-156% (Caucasian strata ~138-146%, clustered near the baseline 1/F_met = 1.41; Asian strata ~144-156%, higher). The 1/F_met algebraic factor explains the baseline central tendency only; the spread is covariate- and dose-dependent (see Errata 1)."
-)
+cmp |>
+  dplyr::rename(
+    "Stratum"         = stratum,
+    "Dose (mg)"       = dose_mg,
+    "Esket Cmax sim"  = esket_cmax_sim,
+    "Esket Cmax pub"  = esket_cmax_pub,
+    "Esket Cmax %"    = esket_cmax_pct,
+    "Esket AUC sim"   = esket_auc024_sim,
+    "Esket AUC pub"   = esket_auc024_pub,
+    "Esket AUC %"     = esket_auc024_pct,
+    "Noresk Cmax sim" = noresk_cmax_sim,
+    "Noresk Cmax pub" = noresk_cmax_pub,
+    "Noresk Cmax %"   = noresk_cmax_pct,
+    "Noresk AUC sim"  = noresk_auc024_sim,
+    "Noresk AUC pub"  = noresk_auc024_pub,
+    "Noresk AUC %"    = noresk_auc024_pct
+  ) |>
+  knitr::kable(
+    digits = c(rep(0, 2), 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0),
+    caption = "Table 4 reproduction. Cmax in ng/mL, AUC0-24 in ng*h/mL. Esket = esketamine, Noresk = noresketamine. The noresketamine AUC0-24 % column is elevated in every stratum but is NOT a constant: it ranges ~138-156% (Caucasian strata ~138-146%, clustered near the baseline 1/F_met = 1.41; Asian strata ~144-156%, higher). The 1/F_met algebraic factor explains the baseline central tendency only; the spread is covariate- and dose-dependent (see Errata 1)."
+  )
 ```
 
 # Replicate Figure 3 (typical-value time-course by dose and race)
@@ -415,9 +424,9 @@ nca_summary <- function(res, label) {
     dplyr::filter(PPTESTCD %in% c("cmax", "auclast")) |>
     dplyr::select(treatment, PPTESTCD, PPORRES) |>
     tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES) |>
-    # Select the analyte columns by NAME, not by pivot_wider's emission order:
-    # PKNCA returns auclast before cmax, so relying on positional order would
-    # transpose the Cmax / AUC0-24 labels in the kable below.
+    # Cmax-before-AUC display order, to match the Table 4 reproduction above.
+    # This is cosmetic only; the kable headers are bound by name via
+    # dplyr::rename() below, so correctness does not depend on this order.
     dplyr::select(treatment, cmax, auclast) |>
     dplyr::mutate(analyte = label)
 }
@@ -427,11 +436,21 @@ pknca_combined <- dplyr::bind_rows(
   nca_summary(nca_res_snk, "noresketamine")
 )
 
-knitr::kable(
-  pknca_combined |> dplyr::arrange(analyte, treatment),
-  digits = 1,
-  col.names = c("Stratum | Dose", "Cmax (ng/mL)", "AUC0-24 (ng*h/mL)", "Analyte"),
-  caption = "PKNCA-derived Cmax and AUC0-24 for each (stratum, dose) cohort. Compare directly against Table 4 of Perez-Ruixo 2020."
+# Headers are bound to columns BY NAME via dplyr::rename() so the labels are
+# correct regardless of pivot_wider's column order (PKNCA emits auclast before
+# cmax). See the extract-literature-model skill, vignette-template.md
+# § "Table column headers".
+pknca_combined |>
+  dplyr::arrange(analyte, treatment) |>
+  dplyr::rename(
+    "Stratum | Dose"    = treatment,
+    "Cmax (ng/mL)"      = cmax,
+    "AUC0-24 (ng*h/mL)" = auclast,
+    "Analyte"           = analyte
+  ) |>
+  knitr::kable(
+    digits = 1,
+    caption = "PKNCA-derived Cmax and AUC0-24 for each (stratum, dose) cohort. Compare directly against Table 4 of Perez-Ruixo 2020."
 )
 ```
 

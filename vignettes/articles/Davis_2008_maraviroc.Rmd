@@ -291,12 +291,16 @@ compare_table <- dplyr::left_join(table_2, mvc_attributable, by = "treatment") |
   dplyr::select(treatment, cmax_ng_mL, model_qtcf_shift_ms,
                 mean_qtcf_paper_ms, ci90_low_ms, ci90_high_ms)
 
-knitr::kable(compare_table,
-             col.names = c("Dose", "Cmax (ng/mL)",
-                           "Model QTcF shift (ms)",
-                           "Table 2 QTcF mean diff (ms)",
-                           "Table 2 90% CI low",
-                           "Table 2 90% CI high"),
+compare_table |>
+  dplyr::rename(
+    "Dose"                        = treatment,
+    "Cmax (ng/mL)"                = cmax_ng_mL,
+    "Model QTcF shift (ms)"       = model_qtcf_shift_ms,
+    "Table 2 QTcF mean diff (ms)" = mean_qtcf_paper_ms,
+    "Table 2 90% CI low"          = ci90_low_ms,
+    "Table 2 90% CI high"         = ci90_high_ms
+  ) |>
+  knitr::kable(
              digits = 2,
              caption = paste(
                "Concentration-attributable QTcF shift (model) vs. ANOVA-derived",

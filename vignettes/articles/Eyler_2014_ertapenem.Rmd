@@ -392,13 +392,16 @@ comparison <- attainment_summary |>
                 simulated_median_pct = median_pct_above_2,
                 published_median_pct_above_2)
 
-knitr::kable(
-  comparison,
+comparison |>
+  dplyr::rename(
+    "Regimen"                              = treatment,
+    "% subjects geq 40% T>MIC (simulated)" = simulated_pct_geq_40,
+    "% subjects geq 40% T>MIC (published)" = published_pct_geq_40,
+    "Median % T > 2 mg/L (simulated)"      = simulated_median_pct,
+    "Median % T > 2 mg/L (published)"      = published_median_pct_above_2
+  ) |>
+  knitr::kable(
   caption = "Replicates Table 3 of Eyler 2014 -- probability of achieving unbound > 2 mg/L for >= 40% of the first dosing interval, plus median percent time above 2 mg/L.",
-  col.names = c("Regimen", "% subjects geq 40% T>MIC (simulated)",
-                "% subjects geq 40% T>MIC (published)",
-                "Median % T > 2 mg/L (simulated)",
-                "Median % T > 2 mg/L (published)"),
   align = c("l", "r", "r", "r", "r")
 )
 ```
@@ -480,7 +483,6 @@ nca_table <- tibble::tribble(
 knitr::kable(
   nca_table,
   caption = "PKNCA summary statistics for the unbound ertapenem profile in the 200-subject virtual cohort (1 g q24h, continuous CRRT).",
-  col.names = c("Quantity", "Value"),
   align = c("l", "r")
 )
 ```

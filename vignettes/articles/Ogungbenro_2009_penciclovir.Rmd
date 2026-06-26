@@ -313,15 +313,21 @@ nca_summary <- res_tbl |>
   summarise(value = median(PPORRES, na.rm = TRUE), .groups = "drop") |>
   pivot_wider(names_from = PPTESTCD, values_from = value)
 
-knitr::kable(
-  nca_summary |>
-    select(treatment, cmax, tmax, auclast, aucinf.obs, half.life) |>
-    mutate(across(c(cmax, tmax, auclast, aucinf.obs, half.life),
-                  ~ signif(.x, 3))),
-  col.names = c("Cohort", "Cmax (mg/L)", "Tmax (h)", "AUClast (mg*h/L)",
-                "AUCinf,obs (mg*h/L)", "t1/2 (h)"),
-  caption = "Per-cohort median PKNCA-derived parameters."
-)
+nca_summary |>
+  select(treatment, cmax, tmax, auclast, aucinf.obs, half.life) |>
+  mutate(across(c(cmax, tmax, auclast, aucinf.obs, half.life),
+                ~ signif(.x, 3))) |>
+  dplyr::rename(
+    "Cohort"              = treatment,
+    "Cmax (mg/L)"         = cmax,
+    "Tmax (h)"            = tmax,
+    "AUClast (mg*h/L)"    = auclast,
+    "AUCinf,obs (mg*h/L)" = aucinf.obs,
+    "t1/2 (h)"            = half.life
+  ) |>
+  knitr::kable(
+    caption = "Per-cohort median PKNCA-derived parameters."
+  )
 
 # Paediatric / adult ratios for AUC and Cmax (the paper's Results targets).
 adult_po <- nca_summary |> filter(treatment == "Adults 500 mg PO")
@@ -352,14 +358,20 @@ compare_tbl <- ratio_tbl |>
                 ~ signif(.x, 3)),
          across(c(auc_pct_diff, cmax_pct_diff), ~ round(.x, 1)))
 
-knitr::kable(
-  compare_tbl,
-  col.names = c("Cohort", "AUC ratio (sim)", "Cmax ratio (sim)",
-                "AUC ratio (paper)", "Cmax ratio (paper)",
-                "AUC % diff", "Cmax % diff"),
-  caption = paste("Paediatric / adult exposure ratios at 10 mg/kg PO,",
-                  "simulated vs Ogungbenro 2009 Results section.")
-)
+compare_tbl |>
+  dplyr::rename(
+    "Cohort"            = treatment,
+    "AUC ratio (sim)"   = auc_ratio_sim,
+    "Cmax ratio (sim)"  = cmax_ratio_sim,
+    "AUC ratio (paper)" = auc_ratio_paper,
+    "Cmax ratio (paper)" = cmax_ratio_paper,
+    "AUC % diff"        = auc_pct_diff,
+    "Cmax % diff"       = cmax_pct_diff
+  ) |>
+  knitr::kable(
+    caption = paste("Paediatric / adult exposure ratios at 10 mg/kg PO,",
+                    "simulated vs Ogungbenro 2009 Results section.")
+  )
 
 # Adult apparent clearance from PO PKNCA: CL/F = dose / AUCinf.
 adult_clf <- 500 / adult_po$aucinf.obs

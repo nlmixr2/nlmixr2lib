@@ -227,11 +227,15 @@ figure4_summary <- per_subject_ss |>
     .groups = "drop"
   )
 
-knitr::kable(
-  figure4_summary,
+figure4_summary |>
+  dplyr::rename(
+    "Treatment"            = treatment,
+    "GM Cmax (ng/mL)"      = gm_cmax,
+    "GM Cmin (ng/mL)"      = gm_cmin,
+    "GM AUC0-24 (ng*h/mL)" = gm_auc
+  ) |>
+  knitr::kable(
   digits  = c(0, 0, 0, 0),
-  col.names = c("Treatment", "GM Cmax (ng/mL)",
-                "GM Cmin (ng/mL)", "GM AUC0-24 (ng*h/mL)"),
   caption = "Replicates Figure 4 / Table 5 of Hong 2011: geometric mean ATV exposures by weight-tiered dose."
 )
 ```

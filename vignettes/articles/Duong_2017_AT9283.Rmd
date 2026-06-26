@@ -332,19 +332,23 @@ cmp <- sim_summary |>
     pct_diff_median
   )
 
-knitr::kable(
-  cmp,
+cmp |>
+  dplyr::rename(
+    "Cohort"         = cohort,
+    "Sim median"     = sim_median,
+    "Sim 5th %ile"   = sim_q05,
+    "Sim 95th %ile"  = sim_q95,
+    "Pub median"     = pub_median,
+    "Pub range low"  = pub_low,
+    "Pub range high" = pub_high,
+    "% diff median"  = pct_diff_median
+  ) |>
+  knitr::kable(
   digits  = 1,
   caption = paste(
     "Simulated AUC0-inf at the MTD (h*ng/mL) versus Duong 2017 Table 4.",
     "Simulated values from PKNCA on the stochastic cohort (100 subjects);",
     "published medians and ranges from Table 4."
-  ),
-  col.names = c(
-    "Cohort",
-    "Sim median", "Sim 5th %ile", "Sim 95th %ile",
-    "Pub median", "Pub range low", "Pub range high",
-    "% diff median"
   )
 )
 ```
