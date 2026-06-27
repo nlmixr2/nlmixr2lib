@@ -1010,6 +1010,8 @@ navbar:
         href: articles/Choi_2018_metformin.html
       - text: "Metformin (vanRongen 2018)"
         href: articles/vanRongen_2018_metformin.html
+      - text: "Methotrexate (Joerger 2006)"
+        href: articles/Joerger_2006_methotrexate.html
       - text: "Methotrexate (Ruhs 2012)"
         href: articles/Ruhs_2012_methotrexate.html
       - text: "Methotrexate (Taylor 2020)"
@@ -2372,6 +2374,7 @@ articles:
   - articles/Jiao_2008_mycophenolic_acid
   - articles/Jiao_2009_sirolimus
   - articles/Jin_2014_simvastatin
+  - articles/Joerger_2006_methotrexate
   - articles/Johnson_2011_olanzapine_rat
   - articles/Jonckheere_2019_cefepime
   - articles/Jones_2011_PF04878691_HCV
