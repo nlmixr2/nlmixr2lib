@@ -1306,6 +1306,14 @@ navbar:
         href: articles/Kakara_2014_statins_LDLC.html
       - text: "Polatuzumab (Lu 2019)"
         href: articles/Lu_2019_polatuzumab.html
+      - text: "Polymyxin AB3070294 (Cheah 2016)"
+        href: articles/Cheah_2016_polymyxin_Abaumannii_dynamics.html
+      - text: "Polymyxin ATCC19606 (Cheah 2016)"
+        href: articles/Cheah_2016_polymyxin_Abaumannii_dynamics.html
+      - text: "Polymyxin FADDIAB008 (Cheah 2016)"
+        href: articles/Cheah_2016_polymyxin_Abaumannii_dynamics.html
+      - text: "Polymyxin FADDIAB030 (Cheah 2016)"
+        href: articles/Cheah_2016_polymyxin_Abaumannii_dynamics.html
       - text: "Posaconazole (Kohl 2010)"
         href: articles/Kohl_2010_posaconazole.html
       - text: "Posdinemab (PerezRuixo 2025)"
@@ -2129,6 +2137,7 @@ articles:
   - articles/Chang_2011_PF04455242_prolactin
   - articles/Charles_2007_tafenoquine
   - articles/Chatelut_1999_interferon_alfa_2b
+  - articles/Cheah_2016_polymyxin_Abaumannii_dynamics
   - articles/Chelle_2019_factorviii_fanhdi
   - articles/Chen_2014_nab_paclitaxel
   - articles/Chen_2015_voriconazole
