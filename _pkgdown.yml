@@ -1264,6 +1264,8 @@ navbar:
         href: articles/Lindauer_2017_pembrolizumab.html
       - text: "Penciclovir (Ogungbenro 2009)"
         href: articles/Ogungbenro_2009_penciclovir.html
+      - text: "Penicillin G (Muller 2007)"
+        href: articles/Muller_2007_penicillin_G.html
       - text: "Penicillin G (Padari 2018)"
         href: articles/Padari_2018_penicillin_G.html
       - text: "Pertuzumab (Garg 2014)"
@@ -2543,6 +2545,7 @@ articles:
   - articles/Mould_2007_alemtuzumab
   - articles/Mukai_2019_mogamulizumab
   - articles/Mukonzo_2009_efavirenz
+  - articles/Muller_2007_penicillin_G
   - articles/Muller_2008_amoxicillin
   - articles/Muller_2010_clindamycin
   - articles/Mulyukov_2018_ranibizumab
