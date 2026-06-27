@@ -1566,6 +1566,8 @@ navbar:
         href: articles/AbdelJalil_2013_tacrolimus.html
       - text: "Tacrolimus (Andrews 2017)"
         href: articles/Andrews_2017_tacrolimus.html
+      - text: "Tacrolimus (Antignac 2007)"
+        href: articles/Antignac_2007_tacrolimus.html
       - text: "Tacrolimus (Benkali 2010)"
         href: articles/Benkali_2010_tacrolimus.html
       - text: "Tacrolimus (Bergmann 2014)"
@@ -2022,6 +2024,7 @@ articles:
   - articles/Anderson_1998_paracetamol
   - articles/Andrews_2017_tacrolimus
   - articles/Angeli_2016_iron_hepcidin
+  - articles/Antignac_2007_tacrolimus
   - articles/Aouri_2017_rilpivirine
   - articles/Aoyama_2012_sepantronium
   - articles/ArabAlameddine_2012_raltegravir
