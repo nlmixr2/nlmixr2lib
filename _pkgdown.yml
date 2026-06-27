@@ -1130,6 +1130,8 @@ navbar:
         href: articles/Ahlstrom_2010_nicotinicAcid_rat.html
       - text: "Nimotuzumab (Castro-Surez 2020)"
         href: articles/Castro-Surez_2020_nimotuzumab.html
+      - text: "Nintedanib (Schmid 2017)"
+        href: articles/Schmid_2017_nintedanib.html
       - text: "Nipocalimab (Valenzuela 2025)"
         href: articles/Valenzuela_2025_nipocalimab.html
       - text: "Nirsevimab (Clegg 2024)"
@@ -2679,6 +2681,7 @@ articles:
   - articles/Schipani_2011_nevirapine
   - articles/Schipani_2012_lopinavir
   - articles/Schipani_2013_atazanavir_ritonavir
+  - articles/Schmid_2017_nintedanib
   - articles/Schmidt_2009_oxazolidinones
   - articles/Schmitt_2018_vinflunine
   - articles/Schoemaker_1996_low_molecular_weight_heparin_modeling

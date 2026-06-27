@@ -2742,3 +2742,9 @@ L- and D-enantiomer suffixes for stereoselective popPK models that simultaneousl
 - **Source aliases:** none.
 - **Example models:** `Jansson_2008_eflornithine_rat.R`.
 - **Notes:** Algebraic sum only; no `central_rac`, `peripheral1_rac`, or `depot_rac` compartment exists.
+
+### bibf (**canonical BIBF 1202 nintedanib-metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** BIBF 1202, the main hydrolytic metabolite of nintedanib (BIBF 1120) formed by cleavage of the methyl ester. Used as the metabolite suffix in parent + metabolite simultaneous popPK models (compartments `depot_bibf`, `central_bibf`; parameters `lka_bibf`, `lvc_bibf`, `lcl_bibf`, `lfdepot_bibf`, `ltlag_bibf`; residual `expSd_bibf`). Founding example: `Schmid_2017_nintedanib.R`.
+- **Source aliases:** none.
+- **Example models:** `Schmid_2017_nintedanib.R`.
