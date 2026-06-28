@@ -4354,7 +4354,7 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Reference category:** 0 (not on ezetimibe).
 - **Source aliases:**
   - Derived from an ezetimibe-identifier column in the source.
-- **Example models:** `Kuchimanchi_2018_evolocumab.R` (multiplicative effect 1.20 on Vmax: `Vmax * 1.20^CONMED_EZE`; labeled "Statin + ezetimibe exponent" in Kuchimanchi 2018 Table 3 because ~99% of ezetimibe users in the dataset were also on a conmed_statin, so the effect effectively captures combination therapy), `Kakara_2014_atorvastatin.R`, `Kakara_2014_pitavastatin.R`, `Kakara_2014_rosuvastatin.R` (additive +0.109 contribution to the indirect-response Imax inhibition fraction INH on the LDL-C synthesis rate Kin: `INH = Imax * DOSE / (ID50 + DOSE) + 0.109 * CONMED_EZE`; Kakara 2014 Table 2 INH_EZT).
+- **Example models:** `Kuchimanchi_2018_evolocumab.R` (multiplicative effect 1.20 on Vmax: `Vmax * 1.20^CONMED_EZE`; labeled "Statin + ezetimibe exponent" in Kuchimanchi 2018 Table 3 because ~99% of ezetimibe users in the dataset were also on a conmed_statin, so the effect effectively captures combination therapy), `Kuchimanchi_2018_evolocumab_ldlc.R` (same PK-layer effect plus a multiplicative exponent 0.768 on baseline LDL-C in the exposure-response layer, Table 4), `Kakara_2014_atorvastatin.R`, `Kakara_2014_pitavastatin.R`, `Kakara_2014_rosuvastatin.R` (additive +0.109 contribution to the indirect-response Imax inhibition fraction INH on the LDL-C synthesis rate Kin: `INH = Imax * DOSE / (ID50 + DOSE) + 0.109 * CONMED_EZE`; Kakara 2014 Table 2 INH_EZT).
 - **Notes:** Scope: specific because Kuchimanchi 2018 interprets the ezetimibe indicator as a combination-therapy marker rather than a pure ezetimibe effect. Future popPK/PD models with cleaner ezetimibe separation should add themselves here or register a more specific canonical.
 
 ### CONMED_H2RA (**canonical for concomitant H2-receptor-antagonist use**)
@@ -4659,7 +4659,7 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Reference category:** 0 (not on conmed_statin monotherapy).
 - **Source aliases:**
   - Derived from a conmed_statin-identifier column in the source (any of atorvastatin, rosuvastatin, simvastatin, lovastatin, pravastatin, pitavastatin, fluvastatin) with an AND over "no other lipid-lowering comedication".
-- **Example models:** `Kuchimanchi_2018_evolocumab.R` (multiplicative effect 1.13 on Vmax: `Vmax * 1.13^CONMED_STATIN_MONO`).
+- **Example models:** `Kuchimanchi_2018_evolocumab.R` (multiplicative effect 1.13 on Vmax: `Vmax * 1.13^CONMED_STATIN_MONO`), `Kuchimanchi_2018_evolocumab_ldlc.R` (same PK-layer effect plus an exponent 0.797 on baseline LDL-C and 0.937 on Emax in the exposure-response layer, Table 4).
 - **Notes:** Scope: specific because Kuchimanchi 2018 narrowly defines the conmed_statin covariate as monotherapy only ("patients on a conmed_statin only and no other comedication"). Mutually compatible with `CONMED_EZE`: a subject on conmed_statin+ezetimibe has `CONMED_STATIN_MONO = 0` and `CONMED_EZE = 1`; a subject on conmed_statin alone has `CONMED_STATIN_MONO = 1` and `CONMED_EZE = 0`; a subject on no lipid-lowering therapy has both 0. Future popPK/PD models that adopt a broader "any conmed_statin" definition should register a separate `CONMED_STATIN` or `CONMED_STATIN` canonical rather than reusing this name.
 
 ### CONMED_STEROID (**canonical for systemic corticosteroid administration indicator**)
@@ -5886,6 +5886,17 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Example models:** `Girard_2012_pimasertib.R` (additive shift on the cumulative-logit AE-score model: `theta_bid * REGI_BID`; -0.399 logit units for BID vs QD).
 - **Notes:** Specific scope because the QD-vs-BID contrast is study-specific; future regimen-comparison models that contrast different schedules should either extend this entry's example list (when QD is the reference) or register a sibling indicator (`REGI_TID`, `REGI_QW`) following the same pattern. Distinct from `DOSE` (dose level in mg) and from total-daily-dose aggregates: a 60 mg/day cohort can include either a 60 mg QD subgroup or a 30 mg BID subgroup, and both share the same `DOSE = 60` while differing in `REGI_BID`.
 
+### REGI_QM (**canonical for once-monthly dosing-regimen indicator**)
+- **Description:** 1 = subject's dosing regimen is once-monthly (QM, typically every 4 weeks for a long-half-life mAb), 0 = the per-paper comparator regimen (typically once-every-2-weeks, Q2W, for evolocumab-class mAbs). Per-subject (regimen-fixed) categorical indicator used by static Emax-on-AUC exposure-response models that pool QM and Q2W arms and need to distinguish them because the Emax-on-AUC formulation cannot represent the difference in target-saturation time courses between the two regimens. This is purely an exposure-response model device; dynamic ODE-based PK / PD layers do not need this indicator because they resolve the concentration time course explicitly.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (non-QM regimen -- paper-defined; Q2W for `Kuchimanchi_2018_evolocumab_ldlc.R`). Document the per-paper comparator in `covariateData[[REGI_QM]]$notes`.
+- **Source aliases:**
+  - `REG` -- Kuchimanchi 2018 notation for the binary indicator `i` in the exposure-response formula `Eff = Emax * AUC / (EC50 * REG^i + AUC)`. The linear-scale multiplier paired with this indicator (paper estimate 2.30) maps to the canonical parameter `reg_qm`.
+- **Example models:** `Kuchimanchi_2018_evolocumab_ldlc.R` (founding example; exposure-response Emax on LDL-C distinguishes 420 mg SC QM from 140 mg SC Q2W via `ec50_eff = ec50 * reg_qm^REGI_QM`).
+- **Notes:** Specific scope because the QM-vs-Q2W contrast is study-specific. Sibling of `REGI_BID` (within-QD-vs-BID schedules) under the `REGI_*` family pattern; future regimen-comparison models that contrast different intervals (e.g., Q4W vs Q8W) should register a sibling indicator (`REGI_Q4W`, `REGI_Q8W`) following the same pattern. Distinct from `DOSE` (dose level in mg) and from regimen-implied total-AUC aggregates: a steady-state exposure-matched 140 mg Q2W and 420 mg QM pair share the same AUC over 4 weeks but differ in `REGI_QM`. Pairs with the canonical parameter `lreg_qm` / `reg_qm` (the EC50 multiplier exponentiated by this indicator). Use only in static Emax-on-AUC exposure-response models; dynamic ODE-based PK / PD layers do not need this indicator.
+
 ### MIL_REGIMEN (**canonical for miltefosine monotherapy vs combination-with-LAmB regimen indicator**)
 - **Description:** Per-subject (time-fixed) binary indicator carrying the visceral-leishmaniasis miltefosine treatment-arm assignment in the Dorlo 2017 Eastern African LEAP-0208 study. 1 = monotherapy arm (28 days oral miltefosine 2.5 mg/kg/day, maximum 150 mg/day); 0 = combination arm (single IV liposomal amphotericin B 10 mg/kg on day 1 plus 10 days oral miltefosine 2.5 mg/kg/day, maximum 150 mg/day). Used to select the duration of the initial reduced-bioavailability window: 7 days for monotherapy, 1 day for the combination arm (Dorlo 2017 Table 2 footnote d).
 - **Units:** (binary)
@@ -6202,7 +6213,7 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Scope:** specific
 - **Reference category:** 0 (non-HeFH arm).
 - **Source aliases:** `HEFH` legacy form (used in Vargo 2014 statins / ezetimibe MBMA pre-rename); alias of the canonical `DIS_HEFH` form per the 2026-05-28 naming audit rename.
-- **Example models:** `Vargo_2014_statins_ezetimibe_mbma.R` (additive shift of +0.127 on the statin Emax in HeFH arms; smaller statin LDL-C lowering in HeFH patients than in the non-HeFH reference; biologically consistent with the LDLR-pathway disruption in HeFH).
+- **Example models:** `Vargo_2014_statins_ezetimibe_mbma.R` (additive shift of +0.127 on the statin Emax in HeFH arms; smaller statin LDL-C lowering in HeFH patients than in the non-HeFH reference; biologically consistent with the LDLR-pathway disruption in HeFH), `Kuchimanchi_2018_evolocumab_ldlc.R` (multiplicative exponent 1.28 on baseline LDL-C in the evolocumab Emax-on-AUC exposure-response layer, Table 4; HeFH patients have higher baseline LDL-C than the non-HeFH reference).
 - **Notes:** Specific scope because the HeFH-cohort effect on statin response is paper-specific. Sibling of `DIS_HOFH` (homozygous form, Pu_2021_evinacumab) and the broader `DIS_<indication>` family. Ratified 2026-05-28 per the naming audit.
 
 ### CONMED_RIF_CC, CONMED_INH_CC, CONMED_EMB_CC, CONMED_STR_CC, CONMED_CAB_CC, CONMED_COL_CC, CONMED_MER_CC, CONMED_GEN_CC, CONMED_CIP_CC (**canonical for time-varying plasma / in-vitro concentration of a co-administered named drug**)
