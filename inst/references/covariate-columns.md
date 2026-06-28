@@ -6730,6 +6730,28 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Example models:** `Jorga_2000_tolcapone_fluctuators.R` (subject-level oral t.i.d.).
 - **Notes:** Sibling of `DOSE_50MG` and `DOSE_70MG`; member of the `DOSE_<N>MG` family of dose-level indicators. Jorga 2000 uses the indicator subject-level on the central and peripheral volumes of distribution: `(1 + e_dose_400mg_vc_vp * DOSE_400MG)` with `e_dose_400mg_vc_vp = +0.40` (V is 140% of the 200 mg reference at the 400 mg t.i.d. arm). The dose-dependent V was an empirical finding in the fluctuator cohort that the authors could not confirm in the nonfluctuator cohort (only 200 and 400 mg arms were enrolled there); the effect plausibly reflects a few high-V outliers in the small-volume cohort rather than a true mechanistic dose-V relationship (Jorga 2000 Discussion). Ratified canonically alongside the Jorga 2000 tolcapone extraction.
 
+### DOSE_130MG (**canonical for 130 mg dose-level indicator**)
+- **Description:** 1 = subject or dose record is in the 130 mg dose-level cohort, 0 = any other dose level. Route-neutral; per-record or per-subject depending on the source design (per-dose-record for Hajjar 2018's adult Pompe-disease ATB200+AT2221 study where the AT2221 dose changes across successive dosing occasions within a subject).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (any non-130 mg dose level in the source study; for Hajjar 2018 paired with `DOSE_260MG = 0` to select the no-AT2221 reference for ATB200 linear CL).
+- **Source aliases:**
+  - derived per-dose-record from the co-administered AT2221 dose amount -- used in `Hajjar_2018_cipaglucosidase.R` as a categorical multiplier on ATB200 linear CL (`e_dose130mg_cl ^ DOSE_130MG`).
+- **Example models:** `Hajjar_2018_cipaglucosidase.R` (per-dose-record oral co-medication indicator).
+- **Notes:** Sibling of `DOSE_50MG`, `DOSE_70MG`, `DOSE_260MG`, and `DOSE_400MG`; member of the `DOSE_<N>MG` family of dose-level indicators. In Hajjar 2018 the indicator marks the AT2221 (miglustat) co-administration dose paired with the same-occasion 20 mg/kg ATB200 IV infusion; mutual exclusivity with `DOSE_260MG` is enforced by the study design (a single dose occasion uses at most one AT2221 dose level). Ratified canonically alongside the Hajjar 2018 ATB200 / AT2221 extraction.
+
+### DOSE_260MG (**canonical for 260 mg dose-level indicator**)
+- **Description:** 1 = subject or dose record is in the 260 mg dose-level cohort, 0 = any other dose level. Route-neutral; per-record or per-subject depending on the source design (per-dose-record for Hajjar 2018's adult Pompe-disease ATB200+AT2221 study where the AT2221 dose changes across successive dosing occasions within a subject).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (any non-260 mg dose level in the source study; for Hajjar 2018 paired with `DOSE_130MG = 0` to select the no-AT2221 reference for ATB200 linear CL).
+- **Source aliases:**
+  - derived per-dose-record from the co-administered AT2221 dose amount -- used in `Hajjar_2018_cipaglucosidase.R` as a categorical multiplier on ATB200 linear CL (`e_dose260mg_cl ^ DOSE_260MG`).
+- **Example models:** `Hajjar_2018_cipaglucosidase.R` (per-dose-record oral co-medication indicator).
+- **Notes:** Sibling of `DOSE_50MG`, `DOSE_70MG`, `DOSE_130MG`, and `DOSE_400MG`; member of the `DOSE_<N>MG` family of dose-level indicators. In Hajjar 2018 the indicator marks the AT2221 (miglustat) co-administration dose paired with the same-occasion 20 mg/kg ATB200 IV infusion; mutual exclusivity with `DOSE_130MG` is enforced by the study design. Ratified canonically alongside the Hajjar 2018 ATB200 / AT2221 extraction.
+
 ### STUDY1 (**canonical for Study-1 cohort indicator**)
 - **Description:** 1 = subject enrolled in Study 1 of the Cirincione 2017 pooled analysis, 0 = other. Used to switch the residual-error magnitude per study.
 - **Units:** (binary)
