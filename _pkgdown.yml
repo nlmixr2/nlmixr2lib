@@ -1082,8 +1082,8 @@ navbar:
         href: articles/Mukai_2019_mogamulizumab.html
       - text: "Monalizumab (Hwang 2023)"
         href: articles/Hwang_2023_monalizumab.html
-      - text: "Morphine (deHoogd 2017)"
-        href: articles/deHoogd_2017_morphine.html
+      - text: "Moroctocog (Abrantes 2017)"
+        href: articles/Abrantes_2017_moroctocog.html
       - text: "Morphine (Elkomy 2015)"
         href: articles/Elkomy_2015_morphine.html
       - text: "Morphine (Franken 2015)"
@@ -2012,6 +2012,7 @@ articles:
   - articles/AbdelJalil_2013_tacrolimus
   - articles/AbdulAziz_2016_doripenem
   - articles/Abduljalil_2009_clarithromycin
+  - articles/Abrantes_2017_moroctocog
   - articles/Abuhelwa_2015_itraconazole
   - articles/Adams_1998_zalcitabine
   - articles/Agerso_2004_desmopressin
