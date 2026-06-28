@@ -1456,6 +1456,8 @@ navbar:
         href: articles/Diao_2014_rFIXFc.html
       - text: "Rfxiii cyno (Dodds 2005)"
         href: articles/Dodds_2005_rfxiii_cyno.html
+      - text: "Rg7652 (Budha 2015)"
+        href: articles/Budha_2015_rg7652.html
       - text: "Ribavirin (Mensing 2017)"
         href: articles/Mensing_2017_3D_HCV_regimen.html
       - text: "Ribavirin (Mulder 2025)"
@@ -2184,6 +2186,7 @@ articles:
   - articles/Brussee_2016_arginine
   - articles/Brussee_2018_midazolam_pbpk
   - articles/BuchwalderCsajka_1999_angiotensin
+  - articles/Budha_2015_rg7652
   - articles/Budha_2023_tislelizumab
   - articles/Buelga_2005_vancomycin
   - articles/Buil-Bruna_2015_lanreotide
