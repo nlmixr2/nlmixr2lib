@@ -381,10 +381,17 @@ pop_table <- dplyr::bind_rows(
 ) |>
   dplyr::mutate(across(c(median, q05, q95), ~ signif(.x, 3)))
 
-knitr::kable(
-  pop_table,
+pop_table |>
+  dplyr::rename(
+    "Output"         = output,
+    "Arm"            = arm,
+    "NCA parameter"  = parameter,
+    "Median"         = median,
+    "5% percentile"  = q05,
+    "95% percentile" = q95
+  ) |>
+  knitr::kable(
   caption = "Population-cohort median and 5%-95% range for AUC0-Inf and t1/2 (per arm and per output). No published reference values.",
-  col.names = c("Output", "Arm", "NCA parameter", "Median", "5% percentile", "95% percentile"),
   align = c("l", "l", "l", "r", "r", "r")
 )
 ```

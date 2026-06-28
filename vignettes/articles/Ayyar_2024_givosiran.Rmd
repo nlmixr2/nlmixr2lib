@@ -236,14 +236,18 @@ summary_tab <- sim_panel |>
     tmax_giv_h          = round(tmax_giv_h, 2),
     tmax_asn1_h         = round(tmax_asn1_h, 2)
   )
-knitr::kable(
-  summary_tab,
-  caption = paste0("Typical-value Cmax / Tmax across simulated SC doses ",
-                   "(parent givosiran and AS(N-1)3' metabolite)."),
-  col.names = c("Dose (mg/kg)", "Cmax givosiran (ng/mL)",
-                "Tmax givosiran (h)", "Cmax AS(N-1)3' (ng/mL)",
-                "Tmax AS(N-1)3' (h)")
-)
+summary_tab |>
+  dplyr::rename(
+    "Dose (mg/kg)"           = dose_mg_per_kg,
+    "Cmax givosiran (ng/mL)" = cmax_giv_ng_per_mL,
+    "Tmax givosiran (h)"     = tmax_giv_h,
+    "Cmax AS(N-1)3' (ng/mL)" = cmax_asn1_ng_per_mL,
+    "Tmax AS(N-1)3' (h)"     = tmax_asn1_h
+  ) |>
+  knitr::kable(
+    caption = paste0("Typical-value Cmax / Tmax across simulated SC doses ",
+                     "(parent givosiran and AS(N-1)3' metabolite).")
+  )
 ```
 
 # Free ASGPR receptor occupancy

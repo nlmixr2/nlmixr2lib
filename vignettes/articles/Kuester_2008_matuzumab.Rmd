@@ -346,8 +346,12 @@ anchor_df <- tibble::tibble(
   t_half_d = log(2) /
     (((CLL_mlh + Vmax_ugh / (Km_ugml + C)) / 1000) / V1_L) / 24
 )
-knitr::kable(anchor_df, digits = 2,
-  col.names = c("Cc (ug/mL)", "Apparent t1/2 (days)"),
+anchor_df |>
+  dplyr::rename(
+    "Cc (ug/mL)"           = C,
+    "Apparent t1/2 (days)" = t_half_d
+  ) |>
+  knitr::kable(digits = 2,
   caption = paste("Apparent first-order half-life from the central compartment.",
                   "Kuester 2008 reports 4.4 d at 20 ug/mL and 10.5 d at 1000 ug/mL",
                   "(Results, p904; Figure 3 right panel). The two-compartment terminal",

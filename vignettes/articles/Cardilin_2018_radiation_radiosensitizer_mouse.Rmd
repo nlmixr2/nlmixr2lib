@@ -158,9 +158,13 @@ kill_tab <- data.frame(
   simulated = round(sapply(c(0, 10, 50, 200), kill_one), 0),
   published = c(17, 24, 46, 85)
 )
-knitr::kable(kill_tab, col.names = c("Scenario", "Simulated kill (%)",
-                                     "Published kill (%)"),
-             caption = "Per-fraction proliferating-cell kill: model vs source.")
+kill_tab |>
+  dplyr::rename(
+    "Scenario"           = scenario,
+    "Simulated kill (%)" = simulated,
+    "Published kill (%)" = published
+  ) |>
+  knitr::kable(caption = "Per-fraction proliferating-cell kill: model vs source.")
 ```
 
 The combination kill fractions reproduce the published values; the 2 Gy-alone
@@ -187,10 +191,13 @@ conc_tab <- data.frame(
   simulated = round(sapply(c(25, 48, 400), cavg), 2),
   published = c(0.52, 0.9, 8.2)
 )
-knitr::kable(conc_tab, col.names = c("RS1 dose (mg/kg)",
-                                     "Simulated mean conc (ug/mL)",
-                                     "Published mean conc (ug/mL)"),
-             caption = "Average daily RS1 plasma concentration: model vs source.")
+conc_tab |>
+  dplyr::rename(
+    "RS1 dose (mg/kg)"            = dose_mgkg,
+    "Simulated mean conc (ug/mL)" = simulated,
+    "Published mean conc (ug/mL)" = published
+  ) |>
+  knitr::kable(caption = "Average daily RS1 plasma concentration: model vs source.")
 ```
 
 # Replicate Figure 5 -- six-week combination prediction

@@ -330,15 +330,21 @@ PerezRuixo_2020_esketamine <- function() {
     # and the printed Section 2.3 equation dA7/dt = kmet*A6 - ken*A7 - ...
     # This faithful encoding reproduces Table 4 esketamine Cmax / AUC0-24
     # within 4% AND the noresketamine Cmax within 2%, but OVER-predicts the
-    # noresketamine AUC0-24 by exactly 1.41 = 1/F_met = (k_el + k_met)/k_met
-    # = 3.88/2.77 (a deterministic algebraic relationship, not noise). Alan
-    # Maloney independently encountered the same discrepancy in his
-    # implementation. Downstream users who specifically need to reproduce
-    # the published noresketamine AUC0-24 can multiply Cc_snk by F_met
-    # externally (a documented alternative; not the default because doing
-    # so would under-predict Cmax by the same 1.41x factor). The committed
-    # model preserves Table 3 verbatim and surfaces the discrepancy in
-    # the vignette Errata so it is visible to every downstream reader.
+    # noresketamine AUC0-24 in every stratum by a covariate- and dose-
+    # dependent factor that ranges ~1.38-1.56 (NOT a single constant). The
+    # baseline (non-Asian) value 1/F_met = (k_el + k_met)/k_met = 3.88/2.77
+    # = 1.40 describes the Caucasian strata's central tendency, but F_met is
+    # covariate-dependent (k_el carries the Asian effect e_asian_kel = 0.36),
+    # so 1/F_met explains the discrepancy only partially -- the Asian strata
+    # over-predict MORE (~1.44-1.56) even though their algebraic 1/F_met is
+    # smaller (1.14). Alan Maloney independently encountered the same
+    # discrepancy in his implementation. Downstream users who want to
+    # approximate the published noresketamine AUC0-24 can multiply Cc_snk by
+    # the baseline F_met externally (a documented alternative, not the
+    # default because it would under-predict the matched Cmax by a comparable
+    # factor and only approximately corrects the covariate-dependent band).
+    # The committed model preserves Table 3 verbatim and surfaces the
+    # discrepancy in the vignette Errata so it is visible to every reader.
     Cc     <- central / Vc * 1000
     Cc_snk <- central_snk / Vcn * 1000
 

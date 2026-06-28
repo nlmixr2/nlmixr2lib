@@ -467,10 +467,15 @@ published_pta <- tibble::tribble(
 
 pta_tbl |>
   left_join(published_pta, by = c("regimen", "MIC")) |>
+  dplyr::rename(
+    "Regimen"                   = regimen,
+    "MIC (mg/L)"                = MIC,
+    "PTA(40% fT>MIC) simulated" = pta_40,
+    "N simulated"               = n,
+    "PTA(40%) Couffignal 2014"  = pta_40_published
+  ) |>
   knitr::kable(
     digits = 3,
-    col.names = c("Regimen", "MIC (mg/L)", "PTA(40% fT>MIC) simulated",
-                  "N simulated", "PTA(40%) Couffignal 2014"),
     caption = paste(
       "Probability of pharmacodynamic-target attainment (PTA) at 40% fT > MIC.",
       "Simulated for the typical-median virtual cohort (WT 77, CRCL 86.4,",

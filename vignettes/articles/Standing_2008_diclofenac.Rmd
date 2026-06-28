@@ -306,16 +306,19 @@ cmp <- dplyr::left_join(published, auc12_sim, by = "cohort") |>
     flag     = ifelse(abs(pct_diff) > 20, "*", "")
   )
 
-knitr::kable(
-  cmp,
-  digits  = c(NA, 1, 1, 1, NA),
-  col.names = c("Cohort", "Paper AUC(0,12 h) [nmol*h/L]",
-                "Simulated AUC(0,12 h) [nmol*h/L]",
-                "% difference",
-                "Flag (* > 20%)"),
-  caption = "Simulated vs. published median AUC(0,12 h) by cohort. The packaged model reproduces the structural simulation underlying Standing 2008 Table 3; per-cohort weight-distribution differences (the paper used the actual study subjects as covariate carriers; this vignette samples weights uniformly within plausible WHO bands) account for residual disagreement.",
-  align = c("l", "r", "r", "r", "c")
-)
+cmp |>
+  dplyr::rename(
+    "Cohort"                           = cohort,
+    "Paper AUC(0,12 h) [nmol*h/L]"     = auc12_paper,
+    "Simulated AUC(0,12 h) [nmol*h/L]" = auc12_sim,
+    "% difference"                     = pct_diff,
+    "Flag (* > 20%)"                   = flag
+  ) |>
+  knitr::kable(
+    digits  = c(NA, 1, 1, 1, NA),
+    caption = "Simulated vs. published median AUC(0,12 h) by cohort. The packaged model reproduces the structural simulation underlying Standing 2008 Table 3; per-cohort weight-distribution differences (the paper used the actual study subjects as covariate carriers; this vignette samples weights uniformly within plausible WHO bands) account for residual disagreement.",
+    align = c("l", "r", "r", "r", "c")
+  )
 ```
 
 # Assumptions and deviations

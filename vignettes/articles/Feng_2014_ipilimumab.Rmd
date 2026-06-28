@@ -283,9 +283,14 @@ cmin1_targets <- cmin1 |>
     .groups = "drop"
   )
 
-knitr::kable(
-  cmin1_targets,
-  col.names = c("Dose", "% > 3 ug/mL", "% > 6 ug/mL", "% > 20 ug/mL"),
+cmin1_targets |>
+  dplyr::rename(
+    "Dose"        = treatment,
+    "% > 3 ug/mL" = pct_gt_3,
+    "% > 6 ug/mL" = pct_gt_6,
+    "% > 20 ug/mL" = pct_gt_20
+  ) |>
+  knitr::kable(
   caption = paste(
     "Simulated proportions of subjects above each Cmin1 cutoff.",
     "Published reference (Feng 2014, Figure 3 narrative):",

@@ -87,14 +87,14 @@ display$section <- factor(
 
 render_table <- function(rows) {
   rows <- rows[order(rows$label), , drop = FALSE]
-  knitr::kable(
-    rows[, c("name_html", "description")],
-    format = "html",
-    col.names = c("name", "description"),
-    row.names = FALSE,
-    table.attr = 'class="model-list-table"',
-    escape = FALSE
-  )
+  rows[, c("name_html", "description")] |>
+    dplyr::rename(name = name_html) |>
+    knitr::kable(
+      format = "html",
+      row.names = FALSE,
+      table.attr = 'class="model-list-table"',
+      escape = FALSE
+    )
 }
 ```
 

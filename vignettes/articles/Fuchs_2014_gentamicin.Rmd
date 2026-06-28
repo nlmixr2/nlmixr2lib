@@ -121,11 +121,15 @@ representatives <- tibble::tibble(
 ```
 
 ```{r cohort-table, echo = FALSE}
-knitr::kable(
-  representatives |>
-    dplyr::select(label, regimen, mg_per_kg, tau),
-  col.names = c("Representative patient", "Recommended regimen",
-                "Dose (mg/kg)", "Interval (h)"),
+representatives |>
+  dplyr::select(label, regimen, mg_per_kg, tau) |>
+  dplyr::rename(
+    "Representative patient" = label,
+    "Recommended regimen"    = regimen,
+    "Dose (mg/kg)"           = mg_per_kg,
+    "Interval (h)"           = tau
+  ) |>
+  knitr::kable(
   caption = "Representative patients and dosage regimens (Methods + Table 3 footnote)."
 )
 ```

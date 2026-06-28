@@ -415,9 +415,12 @@ ss_t90 <- ss_curve |>
   dplyr::filter(Cc_norm >= 0.9) |>
   dplyr::summarise(t90_h = min(time) / 60, .groups = "drop")
 
-knitr::kable(
-  ss_t90,
-  col.names = c("Body weight", "Time to 90% of plateau (h)"),
+ss_t90 |>
+  dplyr::rename(
+    "Body weight"                = cohort_label,
+    "Time to 90% of plateau (h)" = t90_h
+  ) |>
+  knitr::kable(
   caption = paste(
     "Simulated time-to-90%-of-plateau for a fixed 3.5 mg/h continuous",
     "midazolam infusion. Paper reports time-to-steady-state of 19 h",

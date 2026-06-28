@@ -328,10 +328,13 @@ published <- tibble(
 )
 
 comparison <- left_join(published, sim_summary, by = "regimen")
-knitr::kable(comparison,
-             col.names = c("Regimen", "Published median (95 % PI)",
-                           "Simulated median (95 % PI)"),
-             caption = "Myostatin coverage in DMD pediatric patients: simulated vs. Wojciechowski 2022 Results.")
+comparison |>
+  dplyr::rename(
+    "Regimen"                    = regimen,
+    "Published median (95 % PI)" = published,
+    "Simulated median (95 % PI)" = simulated
+  ) |>
+  knitr::kable(caption = "Myostatin coverage in DMD pediatric patients: simulated vs. Wojciechowski 2022 Results.")
 ```
 
 Differences > 20 % between simulated and published values would indicate a

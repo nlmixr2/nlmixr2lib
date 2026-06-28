@@ -345,10 +345,15 @@ heart_half <- heart_sim |>
 
 heart_half |>
   mutate(heart = ifelse(heart == 0, "HEART = 0", "HEART = 1")) |>
+  dplyr::rename(
+    "Cohort"        = heart,
+    "CL (L/h)"      = cl_Lh,
+    "V (L)"         = vc_L,
+    "kel (1/h)"     = kel_per_h,
+    "Half-life (h)" = halflife_h
+  ) |>
   knitr::kable(
     digits = 3,
-    col.names = c("Cohort", "CL (L/h)", "V (L)",
-                  "kel (1/h)", "Half-life (h)"),
     caption = paste(
       "Typical-value clearance, volume, and elimination half-life for a",
       "16.27 kg child with and without the cardiac-perturbation covariate."

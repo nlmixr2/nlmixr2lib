@@ -65,7 +65,9 @@ disease state, dose levels, regions, and any relevant baseline characteristics.
 Cite the source Table that lists baseline demographics.>
 
 The same information is available programmatically via the model's `population`
-metadata (`readModelDb("<model>")$population` after the model is loaded).
+metadata (`readModelDb("<model>")()$population` — `readModelDb()` returns the
+model *function*, so the trailing `()` evaluates it to the model object whose
+`$population` element holds this list).
 
 # Source trace
 
@@ -271,6 +273,48 @@ tune parameters to match.
     upstream model `<Upstream_Year_drug>` (this paper fixes its PK from that
     publication and reports only PD parameters)."
 ````
+
+## Table column headers
+
+When a `knitr::kable()` needs display headers that differ from the data
+frame's column names, rename the columns **by name** with `dplyr::rename()`
+piped immediately before the `kable()` call. **Never** set headers with
+`knitr::kable(..., col.names = c(...))`.
+
+`col.names` is *positional* — it assigns labels to columns by index,
+independent of what each column actually holds. The moment the column order
+changes, the labels silently transpose onto the wrong columns. The classic
+trap is `tidyr::pivot_wider(names_from = PPTESTCD)`, which emits `auclast`
+**before** `cmax`, so a `col.names = c("Group", "Cmax", "AUC0-24")` vector
+puts "Cmax" over the AUC column and "AUC0-24" over the Cmax column. The
+rendered table looks plausible and is wrong. `dplyr::rename("label" = column)`
+binds each label to its column by name, so the header is always correct
+regardless of column order.
+
+```r
+# AVOID — positional; transposes if the column order is not exactly this.
+knitr::kable(
+  nca_summary,
+  col.names = c("Stratum | Dose", "Cmax (ng/mL)", "AUC0-24 (ng*h/mL)"),
+  caption = "..."
+)
+
+# PREFER — bind each header to its column by name; order-independent.
+nca_summary |>
+  dplyr::rename(
+    "Stratum | Dose"    = treatment,
+    "Cmax (ng/mL)"      = cmax,
+    "AUC0-24 (ng*h/mL)" = auclast
+  ) |>
+  knitr::kable(caption = "...")
+```
+
+Any other `kable` argument (`digits`, `caption`, `align`, `format`,
+`escape`, `row.names`, `table.attr`) is unaffected — keep it; only the
+`col.names` argument moves into a `dplyr::rename()` upstream. The column
+*order* in the output is whatever the data frame already has (`rename`
+does not reorder); use `dplyr::relocate()` or `dplyr::select()` first if a
+specific display order is wanted.
 
 ## Notes
 

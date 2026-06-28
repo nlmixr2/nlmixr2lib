@@ -332,10 +332,17 @@ nca_summary <- nca_df |>
   ) |>
   dplyr::arrange(window, PPTESTCD)
 
-knitr::kable(
-  nca_summary,
+nca_summary |>
+  dplyr::rename(
+    "Window"    = window,
+    "Parameter" = PPTESTCD,
+    "Median"    = median,
+    "P05"       = p05,
+    "P95"       = p95,
+    "Unit"      = unit
+  ) |>
+  knitr::kable(
   digits  = c(NA, NA, 2, 2, 2, NA),
-  col.names = c("Window", "Parameter", "Median", "P05", "P95", "Unit"),
   caption = "Simulated NCA parameters by dosing-interval window. Compare AUC_last(Day 1) to Wang 2014 AUC_initial median 52.9 mg.h/L (range 27.5-129.7); AUC_last(Day 14) to AUC_induced median 23.3 mg.h/L (range 16.5-31.4)."
 )
 ```
