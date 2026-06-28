@@ -281,9 +281,13 @@ anchors <- sim_typical |>
   ) |>
   dplyr::arrange(scenario, time_wk)
 
-knitr::kable(
-  anchors,
-  col.names = c("Scenario", "Time (wk)", "Predicted DAS28"),
+anchors |>
+  dplyr::rename(
+    "Scenario"        = scenario,
+    "Time (wk)"       = time_wk,
+    "Predicted DAS28" = das28
+  ) |>
+  knitr::kable(
   caption   = "Reproduction of Wojciechowski 2015 Table 2 / Eq 8 worked anchors."
 )
 ```
@@ -332,10 +336,13 @@ sim_age <- rxode2::rxSolve(
 #> ℹ omega/sigma items treated as zero: 'etabase', 'etaex1', 'etalex2'
 #> Warning: multi-subject simulation without without 'omega'
 
-knitr::kable(
-  sim_age |>
-    dplyr::transmute(age_yrs, baseline_das28 = round(das28, 3)),
-  col.names = c("Age (years)", "Predicted baseline DAS28"),
+sim_age |>
+  dplyr::transmute(age_yrs, baseline_das28 = round(das28, 3)) |>
+  dplyr::rename(
+    "Age (years)"              = age_yrs,
+    "Predicted baseline DAS28" = baseline_das28
+  ) |>
+  knitr::kable(
   caption   = "Age effect on baseline DAS28 (paper-published: 5.4 at age 40, 5.8 at age 70, 5.7 at age 57)."
 )
 ```
@@ -460,9 +467,13 @@ end_of_followup <- sim_vpc |>
     Q95 = round(quantile(sim, 0.95, na.rm = TRUE), 2)
   )
 
-knitr::kable(
-  end_of_followup,
-  col.names = c("5th percentile", "Median", "95th percentile"),
+end_of_followup |>
+  dplyr::rename(
+    "5th percentile"  = Q05,
+    "Median"          = Q50,
+    "95th percentile" = Q95
+  ) |>
+  knitr::kable(
   caption   = "Simulated DV DAS28 distribution at t = 60 weeks (paper Figure 5 reports 90% CI [1.8, 4.2] around PRED 2.8)."
 )
 ```
@@ -505,15 +516,19 @@ sim_long_pop <- rxode2::rxSolve(
 #> ℹ omega/sigma items treated as zero: 'etabase', 'etaex1', 'etalex2'
 #> Warning: multi-subject simulation without without 'omega'
 
-knitr::kable(
-  sim_long_pop |>
-    dplyr::filter(abs(time - 60) < 1e-9) |>
-    dplyr::summarise(
-      Q05 = round(quantile(sim, 0.05, na.rm = TRUE), 2),
-      Q50 = round(quantile(sim, 0.50, na.rm = TRUE), 2),
-      Q95 = round(quantile(sim, 0.95, na.rm = TRUE), 2)
-    ),
-  col.names = c("5th percentile", "Median", "95th percentile"),
+sim_long_pop |>
+  dplyr::filter(abs(time - 60) < 1e-9) |>
+  dplyr::summarise(
+    Q05 = round(quantile(sim, 0.05, na.rm = TRUE), 2),
+    Q50 = round(quantile(sim, 0.50, na.rm = TRUE), 2),
+    Q95 = round(quantile(sim, 0.95, na.rm = TRUE), 2)
+  ) |>
+  dplyr::rename(
+    "5th percentile"  = Q05,
+    "Median"          = Q50,
+    "95th percentile" = Q95
+  ) |>
+  knitr::kable(
   caption   = "Population-typical patient at t = 60 weeks; residual-error only (BSV zeroed). Paper Figure 5: 90% CI [1.8, 4.2] around PRED 2.8."
 )
 ```
@@ -546,9 +561,13 @@ compare <- tibble::tribble(
   "Half-life for current smoker (weeks)",                10.4,        round(log(2) / (0.111 * (1 + (-0.398))), 2)
 )
 
-knitr::kable(
-  compare,
-  col.names = c("Quantity", "Paper published value", "Reproduced from packaged model"),
+compare |>
+  dplyr::rename(
+    "Quantity"                       = quantity,
+    "Paper published value"          = published,
+    "Reproduced from packaged model" = simulated
+  ) |>
+  knitr::kable(
   caption   = "Side-by-side comparison of paper-published structural-model anchors and the simulation from the packaged model."
 )
 ```

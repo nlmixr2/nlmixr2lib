@@ -1554,13 +1554,21 @@ III, and runs PKNCA on the simulated total concentration.</p>
 <span>                <span class="va">tmax_median</span>, <span class="va">tmax_p05</span>, <span class="va">tmax_p95</span>,</span>
 <span>                <span class="va">auclast_median</span>, <span class="va">auclast_p05</span>, <span class="va">auclast_p95</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
-<span>  <span class="va">nca_summary</span>,</span>
+<span><span class="va">nca_summary</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span></span>
+<span>    <span class="st">"Cohort"</span>                    <span class="op">=</span> <span class="va">cohort</span>,</span>
+<span>    <span class="st">"Cmax median (nmol/L)"</span>      <span class="op">=</span> <span class="va">cmax_median</span>,</span>
+<span>    <span class="st">"Cmax p05"</span>                  <span class="op">=</span> <span class="va">cmax_p05</span>,</span>
+<span>    <span class="st">"Cmax p95"</span>                  <span class="op">=</span> <span class="va">cmax_p95</span>,</span>
+<span>    <span class="st">"Tmax median (h)"</span>           <span class="op">=</span> <span class="va">tmax_median</span>,</span>
+<span>    <span class="st">"Tmax p05"</span>                  <span class="op">=</span> <span class="va">tmax_p05</span>,</span>
+<span>    <span class="st">"Tmax p95"</span>                  <span class="op">=</span> <span class="va">tmax_p95</span>,</span>
+<span>    <span class="st">"AUC0-24 median (nmol*h/L)"</span> <span class="op">=</span> <span class="va">auclast_median</span>,</span>
+<span>    <span class="st">"AUC p05"</span>                   <span class="op">=</span> <span class="va">auclast_p05</span>,</span>
+<span>    <span class="st">"AUC p95"</span>                   <span class="op">=</span> <span class="va">auclast_p95</span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
 <span>  digits <span class="op">=</span> <span class="fl">2</span>,</span>
-<span>  col.names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Cohort"</span>,</span>
-<span>                <span class="st">"Cmax median (nmol/L)"</span>, <span class="st">"Cmax p05"</span>, <span class="st">"Cmax p95"</span>,</span>
-<span>                <span class="st">"Tmax median (h)"</span>,       <span class="st">"Tmax p05"</span>, <span class="st">"Tmax p95"</span>,</span>
-<span>                <span class="st">"AUC0-24 median (nmol*h/L)"</span>, <span class="st">"AUC p05"</span>, <span class="st">"AUC p95"</span><span class="op">)</span>,</span>
 <span>  caption <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Simulated steady-state NCA at 25 mg telapristone-acetate "</span>,</span>
 <span>                   <span class="st">"QD by mixture-class (median + 5th/95th percentiles)."</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -1646,13 +1654,20 @@ mixture-class (median + 5th/95th percentiles).</caption>
 <span>                <span class="va">auclast_median</span>, <span class="va">auc024_median_published</span>, <span class="va">auc_pct_diff</span>,</span>
 <span>                <span class="va">tmax_median</span>, <span class="va">tmax_median_published</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
-<span>  <span class="va">comparison</span>,</span>
+<span><span class="va">comparison</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span></span>
+<span>    <span class="st">"Cohort"</span>            <span class="op">=</span> <span class="va">cohort</span>,</span>
+<span>    <span class="st">"Cmax sim (nmol/L)"</span> <span class="op">=</span> <span class="va">cmax_median</span>,</span>
+<span>    <span class="st">"Cmax pub (nmol/L)"</span> <span class="op">=</span> <span class="va">cmax_median_published</span>,</span>
+<span>    <span class="st">"Cmax % diff"</span>       <span class="op">=</span> <span class="va">cmax_pct_diff</span>,</span>
+<span>    <span class="st">"AUC0-24 sim"</span>       <span class="op">=</span> <span class="va">auclast_median</span>,</span>
+<span>    <span class="st">"AUC0-24 pub"</span>       <span class="op">=</span> <span class="va">auc024_median_published</span>,</span>
+<span>    <span class="st">"AUC % diff"</span>        <span class="op">=</span> <span class="va">auc_pct_diff</span>,</span>
+<span>    <span class="st">"Tmax sim (h)"</span>      <span class="op">=</span> <span class="va">tmax_median</span>,</span>
+<span>    <span class="st">"Tmax pub (h)"</span>      <span class="op">=</span> <span class="va">tmax_median_published</span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
 <span>  digits <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>  col.names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Cohort"</span>,</span>
-<span>                <span class="st">"Cmax sim (nmol/L)"</span>, <span class="st">"Cmax pub (nmol/L)"</span>, <span class="st">"Cmax % diff"</span>,</span>
-<span>                <span class="st">"AUC0-24 sim"</span>, <span class="st">"AUC0-24 pub"</span>,            <span class="st">"AUC % diff"</span>,</span>
-<span>                <span class="st">"Tmax sim (h)"</span>, <span class="st">"Tmax pub (h)"</span><span class="op">)</span>,</span>
 <span>  caption <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Simulated vs published steady-state NCA medians by mixture "</span>,</span>
 <span>                   <span class="st">"class. Published values from Morris 2011 Table III "</span>,</span>
 <span>                   <span class="st">"(500 simulated subjects at 25 mg, total concentration of "</span>,</span>

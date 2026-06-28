@@ -281,6 +281,17 @@ sim_vpc <- rxSolve(mod, ev_one, nSub = n_subj, returnType = "data.frame")
 #> intdy -- t = 18 illegal. t not in interval tcur - _rxC(hu) to tcur
 #> intdy -- t = 20 illegal. t not in interval tcur - _rxC(hu) to tcur
 #> intdy -- t = 21 illegal. t not in interval tcur - _rxC(hu) to tcur
+#> intdy -- t = 2 illegal. t not in interval tcur - _rxC(hu) to tcur
+#> intdy -- t = 4 illegal. t not in interval tcur - _rxC(hu) to tcur
+#> intdy -- t = 6 illegal. t not in interval tcur - _rxC(hu) to tcur
+#> intdy -- t = 8 illegal. t not in interval tcur - _rxC(hu) to tcur
+#> intdy -- t = 10 illegal. t not in interval tcur - _rxC(hu) to tcur
+#> intdy -- t = 12 illegal. t not in interval tcur - _rxC(hu) to tcur
+#> intdy -- t = 14 illegal. t not in interval tcur - _rxC(hu) to tcur
+#> intdy -- t = 16 illegal. t not in interval tcur - _rxC(hu) to tcur
+#> intdy -- t = 18 illegal. t not in interval tcur - _rxC(hu) to tcur
+#> intdy -- t = 20 illegal. t not in interval tcur - _rxC(hu) to tcur
+#> intdy -- t = 21 illegal. t not in interval tcur - _rxC(hu) to tcur
 #> intdy -- t = 22 illegal. t not in interval tcur - _rxC(hu) to tcur
 #> intdy -- t = 24 illegal. t not in interval tcur - _rxC(hu) to tcur
 #> intdy -- t = 26 illegal. t not in interval tcur - _rxC(hu) to tcur
@@ -644,7 +655,7 @@ vignette.
 ``` r
 
 sessionInfo()
-#> R version 4.6.0 (2026-04-24)
+#> R version 4.6.1 (2026-06-24)
 #> Platform: x86_64-pc-linux-gnu
 #> Running under: Ubuntu 24.04.4 LTS
 #> 
@@ -670,12 +681,12 @@ sessionInfo()
 #> 
 #> loaded via a namespace (and not attached):
 #>  [1] gtable_0.3.6          xfun_0.59             bslib_0.11.0         
-#>  [4] lattice_0.22-9        vctrs_0.7.3           tools_4.6.0          
-#>  [7] generics_0.1.4        parallel_4.6.0        tibble_3.3.1         
+#>  [4] lattice_0.22-9        vctrs_0.7.3           tools_4.6.1          
+#>  [7] generics_0.1.4        parallel_4.6.1        tibble_3.3.1         
 #> [10] symengine_0.2.13      pkgconfig_2.0.3       data.table_1.18.4    
 #> [13] checkmate_2.3.4       RColorBrewer_1.1-3    S7_0.2.2             
 #> [16] desc_1.4.3            RcppParallel_5.1.11-2 lifecycle_1.0.5      
-#> [19] compiler_4.6.0        farver_2.1.2          textshaping_1.0.5    
+#> [19] compiler_4.6.1        farver_2.1.2          textshaping_1.0.5    
 #> [22] fontawesome_0.5.3     htmltools_0.5.9       sys_3.4.3            
 #> [25] sass_0.4.10           yaml_2.3.12           crayon_1.5.3         
 #> [28] pillar_1.11.1         pkgdown_2.2.0         jquerylib_0.1.4      
@@ -683,7 +694,7 @@ sessionInfo()
 #> [34] nlme_3.1-169          qs2_0.2.2             tidyselect_1.2.1     
 #> [37] digest_0.6.39         lotri_1.0.4           purrr_1.2.2          
 #> [40] labeling_0.4.3        rxode2ll_2.0.14       fastmap_1.2.0        
-#> [43] grid_4.6.0            cli_3.6.6             dparser_1.3.1-13     
+#> [43] grid_4.6.1            cli_3.6.6             dparser_1.3.1-13     
 #> [46] magrittr_2.0.5        withr_3.0.3           scales_1.4.0         
 #> [49] backports_1.5.1       rmarkdown_2.31        otel_0.2.0           
 #> [52] askpass_1.2.1         ragg_1.5.2            stringfish_0.19.0    

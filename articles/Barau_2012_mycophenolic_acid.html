@@ -1427,18 +1427,24 @@ roughly in the middle of that band.</p>
 <span>  <span class="fu">select</span><span class="op">(</span><span class="va">parameter</span>, <span class="va">cohort</span>, <span class="va">median</span>, <span class="va">Q10</span>, <span class="va">Q90</span>, <span class="va">unit</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">arrange</span><span class="op">(</span><span class="va">parameter</span>, <span class="va">cohort</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
-<span>  <span class="va">nca_summary</span>,</span>
-<span>  caption <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span></span>
-<span>    <span class="st">"PKNCA day-5 NCA summary on the simulated cohort (cohort median and 10-90 percentile)."</span>,</span>
-<span>    <span class="st">"Compare AUC(0,12 h) to the Barau 2012 target band of 30-60 mg/L*h"</span>,</span>
-<span>    <span class="st">"(prose target; see Methods) and per-period Table 3 medians of V/F"</span>,</span>
-<span>    <span class="st">"(148.8 vs 61.6 L) and CL/F (16.0 vs 11.2 L/h)."</span></span>
-<span>  <span class="op">)</span>,</span>
-<span>  digits <span class="op">=</span> <span class="fl">2</span>,</span>
-<span>  col.names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Parameter"</span>, <span class="st">"Post-transplant period"</span>,</span>
-<span>                <span class="st">"Median"</span>, <span class="st">"10th pct"</span>, <span class="st">"90th pct"</span>, <span class="st">"Units"</span><span class="op">)</span></span>
-<span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">nca_summary</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span></span>
+<span>    <span class="st">"Parameter"</span>              <span class="op">=</span> <span class="va">parameter</span>,</span>
+<span>    <span class="st">"Post-transplant period"</span> <span class="op">=</span> <span class="va">cohort</span>,</span>
+<span>    <span class="st">"Median"</span>                 <span class="op">=</span> <span class="va">median</span>,</span>
+<span>    <span class="st">"10th pct"</span>               <span class="op">=</span> <span class="va">Q10</span>,</span>
+<span>    <span class="st">"90th pct"</span>               <span class="op">=</span> <span class="va">Q90</span>,</span>
+<span>    <span class="st">"Units"</span>                  <span class="op">=</span> <span class="va">unit</span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
+<span>    caption <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span></span>
+<span>      <span class="st">"PKNCA day-5 NCA summary on the simulated cohort (cohort median and 10-90 percentile)."</span>,</span>
+<span>      <span class="st">"Compare AUC(0,12 h) to the Barau 2012 target band of 30-60 mg/L*h"</span>,</span>
+<span>      <span class="st">"(prose target; see Methods) and per-period Table 3 medians of V/F"</span>,</span>
+<span>      <span class="st">"(148.8 vs 61.6 L) and CL/F (16.0 vs 11.2 L/h)."</span></span>
+<span>    <span class="op">)</span>,</span>
+<span>    digits <span class="op">=</span> <span class="fl">2</span></span>
+<span>  <span class="op">)</span></span></code></pre></div>
 <table style="width:100%;" class="table">
 <caption>PKNCA day-5 NCA summary on the simulated cohort (cohort median
 and 10-90 percentile). Compare AUC(0,12 h) to the Barau 2012 target band

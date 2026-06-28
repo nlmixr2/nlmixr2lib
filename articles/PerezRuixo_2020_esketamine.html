@@ -1078,7 +1078,10 @@ American Indian / Alaska Native). The intranasal dose range was 14-112
 mg with twice-weekly dosing. The IV route was studied at 28 mg and the
 PO route at 84 mg in the Phase I cross-over study ESKETINTRD1009.</p>
 <p>The same information is available programmatically via
-<code>readModelDb("PerezRuixo_2020_esketamine")$population</code>.</p>
+<code>readModelDb("PerezRuixo_2020_esketamine")()$population</code>.
+<code><a href="../reference/readModelDb.html">readModelDb()</a></code> returns the model <em>function</em>; the
+trailing <code>()</code> evaluates it to the model object whose
+<code>$population</code> element holds this list.</p>
 </div>
 <div class="section level2">
 <h2 id="source-trace">Source trace<a class="anchor" aria-label="anchor" href="#source-trace"></a>
@@ -1613,54 +1616,66 @@ one-to-one.</p>
 <span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">stratum</span>, <span class="va">dose_mg</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
-<span>  <span class="va">cmp</span>,</span>
-<span>  digits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">2</span><span class="op">)</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">0</span><span class="op">)</span>,</span>
-<span>  col.names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span>    <span class="st">"Stratum"</span>, <span class="st">"Dose (mg)"</span>,</span>
-<span>    <span class="st">"Esket Cmax sim"</span>, <span class="st">"Esket Cmax pub"</span>, <span class="st">"%pub"</span>,</span>
-<span>    <span class="st">"Esket AUC sim"</span>,  <span class="st">"Esket AUC pub"</span>,  <span class="st">"%pub"</span>,</span>
-<span>    <span class="st">"Noresk Cmax sim"</span>, <span class="st">"Noresk Cmax pub"</span>, <span class="st">"%pub"</span>,</span>
-<span>    <span class="st">"Noresk AUC sim"</span>,  <span class="st">"Noresk AUC pub"</span>,  <span class="st">"%pub"</span></span>
-<span>  <span class="op">)</span>,</span>
-<span>  caption <span class="op">=</span> <span class="st">"Table 4 reproduction. Cmax in ng/mL, AUC0-24 in ng*h/mL. Esket = esketamine, Noresk = noresketamine. The noresketamine AUC0-24 % column is consistently ~140% across all strata and doses; this is the 1.41 = 1/F_met algebraic discrepancy discussed in the Errata."</span></span>
-<span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">cmp</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span></span>
+<span>    <span class="st">"Stratum"</span>         <span class="op">=</span> <span class="va">stratum</span>,</span>
+<span>    <span class="st">"Dose (mg)"</span>       <span class="op">=</span> <span class="va">dose_mg</span>,</span>
+<span>    <span class="st">"Esket Cmax sim"</span>  <span class="op">=</span> <span class="va">esket_cmax_sim</span>,</span>
+<span>    <span class="st">"Esket Cmax pub"</span>  <span class="op">=</span> <span class="va">esket_cmax_pub</span>,</span>
+<span>    <span class="st">"Esket Cmax %"</span>    <span class="op">=</span> <span class="va">esket_cmax_pct</span>,</span>
+<span>    <span class="st">"Esket AUC sim"</span>   <span class="op">=</span> <span class="va">esket_auc024_sim</span>,</span>
+<span>    <span class="st">"Esket AUC pub"</span>   <span class="op">=</span> <span class="va">esket_auc024_pub</span>,</span>
+<span>    <span class="st">"Esket AUC %"</span>     <span class="op">=</span> <span class="va">esket_auc024_pct</span>,</span>
+<span>    <span class="st">"Noresk Cmax sim"</span> <span class="op">=</span> <span class="va">noresk_cmax_sim</span>,</span>
+<span>    <span class="st">"Noresk Cmax pub"</span> <span class="op">=</span> <span class="va">noresk_cmax_pub</span>,</span>
+<span>    <span class="st">"Noresk Cmax %"</span>   <span class="op">=</span> <span class="va">noresk_cmax_pct</span>,</span>
+<span>    <span class="st">"Noresk AUC sim"</span>  <span class="op">=</span> <span class="va">noresk_auc024_sim</span>,</span>
+<span>    <span class="st">"Noresk AUC pub"</span>  <span class="op">=</span> <span class="va">noresk_auc024_pub</span>,</span>
+<span>    <span class="st">"Noresk AUC %"</span>    <span class="op">=</span> <span class="va">noresk_auc024_pct</span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
+<span>    digits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">2</span><span class="op">)</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">0</span><span class="op">)</span>,</span>
+<span>    caption <span class="op">=</span> <span class="st">"Table 4 reproduction. Cmax in ng/mL, AUC0-24 in ng*h/mL. Esket = esketamine, Noresk = noresketamine. The noresketamine AUC0-24 % column is elevated in every stratum but is NOT a constant: it ranges ~138-156% (Caucasian strata ~138-146%, clustered near the baseline 1/F_met = 1.41; Asian strata ~144-156%, higher). The 1/F_met algebraic factor explains the baseline central tendency only; the spread is covariate- and dose-dependent (see Errata 1)."</span></span>
+<span>  <span class="op">)</span></span></code></pre></div>
 <table style="width:100%;" class="table">
 <caption>Table 4 reproduction. Cmax in ng/mL, AUC0-24 in ng*h/mL. Esket
 = esketamine, Noresk = noresketamine. The noresketamine AUC0-24 % column
-is consistently ~140% across all strata and doses; this is the 1.41 =
-1/F_met algebraic discrepancy discussed in the Errata.</caption>
+is elevated in every stratum but is NOT a constant: it ranges ~138-156%
+(Caucasian strata ~138-146%, clustered near the baseline 1/F_met = 1.41;
+Asian strata ~144-156%, higher). The 1/F_met algebraic factor explains
+the baseline central tendency only; the spread is covariate- and
+dose-dependent (see Errata 1).</caption>
 <colgroup>
-<col width="15%">
+<col width="13%">
+<col width="4%">
+<col width="7%">
+<col width="7%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
 <col width="5%">
-<col width="8%">
-<col width="8%">
-<col width="2%">
 <col width="7%">
 <col width="7%">
-<col width="2%">
-<col width="8%">
-<col width="8%">
-<col width="2%">
-<col width="8%">
-<col width="8%">
-<col width="2%">
+<col width="6%">
+<col width="7%">
+<col width="7%">
+<col width="6%">
 </colgroup>
 <thead><tr class="header">
 <th align="left">Stratum</th>
 <th align="right">Dose (mg)</th>
 <th align="right">Esket Cmax sim</th>
 <th align="right">Esket Cmax pub</th>
-<th align="right">%pub</th>
+<th align="right">Esket Cmax %</th>
 <th align="right">Esket AUC sim</th>
 <th align="right">Esket AUC pub</th>
-<th align="right">%pub</th>
+<th align="right">Esket AUC %</th>
 <th align="right">Noresk Cmax sim</th>
 <th align="right">Noresk Cmax pub</th>
-<th align="right">%pub</th>
+<th align="right">Noresk Cmax %</th>
 <th align="right">Noresk AUC sim</th>
 <th align="right">Noresk AUC pub</th>
-<th align="right">%pub</th>
+<th align="right">Noresk AUC %</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
@@ -2041,6 +2056,10 @@ row-for-row with Table 4.</p>
 <span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">PPTESTCD</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cmax"</span>, <span class="st">"auclast"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">treatment</span>, <span class="va">PPTESTCD</span>, <span class="va">PPORRES</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_wider.html" class="external-link">pivot_wider</a></span><span class="op">(</span>names_from <span class="op">=</span> <span class="va">PPTESTCD</span>, values_from <span class="op">=</span> <span class="va">PPORRES</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="co"># Cmax-before-AUC display order, to match the Table 4 reproduction above.</span></span>
+<span>    <span class="co"># This is cosmetic only; the kable headers are bound by name via</span></span>
+<span>    <span class="co"># dplyr::rename() below, so correctness does not depend on this order.</span></span>
+<span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">treatment</span>, <span class="va">cmax</span>, <span class="va">auclast</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>analyte <span class="op">=</span> <span class="va">label</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
@@ -2049,11 +2068,21 @@ row-for-row with Table 4.</p>
 <span>  <span class="fu">nca_summary</span><span class="op">(</span><span class="va">nca_res_snk</span>, <span class="st">"noresketamine"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
-<span>  <span class="va">pknca_combined</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">analyte</span>, <span class="va">treatment</span><span class="op">)</span>,</span>
-<span>  digits <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>  col.names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Stratum | Dose"</span>, <span class="st">"Cmax (ng/mL)"</span>, <span class="st">"AUC0-24 (ng*h/mL)"</span>, <span class="st">"Analyte"</span><span class="op">)</span>,</span>
-<span>  caption <span class="op">=</span> <span class="st">"PKNCA-derived Cmax and AUC0-24 for each (stratum, dose) cohort. Compare directly against Table 4 of Perez-Ruixo 2020."</span></span>
+<span><span class="co"># Headers are bound to columns BY NAME via dplyr::rename() so the labels are</span></span>
+<span><span class="co"># correct regardless of pivot_wider's column order (PKNCA emits auclast before</span></span>
+<span><span class="co"># cmax). See the extract-literature-model skill, vignette-template.md</span></span>
+<span><span class="co"># § "Table column headers".</span></span>
+<span><span class="va">pknca_combined</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">analyte</span>, <span class="va">treatment</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span></span>
+<span>    <span class="st">"Stratum | Dose"</span>    <span class="op">=</span> <span class="va">treatment</span>,</span>
+<span>    <span class="st">"Cmax (ng/mL)"</span>      <span class="op">=</span> <span class="va">cmax</span>,</span>
+<span>    <span class="st">"AUC0-24 (ng*h/mL)"</span> <span class="op">=</span> <span class="va">auclast</span>,</span>
+<span>    <span class="st">"Analyte"</span>           <span class="op">=</span> <span class="va">analyte</span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
+<span>    digits <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>    caption <span class="op">=</span> <span class="st">"PKNCA-derived Cmax and AUC0-24 for each (stratum, dose) cohort. Compare directly against Table 4 of Perez-Ruixo 2020."</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <caption>PKNCA-derived Cmax and AUC0-24 for each (stratum, dose) cohort.
@@ -2073,218 +2102,218 @@ Compare directly against Table 4 of Perez-Ruixo 2020.</caption>
 <tbody>
 <tr class="odd">
 <td align="left">18-60 y, Asian Japanese | 28 mg</td>
-<td align="right">194.2</td>
 <td align="right">58.9</td>
+<td align="right">194.2</td>
 <td align="left">esketamine</td>
 </tr>
 <tr class="even">
 <td align="left">18-60 y, Asian Japanese | 56 mg</td>
-<td align="right">334.0</td>
 <td align="right">98.8</td>
+<td align="right">334.0</td>
 <td align="left">esketamine</td>
 </tr>
 <tr class="odd">
 <td align="left">18-60 y, Asian Japanese | 84 mg</td>
-<td align="right">473.7</td>
 <td align="right">138.8</td>
+<td align="right">473.7</td>
 <td align="left">esketamine</td>
 </tr>
 <tr class="even">
 <td align="left">18-60 y, Asian non-Japanese | 28 mg</td>
-<td align="right">157.9</td>
 <td align="right">46.2</td>
+<td align="right">157.9</td>
 <td align="left">esketamine</td>
 </tr>
 <tr class="odd">
 <td align="left">18-60 y, Asian non-Japanese | 56 mg</td>
-<td align="right">275.1</td>
 <td align="right">78.4</td>
+<td align="right">275.1</td>
 <td align="left">esketamine</td>
 </tr>
 <tr class="even">
 <td align="left">18-60 y, Asian non-Japanese | 84 mg</td>
-<td align="right">392.3</td>
 <td align="right">110.6</td>
+<td align="right">392.3</td>
 <td align="left">esketamine</td>
 </tr>
 <tr class="odd">
 <td align="left">18-60 y, Caucasian | 28 mg</td>
-<td align="right">146.8</td>
 <td align="right">45.7</td>
+<td align="right">146.8</td>
 <td align="left">esketamine</td>
 </tr>
 <tr class="even">
 <td align="left">18-60 y, Caucasian | 56 mg</td>
-<td align="right">253.8</td>
 <td align="right">77.1</td>
+<td align="right">253.8</td>
 <td align="left">esketamine</td>
 </tr>
 <tr class="odd">
 <td align="left">18-60 y, Caucasian | 84 mg</td>
-<td align="right">360.8</td>
 <td align="right">108.6</td>
+<td align="right">360.8</td>
 <td align="left">esketamine</td>
 </tr>
 <tr class="even">
 <td align="left">&gt; 60 y, Asian Japanese | 28 mg</td>
-<td align="right">211.7</td>
 <td align="right">60.0</td>
+<td align="right">211.7</td>
 <td align="left">esketamine</td>
 </tr>
 <tr class="odd">
 <td align="left">&gt; 60 y, Asian Japanese | 56 mg</td>
-<td align="right">362.1</td>
 <td align="right">100.4</td>
+<td align="right">362.1</td>
 <td align="left">esketamine</td>
 </tr>
 <tr class="even">
 <td align="left">&gt; 60 y, Asian Japanese | 84 mg</td>
-<td align="right">512.4</td>
 <td align="right">140.7</td>
+<td align="right">512.4</td>
 <td align="left">esketamine</td>
 </tr>
 <tr class="odd">
 <td align="left">&gt; 60 y, Asian non-Japanese | 28 mg</td>
-<td align="right">170.7</td>
 <td align="right">46.9</td>
+<td align="right">170.7</td>
 <td align="left">esketamine</td>
 </tr>
 <tr class="even">
 <td align="left">&gt; 60 y, Asian non-Japanese | 56 mg</td>
-<td align="right">295.6</td>
 <td align="right">79.1</td>
+<td align="right">295.6</td>
 <td align="left">esketamine</td>
 </tr>
 <tr class="odd">
 <td align="left">&gt; 60 y, Asian non-Japanese | 84 mg</td>
-<td align="right">420.5</td>
 <td align="right">111.5</td>
+<td align="right">420.5</td>
 <td align="left">esketamine</td>
 </tr>
 <tr class="even">
 <td align="left">&gt; 60 y, Caucasian | 28 mg</td>
-<td align="right">160.1</td>
 <td align="right">46.4</td>
+<td align="right">160.1</td>
 <td align="left">esketamine</td>
 </tr>
 <tr class="odd">
 <td align="left">&gt; 60 y, Caucasian | 56 mg</td>
-<td align="right">275.0</td>
 <td align="right">78.0</td>
+<td align="right">275.0</td>
 <td align="left">esketamine</td>
 </tr>
 <tr class="even">
 <td align="left">&gt; 60 y, Caucasian | 84 mg</td>
-<td align="right">389.9</td>
 <td align="right">109.6</td>
+<td align="right">389.9</td>
 <td align="left">esketamine</td>
 </tr>
 <tr class="odd">
 <td align="left">18-60 y, Asian Japanese | 28 mg</td>
-<td align="right">600.1</td>
 <td align="right">71.3</td>
+<td align="right">600.1</td>
 <td align="left">noresketamine</td>
 </tr>
 <tr class="even">
 <td align="left">18-60 y, Asian Japanese | 56 mg</td>
-<td align="right">1147.3</td>
 <td align="right">144.1</td>
+<td align="right">1147.3</td>
 <td align="left">noresketamine</td>
 </tr>
 <tr class="odd">
 <td align="left">18-60 y, Asian Japanese | 84 mg</td>
-<td align="right">1694.6</td>
 <td align="right">217.2</td>
+<td align="right">1694.6</td>
 <td align="left">noresketamine</td>
 </tr>
 <tr class="even">
 <td align="left">18-60 y, Asian non-Japanese | 28 mg</td>
-<td align="right">564.8</td>
 <td align="right">72.4</td>
+<td align="right">564.8</td>
 <td align="left">noresketamine</td>
 </tr>
 <tr class="odd">
 <td align="left">18-60 y, Asian non-Japanese | 56 mg</td>
-<td align="right">1090.2</td>
 <td align="right">146.6</td>
+<td align="right">1090.2</td>
 <td align="left">noresketamine</td>
 </tr>
 <tr class="even">
 <td align="left">18-60 y, Asian non-Japanese | 84 mg</td>
-<td align="right">1615.6</td>
 <td align="right">220.9</td>
+<td align="right">1615.6</td>
 <td align="left">noresketamine</td>
 </tr>
 <tr class="odd">
 <td align="left">18-60 y, Caucasian | 28 mg</td>
-<td align="right">387.1</td>
 <td align="right">58.2</td>
+<td align="right">387.1</td>
 <td align="left">noresketamine</td>
 </tr>
 <tr class="even">
 <td align="left">18-60 y, Caucasian | 56 mg</td>
-<td align="right">746.7</td>
 <td align="right">118.1</td>
+<td align="right">746.7</td>
 <td align="left">noresketamine</td>
 </tr>
 <tr class="odd">
 <td align="left">18-60 y, Caucasian | 84 mg</td>
-<td align="right">1106.2</td>
 <td align="right">178.1</td>
+<td align="right">1106.2</td>
 <td align="left">noresketamine</td>
 </tr>
 <tr class="even">
 <td align="left">&gt; 60 y, Asian Japanese | 28 mg</td>
-<td align="right">590.4</td>
 <td align="right">67.9</td>
+<td align="right">590.4</td>
 <td align="left">noresketamine</td>
 </tr>
 <tr class="odd">
 <td align="left">&gt; 60 y, Asian Japanese | 56 mg</td>
-<td align="right">1131.5</td>
 <td align="right">139.2</td>
+<td align="right">1131.5</td>
 <td align="left">noresketamine</td>
 </tr>
 <tr class="even">
 <td align="left">&gt; 60 y, Asian Japanese | 84 mg</td>
-<td align="right">1672.7</td>
 <td align="right">210.7</td>
+<td align="right">1672.7</td>
 <td align="left">noresketamine</td>
 </tr>
 <tr class="odd">
 <td align="left">&gt; 60 y, Asian non-Japanese | 28 mg</td>
-<td align="right">557.5</td>
 <td align="right">70.2</td>
+<td align="right">557.5</td>
 <td align="left">noresketamine</td>
 </tr>
 <tr class="even">
 <td align="left">&gt; 60 y, Asian non-Japanese | 56 mg</td>
-<td align="right">1078.3</td>
 <td align="right">143.7</td>
+<td align="right">1078.3</td>
 <td align="left">noresketamine</td>
 </tr>
 <tr class="odd">
 <td align="left">&gt; 60 y, Asian non-Japanese | 84 mg</td>
-<td align="right">1599.1</td>
 <td align="right">217.3</td>
+<td align="right">1599.1</td>
 <td align="left">noresketamine</td>
 </tr>
 <tr class="even">
 <td align="left">&gt; 60 y, Caucasian | 28 mg</td>
-<td align="right">382.4</td>
 <td align="right">56.3</td>
+<td align="right">382.4</td>
 <td align="left">noresketamine</td>
 </tr>
 <tr class="odd">
 <td align="left">&gt; 60 y, Caucasian | 56 mg</td>
-<td align="right">738.9</td>
 <td align="right">115.4</td>
+<td align="right">738.9</td>
 <td align="left">noresketamine</td>
 </tr>
 <tr class="even">
 <td align="left">&gt; 60 y, Caucasian | 84 mg</td>
-<td align="right">1095.3</td>
 <td align="right">174.7</td>
+<td align="right">1095.3</td>
 <td align="left">noresketamine</td>
 </tr>
 </tbody>
@@ -2297,24 +2326,51 @@ Compare directly against Table 4 of Perez-Ruixo 2020.</caption>
 3</strong> of Perez-Ruixo 2020. Three items warrant explicit downstream
 attention:</p>
 <div class="section level3">
-<h3 id="noresketamine-auc0-24-over-prediction-1-41x-1f_met">1. Noresketamine AUC0-24 over-prediction (1.41x = 1/F_met)<a class="anchor" aria-label="anchor" href="#noresketamine-auc0-24-over-prediction-1-41x-1f_met"></a>
+<h3 id="noresketamine-auc0-24-over-prediction-1-4-1-6x-only-partly-1f_met">1. Noresketamine AUC0-24 over-prediction (~1.4-1.6x; only partly
+1/F_met)<a class="anchor" aria-label="anchor" href="#noresketamine-auc0-24-over-prediction-1-4-1-6x-only-partly-1f_met"></a>
 </h3>
 <p>The model reproduces the published Table 4 esketamine Cmax and
 AUC0-24 within ~4% and the noresketamine Cmax within ~2% across all 18
 (race x age x dose) strata. The noresketamine AUC0-24, however, is
-<strong>over-predicted by a factor of 1.41 in every stratum</strong>.
-Numerically,</p>
-<pre><code><span><span class="fl">1.41</span> <span class="op">=</span> <span class="fl">1</span> <span class="op">/</span> <span class="va">F_met</span> <span class="op">=</span> <span class="op">(</span><span class="va">k_el</span> <span class="op">+</span> <span class="va">k_met</span><span class="op">)</span> <span class="op">/</span> <span class="va">k_met</span> <span class="op">=</span> <span class="fl">3.88</span> <span class="op">/</span> <span class="fl">2.77</span> <span class="op">=</span> <span class="fl">1.4007</span></span></code></pre>
-<p>This is a deterministic algebraic relationship, not a noise band –
-the mismatch ratio is identical in every row of the Table 4 reproduction
-above. Mass balance was verified in the committed model: integrating
+<strong>over-predicted in every stratum, by a factor that is not
+constant: it ranges ~1.38 to ~1.56</strong> (mean ~1.48) across the 18
+strata in the Table 4 reproduction above. The non-Asian (Caucasian)
+strata cluster near</p>
+<pre><code><span><span class="fl">1</span> <span class="op">/</span> <span class="va">F_met</span> <span class="op">=</span> <span class="op">(</span><span class="va">k_el</span> <span class="op">+</span> <span class="va">k_met</span><span class="op">)</span> <span class="op">/</span> <span class="va">k_met</span> <span class="op">=</span> <span class="fl">3.88</span> <span class="op">/</span> <span class="fl">2.77</span> <span class="op">=</span> <span class="fl">1.4007</span></span></code></pre>
+<p>(observed ~1.38-1.46 for the Caucasian rows), so the baseline 1/F_met
+ratio is a good description of the <em>central tendency</em> for those
+strata. But <strong>1/F_met explains the discrepancy only
+partially</strong>, for two reasons:</p>
+<ul>
+<li>
+<strong>F_met is covariate-dependent.</strong> <code>k_el</code>
+carries the Asian-race effect (<code>e_asian_kel = 0.36</code>, a 64%
+decrease), so for Asian subjects <code>k_el = 1.11 * 0.36 = 0.40</code>
+and the algebraic <code>1/F_met</code> <em>falls</em> to
+<code>(0.40 + 2.77)/2.77 = 1.14</code>. Yet the observed over-prediction
+for the Asian strata is <em>higher</em>, ~1.44-1.56 – i.e. the simple
+<code>1/F_met</code> identity does not even predict the direction of the
+covariate shift, let alone its magnitude.</li>
+<li>
+<strong>The ratio also moves with dose and age</strong> within a
+race stratum (e.g. the Caucasian rows span 1.38-1.46 across 28/56/84 mg
+and the 18-60 vs &gt;60 age split), because the apparent-volume
+convention interacts with the covariate-modified hepatic extraction
+<code>E</code> and the noresketamine apparent clearance.</li>
+</ul>
+<p>The over-prediction is therefore systematic (present in every
+stratum) but is a covariate- and dose-dependent band, not the single
+deterministic <code>1.41</code> factor a literal <code>1/F_met</code>
+reading would imply. Mass balance was verified in the committed model
+for the baseline (Caucasian) case: integrating
 <code>k_met * A_liver(t)</code> for a 28 mg IV esketamine dose yields
 19.94 mg into the noresketamine pool, matching the expected
 <code>F_met * dose = 0.714 * 28 = 19.99 mg</code> to four significant
 figures, and the noresketamine pool mass balance closes at 0.1%. The
 discrepancy is therefore not in the ODE evolution but in the convention
 by which the published <code>V_cn/F = 70 L</code> maps onto an observed
-plasma concentration.</p>
+plasma concentration – a convention whose effect on the reported AUC0-24
+is modulated by the race and age covariates.</p>
 <p>Independent reproduction attempts: Alan Maloney encountered exactly
 the same noresketamine AUC0-24 reproduction failure (and parent +
 metabolite Cmax success) while implementing the same model from Table 3
@@ -2322,20 +2378,27 @@ alone – this finding was the principal reason for the operator note in
 this extraction task. Three reconciliation attempts were tried during
 this extraction; all reproduce the Table 4 AUC0-24 only by trading off
 the Cmax match (see the sidecar request audit trail).</p>
-<p><strong>Downstream usage advice.</strong> Users who specifically need
-to reproduce the published noresketamine AUC0-24 can multiply
-<code>Cc_snk</code> by
+<p><strong>Downstream usage advice.</strong> Users who want to
+approximate the published noresketamine AUC0-24 can multiply
+<code>Cc_snk</code> by the baseline
 <code>F_met = k_met / (k_el + k_met) = 0.7139</code> in their downstream
 analysis:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim_corrected</span> <span class="op">&lt;-</span> <span class="va">sim</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>Cc_snk_corrected <span class="op">=</span> <span class="va">Cc_snk</span> <span class="op">*</span> <span class="op">(</span><span class="fl">2.77</span> <span class="op">/</span> <span class="op">(</span><span class="fl">1.11</span> <span class="op">+</span> <span class="fl">2.77</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p>This is an EXPLICIT deviation from the most literal reading of the
-paper; it is NOT applied in the default model because doing so would
-under-predict the published noresketamine Cmax by the same 1.41 factor.
-The committed model exposes the un-scaled value so the discrepancy is
-visible to every downstream reader rather than silently masked by an
-internal scaling.</p>
+<p>This removes most of the over-prediction for the non-Asian strata
+but, because the true over-prediction is covariate- and dose-dependent
+(~1.38-1.56, above), it leaves a residual mismatch – and for Asian
+subjects the baseline factor over-corrects, since their algebraic
+<code>1/F_met</code> differs. An <em>exact</em> reproduction of the
+published AUC0-24 is not recoverable from Table 3 alone. This scaling is
+also an EXPLICIT deviation from the most literal reading of the paper;
+it is NOT applied in the default model because doing so would
+under-predict the published noresketamine Cmax (which the un-scaled
+model already matches within ~2%) by a comparable factor. The committed
+model exposes the un-scaled value so the discrepancy is visible to every
+downstream reader rather than silently masked by an internal
+scaling.</p>
 <p><strong>Author correspondence remains an open future option</strong>
 to definitively resolve the convention question. The corresponding
 author is <a href="mailto:cperezru@its.jnj.com" class="email">cperezru@its.jnj.com</a> (publication address).</p>

@@ -1922,19 +1922,23 @@ Table 4 reference covariates).</p>
 <span>    <span class="va">pct_diff_median</span></span>
 <span>  <span class="op">)</span></span>
 <span></span>
-<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
-<span>  <span class="va">cmp</span>,</span>
+<span><span class="va">cmp</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span></span>
+<span>    <span class="st">"Cohort"</span>         <span class="op">=</span> <span class="va">cohort</span>,</span>
+<span>    <span class="st">"Sim median"</span>     <span class="op">=</span> <span class="va">sim_median</span>,</span>
+<span>    <span class="st">"Sim 5th %ile"</span>   <span class="op">=</span> <span class="va">sim_q05</span>,</span>
+<span>    <span class="st">"Sim 95th %ile"</span>  <span class="op">=</span> <span class="va">sim_q95</span>,</span>
+<span>    <span class="st">"Pub median"</span>     <span class="op">=</span> <span class="va">pub_median</span>,</span>
+<span>    <span class="st">"Pub range low"</span>  <span class="op">=</span> <span class="va">pub_low</span>,</span>
+<span>    <span class="st">"Pub range high"</span> <span class="op">=</span> <span class="va">pub_high</span>,</span>
+<span>    <span class="st">"% diff median"</span>  <span class="op">=</span> <span class="va">pct_diff_median</span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
 <span>  digits  <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  caption <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span></span>
 <span>    <span class="st">"Simulated AUC0-inf at the MTD (h*ng/mL) versus Duong 2017 Table 4."</span>,</span>
 <span>    <span class="st">"Simulated values from PKNCA on the stochastic cohort (100 subjects);"</span>,</span>
 <span>    <span class="st">"published medians and ranges from Table 4."</span></span>
-<span>  <span class="op">)</span>,</span>
-<span>  col.names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span>    <span class="st">"Cohort"</span>,</span>
-<span>    <span class="st">"Sim median"</span>, <span class="st">"Sim 5th %ile"</span>, <span class="st">"Sim 95th %ile"</span>,</span>
-<span>    <span class="st">"Pub median"</span>, <span class="st">"Pub range low"</span>, <span class="st">"Pub range high"</span>,</span>
-<span>    <span class="st">"% diff median"</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <table class="table">

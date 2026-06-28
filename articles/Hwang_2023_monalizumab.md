@@ -317,10 +317,14 @@ scenarios <- tibble::tribble(
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp'
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp'
 
-knitr::kable(
-  scenarios, digits = 1,
-  col.names = c("Scenario vs. typical (70.6 kg, 3.80 g/dL, male, former smoker)",
-                "AUC change (%)", "Cmax change (%)"),
+scenarios |>
+  dplyr::rename(
+    "Scenario vs. typical (70.6 kg, 3.80 g/dL, male, former smoker)" = scenario,
+    "AUC change (%)"  = auc_pct,
+    "Cmax change (%)" = cmax_pct
+  ) |>
+  knitr::kable(
+  digits = 1,
   caption = "Replicates Figure 4 of Hwang 2023: steady-state AUC and Cmax sensitivity to baseline covariates."
 )
 ```

@@ -274,11 +274,16 @@ pknca_results <- pk.nca(pknca_data)
 pknca_summary <- summary(pknca_results)
 
 # Extract results for comparison (row 2 has the 0-Inf interval)
-knitr::kable(
-  pknca_summary[2, c("cmax", "tmax", "half.life", "aucinf.obs")],
+as.data.frame(pknca_summary[2, c("cmax", "tmax", "half.life", "aucinf.obs")]) |>
+  dplyr::rename(
+    "Cmax (µg/mL)"      = cmax,
+    "Tmax (hr)"         = tmax,
+    "Half-life (hr)"    = half.life,
+    "AUCinf (µg·hr/mL)" = aucinf.obs
+  ) |>
+  knitr::kable(
   caption = "NCA parameters for mogamulizumab 1.0 mg/kg IV (typical subject)",
-  digits = 1,
-  col.names = c("Cmax (µg/mL)", "Tmax (hr)", "Half-life (hr)", "AUCinf (µg·hr/mL)")
+  digits = 1
 )
 ```
 
@@ -395,7 +400,7 @@ cat(sprintf("Mean Cmin,ss (weeks 12-24, typical subject): %.1f µg/mL\n", cmin_s
 ``` r
 
 sessionInfo()
-#> R version 4.6.0 (2026-04-24)
+#> R version 4.6.1 (2026-06-24)
 #> Platform: x86_64-pc-linux-gnu
 #> Running under: Ubuntu 24.04.4 LTS
 #> 
@@ -421,19 +426,19 @@ sessionInfo()
 #> 
 #> loaded via a namespace (and not attached):
 #>  [1] gtable_0.3.6          xfun_0.59             bslib_0.11.0         
-#>  [4] lattice_0.22-9        vctrs_0.7.3           tools_4.6.0          
-#>  [7] generics_0.1.4        parallel_4.6.0        tibble_3.3.1         
+#>  [4] lattice_0.22-9        vctrs_0.7.3           tools_4.6.1          
+#>  [7] generics_0.1.4        parallel_4.6.1        tibble_3.3.1         
 #> [10] symengine_0.2.13      pkgconfig_2.0.3       data.table_1.18.4    
 #> [13] checkmate_2.3.4       RColorBrewer_1.1-3    S7_0.2.2             
 #> [16] desc_1.4.3            RcppParallel_5.1.11-2 lifecycle_1.0.5      
-#> [19] compiler_4.6.0        farver_2.1.2          textshaping_1.0.5    
+#> [19] compiler_4.6.1        farver_2.1.2          textshaping_1.0.5    
 #> [22] fontawesome_0.5.3     htmltools_0.5.9       sys_3.4.3            
 #> [25] sass_0.4.10           yaml_2.3.12           crayon_1.5.3         
 #> [28] pillar_1.11.1         pkgdown_2.2.0         jquerylib_0.1.4      
 #> [31] whisker_0.4.1         openssl_2.4.2         cachem_1.1.0         
 #> [34] nlme_3.1-169          qs2_0.2.2             tidyselect_1.2.1     
 #> [37] digest_0.6.39         lotri_1.0.4           purrr_1.2.2          
-#> [40] rxode2ll_2.0.14       fastmap_1.2.0         grid_4.6.0           
+#> [40] rxode2ll_2.0.14       fastmap_1.2.0         grid_4.6.1           
 #> [43] cli_3.6.6             dparser_1.3.1-13      magrittr_2.0.5       
 #> [46] withr_3.0.3           scales_1.4.0          backports_1.5.1      
 #> [49] rmarkdown_2.31        otel_0.2.0            askpass_1.2.1        

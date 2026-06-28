@@ -291,10 +291,15 @@ scen_cl <- scen_sim |>
   ) |>
   dplyr::mutate(diff_pct = 100 * (cl_model - cl_paper) / cl_paper)
 
-knitr::kable(
-  scen_cl,
+scen_cl |>
+  dplyr::rename(
+    "Scenario"         = scenario,
+    "CL/F model (L/h)" = cl_model,
+    "CL/F paper (L/h)" = cl_paper,
+    "Diff (%)"         = diff_pct
+  ) |>
+  knitr::kable(
   digits  = c(0, 3, 3, 2),
-  col.names = c("Scenario", "CL/F model (L/h)", "CL/F paper (L/h)", "Diff (%)"),
   caption = paste(
     "Typical CL/F predicted by the packaged model versus the value computed",
     "directly from Jiao 2009 Eq. 9 at each scenario. Differences should be at",
@@ -539,12 +544,21 @@ cmp <- nca_tbl |>
   dplyr::select(cohort, cmax, cmin, tmax, auclast, auc_target, auc_diff_pct,
                 cav, cavg_target, cavg_diff_pct)
 
-knitr::kable(
-  cmp,
+cmp |>
+  dplyr::rename(
+    "Cohort"           = cohort,
+    "Cmax,ss"          = cmax,
+    "Cmin,ss"          = cmin,
+    "Tmax"             = tmax,
+    "AUC0-tau (sim)"   = auclast,
+    "AUC0-tau (paper)" = auc_target,
+    "AUC diff (%)"     = auc_diff_pct,
+    "Cavg (sim)"       = cav,
+    "Cavg (paper)"     = cavg_target,
+    "Cavg diff (%)"    = cavg_diff_pct
+  ) |>
+  knitr::kable(
   digits  = c(0, 2, 2, 1, 1, 1, 2, 2, 2, 2),
-  col.names = c("Cohort", "Cmax,ss", "Cmin,ss", "Tmax",
-                "AUC0-tau (sim)", "AUC0-tau (paper)", "AUC diff (%)",
-                "Cavg (sim)", "Cavg (paper)", "Cavg diff (%)"),
   caption = paste(
     "Day-59 steady-state PKNCA on the typical-value (zeroRe) simulation.",
     "Cmax,ss / Cmin,ss / Tmax are absolute values from the simulation;",

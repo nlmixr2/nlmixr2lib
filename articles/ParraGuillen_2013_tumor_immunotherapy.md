@@ -300,10 +300,14 @@ cyaa_cure <- bind_rows(lapply(seq_along(cyaa_days), function(i) {
 #> ℹ parameter labels from comments will be replaced by 'label()'
 #> ℹ parameter labels from comments will be replaced by 'label()'
 
-knitr::kable(cyaa_cure,
-             col.names = c("Vaccine dose day", "Simulated P(cure)"),
-             caption = paste0("Simulated probability of cure at end of study (",
-                              end_of_study, " days) -- CyaA-E7."))
+cyaa_cure |>
+  dplyr::rename(
+    "Vaccine dose day"  = dose_day,
+    "Simulated P(cure)" = prob_cure
+  ) |>
+  knitr::kable(
+    caption = paste0("Simulated probability of cure at end of study (",
+                     end_of_study, " days) -- CyaA-E7."))
 ```
 
 | Vaccine dose day | Simulated P(cure) |
@@ -403,9 +407,10 @@ ggplot(il12_vpc_sum, aes(time, q50)) +
 il12_cure <- il12_vpc |>
   filter(time == 60) |>
   summarise(prob_cure = mean(tumor_size <= 2, na.rm = TRUE))
-knitr::kable(il12_cure,
-             col.names = "Simulated P(cure) at day 60",
-             caption = "IL-12 day 23 simulated probability of cure at day 60.")
+il12_cure |>
+  dplyr::rename("Simulated P(cure) at day 60" = prob_cure) |>
+  knitr::kable(
+    caption = "IL-12 day 23 simulated probability of cure at day 60.")
 ```
 
 | Simulated P(cure) at day 60 |

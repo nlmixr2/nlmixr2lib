@@ -378,11 +378,14 @@ cmp <- dplyr::left_join(sim_summary, published, by = "treatment") |>
   ) |>
   dplyr::select(treatment, sim_geomean, paper_geomean_pretty, pct_diff)
 
-knitr::kable(
-  cmp,
-  col.names = c("Treatment", "Simulated AUC0-inf (ng*h/mL)",
-                "Published AUC0-inf (ng*h/mL, geom. mean (90% CI))",
-                "% diff (sim vs paper)"),
+cmp |>
+  dplyr::rename(
+    "Treatment"                                         = treatment,
+    "Simulated AUC0-inf (ng*h/mL)"                      = sim_geomean,
+    "Published AUC0-inf (ng*h/mL, geom. mean (90% CI))" = paper_geomean_pretty,
+    "% diff (sim vs paper)"                             = pct_diff
+  ) |>
+  knitr::kable(
   digits = 1,
   caption = paste0("Geometric-mean AUC0-inf in 200 simulated patients per arm ",
                    "vs Koolen 2010 Table 3 (1000 simulated patients per arm; ",

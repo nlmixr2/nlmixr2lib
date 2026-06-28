@@ -1376,9 +1376,14 @@ proportions (approximate; the source’s percentages are read from Figure
 <span>    .groups <span class="op">=</span> <span class="st">"drop"</span></span>
 <span>  <span class="op">)</span></span>
 <span></span>
-<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
-<span>  <span class="va">cmin1_targets</span>,</span>
-<span>  col.names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Dose"</span>, <span class="st">"% &gt; 3 ug/mL"</span>, <span class="st">"% &gt; 6 ug/mL"</span>, <span class="st">"% &gt; 20 ug/mL"</span><span class="op">)</span>,</span>
+<span><span class="va">cmin1_targets</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span></span>
+<span>    <span class="st">"Dose"</span>        <span class="op">=</span> <span class="va">treatment</span>,</span>
+<span>    <span class="st">"% &gt; 3 ug/mL"</span> <span class="op">=</span> <span class="va">pct_gt_3</span>,</span>
+<span>    <span class="st">"% &gt; 6 ug/mL"</span> <span class="op">=</span> <span class="va">pct_gt_6</span>,</span>
+<span>    <span class="st">"% &gt; 20 ug/mL"</span> <span class="op">=</span> <span class="va">pct_gt_20</span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
 <span>  caption <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span></span>
 <span>    <span class="st">"Simulated proportions of subjects above each Cmin1 cutoff."</span>,</span>
 <span>    <span class="st">"Published reference (Feng 2014, Figure 3 narrative):"</span>,</span>

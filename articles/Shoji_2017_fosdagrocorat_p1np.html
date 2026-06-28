@@ -1373,11 +1373,14 @@ few percentage points.</p>
 <span>  <span class="fu">arrange</span><span class="op">(</span><span class="va">arm</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">mutate</span><span class="op">(</span>delta <span class="op">=</span> <span class="va">simulated_median_pct</span> <span class="op">-</span> <span class="va">published_median_pct</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">comparison</span>, digits <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>             col.names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Arm"</span>,</span>
-<span>                           <span class="st">"Published median %CFB (Table 3)"</span>,</span>
-<span>                           <span class="st">"Simulated median %CFB"</span>,</span>
-<span>                           <span class="st">"Difference (pp)"</span><span class="op">)</span>,</span>
+<span><span class="va">comparison</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span></span>
+<span>    <span class="st">"Arm"</span>                             <span class="op">=</span> <span class="va">arm</span>,</span>
+<span>    <span class="st">"Published median %CFB (Table 3)"</span> <span class="op">=</span> <span class="va">published_median_pct</span>,</span>
+<span>    <span class="st">"Simulated median %CFB"</span>           <span class="op">=</span> <span class="va">simulated_median_pct</span>,</span>
+<span>    <span class="st">"Difference (pp)"</span>                 <span class="op">=</span> <span class="va">delta</span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span>digits <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>             caption <span class="op">=</span> <span class="st">"P1NP percent change from baseline at week 8 -- published vs simulated."</span><span class="op">)</span></span></code></pre></div>
 <table style="width:100%;" class="table">
 <caption>P1NP percent change from baseline at week 8 – published vs
@@ -1457,9 +1460,14 @@ implementation:</p>
 <span>         arm <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">arm</span>, levels <span class="op">=</span> <span class="va">arm_order</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">arrange</span><span class="op">(</span><span class="va">arm</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">sim_typ_summary</span>, digits <span class="op">=</span> <span class="fl">2</span>,</span>
-<span>             col.names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Arm"</span>, <span class="st">"P1NP wk 0 (typical)"</span>,</span>
-<span>                           <span class="st">"P1NP wk 8 (typical)"</span>, <span class="st">"%CFB typical"</span><span class="op">)</span>,</span>
+<span><span class="va">sim_typ_summary</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span></span>
+<span>    <span class="st">"Arm"</span>                 <span class="op">=</span> <span class="va">arm</span>,</span>
+<span>    <span class="st">"P1NP wk 0 (typical)"</span> <span class="op">=</span> <span class="va">wk0</span>,</span>
+<span>    <span class="st">"P1NP wk 8 (typical)"</span> <span class="op">=</span> <span class="va">wk8</span>,</span>
+<span>    <span class="st">"%CFB typical"</span>        <span class="op">=</span> <span class="va">cfb_pct_typ</span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span>digits <span class="op">=</span> <span class="fl">2</span>,</span>
 <span>             caption <span class="op">=</span> <span class="st">"Typical-value (zero-RE) P1NP at week 8 per arm."</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <caption>Typical-value (zero-RE) P1NP at week 8 per arm.</caption>

@@ -239,11 +239,14 @@ comparison <- published_table3 |>
   arrange(arm) |>
   mutate(delta = simulated_median_pct - published_median_pct)
 
-knitr::kable(comparison, digits = 1,
-             col.names = c("Arm",
-                           "Published median %CFB (Table 3)",
-                           "Simulated median %CFB",
-                           "Difference (pp)"),
+comparison |>
+  dplyr::rename(
+    "Arm"                             = arm,
+    "Published median %CFB (Table 3)" = published_median_pct,
+    "Simulated median %CFB"           = simulated_median_pct,
+    "Difference (pp)"                 = delta
+  ) |>
+  knitr::kable(digits = 1,
              caption = "P1NP percent change from baseline at week 8 -- published vs simulated.")
 ```
 
@@ -278,9 +281,14 @@ sim_typ_summary <- sim_typ |>
          arm = factor(arm, levels = arm_order)) |>
   arrange(arm)
 
-knitr::kable(sim_typ_summary, digits = 2,
-             col.names = c("Arm", "P1NP wk 0 (typical)",
-                           "P1NP wk 8 (typical)", "%CFB typical"),
+sim_typ_summary |>
+  dplyr::rename(
+    "Arm"                 = arm,
+    "P1NP wk 0 (typical)" = wk0,
+    "P1NP wk 8 (typical)" = wk8,
+    "%CFB typical"        = cfb_pct_typ
+  ) |>
+  knitr::kable(digits = 2,
              caption = "Typical-value (zero-RE) P1NP at week 8 per arm.")
 ```
 

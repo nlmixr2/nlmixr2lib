@@ -264,9 +264,14 @@ mc_summary <- mc_results |>
     .groups = "drop"
   )
 
-knitr::kable(mc_summary,
-             col.names = c("CPG2 dose (U/kg)", "Time (h)",
-                           "% MTX < 0.1 umol/L", "% MTX < 1.0 umol/L"),
+mc_summary |>
+  dplyr::rename(
+    "CPG2 dose (U/kg)"   = dose_Upkg,
+    "Time (h)"           = time,
+    "% MTX < 0.1 umol/L" = pct_below_0p1,
+    "% MTX < 1.0 umol/L" = pct_below_1p0
+  ) |>
+  knitr::kable(
              caption = paste0("Monte-Carlo replication of Kimura 2023 Figure 4 (n = ",
                               n_per_arm, " per arm).") )
 ```

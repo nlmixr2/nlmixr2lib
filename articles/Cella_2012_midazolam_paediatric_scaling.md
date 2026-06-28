@@ -193,14 +193,21 @@ cmp <- auc_m1 |>
   mutate(rel_diff_pub_pct = 100 * (pub_model1_int - pub_model2_pred) / pub_model2_pred,
          rel_diff_sim_pct = 100 * (sim_model1   - sim_model2)        / sim_model2)
 
-knitr::kable(
-  cmp,
-  digits = c(0, 1, 2, 2, 2, 2, 1, 1),
-  col.names = c("Subject", "WT (kg)", "Sim Model 1", "Sim Model 2",
-                "Pub Model 2 (Pred)", "Pub Model 1 (Interp)",
-                "Pub rel diff (%)", "Sim rel diff (%)"),
-  caption = "Cella 2012 Table 3 (AUC0-180 in mg/L*min) vs typical-value simulation. Negative 'rel diff' means Model 1 under-predicts Model 2. The simulated rows are typical-value (eta = 0); published rows incorporate per-subject post-hoc eta draws which inflate the absolute AUC, but the direction and weight-trend of the bias are preserved."
-)
+cmp |>
+  dplyr::rename(
+    "Subject"              = id,
+    "WT (kg)"              = wt,
+    "Sim Model 1"          = sim_model1,
+    "Sim Model 2"          = sim_model2,
+    "Pub Model 2 (Pred)"   = pub_model2_pred,
+    "Pub Model 1 (Interp)" = pub_model1_int,
+    "Pub rel diff (%)"     = rel_diff_pub_pct,
+    "Sim rel diff (%)"     = rel_diff_sim_pct
+  ) |>
+  knitr::kable(
+    digits = c(0, 1, 2, 2, 2, 2, 1, 1),
+    caption = "Cella 2012 Table 3 (AUC0-180 in mg/L*min) vs typical-value simulation. Negative 'rel diff' means Model 1 under-predicts Model 2. The simulated rows are typical-value (eta = 0); published rows incorporate per-subject post-hoc eta draws which inflate the absolute AUC, but the direction and weight-trend of the bias are preserved."
+  )
 ```
 
 | Subject | WT (kg) | Sim Model 1 | Sim Model 2 | Pub Model 2 (Pred) | Pub Model 1 (Interp) | Pub rel diff (%) | Sim rel diff (%) |
@@ -371,35 +378,41 @@ nca_df <- as.data.frame(nca_res$result) |>
   pivot_wider(names_from = PPTESTCD, values_from = PPORRES) |>
   left_join(subjects |> select(id, WT), by = "id")
 
-knitr::kable(
-  nca_df,
-  digits = c(0, 4, 2, 2, 2, 1),
-  col.names = c("Subject", "Cmax (mg/L)", "Tmax (min)", "AUClast (mg/L*min)",
-                "t1/2 (min)", "WT (kg)"),
-  caption = "PKNCA-derived per-subject NCA from Cella 2012 Model 2 typical-value simulations (0-180 min window)."
-)
+nca_df |>
+  dplyr::rename(
+    "Subject"            = id,
+    "Cmax (mg/L)"        = cmax,
+    "Tmax (min)"         = tmax,
+    "AUClast (mg/L*min)" = auclast,
+    "t1/2 (min)"         = half.life,
+    "WT (kg)"            = WT
+  ) |>
+  knitr::kable(
+    digits = c(0, 4, 2, 2, 2, 1),
+    caption = "PKNCA-derived per-subject NCA from Cella 2012 Model 2 typical-value simulations (0-180 min window)."
+  )
 ```
 
-| Subject | Cmax (mg/L) | Tmax (min) | AUClast (mg/L\*min) | t1/2 (min) | WT (kg) |
-|--------:|------------:|-----------:|--------------------:|-----------:|--------:|
-|       1 |      5.2423 |       0.06 |                   0 |     114.57 |    12.6 |
-|       2 |      5.5766 |       0.06 |                   0 |     121.91 |    14.0 |
-|       3 |      5.7522 |       0.06 |                   0 |     126.13 |    14.8 |
-|       4 |      5.9176 |       0.06 |                   0 |     130.76 |    15.6 |
-|       5 |      6.2742 |       0.06 |                   0 |     141.72 |    17.5 |
-|       6 |      6.3434 |       0.06 |                   0 |     143.82 |    17.9 |
-|       7 |      6.4923 |       0.06 |                   0 |     149.29 |    18.8 |
-|       8 |      6.5556 |       0.06 |                   0 |     151.74 |    19.2 |
-|       9 |      6.7503 |       0.06 |                   0 |     159.43 |    20.5 |
-|      10 |      7.0202 |       0.06 |                   0 |     171.56 |    22.5 |
-|      11 |      7.0703 |       0.06 |                   0 |     174.07 |    22.9 |
-|      12 |      8.2560 |       0.06 |                   0 |     258.40 |    36.4 |
-|      13 |      8.4581 |       0.06 |                   0 |     280.53 |    39.9 |
-|      14 |      8.5107 |       0.06 |                   0 |     286.98 |    40.9 |
-|      15 |      8.6566 |       0.06 |                   0 |     306.36 |    43.9 |
-|      16 |      8.7620 |       0.06 |                   0 |     321.41 |    46.3 |
-|      17 |      9.1592 |       0.06 |                   0 |     394.69 |    57.7 |
-|      18 |      9.2261 |       0.06 |                   0 |     409.68 |    60.1 |
+| Subject | AUClast (mg/L\*min) | Cmax (mg/L) | Tmax (min) | t1/2 (min) | WT (kg) |
+|--------:|--------------------:|------------:|-----------:|-----------:|--------:|
+|       1 |              5.2423 |        0.06 |          0 |     114.57 |    12.6 |
+|       2 |              5.5766 |        0.06 |          0 |     121.91 |    14.0 |
+|       3 |              5.7522 |        0.06 |          0 |     126.13 |    14.8 |
+|       4 |              5.9176 |        0.06 |          0 |     130.76 |    15.6 |
+|       5 |              6.2742 |        0.06 |          0 |     141.72 |    17.5 |
+|       6 |              6.3434 |        0.06 |          0 |     143.82 |    17.9 |
+|       7 |              6.4923 |        0.06 |          0 |     149.29 |    18.8 |
+|       8 |              6.5556 |        0.06 |          0 |     151.74 |    19.2 |
+|       9 |              6.7503 |        0.06 |          0 |     159.43 |    20.5 |
+|      10 |              7.0202 |        0.06 |          0 |     171.56 |    22.5 |
+|      11 |              7.0703 |        0.06 |          0 |     174.07 |    22.9 |
+|      12 |              8.2560 |        0.06 |          0 |     258.40 |    36.4 |
+|      13 |              8.4581 |        0.06 |          0 |     280.53 |    39.9 |
+|      14 |              8.5107 |        0.06 |          0 |     286.98 |    40.9 |
+|      15 |              8.6566 |        0.06 |          0 |     306.36 |    43.9 |
+|      16 |              8.7620 |        0.06 |          0 |     321.41 |    46.3 |
+|      17 |              9.1592 |        0.06 |          0 |     394.69 |    57.7 |
+|      18 |              9.2261 |        0.06 |          0 |     409.68 |    60.1 |
 
 PKNCA-derived per-subject NCA from Cella 2012 Model 2 typical-value
 simulations (0-180 min window). {.table style="width:100%;"}
@@ -436,13 +449,17 @@ cmp_nca <- simulated_summary |>
             suffix = c("_sim", "_pub")) |>
   mutate(rel_diff_pct = 100 * (auclast_sim - auclast_pub) / auclast_pub)
 
-knitr::kable(
-  cmp_nca,
-  digits = 2,
-  col.names = c("Treatment", "Simulated AUC0-180 (mg/L*min)",
-                "Published AUC0-180 (mg/L*min)", "Rel diff (%)"),
-  caption = "Geometric mean of simulated typical-value AUC0-180 from Cella 2012 Model 2 vs. the geometric mean of the published Table 3 'Predicted exposure' column (Subjects 1-6 and 8-17, dropping the two outliers the paper itself flagged)."
-)
+cmp_nca |>
+  dplyr::rename(
+    "Treatment"                     = treatment,
+    "Simulated AUC0-180 (mg/L*min)" = auclast_sim,
+    "Published AUC0-180 (mg/L*min)" = auclast_pub,
+    "Rel diff (%)"                  = rel_diff_pct
+  ) |>
+  knitr::kable(
+    digits = 2,
+    caption = "Geometric mean of simulated typical-value AUC0-180 from Cella 2012 Model 2 vs. the geometric mean of the published Table 3 'Predicted exposure' column (Subjects 1-6 and 8-17, dropping the two outliers the paper itself flagged)."
+  )
 ```
 
 | Treatment | Simulated AUC0-180 (mg/L\*min) | Published AUC0-180 (mg/L\*min) | Rel diff (%) |

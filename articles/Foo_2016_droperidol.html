@@ -1345,10 +1345,13 @@ and 10 mg + 10 mg at 15 min gives 10 h.</p>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">treatment</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">p_above</span> <span class="op">&gt;=</span> <span class="fl">0.80</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span>time_above_80 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">time</span><span class="op">)</span>, .groups <span class="op">=</span> <span class="st">"drop"</span><span class="op">)</span></span>
-<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
-<span>  <span class="va">duration_80</span>,</span>
+<span><span class="va">duration_80</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span></span>
+<span>    <span class="st">"Treatment"</span>                         <span class="op">=</span> <span class="va">treatment</span>,</span>
+<span>    <span class="st">"Last time P(Cc &gt; LLOQ) &gt;= 80% (h)"</span> <span class="op">=</span> <span class="va">time_above_80</span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
 <span>  digits <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>  col.names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Treatment"</span>, <span class="st">"Last time P(Cc &gt; LLOQ) &gt;= 80% (h)"</span><span class="op">)</span>,</span>
 <span>  caption <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span></span>
 <span>    <span class="st">"Duration above the 80% probability of exceeding LLOQ."</span>,</span>
 <span>    <span class="st">"Paper Results: 5 mg ~5 h, 10 mg ~7 h, 10+10 mg ~10 h."</span></span>
@@ -1503,10 +1506,16 @@ Figures 1 and 2.</p>
 <span>    q95    <span class="op">=</span> <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">PPORRES</span>, <span class="fl">0.95</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
 <span>    .groups <span class="op">=</span> <span class="st">"drop"</span></span>
 <span>  <span class="op">)</span></span>
-<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
-<span>  <span class="va">nca_tbl</span>,</span>
+<span><span class="va">nca_tbl</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span></span>
+<span>    <span class="st">"Treatment"</span>     <span class="op">=</span> <span class="va">treatment</span>,</span>
+<span>    <span class="st">"NCA parameter"</span> <span class="op">=</span> <span class="va">PPTESTCD</span>,</span>
+<span>    <span class="st">"Median"</span>        <span class="op">=</span> <span class="va">median</span>,</span>
+<span>    <span class="st">"P05"</span>           <span class="op">=</span> <span class="va">q05</span>,</span>
+<span>    <span class="st">"P95"</span>           <span class="op">=</span> <span class="va">q95</span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
 <span>  digits  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">2</span><span class="op">)</span>,</span>
-<span>  col.names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Treatment"</span>, <span class="st">"NCA parameter"</span>, <span class="st">"Median"</span>, <span class="st">"P05"</span>, <span class="st">"P95"</span><span class="op">)</span>,</span>
 <span>  caption <span class="op">=</span> <span class="st">"Simulated NCA values across the two single-dose arms (per-subject medians and 5-95% range)."</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <table class="table">

@@ -1400,10 +1400,15 @@ conversions tabulated below.</p>
 <span>  <span class="st">"naproxcinod 2250 mg"</span>,  <span class="st">"depot_naproxcinod"</span>,     <span class="fl">2250</span>,   <span class="fl">317.30</span>, <span class="fl">2250</span> <span class="op">/</span> <span class="fl">317.30</span> <span class="op">*</span> <span class="fl">1000</span></span>
 <span><span class="op">)</span></span>
 <span><span class="va">arms</span><span class="op">$</span><span class="va">umol</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">arms</span><span class="op">$</span><span class="va">umol</span>, <span class="fl">0</span><span class="op">)</span></span>
-<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">arms</span>,</span>
-<span>             col.names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Arm"</span>, <span class="st">"Depot cmt"</span>, <span class="st">"Dose (mg)"</span>,</span>
-<span>                           <span class="st">"MW (g/mol)"</span>, <span class="st">"Dose (umol)"</span><span class="op">)</span>,</span>
-<span>             caption <span class="op">=</span> <span class="st">"Six arms of Bjornsson 2011 single-dose dental-pain trial."</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">arms</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span></span>
+<span>    <span class="st">"Arm"</span>        <span class="op">=</span> <span class="va">arm</span>,</span>
+<span>    <span class="st">"Depot cmt"</span>  <span class="op">=</span> <span class="va">depot</span>,</span>
+<span>    <span class="st">"Dose (mg)"</span>  <span class="op">=</span> <span class="va">mg</span>,</span>
+<span>    <span class="st">"MW (g/mol)"</span> <span class="op">=</span> <span class="va">mw</span>,</span>
+<span>    <span class="st">"Dose (umol)"</span> <span class="op">=</span> <span class="va">umol</span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span>caption <span class="op">=</span> <span class="st">"Six arms of Bjornsson 2011 single-dose dental-pain trial."</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <caption>Six arms of Bjornsson 2011 single-dose dental-pain
 trial.</caption>

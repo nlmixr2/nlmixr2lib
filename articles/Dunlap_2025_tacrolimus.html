@@ -1562,10 +1562,14 @@ safety-constraint analysis.</p>
 <span>  <span class="fu">summarise</span><span class="op">(</span>cmax_median <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/median.html" class="external-link">median</a></span><span class="op">(</span><span class="va">cmax_subj</span><span class="op">)</span>,</span>
 <span>            cmax_p95    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">cmax_subj</span>, <span class="fl">0.95</span><span class="op">)</span>,</span>
 <span>            .groups <span class="op">=</span> <span class="st">"drop"</span><span class="op">)</span></span>
-<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">cmax_summary</span>,</span>
+<span><span class="va">cmax_summary</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span></span>
+<span>    <span class="st">"Sub-group"</span>                                 <span class="op">=</span> <span class="va">subgroup</span>,</span>
+<span>    <span class="st">"Simulated D0 Cmax median (ng/mL)"</span>          <span class="op">=</span> <span class="va">cmax_median</span>,</span>
+<span>    <span class="st">"Simulated D0 Cmax 95th percentile (ng/mL)"</span> <span class="op">=</span> <span class="va">cmax_p95</span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
 <span>             digits <span class="op">=</span> <span class="fl">2</span>,</span>
-<span>             col.names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Sub-group"</span>, <span class="st">"Simulated D0 Cmax median (ng/mL)"</span>,</span>
-<span>                           <span class="st">"Simulated D0 Cmax 95th percentile (ng/mL)"</span><span class="op">)</span>,</span>
 <span>             caption <span class="op">=</span> <span class="st">"Per-sub-group D0 Cmax distribution under the UNCMC protocol; compare against the Dunlap 2025 Methods 2.6 safety constraint of 24.2 ng/mL."</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <caption>Per-sub-group D0 Cmax distribution under the UNCMC protocol;

@@ -248,10 +248,13 @@ duration_80 <- prob_above |>
   dplyr::group_by(treatment) |>
   dplyr::filter(p_above >= 0.80) |>
   dplyr::summarise(time_above_80 = max(time), .groups = "drop")
-knitr::kable(
-  duration_80,
+duration_80 |>
+  dplyr::rename(
+    "Treatment"                         = treatment,
+    "Last time P(Cc > LLOQ) >= 80% (h)" = time_above_80
+  ) |>
+  knitr::kable(
   digits = 1,
-  col.names = c("Treatment", "Last time P(Cc > LLOQ) >= 80% (h)"),
   caption = paste(
     "Duration above the 80% probability of exceeding LLOQ.",
     "Paper Results: 5 mg ~5 h, 10 mg ~7 h, 10+10 mg ~10 h."
@@ -382,10 +385,16 @@ nca_tbl <- as.data.frame(nca_res$result) |>
     q95    = stats::quantile(PPORRES, 0.95, na.rm = TRUE),
     .groups = "drop"
   )
-knitr::kable(
-  nca_tbl,
+nca_tbl |>
+  dplyr::rename(
+    "Treatment"     = treatment,
+    "NCA parameter" = PPTESTCD,
+    "Median"        = median,
+    "P05"           = q05,
+    "P95"           = q95
+  ) |>
+  knitr::kable(
   digits  = c(0, 0, 2, 2, 2),
-  col.names = c("Treatment", "NCA parameter", "Median", "P05", "P95"),
   caption = "Simulated NCA values across the two single-dose arms (per-subject medians and 5-95% range)."
 )
 ```

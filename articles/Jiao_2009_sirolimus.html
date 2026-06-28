@@ -1447,10 +1447,15 @@ reference, the typical CL/F at all-median covariates must equal theta1 =
 <span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>diff_pct <span class="op">=</span> <span class="fl">100</span> <span class="op">*</span> <span class="op">(</span><span class="va">cl_model</span> <span class="op">-</span> <span class="va">cl_paper</span><span class="op">)</span> <span class="op">/</span> <span class="va">cl_paper</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
-<span>  <span class="va">scen_cl</span>,</span>
+<span><span class="va">scen_cl</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span></span>
+<span>    <span class="st">"Scenario"</span>         <span class="op">=</span> <span class="va">scenario</span>,</span>
+<span>    <span class="st">"CL/F model (L/h)"</span> <span class="op">=</span> <span class="va">cl_model</span>,</span>
+<span>    <span class="st">"CL/F paper (L/h)"</span> <span class="op">=</span> <span class="va">cl_paper</span>,</span>
+<span>    <span class="st">"Diff (%)"</span>         <span class="op">=</span> <span class="va">diff_pct</span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
 <span>  digits  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">3</span>, <span class="fl">3</span>, <span class="fl">2</span><span class="op">)</span>,</span>
-<span>  col.names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Scenario"</span>, <span class="st">"CL/F model (L/h)"</span>, <span class="st">"CL/F paper (L/h)"</span>, <span class="st">"Diff (%)"</span><span class="op">)</span>,</span>
 <span>  caption <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span></span>
 <span>    <span class="st">"Typical CL/F predicted by the packaged model versus the value computed"</span>,</span>
 <span>    <span class="st">"directly from Jiao 2009 Eq. 9 at each scenario. Differences should be at"</span>,</span>
@@ -1782,12 +1787,21 @@ values within numerical noise for the typical-value
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">cohort</span>, <span class="va">cmax</span>, <span class="va">cmin</span>, <span class="va">tmax</span>, <span class="va">auclast</span>, <span class="va">auc_target</span>, <span class="va">auc_diff_pct</span>,</span>
 <span>                <span class="va">cav</span>, <span class="va">cavg_target</span>, <span class="va">cavg_diff_pct</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
-<span>  <span class="va">cmp</span>,</span>
+<span><span class="va">cmp</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span></span>
+<span>    <span class="st">"Cohort"</span>           <span class="op">=</span> <span class="va">cohort</span>,</span>
+<span>    <span class="st">"Cmax,ss"</span>          <span class="op">=</span> <span class="va">cmax</span>,</span>
+<span>    <span class="st">"Cmin,ss"</span>          <span class="op">=</span> <span class="va">cmin</span>,</span>
+<span>    <span class="st">"Tmax"</span>             <span class="op">=</span> <span class="va">tmax</span>,</span>
+<span>    <span class="st">"AUC0-tau (sim)"</span>   <span class="op">=</span> <span class="va">auclast</span>,</span>
+<span>    <span class="st">"AUC0-tau (paper)"</span> <span class="op">=</span> <span class="va">auc_target</span>,</span>
+<span>    <span class="st">"AUC diff (%)"</span>     <span class="op">=</span> <span class="va">auc_diff_pct</span>,</span>
+<span>    <span class="st">"Cavg (sim)"</span>       <span class="op">=</span> <span class="va">cav</span>,</span>
+<span>    <span class="st">"Cavg (paper)"</span>     <span class="op">=</span> <span class="va">cavg_target</span>,</span>
+<span>    <span class="st">"Cavg diff (%)"</span>    <span class="op">=</span> <span class="va">cavg_diff_pct</span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
 <span>  digits  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">2</span><span class="op">)</span>,</span>
-<span>  col.names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Cohort"</span>, <span class="st">"Cmax,ss"</span>, <span class="st">"Cmin,ss"</span>, <span class="st">"Tmax"</span>,</span>
-<span>                <span class="st">"AUC0-tau (sim)"</span>, <span class="st">"AUC0-tau (paper)"</span>, <span class="st">"AUC diff (%)"</span>,</span>
-<span>                <span class="st">"Cavg (sim)"</span>, <span class="st">"Cavg (paper)"</span>, <span class="st">"Cavg diff (%)"</span><span class="op">)</span>,</span>
 <span>  caption <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span></span>
 <span>    <span class="st">"Day-59 steady-state PKNCA on the typical-value (zeroRe) simulation."</span>,</span>
 <span>    <span class="st">"Cmax,ss / Cmin,ss / Tmax are absolute values from the simulation;"</span>,</span>

@@ -175,17 +175,24 @@ subgroups <- tibble::tribble(
     AUC0_24_2g = 2000 / CL_Lh
   )
 
-knitr::kable(
-  subgroups |>
-    select(subgroup, age_label, crcl_label, AGE, CRCL,
-           CL_Lh, V_L, AUC0_24_2g) |>
-    mutate(CL_Lh = round(CL_Lh, 2), V_L = round(V_L, 1),
-           AUC0_24_2g = round(AUC0_24_2g, 1)),
-  caption = "Typical-patient CL, V, and AUC0-24 for the four subgroups at the standard 2 g/day vancomycin dose (CREAT = 1.4 mg/dL, WT = 73 kg).",
-  col.names = c("Subgroup", "Age band", "CRCL band",
-                "AGE (years)", "CRCL (mL/min)",
-                "CL (L/h)", "V (L)", "AUC0-24 (mg*h/L)")
-)
+subgroups |>
+  select(subgroup, age_label, crcl_label, AGE, CRCL,
+         CL_Lh, V_L, AUC0_24_2g) |>
+  mutate(CL_Lh = round(CL_Lh, 2), V_L = round(V_L, 1),
+         AUC0_24_2g = round(AUC0_24_2g, 1)) |>
+  dplyr::rename(
+    "Subgroup"         = subgroup,
+    "Age band"         = age_label,
+    "CRCL band"        = crcl_label,
+    "AGE (years)"      = AGE,
+    "CRCL (mL/min)"    = CRCL,
+    "CL (L/h)"         = CL_Lh,
+    "V (L)"            = V_L,
+    "AUC0-24 (mg*h/L)" = AUC0_24_2g
+  ) |>
+  knitr::kable(
+    caption = "Typical-patient CL, V, and AUC0-24 for the four subgroups at the standard 2 g/day vancomycin dose (CREAT = 1.4 mg/dL, WT = 73 kg)."
+  )
 ```
 
 | Subgroup | Age band | CRCL band | AGE (years) | CRCL (mL/min) | CL (L/h) | V (L) | AUC0-24 (mg\*h/L) |

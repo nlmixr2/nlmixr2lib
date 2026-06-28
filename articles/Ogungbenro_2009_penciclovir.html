@@ -1534,15 +1534,21 @@ below.</p></li>
 <span>  <span class="fu">summarise</span><span class="op">(</span>value <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/median.html" class="external-link">median</a></span><span class="op">(</span><span class="va">PPORRES</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>, .groups <span class="op">=</span> <span class="st">"drop"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">pivot_wider</span><span class="op">(</span>names_from <span class="op">=</span> <span class="va">PPTESTCD</span>, values_from <span class="op">=</span> <span class="va">value</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
-<span>  <span class="va">nca_summary</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu">select</span><span class="op">(</span><span class="va">treatment</span>, <span class="va">cmax</span>, <span class="va">tmax</span>, <span class="va">auclast</span>, <span class="va">aucinf.obs</span>, <span class="va">half.life</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu">mutate</span><span class="op">(</span><span class="fu">across</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">cmax</span>, <span class="va">tmax</span>, <span class="va">auclast</span>, <span class="va">aucinf.obs</span>, <span class="va">half.life</span><span class="op">)</span>,</span>
-<span>                  <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">signif</a></span><span class="op">(</span><span class="va">.x</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  col.names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Cohort"</span>, <span class="st">"Cmax (mg/L)"</span>, <span class="st">"Tmax (h)"</span>, <span class="st">"AUClast (mg*h/L)"</span>,</span>
-<span>                <span class="st">"AUCinf,obs (mg*h/L)"</span>, <span class="st">"t1/2 (h)"</span><span class="op">)</span>,</span>
-<span>  caption <span class="op">=</span> <span class="st">"Per-cohort median PKNCA-derived parameters."</span></span>
-<span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">nca_summary</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">select</span><span class="op">(</span><span class="va">treatment</span>, <span class="va">cmax</span>, <span class="va">tmax</span>, <span class="va">auclast</span>, <span class="va">aucinf.obs</span>, <span class="va">half.life</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">mutate</span><span class="op">(</span><span class="fu">across</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">cmax</span>, <span class="va">tmax</span>, <span class="va">auclast</span>, <span class="va">aucinf.obs</span>, <span class="va">half.life</span><span class="op">)</span>,</span>
+<span>                <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">signif</a></span><span class="op">(</span><span class="va">.x</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span></span>
+<span>    <span class="st">"Cohort"</span>              <span class="op">=</span> <span class="va">treatment</span>,</span>
+<span>    <span class="st">"Cmax (mg/L)"</span>         <span class="op">=</span> <span class="va">cmax</span>,</span>
+<span>    <span class="st">"Tmax (h)"</span>            <span class="op">=</span> <span class="va">tmax</span>,</span>
+<span>    <span class="st">"AUClast (mg*h/L)"</span>    <span class="op">=</span> <span class="va">auclast</span>,</span>
+<span>    <span class="st">"AUCinf,obs (mg*h/L)"</span> <span class="op">=</span> <span class="va">aucinf.obs</span>,</span>
+<span>    <span class="st">"t1/2 (h)"</span>            <span class="op">=</span> <span class="va">half.life</span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
+<span>    caption <span class="op">=</span> <span class="st">"Per-cohort median PKNCA-derived parameters."</span></span>
+<span>  <span class="op">)</span></span></code></pre></div>
 <table class="table">
 <caption>Per-cohort median PKNCA-derived parameters.</caption>
 <colgroup>
@@ -1635,14 +1641,20 @@ below.</p></li>
 <span>                <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">signif</a></span><span class="op">(</span><span class="va">.x</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>         <span class="fu">across</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">auc_pct_diff</span>, <span class="va">cmax_pct_diff</span><span class="op">)</span>, <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">.x</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
-<span>  <span class="va">compare_tbl</span>,</span>
-<span>  col.names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Cohort"</span>, <span class="st">"AUC ratio (sim)"</span>, <span class="st">"Cmax ratio (sim)"</span>,</span>
-<span>                <span class="st">"AUC ratio (paper)"</span>, <span class="st">"Cmax ratio (paper)"</span>,</span>
-<span>                <span class="st">"AUC % diff"</span>, <span class="st">"Cmax % diff"</span><span class="op">)</span>,</span>
-<span>  caption <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"Paediatric / adult exposure ratios at 10 mg/kg PO,"</span>,</span>
-<span>                  <span class="st">"simulated vs Ogungbenro 2009 Results section."</span><span class="op">)</span></span>
-<span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">compare_tbl</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span></span>
+<span>    <span class="st">"Cohort"</span>            <span class="op">=</span> <span class="va">treatment</span>,</span>
+<span>    <span class="st">"AUC ratio (sim)"</span>   <span class="op">=</span> <span class="va">auc_ratio_sim</span>,</span>
+<span>    <span class="st">"Cmax ratio (sim)"</span>  <span class="op">=</span> <span class="va">cmax_ratio_sim</span>,</span>
+<span>    <span class="st">"AUC ratio (paper)"</span> <span class="op">=</span> <span class="va">auc_ratio_paper</span>,</span>
+<span>    <span class="st">"Cmax ratio (paper)"</span> <span class="op">=</span> <span class="va">cmax_ratio_paper</span>,</span>
+<span>    <span class="st">"AUC % diff"</span>        <span class="op">=</span> <span class="va">auc_pct_diff</span>,</span>
+<span>    <span class="st">"Cmax % diff"</span>       <span class="op">=</span> <span class="va">cmax_pct_diff</span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
+<span>    caption <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"Paediatric / adult exposure ratios at 10 mg/kg PO,"</span>,</span>
+<span>                    <span class="st">"simulated vs Ogungbenro 2009 Results section."</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span></code></pre></div>
 <table style="width:100%;" class="table">
 <caption>Paediatric / adult exposure ratios at 10 mg/kg PO, simulated vs
 Ogungbenro 2009 Results section.</caption>

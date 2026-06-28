@@ -1373,9 +1373,14 @@ budget; increase <code>n_per_arm</code> for a fuller replication.</p>
 <span>    .groups <span class="op">=</span> <span class="st">"drop"</span></span>
 <span>  <span class="op">)</span></span>
 <span></span>
-<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">mc_summary</span>,</span>
-<span>             col.names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CPG2 dose (U/kg)"</span>, <span class="st">"Time (h)"</span>,</span>
-<span>                           <span class="st">"% MTX &lt; 0.1 umol/L"</span>, <span class="st">"% MTX &lt; 1.0 umol/L"</span><span class="op">)</span>,</span>
+<span><span class="va">mc_summary</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span></span>
+<span>    <span class="st">"CPG2 dose (U/kg)"</span>   <span class="op">=</span> <span class="va">dose_Upkg</span>,</span>
+<span>    <span class="st">"Time (h)"</span>           <span class="op">=</span> <span class="va">time</span>,</span>
+<span>    <span class="st">"% MTX &lt; 0.1 umol/L"</span> <span class="op">=</span> <span class="va">pct_below_0p1</span>,</span>
+<span>    <span class="st">"% MTX &lt; 1.0 umol/L"</span> <span class="op">=</span> <span class="va">pct_below_1p0</span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
 <span>             caption <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Monte-Carlo replication of Kimura 2023 Figure 4 (n = "</span>,</span>
 <span>                              <span class="va">n_per_arm</span>, <span class="st">" per arm)."</span><span class="op">)</span> <span class="op">)</span></span></code></pre></div>
 <table class="table">

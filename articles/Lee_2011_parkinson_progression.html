@@ -1363,9 +1363,12 @@ placebo arm, matching the paper’s reported predictions.</p>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">arm</span>, <span class="va">deltaUPDRS</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>deltaUPDRS <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">deltaUPDRS</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
-<span>  <span class="va">end_of_study</span>,</span>
-<span>  col.names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Arm"</span>, <span class="st">"Predicted change from baseline UPDRS at week 26 (= 6.5 mo)"</span><span class="op">)</span>,</span>
+<span><span class="va">end_of_study</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span></span>
+<span>    <span class="st">"Arm"</span>                                                       <span class="op">=</span> <span class="va">arm</span>,</span>
+<span>    <span class="st">"Predicted change from baseline UPDRS at week 26 (= 6.5 mo)"</span> <span class="op">=</span> <span class="va">deltaUPDRS</span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
 <span>  caption <span class="op">=</span> <span class="st">"Reproduction of Lee 2011 Results section anchor (placebo published as 3.62)."</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <table class="table">
@@ -1506,8 +1509,14 @@ at week 26 of</p>
 <span>    n_subjects      <span class="op">=</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html" class="external-link">n</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>    .groups <span class="op">=</span> <span class="st">"drop"</span></span>
 <span>  <span class="op">)</span></span>
-<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">week26_distribution</span>,</span>
-<span>             col.names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Arm"</span>, <span class="st">"Mean delta-UPDRS at week 26"</span>, <span class="st">"SD"</span>, <span class="st">"N subjects"</span><span class="op">)</span>,</span>
+<span><span class="va">week26_distribution</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span></span>
+<span>    <span class="st">"Arm"</span>                         <span class="op">=</span> <span class="va">arm</span>,</span>
+<span>    <span class="st">"Mean delta-UPDRS at week 26"</span> <span class="op">=</span> <span class="va">mean_deltaUPDRS</span>,</span>
+<span>    <span class="st">"SD"</span>                          <span class="op">=</span> <span class="va">sd_deltaUPDRS</span>,</span>
+<span>    <span class="st">"N subjects"</span>                  <span class="op">=</span> <span class="va">n_subjects</span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
 <span>             caption <span class="op">=</span> <span class="st">"Simulated population-mean change from baseline UPDRS at week 26 (4-week-month axis)."</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <caption>Simulated population-mean change from baseline UPDRS at week 26

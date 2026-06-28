@@ -1629,15 +1629,18 @@ Compute the same summaries from the simulated cohorts:</p>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>pct_drop_delta_pp <span class="op">=</span> <span class="va">sim_pct_drop_median</span> <span class="op">-</span> <span class="va">pub_pct_drop_median</span>,</span>
 <span>                t_max_delta <span class="op">=</span> <span class="va">sim_t_max_weeks_median</span> <span class="op">-</span> <span class="va">pub_t_max_weeks_median</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">cmp</span>,</span>
-<span>             col.names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Drug"</span>, <span class="st">"Dose (mg/day)"</span>,</span>
-<span>                           <span class="st">"Simulated median % reduction"</span>,</span>
-<span>                           <span class="st">"Simulated time to max (weeks)"</span>,</span>
-<span>                           <span class="st">"Published median % reduction"</span>,</span>
-<span>                           <span class="st">"Published time to max (weeks)"</span>,</span>
-<span>                           <span class="st">"% reduction delta (pp)"</span>,</span>
-<span>                           <span class="st">"Time-to-max delta (weeks)"</span><span class="op">)</span>,</span>
-<span>             caption <span class="op">=</span> <span class="st">"Side-by-side comparison: simulated vs Kakara 2014 Table 3 medians."</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">cmp</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span></span>
+<span>    <span class="st">"Drug"</span>                          <span class="op">=</span> <span class="va">drug</span>,</span>
+<span>    <span class="st">"Dose (mg/day)"</span>                 <span class="op">=</span> <span class="va">dose_mg</span>,</span>
+<span>    <span class="st">"Simulated median % reduction"</span>  <span class="op">=</span> <span class="va">sim_pct_drop_median</span>,</span>
+<span>    <span class="st">"Simulated time to max (weeks)"</span> <span class="op">=</span> <span class="va">sim_t_max_weeks_median</span>,</span>
+<span>    <span class="st">"Published median % reduction"</span>  <span class="op">=</span> <span class="va">pub_pct_drop_median</span>,</span>
+<span>    <span class="st">"Published time to max (weeks)"</span> <span class="op">=</span> <span class="va">pub_t_max_weeks_median</span>,</span>
+<span>    <span class="st">"% reduction delta (pp)"</span>        <span class="op">=</span> <span class="va">pct_drop_delta_pp</span>,</span>
+<span>    <span class="st">"Time-to-max delta (weeks)"</span>     <span class="op">=</span> <span class="va">t_max_delta</span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span>caption <span class="op">=</span> <span class="st">"Side-by-side comparison: simulated vs Kakara 2014 Table 3 medians."</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <caption>Side-by-side comparison: simulated vs Kakara 2014 Table 3
 medians.</caption>

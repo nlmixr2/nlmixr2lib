@@ -280,11 +280,16 @@ threshold_summary <- lapply(thresholds, function(thr) {
   dplyr::bind_rows() |>
   dplyr::arrange(dose_label, threshold)
 
-knitr::kable(
-  threshold_summary,
+threshold_summary |>
+  dplyr::rename(
+    "Dose"              = dose_label,
+    "Threshold (IU/mL)" = threshold,
+    "% reaching"        = pct_reached,
+    "Mean duration (h)" = dur_mean,
+    "SD (h)"            = dur_sd
+  ) |>
+  knitr::kable(
   digits  = c(0, 1, 1, 2, 2),
-  col.names = c("Dose", "Threshold (IU/mL)", "% reaching",
-                "Mean duration (h)", "SD (h)"),
   caption = paste0(
     "Replicates Sanchez-Pena 2005 Table 3. Compare against published ",
     "values: 0.5 mg/kg = 100% / 2.7 +/- 0.9 h (>0.5); 75% / 1.7 +/- 0.6 h ",
@@ -402,15 +407,18 @@ peak_pub <- tibble::tibble(
 comparison <- peak_pub |>
   dplyr::left_join(peak_sim, by = "dose_label")
 
-knitr::kable(
-  comparison,
-  digits = 2,
-  col.names = c("Dose", "Published peak (IU/mL)",
-                "Simulated mean (IU/mL)",
-                "Simulated SD (IU/mL)",
-                "Simulated median (IU/mL)"),
-  caption = "Comparison of simulated mean / median peak anti-Xa activity (including basal level) against published reference peaks."
-)
+comparison |>
+  dplyr::rename(
+    "Dose"                    = dose_label,
+    "Published peak (IU/mL)"  = published,
+    "Simulated mean (IU/mL)"  = mean_peak,
+    "Simulated SD (IU/mL)"    = sd_peak,
+    "Simulated median (IU/mL)" = median_peak
+  ) |>
+  knitr::kable(
+    digits = 2,
+    caption = "Comparison of simulated mean / median peak anti-Xa activity (including basal level) against published reference peaks."
+  )
 ```
 
 | Dose | Published peak (IU/mL) | Simulated mean (IU/mL) | Simulated SD (IU/mL) | Simulated median (IU/mL) |

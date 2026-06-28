@@ -325,11 +325,17 @@ nca_wide <- nca_long |>
   pivot_wider(names_from = PPTESTCD, values_from = value) |>
   mutate(`aucinf.obs (uM.h)` = aucinf.obs * 1000 / mw_efv)
 
-knitr::kable(
-  nca_wide |>
-    select(scenario, cmax, tmax, aucinf.obs, `aucinf.obs (uM.h)`, half.life),
-  col.names = c("Scenario", "Cmax (mg/L)", "Tmax (h)",
-                "AUCinf (mg.h/L)", "AUCinf (uM.h)", "Half-life (h)"),
+nca_wide |>
+  select(scenario, cmax, tmax, aucinf.obs, `aucinf.obs (uM.h)`, half.life) |>
+  dplyr::rename(
+    "Scenario"        = scenario,
+    "Cmax (mg/L)"     = cmax,
+    "Tmax (h)"        = tmax,
+    "AUCinf (mg.h/L)" = aucinf.obs,
+    "AUCinf (uM.h)"   = `aucinf.obs (uM.h)`,
+    "Half-life (h)"   = half.life
+  ) |>
+  knitr::kable(
   digits = 2,
   caption = "Typical-value NCA for the four Figure 3 reference subjects."
 )
@@ -373,12 +379,18 @@ cmp <- nca_wide |>
          simulated_thalf_h,    thalf_h,    thalf_diff_pct,
          source)
 
-knitr::kable(
-  cmp,
-  col.names = c("Scenario",
-                "AUCinf sim (uM.h)", "AUCinf pub (uM.h)", "AUC diff (%)",
-                "T1/2 sim (h)",      "T1/2 pub (h)",      "T1/2 diff (%)",
-                "Source"),
+cmp |>
+  dplyr::rename(
+    "Scenario"          = scenario,
+    "AUCinf sim (uM.h)" = simulated_AUCinf_uMh,
+    "AUCinf pub (uM.h)" = aucinf_uMh,
+    "AUC diff (%)"      = AUC_diff_pct,
+    "T1/2 sim (h)"      = simulated_thalf_h,
+    "T1/2 pub (h)"      = thalf_h,
+    "T1/2 diff (%)"     = thalf_diff_pct,
+    "Source"            = source
+  ) |>
+  knitr::kable(
   digits = 2,
   caption = "Simulated typical-value PKNCA vs. Mukonzo 2009 Results / Discussion paragraph after Table 3 and Figure 3 caption."
 )

@@ -1456,10 +1456,14 @@ larger simulation per arm.</p>
 <span><span class="co">#&gt; ℹ parameter labels from comments will be replaced by 'label()'</span></span>
 <span><span class="co">#&gt; ℹ parameter labels from comments will be replaced by 'label()'</span></span>
 <span></span>
-<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">cyaa_cure</span>,</span>
-<span>             col.names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Vaccine dose day"</span>, <span class="st">"Simulated P(cure)"</span><span class="op">)</span>,</span>
-<span>             caption <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Simulated probability of cure at end of study ("</span>,</span>
-<span>                              <span class="va">end_of_study</span>, <span class="st">" days) -- CyaA-E7."</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">cyaa_cure</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span></span>
+<span>    <span class="st">"Vaccine dose day"</span>  <span class="op">=</span> <span class="va">dose_day</span>,</span>
+<span>    <span class="st">"Simulated P(cure)"</span> <span class="op">=</span> <span class="va">prob_cure</span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
+<span>    caption <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Simulated probability of cure at end of study ("</span>,</span>
+<span>                     <span class="va">end_of_study</span>, <span class="st">" days) -- CyaA-E7."</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <caption>Simulated probability of cure at end of study (60 days) –
 CyaA-E7.</caption>
@@ -1572,9 +1576,10 @@ pattern in Figure 4 lower-right panel of the source.</p>
 <code class="sourceCode R"><span><span class="va">il12_cure</span> <span class="op">&lt;-</span> <span class="va">il12_vpc</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">time</span> <span class="op">==</span> <span class="fl">60</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">summarise</span><span class="op">(</span>prob_cure <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">tumor_size</span> <span class="op">&lt;=</span> <span class="fl">2</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">il12_cure</span>,</span>
-<span>             col.names <span class="op">=</span> <span class="st">"Simulated P(cure) at day 60"</span>,</span>
-<span>             caption <span class="op">=</span> <span class="st">"IL-12 day 23 simulated probability of cure at day 60."</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">il12_cure</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span><span class="st">"Simulated P(cure) at day 60"</span> <span class="op">=</span> <span class="va">prob_cure</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
+<span>    caption <span class="op">=</span> <span class="st">"IL-12 day 23 simulated probability of cure at day 60."</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <caption>IL-12 day 23 simulated probability of cure at day 60.</caption>
 <thead><tr class="header">

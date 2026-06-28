@@ -416,13 +416,21 @@ nca_summary <- nca_long |>
                 tmax_median, tmax_p05, tmax_p95,
                 auclast_median, auclast_p05, auclast_p95)
 
-knitr::kable(
-  nca_summary,
+nca_summary |>
+  dplyr::rename(
+    "Cohort"                    = cohort,
+    "Cmax median (nmol/L)"      = cmax_median,
+    "Cmax p05"                  = cmax_p05,
+    "Cmax p95"                  = cmax_p95,
+    "Tmax median (h)"           = tmax_median,
+    "Tmax p05"                  = tmax_p05,
+    "Tmax p95"                  = tmax_p95,
+    "AUC0-24 median (nmol*h/L)" = auclast_median,
+    "AUC p05"                   = auclast_p05,
+    "AUC p95"                   = auclast_p95
+  ) |>
+  knitr::kable(
   digits = 2,
-  col.names = c("Cohort",
-                "Cmax median (nmol/L)", "Cmax p05", "Cmax p95",
-                "Tmax median (h)",       "Tmax p05", "Tmax p95",
-                "AUC0-24 median (nmol*h/L)", "AUC p05", "AUC p95"),
   caption = paste0("Simulated steady-state NCA at 25 mg telapristone-acetate ",
                    "QD by mixture-class (median + 5th/95th percentiles).")
 )
@@ -464,13 +472,20 @@ comparison <- nca_summary |>
                 auclast_median, auc024_median_published, auc_pct_diff,
                 tmax_median, tmax_median_published)
 
-knitr::kable(
-  comparison,
+comparison |>
+  dplyr::rename(
+    "Cohort"            = cohort,
+    "Cmax sim (nmol/L)" = cmax_median,
+    "Cmax pub (nmol/L)" = cmax_median_published,
+    "Cmax % diff"       = cmax_pct_diff,
+    "AUC0-24 sim"       = auclast_median,
+    "AUC0-24 pub"       = auc024_median_published,
+    "AUC % diff"        = auc_pct_diff,
+    "Tmax sim (h)"      = tmax_median,
+    "Tmax pub (h)"      = tmax_median_published
+  ) |>
+  knitr::kable(
   digits = 1,
-  col.names = c("Cohort",
-                "Cmax sim (nmol/L)", "Cmax pub (nmol/L)", "Cmax % diff",
-                "AUC0-24 sim", "AUC0-24 pub",            "AUC % diff",
-                "Tmax sim (h)", "Tmax pub (h)"),
   caption = paste0("Simulated vs published steady-state NCA medians by mixture ",
                    "class. Published values from Morris 2011 Table III ",
                    "(500 simulated subjects at 25 mg, total concentration of ",

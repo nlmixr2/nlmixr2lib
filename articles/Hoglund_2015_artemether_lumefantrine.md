@@ -521,21 +521,25 @@ simulated <- tibble::tibble(
   pub_dha_pct = c(-71.7, -41.3, -59.7)
 )
 
-knitr::kable(
-  simulated,
+simulated |>
+  dplyr::rename(
+    "Arm"                  = arm,
+    "Sim LF AUC72-894 (%)" = sim_lf_pct,
+    "Published LF (%)"     = pub_lf_pct,
+    "Sim DHA AUC0-inf (%)" = sim_dha_pct,
+    "Published DHA (%)"    = pub_dha_pct
+  ) |>
+  knitr::kable(
   caption = "Simulated vs. published exposure changes (% vs. no-ART reference). LF AUC over 72-894 h, DHA AUC0-infinity. Hoglund 2015 Results / Figure 4.",
-  col.names = c("Arm",
-                "Sim LF AUC72-894 (%)", "Published (%)",
-                "Sim DHA AUC0-inf (%)", "Published (%)"),
   align     = c("l", "r", "r", "r", "r")
 )
 ```
 
-| Arm   | Sim LF AUC72-894 (%) | Published (%) | Sim DHA AUC0-inf (%) | Published (%) |
-|:------|---------------------:|--------------:|---------------------:|--------------:|
-| EFV   |                -61.9 |         -69.9 |                -71.5 |         -71.7 |
-| NVP   |                -24.8 |         -25.2 |                -39.4 |         -41.3 |
-| LPV/r |                351.6 |         439.0 |                -58.9 |         -59.7 |
+| Arm | Sim LF AUC72-894 (%) | Published LF (%) | Sim DHA AUC0-inf (%) | Published DHA (%) |
+|:---|---:|---:|---:|---:|
+| EFV | -61.9 | -69.9 | -71.5 | -71.7 |
+| NVP | -24.8 | -25.2 | -39.4 | -41.3 |
+| LPV/r | 351.6 | 439.0 | -58.9 | -59.7 |
 
 Simulated vs. published exposure changes (% vs. no-ART reference). LF
 AUC over 72-894 h, DHA AUC0-infinity. Hoglund 2015 Results / Figure 4.

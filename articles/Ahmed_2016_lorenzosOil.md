@@ -195,12 +195,17 @@ landmark <- data.frame(
     cc26_paper = c(0.997, 0.404, 1.44 * (1 - 0.76))
   )
 
-knitr::kable(
-  landmark,
-  digits  = 3,
-  caption = "Closed-form C26:0 predictions vs. paper-stated landmark values.",
-  col.names = c("Scenario", "Erucic acid (mg/L)", "C26:0 predicted (mg/L)", "C26:0 paper (mg/L)")
-)
+landmark |>
+  dplyr::rename(
+    "Scenario"               = scenario,
+    "Erucic acid (mg/L)"     = ER,
+    "C26:0 predicted (mg/L)" = cc26_pred,
+    "C26:0 paper (mg/L)"     = cc26_paper
+  ) |>
+  knitr::kable(
+    digits  = 3,
+    caption = "Closed-form C26:0 predictions vs. paper-stated landmark values."
+  )
 ```
 
 | Scenario | Erucic acid (mg/L) | C26:0 predicted (mg/L) | C26:0 paper (mg/L) |

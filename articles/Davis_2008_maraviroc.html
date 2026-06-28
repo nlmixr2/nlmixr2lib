@@ -1439,12 +1439,16 @@ concentration up to 2363 ng/mL”.</p>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">treatment</span>, <span class="va">cmax_ng_mL</span>, <span class="va">model_qtcf_shift_ms</span>,</span>
 <span>                <span class="va">mean_qtcf_paper_ms</span>, <span class="va">ci90_low_ms</span>, <span class="va">ci90_high_ms</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">compare_table</span>,</span>
-<span>             col.names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Dose"</span>, <span class="st">"Cmax (ng/mL)"</span>,</span>
-<span>                           <span class="st">"Model QTcF shift (ms)"</span>,</span>
-<span>                           <span class="st">"Table 2 QTcF mean diff (ms)"</span>,</span>
-<span>                           <span class="st">"Table 2 90% CI low"</span>,</span>
-<span>                           <span class="st">"Table 2 90% CI high"</span><span class="op">)</span>,</span>
+<span><span class="va">compare_table</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span></span>
+<span>    <span class="st">"Dose"</span>                        <span class="op">=</span> <span class="va">treatment</span>,</span>
+<span>    <span class="st">"Cmax (ng/mL)"</span>                <span class="op">=</span> <span class="va">cmax_ng_mL</span>,</span>
+<span>    <span class="st">"Model QTcF shift (ms)"</span>       <span class="op">=</span> <span class="va">model_qtcf_shift_ms</span>,</span>
+<span>    <span class="st">"Table 2 QTcF mean diff (ms)"</span> <span class="op">=</span> <span class="va">mean_qtcf_paper_ms</span>,</span>
+<span>    <span class="st">"Table 2 90% CI low"</span>          <span class="op">=</span> <span class="va">ci90_low_ms</span>,</span>
+<span>    <span class="st">"Table 2 90% CI high"</span>         <span class="op">=</span> <span class="va">ci90_high_ms</span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
 <span>             digits <span class="op">=</span> <span class="fl">2</span>,</span>
 <span>             caption <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span></span>
 <span>               <span class="st">"Concentration-attributable QTcF shift (model) vs. ANOVA-derived"</span>,</span>

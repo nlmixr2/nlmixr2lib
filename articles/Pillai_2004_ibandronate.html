@@ -1685,11 +1685,15 @@ parameter values to match a validation target” rule).</p>
 <span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">mutate</span><span class="op">(</span>sim_pct <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"%+.1f%%"</span>, <span class="va">sim_pct</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">cmp</span>,</span>
-<span>             col.names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Scenario"</span>, <span class="st">"Paper-reported range / point"</span>,</span>
-<span>                           <span class="st">"Simulated typical-value change"</span><span class="op">)</span>,</span>
-<span>             align <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"l"</span>, <span class="st">"l"</span>, <span class="st">"r"</span><span class="op">)</span>,</span>
-<span>             caption <span class="op">=</span> <span class="st">"Simulated typical-value uCTX change from baseline vs paper-reported response ranges."</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">cmp</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span></span>
+<span>    <span class="st">"Scenario"</span>                       <span class="op">=</span> <span class="va">scenario</span>,</span>
+<span>    <span class="st">"Paper-reported range / point"</span>   <span class="op">=</span> <span class="va">paper_range_pct</span>,</span>
+<span>    <span class="st">"Simulated typical-value change"</span> <span class="op">=</span> <span class="va">sim_pct</span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
+<span>    align <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"l"</span>, <span class="st">"l"</span>, <span class="st">"r"</span><span class="op">)</span>,</span>
+<span>    caption <span class="op">=</span> <span class="st">"Simulated typical-value uCTX change from baseline vs paper-reported response ranges."</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <caption>Simulated typical-value uCTX change from baseline vs
 paper-reported response ranges.</caption>

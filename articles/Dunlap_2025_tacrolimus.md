@@ -391,10 +391,14 @@ cmax_summary <- sim_uncmc |>
   summarise(cmax_median = median(cmax_subj),
             cmax_p95    = quantile(cmax_subj, 0.95),
             .groups = "drop")
-knitr::kable(cmax_summary,
+cmax_summary |>
+  dplyr::rename(
+    "Sub-group"                                 = subgroup,
+    "Simulated D0 Cmax median (ng/mL)"          = cmax_median,
+    "Simulated D0 Cmax 95th percentile (ng/mL)" = cmax_p95
+  ) |>
+  knitr::kable(
              digits = 2,
-             col.names = c("Sub-group", "Simulated D0 Cmax median (ng/mL)",
-                           "Simulated D0 Cmax 95th percentile (ng/mL)"),
              caption = "Per-sub-group D0 Cmax distribution under the UNCMC protocol; compare against the Dunlap 2025 Methods 2.6 safety constraint of 24.2 ng/mL.")
 ```
 

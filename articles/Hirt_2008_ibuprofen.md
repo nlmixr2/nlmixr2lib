@@ -519,8 +519,15 @@ threshold_table <- auc1d_tbl |>
     .groups        = "drop"
   )
 
-knitr::kable(
-  threshold_table,
+threshold_table |>
+  dplyr::rename(
+    "PNA stratum"           = treatment,
+    "Median AUC1D"          = median_AUC1D,
+    "10th pct AUC1D"        = p10_AUC1D,
+    "90th pct AUC1D"        = p90_AUC1D,
+    "% above 600 mg L^-1 h" = pct_above_600
+  ) |>
+  knitr::kable(
   caption = paste(
     "Simulated AUC1D (mg L^-1 h) and percent of subjects clearing the",
     "600 mg L^-1 h threshold, stratified by PNA band. Hirt 2008 Table 4",
@@ -528,9 +535,6 @@ knitr::kable(
     "50% closure for PNA > 108 h, consistent with the simulated drop in",
     "AUC1D-above-threshold rate across PNA bands."
   ),
-  col.names = c("PNA stratum", "n", "Median AUC1D",
-                "10th pct AUC1D", "90th pct AUC1D",
-                "% above 600 mg L^-1 h"),
   align     = c("l", "r", "r", "r", "r", "r")
 )
 ```

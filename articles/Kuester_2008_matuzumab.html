@@ -1499,8 +1499,12 @@ text:</p>
 <span>  t_half_d <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span> <span class="op">/</span></span>
 <span>    <span class="op">(</span><span class="op">(</span><span class="op">(</span><span class="va">CLL_mlh</span> <span class="op">+</span> <span class="va">Vmax_ugh</span> <span class="op">/</span> <span class="op">(</span><span class="va">Km_ugml</span> <span class="op">+</span> <span class="va">C</span><span class="op">)</span><span class="op">)</span> <span class="op">/</span> <span class="fl">1000</span><span class="op">)</span> <span class="op">/</span> <span class="va">V1_L</span><span class="op">)</span> <span class="op">/</span> <span class="fl">24</span></span>
 <span><span class="op">)</span></span>
-<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">anchor_df</span>, digits <span class="op">=</span> <span class="fl">2</span>,</span>
-<span>  col.names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Cc (ug/mL)"</span>, <span class="st">"Apparent t1/2 (days)"</span><span class="op">)</span>,</span>
+<span><span class="va">anchor_df</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span></span>
+<span>    <span class="st">"Cc (ug/mL)"</span>           <span class="op">=</span> <span class="va">C</span>,</span>
+<span>    <span class="st">"Apparent t1/2 (days)"</span> <span class="op">=</span> <span class="va">t_half_d</span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span>digits <span class="op">=</span> <span class="fl">2</span>,</span>
 <span>  caption <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"Apparent first-order half-life from the central compartment."</span>,</span>
 <span>                  <span class="st">"Kuester 2008 reports 4.4 d at 20 ug/mL and 10.5 d at 1000 ug/mL"</span>,</span>
 <span>                  <span class="st">"(Results, p904; Figure 3 right panel). The two-compartment terminal"</span>,</span>

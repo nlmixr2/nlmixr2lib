@@ -169,9 +169,13 @@ kill_tab <- data.frame(
 #> ℹ omega/sigma items treated as zero: 'etalv0', 'etalcap', 'etalvf', 'etalke'
 #> ℹ omega/sigma items treated as zero: 'etalv0', 'etalcap', 'etalvf', 'etalke'
 #> ℹ omega/sigma items treated as zero: 'etalv0', 'etalcap', 'etalvf', 'etalke'
-knitr::kable(kill_tab, col.names = c("Scenario", "Simulated kill (%)",
-                                     "Published kill (%)"),
-             caption = "Per-fraction proliferating-cell kill: model vs source.")
+kill_tab |>
+  dplyr::rename(
+    "Scenario"           = scenario,
+    "Simulated kill (%)" = simulated,
+    "Published kill (%)" = published
+  ) |>
+  knitr::kable(caption = "Per-fraction proliferating-cell kill: model vs source.")
 ```
 
 | Scenario       | Simulated kill (%) | Published kill (%) |
@@ -211,10 +215,13 @@ conc_tab <- data.frame(
 #> ℹ omega/sigma items treated as zero: 'etalv0', 'etalcap', 'etalvf', 'etalke'
 #> ℹ omega/sigma items treated as zero: 'etalv0', 'etalcap', 'etalvf', 'etalke'
 #> ℹ omega/sigma items treated as zero: 'etalv0', 'etalcap', 'etalvf', 'etalke'
-knitr::kable(conc_tab, col.names = c("RS1 dose (mg/kg)",
-                                     "Simulated mean conc (ug/mL)",
-                                     "Published mean conc (ug/mL)"),
-             caption = "Average daily RS1 plasma concentration: model vs source.")
+conc_tab |>
+  dplyr::rename(
+    "RS1 dose (mg/kg)"            = dose_mgkg,
+    "Simulated mean conc (ug/mL)" = simulated,
+    "Published mean conc (ug/mL)" = published
+  ) |>
+  knitr::kable(caption = "Average daily RS1 plasma concentration: model vs source.")
 ```
 
 | RS1 dose (mg/kg) | Simulated mean conc (ug/mL) | Published mean conc (ug/mL) |

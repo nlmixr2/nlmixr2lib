@@ -1383,11 +1383,16 @@ finite simulation cohort).</p>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">dose_label</span>, <span class="va">threshold</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
-<span>  <span class="va">threshold_summary</span>,</span>
+<span><span class="va">threshold_summary</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span></span>
+<span>    <span class="st">"Dose"</span>              <span class="op">=</span> <span class="va">dose_label</span>,</span>
+<span>    <span class="st">"Threshold (IU/mL)"</span> <span class="op">=</span> <span class="va">threshold</span>,</span>
+<span>    <span class="st">"% reaching"</span>        <span class="op">=</span> <span class="va">pct_reached</span>,</span>
+<span>    <span class="st">"Mean duration (h)"</span> <span class="op">=</span> <span class="va">dur_mean</span>,</span>
+<span>    <span class="st">"SD (h)"</span>            <span class="op">=</span> <span class="va">dur_sd</span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
 <span>  digits  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">2</span><span class="op">)</span>,</span>
-<span>  col.names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Dose"</span>, <span class="st">"Threshold (IU/mL)"</span>, <span class="st">"% reaching"</span>,</span>
-<span>                <span class="st">"Mean duration (h)"</span>, <span class="st">"SD (h)"</span><span class="op">)</span>,</span>
 <span>  caption <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span></span>
 <span>    <span class="st">"Replicates Sanchez-Pena 2005 Table 3. Compare against published "</span>,</span>
 <span>    <span class="st">"values: 0.5 mg/kg = 100% / 2.7 +/- 0.9 h (&gt;0.5); 75% / 1.7 +/- 0.6 h "</span>,</span>
@@ -1633,15 +1638,18 @@ level).</caption>
 <span><span class="va">comparison</span> <span class="op">&lt;-</span> <span class="va">peak_pub</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="va">peak_sim</span>, by <span class="op">=</span> <span class="st">"dose_label"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
-<span>  <span class="va">comparison</span>,</span>
-<span>  digits <span class="op">=</span> <span class="fl">2</span>,</span>
-<span>  col.names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Dose"</span>, <span class="st">"Published peak (IU/mL)"</span>,</span>
-<span>                <span class="st">"Simulated mean (IU/mL)"</span>,</span>
-<span>                <span class="st">"Simulated SD (IU/mL)"</span>,</span>
-<span>                <span class="st">"Simulated median (IU/mL)"</span><span class="op">)</span>,</span>
-<span>  caption <span class="op">=</span> <span class="st">"Comparison of simulated mean / median peak anti-Xa activity (including basal level) against published reference peaks."</span></span>
-<span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">comparison</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span></span>
+<span>    <span class="st">"Dose"</span>                    <span class="op">=</span> <span class="va">dose_label</span>,</span>
+<span>    <span class="st">"Published peak (IU/mL)"</span>  <span class="op">=</span> <span class="va">published</span>,</span>
+<span>    <span class="st">"Simulated mean (IU/mL)"</span>  <span class="op">=</span> <span class="va">mean_peak</span>,</span>
+<span>    <span class="st">"Simulated SD (IU/mL)"</span>    <span class="op">=</span> <span class="va">sd_peak</span>,</span>
+<span>    <span class="st">"Simulated median (IU/mL)"</span> <span class="op">=</span> <span class="va">median_peak</span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
+<span>    digits <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>    caption <span class="op">=</span> <span class="st">"Comparison of simulated mean / median peak anti-Xa activity (including basal level) against published reference peaks."</span></span>
+<span>  <span class="op">)</span></span></code></pre></div>
 <table class="table">
 <caption>Comparison of simulated mean / median peak anti-Xa activity
 (including basal level) against published reference peaks.</caption>

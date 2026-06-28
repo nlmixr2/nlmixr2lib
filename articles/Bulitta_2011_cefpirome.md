@@ -366,11 +366,14 @@ urine_recovery <- sim_unique |>
   ) |>
   dplyr::select(cohort, formatted)
 
-knitr::kable(
-  urine_recovery,
-  caption = "Simulated fraction excreted unchanged in urine at 24 h (median, 5%-95% PI) by cohort.",
-  col.names = c("Cohort", "Fraction excreted unchanged (24 h)")
-)
+urine_recovery |>
+  dplyr::rename(
+    "Cohort"                            = cohort,
+    "Fraction excreted unchanged (24 h)" = formatted
+  ) |>
+  knitr::kable(
+    caption = "Simulated fraction excreted unchanged in urine at 24 h (median, 5%-95% PI) by cohort."
+  )
 ```
 
 | Cohort            | Fraction excreted unchanged (24 h) |

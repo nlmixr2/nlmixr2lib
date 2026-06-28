@@ -1583,11 +1583,14 @@ above.</p>
 <span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">treatment</span>, <span class="va">sim_geomean</span>, <span class="va">paper_geomean_pretty</span>, <span class="va">pct_diff</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
-<span>  <span class="va">cmp</span>,</span>
-<span>  col.names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Treatment"</span>, <span class="st">"Simulated AUC0-inf (ng*h/mL)"</span>,</span>
-<span>                <span class="st">"Published AUC0-inf (ng*h/mL, geom. mean (90% CI))"</span>,</span>
-<span>                <span class="st">"% diff (sim vs paper)"</span><span class="op">)</span>,</span>
+<span><span class="va">cmp</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span></span>
+<span>    <span class="st">"Treatment"</span>                                         <span class="op">=</span> <span class="va">treatment</span>,</span>
+<span>    <span class="st">"Simulated AUC0-inf (ng*h/mL)"</span>                      <span class="op">=</span> <span class="va">sim_geomean</span>,</span>
+<span>    <span class="st">"Published AUC0-inf (ng*h/mL, geom. mean (90% CI))"</span> <span class="op">=</span> <span class="va">paper_geomean_pretty</span>,</span>
+<span>    <span class="st">"% diff (sim vs paper)"</span>                             <span class="op">=</span> <span class="va">pct_diff</span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
 <span>  digits <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  caption <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Geometric-mean AUC0-inf in 200 simulated patients per arm "</span>,</span>
 <span>                   <span class="st">"vs Koolen 2010 Table 3 (1000 simulated patients per arm; "</span>,</span>

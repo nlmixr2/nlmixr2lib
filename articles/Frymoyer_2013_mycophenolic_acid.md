@@ -366,16 +366,23 @@ cmp_tbl <- dplyr::inner_join(
   dplyr::select(cohort, ref_auc_24, sim_auc_24, pct_diff_auc, flag,
                 sim_cmax, sim_tmax)
 
-knitr::kable(
-  cmp_tbl,
+cmp_tbl |>
+  dplyr::rename(
+    "Cohort"               = cohort,
+    "Reference AUC(0,24h)" = ref_auc_24,
+    "Simulated AUC(0,24h)" = sim_auc_24,
+    "% diff vs ref"        = pct_diff_auc,
+    "Flag"                 = flag,
+    "Simulated Cmax"       = sim_cmax,
+    "Simulated Tmax"       = sim_tmax
+  ) |>
+  knitr::kable(
   digits  = 2,
   caption = paste(
     "Simulated vs. published 24-h AUC at steady state for the two",
     "1 g MMF q12h cohorts. AUC unit ng*h/mL; Cmax unit ng/mL; Tmax",
     "unit h. * differs from the reference median by > 20 %."
-  ),
-  col.names = c("Cohort", "Reference AUC(0,24h)", "Simulated AUC(0,24h)",
-                "% diff vs ref", "Flag", "Simulated Cmax", "Simulated Tmax")
+  )
 )
 ```
 

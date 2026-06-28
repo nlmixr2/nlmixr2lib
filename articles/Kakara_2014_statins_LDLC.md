@@ -369,15 +369,18 @@ cmp <- sim_max |>
   dplyr::mutate(pct_drop_delta_pp = sim_pct_drop_median - pub_pct_drop_median,
                 t_max_delta = sim_t_max_weeks_median - pub_t_max_weeks_median)
 
-knitr::kable(cmp,
-             col.names = c("Drug", "Dose (mg/day)",
-                           "Simulated median % reduction",
-                           "Simulated time to max (weeks)",
-                           "Published median % reduction",
-                           "Published time to max (weeks)",
-                           "% reduction delta (pp)",
-                           "Time-to-max delta (weeks)"),
-             caption = "Side-by-side comparison: simulated vs Kakara 2014 Table 3 medians.")
+cmp |>
+  dplyr::rename(
+    "Drug"                          = drug,
+    "Dose (mg/day)"                 = dose_mg,
+    "Simulated median % reduction"  = sim_pct_drop_median,
+    "Simulated time to max (weeks)" = sim_t_max_weeks_median,
+    "Published median % reduction"  = pub_pct_drop_median,
+    "Published time to max (weeks)" = pub_t_max_weeks_median,
+    "% reduction delta (pp)"        = pct_drop_delta_pp,
+    "Time-to-max delta (weeks)"     = t_max_delta
+  ) |>
+  knitr::kable(caption = "Side-by-side comparison: simulated vs Kakara 2014 Table 3 medians.")
 ```
 
 | Drug | Dose (mg/day) | Simulated median % reduction | Simulated time to max (weeks) | Published median % reduction | Published time to max (weeks) | % reduction delta (pp) | Time-to-max delta (weeks) |

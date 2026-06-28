@@ -33,7 +33,10 @@ route was studied at 28 mg and the PO route at 84 mg in the Phase I
 cross-over study ESKETINTRD1009.
 
 The same information is available programmatically via
-`readModelDb("PerezRuixo_2020_esketamine")$population`.
+`readModelDb("PerezRuixo_2020_esketamine")()$population`.
+[`readModelDb()`](https://nlmixr2.github.io/nlmixr2lib/reference/readModelDb.md)
+returns the model *function*; the trailing `()` evaluates it to the
+model object whose `$population` element holds this list.
 
 ## Source trace
 
@@ -314,21 +317,30 @@ cmp <- sim_metrics |>
   ) |>
   dplyr::arrange(stratum, dose_mg)
 
-knitr::kable(
-  cmp,
-  digits = c(rep(0, 2), 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0),
-  col.names = c(
-    "Stratum", "Dose (mg)",
-    "Esket Cmax sim", "Esket Cmax pub", "%pub",
-    "Esket AUC sim",  "Esket AUC pub",  "%pub",
-    "Noresk Cmax sim", "Noresk Cmax pub", "%pub",
-    "Noresk AUC sim",  "Noresk AUC pub",  "%pub"
-  ),
-  caption = "Table 4 reproduction. Cmax in ng/mL, AUC0-24 in ng*h/mL. Esket = esketamine, Noresk = noresketamine. The noresketamine AUC0-24 % column is consistently ~140% across all strata and doses; this is the 1.41 = 1/F_met algebraic discrepancy discussed in the Errata."
-)
+cmp |>
+  dplyr::rename(
+    "Stratum"         = stratum,
+    "Dose (mg)"       = dose_mg,
+    "Esket Cmax sim"  = esket_cmax_sim,
+    "Esket Cmax pub"  = esket_cmax_pub,
+    "Esket Cmax %"    = esket_cmax_pct,
+    "Esket AUC sim"   = esket_auc024_sim,
+    "Esket AUC pub"   = esket_auc024_pub,
+    "Esket AUC %"     = esket_auc024_pct,
+    "Noresk Cmax sim" = noresk_cmax_sim,
+    "Noresk Cmax pub" = noresk_cmax_pub,
+    "Noresk Cmax %"   = noresk_cmax_pct,
+    "Noresk AUC sim"  = noresk_auc024_sim,
+    "Noresk AUC pub"  = noresk_auc024_pub,
+    "Noresk AUC %"    = noresk_auc024_pct
+  ) |>
+  knitr::kable(
+    digits = c(rep(0, 2), 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0),
+    caption = "Table 4 reproduction. Cmax in ng/mL, AUC0-24 in ng*h/mL. Esket = esketamine, Noresk = noresketamine. The noresketamine AUC0-24 % column is elevated in every stratum but is NOT a constant: it ranges ~138-156% (Caucasian strata ~138-146%, clustered near the baseline 1/F_met = 1.41; Asian strata ~144-156%, higher). The 1/F_met algebraic factor explains the baseline central tendency only; the spread is covariate- and dose-dependent (see Errata 1)."
+  )
 ```
 
-| Stratum | Dose (mg) | Esket Cmax sim | Esket Cmax pub | %pub | Esket AUC sim | Esket AUC pub | %pub | Noresk Cmax sim | Noresk Cmax pub | %pub | Noresk AUC sim | Noresk AUC pub | %pub |
+| Stratum | Dose (mg) | Esket Cmax sim | Esket Cmax pub | Esket Cmax % | Esket AUC sim | Esket AUC pub | Esket AUC % | Noresk Cmax sim | Noresk Cmax pub | Noresk Cmax % | Noresk AUC sim | Noresk AUC pub | Noresk AUC % |
 |:---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
 | 18-60 y, Asian Japanese | 28 | 58.9 | 57.5 | 102 | 194.2 | 194.7 | 100 | 71.3 | 72.1 | 99 | 600.1 | 406.4 | 148 |
 | 18-60 y, Asian Japanese | 56 | 98.8 | 94.5 | 105 | 334.0 | 335.1 | 100 | 144.1 | 146.3 | 99 | 1147.3 | 760.8 | 151 |
@@ -351,9 +363,11 @@ knitr::kable(
 
 Table 4 reproduction. Cmax in ng/mL, AUC0-24 in ng\*h/mL. Esket =
 esketamine, Noresk = noresketamine. The noresketamine AUC0-24 % column
-is consistently ~140% across all strata and doses; this is the 1.41 =
-1/F_met algebraic discrepancy discussed in the Errata. {.table
-style="width:100%;"}
+is elevated in every stratum but is NOT a constant: it ranges ~138-156%
+(Caucasian strata ~138-146%, clustered near the baseline 1/F_met = 1.41;
+Asian strata ~144-156%, higher). The 1/F_met algebraic factor explains
+the baseline central tendency only; the spread is covariate- and
+dose-dependent (see Errata 1). {.table style="width:100%;"}
 
 ## Replicate Figure 3 (typical-value time-course by dose and race)
 
@@ -454,6 +468,10 @@ nca_summary <- function(res, label) {
     dplyr::filter(PPTESTCD %in% c("cmax", "auclast")) |>
     dplyr::select(treatment, PPTESTCD, PPORRES) |>
     tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES) |>
+    # Cmax-before-AUC display order, to match the Table 4 reproduction above.
+    # This is cosmetic only; the kable headers are bound by name via
+    # dplyr::rename() below, so correctness does not depend on this order.
+    dplyr::select(treatment, cmax, auclast) |>
     dplyr::mutate(analyte = label)
 }
 
@@ -462,52 +480,62 @@ pknca_combined <- dplyr::bind_rows(
   nca_summary(nca_res_snk, "noresketamine")
 )
 
-knitr::kable(
-  pknca_combined |> dplyr::arrange(analyte, treatment),
-  digits = 1,
-  col.names = c("Stratum | Dose", "Cmax (ng/mL)", "AUC0-24 (ng*h/mL)", "Analyte"),
-  caption = "PKNCA-derived Cmax and AUC0-24 for each (stratum, dose) cohort. Compare directly against Table 4 of Perez-Ruixo 2020."
+# Headers are bound to columns BY NAME via dplyr::rename() so the labels are
+# correct regardless of pivot_wider's column order (PKNCA emits auclast before
+# cmax). See the extract-literature-model skill, vignette-template.md
+# § "Table column headers".
+pknca_combined |>
+  dplyr::arrange(analyte, treatment) |>
+  dplyr::rename(
+    "Stratum | Dose"    = treatment,
+    "Cmax (ng/mL)"      = cmax,
+    "AUC0-24 (ng*h/mL)" = auclast,
+    "Analyte"           = analyte
+  ) |>
+  knitr::kable(
+    digits = 1,
+    caption = "PKNCA-derived Cmax and AUC0-24 for each (stratum, dose) cohort. Compare directly against Table 4 of Perez-Ruixo 2020."
 )
 ```
 
 | Stratum \| Dose | Cmax (ng/mL) | AUC0-24 (ng\*h/mL) | Analyte |
 |:---|---:|---:|:---|
-| 18-60 y, Asian Japanese \| 28 mg | 194.2 | 58.9 | esketamine |
-| 18-60 y, Asian Japanese \| 56 mg | 334.0 | 98.8 | esketamine |
-| 18-60 y, Asian Japanese \| 84 mg | 473.7 | 138.8 | esketamine |
-| 18-60 y, Asian non-Japanese \| 28 mg | 157.9 | 46.2 | esketamine |
-| 18-60 y, Asian non-Japanese \| 56 mg | 275.1 | 78.4 | esketamine |
-| 18-60 y, Asian non-Japanese \| 84 mg | 392.3 | 110.6 | esketamine |
-| 18-60 y, Caucasian \| 28 mg | 146.8 | 45.7 | esketamine |
-| 18-60 y, Caucasian \| 56 mg | 253.8 | 77.1 | esketamine |
-| 18-60 y, Caucasian \| 84 mg | 360.8 | 108.6 | esketamine |
-| \> 60 y, Asian Japanese \| 28 mg | 211.7 | 60.0 | esketamine |
-| \> 60 y, Asian Japanese \| 56 mg | 362.1 | 100.4 | esketamine |
-| \> 60 y, Asian Japanese \| 84 mg | 512.4 | 140.7 | esketamine |
-| \> 60 y, Asian non-Japanese \| 28 mg | 170.7 | 46.9 | esketamine |
-| \> 60 y, Asian non-Japanese \| 56 mg | 295.6 | 79.1 | esketamine |
-| \> 60 y, Asian non-Japanese \| 84 mg | 420.5 | 111.5 | esketamine |
-| \> 60 y, Caucasian \| 28 mg | 160.1 | 46.4 | esketamine |
-| \> 60 y, Caucasian \| 56 mg | 275.0 | 78.0 | esketamine |
-| \> 60 y, Caucasian \| 84 mg | 389.9 | 109.6 | esketamine |
-| 18-60 y, Asian Japanese \| 28 mg | 600.1 | 71.3 | noresketamine |
-| 18-60 y, Asian Japanese \| 56 mg | 1147.3 | 144.1 | noresketamine |
-| 18-60 y, Asian Japanese \| 84 mg | 1694.6 | 217.2 | noresketamine |
-| 18-60 y, Asian non-Japanese \| 28 mg | 564.8 | 72.4 | noresketamine |
-| 18-60 y, Asian non-Japanese \| 56 mg | 1090.2 | 146.6 | noresketamine |
-| 18-60 y, Asian non-Japanese \| 84 mg | 1615.6 | 220.9 | noresketamine |
-| 18-60 y, Caucasian \| 28 mg | 387.1 | 58.2 | noresketamine |
-| 18-60 y, Caucasian \| 56 mg | 746.7 | 118.1 | noresketamine |
-| 18-60 y, Caucasian \| 84 mg | 1106.2 | 178.1 | noresketamine |
-| \> 60 y, Asian Japanese \| 28 mg | 590.4 | 67.9 | noresketamine |
-| \> 60 y, Asian Japanese \| 56 mg | 1131.5 | 139.2 | noresketamine |
-| \> 60 y, Asian Japanese \| 84 mg | 1672.7 | 210.7 | noresketamine |
-| \> 60 y, Asian non-Japanese \| 28 mg | 557.5 | 70.2 | noresketamine |
-| \> 60 y, Asian non-Japanese \| 56 mg | 1078.3 | 143.7 | noresketamine |
-| \> 60 y, Asian non-Japanese \| 84 mg | 1599.1 | 217.3 | noresketamine |
-| \> 60 y, Caucasian \| 28 mg | 382.4 | 56.3 | noresketamine |
-| \> 60 y, Caucasian \| 56 mg | 738.9 | 115.4 | noresketamine |
-| \> 60 y, Caucasian \| 84 mg | 1095.3 | 174.7 | noresketamine |
+| 18-60 y, Asian Japanese \| 28 mg | 58.9 | 194.2 | esketamine |
+| 18-60 y, Asian Japanese \| 56 mg | 98.8 | 334.0 | esketamine |
+| 18-60 y, Asian Japanese \| 84 mg | 138.8 | 473.7 | esketamine |
+| 18-60 y, Asian non-Japanese \| 28 mg | 46.2 | 157.9 | esketamine |
+| 18-60 y, Asian non-Japanese \| 56 mg | 78.4 | 275.1 | esketamine |
+| 18-60 y, Asian non-Japanese \| 84 mg | 110.6 | 392.3 | esketamine |
+| 18-60 y, Caucasian \| 28 mg | 45.7 | 146.8 | esketamine |
+| 18-60 y, Caucasian \| 56 mg | 77.1 | 253.8 | esketamine |
+| 18-60 y, Caucasian \| 84 mg | 108.6 | 360.8 | esketamine |
+| \> 60 y, Asian Japanese \| 28 mg | 60.0 | 211.7 | esketamine |
+| \> 60 y, Asian Japanese \| 56 mg | 100.4 | 362.1 | esketamine |
+| \> 60 y, Asian Japanese \| 84 mg | 140.7 | 512.4 | esketamine |
+| \> 60 y, Asian non-Japanese \| 28 mg | 46.9 | 170.7 | esketamine |
+| \> 60 y, Asian non-Japanese \| 56 mg | 79.1 | 295.6 | esketamine |
+| \> 60 y, Asian non-Japanese \| 84 mg | 111.5 | 420.5 | esketamine |
+| \> 60 y, Caucasian \| 28 mg | 46.4 | 160.1 | esketamine |
+| \> 60 y, Caucasian \| 56 mg | 78.0 | 275.0 | esketamine |
+| \> 60 y, Caucasian \| 84 mg | 109.6 | 389.9 | esketamine |
+| 18-60 y, Asian Japanese \| 28 mg | 71.3 | 600.1 | noresketamine |
+| 18-60 y, Asian Japanese \| 56 mg | 144.1 | 1147.3 | noresketamine |
+| 18-60 y, Asian Japanese \| 84 mg | 217.2 | 1694.6 | noresketamine |
+| 18-60 y, Asian non-Japanese \| 28 mg | 72.4 | 564.8 | noresketamine |
+| 18-60 y, Asian non-Japanese \| 56 mg | 146.6 | 1090.2 | noresketamine |
+| 18-60 y, Asian non-Japanese \| 84 mg | 220.9 | 1615.6 | noresketamine |
+| 18-60 y, Caucasian \| 28 mg | 58.2 | 387.1 | noresketamine |
+| 18-60 y, Caucasian \| 56 mg | 118.1 | 746.7 | noresketamine |
+| 18-60 y, Caucasian \| 84 mg | 178.1 | 1106.2 | noresketamine |
+| \> 60 y, Asian Japanese \| 28 mg | 67.9 | 590.4 | noresketamine |
+| \> 60 y, Asian Japanese \| 56 mg | 139.2 | 1131.5 | noresketamine |
+| \> 60 y, Asian Japanese \| 84 mg | 210.7 | 1672.7 | noresketamine |
+| \> 60 y, Asian non-Japanese \| 28 mg | 70.2 | 557.5 | noresketamine |
+| \> 60 y, Asian non-Japanese \| 56 mg | 143.7 | 1078.3 | noresketamine |
+| \> 60 y, Asian non-Japanese \| 84 mg | 217.3 | 1599.1 | noresketamine |
+| \> 60 y, Caucasian \| 28 mg | 56.3 | 382.4 | noresketamine |
+| \> 60 y, Caucasian \| 56 mg | 115.4 | 738.9 | noresketamine |
+| \> 60 y, Caucasian \| 84 mg | 174.7 | 1095.3 | noresketamine |
 
 PKNCA-derived Cmax and AUC0-24 for each (stratum, dose) cohort. Compare
 directly against Table 4 of Perez-Ruixo 2020. {.table}
@@ -517,24 +545,47 @@ directly against Table 4 of Perez-Ruixo 2020. {.table}
 The model file commits the **most literal reading of Table 3** of
 Perez-Ruixo 2020. Three items warrant explicit downstream attention:
 
-### 1. Noresketamine AUC0-24 over-prediction (1.41x = 1/F_met)
+### 1. Noresketamine AUC0-24 over-prediction (~1.4-1.6x; only partly 1/F_met)
 
 The model reproduces the published Table 4 esketamine Cmax and AUC0-24
 within ~4% and the noresketamine Cmax within ~2% across all 18 (race x
 age x dose) strata. The noresketamine AUC0-24, however, is
-**over-predicted by a factor of 1.41 in every stratum**. Numerically,
+**over-predicted in every stratum, by a factor that is not constant: it
+ranges ~1.38 to ~1.56** (mean ~1.48) across the 18 strata in the Table 4
+reproduction above. The non-Asian (Caucasian) strata cluster near
 
-    1.41 = 1 / F_met = (k_el + k_met) / k_met = 3.88 / 2.77 = 1.4007
+    1 / F_met = (k_el + k_met) / k_met = 3.88 / 2.77 = 1.4007
 
-This is a deterministic algebraic relationship, not a noise band – the
-mismatch ratio is identical in every row of the Table 4 reproduction
-above. Mass balance was verified in the committed model: integrating
-`k_met * A_liver(t)` for a 28 mg IV esketamine dose yields 19.94 mg into
-the noresketamine pool, matching the expected
-`F_met * dose = 0.714 * 28 = 19.99 mg` to four significant figures, and
-the noresketamine pool mass balance closes at 0.1%. The discrepancy is
-therefore not in the ODE evolution but in the convention by which the
-published `V_cn/F = 70 L` maps onto an observed plasma concentration.
+(observed ~1.38-1.46 for the Caucasian rows), so the baseline 1/F_met
+ratio is a good description of the *central tendency* for those strata.
+But **1/F_met explains the discrepancy only partially**, for two
+reasons:
+
+- **F_met is covariate-dependent.** `k_el` carries the Asian-race effect
+  (`e_asian_kel = 0.36`, a 64% decrease), so for Asian subjects
+  `k_el = 1.11 * 0.36 = 0.40` and the algebraic `1/F_met` *falls* to
+  `(0.40 + 2.77)/2.77 = 1.14`. Yet the observed over-prediction for the
+  Asian strata is *higher*, ~1.44-1.56 – i.e. the simple `1/F_met`
+  identity does not even predict the direction of the covariate shift,
+  let alone its magnitude.
+- **The ratio also moves with dose and age** within a race stratum
+  (e.g. the Caucasian rows span 1.38-1.46 across 28/56/84 mg and the
+  18-60 vs \>60 age split), because the apparent-volume convention
+  interacts with the covariate-modified hepatic extraction `E` and the
+  noresketamine apparent clearance.
+
+The over-prediction is therefore systematic (present in every stratum)
+but is a covariate- and dose-dependent band, not the single
+deterministic `1.41` factor a literal `1/F_met` reading would imply.
+Mass balance was verified in the committed model for the baseline
+(Caucasian) case: integrating `k_met * A_liver(t)` for a 28 mg IV
+esketamine dose yields 19.94 mg into the noresketamine pool, matching
+the expected `F_met * dose = 0.714 * 28 = 19.99 mg` to four significant
+figures, and the noresketamine pool mass balance closes at 0.1%. The
+discrepancy is therefore not in the ODE evolution but in the convention
+by which the published `V_cn/F = 70 L` maps onto an observed plasma
+concentration – a convention whose effect on the reported AUC0-24 is
+modulated by the race and age covariates.
 
 Independent reproduction attempts: Alan Maloney encountered exactly the
 same noresketamine AUC0-24 reproduction failure (and parent + metabolite
@@ -544,8 +595,8 @@ extraction task. Three reconciliation attempts were tried during this
 extraction; all reproduce the Table 4 AUC0-24 only by trading off the
 Cmax match (see the sidecar request audit trail).
 
-**Downstream usage advice.** Users who specifically need to reproduce
-the published noresketamine AUC0-24 can multiply `Cc_snk` by
+**Downstream usage advice.** Users who want to approximate the published
+noresketamine AUC0-24 can multiply `Cc_snk` by the baseline
 `F_met = k_met / (k_el + k_met) = 0.7139` in their downstream analysis:
 
 ``` r
@@ -554,12 +605,18 @@ sim_corrected <- sim |>
   dplyr::mutate(Cc_snk_corrected = Cc_snk * (2.77 / (1.11 + 2.77)))
 ```
 
-This is an EXPLICIT deviation from the most literal reading of the
-paper; it is NOT applied in the default model because doing so would
-under-predict the published noresketamine Cmax by the same 1.41 factor.
-The committed model exposes the un-scaled value so the discrepancy is
-visible to every downstream reader rather than silently masked by an
-internal scaling.
+This removes most of the over-prediction for the non-Asian strata but,
+because the true over-prediction is covariate- and dose-dependent
+(~1.38-1.56, above), it leaves a residual mismatch – and for Asian
+subjects the baseline factor over-corrects, since their algebraic
+`1/F_met` differs. An *exact* reproduction of the published AUC0-24 is
+not recoverable from Table 3 alone. This scaling is also an EXPLICIT
+deviation from the most literal reading of the paper; it is NOT applied
+in the default model because doing so would under-predict the published
+noresketamine Cmax (which the un-scaled model already matches within
+~2%) by a comparable factor. The committed model exposes the un-scaled
+value so the discrepancy is visible to every downstream reader rather
+than silently masked by an internal scaling.
 
 **Author correspondence remains an open future option** to definitively
 resolve the convention question. The corresponding author is

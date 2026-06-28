@@ -1512,10 +1512,17 @@ Converting simulated AUC from ng.h/mL to mg.h/L requires dividing by
 <span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">window</span>, <span class="va">PPTESTCD</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
-<span>  <span class="va">nca_summary</span>,</span>
+<span><span class="va">nca_summary</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span></span>
+<span>    <span class="st">"Window"</span>    <span class="op">=</span> <span class="va">window</span>,</span>
+<span>    <span class="st">"Parameter"</span> <span class="op">=</span> <span class="va">PPTESTCD</span>,</span>
+<span>    <span class="st">"Median"</span>    <span class="op">=</span> <span class="va">median</span>,</span>
+<span>    <span class="st">"P05"</span>       <span class="op">=</span> <span class="va">p05</span>,</span>
+<span>    <span class="st">"P95"</span>       <span class="op">=</span> <span class="va">p95</span>,</span>
+<span>    <span class="st">"Unit"</span>      <span class="op">=</span> <span class="va">unit</span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
 <span>  digits  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">NA</span>, <span class="cn">NA</span>, <span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">2</span>, <span class="cn">NA</span><span class="op">)</span>,</span>
-<span>  col.names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Window"</span>, <span class="st">"Parameter"</span>, <span class="st">"Median"</span>, <span class="st">"P05"</span>, <span class="st">"P95"</span>, <span class="st">"Unit"</span><span class="op">)</span>,</span>
 <span>  caption <span class="op">=</span> <span class="st">"Simulated NCA parameters by dosing-interval window. Compare AUC_last(Day 1) to Wang 2014 AUC_initial median 52.9 mg.h/L (range 27.5-129.7); AUC_last(Day 14) to AUC_induced median 23.3 mg.h/L (range 16.5-31.4)."</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <table class="table">

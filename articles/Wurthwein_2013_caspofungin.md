@@ -372,12 +372,18 @@ compare <- nca_summary |>
   dplyr::inner_join(published, by = c("treatment", "PPTESTCD")) |>
   dplyr::mutate(pct_diff = 100 * (geo_mean - pub_geomean) / pub_geomean)
 
-knitr::kable(
-  compare,
+compare |>
+  dplyr::rename(
+    "Dose group"                  = treatment,
+    "Parameter"                   = PPTESTCD,
+    "Sim geomean"                 = geo_mean,
+    "Sim GCV%"                    = gcv_pct,
+    "Published geomean (Table 3)" = pub_geomean,
+    "Published GCV%"              = pub_gcv,
+    "Percent difference"          = pct_diff
+  ) |>
+  knitr::kable(
   digits = c(0, 0, 2, 0, 1, 0, 1),
-  col.names = c("Dose group", "Parameter", "Sim geomean",
-                "Sim GCV%", "Published geomean (Table 3)",
-                "Published GCV%", "Percent difference"),
   caption = paste(
     "Steady-state NCA comparison between this simulation and Wurthwein 2013",
     "Table 3 (geometric mean across the median-weight 76 kg cohort)."

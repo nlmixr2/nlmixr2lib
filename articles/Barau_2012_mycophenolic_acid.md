@@ -317,18 +317,24 @@ nca_summary <- nca_long |>
   select(parameter, cohort, median, Q10, Q90, unit) |>
   arrange(parameter, cohort)
 
-knitr::kable(
-  nca_summary,
-  caption = paste(
-    "PKNCA day-5 NCA summary on the simulated cohort (cohort median and 10-90 percentile).",
-    "Compare AUC(0,12 h) to the Barau 2012 target band of 30-60 mg/L*h",
-    "(prose target; see Methods) and per-period Table 3 medians of V/F",
-    "(148.8 vs 61.6 L) and CL/F (16.0 vs 11.2 L/h)."
-  ),
-  digits = 2,
-  col.names = c("Parameter", "Post-transplant period",
-                "Median", "10th pct", "90th pct", "Units")
-)
+nca_summary |>
+  dplyr::rename(
+    "Parameter"              = parameter,
+    "Post-transplant period" = cohort,
+    "Median"                 = median,
+    "10th pct"               = Q10,
+    "90th pct"               = Q90,
+    "Units"                  = unit
+  ) |>
+  knitr::kable(
+    caption = paste(
+      "PKNCA day-5 NCA summary on the simulated cohort (cohort median and 10-90 percentile).",
+      "Compare AUC(0,12 h) to the Barau 2012 target band of 30-60 mg/L*h",
+      "(prose target; see Methods) and per-period Table 3 medians of V/F",
+      "(148.8 vs 61.6 L) and CL/F (16.0 vs 11.2 L/h)."
+    ),
+    digits = 2
+  )
 ```
 
 | Parameter   | Post-transplant period | Median | 10th pct | 90th pct | Units   |

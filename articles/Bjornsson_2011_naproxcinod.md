@@ -200,10 +200,15 @@ arms <- tibble::tribble(
   "naproxcinod 2250 mg",  "depot_naproxcinod",     2250,   317.30, 2250 / 317.30 * 1000
 )
 arms$umol <- round(arms$umol, 0)
-knitr::kable(arms,
-             col.names = c("Arm", "Depot cmt", "Dose (mg)",
-                           "MW (g/mol)", "Dose (umol)"),
-             caption = "Six arms of Bjornsson 2011 single-dose dental-pain trial.")
+arms |>
+  dplyr::rename(
+    "Arm"        = arm,
+    "Depot cmt"  = depot,
+    "Dose (mg)"  = mg,
+    "MW (g/mol)" = mw,
+    "Dose (umol)" = umol
+  ) |>
+  knitr::kable(caption = "Six arms of Bjornsson 2011 single-dose dental-pain trial.")
 ```
 
 | Arm                 | Depot cmt         | Dose (mg) | MW (g/mol) | Dose (umol) |

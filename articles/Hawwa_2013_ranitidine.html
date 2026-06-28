@@ -1538,10 +1538,15 @@ HEART = 1, both receiving a single 1 mg/kg IV bolus.</p>
 <span></span>
 <span><span class="va">heart_half</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">mutate</span><span class="op">(</span>heart <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">heart</span> <span class="op">==</span> <span class="fl">0</span>, <span class="st">"HEART = 0"</span>, <span class="st">"HEART = 1"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span></span>
+<span>    <span class="st">"Cohort"</span>        <span class="op">=</span> <span class="va">heart</span>,</span>
+<span>    <span class="st">"CL (L/h)"</span>      <span class="op">=</span> <span class="va">cl_Lh</span>,</span>
+<span>    <span class="st">"V (L)"</span>         <span class="op">=</span> <span class="va">vc_L</span>,</span>
+<span>    <span class="st">"kel (1/h)"</span>     <span class="op">=</span> <span class="va">kel_per_h</span>,</span>
+<span>    <span class="st">"Half-life (h)"</span> <span class="op">=</span> <span class="va">halflife_h</span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
 <span>    digits <span class="op">=</span> <span class="fl">3</span>,</span>
-<span>    col.names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Cohort"</span>, <span class="st">"CL (L/h)"</span>, <span class="st">"V (L)"</span>,</span>
-<span>                  <span class="st">"kel (1/h)"</span>, <span class="st">"Half-life (h)"</span><span class="op">)</span>,</span>
 <span>    caption <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span></span>
 <span>      <span class="st">"Typical-value clearance, volume, and elimination half-life for a"</span>,</span>
 <span>      <span class="st">"16.27 kg child with and without the cardiac-perturbation covariate."</span></span>

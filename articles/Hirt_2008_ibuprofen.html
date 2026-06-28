@@ -1644,8 +1644,15 @@ older than 108 h).</p>
 <span>    .groups        <span class="op">=</span> <span class="st">"drop"</span></span>
 <span>  <span class="op">)</span></span>
 <span></span>
-<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
-<span>  <span class="va">threshold_table</span>,</span>
+<span><span class="va">threshold_table</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span></span>
+<span>    <span class="st">"PNA stratum"</span>           <span class="op">=</span> <span class="va">treatment</span>,</span>
+<span>    <span class="st">"Median AUC1D"</span>          <span class="op">=</span> <span class="va">median_AUC1D</span>,</span>
+<span>    <span class="st">"10th pct AUC1D"</span>        <span class="op">=</span> <span class="va">p10_AUC1D</span>,</span>
+<span>    <span class="st">"90th pct AUC1D"</span>        <span class="op">=</span> <span class="va">p90_AUC1D</span>,</span>
+<span>    <span class="st">"% above 600 mg L^-1 h"</span> <span class="op">=</span> <span class="va">pct_above_600</span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
 <span>  caption <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span></span>
 <span>    <span class="st">"Simulated AUC1D (mg L^-1 h) and percent of subjects clearing the"</span>,</span>
 <span>    <span class="st">"600 mg L^-1 h threshold, stratified by PNA band. Hirt 2008 Table 4"</span>,</span>
@@ -1653,9 +1660,6 @@ older than 108 h).</p>
 <span>    <span class="st">"50% closure for PNA &gt; 108 h, consistent with the simulated drop in"</span>,</span>
 <span>    <span class="st">"AUC1D-above-threshold rate across PNA bands."</span></span>
 <span>  <span class="op">)</span>,</span>
-<span>  col.names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"PNA stratum"</span>, <span class="st">"n"</span>, <span class="st">"Median AUC1D"</span>,</span>
-<span>                <span class="st">"10th pct AUC1D"</span>, <span class="st">"90th pct AUC1D"</span>,</span>
-<span>                <span class="st">"% above 600 mg L^-1 h"</span><span class="op">)</span>,</span>
 <span>  align     <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"l"</span>, <span class="st">"r"</span>, <span class="st">"r"</span>, <span class="st">"r"</span>, <span class="st">"r"</span>, <span class="st">"r"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <table style="width:100%;" class="table">

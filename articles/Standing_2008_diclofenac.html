@@ -1578,16 +1578,19 @@ scalings (the model has no saturable elimination).</p>
 <span>    flag     <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">pct_diff</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">20</span>, <span class="st">"*"</span>, <span class="st">""</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
 <span></span>
-<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
-<span>  <span class="va">cmp</span>,</span>
-<span>  digits  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">NA</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="cn">NA</span><span class="op">)</span>,</span>
-<span>  col.names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Cohort"</span>, <span class="st">"Paper AUC(0,12 h) [nmol*h/L]"</span>,</span>
-<span>                <span class="st">"Simulated AUC(0,12 h) [nmol*h/L]"</span>,</span>
-<span>                <span class="st">"% difference"</span>,</span>
-<span>                <span class="st">"Flag (* &gt; 20%)"</span><span class="op">)</span>,</span>
-<span>  caption <span class="op">=</span> <span class="st">"Simulated vs. published median AUC(0,12 h) by cohort. The packaged model reproduces the structural simulation underlying Standing 2008 Table 3; per-cohort weight-distribution differences (the paper used the actual study subjects as covariate carriers; this vignette samples weights uniformly within plausible WHO bands) account for residual disagreement."</span>,</span>
-<span>  align <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"l"</span>, <span class="st">"r"</span>, <span class="st">"r"</span>, <span class="st">"r"</span>, <span class="st">"c"</span><span class="op">)</span></span>
-<span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">cmp</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span></span>
+<span>    <span class="st">"Cohort"</span>                           <span class="op">=</span> <span class="va">cohort</span>,</span>
+<span>    <span class="st">"Paper AUC(0,12 h) [nmol*h/L]"</span>     <span class="op">=</span> <span class="va">auc12_paper</span>,</span>
+<span>    <span class="st">"Simulated AUC(0,12 h) [nmol*h/L]"</span> <span class="op">=</span> <span class="va">auc12_sim</span>,</span>
+<span>    <span class="st">"% difference"</span>                     <span class="op">=</span> <span class="va">pct_diff</span>,</span>
+<span>    <span class="st">"Flag (* &gt; 20%)"</span>                   <span class="op">=</span> <span class="va">flag</span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
+<span>    digits  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">NA</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="cn">NA</span><span class="op">)</span>,</span>
+<span>    caption <span class="op">=</span> <span class="st">"Simulated vs. published median AUC(0,12 h) by cohort. The packaged model reproduces the structural simulation underlying Standing 2008 Table 3; per-cohort weight-distribution differences (the paper used the actual study subjects as covariate carriers; this vignette samples weights uniformly within plausible WHO bands) account for residual disagreement."</span>,</span>
+<span>    align <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"l"</span>, <span class="st">"r"</span>, <span class="st">"r"</span>, <span class="st">"r"</span>, <span class="st">"c"</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span></code></pre></div>
 <table class="table">
 <caption>Simulated vs. published median AUC(0,12 h) by cohort. The
 packaged model reproduces the structural simulation underlying Standing

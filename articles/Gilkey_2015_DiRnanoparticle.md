@@ -260,9 +260,9 @@ cmax_summary <- sim_short |>
     Other_Cmax_ug_mL   = max(coth),
     Other_Tmax_min     = time[which.max(coth)]
   )
-knitr::kable(
-  t(cmax_summary),
-  col.names = "Simulated typical value",
+as.data.frame(t(cmax_summary)) |>
+  dplyr::rename("Simulated typical value" = V1) |>
+  knitr::kable(
   caption = paste0(
     "Simulated Cmax / Tmax for each tissue and the 'other' compartment, ",
     "model native time units (minutes). Paper-reported values: ",

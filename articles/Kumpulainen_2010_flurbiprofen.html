@@ -1636,10 +1636,17 @@ reference values for them, so no Reference column is shown.</p>
 <span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span><span class="fu">across</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">median</span>, <span class="va">q05</span>, <span class="va">q95</span><span class="op">)</span>, <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">signif</a></span><span class="op">(</span><span class="va">.x</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
-<span>  <span class="va">pop_table</span>,</span>
+<span><span class="va">pop_table</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span></span>
+<span>    <span class="st">"Output"</span>         <span class="op">=</span> <span class="va">output</span>,</span>
+<span>    <span class="st">"Arm"</span>            <span class="op">=</span> <span class="va">arm</span>,</span>
+<span>    <span class="st">"NCA parameter"</span>  <span class="op">=</span> <span class="va">parameter</span>,</span>
+<span>    <span class="st">"Median"</span>         <span class="op">=</span> <span class="va">median</span>,</span>
+<span>    <span class="st">"5% percentile"</span>  <span class="op">=</span> <span class="va">q05</span>,</span>
+<span>    <span class="st">"95% percentile"</span> <span class="op">=</span> <span class="va">q95</span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
 <span>  caption <span class="op">=</span> <span class="st">"Population-cohort median and 5%-95% range for AUC0-Inf and t1/2 (per arm and per output). No published reference values."</span>,</span>
-<span>  col.names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Output"</span>, <span class="st">"Arm"</span>, <span class="st">"NCA parameter"</span>, <span class="st">"Median"</span>, <span class="st">"5% percentile"</span>, <span class="st">"95% percentile"</span><span class="op">)</span>,</span>
 <span>  align <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"l"</span>, <span class="st">"l"</span>, <span class="st">"l"</span>, <span class="st">"r"</span>, <span class="st">"r"</span>, <span class="st">"r"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <table class="table">

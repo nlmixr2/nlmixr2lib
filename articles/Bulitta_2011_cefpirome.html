@@ -1540,11 +1540,14 @@ prediction interval) by cohort.</caption>
 <span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">cohort</span>, <span class="va">formatted</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
-<span>  <span class="va">urine_recovery</span>,</span>
-<span>  caption <span class="op">=</span> <span class="st">"Simulated fraction excreted unchanged in urine at 24 h (median, 5%-95% PI) by cohort."</span>,</span>
-<span>  col.names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Cohort"</span>, <span class="st">"Fraction excreted unchanged (24 h)"</span><span class="op">)</span></span>
-<span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">urine_recovery</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span></span>
+<span>    <span class="st">"Cohort"</span>                            <span class="op">=</span> <span class="va">cohort</span>,</span>
+<span>    <span class="st">"Fraction excreted unchanged (24 h)"</span> <span class="op">=</span> <span class="va">formatted</span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
+<span>    caption <span class="op">=</span> <span class="st">"Simulated fraction excreted unchanged in urine at 24 h (median, 5%-95% PI) by cohort."</span></span>
+<span>  <span class="op">)</span></span></code></pre></div>
 <table class="table">
 <caption>Simulated fraction excreted unchanged in urine at 24 h (median,
 5%-95% PI) by cohort.</caption>

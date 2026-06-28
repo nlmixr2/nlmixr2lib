@@ -1513,16 +1513,23 @@ dosing.</p>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">cohort</span>, <span class="va">ref_auc_24</span>, <span class="va">sim_auc_24</span>, <span class="va">pct_diff_auc</span>, <span class="va">flag</span>,</span>
 <span>                <span class="va">sim_cmax</span>, <span class="va">sim_tmax</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
-<span>  <span class="va">cmp_tbl</span>,</span>
+<span><span class="va">cmp_tbl</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span></span>
+<span>    <span class="st">"Cohort"</span>               <span class="op">=</span> <span class="va">cohort</span>,</span>
+<span>    <span class="st">"Reference AUC(0,24h)"</span> <span class="op">=</span> <span class="va">ref_auc_24</span>,</span>
+<span>    <span class="st">"Simulated AUC(0,24h)"</span> <span class="op">=</span> <span class="va">sim_auc_24</span>,</span>
+<span>    <span class="st">"% diff vs ref"</span>        <span class="op">=</span> <span class="va">pct_diff_auc</span>,</span>
+<span>    <span class="st">"Flag"</span>                 <span class="op">=</span> <span class="va">flag</span>,</span>
+<span>    <span class="st">"Simulated Cmax"</span>       <span class="op">=</span> <span class="va">sim_cmax</span>,</span>
+<span>    <span class="st">"Simulated Tmax"</span>       <span class="op">=</span> <span class="va">sim_tmax</span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
 <span>  digits  <span class="op">=</span> <span class="fl">2</span>,</span>
 <span>  caption <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span></span>
 <span>    <span class="st">"Simulated vs. published 24-h AUC at steady state for the two"</span>,</span>
 <span>    <span class="st">"1 g MMF q12h cohorts. AUC unit ng*h/mL; Cmax unit ng/mL; Tmax"</span>,</span>
 <span>    <span class="st">"unit h. * differs from the reference median by &gt; 20 %."</span></span>
-<span>  <span class="op">)</span>,</span>
-<span>  col.names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Cohort"</span>, <span class="st">"Reference AUC(0,24h)"</span>, <span class="st">"Simulated AUC(0,24h)"</span>,</span>
-<span>                <span class="st">"% diff vs ref"</span>, <span class="st">"Flag"</span>, <span class="st">"Simulated Cmax"</span>, <span class="st">"Simulated Tmax"</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <table style="width:100%;" class="table">
 <caption>Simulated vs. published 24-h AUC at steady state for the two 1

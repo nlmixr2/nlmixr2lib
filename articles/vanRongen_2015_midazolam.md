@@ -450,9 +450,12 @@ ss_t90 <- ss_curve |>
 #> Caused by warning in `min()`:
 #> ! no non-missing arguments to min; returning Inf
 
-knitr::kable(
-  ss_t90,
-  col.names = c("Body weight", "Time to 90% of plateau (h)"),
+ss_t90 |>
+  dplyr::rename(
+    "Body weight"                = cohort_label,
+    "Time to 90% of plateau (h)" = t90_h
+  ) |>
+  knitr::kable(
   caption = paste(
     "Simulated time-to-90%-of-plateau for a fixed 3.5 mg/h continuous",
     "midazolam infusion. Paper reports time-to-steady-state of 19 h",

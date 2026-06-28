@@ -356,11 +356,16 @@ simulated_view <- simulated_summary |>
     auclast_0_24  = sprintf("%.0f", auclast_0_24)
   )
 
-knitr::kable(
-  dplyr::bind_rows(simulated_view, published) |>
-    dplyr::arrange(treatment, source),
+dplyr::bind_rows(simulated_view, published) |>
+  dplyr::arrange(treatment, source) |>
+  dplyr::rename(
+    "Treatment"        = treatment,
+    "Source"           = source,
+    "Cmax (mg/L)"      = cmax,
+    "AUC0-24 (mg.h/L)" = auclast_0_24
+  ) |>
+  knitr::kable(
   caption = "Simulated vs published Cmax (mg/L) and AUC0-24 (mg.h/L) for 6 mg/kg gentamicin given 30 min before a 4-h hemodialysis session. Simulated values are means across 200 virtual subjects.",
-  col.names = c("Treatment", "Source", "Cmax (mg/L)", "AUC0-24 (mg.h/L)"),
   align = c("l", "l", "r", "r")
 )
 ```

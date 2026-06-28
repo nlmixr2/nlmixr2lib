@@ -1565,13 +1565,16 @@ three, and the most clinically conservative).</p>
 <span>                simulated_median_pct <span class="op">=</span> <span class="va">median_pct_above_2</span>,</span>
 <span>                <span class="va">published_median_pct_above_2</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
-<span>  <span class="va">comparison</span>,</span>
+<span><span class="va">comparison</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span></span>
+<span>    <span class="st">"Regimen"</span>                              <span class="op">=</span> <span class="va">treatment</span>,</span>
+<span>    <span class="st">"% subjects geq 40% T&gt;MIC (simulated)"</span> <span class="op">=</span> <span class="va">simulated_pct_geq_40</span>,</span>
+<span>    <span class="st">"% subjects geq 40% T&gt;MIC (published)"</span> <span class="op">=</span> <span class="va">published_pct_geq_40</span>,</span>
+<span>    <span class="st">"Median % T &gt; 2 mg/L (simulated)"</span>      <span class="op">=</span> <span class="va">simulated_median_pct</span>,</span>
+<span>    <span class="st">"Median % T &gt; 2 mg/L (published)"</span>      <span class="op">=</span> <span class="va">published_median_pct_above_2</span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
 <span>  caption <span class="op">=</span> <span class="st">"Replicates Table 3 of Eyler 2014 -- probability of achieving unbound &gt; 2 mg/L for &gt;= 40% of the first dosing interval, plus median percent time above 2 mg/L."</span>,</span>
-<span>  col.names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Regimen"</span>, <span class="st">"% subjects geq 40% T&gt;MIC (simulated)"</span>,</span>
-<span>                <span class="st">"% subjects geq 40% T&gt;MIC (published)"</span>,</span>
-<span>                <span class="st">"Median % T &gt; 2 mg/L (simulated)"</span>,</span>
-<span>                <span class="st">"Median % T &gt; 2 mg/L (published)"</span><span class="op">)</span>,</span>
 <span>  align <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"l"</span>, <span class="st">"r"</span>, <span class="st">"r"</span>, <span class="st">"r"</span>, <span class="st">"r"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <table class="table">
@@ -1699,7 +1702,6 @@ derived directly from the typical-value simulation.</p>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
 <span>  <span class="va">nca_table</span>,</span>
 <span>  caption <span class="op">=</span> <span class="st">"PKNCA summary statistics for the unbound ertapenem profile in the 200-subject virtual cohort (1 g q24h, continuous CRRT)."</span>,</span>
-<span>  col.names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Quantity"</span>, <span class="st">"Value"</span><span class="op">)</span>,</span>
 <span>  align <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"l"</span>, <span class="st">"r"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <table class="table">
