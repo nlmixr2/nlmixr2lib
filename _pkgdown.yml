@@ -666,8 +666,8 @@ navbar:
         href: articles/Kim_2017_fimasartan.html
       - text: "Finafloxacin (Taubert 2018)"
         href: articles/Taubert_2018_finafloxacin.html
-      - text: "Finerenone (Goulooze 2022)"
-        href: articles/Goulooze_2022_finerenone.html
+      - text: "Finerenone (vandenBerg 2021)"
+        href: articles/vandenBerg_2021_finerenone.html
       - text: "Flucloxacillin (Landersdorfer 2007)"
         href: articles/Landersdorfer_2007_flucloxacillin.html
       - text: "Fluconazole (Han 2013)"
@@ -3045,5 +3045,24 @@ articles:
   - articles/Zuo_2016_UDCA
   - articles/Zurlinden_2016_paracetamol
   - articles/Zvada_2010_rifapentine
+  - articles/deAlwis_1998_ondansetron
+  - articles/deHoogd_2017_morphine
+  - articles/deJonge_2005_paclitaxel
+  - articles/deKock_2017_sulfadoxinePyrimethamine
+  - articles/deVriesSchultink_2018_cardiotoxicity
+  - articles/deVriesSchultink_2020_zenocutuzumab
+  - articles/deWinter_2009_mycophenolic_acid
+  - articles/deWit_2016_everolimus
+  - articles/elDesoky_1997_theophylline_pediatric_asthma
+  - articles/vanHasselt_2015_eribulin
+  - articles/vanRongen_2015_midazolam
+  - articles/vanRongen_2016_acetaminophen
+  - articles/vanRongen_2017_midazolam
+  - articles/vanRongen_2018_metformin
+  - articles/vanRongen_2018_midazolam
+  - articles/vanWijk_2019_paracetamol
+  - articles/vandenBerg_2021_finerenone
+  - articles/vanderWalt_2013_dapagliflozin
+  - articles/vonHentig_2009_saquinavir
   internal: true
 # AUTOGEN:articles:END
