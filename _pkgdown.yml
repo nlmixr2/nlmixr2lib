@@ -690,6 +690,8 @@ navbar:
         href: articles/Zhang_2018_flurbiprofen.html
       - text: "Fluticasone inhaled (Weber 2015)"
         href: articles/Weber_2015_fluticasone_inhaled.html
+      - text: "Fluvoxamine rat (Geldof 2008)"
+        href: articles/Geldof_2008_fluvoxamine_rat.html
       - text: "Follitropin delta (Rose 2016)"
         href: articles/Rose_2016_follitropin_delta.html
       - text: "Fondaparinux (Zufferey 2018)"
@@ -2338,6 +2340,7 @@ articles:
   - articles/Garot_2011_ceftriaxone
   - articles/Garrett_2014_axitinib
   - articles/Gatti_1996_dapsone
+  - articles/Geldof_2008_fluvoxamine_rat
   - articles/Georges_2009_ceftazidime
   - articles/Germovsek_2016_gentamicin
   - articles/Germovsek_2018_meropenem
