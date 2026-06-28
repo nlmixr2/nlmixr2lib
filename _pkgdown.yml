@@ -894,6 +894,8 @@ navbar:
         href: articles/Zhu_2017_lebrikizumab.html
       - text: "Lenvatinib (Gupta 2016)"
         href: articles/Gupta_2016_lenvatinib.html
+      - text: "Levalbuterol (Jaworowicz 2006)"
+        href: articles/Jaworowicz_2006_levalbuterol.html
       - text: "Levamisole (KreeftmeijerVegter 2015)"
         href: articles/KreeftmeijerVegter_2015_levamisole.html
       - text: "Levetiracetam (Shin 2017)"
@@ -2406,6 +2408,7 @@ articles:
   - articles/Jain_2011_sorafenib
   - articles/Janssen_2017_cabazitaxel_phenotyping
   - articles/Jansson_2008_eflornithine
+  - articles/Jaworowicz_2006_levalbuterol
   - articles/Jelliffe_2014_digoxin
   - articles/Jeon_2012_C3G
   - articles/Jeon_2013_interferonAlfa2a
