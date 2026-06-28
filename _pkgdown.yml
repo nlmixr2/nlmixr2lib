@@ -660,6 +660,8 @@ navbar:
         href: articles/Kim_2017_fimasartan.html
       - text: "Finafloxacin (Taubert 2018)"
         href: articles/Taubert_2018_finafloxacin.html
+      - text: "Finerenone (Eissing 2024)"
+        href: articles/Eissing_2024_finerenone.html
       - text: "Flucloxacillin (Landersdorfer 2007)"
         href: articles/Landersdorfer_2007_flucloxacillin.html
       - text: "Fluconazole (Han 2013)"
@@ -2264,6 +2266,7 @@ articles:
   - articles/Duong_2017_AT9283
   - articles/Easterling_2018_magnesium_sulfate
   - articles/Edstein_2001_tafenoquine
+  - articles/Eissing_2024_finerenone
   - articles/Ekhart_2008_carboplatin
   - articles/Elassaiss-Schaap_2017_pembrolizumab
   - articles/elDesoky_1997_theophylline_pediatric_asthma
