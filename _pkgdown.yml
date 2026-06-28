@@ -1926,6 +1926,8 @@ navbar:
         href: articles/PillaReddy_2013_panss_subscales.html
       - text: "Zolbetuximab (Yamada 2025)"
         href: articles/Yamada_2025_zolbetuximab.html
+      - text: "ZoledronicAcid (Mori 2018)"
+        href: articles/Mori_2018_zoledronicAcid.html
       - text: "Zonisamide (Hashimoto 1994)"
         href: articles/Hashimoto_1994_zonisamide.html
       # AUTOGEN:specific_drugs:END
@@ -2658,6 +2660,7 @@ articles:
   - articles/Mondick_2006_dactinomycin
   - articles/Moore_1999_lamivudine
   - articles/Moore_2016_vancomycin
+  - articles/Mori_2018_zoledronicAcid
   - articles/Morris_2011_artesunate
   - articles/Morris_2011_telapristone
   - articles/Mosha_2014_artemether_lumefantrine
