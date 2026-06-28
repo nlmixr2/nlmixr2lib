@@ -2834,44 +2834,8 @@ L- and D-enantiomer suffixes for stereoselective popPK models that simultaneousl
 - **Example models:** `Jansson_2008_eflornithine_rat.R`.
 - **Notes:** Algebraic sum only; no `central_rac`, `peripheral1_rac`, or `depot_rac` compartment exists.
 
----
-
-## In-vitro single-cell mRNA-translation states (Frohlich 2018 QSP)
-
-The Frohlich 2018 multi-experiment NLME single-cell mRNA-transfection model (npj Syst Biol Appl 4:42) introduces three mechanistic states for an in-vitro gene-expression assay and one log-fluorescence observation. The bare names are short to match the source code (`transfection_ribo_syms.m` in the authors' Zenodo deposit doi:10.5281/zenodo.1228899) and the paper's symbol set (m, GFP, R, r-m complex).
-
-### mrna (**canonical free cytoplasmic messenger RNA**)
-- **Type:** compartment
-- **Role:** Free (translatable) cytoplasmic mRNA copies per cell, normalised by the per-cell transfected mRNA amount `m0` so that the bolus event sets `mrna = 1`. Used by single-cell translation-kinetics models that explicitly model mRNA degradation, ribosome binding, and protein production. Distinct from the PBPK sub-compartment-regex prefix `mrna_<organ>` (membrane-limited intracellular pool in whole-body Parhiz 2024 mRNA-LNP / Sasaki 2022 BNT162b2 models), which is a different mechanistic concept (tissue-resolved bulk mRNA) and is matched by `pbpkSubCompartmentRegex`.
-- **Source aliases:**
-  - `MRNA` -- uppercase in `transfection_ribo_syms.m` (Frohlich 2018 Zenodo deposit).
-  - `m` -- the paper's symbol for the normalised mRNA abundance.
-  - `m_prime` (`m'`) -- the un-normalised mRNA abundance before the m0-normalisation transformation (paper Methods, Mathematical models for GFP translation).
-- **Example models:** `Frohlich_2018_mRNA_translation.R`.
-- **Notes:** State holds a dimensionless normalised copy-number-per-cell (m0 units). Bolus event encoded as a dose of amount 1 to `mrna` with `alag(mrna) = t0` to realise the per-cell transfection-onset time.
-
-### gfp (**canonical green-fluorescent-protein reporter state**)
-- **Type:** compartment
-- **Role:** Concentration / amount per cell of the fluorescent reporter protein (eGFP or destabilized eGFP / d2eGFP) produced by ribosomal translation of transfected mRNA. Used by single-cell mRNA-transfection / reporter-translation assays where the observed quantity is the optical intensity from a fluorescent reporter. Includes the absorbed-into-state scale factor (paper-transformed `scale * GFP`); the linear observable is `gfp + offset` and the log observable is `log(gfp + offset)`.
-- **Source aliases:**
-  - `GFP` -- uppercase in `transfection_ribo_syms.m` (Frohlich 2018 Zenodo deposit).
-  - `p` -- the paper's symbol for protein abundance.
-- **Example models:** `Frohlich_2018_mRNA_translation.R`.
-- **Notes:** Both eGFP and d2eGFP cohorts share the same `gfp` state; the cohort distinction is carried by the `STUDY_d2eGFP` covariate (it selects between two protein degradation rates `gamma_eGFP` and `gamma_d2eGFP`). Single-cell concentration / amount; no body-volume scaling.
-
-### ribo (**canonical free ribosome state (single-cell mRNA-translation models)**)
-- **Type:** compartment
-- **Role:** Free (unbound, available-for-translation) ribosome concentration per cell in single-cell mRNA-transfection / reporter-translation assays with ribosomal rate-limited translation. Used by Frohlich 2018 model (ii) and (iv) (ribosomal-binding extensions of the standard two-stage gene-expression model). The bound mRNA-ribosome complex is the conservation residual `fracr0_m0 - ribo` (total ribosomes = free + bound = R0/m0 normalised), so no separate `complex` state is required.
-- **Source aliases:**
-  - `RIBO` -- uppercase in `transfection_ribo_syms.m` (Frohlich 2018 Zenodo deposit).
-  - `R` -- the paper's symbol for ribosome abundance.
-- **Example models:** `Frohlich_2018_mRNA_translation.R`.
-- **Notes:** Dimensionless normalised ribosome count (m0 units). Initial condition is the per-cell free-ribosome / m0 ratio `fracr0_m0` (paper parameter `R0/m0`). Used jointly with the `mrna` and `gfp` states; the three-state system `(mrna, gfp, ribo)` describes one cohort. Distinct from `bact_<phenotype>` bacterial subpopulation states (different mechanism) and from `enzyme` / `enz_pool` (autoinduction reservoirs).
-
-### logfluor (**canonical log-fluorescence-intensity observable (in-vitro single-cell)**)
-- **Type:** compartment
-- **Role:** Single-output observation variable `logfluor = log(gfp + offset)` for in-vitro single-cell mRNA-transfection / reporter-translation assays. The log-transform is applied to the linear `gfp + offset` predictor so that the residual error is additive on the log scale (the source paper uses this transform to convert multiplicative measurement noise on linear-fluorescence intensity into additive noise on log-fluorescence; Frohlich 2018 Methods, Data acquisition and quantitative image analysis). Used with `~ add(addSd_logfluor)` as the residual-error structure.
-- **Source aliases:**
-  - `y` -- the paper's symbol for the observable (Methods, "the output fluorescence y is assumed to be the sum of a signal proportional to the amount of eGFP (with scaling parameter scale) plus background fluorescence (offset)").
-- **Example models:** `Frohlich_2018_mRNA_translation.R`.
-- **Notes:** Not a state in the ODE system (`logfluor` is derived inside `model()` from the `gfp` state and the `offset` parameter). Registered as a canonical compartment so the single-output observation-variable check accepts `logfluor ~ add(addSd_logfluor)` for in-vitro / mechanistic models without forcing a rename to `Cc`.
+### bibf (**canonical BIBF 1202 nintedanib-metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** BIBF 1202, the main hydrolytic metabolite of nintedanib (BIBF 1120) formed by cleavage of the methyl ester. Used as the metabolite suffix in parent + metabolite simultaneous popPK models (compartments `depot_bibf`, `central_bibf`; parameters `lka_bibf`, `lvc_bibf`, `lcl_bibf`, `lfdepot_bibf`, `ltlag_bibf`; residual `expSd_bibf`). Founding example: `Schmid_2017_nintedanib.R`.
+- **Source aliases:** none.
+- **Example models:** `Schmid_2017_nintedanib.R`.

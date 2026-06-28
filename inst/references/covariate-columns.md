@@ -2607,6 +2607,37 @@ readable.
 - **Example models:** `Brussee_2016_arginine.R` (multiplicative factor `f = 1.9` on L-arginine CL: `CL_i = CL * (WT/60)^k1 * f^RACE_PAPUAN` -- Papuan patients have ~1.9x higher arginine clearance than the non-Papuan reference).
 - **Notes:** Distinct from all existing `RACE_<GROUP>` indicators. Papuans are an indigenous Melanesian / Oceanic population genetically and culturally distinct from `RACE_ASIAN` (mainland-Indonesian transmigrants are typically Austronesian Asian by international population-genetics classification). The Brussee 2016 cohort was enrolled exclusively at the Mitra Masyarakat Hospital in Timika, Papua, so a paired `REGION_INDONESIA` indicator is not needed for that model -- future models that mix Papuan and non-Papuan Indonesian sites may need such a region indicator separately. Ratified canonically on 2026-06-09 (general scope; the Brussee 2016 L-arginine PKPD model is the second example following Yeo 2008 arginine, which also used the same indigenous Papuan vs non-Papuan stratification).
 
+### RACE_IND_CHI_TWN (**canonical for Indian/Chinese/Taiwanese composite race indicator (Schmid 2017 nintedanib)**)
+- **Description:** 1 = subject self-identifies as Indian (South Asian), Chinese, or Taiwanese; 0 = otherwise (Caucasian, Black, Korean, or other Asian). Paper-specific composite developed by Schmid 2017 in pooling South Asian Indian and East Asian Chinese/Taiwanese subgroups together as a single nintedanib-bioavailability (F1) effect category against a Caucasian/Black/other-Asian reference. The grouping reflects the empirical clustering of the F1 covariate analysis (Schmid 2017 Table 3 ethnic-origin row); it does not imply biological homogeneity across the three constituent populations.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 = Caucasian, Black, Korean, or other Asian (paired with `RACE_KOREAN` to capture the Korean subgroup separately).
+- **Source aliases:**
+  - Paper's ethnic-origin categorical levels "Indian / Chinese / Taiwanese origin" -- decompose into `RACE_IND_CHI_TWN = as.integer(ETHNIC %in% c("Indian", "Chinese", "Taiwanese"))`.
+- **Example models:** `Schmid_2017_nintedanib.R` (multiplicative effect 1.33 on nintedanib relative bioavailability F1; reference category Caucasian / Black / other Asian).
+- **Notes:** Operator-ratified sidecar 2026-06-21 (request-002 Q1, option B). Specific scope: the composite grouping is paper-specific to Schmid 2017 and is unlikely to recur unchanged in other popPK extractions; future papers that distinguish South Asian from East Asian (or that lump Korean with Chinese) should register their own composite rather than overload this one. The constituent subgroups Chinese / Indian / Taiwanese remain available as individual indicators (`RACE_CHINESE` is canonical; `RACE_INDIAN` was added alongside this entry; `RACE_TAIWANESE` is not yet canonical but can be added when a future paper requires it).
+
+### RACE_KOREAN (**canonical for Korean-heritage race indicator**)
+- **Description:** 1 = Korean heritage (subject self-identifies as Korean or is enrolled at a Korean-population stratum of a multiregional trial), 0 = non-Korean. Used when Korean subjects form a distinct subgroup whose PK differs from the Caucasian / Black / non-Korean Asian reference (e.g., Schmid 2017 nintedanib showed Korean patients have ~22% lower F1 than the Caucasian reference).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (non-Korean; document the paper-specific reference race composition per-model in the covariate's notes).
+- **Source aliases:** none formally; source NONMEM control streams typically use ad-hoc names (e.g., `KOREAN`, `RACE.EQ.K`).
+- **Example models:** `Schmid_2017_nintedanib.R` (multiplicative effect 0.781 on nintedanib relative bioavailability F1; reference category Caucasian / Black / other Asian).
+- **Notes:** Operator-ratified sidecar 2026-06-21 (request-002 Q1, option B). Parallels the established `RACE_CHINESE` / `RACE_JAPANESE` entries -- individual East Asian nationality indicators when the source paper distinguishes them as distinct subgroups rather than pooling under `RACE_ASIAN_NORTHEAST`. Korean is the third NE-Asian individual nationality canonical alongside Chinese and Japanese; together they exhaust the `RACE_ASIAN_NORTHEAST` composite (Chinese + Japanese + Korean) so a model that uses all three individual indicators can omit `RACE_ASIAN_NORTHEAST` without information loss. Distinct from `RACE_ASIAN_NORTHEAST` (composite) and from `RACE_ASIAN_OTH` (within-Asian-population sub-indicator).
+
+### RACE_INDIAN (**canonical for Indian (South Asian) race indicator**)
+- **Description:** 1 = South Asian Indian heritage (subject self-identifies as Indian; refers to nationals/descendants of India and not to American Indian / Native American groups), 0 = non-Indian. Used when Indian subjects form a distinct subgroup whose PK differs from the Caucasian / Black / non-Indian Asian reference (e.g., Schmid 2017 nintedanib showed Indian patients have ~90% higher BIBF 1202 F2 than the Caucasian / Black reference).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (non-Indian; document the paper-specific reference race composition per-model in the covariate's notes).
+- **Source aliases:** none formally; source NONMEM control streams typically use ad-hoc names (e.g., `INDIAN`, `RACE.EQ.I`).
+- **Example models:** `Schmid_2017_nintedanib.R` (multiplicative effect 1.90 on BIBF 1202 relative bioavailability F2; paired with a non-Indian-Asian indicator at 1.20; reference category Caucasian / Black). The paper's covariate-grouping of Indian alongside Chinese and Taiwanese for the parent-nintedanib F1 effect is captured by the separate `RACE_IND_CHI_TWN` composite.
+- **Notes:** Added 2026-06-27 alongside `RACE_IND_CHI_TWN` and `RACE_KOREAN` for the Schmid 2017 nintedanib extraction (request-002 Q1, option B). Parallels `RACE_CHINESE` / `RACE_JAPANESE` / `RACE_KOREAN` -- individual South / East Asian nationality indicators when the source paper distinguishes them as distinct subgroups. **DISTINCT** from `RACE_ASIAN_AMIND_OTH` and `RACE_ASIAN_AMIND_MULTI`, both of which use "AmInd" / "AMIND" to mean American Indian / Alaska Native (a North American indigenous population), not South Asian Indian. This is a recurring source of confusion in race-canonical lookups; reviewers should verify the meaning whenever a paper mentions "Indian" patients in a popPK cohort.
+
 
 ## Geographic / enrollment-country indicators
 
@@ -3830,6 +3861,17 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
   - `TUMTP` (categorical column with levels including `melanoma`, `NSCLC`, `other`) -- decompose into `TUMTP_NSCLC = as.integer(TUMTP == "NSCLC")`.
 - **Example models:** `Ahamadi_2017_pembrolizumab.R` (proportional change of +14.5% on CL for NSCLC patients relative to melanoma; the "other" cancer type cohort -- 1.01% of the population -- is pooled into the melanoma reference per the paper's model description), `Aoyama_2012_sepantronium.R`.
 - **Notes:** Follows the `TUMTP_HODGKIN_CLASSICAL` / `TUMTP_GASTRIC` / `TUMTP_SCLC` decomposition pattern. Scope: general because NSCLC is a high-frequency tumor-type contrast (with melanoma or "other" reference) across PD-1 / PD-L1 / chemotherapy popPK analyses, and is likely to recur in future extractions. Ratified canonically on 2026-05-17 alongside the Ahamadi 2017 pembrolizumab extraction.
+
+### TUMTP_NSCLC_NONADENO (**canonical for non-adenocarcinoma-histology NSCLC sub-indicator**)
+- **Description:** 1 = NSCLC of a histology OTHER than adenocarcinoma (squamous-cell carcinoma, large-cell carcinoma, or other non-adenocarcinoma NSCLC subtype); 0 = adenocarcinoma NSCLC, NSCLC of unknown histology, or a non-NSCLC diagnosis. Within-NSCLC histology sub-indicator paired with `TUMTP_NSCLC` (which distinguishes NSCLC patients overall from other tumor types).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (adenocarcinoma NSCLC, unknown-histology NSCLC, or non-NSCLC subject; in particular IPF / non-cancer subjects in a mixed cohort are assigned 0 because they have no NSCLC histology).
+- **Source aliases:**
+  - Schmid 2017 categorical column with levels "NSCLC-adenocarcinoma" / "NSCLC-no adenocarcinoma" / "IPF or NSCLC of unknown histology" -- decompose into `TUMTP_NSCLC_NONADENO = as.integer(NSCLC_histology == "non-adenocarcinoma")`.
+- **Example models:** `Schmid_2017_nintedanib.R` (multiplicative effect 1.36 on BIBF 1202 ka2 absorption rate; reference category adenocarcinoma NSCLC pooled with IPF and unknown-histology NSCLC).
+- **Notes:** Follows the `TUMTP_<type>` decomposition pattern (auto-approved family). Within-NSCLC histology distinctions arise when a popPK / PD model in NSCLC differentiates adenocarcinoma from squamous-cell carcinoma; the paired adenocarcinoma reference can be made explicit by adding a `TUMTP_NSCLC_ADENO` sibling in a future extraction if needed. Ratified canonically on 2026-06-27 alongside the Schmid 2017 nintedanib extraction.
 
 ### TUMTP_HRPC (**canonical for hormone-refractory prostate cancer tumor-type indicator**)
 - **Description:** 1 = hormone-refractory prostate cancer (HRPC), 0 = other tumor types. The historical term HRPC has since been displaced by CRPC (castration-resistant prostate cancer); the two terms refer to the same clinical entity. `TUMTP_HRPC` is the canonical column for both wordings (no separate `TUMTP_CRPC` is registered; if a future paper distinguishes hormone-naive metastatic prostate cancer from CRPC, register a more specific canonical at that time).
@@ -7631,6 +7673,46 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Source aliases:** none -- Grzesk 2016 Tables I and II label the four agonists in prose ("PHE", "AVP", "mastoparan-7", "Bay K8644"); the model column is the canonical `AGONIST_CODE`.
 - **Example models:** `Grzesk_2016_m3M3FBS.R` (Grzesk 2016 Table I + Table II Phase 2: per-agonist EC50 (M/L) and maximal-perfusion-pressure Emax (mmHg) pairs; companion `M3M3FBS_PRESENT` flips between control and m-3M3FBS-pretreatment sub-pairs).
 - **Notes:** Specific scope because the integer-to-agonist mapping is anchored to Grzesk 2016 Table I row order. The Grzesk-group sibling papers (Biomed Rep 2 / 2014 pertussis toxin; Mol Med Report 5 / 2012 calcium blockers; Exp Ther Med 4 / 2012; etc.) reuse the same isolated-perfused-tail-artery scaffold with overlapping agonist panels (PHE / AVP / mastoparan-7 are common across the series; the third "channel" probe varies); a future extraction of any of those papers can extend the integer mapping at row 5+ rather than re-introduce a parallel selector canonical. Distinct from `OPIOID_ID` / `ANTAGONIST_ID` (Mann 2022 opioid-binding panel) because the agonists here are not within a single receptor-binding family -- PHE, AVP, mastoparan-7, and Bay K8644 hit four mechanistically distinct contractile pathways (alpha1, V1, G-protein direct, L-type Ca channel), and the model uses agonist-specific (EC50, Emax) pairs rather than a shared binding-kinetic parameter set. Ratified canonically alongside the Grzesk 2016 extraction.
+
+### STUDY_TOMORROW (**canonical for TOMORROW (1199.30) IPF phase II study indicator**)
+- **Description:** 1 = subject enrolled in the TOMORROW phase II trial (NCT00514683; Richeldi 2011 NEJM), the BI 1199.30 protocol that evaluated nintedanib 50 mg QD, 50 mg BID, 100 mg BID, or 150 mg BID vs placebo over 52 weeks in idiopathic pulmonary fibrosis (IPF); 0 = subject from any other study in the Schmid 2017 nintedanib pooled-PK analysis (NSCLC phase II, LUME-Lung 1, or LUME-Lung 2). Used as a per-subject categorical indicator for the trial-effect covariate on nintedanib first-order absorption rate ka.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (non-TOMORROW; in Schmid 2017 the trial-effect reference for ka is the LUME-Lung 1 + LUME-Lung 2 phase III NSCLC pair).
+- **Source aliases:** derived per subject from the trial identifier.
+- **Example models:** `Schmid_2017_nintedanib.R` (combined with `STUDY_NSCLC_NIN_PH2` to drive the ka phase-II trial-group effect = 2.20x; also captures the ka2 BIBF 1202 metabolite phase-II trial-group effect = 0.756x).
+- **Notes:** Specific scope because the trial-effect grouping is paper-specific. Ratified canonically on 2026-06-27 alongside the Schmid 2017 nintedanib extraction.
+
+### STUDY_NSCLC_NIN_PH2 (**canonical for nintedanib NSCLC phase II (Reck 2011) study indicator**)
+- **Description:** 1 = subject enrolled in the nintedanib phase II NSCLC trial reported by Reck et al. 2011 (Annals of Oncology 22(6):1374-1381; BI 1199.4 protocol), which compared nintedanib 150 or 250 mg BID monotherapy in relapsed advanced NSCLC; 0 = subject from any other study in the Schmid 2017 pooled-PK analysis (TOMORROW IPF phase II, LUME-Lung 1, or LUME-Lung 2). Used as a per-subject categorical indicator for two distinct trial-effect covariates on F1 (relative bioavailability) and ka (absorption rate).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (non-NSCLC-phase-II; in Schmid 2017 the trial-effect reference for F1 is the LUME-Lung 1 + TOMORROW pair, and the reference for ka / ka2 is the LUME-Lung 1 + LUME-Lung 2 pair).
+- **Source aliases:** derived per subject from the trial identifier.
+- **Example models:** `Schmid_2017_nintedanib.R` (combined with `STUDY_LUMELUNG2` to drive the F1 trial-group effect = 1.30x; combined with `STUDY_TOMORROW` to drive the ka phase-II trial-group effect = 2.20x and the ka2 BIBF 1202 metabolite phase-II trial-group effect = 0.756x).
+- **Notes:** Specific scope. The Schmid 2017 paper's prose refers to this trial as "NSCLC phase II [23]"; the BI protocol code (1199.4) is not explicit in the paper but is the standard BIBF 1120 NSCLC phase II Reck 2011 study. Ratified canonically on 2026-06-27 alongside the Schmid 2017 nintedanib extraction.
+
+### STUDY_LUMELUNG1 (**canonical for LUME-Lung 1 (nintedanib + docetaxel NSCLC phase III) study indicator**)
+- **Description:** 1 = subject enrolled in LUME-Lung 1 (NCT00805194; Reck 2014 Lancet Oncology 15(2):143-155; BI 1199.13 protocol), the phase III trial of nintedanib 200 mg BID + docetaxel 75 mg/m^2 vs placebo + docetaxel in second-line advanced NSCLC; 0 = subject from any other study in the Schmid 2017 pooled-PK analysis (TOMORROW IPF phase II, NSCLC phase II, or LUME-Lung 2). Used as a per-subject categorical indicator alongside the other three Schmid 2017 study indicators.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (non-LUME-Lung-1).
+- **Source aliases:** derived per subject from the trial identifier.
+- **Example models:** `Schmid_2017_nintedanib.R` (acts as the reference cohort for the F1 trial-effect and as part of the ka / ka2 reference cohort).
+- **Notes:** Specific scope. Ratified canonically on 2026-06-27 alongside the Schmid 2017 nintedanib extraction.
+
+### STUDY_LUMELUNG2 (**canonical for LUME-Lung 2 (nintedanib + pemetrexed NSCLC phase III) study indicator**)
+- **Description:** 1 = subject enrolled in LUME-Lung 2 (NCT00806819; Hanna 2016 Lung Cancer 102:65-73; BI 1199.14 protocol), the phase III trial of nintedanib 200 mg BID + pemetrexed 500 mg/m^2 vs placebo + pemetrexed in second-line non-squamous NSCLC; 0 = subject from any other study in the Schmid 2017 pooled-PK analysis (TOMORROW IPF phase II, NSCLC phase II, or LUME-Lung 1). Used as a per-subject categorical indicator paired with `STUDY_NSCLC_NIN_PH2` for the F1 trial-group effect.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (non-LUME-Lung-2).
+- **Source aliases:** derived per subject from the trial identifier.
+- **Example models:** `Schmid_2017_nintedanib.R` (combined with `STUDY_NSCLC_NIN_PH2` to drive the F1 trial-group effect = 1.30x; acts as the reference cohort for the ka / ka2 trial-effect).
+- **Notes:** Specific scope. Ratified canonically on 2026-06-27 alongside the Schmid 2017 nintedanib extraction.
 
 ### DOSE_AGT_UG (**canonical for per-observation angiotensin challenge dose in ug of angiotensin II equivalents**)
 - **Description:** Per-observation intravenous-bolus dose of exogenous angiotensin administered as a pharmacologic probe during an angiotensin-challenge phase I protocol, expressed as ug of angiotensin II equivalents. For an angiotensin II bolus this is the literal injected mass; for an angiotensin I bolus, multiply by Q = 0.78 (molar-weight ratio between angiotensin I and angiotensin II) before populating this column. Each row in the event table carries the dose given immediately before the observed BP peak was sampled.
