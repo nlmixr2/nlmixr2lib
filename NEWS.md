@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Cao 2017 dihydroartemisinin (DHA) dynamic stress PD model ([doi:10.1128/AAC.00618-17](https://doi.org/10.1128/AAC.00618-17)) -- in vitro Plasmodium falciparum 3D7 across four parasite life-cycle stages (early ring, mid-ring, early trophozoite, late trophozoite); typical-value mechanistic PD with paper-specific `stress` and `parasites` compartments.
+* Add van Iersel 2018 posaconazole ([doi:10.1128/AAC.02465-17](https://doi.org/10.1128/AAC.02465-17)) -- adult healthy volunteers and patients at high risk for invasive fungal disease receiving the delayed-release solid oral tablet (ratifies new `FORM_POSA_AB` and `STUDY_POSA_PHASE3` covariate canonicals).
 * Add Gaohua 2012 pregnancy PBPK ([doi:10.1111/j.1365-2125.2012.04363.x](https://doi.org/10.1111/j.1365-2125.2012.04363.x)) -- healthy pregnant Caucasian women (14-compartment whole-body p-PBPK with GA-dependent maternal physiology, applied to caffeine [CYP1A2], metoprolol [CYP2D6], and midazolam [CYP3A4]); ratifies new canonical bare `skin` PBPK compartment.
 * Add Morris 2011 telapristone ([doi:10.1208/s12248-011-9304-7](https://doi.org/10.1208/s12248-011-9304-7)) -- adult women with single-dose telapristone-acetate phase I/II PK studies; ratifies new `cdb4453` metabolite suffix, `MIX_FAST_ELIM`, and `RENALIMP_MOD` covariate canonicals.
 * Add Padoin 1998 cephalexin ([doi:10.1128/aac.42.6.1463](https://doi.org/10.1128/aac.42.6.1463)) -- preclinical male Wistar rats with a cephalexin / quinapril oral coadministration DDI (ratifies new `CONMED_QPRL_ORAL` covariate canonical).
