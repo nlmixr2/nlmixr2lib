@@ -2778,6 +2778,12 @@ Antibiotic combination-PK drug suffixes (linezolid, vancomycin, meropenem long f
 - **Source aliases:** none.
 - **Example models:** `Standing_2012_oseltamivir.R`.
 
+### ppf (**canonical propofol active-metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Propofol (2,6-diisopropylphenol), the active sedative-hypnotic metabolite liberated from the water-soluble prodrug fospropofol (GPI 15715, AQUAVAN) via systemic alkaline-phosphatase hydrolysis. Used as the metabolite suffix on `central_ppf` / `peripheral1_ppf` compartments and `Cc_ppf` observation in joint parent-prodrug + active-drug popPK models.
+- **Source aliases:** `PR` (Gibiansky 2005 poster table headings: Vc_PR, K10_PR, K12_PR, K21_PR, K_GPI-PR).
+- **Example models:** `Gibiansky_2005_fospropofol.R`.
+
 ---
 
 ## PBPK organ sub-compartment suffixes (Ayyar 2024)
