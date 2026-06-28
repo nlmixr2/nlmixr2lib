@@ -734,6 +734,8 @@ navbar:
         href: articles/MedellinGaribay_2015_gentamicin.html
       - text: "Gentamicin (Mohamed 2012)"
         href: articles/Mohamed_2012_gentamicin.html
+      - text: "Gentamicin (Sampson 2014)"
+        href: articles/Sampson_2014_gentamicin.html
       - text: "Gentamicin (Staatz 2005)"
         href: articles/Staatz_2005_gentamicin_vancomycin.html
       - text: "Gentamicin (Thomson 2003)"
@@ -2706,6 +2708,8 @@ articles:
   - articles/Salem_2014_efavirenz
   - articles/Salinger_2013_magnesiumSulfate
   - articles/Sampson_2014_azithromycin
+  - articles/Sampson_2014_gentamicin
+  - articles/SanchezPena_2005_enoxaparin
   - articles/Sanchez_2011_efavirenz
   - articles/SanchezPena_2005_enoxaparin
   - articles/Sanghavi_2020_ipilimumab
