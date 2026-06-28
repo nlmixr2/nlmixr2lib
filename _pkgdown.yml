@@ -1400,6 +1400,8 @@ navbar:
         href: articles/Ayyoub_2016_pyronaridine.html
       - text: "Quinidine (Fattinger 1991)"
         href: articles/Fattinger_1991_quinidine.html
+      - text: "Quinidine (Westerhout 2013)"
+        href: articles/Westerhout_2013_quinidine.html
       - text: "Quinidine QT (Shin 2006)"
         href: articles/Shin_2006_quinidine_QT.html
       - text: "Quinidine rat (Syvanen 2012)"
@@ -2930,6 +2932,7 @@ articles:
   - articles/Weatherley_2018_fosdagrocorat
   - articles/Weber_1993_remikiren
   - articles/Weber_2015_fluticasone_inhaled
+  - articles/Westerhout_2013_quinidine
   - articles/Wi_2017_teicoplanin
   - articles/Wicha_2017_linezolid_meropenem_vancomycin
   - articles/Wicha_2018_rifampicin

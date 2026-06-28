@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Facius 2018 roflumilast ([doi:10.1007/s40262-018-0671-4](https://doi.org/10.1007/s40262-018-0671-4)) -- adults with severe COPD (integrated parent + N-oxide popPK on the OPTIMIZE + REACT phase III studies, with structural parameters fixed from Lahu 2010).
+* Add Westerhout 2013 quinidine ([doi:10.1007/s10928-013-9314-4](https://doi.org/10.1007/s10928-013-9314-4)) -- preclinical male Wistar WU rats with multi-probe microdialysis; ratifies new `brain_ecf` canonical and the `brain_csf_lv` / `brain_csf_tfv` / `brain_csf_cm` / `brain_csf_sas` CSF-subregion canonicals for mechanistic intra-brain SBPK models.
 * Add Gaohua 2012 pregnancy PBPK ([doi:10.1111/j.1365-2125.2012.04363.x](https://doi.org/10.1111/j.1365-2125.2012.04363.x)) -- healthy pregnant Caucasian women (14-compartment whole-body p-PBPK with GA-dependent maternal physiology, applied to caffeine [CYP1A2], metoprolol [CYP2D6], and midazolam [CYP3A4]); ratifies new canonical bare `skin` PBPK compartment.
 * Add Morris 2011 telapristone ([doi:10.1208/s12248-011-9304-7](https://doi.org/10.1208/s12248-011-9304-7)) -- adult women with single-dose telapristone-acetate phase I/II PK studies; ratifies new `cdb4453` metabolite suffix, `MIX_FAST_ELIM`, and `RENALIMP_MOD` covariate canonicals.
 * Add Padoin 1998 cephalexin ([doi:10.1128/aac.42.6.1463](https://doi.org/10.1128/aac.42.6.1463)) -- preclinical male Wistar rats with a cephalexin / quinapril oral coadministration DDI (ratifies new `CONMED_QPRL_ORAL` covariate canonical).
