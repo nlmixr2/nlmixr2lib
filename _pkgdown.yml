@@ -200,6 +200,10 @@ navbar:
         href: articles/Svensson_2017_bedaquiline.html
       - text: "Bedaquiline (Svensson 2018)"
         href: articles/Svensson_2018_bedaquiline.html
+      - text: "Bedaquiline lpvr (Svensson 2014)"
+        href: articles/Svensson_2014_bedaquiline_arv.html
+      - text: "Bedaquiline nvp (Svensson 2014)"
+        href: articles/Svensson_2014_bedaquiline_arv.html
       - text: "Belantamab (Papathanasiou 2025)"
         href: articles/Papathanasiou_2025_belantamab.html
       - text: "Belatacept (Shen 2013)"
