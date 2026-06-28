@@ -499,6 +499,20 @@ The MTP framework partitions the bacterial population into three states. The ori
 - **Source aliases:** none.
 - **Example models:** `Clewe_2015_rifampicin.R`, `Svensson_2016_rifampicin.R`.
 
+### enzyme_2b6 (**canonical CYP2B6 enzyme pool**)
+- **Type:** compartment
+- **Role:** Parallel CYP2B6 enzyme pool for autoinduction popPK models in which a drug induces CYP2B6 alongside other isoenzymes; the relative enzyme amount drives time-varying CL of the CYP2B6-mediated arm. Extension of the single-`enzyme` Wicha form to a CYP-isoenzyme-resolved pair.
+- **Source aliases:** none.
+- **Example models:** `Heathman_2024_efavirenz.R`.
+- **Notes:** Initial condition `enzyme_2b6(0) <- 1` (relative to baseline). Founding example: `Heathman_2024_efavirenz.R` (efavirenz autoinduction of both CYP2B6 and CYP2A6).
+
+### enzyme_2a6 (**canonical CYP2A6 enzyme pool**)
+- **Type:** compartment
+- **Role:** Parallel CYP2A6 enzyme pool for autoinduction popPK models in which a drug induces CYP2A6 alongside other isoenzymes; the relative enzyme amount drives time-varying CL of the CYP2A6-mediated arm.
+- **Source aliases:** none.
+- **Example models:** `Heathman_2024_efavirenz.R`.
+- **Notes:** Initial condition `enzyme_2a6(0) <- 1` (relative to baseline). Founding example: `Heathman_2024_efavirenz.R`.
+
 ---
 
 ## DAS28 disease-activity score
@@ -2085,6 +2099,20 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Role:** 7-desmethyl-agomelatine metabolite of agomelatine (Xie 2019).
 - **Source aliases:** none.
 - **Example models:** `Xie_2019_agomelatine.R`.
+
+### 8oh (**canonical 8-hydroxy-efavirenz suffix**)
+- **Type:** metabolite-suffix
+- **Role:** 8-hydroxy-efavirenz, the primary CYP2B6-formed metabolite of efavirenz; further metabolised by CYP2B6 and UGT2B7 (Heathman 2024).
+- **Source aliases:** none.
+- **Example models:** `Heathman_2024_efavirenz.R`.
+- **Notes:** Suffix starts with a digit; the convention check matches on `endsWith(name, "_<metab>")` rather than treating the metabolite name as an R identifier. Founding example: `Heathman_2024_efavirenz.R` (full 3-analyte EFV + 8-OH + 7-OH popPK with CYP2B6 / CYP2A6 enzyme-turnover autoinduction).
+
+### 7oh (**canonical 7-hydroxy-efavirenz suffix**)
+- **Type:** metabolite-suffix
+- **Role:** 7-hydroxy-efavirenz, the CYP2A6-formed metabolite of efavirenz (Heathman 2024).
+- **Source aliases:** none.
+- **Example models:** `Heathman_2024_efavirenz.R`.
+- **Notes:** Suffix starts with a digit; the convention check matches on `endsWith(name, "_<metab>")` rather than treating the metabolite name as an R identifier. Founding example: `Heathman_2024_efavirenz.R`.
 
 ### m1 (**canonical paper-named M1 metabolite suffix**)
 - **Type:** metabolite-suffix

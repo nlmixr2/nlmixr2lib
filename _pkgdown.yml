@@ -538,6 +538,8 @@ navbar:
         href: articles/Bienczak_2016_efavirenz.html
       - text: "Efavirenz (Dhoro 2015)"
         href: articles/Dhoro_2015_efavirenz.html
+      - text: "Efavirenz (Heathman 2024)"
+        href: articles/Heathman_2024_efavirenz.html
       - text: "Efavirenz (Hirt 2009)"
         href: articles/Hirt_2009_efavirenz.html
       - text: "Efavirenz (Luo 2016)"
@@ -2390,6 +2392,7 @@ articles:
   - articles/Hayashi_1998_epoetinBeta
   - articles/Hayashi_2007_omalizumab
   - articles/He_2012_lamotrigine
+  - articles/Heathman_2024_efavirenz
   - articles/Hempel_2003_daunorubicin_liposomal
   - articles/Hendriksen_2013_artesunate
   - articles/Henin_2009_capecitabine
