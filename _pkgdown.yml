@@ -420,6 +420,8 @@ navbar:
         href: articles/Garonzik_2016_daptomycin.html
       - text: "Daratumumab (Xu 2020)"
         href: articles/Xu_2020_daratumumab.html
+      - text: "Daratumumab qsstmdd (Li 2021)"
+        href: articles/Li_2021_daratumumab_qsstmdd.html
       - text: "Darbepoetin (Takama 2007)"
         href: articles/Takama_2007_darbepoetin.html
       - text: "Darbepoetin alfa (Agoram 2006)"
@@ -2513,6 +2515,7 @@ articles:
   - articles/Li_2018_PF04236921
   - articles/Li_2018_vancomycin
   - articles/Li_2019_abatacept
+  - articles/Li_2021_daratumumab_qsstmdd
   - articles/LiemMoolenaar_2011_scopolamine
   - articles/Liesenfeld_2006_dabigatran
   - articles/Liesenfeld_2013_dabigatran
