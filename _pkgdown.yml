@@ -780,6 +780,8 @@ navbar:
         href: articles/Schindler_2017_imatinib.html
       - text: "Imetelstat (GonzalezSales 2024)"
         href: articles/GonzalezSales_2024_imetelstat.html
+      - text: "Iminobiotin (Admiraal 2023)"
+        href: articles/Admiraal_2023_iminobiotin.html
       - text: "Imipenem (Couffignal 2014)"
         href: articles/Couffignal_2014_imipenem.html
       - text: "Imipenem (Lamoth 2009)"
@@ -1996,6 +1998,7 @@ articles:
   - articles/Abduljalil_2009_clarithromycin
   - articles/Abuhelwa_2015_itraconazole
   - articles/Adams_1998_zalcitabine
+  - articles/Admiraal_2023_iminobiotin
   - articles/Agerso_2004_desmopressin
   - articles/Agoram_2006_darbepoetin_alfa
   - articles/Aguiar_2021_ustekinumab
