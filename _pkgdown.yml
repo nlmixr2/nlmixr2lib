@@ -1858,6 +1858,10 @@ navbar:
         href: articles/Savic_2010_warfarin.html
       - text: "Warfarin (Xia 2024)"
         href: articles/Xia_2024_warfarin.html
+      - text: "Warfarin r (Hamberg 2007)"
+        href: articles/Hamberg_2007_warfarin_pkpd_pgx.html
+      - text: "Warfarin s (Hamberg 2007)"
+        href: articles/Hamberg_2007_warfarin_pkpd_pgx.html
       - text: "Warfarin vk2 (Zhou 2016)"
         href: articles/Zhou_2016_warfarin_vk2.html
       - text: "Zalcitabine (Adams 1998)"
@@ -2323,6 +2327,7 @@ articles:
   - articles/Gupta_2016_lenvatinib
   - articles/Gupta_2017_ixazomib
   - articles/Hall_2017_dapsone
+  - articles/Hamberg_2007_warfarin_pkpd_pgx
   - articles/Hamren_2008_tesaglitazar
   - articles/Hamuro_2017_DMD_6MWT
   - articles/Han_2010_voriconazole
