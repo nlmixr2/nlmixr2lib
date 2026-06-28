@@ -384,6 +384,8 @@ navbar:
         href: articles/Farrell_2013_conestatAlfa.html
       - text: "Corifollitropin alfa (Zandvliet 2016)"
         href: articles/Zandvliet_2016_corifollitropin_alfa.html
+      - text: "Cotadutide qsp (Bosch 2024)"
+        href: articles/Bosch_2024_cotadutide_qsp.html
       - text: "Crisantaspase (Sassen 2017)"
         href: articles/Sassen_2017_crisantaspase.html
       - text: "Crizotinib mouse (Yamazaki 2008)"
@@ -2119,14 +2121,12 @@ articles:
   - articles/Bizzotto_2016_glucose
   - articles/Bjornsson_2011_naproxcinod
   - articles/Blair_2004_raltitrexed
-  - articles/Blesch_2003_capecitabine
-  - articles/Boer-Perez_2026_piperacillin
   - articles/Boer_2015_cisplatin
   - articles/Boer-Perez_2026_piperacillin
   - articles/Bogason_2011_daunorubicin
   - articles/Bonate_2004_apomine
   - articles/Borghardt_2016_olodaterol
-  - articles/Bosch_2024_glp1ra_bodyweight
+  - articles/Bosch_2024_cotadutide_qsp
   - articles/Bouazza_2010_lamivudine
   - articles/Bouazza_2011_lamivudine
   - articles/Bouazza_2012_clindamycin
