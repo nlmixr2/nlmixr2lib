@@ -289,6 +289,17 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `vanWijk_2019_paracetamol.R`.
 - **Notes:** Specific scope because the meaning is bounded to zebrafish-larval-development PK studies. Distinct from canonical `AGE` (human age in years), `PNA` (postnatal age in months), `PAGE` (postmenstrual age in months), and `GA` (gestational age in weeks) -- none of those are appropriate for a non-mammalian organism whose developmental clock is anchored at fertilization rather than birth. Integer values 3, 4, 5 in the van Wijk 2019 dataset, but treated as a continuous covariate in the elimination-rate power form. Future zebrafish-PK or other non-mammalian-developmental-age models should reuse this canonical only when the covariate is indeed dpf-anchored; other developmental-time conventions (e.g., somite-stage, hpf, dph) would warrant separate canonicals. Ratified canonically on 2026-05-07.
 
+### ASPHYXIA (**canonical for perinatal asphyxia indicator (low 5-minute Apgar score)**)
+- **Description:** Binary indicator of perinatal asphyxia at birth defined by a 5-minute Apgar score < 5; `1` = 5-minute Apgar score was less than 5 (i.e., the neonate met the paper's perinatal-asphyxia criterion), `0` = 5-minute Apgar score was 5 or higher. Time-fixed per subject (an event at birth, not a time-varying physiologic state). Used by neonatal popPK models that report a structural-PK shift in subjects who experienced perinatal asphyxia relative to those who did not.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no perinatal asphyxia; 5-minute Apgar >= 5). Effect form in Grasela 1985 is a linear-deviation increment on the volume of distribution: `V = V_typical * (1 + e_asphyxia_vc * ASPHYXIA)` with `e_asphyxia_vc = 0.13` (+13% V in subjects with 5-minute Apgar < 5; p < 0.05).
+- **Source aliases:**
+  - None registered (Grasela 1985 abstract names the covariate `asphyxia` in prose; the abstract does not report the source NONMEM column label).
+- **Example models:** `Grasela_1985_phenobarbital.R` (Grasela & Donn 1985; preterm-neonate phenobarbital popPK; +13% on V when 5-minute Apgar < 5; no detected effect on CL).
+- **Notes:** Distinct from the continuous Apgar score itself (which has not been registered as a canonical because no model in nlmixr2lib uses the continuous form as of this entry). The < 5 cutoff at 5 minutes is the perinatal-asphyxia convention Grasela 1985 used; future papers that adopt a different Apgar cutoff (e.g., < 7 at 1 minute, or a different time point) should register a separate canonical (e.g., `APGAR1_LT7`) rather than reusing `ASPHYXIA` with relaxed semantics. Ratified canonically alongside the Grasela 1985 phenobarbital extraction.
+
 ## Nutritional status
 
 ### MAL_NOURISH (**canonical for malnutrition status indicator**)

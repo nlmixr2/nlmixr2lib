@@ -1276,26 +1276,8 @@ navbar:
         href: articles/Garg_2014_pertuzumab.html
       - text: "Pertuzumab (Wang 2021)"
         href: articles/Wang_2021_pertuzumab.html
-      - text: "PF 06939999 (Guo 2022)"
-        href: articles/Guo_2022_PF_06939999.html
-      - text: "PF00821385 dog (Langdon 2010)"
-        href: articles/Langdon_2010_PF00821385.html
-      - text: "PF00821385 human (Langdon 2010)"
-        href: articles/Langdon_2010_PF00821385.html
-      - text: "PF04236921 (Li 2018)"
-        href: articles/Li_2018_PF04236921.html
-      - text: "PF04455242 human (Chang 2011)"
-        href: articles/Chang_2011_PF04455242_prolactin.html
-      - text: "PF04455242 rat (Chang 2011)"
-        href: articles/Chang_2011_PF04455242_prolactin.html
-      - text: "PF04878691 (Jones 2011)"
-        href: articles/Jones_2011_PF04878691_HCV.html
-      - text: "PF04878691 lymphocyte (Jones 2011)"
-        href: articles/Jones_2011_PF04878691_HCV.html
-      - text: "PF04878691 oas (Jones 2011)"
-        href: articles/Jones_2011_PF04878691_HCV.html
-      - text: "PF04878691 viralLoad (Jones 2011)"
-        href: articles/Jones_2011_PF04878691_HCV.html
+      - text: "Phenobarbital (Grasela 1985)"
+        href: articles/Grasela_1985_phenobarbital.html
       - text: "Phenytoin (Hennig 2015)"
         href: articles/Hennig_2015_phenytoin.html
       - text: "Phenytoin (Tanaka 2012)"
@@ -2315,6 +2297,7 @@ articles:
   - articles/GonzalezSales_2015_testosterone
   - articles/GonzalezSales_2024_imetelstat
   - articles/Goti_2018_vancomycin
+  - articles/Grasela_1985_phenobarbital
   - articles/Green_2003_enoxaparin
   - articles/Green_2005_enoxaparin
   - articles/Grimm_2023
