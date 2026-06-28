@@ -6972,6 +6972,17 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Example models:** `Bienczak_2025_ligelizumab.R` (Table S6: study C2201 on CL/F = 0.176, log-additive; `cl *= exp(0.176)` for C2201 subjects).
 - **Notes:** Specific scope because the contrast is tied to the Novartis ligelizumab CSU development program. Subject-level / time-fixed; set once from the trial identifier on each subject record. The C2201 effect was retained in the final model because the residual unexplained CL/F differed between C2201 and the other studies after accounting for body weight, IgE, ADA, and disease-state covariates.
 
+### STUDY_HARROLD_PEG (**canonical for Harrold 2020 pegfilgrastim-vs-filgrastim pivotal NHP study indicator**)
+- **Description:** 1 = subject enrolled in the pegfilgrastim pivotal NHP study (Harrold 2020 reference 13; pegfilgrastim 300 ug/kg SC on days 1 and 8); 0 = subject enrolled in the filgrastim pivotal NHP study (Harrold 2020 reference 14; filgrastim 10 ug/kg QD SC starting day 1). Used by the Harrold 2020 OS time-to-event sub-model to select between the two study-specific parameter sets in Table III (lambda_ANC, lambda_BC, k_e0); the ANC response sub-model (Table II) is fit on the combined placebo cohorts and does not depend on this indicator.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (filgrastim pivotal NHP study).
+- **Source aliases:**
+  - `STUDY` -- the paper-text label for the binary study identifier; derived per subject from the trial-of-origin column in the source dataset.
+- **Example models:** `Harrold_2020_radiation_neutropenia.R` (selects between the two OS parameter sets in Table III: lambda_ANC -2.15 vs -0.229, lambda_BC -0.347 vs 0.300, k_e0 0.668 vs 0.156 1/day).
+- **Notes:** Specific scope; the indicator is tied to the two Amgen NHP pivotal studies used by Harrold 2020 (filgrastim reference 14 and pegfilgrastim reference 13) and is required because the paper documents an unexplained between-study OS difference that no observed covariate could resolve. Subject-level (time-fixed). Follows the auto-approved `STUDY_<id>` canonical family.
+
 ### STUDY_LBSL (**canonical for early-phase belimumab LBSL01 / LBSL02 study indicator**)
 - **Description:** 1 = subject enrolled in study LBSL01 (NCT00657007) or LBSL02 (NCT00071487) -- the two early-phase belimumab studies that used a different ELISA-based bioanalytical assay; 0 = any other belimumab study in the Zhou 2021 pooled analysis. Used to switch CL and V1 magnitudes per study group (effectively an assay / early-development PK adjustment).
 - **Units:** (binary)
