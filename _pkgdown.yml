@@ -300,6 +300,8 @@ navbar:
         href: articles/Capparelli_2005_cefepime.html
       - text: "Cefepime (Jonckheere 2019)"
         href: articles/Jonckheere_2019_cefepime.html
+      - text: "Cefepime (Shoji 2016)"
+        href: articles/Shoji_2016_cefepime.html
       - text: "Cefotaxime (Ahsman 2010)"
         href: articles/Ahsman_2010_cefotaxime.html
       - text: "Cefotaxime (Leroux 2016)"
@@ -2900,6 +2902,7 @@ articles:
   - articles/Shin_2014_sevoflurane
   - articles/Shin_2017_levetiracetam
   - articles/Shoji_2011_pregabalin
+  - articles/Shoji_2016_cefepime
   - articles/Shoji_2017_fosdagrocorat_oc
   - articles/Shoji_2017_fosdagrocorat_p1np
   - articles/Sidhu_1998_artemisinin
