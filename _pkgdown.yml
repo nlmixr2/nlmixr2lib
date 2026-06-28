@@ -1090,8 +1090,6 @@ navbar:
         href: articles/Clinckers_2008_MHD_rat.html
       - text: "MI 219 (Zou 2012)"
         href: articles/Zou_2012_MI_219.html
-      - text: "Micafungin (Leroux 2018)"
-        href: articles/Leroux_2018_fluconazole_micafungin.html
       - text: "Micafungin (Martial 2017)"
         href: articles/Martial_2017_micafungin.html
       - text: "Midazolam (Brill 2014)"
@@ -1336,6 +1334,10 @@ navbar:
         href: articles/Muller_2007_penicillin_G.html
       - text: "Penicillin G (Padari 2018)"
         href: articles/Padari_2018_penicillin_G.html
+      - text: "PenicillinG cattle (Li 2014)"
+        href: articles/Li_2014_penicillinG.html
+      - text: "PenicillinG swine (Li 2014)"
+        href: articles/Li_2014_penicillinG.html
       - text: "Pertuzumab (Garg 2014)"
         href: articles/Garg_2014_pertuzumab.html
       - text: "Pertuzumab (Wang 2021)"
@@ -2640,6 +2642,7 @@ articles:
   - articles/Li_2010_taranabant
   - articles/Li_2012_clozapine
   - articles/Li_2012_dexamethasone_rat
+  - articles/Li_2014_penicillinG
   - articles/Li_2015_taspoglutide_mbma
   - articles/Li_2017_brentuximab
   - articles/Li_2017_CC292
