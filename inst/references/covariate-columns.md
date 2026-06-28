@@ -5766,6 +5766,17 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Example models:** `Baron_2016_empagliflozin.R` (power-form effects centred at 2 years on BFPG: `(T_DIAG_DIAB / 2)^0.0512`, on Gmax: `(T_DIAG_DIAB / 2)^0.0117`, on kHbA1cout: `(T_DIAG_DIAB / 2)^-0.577`).
 - **Notes:** Disease-progression marker complementary to the binary `DIS_DIAB` indicator -- `DIS_DIAB` records the comorbidity at baseline (1/0) while `T_DIAG_DIAB` quantifies how long that diabetes has been present. The covariate is a time-since-event under the canonical `T_<event>` family. Distinct from `T_NUT_SUPP` (time on nutritional supplementation) and `T_POST_ECMO` (time after ECMO decannulation) which are different `T_<event>` siblings. For a baseline-only continuous power-form effect, a 0-year subject (newly diagnosed at study entry) yields `(0/2)^theta = 0` -- supply at least a small floor value (e.g. 0.1 year) for newly-diagnosed subjects in simulation; the floor convention should be documented in the per-model `covariateData[[T_DIAG_DIAB]]$notes`. Ratified canonically on 2026-06-24 alongside the Baron 2016 empagliflozin extraction.
 
+### BL_PN_GR1 (**canonical for active baseline grade 1 peripheral neuropathy indicator**)
+- **Description:** 1 = subject had active grade 1 peripheral neuropathy (CTCAE 4.0 grade 1: asymptomatic; clinical or diagnostic observations only; intervention not indicated) at study entry; 0 = no active PN at baseline. Time-fixed at study entry. The covariate captures pre-existing low-grade PN typically arising from prior antimicrotubule or platinum chemotherapy in heavily pretreated oncology cohorts and is used to assess whether baseline PN sensitizes patients to subsequent antimicrotubule-induced PN.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (no active PN at baseline).
+- **Source aliases:**
+  - "active grade 1 PN at study entry (yes/no)" (Lu 2017 narrative; coded as a binary 0/1 in the source NONMEM dataset) -- used in `Lu_2017_polatuzumab_neuropathy.R`.
+- **Example models:** `Lu_2017_polatuzumab_neuropathy.R` (multiplicative effect on the grade >= 2 peripheral neuropathy hazard via `exp(theta_baselinePN * BL_PN_GR1)` with `theta_baselinePN = -0.222`, SE 0.324 -- not detectable given the large SE; the paper reports a sensitivity analysis in which this indicator was replaced by a broader "history of prior PN" indicator with similarly inconclusive results).
+- **Notes:** Specific to oncology cohorts where grade 1 PN is permitted at study entry (per the source paper's eligibility criteria). Distinct from `PREV_AE_SCORE` (the time-varying ordinal Markov-state AE-score covariate from Girard 2012 pimasertib, which conditions a current-observation outcome on the previous observation's grade); `BL_PN_GR1` is a time-fixed baseline indicator that does not update during the analysis window. Distinct from `DIS_DPN` (painful diabetic peripheral polyneuropathy disease-state indicator from chronic-pain cohorts); `DIS_DPN` flags a diabetes-related primary diagnosis used as a stratification covariate, while `BL_PN_GR1` flags a pre-existing low-grade adverse-event status from any prior cause in an oncology trial. When a future paper uses a different baseline-PN grade threshold (e.g., grade <= 2 permitted) or a different AE category, register a parallel canonical (e.g., `BL_PN_GR2`, `BL_FATIGUE_GR1`) rather than overloading this one. Ratified canonically on 2026-06-24 alongside the Lu 2017 polatuzumab vedotin TTE extraction.
+
 ## Hypercholesterolemia biomarkers
 
 ### PCSK9 (**canonical for baseline unbound serum PCSK9 concentration**)
@@ -7325,6 +7336,16 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Example models:** `Garrett_2014_axitinib.R` (linear-proportional effect on bioavailability per Garrett 2014 Table 3 final estimates: `f = exp(lfdepot) * (1 + e_fast_f * (1 - FED)) * (1 + e_xli_f * FORM_AXI_XLI)` with `e_xli_f = -0.150` (15% reduction in F for Form XLI relative to Form IV in the fed state); Form XLI has no retained effect on ka, CL, Vc, Q, or Vp).
 - **Notes:** Specific scope because the Form XLI vs Form IV crystal polymorph contrast is tied to the axitinib drug-product-development comparison in Garrett 2014. Crystal polymorph difference (same dosage form, same drug substance, different crystal lattice with different solubility / dissolution behaviour) rather than a dosage-form difference (tablet vs capsule vs solution) -- distinct from `FORM_TABLET`, `FORM_CAPSULE`, `FORM_SOLUTION`, and the rest of the dosage-form `FORM_*` family. Mirrors the existing `FORM_SAR_DP2` (sarilumab drug-product 2), `FORM_ISA_P2F2` (isatuximab P2F2 drug material), `FORM_LINAG_TAB1` (linagliptin tablet 1), `FORM_VISMO_PHASEI` (vismodegib Phase I capsule), `FORM_ITR_SUBA` (SUBA-itraconazole vs Sporanox capsule), `FORM_TAC_IR` (tacrolimus IR vs prolonged release), `FORM_DOX_DORYX_MPC` (Doryx MPC tablet), and `FORM_THEO_APNECUT` (theophylline Apnecut) entries under the `FORM_*` family of drug-specific drug-product-version / polymorph indicators. Set to 0 to simulate the Form IV early-phase reference; set to 1 to simulate the Form XLI marketed product (the routine clinical-use default). Ratified canonically on 2026-06-16 alongside the Garrett 2014 axitinib extraction.
 
+### STUDY_B1831090 (**canonical for Abrantes 2017 moroctocog study B1831090 cohort indicator**)
+- **Description:** 1 = subject enrolled in study B1831090 (phase I bioequivalence study of Refacto; n = 18, severe and moderately severe hemophilia A, rich sampling, CSA assay) of the Abrantes 2017 pooled population PK analysis; 0 = any other study in the 13-study pool (B1831003, B1831004, B1831015, B1831053, B1831054, B1831061, B1831066, B1831067, B1831068, B1831070, B1831071, B1831077). Used to switch the typical CL magnitude downward for the B1831090 cohort while keeping the rest of the pooled-population PK parameters applicable to the remaining 12 studies.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (any non-B1831090 study in the Abrantes 2017 pool).
+- **Source aliases:**
+  - `STUD` -- used in `Abrantes_2017_moroctocog.R` (Abrantes 2017 Table 2 footnote b: study indicator on CL).
+- **Example models:** `Abrantes_2017_moroctocog.R` (multiplicative effect on CL: `(1 - 0.347 * STUDY_B1831090)` so B1831090 subjects have ~34.7% lower CL than the other 12 studies; Abrantes 2017 Table 2 also reports a 95% CI of -40.7% to -24.2%).
+- **Notes:** Specific scope because the contrast is tied to the Abrantes 2017 pooled-analysis design. Subject-level / time-fixed; set once from the trial identifier on each subject record. Inclusion in the model allows the typical PK parameters to describe the remaining 12 studies, with B1831090 captured by the indicator (Abrantes 2017 Discussion). Ratified canonically on 2026-06-21 alongside the Abrantes 2017 moroctocog extraction.
 
 ## Occasion / period (IOV)
 
@@ -7819,3 +7840,25 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
   - `INSDT` -- "Insulin Dose Type" abbreviation used in Johnston 2019 Table 2 (the two-level categorical column decomposed into the binary CSII indicator with MDI as the reference category).
 - **Example models:** `Johnston_2019_empagliflozin.R` (M-EASE-2 covariate multiplier on baseline HbA1c, Emax, and placebo rate; CSII shifts placebo drift upward by a factor of 1.47 vs MDI -- a moderate effect on the placebo-adjusted HbA1c change).
 - **Notes:** Specific scope because the CSII-vs-MDI contrast and reference category are study-specific. Follows the `<COLUMN>_<LEVEL>` decomposition pattern used for `REGI_BID` / `TUMTP_GLIO`. A future paper that retains the same INSDT covariate but with more than two levels (e.g., CSII vs MDI vs continuous glucose monitoring + open-loop algorithm) would register sibling canonicals (e.g., `INSDT_CGM`) rather than overload this entry. Ratified canonically alongside the Johnston 2019 M-EASE-2 extraction.
+
+### LSCI (**canonical for amplitude of an inverse-Bateman lifestyle-change / placebo effect on energy intake in body-composition modelling**)
+- **Description:** Per-subject (or per-study-arm) amplitude of the inverse-Bateman lifestyle-change (LSC) effect on energy intake (EI) in body-composition models. Drives the magnitude of the placebo / dietary-restriction-induced fractional reduction in EI; combined with onset rate Kdiet and reduction rate Kred to form the LSC effect `LSCeff(t) = 1 - LSCI * Kdiet * (exp(-Kdiet * t) - exp(-Kred * t)) / (Kred - Kdiet)` applied multiplicatively to EI. Subjects in the same study arm typically share the same LSCI value; the column is time-fixed at study entry (a single LSCI per subject per arm).
+- **Units:** fraction (0..1; can be negative for arms that report a paradoxical increase in EI)
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** none -- LSCI = 0 corresponds to no lifestyle effect (the model collapses to pure body composition + drug effects).
+- **Source aliases:**
+  - `LSCI` -- used directly in `Bosch_2024_glp1ra_bodyweight.R` (Bosch 2024 supplement S10 THETA7..THETA16 are per-study fitted LSCI values).
+- **Example models:** `Bosch_2024_glp1ra_bodyweight.R` (introduces the canonical; per-study fitted values 0..0.548 across diet and GLP-1RA studies, with -0.0288 reported for the Blundell 2017 arm).
+- **Notes:** Specific scope because the column's semantics are tied to body-composition / energy-balance modelling. Future extractions that combine the Hall body composition framework with other drug classes or other lifestyle-intervention protocols may reuse this canonical; document the per-paper values in `covariateData[[LSCI]]$notes` so users can match the source-paper LSCI to the simulated arm. Ratified canonically on 2026-06-22 alongside the Bosch 2024 extraction.
+
+### WM_IBT (**canonical for weight-management + intensive-behavioural-treatment intervention indicator**)
+- **Description:** Binary indicator that the subject is enrolled in a study arm with weight management and intensive behavioural treatment (e.g., the STEP-trial-family lifestyle-intervention protocols described in Wadden 2021 / Garvey 2022 / Rubino 2022). Used in QSP body-composition models to gate a body-weight-dependent activity effect on the exercise component of physical activity energy expenditure. Subjects in arms without an explicit weight-management + IBT protocol carry WM_IBT = 0.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (no weight management + intensive behavioural treatment).
+- **Source aliases:**
+  - `IFLAG` -- used in `Bosch_2024_glp1ra_bodyweight.R` (Bosch 2024 supplement S10 IFLAG > 0 gates the activity effect).
+- **Example models:** `Bosch_2024_glp1ra_bodyweight.R` (introduces the canonical; gates the body-weight-dependent activity effect on PAE for STEP-family arms in the Bosch 2024 dataset).
+- **Notes:** Specific scope because the canonical name is tied to body-composition QSP modelling where the activity effect is empirically estimated for IBT-instrumented arms. Future extractions of similar lifestyle-intervention-aware body-composition or weight-loss-trajectory models may reuse this canonical; mark the per-paper IBT-intensity definition in `covariateData[[WM_IBT]]$notes` so users can distinguish "weekly clinic counselling + diary review" intensity (STEP 3) from "minimal-counselling -500 kcal/d" intensity (STEP 5 / STEP 8). Ratified canonically on 2026-06-22 alongside the Bosch 2024 extraction.
