@@ -420,6 +420,8 @@ navbar:
         href: articles/Diao_2016_daclizumab_cd56bright.html
       - text: "Daclizumab treg (Diao 2016)"
         href: articles/Diao_2016_daclizumab_treg.html
+      - text: "Dactinomycin (Mondick 2006)"
+        href: articles/Mondick_2006_dactinomycin.html
       - text: "Dalteparin (Schoemaker 1996)"
         href: articles/Schoemaker_1996_low_molecular_weight_heparin_modeling.html
       - text: "Dapagliflozin (vanderWalt 2013)"
@@ -2650,6 +2652,7 @@ articles:
   - articles/Mohamed_2016_colistin_meropenem
   - articles/Molto_2016_atazanavir_ritonavir
   - articles/Momper_2016_fluconazole
+  - articles/Mondick_2006_dactinomycin
   - articles/Moore_1999_lamivudine
   - articles/Moore_2016_vancomycin
   - articles/Morris_2011_artesunate
