@@ -186,6 +186,10 @@ navbar:
         href: articles/Zheng_2014_azithromycin.html
       - text: "Azithromycin (Zheng 2018)"
         href: articles/Zheng_2018_azithromycin.html
+      - text: "BAY81 8973 (Garmann 2017)"
+        href: articles/Garmann_2017_BAY81_8973.html
+      - text: "BAY94 9027 (Solms 2020)"
+        href: articles/Solms_2020_BAY94_9027.html
       - text: "Bapineuzumab (Hu 2014)"
         href: articles/Hu_2014_bapineuzumab.html
       - text: "BAY81 8973 (Garmann 2017)"
@@ -2811,7 +2815,7 @@ articles:
   - articles/Smythe_2012_rifampicin
   - articles/Smythe_2013_gatifloxacin
   - articles/Soehoel_2022_tralokinumab
-  - articles/Solana_2014_omeprazole
+  - articles/Solms_2020_BAY94_9027
   - articles/Soto_2014_ampicillin_sulbactam
   - articles/Soy_2015_benznidazole
   - articles/Staatz_2005_gentamicin_vancomycin
