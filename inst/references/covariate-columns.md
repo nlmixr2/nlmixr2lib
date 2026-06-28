@@ -7077,6 +7077,16 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Example models:** `Takahashi_2023_abatacept.R` (multiplicative `Ratio` factors on CL = 0.91 and on Vc = 1.32 vs the RA/JIA reference; values from Takahashi 2023 Supplemental Table 4).
 - **Notes:** Pairs with `STUDY_ABA2_HLA78`. At most one of the two indicators is 1 per subject; both 0 reproduces the RA/JIA reference. Scope: specific.
 
+### STUDY_d2eGFP (**canonical for Frohlich 2018 multi-experiment NLME reporter-construct cohort indicator**)
+- **Description:** 1 = cell transfected with destabilized eGFP (d2eGFP, mRNA construct pVAXA120-d2EGFP, ~6.6 h protein half-life via C-terminal PEST sequence); 0 = cell transfected with eGFP (mRNA construct pVAXA120-eGFP, ~22.8 h protein half-life). Cohort indicator in the Frohlich 2018 multi-experiment NLME single-cell translation-kinetics analysis used to select between the two reporter-construct cohorts (Experiment 1 eGFP vs Experiment 2 d2eGFP). All structural and ribosomal-binding parameters (mRNA degradation, ribosome-mRNA binding rate x m0, ribosome catalytic rate, R0/m0, fluorescence offset, transfection-onset time, scale x m0) are shared between cohorts; only the protein degradation rate (`gamma_eGFP` for STUDY_d2eGFP = 0 vs `gamma_d2eGFP` for STUDY_d2eGFP = 1) and its IIV variance differ.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (eGFP cohort -- the stable reporter; this is the cohort with the slower protein degradation rate ~0.030 1/h and the larger between-cell IIV variance on it).
+- **Source aliases:** derived per cell from the experiment identifier in the source dataset (`Experiment 1` / eGFP -> 0, `Experiment 2` / d2eGFP -> 1; see `code.zip` project/models/experiments_transfection_ribo.m in the Frohlich 2018 Zenodo deposit doi:10.5281/zenodo.1228899).
+- **Example models:** `Frohlich_2018_mRNA_translation.R`.
+- **Notes:** Specific scope because the cohort is tied to the Frohlich 2018 in-vitro reporter-mRNA assay (eGFP vs d2eGFP). Cell-level (time-fixed) indicator; set once per cell from the transfection-construct identifier. Conceptually analogous to a single-study two-arm cohort indicator (e.g. `STUDY_FARLETUZUMAB_PHASE2`, `STUDY_NIPOCALIMAB_PHASE1`), but the contrast is between two reporter mRNA constructs measured under the same physical / imaging protocol rather than between trial phases.
+
 ### STUDY_RIV201 (**canonical for Tammara 2017 rivipansel phase II SCD study indicator**)
 - **Description:** 1 = subject enrolled in the phase II rivipansel study (NCT01119833; "study 201" in the Tammara 2017 integrated population PK analysis; Telen 2015 Blood 125:2656-2664 reports the trial results); 0 = healthy adult volunteers from the three rivipansel phase I studies (studies 101, 102, and 103) pooled into the integrated dataset. Used both as an additive shift on typical clearance (interpreted by the authors as the SCD-hyperfiltration component, ~23%) and to switch the additive / proportional residual-error magnitudes between the two cohorts (Table 1).
 - **Units:** (binary)
