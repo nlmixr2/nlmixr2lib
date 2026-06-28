@@ -1666,6 +1666,17 @@ All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODA
 - **Example models:** `FiedlerKelly_2020_fremanezumab_em.R`, `FiedlerKelly_2020_fremanezumab_cm.R`, `Schoemaker_2018_levetiracetam.R` (DDMODEL00000239; LEV plasma concentration in mg/L), `Svensson_2017_bedaquiline.R` (weekly-average bedaquiline concentration in mg/L driving an Emax effect on the mycobacterial-load half-life; EC50 = 1.42 mg/L, Emax fixed at -100%; placebo subjects use CAV = 0), `Li_2015_taspoglutide_mbma.R` (MBMA study-arm-level Cavg of taspoglutide between weeks 2 and 4 of QW dosing, in pmol/L; 0 / 59.85 / 119.7 pmol/L for placebo / 10 mg / 20 mg arms; drives an additive Emax response on body-weight change), `Lacy_2018_cabozantinib_tumor.R` (individual predicted daily-average cabozantinib plasma concentration in ng/mL from the upstream Lacy 2018 popPK; drives a saturable Cavg/(EC50 + Cavg) Hill-1 term on a time-attenuating decay rate of tumor SOD; EC50 = 251 ng/mL; per-cohort steady-state Cavg 375 / 750 / 1125 ng/mL for 20 / 40 / 60 mg/day starting doses; dose-hold periods set CAV = 0), `Lacy_2018_cabozantinib_dose_modification.R` (same upstream-popPK-derived Cavg in ng/mL; drives a log-linear effect with coefficient theta_drug = 0.000807 per ng/mL on the active-dose log hazard for repeated dose modifications; dose-hold periods set CAV = 0 and switch to the dose-hold baseline log hazard).
 - **Notes:** Specific scope because the value is intrinsically tied to the modelled drug -- there is no shared meaning across drugs or studies. Each model's `covariateData[[CAV]]$notes` should state how the Cav values are derived (e.g., empirical-Bayes from a referenced population PK model) and that the column is set to 0 for placebo periods. The averaging window is also model-specific (per-dosing-interval Cav = AUC_tau / tau in Schoemaker 2018 / Fiedler-Kelly 2020, but weekly-rolling-mean Cav_W in Svensson 2017 -- where the bedaquiline once-daily loading + thrice-weekly maintenance schedule makes "per dosing interval" ambiguous; weeks 2-4 Cavg in Li 2015 carried forward for the entire 8-52 week follow-up); document the averaging convention in each model's `covariateData[[CAV]]$notes`. MBMA usage (Li 2015) treats CAV as a study-arm-level (not individual-level) exposure metric -- the meaning is the same (period-averaged plasma concentration of the modelled drug) so a separate canonical is not warranted.
 
+### DOSE_EMPA_MGD (**canonical for daily empagliflozin dose**)
+- **Description:** Patient's own once-daily empagliflozin dose, in mg/day. Per-dose-record covariate; constant within an inter-dose interval and updated when the prescriber alters the daily dose. Set to 0 mg/day for placebo arms.
+- **Units:** mg/day
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters into the steady-state AUC computation `AUCss [nM*h] = DOSE_EMPA_MGD * 1e6 / 450.91 / cl` that drives the Emax stimulation of FPG elimination in the indirect-response PD model.
+- **Source aliases:**
+  - `DOSE` -- used in `Baron_2016_empagliflozin.R` (Baron 2016 Methods; studied doses 1, 5, 10, 25, 50 mg QD per Table S2 with 10 and 25 mg dominating; 1129 / 40.9% and 1269 / 46.0% of patients respectively).
+- **Example models:** `Baron_2016_empagliflozin.R` (drives AUCss feeding Gmax * AUCss / (AUC50 + AUCss) -- AUC50 = 703 nM*h).
+- **Notes:** Follows the `DOSE_<DRUG>_<UNITS>` auto-approve family (e.g., `DOSE_PHT_MGKGD` for phenytoin). Distinct from `DOSE_PHT_MGKGD` (per-kg phenytoin daily-dose) -- empagliflozin is dosed in flat mg/day (no per-kg adjustment in label). Future once-daily SGLT2-inhibitor extractions should register sibling canonicals (e.g., `DOSE_DAPA_MGD` for dapagliflozin, `DOSE_CANA_MGD` for canagliflozin) rather than reuse this name. Ratified canonically on 2026-06-24 alongside the Baron 2016 empagliflozin extraction.
+
 ### DOSE_PHT_MGKGD (**canonical for daily phenytoin dose per kg body weight**)
 - **Description:** Patient's own total daily dose of phenytoin (mg) divided by current body weight (kg), expressed as mg/kg/d. Per-dose-record covariate; constant within an inter-dose interval and updated when the prescriber alters the daily dose.
 - **Units:** mg/kg/d
@@ -4610,6 +4621,28 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Example models:** `Rosario_2015_vedolizumab.R` (power-form on CLL: `CLL * 1.04^CONMED_MP`).
 - **Notes:** Second thiopurine immunomodulator used in IBD maintenance; typically mutually exclusive with `CONMED_AZA` for a given subject.
 
+### CONMED_SULFONYLUREA (**canonical for concomitant sulfonylurea (class) co-administration indicator**)
+- **Description:** 1 = subject is on a concomitant sulfonylurea (class indicator pooling glyburide / glibenclamide / glipizide / glimepiride / gliclazide / tolbutamide / glipizide-ER / chlorpropamide and other oral insulin-secretagogue sulfonylureas), 0 = not. Time-fixed in source datasets where the sulfonylurea is a study-design background-therapy arm (e.g., the Baron 2016 metformin + sulfonylurea cohort); permits a time-varying form when a study tracks on / off sulfonylurea transitions.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no concomitant sulfonylurea).
+- **Source aliases:**
+  - `SU` -- used in `Baron_2016_empagliflozin.R` (Baron 2016 Methods and Table S2 'background sulfonylurea' cohort; multiplicative effects on the model-predicted baseline FPG and on Gmax in Table S3).
+- **Example models:** `Baron_2016_empagliflozin.R` (multiplicative effect on BFPG: `bfpg_su^CONMED_SULFONYLUREA = 1.01^...`; on Gmax: `gmax_su^CONMED_SULFONYLUREA = 1.27^...` -- sulfonylurea co-treatment increases empagliflozin's maximal FPG-lowering effect, attributed by the authors to possible improvement in beta-cell function).
+- **Notes:** Class-level pooling indicator analogous to `CONMED_AZOLE`, `CONMED_NSAID`, `CONMED_STATIN`, `CONMED_AED`, etc. Future T2DM popPK / PD extractions that need to distinguish individual sulfonylureas (e.g., for a DDI sub-analysis on a CYP2C9-metabolized member) should register a per-INN sibling canonical (`CONMED_GLYBURIDE`, `CONMED_GLIPIZIDE`, ...) and keep `CONMED_SULFONYLUREA` for the class-pooled summary. Ratified canonically on 2026-06-24 alongside the Baron 2016 empagliflozin extraction.
+
+### CONMED_PIOGLITAZONE (**canonical for concomitant pioglitazone co-administration indicator**)
+- **Description:** 1 = subject is on concomitant pioglitazone (thiazolidinedione (TZD) class oral antidiabetic), 0 = not. Time-fixed in source datasets where pioglitazone is a study-design background-therapy arm; permits a time-varying form when a study tracks on / off transitions.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no concomitant pioglitazone).
+- **Source aliases:**
+  - `PIO` -- used in `Baron_2016_empagliflozin.R` (Baron 2016 Methods and Study 7 background pioglitazone cohort; multiplicative effects on the model-predicted baseline FPG and on Gmax in Table S3).
+- **Example models:** `Baron_2016_empagliflozin.R` (multiplicative effect on BFPG: `bfpg_pio^CONMED_PIOGLITAZONE = 0.999^...`; on Gmax: `gmax_pio^CONMED_PIOGLITAZONE = 1.02^...` -- both effects are not statistically significant in the source analysis but are retained per the full-covariate-modelling approach).
+- **Notes:** Follows the per-INN `CONMED_<INN>` pattern (CONMED_METFORMIN, CONMED_LPV, CONMED_ATAZANAVIR, CONMED_RIF, CONMED_PROBENECID, etc.). Distinct from a putative future `CONMED_TZD` (class indicator) -- the thiazolidinedione class additionally contains rosiglitazone (largely withdrawn) and lobeglitazone (Korean market); pool a TZD class indicator only if a future paper aggregates them. Ratified canonically on 2026-06-24 alongside the Baron 2016 empagliflozin extraction.
+
 ### CONMED_MTX (**canonical for concomitant methotrexate**)
 - **Description:** 1 = on concomitant methotrexate, 0 = not.
 - **Units:** (binary)
@@ -5602,16 +5635,16 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Example models:** `vanHasselt_2015_eribulin.R` (van Hasselt 2015 Eq. 4 power covariate on drug PSA inhibition rate KD0: `kd0 = exp(lkd0 + etalkd0) * (1 + PRIOR_TAXANE_DAYS / 720)^e_prior_taxane_days_kd0` with `e_prior_taxane_days_kd0 = -4.00` -- KD0 decreases with longer prior-taxane exposure, encoding cross-resistance between docetaxel and eribulin via the shared microtubule-inhibition mechanism).
 - **Notes:** Pairs with `PRIOR_TAXANE` (binary). The paper also considered an alternative continuous parameterisation in cycles of prior taxane (`NCYCL`, median 30 cycles) which was deemed slightly less informative (dOFV = -8 for NCYCL vs -10 for NTRT) and was not retained in the final model. If a future model needs the cycle-count form, register a parallel canonical (e.g. `PRIOR_TAXANE_CYCLES`) rather than overloading this one. Scope: specific because the 720-day normalisation reference is tied to the van Hasselt 2015 study population (post-docetaxel mCRPC patients).
 
-### BL_PN_GR1 (**canonical for active baseline grade 1 peripheral neuropathy indicator**)
-- **Description:** 1 = subject had active grade 1 peripheral neuropathy (CTCAE 4.0 grade 1: asymptomatic; clinical or diagnostic observations only; intervention not indicated) at study entry; 0 = no active PN at baseline. Time-fixed at study entry. The covariate captures pre-existing low-grade PN typically arising from prior antimicrotubule or platinum chemotherapy in heavily pretreated oncology cohorts and is used to assess whether baseline PN sensitizes patients to subsequent antimicrotubule-induced PN.
-- **Units:** (binary)
-- **Type:** binary
-- **Scope:** specific
-- **Reference category:** 0 (no active PN at baseline).
+### T_DIAG_DIAB (**canonical for time since type 2 diabetes diagnosis**)
+- **Description:** Time elapsed since clinical diagnosis of type 2 diabetes mellitus (T2DM) at study entry, in years. Continuous time-fixed covariate; supply the per-subject duration in years. T2DM-specific (Type 1 cohorts use a separate `T_DIAG_T1D` canonical if registered in the future).
+- **Units:** years
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- enters as a power covariate `(T_DIAG_DIAB / 2)^theta` on the model-predicted baseline FPG, on Gmax (the maximal SGLT2-inhibition-driven FPG-reduction), and on kHbA1cout. Reference value 2 years per Baron 2016 Tables S3 and S4.
 - **Source aliases:**
-  - "active grade 1 PN at study entry (yes/no)" (Lu 2017 narrative; coded as a binary 0/1 in the source NONMEM dataset) -- used in `Lu_2017_polatuzumab_neuropathy.R`.
-- **Example models:** `Lu_2017_polatuzumab_neuropathy.R` (multiplicative effect on the grade >= 2 peripheral neuropathy hazard via `exp(theta_baselinePN * BL_PN_GR1)` with `theta_baselinePN = -0.222`, SE 0.324 -- not detectable given the large SE; the paper reports a sensitivity analysis in which this indicator was replaced by a broader "history of prior PN" indicator with similarly inconclusive results).
-- **Notes:** Specific to oncology cohorts where grade 1 PN is permitted at study entry (per the source paper's eligibility criteria). Distinct from `PREV_AE_SCORE` (the time-varying ordinal Markov-state AE-score covariate from Girard 2012 pimasertib, which conditions a current-observation outcome on the previous observation's grade); `BL_PN_GR1` is a time-fixed baseline indicator that does not update during the analysis window. Distinct from `DIS_DPN` (painful diabetic peripheral polyneuropathy disease-state indicator from chronic-pain cohorts); `DIS_DPN` flags a diabetes-related primary diagnosis used as a stratification covariate, while `BL_PN_GR1` flags a pre-existing low-grade adverse-event status from any prior cause in an oncology trial. When a future paper uses a different baseline-PN grade threshold (e.g., grade <= 2 permitted) or a different AE category, register a parallel canonical (e.g., `BL_PN_GR2`, `BL_FATIGUE_GR1`) rather than overloading this one. Ratified canonically on 2026-06-24 alongside the Lu 2017 polatuzumab vedotin TTE extraction.
+  - `DUR` -- used in `Baron_2016_empagliflozin.R` (Baron 2016 Methods column "duration of diabetes"; PK/PD dataset categorisation reported as <1 year / 1-5 years / >5 years in Table S2 with 58.5% of patients in the >5 years group).
+- **Example models:** `Baron_2016_empagliflozin.R` (power-form effects centred at 2 years on BFPG: `(T_DIAG_DIAB / 2)^0.0512`, on Gmax: `(T_DIAG_DIAB / 2)^0.0117`, on kHbA1cout: `(T_DIAG_DIAB / 2)^-0.577`).
+- **Notes:** Disease-progression marker complementary to the binary `DIS_DIAB` indicator -- `DIS_DIAB` records the comorbidity at baseline (1/0) while `T_DIAG_DIAB` quantifies how long that diabetes has been present. The covariate is a time-since-event under the canonical `T_<event>` family. Distinct from `T_NUT_SUPP` (time on nutritional supplementation) and `T_POST_ECMO` (time after ECMO decannulation) which are different `T_<event>` siblings. For a baseline-only continuous power-form effect, a 0-year subject (newly diagnosed at study entry) yields `(0/2)^theta = 0` -- supply at least a small floor value (e.g. 0.1 year) for newly-diagnosed subjects in simulation; the floor convention should be documented in the per-model `covariateData[[T_DIAG_DIAB]]$notes`. Ratified canonically on 2026-06-24 alongside the Baron 2016 empagliflozin extraction.
 
 ## Hypercholesterolemia biomarkers
 
