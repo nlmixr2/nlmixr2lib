@@ -88,6 +88,8 @@ navbar:
         href: articles/Tiraboschi_2025_amlitelimab.html
       - text: "Amodiaquine (Ali 2018)"
         href: articles/Ali_2018_amodiaquine.html
+      - text: "Amoxicillin (Fournier 2018)"
+        href: articles/Fournier_2018_amoxicillin.html
       - text: "Amoxicillin (Muller 2008)"
         href: articles/Muller_2008_amoxicillin.html
       - text: "Amoxicillin (Tang 2019)"
@@ -2412,7 +2414,7 @@ articles:
   - articles/Flint_2017_s_ketamine
   - articles/Foissac_2011_atazanavir
   - articles/Foo_2016_droperidol
-  - articles/Fostvedt_2021_glasdegib
+  - articles/Fournier_2018_amoxicillin
   - articles/Franken_2015_morphine
   - articles/Franken_2017_haloperidol
   - articles/Franken_2017_midazolam
