@@ -1618,6 +1618,8 @@ navbar:
         href: articles/Goel_2016_Sonidegib.html
       - text: "Sorafenib (Jain 2011)"
         href: articles/Jain_2011_sorafenib.html
+      - text: "Spectinamide 1810 mouse (Wagh 2021)"
+        href: articles/Wagh_2021_spectinamide_1810_mouse.html
       - text: "Sugammadex rocuronium (Kleijn 2011)"
         href: articles/Kleijn_2011_sugammadex_rocuronium.html
       - text: "Sugemalimab (Wang 2024)"
@@ -2974,6 +2976,7 @@ articles:
   - articles/Vuu_2016_topiramate_dog
   - articles/Wade_2008_fluconazole
   - articles/Wade_2015_certolizumab
+  - articles/Wagh_2021_spectinamide_1810_mouse
   - articles/Wahlby_2004_time_varying_covariates
   - articles/Wang_2010_romiplostim
   - articles/Wang_2011_raltegravir
