@@ -630,10 +630,6 @@ navbar:
         href: articles/Cirincione_2017_exenatide_er.html
       - text: "Exendin939 (Ng 2018)"
         href: articles/Ng_2018_exendin939.html
-      - text: "FXa inhibitors mbma (Yoshioka 2018)"
-        href: articles/Yoshioka_2018_FXa_inhibitors_mbma.html
-      - text: "FactorIX (Brekkan 2016)"
-        href: articles/Brekkan_2016_factorIX.html
       - text: "Factorix (Koopman 2023)"
         href: articles/Koopman_2023_factorix.html
       - text: "Factorviii (Nestorov 2014)"
@@ -1038,8 +1034,6 @@ navbar:
         href: articles/Eugene_2016_metoprolol.html
       - text: "Metronidazole (CohenWolkowiez 2012)"
         href: articles/CohenWolkowiez_2012_metronidazole.html
-      - text: "Metronidazole (Suyagh 2011)"
-        href: articles/Suyagh_2011_metronidazole.html
       - text: "MHD rat (Clinckers 2008)"
         href: articles/Clinckers_2008_MHD_rat.html
       - text: "MI 219 (Zou 2012)"
@@ -1086,8 +1080,8 @@ navbar:
         href: articles/Mukai_2019_mogamulizumab.html
       - text: "Monalizumab (Hwang 2023)"
         href: articles/Hwang_2023_monalizumab.html
-      - text: "Moroctocog (Abrantes 2017)"
-        href: articles/Abrantes_2017_moroctocog.html
+      - text: "Morphine (deHoogd 2017)"
+        href: articles/deHoogd_2017_morphine.html
       - text: "Morphine (Elkomy 2015)"
         href: articles/Elkomy_2015_morphine.html
       - text: "Morphine (Franken 2015)"
@@ -1280,8 +1274,26 @@ navbar:
         href: articles/Garg_2014_pertuzumab.html
       - text: "Pertuzumab (Wang 2021)"
         href: articles/Wang_2021_pertuzumab.html
-      - text: "Phenobarbital (Grasela 1985)"
-        href: articles/Grasela_1985_phenobarbital.html
+      - text: "PF 06939999 (Guo 2022)"
+        href: articles/Guo_2022_PF_06939999.html
+      - text: "PF00821385 dog (Langdon 2010)"
+        href: articles/Langdon_2010_PF00821385.html
+      - text: "PF00821385 human (Langdon 2010)"
+        href: articles/Langdon_2010_PF00821385.html
+      - text: "PF04236921 (Li 2018)"
+        href: articles/Li_2018_PF04236921.html
+      - text: "PF04455242 human (Chang 2011)"
+        href: articles/Chang_2011_PF04455242_prolactin.html
+      - text: "PF04455242 rat (Chang 2011)"
+        href: articles/Chang_2011_PF04455242_prolactin.html
+      - text: "PF04878691 (Jones 2011)"
+        href: articles/Jones_2011_PF04878691_HCV.html
+      - text: "PF04878691 lymphocyte (Jones 2011)"
+        href: articles/Jones_2011_PF04878691_HCV.html
+      - text: "PF04878691 oas (Jones 2011)"
+        href: articles/Jones_2011_PF04878691_HCV.html
+      - text: "PF04878691 viralLoad (Jones 2011)"
+        href: articles/Jones_2011_PF04878691_HCV.html
       - text: "Phenytoin (Hennig 2015)"
         href: articles/Hennig_2015_phenytoin.html
       - text: "Phenytoin (Tanaka 2012)"
@@ -1598,6 +1610,8 @@ navbar:
         href: articles/JacoboCabral_2015_tacrolimus.html
       - text: "Tacrolimus (Ji 2018)"
         href: articles/Ji_2018_tacrolimus.html
+      - text: "Tacrolimus (Kassir 2014)"
+        href: articles/Kassir_2014_tacrolimus.html
       - text: "Tacrolimus (Kim 2018)"
         href: articles/Kim_2018_tacrolimus.html
       - text: "Tacrolimus (Kirubakaran 2022)"
@@ -2427,6 +2441,7 @@ articles:
   - articles/Karaiskos_2015_colistin
   - articles/Karlsson_2009_voriconazole
   - articles/Karunajeewa_2009_sulfadoxinePyrimethamine
+  - articles/Kassir_2014_tacrolimus
   - articles/Kawamura_2018_eribulin
   - articles/Keizer_2011_E7820
   - articles/Kelman_1984_gentamicin
@@ -2704,8 +2719,6 @@ articles:
   - articles/Salem_2014_efavirenz
   - articles/Salinger_2013_magnesiumSulfate
   - articles/Sampson_2014_azithromycin
-  - articles/Sampson_2014_gentamicin
-  - articles/SanchezPena_2005_enoxaparin
   - articles/Sanchez_2011_efavirenz
   - articles/SanchezPena_2005_enoxaparin
   - articles/Sanghavi_2020_ipilimumab
