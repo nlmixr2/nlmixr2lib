@@ -968,6 +968,8 @@ navbar:
         href: articles/Hietala_2010_artemether_lumefantrine_malaria.html
       - text: "Lumefantrine (Hoglund 2015)"
         href: articles/Hoglund_2015_artemether_lumefantrine.html
+      - text: "Lumefantrine (Kay 2022)"
+        href: articles/Kay_2022_lumefantrine.html
       - text: "Lumefantrine (Kloprogge 2013)"
         href: articles/Kloprogge_2013_lumefantrine.html
       - text: "Lumefantrine (Kloprogge 2015)"
@@ -2488,6 +2490,7 @@ articles:
   - articles/Karunajeewa_2009_sulfadoxinePyrimethamine
   - articles/Kassir_2014_tacrolimus
   - articles/Kawamura_2018_eribulin
+  - articles/Kay_2022_lumefantrine
   - articles/Keizer_2011_E7820
   - articles/Kelman_1984_gentamicin
   - articles/Kerbusch_2000_ifosfamide
