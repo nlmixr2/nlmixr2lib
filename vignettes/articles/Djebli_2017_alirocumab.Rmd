@@ -160,7 +160,6 @@ Typical-value (no IIV) replication for the figure overlays:
 mod_typical <- mod |> rxode2::zeroRe()
 sim_typical <- rxode2::rxSolve(mod_typical,
                                events    = events,
-                               useLinCmt = FALSE,
                                keep      = c("treatment", "WT", "CONMED_STATIN")) |>
   as.data.frame()
 ```

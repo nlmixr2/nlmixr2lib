@@ -177,7 +177,6 @@ stopifnot(!anyDuplicated(unique(events_sd[, c("id", "time", "evid")])))
 sim_sd <- rxode2::rxSolve(
   object  = mod,
   events  = events_sd,
-  useLinCmt = FALSE, # coupled OXC+MHD model; ODE->linCmt breaks dvid (5b)
   keep    = c("WT", "CONMED_EIAED", "regimen"),
   returnType = "data.frame"
 ) |>
@@ -191,7 +190,6 @@ profile, zero out the random effects:
 sim_sd_typical <- rxode2::rxSolve(
   object  = rxode2::zeroRe(mod),
   events  = events_sd,
-  useLinCmt = FALSE, # coupled OXC+MHD model; ODE->linCmt breaks dvid (5b)
   keep    = c("WT", "CONMED_EIAED", "regimen"),
   returnType = "data.frame"
 ) |>
@@ -228,7 +226,6 @@ ev_typ <- bind_rows(
 sim_typ <- rxode2::rxSolve(
   object  = rxode2::zeroRe(mod),
   events  = ev_typ,
-  useLinCmt = FALSE, # coupled OXC+MHD model; ODE->linCmt breaks dvid (5b)
   keep    = c("WT", "CONMED_EIAED", "regimen"),
   returnType = "data.frame"
 ) |>
@@ -425,7 +422,6 @@ stopifnot(!anyDuplicated(unique(ev_ss[, c("id", "time", "evid")])))
 
 sim_ss <- rxode2::rxSolve(
   object = mod, events = ev_ss,
-  useLinCmt = FALSE, # coupled OXC+MHD model; ODE->linCmt breaks dvid (5b)
   keep   = c("WT", "CONMED_EIAED", "cell", "dose_per_kg_day"),
   returnType = "data.frame"
 ) |>

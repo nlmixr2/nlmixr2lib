@@ -250,7 +250,6 @@ rounding, confirming the structural model and parameter encoding.
 mod_typical <- rxode2::zeroRe(mod)
 sim <- rxode2::rxSolve(
   object = mod_typical, events = events,
-  useLinCmt = FALSE, # coupled model; ODE->linCmt breaks dvid map (see 5b)
   keep   = c("cohort", "stratum", "dose_mg", "q_h", "WT", "PAGE",
              "CREAT", "CREAT_REF", "CSF_TPRO")
 ) |>

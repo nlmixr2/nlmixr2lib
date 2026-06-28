@@ -176,8 +176,7 @@ stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid", "dvid")])))
 mod <- rxode2::rxode2(readModelDb("Budha_2015_rg7652"))
 sim <- as.data.frame(rxode2::rxSolve(
   mod, events = events,
-  keep    = c("treatment", "AGE", "WT", "LDLC"),
-  useLinCmt = FALSE
+  keep    = c("treatment", "AGE", "WT", "LDLC")
 ))
 ```
 
@@ -261,8 +260,7 @@ ev_sd_all <- dplyr::bind_rows(ev_sd, ev_sd_pk) |>
 
 sim_sd <- as.data.frame(rxode2::rxSolve(
   rxode2::zeroRe(mod), events = ev_sd_all,
-  keep = c("treatment"),
-  useLinCmt = FALSE
+  keep = c("treatment")
 ))
 # rxSolve omits the `id` column for a single-subject solve; restore it so PKNCA
 # can group by subject.

@@ -134,8 +134,7 @@ events_maturation <- typical_subjects |>
 
 sim_maturation <- rxode2::rxSolve(
   mod_typical, events = events_maturation,
-  keep = c("cohort", "GA", "WT_BIRTH"),
-  useLinCmt = FALSE
+  keep = c("cohort", "GA", "WT_BIRTH")
 ) |>
   as.data.frame() |>
   dplyr::filter(time > 0) |>                # drop the anchor row
@@ -281,8 +280,7 @@ events_adult <- dplyr::bind_rows(dose_adult, obs_adult) |>
 
 sim_adult <- rxode2::rxSolve(
   mod, events = events_adult,
-  keep      = c("cohort", "WT", "WT_BIRTH", "GA", "PNA"),
-  useLinCmt = FALSE
+  keep      = c("cohort", "WT", "WT_BIRTH", "GA", "PNA")
 ) |>
   as.data.frame()
 ```

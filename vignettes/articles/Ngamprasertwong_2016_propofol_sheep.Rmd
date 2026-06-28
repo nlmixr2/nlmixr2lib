@@ -123,8 +123,7 @@ mod <- readModelDb("Ngamprasertwong_2016_propofol_sheep") |> rxode2::rxode()
 # Typical-subject simulation: zero out random effects to reproduce the
 # cohort-mean concentration time course shown in Table 1 / Fig 2.
 mod_typ <- rxode2::zeroRe(mod)
-sim_typ <- rxode2::rxSolve(mod_typ, events = events, keep = "HR",
-                           useLinCmt = FALSE) |> # coupled model; see 5b
+sim_typ <- rxode2::rxSolve(mod_typ, events = events, keep = "HR") |>
   as.data.frame()
 ```
 
@@ -226,8 +225,7 @@ events_cohort <- purrr::map_dfr(seq_len(n_sim), function(i) {
   dplyr::arrange(id, time, dplyr::desc(evid))
 
 sim_cohort <- rxode2::rxSolve(mod, events = events_cohort,
-                              keep = c("HR", "treatment"),
-                              useLinCmt = FALSE) |> # coupled model; see 5b
+                              keep = c("HR", "treatment")) |>
   as.data.frame()
 
 # Maternal Cc NCA: AUClast over 0-180 min (the observation window) plus

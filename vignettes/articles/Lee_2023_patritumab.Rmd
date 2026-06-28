@@ -193,18 +193,12 @@ stopifnot(!anyDuplicated(unique(events_pop[, c("id", "time", "evid")])))
 mod <- mod_obj
 
 # Deterministic typical-subject simulation: zero out IIV and residual error.
-# useLinCmt = FALSE avoids rxode2's ODE->linCmt auto-conversion which corrupts
-# the dvid mapping for this multi-output model (see
-# .claude/skills/extract-literature-model/references/known-vignette-failure-patterns.md
-# pattern #5b).
 sim_typ <- rxode2::rxSolve(rxode2::zeroRe(mod), events = events_ref,
-                           useLinCmt = FALSE,
                            returnType = "data.frame")
 
 # Stochastic 200-subject VPC simulation (covariate-stratified)
 sim_pop <- rxode2::rxSolve(mod, events = events_pop,
                            keep = c("arm"),
-                           useLinCmt = FALSE,
                            returnType = "data.frame")
 ```
 

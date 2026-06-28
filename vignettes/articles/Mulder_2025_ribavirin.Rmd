@@ -177,16 +177,11 @@ events_typical <- cohorts |>
 mod         <- readModelDb("Mulder_2025_ribavirin")()
 mod_typical <- rxode2::zeroRe(mod)
 
-# `useLinCmt = FALSE` is required because the model has multiple
-# algebraic observables (Cc, hb, vload) and rxode2's ODE -> linCmt
-# auto-conversion corrupts the dvid -> cmt mapping in that case
-# (see references/known-vignette-failure-patterns.md pattern 5b).
 sim_typical <- rxode2::rxSolve(
   mod_typical,
   events_typical,
   keep         = c("regimen"),
-  returnType   = "data.frame",
-  useLinCmt    = FALSE
+  returnType   = "data.frame"
 )
 ```
 

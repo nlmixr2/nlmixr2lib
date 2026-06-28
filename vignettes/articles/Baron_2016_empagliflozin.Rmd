@@ -166,8 +166,7 @@ stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
 sim <- rxode2::rxSolve(
   mod,
   events = events,
-  keep = c("treatment"),
-  useLinCmt = FALSE   # multi-output (Cc + glucose + hba1c) -- skip ODE -> linCmt auto-conversion
+  keep = c("treatment")
 ) |> as.data.frame()
 
 dim(sim)
