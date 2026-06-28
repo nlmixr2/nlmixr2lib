@@ -468,6 +468,8 @@ navbar:
         href: articles/Talke_2018_dexmedetomidine.html
       - text: "Dexmedetomidine piglet (Ezzati 2014)"
         href: articles/Ezzati_2014_dexmedetomidine_piglet.html
+      - text: "Dextroamphetamine (Castelli 2022)"
+        href: articles/Castelli_2022_dextroamphetamine.html
       - text: "Dextromethorphan (TerHeine 2014)"
         href: articles/TerHeine_2014_tamoxifen.html
       - text: "Diazepam (Ku 2018)"
@@ -2202,6 +2204,7 @@ articles:
   - articles/Capparelli_2005_cefepime
   - articles/Cardilin_2018_radiation_radiosensitizer_mouse
   - articles/CarlssonPetri_2021_liraglutide
+  - articles/Castelli_2022_dextroamphetamine
   - articles/Castro-Surez_2020_nimotuzumab
   - articles/Catalan-Latorre_2018_taurine_rat
   - articles/Cella_2012_midazolam_paediatric_scaling
