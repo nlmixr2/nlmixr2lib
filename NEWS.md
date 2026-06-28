@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Mould 2007 alemtuzumab coupled PK-PD ([doi:10.1111/j.1365-2125.2007.02914.x](https://doi.org/10.1111/j.1365-2125.2007.02914.x)) -- adults with B-cell chronic lymphocytic leukaemia; companion `Mould_2007_alemtuzumab_wbc` joins the two-compartment Michaelis-Menten PK to the indirect-response WBC model (stimulation of Kout) from Mould 2007 Table 3 with WBC as a coupled state.
+* Add Zandvliet 2008 carboplatin ([doi:10.1111/j.1365-2125.2008.03230.x](https://doi.org/10.1111/j.1365-2125.2008.03230.x)) -- adults with refractory solid tumours in a Phase I dose-escalation study of indisulam + carboplatin (carboplatin 2-compartment PK only; combination myelosuppression PD layer deferred pending upstream indisulam PK acquisition).
 * Add Gaohua 2012 pregnancy PBPK ([doi:10.1111/j.1365-2125.2012.04363.x](https://doi.org/10.1111/j.1365-2125.2012.04363.x)) -- healthy pregnant Caucasian women (14-compartment whole-body p-PBPK with GA-dependent maternal physiology, applied to caffeine [CYP1A2], metoprolol [CYP2D6], and midazolam [CYP3A4]); ratifies new canonical bare `skin` PBPK compartment.
 * Add Morris 2011 telapristone ([doi:10.1208/s12248-011-9304-7](https://doi.org/10.1208/s12248-011-9304-7)) -- adult women with single-dose telapristone-acetate phase I/II PK studies; ratifies new `cdb4453` metabolite suffix, `MIX_FAST_ELIM`, and `RENALIMP_MOD` covariate canonicals.
 * Add Padoin 1998 cephalexin ([doi:10.1128/aac.42.6.1463](https://doi.org/10.1128/aac.42.6.1463)) -- preclinical male Wistar rats with a cephalexin / quinapril oral coadministration DDI (ratifies new `CONMED_QPRL_ORAL` covariate canonical).

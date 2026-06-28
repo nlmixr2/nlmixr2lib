@@ -278,6 +278,8 @@ navbar:
         href: articles/Urien_2005_capecitabine.html
       - text: "Carboplatin (Ekhart 2008)"
         href: articles/Ekhart_2008_carboplatin.html
+      - text: "Carboplatin (Zandvliet 2008)"
+        href: articles/Zandvliet_2008_carboplatin.html
       - text: "Carfentanil iv (Mann 2022)"
         href: articles/Laffont_2025_opioid_overdose_reversal_simulation.html
       - text: "Carvedilol (Honda 2005)"
@@ -3135,7 +3137,7 @@ articles:
   - articles/Yu_2022_ofatumumab
   - articles/Yuan_2019_concizumab
   - articles/Yukawa_1990_phenytoin
-  - articles/Yukawa_2002_clonazepam_pediatric
+  - articles/Zandvliet_2008_carboplatin
   - articles/Zandvliet_2016_corifollitropin_alfa
   - articles/Zecchin_2016_survival
   - articles/Zecchin_2016_tumorovarian
