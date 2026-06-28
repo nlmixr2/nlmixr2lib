@@ -836,6 +836,8 @@ navbar:
         href: articles/Yadav_2017_imipenem_aminoglycoside_pseudomonas.html
       - text: "Immunoglobulin (Cheng 2026)"
         href: articles/Cheng_2026_immunoglobulin.html
+      - text: "Imr687 (Byrne 2022)"
+        href: articles/Byrne_2022_imr687.html
       - text: "Indacaterol (Renard 2011)"
         href: articles/Renard_2011_indacaterol.html
       - text: "Indinavir (Csajka 2004)"
@@ -2181,6 +2183,7 @@ articles:
   - articles/Bulitta_2010_colistin
   - articles/Bulitta_2010_piperacillin
   - articles/Bulitta_2011_cefpirome
+  - articles/Byrne_2022_imr687
   - articles/Caldes_2009_ganciclovir
   - articles/Campagne_2019_cyclophosphamide_mouse
   - articles/Candelaria_2018_rituximab

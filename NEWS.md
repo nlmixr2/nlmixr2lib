@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Kay 2022 lumefantrine ([doi:10.1002/cpt.2768](https://doi.org/10.1002/cpt.2768)) -- Ugandan children (~2 months to 8.6 years) with and without HIV receiving six-dose artemether-lumefantrine with concomitant efavirenz-, lopinavir/ritonavir-, or nevirapine-based antiretroviral therapy.
+* Add Byrne 2022 IMR-687 ([doi:10.70534/zdmj9414](https://doi.org/10.70534/zdmj9414)) -- adults with sickle cell disease (1-compartment popPK + RTTE exposure-response model of vaso-occlusive crises; conference poster, ACoP 2022).
 * Add Gaohua 2012 pregnancy PBPK ([doi:10.1111/j.1365-2125.2012.04363.x](https://doi.org/10.1111/j.1365-2125.2012.04363.x)) -- healthy pregnant Caucasian women (14-compartment whole-body p-PBPK with GA-dependent maternal physiology, applied to caffeine [CYP1A2], metoprolol [CYP2D6], and midazolam [CYP3A4]); ratifies new canonical bare `skin` PBPK compartment.
 * Add Morris 2011 telapristone ([doi:10.1208/s12248-011-9304-7](https://doi.org/10.1208/s12248-011-9304-7)) -- adult women with single-dose telapristone-acetate phase I/II PK studies; ratifies new `cdb4453` metabolite suffix, `MIX_FAST_ELIM`, and `RENALIMP_MOD` covariate canonicals.
 * Add Padoin 1998 cephalexin ([doi:10.1128/aac.42.6.1463](https://doi.org/10.1128/aac.42.6.1463)) -- preclinical male Wistar rats with a cephalexin / quinapril oral coadministration DDI (ratifies new `CONMED_QPRL_ORAL` covariate canonical).
