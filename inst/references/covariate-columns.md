@@ -1035,6 +1035,17 @@ All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODA
 - **Example models:** `Yamada_2025_zolbetuximab.R` (g/L, reference 118; exponent -0.374 on V1).
 - **Notes:** Unit varies by paper (SI g/L, US g/dL; 1 g/dL = 10 g/L). The per-model `covariateData[[HGB]]$units` field is load-bearing.
 
+### HGB_BL (**canonical for per-subject baseline hemoglobin concentration (initial-condition use)**)
+- **Description:** Pre-treatment (or per-subject anchor-time) hemoglobin concentration used as the initial condition for a hemoglobin state variable in indirect-response / turnover anaemia models. Distinct from `HGB` (which is the time-varying or baseline-only hemoglobin value when entering a covariate effect on a structural PK parameter): `HGB_BL` is a static per-subject covariate that supplies the steady-state baseline for an Hb-state ODE, typically together with a `kin = kout * HGB_BL` synthesis-rate-from-baseline coupling so the Hb state starts at steady state. Parallel to `FERRITIN_BL` (baseline ferritin) and `WT_BASE` (baseline weight).
+- **Units:** g/L, g/dL, or mmol/L -- document the unit used in each model via `covariateData[[HGB_BL]]$units`.
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- subject-level baseline supplied as a covariate column. Reference values observed: 8.3 mmol/L (Mulder 2025 chronic-HEV SOT cohort median).
+- **Source aliases:**
+  - `HBBASE` -- used in `Mulder_2025_ribavirin.R`.
+- **Example models:** `Mulder_2025_ribavirin.R` (mmol/L; initial condition for the `hb_state` compartment; per-subject `kin = kout * HGB_BL` so the Hb state is at steady state pre-RBV; the source paper substitutes the cohort typical (median) baseline for the one subject without an individual baseline value).
+- **Notes:** Specific scope because the initial-condition idiom is paper-defined (Mulder 2025 specifies `kin` per subject from baseline rather than estimating a typical Hb0). Promote to `general` if a second paper ratifies the same baseline-Hb-as-initial-condition pattern. The unit varies widely across papers (SI g/L, US g/dL, Dutch / European convention mmol/L; 1 g/dL = 10 g/L; 1 mmol/L of tetrameric haemoglobin ~ 16.114 g/L); the per-model `covariateData[[HGB_BL]]$units` field is load-bearing.
+
 ### WBC (**canonical for white blood cell count**)
 - **Description:** Total white blood cell count (baseline or time-varying). In chronic lymphocytic leukaemia (CLL) populations the value is elevated because circulating leukaemic B-cells make up the majority of the count, so WBC can serve as a biomarker of target-cell burden rather than general hematology.
 - **Units:** 10^9 cells/L (equivalent to 10^3 cells/uL). Document per-model via `covariateData[[WBC]]$units`.
@@ -3357,6 +3368,17 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
   - `VIRAL` -- used in `Lin_2024_casirivimab.R`.
 - **Example models:** `Lin_2024_casirivimab.R` (small negative exponent -0.0075 on CL).
 - **Notes:** SARS-CoV-2-specific. For non-infected subjects, the value is encoded as 0 in the source dataset (below assay detection); the population-PK exponent is small enough that this 0 is absorbed by the reference shift. Register a parallel canonical for any future paper that uses a different infection (e.g., RSV, influenza).
+
+### HEV_VLOAD (**canonical for hepatitis E virus baseline viral load**)
+- **Description:** Pre-treatment (per-subject anchor-time) hepatitis E virus (HEV) RNA concentration in plasma, reported by RT-qPCR. Used as a static per-subject covariate that supplies the initial condition for a virion-state ODE in target-cell-limited HEV viral-dynamics models (`virus(0) <- HEV_VLOAD`) and that feeds the steady-state derivation of the infection-rate and virion-production-rate constants (`beta = kloss * rho / HEV_VLOAD`, `p = elim * HEV_VLOAD / rho`) so that all three viral compartments (healthy hepatocytes, infected hepatocytes, virions) start at pre-treatment steady state.
+- **Units:** IU/mL (international units per millilitre; the WHO-standardized HEV-RNA reporting unit since the 2011 first WHO international standard for HEV RNA, NIBSC code 6329/10).
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- subject-level baseline supplied as a covariate column. Reference values observed: 1.886e6 IU/mL (Mulder 2025 chronic-HEV SOT cohort median; range 527-1.68e8 IU/mL).
+- **Source aliases:**
+  - `VLBASE` -- used in `Mulder_2025_ribavirin.R`.
+- **Example models:** `Mulder_2025_ribavirin.R` (IU/mL; initial condition for the `virus` compartment; used in the baseline steady-state derivations for the infection-rate `beta` and virion-production rate `p`; cohort median 1,886,058 IU/mL).
+- **Notes:** HEV-specific (parallel to `SARS_VLOAD` for SARS-CoV-2 and to viral-load canonicals for HCV / HBV / HIV that should be registered separately when first encountered). The IU/mL reporting convention is the WHO-standardized one for HEV; older HEV literature may report viral load in genomic copies/mL with a study-specific copies-to-IU conversion factor (roughly 1 IU ~ 0.3-2.5 copies depending on assay). The Mulder 2025 dataset is chronically infected subjects only (no zero baselines); papers that pool infected and non-infected subjects should encode the non-infected value as the assay LOD and document the convention in `covariateData[[HEV_VLOAD]]$notes`. Specific scope; promote to `general` only if a second paper ratifies the same HEV-RNA-baseline-as-initial-condition pattern.
 
 ### SARS_SEROPOS (**canonical for SARS-CoV-2 baseline serostatus positive**)
 - **Description:** 1 = SARS-CoV-2 spike or nucleocapsid antibody positive at baseline (prior infection or prior vaccination), 0 = seronegative or other / unknown.
