@@ -372,6 +372,8 @@ navbar:
         href: articles/Smith_2017_clindamycin.html
       - text: "Clomethiazole (Zingmark 2003)"
         href: articles/Zingmark_2003_clomethiazole.html
+      - text: "Clonazepam pediatric (Yukawa 2002)"
+        href: articles/Yukawa_2002_clonazepam_pediatric.html
       - text: "Clopidogrel (Danielak 2017)"
         href: articles/Danielak_2017_clopidogrel.html
       - text: "Clozapine (Li 2012)"
@@ -3048,6 +3050,7 @@ articles:
   - articles/Yu_2022_ofatumumab
   - articles/Yuan_2019_concizumab
   - articles/Yukawa_1990_phenytoin
+  - articles/Yukawa_2002_clonazepam_pediatric
   - articles/Zandvliet_2016_corifollitropin_alfa
   - articles/Zecchin_2016_survival
   - articles/Zecchin_2016_tumorovarian
