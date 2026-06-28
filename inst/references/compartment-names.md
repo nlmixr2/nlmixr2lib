@@ -261,6 +261,13 @@ The `brain_<region>` namespace was adopted 2026-05-28 to disambiguate brain-anat
 - **Example models:** Friberg-style myelosuppression PD extractions.
 - **Notes:** Replaces a paper-naming `central` for circulating neutrophils / platelets / lymphocytes when the model is a maturation chain rather than a classical-PK central compartment. Suffix-form `circ_<celltype>` (e.g., `circ_anc`, `circ_plt`) is accepted for paired-output multi-cell-type models via the registered `_anc` / `_plt` / `_wbc` metabolite suffixes.
 
+### prol (**canonical Friberg proliferating-cell pool**)
+- **Type:** compartment
+- **Role:** Self-renewing proliferating-progenitor pool at the head of a Friberg-Karlsson myelosuppression chain (`prol` -> `transit1` ... `transitN` -> `circ`). The drug effect and the `(circ0 / circ)^gamma` rebound-feedback term act on the proliferation rate of this state.
+- **Source aliases:** none.
+- **Example models:** `Hansson_2013_sunitinib_myelosuppression.R`.
+- **Notes:** Registered 2026-06-28. Names the proliferating head state explicitly when the source model separates proliferation from a numbered `transit1..N` maturation chain feeding the canonical `circ` circulating pool (some library models instead use the `precursor1..N` chain form documented under `circ`). Distinct from `cycling_cells` (the Simeoni 2004 oncology TGI proliferating pool); `prol` is the hematopoietic stem/progenitor pool of the neutrophil / platelet / leukocyte maturation cascade.
+
 ---
 
 ## Urinary excretion
@@ -341,14 +348,14 @@ The Cao 2013 mAb mPBPK family uses paper-anatomical compartment names that are a
 - **Source aliases:** none.
 - **Example models:** `Ait-Oudhia_2016_sunitinib.R`, `NA_NA_sunitinib.R`, `Schindler_2016_sunitinib.R`, `Wilbaux_2015_paclitaxel.R`.
 
-### tumor_size (**canonical TGI tumor-size output state**)
+### tumor_size, TS (**canonical TGI tumor-size output state**)
 - **Type:** compartment
-- **Role:** Snake-case canonical output-state name for the TGI template family.
+- **Role:** Snake-case canonical output-state name for the TGI template family (`tumor_size`); `TS` is the equivalent upper-case abbreviation (RECIST 1.1 sum of longest diameters of target lesions, mm) registered as a canonical sibling because Struemper 2025 uses `TS` directly as the model observation variable.
 - **Source aliases:**
-  - `Ts` -- legacy.
-  - `ts` -- legacy.
-- **Example models:** `tgi_no_sat_*.R`, `tgi_sat_*.R`, `Ouerdani_2015_pazopanib.R`, `Mazzocco_2015.R`, `Zecchin_2016.R`, `Wilson_2015_sunitinib_irinotecan_mouse.R`.
-- **Notes:** Registered 2026-05-28 per the naming audit for the TGI template family.
+  - `Ts` -- deprecated legacy lower-case form.
+  - `ts` -- deprecated legacy lower-case form.
+- **Example models:** `tgi_no_sat_*.R`, `tgi_sat_*.R`, `Ouerdani_2015_pazopanib.R`, `Mazzocco_2015.R`, `Zecchin_2016.R`, `Wilson_2015_sunitinib_irinotecan_mouse.R`, `Struemper_2025_tumorsize_OS_nsclc.R` (as `TS`).
+- **Notes:** Registered 2026-05-28 per the naming audit for the TGI template family. `TS` added 2026-06-28 as a canonical sibling name (upper-case RECIST sum-of-longest-diameters abbreviation) for Struemper 2025, which observes `TS = growth + shrink - TSb` from the Stein bi-exponential `growth` / `shrink` states; the related time-varying covariate column for an observed-TS data input is `TUM_SLD` in `covariate-columns.md`. The deprecated lower-case `Ts` / `ts` forms remain aliases (no active model uses them as the bare observation).
 
 ### carrying_capacity (**canonical TGI saturable growth ceiling**)
 - **Type:** compartment
@@ -381,6 +388,20 @@ The Cao 2013 mAb mPBPK family uses paper-anatomical compartment names that are a
 - **Role:** Third damaged-cell transit compartment in Simeoni 2004 cell-cycle decomposition.
 - **Source aliases:** none.
 - **Example models:** `Simeoni_2004.R`, `Wilson_2015_sunitinib_irinotecan_mouse.R`.
+
+### growth (**canonical Stein-model tumor-growth sub-state**)
+- **Type:** compartment
+- **Role:** Exponentially growing (treatment-resistant) sub-population of the Stein bi-exponential tumor-size model: `d/dt(growth) = kge * growth` with `growth(0) = TSb`, so `growth(t) = TSb * exp(kge * t)`. Paired with `shrink`; the observed tumor size is `TS = growth + shrink - TSb`.
+- **Source aliases:** none.
+- **Example models:** `Struemper_2025_tumorsize_OS_nsclc.R`.
+- **Notes:** Registered 2026-06-28. The Stein (2008) bi-exponential TS model decomposes tumor dynamics into a treatment-resistant growing fraction (`growth`, rate `kge`) and a treatment-sensitive shrinking fraction (`shrink`, rate `kse`). Distinct from the saturable-growth `tumor_size` / `carrying_capacity` family and from the Simeoni `cycling_cells` chain.
+
+### shrink (**canonical Stein-model tumor-shrinkage sub-state**)
+- **Type:** compartment
+- **Role:** Exponentially shrinking (treatment-sensitive) sub-population of the Stein bi-exponential tumor-size model: `d/dt(shrink) = -kse * shrink` with `shrink(0) = TSb`, so `shrink(t) = TSb * exp(-kse * t)`. Paired with `growth`; the observed tumor size is `TS = growth + shrink - TSb`.
+- **Source aliases:** none.
+- **Example models:** `Struemper_2025_tumorsize_OS_nsclc.R`.
+- **Notes:** Registered 2026-06-28. See `growth` for the Stein bi-exponential decomposition.
 
 ---
 
@@ -824,11 +845,12 @@ PBPK organ-vascular concentration compartments used by membrane-limited PBPK ext
 
 These are internationally standardised clinical abbreviations registered as canonical compartments / output-state names so single-output PD models using them pass the relaxed `Cc` rule. Registered 2026-05-28 per the naming audit (operator decision: spell out paper-mechanistic names but the standard clinical abbreviations are themselves canonical and need not be expanded).
 
-### ANC (**canonical absolute neutrophil count**)
+### ANC, anc (**canonical absolute neutrophil count**)
 - **Type:** compartment
-- **Role:** Absolute neutrophil count PD output.
+- **Role:** Absolute neutrophil count PD output. `ANC` is the standard upper-case clinical abbreviation; `anc` is the lower-case sibling registered as canonical because some Friberg myelosuppression models assign the circulating-pool observation to a lower-case `anc <- circ` output variable (matching the all-lowercase ODE-state convention).
 - **Source aliases:** none.
-- **Example models:** myelosuppression PD models with ANC output.
+- **Example models:** myelosuppression PD models with ANC output; `Hansson_2013_sunitinib_myelosuppression.R` (as lower-case `anc`).
+- **Notes:** `anc` added 2026-06-28 as a canonical lower-case sibling. For paired-output multi-cell-type Friberg models prefer the `circ_anc` suffix form (see `circ`); the bare lower-case `anc` is the single-output PD-observation form. Distinct in Type from the `anc` cell-type metabolite suffix (see the Cell-type suffixes section), which the runtime parser routes separately.
 
 ### PLT (**canonical platelet count**)
 - **Type:** compartment
@@ -910,11 +932,12 @@ These are internationally standardised clinical abbreviations registered as cano
 - **Source aliases:** none.
 - **Example models:** endocrinology / coagulation PD models.
 
-### QTc (**canonical heart-rate-corrected QT interval**)
+### QTc, QTcF, QTcS (**canonical heart-rate-corrected QT interval**)
 - **Type:** compartment
-- **Role:** Heart-rate-corrected QT interval (electrocardiographic PD endpoint), typically expressed in ms. Used as the observation variable in direct-effect Emax models of drug-induced QT prolongation (cardiac-safety / thorough-QT studies, e.g. quinidine, moxifloxacin, sotalol). The choice of correction formula (Bazett, Fridericia, individual-correction) is paper-dependent and recorded in `description`; the canonical name covers the corrected-interval output regardless of which correction was applied.
-- **Source aliases:** `QTcB` (Bazett), `QTcF` (Fridericia), `QTcI` (individual correction) — translate to `QTc` and record the correction in the model file's description / vignette.
-- **Example models:** `Shin_2006_quinidine_QT.R` (Bazett-corrected QT interval; founding example).
+- **Role:** Heart-rate-corrected QT interval (electrocardiographic PD endpoint), typically expressed in ms. Used as the observation variable in direct-effect / linear concentration-QTc models of drug-induced QT prolongation (cardiac-safety / thorough-QT studies, e.g. quinidine, moxifloxacin, sotalol, glasdegib). `QTc` is the generic canonical; `QTcF` (Fridericia correction) and `QTcS` (study-specific correction) are registered as canonical sibling names because the Fostvedt 2021 glasdegib models use the correction-specific name directly as the observation variable.
+- **Source aliases:** `QTcB` (Bazett), `QTcI` (individual correction) — translate to `QTc` and record the correction in the model file's description / vignette.
+- **Example models:** `Shin_2006_quinidine_QT.R` (Bazett-corrected QT interval; founding example), `Fostvedt_2021_glasdegib_QTcF.R` (Fridericia, as `QTcF`), `Fostvedt_2021_glasdegib_QTcS.R` (study-specific correction, as `QTcS`).
+- **Notes:** `QTcF` / `QTcS` promoted from translate-to-`QTc` aliases to canonical sibling names 2026-06-28 so single-output models that name the observation by its specific correction (rather than the generic `QTc`) pass the convention check. New models should still prefer the generic `QTc` where the correction is incidental; use the specific name only when the correction is the defining feature of the endpoint (as in the paired Fostvedt 2021 QTcF / QTcS glasdegib analyses).
 
 ### serumK (**canonical serum potassium**)
 - **Type:** compartment
@@ -1010,6 +1033,27 @@ Each entry below is a paper-mechanistic PD endpoint registered as a canonical co
 - **Role:** Fatigue grade PD output (Hansson 2013c sunitinib).
 - **Source aliases:** none.
 - **Example models:** `Hansson_2013c_sunitinib.R`.
+
+### hfs_grade (**canonical hand-foot syndrome grade**)
+- **Type:** compartment
+- **Role:** Hand-foot syndrome (palmar-plantar erythrodysesthesia) NCI-CTC ordinal grade (0 / 1 / 2 / 3+) PD output. In Hansson 2013 sunitinib the reported output is the expected HFS grade given the previous state, derived from a first-order-Markov + proportional-odds transition model.
+- **Source aliases:** none.
+- **Example models:** `Hansson_2013_sunitinib_hfs.R`.
+- **Notes:** Registered 2026-06-28. Sibling endpoint to `fatigue_grade` (Hansson 2013c sunitinib), which shares the same Markov + proportional-odds structure.
+
+### dbp (**canonical diastolic blood pressure PD state**)
+- **Type:** compartment
+- **Role:** Diastolic blood pressure (mmHg) indirect-response turnover state and PD output. In Hansson 2013 sunitinib, `dbp` turns over via a stimulated zero-order production `kin` and first-order loss `kout`, with sunitinib AUC linearly stimulating `kin`; the state both carries the ODE and is the single observation variable.
+- **Source aliases:** none.
+- **Example models:** `Hansson_2013_sunitinib_dbp.R`.
+- **Notes:** Registered 2026-06-28. Holds a blood-pressure value (mmHg), not a drug concentration; the related drug-induced *relative* change covariate used downstream is `DBP_REL` in `covariate-columns.md`.
+
+### bm (**canonical delayed biomarker-signal effect state**)
+- **Type:** compartment
+- **Role:** Effect-compartment-smoothed (first-order `ke0`) delayed biomarker-signal state that drives a downstream PD endpoint. In Hansson 2013 sunitinib (HFS / fatigue models) `bm` is the delayed relative-change-from-baseline signal of soluble VEGFR-3: `d/dt(bm) = ke0 * (bm_input - bm)` with `bm_input = (svegfr3 - baseline) / baseline`, which shifts the proportional-odds baseline logits.
+- **Source aliases:** none.
+- **Example models:** `Hansson_2013_sunitinib_hfs.R`.
+- **Notes:** Registered 2026-06-28. `bm` is the paper's notation for the delayed sVEGFR-3 "biomarker" signal; it is a transduction / effect-compartment state, not a clinical endpoint, and is scoped to the Hansson 2013 sunitinib adverse-effect models. Reuse only for the same delayed-biomarker-signal role, not as a generic short name.
 
 ### walkDist (**canonical 6-minute walk distance**)
 - **Type:** compartment
@@ -1886,6 +1930,20 @@ The Ait-Oudhia 2012 canakinumab IL-1beta -> CRP transit cascade: `crp1` / `crp2`
 - **Example models:** `Schindler_2016_sunitinib.R`.
 - **Notes:** Renamed from `cumHaz_drop` to `cumhaz_drop` on 2026-06-19 per the canonical-register standardization audit (lowercase compartment-name standardization).
 
+### cumhaz_cens (**canonical censoring cumulative-hazard**)
+- **Type:** compartment
+- **Role:** Censoring-distribution cumulative-hazard state in time-to-event sub-models that describe informative dropout / censoring with a separate hazard alongside the event hazard. Integrates the censoring hazard so the censoring survival is `sur_cens = exp(-cumhaz_cens)`, used for simulation-based dropout.
+- **Source aliases:** none.
+- **Example models:** `Hansson_2013_sunitinib_os.R`.
+- **Notes:** Registered 2026-06-28. Member of the `cumhaz_<type>` multi-hazard family alongside `cumhaz`, `cumhaz_os`, and `cumhaz_drop`; `_cens` denotes the censoring distribution specifically (in Hansson 2013 a separate Weibull `lambdacens` / `alphacens` censoring model exposed for forward dropout simulation).
+
+### sur (**canonical survival-probability output**)
+- **Type:** compartment
+- **Role:** Survival-probability output `S(t)` of a time-to-event sub-model, derived from the cumulative hazard (`sur = exp(-cumhaz)` for a proportional-hazard form, or `sur = 1 - Phi(z)` for an accelerated-failure-time log-normal form). Single PD output for forward-simulation TTE models.
+- **Source aliases:** none.
+- **Example models:** `Hansson_2013_sunitinib_os.R` (Weibull PH `sur = exp(-cumhaz)`; the observation variable), `Struemper_2025_tumorsize_OS_nsclc.R` (AFT log-normal `sur = 1 - pnorm(z_os)`, derived OS output).
+- **Notes:** Registered 2026-06-28. Founding models expose `sur` with a small placeholder residual so the nlmixr2 likelihood machinery accepts the forward-simulation model.
+
 ---
 
 ## MBMA placebo / drug arm output compartments
@@ -2010,6 +2068,149 @@ The Frohlich 2018 multi-experiment NLME single-cell mRNA-transfection model (npj
   - `y` -- the paper's symbol for the observable (Methods, "the output fluorescence y is assumed to be the sum of a signal proportional to the amount of eGFP (with scaling parameter scale) plus background fluorescence (offset)").
 - **Example models:** `Frohlich_2018_mRNA_translation.R`.
 - **Notes:** Not a state in the ODE system (`logfluor` is derived inside `model()` from the `gfp` state and the `offset` parameter). Registered as a canonical compartment so the single-output observation-variable check accepts `logfluor ~ add(addSd_logfluor)` for in-vitro / mechanistic models without forcing a rename to `Cc`.
+
+---
+
+## Muliaditan 2025 TfR-mediated brain mPBPK states
+
+The Muliaditan 2025 translational minimal-PBPK (mPBPK) model for transferrin-receptor (TfR)-mediated brain delivery of monoclonal antibodies introduces a membrane-limited, FcRn-recycling brain-distribution scheme with its own `<location>_<subtype>` compartment namespace. Registered individually (rather than via a regex) per the 2026-06-28 naming-audit decision: the scheme is bespoke to this two-file model family (`Muliaditan_2025_mab_mpbpk_human.R`, `Muliaditan_2025_mab_mpbpk_nhp.R`), uses only three barrier locations (so it lacks the combinatorial organ explosion that motivates the `pbpkSubCompartmentRegex`), and each TfR-binding bookkeeping state has a distinct mechanistic role that warrants an explicit entry. All states hold an antibody **amount** (nmol); concentrations are derived in `model()` as `c_<state> = <state> / v_<volume>`. The two models also use the already-canonical `central` (plasma), `brain_vascular`, `csf`, and `lymph` states, which are not re-registered here.
+
+The namespace has two families:
+
+1. **Membrane-limited sub-compartments** `<location>_<subtype>` where location is `tissue` (lumped peripheral tissue), `bbb` (blood-brain-barrier endothelium), or `bcsfb` (blood-CSF-barrier / choroid-plexus epithelium), and subtype is `vasc` (vascular space), `endo_u` (endosomal unbound drug), `endo_b` (endosomal FcRn-bound drug), `isf` (interstitial fluid), or `fcrn` (free FcRn receptor pool); plus `brain_isf` (brain parenchymal ISF). This is the inverse-ordering analogue of the existing `<subtype>_<organ>` `pbpkSubCompartmentRegex` (Shah 2012 / Parhiz 2024).
+2. **TfR-binding bookkeeping states** tracking the drug-TfR complex (`complex_<location>`) and the unbound-TfR pools at each barrier face (luminal `_lum` = blood side, abluminal `_abl` = brain / CSF side), plus the neuronal TfR sink. `delta_utfr_<barrier>` carries the deviation of luminal unbound TfR from its baseline so the luminal level is `utfr0 + delta`.
+
+### tissue_vasc (**canonical mPBPK peripheral-tissue vascular space**)
+- **Type:** compartment
+- **Role:** Antibody amount in the lumped peripheral-tissue vascular space (volume `v_tissue_v`); exchanges with plasma by tissue plasma flow `qt` and lymph, and receives FcRn-recycled drug from `tissue_endo_b`.
+- **Source aliases:** none.
+- **Example models:** `Muliaditan_2025_mab_mpbpk_human.R`, `Muliaditan_2025_mab_mpbpk_nhp.R`.
+
+### tissue_endo_u (**canonical mPBPK peripheral-tissue endosomal unbound drug**)
+- **Type:** compartment
+- **Role:** Unbound antibody in the peripheral-tissue endosomal space (volume `v_tissue_e`); taken up by pinocytosis (`clup_t`), then either binds FcRn (-> `tissue_endo_b`) or is degraded (`kdeg_endo`).
+- **Source aliases:** none.
+- **Example models:** `Muliaditan_2025_mab_mpbpk_human.R`, `Muliaditan_2025_mab_mpbpk_nhp.R`.
+
+### tissue_endo_b (**canonical mPBPK peripheral-tissue endosomal FcRn-bound drug**)
+- **Type:** compartment
+- **Role:** FcRn-bound antibody in the peripheral-tissue endosome; recycled back to `tissue_vasc` (fraction `fr_tissue`) and `tissue_isf` (`1 - fr_tissue`) by `clup_t`.
+- **Source aliases:** none.
+- **Example models:** `Muliaditan_2025_mab_mpbpk_human.R`, `Muliaditan_2025_mab_mpbpk_nhp.R`.
+
+### tissue_isf (**canonical mPBPK peripheral-tissue interstitial fluid**)
+- **Type:** compartment
+- **Role:** Antibody amount in the lumped peripheral-tissue interstitial fluid (volume `v_tissue_i`); fed by lymph-reflection convection from `tissue_vasc` and FcRn recycling, drained by lymph flow `lt`.
+- **Source aliases:** none.
+- **Example models:** `Muliaditan_2025_mab_mpbpk_human.R`, `Muliaditan_2025_mab_mpbpk_nhp.R`.
+
+### tissue_fcrn (**canonical mPBPK peripheral-tissue free FcRn pool**)
+- **Type:** compartment
+- **Role:** Free (unoccupied) FcRn receptor pool in the peripheral-tissue endosome; consumed by binding `tissue_endo_u` and regenerated when `tissue_endo_b` is recycled out. Initial condition `fcrn_baseline * v_tissue_e`.
+- **Source aliases:** none.
+- **Example models:** `Muliaditan_2025_mab_mpbpk_human.R`, `Muliaditan_2025_mab_mpbpk_nhp.R`.
+
+### bbb_endo_u (**canonical mPBPK blood-brain-barrier endosomal unbound drug**)
+- **Type:** compartment
+- **Role:** Unbound antibody in the blood-brain-barrier (BBB) endothelial endosome (volume `v_bbb_e`); taken up from `brain_vascular` and `brain_isf` (`clup_bbb`), then binds FcRn or is degraded.
+- **Source aliases:** none.
+- **Example models:** `Muliaditan_2025_mab_mpbpk_human.R`, `Muliaditan_2025_mab_mpbpk_nhp.R`.
+
+### bbb_endo_b (**canonical mPBPK blood-brain-barrier endosomal FcRn-bound drug**)
+- **Type:** compartment
+- **Role:** FcRn-bound antibody in the BBB endothelial endosome; recycled to `brain_vascular` (fraction `fr_brain`) and `brain_isf` (`1 - fr_brain`) by `clup_bbb`. This trans-endothelial recycling is the mechanism of antibody brain entry.
+- **Source aliases:** none.
+- **Example models:** `Muliaditan_2025_mab_mpbpk_human.R`, `Muliaditan_2025_mab_mpbpk_nhp.R`.
+
+### bbb_fcrn (**canonical mPBPK blood-brain-barrier free FcRn pool**)
+- **Type:** compartment
+- **Role:** Free FcRn receptor pool in the BBB endothelial endosome; binds `bbb_endo_u` and is regenerated on `bbb_endo_b` recycling. Initial condition `fcrn_baseline * v_bbb_e`.
+- **Source aliases:** none.
+- **Example models:** `Muliaditan_2025_mab_mpbpk_human.R`, `Muliaditan_2025_mab_mpbpk_nhp.R`.
+
+### bcsfb_endo_u (**canonical mPBPK blood-CSF-barrier endosomal unbound drug**)
+- **Type:** compartment
+- **Role:** Unbound antibody in the blood-CSF-barrier (BCSFB, choroid-plexus) epithelial endosome (volume `v_bcsfb_e`); taken up from `brain_vascular` and `csf` (`clup_bcsfb`), then binds FcRn or is degraded.
+- **Source aliases:** none.
+- **Example models:** `Muliaditan_2025_mab_mpbpk_human.R`, `Muliaditan_2025_mab_mpbpk_nhp.R`.
+
+### bcsfb_endo_b (**canonical mPBPK blood-CSF-barrier endosomal FcRn-bound drug**)
+- **Type:** compartment
+- **Role:** FcRn-bound antibody in the BCSFB epithelial endosome; recycled to `brain_vascular` (fraction `fr_brain`) and `csf` (`1 - fr_brain`) by `clup_bcsfb`.
+- **Source aliases:** none.
+- **Example models:** `Muliaditan_2025_mab_mpbpk_human.R`, `Muliaditan_2025_mab_mpbpk_nhp.R`.
+
+### bcsfb_fcrn (**canonical mPBPK blood-CSF-barrier free FcRn pool**)
+- **Type:** compartment
+- **Role:** Free FcRn receptor pool in the BCSFB epithelial endosome; binds `bcsfb_endo_u` and is regenerated on `bcsfb_endo_b` recycling. Initial condition `fcrn_baseline * v_bcsfb_e`.
+- **Source aliases:** none.
+- **Example models:** `Muliaditan_2025_mab_mpbpk_human.R`, `Muliaditan_2025_mab_mpbpk_nhp.R`.
+
+### brain_isf (**canonical mPBPK brain parenchymal interstitial fluid**)
+- **Type:** compartment
+- **Role:** Antibody amount in the brain parenchymal interstitial fluid (volume `v_brain_i`); fed by BBB ECF convection and BBB FcRn recycling, exchanges with `csf` at the brain-ECF flow, and is the site of neuronal-TfR binding. The whole-brain homogenate observation `Cbrain` is computed from this plus the BBB/BCSFB endosomal pools.
+- **Source aliases:** none.
+- **Example models:** `Muliaditan_2025_mab_mpbpk_human.R`, `Muliaditan_2025_mab_mpbpk_nhp.R`.
+
+### complex_plasma (**canonical mPBPK drug-TfR complex, plasma**)
+- **Type:** compartment
+- **Role:** Drug-soluble-TfR complex in plasma (volume `vp`); formed by `kon_t` binding of plasma drug to plasma TfR (`tfrpt`), dissociating at `koff_t`, and internalized/eliminated at `kint`.
+- **Source aliases:** none.
+- **Example models:** `Muliaditan_2025_mab_mpbpk_human.R`, `Muliaditan_2025_mab_mpbpk_nhp.R`.
+
+### complex_bbb_lum (**canonical mPBPK drug-TfR complex, BBB luminal**)
+- **Type:** compartment
+- **Role:** Drug-TfR complex on the luminal (blood) face of the BBB; formed from `brain_vascular` drug and luminal BBB TfR, transcytosed to the abluminal face at `ktrans`, and internalized at `kint`.
+- **Source aliases:** none.
+- **Example models:** `Muliaditan_2025_mab_mpbpk_human.R`, `Muliaditan_2025_mab_mpbpk_nhp.R`.
+
+### complex_bbb_abl (**canonical mPBPK drug-TfR complex, BBB abluminal**)
+- **Type:** compartment
+- **Role:** Drug-TfR complex on the abluminal (brain) face of the BBB; arrives by transcytosis from `complex_bbb_lum`, dissociates to release drug into `brain_isf`, and is internalized at `kint`.
+- **Source aliases:** none.
+- **Example models:** `Muliaditan_2025_mab_mpbpk_human.R`, `Muliaditan_2025_mab_mpbpk_nhp.R`.
+
+### complex_bcsfb_lum (**canonical mPBPK drug-TfR complex, BCSFB luminal**)
+- **Type:** compartment
+- **Role:** Drug-TfR complex on the luminal (blood) face of the BCSFB; formed from `brain_vascular` drug and luminal BCSFB TfR, transcytosed to the abluminal face at `ktrans`, internalized at `kint`.
+- **Source aliases:** none.
+- **Example models:** `Muliaditan_2025_mab_mpbpk_human.R`, `Muliaditan_2025_mab_mpbpk_nhp.R`.
+
+### complex_bcsfb_abl (**canonical mPBPK drug-TfR complex, BCSFB abluminal**)
+- **Type:** compartment
+- **Role:** Drug-TfR complex on the abluminal (CSF) face of the BCSFB; arrives by transcytosis from `complex_bcsfb_lum`, dissociates to release drug into `csf`, internalized at `kint`.
+- **Source aliases:** none.
+- **Example models:** `Muliaditan_2025_mab_mpbpk_human.R`, `Muliaditan_2025_mab_mpbpk_nhp.R`.
+
+### complex_neuron (**canonical mPBPK drug-TfR complex, neuronal**)
+- **Type:** compartment
+- **Role:** Drug bound to neuronal TfR (total `tfrtotn`) in the brain ISF; formed by `kon_t` binding of `brain_isf` drug to unbound neuronal TfR, dissociating at `koff_t`, internalized at `kint`. Represents the target-mediated neuronal sink.
+- **Source aliases:** none.
+- **Example models:** `Muliaditan_2025_mab_mpbpk_human.R`, `Muliaditan_2025_mab_mpbpk_nhp.R`.
+
+### delta_utfr_bbb (**canonical mPBPK luminal unbound-TfR deviation, BBB**)
+- **Type:** compartment
+- **Role:** Deviation of the luminal unbound TfR concentration on the BBB from its baseline `utfr0_bbb`, so the luminal level is `utfr_bbb_lum = utfr0_bbb + c_delta_utfr_bbb`. Driven by TfR synthesis/degradation, drug binding, and abluminal-TfR recycling.
+- **Source aliases:** none.
+- **Example models:** `Muliaditan_2025_mab_mpbpk_human.R`, `Muliaditan_2025_mab_mpbpk_nhp.R`.
+
+### delta_utfr_bcsfb (**canonical mPBPK luminal unbound-TfR deviation, BCSFB**)
+- **Type:** compartment
+- **Role:** Deviation of the luminal unbound TfR concentration on the BCSFB from its baseline `utfr0_bcsfb`, so `utfr_bcsfb_lum = utfr0_bcsfb + c_delta_utfr_bcsfb`. BCSFB counterpart of `delta_utfr_bbb`.
+- **Source aliases:** none.
+- **Example models:** `Muliaditan_2025_mab_mpbpk_human.R`, `Muliaditan_2025_mab_mpbpk_nhp.R`.
+
+### utfr_bbb_abl (**canonical mPBPK abluminal unbound TfR, BBB**)
+- **Type:** compartment
+- **Role:** Unbound TfR pool on the abluminal (brain) face of the BBB; consumed by binding abluminal drug to form `complex_bbb_abl` and regenerated by recycling at `krec_utfr`.
+- **Source aliases:** none.
+- **Example models:** `Muliaditan_2025_mab_mpbpk_human.R`, `Muliaditan_2025_mab_mpbpk_nhp.R`.
+
+### utfr_bcsfb_abl (**canonical mPBPK abluminal unbound TfR, BCSFB**)
+- **Type:** compartment
+- **Role:** Unbound TfR pool on the abluminal (CSF) face of the BCSFB; consumed by binding abluminal drug to form `complex_bcsfb_abl` and regenerated by recycling at `krec_utfr`. BCSFB counterpart of `utfr_bbb_abl`.
+- **Source aliases:** none.
+- **Example models:** `Muliaditan_2025_mab_mpbpk_human.R`, `Muliaditan_2025_mab_mpbpk_nhp.R`.
 
 ## Metabolite / sibling-drug / payload suffixes
 

@@ -137,3 +137,50 @@ Each downstream PR (6b, 6c, ...) MUST:
 * Run a before/after simulation with equivalent input values and verify
   numerical-tolerance equivalence of outputs.
 * Document the validation result in the per-PR deliverable report.
+
+---
+
+## Dosing&harr;concentration dimensional-check relaxation (2026-06-28)
+
+Separately from the canonical-Units SI standardization above, the
+`.checkUnits()` dosing&harr;concentration *dimensional* heuristic in
+`R/checkModelConventions.R` was relaxed during the 2026-06-28 naming audit
+(operator decision) so it stops flagging non-plasma-concentration PD / QSP /
+bacterial-kill endpoints. The heuristic compares the `units$dosing` amount
+against the `units$concentration` numerator; before the change it emitted a
+`warning` whenever the two were not the same pharmacological dimension, which
+fired spuriously on legitimate PD endpoints whose `concentration` field
+documents a non-mass/volume output (mmHg, ordinal grade, 10^9 cells/L,
+log10 CFU/mL, mU/mL, ...).
+
+New behavior (the relaxation only removes or downgrades issues; it never adds
+a warning):
+
+* **Parentheticals stripped before comparison.** Descriptive parentheticals on
+  either token are removed first, so e.g.
+  `dosing = "nmol (convert mg via dose_nmol = dose_mg / mw_kda * 1000)"` now
+  matches a `nmol/L` concentration. This fixed a genuine false positive on the
+  Muliaditan 2025 mAb mPBPK models (nmol dose vs nmol/L concentration).
+* **Non-amount endpoint &rarr; skipped.** A `concentration` whose numerator is
+  not a recognized pharmacological amount (CFU, cells, mmHg, ordinal grade, mU,
+  receptor occupancy, probability, ...) is a biological / PD endpoint; the
+  mass/volume check does not apply and is skipped (no issue).
+* **Cross-dimension amounts &rarr; `info`.** A `concentration` numerator that IS
+  a pharmacological amount but of a different dimension than the dosing amount
+  (mass dose vs molar concentration, mg vs IU, ...) is reported as `info` rather
+  than `warning`, because the molecular-weight / potency conversion is expected
+  and performed in `model()`.
+* **Preserved `warning`.** The one retained `warning` is when `concentration`
+  has no `/` AND is itself a bare pharmacological amount (an amount written
+  where a concentration belongs) -- a genuine PK mistake.
+
+Net effect across the package: the 11 dosing&harr;concentration warnings on the
+2026-06-28 consolidation's new PD / QSP / bacterial models cleared, along with
+the equivalent pre-existing warnings on older PD / QSP / bacterial-kill models;
+total package `units` warnings dropped from 40 to 2 (the residual 2 are the
+preserved bare-amount-as-concentration case). No model files were changed and no
+new warnings were introduced. Rationale: the dimensional heuristic is only
+meaningful for classical PK models where `concentration` is a plasma-drug
+concentration; for PD / QSP / MBMA / in-vitro / bacterial-kill models the field
+legitimately documents a non-plasma output, so a mass/volume mismatch there is
+informational, not an error.
