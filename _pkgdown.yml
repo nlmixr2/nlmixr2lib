@@ -1084,6 +1084,10 @@ navbar:
         href: articles/Wittau_2015_meropenem.html
       - text: "Meropenem ciprofloxacin (Rees 2018)"
         href: articles/Rees_2018_meropenem_ciprofloxacin.html
+      - text: "Meropenem tobramycin PAO1 (Landersdorfer 2018)"
+        href: articles/Landersdorfer_2018_meropenem_tobramycin.html
+      - text: "Meropenem tobramycin PAOmutS (Landersdorfer 2018)"
+        href: articles/Landersdorfer_2018_meropenem_tobramycin.html
       - text: "Metformin (Chae 2012)"
         href: articles/Chae_2012_metformin.html
       - text: "Metformin (Choi 2018)"
@@ -2650,6 +2654,7 @@ articles:
   - articles/Landersdorfer_2012_vildagliptin
   - articles/Landersdorfer_2013_nisin_amikacin_linezolid
   - articles/Landersdorfer_2018_imipenem_tobramycin
+  - articles/Landersdorfer_2018_meropenem_tobramycin
   - articles/Langdon_2010_PF00821385
   - articles/Laouenan_2015_ribavirin
   - articles/Lawson_2022_busulfan

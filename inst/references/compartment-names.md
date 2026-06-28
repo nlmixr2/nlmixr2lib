@@ -1250,6 +1250,12 @@ Central-compartment drug states named after the drug INN abbreviation. Sibling t
 - **Source aliases:** none.
 - **Example models:** `Rees_2018_meropenem_ciprofloxacin.R`.
 
+### ctob (**canonical tobramycin bath-concentration state**)
+- **Type:** compartment
+- **Role:** Tobramycin bath / medium concentration state (mg/L) in static-concentration time-kill and hollow-fiber infection-model time-kill PD; dosed by the user, drives the Hill-type tobramycin killing term on each bacterial subpopulation, and disrupts the bacterial outer membrane to lower the effective meropenem KC50 through the mechanistic-synergy term. Pairs with `cmem` in meropenem-plus-tobramycin combination MBMs.
+- **Source aliases:** none.
+- **Example models:** `Landersdorfer_2018_meropenem_tobramycin_PAO1.R`, `Landersdorfer_2018_meropenem_tobramycin_PAOmutS.R`.
+
 ---
 
 ## Bacterial subpopulation states
