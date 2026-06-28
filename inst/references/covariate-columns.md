@@ -4580,6 +4580,17 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Example models:** `Savic_2017_cladribine.R` (multiplicative effect on cladribine non-renal clearance: `cl_nonrenal *= (1 + e_ifn_clnr * CONMED_IFNB1A)` with `e_ifn_clnr = 0.21`, i.e. a 21% increase in non-renal CL when coadministered with IFN beta-1a).
 - **Notes:** Captured at the dose-record level in Savic 2017 (multiple-dose study 26486 alternated between cladribine alone and cladribine + IFN beta-1a periods). The interaction mechanism is not definitively established in the source paper; Savic 2017 discusses that the observed effect could alternatively be modelled on bioavailability or interpreted as a period-effect / interoccasion variability artefact. Future cladribine + immunomodulator extractions should reuse this canonical when IFN beta-1a is the specific concomitant agent; register a sibling canonical (e.g. `CONMED_IFNB1B`, `CONMED_IFNALPHA`) if a different interferon species is intended.
 
+### CONMED_IFNALPHA (**canonical for concomitant interferon alpha coadministration indicator**)
+- **Description:** 1 = patient coadministered systemic interferon alpha (any subtype; recombinant IFN-alpha-2a, IFN-alpha-2b, or pegylated IFN-alpha) during the observation interval, 0 = no concomitant IFN-alpha. Time-fixed when the source paper analyses cohorts whose IFN-alpha exposure is unchanged across the analysis window (per-trial protocol); time-varying when IFN-alpha cycling on/off is recorded at the observation level.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no concomitant IFN-alpha).
+- **Source aliases:**
+  - `IFNa` -- used in `Han_2016_bevacizumab.R` (Han 2016 Table 3 categorical indicator on bevacizumab CL; the 102 IFN-alpha-coadministered patients were enrolled in renal cell carcinoma study BO17705 per Han 2016 Table 1 and Table 2 row 'Concomitant treatment').
+- **Example models:** `Han_2016_bevacizumab.R` (multiplicative effect on bevacizumab CL: `cl *= exp(e_ifna_lcl * CONMED_IFNALPHA)` with `e_ifna_lcl = log(0.844) = -0.170`, i.e. CL is 15.6% lower when IFN-alpha is coadministered).
+- **Notes:** Sibling canonical to `CONMED_IFNB1A` (interferon beta-1a) under the `CONMED_<INN>` family; the existing CONMED_IFNB1A entry explicitly anticipated this `CONMED_IFNALPHA` name for the alpha-interferon species. Per-paper alpha-subtype detail (IFN-alpha-2a vs -2b vs pegylated) is documented in `covariateData[[CONMED_IFNALPHA]]$notes` where available; pooled here because the source paper (Han 2016) does not separately enumerate subtypes. Distinct from `CONMED_IFNB1A`/`CONMED_IFNB1B` (beta-interferon species). Ratified canonically on 2026-06-25 alongside the Han 2016 bevacizumab extraction.
+
 ### CONMED_IMMUNOMOD (**canonical for any-immunomodulator (purine analogue or methotrexate) composite indicator**)
 - **Description:** 1 = subject is on at least one concomitant immunomodulator (any of: azathioprine (AZA), 6-mercaptopurine (6-MP), or methotrexate (MTX)) at the PK observation, 0 = no concomitant immunomodulator from this class. A composite pooled indicator used in inflammatory-bowel-disease popPK analyses where the source paper does not separate the individual thiopurine vs MTX effects on therapeutic-mAb (typically anti-TNF) clearance.
 - **Units:** (binary)
