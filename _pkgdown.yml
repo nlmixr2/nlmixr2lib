@@ -660,8 +660,8 @@ navbar:
         href: articles/Kim_2017_fimasartan.html
       - text: "Finafloxacin (Taubert 2018)"
         href: articles/Taubert_2018_finafloxacin.html
-      - text: "Finerenone (Eissing 2024)"
-        href: articles/Eissing_2024_finerenone.html
+      - text: "Finerenone (Goulooze 2022)"
+        href: articles/Goulooze_2022_finerenone.html
       - text: "Flucloxacillin (Landersdorfer 2007)"
         href: articles/Landersdorfer_2007_flucloxacillin.html
       - text: "Fluconazole (Han 2013)"
@@ -2332,7 +2332,7 @@ articles:
   - articles/GonzalezSales_2015_testosterone
   - articles/GonzalezSales_2024_imetelstat
   - articles/Goti_2018_vancomycin
-  - articles/Grasela_1985_phenobarbital
+  - articles/Goulooze_2022_finerenone
   - articles/Green_2003_enoxaparin
   - articles/Green_2005_enoxaparin
   - articles/Grimm_2023
