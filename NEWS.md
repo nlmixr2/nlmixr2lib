@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Muliaditan 2025 mAb mPBPK ([doi:10.1080/19420862.2025.2515414](https://doi.org/10.1080/19420862.2025.2515414)) -- two paired files (`Muliaditan_2025_mab_mpbpk_nhp` cynomolgus monkey primary fit, `Muliaditan_2025_mab_mpbpk_human` 70-kg human projection) for transferrin-receptor (TfR) mediated brain delivery of monoclonal antibodies (26-compartment Bloomingdale/Chang mPBPK with FcRn recycling and TfR binding in plasma + brain barriers).
+* Add Niloy 2026 MTMSA-Trp ([doi:10.21203/rs.3.rs-9035594/v1](https://doi.org/10.21203/rs.3.rs-9035594/v1)) -- preclinical female athymic nu/nu mice (one-compartment IV popPK with empirical power-function dose-dependent clearance over 0.3-10 mg/kg; ratifies general scope for the `COHDOSE` covariate canonical).
 * Add Gaohua 2012 pregnancy PBPK ([doi:10.1111/j.1365-2125.2012.04363.x](https://doi.org/10.1111/j.1365-2125.2012.04363.x)) -- healthy pregnant Caucasian women (14-compartment whole-body p-PBPK with GA-dependent maternal physiology, applied to caffeine [CYP1A2], metoprolol [CYP2D6], and midazolam [CYP3A4]); ratifies new canonical bare `skin` PBPK compartment.
 * Add Morris 2011 telapristone ([doi:10.1208/s12248-011-9304-7](https://doi.org/10.1208/s12248-011-9304-7)) -- adult women with single-dose telapristone-acetate phase I/II PK studies; ratifies new `cdb4453` metabolite suffix, `MIX_FAST_ELIM`, and `RENALIMP_MOD` covariate canonicals.
 * Add Padoin 1998 cephalexin ([doi:10.1128/aac.42.6.1463](https://doi.org/10.1128/aac.42.6.1463)) -- preclinical male Wistar rats with a cephalexin / quinapril oral coadministration DDI (ratifies new `CONMED_QPRL_ORAL` covariate canonical).
