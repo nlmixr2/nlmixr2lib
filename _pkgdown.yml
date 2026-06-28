@@ -568,6 +568,8 @@ navbar:
         href: articles/Goggin_2004_emfilermin.html
       - text: "Emicizumab (Yoneyama 2017)"
         href: articles/Yoneyama_2017_emicizumab.html
+      - text: "Empagliflozin (Johnston 2019)"
+        href: articles/Johnston_2019_empagliflozin.html
       - text: "Emtricitabine (Valade 2014)"
         href: articles/Valade_2014_emtricitabine.html
       - text: "Emtricitabine (Valade 2015)"
@@ -2464,6 +2466,7 @@ articles:
   - articles/Jiao_2009_sirolimus
   - articles/Jin_2014_simvastatin
   - articles/Johnson_2011_olanzapine_rat
+  - articles/Johnston_2019_empagliflozin
   - articles/Jonckheere_2019_cefepime
   - articles/Jones_2011_PF04878691_HCV
   - articles/Jonsson_2005_disufenton
