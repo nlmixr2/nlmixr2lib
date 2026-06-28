@@ -1210,6 +1210,8 @@ navbar:
         href: articles/Hayashi_2007_omalizumab.html
       - text: "Omalizumab (Lowe 2009)"
         href: articles/Lowe_2009_omalizumab.html
+      - text: "Omalizumab pediatric (Zhu 2023)"
+        href: articles/Zhu_2023_omalizumab_pediatric.html
       - text: "Ombitasvir (Mensing 2017)"
         href: articles/Mensing_2017_3D_HCV_regimen.html
       - text: "Omeprazole (Solana 2014)"
@@ -3040,6 +3042,7 @@ articles:
   - articles/Zhou_2025_brentuximab
   - articles/Zhu_2014_tacrolimus
   - articles/Zhu_2017_lebrikizumab
+  - articles/Zhu_2023_omalizumab_pediatric
   - articles/Zierhut_2008_osteoprotegerin
   - articles/Zingmark_2003_clomethiazole
   - articles/Zou_2012_MI_219
