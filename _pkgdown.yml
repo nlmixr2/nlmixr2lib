@@ -752,6 +752,8 @@ navbar:
         href: articles/Ngo_2020_HL2351.html
       - text: "Haloperidol (Franken 2017)"
         href: articles/Franken_2017_haloperidol.html
+      - text: "Haloperidol panss subscales (PillaReddy 2013)"
+        href: articles/PillaReddy_2013_panss_subscales.html
       - text: "Higenamine (Feng 2012)"
         href: articles/Feng_2012_higenamine.html
       - text: "HuHMFG1 (Royer 2010)"
@@ -1152,6 +1154,8 @@ navbar:
         href: articles/Yu_2022_ofatumumab.html
       - text: "Ofloxacin (Chigutsa 2012)"
         href: articles/Chigutsa_2012_ofloxacin.html
+      - text: "Olanzapine panss subscales (PillaReddy 2013)"
+        href: articles/PillaReddy_2013_panss_subscales.html
       - text: "Olanzapine rat (Johnson 2011)"
         href: articles/Johnson_2011_olanzapine_rat.html
       - text: "Olaratumab (Mo 2018)"
@@ -1224,6 +1228,8 @@ navbar:
         href: articles/deJonge_2005_paclitaxel.html
       - text: "Paclitaxel myelosuppression (Wahlby 2004)"
         href: articles/Wahlby_2004_time_varying_covariates.html
+      - text: "Paliperidone panss subscales (PillaReddy 2013)"
+        href: articles/PillaReddy_2013_panss_subscales.html
       - text: "Palivizumab (Robbie 2012)"
         href: articles/Robbie_2012_palivizumab.html
       - text: "Pantoprazole (Pettersen 2009)"
@@ -1428,6 +1434,8 @@ navbar:
         href: articles/Feng_2008_risperidone.html
       - text: "Risperidone (Sherwin 2012)"
         href: articles/Sherwin_2012_risperidone.html
+      - text: "Risperidone panss subscales (PillaReddy 2013)"
+        href: articles/PillaReddy_2013_panss_subscales.html
       - text: "Ritonavir (Kappelhoff 2005)"
         href: articles/Kappelhoff_2005_ritonavir.html
       - text: "Ritonavir (Mensing 2017)"
@@ -1842,6 +1850,8 @@ navbar:
         href: articles/PiresdeMello_2018_zika_FAV_HFIM.html
       - text: "Zika FAV IFN RBV (PiresdeMello 2018)"
         href: articles/PiresdeMello_2018_zika_FAV_IFN_RBV.html
+      - text: "Ziprasidone panss subscales (PillaReddy 2013)"
+        href: articles/PillaReddy_2013_panss_subscales.html
       - text: "Zolbetuximab (Yamada 2025)"
         href: articles/Yamada_2025_zolbetuximab.html
       - text: "Zonisamide (Hashimoto 1994)"
@@ -2621,6 +2631,7 @@ articles:
   - articles/Pettersen_2009_pantoprazole
   - articles/Philippe_2015_cyclosporine
   - articles/Pierre_2017_morphine
+  - articles/PillaReddy_2013_panss_subscales
   - articles/Pillai_2004_ibandronate
   - articles/PiresdeMello_2018_zika_FAV_HFIM
   - articles/PiresdeMello_2018_zika_FAV_IFN_RBV
