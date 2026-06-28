@@ -542,6 +542,13 @@ The MTP framework partitions the bacterial population into three states. The ori
 - **Example models:** `Thorsted_2016_somatropin_rat.R`, `Thorsted_2016_somatropin_human.R`.
 - **Notes:** Registered 2026-05-28 per the naming audit.
 
+### BMD (**canonical bone mineral density**)
+- **Type:** compartment
+- **Role:** Bone mineral density PD output, reported in g/cm^2 (femoral neck / lumbar spine / total hip per the source paper's DXA region). Used as the modelled endpoint in osteoporosis disease-progression models (e.g., piecewise-linear menopausal BMD trajectories driven by years since final menstrual period; semi-mechanistic bone-remodelling models linking RANKL / OPG / PTH / vitamin D dynamics to BMD turnover). Usually algebraic in `model()`; can be an ODE state in mechanistic bone-remodelling models.
+- **Source aliases:** `bmd`. Capitalisation matches the convention for upper-case observation variables (`Cc`).
+- **Example models:** `Plan_2012_bmd_fracture.R`.
+- **Notes:** Founding example Plan 2012 PAGE poster; the BMD output is algebraic (BMD <- b * (1 + sum(slope * piece) / 100)) and is the LHS of the residual-error declaration `BMD ~ add(addSd)`. Distinct from the `vp_bone` PBPK bone-vascular compartment, which is a drug-distribution state, not an output endpoint.
+
 ---
 
 ## Gastric / GI transit
