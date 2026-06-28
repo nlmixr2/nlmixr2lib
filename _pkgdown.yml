@@ -64,6 +64,8 @@ navbar:
         href: articles/Xie_2019_agomelatine.html
       - text: "Alemtuzumab (Mould 2007)"
         href: articles/Mould_2007_alemtuzumab.html
+      - text: "Alirocumab (Djebli 2017)"
+        href: articles/Djebli_2017_alirocumab.html
       - text: "Alirocumab (Martinez 2019)"
         href: articles/Martinez_2019_alirocumab.html
       - text: "Alvespimycin (Aregbe 2012)"
@@ -2242,6 +2244,7 @@ articles:
   - articles/Diep_2022_eplontersen
   - articles/Diep_2026_donidalorsen
   - articles/Diepstraten_2013_propofol
+  - articles/Djebli_2017_alirocumab
   - articles/Dodds_2005_rfxiii_cyno
   - articles/Dogterom_2018_asenapine
   - articles/DoldanMartelli_2013_EGF_IFN_chimera
