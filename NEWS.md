@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Yukawa 2002 clonazepam (J Clin Pharmacol 2002;42(1):81-88; DOI not on disk) -- Japanese pediatric and adult epileptic patients on chronic oral clonazepam (ratifies new `CONMED_AED_GE2` covariate canonical for the 3-tier AED-count drug-interaction factor).
+* Add Azechi 2024 tamibarotene ([doi:10.3390/curroncol31110527](https://doi.org/10.3390/curroncol31110527)) -- pediatric and young adult patients (4-23 years) with recurrent or refractory solid tumors.
 * Add Gaohua 2012 pregnancy PBPK ([doi:10.1111/j.1365-2125.2012.04363.x](https://doi.org/10.1111/j.1365-2125.2012.04363.x)) -- healthy pregnant Caucasian women (14-compartment whole-body p-PBPK with GA-dependent maternal physiology, applied to caffeine [CYP1A2], metoprolol [CYP2D6], and midazolam [CYP3A4]); ratifies new canonical bare `skin` PBPK compartment.
 * Add Morris 2011 telapristone ([doi:10.1208/s12248-011-9304-7](https://doi.org/10.1208/s12248-011-9304-7)) -- adult women with single-dose telapristone-acetate phase I/II PK studies; ratifies new `cdb4453` metabolite suffix, `MIX_FAST_ELIM`, and `RENALIMP_MOD` covariate canonicals.
 * Add Padoin 1998 cephalexin ([doi:10.1128/aac.42.6.1463](https://doi.org/10.1128/aac.42.6.1463)) -- preclinical male Wistar rats with a cephalexin / quinapril oral coadministration DDI (ratifies new `CONMED_QPRL_ORAL` covariate canonical).

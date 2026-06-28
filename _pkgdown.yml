@@ -1698,6 +1698,8 @@ navbar:
         href: articles/Charles_2007_tafenoquine.html
       - text: "Tafenoquine (Edstein 2001)"
         href: articles/Edstein_2001_tafenoquine.html
+      - text: "Tamibarotene pediatric (Azechi 2024)"
+        href: articles/Azechi_2024_tamibarotene_pediatric.html
       - text: "Tamsulosin (Tsuda 2010)"
         href: articles/Tsuda_2010_tamsulosin.html
       - text: "Taranabant (Li 2010)"
@@ -2130,6 +2132,7 @@ articles:
   - articles/Attarwala_2023_mRNA3927
   - articles/Ayyar_2024_givosiran
   - articles/Ayyoub_2016_pyronaridine
+  - articles/Azechi_2024_tamibarotene_pediatric
   - articles/Back_2018_fenofibrate
   - articles/Baheti_2011_tenofovir
   - articles/Bajaj_2017_nivolumab
