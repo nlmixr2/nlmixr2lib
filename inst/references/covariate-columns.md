@@ -3108,7 +3108,7 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Reference category:** 0 (non-COPD subject; the complement group is paper-defined -- for Lahu 2010 the reference is the pooled phase I healthy-volunteer cohort).
 - **Source aliases:**
   - `COPD` -- used in `Lahu_2010_roflumilast.R` (paper text covariate symbol in equation 6 and 7).
-- **Example models:** `Lahu_2010_roflumilast.R` (linear additive effects on roflumilast parent CL (-39.4%) and V1 (+184%) and on roflumilast N-oxide CL (-7.9%) and Vd (-21.4%); reference category 0 = pooled phase I healthy volunteers, 1 = pooled phase II/III moderate-to-severe COPD patient).
+- **Example models:** `Lahu_2010_roflumilast.R` (linear additive effects on roflumilast parent CL (-39.4%) and V1 (+184%) and on roflumilast N-oxide CL (-7.9%) and Vd (-21.4%); reference category 0 = pooled phase I healthy volunteers, 1 = pooled phase II/III moderate-to-severe COPD patient), `Facius_2018_roflumilast.R` (linear additive phase II-III patient effects on KA (-73.3%), parent CL (-55.2%), N-oxide CL (-24.4%), and N-oxide central V3 (-20.7%) on the joint Lahu 2010 base model re-estimated on the OPTIMIZE + REACT phase III COPD dataset; reference category 0 = the implicit phase I healthy-volunteer cohort that backed the upstream Lahu 2010 fixed structural parameters).
 - **Notes:** Used when a population PK/PD model pools healthy volunteers with COPD patients and the COPD-vs-HV contrast is retained as a covariate on PK parameters. Scope: specific because the complement reference category and the COPD-severity inclusion criteria are paper-defined.
 
 ### DIS_OBESE_MORBID (**canonical for morbidly obese cohort indicator**)

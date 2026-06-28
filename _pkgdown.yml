@@ -186,10 +186,6 @@ navbar:
         href: articles/Zheng_2014_azithromycin.html
       - text: "Azithromycin (Zheng 2018)"
         href: articles/Zheng_2018_azithromycin.html
-      - text: "BAY81 8973 (Garmann 2017)"
-        href: articles/Garmann_2017_BAY81_8973.html
-      - text: "BAY94 9027 (Solms 2020)"
-        href: articles/Solms_2020_BAY94_9027.html
       - text: "Bapineuzumab (Hu 2014)"
         href: articles/Hu_2014_bapineuzumab.html
       - text: "BAY81 8973 (Garmann 2017)"
@@ -982,22 +978,6 @@ navbar:
         href: articles/Chen_2020_luspatercept.html
       - text: "M3g rat (Xie 2000)"
         href: articles/Xie_2000_m3g_rat.html
-      - text: "MBG453 (Xu 2023)"
-        href: articles/Xu_2023_MBG453.html
-      - text: "MEDI528 (Cao 2013)"
-        href: articles/Cao_2013_MEDI528.html
-      - text: "MHD rat (Clinckers 2008)"
-        href: articles/Clinckers_2008_MHD_rat.html
-      - text: "MI 219 (Zou 2012)"
-        href: articles/Zou_2012_MI_219.html
-      - text: "MK3577 (Peng 2014)"
-        href: articles/Peng_2014_MK3577.html
-      - text: "MK3577 t2dm (Peng 2014)"
-        href: articles/Peng_2014_MK3577.html
-      - text: "MRNA3927 (Attarwala 2023)"
-        href: articles/Attarwala_2023_mRNA3927.html
-      - text: "MTMSATrp mouse (Niloy 2026)"
-        href: articles/Niloy_2026_MTMSATrp_mouse.html
       - text: "Magnesium sulfate (Easterling 2018)"
         href: articles/Easterling_2018_magnesium_sulfate.html
       - text: "MagnesiumSulfate (Salinger 2013)"
@@ -1506,6 +1486,8 @@ navbar:
         href: articles/Tammara_2017_rivipansel.html
       - text: "Rocatinlimab (Okada 2025)"
         href: articles/Okada_2025_rocatinlimab.html
+      - text: "Roflumilast (Facius 2018)"
+        href: articles/Facius_2018_roflumilast.html
       - text: "Roflumilast (Lahu 2010)"
         href: articles/Lahu_2010_roflumilast.html
       - text: "Rolofylline (Stroh 2013)"
@@ -2303,6 +2285,7 @@ articles:
   - articles/Eugene_2016_metoprolol
   - articles/Eyler_2014_ertapenem
   - articles/Ezzati_2014_dexmedetomidine_piglet
+  - articles/Facius_2018_roflumilast
   - articles/Faelens_2021_infliximab
   - articles/Fang_2010_etanercept
   - articles/Fanta_2007_ciclosporin
@@ -3045,24 +3028,5 @@ articles:
   - articles/Zuo_2016_UDCA
   - articles/Zurlinden_2016_paracetamol
   - articles/Zvada_2010_rifapentine
-  - articles/deAlwis_1998_ondansetron
-  - articles/deHoogd_2017_morphine
-  - articles/deJonge_2005_paclitaxel
-  - articles/deKock_2017_sulfadoxinePyrimethamine
-  - articles/deVriesSchultink_2018_cardiotoxicity
-  - articles/deVriesSchultink_2020_zenocutuzumab
-  - articles/deWinter_2009_mycophenolic_acid
-  - articles/deWit_2016_everolimus
-  - articles/elDesoky_1997_theophylline_pediatric_asthma
-  - articles/vanHasselt_2015_eribulin
-  - articles/vanRongen_2015_midazolam
-  - articles/vanRongen_2016_acetaminophen
-  - articles/vanRongen_2017_midazolam
-  - articles/vanRongen_2018_metformin
-  - articles/vanRongen_2018_midazolam
-  - articles/vanWijk_2019_paracetamol
-  - articles/vandenBerg_2021_finerenone
-  - articles/vanderWalt_2013_dapagliflozin
-  - articles/vonHentig_2009_saquinavir
   internal: true
 # AUTOGEN:articles:END
