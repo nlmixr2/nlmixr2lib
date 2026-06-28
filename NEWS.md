@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Hajjar 2018 cipaglucosidase alfa + miglustat ([Metrum/Amicus 2018 ACCP poster](https://metrumrg.com/wp-content/uploads/Pubs/2018-ACCP-Population-PK-of-ATB200-AT221-in-Pompe-Patients_2018-09-18-Poster_L1e.pdf)) -- adults with Pompe disease (parallel linear + Michaelis-Menten ATB200 IV PK with AT2221 categorical CL effect; AT2221 oral sequential ZO+FO absorption); ratifies new `DOSE_130MG` and `DOSE_260MG` covariate canonicals.
+* Add Lu 2017 polatuzumab vedotin peripheral-neuropathy TTE ([doi:10.1002/psp4.12192](https://doi.org/10.1002/psp4.12192)) -- adults with relapsed/refractory B-cell non-Hodgkin lymphoma (effect-compartment + Weibull-modulated hazard for grade >= 2 PN, inlined Lu 2019 acMMAE PK; ratifies new `BL_PN_GR1`, `PRIOR_RADIATION`, `PRIOR_VINCA`, `PRIOR_PLATIN`, `TUMTP_FL`, and `TUMTP_OTHER_NHL` covariate canonicals).
 * Add Gaohua 2012 pregnancy PBPK ([doi:10.1111/j.1365-2125.2012.04363.x](https://doi.org/10.1111/j.1365-2125.2012.04363.x)) -- healthy pregnant Caucasian women (14-compartment whole-body p-PBPK with GA-dependent maternal physiology, applied to caffeine [CYP1A2], metoprolol [CYP2D6], and midazolam [CYP3A4]); ratifies new canonical bare `skin` PBPK compartment.
 * Add Morris 2011 telapristone ([doi:10.1208/s12248-011-9304-7](https://doi.org/10.1208/s12248-011-9304-7)) -- adult women with single-dose telapristone-acetate phase I/II PK studies; ratifies new `cdb4453` metabolite suffix, `MIX_FAST_ELIM`, and `RENALIMP_MOD` covariate canonicals.
 * Add Padoin 1998 cephalexin ([doi:10.1128/aac.42.6.1463](https://doi.org/10.1128/aac.42.6.1463)) -- preclinical male Wistar rats with a cephalexin / quinapril oral coadministration DDI (ratifies new `CONMED_QPRL_ORAL` covariate canonical).

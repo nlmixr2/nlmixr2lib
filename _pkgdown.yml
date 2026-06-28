@@ -1356,6 +1356,8 @@ navbar:
         href: articles/Kakara_2014_statins_LDLC.html
       - text: "Polatuzumab (Lu 2019)"
         href: articles/Lu_2019_polatuzumab.html
+      - text: "Polatuzumab neuropathy (Lu 2017)"
+        href: articles/Lu_2017_polatuzumab_neuropathy.html
       - text: "Posaconazole (Kohl 2010)"
         href: articles/Kohl_2010_posaconazole.html
       - text: "Posdinemab (PerezRuixo 2025)"
@@ -2607,6 +2609,7 @@ articles:
   - articles/Lu_2015_tacrolimus
   - articles/Lu_2015_vismodegib
   - articles/Lu_2016_tenofovir
+  - articles/Lu_2017_polatuzumab_neuropathy
   - articles/Lu_2019_polatuzumab
   - articles/Lu_2019_tacrolimus_industry_meta
   - articles/Lu_2022_patritumab

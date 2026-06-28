@@ -1497,7 +1497,7 @@ All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODA
 - **Source aliases:**
   - `Bcell0` -- used in `Yu_2022_ofatumumab.R`.
   - `BBCC` (NHL Phase I/Ib/II convention; values in 10^6 cells/L = cells/uL) -- used in `Lu_2019_polatuzumab.R`.
-- **Example models:** `Yu_2022_ofatumumab.R` (power effect on the maximum B-cell-lysis stimulatory effect Emax, exponent 0.275, reference 200 cells/uL), `Lu_2019_polatuzumab.R` (two distinct effects: power on CL_INF with input floored at 1 cell/uL, and a thresholded power on CL_T with the BLBCELL/121-cells/uL ratio floored at 1).
+- **Example models:** `Yu_2022_ofatumumab.R` (power effect on the maximum B-cell-lysis stimulatory effect Emax, exponent 0.275, reference 200 cells/uL), `Lu_2019_polatuzumab.R` (two distinct effects: power on CL_INF with input floored at 1 cell/uL, and a thresholded power on CL_T with the BLBCELL/121-cells/uL ratio floored at 1), `Lu_2017_polatuzumab_neuropathy.R` (carries forward the Lu 2019 acMMAE PK-side effects via the inlined acMMAE popPK layer; not used directly by the Lu 2017 TTE PD layer).
 - **Notes:** Distinct from a *time-varying* B cell count, which is the PD response variable rather than a covariate. Scope: specific because the clinically relevant baseline depends on the surface marker (CD19, CD20, CD22) and whether the panel reports total B cells or memory/naive subsets -- register a new canonical name if a future paper uses a different marker. Both Yu 2022 (anti-CD20 ofatumumab) and Lu 2019 (anti-CD79b polatuzumab vedotin) use CD19+ counts, so the canonical is reused; subtype-specific differences are documented in each model's `covariateData[[BLBCELL]]$notes`.
 
 ### BL_PARP_PBL (**canonical for baseline poly(ADP-ribose) polymerase activity in peripheral blood lymphocytes**)
@@ -3943,7 +3943,7 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Reference category:** 0 = all other tumor types (in Gibiansky 2014 the implicit reference is CLL when paired with `TUMTP_BCL` and `TUMTP_MCL` all = 0).
 - **Source aliases:**
   - `DIS` (Gibiansky 2014; integer code with `DIS == 3` flagging DLBCL) -- decompose into `TUMTP_DLBCL = as.integer(DIS == 3)`.
-- **Example models:** `Gibiansky_2014_obinutuzumab.R` (effect on kdes via the any-NHL composite indicator; effect on CL_T and CL_inf via the shared BCL/DLBCL composite indicator).
+- **Example models:** `Gibiansky_2014_obinutuzumab.R` (effect on kdes via the any-NHL composite indicator; effect on CL_T and CL_inf via the shared BCL/DLBCL composite indicator), `Lu_2017_polatuzumab_neuropathy.R` (multiplicative effect on the grade >= 2 peripheral neuropathy hazard via `exp(theta_DLBCL * TUMTP_DLBCL)` with `theta_DLBCL = -0.0697`, SE 0.365; the median hazard ratio of DLBCL vs FL is 0.931 per Figure 3).
 - **Notes:** Follows the `TUMTP_HODGKIN_CLASSICAL` / `TUMTP_GASTRIC` / `TUMTP_SCLC` decomposition pattern. Distinct from `TUMTP_LYMPH` (broader lymphoma pool) and `TUMTP_PCALCL` (primary cutaneous anaplastic large-cell lymphoma; a CD30+ T-cell-lineage entity unrelated to DLBCL). DLBCL is the most common high-grade B-cell-NHL subtype; the Gibiansky 2014 cohort had only 30 DLBCL patients (4.4%), so a single estimated effect on CL is shared with BCL (a much larger pooled group; see `TUMTP_BCL` notes). Ratified canonically on 2026-05-11.
 
 ### TUMTP_MCL (**canonical for mantle cell lymphoma indicator**)
@@ -3956,6 +3956,28 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
   - `DIS` (Gibiansky 2014; integer code with `DIS == 4` flagging MCL) -- decompose into `TUMTP_MCL = as.integer(DIS == 4)`.
 - **Example models:** `Gibiansky_2014_obinutuzumab.R` (effect on kdes via the any-NHL composite indicator; separate effect on CL_T and CL_inf via the standalone MCL indicator (ratio 1.75, i.e., 75% higher CL than CLL)).
 - **Notes:** Follows the `TUMTP_HODGKIN_CLASSICAL` / `TUMTP_GASTRIC` / `TUMTP_SCLC` decomposition pattern. Distinct from `TUMTP_LYMPH` (broader lymphoma pool). The Gibiansky 2014 cohort had only 20 MCL patients (2.9%); the paper reports the highest obinutuzumab CL among the four B-cell-malignancy histologies for MCL, consistent with the highest CD20 expression density on MCL B-cells relative to the other histologies. Ratified canonically on 2026-05-11.
+
+### TUMTP_FL (**canonical for follicular lymphoma indicator**)
+- **Description:** 1 = follicular lymphoma (FL), 0 = other tumor types. Time-fixed per subject. FL is the most common indolent non-Hodgkin lymphoma (NHL) subtype, derived from germinal-center B cells and characterized by the t(14;18) BCL2-IGH translocation in most cases.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 = all other tumor types (in Lu 2017 the implicit reference is the union of DLBCL and other non-FL NHL when paired with `TUMTP_DLBCL = 0` and `TUMTP_OTHER_NHL = 0`; the Lu 2017 covariate model uses FL itself as the reference category, so the indicator does not appear explicitly in `model()` -- both `TUMTP_DLBCL` and `TUMTP_OTHER_NHL` are 0 for FL patients).
+- **Source aliases:**
+  - Categorical "tumor histology" column with level `FL` (Lu 2017) -- decompose into `TUMTP_FL = as.integer(tumor_histology == "FL")`.
+- **Example models:** `Lu_2017_polatuzumab_neuropathy.R` (FL is the implicit reference category; the model file declares `TUMTP_FL` in `covariatesDataExcluded` to record FL as the reference without referencing it in `model()`).
+- **Notes:** Follows the `TUMTP_HODGKIN_CLASSICAL` / `TUMTP_GASTRIC` / `TUMTP_SCLC` decomposition pattern. Distinct from `TUMTP_BCL` (a broader pooled-residual indolent-B-cell-lymphoma indicator in Gibiansky 2014 that lumps FL with other indolent histologies); use `TUMTP_FL` when the source paper names follicular lymphoma in isolation. Ratified canonically on 2026-06-24 alongside the Lu 2017 polatuzumab vedotin TTE extraction.
+
+### TUMTP_OTHER_NHL (**canonical for 'other non-FL non-DLBCL NHL' tumor-histology indicator**)
+- **Description:** 1 = a non-follicular-lymphoma (non-FL) non-diffuse-large-B-cell-lymphoma (non-DLBCL) NHL histology (e.g., mantle cell lymphoma, marginal-zone lymphoma, small-lymphocytic lymphoma, transformed FL, chronic lymphocytic leukemia, T-cell NHL, etc., pooled together in the paper's residual histology category), 0 = FL or DLBCL or any non-NHL tumor. Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (FL or DLBCL or any non-NHL tumor; in Lu 2017 the implicit reference is FL when paired with `TUMTP_DLBCL = 0`).
+- **Source aliases:**
+  - Categorical "tumor histology" column with level not in {`FL`, `DLBCL`} (Lu 2017 "others" category) -- decompose into `TUMTP_OTHER_NHL = as.integer(!tumor_histology %in% c("FL", "DLBCL"))`.
+- **Example models:** `Lu_2017_polatuzumab_neuropathy.R` (multiplicative effect on hazard of grade >= 2 peripheral neuropathy via the `exp(theta_otherNonFL * TUMTP_OTHER_NHL)` proportional-hazard term with `theta_otherNonFL = 0.688`, SE 0.758; the median hazard ratio of "other non-FL" vs FL is 1.98 per Figure 3 with very wide uncertainty given the small "others" sub-cohort).
+- **Notes:** Captures the residual NHL-histology bucket in papers that decompose tumor histology into a three-level categorical (FL reference, DLBCL, otherNonFL). Distinct from `TUMTP_BCL` (Gibiansky 2014 four-level B-cell-lymphoma decomposition: CLL, BCL, DLBCL, MCL -- where BCL is the indolent-B-cell-lymphoma residual including FL). When a future paper retains a different pool of non-FL non-DLBCL histologies, document the per-paper histology composition in `covariateData[[TUMTP_OTHER_NHL]]$notes` rather than overloading the canonical. Ratified canonically on 2026-06-24 alongside the Lu 2017 polatuzumab vedotin TTE extraction.
 
 ### LINE_1L (**canonical for first-line-therapy indicator**)
 - **Description:** 1 = first-line therapy (1L) / treatment-naive, 0 = second-line or greater (2L+) / relapsed-or-refractory.
@@ -4907,6 +4929,39 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Example models:** `Netterberg_2017_docetaxel.R` (multiplicative effect on baseline ANC: `BACOV *= (1 + theta * PRIOR_ANTICANCER)` with theta = -0.147; prior-anticancer patients have ~14.7% lower baseline ANC than treatment-naive patients).
 - **Notes:** Distinct from `LINE_1L` (which is the inverse semantics for systemic-drug therapy lines only) and `PRIOR_TNF` / `PRIOR_BIO` (which are modality-specific to anti-TNF / biologic exposure in inflammatory-disease cohorts). Use `PRIOR_ANTICANCER` when the source paper's covariate counts any anticancer modality (including radiotherapy and surgery) as prior exposure. When a future paper restricts the indicator to cytotoxic chemotherapy alone, use `LINE_1L` (with values inverted: paper's `PRIOR_CHEMO = 1 - LINE_1L`). When a paper distinguishes prior chemotherapy from prior radiotherapy, register a parallel `PRIOR_RADIATION` canonical.
 
+### PRIOR_RADIATION (**canonical for prior radiotherapy exposure indicator**)
+- **Description:** 1 = subject received any prior radiotherapy (external-beam, brachytherapy, or radionuclide-targeted) before the start of the analyzed treatment; 0 = radiotherapy-naive. Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (radiotherapy-naive).
+- **Source aliases:**
+  - "prior radiotherapy (yes/no)" (Lu 2017 narrative; coded as a binary 0/1 in the source NONMEM dataset) -- used in `Lu_2017_polatuzumab_neuropathy.R`.
+- **Example models:** `Lu_2017_polatuzumab_neuropathy.R` (multiplicative effect on the grade >= 2 peripheral neuropathy hazard via `exp(theta_priorRadioTx * PRIOR_RADIATION)` with `theta_priorRadioTx = -7.94e-3`, SE 0.319 -- effectively no detectable effect given the large SE).
+- **Notes:** Sibling of `PRIOR_ANTICANCER` (the broader any-modality indicator) and `PRIOR_VINCA` / `PRIOR_PLATIN` (chemotherapy-class-specific siblings). Use this canonical when the source paper distinguishes radiotherapy as a separate covariate from prior chemotherapy / hormonal / immunotherapy exposure. Pre-authorized as a parallel-sibling canonical in the `PRIOR_ANTICANCER` notes. Ratified canonically on 2026-06-24 alongside the Lu 2017 polatuzumab vedotin TTE extraction.
+
+### PRIOR_VINCA (**canonical for prior vinca-alkaloid chemotherapy indicator**)
+- **Description:** 1 = subject received any prior vinca-alkaloid chemotherapy (vincristine, vinblastine, vinorelbine, vindesine) before the start of the analyzed treatment; 0 = vinca-naive. Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (vinca-naive).
+- **Source aliases:**
+  - "prior vinca alkaloids treatment (yes/no)" (Lu 2017 narrative; coded as a binary 0/1 in the source NONMEM dataset) -- used in `Lu_2017_polatuzumab_neuropathy.R`.
+- **Example models:** `Lu_2017_polatuzumab_neuropathy.R` (multiplicative effect on the grade >= 2 peripheral neuropathy hazard via `exp(theta_priorVinca * PRIOR_VINCA)` with `theta_priorVinca = -0.102`, SE 0.469 -- not detectable given the large SE; the paper hypothesized prior vinca-alkaloid exposure could sensitize patients to antimicrotubule-induced PN but did not find a clinically meaningful effect).
+- **Notes:** Vinca alkaloids are microtubule-destabilising agents (the natural-product parent class of the vc-MMAE / vc-MMAF ADC payloads); prior exposure is a clinically meaningful pretreatment indicator in any analysis where antimicrotubule-toxicity history affects subsequent dosing decisions or AE risk. Sibling of `PRIOR_ANTICANCER` (broader any-modality indicator), `PRIOR_RADIATION`, `PRIOR_PLATIN`, and `PRIOR_TAXANE` (parallel chemotherapy-class siblings). Ratified canonically on 2026-06-24 alongside the Lu 2017 polatuzumab vedotin TTE extraction.
+
+### PRIOR_PLATIN (**canonical for prior platinum-based chemotherapy indicator**)
+- **Description:** 1 = subject received any prior platinum-based chemotherapy (cisplatin, carboplatin, oxaliplatin, nedaplatin, satraplatin) before the start of the analyzed treatment; 0 = platinum-naive. Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (platinum-naive).
+- **Source aliases:**
+  - "prior platinum-based treatment (yes/no)" (Lu 2017 narrative; coded as a binary 0/1 in the source NONMEM dataset) -- used in `Lu_2017_polatuzumab_neuropathy.R`.
+- **Example models:** `Lu_2017_polatuzumab_neuropathy.R` (multiplicative effect on the grade >= 2 peripheral neuropathy hazard via `exp(theta_Platin * PRIOR_PLATIN)` with `theta_Platin = 0.159`, SE 0.345 -- not detectable given the large SE; the paper hypothesized prior platinum exposure could sensitize patients to subsequent antimicrotubule-induced PN given that platinum agents themselves cause sensory PN, but did not find a clinically meaningful effect).
+- **Notes:** Platinum agents are DNA-crosslinking cytotoxics with peripheral-neuropathy as a well-known adverse-event profile (especially for cisplatin and oxaliplatin); prior exposure is therefore a defensible pretreatment indicator in any subsequent-PN-risk analysis. Sibling of `PRIOR_ANTICANCER` (broader any-modality indicator), `PRIOR_RADIATION`, `PRIOR_VINCA`, and `PRIOR_TAXANE` (parallel chemotherapy-class siblings). Distinct from `AUC_CARBO` (the continuous per-cycle carboplatin-AUC drug-exposure covariate, which is time-varying and used as a direct drug-exposure driver in tumor-dynamics models, e.g. `Zecchin_2016_survival.R`). Ratified canonically on 2026-06-24 alongside the Lu 2017 polatuzumab vedotin TTE extraction.
+
 ### PRIOR_BIO (**canonical for prior biologic exposure**)
 - **Description:** 1 = subject previously treated with any biologic (broader than `PRIOR_TNF`: includes anti-TNF agents plus anti-integrin, anti-IL-12/23, anti-IL-17, anti-IL-23, anti-IL-6, etc.), 0 = biologic-naive.
 - **Units:** (binary)
@@ -5546,6 +5601,17 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
   - `NTRT` -- used in `vanHasselt_2015_eribulin.R` (van Hasselt 2015 paper notation; cumulative number of days of prior taxane treatment).
 - **Example models:** `vanHasselt_2015_eribulin.R` (van Hasselt 2015 Eq. 4 power covariate on drug PSA inhibition rate KD0: `kd0 = exp(lkd0 + etalkd0) * (1 + PRIOR_TAXANE_DAYS / 720)^e_prior_taxane_days_kd0` with `e_prior_taxane_days_kd0 = -4.00` -- KD0 decreases with longer prior-taxane exposure, encoding cross-resistance between docetaxel and eribulin via the shared microtubule-inhibition mechanism).
 - **Notes:** Pairs with `PRIOR_TAXANE` (binary). The paper also considered an alternative continuous parameterisation in cycles of prior taxane (`NCYCL`, median 30 cycles) which was deemed slightly less informative (dOFV = -8 for NCYCL vs -10 for NTRT) and was not retained in the final model. If a future model needs the cycle-count form, register a parallel canonical (e.g. `PRIOR_TAXANE_CYCLES`) rather than overloading this one. Scope: specific because the 720-day normalisation reference is tied to the van Hasselt 2015 study population (post-docetaxel mCRPC patients).
+
+### BL_PN_GR1 (**canonical for active baseline grade 1 peripheral neuropathy indicator**)
+- **Description:** 1 = subject had active grade 1 peripheral neuropathy (CTCAE 4.0 grade 1: asymptomatic; clinical or diagnostic observations only; intervention not indicated) at study entry; 0 = no active PN at baseline. Time-fixed at study entry. The covariate captures pre-existing low-grade PN typically arising from prior antimicrotubule or platinum chemotherapy in heavily pretreated oncology cohorts and is used to assess whether baseline PN sensitizes patients to subsequent antimicrotubule-induced PN.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (no active PN at baseline).
+- **Source aliases:**
+  - "active grade 1 PN at study entry (yes/no)" (Lu 2017 narrative; coded as a binary 0/1 in the source NONMEM dataset) -- used in `Lu_2017_polatuzumab_neuropathy.R`.
+- **Example models:** `Lu_2017_polatuzumab_neuropathy.R` (multiplicative effect on the grade >= 2 peripheral neuropathy hazard via `exp(theta_baselinePN * BL_PN_GR1)` with `theta_baselinePN = -0.222`, SE 0.324 -- not detectable given the large SE; the paper reports a sensitivity analysis in which this indicator was replaced by a broader "history of prior PN" indicator with similarly inconclusive results).
+- **Notes:** Specific to oncology cohorts where grade 1 PN is permitted at study entry (per the source paper's eligibility criteria). Distinct from `PREV_AE_SCORE` (the time-varying ordinal Markov-state AE-score covariate from Girard 2012 pimasertib, which conditions a current-observation outcome on the previous observation's grade); `BL_PN_GR1` is a time-fixed baseline indicator that does not update during the analysis window. Distinct from `DIS_DPN` (painful diabetic peripheral polyneuropathy disease-state indicator from chronic-pain cohorts); `DIS_DPN` flags a diabetes-related primary diagnosis used as a stratification covariate, while `BL_PN_GR1` flags a pre-existing low-grade adverse-event status from any prior cause in an oncology trial. When a future paper uses a different baseline-PN grade threshold (e.g., grade <= 2 permitted) or a different AE category, register a parallel canonical (e.g., `BL_PN_GR2`, `BL_FATIGUE_GR1`) rather than overloading this one. Ratified canonically on 2026-06-24 alongside the Lu 2017 polatuzumab vedotin TTE extraction.
 
 ## Hypercholesterolemia biomarkers
 
