@@ -1770,6 +1770,8 @@ navbar:
         href: articles/Jorga_2000_tolcapone.html
       - text: "Topiramate (Ahmed 2015)"
         href: articles/Ahmed_2015_topiramate.html
+      - text: "Topiramate dog (Vuu 2016)"
+        href: articles/Vuu_2016_topiramate_dog.html
       - text: "Topotecan (Leger 2004)"
         href: articles/Leger_2004_topotecan.html
       - text: "Topotecan (Roberts 2016)"
@@ -2955,7 +2957,7 @@ articles:
   - articles/Viberg_2006_cefuroxime
   - articles/Vinnard_2017_rifampicin
   - articles/Voller_2017_phenobarbital
-  - articles/vonHentig_2009_saquinavir
+  - articles/Vuu_2016_topiramate_dog
   - articles/Wade_2008_fluconazole
   - articles/Wade_2015_certolizumab
   - articles/Wahlby_2004_time_varying_covariates
