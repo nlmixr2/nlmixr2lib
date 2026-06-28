@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Lin 2020 glasdegib ([doi:10.1007/s00280-020-04132-x](https://doi.org/10.1007/s00280-020-04132-x)) -- older adults (>= 55 years) with newly diagnosed AML ineligible for intensive chemotherapy in BRIGHT AML 1003 (three exponential time-to-event overall-survival models: Phase 2 treatment-response, Phase 2 exposure-response subset, and exploratory pooled Phase 1b + Phase 2 including a small glasdegib + decitabine arm); ratifies new `CONMED_GLASDEGIB` and `CONMED_DECITABINE` covariate canonicals.
+* Add Yin 2020 pexidartinib ([doi:10.1002/jcph.1753](https://doi.org/10.1002/jcph.1753)) -- pooled healthy adult subjects and adult patients with tenosynovial giant cell tumour or other advanced solid tumours (ratifies new `FORM_PEX_PHASE1` covariate canonical for the pexidartinib Phase 1 vs Phase 3 / commercial formulation indicator).
 * Add Gaohua 2012 pregnancy PBPK ([doi:10.1111/j.1365-2125.2012.04363.x](https://doi.org/10.1111/j.1365-2125.2012.04363.x)) -- healthy pregnant Caucasian women (14-compartment whole-body p-PBPK with GA-dependent maternal physiology, applied to caffeine [CYP1A2], metoprolol [CYP2D6], and midazolam [CYP3A4]); ratifies new canonical bare `skin` PBPK compartment.
 * Add Morris 2011 telapristone ([doi:10.1208/s12248-011-9304-7](https://doi.org/10.1208/s12248-011-9304-7)) -- adult women with single-dose telapristone-acetate phase I/II PK studies; ratifies new `cdb4453` metabolite suffix, `MIX_FAST_ELIM`, and `RENALIMP_MOD` covariate canonicals.
 * Add Padoin 1998 cephalexin ([doi:10.1128/aac.42.6.1463](https://doi.org/10.1128/aac.42.6.1463)) -- preclinical male Wistar rats with a cephalexin / quinapril oral coadministration DDI (ratifies new `CONMED_QPRL_ORAL` covariate canonical).
