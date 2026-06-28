@@ -2113,19 +2113,12 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Source aliases:** none.
 - **Example models:** `Xie_2019_agomelatine.R`.
 
-### 8oh (**canonical 8-hydroxy-efavirenz suffix**)
+### 7ohmtx (**canonical 7-hydroxy-methotrexate suffix**)
 - **Type:** metabolite-suffix
-- **Role:** 8-hydroxy-efavirenz, the primary CYP2B6-formed metabolite of efavirenz; further metabolised by CYP2B6 and UGT2B7 (Heathman 2024).
+- **Role:** 7-hydroxy-methotrexate (7-OH-MTX), the principal circulating metabolite of methotrexate formed by aldehyde-oxidase-mediated 7-hydroxylation in the liver. Used in parent + metabolite joint popPK extractions of high-dose intravenous MTX therapy.
 - **Source aliases:** none.
-- **Example models:** `Heathman_2024_efavirenz.R`.
-- **Notes:** Suffix starts with a digit; the convention check matches on `endsWith(name, "_<metab>")` rather than treating the metabolite name as an R identifier. Founding example: `Heathman_2024_efavirenz.R` (full 3-analyte EFV + 8-OH + 7-OH popPK with CYP2B6 / CYP2A6 enzyme-turnover autoinduction).
-
-### 7oh (**canonical 7-hydroxy-efavirenz suffix**)
-- **Type:** metabolite-suffix
-- **Role:** 7-hydroxy-efavirenz, the CYP2A6-formed metabolite of efavirenz (Heathman 2024).
-- **Source aliases:** none.
-- **Example models:** `Heathman_2024_efavirenz.R`.
-- **Notes:** Suffix starts with a digit; the convention check matches on `endsWith(name, "_<metab>")` rather than treating the metabolite name as an R identifier. Founding example: `Heathman_2024_efavirenz.R`.
+- **Example models:** `Joerger_2006_methotrexate.R` (3-cmt MTX parent + 2-cmt 7-OH-MTX metabolite, joint NONMEM ADVAN5 fit; metabolic fraction fixed at 10 percent per Joerger 2006 Results page 75).
+- **Notes:** Suffix starts with a digit; the convention check matches on `endsWith(name, "_<metab>")` rather than treating the metabolite name as an R identifier, following the `3oh` / `7dm` precedent.
 
 ### m1 (**canonical paper-named M1 metabolite suffix**)
 - **Type:** metabolite-suffix
