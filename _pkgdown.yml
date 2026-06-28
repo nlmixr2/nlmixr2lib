@@ -760,6 +760,8 @@ navbar:
         href: articles/Ayyar_2024_givosiran.html
       - text: "Glibenclamide (Rambiritch 2016)"
         href: articles/Rambiritch_2016_glibenclamide.html
+      - text: "Glp1ra bodyweight (Bosch 2024)"
+        href: articles/Bosch_2024_glp1ra_bodyweight.html
       - text: "Glucarpidase (Kimura 2023)"
         href: articles/Kimura_2023_glucarpidase.html
       - text: "GNbAC1 (Cao 2013)"
@@ -2124,6 +2126,7 @@ articles:
   - articles/Bogason_2011_daunorubicin
   - articles/Bonate_2004_apomine
   - articles/Borghardt_2016_olodaterol
+  - articles/Bosch_2024_glp1ra_bodyweight
   - articles/Bouazza_2010_lamivudine
   - articles/Bouazza_2011_lamivudine
   - articles/Bouazza_2012_clindamycin

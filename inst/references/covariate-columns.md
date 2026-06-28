@@ -7264,3 +7264,25 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
   - `D x Q` -- used in `BuchwalderCsajka_1999_angiotensin.R` (Buchwalder-Csajka 1999 Table 1 row 5 column header, where `D` is the raw angiotensin dose in ug and `Q` is the molar-weight conversion factor).
 - **Example models:** `BuchwalderCsajka_1999_angiotensin.R` (drives the algebraic Emax dose-response `E = Emax * DOSE_AGT_UG / (DOSE_AGT_UG + ED50)` separately for SBP and DBP).
 - **Notes:** Per-observation challenge-dose column for the algebraic Emax angiotensin-challenge PD model. Differs from the standard rxode2 `AMT` / `EVID = 1` dosing column because the model is purely algebraic (no PK, no ODEs); the dose enters the model() block as a covariate symbol rather than via a dosing event. Specific scope because the column's semantics (Q-corrected angiotensin dose) are tied to angiotensin-challenge protocols; future angiotensin-challenge extractions may reuse this canonical. Ratified canonically on 2026-06-10 alongside the Buchwalder-Csajka 1999 extraction.
+
+### LSCI (**canonical for amplitude of an inverse-Bateman lifestyle-change / placebo effect on energy intake in body-composition modelling**)
+- **Description:** Per-subject (or per-study-arm) amplitude of the inverse-Bateman lifestyle-change (LSC) effect on energy intake (EI) in body-composition models. Drives the magnitude of the placebo / dietary-restriction-induced fractional reduction in EI; combined with onset rate Kdiet and reduction rate Kred to form the LSC effect `LSCeff(t) = 1 - LSCI * Kdiet * (exp(-Kdiet * t) - exp(-Kred * t)) / (Kred - Kdiet)` applied multiplicatively to EI. Subjects in the same study arm typically share the same LSCI value; the column is time-fixed at study entry (a single LSCI per subject per arm).
+- **Units:** fraction (0..1; can be negative for arms that report a paradoxical increase in EI)
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** none -- LSCI = 0 corresponds to no lifestyle effect (the model collapses to pure body composition + drug effects).
+- **Source aliases:**
+  - `LSCI` -- used directly in `Bosch_2024_glp1ra_bodyweight.R` (Bosch 2024 supplement S10 THETA7..THETA16 are per-study fitted LSCI values).
+- **Example models:** `Bosch_2024_glp1ra_bodyweight.R` (introduces the canonical; per-study fitted values 0..0.548 across diet and GLP-1RA studies, with -0.0288 reported for the Blundell 2017 arm).
+- **Notes:** Specific scope because the column's semantics are tied to body-composition / energy-balance modelling. Future extractions that combine the Hall body composition framework with other drug classes or other lifestyle-intervention protocols may reuse this canonical; document the per-paper values in `covariateData[[LSCI]]$notes` so users can match the source-paper LSCI to the simulated arm. Ratified canonically on 2026-06-22 alongside the Bosch 2024 extraction.
+
+### WM_IBT (**canonical for weight-management + intensive-behavioural-treatment intervention indicator**)
+- **Description:** Binary indicator that the subject is enrolled in a study arm with weight management and intensive behavioural treatment (e.g., the STEP-trial-family lifestyle-intervention protocols described in Wadden 2021 / Garvey 2022 / Rubino 2022). Used in QSP body-composition models to gate a body-weight-dependent activity effect on the exercise component of physical activity energy expenditure. Subjects in arms without an explicit weight-management + IBT protocol carry WM_IBT = 0.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (no weight management + intensive behavioural treatment).
+- **Source aliases:**
+  - `IFLAG` -- used in `Bosch_2024_glp1ra_bodyweight.R` (Bosch 2024 supplement S10 IFLAG > 0 gates the activity effect).
+- **Example models:** `Bosch_2024_glp1ra_bodyweight.R` (introduces the canonical; gates the body-weight-dependent activity effect on PAE for STEP-family arms in the Bosch 2024 dataset).
+- **Notes:** Specific scope because the canonical name is tied to body-composition QSP modelling where the activity effect is empirically estimated for IBT-instrumented arms. Future extractions of similar lifestyle-intervention-aware body-composition or weight-loss-trajectory models may reuse this canonical; mark the per-paper IBT-intensity definition in `covariateData[[WM_IBT]]$notes` so users can distinguish "weekly clinic counselling + diary review" intensity (STEP 3) from "minimal-counselling -500 kcal/d" intensity (STEP 5 / STEP 8). Ratified canonically on 2026-06-22 alongside the Bosch 2024 extraction.
