@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Harrold 2020 radiation neutropenia ([doi:10.1007/s11095-020-02839-3](https://doi.org/10.1007/s11095-020-02839-3)) -- preclinical rhesus macaques exposed to 750 cGy whole-body irradiation (semi-mechanistic K-PD radiation injury + Friberg-style granulopoiesis + Box-Cox-effect-compartment time-to-event survival sub-model); ratifies new `STUDY_HARROLD_PEG` covariate canonical.
+* Add Harrold 2020 filgrastim ([doi:10.1111/cts.12777](https://doi.org/10.1111/cts.12777)) -- adult and pediatric humans at risk of hematopoietic syndrome of acute radiation syndrome (semi-mechanistic popPK / ANC / overall-survival model with quadratic-equilibrium G-CSFR binding, 5-stage granulopoiesis cascade, K-PD radiation effect on mitotic-stem cells, and Box-Cox-on-ANCe Cox-hazard survival sub-model).
 * Add Gaohua 2012 pregnancy PBPK ([doi:10.1111/j.1365-2125.2012.04363.x](https://doi.org/10.1111/j.1365-2125.2012.04363.x)) -- healthy pregnant Caucasian women (14-compartment whole-body p-PBPK with GA-dependent maternal physiology, applied to caffeine [CYP1A2], metoprolol [CYP2D6], and midazolam [CYP3A4]); ratifies new canonical bare `skin` PBPK compartment.
 * Add Morris 2011 telapristone ([doi:10.1208/s12248-011-9304-7](https://doi.org/10.1208/s12248-011-9304-7)) -- adult women with single-dose telapristone-acetate phase I/II PK studies; ratifies new `cdb4453` metabolite suffix, `MIX_FAST_ELIM`, and `RENALIMP_MOD` covariate canonicals.
 * Add Padoin 1998 cephalexin ([doi:10.1128/aac.42.6.1463](https://doi.org/10.1128/aac.42.6.1463)) -- preclinical male Wistar rats with a cephalexin / quinapril oral coadministration DDI (ratifies new `CONMED_QPRL_ORAL` covariate canonical).

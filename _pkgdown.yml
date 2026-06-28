@@ -674,6 +674,8 @@ navbar:
         href: articles/Laffont_2025_opioid_overdose_reversal_simulation.html
       - text: "Ferumoxytol (Plock 2014)"
         href: articles/Plock_2014_ferumoxytol.html
+      - text: "Filgrastim (Harrold 2020)"
+        href: articles/Harrold_2020_filgrastim_ars.html
       - text: "Fimasartan (Kim 2017)"
         href: articles/Kim_2017_fimasartan.html
       - text: "Finafloxacin (Taubert 2018)"
@@ -2416,7 +2418,7 @@ articles:
   - articles/Hansson_2013c_sunitinib
   - articles/Hanzel_2021_infliximab
   - articles/Hao_2018_tacrolimus
-  - articles/Harrold_2020_radiation_neutropenia
+  - articles/Harrold_2020_filgrastim_ars
   - articles/Harun_2019_cysticFibrosis
   - articles/Hashimoto_1994_zonisamide
   - articles/Hawwa_2008_mercaptopurine
