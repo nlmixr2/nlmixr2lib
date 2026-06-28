@@ -1452,6 +1452,8 @@ navbar:
         href: articles/Chi_2018_propofol.html
       - text: "Propofol (Diepstraten 2013)"
         href: articles/Diepstraten_2013_propofol.html
+      - text: "Propofol (Koo 2012)"
+        href: articles/Koo_2012_propofol.html
       - text: "Propofol (Przybylowski 2015)"
         href: articles/Przybylowski_2015_propofol.html
       - text: "Propofol (Wang 2012)"
@@ -2612,6 +2614,7 @@ articles:
   - articles/Knights_2015_aripiprazole
   - articles/Kohl_2010_posaconazole
   - articles/Koloskoff_2025_ganciclovir
+  - articles/Koo_2012_propofol
   - articles/Koolen_2010_docetaxel
   - articles/Koopman_2023_factorix
   - articles/Kotani_2022_astegolimab
