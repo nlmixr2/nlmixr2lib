@@ -486,6 +486,14 @@ navbar:
         href: articles/Castelli_2022_dextroamphetamine.html
       - text: "Dextromethorphan (TerHeine 2014)"
         href: articles/TerHeine_2014_tamoxifen.html
+      - text: "Dha ring early (Cao 2017)"
+        href: articles/Cao_2017_dha_artemisinin_stress_model.html
+      - text: "Dha ring mid (Cao 2017)"
+        href: articles/Cao_2017_dha_artemisinin_stress_model.html
+      - text: "Dha troph early (Cao 2017)"
+        href: articles/Cao_2017_dha_artemisinin_stress_model.html
+      - text: "Dha troph late (Cao 2017)"
+        href: articles/Cao_2017_dha_artemisinin_stress_model.html
       - text: "Diazepam (Ku 2018)"
         href: articles/Ku_2018_diazepam.html
       - text: "Diclofenac (Standing 2008)"
@@ -2266,6 +2274,7 @@ articles:
   - articles/Cao_2013_siltuximab
   - articles/Cao_2013_tefibazumab
   - articles/Cao_2013_visilizumab
+  - articles/Cao_2017_dha_artemisinin_stress_model
   - articles/Capparelli_2005_cefepime
   - articles/Cardilin_2018_radiation_radiosensitizer_mouse
   - articles/CarlssonPetri_2021_liraglutide
