@@ -1,0 +1,396 @@
+---
+title: "Tacrolimus (Kassir 2014)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Tacrolimus (Kassir 2014)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Kassir_2014_tacrolimus"))$meta$reference`
+* Description: `r rxode2::rxode(readModelDb("Kassir_2014_tacrolimus"))$meta$description`
+* Article: <https://doi.org/10.1111/bcp.12276>
+
+Kassir et al. (2014) developed a two-compartment population PK model with
+first-order absorption and an absorption lag time for twice-daily oral
+tacrolimus in 30 paediatric liver transplant recipients at CHU Sainte-Justine
+in Montreal. The model used theory-based allometric scaling on body weight
+referenced to the cohort median of 20 kg as the only covariate; an extensive
+stepwise covariate screen (age, sex, transplant type, donor age, time
+post-transplantation, liver-function tests, albumin, renal function,
+haematocrit, steroid use, CYP3A4 inhibitors, and drug formulation) returned
+no further significant covariates. CYP3A5 genotype was not available for
+either recipients or donors and could not be tested. The same model
+parameters were then used as Bayesian priors for an optimal-sampling
+strategy (OSS) that estimates AUC(0-12) from three or four samples within
+the first 4 hours post-dose. This vignette reproduces the typical-value
+structural model, illustrates the weight-driven scaling of exposure across
+the paediatric weight range, and validates the steady-state AUC against the
+analytical AUC = Dose / CL/F relationship at the published reference values.
+
+# Population
+
+The cohort (Kassir 2014 Tables 2 and 3) was n = 30 paediatric liver
+transplant recipients contributing 38 twelve-hour intensive PK profiles
+(341 whole-blood samples) at steady state. Demographics: median age 7.3
+years (range 0.4-18.4), median weight 20.4 kg (range 4.5-57.8), 43.3%
+female. Underlying diagnoses included biliary atresia (n = 12),
+tyrosinaemia (n = 8), North American Indian childhood cirrhosis (n = 3),
+fulminant hepatitis (n = 2), Alagille syndrome (n = 2), and one each of
+histiocytosis X, sclerosing cholangitis, and autoimmune hepatitis. Two-
+thirds of the recipients received a cut-down liver graft and one-third a
+whole liver; donor age ranged 0.58-66 years. Tacrolimus was administered
+twice daily as a capsule (50%) or as a 0.5 mg/mL extemporaneously
+compounded oral suspension (50%), dosed by the transplant team to keep the
+trough concentration between 5-15 ng/mL. Median time post-transplantation
+was 2.5 months; no patients were studied during the first 2 weeks
+post-transplant. Whole-blood tacrolimus was measured by the MEIA IMx
+microparticle enzyme immunoassay (Abbott Laboratories; LLOQ 1.5 ng/mL,
+linear to 30 ng/mL).
+
+The same information is available programmatically via the model's
+`population` metadata
+(`rxode2::rxode(readModelDb("Kassir_2014_tacrolimus"))$meta$population`).
+
+# Source trace
+
+The per-parameter origin is recorded as an in-file comment next to each
+`ini()` entry in `inst/modeldb/specificDrugs/Kassir_2014_tacrolimus.R`. The
+table below collects them in one place for review.
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `lka` (ka)           | log(0.342) (1/h) | Kassir 2014 Table 4 final model (RSE 33.3%) |
+| `ltlag` (tlag)       | log(0.433) (h)   | Kassir 2014 Table 4 final model (RSE 4.2%) |
+| `lcl` (CL/F)         | log(12.1) (L/h)  | Kassir 2014 Table 4 final model (RSE 10.1%) |
+| `lvc` (V1/F)         | log(31.3) (L)    | Kassir 2014 Table 4 final model (RSE 42.8%) |
+| `lq` (Q2/F)          | log(30.7) (L/h)  | Kassir 2014 Table 4 final model (RSE 29.3%) |
+| `lvp` (V2/F)         | fixed(log(290)) (L) | Kassir 2014 Table 4 footnote: V2/F was fixed to stabilise the model |
+| `e_wt_cl`            | fixed(0.75)      | Kassir 2014 Methods equation block (Anderson-Holford theory) |
+| `e_wt_q`             | fixed(0.75)      | Kassir 2014 Methods equation block |
+| `e_wt_vc`            | fixed(1)         | Kassir 2014 Methods equation block |
+| `e_wt_vp`            | fixed(1)         | Kassir 2014 Methods equation block |
+| `e_wt_ka`            | fixed(-0.25)     | Kassir 2014 Methods equation block (ka = theta * (WT/WTmedian)^(-0.25)) |
+| IIV CL/F (55.6% CV)  | omega^2 = log(1 + 0.556^2) = 0.269367 | Kassir 2014 Table 4 (RSE 9.6%) |
+| IIV V1/F (126.1% CV) | omega^2 = log(1 + 1.261^2) = 0.951705 | Kassir 2014 Table 4 (RSE 18%) |
+| IIV Q2/F (84.0% CV)  | omega^2 = log(1 + 0.840^2) = 0.533917 | Kassir 2014 Table 4 (RSE 21.3%) |
+| `propSd` (residual)  | 0.203 | Kassir 2014 Table 4 proportional residual error 20.3% (RSE 12.1%) |
+| Reference body weight | 20 kg | Kassir 2014 Methods (cohort median weight, the published WTmedian in the equation block) |
+| 2-compartment ODE structure | d/dt(depot), d/dt(central), d/dt(peripheral1) + alag(depot) | Kassir 2014 Results 'Population pharmacokinetics' |
+
+# Virtual cohort
+
+The original observed data are not publicly available. The figures below use
+virtual populations whose body weight distributions approximate the
+published cohort (Kassir 2014 Table 3: median 20.4 kg, range 4.5-57.8 kg).
+
+```{r cohort}
+set.seed(20260621)
+
+# Helper: build one cohort as a self-contained event table for a given body
+# weight at a steady-state twice-daily oral tacrolimus regimen. The dose is
+# specified in mg/kg/day and split into two q12h doses; observation rows use
+# cmt = "central" (the ODE state name, never the algebraic observable Cc).
+make_cohort <- function(n, wt,
+                        dose_mg_per_kg_per_day = 0.15,
+                        n_days = 14,
+                        regimen = "0.15 mg/kg/day q12h",
+                        id_offset = 0L) {
+  per_dose <- dose_mg_per_kg_per_day * wt / 2
+  dose_times <- seq(from = 0, by = 12, length.out = n_days * 2)
+  obs_times  <- sort(unique(c(seq(0, n_days * 24, by = 0.5),
+                              dose_times + c(0.25, 0.5, 1, 1.5, 2, 3, 4, 8))))
+
+  per_subject <- function(i) {
+    id_i  <- id_offset + i
+    doses <- tibble::tibble(
+      id = id_i, time = dose_times, evid = 1, amt = per_dose, cmt = "depot"
+    )
+    obs   <- tibble::tibble(
+      id = id_i, time = obs_times, evid = 0, amt = NA_real_, cmt = "central"
+    )
+    dplyr::bind_rows(doses, obs)
+  }
+  rows <- dplyr::bind_rows(lapply(seq_len(n), per_subject))
+  rows$WT      <- wt
+  rows$regimen <- regimen
+  rows
+}
+```
+
+# Simulation
+
+The model is loaded from the registry. The replications below use
+typical-value simulations (zero IIV) to make the body-weight-driven scaling
+visible without VPC noise; a stochastic VPC at the published BSV magnitudes
+is also shown.
+
+```{r simulate-typical}
+mod         <- readModelDb("Kassir_2014_tacrolimus")
+mod_typical <- mod |> rxode2::zeroRe()
+```
+
+# Replicate published model behaviour
+
+Kassir 2014 reports typical population CL/F = 12.1 L/h and V1/F = 31.3 L
+for a typical 20 kg child (Table 4 with the equation block on p. 1056).
+The figure below shows the steady-state typical-value concentration-time
+profile at WT = 20 kg dosed at 0.15 mg/kg/day q12h (a representative dose
+inside the cohort's typical-therapeutic-range; the actual dose was
+individualised by the transplant team to keep troughs between 5-15 ng/mL).
+
+```{r reference-profile, fig.cap = "Typical steady-state tacrolimus whole-blood concentration-time profile for a 20 kg paediatric liver transplant recipient at 0.15 mg/kg/day split twice daily (Kassir 2014 typical-value model)."}
+events_ref <- make_cohort(n = 1, wt = 20, dose_mg_per_kg_per_day = 0.15,
+                          regimen = "20 kg, 0.15 mg/kg/day q12h")
+sim_ref <- rxode2::rxSolve(mod_typical, events = events_ref,
+                           keep = c("WT", "regimen")) |> as.data.frame()
+
+ggplot(sim_ref |> dplyr::filter(time >= 12 * 13, time <= 12 * 14 + 12),
+       aes(time - 12 * 13, Cc)) +
+  geom_line(linewidth = 1, colour = "steelblue") +
+  geom_hline(yintercept = c(5, 15), linetype = "dashed", colour = "gray60") +
+  annotate("text", x = 11.5, y = 16.2, hjust = 1, vjust = 0,
+           label = "target trough 5-15 ng/mL", colour = "gray40", size = 3) +
+  labs(x = "Time after dose at steady state (h)",
+       y = "Tacrolimus whole-blood Cc (ng/mL)",
+       title = "Typical 20 kg paediatric LT recipient at steady state",
+       caption = "Kassir 2014 typical-value model, 0.15 mg/kg/day q12h.") +
+  theme_minimal()
+```
+
+## Body-weight effect
+
+Tacrolimus exposure scales with body weight via the published allometric
+exponents (Kassir 2014 Methods equation block: 0.75 on CL/F and Q2/F, 1 on
+V1/F and V2/F, -0.25 on ka, all referenced to 20 kg). The panel below
+sweeps four body-weight levels spanning the cohort range (5, 10, 20, 40
+kg) at a constant mg/kg/day dose. Both AUC and Cmax decrease as weight
+increases because CL/F scales sub-proportionally to the dose (the
+exponent 0.75 is less than 1).
+
+```{r weight-sweep, fig.cap = "Steady-state tacrolimus concentration-time profile across the paediatric weight range at constant 0.15 mg/kg/day (Kassir 2014 typical-value model)."}
+wt_levels <- c(5, 10, 20, 40)
+events_wt <- dplyr::bind_rows(lapply(seq_along(wt_levels), function(j) {
+  make_cohort(n = 1, wt = wt_levels[j],
+              dose_mg_per_kg_per_day = 0.15,
+              regimen = sprintf("WT %2d kg", wt_levels[j]),
+              id_offset = 100L * (j - 1L))
+}))
+sim_wt <- rxode2::rxSolve(mod_typical, events = events_wt,
+                          keep = c("WT", "regimen")) |> as.data.frame()
+
+ggplot(sim_wt |> dplyr::filter(time >= 12 * 13, time <= 12 * 14 + 12),
+       aes(time - 12 * 13, Cc, colour = regimen)) +
+  geom_line(linewidth = 1) +
+  labs(x = "Time after dose at steady state (h)",
+       y = "Tacrolimus whole-blood Cc (ng/mL)",
+       title = "Body-weight effect at constant mg/kg/day",
+       caption = "Sub-proportional CL/F scaling (exponent 0.75) drives higher exposure in smaller children.") +
+  theme_minimal()
+```
+
+## Stochastic VPC at published BSV
+
+The high published between-subject variabilities (55.6% on CL/F, 126.1%
+on V1/F, 84.0% on Q2/F) produce wide concentration-time scatter in a
+stochastic VPC, consistent with the paper's own observation that
+"between-subject variability in pharmacokinetics and patient demographics"
+is high in this population. The simulation below uses 100 virtual
+subjects with weights sampled approximately uniformly across the cohort
+weight range (4.5-57.8 kg), dosed at 0.15 mg/kg/day at steady state.
+
+```{r vpc, fig.cap = "Stochastic VPC of steady-state tacrolimus profiles at 0.15 mg/kg/day q12h across the paediatric weight range (median and 5th-95th simulation percentile, n = 100)."}
+n_vpc <- 100L
+wt_vpc <- runif(n_vpc, 4.5, 57.8)
+events_vpc <- dplyr::bind_rows(lapply(seq_len(n_vpc), function(j) {
+  make_cohort(n = 1, wt = wt_vpc[j],
+              dose_mg_per_kg_per_day = 0.15,
+              regimen = "VPC",
+              id_offset = j * 100L)
+}))
+sim_vpc <- rxode2::rxSolve(mod, events = events_vpc,
+                           keep = c("WT", "regimen")) |> as.data.frame()
+
+vpc_summary <- sim_vpc |>
+  dplyr::filter(time >= 12 * 13, time <= 12 * 14 + 12) |>
+  dplyr::mutate(t = time - 12 * 13) |>
+  dplyr::group_by(t) |>
+  dplyr::summarise(
+    p05 = quantile(Cc, 0.05, na.rm = TRUE),
+    p50 = quantile(Cc, 0.50, na.rm = TRUE),
+    p95 = quantile(Cc, 0.95, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+ggplot(vpc_summary, aes(t, p50)) +
+  geom_ribbon(aes(ymin = p05, ymax = p95), fill = "steelblue", alpha = 0.25) +
+  geom_line(linewidth = 1, colour = "steelblue") +
+  geom_hline(yintercept = c(5, 15), linetype = "dashed", colour = "gray60") +
+  labs(x = "Time after dose at steady state (h)",
+       y = "Tacrolimus whole-blood Cc (ng/mL)",
+       title = "Stochastic steady-state VPC (n = 100)",
+       caption = "Ribbon: 5th-95th simulation percentile; line: median.") +
+  theme_minimal()
+```
+
+# PKNCA validation
+
+We compute steady-state AUC(0-12), Cmax, and Tmax via PKNCA on the
+typical-value simulation, then compare against the analytical expectation
+AUC = Dose / CL/F that follows from the model's typical-value parameters.
+Kassir 2014 itself reports Bayesian-vs-trapezoidal AUC bias of -2.8 to
+-1.9% across four optimal-sampling schedules (Table 5), confirming that
+the typical-value model and a trapezoidal NCA agree on AUC to within ~3%.
+
+```{r pknca}
+# Typical-value simulation across the cohort weight range. Each WT contributes
+# one regimen at 0.15 mg/kg/day; the resulting steady-state AUC is computed by
+# PKNCA on a dense observation grid over the last 12 h dosing interval.
+wt_pkn <- c(5, 10, 20, 40)
+events_pkn <- dplyr::bind_rows(lapply(seq_along(wt_pkn), function(j) {
+  make_cohort(n = 1, wt = wt_pkn[j],
+              dose_mg_per_kg_per_day = 0.15,
+              regimen = sprintf("WT %2d kg", wt_pkn[j]),
+              id_offset = 100L * (j - 1L))
+}))
+sim_pkn_raw <- rxode2::rxSolve(mod_typical, events = events_pkn,
+                               keep = c("WT", "regimen")) |> as.data.frame()
+
+# Restrict to the final 12-h dosing interval at steady state (days 13-14) and
+# re-base time at zero for PKNCA. Defensive time-zero anchor included.
+sim_pkn <- sim_pkn_raw |>
+  dplyr::filter(time >= 12 * 27, time <= 12 * 28) |>
+  dplyr::mutate(time = time - 12 * 27) |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::select(id, time, Cc, WT, regimen)
+
+conc_obj <- PKNCA::PKNCAconc(sim_pkn, Cc ~ time | regimen + id)
+
+# Dose record: the last dose of the simulation re-based to time 0.
+dose_df <- events_pkn |>
+  dplyr::filter(evid == 1) |>
+  dplyr::group_by(id) |>
+  dplyr::slice_tail(n = 1) |>
+  dplyr::ungroup() |>
+  dplyr::mutate(time = 0) |>
+  dplyr::select(id, time, amt, WT, regimen)
+
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | regimen + id)
+
+intervals <- data.frame(start = 0, end = 12,
+                        cmax = TRUE, tmax = TRUE, auclast = TRUE)
+nca_data  <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
+nca_res   <- suppressMessages(suppressWarnings(PKNCA::pk.nca(nca_data)))
+nca_df    <- as.data.frame(nca_res$result)
+
+knitr::kable(nca_df, caption = "Simulated steady-state NCA parameters per body weight (PKNCA).")
+```
+
+## Comparison against published typical CL/F
+
+The Kassir 2014 final-model typical-value equations (Methods p. 1056)
+predict steady-state AUC(0-tau) at each body weight from the analytical
+relation AUC = Dose / CL/F with CL/F = 12.1 * (WT/20)^0.75 L/h. The table
+below compares PKNCA AUC(0-12) and Cmax against this analytical
+expectation; AUC(0-12) should match closely because the typical-value
+simulation has no IIV and no residual error. The dose per 12 h interval
+is 0.15 mg/kg/day * WT / 2 = 0.075 * WT mg, expressed in ug for the
+ng-hour-per-mL units PKNCA uses.
+
+```{r compare-published}
+# Analytical AUC(0-12) at steady state from the published typical CL/F.
+ref_df <- tibble::tibble(
+  regimen = sprintf("WT %2d kg", wt_pkn),
+  WT      = wt_pkn,
+  dose_ug = 0.15 * wt_pkn / 2 * 1000,
+  CL_F    = 12.1 * (wt_pkn / 20) ^ 0.75
+) |>
+  dplyr::mutate(auclast = dose_ug / CL_F)
+
+# Reference Cmax estimated from the typical-value simulation peak in the same
+# 12 h window (the paper does not publish typical-value Cmax / Tmax in Table 4;
+# we use the model itself as the reference and check PKNCA reproduces it,
+# i.e., a self-consistency check across the PKNCA AUC integration).
+ref_with_cmax <- sim_pkn |>
+  dplyr::group_by(regimen) |>
+  dplyr::summarise(cmax = max(Cc, na.rm = TRUE),
+                   tmax = time[which.max(Cc)], .groups = "drop") |>
+  dplyr::left_join(ref_df |> dplyr::select(regimen, auclast), by = "regimen")
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_df |> dplyr::select(regimen, PPTESTCD, PPORRES),
+  reference = ref_with_cmax,
+  by    = "regimen",
+  units = c(cmax = "ng/mL", tmax = "h", auclast = "ng*h/mL")
+)
+knitr::kable(cmp, caption = "Simulated NCA vs analytical reference for typical-value Kassir 2014 model at four body weights.")
+attr(cmp, "footnote")
+```
+
+The simulated NCA AUC(0-12) values agree with the analytical expectation
+AUC = Dose / CL/F to within a few percent at every weight, consistent with
+Kassir et al. own reported Bayesian-vs-trapezoidal bias of -2.8 to -1.9%
+(Table 5).
+
+# Assumptions and deviations
+
+* **Allometric scaling exponents** are fixed at the Anderson-Holford theory
+  values (0.75 on CL/F and Q2/F, 1.0 on V1/F and V2/F, -0.25 on ka), as
+  reported in the Methods equation block citing references [20, 21] of
+  Kassir 2014. Table 4's footnote "Bodyweight was included in all
+  pharmacokinetic parameters as an allometric fixed term" confirms the
+  fixed status.
+* **V2/F is fixed at 290 L** (Kassir 2014 Table 4 footnote: "V2/F was fixed
+  to a value estimated from a previous run in order to stabilize the
+  model"). The corresponding `ini()` line uses `fixed(log(290))`.
+* **No inter-occasion variability (IOV)** was retained by the authors
+  ("Between-occasion variability was not included in the model"; Kassir
+  2014 Results 'Population pharmacokinetics'). The same omission is carried
+  here.
+* **No inter-eta covariance** is encoded. Kassir 2014 Methods state
+  "Covariance between parameters was also examined" but Table 4 reports
+  only diagonal BSV entries; no off-diagonal value is published, so the IIV
+  block here is diagonal on `etalcl`, `etalvc`, `etalq`.
+* **No covariate beyond body weight** is retained. The Kassir 2014 stepwise
+  forward/backward covariate analysis (P = 0.05 forward inclusion / P = 0.01
+  backward elimination) screened age, sex, transplant type, donor age, time
+  post-transplantation, ALT, AST, GGT, total bilirubin, albumin, serum
+  creatinine, creatinine clearance, haematocrit, steroid use, CYP3A4
+  inhibitors, and drug formulation; none was significant. CYP3A5 genotype
+  could not be tested because genotype data were not available for either
+  recipients or donors. These covariates are documented in
+  `covariatesDataExcluded` so future users can see what was screened.
+* **Race / ethnicity is not reported** in Kassir 2014; the `race_ethnicity`
+  field in `population` is `NULL` to reflect that.
+* **Applicability limits.** The authors caution against (i) applying the
+  model in young infants (< 1 year, only 4 such patients in the cohort);
+  and (ii) using the model in the early post-transplant period (< 2 weeks
+  post-transplant, no included patients in that window). The vignette
+  simulations stay within the published weight range (4.5-57.8 kg).
+* **Assay.** The model was fit to whole-blood tacrolimus concentrations
+  measured by MEIA IMx (Abbott); cross-validation against LC-MS/MS-based
+  assays may show small systematic offsets owing to known cross-reactivity
+  of MEIA with tacrolimus metabolites.
+* **PKNCA dose-comparison reference for Cmax / Tmax** uses the typical-value
+  simulation itself (rather than published values) because Kassir 2014
+  Table 4 publishes structural parameters but not typical Cmax / Tmax at
+  any specific dose; the AUC(0-12) reference is analytical (Dose / CL/F).
+
+# Errata
+
+No errata or corrigenda were identified for Kassir et al. 2014 BJCP 77(6):
+1051-1063 (PubMed search 2026-06-21 for "Kassir tacrolimus 2014 erratum"
+returned no corrections). The DOI `10.1111/bcp.12276` resolves to the
+original article only.

@@ -184,6 +184,39 @@ The `l<base>` convention denotes a population mean estimated on the log scale (`
   - `CL_non-met` -- Lehr 2010 paper notation.
 - **Example models:** `Lehr_2010_tesofensine.R` (paper Table I: CL_non-met/F = 1.31 L/h, IIV 42.2% CV; carries the parent CL IIV).
 
+### lcl_2b6 (**canonical log-transformed CYP2B6-mediated clearance arm**)
+- **Type:** log-transformed-pk
+- **Role:** CYP2B6-mediated metabolic clearance arm of a parent + metabolite popPK decomposition. When the parent drug induces CYP2B6, the time-varying enzyme amount in `enzyme_2b6` multiplies this arm to produce the dynamic CL contribution. Combined with metabolite suffixes (`lcl_2b6_8oh`) to express the same isoenzyme-mediated arm on a metabolite.
+- **Source aliases:**
+  - `CL-EFV,2B6` -- Heathman 2024 paper notation (parent EFV cleared via CYP2B6 forming 8-OH EFV).
+- **Example models:** `Heathman_2024_efavirenz.R`.
+- **Notes:** Founding example: `Heathman_2024_efavirenz.R` (parent CL-EFV,2B6 = 3.64 L/h; modulated dynamically by `enzyme_2b6(t)` and by CYP2B6 IM / PM phenotype reductions).
+
+### lcl_2a6 (**canonical log-transformed CYP2A6-mediated clearance arm**)
+- **Type:** log-transformed-pk
+- **Role:** CYP2A6-mediated metabolic clearance arm of a parent + metabolite popPK decomposition. When the parent drug induces CYP2A6, the time-varying enzyme amount in `enzyme_2a6` multiplies this arm to produce the dynamic CL contribution.
+- **Source aliases:**
+  - `CL-EFV,2A6` -- Heathman 2024 paper notation (parent EFV cleared via CYP2A6 forming 7-OH EFV).
+- **Example models:** `Heathman_2024_efavirenz.R`.
+- **Notes:** Founding example: `Heathman_2024_efavirenz.R` (parent CL-EFV,2A6 = 0.0947 L/h; modulated dynamically by `enzyme_2a6(t)`).
+
+### lcl_ugt (**canonical log-transformed UGT-mediated clearance arm**)
+- **Type:** log-transformed-pk
+- **Role:** UGT (uridine-diphosphate glucuronosyltransferase, typically UGT2B7) -mediated metabolic clearance arm of a parent + metabolite popPK decomposition. Not autoinduced by the drugs in the founding example (EFV does not induce UGT2B7 in Heathman 2024); the arm is constant in time.
+- **Source aliases:**
+  - `CL-EFV,UGT` -- Heathman 2024 paper notation (parent EFV cleared via UGT2B7).
+  - `CL-8OH,UGT` -- Heathman 2024 paper notation when applied to the 8-OH metabolite (in that role the canonical name is `lcl_ugt_8oh`).
+- **Example models:** `Heathman_2024_efavirenz.R`.
+- **Notes:** Founding example: `Heathman_2024_efavirenz.R` (parent CL-EFV,UGT = 0.0504 L/h; constant in time).
+
+### ld1 (**canonical log-transformed zero-order absorption duration**)
+- **Type:** log-transformed-pk
+- **Role:** Duration of the zero-order input rate into the depot (or central) compartment for sequential zero+first-order or pure zero-order absorption models. Applied via `dur(depot) <- d1` or `dur(central) <- d1` inside `model()`; the dose mass is delivered uniformly over `[0, d1]`.
+- **Source aliases:**
+  - `D1` -- common NONMEM / paper notation (Aouri 2017, Goggin 2004, Heathman 2024, Gupta 2016).
+  - `lduration` -- Gupta 2016 paper notation; an equivalent log-transformed entry.
+- **Example models:** `Aouri_2017_rilpivirine.R` (pure zero-order absorption directly into central; D1 = 4 h), `Goggin_2004_emfilermin.R` (zero-order SC absorption, D1 = 0.84 h), `Heathman_2024_efavirenz.R` (sequential zero-order then first-order; D1 = 1.74 h followed by KA = 0.165/h).
+
 ### lkel (**canonical log-transformed elimination rate constant (K-PD)**)
 - **Type:** log-transformed-pk
 - **Role:** First-order elimination rate constant used when no explicit `vc` is estimated (K-PD or single-rate-constant elimination form).
@@ -410,6 +443,32 @@ The bare counterparts of the log-transformed parameters above. Used when the sou
 - **Source aliases:** none.
 - **Example models:** `Lehr_2010_tesofensine.R`.
 
+### cl_2b6 (**canonical bare CYP2B6-mediated clearance arm**)
+- **Type:** bare-pk
+- **Role:** Bare counterpart of `lcl_2b6`. CYP2B6-mediated metabolic clearance arm; dynamically multiplied by `enzyme_2b6(t)` for the autoinduction contribution.
+- **Source aliases:** none.
+- **Example models:** `Heathman_2024_efavirenz.R`.
+
+### cl_2a6 (**canonical bare CYP2A6-mediated clearance arm**)
+- **Type:** bare-pk
+- **Role:** Bare counterpart of `lcl_2a6`. CYP2A6-mediated metabolic clearance arm; dynamically multiplied by `enzyme_2a6(t)` for the autoinduction contribution.
+- **Source aliases:** none.
+- **Example models:** `Heathman_2024_efavirenz.R`.
+
+### cl_ugt (**canonical bare UGT-mediated clearance arm**)
+- **Type:** bare-pk
+- **Role:** Bare counterpart of `lcl_ugt`. UGT (typically UGT2B7) -mediated metabolic clearance arm; constant in time (not autoinduced in the founding example).
+- **Source aliases:** none.
+- **Example models:** `Heathman_2024_efavirenz.R`.
+
+### d1 (**canonical bare zero-order absorption duration**)
+- **Type:** bare-pk
+- **Role:** Bare counterpart of `ld1`. Duration of the zero-order input rate into the depot (or central) compartment for sequential zero+first-order or pure zero-order absorption models.
+- **Source aliases:**
+  - `D1` -- NONMEM / paper notation.
+  - `duration` -- alternate paper notation.
+- **Example models:** `Aouri_2017_rilpivirine.R`, `Goggin_2004_emfilermin.R`, `Heathman_2024_efavirenz.R`.
+
 ### tlag (**canonical bare absorption lag time**)
 - **Type:** bare-pk
 - **Role:** Bare counterpart of `ltlag`. Absorption lag time before drug enters the depot (time).
@@ -520,6 +579,21 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
 - **Role:** Bare counterpart of `lec50`; the half-maximal effect concentration on the linear scale.
 - **Source aliases:** none.
 - **Example models:** widespread sigmoid-Emax PD extractions.
+
+### lreg_qm (**canonical log-transformed once-monthly regimen EC50 multiplier**)
+- **Type:** paper-named-param
+- **Role:** Log-transformed multiplicative modifier applied to EC50 when a static Emax-on-AUC exposure-response model parameterised on an integrated-window AUC predictor (rather than an instantaneous concentration) needs to distinguish between dosing regimens whose AUCs encode different time-course profiles. Paired with the binary covariate `REGI_QM`: applied as `ec50_eff = ec50 * reg_qm^REGI_QM`, i.e., `ec50_eff = ec50` for Q2W (REGI_QM = 0) and `ec50_eff = ec50 * exp(lreg_qm)` for QM (REGI_QM = 1). Captures the "lack of kinetics" gap in static Emax-on-AUC models where two regimens that produce similar window-AUC values can still produce different effects because of differences in target-saturation time courses. Inside `model()` the bare name is `reg_qm`.
+- **Source aliases:**
+  - `REG` -- Kuchimanchi 2018 notation for the linear-scale multiplier (paper estimate 2.30, RSE 10.3%); the linear-scale form maps to `exp(lreg_qm)`.
+- **Example models:** `Kuchimanchi_2018_evolocumab_ldlc.R` (founding example; evolocumab exposure-response Emax on LDL-C with `reg_qm = 2.30` distinguishing 420 mg SC QM from 140 mg SC Q2W regimens).
+- **Notes:** Paired with the canonical covariate `REGI_QM`. Use only in static Emax-on-AUC exposure-response models that explicitly need a regimen-specific EC50; dynamic ODE-based PD models that resolve the concentration time course naturally do not need this parameter. Distinct from `lec50` (the half-maximal-effect concentration itself, with which `lreg_qm` is multiplicatively composed).
+
+### reg_qm (**canonical bare once-monthly regimen EC50 multiplier**)
+- **Type:** paper-named-param
+- **Role:** Bare counterpart of `lreg_qm`; the linear-scale multiplicative modifier on EC50 for once-monthly dosing regimens in static Emax-on-AUC exposure-response models. Applied as `ec50_eff = ec50 * reg_qm^REGI_QM` so that `reg_qm` acts as the EC50 multiplier when `REGI_QM = 1` and the EC50 is unchanged when `REGI_QM = 0`.
+- **Source aliases:**
+  - `REG` -- Kuchimanchi 2018 notation.
+- **Example models:** `Kuchimanchi_2018_evolocumab_ldlc.R`.
 
 ### le0 (**canonical log-transformed PD baseline parameter**)
 - **Type:** paper-named-param

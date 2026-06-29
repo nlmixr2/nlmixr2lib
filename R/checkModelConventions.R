@@ -941,42 +941,50 @@ checkModelConventions <- function(model, verbose = TRUE) {
   conc <- units$concentration
   # The dosing<->concentration dimensional checks below are only
   # meaningful for classical PK models where `dosing` is a simple
-  # administered amount (mass / molar / IU). Skip them when dosing is a
-  # rate or concentration (contains "/"), is declared not-applicable, or
-  # is otherwise not a clean amount token -- i.e. PD / MBMA / in-vitro /
-  # endogenous models, where the `concentration` field documents a
-  # non-plasma-concentration output (CFU, ventilation, probability, body
-  # weight, receptor-occupancy fraction, ...) and a mass/volume check
-  # does not apply. This narrows the check to where it adds value and
-  # removes false positives; it never introduces a new warning.
+  # administered amount (mass / molar / IU) and `concentration` is a
+  # plasma-drug concentration. They are skipped when dosing is a rate or
+  # concentration (contains "/"), is declared not-applicable, or is
+  # otherwise not a clean amount token -- i.e. PD / MBMA / in-vitro /
+  # endogenous models. They are further RELAXED for PD / QSP / bacterial-
+  # kill endpoints (2026-06-28 naming-audit decision):
+  #   * a `concentration` whose numerator is not a recognized
+  #     pharmacological amount is a biological / PD endpoint (CFU, cells,
+  #     mmHg, ordinal grade, receptor occupancy, probability, ...) and a
+  #     mass/volume check does not apply -> skipped (no issue);
+  #   * a `concentration` numerator that IS a pharmacological amount but of
+  #     a different dimension than the dosing amount (mass dose vs molar
+  #     concentration, mg vs IU, ...) is reported as `info`, not a warning,
+  #     because the molecular-weight / potency conversion is expected and
+  #     handled in model().
+  # Descriptive parentheticals on either token (e.g.
+  # "nmol (convert mg via dose_nmol = ...)") are stripped before the
+  # comparison so they do not spuriously defeat a same-dimension match.
+  # The relaxation only removes or downgrades issues; it never introduces a
+  # new warning.
   dose_is_amount <- !endo && !is.null(dosing) && nzchar(dosing) &&
     .unitsRecognizedAmount(dosing)
   if (dose_is_amount && !is.null(conc) && nzchar(conc)) {
+    dose_core <- trimws(sub("\\(.*$", "", dosing))
     if (!grepl("/", conc)) {
-      issues <- rbind(issues, .issue(
-        "units", "warning", "concentration",
-        sprintf("units$concentration='%s' does not contain '/' (mass/volume).", conc),
-        "Concentration units usually look like 'mg/L', 'ug/mL', 'ng/mL'."
-      ))
-    } else {
-      conc_num <- trimws(sub("/.*$", "", conc))
-      if (!.unitsCompatible(dosing, conc_num) &&
-          !.unitsSameDimension(dosing, conc_num)) {
+      # No mass/volume slash. Warn only when the concentration field is
+      # itself a bare pharmacological amount (an amount written where a
+      # concentration belongs); a non-amount PD endpoint (mmHg, ordinal
+      # grade, ...) is a legitimate non-plasma-concentration output.
+      if (.unitsRecognizedAmount(conc)) {
         issues <- rbind(issues, .issue(
-          "units", "warning", "dosing_concentration",
-          sprintf(
-            paste0(
-              "units$dosing ('%s') and units$concentration numerator ",
-              "('%s') appear dimensionally incompatible."
-            ),
-            dosing, conc_num
-          ),
-          paste0(
-            "Confirm the dosing unit dimension matches the concentration ",
-            "numerator dimension (both mass, or both molar, etc.)."
-          )
+          "units", "warning", "concentration",
+          sprintf("units$concentration='%s' does not contain '/' (mass/volume).", conc),
+          "Concentration units usually look like 'mg/L', 'ug/mL', 'ng/mL'."
         ))
-      } else if (!.unitsCompatible(dosing, conc_num)) {
+      }
+    } else {
+      conc_num <- trimws(sub("\\(.*$", "", trimws(sub("/.*$", "", conc))))
+      if (!.unitsRecognizedAmount(conc_num)) {
+        # Non-pharmacological-amount numerator (CFU, cells, mU, ...):
+        # PD / QSP / bacterial-kill endpoint -> mass/volume check N/A, skip.
+      } else if (.unitsCompatible(dose_core, conc_num)) {
+        # Identical pharmacological dimension and token -> nothing to flag.
+      } else if (.unitsSameDimension(dose_core, conc_num)) {
         issues <- rbind(issues, .issue(
           "units", "info", "dosing_concentration",
           sprintf(
@@ -984,11 +992,31 @@ checkModelConventions <- function(model, verbose = TRUE) {
               "units$dosing ('%s') and units$concentration numerator ",
               "('%s') differ in magnitude; ensure scaling is applied in model()."
             ),
-            dosing, conc_num
+            dose_core, conc_num
           ),
           paste0(
             "When dosing is mg but concentration is ug/mL (= mg/L), no ",
             "conversion is needed if volume is in L. Verify the relationship."
+          )
+        ))
+      } else {
+        # Both are recognized amounts but of different pharmacological
+        # dimensions (mass vs molar vs IU). The conversion (molecular
+        # weight / potency) is expected and performed in model() ->
+        # informational, not a warning.
+        issues <- rbind(issues, .issue(
+          "units", "info", "dosing_concentration",
+          sprintf(
+            paste0(
+              "units$dosing ('%s') and units$concentration numerator ",
+              "('%s') differ in dimension (mass vs molar vs IU); ensure the ",
+              "molecular-weight / potency conversion is applied in model()."
+            ),
+            dose_core, conc_num
+          ),
+          paste0(
+            "Confirm the dosing-to-concentration conversion (e.g. mg -> nmol ",
+            "via molecular weight) is performed in model()."
           )
         ))
       }

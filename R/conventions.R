@@ -364,7 +364,14 @@
     # esterase / amidase hydrolysis. Used as a metabolite suffix in
     # parent + metabolite simultaneous popPK models
     # (Wu 2012 Acta Pharmacol Sin 33:1401-1408 doi:10.1038/aps.2012.124).
-    "mfa"
+    "mfa",
+    # 7-Hydroxy-methotrexate (7-OH-MTX), the principal circulating
+    # metabolite of methotrexate formed by aldehyde-oxidase-mediated
+    # 7-hydroxylation in the liver. Used as a metabolite suffix in
+    # parent + metabolite joint popPK models for high-dose methotrexate
+    # therapy (Joerger 2006 Br J Clin Pharmacol 62(1):71-80
+    # doi:10.1111/j.1365-2125.2005.02513.x).
+    "7ohmtx"
   ),
   # Suffixes allowed for multi-component CL parameters. `_ss` denotes
   # the steady-state arm; `_time` the time-varying decay arm; `_renal`
