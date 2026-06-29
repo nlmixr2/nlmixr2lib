@@ -11,7 +11,7 @@ modeldb
 
 ## Format
 
-A data frame with 1080 rows and 12 columns
+A data frame with 1203 rows and 12 columns
 
 - name:
 

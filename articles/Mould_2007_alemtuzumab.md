@@ -91,6 +91,16 @@ Pharmacology* 2007;64(3):278–291
 | Response threshold (trough) | Abstract / Results | 13.2 µg mL⁻¹ |
 | Response threshold (AUC_(0–τ)) | Abstract / Results | 484 µg h mL⁻¹ |
 | Baseline WBC distribution | Table 1 | median 37.8 × 10⁹/L, range 1.3–522 |
+| **PD model — indirect response on WBC** (Mould_2007_alemtuzumab_wbc) |  |  |
+| Stimulatory-loss IDR structure | Results § PD model / Eq. for dWBC/dt | dWBC/dt = K_(in) − K_(out)(1 + E_(max)·C/(EC50+C))·WBC |
+| E_(max) | Table 3 final estimates | 18.2 |
+| EC50 | Table 3 final estimates | 306 µg L⁻¹ |
+| K_(in) | Table 3 final estimates | 1.56 × 10⁹ cells L⁻¹ h⁻¹ |
+| K_(out) | Table 3 final estimates | 0.029 h⁻¹ |
+| IIV on E_(max), EC50, K_(in) | Table 3 | 244%, 775%, 172% CV |
+| IIV on K_(out) | Table 3 | Not estimated (held at 0) |
+| PD additive residual SD | Table 3 | 15.6 × 10⁹ cells L⁻¹ |
+| Implied typical baseline WBC | Results, PD § (K_(in)/K_(out)) | 53.8 × 10⁹/L |
 
 ### Virtual cohort
 
@@ -591,17 +601,179 @@ discrepancy of 2-3× against the threshold is consistent with a typical
 patient whose baseline WBC is near the cohort median; responders tend to
 be those whose V_(max) drops most during treatment.
 
+### Coupled PK-PD model — indirect-response WBC dynamics
+
+Mould 2007 also reports a stimulatory-loss indirect-response model on
+total white blood cell count (Mould 2007 Results, PD section, Table 3):
+
+``` math
+\frac{\mathrm{d}\mathrm{WBC}}{\mathrm{d}t}
+  = K_{\mathrm{in}}
+    - K_{\mathrm{out}}\!\left(1 + \frac{E_{\max}\,C}{\mathrm{EC}_{50}+C}\right)\!\mathrm{WBC}
+```
+
+`Mould_2007_alemtuzumab_wbc` joins this PD layer to the two-compartment
+Michaelis–Menten PK above, with the WBC ODE state replacing the
+data-supplied WBC covariate used by the PK-only model: V_(max) at every
+time point is computed as `TVVmax * (WBC_state / 10)^0.194`, so the PK
+and PD evolve together as a single coupled system. WBC is initialised
+per subject at the steady-state baseline `K_in / K_out`.
+
+The chunk below replays a single 30 mg IV 2-h infusion in a typical
+patient and a 12-week 30 mg three-times-weekly course in a 100-subject
+virtual cohort, then plots Cc and WBC side by side. Cohort size is
+capped at 100 per arm (well under the 200/arm vignette ceiling) because
+the IDR system runs at finer effective resolution than the PK alone.
+
+``` r
+
+mod_pd <- readModelDb("Mould_2007_alemtuzumab_wbc")
+
+# Single 30 mg 2-h IV infusion at time 0; observe on the central compartment
+# (rxode2 returns every ODE state and derived observable per row regardless
+# of which compartment the observation event is keyed to).
+typ_obs_times <- seq(0, 14 * 24, by = 1)
+d_typ <- bind_rows(
+  tibble(ID = 1L, TIME = 0,             AMT = 30, EVID = 1, CMT = "central", RATE = 15, DV = NA_real_),
+  tibble(ID = 1L, TIME = typ_obs_times, AMT = 0,  EVID = 0, CMT = "Cc",      RATE = 0,  DV = NA_real_)
+) |>
+  arrange(TIME, desc(EVID))
+
+sim_single <- rxode2::rxSolve(rxode2::zeroRe(mod_pd), events = d_typ) |>
+  as.data.frame() |>
+  mutate(time_day = time / 24) |>
+  tidyr::pivot_longer(
+    cols      = c(Cc, WBC),
+    names_to  = "endpoint",
+    values_to = "value"
+  ) |>
+  mutate(endpoint = recode(endpoint,
+    Cc  = "Alemtuzumab Cc (ug/mL)",
+    WBC = "WBC (10^9 cells/L)"
+  ))
+#> ℹ parameter labels from comments will be replaced by 'label()'
+#> ℹ omega/sigma items treated as zero: 'etalvmax', 'etalkm', 'etalvc', 'etalvp', 'etalemax', 'etalec50', 'etalkin', 'etalkout'
+
+ggplot(sim_single, aes(time_day, value)) +
+  geom_line(linewidth = 0.8, colour = "steelblue") +
+  facet_wrap(~ endpoint, scales = "free_y", ncol = 2) +
+  labs(
+    x       = "Time after dose (days)",
+    y       = NULL,
+    title   = "Single 30 mg IV 2-h infusion - coupled PK-PD typical patient",
+    caption = "Mould 2007 Figure 5-equivalent (typical patient; baseline WBC = Kin/Kout = 53.8 x 10^9/L)"
+  ) +
+  theme_bw()
+```
+
+![](Mould_2007_alemtuzumab_files/figure-html/pkpd-typical-1.png)
+
+``` r
+
+set.seed(2007)
+n_pd <- 100
+
+week_h_pd <- 7 * 24
+dose_times_pd <- sort(as.vector(outer(
+  c(0, 2 * 24, 4 * 24),
+  (seq_len(12) - 1) * week_h_pd,
+  `+`
+)))
+tmax_pd_h <- max(dose_times_pd) + 21 * 24
+
+cohort_obs_times <- seq(0, tmax_pd_h, by = 6)
+
+d_dose_pd <- tibble(ID = seq_len(n_pd)) |>
+  tidyr::crossing(TIME = dose_times_pd) |>
+  mutate(AMT = 30, EVID = 1L, CMT = "central", RATE = 15, DV = NA_real_)
+
+d_obs_pd <- tibble(ID = seq_len(n_pd)) |>
+  tidyr::crossing(TIME = cohort_obs_times) |>
+  mutate(AMT = 0,  EVID = 0L, CMT = "Cc",      RATE = 0,  DV = NA_real_)
+
+d_cohort <- bind_rows(d_dose_pd, d_obs_pd) |>
+  arrange(ID, TIME, desc(EVID))
+
+sim_cohort <- rxode2::rxSolve(mod_pd, events = d_cohort) |>
+  as.data.frame() |>
+  mutate(time_day = time / 24)
+#> ℹ parameter labels from comments will be replaced by 'label()'
+#> ℹ omega/sigma items treated as zero: 'etalkout'
+
+summary_cohort <- sim_cohort |>
+  group_by(time_day) |>
+  summarise(
+    cc_med  = stats::median(Cc,  na.rm = TRUE),
+    cc_lo   = stats::quantile(Cc,  0.05, na.rm = TRUE),
+    cc_hi   = stats::quantile(Cc,  0.95, na.rm = TRUE),
+    wbc_med = stats::median(WBC, na.rm = TRUE),
+    wbc_lo  = stats::quantile(WBC, 0.05, na.rm = TRUE),
+    wbc_hi  = stats::quantile(WBC, 0.95, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+p_cc <- ggplot(summary_cohort, aes(time_day, cc_med)) +
+  geom_ribbon(aes(ymin = cc_lo, ymax = cc_hi),
+              fill = "steelblue", alpha = 0.25) +
+  geom_line(linewidth = 0.8) +
+  labs(x = "Time (days)", y = expression(C[c]~(mu*g/mL)),
+       title = "Alemtuzumab Cc - 12-week course") +
+  theme_bw()
+
+p_wbc <- ggplot(summary_cohort, aes(time_day, wbc_med)) +
+  geom_ribbon(aes(ymin = wbc_lo, ymax = wbc_hi),
+              fill = "darkorange", alpha = 0.25) +
+  geom_line(linewidth = 0.8, colour = "firebrick") +
+  labs(x = "Time (days)", y = expression(WBC~(10^9~cells/L)),
+       title = "WBC dynamics - 12-week course") +
+  theme_bw()
+
+if (requireNamespace("patchwork", quietly = TRUE)) {
+  patchwork::wrap_plots(p_cc, p_wbc, ncol = 2)
+} else {
+  print(p_cc)
+  print(p_wbc)
+}
+```
+
+![](Mould_2007_alemtuzumab_files/figure-html/pkpd-cohort-1.png)![](Mould_2007_alemtuzumab_files/figure-html/pkpd-cohort-2.png)
+
+The cohort plot replicates the qualitative pattern of Mould 2007 Figure
+5: WBC drops sharply from the typical baseline (~54 × 10⁹/L per
+`K_in / K_out`) during the first weeks of dosing and approaches a
+low-level steady state by the end of the 12-week course. As WBC falls,
+the simulated V_(max) also falls (it is now driven by the state), so
+simulated trough Cc under this coupled model accumulates more
+aggressively than under the constant-WBC PK-only simulation above —
+bringing the typical patient closer to the 13.2 µg mL⁻¹ responder
+threshold.
+
 ### Assumptions and deviations
 
-- **WBC dynamics.** Mould 2007 pairs the PK model with an
-  indirect-response PD model for WBC. This vignette does not
-  re-implement the PD model and holds WBC constant at each subject’s
-  baseline value. As a result the simulated steady-state accumulation is
-  lower than the 13.2 µg mL⁻¹ and 484 µg h mL⁻¹ thresholds because
-  V_(max) is not allowed to decline as leukaemic cells are depleted.
-  Users who want mechanistically coupled PK-PD should append the
-  indirect-response WBC model and pass the time-varying WBC through to
-  this PK model.
+- **WBC dynamics (PK-only model).** The `Mould_2007_alemtuzumab` PK-only
+  model uses WBC as a data-supplied covariate and holds it constant at
+  each subject’s baseline value in the PK simulation above. As a result
+  the PK-only steady-state accumulation is lower than the 13.2 µg mL⁻¹
+  and 484 µg h mL⁻¹ thresholds because V_(max) is not allowed to decline
+  as leukaemic cells are depleted. `Mould_2007_alemtuzumab_wbc` (used in
+  the coupled-PK-PD section above) replaces the data WBC with the PD ODE
+  state and so does drive V_(max) dynamically.
+- **Implied PD-baseline WBC mismatch.** The typical-value baseline
+  implied by the PD parameters is
+  `K_in / K_out = 1.56 / 0.029 = 53.8 × 10^9^/L` (Mould 2007 Results, PD
+  section). The observed cohort median is 37.8 × 10⁹/L (Table 1). The
+  IIV on K_(in) (172%) widens the per-subject baseline distribution; the
+  typical-value comparator should be read as 53.8 × 10⁹/L, not the
+  cohort median.
+- **Missing E_(max)/EC50 correlation.** Mould 2007 reports that the PD
+  model contained a correlation term between E_(max) and EC50 (“The
+  model contained a term describing the correlation of E_(max) and
+  EC50”) but does not publish the correlation value.
+  `Mould_2007_alemtuzumab_wbc` uses a diagonal Ω on the PD parameters;
+  the missing covariance is not invented.
+- **K_(out) IIV not estimated.** Mould 2007 Table 3 reports “Not
+  estimated” for K_(out) IIV; `etalkout` is wrapped in `fixed(0)` so the
+  structural K_(out) varies only with the typical-value estimate.
 - **Time-varying WBC rxode2 limitation.** A time-varying WBC column in
   the events data frame segfaults rxode2 when combined with the repeated
   IV bolus dose schedule used here (observed on rxode2 in
@@ -631,3 +803,9 @@ be those whose V_(max) drops most during treatment.
   with chronic lymphocytic leukaemia and its link to treatment response.
   Br J Clin Pharmacol. 2007;64(3):278-291.
   <doi:10.1111/j.1365-2125.2007.02914.x>
+
+Two model files are bundled for this paper:
+
+- `Mould_2007_alemtuzumab` — PK-only, WBC as a data covariate.
+- `Mould_2007_alemtuzumab_wbc` — coupled PK + indirect-response PD on
+  WBC.

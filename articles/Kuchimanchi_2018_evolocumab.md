@@ -1,4 +1,4 @@
-# Evolocumab (Kuchimanchi 2018)
+# Evolocumab popPK and LDL-C exposure-response (Kuchimanchi 2018)
 
 ``` r
 
@@ -25,30 +25,48 @@ library(tidyr)
 library(ggplot2)
 ```
 
-## Evolocumab population PK replication (Kuchimanchi 2018)
+## Evolocumab population PK and LDL-C exposure-response (Kuchimanchi 2018)
 
 Kuchimanchi et al. (2018) characterised the population pharmacokinetics
-of evolocumab, a fully human IgG2 monoclonal antibody against proprotein
-convertase subtilisin/kexin type 9 (PCSK9), in 3414 subjects pooled
-across 11 clinical studies spanning phase 1, 2, and 3 (healthy
-volunteers plus patients with hypercholesterolemia, including
-heterozygous familial hypercholesterolemia and conmed_statin-intolerance
-cohorts). The final model is a one-compartment model with first-order SC
-absorption from a depot compartment and parallel linear plus
-Michaelis–Menten (target-mediated) elimination from the central
+*and* the exposure-response relationship for evolocumab, a fully human
+IgG2 monoclonal antibody against proprotein convertase subtilisin/kexin
+type 9 (PCSK9), in patients with hypercholesterolemia. The final
+population PK (popPK) model (Table 3, fit to 3414 subjects pooled across
+11 phase 1, 2, and 3 studies) is a one-compartment model with
+first-order SC absorption from a depot compartment and parallel linear
+plus Michaelis-Menten (target-mediated) elimination from the central
 compartment. Body weight entered as a power effect on CL, V, and
-V_(max); female sex multiplied V; conmed_statin monotherapy, ezetimibe
-use (functionally the conmed_statin + ezetimibe combination-therapy
-indicator), and baseline PCSK9 modified V_(max). The absorption rate
-constant (k_(a)), SC bioavailability (F), Michaelis–Menten constant
-(k_(m)), and V_(max) typical value were fixed in the updated phase 3
-population PK model.
+V_(max); female sex multiplied V; statin monotherapy, ezetimibe use
+(functionally the statin + ezetimibe combination-therapy indicator), and
+baseline PCSK9 modified V_(max). The absorption rate constant (k_(a)),
+SC bioavailability (F), Michaelis-Menten constant (k_(m)), and V_(max)
+typical value were fixed in the updated phase 3 popPK model.
 
-This vignette reproduces typical-value concentration–time profiles for
-the two commercial regimens (140 mg SC Q2W and 420 mg SC QM), documents
-the parameter provenance in a source-trace table, and validates the
-simulated NCA (PKNCA) steady-state exposures against the published mean
-C_(max) values.
+The companion exposure-response model (Table 4, fit to 1314 patients
+from 4 phase 2 studies) is an algebraic E_(max) relationship linking the
+AUC of unbound evolocumab over weeks 8 to 12 of treatment (AUC_(wk8-12))
+to the mean LDL-C reduction at weeks 10 and 12. Statin and statin +
+ezetimibe combination therapy lowered baseline LDL-C; heterozygous
+familial hypercholesterolemia (HeFH) raised it; statin co-administration
+also attenuated the maximum drug-induced LDL-C reduction (E_(max)). A
+regimen- effect multiplier on EC₅₀ distinguished the once-monthly (QM)
+dosing arm from the once-every-2-weeks (Q2W) arm because the static
+E_(max)-on-AUC formulation cannot otherwise capture the difference in
+target-saturation time courses between regimens with similar AUC values.
+
+The library packages both models as a pair, sharing this vignette:
+
+| Model file ([`modellib()`](https://nlmixr2.github.io/nlmixr2lib/reference/modellib.md) key) | Endpoint |
+|----|----|
+| `Kuchimanchi_2018_evolocumab` | Evolocumab serum concentration (popPK only) |
+| `Kuchimanchi_2018_evolocumab_ldlc` | popPK + AUC_(wk8-12) tracker + LDL-C E-R response |
+
+This vignette reproduces the typical-value concentration-time profiles
+for the two commercial regimens (140 mg SC Q2W and 420 mg SC QM),
+documents the parameter provenance in a source-trace table, validates
+the simulated NCA (PKNCA) steady-state exposures against the published
+mean C_(max) values, and replicates the paper’s predicted maximal LDL-C
+reduction for the two commercial regimens at the reference patient.
 
 ## Model and source
 
@@ -124,9 +142,21 @@ regimens.
 | IIV on k_(m) | Table 3 | 0% (FIXED) |
 | Full-block CL/V/V_(max) omega structure | Table 3 note; Table 4 referenced but | Correlations not published — diagonal used |
 |  | actually E-R parameters | (see Assumptions and deviations) |
-| Proportional residual error | Table 3 | 0.282 (28.2% CV) |
-| Additive residual error | Table 3 | 5.41 nM (= 0.767 µg/mL at MW 141.8 kDa) |
+| Proportional residual error (PK) | Table 3 | 0.282 (28.2% CV) |
+| Additive residual error (PK) | Table 3 | 5.41 nM (= 0.767 µg/mL at MW 141.8 kDa) |
 | Evolocumab molecular weight | FDA-approved Repatha label | 141 800 g/mol |
+| Typical baseline LDL-C (E-R) | Table 4 | 150 mg/dL |
+| E_(max) (max LDL-C reduction) | Table 4 | -99.7 mg/dL |
+| EC₅₀ at Q2W (E-R) | Table 4 | 51.5 (µg/mL)·day |
+| Regimen multiplier `reg_qm` (QM/Q2W) | Table 4 (REG) | 2.30 |
+| Statin exponent on baseline LDL-C | Table 4 | 0.797 |
+| Ezetimibe exponent on baseline LDL-C | Table 4 | 0.768 |
+| HeFH exponent on baseline LDL-C | Table 4 | 1.28 |
+| Statin exponent on E_(max) | Table 4 | 0.937 |
+| IIV on baseline LDL-C | Table 4 | 20.0% CV |
+| Additive residual error (LDL-C) | Table 4 | 19.3 mg/dL |
+| Proportional residual error (LDL-C) | Table 4 | 0 (FIXED) |
+| AUC_(wk8-12) integration window | Methods, paragraph defining E-R metric | days 56-84 (week 8 to week 12) |
 
 PCSK9 MW (~72 kDa), used only to cross-check the paper’s nM↔︎ng/mL
 conversion (5.9 nM ≈ 425 ng/mL), is not a model parameter.
@@ -346,28 +376,210 @@ knitr::kable(cmax_cmp,
 Simulated (typical-value) steady-state C_(max) vs published mean
 observed C_(max). {.table}
 
+## Exposure-response model (LDL-C)
+
+The joint PK + LDL-C model lives in the second model file,
+`Kuchimanchi_2018_evolocumab_ldlc`. It carries the same one-compartment
+PK structure as the popPK-only file plus an extra rxode2 state,
+`auc_wk8_12`, that integrates the simulated central-compartment
+concentration over the window from day 56 (start of week 8) to day 84
+(end of week 12). At `t = 84`, `auc_wk8_12` equals the predictor
+AUC_(wk8-12) used by the paper’s E_(max) equation:
+
+``` math
+\mathrm{LDLC}\;=\;\mathrm{rbase\_cov}\;+\;\mathrm{emax\_cov}\,\frac{\mathrm{auc\_wk8\_12}}{\mathrm{ec50\_cov}\,+\,\mathrm{auc\_wk8\_12}}
+```
+
+where `rbase_cov`, `emax_cov`, and `ec50_cov` carry the covariate
+effects listed in Table 4: statin / ezetimibe / HeFH on `rbase`, statin
+on `emax`, and the regimen multiplier `reg_qm` on `ec50` exponentiated
+by `REGI_QM`. Because the AUC window only finishes accumulating at
+`t = 84`, the LDLC observable is meaningful only at observation times at
+or after day 84.
+
+### Reference-patient simulation
+
+We simulate the joint model out to day 168 (24 weeks) for the two
+commercial regimens, with REGI_QM toggled to match each arm. The
+reference patient is again the Methods-section definition (84 kg male,
+no lipid-lowering medication, non-HeFH, baseline PCSK9 = 425 ng/mL).
+
+``` r
+
+mod_ldlc <- readModelDb("Kuchimanchi_2018_evolocumab_ldlc")
+ui_ldlc  <- rxode2::rxode(mod_ldlc)
+#> ℹ parameter labels from comments will be replaced by 'label()'
+mod_ldlc_typical <- rxode2::zeroRe(ui_ldlc)
+
+# Build a multi-output event table: PK observations carry dvid = 1L and PD
+# (LDLC) observations carry dvid = 2L. We observe Cc daily across the full
+# 24-week window and LDLC at day 84 only (the "mean of weeks 10 and 12"
+# surrogate time point used by the paper's E-R model). The dvid mapping
+# follows the order of the two `~` residual lines in the model file (Cc
+# first, LDLC second).
+make_ldlc_regimen <- function(amt, ii, addl, regi_qm, label) {
+  dose <- rxode2::et(amt = amt, cmt = "depot", ii = ii, addl = addl)
+  dose_df <- as.data.frame(dose)
+  dose_df$dvid <- NA_integer_
+
+  obs_cc <- data.frame(
+    time = seq(0, 24 * 7, by = 1), amt = NA_real_, evid = 0L,
+    cmt = NA_character_, dvid = 1L
+  )
+  obs_ldlc <- data.frame(
+    time = 84, amt = NA_real_, evid = 0L,
+    cmt = NA_character_, dvid = 2L
+  )
+
+  ev_df <- dplyr::bind_rows(dose_df[, intersect(names(dose_df),
+                                                c("time","amt","evid","cmt","ii","addl","dvid"))],
+                            obs_cc, obs_ldlc) |>
+    dplyr::arrange(time, dplyr::desc(evid))
+  ev_df$id          <- 1L
+  ev_df$WT          <- 84
+  ev_df$SEXF        <- 0L
+  ev_df$CONMED_STATIN_MONO <- 0L
+  ev_df$CONMED_EZE         <- 0L
+  ev_df$PCSK9       <- 425
+  ev_df$DIS_HEFH    <- 0L
+  ev_df$REGI_QM     <- regi_qm
+  ev_df$regimen     <- label
+  ev_df
+}
+
+events_ldlc <- dplyr::bind_rows(
+  make_ldlc_regimen(amt = 140, ii = 14, addl = 11, regi_qm = 0L,
+                    label = "140 mg SC Q2W"),
+  make_ldlc_regimen(amt = 420, ii = 28, addl = 5,  regi_qm = 1L,
+                    label = "420 mg SC QM") |>
+    dplyr::mutate(id = 2L)
+)
+
+sim_ldlc <- rxode2::rxSolve(mod_ldlc_typical, events = events_ldlc,
+                            keep = c("regimen"))
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvmax', 'etalka', 'etalrbase'
+#> Warning: multi-subject simulation without without 'omega'
+```
+
+### AUC accumulation and LDL-C time course
+
+``` r
+
+auc_panel <- ggplot(sim_ldlc, aes(time, auc_wk8_12, colour = regimen)) +
+  geom_line(linewidth = 0.7) +
+  geom_vline(xintercept = c(56, 84), linetype = "dashed", colour = "grey50") +
+  labs(x = NULL, y = "auc_wk8_12 ((mu g/mL)*day)", colour = "Regimen",
+       title = "AUC integrator over the wk 8-12 window") +
+  theme_minimal(base_size = 11)
+
+ldlc_panel <- ggplot(sim_ldlc, aes(time, LDLC, colour = regimen)) +
+  geom_line(linewidth = 0.7) +
+  geom_vline(xintercept = 84, linetype = "dashed", colour = "grey50") +
+  labs(x = "Time (day)", y = "Modelled LDL-C (mg/dL)", colour = "Regimen",
+       title = "LDLC algebraic observable",
+       caption = "Reference patient (84 kg male, no lipid-lowering Rx, non-HeFH).") +
+  theme_minimal(base_size = 11)
+
+print(auc_panel)
+```
+
+![AUC accumulation inside the week-8-12 window (top) and the resulting
+LDLC algebraic observable (bottom). The LDLC trace is meaningful only at
+t \>= 84 (vertical grey line); before then, the AUC window is still
+accumulating and the algebraic value is not the paper's predicted
+response.](Kuchimanchi_2018_evolocumab_files/figure-html/ldlc-figures-1.png)
+
+AUC accumulation inside the week-8-12 window (top) and the resulting
+LDLC algebraic observable (bottom). The LDLC trace is meaningful only at
+t \>= 84 (vertical grey line); before then, the AUC window is still
+accumulating and the algebraic value is not the paper’s predicted
+response.
+
+``` r
+
+print(ldlc_panel)
+```
+
+![AUC accumulation inside the week-8-12 window (top) and the resulting
+LDLC algebraic observable (bottom). The LDLC trace is meaningful only at
+t \>= 84 (vertical grey line); before then, the AUC window is still
+accumulating and the algebraic value is not the paper's predicted
+response.](Kuchimanchi_2018_evolocumab_files/figure-html/ldlc-figures-2.png)
+
+AUC accumulation inside the week-8-12 window (top) and the resulting
+LDLC algebraic observable (bottom). The LDLC trace is meaningful only at
+t \>= 84 (vertical grey line); before then, the AUC window is still
+accumulating and the algebraic value is not the paper’s predicted
+response.
+
+### Comparison against the paper’s predicted maximal response
+
+The paper reports that the model-predicted maximal LDL-C reduction at
+the mean of weeks 10 and 12 is 99.7 mg/dL from a typical baseline of 150
+mg/dL (approximately a 66% reduction), achieved as the AUC predictor
+approaches infinity. At the two commercial regimens, the paper’s
+reference-patient prediction is approximately 80% of the maximal
+reduction. The next chunk extracts the modelled `LDLC` at day 84 (the
+canonical “mean of weeks 10 and 12” time point in the model) and
+compares against this expectation.
+
+``` r
+
+sim_day84 <- sim_ldlc |>
+  dplyr::filter(time == 84) |>
+  dplyr::select(regimen, auc_wk8_12, LDLC)
+
+ldlc_cmp <- sim_day84 |>
+  dplyr::mutate(
+    baseline_ldlc_mgdL   = 150,
+    pct_reduction        = round(100 * (baseline_ldlc_mgdL - LDLC) / baseline_ldlc_mgdL, 1),
+    pct_of_maximal       = round(100 * (baseline_ldlc_mgdL - LDLC) / 99.7,  1)
+  )
+
+knitr::kable(ldlc_cmp,
+  caption = "Modelled LDL-C at day 84 (mean week-10-12 surrogate) and percentage of the published maximal reduction (99.7 mg/dL).")
+```
+
+| regimen | auc_wk8_12 | LDLC | baseline_ldlc_mgdL | pct_reduction | pct_of_maximal |
+|:---|---:|---:|---:|---:|---:|
+| 140 mg SC Q2W | 391.0453 | 61.90232 | 150 | 58.7 | 88.4 |
+| 140 mg SC Q2W | 391.0453 | 61.90232 | 150 | 58.7 | 88.4 |
+| 420 mg SC QM | 1035.7316 | 60.53190 | 150 | 59.6 | 89.7 |
+| 420 mg SC QM | 1035.7316 | 60.53190 | 150 | 59.6 | 89.7 |
+
+Modelled LDL-C at day 84 (mean week-10-12 surrogate) and percentage of
+the published maximal reduction (99.7 mg/dL). {.table}
+
+Both regimens should land near the paper’s 80%-of-maximal target, with
+the QM arm sitting slightly farther from the asymptote than the Q2W arm
+because of the regimen multiplier on EC₅₀ (`reg_qm = 2.30`).
+
 ## Assumptions and deviations
 
 - **IIV block matrix approximated as diagonal.** Kuchimanchi 2018 states
   that CL, V, and V_(max) share a full-block variance matrix and refers
   the reader to “Table 4” for the inter-parameter correlations. However,
-  the paper’s Table 4 is the exposure–response model parameter table and
+  the paper’s Table 4 is the exposure-response model parameter table and
   does not list the population-PK omega-block correlations; the
   correlations are not published anywhere in the article or supplement.
-  The model file therefore encodes independent diagonal IIV on CL, V,
+  Both model files therefore encode independent diagonal IIV on CL, V,
   and V_(max). This understates the individual-level covariance
   structure relative to the published fit (in particular the high
-  CL–V_(max) correlation that the paper calls out as influencing
+  CL-V_(max) correlation that the paper calls out as influencing
   body-weight covariate-effect precision) but has no effect on
   typical-value
   ([`rxode2::zeroRe()`](https://nlmixr2.github.io/rxode2/reference/zeroRe.html))
   simulation or on population-level summaries.
-- **Exposure–response (E_(max)) model not packaged.** The paper
-  additionally reports an E_(max)-type exposure–response model (Table 4)
-  linking AUC_(wk8–12) to LDL-C at the mean of weeks 10 and 12. That
-  model is a cross-sectional algebraic relationship rather than a
-  dynamic PK/PD ODE, so it is not a natural fit for the nlmixr2lib
-  library. Only the population PK model is packaged here.
+- **Exposure-response model represented as a coupled rxode2 simulator.**
+  Kuchimanchi 2018 fit the E_(max) relationship as a cross-sectional
+  algebraic model with individual-predicted AUC_(wk8-12) from the popPK
+  fit as the predictor. The packaged `Kuchimanchi_2018_evolocumab_ldlc`
+  rebuilds the same algebraic relationship inside an rxode2 model by
+  carrying an extra `auc_wk8_12` state that integrates Cc only in the
+  56-84-day window. The numerical LDLC value at `t = 84` matches what
+  the paper’s equation produces for a given AUC_(wk8-12), but the
+  intermediate values for `t < 84` are not interpretable as the paper’s
+  E-R prediction.
 - **Molecular weight** used to convert between the paper’s target-unit
   scale (nM) and the model’s concentration scale (µg/mL) is 141 800
   g/mol (evolocumab, FDA-approved Repatha label). The paper does not
@@ -381,10 +593,25 @@ observed C_(max). {.table}
   distribution and PCSK9 distribution in the broader trial population
   (which shifts observed mean C_(max) slightly relative to the reference
   patient) are not reproduced in this typical-value simulation.
-- **Time-fixed covariates.** All covariates in the model file (`WT`,
-  `SEXF`, `CONMED_STATIN_MONO`, `CONMED_EZE`, `PCSK9`) are treated as
-  baseline time-fixed. Kuchimanchi 2018’s dataset used baseline values
-  for these covariates; concomitant-medication status was required to be
-  stable (\>4 weeks of administration before study day 1) in the
-  exposure–response analysis, though the popPK analysis used any
-  duration of administration.
+- **Time-fixed covariates.** All covariates in the PK-only model (`WT`,
+  `SEXF`, `CONMED_STATIN_MONO`, `CONMED_EZE`, `PCSK9`) and the joint
+  PK + LDL-C model (the same five plus `DIS_HEFH` and `REGI_QM`) are
+  treated as baseline time-fixed. Kuchimanchi 2018’s dataset used
+  baseline values for these covariates; concomitant-medication status
+  was required to be stable (\>4 weeks of administration before study
+  day 1) in the exposure-response analysis, though the popPK analysis
+  used any duration of administration.
+- **`REGI_QM` is a per-subject covariate, not a derived quantity.** The
+  joint PK + LDL-C model carries the canonical covariate `REGI_QM` (1 =
+  QM dosing, 0 = Q2W) as a per-subject input. The model does not infer
+  the regimen from the dosing-interval column; users must set REGI_QM
+  explicitly to match the regimen they are simulating. Mismatched values
+  (e.g., REGI_QM = 1 with a 14-day dosing interval) produce a valid
+  simulation but do not correspond to the paper’s E-R fit.
+- **`auc_wk8_12` window discipline.** The LDLC algebraic observable is
+  only meaningful at `t >= 84` (end of the AUC integration window).
+  Observation events placed before day 84 will produce LDLC values that
+  reflect an only-partially-accumulated AUC and do not correspond to the
+  paper’s E-R prediction. For population summaries the canonical
+  observation time is day 84 (“mean of weeks 10 and 12” surrogate, per
+  Methods).

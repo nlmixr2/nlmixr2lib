@@ -1,0 +1,637 @@
+# Meropenem + tobramycin against P. aeruginosa PAO1 and PAOdelta-mutS (Landersdorfer 2018)
+
+## Model and source
+
+- Article: <https://doi.org/10.1128/AAC.02055-17>
+- Supplement (model equations Eqs 2-5, Table S3 parameter estimates):
+  same DOI; SUPPLEMENTAL FILE 1, PDF.
+
+``` r
+
+pao1   <- rxode2::rxode(readModelDb("Landersdorfer_2018_meropenem_tobramycin_PAO1"))
+paomut <- rxode2::rxode(readModelDb("Landersdorfer_2018_meropenem_tobramycin_PAOmutS"))
+cat(pao1$reference, sep = "\n")
+#> Landersdorfer CB, Rees VE, Yadav R, Rogers KE, Kim TH, Bergen PJ, Cheah SE, Boyce JD, Peleg AY, Oliver A, Shin BS, Nation RL, Bulitta JB. Optimization of a meropenem-tobramycin combination dosage regimen against hypermutable and nonhypermutable Pseudomonas aeruginosa via mechanism-based modeling and the hollow-fiber infection model. Antimicrob Agents Chemother. 2018 Mar 27;62(4):e02055-17. doi:10.1128/AAC.02055-17. Model differential equations (Eqs 2-5) and Table S3 population parameter estimates are in the supplemental material.
+```
+
+This paper develops a single mechanism-based PK/PD model (MBM) of
+bacterial killing and resistance and co-fits it to static-concentration
+time-kill (SCTK) data from two strains of *Pseudomonas aeruginosa*: the
+wild-type reference strain PAO1 and its isogenic hypermutable
+PAOdelta-mutS sibling (~1000-fold higher mutation rate due to defective
+DNA-mismatch repair). The published model shares the bulk of its
+parameters across strains and reports strain-specific estimates for the
+bacterial killing rate constants (`Kmax_MEM_*`, `Kmax_TOB_*`), one of
+the meropenem KC50s (`KC50_MEM_IR`), and the two pre-existing
+less-susceptible subpopulation fractions (`Log10PRB_RI`, `Log10PRB_IR`).
+The MBM was subsequently used in in-silico simulations to predict
+bacterial outcomes for hollow-fiber infection model (HFIM) regimens
+under CF-patient meropenem and tobramycin pharmacokinetics.
+
+Because the strain-specific parameter sets give two distinct
+deterministic trajectories that a downstream user is likely to want to
+compare side by side, the model is packaged as **two sibling files**:
+
+- `Landersdorfer_2018_meropenem_tobramycin_PAO1` – parameter estimates
+  for PAO1 (Table S3 column “a”).
+- `Landersdorfer_2018_meropenem_tobramycin_PAOmutS` – parameter
+  estimates for PAOdelta-mutS (Table S3 column “b”).
+
+Both files implement the same model structure (Eqs 2-5 of the
+supplement); they differ only in the eight strain-specific `ini()`
+values.
+
+This is **not** a population PK model. The antibiotic exposures
+(meropenem and tobramycin concentrations) are model inputs that the user
+doses; they decline with the simulated CF-patient half-lives (0.8 h
+meropenem, 2.5 h tobramycin) reported in Methods. There is no
+absorption-distribution-elimination profile of a drug to integrate for
+NCA, so PKNCA is not the right validation; the mechanistic checks below
+replace it.
+
+## Population (biological context)
+
+Both strains share an identical pre-treatment MIC pair (1 mg/L
+meropenem, 0.5 mg/L tobramycin). The SCTK that calibrated the MBM ran
+for 96 h at static antibiotic concentrations of 2, 8, and 16 mg/L
+meropenem and 1, 4, and 8 mg/L tobramycin, alone and in all 9
+combinations, with a targeted initial inoculum of ~10^7.8 CFU/mL in 15
+mL of cation-adjusted Mueller-Hinton broth at 36 deg C (the
+supplement-fitted `Log10CFU0` is 7.72). Bacterial suspensions were
+centrifuged and resuspended in fresh antibiotic-containing medium every
+24 h to maintain static concentrations, with meropenem additionally
+supplemented at 30% of the initial concentration at 6, 30, 54, and 78 h
+to compensate for thermal degradation.
+
+PAO1 is the wild-type *P. aeruginosa* reference strain (Hancock
+laboratory). PAOdelta-mutS is its isogenic hypermutable derivative
+constructed by Mena et al. via *mutS* deletion – *mutS* encodes a
+component of the DNA mismatch-repair system, and its loss increases the
+mutation rate ~1000-fold without changing the baseline drug MICs.
+Hypermutable strains are prevalent in cystic fibrosis chronic lung
+infection and are linked to multidrug resistance and reduced lung
+function.
+
+The same information is available programmatically via
+`readModelDb("Landersdorfer_2018_meropenem_tobramycin_PAO1")$population`
+and its `_PAOmutS` sibling.
+
+## Source trace
+
+Per-parameter origins are recorded as in-file comments next to each
+`ini()` entry in the two model files. The tables below collect them in
+one place.
+
+| Parameter | PAO1 value | PAOdelta-mutS value | Source location |
+|----|---:|---:|----|
+| `log10cfu0` | 7.72 | 7.72 | Table S3 (shared) |
+| `log10cfumax` | 9.57 | 9.57 | Table S3 (shared) |
+| `lk21` | log(50.0) FIXED | log(50.0) FIXED | Supplement prose (“k21 was assumed to be fast”); value 50/h is the same-group Rees 2018 precedent |
+| `mgt_ss` | 57.3 | 57.3 | Table S3 (shared) MGT_SS |
+| `mgt_ri` | 2341 | 2341 | Table S3 (shared) MGT_RI |
+| `mgt_ir` | 78.4 | 78.4 | Table S3 (shared) MGT_IR |
+| `log10prb_ri` | -8.53 | -7.63 | Table S3 Log10PRB_RI |
+| `log10prb_ir` | -3.08 | -2.99 | Table S3 Log10PRB_IR |
+| `kmax_mem_ss` | 3.77 | 2.81 | Table S3 Kmax_MEM_SS |
+| `kmax_mem_ri` | 0.652 | 0.458 | Table S3 Kmax_MEM_RI |
+| `kmax_mem_ir` | 3.92 | 1.69 | Table S3 Kmax_MEM_IR |
+| `kc50_ss_mem` | 2.07 | 2.07 | Table S3 (shared) KC50_MEM_SS |
+| `kc50_ri_mem` | 81.2 | 81.2 | Table S3 (shared) KC50_MEM_RI |
+| `kc50_ir_mem` | 61.5 | 40.0 | Table S3 KC50_MEM_IR |
+| `hill_mem` | 0.563 | 0.563 | Table S3 (shared) HillMEM |
+| `kmax_tob_ss` | 7.03 | 5.73 | Table S3 Kmax_TOB_SS |
+| `kmax_tob_ri` | 0.624 | 0.182 | Table S3 Kmax_TOB_RI |
+| `kmax_tob_ir` | 0.156 | 0.156 | Table S3 (shared) Kmax_TOB_IR |
+| `kc50_ss_tob` | 1.62 | 1.62 | Table S3 (shared) KC50_TOB_SS |
+| `kc50_ri_tob` | 31.0 | 31.0 | Table S3 (shared) KC50_TOB_RI |
+| `kc50_ir_tob` | 92.8 | 92.8 | Table S3 (shared) KC50_TOB_IR |
+| `hill_tob` | 3.03 | 3.03 | Table S3 (shared) HillTOB |
+| `imax_om` | 1.0 FIXED | 1.0 FIXED | Table S3 footnote e (fixed) |
+| `ic50_om` | 0.587 | 0.587 | Table S3 (shared) IC50_OM |
+| `addSd` | 0.41 | 0.41 | Table S3 (shared) SDCFU |
+| `thalf_mem` | 0.8 FIXED | 0.8 FIXED | Main-text Methods: simulated CF-patient meropenem half-life |
+| `thalf_tob` | 2.5 FIXED | 2.5 FIXED | Main-text Methods: simulated CF-patient tobramycin half-life |
+| Life-cycle growth ODEs (2 states/subpop) | n/a | n/a | Supplement Eqs 2, 4 |
+| Killing term (Hill MEM with synergy + Hill TOB) | n/a | n/a | Supplement Eq 2 |
+| Replication factor `REP = 2 - CFUall/CFUmax` | n/a | n/a | Supplement Eq 3 |
+| Mechanistic synergy `OM_effect = 1 - Imax_OM * Ctob / (Ctob + IC50_OM)` | n/a | n/a | Supplement Eq 5 (HillOM taken as 1 – see Assumptions) |
+
+### Units (dimensional analysis)
+
+| Symbol | Meaning | Units |
+|----|----|----|
+| `bact_*1`, `bact_*2` (six bacterial states) | bacterial counts | CFU/mL |
+| `cmem`, `ctob` | antibiotic concentrations | mg/L |
+| `k21`, `k12*`, `kel_*`, `kill_*`, `kmax_*` | rate constants | 1/h |
+| `kc50_*`, `ic50_om` | half-effect concentrations | mg/L |
+| `hill_mem`, `hill_tob`, `rep_factor`, `om_effect`, `imax_om` | dimensionless | – |
+| `cfumax`, `cfu0` | population scale | CFU/mL |
+
+Every growth/kill ODE term has units (1/h) x (CFU/mL) = (CFU/mL)/h
+matching `d/dt(state)`; the drug ODEs have (1/h) x (mg/L) = (mg/L)/h.
+`k12 = 60/MGT` carries the 60 in (min/h), converting the mean generation
+time (min) to a rate (1/h).
+
+## Parameter tables (paper vs. file)
+
+``` r
+
+data.frame(
+  parameter      = names(pao1$theta),
+  PAO1_file      = unname(pao1$theta),
+  PAOmutS_file   = unname(paomut$theta)
+) |>
+  knitr::kable(digits = 6,
+               caption = "Typical-value parameter values as loaded from each model file (Landersdorfer 2018 Table S3).")
+```
+
+| parameter   |   PAO1_file | PAOmutS_file |
+|:------------|------------:|-------------:|
+| log10cfu0   |    7.720000 |     7.720000 |
+| log10cfumax |    9.570000 |     9.570000 |
+| lk21        |    3.912023 |     3.912023 |
+| mgt_ss      |   57.300000 |    57.300000 |
+| mgt_ri      | 2341.000000 |  2341.000000 |
+| mgt_ir      |   78.400000 |    78.400000 |
+| log10prb_ri |   -8.530000 |    -7.630000 |
+| log10prb_ir |   -3.080000 |    -2.990000 |
+| kmax_mem_ss |    3.770000 |     2.810000 |
+| kmax_mem_ri |    0.652000 |     0.458000 |
+| kmax_mem_ir |    3.920000 |     1.690000 |
+| kc50_ss_mem |    2.070000 |     2.070000 |
+| kc50_ri_mem |   81.200000 |    81.200000 |
+| kc50_ir_mem |   61.500000 |    40.000000 |
+| hill_mem    |    0.563000 |     0.563000 |
+| kmax_tob_ss |    7.030000 |     5.730000 |
+| kmax_tob_ri |    0.624000 |     0.182000 |
+| kmax_tob_ir |    0.156000 |     0.156000 |
+| kc50_ss_tob |    1.620000 |     1.620000 |
+| kc50_ri_tob |   31.000000 |    31.000000 |
+| kc50_ir_tob |   92.800000 |    92.800000 |
+| hill_tob    |    3.030000 |     3.030000 |
+| imax_om     |    1.000000 |     1.000000 |
+| ic50_om     |    0.587000 |     0.587000 |
+| addSd       |    0.410000 |     0.410000 |
+| thalf_mem   |    0.800000 |     0.800000 |
+| thalf_tob   |    2.500000 |     2.500000 |
+
+Typical-value parameter values as loaded from each model file
+(Landersdorfer 2018 Table S3). {.table}
+
+## Solver note
+
+The meropenem Hill exponent (`hill_mem = 0.563`) is \< 1. The analytical
+Jacobian of the meropenem killing term has a
+`c^(hill_mem - 1) = c^(-0.437)` factor that is singular at `cmem = 0`.
+The default rxode2 stiff solver (`lsoda`, BDF with numerical Jacobian)
+propagates that singularity and produces NaN trajectories once any
+subpopulation’s state-2 cell count is non-trivial. The explicit
+Dormand-Prince RK8 solver (`method = "dop853"`) does not need the
+Jacobian and integrates the published equations cleanly – all
+simulations below use it. The bare `rxSolve()` defaults will fail; this
+is a property of the published Hill \< 1 form, not a model-file bug.
+
+## Carrying-capacity (growth control) check
+
+With no antibiotic, the population grows from the inoculum (10^7.72)
+toward a stationary plateau. A structural property of the published
+two-state life-cycle growth model with `REP = 2 - CFUall/CFUmax`
+(supplement Eq 3) is that the stationary plateau settles **at CFUmax**,
+not at a fraction of CFUmax: at steady state `REP = 1`, which requires
+`CFUall = CFUmax`. The simulated growth controls below approach
+`log10(CFUmax) = 9.57` for both strains, matching the predicted plateau.
+(The observed HFIM growth control in the paper reaches ~10.5 log10
+CFU/mL, but that is a different experimental system; the MBM was
+calibrated against SCTK plateau data, not the HFIM growth control.)
+
+``` r
+
+ev_gc <- as.data.frame(et(seq(0, 96, by = 1)))
+
+gc <- bind_rows(
+  rxode2::rxSolve(pao1,   ev_gc, returnType = "data.frame",
+                  maxsteps = 1e6, method = "dop853") |>
+    transmute(time, log10CFU = Cc, strain = "PAO1"),
+  rxode2::rxSolve(paomut, ev_gc, returnType = "data.frame",
+                  maxsteps = 1e6, method = "dop853") |>
+    transmute(time, log10CFU = Cc, strain = "PAOdelta-mutS")
+)
+
+cat(sprintf("PAO1   log10CFU(0)=%.3f  log10CFU(96)=%.3f  (expected approach CFUmax=9.57)\n",
+            gc$log10CFU[gc$strain=="PAO1"   & gc$time==0],
+            gc$log10CFU[gc$strain=="PAO1"   & gc$time==96]))
+#> PAO1   log10CFU(0)=7.720  log10CFU(96)=9.570  (expected approach CFUmax=9.57)
+cat(sprintf("PAOmS  log10CFU(0)=%.3f  log10CFU(96)=%.3f  (expected approach CFUmax=9.57)\n",
+            gc$log10CFU[gc$strain=="PAOdelta-mutS" & gc$time==0],
+            gc$log10CFU[gc$strain=="PAOdelta-mutS" & gc$time==96]))
+#> PAOmS  log10CFU(0)=7.720  log10CFU(96)=9.570  (expected approach CFUmax=9.57)
+
+ggplot(gc, aes(time, log10CFU, colour = strain)) +
+  geom_line(linewidth = 1) +
+  geom_hline(yintercept = 9.57, linetype = 2, colour = "grey50") +
+  labs(x = "Time (h)", y = expression(log[10]~CFU/mL),
+       title = "Antibiotic-free growth control",
+       caption = "Dashed line: predicted stationary plateau Log10CFUmax = 9.57.")
+```
+
+![](Landersdorfer_2018_meropenem_tobramycin_files/figure-html/growth-control-1.png)
+
+## Mechanistic synergy check (outer-membrane effect)
+
+Tobramycin lowers the effective meropenem KC50 through the synergy
+factor `om_effect = 1 - Imax_OM * Ctob / (Ctob + IC50_OM)` (supplement
+Eq 5; Imax_OM fixed at 1, IC50_OM = 0.587 mg/L). The meropenem killing
+term uses `(om_effect * KC50_MEM)^HillMEM` in its denominator, so the
+effective KC50_MEM is `om_effect * KC50_MEM`, and the fold-decrease in
+KC50_MEM is `1 / om_effect`. At the regimens used in the HFIM, target
+tobramycin Cmax was about 25-26 mg/L; even modest persistent tobramycin
+concentrations strongly reduce the effective meropenem KC50.
+
+``` r
+
+imax_om <- 1; ic50_om <- 0.587
+om_effect <- function(ctob) 1 - imax_om * ctob / (ctob + ic50_om)
+
+data.frame(
+  Ctob_mgL = c(0, ic50_om, 1, 3, 10, 25),
+  om_effect = om_effect(c(0, ic50_om, 1, 3, 10, 25)),
+  KC50_MEM_fold_decrease = 1 / om_effect(c(0, ic50_om, 1, 3, 10, 25))
+) |>
+  knitr::kable(digits = 3,
+               caption = "Mechanistic synergy: fold-decrease in effective meropenem KC50 (1/om_effect) as a function of tobramycin concentration.")
+```
+
+| Ctob_mgL | om_effect | KC50_MEM_fold_decrease |
+|---------:|----------:|-----------------------:|
+|    0.000 |     1.000 |                  1.000 |
+|    0.587 |     0.500 |                  2.000 |
+|    1.000 |     0.370 |                  2.704 |
+|    3.000 |     0.164 |                  6.111 |
+|   10.000 |     0.055 |                 18.036 |
+|   25.000 |     0.023 |                 43.589 |
+
+Mechanistic synergy: fold-decrease in effective meropenem KC50
+(1/om_effect) as a function of tobramycin concentration. {.table}
+
+## Replicate static-concentration time-kill (SCTK) – Figure 1 subset
+
+Figure 1 of Landersdorfer 2018 shows total bacterial counts over 96 h
+for each strain under all SCTK regimens. The SCTK held the antibiotic
+concentrations static via 24-hourly medium replacement plus meropenem
+re-supplementation at 6, 30, 54, and 78 h. We approximate that
+experimental design by giving instantaneous “refresh” bolus doses into
+`cmem` and `ctob` on the published schedule, sized so each refresh
+restores the target nominal concentration. The simulated profile is the
+model’s prediction, not the observed data (the observed total viable
+counts are in the paper’s Figure 1).
+
+``` r
+
+# SCTK schedule: refresh to nominal concentration at 0, 24, 48, 72 h; partial MEM
+# refresh (+ 30% of nominal) at 6, 30, 54, 78 h. We treat the refreshes as
+# instantaneous boluses on a unit-volume concentration state (amt = target,
+# replace = 1 via reset on dose). Since rxode2 boluses are additive, we instead
+# pre-decay-cancel by dosing the SHORTFALL needed to restore the target.
+
+# Helper: simulate one regimen across one strain with SCTK-style refreshes.
+sim_sctk <- function(mod, mem_nom, tob_nom, obs_times = c(0,1,3,6,24,29,48,72,96)) {
+  kel_mem <- log(2) / 0.8
+  kel_tob <- log(2) / 2.5
+  # Pre-compute residual concentrations just before each refresh and dose the
+  # shortfall as a bolus into the cmem / ctob state (which behaves as a
+  # concentration because the corresponding ODE has no V scaling).
+  refresh_full_t <- c(0, 24, 48, 72)
+  refresh_mem_30 <- c(6, 30, 54, 78)
+
+  ev <- as.data.frame(et(time = sort(unique(c(obs_times,
+                                              refresh_full_t,
+                                              refresh_mem_30)))))
+  doses <- list()
+  # Walk through each refresh in increasing time, computing the residual via
+  # exponential decay from the previous refresh.
+  schedule_mem <- data.frame(
+    t = c(refresh_full_t, refresh_mem_30),
+    add = c(rep(mem_nom, length(refresh_full_t)), rep(0.3 * mem_nom, length(refresh_mem_30)))
+  )
+  schedule_mem <- schedule_mem[order(schedule_mem$t), ]
+  # Cumulative residual + shortfall logic: at each refresh time, restore (or top
+  # up by 30%) the nominal concentration. We dose the SHORTFALL = (target - residual).
+  residual_mem <- 0
+  last_t <- 0
+  for (i in seq_len(nrow(schedule_mem))) {
+    t <- schedule_mem$t[i]; add <- schedule_mem$add[i]
+    residual_mem <- residual_mem * exp(-kel_mem * (t - last_t))
+    if (add == mem_nom) {
+      # Full refresh: restore to nominal
+      shortfall <- max(mem_nom - residual_mem, 0)
+      residual_mem <- mem_nom
+    } else {
+      # +30% top-up
+      shortfall <- add
+      residual_mem <- residual_mem + add
+    }
+    if (shortfall > 0) {
+      doses[[length(doses) + 1L]] <- as.data.frame(
+        et(amt = shortfall, cmt = "cmem", time = t))
+    }
+    last_t <- t
+  }
+  residual_tob <- 0
+  last_t <- 0
+  for (t in refresh_full_t) {
+    residual_tob <- residual_tob * exp(-kel_tob * (t - last_t))
+    shortfall <- max(tob_nom - residual_tob, 0)
+    if (shortfall > 0) {
+      doses[[length(doses) + 1L]] <- as.data.frame(
+        et(amt = shortfall, cmt = "ctob", time = t))
+    }
+    residual_tob <- tob_nom
+    last_t <- t
+  }
+  events <- bind_rows(ev, do.call(bind_rows, doses))
+  rxode2::rxSolve(mod, events, returnType = "data.frame",
+                  maxsteps = 1e6, method = "dop853") |>
+    filter(time %in% obs_times) |>
+    select(time, Cc, cmem, ctob)
+}
+
+regimens <- list(
+  "Growth control"    = c(mem = 0,  tob = 0),
+  "MEM 2 mg/L"        = c(mem = 2,  tob = 0),
+  "MEM 8 mg/L"        = c(mem = 8,  tob = 0),
+  "MEM 16 mg/L"       = c(mem = 16, tob = 0),
+  "TOB 1 mg/L"        = c(mem = 0,  tob = 1),
+  "TOB 4 mg/L"        = c(mem = 0,  tob = 4),
+  "MEM 2 + TOB 1"     = c(mem = 2,  tob = 1),
+  "MEM 8 + TOB 4"     = c(mem = 8,  tob = 4),
+  "MEM 16 + TOB 8"    = c(mem = 16, tob = 8)
+)
+
+sctk_all <- bind_rows(lapply(names(regimens), function(rg) {
+  pars <- regimens[[rg]]
+  bind_rows(
+    sim_sctk(pao1,   pars["mem"], pars["tob"]) |>
+      mutate(strain = "PAO1", regimen = rg),
+    sim_sctk(paomut, pars["mem"], pars["tob"]) |>
+      mutate(strain = "PAOdelta-mutS", regimen = rg)
+  )
+}))
+sctk_all$regimen <- factor(sctk_all$regimen, levels = names(regimens))
+
+ggplot(sctk_all, aes(time, Cc, colour = strain)) +
+  geom_line(linewidth = 0.7) +
+  geom_hline(yintercept = log10(100), linetype = 3, colour = "grey60") +
+  facet_wrap(~ regimen, ncol = 3) +
+  scale_x_continuous(breaks = seq(0, 96, by = 24)) +
+  labs(x = "Time (h)", y = expression(log[10]~CFU/mL), colour = NULL,
+       title = "Replicates the SCTK arms in Figure 1 of Landersdorfer 2018",
+       caption = "Dotted line: limit of counting (10^2 CFU/mL). Refreshes at 0, 24, 48, 72 h plus MEM +30% at 6, 30, 54, 78 h.") +
+  theme(legend.position = "bottom")
+```
+
+![](Landersdorfer_2018_meropenem_tobramycin_files/figure-html/sctk-1.png)
+
+## Replicate hollow-fiber infection model (HFIM) – Figure 4 subset
+
+The HFIM in Landersdorfer 2018 simulated CF-patient pharmacokinetics for
+meropenem and tobramycin (CL_MEM = 15.9 L/h, t1/2 = 0.8 h; CL_TOB = 4.9
+L/h, t1/2 = 2.5 h). Regimens were (i) meropenem 1 g q8h as a 0.5-h
+infusion, (ii) meropenem 3 g/day as a continuous infusion (CI) started
+at the steady-state concentration of ~8 mg/L, (iii) tobramycin 10 mg/kg
+q24h as a 1-h infusion, and the two MEM regimens combined with TOB.
+Figure 4 of the paper shows the observed bacterial-count time courses
+across 240 h. We reproduce the qualitative behaviour using rate-shaped
+infusions chosen to match the published Cmax / Cmin envelope.
+
+The HFIM uses a humidified incubator at 36 deg C and the meropenem
+concentration in the central reservoir was reproduced experimentally to
+the target profile. Our simulated meropenem and tobramycin Cmax targets
+were calibrated to reach the in-text reference values: meropenem peaks
+of ~60 mg/L (1 g q8h 0.5-h infusion) and steady-state ~8 mg/L (3 g/day
+CI), and tobramycin peak ~25 mg/L (10 mg/kg q24h 1-h infusion).
+
+``` r
+
+# Infusion rate (mg/L per h) that, given first-order elimination at rate kel,
+# delivers target Cmax over a tau-h interval with a T-h infusion (steady state).
+rate_for <- function(Cmax, kel, tau, Tinf) {
+  Cmax * kel * (1 - exp(-kel * tau)) / (1 - exp(-kel * Tinf))
+}
+
+kel_mem <- log(2) / 0.8
+kel_tob <- log(2) / 2.5
+TARGET_MEM_INT_CMAX  <- 60   # mg/L peak for 1 g q8h 0.5-h infusion
+TARGET_MEM_CI_SS     <- 8    # mg/L steady-state for 3 g/day CI
+TARGET_TOB_CMAX      <- 25   # mg/L peak for 10 mg/kg q24h 1-h infusion
+HFIM_DUR <- 240              # h
+
+mem_intermittent <- function(id) {
+  R <- rate_for(TARGET_MEM_INT_CMAX, kel_mem, tau = 8, Tinf = 0.5)
+  as.data.frame(et(id = id, amt = R * 0.5, rate = R, ii = 8,
+                   cmt = "cmem", until = HFIM_DUR))
+}
+mem_continuous <- function(id) {
+  # 3 g/day CI starting at SS ~ 8 mg/L: a single bolus = TARGET (concentration
+  # state) at t = 0 to reach the SS instantly, then a sustained infusion at
+  # rate = kel * Css for the duration.
+  bind_rows(
+    as.data.frame(et(id = id, amt = TARGET_MEM_CI_SS, cmt = "cmem", time = 0)),
+    as.data.frame(et(id = id, amt = kel_mem * TARGET_MEM_CI_SS * HFIM_DUR,
+                     rate = kel_mem * TARGET_MEM_CI_SS,
+                     cmt = "cmem", time = 0))
+  )
+}
+tob_intermittent <- function(id) {
+  R <- rate_for(TARGET_TOB_CMAX, kel_tob, tau = 24, Tinf = 1)
+  as.data.frame(et(id = id, amt = R * 1, rate = R, ii = 24,
+                   cmt = "ctob", until = HFIM_DUR))
+}
+
+obs <- function(id) as.data.frame(et(id = id, time = seq(0, HFIM_DUR, by = 1)))
+
+regimens_hfim <- list(
+  "Growth control"                  = function(id) as.data.frame(et(id = id, amt = 0, cmt = "cmem", time = 0)),
+  "MEM 1 g q8h"                     = function(id) mem_intermittent(id),
+  "MEM 3 g/day CI"                  = function(id) mem_continuous(id),
+  "TOB 10 mg/kg q24h"               = function(id) tob_intermittent(id),
+  "MEM 1 g q8h + TOB 10 mg/kg q24h" = function(id) bind_rows(mem_intermittent(id), tob_intermittent(id)),
+  "MEM 3 g/day CI + TOB 10 mg/kg q24h" = function(id) bind_rows(mem_continuous(id), tob_intermittent(id))
+)
+
+sim_hfim_strain <- function(mod, strain_label) {
+  events <- bind_rows(lapply(seq_along(regimens_hfim), function(i) {
+    bind_rows(regimens_hfim[[i]](i), obs(i)) |>
+      mutate(regimen = names(regimens_hfim)[i])
+  }))
+  rxode2::rxSolve(mod, events, keep = "regimen",
+                  returnType = "data.frame", maxsteps = 1e6, method = "dop853") |>
+    mutate(strain = strain_label)
+}
+
+hfim_sim <- bind_rows(
+  sim_hfim_strain(pao1,   "PAO1"),
+  sim_hfim_strain(paomut, "PAOdelta-mutS")
+)
+#> Warning: multi-subject simulation without without 'omega'
+#> Warning: multi-subject simulation without without 'omega'
+hfim_sim$regimen <- factor(hfim_sim$regimen, levels = names(regimens_hfim))
+```
+
+``` r
+
+loc <- 1.0  # limit of counting on antibiotic-free agar (10^1 CFU/mL)
+hfim_long <- hfim_sim |>
+  mutate(
+    `Total`          = pmax(log10(pmax(CFUall, 1e-3)), loc),
+    `MEM-resistant`  = pmax(log10(pmax(CFUri,  1e-3)), loc),
+    `TOB-resistant`  = pmax(log10(pmax(CFUir,  1e-3)), loc)
+  ) |>
+  select(time, strain, regimen, Total, `MEM-resistant`, `TOB-resistant`) |>
+  pivot_longer(c(Total, `MEM-resistant`, `TOB-resistant`),
+               names_to = "population", values_to = "log10CFU")
+
+ggplot(hfim_long, aes(time, log10CFU, colour = population)) +
+  geom_line(linewidth = 0.6) +
+  facet_grid(strain ~ regimen) +
+  scale_x_continuous(breaks = seq(0, HFIM_DUR, by = 96)) +
+  labs(x = "Time (h)", y = expression(log[10]~CFU/mL), colour = NULL,
+       title = "Replicates Figure 4 of Landersdorfer 2018 (HFIM, 10 days)",
+       caption = paste("Counts floored at the limit of counting (10^1 CFU/mL).",
+                       "The optimized MEM 3 g/day CI + TOB combination is predicted to suppress",
+                       "regrowth in both strains.")) +
+  theme(legend.position = "bottom",
+        strip.text.x = element_text(size = 8),
+        strip.text.y = element_text(size = 9))
+```
+
+![](Landersdorfer_2018_meropenem_tobramycin_files/figure-html/hfim-plot-1.png)
+
+``` r
+
+hfim_sim |>
+  group_by(strain, regimen) |>
+  summarise(
+    nadir_total_log10  = round(min(log10(pmax(CFUall, 1e-3))), 2),
+    end_total_log10    = round(log10(pmax(tail(CFUall, 1), 1e-3)), 2),
+    end_MEMres_log10   = round(log10(pmax(tail(CFUri,  1e-3), 1)), 2),
+    end_TOBres_log10   = round(log10(pmax(tail(CFUir,  1e-3), 1)), 2),
+    .groups = "drop"
+  ) |>
+  arrange(strain, regimen) |>
+  knitr::kable(caption = "Simulated nadir and day-10 (240 h) populations by strain and regimen. The MEM 3 g/day CI + TOB combination is predicted to drive total bacteria toward / below the limit of counting in both strains; the standard MEM 1 g q8h + TOB regimen leaves the hypermutable strain with a regrown TOB-resistant subpopulation, matching the paper's qualitative HFIM findings (Figure 4, Table 1).")
+```
+
+| strain | regimen | nadir_total_log10 | end_total_log10 | end_MEMres_log10 | end_TOBres_log10 |
+|:---|:---|---:|---:|---:|---:|
+| PAO1 | Growth control | 7.72 | 9.57 | 0.00 | 6.00 |
+| PAO1 | MEM 1 g q8h | 2.24 | 3.05 | 0.00 | 3.05 |
+| PAO1 | MEM 3 g/day CI | -3.00 | -3.00 | 0.00 | 0.00 |
+| PAO1 | TOB 10 mg/kg q24h | 5.28 | 9.57 | 0.00 | 9.57 |
+| PAO1 | MEM 1 g q8h + TOB 10 mg/kg q24h | -3.00 | -3.00 | 0.00 | 0.00 |
+| PAO1 | MEM 3 g/day CI + TOB 10 mg/kg q24h | -3.00 | -3.00 | 0.00 | 0.00 |
+| PAOdelta-mutS | Growth control | 7.72 | 9.57 | 0.14 | 6.09 |
+| PAOdelta-mutS | MEM 1 g q8h | 5.81 | 9.45 | 0.00 | 9.45 |
+| PAOdelta-mutS | MEM 3 g/day CI | 5.60 | 9.11 | 0.00 | 9.11 |
+| PAOdelta-mutS | TOB 10 mg/kg q24h | 5.38 | 9.57 | 0.00 | 9.57 |
+| PAOdelta-mutS | MEM 1 g q8h + TOB 10 mg/kg q24h | 3.76 | 9.36 | 0.00 | 9.36 |
+| PAOdelta-mutS | MEM 3 g/day CI + TOB 10 mg/kg q24h | -1.95 | -1.06 | 0.00 | 0.00 |
+
+Simulated nadir and day-10 (240 h) populations by strain and regimen.
+The MEM 3 g/day CI + TOB combination is predicted to drive total
+bacteria toward / below the limit of counting in both strains; the
+standard MEM 1 g q8h + TOB regimen leaves the hypermutable strain with a
+regrown TOB-resistant subpopulation, matching the paper’s qualitative
+HFIM findings (Figure 4, Table 1). {.table}
+
+## Assumptions and deviations
+
+- **Model class / species.** This is an in-vitro mechanism-based PK/PD
+  model, not a popPK model; `population$species` records the two *P.
+  aeruginosa* strains. No PKNCA validation is performed (there is no
+  drug NCA to compute); the mechanistic checks above replace it, per the
+  endogenous / mechanistic validation strategy.
+- **File naming.** The dispatch metadata listed the drug as
+  “Antimicrobial Agents and Chemo”, which is the journal name
+  (Antimicrobial Agents and Chemotherapy), not a drug. The paper
+  unambiguously models meropenem plus tobramycin against two strains, so
+  the model files and this vignette use
+  `Landersdorfer_2018_meropenem_tobramycin_PAO1` and
+  `Landersdorfer_2018_meropenem_tobramycin_PAOmutS`.
+- **Two files, one vignette.** Replicating the author’s structure: the
+  published MBM was co-fit to both strains with shared and
+  strain-specific parameters (Table S3). Splitting into two `.R` files
+  keeps the strain- specific parameter sets self-contained and
+  addressable by name; one vignette walks the paper as a unit.
+- **REP formula and plateau location.** The supplement prose for Eq 3 is
+  explicit: REP approaches 2 at low CFU and approaches 1 at CFUall =
+  CFUmax. We implement `rep_factor = 2 - CFUall/CFUmax`, which gives the
+  published asymptote (stationary plateau at CFUmax). The sibling Rees
+  2018 file in this package uses a different form
+  (`2 * (1 - CFUall/CFUmax)`, plateau at 0.5 \* CFUmax); the difference
+  is documented to be consistent with each paper’s supplement on its own
+  terms.
+- **Synergy term Hill exponent.** Supplement Eq 5 renders the OM_effect
+  form with a HillOM exponent on tobramycin:
+  `1 - Imax * Ctob^HillOM / (Ctob^HillOM + IC50_OM^HillOM)`. Table S3
+  reports no estimate for HillOM, and the sibling Rees 2018 MBM (same
+  group) uses the plain Emax form (HillOM = 1). We follow the Rees 2018
+  convention and use Emax (HillOM = 1). If a future operator obtains a
+  HillOM value from the authors, swap the `om_effect` line in `model()`
+  for the Hill form and add the parameter to `ini()`.
+- **k21 (replication rate constant) value.** The supplement states “k21
+  was assumed to be fast” but does not report a numeric value. We fix
+  k21 at 50/h, matching the Bulitta-group precedent (Rees 2018, AAC).
+  The system is insensitive to the specific k21 value when k21 \>\> k12
+  (a few-fold change in k21 leaves trajectories essentially unchanged).
+- **Pre-existing subpopulation labels.** Table S3 labels the two
+  pre-existing less-susceptible subpopulations “intermediate population”
+  (with the symbol Log10PRB_RI) and “resistant population”
+  (Log10PRB_IR). The table footnotes decode the labels: the
+  “intermediate” subpopulation is MEM-resistant / TOB-intermediate (RI),
+  and the “resistant” subpopulation is MEM-intermediate / TOB-resistant
+  (IR). The compartment names `bact_resistant_intermediate*` and
+  `bact_intermediate_resistant*` follow the MEM-status / TOB-status
+  order.
+- **Initial state partitioning.** All inoculum is placed in life-cycle
+  state 1; the paper specifies the inoculum and the pre-existing
+  subpopulation fractions but not the state-1 / state-2 split. State 2
+  equilibrates within ~1/k12 (under 1 h for SS, IR; about 40 h for the
+  slow RI subpopulation, which the SCTK fits accommodate).
+- **Simulated antibiotic disposition.** Both half-lives are fixed inputs
+  taken from the clinical CF-patient PK literature cited in Methods
+  (refs 55, 56), not MBM estimates. They parameterise the `cmem` and
+  `ctob` elimination so the model is self-contained.
+- **SCTK refresh approximation.** SCTK held antibiotic concentrations
+  static via 24-hourly medium replacement (plus meropenem +30% at 6, 30,
+  54, 78 h). We model that schedule with instantaneous “shortfall”
+  boluses into the `cmem` / `ctob` concentration states so the
+  post-refresh concentration returns to nominal. Between refreshes the
+  drugs decay at the published half-lives (an approximation – in the
+  actual SCTK the medium was static between refreshes, but the published
+  half-lives are short enough that the decay between refreshes is small
+  for the 24-h interval).
+- **HFIM regimen parameterisation.** The HFIM rate-shaped infusions were
+  derived analytically to hit published Cmax / Cmin envelopes (Methods
+  and Table 1 footnote), not fitted to the bacterial data. The
+  continuous infusion of meropenem is started at the steady-state
+  concentration of ~8 mg/L (paper Methods).
+- **Solver.** `method = "dop853"` and `maxsteps = 1e6` are passed to
+  `rxSolve` because the published meropenem Hill exponent (0.563)
+  creates a singular analytical Jacobian at `cmem = 0`, which causes the
+  default `lsoda` solver to fail. Steady-state (`ss=1`) dosing must not
+  be used: it would reinitialize the bacterial states to their grown
+  steady state and destroy the inoculum.
+- **Below limit of counting.** Displayed counts are floored at 10^1
+  CFU/mL (the published limit of counting on antibiotic-free agar;
+  10^0.7 on antibiotic-containing agar); the underlying states are not
+  floored.
+- **Convention deviations**
+  ([`checkModelConventions()`](https://nlmixr2.github.io/nlmixr2lib/reference/checkModelConventions.md)
+  is clean – no warnings or errors). The mechanism-specific
+  bacterial-state compartments (`bact_susceptible_susceptible*`,
+  `bact_resistant_intermediate*`, `bact_intermediate_resistant*`) are
+  declared via `paper_specific_compartment_pattern = "^bact_"`. The
+  antibiotic bath-concentration states `cmem` and `ctob` are registered
+  canonicals in `inst/references/compartment-names.md` for
+  combination-antibiotic time-kill PD models; `ctob` was added in this
+  extraction following the existing `cmem` / `ccip` family pattern.
