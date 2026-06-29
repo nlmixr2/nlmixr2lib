@@ -2989,6 +2989,30 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Notes:** Distinct from `POD` (post-operative day -- continuous days since surgery, rising monotonically from 0) and `POSTTX_DAY1` (binary first-24-hours-post-transplant indicator). INTRAOP captures the active-surgery window itself, whereas POD and POSTTX_DAY1 capture the post-surgical recovery time course. The three canonicals can coexist in a single dataset that pools perioperative and post-discharge PK samples. The intra-operative effect is typically interpreted as a composite of multiple confounded physiological perturbations and is not directly attributable to any single mechanism (e.g., Stricker 2013 Discussion: "the model results may be simply reflecting the net effect of a possible increased CL due to blood loss and decreased CL due to other confounding intra-operative factors"). Pairs with a future `INTRAOP_BL` (per-subject calculated intra-operative blood loss) canonical when a source paper reports a continuous blood-loss column alongside or instead of the binary indicator -- that is a separate canonical to be proposed when needed.
 
 
+### T_CPB (**canonical for total cardiopulmonary bypass duration during the most recent cardiac surgery**)
+- **Description:** Total time the patient spent on cardiopulmonary bypass (CPB) during their most recent cardiac-surgery operation. Time-fixed per subject (the duration of the bypass run is a single scalar set at the close of surgery). Captures composite physiological / pharmacological effects of CPB on post-operative drug disposition (hemodilution from priming volume, systemic inflammatory response, transient hepatic / renal hypoperfusion).
+- **Units:** minutes
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- typically enters as a power-centred effect `(T_CPB / ref)^exponent`. Reference value is paper-specific (cohort median total CPB time): Su 2016 uses 60 minutes (overall cohort median, Table 3).
+- **Source aliases:**
+  - `TBYP` -- used in `Su_2016_dexmedetomidine.R` (Su 2016 NONMEM column for total bypass time in minutes; Methods 'Full Covariate Model' equation and Table 4 footnote).
+- **Example models:** `Su_2016_dexmedetomidine.R` (power effect on CL: `(T_CPB / 60)^(-0.31)`; negative exponent so longer bypass time reduces post-operative CL).
+- **Notes:** General scope because CPB time is a routine clinical covariate in any popPK study of patients undergoing open heart surgery. Distinct from `T_POST_ECMO` (time AFTER decannulation from ECMO -- T_CPB captures the DURATION of the bypass procedure during surgery, not time since the end of it; T_POST_ECMO is time-varying within subject whereas T_CPB is time-fixed). Distinct from `POD` (post-operative day) and `INTRAOP` (binary intra-operative indicator). Per the T_<event> canonical family, the `T_` prefix denotes a procedure-related time covariate; for T_CPB the "event" is the bypass run itself and the column carries the duration of that run. Future paediatric / adult cardiac-surgery popPK extractions that retain CPB time should reuse this canonical. Ratified canonically on 2026-06-28 alongside the Su 2016 dexmedetomidine extraction.
+
+
+### ICSHUNT_R2L (**canonical for right-to-left intracardiac shunt indicator**)
+- **Description:** Binary indicator that the patient's cardiac anatomy produces a right-to-left intracardiac shunt with pulmonary blood flow to systemic blood flow ratio Qp:Qs < 1. 1 = right-to-left shunt present (e.g., single-ventricle physiology after stage 2 palliation -- Glenn or hemi-Fontan); 0 = no right-to-left shunt (Qp:Qs >= 1). Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no right-to-left shunt; Qp:Qs >= 1).
+- **Source aliases:**
+  - `intracardiac shunt` -- used in `Su_2016_dexmedetomidine.R` (Su 2016 Methods 'Full Covariate Model' definition; encoded in the source dataset as a binary indicator and entered in the CL equation as a multiplicative factor when shunt = 1).
+- **Example models:** `Su_2016_dexmedetomidine.R` (multiplicative effect on CL: CL is multiplied by 1.24 when ICSHUNT_R2L = 1; Su 2016 Methods hypothesise the mechanism is shunt-induced reduction in first-pass lung extraction combined with increased hepatic perfusion for a drug with relatively high hepatic extraction ratio).
+- **Notes:** General scope because intracardiac shunting is a defining anatomical feature in any congenital-heart-disease popPK cohort and is likely to recur in future paediatric / adult cardiac-surgery popPK studies. The Qp:Qs < 1 threshold is the standard clinical definition for right-to-left shunting. Distinct from `TX_HEART` (heart-transplant indicator), `RACHS1` (paediatric cardiac surgery risk category), and `INTRAOP` (binary intra-operative indicator). Future extractions that report a continuous Qp:Qs ratio could either (a) reuse ICSHUNT_R2L as a binary derived from the continuous ratio (Qp:Qs < 1) or (b) register a sibling continuous canonical `QP_QS`. Ratified canonically on 2026-06-28 alongside the Su 2016 dexmedetomidine extraction.
+
+
 ## Disease state (cross-population indicators)
 
 ### DIS_UC (**canonical for ulcerative colitis disease-state indicator**)

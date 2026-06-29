@@ -486,6 +486,8 @@ navbar:
         href: articles/Perez-Guille_2018_dexmedetomidine.html
       - text: "Dexmedetomidine (Smuszkiewicz 2017)"
         href: articles/Smuszkiewicz_2017_dexmedetomidine.html
+      - text: "Dexmedetomidine (Su 2016)"
+        href: articles/Su_2016_dexmedetomidine.html
       - text: "Dexmedetomidine (Talke 2018)"
         href: articles/Talke_2018_dexmedetomidine.html
       - text: "Dexmedetomidine piglet (Ezzati 2014)"
@@ -3012,6 +3014,7 @@ articles:
   - articles/Stroh_2013_rolofylline
   - articles/Struemper_2017_belimumab
   - articles/Struemper_2025_tumorsize_OS_nsclc
+  - articles/Su_2016_dexmedetomidine
   - articles/Suda_2008_theophylline
   - articles/Suleiman_2019_risankizumab
   - articles/Suri_2018_brentuximab
