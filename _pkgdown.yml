@@ -2030,8 +2030,12 @@ navbar:
         href: articles/Xia_2024_warfarin.html
       - text: "Warfarin r (Hamberg 2007)"
         href: articles/Hamberg_2007_warfarin_pkpd_pgx.html
+      - text: "Warfarin r (Lane 2011)"
+        href: articles/Lane_2011_warfarin.html
       - text: "Warfarin s (Hamberg 2007)"
         href: articles/Hamberg_2007_warfarin_pkpd_pgx.html
+      - text: "Warfarin s (Lane 2011)"
+        href: articles/Lane_2011_warfarin.html
       - text: "Warfarin vk2 (Zhou 2016)"
         href: articles/Zhou_2016_warfarin_vk2.html
       - text: "Zalcitabine (Adams 1998)"
@@ -2707,6 +2711,7 @@ articles:
   - articles/Landersdorfer_2013_nisin_amikacin_linezolid
   - articles/Landersdorfer_2018_imipenem_tobramycin
   - articles/Landersdorfer_2018_meropenem_tobramycin
+  - articles/Lane_2011_warfarin
   - articles/Langdon_2010_PF00821385
   - articles/Laouenan_2015_ribavirin
   - articles/Lawson_2022_busulfan
