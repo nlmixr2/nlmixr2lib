@@ -1211,6 +1211,17 @@ All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODA
 - **Example models:** `Sherer_2012_AAA.R` (proportional covariate on all three individual-level parameters: `e_aaadiam_b0 = 32.6 mm` on baseline size beta0, `e_aaadiam_b1 = 2.03 mm/year` on baseline growth rate beta1, and `e_aaadiam_b2 = 0.59/year` on the first derivative of growth rate with size beta2).
 - **Notes:** Specific scope until a second model registers the canonical. Time-fixed (baseline-only) per subject -- the value is the single screening ultrasound diameter; the time-evolving AAA diameter during follow-up is the model's observation, not the covariate. Sherer 2012 inclusion criterion (HIMS cohort): 30-49 mm small AAA, so extrapolation outside this range to <30 mm (non-aneurysmal aorta) or >=50 mm (surgical-referral threshold) is not validated by the source. Ratified canonically on 2026-05-16 alongside the Sherer 2012 extraction.
 
+### FIB (**canonical for plasma fibrinogen concentration**)
+- **Description:** Plasma fibrinogen concentration (Clauss assay or equivalent). Acute-phase protein synthesised in the liver; values rise in inflammation, infection, trauma, and pregnancy and fall in disseminated intravascular coagulation, severe hepatic failure, and congenital afibrinogenaemia. Used as a per-subject (or time-varying) covariate that proxies hepatic acute-phase response or inflammatory burden on the clearance of drugs whose elimination correlates with these processes.
+- **Units:** umol/L (Taubert 2016 reports values in umol/L; the more common clinical units are g/L or mg/dL -- document per-model via `covariateData[[FIB]]$units`. Approximate conversion using a molecular weight of 340 kDa: 1 umol/L ~ 0.34 g/L.)
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- used with power scaling `(FIB / ref)^exponent`. Reference values observed: 13.0 umol/L (Taubert 2016 patient-group-1 median; a critically-ill ICU cohort with elevated baseline fibrinogen).
+- **Source aliases:**
+  - `Fibrinogen` -- the spelled-out column header in Taubert 2016 Table 1 and supplementary Table S3; same biological quantity, no value transformation.
+- **Example models:** `Taubert_2016_linezolid.R` (umol/L; reference 13.0; positive power exponent 0.04 on CL; quantitatively a weak effect at the cohort range but selected by stepwise covariate modeling).
+- **Notes:** Distinct from `FVIIIRECENT` and `VWF` (specific coagulation-factor activities used in haemophilia / DDAVP-response models) -- `FIB` is the routine plasma-fibrinogen concentration used as an acute-phase / inflammatory marker in popPK analyses. Distinct from `CRP`, `IL6`, `LDH`, and other acute-phase / cell-turnover biomarkers; `FIB` may correlate with these but is a separate measurement. Ratified canonically on 2026-06-30 alongside the Taubert 2016 linezolid extraction.
+
 ## Disease severity scores
 
 ### SCORE_EASI (**canonical for Eczema Area and Severity Index**)
@@ -1385,6 +1396,18 @@ All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODA
   - `SAPS II` (with whitespace, as printed in the source paper's prose) -- used in `Abboud_2009_epinephrine.R`.
 - **Example models:** `Abboud_2009_epinephrine.R` (power exponent -0.67 on epinephrine CL with reference 50; higher SAPS II is associated with lower clearance), `Polito_2016_fludrocortisone.R` (power exponents +0.019 on apparent oral fludrocortisone CL/F and +0.036 on the absorption lag time Tlag, both with reference 53 = the cohort median SAPS II among the 14 patients with detectable plasma concentrations; higher SAPS II is associated with longer absorption lag and faster apparent oral clearance).
 - **Notes:** Specific scope because the column is critical-care-population-bound (adult ICU) and the score's clinical meaning depends on the SAPS-II derivation rules; future ICU models reusing the score with the same definition can extend `Example models` rather than registering a new canonical. Should not be confused with SAPS I or SAPS 3 (different scoring rules / item sets) -- register those under separate canonicals if a future paper uses them. Ratified canonically on 2026-05-18 alongside the Abboud 2009 epinephrine extraction.
+
+### LACT (**canonical for serum lactate concentration**)
+- **Description:** Serum (or plasma / arterial-blood) L-lactate concentration. Routine acid-base / tissue-perfusion marker in critically ill patients; rising values reflect tissue hypoperfusion, anaerobic glycolysis, hepatic dysfunction, or metabolic disturbance. Distinct from `LDH` (lactate dehydrogenase enzyme activity), which is a related but mechanistically different cell-turnover marker. Time-varying within an ICU stay (often updated several times per day) although source papers may use it as a per-day or per-subject summary -- document per-model in `covariateData[[LACT]]$notes`.
+- **Units:** mmol/L (SI; equivalent to mEq/L; commonly reported as mg/dL = mmol/L * 9.0)
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- used with power scaling `(LACT / ref)^exponent`. Reference values observed: 1.91 mmol/L (Taubert 2016 patient-group-1 day-1 median; a critically-ill ICU cohort spanning 0.53-10.7 mmol/L).
+- **Source aliases:**
+  - `Lactate` -- the spelled-out column header in Taubert 2016 Table 1 and supplementary Table S3; same biological quantity, no value transformation.
+- **Example models:** `Taubert_2016_linezolid.R` (mmol/L; reference 1.91; negative power exponent -0.21 on CL; lower lactate is associated with higher clearance, consistent with reduced cardiac output / impaired tissue perfusion at higher lactate).
+- **Notes:** Distinct from `LDH` (serum lactate dehydrogenase enzyme activity in U/L); a popular point of confusion because both encode "lactate" in the lab-marker abbreviation. Critically-ill PK models that include both should keep the two columns separate. Taubert 2016 reports that lactate correlated significantly with the cardiovascular SOFA sub-score (i.e., lactate acts here as a perfusion / cardiac-output proxy more than as a direct biochemical driver of linezolid elimination). General scope because serum lactate is a universally applicable critical-care covariate. Ratified canonically on 2026-06-30 alongside the Taubert 2016 linezolid extraction.
+
 ### RACHS1 (**canonical for Risk Adjustment for Congenital Heart Surgery 1 (RACHS-1) category**)
 - **Description:** Integer 1-6 RACHS-1 surgical-risk category, ascertained pre-operatively from the type of congenital heart defect and the planned operation. Higher categories indicate greater perioperative risk of in-hospital mortality (Jenkins 2002 Pediatrics). Time-fixed per subject.
 - **Units:** (categorical; 1-6 integer)
@@ -3395,6 +3418,30 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
   - `TBI` -- used in `Han_2013_fluconazole.R` (Han 2013 Methods / Tables 2 and 3 covariate with values 1 = within 30 days of burn injury, 0 = at least 30 days postburn; same orientation as the canonical, with the recency threshold = 30 days documented per-model). NOTE: `TBI` in this register is a recoded binary covariate; it does NOT denote traumatic brain injury (the common medical abbreviation) and is NOT a continuous time-from-burn-injury value.
 - **Example models:** `Han_2013_fluconazole.R` (recency threshold = 30 days; additive shifts on both CL and V: `CL_norrt += TBI*theta7` with `theta7 = 0.504 L/h` and `V += TBI*theta8` with `theta8 = 9.61 L` -- recent-postburn patients have about 0.5 L/h higher CL and 9.6 L larger V relative to the resolved-phase reference).
 - **Notes:** Generalised binary recoding rather than a continuous time-from-burn-injury column. A future paper that uses a continuous days-from-burn-injury covariate (analogous to `TPP` for time-postpartum) would warrant its own canonical (suggested name: `POSTBURN_DAYS`); `DIS_BURN_RECENT` is reserved for binary phase indicators. The paper's source-column name `TBI` is preserved as a documented alias even though it collides with the medical abbreviation for traumatic brain injury -- this is the author's chosen column name and the canonical avoids the collision. Ratified canonically on 2026-06-09 alongside the Han 2013 fluconazole extraction.
+
+
+### DIS_ARDS (**canonical for acute respiratory distress syndrome indicator**)
+- **Description:** 1 = acute respiratory distress syndrome (ARDS) present at the start of (or during) the modeled PK interval, 0 = no ARDS. Diagnostic standard is paper-specific (Berlin 2012 criteria, the older American-European Consensus Conference / AECC criteria, or a clinician-adjudicated diagnosis on the chart) -- document per-model in `covariateData[[DIS_ARDS]]$notes` which definition was used. Used as a binary co-condition indicator on PK parameters (most often clearance and / or volume) when ARDS is hypothesized to alter drug disposition through pulmonary inflammation, increased pulmonary reactive oxygen species, ventilator-induced lung injury, or altered fluid balance and capillary leak.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no ARDS).
+- **Source aliases:**
+  - `ARDS` -- used in `Taubert_2016_linezolid.R` (Taubert 2016 patient-group-1 baseline indicator; ARDS = 1 multiplies CL by 1.82, encoded inside `model()` as a log-additive shift `e_dis_ards_cl = log(1.82)` per Taubert 2016 page 5256 covariate-model equation).
+- **Example models:** `Taubert_2016_linezolid.R` (multiplicative factor on CL: typical-value CL is multiplied by 1.82 in ARDS patients, equivalent to a ~82% increase in linezolid clearance; the proposed mechanism is non-enzymatic oxidation of linezolid by elevated pulmonary reactive oxygen species in ARDS lungs per Taubert 2016 Discussion).
+- **Notes:** Distinct from `DIS_SEPSIS` (acute septic syndrome co-condition) and from `DIS_CKD` / `DIS_HEPATIC` chronic organ-failure indicators -- ARDS is an acute pulmonary syndrome that may coexist with sepsis but has its own pathophysiology and is captured separately when both are tested as covariates. General scope because ARDS has a stable internationally-standardised clinical definition (Berlin criteria) and is universally applicable as a critically-ill PK covariate. Time-varying within a subject is permitted as the syndrome resolves or worsens. Ratified canonically on 2026-06-30 alongside the Taubert 2016 linezolid extraction.
+
+
+### DIS_PERIT (**canonical for peritonitis indicator**)
+- **Description:** 1 = peritonitis (infection / inflammation of the peritoneum, including primary spontaneous bacterial peritonitis, secondary peritonitis from a perforated viscus or anastomotic leak, and tertiary / persistent peritonitis) present at the start of (or during) the modeled PK interval, 0 = no peritonitis. Used as a binary co-condition indicator on PK parameters when peritoneal inflammation, intra-abdominal fluid sequestration, third-space loss, or altered hepatic synthetic function is hypothesized to change drug disposition.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no peritonitis).
+- **Source aliases:**
+  - `Peritonitis` -- used in `Taubert_2016_linezolid.R` (Taubert 2016 patient-group-1 baseline indicator; peritonitis = 1 multiplies Vc by 1.53, encoded inside `model()` as a log-additive shift `e_dis_perit_vc = log(1.53)` per Taubert 2016 page 5256 covariate-model equation).
+- **Example models:** `Taubert_2016_linezolid.R` (multiplicative factor on Vc: typical-value central volume is multiplied by 1.53 in peritonitis patients, equivalent to a ~53% larger central volume of distribution, attributed in Taubert 2016 Discussion to third-space fluid accumulation in the peritoneal cavity).
+- **Notes:** Distinct from `PERIT_DIAL` (chronic peritoneal-dialysis modality indicator) -- `DIS_PERIT` is an acute infection / inflammation of the peritoneum, while `PERIT_DIAL` is a chronic therapeutic dialysis modality; the two have entirely different pathophysiologies and PK implications. Future papers that retain peritonitis as a covariate may extend `Example models`. General scope because peritonitis has a clear universal clinical definition and any future critically-ill PK model with the same encoding may reuse the canonical. Ratified canonically on 2026-06-30 alongside the Taubert 2016 linezolid extraction.
 
 
 ### DIS_SCOL_IDIO (**canonical for idiopathic-scoliosis aetiology indicator**)

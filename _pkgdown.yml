@@ -996,6 +996,8 @@ navbar:
         href: articles/Tadayasu_2014_linagliptin.html
       - text: "Linezolid (Schmidt 2009)"
         href: articles/Schmidt_2009_oxazolidinones.html
+      - text: "Linezolid (Taubert 2016)"
+        href: articles/Taubert_2016_linezolid.html
       - text: "Linezolid (Tsuji 2017)"
         href: articles/Tsuji_2017_linezolid.html
       - text: "Liraglutide (CarlssonPetri 2021)"
@@ -3042,6 +3044,7 @@ articles:
   - articles/Tarning_2012_artemether
   - articles/Tarning_2012_dihydroartemisinin_piperaquine
   - articles/Tarning_2014_piperaquine
+  - articles/Taubert_2016_linezolid
   - articles/Taubert_2018_finafloxacin
   - articles/Taylor_2020_methotrexate
   - articles/TerHeine_2014_tamoxifen
