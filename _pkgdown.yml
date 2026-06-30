@@ -568,6 +568,8 @@ navbar:
         href: articles/Niebecker_2015_edoxaban.html
       - text: "Efalizumab (Stein 2018)"
         href: articles/Stein_2018_mAb_nonlinear_PK.html
+      - text: "Efaproxiral (Gastonguay 2005)"
+        href: articles/Gastonguay_2005_efaproxiral.html
       - text: "Efavirenz (Bienczak 2016)"
         href: articles/Bienczak_2016_efavirenz.html
       - text: "Efavirenz (Dhoro 2015)"
@@ -2484,6 +2486,7 @@ articles:
   - articles/Garonzik_2016_daptomycin
   - articles/Garot_2011_ceftriaxone
   - articles/Garrett_2014_axitinib
+  - articles/Gastonguay_2005_efaproxiral
   - articles/Gatti_1996_dapsone
   - articles/Geldof_2008_fluvoxamine_rat
   - articles/Georges_2009_ceftazidime
