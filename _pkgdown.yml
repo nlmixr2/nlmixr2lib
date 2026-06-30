@@ -692,6 +692,8 @@ navbar:
         href: articles/Chelle_2019_factorviii_fanhdi.html
       - text: "Farletuzumab (Farrell 2012)"
         href: articles/Farrell_2012_farletuzumab.html
+      - text: "Fazpilodemab (Yoshida 2024)"
+        href: articles/Yoshida_2024_fazpilodemab.html
       - text: "Febuxostat lesinurad (HillMcManus 2017)"
         href: articles/HillMcManus_2017_febuxostat_lesinurad.html
       - text: "Fenofibrate (Back 2018)"
@@ -3174,6 +3176,7 @@ articles:
   - articles/Yoshida_2018_coproporphyrin_I_GDC0810
   - articles/Yoshida_2018_coproporphyrin_I_rifampin
   - articles/Yoshida_2021_ipatasertib
+  - articles/Yoshida_2024_fazpilodemab
   - articles/Yoshioka_2018_FXa_inhibitors_mbma
   - articles/You_2013_hCG_GTN
   - articles/Yu_2015_sunitinib
