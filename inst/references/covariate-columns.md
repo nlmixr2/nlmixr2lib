@@ -7091,6 +7091,17 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Example models:** `Bienczak_2025_ligelizumab.R` (Table S6: study C2201 on CL/F = 0.176, log-additive; `cl *= exp(0.176)` for C2201 subjects).
 - **Notes:** Specific scope because the contrast is tied to the Novartis ligelizumab CSU development program. Subject-level / time-fixed; set once from the trial identifier on each subject record. The C2201 effect was retained in the final model because the residual unexplained CL/F differed between C2201 and the other studies after accounting for body weight, IgE, ADA, and disease-state covariates.
 
+### STUDY_1 (**canonical for Duong 2017 Study-1 (newly diagnosed obese T2DM) cohort indicator**)
+- **Description:** 1 = subject enrolled in Study 1 (NCT00236600) of the Duong 2017 pooled placebo T2DM analysis (newly diagnosed, treatment-naive, obese T2DM subjects; 6-week placebo run-in followed by 60-week placebo treatment phase with an ancillary weight-loss diet and exercise counselling arm); 0 = subject enrolled in Study 2 (NCT01071850) or Study 3 (NCT01117584) of the same pool (advanced T2DM cohorts on stable diet and exercise, no weight-loss counselling).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (Studies 2 and 3 pooled -- the "advanced T2DM" reference: baseline b-cell function logit b0 = 0.677 and no treatment-phase placebo effect on weight (EFPL)).
+- **Source aliases:**
+  - `STUDY = 1` (character-valued or integer study identifier; `STUDY_1 = as.integer(STUDY == 1)`).
+- **Example models:** `Duong_2016_WHIG_T2DM.R` (switches the baseline b-cell function logit b0 = -0.298 for Study 1 vs 0.677 for Studies 2 and 3, and activates the treatment-phase placebo weight effect EFPL only for Study 1 -- the "additional placebo effect during the treatment phase for Studies 2 and 3 was not significant" per Duong 2017 Results).
+- **Notes:** Follows the auto-approved `STUDY_<id>` canonical family. Distinct from the Cirincione 2017 `STUDY1` (no underscore) which selects a different study in a different pooled analysis. Subject-level (time-fixed).
+
 ### STUDY_HARROLD_PEG (**canonical for Harrold 2020 pegfilgrastim-vs-filgrastim pivotal NHP study indicator**)
 - **Description:** 1 = subject enrolled in the pegfilgrastim pivotal NHP study (Harrold 2020 reference 13; pegfilgrastim 300 ug/kg SC on days 1 and 8); 0 = subject enrolled in the filgrastim pivotal NHP study (Harrold 2020 reference 14; filgrastim 10 ug/kg QD SC starting day 1). Used by the Harrold 2020 OS time-to-event sub-model to select between the two study-specific parameter sets in Table III (lambda_ANC, lambda_BC, k_e0); the ANC response sub-model (Table II) is fit on the combined placebo cohorts and does not depend on this indicator.
 - **Units:** (binary)
