@@ -1580,6 +1580,8 @@ navbar:
         href: articles/Clewe_2015_rifampicin.html
       - text: "Rifampicin (Horita 2018)"
         href: articles/Horita_2018_rifampicin.html
+      - text: "Rifampicin (Marsot 2017)"
+        href: articles/Marsot_2017_rifampicin.html
       - text: "Rifampicin (Sloan 2017)"
         href: articles/Sloan_2017_rifampicin.html
       - text: "Rifampicin (Smythe 2012)"
@@ -2777,6 +2779,7 @@ articles:
   - articles/Marier_2002_tobramycin_rat_liposomal
   - articles/MarquesMinana_2010_vancomycin
   - articles/Marquez-Megias_2023_adalimumab
+  - articles/Marsot_2017_rifampicin
   - articles/Martial_2017_micafungin
   - articles/Martinez_2019_alirocumab
   - articles/Masters_2022_avelumab
