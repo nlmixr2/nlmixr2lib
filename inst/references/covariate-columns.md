@@ -7885,3 +7885,45 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
   - `IFLAG` -- used in `Bosch_2024_glp1ra_bodyweight.R` (Bosch 2024 supplement S10 IFLAG > 0 gates the activity effect).
 - **Example models:** `Bosch_2024_glp1ra_bodyweight.R` (introduces the canonical; gates the body-weight-dependent activity effect on PAE for STEP-family arms in the Bosch 2024 dataset).
 - **Notes:** Specific scope because the canonical name is tied to body-composition QSP modelling where the activity effect is empirically estimated for IBT-instrumented arms. Future extractions of similar lifestyle-intervention-aware body-composition or weight-loss-trajectory models may reuse this canonical; mark the per-paper IBT-intensity definition in `covariateData[[WM_IBT]]$notes` so users can distinguish "weekly clinic counselling + diary review" intensity (STEP 3) from "minimal-counselling -500 kcal/d" intensity (STEP 5 / STEP 8). Ratified canonically on 2026-06-22 alongside the Bosch 2024 extraction.
+
+### IP_FA (**canonical for tablet-transit inflection-point time from fundus to antrum**)
+- **Description:** Individual inflection-point time (h) at which the sigmoid step function governing tablet movement from the fundus to the antrum equals 0.5 (paper Equation 1 form: `STEP(t) = 1 / (1 + exp(-SIG * (t - IP)))`). Used in the Gastro-Intestinal Transit Time (GITT) absorption model of Henin 2012 to drive per-subject tablet residence time in the fundus. The paper samples IP per subject from a fixed log-normal distribution `IP = MRT * exp(eta)` with `eta ~ N(0, VRT)` and MRT / VRT taken from the upstream Bergstrand 2009 Markov-chain fit (Table II of Henin 2012): MRT_fundus = 0.4 h (fasted) / 1.04 h (fed), VRT_fundus = 0.46 / 1.09 h^2 (CV 100%).
+- **Units:** h
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** NULL -- IP_FA is a continuous per-subject residence time; the sigmoid step is centred at IP_FA regardless of whether the subject is fed or fasted, but the sampling distribution is fed / fasted stratified.
+- **Source aliases:**
+  - `IP_F_A` -- used directly in the Henin 2012 model file annotations for the fundus-to-antrum inflection point.
+- **Example models:** `Henin_2012_felodipine.R` (founding example; used in the felodipine GITT extraction for the extended-release tablet transit).
+- **Notes:** Specific scope because the canonical name is tied to the GITT / MMM-derived semi-mechanistic absorption modelling framework where the tablet position is modelled by sigmoid STEP functions with per-subject inflection points. Only the "no return to fundus" subpopulation is encoded in the Henin 2012 extraction (7/12 felodipine subjects per the paper); the paper's 3-component mixture with 0 / 1 / 2 antrum-to-fundus returns is documented as a deviation in the vignette. Future GITT-family extractions (Bergstrand 2009 upstream, or 2020+ mechanistic-absorption papers extending the same STEP-function idiom) should reuse this canonical. Ratified canonically alongside the Henin 2012 extraction.
+
+### IP_APSI (**canonical for tablet-transit inflection-point time from antrum to proximal small intestine**)
+- **Description:** Individual inflection-point time (h) at which the sigmoid step function governing tablet movement from the antrum (or the enteric-coated-tablet whole-stomach exit) to the proximal small intestine equals 0.5. Central variable in the Gastro-Intestinal Transit Time (GITT) model (Henin 2012 Equation 1). For the extended-release felodipine model the population distribution is fed / fasted stratified: MRT_antrum = 0.32 h (fasted) / 1.58 h (fed), VRT_antrum = 0.15 / 2.50 h^2 (CV 100%). For enteric-coated diclofenac the same covariate represents the combined stomach transit (mean ~ 2 h ranging 1.5-3 h per paper Results).
+- **Units:** h
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** NULL -- continuous per-subject residence time.
+- **Source aliases:**
+  - `IP_A_PSI` -- used in the Henin 2012 model file annotations for the antrum-to-proximal-small-intestine inflection point.
+- **Example models:** `Henin_2012_felodipine.R` (extended-release with drug release in fundus + antrum + PSI + DSI + colon), `Henin_2012_diclofenac.R` (enteric-coated with stomach transit only, no drug release in stomach; IP_APSI represents the gastric emptying event).
+- **Notes:** Specific scope. IP_APSI's exact operational meaning differs slightly between the two Henin 2012 models: felodipine's IP_APSI is the antrum -> PSI transition (fundus and antrum are separate compartments), while diclofenac's IP_APSI is a lumped stomach -> PSI transition (fundus and antrum are not distinguished because the enteric coating prevents any drug release in the stomach). Both use the same STEP-function machinery and the same "no return to fundus" subpopulation simplification. Ratified canonically alongside the Henin 2012 extraction.
+
+### IP_PSI_DSI (**canonical for tablet-transit inflection-point time from proximal to distal small intestine**)
+- **Description:** Individual inflection-point time (h) at which the sigmoid step function governing tablet movement from the proximal small intestine to the distal small intestine equals 0.5. Not fed / fasted stratified in the Henin 2012 GITT framework. Sampled per subject as `IP_PSI_DSI = MRT_psi * exp(eta)` with MRT_psi = 1.17 h, VRT_psi = 1.37 h^2 (CV 50%) per Table II.
+- **Units:** h
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** NULL -- continuous per-subject residence time.
+- **Source aliases:** none.
+- **Example models:** `Henin_2012_felodipine.R`, `Henin_2012_diclofenac.R`.
+- **Notes:** Specific scope. Time-zero-referenced: IP_PSI_DSI is the absolute clock time (relative to dose administration) at which the sigmoid switch crosses 0.5. The effective PSI residence time is IP_PSI_DSI - IP_APSI. Ratified canonically alongside the Henin 2012 extraction.
+
+### IP_DSI_C (**canonical for tablet-transit inflection-point time from distal small intestine to colon**)
+- **Description:** Individual inflection-point time (h) at which the sigmoid step function governing tablet movement from the distal small intestine to the colon equals 0.5. Not fed / fasted stratified in the Henin 2012 GITT framework. Sampled per subject as `IP_DSI_C = MRT_dsi * exp(eta)` with MRT_dsi = 1.22 h, VRT_dsi = 1.48 h^2 (CV 58%) per Table II.
+- **Units:** h
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** NULL -- continuous per-subject residence time.
+- **Source aliases:** none.
+- **Example models:** `Henin_2012_felodipine.R`, `Henin_2012_diclofenac.R`.
+- **Notes:** Specific scope. Time-zero-referenced; effective DSI residence time is IP_DSI_C - IP_PSI_DSI. Ratified canonically alongside the Henin 2012 extraction.
