@@ -1596,6 +1596,8 @@ navbar:
         href: articles/Zhang_2016_rilotumumab.html
       - text: "Rilpivirine (Aouri 2017)"
         href: articles/Aouri_2017_rilpivirine.html
+      - text: "Risankizumab (Suleiman 2018)"
+        href: articles/Suleiman_2018_risankizumab.html
       - text: "Risankizumab (Suleiman 2019)"
         href: articles/Suleiman_2019_risankizumab.html
       - text: "Risankizumab (Thakre 2022)"
@@ -3013,6 +3015,7 @@ articles:
   - articles/Struemper_2017_belimumab
   - articles/Struemper_2025_tumorsize_OS_nsclc
   - articles/Suda_2008_theophylline
+  - articles/Suleiman_2018_risankizumab
   - articles/Suleiman_2019_risankizumab
   - articles/Suri_2018_brentuximab
   - articles/Suyagh_2011_metronidazole
