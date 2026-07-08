@@ -703,6 +703,49 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
 - **Source aliases:** none.
 - **Example models:** paper-mechanistic removal PD models.
 
+### kgrow (**canonical growth-rate parameter**)
+- **Type:** paper-named-param
+- **Role:** First-order growth / net-multiplication rate constant of a paper-mechanistic proliferating state (1 / time). Founding use: fixed net asexual-parasite growth rate `kgrow = ln(10) / 48 = 0.0479 /h` for a Plasmodium falciparum life-cycle model in which parasites multiply 10-fold per 48-h intraerythrocytic cycle (Hien 2017 Table 3 row `K_grow (1/h) = 0.0479 fix`). Inside `model()` the bare name is `kgrow`; the log-transformed `lkgrow` form is used in `ini()` when the rate itself is log-parameterised (typical for positivity constraint).
+- **Source aliases:**
+  - `K_grow`, `Kgrow` -- Hien 2017 notation.
+- **Example models:** `Hien_2017_cipargamin.R` (founding example; `kgrow` fixed at ln(10)/48 = 0.0479 /h for the 10-fold per 48-h cycle Plasmodium falciparum multiplication rate).
+- **Notes:** Mechanistically distinct from `p` (generic proliferation / growth-rate constant, TGI-family) in that `kgrow` is specifically a life-cycle-anchored multiplication rate constrained by an independently-known cycle time and per-cycle amplification factor -- typically fixed rather than estimated. Also distinct from `kin` / `ksyn` (zero-order production rates into a turnover pool) because `kgrow` is a first-order growth rate proportional to the state itself. Ratified canonically on 2026-07-08 alongside the Hien 2017 cipargamin extraction.
+
+### kact (**canonical activation-rate parameter**)
+- **Type:** paper-named-param
+- **Role:** First-order activation rate constant for a paper-mechanistic dormant / refractory state to become active (1 / time). Founding use: rate constant `kact` at which refractory (drug-tolerant) Plasmodium falciparum parasites become active and re-enter the drug-sensitive pool in a two-population parasite clearance model (Hien 2017 Table 3 row `K_act (1/h) = 0.0987`). Inside `model()` the bare name is `kact`; the log-transformed `lkact` form is used in `ini()` when the rate itself is log-parameterised.
+- **Source aliases:**
+  - `K_act`, `Kact` -- Hien 2017 notation.
+- **Example models:** `Hien_2017_cipargamin.R` (founding example; `kact = 0.0987 /h` for refractory-to-active first-order transition, with IIV 41.5% CV per Hien 2017 Table 3; drives the awakening term `+ kact * parasite_refractory` in the sensitive-pool ODE and the loss term `- kact * parasite_refractory` in the refractory-pool ODE).
+- **Notes:** Mechanistically distinct from `kel` / `kdeg` (single-drug or single-pool elimination), from `kmet` (parent-to-metabolite conversion), and from `kint` (target-mediated internalisation) in that `kact` transfers mass from an inactive pool to an active pool of the same species (no drug binding, no metabolism, no target sequestration). Ratified canonically on 2026-07-08 alongside the Hien 2017 cipargamin extraction.
+
+### fsen (**canonical bare drug-sensitive fraction**)
+- **Type:** paper-named-param
+- **Role:** Fraction of a paper-mechanistic asexual / cycling pool that is fully drug-sensitive at model initialisation, bounded in `[0, 1]`. Complement `(1 - fsen)` is the drug-refractory subpool. Inside `model()` the bare name is `fsen`; the log-transformed `lfsen` form is used in `ini()`. Founding use: population fraction of asexual Plasmodium falciparum parasites that are drug-sensitive at enrolment in a two-population parasite clearance model (Hien 2017 Table 3 row `F_sen (%) = 99.1`).
+- **Source aliases:**
+  - `F_sen`, `Fsen` -- Hien 2017 notation.
+- **Example models:** `Hien_2017_cipargamin.R` (founding example; `fsen = 0.991` typical; large IIV 81.8% CV per Hien 2017 Table 3; seeds the initial condition of the two ODE pools: `parasite_sensitive(0) = fsen * PARA` and `parasite_refractory(0) = (1 - fsen) * PARA`).
+- **Notes:** Encoded on the log scale (`lfsen = log(0.991)`) for consistency with the paper's log-normal `omega^2 = log(1 + CV^2)` reporting formula (Hien 2017 Table 3 footnote a). Individual `fsen_i = exp(lfsen + etalfsen)` can occasionally exceed 1 for extreme etas; this is a documented limitation of the log-normal-on-fraction encoding and is preferable to reinterpreting the paper's reported %CV on a logit scale. Downstream simulations that need strictly-bounded individual fractions can clamp `fsen_i` to `min(fsen_i, 1)` at post-processing. Distinct from `fu` (fraction unbound in plasma; time-invariant physicochemical / binding property), `fr` (Bergstrand-Karlsson mixed-model fraction of MAT in transit delay), and `fm` (fraction metabolised through a specific pathway). Ratified canonically on 2026-07-08 alongside the Hien 2017 cipargamin extraction.
+
+### lfsen (**canonical log-transformed drug-sensitive fraction**)
+- **Type:** paper-named-param
+- **Role:** Log-transformed counterpart of `fsen` for use in `ini()`. Individual fraction `fsen_i = exp(lfsen + etalfsen)`.
+- **Source aliases:** none.
+- **Example models:** `Hien_2017_cipargamin.R`.
+- **Notes:** See `fsen` for the full role description and the caveat on the log-transform-on-a-bounded-fraction encoding choice.
+
+### lkgrow (**canonical log-transformed growth-rate parameter**)
+- **Type:** paper-named-param
+- **Role:** Log-transformed counterpart of `kgrow` for use in `ini()`.
+- **Source aliases:** none.
+- **Example models:** `Hien_2017_cipargamin.R` (`lkgrow = fixed(log(0.0479))`).
+
+### lkact (**canonical log-transformed activation-rate parameter**)
+- **Type:** paper-named-param
+- **Role:** Log-transformed counterpart of `kact` for use in `ini()`.
+- **Source aliases:** none.
+- **Example models:** `Hien_2017_cipargamin.R` (`lkact = log(0.0987)`).
+
 ### mat (**canonical mean absorption time**)
 - **Type:** paper-named-param
 - **Role:** Mean absorption time for transit-absorption popPK parameterisations (time).

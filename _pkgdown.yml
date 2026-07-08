@@ -362,6 +362,8 @@ navbar:
         href: articles/Yoo_2009_cilostazol.html
       - text: "Cipaglucosidase (Hajjar 2018)"
         href: articles/Hajjar_2018_pompe_disease.html
+      - text: "Cipargamin (Hien 2017)"
+        href: articles/Hien_2017_cipargamin.html
       - text: "Ciprofloxacin (Schaefer 1996)"
         href: articles/Schaefer_1996_ciprofloxacin.html
       - text: "Ciprofloxacin (Thuo 2011)"
@@ -2558,6 +2560,7 @@ articles:
   - articles/Hennig_2015_phenytoin
   - articles/Hennig_2015_rifabutin
   - articles/Heuberger_2018_salbutamol
+  - articles/Hien_2017_cipargamin
   - articles/Hietala_2010_artemether_lumefantrine_malaria
   - articles/HillMcManus_2017_febuxostat_lesinurad
   - articles/Hirt_2006_nelfinavir
