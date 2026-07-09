@@ -6972,6 +6972,17 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Example models:** `Othman_2014_daclizumab.R` (record-level SC), `Diao_2016_daclizumab_cd25.R`, `Diao_2016_daclizumab_cd56bright.R`, `Diao_2016_daclizumab_treg.R`, `Jorga_2000_tolcapone_fluctuators.R` (subject-level oral t.i.d.).
 - **Notes:** Othman 2014 estimated two separate absolute bioavailabilities because of non-linear dose-normalized exposure at the 50 mg SC dose -- F = 0.84 for the therapeutic 100-300 mg SC range and F = 0.57 for the 50 mg SC cohort. Encoded as a record-level indicator so `e_dose_50mg_f = 0.57/0.84 - 1 = -0.321` scales bioavailability only on 50 mg SC dose records. For clinical-range simulation (150 mg SC Q4W Phase III regimen) leave `DOSE_50MG = 0`. The Diao 2016 PK/PD models inherit the Othman 2014 PK backbone verbatim. Jorga 2000 uses the indicator subject-level on the central and peripheral volumes of distribution: `(1 + e_dose_50mg_vc_vp * DOSE_50MG)` with `e_dose_50mg_vc_vp = -0.45` (V is 55% of the 200 mg reference at the 50 mg t.i.d. arm); paired with `DOSE_400MG` in the same fluctuator model so the 200 mg arm is the joint reference (both indicators = 0).
 
+### DOSE_10MG (**canonical for 10 mg dose-level indicator**)
+- **Description:** 1 = subject or dose record is in the 10 mg dose-level cohort, 0 = any other dose level. Route-neutral; per-record or per-subject depending on the source design (subject-level for fixed-arm randomizations such as Zhang 2015's dolutegravir dose-ranging cohorts).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (any non-10 mg dose level in the source study; for Zhang 2015 dolutegravir the reference is the pooled 25 mg / 50 mg dose levels).
+- **Source aliases:**
+  - `DOSE` (= 1 for the 10 mg dose, 0 for 25 / 50 mg) -- used in `Zhang_2015_dolutegravir.R` (per Zhang 2015 Table 3 footnote, `F = 1.21^GEND * 1.24^DOSE`).
+- **Example models:** `Zhang_2015_dolutegravir.R` (exponential effect on bioavailability: `f(depot) <- exp(lfdepot + e_dose_10mg_fdepot * DOSE_10MG)` with `e_dose_10mg_fdepot = log(1.24) = 0.215`, so F is 24% higher at the 10 mg dose vs the pooled 25 / 50 mg reference).
+- **Notes:** Sibling of `DOSE_50MG`, `DOSE_70MG`, `DOSE_130MG`, `DOSE_260MG`, and `DOSE_400MG`; member of the `DOSE_<N>MG` family of dose-level indicators. Zhang 2015 reports that continuous dose was tested as a covariate on F but was not significant, and no F difference was found between the 25 and 50 mg dose levels; the higher relative bioavailability at the 10 mg dose is attributed to better dispersion of the lower-strength tablet (Zhang 2015 Discussion). Ratified canonically alongside the Zhang 2015 dolutegravir extraction.
+
 ### DOSE_400MG (**canonical for 400 mg dose-level indicator**)
 - **Description:** 1 = subject or dose record is in the 400 mg dose-level cohort, 0 = any other dose level. Route-neutral; per-record or per-subject depending on the source design (subject-level for fixed-arm randomizations such as Jorga 2000's t.i.d. tolcapone study arms).
 - **Units:** (binary)
@@ -7090,6 +7101,17 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Source aliases:** derived per subject from the trial identifier (`C2201` -> 1, else -> 0).
 - **Example models:** `Bienczak_2025_ligelizumab.R` (Table S6: study C2201 on CL/F = 0.176, log-additive; `cl *= exp(0.176)` for C2201 subjects).
 - **Notes:** Specific scope because the contrast is tied to the Novartis ligelizumab CSU development program. Subject-level / time-fixed; set once from the trial identifier on each subject record. The C2201 effect was retained in the final model because the residual unexplained CL/F differed between C2201 and the other studies after accounting for body weight, IgE, ADA, and disease-state covariates.
+
+### STUDY_ING111521 (**canonical for Zhang 2015 dolutegravir proof-of-concept study cohort indicator**)
+- **Description:** 1 = subject enrolled in study ING111521 (phase 2a, proof-of-concept dose-ranging study of dolutegravir monotherapy in HIV-1-infected adults; n = 19 in the Zhang 2015 pooled analysis) of the Zhang 2015 dolutegravir PopPK; 0 = SPRING-1 (phase 2b, n = 141) or SPRING-2 (phase 3, n = 403). Used to switch the typical CL/F magnitude in study ING111521.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (SPRING-1 / SPRING-2 combined adult treatment-naive HIV-1 cohort).
+- **Source aliases:**
+  - `POC` (proof-of-concept) -- used in `Zhang_2015_dolutegravir.R` (= 1 for ING111521, 0 otherwise; per Zhang 2015 Table 3 footnote `CL/F = 0.901 * 1.16^SMOK * 1.35^POC * (WT/70)^0.438 * (AGE/40)^0.193 * (BILI/9)^-0.211`).
+- **Example models:** `Zhang_2015_dolutegravir.R` (exponential effect on CL/F: `cl *= exp(e_ing111521_cl * STUDY_ING111521)` with `e_ing111521_cl = log(1.35) = 0.300`, so CL/F is 35% higher in study ING111521 than in the SPRING-1 / SPRING-2 reference).
+- **Notes:** Sibling of `STUDY_C2201` (Bienczak 2025 ligelizumab), `STUDY_LBSL` (Zhou 2021 belimumab), `STUDY_M281_004` (Vivacity-MG nipocalimab), `STUDY_MD` (Cirincione 2017 ER exenatide multi-dose), `STUDY_PKU015` (Qi 2014 sapropterin pediatric), and `STUDY_RIV201` (Tammara 2017 rivipansel); member of the `STUDY_<name>` family of paper-specific study cohort indicators. The 35% higher CL/F in ING111521 vs SPRING-1 / SPRING-2 is unexplained by available covariates; Zhang 2015 attributes it plausibly to the smaller sample size and less diverse patient population in ING111521 (Zhang 2015 Discussion p. 506). Subject-level (time-fixed); set once from the trial identifier on each subject record. Ratified canonically alongside the Zhang 2015 dolutegravir extraction.
 
 ### STUDY_HARROLD_PEG (**canonical for Harrold 2020 pegfilgrastim-vs-filgrastim pivotal NHP study indicator**)
 - **Description:** 1 = subject enrolled in the pegfilgrastim pivotal NHP study (Harrold 2020 reference 13; pegfilgrastim 300 ug/kg SC on days 1 and 8); 0 = subject enrolled in the filgrastim pivotal NHP study (Harrold 2020 reference 14; filgrastim 10 ug/kg QD SC starting day 1). Used by the Harrold 2020 OS time-to-event sub-model to select between the two study-specific parameter sets in Table III (lambda_ANC, lambda_BC, k_e0); the ANC response sub-model (Table II) is fit on the combined placebo cohorts and does not depend on this indicator.
