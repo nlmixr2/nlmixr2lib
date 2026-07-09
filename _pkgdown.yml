@@ -850,6 +850,8 @@ navbar:
         href: articles/Feng_2012_higenamine.html
       - text: "HuHMFG1 (Royer 2010)"
         href: articles/Royer_2010_HuHMFG1.html
+      - text: "Hydroxychloroquine (Carmichael 2003)"
+        href: articles/Carmichael_2003_hydroxychloroquine.html
       - text: "Hydroxyurea (Dong 2016)"
         href: articles/Dong_2016_hydroxyurea.html
       - text: "Hydroxyurea (Paule 2011)"
@@ -2338,6 +2340,7 @@ articles:
   - articles/Capparelli_2005_cefepime
   - articles/Cardilin_2018_radiation_radiosensitizer_mouse
   - articles/CarlssonPetri_2021_liraglutide
+  - articles/Carmichael_2003_hydroxychloroquine
   - articles/Castelli_2022_dextroamphetamine
   - articles/Castro-Surez_2020_nimotuzumab
   - articles/Catalan-Latorre_2018_taurine_rat
