@@ -1612,6 +1612,8 @@ navbar:
         href: articles/Mensing_2017_3D_HCV_regimen.html
       - text: "Rituximab (Candelaria 2018)"
         href: articles/Candelaria_2018_rituximab.html
+      - text: "Rituximab (Rozman 2017)"
+        href: articles/Rozman_2017_rituximab.html
       - text: "Rivaroxaban (Willmann 2021)"
         href: articles/Willmann_2021_rivaroxaban.html
       - text: "Rivipansel (Tammara 2017)"
@@ -2931,6 +2933,7 @@ articles:
   - articles/Rovei_1982_theophylline
   - articles/Rower_2017_tacrolimus
   - articles/Royer_2010_HuHMFG1
+  - articles/Rozman_2017_rituximab
   - articles/Ruhs_2012_methotrexate
   - articles/Rymut_2023_anti_tryptase
   - articles/Sadouki_2025_meropenem_gentamicin_ciprofloxacin
