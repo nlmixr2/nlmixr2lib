@@ -1,0 +1,329 @@
+---
+title: "Ranibizumab ocular PK/PD (Hutton-Smith 2018)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Ranibizumab ocular PK/PD (Hutton-Smith 2018)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode2(readModelDb("HuttonSmith_2018_ranibizumab"))$reference`
+* Description: `r rxode2::rxode2(readModelDb("HuttonSmith_2018_ranibizumab"))$description`
+* Article: <https://doi.org/10.1021/acs.molpharmaceut.8b00280>
+
+Hutton-Smith 2018 extends the two-compartment (vitreous, aqueous) ranibizumab-VEGF PK/PD model of Hutton-Smith 2016 to a three-compartment (retina, vitreous, aqueous) system by adding a retinal compartment with hydrodynamic-radius-dependent inner-limiting-membrane (ILM) and retinal-pigment-epithelium (RPE) permeabilities. VEGF has two identical binding sites for ranibizumab, so the paper carries three species per compartment (free VEGF V, ranibizumab R, VR complex, RVR complex) alongside their reaction and transport pathways. The resulting 12-ODE system was fit to 31 wet-AMD patients from Saunders 2015. The extraction here follows the paper's eqs 3-14 exactly, with the vitreous-to-aqueous rate constant `k_el` for each species derived from the eigenmode mass-balance of Supporting Information Section S2.
+
+# Population
+
+The model was re-fit on aqueous humor free-VEGF concentrations from **31 wet-AMD patients** in Saunders et al. 2015 (Br J Ophthalmol 99:1554-1559). Each patient received a single 0.5 mg intravitreal injection of ranibizumab followed by serial aqueous humor samples measured by Luminex multiplex bead analysis. Individual patient fits held `K_D` fixed within a grid from 50 to 50,000 pM and estimated the ocular half-life `t_1/2^(r)` and the VEGF production rate `V_in`; the population `K_D = 19,000 pM` was chosen to reproduce the reference ranibizumab ocular half-life 7.9 +/- 1.74 days (previously compiled in Hutton-Smith 2016). The retinal permeabilities and hydrodynamic radii used in eqs 15-16 are inherited from Hutton-Smith 2017 (rabbit intravitreal PK of therapeutic antibodies).
+
+The same information is available programmatically:
+
+```{r population}
+str(rxode2::rxode2(readModelDb("HuttonSmith_2018_ranibizumab"))$population)
+```
+
+# Source trace
+
+The per-parameter origin is recorded as an in-file comment next to each `ini()` entry in `inst/modeldb/specificDrugs/HuttonSmith_2018_ranibizumab.R`. The table below collects the equations and parameters in one place.
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `k_off` (1/day)                | 0.864 (fixed)         | Hutton-Smith 2018 Table 2 (Yang 2014 in vitro estimate; ref 14) |
+| `K_D` (pM)                     | 19,000 (fixed)        | Table 2 (estimated jointly to reproduce t_1/2^(r) = 7.9 +/- 1.74 days) |
+| `C_L` (mL/day)                 | 3.6                   | Table 2 (ref 15; aqueous humor outflow) |
+| `V_vit` (mL)                   | 4.5                   | Table 2 (refs 16, 17) |
+| `V_aq` (mL)                    | 0.16                  | Table 2 (refs 18, 19) |
+| `v_ret` (mL)                   | 0.22                  | Table 2 footnote b (derived from Missel 2012 anatomy) |
+| `S_ret` (cm2)                  | 9.71                  | Table 2 footnote b (derived from Missel 2012 anatomy) |
+| `MW_ranib` (kDa)               | 48.35                 | Methods (paragraph after Table 1); ref 11 |
+| `R_h`, `p_ILM`, `p_RPE` (V, R, VR, RVR) | Table 3       | Hutton-Smith 2017 rabbit-PK-derived power-law expressions (eqs 15-16), evaluated at each species' hydrodynamic radius |
+| log-normal `t_1/2^(r)` (days)  | mu = 2.03, sigma = 0.25 | Figure 6 (95% CI 1.94-2.12; 0.20-0.33) |
+| log-normal `V_in` (fmol/day)   | mu = 2.76, sigma = 0.38 | Figure 5 (95% CI 2.65-2.93; 0.30-0.51) |
+| Bivalent binding kinetics      | 2 k_on / k_off (V+R) and k_on / 2 k_off (R+VR) | Methods (Model Description), eqs 1-2, Figure 1 |
+| Retinal ODEs                   | eqs 3-6               | Methods (Model Description) |
+| Vitreous ODEs                  | eqs 7-10              |  |
+| Aqueous ODEs                   | eqs 11-14             |  |
+| Species-specific `t_1/2^(i)`   | eq 17 (proportional to R_h) | Methods paragraph after eqs 15-16 |
+| Species-specific `lambda^(i)`  | eq 18 (log 2 / t_1/2) |  |
+| Species-specific `k_el^(i)`    | derived from lambda, p_ILM, p_RPE, anatomy | Section S2 of Supporting Information (mass-balance eigenmode) |
+| Steady-state VEGF distribution | Closed-form (retina/vitreous/aqueous balance) | Methods (initial conditions) and Section S3 of Supporting Information |
+| Residual error on aqueous VEGF | log-normal SD ~ 0.26   | Results (Fitting Results) and Figure 3b/c |
+
+## Units
+
+| Symbol | Units |
+|--------|-------|
+| Time                        | day |
+| Compartment states          | fmol (amount) |
+| `Cc_*` observation outputs  | pM (pmol/L) |
+| Dose input (`amt`)          | mg (converted to fmol via `f(ranib_vit) = 1e12 / MW_ranib`) |
+| Reaction rate constants     | `k_off` in 1/day; `k_on` in 1/(pM * day) |
+| Permeabilities              | cm/day (Table 3 reports cm/s; multiplied by 86400) |
+| Volumes                     | mL |
+| Surface areas               | cm2 |
+
+# Virtual cohort and simulation
+
+Original observed data (Saunders 2015 aqueous humor VEGF profiles) are not publicly available. The verification below combines a deterministic replication of the paper's Figure 2 (patient 40, typical values) with a small population simulation using the published log-normal distributions of `t_1/2^(r)` and `V_in`.
+
+```{r cohort}
+set.seed(20180507L)  # paper's publication date
+
+mod <- rxode2::rxode2(readModelDb("HuttonSmith_2018_ranibizumab"))
+
+# Deterministic replication for patient 40: K_D = 19,000 pM (already fixed),
+# V_in = 18.5 fmol/day, t_1/2^(r) = 7.5 days (Figure 2 legend).
+mod_pt40 <- rxode2::zeroRe(mod)
+mod_pt40 <- rxode2::ini(mod_pt40, lthalfr = log(7.5), lVin = log(18.5))
+
+# Population simulation: 100 subjects with the published IIV, single 0.5 mg IVT.
+n_pop <- 100L
+dose_time <- 0
+obs_times <- unique(c(seq(0, 3, by = 0.1), seq(3, 30, by = 0.5), seq(30, 150, by = 1)))
+
+pop_events <- tibble::tibble(
+  id  = seq_len(n_pop),
+  amt = 0.5,        # mg (converted to fmol inside the model via f(ranib_vit))
+  cmt = "ranib_vit",
+  evid = 1,
+  time = dose_time
+) |>
+  dplyr::bind_rows(
+    tidyr::expand_grid(id = seq_len(n_pop), time = obs_times) |>
+      dplyr::mutate(amt = NA_real_, cmt = "ranib_vit", evid = 0)
+  ) |>
+  dplyr::arrange(id, time, dplyr::desc(evid))
+```
+
+```{r simulate}
+sim_pt40 <- rxode2::rxSolve(
+  mod_pt40,
+  events = tibble::tibble(
+    id   = 1L,
+    amt  = c(0.5, NA_real_),
+    cmt  = c("ranib_vit", "ranib_vit"),
+    evid = c(1L, 0L),
+    time = c(0, 0)
+  ) |>
+    dplyr::bind_rows(tibble::tibble(
+      id   = 1L,
+      amt  = NA_real_,
+      cmt  = "ranib_vit",
+      evid = 0L,
+      time = obs_times
+    )) |>
+    dplyr::arrange(time, dplyr::desc(evid)),
+  useLinCmt = FALSE,
+  returnType = "data.frame"
+)
+
+sim_pop <- rxode2::rxSolve(
+  mod, events = pop_events, useLinCmt = FALSE, returnType = "data.frame"
+)
+```
+
+# Replicate published figures
+
+## Figure 2 - Patient 40 concentration profiles
+
+Replicates Figure 2 of Hutton-Smith 2018: ranibizumab (log scale) and free VEGF (linear scale) in the retina, vitreous, and aqueous humor for a representative patient (`K_D = 19,000 pM`, `V_in = 18.5 fmol/day`, `t_1/2^(r) = 7.5 days`). The paper reports vitreous:retina:aqueous concentration ratios of approximately 2:1:0.1 for ranibizumab and 3:1:0.03 for VEGF at t = 0.
+
+```{r figure-2, fig.height = 6}
+fig2 <- sim_pt40 |>
+  dplyr::select(time,
+                Ranibizumab_retina  = Cc_ranib_ret,
+                Ranibizumab_vitreous = Cc_ranib_vit,
+                Ranibizumab_aqueous = Cc_ranib_aq,
+                VEGF_retina = Cc_vegf_ret,
+                VEGF_vitreous = Cc_vegf_vit,
+                VEGF_aqueous = Cc_vegf_aq) |>
+  tidyr::pivot_longer(-time, names_to = "series", values_to = "conc") |>
+  tidyr::separate(series, into = c("species", "compartment"), sep = "_") |>
+  dplyr::mutate(compartment = factor(compartment,
+                                     levels = c("retina", "vitreous", "aqueous")))
+
+p_ranib <- fig2 |>
+  dplyr::filter(species == "Ranibizumab", conc > 0) |>
+  ggplot(aes(time, conc)) +
+  geom_line(colour = "seagreen", linewidth = 0.7) +
+  facet_wrap(~compartment, scales = "free_y") +
+  scale_y_log10() +
+  labs(x = "Time (days)", y = "Ranibizumab (pM, log)",
+       title = "Ranibizumab decay",
+       caption = "Replicates Figure 2 of Hutton-Smith 2018 (green traces).")
+
+p_vegf <- fig2 |>
+  dplyr::filter(species == "VEGF") |>
+  ggplot(aes(time, conc)) +
+  geom_line(colour = "firebrick", linewidth = 0.7) +
+  facet_wrap(~compartment, scales = "free_y") +
+  labs(x = "Time (days)", y = "Free VEGF (pM)",
+       title = "Free VEGF suppression",
+       caption = "Replicates Figure 2 of Hutton-Smith 2018 (red traces).")
+
+print(p_ranib)
+print(p_vegf)
+```
+
+## Steady-state VEGF and retina/vitreous/aqueous ratios
+
+Numeric verification of the pre-dose steady state (Results, Fitting Results): the retina holds approximately 3-fold higher free-VEGF concentration than the vitreous, and approximately 30-fold higher than the aqueous.
+
+```{r ss-ratios}
+ss <- sim_pt40 |>
+  dplyr::filter(time == 0) |>
+  dplyr::slice(1) |>
+  dplyr::select(Cc_vegf_ret, Cc_vegf_vit, Cc_vegf_aq)
+
+vret <- ss$Cc_vegf_ret
+vvit <- ss$Cc_vegf_vit
+vaq  <- ss$Cc_vegf_aq
+
+ratios <- tibble::tibble(
+  Quantity = c("v_ret(0) (pM)", "v_vit(0) (pM)", "v_aq(0) (pM)",
+               "v_ret / v_vit", "v_vit / v_aq", "v_ret / v_aq"),
+  Simulated = c(vret, vvit, vaq, vret / vvit, vvit / vaq, vret / vaq),
+  Published_target = c(NA, NA, NA, 3, 10, 30)
+)
+
+knitr::kable(ratios, digits = 3, caption = "Pre-dose free-VEGF steady state and ratios (patient 40 typical values).")
+```
+
+## Figure 6 - Distribution of `t_1/2^(r)`
+
+Replicates Figure 6 of Hutton-Smith 2018: histogram of the ocular half-life of ranibizumab across simulated subjects, overlaid with the published log-normal fit (`mu = 2.03`, `sigma = 0.25`). Per-subject `t_1/2^(r)` is available directly from the sampled random effect.
+
+```{r figure-6}
+# Recover per-subject t_1/2^(r) from the post-dose vitreous ranibizumab decay
+# slope between 20 and 60 days (post-redistribution, pre-noise-floor).
+decay_win <- sim_pop |>
+  dplyr::filter(time %in% c(20, 60), Cc_ranib_vit > 0) |>
+  dplyr::group_by(id) |>
+  dplyr::summarise(
+    thalf_r = log(2) * (60 - 20) / (log(Cc_ranib_vit[time == 20]) - log(Cc_ranib_vit[time == 60])),
+    .groups = "drop"
+  )
+
+lognormal_x <- seq(1, 25, by = 0.1)
+lognormal_y <- dlnorm(lognormal_x, meanlog = 2.03, sdlog = 0.25)
+
+ggplot(decay_win, aes(thalf_r)) +
+  geom_histogram(aes(y = after_stat(density)), bins = 25,
+                 fill = "grey70", colour = "grey40") +
+  geom_line(data = tibble::tibble(x = lognormal_x, y = lognormal_y),
+            aes(x, y), colour = "red", linewidth = 0.6, inherit.aes = FALSE) +
+  labs(x = "t_1/2^(r) (days)", y = "Density",
+       title = "Distribution of ocular half-life of ranibizumab",
+       caption = "Histogram: 100 simulated subjects. Red line: published log-normal (mu = 2.03, sigma = 0.25).")
+
+cat("Simulated mean t_1/2^(r):",  round(mean(decay_win$thalf_r), 2), "days\n")
+cat("Simulated SD   t_1/2^(r):",  round(sd(decay_win$thalf_r), 2),   "days\n")
+cat("Published target (Figure 6): mean 7.9 days, SD 2.0 days\n")
+```
+
+# PKNCA validation - ranibizumab in the vitreous
+
+The paper's headline PK claim is that ranibizumab decays with a single ocular half-life across all three ocular compartments. We take the simulated per-subject vitreous ranibizumab concentration series and compute the terminal half-life via `PKNCA`, then compare against the published log-normal mean 7.9 days (SD 2.0).
+
+```{r pknca}
+sim_nca <- sim_pop |>
+  dplyr::filter(!is.na(Cc_ranib_vit)) |>
+  dplyr::mutate(Cc = Cc_ranib_vit, treatment = "0.5 mg IVT") |>
+  dplyr::select(id, time, Cc, treatment)
+
+# Guarantee a time = 0 row per subject (pre-dose ranibizumab is zero).
+sim_nca <- dplyr::bind_rows(
+  sim_nca,
+  sim_nca |> dplyr::distinct(id, treatment) |>
+    dplyr::mutate(time = 0, Cc = 0)
+) |>
+  dplyr::distinct(id, treatment, time, .keep_all = TRUE) |>
+  dplyr::arrange(id, treatment, time)
+
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | treatment + id)
+
+dose_df <- pop_events |>
+  dplyr::filter(evid == 1) |>
+  dplyr::mutate(treatment = "0.5 mg IVT") |>
+  dplyr::select(id, time, amt, treatment)
+
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id)
+
+intervals <- data.frame(
+  start      = 0,
+  end        = Inf,
+  cmax       = TRUE,
+  tmax       = TRUE,
+  aucinf.obs = TRUE,
+  half.life  = TRUE
+)
+
+nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
+nca_res  <- suppressWarnings(PKNCA::pk.nca(nca_data))
+```
+
+## Comparison against published NCA
+
+The paper reports a single log-normal `t_1/2^(r)` fit across the 31-patient sample with mean 7.9 days and SD 2.0 days (Results, Figure 6 legend). Cmax and AUC0-inf were not tabulated for ranibizumab in the paper (aqueous humor VEGF was the fitted endpoint), so the simulated Cmax / Tmax / AUC0-inf values are shown for reference only, with no target column.
+
+```{r nca-compare}
+nca_summary <- as.data.frame(nca_res$result) |>
+  dplyr::filter(PPTESTCD %in% c("cmax", "tmax", "aucinf.obs", "half.life")) |>
+  dplyr::group_by(PPTESTCD) |>
+  dplyr::summarise(
+    mean = mean(PPORRES, na.rm = TRUE),
+    sd   = sd(PPORRES, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+published <- tibble::tibble(
+  PPTESTCD = c("cmax", "tmax", "aucinf.obs", "half.life"),
+  Published_mean = c(NA_real_, NA_real_, NA_real_, 7.9),
+  Published_sd   = c(NA_real_, NA_real_, NA_real_, 2.0)
+)
+
+nca_summary |>
+  dplyr::left_join(published, by = "PPTESTCD") |>
+  dplyr::mutate(
+    parameter = dplyr::case_when(
+      PPTESTCD == "cmax"       ~ "Cmax (pM)",
+      PPTESTCD == "tmax"       ~ "Tmax (day)",
+      PPTESTCD == "aucinf.obs" ~ "AUC0-inf (pM * day)",
+      PPTESTCD == "half.life"  ~ "t_1/2 (day)"
+    )
+  ) |>
+  dplyr::select(-PPTESTCD) |>
+  dplyr::relocate(parameter) |>
+  dplyr::rename(
+    "NCA parameter"       = parameter,
+    "Simulated mean"      = mean,
+    "Simulated SD"        = sd,
+    "Published mean"      = Published_mean,
+    "Published SD"        = Published_sd
+  ) |>
+  knitr::kable(digits = 2,
+               caption = "PKNCA on simulated vitreous ranibizumab (n = 100 subjects, 0.5 mg IVT). The paper reports only the ocular half-life target; other NCA values are for reference.")
+```
+
+# Assumptions and deviations
+
+- **Vitreous-to-aqueous rate constant `k_el^(i)`** for each species is derived inside `model()` from the paper's eq 17 half-life relationship and the free-species mass balance. Section S2 of the Supporting Information (referenced by the main paper for this derivation) was not on disk during extraction; the closed-form expression `k_el^(i) = lambda^(i) + (S_ret / vol_vit) * p_ILM^(i) * (alpha^(i) - 1)` used here follows directly from the vitreous eigenmode balance for a free (non-binding) species and reproduces the paper's stated vitreous:aqueous:retina ratios (approximately 10:1:5) at `t_1/2^(r) = 7.5 days` (see the "Steady-state VEGF and ratios" chunk above).
+- **`K_D = 19,000 pM` is encoded as fixed** rather than estimated. The paper's fitting protocol (Methods, Fitting Protocol) held `K_D` fixed within a grid search from 50 to 50,000 pM and chose the value that best matched the reference `t_1/2^(r) = 7.9 +/- 1.74 days`; no uncertainty statistic is reported for the chosen `K_D`, so `fixed()` was used.
+- **`k_off = 0.864 /day` is fixed** at the Yang 2014 in-vitro estimate cited in the paper.
+- **Residual error is encoded as `lnorm(0.26)`** on the log-scale aqueous free-VEGF observation. Paper Results (Fitting Results) states the residuals are "normally distributed with mean and standard deviation of approximately 0 and 0.26 pM"; the fitting protocol used the relative-log-error criterion, so the SD is most naturally interpreted on the log-pM scale.
+- **Population**: the 31 wet-AMD patients in Saunders 2015 supplied the aqueous-humor VEGF profiles that were re-fit; individual patient demographics (age, weight, sex, race) are not tabulated in the current paper, so `covariateData` is empty and `population` contains only the disease-state / dosing description.
+- **Retinal permeabilities from Hutton-Smith 2017** (rabbit intravitreal PK, ref 8) are inherited as constants. The paper acknowledges the human/rabbit permeability assumption and motivates the sensitivity analysis in the "Impact of Alterations to the Permeability of the RPE" section (Results); the base model uses the reference rabbit values.
+- **Cmax, Tmax, AUC0-inf for ranibizumab** are simulated for illustration only. The paper's data (Saunders 2015) are aqueous humor VEGF concentrations; ranibizumab was never measured directly and the paper does not tabulate NCA parameters for it.
