@@ -931,6 +931,18 @@ All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODA
 - **Notes:** Distinct from `ECMO_PUMP_SPEED` (the centrifugal-pump rotational speed setting cardiac-output augmentation) and from `BFR` / `DFR` (blood-flow / dialysate-flow rates characterising standalone hemodialysis circuits): Q_CVVH is the slow-clearance flow through a CVVH filter integrated INTO an ECMO circuit. Distinct from `RRT_CRRT_STATUS` (binary on / off indicator for continuous RRT) which captures presence-of-therapy rather than its rate. Future ECMO + CVVH popPK extractions that quantify CVVH flow should reuse this canonical and extend the example list. Ratified canonically alongside the Ahsman 2010 cefotaxime extraction.
 
 
+### T_ECMO (**canonical for time since ECMO cannulation start (beginning of extracorporeal circulation)**)
+- **Description:** Wall-clock time elapsed since the patient was cannulated onto ECMO (the beginning of extracorporeal circulation). Zero before cannulation; positive and monotonically increasing throughout the ECMO support period. Time-varying. Whether the value continues to increase after decannulation, resets at decannulation, or is censored at decannulation is paper-specific and must be documented in `covariateData[[T_ECMO]]$notes`; when the source model uses a saturating Hill / Emax form (Kleiber 2017) it does not matter whether T_ECMO continues past decannulation because the effect is already saturated.
+- **Units:** hour
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- enters as a sigmoidal Emax multiplier `1 + Emax * T_ECMO^gamma / (T50_EC^gamma + T_ECMO^gamma)` (Kleiber 2017 Eq 9) or a saturating half-life form (Ahsman 2010 Eq 10-style). At `T_ECMO = 0` (pre-ECMO baseline) the Hill ratio evaluates to 0 and the multiplier collapses to 1.
+- **Source aliases:**
+  - `tec` / `t_EC` -- used in `Kleiber_2017_clonidine.R` (paper notation, Eq 9 and Table 3).
+- **Example models:** `Kleiber_2017_clonidine.R` (sigmoidal Emax effect on V: `V x (1 + 0.55 * T_ECMO^18.5 / (51.7^18.5 + T_ECMO^18.5))`; V approaches 1.55 * V_pop * (WT/70) on full ECMO and recovers to V_pop * (WT/70) before ECMO).
+- **Notes:** Conceptually the on-ECMO mirror of `T_POST_ECMO` -- `T_ECMO` measures time since cannulation, `T_POST_ECMO` measures time since decannulation. A model that uses BOTH typically gates each by an additional ECMO-on indicator or by the natural floor (`T_ECMO = 0` before cannulation, `T_POST_ECMO = 0` before-and-during ECMO). Kleiber 2017 uses only `T_ECMO`; Ahsman 2010 uses only `T_POST_ECMO`. Distinct from on-ECMO duration covariates (per-run summary of total ECMO hours) and from `ECMO_PUMP_SPEED` (instantaneous centrifugal-pump rotational speed). Anticipated by the existing `T_POST_ECMO` entry's Notes (which referenced `t_EC` as "tested but not retained" in Ahsman 2010); ratified canonically alongside the Kleiber 2017 clonidine extraction where the covariate is retained.
+
+
 ### T_POST_ECMO (**canonical for time after ECMO decannulation (end of extracorporeal circulation)**)
 - **Description:** Wall-clock time elapsed since the patient was decannulated from ECMO (the end of extracorporeal circulation). Zero before and during ECMO support; becomes positive after decannulation and increases linearly with time. Naturally time-varying. Used as a power-centred recovery-time covariate on PK parameters whose values change as the patient transitions off ECMO back to native circulation.
 - **Units:** hour
@@ -4557,6 +4569,17 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
   - Derived from the protocol-defined treatment arm in `Lin_2020_glasdegib_decitabine.R` (BRIGHT AML 1003 Phase 1b Arm B: glasdegib + decitabine, n = 7).
 - **Example models:** `Lin_2020_glasdegib_decitabine.R` (paired with `CONMED_GLASDEGIB` to identify the three trial arms; multiplicative hazard reduction `1 - 0.618 * (CONMED_GLASDEGIB * CONMED_DECITABINE)` on the exponential overall-survival hazard).
 - **Notes:** Specific scope because the only on-disk source is Lin 2020 BRIGHT AML 1003 Phase 1b Arm B (5 AML + 2 MDS, n = 7). The reported CI of the glasdegib + decitabine hazard reduction is wide (-95.0% to -28.6%) due to the small sample. Ratified canonically on 2026-06-24 alongside the Lin 2020 BRIGHT AML 1003 overall-survival extraction. Auto-approved member of the `CONMED_<INN>` family.
+
+### CONMED_DIURETIC (**canonical for any-diuretic coadministration indicator**)
+- **Description:** 1 = subject is currently exposed to any diuretic (loop diuretic, thiazide, potassium-sparing, osmotic, or carbonic-anhydrase inhibitor), 0 = no diuretic exposure. Per-time-point indicator; time-varying within subject. The exact class composition and per-class dosing in any given cohort is paper-specific and must be documented in `covariateData[[CONMED_DIURETIC]]$notes`. Composite class indicator following the `CONMED_STEROID` / `CONMED_AED` / `CONMED_AZOLE` pattern (pooled class indicator) rather than the `CONMED_<INN>` per-drug pattern (`CONMED_SPIRON`, `CONMED_FUROSEMIDE`, ...).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no diuretic exposure). Effect on CL / other PK parameters is typically encoded multiplicatively as `Theta^CONMED_DIURETIC` (paper Kleiber 2017 Eq 6 style) or `1 + e_diur_<param> * CONMED_DIURETIC` (linear-deviation form).
+- **Source aliases:**
+  - `DIURETIC` -- used in `Kleiber_2017_clonidine.R` (paper's pooled indicator combining furosemide intermittent + furosemide infusion + spironolactone + bumetanide; source column DIURETIC in the NONMEM dataset).
+- **Example models:** `Kleiber_2017_clonidine.R` (multiplicative effect on CL: `diur_cl = 0.659^CONMED_DIURETIC`; per Table 3 / Table 4 CL is reduced by 34.1% when any diuretic is active).
+- **Notes:** Distinct from `CONMED_SPIRON` (spironolactone-only per-drug indicator, used in `Yukawa_1996_digoxin.R`), which is a member of the `CONMED_<INN>` family. Use `CONMED_DIURETIC` when the source paper pools multiple diuretic classes into one indicator (as Kleiber 2017 does); use `CONMED_SPIRON` (or a future `CONMED_FUROSEMIDE`) when the source paper tracks a single specific diuretic. The exact classes pooled and their per-class prevalence must be documented in per-model notes. Ratified canonically alongside the Kleiber 2017 clonidine extraction.
 
 ### CONMED_DOXORUBICIN (**canonical for concomitant doxorubicin (anthracycline) chemotherapy backbone indicator**)
 - **Description:** 1 = subject is receiving (or has received during the relevant observation window) doxorubicin as the anthracycline component of an adjuvant or neoadjuvant chemotherapy regimen; 0 = subject is receiving a different anthracycline (or no anthracycline at all). Used in cardiac-biomarker PD models to differentiate doxorubicin-driven myocardial damage from epirubicin-driven damage (doxorubicin has approximately twice the per-mg cardiotoxic effect of epirubicin at clinically equivalent oncologic exposures).
