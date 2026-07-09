@@ -5029,6 +5029,17 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Example models:** `Schoemaker_2017_brivaracetam.R` (multiplicative effect on apparent oral clearance: `cl *= (1 - 0.101 * CONMED_VPA)`; -10.1% relative to no-VPA reference, corresponding to ~11% higher brivaracetam exposure, Schoemaker 2017 Table 1).
 - **Notes:** Drug-specific CONMED_* indicator anticipated in the [[CONMED_AED]] notes. Schoemaker 2017 retained the VPA effect in the final model even though it did not formally meet the SCM inclusion criteria (forward p < 0.01) because quantifying its contribution was considered informative; the authors note the apparent VPA-induced exposure rise may be confounded with VPA-driven weight / fat gain in chronic users. Distinct from the broader [[CONMED_AED]] (any concomitant AED). When a paper distinguishes individual AEDs separately, use the drug-specific canonicals [[CONMED_CBZ]], [[CONMED_PB]], `CONMED_VPA` rather than collapsing into the class-level indicator. Ratified canonically on 2026-05-20 alongside the Schoemaker 2017 brivaracetam paediatric extraction.
 
+### CONMED_VERTEPORFIN (**canonical for concomitant verteporfin photodynamic therapy (PDT) coadministration indicator**)
+- **Description:** 1 = subject received one or more concomitant verteporfin photodynamic-therapy (PDT) procedures during the ranibizumab treatment period; 0 = no concomitant PDT. Time-fixed per subject in Xu 2013 (`All covariates adopted their values measured at baseline`). Verteporfin (Visudyne) is a benzoporphyrin-derivative photosensitizer activated by non-thermal 689 nm laser to induce localized choroidal vessel occlusion in neovascular age-related macular degeneration; the PDT procedure is administered 7 days before ranibizumab in the FOCUS combination protocol.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no concomitant verteporfin PDT).
+- **Source aliases:**
+  - `PDT` -- used in `Xu_2013_ranibizumab.R` (Xu 2013 Fig 1 lists "concomitant PDT therapy" as a screened covariate; "Specifically in this case, PDT is verteporfin for injection.").
+- **Example models:** `Xu_2013_ranibizumab.R` (multiplicative reduction of vitreous elimination rate Ka: `ka *= (1 - e_conmed_verteporfin_ka * CONMED_VERTEPORFIN)` with `e_conmed_verteporfin_ka = 0.353`, i.e. 35.3% lower Ka on subjects with concomitant PDT; Xu 2013 Table 3, theta6 = 0.353 stored as a positive fractional-reduction magnitude under the header 'Covariate multiplier for Ka').
+- **Notes:** Member of the `CONMED_<INN>` binary concomitant-medication family. Verteporfin PDT is the specific PDT modality in the Xu 2013 AMD analysis, so the INN-specific canonical name is used rather than a generic `CONMED_PDT`. Xu 2013 attributes the slower vitreous elimination in PDT-treated subjects to `vessel occlusion and soft tissue scarring` reducing choroidal drainage of ranibizumab from the vitreous humor. Ratified canonically alongside the Xu 2013 ranibizumab extraction (2026-07-09).
+
 ### CONMED_SILDENAFIL (**canonical for concomitant sildenafil coadministration indicator**)
 - **Description:** Binary indicator for concomitant sildenafil coadministration. 1 = sildenafil was administered during this experimental occasion (in the Bender 2009 rat study, a 2 mg/kg bolus followed by a 6 h steady-state infusion), 0 = saline (no sildenafil). Per-occasion (not per-subject) in a crossover design.
 - **Units:** (binary)
