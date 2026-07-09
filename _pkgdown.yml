@@ -972,6 +972,8 @@ navbar:
         href: articles/Sakurai_2007_lansoprazole.html
       - text: "Lebrikizumab (Zhu 2017)"
         href: articles/Zhu_2017_lebrikizumab.html
+      - text: "Leflunomide (Hopkins 2015)"
+        href: articles/Hopkins_2015_leflunomide.html
       - text: "Lenvatinib (Gupta 2016)"
         href: articles/Gupta_2016_lenvatinib.html
       - text: "Levalbuterol (Jaworowicz 2006)"
@@ -2579,6 +2581,7 @@ articles:
   - articles/Hong_2015_moxifloxacin
   - articles/Hong_2025_datopotamab
   - articles/Hood_2021_medi7836
+  - articles/Hopkins_2015_leflunomide
   - articles/Hopkins_2017_doxycycline
   - articles/Horita_2018_ethambutol
   - articles/Horita_2018_isoniazid
