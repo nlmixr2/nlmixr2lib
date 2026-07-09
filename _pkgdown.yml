@@ -1204,6 +1204,8 @@ navbar:
         href: articles/Hong_2015_moxifloxacin.html
       - text: "Moxifloxacin (Landersdorfer 2009)"
         href: articles/Landersdorfer_2009_moxifloxacin.html
+      - text: "Moxifloxacin (Morganroth 2015)"
+        href: articles/Morganroth_2015_moxifloxacin.html
       - text: "Moxifloxacin (Nielsen 2011)"
         href: articles/Nielsen_2011_antibacterial_efficacy.html
       - text: "Mu receptor binding (Mann 2022)"
@@ -2799,6 +2801,7 @@ articles:
   - articles/Mondick_2006_dactinomycin
   - articles/Moore_1999_lamivudine
   - articles/Moore_2016_vancomycin
+  - articles/Morganroth_2015_moxifloxacin
   - articles/Mori_2018_zoledronicAcid
   - articles/Morris_2011_artesunate
   - articles/Morris_2011_telapristone
