@@ -7246,6 +7246,16 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Example models:** `Jansson_2008_eflornithine_rat.R`.
 - **Notes:** Specific scope because the threshold (3000 mg/kg of body weight) and the bioavailability shifts (+14.6% for L-eflornithine, +32.8% for D-eflornithine relative to the 750-2000 mg/kg reference) are intrinsically tied to the Jansson 2008 dose-design and are not transferable to other drugs. Encoded as a binary because the paper's prose explicitly states linear and power dose-F relationships did not improve the fit. Per-subject indicator in the source data (each rat received exactly one oral dose); for multi-dose simulation, set the indicator per dose record.
 
+### DOSE_LOW_AMG221 (**canonical for low-dose AMG 221 indicator**)
+- **Description:** 1 = dose record is the 3 mg oral AMG 221 dose in the Gibbs 2011 phase 1 study; 0 = the 30 or 100 mg oral AMG 221 dose. Sibling of `DOSE_HIGH_EFL`: same drug-suffixed dose-level indicator family, opposite direction of effect (the reduced-bioavailability tier is the flagged tier).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (30 or 100 mg oral AMG 221, where F1 = 1).
+- **Source aliases:** derived per dose record from the administered amount. Gibbs 2011 Table III + footnote a: F1 = 0.546 at 3 mg vs F1 = 1 fixed at 30 or 100 mg.
+- **Example models:** `Gibbs_2011_amg221.R`.
+- **Notes:** Specific scope because the threshold (3 mg vs 30/100 mg oral AMG 221 as a suspension in healthy obese adults) and the -45.4% bioavailability shift are intrinsically tied to the Gibbs 2011 dose-design and are not transferable to other drugs. Gibbs 2011 Discussion attributes the reduced 3 mg bioavailability to a possible high-affinity intestinal-metabolism / transport process saturating at higher doses (Caco-2 permeability plus in vitro CYP3A metabolism with Km > 100 uM, so a 30 mg dose is expected to produce intestinal concentrations high enough to saturate intestinal metabolism); the paper flags an alternative Michaelis-Menten dose-F structure that was not fit because only three discrete dose levels were tested. Per-dose-record indicator; observation rows inherit the indicator from the preceding dose.
+
 
 ### MEAL_A (**canonical for Zvada 2010 meal-A high-fat English breakfast indicator**)
 - **Description:** 1 = oral dose administered 30 min after Zvada 2010 meal A (a high-fat English breakfast); 0 = otherwise. Per Zvada 2010 Table 1 meal A consists of 2 rashers of bacon (20 g), 1 fried egg (50 g), 1 slice white toast (30 g) with butter (7 g) and marmalade (10 g), 2 cups decaffeinated coffee (400 ml) with full-cream milk (100 ml) and 2 teaspoons sugar (10 g); 18.9 g protein, 27 g fat, 38 g carbohydrate, 1,966 kJ, 627 g total weight. Distinct from the general `FED_HIGHFAT` because Zvada 2010 isolates four operationally-distinct meal compositions (A/B/C/D) each with its own bioavailability effect estimate and because the paper's Discussion explicitly attributes part of meal A's effect to eggs rather than total fat.
