@@ -60,6 +60,8 @@ navbar:
         href: articles/Drweesh_2026_adalimumab.html
       - text: "Adalimumab (Marquez-Megias 2023)"
         href: articles/Marquez-Megias_2023_adalimumab.html
+      - text: "Adalimumab (Zheng 2012)"
+        href: articles/Zheng_2012_minipig_mab.html
       - text: "Adecatumumab (Cao 2013)"
         href: articles/Cao_2013_adecatumumab.html
       - text: "Aflibercept (Thai 2011)"
@@ -1048,6 +1050,22 @@ navbar:
         href: articles/Chen_2020_luspatercept.html
       - text: "M3g rat (Xie 2000)"
         href: articles/Xie_2000_m3g_rat.html
+      - text: "MAb1 (Zheng 2012)"
+        href: articles/Zheng_2012_minipig_mab.html
+      - text: "MAb2 (Zheng 2012)"
+        href: articles/Zheng_2012_minipig_mab.html
+      - text: "MAb3 (Zheng 2012)"
+        href: articles/Zheng_2012_minipig_mab.html
+      - text: "MAb4 (Zheng 2012)"
+        href: articles/Zheng_2012_minipig_mab.html
+      - text: "MAb5 (Zheng 2012)"
+        href: articles/Zheng_2012_minipig_mab.html
+      - text: "MAb6 (Zheng 2012)"
+        href: articles/Zheng_2012_minipig_mab.html
+      - text: "MAb7 (Zheng 2012)"
+        href: articles/Zheng_2012_minipig_mab.html
+      - text: "MAb8 (Zheng 2012)"
+        href: articles/Zheng_2012_minipig_mab.html
       - text: "MBG453 (Xu 2023)"
         href: articles/Xu_2023_MBG453.html
       - text: "MEDI528 (Cao 2013)"
@@ -3205,6 +3223,7 @@ articles:
   - articles/Zhao_2014_vancomycin
   - articles/Zhao_2015_teicoplanin
   - articles/Zhao_2018_omeprazole
+  - articles/Zheng_2012_minipig_mab
   - articles/Zheng_2014_azithromycin
   - articles/Zheng_2016_sifalimumab
   - articles/Zheng_2018_azithromycin
