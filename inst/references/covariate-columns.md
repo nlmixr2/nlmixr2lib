@@ -5018,6 +5018,17 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Example models:** `Passey_2011_tacrolimus.R` (power-of-binary-indicator multiplicative factor on apparent oral clearance: `e_steroid_spare_cl ^ CONMED_STEROID_SPARING` with `e_steroid_spare_cl = 0.70`; steroid-sparing patients have 30% lower apparent oral tacrolimus CL/F than continuous-steroid patients; Passey 2011 Discussion attributes the effect to reduced CYP3A induction in the absence of ongoing corticosteroid therapy).
 - **Notes:** Companion to `CONMED_STEROID` (which captures concurrent / baseline corticosteroid USE; `CONMED_STEROID_SPARING` captures the protocol-level decision to MINIMIZE corticosteroid use). The two coexist in the same dataset when needed: a steroid-sparing patient still has `CONMED_STEROID = 1` during days 1-7 post-transplant (the short-duration administration window) and `CONMED_STEROID = 0` thereafter. The Passey 2011 binary indicator collapses both phases into a single time-invariant per-subject attribute via the centre-level assignment; document the per-model temporal interpretation in `covariateData[[CONMED_STEROID_SPARING]]$notes`. Distinct from `PRICORT` (pre-study corticosteroid history) and from `HCT_COND_RIC` (reduced-intensity conditioning regimen for HSC transplantation, which is a different protocol axis). Future models that distinguish the specific duration of steroid administration (e.g. 7 days vs 14 days vs 30 days) should register companion canonicals rather than overloading `CONMED_STEROID_SPARING`. Ratified canonically on 2026-05-20 alongside the Passey 2011 tacrolimus extraction.
 
+### CONMED_UGT_INH (**canonical for concomitant UGT-inhibitor coadministration indicator (pooled)**)
+- **Description:** 1 = subject is receiving at least one drug the source paper classifies as a UGT (uridine 5'-diphospho-glucuronosyltransferase) inhibitor at the PK observation, 0 = not on any such drug. Class-level pool paralleling `CONMED_EIAED` (pooled enzyme-inducing antiepileptic drugs); used when a paper aggregates multiple mechanism-related UGT-inhibiting comedications into a single indicator because per-drug sample sizes are too small to identify separate effects. Time-varying in principle; time-fixed for chronic-maintenance cohorts.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no concomitant UGT inhibitor).
+- **Source aliases:**
+  - `Inh` / `Inhibitors` -- used in `Milosheska_2016_lamotrigine.R` (paper Table 4 footnote `*Valproic acid or sertraline (Inh)`; the paper pools valproic acid (n = 13) and sertraline (n = 2) because both were hypothesised to act via UGT2B7 competitive inhibition and the per-drug sample sizes were too small to estimate distinct effects).
+- **Example models:** `Milosheska_2016_lamotrigine.R` (multiplicative effect on parent lamotrigine apparent clearance: `cl *= (1 - 0.579 * CONMED_UGT_INH)`; carriers have -57.9% lower CL relative to the no-inhibitor reference, Milosheska 2016 Table 4 row `Co-treatment with inhibitors`).
+- **Notes:** The per-paper list of drugs counted as UGT inhibitors MUST be documented in `covariateData[[CONMED_UGT_INH]]$notes` because the pooling criterion varies across studies (Milosheska 2016 pools valproic acid + sertraline; a future paper might pool valproic acid + probenecid + sertraline + fluvoxamine). Distinct from the drug-specific canonical `CONMED_VPA` (concomitant valproate alone). When a paper reports enough per-drug data to identify separate effects, use the drug-specific canonicals (`CONMED_VPA`, `CONMED_SERTRALINE`, ...) rather than collapsing into `CONMED_UGT_INH`. Analogous to `CONMED_EIAED` (pooled enzyme-inducing AEDs) which serves the same role for the inducer side. Ratified canonically on 2026-06-20 alongside the Milosheska 2016 lamotrigine extraction.
+
 ### CONMED_VPA (**canonical for concomitant valproate (valproic acid) coadministration indicator**)
 - **Description:** 1 = subject is taking valproate (valproic acid, sodium valproate, divalproex) as a concomitant antiepileptic drug at the PK observation, 0 = no concomitant valproate. Valproate is a broad-spectrum AED that inhibits UGT and CYP2C9, and chronic use is associated with weight gain. Time-varying when valproate starts / stops within the observation window; time-fixed when the source paper analyses chronic-maintenance cohorts whose AED therapy is stable.
 - **Units:** (binary)
@@ -5657,6 +5668,78 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
   - `UGT2B7 211TT` / `UGT2B7-211TT` / `211TT` -- used in `Yu_2017_mycophenolic_acid.R` (paper Table 5).
 - **Example models:** `Yu_2017_mycophenolic_acid.R` (one of three UGT2B7-211 binary indicators; see `UGT2B7_211GG` notes for the paper's ordinal-code reconstruction).
 - **Notes:** Companion canonical to `UGT2B7_211GG` and `UGT2B7_211GT`; see `UGT2B7_211GG` notes for variant biology and allele-frequency context. Ratified canonically on 2026-06-03 alongside the Yu 2017 mycophenolic acid extraction.
+
+
+### UGT2B7_M161CC (**canonical for UGT2B7 -161C>T (rs7668258) homozygous C/C genotype indicator**)
+- **Description:** 1 = subject is homozygous for the ancestral cytosine at nucleotide -161 of the UGT2B7 gene promoter (position numbered relative to the transcription start site; the leading `M` in the canonical name stands for `minus`); 0 = otherwise (M161CT heterozygote or M161TT homozygote). Encoded by the UGT2B7 -161C>T single-nucleotide polymorphism (rs7668258), a promoter-region variant in strong linkage disequilibrium with UGT2B7*2 (211G>T) in most populations. Time-fixed per subject (germline genotype).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (any non-C/C genotype: M161CT or M161TT).
+- **Source aliases:**
+  - `UGT2B7 -161CC` / `UGT2B7 -161 C/C` / `-161CC` -- used in `Milosheska_2016_lamotrigine.R` (paper Table 4 covariate equation reference stratum, listed as `CC` in the paper's Table 2 genotype-frequency column; the canonical prefixes `M` for `minus` because R identifiers cannot carry a leading hyphen).
+- **Example models:** `Milosheska_2016_lamotrigine.R` (reference stratum for the three-indicator UGT2B7 -161C>T genotype categorical on parent lamotrigine apparent clearance; the two paired non-reference indicators are `UGT2B7_M161CT` and `UGT2B7_M161TT`).
+- **Notes:** Distinct from the coding-region UGT2B7*2 variant registered as `UGT2B7_211GG / GT / TT` (rs7438135, Ala71Ser). The -161C>T promoter SNP is in strong linkage disequilibrium with 211G>T in European populations; carrying both position-level canonicals lets downstream models distinguish papers that genotype only one position from those that genotype both. Position notation follows the paper's convention (`c.-161C>T`) with the leading minus rewritten as the letter `M` for R-identifier compatibility, paralleling the ATC-style naming of promoter SNPs already registered under `SNP_VEGFA_RS1570360` (VEGFA -1154G>A) and `SNP_VEGFA_RS699947` (VEGFA -2578C>A). Ratified canonically on 2026-06-20 alongside the Milosheska 2016 lamotrigine extraction.
+
+
+### UGT2B7_M161CT (**canonical for UGT2B7 -161C>T (rs7668258) heterozygous C/T genotype indicator**)
+- **Description:** 1 = subject is heterozygous at nucleotide -161 of the UGT2B7 gene promoter, carrying one wild-type C allele and one variant T allele; 0 = otherwise (M161CC homozygote or M161TT homozygote). Encoded by the UGT2B7 -161C>T single-nucleotide polymorphism (rs7668258). Time-fixed per subject (germline genotype).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (any non-C/T genotype: M161CC or M161TT). The reference used in effect estimation is the M161CC homozygous wild-type stratum, encoded when all three UGT2B7_M161* indicators equal 0.
+- **Source aliases:**
+  - `UGT2B7 -161CT` / `UGT2B7 -161 C/T` / `-161CT` -- used in `Milosheska_2016_lamotrigine.R` (paper Table 4 covariate equation `UGT2B7 -161CT vs CC` row).
+- **Example models:** `Milosheska_2016_lamotrigine.R` (multiplicative effect on parent apparent clearance: `cl *= (1 - 0.0358 * UGT2B7_M161CT)`; heterozygotes have -3.6% lower CL relative to the CC homozygous wild-type reference, Milosheska 2016 Table 4 row `UGT2B7 -161C>T genotype CT vs CC`).
+- **Notes:** Companion canonical to `UGT2B7_M161CC` and `UGT2B7_M161TT`. See `UGT2B7_M161CC` for variant biology and the M-for-minus naming rationale. Ratified canonically on 2026-06-20 alongside the Milosheska 2016 lamotrigine extraction.
+
+
+### UGT2B7_M161TT (**canonical for UGT2B7 -161C>T (rs7668258) homozygous T/T genotype indicator**)
+- **Description:** 1 = subject is homozygous for the variant thymine at nucleotide -161 of the UGT2B7 gene promoter; 0 = otherwise (M161CC homozygote or M161CT heterozygote). Encoded by the UGT2B7 -161C>T single-nucleotide polymorphism (rs7668258). Time-fixed per subject (germline genotype).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (any non-T/T genotype: M161CC or M161CT). The reference used in effect estimation is the M161CC homozygous wild-type stratum, encoded when all three UGT2B7_M161* indicators equal 0.
+- **Source aliases:**
+  - `UGT2B7 -161TT` / `UGT2B7 -161 T/T` / `-161TT` -- used in `Milosheska_2016_lamotrigine.R` (paper Table 4 covariate equation `UGT2B7 -161TT vs CC` row).
+- **Example models:** `Milosheska_2016_lamotrigine.R` (multiplicative effect on parent apparent clearance: `cl *= (1 - 0.204 * UGT2B7_M161TT)`; homozygous variant carriers have -20.4% lower CL relative to the CC homozygous wild-type reference, Milosheska 2016 Table 4 row `UGT2B7 -161C>T genotype TT vs CC`).
+- **Notes:** Companion canonical to `UGT2B7_M161CC` and `UGT2B7_M161CT`. Reduced UGT2B7 transcriptional activity attributable to the -161 T allele is one of the biological interpretations offered by Milosheska 2016 Discussion paragraph 5 for the lower lamotrigine glucuronidation observed in TT carriers. Ratified canonically on 2026-06-20 alongside the Milosheska 2016 lamotrigine extraction.
+
+
+### UGT2B7_372AA (**canonical for UGT2B7 372A>G (rs28365063) homozygous A/A genotype indicator**)
+- **Description:** 1 = subject is homozygous for the ancestral adenine at nucleotide 372 of the UGT2B7 coding sequence (synonymous variant, His124His); 0 = otherwise (372AG heterozygote or 372GG homozygote). Encoded by the UGT2B7 372A>G single-nucleotide polymorphism (rs28365063). Time-fixed per subject (germline genotype).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (any non-A/A genotype: 372AG or 372GG).
+- **Source aliases:**
+  - `UGT2B7 372AA` / `UGT2B7 372 A/A` / `372AA` -- used in `Milosheska_2016_lamotrigine.R` (paper Table 4 covariate equation reference stratum, listed as `AA` in the paper's Table 2 genotype-frequency column).
+- **Example models:** `Milosheska_2016_lamotrigine.R` (reference stratum for the three-indicator UGT2B7 372A>G genotype categorical on parent lamotrigine apparent clearance; the two paired non-reference indicators are `UGT2B7_372AG` and `UGT2B7_372GG`).
+- **Notes:** Distinct from the -161C>T promoter variant (`UGT2B7_M161*`) and the 211G>T coding variant (`UGT2B7_211*`). The 372A>G variant is a synonymous coding change but Milosheska 2016 identify a strong effect on parent lamotrigine apparent clearance (GG homozygotes have +117% higher CL vs AA reference), attributed in the Discussion to linkage with a functionally consequential 3' UTR variant. Following the position-based `UGT2B7_<position><genotype>` register precedent from `UGT2B7_211GG / GT / TT`. Ratified canonically on 2026-06-20 alongside the Milosheska 2016 lamotrigine extraction.
+
+
+### UGT2B7_372AG (**canonical for UGT2B7 372A>G (rs28365063) heterozygous A/G genotype indicator**)
+- **Description:** 1 = subject is heterozygous at nucleotide 372 of the UGT2B7 coding sequence, carrying one wild-type A allele and one variant G allele; 0 = otherwise (372AA homozygote or 372GG homozygote). Encoded by the UGT2B7 372A>G single-nucleotide polymorphism (rs28365063). Time-fixed per subject (germline genotype).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (any non-A/G genotype: 372AA or 372GG). The reference used in effect estimation is the 372AA homozygous wild-type stratum, encoded when all three UGT2B7_372* indicators equal 0.
+- **Source aliases:**
+  - `UGT2B7 372AG` / `UGT2B7 372 A/G` / `372AG` -- used in `Milosheska_2016_lamotrigine.R` (paper Table 4 covariate equation `UGT2B7 372AG vs AA` row).
+- **Example models:** `Milosheska_2016_lamotrigine.R` (multiplicative effect on parent apparent clearance: `cl *= (1 + 0.194 * UGT2B7_372AG)`; heterozygotes have +19.4% higher CL relative to the AA homozygous wild-type reference, Milosheska 2016 Table 4 row `UGT2B7 372 A > G genotype AG vs AA`).
+- **Notes:** Companion canonical to `UGT2B7_372AA` and `UGT2B7_372GG`. See `UGT2B7_372AA` for variant biology. Ratified canonically on 2026-06-20 alongside the Milosheska 2016 lamotrigine extraction.
+
+
+### UGT2B7_372GG (**canonical for UGT2B7 372A>G (rs28365063) homozygous G/G genotype indicator**)
+- **Description:** 1 = subject is homozygous for the variant guanine at nucleotide 372 of the UGT2B7 coding sequence; 0 = otherwise (372AA homozygote or 372AG heterozygote). Encoded by the UGT2B7 372A>G single-nucleotide polymorphism (rs28365063). Time-fixed per subject (germline genotype).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (any non-G/G genotype: 372AA or 372AG). The reference used in effect estimation is the 372AA homozygous wild-type stratum, encoded when all three UGT2B7_372* indicators equal 0.
+- **Source aliases:**
+  - `UGT2B7 372GG` / `UGT2B7 372 G/G` / `372GG` -- used in `Milosheska_2016_lamotrigine.R` (paper Table 4 covariate equation `UGT2B7 372GG vs AA` row).
+- **Example models:** `Milosheska_2016_lamotrigine.R` (multiplicative effect on parent apparent clearance: `cl *= (1 + 1.17 * UGT2B7_372GG)`; homozygous variant carriers have +117% higher CL relative to the AA homozygous wild-type reference, Milosheska 2016 Table 4 row `UGT2B7 372 A > G genotype GG vs AA`).
+- **Notes:** Companion canonical to `UGT2B7_372AA` and `UGT2B7_372AG`. The magnitude of the GG effect is by far the largest single-variant effect on lamotrigine apparent clearance identified in Milosheska 2016; the GG homozygote frequency in the paper's Slovenian cohort was 2.0% (2 of 99 subjects), so per-model `covariateData[[UGT2B7_372GG]]$notes` should record the small-N caveat. Ratified canonically on 2026-06-20 alongside the Milosheska 2016 lamotrigine extraction.
 
 
 ## Immunogenicity
