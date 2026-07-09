@@ -682,6 +682,8 @@ navbar:
         href: articles/Ng_2018_exendin939.html
       - text: "FXa inhibitors mbma (Yoshioka 2018)"
         href: articles/Yoshioka_2018_FXa_inhibitors_mbma.html
+      - text: "Factor viii (Noe 1996)"
+        href: articles/Noe_1996_factor_viii.html
       - text: "FactorIX (Brekkan 2016)"
         href: articles/Brekkan_2016_factorIX.html
       - text: "Factorix (Koopman 2023)"
@@ -2842,6 +2844,7 @@ articles:
   - articles/Nielsen_2011_antibacterial_efficacy
   - articles/Nikanjam_2019_siltuximab
   - articles/Niloy_2026_MTMSATrp_mouse
+  - articles/Noe_1996_factor_viii
   - articles/Novakovic_2017_cladribine
   - articles/ObrinkHansen_2015_piperacillin
   - articles/Odongo_2015_sulfadoxinePyrimethamine
