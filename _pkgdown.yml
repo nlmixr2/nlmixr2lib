@@ -1048,6 +1048,14 @@ navbar:
         href: articles/Chen_2020_luspatercept.html
       - text: "M3g rat (Xie 2000)"
         href: articles/Xie_2000_m3g_rat.html
+      - text: "MAb combined (Betts 2018)"
+        href: articles/Betts_2018_mAb_linear_PK.html
+      - text: "MAb cyno (Betts 2018)"
+        href: articles/Betts_2018_mAb_linear_PK.html
+      - text: "MAb human (Betts 2018)"
+        href: articles/Betts_2018_mAb_linear_PK.html
+      - text: "MAb tg32mouse (Betts 2018)"
+        href: articles/Betts_2018_mAb_linear_PK.html
       - text: "MBG453 (Xu 2023)"
         href: articles/Xu_2023_MBG453.html
       - text: "MEDI528 (Cao 2013)"
@@ -2269,6 +2277,7 @@ articles:
   - articles/Berges_2015_ozanezumab
   - articles/Bergmann_2014_tacrolimus
   - articles/Bertrand_2011_S33138
+  - articles/Betts_2018_mAb_linear_PK
   - articles/Bi_2017_peginterferon_alfa_2a
   - articles/Bienczak_2016_efavirenz
   - articles/Bienczak_2016_nevirapine
