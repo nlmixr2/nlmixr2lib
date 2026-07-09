@@ -226,6 +226,8 @@ navbar:
         href: articles/Nielsen_2011_antibacterial_efficacy.html
       - text: "Betamethasone (Schoenmakers 2025)"
         href: articles/Schoenmakers_2025_betamethasone.html
+      - text: "Bevacizumab (Han 2015)"
+        href: articles/Han_2015_bevacizumab.html
       - text: "Bevacizumab (Han 2016)"
         href: articles/Han_2016_bevacizumab.html
       - text: "Bevacizumab (Panoilia 2015)"
@@ -2523,6 +2525,7 @@ articles:
   - articles/Hamuro_2017_DMD_6MWT
   - articles/Han_2010_voriconazole
   - articles/Han_2013_fluconazole
+  - articles/Han_2015_bevacizumab
   - articles/Han_2015_decitabine
   - articles/Han_2015_sibutramine
   - articles/Han_2016_bevacizumab
