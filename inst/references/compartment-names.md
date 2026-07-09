@@ -2589,6 +2589,12 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Source aliases:** none.
 - **Example models:** `Li_2012_clozapine.R` (doi:10.1038/aps.2012.71).
 
+### dnef (**canonical desmethyl-nefopam suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Desmethyl-nefopam (nor-nefopam), N-demethyl metabolite of nefopam formed by CYP3A4-mediated N-demethylation. Followed in plasma alongside the parent in joint parent + metabolite popPK models of postoperative nefopam analgesia. Used as the metabolite suffix on `central_dnef` compartments, `lcl_dnef` / `lvc_dnef` / `lcl_form_dnef` parameters, and `addSd_dnef` / `propSd_dnef` residual SDs.
+- **Source aliases:** none.
+- **Example models:** `Djerada_2014_nefopam.R` (doi:10.1111/bcp.12291).
+
 ### cysmer (**canonical APAP cysteine+mercapturate suffix**)
 - **Type:** metabolite-suffix
 - **Role:** Combined acetaminophen cysteine + mercapturate compartment used by CYP2E1-oxidation popPK models that lump the two oxidation metabolites (the species are in rapid equilibrium with overlapping disposition).

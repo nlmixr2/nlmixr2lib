@@ -1242,6 +1242,8 @@ navbar:
         href: articles/Boucher_2018_naproxen_mbma.html
       - text: "Necitumumab (Long 2017)"
         href: articles/Long_2017_necitumumab.html
+      - text: "Nefopam (Djerada 2014)"
+        href: articles/Djerada_2014_nefopam.html
       - text: "Nelfinavir (Hirt 2006)"
         href: articles/Hirt_2006_nelfinavir.html
       - text: "Nelfinavir (Hirt 2007)"
@@ -2415,6 +2417,7 @@ articles:
   - articles/Diep_2026_donidalorsen
   - articles/Diepstraten_2013_propofol
   - articles/Djebli_2017_alirocumab
+  - articles/Djerada_2014_nefopam
   - articles/Dodds_2005_rfxiii_cyno
   - articles/Dogterom_2018_asenapine
   - articles/DoldanMartelli_2013_EGF_IFN_chimera

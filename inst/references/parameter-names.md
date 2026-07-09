@@ -27,9 +27,9 @@ Each canonical entry is an H3 heading whose first whitespace-separated token (be
 
 The `Type:` field is the routing tag the runtime parser uses to assign the entry to the appropriate static vector:
 
-- `log-transformed-pk` → `pkParams` (used by `.isPkParam` and the `l<base>` convention check)
-- `bare-pk` → `pkBareParams` (used by `.isPkBareParam`, the bare-counterpart check, and covariate-effect shared-exponent detection)
-- `paper-named-param` → `paperNamedParams` (paper-mechanistic parameters that fall outside the standard `ka`/`cl`/`vc` shape but recur across published models)
+- `log-transformed-pk` -> `pkParams` (used by `.isPkParam` and the `l<base>` convention check)
+- `bare-pk` -> `pkBareParams` (used by `.isPkBareParam`, the bare-counterpart check, and covariate-effect shared-exponent detection)
+- `paper-named-param` -> `paperNamedParams` (paper-mechanistic parameters that fall outside the standard `ka`/`cl`/`vc` shape but recur across published models)
 
 ## Regex constants (kept in R, not migrated)
 
@@ -183,6 +183,15 @@ The `l<base>` convention denotes a population mean estimated on the log scale (`
 - **Source aliases:**
   - `CL_non-met` -- Lehr 2010 paper notation.
 - **Example models:** `Lehr_2010_tesofensine.R` (paper Table I: CL_non-met/F = 1.31 L/h, IIV 42.2% CV; carries the parent CL IIV).
+
+### lcl_form (**canonical log-transformed metabolite formation clearance**)
+- **Type:** log-transformed-pk
+- **Role:** Formation (parent-to-metabolite) clearance parameter for parent + metabolite popPK models in which each metabolite's formation flux is estimated as a distinct clearance rather than as a fraction of the parent's total CL. Applied with a metabolite suffix as `lcl_form_<metab>` (e.g., `lcl_form_m3g`, `lcl_form_m6g`, `lcl_form_dnef`). The apparent-clearance form absorbs the fraction metabolised and the metabolite bioavailability into a single positive coefficient, so the metabolite ODE is simply `d/dt(central_<metab>) <- cl_form_<metab> * central / vc - cl_<metab> * central_<metab> / vc_<metab>`. Distinct from `lcl_met`: `lcl_met` presupposes a `CL_parent_total = CL_met + CL_nonmet` decomposition of the parent's total elimination (single-metabolite systems), whereas `lcl_form_<metab>` is used when the parent's total CL (`lcl`) is estimated as a separate parameter or when multiple parallel formation clearances co-exist (multi-metabolite systems).
+- **Source aliases:**
+  - `Qm` -- paper-named formation-rate symbol (Kunarajah 2017 doxorubicin), when the source parameterises the metabolite input as a Q-analogue in mass / volume units.
+  - `K13` -- paper-named apparent clearance of metabolisation (Djerada 2014 nefopam Figure 1B; nefopam -> desmethyl-nefopam).
+- **Example models:** `Knibbe_2009_morphine.R` (PNA-stratified `lcl_form_m3g_le10` / `lcl_form_m3g_gt10` and `lcl_form_m6g_le10` / `lcl_form_m6g_gt10` for the morphine -> M3G and morphine -> M6G glucuronidation arms), `Franken_2015_morphine.R` (`fm_m3g * cl`, `fm_m6g * cl` derived within `model()` from fixed fractions), `deHoogd_2017_morphine.R`, `Hennig_2015_rifabutin.R`, `Djerada_2014_nefopam.R` (`lcl_form_dnef` = log(K13); the apparent metabolic clearance of nefopam to desmethyl-nefopam).
+- **Notes:** The `lcl_form_<metab>` pattern predates the parameter-names.md register (in use since at least Knibbe 2009); formalised on 2026-06-21 alongside the Djerada 2014 nefopam extraction so the convention is discoverable to future extractions. The `lcl_form_<metab>` form does not require a companion `lcl_nonform_<metab>` parameter (mass balance is enforced only when the parent's total CL is independently estimated); use `lcl_met` / `lcl_nonmet` in place of `lcl_form` when the source paper explicitly decomposes total parent CL into formation + non-formation arms with mass balance.
 
 ### lcl_2b6 (**canonical log-transformed CYP2B6-mediated clearance arm**)
 - **Type:** log-transformed-pk
