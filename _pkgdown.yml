@@ -28,6 +28,8 @@ navbar:
       # AUTOGEN:specific_drugs:BEGIN
       - text: "ABT 102 (Othman 2013)"
         href: articles/Othman_2013_ABT_102.html
+      - text: "ASP8232 (Snelder 2020)"
+        href: articles/Snelder_2020_ASP8232.html
       - text: "AT9283 (Duong 2017)"
         href: articles/Duong_2017_AT9283.html
       - text: "Abacavir (Archary 2019)"
@@ -2994,6 +2996,7 @@ articles:
   - articles/Smuszkiewicz_2017_dexmedetomidine
   - articles/Smythe_2012_rifampicin
   - articles/Smythe_2013_gatifloxacin
+  - articles/Snelder_2020_ASP8232
   - articles/Soehoel_2022_tralokinumab
   - articles/Solana_2014_omeprazole
   - articles/Solms_2020_BAY94_9027

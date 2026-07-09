@@ -2,6 +2,7 @@
 
 # development version
 
+* Add Snelder 2020 ASP8232 ([doi:10.1007/s10928-020-09717-w](https://doi.org/10.1007/s10928-020-09717-w)) -- pooled healthy volunteers and adults with renal impairment, diabetic kidney disease, or diabetic macular oedema receiving oral ASP8232 (integrated multiple-target-mediated drug disposition model for the small-molecule vascular adhesion protein-1 / AOC3 inhibitor; ratifies new `STUDY_ASP8232_PHASE2` covariate canonical for study-level residual-error scaling).
 * Add Luu 2017 nusinersen ([doi:10.1002/jcph.884](https://doi.org/10.1002/jcph.884)) -- pediatric patients with spinal muscular atrophy receiving intrathecal nusinersen.
 * Add Gaohua 2012 pregnancy PBPK ([doi:10.1111/j.1365-2125.2012.04363.x](https://doi.org/10.1111/j.1365-2125.2012.04363.x)) -- healthy pregnant Caucasian women (14-compartment whole-body p-PBPK with GA-dependent maternal physiology, applied to caffeine [CYP1A2], metoprolol [CYP2D6], and midazolam [CYP3A4]); ratifies new canonical bare `skin` PBPK compartment.
 * Add Morris 2011 telapristone ([doi:10.1208/s12248-011-9304-7](https://doi.org/10.1208/s12248-011-9304-7)) -- adult women with single-dose telapristone-acetate phase I/II PK studies; ratifies new `cdb4453` metabolite suffix, `MIX_FAST_ELIM`, and `RENALIMP_MOD` covariate canonicals.
