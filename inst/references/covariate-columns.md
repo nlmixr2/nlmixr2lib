@@ -7885,3 +7885,13 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
   - `IFLAG` -- used in `Bosch_2024_glp1ra_bodyweight.R` (Bosch 2024 supplement S10 IFLAG > 0 gates the activity effect).
 - **Example models:** `Bosch_2024_glp1ra_bodyweight.R` (introduces the canonical; gates the body-weight-dependent activity effect on PAE for STEP-family arms in the Bosch 2024 dataset).
 - **Notes:** Specific scope because the canonical name is tied to body-composition QSP modelling where the activity effect is empirically estimated for IBT-instrumented arms. Future extractions of similar lifestyle-intervention-aware body-composition or weight-loss-trajectory models may reuse this canonical; mark the per-paper IBT-intensity definition in `covariateData[[WM_IBT]]$notes` so users can distinguish "weekly clinic counselling + diary review" intensity (STEP 3) from "minimal-counselling -500 kcal/d" intensity (STEP 5 / STEP 8). Ratified canonically on 2026-06-22 alongside the Bosch 2024 extraction.
+
+### STRAIN_C57BI6 (**canonical for C57BI/6 mouse-strain indicator**)
+- **Description:** Binary within-species mouse-strain indicator: 1 = subject is a C57BI/6 mouse, 0 = subject is a mouse of the reference strain (in the founding example, NMRI). Used to gate strain-specific fractional multipliers on structural PK parameters within a mouse popPK model when the source paper pools two strains and reports a fractional strain effect.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (NMRI mouse in Larsen 2018; other reference strains permitted for future extractions provided the per-paper reference is documented in `covariateData[[STRAIN_C57BI6]]$notes`).
+- **Source aliases:** none.
+- **Example models:** `Larsen_2018_factorviia_mouse.R` (Larsen 2018 pooled C57BI/6 + NMRI mice with fractional C57BI/6 effect on V and CL for rFVIIa: `V_C57BI6 = V * 0.588`, `CL_C57BI6 = CL * 0.87` per Table 2).
+- **Notes:** Analogous to the `RACE_<GROUP>` naming family for human race indicators: `STRAIN_<GROUP>` gives each within-species strain-of-interest its own binary indicator, with the reference strain implicitly encoded as `0`. A future mouse popPK model that pools additional strains (e.g., BALB/c, C3H) should register a parallel canonical (`STRAIN_BALBC`, `STRAIN_C3H`, ...) rather than overload this one. Ratified alongside the Larsen 2018 rFVIIa mouse extraction.

@@ -281,6 +281,14 @@ The `l<base>` convention denotes a population mean estimated on the log scale (`
 - **Example models:** `Desai_2016_isavuconazole.R` (founding example).
 - **Notes:** Distinct from `lhill` (sigmoidal Emax / Imax exponent) and from `lgamma` (Friberg myelosuppression feedback / TGI growth exponents). The `gam1` suffix follows the NONMEM convention for Weibull-absorption sigmoidicity. Ratified canonically alongside the Desai 2016 isavuconazole extraction.
 
+### lbeta_cl (**canonical log-transformed exponential-nonlinear-CL slope**)
+- **Type:** log-transformed-pk
+- **Role:** Log of the concentration-slope coefficient in an exponential-nonlinear-clearance function of the form `CL(C) = CL_0 * exp(beta_cl * C)`, where `CL_0` is the linear-scale clearance at C = 0 (encoded as the standard `lcl` parameter) and `C` is the observed drug concentration in the same units as the paper's Table. Used when the source paper describes a monotonically-increasing clearance-vs-concentration relationship arising from a saturable protein-binding buffer (e.g., FVIII / von Willebrand factor complex saturation at supraphysiological rFVIII doses). Larger `beta_cl` gives a steeper rise in CL with C; `beta_cl = 0` recovers linear elimination. The bare counterpart inside `model()` is `beta_cl` (units of 1 / concentration).
+- **Source aliases:**
+  - `β` -- Greek letter used in Larsen 2018 Table 3 and Eq. 1.
+- **Example models:** `Larsen_2018_factorviii_rat.R`, `Larsen_2018_factorviii_monkey.R` (founding examples; rat `beta_cl = 0.162 mL/IU`, monkey `beta_cl = 0.0355 mL/IU`, both fitting the exponential-nonlinear-CL form on total FVIII activity).
+- **Notes:** Distinct from `lhill` (sigmoidal Emax / Imax exponent), `lgamma` (Friberg / TGI kinetic exponents), and `lvmax` / `Km` (Michaelis-Menten saturable elimination — a different mathematical form). Choose `lbeta_cl` when the source paper explicitly parameterises CL as an exponential function of concentration; choose `lvmax` / `Km` when the paper fits Michaelis-Menten saturation instead. The `_cl` suffix marks that the slope acts on clearance; parallel `beta_<param>` names are permitted for other parameters when a paper extends the exponential-nonlinear form to `V` or `Q`.
+
 ---
 
 ## Bare structural PK parameters
@@ -515,6 +523,13 @@ The bare counterparts of the log-transformed parameters above. Used when the sou
 - **Source aliases:**
   - `GAM1` / `GAMMA1` -- NONMEM convention.
 - **Example models:** `Desai_2016_isavuconazole.R` (founding example).
+
+### beta_cl (**canonical bare exponential-nonlinear-CL slope**)
+- **Type:** bare-pk
+- **Role:** Bare counterpart of `lbeta_cl`. Concentration-slope coefficient in an exponential-nonlinear-clearance function of the form `CL(C) = CL_0 * exp(beta_cl * C)`, units of 1 / concentration. Used inside `model()` after being exponentiated from `lbeta_cl`.
+- **Source aliases:**
+  - `β` -- Greek letter used in Larsen 2018 Table 3 and Eq. 1.
+- **Example models:** `Larsen_2018_factorviii_rat.R`, `Larsen_2018_factorviii_monkey.R` (founding examples).
 
 ---
 
