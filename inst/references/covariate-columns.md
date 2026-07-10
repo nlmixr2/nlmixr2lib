@@ -4646,6 +4646,18 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Example models:** `Lin_2020_glasdegib_treatment.R` (binary indicator on the exponential overall-survival hazard; the published equation uses the complementary indicator `LDAC_alone = 1 - CONMED_GLASDEGIB` so the model file derives `ldac_alone <- 1 - CONMED_GLASDEGIB` inside `model()` to preserve the paper's parameter values verbatim), `Lin_2020_glasdegib_decitabine.R` (paired with `CONMED_DECITABINE` in the three-arm exploratory analysis).
 - **Notes:** Specific scope because the only on-disk source is the BRIGHT AML 1003 trial (Lin 2020). Auto-approved member of the `CONMED_<INN>` family. Ratified canonically on 2026-06-24 alongside the Lin 2020 BRIGHT AML 1003 overall-survival extraction. The Lin 2020 treatment-response equation uses LDAC_alone as the binary covariate (1 = LDAC alone, 0 = glasdegib + LDAC) with parameter `theta_ldac_alone = 1.376`; the canonical-column form (1 = glasdegib + LDAC) preserves the published value via the in-model `1 - CONMED_GLASDEGIB` mapping rather than refitting the parameter against a re-encoded covariate.
 
+### CONMED_GCSF (**canonical for concomitant granulocyte colony-stimulating factor (G-CSF) treatment indicator**)
+- **Description:** 1 = subject received granulocyte colony-stimulating factor (G-CSF; filgrastim, pegfilgrastim, lenograstim, or another G-CSF product) as concomitant medication during the observation period; 0 = did not receive G-CSF. Used in chemotherapy-induced myelosuppression popPK/PD analyses either (a) as an exclusion filter, or (b) as a covariate on Friberg-style bone-marrow lifespan-model parameters (typically MTT, kprol, Slope, and/or Gamma) to capture the effect of prophylactic or reactive G-CSF support on neutrophil recovery kinetics.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no concomitant G-CSF treatment).
+- **Source aliases:**
+  - `G-CSF` -- van Hasselt 2013 paper narrative and Table 2 / Table 3 header notation.
+  - `GCSF` -- common NONMEM column-name form used by Friberg-style myelosuppression implementations.
+- **Example models:** `vanHasselt_2013_eribulin.R` (proportional / dichotomous effect on MTT with theta = 0.883 -- G-CSF shortens MTT by ~12% -- and on SLOPE with theta = 1.3 -- G-CSF increases the linear drug-effect coefficient by ~30%. Encoded as `mtt = ... * e_gcsf_mtt^CONMED_GCSF` and `slope = ... * e_gcsf_slope^CONMED_GCSF`).
+- **Notes:** Time-varying per subject in principle (G-CSF is given as a course over specific days after chemotherapy), but van Hasselt 2013 treats it as a subject-level indicator in the covariate model (subject received G-CSF at any point during the observation period). Per-model `covariateData[[CONMED_GCSF]]$notes` should record whether the paper's encoding is "ever received G-CSF" (subject-level, time-fixed) or per-cycle time-varying. Distinct from `CSF1` (colony-stimulating factor 1 / M-CSF concentration, a target-engagement biomarker in anti-CSF-1R mAb models) -- the two concepts share the abbreviation "CSF" but are otherwise unrelated. Ratified canonically on 2026-07-10 alongside the van Hasselt 2013 eribulin-neutropenia extraction (operator decision in sidecar request 002).
+
 ### CONMED_H2RA (**canonical for concomitant H2-receptor-antagonist use**)
 - **Description:** 1 = patient on concomitant histamine H2-receptor-antagonist therapy (e.g., ranitidine, famotidine), 0 = no CONMED_H2RA use. Captures another class of gastric-pH-modifying co-medication that may reduce bioavailability of pH-sensitive orally administered drugs.
 - **Units:** (binary)

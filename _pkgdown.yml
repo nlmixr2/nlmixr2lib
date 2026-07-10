@@ -638,6 +638,8 @@ navbar:
         href: articles/Hayashi_1998_epoetinBeta.html
       - text: "Eribulin (Kawamura 2018)"
         href: articles/Kawamura_2018_eribulin.html
+      - text: "Eribulin (vanHasselt 2013)"
+        href: articles/vanHasselt_2013_eribulin.html
       - text: "Eribulin (vanHasselt 2015)"
         href: articles/vanHasselt_2015_eribulin.html
       - text: "Ertapenem (Eyler 2014)"
@@ -3234,6 +3236,7 @@ articles:
   - articles/deWit_2016_everolimus
   - articles/elDesoky_1997_theophylline_pediatric_asthma
   - articles/vanErp_2010_sunitinib
+  - articles/vanHasselt_2013_eribulin
   - articles/vanHasselt_2015_eribulin
   - articles/vanIersel_2018_posaconazole
   - articles/vanRongen_2015_midazolam
