@@ -6245,6 +6245,17 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Example models:** `Denti_2018_levofloxacin.R` (multiplicative effect on the absorption lag time: `(1 + e_route_ngt_tlag * ROUTE_NGT)` with `e_route_ngt_tlag = -0.856`, so NGT delivery shortens T_lag to ~14.4% of its oral value; in the cohort 90/109 (82.6%) children were dosed by crushed tablet via NGT, Denti 2018 Table 2).
 - **Notes:** This is the per-dose-record covariate-equation indicator, distinct from the dosing-event `cmt` column that names the target compartment. When simulating NGT doses, set `ROUTE_NGT = 1` on the dose record(s); set `ROUTE_NGT = 0` for oral dose records. Scope: specific because the NGT-vs-oral contrast and which absorption parameter it modifies are paper-specific. Distinct from the `ROUTE_IV` (IV-vs-SC) and `ROUTE_IP` (IP-vs-non-IP) parenteral-route indicators -- `ROUTE_NGT` is an enteral-delivery-method indicator within oral administration. Ratified canonically alongside the Denti 2018 levofloxacin extraction.
 
+### ROUTE_SC (**canonical for subcutaneous-vs-intramuscular administration route indicator**)
+- **Description:** 1 = dose record (or subject occasion) administered by subcutaneous (SC) injection, 0 = intramuscular (IM) injection. Per-dose-record / per-occasion covariate flagging SC delivery when a population analysis pools IM and SC injection cohorts of an injectable long-acting formulation, with the IM cohort as the structural reference and SC-specific effects encoded as multiplicative factors on absorption half-lives, dose-split ratios, and relative bioavailability.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (IM injection; the structural reference in Kado 2020, whose "Relative structural model parameters for SC administration" are all ratios of SC-value / IM-value with IM's F fixed at 1).
+- **Source aliases:**
+  - `SC` / `route = SC` -- Kado 2020 Table 1 SC-relative parameter block (SC vs IM crossover of benzathine benzylpenicillin G).
+- **Example models:** `Kado_2020_benzathine_benzylpenicillin_g.R` (per-dose-record indicator switching the three absorption half-lives (t1/2,abs-1/-2/-3), the transit half-life (t1/2,tr), the two dose-split ratios (RAT-transit, RAT-slowfast), and the relative bioavailability (F_SC = 0.957) between the IM reference and the SC structural values; all IIVs on absorption parameters are also route-specific per Kado 2020 Methods 'PK modelling').
+- **Notes:** This is the per-dose-record covariate-equation indicator, distinct from the dosing-event `cmt` column that names the target compartment (Kado 2020 doses all routes into the same triple-depot absorption chain; only the parameter values switch by route). Complementary to `ROUTE_IV` (IV-vs-SC, where SC is the reference) and `ROUTE_IP` (IP-vs-non-IP, where non-IP including SC is the reference) -- `ROUTE_SC` fills the SC-vs-IM contrast that neither of those cover. Scope: specific because the IM-vs-SC contrast and the set of parameters that differ by route are paper-specific.
+
 ### DEVICE_AI (**canonical for autoinjector-vs-prefilled-syringe SC device indicator**)
 - **Description:** 1 = subject's SC dose delivered via autoinjector (AI), 0 = prefilled syringe (PFS). Per-subject (study-fixed) covariate flagging the SC delivery device when a model carries device-specific PK effects.
 - **Units:** (binary)
