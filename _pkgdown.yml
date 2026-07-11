@@ -1044,6 +1044,8 @@ navbar:
         href: articles/Milosheska_2016_lamotrigine.html
       - text: "Lampalizumab (Le 2015)"
         href: articles/Le_2015_lampalizumab.html
+      - text: "Lampalizumab cyno (Le 2015)"
+        href: articles/Le_2015_lampalizumab_cyno.html
       - text: "Landiolol (Kunisawa 2015)"
         href: articles/Kunisawa_2015_landiolol.html
       - text: "Lanreotide (Buil-Bruna 2015)"
@@ -2860,6 +2862,7 @@ articles:
   - articles/Larsen_2018_haemophilia_animal_popPK
   - articles/Lawson_2022_busulfan
   - articles/Le_2015_lampalizumab
+  - articles/Le_2015_lampalizumab_cyno
   - articles/Lee_2011_parkinson_progression
   - articles/Lee_2013_colistin
   - articles/Lee_2015_sumatriptan
