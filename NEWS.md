@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Betts 2019 PF-06671008 QSP ([doi:10.1208/s12248-019-0332-z](https://doi.org/10.1208/s12248-019-0332-z)) -- preclinical mouse (female NSG HCT-116 xenograft with human PBMC engraftment) translational QSP model for the CD3 x P-cadherin LP DART bispecific PF-06671008 (couples 2-cpt PK, permeability-diffusion tumor drug disposition, mass-action trimer formation, and 4-cpt Simeoni tumor growth); registers new canonical `drug_cd3_tumor`, `drug_pcad_tumor`, and `trimer` compartments.
+* Add Abuqayyas 2012 8C2 murine IgG1 anti-topotecan mAb ([doi:10.1016/j.ijpharm.2012.09.042](https://doi.org/10.1016/j.ijpharm.2012.09.042)) -- preclinical mice (C57BL/6 wild-type, Fc-gamma-RI/RIII knockout, Fc-gamma-RIIb knockout; two-compartment IV bolus popPK with per-kg body-weight scaling; strain screened but not retained).
 * Add Luu 2017 nusinersen ([doi:10.1002/jcph.884](https://doi.org/10.1002/jcph.884)) -- pediatric patients with spinal muscular atrophy receiving intrathecal nusinersen.
 * Add Gaohua 2012 pregnancy PBPK ([doi:10.1111/j.1365-2125.2012.04363.x](https://doi.org/10.1111/j.1365-2125.2012.04363.x)) -- healthy pregnant Caucasian women (14-compartment whole-body p-PBPK with GA-dependent maternal physiology, applied to caffeine [CYP1A2], metoprolol [CYP2D6], and midazolam [CYP3A4]); ratifies new canonical bare `skin` PBPK compartment.
 * Add Morris 2011 telapristone ([doi:10.1208/s12248-011-9304-7](https://doi.org/10.1208/s12248-011-9304-7)) -- adult women with single-dose telapristone-acetate phase I/II PK studies; ratifies new `cdb4453` metabolite suffix, `MIX_FAST_ELIM`, and `RENALIMP_MOD` covariate canonicals.
