@@ -714,8 +714,6 @@ navbar:
         href: articles/Cirincione_2017_exenatide_er.html
       - text: "Exendin939 (Ng 2018)"
         href: articles/Ng_2018_exendin939.html
-      - text: "Factor viii (Hazendonk 2016)"
-        href: articles/Hazendonk_2016_factor_viii.html
       - text: "FactorIX (Brekkan 2016)"
         href: articles/Brekkan_2016_factorIX.html
       - text: "Factorix (Koopman 2023)"
@@ -758,6 +756,8 @@ navbar:
         href: articles/Laffont_2025_opioid_overdose_reversal_simulation.html
       - text: "Ferumoxytol (Plock 2014)"
         href: articles/Plock_2014_ferumoxytol.html
+      - text: "Fesoterodine (Oishi 2014)"
+        href: articles/Oishi_2014_fesoterodine.html
       - text: "Filgrastim (Harrold 2020)"
         href: articles/Harrold_2020_filgrastim_ars.html
       - text: "Fimasartan (Kim 2017)"
