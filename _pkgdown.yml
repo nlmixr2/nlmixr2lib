@@ -1074,8 +1074,8 @@ navbar:
         href: articles/Tsuji_2017_linezolid.html
       - text: "Liraglutide (CarlssonPetri 2021)"
         href: articles/CarlssonPetri_2021_liraglutide.html
-      - text: "Liraglutide (Watson 2010)"
-        href: articles/Watson_2010_liraglutide.html
+      - text: "Liraglutide (Overgaard 2016)"
+        href: articles/Overgaard_2016_liraglutide.html
       - text: "Lisinopril (Thomson 1989)"
         href: articles/Thomson_1989_lisinopril.html
       - text: "Lopinavir (Archary 2018)"
@@ -3018,6 +3018,7 @@ articles:
   - articles/Oualha_2018_enoxaparin
   - articles/Ouerdani_2015_pazopanib
   - articles/Ouerdani_2015_pazopanib_mouse
+  - articles/Overgaard_2016_liraglutide
   - articles/Overgaard_2019_semaglutide
   - articles/Ozawa_2007_docetaxel
   - articles/Padari_2012_meropenem
