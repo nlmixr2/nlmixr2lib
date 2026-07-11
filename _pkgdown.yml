@@ -1618,6 +1618,8 @@ navbar:
         href: articles/Blair_2004_raltitrexed.html
       - text: "Ranibizumab (Mulyukov 2018)"
         href: articles/Mulyukov_2018_ranibizumab.html
+      - text: "Ranibizumab (Xu 2013)"
+        href: articles/Xu_2013_ranibizumab.html
       - text: "Ranitidine (Hawwa 2013)"
         href: articles/Hawwa_2013_ranitidine.html
       - text: "RBP 7000 (Ivaturi 2017)"
@@ -3296,6 +3298,7 @@ articles:
   - articles/Xie_2000_m3g_rat
   - articles/Xie_2019_agomelatine
   - articles/Xu_2011_sirukumab
+  - articles/Xu_2013_ranibizumab
   - articles/Xu_2019_sarilumab
   - articles/Xu_2020_daratumumab
   - articles/Xu_2023_MBG453
