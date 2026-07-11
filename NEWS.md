@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Kervezee 2014 quinidine rat brain-distribution PBPK ([doi:10.1208/s12248-014-9625-4](https://doi.org/10.1208/s12248-014-9625-4)) -- male Wistar rats receiving i.v. quinidine with a diurnal-period P-gp / CSF-flow covariate; ratifies new `PERIOD_ACTIVE` binary covariate canonical.
+* Add Yoon 2013 metformin ([doi:10.1208/s12248-013-9460-z](https://doi.org/10.1208/s12248-013-9460-z)) -- healthy Korean male adults with single 500 mg oral dose; ratifies new `SNP_SLC22A2_808GT` (OCT2 A270S) and `SNP_SLC22A4_917CT` (OCTN1 T306I) covariate canonicals.
 * Add Luu 2017 nusinersen ([doi:10.1002/jcph.884](https://doi.org/10.1002/jcph.884)) -- pediatric patients with spinal muscular atrophy receiving intrathecal nusinersen.
 * Add Gaohua 2012 pregnancy PBPK ([doi:10.1111/j.1365-2125.2012.04363.x](https://doi.org/10.1111/j.1365-2125.2012.04363.x)) -- healthy pregnant Caucasian women (14-compartment whole-body p-PBPK with GA-dependent maternal physiology, applied to caffeine [CYP1A2], metoprolol [CYP2D6], and midazolam [CYP3A4]); ratifies new canonical bare `skin` PBPK compartment.
 * Add Morris 2011 telapristone ([doi:10.1208/s12248-011-9304-7](https://doi.org/10.1208/s12248-011-9304-7)) -- adult women with single-dose telapristone-acetate phase I/II PK studies; ratifies new `cdb4453` metabolite suffix, `MIX_FAST_ELIM`, and `RENALIMP_MOD` covariate canonicals.
