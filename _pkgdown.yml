@@ -820,10 +820,8 @@ navbar:
         href: articles/FiedlerKelly_2020_fremanezumab_cm.html
       - text: "Fremanezumab em (FiedlerKelly 2020)"
         href: articles/FiedlerKelly_2020_fremanezumab_em.html
-      - text: "Furmonertinib (Zou 2022)"
-        href: articles/Zou_2022_furmonertinib.html
-      - text: "GNbAC1 (Cao 2013)"
-        href: articles/Cao_2013_GNbAC1.html
+      - text: "FXa inhibitors mbma (Yoshioka 2018)"
+        href: articles/Yoshioka_2018_FXa_inhibitors_mbma.html
       - text: "Galcanezumab (Kielbasa 2020)"
         href: articles/Kielbasa_2020_galcanezumab.html
       - text: "Ganciclovir (Caldes 2009)"
@@ -1102,6 +1100,8 @@ navbar:
         href: articles/Fauchet_2015_lopinavir.html
       - text: "LorenzosOil (Ahmed 2016)"
         href: articles/Ahmed_2016_lorenzosOil.html
+      - text: "Losmapimod (Yang 2013)"
+        href: articles/Yang_2013_losmapimod.html
       - text: "Lumefantrine (Hietala 2010)"
         href: articles/Hietala_2010_artemether_lumefantrine_malaria.html
       - text: "Lumefantrine (Hoglund 2015)"
@@ -3352,6 +3352,7 @@ articles:
   - articles/Yamada_2025_zolbetuximab
   - articles/Yamazaki_2008_crizotinib_mouse
   - articles/Yang_2010_rosuvastatin_mbma
+  - articles/Yang_2013_losmapimod
   - articles/Yang_2016_dilmapimod
   - articles/Yang_2017_remifentanil
   - articles/Yang_2021_cemiplimab
