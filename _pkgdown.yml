@@ -26,6 +26,8 @@ navbar:
       text: Specific drug models
       menu:
       # AUTOGEN:specific_drugs:BEGIN
+      - text: "8C2 (Abuqayyas 2012)"
+        href: articles/Abuqayyas_2012_8C2.html
       - text: "ABT 102 (Othman 2013)"
         href: articles/Othman_2013_ABT_102.html
       - text: "AT9283 (Duong 2017)"
@@ -2202,6 +2204,7 @@ articles:
   - articles/Abduljalil_2009_clarithromycin
   - articles/Abrantes_2017_moroctocog
   - articles/Abuhelwa_2015_itraconazole
+  - articles/Abuqayyas_2012_8C2
   - articles/Adams_1998_zalcitabine
   - articles/Admiraal_2023_iminobiotin
   - articles/Agerso_2004_desmopressin
