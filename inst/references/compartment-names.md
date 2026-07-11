@@ -2538,6 +2538,12 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Source aliases:** none.
 - **Example models:** `Brown_2017_osimertinib.R` (doi:10.1111/bcp.13223).
 
+### ast5902 (**canonical AST5902 furmonertinib active metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** AST5902, the CYP3A4-derived active metabolite of furmonertinib (AST2818 / alflutinib), a third-generation irreversible EGFR TKI approved for NSCLC with EGFR-sensitising / T790M mutations. Used as a compartment / parameter suffix in joint parent-plus-metabolite popPK models where furmonertinib and AST5902 are followed simultaneously in plasma.
+- **Source aliases:** none.
+- **Example models:** `Zou_2022_furmonertinib.R` (doi:10.1038/s41401-021-00798-y).
+
 ### ndmsel (**canonical N-desmethyl-selumetinib suffix**)
 - **Type:** metabolite-suffix
 - **Role:** N-desmethyl-selumetinib, active selumetinib metabolite (~3-5-fold more potent for MEK1 inhibition than parent), formed by oxidative N-demethylation.
