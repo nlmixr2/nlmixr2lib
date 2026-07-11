@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Betts 2018 monoclonal antibody linear PK ([doi:10.1080/19420862.2018.1462429](https://doi.org/10.1080/19420862.2018.1462429)) -- pooled Pfizer dataset of 27 mAbs with linear (non-target-mediated) clearance across 18 humans, 23 cynomolgus monkeys, and 11 hFcRn Tg32 transgenic mice; four packaged models (human, cyno, tg32 mouse single-species fits from Table 2 and the combined all-species allometric fit from Table 4).
+* Add Langenhorst 2019 fludarabine ([doi:10.1007/s40262-018-0715-9](https://doi.org/10.1007/s40262-018-0715-9)) -- children and adults undergoing myeloablative conditioning prior to allogeneic hematopoietic cell transplantation (three-compartment IV popPK with body-weight allometric scaling and eGFR-driven renal-clearance component).
 * Add Luu 2017 nusinersen ([doi:10.1002/jcph.884](https://doi.org/10.1002/jcph.884)) -- pediatric patients with spinal muscular atrophy receiving intrathecal nusinersen.
 * Add Gaohua 2012 pregnancy PBPK ([doi:10.1111/j.1365-2125.2012.04363.x](https://doi.org/10.1111/j.1365-2125.2012.04363.x)) -- healthy pregnant Caucasian women (14-compartment whole-body p-PBPK with GA-dependent maternal physiology, applied to caffeine [CYP1A2], metoprolol [CYP2D6], and midazolam [CYP3A4]); ratifies new canonical bare `skin` PBPK compartment.
 * Add Morris 2011 telapristone ([doi:10.1208/s12248-011-9304-7](https://doi.org/10.1208/s12248-011-9304-7)) -- adult women with single-dose telapristone-acetate phase I/II PK studies; ratifies new `cdb4453` metabolite suffix, `MIX_FAST_ELIM`, and `RENALIMP_MOD` covariate canonicals.
