@@ -232,8 +232,7 @@ mod <- readModelDb("Mohamed_2013_procainamide")
 
 sim_case <- rxode2::rxSolve(
   mod,
-  events    = case_events,
-  useLinCmt = FALSE                # mixed ODE + algebraic observables; keep the ODE solver path
+  events    = case_events
 ) |>
   as.data.frame() |>
   dplyr::mutate(Cc_total = Cc + Cc_napa)
@@ -241,8 +240,7 @@ sim_case <- rxode2::rxSolve(
 sim_fig2 <- rxode2::rxSolve(
   mod,
   events    = fig2_events,
-  keep      = "regimen",
-  useLinCmt = FALSE
+  keep      = "regimen"
 ) |>
   as.data.frame() |>
   dplyr::mutate(Cc_total = Cc + Cc_napa)
@@ -356,8 +354,7 @@ bolus_events <- dplyr::bind_rows(bolus_dose, bolus_obs) |>
 sim_bolus <- rxode2::rxSolve(
   mod,
   events    = bolus_events,
-  keep      = "cohort",
-  useLinCmt = FALSE
+  keep      = "cohort"
 ) |>
   as.data.frame() |>
   dplyr::mutate(id = 1L)              # rxSolve drops the id column for single-subject events; add it back for PKNCA grouping

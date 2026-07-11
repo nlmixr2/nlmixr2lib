@@ -126,12 +126,11 @@ sim_pt40 <- rxode2::rxSolve(
       time = obs_times
     )) |>
     dplyr::arrange(time, dplyr::desc(evid)),
-  useLinCmt = FALSE,
   returnType = "data.frame"
 )
 
 sim_pop <- rxode2::rxSolve(
-  mod, events = pop_events, useLinCmt = FALSE, returnType = "data.frame"
+  mod, events = pop_events, returnType = "data.frame"
 )
 ```
 

@@ -203,8 +203,7 @@ sim_typical <- rxode2::rxSolve(
   mod_typical,
   events    = events,
   keep      = c("arm", "dose_mgkg", "dose_ugkg"),
-  inits     = c(cycling_cells = init_tumor),
-  useLinCmt = FALSE
+  inits     = c(cycling_cells = init_tumor)
 ) |> as.data.frame()
 ```
 
