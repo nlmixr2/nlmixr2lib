@@ -482,6 +482,8 @@ navbar:
         href: articles/Han_2015_decitabine.html
       - text: "Deferiprone (Bellanti 2014)"
         href: articles/Bellanti_2014_deferiprone.html
+      - text: "Deferiprone (Bellanti 2017)"
+        href: articles/Bellanti_2017_deferiprone.html
       - text: "Deferoxamine (Bellanti 2015)"
         href: articles/Bellanti_2015_deferoxamine.html
       - text: "Degarelix (Tornoe 2006)"
@@ -2327,6 +2329,7 @@ articles:
   - articles/Baverel_2015_tralokinumab
   - articles/Bellanti_2014_deferiprone
   - articles/Bellanti_2015_deferoxamine
+  - articles/Bellanti_2017_deferiprone
   - articles/Belldina_2003_cysteamine
   - articles/Bender_2009_pregabalin_rat
   - articles/Bender_2014_trastuzumabEmtansine_mechanistic
