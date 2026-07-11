@@ -876,6 +876,8 @@ navbar:
         href: articles/GonzalezSales_2024_imetelstat.html
       - text: "Iminobiotin (Admiraal 2023)"
         href: articles/Admiraal_2023_iminobiotin.html
+      - text: "Iminobiotin (Vos 2025)"
+        href: articles/Vos_2025_iminobiotin.html
       - text: "Imipenem (Couffignal 2014)"
         href: articles/Couffignal_2014_imipenem.html
       - text: "Imipenem (Lamoth 2009)"
@@ -3096,6 +3098,7 @@ articles:
   - articles/Viberg_2006_cefuroxime
   - articles/Vinnard_2017_rifampicin
   - articles/Voller_2017_phenobarbital
+  - articles/Vos_2025_iminobiotin
   - articles/Vuu_2016_topiramate_dog
   - articles/Wade_2008_fluconazole
   - articles/Wade_2015_certolizumab
