@@ -1,6 +1,6 @@
 # Canonical compartment and metabolite-suffix names
 
-This file is the authoritative register of compartment / state names and metabolite-suffix tokens used in nlmixr2lib models. Every compartment that appears in a model's `model()` block (and every metabolite / sibling-drug suffix used to derive a compartment / parameter / residual-SD name) is expected to match one of the canonical entries below — or to fit one of the regex constants documented in the header section. The register is seeded from the 2026-05-28 naming audit and extended whenever a new paper introduces a state that isn't yet registered.
+This file is the authoritative register of compartment / state names and metabolite-suffix tokens used in nlmixr2lib models. Every compartment that appears in a model's `model()` block (and every metabolite / sibling-drug suffix used to derive a compartment / parameter / residual-SD name) is expected to match one of the canonical entries below -- or to fit one of the regex constants documented in the header section. The register is seeded from the 2026-05-28 naming audit and extended whenever a new paper introduces a state that isn't yet registered.
 
 ## How to use this register
 
@@ -36,10 +36,10 @@ A single token can appear under both Types (e.g., `lzd` is both a bare drug-stat
 
 The following pattern constants remain hard-coded in `R/conventions.R::.nlmixr2libConventionsStatic` because they are structural regular expressions rather than name lists:
 
-- `compartmentRegex = "^(transit|effect|precursor|lat|depot)[0-9]+$"` — numbered-chain compartments: transit absorption chains (`transit1`, `transit2`, ...), effect-compartment chains (`effect1`, `effect2`, ...), precursor pools for delayed-feedback IDR (`precursor1`, `precursor2`, ...), latent chains (`lat1`, ...), parallel-absorption depots (`depot1`, `depot2`, ...). Numeric suffix is required (single-state members use the bare canonical `effect` / `depot`).
-- `darCompartmentRegex = "^dar[0-9]+_(central|peripheral[0-9]?)$"` — DAR-numbered ADC isoform compartments (`dar0_central`, `dar4_peripheral1`, ...).
-- `targetLocationRegex = "^(target|complex)_(csf|isf|peripheral[0-9]?)$"` — target species in physiologic / numbered-peripheral compartments (`target_csf`, `target_isf`, `target_peripheral`, `target_peripheral1`, `complex_peripheral`, ...).
-- `pbpkSubCompartmentRegex = "^(bc|eu|eb|fr|is|int|mrna|luc)_(liver|lung|kidney|spleen|heart|muscle|skin|adipose|bone|brain|small_intestine|large_intestine|pancreas|thymus|portal|remainder|other|hepatic|fat|rapidly_perfused|slowly_perfused|venous|arterial|urine|gut)$` — membrane-limited PBPK sub-compartments: vascular blood cells (`bc_`), endosomal unbound (`eu_`), endosomal FcRn-bound (`eb_`), endosomal free FcRn (`fr_`), interstitial space (`is_`), intracellular (`int_`), mRNA pool (`mrna_`), luciferase reporter (`luc_`).
+- `compartmentRegex = "^(transit|effect|precursor|lat|depot)[0-9]+$"` -- numbered-chain compartments: transit absorption chains (`transit1`, `transit2`, ...), effect-compartment chains (`effect1`, `effect2`, ...), precursor pools for delayed-feedback IDR (`precursor1`, `precursor2`, ...), latent chains (`lat1`, ...), parallel-absorption depots (`depot1`, `depot2`, ...). Numeric suffix is required (single-state members use the bare canonical `effect` / `depot`).
+- `darCompartmentRegex = "^dar[0-9]+_(central|peripheral[0-9]?)$"` -- DAR-numbered ADC isoform compartments (`dar0_central`, `dar4_peripheral1`, ...).
+- `targetLocationRegex = "^(target|complex)_(csf|isf|peripheral[0-9]?)$"` -- target species in physiologic / numbered-peripheral compartments (`target_csf`, `target_isf`, `target_peripheral`, `target_peripheral1`, `complex_peripheral`, ...).
+- `pbpkSubCompartmentRegex = "^(bc|eu|eb|fr|is|int|mrna|luc)_(liver|lung|kidney|spleen|heart|muscle|skin|adipose|bone|brain|small_intestine|large_intestine|pancreas|thymus|portal|remainder|other|hepatic|fat|rapidly_perfused|slowly_perfused|venous|arterial|urine|gut)$` -- membrane-limited PBPK sub-compartments: vascular blood cells (`bc_`), endosomal unbound (`eu_`), endosomal FcRn-bound (`eb_`), endosomal free FcRn (`fr_`), interstitial space (`is_`), intracellular (`int_`), mRNA pool (`mrna_`), luciferase reporter (`luc_`).
 - `compartmentRegex` and the four extension patterns above are extended only when a new paper introduces a structurally new shape. Adding a new spelled-out organ to the `pbpkSubCompartmentRegex` is a routine extension; introducing a new chain prefix is a naming-audit decision.
 
 ---
@@ -935,16 +935,16 @@ These are internationally standardised clinical abbreviations registered as cano
 
 ### TT (**canonical total testosterone / thrombin time**)
 - **Type:** compartment
-- **Role:** Total testosterone (endocrinology) or thrombin time (coagulation) — paper-dependent; both share the TT abbreviation in the contexts where it appears.
+- **Role:** Total testosterone (endocrinology) or thrombin time (coagulation) -- paper-dependent; both share the TT abbreviation in the contexts where it appears.
 - **Source aliases:** none.
 - **Example models:** endocrinology / coagulation PD models.
 
 ### QTc, QTcF, QTcI, QTcS (**canonical heart-rate-corrected QT interval**)
 - **Type:** compartment
-- **Role:** Heart-rate-corrected QT interval (electrocardiographic PD endpoint), typically expressed in ms. Used as the observation variable in direct-effect / linear concentration-QTc models of drug-induced QT prolongation (cardiac-safety / thorough-QT studies, e.g. quinidine, moxifloxacin, sotalol, glasdegib). `QTc` is the generic canonical; `QTcF` (Fridericia correction), `QTcI` (individual / per-subject log-linear correction), and `QTcS` (study-specific correction) are registered as canonical sibling names because correction-specific name use is common in published QTc analyses. The value semantic (absolute QTc, ms vs. change from time-matched baseline DeltaQTc, ms) is per-model and is documented in the model file's `units` / `description` fields; both semantics are admissible under the same canonical observation name.
-- **Source aliases:** `QTcB` (Bazett) -- translates to `QTc` and the Bazett correction is recorded in the model file's description / vignette.
-- **Example models:** `Shin_2006_quinidine_QT.R` (Bazett-corrected QT interval; founding example), `Fostvedt_2021_glasdegib_QTcF.R` (Fridericia absolute QTcF), `Fostvedt_2021_glasdegib_QTcS.R` (study-specific correction, absolute QTcS), `Darpo_2014_racSotalol_QTcI.R` (individual-correction CHANGE FROM BASELINE DeltaQTcI), `Darpo_2014_racSotalol_QTcF.R` (Fridericia CHANGE FROM BASELINE DeltaQTcF).
-- **Notes:** `QTcF` / `QTcS` promoted from translate-to-`QTc` aliases to canonical sibling names 2026-06-28 so single-output models that name the observation by its specific correction (rather than the generic `QTc`) pass the convention check. `QTcI` (individually-corrected QT interval; each subject's own log-linear regression slope of ln(QT) on ln(RR) used as the heart-rate exponent) promoted from translate-to-`QTc` alias to canonical sibling 2026-06-30 alongside the Darpo 2014 rac-sotalol concentration-DeltaQTc extraction. The Darpo 2014 founding example for the change-from-baseline semantic models DeltaQTc (the difference between on-drug and time-matched day-0 QTc, ms) directly as the observation variable, distinct from the absolute QTc observation in Shin 2006 / Fostvedt 2021; the per-model `units` field documents which semantic applies. New models should still prefer the generic `QTc` where the correction is incidental; use the specific name only when the correction is the defining feature of the endpoint.
+- **Role:** Heart-rate-corrected QT interval (electrocardiographic PD endpoint), typically expressed in ms. Used as the observation variable in direct-effect / linear concentration-QTc models of drug-induced QT prolongation (cardiac-safety / thorough-QT studies, e.g. quinidine, moxifloxacin, sotalol, glasdegib). `QTc` is the generic canonical; `QTcF` (Fridericia correction) and `QTcS` (study-specific correction) are registered as canonical sibling names because the Fostvedt 2021 glasdegib models use the correction-specific name directly as the observation variable.
+- **Source aliases:** `QTcB` (Bazett), `QTcI` (individual correction) -- translate to `QTc` and record the correction in the model file's description / vignette.
+- **Example models:** `Shin_2006_quinidine_QT.R` (Bazett-corrected QT interval; founding example), `Fostvedt_2021_glasdegib_QTcF.R` (Fridericia, as `QTcF`), `Fostvedt_2021_glasdegib_QTcS.R` (study-specific correction, as `QTcS`).
+- **Notes:** `QTcF` / `QTcS` promoted from translate-to-`QTc` aliases to canonical sibling names 2026-06-28 so single-output models that name the observation by its specific correction (rather than the generic `QTc`) pass the convention check. New models should still prefer the generic `QTc` where the correction is incidental; use the specific name only when the correction is the defining feature of the endpoint (as in the paired Fostvedt 2021 QTcF / QTcS glasdegib analyses).
 
 ### serumK (**canonical serum potassium**)
 - **Type:** compartment
@@ -1369,9 +1369,9 @@ These states are **not** registered as individual H3 entries; they are matched a
 (The regex is a structural pattern and lives in R alongside the other `*Regex` compartment constants documented in the "Regex constants" header section, not as a name list in this file.)
 
 - **Example models:**
-  - `Garonzik_2016_daptomycin.R` — single-drug: `bact_susceptible1` / `bact_susceptible2`, `bact_intermediate1` / `bact_intermediate2`, `bact_resistant1` / `bact_resistant2` (three subpopulations of decreasing daptomycin susceptibility, each with the two-state life cycle).
-  - `Rees_2018_meropenem_ciprofloxacin.R` — two-drug (meropenem + ciprofloxacin): `bact_susceptible_susceptible1` / `2`, `bact_resistant_intermediate1` / `2`, `bact_intermediate_resistant1` / `2`.
-  - `Landersdorfer_2018_imipenem_tobramycin.R` — two-drug (imipenem + tobramycin): same `bact_<drug1pheno>_<drug2pheno>` compound scheme with the two-state life-cycle digit.
+  - `Garonzik_2016_daptomycin.R` -- single-drug: `bact_susceptible1` / `bact_susceptible2`, `bact_intermediate1` / `bact_intermediate2`, `bact_resistant1` / `bact_resistant2` (three subpopulations of decreasing daptomycin susceptibility, each with the two-state life cycle).
+  - `Rees_2018_meropenem_ciprofloxacin.R` -- two-drug (meropenem + ciprofloxacin): `bact_susceptible_susceptible1` / `2`, `bact_resistant_intermediate1` / `2`, `bact_intermediate_resistant1` / `2`.
+  - `Landersdorfer_2018_imipenem_tobramycin.R` -- two-drug (imipenem + tobramycin): same `bact_<drug1pheno>_<drug2pheno>` compound scheme with the two-state life-cycle digit.
 
 ---
 
@@ -2405,7 +2405,7 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Role:** N,N-bis-desmethyl-bedaquiline (M3) metabolite of bedaquiline; the downstream demethylation product of M2 (responsible enzyme(s) not identified in vitro but suspected CYP3A4-mediated demethylation by analogy with the BDQ -> M2 step).
 - **Source aliases:** none.
 - **Example models:** `Svensson_2013_bedaquiline.R`.
-- **Notes:** Distinct from `m3g` (morphine-3-glucuronide) — the suffix matcher uses `endsWith(name, "_m3")` vs `endsWith(name, "_m3g")` and these do not collide. Registered alongside the Svensson 2013 bedaquiline extraction (the first BDQ paper to model the M3 metabolite).
+- **Notes:** Distinct from `m3g` (morphine-3-glucuronide) -- the suffix matcher uses `endsWith(name, "_m3")` vs `endsWith(name, "_m3g")` and these do not collide. Registered alongside the Svensson 2013 bedaquiline extraction (the first BDQ paper to model the M3 metabolite).
 
 ### m8 (**canonical hydroxy-tert-butylamide (M8) suffix**)
 - **Type:** metabolite-suffix
@@ -2610,11 +2610,11 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Source aliases:** none.
 - **Example models:** `Lahu_2010_roflumilast.R` (doi:10.2165/11536600-000000000-00000).
 
-### napa (**canonical N-acetylprocainamide suffix**)
+### oxy (**canonical oxypurinol suffix**)
 - **Type:** metabolite-suffix
-- **Role:** N-acetylprocainamide (NAPA), the major active metabolite of procainamide formed by hepatic N-acetylation (NAT2). NAPA is a Vaughan-Williams Class III antiarrhythmic in its own right, is predominantly renally cleared, and accumulates alongside the parent in chronic-kidney-disease patients -- parent-plus-NAPA combined exposure is the therapeutic-window target for procainamide dosing in CKD.
+- **Role:** Oxypurinol (1H-purine-2,6,8(3H)-trione), the principal long-lived active metabolite of allopurinol produced by xanthine oxidase and aldehyde oxidase catalysed 2-hydroxylation. Oxypurinol is itself a xanthine-oxidase inhibitor and is the main contributor to sustained urate-lowering effect during chronic allopurinol therapy (allopurinol has a short plasma half-life of ~1-2 h while oxypurinol persists for ~24 h with a renally-cleared elimination). Used as a metabolite suffix in parent-plus-metabolite joint or sequential popPK models for allopurinol.
 - **Source aliases:** none.
-- **Example models:** `Mohamed_2013_procainamide.R` (doi:10.1053/j.ajkd.2013.02.358).
+- **Example models:** `Wright_2013_allopurinol.R` (Wright 2013 doi:10.1007/s00228-013-1478-8 -- sequential 2-cpt allopurinol + 1-cpt oxypurinol model; the metabolite is central_oxy with Cc_oxy observation and independent renal + non-renal clearance components sensitive to CLcr, fat-free mass, and concomitant diuretic use).
 
 ### norcloz (**canonical norclozapine (N-desmethylclozapine) suffix**)
 - **Type:** metabolite-suffix
