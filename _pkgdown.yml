@@ -1718,6 +1718,8 @@ navbar:
         href: articles/Willmann_2021_rivaroxaban.html
       - text: "Rivipansel (Tammara 2017)"
         href: articles/Tammara_2017_rivipansel.html
+      - text: "Roblitinib (Wilbaux 2022)"
+        href: articles/Wilbaux_2022_roblitinib.html
       - text: "Rocatinlimab (Okada 2025)"
         href: articles/Okada_2025_rocatinlimab.html
       - text: "Roflumilast (Facius 2018)"
@@ -3320,6 +3322,7 @@ articles:
   - articles/Wicha_2018_rifampicin
   - articles/Wilbaux_2014_ovarianCancer_ca125
   - articles/Wilbaux_2015_prostate
+  - articles/Wilbaux_2022_roblitinib
   - articles/Wilhelm_2012_ciclosporin
   - articles/Wilkins_2008_rifampicin
   - articles/Wilkins_2011_isoniazid
