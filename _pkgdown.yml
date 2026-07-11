@@ -1678,6 +1678,8 @@ navbar:
         href: articles/Wang_2010_romiplostim.html
       - text: "Romosozumab (Stein 2018)"
         href: articles/Stein_2018_mAb_nonlinear_PK.html
+      - text: "Ropivacaine (Ollier 2015)"
+        href: articles/Ollier_2015_ropivacaine.html
       - text: "Rosuvastatin (Barnett 2018)"
         href: articles/Barnett_2018_rosuvastatin.html
       - text: "Rosuvastatin (Kakara 2014)"
@@ -2923,6 +2925,7 @@ articles:
   - articles/Ogungbenro_2009_penciclovir
   - articles/Okada_2025_rocatinlimab
   - articles/Olagunju_2018_efavirenz
+  - articles/Ollier_2015_ropivacaine
   - articles/Oniki_2018_BMI_NAFLD
   - articles/Oosten_2016_fentanyl
   - articles/Othman_2007_carvedilol
