@@ -594,7 +594,7 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Thuo_2011_ciprofloxacin.R` (linear centered-deviation effects on apparent CL and apparent Vc: `1 + 0.0368*(SOD - 136)` and `1 + 0.0291*(SOD - 136)`; reference 136 mmol/L is the cohort median).
 - **Notes:** General scope because serum sodium is a universally applicable serum-electrolyte covariate. Reference value is paper-specific (cohort median); future models should document their own reference in `covariateData[[SOD]]$notes`. Distinct from any "sodium content of dosed formulation" concept (e.g., sodium-rich oral rehydration solution) -- that would warrant a separate canonical (`DOSE_NA_MGML`, etc.) if a future model retains it. Ratified canonically on 2026-05-21 alongside the Thuo 2011 ciprofloxacin extraction.
 
-## Renal-replacement-therapy (RRT) family — section-header policy
+## Renal-replacement-therapy (RRT) family -- section-header policy
 
 All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODALITY` is the specific RRT type (`HEMODIAL` for intermittent hemodialysis, `CRRT` for continuous / extended modalities, `PERIT_DIAL` for peritoneal dialysis) and `KIND` is `STATUS` for subject-level treatment-status indicators (time-fixed within the analysis window) or `ACTIVE` for per-time-point session gates (time-varying within subject, 1 only during an active session). The 2026-06-19 canonical-register standardization audit renamed the prior `HEMODIAL`, `HEMODIALYSIS`, and `CRRT_STATUS` canonicals into this family to make the modality + kind contrast explicit at the column name; pre-2026-06-19 names are preserved as `source_aliases` so existing data CSVs continue to work for one release cycle.
 
@@ -4265,7 +4265,7 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Reference category:** 0 (IgG MM).
 - **Source aliases:**
   - `Ig_type` -- used in `Fau_2020_isatuximab.R`. Values 0 / 1 with the same orientation as the canonical (1 = non-IgG MM).
-- **Example models:** `Fau_2020_isatuximab.R` (exponential effect on the steady-state linear CL CLinf with coefficient -0.751, and on the time-varying-CL half-time KCL with coefficient -0.931), `Xu_2020_daratumumab.R` (additive shift `(1 + 0.806 * (1 - MM_NIGG))` on linear CL — Xu 2020 parameterises with non-IgG MM as reference, so an IgG MM patient receives an 80.6% higher linear CL than a non-IgG MM patient; canonical column semantics 1 = non-IgG / 0 = IgG are preserved).
+- **Example models:** `Fau_2020_isatuximab.R` (exponential effect on the steady-state linear CL CLinf with coefficient -0.751, and on the time-varying-CL half-time KCL with coefficient -0.931), `Xu_2020_daratumumab.R` (additive shift `(1 + 0.806 * (1 - MM_NIGG))` on linear CL -- Xu 2020 parameterises with non-IgG MM as reference, so an IgG MM patient receives an 80.6% higher linear CL than a non-IgG MM patient; canonical column semantics 1 = non-IgG / 0 = IgG are preserved).
 - **Notes:** Within-disease (multiple-myeloma) immunoglobulin-subtype stratifier. The mechanistic rationale (Fau 2020) is that endogenous IgG monoclonal protein in IgG-MM patients competes with the therapeutic IgG mAb for FcRn-mediated salvage, raising the therapeutic mAb's catabolic clearance; non-IgG-MM patients lack that competition and exhibit lower therapeutic-mAb clearance. Distinct from the disease-state indicators (`DIS_SMM` = smoldering MM); applies only after a multiple-myeloma diagnosis is established. Scope: specific because the comparison is a within-MM stratifier rather than a cross-population indicator. Reference category at the model level (which value of MM_NIGG corresponds to TVCL = base) varies between papers: Fau 2020 anchors to 0 (IgG MM) and Xu 2020 anchors to 1 (non-IgG MM); the canonical column orientation (1 = non-IgG) is fixed across papers and the per-model `covariateData[[MM_NIGG]]$reference_category` field records which anchor each model uses.
 
 ### TUM_TP53_MUT (**canonical for tumour TP53 / p53 mutation indicator**)
@@ -4785,6 +4785,18 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Source aliases:** `MTX` -- used in `Rosario_2015_vedolizumab.R`.
 - **Example models:** `Rosario_2015_vedolizumab.R` (power-form on CLL: `CLL * 0.983^CONMED_MTX`).
 - **Notes:** Immunomodulator used especially in CD maintenance. Generic concomitant-MTX indicator that may also appear in non-IBD models; start as scope: general.
+
+### CONMED_DIUR (**canonical for any concomitant diuretic (class) coadministration indicator**)
+- **Description:** 1 = subject is on concomitant diuretic therapy of any class (loop, thiazide, thiazide-like, potassium-sparing, aldosterone-antagonist, or carbonic-anhydrase inhibitor), 0 = not on any diuretic. Diuretics reduce renal tubular reabsorption / secretion of urate and oxypurinol via competition at organic-anion transporters, and are a well-established covariate on oxypurinol clearance.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no concomitant diuretic use).
+- **Source aliases:**
+  - `DIUR` -- used in `Stocker_2012_oxypurinol.R` (Stocker 2012 Table 1 footnote 'Including furosemide, thiazide diuretics and spironolactone'; 46% of 155 gouty patients on a concomitant diuretic; linear-deviation multiplicative effect on CL/Fm: -29.4%, Stocker 2012 Table 3 theta7).
+  - `diuretic` -- used in `Wright_2013_allopurinol.R` (Wright 2013 Table 2: 29 of 104 subjects on diuretics; the fractional-effect multiplier applied to the renal component of oxypurinol clearance was 0.61, i.e., a 39% reduction in renal CL_oxy in diuretic users).
+- **Example models:** `Stocker_2012_oxypurinol.R` (linear-deviation multiplicative effect on apparent oxypurinol CL/Fm: `cl *= (1 + (-0.294) * CONMED_DIUR)`; -29.4%), `Wright_2013_allopurinol.R` (fractional-effect multiplier: `cl_oxy_renal *= 0.61^CONMED_DIUR` -- renal CL_oxy is reduced by 39% when a diuretic is coadministered).
+- **Notes:** Class-level indicator; individual diuretic INN can be resolved via a per-model `covariateData[[CONMED_DIUR]]$notes` if the source paper distinguished loop / thiazide / potassium-sparing sub-classes. Follows the class-level pattern established for `CONMED_NSAID`, `CONMED_STATIN`, `CONMED_AZOLE`, `CONMED_H2RA`, and `CONMED_PPI`. Distinct from `CONMED_SPIRON` (specific to spironolactone as an aldosterone antagonist / renal P-gp inhibitor at the digoxin transporter) and from `DIS_CHF` (a disease-state indicator that does not by itself imply diuretic use). The canonical name uses the short `CONMED_DIUR` form (not `CONMED_DIURETIC`) to match the pre-existing `Stocker_2012_oxypurinol.R` convention, and both allopurinol-oxypurinol popPK models (Stocker 2012 and Wright 2013) now share the same canonical.
 
 ### CONMED_NSAID (**canonical for concomitant NSAID use**)
 - **Description:** 1 = on concomitant non-steroidal anti-inflammatory drug (NSAID) therapy at baseline, 0 = not.
@@ -6197,7 +6209,7 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 
 ## Formulation / assay / study
 
-### ROUTE_* family — section-header policy
+### ROUTE_* family -- section-header policy
 
 All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 1 = subject received the `<TARGET>` administration route and 0 = subject received the *reference* (non-target) route. The reference category is route-pair-specific and is documented per-canonical in the `Reference category:` field (e.g., `ROUTE_IV` references SC; `ROUTE_IP` references non-IP; `ROUTE_NGT` references oral). The 2026-06-19 canonical-register standardization audit reviewed renaming this family to a more explicit `ROUTE_<TARGET>_VS_<REFERENCE>` shape but the operator declined the rename and instead set the following documentation discipline:
 
@@ -6229,10 +6241,10 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Scope:** specific
 - **Reference category:** 0 (non-IP, typically SC or IV with bioavailability fixed at 1).
 - **Source aliases:**
-  - "IP" (route label in Johnson 2011 Table I, per-study route designation across 12 rat studies — IP studies 1-6b, SC studies 7-11, IV study 12).
+  - "IP" (route label in Johnson 2011 Table I, per-study route designation across 12 rat studies -- IP studies 1-6b, SC studies 7-11, IV study 12).
 - **Example models:**
   - `Johnson_2011_olanzapine_rat.R` (per-dose-record indicator selecting the IP bioavailability `FIP = 0.636` with 87% CV log-normal IIV; ROUTE_IP = 0 selects F = 1 for SC and IV. The encoding `f(central) <- exp(ROUTE_IP * (lfip + etalfip))` collapses to 1 when ROUTE_IP = 0 because exp(0) = 1, so subjects dosed via SC or IV inherit complete bioavailability without IIV on F).
-- **Notes:** This is the per-dose-record covariate-equation indicator, distinct from the dosing-event `cmt` column that names the target compartment (Johnson 2011 doses all routes directly into `central` because the absorption rate constant was not estimable from the available data). When simulating IP doses, set `ROUTE_IP = 1` on the dose record(s); set `ROUTE_IP = 0` for SC and IV dose records. Scope: specific because the IP-vs-other contrast and which parameter it modifies (here, bioavailability) is paper-specific; complementary to `ROUTE_IV` (IV-vs-SC indicator) — a future tri-route study could use both indicators jointly.
+- **Notes:** This is the per-dose-record covariate-equation indicator, distinct from the dosing-event `cmt` column that names the target compartment (Johnson 2011 doses all routes directly into `central` because the absorption rate constant was not estimable from the available data). When simulating IP doses, set `ROUTE_IP = 1` on the dose record(s); set `ROUTE_IP = 0` for SC and IV dose records. Scope: specific because the IP-vs-other contrast and which parameter it modifies (here, bioavailability) is paper-specific; complementary to `ROUTE_IV` (IV-vs-SC indicator) -- a future tri-route study could use both indicators jointly.
 
 ### ROUTE_NGT (**canonical for nasogastric-tube-vs-oral administration route indicator**)
 - **Description:** 1 = dose record administered by nasogastric tube (NGT), 0 = oral administration. Per-dose-record covariate flagging NGT delivery when an oral popPK pools whole-tablet / crushed-tablet oral dosing with crushed-tablet-via-NGT dosing, with the route effect captured on an absorption parameter.

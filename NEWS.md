@@ -2,6 +2,7 @@
 
 # development version
 
+* Add Wright 2013 allopurinol ([doi:10.1007/s00228-013-1478-8](https://doi.org/10.1007/s00228-013-1478-8)) -- adults with chronic gout plus healthy volunteers (sequential parent-metabolite popPK jointly covering oral and intravenous allopurinol and its principal active metabolite oxypurinol; ratifies new `oxy` registered metabolite suffix and new `CONMED_DIUR` covariate canonical, which is now shared with the pre-existing `Stocker_2012_oxypurinol.R`).
 * Add Luu 2017 nusinersen ([doi:10.1002/jcph.884](https://doi.org/10.1002/jcph.884)) -- pediatric patients with spinal muscular atrophy receiving intrathecal nusinersen.
 * Add Gaohua 2012 pregnancy PBPK ([doi:10.1111/j.1365-2125.2012.04363.x](https://doi.org/10.1111/j.1365-2125.2012.04363.x)) -- healthy pregnant Caucasian women (14-compartment whole-body p-PBPK with GA-dependent maternal physiology, applied to caffeine [CYP1A2], metoprolol [CYP2D6], and midazolam [CYP3A4]); ratifies new canonical bare `skin` PBPK compartment.
 * Add Morris 2011 telapristone ([doi:10.1208/s12248-011-9304-7](https://doi.org/10.1208/s12248-011-9304-7)) -- adult women with single-dose telapristone-acetate phase I/II PK studies; ratifies new `cdb4453` metabolite suffix, `MIX_FAST_ELIM`, and `RENALIMP_MOD` covariate canonicals.
