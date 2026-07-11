@@ -692,8 +692,8 @@ navbar:
         href: articles/Nemoto_2017_ethanol.html
       - text: "Ethaselen (Ye 2017)"
         href: articles/Ye_2017_ethaselen.html
-      - text: "Etoposide (Freyer 2000)"
-        href: articles/Freyer_2000_AVI_regimen.html
+      - text: "Etoposide (Toffoli 2001)"
+        href: articles/Toffoli_2001_etoposide.html
       - text: "Etrolizumab (Moein 2022)"
         href: articles/Moein_2022_etrolizumab.html
       - text: "Everolimus (deWit 2016)"
@@ -3192,6 +3192,7 @@ articles:
   - articles/Ting_2014_tobramycin_inhaled
   - articles/Tiraboschi_2025_amlitelimab
   - articles/Tod_1998_amikacin
+  - articles/Toffoli_2001_etoposide
   - articles/Tornoe_2006_HPG_axis
   - articles/Tortorici_2017_a1pi
   - articles/Toukam_2025_biib107
