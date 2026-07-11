@@ -127,6 +127,9 @@ mod_con <- mod_typical
 
 sim_lip <- as.data.frame(rxode2::rxSolve(mod_lip, events_typ)) |>
   dplyr::mutate(formulation = "Liposomal")
+#> rxode2 already building model, waiting for lock file removal
+#> lock file: "/tmp/Rtmpn03vKx/rxode2/rx_1835bee42ca4bb511916d8fa586b7174__.rxd/rx_1835bee42ca4bb511916d8fa586b7174_.c.lock"
+#> .
 #> ℹ omega/sigma items treated as zero: 'etalka', 'etalfdepot', 'etalk12', 'etalk21', 'etalkel'
 sim_con <- as.data.frame(rxode2::rxSolve(mod_con, events_typ)) |>
   dplyr::mutate(formulation = "Conventional")

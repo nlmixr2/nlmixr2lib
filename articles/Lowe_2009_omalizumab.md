@@ -552,7 +552,7 @@ sessionInfo()
 #> [4] dplyr_1.2.1           rxode2_5.1.2          nlmixr2lib_0.3.2.9000
 #> 
 #> loaded via a namespace (and not attached):
-#>  [1] gtable_0.3.6          xfun_0.59             bslib_0.11.0         
+#>  [1] gtable_0.3.6          xfun_0.60             bslib_0.11.0         
 #>  [4] lattice_0.22-9        vctrs_0.7.3           tools_4.6.1          
 #>  [7] generics_0.1.4        parallel_4.6.1        tibble_3.3.1         
 #> [10] symengine_0.2.13      pkgconfig_2.0.3       data.table_1.18.4    
@@ -561,7 +561,7 @@ sessionInfo()
 #> [19] compiler_4.6.1        farver_2.1.2          textshaping_1.0.5    
 #> [22] fontawesome_0.5.3     htmltools_0.5.9       sys_3.4.3            
 #> [25] sass_0.4.10           yaml_2.3.12           crayon_1.5.3         
-#> [28] pillar_1.11.1         pkgdown_2.2.0         jquerylib_0.1.4      
+#> [28] pillar_1.11.1         pkgdown_2.2.1         jquerylib_0.1.4      
 #> [31] whisker_0.4.1         openssl_2.4.2         cachem_1.1.0         
 #> [34] nlme_3.1-169          qs2_0.2.2             tidyselect_1.2.1     
 #> [37] digest_0.6.39         lotri_1.0.4           purrr_1.2.2          
@@ -571,8 +571,8 @@ sessionInfo()
 #> [49] backports_1.5.1       rmarkdown_2.31        otel_0.2.0           
 #> [52] askpass_1.2.1         ragg_1.5.2            stringfish_0.19.0    
 #> [55] memoise_2.0.1         evaluate_1.0.5        knitr_1.51           
-#> [58] rex_1.2.2             PreciseSums_0.7       rlang_1.2.0          
-#> [61] downlit_0.4.5         Rcpp_1.1.1-1.1        glue_1.8.1           
+#> [58] rex_1.2.2             PreciseSums_0.7       rlang_1.3.0          
+#> [61] downlit_0.4.5         Rcpp_1.1.2            glue_1.8.1           
 #> [64] xml2_1.6.0            jsonlite_2.0.0        R6_2.6.1             
 #> [67] systemfonts_1.3.2     fs_2.1.0
 ```

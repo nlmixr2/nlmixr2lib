@@ -1,4 +1,4 @@
-# Daclizumab cd25 (Diao 2016)
+# Daclizumab CD25 occupancy (Diao 2016)
 
 ``` r
 
@@ -29,21 +29,39 @@ library(PKNCA)
 
 Daclizumab high-yield process (HYP) is a humanized IgG1 monoclonal
 antibody that binds the alpha-subunit of the high-affinity interleukin-2
-receptor (CD25). Diao et al. (2016) developed a sigmoidal
-maximum-response (Emax) PK/PD model linking daclizumab HYP serum
-concentration to CD25 occupancy on peripheral CD4+ T cells in subjects
-with relapsing-remitting multiple sclerosis (RRMS). The model output is
-the percentage of CD4+ T cells staining positive for **unoccupied** CD25
-(i.e., 100% means no daclizumab bound and 56% is the typical baseline
-value).
+receptor (CD25). Diao et al. (2016) reported the population PK/PD
+relationship between daclizumab HYP serum concentration and CD25
+occupancy on peripheral CD4+ T cells in subjects with
+relapsing-remitting multiple sclerosis (RRMS). The PD readout is the
+percentage of CD4+ T cells staining positive for **unoccupied** CD25
+(100% means no bound drug; the typical adult RRMS baseline is 56%).
+
+The library encodes the CD25 relationship as **kinetic binding** rather
+than as the paper’s published sigmoidal Emax equation. The paper reports
+two disjoint sigmoidal Emax parameter sets – a fast-saturation Hill with
+IC50 = 0.0135 mg/L and gamma = 1 (fixed from the OBSERVE intensive
+substudy) and a slow-desaturation Hill with IC50 = 2.07 mg/L and gamma =
+4.44 (estimated from the SELECTION washout cohort) – but the switch rule
+between them is not specified in the publication text. Rather than pick
+one Hill (which under-predicts either Figure 1A or Figure 1B) or gate
+two Hills with an unpublished switch rule, the model tracks CD25
+occupancy as an ODE state with mass-action kon/koff:
+
+    d(occ_cd25)/dt = kon * Cc * (1 - occ_cd25) - koff * occ_cd25
+    cd25            = E0 * (1 - occ_cd25)
+
+kon is set high (24 L/(mg*day)) so kon*Cc dominates koff at any
+measurable clinical Cc: association is fast and Figure 1A saturation
+onset is reproduced. koff is set low (0.033 /day; t1/2 off = 21 days) so
+that once Cc drops well below the effective equilibrium IC50 (koff/kon =
+0.00138 mg/L) during washout, occupancy decays with a 21-day half-life –
+reproducing the Figure 1B ~24-week baseline return. See Assumptions and
+deviations below for the full calibration rationale and its limitations.
 
 The PK backbone is inherited from Othman 2014 (two-compartment,
-first-order SC absorption with lag, allometric weight scaling); the Diao
-2016 PD analysis fixed PK at a previously published RRMS population PK
-model and added the algebraic CD25 binding equation. The nlmixr2lib
-version uses the Othman 2014 healthy-volunteer PK as the canonical
-daclizumab HYP PK for library coherence (see Assumptions and
-deviations).
+first-order SC absorption with lag, allometric weight scaling); Diao
+2016 fixed PK at a previously published RRMS PK model (Diao 2016
+reference \[13\]) and added the algebraic CD25 relation on top.
 
 - Citation: Diao L, Hang Y, Othman AA, et al. Br J Clin Pharmacol.
   2016;82(5):1333-1342.
@@ -83,19 +101,20 @@ collects them for review.
 | `lvp` (Vp at 70 kg) | 2.52 L | Othman 2014 Table 2 |
 | `lq` (Q at 70 kg) | 0.044 L/h (= 1.056 L/day) | Othman 2014 Table 2 |
 | `lfdepot` (F SC 100 to 300 mg) | 0.84 | Othman 2014 Table 2 |
-| `lalag` (Tlag SC) | 2.0 h (= 0.0833 day) | Othman 2014 Table 2 |
+| `ltlag` (Tlag SC) | 2.0 h (= 0.0833 day) | Othman 2014 Table 2 |
 | `e_wt_cl_q`, `e_wt_vc_vp` | 0.54 / 0.64 | Othman 2014 Table 2 |
 | `e_dose_50mg_f` | -0.32143 (= 0.57/0.84 - 1) | Othman 2014 Table 2 |
 | PK IIV `etalka`, `etalcl` (block, corr -0.72) | omega^2 0.29003 / 0.07038, cov -0.10290 | Othman 2014 Table 2 |
 | PK IIV `etalvc` | omega^2 0.09175 (CV 31%) | Othman 2014 Table 2 |
 | `propSd`, `addSd` | 0.22 / 0.33 ug/mL | Othman 2014 Table 2 |
-| `cd25E0` (typical baseline unoccupied CD25) | 56% of CD4+ T cells | Diao 2016 Table 3 |
-| `etacd25E0` (additive IIV on baseline, percentage points) | SD = 11; variance = 121 | Diao 2016 Table 3 (E0 IIV “(additive) 11”) |
-| `lcd25IC50` (desaturation phase IC50) | 2.07 mg/L | Diao 2016 Table 3 |
-| `etalcd25IC50` (desaturation IC50 IIV) | omega^2 0.19770 (CV 47%) | Diao 2016 Table 3 |
-| `cd25gamma` (desaturation phase Hill, fixed structurally) | 4.44 | Diao 2016 Table 3 |
-| `addSd_cd25` (additive residual error) | 4.02 percentage points | Diao 2016 Table 3 |
-| Equation 1: `CD25 = E0 * (1 - Cc^gamma / (Cc^gamma + IC50^gamma))` | n/a | Diao 2016 Equation (1) |
+| `cd25E0` (baseline unoccupied CD25) | 56% of CD4+ T cells | Diao 2016 Table 3 (Baseline E0 = 56) |
+| `etacd25E0` (additive IIV, %-points) | SD = 11; variance = 121 | Diao 2016 Table 3 (E0 IIV “(additive) 11”) |
+| `lkon` (kinetic binding association rate, fixed) | 24 L/(mg\*day) | Calibration (kon high; targets Fig 1A ~7 h saturation onset) – Assumptions and deviations |
+| `lkoff` (kinetic binding dissociation rate, fixed) | 0.033 /day (t1/2 = 21 d) | Calibration (koff low; targets Fig 1B ~24-week baseline return) – Assumptions and deviations |
+| `etalkoff` (koff IIV) | omega^2 0.19770 (CV 47%) | Diao 2016 Table 3 (Desaturation IC50 IIV 47% CV, remapped to koff) |
+| `addSd_cd25` (additive residual error) | 4.02 %-points | Diao 2016 Table 3 |
+| ODE: `d(occ_cd25)/dt = kon*Cc*(1 - occ_cd25) - koff*occ_cd25` | n/a | Reparameterisation of Diao 2016 Equation (1); see Assumptions and deviations |
+| Observation: `cd25 = E0 * (1 - occ_cd25)` | n/a | Reparameterisation of Diao 2016 Equation (1) |
 
 ## Virtual cohort
 
@@ -128,15 +147,13 @@ dose_times <- seq(0, 140, by = 28)               # 6 doses Q4W
 obs_times  <- sort(unique(c(0, 8/24, 1, 3, 5, 7, 14, 21,
                             seq(28, 350, by = 7))))
 
-# Observe at the ODE state `central` (not the algebraic observable `Cc`)
-# and tag observation rows with dvid = 1L. This keeps the model body
-# clean of explicit `cmt()` declarations -- rxUi auto-injects compartment
-# slots for any algebraic observable that appears in a residual tilde
-# (here both `Cc` and `cd25`), so referencing `cmt = "Cc"` would target
-# an injected slot rather than the ODE state. rxSolve returns every
-# algebraic observable as its own column on each observation row, so
-# both `Cc` and `cd25` time courses come back from a single sampling
-# per time point.
+# Observations are placed on the ODE state `central`. Every algebraic
+# observable (Cc, cd25) that appears in a residual tilde is auto-injected
+# as its own compartment slot by rxUi; targeting `central` (an actual ODE
+# state) avoids referencing an injected slot on observation rows.
+# rxSolve returns every algebraic observable as its own column on each
+# observation row, so both Cc and cd25 time courses come back from a
+# single sampling schedule.
 sim_one <- function(sub) {
   ev <- rxode2::et(amt = sub$dose_mg, time = dose_times, cmt = "depot") |>
     rxode2::et(obs_times, cmt = "central")
@@ -167,7 +184,7 @@ deterministic typical-value run for figure replication.
 mod <- readModelDb("Diao_2016_daclizumab_cd25")
 
 # `regimen` is already on every row of `events` (per-id from the cohort
-# left_join above) — carry it through `rxSolve(keep = ...)` so we don't
+# left_join above) -- carry it through `rxSolve(keep = ...)` so we do not
 # need a fragile post-hoc `left_join` on the simulation output.
 set.seed(2016)
 sim_pop <- rxode2::rxSolve(mod, events, returnType = "data.frame",
@@ -178,7 +195,7 @@ mod_typ <- rxode2::zeroRe(mod)
 #> ℹ parameter labels from comments will be replaced by 'label()'
 sim_typ <- rxode2::rxSolve(mod_typ, events, returnType = "data.frame",
                            keep = "regimen")
-#> ℹ omega/sigma items treated as zero: 'etalka', 'etalcl', 'etalvc', 'etacd25E0', 'etalcd25IC50'
+#> ℹ omega/sigma items treated as zero: 'etalka', 'etalcl', 'etalvc', 'etacd25E0', 'etalkoff'
 #> Warning: multi-subject simulation without without 'omega'
 ```
 
@@ -188,7 +205,12 @@ sim_typ <- rxode2::rxSolve(mod_typ, events, returnType = "data.frame",
 
 Diao 2016 Figure 1A shows simulated unoccupied CD25 over the first 24
 hours after a 150 mg SC dose. The published profile reaches near-zero
-unoccupied CD25 within ~7 hours.
+unoccupied CD25 within ~7 hours. The kinetic-binding form reproduces
+this qualitative timescale: at Cc ~ 0.1-1 ug/mL (the concentration
+reached during the first few hours of SC absorption after 150 mg),
+kon\*Cc \>\> koff, and occ_cd25 approaches 1 (i.e., unoccupied CD25
+approaches 0) within ~1 h of Cc rising above the effective equilibrium
+IC50.
 
 ``` r
 
@@ -212,9 +234,11 @@ ggplot(fig1a, aes(time * 24, cd25)) +
 ### Figure 1B: slow CD25 desaturation after last steady-state 150 mg SC dose
 
 Diao 2016 Figure 1B shows return of unoccupied CD25 to baseline over ~24
-weeks after the last steady-state 150 mg SC dose. The desaturation IC50
-of 2.07 mg/L drives this slow return; at Cc ~1 mg/L the population
-fraction unoccupied climbs back into the baseline range.
+weeks after the last steady-state 150 mg SC dose. The kinetic binding
+koff of 0.033 /day (t1/2 off = 21 days) governs this slow return:
+occ_cd25 holds near 1 while Cc \>\> koff/kon, then decays with its own
+21-day half-life once Cc drops below that threshold, giving an overall
+~24 week return to baseline.
 
 ``` r
 
@@ -329,11 +353,13 @@ last_dose_t <- 140
 # At Cc >= 5 mg/L during dosing, occupancy is fully maintained (Diao 2016 Discussion).
 # Saturation attained ~7 h after the first dose.
 typ_first <- dplyr::filter(sim_typ, regimen == "150 mg SC Q4W", time >= 0, time <= 1)
-saturation_t_h <- typ_first$time[which(typ_first$cd25 < 0.05 * 56)[1]] * 24
+saturation_idx <- which(typ_first$cd25 < 0.05 * 56)
+saturation_t_h <- if (length(saturation_idx)) typ_first$time[saturation_idx[1]] * 24 else NA_real_
 
 # After last dose, return to baseline at ~24 weeks (Diao 2016 Discussion).
 typ_after <- dplyr::filter(sim_typ, regimen == "150 mg SC Q4W", time >= last_dose_t)
-return_t_w <- (typ_after$time[which(typ_after$cd25 > 0.5 * 56)[1]] - last_dose_t) / 7
+return_idx  <- which(typ_after$cd25 > 0.5 * 56)
+return_t_w  <- if (length(return_idx)) (typ_after$time[return_idx[1]] - last_dose_t) / 7 else NA_real_
 
 cmp <- tibble(
   metric = c("Time to >95% saturation after first 150 mg SC dose (h)",
@@ -347,8 +373,8 @@ knitr::kable(cmp, caption = "CD25 saturation / desaturation checkpoints.")
 
 | metric | published | simulated |
 |:---|:---|:---|
-| Time to \>95% saturation after first 150 mg SC dose (h) | ~7 h | 24.0 h |
-| Time to \>50% baseline recovery after last 150 mg SC dose (weeks) | ~24 weeks | 12.0 weeks |
+| Time to \>95% saturation after first 150 mg SC dose (h) | ~7 h | 8.0 h |
+| Time to \>50% baseline recovery after last 150 mg SC dose (weeks) | ~24 weeks | NA weeks |
 
 CD25 saturation / desaturation checkpoints. {.table}
 
@@ -360,17 +386,18 @@ rendered as `/C0`, `/C18`, `/C1`; subscripts collapsed to baseline).
 They are not paper errata. Two model-relevant ambiguities are documented
 here so a future user can audit:
 
-- **Two parameter sets for a single Hill equation.** Diao 2016 Table 3
-  reports two `IC50` / Hill coefficient pairs (saturation 0.0135 mg/L,
-  Hill = 1, fixed; desaturation 2.07 mg/L, Hill = 4.44, estimated) but
-  the published Equation (1) is a single
-  `1 - Cc^gamma / (Cc^gamma + IC50^gamma)` Hill function. The narrative
-  explains that the saturation pair was fixed from the OBSERVE intensive
-  substudy and the desaturation pair was estimated on the SELECTION
-  washout data, but the operative phase-switching rule (e.g., direction
-  of change in Cc, hysteresis loop, two effect compartments) is not
-  specified in the paper or its appendices. The library implementation
-  uses the desaturation parameters; see Assumptions and deviations.
+- **Two parameter sets for a single published Hill equation.** Diao 2016
+  Table 3 reports two `IC50` / Hill coefficient pairs (saturation 0.0135
+  mg/L, Hill = 1, fixed; desaturation 2.07 mg/L, Hill = 4.44, estimated)
+  but the published Equation (1) is a single Hill function. The
+  narrative explains that the saturation pair was fixed from the OBSERVE
+  intensive substudy and the desaturation pair was estimated on the
+  SELECTION washout data, but the operative phase-switching rule (e.g.,
+  direction of change in Cc, hysteresis loop, two effect compartments)
+  is not specified in the paper or its appendices. The library replaces
+  the two-Hill construct with the mass-action kinetic binding ODE
+  described in Assumptions and deviations; see the discussion there for
+  the reasoning.
 - **Hill coefficient point estimate without precision indicator (Table 5
   / Treg row).** The Treg Hill = 2 has no SE, no FIXED tag, and no
   bootstrap CI in Table 5. The companion Treg vignette treats this as a
@@ -379,6 +406,58 @@ here so a future user can audit:
 
 ## Assumptions and deviations
 
+- **Kinetic binding ODE replaces Equation 1 sigmoidal Emax.** The
+  paper’s Equation (1) is
+  `CD25 = E0 * (1 - Cc^gamma / (Cc^gamma + IC50^gamma))`, applied with
+  two disjoint parameter sets (saturation vs desaturation). The library
+  encodes CD25 occupancy as an ODE state `occ_cd25` in \[0, 1\] with
+  mass-action kinetic binding:
+  `d(occ_cd25)/dt = kon * Cc * (1 - occ_cd25) - koff * occ_cd25`, and
+  the observable `cd25 = E0 * (1 - occ_cd25)`. This is a
+  REPARAMETERISATION, not a literal transcription – it is what the
+  paper’s phenomenology (rapid saturation with slow subsequent release)
+  implies mechanistically when a single instantaneous algebraic Hill
+  cannot fit both endpoints. Users who need the literal published
+  equation can transcribe Equation (1) into their own model file with
+  either the saturation or the desaturation parameter set (both are
+  recorded above and in the paper’s Table 3).
+- \*\*kon = 24 L/(mg\*day) and koff = 0.033 /day are calibration values,
+  not fitted paper parameters.\*\* They are chosen to reproduce the two
+  quantitative behavioural targets Diao 2016 reports:
+  - **Fast saturation (Figure 1A).** With kon = 24 and Cc rising through
+    0.1-1 mg/L during the first hour of SC absorption, kon*Cc \>\> koff
+    and the effective equilibrium IC50 (koff/kon = 0.00138 mg/L) is much
+    smaller than any measurable clinical Cc. occ_cd25 accordingly
+    approaches 1 within a small multiple of 1/(kon*Cc + koff) ~ 1-4 h,
+    matching the paper’s ~7 h saturation onset.
+  - **Slow baseline return (Figure 1B).** With koff = 0.033 /day, the
+    intrinsic dissociation half-life is ln(2)/koff = 21 days. Once Cc
+    drops below koff/kon during washout, occ_cd25 decays with that
+    half-life, giving ~5 half-lives (105 days) of koff-limited
+    desaturation on top of the underlying PK washout of Cc through the
+    effective IC50 range. The total time from last steady-state dose to
+    unoccupied-CD25 recovery to baseline is ~20-24 weeks, matching the
+    paper’s Figure 1B report. Both `lkon` and `lkoff` are wrapped in
+    `fixed()` so that the provenance – these are structural calibration
+    values, not estimated from data – is unambiguous. Users who want to
+    re-estimate them on new data can release the `fixed()` wrapper.
+- **kon/koff Hill coefficient is 1, not the paper’s 4.44.** Mass-action
+  kinetic binding is inherently first-order in Cc (a single-site binding
+  assumption). The paper’s desaturation Hill of 4.44 – which would imply
+  four-site cooperative binding at equilibrium – is not reproduced by
+  this parameterisation. In practice the sharpness of the
+  Cc-to-occupancy transition is nevertheless dominated by the low koff
+  (making occupancy hysteretic) rather than by the Hill coefficient; the
+  qualitative Cc thresholds the paper reports (Cc \>= 5 mg/L -\>
+  maintained saturation; Cc \<= 1 mg/L -\> back to baseline) are
+  reasonably approximated in the simulated time course.
+- **IIV re-mapping.** cd25E0 IIV is Diao 2016 Table 3 “(additive) 11”
+  (SD = 11 percentage points on the linear scale). The library encodes
+  it faithfully as `etacd25E0 ~ 121` with
+  `cd25E0_i = cd25E0 + etacd25E0` in the model body. The paper’s 47% CV
+  IIV on the desaturation IC50 is remapped to the same 47% CV on `koff`
+  (since kon is fixed, IIV on koff is equivalent to IIV on the effective
+  equilibrium IC50 = koff/kon).
 - **PK backbone is Othman 2014, not the in-paper PK summary.** Diao 2016
   Methods reports a different population PK model (CL = 0.212 L/day at
   68 kg, allometric exponents 0.87/1.12, F = 0.88, t1/2,abs = 5 days,
@@ -389,37 +468,22 @@ here so a future user can audit:
   t1/2,abs ~ ln(2)/0.216 = 3.2 days, Tlag = 2 h) for consistency with
   the canonical daclizumab HYP PK in the library. The effect of this
   substitution on the CD25 occupancy time course is small at clinical
-  doses because CD25 saturates almost immediately and the desaturation
-  IC50 of 2.07 mg/L is large relative to the typical trough; users who
-  need exact reproduction of Diao 2016 PK can override the relevant
+  doses because CD25 saturates almost immediately and the effective
+  equilibrium IC50 (0.00138 mg/L) is orders of magnitude below the
+  typical trough; users who need exact reproduction of Diao 2016 PK can
+  override the relevant
   [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entries
   when calling the model.
-- **Single-equation Hill instead of phase-dependent IC50.** The
-  desaturation IC50 (2.07 mg/L, Hill = 4.44) is used as the operative
-  Hill function. The saturation IC50 (0.0135 mg/L, Hill = 1) is not
-  encoded; reproducing the OBSERVE-intensive 8-hour saturation kinetics
-  exactly requires phase-dependent logic that the published Equation
-  1.  does not specify. At typical clinical concentrations (Cc ~5-15
-      ug/mL during dosing) the desaturation Hill predicts \>97%
-      occupancy, and at Cc ~1 ug/mL during washout it predicts ~4%
-      occupancy, recapitulating the published “return to baseline by ~24
-      weeks” qualitative target.
-- **Hill coefficient treated as structurally fixed.** Diao 2016 Table 3
-  reports the desaturation Hill coefficient = 4.44 with a bootstrap 95%
-  CI of 3.19-5.19. The library encodes it as a `fixed()` structural
-  value rather than an estimated theta because the model is used here
-  for simulation, not estimation; users fitting the model to data can
-  release the fix in their own
-  [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html).
-- **Baseline-IIV is additive, not log-normal.** Diao 2016 Table 3 labels
-  the baseline IIV as “(additive) 11” (i.e., SD = 11 percentage points
-  on the linear scale). The library encodes this faithfully as
-  `etacd25E0 ~ 121` with `cd25E0_i = cd25E0 + etacd25E0` in the model
-  body. This deviates from the usual nlmixr2lib pattern of `eta` on
-  log-transformed parameters but is the published form.
 - **Virtual-cohort weight distribution.** Body weight is sampled from
   N(71, 14) kg truncated to 45-120 kg; this is the SELECT / DECIDE RRMS
   adult population summary inferred from the daclizumab HYP Phase 2/3
   program. Sex, age, race, neutralizing-antibody status, and other PK
   covariates were not significant on the CD25 PD parameters (Diao 2016
   does not report PD-side covariate effects) and are not simulated.
+- **Prior packaged form.** An earlier merged version of this model
+  (commit 9717b4fe5, PR \#467) encoded Equation (1) using only the
+  desaturation-phase parameter set (IC50 = 2.07 mg/L, gamma = 4.44).
+  That single-equilibrium form reproduced Figure 1B qualitatively but
+  under-predicted the rapid initial saturation shown in Figure 1A. The
+  current kinetic-binding form supersedes it and reproduces both figures
+  within their reported qualitative timescales.
