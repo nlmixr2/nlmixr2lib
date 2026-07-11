@@ -1074,6 +1074,8 @@ navbar:
         href: articles/Tsuji_2017_linezolid.html
       - text: "Liraglutide (CarlssonPetri 2021)"
         href: articles/CarlssonPetri_2021_liraglutide.html
+      - text: "Liraglutide (Watson 2010)"
+        href: articles/Watson_2010_liraglutide.html
       - text: "Lisinopril (Thomson 1989)"
         href: articles/Thomson_1989_lisinopril.html
       - text: "Lopinavir (Archary 2018)"
@@ -3295,6 +3297,7 @@ articles:
   - articles/Wang_2020_ontamalimab
   - articles/Wang_2021_pertuzumab
   - articles/Wang_2024_sugemalimab
+  - articles/Watson_2010_liraglutide
   - articles/Watt_2015_fluconazole
   - articles/Wattanakul_2016_paracetamol
   - articles/Weatherley_2009_maraviroc_iv
