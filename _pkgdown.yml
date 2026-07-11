@@ -544,6 +544,8 @@ navbar:
         href: articles/Kuchimanchi_2024_dostarlimab.html
       - text: "Dostarlimab (Melhem 2022)"
         href: articles/Melhem_2022_dostarlimab.html
+      - text: "Doxorubicin (Freyer 2000)"
+        href: articles/Freyer_2000_AVI_regimen.html
       - text: "Doxorubicin (Kunarajah 2017)"
         href: articles/Kunarajah_2017_doxorubicin.html
       - text: "Doxorubicin (PerezBlanco 2016)"
@@ -672,6 +674,8 @@ navbar:
         href: articles/Nemoto_2017_ethanol.html
       - text: "Ethaselen (Ye 2017)"
         href: articles/Ye_2017_ethaselen.html
+      - text: "Etoposide (Freyer 2000)"
+        href: articles/Freyer_2000_AVI_regimen.html
       - text: "Etrolizumab (Moein 2022)"
         href: articles/Moein_2022_etrolizumab.html
       - text: "Everolimus (deWit 2016)"
@@ -878,6 +882,8 @@ navbar:
         href: articles/Lodise_2018_iclaprim.html
       - text: "Ifosfamide (Brain 2008)"
         href: articles/Brain_2008_ifosfamide.html
+      - text: "Ifosfamide (Freyer 2000)"
+        href: articles/Freyer_2000_AVI_regimen.html
       - text: "Ifosfamide (Kerbusch 2000)"
         href: articles/Kerbusch_2000_ifosfamide.html
       - text: "Il12 (ParraGuillen 2013)"
@@ -2507,6 +2513,7 @@ articles:
   - articles/Franken_2017_midazolam
   - articles/Frey_2010_tocilizumab
   - articles/Frey_2013_tocilizumab
+  - articles/Freyer_2000_AVI_regimen
   - articles/Friberg_2002_paclitaxel
   - articles/Friberg_2012_voriconazole
   - articles/Frobel_2013_ciclosporin

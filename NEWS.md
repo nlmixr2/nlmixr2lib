@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Royer 2011 cisplatin ([doi:10.1038/bjc.2011.557](https://doi.org/10.1038/bjc.2011.557)) -- adult women with recurrent epithelial ovarian cancer receiving perioperative intraperitoneal cisplatin (four-compartment popPK with paper-mechanistic peritoneum and bound-Pt compartments; ratifies new `CONMED_EPI` covariate canonical for coadministered epinephrine).
+* Add Freyer 2000 doxorubicin, etoposide, and ifosfamide ([doi:10.1046/j.1365-2125.2000.00269.x](https://doi.org/10.1046/j.1365-2125.2000.00269.x)) -- 24 French small-cell lung cancer patients on the AVI regimen (one-compartment IV reduction; peripheral parameters not reported by the source).
 * Add Luu 2017 nusinersen ([doi:10.1002/jcph.884](https://doi.org/10.1002/jcph.884)) -- pediatric patients with spinal muscular atrophy receiving intrathecal nusinersen.
 * Add Gaohua 2012 pregnancy PBPK ([doi:10.1111/j.1365-2125.2012.04363.x](https://doi.org/10.1111/j.1365-2125.2012.04363.x)) -- healthy pregnant Caucasian women (14-compartment whole-body p-PBPK with GA-dependent maternal physiology, applied to caffeine [CYP1A2], metoprolol [CYP2D6], and midazolam [CYP3A4]); ratifies new canonical bare `skin` PBPK compartment.
 * Add Morris 2011 telapristone ([doi:10.1208/s12248-011-9304-7](https://doi.org/10.1208/s12248-011-9304-7)) -- adult women with single-dose telapristone-acetate phase I/II PK studies; ratifies new `cdb4453` metabolite suffix, `MIX_FAST_ELIM`, and `RENALIMP_MOD` covariate canonicals.
