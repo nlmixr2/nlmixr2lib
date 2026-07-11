@@ -992,6 +992,10 @@ navbar:
         href: articles/Park_2001_ketoprofen.html
       - text: "Ketorolac (Valitalo 2017)"
         href: articles/Valitalo_2017_ketorolac.html
+      - text: "Lacosamide dropout (Lindauer 2017)"
+        href: articles/Lindauer_2017_lacosamide.html
+      - text: "Lacosamide seizure (Lindauer 2017)"
+        href: articles/Lindauer_2017_lacosamide.html
       - text: "Lamivudine (Archary 2019)"
         href: articles/Archary_2019_lamivudine.html
       - text: "Lamivudine (Bouazza 2010)"
@@ -2846,6 +2850,7 @@ articles:
   - articles/Lin_2020_glasdegib_AML_overall_survival
   - articles/Lin_2024_casirivimab
   - articles/Lin_2024_pozelimab
+  - articles/Lindauer_2017_lacosamide
   - articles/Lindauer_2017_pembrolizumab
   - articles/Livio_2014_tobramycin
   - articles/Llanos_2017_gentamicin

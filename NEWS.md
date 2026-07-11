@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Rozman 2017 rituximab ([doi:10.1111/bcp.13271](https://doi.org/10.1111/bcp.13271)) -- adults with diffuse large B-cell lymphoma on R-CHOP q3w (ratifies new `PFS_EVENT` covariate canonical for progression-free-survival event indicator observed during follow-up).
+* Add Lindauer 2017 lacosamide ([doi:10.1007/s40262-017-0530-8](https://doi.org/10.1007/s40262-017-0530-8)) -- adults newly diagnosed with focal or generalized tonic-clonic epilepsy on lacosamide or carbamazepine-CR monotherapy (SP0993 trial; repeated time-to-event models for dropout and for time to seizure; ratifies new `CONMED_LCM`, `AUC_LCM`, `AUC_CBZ`, `NSP3M_LT2`, `NSP3M_7_50`, `NSP3M_GT50` covariate canonicals and new `cumhaz_1st`, `cumhaz_2nd` compartment canonicals).
 * Add Luu 2017 nusinersen ([doi:10.1002/jcph.884](https://doi.org/10.1002/jcph.884)) -- pediatric patients with spinal muscular atrophy receiving intrathecal nusinersen.
 * Add Gaohua 2012 pregnancy PBPK ([doi:10.1111/j.1365-2125.2012.04363.x](https://doi.org/10.1111/j.1365-2125.2012.04363.x)) -- healthy pregnant Caucasian women (14-compartment whole-body p-PBPK with GA-dependent maternal physiology, applied to caffeine [CYP1A2], metoprolol [CYP2D6], and midazolam [CYP3A4]); ratifies new canonical bare `skin` PBPK compartment.
 * Add Morris 2011 telapristone ([doi:10.1208/s12248-011-9304-7](https://doi.org/10.1208/s12248-011-9304-7)) -- adult women with single-dose telapristone-acetate phase I/II PK studies; ratifies new `cdb4453` metabolite suffix, `MIX_FAST_ELIM`, and `RENALIMP_MOD` covariate canonicals.

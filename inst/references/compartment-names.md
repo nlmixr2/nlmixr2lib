@@ -1950,6 +1950,20 @@ The Ait-Oudhia 2012 canakinumab IL-1beta -> CRP transit cascade: `crp1` / `crp2`
 - **Example models:** `Hansson_2013_sunitinib_os.R`.
 - **Notes:** Registered 2026-06-28. Member of the `cumhaz_<type>` multi-hazard family alongside `cumhaz`, `cumhaz_os`, and `cumhaz_drop`; `_cens` denotes the censoring distribution specifically (in Hansson 2013 a separate Weibull `lambdacens` / `alphacens` censoring model exposed for forward dropout simulation).
 
+### cumhaz_1st (**canonical first-event cumulative-hazard (repeated-time-to-event sub-model)**)
+- **Type:** compartment
+- **Role:** Cumulative-hazard state for the time-to-first-event Weibull sub-model in repeated-time-to-event models with distinct first-event and subsequent-event hazard sub-models (Abrantes 2010 / Lindauer 2017 parameterisation). Integrates the first-event hazard from t = 0 so the first-event survivor function is `sur = exp(-cumhaz_1st)` (the paper's `sur` for "time to first seizure"). Paired with `cumhaz_2nd` for the subsequent-event sub-model.
+- **Source aliases:** none.
+- **Example models:** `Lindauer_2017_lacosamide_seizure.R` (Weibull baseline hazard `hazard_1st = lam1_eff * p1 * (lam1_eff * (t + del))^(p1 - 1)`; the LHS survivor function `sur = exp(-cumhaz_1st)` is the observation variable for the first-seizure TTE sub-model).
+- **Notes:** Registered 2026-07-03. Member of the `cumhaz_<type>` multi-hazard family alongside `cumhaz`, `cumhaz_os`, `cumhaz_drop`, and `cumhaz_cens`. The paired 2nd-event canonical is `cumhaz_2nd`.
+
+### cumhaz_2nd (**canonical second-and-subsequent-event cumulative-hazard (repeated-time-to-event sub-model)**)
+- **Type:** compartment
+- **Role:** Cumulative-hazard state for the time-to-second-and-subsequent-event Weibull sub-model in repeated-time-to-event models with distinct first-event and subsequent-event hazard sub-models (Abrantes 2010 / Lindauer 2017 parameterisation). Integrates the subsequent-event hazard from t = 0; the derived subsequent-event survivor function `sur_2nd = exp(-cumhaz_2nd)` is exposed as a diagnostic output. Paired with `cumhaz_1st` for the first-event sub-model.
+- **Source aliases:** none.
+- **Example models:** `Lindauer_2017_lacosamide_seizure.R` (Weibull baseline hazard `hazard_2nd = lam2_eff * p2 * (lam2_eff * (t + del))^(p2 - 1)` with an IIV eta on ln(lam2), reflecting the paper's Table 3 finding of substantial between-subject variability in the subsequent-seizure hazard; SD 2.03 on ln(k2)).
+- **Notes:** Registered 2026-07-03. Member of the `cumhaz_<type>` multi-hazard family. Applies whenever a model separately parameterises the first-event hazard (`cumhaz_1st`) and the subsequent-event hazard (`cumhaz_2nd`) with different Weibull scale / shape and, typically, different covariate coefficients on each sub-model, as first proposed by Abrantes et al. and adopted by Lindauer 2017 for lacosamide.
+
 ### sur (**canonical survival-probability output**)
 - **Type:** compartment
 - **Role:** Survival-probability output `S(t)` of a time-to-event sub-model, derived from the cumulative hazard (`sur = exp(-cumhaz)` for a proportional-hazard form, or `sur = 1 - Phi(z)` for an accelerated-failure-time log-normal form). Single PD output for forward-simulation TTE models.

@@ -1906,6 +1906,28 @@ All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODA
 - **Example models:** `Koloskoff_2025_ganciclovir.R` (Koloskoff 2025 indirect viral turnover model for CMV viral load in pediatric SOT / HSCT recipients; AUC_GCV enters the ODE via `kout * (1 + Emax * AUC_GCV / (EC50 + AUC_GCV)) * viralLoad`).
 - **Notes:** Specific scope -- the column meaning is tied to ganciclovir as the drug and to a q12h interval-averaging convention. Sibling drug-specific AUC canonicals (`AUC_CARBO`, `AUC_GEM`, `AUC_BAST_FW`, `AUC_PAZO`) follow the same `AUC_<DRUG>` naming pattern; a future PK/PD model that uses a different exposure metric for ganciclovir (e.g., trough concentration, instantaneous concentration) should register a parallel canonical rather than overload `AUC_GCV`. Koloskoff 2025 Monte Carlo simulations are reported under AUC_0-24 (Tables 3 and 4) assuming AUC_0-24 = 2 x AUC_0-12 at steady state; nlmixr2 simulations should set AUC_GCV to the q12h-interval value (i.e., AUC_0-24 / 2).
 
+### AUC_LCM (**canonical for daily AUC of lacosamide at steady state**)
+- **Description:** Daily area under the plasma concentration-time curve of lacosamide (LCM) at steady state (mg*h/L), used as the drug-exposure covariate on the seizure hazard in time-to-seizure models of LCM anti-epileptic therapy. Dose-step-varying (the value tracks the patient's currently assigned LCM target dose level: 100 -> 200 -> 400 -> 600 mg/day). Set to 0 for subjects not on lacosamide so the centred-deviation covariate contribution is gated by a treatment-arm indicator (`CONMED_LCM`) inside the model rather than by the covariate value itself.
+- **Units:** `mg*h/L` (document per-model via `covariateData[[AUC_LCM]]$units` if a different exposure unit is reported).
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters via centred-deviation form `slope * (AUC_LCM - AUC_ref)`. Reference value observed: 104 mg*h/L (Lindauer 2017 SP0993 typical daily AUC at the first LCM target dose 200 mg/day; Lindauer 2017 Table 3 note c). Approximate scaling at higher doses: ~208 mg*h/L at 400 mg/day, ~312 mg*h/L at 600 mg/day.
+- **Source aliases:**
+  - `AUC_LCM` -- printed name in Lindauer 2017 Table 3 (rows `AUC_LCM * k1` and `AUC_LCM * k2`); the paper computes per-subject daily AUC from an empirical-Bayes clearance estimate of a previously published lacosamide popPK model (Lindauer 2017 Section 2.3).
+- **Example models:** `Lindauer_2017_lacosamide_seizure.R` (centred-deviation form on both first-seizure and subsequent-seizure Weibull scale parameters: slopes -0.00917 (1st) and -0.00751 (2nd+); gated by `CONMED_LCM = 1`).
+- **Notes:** Specific scope; lacosamide-specific. Follows the `AUC_<DRUG>` sibling family (`AUC_CARBO`, `AUC_GEM`, `AUC_BAST_FW`, `AUC_PAZO`, `AUC_GCV`, `AUC_RTV`). Downstream users should compute the per-subject daily AUC from an on-disk lacosamide popPK model (e.g., a Cawello 2013 / 2015 popPK) or from the actual LCM dose regimen if a compartmental model is being coupled to the TTE hazard. Ratified canonically on 2026-07-03 alongside the Lindauer 2017 lacosamide time-to-seizure extraction.
+
+### AUC_CBZ (**canonical for daily AUC of carbamazepine at steady state**)
+- **Description:** Daily area under the plasma concentration-time curve of carbamazepine (CBZ; typically as controlled-release CBZ-CR) at steady state (mg*h/L), used as the drug-exposure covariate on the seizure hazard in time-to-seizure models of CBZ anti-epileptic therapy. Dose-step-varying (the value tracks the patient's currently assigned CBZ-CR target dose level: 200 -> 400 -> 800 -> 1200 mg/day in the Lindauer 2017 SP0993 design). Set to 0 for subjects not on carbamazepine so the centred-deviation covariate contribution is gated by a treatment-arm indicator (`CONMED_LCM` in Lindauer 2017; equivalent to `1 - CONMED_CBZ` for that design) inside the model rather than by the covariate value itself.
+- **Units:** `mg*h/L` (document per-model via `covariateData[[AUC_CBZ]]$units` if a different exposure unit is reported).
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters via centred-deviation form `slope * (AUC_CBZ - AUC_ref)`. Reference value observed: 132 mg*h/L (Lindauer 2017 SP0993 typical daily AUC at the first CBZ-CR target dose 400 mg/day for a 70-kg patient; Lindauer 2017 Section 3.4 first paragraph).
+- **Source aliases:**
+  - `AUC_CBZ` -- printed name in Lindauer 2017 Table 3 (rows `AUC_CBZ * k1` and `AUC_CBZ * k2`); the paper computes per-subject daily AUC from an empirical-Bayes clearance estimate of a previously published carbamazepine popPK model (Lindauer 2017 Section 2.3).
+- **Example models:** `Lindauer_2017_lacosamide_seizure.R` (centred-deviation form on both first-seizure and subsequent-seizure Weibull scale parameters: slopes -0.00658 (1st) and -0.0153 (2nd+); gated by `CONMED_LCM = 0` -- i.e., the CBZ-CR arm).
+- **Notes:** Specific scope; carbamazepine-specific. Distinct from `CONMED_CBZ` -- `CONMED_CBZ` is the binary carbamazepine coadministration indicator (used in models where the effect of CBZ enters as a categorical on / off shift, e.g., Schoemaker 2017 brivaracetam), while `AUC_CBZ` carries the magnitude of CBZ exposure and is used when the effect scales with dose. Follows the `AUC_<DRUG>` sibling family. Ratified canonically on 2026-07-03 alongside the Lindauer 2017 lacosamide time-to-seizure extraction.
+
 ### AUC_PAZO (**canonical for per-period mean AUC of pazopanib**)
 - **Description:** Per-period (per-dose-group in preclinical xenograft studies; per-subject mean dose-adjusted in clinical studies) mean AUC of pazopanib used as the drug-exposure covariate driving the antiangiogenic and cytotoxic effect rates in semi-mechanistic tumour-growth / angiogenesis-inhibition (TGI) models of pazopanib in renal-cell carcinoma. Time-varying step-wise (held constant within a treatment period and resetting when dose level changes or treatment ends).
 - **Units:** `ug*h/mL` (`= mg*h/L`). Document per-model via `covariateData[[AUC_PAZO]]$units`.
@@ -3629,6 +3651,44 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Notes:** Use this canonical when the source paper tests a binary cardiac-failure indicator (compensated, stable, on background therapy) as a structural covariate on PK parameters. Distinct from concomitant-medication indicators such as `CONMED_SPIRON` (which captures the diuretic / aldosterone-antagonist effect typically given alongside CHF therapy) and from haemodynamic / autonomic covariates such as `HR` and the blood-pressure outputs. For papers that decompose CHF severity into NYHA classes, prefer a per-class encoding (e.g., `DIS_CHF_NYHA3`, `DIS_CHF_NYHA4`) when the strata are retained in the final model. The covariate-effect parameter form is `e_chf_<param>` (drops the `DIS_` prefix per the existing `DIS_CANCER -> e_cancer_<param>` precedent). Ratified canonically on 2026-06-10 alongside the Thomson 1989 lisinopril extraction.
 
 
+## Epilepsy baseline seizure-severity indicators
+
+Baseline seizure-severity indicators derived from a pre-trial seizure count (typically the number of seizures in the 3 months before study entry, decomposed by the source paper into severity bins). The count itself is decomposed into a set of mutually-exclusive binary indicators per the standing operator policy for count covariates ("count covariate -> decomposed binary indicators, not a single integer count"). Members are jointly restricted to at most one being = 1 for any subject; the reference category is 2-6 seizures in the previous 3 months (all indicators = 0 selects the reference).
+
+### NSP3M_LT2 (**canonical for baseline seizure count fewer than 2 in the previous 3 months**)
+- **Description:** Binary indicator that the subject reported fewer than 2 seizures in the 3 months before trial start (baseline period). 1 = <2 baseline seizures (the low-severity bin), 0 = otherwise. Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (2-6 baseline seizures per the Lindauer 2017 NSP3M decomposition; the reference bin). Subjects in the 7-50 or >50 bins have `NSP3M_LT2 = 0` and are identified by `NSP3M_7_50 = 1` or `NSP3M_GT50 = 1` instead.
+- **Source aliases:**
+  - `NSP3M` (categorical, the <2 bin) -- used in `Lindauer_2017_lacosamide_seizure.R` (Lindauer 2017 Section 2.5 splits NSP3M into four categories: <2, 2-6, 7-50, >50, with 2-6 as reference; the low-severity bin is registered here as `NSP3M_LT2`).
+- **Example models:** `Lindauer_2017_lacosamide_seizure.R` (log-hazard shifts on both first-seizure and subsequent-seizure Weibull scale: e_nsp3m_lt2_1st = -1.12 (first event), e_nsp3m_lt2_2nd = -1.37 (subsequent events); the associated hazard ratios vs the 2-6 reference are 0.58 and 0.38 per Lindauer 2017 Table 4).
+- **Notes:** Specific scope because the concept is tied to the pre-trial-seizure-count decomposition used in the SP0993 / N01061 monotherapy epilepsy trials (Lindauer 2017 references Abrantes et al. for the two-Weibull-sub-model approach with NSP3M-derived binary categories). Sibling canonicals `NSP3M_7_50` and `NSP3M_GT50` complete the 4-level decomposition. Data assemblers must enforce mutual exclusivity: at most one of {`NSP3M_LT2`, `NSP3M_7_50`, `NSP3M_GT50`} is 1 for each subject; if all three are 0 the subject belongs to the reference 2-6 bin. The covariate-effect parameter form is `e_nsp3m_lt2_<param>` (drops `_LT2` structure into the coefficient name). Ratified canonically on 2026-07-03 alongside the Lindauer 2017 lacosamide time-to-seizure extraction.
+
+### NSP3M_7_50 (**canonical for baseline seizure count 7 to 50 in the previous 3 months**)
+- **Description:** Binary indicator that the subject reported 7 to 50 seizures in the 3 months before trial start (baseline period). 1 = 7-50 baseline seizures (the moderate-high-severity bin), 0 = otherwise. Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (2-6 baseline seizures per the Lindauer 2017 NSP3M decomposition; the reference bin).
+- **Source aliases:**
+  - `NSP3M` (categorical, the 7-50 bin) -- used in `Lindauer_2017_lacosamide_seizure.R`.
+- **Example models:** `Lindauer_2017_lacosamide_seizure.R` (log-hazard shifts on both first-seizure and subsequent-seizure Weibull scale: e_nsp3m_7_50_1st = +1.94 (first event), e_nsp3m_7_50_2nd = +1.36 (subsequent events); the associated hazard ratios vs the 2-6 reference are 2.60 and 2.63 per Lindauer 2017 Table 4).
+- **Notes:** Specific scope. Sibling of `NSP3M_LT2` and `NSP3M_GT50` in the 4-level NSP3M decomposition; see `NSP3M_LT2` notes for the mutual-exclusivity rule and covariate-effect naming. The Lindauer 2017 Table 4 hazard ratio of 2.60 (90% CI 2.02-3.31) for the first-seizure hazard was highlighted in the paper Abstract as the primary NSP3M-severity finding. Ratified canonically on 2026-07-03 alongside the Lindauer 2017 lacosamide time-to-seizure extraction.
+
+### NSP3M_GT50 (**canonical for baseline seizure count greater than 50 in the previous 3 months**)
+- **Description:** Binary indicator that the subject reported more than 50 seizures in the 3 months before trial start (baseline period). 1 = >50 baseline seizures (the highest-severity bin), 0 = otherwise. Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (2-6 baseline seizures per the Lindauer 2017 NSP3M decomposition; the reference bin).
+- **Source aliases:**
+  - `NSP3M` (categorical, the >50 bin) -- used in `Lindauer_2017_lacosamide_seizure.R`.
+- **Example models:** `Lindauer_2017_lacosamide_seizure.R` (log-hazard shifts on both first-seizure and subsequent-seizure Weibull scale: e_nsp3m_gt50_1st = +3.30 (first event), e_nsp3m_gt50_2nd = +2.53 (subsequent events); the associated hazard ratios vs the 2-6 reference are 5.09 and 6.09 per Lindauer 2017 Table 4).
+- **Notes:** Specific scope. Sibling of `NSP3M_LT2` and `NSP3M_7_50` in the 4-level NSP3M decomposition; see `NSP3M_LT2` notes for the mutual-exclusivity rule and covariate-effect naming. Ratified canonically on 2026-07-03 alongside the Lindauer 2017 lacosamide time-to-seizure extraction.
+
+
 ## Pulmonary / lung-disease biomarkers
 
 ### FEV1 (**canonical for forced expiratory volume in 1 second**)
@@ -5009,6 +5069,17 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
   - `IPICO` -- used in `Zhang_2019_nivolumab.R`.
 - **Example models:** `Zhang_2019_nivolumab.R` (additive effect on the time-varying-CL Emax parameter: Emax += -0.0668 when CONMED_IPI_ANY = 1).
 - **Notes:** Logically the union of the regimen-specific indicators (CONMED_IPI_3Q3W, CONMED_IPI_1Q6W, plus the unmodeled 1 mg/kg q3wx4 and 1 mg/kg q12w schedules). Zhang 2019 uses it on the *time-varying* Emax (a different structural parameter from baseline CL), which is why it coexists with the regimen-specific indicators on baseline CL rather than substituting for them.
+
+### CONMED_LCM (**canonical for lacosamide (monotherapy or coadministration) indicator**)
+- **Description:** 1 = subject is on lacosamide (LCM) at the observation, 0 = not on lacosamide. In an active-controlled monotherapy trial (SP0993) the indicator identifies the LCM arm (the CBZ-CR arm gets 0). In adjunctive-treatment cohorts the same canonical would flag concomitant lacosamide use. Time-varying is permitted when a study spans on / off transitions; time-fixed in monotherapy parallel-group trials.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (not on lacosamide; in monotherapy head-to-head trials this is the comparator arm, e.g., carbamazepine controlled-release in Lindauer 2017 SP0993).
+- **Source aliases:**
+  - `TYPE` -- used in `Lindauer_2017_lacosamide_dropout.R` and `Lindauer_2017_lacosamide_seizure.R` (Lindauer 2017 SP0993 encoding: TYPE = 1 for the lacosamide arm, 0 for the CBZ-CR arm; same value semantics as the canonical CONMED_LCM column).
+- **Example models:** `Lindauer_2017_lacosamide_dropout.R` (multiplicative log-hazard shift on the dropout hazard: `hazard *= exp(-0.138 * CONMED_LCM)`, HR = 0.871 vs the CBZ-CR arm, Lindauer 2017 Table 2 Coeff_TYPE), `Lindauer_2017_lacosamide_seizure.R` (gates the drug-specific AUC covariate contributions -- `AUC_LCM` centred deviation is active only when CONMED_LCM = 1, `AUC_CBZ` centred deviation active only when CONMED_LCM = 0 -- and gates the AGE covariate effect on the first-seizure hazard which is LCM-only per Lindauer 2017 Section 3.4).
+- **Notes:** Auto-approved member of the `CONMED_<INN>` family. Follows the `CONMED_*` concomitant-medication pattern (`CONMED_CBZ`, `CONMED_EFV`, `CONMED_AZA`, etc.). Semantically the indicator captures "is the subject taking lacosamide at this record"; in a monotherapy parallel-group trial that equates to arm membership, and in adjunctive or cross-over designs it captures the on / off status. Ratified canonically on 2026-07-03 alongside the Lindauer 2017 lacosamide time-to-seizure / dropout extraction.
 
 ### CONMED_LPV (**canonical for concomitant lopinavir co-administration indicator**)
 - **Description:** 1 = subject is receiving concomitant lopinavir as part of an antiretroviral regimen at the observation, 0 = not on lopinavir. Captures the LPV-ritonavir DDI on ritonavir apparent oral clearance: when LPV/r is co-administered, ritonavir CL/F is roughly 2.7-fold higher than when ritonavir is given without lopinavir (Kappelhoff 2005 attributes the increase to lopinavir-driven enzyme induction superimposed on ritonavir's own CYP3A4 inhibition). Distinct from the joint rifampicin + super-boosted-LPV/r 4:4 indicator `CONMED_RIF_LPVR4` and from the cholesterol-surrogate use in `Archary_2018_lopinavir.R`; this canonical is the binary "is the subject on lopinavir at all" flag, not a regimen-specific contrast.
