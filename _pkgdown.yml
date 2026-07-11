@@ -1556,6 +1556,8 @@ navbar:
         href: articles/Westerhout_2013_quinidine.html
       - text: "Quinidine QT (Shin 2006)"
         href: articles/Shin_2006_quinidine_QT.html
+      - text: "Quinidine rat (Kervezee 2014)"
+        href: articles/Kervezee_2014_quinidine_rat.html
       - text: "Quinidine rat (Syvanen 2012)"
         href: articles/Syvanen_2012_quinidine_rat.html
       - text: "Quinine (Kloprogge 2014)"
@@ -2687,6 +2689,7 @@ articles:
   - articles/Keizer_2011_E7820
   - articles/Kelman_1984_gentamicin
   - articles/Kerbusch_2000_ifosfamide
+  - articles/Kervezee_2014_quinidine_rat
   - articles/Khan_2015_ciprofloxacin
   - articles/Kielbasa_2020_galcanezumab
   - articles/Kim_2008_aripiprazole
