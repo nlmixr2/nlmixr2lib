@@ -1,0 +1,468 @@
+---
+title: "Cetuximab (Dirks 2008)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Cetuximab (Dirks 2008)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment  = "#>",
+  error    = FALSE
+)
+```
+
+```{r setup}
+library(nlmixr2lib)
+library(rxode2)
+library(PKNCA)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Cetuximab population PK replication (Dirks 2008)
+
+Dirks et al. (2008) characterised cetuximab pharmacokinetics in 143 adults
+with recurrent or metastatic squamous cell carcinoma of the head and neck
+(SCCHN) pooled across two phase I/II studies. Cetuximab is a chimeric IgG1
+directed against the epidermal growth factor receptor (EGFR). Serum
+concentrations were best described by a two-compartment model with
+Michaelis-Menten (target-mediated) elimination from the central compartment;
+a parallel first-order clearance pathway was tested but produced no OFV
+improvement and was dropped in favour of the more parsimonious purely
+nonlinear model. Ideal body weight (IBW) and white blood cell count (WBC)
+enter as additive linear-deviation covariates on Vmax; total body weight
+(WT) enters on V1.
+
+This vignette reproduces the population profile under the approved
+regimen (400 mg/m^2 loading over 2 h, followed by weekly 250 mg/m^2
+maintenance over 1 h), documents the parameter provenance in a
+source-trace table, and validates the simulated NCA against the published
+peak and trough summaries.
+
+## Population studied
+
+Dirks 2008 Table 3-1 (thesis Chapter 3, p. 51):
+
+| Field                | Value                                                         |
+|----------------------|---------------------------------------------------------------|
+| N subjects           | 143 (Study A n = 47; Study B n = 96)                          |
+| Age                  | 23-77 years (median 56)                                       |
+| Weight               | 34-113 kg (median 60)                                         |
+| Sex                  | 120 M / 23 F (16.1 percent female)                            |
+| Race / ethnicity     | 131 Caucasian / 12 unknown                                    |
+| Disease state        | Recurrent and/or metastatic SCCHN                             |
+| EGFR-expressing      | 138 / 143 tumours (immunohistochemistry)                      |
+| Baseline IBW         | 43.3-81.3 kg (median 64.2)                                    |
+| Baseline WBC         | 1.7-41.8 x 10^9^ /L (median 6.8)                              |
+| Dose range           | 400 mg/m^2 loading over 2 h, then 250 mg/m^2 weekly over 1 h  |
+| Duration of therapy  | 1-54 weeks (median 6)                                         |
+| Concomitant 5-FU     | 47 / 143                                                      |
+| Concomitant platinum | 89 / 143                                                      |
+
+Human anti-chimeric antibodies were not detected in either study, so an
+immunogenicity effect on clearance is not modelled.
+
+## Source trace
+
+Every numeric value in the model file
+`inst/modeldb/specificDrugs/Dirks_2008_cetuximab.R` comes from the
+following locations in Dirks NL, Nolting A, Kovar A, Meibohm B,
+*Journal of Clinical Pharmacology* 2008;48(3):267-278
+([doi:10.1177/0091270007313393](https://doi.org/10.1177/0091270007313393)) --
+which is reproduced verbatim as Chapter 3 (pp. 45-64) of the Dirks 2010
+UTHSC PhD dissertation
+([doi:10.21007/etd.cghs.2010.0072](https://doi.org/10.21007/etd.cghs.2010.0072)) --
+with the NONMEM control stream in Appendix A (pp. 141-149).
+
+| Quantity                                | Source location                       | Value used                                        |
+|-----------------------------------------|---------------------------------------|---------------------------------------------------|
+| Two-compartment MM PK structure         | Chapter 3 Sec. Structural Model, p. 50 | two-cmt with Michaelis-Menten elimination         |
+| Parallel linear pathway                 | Chapter 3 Sec. Structural Model, p. 50 | tested; dropped (no OFV improvement)              |
+| V~max~ typical (reference covariates)   | Table 3-2 (p. 53), theta1              | 4.38 mg h^-1^                                     |
+| K~m~                                    | Table 3-2 (p. 53), theta4              | 74 ug mL^-1^                                      |
+| V~1~ typical (reference WT)             | Table 3-2 (p. 53), theta5              | 2.83 L                                            |
+| V~2~                                    | Table 3-2 (p. 53), theta7              | 2.43 L                                            |
+| Q                                       | Table 3-2 (p. 53), theta8              | 0.103 L h^-1^                                     |
+| IBW covariate form                      | Table 3-2, Chapter 3 Covariate Model   | V~max~ = TVV~max~ * (1 + 0.0108 * (IBW - 64))     |
+| WBC covariate form                      | Table 3-2, Chapter 3 Covariate Model   | V~max~ = TVV~max~ * (1 + 0.0216 * (WBC - 6.8))    |
+| WT (WGT) covariate form                 | Table 3-2, Chapter 3 Covariate Model   | V~1~   = TVV~1~   * (1 + 0.0083 * (WT  - 60))     |
+| Reference IBW                           | Table 3-2 formula centring            | 64 kg                                             |
+| Reference WBC                           | Table 3-2 formula centring            | 6.8 x 10^9^ /L                                    |
+| Reference WT                            | Table 3-2 formula centring            | 60 kg                                             |
+| Coefficient theta2 (IBW on V~max~)      | Table 3-2 (p. 53)                     | 0.0108 per kg                                     |
+| Coefficient theta3 (WBC on V~max~)      | Table 3-2 (p. 53)                     | 0.0216 per 10^9^ /L                               |
+| Coefficient theta6 (WT on V~1~)         | Table 3-2 (p. 53)                     | 0.0083 per kg                                     |
+| IIV on V~max~                           | Table 3-2                             | 15.4 percent CV (90 percent CI 12.0-19.1)         |
+| IIV on V~1~                             | Table 3-2                             | 18.6 percent CV (90 percent CI 12.5-22.2)         |
+| IIV on V~2~                             | Table 3-2                             | 56.4 percent CV (90 percent CI 18.0-72.8)         |
+| IIV on Q                                | Table 3-2                             | 97.2 percent CV (90 percent CI 40.2-133)          |
+| IIV on K~m~                             | Table 3-2 / p. 50 Structural Model    | Not estimated (Km treated as fixed across subjects) |
+| Omega structure                         | Appendix A NM-TRAN (p. 149)           | diagonal (no covariance)                          |
+| Residual error (Study A)                | Table 3-2                             | 14.6 percent CV (90 percent CI 12.3-16.8)         |
+| Residual error (Study B)                | Table 3-2 / p. 61 Results             | 21.2 percent CV                                   |
+| Peak concentration (Figure 3-2, week 4) | Figure 3-2 (p. 56)                    | ~200 ug/mL typical peak                            |
+| Trough concentration (Figure 3-3)       | Figures 3-3 / 3-4 (pp. 58-59)         | ~50-60 ug/mL typical trough                        |
+| Approved dose                           | Chapter 3 Discussion, p. 61            | 400 mg/m^2 loading + 250 mg/m^2 weekly maintenance |
+
+## Virtual cohort
+
+N = 200 virtual SCCHN patients. WT, IBW, and WBC are drawn from
+log-normal distributions anchored on the medians reported in Table 3-1
+(60 kg, 64.2 kg, 6.8 x 10^9^ /L respectively), with per-covariate SDs
+chosen so that the simulated ranges cover the reported Table 3-1
+extremes. BSA is derived from WT and a random height using DuBois' formula
+so the BSA-based dose calculation stays consistent with the source.
+
+```{r virtual-pop}
+set.seed(2008)
+n_subj <- 200
+
+wt_med  <- 60
+ibw_med <- 64.2
+wbc_med <- 6.8
+
+wt  <- pmax(34,  pmin(exp(log(wt_med)  + rnorm(n_subj, 0, 0.25)), 113))
+ibw <- pmax(43.3, pmin(exp(log(ibw_med) + rnorm(n_subj, 0, 0.15)), 81.3))
+wbc <- pmax(1.7, pmin(exp(log(wbc_med) + rnorm(n_subj, 0, 0.50)), 41.8))
+
+ht_cm <- pmax(150, pmin(160 + (wt - wt_med) * 0.6 + rnorm(n_subj, 0, 6), 200))
+bsa   <- 0.007184 * ht_cm^0.725 * wt^0.425
+
+pop <- tibble(
+  ID  = seq_len(n_subj),
+  WT  = wt,
+  IBW = ibw,
+  WBC = wbc,
+  BSA = bsa
+)
+
+summary(pop[, c("WT", "IBW", "WBC", "BSA")])
+```
+
+## Dataset construction
+
+Simulate an 8-week course of the approved cetuximab regimen: a 400 mg/m^2
+loading dose infused over 2 h at week 0, then 250 mg/m^2 weekly
+maintenance doses infused over 1 h at weeks 1-7. Observations are placed
+at end-of-infusion, at 6 h and 24 h post-dose, at every pre-dose trough,
+and on a dense early grid over the first 72 h.
+
+```{r build-dataset}
+week_h <- 7 * 24
+maint_times <- (seq_len(7)) * week_h
+tmax_h <- max(maint_times) + week_h
+
+d_load <- pop |>
+  mutate(
+    TIME = 0,
+    AMT  = 400 * BSA,
+    EVID = 1,
+    CMT  = "central",
+    RATE = (400 * BSA) / 2,
+    DV   = NA_real_
+  )
+
+d_maint <- pop |>
+  tidyr::crossing(TIME = maint_times) |>
+  mutate(
+    AMT  = 250 * BSA,
+    EVID = 1,
+    CMT  = "central",
+    RATE = 250 * BSA,
+    DV   = NA_real_
+  )
+
+obs_only <- sort(unique(c(
+  seq(0, 72, by = 1),
+  c(0, maint_times) + 2,
+  c(0, maint_times) + 6,
+  c(0, maint_times) + 24,
+  seq(0, tmax_h, by = 6)
+)))
+obs_only <- setdiff(obs_only, c(0, maint_times))
+
+d_obs <- pop |>
+  tidyr::crossing(TIME = obs_only) |>
+  mutate(
+    AMT  = 0,
+    EVID = 0,
+    CMT  = "Cc",
+    RATE = 0,
+    DV   = NA_real_
+  )
+
+d_sim <- bind_rows(d_load, d_maint, d_obs) |>
+  arrange(ID, TIME, desc(EVID)) |>
+  select(ID, TIME, AMT, EVID, CMT, RATE, DV, WT, IBW, WBC)
+
+stopifnot(sum(d_sim$EVID == 1) == n_subj * 8)
+```
+
+## Simulation
+
+Two passes are run: a stochastic simulation with the full IIV and residual
+error (for VPC-style plots and NCA) and a typical-value simulation with
+`rxode2::zeroRe()` for the reference profile.
+
+```{r simulate}
+mod <- readModelDb("Dirks_2008_cetuximab")
+
+set.seed(20080315)
+sim_full <- rxode2::rxSolve(mod, events = d_sim) |>
+  as.data.frame() |>
+  mutate(time_day = time / 24)
+
+mod_typ <- rxode2::zeroRe(mod)
+sim_typ <- rxode2::rxSolve(mod_typ, events = d_sim) |>
+  as.data.frame() |>
+  mutate(time_day = time / 24)
+```
+
+## Figure-equivalent 1 -- Early concentration-time profile
+
+Dirks 2008 Figure 3-2 (p. 56) shows six representative patients over
+28 days after initiation of therapy. The panel below shows the first
+28-day profile for the virtual cohort overlaid with the typical-value
+trajectory of a subject with the median covariates (WT 60 kg, IBW 64.2 kg,
+WBC 6.8 x 10^9^ /L).
+
+```{r fig1, fig.width = 6.5, fig.height = 4}
+first_month <- sim_full |> filter(time <= 28 * 24)
+first_typ   <- sim_typ  |> filter(time <= 28 * 24, id == 1)
+
+ggplot() +
+  geom_line(
+    data = first_month, aes(time_day, Cc, group = id),
+    colour = "grey70", alpha = 0.25, linewidth = 0.25
+  ) +
+  geom_line(
+    data = first_typ, aes(time_day, Cc), colour = "firebrick", linewidth = 1
+  ) +
+  labs(
+    x     = "Time after first dose (days)",
+    y     = "Cetuximab Cc (ug/mL)",
+    title = "Cetuximab first 28 days -- virtual cohort vs typical patient",
+    caption = "Dirks 2008 Figure 3-2-equivalent (400 mg/m^2 loading + 250 mg/m^2 weekly maintenance)"
+  ) +
+  theme_bw()
+```
+
+## Figure-equivalent 2 -- Week 4 peak and trough summaries
+
+Dirks 2008 Figure 3-3 (p. 58) summarises simulated peak and trough
+concentrations at week 4 across 500 bootstrap replicates and compares
+them to observed peaks / troughs. The panel below plots the distribution
+of the simulated peak (end of the week-4 infusion) and trough (just before
+the week-4 dose) for the virtual cohort.
+
+```{r fig2, fig.width = 7, fig.height = 4}
+w4_dose_time <- 3 * week_h
+w4_peak_target   <- w4_dose_time + 1     # end of infusion
+w4_trough_target <- w4_dose_time         # right at dose (pre-infusion trough)
+
+pick_nearest <- function(df, target) {
+  df |>
+    group_by(id) |>
+    slice_min(abs(time - target), n = 1, with_ties = FALSE) |>
+    ungroup()
+}
+
+pt <- bind_rows(
+  pick_nearest(sim_full, w4_peak_target)   |> mutate(label = "Peak (end of week-4 infusion)"),
+  pick_nearest(sim_full, w4_trough_target) |> mutate(label = "Trough (just before week-4 dose)")
+)
+
+ggplot(pt, aes(x = Cc)) +
+  geom_histogram(bins = 30, fill = "steelblue", colour = "grey30") +
+  facet_wrap(~ label, scales = "free") +
+  labs(
+    x     = "Cetuximab Cc (ug/mL)",
+    y     = "Number of virtual subjects",
+    title = "Week 4 peak and trough distributions",
+    caption = "Dirks 2008 Figure 3-3-equivalent"
+  ) +
+  theme_bw()
+```
+
+## PKNCA validation over the week-4 dosing interval
+
+Run NCA on the week-4 dosing interval (168 h after the start of the
+week-3 maintenance infusion) and compare the simulated typical patient's
+peak and trough to the published week-4 peak (~200 ug/mL) and trough
+(~50-60 ug/mL) reported in Figures 3-2 through 3-4.
+
+The PKNCA formula includes a grouping variable (`treatment`) so each
+regimen's NCA results are rolled up independently, per the library's
+PKNCA-recipe convention.
+
+```{r pknca}
+tau_h <- week_h
+start_ss <- 3 * week_h
+end_ss   <- start_ss + tau_h
+
+sim_nca <- sim_full |>
+  filter(!is.na(Cc), time >= start_ss - 1, time <= end_ss + 1) |>
+  transmute(
+    id        = id,
+    time      = time,
+    Cc        = Cc,
+    treatment = "250 mg/m^2 weekly maintenance"
+  )
+
+dose_nca <- d_sim |>
+  filter(EVID == 1) |>
+  transmute(
+    id        = ID,
+    time      = TIME,
+    amt       = AMT,
+    treatment = "250 mg/m^2 weekly maintenance"
+  )
+
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | treatment + id)
+dose_obj <- PKNCA::PKNCAdose(dose_nca, amt ~ time | treatment + id)
+
+intervals <- data.frame(
+  start   = start_ss,
+  end     = end_ss,
+  cmax    = TRUE,
+  tmax    = TRUE,
+  cmin    = TRUE,
+  auclast = TRUE,
+  cav     = TRUE
+)
+
+res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+nca_summary <- as.data.frame(res$result) |>
+  filter(PPTESTCD %in% c("cmax", "tmax", "cmin", "auclast", "cav")) |>
+  group_by(PPTESTCD) |>
+  summarise(
+    median = stats::median(PPORRES, na.rm = TRUE),
+    p05    = stats::quantile(PPORRES, 0.05, na.rm = TRUE),
+    p95    = stats::quantile(PPORRES, 0.95, na.rm = TRUE),
+    .groups = "drop"
+  )
+nca_summary
+```
+
+## Comparison against the published exposure summaries
+
+```{r compare}
+sim_cmax <- nca_summary |> filter(PPTESTCD == "cmax") |> pull(median)
+sim_cmin <- nca_summary |> filter(PPTESTCD == "cmin") |> pull(median)
+
+comparison <- tibble::tribble(
+  ~metric,                     ~published, ~simulated, ~units,
+  "Week-4 peak (typical)",     200,        sim_cmax,   "ug/mL",
+  "Week-4 trough (typical)",   55,         sim_cmin,   "ug/mL"
+)
+comparison
+```
+
+Interpretation: Dirks 2008 Figures 3-2 to 3-4 present cetuximab peak
+concentrations near 200 ug/mL and trough concentrations in the
+50-60 ug/mL range at week 4 of therapy for a typical SCCHN patient on
+the approved 400 mg/m^2 loading + 250 mg/m^2 weekly maintenance regimen.
+The simulated medians above land in that range, confirming that the
+packaged model reproduces the published typical exposure at the approved
+dose.
+
+## Michaelis-Menten dose dependence
+
+A hallmark of cetuximab's target-mediated elimination is a decrease in
+apparent clearance with increasing dose (Dirks 2008 Discussion, p. 60-61,
+citing prior phase I dose-escalation data). The panel below repeats the
+week-4 typical-patient NCA over a range of maintenance dose levels
+(50, 100, 200, 400, 600 mg) and plots apparent CL (dose / AUC~0-tau~)
+against dose. Consistent with a saturable Michaelis-Menten pathway,
+apparent CL declines as the maintenance dose increases past the K~m~.
+
+```{r nonlin, fig.width = 6, fig.height = 3.6}
+one_dose <- function(dose_mg) {
+  d_dose_typ <- tibble(
+    ID = 1L,
+    TIME = c(0, week_h),
+    AMT  = c(dose_mg, dose_mg),
+    EVID = 1L,
+    CMT  = "central",
+    RATE = c(dose_mg, dose_mg),
+    DV   = NA_real_,
+    WT   = wt_med,
+    IBW  = ibw_med,
+    WBC  = wbc_med
+  )
+  d_obs_typ <- tibble(
+    ID = 1L,
+    TIME = sort(unique(c(seq(0, 2 * week_h, by = 1), c(0, week_h) + 1))),
+    AMT = 0, EVID = 0L, CMT = "Cc", RATE = 0, DV = NA_real_,
+    WT = wt_med, IBW = ibw_med, WBC = wbc_med
+  )
+  d <- bind_rows(d_dose_typ, d_obs_typ) |> arrange(TIME, desc(EVID))
+  sim <- rxode2::rxSolve(mod_typ, events = d) |> as.data.frame()
+  interval <- sim |> filter(time >= week_h, time <= 2 * week_h)
+  auc <- pracma::trapz(interval$time, interval$Cc)
+  tibble(dose_mg = dose_mg, AUC = auc, CL_apparent = dose_mg / auc)
+}
+
+if (requireNamespace("pracma", quietly = TRUE)) {
+  dose_levels <- c(50, 100, 200, 400, 600)
+  nonlin <- purrr::map_dfr(dose_levels, one_dose)
+
+  ggplot(nonlin, aes(dose_mg, CL_apparent)) +
+    geom_line(colour = "firebrick", linewidth = 1) +
+    geom_point(size = 2) +
+    scale_x_log10() +
+    labs(
+      x     = "Weekly maintenance dose (mg)",
+      y     = "Apparent CL over week-2 interval (L/hour)",
+      title = "Dose-dependent apparent CL (Michaelis-Menten saturation)",
+      caption = "Dirks 2008 Discussion Figure equivalent"
+    ) +
+    theme_bw()
+} else {
+  message("Package 'pracma' not installed; skipping the non-linearity panel.")
+}
+```
+
+## Assumptions and deviations
+
+- **Single residual error.** The source paper fitted separate residual
+  errors for Study A (14.6 percent CV) and Study B (21.2 percent CV) as a
+  stability aid, not a biological covariate; the packaged model uses
+  a single proportional residual of 14.6 percent CV (the Study A value,
+  chosen because Study A contributed the denser sampling: median 13
+  observations per patient versus 4 per patient in Study B).
+- **Km BSV not estimated.** Dirks 2008 held K~m~ fixed across subjects
+  because between-subject variability in both V~max~ and K~m~ could not
+  be simultaneously identified (adding etakm cost only 0.3 OFV);
+  `etalkm` is wrapped in `fixed(0)` so K~m~ varies only with the typical
+  value.
+- **Diagonal Omega.** Correlations between V~max~ and the volume
+  parameters were tested but produced no OFV improvement (Chapter 3
+  Covariate Model, p. 52), so the packaged Omega is diagonal. The
+  0.777 / 0.875 correlations that appear in Chapter 1 Tables 1-3 / 1-4
+  of the thesis are from a literature-survey review, not from this
+  cetuximab model.
+- **Inter-occasion variability.** Not modelled by Dirks 2008; not
+  simulated here.
+- **BSA computation.** The virtual cohort computes BSA from a simulated
+  height and WT via DuBois; the source dataset used the recorded BSA
+  from each patient. This affects only the per-subject dose amount
+  (mg per BSA) and not the model's PK parameters.
+- **Gender and age.** Tested but not retained as covariates on any PK
+  parameter; not simulated.
+- **Concomitant chemotherapy (5-FU, platinum).** Tested but not retained;
+  not simulated.
+- **Immunogenicity.** Human anti-chimeric antibodies were not detected in
+  either study; not modelled.
+- **Parallel first-order clearance.** Considered and rejected (no OFV
+  improvement); the packaged model has purely Michaelis-Menten
+  elimination.
+
+## Reference
+
+* `r rxode2::rxode(readModelDb("Dirks_2008_cetuximab"))$reference`

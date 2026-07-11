@@ -342,6 +342,8 @@ navbar:
         href: articles/Padoin_1998_cephalexin_rat.html
       - text: "Certolizumab (Wade 2015)"
         href: articles/Wade_2015_certolizumab.html
+      - text: "Cetuximab (Dirks 2008)"
+        href: articles/Dirks_2008_cetuximab.html
       - text: "Chloroquine (Simpson 2013)"
         href: articles/Simpson_2013_chloroquine.html
       - text: "Ciclosporin (Fanta 2007)"
@@ -2414,6 +2416,7 @@ articles:
   - articles/Diep_2022_eplontersen
   - articles/Diep_2026_donidalorsen
   - articles/Diepstraten_2013_propofol
+  - articles/Dirks_2008_cetuximab
   - articles/Djebli_2017_alirocumab
   - articles/Dodds_2005_rfxiii_cyno
   - articles/Dogterom_2018_asenapine
