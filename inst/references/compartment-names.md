@@ -2835,6 +2835,12 @@ Per-paper metabolite / sibling-drug suffix additions discovered during the 2026-
 - **Source aliases:** none.
 - **Example models:** `Schipani_2013_atazanavir_ritonavir.R`.
 
+### val (**canonical valsartan sibling-drug suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Valsartan (angiotensin-II receptor blocker) sibling-drug suffix, paired with amlodipine as the unsuffixed parent in the Heo 2016 amlodipine + valsartan combined PK/PD antihypertensive-interaction model. Drives `central_val` / `peripheral1_val` / `effect_val` compartments, `lcl_val` / `lvc_val` / `lq_val` / `lvp_val` / `ld1_val` PK parameters, and the `propSd_val` / `addSd_val` residuals on valsartan plasma concentration.
+- **Source aliases:** none.
+- **Example models:** `Heo_2016_amlodipine_valsartan.R` (doi:10.1111/bcp.13082).
+
 ### 9oh (**canonical 9-hydroxyrisperidone suffix**)
 - **Type:** metabolite-suffix
 - **Role:** 9-hydroxyrisperidone (paliperidone) active metabolite of risperidone.

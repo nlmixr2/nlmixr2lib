@@ -90,6 +90,8 @@ navbar:
         href: articles/Stricker_2013_aminocaproicAcid.html
       - text: "Amlitelimab (Tiraboschi 2025)"
         href: articles/Tiraboschi_2025_amlitelimab.html
+      - text: "Amlodipine valsartan (Heo 2016)"
+        href: articles/Heo_2016_amlodipine_valsartan.html
       - text: "Amodiaquine (Ali 2018)"
         href: articles/Ali_2018_amodiaquine.html
       - text: "Amoxicillin (Fournier 2018)"
@@ -2557,6 +2559,7 @@ articles:
   - articles/Hennig_2013_tobra
   - articles/Hennig_2015_phenytoin
   - articles/Hennig_2015_rifabutin
+  - articles/Heo_2016_amlodipine_valsartan
   - articles/Heuberger_2018_salbutamol
   - articles/Hietala_2010_artemether_lumefantrine_malaria
   - articles/HillMcManus_2017_febuxostat_lesinurad
