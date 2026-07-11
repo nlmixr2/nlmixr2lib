@@ -372,6 +372,8 @@ navbar:
         href: articles/Zhao_2014_ciprofloxacin.html
       - text: "Cisplatin (Boer 2015)"
         href: articles/Boer_2015_cisplatin.html
+      - text: "Cisplatin (Royer 2011)"
+        href: articles/Royer_2011_cisplatin.html
       - text: "Cisplatin (Urien 2004)"
         href: articles/Urien_2004_cisplatin.html
       - text: "Cladribine (Savic 2017)"
@@ -2976,6 +2978,7 @@ articles:
   - articles/Rovei_1982_theophylline
   - articles/Rower_2017_tacrolimus
   - articles/Royer_2010_HuHMFG1
+  - articles/Royer_2011_cisplatin
   - articles/Ruhs_2012_methotrexate
   - articles/Rymut_2023_anti_tryptase
   - articles/Sadouki_2025_meropenem_gentamicin_ciprofloxacin
