@@ -1526,6 +1526,8 @@ navbar:
         href: articles/Wang_2012_propofol.html
       - text: "Propofol human (Knibbe 2005)"
         href: articles/Knibbe_2005_propofol.html
+      - text: "Propofol pbpk (Levitt 2005)"
+        href: articles/Levitt_2005_propofol_pbpk.html
       - text: "Propofol rat (Knibbe 2005)"
         href: articles/Knibbe_2005_propofol.html
       - text: "Propofol sheep (Ngamprasertwong 2016)"
@@ -2767,6 +2769,7 @@ articles:
   - articles/Lestini_2015_tgfbinhibitor
   - articles/LeTilly_2021_trastuzumab
   - articles/Leuppi-Taegtmeyer_2019_colistin
+  - articles/Levitt_2005_propofol_pbpk
   - articles/Li_2006_meropenem
   - articles/Li_2010_taranabant
   - articles/Li_2012_clozapine
