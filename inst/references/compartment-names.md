@@ -3032,6 +3032,12 @@ Antibiotic combination-PK drug suffixes (linezolid, vancomycin, meropenem long f
 - **Source aliases:** none.
 - **Example models:** `Standing_2012_oseltamivir.R`.
 
+### enaat (**canonical enalaprilat metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Enalaprilat (ENAAT), the pharmacologically active diacid metabolite of enalapril formed by hepatic carboxylesterase 1 (CES1) hydrolysis of the inactive ester prodrug. Used as the metabolite suffix on `central_enaat` compartments, `lcl_enaat` / `lvc_enaat` parameters, and `Cc_enaat` observation in joint parent-prodrug + active-metabolite popPK models.
+- **Source aliases:** `ENAAT` (NONMEM-style abbreviation used by Steichert 2025).
+- **Example models:** `Steichert_2025_enalapril_enalaprilat_pediatric.R`.
+
 ### ppf (**canonical propofol active-metabolite suffix**)
 - **Type:** metabolite-suffix
 - **Role:** Propofol (2,6-diisopropylphenol), the active sedative-hypnotic metabolite liberated from the water-soluble prodrug fospropofol (GPI 15715, AQUAVAN) via systemic alkaline-phosphatase hydrolysis. Used as the metabolite suffix on `central_ppf` / `peripheral1_ppf` compartments and `Cc_ppf` observation in joint parent-prodrug + active-drug popPK models.

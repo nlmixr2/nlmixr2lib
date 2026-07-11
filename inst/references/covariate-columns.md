@@ -1330,6 +1330,17 @@ All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODA
 - **Example models:** `Delor_2013_alzheimer.R` (time-fixed baseline covariate; enters the per-subject slow-progression mixture-logit additive form `+ e_rhpnm_slow * (SCORE_RHPNM - 1)` with `e_rhpnm_slow = 7.5`, a strongly positive effect indicating that less atrophic hippocampi (SCORE_RHPNM closer to 1) are associated with a higher probability of being in the slow-progressing subpopulation).
 - **Notes:** Distinct from the raw hippocampal volume (which would be a `HIPV` canonical not yet registered; raw HIPV is confounded with head size and age, hence the need for the normalisation). The Delor 2013 paper notes that the same effect is only marginally significant with unnormalised HIPV (P = 0.02) but strongly significant with the normalised form (SCORE_RHPNM). The exact age / EICV regression coefficients are paper-specific and any future model adopting this canonical should re-derive the normalisation for its own population or document why the Delor 2013 regression is reused. Ratified canonically on 2026-05-16 alongside the Delor 2013 extraction.
 
+### SCORE_ROSS (**canonical for modified Ross score of paediatric heart-failure severity**)
+- **Description:** Modified Ross score, a clinical heart-failure severity instrument for infants and young children. Integer sum of per-domain ordinal items across feeding / exertional, respiratory (tachypnoea, retractions), cardiac auscultation (S3, hepatomegaly), and perfusion domains. Scale 0-12 in the modified Reithmann / Ross / Connolly form used across paediatric heart-failure trials; lower values = milder heart failure, higher values = more severe. The paediatric analogue of the adult-only NYHA functional classification.
+- **Units:** (score; integer 0-12)
+- **Type:** count
+- **Scope:** general
+- **Reference category:** n/a -- typically entered as an exponential effect `exp(theta * (SCORE_ROSS - ref))` on a PK parameter, centred on a dataset median. Per-model reference value must be documented in `covariateData[[SCORE_ROSS]]$notes`. The exponential form is required over a power form because the score can legitimately be 0 (per Steichert 2025 Section 2.2.2 rationale).
+- **Source aliases:**
+  - `Ross score` -- paper-prose form.
+- **Example models:** `Steichert_2025_enalapril_enalaprilat_pediatric.R` (reference SCORE_ROSS = 4, the analysed-population weighted median; exponential effect `theta = -0.15` (RSE 26.3%) on the apparent volume of distribution of enalaprilat `Vd_ENAAT/F`).
+- **Notes:** Distinct from `RACHS1` (Risk Adjustment for Congenital Heart Surgery, a perioperative surgery-risk category derived from procedure type) and from the adult-only NYHA classification. Count type rather than continuous because the score is an integer sum of per-domain ordinal items. Different modifications of the Ross score exist across paediatric cardiology (Reithmann 1989, Ross 1992 derivation; Connolly 2001, Laer / LENA 2015+ form); the specific modification used must be documented in `covariateData[[SCORE_ROSS]]$notes` per model.
+
 ### ACUTE_MED_DAYS (**canonical for baseline number of days/month of acute migraine medication use**)
 - **Description:** Baseline number of days per month on which acute migraine medication (triptans or ergot compounds) was used during the 28-day run-in period prior to first dose. Enters as a piecewise-linear shift on baseline migraine or moderate-to-severe headache days in migraine exposure-response models.
 - **Units:** days/month

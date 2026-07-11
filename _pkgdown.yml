@@ -610,6 +610,8 @@ navbar:
         href: articles/Valade_2014_emtricitabine.html
       - text: "Emtricitabine (Valade 2015)"
         href: articles/Valade_2015_emtricitabine.html
+      - text: "Enalapril enalaprilat pediatric (Steichert 2025)"
+        href: articles/Steichert_2025_enalapril_enalaprilat_pediatric.html
       - text: "Enoxaparin (Barras 2009)"
         href: articles/Barras_2009_enoxaparin.html
       - text: "Enoxaparin (Berges 2007)"
@@ -3012,6 +3014,7 @@ articles:
   - articles/Staatz_2005_gentamicin_vancomycin
   - articles/Standing_2008_diclofenac
   - articles/Standing_2012_oseltamivir
+  - articles/Steichert_2025_enalapril_enalaprilat_pediatric
   - articles/Stein_2018_mAb_nonlinear_PK
   - articles/Stein_2019_Tisagenlecleucel
   - articles/Stevens_2012_remoxipride
