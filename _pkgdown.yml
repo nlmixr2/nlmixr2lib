@@ -1746,6 +1746,8 @@ navbar:
         href: articles/Peng_2024_SAL003.html
       - text: "Salbutamol (Heuberger 2018)"
         href: articles/Heuberger_2018_salbutamol.html
+      - text: "Sapropterin (Feillet 2008)"
+        href: articles/Feillet_2008_sapropterin.html
       - text: "Sapropterin (Muntau 2017)"
         href: articles/Muntau_2017_sapropterin.html
       - text: "Sapropterin (Qi 2014)"
@@ -2574,6 +2576,7 @@ articles:
   - articles/Fauchet_2013_zidovudine
   - articles/Fauchet_2015_lopinavir
   - articles/FehlingKaschek_2019_trastuzumab_skbr3
+  - articles/Feillet_2008_sapropterin
   - articles/Feng_2006_enoxaparin
   - articles/Feng_2008_risperidone
   - articles/Feng_2012_higenamine
