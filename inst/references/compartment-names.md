@@ -2652,6 +2652,12 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Source aliases:** none.
 - **Example models:** `Wright_2013_allopurinol.R` (Wright 2013 doi:10.1007/s00228-013-1478-8 -- sequential 2-cpt allopurinol + 1-cpt oxypurinol model; the metabolite is central_oxy with Cc_oxy observation and independent renal + non-renal clearance components sensitive to CLcr, fat-free mass, and concomitant diuretic use).
 
+### napa (**canonical N-acetylprocainamide suffix**)
+- **Type:** metabolite-suffix
+- **Role:** N-acetylprocainamide (NAPA), the major active metabolite of procainamide formed by hepatic N-acetylation (NAT2). NAPA is a Vaughan-Williams Class III antiarrhythmic in its own right, is predominantly renally cleared, and accumulates alongside the parent in chronic-kidney-disease patients -- parent-plus-NAPA combined exposure is the therapeutic-window target for procainamide dosing in CKD.
+- **Source aliases:** none.
+- **Example models:** `Mohamed_2013_procainamide.R` (doi:10.1053/j.ajkd.2013.02.358).
+
 ### norcloz (**canonical norclozapine (N-desmethylclozapine) suffix**)
 - **Type:** metabolite-suffix
 - **Role:** Norclozapine (N-desmethylclozapine), the primary pharmacologically active metabolite of clozapine formed predominantly by CYP1A2 (with secondary contributions from CYP2C19, CYP3A4, CYP2C9, and CYP2D6). Norclozapine retains receptor affinity at multiple monoaminergic and muscarinic targets and is routinely measured alongside clozapine in therapeutic-drug-monitoring (TDM) practice; the parent-to-metabolite ratio is itself a clinical descriptor of CYP1A2 activity.
