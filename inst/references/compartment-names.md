@@ -405,6 +405,36 @@ The Cao 2013 mAb mPBPK family uses paper-anatomical compartment names that are a
 
 ---
 
+## CD3 bispecific / trispecific binding states (tumor microenvironment)
+
+The three canonicals below describe the drug-target-effector-cell mass-action binding equilibrium at the tumor microenvironment used by CD3 (and analogous immune-effector) bispecific / trispecific QSP models. Each compartment holds an accessible-void concentration (nM) in the tumor extracellular space; the "free" (unbound) target concentrations enter the mass-action rate law after being divided by the tumor void fraction `void_frac`. Companion parameters `kon_cd3`, `koff_cd3`, `kon_pcad`, `koff_pcad` and receptor densities `cd3_receptors`, `mpcad`, `tumor_cells_g` live in `parameter-names.md`.
+
+### drug_cd3_tumor (**canonical drug-CD3 dimer in tumor**)
+- **Type:** compartment
+- **Role:** Drug-CD3 receptor dimer concentration in the tumor extracellular space (nM). Formed by mass-action binding of free drug to CD3 receptors on T cells present in the TME; can bind additional free P-cadherin (or the target antigen for other CD3 bispecifics) to yield the productive `trimer` complex, or dissociate back to free drug and CD3.
+- **Source aliases:**
+  - `DCD3t` -- Betts 2019 paper notation.
+- **Example models:** `Betts_2019_pf_06671008_qsp.R`.
+- **Notes:** Founding example Betts 2019 (Eq 14 dDCD3t/dt). CD3 concentration is derived from a T-cell density (cells/L) and per-cell receptor count, divided by Avogadro; see `parameter-names.md` § "Receptor densities". Sibling `drug_pcad_tumor` and `trimer` complete the CD3 x TAA binding triad.
+
+### drug_pcad_tumor (**canonical drug-target-antigen dimer in tumor**)
+- **Type:** compartment
+- **Role:** Drug bound to the tumor-associated antigen (P-cadherin, HER2, CEA, etc.) receptor in the tumor extracellular space (nM). Formed by mass-action binding of free drug to antigen receptors on tumor cells; can bind additional free CD3 (or other CD3 arm) to yield the productive `trimer` complex, or dissociate back to free drug and antigen. Includes an internalization loss term (`kint`) representing receptor-mediated endocytosis of the drug-antigen complex.
+- **Source aliases:**
+  - `DPcadt` -- Betts 2019 paper notation for the drug-P-cadherin dimer in tumor.
+- **Example models:** `Betts_2019_pf_06671008_qsp.R`.
+- **Notes:** Founding example Betts 2019 (Eq 15 dDPcadt/dt). Canonical name is `drug_pcad_tumor` for the founding P-cadherin example; per-antigen suffixed forms (`drug_her2_tumor`, `drug_cea_tumor`, etc.) can be registered as new canonicals when future CD3 bispecifics targeting other antigens are extracted. The internalization rate `kint` distinguishes this compartment from `drug_cd3_tumor`, which is not internalized in the current model class.
+
+### trimer (**canonical drug-CD3-antigen ternary complex in tumor**)
+- **Type:** compartment
+- **Role:** Productive drug-CD3-antigen ternary complex (trimer) in the tumor extracellular space (nM). Forms an immune synapse-mimetic bridge between a T cell and an antigen-expressing tumor cell; the paper's PD driver linking bispecific PK to tumor cell killing via `kkill = kmax * trimer / (kc50 + trimer)`. Reversible mass-action formation from either dimer (`drug_cd3_tumor` + free antigen, or `drug_pcad_tumor` + free CD3) with dissociation back to either dimer.
+- **Source aliases:**
+  - `Trimer` -- Betts 2019 paper notation (deprecated capitalized form).
+- **Example models:** `Betts_2019_pf_06671008_qsp.R`.
+- **Notes:** Founding example Betts 2019 (Eq 16 dTrimer/dt). The trimer concentration drives the tumor-killing rate `kkill` and is the mechanistic PD linker of the CD3-bispecific class. Trimer formation exhibits the bell-shaped concentration-response phenomenon (Betts 2019 Fig 1b): trimer decreases at very high drug concentrations because the equilibrium shifts toward drug-CD3 and drug-antigen dimers rather than the productive trimer.
+
+---
+
 ## Endogenous metabolic species
 
 ### glucose (**canonical plasma glucose**)
