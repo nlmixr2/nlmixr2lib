@@ -876,6 +876,8 @@ navbar:
         href: articles/Ngo_2020_HL2351.html
       - text: "HuHMFG1 (Royer 2010)"
         href: articles/Royer_2010_HuHMFG1.html
+      - text: "HydroxyprogesteroneCaproate (Sharma 2016)"
+        href: articles/Sharma_2016_hydroxyprogesteroneCaproate.html
       - text: "Hydroxyurea (Dong 2016)"
         href: articles/Dong_2016_hydroxyurea.html
       - text: "Hydroxyurea (Paule 2011)"
@@ -3053,6 +3055,7 @@ articles:
   - articles/Schutte_2018_desmopressin
   - articles/Seng_2015_isoniazid
   - articles/Shah_2012_mAb_PBPK
+  - articles/Sharma_2016_hydroxyprogesteroneCaproate
   - articles/Sharma_2018_naltrexone_bupropion
   - articles/Sharma_2018_SHetA2
   - articles/Shekar_2014_meropenem
