@@ -1744,6 +1744,8 @@ navbar:
         href: articles/Patel_2017_selumetinib.html
       - text: "Semaglutide (Overgaard 2019)"
         href: articles/Overgaard_2019_semaglutide.html
+      - text: "Semimechanistic antibiotic pd (Nielsen 2007)"
+        href: articles/Nielsen_2007_semimechanistic_antibiotic_pd.html
       - text: "Sepantronium (Aoyama 2012)"
         href: articles/Aoyama_2012_sepantronium.html
       - text: "Sertraline (Cooper 2015)"
@@ -2948,6 +2950,7 @@ articles:
   - articles/Nicholas_2009_ponezumab
   - articles/Nichols_2016_piperacillin_tazobactam
   - articles/Niebecker_2015_edoxaban
+  - articles/Nielsen_2007_semimechanistic_antibiotic_pd
   - articles/Nielsen_2011_antibacterial_efficacy
   - articles/Nikanjam_2019_siltuximab
   - articles/Niloy_2026_MTMSATrp_mouse
