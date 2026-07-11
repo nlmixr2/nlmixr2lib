@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Carmichael 2003 hydroxychloroquine ([doi:10.1097/00007691-200312000-00005](https://doi.org/10.1097/00007691-200312000-00005)) -- adults with rheumatoid arthritis (HCQ alone or concomitant methotrexate).
+* Add Roepcke 2018 TAK-079 ([doi:10.1002/prp2.402](https://doi.org/10.1002/prp2.402)) -- preclinical cynomolgus monkeys (2-compartment QSS-TMDD popPK plus NK-, B-, and T-cell PK-PD lymphocyte-depletion sub-models for a cytolytic anti-CD38 IgG1-kappa monoclonal antibody).
 * Add Luu 2017 nusinersen ([doi:10.1002/jcph.884](https://doi.org/10.1002/jcph.884)) -- pediatric patients with spinal muscular atrophy receiving intrathecal nusinersen.
 * Add Gaohua 2012 pregnancy PBPK ([doi:10.1111/j.1365-2125.2012.04363.x](https://doi.org/10.1111/j.1365-2125.2012.04363.x)) -- healthy pregnant Caucasian women (14-compartment whole-body p-PBPK with GA-dependent maternal physiology, applied to caffeine [CYP1A2], metoprolol [CYP2D6], and midazolam [CYP3A4]); ratifies new canonical bare `skin` PBPK compartment.
 * Add Morris 2011 telapristone ([doi:10.1208/s12248-011-9304-7](https://doi.org/10.1208/s12248-011-9304-7)) -- adult women with single-dose telapristone-acetate phase I/II PK studies; ratifies new `cdb4453` metabolite suffix, `MIX_FAST_ELIM`, and `RENALIMP_MOD` covariate canonicals.
