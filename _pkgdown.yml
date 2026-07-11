@@ -1764,6 +1764,8 @@ navbar:
         href: articles/Krause_2017_selexipag.html
       - text: "Selumetinib (Patel 2017)"
         href: articles/Patel_2017_selumetinib.html
+      - text: "Semaglutide (CarlssonPetri 2018)"
+        href: articles/CarlssonPetri_2018_semaglutide.html
       - text: "Semaglutide (Overgaard 2019)"
         href: articles/Overgaard_2019_semaglutide.html
       - text: "Semimechanistic antibiotic pd (Nielsen 2007)"
@@ -2442,6 +2444,7 @@ articles:
   - articles/Cao_2017_dha_artemisinin_stress_model
   - articles/Capparelli_2005_cefepime
   - articles/Cardilin_2018_radiation_radiosensitizer_mouse
+  - articles/CarlssonPetri_2018_semaglutide
   - articles/CarlssonPetri_2021_liraglutide
   - articles/Carmichael_2003_hydroxychloroquine
   - articles/Castelli_2022_dextroamphetamine
