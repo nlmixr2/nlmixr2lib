@@ -7874,15 +7874,15 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Example models:** `Jansson_2008_eflornithine_rat.R`.
 - **Notes:** Specific scope because the threshold (3000 mg/kg of body weight) and the bioavailability shifts (+14.6% for L-eflornithine, +32.8% for D-eflornithine relative to the 750-2000 mg/kg reference) are intrinsically tied to the Jansson 2008 dose-design and are not transferable to other drugs. Encoded as a binary because the paper's prose explicitly states linear and power dose-F relationships did not improve the fit. Per-subject indicator in the source data (each rat received exactly one oral dose); for multi-dose simulation, set the indicator per dose record.
 
-### DOSE_HIGH_RIV (**canonical for high-dose rivaroxaban indicator**)
-- **Description:** 1 = dose record is at the 20 mg-equivalent body-weight-adjusted rivaroxaban dose, 0 = the 10 mg-equivalent body-weight-adjusted rivaroxaban dose. The Willmann 2018 EINSTEIN-Jr phase I paediatric study (NCT01145859) dosed children with body-weight-adjusted amounts targeting adult exposures of either rivaroxaban 10 mg or 20 mg; the popPK model estimates a relative bioavailability F1 = 0.648 for the 20 mg-equivalent dose, with the 10 mg-equivalent dose anchored at F1 = 1 by definition.
+### DOSE_LOW_AMG221 (**canonical for low-dose AMG 221 indicator**)
+- **Description:** 1 = dose record is the 3 mg oral AMG 221 dose in the Gibbs 2011 phase 1 study; 0 = the 30 or 100 mg oral AMG 221 dose. Sibling of `DOSE_HIGH_EFL`: same drug-suffixed dose-level indicator family, opposite direction of effect (the reduced-bioavailability tier is the flagged tier).
 - **Units:** (binary)
 - **Type:** binary
 - **Scope:** specific
-- **Reference category:** 0 (10 mg-equivalent body-weight-adjusted dose; relative bioavailability fixed to 1 in the source paper).
-- **Source aliases:** derived per dose record from the EINSTEIN-Jr phase I dose level assigned to the cohort; the paper's Methods describe the dose stratification as "two dose levels, equivalent to adult doses of rivaroxaban 10 mg and 20 mg" (Willmann 2018 Methods / Modelling strategy).
-- **Example models:** `Willmann_2018_rivaroxaban.R` (multiplicative effect on the depot bioavailability: `fdepot <- exp(lfdepot * DOSE_HIGH_RIV)` with `lfdepot = log(0.648)` per Willmann 2018 Table 1, RSE 9.03%; the dose-dependent reduction is consistent with the saturable-solubility behaviour of rivaroxaban reported in the adult patient popPK [reference 21 of Willmann 2018]).
-- **Notes:** Specific scope because the 20 mg-equivalent vs 10 mg-equivalent dose stratification and the 0.648 relative-bioavailability estimate are intrinsically tied to the Willmann 2018 EINSTEIN-Jr phase I paediatric study. Drug-specific member of the `DOSE_HIGH_*` family alongside `DOSE_HIGH_EFL` (Jansson 2008 eflornithine high-dose indicator). Per-dose-occasion indicator in principle, although in the Willmann 2018 single-dose study each subject received exactly one rivaroxaban dose.
+- **Reference category:** 0 (30 or 100 mg oral AMG 221, where F1 = 1).
+- **Source aliases:** derived per dose record from the administered amount. Gibbs 2011 Table III + footnote a: F1 = 0.546 at 3 mg vs F1 = 1 fixed at 30 or 100 mg.
+- **Example models:** `Gibbs_2011_amg221.R`.
+- **Notes:** Specific scope because the threshold (3 mg vs 30/100 mg oral AMG 221 as a suspension in healthy obese adults) and the -45.4% bioavailability shift are intrinsically tied to the Gibbs 2011 dose-design and are not transferable to other drugs. Gibbs 2011 Discussion attributes the reduced 3 mg bioavailability to a possible high-affinity intestinal-metabolism / transport process saturating at higher doses (Caco-2 permeability plus in vitro CYP3A metabolism with Km > 100 uM, so a 30 mg dose is expected to produce intestinal concentrations high enough to saturate intestinal metabolism); the paper flags an alternative Michaelis-Menten dose-F structure that was not fit because only three discrete dose levels were tested. Per-dose-record indicator; observation rows inherit the indicator from the preceding dose.
 
 
 ### MEAL_A (**canonical for Zvada 2010 meal-A high-fat English breakfast indicator**)
