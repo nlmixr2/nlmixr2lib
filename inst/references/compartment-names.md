@@ -1,6 +1,6 @@
 # Canonical compartment and metabolite-suffix names
 
-This file is the authoritative register of compartment / state names and metabolite-suffix tokens used in nlmixr2lib models. Every compartment that appears in a model's `model()` block (and every metabolite / sibling-drug suffix used to derive a compartment / parameter / residual-SD name) is expected to match one of the canonical entries below — or to fit one of the regex constants documented in the header section. The register is seeded from the 2026-05-28 naming audit and extended whenever a new paper introduces a state that isn't yet registered.
+This file is the authoritative register of compartment / state names and metabolite-suffix tokens used in nlmixr2lib models. Every compartment that appears in a model's `model()` block (and every metabolite / sibling-drug suffix used to derive a compartment / parameter / residual-SD name) is expected to match one of the canonical entries below -- or to fit one of the regex constants documented in the header section. The register is seeded from the 2026-05-28 naming audit and extended whenever a new paper introduces a state that isn't yet registered.
 
 ## How to use this register
 
@@ -36,10 +36,10 @@ A single token can appear under both Types (e.g., `lzd` is both a bare drug-stat
 
 The following pattern constants remain hard-coded in `R/conventions.R::.nlmixr2libConventionsStatic` because they are structural regular expressions rather than name lists:
 
-- `compartmentRegex = "^(transit|effect|precursor|lat|depot)[0-9]+$"` — numbered-chain compartments: transit absorption chains (`transit1`, `transit2`, ...), effect-compartment chains (`effect1`, `effect2`, ...), precursor pools for delayed-feedback IDR (`precursor1`, `precursor2`, ...), latent chains (`lat1`, ...), parallel-absorption depots (`depot1`, `depot2`, ...). Numeric suffix is required (single-state members use the bare canonical `effect` / `depot`).
-- `darCompartmentRegex = "^dar[0-9]+_(central|peripheral[0-9]?)$"` — DAR-numbered ADC isoform compartments (`dar0_central`, `dar4_peripheral1`, ...).
-- `targetLocationRegex = "^(target|complex)_(csf|isf|peripheral[0-9]?)$"` — target species in physiologic / numbered-peripheral compartments (`target_csf`, `target_isf`, `target_peripheral`, `target_peripheral1`, `complex_peripheral`, ...).
-- `pbpkSubCompartmentRegex = "^(bc|eu|eb|fr|is|int|mrna|luc)_(liver|lung|kidney|spleen|heart|muscle|skin|adipose|bone|brain|small_intestine|large_intestine|pancreas|thymus|portal|remainder|other|hepatic|fat|rapidly_perfused|slowly_perfused|venous|arterial|urine|gut)$` — membrane-limited PBPK sub-compartments: vascular blood cells (`bc_`), endosomal unbound (`eu_`), endosomal FcRn-bound (`eb_`), endosomal free FcRn (`fr_`), interstitial space (`is_`), intracellular (`int_`), mRNA pool (`mrna_`), luciferase reporter (`luc_`).
+- `compartmentRegex = "^(transit|effect|precursor|lat|depot)[0-9]+$"` -- numbered-chain compartments: transit absorption chains (`transit1`, `transit2`, ...), effect-compartment chains (`effect1`, `effect2`, ...), precursor pools for delayed-feedback IDR (`precursor1`, `precursor2`, ...), latent chains (`lat1`, ...), parallel-absorption depots (`depot1`, `depot2`, ...). Numeric suffix is required (single-state members use the bare canonical `effect` / `depot`).
+- `darCompartmentRegex = "^dar[0-9]+_(central|peripheral[0-9]?)$"` -- DAR-numbered ADC isoform compartments (`dar0_central`, `dar4_peripheral1`, ...).
+- `targetLocationRegex = "^(target|complex)_(csf|isf|peripheral[0-9]?)$"` -- target species in physiologic / numbered-peripheral compartments (`target_csf`, `target_isf`, `target_peripheral`, `target_peripheral1`, `complex_peripheral`, ...).
+- `pbpkSubCompartmentRegex = "^(bc|eu|eb|fr|is|int|mrna|luc)_(liver|lung|kidney|spleen|heart|muscle|skin|adipose|bone|brain|small_intestine|large_intestine|pancreas|thymus|portal|remainder|other|hepatic|fat|rapidly_perfused|slowly_perfused|venous|arterial|urine|gut)$` -- membrane-limited PBPK sub-compartments: vascular blood cells (`bc_`), endosomal unbound (`eu_`), endosomal FcRn-bound (`eb_`), endosomal free FcRn (`fr_`), interstitial space (`is_`), intracellular (`int_`), mRNA pool (`mrna_`), luciferase reporter (`luc_`).
 - `compartmentRegex` and the four extension patterns above are extended only when a new paper introduces a structurally new shape. Adding a new spelled-out organ to the `pbpkSubCompartmentRegex` is a routine extension; introducing a new chain prefix is a naming-audit decision.
 
 ---
@@ -405,6 +405,36 @@ The Cao 2013 mAb mPBPK family uses paper-anatomical compartment names that are a
 
 ---
 
+## CD3 bispecific / trispecific binding states (tumor microenvironment)
+
+The three canonicals below describe the drug-target-effector-cell mass-action binding equilibrium at the tumor microenvironment used by CD3 (and analogous immune-effector) bispecific / trispecific QSP models. Each compartment holds an accessible-void concentration (nM) in the tumor extracellular space; the "free" (unbound) target concentrations enter the mass-action rate law after being divided by the tumor void fraction `void_frac`. Companion parameters `kon_cd3`, `koff_cd3`, `kon_pcad`, `koff_pcad` and receptor densities `cd3_receptors`, `mpcad`, `tumor_cells_g` live in `parameter-names.md`.
+
+### drug_cd3_tumor (**canonical drug-CD3 dimer in tumor**)
+- **Type:** compartment
+- **Role:** Drug-CD3 receptor dimer concentration in the tumor extracellular space (nM). Formed by mass-action binding of free drug to CD3 receptors on T cells present in the TME; can bind additional free P-cadherin (or the target antigen for other CD3 bispecifics) to yield the productive `trimer` complex, or dissociate back to free drug and CD3.
+- **Source aliases:**
+  - `DCD3t` -- Betts 2019 paper notation.
+- **Example models:** `Betts_2019_pf_06671008_qsp.R`.
+- **Notes:** Founding example Betts 2019 (Eq 14 dDCD3t/dt). CD3 concentration is derived from a T-cell density (cells/L) and per-cell receptor count, divided by Avogadro; see `parameter-names.md` § "Receptor densities". Sibling `drug_pcad_tumor` and `trimer` complete the CD3 x TAA binding triad.
+
+### drug_pcad_tumor (**canonical drug-target-antigen dimer in tumor**)
+- **Type:** compartment
+- **Role:** Drug bound to the tumor-associated antigen (P-cadherin, HER2, CEA, etc.) receptor in the tumor extracellular space (nM). Formed by mass-action binding of free drug to antigen receptors on tumor cells; can bind additional free CD3 (or other CD3 arm) to yield the productive `trimer` complex, or dissociate back to free drug and antigen. Includes an internalization loss term (`kint`) representing receptor-mediated endocytosis of the drug-antigen complex.
+- **Source aliases:**
+  - `DPcadt` -- Betts 2019 paper notation for the drug-P-cadherin dimer in tumor.
+- **Example models:** `Betts_2019_pf_06671008_qsp.R`.
+- **Notes:** Founding example Betts 2019 (Eq 15 dDPcadt/dt). Canonical name is `drug_pcad_tumor` for the founding P-cadherin example; per-antigen suffixed forms (`drug_her2_tumor`, `drug_cea_tumor`, etc.) can be registered as new canonicals when future CD3 bispecifics targeting other antigens are extracted. The internalization rate `kint` distinguishes this compartment from `drug_cd3_tumor`, which is not internalized in the current model class.
+
+### trimer (**canonical drug-CD3-antigen ternary complex in tumor**)
+- **Type:** compartment
+- **Role:** Productive drug-CD3-antigen ternary complex (trimer) in the tumor extracellular space (nM). Forms an immune synapse-mimetic bridge between a T cell and an antigen-expressing tumor cell; the paper's PD driver linking bispecific PK to tumor cell killing via `kkill = kmax * trimer / (kc50 + trimer)`. Reversible mass-action formation from either dimer (`drug_cd3_tumor` + free antigen, or `drug_pcad_tumor` + free CD3) with dissociation back to either dimer.
+- **Source aliases:**
+  - `Trimer` -- Betts 2019 paper notation (deprecated capitalized form).
+- **Example models:** `Betts_2019_pf_06671008_qsp.R`.
+- **Notes:** Founding example Betts 2019 (Eq 16 dTrimer/dt). The trimer concentration drives the tumor-killing rate `kkill` and is the mechanistic PD linker of the CD3-bispecific class. Trimer formation exhibits the bell-shaped concentration-response phenomenon (Betts 2019 Fig 1b): trimer decreases at very high drug concentrations because the equilibrium shifts toward drug-CD3 and drug-antigen dimers rather than the productive trimer.
+
+---
+
 ## Endogenous metabolic species
 
 ### glucose (**canonical plasma glucose**)
@@ -544,6 +574,13 @@ The MTP framework partitions the bacterial population into three states. The ori
 - **Source aliases:** none.
 - **Example models:** `Frey_2013_tocilizumab.R`, `Ma_2020_sarilumab_das28crp.R`.
 - **Notes:** Registered 2026-05-28 per the naming audit.
+
+### das28cfb (**canonical DAS28 change-from-baseline output compartment**)
+- **Type:** compartment
+- **Role:** DAS28 change-from-baseline (DAS28cfb) PD output used by rheumatoid-arthritis models that fit the paper-declared change score rather than the absolute DAS28 value. Companion to `das28` (which holds the absolute score); use `das28cfb` when the paper's own equation targets `DAS28cfb = f(t, Cij)`, with the change interpretation as a negative-going quantity for treatment improvement. Same canonical-lower-case-name convention as `das28` / `deltaUPDRS`.
+- **Source aliases:** `DAS28cfb` -- Williams 2016 paper notation.
+- **Example models:** `Williams_2016_rituximab_das28cfb.R`.
+- **Notes:** Ratified canonically on 2026-07-09 alongside the Williams 2016 rituximab-biosimilar extraction (the paper fits the DAS28 change-from-baseline directly via a 1 - exp(fnon-C + fC) transformation, so the modelled endpoint is the change score rather than the absolute DAS28). Follows the same lowercase-name convention as `das28` / `deltaUPDRS`.
 
 ---
 
@@ -928,14 +965,14 @@ These are internationally standardised clinical abbreviations registered as cano
 
 ### TT (**canonical total testosterone / thrombin time**)
 - **Type:** compartment
-- **Role:** Total testosterone (endocrinology) or thrombin time (coagulation) — paper-dependent; both share the TT abbreviation in the contexts where it appears.
+- **Role:** Total testosterone (endocrinology) or thrombin time (coagulation) -- paper-dependent; both share the TT abbreviation in the contexts where it appears.
 - **Source aliases:** none.
 - **Example models:** endocrinology / coagulation PD models.
 
-### QTc, QTcF, QTcS (**canonical heart-rate-corrected QT interval**)
+### QTc, QTcF, QTcI, QTcS (**canonical heart-rate-corrected QT interval**)
 - **Type:** compartment
 - **Role:** Heart-rate-corrected QT interval (electrocardiographic PD endpoint), typically expressed in ms. Used as the observation variable in direct-effect / linear concentration-QTc models of drug-induced QT prolongation (cardiac-safety / thorough-QT studies, e.g. quinidine, moxifloxacin, sotalol, glasdegib). `QTc` is the generic canonical; `QTcF` (Fridericia correction) and `QTcS` (study-specific correction) are registered as canonical sibling names because the Fostvedt 2021 glasdegib models use the correction-specific name directly as the observation variable.
-- **Source aliases:** `QTcB` (Bazett), `QTcI` (individual correction) — translate to `QTc` and record the correction in the model file's description / vignette.
+- **Source aliases:** `QTcB` (Bazett), `QTcI` (individual correction) -- translate to `QTc` and record the correction in the model file's description / vignette.
 - **Example models:** `Shin_2006_quinidine_QT.R` (Bazett-corrected QT interval; founding example), `Fostvedt_2021_glasdegib_QTcF.R` (Fridericia, as `QTcF`), `Fostvedt_2021_glasdegib_QTcS.R` (study-specific correction, as `QTcS`).
 - **Notes:** `QTcF` / `QTcS` promoted from translate-to-`QTc` aliases to canonical sibling names 2026-06-28 so single-output models that name the observation by its specific correction (rather than the generic `QTc`) pass the convention check. New models should still prefer the generic `QTc` where the correction is incidental; use the specific name only when the correction is the defining feature of the endpoint (as in the paired Fostvedt 2021 QTcF / QTcS glasdegib analyses).
 
@@ -1223,6 +1260,12 @@ PBPK bare organ-amount compartments used by Zhang 2011 nutlin3a and similar full
 - **Source aliases:** none.
 - **Example models:** `Zhang_2011_nutlin3a.R`.
 
+### skin (**canonical bare skin compartment**)
+- **Type:** compartment
+- **Role:** Bare skin tissue compartment in full-body PBPK extractions. Total tissue (well-stirred) drug concentration; paired with `lung`, `liver`, `kidney`, `spleen`, `brain`, `heart`, `muscle`, `adipose`, `bone`, `other` etc. in whole-body PBPK extractions that resolve skin as a distinct organ. The token `skin` already appears in the `vp_skin` canonical entry and in the `pbpkSubCompartmentRegex` valid-organ list, so this entry registers the bare-organ form for parity with the surrounding canonicals.
+- **Source aliases:** none.
+- **Example models:** `Gaohua_2012_pregnancy_pbpk_caffeine.R`, `Gaohua_2012_pregnancy_pbpk_metoprolol.R`, `Gaohua_2012_pregnancy_pbpk_midazolam.R`, `Levitt_2005_propofol_pbpk.R`.
+
 ---
 
 ## Adaptive-resistance bacterial states
@@ -1356,9 +1399,9 @@ These states are **not** registered as individual H3 entries; they are matched a
 (The regex is a structural pattern and lives in R alongside the other `*Regex` compartment constants documented in the "Regex constants" header section, not as a name list in this file.)
 
 - **Example models:**
-  - `Garonzik_2016_daptomycin.R` — single-drug: `bact_susceptible1` / `bact_susceptible2`, `bact_intermediate1` / `bact_intermediate2`, `bact_resistant1` / `bact_resistant2` (three subpopulations of decreasing daptomycin susceptibility, each with the two-state life cycle).
-  - `Rees_2018_meropenem_ciprofloxacin.R` — two-drug (meropenem + ciprofloxacin): `bact_susceptible_susceptible1` / `2`, `bact_resistant_intermediate1` / `2`, `bact_intermediate_resistant1` / `2`.
-  - `Landersdorfer_2018_imipenem_tobramycin.R` — two-drug (imipenem + tobramycin): same `bact_<drug1pheno>_<drug2pheno>` compound scheme with the two-state life-cycle digit.
+  - `Garonzik_2016_daptomycin.R` -- single-drug: `bact_susceptible1` / `bact_susceptible2`, `bact_intermediate1` / `bact_intermediate2`, `bact_resistant1` / `bact_resistant2` (three subpopulations of decreasing daptomycin susceptibility, each with the two-state life cycle).
+  - `Rees_2018_meropenem_ciprofloxacin.R` -- two-drug (meropenem + ciprofloxacin): `bact_susceptible_susceptible1` / `2`, `bact_resistant_intermediate1` / `2`, `bact_intermediate_resistant1` / `2`.
+  - `Landersdorfer_2018_imipenem_tobramycin.R` -- two-drug (imipenem + tobramycin): same `bact_<drug1pheno>_<drug2pheno>` compound scheme with the two-state life-cycle digit.
 
 ---
 
@@ -1937,6 +1980,20 @@ The Ait-Oudhia 2012 canakinumab IL-1beta -> CRP transit cascade: `crp1` / `crp2`
 - **Example models:** `Hansson_2013_sunitinib_os.R`.
 - **Notes:** Registered 2026-06-28. Member of the `cumhaz_<type>` multi-hazard family alongside `cumhaz`, `cumhaz_os`, and `cumhaz_drop`; `_cens` denotes the censoring distribution specifically (in Hansson 2013 a separate Weibull `lambdacens` / `alphacens` censoring model exposed for forward dropout simulation).
 
+### cumhaz_1st (**canonical first-event cumulative-hazard (repeated-time-to-event sub-model)**)
+- **Type:** compartment
+- **Role:** Cumulative-hazard state for the time-to-first-event Weibull sub-model in repeated-time-to-event models with distinct first-event and subsequent-event hazard sub-models (Abrantes 2010 / Lindauer 2017 parameterisation). Integrates the first-event hazard from t = 0 so the first-event survivor function is `sur = exp(-cumhaz_1st)` (the paper's `sur` for "time to first seizure"). Paired with `cumhaz_2nd` for the subsequent-event sub-model.
+- **Source aliases:** none.
+- **Example models:** `Lindauer_2017_lacosamide_seizure.R` (Weibull baseline hazard `hazard_1st = lam1_eff * p1 * (lam1_eff * (t + del))^(p1 - 1)`; the LHS survivor function `sur = exp(-cumhaz_1st)` is the observation variable for the first-seizure TTE sub-model).
+- **Notes:** Registered 2026-07-03. Member of the `cumhaz_<type>` multi-hazard family alongside `cumhaz`, `cumhaz_os`, `cumhaz_drop`, and `cumhaz_cens`. The paired 2nd-event canonical is `cumhaz_2nd`.
+
+### cumhaz_2nd (**canonical second-and-subsequent-event cumulative-hazard (repeated-time-to-event sub-model)**)
+- **Type:** compartment
+- **Role:** Cumulative-hazard state for the time-to-second-and-subsequent-event Weibull sub-model in repeated-time-to-event models with distinct first-event and subsequent-event hazard sub-models (Abrantes 2010 / Lindauer 2017 parameterisation). Integrates the subsequent-event hazard from t = 0; the derived subsequent-event survivor function `sur_2nd = exp(-cumhaz_2nd)` is exposed as a diagnostic output. Paired with `cumhaz_1st` for the first-event sub-model.
+- **Source aliases:** none.
+- **Example models:** `Lindauer_2017_lacosamide_seizure.R` (Weibull baseline hazard `hazard_2nd = lam2_eff * p2 * (lam2_eff * (t + del))^(p2 - 1)` with an IIV eta on ln(lam2), reflecting the paper's Table 3 finding of substantial between-subject variability in the subsequent-seizure hazard; SD 2.03 on ln(k2)).
+- **Notes:** Registered 2026-07-03. Member of the `cumhaz_<type>` multi-hazard family. Applies whenever a model separately parameterises the first-event hazard (`cumhaz_1st`) and the subsequent-event hazard (`cumhaz_2nd`) with different Weibull scale / shape and, typically, different covariate coefficients on each sub-model, as first proposed by Abrantes et al. and adopted by Lindauer 2017 for lacosamide.
+
 ### sur (**canonical survival-probability output**)
 - **Type:** compartment
 - **Role:** Survival-probability output `S(t)` of a time-to-event sub-model, derived from the cumulative hazard (`sur = exp(-cumhaz)` for a proportional-hazard form, or `sur = 1 - Phi(z)` for an accelerated-failure-time log-normal form). Single PD output for forward-simulation TTE models.
@@ -2378,7 +2435,7 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Role:** N,N-bis-desmethyl-bedaquiline (M3) metabolite of bedaquiline; the downstream demethylation product of M2 (responsible enzyme(s) not identified in vitro but suspected CYP3A4-mediated demethylation by analogy with the BDQ -> M2 step).
 - **Source aliases:** none.
 - **Example models:** `Svensson_2013_bedaquiline.R`.
-- **Notes:** Distinct from `m3g` (morphine-3-glucuronide) — the suffix matcher uses `endsWith(name, "_m3")` vs `endsWith(name, "_m3g")` and these do not collide. Registered alongside the Svensson 2013 bedaquiline extraction (the first BDQ paper to model the M3 metabolite).
+- **Notes:** Distinct from `m3g` (morphine-3-glucuronide) -- the suffix matcher uses `endsWith(name, "_m3")` vs `endsWith(name, "_m3g")` and these do not collide. Registered alongside the Svensson 2013 bedaquiline extraction (the first BDQ paper to model the M3 metabolite).
 
 ### m8 (**canonical hydroxy-tert-butylamide (M8) suffix**)
 - **Type:** metabolite-suffix
@@ -2511,6 +2568,12 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Source aliases:** none.
 - **Example models:** `Brown_2017_osimertinib.R` (doi:10.1111/bcp.13223).
 
+### ast5902 (**canonical AST5902 furmonertinib active metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** AST5902, the CYP3A4-derived active metabolite of furmonertinib (AST2818 / alflutinib), a third-generation irreversible EGFR TKI approved for NSCLC with EGFR-sensitising / T790M mutations. Used as a compartment / parameter suffix in joint parent-plus-metabolite popPK models where furmonertinib and AST5902 are followed simultaneously in plasma.
+- **Source aliases:** none.
+- **Example models:** `Zou_2022_furmonertinib.R` (doi:10.1038/s41401-021-00798-y).
+
 ### ndmsel (**canonical N-desmethyl-selumetinib suffix**)
 - **Type:** metabolite-suffix
 - **Role:** N-desmethyl-selumetinib, active selumetinib metabolite (~3-5-fold more potent for MEK1 inhibition than parent), formed by oxidative N-demethylation.
@@ -2583,11 +2646,29 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Source aliases:** none.
 - **Example models:** `Lahu_2010_roflumilast.R` (doi:10.2165/11536600-000000000-00000).
 
+### oxy (**canonical oxypurinol suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Oxypurinol (1H-purine-2,6,8(3H)-trione), the principal long-lived active metabolite of allopurinol produced by xanthine oxidase and aldehyde oxidase catalysed 2-hydroxylation. Oxypurinol is itself a xanthine-oxidase inhibitor and is the main contributor to sustained urate-lowering effect during chronic allopurinol therapy (allopurinol has a short plasma half-life of ~1-2 h while oxypurinol persists for ~24 h with a renally-cleared elimination). Used as a metabolite suffix in parent-plus-metabolite joint or sequential popPK models for allopurinol.
+- **Source aliases:** none.
+- **Example models:** `Wright_2013_allopurinol.R` (Wright 2013 doi:10.1007/s00228-013-1478-8 -- sequential 2-cpt allopurinol + 1-cpt oxypurinol model; the metabolite is central_oxy with Cc_oxy observation and independent renal + non-renal clearance components sensitive to CLcr, fat-free mass, and concomitant diuretic use).
+
+### napa (**canonical N-acetylprocainamide suffix**)
+- **Type:** metabolite-suffix
+- **Role:** N-acetylprocainamide (NAPA), the major active metabolite of procainamide formed by hepatic N-acetylation (NAT2). NAPA is a Vaughan-Williams Class III antiarrhythmic in its own right, is predominantly renally cleared, and accumulates alongside the parent in chronic-kidney-disease patients -- parent-plus-NAPA combined exposure is the therapeutic-window target for procainamide dosing in CKD.
+- **Source aliases:** none.
+- **Example models:** `Mohamed_2013_procainamide.R` (doi:10.1053/j.ajkd.2013.02.358).
+
 ### norcloz (**canonical norclozapine (N-desmethylclozapine) suffix**)
 - **Type:** metabolite-suffix
 - **Role:** Norclozapine (N-desmethylclozapine), the primary pharmacologically active metabolite of clozapine formed predominantly by CYP1A2 (with secondary contributions from CYP2C19, CYP3A4, CYP2C9, and CYP2D6). Norclozapine retains receptor affinity at multiple monoaminergic and muscarinic targets and is routinely measured alongside clozapine in therapeutic-drug-monitoring (TDM) practice; the parent-to-metabolite ratio is itself a clinical descriptor of CYP1A2 activity.
 - **Source aliases:** none.
 - **Example models:** `Li_2012_clozapine.R` (doi:10.1038/aps.2012.71).
+
+### dnef (**canonical desmethyl-nefopam suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Desmethyl-nefopam (nor-nefopam), N-demethyl metabolite of nefopam formed by CYP3A4-mediated N-demethylation. Followed in plasma alongside the parent in joint parent + metabolite popPK models of postoperative nefopam analgesia. Used as the metabolite suffix on `central_dnef` compartments, `lcl_dnef` / `lvc_dnef` / `lcl_form_dnef` parameters, and `addSd_dnef` / `propSd_dnef` residual SDs.
+- **Source aliases:** none.
+- **Example models:** `Djerada_2014_nefopam.R` (doi:10.1111/bcp.12291).
 
 ### cysmer (**canonical APAP cysteine+mercapturate suffix**)
 - **Type:** metabolite-suffix
@@ -3031,6 +3112,12 @@ Antibiotic combination-PK drug suffixes (linezolid, vancomycin, meropenem long f
 - **Role:** Oseltamivir carboxylate (OC), the active neuraminidase-inhibitor metabolite formed from the oseltamivir prodrug primarily via human carboxylesterase 1 (HCE1) in the liver.
 - **Source aliases:** none.
 - **Example models:** `Standing_2012_oseltamivir.R`.
+
+### enaat (**canonical enalaprilat metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Enalaprilat (ENAAT), the pharmacologically active diacid metabolite of enalapril formed by hepatic carboxylesterase 1 (CES1) hydrolysis of the inactive ester prodrug. Used as the metabolite suffix on `central_enaat` compartments, `lcl_enaat` / `lvc_enaat` parameters, and `Cc_enaat` observation in joint parent-prodrug + active-metabolite popPK models.
+- **Source aliases:** `ENAAT` (NONMEM-style abbreviation used by Steichert 2025).
+- **Example models:** `Steichert_2025_enalapril_enalaprilat_pediatric.R`.
 
 ### ppf (**canonical propofol active-metabolite suffix**)
 - **Type:** metabolite-suffix

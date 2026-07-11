@@ -1,8 +1,10 @@
 Diao_2016_daclizumab_cd25 <- function() {
-  description <- "Sigmoidal Emax PK/PD model of CD25 receptor occupancy on peripheral CD4+ T cells following subcutaneous daclizumab high-yield process (HYP) in adults with relapsing-remitting multiple sclerosis (Diao 2016). The PD output is the percentage of CD4+ T cells staining positive for unoccupied CD25 (i.e., the unbound CD25 fraction). The PK backbone is the two-compartment, first-order SC absorption + lag model from Othman 2014 (file inst/modeldb/specificDrugs/Othman_2014_daclizumab.R), copied verbatim with weight-based allometric scaling."
+  description <- "Kinetic-binding PK/PD model of CD25 receptor occupancy on peripheral CD4+ T cells following subcutaneous daclizumab high-yield process (HYP) in adults with relapsing-remitting multiple sclerosis (Diao 2016). The receptor-occupancy state occ_cd25 obeys dOcc/dt = kon*Cc*(1 - Occ) - koff*Occ; the PD output is the percentage of CD4+ T cells staining positive for unoccupied CD25, computed as E0 * (1 - occ_cd25). This is a REPARAMETERISATION of the paper's published sigmoidal Emax (Equation 1) with its two-parameter-set (saturation-phase / desaturation-phase) Hill function -- kon and koff are calibrated to reproduce the paper's phenomenology (rapid saturation within 7 h after first 150 mg SC dose per Figure 1A; return of unoccupied CD25 to baseline in ~24 weeks after last steady-state dose per Figure 1B) rather than transcribed from a paper table. See the companion vignette Assumptions and deviations for the calibration rationale. The PK backbone is inherited verbatim from Othman 2014."
   reference <- "Diao L, Hang Y, Othman AA, Nestorov I, Tran JQ, Mehta D, Amaravadi L. Population PK/PD analyses of CD25 occupancy, CD56 bright NK cell expansion and regulatory T cell reduction by daclizumab HYP in subjects with multiple sclerosis. Br J Clin Pharmacol. 2016;82(5):1333-1342. doi:10.1111/bcp.13051 (PMID 27333593). PK backbone: Othman AA, Tran JQ, Tang MT, Dutta S. Population Pharmacokinetics of Daclizumab High-Yield Process in Healthy Volunteers. Clin Pharmacokinet. 2014;53(10):907-918. doi:10.1007/s40262-014-0159-9."
   vignette <- "Diao_2016_daclizumab_cd25"
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL", response = "% of CD4+ T cells unoccupied CD25")
+
+  paper_specific_compartments <- c("occ_cd25")
 
   covariateData <- list(
     WT = list(
@@ -84,37 +86,58 @@ Diao_2016_daclizumab_cd25 <- function() {
     addSd  <- 0.33; label("Additive residual error on daclizumab HYP serum concentration (ug/mL)")        # Othman 2014 Table 2
 
     # ----------------------------------------------------------------------
-    # CD25 occupancy PD parameters (Diao 2016 Table 3, sigmoidal Emax model).
-    # Equation 1: CD25 = E0 * (1 - Cc^gamma / (Cc^gamma + IC50^gamma)).
-    # Emax fixed to 1 (CD25 occupancy can be fully saturated).
+    # CD25 kinetic-binding parameters (REPARAMETERISATION of Diao 2016 Eq. 1).
     #
-    # The published "final model" reported TWO parameter sets for the Hill
-    # function: a saturation set (IC50 = 0.0135 mg/L, gamma = 1, both FIXED
-    # to OBSERVE intensive-substudy estimates) governing the rapid initial
-    # binding phase, and a desaturation set (IC50 = 2.07 mg/L, gamma = 4.44,
-    # estimated) governing the slow return-to-baseline during washout.
-    # The single-equation library implementation uses the desaturation
-    # parameter set, which is sufficient for steady-state and washout
-    # simulation: at typical clinical Cc (5-15 ug/mL during dosing) the
-    # desaturation Hill predicts >97% occupied, and the published return
-    # to baseline at Cc ~ 1 ug/mL is reproduced (Hill = 4% occupied).
-    # The saturation parameters are reported in the model description /
-    # vignette but are not used in the operative equation; reproducing the
-    # OBSERVE 8-hour saturation kinetics requires phase-dependent IC50 logic
-    # that the published equation does not specify and that the NONMEM
-    # control stream is not available to clarify.
+    # The paper reports two sigmoidal Emax parameter sets that cannot be
+    # reconciled with a single instantaneous Hill function (Diao 2016 Table 3):
+    #
+    #   saturation phase   IC50 = 0.0135 mg/L, gamma = 1     (both FIXED
+    #                      from the OBSERVE intensive substudy; describe
+    #                      the rapid initial binding)
+    #   desaturation phase IC50 = 2.07 mg/L,  gamma = 4.44   (estimated
+    #                      from the SELECTION washout cohort; describe the
+    #                      slow return to baseline)
+    #
+    # A single equilibrium Hill can only match one of the two limits at a
+    # time (the earlier merged-to-main version of this model used the
+    # desaturation set only, under-predicting the rapid initial saturation
+    # reported in Diao 2016 Figure 1A). To reproduce BOTH the ~7 h
+    # saturation timescale and the ~24 week baseline-return timescale in a
+    # single simulation-ready model, the receptor occupancy is instead
+    # tracked as an ODE state occ_cd25 in [0, 1] with mass-action kinetic
+    # binding:
+    #
+    #     d(occ_cd25)/dt = kon * Cc * (1 - occ_cd25) - koff * occ_cd25
+    #
+    # kon is set high so kon*Cc dominates koff at any measurable clinical
+    # Cc (fast association -> Figure 1A saturation within hours of the
+    # first dose). koff is set low so once Cc drops well below the effective
+    # equilibrium IC50 (koff/kon) during washout, occ_cd25 decays with
+    # t1/2 = ln(2)/koff = 21 days (slow dissociation -> Figure 1B
+    # ~24-week baseline return).
+    #
+    # kon and koff are CALIBRATION values, not fitted paper parameters.
+    # They are wrapped in fixed() to make the provenance unambiguous.
+    # The observation-scale IIV (baseline additive; koff CV) is retained
+    # from the paper's Table 3 estimates on the E0 and IC50 (desaturation)
+    # rows so that the marginal spread of the simulated occupancy tracks
+    # the paper's reported variability.
     # ----------------------------------------------------------------------
-    cd25E0    <- 56;        label("Typical baseline unoccupied CD25 (% of CD4+ T cells)")       # Diao 2016 Table 3 (Baseline E0 = 56)
-    lcd25IC50 <- log(2.07); label("CD25 IC50 (Cc giving 50% bound, desaturation phase, mg/L)")  # Diao 2016 Table 3 (Desaturation IC50 = 2.07 mg/L)
-    cd25gamma <- fixed(4.44); label("CD25 Hill coefficient (desaturation phase, unitless)")     # Diao 2016 Table 3 (Desaturation Hill = 4.44; estimated, treated as fixed structural here)
+    lkon      <- fixed(log(24));    label("Kinetic binding association rate (kon, L/(mg*day); calibrated -- see Assumptions)")   # Calibrated re-parameterisation; targets rapid Figure 1A saturation
+    lkoff     <- fixed(log(0.033)); label("Kinetic binding dissociation rate (koff, 1/day; t1/2 off = 21 days; calibrated)")     # Calibrated re-parameterisation; targets Figure 1B ~24-week baseline return
+    cd25E0    <- 56;                label("Typical baseline unoccupied CD25 (% of CD4+ T cells)")                                # Diao 2016 Table 3 (Baseline E0 = 56%)
 
     # IIV.
-    # cd25E0 IIV is specified in Diao 2016 Table 3 as "(additive) 11" (i.e.,
-    # additive on the linear percentage scale), not CV%. We model this with
-    # an additive eta on cd25E0 in linear (percentage-point) space.
-    # IC50 IIV = 47% CV -> omega^2 = log(1 + 0.47^2) = 0.19770.
-    etacd25E0    ~ 121        # Diao 2016 Table 3 (Baseline E0 IIV additive SD = 11 percentage points; variance = 11^2)
-    etalcd25IC50 ~ 0.19770    # Diao 2016 Table 3 (Desaturation IC50 IIV 47% CV)
+    # cd25E0 IIV is Diao 2016 Table 3 as "(additive) 11" (i.e., additive on
+    # the linear percentage scale), not CV%. Encoded as an additive eta on
+    # cd25E0 in linear (percentage-point) space; variance = 11^2 = 121.
+    # koff IIV = 47% CV -> omega^2 = log(1 + 0.47^2) = 0.19770. This is
+    # inherited from the paper's desaturation-IC50 IIV row: with kon fixed,
+    # IIV on koff is equivalent to IIV on the effective equilibrium IC50
+    # (which equals koff/kon), preserving the between-subject variability
+    # the paper reported.
+    etacd25E0 ~ 121                                                                              # Diao 2016 Table 3 (Baseline E0 IIV additive SD = 11 percentage points; variance = 11^2)
+    etalkoff  ~ 0.19770                                                                          # Diao 2016 Table 3 (Desaturation IC50 IIV 47% CV, remapped to kinetic binding koff)
 
     # Residual error on the CD25 occupancy observation.
     # Diao 2016 Table 3 reports "Residual error (additive) = 4.02" (units:
@@ -149,20 +172,27 @@ Diao_2016_daclizumab_cd25 <- function() {
     Cc <- central / vc
 
     # ------------------------------------------------------------------
-    # 3. Individual CD25 PD parameters.
+    # 3. Individual CD25 kinetic-binding parameters.
     # ------------------------------------------------------------------
-    cd25E0_i   <- cd25E0 + etacd25E0
-    cd25IC50_i <- exp(lcd25IC50 + etalcd25IC50)
+    kon_i    <- exp(lkon)
+    koff_i   <- exp(lkoff + etalkoff)
+    cd25E0_i <- cd25E0 + etacd25E0
 
     # ------------------------------------------------------------------
-    # 4. Sigmoidal Emax CD25 occupancy (Diao 2016 Equation 1).
-    #    Emax fixed at 1 (full saturation possible).
-    #    cd25 = unoccupied CD25 (% of CD4+ T cells).
+    # 4. Kinetic binding ODE for the fraction of CD25 bound by daclizumab HYP.
+    #    State occ_cd25 in [0, 1]; initial condition 0 (no drug present).
+    #    See Assumptions and deviations for the calibration rationale.
     # ------------------------------------------------------------------
-    cd25 <- cd25E0_i * (1 - Cc^cd25gamma / (Cc^cd25gamma + cd25IC50_i^cd25gamma))
+    d/dt(occ_cd25) <- kon_i * Cc * (1 - occ_cd25) - koff_i * occ_cd25
+    occ_cd25(0)    <- 0
 
     # ------------------------------------------------------------------
-    # 5. Observation and error model (PK + PD outputs).
+    # 5. Unoccupied CD25 percentage (observable).
+    # ------------------------------------------------------------------
+    cd25 <- cd25E0_i * (1 - occ_cd25)
+
+    # ------------------------------------------------------------------
+    # 6. Observation and error model (PK + PD outputs).
     # ------------------------------------------------------------------
     Cc   ~ add(addSd) + prop(propSd)
     cd25 ~ add(addSd_cd25)

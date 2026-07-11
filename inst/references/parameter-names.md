@@ -27,9 +27,9 @@ Each canonical entry is an H3 heading whose first whitespace-separated token (be
 
 The `Type:` field is the routing tag the runtime parser uses to assign the entry to the appropriate static vector:
 
-- `log-transformed-pk` → `pkParams` (used by `.isPkParam` and the `l<base>` convention check)
-- `bare-pk` → `pkBareParams` (used by `.isPkBareParam`, the bare-counterpart check, and covariate-effect shared-exponent detection)
-- `paper-named-param` → `paperNamedParams` (paper-mechanistic parameters that fall outside the standard `ka`/`cl`/`vc` shape but recur across published models)
+- `log-transformed-pk` -> `pkParams` (used by `.isPkParam` and the `l<base>` convention check)
+- `bare-pk` -> `pkBareParams` (used by `.isPkBareParam`, the bare-counterpart check, and covariate-effect shared-exponent detection)
+- `paper-named-param` -> `paperNamedParams` (paper-mechanistic parameters that fall outside the standard `ka`/`cl`/`vc` shape but recur across published models)
 
 ## Regex constants (kept in R, not migrated)
 
@@ -184,6 +184,15 @@ The `l<base>` convention denotes a population mean estimated on the log scale (`
   - `CL_non-met` -- Lehr 2010 paper notation.
 - **Example models:** `Lehr_2010_tesofensine.R` (paper Table I: CL_non-met/F = 1.31 L/h, IIV 42.2% CV; carries the parent CL IIV).
 
+### lcl_form (**canonical log-transformed metabolite formation clearance**)
+- **Type:** log-transformed-pk
+- **Role:** Formation (parent-to-metabolite) clearance parameter for parent + metabolite popPK models in which each metabolite's formation flux is estimated as a distinct clearance rather than as a fraction of the parent's total CL. Applied with a metabolite suffix as `lcl_form_<metab>` (e.g., `lcl_form_m3g`, `lcl_form_m6g`, `lcl_form_dnef`). The apparent-clearance form absorbs the fraction metabolised and the metabolite bioavailability into a single positive coefficient, so the metabolite ODE is simply `d/dt(central_<metab>) <- cl_form_<metab> * central / vc - cl_<metab> * central_<metab> / vc_<metab>`. Distinct from `lcl_met`: `lcl_met` presupposes a `CL_parent_total = CL_met + CL_nonmet` decomposition of the parent's total elimination (single-metabolite systems), whereas `lcl_form_<metab>` is used when the parent's total CL (`lcl`) is estimated as a separate parameter or when multiple parallel formation clearances co-exist (multi-metabolite systems).
+- **Source aliases:**
+  - `Qm` -- paper-named formation-rate symbol (Kunarajah 2017 doxorubicin), when the source parameterises the metabolite input as a Q-analogue in mass / volume units.
+  - `K13` -- paper-named apparent clearance of metabolisation (Djerada 2014 nefopam Figure 1B; nefopam -> desmethyl-nefopam).
+- **Example models:** `Knibbe_2009_morphine.R` (PNA-stratified `lcl_form_m3g_le10` / `lcl_form_m3g_gt10` and `lcl_form_m6g_le10` / `lcl_form_m6g_gt10` for the morphine -> M3G and morphine -> M6G glucuronidation arms), `Franken_2015_morphine.R` (`fm_m3g * cl`, `fm_m6g * cl` derived within `model()` from fixed fractions), `deHoogd_2017_morphine.R`, `Hennig_2015_rifabutin.R`, `Djerada_2014_nefopam.R` (`lcl_form_dnef` = log(K13); the apparent metabolic clearance of nefopam to desmethyl-nefopam).
+- **Notes:** The `lcl_form_<metab>` pattern predates the parameter-names.md register (in use since at least Knibbe 2009); formalised on 2026-06-21 alongside the Djerada 2014 nefopam extraction so the convention is discoverable to future extractions. The `lcl_form_<metab>` form does not require a companion `lcl_nonform_<metab>` parameter (mass balance is enforced only when the parent's total CL is independently estimated); use `lcl_met` / `lcl_nonmet` in place of `lcl_form` when the source paper explicitly decomposes total parent CL into formation + non-formation arms with mass balance.
+
 ### lcl_2b6 (**canonical log-transformed CYP2B6-mediated clearance arm**)
 - **Type:** log-transformed-pk
 - **Role:** CYP2B6-mediated metabolic clearance arm of a parent + metabolite popPK decomposition. When the parent drug induces CYP2B6, the time-varying enzyme amount in `enzyme_2b6` multiplies this arm to produce the dynamic CL contribution. Combined with metabolite suffixes (`lcl_2b6_8oh`) to express the same isoenzyme-mediated arm on a metabolite.
@@ -280,6 +289,14 @@ The `l<base>` convention denotes a population mean estimated on the log scale (`
   - `GAM1` / `GAMMA1` -- NONMEM `$THETA` convention used in Weibull-absorption control streams.
 - **Example models:** `Desai_2016_isavuconazole.R` (founding example).
 - **Notes:** Distinct from `lhill` (sigmoidal Emax / Imax exponent) and from `lgamma` (Friberg myelosuppression feedback / TGI growth exponents). The `gam1` suffix follows the NONMEM convention for Weibull-absorption sigmoidicity. Ratified canonically alongside the Desai 2016 isavuconazole extraction.
+
+### lbeta_cl (**canonical log-transformed exponential-nonlinear-CL slope**)
+- **Type:** log-transformed-pk
+- **Role:** Log of the concentration-slope coefficient in an exponential-nonlinear-clearance function of the form `CL(C) = CL_0 * exp(beta_cl * C)`, where `CL_0` is the linear-scale clearance at C = 0 (encoded as the standard `lcl` parameter) and `C` is the observed drug concentration in the same units as the paper's Table. Used when the source paper describes a monotonically-increasing clearance-vs-concentration relationship arising from a saturable protein-binding buffer (e.g., FVIII / von Willebrand factor complex saturation at supraphysiological rFVIII doses). Larger `beta_cl` gives a steeper rise in CL with C; `beta_cl = 0` recovers linear elimination. The bare counterpart inside `model()` is `beta_cl` (units of 1 / concentration).
+- **Source aliases:**
+  - `β` -- Greek letter used in Larsen 2018 Table 3 and Eq. 1.
+- **Example models:** `Larsen_2018_factorviii_rat.R`, `Larsen_2018_factorviii_monkey.R` (founding examples; rat `beta_cl = 0.162 mL/IU`, monkey `beta_cl = 0.0355 mL/IU`, both fitting the exponential-nonlinear-CL form on total FVIII activity).
+- **Notes:** Distinct from `lhill` (sigmoidal Emax / Imax exponent), `lgamma` (Friberg / TGI kinetic exponents), and `lvmax` / `Km` (Michaelis-Menten saturable elimination — a different mathematical form). Choose `lbeta_cl` when the source paper explicitly parameterises CL as an exponential function of concentration; choose `lvmax` / `Km` when the paper fits Michaelis-Menten saturation instead. The `_cl` suffix marks that the slope acts on clearance; parallel `beta_<param>` names are permitted for other parameters when a paper extends the exponential-nonlinear form to `V` or `Q`.
 
 ---
 
@@ -516,6 +533,13 @@ The bare counterparts of the log-transformed parameters above. Used when the sou
   - `GAM1` / `GAMMA1` -- NONMEM convention.
 - **Example models:** `Desai_2016_isavuconazole.R` (founding example).
 
+### beta_cl (**canonical bare exponential-nonlinear-CL slope**)
+- **Type:** bare-pk
+- **Role:** Bare counterpart of `lbeta_cl`. Concentration-slope coefficient in an exponential-nonlinear-clearance function of the form `CL(C) = CL_0 * exp(beta_cl * C)`, units of 1 / concentration. Used inside `model()` after being exponentiated from `lbeta_cl`.
+- **Source aliases:**
+  - `β` -- Greek letter used in Larsen 2018 Table 3 and Eq. 1.
+- **Example models:** `Larsen_2018_factorviii_rat.R`, `Larsen_2018_factorviii_monkey.R` (founding examples).
+
 ---
 
 ## Paper-named mechanistic parameters
@@ -702,6 +726,49 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
 - **Role:** First-order removal / clearance rate constant for a paper-mechanistic state.
 - **Source aliases:** none.
 - **Example models:** paper-mechanistic removal PD models.
+
+### kgrow (**canonical growth-rate parameter**)
+- **Type:** paper-named-param
+- **Role:** First-order growth / net-multiplication rate constant of a paper-mechanistic proliferating state (1 / time). Founding use: fixed net asexual-parasite growth rate `kgrow = ln(10) / 48 = 0.0479 /h` for a Plasmodium falciparum life-cycle model in which parasites multiply 10-fold per 48-h intraerythrocytic cycle (Hien 2017 Table 3 row `K_grow (1/h) = 0.0479 fix`). Inside `model()` the bare name is `kgrow`; the log-transformed `lkgrow` form is used in `ini()` when the rate itself is log-parameterised (typical for positivity constraint).
+- **Source aliases:**
+  - `K_grow`, `Kgrow` -- Hien 2017 notation.
+- **Example models:** `Hien_2017_cipargamin.R` (founding example; `kgrow` fixed at ln(10)/48 = 0.0479 /h for the 10-fold per 48-h cycle Plasmodium falciparum multiplication rate).
+- **Notes:** Mechanistically distinct from `p` (generic proliferation / growth-rate constant, TGI-family) in that `kgrow` is specifically a life-cycle-anchored multiplication rate constrained by an independently-known cycle time and per-cycle amplification factor -- typically fixed rather than estimated. Also distinct from `kin` / `ksyn` (zero-order production rates into a turnover pool) because `kgrow` is a first-order growth rate proportional to the state itself. Ratified canonically on 2026-07-08 alongside the Hien 2017 cipargamin extraction.
+
+### kact (**canonical activation-rate parameter**)
+- **Type:** paper-named-param
+- **Role:** First-order activation rate constant for a paper-mechanistic dormant / refractory state to become active (1 / time). Founding use: rate constant `kact` at which refractory (drug-tolerant) Plasmodium falciparum parasites become active and re-enter the drug-sensitive pool in a two-population parasite clearance model (Hien 2017 Table 3 row `K_act (1/h) = 0.0987`). Inside `model()` the bare name is `kact`; the log-transformed `lkact` form is used in `ini()` when the rate itself is log-parameterised.
+- **Source aliases:**
+  - `K_act`, `Kact` -- Hien 2017 notation.
+- **Example models:** `Hien_2017_cipargamin.R` (founding example; `kact = 0.0987 /h` for refractory-to-active first-order transition, with IIV 41.5% CV per Hien 2017 Table 3; drives the awakening term `+ kact * parasite_refractory` in the sensitive-pool ODE and the loss term `- kact * parasite_refractory` in the refractory-pool ODE).
+- **Notes:** Mechanistically distinct from `kel` / `kdeg` (single-drug or single-pool elimination), from `kmet` (parent-to-metabolite conversion), and from `kint` (target-mediated internalisation) in that `kact` transfers mass from an inactive pool to an active pool of the same species (no drug binding, no metabolism, no target sequestration). Ratified canonically on 2026-07-08 alongside the Hien 2017 cipargamin extraction.
+
+### fsen (**canonical bare drug-sensitive fraction**)
+- **Type:** paper-named-param
+- **Role:** Fraction of a paper-mechanistic asexual / cycling pool that is fully drug-sensitive at model initialisation, bounded in `[0, 1]`. Complement `(1 - fsen)` is the drug-refractory subpool. Inside `model()` the bare name is `fsen`; the log-transformed `lfsen` form is used in `ini()`. Founding use: population fraction of asexual Plasmodium falciparum parasites that are drug-sensitive at enrolment in a two-population parasite clearance model (Hien 2017 Table 3 row `F_sen (%) = 99.1`).
+- **Source aliases:**
+  - `F_sen`, `Fsen` -- Hien 2017 notation.
+- **Example models:** `Hien_2017_cipargamin.R` (founding example; `fsen = 0.991` typical; large IIV 81.8% CV per Hien 2017 Table 3; seeds the initial condition of the two ODE pools: `parasite_sensitive(0) = fsen * PARA` and `parasite_refractory(0) = (1 - fsen) * PARA`).
+- **Notes:** Encoded on the log scale (`lfsen = log(0.991)`) for consistency with the paper's log-normal `omega^2 = log(1 + CV^2)` reporting formula (Hien 2017 Table 3 footnote a). Individual `fsen_i = exp(lfsen + etalfsen)` can occasionally exceed 1 for extreme etas; this is a documented limitation of the log-normal-on-fraction encoding and is preferable to reinterpreting the paper's reported %CV on a logit scale. Downstream simulations that need strictly-bounded individual fractions can clamp `fsen_i` to `min(fsen_i, 1)` at post-processing. Distinct from `fu` (fraction unbound in plasma; time-invariant physicochemical / binding property), `fr` (Bergstrand-Karlsson mixed-model fraction of MAT in transit delay), and `fm` (fraction metabolised through a specific pathway). Ratified canonically on 2026-07-08 alongside the Hien 2017 cipargamin extraction.
+
+### lfsen (**canonical log-transformed drug-sensitive fraction**)
+- **Type:** paper-named-param
+- **Role:** Log-transformed counterpart of `fsen` for use in `ini()`. Individual fraction `fsen_i = exp(lfsen + etalfsen)`.
+- **Source aliases:** none.
+- **Example models:** `Hien_2017_cipargamin.R`.
+- **Notes:** See `fsen` for the full role description and the caveat on the log-transform-on-a-bounded-fraction encoding choice.
+
+### lkgrow (**canonical log-transformed growth-rate parameter**)
+- **Type:** paper-named-param
+- **Role:** Log-transformed counterpart of `kgrow` for use in `ini()`.
+- **Source aliases:** none.
+- **Example models:** `Hien_2017_cipargamin.R` (`lkgrow = fixed(log(0.0479))`).
+
+### lkact (**canonical log-transformed activation-rate parameter**)
+- **Type:** paper-named-param
+- **Role:** Log-transformed counterpart of `kact` for use in `ini()`.
+- **Source aliases:** none.
+- **Example models:** `Hien_2017_cipargamin.R` (`lkact = log(0.0987)`).
 
 ### mat (**canonical mean absorption time**)
 - **Type:** paper-named-param
