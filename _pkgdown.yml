@@ -64,8 +64,8 @@ navbar:
         href: articles/Drweesh_2026_adalimumab.html
       - text: "Adalimumab (Marquez-Megias 2023)"
         href: articles/Marquez-Megias_2023_adalimumab.html
-      - text: "Adalimumab (Nader 2017)"
-        href: articles/Nader_2017_adalimumab.html
+      - text: "Adalimumab (Zheng 2012)"
+        href: articles/Zheng_2012_minipig_mab.html
       - text: "Adecatumumab (Cao 2013)"
         href: articles/Cao_2013_adecatumumab.html
       - text: "Aflibercept (Thai 2011)"
@@ -1140,6 +1140,38 @@ navbar:
         href: articles/Chen_2020_luspatercept.html
       - text: "M3g rat (Xie 2000)"
         href: articles/Xie_2000_m3g_rat.html
+      - text: "MAb1 (Zheng 2012)"
+        href: articles/Zheng_2012_minipig_mab.html
+      - text: "MAb2 (Zheng 2012)"
+        href: articles/Zheng_2012_minipig_mab.html
+      - text: "MAb3 (Zheng 2012)"
+        href: articles/Zheng_2012_minipig_mab.html
+      - text: "MAb4 (Zheng 2012)"
+        href: articles/Zheng_2012_minipig_mab.html
+      - text: "MAb5 (Zheng 2012)"
+        href: articles/Zheng_2012_minipig_mab.html
+      - text: "MAb6 (Zheng 2012)"
+        href: articles/Zheng_2012_minipig_mab.html
+      - text: "MAb7 (Zheng 2012)"
+        href: articles/Zheng_2012_minipig_mab.html
+      - text: "MAb8 (Zheng 2012)"
+        href: articles/Zheng_2012_minipig_mab.html
+      - text: "MBG453 (Xu 2023)"
+        href: articles/Xu_2023_MBG453.html
+      - text: "MEDI528 (Cao 2013)"
+        href: articles/Cao_2013_MEDI528.html
+      - text: "MHD rat (Clinckers 2008)"
+        href: articles/Clinckers_2008_MHD_rat.html
+      - text: "MI 219 (Zou 2012)"
+        href: articles/Zou_2012_MI_219.html
+      - text: "MK3577 (Peng 2014)"
+        href: articles/Peng_2014_MK3577.html
+      - text: "MK3577 t2dm (Peng 2014)"
+        href: articles/Peng_2014_MK3577.html
+      - text: "MRNA3927 (Attarwala 2023)"
+        href: articles/Attarwala_2023_mRNA3927.html
+      - text: "MTMSATrp mouse (Niloy 2026)"
+        href: articles/Niloy_2026_MTMSATrp_mouse.html
       - text: "Mab mpbpk human (Muliaditan 2025)"
         href: articles/Muliaditan_2025_mab_mpbpk.html
       - text: "Mab mpbpk nhp (Muliaditan 2025)"
@@ -3406,6 +3438,7 @@ articles:
   - articles/Zhao_2014_vancomycin
   - articles/Zhao_2015_teicoplanin
   - articles/Zhao_2018_omeprazole
+  - articles/Zheng_2012_minipig_mab
   - articles/Zheng_2014_azithromycin
   - articles/Zheng_2016_sifalimumab
   - articles/Zheng_2018_azithromycin
