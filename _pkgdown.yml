@@ -714,6 +714,8 @@ navbar:
         href: articles/Cirincione_2017_exenatide_er.html
       - text: "Exendin939 (Ng 2018)"
         href: articles/Ng_2018_exendin939.html
+      - text: "Factor viii (Hazendonk 2016)"
+        href: articles/Hazendonk_2016_factor_viii.html
       - text: "FactorIX (Brekkan 2016)"
         href: articles/Brekkan_2016_factorIX.html
       - text: "Factorix (Koopman 2023)"
@@ -2679,6 +2681,7 @@ articles:
   - articles/Hawwa_2013_ranitidine
   - articles/Hayashi_1998_epoetinBeta
   - articles/Hayashi_2007_omalizumab
+  - articles/Hazendonk_2016_factor_viii
   - articles/He_2012_lamotrigine
   - articles/Heathman_2024_efavirenz
   - articles/Hempel_2003_daunorubicin_liposomal
