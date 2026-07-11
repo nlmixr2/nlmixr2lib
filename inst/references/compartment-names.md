@@ -545,6 +545,13 @@ The MTP framework partitions the bacterial population into three states. The ori
 - **Example models:** `Frey_2013_tocilizumab.R`, `Ma_2020_sarilumab_das28crp.R`.
 - **Notes:** Registered 2026-05-28 per the naming audit.
 
+### das28cfb (**canonical DAS28 change-from-baseline output compartment**)
+- **Type:** compartment
+- **Role:** DAS28 change-from-baseline (DAS28cfb) PD output used by rheumatoid-arthritis models that fit the paper-declared change score rather than the absolute DAS28 value. Companion to `das28` (which holds the absolute score); use `das28cfb` when the paper's own equation targets `DAS28cfb = f(t, Cij)`, with the change interpretation as a negative-going quantity for treatment improvement. Same canonical-lower-case-name convention as `das28` / `deltaUPDRS`.
+- **Source aliases:** `DAS28cfb` -- Williams 2016 paper notation.
+- **Example models:** `Williams_2016_rituximab_das28cfb.R`.
+- **Notes:** Ratified canonically on 2026-07-09 alongside the Williams 2016 rituximab-biosimilar extraction (the paper fits the DAS28 change-from-baseline directly via a 1 - exp(fnon-C + fC) transformation, so the modelled endpoint is the change score rather than the absolute DAS28). Follows the same lowercase-name convention as `das28` / `deltaUPDRS`.
+
 ---
 
 ## Body-weight PD output

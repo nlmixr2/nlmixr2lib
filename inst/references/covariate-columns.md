@@ -2475,6 +2475,18 @@ All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODA
 - **Notes:** Specific scope; remikiren-specific. The drug-specific naming follows the established `CP_<drug>_<units>` precedent (`CP_OXY_NGML`, `CP_FBX_NGML`, `CP_LSN_NGML`, `CP_MORPH_NGML`, `CP_RIF_UM`). Weber 1993 fit the PD model directly to observed plasma concentrations because no structural population PK model was estimated -- the paper characterised remikiren PK with model-independent NCA only. Users wishing to drive the PD model from a simulated PK source must supply their own concentration trajectory (the published single-dose Weber-group papers from the same series report compartmental PK in healthy volunteers but are not on disk in nlmixr2lib). Ratified canonically on 2026-06-10 alongside the Weber 1993 remikiren PD extraction.
 
 
+### CP_RITUXIMAB_UGML (**canonical for instantaneous rituximab plasma concentration as a time-varying PD driver**)
+- **Description:** Instantaneous plasma concentration of rituximab (chimeric anti-CD20 monoclonal antibody), or of one of its biosimilars, supplied directly as a time-varying covariate column rather than computed from a coupled PK model. Used in PD-only exposure-response models that take rituximab exposure as an external input to a concentration-effect equation (e.g., Emax on DAS28 change from baseline).
+- **Units:** ug/mL
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters as an Emax-style concentration-effect term `fC = Emax * CP_RITUXIMAB_UGML / (CP_RITUXIMAB_UGML + ec50)`. Set to 0 outside the drug-exposure window (the concentration-effect term then collapses to 0). Reference values observed: typical steady-state Cmax after the two-dose loading course (1000 mg IV on days 1 and 15) reaches the low hundreds of ug/mL and washes out to <1 ug/mL by week 24 (Williams 2016 Supplemental Figure S1 VPC).
+- **Source aliases:**
+  - `CONC` -- Williams 2016 popPK/PD analysis; the paper's popPK model produced individual predicted concentrations `Cij` that were passed to the DAS28cfb PD model as an input variable.
+- **Example models:** `Williams_2016_rituximab_das28cfb.R` (PD-only Emax-style exposure-response model for the DAS28 change from baseline; the source rituximab popPK model was two-compartment with baseline-BSA and sex covariates on CL and Vc, but Williams 2016 does not tabulate the popPK parameter estimates, so users must supply their own concentration trajectory).
+- **Notes:** Specific scope; rituximab-specific. Same covariate is used for the biosimilar candidate PF-05280586 in the Williams 2016 trial (PF-05280586 was shown to be PK-similar to reference rituximab). Drug-product distinction is captured by the separate `TRT` covariate rather than by separate concentration columns. Ratified canonically on 2026-07-09 alongside the Williams 2016 biosimilar-rituximab DAS28cfb extraction.
+
+
 ### CP_GLASDEGIB_NGML (**canonical for instantaneous glasdegib plasma concentration as a time-varying PD driver**)
 - **Description:** Instantaneous plasma concentration of glasdegib (PF-04449913; orally active Hedgehog pathway / Smoothened inhibitor) supplied directly as a time-varying covariate column rather than computed from a coupled PK model. Used in PD-only linear exposure-response models that take glasdegib exposure as an external input to a concentration-effect equation (e.g., concentration-QTc).
 - **Units:** ng/mL
@@ -5560,11 +5572,56 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Units:** count (0-28)
 - **Type:** continuous
 - **Scope:** general
-- **Reference category:** n/a -- used as a shifted power term `((SWOL_28JOINT + 1)/(<ref> + 1))^exponent` to avoid the zero-count edge case. Reference value observed: 16 in Li 2019 (approximate dataset median of the popPK cohort).
+- **Reference category:** n/a -- used as a shifted power term `((SWOL_28JOINT + 1)/(<ref> + 1))^exponent` to avoid the zero-count edge case. Reference value observed: 16 in Li 2019 (approximate dataset median of the popPK cohort); 12 in Williams 2016 (median of DAS28cfb PK/PD dataset).
 - **Source aliases:**
   - `SWOL` -- used in `Li_2019_abatacept.R` (Li 2019 Methods abbreviation).
-- **Example models:** `Li_2019_abatacept.R` (power effect on CL with exponent 0.0965; not clinically relevant per Li 2019).
-- **Notes:** The `_28JOINT` suffix distinguishes this from the 66/68-joint swollen count used in some earlier RA scales -- register a separate canonical (`SWOL_66JOINT` or similar) if a future paper uses a different joint-count scale. Canonical name drops the `BL` prefix to match the `SCORE_EASI` / `AGE` / `WT` / `ALB` convention where baseline-vs-time-varying status is documented in `covariateData` notes rather than the column name.
+  - `SJ28` -- used in `Williams_2016_rituximab_das28cfb.R` (Williams 2016 Supplemental Methods g_i covariate function).
+- **Example models:** `Li_2019_abatacept.R` (power effect on CL with exponent 0.0965; not clinically relevant per Li 2019), `Williams_2016_rituximab_das28cfb.R` (additive log-scale effect (SWOL_28JOINT - 12) on each of PMAX, kp, and Emax in the DAS28 change-from-baseline model).
+- **Notes:** The `_28JOINT` suffix distinguishes this from the 66-joint swollen count (`SWOL_66JOINT`) used in the extended ACR joint set. Canonical name drops the `BL` prefix to match the `SCORE_EASI` / `AGE` / `WT` / `ALB` convention where baseline-vs-time-varying status is documented in `covariateData` notes rather than the column name.
+
+### TEND_28JOINT (**canonical for 28-joint tender joint count**)
+- **Description:** Tender joint count on the 28-joint (DAS28) scale (integer 0-28; component of the DAS28 composite). Baseline value is typical; document time-varying use in per-model `notes`.
+- **Units:** count (0-28)
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- used with additive shift `(TEND_28JOINT - <ref>)` in log-scale coefficient models or shifted power `((TEND_28JOINT + 1)/(<ref> + 1))^exponent` to avoid the zero-count edge case. Reference value observed: 16 in Williams 2016 (median of DAS28cfb PK/PD dataset).
+- **Source aliases:**
+  - `TJ28` -- used in `Williams_2016_rituximab_das28cfb.R` (Williams 2016 Supplemental Methods g_i covariate function).
+- **Example models:** `Williams_2016_rituximab_das28cfb.R` (additive log-scale effect (TEND_28JOINT - 16) on each of PMAX, kp, and Emax in the DAS28 change-from-baseline model).
+- **Notes:** Companion to `SWOL_28JOINT` — the tender-count analog of the swollen count on the 28-joint DAS28 subscale. Distinct from `TEND_68JOINT` which uses the 68-joint extended count. Ratified canonically on 2026-07-09 alongside the Williams 2016 rituximab-biosimilar DAS28cfb extraction.
+
+### SWOL_66JOINT (**canonical for 66-joint swollen joint count**)
+- **Description:** Swollen joint count on the 66-joint extended (ACR) scale (integer 0-66; component of the ACR responder-rate criteria alongside `TEND_68JOINT`). Baseline value is typical; document time-varying use in per-model `notes`.
+- **Units:** count (0-66)
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- used with additive shift `(SWOL_66JOINT - <ref>)` in log-scale coefficient models. Reference value observed: 16 in Williams 2016 (median of the ACR dataset).
+- **Source aliases:**
+  - `SJ66` -- used in `Williams_2016_rituximab_acr.R` (Williams 2016 Supplemental Methods g_i covariate function).
+- **Example models:** `Williams_2016_rituximab_acr.R` (additive log-scale effect (SWOL_66JOINT - 16) on PMAX and onset half-life in the cumulative-probit ACR responder-rate model).
+- **Notes:** Register-anticipated: the existing `SWOL_28JOINT` entry's Notes section explicitly reserves `SWOL_66JOINT` for the extended-joint scale used by ACR. Companion to `TEND_68JOINT`. Ratified canonically on 2026-07-09 alongside the Williams 2016 rituximab-biosimilar ACR extraction.
+
+### TEND_68JOINT (**canonical for 68-joint tender joint count**)
+- **Description:** Tender joint count on the 68-joint extended (ACR) scale (integer 0-68; component of the ACR responder-rate criteria alongside `SWOL_66JOINT`). Baseline value is typical; document time-varying use in per-model `notes`.
+- **Units:** count (0-68)
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- used with additive shift `(TEND_68JOINT - <ref>)` in log-scale coefficient models. Reference value observed: 24 in Williams 2016 (median of the ACR dataset).
+- **Source aliases:**
+  - `TJ68` -- used in `Williams_2016_rituximab_acr.R` (Williams 2016 Supplemental Methods g_i covariate function).
+- **Example models:** `Williams_2016_rituximab_acr.R` (additive log-scale effect (TEND_68JOINT - 24) on PMAX and onset half-life in the cumulative-probit ACR responder-rate model).
+- **Notes:** Companion to `SWOL_66JOINT`. Distinct from `TEND_28JOINT` (28-joint DAS28 subscale). Ratified canonically on 2026-07-09 alongside the Williams 2016 rituximab-biosimilar ACR extraction.
+
+### PGA_PT (**canonical for baseline patient's global assessment of arthritis (VAS)**)
+- **Description:** Patient's own overall rating of arthritis disease activity on a 100-mm visual analogue scale (0 = no disease activity, 100 = maximum). Distinct from `BLPHYVAS` (the *physician*'s global assessment) and from `PAIN` (the patient's *pain*-specific rating). Time-fixed per subject in the known example; document time-varying use in per-model `notes`.
+- **Units:** mm (0-100 VAS)
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- used with additive shift `(PGA_PT - <ref>)` in log-scale coefficient models or as a power term `(PGA_PT / <ref>)^exponent`. Reference value observed: 70 in Williams 2016 (median of both the DAS28cfb and ACR datasets).
+- **Source aliases:**
+  - `PGA` -- used in `Williams_2016_rituximab_das28cfb.R` and `Williams_2016_rituximab_acr.R` (Williams 2016 Supplemental Methods g_i covariate function; the paper writes "PGA" for the patient's global assessment).
+- **Example models:** `Williams_2016_rituximab_das28cfb.R` (additive log-scale effect on each of PMAX, kp, and Emax), `Williams_2016_rituximab_acr.R` (additive log-scale effect on PMAX and onset half-life in the cumulative-probit ACR model).
+- **Notes:** The `_PT` suffix disambiguates the patient's global assessment from the physician's global assessment (`BLPHYVAS`) — the paper-verbatim "PGA" abbreviation is ambiguous between the two in cross-literature usage. Ratified canonically on 2026-07-09 alongside the Williams 2016 rituximab-biosimilar extraction (the paper reports both PGA and PhGA separately and estimates independent covariate effects on each).
 
 ## Pharmacogenetics
 
