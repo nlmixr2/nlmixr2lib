@@ -1630,6 +1630,8 @@ navbar:
         href: articles/Clewe_2015_rifampicin.html
       - text: "Rifampicin (Horita 2018)"
         href: articles/Horita_2018_rifampicin.html
+      - text: "Rifampicin (Schipani 2016)"
+        href: articles/Schipani_2016_rifampicin.html
       - text: "Rifampicin (Sloan 2017)"
         href: articles/Sloan_2017_rifampicin.html
       - text: "Rifampicin (Smythe 2012)"
@@ -3048,6 +3050,7 @@ articles:
   - articles/Schipani_2011_nevirapine
   - articles/Schipani_2012_lopinavir
   - articles/Schipani_2013_atazanavir_ritonavir
+  - articles/Schipani_2016_rifampicin
   - articles/Schmid_2017_nintedanib
   - articles/Schmidt_2009_oxazolidinones
   - articles/Schmitt_2018_vinflunine
