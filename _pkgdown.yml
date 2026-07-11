@@ -1632,6 +1632,8 @@ navbar:
         href: articles/Wang_2011_raltegravir.html
       - text: "Raltitrexed (Blair 2004)"
         href: articles/Blair_2004_raltitrexed.html
+      - text: "Ranibizumab (HuttonSmith 2018)"
+        href: articles/HuttonSmith_2018_ranibizumab.html
       - text: "Ranibizumab (Mulyukov 2018)"
         href: articles/Mulyukov_2018_ranibizumab.html
       - text: "Ranibizumab (Xu 2013)"
@@ -2732,6 +2734,7 @@ articles:
   - articles/Hurtado_2014_levofloxacin_rat
   - articles/Hussein_1997_lamotrigine
   - articles/Hussein_2005_levocetirizine
+  - articles/HuttonSmith_2018_ranibizumab
   - articles/Huynh_2026_VRC07523LS
   - articles/Hwang_2022_tremelimumab
   - articles/Hwang_2023_monalizumab
