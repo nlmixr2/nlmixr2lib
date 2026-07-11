@@ -400,6 +400,8 @@ navbar:
         href: articles/Zingmark_2003_clomethiazole.html
       - text: "Clonazepam pediatric (Yukawa 2002)"
         href: articles/Yukawa_2002_clonazepam_pediatric.html
+      - text: "Clonidine (Kleiber 2017)"
+        href: articles/Kleiber_2017_clonidine.html
       - text: "Clopidogrel (Danielak 2017)"
         href: articles/Danielak_2017_clopidogrel.html
       - text: "Clozapine (Li 2012)"
@@ -2753,6 +2755,7 @@ articles:
   - articles/Kim_2018_tacrolimus
   - articles/Kimura_2023_glucarpidase
   - articles/Kirubakaran_2022_tacrolimus
+  - articles/Kleiber_2017_clonidine
   - articles/Kleideiter_2017_cebranopadol
   - articles/Kleideiter_2018_cebranopadol
   - articles/Kleijn_2011_sugammadex_rocuronium
