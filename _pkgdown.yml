@@ -1422,6 +1422,8 @@ navbar:
         href: articles/Wang_2021_pertuzumab.html
       - text: "Pexidartinib (Yin 2020)"
         href: articles/Yin_2020_pexidartinib.html
+      - text: "Pf 06671008 qsp (Betts 2019)"
+        href: articles/Betts_2019_pf_06671008.html
       - text: "Phenobarbital (Grasela 1985)"
         href: articles/Grasela_1985_phenobarbital.html
       - text: "Phenytoin (Hennig 2015)"
@@ -2269,6 +2271,7 @@ articles:
   - articles/Berges_2015_ozanezumab
   - articles/Bergmann_2014_tacrolimus
   - articles/Bertrand_2011_S33138
+  - articles/Betts_2019_pf_06671008
   - articles/Bi_2017_peginterferon_alfa_2a
   - articles/Bienczak_2016_efavirenz
   - articles/Bienczak_2016_nevirapine
