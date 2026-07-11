@@ -1861,6 +1861,39 @@ All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODA
 - **Example models:** `CarlssonPetri_2018_semaglutide.R` (binary 0.5-vs-1.0 mg maintenance-dose indicator derived inline in `model()`; CL/F ratio 1.00 per Table S3 confirming dose proportionality; the coefficient is fixed at 1.00 in the model file to preserve fidelity to the published estimate).
 - **Notes:** Follows the `DOSE_<DRUG>_<UNITS>` auto-approve family. Distinct from the rxode2/nlmixr2 event column `amt` (which carries the administered dose at dose events; `DOSE_SEMAGLUTIDE_MG` is a per-subject fixed covariate carrying the assigned MAINTENANCE dose target, not the per-record actual dose which varies during the dose-escalation phase). Future once-weekly-semaglutide extractions with the same 0.5-vs-1.0 mg contrast (or an extension to 2.0 mg / oral 3-14 mg tablets) can reuse this canonical; other GLP-1 receptor agonists dosed in mg (dulaglutide, tirzepatide) should register sibling canonicals (e.g. `DOSE_DULAGLUTIDE_MG`, `DOSE_TIRZEPATIDE_MG`) rather than overload this name because the numeric coefficient value is drug-specific. Founded alongside the CarlssonPetri_2018_semaglutide extraction.
 
+### DOSE_EFP_MAX_MG (**canonical for per-subject maximum administered efaproxiral dose**)
+- **Description:** Per-subject maximum administered single-dose efaproxiral dose, in mg. Time-fixed per subject; defined as the largest single-administration dose the subject received during the trial. Distinct from a per-administration `DOSE` column because the covariate enters the model as a static per-subject scalar (a power-model effect on the RBC:plasma proportionality SLPRBC) rather than a per-dose-record exposure regressor.
+- **Units:** mg
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters as a power-model effect `(DOSE_EFP_MAX_MG / 6800)^theta_SLPRBC~MDOS` on the RBC:plasma proportionality SLPRBC. Reference value 6800 mg per Equation 1 of Gastonguay 2005 (close to the median 100 mg/kg x ~72 kg derived from the cohort).
+- **Source aliases:**
+  - `MDOS` -- used in `Gastonguay_2005_efaproxiral.R` (Gastonguay 2005 Data section; per-subject maximum administered dose value used as a power-model covariate on SLPRBC).
+- **Example models:** `Gastonguay_2005_efaproxiral.R` (efaproxiral; theta_SLPRBC~MDOS = -0.125, 95% CI -0.220 to -0.0222, classified NCI = not clinically important).
+- **Notes:** Specific scope because the absolute reference value (6800 mg) is tied to the efaproxiral cohort and the per-administration MDOS abstraction is uncommon outside hemoglobin-modifier infusion programs. Follows the `DOSE_<DRUG>_<MODIFIER>_<UNITS>` auto-approve family (e.g., `DOSE_PHT_MGKGD` for phenytoin, `DOSE_EMPA_MGD` for empagliflozin) -- the `_MAX_` token disambiguates from a per-administration `DOSE_EFP_MG` column that a future extraction may need. Ratified canonically on 2026-06-30 alongside the Gastonguay 2005 efaproxiral extraction.
+
+### DOSE_CIPARGAMIN_MG (**canonical for administered cipargamin single-dose amount**)
+- **Description:** Administered single oral dose of the spiroindolone antimalarial cipargamin (formerly KAE609), in mg. Time-fixed per subject in the founding single-dose study (each patient receives one dose on day 1); a per-dose-record covariate in principle if the design ever ran a multi-dose regimen. Not a PK covariate -- the amount already appears on the dose record via `amt`. Used inside `model()` as the regressor in the dose-dependent Emax equation `Emax_i = TVEmax * (DOSE_CIPARGAMIN_MG / 10)^COVdose_Emax` (Hien 2017 equation 7 in the supplemental text).
+- **Units:** mg
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters via `(DOSE_CIPARGAMIN_MG / 10)^e_dose_emax` with reference dose 10 mg (the smallest study cohort dose in Hien 2017).
+- **Source aliases:**
+  - `DOSE` -- used in `Hien_2017_cipargamin.R` (Hien 2017 Methods 'Study design'; studied doses 10, 15, 20, 21 [one patient administered 21 mg in error], and 30 mg).
+- **Example models:** `Hien_2017_cipargamin.R` (drives the dose-dependent typical Emax in the two-population parasite clearance PD model: `emax = emax_typical * (DOSE_CIPARGAMIN_MG / 10)^e_dose_emax` with `e_dose_emax = 0.0463` per Hien 2017 Table 3).
+- **Notes:** Follows the `DOSE_<DRUG>_<UNITS>` auto-approve family (siblings: `DOSE_EMPA_MGD`, `DOSE_PHT_MGKGD`). Distinct from those two because cipargamin is a single-dose administration (mg, not mg/day) in the founding study, so the units suffix is `MG`. Sibling canonicals may be registered for other single-dose antimalarial extractions using the same auto-approve pattern. Ratified canonically on 2026-07-08 alongside the Hien 2017 cipargamin extraction.
+
+### DOSE_UFH_UH (**canonical for concomitant continuous-infusion unfractionated heparin dose rate**)
+- **Description:** Patient's concurrent continuous intravenous infusion rate of unfractionated heparin (UFH), in absolute units per hour. Absolute (not weight-normalized) infusion rate is preserved at the column level because the source model parameterizes the UFH-on-clearance effect against a cohort-median absolute rate rather than a per-kg rate. Time-varying per observation as the UFH infusion is titrated. Set to 0 units/h for patients not receiving concurrent UFH.
+- **Units:** units/h (absolute infusion rate; document per-model via `covariateData[[DOSE_UFH_UH]]$units` if a different unit is reported).
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters as an additive linear increment on clearance in the source paper's final model: `CL = CL_base * (WT / 70)^0.75 + e_ufh_cl * (DOSE_UFH_UH / ref)`. Reference values observed: 173 units/h (Moffett 2017 cohort median absolute UFH infusion rate). The additive form (rather than multiplicative) reflects the observed clinical mechanism -- UFH binds to and potentiates antithrombin activity, so higher UFH infusion rates deplete circulating antithrombin at a constant additive rate on top of the baseline weight-scaled clearance.
+- **Source aliases:**
+  - `UFH` -- used in `Moffett_2017_antithrombin.R` (Moffett 2017 Table 3 covariate; the paper's absolute UFH infusion-rate column in units/h). The cohort mean per-kg UFH dose was 34.1 +/- 22.7 units/kg/h (Moffett 2017 Results and Table 5); the per-record absolute rate is the value that entered the (UFH/173) covariate ratio.
+- **Example models:** `Moffett_2017_antithrombin.R` (linear-additive effect on AT clearance: `CL_dL_h = 0.917 * (WT/70)^0.75 + 0.129 * (DOSE_UFH_UH / 173)`; reference 173 units/h from Moffett 2017 Table 3).
+- **Notes:** Specific scope until a second antithrombin / anticoagulation-covariate model ratifies the canonical. UFH is a heterogeneous polymeric anticoagulant that acts by potentiating endogenous antithrombin; concurrent UFH therefore accelerates depletion of dosed exogenous antithrombin, motivating its inclusion as a covariate on AT clearance. Future models parameterizing the same covariate on a per-kg basis (units/kg/h) should either add a source alias here with the value transformation `DOSE_UFH_UKGH = DOSE_UFH_UH / WT` documented, or register a sibling canonical `DOSE_UFH_UKGH` if the effect coefficient's meaning changes. Distinct from the AT-related coagulation biomarker `AT_BL_UDL` (baseline antithrombin activity, used as a covariate on VD in the same Moffett 2017 model). Set to 0 for patients not receiving concurrent UFH; the additive covariate term collapses to zero and the clearance reduces to the baseline weight-scaled arm. Ratified canonically on 2026-06-21 alongside the Moffett 2017 antithrombin extraction.
+
 ### DOSE_PHT_MGKGD (**canonical for daily phenytoin dose per kg body weight**)
 - **Description:** Patient's own total daily dose of phenytoin (mg) divided by current body weight (kg), expressed as mg/kg/d. Per-dose-record covariate; constant within an inter-dose interval and updated when the prescriber alters the daily dose.
 - **Units:** mg/kg/d
@@ -7876,6 +7909,17 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Example models:** `Duong_2016_WHIG_T2DM.R` (switches the baseline b-cell function logit b0 = -0.298 for Study 1 vs 0.677 for Studies 2 and 3, and activates the treatment-phase placebo weight effect EFPL only for Study 1 -- the "additional placebo effect during the treatment phase for Studies 2 and 3 was not significant" per Duong 2017 Results).
 - **Notes:** Follows the auto-approved `STUDY_<id>` canonical family. Distinct from the Cirincione 2017 `STUDY1` (no underscore) which selects a different study in a different pooled analysis. Subject-level (time-fixed).
 
+### STUDY_ING111521 (**canonical for Zhang 2015 dolutegravir proof-of-concept study cohort indicator**)
+- **Description:** 1 = subject enrolled in study ING111521 (phase 2a, proof-of-concept dose-ranging study of dolutegravir monotherapy in HIV-1-infected adults; n = 19 in the Zhang 2015 pooled analysis) of the Zhang 2015 dolutegravir PopPK; 0 = SPRING-1 (phase 2b, n = 141) or SPRING-2 (phase 3, n = 403). Used to switch the typical CL/F magnitude in study ING111521.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (SPRING-1 / SPRING-2 combined adult treatment-naive HIV-1 cohort).
+- **Source aliases:**
+  - `POC` (proof-of-concept) -- used in `Zhang_2015_dolutegravir.R` (= 1 for ING111521, 0 otherwise; per Zhang 2015 Table 3 footnote `CL/F = 0.901 * 1.16^SMOK * 1.35^POC * (WT/70)^0.438 * (AGE/40)^0.193 * (BILI/9)^-0.211`).
+- **Example models:** `Zhang_2015_dolutegravir.R` (exponential effect on CL/F: `cl *= exp(e_ing111521_cl * STUDY_ING111521)` with `e_ing111521_cl = log(1.35) = 0.300`, so CL/F is 35% higher in study ING111521 than in the SPRING-1 / SPRING-2 reference).
+- **Notes:** Sibling of `STUDY_C2201` (Bienczak 2025 ligelizumab), `STUDY_LBSL` (Zhou 2021 belimumab), `STUDY_M281_004` (Vivacity-MG nipocalimab), `STUDY_MD` (Cirincione 2017 ER exenatide multi-dose), `STUDY_PKU015` (Qi 2014 sapropterin pediatric), and `STUDY_RIV201` (Tammara 2017 rivipansel); member of the `STUDY_<name>` family of paper-specific study cohort indicators. The 35% higher CL/F in ING111521 vs SPRING-1 / SPRING-2 is unexplained by available covariates; Zhang 2015 attributes it plausibly to the smaller sample size and less diverse patient population in ING111521 (Zhang 2015 Discussion p. 506). Subject-level (time-fixed); set once from the trial identifier on each subject record. Ratified canonically alongside the Zhang 2015 dolutegravir extraction.
+
 ### STUDY_HARROLD_PEG (**canonical for Harrold 2020 pegfilgrastim-vs-filgrastim pivotal NHP study indicator**)
 - **Description:** 1 = subject enrolled in the pegfilgrastim pivotal NHP study (Harrold 2020 reference 13; pegfilgrastim 300 ug/kg SC on days 1 and 8); 0 = subject enrolled in the filgrastim pivotal NHP study (Harrold 2020 reference 14; filgrastim 10 ug/kg QD SC starting day 1). Used by the Harrold 2020 OS time-to-event sub-model to select between the two study-specific parameter sets in Table III (lambda_ANC, lambda_BC, k_e0); the ANC response sub-model (Table II) is fit on the combined placebo cohorts and does not depend on this indicator.
 - **Units:** (binary)
@@ -8042,6 +8086,26 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Example models:** `Melhem_2018_g_csf.R`.
 - **Notes:** Sibling of `DOSE_HIGH_EFL` (Jansson 2008 eflornithine highest-dose indicator) and `DOSE_400MG` / `DOSE_50MG` / `DOSE_70MG` / `DOSE_130MG` / `DOSE_260MG` (Jorga 2000 / other dose-level indicators). Specific scope because the low-clearance shift (0.107 / 0.362 = fold-decrease 0.295) is intrinsically tied to the Melhem 2018 pooled analysis. Melhem 2018 introduced the effect after graphical analysis of IIV suggested distinct clearance behaviour for the 300 ug/kg pegfilgrastim cohort; the paper notes the small sample size (n = 12) and physiological plausibility of the finding. Encoded as an additive log-scale shift on CLD that is meaningful only when `FORM_GCSF_PEG = 1`; a study of pegfilgrastim at other dose levels should set `DOSE_PEG_300UGKG = 0`. Ratified canonically alongside the Melhem 2018 g_csf extraction. Auto-approved sibling of the `DOSE_HIGH_<drug>` / `DOSE_<N>MG` cohort-indicator family.
 
+
+### DOSE_HIGH_RIV (**canonical for high-dose rivaroxaban indicator**)
+- **Description:** 1 = dose record is at the 20 mg-equivalent body-weight-adjusted rivaroxaban dose, 0 = the 10 mg-equivalent body-weight-adjusted rivaroxaban dose. The Willmann 2018 EINSTEIN-Jr phase I paediatric study (NCT01145859) dosed children with body-weight-adjusted amounts targeting adult exposures of either rivaroxaban 10 mg or 20 mg; the popPK model estimates a relative bioavailability F1 = 0.648 for the 20 mg-equivalent dose, with the 10 mg-equivalent dose anchored at F1 = 1 by definition.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (10 mg-equivalent body-weight-adjusted dose; relative bioavailability fixed to 1 in the source paper).
+- **Source aliases:** derived per dose record from the EINSTEIN-Jr phase I dose level assigned to the cohort; the paper's Methods describe the dose stratification as "two dose levels, equivalent to adult doses of rivaroxaban 10 mg and 20 mg" (Willmann 2018 Methods / Modelling strategy).
+- **Example models:** `Willmann_2018_rivaroxaban.R` (multiplicative effect on the depot bioavailability: `fdepot <- exp(lfdepot * DOSE_HIGH_RIV)` with `lfdepot = log(0.648)` per Willmann 2018 Table 1, RSE 9.03%; the dose-dependent reduction is consistent with the saturable-solubility behaviour of rivaroxaban reported in the adult patient popPK [reference 21 of Willmann 2018]).
+- **Notes:** Specific scope because the 20 mg-equivalent vs 10 mg-equivalent dose stratification and the 0.648 relative-bioavailability estimate are intrinsically tied to the Willmann 2018 EINSTEIN-Jr phase I paediatric study. Drug-specific member of the `DOSE_HIGH_*` family alongside `DOSE_HIGH_EFL` (Jansson 2008 eflornithine high-dose indicator). Per-dose-occasion indicator in principle, although in the Willmann 2018 single-dose study each subject received exactly one rivaroxaban dose.
+
+### DOSE_LOW_AMG221 (**canonical for low-dose AMG 221 indicator**)
+- **Description:** 1 = dose record is the 3 mg oral AMG 221 dose in the Gibbs 2011 phase 1 study; 0 = the 30 or 100 mg oral AMG 221 dose. Sibling of `DOSE_HIGH_EFL`: same drug-suffixed dose-level indicator family, opposite direction of effect (the reduced-bioavailability tier is the flagged tier).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (30 or 100 mg oral AMG 221, where F1 = 1).
+- **Source aliases:** derived per dose record from the administered amount. Gibbs 2011 Table III + footnote a: F1 = 0.546 at 3 mg vs F1 = 1 fixed at 30 or 100 mg.
+- **Example models:** `Gibbs_2011_amg221.R`.
+- **Notes:** Specific scope because the threshold (3 mg vs 30/100 mg oral AMG 221 as a suspension in healthy obese adults) and the -45.4% bioavailability shift are intrinsically tied to the Gibbs 2011 dose-design and are not transferable to other drugs. Gibbs 2011 Discussion attributes the reduced 3 mg bioavailability to a possible high-affinity intestinal-metabolism / transport process saturating at higher doses (Caco-2 permeability plus in vitro CYP3A metabolism with Km > 100 uM, so a 30 mg dose is expected to produce intestinal concentrations high enough to saturate intestinal metabolism); the paper flags an alternative Michaelis-Menten dose-F structure that was not fit because only three discrete dose levels were tested. Per-dose-record indicator; observation rows inherit the indicator from the preceding dose.
 
 ### MEAL_A (**canonical for Zvada 2010 meal-A high-fat English breakfast indicator**)
 - **Description:** 1 = oral dose administered 30 min after Zvada 2010 meal A (a high-fat English breakfast); 0 = otherwise. Per Zvada 2010 Table 1 meal A consists of 2 rashers of bacon (20 g), 1 fried egg (50 g), 1 slice white toast (30 g) with butter (7 g) and marmalade (10 g), 2 cups decaffeinated coffee (400 ml) with full-cream milk (100 ml) and 2 teaspoons sugar (10 g); 18.9 g protein, 27 g fat, 38 g carbohydrate, 1,966 kJ, 627 g total weight. Distinct from the general `FED_HIGHFAT` because Zvada 2010 isolates four operationally-distinct meal compositions (A/B/C/D) each with its own bioavailability effect estimate and because the paper's Discussion explicitly attributes part of meal A's effect to eggs rather than total fat.
@@ -8715,3 +8779,45 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Source aliases:** none.
 - **Example models:** `Larsen_2018_factorviia_mouse.R` (Larsen 2018 pooled C57BI/6 + NMRI mice with fractional C57BI/6 effect on V and CL for rFVIIa: `V_C57BI6 = V * 0.588`, `CL_C57BI6 = CL * 0.87` per Table 2).
 - **Notes:** Analogous to the `RACE_<GROUP>` naming family for human race indicators: `STRAIN_<GROUP>` gives each within-species strain-of-interest its own binary indicator, with the reference strain implicitly encoded as `0`. A future mouse popPK model that pools additional strains (e.g., BALB/c, C3H) should register a parallel canonical (`STRAIN_BALBC`, `STRAIN_C3H`, ...) rather than overload this one. Ratified alongside the Larsen 2018 rFVIIa mouse extraction.
+
+### IP_FA (**canonical for tablet-transit inflection-point time from fundus to antrum**)
+- **Description:** Individual inflection-point time (h) at which the sigmoid step function governing tablet movement from the fundus to the antrum equals 0.5 (paper Equation 1 form: `STEP(t) = 1 / (1 + exp(-SIG * (t - IP)))`). Used in the Gastro-Intestinal Transit Time (GITT) absorption model of Henin 2012 to drive per-subject tablet residence time in the fundus. The paper samples IP per subject from a fixed log-normal distribution `IP = MRT * exp(eta)` with `eta ~ N(0, VRT)` and MRT / VRT taken from the upstream Bergstrand 2009 Markov-chain fit (Table II of Henin 2012): MRT_fundus = 0.4 h (fasted) / 1.04 h (fed), VRT_fundus = 0.46 / 1.09 h^2 (CV 100%).
+- **Units:** h
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** NULL -- IP_FA is a continuous per-subject residence time; the sigmoid step is centred at IP_FA regardless of whether the subject is fed or fasted, but the sampling distribution is fed / fasted stratified.
+- **Source aliases:**
+  - `IP_F_A` -- used directly in the Henin 2012 model file annotations for the fundus-to-antrum inflection point.
+- **Example models:** `Henin_2012_felodipine.R` (founding example; used in the felodipine GITT extraction for the extended-release tablet transit).
+- **Notes:** Specific scope because the canonical name is tied to the GITT / MMM-derived semi-mechanistic absorption modelling framework where the tablet position is modelled by sigmoid STEP functions with per-subject inflection points. Only the "no return to fundus" subpopulation is encoded in the Henin 2012 extraction (7/12 felodipine subjects per the paper); the paper's 3-component mixture with 0 / 1 / 2 antrum-to-fundus returns is documented as a deviation in the vignette. Future GITT-family extractions (Bergstrand 2009 upstream, or 2020+ mechanistic-absorption papers extending the same STEP-function idiom) should reuse this canonical. Ratified canonically alongside the Henin 2012 extraction.
+
+### IP_APSI (**canonical for tablet-transit inflection-point time from antrum to proximal small intestine**)
+- **Description:** Individual inflection-point time (h) at which the sigmoid step function governing tablet movement from the antrum (or the enteric-coated-tablet whole-stomach exit) to the proximal small intestine equals 0.5. Central variable in the Gastro-Intestinal Transit Time (GITT) model (Henin 2012 Equation 1). For the extended-release felodipine model the population distribution is fed / fasted stratified: MRT_antrum = 0.32 h (fasted) / 1.58 h (fed), VRT_antrum = 0.15 / 2.50 h^2 (CV 100%). For enteric-coated diclofenac the same covariate represents the combined stomach transit (mean ~ 2 h ranging 1.5-3 h per paper Results).
+- **Units:** h
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** NULL -- continuous per-subject residence time.
+- **Source aliases:**
+  - `IP_A_PSI` -- used in the Henin 2012 model file annotations for the antrum-to-proximal-small-intestine inflection point.
+- **Example models:** `Henin_2012_felodipine.R` (extended-release with drug release in fundus + antrum + PSI + DSI + colon), `Henin_2012_diclofenac.R` (enteric-coated with stomach transit only, no drug release in stomach; IP_APSI represents the gastric emptying event).
+- **Notes:** Specific scope. IP_APSI's exact operational meaning differs slightly between the two Henin 2012 models: felodipine's IP_APSI is the antrum -> PSI transition (fundus and antrum are separate compartments), while diclofenac's IP_APSI is a lumped stomach -> PSI transition (fundus and antrum are not distinguished because the enteric coating prevents any drug release in the stomach). Both use the same STEP-function machinery and the same "no return to fundus" subpopulation simplification. Ratified canonically alongside the Henin 2012 extraction.
+
+### IP_PSI_DSI (**canonical for tablet-transit inflection-point time from proximal to distal small intestine**)
+- **Description:** Individual inflection-point time (h) at which the sigmoid step function governing tablet movement from the proximal small intestine to the distal small intestine equals 0.5. Not fed / fasted stratified in the Henin 2012 GITT framework. Sampled per subject as `IP_PSI_DSI = MRT_psi * exp(eta)` with MRT_psi = 1.17 h, VRT_psi = 1.37 h^2 (CV 50%) per Table II.
+- **Units:** h
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** NULL -- continuous per-subject residence time.
+- **Source aliases:** none.
+- **Example models:** `Henin_2012_felodipine.R`, `Henin_2012_diclofenac.R`.
+- **Notes:** Specific scope. Time-zero-referenced: IP_PSI_DSI is the absolute clock time (relative to dose administration) at which the sigmoid switch crosses 0.5. The effective PSI residence time is IP_PSI_DSI - IP_APSI. Ratified canonically alongside the Henin 2012 extraction.
+
+### IP_DSI_C (**canonical for tablet-transit inflection-point time from distal small intestine to colon**)
+- **Description:** Individual inflection-point time (h) at which the sigmoid step function governing tablet movement from the distal small intestine to the colon equals 0.5. Not fed / fasted stratified in the Henin 2012 GITT framework. Sampled per subject as `IP_DSI_C = MRT_dsi * exp(eta)` with MRT_dsi = 1.22 h, VRT_dsi = 1.48 h^2 (CV 58%) per Table II.
+- **Units:** h
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** NULL -- continuous per-subject residence time.
+- **Source aliases:** none.
+- **Example models:** `Henin_2012_felodipine.R`, `Henin_2012_diclofenac.R`.
+- **Notes:** Specific scope. Time-zero-referenced; effective DSI residence time is IP_DSI_C - IP_PSI_DSI. Ratified canonically alongside the Henin 2012 extraction.
