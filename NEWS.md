@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Schindler 2017 mCTMM ([doi:10.1208/s12248-017-0109-1](https://doi.org/10.1208/s12248-017-0109-1)) -- minimal continuous-time Markov PD models for sunitinib-driven fatigue (Schindler_2017_sunitinib_fatigue), sunitinib-driven hand-foot syndrome (Schindler_2017_sunitinib_hfs) in GIST patients, and placebo-arm 11-point Likert pain (Schindler_2017_likert_pain) in painful distal diabetic neuropathy.
+* Add Perez-Ruixo 2015 oxaliplatin platelet-dynamics ([doi:10.1208/s12248-015-9839-0](https://doi.org/10.1208/s12248-015-9839-0)) -- adults with peritoneal carcinomatosis receiving cytoreductive surgery with or without hyperthermic intraperitoneal oxaliplatin (PD-only semi-mechanistic model; ratifies new `PRIOR_SPLEN` and `CP_OXA_MGL` covariate canonicals).
 * Add Luu 2017 nusinersen ([doi:10.1002/jcph.884](https://doi.org/10.1002/jcph.884)) -- pediatric patients with spinal muscular atrophy receiving intrathecal nusinersen.
 * Add Gaohua 2012 pregnancy PBPK ([doi:10.1111/j.1365-2125.2012.04363.x](https://doi.org/10.1111/j.1365-2125.2012.04363.x)) -- healthy pregnant Caucasian women (14-compartment whole-body p-PBPK with GA-dependent maternal physiology, applied to caffeine [CYP1A2], metoprolol [CYP2D6], and midazolam [CYP3A4]); ratifies new canonical bare `skin` PBPK compartment.
 * Add Morris 2011 telapristone ([doi:10.1208/s12248-011-9304-7](https://doi.org/10.1208/s12248-011-9304-7)) -- adult women with single-dose telapristone-acetate phase I/II PK studies; ratifies new `cdb4453` metabolite suffix, `MIX_FAST_ELIM`, and `RENALIMP_MOD` covariate canonicals.
