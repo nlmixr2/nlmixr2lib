@@ -238,6 +238,8 @@ navbar:
         href: articles/Papachristos_2020_bevacizumab_pkpd.html
       - text: "Bevacizumab qss (Papachristos 2020)"
         href: articles/Papachristos_2020_bevacizumab_qss.html
+      - text: "BIIB023 (Galluppi 2016)"
+        href: articles/Galluppi_2016_BIIB023.html
       - text: "Biib107 (Toukam 2025)"
         href: articles/Toukam_2025_biib107.html
       - text: "Bivalirudin (Zhang 2012)"
@@ -2551,6 +2553,7 @@ articles:
   - articles/Frymoyer_2017_infliximab
   - articles/Fuchs_2014_gentamicin
   - articles/Fung_2008_butanediol_rat
+  - articles/Galluppi_2016_BIIB023
   - articles/Gandhi_2021_abatacept
   - articles/Gaohua_2012_pregnancy_pbpk
   - articles/Garg_2014_pertuzumab
@@ -3055,7 +3058,6 @@ articles:
   - articles/Schutte_2018_desmopressin
   - articles/Seng_2015_isoniazid
   - articles/Shah_2012_mAb_PBPK
-  - articles/Sharma_2016_hydroxyprogesteroneCaproate
   - articles/Sharma_2018_naltrexone_bupropion
   - articles/Sharma_2018_SHetA2
   - articles/Shekar_2014_meropenem
