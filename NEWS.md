@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Biliouris 2018 nusinersen ([doi:10.1002/psp4.12323](https://doi.org/10.1002/psp4.12323)) -- semi-mechanistic nine-compartment CNS-distribution PK model fit to cynomolgus monkeys with pediatric-human extrapolation (V_CSF stepwise by age for < 2 y; volumes linear in body weight from 2.8 kg reference; rate constants scaled as (WT/2.8)^(-0.08)).
+* Add Kaufman 1999 phenylalanine ([doi:10.1073/pnas.96.6.3160](https://doi.org/10.1073/pnas.96.6.3160)) -- humans (normal controls, obligate PKU heterozygotes, and classical / moderate / mild PKU patients); deterministic mechanistic PAH-transaminase-net-protein-degradation model that is the foundation for the existing `phenylalanine_charbonneau_2021` model.
 * Add Luu 2017 nusinersen ([doi:10.1002/jcph.884](https://doi.org/10.1002/jcph.884)) -- pediatric patients with spinal muscular atrophy receiving intrathecal nusinersen.
 * Add Gaohua 2012 pregnancy PBPK ([doi:10.1111/j.1365-2125.2012.04363.x](https://doi.org/10.1111/j.1365-2125.2012.04363.x)) -- healthy pregnant Caucasian women (14-compartment whole-body p-PBPK with GA-dependent maternal physiology, applied to caffeine [CYP1A2], metoprolol [CYP2D6], and midazolam [CYP3A4]); ratifies new canonical bare `skin` PBPK compartment.
 * Add Morris 2011 telapristone ([doi:10.1208/s12248-011-9304-7](https://doi.org/10.1208/s12248-011-9304-7)) -- adult women with single-dose telapristone-acetate phase I/II PK studies; ratifies new `cdb4453` metabolite suffix, `MIX_FAST_ELIM`, and `RENALIMP_MOD` covariate canonicals.
