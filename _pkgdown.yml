@@ -508,6 +508,8 @@ navbar:
         href: articles/Cao_2017_dha_artemisinin_stress_model.html
       - text: "Diazepam (Ku 2018)"
         href: articles/Ku_2018_diazepam.html
+      - text: "Diclofenac (Henin 2012)"
+        href: articles/Henin_2012_gastrointestinal_transit_time_absorption.html
       - text: "Diclofenac (Standing 2008)"
         href: articles/Standing_2008_diclofenac.html
       - text: "Didanosine (Hirt 2009)"
@@ -702,6 +704,8 @@ navbar:
         href: articles/Yoshida_2024_fazpilodemab.html
       - text: "Febuxostat lesinurad (HillMcManus 2017)"
         href: articles/HillMcManus_2017_febuxostat_lesinurad.html
+      - text: "Felodipine (Henin 2012)"
+        href: articles/Henin_2012_gastrointestinal_transit_time_absorption.html
       - text: "Fenofibrate (Back 2018)"
         href: articles/Back_2018_fenofibrate.html
       - text: "Fentanyl (Bista 2015)"
@@ -2579,6 +2583,7 @@ articles:
   - articles/Hempel_2003_daunorubicin_liposomal
   - articles/Hendriksen_2013_artesunate
   - articles/Henin_2009_capecitabine
+  - articles/Henin_2012_gastrointestinal_transit_time_absorption
   - articles/Hennig_2006_itraconazole
   - articles/Hennig_2007_itraconazole
   - articles/Hennig_2008_tobramycin
