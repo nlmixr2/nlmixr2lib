@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Willmann 2018 rivaroxaban ([doi:10.1186/s12959-018-0185-1](https://doi.org/10.1186/s12959-018-0185-1)) -- children aged 0.5-18 years who had completed treatment for venous thromboembolism (EINSTEIN-Jr phase I, NCT01145859); ratifies new `FORM_UNDIL_SUSP` and `DOSE_HIGH_RIV` covariate canonicals.
+* Add Suleiman 2018 risankizumab ([doi:10.1007/s40262-018-0704-z](https://doi.org/10.1007/s40262-018-0704-z)) -- pooled adults with moderate-to-severe plaque psoriasis and moderate-to-severe Crohn's disease (phase I-II).
 * Add Luu 2017 nusinersen ([doi:10.1002/jcph.884](https://doi.org/10.1002/jcph.884)) -- pediatric patients with spinal muscular atrophy receiving intrathecal nusinersen.
 * Add Gaohua 2012 pregnancy PBPK ([doi:10.1111/j.1365-2125.2012.04363.x](https://doi.org/10.1111/j.1365-2125.2012.04363.x)) -- healthy pregnant Caucasian women (14-compartment whole-body p-PBPK with GA-dependent maternal physiology, applied to caffeine [CYP1A2], metoprolol [CYP2D6], and midazolam [CYP3A4]); ratifies new canonical bare `skin` PBPK compartment.
 * Add Morris 2011 telapristone ([doi:10.1208/s12248-011-9304-7](https://doi.org/10.1208/s12248-011-9304-7)) -- adult women with single-dose telapristone-acetate phase I/II PK studies; ratifies new `cdb4453` metabolite suffix, `MIX_FAST_ELIM`, and `RENALIMP_MOD` covariate canonicals.
