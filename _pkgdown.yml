@@ -58,6 +58,8 @@ navbar:
         href: articles/Drweesh_2026_adalimumab.html
       - text: "Adalimumab (Marquez-Megias 2023)"
         href: articles/Marquez-Megias_2023_adalimumab.html
+      - text: "Adalimumab (Nader 2017)"
+        href: articles/Nader_2017_adalimumab.html
       - text: "Adecatumumab (Cao 2013)"
         href: articles/Cao_2013_adecatumumab.html
       - text: "Aflibercept (Thai 2011)"
@@ -2982,6 +2984,7 @@ articles:
   - articles/NA_NA_tte_gompertz_ev2
   - articles/NA_NA_tte_loglogistic
   - articles/NA_NA_tte_lognormal
+  - articles/Nader_2017_adalimumab
   - articles/Naik_2013_peginesatide
   - articles/Naik_2016_vortioxetine
   - articles/Nanga_2019_tacrolimus_metaanalysis
