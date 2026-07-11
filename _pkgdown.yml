@@ -714,10 +714,6 @@ navbar:
         href: articles/Cirincione_2017_exenatide_er.html
       - text: "Exendin939 (Ng 2018)"
         href: articles/Ng_2018_exendin939.html
-      - text: "FXa inhibitors mbma (Yoshioka 2018)"
-        href: articles/Yoshioka_2018_FXa_inhibitors_mbma.html
-      - text: "Factor viii (Noe 1996)"
-        href: articles/Noe_1996_factor_viii.html
       - text: "FactorIX (Brekkan 2016)"
         href: articles/Brekkan_2016_factorIX.html
       - text: "Factorix (Koopman 2023)"
@@ -1650,6 +1646,8 @@ navbar:
         href: articles/Laffont_2025_opioid_overdose_reversal_simulation.html
       - text: "RFIXFc (Diao 2014)"
         href: articles/Diao_2014_rFIXFc.html
+      - text: "Rfviii rat (VargasChristensen 2019)"
+        href: articles/VargasChristensen_2019_rfviii_rat.html
       - text: "Rfxiii cyno (Dodds 2005)"
         href: articles/Dodds_2005_rfxiii_cyno.html
       - text: "Rg7652 (Budha 2015)"
@@ -3256,6 +3254,7 @@ articles:
   - articles/VanWart_2004_garenoxacin
   - articles/vanWijk_2019_paracetamol
   - articles/Varatharajan_2016_daunorubicin
+  - articles/VargasChristensen_2019_rfviii_rat
   - articles/Vargo_2014_statins_ezetimibe_mbma
   - articles/VasquezBahena_2009_lumiracoxib_rat
   - articles/VegaVilla_2013_sodium_nitrite_qsp
