@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Larsen 2018 rFVIIa and rFVIII animal popPK ([doi:10.1016/j.ejps.2018.01.035](https://doi.org/10.1016/j.ejps.2018.01.035)) -- preclinical mice, rats, cynomolgus monkeys, and beagle / haemophilia A dogs (eight species-specific models: two-compartment rFVIIa in every species; one-compartment rFVIII in mouse / rat / monkey with exponential-nonlinear CL in rat and monkey, and two-compartment rFVIII in dog). Ratifies new `STRAIN_C57BI6` covariate canonical and new `lbeta_cl` / `beta_cl` parameter canonicals for the exponential-nonlinear CL slope.
+* Add Carmichael 2003 hydroxychloroquine ([doi:10.1097/00007691-200312000-00005](https://doi.org/10.1097/00007691-200312000-00005)) -- adults with rheumatoid arthritis (HCQ alone or concomitant methotrexate).
 * Add Luu 2017 nusinersen ([doi:10.1002/jcph.884](https://doi.org/10.1002/jcph.884)) -- pediatric patients with spinal muscular atrophy receiving intrathecal nusinersen.
 * Add Gaohua 2012 pregnancy PBPK ([doi:10.1111/j.1365-2125.2012.04363.x](https://doi.org/10.1111/j.1365-2125.2012.04363.x)) -- healthy pregnant Caucasian women (14-compartment whole-body p-PBPK with GA-dependent maternal physiology, applied to caffeine [CYP1A2], metoprolol [CYP2D6], and midazolam [CYP3A4]); ratifies new canonical bare `skin` PBPK compartment.
 * Add Morris 2011 telapristone ([doi:10.1208/s12248-011-9304-7](https://doi.org/10.1208/s12248-011-9304-7)) -- adult women with single-dose telapristone-acetate phase I/II PK studies; ratifies new `cdb4453` metabolite suffix, `MIX_FAST_ELIM`, and `RENALIMP_MOD` covariate canonicals.
