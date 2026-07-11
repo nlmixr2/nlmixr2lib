@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Yoon 2013 metformin ([doi:10.1208/s12248-013-9460-z](https://doi.org/10.1208/s12248-013-9460-z)) -- healthy Korean male adults with single 500 mg oral dose; ratifies new `SNP_SLC22A2_808GT` (OCT2 A270S) and `SNP_SLC22A4_917CT` (OCTN1 T306I) covariate canonicals.
+* Add Schindler 2017 mCTMM ([doi:10.1208/s12248-017-0109-1](https://doi.org/10.1208/s12248-017-0109-1)) -- minimal continuous-time Markov PD models for sunitinib-driven fatigue (Schindler_2017_sunitinib_fatigue), sunitinib-driven hand-foot syndrome (Schindler_2017_sunitinib_hfs) in GIST patients, and placebo-arm 11-point Likert pain (Schindler_2017_likert_pain) in painful distal diabetic neuropathy.
 * Add Luu 2017 nusinersen ([doi:10.1002/jcph.884](https://doi.org/10.1002/jcph.884)) -- pediatric patients with spinal muscular atrophy receiving intrathecal nusinersen.
 * Add Gaohua 2012 pregnancy PBPK ([doi:10.1111/j.1365-2125.2012.04363.x](https://doi.org/10.1111/j.1365-2125.2012.04363.x)) -- healthy pregnant Caucasian women (14-compartment whole-body p-PBPK with GA-dependent maternal physiology, applied to caffeine [CYP1A2], metoprolol [CYP2D6], and midazolam [CYP3A4]); ratifies new canonical bare `skin` PBPK compartment.
 * Add Morris 2011 telapristone ([doi:10.1208/s12248-011-9304-7](https://doi.org/10.1208/s12248-011-9304-7)) -- adult women with single-dose telapristone-acetate phase I/II PK studies; ratifies new `cdb4453` metabolite suffix, `MIX_FAST_ELIM`, and `RENALIMP_MOD` covariate canonicals.

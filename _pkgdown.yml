@@ -26,12 +26,6 @@ navbar:
       text: Specific drug models
       menu:
       # AUTOGEN:specific_drugs:BEGIN
-      - text: "ABT 102 (Othman 2013)"
-        href: articles/Othman_2013_ABT_102.html
-      - text: "AT9283 (Duong 2017)"
-        href: articles/Duong_2017_AT9283.html
-      - text: "AZD6088 rat (Viberg 2012)"
-        href: articles/Viberg_2012_AZD6088_rat.html
       - text: "Abacavir (Archary 2019)"
         href: articles/Archary_2019_abacavir.html
       - text: "Abacavir (Jullien 2005)"
@@ -2998,6 +2992,7 @@ articles:
   - articles/Schaefer_1996_ciprofloxacin
   - articles/Schindler_2016_sunitinib
   - articles/Schindler_2017_imatinib
+  - articles/Schindler_2017_mCTMM
   - articles/Schipani_2011_nevirapine
   - articles/Schipani_2012_lopinavir
   - articles/Schipani_2013_atazanavir_ritonavir
