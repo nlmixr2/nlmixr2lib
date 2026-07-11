@@ -700,8 +700,8 @@ navbar:
         href: articles/Chelle_2019_factorviii_fanhdi.html
       - text: "Farletuzumab (Farrell 2012)"
         href: articles/Farrell_2012_farletuzumab.html
-      - text: "Fazpilodemab (Yoshida 2024)"
-        href: articles/Yoshida_2024_fazpilodemab.html
+      - text: "Febuxostat (Hirai 2016)"
+        href: articles/Hirai_2016_febuxostat.html
       - text: "Febuxostat lesinurad (HillMcManus 2017)"
         href: articles/HillMcManus_2017_febuxostat_lesinurad.html
       - text: "Felodipine (Henin 2012)"
@@ -2598,6 +2598,7 @@ articles:
   - articles/Hien_2017_cipargamin
   - articles/Hietala_2010_artemether_lumefantrine_malaria
   - articles/HillMcManus_2017_febuxostat_lesinurad
+  - articles/Hirai_2016_febuxostat
   - articles/Hirt_2006_nelfinavir
   - articles/Hirt_2007_nelfinavir
   - articles/Hirt_2008_ibuprofen
