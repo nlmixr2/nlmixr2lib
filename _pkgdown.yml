@@ -1334,6 +1334,8 @@ navbar:
         href: articles/Zhang_2019_nivolumab.html
       - text: "Norepinephrine (Oualha 2014)"
         href: articles/Oualha_2014_norepinephrine.html
+      - text: "Nusinersen (Biliouris 2018)"
+        href: articles/Biliouris_2018_nusinersen.html
       - text: "Nusinersen (Luu 2017)"
         href: articles/Luu_2017_nusinersen.html
       - text: "Nutlin3a (Zhang 2011)"
@@ -2357,6 +2359,7 @@ articles:
   - articles/Bienczak_2025_ligelizumab
   - articles/Bijleveld_2016_gentamicin
   - articles/Bijleveld_2017_gentamicin
+  - articles/Biliouris_2018_nusinersen
   - articles/Billard_1995_methoxsalen
   - articles/Birgersson_2016_artemisinin
   - articles/Birgersson_2019_artesunate
