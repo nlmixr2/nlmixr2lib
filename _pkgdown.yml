@@ -1110,6 +1110,8 @@ navbar:
         href: articles/Watson_2010_liraglutide.html
       - text: "Lisinopril (Thomson 1989)"
         href: articles/Thomson_1989_lisinopril.html
+      - text: "LngIus52mg (Jensen 2023)"
+        href: articles/Jensen_2023_lngIus52mg.html
       - text: "Lopinavir (Archary 2018)"
         href: articles/Archary_2018_lopinavir.html
       - text: "Lopinavir (Crommentuyn 2005)"
@@ -2830,6 +2832,7 @@ articles:
   - articles/Jansson_2008_eflornithine
   - articles/Jaworowicz_2006_levalbuterol
   - articles/Jelliffe_2014_digoxin
+  - articles/Jensen_2023_lngIus52mg
   - articles/Jeon_2012_C3G
   - articles/Jeon_2013_interferonAlfa2a
   - articles/Jeon_2014_piperacillin
