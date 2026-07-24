@@ -1965,6 +1965,13 @@ The Ait-Oudhia 2012 canakinumab IL-1beta -> CRP transit cascade: `crp1` / `crp2`
 - **Example models:** `Schindler_2016_sunitinib.R`.
 - **Notes:** Renamed from `cumHaz_os` to `cumhaz_os` on 2026-06-19 per the canonical-register standardization audit (operator decision: compartment names follow the all-lowercase nlmixr2 convention; the cumulative-hazard family is now uniformly lowercase across `cumhaz`, `cumhaz_os`, `cumhaz_drop`).
 
+### cumhaz_pfs (**canonical progression-free-survival cumulative-hazard**)
+- **Type:** compartment
+- **Role:** Progression-free-survival cumulative-hazard state in oncology TTE sub-models that expose PFS alongside OS as two parallel time-to-event endpoints. Integrates the PFS hazard so the PFS survivor function is `S_pfs = exp(-cumhaz_pfs)`; paired with `cumhaz_os` for the OS sub-model when both endpoints are simulated jointly. Distinct from `cumhaz_os` (overall-survival endpoint), `cumhaz_drop` (dropout / trial withdrawal), and `cumhaz_cens` (informative censoring distribution).
+- **Source aliases:** none.
+- **Example models:** `Franzese_2026_pdl1_nsclc_mbma.R` (MBMA semi-parametric proportional hazards for PFS with monthly discrete baseline hazard from Franzese 2026 Table S2; five treatment-category-specific ORR-slopes, PD-(L)1-monotherapy hazard-intercept shift, and chemotherapy time-dependent baseline-hazard shift).
+- **Notes:** Registered 2026-07-24 alongside the Franzese 2026 MBMA extraction. Member of the `cumhaz_<type>` multi-hazard family alongside `cumhaz`, `cumhaz_os`, `cumhaz_drop`, `cumhaz_cens`, `cumhaz_1st`, and `cumhaz_2nd`. Applies whenever an oncology model separately parameterises the PFS hazard alongside an OS hazard (both endpoints simulated in the same solve so the two survival curves are internally consistent given the same shared covariates and study-strata random effects).
+
 ### cumhaz_drop (**canonical dropout cumulative-hazard**)
 - **Type:** compartment
 - **Role:** Dropout cumulative-hazard state.
