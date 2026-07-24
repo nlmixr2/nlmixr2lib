@@ -618,6 +618,13 @@ The MTP framework partitions the bacterial population into three states. The ori
 - **Example models:** `Guiastrennec_2016_paracetamol.R`, `Back_2018_fenofibrate.R`.
 - **Notes:** Registered 2026-05-28 per the naming audit.
 
+### gastric_remaining (**canonical algebraic gastric-emptying percent-of-meal-remaining observation**)
+- **Type:** compartment
+- **Role:** Algebraic observation variable holding the percentage of a test meal remaining in the stomach at time `t` (0 - 100). Used by pure-algebraic gastric-emptying meta-analyses that fit a % remaining vs. time curve directly (no drug, no dose, no mass-balance ODE). Distinct from the `stomach` compartment (which holds a mass-balance drug amount as an ODE state driving downstream absorption); `gastric_remaining` is the algebraic dependent variable of the meta-analysis and is not integrated as a state.
+- **Source aliases:** paper narrative `GE` (Bonner 2015 Eq. 1), `% remaining`.
+- **Example models:** `Bonner_2015_gastric_emptying.R` (double Weibull mixture % remaining = (100 - PR) * exp(-(t/gamma1)^beta1) + PR * exp(-(t/gamma2)^beta2)).
+- **Notes:** Registered 2026-07-24 alongside the Bonner 2015 gastric-emptying meta-analysis extraction. Reserved for algebraic-observable use in gastric-emptying meta-analyses; do not overload for ODE-integrated drug-amount states (use `stomach` for those).
+
 ### duodenum (**canonical duodenum compartment**)
 - **Type:** compartment
 - **Role:** Duodenum compartment in GI-segment paracetamol models. Canonical small-intestine subsegment downstream of the stomach.
