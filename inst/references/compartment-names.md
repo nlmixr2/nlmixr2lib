@@ -2542,6 +2542,12 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Source aliases:** none.
 - **Example models:** `Kunarajah_2017_doxorubicin.R`.
 
+### eddp (**canonical EDDP methadone metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** 2-Ethylidene-1,5-dimethyl-3,3-diphenylpyrrolidine (EDDP), the principal (largely inactive) N-demethylation cyclisation metabolite of methadone. Formed stereoselectively by CYP3A, CYP2B6, and CYP2C19 from R- and S-methadone. Used as the metabolite suffix in parent + metabolite simultaneous popPK models of methadone enantiomers (compartments `central_eddp`, parameters `lcl_eddp`, residuals `propSd_eddp`).
+- **Source aliases:** none.
+- **Example models:** `Aruldhas_2021_R_methadone.R`, `Aruldhas_2021_S_methadone.R`.
+
 ### dol (**canonical daunorubicinol suffix**)
 - **Type:** metabolite-suffix
 - **Role:** Daunorubicinol (DOL), C-13 alcohol metabolite of daunorubicin formed primarily by carbonyl reductase 1 (CBR1) in adult AML patients.
