@@ -120,6 +120,8 @@ navbar:
         href: articles/Tremoulet_2014_ampicillin.html
       - text: "Ampicillin sulbactam (Soto 2014)"
         href: articles/Soto_2014_ampicillin_sulbactam.html
+      - text: "Amyloid (vanMaanen 2025)"
+        href: articles/vanMaanen_2025_amyloid.html
       - text: "Anakinra (Urien 2013)"
         href: articles/Urien_2013_anakinra.html
       - text: "Angiotensin (BuchwalderCsajka 1999)"
@@ -3511,6 +3513,7 @@ articles:
   - articles/vanHasselt_2013_eribulin
   - articles/vanHasselt_2015_eribulin
   - articles/vanIersel_2018_posaconazole
+  - articles/vanMaanen_2025_amyloid
   - articles/vanRongen_2015_midazolam
   - articles/vanRongen_2016_acetaminophen
   - articles/vanRongen_2017_midazolam

@@ -2027,6 +2027,72 @@ All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODA
 - **Example models:** `Dickinson_2009_atazanavir.R` (atazanavir CL/F power-function dependence on RTVAUC0-24, centred at 7.52 mg*h/L with exponent -0.8).
 - **Notes:** Specific scope because the column meaning is tied to ritonavir as the booster drug and to the 0-24 h once-daily dosing-interval AUC convention. Sibling drug-specific AUC canonicals (`AUC_CARBO`, `AUC_GEM`, `AUC_BAST_FW`, `AUC_PAZO`, `AUC_GCV`) follow the same `AUC_<DRUG>` naming pattern. A future PK model that uses a different ritonavir exposure metric (trough concentration, q12h-interval AUC for BID ritonavir regimens) should register a parallel canonical rather than overload `AUC_RTV`. For simulation users without observed ritonavir AUC, the Dickinson 2009 cohort median 7.52 mg*h/L reproduces typical-value behaviour (the centring point of the covariate effect).
 
+### AUC_VERUB (**canonical for verubecestat AUC over the 24 h dosing interval at steady state**)
+- **Description:** Time-varying verubecestat plasma AUC over the once-daily 24 h dosing interval at steady state, used as the driver of the inhibitory Emax sigmoid on the amyloid plaque formation rate Kin in the van Maanen 2025 amyloid plaque turnover model (paper Eq 4: `Inh_verub = Imax * AUC_VERUB / (AUC_VERUB + AUC50)`). The van Maanen 2025 analysis derives individual AUC_VERUB from the upstream Dockendorf 2022 verubecestat population PK model (cited in Table S1).
+- **Units:** `uM*h` (micromolar * hour). Must be in the same units as the model's AUC50 parameter (uM*h) so the sigmoid AUC/(AUC + AUC50) is dimensionless. Document per-model via `covariateData[[AUC_VERUB]]$units`.
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters via Emax-sigmoid form `Imax * AUC / (AUC + AUC50)`. Set to 0 in periods where verubecestat is not administered so the inhibition term vanishes and Kin returns to its typical (undrugged) value. Typical AUC values reverse-computed from the paper's Table S5 stable-plaque predictions and AUC50 = 0.392 uM*h: 40 mg daily -> approximately 4.4 uM*h (91.8% inhibition); 11.9 mg -> approximately 1.44 uM*h (78.7%); 2.9 mg -> approximately 0.35 uM*h (47.2%); 1.7 mg -> approximately 0.21 uM*h (34.5%).
+- **Source aliases:**
+  - `AUC_verub` -- printed name in van Maanen 2025 Eq 4 and Figure 1.
+- **Example models:** `vanMaanen_2025_amyloid.R` (verubecestat inhibition of plaque formation via Imax = 1 fixed and AUC50 = 0.392 uM*h).
+- **Notes:** Specific scope because the value is intrinsically tied to verubecestat (BACE1 inhibitor) and the once-daily 24 h dosing-interval AUC convention. Sibling drug-specific AUC canonicals (`AUC_CARBO`, `AUC_GEM`, `AUC_BAST_FW`, `AUC_PAZO`, `AUC_GCV`, `AUC_LCM`, `AUC_CBZ`, `AUC_RTV`, `AUC_EMPA`, `AUC_ADU`, `AUC_DON`, `AUC_GAN`, `AUC_LEC`) follow the same `AUC_<DRUG>` naming pattern. Ratified canonically on 2026-07-24 alongside the van Maanen 2025 amyloid plaque turnover extraction.
+
+### AUC_ADU (**canonical for aducanumab serum AUC over the 4-week dosing interval at steady state**)
+- **Description:** Time-varying aducanumab serum AUC over the 4-week Q4W dosing interval at steady state, used as the driver of the linear stimulation term on the amyloid plaque elimination rate Kout in the van Maanen 2025 amyloid plaque turnover model (paper Eq 6: `Stim_ADU = slope_adu * (AUC_ADU / MW_ADU)`). The van Maanen 2025 analysis derives aducanumab AUC from the upstream Sevigny 2016 phase 1b popPK study (Table S1) with linear dose scaling where the target dose differs from the source PK study dose.
+- **Units:** `mg*day/L` (milligrams * day per litre). Must be in mg*day/L (not mg*h/mL, not ug*h/mL) so that `AUC_ADU / MW_ADU_g_per_mol` evaluates in mmol*day/L = mM*day and the paper's slope units (mM^-1 * day^-1) multiply to a dimensionless stimulation term. Conversion from mg*h/L: divide by 24. Document per-model via `covariateData[[AUC_ADU]]$units`.
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters via linear form `slope_adu * AUC_ADU / MW_ADU`. Set to 0 in periods where aducanumab is not administered so the stimulation term vanishes and Kout returns to its typical (undrugged) value. Reference regimen (Table S3): EMERGE/ENGAGE high-dose titration -> target 10 mg/kg IV Q4W, giving a typical steady-state 4-week AUC of approximately 1944 mg*day/L for a 70 kg subject at CL approximately 0.36 L/day.
+- **Source aliases:**
+  - `AUC_mAb` (for aducanumab) -- printed name in van Maanen 2025 Eq 6 and Figure 1.
+- **Example models:** `vanMaanen_2025_amyloid.R` (aducanumab stimulation of plaque elimination via slope_adu = 719 mM^-1 day^-1 and MW_ADU = 145912 g/mol).
+- **Notes:** Specific scope. Sibling anti-A-beta mAb AUC canonicals `AUC_DON` (donanemab), `AUC_GAN` (gantenerumab), `AUC_LEC` (lecanemab) follow the same convention and are consumed by the same van Maanen 2025 model. Ratified canonically on 2026-07-24 alongside the van Maanen 2025 amyloid plaque turnover extraction.
+
+### AUC_DON (**canonical for donanemab serum AUC over the 4-week dosing interval at steady state**)
+- **Description:** Time-varying donanemab serum AUC over the 4-week Q4W dosing interval at steady state, used as the driver of the linear stimulation term on the amyloid plaque elimination rate Kout in the van Maanen 2025 amyloid plaque turnover model (paper Eq 6: `Stim_DON = slope_don * (AUC_DON / MW_DON)`). The van Maanen 2025 analysis derives donanemab AUC from the Lowe 2021 phase 1b SAD/MAD popPK data (Table S1).
+- **Units:** `mg*day/L`. Same unit convention as `AUC_ADU` (see notes there). Document per-model via `covariateData[[AUC_DON]]$units`.
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- set to 0 in periods where donanemab is not administered. Reference regimen (Table S3): TRAILBLAZER-ALZ 1/2/4 titration to 1400 mg IV Q4W after 3 loading doses of 10 mg/kg IV Q4W.
+- **Source aliases:**
+  - `AUC_mAb` (for donanemab) -- printed name in van Maanen 2025 Eq 6 and Figure 1.
+- **Example models:** `vanMaanen_2025_amyloid.R` (donanemab stimulation of plaque elimination via slope_don = 1120 mM^-1 day^-1 and MW_DON = 145087 g/mol).
+- **Notes:** Specific scope. Sibling anti-A-beta mAb AUC canonicals `AUC_ADU`, `AUC_GAN`, `AUC_LEC` follow the same convention. Ratified canonically on 2026-07-24 alongside the van Maanen 2025 extraction.
+
+### AUC_GAN (**canonical for gantenerumab serum AUC over the 4-week dosing interval at steady state**)
+- **Description:** Time-varying gantenerumab serum AUC over the 4-week dosing interval at steady state (delivered as SC Q4W or IV titration in the source trials, expressed here as a 4-week interval-AUC to match the paper's Kout stimulation term), used as the driver of the linear stimulation term on the amyloid plaque elimination rate Kout in the van Maanen 2025 amyloid plaque turnover model (paper Eq 6: `Stim_GAN = slope_gan * (AUC_GAN / MW_GAN)`). The van Maanen 2025 analysis derives gantenerumab AUC from the Portron 2020 phase 1 single active dose PK data (Table S1).
+- **Units:** `mg*day/L`. Same unit convention as `AUC_ADU`. Document per-model via `covariateData[[AUC_GAN]]$units`.
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- set to 0 in periods where gantenerumab is not administered. Reference regimen (Table S3): GRADUATE 1/2 titration to 1020 mg every 4 weeks (delivered as 510 mg SC Q2W) after a 9-month step-up sequence of 120 -> 255 -> 510 -> 1020 mg per 4 weeks.
+- **Source aliases:**
+  - `AUC_mAb` (for gantenerumab) -- printed name in van Maanen 2025 Eq 6 and Figure 1.
+- **Example models:** `vanMaanen_2025_amyloid.R` (gantenerumab stimulation of plaque elimination via slope_gan = 397 mM^-1 day^-1 and MW_GAN = 146300 g/mol).
+- **Notes:** Specific scope. Sibling anti-A-beta mAb AUC canonicals `AUC_ADU`, `AUC_DON`, `AUC_LEC` follow the same convention. Ratified canonically on 2026-07-24 alongside the van Maanen 2025 extraction.
+
+### AUC_LEC (**canonical for lecanemab serum AUC over the 4-week dosing interval at steady state**)
+- **Description:** Time-varying lecanemab serum AUC over the 4-week dosing interval at steady state (delivered as IV Q2W in Clarity AD, expressed here as the equivalent 4-week interval-AUC = 2 * Q2W-interval AUC), used as the driver of the linear stimulation term on the amyloid plaque elimination rate Kout in the van Maanen 2025 amyloid plaque turnover model (paper Eq 6: `Stim_LEC = slope_lec * (AUC_LEC / MW_LEC)`). The van Maanen 2025 analysis derives lecanemab AUC from the Logovinsky 2016 phase 1 SAD/MAD PK data (Table S1).
+- **Units:** `mg*day/L`. Same unit convention as `AUC_ADU`. Document per-model via `covariateData[[AUC_LEC]]$units`.
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- set to 0 in periods where lecanemab is not administered. Reference regimen (Table S3): Clarity AD 10 mg/kg IV Q2W (equivalent to approximately 20 mg/kg per 4 weeks).
+- **Source aliases:**
+  - `AUC_mAb` (for lecanemab) -- printed name in van Maanen 2025 Eq 6 and Figure 1.
+- **Example models:** `vanMaanen_2025_amyloid.R` (lecanemab stimulation of plaque elimination via slope_lec = 606 mM^-1 day^-1 and MW_LEC = 150000 g/mol).
+- **Notes:** Specific scope. Sibling anti-A-beta mAb AUC canonicals `AUC_ADU`, `AUC_DON`, `AUC_GAN` follow the same convention. Ratified canonically on 2026-07-24 alongside the van Maanen 2025 extraction.
+
+### PLAQUE_BL (**canonical for per-subject baseline amyloid plaque burden (initial-condition use)**)
+- **Description:** Per-subject pre-treatment amyloid plaque burden on the Centiloid scale, used as the initial condition for a plaque state variable in indirect-response amyloid plaque turnover models. Parallel to `HGB_BL` (per-subject baseline haemoglobin as an initial condition for haemoglobin turnover models): `PLAQUE_BL` is a static per-subject baseline that supplies the plaque state's initial value at t = 0 so the trajectory is anchored to the observed baseline before any drug effect starts perturbing it. van Maanen 2025 Supplement Section 'Further details on the exposure-response model' specifies this pattern: 'Individual participant "observed" baseline amyloid plaque burden (before the first dose) was an initial condition at time 0. No additional interindividual variability was included.'
+- **Units:** CL (Centiloid; 0 = amyloid-negative, 100 = typical AD plaque burden per Klunk 2015 Centiloid consensus). Document per-model via `covariateData[[PLAQUE_BL]]$units`.
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- subject-level baseline supplied as a covariate column. Reference values observed: 70-104 CL across the van Maanen 2025 modelling cohorts (Table S2); 71.2 CL median in the APECS individual analysis dataset. Amyloid-positivity threshold used in the van Maanen 2025 ADNI external validation was > 24 CL.
+- **Source aliases:**
+  - `Baseline_Plaque` -- printed name in van Maanen 2025 Eq 5 (initial condition line `Plaque_{t=0} = Baseline_Plaque`).
+- **Example models:** `vanMaanen_2025_amyloid.R` (van Maanen 2025 indirect-response plaque turnover model; sets `plaque(0) <- PLAQUE_BL` per subject).
+- **Notes:** Specific scope because the initial-condition idiom is paper-defined (van Maanen 2025 specifies per-subject baseline rather than estimating a typical plaque baseline). Promote to `general` if a second paper ratifies the same baseline-plaque-as-initial-condition pattern (e.g., an amyloid-plaque or biomarker turnover model in an independent Alzheimer's disease programme). Ratified canonically on 2026-07-24 alongside the van Maanen 2025 amyloid plaque turnover extraction.
+
 ### CLI (**canonical for individual posthoc clearance from an upstream popPK fit**)
 - **Description:** Subject-specific empirical-Bayes (posthoc) total plasma clearance from a separately published population PK model that the current PD model treats as a fixed input. Used as a per-subject (time-fixed) covariate in PD-only models that derive a per-cycle exposure metric (e.g., AUC = DOSE / CLI) without instantiating a PK ODE.
 - **Units:** L/h (document per-model via `covariateData[[CLI]]$units`).
