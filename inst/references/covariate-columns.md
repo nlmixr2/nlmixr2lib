@@ -3508,6 +3508,39 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Example models:** `Wu_2024_inotuzumab.R` (additive fractional-change effects on CL1 (-0.767) and CL2 (-0.362), and gates the BLSTABL and AGE effects on kdes; for kdes itself a -0.924 fractional change for BCP-ALL).
 - **Notes:** Used when a population PK model pools BCP-ALL patients with a non-BCP-ALL reference (e.g., Wu 2024: pooled adult B-cell NHL + adult BCP-ALL + pediatric BCP-ALL). Scope: specific because the complement reference category is paper-defined (Wu 2024 reference is pooled adult B-cell NHL). The "ALL effect" theta in Wu 2024 conflates two physiologically distinct sources of variation -- B-cell tumor type (NHL vs ALL surface CD22 burden) and bioanalytical method (ELISA for adult NHL vs HPLC-MS for ALL) -- and cannot be split with the available data; document this confounding when comparing across populations. Ratified canonically on 2026-04-26.
 
+### DIS_BCELLNHL (**canonical for B-cell non-Hodgkin lymphoma disease-state indicator**)
+- **Description:** 1 = patient with B-cell non-Hodgkin lymphoma (B-cell NHL), 0 = non-B-cell-NHL subject (the complement group in a pooled multi-indication PK analysis of hematologic malignancies). Time-fixed per subject. Used when a population PK model treats B-cell NHL as its own indicator alongside a sibling CLL/SLL reference and other lymphoma / leukemia strata.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (non-B-cell-NHL; the complement group is paper-defined -- for Kemal 2026 the reference is chronic lymphocytic leukemia / small lymphocytic lymphoma (CLL/SLL), alongside the parallel `DIS_WM` and `DIS_OTHER_HEME` indicators that decompose the hematologic-malignancy cohort).
+- **Source aliases:**
+  - `INDIC == 1` -- used in `Kemal_2026_nemtabrutinib.R` (Kemal 2026 NONMEM control stream in the supplement encodes disease as the categorical column `INDIC` with categories `{B-cell NHL, CLL/SLL, WM, Other, MZL, FL, MCL, RT}` and reference `CLL/SLL`; the canonical column carries the binary `as.integer(INDIC == 1)`).
+- **Example models:** `Kemal_2026_nemtabrutinib.R` (fractional-change effects on CL/F (-0.166) and Vc/F (0.00224); reference category CLL/SLL).
+- **Notes:** Distinct from `DIS_BCPALL` (B-cell precursor acute lymphoblastic leukemia). Use `DIS_BCELLNHL` when the source paper treats B-cell NHL as one indication category in a pooled analysis of chronic B-cell malignancies (CLL/SLL, WM, DLBCL, follicular, mantle-cell, marginal-zone) and the model estimates a disease-specific effect on PK. Scope: specific because the complement reference category is paper-defined.
+
+### DIS_WM (**canonical for Waldenstrom's macroglobulinemia disease-state indicator**)
+- **Description:** 1 = patient with Waldenstrom's macroglobulinemia (WM), 0 = non-WM subject. Time-fixed per subject. WM is a rare indolent B-cell lymphoma / IgM-secreting lymphoplasmacytic disorder that is sometimes pooled with other B-cell malignancies in oncology popPK analyses.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (non-WM; the complement group is paper-defined -- for Kemal 2026 the reference is CLL/SLL, alongside the parallel `DIS_BCELLNHL` and `DIS_OTHER_HEME` indicators).
+- **Source aliases:**
+  - `INDIC == 3` -- used in `Kemal_2026_nemtabrutinib.R` (Kemal 2026 NONMEM control stream in the supplement; reference category CLL/SLL).
+- **Example models:** `Kemal_2026_nemtabrutinib.R` (fractional-change effects on CL/F (0.0718) and Vc/F (0.152); reference category CLL/SLL).
+- **Notes:** Scope: specific because the complement reference category is paper-defined.
+
+### DIS_OTHER_HEME (**canonical for pooled 'other hematologic malignancy' indicator**)
+- **Description:** 1 = patient with a hematologic malignancy other than the explicitly-modeled sibling indications (typically pools some subset of MZL, FL, MCL, Richter's transformation, or unclassified 'other'), 0 = one of the explicitly-modeled indications or the reference disease. Time-fixed per subject. The exact composition of the pool is paper-specific and must be documented in per-model `covariateData[[DIS_OTHER_HEME]]$notes`.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (subject falls into one of the sibling indication indicators or the reference; the reference disease is paper-defined -- for Kemal 2026 the reference is CLL/SLL).
+- **Source aliases:**
+  - `INDIC IN (4, 5, 6, 7, 8)` -- used in `Kemal_2026_nemtabrutinib.R` (Kemal 2026 NONMEM control stream pools 'Other', marginal zone lymphoma (MZL), follicular lymphoma (FL), mantle cell lymphoma (MCL), and Richter's transformation (RT) into a single indicator).
+- **Example models:** `Kemal_2026_nemtabrutinib.R` (fractional-change effects on CL/F (-0.0244) and Vc/F (-0.0200); reference category CLL/SLL).
+- **Notes:** Different-composition pools do not share coefficients; every model that uses `DIS_OTHER_HEME` must document the exact set of pooled diseases in `covariateData[[DIS_OTHER_HEME]]$notes` so downstream users know what the coefficient represents. When a paper analyzes MZL, FL, MCL, RT, or a specific 'other' indication as its own indicator, register a sibling per-disease canonical (e.g. `DIS_MZL`, `DIS_FL`, `DIS_MCL`, `DIS_RT`) rather than reusing `DIS_OTHER_HEME`. Scope: specific because the pool composition is paper-defined.
+
 ### DIS_SAD (**canonical for secondary antibody deficiency indicator**)
 - **Description:** 1 = secondary antibody deficiency (SAD) patient (hypogammaglobulinaemia from external causes such as B-cell-depleting therapy, haematological malignancy, or other immunosuppression), 0 = primary immunodeficiency (PID) patient. Time-fixed per subject.
 - **Units:** (binary)
@@ -5116,6 +5149,17 @@ Baseline seizure-severity indicators derived from a pre-trial seizure count (typ
 - **Example models:** `Goel_2016_Sonidegib.R` (multiplicative effect on F: `0.996^CONMED_H2RA`, no clinically meaningful effect; reported alongside `CONMED_PPI` for completeness).
 - **Notes:** Per-model `covariateData[[CONMED_H2RA]]$notes` must document the operational definition (Goel 2016: >= 80% of PK assessment phase). Distinct from `CONMED_PPI`.
 
+### CONMED_ANTACID (**canonical for concomitant antacid use**)
+- **Description:** 1 = patient on concomitant antacid therapy (typically over-the-counter aluminum-, magnesium-, or calcium-based salts such as calcium carbonate, magnesium carbonate, magnesium hydroxide, or aluminum hydroxide), 0 = no CONMED_ANTACID use. Captures the third class of gastric-pH-modifying co-medication alongside `CONMED_PPI` and `CONMED_H2RA`; primarily used to test the impact of transient gastric-pH elevation on the bioavailability of pH-sensitive orally administered drugs.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no CONMED_ANTACID use).
+- **Source aliases:**
+  - `ANTACIDF` -- used in `Kemal_2026_nemtabrutinib.R` (Kemal 2026 NONMEM control stream in the supplement; time-varying regressor coded 1 = concomitant antacid at the observation, 0 otherwise).
+- **Example models:** `Kemal_2026_nemtabrutinib.R` (multiplicative effect on F: `(1 + -0.0360 * CONMED_ANTACID)`, i.e. 3.6% lower F under antacid coadministration; RSE 72.8%, 95% CI includes zero -- retained in the full covariate model).
+- **Notes:** Per-model `covariateData[[CONMED_ANTACID]]$notes` should document the operational definition (per-observation time-varying indicator vs subject-level ever-vs-never) and the class of antacids pooled into the `= 1` category, since inclusion criteria vary by study. Distinct from `CONMED_PPI` (proton-pump inhibitors: irreversible H+/K+-ATPase inhibition, sustained gastric-pH elevation) and `CONMED_H2RA` (histamine H2 receptor antagonists: reversible histamine-mediated acid-secretion blockade). Antacids act by direct chemical neutralization of gastric acid rather than by inhibiting acid secretion, giving them a shorter and more localized pH-elevating effect than the other two classes.
+
 ### CONMED_IFNB1A (**canonical for concomitant interferon beta-1a coadministration indicator**)
 - **Description:** 1 = patient coadministered subcutaneous interferon beta-1a (Rebif or equivalent recombinant IFN beta-1a product) during the observation interval, 0 = no concomitant IFN beta-1a. Time-varying per subject because the source studies enrol both monotherapy and IFN beta-1a combination periods.
 - **Units:** (binary)
@@ -6102,6 +6146,28 @@ Baseline seizure-severity indicators derived from a pre-trial seizure count (typ
   - Other source-dataset column names typically: `CYP3AIND`, `CYP3A4IND`, `INDU`, `INDUCER`, or a free-text concomitant-medication indicator. Document the source-column name per-model in `covariateData[[CONMED_CYP3A4_IND]]$source_name`.
 - **Example models:** `Gupta_2016_lenvatinib.R` (multiplicative power-form effect on CL/F: `1.30^CONMED_CYP3A4_IND` with `e_cyp3a4_ind_cl = log(1.30) ~ 0.262`; the Gupta dataset pools any concomitant CYP3A4 inducer reported in the per-subject medication log into the `CONMED_CYP3A4_IND = 1` category, with `n = 19` (2.4%) of the 779-subject pooled cohort flagged positive).
 - **Notes:** Per-model `covariateData[[CONMED_CYP3A4_IND]]$notes` must document which inducer strengths (strong / moderate / weak) and which specific drug examples are pooled into the `CONMED_CYP3A4_IND = 1` category, since inclusion criteria vary by study. Future models that need stratified encoding (separate strong / moderate / weak indicators) should register companion canonicals (e.g. `CONMED_CYP3A4_IND_STRONG`, `CONMED_CYP3A4_IND_MOD`, `CONMED_CYP3A4_IND_WEAK`) rather than overloading `CONMED_CYP3A4_IND`. Sibling canonical to `CONMED_CYP3A4_INH`. Ratified canonically alongside the Gupta 2016 lenvatinib extraction. Renamed from `CYP3A4_IND` to `CONMED_CYP3A4_IND` on 2026-06-19 per the canonical-register standardization audit (operator decision: the indicator captures a concomitant medication, so it belongs in the `CONMED_<concept>` family).
+
+### CONMED_CYP3A4_IND_MOD (**canonical for concomitant moderate CYP3A4 inducer coadministration indicator**)
+- **Description:** 1 = subject coadministered a moderate-strength CYP3A4 inducer (FDA / EMA classification) at the observation, 0 = no concomitant moderate CYP3A4 inducer. Strength-stratified companion to `CONMED_CYP3A4_IND` (pooled any-inducer indicator) and to the sibling canonicals `CONMED_CYP3A4_IND_STRONG` / `CONMED_CYP3A4_IND_WEAK` (reserved for future extractions using the same stratification convention). Use this canonical when the source paper enters moderate-strength CYP3A4 inducers as an isolated indicator rather than pooling them with strong or weak inducers.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no concomitant moderate CYP3A4 inducer; subjects on strong or weak inducers, or on no inducer, all fall here when using this indicator alone).
+- **Source aliases:**
+  - `C3A4INDM` -- used in `Kemal_2026_nemtabrutinib.R` (Kemal 2026 NONMEM control stream; time-varying regressor 1 = moderate CYP3A4 inducer at the observation, 0 otherwise. In the Kemal 2026 cohort no subjects received a strong inducer, so the source dataset enters only the moderate-inducer stratum into the model).
+- **Example models:** `Kemal_2026_nemtabrutinib.R` (multiplicative effect on CL/F: `(1 + 0.0220 * CONMED_CYP3A4_IND_MOD)`, i.e. 2.2% higher CL/F under moderate CYP3A4 induction; RSE 458%, 95% CI includes zero -- retained in the full covariate model).
+- **Notes:** Companion to the pooled `CONMED_CYP3A4_IND` (any inducer, no strength stratification). Per-model `covariateData[[CONMED_CYP3A4_IND_MOD]]$notes` should document which specific inducers the source paper classified as moderate (typically per FDA guidance: efavirenz, bosentan, etravirine, phenobarbital, modafinil, dabrafenib) and the fraction of the cohort exposed. Sibling canonicals `CONMED_CYP3A4_IND_STRONG` and `CONMED_CYP3A4_IND_WEAK` are reserved for parallel future extractions and are named in the `CONMED_CYP3A4_IND` register entry.
+
+### CONMED_CYP3A4_INH_STRONG (**canonical for concomitant strong CYP3A4 inhibitor coadministration indicator**)
+- **Description:** 1 = subject coadministered a strong-strength CYP3A4 inhibitor (FDA / EMA classification: >= 5-fold AUC increase or >= 80% CL decrease of a sensitive substrate) at the observation, 0 = no concomitant strong CYP3A4 inhibitor. Strength-stratified companion to `CONMED_CYP3A4_INH` (pooled any-inhibitor indicator) and to the sibling canonicals `CONMED_CYP3A4_INH_MOD` / `CONMED_CYP3A4_INH_WEAK` (reserved for future extractions using the same stratification convention). Distinct axis from `CONMED_CYP3A4_INH_HI` / `CONMED_CYP3A4_INH_LO`, which stratify by cumulative-exposure duration (>= 50% of the on-treatment period) rather than by inhibitor strength.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no concomitant strong CYP3A4 inhibitor; subjects on moderate or weak inhibitors, or on no inhibitor, all fall here when using this indicator alone).
+- **Source aliases:**
+  - `C3A4INHS` -- used in `Kemal_2026_nemtabrutinib.R` (Kemal 2026 NONMEM control stream; time-varying regressor 1 = strong CYP3A4 inhibitor at the observation, 0 otherwise. In the Kemal 2026 cohort weak and moderate CYP3A4 inhibitors were not entered into the model even though a majority of subjects were exposed to at least one).
+- **Example models:** `Kemal_2026_nemtabrutinib.R` (multiplicative effect on CL/F: `(1 + -0.0119 * CONMED_CYP3A4_INH_STRONG)`, i.e. 1.2% lower CL/F under strong CYP3A4 inhibition; RSE 774%, 95% CI includes zero -- retained in the full covariate model).
+- **Notes:** Companion to the pooled `CONMED_CYP3A4_INH` (any inhibitor, no strength stratification) and to the duration-based `CONMED_CYP3A4_INH_HI` / `CONMED_CYP3A4_INH_LO` pair (different stratification axis, coexist without conflict). Per-model `covariateData[[CONMED_CYP3A4_INH_STRONG]]$notes` should document which specific inhibitors the source paper classified as strong (typically per FDA guidance: ketoconazole, itraconazole, clarithromycin, ritonavir, boceprevir, telaprevir, nefazodone, cobicistat, indinavir, saquinavir) and the fraction of the cohort exposed. Sibling canonicals `CONMED_CYP3A4_INH_MOD` and `CONMED_CYP3A4_INH_WEAK` are reserved for parallel future extractions and are named in the `CONMED_CYP3A4_INH` register entry.
 
 ### APOE4_COUNT (**canonical for APOE-epsilon4 allele count**)
 - **Description:** Continuous individual-level APOE-epsilon4 allele count: 0 = non-carrier, 1 = heterozygous (one epsilon4 allele), 2 = homozygous (two epsilon4 alleles). Time-invariant (germline genotype). Models in the Alzheimer's-disease-progression literature treat the 0 / 1 / 2 count as a continuous effect on baseline cognitive score and / or disease-progression slope, with the population-mean carrier-allele count used as the centring value (e.g., 0.72 in the Conrado 2014 CAMD cohort).
