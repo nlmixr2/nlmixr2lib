@@ -2140,6 +2140,8 @@ navbar:
         href: articles/Jia_2015_unfractionatedHeparin.html
       - text: "Upadacitinib (Klunder 2017)"
         href: articles/Klunder_2017_upadacitinib.html
+      - text: "Uprifosbuvir pbpk (vandenBerg 2021)"
+        href: articles/vandenBerg_2021_uprifosbuvir.html
       - text: "Ustekinumab (Aguiar 2021)"
         href: articles/Aguiar_2021_ustekinumab.html
       - text: "VRC07523LS (Huynh 2026)"
@@ -3518,6 +3520,7 @@ articles:
   - articles/vanRongen_2018_midazolam
   - articles/vanWijk_2019_paracetamol
   - articles/vandenBerg_2021_finerenone
+  - articles/vandenBerg_2021_uprifosbuvir
   - articles/vanderWalt_2013_dapagliflozin
   - articles/vonHentig_2009_saquinavir
   internal: true
