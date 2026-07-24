@@ -844,6 +844,8 @@ navbar:
         href: articles/FiedlerKelly_2020_fremanezumab_em.html
       - text: "Furmonertinib (Zou 2022)"
         href: articles/Zou_2022_furmonertinib.html
+      - text: "FxiLica (Willmann 2021)"
+        href: articles/Willmann_2021_fxi_aso.html
       - text: "G csf (Melhem 2018)"
         href: articles/Melhem_2018_g_csf.html
       - text: "GNbAC1 (Cao 2013)"
@@ -1008,6 +1010,8 @@ navbar:
         href: articles/Chatelut_1999_interferon_alfa_2b.html
       - text: "InterferonAlfa2a (Jeon 2013)"
         href: articles/Jeon_2013_interferonAlfa2a.html
+      - text: "IonisFxirx (Willmann 2021)"
+        href: articles/Willmann_2021_fxi_aso.html
       - text: "Ipatasertib (Yoshida 2021)"
         href: articles/Yoshida_2021_ipatasertib.html
       - text: "Ipilimumab (Feng 2014)"
@@ -3397,6 +3401,7 @@ articles:
   - articles/Williams_2012_valproic_acid_pediatric
   - articles/Williams_2016_rituximab_biosimilar
   - articles/Willmann_2018_rivaroxaban
+  - articles/Willmann_2021_fxi_aso
   - articles/Willmann_2021_rivaroxaban
   - articles/Wilson_2015_sunitinib_irinotecan_mouse
   - articles/Wittau_2015_meropenem
