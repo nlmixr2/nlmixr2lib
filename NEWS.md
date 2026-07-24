@@ -2,6 +2,7 @@
 
 # development version
 
+* Add Mitra 2026 ziftomenib ([doi:10.1002/psp4.70244](https://doi.org/10.1002/psp4.70244)) -- adult patients with relapsed / refractory NPM1-mutated acute myeloid leukemia plus healthy volunteers (sequential two-stage popPK for parent ziftomenib and two active metabolites KO-739 and KO-516; ratifies new `ko739` / `ko516` metabolite suffix canonicals, `CONMED_CYP3A4_INH_STRONG` covariate canonical, and `logitfm` parameter canonical for logit-transformed fraction metabolized).
 * Add Beal 2001 one-compartment IV-bolus BQL methodology template ([doi:10.1023/a:1012299115260](https://doi.org/10.1023/a:1012299115260)) -- methodology reference (no drug, no patients); packages the SI1 generative model from Beal's M1-M7 below-quantification-limit paper as a teaching template with CL = 0.693 and Vd = 1 (time in half-lives).
 * Add Luu 2017 nusinersen ([doi:10.1002/jcph.884](https://doi.org/10.1002/jcph.884)) -- pediatric patients with spinal muscular atrophy receiving intrathecal nusinersen.
 * Add Gaohua 2012 pregnancy PBPK ([doi:10.1111/j.1365-2125.2012.04363.x](https://doi.org/10.1111/j.1365-2125.2012.04363.x)) -- healthy pregnant Caucasian women (14-compartment whole-body p-PBPK with GA-dependent maternal physiology, applied to caffeine [CYP1A2], metoprolol [CYP2D6], and midazolam [CYP3A4]); ratifies new canonical bare `skin` PBPK compartment.

@@ -2236,6 +2236,8 @@ navbar:
         href: articles/deVriesSchultink_2020_zenocutuzumab.html
       - text: "Zidovudine (Fauchet 2013)"
         href: articles/Fauchet_2013_zidovudine.html
+      - text: "Ziftomenib (Mitra 2026)"
+        href: articles/Mitra_2026_ziftomenib.html
       - text: "Zika FAV HFIM (PiresdeMello 2018)"
         href: articles/PiresdeMello_2018_zika_FAV_HFIM.html
       - text: "Zika FAV IFN RBV (PiresdeMello 2018)"
@@ -3024,6 +3026,7 @@ articles:
   - articles/Mensing_2017_3D_HCV_regimen
   - articles/Merchan_2015_azithromycin
   - articles/Milosheska_2016_lamotrigine
+  - articles/Mitra_2026_ziftomenib
   - articles/Mo_2018_olaratumab
   - articles/Moein_2022_etrolizumab
   - articles/Moes_2016_tacrolimus
