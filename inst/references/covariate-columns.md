@@ -4782,6 +4782,18 @@ Baseline seizure-severity indicators derived from a pre-trial seizure count (typ
 - **Example models:** `Faelens_2021_infliximab.R` (categorical effect on KE: separate typical KE for Mayo 1 / Mayo 2 / Mayo 3; reference category Mayo 2).
 - **Notes:** Distinct from the full Mayo score (0-12) and the partial Mayo score (`SCORE_PMAYO`, 0-9). The endoscopic subscore alone is the core inclusion criterion in many UC induction-therapy popPK datasets (typically Mayo 2 or 3 = moderate-to-severe disease). Mutually compatible with `SCORE_PMAYO` in datasets that report both.
 
+### SCORE_SLEDAI (**canonical for Systemic Lupus Erythematosus Disease Activity Index**)
+- **Description:** Systemic Lupus Erythematosus Disease Activity Index score, a weighted composite of 24 clinical and laboratory features scoring 1-8 points each and summed to a total of 0-105. Higher values indicate more active SLE disease. Time-fixed at baseline in most SLE trials but can be time-varying when measured at follow-up. In model-based meta-analyses of SLE, the *per-arm mean baseline* SLEDAI (rather than an individual score) is the modelled covariate.
+- **Units:** (score, 0-105)
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- used centered on a per-paper reference value (10.5 in Goteti 2024, the across-arm mean baseline SLEDAI across the 81 study arms). Enters via `(1 + beta * (SCORE_SLEDAI - reference))` on latent disease activity.
+- **Source aliases:**
+  - `SLEDAI` -- printed name in Goteti 2024 Table 2 / Table 3 / equations; same orientation, no transformation.
+  - `SLEDAI (mean)` -- Goteti 2024 covariate-summary column header.
+- **Example models:** `Goteti_2024_SLE_mbma.R` (per-arm mean baseline SLEDAI; centered at 10.5; multiplicative shifts of +0.208 per unit on latent `mu_ijk` and +0.255 per unit on latent `delta_ijk`).
+- **Notes:** SLEDAI has several closely related scoring variants (SLEDAI-2K, SELENA-SLEDAI); the numeric range and interpretation are similar and papers use SLEDAI as an umbrella label. When a paper uses a specific variant, document in `covariateData[[SCORE_SLEDAI]]$notes`. Distinct from disease-specific composite outcomes like BICLA / SRI / LLDAS / CLASI (which are treatment-response composites, not disease-activity scores). Follows the `SCORE_*` family pattern (`SCORE_EASI`, `SCORE_MGADL`, `SCORE_CDAI`, etc.); canonical name is `SCORE_SLEDAI` without a `B` or `BL` prefix to match the `AGE` / `WT` / `ALB` pattern where baseline vs time-varying status is recorded in `notes` rather than the column name. Ratified canonically on 2026-07-24 alongside the Goteti 2024 SLE MBMA extraction.
+
 ### ENDO_ULCER (**canonical for endoscopically active luminal disease at baseline**)
 - **Description:** 1 = mucosal ulcerations confirmed at baseline ileocolonoscopy / endoscopy (endoscopically active luminal disease), 0 = no mucosal ulcerations at baseline. Time-fixed (assessed at study entry).
 - **Units:** (binary)
