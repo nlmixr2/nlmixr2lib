@@ -2134,6 +2134,8 @@ navbar:
         href: articles/Zuo_2016_UDCA.html
       - text: "Udenafil (Kim 2016)"
         href: articles/Kim_2016_udenafil.html
+      - text: "Ulotaront (Galluppi 2021)"
+        href: articles/Galluppi_2021_ulotaront.html
       - text: "UnfractionatedHeparin (AlSallami 2016)"
         href: articles/AlSallami_2016_unfractionatedHeparin.html
       - text: "UnfractionatedHeparin (Jia 2015)"
@@ -2689,6 +2691,7 @@ articles:
   - articles/Fuchs_2014_gentamicin
   - articles/Fung_2008_butanediol_rat
   - articles/Galluppi_2016_BIIB023
+  - articles/Galluppi_2021_ulotaront
   - articles/Gandhi_2021_abatacept
   - articles/Gaohua_2012_pregnancy_pbpk
   - articles/Garg_2014_pertuzumab
