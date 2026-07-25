@@ -1064,20 +1064,6 @@ All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODA
 - **Notes:** Use this column when a model dichotomizes moderate hepatic impairment as a separate indicator from milder or more-severe categories. The classification scheme (NCI ODWG vs Child-Pugh vs other) is paper-specific and must be documented per-model. Companion to `HEPIMP_MILD` (mild only) and `HEPIMP_SEV` (severe only). Distinct from `HEPIMP_MOD_OR_MISSING` (pools moderate cases with missing-data cases) and `HEPIMP_MODSEV` (pools moderate with severe). Anticipated by the `HEPIMP_MILD` entry's Notes: "For models that test moderate or severe as separate categories, register additional canonicals HEPIMP_MOD / HEPIMP_SEV rather than overloading this entry." HEPIMP_SEV was registered separately; HEPIMP_MOD completes the parallel.
 
 
-### RENALIMP_MOD (**canonical for moderate renal impairment indicator**)
-- **Description:** 1 = moderate renal impairment, 0 = normal renal function, mild renal impairment, or any non-moderate category. Binary categorical indicator used by source papers that test renal-impairment status as a discrete covariate rather than via continuous creatinine clearance (`CRCL`). The classification scheme that defines "moderate" is paper-specific and must be documented in per-model `covariateData[[RENALIMP_MOD]]$notes`. Two schemes are commonly encountered:
-  - **Cockcroft-Gault CrCl 30-50 mL/min** (Morris 2011 ZP-006 study eligibility criteria).
-  - **FDA / EMA labeling: CrCl 30-59 mL/min** (US FDA Guidance for Industry: PK in Patients with Impaired Renal Function, 2020).
-- **Units:** (binary)
-- **Type:** binary
-- **Scope:** general
-- **Reference category:** 0 (normal renal function or mild renal impairment; severe and end-stage categories are typically pooled with the reference or excluded from the source cohort).
-- **Source aliases:**
-  - `RENAL` (binary 1 = moderate / 0 = healthy or mild) -- used in `Morris_2011_telapristone.R` (Morris 2011 Methods "Covariate Analysis", paragraph after Equation for the proportional covariate model).
-- **Example models:** `Morris_2011_telapristone.R` (proportional fractional effect on the telapristone absorption rate constant Ka; coefficient -0.744 yielding `Ka = Ka_typ * (1 + e_renalimp_mod_ka * RENALIMP_MOD)`, i.e., a 74% decrease in Ka in moderate-renal-impaired subjects vs the reference healthy/mild-renal cohort).
-- **Notes:** Use this column when a model dichotomizes moderate renal impairment as a separate indicator (typically because severe / ESRD subjects are not in the source cohort and the moderate group is the only renal-impairment stratum with non-trivial sample size). The classification scheme (Cockcroft-Gault vs MDRD vs CKD-EPI; mL/min vs mL/min/1.73 m^2) is paper-specific and must be documented per-model. Companion to `CRCL` (continuous Cockcroft-Gault clearance), `RENALIMP_MILD` and `RENALIMP_SEV` (parallel canonicals reserved for future extractions following the `HEPIMP_*` family precedent). The Morris 2011 Discussion notes that the effect is "not directly attributed to renal impairment (in terms of decrease glomerular filtration rate/changes in creatinine clearance)" but "attributed to some other disease precluding/resulting in renal impairment or other pathophysiologic states induced by renal impairment (e.g., delayed gastric emptying as a result of diabetes)", so the binary indicator captures the cohort allocation rather than a mechanistic GFR effect. Ratified canonically on 2026-06-09 alongside the Morris 2011 telapristone extraction.
-
-
 ### CRCL_BASE (**canonical for per-subject baseline creatinine clearance (time-fixed)**)
 - **Description:** Per-subject baseline creatinine clearance, time-fixed. Used when a source paper enters the subject's baseline CRCL as a separate constant column alongside a time-varying `CRCL` column under Wahlby 2004's extended covariate-model decomposition (Br J Clin Pharmacol 2004;58(4):367-377). The within-subject delta is computed in `model()` as `(CRCL - CRCL_BASE)`.
 - **Units:** mL/min or mL/min/1.73 m^2 -- match the units of the paired `CRCL` column and document per-model via `covariateData[[CRCL_BASE]]$units`.
@@ -2857,17 +2843,6 @@ readable.
 - **Example models:** `Brown_2017_osimertinib.R` (linear additive effect `(1 + 0.17 * RACE_CHINESE)` on apparent clearance of the AZ5104 metabolite; reference category Caucasian).
 - **Notes:** Distinct from `RACE_NEAS` (North East Asian composite, includes Chinese, Japanese, and Korean) and from `RACE_ASIAN`. Use `RACE_CHINESE` only when the source paper breaks out Chinese heritage as its own indicator alongside `RACE_JAPANESE` and `RACE_ASIAN_OTH`; do not aggregate with other Asian groups when the paper keeps them separate. Parallels the established `RACE_JAPANESE` entry. Ratified canonically on 2026-05-09.
 
-### RACE_KOREAN (**canonical for Korean-heritage race indicator**)
-- **Description:** 1 = Korean heritage, 0 = non-Korean. Used when Korean subjects form a distinct race / ethnicity subgroup alongside Japanese, Chinese, Asian-other, and other race categories.
-- **Units:** (binary)
-- **Type:** binary
-- **Scope:** general
-- **Reference category:** 0 (non-Korean; document the paper-specific reference race composition per-model).
-- **Source aliases:**
-  - `RACA = 3.3` -- the FIDELIO-DKD popPK analysis dataset encoded race / ethnicity as a numeric race-and-ethnicity composite (`RACA`); `RACA = 3.3` flags Korean subjects, with all other races at non-3.3 values. Used in `vandenBerg_2021_finerenone.R`.
-- **Example models:** `vandenBerg_2021_finerenone.R` (multiplicative effect `1.29^RACE_KOREAN` on Vc/F; 2.4% of the FIDELIO-DKD cohort were Korean, and the paper Discussion notes the effect "may be a spurious finding based on limited data"), `Schmid_2017_nintedanib.R` (multiplicative effect 0.781 on nintedanib relative bioavailability F1; reference category Caucasian / Black / other Asian).
-- **Notes:** Distinct from `RACE_ASIAN_NORTHEAST` (composite of Chinese + Japanese + Korean) and from `RACE_ASIAN`. Use `RACE_KOREAN` only when the source paper isolates Korean heritage as its own effect distinct from other Asian subgroups; do not aggregate with Chinese / Japanese when the paper keeps them separate. Parallels the established `RACE_JAPANESE` and `RACE_CHINESE` entries.
-
 ### RACE_PAPUAN (**canonical for Papuan / indigenous Melanesian Indonesian heritage race indicator**)
 - **Description:** 1 = Papuan (indigenous Melanesian heritage native to the Indonesian provinces of Papua / West Papua, the western half of the island of New Guinea), 0 = non-Papuan (typically Indonesian residents of mainland-Indonesian Austronesian origin, e.g., Javanese / Sumatran transmigrants enrolled at Papua-based clinical sites; possibly also any non-Indonesian subjects in mixed cohorts). Used as a binary race / ethnicity indicator in clinical pharmacology studies conducted at sites in Indonesian Papua where the local population is a mixture of indigenous Melanesian Papuans and mainland-Indonesian transmigrants, and where PK differences across the two groups are clinically relevant.
 - **Units:** (binary)
@@ -3961,16 +3936,6 @@ Baseline seizure-severity indicators derived from a pre-trial seizure count (typ
 - **Example models:** `Majekodunmi_2017_HIV_HCV_CD4_recovery.R` (multiplicative fractional reduction on the CD4 z-score recovery-rate constant c: `c = (c_pop + etac) * (1 + e_hcv_pos_c * HCV_POS)` with `e_hcv_pos_c = -0.77`; HCV-coinfected children recover at 23% of the HIV-monoinfected rate -- 0.357 /year versus 1.55 /year typical).
 - **Notes:** Parallels the `_POS` suffix convention used by `HIV_POS`, `TB_POS`, `ADA_POS`, `SARS_SEROPOS`, and other serostatus / disease-state indicators. Distinct from any anti-HCV treatment-regimen indicator (e.g., pegylated interferon + ribavirin in Majekodunmi 2017's coinfected subset of 10 children) and from any HCV-genotype indicator (1/2/3/4 distribution reported in Majekodunmi 2017 Table 1 but not used as a covariate). Distinct from a primary disease-state indicator like `DIS_HCV` (not yet registered) -- `HCV_POS` is the coinfection / comorbidity flag in non-HCV-primary indications. Ratified canonically on 2026-05-22 alongside the Majekodunmi 2017 CD4 recovery extraction.
 
-### HCV_GT1B (**canonical for HCV genotype-1B vs 1A subtype indicator**)
-- **Description:** HCV genotype-1 subtype indicator. 1 = patient infected with HCV genotype 1B; 0 = patient infected with HCV genotype 1A (the source-paper reference subtype for the IC50 estimates). Time-fixed per subject (HCV subtype is determined at the time of infection and does not change over the modelled treatment window).
-- **Units:** (binary)
-- **Type:** binary
-- **Scope:** specific
-- **Reference category:** 0 (HCV GT1A; 77 percent of the Wang 2018 viral-dynamics cohort, 55 of 72 patients).
-- **Source aliases:** none -- the source encodes the complement (GT1B = 1 - "Genotype 1A (%)", Wang 2018 Table 2) so that the canonical reference category matches the source-paper IC50,GT1A estimates; the model column is the canonical `HCV_GT1B`.
-- **Example models:** `Wang_2018_daclatasvir_asunaprevir.R` (switches the daclatasvir and asunaprevir antiviral IC50 and the daclatasvir resistance coefficient between GT1A and GT1B values via fixed scaling factors: IC50,DCV 0.041 -> 0.0074 ug/L (SCL = 0.18), IC50,ASV 2.45 -> 0.74 ug/L (SCL = 0.30), Kr,DCV 0.43 -> 0.13 per day; Kr,ASV is the same for both subtypes).
-- **Notes:** Specific scope because the GT1A-vs-GT1B contrast and the IC50 / resistance scaling factors are paper-specific to the Wang 2018 daclatasvir + asunaprevir viral-dynamics MBMA. Distinct from `HCV_POS` (the HCV coinfection / comorbidity flag in non-HCV-primary indications) -- `HCV_GT1B` is a within-HCV-population subtype indicator for an HCV-primary antiviral analysis. Future HCV antiviral models that distinguish additional genotypes (GT2/3/4) should register sibling subtype canonicals rather than overload this binary 1B-vs-1A indicator. Ratified canonically alongside the Wang 2018 daclatasvir/asunaprevir extraction.
-
 ### EARLY_ART (**canonical for early-vs-delayed antiretroviral-treatment-initiation arm indicator**)
 - **Description:** Trial randomization-arm indicator: 1 = subject was randomized to initiate antiretroviral treatment (ART) early (within the first 14 days of admission, before nutritional recovery), 0 = subject was randomized to delayed ART initiation (after nutritional recovery, > 14 days from admission). Time-fixed per subject within the trial. The indicator captures the early-vs-delayed-ART contrast tested in the Archary 2019 / MATCH (Malnutrition and ART Timing in Children with HIV) trial in severely malnourished HIV-infected children; the early-ART arm exhibits ~31% higher abacavir bioavailability than the delayed-ART arm.
 - **Units:** (binary)
@@ -4958,7 +4923,7 @@ Baseline seizure-severity indicators derived from a pre-trial seizure count (typ
 - **Source aliases:**
   - `DIUR` -- used in `Stocker_2012_oxypurinol.R` (Stocker 2012 dataset column; pools thiazide + loop + spironolactone; n = 72 of 155 gouty patients).
   - `diuretic` -- used in `Wright_2016_allopurinol.R` (Wright 2016 narrative term; pools thiazide + loop diuretics only, excludes spironolactone / amiloride; n = 44 of 133 gouty patients).
-- **Example models:** `Stocker_2012_oxypurinol.R` (multi-class composite: thiazide + loop + potassium-sparing; multiplicative linear-deviation effect on apparent CL/Fm: `cl *= (1 + (-0.294) * CONMED_DIUR)`, i.e. -29.4% apparent oxypurinol clearance with any concomitant diuretic in adults with gout; Stocker 2012 Table 3 theta7), `Wright_2016_allopurinol.R` (thiazide + loop only, no potassium-sparing; multiplicative power-form effect on both CL/F_oxy and baseline urate U0: `cl *= 0.740^CONMED_DIUR` (-26%) and `rbase *= 1.14^CONMED_DIUR` (+14%); Wright 2016 Table 3 thetadiuretic and thetaE0_diuretic).
+- **Example models:** `Stocker_2012_oxypurinol.R` (multi-class composite: thiazide + loop + potassium-sparing; multiplicative linear-deviation effect on apparent CL/Fm: `cl *= (1 + (-0.294) * CONMED_DIUR)`, i.e. -29.4% apparent oxypurinol clearance with any concomitant diuretic in adults with gout; Stocker 2012 Table 3 theta7), `Wright_2016_allopurinol.R` (thiazide + loop only, no potassium-sparing; multiplicative power-form effect on both CL/F_oxy and baseline urate U0: `cl *= 0.740^CONMED_DIUR` (-26%) and `rbase *= 1.14^CONMED_DIUR` (+14%); Wright 2016 Table 3 thetadiuretic and thetaE0_diuretic), `Wright_2013_allopurinol.R` (merged from a duplicate register entry, 2026-07-25 dedup).
 - **Notes:** Composite indicator with paper-specific class membership. When the source paper pools thiazide + loop + potassium-sparing into a single column (e.g. Stocker 2012), `CONMED_DIUR` is the canonical and the per-model `covariateData[[CONMED_DIUR]]$notes` must enumerate the pooled classes. When the source paper pools a narrower set -- typically thiazide + loop only, because potassium-sparing diuretics tend to be uricosuric (lower serum urate) and have an opposite-direction PD effect (e.g. Wright 2016) -- the same `CONMED_DIUR` canonical is reused with the narrower definition documented in per-model notes. Users simulating across models that share the canonical column name but differ in class membership must populate the column according to the paper's own definition. Distinct from `CONMED_SPIRON` (spironolactone-only, used in Zhou 2010 digoxin popPK to encode P-glycoprotein inhibition at the renal tubular secretion site); the two canonicals can coexist when a future paper distinguishes specific drug classes. When a paper requires class-resolved encoding (separate thiazide / loop / K-sparing indicators), register sibling canonicals (e.g. `CONMED_THIAZIDE`, `CONMED_LOOP_DIUR`) rather than overloading `CONMED_DIUR`. Ratified canonically on 2026-06-20 alongside the Stocker 2012 oxypurinol extraction; class-restricted definition extended on 2026-06-30 alongside the Wright 2016 allopurinol extraction.
 
 ### CONMED_DECITABINE (**canonical for concomitant decitabine (hypomethylating-agent) chemotherapy backbone indicator**)
@@ -5255,18 +5220,6 @@ Baseline seizure-severity indicators derived from a pre-trial seizure count (typ
 - **Source aliases:** `MTX` -- used in `Rosario_2015_vedolizumab.R`.
 - **Example models:** `Rosario_2015_vedolizumab.R` (power-form on CLL: `CLL * 0.983^CONMED_MTX`).
 - **Notes:** Immunomodulator used especially in CD maintenance. Generic concomitant-MTX indicator that may also appear in non-IBD models; start as scope: general.
-
-### CONMED_DIUR (**canonical for any concomitant diuretic (class) coadministration indicator**)
-- **Description:** 1 = subject is on concomitant diuretic therapy of any class (loop, thiazide, thiazide-like, potassium-sparing, aldosterone-antagonist, or carbonic-anhydrase inhibitor), 0 = not on any diuretic. Diuretics reduce renal tubular reabsorption / secretion of urate and oxypurinol via competition at organic-anion transporters, and are a well-established covariate on oxypurinol clearance.
-- **Units:** (binary)
-- **Type:** binary
-- **Scope:** general
-- **Reference category:** 0 (no concomitant diuretic use).
-- **Source aliases:**
-  - `DIUR` -- used in `Stocker_2012_oxypurinol.R` (Stocker 2012 Table 1 footnote 'Including furosemide, thiazide diuretics and spironolactone'; 46% of 155 gouty patients on a concomitant diuretic; linear-deviation multiplicative effect on CL/Fm: -29.4%, Stocker 2012 Table 3 theta7).
-  - `diuretic` -- used in `Wright_2013_allopurinol.R` (Wright 2013 Table 2: 29 of 104 subjects on diuretics; the fractional-effect multiplier applied to the renal component of oxypurinol clearance was 0.61, i.e., a 39% reduction in renal CL_oxy in diuretic users).
-- **Example models:** `Stocker_2012_oxypurinol.R` (linear-deviation multiplicative effect on apparent oxypurinol CL/Fm: `cl *= (1 + (-0.294) * CONMED_DIUR)`; -29.4%), `Wright_2013_allopurinol.R` (fractional-effect multiplier: `cl_oxy_renal *= 0.61^CONMED_DIUR` -- renal CL_oxy is reduced by 39% when a diuretic is coadministered).
-- **Notes:** Class-level indicator; individual diuretic INN can be resolved via a per-model `covariateData[[CONMED_DIUR]]$notes` if the source paper distinguished loop / thiazide / potassium-sparing sub-classes. Follows the class-level pattern established for `CONMED_NSAID`, `CONMED_STATIN`, `CONMED_AZOLE`, `CONMED_H2RA`, and `CONMED_PPI`. Distinct from `CONMED_SPIRON` (specific to spironolactone as an aldosterone antagonist / renal P-gp inhibitor at the digoxin transporter) and from `DIS_CHF` (a disease-state indicator that does not by itself imply diuretic use). The canonical name uses the short `CONMED_DIUR` form (not `CONMED_DIURETIC`) to match the pre-existing `Stocker_2012_oxypurinol.R` convention, and both allopurinol-oxypurinol popPK models (Stocker 2012 and Wright 2013) now share the same canonical.
 
 ### CONMED_NSAID (**canonical for concomitant NSAID use**)
 - **Description:** 1 = on concomitant non-steroidal anti-inflammatory drug (NSAID) therapy at baseline, 0 = not.
@@ -8371,18 +8324,6 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Example models:** `Bonate_2004_apomine.R` (multiplicative log-additive effect on Vp: `vp = exp(lvp + e_high_vp_vp * MIX_HIGH_VP + etalvp)` with `e_high_vp_vp = log(23.5) = 3.157`).
 - **Notes:** The population probability of `MIX_HIGH_VP = 1` is 4 / 38 = 0.105 in the Bonate 2004 model-development set. For typical-value forward simulations set `MIX_HIGH_VP = 0` (the recommended default); the paper notes that simulations with and without the multiplier showed minimal differences in concentration-time profiles. Set `MIX_HIGH_VP = 1` only to reproduce the Bonate 2004 Study 2 healthy-male multiple-dose subgroup specifically. Scope: specific because the binary semantics are tied to Bonate 2004's anomalous Study 2 high-Vp subgroup; future popPK papers that retain a similar dichotomous high-Vp subgroup multiplier may extend this entry, while peripheral-volume mixture indicators from unrelated dichotomies should register a new canonical name. Ratified canonically on 2026-06-04 alongside the Bonate 2004 apomine extraction.
 
-### MIX_FAST_ELIM (**canonical for binary mixture-model class indicator: fast (high-CL) vs slow (low-CL) eliminator subpopulation**)
-- **Description:** Per-subject latent mixture-model class indicator from a `$MIXTURE` NONMEM block describing a bimodal apparent-clearance distribution. 1 = subject classified to the high-CL / fast-eliminator subpopulation; 0 = subject classified to the low-CL / slow-eliminator subpopulation. Not a measured clinical covariate -- the mixture assignment is a posterior latent-class index from the NONMEM `$MIXTURE` block. One assignment per subject, time-fixed.
-- **Units:** (binary)
-- **Type:** binary
-- **Scope:** general
-- **Reference category:** 0 (low-CL / slow-eliminator subpopulation).
-- **Source aliases:**
-  - `MIXTURE` -- NONMEM `$MIXTURE` block class index in the Morris 2011 estimation run (component 1 = high-CL with P = 0.251, component 2 = low-CL with P = 0.749); the binary indicator is `MIX_FAST_ELIM = as.integer(MIXTURE == 1)`.
-- **Example models:** `Morris_2011_telapristone.R` (selects the telapristone CL/F typical value between the high-CL anchor `exp(lcl_pop1) = 11.6 L/h` and the low-CL anchor `exp(lcl_pop2) = 3.34 L/h`; the shared IIV `etalcl ~ 0.200` is applied multiplicatively to whichever typical the mixture-class selects), `Wilkins_2011_isoniazid.R` (gates the typical apparent CL/F via the power-form covariate effect `e_mix_fast_elim_cl` on CL/F: `cl = exp(lcl + e_mix_fast_elim_cl * MIX_FAST_ELIM + etalcl) * (WT/70)^0.75 * (1 + e_hiv_pos_cl * HIV_POS)` with `lcl = log(9.70)` (slow-eliminator reference) and `e_mix_fast_elim_cl = log(21.6/9.70) approx 0.8005`).
-- **Notes:** Pre-named by the `MIX_PDI` register entry's Notes block ("mixture indicators from unrelated dichotomies should register a new canonical name (e.g., `MIX_FAST_ELIM` for a fast/slow eliminator mixture)"). Population probability of `MIX_FAST_ELIM = 1` is recorded per-model in `covariateData[[MIX_FAST_ELIM]]$notes`; in Morris 2011 it is 0.251 (Table II, "Probability" row, RSE 61.0%). The Morris 2011 Discussion attributes the bimodal CL distribution to polymorphic CYP3A5 (functional CYP3A5 present in 10-40% of Caucasians, ~50% of African Americans, ~33% of Asians) but does not test the genotype hypothesis directly; the mixture indicator is therefore a latent-class label, not a CYP3A5-genotype indicator. For typical-value simulation set `MIX_FAST_ELIM = 1` (fast eliminator; lower steady-state exposure, ~12 h elimination half-life per Morris 2011 Results) or `MIX_FAST_ELIM = 0` (slow eliminator; higher steady-state exposure, ~35 h half-life). For population simulation, draw `MIX_FAST_ELIM ~ Bernoulli(0.251)` per subject. Scope: general because the fast/slow-eliminator dichotomy is a recurring popPK concept across drugs metabolized by polymorphic enzymes (CYP2C9*2/*3, CYP2C19*2, CYP3A5*3, NAT2 slow/fast acetylators); future popPK papers fitting a `$MIXTURE` on CL should re-use this canonical rather than introducing per-drug-specific `MIX_<drug>_FAST` names. The reference category (= 0 = slow eliminator) is chosen so the binary numerically matches the paper's mixture-indicator orientation. Ratified canonically on 2026-06-09 alongside the Morris 2011 telapristone extraction.
-
-
 ### MIX_VAC_RELAPSE (**canonical for binary mixture-model class indicator: tumor-relapse vs cure subpopulation after a single-dose immunotherapy / vaccine**)
 - **Description:** Per-subject latent mixture-model class indicator from the Parra-Guillen 2013 cancer-vaccine tumor-dynamics model. 1 = subject classified to the relapser subpopulation (transient vaccine-elicited inhibitory signal, SVAC degradation rate k2 = k1 estimated; tumor regrowth observed after initial response; estimated population probability 1 - P(1) = 0.156 in Parra-Guillen 2013 Table I row 'P(1) = 0.844 FIX'); 0 = subject classified to the responder / cure subpopulation (permanent vaccine-elicited inhibitory signal, SVAC degradation rate k2 = 0 FIX; complete tumor regression maintained for the duration of the experiment). Not a measured clinical covariate -- the mixture assignment is the per-subject latent-class index from a NONMEM `$MIXTURE` block (Parra-Guillen 2013 Methods 'Data Evaluation, Biological Assumptions and Mathematical Model' subsection bullet (e); Discussion 'A challenge when using a mixture model' paragraph). Time-fixed per subject.
 - **Units:** (binary)
@@ -8619,39 +8560,6 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Source aliases:** `Ce_pM` (upstream PK output name when composed in-chain).
 - **Example models:** `Mann_2022_mu_receptor_binding.R`.
 - **Notes:** Scope: specific because the unit choice (pM) is tied to the Mann 2022 binding-rate parameterisation. A future binding model that uses nM or mg/L should register a separately named canonical (e.g., `L_OPIOID_nM`) rather than reusing this name with a different unit, because the binding model's downstream math depends on the unit match. Ratified canonically on 2026-05-29 alongside the Mann 2022 translational-model extraction.
-
-
-### L_ANTAGONIST_pM (**canonical for time-varying opioid-antagonist effect-site concentration input to the Mann 2022 binding layer**)
-- **Description:** Time-varying opioid-antagonist effect-site concentration in picomolar (pM), supplied as a data covariate to the multi-ligand competitive mu-receptor binding model. Antagonist analogue of `L_OPIOID_pM`. In a composed Mann 2022 + Laffont 2024 / 2025 chain, the upstream antagonist PK layer (`Laffont_2024_naloxone` or `Laffont_2024_nalmefene`) is post-processed in the vignette by (a) converting time to minutes, (b) convolving plasma concentration with the Mann 2022 ke0 = 0.001774 1/s effect-site equilibration (carried into Laffont 2024 Supp Table S3 unchanged for both nalmefene and naloxone), and (c) converting ng/mL to pM via the antagonist's free-base molecular weight (naloxone 327.37 g/mol, nalmefene 339.43 g/mol); the resulting per-subject time series is supplied as this covariate.
-- **Units:** pM (picomolar)
-- **Type:** continuous
-- **Scope:** specific
-- **Reference category:** n/a.
-- **Source aliases:** none.
-- **Example models:** `Mann_2022_mu_receptor_binding.R`.
-- **Notes:** Scope: specific. Same pM-unit / Table-S2-Kon-unit alignment requirement as `L_OPIOID_pM`. Ratified canonically on 2026-05-29 alongside the Mann 2022 translational-model extraction.
-
-
-### CAR_OPIOID (**canonical for time-varying fraction of mu-opioid receptors bound by an agonist input to the Mann 2022 physiology layer**)
-- **Description:** Time-varying fraction (0..1) of mu-opioid receptors bound by an opioid agonist. The Mann 2022 respiratory-physiology layer consumes this as a data covariate to drive opioid-induced reductions in wakefulness drive (W - Wmax * CAR^P3) and in chemoreflex drives (factor 1 - CAR^P1). In the composed Mann 2022 chain, this is the `RL_op` output of `Mann_2022_mu_receptor_binding.R`; in standalone physiology-only use, the operator supplies CAR_OPIOID as a time-varying data column.
-- **Units:** fraction (0..1)
-- **Type:** continuous
-- **Scope:** specific
-- **Reference category:** n/a; 0 = no receptor occupancy = baseline ventilation.
-- **Source aliases:** `RL_op` / `CAR` (binding-model output name).
-- **Example models:** `Mann_2022_respiratory_physiology.R`.
-- **Notes:** Scope: specific because the semantics are anchored to mu-opioid receptor occupancy in the Mann 2022 translational chain. Future opioid-pharmacology models that consume a different receptor-occupancy concept (e.g., kappa-opioid or delta-opioid) should register a separately named canonical with the receptor subtype in the name (e.g., `CAR_KAPPA`). Ratified canonically on 2026-05-29 alongside the Mann 2022 translational-model extraction.
-
-
-### OPIOID_PATIENT_TYPE (**canonical for opioid-naive vs chronic-opioid-user indicator in the Mann 2022 respiratory-depression PD layer**)
-- **Description:** Binary indicator selecting the pharmacodynamic-sensitivity parameter set in the Mann 2022 respiratory-physiology layer. 0 = healthy opioid-naive volunteer (P1 = 2.875, P3 = 0.9); 1 = chronic opioid user with established tolerance (P1 = 4.226, P3 = 1.323). P2 (metabolism exponent) is shared across both patient types at 0.06319. The naive vs chronic split is empirically calibrated against Algera 2021 (Clin Pharmacol Ther 2021;109(3):637-645) and Stoeckel 1982 (Br J Anaesth 1982;54(10):1087-1095); the numeric P1, P3 values are taken from FDA simulateToGetOD_IM.R lines 185-192 (Mann 2022 reference implementation).
-- **Units:** (binary)
-- **Type:** binary
-- **Scope:** specific
-- **Reference category:** 0 (healthy opioid-naive).
-- **Source aliases:** none.
-- **Example models:** `Mann_2022_respiratory_physiology.R`.
-- **Notes:** Scope: specific because the two parameter sets are tied to the Mann 2022 chronic-vs-naive opioid pharmacology calibration. A future model that captures a graded tolerance (e.g., a continuous "tolerance index") rather than a two-class binary should register a separate continuous canonical. Ratified canonically on 2026-05-29 alongside the Mann 2022 translational-model extraction.
 
 
 ### AGONIST_CODE (**canonical for vasoactive-agonist ligand selector in the Grzesk 2016 vascular-reactivity sigmoidal Emax CRC model**)
