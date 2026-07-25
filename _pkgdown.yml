@@ -2186,6 +2186,8 @@ navbar:
         href: articles/Wang_2014_vatalanib.html
       - text: "Vedolizumab (Rosario 2015)"
         href: articles/Rosario_2015_vedolizumab.html
+      - text: "Vedolizumab (Waterhouse 2024)"
+        href: articles/Waterhouse_2024_vedolizumab.html
       - text: "Verapamil rat (Syvanen 2011)"
         href: articles/Syvanen_2011_verapamil_rat.html
       - text: "Vildagliptin (Landersdorfer 2012)"
@@ -3374,6 +3376,7 @@ articles:
   - articles/Wang_2020_ontamalimab
   - articles/Wang_2021_pertuzumab
   - articles/Wang_2024_sugemalimab
+  - articles/Waterhouse_2024_vedolizumab
   - articles/Watson_2010_liraglutide
   - articles/Watt_2015_fluconazole
   - articles/Wattanakul_2016_paracetamol
