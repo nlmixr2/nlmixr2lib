@@ -873,3 +873,33 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
 - **Source aliases:** `EH` -- used in `Chan_2008_maraviroc.R` and Brussee 2018 mAb PBPK (the latter as a derived `model()`-block quantity rather than an `ini()` parameter, so the canonical applies to the `ini()` use case introduced by Chan 2008).
 - **Example models:** `Chan_2008_maraviroc.R` (estimated `logiteh = logit(0.662)` with logit-additive IIV per Chan 2008 Eq 9; downstream `eh` enters `clh = fq * eh` and `fhep = 1 - eh`).
 - **Notes:** Paired with the canonical compartment / pseudo-parameter `fq` (hepatic plasma flow, fixed at a literature value) and the canonical `clr` (renal clearance, often fixed) when the paper decomposes total CL into renal + hepatic with hepatic-extraction physiology. Distinct from `lcl_nonren` (additive renal + non-renal CL decomposition without an explicit extraction-ratio bound): use `eh` only when the source paper writes hepatic clearance as `CL_H = FQ * E_H` and constrains E_H in [0, 1] (e.g., via a logit-form IIV transformation).
+
+### nowsmax (**canonical bare NAS-natural-history maximum-baseline term**)
+- **Type:** paper-named-param
+- **Role:** Multiplicative baseline of the natural neonatal-abstinence-syndrome (NAS) severity-decay-with-postnatal-age term `NOWST = nowsmax * exp(-nowsm * PNA_days)` used inside the Eudy-Byrne 2021 buprenorphine indirect-response PD model of MOTHER NAS scores. `nowsmax` is unitless (a multiplier on `kin/kout`) and enters both the ODE production term `kin * (1 + nowst)` and the drug-free quasi-steady-state initial condition `nows(0) = kin * (1 + nowst) / kout`. Log-transformed form is `lnowsmax`.
+- **Source aliases:**
+  - `NOWSMAX` -- Eudy-Byrne 2021 Table S3 notation (all-caps).
+- **Example models:** `EudyByrne_2021_buprenorphine.R` (typical `nowsmax = 1.92`, unitless; 95% CI 1.76-2.08; log-normal IIV omega^2 = 1.14).
+- **Notes:** Paired with `nowsm` (natural decay rate) and the canonical PD state / observation `nows`. Registered 2026-07-25 alongside the Eudy-Byrne 2021 extraction. Distinct from `rbase` (generic IDR baseline) because `nowsmax` multiplies an exponential decay with postnatal age rather than being a fixed steady-state baseline.
+
+### lnowsmax (**canonical log-transformed NAS-natural-history maximum-baseline term**)
+- **Type:** paper-named-param
+- **Role:** Log-transformed form of `nowsmax` for `ini()` with log-normal IIV. Inside `model()` the bare name is `nowsmax = exp(lnowsmax + etalnowsmax)`.
+- **Source aliases:**
+  - `log NOWSMAX`, `lNOWSMAX` -- equivalent paper notation.
+- **Example models:** `EudyByrne_2021_buprenorphine.R`.
+
+### nowsm (**canonical bare NAS-natural-history decay rate with postnatal age**)
+- **Type:** paper-named-param
+- **Role:** First-order decay rate constant (1/day) of the natural NAS-severity term `NOWST = nowsmax * exp(-nowsm * PNA_days)` with chronological postnatal age. As PNA grows, NOWST decays toward zero and the drug-free quasi-steady-state NAS score `nows0 = kin * (1 + nowst) / kout` approaches its long-term floor `kin / kout`. Log-transformed form is `lnowsm`.
+- **Source aliases:**
+  - `NOWSM` -- Eudy-Byrne 2021 Table S3 notation (all-caps).
+- **Example models:** `EudyByrne_2021_buprenorphine.R` (typical `nowsm = 0.107 1/day`; 95% CI 0.102-0.112; log-normal IIV omega^2 = 1.42; correlated with `nowsmax` at corr = 0.778).
+- **Notes:** Units are 1/day. When paired with the canonical `PNA` covariate (which is in MONTHS), inside `model()` compute `pna_days = PNA * 30.4375` before use so the exponent stays dimensionless (same pattern as Zhao 2018).
+
+### lnowsm (**canonical log-transformed NAS-natural-history decay rate**)
+- **Type:** paper-named-param
+- **Role:** Log-transformed form of `nowsm` for `ini()` with log-normal IIV. Inside `model()` the bare name is `nowsm = exp(lnowsm + etalnowsm)`.
+- **Source aliases:**
+  - `log NOWSM`, `lNOWSM` -- equivalent paper notation.
+- **Example models:** `EudyByrne_2021_buprenorphine.R`.
