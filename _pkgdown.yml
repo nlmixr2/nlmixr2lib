@@ -1842,6 +1842,8 @@ navbar:
         href: articles/Park_2014_SKL10406.html
       - text: "Sacituzumab (Sathe 2024)"
         href: articles/Sathe_2024_sacituzumab.html
+      - text: "Sacituzumab (Sathe 2025)"
+        href: articles/Sathe_2025_sacituzumab.html
       - text: "Salbutamol (Heuberger 2018)"
         href: articles/Heuberger_2018_salbutamol.html
       - text: "Sapropterin (Feillet 2008)"
@@ -3196,6 +3198,7 @@ articles:
   - articles/Sarashina_2005_epinastine
   - articles/Sassen_2017_crisantaspase
   - articles/Sathe_2024_sacituzumab
+  - articles/Sathe_2025_sacituzumab
   - articles/Savic_2010_warfarin
   - articles/Savic_2017_cladribine
   - articles/Schaefer_1996_ciprofloxacin
