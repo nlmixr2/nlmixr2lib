@@ -467,6 +467,18 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Ngamprasertwong_2016_propofol_sheep.R` (power effect on maternal propofol clearance: `CL_indiv = theta1 * (HR/158)^theta2` with `theta2 = 0.764`; clearance increases with heart rate, plausibly reflecting heart-rate-driven increases in hepatic blood flow that govern propofol's high hepatic-extraction-ratio elimination).
 - **Notes:** General scope because heart rate is a universally applicable vital sign suitable for any model where hemodynamic state modulates clearance. Future models can use a different reference HR (typical adult human is ~70 beats/min vs the sheep cohort 158 beats/min); document the reference in `covariateData[[HR]]$notes`. Distinct from `HR_BAND` or `HRV` (not yet registered) which would be a heart-rate-band stratifier or heart-rate variability metric, respectively. Ratified canonically on 2026-05-23 alongside the Ngamprasertwong 2016 propofol maternal-fetal sheep extraction.
 
+### SBP (**canonical for systolic blood pressure**)
+- **Description:** Subject systolic blood pressure, in mmHg. Captured at baseline or serially during a study. Universal vital sign used in popPK / disease-progression models where hemodynamic state serves as either (a) a prognostic covariate on non-PK endpoints (overall survival, tumor dynamics), or (b) a covariate on clearance for drugs whose disposition is sensitive to blood pressure. Document baseline-vs-time-varying status per model in `covariateData[[SBP]]$notes`.
+- **Units:** mmHg
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- used with power scaling `(SBP / ref)^exponent`, linear-deviation forms `(1 + e * (SBP - ref))`, or additive-log forms `beta * log(SBP)`. Reference values observed: 120 mmHg (Terranova 2022 avelumab JAVELIN Gastric 100 cohort median; also the population-adult clinical normal midpoint).
+- **Source aliases:**
+  - `Log systolic blood pressure` -- Terranova 2022 Table S2 OS TTE coefficient label; enters as `log(SBP) * beta` (an additive-log form on log-median OS).
+  - `SBP` -- source-paper column name; same orientation, no value transformation.
+- **Example models:** `Terranova_2022_TGD_OS_gastric.R` (additive-log effect on log-median OS: `log_median_OS += 0.532 * log(SBP)`, screened by ML and retained in the parametric TTE model despite the credible interval including zero, in keeping with the paper's hypothesis-generating scope).
+- **Notes:** General scope because systolic BP is a universally applicable vital sign. Sibling of `HR` (heart rate, beats/min) and `DBP_REL` (relative change in diastolic BP from baseline, unitless). The two BP siblings are physiologically related but independent covariate columns: some source papers report SBP only, some report DBP or DBP-change only, some report both. `SBP` here is the raw absolute value; if a future model needs a relative-change (`SBP_REL`) or a diastolic sibling (`DBP`) it should register a new sibling canonical rather than overloading this entry. Ratified canonically on 2026-07-24 alongside the Terranova 2022 avelumab JAVELIN Gastric 100 extraction (agcand_13066655 sidecar request-001 q1=A).
+
 ### BODYTEMP (**canonical for body temperature**)
 - **Description:** Subject body temperature (typically axillary or oral) at the relevant clinical observation. Captured at study admission in acute-infection PK studies (fever as a marker of acute illness severity); may be time-varying when serial temperature measurements are recorded across visits. Document baseline-vs-time-varying status in `covariateData[[BODYTEMP]]$notes` per model.
 - **Units:** degC
@@ -4219,6 +4231,62 @@ Baseline seizure-severity indicators derived from a pre-trial seizure count (typ
 - **Example models:** `Bruno_2005_trastuzumab.R` (multiplicative effect on linear CL: typical CL multiplied by `(1 + 0.221 * MET_GE4)`, i.e. +22.1% CL in MET_GE4 = 1 patients; reference MET_GE4 = 0 per Bruno 2005 Table 3).
 - **Notes:** The >= 4 split is the dichotomisation used by Bruno 2005 to capture "patients with four or more metastatic sites" as a high-tumor-burden subgroup. Scope: general so future oncology popPK papers using the same dichotomisation can reuse this canonical column. If a future paper uses a different split (e.g. >= 2 or >= 5), register a separate `MET_GEN` canonical rather than overloading this entry. A `MET_GE4 = 1` patient may also have `LMET = 1`; the two columns are not mutually exclusive (liver-only metastases would have `LMET = 1`, `MET_GE4 = 0`).
 
+### MET_GE3 (**canonical for baseline number of metastatic sites >= 3 indicator**)
+- **Description:** Binary indicator dichotomising the count of baseline metastatic sites at 3, 1 = patient has three or more documented metastatic sites at baseline, 0 = patient has zero to two metastatic sites at baseline. Time-fixed per subject. Treated as a surrogate for tumor burden in oncology popPK / TGD analyses that centre the source-paper continuous integer count at 3.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (fewer than three metastatic sites at baseline).
+- **Source aliases:**
+  - `NumMet` (raw integer count 0-12; used in `Terranova_2022_TGD_OS_gastric.R`). When a source paper supplies the raw integer count column, derive `MET_GE3 = as.integer(NumMet >= 3)`.
+- **Example models:** `Terranova_2022_TGD_OS_gastric.R` (multiplicative-additive effect on Gompertzian baseline tumor size: `BASE = exp(ltvBase + etalBase) * exp(0.143 * MET_GE3)` -- single-step binarisation of the paper's continuous per-metastasis coefficient `exp(0.143 * (NumMet - 3))`; deviation from paper's continuous form documented in vignette Errata per the count-covariate policy).
+- **Notes:** Sibling of `MET_GE4` (Bruno 2005) and `NTARGET_GE3` (Struemper 2025). The >= 3 split matches Terranova 2022's centering value of 3 (avelumab-arm median NumMet). Auto-approved under the count-covariate-decomposed-to-binary policy on 2026-07-24 (agcand_13066655). If a future paper uses a different split (e.g. >= 2 or >= 5), register a separate sibling (`MET_GE2`, `MET_GE5`) rather than overloading this entry. A `MET_GE3 = 1` patient may also have `LMET = 1` (liver metastasis) or `PERIT_CARC = 1` (peritoneal carcinomatosis); the three columns are not mutually exclusive.
+
+### PERIT_CARC (**canonical for peritoneal carcinomatosis indicator**)
+- **Description:** Binary indicator of radiologically or surgically documented peritoneal carcinomatosis (diffuse peritoneal-surface metastatic spread) at baseline / re-baseline in a solid-tumor oncology cohort, 1 = peritoneal carcinomatosis present, 0 = absent. Time-fixed per subject at the assessed baseline. Distinct from `PERIT_DIAL` (peritoneal-dialysis treatment-status indicator; entirely different clinical concept) and from `DIS_PERIT` (peritonitis, an infectious inflammation of the peritoneum).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (no peritoneal carcinomatosis at baseline).
+- **Source aliases:**
+  - `Peritoneal carcinomatosis` -- used in `Terranova_2022_TGD_OS_gastric.R` (Terranova 2022 Table S2 categorical covariate on log-median OS, coded 1/0).
+- **Example models:** `Terranova_2022_TGD_OS_gastric.R` (linear-additive effect on log-median OS: `log_median_OS += -0.181 * PERIT_CARC`; peritoneal carcinomatosis shortens median OS by ~16.6% relative to patients without it, one of the covariates flagged as meaningful in the paper's +/-15% posterior-median threshold).
+- **Notes:** Specific scope because peritoneal carcinomatosis is a gastrointestinal-cancer-associated metastasis pattern (colon, gastric, ovarian, appendiceal); future GI-oncology or ovarian-cancer popPK models retaining this covariate should extend the Example-models list rather than register a sibling. Ratified canonically on 2026-07-24 alongside the Terranova 2022 avelumab JAVELIN Gastric 100 extraction (agcand_13066655 sidecar request-001 q1=A). Sibling to `LMET` (liver metastasis) and `MET_GE3` / `MET_GE4` (aggregate metastatic-site count binarised at different thresholds); all four indicators can coexist for a patient with widespread advanced disease.
+
+### RESP_SD (**canonical for RECIST re-baseline response = stable disease indicator**)
+- **Description:** Binary indicator, 1 = the patient's RECIST 1.1 best response at re-baseline (typically the end of induction chemotherapy or the pre-maintenance assessment) is stable disease (SD); 0 = any other response category (CR, PR, PD, NED, NE, or non-CR/non-PD). Time-fixed at the re-baseline assessment. Used as one leaf of a decomposed RECIST-response categorical covariate under the count-covariate-decomposed-to-binary policy.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (RECIST response is anything other than SD -- typically responder [CR/PR], non-CR/non-PD, PD, or NE).
+- **Source aliases:**
+  - `Re-baseline stable disease vs other` -- used in `Terranova_2022_TGD_OS_gastric.R` (Terranova 2022 Table S2 categorical covariate; also enters TGD BASE equation).
+  - `RESSD` -- source NONMEM column name derived from the RECIST assessment.
+- **Example models:** `Terranova_2022_TGD_OS_gastric.R` (multiplicative effect on Gompertzian baseline tumor size `BASE = ... * (1 + 0.644 * RESP_SD)` -- SD patients have +64% larger baseline tumor size than the responder+PD+NE reference at re-baseline; and additive linear effect on log-median OS: `log_median_OS += -0.0919 * RESP_SD`).
+- **Notes:** One of three parallel RECIST-response indicators (`RESP_SD`, `RESP_NONPDCR`, `RESP_RESPONDER`) that decompose the RECIST 1.1 response categorical into binary flags per the count-covariate-decomposed-to-binary policy. The three flags share the same source RECIST-response column and different subsets are used by different sub-models within the same paper (Terranova 2022 TGD uses `RESP_SD` + `RESP_NONPDCR` with implicit reference = responder/PD/NE; Terranova 2022 OS TTE uses `RESP_SD` + `RESP_RESPONDER` with implicit reference = non-responder-non-SD). Ratified canonically on 2026-07-24 alongside the Terranova 2022 avelumab JAVELIN Gastric 100 extraction (agcand_13066655 sidecar request-001 q1=A).
+
+### RESP_NONPDCR (**canonical for RECIST re-baseline response = neither CR nor PR indicator**)
+- **Description:** Binary indicator, 1 = the patient's RECIST 1.1 best response at re-baseline is NOT complete response (CR) and NOT partial response (PR) -- i.e., the patient is a non-responder by RECIST criteria (any of stable disease [SD], non-CR/non-PD, no evidence of disease [NED], progressive disease [PD], or not evaluable [NE]); 0 = responder (CR or PR). Time-fixed at the re-baseline assessment. Complement of `RESP_RESPONDER` from a different reference-category framing; both are needed because different sub-models within the same analysis use different reference categories.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (responder: CR or PR at re-baseline).
+- **Source aliases:**
+  - `RES_nonPR/nonCR` -- Terranova 2022 Supplementary Methods notation; equivalent to "response at re-baseline was not complete or partial response" per the paper's definition. Coded 1/0.
+- **Example models:** `Terranova_2022_TGD_OS_gastric.R` (multiplicative effect on Gompertzian baseline tumor size: `BASE = ... * (1 - 0.0769 * RESP_NONPDCR)` -- non-responders have -7.69% smaller baseline tumor size than responders at re-baseline; used in the TGD sub-model only).
+- **Notes:** Sibling of `RESP_SD` and `RESP_RESPONDER`. The name is deliberately explicit about "not CR / not PR" rather than the shorter `RESP_NONRESP` because the source paper's coding is defined on the exact CR/PR complement rather than an arbitrary "responder / non-responder" binarisation of a broader ordinal. Ratified canonically on 2026-07-24 alongside the Terranova 2022 avelumab JAVELIN Gastric 100 extraction (agcand_13066655 sidecar request-001 q1=A).
+
+### RESP_RESPONDER (**canonical for RECIST re-baseline response = responder (CR or PR) indicator**)
+- **Description:** Binary indicator, 1 = the patient's RECIST 1.1 best response at re-baseline is either complete response (CR) or partial response (PR) -- i.e., the patient is a responder by RECIST criteria; 0 = non-responder (any of SD, non-CR/non-PD, NED, PD, NE). Time-fixed at the re-baseline assessment. Complement of `RESP_NONPDCR` from a different reference-category framing; both are needed because different sub-models within the same analysis use different reference categories.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (non-responder at re-baseline; typically the pooled reference alongside a separate `RESP_SD` flag).
+- **Source aliases:**
+  - `Re-baseline responder vs other` -- Terranova 2022 Table S2 OS TTE covariate label; coded 1/0.
+- **Example models:** `Terranova_2022_TGD_OS_gastric.R` (additive linear effect on log-median OS: `log_median_OS += 0.146 * RESP_RESPONDER`; responder patients have ~15.7% longer median OS than non-responder-non-SD reference).
+- **Notes:** Sibling of `RESP_SD` and `RESP_NONPDCR`. Explicitly `RESPONDER` rather than `CRPR` because responder-vs-other is the clinically meaningful contrast used by the source paper's OS sub-model. Ratified canonically on 2026-07-24 alongside the Terranova 2022 avelumab JAVELIN Gastric 100 extraction (agcand_13066655 sidecar request-001 q1=A).
+
 ### NTARGET_GE3 (**canonical for baseline number of target lesions >= 3 indicator**)
 - **Description:** Binary indicator dichotomising the count of target lesions at baseline at 3, 1 = three or more target lesions at baseline (per RECIST 1.1), 0 = one or two target lesions at baseline. Time-fixed per subject. Distinct from `TUM_SLD` (continuous sum of longest diameters, mm), which captures tumor burden magnitude; `NTARGET_GE3` captures lesion multiplicity / spread.
 - **Units:** (binary)
@@ -6399,6 +6467,18 @@ Baseline seizure-severity indicators derived from a pre-trial seizure count (typ
   - `DUR` -- used in `Baron_2016_empagliflozin.R` (Baron 2016 Methods column "duration of diabetes"; PK/PD dataset categorisation reported as <1 year / 1-5 years / >5 years in Table S2 with 58.5% of patients in the >5 years group).
 - **Example models:** `Baron_2016_empagliflozin.R` (power-form effects centred at 2 years on BFPG: `(T_DIAG_DIAB / 2)^0.0512`, on Gmax: `(T_DIAG_DIAB / 2)^0.0117`, on kHbA1cout: `(T_DIAG_DIAB / 2)^-0.577`).
 - **Notes:** Disease-progression marker complementary to the binary `DIS_DIAB` indicator -- `DIS_DIAB` records the comorbidity at baseline (1/0) while `T_DIAG_DIAB` quantifies how long that diabetes has been present. The covariate is a time-since-event under the canonical `T_<event>` family. Distinct from `T_NUT_SUPP` (time on nutritional supplementation) and `T_POST_ECMO` (time after ECMO decannulation) which are different `T_<event>` siblings. For a baseline-only continuous power-form effect, a 0-year subject (newly diagnosed at study entry) yields `(0/2)^theta = 0` -- supply at least a small floor value (e.g. 0.1 year) for newly-diagnosed subjects in simulation; the floor convention should be documented in the per-model `covariateData[[T_DIAG_DIAB]]$notes`. Ratified canonically on 2026-06-24 alongside the Baron 2016 empagliflozin extraction.
+
+### T_DIAG_CANCER (**canonical for time since primary cancer diagnosis**)
+- **Description:** Time elapsed between the patient's primary cancer diagnosis (histopathology / imaging confirmation date recorded in the clinical database) and study entry / re-baseline, in days. Continuous time-fixed covariate; supply the per-subject duration in days. Cancer-nonspecific (gastric, GEJC, NSCLC, breast, etc. all use this same canonical). Distinct from `T_DIAG_DIAB` (T2DM-specific; different disease and different reference form).
+- **Units:** days
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- entered as a power covariate `(T_DIAG_CANCER / ref)^exponent` on structural parameters. Reference values observed: 53 days (Terranova 2022 avelumab arm median at randomization for the JAVELIN Gastric 100 gastric-cancer cohort, per Supplementary Methods).
+- **Source aliases:**
+  - `Tdiag` -- used in `Terranova_2022_TGD_OS_gastric.R` (Terranova 2022 Supplementary Methods equation form `(Tdiag/53)^theta5` on the Gompertz tumor-growth rate constant `Kg`).
+  - `Log time since diagnosis` -- Terranova 2022 Table S2 OS TTE coefficient label; enters on `log(median OS)` via `log(T_DIAG_CANCER) * beta`.
+- **Example models:** `Terranova_2022_TGD_OS_gastric.R` (power effect on Gompertzian `Kg`: `Kg = tvKg * (T_DIAG_CANCER / 53)^-0.00291`, reference 53 days; and additive linear-log effect on log-median OS: `log_median_OS += 0.0436 * log(T_DIAG_CANCER)`).
+- **Notes:** Sibling of `T_DIAG_DIAB` under the canonical `T_<event>` family. Auto-approved without a naming sidecar per the T_<event> policy on 2026-07-24 (agcand_13066655 request-001 q1=A). For a 0-day subject (diagnosed at study entry) the power form `(0/53)^theta` evaluates to `0` when the exponent is positive, which is a boundary case; supply at least a small floor value (e.g. 1 day) for such subjects in simulation. Distinct from post-treatment intervals (`T_POST_ECMO`, etc.) which are time-since-intervention rather than time-since-diagnosis.
 
 ### BL_PN_GR1 (**canonical for active baseline grade 1 peripheral neuropathy indicator**)
 - **Description:** 1 = subject had active grade 1 peripheral neuropathy (CTCAE 4.0 grade 1: asymptomatic; clinical or diagnostic observations only; intervention not indicated) at study entry; 0 = no active PN at baseline. Time-fixed at study entry. The covariate captures pre-existing low-grade PN typically arising from prior antimicrotubule or platinum chemotherapy in heavily pretreated oncology cohorts and is used to assess whether baseline PN sensitizes patients to subsequent antimicrotubule-induced PN.
