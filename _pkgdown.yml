@@ -2094,6 +2094,8 @@ navbar:
         href: articles/Baverel_2015_tralokinumab.html
       - text: "Tralokinumab (Soehoel 2022)"
         href: articles/Soehoel_2022_tralokinumab.html
+      - text: "Tramadol tapentadol mbma (Mercier 2014)"
+        href: articles/Mercier_2014_tramadol_tapentadol.html
       - text: "TranexamicAcid (Dunn 2025)"
         href: articles/Dunn_2025_tranexamicAcid.html
       - text: "Trastuzumab (Bruno 2005)"
@@ -3023,6 +3025,7 @@ articles:
   - articles/Melhem_2022_dostarlimab
   - articles/Mensing_2017_3D_HCV_regimen
   - articles/Merchan_2015_azithromycin
+  - articles/Mercier_2014_tramadol_tapentadol
   - articles/Milosheska_2016_lamotrigine
   - articles/Mo_2018_olaratumab
   - articles/Moein_2022_etrolizumab
