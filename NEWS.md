@@ -1,5 +1,10 @@
 # nlmixr2lib
 
+* Drop `qs2`.  The model database now ships as `inst/modeldb.rds` instead of
+  `inst/modeldb.qs2`, so `readModelDb()` no longer needs `qs2`.  It was only
+  listed in `Suggests` yet used unconditionally, so `readModelDb()` failed
+  outright when `qs2` was not installed.
+
 # Version 0.3.2
 
 * Add Kim 2006 model for IgG metabolism

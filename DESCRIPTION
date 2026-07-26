@@ -37,7 +37,6 @@ Suggests:
     knitr,
     rmarkdown,
     testthat (>= 3.0.0),
-    qs2,
     tidyr,
     ggplot2,
     withr
