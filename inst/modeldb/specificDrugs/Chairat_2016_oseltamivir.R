@@ -15,14 +15,14 @@ Chairat_2016_oseltamivir <- function() {
     "per 10 mL/min increase). Obesity itself was not a retained covariate in",
     "the formal model. Residual error is additive on log-transformed",
     "concentrations of OS and OC (encoded here as a log-normal residual on",
-    "Cc and Cc_oc).")
+    "Cc and Cc_oselcarb).")
   reference <- "Chairat K, Jittamala P, Hanpithakpong W, Day NPJ, White NJ, Pukrittayakamee S, Tarning J. Population pharmacokinetics of oseltamivir and oseltamivir carboxylate in obese and non-obese volunteers. Br J Clin Pharmacol. 2016;81(6):1103-1112. doi:10.1111/bcp.12892"
   vignette <- "Chairat_2016_oseltamivir"
   units <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
 
   # Intermediate metabolism delay compartment between parent OS central and
   # metabolite OC central; not an absorption-chain transit (Savic) and not a
-  # well-stirred-hepatic compartment (Standing 2012 transit_oc). Declared as
+  # well-stirred-hepatic compartment (Standing 2012 transit_oselcarb). Declared as
   # paper-specific so checkModelConventions() does not flag the name.
   paper_specific_compartments <- "metabolism"
 
@@ -32,7 +32,7 @@ Chairat_2016_oseltamivir <- function() {
       units              = "mL/min",
       type               = "continuous",
       reference_category = NULL,
-      notes              = "Linear covariate on apparent oseltamivir carboxylate clearance CL/FOC: CL/FOC = exp(lcl_oc) * (1 + e_crcl_cl_oc * (CRCL - 73)). The 0.00384 per mL/min coefficient is 3.84% per 10 mL/min, i.e. Chairat 2016 Table 1 covariate-effect row and Eq. 11. Centering 73 mL/min is the population median CLCR(FFM) used by the paper; the cohort range was 48.0-114 mL/min (Chairat 2016 Discussion paragraph 3).",
+      notes              = "Linear covariate on apparent oseltamivir carboxylate clearance CL/FOC: CL/FOC = exp(lcl_oselcarb) * (1 + e_crcl_cl_oselcarb * (CRCL - 73)). The 0.00384 per mL/min coefficient is 3.84% per 10 mL/min, i.e. Chairat 2016 Table 1 covariate-effect row and Eq. 11. Centering 73 mL/min is the population median CLCR(FFM) used by the paper; the cohort range was 48.0-114 mL/min (Chairat 2016 Discussion paragraph 3).",
       source_name        = "CLCR(FFM)"
     )
   )
@@ -59,14 +59,14 @@ Chairat_2016_oseltamivir <- function() {
     lcl     <- log(585);   label("Oseltamivir apparent clearance CL/FOS (L/h)")                    # Chairat 2016 Table 1: CL/FOS = 585 L/h
     lvc     <- log(1110);  label("Oseltamivir apparent volume of distribution V/FOS (L)")          # Chairat 2016 Table 1: V/FOS = 1110 L
     lkm     <- log(2.13);  label("Metabolism rate constant km for OC formation (1/h)")             # Chairat 2016 Table 1: km = 2.13 1/h
-    lcl_oc  <- log(20.6);  label("Oseltamivir carboxylate apparent clearance CL/FOC (L/h)")        # Chairat 2016 Table 1: CL/FOC = 20.6 L/h
-    lvc_oc  <- log(159);   label("Oseltamivir carboxylate apparent volume of distribution V/FOC (L)") # Chairat 2016 Table 1: V/FOC = 159 L
+    lcl_oselcarb  <- log(20.6);  label("Oseltamivir carboxylate apparent clearance CL/FOC (L/h)")        # Chairat 2016 Table 1: CL/FOC = 20.6 L/h
+    lvc_oselcarb  <- log(159);   label("Oseltamivir carboxylate apparent volume of distribution V/FOC (L)") # Chairat 2016 Table 1: V/FOC = 159 L
     lfdepot <- fixed(log(1)); label("Relative oral bioavailability F (fixed to unity)")            # Chairat 2016 Table 1: F = 100% (fixed)
 
     # Covariate effect on CL/FOC (Chairat 2016 Eq. 11 and Table 1 row "Effect
     # of CLCR on CL/FOC (% change per 10 units of CLCR)" = 3.84). The
     # coefficient stored here is in /mL/min units (= 0.0384 per 10 mL/min).
-    e_crcl_cl_oc <- 0.00384; label("Linear effect of CLCR on CL/FOC (per 1 mL/min, around 73 mL/min)")  # Chairat 2016 Table 1 / Eq. 11: 3.84% per 10 mL/min around 73 mL/min
+    e_crcl_cl_oselcarb <- 0.00384; label("Linear effect of CLCR on CL/FOC (per 1 mL/min, around 73 mL/min)")  # Chairat 2016 Table 1 / Eq. 11: 3.84% per 10 mL/min around 73 mL/min
 
     # Random effects (Chairat 2016 Table 1). The paper reports BSV (IIV) and
     # BOV (interoccasion variability, IOV) as %CV computed by NONMEM as
@@ -87,14 +87,14 @@ Chairat_2016_oseltamivir <- function() {
     etalcl     ~ 0.027183  # Chairat 2016 Table 1: BSV(CL/FOS) = 16.6%CV
     etalvc     ~ 0.034007  # Chairat 2016 Table 1: IOV(V/FOS) = 18.6%CV; encoded as IIV
     etalkm     ~ 0.171042  # Chairat 2016 Table 1: IOV(km) = 43.2%CV; encoded as IIV
-    etalvc_oc  ~ 0.034375  # Chairat 2016 Table 1: BSV(V/FOC) = 18.7%CV
+    etalvc_oselcarb  ~ 0.034375  # Chairat 2016 Table 1: BSV(V/FOC) = 18.7%CV
 
     # Residual error. The paper used additive errors on log-transformed
     # concentrations, which corresponds to a log-normal residual on the
     # natural concentration scale. Encoded here as ~ lnorm(<sd>) with the
     # log-scale SDs from Table 1.
     expSd    <- 0.431; label("Log-scale residual SD on oseltamivir Cc")                        # Chairat 2016 Table 1: additive on log(OS) = 0.431
-    expSd_oc <- 0.161; label("Log-scale residual SD on oseltamivir carboxylate Cc_oc")         # Chairat 2016 Table 1: additive on log(OC) = 0.161
+    expSd_oselcarb <- 0.161; label("Log-scale residual SD on oseltamivir carboxylate Cc_oselcarb")         # Chairat 2016 Table 1: additive on log(OC) = 0.161
   })
 
   model({
@@ -107,25 +107,25 @@ Chairat_2016_oseltamivir <- function() {
     cl     <- exp(lcl     + etalcl)
     vc     <- exp(lvc     + etalvc)
     km     <- exp(lkm     + etalkm)
-    cl_oc  <- exp(lcl_oc)                * (1 + e_crcl_cl_oc * (CRCL - crcl_ref))
-    vc_oc  <- exp(lvc_oc  + etalvc_oc)
+    cl_oselcarb  <- exp(lcl_oselcarb)                * (1 + e_crcl_cl_oselcarb * (CRCL - crcl_ref))
+    vc_oselcarb  <- exp(lvc_oselcarb  + etalvc_oselcarb)
     fbio   <- exp(lfdepot + etalfdepot)
 
     # ODE system (Chairat 2016 Figure 1):
-    #   depot --ka--> central (OS) --(cl/vc)--> metabolism --km--> central_oc
-    #   (OC) --(cl_oc/vc_oc)--> eliminated
+    #   depot --ka--> central (OS) --(cl/vc)--> metabolism --km--> central_oselcarb
+    #   (OC) --(cl_oselcarb/vc_oselcarb)--> eliminated
     # All states are amounts (mg). Volumes are L; clearances L/h; rates 1/h.
     d/dt(depot)      <- -ka * depot
     d/dt(central)    <-  ka * depot - (cl / vc) * central
     d/dt(metabolism) <-  (cl / vc) * central - km * metabolism
-    d/dt(central_oc) <-  km * metabolism - (cl_oc / vc_oc) * central_oc
+    d/dt(central_oselcarb) <-  km * metabolism - (cl_oselcarb / vc_oselcarb) * central_oselcarb
     f(depot)         <-  fbio
 
     # Concentrations in ng/mL (dose in mg, V in L gives mg/L = 1000 ng/mL).
     Cc    <- 1000 * central    / vc
-    Cc_oc <- 1000 * central_oc / vc_oc
+    Cc_oselcarb <- 1000 * central_oselcarb / vc_oselcarb
 
     Cc    ~ lnorm(expSd)
-    Cc_oc ~ lnorm(expSd_oc)
+    Cc_oselcarb ~ lnorm(expSd_oselcarb)
   })
 }

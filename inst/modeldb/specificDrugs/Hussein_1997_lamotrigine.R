@@ -35,8 +35,9 @@ Hussein_1997_lamotrigine <- function() {
       type        = "binary",
       notes       = "Screened univariately on CL_o (Table 2 DOBJF 8.48, P<0.005 univariate) and V/F (Table 2 DOBJF 5.34); the female effect on CL_o did not survive multivariate elimination once duration of therapy and Asians were in the model (Table 3 females-on-CL_o: -0.088, DOBJF 7.67, not retained). Not in the final model."
     ),
-    OC = list(
+    CONMED_BIRTHCONTROL = list(
       description = "Concomitant oral-contraceptive use indicator",
+      source_name = "OC",
       units       = "(binary)",
       type        = "binary",
       notes       = "Screened univariately on CL_o (Table 2 DOBJF 2.95); did not reach statistical significance and is not in the final model."

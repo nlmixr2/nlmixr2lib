@@ -2,6 +2,15 @@
 
 # development version
 
+- Disambiguated the overloaded `OC` name, which denoted five unrelated
+  concepts. Osteocalcin `OC` -> `OSTCALC` (uppercase, matching the sibling
+  biomarkers `P1NP` / `PSA` / `PLT` / `WBC` and the sister model
+  `Shoji_2017_fosdagrocorat_p1np`); the oseltamivir-carboxylate metabolite
+  suffix `_oc` -> `_oselcarb` (`central_oselcarb`, `lcl_oselcarb`,
+  `Cc_oselcarb`, ...) across Chairat 2016, Kamal 2013 and Standing 2012;
+  Hussein 1997's unregistered `OC` covariate column -> the existing
+  canonical `CONMED_BIRTHCONTROL`. **Breaking for simulation code** that
+  references the old names. Model ids and vignette filenames are unchanged.
 - Merged the `CONMED_DIUR` covariate canonical into `CONMED_DIURETIC`. The two
   names denoted the same concept (concomitant diuretic use); the split was an
   artifact of independent extractions. `Wright_2016_allopurinol`,

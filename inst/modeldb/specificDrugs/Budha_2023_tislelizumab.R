@@ -57,7 +57,7 @@ Budha_2023_tislelizumab <- function() {
       description        = "Tumor-type indicator for classical Hodgkin lymphoma",
       units              = "(binary)",
       type               = "binary",
-      reference_category = "0 (all other tumor types: NSCLC, EC, HCC, UC, GC, CRC, NPC, OC, Other)",
+      reference_category = "0 (all other tumor types: NSCLC, EC, HCC, UC, GC, CRC, NPC, ovarian cancer, Other)",
       notes              = "Exponential effect on CL for cHL patients (Budha 2023 Equation 5). Derived from the source categorical column TUMTP as TUMTP_HODGKIN_CLASSICAL = as.integer(TUMTP == 'cHL').",
       source_name        = "TUMTP"
     ),
