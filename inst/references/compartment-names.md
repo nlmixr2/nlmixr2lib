@@ -1116,6 +1116,13 @@ Each entry below is a paper-mechanistic PD endpoint registered as a canonical co
 - **Source aliases:** none.
 - **Example models:** `FiedlerKelly_2020_fremanezumab.R`.
 
+### hae_attacks (**canonical per-4-week hereditary-angioedema attack-count PD output**)
+- **Type:** compartment
+- **Role:** Per-4-week normalized hereditary-angioedema (HAE) attack count / rate PD output used by count-outcome exposure-response models that relate on-treatment HAE attack rate to a plasma-prekallikrein exposure driver. The state holds the Poisson-rate mean at each observation row (algebraic sigmoidal Emax function of `PKK`); the observation model is `hae_attacks ~ pois(attack_rate)`.
+- **Source aliases:** none.
+- **Example models:** `Singh_2025_donidalorsen.R`.
+- **Notes:** Ratified canonically alongside the Singh 2025 donidalorsen exposure-response extraction. Companion covariates are `PKK` (time-varying prekallikrein exposure driver), `PKK_BL` (per-subject baseline PKK), and `HAERATE_BL` (per-subject baseline attack rate) documented in `inst/references/covariate-columns.md`. Sibling count-outcome PD-output canonicals include `msHeadacheDays`, `migraineDays`, `cel_count`, and `score` (each paper-specific by disease domain).
+
 ### viralLoad (**canonical viral load**)
 - **Type:** compartment
 - **Role:** Viral load PD output (virology).

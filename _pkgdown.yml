@@ -566,6 +566,8 @@ navbar:
         href: articles/Wojciechowski_2022_domagrozumab.html
       - text: "Donidalorsen (Diep 2026)"
         href: articles/Diep_2026_donidalorsen.html
+      - text: "Donidalorsen (Singh 2025)"
+        href: articles/Singh_2025_donidalorsen.html
       - text: "Doripenem (AbdulAziz 2016)"
         href: articles/AbdulAziz_2016_doripenem.html
       - text: "Doripenem (Lee 2017)"
@@ -3241,6 +3243,7 @@ articles:
   - articles/Simpson_2013_chloroquine
   - articles/Simpson_2013_lumefantrine
   - articles/Simpson_2013_mefloquine
+  - articles/Singh_2025_donidalorsen
   - articles/Sloan_2017_rifampicin
   - articles/Smith_2017_clindamycin
   - articles/Smuszkiewicz_2017_dexmedetomidine

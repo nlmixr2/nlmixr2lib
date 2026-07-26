@@ -1811,6 +1811,41 @@ All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODA
 - **Example models:** `Mori_2018_zoledronicAcid.R` (g/cm^2, used as the initial condition `bmd(0) <- BMD_BL` and the deviation reference inside the BMD ODE; per-subject median 0.677 g/cm^2 across the Mori 2018 cohort).
 - **Notes:** Specific scope because the anatomical site (lumbar spine L2-L4) and the modality (DXA Hologic instrument) are tied to the Mori 2018 ZONE-study protocol; future BMD extractions from other anatomical sites (femoral neck, total hip, distal radius) should ratify a sibling canonical (e.g., `BMD_FN_BL`, `BMD_TH_BL`) rather than overloading this column. Ratified canonically alongside the Mori 2018 zoledronic-acid BMD extraction. Companion bone biomarker to `TRACP5B_BL`.
 
+## Kallikrein-kinin system biomarkers and hereditary-angioedema disease-activity covariates
+
+### PKK (**canonical for plasma prekallikrein concentration as a time-varying PD driver**)
+- **Description:** Plasma prekallikrein concentration used as a time-varying regressor / exposure driver in downstream exposure-response models for hereditary-angioedema (HAE) prophylactic therapies (e.g., prekallikrein-lowering antisense oligonucleotides such as donidalorsen). Averaging convention is per-model (e.g., per-4-week average `PKKavg,4W` in Singh 2025); the canonical column stores the appropriate exposure summary at each observation row and is consumed with LOCF (piecewise-constant) or `linear()` interpolation semantics as documented per model.
+- **Units:** mg/L (document per-model via `covariateData[[PKK]]$units`).
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters the sigmoidal Emax attack-rate model as `PKK^Hill / (EC50^Hill + PKK^Hill)` (Singh 2025 page 3 equation). Set to `PKK_BL` at the pre-dose baseline row and to model-predicted values thereafter (either from an on-disk companion popPK/PD like `Diep_2026_donidalorsen` or from observed data for placebo arms).
+- **Source aliases:**
+  - `PKKavg,4W` -- Singh 2025 Section 2.2 and Table 1 (per-4-week average plasma prekallikrein).
+- **Example models:** `Singh_2025_donidalorsen.R` (per-4-week average PKK reads at each observation row; drives the sigmoidal Emax term).
+- **Notes:** Specific scope because `PKK` is meaningful only for HAE / kallikrein-kinin-pathway PD models that consume prekallikrein as an exogenous exposure driver. Companion baseline canonical `PKK_BL`. The companion popPK/PD backbone for donidalorsen simulations is `Diep_2026_donidalorsen` (indirect-response model with donidalorsen-driven inhibition of PKK production). Ratified canonically alongside the Singh 2025 donidalorsen exposure-response extraction.
+
+### PKK_BL (**canonical for per-subject baseline plasma prekallikrein concentration**)
+- **Description:** Per-subject baseline (pre-dose) plasma prekallikrein concentration, time-fixed per subject. For donidalorsen-treated cohorts the value is typically the initial condition of an upstream popPK/PD model (e.g., `Diep_2026_donidalorsen`'s baseline PKK = `rbase`, derived from `lrbase + etalrbase` with HAE-status adjustment); for placebo arms the observed baseline PKK is used directly. Enters downstream exposure-response models as a covariate on EC50 via a power form.
+- **Units:** mg/L (document per-model via `covariateData[[PKK_BL]]$units`).
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- used with power scaling `(PKK_BL / ref)^exponent`. Reference value observed: 122 mg/L (Singh 2025 page 3 equation `(BLPKK/122)^bPKK`; matches the Section 2.3 simulation baseline PKK).
+- **Source aliases:**
+  - `BLPKK` -- Singh 2025 page 3 equation and Table 1 abbreviation.
+- **Example models:** `Singh_2025_donidalorsen.R` (per-subject baseline PKK reference 122 mg/L; power exponent `e_pkk_bl_ec50 = 0.13` on the EC50^Hill denominator term of the sigmoidal Emax attack-rate model).
+- **Notes:** Specific scope for the same reasons as `PKK` (HAE / kallikrein-kinin-pathway-bound). Sister to `PKK` (time-varying). Distinct from the general-purpose `_BL` baseline-biomarker family (`TRACP5B_BL`, `BMD_BL`, `HGB_BL`, `INS_BL`, `FERRITIN_BL`) whose members serve broader clinical contexts; `PKK_BL` is narrowly the prekallikrein-pathway baseline. Ratified canonically alongside the Singh 2025 donidalorsen exposure-response extraction.
+
+### HAERATE_BL (**canonical for baseline per-4-week normalized hereditary-angioedema attack rate**)
+- **Description:** Per-subject baseline HAE attack rate normalised to a 4-week window, computed from the number of investigator-confirmed HAE attacks during a defined screening / run-in period divided by the contributed days and multiplied by 28 days. Time-fixed per subject. Used as a per-subject covariate on Emax in HAE exposure-response models (higher baseline attack burden -> proportionally higher on-treatment maximum attack rate).
+- **Units:** attacks per 4 weeks (document per-model via `covariateData[[HAERATE_BL]]$units`).
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- used with power scaling `(HAERATE_BL / ref)^exponent`. Reference value observed: 3 attacks per 4 weeks (Singh 2025 page 3 equation `(BLRATE/3)^bHAE`; matches the Section 2.3 simulation baseline attack rate).
+- **Source aliases:**
+  - `BLRATE` -- Singh 2025 page 3 equation and Table 1 abbreviation ("baseline per-4-week normalized HAE attack rate").
+- **Example models:** `Singh_2025_donidalorsen.R` (per-subject baseline attack rate reference 3 attacks/4W; power exponent `e_haerate_bl_emax = 1.03` on Emax of the sigmoidal Emax attack-rate model).
+- **Notes:** Specific scope because the variable is HAE-domain-bound. Time-fixed per subject (baseline-only). Conceptually a specific-domain analogue of `ACUTE_MED_DAYS` (baseline migraine acute-medication days per month, migraine E-R models); both encode a baseline symptom / event rate as a power-law scaling covariate on the on-treatment response. If future HAE E-R models use a different screening window or normalisation window (e.g., per-day, per-month), document the per-model window in `covariateData[[HAERATE_BL]]$notes`. Ratified canonically alongside the Singh 2025 donidalorsen exposure-response extraction.
+
 ## Drug exposure metrics
 
 ### CAV (**canonical for average drug plasma concentration over a dosing interval**)
