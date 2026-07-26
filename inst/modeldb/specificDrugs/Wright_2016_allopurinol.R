@@ -29,12 +29,12 @@ Wright_2016_allopurinol <- function() {
       notes              = "Wright 2016 Methods (Covariate models): 'Renal function was calculated using the Cockroft-Gault formula [38] and expressed as creatinine clearance (CLcr) standardized to 70 kg [39]. Renal function (RF) was then normalized to a standard creatinine clearance (CLcrSTD) of 6 l h^-1/70 kg (100 ml min^-1/70 kg)'. Values are stored in L/h (so a typical normal-renal-function adult is 6 L/h; the cohort median 68 mL/min / 70 kg ~= 4.08 L/h). Enters apparent oxypurinol clearance via power scaling (CRCL/6)^0.587 and enters baseline urate U0 via power scaling (CRCL/6)^(-0.119). Stored under the canonical CRCL register entry with the explicit Cockcroft-Gault-standardised-to-70 kg assay form documented here (mirrors the Stocker 2012 oxypurinol precedent which uses raw Cockcroft-Gault mL/min normalised on lean body weight; the two papers use different normalisations of the same biological quantity).",
       source_name        = "CLcr"
     ),
-    CONMED_DIUR = list(
-      description        = "Concomitant diuretic indicator. Wright 2016's CONMED_DIUR captures thiazide diuretics OR loop diuretics; potassium-sparing diuretics (spironolactone, amiloride) are NOT pooled in.",
+    CONMED_DIURETIC = list(
+      description        = "Concomitant diuretic indicator. Wright 2016's CONMED_DIURETIC captures thiazide diuretics OR loop diuretics; potassium-sparing diuretics (spironolactone, amiloride) are NOT pooled in.",
       units              = "(binary)",
       type               = "binary",
       reference_category = "0 (no concomitant thiazide or loop diuretic)",
-      notes              = "Wright 2016 Methods (Covariate models): 'drugs associated with an increased or decreased risk of hyperuricaemia were tested in the PKPD model including thiazide or loop diuretics ...'. Wright 2016 Table 4 footer: 'Diuretics include thiazides and loop diuretics'. 33% of the cohort (44 of 133 patients) were on a thiazide or loop diuretic at study entry (Wright 2016 Table 2 totals). This is NARROWER than the Stocker_2012_oxypurinol.R definition (which pools thiazide + loop + spironolactone into the same CONMED_DIUR column): Wright excludes potassium-sparing diuretics on the documented clinical rationale that thiazide and loop diuretics raise serum urate (anti-uricosuric) whereas potassium-sparing diuretics tend to lower it (uricosuric). Users simulating across the Wright 2016 and Stocker 2012 models must populate the column accordingly per the paper definition. Multiplicative effects in Wright 2016: CL/F_oxy *= 0.740^CONMED_DIUR (-26% on diuretic), U0 *= 1.14^CONMED_DIUR (+14% on diuretic); both from Wright 2016 Table 3 final-model thetadiuretic and thetaE0_diuretic.",
+      notes              = "Wright 2016 Methods (Covariate models): 'drugs associated with an increased or decreased risk of hyperuricaemia were tested in the PKPD model including thiazide or loop diuretics ...'. Wright 2016 Table 4 footer: 'Diuretics include thiazides and loop diuretics'. 33% of the cohort (44 of 133 patients) were on a thiazide or loop diuretic at study entry (Wright 2016 Table 2 totals). This is NARROWER than the Stocker_2012_oxypurinol.R definition (which pools thiazide + loop + spironolactone into the same CONMED_DIURETIC column): Wright excludes potassium-sparing diuretics on the documented clinical rationale that thiazide and loop diuretics raise serum urate (anti-uricosuric) whereas potassium-sparing diuretics tend to lower it (uricosuric). Users simulating across the Wright 2016 and Stocker 2012 models must populate the column accordingly per the paper definition. Multiplicative effects in Wright 2016: CL/F_oxy *= 0.740^CONMED_DIURETIC (-26% on diuretic), U0 *= 1.14^CONMED_DIURETIC (+14% on diuretic); both from Wright 2016 Table 3 final-model thetadiuretic and thetaE0_diuretic.",
       source_name        = "diuretic"
     )
   )
@@ -84,7 +84,7 @@ Wright_2016_allopurinol <- function() {
 
     # Covariate effects on CL/F_oxy.
     e_crcl_cl        <- 0.587; label("Power exponent of (CRCL/6) on CL/F_oxy (unitless)")                    # Wright 2016 Table 3: thetaRFexp = 0.587 (RSE 11.7%); bootstrap median 0.588 [0.476, 0.742]
-    e_conmed_diur_cl <- 0.740; label("Multiplicative factor on CL/F_oxy when CONMED_DIUR = 1 (unitless)")    # Wright 2016 Table 3: thetadiuretic = 0.740 (RSE 6.4%); bootstrap median 0.748 [0.64, 0.86]; CL reduced by 26% on diuretics
+    e_conmed_diuretic_cl <- 0.740; label("Multiplicative factor on CL/F_oxy when CONMED_DIURETIC = 1 (unitless)")    # Wright 2016 Table 3: thetadiuretic = 0.740 (RSE 6.4%); bootstrap median 0.748 [0.64, 0.86]; CL reduced by 26% on diuretics
 
     # ----- PD parameters (Wright 2016 Table 3 'Final model'). -----
     # Direct-effect sigmoidal Emax inhibition of urate production on
@@ -99,7 +99,7 @@ Wright_2016_allopurinol <- function() {
 
     # Covariate effects on baseline urate U0.
     e_crcl_rbase        <- -0.119; label("Power exponent of (CRCL/6) on baseline urate U0 (unitless)")        # Wright 2016 Table 3: thetaE0_RFexp = -0.119 (RSE 21.6%); bootstrap median -0.121 [-0.18, -0.07]
-    e_conmed_diur_rbase <-  1.14;  label("Multiplicative factor on baseline urate U0 when CONMED_DIUR = 1 (unitless)") # Wright 2016 Table 3: thetaE0_diuretic = 1.14 (RSE 1.8%); bootstrap median 1.14 [1.09, 1.19]; U0 14% higher on diuretics
+    e_conmed_diuretic_rbase <-  1.14;  label("Multiplicative factor on baseline urate U0 when CONMED_DIURETIC = 1 (unitless)") # Wright 2016 Table 3: thetaE0_diuretic = 1.14 (RSE 1.8%); bootstrap median 1.14 [1.09, 1.19]; U0 14% higher on diuretics
 
     # ----- IIV (Wright 2016 Table 3 'Final model'). -----
     # Wright 2016 reports between-subject variability as 'omega (CV%)',
@@ -190,7 +190,7 @@ Wright_2016_allopurinol <- function() {
     # ----- Individual PK parameters -----
     # Wright 2016 final-model equations:
     #   CL/F_oxy = thetaCL * (CRCL/6)^thetaRFexp * (FFM/70)^0.75
-    #                       * thetadiuretic^CONMED_DIUR
+    #                       * thetadiuretic^CONMED_DIURETIC
     #   V/F_oxy  = thetaV  * (TBW/70)^1
     #   Ka       = 1.09 (fixed)
     # Per Wright 2016 Results, V's eta is a fractional shared scaling
@@ -199,7 +199,7 @@ Wright_2016_allopurinol <- function() {
     cl <- exp(lcl + etalcl) *
           (CRCL / ref_crcl)^e_crcl_cl *
           (FFM / ref_ffm)^e_ffm_cl *
-          e_conmed_diur_cl^CONMED_DIUR
+          e_conmed_diuretic_cl^CONMED_DIURETIC
     vc <- exp(lvc + F_v_oxy * etalcl) *
           (WT / ref_wt)^e_wt_vc
     kel <- cl / vc
@@ -211,10 +211,10 @@ Wright_2016_allopurinol <- function() {
 
     # Baseline urate U0 with renal-function power scaling and diuretic
     # multiplier:
-    #   U0 = thetaU0 * (CRCL/6)^thetaE0_RFexp * thetaE0_diuretic^CONMED_DIUR
+    #   U0 = thetaU0 * (CRCL/6)^thetaE0_RFexp * thetaE0_diuretic^CONMED_DIURETIC
     rbase <- exp(lrbase + etalrbase) *
              (CRCL / ref_crcl)^e_crcl_rbase *
-             e_conmed_diur_rbase^CONMED_DIUR
+             e_conmed_diuretic_rbase^CONMED_DIURETIC
 
     # ----- ODE system -----
     # depot and central carry mg of allopurinol-equivalent mass (the
