@@ -538,6 +538,18 @@ navbar:
         href: articles/Cao_2017_dha_artemisinin_stress_model.html
       - text: "Diazepam (Ku 2018)"
         href: articles/Ku_2018_diazepam.html
+      - text: "Diazepam pbpk kpu human (Yau 2023)"
+        href: articles/Yau_2023_diazepam_pbpk.html
+      - text: "Diazepam pbpk kpu rat (Yau 2023)"
+        href: articles/Yau_2023_diazepam_pbpk.html
+      - text: "Diazepam pbpk lumped human (Yau 2023)"
+        href: articles/Yau_2023_diazepam_pbpk.html
+      - text: "Diazepam pbpk lumped rat (Yau 2023)"
+        href: articles/Yau_2023_diazepam_pbpk.html
+      - text: "Diazepam pbpk scalar human (Yau 2023)"
+        href: articles/Yau_2023_diazepam_pbpk.html
+      - text: "Diazepam pbpk scalar rat (Yau 2023)"
+        href: articles/Yau_2023_diazepam_pbpk.html
       - text: "Diclofenac (Henin 2012)"
         href: articles/Henin_2012_gastrointestinal_transit_time_absorption.html
       - text: "Diclofenac (Standing 2008)"
@@ -3435,6 +3447,7 @@ articles:
   - articles/Yano_1993_theophylline
   - articles/Yao_2018_guselkumab
   - articles/Yassen_2025_asundexian
+  - articles/Yau_2023_diazepam_pbpk
   - articles/Ye_2017_ethaselen
   - articles/Yin_2020_pexidartinib
   - articles/Yin_2021_trastuzumabDeruxtecan
