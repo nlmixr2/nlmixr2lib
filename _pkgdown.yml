@@ -30,6 +30,12 @@ navbar:
         href: articles/Abuqayyas_2012_8C2.html
       - text: "ABT 102 (Othman 2013)"
         href: articles/Othman_2013_ABT_102.html
+      - text: "ADC human qsp (Scheuher 2023)"
+        href: articles/Scheuher_2023_ADC_platform_qsp.html
+      - text: "ADC invitro qsp (Scheuher 2023)"
+        href: articles/Scheuher_2023_ADC_platform_qsp.html
+      - text: "ADC mouse qsp (Scheuher 2023)"
+        href: articles/Scheuher_2023_ADC_platform_qsp.html
       - text: "ASP8232 (Snelder 2020)"
         href: articles/Snelder_2020_ASP8232.html
       - text: "AT9283 (Duong 2017)"
@@ -3199,6 +3205,7 @@ articles:
   - articles/Savic_2010_warfarin
   - articles/Savic_2017_cladribine
   - articles/Schaefer_1996_ciprofloxacin
+  - articles/Scheuher_2023_ADC_platform_qsp
   - articles/Schindler_2016_sunitinib
   - articles/Schindler_2017_imatinib
   - articles/Schindler_2017_mCTMM
