@@ -2830,6 +2830,18 @@ Sibling-drug suffix for the Kleijn 2011 sugammadex-mediated reversal of rocuroni
 
 ---
 
+## Anthracycline cardioprotection sibling-drug suffixes
+
+Sibling-drug suffix for anthracycline + cardioprotectant PK/TD models (e.g., Mody 2023 doxorubicin + dexrazoxane), where doxorubicin (the anthracycline responsible for the antitumor and cardiotoxic effect) is the unsuffixed parent and dexrazoxane (the FDA-approved cardioprotectant, iron chelator via ADR-925 and Top2 catalytic inhibitor) carries the `dex` suffix.
+
+### dex (**canonical dexrazoxane sibling-drug suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Dexrazoxane (ICRF-187, bisdioxopiperazine cardioprotectant) sibling-drug suffix, paired with doxorubicin as the unsuffixed parent in anthracycline + cardioprotectant PK/TD models. Drives `central_dex` / `peripheral1_dex` PK compartments, `lcl_dex` / `lvc_dex` / `lq_dex` / `lvp_dex` PK parameters, `limax_dex` / `lic50_dex` PD-inhibition parameters (DEX's Hill inhibition on the DOX-induced stimulation of cardiomyocyte death), and the `addSd_dex` residual on plasma concentration.
+- **Source aliases:** none (the paper uses DEX throughout; the FDA-approved brand names Zinecard / Cardioxane / Totect refer to the same molecule).
+- **Example models:** `Mody_2023_doxorubicin_dexrazoxane.R` (doi:10.1038/s41598-023-29964-4).
+
+---
+
 ## Deprecated Zurlinden 2016 paracetamol PBPK metabolite suffixes (subsumed into Cook 2016 forms)
 
 Zurlinden 2016 paracetamol PBPK shorthand suffixes `as` and `ag` were deprecated on 2026-06-19 because they collide with R reserved words (`as.numeric`, `as.integer`, `as.character`, etc.) and chemistry symbols (Ag = silver). The Zurlinden 2016 paracetamol PBPK model is migrated to use the existing Cook 2016 `apaps` / `apapg` canonicals for the same chemical species. See the `apaps` / `apapg` entries above for the canonical names.
