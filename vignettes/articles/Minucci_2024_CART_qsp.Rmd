@@ -1,0 +1,422 @@
+---
+title: "CD19 CAR T-cell CK/PD QSP (Minucci 2024)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{CD19 CAR T-cell CK/PD QSP (Minucci 2024)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r readModelDb("Minucci_2024_CART_qsp")()$reference`
+* Description: `r readModelDb("Minucci_2024_CART_qsp")()$description`
+* Article: [Front. Syst. Biol. 4:1380018](https://doi.org/10.3389/fsysb.2024.1380018)
+
+Minucci et al. present a multi-scale semi-mechanistic cellular-kinetic /
+pharmacodynamic (CK/PD) QSP model for CD19-targeted CAR T-cell therapy of
+B-cell non-Hodgkin lymphoma. The model was implemented in Applied BioMath's
+proprietary QSP platform and calibrated to phase I IM19 CAR T-cell CK and
+B-cell aplasia data from Ying et al. 2021 (n = 13 relapsed/refractory NHL
+patients).
+
+# Population
+
+Ying et al. 2021 enrolled 13 adults (>= 18 y) with relapsed / refractory
+B-cell non-Hodgkin lymphoma at a single Chinese centre. Two days before
+CAR T-cell infusion, all patients were lymphodepleted with fludarabine +
+cyclophosphamide for three days (assumed to deplete 90 percent of endogenous
+lymphocytes). Body-weight range was 48-88 kg (median 67 kg). CAR T-cells
+were infused at 3e5, 1e6, or 3e6 cells / kg. The CD4:CD8 ratio of the
+infused product varied widely from patient to patient
+(fCD8Tdp = 0.29-0.94).
+
+The `population` metadata is available programmatically:
+
+```{r pop_meta}
+pop <- readModelDb("Minucci_2024_CART_qsp")()$population
+pop$species
+pop$n_subjects
+pop$dose_range
+pop$disease_state
+```
+
+# Source trace
+
+The per-parameter origin is recorded inline in
+`inst/modeldb/therapeuticArea/oncology/Minucci_2024_CART_qsp.R`. Summary:
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| Blood volume `V` | 5 L | Methods 2.3.1 (Sharma & Sharma 2018); Table S1 |
+| CAR density per T cell `RPC_CAR_*` | 12,700 receptors/cell | Methods 2.3.2 (Anikeeva 2021); Table S1 |
+| CAR internalisation half-life `Thalf_CAR_h` | 6 h | Methods 2.3.2 (Li 2020); Table S1 |
+| CD19 antigen density per B cell `mAgperCell` | 5,000 receptors/cell | Methods 2.3.1 (D'Arena 2000); Table S1 |
+| CD19 internalisation half-life `Thalf_mAg_h` | 4 h | Methods 2.3.1 (Du 2008 / Sieber 2003); Table S1 |
+| Tumor carrying capacity `Nmax_tumor` | 7e12 cells | Methods 2.3.1 (Press 1993); Table S1 (not in ODE) |
+| Tumor doubling time `tDivTumor_d` | 16 days | Methods 2.3.3 (hand-tuned); Table S1 |
+| K_D (CAR:CD19) | 1 nM | Methods 2.3.2 (Jayaraman 2020); Table S1 |
+| CAR:CD19 on-rate `kon` | 0.001 /(nM*s) | Methods 2.3.2 (Jayaraman 2020); Table S1 |
+| CD8 activation time | 18 h | Methods 2.3.2 (Henrickson 2008); Table S1 |
+| CD4 activation time | 36 h | Methods 2.3.2 (Kaech 2002); Table S1 |
+| Time per T-cell division | 5.397703 h | Methods 2.3.3 fitted globally; Table S1 |
+| Drug-product lifespan | 9.606881 days | Methods 2.3.3 fitted globally; Table S1 |
+| Effector lifespan | 3.101849 days | Methods 2.3.3 fitted globally; Table S1 |
+| CD8 memory lifespan | 180 days | Methods 2.3.2 (Borghans 2018); Table S1 |
+| CD4 memory lifespan | 240 days | Methods 2.3.2 (Borghans 2018); Table S1 |
+| Max kill rate `kmaxKill` | 1e-9 /(s*cell) | Methods 2.3.3 fitted / calibrated; Table S1 |
+| Endogenous lymphocyte density | 5e8 cells/L | Table S1 (paper text says 1e9/L; see Errata) |
+| Endogenous lymphocyte lifespan | 30 days | Methods 2.3.1 (Hakim 2005); Table S1 |
+| Lymphodepletion fraction | 0.9 | Methods 2.3.1 (Ying 2019); Table S1 |
+| Cell-state ODEs (T_inf / T_eff / T_mem) | equations | Methods 2.3 |
+| Tumor ODE (exponential + kill) | equation | Methods 2.3 |
+| Endogenous lymphocyte ODE | equation | Methods 2.3 |
+
+Per-patient parameters (Table S1, `params-case-study-final` sheet):
+
+```{r patients}
+patients <- tibble::tribble(
+  ~id_str, ~BW, ~fCD8Tdp,   ~N0_tumorCells, ~ndiv,     ~fmem,
+  "F0104", 73,  0.333,      1.0e7,          21.41559,  2.514715e-03,
+  "F0106", 57,  0.446,      1.0e7,          22.21255,  2.367866e-03,
+  "F0107", 48,  0.461,      1.0e7,          21.15557,  1.336295e-02,
+  "F0109", 88,  0.833,      1.0e5,          27.70301,  2.076709e-03,
+  "F0110", 67,  0.820,      1.0e5,          19.58777,  1.000000e-01,
+  "F0111", 76,  0.943,      1.0e5,          22.85367,  1.000000e-01,
+  "F0118", 80,  0.290,      1.0e7,          15.88462,  2.267028e-03,
+  "F0119", 62,  0.633,      1.0e7,          21.48104,  2.910000e-10,
+  "F0121", 62,  0.610,      3.834397e6,     18.06981,  1.182971e-03,
+  "F0122", 62,  0.546,      1.162658e6,     19.63343,  7.041995e-03,
+  "F0123", 63,  0.725,      1.0e5,          21.63407,  1.000000e-01,
+  "F0125", 71,  0.376,      1.613397e6,     18.05807,  1.480000e-07,
+  "F0126", 68,  0.372,      2.798924e5,     22.42293,  4.570000e-07
+)
+patients$id <- seq_len(nrow(patients))
+knitr::kable(
+  patients |> dplyr::select(id_str, BW, fCD8Tdp, N0_tumorCells, ndiv, fmem),
+  digits = 3,
+  caption = "Per-patient parameters from Minucci 2024 Table S1 (params-case-study-final).")
+```
+
+# Virtual cohort -- per-patient replication (n = 13)
+
+We replicate the 13 individual patients from Ying et al. 2021 using their
+individually fitted parameters from Table S1. Each patient receives a
+single infusion (t = 0) split between CD8+ and CD4+ CAR T-cells per
+their reported CD4:CD8 ratio. Follow-up window: 0-100 days.
+
+```{r cohort}
+set.seed(20260725)
+
+# All patients received a common dose level in the model calibration
+# (1e6 cells/kg per Methods 2.4 "Simulations were initialized with a
+# 1e6 cells/kg dose"). We use 1e6 cells/kg for the population VPC.
+dose_per_kg <- 1e6
+
+# Total CAR T-cells per subject, split by the drug-product CD8 fraction:
+patients_dose <- patients |>
+  dplyr::mutate(
+    dose_total = BW * dose_per_kg,
+    amt_cd8    = fCD8Tdp * dose_total,
+    amt_cd4    = (1 - fCD8Tdp) * dose_total
+  )
+
+# Build the event table -- one dose row into t_cd8_inf and one into
+# t_cd4_inf per subject, plus observation rows on a 0.5-day grid.
+obs_times <- seq(0, 100, by = 0.5)
+
+dose_events <- dplyr::bind_rows(
+  patients_dose |>
+    dplyr::transmute(
+      id, time = 0, amt = amt_cd8, cmt = "t_cd8_inf", evid = 1L,
+      WT = BW, FCD8TDP = fCD8Tdp, TUM_CELLS0 = N0_tumorCells,
+      NDIV = ndiv, FMEM = fmem, id_str
+    ),
+  patients_dose |>
+    dplyr::transmute(
+      id, time = 0, amt = amt_cd4, cmt = "t_cd4_inf", evid = 1L,
+      WT = BW, FCD8TDP = fCD8Tdp, TUM_CELLS0 = N0_tumorCells,
+      NDIV = ndiv, FMEM = fmem, id_str
+    )
+)
+
+obs_events <- patients_dose |>
+  tidyr::crossing(time = obs_times) |>
+  dplyr::transmute(
+    id, time, amt = NA_real_, cmt = "t_cd8_eff", evid = 0L,
+    WT = BW, FCD8TDP = fCD8Tdp, TUM_CELLS0 = N0_tumorCells,
+    NDIV = ndiv, FMEM = fmem, id_str
+  )
+
+events <- dplyr::bind_rows(dose_events, obs_events) |>
+  dplyr::arrange(id, time, dplyr::desc(evid))
+
+stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid", "cmt")])))
+```
+
+# Simulation
+
+```{r simulate}
+mod <- readModelDb("Minucci_2024_CART_qsp")
+mod <- rxode2::zeroRe(mod)      # zero the nominal residual for deterministic sim
+
+sim <- rxode2::rxSolve(mod, events = events, keep = c("id_str"))
+sim <- as.data.frame(sim)
+head(sim[, c("time", "id", "id_str", "t_cd8_inf", "t_cd8_eff", "t_cd8_mem",
+             "tumor", "endo", "CAR_perUL", "B_pct")])
+```
+
+# Replicate published figures
+
+## Figure 2A -- population CAR T-cell CK
+
+Population summary of CAR T-cell concentration in blood (cells/uL) over 100
+days, aggregated across the 13 patients. Compare against the shaded region
+in Figure 2A of Minucci 2024 which shows the full range across the 13
+patient trajectories.
+
+```{r figure-2a}
+pop_ck <- sim |>
+  dplyr::group_by(time) |>
+  dplyr::summarise(
+    Q05 = quantile(CAR_perUL, 0.05, na.rm = TRUE),
+    Q50 = quantile(CAR_perUL, 0.50, na.rm = TRUE),
+    Q95 = quantile(CAR_perUL, 0.95, na.rm = TRUE),
+    Qmax = max(CAR_perUL, na.rm = TRUE),
+    Qmin = min(CAR_perUL, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+ggplot(pop_ck, aes(time, Q50)) +
+  geom_ribbon(aes(ymin = pmax(Qmin, 1e-4), ymax = pmax(Qmax, 1e-4)),
+              alpha = 0.20, fill = "steelblue") +
+  geom_line(color = "steelblue4", linewidth = 0.9) +
+  scale_y_log10(labels = scales::label_number()) +
+  labs(x = "Time (days)", y = "CAR T-cells (cells / uL)",
+       title = "Figure 2A -- population CAR T-cell CK",
+       caption = "Median + full range across the 13 patients (replicates Fig 2A of Minucci 2024).")
+```
+
+## Figure 2C -- individual CAR T-cell CK per patient
+
+```{r figure-2c, fig.height = 6.5}
+ggplot(sim, aes(time, pmax(CAR_perUL, 1e-4))) +
+  geom_line(color = "steelblue4") +
+  facet_wrap(~id_str, ncol = 4, scales = "free_y") +
+  scale_y_log10(labels = scales::label_number()) +
+  labs(x = "Time (days)", y = "CAR T-cells (cells / uL)",
+       title = "Figure 2C -- per-patient CAR T-cell CK",
+       caption = "Replicates the per-panel trajectories of Fig 2C of Minucci 2024.")
+```
+
+## Figure 2B -- B-cell aplasia trajectory
+
+The B-cell aplasia readout is B cells as percentage of total blood
+lymphocytes (B_pct = 100 * tumor / (tumor + endo)). Compare against the
+population trend in Figure 2B of Minucci 2024.
+
+```{r figure-2b}
+pop_bp <- sim |>
+  dplyr::group_by(time) |>
+  dplyr::summarise(
+    Q50 = median(B_pct, na.rm = TRUE),
+    Qmax = max(B_pct, na.rm = TRUE),
+    Qmin = min(B_pct, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+ggplot(pop_bp, aes(time, Q50)) +
+  geom_ribbon(aes(ymin = Qmin, ymax = Qmax), alpha = 0.20, fill = "firebrick") +
+  geom_line(color = "firebrick4", linewidth = 0.9) +
+  labs(x = "Time (days)", y = "B cells (% of total lymphocytes)",
+       title = "Figure 2B -- B-cell aplasia",
+       caption = "Median + range across 13 patients (replicates Fig 2B of Minucci 2024).")
+```
+
+# CAR T CK NCA (PKNCA)
+
+Compute peak (Cmax), time to peak (Tmax), AUC0-inf, and terminal half-life
+from the simulated CAR T-cell trajectories using PKNCA. This gives a
+summary of the CK model's key kinetic descriptors.
+
+```{r pknca}
+# Concentration frame -- rename CAR_perUL to Cc (nlmixr2lib convention).
+sim_nca <- sim |>
+  dplyr::filter(!is.na(CAR_perUL)) |>
+  dplyr::select(id, id_str, time, Cc = CAR_perUL)
+
+# Ensure a time=0 row per subject with Cc=0 (extravascular pre-dose).
+sim_nca <- dplyr::bind_rows(
+  sim_nca,
+  sim_nca |> dplyr::distinct(id, id_str) |>
+    dplyr::mutate(time = 0, Cc = 0)
+) |>
+  dplyr::distinct(id, id_str, time, .keep_all = TRUE) |>
+  dplyr::arrange(id, id_str, time)
+
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | id_str + id)
+
+# Dose frame -- one total-CAR-dose event per subject.
+dose_df <- patients_dose |>
+  dplyr::transmute(id, id_str, time = 0, amt = dose_total)
+
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | id_str + id)
+
+intervals <- data.frame(
+  start = 0, end = Inf,
+  cmax = TRUE, tmax = TRUE, aucinf.obs = TRUE, half.life = TRUE
+)
+
+nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
+nca_res  <- suppressWarnings(PKNCA::pk.nca(nca_data))
+nca_res_df <- as.data.frame(nca_res)
+
+nca_wide <- nca_res_df |>
+  dplyr::select(id_str, PPTESTCD, PPORRES) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES)
+
+nca_wide |>
+  dplyr::rename(
+    "Patient"                 = id_str,
+    "Cmax (cells/uL)"         = cmax,
+    "Tmax (day)"              = tmax,
+    "AUC0-inf (cells*day/uL)" = aucinf.obs,
+    "t1/2 (day)"              = half.life
+  ) |>
+  knitr::kable(digits = 3,
+               caption = "Simulated per-patient CAR T-cell CK NCA (from PKNCA).")
+```
+
+The above summary is *simulated*, not observed -- Minucci 2024 does not
+publish a per-patient Cmax / AUC table for readers to cross-check. The
+paper's Figure 2A / 2C provide the visual comparison against the
+individually digitised Ying 2021 data.
+
+# Peak-CAR summary vs. dose level
+
+Sensitivity of Cmax to dose level (1e5, 1e6, 3e6 cells / kg) for a
+representative patient (F0104). This mirrors the "Simulations were
+initialized with a 1e6 cells/kg dose" language in Methods 2.4 and shows
+the dose-response pattern of CAR T-cell expansion.
+
+```{r dose-scan}
+scan_doses <- c(1e5, 1e6, 3e6)
+pt_F0104   <- patients_dose |> dplyr::filter(id_str == "F0104")
+
+build_scan_events <- function(d, id) {
+  dose_total_i <- pt_F0104$BW * d
+  amt_cd8_i    <- pt_F0104$fCD8Tdp * dose_total_i
+  amt_cd4_i    <- (1 - pt_F0104$fCD8Tdp) * dose_total_i
+  base <- tibble::tibble(
+    id = id, WT = pt_F0104$BW, FCD8TDP = pt_F0104$fCD8Tdp,
+    TUM_CELLS0 = pt_F0104$N0_tumorCells,
+    NDIV = pt_F0104$ndiv, FMEM = pt_F0104$fmem,
+    dose_per_kg = d
+  )
+  dplyr::bind_rows(
+    base |> dplyr::mutate(time = 0, amt = amt_cd8_i,
+                          cmt = "t_cd8_inf", evid = 1L),
+    base |> dplyr::mutate(time = 0, amt = amt_cd4_i,
+                          cmt = "t_cd4_inf", evid = 1L),
+    base |> tidyr::crossing(time = seq(0, 60, by = 0.5)) |>
+      dplyr::mutate(amt = NA_real_, cmt = "t_cd8_eff", evid = 0L)
+  )
+}
+
+scan_events <- dplyr::bind_rows(lapply(
+  seq_along(scan_doses),
+  function(i) build_scan_events(scan_doses[i], id = i)
+))
+
+sim_scan <- rxode2::rxSolve(mod, events = scan_events, keep = c("dose_per_kg")) |>
+  as.data.frame()
+
+ggplot(sim_scan, aes(time, pmax(CAR_perUL, 1e-4),
+                     color = factor(dose_per_kg))) +
+  geom_line(linewidth = 0.9) +
+  scale_y_log10(labels = scales::label_number()) +
+  scale_color_brewer(palette = "Set1", name = "Dose (cells / kg)") +
+  labs(x = "Time (days)", y = "CAR T-cells (cells / uL)",
+       title = "Dose-response of CAR T-cell expansion (patient F0104)",
+       caption = "One-at-a-time dose scan; other parameters held at F0104 fitted values.")
+```
+
+# Assumptions and deviations
+
+- **QSS reduction of the receptor-binding sub-model.** Minucci 2024's
+  original model tracks free and CD19-bound CAR receptors on each T-cell
+  phenotype (14 CAR receptor states) plus a transient activated-cell
+  compartment T_act. With CAR:CD19 binding rates ~86/day and cellular
+  rates 0.005-0.3/day, quasi-steady-state gives f_bound = [CD19] / (K_D +
+  [CD19]) uniformly across all CAR compartments. T_act relaxes on a ~5.4
+  h timescale (much shorter than any observed transient) and its
+  amplification factor 2^ndiv is folded into the T_inf -> T_eff transfer
+  via the fast-T_act QSS. The observed cell populations, tumor burden,
+  and B-cell aplasia trajectories are preserved. The full explicit
+  25-state model is available in principle but was reduced here for
+  numerical stability and vignette-render time; see the file header
+  block-comment in the model file for the mapping.
+
+- **Endogenous lymphocyte concentration.** Methods 2.3.1 of the paper
+  reports 10^9 per L but the supplementary Table S1
+  (`params-case-study-final`) lists 5e8 per L; the Table S1 value is used
+  here per the on-disk-final rule. The final case-study simulations use
+  Table S1 values.
+
+- **CD19 receptors per cell.** Methods 2.3.1 reports 5000 per B cell and
+  Table S1 lists `mAgperCell = 5000` and also `RPC_CD19 = 15877`, both
+  described as "Antigen expression level". Only mAgperCell = 5000 is
+  documented in the paper text; the second entry is unexplained. The
+  extraction uses 5000 (aligns with paper text and GSA nominal), and
+  documents the duplicate as a possible transcription artefact of the
+  supplement's parameter export.
+
+- **Tumor carrying capacity `Nmax_tumor = 7e12`** is estimated (Methods
+  2.3.1, Press 1993) but does not appear in the paper's stated Tumor ODE
+  (Methods 2.3, pure exponential minus killing). Within the 100-day
+  simulation window Tumor stays well below `Nmax_tumor` for all
+  patients in Table S1, so omission has no effect on the simulated
+  trajectories.
+
+- **Residual error.** Minucci 2024 fitted each patient individually with
+  trust-region optimisation and did not publish a population residual-
+  error model. A nominal fixed `addSd = 0.1` on `log(CAR_perUL)` is
+  retained so the model has a well-formed error line for nlmixr2 UI, but
+  it is zeroed with `rxode2::zeroRe(mod)` throughout this vignette. The
+  vignette's outputs are typical-value (deterministic) predictions, not
+  VPCs.
+
+- **Non-canonical covariates.** `FCD8TDP` (drug-product CD8 fraction),
+  `TUM_CELLS0` (initial tumor cells), `NDIV` (T-cell expansion factor),
+  and `FMEM` (fraction of effector T-cells that become memory) are
+  paper-specific covariates without existing canonical entries in
+  `inst/references/covariate-columns.md`. Each has a `covariateData`
+  entry with an explicit `notes` field documenting the source paper
+  provenance. The `TUM_` covariate family in the register currently
+  covers volume-based tumor measures (`TUM_VOL`, `TUM_SLD`) rather than
+  cell-count-based measures.
+
+- **Non-canonical compartment names.** The six CAR T-cell state
+  compartments (`t_cd8_inf`, `t_cd8_eff`, `t_cd8_mem`, `t_cd4_inf`,
+  `t_cd4_eff`, `t_cd4_mem`) and the endogenous-lymphocyte compartment
+  (`endo`) are not registered in `R/conventions.R`. `checkModelConventions()`
+  flags them as warnings. If further CAR T-cell / immunology QSP models
+  are extracted, adding these to the compartment register is warranted.
+
+- **Original observed data.** Ying et al. 2021's patient-level CK and
+  B-cell aplasia trajectories are not shipped with either paper. Minucci
+  2024 obtained them by digitising Figure 2 of Ying 2021 with
+  WebPlotDigitizer; only 6 of the 13 patients had B-cell aplasia
+  trajectories distinguishable enough to digitise. This vignette
+  therefore validates the *model* against the *paper's Figure 2*
+  visualisation rather than against the raw source data.
