@@ -552,6 +552,12 @@ navbar:
         href: articles/Tarning_2012_dihydroartemisinin_piperaquine.html
       - text: "Dilmapimod (Yang 2016)"
         href: articles/Yang_2016_dilmapimod.html
+      - text: "Dimethyltryptamine LZc (Eckernas 2023)"
+        href: articles/Eckernas_2023_dimethyltryptamine_EEG.html
+      - text: "Dimethyltryptamine alphaPower (Eckernas 2023)"
+        href: articles/Eckernas_2023_dimethyltryptamine_EEG.html
+      - text: "Dimethyltryptamine betaPower (Eckernas 2023)"
+        href: articles/Eckernas_2023_dimethyltryptamine_EEG.html
       - text: "Docetaxel (Koolen 2010)"
         href: articles/Koolen_2010_docetaxel.html
       - text: "Docetaxel (Ozawa 2007)"
@@ -2636,6 +2642,7 @@ articles:
   - articles/Duong_2016_WHIG_T2DM
   - articles/Duong_2017_AT9283
   - articles/Easterling_2018_magnesium_sulfate
+  - articles/Eckernas_2023_dimethyltryptamine_EEG
   - articles/Edstein_2001_tafenoquine
   - articles/Eissing_2024_finerenone
   - articles/Ekhart_2008_carboplatin
