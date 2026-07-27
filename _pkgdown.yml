@@ -982,6 +982,8 @@ navbar:
         href: articles/Yadav_2017_imipenem_aminoglycoside_pseudomonas.html
       - text: "Imipenem tobramycin PA088 (Yadav 2017)"
         href: articles/Yadav_2017_imipenem_aminoglycoside_pseudomonas.html
+      - text: "Imipramine pbpk (Pardridge 2023)"
+        href: articles/Pardridge_2023_brain_plasma_protein_binding.html
       - text: "Immunoglobulin (Cheng 2026)"
         href: articles/Cheng_2026_immunoglobulin.html
       - text: "Imr687 (Byrne 2022)"
@@ -1662,6 +1664,8 @@ navbar:
         href: articles/DelFrari_2018_propranolol.html
       - text: "Propranolol (Takechi 2018)"
         href: articles/Takechi_2018_propranolol.html
+      - text: "Propranolol pbpk (Pardridge 2023)"
+        href: articles/Pardridge_2023_brain_plasma_protein_binding.html
       - text: "PropyleneGlycol (DeCock 2012)"
         href: articles/DeCock_2012_propyleneGlycol.html
       - text: "Pyrazinamide (Alsultan 2017)"
@@ -3114,6 +3118,7 @@ articles:
   - articles/Papachristos_2020_bevacizumab_pkpd
   - articles/Papachristos_2020_bevacizumab_qss
   - articles/Papathanasiou_2025_belantamab
+  - articles/Pardridge_2023_brain_plasma_protein_binding
   - articles/Parhiz_2024_mRNALNP
   - articles/Park_2001_ketoprofen
   - articles/Park_2014_SKL10406
