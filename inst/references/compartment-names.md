@@ -2437,6 +2437,13 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Example models:** `Svensson_2013_bedaquiline.R`.
 - **Notes:** Distinct from `m3g` (morphine-3-glucuronide) -- the suffix matcher uses `endsWith(name, "_m3")` vs `endsWith(name, "_m3g")` and these do not collide. Registered alongside the Svensson 2013 bedaquiline extraction (the first BDQ paper to model the M3 metabolite).
 
+### m4 (**canonical edoxaban M4 metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** M4, the main human metabolite of edoxaban, formed by carboxylesterase-1-mediated hydrolysis and pharmacologically active. Used as the metabolite suffix on the `central_m4` compartment, the `lcl_m4` / `lvc_m4` parameters and the `Cc_m4` observation in joint parent + metabolite popPK models. In Jonsson 2015 the fraction of edoxaban converted to M4 was not identifiable, so the model assumes that all edoxaban not excreted renally forms M4 (`fm,M4 = 1 - fe = CLNR/CL`); the resulting `cl_m4` and `vc_m4` are therefore APPARENT values, overestimated relative to the true ones by a factor `1/fm,M4`.
+- **Source aliases:** `M-4` -- the hyphenated form used in some edoxaban literature and regulatory documents.
+- **Example models:** `Jonsson_2015_edoxaban.R` (doi:10.1002/jcph.541; joint edoxaban + M4 renal-impairment popPK with a urine compartment).
+- **Notes:** Fourth member of the generic numbered-metabolite suffix family alongside `m1`, `m2` and `m3`, following the same convention of lowercasing a source paper's `M<n>` designation. Distinct from `m3g` / `m6g` (morphine glucuronides) and from `m2` / `m3` (bedaquiline demethylation products) -- the suffix matcher compares with `endsWith(name, "_m4")` so there is no collision. Do not confuse with `dm4` / `medm4`, which are the maytansinoid ADC payload suffixes.
+
 ### m8 (**canonical hydroxy-tert-butylamide (M8) suffix**)
 - **Type:** metabolite-suffix
 - **Role:** Hydroxy-tert-butylamide (M8) active metabolite of nelfinavir; formed by CYP2C19-mediated hydroxylation of nelfinavir and eliminated by CYP3A4. Equipotent to the parent drug against HIV-1 protease.

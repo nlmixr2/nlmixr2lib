@@ -604,6 +604,8 @@ navbar:
         href: articles/Keizer_2011_E7820.html
       - text: "EGF IFN chimera (DoldanMartelli 2013)"
         href: articles/DoldanMartelli_2013_EGF_IFN_chimera.html
+      - text: "Edoxaban (Jonsson 2015)"
+        href: articles/Jonsson_2015_edoxaban.html
       - text: "Edoxaban (Niebecker 2015)"
         href: articles/Niebecker_2015_edoxaban.html
       - text: "Efalizumab (Stein 2018)"
@@ -2849,6 +2851,7 @@ articles:
   - articles/Jonsson_2005_disufenton
   - articles/Jonsson_2011_ethambutol
   - articles/Jonsson_2011_ethambutol_ddmore
+  - articles/Jonsson_2015_edoxaban
   - articles/Jorga_2000_tolcapone
   - articles/Jullien_2005_abacavir
   - articles/Jullien_2006_lopinavir
