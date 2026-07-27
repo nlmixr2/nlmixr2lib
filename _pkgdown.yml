@@ -960,6 +960,8 @@ navbar:
         href: articles/Pei_2016_iloperidone.html
       - text: "Imatinib (Chien 2022)"
         href: articles/Chien_2022_imatinib.html
+      - text: "Imatinib (Jiang 2023)"
+        href: articles/Jiang_2023_imatinib.html
       - text: "Imatinib (Schindler 2017)"
         href: articles/Schindler_2017_imatinib.html
       - text: "Imetelstat (GonzalezSales 2024)"
@@ -2838,6 +2840,7 @@ articles:
   - articles/Ji_2018_tacrolimus
   - articles/Jia_2015_unfractionatedHeparin
   - articles/Jiang_2008_gemcitabine
+  - articles/Jiang_2023_imatinib
   - articles/Jiao_2008_mycophenolic_acid
   - articles/Jiao_2009_sirolimus
   - articles/Jin_2014_simvastatin
