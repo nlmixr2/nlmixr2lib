@@ -1214,6 +1214,8 @@ navbar:
         href: articles/Rosario_2008_maraviroc.html
       - text: "Maraviroc iv (Weatherley 2009)"
         href: articles/Weatherley_2009_maraviroc_iv.html
+      - text: "Maribavir (Sun 2023)"
+        href: articles/Sun_2023_maribavir.html
       - text: "Matuzumab (Kuester 2008)"
         href: articles/Kuester_2008_matuzumab.html
       - text: "Mavrilimumab (Stein 2018)"
@@ -3270,6 +3272,7 @@ articles:
   - articles/Suda_2008_theophylline
   - articles/Suleiman_2018_risankizumab
   - articles/Suleiman_2019_risankizumab
+  - articles/Sun_2023_maribavir
   - articles/Suri_2018_brentuximab
   - articles/Suyagh_2011_metronidazole
   - articles/Suyagh_2012_canrenone

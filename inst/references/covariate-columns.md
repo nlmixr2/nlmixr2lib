@@ -3260,6 +3260,17 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 
 ## Disease state (cross-population indicators)
 
+### DIS_CMV (**canonical for transplant-recipient-with-cytomegalovirus-infection disease-state indicator**)
+- **Description:** 1 = hematopoietic cell transplant (HCT) or solid organ transplant (SOT) recipient with cytomegalovirus (CMV) infection/disease; 0 = non-CMV subject (healthy volunteer, or a phase I participant such as a renal- or hepatic-impairment cohort member, pooled into the same analysis as the reference group). Time-fixed per subject. Used when a population PK model pools healthy volunteers / phase I participants with transplant recipients who have CMV infection and tests the patient-vs-healthy contrast as a PK covariate.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (non-CMV subject; the complement group is defined per-model -- typically healthy volunteers plus the phase I special-population cohorts).
+- **Source aliases:**
+  - `HSCMV` -- NONMEM control-stream column name used in `Sun_2023_maribavir.R`.
+- **Example models:** `Sun_2023_maribavir.R` (log-scale additive shift on CL/F: `exp(e_dis_cmv_cl * DIS_CMV)` with `e_dis_cmv_cl = -0.280346`, i.e. CL/F is 0.756x lower in transplant recipients with CMV than in the healthy 70-kg reference subject).
+- **Notes:** Distinct from the organ-specific transplant indicators `TX_LIVER` / `TX_HEART` / `TX_LUNG`, which record which organ was transplanted rather than the presence of CMV infection, and from `DIS_HEALTHY`, which is the complementary healthy-cohort indicator. `DIS_CMV` is preferred over encoding this contrast as `DIS_HEALTHY = 1 - DIS_CMV` because the source's structural reference subject is explicitly the non-CMV individual (Sun 2023 Table S2: "The reference population is a 70-kg individual without CMV administered a 800 mg maribavir dose"), so keeping the patient group as the indicator preserves the published meaning of the reference THETA. Also distinct from `AUC_GCV`, which supplies ganciclovir exposure to CMV viral-load PD models rather than flagging CMV disease state. Scope: specific; promote to general if a second paper pools transplant recipients with CMV against a non-CMV reference with the same semantics. Registered alongside the Sun 2023 maribavir extraction.
+
 ### DIS_UC (**canonical for ulcerative colitis disease-state indicator**)
 - **Description:** 1 = ulcerative colitis patient, 0 = non-UC (e.g., healthy volunteer or non-IBD indication). Time-fixed per subject.
 - **Units:** (binary)
