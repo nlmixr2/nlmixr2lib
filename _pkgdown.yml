@@ -1918,6 +1918,8 @@ navbar:
         href: articles/Kleijn_2011_sugammadex_rocuronium.html
       - text: "Sugemalimab (Wang 2024)"
         href: articles/Wang_2024_sugemalimab.html
+      - text: "Sulbactam durlobactam (Cammarata 2024)"
+        href: articles/Cammarata_2024_sulbactam_durlobactam.html
       - text: "Sulfadoxine (Karunajeewa 2009)"
         href: articles/Karunajeewa_2009_sulfadoxinePyrimethamine.html
       - text: "SulfadoxinePyrimethamine (Odongo 2015)"
@@ -2523,6 +2525,7 @@ articles:
   - articles/Bulitta_2011_cefpirome
   - articles/Byrne_2022_imr687
   - articles/Caldes_2009_ganciclovir
+  - articles/Cammarata_2024_sulbactam_durlobactam
   - articles/Campagne_2019_cyclophosphamide_mouse
   - articles/Candelaria_2018_rituximab
   - articles/Cao_2013_GNbAC1
