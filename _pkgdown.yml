@@ -1670,6 +1670,8 @@ navbar:
         href: articles/Chirehwa_2017_pyrazinamide.html
       - text: "Pyrazinamide (Horita 2018)"
         href: articles/Horita_2018_pyrazinamide.html
+      - text: "Pyrazinamide (Kim 2023)"
+        href: articles/Kim_2023_pyrazinamide.html
       - text: "Pyrimethamine (Karunajeewa 2009)"
         href: articles/Karunajeewa_2009_sulfadoxinePyrimethamine.html
       - text: "Pyronaridine (Ayyoub 2016)"
@@ -2879,6 +2881,7 @@ articles:
   - articles/Kim_2016_udenafil
   - articles/Kim_2017_fimasartan
   - articles/Kim_2018_tacrolimus
+  - articles/Kim_2023_pyrazinamide
   - articles/Kimura_2023_glucarpidase
   - articles/Kirubakaran_2022_tacrolimus
   - articles/Kleiber_2017_clonidine
