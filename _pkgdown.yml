@@ -228,6 +228,8 @@ navbar:
         href: articles/Svensson_2018_bedaquiline.html
       - text: "Bedaquiline lpvr (Svensson 2014)"
         href: articles/Svensson_2014_bedaquiline_arv.html
+      - text: "Bedaquiline mpbpk (Mehta 2023)"
+        href: articles/Mehta_2023_tb_lesion_mpbpk.html
       - text: "Bedaquiline nvp (Svensson 2014)"
         href: articles/Svensson_2014_bedaquiline_arv.html
       - text: "Belantamab (Papathanasiou 2025)"
@@ -1638,6 +1640,8 @@ navbar:
         href: articles/Gaohua_2012_pregnancy_pbpk.html
       - text: "Pregnancy pbpk midazolam (Gaohua 2012)"
         href: articles/Gaohua_2012_pregnancy_pbpk.html
+      - text: "Pretomanid mpbpk (Mehta 2023)"
+        href: articles/Mehta_2023_tb_lesion_mpbpk.html
       - text: "Procainamide (Mohamed 2013)"
         href: articles/Mohamed_2013_procainamide.html
       - text: "Propofol (Chi 2018)"
@@ -1670,6 +1674,8 @@ navbar:
         href: articles/Chirehwa_2017_pyrazinamide.html
       - text: "Pyrazinamide (Horita 2018)"
         href: articles/Horita_2018_pyrazinamide.html
+      - text: "Pyrazinamide mpbpk (Mehta 2023)"
+        href: articles/Mehta_2023_tb_lesion_mpbpk.html
       - text: "Pyrimethamine (Karunajeewa 2009)"
         href: articles/Karunajeewa_2009_sulfadoxinePyrimethamine.html
       - text: "Pyronaridine (Ayyoub 2016)"
@@ -3019,6 +3025,7 @@ articles:
   - articles/McLachlan_1996_fluconazole
   - articles/McLaughlin_2024_tld_1
   - articles/MedellinGaribay_2015_gentamicin
+  - articles/Mehta_2023_tb_lesion_mpbpk
   - articles/Melhem_2018_g_csf
   - articles/Melhem_2022_dostarlimab
   - articles/Mensing_2017_3D_HCV_regimen

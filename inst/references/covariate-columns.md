@@ -1869,6 +1869,17 @@ All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODA
 - **Example models:** `Hien_2017_cipargamin.R` (drives the dose-dependent typical Emax in the two-population parasite clearance PD model: `emax = emax_typical * (DOSE_CIPARGAMIN_MG / 10)^e_dose_emax` with `e_dose_emax = 0.0463` per Hien 2017 Table 3).
 - **Notes:** Follows the `DOSE_<DRUG>_<UNITS>` auto-approve family (siblings: `DOSE_EMPA_MGD`, `DOSE_PHT_MGKGD`). Distinct from those two because cipargamin is a single-dose administration (mg, not mg/day) in the founding study, so the units suffix is `MG`. Sibling canonicals may be registered for other single-dose antimalarial extractions using the same auto-approve pattern. Ratified canonically on 2026-07-08 alongside the Hien 2017 cipargamin extraction.
 
+### DOSE_PTM_MG (**canonical for administered pretomanid per-administration dose amount**)
+- **Description:** Administered oral dose of the nitroimidazooxazine antituberculosis agent pretomanid (formerly PA-824), in mg, for the current dose record. Per-dose-record covariate; must equal the `amt` of the corresponding dosing record. Not a PK covariate in the usual sense -- the amount already appears on the dose record via `amt` -- but it is required as an explicit regressor because pretomanid bioavailability is saturable in dose, so the dose amount has to be readable inside `model()` to compute `f(depot)`.
+- **Units:** mg
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters via the saturable bioavailability `f(depot) = Fmax / (1 + DOSE_PTM_MG / ED50)` with `Fmax` assumed 1 and `ED50` = 554 mg in humans (Mehta 2023 Table 1). A 200 mg dose therefore gives F = 1 / (1 + 200/554) = 0.735.
+- **Source aliases:**
+  - `dose` -- used in `Mehta_2023_pretomanid_mpbpk.R` (Mehta 2023 ESM S2, which writes `doseIn = Fmax*dose/(1 + dose/ED50)` followed by `f(depot) = doseIn/dose`; the packaged model uses the algebraically identical single-expression form, which avoids dividing by the dose amount).
+- **Example models:** `Mehta_2023_pretomanid_mpbpk.R` (drives the dose-dependent bioavailability of the translational lung-lesion mPBPK model; simulated regimen 200 mg once daily, clinical validation data spanning 50-1200 mg).
+- **Notes:** Follows the `DOSE_<DRUG>_<UNITS>` auto-approve family (siblings: `DOSE_EMPA_MGD`, `DOSE_CIPARGAMIN_MG`, `DOSE_PHT_MGKGD`). Units suffix is `MG` because pretomanid is dosed as a per-administration amount rather than a daily total. Ratified canonically alongside the Mehta 2023 pretomanid extraction.
+
 ### DOSE_UFH_UH (**canonical for concomitant continuous-infusion unfractionated heparin dose rate**)
 - **Description:** Patient's concurrent continuous intravenous infusion rate of unfractionated heparin (UFH), in absolute units per hour. Absolute (not weight-normalized) infusion rate is preserved at the column level because the source model parameterizes the UFH-on-clearance effect against a cohort-median absolute rate rather than a per-kg rate. Time-varying per observation as the UFH infusion is titrated. Set to 0 units/h for patients not receiving concurrent UFH.
 - **Units:** units/h (absolute infusion rate; document per-model via `covariateData[[DOSE_UFH_UH]]$units` if a different unit is reported).
