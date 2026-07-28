@@ -3271,6 +3271,17 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Example models:** `Hua_2015_anrukinzumab.R` (multiplicative fractional increase in CL, +72.8%, on top of weight and albumin effects).
 - **Notes:** Used when a population PK model pools UC patients with a non-UC reference population (e.g., Hua 2015: healthy volunteers + asthma patients + UC patients) and UC disease status is tested as a PK covariate. Distinct from `DISEXT_EP` / `DISEXT_OTHER`, which operate *within* a UC-only cohort (disease extension). Start as scope: specific; promote to general if a second paper pools UC with a non-UC reference.
 
+### DIS_DUOD_ULCER (**canonical for duodenal-ulcer disease-state indicator**)
+- **Description:** 1 = duodenal-ulcer patient (peptic ulcer disease of the duodenum, endoscopically confirmed), 0 = non-duodenal-ulcer reference (e.g., healthy volunteer, or other non-peptic-ulcer indication pooled in the source analysis). Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (non-duodenal-ulcer subject; the complement group is paper-defined -- for Yu 2024 the reference is the pooled healthy-subject cohort across 4 phase I trials).
+- **Source aliases:**
+  - `Disease status` -- Yu 2024 paper narrative and Table 3 footnote (1 = duodenal ulcer, 0 = healthy).
+- **Example models:** `Yu_2024_ilaprazole.R` (exponential effects `exp(0.290 * DIS_DUOD_ULCER)` on CL and `exp(0.356 * DIS_DUOD_ULCER)` on Vp of the 2-compartment IV ilaprazole model; reference category is the pooled healthy-subject cohort from CTR20132848 / CTR20140147 / CTR20150686 / CTR20150685, and the phase IIa duodenal-ulcer cohort CTR20132846 required an ulcer diameter <= 15 mm with no combined ulcer bleeding; Yu 2024 Table 3 and Eqs. 7-9).
+- **Notes:** Distinct from `ENDO_ULCER` (IBD mucosal-ulcer activity indicator scored *within* an IBD cohort at baseline ileocolonoscopy) because `DIS_DUOD_ULCER` is a peptic-duodenal-ulcer-patient vs non-patient cohort indicator, following the `DIS_UC` / `DIS_PSORIASIS` / `DIS_HAE` pattern of specific-disease-vs-non-disease pooled-cohort covariates. Distinct from `DIS_UC` and any future IBD indicators because peptic ulcer disease is a non-IBD upper-GI condition. Also distinct from `DIS_HEALTHY`: that canonical carries a healthy-vs-pooled-patient contrast with 0 = patient, whereas a paper enrolling a single named disease cohort alongside healthy participants is encoded with the disease-specific indicator so the source coefficients and typical values transfer without a sign flip or re-baselining. The shorter forms `DIS_DU` (collides with other DU acronyms), `DIS_PUD`, and `DIS_PEPTIC_ULCER` (both broader than the duodenal-only cohort Yu 2024 enrolled) were considered and rejected. Scope: specific because the complement reference category is paper-defined; promote to general if a second paper pools duodenal-ulcer patients with a non-peptic-ulcer reference. Ratified canonically on 2026-07-28 alongside the Yu 2024 ilaprazole extraction.
+
 ### DIS_SASTHMA (**canonical for moderate-to-severe asthma disease-state indicator**)
 - **Description:** 1 = moderate-to-severe asthma patient, 0 = not (e.g., healthy volunteer, mild-to-moderate asthma, or other indication). Time-fixed per subject.
 - **Units:** (binary)
