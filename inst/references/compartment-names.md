@@ -1242,6 +1242,12 @@ PBPK bare organ-amount compartments used by Zhang 2011 nutlin3a and similar full
 - **Source aliases:** none.
 - **Example models:** `Zhang_2011_nutlin3a.R`.
 
+### trachea (**canonical bare trachea compartment**)
+- **Type:** compartment
+- **Role:** Bare trachea organ compartment in PBPK extractions that resolve the conducting airway as a distinct target tissue. Holds the total tissue (well-stirred) drug amount and is paired with `lung`, `blood` and `other` in respiratory-target minimal-PBPK models. Registered for parity with the surrounding bare-organ canonicals (`lung`, `brain`, `heart`, `bone`, `skin`, `other`); it is a plain anatomical organ name rather than a mechanism-specific state, so the metabolite-suffixed form `trachea_<metab>` (e.g. `trachea_dihydroart`) follows the usual parent + metabolite rule without a separate registration.
+- **Source aliases:** none.
+- **Example models:** `Kang_2023_pyronaridine_hamster_pbpk.R`, `Kang_2023_artesunate_hamster_pbpk.R`.
+
 ### heart (**canonical bare heart compartment**)
 - **Type:** compartment
 - **Role:** Bare heart organ compartment in full-body PBPK extractions. Total tissue (well-stirred) drug concentration in the myocardium; paired with `lung`, `liver`, `kidney`, `spleen`, `brain` etc. in whole-body PBPK extractions that resolve heart as a distinct organ. The token `heart` already appears in the `vp_heart` canonical entry and in the `pbpkSubCompartmentRegex` valid-organ list (alongside `lung`, `kidney`, `spleen`), so this entry registers the bare-organ form for parity with the surrounding canonicals.
