@@ -2196,6 +2196,8 @@ navbar:
         href: articles/Cao_2013_visilizumab.html
       - text: "Vismodegib (Lu 2015)"
         href: articles/Lu_2015_vismodegib.html
+      - text: "VonicogAlfa (Bauer 2023)"
+        href: articles/Bauer_2023_vonWillebrandFactor.html
       - text: "Voriconazole (Akbar 2025)"
         href: articles/Akbar_2025_voriconazole.html
       - text: "Voriconazole (Chen 2015)"
@@ -2216,6 +2218,8 @@ navbar:
         href: articles/Naik_2016_vortioxetine.html
       - text: "Vrc01 (Huang 2017)"
         href: articles/Huang_2017_vrc01.html
+      - text: "VwfFviii humateP (Bauer 2023)"
+        href: articles/Bauer_2023_vonWillebrandFactor.html
       - text: "Warfarin (Savic 2010)"
         href: articles/Savic_2010_warfarin.html
       - text: "Warfarin (Xia 2024)"
@@ -2453,6 +2457,7 @@ articles:
   - articles/Baron_2016_empagliflozin
   - articles/Barras_2009_enoxaparin
   - articles/Bastida_2018_tocilizumab
+  - articles/Bauer_2023_vonWillebrandFactor
   - articles/Baverel_2015_tralokinumab
   - articles/Beal_2001_iv1cmt_bql
   - articles/Bellanti_2014_deferiprone
