@@ -350,6 +350,8 @@ navbar:
         href: articles/Georges_2009_ceftazidime.html
       - text: "Ceftazidime (Shi 2018)"
         href: articles/Shi_2018_ceftazidime.html
+      - text: "Ceftazidime (Zieck 2023)"
+        href: articles/Zieck_2023_ceftazidime.html
       - text: "Ceftriaxone (Garot 2011)"
         href: articles/Garot_2011_ceftriaxone.html
       - text: "Cefuroxime (Alqahtani 2018)"
@@ -3490,6 +3492,7 @@ articles:
   - articles/Zhu_2014_tacrolimus
   - articles/Zhu_2017_lebrikizumab
   - articles/Zhu_2023_omalizumab_pediatric
+  - articles/Zieck_2023_ceftazidime
   - articles/Zierhut_2008_osteoprotegerin
   - articles/Zingmark_2003_clomethiazole
   - articles/Zou_2012_MI_219
