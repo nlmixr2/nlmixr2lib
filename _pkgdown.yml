@@ -1238,6 +1238,8 @@ navbar:
         href: articles/Hawwa_2008_mercaptopurine.html
       - text: "Meropenem (Bergen 2017)"
         href: articles/Bergen_2017_meropenem.html
+      - text: "Meropenem (Fukumoto 2023)"
+        href: articles/Fukumoto_2023_meropenem.html
       - text: "Meropenem (Germovsek 2018)"
         href: articles/Germovsek_2018_meropenem.html
       - text: "Meropenem (Hanberg 2018)"
@@ -2687,6 +2689,7 @@ articles:
   - articles/Frymoyer_2013_mycophenolic_acid
   - articles/Frymoyer_2017_infliximab
   - articles/Fuchs_2014_gentamicin
+  - articles/Fukumoto_2023_meropenem
   - articles/Fung_2008_butanediol_rat
   - articles/Galluppi_2016_BIIB023
   - articles/Gandhi_2021_abatacept
