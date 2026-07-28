@@ -72,7 +72,7 @@ Minucci_2024_CART_qsp <- function() {
       units              = "fraction",
       type               = "continuous",
       reference_category = NULL,
-      notes              = "Drug-product characterisation covariate specific to CAR T-cell therapy; per-patient CD4:CD8 ratio of the infused product from Ying et al. 2021 as reproduced in Table S1 of the source paper. Paper-specific covariate not in inst/references/covariate-columns.md because CAR T-cell drug-product composition has no analogue in traditional small-molecule / mAb popPK. Used only to split the total infused CAR T-cell dose between the t_cd8_inf and t_cd4_inf depot compartments; the value flows via the dose amt (computed as FCD8TDP * WT * dose_per_kg for CD8+, (1 - FCD8TDP) * WT * dose_per_kg for CD4+).",
+      notes              = "Drug-product characterisation covariate specific to CAR T-cell therapy; per-patient CD4:CD8 ratio of the infused product from Ying et al. 2021 as reproduced in Table S1 of the source paper. Registered as a scope: specific canonical in inst/references/covariate-columns.md; a drug-product characterisation covariate rather than a patient covariate, since CAR T-cell product composition has no analogue in traditional small-molecule / mAb popPK. Used only to split the total infused CAR T-cell dose between the t_cd8_inf and t_cd4_inf depot compartments; the value flows via the dose amt (computed as FCD8TDP * WT * dose_per_kg for CD8+, (1 - FCD8TDP) * WT * dose_per_kg for CD4+).",
       source_name        = "fCD8Tdp"
     ),
     TUM_CELLS0 = list(
@@ -80,7 +80,7 @@ Minucci_2024_CART_qsp <- function() {
       units              = "cells",
       type               = "continuous",
       reference_category = NULL,
-      notes              = "Per-patient fitted initial condition for the Tumor compartment. Values from Table S1 of Minucci 2024. This is a fit-derived per-patient parameter, not a measured baseline; the paper obtained it by trust-region optimisation against individual CAR T CK trajectories. Paper-specific covariate not in inst/references/covariate-columns.md.",
+      notes              = "Per-patient fitted initial condition for the Tumor compartment. Values from Table S1 of Minucci 2024. This is a fit-derived per-patient parameter, not a measured baseline; the paper obtained it by trust-region optimisation against individual CAR T CK trajectories. Registered as a scope: specific canonical in inst/references/covariate-columns.md; distinct from the length/volume-based TUMSZ / TUM_SLD / TUM_VOL family because this column's currency is an absolute cell count.",
       source_name        = "N0_tumorCells"
     ),
     NDIV = list(
@@ -88,7 +88,7 @@ Minucci_2024_CART_qsp <- function() {
       units              = "divisions",
       type               = "continuous",
       reference_category = NULL,
-      notes              = "Per-patient fitted CAR T-cell expansion parameter. Governs the effective amplification factor 2^NDIV applied to the T_inf -> T_eff flux (after T_act quasi-steady-state reduction; see the file header). Values from Table S1 of Minucci 2024. Paper-specific covariate not in inst/references/covariate-columns.md.",
+      notes              = "Per-patient fitted CAR T-cell expansion parameter. Governs the effective amplification factor 2^NDIV applied to the T_inf -> T_eff flux (after T_act quasi-steady-state reduction; see the file header). Values from Table S1 of Minucci 2024. Registered as a scope: specific canonical in inst/references/covariate-columns.md.",
       source_name        = "ndiv"
     ),
     FMEM = list(
@@ -96,7 +96,7 @@ Minucci_2024_CART_qsp <- function() {
       units              = "fraction",
       type               = "continuous",
       reference_category = NULL,
-      notes              = "Per-patient fitted CAR T-cell persistence parameter. Values from Table S1 of Minucci 2024. Paper-specific covariate not in inst/references/covariate-columns.md.",
+      notes              = "Per-patient fitted CAR T-cell persistence parameter. Values from Table S1 of Minucci 2024. Registered as a scope: specific canonical in inst/references/covariate-columns.md.",
       source_name        = "fmem"
     )
   )

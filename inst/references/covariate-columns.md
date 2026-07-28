@@ -4684,6 +4684,51 @@ Baseline seizure-severity indicators derived from a pre-trial seizure count (typ
 - **Notes:** Paired with `GEMOX` (see that entry for the joint encoding). The Jiang 2008 cohort distribution is gem-alone n=31, gem-then-ox n=38, ox-then-gem n=25; the larger V_C,dFdU/F reduction observed for ox-then-gem (factor 0.54) vs gem-then-ox (factor 0.65) is hypothesised by the authors to reflect order-dependent tissue-uptake effects of dFdU.
 
 
+### TUM_CELLS0 (**canonical for subject-specific baseline tumour burden expressed as an absolute cell count**)
+- **Description:** Per-subject baseline number of malignant cells in the modelled compartment, in absolute cells (not mm, mm^3, or SLD). Used to initialise a mechanistic tumour-cell ODE state whose currency is cell count rather than a caliper- or imaging-derived size (`tumor(0) <- TUM_CELLS0`). In Minucci 2024 the value is the fitted initial malignant-B-cell burden obtained by trust-region optimisation against the individual CAR T-cell cellular-kinetic trajectory, because the IM19 phase I trial (Ying 2021) reported no direct longitudinal tumour-burden measurement.
+- **Units:** cells (count)
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- used directly as the tumour-cell ODE initial condition.
+- **Source aliases:**
+  - `N0_tumorCells` -- column in the Minucci 2024 Supplementary Material `Table 1 (1).XLSX`, sheet `params-case-study-final`; used in `Minucci_2024_CART_qsp.R`.
+- **Example models:** `Minucci_2024_CART_qsp.R` (13 relapsed/refractory NHL patients; fitted values span 1.0e5 to 1.0e7 cells, with F0109 / F0110 / F0111 / F0123 pinned at the 1e5 lower optimisation bound and F0104 / F0106 / F0107 / F0118 / F0119 at the 1e7 upper bound).
+- **Notes:** Deliberately distinct from the imaging/caliper tumour-burden family. `TUMSZ` and `TUM_SLD` carry measured sizes in mm; `TUM_VOL` carries a caliper volume in mm^3; `IBASE` carries an empirical-Bayes *fitted* baseline SLD from an upstream tumour-size model. `TUM_CELLS0` is the cell-count analogue, appropriate for mechanistic / QSP models that track individual malignant cells and their receptor burden, where no length or volume conversion is defined by the source. Same fitted-input class as `KG` / `KD0` / `KD1` / `IBASE` (subject-specific values carried over from a prior fit rather than measured at baseline), hence scope: specific -- a downstream user cannot populate this column from routine clinical data without re-running the source optimisation. Note that several Minucci 2024 values sit exactly on the optimiser's bounds, so they are identifiability-limited rather than precisely estimated; treat the column as a per-subject model input, not as a clinical measurement.
+
+### NDIV (**canonical for the fitted number of divisions per activated cell in an expansion-driven cell-therapy model**)
+- **Description:** Per-subject number of cell divisions that an activated (antigen-stimulated) therapeutic cell undergoes before differentiating into the effector phenotype. Drives the expansion amplification factor `2^NDIV` applied to the activated-cell-to-effector flux. Non-integer values are expected and meaningful: the parameter is fitted on a continuous scale and represents a population-average division count, not a per-cell integer.
+- **Units:** divisions (dimensionless count, continuous-valued)
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- multiplicative expansion parameter.
+- **Source aliases:**
+  - `ndiv` -- column in the Minucci 2024 Supplementary Material `Table 1 (1).XLSX`, sheet `params-case-study-final` (the sheet's `units` cell reads `# cells`, which is a labelling error: the description column and the paper's Methods 2.3 both define it as a division count); used in `Minucci_2024_CART_qsp.R`.
+- **Example models:** `Minucci_2024_CART_qsp.R` (fitted per-patient values 15.88 to 27.70 divisions across the 13 IM19 patients).
+- **Notes:** Scope: specific because the value is the output of a per-subject fit to that subject's own cellular-kinetic trajectory, not an independently measurable patient characteristic. Minucci 2024 global sensitivity analysis identifies `NDIV` as the single most influential parameter for CAR T-cell Cmax, contributing more than 80 percent of the variance -- so the column is load-bearing and must not be defaulted. Although the paper classifies it as a drug-product (manufacturing) property, it is carried as a per-subject covariate because CAR T-cell products are manufactured from each patient's own cells. Promote to general only if a second cell-therapy extraction retains an identically-defined division-count input.
+
+### FMEM (**canonical for the fitted effector-to-memory conversion fraction in a cell-therapy model**)
+- **Description:** Per-subject fraction of effector therapeutic cells that convert to the long-lived memory phenotype at the point of effector-cell loss; the remaining `1 - FMEM` truly die. Governs the long-term persistence phase of cellular kinetics.
+- **Units:** fraction (0 to 1)
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- multiplicative branching fraction on the effector-loss flux.
+- **Source aliases:**
+  - `fmem` -- column in the Minucci 2024 Supplementary Material `Table 1 (1).XLSX`, sheet `params-case-study-final`; used in `Minucci_2024_CART_qsp.R`.
+- **Example models:** `Minucci_2024_CART_qsp.R` (fitted per-patient values spanning nine orders of magnitude, 2.91e-10 to 0.1, across the 13 IM19 patients).
+- **Notes:** Scope: specific because the value is a per-subject fit output rather than a measured characteristic. Three of the 13 Minucci 2024 patients (F0110, F0111, F0123) sit exactly on the 0.1 upper optimisation bound and three more (F0119, F0125, F0126) are numerically indistinguishable from zero, so the column is identifiability-limited at both ends; the paper interprets the high-`FMEM` patients as those with no clear contraction phase in their cellular kinetics. Distinct from a residual-error or variance term: this is a structural branching fraction supplied per subject as data.
+
+### FCD8TDP (**canonical for the CD8-positive fraction of an infused cell-therapy drug product**)
+- **Description:** Fraction of the infused therapeutic cell dose that is CD8-positive; the remaining `1 - FCD8TDP` is CD4-positive. Characterises the composition of the administered product rather than the patient, and is used to split a single total cell dose between the CD8 and CD4 arms of a phenotype-resolved cellular-kinetic model.
+- **Units:** fraction (0 to 1)
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- dose-splitting fraction.
+- **Source aliases:**
+  - `fCD8Tdp` -- column in the Minucci 2024 Supplementary Material `Table 1 (1).XLSX`, sheet `params-case-study-final`, derived from the per-patient CD4:CD8 ratio of the infused IM19 product reported in Ying 2021; used in `Minucci_2024_CART_qsp.R`.
+- **Example models:** `Minucci_2024_CART_qsp.R` (per-patient values 0.290 to 0.943 across the 13 IM19 patients; drives `amt_CD8 = FCD8TDP * WT * dose_per_kg` and `amt_CD4 = (1 - FCD8TDP) * WT * dose_per_kg` in the event table, and is exposed in `model()` as the `CD8_dose_frac` output).
+- **Notes:** A drug-product characterisation covariate, not a patient covariate -- the closest existing analogues are the `FORM_<drug>_<formulation>` formulation indicators, but those are categorical product selectors whereas this is a continuous composition fraction. Scope: specific because autologous cell-therapy product composition is measured per manufacturing run and has no analogue in small-molecule or monoclonal-antibody popPK. Note that Minucci 2024 assumes 100 percent product viability (`fViable = 1`), so `FCD8TDP` alone determines the CD8/CD4 dose split; a source reporting a viability below 1 would need that factor carried separately rather than folded into this column.
+
+
 ## Laboratory / disease-activity
 
 ### ALBR (**canonical for serum albumin normalized to the laboratory's upper limit of normal**)
