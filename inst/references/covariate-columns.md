@@ -1187,6 +1187,18 @@ All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODA
 - **Example models:** `Tetschke_2018_erythropoiesis.R` (reference 885.42 g; Pottgiesser 2008 dataset of 29 healthy adult male volunteers).
 - **Notes:** Specific scope because total hemoglobin mass requires the optimised CO-rebreathing method to obtain (Schmidt 2005), which is a specialised technique not present in routine clinical labs; promote to `general` if a second model registers this quantity. Distinct from `HGB` (g/L or g/dL plasma concentration) and `HCT` (RBC volume fraction): `THB_MASS` is the absolute body-pool mass and is not perturbed by short-term plasma-volume fluctuations (Pottgiesser 2008 Section 3.2 explicitly motivates the choice of mass over concentration). Sex-dimorphic: typical value in adult males is meaningfully higher than in adult females; document the sex composition of the population in `covariateData[[THB_MASS]]$notes`.
 
+### LYMPH_ABS (**canonical for absolute peripheral-blood lymphocyte count (total)**)
+- **Description:** Total absolute peripheral-blood lymphocyte count (all lymphocyte subsets pooled: T, B, and NK cells). Baseline or time-varying; document the time resolution per model via `covariateData[[LYMPH_ABS]]$notes`. Used as a continuous covariate on clearance and other PK parameters when the source paper carries the count as an exogenous exposure covariate rather than as a modelled PD state. Common in allo-HSCT / GvHD-prophylaxis popPK studies where circulating-lymphocyte burden is a mechanistic driver for lymphocyte-targeting biologics (integrin blockers, T-cell / B-cell-depleting mAbs).
+- **Units:** cells/uL (equivalent to 10^9 cells/L = K/uL x 1000; document the per-paper reporting unit in `covariateData[[LYMPH_ABS]]$units`). Reporting conventions vary: some papers report as `K/uL` (i.e., 10^3 cells/uL, numerically identical to 10^9 cells/L) and some as `cells/uL` -- both encode the same numerical value once the K/uL suffix is expanded. Prefer `cells/uL` as the canonical unit for consistency with `CD4_ABS`, `CD19_ABS`, and `NEUT`.
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- typically enters as a power term `(LYMPH_ABS / ref)^exponent` against a paper-specific reference. Reference values observed: 100 cells/uL (Waterhouse 2024, `0.1 K/uL`, exponent -0.0180 on CL; the paper further replaces any zero lymphocyte counts with `0.01 K/uL` = 10 cells/uL to avoid a log-of-zero in the power form).
+- **Source aliases:**
+  - `LYMPH` -- Waterhouse 2024 NM-TRAN column, time-varying absolute lymphocyte count in K/uL.
+  - `ALC` -- clinical laboratory abbreviation for "absolute lymphocyte count"; common in hematology / transplant papers. Same semantics; no value transformation.
+- **Example models:** `Waterhouse_2024_vedolizumab.R` (time-varying absolute lymphocyte count on CL: `cl *= (LYMPH_ABS / 100)^-0.0180`; reference 100 cells/uL = 0.1 K/uL per paper Table 2; zeros replaced with 10 cells/uL to avoid `log(0)`).
+- **Notes:** Distinct from `CD4_ABS` (a subset -- CD4+ T-lymphocytes only), `CD19_ABS` (a subset -- CD19+ B-lymphocytes only), and `NLR` (a ratio, neutrophil-to-lymphocyte). `LYMPH_ABS` is the total pooled lymphocyte count and is the correct canonical for papers that measure "absolute lymphocyte count" without further flow-cytometry subsetting. Distinct from `WBC` (total white blood cell count, of which lymphocytes are one differential fraction). Zero-value handling: allo-HSCT / lymphocyte-depleting-therapy cohorts routinely have observed lymphocyte counts of exactly 0 K/uL at some time points; source papers commonly substitute a small floor (e.g., Waterhouse 2024 uses 0.01 K/uL) before evaluating a power-form covariate effect, per Waterhouse 2024 Supplement Equation S2. Document any per-paper zero-floor convention in `covariateData[[LYMPH_ABS]]$notes`. Ratified canonically on 2026-07-25 alongside the Waterhouse 2024 vedolizumab extraction.
+
 ### NEUT (**canonical for absolute neutrophil count**)
 - **Description:** Absolute neutrophil count, typically as a baseline covariate (entered via centred-deviation `(NEUT - ref)` or power scaling `(NEUT / ref)^exponent`) or, in semi-mechanistic myelosuppression models, as a per-subject initial-condition value for the proliferation, transit, and circulating compartments.
 - **Units:** cells/mm^3 (equivalent to cells/uL; i.e., the same value reported in 10^9/L x 1000). Document per-model via `covariateData[[NEUT]]$units` if the source paper uses a different unit (e.g., `10^9 cells/L` for `Ozawa_2007_docetaxel.R` per the paper's Table-3 reporting unit).
@@ -6442,6 +6454,39 @@ Baseline seizure-severity indicators derived from a pre-trial seizure count (typ
   - `RIC` (Dunlap 2025 NM-TRAN convention; binary 0 / 1) -- used directly in `Dunlap_2025_tacrolimus.R`.
 - **Example models:** `Dunlap_2025_tacrolimus.R` (Dunlap 2025 Table 2 reduced-covariate-model column; exponential effect on apparent oral clearance: `cl *= 0.63 ^ HCT_COND_RIC`, so RIC recipients have ~37% lower apparent oral tacrolimus clearance than MAC recipients).
 - **Notes:** Conditioning regimen intensity has been reported to associate with post-transplant tacrolimus apparent clearance, likely via gut / hepatic CYP3A activity, GVHD-related inflammatory response, and post-transplant haematopoietic state. The paper-specific definition of "RIC" follows the source publication's own classification (e.g., Dunlap 2025 follows the institutional protocol at UNCMC, which pools non-myeloablative conditioning regimens into the RIC category when assigning the binary indicator); document the source paper's RIC criteria in `covariateData[[HCT_COND_RIC]]$notes`. When a future paper distinguishes a third intensity tier (non-myeloablative, NMA) as a separate covariate level rather than pooling NMA into RIC, register a parallel canonical (e.g. `HCT_COND_NMA`) instead of overloading `HCT_COND_RIC`. Scope: specific because the column is meaningful only for allo-HCT recipients. Ratified canonically on 2026-05-09 alongside the Dunlap 2025 tacrolimus extraction.
+
+### AGVHD_LIVER (**canonical for acute graft-versus-host disease -- liver involvement indicator**)
+- **Description:** 1 = subject has documented evidence of acute graft-versus-host disease (aGvHD) involving the liver (any grade, I-IV) at the current model time; 0 = no documented liver aGvHD. Time-varying per subject in allo-HSCT cohorts: 0 before the first documented liver-aGvHD diagnosis and 1 from that time onward for the modeled observation window. Interpolation convention (Waterhouse 2024 Methods): next observation carried backward (NOCB), i.e., a subject with a positive liver-aGvHD diagnosis at any time during the study has `AGVHD_LIVER = 1` from study start through the diagnosis time; use last-observation-carried-forward (LOCF) instead if the source paper documents that convention.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (no documented liver aGvHD; the pooled reference includes both subjects who never developed liver aGvHD and time periods before diagnosis in subjects who eventually did).
+- **Source aliases:**
+  - `LIVGVHD` / `GVHD_LIVER` -- Waterhouse 2024 NM-TRAN column for the time-varying liver-aGvHD indicator. Same orientation, no value transformation.
+- **Example models:** `Waterhouse_2024_vedolizumab.R` (multiplicative power-form effect on CL: `cl *= 1.05^AGVHD_LIVER`, i.e., liver-aGvHD subjects show ~5% higher CL than the reference at the diagnosis time and thereafter; the paper's Table 2 reports the estimate as `1.05 (0.834, 1.26)` with 10.3% RSE, and the Results paragraph 3 concludes the 90% CI crosses 1 so the effect is not clinically meaningful).
+- **Notes:** Sibling to `AGVHD_SKIN` and `AGVHD_INTESTINE` -- a patient can have more than one organ involvement simultaneously (Table 1 footnote in Waterhouse 2024: "a patient could exhibit one or more types of GvHD"), so the three indicators are orthogonal binary covariates rather than mutually-exclusive levels of a categorical. Time-varying with the diagnosis-time boundary; supply per subject at every observation timestamp in the event dataset. Specific scope because the column is meaningful only for allo-HSCT cohorts. Distinct from `TX_LIVER` (liver-transplant recipient indicator, a solid-organ-transplant-cohort covariate). Future extractions distinguishing chronic-vs-acute GvHD should register sibling canonicals (e.g., `CGVHD_LIVER`) rather than overloading this name. Ratified canonically on 2026-07-25 alongside the Waterhouse 2024 vedolizumab extraction.
+
+### AGVHD_SKIN (**canonical for acute graft-versus-host disease -- skin involvement indicator**)
+- **Description:** 1 = subject has documented evidence of acute graft-versus-host disease (aGvHD) involving the skin (any grade, I-IV) at the current model time; 0 = no documented skin aGvHD. Time-varying per subject in allo-HSCT cohorts using the same NOCB interpolation convention as `AGVHD_LIVER`.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (no documented skin aGvHD).
+- **Source aliases:**
+  - `SKGVHD` / `GVHD_SKIN` -- Waterhouse 2024 NM-TRAN column for the time-varying skin-aGvHD indicator.
+- **Example models:** `Waterhouse_2024_vedolizumab.R` (multiplicative power-form effect on CL: `cl *= 1.03^AGVHD_SKIN`; Waterhouse 2024 Table 2 reports `1.03 (0.940, 1.12)` with 4.56% RSE; the 90% CI crosses 1 so the effect is not clinically meaningful).
+- **Notes:** Sibling to `AGVHD_LIVER` and `AGVHD_INTESTINE`; see the `AGVHD_LIVER` entry for the shared multi-organ / orthogonal-indicator rationale. Ratified canonically on 2026-07-25 alongside the Waterhouse 2024 vedolizumab extraction.
+
+### AGVHD_INTESTINE (**canonical for acute graft-versus-host disease -- intestinal involvement indicator**)
+- **Description:** 1 = subject has documented evidence of acute graft-versus-host disease (aGvHD) involving the intestine / gastrointestinal tract (any grade, I-IV) at the current model time; 0 = no documented intestinal aGvHD. Time-varying per subject in allo-HSCT cohorts using the same NOCB interpolation convention as `AGVHD_LIVER`.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (no documented intestinal aGvHD).
+- **Source aliases:**
+  - `INTGVHD` / `GVHD_INTESTINE` / `GVHD_GI` -- Waterhouse 2024 NM-TRAN column for the time-varying intestinal-aGvHD indicator.
+- **Example models:** `Waterhouse_2024_vedolizumab.R` (multiplicative power-form effect on CL: `cl *= 1.07^AGVHD_INTESTINE`; Waterhouse 2024 Table 2 reports `1.07 (0.870, 1.27)` with 9.54% RSE; the 90% CI crosses 1 so the effect is not clinically meaningful).
+- **Notes:** Sibling to `AGVHD_LIVER` and `AGVHD_SKIN`; see the `AGVHD_LIVER` entry for the shared multi-organ / orthogonal-indicator rationale. Vedolizumab's mechanism (integrin alpha-4 beta-7 blockade) specifically targets gut-homing leukocyte trafficking, so `AGVHD_INTESTINE` is the mechanistically-motivated on-target-organ indicator in vedolizumab-for-GvHD-prophylaxis popPK studies; the paper notes the observed effect (~7% increase in CL at intestinal-aGvHD onset) is consistent with target-mediated drug disposition at the on-target site but the estimate is not statistically or clinically significant in this dataset. Ratified canonically on 2026-07-25 alongside the Waterhouse 2024 vedolizumab extraction.
 
 ### DISEXT_EP (**canonical for extensive colitis / pancolitis indicator**)
 - **Description:** 1 = extensive colitis or pancolitis disease extension, 0 = otherwise (any non-extensive disease extension, e.g. left-sided colitis or proctitis).
