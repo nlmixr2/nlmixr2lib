@@ -848,6 +848,15 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
 - **Example models:** sigmoidal Emax / Imax PD templates.
 - **Notes:** Codified 2026-05-28 per the naming audit. Distinct from `gamma` for Friberg myelosuppression feedback / TGI power-law growth exponents, which retain `gamma` as a mechanistic-role designator.
 
+### iplac (**canonical constant fractional placebo inhibition of an IDR production rate**)
+- **Type:** paper-named-param
+- **Role:** Constant fractional inhibition of an indirect-response production rate attributable to the placebo / background effect, entering as `kin * (1 - iplac - <drug effect>)`. Unitless and bounded in [0, 1]; carries no driver (no concentration, no biomarker) and is therefore NOT a maximum. Used in placebo-controlled longitudinal disease-score IDR models where the total inhibition of the input function decomposes additively into a placebo term and a drug term.
+- **Source aliases:**
+  - `PLAC`, `TVPLAC` -- Zhang 2023 NONMEM control streams (`PLAC = TVPLAC + ETA(9)`; `DADT(4) = KIN*(1-PLAC-EFF) - KOUT*A(4)`).
+  - `Inhibitory placebo effect` -- Zhang 2023 Table 2 row label.
+- **Example models:** `Zhang_2023_brazikumab_il22.R` (`iplac = 0.209`, i.e. placebo inhibits the CDAI input rate by 20.9%), `Zhang_2023_brazikumab_crp.R` (`iplac = 0.178`).
+- **Notes:** Ratified 2026-07-29 alongside the Zhang 2023 brazikumab extraction (sidecar request-002 / response-002, option A). Kept on the bare (untransformed) linear scale rather than log-transformed because the published between-subject variability on it is ADDITIVE (Zhang 2023 Methods: "the placebo effect ... is modeled to have an additive variability (i.e., PLAC_i = PLAC_TV + eta_i), with the assumption that the placebo effect in any individual may be higher or lower than the typical value ... by an equal probability"), so an `etaiplac` enters as `iplac + etaiplac`. Distinct from `imax`, which is the MAXIMUM of a driver-dependent (sigmoid) inhibition; `iplac` is a driver-free constant. Distinct also from `lplac` as used in `Schoemaker_2018_levetiracetam.R`, which is a log-scale placebo effect on a seizure RATE rather than a fractional inhibition of an IDR input function. Later placebo-controlled IDR extractions in the IBD / CDAI family (certolizumab, ustekinumab, mirikizumab, ...) should reuse this canonical.
+
 ### rbase (**canonical baseline-value parameter**)
 - **Type:** paper-named-param
 - **Role:** Baseline-value parameter for IDR / turnover state initial conditions and TGI initial tumour sizes.
