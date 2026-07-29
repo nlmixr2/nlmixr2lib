@@ -3127,6 +3127,39 @@ Antibiotic combination-PK drug suffixes (linezolid, vancomycin, meropenem long f
 
 ---
 
+## PBPK organ extracellular / cellular split (Parmar 2023 mPBPK family)
+
+Minimal-PBPK models that resolve each organ into a rapid-equilibrium pool (vascular + interstitial, taken to be in instantaneous equilibrium with blood) and a slow-equilibrium cellular pool use the `<organ>_extracellular` / `<organ>_cellular` suffix pair. The two suffixes are complements of each other and must be used together: an organ carrying one without the other is a naming error, because the pair's whole point is that the organ's total concentration is the amount-weighted sum of exactly these two pools divided by the organ volume.
+
+The names are spelled out in full per the 2026-05-28 anti-abbreviation audit. In particular, do **not** shorten the rapid-equilibrium pool to `<organ>_rap`: that would read as a per-organ analogue of the existing `a_rapidly_perfused` compartment, which means something different (a lumped rapidly-perfused ORGAN GROUP, not an intra-organ sub-pool).
+
+### extracellular (**canonical rapid-equilibrium vascular+interstitial pool suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Rapid-equilibrium sub-compartment of the named organ, lumping the vascular and interstitial spaces which are assumed to be in instantaneous equilibrium with blood. Its effective volume is `V_vascular + V_interstitial / k(b/p)` so that a single blood-scale concentration describes both spaces.
+- **Source aliases:** `rapid equilibrium sub-compartment`, `V+I` -- Parmar 2023 Table 4 / Table 7 row descriptions and supplement equations S3, S7, S10, S13, S16 (free-form prose labels, not data column names).
+- **Example models:** `Parmar_2023_spectinamide_1599_mouse_pbpk.R`, `Parmar_2023_spectinamide_1599_rat_pbpk.R`, `Parmar_2023_spectinamide_1810_mouse_pbpk.R`, `Parmar_2023_spectinamide_1810_rat_pbpk.R`.
+- **Notes:** Distinct from the membrane-limited `is_<organ>` interstitial-space prefix in `pbpkSubCompartmentRegex`, which carries interstitium alone with the vascular space held as a separate `bc_` / `vp_` state; `<organ>_extracellular` deliberately lumps the two because the source model assumes instantaneous vascular-interstitial equilibrium. Paired with `cellular`.
+
+### cellular (**canonical slow-equilibrium cellular pool suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Slow-equilibrium cellular sub-compartment of the named organ, coupled to the organ's `_extracellular` pool by a first-order influx acting on the unbound fraction (`K(I->C) x fu`) and a first-order back flux (`K(C->I)`) on the total cellular amount.
+- **Source aliases:** `cellular sub-compartment` -- Parmar 2023 Table 4 / Table 7 row descriptions and supplement equations S4, S8, S11, S14, S17 (prose label, not a data column name).
+- **Example models:** `Parmar_2023_spectinamide_1599_mouse_pbpk.R`, `Parmar_2023_spectinamide_1599_rat_pbpk.R`, `Parmar_2023_spectinamide_1810_mouse_pbpk.R`, `Parmar_2023_spectinamide_1810_rat_pbpk.R`.
+- **Notes:** Distinct from the membrane-limited `int_<organ>` intracellular prefix in `pbpkSubCompartmentRegex`, which pairs with `is_<organ>` under a permeability-surface-area coupling rather than the pair of first-order rate constants used here. Paired with `extracellular`.
+
+---
+
+## Epithelial lining fluid
+
+### elf (**canonical epithelial-lining-fluid compartment**)
+- **Type:** compartment
+- **Role:** Epithelial lining fluid of the lung airspace: the apical aqueous layer that inhaled or intratracheally instilled drug is deposited into before it distributes into the lung tissue and reaches the systemic circulation. Carries its own physiological volume and its own unbound fraction `fu_elf` (typically derived from plasma `fu` and the plasma/ELF albumin ratio), and exchanges with the lung's `lung_cellular` and `lung_extracellular` pools.
+- **Source aliases:** `ELF` -- Parmar 2023 Figure 2, Table 2 (`V ELF`, `fu ELF`) and supplement equations S22-S26.
+- **Example models:** `Parmar_2023_spectinamide_1599_mouse_pbpk.R`.
+- **Notes:** A physiological airspace compartment, not an absorption depot: the inhaled or intratracheal dose lands in a separate `depot2` and reaches `elf` by first-order absorption with its own bioavailability, exactly as an oral dose reaches `central` from `depot`. Whole-lung concentration includes the ELF amount (Parmar 2023 supplement S26). Related but distinct from `isf` (generic interstitial fluid) and from the `brain_csf*` namespace; a future inhalation model that resolves regional airway ELF should register `elf_<region>` names rather than overload the bare `elf`.
+
+---
+
 ## PBPK organ sub-compartment suffixes (Ayyar 2024)
 
 PBPK organ sub-compartment suffixes used by Ayyar 2024 givosiran whole-organ extractions. The `<organ>_endo` / `<organ>_deep` / `<organ>_vas` shape lets each organ carry endosomal, sequestered-deep, and vascular pools alongside the existing `vp_<organ>` membrane-limited form.
