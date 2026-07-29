@@ -338,6 +338,8 @@ navbar:
         href: articles/Laffont_2025_opioid_overdose_reversal_simulation.html
       - text: "Carvedilol (Honda 2005)"
         href: articles/Honda_2005_carvedilol.html
+      - text: "Carvedilol (Hwang 2023)"
+        href: articles/Hwang_2023_carvedilol.html
       - text: "Carvedilol (Othman 2007)"
         href: articles/Othman_2007_carvedilol.html
       - text: "Casirivimab (Lin 2024)"
@@ -3005,6 +3007,7 @@ articles:
   - articles/HuttonSmith_2018_ranibizumab
   - articles/Huynh_2026_VRC07523LS
   - articles/Hwang_2022_tremelimumab
+  - articles/Hwang_2023_carvedilol
   - articles/Hwang_2023_monalizumab
   - articles/Ide_2009_pravastatin
   - articles/Ide_2020_elotuzumab
