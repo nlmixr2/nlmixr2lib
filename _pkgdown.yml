@@ -192,6 +192,8 @@ navbar:
         href: articles/Molto_2016_atazanavir_ritonavir.html
       - text: "Atazanavir ritonavir (Schipani 2013)"
         href: articles/Schipani_2013_atazanavir_ritonavir.html
+      - text: "Atezolizumab cibisatamab qsp (Anbari 2023)"
+        href: articles/Anbari_2023_atezolizumab_cibisatamab_qsp.html
       - text: "Atorvastatin (Kakara 2014)"
         href: articles/Kakara_2014_statins_LDLC.html
       - text: "Avelumab (Masters 2022)"
@@ -2424,6 +2426,7 @@ articles:
   - articles/Alsultan_2017_pyrazinamide
   - articles/AlvarezJimenez_2016_scopolamine
   - articles/An_2012_mitoxantrone_pbpk
+  - articles/Anbari_2023_atezolizumab_cibisatamab_qsp
   - articles/Ande_2018_paclitaxel_everolimus_dasatinib
   - articles/Anderson_1998_paracetamol
   - articles/Andrews_2017_tacrolimus
