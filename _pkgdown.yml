@@ -906,6 +906,8 @@ navbar:
         href: articles/Jiang_2008_gemcitabine.html
       - text: "Gemifloxacin (Landersdorfer 2009)"
         href: articles/Landersdorfer_2009_gemifloxacin.html
+      - text: "Gentamicin (Abbasi 2023)"
+        href: articles/Abbasi_2023_gentamicin.html
       - text: "Gentamicin (Bijleveld 2016)"
         href: articles/Bijleveld_2016_gentamicin.html
       - text: "Gentamicin (Bijleveld 2017)"
@@ -2482,6 +2484,7 @@ articles:
 - title: internal
   desc: Drug-specific validation vignettes. They are reached from the Specific drug models and DDMoRe models navbar dropdowns; this group hides them from the main Articles index.
   contents:
+  - articles/Abbasi_2023_gentamicin
   - articles/Abboud_2009_epinephrine
   - articles/AbdelJalil_2013_tacrolimus
   - articles/AbdulAziz_2016_doripenem
