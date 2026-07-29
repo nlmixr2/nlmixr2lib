@@ -1689,6 +1689,13 @@ Population body-composition / disease-risk PD output states from the Oniki 2018 
 - **Source aliases:** none.
 - **Example models:** `NA_NA_paracetamol.R`.
 
+### shbg (**canonical sex hormone-binding globulin biomarker**)
+- **Type:** compartment
+- **Role:** Sex hormone-binding globulin (SHBG) serum concentration (nmol/L) modelled as an indirect-response turnover state. In Jensen 2023 LNG-IUS 52 mg the SHBG state has a zero-order synthesis rate `kin_shbg = rbase_shbg * kout_shbg` linearly inhibited by a delayed unbound-LNG signal (`kin_shbg * (1 - inh)`) and a first-order elimination rate `kout_shbg`; the drug-free steady state equals `rbase_shbg`. SHBG also binds LNG with dissociation constant KDS = 1.82 nmol/L, coupling the SHBG turnover to the unbound-LNG PK via a closed-form free-fraction equation.
+- **Source aliases:** none.
+- **Example models:** `Jensen_2023_lngIus52mg.R`.
+- **Notes:** Registered 2026-07-24 following the `igf1` / `pth` / `iron` pattern for named endogenous protein biomarker states in indirect-response turnover models. SHBG has generalisable scope beyond a single paper (any drug modulating sex-hormone binding — contraceptives, HRT, androgens — may reuse this canonical).
+
 ---
 
 ## Lab values and endogenous biomarker compartments
