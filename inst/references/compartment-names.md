@@ -1266,6 +1266,12 @@ PBPK bare organ-amount compartments used by Zhang 2011 nutlin3a and similar full
 - **Source aliases:** none.
 - **Example models:** `Gaohua_2012_pregnancy_pbpk_caffeine.R`, `Gaohua_2012_pregnancy_pbpk_metoprolol.R`, `Gaohua_2012_pregnancy_pbpk_midazolam.R`, `Levitt_2005_propofol_pbpk.R`.
 
+### skin_fat (**canonical bare lumped skin + fat compartment**)
+- **Type:** compartment
+- **Role:** Skin and subcutaneous fat lumped into a **single** well-stirred tissue compartment carrying one volume, one plasma flow and one tissue:plasma partition coefficient. Distinct from the separate bare `skin` and `adipose` canonicals: this is the combined tissue, used when a source model does not resolve the two organs independently. Use it only when the source genuinely lumps them -- a model that reports separate partition coefficients for skin and fat must use `skin` + `adipose`. The motivating case is veterinary residue-depletion PBPK: "skin and fat in natural proportions" is the statutory edible-tissue matrix against which both the Chinese (GB 31650) and European (Reg. 37/2010) maximum residue limits for poultry are set, so the combined tissue is the regulated unit and cannot be split without inventing per-organ partition coefficients the source does not report. Component volume fractions may still be documented separately (e.g. Yang 2023 Table 4 gives `Vcsk` 13.38% and `Vcfa` 13.40% of body weight, summing to the 26.78% of the combined compartment) while the ODE system carries exactly one state. Expected to recur across the poultry and swine residue-PBPK family. The associated partition coefficient follows the `lk_<organ>` pattern as `lk_skf`.
+- **Source aliases:** `skin + fat`, `skin+fat`, `sf` (Yang 2023 subscript).
+- **Example models:** `Yang_2023_diclazuril_chicken_pbpk.R` (founding example).
+
 ---
 
 ## Adaptive-resistance bacterial states

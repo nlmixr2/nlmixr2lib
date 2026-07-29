@@ -538,6 +538,8 @@ navbar:
         href: articles/Cao_2017_dha_artemisinin_stress_model.html
       - text: "Diazepam (Ku 2018)"
         href: articles/Ku_2018_diazepam.html
+      - text: "Diclazuril chicken pbpk (Yang 2023)"
+        href: articles/Yang_2023_diclazuril.html
       - text: "Diclofenac (Henin 2012)"
         href: articles/Henin_2012_gastrointestinal_transit_time_absorption.html
       - text: "Diclofenac (Standing 2008)"
@@ -3431,6 +3433,7 @@ articles:
   - articles/Yang_2016_dilmapimod
   - articles/Yang_2017_remifentanil
   - articles/Yang_2021_cemiplimab
+  - articles/Yang_2023_diclazuril
   - articles/Yang_2024_axatilimab
   - articles/Yano_1993_theophylline
   - articles/Yao_2018_guselkumab
