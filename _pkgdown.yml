@@ -128,6 +128,8 @@ navbar:
         href: articles/deVriesSchultink_2018_cardiotoxicity.html
       - text: "Anti tryptase (Rymut 2023)"
         href: articles/Rymut_2023_anti_tryptase.html
+      - text: "Antithrombin (DeJongh 2014)"
+        href: articles/DeJongh_2014_antithrombin.html
       - text: "Antithrombin (Moffett 2017)"
         href: articles/Moffett_2017_antithrombin.html
       - text: "Apixaban (Ueshima 2018)"
@@ -2672,6 +2674,7 @@ articles:
   - articles/DeCock_2012_propyleneGlycol
   - articles/deHoogd_2017_morphine
   - articles/deJonge_2005_paclitaxel
+  - articles/DeJongh_2014_antithrombin
   - articles/deKock_2017_sulfadoxinePyrimethamine
   - articles/Delattre_2010_amikacin
   - articles/DelFrari_2018_propranolol
