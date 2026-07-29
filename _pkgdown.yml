@@ -1816,6 +1816,8 @@ navbar:
         href: articles/Willmann_2018_rivaroxaban.html
       - text: "Rivaroxaban (Willmann 2021)"
         href: articles/Willmann_2021_rivaroxaban.html
+      - text: "Rivaroxaban (Willmann 2022)"
+        href: articles/Willmann_2022_rivaroxaban.html
       - text: "Rivipansel (Tammara 2017)"
         href: articles/Tammara_2017_rivipansel.html
       - text: "Rlyb212 (MocWilleford 2024)"
@@ -2140,12 +2142,8 @@ navbar:
         href: articles/FehlingKaschek_2019_trastuzumab_skbr3.html
       - text: "TrastuzumabDeruxtecan (Yin 2021)"
         href: articles/Yin_2021_trastuzumabDeruxtecan.html
-      - text: "TrastuzumabDeruxtecan mbma (Asiimwe 2025)"
-        href: articles/Asiimwe_2025_trastuzumab_ADCs_mbma.html
       - text: "Trastuzumabemtansine (Lu 2014)"
         href: articles/Lu_2014_trastuzumabemtansine.html
-      - text: "TrastuzumabEmtansine mbma (Asiimwe 2025)"
-        href: articles/Asiimwe_2025_trastuzumab_ADCs_mbma.html
       - text: "TrastuzumabEmtansine mechanistic (Bender 2014)"
         href: articles/Bender_2014_trastuzumabEmtansine_mechanistic.html
       - text: "TrastuzumabEmtansine reduced (Bender 2014)"
@@ -3479,6 +3477,7 @@ articles:
   - articles/Willmann_2018_rivaroxaban
   - articles/Willmann_2021_fxi_aso
   - articles/Willmann_2021_rivaroxaban
+  - articles/Willmann_2022_rivaroxaban
   - articles/Wilson_2015_sunitinib_irinotecan_mouse
   - articles/Wittau_2015_meropenem
   - articles/Woillard_2011_tacrolimus
