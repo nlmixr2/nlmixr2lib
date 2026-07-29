@@ -907,6 +907,23 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
 - **Example models:** `Campagne_2019_cyclophosphamide_mouse.R`.
 - **Notes:** Usually held fixed at the in-vitro equilibrium-dialysis-derived value. The BBB transfer term is `CLin * fu * Cp`.
 
+### kpu<n> (**canonical clustered unbound tissue:plasma partition coefficient**)
+- **Type:** paper-named-param
+- **Role:** Estimated unbound tissue-to-plasma partition coefficient (Kpu) shared by a *cluster* of PBPK tissues, numbered `kpu1`, `kpu2`, `kpu3`, `kpu4`, ... (log-transform prefix `lkpu<n>`). Unitless. Used by "steady-state commonality" PBPK simplifications that keep the full whole-body kinetic structure but reduce the number of unknown distribution parameters by assigning one common Kpu to every tissue in a composition-derived cluster. The numeric suffix indexes the cluster, not a compartment; the cluster-to-tissue mapping must be written out explicitly in `model()` (e.g. `kpu_bone <- kpu1`) and cited to the source table footnote. Convert to the tissue:blood coefficient with `kb = kpu * fu_p / BP`.
+- **Source aliases:**
+  - `KPU1` .. `KPU4` -- NONMEM `$PK` names in Yau 2023 Appendix S1.
+  - `Kpu1` .. `Kpu4` -- Yau 2023 Table 2 / Table S6.
+- **Example models:** `Yau_2023_diazepam_pbpk_kpu_human.R`, `Yau_2023_diazepam_pbpk_kpu_rat.R`, `Yau_2023_diazepam_pbpk_lumped_human.R`, `Yau_2023_diazepam_pbpk_lumped_rat.R`.
+- **Notes:** Distinct from the per-tissue `kp_<tissue>` family (a separate Kp value named for one specific organ, as in the Gaohua 2012 pregnancy PBPK models) -- `kpu<n>` is deliberately cluster-indexed because the whole point of the parameterisation is that several anatomically distinct tissues share one estimate. Also distinct from `sf<n>` below, which scales a *predicted* Kpu rather than replacing it. In kinetically lumped models the same `kpu<n>` names index the lumped compartments (`kpu1` = central lump, `kpu2` = peripheral1 lump, ...). Introduced 2026-07-26 with the Yau 2023 diazepam PBPK extraction.
+
+### sf<n> (**canonical clustered Kpu scaling factor**)
+- **Type:** paper-named-param
+- **Role:** Estimated multiplicative correction factor applied to a *bottom-up predicted* unbound tissue:plasma partition coefficient, shared by a cluster of PBPK tissues and numbered `sf1`, `sf2`, `sf3`, `sf4`, ... (log-transform prefix `lsf<n>`). Unitless. Implements `Kpu_i = Kpu_pred,i * SF_cluster(i)`, where `Kpu_pred,i` comes from a mechanistic tissue-composition model (Rodgers and Rowland, Poulin and Theil, Berezhkovskiy, ...) evaluated inside `model()`. The scalar therefore *quantifies the systematic bias* of the bottom-up prediction instead of discarding it, which is what makes this parameterisation attractive for interspecies translation (the bias is assumed to be conserved across species while the composition inputs change).
+- **Source aliases:**
+  - `SF1` .. `SF4` -- Yau 2023 Table 2 / Table S6 and Eq 10.
+- **Example models:** `Yau_2023_diazepam_pbpk_scalar_human.R`, `Yau_2023_diazepam_pbpk_scalar_rat.R`.
+- **Notes:** A value of 1 means the bottom-up prediction needs no correction, so `sf<n>` estimates are directly interpretable as fold-bias. Do NOT reuse `sf<n>` for a generic "scaling factor" on a non-partition-coefficient parameter -- allometric exponents use `allo_<param>`, and covariate multipliers use the `e_<cov>_<param>` family. Paired with the `kpurr_<tissue>` derived `model()` quantities in the founding examples. Introduced 2026-07-26 with the Yau 2023 diazepam PBPK extraction.
+
 ### eh (**canonical hepatic extraction ratio**)
 - **Type:** paper-named-param
 - **Role:** Hepatic extraction ratio in the well-stirred liver model (`CL_H = FQ * eh`, `F_HEP = 1 - eh`). Unitless, bounded in [0, 1]. Use whenever a paper parameterises hepatic clearance through the extraction-ratio physiology rather than through `lcl` / `lcl_nonren` directly. The companion log-transform prefix is `logiteh` (logit-scale `ini()` typical value) because the linear-scale `eh` is bounded; logit-additive eta on `logiteh` keeps every individual `eh_i` inside the (0, 1) box.
