@@ -2,7 +2,7 @@
 
 # development version
 
-* Add van Maanen 2025 amyloid ([doi:10.1002/trc2.70169](https://doi.org/10.1002/trc2.70169)) -- adults with mild cognitive impairment or mild dementia due to Alzheimer's disease (indirect-response turnover model of brain amyloid plaque burden in Centiloid units under BACE1 inhibition by verubecestat and stimulated elimination by four anti-amyloid mAbs -- aducanumab, donanemab, gantenerumab, lecanemab; ratifies new `AUC_VERUB`, `AUC_ADU`, `AUC_DON`, `AUC_GAN`, `AUC_LEC` and `PLAQUE_BL` covariate canonicals).
+* Add Scheuher 2023 anti-HER2 ADC platform QSP model ([doi:10.1007/s10928-023-09884-6](https://doi.org/10.1007/s10928-023-09884-6)) -- three nested model files (in vitro cellular, mouse in vivo, human clinical) for trastuzumab-DM1 and trastuzumab-deruxtecan; HER2+ breast cancer cell lines, mouse xenografts, and HER2+ metastatic breast cancer patients.
 * Add Beal 2001 one-compartment IV-bolus BQL methodology template ([doi:10.1023/a:1012299115260](https://doi.org/10.1023/a:1012299115260)) -- methodology reference (no drug, no patients); packages the SI1 generative model from Beal's M1-M7 below-quantification-limit paper as a teaching template with CL = 0.693 and Vd = 1 (time in half-lives).
 * Add Luu 2017 nusinersen ([doi:10.1002/jcph.884](https://doi.org/10.1002/jcph.884)) -- pediatric patients with spinal muscular atrophy receiving intrathecal nusinersen.
 * Add Gaohua 2012 pregnancy PBPK ([doi:10.1111/j.1365-2125.2012.04363.x](https://doi.org/10.1111/j.1365-2125.2012.04363.x)) -- healthy pregnant Caucasian women (14-compartment whole-body p-PBPK with GA-dependent maternal physiology, applied to caffeine [CYP1A2], metoprolol [CYP2D6], and midazolam [CYP3A4]); ratifies new canonical bare `skin` PBPK compartment.
