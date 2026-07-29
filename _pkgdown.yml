@@ -1540,8 +1540,6 @@ navbar:
         href: articles/Robbie_2012_palivizumab.html
       - text: "PAmAb (Cao 2013)"
         href: articles/Cao_2013_PAmAb.html
-      - text: "Panitumumab (Marcantonio 2022)"
-        href: articles/Marcantonio_2022_efa.html
       - text: "Pantoprazole (Pettersen 2009)"
         href: articles/Pettersen_2009_pantoprazole.html
       - text: "Paracetamol (Anderson 1998)"
@@ -2220,8 +2218,6 @@ navbar:
         href: articles/vandenBerg_2021_uprifosbuvir.html
       - text: "Ustekinumab (Aguiar 2021)"
         href: articles/Aguiar_2021_ustekinumab.html
-      - text: "Ustekinumab (Marcantonio 2022)"
-        href: articles/Marcantonio_2022_efa.html
       - text: "Valganciclovir (Vezina 2010)"
         href: articles/Vezina_2010_valganciclovir.html
       - text: "Valganciclovir (Vezina 2014)"
@@ -3141,7 +3137,7 @@ articles:
   - articles/Mensing_2017_3D_HCV_regimen
   - articles/Merchan_2015_azithromycin
   - articles/Milosheska_2016_lamotrigine
-  - articles/Mitra_2026_ziftomenib
+  - articles/Minucci_2024_CART_qsp
   - articles/Mo_2018_olaratumab
   - articles/MocWilleford_2024_rlyb212
   - articles/Moein_2022_etrolizumab
