@@ -2,7 +2,8 @@
 
 # development version
 
-* Add Heo 2016 amlodipine + valsartan ([doi:10.1111/bcp.13082](https://doi.org/10.1111/bcp.13082)) -- healthy adult Korean male volunteers (joint two-drug PK/PD interaction model on SBP and DBP; ratifies new `val` valsartan sibling-drug suffix canonical).
+* Add Miyano 2022 atopic dermatitis biologics QSP ([doi:10.1111/all.14870](https://doi.org/10.1111/all.14870)) -- adults with moderate-to-severe atopic dermatitis (14-ODE / 51-parameter QSP + MBMA across 9 biologics: dupilumab, lebrikizumab, tralokinumab, secukinumab, fezakinumab, nemolizumab, tezepelumab, GBR 830, and rIFNg).
+* Add Beal 2001 one-compartment IV-bolus BQL methodology template ([doi:10.1023/a:1012299115260](https://doi.org/10.1023/a:1012299115260)) -- methodology reference (no drug, no patients); packages the SI1 generative model from Beal's M1-M7 below-quantification-limit paper as a teaching template with CL = 0.693 and Vd = 1 (time in half-lives).
 * Add Luu 2017 nusinersen ([doi:10.1002/jcph.884](https://doi.org/10.1002/jcph.884)) -- pediatric patients with spinal muscular atrophy receiving intrathecal nusinersen.
 * Add Gaohua 2012 pregnancy PBPK ([doi:10.1111/j.1365-2125.2012.04363.x](https://doi.org/10.1111/j.1365-2125.2012.04363.x)) -- healthy pregnant Caucasian women (14-compartment whole-body p-PBPK with GA-dependent maternal physiology, applied to caffeine [CYP1A2], metoprolol [CYP2D6], and midazolam [CYP3A4]); ratifies new canonical bare `skin` PBPK compartment.
 * Add Morris 2011 telapristone ([doi:10.1208/s12248-011-9304-7](https://doi.org/10.1208/s12248-011-9304-7)) -- adult women with single-dose telapristone-acetate phase I/II PK studies; ratifies new `cdb4453` metabolite suffix, `MIX_FAST_ELIM`, and `RENALIMP_MOD` covariate canonicals.
