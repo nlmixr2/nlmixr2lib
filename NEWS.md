@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Chen 2014 immunogenicity QSP ([doi:10.1038/psp.2014.30](https://doi.org/10.1038/psp.2014.30)) -- theoretical human multiscale mechanistic model of antidrug-antibody formation (subcellular MHC-II antigen presentation + cellular T/B kinetics + whole-body antigen and ADA disposition).
+* Add Dogra 2023 COVID-19 mRNA vaccine QSP ([doi:10.1172/jci.insight.169860](https://doi.org/10.1172/jci.insight.169860)) -- mechanistic 17-ODE QSP model of the adaptive immune response to COVID-19 mRNA vaccination in healthy and immunocompromised adults; calibrated jointly against Lucas 2020 infection kinetics, Collier 2021 healthy-adult vaccine data, and Peeters 2022 cancer-patient vaccine data, with external validation against Bayart 2021 and Papazisis 2022.
 * Add Beal 2001 one-compartment IV-bolus BQL methodology template ([doi:10.1023/a:1012299115260](https://doi.org/10.1023/a:1012299115260)) -- methodology reference (no drug, no patients); packages the SI1 generative model from Beal's M1-M7 below-quantification-limit paper as a teaching template with CL = 0.693 and Vd = 1 (time in half-lives).
 * Add Luu 2017 nusinersen ([doi:10.1002/jcph.884](https://doi.org/10.1002/jcph.884)) -- pediatric patients with spinal muscular atrophy receiving intrathecal nusinersen.
 * Add Gaohua 2012 pregnancy PBPK ([doi:10.1111/j.1365-2125.2012.04363.x](https://doi.org/10.1111/j.1365-2125.2012.04363.x)) -- healthy pregnant Caucasian women (14-compartment whole-body p-PBPK with GA-dependent maternal physiology, applied to caffeine [CYP1A2], metoprolol [CYP2D6], and midazolam [CYP3A4]); ratifies new canonical bare `skin` PBPK compartment.
