@@ -1152,6 +1152,12 @@ Each entry below is a paper-mechanistic PD endpoint registered as a canonical co
 - **Source aliases:** none.
 - **Example models:** `Bizzotto_2016_glucose.R`.
 
+### MCC (**canonical maximum cystometric capacity**)
+- **Type:** compartment
+- **Role:** Maximum cystometric capacity (MCC), the urodynamic bladder-volume PD endpoint measured by multichannel cystometry, in mL. Used in exposure-response models of overactive bladder (OAB) and neurogenic detrusor overactivity (NDO) antimuscarinics, where the maximum attainable MCC is commonly anchored to the age-based pediatric expected bladder capacity (EBC) rather than estimated. All-caps because MCC is the standard urodynamics abbreviation and is never spelled out in the source literature after first use, matching the `ANC` / `PLT` / `WBC` / `RBC` clinical-abbreviation precedent in this register.
+- **Source aliases:** none.
+- **Example models:** `Sano_2023_fesoterodine_mcc.R` (Emax exposure-response of 5-HMT average steady-state concentration on MCC in pediatric NDO; baseline MCC and the EBC ceiling both scale with age by the same `(AGE + 1)/13` factor, and residual error is combined proportional plus additive as `propSd_MCC` / `addSd_MCC`).
+
 ---
 
 ## PBPK bare organ-amount compartments (Zhang 2011 family)

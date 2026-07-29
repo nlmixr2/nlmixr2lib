@@ -2,6 +2,7 @@
 
 # development version
 
+* Add Sano 2023 fesoterodine ([doi:10.1007/s13318-023-00818-8](https://doi.org/10.1007/s13318-023-00818-8)) -- pediatric patients aged 6-17 years with overactive bladder or neurogenic detrusor overactivity (popPK of the active metabolite 5-HMT plus an Emax exposure-response model on maximum cystometric capacity; ratifies the new `MCC` canonical PD-output compartment).
 * Add Beal 2001 one-compartment IV-bolus BQL methodology template ([doi:10.1023/a:1012299115260](https://doi.org/10.1023/a:1012299115260)) -- methodology reference (no drug, no patients); packages the SI1 generative model from Beal's M1-M7 below-quantification-limit paper as a teaching template with CL = 0.693 and Vd = 1 (time in half-lives).
 * Add Luu 2017 nusinersen ([doi:10.1002/jcph.884](https://doi.org/10.1002/jcph.884)) -- pediatric patients with spinal muscular atrophy receiving intrathecal nusinersen.
 * Add Gaohua 2012 pregnancy PBPK ([doi:10.1111/j.1365-2125.2012.04363.x](https://doi.org/10.1111/j.1365-2125.2012.04363.x)) -- healthy pregnant Caucasian women (14-compartment whole-body p-PBPK with GA-dependent maternal physiology, applied to caffeine [CYP1A2], metoprolol [CYP2D6], and midazolam [CYP3A4]); ratifies new canonical bare `skin` PBPK compartment.
