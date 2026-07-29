@@ -2358,6 +2358,8 @@ navbar:
         href: articles/Savic_2010_warfarin.html
       - text: "Warfarin (Xia 2024)"
         href: articles/Xia_2024_warfarin.html
+      - text: "Warfarin qsp (Falkenhagen 2023)"
+        href: articles/Falkenhagen_2023_warfarin_qsp.html
       - text: "Warfarin r (Hamberg 2007)"
         href: articles/Hamberg_2007_warfarin_pkpd_pgx.html
       - text: "Warfarin r (Lane 2011)"
@@ -2816,6 +2818,7 @@ articles:
   - articles/Ezzati_2014_dexmedetomidine_piglet
   - articles/Facius_2018_roflumilast
   - articles/Faelens_2021_infliximab
+  - articles/Falkenhagen_2023_warfarin_qsp
   - articles/Fang_2010_etanercept
   - articles/Fanta_2007_ciclosporin
   - articles/Farrell_2012_farletuzumab
