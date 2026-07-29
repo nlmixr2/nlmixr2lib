@@ -914,72 +914,32 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
 - **Example models:** `Chan_2008_maraviroc.R` (estimated `logiteh = logit(0.662)` with logit-additive IIV per Chan 2008 Eq 9; downstream `eh` enters `clh = fq * eh` and `fhep = 1 - eh`).
 - **Notes:** Paired with the canonical compartment / pseudo-parameter `fq` (hepatic plasma flow, fixed at a literature value) and the canonical `clr` (renal clearance, often fixed) when the paper decomposes total CL into renal + hepatic with hepatic-extraction physiology. Distinct from `lcl_nonren` (additive renal + non-renal CL decomposition without an explicit extraction-ratio bound): use `eh` only when the source paper writes hepatic clearance as `CL_H = FQ * E_H` and constrains E_H in [0, 1] (e.g., via a logit-form IIV transformation).
 
-### lthalf (**canonical log-transformed linear-elimination half-life**)
+### nowsmax (**canonical bare NAS-natural-history maximum-baseline term**)
 - **Type:** paper-named-param
-- **Role:** Log of the terminal-linear-elimination half-life used as a macroparameter in the Kapitanov 2025 physiologically-inspired PKRO (piPKRO) mAb framework, where drug elimination is defined to occur in every compartment at the same rate constant `k_el = log(2) / thalf`. The macroparameter form (Eq 5) preserves the intuitive interpretation that `thalf` equals the terminal-phase half-life derived from the plasma concentration-time profile in the absence of TMDD. Bare counterpart `thalf`. Distinct from `lthalfrec` (effect-compartment recovery half-life) and from `lthalfr` (the ranibizumab ocular half-life fitted in `HuttonSmith_2018_ranibizumab.R`).
+- **Role:** Multiplicative baseline of the natural neonatal-abstinence-syndrome (NAS) severity-decay-with-postnatal-age term `NOWST = nowsmax * exp(-nowsm * PNA_days)` used inside the Eudy-Byrne 2021 buprenorphine indirect-response PD model of MOTHER NAS scores. `nowsmax` is unitless (a multiplier on `kin/kout`) and enters both the ODE production term `kin * (1 + nowst)` and the drug-free quasi-steady-state initial condition `nows(0) = kin * (1 + nowst) / kout`. Log-transformed form is `lnowsmax`.
 - **Source aliases:**
-  - `t_half`, `T_half`, `thalf` -- Kapitanov 2025 notation (Table 2 and Table S4).
-- **Example models:** `Kapitanov_2025_dupilumab_qsp.R`, `Kapitanov_2025_dupilumab_3cmt_qsp.R` (founding examples; the paper reports `t_half = 32.8 d` after fitting a 2-cpt piPKRO to digitised dupilumab mean PK data in Case Study 2).
-- **Notes:** Log-transform because the half-life is strictly positive. When the paper reports a value in days but the model uses hours (or vice-versa), convert once and note the source and target units alongside the value. The linear-elimination rate constant `kel = log(2) / thalf` is derived inside `model()`.
+  - `NOWSMAX` -- Eudy-Byrne 2021 Table S3 notation (all-caps).
+- **Example models:** `EudyByrne_2021_buprenorphine.R` (typical `nowsmax = 1.92`, unitless; 95% CI 1.76-2.08; log-normal IIV omega^2 = 1.14).
+- **Notes:** Paired with `nowsm` (natural decay rate) and the canonical PD state / observation `nows`. Registered 2026-07-25 alongside the Eudy-Byrne 2021 extraction. Distinct from `rbase` (generic IDR baseline) because `nowsmax` multiplies an exponential decay with postnatal age rather than being a fixed steady-state baseline.
 
-### thalf (**canonical bare linear-elimination half-life**)
+### lnowsmax (**canonical log-transformed NAS-natural-history maximum-baseline term**)
 - **Type:** paper-named-param
-- **Role:** Bare counterpart of `lthalf`; the terminal-linear-elimination half-life in the units declared by the model file's `units$time`.
-- **Source aliases:** none.
-- **Example models:** `Kapitanov_2025_dupilumab_qsp.R`, `Kapitanov_2025_dupilumab_3cmt_qsp.R`.
-
-### ltdist (**canonical log-transformed distribution half-time**)
-- **Type:** paper-named-param
-- **Role:** Log of the distribution half-time macroparameter for a single central-to-peripheral distribution in the Kapitanov 2025 piPKRO mAb framework (Eq 7: `tdist = log(2) / (k_12 + k_21)`). Reparameterises the pair of first-order transport rate constants `k_12` and `k_21` by the half-time of central-peripheral distribution equilibrium; the paired partition coefficient `pdist` completes the reparameterisation. Distinct from `mat` (mean absorption time) and `mtt` (mean transit time), which describe absorption-phase transit chains rather than distribution equilibration. Bare counterpart `tdist`.
+- **Role:** Log-transformed form of `nowsmax` for `ini()` with log-normal IIV. Inside `model()` the bare name is `nowsmax = exp(lnowsmax + etalnowsmax)`.
 - **Source aliases:**
-  - `t_dist`, `T_dist`, `tdist` -- Kapitanov 2025 notation (Table 2 and Table S4).
-- **Example models:** `Kapitanov_2025_dupilumab_qsp.R` (2-cpt fitted; `t_dist = 54.3 h`).
-- **Notes:** Log-transform because the half-time is strictly positive. When a 3-compartment piPKRO adds a second peripheral (site-of-action) compartment, the second distribution half-time uses the `_p2` suffix (see `ltdist_p2`).
+  - `log NOWSMAX`, `lNOWSMAX` -- equivalent paper notation.
+- **Example models:** `EudyByrne_2021_buprenorphine.R`.
 
-### tdist (**canonical bare distribution half-time**)
+### nowsm (**canonical bare NAS-natural-history decay rate with postnatal age**)
 - **Type:** paper-named-param
-- **Role:** Bare counterpart of `ltdist`; the distribution half-time in the model's `units$time`.
-- **Source aliases:** none.
-- **Example models:** `Kapitanov_2025_dupilumab_qsp.R`.
-
-### lpdist (**canonical log-transformed peripheral partition coefficient**)
-- **Type:** paper-named-param
-- **Role:** Log of the peripheral partition coefficient macroparameter defined in Kapitanov 2025 as the ratio of drug concentration in the peripheral compartment to central at quasi-steady-state in the absence of target binding (Eq 6: `pdist = V_1 * k_12 / (V_2 * k_21)`). Unitless. For monoclonal antibodies `pdist` is typically well below 1 because interstitial drug concentrations are lower than plasma; the paper reports typical values of 0.267 (human), 0.186 (cyno), and 0.353 (Tg32 mouse). Distinct from `fm` (fraction metabolised through a specific pathway; unitless but bounded and mechanistically different) and from `frac` (generic mixing weight). Bare counterpart `pdist`.
+- **Role:** First-order decay rate constant (1/day) of the natural NAS-severity term `NOWST = nowsmax * exp(-nowsm * PNA_days)` with chronological postnatal age. As PNA grows, NOWST decays toward zero and the drug-free quasi-steady-state NAS score `nows0 = kin * (1 + nowst) / kout` approaches its long-term floor `kin / kout`. Log-transformed form is `lnowsm`.
 - **Source aliases:**
-  - `P_dist`, `pdist` -- Kapitanov 2025 notation (Table 2 and Table S4).
-- **Example models:** `Kapitanov_2025_dupilumab_qsp.R` (2-cpt fitted; `P_dist = 0.352`).
-- **Notes:** Log-transform for the positivity constraint. Because `pdist` can be > 1 in tissues with sinusoidal capillary architecture (e.g., bone marrow), the log form does not clamp to [0, 1]; encode as `lpdist <- log(<value>)` with `<value>` matching the paper.
+  - `NOWSM` -- Eudy-Byrne 2021 Table S3 notation (all-caps).
+- **Example models:** `EudyByrne_2021_buprenorphine.R` (typical `nowsm = 0.107 1/day`; 95% CI 0.102-0.112; log-normal IIV omega^2 = 1.42; correlated with `nowsmax` at corr = 0.778).
+- **Notes:** Units are 1/day. When paired with the canonical `PNA` covariate (which is in MONTHS), inside `model()` compute `pna_days = PNA * 30.4375` before use so the exponent stays dimensionless (same pattern as Zhao 2018).
 
-### pdist (**canonical bare peripheral partition coefficient**)
+### lnowsm (**canonical log-transformed NAS-natural-history decay rate**)
 - **Type:** paper-named-param
-- **Role:** Bare counterpart of `lpdist`; the peripheral-to-central concentration ratio at quasi-steady-state in the absence of target binding (unitless).
-- **Source aliases:** none.
-- **Example models:** `Kapitanov_2025_dupilumab_qsp.R`.
-
-### ltdist_p2 (**canonical log-transformed second-peripheral distribution half-time**)
-- **Type:** paper-named-param
-- **Role:** Log of the distribution half-time between central and the second peripheral compartment (site-of-action in the Kapitanov 2025 3-compartment piPKRO framework). Analogous to `ltdist` but for the `peripheral2` compartment. Bare counterpart `tdist_p2`.
+- **Role:** Log-transformed form of `nowsm` for `ini()` with log-normal IIV. Inside `model()` the bare name is `nowsm = exp(lnowsm + etalnowsm)`.
 - **Source aliases:**
-  - `t_dist,13` -- Kapitanov 2025 notation (Table S4 for the 3-compartment piPKRO dupilumab model).
-- **Example models:** `Kapitanov_2025_dupilumab_3cmt_qsp.R` (Case Study 3 Approach 2; `t_dist,13 = 30 h`).
-- **Notes:** The `_p2` suffix matches the canonical `peripheral2` compartment naming and the `lvp2` / `lq2` volume / clearance suffixing conventions.
-
-### tdist_p2 (**canonical bare second-peripheral distribution half-time**)
-- **Type:** paper-named-param
-- **Role:** Bare counterpart of `ltdist_p2`.
-- **Source aliases:** none.
-- **Example models:** `Kapitanov_2025_dupilumab_3cmt_qsp.R`.
-
-### lpdist_p2 (**canonical log-transformed second-peripheral partition coefficient**)
-- **Type:** paper-named-param
-- **Role:** Log of the peripheral2 partition coefficient in the Kapitanov 2025 3-compartment piPKRO framework. Analogous to `lpdist` but for the `peripheral2` compartment. Unitless. Bare counterpart `pdist_p2`.
-- **Source aliases:**
-  - `P_dist,13` -- Kapitanov 2025 notation (Table S4).
-- **Example models:** `Kapitanov_2025_dupilumab_3cmt_qsp.R` (Case Study 3 Approach 2; `P_dist,13 = 0.3`).
-- **Notes:** Paper's Case Study 3 Approach 2 uses `P_dist,13 = 0.3` and `t_dist,13 = 30 h` to reflect a lower partition and faster equilibrium into the inflamed-skin site of action than the lumped peripheral.
-
-### pdist_p2 (**canonical bare second-peripheral partition coefficient**)
-- **Type:** paper-named-param
-- **Role:** Bare counterpart of `lpdist_p2`.
-- **Source aliases:** none.
-- **Example models:** `Kapitanov_2025_dupilumab_3cmt_qsp.R`.
+  - `log NOWSM`, `lNOWSM` -- equivalent paper notation.
+- **Example models:** `EudyByrne_2021_buprenorphine.R`.
