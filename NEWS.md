@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Fu 2023 cardiovascular systems QSP model ([doi:10.3390/pharmaceutics15041175](https://doi.org/10.3390/pharmaceutics15041175)) -- preclinical rat hemodynamic safety pharmacology (four-compartment cardiovascular systems QSP model with drug PK, HR / SV-turnover / TPR indirect-response ODEs, MAP negative feedback, cosine circadian rhythms on HR and TPR, and hypothetical Emax drug effect on HR-production; system parameters fixed to Snelder-derived rat values).
+* Add Canini 2015 danoprevir ([doi:10.3851/IMP2879](https://doi.org/10.3851/IMP2879)) -- adults with chronic HCV receiving 14 days of oral danoprevir monotherapy in a Phase 1 single-ascending-dose study (integrated 2-compartment PK plus Neumann viral-kinetic model with Emax effectiveness on virion production).
 * Add Beal 2001 one-compartment IV-bolus BQL methodology template ([doi:10.1023/a:1012299115260](https://doi.org/10.1023/a:1012299115260)) -- methodology reference (no drug, no patients); packages the SI1 generative model from Beal's M1-M7 below-quantification-limit paper as a teaching template with CL = 0.693 and Vd = 1 (time in half-lives).
 * Add Luu 2017 nusinersen ([doi:10.1002/jcph.884](https://doi.org/10.1002/jcph.884)) -- pediatric patients with spinal muscular atrophy receiving intrathecal nusinersen.
 * Add Gaohua 2012 pregnancy PBPK ([doi:10.1111/j.1365-2125.2012.04363.x](https://doi.org/10.1111/j.1365-2125.2012.04363.x)) -- healthy pregnant Caucasian women (14-compartment whole-body p-PBPK with GA-dependent maternal physiology, applied to caffeine [CYP1A2], metoprolol [CYP2D6], and midazolam [CYP3A4]); ratifies new canonical bare `skin` PBPK compartment.

@@ -484,6 +484,8 @@ navbar:
         href: articles/Mondick_2006_dactinomycin.html
       - text: "Dalteparin (Schoemaker 1996)"
         href: articles/Schoemaker_1996_low_molecular_weight_heparin_modeling.html
+      - text: "Danoprevir (Canini 2015)"
+        href: articles/Canini_2015_danoprevir.html
       - text: "Dapagliflozin (vanderWalt 2013)"
         href: articles/vanderWalt_2013_dapagliflozin.html
       - text: "Dapsone (Gatti 1996)"
@@ -2595,7 +2597,7 @@ articles:
   - articles/Caldes_2009_ganciclovir
   - articles/Campagne_2019_cyclophosphamide_mouse
   - articles/Candelaria_2018_rituximab
-  - articles/Canini_2018_setrobuvir
+  - articles/Canini_2015_danoprevir
   - articles/Cao_2013_GNbAC1
   - articles/Cao_2013_MEDI528
   - articles/Cao_2013_PAmAb
