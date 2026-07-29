@@ -1396,6 +1396,8 @@ navbar:
         href: articles/Hirt_2006_nelfinavir.html
       - text: "Nelfinavir (Hirt 2007)"
         href: articles/Hirt_2007_nelfinavir.html
+      - text: "Nemtabrutinib (Kemal 2026)"
+        href: articles/Kemal_2026_nemtabrutinib.html
       - text: "Nevirapine (Bienczak 2016)"
         href: articles/Bienczak_2016_nevirapine.html
       - text: "Nevirapine (Schipani 2011)"
@@ -2919,6 +2921,7 @@ articles:
   - articles/Kay_2022_lumefantrine
   - articles/Keizer_2011_E7820
   - articles/Kelman_1984_gentamicin
+  - articles/Kemal_2026_nemtabrutinib
   - articles/Kerbusch_2000_ifosfamide
   - articles/Kervezee_2014_quinidine_rat
   - articles/Khan_2015_ciprofloxacin
