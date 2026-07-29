@@ -1710,6 +1710,8 @@ navbar:
         href: articles/Bukkems_2021_raltegravir.html
       - text: "Raltegravir (Lee 2016)"
         href: articles/Lee_2016_raltegravir.html
+      - text: "Raltegravir (Lommerse 2019)"
+        href: articles/Lommerse_2019_raltegravir.html
       - text: "Raltegravir (Wang 2011)"
         href: articles/Wang_2011_raltegravir.html
       - text: "Raltitrexed (Blair 2004)"
@@ -3010,6 +3012,7 @@ articles:
   - articles/Llanos-Paez_2020_gentamicin
   - articles/Lodise_2018_iclaprim
   - articles/LohyDas_2018_artesunate
+  - articles/Lommerse_2019_raltegravir
   - articles/Lon_2013_abatacept
   - articles/Long_2017_necitumumab
   - articles/Long-Boyle_2015_busulfan
