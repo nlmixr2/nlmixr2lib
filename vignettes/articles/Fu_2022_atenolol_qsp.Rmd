@@ -137,17 +137,24 @@ build_cohort <- function(dose_mg_per_kg, n, id_offset, study_az = 0L) {
   # HR, CTRM, CO, MAP, Cc, and all ODE states as columns regardless of the
   # observation `cmt` value.
   dplyr::bind_rows(lapply(ids, function(sid) {
-    ev <- rxode2::et(amountUnits = "mg/kg", timeUnits = "hours")
+    # Units are recorded STATICALLY in the comments below (and canonically in
+    # the model's own `units` field: time = hours, dosing = mg/kg) rather than
+    # declared via et(amountUnits=, timeUnits=). Those arguments attach unit
+    # attributes through the `units` package, which is NOT a dependency of
+    # nlmixr2lib and is absent on the CI runners -- pkgdown failed with
+    # "there is no package called 'units'". Nothing was gained by declaring
+    # them here: the attributes were stripped back to plain numerics two lines
+    # later so dplyr::bind_rows could align the columns. No unit CONVERSION is
+    # performed anywhere in this vignette; every dose is already mg/kg and
+    # every time is already hours, matching the model.
+    ev <- rxode2::et()
     if (dose_mg_per_kg > 0) {
+      # amt in mg/kg; time in hours (dose at 168 h = end of the 1-week warm-up)
       ev <- ev |>
         rxode2::et(amt = dose_mg_per_kg, cmt = "depot", time = 168)
     }
-    ev <- ev |> rxode2::et(time = tobs, cmt = "HR")
+    ev <- ev |> rxode2::et(time = tobs, cmt = "HR")   # tobs in hours
     df <- as.data.frame(ev)
-    # Strip time / amt units so dplyr::bind_rows can align columns cleanly
-    for (nm in names(df)) if (!is.null(attr(df[[nm]], "units"))) {
-      df[[nm]] <- as.numeric(df[[nm]])
-    }
     df$id              <- sid
     df$STUDY_FU2022_AZ <- study_az
     df$treatment       <- treatment_lbl
