@@ -232,6 +232,8 @@ navbar:
         href: articles/Svensson_2014_bedaquiline_arv.html
       - text: "Belantamab (Papathanasiou 2025)"
         href: articles/Papathanasiou_2025_belantamab.html
+      - text: "Belantamab mprotein (Collins 2023)"
+        href: articles/Collins_2023_belantamab_mprotein.html
       - text: "Belatacept (Shen 2013)"
         href: articles/Shen_2013_belatacept.html
       - text: "Belimumab (Struemper 2017)"
@@ -2627,6 +2629,7 @@ articles:
   - articles/CohenWolkowiez_2012_metronidazole
   - articles/CohenWolkowiez_2014_piperacillin_tazobactam
   - articles/Colin_2014_moxifloxacin
+  - articles/Collins_2023_belantamab_mprotein
   - articles/Colombo_2006_atazanavir
   - articles/Conil_2007_ceftazidime
   - articles/Conil_2010_tobramycin

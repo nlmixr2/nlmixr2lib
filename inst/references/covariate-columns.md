@@ -1797,7 +1797,7 @@ All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODA
 - **Reference category:** n/a -- used with power scaling `(SBCMA / ref)^exponent`. Reference value observed: 50 ng/mL (Papathanasiou 2025 typical-patient definition).
 - **Source aliases:**
   - `SBCMABL` (baseline soluble BCMA) -- used in `Papathanasiou_2025_belantamab.R`.
-- **Example models:** `Papathanasiou_2025_belantamab.R` (ng/mL, reference 50; power exponents on initial CL +0.113, on ADC Vc +0.0401, on Imax +0.160).
+- **Example models:** `Papathanasiou_2025_belantamab.R` (ng/mL, reference 50; power exponents on initial CL +0.113, on ADC Vc +0.0401, on Imax +0.160); `Collins_2023_belantamab_mprotein.R` (ng/mL, reference 100; power exponent -0.414 on the effect-compartment rate constant KEO of the serum M-protein tumour-growth-inhibition model).
 - **Notes:** Specific scope because the column is meaningful only for drugs whose mechanism involves the BCMA receptor (and thus a circulating soluble-target pool). Reusing the name for another anti-BCMA agent is acceptable (extend the example-models list). For other oncology TMDD targets register a new canonical (e.g., `HER2_ECD` already exists for HER2; an analogous `SCD20`, `SCD38` would follow the same pattern). Multiple myeloma populations show sBCMA spanning roughly 2 to 2,000 ng/mL, so the (SBCMA/50)^exponent form should be evaluated with care over the full clinical range.
 
 ### HBA1C (**canonical for glycated hemoglobin**)
@@ -3453,6 +3453,18 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Example models:** `Ogasawara_2020_durvalumab.R` (multiplicative factor 0.820 on Vc per Ogasawara 2020 Table 3 footnote c; active (non-smoldering) multiple myeloma cohort from studies MEDI4736-MM-002 and -MM-005).
 - **Notes:** Renamed from `MM` to `DIS_MM` on 2026-06-19 per the canonical-register standardization audit (operator decision to apply the `DIS_<concept>` prefix uniformly to disease-state indicators; the bare `MM` token clashed with the millimolar SI unit and with the TUMTP "MM = malignant melanoma" usage). Distinct from `DIS_SMM` (smoldering multiple myeloma) and `MM_NIGG` (the immunoglobulin-subtype stratifier within multiple myeloma cohorts).
 
+### DIS_EMD (**canonical for extramedullary disease indicator**)
+- **Description:** 1 = extramedullary disease (plasmacytoma or plasma-cell infiltration outside the bone marrow) present at baseline / screening, 0 = disease confined to the bone marrow. Time-fixed per subject. An aggressive-phenotype and high-tumour-burden marker in multiple myeloma and related plasma-cell malignancies; prevalence is roughly 15-20% at initial diagnosis and higher in relapsed/refractory populations.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (medullary / bone-marrow-confined disease).
+- **Source aliases:**
+  - `MEDFL` -- used in `Collins_2023_belantamab_mprotein.R`; the same column name appears in the related GSK belantamab mafodotin exposure-response analyses.
+  - `EMD`, `EMD_BL`, `EXTRAMED` -- plausible alternative NONMEM `$INPUT` forms.
+- **Example models:** `Collins_2023_belantamab_mprotein.R` (multiplicative factor 0.108 on the effect-compartment rate constant KEO of the serum M-protein tumour-growth-inhibition model when `DIS_EMD = 1`, per Collins 2023 Table 1; 95% CI 0.0617-0.187).
+- **Notes:** Distinct from `DIS_MM` (active vs smoldering multiple-myeloma disease status) and `DIS_SMM` (smoldering multiple myeloma), and complementary to both: a patient with active multiple myeloma may or may not have extramedullary disease. Also distinct from the ulcerative-colitis disease-extent canonicals `DISEXT_EP` / `DISEXT_OTHER`, which describe the anatomical extent of inflammatory bowel disease rather than a plasma-cell malignancy outside the marrow. Covariate-effect parameters drop the `DIS_` prefix per the `DIS_CANCER` -> `e_cancer_*` convention; use `e_emd_<param>`. Scope: specific because the concept is mechanistically bound to plasma-cell malignancies. Ratified canonically on 2026-07-27 alongside the Collins 2023 belantamab mafodotin M-protein extraction.
+
 ### DIS_PNH (**canonical for paroxysmal nocturnal hemoglobinuria indicator**)
 - **Description:** 1 = paroxysmal nocturnal hemoglobinuria (PNH) patient, 0 = non-PNH subject (healthy volunteer or another indication pooled in the source analysis). Time-fixed per subject.
 - **Units:** (binary)
@@ -4218,7 +4230,7 @@ Baseline seizure-severity indicators derived from a pre-trial seizure count (typ
 - **Reference category:** n/a -- used as a continuous, log-linear effect on the Vmax of target-mediated elimination via `exp(theta * MCPROT)` (i.e., MCPROT enters un-log-transformed). Reference values observed: 0 g/dL (Ide 2020 Vmax,REF reference) and 2.0 g/dL (Ide 2020 figure-1 reference patient).
 - **Source aliases:**
   - `TMCPROT` (time-varying serum M-protein concentration) -- used in `Ide_2020_elotuzumab.R`. NONMEM column with imputation sentinel `-99` for missing observations, replaced by population median 2.1 g/dL via `IF(TMCPROT.EQ.-99) TMCPROT = 2.1`.
-- **Example models:** `Ide_2020_elotuzumab.R` (g/dL, time-varying; entered un-log-transformed as `exp(0.277 * MCPROT)` on Vmax of the Michaelis-Menten target-mediated elimination from the central compartment).
+- **Example models:** `Ide_2020_elotuzumab.R` (g/dL, time-varying; entered un-log-transformed as `exp(0.277 * MCPROT)` on Vmax of the Michaelis-Menten target-mediated elimination from the central compartment); `Collins_2023_belantamab_mprotein.R` (g/L, time-fixed baseline; seeds the initial condition of the modelled M-protein `tumor` state and is binarized as `(MCPROT < 20)` to carry a multiplicative factor 1.41 on the kill rate constant KD).
 - **Notes:** Specific scope because the column is mechanistically meaningful only for plasma-cell-targeting therapies in multiple myeloma (e.g., elotuzumab anti-SLAMF7, daratumumab anti-CD38, isatuximab anti-CD38, belantamab anti-BCMA, and BCMA-bispecifics / CAR-T). MCPROT decreases with treatment response; the time-varying form is the only correct way to capture the diminishing target-mediated-elimination component as the tumor regresses. In NONMEM datasets MCPROT is supplied at each event-row time, with linear interpolation between observations and last-observation-carried-forward beyond the last sample (Ide 2020 Methods). Distinct from `MM_NIGG` (which is the immunoglobulin subtype, an MM-disease stratifier that is time-fixed), `SBCMA` (soluble BCMA, a different MM tumor-burden biomarker for BCMA-targeting drugs), and `B2M` (beta-2-microglobulin, a renal-function-and-MM-disease-burden marker). The 1 g/dL = 10 g/L conversion lets future SI-convention papers register the same canonical with their own unit string.
 
 ### PDL1_TUM (**canonical for tumor PD-L1 expression (tumor proportion score)**)
