@@ -27,7 +27,7 @@ Wright_2013_allopurinol <- function() {
       notes              = "Time-fixed baseline. Reference CLcr_STD = 6 L/h per 70 kg (equivalent to 100 mL/min per 70 kg body weight), Wright 2013 Methods 'Covariate model' equation for RF. Range 1.0 to 8.5 L/h (median 4.3 L/h) across the pooled dataset (Wright 2013 Table 1). The renal component of oxypurinol clearance is proportional to CRCL / 6. Wright's CLcr is scaled per 70 kg body weight rather than to 1.73 m^2 body surface area, in keeping with the Anderson-Holford PK-scaling convention.",
       source_name        = "CLcr"
     ),
-    CONMED_DIUR = list(
+    CONMED_DIURETIC = list(
       description        = "Concomitant diuretic therapy indicator (any diuretic class)",
       units              = "(binary)",
       type               = "binary",
@@ -134,10 +134,10 @@ Wright_2013_allopurinol <- function() {
 
     # Oxypurinol clearance: linear sum of non-renal + renal components. The
     # renal component is proportional to (CRCL / 6), scaled by the diuretic
-    # multiplier raised to the CONMED_DIUR indicator. The whole clearance
+    # multiplier raised to the CONMED_DIURETIC indicator. The whole clearance
     # is allometrically scaled by (FFM / 70)^0.75 (Wright 2013 page 6 final
     # equation). Log-normal BSV is applied multiplicatively to the total.
-    cl_oxy_renal <- cl_oxy_renref * (CRCL / 6) * (e_conmed_diuretic_cl_oxy_renal^CONMED_DIUR)
+    cl_oxy_renal <- cl_oxy_renref * (CRCL / 6) * (e_conmed_diuretic_cl_oxy_renal^CONMED_DIURETIC)
     cl_oxy_typ   <- (cl_oxy_nonren + cl_oxy_renal) * (FFM / 70)^e_ffm_cl
     cl_oxy       <- cl_oxy_typ * exp(etacl_oxy)
     v_oxy        <- exp(lv_oxy + etalv_oxy) * (FFM / 70)^e_ffm_vc

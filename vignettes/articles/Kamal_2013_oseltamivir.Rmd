@@ -37,8 +37,8 @@ covariate on the prodrug CLp/F and on both OC parameters CLm/F and
 Vcm/F; creatinine clearance is a power covariate on CLm/F; age is a
 linear additive term on Vcm/F. Inter-individual variability is
 exponential on all seven structural parameters with two off-diagonal
-covariances on the eta scale: (etalcl, etalcl_oc) and (etalvp,
-etalvc_oc). Residual error is proportional only for OP (40.5 % CV) and
+covariances on the eta scale: (etalcl, etalcl_oselcarb) and (etalvp,
+etalvc_oselcarb). Residual error is proportional only for OP (40.5 % CV) and
 combined additive plus proportional for OC (14.0 % CV + 17.9 ng/mL).
 
 # Population
@@ -107,7 +107,7 @@ Table 2 (final-estimate column).
 | ODE: `d/dt(depot) = -ka * depot` | n/a | Figure 1 schematic (page 3472) |
 | ODE: `d/dt(central) = ka * depot - kel * central - k12 * central + k21 * peripheral1` | n/a | Figure 1 schematic; Methods 'Structural model development' page 3471 |
 | ODE: `d/dt(peripheral1) = k12 * central - k21 * peripheral1` | n/a | Figure 1 schematic |
-| ODE: `d/dt(central_oc) = kel * central - kel_oc * central_oc` | n/a | Figure 1 schematic ('direct conversion of oseltamivir to OC'); Discussion page 3473 ('oseltamivir is completely converted to the OC metabolite') |
+| ODE: `d/dt(central_oselcarb) = kel * central - kel_oselcarb * central_oselcarb` | n/a | Figure 1 schematic ('direct conversion of oseltamivir to OC'); Discussion page 3473 ('oseltamivir is completely converted to the OC metabolite') |
 
 # Virtual cohort
 
@@ -181,7 +181,7 @@ sim_crcl_ss <- sim_crcl |>
   mutate(t_in_interval = time - 108,
          group = factor(group, levels = c("CRCL 120","CRCL 80","CRCL 50","CRCL 30")))
 
-ggplot(sim_crcl_ss, aes(t_in_interval, Cc_oc, colour = group)) +
+ggplot(sim_crcl_ss, aes(t_in_interval, Cc_oselcarb, colour = group)) +
   geom_line(linewidth = 0.7) +
   scale_y_continuous(name = "OC concentration (mg/L)") +
   scale_x_continuous(name = "Time after morning dose at steady state (h)",
@@ -195,9 +195,9 @@ ggplot(sim_crcl_ss, aes(t_in_interval, Cc_oc, colour = group)) +
 ```{r figure-4a-ratios}
 auc24 <- sim_crcl_ss |>
   group_by(group) |>
-  summarise(AUC_0_24 = PKNCA::pk.calc.auc(Cc_oc, t_in_interval,
+  summarise(AUC_0_24 = PKNCA::pk.calc.auc(Cc_oselcarb, t_in_interval,
                                           method = "linear"),
-            Cmax     = max(Cc_oc),
+            Cmax     = max(Cc_oselcarb),
             .groups = "drop")
 ref_120 <- auc24 |> filter(group == "CRCL 120")
 auc24 <- auc24 |>
@@ -242,7 +242,7 @@ sim_wt_ss <- sim_wt |>
   filter(time >= 108, time <= 132) |>
   mutate(t_in_interval = time - 108)
 
-ggplot(sim_wt_ss, aes(t_in_interval, Cc_oc, colour = wt_band)) +
+ggplot(sim_wt_ss, aes(t_in_interval, Cc_oselcarb, colour = wt_band)) +
   geom_line(linewidth = 0.7) +
   facet_wrap(~ age_band) +
   scale_y_continuous(name = "OC concentration (mg/L)") +
@@ -257,8 +257,8 @@ ggplot(sim_wt_ss, aes(t_in_interval, Cc_oc, colour = wt_band)) +
 ```{r figure-4b-ratios}
 wt_age_summary <- sim_wt_ss |>
   group_by(age_band, wt_band) |>
-  summarise(Cmax = max(Cc_oc),
-            AUC_0_24 = PKNCA::pk.calc.auc(Cc_oc, t_in_interval, method = "linear"),
+  summarise(Cmax = max(Cc_oselcarb),
+            AUC_0_24 = PKNCA::pk.calc.auc(Cc_oselcarb, t_in_interval, method = "linear"),
             .groups = "drop")
 
 # Within-age weight ratios (90 kg vs 50 kg).
@@ -319,9 +319,9 @@ sim_vpc_ss <- sim_vpc |>
   filter(time >= 108, time <= 132) |>
   mutate(t_in_interval = time - 108) |>
   group_by(t_in_interval) |>
-  summarise(Q05_oc = quantile(Cc_oc, 0.05),
-            Q50_oc = quantile(Cc_oc, 0.50),
-            Q95_oc = quantile(Cc_oc, 0.95),
+  summarise(Q05_oselcarb = quantile(Cc_oselcarb, 0.05),
+            Q50_oselcarb = quantile(Cc_oselcarb, 0.50),
+            Q95_oselcarb = quantile(Cc_oselcarb, 0.95),
             Q05_op = quantile(Cc,    0.05),
             Q50_op = quantile(Cc,    0.50),
             Q95_op = quantile(Cc,    0.95),
@@ -358,38 +358,38 @@ nca_grid <- sim_crcl |>
   filter(time >= 108, time <= 132) |>
   mutate(time = time - 108)
 
-conc_oc  <- nca_grid |> select(id, time, Cc_oc, group) |>
-  rename(Cc = Cc_oc)
-dose_oc  <- nca_grid |>
+conc_oselcarb  <- nca_grid |> select(id, time, Cc_oselcarb, group) |>
+  rename(Cc = Cc_oselcarb)
+dose_oselcarb  <- nca_grid |>
   group_by(id, group) |>
   slice_min(time, n = 1, with_ties = FALSE) |>
   ungroup() |>
   mutate(amt = 75, time = 0) |>
   select(id, time, amt, group)
 
-conc_obj_oc <- PKNCA::PKNCAconc(conc_oc, Cc ~ time | group + id)
-dose_obj_oc <- PKNCA::PKNCAdose(dose_oc, amt ~ time | group + id)
+conc_obj_oselcarb <- PKNCA::PKNCAconc(conc_oselcarb, Cc ~ time | group + id)
+dose_obj_oselcarb <- PKNCA::PKNCAdose(dose_oselcarb, amt ~ time | group + id)
 
-intervals_oc <- data.frame(
+intervals_oselcarb <- data.frame(
   start = 0, end = 24,
   cmax = TRUE, tmax = TRUE, auclast = TRUE, half.life = TRUE
 )
 
-nca_data_oc <- PKNCA::PKNCAdata(conc_obj_oc, dose_obj_oc, intervals = intervals_oc)
-nca_res_oc  <- PKNCA::pk.nca(nca_data_oc)
+nca_data_oselcarb <- PKNCA::PKNCAdata(conc_obj_oselcarb, dose_obj_oselcarb, intervals = intervals_oselcarb)
+nca_res_oselcarb  <- PKNCA::pk.nca(nca_data_oselcarb)
 
-nca_table_oc <- as.data.frame(nca_res_oc$result) |>
+nca_table_oselcarb <- as.data.frame(nca_res_oselcarb$result) |>
   select(group, PPTESTCD, PPORRES) |>
   pivot_wider(names_from = PPTESTCD, values_from = PPORRES)
 
-knitr::kable(nca_table_oc, digits = 3,
+knitr::kable(nca_table_oselcarb, digits = 3,
              caption = "Simulated OC NCA parameters across the steady-state 12-hour interval (cmax in mg/L, tmax in h, auclast in mg*h/L, half-life in h).")
 ```
 
 ```{r pknca-op}
 conc_op  <- nca_grid |> select(id, time, Cc, group)
 conc_obj_op <- PKNCA::PKNCAconc(conc_op, Cc ~ time | group + id)
-dose_obj_op <- PKNCA::PKNCAdose(dose_oc, amt ~ time | group + id)
+dose_obj_op <- PKNCA::PKNCAdose(dose_oselcarb, amt ~ time | group + id)
 
 intervals_op <- data.frame(
   start = 0, end = 12,
@@ -466,7 +466,7 @@ OC AUC) is also covered by the simulated AUC table above.
   rows "sigma^2 CCV" and "sigma^2 ADD" but the numerical values are
   reported as SDs (% CV for the proportional CCV term; ng/mL for the
   additive ADD term). The values 40.5 %, 14.0 %, and 17.9 ng/mL are
-  encoded as `propSd`, `propSd_oc`, and `addSd_oc` respectively on
+  encoded as `propSd`, `propSd_oselcarb`, and `addSd_oselcarb` respectively on
   the linear concentration scale (mg/L for the OC additive SD), and
   the cross-check at the bounds reproduces the paper's reported
   combined-error range of "49.8 % to 14.3 % CV for plasma OC

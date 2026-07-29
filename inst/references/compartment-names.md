@@ -1014,9 +1014,9 @@ These are internationally standardised clinical abbreviations registered as cano
 - **Source aliases:** none.
 - **Example models:** osteoporosis PD models.
 
-### OC (**canonical osteocalcin**)
+### OSTCALC (**canonical osteocalcin**)
 - **Type:** compartment
-- **Role:** Osteocalcin bone-turnover biomarker.
+- **Role:** Osteocalcin bone-turnover biomarker. Renamed from the former `OC` canonical on 2026-07-26: `OC` was overloaded across five unrelated concepts in this codebase (osteocalcin, oseltamivir carboxylate, oral contraceptive, ovarian cancer, and the omega-correlation column of a source table). Uppercase to match the sibling biomarker observables (`P1NP`, `PSA`, `PLT`, `WBC`, `MBL`) and, in particular, the sister model `Shoji_2017_fosdagrocorat_p1np`, which names its observable `P1NP` in the identical structural slot.
 - **Source aliases:** none.
 - **Example models:** osteoporosis PD models.
 
@@ -3269,11 +3269,13 @@ Antibiotic combination-PK drug suffixes (linezolid, vancomycin, meropenem long f
 - **Source aliases:** none.
 - **Example models:** `Chen_2017_TB_MTP_GPDI_mouse.R`.
 
-### oc (**canonical oseltamivir carboxylate suffix**)
+### oselcarb (**canonical oseltamivir carboxylate suffix**)
 - **Type:** metabolite-suffix
 - **Role:** Oseltamivir carboxylate (OC), the active neuraminidase-inhibitor metabolite formed from the oseltamivir prodrug primarily via human carboxylesterase 1 (HCE1) in the liver.
-- **Source aliases:** none.
-- **Example models:** `Standing_2012_oseltamivir.R`.
+- **Source aliases:**
+  - `OC` -- the abbreviation used throughout the oseltamivir literature (Chairat 2016, Kamal 2013, Standing 2012) and retained in prose / plot labels.
+- **Example models:** `Standing_2012_oseltamivir.R`, `Chairat_2016_oseltamivir.R`, `Kamal_2013_oseltamivir.R`.
+- **Notes:** Renamed from the former `oc` suffix on 2026-07-26 to remove the `OC`/`oc` case-only distinction from osteocalcin. Used as `central_oselcarb`, `cl_oselcarb`, `lcl_oselcarb`, `lvc_oselcarb`, `Cc_oselcarb`, following the `enaat` metabolite-suffix pattern.
 
 ### enaat (**canonical enalaprilat metabolite suffix**)
 - **Type:** metabolite-suffix

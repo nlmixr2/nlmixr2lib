@@ -102,7 +102,7 @@ tumtp_p <- c(
   HCC   = 0.122,
   NPC   = 0.008,
   NSCLC = 0.443,
-  OC    = 0.020,
+  TUMTP_OVARIAN = 0.020,
   UC    = 0.058,
   Other = 0.108
 )
