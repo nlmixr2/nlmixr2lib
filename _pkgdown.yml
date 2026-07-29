@@ -2148,6 +2148,8 @@ navbar:
         href: articles/Nichols_2016_piperacillin_tazobactam.html
       - text: "Tefibazumab (Cao 2013)"
         href: articles/Cao_2013_tefibazumab.html
+      - text: "Teicoplanin (Chen 2023)"
+        href: articles/Chen_2023_teicoplanin.html
       - text: "Teicoplanin (Wi 2017)"
         href: articles/Wi_2017_teicoplanin.html
       - text: "Teicoplanin (Zhao 2015)"
@@ -2725,6 +2727,7 @@ articles:
   - articles/Chen_2021_ganciclovir
   - articles/Chen_2021_lorlatinib
   - articles/Chen_2022_guselkumab
+  - articles/Chen_2023_teicoplanin
   - articles/Cheng_2026_immunoglobulin
   - articles/Chi_2018_propofol
   - articles/Chien_2022_imatinib
