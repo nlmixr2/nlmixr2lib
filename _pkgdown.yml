@@ -1184,6 +1184,8 @@ navbar:
         href: articles/Taubert_2016_linezolid.html
       - text: "Linezolid (Tsuji 2017)"
         href: articles/Tsuji_2017_linezolid.html
+      - text: "Linezolid cns pbpk (Litjens 2023)"
+        href: articles/Litjens_2023_linezolid_tuberculous_meningitis.html
       - text: "Liraglutide (CarlssonPetri 2021)"
         href: articles/CarlssonPetri_2021_liraglutide.html
       - text: "Liraglutide (Overgaard 2016)"
@@ -3165,6 +3167,7 @@ articles:
   - articles/Lindauer_2017_lacosamide
   - articles/Lindauer_2017_pembrolizumab
   - articles/Lioger_2017_rituximab
+  - articles/Litjens_2023_linezolid_tuberculous_meningitis
   - articles/Livio_2014_tobramycin
   - articles/Llanos_2017_gentamicin
   - articles/Llanos-Paez_2017_gentamicin
