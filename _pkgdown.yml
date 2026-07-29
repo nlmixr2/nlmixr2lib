@@ -1700,8 +1700,6 @@ navbar:
         href: articles/LeJouan_2005_quinine.html
       - text: "Quinine rat (Sheng 2016)"
         href: articles/Sheng_2016_quinine_rat.html
-      - text: "R methadone (Aruldhas 2021)"
-        href: articles/Aruldhas_2021_methadone.html
       - text: "RacSotalol QTcF (Darpo 2014)"
         href: articles/Darpo_2014_racSotalol.html
       - text: "RacSotalol QTcI (Darpo 2014)"
@@ -2753,6 +2751,7 @@ articles:
   - articles/Golubovic_2019_sirolimus
   - articles/GonzalezSales_2015_testosterone
   - articles/GonzalezSales_2024_imetelstat
+  - articles/Goteti_2024_SLE_mbma
   - articles/Goti_2018_vancomycin
   - articles/Goulooze_2022_finerenone
   - articles/Grasela_1985_phenobarbital
@@ -3556,28 +3555,5 @@ articles:
   - articles/Zuo_2016_UDCA
   - articles/Zurlinden_2016_paracetamol
   - articles/Zvada_2010_rifapentine
-  - articles/deAlwis_1998_ondansetron
-  - articles/deHoogd_2017_morphine
-  - articles/deJonge_2005_paclitaxel
-  - articles/deKock_2017_sulfadoxinePyrimethamine
-  - articles/deVriesSchultink_2018_cardiotoxicity
-  - articles/deVriesSchultink_2020_zenocutuzumab
-  - articles/deWinter_2009_mycophenolic_acid
-  - articles/deWit_2016_everolimus
-  - articles/elDesoky_1997_theophylline_pediatric_asthma
-  - articles/vanErp_2010_sunitinib
-  - articles/vanHasselt_2013_eribulin
-  - articles/vanHasselt_2015_eribulin
-  - articles/vanIersel_2018_posaconazole
-  - articles/vanRongen_2015_midazolam
-  - articles/vanRongen_2016_acetaminophen
-  - articles/vanRongen_2017_midazolam
-  - articles/vanRongen_2018_metformin
-  - articles/vanRongen_2018_midazolam
-  - articles/vanWijk_2019_paracetamol
-  - articles/vandenBerg_2021_finerenone
-  - articles/vandenBerg_2021_uprifosbuvir
-  - articles/vanderWalt_2013_dapagliflozin
-  - articles/vonHentig_2009_saquinavir
   internal: true
 # AUTOGEN:articles:END
