@@ -1706,6 +1706,8 @@ navbar:
         href: articles/Cardilin_2018_radiation_radiosensitizer_mouse.html
       - text: "Raltegravir (ArabAlameddine 2012)"
         href: articles/ArabAlameddine_2012_raltegravir.html
+      - text: "Raltegravir (Bukkems 2021)"
+        href: articles/Bukkems_2021_raltegravir.html
       - text: "Raltegravir (Lee 2016)"
         href: articles/Lee_2016_raltegravir.html
       - text: "Raltegravir (Wang 2011)"
@@ -2524,6 +2526,7 @@ articles:
   - articles/Budha_2023_tislelizumab
   - articles/Buelga_2005_vancomycin
   - articles/Buil-Bruna_2015_lanreotide
+  - articles/Bukkems_2021_raltegravir
   - articles/Bulitta_2007_piperacillin
   - articles/Bulitta_2009_ceftazidime
   - articles/Bulitta_2009_cefuroxime_axetil

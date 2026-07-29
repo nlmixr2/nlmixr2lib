@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Berkhout 2015 placebo-arm osteoporosis QSP ([doi:10.1002/psp4.12006](https://doi.org/10.1002/psp4.12006)) -- postmenopausal women in the placebo arm of the EPIC study (reduced Lemaire bone-remodelling QSP with indirect-response BMD; ratifies new canonical compartments `osteoblast`, `osteoclast`, `BMD_LS`, `BMD_TH` and extends the existing `T_ENTRY` covariate to a second registered use).
+* Add Bukkems 2021 raltegravir ([doi:10.1002/psp4.12586](https://doi.org/10.1002/psp4.12586)) -- pooled healthy adults, non-pregnant adults living with HIV, and third-trimester pregnant women living with HIV across 400 mg BID and 1200 mg QD (two 600 mg tablets) regimens (ratifies new `FORM_RAL_600` and `FED_LOWFAT` covariate canonicals).
 * Add Beal 2001 one-compartment IV-bolus BQL methodology template ([doi:10.1023/a:1012299115260](https://doi.org/10.1023/a:1012299115260)) -- methodology reference (no drug, no patients); packages the SI1 generative model from Beal's M1-M7 below-quantification-limit paper as a teaching template with CL = 0.693 and Vd = 1 (time in half-lives).
 * Add Luu 2017 nusinersen ([doi:10.1002/jcph.884](https://doi.org/10.1002/jcph.884)) -- pediatric patients with spinal muscular atrophy receiving intrathecal nusinersen.
 * Add Gaohua 2012 pregnancy PBPK ([doi:10.1111/j.1365-2125.2012.04363.x](https://doi.org/10.1111/j.1365-2125.2012.04363.x)) -- healthy pregnant Caucasian women (14-compartment whole-body p-PBPK with GA-dependent maternal physiology, applied to caffeine [CYP1A2], metoprolol [CYP2D6], and midazolam [CYP3A4]); ratifies new canonical bare `skin` PBPK compartment.
