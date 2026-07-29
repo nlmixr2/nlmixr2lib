@@ -596,10 +596,14 @@ navbar:
         href: articles/Kovalenko_2020_dupilumab.html
       - text: "Dupilumab (Zhang 2021)"
         href: articles/Zhang_2021_dupilumab.html
+      - text: "Dupilumab 3cmt qsp (Kapitanov 2025)"
+        href: articles/Kapitanov_2025_dupilumab.html
       - text: "Dupilumab base (Kovalenko 2020)"
         href: articles/Kovalenko_2020_dupilumab.html
       - text: "Dupilumab covariate (Kovalenko 2020)"
         href: articles/Kovalenko_2020_dupilumab.html
+      - text: "Dupilumab qsp (Kapitanov 2025)"
+        href: articles/Kapitanov_2025_dupilumab.html
       - text: "Durvalumab (Ogasawara 2020)"
         href: articles/Ogasawara_2020_durvalumab.html
       - text: "Dutasteride (Gisleskog 1999)"
@@ -2912,6 +2916,7 @@ articles:
   - articles/Kamal_2013_oseltamivir
   - articles/Kamal_2015_oseltamivir
   - articles/Kang_2020_cefpirome
+  - articles/Kapitanov_2025_dupilumab
   - articles/Kappelhoff_2005_indinavir
   - articles/Kappelhoff_2005_ritonavir
   - articles/Karaiskos_2015_colistin
