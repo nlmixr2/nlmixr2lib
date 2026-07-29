@@ -7775,6 +7775,36 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Example models:** `Vargo_2014_statins_ezetimibe_mbma.R` (linear coefficient `e_chd_emax_statin = -0.000649` per percentage point on Emax_statin, i.e. a 24% CHD arm reduces Emax_statin by `0.000649 * 24 = 0.016`; the paper's typical-patient definition uses 24% CHD).
 - **Notes:** MBMA study-arm-level covariate; the canonical register's individual-level pop-PK covariates do not directly fit aggregate-percentage columns, so this canonical is specific-scope and explicitly carries a study-arm aggregate meaning. Future MBMA models should reuse for the CHD-cohort prevalence column. Ratified 2026-05-28 per the naming audit.
 
+### TUMTP_SQUAM_PCT (**canonical for squamous-tumor-histology cohort prevalence percentage**)
+- **Description:** Study-arm-level percentage (0-100) of the enrolled cohort whose tumor histology is squamous (versus non-squamous). Continuous covariate scaled in percent (not fraction). In non-small cell lung cancer (NSCLC) MBMA papers the arm's squamous fraction interacts with the chemotherapy treatment class (chemotherapy tends to be more effective on squamous NSCLC than on non-squamous NSCLC).
+- **Units:** %
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** 0% (all-non-squamous arm).
+- **Source aliases:** `%squamous histology` (Franzese 2026 Table 1 / Table S1 covariate label).
+- **Example models:** `Franzese_2026_pdl1_nsclc_mbma.R` (linear coefficients on ORR chemotherapy intercept (+0.282), OS chemotherapy hazard (+0.213), and PFS chemotherapy hazard (+0.186) in a mNSCLC MBMA of PD-(L)1 immunotherapy).
+- **Notes:** MBMA study-arm-level covariate. Family precedent: `DIS_CHD_PERCENT` (Vargo 2014). Ratified 2026-07-24 alongside the Franzese 2026 mNSCLC MBMA. Distinct from a per-subject binary squamous-histology indicator; here the arm's squamous fraction is a continuous proportion of participants.
+
+### PS_ECOG_0_PCT (**canonical for ECOG-performance-status-0 cohort prevalence percentage**)
+- **Description:** Study-arm-level percentage (0-100) of the enrolled cohort with an Eastern Cooperative Oncology Group (ECOG) Performance Status score of 0 at baseline (fully active / asymptomatic). Continuous covariate scaled in percent (not fraction). Higher arm-level ECOG-0 fraction typically indicates a healthier / more-active enrolled cohort and is associated with better survival outcomes.
+- **Units:** %
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** 0% (no ECOG-0 patients; all ECOG >= 1).
+- **Source aliases:** `%ECOG PS score of 0` / `ps.0` (Franzese 2026 Table 1 / Table S1 covariate label).
+- **Example models:** `Franzese_2026_pdl1_nsclc_mbma.R` (linear coefficient on OS non-chemotherapy hazard (-0.400) and on PFS global hazard (-0.293) in a mNSCLC MBMA of PD-(L)1 immunotherapy).
+- **Notes:** MBMA study-arm-level covariate. Distinct from the per-subject `ECOG_GE1` and `ECOG_GE2` binaries (individual-level indicators). Family precedent: `DIS_CHD_PERCENT` (Vargo 2014). Ratified 2026-07-24 alongside the Franzese 2026 mNSCLC MBMA.
+
+### RACE_ASIAN_PCT (**canonical for Asian-race cohort prevalence percentage**)
+- **Description:** Study-arm-level percentage (0-100) of the enrolled cohort who are Asian (any Asian subgroup, matching the individual-level `RACE_ASIAN` canonical). Continuous covariate scaled in percent (not fraction).
+- **Units:** %
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** 0% (all-non-Asian arm).
+- **Source aliases:** `%Asian race` / `Race.Asian` (Franzese 2026 Table 1 / Table S1 covariate label).
+- **Example models:** `Franzese_2026_pdl1_nsclc_mbma.R` (enters the OS ORR-slope as an interaction term `(eta_orr_os - 0.595) * (ORR/100) * (RACE_ASIAN_PCT/100)`; the paper's Discussion attributes the effect to regional trial-conduct differences rather than an inherent race effect).
+- **Notes:** MBMA study-arm-level covariate. Distinct from the per-subject binary `RACE_ASIAN` canonical (individual-level 0 or 1); here the arm's Asian fraction is a continuous proportion of participants. Also distinct from Yang 2010's use of `RACE_ASIAN` as a binary at the arm level (whole-arm-Asian vs whole-arm-Western), which is coarser than the continuous-fraction form. Family precedent: `DIS_CHD_PERCENT` (Vargo 2014). Ratified 2026-07-24 alongside the Franzese 2026 mNSCLC MBMA.
+
 ### FORM_ISA_P2F2 (**canonical for isatuximab P2F2 drug-material indicator**)
 <!-- AUDIT 2026-06-19: renamed from `FORM_P2F2` to `FORM_ISA_P2F2` per the canonical-register standardization audit. The prior name `FORM_P2F2` is preserved as a source_alias for one release cycle so existing covariate-data CSVs continue to load. -->
 - **Description:** 1 = isatuximab P2F2 drug material (intended commercial / phase III material, used in the EFC14335 / ICARIA-MM study), 0 = P1F1 drug material (early-phase material used in TED10893 / TED14154 / TCD14079).
