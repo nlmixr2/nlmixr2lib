@@ -1594,6 +1594,8 @@ navbar:
         href: articles/Li_2014_penicillinG.html
       - text: "PenicillinG swine (Li 2014)"
         href: articles/Li_2014_penicillinG.html
+      - text: "Perampanel (Silva 2023)"
+        href: articles/Silva_2023_perampanel.html
       - text: "Pertuzumab (Garg 2014)"
         href: articles/Garg_2014_pertuzumab.html
       - text: "Pertuzumab (Wang 2021)"
@@ -3362,6 +3364,7 @@ articles:
   - articles/Sidhu_1998_artemisinin
   - articles/Sikma_2020_tacrolimus_thoracic
   - articles/Sikma_2020_tacrolimus_unbound_plasma
+  - articles/Silva_2023_perampanel
   - articles/Simpson_2013_artesunate
   - articles/Simpson_2013_chloroquine
   - articles/Simpson_2013_lumefantrine
