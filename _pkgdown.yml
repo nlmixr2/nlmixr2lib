@@ -1346,6 +1346,8 @@ navbar:
         href: articles/Sahota_2015_miridesap.html
       - text: "Mirikizumab (Chua 2025)"
         href: articles/Chua_2025_mirikizumab.html
+      - text: "Misoprostol (Vorontsova 2022)"
+        href: articles/Vorontsova_2022_misoprostol.html
       - text: "Mitoxantrone human pbpk (An 2012)"
         href: articles/An_2012_mitoxantrone_pbpk.html
       - text: "Mitoxantrone mouse pbpk (An 2012)"
@@ -3493,7 +3495,7 @@ articles:
   - articles/Viberg_2012_AZD6088_rat
   - articles/Vinnard_2017_rifampicin
   - articles/Voller_2017_phenobarbital
-  - articles/vonHentig_2009_saquinavir
+  - articles/Vorontsova_2022_misoprostol
   - articles/Vos_2025_iminobiotin
   - articles/Vuu_2016_topiramate_dog
   - articles/Wade_2008_fluconazole
