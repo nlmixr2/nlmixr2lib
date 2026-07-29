@@ -1134,6 +1134,8 @@ navbar:
         href: articles/Fauchet_2015_lopinavir.html
       - text: "LorenzosOil (Ahmed 2016)"
         href: articles/Ahmed_2016_lorenzosOil.html
+      - text: "Lorlatinib (Chen 2021)"
+        href: articles/Chen_2021_lorlatinib.html
       - text: "Losmapimod (Yang 2013)"
         href: articles/Yang_2013_losmapimod.html
       - text: "Lumefantrine (Hietala 2010)"
@@ -2568,6 +2570,7 @@ articles:
   - articles/Chen_2017_tacrolimus
   - articles/Chen_2020_luspatercept
   - articles/Chen_2021_ganciclovir
+  - articles/Chen_2021_lorlatinib
   - articles/Chen_2022_guselkumab
   - articles/Cheng_2026_immunoglobulin
   - articles/Chi_2018_propofol

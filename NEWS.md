@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Bosch 2022 liraglutide + glucose regulation QSP ([doi:10.1002/psp4.12752](https://doi.org/10.1002/psp4.12752)) -- pooled healthy volunteers, healthy obese subjects, and adults with type 2 diabetes mellitus (integrated 4GI systems-pharmacology model of glucose / insulin / GLP-1 / glucagon / GIP with liraglutide PK+PD baked in as the training drug).
+* Add Chen 2021 lorlatinib ([doi:10.1002/psp4.12585](https://doi.org/10.1002/psp4.12585)) -- adults with ALK/ROS1-positive non-small cell lung cancer and healthy participants (two-compartment popPK with sequential zero-first order absorption and time-varying auto-induction of clearance; ratifies new `DOSE_LOR_MGD` covariate canonical).
 * Add Beal 2001 one-compartment IV-bolus BQL methodology template ([doi:10.1023/a:1012299115260](https://doi.org/10.1023/a:1012299115260)) -- methodology reference (no drug, no patients); packages the SI1 generative model from Beal's M1-M7 below-quantification-limit paper as a teaching template with CL = 0.693 and Vd = 1 (time in half-lives).
 * Add Luu 2017 nusinersen ([doi:10.1002/jcph.884](https://doi.org/10.1002/jcph.884)) -- pediatric patients with spinal muscular atrophy receiving intrathecal nusinersen.
 * Add Gaohua 2012 pregnancy PBPK ([doi:10.1111/j.1365-2125.2012.04363.x](https://doi.org/10.1111/j.1365-2125.2012.04363.x)) -- healthy pregnant Caucasian women (14-compartment whole-body p-PBPK with GA-dependent maternal physiology, applied to caffeine [CYP1A2], metoprolol [CYP2D6], and midazolam [CYP3A4]); ratifies new canonical bare `skin` PBPK compartment.
