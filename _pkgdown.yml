@@ -934,14 +934,32 @@ navbar:
         href: articles/Cao_2013_GNbAC1.html
       - text: "Galcanezumab (Kielbasa 2020)"
         href: articles/Kielbasa_2020_galcanezumab.html
+      - text: "Ganciclovir (Acosta 2007)"
+        href: articles/Yang_2023_ganciclovir_model_repository.html
       - text: "Ganciclovir (Caldes 2009)"
         href: articles/Caldes_2009_ganciclovir.html
       - text: "Ganciclovir (Chen 2021)"
         href: articles/Chen_2021_ganciclovir.html
+      - text: "Ganciclovir (Facchin 2019)"
+        href: articles/Yang_2023_ganciclovir_model_repository.html
+      - text: "Ganciclovir (Franck 2021)"
+        href: articles/Yang_2023_ganciclovir_model_repository.html
+      - text: "Ganciclovir (Horvatits 2014)"
+        href: articles/Yang_2023_ganciclovir_model_repository.html
       - text: "Ganciclovir (Koloskoff 2025)"
         href: articles/Koloskoff_2025_ganciclovir.html
+      - text: "Ganciclovir (Krens 2020)"
+        href: articles/Yang_2023_ganciclovir_model_repository.html
+      - text: "Ganciclovir (Lalagkas 2023)"
+        href: articles/Yang_2023_ganciclovir_model_repository.html
+      - text: "Ganciclovir (Li 2021)"
+        href: articles/Yang_2023_ganciclovir_model_repository.html
       - text: "Ganciclovir (Perrottet 2009)"
         href: articles/Perrottet_2009_ganciclovir.html
+      - text: "Ganciclovir (Zhao 2009)"
+        href: articles/Yang_2023_ganciclovir_model_repository.html
+      - text: "Ganciclovir (Zhou 1996)"
+        href: articles/Yang_2023_ganciclovir_model_repository.html
       - text: "Gantenerumab (Grimm 2023)"
         href: articles/Grimm_2023.html
       - text: "Garenoxacin (VanWart 2004)"
@@ -3708,6 +3726,7 @@ articles:
   - articles/Yang_2016_dilmapimod
   - articles/Yang_2017_remifentanil
   - articles/Yang_2021_cemiplimab
+  - articles/Yang_2023_ganciclovir_model_repository
   - articles/Yang_2024_axatilimab
   - articles/Yano_1993_theophylline
   - articles/Yao_2018_guselkumab
