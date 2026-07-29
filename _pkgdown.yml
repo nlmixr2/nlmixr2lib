@@ -1110,6 +1110,8 @@ navbar:
         href: articles/Overgaard_2016_liraglutide.html
       - text: "Liraglutide (Watson 2010)"
         href: articles/Watson_2010_liraglutide.html
+      - text: "Liraglutide qsp (Bosch 2022)"
+        href: articles/Bosch_2022_liraglutide_qsp.html
       - text: "Lisinopril (Thomson 1989)"
         href: articles/Thomson_1989_lisinopril.html
       - text: "Lopinavir (Archary 2018)"
@@ -2495,6 +2497,7 @@ articles:
   - articles/Bogason_2011_daunorubicin
   - articles/Bonate_2004_apomine
   - articles/Borghardt_2016_olodaterol
+  - articles/Bosch_2022_liraglutide_qsp
   - articles/Bosch_2024_cotadutide_qsp
   - articles/Bosch_2024_glp1ra_bodyweight
   - articles/Bosch_2025_glp1ra_hba1c
