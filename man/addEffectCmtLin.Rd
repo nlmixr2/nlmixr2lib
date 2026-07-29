@@ -35,7 +35,7 @@ Add effect compartment
 \examples{
 
 readModelDb("PK_2cmt_no_depot") |>
-   addEffectCmtLin()
+  addEffectCmtLin()
 
 # Can also be changed to the more typical Emax with constant (estimated) baselie
 readModelDb("PK_2cmt_no_depot") |>

@@ -4,7 +4,7 @@
 \alias{addResErr}
 \title{Add residual error to a model}
 \usage{
-addResErr(ui, reserr, endpoint)
+addResErr(ui, reserr, endpoint, model)
 }
 \arguments{
 \item{ui}{The model as a function}
@@ -15,6 +15,9 @@ accepted)}
 
 \item{endpoint}{the endpoint to apply the error; will default to
 the first error in the model}
+
+\item{model}{Deprecated alias for \code{ui}. Supplying \code{model}
+instead of \code{ui} still works but emits a deprecation warning.}
 }
 \value{
 The model with residual error modified

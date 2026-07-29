@@ -1,0 +1,166 @@
+---
+title: "Mefloquine in vitro P. falciparum susceptibility (Simpson 2013)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Mefloquine in vitro P. falciparum susceptibility (Simpson 2013)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>",
+                      fig.width = 7, fig.height = 4.5, dpi = 90)
+library(nlmixr2lib)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: Simpson JA, Jamsen KM, Anderson TJC, Zaloumis S, Nair S, Woodrow C, White NJ, Nosten F, Price RN. (2013). Nonlinear Mixed-Effects Modelling of In Vitro Drug Susceptibility and Molecular Correlates of Multidrug Resistant Plasmodium falciparum. *PLoS ONE* 8(7):e69505.
+* Article (open access): <https://doi.org/10.1371/journal.pone.0069505>
+
+This is an in vitro pharmacodynamic model of mefloquine effect on Plasmodium falciparum parasite growth, fit to data from a hypoxanthine-uptake-inhibition susceptibility assay on 460 P. falciparum clinical isolates collected at the Shoklo Malaria Research Unit (SMRU), western Thai-Myanmar border, between 1993 and 2005. The "subject" in the NLME framework is the parasite isolate. The per-record drug-well concentration `STIM_MEFLOQUINE_NM` drives a sigmoid Emax inhibition of normalised hypoxanthine uptake; the model has no PK and no time evolution. Pfmdr1 genotype is the principal scientific covariate -- mefloquine is the drug with the largest pfmdr1 amplification effect in the study (double-copy parasites have 139% higher EC50, triple+ 188% higher; Table 3).
+
+# Population
+
+* **460 P. falciparum clinical isolates** with mefloquine concentration-effect data (Results paragraph 1; Table 3).
+* Total cohort: 490 isolates across the four-drug study.
+* Pfmdr1 genotype distribution (Table 3 mefloquine row): Genotype 1 (single-copy WT 86N/1042N) 230 isolates (50.0%), Genotype 2 (single-copy 86Y) 25 (5.4%), Genotype 3 (single-copy 1042D) 24 (5.2%), Genotype 4 (double-copy WT) 118 (25.7%), Genotype 5 (triple+ copy WT) 63 (13.7%).
+* Assay: hypoxanthine-uptake inhibition (Methods, In vitro Drug Assay). Doubling-dilution series 1.62-1646.6 nM mefloquine plus drug-free controls.
+
+# Source trace
+
+| nlmixr2 parameter        | Value (typical) | Source location |
+|--------------------------|-----------------|-----------------|
+| `e0` (fixed)             | 0.01            | Table 3 footnote `#E0 fixed to 0.01` |
+| `emax` (fixed)           | 0.98            | Table 3 footnote `#Emax fixed to 0.98` |
+| `lec50` (EC50 53.0 nM)   | log(53.0)       | Table 3, Mefloquine Genotype 1 (WT reference) row, Estimated value (nM): 53.0 (95% CI 48.0, 58.1) |
+| `lgamma` (gamma 3.10)    | log(3.10)       | Table 1, NLME row mefloquine, slope estimate 3.10 (95% reference range 1.39-6.92) |
+| `e_pfmdr1_86y_ec50`      | -0.59           | Table 3, Mefloquine Genotype 2 percent change -59 (95% CI -72, -46) |
+| `e_pfmdr1_1042d_ec50`    | -0.42           | Table 3, Mefloquine Genotype 3 percent change -42 (95% CI -67, -17) |
+| `e_pfmdr1_cn2_ec50`      |  1.39           | Table 3, Mefloquine Genotype 4 percent change 139 (95% CI 102, 175) |
+| `e_pfmdr1_cn3plus_ec50`  |  1.88           | Table 3, Mefloquine Genotype 5 percent change 188 (95% CI 126, 250) |
+| `etalec50` variance      | 0.56            | Table 3 footnote: between-isolate variance for EC50 = 0.56 (SE 0.043) mefloquine |
+| `etalgamma` variance     | 0.41^2 = 0.1681 | Table 1 NLME mefloquine slope SD (log_e units) = 0.41 |
+| `propSd` (proportional)  | sqrt(0.010)     | Table 3 footnote: proportional variance 0.010 (SE 0.0011) mefloquine |
+| `addSd` (additive)       | sqrt(0.001)     | Table 3 footnote: additive variance 0.001 (SE 0.0001) mefloquine |
+| Structural eq. 1         | n/a             | Methods Eq. 1: E = Emax - (Emax - E0) * C^gamma / (C^gamma + EC50^gamma) |
+| Random-effects eq. 2     | n/a             | Methods Eq. 2 modified with theta_1..theta_4 for pfmdr1 genotypes |
+| Residual eq. 3           | n/a             | Methods Eq. 3 (combined additive + proportional) |
+
+# Mechanistic structure
+
+The sigmoid Emax inhibition equation and the genotype covariate parameterisation are common across the four Simpson 2013 drugs; see the chloroquine vignette's "Mechanistic structure" section for the equations.
+
+For mefloquine the pfmdr1 effects are dominated by gene amplification: the 86Y SNP mutant actually has 59% *lower* EC50 (higher susceptibility) than WT, but every additional pfmdr1 copy roughly doubles the EC50 (double-copy +139%, triple+ +188%). This is the principal evidence motivating the well-established clinical link between Southeast-Asian pfmdr1 amplification and reduced mefloquine susceptibility.
+
+# Virtual cohort
+
+```{r cohort}
+set.seed(20260528)
+
+genotype_grid <- tibble::tribble(
+  ~ genotype,         ~ PFMDR1_86Y, ~ PFMDR1_1042D, ~ PFMDR1_CN2, ~ PFMDR1_CN3PLUS,
+  "Single WT",                  0L,             0L,           0L,               0L,
+  "Single 86Y mutant",          1L,             0L,           0L,               0L,
+  "Single 1042D mutant",        0L,             1L,           0L,               0L,
+  "Double WT",                  0L,             0L,           1L,               0L,
+  "Triple+ WT",                 0L,             0L,           0L,               1L
+)
+
+# Concentration grid: linear 0-600 nM (matches Figure 1 mefloquine x-axis).
+conc_grid <- c(0, 5, 10, 25, 50, 75, 100, 150, 200, 250, 300, 400, 500, 600)
+
+events <- tidyr::expand_grid(genotype_grid, STIM_MEFLOQUINE_NM = conc_grid)
+events$id   <- seq_len(nrow(events))
+events$time <- 0
+events$evid <- 0
+head(events, 10)
+```
+
+# Simulation (typical-value)
+
+```{r simulate-typical}
+mod_fn <- readModelDb("Simpson_2013_mefloquine")
+mod_typical <- rxode2::zeroRe(rxode2::rxode2(mod_fn))
+
+sim <- rxode2::rxSolve(
+  mod_typical, events = events,
+  keep = c("genotype", "STIM_MEFLOQUINE_NM",
+           "PFMDR1_86Y", "PFMDR1_1042D", "PFMDR1_CN2", "PFMDR1_CN3PLUS")
+)
+sim_df <- as.data.frame(sim) |>
+  dplyr::select(id, time, genotype, STIM_MEFLOQUINE_NM, ec50, gamma, effect)
+head(sim_df)
+```
+
+```{r figure-1-mefloquine}
+sim_df |>
+  ggplot(aes(STIM_MEFLOQUINE_NM, effect,
+             colour = genotype, linetype = genotype)) +
+  geom_line(linewidth = 1) +
+  coord_cartesian(xlim = c(0, 600), ylim = c(0, 1)) +
+  labs(x = "Mefloquine concentration (nM)",
+       y = "Estimated sigmoid inhibitory effect E",
+       colour = "Pfmdr1 genotype",
+       linetype = "Pfmdr1 genotype",
+       title = "Figure 1 (mefloquine panel) -- concentration-effect by genotype",
+       caption = "Replicates Figure 1 mefloquine panel of Simpson 2013 (typical-value).")
+```
+
+# Comparison against published EC50 values (Table 3)
+
+```{r table-3-compare}
+table3_obs <- tibble::tibble(
+  genotype  = c("Single WT", "Single 86Y mutant", "Single 1042D mutant",
+                "Double WT", "Triple+ WT"),
+  ec50_obs  = c(53.0, 21.7, 30.9, 126.3, 152.6)
+)
+
+table3_sim <- sim_df |>
+  dplyr::distinct(genotype, ec50) |>
+  dplyr::rename(ec50_sim = ec50)
+
+cmp <- dplyr::left_join(table3_obs, table3_sim, by = "genotype")
+cmp$pct_diff <- 100 * (cmp$ec50_sim - cmp$ec50_obs) / cmp$ec50_obs
+
+knitr::kable(cmp, digits = 2,
+             caption = "Per-genotype EC50 (nM): Simpson 2013 Table 3 mefloquine row vs simulated typical-value.")
+```
+
+# Genotype effect on the EC50 shift
+
+```{r table-3-percent-change}
+ratio_obs <- tibble::tibble(
+  genotype     = c("Single 86Y mutant", "Single 1042D mutant",
+                   "Double WT", "Triple+ WT"),
+  pct_obs      = c(-59, -42, 139, 188),
+  pct_ci       = c("(-72, -46)", "(-67, -17)", "(102, 175)", "(126, 250)")
+)
+
+ratio_sim <- sim_df |>
+  dplyr::filter(genotype != "Single WT") |>
+  dplyr::distinct(genotype, ec50)
+
+ref_ec50 <- sim_df |>
+  dplyr::filter(genotype == "Single WT") |>
+  dplyr::pull(ec50) |>
+  unique()
+ratio_sim$pct_sim <- 100 * (ratio_sim$ec50 - ref_ec50) / ref_ec50
+
+cmp_pct <- dplyr::left_join(ratio_obs, ratio_sim, by = "genotype") |>
+  dplyr::select(genotype, pct_obs, pct_ci, pct_sim)
+
+knitr::kable(cmp_pct, digits = 2,
+             caption = "Per-genotype EC50 percent change vs single WT: Simpson 2013 Table 3 mefloquine row (with 95% CI) vs simulated.")
+```
+
+# Assumptions and deviations
+
+The deviations are common across the four Simpson 2013 drug-specific extractions; see the chloroquine vignette's "Assumptions and deviations" section for the full list. Mefloquine-specific notes:
+
+- **Mefloquine is the only one of the four drugs where the 86Y SNP increases susceptibility** (negative coefficient on EC50). This is consistent with the well-known clinical observation that 86Y carriers are more sensitive to mefloquine than WT parasites -- the same SNP that reduces chloroquine susceptibility.
+- **The CN2 -> CN3+ EC50 shift is monotone for mefloquine** (139% -> 188%), unlike lumefantrine where the higher copy-number group has approximately the same EC50 as the double-copy group (82% -> 75%).

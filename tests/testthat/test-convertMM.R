@@ -5,23 +5,23 @@ test_that(".replaceMultC works", {
   e2 <- str2lang("d/dt(central) <- - fun")
 
   expect_equal(.replaceMultC(e1, str2lang("ka"),
-                             str2lang("depot"),
-                             str2lang("fun")),
-               e2)
+    str2lang("depot"),
+    str2lang("fun")),
+  e2)
 
   e1 <- str2lang("d/dt(central) <- + ka * depot")
   e2 <- str2lang("d/dt(central) <- fun")
 
   expect_equal(.replaceMultC(e1, str2lang("ka"),
-                             str2lang("depot"),
-                             str2lang("fun")),
-               e2)
+    str2lang("depot"),
+    str2lang("fun")),
+  e2)
 
 
   expect_equal(.replaceMultC(e1, str2lang("ka"),
-                             str2lang("depot"),
-                             str2lang("fun")),
-               e2)
+    str2lang("depot"),
+    str2lang("fun")),
+  e2)
 
 
   e1 <- str2lang("d/dt(central) <- ka * depot - kel * central")
@@ -29,21 +29,21 @@ test_that(".replaceMultC works", {
   e2 <- str2lang("d/dt(central) <- ka * depot - (vm * central/vc)/(km + central/vc)")
 
   expect_equal(.replaceMultC(e1, str2lang("kel"),
-                             str2lang("central"),
-                             str2lang("(vm*central/vc)/(km+central/vc)")),
-               e2)
+    str2lang("central"),
+    str2lang("(vm*central/vc)/(km+central/vc)")),
+  e2)
 
   expect_equal(.replaceMultC(e1,
-                             str2lang("central"),
-                             str2lang("kel"),
-                             str2lang("(vm*central/vc)/(km+central/vc)")),
-               e2)
+    str2lang("central"),
+    str2lang("kel"),
+    str2lang("(vm*central/vc)/(km+central/vc)")),
+  e2)
 
   expect_equal(.replaceMultC(e1,
-                             str2lang("funny"),
-                             str2lang("kel"),
-                             str2lang("(vm*central/vc)/(km+central/vc)")),
-               e1)
+    str2lang("funny"),
+    str2lang("kel"),
+    str2lang("(vm*central/vc)/(km+central/vc)")),
+  e1)
 
 })
 
@@ -52,18 +52,18 @@ test_that("convertMM fun", {
 
   f <- function() {
     ini({
-      lka <- 0.45 ; label("Absorption rate (Ka)")
-      lcl <- 1 ; label("Clearance (CL)")
-      lvc  <- 3.45 ; label("Central volume of distribution (V)")
-      propSd <- 0.5 ; label("Proportional residual error (fraction)")
+      lka <- 0.45
+      lcl <- 1
+      lvc <- 3.45
+      propSd <- 0.5
     })
     model({
       ka <- exp(lka)
       cl <- exp(lcl)
-      vc  <- exp(lvc)
+      vc <- exp(lvc)
       kel <- cl / vc
-      d/dt(depot) <- -ka*depot
-      d/dt(central) <- ka*depot-kel*central
+      d / dt(depot) <- -ka * depot
+      d / dt(central) <- ka * depot - kel * central
       Cc <- central / vc
       Cc ~ prop(propSd)
     })
@@ -73,19 +73,19 @@ test_that("convertMM fun", {
 
   f <- function() {
     ini({
-      lka <- 0.45 ; label("Absorption rate (Ka)")
-      lkel <- 1 ; label("lkel")
-      lvc  <- 3.45 ; label("Central volume of distribution (V)")
-      propSd <- 0.5 ; label("Proportional residual error (fraction)")
+      lka <- 0.45
+      lkel <- 1
+      lvc <- 3.45
+      propSd <- 0.5
       eta.cl ~ 0.1
     })
     model({
       ka <- exp(lka)
       cl <- exp(lcl + eta.cl)
-      vc  <- exp(lvc)
+      vc <- exp(lvc)
       kel <- exp(lkel)
-      d/dt(depot) <- -ka*depot
-      d/dt(central) <- ka*depot-kel*central
+      d / dt(depot) <- -ka * depot
+      d / dt(central) <- ka * depot - kel * central
       Cc <- central / vc
       Cc ~ prop(propSd)
     })
@@ -95,19 +95,19 @@ test_that("convertMM fun", {
 
   f <- function() {
     ini({
-      lka <- 0.45 ; label("Absorption rate (Ka)")
-      lkel <- 1 ; label("lkel")
-      lvc  <- 3.45 ; label("Central volume of distribution (V)")
-      propSd <- 0.5 ; label("Proportional residual error (fraction)")
+      lka <- 0.45
+      lkel <- 1
+      lvc <- 3.45
+      propSd <- 0.5
       eta.kel ~ 0.1
     })
     model({
       ka <- exp(lka)
       cl <- exp(lcl)
-      vc  <- exp(lvc)
+      vc <- exp(lvc)
       kel <- exp(lkel + eta.kel)
-      d/dt(depot) <- -ka*depot
-      d/dt(central) <- ka*depot-kel*central
+      d / dt(depot) <- -ka * depot
+      d / dt(central) <- ka * depot - kel * central
       Cc <- central / vc
       Cc ~ prop(propSd)
     })
@@ -117,17 +117,17 @@ test_that("convertMM fun", {
 
   f <- function() {
     ini({
-      lka <- 0.45 ; label("Absorption rate (Ka)")
-      lvc  <- 3.45 ; label("Central volume of distribution (V)")
-      propSd <- 0.5 ; label("Proportional residual error (fraction)")
+      lka <- 0.45
+      lvc <- 3.45
+      propSd <- 0.5
       kel <- 0.1
     })
     model({
       ka <- exp(lka)
       cl <- exp(lcl)
-      vc  <- exp(lvc)
-      d/dt(depot) <- -ka*depot
-      d/dt(central) <- ka*depot-kel*central
+      vc <- exp(lvc)
+      d / dt(depot) <- -ka * depot
+      d / dt(central) <- ka * depot - kel * central
       Cc <- central / vc
       Cc ~ prop(propSd)
     })
@@ -137,16 +137,16 @@ test_that("convertMM fun", {
 
   f <- function() {
     ini({
-      lka <- 0.45 ; label("Absorption rate (Ka)")
-      lvc  <- 3.45 ; label("Central volume of distribution (V)")
-      propSd <- 0.5 ; label("Proportional residual error (fraction)")
+      lka <- 0.45
+      lvc <- 3.45
+      propSd <- 0.5
     })
     model({
       ka <- exp(lka)
       cl <- exp(lcl)
-      vc  <- exp(lvc)
-      d/dt(depot) <- -ka*depot
-      d/dt(central) <- ka*depot-kel*central
+      vc <- exp(lvc)
+      d / dt(depot) <- -ka * depot
+      d / dt(central) <- ka * depot - kel * central
       Cc <- central / vc
       Cc ~ prop(propSd)
     })
@@ -156,15 +156,15 @@ test_that("convertMM fun", {
 
   f <- function() {
     ini({
-      lka <- 0.45 ; label("Absorption rate (Ka)")
-      lvc  <- 3.45 ; label("Central volume of distribution (V)")
+      lka <- 0.45
+      lvc <- 3.45
     })
     model({
       ka <- exp(lka)
       cl <- exp(lcl)
-      vc  <- exp(lvc)
-      d/dt(depot) <- -ka*depot
-      d/dt(central) <- ka*depot-kel*central
+      vc <- exp(lvc)
+      d / dt(depot) <- -ka * depot
+      d / dt(central) <- ka * depot - kel * central
       Cc <- central / vc
     })
   }
@@ -174,8 +174,8 @@ test_that("convertMM fun", {
   # doesn't need estimates
   f <- function() {
     model({
-      d/dt(depot) <- -ka*depot
-      d/dt(central) <- ka*depot-kel*central
+      d / dt(depot) <- -ka * depot
+      d / dt(central) <- ka * depot - kel * central
       Cc <- central / vc
     })
   }
@@ -188,8 +188,8 @@ test_that("convertMM fun", {
       kel ~ 0.1
     })
     model({
-      d/dt(depot) <- -ka*depot
-      d/dt(central) <- ka*depot-kel*central
+      d / dt(depot) <- -ka * depot
+      d / dt(central) <- ka * depot - kel * central
       Cc <- central / vc
     })
   }

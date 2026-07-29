@@ -6,7 +6,7 @@
 #' @examples
 #' readModelDb("PK_1cmt")
 readModelDb <- function(name) {
-  .modeldb <- readRDS(system.file("modeldb.rds", package="nlmixr2lib"))
+  .modeldb <- readRDS(system.file("modeldb.rds", package = "nlmixr2lib"))
   if (!(name %in% .modeldb$name)) {
     stop("'name' not in database")
   } else {

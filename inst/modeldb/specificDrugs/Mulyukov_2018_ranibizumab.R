@@ -1,0 +1,203 @@
+Mulyukov_2018_ranibizumab <- function() {
+  description <- "Indirect-response PK/PD model of intravitreal ranibizumab on best-corrected visual acuity (SCORE_BCVA, ETDRS letters) in anti-VEGF-naive adults with neovascular age-related macular degeneration (Mulyukov 2018). SCORE_BCVA is driven by an indirect-response ODE in which drug concentration stimulates the SCORE_BCVA production rate (kin) through a Michaelis-Menten-like term with a time-dependent maximum effect emax(t) = emax_ss + demax_0 * exp(-kemax * t). The PK is a fixed first-order vitreous-elimination placeholder (kel = 0.077/day, vitreous volume = 4 mL, no IIV) borrowed from a previous population PK analysis (reference 20 of the paper) because vitreous PK data were not collected in the development studies."
+  reference <- "Mulyukov Z, Weber S, Pigeolet E, Clemens A, Lehr T, Racine A. Neovascular Age-Related Macular Degeneration: A Visual Acuity Model of Natural Disease Progression and Ranibizumab Treatment Effect. CPT Pharmacometrics Syst Pharmacol. 2018;7(10):660-669. doi:10.1002/psp4.12322. PMID: 30043524."
+  vignette <- "Mulyukov_2018_ranibizumab"
+  units <- list(time = "day", dosing = "mg", concentration = "mg/L (equivalent to ug/mL)", response = "SCORE_BCVA (ETDRS letters, 0-100)")
+
+  covariateData <- list(
+    AGE = list(
+      description        = "Subject age",
+      units              = "years",
+      type               = "continuous",
+      reference_category = NULL,
+      notes              = "Time-fixed per subject. Power-form effect on steady-state drug effect emax_ss normalized as (AGE/77)^beta_emax_ss,AGE (Mulyukov 2018 Eq. 3, Table 2). Reference 77 years is the study-population mean baseline age. Paper narrative: a 4 ETDRS letter reduction in 12-month SCORE_BCVA improvement is expected for an 85-year-old vs a 65-year-old patient.",
+      source_name        = "AGE"
+    ),
+    SCORE_BCVA = list(
+      description        = "Observed baseline best-corrected visual acuity",
+      units              = "ETDRS letters (0-100)",
+      type               = "continuous",
+      reference_category = NULL,
+      notes              = "Time-fixed per subject. Used as the per-subject center for the baseline SCORE_BCVA initial condition g0_i = BVA_i + eta_{1,i} (Mulyukov 2018 Methods, paragraph above Eq. 3: 'We modeled baseline VA as normally distributed around observed value BVA'). Canonical register alias: source column 'BVA' in Mulyukov 2018. Study-population baseline mean (SD) = 54 (13) letters across the four development datasets.",
+      source_name        = "BVA"
+    )
+  )
+
+  population <- list(
+    n_subjects          = 1524L,
+    n_observations      = 29754L,
+    n_studies           = 4L,
+    age_range           = "50-96 years; mean (SD) 77 (7.5) years",
+    age_median          = "77 years (mean)",
+    weight_range        = NULL,
+    sex_female_pct      = 60,
+    race_ethnicity      = NULL,
+    disease_state       = "Anti-VEGF treatment-naive neovascular (wet) age-related macular degeneration with best-corrected visual acuity 25-70 ETDRS letters at entry.",
+    dose_range          = "Ranibizumab 0.3 mg or 0.5 mg intravitreal injection, monthly (q4w) or quarterly (q12w) after three monthly loading doses; sham comparator arms also modelled simultaneously.",
+    regions             = "Multinational (ANCHOR, MARINA, PIER, and EXCITE phase III programmes).",
+    baseline_BCVA       = "Mean (SD) 54 (13) ETDRS letters; range 3-84 letters.",
+    external_validation = "HARBOR study (ranibizumab 0.5 mg and 2.0 mg q4w, summary data only) used for predictive check only; not part of model fitting.",
+    notes               = "Pooled from the ANCHOR (2 y), MARINA (2 y), PIER (1 y), and EXCITE (1 y) phase III ranibizumab trials (Mulyukov 2018 Table 1). The PDT (verteporfin) arm of ANCHOR and the year-2 PIER data were excluded from the modelled dataset per the paper's Methods. Approximately 40% of patients were male. Weight / race-ethnicity distributions were not reported in Table 1."
+  )
+
+  ini({
+    # ------------------------------------------------------------------------
+    # PK backbone (fixed, no IIV) borrowed from a previous population PK
+    # analysis cited as reference 20 in Mulyukov 2018. Paper (Methods - Model
+    # development, paragraph 1): "for all modeling we used results of a previous
+    # population PK analysis that concluded the vitreous concentration of
+    # ranibizumab follows first-order elimination PKs, with a half-life of 9
+    # days ... Due to the absence of vitreous PK data, intersubject variability
+    # of PK parameters was disregarded." Vitreous volume set to 4 mL (Methods
+    # paragraph above Eq. 1).
+    # ------------------------------------------------------------------------
+    lkel  <- fixed(log(0.077));   label("Vitreous elimination rate constant kel (1/day)")               # Mulyukov 2018 Table 2: k_elim 0.077/day (t1/2 = 9 days), fixed
+    lvvit <- fixed(log(0.004));   label("Vitreous volume of distribution (L)")                          # Mulyukov 2018 Methods (Model development): vitreous volume 4 mL = 0.004 L, fixed
+
+    # ------------------------------------------------------------------------
+    # SCORE_BCVA indirect-response PD model (Mulyukov 2018 Eq. 1, Table 2).
+    # Natural-progression steady state g_ss = kin/kout (paper Methods, paragraph
+    # after Eq. 1). With no treatment, the SCORE_BCVA state decays from the observed
+    # baseline g0 toward g_ss at rate kout.
+    # ------------------------------------------------------------------------
+    lgss       <- log(11);          label("Equilibrium SCORE_BCVA under natural disease progression g_ss (ETDRS letters)")  # Mulyukov 2018 Table 2: g_ss 11 letters (RSE 5%)
+    lkout      <- log(0.19 / 365.25); label("SCORE_BCVA deterioration rate constant kout (1/day)")                          # Mulyukov 2018 Table 2: k_out 0.19/year (t1/2 = 3.6 years); converted to 1/day by /365.25
+    lemaxss    <- log(6.1);         label("Steady-state maximum drug effect emax_ss on SCORE_BCVA kin (unitless)")          # Mulyukov 2018 Table 2: emax_ss 6.1 (RSE 7%)
+    ldemax0    <- log(41);          label("Additional drug effect at treatment onset demax_0 (unitless)")             # Mulyukov 2018 Table 2: demax_0 41 (RSE 12%)
+    lkemax     <- fixed(log(0.046));label("Rate of emax decay kemax (1/day)")                                         # Mulyukov 2018 Table 2: k_emax 0.046/day (t1/2 = 15 days), fixed
+    lec50      <- log(2.1);         label("Drug concentration at half-maximum effect ec50 (mg/L = ug/mL)")            # Mulyukov 2018 Table 2: ec50 2.1 ug/mL (= mg/L) (RSE 35%)
+
+    # ------------------------------------------------------------------------
+    # Covariate effect (Mulyukov 2018 Table 2 / Eq. 3).
+    # Age / baseline-VA / sex effects on k_out, emax_ss, and demax_0 were tested.
+    # Only age on emax_ss was significant and retained in the final model.
+    # ------------------------------------------------------------------------
+    e_age_emaxss <- -1.4;           label("Power exponent of AGE/77 on emax_ss (unitless)")                           # Mulyukov 2018 Table 2: beta_emax_ss,AGE -1.4 (RSE 18%)
+
+    # ------------------------------------------------------------------------
+    # Typical-value placeholder for the additive random effect on baseline SCORE_BCVA.
+    # Paper's parameterization g_{i,0} = BVA_i + eta_{1,i} has no typical-value
+    # theta for the baseline (BVA is subject-level data, not a population
+    # parameter). g0res is a fixed(0) theta kept only to pair naming-wise with
+    # etag0res per the nlmixr2lib convention (eta<x> must pair with theta <x>).
+    # ------------------------------------------------------------------------
+    g0res <- fixed(0); label("Typical additive residual on baseline SCORE_BCVA around the observed value (ETDRS letters); paper Eq. g_{i,0} = BVA_i + eta_{1,i}, so typical value is 0")  # Mulyukov 2018 Methods (paragraph above Eq. 3): baseline modelled as normally distributed around observed value with additive random effect
+
+    # ------------------------------------------------------------------------
+    # Inter-individual variability: full 4x4 covariance (Mulyukov 2018 Table 2
+    # diagonal + Table S1 off-diagonal correlations).
+    #
+    # Baseline SCORE_BCVA uses an ADDITIVE per-subject random effect in letters
+    # (paper Eq. g_{i,0} = BVA_i + eta_{1,i}; Table 2 reports an SD, not a CV).
+    # The other three PD parameters (k_out, Emax_ss, dEmax_0) use log-normal
+    # IIV with large CV%; convert each to log-scale variance via
+    #   omega^2 = log(CV^2 + 1)
+    #     k_out   CV 730%   -> log(7.30^2 + 1)  = 3.99434
+    #     Emax_ss CV 110%   -> log(1.10^2 + 1)  = 0.79299
+    #     dEmax_0 CV 1100%  -> log(11.0^2 + 1)  = 4.80402
+    # corresponding to SDs (g0, lkout, lEmaxss, ldEmax0) =
+    # (4.10000, 1.99858, 0.89050, 2.19181).
+    #
+    # Off-diagonal correlations are taken directly from Table S1 ("Correlations
+    # of modeled random effects"). The lower-triangular correlation matrix is:
+    #             g0       lkout    lEmaxss
+    #   lkout    -0.14
+    #   lEmaxss   0.27    -0.62
+    #   ldEmax0   0.48    -0.89     0.46
+    # Covariances cov(i,j) = corr(i,j) * sd(i) * sd(j):
+    #   cov(g0,      lkout)   = -0.14 * 4.10000 * 1.99858 = -1.14719
+    #   cov(g0,      lEmaxss) =  0.27 * 4.10000 * 0.89050 =  0.98578
+    #   cov(g0,      ldEmax0) =  0.48 * 4.10000 * 2.19181 =  4.31348
+    #   cov(lkout,   lEmaxss) = -0.62 * 1.99858 * 0.89050 = -1.10344
+    #   cov(lkout,   ldEmax0) = -0.89 * 1.99858 * 2.19181 = -3.89866
+    #   cov(lEmaxss, ldEmax0) =  0.46 * 0.89050 * 2.19181 =  0.89783
+    # The resulting 4x4 covariance was Cholesky-verified positive definite.
+    #
+    # The Stan model in Supplementary File S1 declares the full 4-vector eta
+    # block (cholesky_factor_corr[n_u] L_u with n_u = 4) and applies it as
+    #   g0 = BVA + eta[1]
+    #   kout = pop_kout * exp(eta[2])
+    #   Emax = pop_Emax * exp(eta[3] + delta_emax_age * cov_age)
+    #   dEmax0 = pop_lamb * exp(eta[4])
+    # which matches the ordering encoded here.
+    # ------------------------------------------------------------------------
+    # Block layout (lower triangular, row by row; one row per random effect):
+    #   row 1                                              -> var(g0)
+    #   row 2  cov(g0, lkout),    var(lkout)
+    #   row 3  cov(g0, lEmaxss),  cov(lkout, lEmaxss),  var(lEmaxss)
+    #   row 4  cov(g0, ldEmax0),  cov(lkout, ldEmax0),  cov(lEmaxss, ldEmax0),  var(ldEmax0)
+    etag0res + etalkout + etalemaxss + etaldemax0 ~ c(
+       16.81,
+      -1.14719,  3.99434,
+       0.98578, -1.10344, 0.79299,
+       4.31348, -3.89866, 0.89783, 4.80402
+    )
+
+    # ------------------------------------------------------------------------
+    # Residual error. Paper Table 2 reports two additive residual SDs:
+    #   sigma_treatment = 5 letters (treated arms)
+    #   sigma_sham      = 7 letters (untreated arms)
+    # The library exposes the treated-arm value (primary use case for
+    # ranibizumab simulation); the sham-arm value is documented in the
+    # vignette's Assumptions and deviations.
+    # ------------------------------------------------------------------------
+    addSd_bcva  <- 5; label("Additive residual error on SCORE_BCVA for treated subjects (ETDRS letters)")  # Mulyukov 2018 Table 2: sigma_treatment 5 letters (RSE 0.5%)
+  })
+
+  model({
+    # ------------------------------------------------------------------
+    # PK parameters (fixed, no IIV).
+    # ------------------------------------------------------------------
+    kel  <- exp(lkel)
+    vvit <- exp(lvvit)
+
+    # ------------------------------------------------------------------
+    # Individual PD parameters (Mulyukov 2018 Eq. 3 / Table 2).
+    # Only age-on-emax_ss survived covariate selection; other covariate
+    # effects (baseline VA, sex, age on k_out / demax_0) were dropped.
+    # ------------------------------------------------------------------
+    gss    <- exp(lgss)
+    kout   <- exp(lkout + etalkout)
+    emaxss <- exp(lemaxss + etalemaxss) * (AGE / 77)^e_age_emaxss
+    demax0 <- exp(ldemax0 + etaldemax0)
+    kemax  <- exp(lkemax)
+    ec50   <- exp(lec50)
+
+    # Baseline SCORE_BCVA: additive IIV around the observed per-subject value.
+    # Paper: g_{i,0} = BVA_i + eta_{1,i}; typical-value theta g0res fixed(0).
+    g0  <- SCORE_BCVA + g0res + etag0res
+
+    # Natural-progression mass balance: kin chosen so untreated steady state
+    # equals gss (paper: g_ss = kin / kout).
+    kin <- kout * gss
+
+    # Time-dependent maximum drug effect (Mulyukov 2018 Eq. 2). `time` is the
+    # integration time in days, equal to time from first dose for the event
+    # datasets this model expects.
+    emax_t <- emaxss + demax0 * exp(-kemax * time)
+
+    # ------------------------------------------------------------------
+    # PK ODE: first-order vitreous elimination. The intravitreal dose is
+    # administered directly into the central compartment (F = 1 by default);
+    # there is no absorption compartment. Concentration units: central (mg) /
+    # vvit (L) = mg/L, which equals ug/mL in the paper's tables.
+    # ------------------------------------------------------------------
+    Cc <- central / vvit
+
+    d/dt(central) <- -kel * central
+
+    # ------------------------------------------------------------------
+    # PD ODE: indirect response on SCORE_BCVA with stimulation of kin.
+    # Paper (Results - Model development): "Stimulation of kin rather than
+    # suppression of kout was selected to describe the drug effect as it led
+    # to better stability of model fit with no other significant differences."
+    # ------------------------------------------------------------------
+    bcva(0)    <- g0
+    d/dt(bcva) <- kin * (1 + emax_t * Cc / (ec50 + Cc)) - kout * bcva
+
+    # ------------------------------------------------------------------
+    # Observation and error.
+    # ------------------------------------------------------------------
+    bcva ~ add(addSd_bcva)
+  })
+}

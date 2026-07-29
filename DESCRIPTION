@@ -22,10 +22,9 @@ Imports:
     cli,
     methods,
     nlmixr2est,
-    rxode2 (>= 2.0.12)
+    rxode2 (>= 5.0.2)
 License: GPL (>= 2)
 LazyData: true
-RoxygenNote: 7.3.3
 VignetteBuilder: knitr
 URL: https://github.com/nlmixr2/nlmixr2lib,
     https://nlmixr2.github.io/nlmixr2lib/
@@ -35,10 +34,16 @@ Suggests:
     covr,
     dplyr,
     knitr,
+    PKNCA,
     rmarkdown,
     testthat (>= 3.0.0),
     tidyr,
     ggplot2,
-    withr
+    scales,
+    tibble,
+    withr,
+    yaml
 Config/testthat/edition: 3
 Config/testthat/parallel: true
+Config/roxygen2/version: 8.0.0
+RoxygenNote: 7.3.3

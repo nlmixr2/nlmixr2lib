@@ -14,12 +14,12 @@
 #' @family Indirect response
 #' @examples
 #'
-#' addIndirect(stim="in") |> convertKinR0()
+#' addIndirect(stim = "in") |> convertKinR0()
 convertKinR0 <- function(ui,
-                         kin="kin",
-                         kout="kout",
-                         R="R",
-                         R0="R0") {
+                         kin = "kin",
+                         kout = "kout",
+                         R = "R",
+                         R0 = "R0") {
   .ui <- rxode2::assertRxUi(ui)
   kin <- rxode2::assertVariableExists(.ui, kin)
   rxode2::assertVariableNew(.ui, R0)
@@ -29,23 +29,23 @@ convertKinR0 <- function(ui,
   .theta <- .tmp$theta
   .theta1 <- .tmp$theta1
   .eta <- .tmp$eta
-  if(length(.theta$ntheta) == 0) {
+  if (length(.theta$ntheta) == 0) {
     .ntheta <- 0
   } else {
     .ntheta <- max(.theta$ntheta)
   }
   .modelLines <- .ui$lstExpr
-  .w <- .whichDdt(.modelLines, R, start="", end="(0)")
+  .w <- .whichDdt(.modelLines, R, start = "", end = "(0)")
   if (length(.w) != 1L) {
     stop(paste0("the model does not have the expected ",
-                R, "(0) expression"),
-         call.=FALSE)
+      R, "(0) expression"),
+    call. = FALSE)
   }
   .tmp <- .extractModelLinesAtW(.modelLines, .w)
   if (!identical(.tmp$w[[3]], str2lang(paste0(kin, "/", kout)))) {
     stop(paste0("the model does not have the expected ",
-                R, "(0) <- ", kin,"/",kout, " expression"),
-         call.=FALSE)
+      R, "(0) <- ", kin, "/", kout, " expression"),
+    call. = FALSE)
   }
   .modelLines <- c(
     str2lang(paste0(R0, "<- u", R0)),
@@ -56,8 +56,8 @@ convertKinR0 <- function(ui,
   .w <- .whichDdt(.modelLines, R)
   if (length(.w) != 1L) {
     stop(paste0("the model does not have the expected d/dt(",
-                R, ") expression"),
-         call.=FALSE)
+      R, ") expression"),
+    call. = FALSE)
   }
   .tmp <- .extractModelLinesAtW(.modelLines, .w)
   .tmp$w <- searchReplaceHelper(.tmp$w, str2lang(kin), str2lang(paste0(kout, "*", R0)))
@@ -68,16 +68,16 @@ convertKinR0 <- function(ui,
   .theta <- .tmp$theta
   .eta <- .tmp$eta
 
-  .thetaR0 <- .get1theta(R0,  .theta1, .ntheta,
-                         name=paste0("u", R0),
-                         label=paste0("untransformed baseline (",
-                                      R0, ")"))
+  .thetaR0 <- .get1theta(R0, .theta1, .ntheta,
+    name = paste0("u", R0),
+    label = paste0("untransformed baseline (",
+      R0, ")"))
   .ui <- rxode2::rxUiDecompress(.ui)
   .ui$iniDf <- rbind(.theta,
-                     .thetaR0,
-                     .eta)
-  if (exists("description", envir=.ui$meta)) {
-    rm("description", envir=.ui$meta)
+    .thetaR0,
+    .eta)
+  if (exists("description", envir = .ui$meta)) {
+    rm("description", envir = .ui$meta)
   }
   rxode2::model(.ui) <- .modelLines
   .ui

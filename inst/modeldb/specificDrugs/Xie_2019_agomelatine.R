@@ -3,22 +3,71 @@
 Xie_2019_agomelatine <- function () {
   description <- "A semiphysiological population pharmacokinetic model of agomelatine and its metabolites in Chinese healthy volunteers"
   reference <- "Xie F, Vermeulen A, Colin P, Cheng Z. A semiphysiological population pharmacokinetic model of agomelatine and its metabolites in Chinese healthy volunteers. Br J Clin Pharmacol. 2019 May;85(5):1003-1014. doi: 10.1111/bcp.13902. Epub 2019 Mar 21. PMID: 30761579; PMCID: PMC6475681."
+  vignette <- "Xie_2019_agomelatine"
   units <-
     list(
       time = "hr",
       dosing = "mg",
-      calmt = "ng/mL", # plasma agomelatine
-      c3oh = "ng/mL", # plasma 3‐hydroxy‐agomelatine
-      c7dm = "ng/mL" # plasma 7‐desmethyl‐agomelatine
+      concentration = "ng/mL" # applied to all three plasma outputs: calmt (agomelatine), c3oh (3-hydroxy-agomelatine), c7dm (7-desmethyl-agomelatine)
     )
-  covariates <-
-    list(
-      ooc1 = "1 if period 1; 0 otherwise",
-      ooc2 = "1 if period 2; 0 otherwise",
-      ooc3 = "1 if period 3; 0 otherwise",
-      ooc4 = "1 if period 4; 0 otherwise",
-      WT = "Body weight in kg"
+
+  covariateData <- list(
+    WT = list(
+      description        = "Body weight",
+      units              = "kg",
+      type               = "continuous",
+      reference_category = NULL,
+      notes              = "Used inside liver-volume allometry: lv = 0.05012 * WT^0.78. No explicit reference weight reported; the allometric form uses the raw WT value directly.",
+      source_name        = "WT"
+    ),
+    ooc1 = list(
+      description        = "Occasion indicator for period 1 of the four-period crossover study",
+      units              = "(binary)",
+      type               = "binary",
+      reference_category = "Not applicable; ooc1..ooc4 are a mutually exclusive set (exactly one is 1 per observation)",
+      notes              = "Lower-case name preserved from source per covariate-columns.md register. Used to select the period-specific IOV eta across k13, alag2, k23, clint, and the logit-fraction partitioning absorption between depot and depot2.",
+      source_name        = "ooc1"
+    ),
+    ooc2 = list(
+      description        = "Occasion indicator for period 2 of the four-period crossover study",
+      units              = "(binary)",
+      type               = "binary",
+      reference_category = "Not applicable; ooc1..ooc4 are a mutually exclusive set (exactly one is 1 per observation)",
+      notes              = "Lower-case name preserved from source per covariate-columns.md register.",
+      source_name        = "ooc2"
+    ),
+    ooc3 = list(
+      description        = "Occasion indicator for period 3 of the four-period crossover study",
+      units              = "(binary)",
+      type               = "binary",
+      reference_category = "Not applicable; ooc1..ooc4 are a mutually exclusive set (exactly one is 1 per observation)",
+      notes              = "Lower-case name preserved from source per covariate-columns.md register.",
+      source_name        = "ooc3"
+    ),
+    ooc4 = list(
+      description        = "Occasion indicator for period 4 of the four-period crossover study",
+      units              = "(binary)",
+      type               = "binary",
+      reference_category = "Not applicable; ooc1..ooc4 are a mutually exclusive set (exactly one is 1 per observation)",
+      notes              = "Lower-case name preserved from source per covariate-columns.md register.",
+      source_name        = "ooc4"
     )
+  )
+
+  population <- list(
+    n_subjects     = "TODO: from source paper",
+    n_studies      = 1,
+    age_range      = "TODO: from source paper",
+    age_median     = "TODO: from source paper",
+    weight_range   = "TODO: from source paper",
+    weight_median  = "60 kg (used as representative weight in vignette simulations per Table 1 of source)",
+    sex_female_pct = "TODO: from source paper",
+    race_ethnicity = c(Asian = 100),
+    disease_state  = "Healthy Chinese volunteers",
+    dose_range     = "25 mg single oral dose (vignette simulation; confirm full design in source)",
+    regions        = "China",
+    notes          = "Four-period crossover design (occasions ooc1..ooc4) with IOV on multiple PK parameters. TODO: fill exact demographics from Table 1 of Xie 2019."
+  )
 
   ini({
     ltvk13 <- log(4.54); label("K13 (1/h)")
@@ -28,70 +77,75 @@ Xie_2019_agomelatine <- function () {
     lBA4 <- log(exp(-3.95)); label("BA4") # log(exp()) so that the original parameter value is maintained in the ini block
     ltvcl3oh <- log(44.9); label("CL3OH (L/h)")
     ltvcl7dm <- log(52.9); label("CL7DM (L/h)")
-    ltvalag1 <- log(0.185); label("ALAG1 (h)")
+    ltvalag <- log(0.185); label("ALAG1 (h)")
     ltvk23 <- log(4.23); label("K23 (1/h)")
     ltvalag2 <- log(0.305); label("ALAG2 (h)")
-    F1 <- 0.681; label("F1")
+    fpop <- 0.681; label("Typical population fraction of dose absorbed via the primary depot (F1; unitless)")
     lvq7dm <- log(28.1); label("Q7DM (L/h)")
     lvv7dm <- log(536); label("V7DM (L)")
     lvqalmt <- log(4.36); label("QALMT (L/h)")
     lvvalmt <- log(157); label("VALMT (L)")
-    sdalmt <- 0.39; label("Residual standard deviation of agomelatine (log-scale, additive error)")
-    sd3oh <- 0.228; label("Residual standard deviation of 3-hydroxy-agomelatine (log-scale, additive error)")
-    sd7dm <- 0.297; label("SD7DM")
-    IIV_K13 ~ 0.101
-    IIV_V4 ~ 0.0374
-    IIV_CLint ~ 0.998
-    IIV_BA3 ~ 0.175
-    IIV_BA4 ~ c(0.153, 0.231)
-    IIV_CL3OH ~ 0.0414
-    IIV_CL7DM ~ c(0.0492, 0.0774)
-    IIV_ALAG1 ~ 0.0628
-    IIV_K23 ~ 3.78
-    IIV_ALAG2 ~ 3.3
-    IIV_F1 ~ 0.526
-    IIV_Q7DM ~ fix(0.001)
-    IIV_V7DM ~ fix(0.001)
-    IIV_QALMT ~ 1.46
-    IIV_VALMT ~ fix(0.001)
-    e.IOV1 ~ 1.52
-    eta17 ~ fix(1.52)
-    eta18 ~ fix(1.52)
-    eta19 ~ fix(1.52)
-    e.IOV2 ~ 4.32
-    eta21 ~ fix(4.32)
-    eta22 ~ fix(4.32)
-    eta23 ~ fix(4.32)
-    e.IOV3 ~ 5.01
-    eta25 ~ fix(5.01)
-    eta26 ~ fix(5.01)
-    eta27 ~ fix(5.01)
-    e.IOV4 ~ 0.0779
-    eta29 ~ fix(0.0779)
-    eta30 ~ fix(0.0779)
-    eta31 ~ fix(0.0779)
-    e.IOV5 ~ 2.32
-    eta33 ~ fix(2.32)
-    eta34 ~ fix(2.32)
-    eta35 ~ fix(2.32)
+    addSd_lcalmt <- 0.39;  label("Additive residual SD of log-agomelatine plasma concentration (log-ng/mL)")
+    addSd_lc3oh  <- 0.228; label("Additive residual SD of log-3-hydroxy-agomelatine plasma concentration (log-ng/mL)")
+    addSd_lc7dm  <- 0.297; label("Additive residual SD of log-7-desmethyl-agomelatine plasma concentration (log-ng/mL)")
+    etaltvk13 ~ 0.101
+    etaltvv4 ~ 0.0374
+    etaltvclint ~ 0.998
+    etalBA3 ~ 0.175
+    etalBA4 ~ c(0.153, 0.231)
+    etaltvcl3oh ~ 0.0414
+    etaltvcl7dm ~ c(0.0492, 0.0774)
+    etaltvalag ~ 0.0628
+    etaltvk23 ~ 3.78
+    etaltvalag2 ~ 3.3
+    etafpop ~ 0.526
+    etalvq7dm ~ fix(0.001)
+    etalvv7dm ~ fix(0.001)
+    etalvqalmt ~ 1.46
+    etalvvalmt ~ fix(0.001)
+    # Inter-occasion variability (IOV). Each chain is a single estimated
+    # variance (occasion 1) propagated as fix(...) through occasions 2-4 so
+    # the four occasions share a common between-occasion variance. The eta
+    # name encodes which structural parameter the IOV applies to and the
+    # occasion index: etaiov_<param>_<occ>.
+    etaiov_k13_1 ~ 1.52
+    etaiov_k13_2 ~ fix(1.52)
+    etaiov_k13_3 ~ fix(1.52)
+    etaiov_k13_4 ~ fix(1.52)
+    etaiov_alag2_1 ~ 4.32
+    etaiov_alag2_2 ~ fix(4.32)
+    etaiov_alag2_3 ~ fix(4.32)
+    etaiov_alag2_4 ~ fix(4.32)
+    etaiov_k23_1 ~ 5.01
+    etaiov_k23_2 ~ fix(5.01)
+    etaiov_k23_3 ~ fix(5.01)
+    etaiov_k23_4 ~ fix(5.01)
+    etaiov_clint_1 ~ 0.0779
+    etaiov_clint_2 ~ fix(0.0779)
+    etaiov_clint_3 ~ fix(0.0779)
+    etaiov_clint_4 ~ fix(0.0779)
+    etaiov_fpop_1 ~ 2.32
+    etaiov_fpop_2 ~ fix(2.32)
+    etaiov_fpop_3 ~ fix(2.32)
+    etaiov_fpop_4 ~ fix(2.32)
   })
   model({
-    iov1 <- ooc1 * e.IOV1 + ooc2 * eta17 + ooc3 * eta18 + ooc4 * eta19
-    iov2 <- ooc1 * e.IOV2 + ooc2 * eta21 + ooc3 * eta22 + ooc4 * eta23
-    iov3 <- ooc1 * e.IOV3 + ooc2 * eta25 + ooc3 * eta26 + ooc4 * eta27
-    iov4 <- ooc1 * e.IOV4 + ooc2 * eta29 + ooc3 * eta30 + ooc4 * eta31
-    iov5 <- ooc1 * e.IOV5 + ooc2 * eta33 + ooc3 * eta34 + ooc4 * eta35
+    iov_k13   <- ooc1 * etaiov_k13_1   + ooc2 * etaiov_k13_2   + ooc3 * etaiov_k13_3   + ooc4 * etaiov_k13_4
+    iov_alag2 <- ooc1 * etaiov_alag2_1 + ooc2 * etaiov_alag2_2 + ooc3 * etaiov_alag2_3 + ooc4 * etaiov_alag2_4
+    iov_k23   <- ooc1 * etaiov_k23_1   + ooc2 * etaiov_k23_2   + ooc3 * etaiov_k23_3   + ooc4 * etaiov_k23_4
+    iov_clint <- ooc1 * etaiov_clint_1 + ooc2 * etaiov_clint_2 + ooc3 * etaiov_clint_3 + ooc4 * etaiov_clint_4
+    iov_fpop    <- ooc1 * etaiov_fpop_1    + ooc2 * etaiov_fpop_2    + ooc3 * etaiov_fpop_3    + ooc4 * etaiov_fpop_4
 
-    k13 <- exp(ltvk13 + IIV_K13) * exp(iov1)
-    v4 <- exp(ltvv4 + IIV_V4)
-    clint <- exp(ltvclint + IIV_CLint + iov4)
-    alag1 <- exp(ltvalag1 + IIV_ALAG1)
-    k23 <- exp(ltvk23 + IIV_K23) * exp(iov3)
-    alag2 <- exp(ltvalag2 + IIV_ALAG2 + iov2)
+    k13 <- exp(ltvk13 + etaltvk13) * exp(iov_k13)
+    v4 <- exp(ltvv4 + etaltvv4)
+    clint <- exp(ltvclint + etaltvclint + iov_clint)
+    alag <- exp(ltvalag + etaltvalag)
+    k23 <- exp(ltvk23 + etaltvk23) * exp(iov_k23)
+    alag2 <- exp(ltvalag2 + etaltvalag2 + iov_alag2)
 
-    expp <- log(F1/(1 - F1)) + IIV_F1
-    fDepot1 <- exp(expp + iov5)/(1 + exp(expp + iov5))
-    fDepot2 <- 1 - fDepot1
+    expp <- log(fpop/(1 - fpop)) + etafpop
+    fDepot <- exp(expp + iov_fpop)/(1 + exp(expp + iov_fpop))
+    fDepot2 <- 1 - fDepot
     lv <- 0.05012 * WT^0.78
     v3 <- lv
     pbr <- 1/0.69
@@ -101,53 +155,53 @@ Xie_2019_agomelatine <- function () {
     fh <- 1 - eh
     clh <- qh * eh/pbr
     cl <- clh
-    ba3 <- exp(lBA3 + IIV_BA3)
-    ba4 <- exp(lBA4 + IIV_BA4)
+    ba3 <- exp(lBA3 + etalBA3)
+    ba4 <- exp(lBA4 + etalBA4)
     fm3oh <- ba3/(1 + ba3 + ba4)
     fm7dm <- ba4/(1 + ba3 + ba4)
-    cl3oh <- exp(ltvcl3oh + IIV_CL3OH)
-    cl7dm <- exp(ltvcl7dm + IIV_CL7DM)
-    q7dm <- exp(lvq7dm + IIV_Q7DM)
-    v7dm <- exp(lvv7dm + IIV_V7DM)
-    qalmt <- exp(lvqalmt + IIV_QALMT)
-    valmt <- exp(lvvalmt + IIV_VALMT)
-    mpr1 <- 259/243
-    mpr2 <- 229/243
+    cl3oh <- exp(ltvcl3oh + etaltvcl3oh)
+    cl7dm <- exp(ltvcl7dm + etaltvcl7dm)
+    q7dm <- exp(lvq7dm + etalvq7dm)
+    v7dm <- exp(lvv7dm + etalvv7dm)
+    qalmt <- exp(lvqalmt + etalvqalmt)
+    valmt <- exp(lvvalmt + etalvvalmt)
+    mpr_3oh <- 259/243
+    mpr_7dm <- 229/243
     v5 <- v4
     v6 <- v4
 
-    d/dt(DEPOT1) <- -k13 * DEPOT1
-    d/dt(DEPOT2) <- -k23 * DEPOT2
-    d/dt(LIVER) <- k13 * DEPOT1 + k23 * DEPOT2 - qh * fh * LIVER/v3 + qh * CENTPRNT/v4 - clh * LIVER/v3
-    d/dt(CENTPRNT) <- qh * fh * LIVER/v3 - qh * CENTPRNT/v4 - CENTPRNT * qalmt/v4 + ALMTPERI * qalmt/valmt
-    d/dt(METB3OH) <- fm3oh * clh * LIVER/v3 * mpr1 - METB3OH * cl3oh/v5
-    d/dt(METB7DM) <- fm7dm * clh * LIVER/v3 * mpr2 - METB7DM * cl7dm/v6 - METB7DM * q7dm/v6 + METB7DMPERI * q7dm/v7dm
-    d/dt(METB7DMPERI) <- METB7DM * q7dm/v6 - METB7DMPERI * q7dm/v7dm
-    d/dt(ALMTPERI) <- CENTPRNT * qalmt/v4 - ALMTPERI * qalmt/valmt
+    d/dt(depot)           <- -k13 * depot
+    d/dt(depot2)          <- -k23 * depot2
+    d/dt(liver)           <- k13 * depot + k23 * depot2 - qh * fh * liver/v3 + qh * central/v4 - clh * liver/v3
+    d/dt(central)         <- qh * fh * liver/v3 - qh * central/v4 - central * qalmt/v4 + peripheral1 * qalmt/valmt
+    d/dt(central_3oh)     <- fm3oh * clh * liver/v3 * mpr_3oh - central_3oh * cl3oh/v5
+    d/dt(central_7dm)     <- fm7dm * clh * liver/v3 * mpr_7dm - central_7dm * cl7dm/v6 - central_7dm * q7dm/v6 + peripheral1_7dm * q7dm/v7dm
+    d/dt(peripheral1_7dm) <- central_7dm * q7dm/v6 - peripheral1_7dm * q7dm/v7dm
+    d/dt(peripheral1)     <- central * qalmt/v4 - peripheral1 * qalmt/valmt
 
-    alag(DEPOT1) <- alag1
-    alag(DEPOT2) <- alag2
-    f(DEPOT1) <- fDepot1
-    f(DEPOT2) <- fDepot2
+    alag(depot)  <- alag
+    alag(depot2) <- alag2
+    f(depot)     <- fDepot
+    f(depot2)    <- fDepot2
 
     # Concentration of agomelatine in plasma. The unit conversion of *1000 was
     # not in the original model. It is used to allow dosing units to be in mg and
-    calmt <- CENTPRNT/v4 * 1000
+    calmt <- central/v4 * 1000
     lcalmt <- log(calmt)
     # Concentration of 3-hydroxy-agomelatine in plasma. The unit conversion of *1000 was
     # not in the original model. It is used to allow dosing units to be in mg and
-    c3oh <- METB3OH/v5 * 1000
+    c3oh <- central_3oh/v5 * 1000
     lc3oh <- log(c3oh)
     # Concentration of 7-desmethyl-agomelatine in plasma. The unit conversion of *1000 was
     # not in the original model. It is used to allow dosing units to be in mg and
-    c7dm <- METB7DM/v6 * 1000
+    c7dm <- central_7dm/v6 * 1000
     lc7dm <- log(c7dm)
 
     lloqalmt <- log(0.0457)
     lloq7dm <- log(0.1372)
 
-    lcalmt ~ add(sdalmt)
-    lc3oh ~ add(sd3oh)
-    lc7dm ~ add(sd7dm)
+    lcalmt ~ add(addSd_lcalmt)
+    lc3oh  ~ add(addSd_lc3oh)
+    lc7dm  ~ add(addSd_lc7dm)
   })
 }

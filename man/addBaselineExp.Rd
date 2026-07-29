@@ -24,20 +24,20 @@ model with baseline constant
 Add baseline that decays exponential with time
 }
 \examples{
- readModelDb("PK_2cmt_no_depot") |>
+readModelDb("PK_2cmt_no_depot") |>
   addDirectLin() |>
   convertQuad() |>
   addBaselineExp()
 }
 \seealso{
-Other PD: 
-\code{\link{addBaseline1exp}()},
-\code{\link{addBaselineConst}()},
-\code{\link{addBaselineLin}()},
-\code{\link{addDirectLin}()},
-\code{\link{convertEmax}()},
-\code{\link{convertLogLin}()},
-\code{\link{convertQuad}()}
+Other PD:
+\code{\link[=addBaseline1exp]{addBaseline1exp()}},
+\code{\link[=addBaselineConst]{addBaselineConst()}},
+\code{\link[=addBaselineLin]{addBaselineLin()}},
+\code{\link[=addDirectLin]{addDirectLin()}},
+\code{\link[=convertEmax]{convertEmax()}},
+\code{\link[=convertLogLin]{convertLogLin()}},
+\code{\link[=convertQuad]{convertQuad()}}
 }
 \author{
 Matthew L. Fidler

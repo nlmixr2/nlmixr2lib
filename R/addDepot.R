@@ -6,52 +6,60 @@
 #' @param central central compartment name
 #' @param depot depot compartment name
 #' @param ka absorption rate parameter name
+#' @param model Deprecated alias for \code{ui}. Supplying \code{model}
+#'   instead of \code{ui} still works but emits a deprecation warning.
 #' @return a model with the depot added
 #' @export
 #' @examples
 #' # most of the examples in the model library already have a depot
 #' # the PK_2cmt_no_depot is an exception
-#' readModelDb("PK_2cmt_no_depot")  |> addDepot()
+#' readModelDb("PK_2cmt_no_depot") |> addDepot()
 addDepot <- function(ui,
                      central = "central", depot = "depot",
-                     ka="ka") {
+                     ka = "ka",
+                     model) {
+  .useModelAsUi()
   .ui <- rxode2::assertRxUi(ui)
   assertCompartmentName(depot)
   assertCompartmentExists(.ui, central)
   assertVariableName(ka)
   .mv <- rxode2::rxModelVars(.ui)
-  # Get the central ODE and add depot to it
+  # Insert the new lines immediately before d/dt(central) and modify
+  # d/dt(central) in place so every pre-existing line keeps its original
+  # position (and any interleaved residual-error ~ lines continue to
+  # capture their source-order semantics).
   .modelLines <- .ui$lstExpr
   .w <- .whichDdt(.modelLines, central)
-  .tmp <- .extractModelLinesAtW(.modelLines, .w)
-  .tmp$w <- str2lang(paste0(deparse1(.tmp$w), "+", ka, "*", depot))
-  .modelLines <- c(list(str2lang(paste0(ka, "<- exp(l", ka, ")"))),
-                   .tmp$pre,
-                   list(str2lang(paste0("d/dt(", depot, ") <- -", ka, "*", depot))),
-                   list(.tmp$w),
-                   .tmp$post)
+  .modLine <- str2lang(paste0(deparse1(.modelLines[[.w]]), "+", ka, "*", depot))
+  .newLines <- list(
+    str2lang(paste0(ka, " <- exp(l", ka, ")")),
+    str2lang(paste0("d/dt(", depot, ") <- -", ka, "*", depot))
+  )
+  .before <- if (.w > 1L) .modelLines[seq_len(.w - 1L)] else list()
+  .after <- if (.w < length(.modelLines)) .modelLines[(.w + 1L):length(.modelLines)] else list()
+  .modelLines <- c(.before, .newLines, list(.modLine), .after)
 
   .tmp <- .getEtaThetaTheta1(.ui)
   .iniDf <- .tmp$iniDf
   .theta <- .tmp$theta
   .theta1 <- .tmp$theta1
   .eta <- .tmp$eta
-  if (length(.iniDf$name) == 0L)  {
+  if (length(.iniDf$name) == 0L) {
     .ntheta <- 0
   } else {
     .ntheta <- max(.iniDf$ntheta)
   }
 
   .thetaka <- .get1theta(ka, .theta1, .ntheta,
-                         label=paste0("First order absorption rate (", ka, ")"))
+    label = paste0("First order absorption rate (", ka, ")"))
   .ntheta <- .ntheta + 1
 
   .ui <- rxode2::rxUiDecompress(.ui)
   .ui$iniDf <- rbind(.theta,
-                     .thetaka,
-                     .eta)
-  if (exists("description", envir=.ui$meta)) {
-    rm("description", envir=.ui$meta)
+    .thetaka,
+    .eta)
+  if (exists("description", envir = .ui$meta)) {
+    rm("description", envir = .ui$meta)
   }
   rxode2::model(.ui) <- .modelLines
   rxode2::rxUiCompress(.ui)
@@ -66,7 +74,9 @@ addDepot <- function(ui,
 #' @examples
 #' readModelDb("PK_1cmt_des") |> removeDepot()
 removeDepot <- function(ui, central = "central", depot = "depot",
-                        ka="ka") {
+                        ka = "ka",
+                        model) {
+  .useModelAsUi()
   .ui <- rxode2::assertRxUi(ui)
   assertCompartmentExists(.ui, central)
   assertCompartmentExists(.ui, depot)
@@ -76,8 +86,8 @@ removeDepot <- function(ui, central = "central", depot = "depot",
   .tmp <- .extractModelLinesAtW(.modelLines, .w)
   .tmp$w <- .dropDotAddExpr(.replaceMult(.tmp$w, ka, depot, "."))
   .modelLines <- c(.tmp$pre,
-                   .tmp$w,
-                   .tmp$post)
+    .tmp$w,
+    .tmp$post)
   .tmp <- .getEtaThetaTheta1(.ui)
   .iniDf <- .tmp$iniDf
   .eta <- .tmp$eta
@@ -91,9 +101,9 @@ removeDepot <- function(ui, central = "central", depot = "depot",
   .eta <- .tmp$eta
   .ui <- rxode2::rxUiDecompress(.ui)
   .ui$iniDf <- rbind(.theta,
-                     .eta)
-  if (exists("description", envir=.ui$meta)) {
-    rm("description", envir=.ui$meta)
+    .eta)
+  if (exists("description", envir = .ui$meta)) {
+    rm("description", envir = .ui$meta)
   }
   rxode2::model(.ui) <- .modelLines
   rxode2::rxUiCompress(.ui)

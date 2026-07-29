@@ -26,12 +26,12 @@ parameterization
 }
 \examples{
 
-addIndirect(stim="in") |> convertKinR0()
+addIndirect(stim = "in") |> convertKinR0()
 }
 \seealso{
-Other Indirect response: 
-\code{\link{addIndirect}()},
-\code{\link{addIndirectLin}()}
+Other Indirect response:
+\code{\link[=addIndirect]{addIndirect()}},
+\code{\link[=addIndirectLin]{addIndirectLin()}}
 }
 \author{
 Matthew L. Fidler

@@ -1,10 +1,10 @@
 f <- function() {
   description <- "A two compartment model with a direct effect , no endpoints and no thetas"
   model({
-    d/dt(central) <- -kel * central - k12 * central + k21 *
+    d / dt(central) <- -kel * central - k12 * central + k21 *
       peripheral1
-    d/dt(peripheral1) <- k12 * central - k21 * peripheral1
-    Cc <- central/vc
+    d / dt(peripheral1) <- k12 * central - k21 * peripheral1
+    Cc <- central / vc
     effect <- Ek * Cc
   })
 }
@@ -16,13 +16,13 @@ test_that("Test addBaselineConst function", {
   expect_s3_class(result, "rxUi")
 
   expect_equal(rxode2::modelExtract(result, effect),
-               "effect <- Ek * Cc + Eb")
+    "effect <- Ek * Cc + Eb")
 
   # now with no theta and a description
   result <- addBaselineConst(f)
   expect_null(result$meta$description)
   expect_equal(rxode2::modelExtract(result, effect),
-               "effect <- Ek * Cc + Eb")
+    "effect <- Ek * Cc + Eb")
   expect_equal(result$theta, c(uEb = 0.1))
   expect_equal(result$iniDf$label, "untransformed constant baseline (Eb)")
 })
@@ -33,16 +33,16 @@ test_that("Test addBaselineExp function", {
   result <- addBaselineExp(ui)
   expect_s3_class(result, "rxUi")
   expect_equal(rxode2::modelExtract(result, effect),
-               "effect <- Ek * Cc + Eb * exp(-kb * time)")
+    "effect <- Ek * Cc + Eb * exp(-kb * time)")
 
   # now with no theta and a description
   result <- addBaselineExp(f)
   expect_null(result$meta$description)
   expect_equal(rxode2::modelExtract(result, effect),
-               "effect <- Ek * Cc + Eb * exp(-kb * time)")
-  expect_equal(result$theta, c(uEb = 0.1, lkb=0.1))
+    "effect <- Ek * Cc + Eb * exp(-kb * time)")
+  expect_equal(result$theta, c(uEb = 0.1, lkb = 0.1))
   expect_equal(result$iniDf$label, c("untransformed constant baseline (Eb)",
-                                     "baseline time-decay constant (kb)"))
+    "baseline time-decay constant (kb)"))
 })
 
 test_that("Test addBaseline1exp function", {
@@ -50,16 +50,16 @@ test_that("Test addBaseline1exp function", {
   result <- addBaseline1exp(ui)
   expect_s3_class(result, "rxUi")
   expect_equal(rxode2::modelExtract(result, effect),
-               "effect <- Ek * Cc + Eb * (1 - exp(-kb * time))")
+    "effect <- Ek * Cc + Eb * (1 - exp(-kb * time))")
 
   # now with no theta and a description
   result <- addBaseline1exp(f)
   expect_null(result$meta$description)
   expect_equal(rxode2::modelExtract(result, effect),
-               "effect <- Ek * Cc + Eb * (1 - exp(-kb * time))")
-  expect_equal(result$theta, c(uEb = 0.1, lkb=0.1))
+    "effect <- Ek * Cc + Eb * (1 - exp(-kb * time))")
+  expect_equal(result$theta, c(uEb = 0.1, lkb = 0.1))
   expect_equal(result$iniDf$label, c("untransformed constant baseline (Eb)",
-                                     "baseline time-decay constant (kb)"))
+    "baseline time-decay constant (kb)"))
 })
 
 test_that("Test addBaselineLin function", {
@@ -67,13 +67,13 @@ test_that("Test addBaselineLin function", {
   result <- addBaselineLin(ui)
   expect_s3_class(result, "rxUi")
   expect_equal(rxode2::modelExtract(result, effect),
-               "effect <- Ek * Cc + Eb * time")
+    "effect <- Ek * Cc + Eb * time")
 
   # now with no theta and a description
   result <- addBaselineLin(f)
   expect_null(result$meta$description)
   expect_equal(rxode2::modelExtract(result, effect),
-               "effect <- Ek * Cc + Eb * time")
+    "effect <- Ek * Cc + Eb * time")
   expect_equal(result$theta, c(uEb = 0.1))
   expect_equal(result$iniDf$label, "untransformed constant baseline (Eb)")
 

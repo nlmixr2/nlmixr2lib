@@ -8,7 +8,8 @@ addEta(
   ui,
   eta,
   priorName = getOption("nlmixr2lib.priorEta", TRUE),
-  etaCombineType = c("default", "snake", "camel", "dot", "blank")
+  etaCombineType = c("default", "snake", "camel", "dot", "blank"),
+  model
 )
 }
 \arguments{
@@ -24,6 +25,9 @@ instead of the left handed side of the equation.}
 \item{etaCombineType}{the option for the how to combine the eta
 with the parameter name.  Can be: "default", "snake", "camel",
 "dot", "blank"}
+
+\item{model}{Deprecated alias for \code{ui}. Supplying \code{model}
+instead of \code{ui} still works but emits a deprecation warning.}
 }
 \value{
 The model with eta added to the requested parameters

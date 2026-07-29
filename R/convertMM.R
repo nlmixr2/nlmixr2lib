@@ -9,21 +9,18 @@
 .removeLines <- function(modelLines, lhs) {
   # Look for assignment of elimination in model
   .w <- vapply(seq_along(modelLines),
-               function(i) {
-                 rxode2::.matchesLangTemplate(modelLines[[i]],
-                                              str2lang(paste0(lhs,
-                                                              " <- ."))) ||
-                   rxode2::.matchesLangTemplate(modelLines[[i]],
-                                                str2lang(paste0(lhs,
-                                                                "=.")))
-               }, logical(1), USE.NAMES = FALSE)
+    function(i) {
+      rxode2::.matchesLangTemplate(modelLines[[i]],
+        str2lang(paste0(lhs,
+          " <- ."))) ||
+        rxode2::.matchesLangTemplate(modelLines[[i]],
+          str2lang(paste0(lhs,
+            "=.")))
+    }, logical(1), USE.NAMES = FALSE)
   .w <- which(!.w)
   .seq <- seq_along(modelLines)[.w]
-  lapply(.seq,
-         function(i) {modelLines[[i]]})
+  lapply(.seq, function(i) modelLines[[i]])
 }
-
-# .replaceMultC(tmp[[5]], str2lang("kel"), str2lang("central"), str2lang("(vm*central/vc)/(km+central/vc)"))
 
 #' Replace multiplication expressions
 #'
@@ -38,22 +35,22 @@
 .replaceMultC <- function(x, v1, v2, ret) {
   if (is.call(x)) {
     if (length(x) == 3 &&
-          identical(x[[1]], quote(`*`))) {
+      identical(x[[1]], quote(`*`))) {
       .neg <- FALSE
       .x20 <- x[[2]]
       if (length(x[[2]]) == 2 &&
-            identical(x[[2]][[1]], quote(`+`))) {
+        identical(x[[2]][[1]], quote(`+`))) {
         x[[2]] <- x[[2]][[2]]
       }
       if (length(x[[2]]) == 2 &&
-            identical(x[[2]][[1]], quote(`-`))) {
+        identical(x[[2]][[1]], quote(`-`))) {
         .neg <- TRUE
         x[[2]] <- x[[2]][[2]]
       }
       if ((identical(x[[2]], v1) &&
-             identical(x[[3]], v2)) ||
-            (identical(x[[3]], v1) &&
-               identical(x[[2]], v2))) {
+        identical(x[[3]], v2)) ||
+        (identical(x[[3]], v1) &&
+          identical(x[[2]], v2))) {
         if (.neg) {
           return(str2lang(paste0("-", deparse1(ret))))
         } else {
@@ -63,9 +60,9 @@
       if (.neg) {
         x[[2]] <- .x20
       }
-      as.call(lapply(x, .replaceMultC, v1=v1, v2=v2, ret=ret))
+      as.call(lapply(x, .replaceMultC, v1 = v1, v2 = v2, ret = ret))
     } else {
-      as.call(lapply(x, .replaceMultC, v1=v1, v2=v2, ret=ret))
+      as.call(lapply(x, .replaceMultC, v1 = v1, v2 = v2, ret = ret))
     }
   } else {
     x
@@ -88,9 +85,9 @@
   .v2 <- str2lang(v2)
   .ret <- str2lang(ret)
   lapply(seq_along(modelLines),
-         function(i) {
-           as.call(.replaceMultC(modelLines[[i]], v1=.v1, v2=.v2, ret=.ret))
-         })
+    function(i) {
+      as.call(.replaceMultC(modelLines[[i]], v1 = .v1, v2 = .v2, ret = .ret))
+    })
 }
 #' Drop thetas in the theta section of an iniDf
 #'
@@ -105,7 +102,7 @@
   .w <- which(.theta$name %in% pars)
   if (length(.w) > 0) {
     # These are directly estimated, drop
-    .theta <- .theta[-.w,, drop = FALSE]
+    .theta <- .theta[-.w, , drop = FALSE]
     .theta$ntheta <- seq_along(.theta$name)
   }
   .theta
@@ -126,11 +123,11 @@
     # Convert to matrix and drop columns
     .e <- vapply(.w, function(i) {
       .eta$neta1[i]
-    }, double(1), USE.NAMES=FALSE)
-    .eta <- .eta[!(.eta$neta1 %in% .e),, drop = FALSE]
-    .eta <- .eta[!(.eta$neta2 %in% .e),, drop = FALSE]
+    }, double(1), USE.NAMES = FALSE)
+    .eta <- .eta[!(.eta$neta1 %in% .e), , drop = FALSE]
+    .eta <- .eta[!(.eta$neta2 %in% .e), , drop = FALSE]
     if (length(.eta$name) > 0) {
-      .eta <- .eta[order(.eta$neta1, .eta$neta2),]
+      .eta <- .eta[order(.eta$neta1, .eta$neta2), ]
       .eta$neta1 <- as.integer(factor(.eta$neta1))
       .eta$neta2 <- as.integer(factor(.eta$neta2))
     }
@@ -152,7 +149,7 @@
 .dropLine1 <- function(ui, modelLines, theta, eta, par1) {
   .line <- rxode2::modelExtract(ui, par1)
   if (length(.line) == 0) {
-    return(list(modelLines=modelLines, theta=theta, eta=eta))
+    return(list(modelLines = modelLines, theta = theta, eta = eta))
   }
   .modelLines <- .removeLines(modelLines, par1)
   .vars <- rxode2::rxModelVars(.line)$params
@@ -164,7 +161,7 @@
     .eta <- .ret$eta
     .modelLines <- .ret$modelLines
   }
-  list(modelLines=.modelLines, theta=.theta, eta=.eta)
+  list(modelLines = .modelLines, theta = .theta, eta = .eta)
 }
 #' Drop the lines from the model
 #'
@@ -187,7 +184,7 @@
     .eta <- .ret$eta
     .modelLines <- .ret$modelLines
   }
-  list(modelLines=.modelLines, theta=.theta, eta=.eta)
+  list(modelLines = .modelLines, theta = .theta, eta = .eta)
 }
 #' Returns the iniDf, theta, eta and theta1 data frames
 #'
@@ -199,32 +196,32 @@
 .getEtaThetaTheta1 <- function(ui) {
   .ui <- ui
   .iniDf <- .ui$iniDf
-  .eta <- .iniDf[!is.na(.iniDf$neta1),, drop = FALSE]
-  .theta <- .iniDf[is.na(.iniDf$neta1),, drop = FALSE]
+  .eta <- .iniDf[!is.na(.iniDf$neta1), , drop = FALSE]
+  .theta <- .iniDf[is.na(.iniDf$neta1), , drop = FALSE]
   if (length(.theta$ntheta) == 0) {
     .theta1 <- lapply(names(.theta),
-                      function(n) {
-                        switch(n,
-                               ntheta=1L,
-                               neta1=NA,
-                               neta2=NA,
-                               name="_dummy",
-                               lower= -Inf,
-                               est=0,
-                               upper=Inf,
-                               fix=FALSE,
-                               label=NA_character_,
-                               backTransform=NA_character_,
-                               condition=NA_character_,
-                               err=NA_character_,
-                               NA)
-                      })
+      function(n) {
+        switch(n,
+          ntheta = 1L,
+          neta1 = NA,
+          neta2 = NA,
+          name = "_dummy",
+          lower = -Inf,
+          est = 0,
+          upper = Inf,
+          fix = FALSE,
+          label = NA_character_,
+          backTransform = NA_character_,
+          condition = NA_character_,
+          err = NA_character_,
+          NA)
+      })
     names(.theta1) <- names(.theta)
     .theta1 <- as.data.frame(.theta1)
   } else {
     .theta1 <- .theta[1, ]
   }
-  list(iniDf=.iniDf, theta=.theta, theta1=.theta1, eta=.eta)
+  list(iniDf = .iniDf, theta = .theta, theta1 = .theta1, eta = .eta)
 }
 #' Get a single theta estimate
 #'
@@ -241,13 +238,13 @@
 #' @noRd
 #' @author Matthew L. Fidler
 .get1theta <- function(vm, theta1, ntheta,
-                       lower= -Inf, est=0.1, upper=Inf,
-                       fix=FALSE, label=NA_character_,
-                       name=paste0("l", vm)) {
+                       lower = -Inf, est = 0.1, upper = Inf,
+                       fix = FALSE, label = NA_character_,
+                       name = paste0("l", vm)) {
   .thetaVm <- theta1
   .thetaVm$ntheta <- ntheta + 1
   .thetaVm$name <- name
-  .thetaVm$lower <-lower
+  .thetaVm$lower <- lower
   .thetaVm$est <- est
   .thetaVm$upper <- upper
   .thetaVm$fix <- fix
@@ -277,9 +274,9 @@
 #' readModelDb("PK_3cmt_des") |> convertMM()
 #'
 #' readModelDb("PK_3cmt_des") |> removeDepot() |> convertMM()
-convertMM <- function(ui, central="central",
-                      elimination="kel",
-                      vm="vm", km="km", vc="vc") {
+convertMM <- function(ui, central = "central",
+                      elimination = "kel",
+                      vm = "vm", km = "km", vc = "vc") {
   rxode2::assertVariableName(elimination)
   rxode2::assertVariableName(vm)
   rxode2::assertVariableName(km)
@@ -308,7 +305,7 @@ convertMM <- function(ui, central="central",
     .theta <- .ret$theta
     .eta <- .ret$eta
   }
-  if(length(.theta$ntheta) == 0) {
+  if (length(.theta$ntheta) == 0) {
     .ntheta <- 0
   } else {
     .ntheta <- max(.theta$ntheta)
@@ -321,16 +318,16 @@ convertMM <- function(ui, central="central",
 
   .ui <- rxode2::rxUiDecompress(.ui)
   .ui$iniDf <- rbind(.theta,
-        .thetaVm,
-        .thetakm,
-        .eta)
+    .thetaVm,
+    .thetakm,
+    .eta)
   .model <- c(list(str2lang(paste0(vm, " <- exp(l", vm, ")")),
-         str2lang(paste0(km, " <- exp(l", km, ")"))),
-    .replaceMult(.modelLines, elimination, central,
-               paste0("(", vm, "*", central, "/", vc, ")/(", km,
-                      "+", central, "/", vc, ")")))
-  if (exists("description", envir=.ui$meta)) {
-    rm("description", envir=.ui$meta)
+    str2lang(paste0(km, " <- exp(l", km, ")"))),
+  .replaceMult(.modelLines, elimination, central,
+    paste0("(", vm, "*", central, "/", vc, ")/(", km,
+      "+", central, "/", vc, ")")))
+  if (exists("description", envir = .ui$meta)) {
+    rm("description", envir = .ui$meta)
   }
   rxode2::model(.ui) <- .model
   .ui

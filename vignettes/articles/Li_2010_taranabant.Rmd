@@ -1,0 +1,387 @@
+---
+title: "Taranabant (Li 2010)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Taranabant (Li 2010)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Li_2010_taranabant"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Li_2010_taranabant"))$description`
+* Article: [AAPS J 12(4):537-547 (2010), doi:10.1208/s12248-010-9212-2](https://doi.org/10.1208/s12248-010-9212-2)
+
+# Population
+
+Li 2010 pooled 6,834 plasma taranabant concentrations from 572 subjects
+across 12 Phase 1 studies (n = 187 healthy adults, mostly white males,
+median BMI 24.8 kg/m^2, median age 32 years) and one Phase 2 trial in
+obese subjects (n = 385, predominantly white females, median BMI
+35 kg/m^2, median age 41 years). A small Phase 1 substudy included
+subjects with mild, moderate, and severe renal insufficiency (CrCL range
+5.1-171 mL/min). Subjects with moderate hepatic insufficiency were
+excluded because matched healthy-volunteer hepatic-function data were
+unavailable. Single doses above 12 mg and multiple doses at or above
+10 mg were also excluded so that auto-induction of metabolism would not
+need to be modelled. Source: Li 2010 Tables I and II.
+
+The packaged metadata is available programmatically:
+
+```{r population-metadata}
+pop <- rxode2::rxode(readModelDb("Li_2010_taranabant"))$population
+str(pop, max.level = 1)
+```
+
+# Source trace
+
+Per-parameter source-of-truth is in the in-file comments next to each
+`ini()` entry of
+`inst/modeldb/specificDrugs/Li_2010_taranabant.R`. The table below
+collates them for review.
+
+| Equation / parameter | Value | Source |
+|----------------------|------:|--------|
+| `ka` (absorption rate, 1/h) | 2.73 | Table III |
+| `cl` base coefficient (CL/F, L/h) | 25.4 | Table III, Eq. 1 |
+| `vc` (V2/F, L) | 175 | Table III |
+| `vp` (V3/F, L) | 273 | Table III (no IIV estimated) |
+| `vp2` base coefficient (V4/F, L) | 2130 | Table III, Eq. 3 |
+| `vp2` age intercept (L) | 752 | Table III, Eq. 3 |
+| `q`  (Q3/F, L/h) | 24.6 | Table III |
+| `q2` base coefficient (Q4/F, L/h) | 30.4 | Table III, Eq. 2 |
+| BMI exponent on CL/F | -1.11 | Table III, Eq. 1 |
+| CrCL slope on CL/F (L/h per mL/min) | 0.0668 | Table III, Eq. 1 |
+| BMI exponent on V4/F | 1.38 | Table III, Eq. 3 |
+| AGE exponent on V4/F | 2.10 | Table III, Eq. 3 |
+| SEXF additive shift on V4/F (L) | 643 | Table III, Eq. 3 |
+| CrCL slope on V4/F (L per mL/min) | 12.5 | Table III, Eq. 3 |
+| AGE exponent on Q4/F | 0.357 | Table III, Eq. 2 |
+| omega^2 ka (3 x 3 block) | 0.4272 | Table III (73.0% CV) |
+| omega^2 Q3, Q4 (block) | 0.1297, 0.1212 | Table III (37.2%, 35.9% CV) |
+| cov(ka, Q3), cov(ka, Q4), cov(Q3, Q4) | 0.0901, 0.0676, 0.0764 | Table III |
+| omega^2 CL, Vc, V4 (diagonal) | 0.1779, 0.0846, 0.1051 | Table III (44.1%, 29.7%, 33.3% CV) |
+| Proportional residual error (Phase 2) | 0.355 | Table III (variance 0.126) |
+| CL/F equation | n/a | Eq. 1 |
+| Q4/F equation | n/a | Eq. 2 |
+| V4/F equation | n/a | Eq. 3 |
+| Three-compartment ODE with first-order absorption | n/a | Methods + Results |
+| Reference covariates (BMI 31.5, AGE 39, CRCL 80.6) | n/a | embedded in Eq. 1-3 |
+
+# Virtual cohort
+
+The published trial data are not redistributable; the figures below use
+virtual populations whose covariate distributions approximate the Phase 1
+and Phase 2 demographics from Table II of Li 2010.
+
+```{r cohort}
+set.seed(20100706)  # arbitrary fixed seed; date of publication used for traceability
+
+make_cohort <- function(n, label, bmi_mean, bmi_sd, age_mean, age_sd,
+                        crcl_mean, crcl_sd, sex_female_pct, wt_mean, wt_sd,
+                        dose_mg, n_doses, tau_h, obs_h, id_offset = 0L) {
+  ids <- id_offset + seq_len(n)
+  covs <- tibble(
+    id   = ids,
+    BMI  = pmax(15, rnorm(n, bmi_mean, bmi_sd)),
+    AGE  = pmax(18, rnorm(n, age_mean, age_sd)),
+    CRCL = pmax(5,  rnorm(n, crcl_mean, crcl_sd)),
+    SEXF = rbinom(n, 1, sex_female_pct / 100),
+    WT   = pmax(40, rnorm(n, wt_mean, wt_sd)),
+    cohort = label
+  )
+  dose_times <- seq(0, by = tau_h, length.out = n_doses)
+  doses <- tidyr::expand_grid(id = ids, time = dose_times) |>
+    dplyr::mutate(evid = 1L, amt = dose_mg, cmt = "depot")
+  obs <- tidyr::expand_grid(id = ids, time = obs_h) |>
+    dplyr::mutate(evid = 0L, amt = NA_real_, cmt = "central")
+  ev <- dplyr::bind_rows(doses, obs) |>
+    dplyr::left_join(covs, by = "id") |>
+    dplyr::arrange(id, time, evid)
+  ev
+}
+
+# Phase 1 single-dose-like cohort: 2 mg single dose, healthy non-obese
+phase1 <- make_cohort(
+  n = 200, label = "Phase1_2mg_SD",
+  bmi_mean = 25.0, bmi_sd = 3.2,
+  age_mean = 33.5, age_sd = 11.6,
+  crcl_mean = 95.6, crcl_sd = 26.3,
+  sex_female_pct = 19.8,    # 37 / 187 from Phase 1 Table II
+  wt_mean = 74.3, wt_sd = 12.0,
+  dose_mg = 2, n_doses = 1, tau_h = 24,
+  obs_h = unique(c(seq(0, 24, by = 0.5), seq(28, 168, by = 4))),
+  id_offset = 0L
+)
+
+# Phase 2 multiple-dose cohort: 6 mg QD x 28 days, obese
+phase2 <- make_cohort(
+  n = 200, label = "Phase2_6mg_QD28",
+  bmi_mean = 35.4, bmi_sd = 3.8,
+  age_mean = 42.3, age_sd = 10.18,
+  crcl_mean = 73.3, crcl_sd = 16.2,
+  sex_female_pct = 86.0,    # 331 / 385 from Phase 2 Table II
+  wt_mean = 97.1, wt_sd = 14.4,
+  dose_mg = 6, n_doses = 28, tau_h = 24,
+  obs_h = unique(c(seq(0, 24, by = 0.5),
+                   seq(24, 27 * 24, by = 6),
+                   seq(27 * 24, 28 * 24, by = 0.5),
+                   seq(28 * 24, 35 * 24, by = 6))),
+  id_offset = 200L
+)
+
+events <- dplyr::bind_rows(phase1, phase2)
+stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
+```
+
+# Simulation
+
+```{r simulate}
+mod <- rxode2::rxode(readModelDb("Li_2010_taranabant"))
+sim <- rxode2::rxSolve(
+  mod,
+  events = events,
+  keep = c("cohort", "BMI", "AGE", "CRCL", "SEXF", "WT")
+) |>
+  as.data.frame()
+```
+
+# Replicate published figures
+
+Li 2010 Figures 3 and 4 are visual predictive checks of dose-normalised
+plasma taranabant concentrations against time-since-last-dose. We
+reproduce the equivalent dose-normalised median + 5th/95th-percentile
+envelope from the simulation.
+
+```{r figure-3-vpc-phase1}
+sim |>
+  dplyr::filter(cohort == "Phase1_2mg_SD", time > 0, Cc > 0) |>
+  dplyr::mutate(Cc_per_mg = Cc / 2) |>     # normalise by 2 mg single dose
+  dplyr::group_by(time) |>
+  dplyr::summarise(
+    Q05 = quantile(Cc_per_mg, 0.05, na.rm = TRUE),
+    Q50 = quantile(Cc_per_mg, 0.50, na.rm = TRUE),
+    Q95 = quantile(Cc_per_mg, 0.95, na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  ggplot2::ggplot(ggplot2::aes(time, Q50)) +
+  ggplot2::geom_ribbon(ggplot2::aes(ymin = Q05, ymax = Q95), alpha = 0.25) +
+  ggplot2::geom_line() +
+  ggplot2::scale_y_log10() +
+  ggplot2::labs(
+    x = "Time since last dose (h)", y = "Dose-normalised Cc (ug/mL per mg)",
+    title = "Dose-normalised single-dose VPC (Phase 1, 2 mg)",
+    caption = "Compare to Figure 3a of Li 2010 (single-dose Phase 1 VPC)."
+  )
+```
+
+```{r figure-4-vpc-phase2}
+# Final dosing interval (day 28) at steady state, dose-normalised by 6 mg
+final_start <- 27 * 24
+sim |>
+  dplyr::filter(cohort == "Phase2_6mg_QD28", time >= final_start, Cc > 0) |>
+  dplyr::mutate(
+    tsld = time - final_start,
+    Cc_per_mg = Cc / 6
+  ) |>
+  dplyr::group_by(tsld) |>
+  dplyr::summarise(
+    Q05 = quantile(Cc_per_mg, 0.05, na.rm = TRUE),
+    Q50 = quantile(Cc_per_mg, 0.50, na.rm = TRUE),
+    Q95 = quantile(Cc_per_mg, 0.95, na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  ggplot2::ggplot(ggplot2::aes(tsld, Q50)) +
+  ggplot2::geom_ribbon(ggplot2::aes(ymin = Q05, ymax = Q95), alpha = 0.25) +
+  ggplot2::geom_line() +
+  ggplot2::scale_y_log10() +
+  ggplot2::labs(
+    x = "Time since last dose (h)", y = "Dose-normalised Cc (ug/mL per mg)",
+    title = "Dose-normalised steady-state VPC (Phase 2, 6 mg QD day 28)",
+    caption = "Compare to Figure 4 of Li 2010 (Phase 2 multiple-dose VPC)."
+  )
+```
+
+# PKNCA validation
+
+We run PKNCA on the Phase 1 single-dose simulation to characterise
+Cmax / Tmax / AUC0-inf / half-life, and on the Phase 2 final dosing
+interval (day 28) for steady-state Cmax,ss / Tmax,ss / AUC0-24 / Cmin,ss.
+
+```{r pknca-sd}
+sd_conc <- sim |>
+  dplyr::filter(cohort == "Phase1_2mg_SD", !is.na(Cc), Cc > 0) |>
+  dplyr::select(id, time, Cc, cohort)
+
+sd_dose <- events |>
+  dplyr::filter(cohort == "Phase1_2mg_SD", evid == 1) |>
+  dplyr::select(id, time, amt, cohort)
+
+conc_sd <- PKNCA::PKNCAconc(sd_conc, Cc ~ time | cohort + id,
+                            concu = "ug/mL", timeu = "h")
+dose_sd <- PKNCA::PKNCAdose(sd_dose, amt ~ time | cohort + id,
+                            doseu = "mg")
+
+intervals_sd <- data.frame(
+  start       = 0,
+  end         = Inf,
+  cmax        = TRUE,
+  tmax        = TRUE,
+  aucinf.obs  = TRUE,
+  half.life   = TRUE,
+  clast.obs   = TRUE,
+  lambda.z    = TRUE
+)
+nca_sd <- PKNCA::pk.nca(
+  PKNCA::PKNCAdata(conc_sd, dose_sd, intervals = intervals_sd)
+)
+knitr::kable(
+  summary(nca_sd),
+  caption = "Simulated single-dose NCA parameters, Phase 1 cohort, 2 mg."
+)
+```
+
+```{r pknca-ss}
+ss_start <- 27 * 24
+ss_end   <- 28 * 24
+ss_conc <- sim |>
+  dplyr::filter(cohort == "Phase2_6mg_QD28",
+                time >= ss_start, time <= ss_end + 6,
+                !is.na(Cc), Cc > 0) |>
+  dplyr::mutate(time = time - ss_start) |>
+  dplyr::select(id, time, Cc, cohort)
+
+ss_dose <- events |>
+  dplyr::filter(cohort == "Phase2_6mg_QD28", evid == 1, time == ss_start) |>
+  dplyr::mutate(time = 0) |>
+  dplyr::select(id, time, amt, cohort)
+
+conc_ss <- PKNCA::PKNCAconc(ss_conc, Cc ~ time | cohort + id,
+                            concu = "ug/mL", timeu = "h")
+dose_ss <- PKNCA::PKNCAdose(ss_dose, amt ~ time | cohort + id,
+                            doseu = "mg")
+
+intervals_ss <- data.frame(
+  start    = 0,
+  end      = 24,
+  cmax     = TRUE,
+  tmax     = TRUE,
+  cmin     = TRUE,
+  auclast  = TRUE,
+  cav      = TRUE
+)
+nca_ss <- PKNCA::pk.nca(
+  PKNCA::PKNCAdata(conc_ss, dose_ss, intervals = intervals_ss)
+)
+knitr::kable(
+  summary(nca_ss),
+  caption = "Simulated steady-state NCA parameters, Phase 2 cohort, 6 mg QD day 28."
+)
+```
+
+## Comparison against published exposure ratios
+
+Li 2010 Table V reports ratios of typical-population exposure (AUCss
+and Css(24)) at perturbations of each retained covariate vs the
+median. We reproduce the AUCss ratios by computing typical-value
+AUCss = dose / CL_typical for each covariate perturbation. Because
+CL/F depends only on BMI and CrCL (and not on AGE / SEXF), the
+table covers only those two AUCss rows that the paper itself populates;
+SEXF and AGE rows are NA in Table V for the same reason.
+
+```{r typical-cl}
+TVCL <- function(BMI, CRCL) 25.4 * (BMI / 31.5)^(-1.11) + 0.0668 * (CRCL - 80.6)
+
+bmi_ref  <- 32
+crcl_ref <- 80
+bmi_eval <- c(22, 28, 38, 42)
+crcl_eval <- 50
+
+tab_bmi <- data.frame(
+  Covariate = "BMI (kg/m^2)",
+  Value     = paste0(bmi_eval, ":", bmi_ref),
+  Published = c(0.659, 0.862, 1.21, 1.35),
+  Simulated = round(TVCL(bmi_ref, crcl_ref) / TVCL(bmi_eval, crcl_ref), 3)
+)
+
+tab_crcl <- data.frame(
+  Covariate = "CrCL (mL/min)",
+  Value     = paste0(crcl_eval, ":", crcl_ref),
+  Published = 1.09,
+  Simulated = round(TVCL(bmi_ref, crcl_ref) / TVCL(bmi_ref, crcl_eval), 3)
+)
+
+ratio_tab <- dplyr::bind_rows(tab_bmi, tab_crcl)
+knitr::kable(
+  ratio_tab,
+  caption = "AUCss ratios at perturbed covariate values vs reference (BMI 32, CrCL 80). Published values from Li 2010 Table V."
+)
+```
+
+The simulated AUCss ratios agree with the published values to three
+decimal places (within rounding) because both are computed from the
+same closed-form CL/F equation. This confirms the model file has
+transcribed the published CL/F equation faithfully.
+
+# Assumptions and deviations
+
+- **Residual error simplification.** Li 2010 used a phase-stratified
+  residual error model: Phase 1 used a TSLD-stratified
+  proportional-only error (variance 0.407 for TSLD < 2 h,
+  variance 0.0526 for TSLD >= 2 h), and Phase 2 used a combined
+  additive + proportional error (variance 0.126 proportional plus
+  variance 0.00385 additive). The model file encodes only the Phase 2
+  proportional component (propSd 0.355) as a single representative
+  residual error. The Phase 2 additive component is omitted because the
+  paper does not state the dataset's concentration unit explicitly
+  (text suggests nM based on the 0.1 nM LLOQ and 71.5% CV at LLOQ), and
+  the model concentration is in ug/mL. The Phase 1 absorption-window
+  variance (0.407) is large because the paper notes the absorption
+  process is highly variable; for simulations focused on the disposition
+  phase the Phase 2 proportional value is the more appropriate single
+  representative.
+- **Reference covariates.** The reference values BMI 31.5 kg/m^2,
+  AGE 39 years, and CRCL 80.6 mL/min are embedded in Equations 1-3 of
+  Li 2010. They are close to but not identical to the Table II pooled
+  medians (BMI 32.5, AGE 39, CRCL 78.4); the published equations are
+  used verbatim.
+- **Time-varying covariates.** Li 2010 Methods state that BMI, body
+  weight, and CrCL were nonstationary in the Phase 2 cohort. The
+  packaged model accepts BMI and CRCL as columns in the event table;
+  whether the user supplies a baseline-fixed or per-visit time-varying
+  column is a downstream choice.
+- **No IIV on V3/F.** Table III reports IIV on V3/F (peripheral 1) as
+  not estimated. The packaged model accordingly omits `etalvp`; the
+  per-subject V3/F is the population mean 273 L.
+- **Race covariate not retained.** Race was tested in the forward
+  selection / backward elimination procedure but was not retained as a
+  significant covariate. It is therefore not in `covariateData`.
+- **Food effect not retained.** A high-fat meal increased Cmax 14% and
+  AUC0-inf 74% but did not affect 24-h trough concentrations; the food
+  effect was therefore not included in the final model and is not in
+  the packaged model.
+- **Paper-specific structural parameter `lvp2_age`.** The 752 L
+  additive intercept for the age contribution to V4/F is named
+  `lvp2_age` in `ini()` because the canonical PK-parameter list does
+  not have an "additive intercept" suffix; this triggers a structural-
+  parameter naming warning under `checkModelConventions()` which is a
+  justified paper-specific deviation. The value (752 L) and its log
+  form (log(752)) are taken verbatim from Table III.
+- **Hepatic insufficiency excluded.** Subjects with moderate hepatic
+  insufficiency were dropped from the population PK analysis (Methods);
+  the model should not be extrapolated to hepatically impaired subjects.
+- **Dose range limit.** The paper explicitly notes the model cannot
+  extrapolate beyond 0.5 to 8 mg single or 0.5 to <10 mg multiple
+  doses, because higher doses were excluded to avoid auto-induction
+  of metabolism. Simulations outside this range should not be trusted.

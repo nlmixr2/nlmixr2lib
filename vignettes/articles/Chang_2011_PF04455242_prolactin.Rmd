@@ -1,0 +1,540 @@
+---
+title: "PF-04455242 KOR antagonist rat-to-human translational PK-PD (Chang 2011)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{PF-04455242 KOR antagonist rat-to-human translational PK-PD (Chang 2011)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.2)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Chang et al. (2011) develop a translational PK-PD model for the novel kappa
+opioid receptor (KOR) antagonist PF-04455242. Spiradoline (a KOR agonist) is
+used as a pharmacodynamic challenge: it elevates plasma prolactin via
+KOR-mediated inhibition of tuberoinfundibular dopaminergic (TIDA) neurons, and
+PF-04455242 blocks this elevation by competitive antagonism at the KOR.
+
+The paper contributes two coupled PK-PD models, extracted here as two separate
+model files (Phase 1 replicate-author-structure policy):
+
+* `modellib("Chang_2011_PF04455242_rat")` -- Sprague-Dawley rat preclinical
+  model: one-compartment first-order absorption PK for both spiradoline and
+  PF-04455242 (with dose-dependent Ka), feeding a direct-response sigmoid
+  Emax PD on prolactin with competitive antagonism by PF-04455242
+  (Chang 2011 Eq. 1, Fig. 2). PK parameters from Table I; PD parameters
+  from Table II.
+* `modellib("Chang_2011_PF04455242_human")` -- healthy male volunteer model:
+  two-compartment zero-order-absorption PK for PF-04455242 (Table III) with
+  log-transform-both-sides residual error, and the reduced antagonism PD
+  (Eq. 11/12) in which the spiradoline-driven prolactin elevation is
+  described empirically by a Weibull-scaled placebo profile rather than via
+  an explicit spiradoline PK compartment. PD parameters from Table IV.
+
+* Citation: Chang C, Byon W, Lu Y, Jacobsen LK, Badura LL, Sawant-Basak A,
+  Miller E, Liu J, Grimwood S, Wang EQ, Maurer TS. Quantitative PK-PD
+  Model-Based Translational Pharmacology of a Novel Kappa Opioid Receptor
+  Antagonist Between Rats and Humans. *AAPS J* 2011;13(4):565-575.
+* Article: [doi:10.1208/s12248-011-9296-3](https://doi.org/10.1208/s12248-011-9296-3)
+
+# Population
+
+**Rat (preclinical).** Three independent studies in male Sprague-Dawley rats
+(300-400 g) at Pfizer:
+
+* Study 1: vehicle / spiradoline 0.1 / 0.32 / 1.0 mg/kg SC (n = 6-9 per
+  group); plasma prolactin sampled at 0, 30, 60, 120 min post-dose.
+* Study 2: spiradoline 0.1 / 0.32 / 1.0 mg/kg SC (n = 5); single PK
+  sample at 30 min post-dose.
+* Study 3: vehicle / PF-04455242 0.32 / 10 mg/kg SC at t = -30 min, then
+  spiradoline 0.32 mg/kg SC at t = 0 (n = 6-9 per group); plasma
+  prolactin, PF-04455242, and spiradoline sampled at -30, 10, 20, 30,
+  45, 60, 90, 120 min post-spiradoline.
+
+**Human.** 69 healthy male adult volunteers pooled across three Pfizer
+clinical studies:
+
+* Single-dose escalation (PF-04455242 0.5-30 mg PO, n = 18; reference
+  CSR B1071001).
+* Multiple-dose escalation (PF-04455242 every 6 h followed by a single
+  dose on day 7, n = 27; reference CSR B1071002).
+* Proof-of-mechanism (POM) study (n = 24): randomised placebo-controlled
+  parallel-group, single doses of PF-04455242 placebo / 18 mg / 30 mg PO
+  at t = -1 h, followed by spiradoline 3.2 ug/kg IM at t = 0 (8
+  subjects per arm). PK samples 15, 30, 45, 60, 75, 90, 105, 120, 135,
+  150, 165, 180, and 360 min after PF-04455242 dose; serum prolactin
+  pre-dose and at 15, 30, 45, 60, 75, 90, 105, 120, 135, 150, 165, and
+  180 min after PF-04455242 dose (CSR B1071004).
+
+The PK pool (n = 45 from the single + multi-dose escalations) supplied 943
+PF-04455242 concentrations for the structural PK fit; the POM cohort (n = 24)
+supplied the prolactin PD observations.
+
+The same information is available programmatically via the models'
+`population` metadata:
+
+```{r metadata, eval = FALSE}
+readModelDb("Chang_2011_PF04455242_rat")$population
+readModelDb("Chang_2011_PF04455242_human")$population
+```
+
+# Source trace
+
+Per-parameter origin is recorded as an in-file comment next to each `ini()`
+entry in the two model files; the table below collects the values in one
+place for review.
+
+| Layer (species) | Parameter | Value | Source location |
+|---|---|---|---|
+| PK (rat) -- spiradoline | Ka | 4.75 1/h | Table I |
+| PK (rat) -- spiradoline | CL/F | 6.06 L/h/kg | Table I |
+| PK (rat) -- spiradoline | Vc/F | 7.15 L/kg | Table I |
+| PK (rat) -- spiradoline | omega Ka / CL / Vc | 59.1 / 18.0 / 46.5 %CV | Table I |
+| PK (rat) -- spiradoline | proportional residual | 44.72 % | Table I |
+| PK (rat) -- PF-04455242 | Ka (3.2 mg/kg) | 1.64 1/h | Table I, footnote a |
+| PK (rat) -- PF-04455242 | Ka (10 mg/kg) | 0.385 1/h | Table I, footnote b |
+| PK (rat) -- PF-04455242 | CL/F | 2.5 L/h/kg | Table I |
+| PK (rat) -- PF-04455242 | Vc/F | 1.31 L/kg | Table I |
+| PK (rat) -- PF-04455242 | omega Ka / CL / Vc | 31.9 (3.2 mg/kg) / 35.6 / 26.1 %CV | Table I |
+| PK (rat) -- PF-04455242 | proportional residual | 14.1 % | Table I |
+| PD (rat) | Baseline prolactin | 1.34 ng/mL | Table II |
+| PD (rat) | Emax | 39.7 ng/mL | Table II |
+| PD (rat) | EC50 (spiradoline) | 34.3 ng/mL | Table II |
+| PD (rat) | Ki (PF-04455242 rat KOR) | 414 ng/mL | Table II |
+| PD (rat) | gamma | 4.15 | Table II |
+| PD (rat) | omega Baseline | 39.1 %CV | Table II |
+| PD (rat) | proportional residual | 131 % | Table II |
+| PK (human) | CL/F | 54.6 L/h | Table III |
+| PK (human) | Vc/F | 327 L | Table III |
+| PK (human) | Duration D1 | 1.24 h | Table III |
+| PK (human) | Vp/F | 58.5 L | Table III |
+| PK (human) | Q/F | 6.51 L/h | Table III |
+| PK (human) | ALAG1 | 0.374 h | Table III |
+| PK (human) | omega CL / Vc / D1 / Vp / Q / ALAG1 | 53.7 / 48.5 / 30.6 / 27.3 / 27.3 / 26.6 %CV | Table III |
+| PK (human) | cov(omega CL, omega Vc) | 48.5 (interpreted as correlation 0.485; see Errata) | Table III |
+| PK (human) | residual (LTBS, lnorm) | 32.6 % | Table III |
+| PD (human) | Baseline prolactin BL | 9.53 ng/mL | Table IV |
+| PD (human) | Weibull kappa | 2.49 | Table IV |
+| PD (human) | Weibull lambda | 0.943 h | Table IV |
+| PD (human) | Ki (PF-04455242 human KOR) | 39.2 ng/mL | Table IV |
+| PD (human) | gamma | 1.5 | Table IV |
+| PD (human) | omega BL | 3.1 ng/mL (additive; see Errata) | Table IV |
+| PD (human) | omega lambda | 19.9 %CV | Table IV |
+| PD (human) | proportional residual | 17.5 % | Table IV |
+| PD (rat) | Rat PD direct-response equation | n/a | Eq. 1, Fig. 2 |
+| PD (human) | Reduced antagonism equation | n/a | Eq. 11 |
+| PD (human) | Weibull placebo equation | n/a | Eq. 12 |
+
+# Rat model
+
+## Loading and virtual cohort
+
+```{r load-rat}
+mod_rat <- readModelDb("Chang_2011_PF04455242_rat")
+```
+
+The PD study (Study 3) compared three dose groups: vehicle (PF = 0), low PF
+(3.2 mg/kg), and high PF (10 mg/kg), all with a fixed 0.32 mg/kg spiradoline
+SC challenge at t = 0 and PF-04455242 administered 30 min earlier
+(t = -0.5 h). Simulate 60 rats per group.
+
+```{r rat-cohort}
+set.seed(20110817L)  # Chang 2011 received-date
+
+n_rat <- 60L
+
+# Build one cohort's event table. Uses uppercase event-column names
+# (ID, TIME, EVID, CMT, AMT, DV) to satisfy rxode2's event-table
+# convention and CMT = "Cc" on observation rows so rxSolve returns all
+# defined outputs (Cc, Cspir, PRL) regardless of the listed cmt.
+make_rat_cohort <- function(pf_dose_mgkg, label, id_offset) {
+  ids <- id_offset + seq_len(n_rat)
+  obs_times <- seq(-0.5, 2, by = 0.05)
+
+  doses_pf <- if (pf_dose_mgkg > 0) {
+    expand.grid(ID = ids, TIME = -0.5) |>
+      mutate(EVID = 1L, CMT = "depot", AMT = pf_dose_mgkg, DV = NA_real_)
+  } else {
+    NULL
+  }
+
+  doses_sp <- expand.grid(ID = ids, TIME = 0) |>
+    mutate(EVID = 1L, CMT = "depot_spiradoline", AMT = 0.32, DV = NA_real_)
+
+  obs <- expand.grid(ID = ids, TIME = obs_times) |>
+    mutate(EVID = 0L, CMT = "Cc", AMT = NA_real_, DV = NA_real_)
+
+  ev <- bind_rows(doses_pf, doses_sp, obs)
+  ev$DOSE <- pf_dose_mgkg
+  ev$cohort <- label
+  ev |> arrange(ID, TIME, desc(EVID))
+}
+
+events_rat <- bind_rows(
+  make_rat_cohort(0,   "Vehicle + 0.32 mg/kg spir",      id_offset =   0L),
+  make_rat_cohort(3.2, "3.2 mg/kg PF + 0.32 mg/kg spir", id_offset = 100L),
+  make_rat_cohort(10,  "10 mg/kg PF + 0.32 mg/kg spir",  id_offset = 200L)
+)
+
+stopifnot(!anyDuplicated(unique(events_rat[, c("ID", "TIME", "EVID", "CMT")])))
+```
+
+## Simulate and replicate Figures 3 + 4
+
+```{r rat-sim}
+sim_rat <- rxode2::rxSolve(mod_rat, events = events_rat, keep = c("cohort", "DOSE")) |>
+  as.data.frame()
+```
+
+Replicate Figure 3 (rat PK profiles). Panel (a) is the lone spiradoline cohort
+(0.32 mg/kg SC) -- there is one cohort per study 3 dose group but Cspir is
+driven by the same spiradoline PK in every group. Panel (b) is PF-04455242
+plasma concentration at the two co-administered doses (3.2 and 10 mg/kg).
+
+```{r figure-3, fig.height = 5}
+fig3_spir <- sim_rat |>
+  filter(cohort != "Vehicle + 0.32 mg/kg spir", time >= 0) |>
+  group_by(time) |>
+  summarise(
+    Q05 = quantile(Cspir, 0.05, na.rm = TRUE),
+    Q50 = quantile(Cspir, 0.50, na.rm = TRUE),
+    Q95 = quantile(Cspir, 0.95, na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  mutate(panel = "(a) 0.32 mg/kg spiradoline SC")
+
+fig3_pf <- sim_rat |>
+  filter(cohort != "Vehicle + 0.32 mg/kg spir", time >= -0.5) |>
+  group_by(cohort, time) |>
+  summarise(
+    Q05 = quantile(Cc, 0.05, na.rm = TRUE),
+    Q50 = quantile(Cc, 0.50, na.rm = TRUE),
+    Q95 = quantile(Cc, 0.95, na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  mutate(panel = paste("(b)", cohort))
+
+bind_rows(fig3_spir, fig3_pf) |>
+  ggplot(aes(time, Q50)) +
+  geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.20, fill = "steelblue") +
+  geom_line(colour = "red", linetype = "dashed") +
+  facet_wrap(~panel, scales = "free_y") +
+  scale_y_log10() +
+  labs(x = "Time after spiradoline (h)", y = "Plasma concentration (ng/mL)",
+       caption = "Replicates Figure 3 of Chang 2011 (spiradoline plus PF-04455242 PK in rats).")
+```
+
+Replicate Figure 4b (rat prolactin time course, PF-04455242 dose-response
+under fixed 0.32 mg/kg spiradoline challenge).
+
+```{r figure-4b}
+sim_rat |>
+  filter(time >= 0) |>
+  group_by(cohort, time) |>
+  summarise(
+    Q05 = quantile(PRL, 0.05, na.rm = TRUE),
+    Q50 = quantile(PRL, 0.50, na.rm = TRUE),
+    Q95 = quantile(PRL, 0.95, na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(time, Q50)) +
+  geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.20, fill = "steelblue") +
+  geom_line(colour = "red", linetype = "dashed") +
+  facet_wrap(~cohort) +
+  scale_y_log10() +
+  labs(x = "Time after spiradoline (h)", y = "Plasma prolactin (ng/mL)",
+       caption = "Replicates Figure 4b of Chang 2011 (rat prolactin response: vehicle / 3.2 mg/kg / 10 mg/kg PF-04455242).")
+```
+
+## PKNCA validation -- PF-04455242 in rats
+
+PKNCA on Cc by PF dose cohort (use the typical-value sim to suppress
+residual variability before NCA -- the model's IIV is faithful to the
+paper but residual error of 14% would inflate the per-subject Cmax tail).
+
+```{r rat-pknca}
+mod_rat_typ <- rxode2::zeroRe(mod_rat)
+sim_rat_typ <- rxode2::rxSolve(mod_rat_typ, events = events_rat, keep = c("cohort", "DOSE")) |>
+  as.data.frame()
+
+sim_rat_nca <- sim_rat_typ |>
+  filter(cohort != "Vehicle + 0.32 mg/kg spir", time >= -0.5, !is.na(Cc), Cc > 0) |>
+  select(id, time, Cc, cohort)
+
+dose_rat <- events_rat |>
+  filter(EVID == 1L, CMT == "depot") |>
+  transmute(id = ID, time = TIME, amt = AMT, cohort)
+
+conc_obj_rat <- PKNCA::PKNCAconc(
+  sim_rat_nca, Cc ~ time | cohort + id,
+  concu = "ng/mL", timeu = "h"
+)
+dose_obj_rat <- PKNCA::PKNCAdose(
+  dose_rat, amt ~ time | cohort + id,
+  doseu = "mg/kg"
+)
+
+intervals_rat <- data.frame(
+  start = -0.5, end = 2,
+  cmax = TRUE, tmax = TRUE,
+  auclast = TRUE, half.life = TRUE
+)
+
+nca_rat <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj_rat, dose_obj_rat, intervals = intervals_rat))
+knitr::kable(
+  as.data.frame(nca_rat$result) |>
+    filter(PPTESTCD %in% c("cmax", "tmax", "auclast", "half.life")) |>
+    group_by(cohort, PPTESTCD) |>
+    summarise(value = round(median(PPORRES), 3), .groups = "drop") |>
+    pivot_wider(names_from = PPTESTCD, values_from = value),
+  caption = "Simulated NCA parameters for PF-04455242 in rats (typical-value)."
+)
+```
+
+The structural half-life of PF-04455242 in the rat is `ln(2) * Vc/CL = 0.693 *
+1.31 / 2.5 = 0.363 h` (about 22 min), consistent with the rapid clearance
+described in the Results section. AUC0-last increases approximately linearly
+with dose because CL/F is dose-independent.
+
+# Human model
+
+## Loading and virtual cohort
+
+```{r load-human}
+mod_human <- readModelDb("Chang_2011_PF04455242_human")
+```
+
+POM trial design: PF-04455242 placebo / 18 mg / 30 mg PO at t = -1 h
+followed by spiradoline 3.2 ug/kg IM at t = 0. Simulation time t = 0 is
+aligned with the IM spiradoline dose (the Weibull placebo origin).
+Simulate 60 subjects per group.
+
+```{r human-cohort}
+set.seed(20110817L)
+
+n_human <- 60L
+
+# Zero-order absorption requires RATE = -2 in the dose event so that
+# rxode2 uses the dur(central) function specified in the model. The
+# absorption lag time alag(central) is similarly model-driven and
+# applied automatically; no separate ALAG column is needed.
+make_human_cohort <- function(pf_dose_mg, label, id_offset) {
+  ids <- id_offset + seq_len(n_human)
+  obs_times <- seq(-1, 5, by = 0.05)
+
+  doses <- if (pf_dose_mg > 0) {
+    expand.grid(ID = ids, TIME = -1) |>
+      mutate(EVID = 1L, CMT = "central", AMT = pf_dose_mg, RATE = -2, DV = NA_real_)
+  } else {
+    NULL
+  }
+
+  obs <- expand.grid(ID = ids, TIME = obs_times) |>
+    mutate(EVID = 0L, CMT = "Cc", AMT = NA_real_, RATE = NA_real_, DV = NA_real_)
+
+  ev <- bind_rows(doses, obs)
+  ev$cohort <- label
+  ev |> arrange(ID, TIME, desc(EVID))
+}
+
+events_human <- bind_rows(
+  make_human_cohort(0,  "Placebo + spir",   id_offset =   0L),
+  make_human_cohort(18, "18 mg PF + spir",  id_offset = 100L),
+  make_human_cohort(30, "30 mg PF + spir",  id_offset = 200L)
+)
+
+stopifnot(!anyDuplicated(unique(events_human[, c("ID", "TIME", "EVID", "CMT")])))
+```
+
+## Simulate and replicate Figures 6 + 7
+
+```{r human-sim}
+sim_human <- rxode2::rxSolve(mod_human, events = events_human, keep = "cohort") |>
+  as.data.frame()
+```
+
+Replicate Figure 6 (PF-04455242 plasma concentration in healthy volunteers
+after 18 or 30 mg PO). Plot from -1 h (PF dose) to 11 h (= 12 h post-PF-dose
+to match Figure 6's "0 to 12 hr" x-axis -- here time is referenced to
+spiradoline so PF-dose time is -1 h).
+
+```{r figure-6}
+sim_human |>
+  filter(cohort != "Placebo + spir", time >= -1, !is.na(Cc), Cc > 0) |>
+  group_by(cohort, time) |>
+  summarise(
+    Q05 = quantile(Cc, 0.05, na.rm = TRUE),
+    Q50 = quantile(Cc, 0.50, na.rm = TRUE),
+    Q95 = quantile(Cc, 0.95, na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  mutate(time_pf = time + 1) |>
+  ggplot(aes(time_pf, Q50)) +
+  geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.20, fill = "steelblue") +
+  geom_line(colour = "red", linetype = "dashed") +
+  facet_wrap(~cohort) +
+  scale_y_log10() +
+  labs(x = "Time after PF-04455242 dose (h)", y = "Plasma concentration (ng/mL)",
+       caption = "Replicates Figure 6 of Chang 2011 (PF-04455242 PK in healthy volunteers, 18 and 30 mg PO).")
+```
+
+Replicate Figure 7 (prolactin time course in healthy volunteers after
+spiradoline 3.2 ug/kg IM, with PF-04455242 placebo / 18 mg / 30 mg PO
+pre-treatment). Plot from 1 to 3 h after PF-04455242 dose (= 0 to 2 h after
+spiradoline), the Fig 7 x-axis range.
+
+```{r figure-7}
+sim_human |>
+  filter(time >= 0, time <= 2) |>
+  group_by(cohort, time) |>
+  summarise(
+    Q05 = quantile(PRL, 0.05, na.rm = TRUE),
+    Q50 = quantile(PRL, 0.50, na.rm = TRUE),
+    Q95 = quantile(PRL, 0.95, na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  mutate(time_pf = time + 1) |>
+  ggplot(aes(time_pf, Q50)) +
+  geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.20, fill = "steelblue") +
+  geom_line(colour = "red", linetype = "dashed") +
+  facet_wrap(~cohort) +
+  labs(x = "Time after PF-04455242 dose (h)", y = "Plasma prolactin (ng/mL)",
+       caption = "Replicates Figure 7 of Chang 2011 (human prolactin response: placebo / 18 mg / 30 mg PF-04455242).")
+```
+
+## PKNCA validation -- PF-04455242 in healthy volunteers
+
+```{r human-pknca}
+mod_human_typ <- rxode2::zeroRe(mod_human)
+sim_human_typ <- rxode2::rxSolve(mod_human_typ, events = events_human, keep = "cohort") |>
+  as.data.frame()
+
+sim_human_nca <- sim_human_typ |>
+  filter(cohort != "Placebo + spir", time >= -1, !is.na(Cc), Cc > 0) |>
+  select(id, time, Cc, cohort)
+
+dose_human <- events_human |>
+  filter(EVID == 1L) |>
+  transmute(id = ID, time = TIME, amt = AMT, cohort)
+
+conc_obj_h <- PKNCA::PKNCAconc(
+  sim_human_nca, Cc ~ time | cohort + id,
+  concu = "ng/mL", timeu = "h"
+)
+dose_obj_h <- PKNCA::PKNCAdose(
+  dose_human, amt ~ time | cohort + id,
+  doseu = "mg"
+)
+
+intervals_h <- data.frame(
+  start = -1, end = 5,
+  cmax = TRUE, tmax = TRUE,
+  auclast = TRUE, half.life = TRUE
+)
+
+nca_h <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj_h, dose_obj_h, intervals = intervals_h))
+
+knitr::kable(
+  as.data.frame(nca_h$result) |>
+    filter(PPTESTCD %in% c("cmax", "tmax", "auclast", "half.life")) |>
+    group_by(cohort, PPTESTCD) |>
+    summarise(value = round(median(PPORRES), 3), .groups = "drop") |>
+    pivot_wider(names_from = PPTESTCD, values_from = value),
+  caption = "Simulated NCA parameters for PF-04455242 in healthy volunteers (typical-value, 0-5 h after spiradoline)."
+)
+```
+
+Structural Cmax and AUC are dose-proportional. The terminal half-life is
+`ln(2) * (Vc + Vp) / CL ~= 0.693 * 385.5 / 54.6 ~= 4.9 h` under the simple
+two-compartment apparent-volume assumption; the NCA half-life will be lower
+than this because the 0-5 h window misses the slow distribution phase
+visible in Figure 6's later samples.
+
+# Assumptions and deviations / Errata
+
+* **Rat PF-04455242 dose-dependent Ka encoded as a step function on a `DOSE`
+  covariate.** The paper estimated Ka = 1.64 1/h at the 3.2 mg/kg
+  PF-04455242 cohort and Ka = 0.385 1/h at the 10 mg/kg cohort (Table I,
+  footnotes a and b). The model uses a continuous canonical `DOSE`
+  covariate (per-subject, in mg/kg) and switches Ka at threshold > 5 mg/kg
+  to recover the two reported values. The IIV omega-Ka was reported only
+  at 3.2 mg/kg (NE at 10 mg/kg per footnote b); the model applies the
+  3.2 mg/kg eta uniformly to both dose levels.
+
+* **Spiradoline compartments declared via `paper_specific_compartments`
+  rather than registering a new sibling-drug suffix.** Spiradoline is a
+  KOR-agonist challenge drug co-administered with PF-04455242 in the rat
+  PK-PD study; it has its own one-compartment first-order absorption PK
+  (Table I) and its own depot / central compartments. Rather than
+  introduce a new canonical metabolite-suffix token (the
+  `inst/references/compartment-names.md` "sibling-drug suffix" register --
+  e.g., `ftc`, `rtv`, `dha`, `col`), the rat model uses the documented
+  `paper_specific_compartments` escape hatch with full-word compartment
+  names (`depot_spiradoline`, `central_spiradoline`) and `_spiradoline`-
+  suffixed structural parameters. The output variable `Cspir` is paper-
+  named. A future maintainer who finds spiradoline used in additional
+  registered models may promote it to a canonical sibling-drug suffix
+  (`spir`) without changing the model behaviour.
+
+* **Human cov(omega-CL, omega-Vc) = 48.5 interpreted as correlation 0.485.**
+  Table III reports `cov(omega CL, omega VC) = 48.5` with no `%` unit. The
+  only physically consistent interpretation (correlation in [-1, 1]) is
+  that 48.5 is the correlation coefficient as a percentage. Variance- or
+  SD-unit interpretations give correlation > 1, which is impossible. The
+  log-scale covariance is then 0.485 * sqrt(0.2533 * 0.2113) = 0.1122 and
+  is encoded in the block `etalcl + etalvc ~ c(0.2533, 0.1122, 0.2113)`.
+
+* **Human gamma = 1.5 (Table IV) used; the inline Results-text mention of
+  "1.66" is treated as a typo.** Table IV reports gamma = 1.5 (CV 79.3%);
+  the Discussion text repeatedly cites gamma = 1.5 ("the gamma parameter
+  was found to be different between rats and humans (4.15, versus 1.5,
+  respectively)"); a single sentence in the Results "Clinical PK-PD"
+  paragraph cites "a gamma estimate of 1.66". Table IV is treated as the
+  canonical value.
+
+* **Human omega-BL = 3.1 ng/mL (additive, Table IV) approximated as
+  multiplicative log-normal IIV.** Table IV reports omega-BL = 3.1 with
+  units `(ng/mL)` (not `(%)`), indicating additive IIV on the linear-scale
+  baseline. The model approximates this as a multiplicative log-normal
+  IIV with equivalent CV = 3.1 / 9.53 = 32.5% (`log(0.325^2 + 1) = 0.1003`).
+  The approximation is accurate to within < 5 % of the additive IIV for
+  prolactin baselines within +-2 SD of the typical value, and avoids the
+  paper-specific-eta escape hatch needed to encode true additive IIV
+  alongside a canonical `lrbase` typical value. Users who need exact
+  additive IIV can rewrite `bl <- exp(lrbase) + etabl_additive` and
+  declare `etabl_additive` via `paper_specific_etas`.
+
+* **Spiradoline pharmacokinetics not modeled explicitly in the human file.**
+  Chang 2011 Methods 'Clinical POM Prediction' explicitly drops spiradoline
+  PK from the human model because (a) human spiradoline PK was never
+  measured, and (b) the placebo-corrected prolactin response is two-fold
+  proportional between spiradoline 1.6 and 3.2 ug/kg, allowing
+  reformulation of the antagonism term in terms of a dimensionless scaling
+  factor `x = 2` (Eq. 6 / Eq. 7 / Eq. 11). The human model file therefore
+  carries `x_scale = fixed(2)` and a Weibull-scaled empirical placebo
+  prolactin profile (Eq. 12) rather than a spiradoline compartment.
+
+* **Simulation time origin (human model) must be aligned with the IM
+  spiradoline dose.** The Weibull placebo profile (Eq. 12) is parameterised
+  in `TIME = time since spiradoline administration`. In the POM trial
+  design, PF-04455242 was dosed PO at t = -1 h relative to spiradoline.
+  The vignette events table follows this convention (PF dose at t = -1 h,
+  spiradoline as the simulation t = 0 reference).
+
+* **No covariate model.** Both papers (Chang 2011 and the upstream PK
+  studies it references) explicitly used the population PK analyses to
+  characterise structural pharmacokinetics without covariates (Methods
+  'Data Analysis': "Both preclinical and clinical population PK analyses
+  were focused on developing a structural pharmacokinetic model without
+  covariates"). The rat model carries only `DOSE` as a structural switch
+  for the dose-dependent Ka; the human model carries no covariates.

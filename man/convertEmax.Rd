@@ -40,24 +40,24 @@ Convert linear effect to Emax effect
 \examples{
 
 readModelDb("PK_2cmt_no_depot") |>
-  addIndirectLin(stim="in") |>
+  addIndirectLin(stim = "in") |>
   convertEmax()
 
 # When emax=1
 readModelDb("PK_2cmt_no_depot") |>
-  addIndirectLin(stim="in") |>
-  convertEmax(emax=1)
+  addIndirectLin(stim = "in") |>
+  convertEmax(emax = 1)
 
 }
 \seealso{
-Other PD: 
-\code{\link{addBaseline1exp}()},
-\code{\link{addBaselineConst}()},
-\code{\link{addBaselineExp}()},
-\code{\link{addBaselineLin}()},
-\code{\link{addDirectLin}()},
-\code{\link{convertLogLin}()},
-\code{\link{convertQuad}()}
+Other PD:
+\code{\link[=addBaseline1exp]{addBaseline1exp()}},
+\code{\link[=addBaselineConst]{addBaselineConst()}},
+\code{\link[=addBaselineExp]{addBaselineExp()}},
+\code{\link[=addBaselineLin]{addBaselineLin()}},
+\code{\link[=addDirectLin]{addDirectLin()}},
+\code{\link[=convertLogLin]{convertLogLin()}},
+\code{\link[=convertQuad]{convertQuad()}}
 }
 \author{
 Matthew L. Fidler

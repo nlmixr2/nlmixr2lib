@@ -108,7 +108,6 @@ ui with no PK parameters estimated
 Change the transformation type for PK models
 }
 \examples{
-
 \donttest{
 # Three compartment model translations
 
@@ -152,7 +151,6 @@ readModelDb("PK_1cmt_des") |>
 readModelDb("PK_3cmt_des") |>
   removeDepot() |>
   pkTrans("k")
-
 }
 }
 \author{

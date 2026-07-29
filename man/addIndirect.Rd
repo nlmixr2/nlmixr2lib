@@ -73,15 +73,15 @@ Add an indirect response model to a PK model
 \examples{
 
 readModelDb("PK_2cmt_no_depot") |>
-  addIndirect(stim="in",hill=TRUE)
+  addIndirect(stim = "in", hill = TRUE)
 
 readModelDb("PK_2cmt_no_depot") |>
-  addIndirect(inhib="out", imax=1)
+  addIndirect(inhib = "out", imax = 1)
 }
 \seealso{
-Other Indirect response: 
-\code{\link{addIndirectLin}()},
-\code{\link{convertKinR0}()}
+Other Indirect response:
+\code{\link[=addIndirectLin]{addIndirectLin()}},
+\code{\link[=convertKinR0]{convertKinR0()}}
 }
 \author{
 Matthew L. Fidler

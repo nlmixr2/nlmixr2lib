@@ -1,0 +1,282 @@
+---
+title: "Ephedrine + caffeine + norephedrine (Csajka 2005)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Ephedrine + caffeine + norephedrine (Csajka 2005)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+```{r model-metadata}
+mod_fn <- readModelDb("Csajka_2005_ephedrine_caffeine")
+mod    <- rxode2::rxode(mod_fn)
+```
+
+* Citation: `r mod$reference`
+* Article: <https://doi.org/10.1111/j.1365-2125.2005.02254.x>
+
+This vignette validates the simultaneous mechanistic PK model of Csajka et al. (2005) for co-administered ephedrine, its N-demethylation metabolite norephedrine, and caffeine after single oral doses in healthy adults.
+
+# Population
+
+Twenty-four healthy adults (14 female, 10 male; age 22-39 years; body weight 52-91.5 kg) participated across two single-dose cross-over studies at UCSF. Study 1 (n=8) received a single oral dose of a commercial herbal supplement (Metabolift, two capsules) containing 17.3 mg ephedrine and 175 mg caffeine. Study 2 (n=16) received single oral doses of 25 mg ephedrine sulphate and / or 200 mg caffeine sulphate, alone and in combination. Six of the 24 subjects (25%) were on concurrent oral contraceptives. Race / ethnicity was reported only for Study 2 (10 Caucasian, 1 African American, 3 Asian / Pacific Islander, 2 Latino). Demographics are from Csajka 2005 Table 1.
+
+The same information is available programmatically via the model's `population` metadata:
+
+```{r pop}
+str(mod$population, max.level = 1)
+```
+
+# Source trace
+
+The per-parameter origin is recorded as an in-file comment next to each `ini()` entry in `inst/modeldb/specificDrugs/Csajka_2005_ephedrine_caffeine.R`. The table below collects them in one place.
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `lka_caf` (caffeine ka_C)       | log(0.064 1/min)     | Csajka 2005 Table 3 |
+| `lcl_caf` (caffeine CL_C/F_C)   | log(0.083 L/min)     | Csajka 2005 Table 3 |
+| `lvc_caf` (caffeine V_C/F_C)    | log(38.6 L)          | Csajka 2005 Table 3 |
+| `e_conmed_birthcontrol_cl_caf`  | 0.54                 | Csajka 2005 Table 3 (d_OC_CL) |
+| `lka` (ephedrine ka_E)          | log(0.036 1/min)     | Csajka 2005 Table 3 |
+| `lcl_renal` (CL_RE/F_E)         | log(0.34 L/min)      | Csajka 2005 Table 3 |
+| `lvc` (V_E/F_E)                 | log(181 L)           | Csajka 2005 Table 3 |
+| `ltlag` (ephedrine lag)         | log(16.7 min)        | Csajka 2005 Table 3 |
+| `lfdepot` (F_E,pharm)           | fixed(log(0.59))     | Csajka 2005 Table 3 |
+| `lvmax_neph` (Vmax/V_NE)        | log(1.96e-4 mg/(min*L)) | Csajka 2005 Table 3 |
+| `lkm` (Michaelis-Menten Km)     | log(2.77 mg)         | Csajka 2005 Table 3 |
+| `lkel_neph` (norephedrine ke_NE)| log(0.037 1/min)     | Csajka 2005 Table 3, Methods text |
+| `la50_caf` (ka_E,50)            | log(31.4 mg)         | Csajka 2005 Table 3 |
+| `d_caf`                         | fixed(0.99)          | Csajka 2005 Table 3 (d = expit(theta_e = 19.5)) |
+| `propSd` (ephedrine plasma)     | 0.17                 | Csajka 2005 Table 3 |
+| `propSd_caf` (caffeine plasma)  | 0.17                 | Csajka 2005 Table 3 |
+| `propSd_neph` (norephedrine)    | 0.15                 | Csajka 2005 Table 3 |
+| IIVs (omega^2 = log(CV^2 + 1))  | derived from %CV     | Csajka 2005 Table 3 |
+| Caffeine equation               | n/a                  | Csajka 2005 Methods 'Caffeine pharmacokinetics', equation 1 |
+| Ephedrine + norephedrine MM     | n/a                  | Csajka 2005 Methods 'Ephedrine and norephedrine pharmacokinetics', equation 6 |
+| Caffeine effect on ephedrine ka | n/a                  | Csajka 2005 Methods 'Interaction of caffeine and ephedrine', equations 10b / 10e (final) |
+| OC effect on caffeine CL        | n/a                  | Csajka 2005 Methods 'Caffeine pharmacokinetics', equation 5 |
+
+# Virtual cohort
+
+Original observed data are not publicly available. The virtual cohort below mirrors the Study 2 design (single oral 25 mg ephedrine + 200 mg caffeine, no oral contraceptive use), with a small parallel oral-contraceptive cohort to demonstrate the d_OC_CL effect on caffeine.
+
+```{r cohort}
+set.seed(20260604)
+
+obs_times <- c(0, 15, 30, 45, 60, 75, 90, 120, 150, 180, 210, 240, 300, 360, 420,
+               480, 600, 660, 720, 840, 960, 1080, 1200, 1320, 1440)
+
+make_cohort <- function(n, cohort_label, oc_status, id_offset) {
+  cov <- tibble(
+    id = id_offset + seq_len(n),
+    CONMED_BIRTHCONTROL = oc_status
+  )
+  doses <- bind_rows(
+    cov |> mutate(time = 0, amt = 25,  cmt = "depot",     evid = 1L),
+    cov |> mutate(time = 0, amt = 200, cmt = "depot_caf", evid = 1L)
+  )
+  obs <- tidyr::crossing(cov, tibble(time = obs_times)) |>
+    mutate(amt = NA_real_, cmt = "Cc", evid = 0L)
+  bind_rows(doses, obs) |>
+    arrange(id, time, evid) |>
+    mutate(cohort = cohort_label)
+}
+
+events <- bind_rows(
+  make_cohort(60, "Study 2 pharmaceutical (no OC)", 0, id_offset = 0L),
+  make_cohort(20, "Study 2 pharmaceutical (with OC)", 1, id_offset = 100L)
+)
+
+stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
+```
+
+# Simulation
+
+```{r simulate}
+sim <- rxode2::rxSolve(
+  mod,
+  events  = events,
+  keep    = c("cohort", "CONMED_BIRTHCONTROL"),
+  addCov  = TRUE,
+  nStud   = 1
+) |>
+  as.data.frame()
+
+sim_typical <- rxode2::rxSolve(
+  rxode2::zeroRe(mod),
+  events  = events,
+  keep    = c("cohort", "CONMED_BIRTHCONTROL"),
+  addCov  = TRUE
+) |>
+  as.data.frame()
+```
+
+# Replicate published figures
+
+## Figure 2 - Caffeine plasma profile, +/- oral contraceptive
+
+```{r figure-2-caffeine}
+sim_typical |>
+  filter(time <= 24 * 60) |>
+  mutate(Cc_caf_ug_per_L = Cc_caf * 1000,
+         OC = ifelse(CONMED_BIRTHCONTROL == 1, "On oral contraceptive", "Not on oral contraceptive")) |>
+  distinct(time, OC, .keep_all = TRUE) |>
+  ggplot(aes(time / 60, Cc_caf_ug_per_L, colour = OC)) +
+  geom_line(linewidth = 0.7) +
+  labs(x = "Time (h)", y = "Plasma caffeine (ug/L)",
+       colour = "Cohort",
+       title = "Figure 2 - caffeine plasma profile",
+       caption = "Pharmaceutical 200 mg caffeine; typical-value simulation.\nReplicates the shape of Csajka 2005 Figure 2.")
+```
+
+## Figure 3 - Norephedrine plasma profile from ephedrine metabolism
+
+```{r figure-3-norephedrine}
+sim_typical |>
+  filter(time <= 24 * 60, cohort == "Study 2 pharmaceutical (no OC)") |>
+  mutate(Cc_neph_ug_per_L = Cc_neph * 1000) |>
+  distinct(time, .keep_all = TRUE) |>
+  ggplot(aes(time / 60, Cc_neph_ug_per_L)) +
+  geom_line(linewidth = 0.7) +
+  labs(x = "Time (h)", y = "Plasma norephedrine (ug/L)",
+       title = "Figure 3 - plasma norephedrine from saturable conversion",
+       caption = "Pharmaceutical 25 mg ephedrine; typical-value simulation.\nReplicates the shape of Csajka 2005 Figure 3 (solid line = MM model).")
+```
+
+## Figure 4 - Ephedrine plasma profile
+
+```{r figure-4-ephedrine}
+sim_typical |>
+  filter(time <= 24 * 60, cohort == "Study 2 pharmaceutical (no OC)") |>
+  mutate(Cc_ug_per_L = Cc * 1000) |>
+  distinct(time, .keep_all = TRUE) |>
+  ggplot(aes(time / 60, Cc_ug_per_L)) +
+  geom_line(linewidth = 0.7) +
+  labs(x = "Time (h)", y = "Plasma ephedrine (ug/L)",
+       title = "Figure 4 - plasma ephedrine after pharmaceutical 25 mg",
+       caption = "Caffeine-modulated absorption (d_caf = 0.99, ka_E,50 = 31.4 mg).\nReplicates the shape of Csajka 2005 Figure 4.")
+```
+
+# PKNCA validation
+
+Three independent PKNCA blocks - one per plasma output (caffeine, ephedrine, norephedrine). The treatment grouping (`cohort + id`) carries the with / without oral-contraceptive subgroups so per-cohort half-lives can be compared against the paper.
+
+```{r pknca-caffeine}
+# Caffeine plasma NCA, both cohorts (no OC and with OC).
+sim_caf <- sim |>
+  filter(!is.na(Cc_caf)) |>
+  mutate(Cc_caf_ug_per_L = Cc_caf * 1000) |>
+  select(id, time, Cc_caf_ug_per_L, cohort)
+
+dose_caf <- events |>
+  filter(evid == 1, cmt == "depot_caf") |>
+  select(id, time, amt, cohort)
+
+conc_caf  <- PKNCA::PKNCAconc(sim_caf, Cc_caf_ug_per_L ~ time | cohort + id,
+                              concu = "ug/L", timeu = "min")
+dose_caf  <- PKNCA::PKNCAdose(dose_caf, amt ~ time | cohort + id, doseu = "mg")
+ints_caf  <- data.frame(start = 0, end = Inf, cmax = TRUE, tmax = TRUE,
+                        aucinf.obs = TRUE, half.life = TRUE)
+nca_caf   <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_caf, dose_caf, intervals = ints_caf))
+
+nca_caf_tbl <- nca_caf$result |>
+  filter(PPTESTCD %in% c("cmax", "tmax", "aucinf.obs", "half.life")) |>
+  group_by(cohort, PPTESTCD) |>
+  summarise(median = median(PPORRES, na.rm = TRUE),
+            q05    = quantile(PPORRES, 0.05, na.rm = TRUE),
+            q95    = quantile(PPORRES, 0.95, na.rm = TRUE), .groups = "drop")
+knitr::kable(nca_caf_tbl, caption = "Simulated caffeine NCA (per cohort).", digits = 2)
+```
+
+```{r pknca-ephedrine}
+# Ephedrine plasma NCA, no-OC cohort only (no OC effect on ephedrine).
+sim_eph <- sim |>
+  filter(!is.na(Cc), cohort == "Study 2 pharmaceutical (no OC)") |>
+  mutate(Cc_ug_per_L = Cc * 1000) |>
+  select(id, time, Cc_ug_per_L, cohort)
+
+dose_eph <- events |>
+  filter(evid == 1, cmt == "depot", cohort == "Study 2 pharmaceutical (no OC)") |>
+  select(id, time, amt, cohort)
+
+conc_eph  <- PKNCA::PKNCAconc(sim_eph, Cc_ug_per_L ~ time | cohort + id,
+                              concu = "ug/L", timeu = "min")
+dose_eph  <- PKNCA::PKNCAdose(dose_eph, amt ~ time | cohort + id, doseu = "mg")
+ints_eph  <- data.frame(start = 0, end = Inf, cmax = TRUE, tmax = TRUE,
+                        aucinf.obs = TRUE, half.life = TRUE)
+nca_eph   <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_eph, dose_eph, intervals = ints_eph))
+
+nca_eph_tbl <- nca_eph$result |>
+  filter(PPTESTCD %in% c("cmax", "tmax", "aucinf.obs", "half.life")) |>
+  group_by(PPTESTCD) |>
+  summarise(median = median(PPORRES, na.rm = TRUE),
+            q05    = quantile(PPORRES, 0.05, na.rm = TRUE),
+            q95    = quantile(PPORRES, 0.95, na.rm = TRUE), .groups = "drop")
+knitr::kable(nca_eph_tbl, caption = "Simulated ephedrine NCA (no-OC cohort).", digits = 2)
+```
+
+```{r pknca-norephedrine}
+# Norephedrine plasma NCA, no-OC cohort. Norephedrine is a metabolite
+# (no direct dose), so a dose object is omitted from PKNCAdata.
+sim_neph <- sim |>
+  filter(!is.na(Cc_neph), cohort == "Study 2 pharmaceutical (no OC)") |>
+  mutate(Cc_neph_ug_per_L = Cc_neph * 1000) |>
+  select(id, time, Cc_neph_ug_per_L, cohort)
+
+conc_neph <- PKNCA::PKNCAconc(sim_neph, Cc_neph_ug_per_L ~ time | cohort + id,
+                              concu = "ug/L", timeu = "min")
+ints_neph <- data.frame(start = 0, end = Inf, cmax = TRUE, tmax = TRUE,
+                        auclast = TRUE, half.life = TRUE)
+nca_neph  <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_neph, intervals = ints_neph))
+
+nca_neph_tbl <- nca_neph$result |>
+  filter(PPTESTCD %in% c("cmax", "tmax", "auclast", "half.life")) |>
+  group_by(PPTESTCD) |>
+  summarise(median = median(PPORRES, na.rm = TRUE),
+            q05    = quantile(PPORRES, 0.05, na.rm = TRUE),
+            q95    = quantile(PPORRES, 0.95, na.rm = TRUE), .groups = "drop")
+knitr::kable(nca_neph_tbl, caption = "Simulated norephedrine NCA (no-OC cohort).", digits = 2)
+```
+
+## Comparison against published NCA
+
+The paper reports terminal half-lives derived from the population PK fit (not full NCA tables). Compare the simulated half-lives below against the reported values.
+
+| Analyte / cohort                    | Simulated median t1/2 (h) | Published t1/2 (h) | Source |
+|-------------------------------------|---------------------------|--------------------|--------|
+| Caffeine, no oral contraceptive     | `r round(median(nca_caf$result$PPORRES[nca_caf$result$PPTESTCD == "half.life" & nca_caf$result$cohort == "Study 2 pharmaceutical (no OC)"], na.rm = TRUE) / 60, 1)` | 5.3 | Csajka 2005 Results 'Caffeine pharmacokinetics' |
+| Caffeine, on oral contraceptive     | `r round(median(nca_caf$result$PPORRES[nca_caf$result$PPTESTCD == "half.life" & nca_caf$result$cohort == "Study 2 pharmaceutical (with OC)"], na.rm = TRUE) / 60, 1)` | 11.8 | Csajka 2005 Results 'Caffeine pharmacokinetics' |
+| Ephedrine, no oral contraceptive    | `r round(median(nca_eph$result$PPORRES[nca_eph$result$PPTESTCD == "half.life"], na.rm = TRUE) / 60, 1)` | 6.1 | Csajka 2005 Results 'Ephedrine and norephedrine pharmacokinetics' |
+
+A peak-amount sanity check against the paper's observed-concentration ranges (Csajka 2005 Results):
+
+| Analyte                 | Simulated median Cmax (ug/L) | Published observed range (ug/L) |
+|-------------------------|------------------------------|---------------------------------|
+| Caffeine, no OC         | `r round(median(nca_caf$result$PPORRES[nca_caf$result$PPTESTCD == "cmax" & nca_caf$result$cohort == "Study 2 pharmaceutical (no OC)"], na.rm = TRUE), 0)` | 0 - 8470 |
+| Ephedrine, no OC        | `r round(median(nca_eph$result$PPORRES[nca_eph$result$PPTESTCD == "cmax"], na.rm = TRUE), 0)` | 1.59 - 101.40 |
+| Norephedrine            | `r round(median(nca_neph$result$PPORRES[nca_neph$result$PPTESTCD == "cmax"], na.rm = TRUE), 2)` | 0.51 - 8.18 |
+
+# Assumptions and deviations
+
+- **Pharmaceutical formulation default.** The model's `ini()` carries the pharmaceutical-formulation values (F_E,pharm = 0.59, no caffeine absorption lag). For herbal-formulation simulations, override `lfdepot <- log(0.78)` for F_E,herbal and prepend a 22.2-minute time shift to caffeine doses (the herbal caffeine lag); the paper reports no significant difference in caffeine bioavailability between formulations, so no herbal lfdepot_caf is required.
+- **Norephedrine metabolic pathway treated as formation-only.** The Michaelis-Menten conversion term `vmax_neph * mm_factor` drives the norephedrine pseudo-concentration but does NOT subtract from ephedrine `central`. The paper (Csajka 2005, Discussion paragraph 3) characterises this pathway as "minor compared with the renal elimination of ephedrine"; the published `Vmax/V_NE` is a compound parameter that pins the norephedrine concentration rate but does not identify the absolute Vmax required to deplete the parent. This is the standard mechanistic simplification for a saturable-but-minor conversion; ephedrine cumulative urinary recovery in the no-OC cohort matches the paper's observed 0-24 h range (7.35 - 22.2 mg) under this simplification, which it would not under a fully-coupled depletion form.
+- **Norephedrine compartment carries a pseudo-concentration.** Because the norephedrine volume V_NE is unidentifiable, `central_neph` stores the norephedrine concentration directly (= A5 / V_NE), and the reported `Vmax/V_NE` is the rate of change of that concentration when the MM is saturated. The observation `Cc_neph` is therefore `central_neph` itself (no division by a volume).
+- **Caffeine baseline omitted.** The paper integrates a per-subject baseline caffeine concentration `C0` (range 14.2 - 3820 ug/L due to dietary intake) for 22 of 24 subjects. The model file defaults to `C0 = 0` (washout); users who want to reproduce the paper's pre-dose concentrations can add an earlier-time dose or initialise `central_caf` accordingly.
+- **OCR-derived unit ambiguity in Vmax/V_NE.** Csajka 2005 Table 3 reports `Vmax/V_NE = 1.96e-4` with a unit heading rendered ambiguously in the source PDF / trimmed-markdown (the character that should be "mu g" is rendered as "m g"); the same OCR rendering applies to plasma concentrations (e.g. "8470 m g L^-1" for caffeine, which can only mean "ug / L"). The numerical interpretation that reproduces the paper's observed norephedrine concentration range (0.51 - 8.18 ug/L) is `1.96e-4 mg / (min L)` (equivalently 0.196 ug / (min L)); the model file uses this interpretation, which is consistent with the table heading taken literally as `mg`. If a future re-extraction confirms that the heading was meant to be `ug` with no compensating order-of-magnitude shift elsewhere in the paper, the model file should be updated accordingly.
+- **Km on amount, not concentration.** Csajka 2005 Table 3 reports `Km = 2.77` in the same heading-ambiguous unit as Vmax/V_NE. The model file encodes Km as a mg amount (compared against the ephedrine central state amount, not the central concentration); under this encoding the MM transitions from saturated to linear over the observed ephedrine concentration range, which is the structural improvement the paper attributes to the MM term (DOBJ = -124 vs the linear-formation alternative).
+- **No effect of caffeine on its own absorption from the ephedrine indirect-action model.** The paper confirms "No statistically significant effect of ephedrine on caffeine absorption was observed." The caffeine ODE is independent of the ephedrine state.
+- **OC encoding inverted from the paper's source column.** The paper's source column is named `OC` (1 = on oral contraceptive); the canonical `CONMED_BIRTHCONTROL` has the same 1 = on-OC orientation, so no value transformation is required (`covariateData$CONMED_BIRTHCONTROL$source_name = "OC"`).
+- **Urine pH covariate excluded.** The paper reports a post-hoc inverse linear association between urine pH and ephedrine renal clearance (`CL_R = 0.4723 - 0.0172 * pH`, p = 0.013) but does not retain pH in the final population PK model; the model file documents the screen via `covariatesDataExcluded$URINE_PH` rather than introducing pH as a covariate effect.
+- **Norephedrine elimination unit.** Csajka 2005 Table 3 prints the ke_NE row's unit heading as "L / h" which is dimensionally wrong for a first-order rate constant. The prose text in the Results section gives the correct unit ("0.037 1 min^-1"); the model file uses the prose value.

@@ -1,0 +1,352 @@
+---
+title: "PF-06671008 (Betts 2019)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{PF-06671008 (Betts 2019)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.2)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+```{r model-meta, include = FALSE}
+mod_meta <- readModelDb("Betts_2019_pf_06671008_qsp")()
+```
+
+* Citation: `r mod_meta$reference`
+* Description: `r mod_meta$description`
+* Article: <https://doi.org/10.1208/s12248-019-0332-z>
+
+Betts 2019 develops a translational quantitative systems pharmacology (QSP)
+model for the CD3 x P-cadherin LP DART bispecific PF-06671008. The mouse fit
+couples a 2-compartment linear PK, a permeability-diffusion tumor-drug
+disposition (ref 19 in Betts 2019), mass-action trimer (drug-CD3-Pcad)
+formation in the tumor microenvironment, and a 4-compartment tumor growth
+transduction (Simeoni-based) model driving tumor volume dynamics. The model
+was fit in Monolix v4.3.3 to three mouse tumor models (HCT-116 T cell
+engrafted, HCT-116 adoptive transfer, SUM-149 adoptive transfer); this
+extraction packages the primary HCT-116 T cell engrafted parameter set
+(Betts 2019 Table II column a) as the shipped model. Tumor T cell density
+`tcellst_tumor` is a fixed system parameter (steady-state approximation to
+the paper's piecewise Prate-driven TIL kinetics of Eqs 9-11); Assumptions
+and deviations discusses the simplification.
+
+The paper also translates the QSP framework to human simulations that add
+soluble P-cadherin (sPcad) binding in the central compartment and drop the
+mouse T cell proliferation dynamics (Eqs 24-26; Table III). Those extensions
+are not encoded in the shipped model but the parameter values and rationale
+are documented below and in the model file so a user can enable them.
+
+# Population
+
+The primary fit is to female NSG (NOD-scid IL-2rg-null) mice bearing
+subcutaneous HCT-116 human colorectal xenografts and engrafted with human
+peripheral blood mononuclear cells (PBMCs) intraperitoneally 7 days before
+randomization. Mice were 6-8 weeks old at implantation. The mouse serum PK
+sub-study used n = 3 mice per timepoint per dose across 0.05 and 0.5 mg/kg
+IV bolus arms; the tumor growth inhibition (TGI) sub-study used n = 10 mice
+per dose across 0.01, 0.05, 0.1, 0.15 and 0.5 mg/kg q7d x 2 IV arms
+(Betts 2019 Methods).
+
+```{r population}
+str(mod_meta$population, max.level = 1)
+```
+
+# Source trace
+
+The per-parameter source-location comment is recorded next to each `ini()`
+entry in `inst/modeldb/specificDrugs/Betts_2019_pf_06671008_qsp.R`. The table
+below collects the key entries.
+
+| Element | Value | Source location |
+|---------|-------|-----------------|
+| V1 (central Vd) | 49.6 mL/kg | Betts 2019 Table II p6: V1 = 49.6 (9% CV) |
+| V2 (peripheral Vd) | 60.7 mL/kg | Betts 2019 Table II p6: V2 = 60.7 (16% CV) |
+| CL (mouse) | 0.45 mL/h/kg | Betts 2019 Table II p6: CL = 0.45 (12% CV) |
+| CLd (mouse) | 4.95 mL/h/kg | Betts 2019 Table II p6: CLd = 4.95 (28% CV) |
+| kon_cd3 | 1.72 1/nM/h | Betts 2019 Table II p6, source ref 7 SPR |
+| koff_cd3 | 19.66 1/h | Betts 2019 Table II p6 |
+| kon_pcad | 1.57 1/nM/h | Betts 2019 Table II p6 |
+| koff_pcad | 0.74 1/h | Betts 2019 Table II p6 |
+| P (permeability) | 334 um/day | Betts 2019 Table II p6, source ref 19 |
+| D (diffusivity) | 0.022 cm^2/day | Betts 2019 Table II p6 |
+| epsilon (void frac) | 0.24 | Betts 2019 Table II p6 |
+| Rcap | 8 um | Betts 2019 Table II p6 |
+| Rkrogh | 75 um | Betts 2019 Table II p6 |
+| CD3 receptors / T cell | 100000 | Betts 2019 Table II p6, source refs 17,18 |
+| mPcad (HCT-116) | 28706 | Betts 2019 Table II p6, source ref 15 |
+| Tumor cells / g tumor | 1e8 | Betts 2019 Table II p6, source ref 21 |
+| kint | 0.1728 1/day | Betts 2019 Table II p6 (96 h half-life) |
+| kg0 (HCT-116 engrafted) | 0.30 1/day | Betts 2019 Table II p6 col a |
+| kg (HCT-116 engrafted) | 105 mm^3/day | Betts 2019 Table II p6 col a |
+| Mmax (HCT-116 engrafted) | 3800 mm^3 | Betts 2019 Table II p6 col a |
+| psi | 20 | Betts 2019 Table II p6, ref 22 Simeoni |
+| kmax (HCT-116 engrafted) | 2.71 1/day | Betts 2019 Table II p7 col a (14% CV) |
+| kc50 (HCT-116 engrafted) | 2.0e-4 nM | Betts 2019 Table II p7 col a (15% CV) |
+| tau (HCT-116 engrafted) | 2.25 day | Betts 2019 Table II p7 col a (3% CV) |
+| Omega kg0 | 0.12 | Betts 2019 Table II p7 col a (25% CV) |
+| Omega kg | 0.16 | Betts 2019 Table II p7 col a (28% CV) |
+| Additive serum error | 0.067 nM | Betts 2019 Table II p6, a = 0.067 (32%) |
+| Prop serum error | 0.207 | Betts 2019 Table II p6, b = 0.207 (15%) |
+| Additive tumor error | 60 mm^3 | Betts 2019 Table II p7 col a |
+| Prop tumor error | 0.01 | Betts 2019 Table II p7 col a (50% CV) |
+| Eq 1 dC1/dt | central PK + tumor exchange | Betts 2019 p5, Eq 1 |
+| Eq 2 dC2/dt | peripheral PK | Betts 2019 p5, Eq 2 |
+| Eq 3 Tumor disposition | permeability + diffusion terms | Betts 2019 p5, Eq 3 |
+| Eq 4 dC3/dt | tumor free drug with binding | Betts 2019 p5, Eq 4 |
+| Eqs 14-16 DCD3t, DPcadt, Trimer | mass-action binding in TME | Betts 2019 p7 |
+| Eqs 17-22 Tumor growth + kill | 4-cpt transduction (Simeoni-based) | Betts 2019 p7 |
+
+The paper also fit HCT-116 adoptive transfer (kmax 1.32 /day, kc50 6.9e-5 nM,
+tau 3.99 day, TSC 0.011 pM) and SUM-149 adoptive transfer (kmax 0.74 /day,
+kc50 1.0e-4 nM, tau 4.78 day, TSC 0.0092 pM), all from Betts 2019 Table II p7
+columns b (see paper for the parameter table); users can swap these values
+into the model file to simulate those cell lines. Human simulations
+(Betts 2019 Table III p10) use allometrically scaled PK (CL 4.61 mL/h/kg,
+V1 40.2 mL/kg, V2 211 mL/kg, CLd 25.2 mL/h/kg) with sPcad = 1.1 nM,
+kdeg = 0.15 /h and kdegcx = 0.115 /h; those PK parameters and the sPcad
+binding extension (Eqs 24-26) are not enabled in the mouse-fit shipped model.
+
+# Virtual cohort
+
+We simulate 3 dose arms with a small preclinical n per arm, matching the
+TGI-study design (n = 10 mice/dose). Doses are converted to nmol per mouse
+using MW = 105 kDa and BW = 0.025 kg.
+
+```{r cohort}
+set.seed(20260711)
+
+mw_kda    <- 105     # MW PF-06671008 (kDa) - Betts 2019 Table II footnote
+bw_kg     <- 0.025   # typical NSG mouse body weight
+v1_perkg  <- 49.6    # mL/kg, Betts 2019 Table II p6
+mice_per_arm <- 10   # Betts 2019 TGI n = 10/dose
+
+# For an IV bolus into the central compartment the model expects the *central-
+# compartment concentration equivalent* (C1(0) = dose_nmol / V1_L) as the dose
+# amount, because states central/peripheral1/tumor carry concentrations (nM)
+# per Betts 2019 Eqs 1-4. Convert mg/kg to nM using MW and V1:
+#   dose_nM = (dose_mgkg * BW_kg * 1e6 ng/mg / MW_kda / 1000 ng/nmol) / (V1_perkg * BW_kg / 1000 mL/L)
+#           = dose_mgkg * 1e6 / (MW_kda * 1000 * V1_perkg / 1000)
+#           = dose_mgkg * 1e6 / (MW_kda * V1_perkg)
+mgkg_to_nM <- function(mgkg) mgkg * 1e6 / (mw_kda * v1_perkg)
+
+arms <- tibble::tribble(
+  ~arm,           ~dose_mgkg, ~dose_ugkg,
+  "0.05 mg/kg",   0.05,       50,
+  "0.15 mg/kg",   0.15,       150,
+  "0.50 mg/kg",   0.50,       500
+) |>
+  mutate(dose_nM = mgkg_to_nM(dose_mgkg))
+
+make_cohort <- function(dose_row, id_offset = 0L) {
+  # Betts 2019 TGI: q7dx2 IV bolus. Initial tumor ~200 mm^3 (T cell engrafted, ~7 days established).
+  # T cell steady-state assumption: TCELLST_TUMOR set to ~5e8 cells/L, matching
+  # the paper's mouse Fig 3 baseline before proliferation. Full Prate-driven
+  # trajectory (Eqs 9-11) is discussed in "Assumptions and deviations".
+  dose_times <- c(0, 7)
+  obs_times  <- c(seq(0, 0.5, by = 0.05),                # early PK sampling: hours
+                  seq(1,   7, by = 1),
+                  seq(7.5, 14, by = 0.5),
+                  seq(15,  21, by = 1))
+  ids <- id_offset + seq_len(mice_per_arm)
+  bind_rows(
+    # Dosing rows into central (IV bolus). amt = concentration equivalent (nM);
+    # rxode2 adds this to the central state which is a concentration in this model.
+    tidyr::crossing(id = ids, time = dose_times) |>
+      mutate(evid = 1L, amt = dose_row$dose_nM, cmt = "central"),
+    # Observation rows on central (serum) and M1 (tumor growth)
+    tidyr::crossing(id = ids, time = obs_times) |>
+      mutate(evid = 0L, amt = NA_real_, cmt = "central")
+  ) |>
+    arrange(id, time, dplyr::desc(evid)) |>
+    mutate(
+      WT        = bw_kg,
+      arm       = dose_row$arm,
+      dose_mgkg = dose_row$dose_mgkg,
+      dose_ugkg = dose_row$dose_ugkg
+    )
+}
+
+events <- bind_rows(
+  make_cohort(arms[1, ], id_offset =  0L),
+  make_cohort(arms[2, ], id_offset = 10L),
+  make_cohort(arms[3, ], id_offset = 20L)
+)
+
+stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
+```
+
+# Simulation
+
+```{r simulate}
+mod <- readModelDb("Betts_2019_pf_06671008_qsp")
+
+# Initial tumor volume set to 200 mm^3 (typical established xenograft at
+# randomization) by seeding the cycling_cells compartment via inits.
+init_tumor <- 200  # mm^3
+
+# Use zeroRe() first so plots reflect typical-value trajectories, then
+# separately show variability by omitting zeroRe().
+mod_typical <- rxode2::zeroRe(mod)
+
+sim_typical <- rxode2::rxSolve(
+  mod_typical,
+  events    = events,
+  keep      = c("arm", "dose_mgkg", "dose_ugkg"),
+  inits     = c(cycling_cells = init_tumor)
+) |> as.data.frame()
+```
+
+# Replicate Figure 2 - serum PK after single IV bolus
+
+Betts 2019 Figure 2a shows serum PK profiles of PF-06671008 in PBMC-engrafted
+HCT-116 tumor-bearing mice after IV bolus of 0.05 and 0.5 mg/kg. The paper
+reports dose-proportional AUC between the two dose levels. We simulate all
+three arms and plot the typical-value serum trajectory over the first 10 days.
+
+```{r figure-2, fig.cap = "Replicates Figure 2 of Betts 2019 (mouse serum PK)."}
+sim_typical |>
+  filter(time <= 10, time >= 0.01) |>
+  ggplot(aes(time, Cc, colour = arm)) +
+  geom_line(size = 0.6) +
+  scale_y_log10() +
+  labs(x = "Time (day)", y = "PF-06671008 serum (nM, log scale)",
+       colour = "Dose",
+       title = "Simulated mouse serum PK (typical value)",
+       caption = "Replicates Figure 2a of Betts 2019 (0.05 and 0.5 mg/kg PBMC engrafted).")
+```
+
+# Tumor growth inhibition trajectory
+
+The shipped model uses the HCT-116 T cell engrafted parameter set (kmax = 2.71
+1/day, kc50 = 2.0e-4 nM, tau = 2.25 day). Total tumor volume w = M1 + M2 + M3
++ M4 is the model's observable `tumorVol`.
+
+```{r tumor-growth, fig.cap = "Simulated tumor volume trajectories under q7d x 2 dosing."}
+sim_typical |>
+  filter(time <= 21) |>
+  ggplot(aes(time, tumorVol, colour = arm)) +
+  geom_line(size = 0.7) +
+  labs(x = "Time (day)", y = "Total tumor volume (mm^3)",
+       colour = "Dose",
+       title = "Simulated HCT-116 T-cell engrafted tumor kinetics",
+       caption = "Q7d x 2 IV bolus PF-06671008 with steady-state Tcellst = 5e8 cells/L; initial tumor 200 mm^3.")
+```
+
+# PKNCA validation on serum PK
+
+We use PKNCA to compute Cmax and AUC0-inf on the first-dose serum trajectory
+and compare across the three simulated arms.
+
+```{r pknca}
+sim_nca <- sim_typical |>
+  filter(!is.na(Cc)) |>
+  select(id, time, Cc, arm)
+
+# Ensure a t = 0 row (Cc = 0 pre-dose for IV bolus is unusual, but the model
+# solves right after the bolus; add a baseline row to anchor PKNCA).
+sim_nca <- bind_rows(
+  sim_nca,
+  sim_nca |> distinct(id, arm) |> mutate(time = 0, Cc = 0)
+) |>
+  distinct(id, arm, time, .keep_all = TRUE) |>
+  arrange(id, arm, time)
+
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | arm + id)
+
+dose_df <- events |>
+  filter(evid == 1L, time == 0) |>
+  select(id, time, amt, arm)
+
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | arm + id)
+
+intervals <- data.frame(
+  start      = 0,
+  end        = 7,
+  cmax       = TRUE,
+  tmax       = TRUE,
+  auclast    = TRUE,
+  half.life  = TRUE
+)
+
+nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
+nca_res  <- PKNCA::pk.nca(nca_data)
+
+nca_summary <- as.data.frame(nca_res$result) |>
+  select(arm, PPTESTCD, PPORRES) |>
+  group_by(arm, PPTESTCD) |>
+  summarise(value = mean(PPORRES, na.rm = TRUE), .groups = "drop") |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = value)
+
+nca_summary |>
+  dplyr::rename(
+    "Dose arm"           = arm,
+    "Cmax (nM)"          = cmax,
+    "Tmax (day)"         = tmax,
+    "AUC0-7d (nM*day)"   = auclast,
+    "t1/2 (day)"         = half.life
+  ) |>
+  knitr::kable(digits = 3, caption = "Simulated NCA of PF-06671008 serum after single IV bolus.")
+```
+
+The paper reports dose-proportional serum AUC between the 0.05 and 0.5 mg/kg
+arms (Betts 2019 Results section "Serum and Tumor PK of PF-06671008 in Mouse";
+also Supplemental Fig 1) and a terminal half-life of 3.7-6 days in mouse.
+The simulated dose-proportional pattern above (10-fold dose ~ 10-fold Cmax
+and AUC) is consistent with the paper.
+
+# Assumptions and deviations
+
+- **T cell kinetics in the tumor (`tcellst_tumor`).** Betts 2019's mouse
+  fit uses a 5-day lag on plasma-to-tumor T cell migration (Eqs 7-8),
+  followed by piecewise proliferation for 7 days at rate
+  `Prate = 0.014/(4 + dose_ugkg) + 1.5e-5 * dose_ugkg` (Eq 9; 1/h) and
+  contraction thereafter at `k_exhaust = 0.0412 /h` (Eq 11). Encoding this
+  full time-varying trajectory as an ODE state in the shipped model would
+  add substantial dose-conditional logic; instead the model uses a fixed
+  scalar `tcellst_tumor = 5e8 cells/L` (Betts 2019 Fig 3 baseline) that
+  approximates a mid-range tumor T cell density. Users reproducing the
+  paper's exact TIL dynamics can either edit this scalar per simulation
+  segment or add a time-varying regressor via `rxode2::rxSetIni()` /
+  event-table modifications.
+- **CD3 dimer in plasma (`DCD3p`) dropped.** The paper's Eq 6 tracks plasma
+  drug-CD3 dimer, but with plasma T cell density ~5e8 cells/L the total
+  plasma CD3 concentration is ~0.1 nM against a CD3 Kd of 11.4 nM; the
+  fraction of drug bound is < 1% and has negligible effect on central PK.
+  The model drops this state; the mouse serum PK Eq 1 is implemented
+  without the DCD3p term.
+- **T cell trafficking ODEs (Eqs 7-8) collapsed into `TCELLST_TUMOR`.**
+  As above, T cell plasma and migration ODEs are not maintained; T cell
+  content in the tumor is a user-supplied time-varying covariate.
+- **Soluble P-cadherin binding excluded.** In the mouse model the paper
+  states "PF-06671008 does not bind to sPcad" (Betts 2019 p3), so the
+  sPcad state and its Eqs 25-26 are only relevant to human simulations
+  and are not encoded in the shipped mouse-fit model.
+- **Initial tumor volume.** Set to 200 mm^3 (typical established
+  xenograft at randomization) via the `inits = c(M1 = init_tumor)` argument
+  to `rxSolve()`. Users can override this to reproduce specific mouse
+  arms.
+- **Body weight.** `WT = 0.025 kg` is used as a nominal NSG mouse weight;
+  V1, V2, CL and CLd (reported per kg in Betts 2019 Table II) scale
+  linearly with `WT`, so passing a different weight into the events data
+  changes the effective volumes and clearances.
+- **HCT-116 T cell engrafted parameters are shipped.** The paper reports
+  distinct HCT-116 adoptive transfer and SUM-149 adoptive transfer fits
+  (Table II p7 columns b); those parameters are documented in the source-
+  trace table and paper but are not selectable via a model-file switch.
+- **Bell-shaped dose-response.** At high concentrations the paper predicts
+  a bell-shaped trimer-vs-dose curve (Betts 2019 Fig 1b, Supplementary
+  Fig 4); the shipped model reproduces this behaviour because the trimer
+  state depends non-monotonically on drug concentration through the free-
+  CD3 / free-Pcad terms. Users interested in exploring the bell can
+  simulate a dose escalation and monitor the `Trimer` state.

@@ -1,0 +1,360 @@
+---
+title: "Desmopressin (Agerso 2004)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Desmopressin (Agerso 2004)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: Agerso H, Seiding Larsen L, Riis A, Lovgren U, Karlsson MO, Senderovitz T.
+  Pharmacokinetics and renal excretion of desmopressin after intravenous
+  administration to healthy subjects and renally impaired patients.
+  *Br J Clin Pharmacol*. 2004;58(4):352-358.
+* Article: <https://doi.org/10.1111/j.1365-2125.2004.02175.x>
+* Description: three-compartment IV PK model with simultaneous plasma and
+  cumulative urinary-amount outputs; systemic clearance is split into renal and
+  non-renal components, each modulated linearly by creatinine clearance.
+
+# Population
+
+Twenty-four subjects (49-68 years) were enrolled, of whom 22 contributed to the
+final pharmacokinetic analysis (Methods 'Study design'; two subjects were
+excluded because their plasma profiles showed an absorption phase incompatible
+with IV administration). Subjects were stratified by renal function into four
+groups (Results / Table 2):
+
+* Group 1: normal renal function (n=6, mean CRCL 103 mL/min/1.73 m^2)
+* Group 2: mild impairment      (n=5, mean CRCL  72 mL/min/1.73 m^2)
+* Group 3: moderate impairment  (n=5, mean CRCL  37 mL/min/1.73 m^2)
+* Group 4: severe impairment    (n=6, mean CRCL  16 mL/min/1.73 m^2)
+
+All received a single 2 ug IV dose (4 ug/mL, 0.5 mL over 1 min). Blood was
+sampled at 5, 15, 30, 45 min and 1, 1.5, 2, 3, 4, 6, 8, 12, 16, 24 h post-dose;
+urine was pooled over eight 3-hour intervals to 24 h.
+
+# Source trace
+
+| Element                              | Value               | Source                                 |
+|--------------------------------------|---------------------|----------------------------------------|
+| CL_r at CRCL=60 mL/min/1.73 m^2      | 2.41 L/h            | Table 1, row CL_r                      |
+| CL_nr at CRCL=60 mL/min/1.73 m^2     | 3.91 L/h            | Table 1, row CL_nr                     |
+| V1 (central)                         | 13.9 L              | Table 1, row V1                        |
+| V2 (peripheral 1)                    | 12.5 L              | Table 1, row V2                        |
+| V3 (peripheral 2)                    | 11.7 L              | Table 1, row V3                        |
+| Q2                                   | 4.43 L/h            | Table 1, row Q2                        |
+| Q3                                   | 27.5 L/h            | Table 1, row Q3                        |
+| CRCL effect on CL_r                  | 1.74% per mL/min    | Table 1, row 'CrCL effect on CL_r'     |
+| CRCL effect on CL_nr                 | 0.933% per mL/min   | Table 1, row 'CrCL effect on CL_nr'    |
+| IIV CL_r (CV%)                       | 24%                 | Table 1, IIV column                    |
+| IIV CL_nr (CV%)                      | 30%                 | Table 1, IIV column (corr 0.86 w/ V1)  |
+| IIV V1=V3 (single shared term, CV%)  | 31%                 | Table 1 footnote 'shared'              |
+| Add error on plasma                  | 0.27 pg/mL          | Table 1                                |
+| Prop error on plasma                 | 29%                 | Table 1                                |
+| Add error on urine amount            | 4140 pg             | Table 1                                |
+| Prop error on urine amount           | 47%                 | Table 1                                |
+| Three-compartment structure          | n/a                 | Results paragraph 2 ('best described by a three-compartmental model'); Discussion |
+| Renal/non-renal CL split + urine fit | n/a                 | Results paragraph 2 ('possible to fit the plasma concentrations and the amounts excreted in urine simultaneously') |
+| Linear CRCL effect form              | n/a                 | Results paragraph 2 + Table 1 footnote |
+
+The per-parameter origin is also recorded as an in-file comment next to each
+`ini()` entry in
+`inst/modeldb/specificDrugs/Agerso_2004_desmopressin.R`.
+
+# Virtual cohort
+
+```{r cohort}
+set.seed(20040401)
+
+# Build four CRCL groups matching Table 2 means and SDs. Per-subject CRCL is
+# drawn from a truncated normal and bounded to the paper's observed CRCL
+# range (10-144 mL/min/1.73 m^2) so the linear CRCL effect on CL stays in
+# the validated region.
+make_cohort <- function(n, mean_crcl, sd_crcl, group_label, id_offset) {
+  tibble(
+    id    = id_offset + seq_len(n),
+    group = group_label,
+    CRCL  = pmin(pmax(rnorm(n, mean = mean_crcl, sd = sd_crcl), 10), 144)
+  )
+}
+
+cohort <- bind_rows(
+  make_cohort(50, 103, 21,  "Group 1 (normal)",          id_offset =   0L),
+  make_cohort(50,  72,  6.8,"Group 2 (mild)",            id_offset =  50L),
+  make_cohort(50,  37,  9.9,"Group 3 (moderate)",        id_offset = 100L),
+  make_cohort(50,  16,  6.6,"Group 4 (severe)",          id_offset = 150L)
+)
+
+dose_ng <- 2 * 1000  # 2 ug single IV bolus expressed in ng
+
+obs_times <- c(5, 15, 30, 45) / 60          # min -> h
+obs_times <- c(obs_times, c(1, 1.5, 2, 3, 4, 6, 8, 12, 16, 24))
+
+dose_rows <- cohort %>%
+  transmute(id, time = 0, amt = dose_ng, evid = 1L, cmt = "central",
+            group, CRCL)
+
+obs_rows_cc <- tidyr::expand_grid(cohort, time = obs_times) %>%
+  transmute(id, time, amt = NA_real_, evid = 0L, cmt = "Cc",
+            group, CRCL)
+
+obs_rows_urine <- tidyr::expand_grid(cohort, time = c(3, 6, 9, 12, 15, 18, 21, 24)) %>%
+  transmute(id, time, amt = NA_real_, evid = 0L, cmt = "urineAmt",
+            group, CRCL)
+
+events <- bind_rows(dose_rows, obs_rows_cc, obs_rows_urine) %>%
+  arrange(id, time, desc(evid))
+```
+
+# Simulation
+
+```{r simulate}
+mod <- readModelDb("Agerso_2004_desmopressin")
+
+sim <- rxode2::rxSolve(
+  mod,
+  events = events,
+  keep   = c("group", "CRCL")
+) %>% as.data.frame()
+```
+
+For deterministic typical-value replication, zero out the random effects:
+
+```{r simulate-typical}
+mod_typical <- mod %>% rxode2::zeroRe()
+sim_typical <- rxode2::rxSolve(
+  mod_typical,
+  events = events,
+  keep   = c("group", "CRCL")
+) %>% as.data.frame()
+```
+
+# Plasma concentration vs time by group
+
+The paper's Figure 1 shows goodness-of-fit panels (DV vs IPRED / PRED).
+Lacking the source observed data, the simulated plasma profiles by CRCL group
+are shown below -- the steeper terminal slope at higher CRCL reflects the
+positive coupling between CRCL and total clearance.
+
+```{r figure-1}
+sim %>%
+  filter(time > 0) %>%
+  group_by(time, group) %>%
+  summarise(
+    Q05 = quantile(Cc, 0.05, na.rm = TRUE),
+    Q50 = quantile(Cc, 0.50, na.rm = TRUE),
+    Q95 = quantile(Cc, 0.95, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  ggplot(aes(time, Q50)) +
+  geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.25) +
+  geom_line() +
+  facet_wrap(~ group) +
+  scale_y_log10() +
+  labs(x = "Time (h)", y = "Cc (pg/mL)",
+       title = "Plasma desmopressin by renal-function group",
+       caption = "Compare to Figure 1 (Agerso 2004); 5th-50th-95th simulated percentiles.")
+```
+
+# CRCL vs CL_r and CL_nr (Figure 2)
+
+The paper's Figure 2 plots renal and non-renal clearance against creatinine
+clearance, with the model-predicted solid line. The model encodes the linear
+multiplicative effect on each component.
+
+```{r figure-2}
+crcl_grid <- tibble(CRCL = seq(10, 145, by = 1)) %>%
+  mutate(
+    `CL_r (L/h)`  = 2.41 * (1 + 0.0174  * (CRCL - 60)),
+    `CL_nr (L/h)` = 3.91 * (1 + 0.00933 * (CRCL - 60))
+  ) %>%
+  pivot_longer(cols = c(`CL_r (L/h)`, `CL_nr (L/h)`),
+               names_to = "component", values_to = "value")
+
+ggplot(crcl_grid, aes(CRCL, value)) +
+  geom_line() +
+  facet_wrap(~ component, scales = "free_y") +
+  labs(x = "CRCL (mL/min/1.73 m^2)", y = "Clearance (L/h)",
+       title = "Renal and non-renal clearance vs CRCL",
+       caption = "Replicates Figure 2 of Agerso 2004 (typical-value lines).")
+```
+
+# Renal excretion fraction (fe) vs CRCL
+
+The paper reports that the fraction of dose excreted in urine (fe) drops from
+~47% in healthy subjects to ~21% in severely renally impaired patients
+(Results, Table 2). The simulation reproduces this gradient.
+
+```{r fe-by-group}
+fe_summary <- sim_typical %>%
+  group_by(id, group, CRCL) %>%
+  summarise(urineAmt_pg = max(urineAmt, na.rm = TRUE), .groups = "drop") %>%
+  mutate(fe = urineAmt_pg / (dose_ng * 1000))   # dose_ng * 1000 = dose in pg
+
+fe_summary %>%
+  group_by(group) %>%
+  summarise(
+    fe_mean = mean(fe),
+    fe_sd   = sd(fe),
+    .groups = "drop"
+  ) %>%
+  knitr::kable(digits = 3,
+               caption = "Simulated fraction excreted in urine (fe) by group; compare Table 2 fe column.")
+```
+
+# PKNCA validation
+
+```{r pknca}
+sim_nca <- sim %>%
+  filter(time > 0, !is.na(Cc)) %>%
+  distinct(id, time, .keep_all = TRUE) %>%
+  select(id, time, Cc, group)
+
+conc_obj <- PKNCA::PKNCAconc(
+  sim_nca, Cc ~ time | group + id,
+  concu = "pg/mL", timeu = "h"
+)
+
+dose_df <- events %>%
+  filter(evid == 1) %>%
+  select(id, time, amt, group)
+
+dose_obj <- PKNCA::PKNCAdose(
+  dose_df, amt ~ time | group + id,
+  doseu = "ng"
+)
+
+intervals <- data.frame(
+  start       = 0,
+  end         = Inf,
+  cmax        = TRUE,
+  tmax        = TRUE,
+  aucinf.obs  = TRUE,
+  half.life   = TRUE
+)
+
+nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
+nca_res  <- suppressWarnings(PKNCA::pk.nca(nca_data))
+
+nca_tbl <- as.data.frame(nca_res$result)
+
+nca_summary <- nca_tbl %>%
+  filter(PPTESTCD %in% c("cmax", "tmax", "aucinf.obs", "half.life")) %>%
+  group_by(group, PPTESTCD) %>%
+  summarise(median = median(PPORRES, na.rm = TRUE),
+            .groups = "drop") %>%
+  pivot_wider(names_from = PPTESTCD, values_from = median)
+
+knitr::kable(nca_summary, digits = 3,
+             caption = "Median simulated NCA parameters by renal-function group.")
+```
+
+## Comparison against Table 2 (per-group means)
+
+Total CL is computed at the published per-group mean CRCL by summing the
+model's typical renal and non-renal components. Terminal half-life and fe
+are pulled from the PKNCA / cumulative-urine summaries above.
+
+```{r table2-comparison}
+published <- tibble(
+  group = c("Group 1 (normal)",   "Group 2 (mild)",
+            "Group 3 (moderate)", "Group 4 (severe)"),
+  CRCL_pub       = c(103,   72,   37,   16),
+  CL_pub_Lh      = c(10,   6.9,  4.9,  2.9),
+  t12_pub_h      = c(3.7,  4.8,  7.2, 10.0),
+  fe_pub         = c(0.47, 0.41, 0.26, 0.21)
+)
+
+published <- published %>%
+  mutate(
+    CL_sim_Lh = 2.41 * (1 + 0.0174  * (CRCL_pub - 60)) +
+                3.91 * (1 + 0.00933 * (CRCL_pub - 60))
+  )
+
+t12sum <- nca_summary %>%
+  transmute(group, t12_sim_h = half.life)
+
+fe_sum <- fe_summary %>%
+  group_by(group) %>%
+  summarise(fe_sim = mean(fe), .groups = "drop")
+
+comparison <- published %>%
+  left_join(t12sum, by = "group") %>%
+  left_join(fe_sum, by = "group") %>%
+  mutate(
+    CL_ratio  = CL_sim_Lh / CL_pub_Lh,
+    t12_ratio = t12_sim_h / t12_pub_h,
+    fe_ratio  = fe_sim    / fe_pub
+  )
+
+knitr::kable(comparison, digits = 3,
+             caption = "Simulated vs published per-group summaries (Agerso 2004 Table 2). CL_sim is the typical-value total CL evaluated at the published per-group mean CRCL.")
+```
+
+Differences > 20% would warrant investigation rather than parameter tuning.
+The simulation should reproduce the order-of-magnitude gradient across CRCL
+groups in CL, half-life, and fe (Table 2 of the paper).
+
+# Assumptions and deviations
+
+* **Unit convention.** The model accepts doses in ng and reports concentrations
+  in pg/mL (numerically equal to ng/L). The 2 ug paper dose becomes 2000 ng in
+  the event table. The urine compartment accumulates in ng (dose units); the
+  `urineAmt` output multiplies by 1000 to report in pg, matching the paper's
+  Table 1 additive-error magnitude of 4140 pg. The lint-conventions check
+  flags this unit-magnitude mismatch as informational; the scaling is
+  deliberate and verified above.
+
+* **Linear CRCL effect range.** The covariate effect
+  `(1 + e_crcl_cl_* * (CRCL - 60))` is the form Agerso 2004 fitted to the
+  observed CRCL range (10-144 mL/min/1.73 m^2). At CRCL < ~2.5 mL/min the
+  renal-clearance multiplier becomes non-positive; downstream simulations
+  should restrict CRCL to >= 5 mL/min/1.73 m^2 (this vignette truncates the
+  sampled CRCL at 10 mL/min, the paper's lowest observed value).
+
+* **Shared V1/V3 IIV term.** Table 1 footnote 'shared' indicates the
+  interindividual variability on the central and second peripheral volumes
+  was estimated as a single 31% CV term, positively correlated (r = 0.86)
+  with the IIV on CL_nr. The model encodes this as a paper-specific eta
+  `etalvc_vp2` applied to both `vc` and `vp2`, declared via the
+  `paper_specific_etas` metadata field so the convention checker does not
+  flag the absence of separate `etalvc` / `etalvp2` terms. V2 (`vp`) was not
+  reported with IIV and has no eta.
+
+* **IIV on residual error magnitudes (not implemented).** Table 1 reports
+  significant interindividual variability in the residual error magnitudes
+  for both plasma (CV 43%) and urine (CV 65%). nlmixr2 does not directly
+  support eta-on-EPS in its standard syntax; the residual errors here are
+  population-typical values and the simulated VPC band is consequently
+  narrower than the Agerso 2004 fit would yield. This is a documentation-only
+  deviation from the source.
+
+* **Population sex, race, regional distribution.** The paper reports only age
+  (49-68 years), BMI (23-32 kg/m^2), and height (152-184 cm); sex breakdown,
+  race / ethnicity, and centre detail (Germany; Bayerische Landesarztekammer
+  approval) are not summarised here. The virtual cohort samples CRCL only;
+  no body-size scaling is applied because Agerso 2004 found no significant
+  weight / BMI / height / age covariates beyond CRCL on either CL component.
+
+* **Two excluded subjects.** The published parameter estimates are based on
+  N = 22 (24 enrolled, 2 excluded for an absorption-like phase). The model
+  population metadata uses N = 22 to match Table 1.
+
+* **CRCL definition.** The paper computes CRCL from a 24-h urine collection
+  using `(Cr_urine x UV / dt) / Cr_serum x 1.73 / BSA`, with BSA from the
+  Gehan and George formula. This is a measured, BSA-normalised creatinine
+  clearance in mL/min/1.73 m^2, matching the canonical `CRCL` definition in
+  `inst/references/covariate-columns.md`. The per-model `covariateData$CRCL`
+  notes record the derivation.

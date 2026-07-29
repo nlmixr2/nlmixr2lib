@@ -12,24 +12,24 @@
 #'
 #' fakeCc(addDirectLin) |> convertEmaxHill()
 #'
-fakeCc <- function(fun, ..., cc="Cc") {
+fakeCc <- function(fun, ..., cc = "Cc") {
   checkmate::assertCharacter(cc, any.missing = FALSE, min.len = 1)
   if (length(cc) > 0) {
     cc <- cc[length(cc)]
   }
   fun <- as.character(substitute(fun))
-  .fun <- try(get(fun, mode="function"), silent=TRUE)
+  .fun <- try(get(fun, mode = "function"), silent = TRUE)
   if (inherits(.fun, "try-error")) {
     stop(paste0(fun, " is not a function"))
   }
   .f <- paste0(cc, " <- NA\n")
   .f <- suppressMessages(rxode2::as.rxUi(rxode2::rxModelVars(.f)))
-  .cc <- .fun(ui=.f, ..., cc=cc)
+  .cc <- .fun(ui = .f, ..., cc = cc)
   .modelLines <- .cc$lstExpr
-  .w <- .whichDdt(.modelLines, cc, start="", end="")
+  .w <- .whichDdt(.modelLines, cc, start = "", end = "")
   .f <- rxode2::rxode2(.f)
   .tmp <- .extractModelLinesAtW(.modelLines, .w)
   rxode2::model(.cc) <- c(.tmp$pre,
-                         .tmp$post)
+    .tmp$post)
   .cc
 }

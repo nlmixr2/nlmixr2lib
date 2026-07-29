@@ -1,0 +1,468 @@
+---
+title: "Recombinant human C1 inhibitor / conestat alfa (Farrell 2013)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Recombinant human C1 inhibitor / conestat alfa (Farrell 2013)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Farrell_2013_conestatAlfa"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Farrell_2013_conestatAlfa"))$description`
+* Article: <https://doi.org/10.1111/bcp.12132>
+
+# Population
+
+Farrell 2013 pooled six clinical-trial datasets totalling 294 intravenous
+administrations of recombinant human C1 inhibitor (rhC1INH; brand name
+Ruconest, INN conestat alfa) to 133 subjects. The pooled cohort comprised
+14 healthy volunteers (Study C1 1106-02, 100 U/kg), 12 asymptomatic
+patients with hereditary angioedema (HAE) dosed between attacks (Study
+C1 1101-01, 6.25-100 U/kg), and 107 patients with symptomatic HAE dosed
+during attacks across four studies (C1 1202-01, C1 1203-01, C1 1205-01,
+C1 1304-01; 50, 100, or up to 6300 U as fixed-vial regimens). Subject age
+ranged from 13 to 66 years (median 33) and body weight from 45 to 128 kg
+(median 72), with 86 of 133 subjects (64.7%) female (Farrell 2013 Table 1
+and the "Subjects" section).
+
+The same information is available programmatically via
+`readModelDb("Farrell_2013_conestatAlfa")$population`.
+
+# Source trace
+
+The per-parameter origin is recorded as an in-file comment next to each
+`ini()` entry in
+`inst/modeldb/specificDrugs/Farrell_2013_conestatAlfa.R`. The table below
+collects the equations and parameter origins in one place for review.
+
+| Equation / parameter            | Value          | Source location                                                              |
+|---------------------------------|----------------|------------------------------------------------------------------------------|
+| `lvc` (central volume)          | 2.86 L         | Table 2 "Volume of distribution (l)" row; 95% CI 2.68-3.03                  |
+| `lvmax` (Vmax)                  | 1.63 U/mL/h    | Table 2 "Vmax in healthy volunteers and symptomatic HAE patients"; CI 1.41-1.88 |
+| `lkm` (Km)                      | 1.60 U/mL      | Table 2 "Km" row; 95% CI 1.14-2.24                                          |
+| `lrbase_hv` (HV baseline)       | 0.901 U/mL     | Table 2 "Baseline levels in healthy volunteers"; 95% CI 0.839-0.968          |
+| `lrbase_hae` (HAE baseline)     | 0.176 U/mL     | Table 2 "Baseline levels in HAE patients"; 95% CI 0.154-0.200                |
+| `e_wt_vc` (allometric exponent) | 0.612          | Table 2 "Effect of bodyweight on volume"; 95% CI 0.351-0.873                 |
+| `etalvc` (IIV V, %CV)           | 16.2%          | Table 2 "Interindividual variability in volume"                              |
+| `etalvmax` (IIV Vmax, %CV)      | 29.2%          | Table 2 "Interindividual variability in Vmax"                                |
+| `etalrbase_hv` (IIV HV baseline)| 12.7%          | Table 2 "Interindividual variability in healthy volunteer baseline levels"   |
+| `etalrbase_hae` (IIV HAE base)  | 54.4%          | Table 2 "Interindividual variability in HAE patient baseline levels"         |
+| `propSd` (prop. resid. err.)    | 10.5%          | Table 2 "Proportional residual variability for all other studies"            |
+| `addSd` (additive resid. err.)  | 0.0556 U/mL    | Table 2 "Additive residual variability"                                      |
+| `d/dt(central)` (MM ODE)        | n/a            | Methods "Population pharmacokinetic analysis" (Michaelis-Menten elimination) |
+| `kin = Vmax * rbase / (Km+rbase) * V` | n/a      | Methods, "For nonlinear models ... rate of production was a function of the nonlinear clearance and baseline concentration" |
+| `V = TVV * (WT/70)^0.612`       | n/a            | Discussion: "For subjects with the lowest and highest bodyweights (45 and 128 kg), volume would be 24% lower and 45% higher compared with a 70 kg subject" |
+
+# Virtual cohort
+
+Original observed data are not publicly available. The figures below
+simulate three virtual cohorts whose dosing and population labels match
+the dominant cells of Farrell 2013 Table 1:
+
+* **HAE 50 U/kg** -- clinical-target dose for symptomatic HAE attacks
+  (`DIS_HEALTHY = 0`).
+* **HAE 100 U/kg** -- open-label exploratory and high-dose regimens
+  (`DIS_HEALTHY = 0`).
+* **HV 100 U/kg** -- healthy-volunteer regimen from Study C1 1106-02
+  (`DIS_HEALTHY = 1`).
+
+Each cohort uses a weight distribution truncated to 45-128 kg (the pooled
+analysis range, Farrell 2013 Methods) with a log-normal weight centred at
+the cohort median of 72 kg. Sex is not in the model; race / ethnicity were
+not reported.
+
+```{r cohort}
+set.seed(20130418)
+
+make_cohort <- function(n, dose_per_kg = NA_real_, dose_fixed = NA_real_,
+                        DIS_HEALTHY, treatment, id_offset = 0L) {
+  wt <- pmin(pmax(rlnorm(n, meanlog = log(72), sdlog = 0.18), 45), 128)
+  amt <- if (!is.na(dose_per_kg)) dose_per_kg * wt else rep(dose_fixed, n)
+  tibble::tibble(
+    id          = id_offset + seq_len(n),
+    WT          = wt,
+    DIS_HEALTHY = DIS_HEALTHY,
+    treatment   = treatment,
+    amt         = amt
+  )
+}
+
+n_per <- 100L
+covs <- dplyr::bind_rows(
+  make_cohort(n_per, dose_per_kg = 50,  DIS_HEALTHY = 0,
+              treatment = "HAE 50 U/kg",  id_offset =   0L),
+  make_cohort(n_per, dose_per_kg = 100, DIS_HEALTHY = 0,
+              treatment = "HAE 100 U/kg", id_offset = 1000L),
+  make_cohort(n_per, dose_per_kg = 100, DIS_HEALTHY = 1,
+              treatment = "HV 100 U/kg",  id_offset = 2000L)
+)
+
+# Per-subject dose record (30 min IV infusion into the central compartment;
+# Farrell 2013 Methods: "rhC1INH was administered intravenously over 2-30 min").
+infusion_min <- 30
+ev_dose <- covs |>
+  dplyr::mutate(time = 0,
+                evid = 1,
+                cmt  = "central",
+                rate = amt / (infusion_min / 60))   # U / h
+
+# Observation grid (every 0.25 h up to 48 h, then sparse out to 168 h).
+obs_grid <- c(seq(0, 48, by = 0.25), seq(54, 168, by = 6))
+ev_obs <- covs |>
+  tidyr::expand_grid(time = obs_grid) |>
+  dplyr::mutate(evid = 0,
+                cmt  = NA_character_,
+                amt  = 0,
+                rate = 0)
+
+events <- dplyr::bind_rows(ev_dose, ev_obs) |>
+  dplyr::arrange(id, time, dplyr::desc(evid)) |>
+  as.data.frame()
+
+stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
+```
+
+# Simulation
+
+```{r simulate}
+mod <- readModelDb("Farrell_2013_conestatAlfa")
+
+sim <- rxode2::rxSolve(
+  mod,
+  events = events,
+  keep   = c("treatment", "WT", "DIS_HEALTHY")
+) |>
+  as.data.frame()
+```
+
+For deterministic typical-value predictions (reproducing the paper's
+median curves), zero out the random effects.
+
+```{r simulate-typical}
+mod_typical <- mod |> rxode2::zeroRe()
+sim_typical <- rxode2::rxSolve(
+  mod_typical,
+  events = events,
+  keep   = c("treatment", "WT", "DIS_HEALTHY")
+) |>
+  as.data.frame()
+```
+
+# Replicate published figures
+
+## Figure 3 -- Visual predictive check by population
+
+Farrell 2013 Figure 3 shows the VPC of the final PK model stratified by
+dose (50 vs 100 U/kg) and population (HV, asymptomatic HAE, symptomatic
+HAE). Asymptomatic-HAE-specific Vmax is omitted from this package model
+(see the Assumptions and deviations section below), so the figure below
+combines the symptomatic and asymptomatic HAE cohorts under the
+DIS_HEALTHY = 0 label.
+
+```{r figure-3, fig.height = 5.5}
+sim_summary <- sim |>
+  dplyr::filter(time <= 96) |>
+  dplyr::group_by(treatment, time) |>
+  dplyr::summarise(
+    Q05 = quantile(Cc, 0.05, na.rm = TRUE),
+    Q50 = quantile(Cc, 0.50, na.rm = TRUE),
+    Q95 = quantile(Cc, 0.95, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+ggplot(sim_summary, aes(time, Q50)) +
+  geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.25) +
+  geom_line(linewidth = 0.6) +
+  facet_wrap(~treatment, scales = "free_y") +
+  labs(
+    x = "Time after dose (h)",
+    y = "Functional plasma C1INH (U/mL)",
+    title = "Simulated concentration-time profiles by cohort",
+    caption = "Replicates Figure 3 of Farrell 2013 (VPC). Ribbon = 5-95th percentile of 100 simulated subjects; line = median."
+  )
+```
+
+## Figure 4 -- Predicted peak C1INH across body weight for the proposed dosing scheme
+
+Farrell 2013 Figure 4 simulates the maximal C1INH concentration achieved
+under the proposed dosing scheme (50 U/kg up to 84 kg; fixed 4200 U above
+84 kg) for body weights from 40 to 180 kg. The paper reports median Cmax
+"increased from 1.18 to 1.45 U/mL for the 50 U/kg (40 to <= 84 kg)
+dosing" and "decreased from 1.50 to 1.01 U/mL across the proposed fixed
+dose of 4200 U for the weight range from > 84 to 180 kg".
+
+```{r figure-4, fig.height = 4.5}
+wt_grid <- seq(40, 180, by = 5)
+n_per_wt <- 200L
+
+ev_f4_dose <- tidyr::expand_grid(WT = wt_grid, rep = seq_len(n_per_wt)) |>
+  dplyr::mutate(
+    id          = seq_len(dplyr::n()),
+    DIS_HEALTHY = 0,
+    amt         = ifelse(WT <= 84, 50 * WT, 4200),
+    time        = 0,
+    evid        = 1,
+    cmt         = "central",
+    rate        = amt / (infusion_min / 60)
+  )
+
+ev_f4_obs <- ev_f4_dose |>
+  dplyr::select(id, WT, DIS_HEALTHY, amt) |>
+  tidyr::expand_grid(time = c(seq(0, 1, by = 0.05), seq(1.25, 8, by = 0.25))) |>
+  dplyr::mutate(evid = 0, cmt = NA_character_, rate = 0, amt = 0)
+
+ev_f4 <- dplyr::bind_rows(ev_f4_dose, ev_f4_obs) |>
+  dplyr::arrange(id, time, dplyr::desc(evid)) |>
+  as.data.frame()
+
+sim_f4 <- rxode2::rxSolve(
+  mod, events = ev_f4, keep = c("WT")
+) |>
+  as.data.frame()
+
+cmax_by_wt <- sim_f4 |>
+  dplyr::group_by(id, WT) |>
+  dplyr::summarise(Cmax = max(Cc, na.rm = TRUE), .groups = "drop") |>
+  dplyr::mutate(
+    wt_bin = cut(WT, breaks = c(seq(40, 80, by = 10), 84, seq(90, 180, by = 10)),
+                 include.lowest = TRUE)
+  )
+
+cmax_summary <- cmax_by_wt |>
+  dplyr::group_by(wt_bin) |>
+  dplyr::summarise(
+    wt_mid = mean(WT),
+    Q05 = quantile(Cmax, 0.05),
+    Q25 = quantile(Cmax, 0.25),
+    Q50 = quantile(Cmax, 0.50),
+    Q75 = quantile(Cmax, 0.75),
+    Q95 = quantile(Cmax, 0.95),
+    .groups = "drop"
+  )
+
+ggplot(cmax_summary, aes(wt_mid)) +
+  geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.18, fill = "steelblue") +
+  geom_ribbon(aes(ymin = Q25, ymax = Q75), alpha = 0.35, fill = "steelblue") +
+  geom_line(aes(y = Q50), colour = "steelblue", linewidth = 0.8) +
+  geom_hline(yintercept = 0.7, linetype = "dashed", colour = "grey40") +
+  scale_x_continuous(breaks = seq(40, 180, by = 20)) +
+  labs(
+    x = "Body weight (kg)",
+    y = "Predicted maximal C1INH concentration (U/mL)",
+    title = "Predicted Cmax across body weight under the proposed dosing scheme",
+    subtitle = "50 U/kg up to 84 kg; fixed 4200 U above 84 kg",
+    caption = paste("Replicates Figure 4 of Farrell 2013.",
+                    "Dashed line = lower limit of normal C1INH activity (0.7 U/mL).",
+                    "Ribbon = 5-95th and 25-75th percentiles of 200 simulated HAE-patient replicates per WT bin.",
+                    sep = "\n")
+  )
+```
+
+# PKNCA validation
+
+PKNCA is used to extract Cmax, Tmax, AUC, and half-life from the
+typical-value simulation so they can be lined up against the paper's
+narrative claims (typical-Cmax range from Figure 4 caption; "the
+half-life of rhC1INH, estimated to be approximately 3 h after
+administration of 100 U/kg rhC1INH" from the Discussion). The
+simulation uses the typical-value model (random effects zeroed) so the
+NCA values represent typical individuals at each cohort's median weight.
+
+```{r pknca-prep}
+events_typical <- covs |>
+  dplyr::filter(id %% 10L == 1L) |>      # one representative subject per cohort
+  dplyr::mutate(WT = 72) |>
+  dplyr::mutate(amt = dplyr::case_when(
+    treatment == "HAE 50 U/kg"  ~ 50  * WT,
+    treatment == "HAE 100 U/kg" ~ 100 * WT,
+    treatment == "HV 100 U/kg"  ~ 100 * WT
+  ))
+
+ev_typ_dose <- events_typical |>
+  dplyr::mutate(time = 0, evid = 1, cmt = "central",
+                rate = amt / (infusion_min / 60))
+
+obs_typ_grid <- c(seq(0, 24, by = 0.1), seq(24.5, 96, by = 0.5))
+ev_typ_obs <- events_typical |>
+  dplyr::select(id, WT, DIS_HEALTHY, treatment, amt) |>
+  tidyr::expand_grid(time = obs_typ_grid) |>
+  dplyr::mutate(evid = 0, cmt = NA_character_, rate = 0, amt = 0)
+
+ev_typ <- dplyr::bind_rows(ev_typ_dose, ev_typ_obs) |>
+  dplyr::arrange(id, time, dplyr::desc(evid)) |>
+  as.data.frame()
+
+sim_typ <- rxode2::rxSolve(
+  mod_typical, events = ev_typ,
+  keep = c("treatment", "WT", "DIS_HEALTHY")
+) |>
+  as.data.frame()
+
+# Subtract the cohort-specific endogenous baseline so the NCA half-life
+# reflects the exogenous rhC1INH decay (the paper's reported "approximately
+# 3 h half-life" describes the drug's elimination, not the approach of total
+# C1INH to its endogenous baseline).
+sim_typ <- sim_typ |>
+  dplyr::mutate(
+    baseline = ifelse(DIS_HEALTHY == 1, 0.901, 0.176),
+    Cexo     = pmax(Cc - baseline, 0)
+  )
+```
+
+```{r pknca}
+sim_nca <- sim_typ |>
+  dplyr::filter(!is.na(Cexo)) |>
+  dplyr::select(id, time, Cc = Cexo, treatment)
+
+sim_nca <- dplyr::bind_rows(
+  sim_nca,
+  sim_nca |> dplyr::distinct(id, treatment) |>
+    dplyr::mutate(time = 0, Cc = 0)
+) |>
+  dplyr::distinct(id, treatment, time, .keep_all = TRUE) |>
+  dplyr::arrange(id, treatment, time)
+
+dose_df <- ev_typ_dose |>
+  dplyr::select(id, time, amt, treatment)
+
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | treatment + id,
+                             concu = "U/mL", timeu = "h")
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id,
+                             doseu = "U")
+
+intervals <- data.frame(
+  start       = 0,
+  end         = Inf,
+  cmax        = TRUE,
+  tmax        = TRUE,
+  aucinf.obs  = TRUE,
+  half.life   = TRUE
+)
+
+nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
+nca_res  <- PKNCA::pk.nca(nca_data)
+```
+
+## Comparison against published values
+
+Farrell 2013 reports typical-Cmax windows from Figure 4 (proposed dosing
+scheme) and a half-life of "approximately 3 h" in the Discussion. The
+paper does not tabulate per-dose AUC, so the AUC column below is the
+simulated value with no published comparator.
+
+```{r nca_compare, message = FALSE}
+# Reference values for the half-life of exogenous rhC1INH are paper-text;
+# Cmax(exo) anchors come from Figure 4 (50 U/kg, 72 kg subject gives a typical
+# Cmax(total) of ~1.41 U/mL = baseline 0.176 + exogenous ~1.23 U/mL).
+published <- tibble::tribble(
+  ~treatment,        ~cmax, ~half.life,
+  "HAE 50 U/kg",      1.23,        3.0,
+  "HAE 100 U/kg",     2.47,        3.0,
+  "HV 100 U/kg",      2.47,        3.0
+)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_res,
+  reference = published,
+  by        = "treatment",
+  units     = c(cmax = "U/mL", aucinf.obs = "U*h/mL",
+                tmax = "h", half.life = "h"),
+  tolerance_pct = 20
+)
+
+knitr::kable(
+  cmp,
+  caption = paste("Simulated vs. published NCA on exogenous (baseline-subtracted) rhC1INH.",
+                  "* differs from published reference by >20%."),
+  align   = c("l", "l", "r", "r", "r", "r")
+)
+```
+
+The published Cmax anchors above are derived from dose / V at the
+cohort-median weight (50 or 100 U/kg into 72 kg, with V = 2.86 L):
+50 U/kg gives 3600 U / 2.86 L = 1.26 U/mL exogenous Cmax; 100 U/kg gives
+2.52 U/mL. These match Farrell 2013 Figure 4's typical-value Cmax window
+(1.18-1.45 U/mL median for the 50 U/kg dosing scheme across 40-84 kg)
+once the endogenous baseline (0.176 U/mL for HAE patients) is added back.
+
+# Assumptions and deviations
+
+- **Asymptomatic-HAE Vmax effect omitted.** Farrell 2013 Table 2 reports
+  a fractional change in Vmax of 0.644 (95% CI 0.517-0.803) for
+  asymptomatic HAE patients relative to the pooled (healthy volunteer +
+  symptomatic HAE) reference - i.e. asymptomatic HAE patients had Vmax
+  approximately 36% lower than the typical value. The asymptomatic-HAE
+  subgroup is biologically distinct from the symptomatic-HAE subgroup
+  (no acute angioedema attack at the time of dosing), but a new
+  canonical covariate column (e.g. `DIS_HAE_ASYMP`) would be required to
+  encode it. Asymptomatic-HAE patients comprise 12 of 119 HAE subjects
+  in the pooled cohort (Study C1 1101-01 only); the proposed clinical
+  dosing regimen targets symptomatic HAE (treatment of acute attacks).
+  The packaged model therefore uses the paper's typical Vmax (1.63
+  U/mL/h, the symptomatic-HAE + HV value); a downstream user simulating
+  asymptomatic-HAE patients should multiply Vmax by 0.644 to reproduce
+  Farrell 2013 Table 2 verbatim.
+- **Study-specific central-volume effect omitted.** Farrell 2013 Table
+  2 reports a fractional change in V of 0.681 (95% CI 0.579-0.801) for
+  Studies C1 1202-01 and C1 1203-01 (n = 14 symptomatic-HAE subjects),
+  driven by a 22-point OFV drop in the covariate-search stage. This is
+  a study-batch effect that does not transfer to new populations and is
+  not encoded as a covariate in the packaged model; the per-study
+  fractional shift is documented here for completeness.
+- **Interoccasion variability on V omitted.** Farrell 2013 Table 2
+  reports an IOV of 18.3% CV on V (in addition to the 16.2% CV IIV).
+  IOV requires an occasion-level data column, which the model file
+  format does not carry; the IIV on V (16.2% CV) is retained as the
+  total log-normal subject-level variability for V. A downstream user
+  who needs occasion-level variability can add an OCC-driven eta in the
+  data layer.
+- **Study-specific residual error not encoded.** Farrell 2013 Table 2
+  reports three proportional residual errors: 10.5% (Studies C1
+  1101-01, C1 1106-02, C1 1202-01, C1 1203-01), 23.6% (Study C1
+  1205-01), and 53.6% (Study C1 1304-01). The packaged model uses the
+  10.5% value (applies to 4 of 6 studies and to all assay-laboratory
+  configurations except the two pivotal phase III studies); per-study
+  residual error is not encoded.
+- **Demographic covariates AGE and SEXF screened but not retained.**
+  Farrell 2013 Methods state "Population (healthy volunteers,
+  symptomatic patients and asymptomatic patients), weight, age, gender,
+  dose and study were evaluated as covariates ... No other relationships
+  were evident between the individual random effects and covariates."
+  These covariates are recorded in the model file's
+  `covariatesDataExcluded` list (documentation only; not used in
+  `model()`).
+- **IIV CV-to-omega2 convention follows the paper's footnote.** Farrell
+  2013 Table 2 footnote: "The %CV for both intersubject and residual
+  variability is an approximation taken as the square root of the
+  variance for the proportional error term * 100." The model file
+  therefore encodes `omega^2 = (CV/100)^2` (the linear small-variance
+  approximation), not the exact log-normal `log(CV^2 + 1)`. The two
+  differ by < 5% for the four small CVs (12.7%, 16.2%, 29.2%) and by
+  approximately 35% for the largest CV (54.4%, HAE-patient baseline),
+  where the linear value 0.296 is what the paper meant by "54.4% CV"
+  under its footnote convention.
+- **30-minute IV infusion used for simulation.** Farrell 2013 Methods
+  state "rhC1INH was administered intravenously over 2-30 min." The
+  vignette uses the upper-bound duration (30 min) for all dose events;
+  the model itself is duration-agnostic (cmt = central with `rate`
+  parameterised by the user) so a shorter infusion or instantaneous
+  bolus is supported by the same model file with no changes.
+- **PKNCA half-life on exogenous concentration.** PKNCA terminal-slope
+  half-life is computed on `Cc - baseline` rather than on total
+  measured C1INH so the reported value reflects the elimination of
+  exogenous rhC1INH (the quantity the paper's "approximately 3 h" half-
+  life claim describes). A naive NCA on total Cc would yield a longer
+  apparent half-life because total C1INH asymptotes to the endogenous
+  baseline rather than to zero.

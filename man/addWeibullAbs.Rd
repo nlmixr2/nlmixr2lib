@@ -46,9 +46,9 @@ readModelDb("PK_1cmt_des") |>
   addWeibullAbs()
 }
 \seealso{
-Other absorption: 
-\code{\link{addTransit}()},
-\code{\link{removeTransit}()}
+Other absorption:
+\code{\link[=addTransit]{addTransit()}},
+\code{\link[=removeTransit]{removeTransit()}}
 }
 \author{
 Matthew L. Fidler

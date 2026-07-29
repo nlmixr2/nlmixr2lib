@@ -1,0 +1,321 @@
+---
+title: "Rifapentine (Zvada 2010)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Rifapentine (Zvada 2010)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+```{r meta}
+mod <- rxode2::rxode(readModelDb("Zvada_2010_rifapentine"))
+```
+
+* Citation: `r mod$reference`
+* Description: `r mod$description`
+* Article: [doi:10.1128/AAC.00345-10](https://doi.org/10.1128/AAC.00345-10)
+
+# Population
+
+The model was developed from 2,272 plasma concentration observations of rifapentine (RFP) and 25-O-desacetyl rifapentine (25-DRFP) collected from 34 healthy adult male volunteers (one of 35 enrolled withdrew after a single visit) at Groote Schuur Hospital, Cape Town, South Africa. Reported baseline characteristics were age 23.9 (SD 4.82) years, weight 74.4 (SD 12.3) kg, and height 177.2 (SD 7.33) cm; participants were nonsmokers with normal physical examination and baseline laboratory evaluation and were free of cardiovascular, hepatic, neurologic, or endocrine disease, of tuberculosis, of active allergies, of excessive coffee or alcohol consumption, and of HIV or hepatitis B infection. Women were excluded to limit the risk of unintended fetal exposure. Race or ethnicity is not reported in the paper (Zvada 2010 Methods, "Participant enrollment" and Results paragraph 1).
+
+Each participant received a single 900 mg oral rifapentine dose (six 150 mg Priftin tablets with 200 ml of water) 30 min after each of five test meals (A, B, C, D, or fasted = E) in an open-label, randomized, sequential, five-way crossover design with a 14-day washout between occasions. Plasma samples were collected at 2, 3, 4, 5, 6, 7, 8, 10, 12, 14, 24, 36, 48, and 72 h post dose (plus a predose sample at each visit).
+
+The same information is available programmatically via `readModelDb("Zvada_2010_rifapentine")()$population`.
+
+# Source trace
+
+The per-parameter origin is recorded as an in-file comment next to each `ini()` entry. The table below collects them in one place for review.
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `lcl1` (RFP CL1/F pre-MTIME) | log(2.14) L/h | Zvada 2010 Table 2 "CL1/F (liters/h)" |
+| `lcl2` (RFP CL2/F post-MTIME) | log(3.22) L/h | Zvada 2010 Table 2 "CL2/F (liters/h)" |
+| `lt_switch` (RFP CL switch time, fixed) | log(43) h | Zvada 2010 Table 2 "MTIME (h)" |
+| `lvc` (RFP V/F) | log(60.6) L | Zvada 2010 Table 2 "V/F (liters)" |
+| `lka` (RFP absorption ka) | log(1.66) 1/h | Zvada 2010 Table 2 "ka (h^-1)" |
+| `lmtt` (RFP transit MTT) | log(1.45) h | Zvada 2010 Table 2 "MTT (h)" |
+| `lnn` (RFP transit chain NN) | log(10.9) | Zvada 2010 Table 2 "NN" |
+| `lfdepot` (RFP F, fasted reference, fixed) | log(1) | Zvada 2010 Table 2 "F = 1 (fixed)"; Methods "TVF = theta_F * (1 + RXF); theta_F is the value of F under fasting conditions (fixed to 1)" |
+| `e_meal_a_fdepot` | 0.857 | Zvada 2010 Table 3 meal A "% increase in oral bioavailability = 85.7" |
+| `e_meal_b_fdepot` | 0.327 | Zvada 2010 Table 3 meal B "% increase = 32.7" |
+| `e_meal_c_fdepot` | 0.457 | Zvada 2010 Table 3 meal C "% increase = 45.7" |
+| `e_meal_d_fdepot` | 0.489 | Zvada 2010 Table 3 meal D "% increase = 48.9" |
+| `lcl1_desrpt` | log(1.81) L/h | Zvada 2010 Table 4 "CL_M1/F (liters/h)" |
+| `lcl2_desrpt` | log(4.63) L/h | Zvada 2010 Table 4 "CL_M2/F (liters/h)" |
+| `lt_switch_desrpt` (fixed) | log(46.8) h | Zvada 2010 Table 4 "MTIME (h)" |
+| `lvc_desrpt` | log(6.36) L | Zvada 2010 Table 4 "V_MC/F (liters)" |
+| `lvp_desrpt` | log(22.1) L | Zvada 2010 Table 4 "V_MP/F (liters)" |
+| `lq_desrpt` | log(4.4) L/h | Zvada 2010 Table 4 "QM (liters/h)" |
+| `etalcl + etalmtt + etalfdepot ~ ...` (3x3 block) | omega^2 = log(1 + CV^2); CV CL/MTT/F = 19.2/9.5/21.4 %; rho(F,MTT) = 0.65; rho(CL,MTT) = -0.56; rho(CL,F) = 0 (assumed) | Zvada 2010 Table 2 IIV columns; Discussion paragraph 4 |
+| `etalcl_desrpt ~ ...` (single eta) | omega^2 = log(1 + 0.239^2) = 0.0555 | Zvada 2010 Table 4 IIV column for CL_M/F |
+| `addSd` / `propSd` (RFP) | 0.206 mg/L additive; 10.6% proportional | Zvada 2010 Table 2 "Residual variability" |
+| `addSd_desrpt` / `propSd_desrpt` | 0.211 mg/L additive; 19.1% proportional | Zvada 2010 Table 4 "Residual variability" |
+| ODE: d/dt(depot) = transit(nn, mtt, fdepot) - ka * depot, f(depot) <- 0 | Savic transit-absorption closed form | Zvada 2010 Methods "transit absorption model where drug absorption is described as drug movement through a series of hypothetical presystemic compartments, as suggested by Savic et al."; Figure 1 |
+| ODE: d/dt(central) = ka*depot - kel*central, kel = cl/vc with cl switching at t_switch | Step-function autoinduction | Zvada 2010 Methods "CL_i = {TV(CL1/F) * [1 - mpast(1)] + TV(CL2/F) * mpast(1)} * exp(eta_i + kappa_i)" |
+| ODE: d/dt(central_desrpt) = kel*central - kelm*central_desrpt - kmcmp*central_desrpt + kmpmc*peripheral1_desrpt | All-RFP-converts-to-25-DRFP parent-metabolite coupling | Zvada 2010 Figure 1 caption "All rifapentine (RFP) is assumed to be converted to the major metabolite (25-DRFP)" |
+| Cc, Cc_desrpt | central/vc, central_desrpt/vc_desrpt in mg/L | Zvada 2010 Results; units throughout the paper |
+
+# Virtual cohort
+
+Original observed data are not publicly available. The figures below use a virtual five-way crossover cohort whose covariate distributions approximate the published trial.
+
+```{r cohort}
+set.seed(20100601L)
+n_subj <- 35L
+times  <- c(0, 2, 3, 4, 5, 6, 7, 8, 10, 12, 14, 24, 36, 48, 72)
+
+meal_levels <- c("E_fasted", "A", "B", "C", "D")
+
+# Build one (id, meal) cell. id_offset shifts subject IDs so multiple cohorts
+# can be bind_rows()-ed without colliding inside rxSolve.
+make_cell <- function(meal_label, id_offset) {
+  ma <- as.integer(meal_label == "A")
+  mb <- as.integer(meal_label == "B")
+  mc <- as.integer(meal_label == "C")
+  md <- as.integer(meal_label == "D")
+  dose_rows <- data.frame(
+    id     = id_offset + seq_len(n_subj),
+    time   = 0,
+    amt    = 900,
+    evid   = 1L,
+    cmt    = "depot",
+    MEAL_A = ma, MEAL_B = mb, MEAL_C = mc, MEAL_D = md,
+    meal   = meal_label
+  )
+  obs_rows <- expand.grid(
+    id   = id_offset + seq_len(n_subj),
+    time = times[-1],
+    stringsAsFactors = FALSE
+  )
+  obs_rows$amt  <- NA_real_
+  obs_rows$evid <- 0L
+  obs_rows$cmt  <- "Cc"
+  obs_rows$MEAL_A <- ma; obs_rows$MEAL_B <- mb
+  obs_rows$MEAL_C <- mc; obs_rows$MEAL_D <- md
+  obs_rows$meal   <- meal_label
+  dplyr::bind_rows(dose_rows, obs_rows) |>
+    dplyr::arrange(id, time, dplyr::desc(evid))
+}
+
+events <- dplyr::bind_rows(
+  lapply(seq_along(meal_levels), function(i)
+    make_cell(meal_levels[i], id_offset = (i - 1L) * n_subj))
+)
+
+# Guard rail: ids must be disjoint across meal cells.
+stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
+
+cat("Events shape:", dim(events), "\n")
+table(events$meal, events$evid)
+```
+
+# Simulation
+
+```{r simulate}
+sim <- rxode2::rxSolve(
+  mod, events = events, keep = c("meal", "MEAL_A", "MEAL_B", "MEAL_C", "MEAL_D")
+) |> as.data.frame()
+cat("Simulation shape:", dim(sim), "\n")
+```
+
+For a deterministic, typical-value run (used for the side-by-side figure replicate below) the random effects are zeroed:
+
+```{r simulate-typical}
+mod_typical <- rxode2::zeroRe(mod)
+sim_typical <- rxode2::rxSolve(
+  mod_typical, events = events, keep = c("meal")
+) |> as.data.frame()
+```
+
+# Replicate published figures
+
+Zvada 2010 Figure 2 shows visual predictive checks (VPC) for the final RFP model (left) and the 25-DRFP metabolite model (right) overlaid on observed concentrations. The chunk below reproduces the pooled VPC structure: the median and the 5th-95th percentile band from the stochastic simulation across all five meal arms.
+
+```{r figure-2-vpc}
+vpc_summary <- function(df, conc_col) {
+  df |>
+    dplyr::filter(time > 0) |>
+    dplyr::group_by(time, meal) |>
+    dplyr::summarise(
+      q05 = quantile(.data[[conc_col]], 0.05, na.rm = TRUE),
+      q50 = quantile(.data[[conc_col]], 0.50, na.rm = TRUE),
+      q95 = quantile(.data[[conc_col]], 0.95, na.rm = TRUE),
+      .groups = "drop"
+    )
+}
+
+vpc_rfp   <- vpc_summary(sim, "Cc")
+vpc_drfp  <- vpc_summary(sim, "Cc_desrpt")
+
+p_rfp <- ggplot(vpc_rfp, aes(time, q50)) +
+  geom_ribbon(aes(ymin = q05, ymax = q95, fill = meal), alpha = 0.2) +
+  geom_line(aes(colour = meal)) +
+  scale_y_continuous(name = "Plasma rifapentine Cc (mg/L)") +
+  scale_x_continuous(name = "Time after dose (h)", breaks = c(0, 12, 24, 36, 48, 72)) +
+  labs(title = "Rifapentine (RFP) -- replicates Zvada 2010 Figure 2 (left panel)") +
+  theme_minimal()
+
+p_drfp <- ggplot(vpc_drfp, aes(time, q50)) +
+  geom_ribbon(aes(ymin = q05, ymax = q95, fill = meal), alpha = 0.2) +
+  geom_line(aes(colour = meal)) +
+  scale_y_continuous(name = "Plasma 25-DRFP Cc (mg/L)") +
+  scale_x_continuous(name = "Time after dose (h)", breaks = c(0, 12, 24, 36, 48, 72)) +
+  labs(title = "25-DRFP -- replicates Zvada 2010 Figure 2 (right panel)") +
+  theme_minimal()
+
+print(p_rfp)
+print(p_drfp)
+```
+
+The five meal arms produce a fan of overlapping ribbons whose magnitudes track Table 3 (meal A largest, fasted smallest). The step-function autoinduction at MTIME = 43 h (RFP) and MTIME = 46.8 h (25-DRFP) produces a visible bend in the terminal decay phase consistent with the paper's Figure 2.
+
+# PKNCA validation
+
+The paper's central quantitative result is the meal-effect Table 3: the percent increase in oral bioavailability for each meal relative to fasted. With dose held constant at 900 mg, the per-meal ratio of AUC0-inf to the fasted AUC0-inf equals (1 + RXF_meal) under linear kinetics. The PKNCA pipeline below recovers AUC0-inf per (subject x meal) and aggregates to the meal-level mean ratio for comparison against Table 3.
+
+```{r pknca}
+sim_nca <- sim |>
+  dplyr::filter(!is.na(Cc), time > 0) |>
+  dplyr::select(id, time, Cc, meal)
+
+# Doses -- one row per (id, meal) crossover cell.
+dose_df <- events |>
+  dplyr::filter(evid == 1) |>
+  dplyr::select(id, time, amt, meal)
+
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | meal + id,
+                             concu = "mg/L", timeu = "h")
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | meal + id,
+                             doseu = "mg")
+
+intervals <- data.frame(
+  start       = 0,
+  end         = Inf,
+  cmax        = TRUE,
+  tmax        = TRUE,
+  aucinf.obs  = TRUE,
+  half.life   = TRUE
+)
+
+nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
+nca_res  <- PKNCA::pk.nca(nca_data)
+
+nca_res_df <- as.data.frame(nca_res$result) |>
+  dplyr::filter(PPTESTCD %in% c("cmax", "tmax", "aucinf.obs", "half.life")) |>
+  dplyr::select(meal, id, PPTESTCD, PPORRES) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES)
+
+# Per-meal mean of subject-level NCA.
+meal_summary <- nca_res_df |>
+  dplyr::group_by(meal) |>
+  dplyr::summarise(
+    n             = dplyr::n(),
+    cmax_mean     = mean(cmax,        na.rm = TRUE),
+    tmax_median   = median(tmax,      na.rm = TRUE),
+    aucinf_mean   = mean(aucinf.obs,  na.rm = TRUE),
+    half_life_mean = mean(half.life,  na.rm = TRUE),
+    .groups       = "drop"
+  )
+knitr::kable(
+  meal_summary,
+  digits  = 3,
+  caption = "Simulated per-meal NCA summary (mean across subjects of subject-level AUC0-inf, Cmax, and t1/2; median Tmax)."
+)
+```
+
+## Comparison against Zvada 2010 Table 3
+
+Zvada 2010 Table 3 reports the percent increase in oral bioavailability under meals A-D relative to the fasted reference (meal E). Because F1 is fixed at 1 for fasted and dose is held constant at 900 mg, the AUC0-inf ratio is the same quantity in the simulation.
+
+```{r table-3-compare}
+auc_fasted <- meal_summary$aucinf_mean[meal_summary$meal == "E_fasted"]
+ratio_simulated <- meal_summary |>
+  dplyr::mutate(
+    sim_ratio       = aucinf_mean / auc_fasted,
+    sim_pct_increase = 100 * (sim_ratio - 1)
+  ) |>
+  dplyr::select(meal, sim_ratio, sim_pct_increase)
+
+published <- tibble::tribble(
+  ~meal,        ~published_pct_increase, ~published_RSE_pct,
+  "E_fasted",   0,                       NA_real_,
+  "A",          85.7,                    20.1,
+  "B",          32.7,                    40.4,
+  "C",          45.7,                    29.3,
+  "D",          48.9,                    30.7
+)
+
+compare <- dplyr::left_join(ratio_simulated, published, by = "meal") |>
+  dplyr::mutate(
+    delta_pct = sim_pct_increase - published_pct_increase
+  ) |>
+  dplyr::arrange(match(meal, c("E_fasted", "A", "B", "C", "D")))
+
+knitr::kable(
+  compare,
+  digits  = 2,
+  caption = "Table 3 reproduction: simulated AUC0-inf ratios vs published meal-effect percent increases relative to fasted."
+)
+```
+
+A close-to-zero `delta_pct` for each meal confirms that the encoded RXF_meal values reproduce Zvada 2010 Table 3 (and therefore that the model file correctly encodes `TVF = 1 * (1 + RXF)` with the exact per-meal RXF values). Small departures are driven by between-subject variability in CL / MTT / F and by terminal-phase extrapolation residuals in the AUC0-inf calculation, both of which are expected and do not indicate a model-file bug.
+
+## 25-DRFP metabolite NCA
+
+The paper's "similar trends were observed for 25-desacetyl rifapentine" statement implies that meal effects propagate from RFP to the metabolite under the all-RFP-converts assumption. The metabolite NCA below confirms that the meal-effect ratios apply equally to 25-DRFP AUC.
+
+```{r pknca-metabolite}
+sim_nca_m <- sim |>
+  dplyr::filter(!is.na(Cc_desrpt), time > 0) |>
+  dplyr::select(id, time, Cc_desrpt, meal) |>
+  dplyr::rename(Cc = Cc_desrpt)
+
+conc_obj_m <- PKNCA::PKNCAconc(sim_nca_m, Cc ~ time | meal + id,
+                               concu = "mg/L", timeu = "h")
+nca_data_m <- PKNCA::PKNCAdata(conc_obj_m, dose_obj, intervals = intervals)
+nca_res_m  <- PKNCA::pk.nca(nca_data_m)
+m_df <- as.data.frame(nca_res_m$result) |>
+  dplyr::filter(PPTESTCD == "aucinf.obs") |>
+  dplyr::select(meal, id, PPORRES)
+m_means <- m_df |>
+  dplyr::group_by(meal) |>
+  dplyr::summarise(aucinf_mean = mean(PPORRES, na.rm = TRUE), .groups = "drop")
+auc_fasted_m <- m_means$aucinf_mean[m_means$meal == "E_fasted"]
+m_compare <- m_means |>
+  dplyr::mutate(
+    sim_ratio       = aucinf_mean / auc_fasted_m,
+    sim_pct_increase = 100 * (sim_ratio - 1)
+  ) |>
+  dplyr::left_join(published, by = "meal") |>
+  dplyr::select(meal, sim_ratio, sim_pct_increase, published_pct_increase)
+knitr::kable(
+  m_compare,
+  digits = 2,
+  caption = "25-DRFP AUC0-inf ratio vs RFP Table 3 published meal-effect percent increases. Because the model assumes complete RFP-to-25-DRFP conversion and metabolite clearance is meal-independent, the metabolite AUC scales with the parent's bioavailability."
+)
+```
+
+# Assumptions and deviations
+
+* **Inter-occasion variability (IOV) omitted.** Zvada 2010 Table 2 and Table 4 report IOV components for CL/F, MTT, F (parent) and CL_M/F (metabolite). nlmixr2lib does not standardize an OCC encoding, and the published IOV magnitudes (12.2-30.2% CV) would only manifest in multi-occasion VPC simulation. The IIV terms reported in Table 2 / Table 4 are encoded and applied. Users who need to reproduce the full crossover IOV decomposition can extend the simulation with their own OCC indicator.
+* **Correlation cov(eta_CL, eta_F) assumed 0.** Zvada 2010 Discussion explicitly reports rho(eta_CL, eta_MTT) = -0.56 and rho(eta_F, eta_MTT) = 0.65 but does not report rho(eta_CL, eta_F). The IIV 3x3 block is encoded with cov(eta_CL, eta_F) = 0; the matrix is positive definite (eigenvalues 0.0499 / 0.0381 / 0.00202).
+* **Shared eta across pre- and post-MTIME clearances.** Both Table 2 and Table 4 report identical IIV and IOV percentages for the two clearance rows (CL1/F vs CL2/F; CL_M1/F vs CL_M2/F), which we interpret as a single shared eta passing through the step-function autoinduction. The model encodes one eta_CL applied to both cl1 and cl2 (and one eta_CL_desrpt applied to both cl1_desrpt and cl2_desrpt). These shared etas are declared as `paper_specific_etas` because they do not pair 1-to-1 with a single fixed-effect parameter.
+* **Step-function autoinduction encoded via `tad(depot)`.** The paper's `mpast(1)` switch is reproduced as `(tad(depot) >= t_switch)`, which evaluates to 0 before the switch time and 1 after, identical to the NONMEM PSN form. `tad(depot)` returns time since the most recent dose into the depot compartment, so the switch fires correctly in multi-occasion crossover simulations.
+* **No MW correction on the parent-to-metabolite conversion.** RFP (877.03 g/mol) and 25-DRFP (835.0 g/mol) differ by about 5% in molecular weight. Zvada 2010 Figure 1 caption describes the model as "All rifapentine (RFP) is assumed to be converted to the major metabolite (25-DRFP)" without an explicit MW factor; the apparent metabolite volume V_MC/F absorbs the implicit conversion factor. The model file follows the paper exactly and does not introduce an MW correction.
+* **Race, ethnicity, and BMI distribution.** Zvada 2010 enrolled adult male volunteers in Cape Town, South Africa; race and ethnicity are not reported in the paper, so the model file leaves `population$race_ethnicity` documented as "not specified" rather than imputing a distribution. The vignette virtual cohort uses no race / ethnicity covariate (none enters the model structurally).
+* **`MTIME` symbol renamed to `t_switch`.** rxode2 reserves `mtime()` as a model-event-time declaration function. The paper's `MTIME` symbol is renamed to `t_switch` (parent) and `t_switch_desrpt` (metabolite) in this implementation; the numerical value 43 h (parent) and 46.8 h (metabolite) is unchanged.
+* **MEAL_A through MEAL_D covariate columns registered.** Four new specific-scope binary covariates were added to `inst/references/covariate-columns.md` for this extraction. They are mutually exclusive: at most one of the four indicators can be 1 on any single dosing record, and the all-zero state encodes the fasted reference (meal E).
+* **`desrpt` metabolite suffix registered.** A new metabolite-suffix `desrpt` (25-O-desacetyl rifapentine) was added to `inst/references/compartment-names.md`, parallel to the existing `desrbn` (25-O-desacetyl rifabutin) entry.

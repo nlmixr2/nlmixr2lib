@@ -4,7 +4,7 @@
 \alias{removeDepot}
 \title{To convert from first order oral absorption to IV/Intravenous}
 \usage{
-removeDepot(ui, central = "central", depot = "depot", ka = "ka")
+removeDepot(ui, central = "central", depot = "depot", ka = "ka", model)
 }
 \arguments{
 \item{ui}{The model as a function (or something convertible to an rxUi
@@ -15,6 +15,9 @@ object)}
 \item{depot}{depot compartment name}
 
 \item{ka}{absorption rate parameter name}
+
+\item{model}{Deprecated alias for \code{ui}. Supplying \code{model}
+instead of \code{ui} still works but emits a deprecation warning.}
 }
 \value{
 Returns a model with the depot from a first order absorption model removed

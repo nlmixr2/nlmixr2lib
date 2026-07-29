@@ -1,3 +1,5 @@
+^\.claude$
+^CLAUDE\.md$
 ^\.github$
 ^codecov\.yml$
 ^_pkgdown\.yml$
@@ -8,3 +10,6 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^data-raw$
+^\.lintr$
+^vignettes/articles$
+^post_merge_advance\.sh$
