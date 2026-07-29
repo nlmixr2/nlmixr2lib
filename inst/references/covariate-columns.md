@@ -3192,6 +3192,18 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Example models:** `Majekodunmi_2017_HIV_HCV_CD4_recovery.R` (additive -3.63 shift on pre-ART CD4 z-score intercept; Ukraine reference; small-sample subgroup with n = 2).
 - **Notes:** Specific scope; pairs with the other EPPICC REGION indicators. Ratified canonically on 2026-05-22.
 
+### REGION_EASTASIA (**canonical for East Asian region-of-origin study-site indicator**)
+- **Description:** 1 = subject enrolled at a study site in the East Asian region, 0 = enrolled elsewhere. Multi-country regional grouping (broader than a single-country `REGION_<COUNTRY>` indicator, narrower than a Rest-of-World `REGION_ROW` bucket). The exact country membership is protocol-specific and must be documented in per-model `covariateData[[REGION_EASTASIA]]$notes`. Distinct from the `RACE_ASIAN*` family: `REGION_EASTASIA` records where a subject was enrolled, not self-reported race; source papers routinely test the two separately and can find one significant and the other not.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (non-East-Asian region).
+- **Source aliases:**
+  - `EASIAFL` -- East Asian flag; used in `Cammarata_2024_sulbactam_durlobactam.R` (Table 1 rows `CLEASIAFL1` and `V1EASIAFL1`).
+  - `EAST_ASIA`, `REGION = East Asia` -- variant spellings of the same regional grouping.
+- **Example models:** `Cammarata_2024_sulbactam_durlobactam.R` (China, Taiwan, or South Korea; proportional shifts of -0.199 on durlobactam total CL and -0.263 on durlobactam Vc, with no sulbactam region effect; 45 of 373 pooled subjects, 12.1%).
+- **Notes:** Scope `specific`, matching every other member of the `REGION_*` family. Sibling to the single-country `REGION_JAPAN` / `REGION_FRANCE` / ... entries and to `REGION_EUROPE` / `REGION_ROW`. When a source paper reports BOTH a region effect and a race effect, register the race arm separately under the `RACE_*` family and keep the two columns distinct -- Cammarata 2024 explicitly found race and country of origin non-significant while East Asian region was significant. Ratified canonically on 2026-07-28 alongside the Cammarata 2024 sulbactam-durlobactam extraction.
+
 ## Pediatric comorbidities
 
 ### DIS_CLD_PREM (**canonical for chronic lung disease of prematurity**)
@@ -3822,7 +3834,62 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Source aliases:**
   - `SOI` (severity-of-infection indicator; same orientation, 1 = severe / 0 = not severe) -- used in `Lodise_2018_iclaprim.R` (ASSIST-1 / ASSIST-2 phase 3 cSSSI trials).
 - **Example models:** `Lodise_2018_iclaprim.R` (additive-linear shift on inter-compartmental clearance Q: `q_typ = exp(lq) + e_infect_csssi_sev_q * DIS_INFECT_CSSSI_SEV` with `e_infect_csssi_sev_q = +13.5 L/h`, so severe-cSSSI patients have Q rise from 1.85 L/h to 15.35 L/h relative to non-severe patients).
-- **Notes:** Specific scope because the "severe cSSSI" definition is protocol-defined; future antimicrobial popPK papers that test a severity-of-infection contrast in a different infection class (pneumonia, HABP/VABP, bloodstream infection, bone and joint infection) should register sibling canonicals (e.g., `DIS_INFECT_PNEUM_SEV`, `DIS_INFECT_HABP_SEV`) rather than overloading this entry. Distinct from `DIS_SASTHMA` and other disease-state indicators (which contrast a disease cohort with a non-disease reference) -- `DIS_INFECT_CSSSI_SEV` operates *within* an already-cSSSI cohort. The covariate-effect parameter naming drops the `DIS_` prefix per the existing `DIS_CANCER` -> `e_cancer_*` / `DIS_CANCER_PED` -> `e_cancer_ped_*` convention; here that gives `e_infect_csssi_sev_<param>`. Ratified canonically on 2026-05-30 alongside the Lodise 2018 iclaprim extraction.
+- **Notes:** Specific scope because the "severe cSSSI" definition is protocol-defined; future antimicrobial popPK papers that test a severity-of-infection contrast in a different infection class (pneumonia, HABP/VABP, bloodstream infection, bone and joint infection) should register sibling canonicals (e.g., `DIS_INFECT_PNEUM_SEV`, `DIS_HABP_SEV`) rather than overloading this entry. Distinct from `DIS_SASTHMA` and other disease-state indicators (which contrast a disease cohort with a non-disease reference) -- `DIS_INFECT_CSSSI_SEV` operates *within* an already-cSSSI cohort. The covariate-effect parameter naming drops the `DIS_` prefix per the existing `DIS_CANCER` -> `e_cancer_*` / `DIS_CANCER_PED` -> `e_cancer_ped_*` convention; here that gives `e_infect_csssi_sev_<param>`. Ratified canonically on 2026-05-30 alongside the Lodise 2018 iclaprim extraction.
+
+### DIS_HABP (**canonical for hospital-acquired bacterial pneumonia infection-type indicator**)
+- **Description:** 1 = the subject's index infection is hospital-acquired bacterial pneumonia (HABP), 0 = otherwise. Infection-TYPE indicator (which infection the subject has), not a within-class severity indicator. Member of the mutually exclusive `DIS_<infection>` cohort-indicator set used by antimicrobial popPK analyses that pool healthy volunteers with several infected cohorts; the shared reference category (all indicators 0) is normally the uninfected healthy-volunteer stratum, but the reference must be documented per model because some analyses use one infection type as reference instead.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (no HABP; in `Cammarata_2024_sulbactam_durlobactam.R` the shared all-zero reference is the uninfected Phase 1 subject).
+- **Source aliases:**
+  - `INFTYPN = 1` -- numeric infection-type flag level; used in `Cammarata_2024_sulbactam_durlobactam.R` (Table 1 rows `CLINFTYPN1`, `V3INFTYPN1`, and the merged `V1INFTYPN1&2`).
+- **Example models:** `Cammarata_2024_sulbactam_durlobactam.R` (proportional shifts of -0.424 on sulbactam total CL and +0.836 on sulbactam Vc; durlobactam Vc uses a merged HABP-or-VABP coefficient of +1.52 applied to `DIS_HABP + DIS_VABP`).
+- **Notes:** Plain `DIS_<disease>` cohort indicator in the same shape as `DIS_HEALTHY` / `DIS_CANCER` / `DIS_MDS` / `DIS_AML`. Sibling to `DIS_VABP`, `DIS_CUTI`, `DIS_BACTEREMIA`, and `DIS_AP`. Scope is `specific` until a second model ratifies each, per the operator decision recorded in the Cammarata 2024 extraction sidecar (`agcand_13067668` request-001 q1, answered A on 2026-07-27); the alternative `DIS_INFECT_<TYPE>` prefix suggested by the `DIS_INFECT_CSSSI_SEV` Notes was offered as option B and not chosen, because `DIS_INFECT_CSSSI_SEV` is a severity-WITHIN-cohort indicator while these are type-of-infection COHORT indicators. Covariate-effect naming drops the `DIS_` prefix: `e_habp_<param>`, or `e_habp_vabp_<param>` when a model shares one coefficient across the two pneumonia types. Ratified canonically on 2026-07-28 alongside the Cammarata 2024 sulbactam-durlobactam extraction.
+
+### DIS_VABP (**canonical for ventilator-associated bacterial pneumonia infection-type indicator**)
+- **Description:** 1 = the subject's index infection is ventilator-associated bacterial pneumonia (VABP), 0 = otherwise. Member of the mutually exclusive `DIS_<infection>` cohort-indicator set. See `DIS_HABP` for the shared-reference-category discipline.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (no VABP; shared all-zero reference documented per model).
+- **Source aliases:**
+  - `INFTYPN = 2` -- numeric infection-type flag level; used in `Cammarata_2024_sulbactam_durlobactam.R` (Table 1 rows `CLINFTYPN2`, `V3INFTYPN2`, and the merged `V1INFTYPN1&2`).
+- **Example models:** `Cammarata_2024_sulbactam_durlobactam.R` (proportional shifts of -0.298 on sulbactam total CL and +1.43 on sulbactam Vc; shares the merged +1.52 HABP-or-VABP coefficient on durlobactam Vc because the separate HABP and VABP durlobactam terms 'did not yield significantly different effects on PK from one another').
+- **Notes:** Scope `specific` until a second model ratifies it; sibling to `DIS_HABP`. When a source paper merges the HABP and VABP arms into one coefficient, keep the two covariate COLUMNS distinct and apply the shared coefficient to their sum inside `model()` -- do not collapse to a single `DIS_HABP_VABP` column, because sibling analyses (and the same paper's other analyte) may separate them again. Ratified canonically on 2026-07-28 alongside the Cammarata 2024 sulbactam-durlobactam extraction.
+
+### DIS_CUTI (**canonical for complicated urinary tract infection infection-type indicator**)
+- **Description:** 1 = the subject's index infection is a complicated urinary tract infection (cUTI), 0 = otherwise. Member of the mutually exclusive `DIS_<infection>` cohort-indicator set. Papers that enroll a combined "cUTI including acute pyelonephritis" cohort but report separate model coefficients for the two should pair this column with `DIS_AP`; papers that report a single pooled coefficient should use this column alone and say so in the per-model notes.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (no cUTI; shared all-zero reference documented per model).
+- **Source aliases:**
+  - `INFTYPN = 3` -- numeric infection-type flag level; used in `Cammarata_2024_sulbactam_durlobactam.R` (Table 1 rows `V1INFTYPN3`, `CLINFTYPN3`, `V3INFTYPN3`).
+- **Example models:** `Cammarata_2024_sulbactam_durlobactam.R` (proportional shifts of +0.343 on durlobactam Vc, -0.157 on sulbactam total CL, and +0.17 on sulbactam Vc; cUTI subjects came from the Phase 2 study CS2514-2017-0003, in which acute pyelonephritis was reported as a separate infection-type level).
+- **Notes:** Scope `specific` until a second model ratifies it; sibling to `DIS_HABP` / `DIS_VABP` / `DIS_BACTEREMIA` / `DIS_AP`. Ratified canonically on 2026-07-28 alongside the Cammarata 2024 sulbactam-durlobactam extraction.
+
+### DIS_BACTEREMIA (**canonical for bacteremia / bloodstream-infection infection-type indicator**)
+- **Description:** 1 = the subject's index infection is bacteremia (bloodstream infection), 0 = otherwise. Member of the mutually exclusive `DIS_<infection>` cohort-indicator set. Whether bacteremia secondary to another focus counts as bacteremia or as the primary focus is protocol-specific and must be documented per model.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (no bacteremia; shared all-zero reference documented per model).
+- **Source aliases:**
+  - `INFTYPN = 4` -- numeric infection-type flag level; used in `Cammarata_2024_sulbactam_durlobactam.R` (Table 1 rows `V1INFTYPN4`, `CLINFTYPN4`, `V3INFTYPN4`).
+- **Example models:** `Cammarata_2024_sulbactam_durlobactam.R` (proportional shifts of +3.32 on durlobactam Vc -- the largest single covariate effect in the model -- plus -0.444 on sulbactam total CL and +1.85 on sulbactam Vc; bacteremia due to *Acinetobacter baumannii-calcoaceticus* complex was one of the Phase 3 enrollment categories).
+- **Notes:** Scope `specific` until a second model ratifies it; sibling to `DIS_HABP` / `DIS_VABP` / `DIS_CUTI` / `DIS_AP`. Ratified canonically on 2026-07-28 alongside the Cammarata 2024 sulbactam-durlobactam extraction.
+
+### DIS_AP (**canonical for acute pyelonephritis infection-type indicator**)
+- **Description:** 1 = the subject's index infection is acute pyelonephritis (AP), 0 = otherwise. Member of the mutually exclusive `DIS_<infection>` cohort-indicator set. Used when a source paper reports AP as a model level distinct from `DIS_CUTI`, which is common because AP trials enroll under a combined "cUTI including AP" protocol but the two present with materially different renal and distributional physiology.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (no AP; shared all-zero reference documented per model).
+- **Source aliases:**
+  - `INFTYPN = 5` -- numeric infection-type flag level; used in `Cammarata_2024_sulbactam_durlobactam.R` (Table 1 rows `CLINFTYPN5`, `V3INFTYPN5`; the table footnote defines 'AP, acute pyelonephritis').
+- **Example models:** `Cammarata_2024_sulbactam_durlobactam.R` (proportional shifts of -0.382 on sulbactam total CL and -0.704 on sulbactam Vc; durlobactam carries no AP term because no `V1INFTYPN5` row appears in the durlobactam half of Table 1).
+- **Notes:** Scope `specific` until a second model ratifies it; sibling to `DIS_CUTI`. A model may legitimately carry an AP coefficient for one analyte and not the other -- do not synthesise a missing coefficient by borrowing the cUTI value. Ratified canonically on 2026-07-28 alongside the Cammarata 2024 sulbactam-durlobactam extraction.
 
 ### CARRAGEENAN (**canonical for intraplantar-carrageenan inflammatory-challenge indicator**)
 - **Description:** Binary indicator for intraplantar injection of carrageenan suspension as an experimental inflammatory / hyperalgesic challenge. 1 = subject received an intraplantar carrageenan injection at the start of the experiment (the carrageenan-induced peripheral inflammation / thermal-hyperalgesia paradigm); 0 = subject received an intraplantar saline injection (sham control). Time-fixed per subject within an experiment.
@@ -8460,6 +8527,26 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Source aliases:** derived per subject from the trial identifier (P05615 -> 1, any of P04975 / P05637 / P07764 / P07783 / P07691 -> 0).
 - **Example models:** `vanIersel_2018_posaconazole.R` (switches the log-additive residual SD on Cc between `expSd_p1 = 0.42` (phase 1) and `expSd_p3 = 0.322` (phase 3), per van Iersel 2018 Table 2 final-model 'SD (phase 1 studies)' and 'SD (phase 3 study)').
 - **Notes:** Specific scope because the contrast is tied to the van Iersel 2018 posaconazole solid-tablet clinical-development pooled analysis. Drug-specific paper-anchored member of the `STUDY_<DRUG>_PHASE<N>` family alongside `STUDY_NIPOCALIMAB_PHASE1` (Valenzuela 2025) and `STUDY_FARLETUZUMAB_PHASE2` (Farrell 2012); distinct from those entries because the reference category (phase 1) and 1-level (phase 3) are paper-specific to van Iersel 2018. Subject-level (time-fixed); set once from the trial identifier on each subject record. Ratified canonically alongside the van Iersel 2018 posaconazole extraction.
+
+### STUDY_SULDUR_PHASE2 (**canonical for Cammarata 2024 sulbactam-durlobactam phase 2 study cohort indicator**)
+- **Description:** 1 = subject enrolled in the Phase 2 study CS2514-2017-0003 (complicated urinary tract infection including acute pyelonephritis) of the Cammarata 2024 pooled sulbactam-durlobactam popPK analysis; 0 = otherwise. Paired with `STUDY_SULDUR_PHASE3`; both indicators 0 selects the six Phase 1 studies (the reference stratum). Used to switch the DURLOBACTAM residual-error magnitude between the three study phases; sulbactam residual variability is not phase-stratified.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 with `STUDY_SULDUR_PHASE3` also 0 (Phase 1 studies CS2514-2016-0001, CS2514-2017-0001, CS2514-2017-0002, CS2514-2018-0002, CS2514-2018-0003, ZL-2402-001).
+- **Source aliases:** derived per subject from the trial identifier (CS2514-2017-0003 -> 1).
+- **Example models:** `Cammarata_2024_sulbactam_durlobactam.R` (selects `propSdPhase2 = sqrt(0.0794)` = 0.282 for durlobactam plasma observations; no additive residual term applies to Phase 2, per Cammarata 2024 Table 1, which lists a single additive sigma^2 for Phase 1 only).
+- **Notes:** Specific scope because the contrast is tied to the Cammarata 2024 sulbactam-durlobactam clinical-development pooled analysis. Drug-specific paper-anchored member of the `STUDY_<DRUG>_PHASE<N>` family alongside `STUDY_POSA_PHASE3` (van Iersel 2018), `STUDY_ASP8232_PHASE2` (Snelder 2020), `STUDY_NIPOCALIMAB_PHASE1` (Valenzuela 2025), and `STUDY_FARLETUZUMAB_PHASE2` (Farrell 2012). This is the first member of the family that needs a PAIR of indicators, because the paper stratifies residual error across three phases rather than two; keep both columns rather than an integer `PHASE` column so the reference stratum stays explicit. Subject-level (time-fixed); set once from the trial identifier on each subject record. Ratified canonically on 2026-07-28 alongside the Cammarata 2024 sulbactam-durlobactam extraction.
+
+### STUDY_SULDUR_PHASE3 (**canonical for Cammarata 2024 sulbactam-durlobactam phase 3 study cohort indicator**)
+- **Description:** 1 = subject enrolled in the Phase 3 study CS2514-2017-0004 (infections caused by *Acinetobacter baumannii-calcoaceticus* complex) of the Cammarata 2024 pooled sulbactam-durlobactam popPK analysis; 0 = otherwise. Paired with `STUDY_SULDUR_PHASE2`; both indicators 0 selects the six Phase 1 studies.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 with `STUDY_SULDUR_PHASE2` also 0 (Phase 1 studies).
+- **Source aliases:** derived per subject from the trial identifier (CS2514-2017-0004 -> 1).
+- **Example models:** `Cammarata_2024_sulbactam_durlobactam.R` (selects `propSdPhase3 = sqrt(0.203)` = 0.451 for durlobactam plasma observations; the Phase 3 additive residual component 'was determined to not be significant and was consequently removed', per Cammarata 2024 Results).
+- **Notes:** Specific scope; see `STUDY_SULDUR_PHASE2` for the full family rationale and the pair-of-indicators convention. Ratified canonically on 2026-07-28 alongside the Cammarata 2024 sulbactam-durlobactam extraction.
 
 ### STUDY_ASP8232_PHASE2 (**canonical for Snelder 2020 ASP8232 phase 2 study cohort indicator in the pooled TMDD PK-PD analysis**)
 - **Description:** 1 = subject enrolled in one of the two phase 2 studies of the Snelder 2020 pooled ASP8232 TMDD PK-PD analysis (VIDI study, NCT02302079, diabetic macular edema; or ALBUM study 8232-CL-0004, NCT02358096, diabetic kidney disease); 0 = subject enrolled in one of the two phase 1 studies (8232-CL-0001 first-in-human healthy volunteers; 8232-CL-0002 renal impairment / T2DM-CKD, NCT02218099). Used to switch the log-additive residual-error magnitude on ASP8232 plasma concentrations and on VAP-1 plasma activity between the phase 1 studies (reference) and the phase 2 studies (paper's estimated multiplicative factor 1.88 relative to phase 1).

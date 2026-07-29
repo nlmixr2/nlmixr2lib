@@ -2904,6 +2904,17 @@ Sibling-drug suffix for the Kleijn 2011 sugammadex-mediated reversal of rocuroni
 - **Example models:** `Sadouki_2025_meropenem.R`, `Wicha_2017_linezolid_meropenem_vancomycin.R`.
 - **Notes:** Same token as the bare `mer` drug-state compartment; both Types co-exist for the same canonical name.
 
+### sbt (**canonical sulbactam sibling-drug suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Sulbactam (beta-lactamase-inhibitor beta-lactam) sibling-drug suffix, used when sulbactam is co-modelled with a partner beta-lactam or beta-lactamase inhibitor and is not the unsuffixed parent. Drives `central_sbt` / `peripheral1_sbt` compartments, `lcl_sbt` / `lvc_sbt` / `lq_sbt` / `lvp_sbt` PK parameters, `f_renal_sbt` and the `e_<cov>_<param>_sbt` covariate-effect forms, and the `propSd_sbt` / `addSd_sbt` residuals on the `Cc_sbt` sulbactam plasma concentration.
+- **Source aliases:**
+  - `SUL` -- abbreviation used in `Cammarata_2024_sulbactam_durlobactam.R` (supplement Abbreviations Listing).
+  - `(2)` -- NONMEM L2 drug index for sulbactam in `Soto_2014_ampicillin_sulbactam.R`.
+- **Example models:**
+  - `Cammarata_2024_sulbactam_durlobactam.R` (doi:10.1128/aac.00485-24) where durlobactam is the unsuffixed parent (NONMEM compartments 1-2) and sulbactam carries the suffix (NONMEM compartments 3-4).
+  - `Soto_2014_ampicillin_sulbactam.R` (doi:10.1111/bcp.12232), where ampicillin is the unsuffixed parent.
+- **Notes:** Registered 2026-07-28 alongside the Cammarata 2024 sulbactam-durlobactam extraction. `Soto_2014_ampicillin_sulbactam.R` had been using this suffix since its own extraction without a register entry, so registering it also clears that model's pre-existing `central_sbt` / `peripheral1_sbt` / `propSd_sbt` convention warnings. Sulbactam is a sibling drug, not a metabolite: in both source papers the two analytes are dosed as a fixed-ratio combination and fitted simultaneously without interconversion.
+
 ---
 
 ## Anthracycline cardioprotection sibling-drug suffixes
