@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Dowling 2008 naloxone ([doi:10.1097/FTD.0b013e3181816214](https://doi.org/10.1097/FTD.0b013e3181816214)) -- healthy adult male volunteers receiving intravenous, intramuscular, and intranasal naloxone in an open-label crossover (three-compartment popPK with parallel first-order absorption depots for IM and IN routes).
+* Add Bonner 2015 gastric-emptying meta-analysis ([doi:10.1002/bdd.1937](https://doi.org/10.1002/bdd.1937)) -- meta-analysis of 49 published gastric-emptying studies (1457 human subjects, 28 weeks gestational age through adults); ratifies five new `MEAL_AQUEOUS` / `MEAL_BREASTMILK` / `MEAL_FORMULA` / `MEAL_SEMISOLID` / `MEAL_SOLID` covariate canonicals and a new `gastric_remaining` algebraic-observable compartment canonical.
 * Add Beal 2001 one-compartment IV-bolus BQL methodology template ([doi:10.1023/a:1012299115260](https://doi.org/10.1023/a:1012299115260)) -- methodology reference (no drug, no patients); packages the SI1 generative model from Beal's M1-M7 below-quantification-limit paper as a teaching template with CL = 0.693 and Vd = 1 (time in half-lives).
 * Add Luu 2017 nusinersen ([doi:10.1002/jcph.884](https://doi.org/10.1002/jcph.884)) -- pediatric patients with spinal muscular atrophy receiving intrathecal nusinersen.
 * Add Gaohua 2012 pregnancy PBPK ([doi:10.1111/j.1365-2125.2012.04363.x](https://doi.org/10.1111/j.1365-2125.2012.04363.x)) -- healthy pregnant Caucasian women (14-compartment whole-body p-PBPK with GA-dependent maternal physiology, applied to caffeine [CYP1A2], metoprolol [CYP2D6], and midazolam [CYP3A4]); ratifies new canonical bare `skin` PBPK compartment.
