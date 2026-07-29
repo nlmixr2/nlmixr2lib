@@ -663,6 +663,39 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
 - **Source aliases:** none.
 - **Example models:** TMDD models with explicit complex internalisation.
 
+### kphag (**canonical threshold-gated phagocytic elimination rate**)
+- **Type:** paper-named-param
+- **Role:** First-order elimination rate constant for phagocytic clearance of antibody-coated target cells (platelets, RBCs, etc.) in TMDD models where phagocytosis is gated by a receptor-occupancy threshold: kphag acts on both the free-target and the drug-target-complex states while receptor occupancy exceeds the paper-fixed `thres` (percent), and is switched off below threshold. Distinct from the constitutive `kdeg` (baseline natural turnover), which is always on, and from `kint` (receptor-mediated complex internalisation, no threshold gate). Used in threshold-switch TMDD models where the paper reports a rate constant explicitly named "phagocytosis" alongside a receptor-occupancy threshold.
+- **Source aliases:**
+  - `KPH` -- Moc Willeford 2024 NONMEM abbreviation (supplement differential equations).
+  - `kphagocytosis` -- Moc Willeford 2024 Table 1 / 2 typeset name.
+- **Example models:** `MocWilleford_2024_rlyb212.R` (RLYB212 anti-HPA-1a IgG1 with threshold-gated phagocytic elimination of HPA-1a-positive platelets; founding example).
+- **Notes:** Paired with the canonical `thres` receptor-occupancy threshold. When the paper reports a rate constant for phagocytic clearance without a threshold gate (i.e., always on), it is functionally equivalent to `kdeg` and should be recorded as such; `kphag` is reserved for the threshold-switched form.
+
+### thres (**canonical receptor-occupancy threshold**)
+- **Type:** paper-named-param
+- **Role:** Threshold value of receptor occupancy (typically expressed as a percent) above which a threshold-gated elimination pathway (e.g., `kphag`) is switched on. Below the threshold, the gated pathway contributes zero to the target elimination rate; above the threshold, it contributes its full rate constant. Used in TMDD models where receptor engagement must exceed a minimum coating fraction before macrophage / RES-mediated phagocytic clearance is triggered.
+- **Source aliases:**
+  - `THRES` -- Moc Willeford 2024 NONMEM / typeset name.
+- **Example models:** `MocWilleford_2024_rlyb212.R` (THRES = 10 percent fixed, describing the minimum receptor coating required to drive phagocytic clearance of HPA-1a-positive platelets; founding example).
+- **Notes:** Usually held fixed at a value inferred from the paper's model-development results (Moc Willeford 2024: estimation ranged 3-22 percent when co-estimated with other parameters, so THRES was fixed at 10 percent). Distinct from a generic sigmoidal `hill` or `ec50` because the pathway is a hard switch rather than a smooth curve. When expressed as a percent, `thres` is compared to a percent receptor occupancy `ro = 100 * complex / (target + complex)`; when expressed as a fraction, `thres` is compared to the corresponding unitless ratio.
+
+### qp (**canonical target inter-compartmental clearance**)
+- **Type:** paper-named-param
+- **Role:** Inter-compartmental clearance between the central and peripheral compartments of a target species (platelet, receptor, or other cell population tracked as an ODE state alongside the drug in a TMDD model). Units L / time. Distinct from the canonical drug `lq` / `q` because the two flows are semantically different: `q` moves drug between drug compartments, `qp` moves target between target compartments. Used when the source paper carries a peripheral distribution for the target species with its own inter-compartmental clearance parameter.
+- **Source aliases:**
+  - `QP` -- Moc Willeford 2024 Table 1 / 2 / supplement notation.
+- **Example models:** `MocWilleford_2024_rlyb212.R` (QP = 2.45 L/h: platelet inter-compartmental clearance between the shared central compartment (V1) and the target peripheral compartment (V3); founding example).
+- **Notes:** Encoded via `lqp` in `ini()` and `qp` in `model()`; scales allometrically with body weight at exponent 0.75 in the Moc Willeford 2024 simulation.
+
+### vp_target (**canonical target peripheral volume**)
+- **Type:** paper-named-param
+- **Role:** Peripheral volume of distribution for a target species tracked as an ODE state alongside the drug in a TMDD model (units L). Distinct from the drug's canonical `lvp` / `vp` because the drug and the target may have physically different peripheral distribution volumes even when they share a central compartment. Paired with `qp` as the corresponding target inter-compartmental clearance.
+- **Source aliases:**
+  - `V3` -- Moc Willeford 2024 Table 1 / 2 / supplement notation for the target peripheral volume (the paper's V1 is the shared central, V2 is the drug peripheral, V3 is the target peripheral).
+- **Example models:** `MocWilleford_2024_rlyb212.R` (V3 = 0.523 L: peripheral platelet distribution volume, paired with target central sharing V1; founding example).
+- **Notes:** Encoded via `lvp_target` in `ini()` and `vp_target` in `model()`. Do not conflate with the drug's `lvp2` (second peripheral volume of a 3-compartment drug model); those are drug compartments, `vp_target` is a target compartment.
+
 ### kbm (**canonical biliary-metabolite excretion rate**)
 - **Type:** paper-named-param
 - **Role:** First-order rate constant for biliary excretion of a drug or metabolite from a plasma / central compartment into a downstream gut / bile compartment (1 / time). Used in enterohepatic-recirculation and interconversion submodels where the source paper carries biliary transport as a separate ODE flux (distinct from the drug's total clearance terms).

@@ -1808,6 +1808,8 @@ navbar:
         href: articles/Willmann_2021_rivaroxaban.html
       - text: "Rivipansel (Tammara 2017)"
         href: articles/Tammara_2017_rivipansel.html
+      - text: "Rlyb212 (MocWilleford 2024)"
+        href: articles/MocWilleford_2024_rlyb212.html
       - text: "Roblitinib (Wilbaux 2022)"
         href: articles/Wilbaux_2022_roblitinib.html
       - text: "Rocatinlimab (Okada 2025)"
@@ -3073,6 +3075,7 @@ articles:
   - articles/Milosheska_2016_lamotrigine
   - articles/Mitra_2026_ziftomenib
   - articles/Mo_2018_olaratumab
+  - articles/MocWilleford_2024_rlyb212
   - articles/Moein_2022_etrolizumab
   - articles/Moes_2016_tacrolimus
   - articles/Moffett_2017_antithrombin
