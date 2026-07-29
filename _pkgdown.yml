@@ -252,6 +252,8 @@ navbar:
         href: articles/Struemper_2017_belimumab.html
       - text: "Belimumab (Zhou 2021)"
         href: articles/Zhou_2021_belimumab.html
+      - text: "Belzutifan (Marathe 2023)"
+        href: articles/Marathe_2023_belzutifan.html
       - text: "Benralizumab (Wang 2017)"
         href: articles/Wang_2017_benralizumab.html
       - text: "Benzathine benzylpenicillin g (Kado 2020)"
@@ -3120,7 +3122,7 @@ articles:
   - articles/Macpherson_2015_rosuvastatin
   - articles/Majekodunmi_2017_HIV_HCV_CD4_recovery
   - articles/MangasSanjuan_2016_axomadol
-  - articles/Marcantonio_2022_efa
+  - articles/Marathe_2023_belzutifan
   - articles/Marier_2002_tobramycin_rat_conventional
   - articles/Marier_2002_tobramycin_rat_liposomal
   - articles/MarquesMinana_2010_vancomycin
