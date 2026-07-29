@@ -494,6 +494,8 @@ navbar:
         href: articles/Takama_2007_darbepoetin.html
       - text: "Darbepoetin alfa (Agoram 2006)"
         href: articles/Agoram_2006_darbepoetin_alfa.html
+      - text: "Darunavir (Brochot 2015)"
+        href: articles/Brochot_2015_darunavir.html
       - text: "Dasabuvir (Mensing 2017)"
         href: articles/Mensing_2017_3D_HCV_regimen.html
       - text: "Datopotamab (Hong 2025)"
@@ -2545,6 +2547,7 @@ articles:
   - articles/Brekkan_2016_factorIX
   - articles/Brill_2014_midazolam
   - articles/Brillac_2025_isatuximab
+  - articles/Brochot_2015_darunavir
   - articles/Brooks_2021_tacrolimus
   - articles/Brown_2017_osimertinib
   - articles/Bruno_2005_trastuzumab
