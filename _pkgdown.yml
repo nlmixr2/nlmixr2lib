@@ -174,6 +174,8 @@ navbar:
         href: articles/Simpson_2013_artesunate.html
       - text: "Artesunate (Tan 2009)"
         href: articles/Tan_2009_artesunate.html
+      - text: "Asc10a (Lv 2025)"
+        href: articles/Lv_2025_asc10a.html
       - text: "Asenapine (Dogterom 2018)"
         href: articles/Dogterom_2018_asenapine.html
       - text: "ASP8232 (Snelder 2020)"
@@ -3112,6 +3114,7 @@ articles:
   - articles/Lu_2022_patritumab
   - articles/Luo_2016_efavirenz
   - articles/Luu_2017_nusinersen
+  - articles/Lv_2025_asc10a
   - articles/Ma_2020_sarilumab_anc
   - articles/Ma_2020_sarilumab_das28crp
   - articles/Macpherson_2015_rosuvastatin
