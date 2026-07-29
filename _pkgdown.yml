@@ -1920,6 +1920,8 @@ navbar:
         href: articles/Aoyama_2012_sepantronium.html
       - text: "Sertraline (Cooper 2015)"
         href: articles/Cooper_2015_sertraline.html
+      - text: "Setrobuvir (Canini 2018)"
+        href: articles/Canini_2018_setrobuvir.html
       - text: "Sevoflurane (Shin 2014)"
         href: articles/Shin_2014_sevoflurane.html
       - text: "Sglt qsp (Lu 2014)"
@@ -2593,6 +2595,11 @@ articles:
   - articles/Caldes_2009_ganciclovir
   - articles/Campagne_2019_cyclophosphamide_mouse
   - articles/Candelaria_2018_rituximab
+  - articles/Canini_2018_setrobuvir
+  - articles/Cao_2013_GNbAC1
+  - articles/Cao_2013_MEDI528
+  - articles/Cao_2013_PAmAb
+  - articles/Cao_2013_PRO95780
   - articles/Cao_2013_adecatumumab
   - articles/Cao_2013_gevokizumab
   - articles/Cao_2013_GNbAC1
