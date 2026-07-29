@@ -190,6 +190,8 @@ navbar:
         href: articles/Molto_2016_atazanavir_ritonavir.html
       - text: "Atazanavir ritonavir (Schipani 2013)"
         href: articles/Schipani_2013_atazanavir_ritonavir.html
+      - text: "Atenolol qsp (Fu 2022)"
+        href: articles/Fu_2022_atenolol_qsp.html
       - text: "Atorvastatin (Kakara 2014)"
         href: articles/Kakara_2014_statins_LDLC.html
       - text: "Avelumab (Masters 2022)"
@@ -2731,6 +2733,7 @@ articles:
   - articles/Frymoyer_2013_gentamicin
   - articles/Frymoyer_2013_mycophenolic_acid
   - articles/Frymoyer_2017_infliximab
+  - articles/Fu_2022_atenolol_qsp
   - articles/Fuchs_2014_gentamicin
   - articles/Fung_2008_butanediol_rat
   - articles/Galluppi_2016_BIIB023
