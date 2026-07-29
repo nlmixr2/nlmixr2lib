@@ -1,0 +1,874 @@
+---
+title: "Ceftazidime (Zieck 2023)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Ceftazidime (Zieck 2023)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Zieck_2023_ceftazidime"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Zieck_2023_ceftazidime"))$description`
+* Article: [Antibiotics (Basel) 2023;12(3):469](https://doi.org/10.3390/antibiotics12030469)
+* Supplement (Figure S1 goodness-of-fit plots and File S1 NONMEM control stream): <https://www.mdpi.com/2079-6382/12/3/469/s1>
+
+# Population
+
+Zieck 2023 was a prospective, observational, bicenter cohort study run
+between October 2019 and December 2021 at Amsterdam UMC (location AMC)
+and Noordwest Ziekenhuisgroep (location Alkmaar) in the Netherlands.
+Forty adults admitted to a **general ward** -- explicitly *not* the ICU
+-- received ceftazidime as part of standard care. Patients in the ICU,
+on renal replacement therapy, with cystic fibrosis, or with severe
+burns were excluded because of known altered pharmacokinetics
+(Methods 4.2). This general-ward focus is what distinguishes the study
+from the critically-ill ceftazidime cohorts that dominate the
+literature, and from the other ceftazidime models in this package.
+
+The cohort had median age 62.0 years (IQR 47.0-72.0), median weight
+79.6 kg (IQR 69.7-92.3), median height 175.5 cm (IQR 167.0-185.0), and
+17/40 (42.5%) were female. Ethnicity was 32 Caucasian, 4 African
+American, 3 Asian, and 1 Hispanic. 27/40 (68%) were receiving a
+concomitant other antibiotic. Baseline characteristics are Zieck 2023
+Table 2.
+
+Patients were enrolled into three prespecified renal-function strata,
+each receiving the guideline-recommended dose for that stratum
+(Table 1), given as a 0.5 h IV infusion:
+
+| Stratum | CKD-EPI eGFR (mL/min/1.73 m^2) | n | Median eGFR (IQR) | Regimen |
+|---|---|---|---|---|
+| Adequate renal function | >= 50 | 25 | 102.8 (78.1-124.8) | 2000 mg q8h |
+| Moderate renal impairment | 30-50 | 10 | 34.3 (30.9-48.2) | 1000 mg q12h |
+| Severe renal impairment | < 30 | 5 | 18.6 (10.6-25.9) | 1000 mg q24h |
+
+Three samples per patient (one trough plus two random) were drawn
+within 72 h of treatment start. Of 121 collected samples, 2 were
+excluded, leaving 119 for NONMEM 7.5 estimation; 1 was below the
+0.1 mg/L LLOQ and none above the 40 mg/L ULOQ. The model was internally
+validated with a 1000-run bootstrap and a prediction-corrected VPC
+(Figure 1).
+
+The same information is available programmatically via
+`readModelDb("Zieck_2023_ceftazidime")()$population`.
+
+# Source trace
+
+Every numeric value in `ini()` carries an in-file comment pointing to
+its Zieck 2023 source location. The table below collects them in one
+place for review. Table 3 of the paper and the `$THETA` block of
+Supplementary File S1 agree exactly on all six thetas, so both are
+cited.
+
+| Equation / parameter | Value | Source location |
+|---|---|---|
+| One-compartment IV, first-order elimination | n/a | Results 2.2 ("A one-compartment model with first-order elimination best described the pharmacokinetics of ceftazidime"); File S1 `$SUBROUTINES ADVAN1 TRANS2`, `S1 = V` |
+| `lcl` (typical CL at eGFR 76.85, no concomitant antibiotic) | 3.74 L/h | Table 3 "Final Model" CL (RSE 9.80%; bootstrap 3.74, CI 3.03-4.41); File S1 `$THETA(3)` |
+| `lvc` (volume of distribution) | 21.8 L | Table 3 "Final Model" V (RSE 7.90%; bootstrap 22.1, CI 19.1-25.1); File S1 `$THETA(5)` |
+| `e_crcl_cl` (power exponent on eGFR) | 0.75 | Table 3 "Final Model" eGFR (CKD-EPI) on CL (RSE 13.9%; bootstrap 0.74, CI 0.56-0.93); File S1 `$THETA(4)`, commented "est exponent TVCL effect CKDEPI" |
+| `e_conmed_abx_cl` (concomitant-antibiotic factor) | 1.56 | Table 3 "Final Model" concomitant antibiotic use on CL (RSE 12.4%; bootstrap 1.57, CI 1.20-1.94); File S1 `$THETA(6)`, commented "effect concomittant AB" |
+| eGFR normaliser | 76.85 mL/min/1.73 m^2 | File S1 `$PK`: `TVCL=THETA(3)*(CKDEPI/76.85)**THETA(4)*THETA(6)**FLAG1` (Table 3 footnote prints 76.86; see Errata) |
+| CL covariate equation | `CL = 3.74 * (CKDEPI/76.85)^0.75 * 1.56^flag` | Table 3 footnote `*`; File S1 `$PK` |
+| Exponential IIV on CL and V | n/a | File S1 `$PK`: `CL=TVCL*EXP(ETA(1))`, `V = THETA(5) * EXP(ETA(2))` |
+| `etalcl` (IIV CL variance) | 0.0936 | File S1 `$OMEGA(1)`; implies CV = sqrt(exp(0.0936)-1) = 31.3%, matching Table 3 "Final Model" IIV CL 31.3% CV exactly |
+| `etalvc` (IIV V variance) | 0.1498 | Table 3 "Final Model" IIV V 40.2% CV, back-transformed as omega^2 = log(1 + 0.402^2) (see Errata) |
+| `propSd` (proportional residual SD) | 0.186 | Table 3 "Final Model" proportional error 18.6% (RSE 15.9%; bootstrap 18.7, CI 13.9-23.6); File S1 `$THETA(1)` |
+| Proportional-only residual error | n/a | File S1 `$ERROR`: `W = IPRED*THETA(1)+THETA(2)`, `Y = IPRED+W*ERR(1)` with `$THETA(2) = (0 fix)` and `$SIGMA 1 FIX` |
+| Renal-function strata and doses | n/a | Table 1; Methods 4.5 (0.5 h infusion of the first dose) |
+| PK/PD target 50% T > MIC; MIC 8 mg/L breakpoint | n/a | Methods 4.5; Results 2.3 |
+
+## Interpretation notes
+
+**The 0.75 exponent is estimated, not fixed.** It coincidentally equals
+the canonical allometric 3/4 power, but Table 3 reports it with
+RSE 13.9% and a bootstrap 95% CI of 0.56-0.93, and the File S1 `$THETA`
+comment reads "est exponent". It is therefore encoded as a plain
+estimated parameter, not wrapped in `fixed()`.
+
+**`$SIGMA 1 FIX` with the magnitude in `$THETA`.** Zieck 2023 uses the
+common NONMEM idiom of fixing `$SIGMA` to 1 and carrying the residual
+magnitude as a `$THETA` inside `$ERROR` (`W = IPRED*THETA(1)+THETA(2)`).
+Because `THETA(2)` is `(0 fix)`, the error model is purely
+proportional and `propSd` is `THETA(1) = 0.186` directly -- no square
+root is taken (contrast `Georges_2009_ceftazidime`, where the Table 2
+`Sigma` really is a NONMEM variance and `propSd = sqrt(0.05)`).
+
+# Virtual cohort
+
+Original observed data are not publicly available. The cohort below
+mirrors the Zieck 2023 Table 2 renal-function strata, scaled from the
+observed 25/10/5 subjects to 200 simulated subjects per stratum, and
+uses the exact guideline dosing intervals from Table 1.
+
+CKD-EPI eGFR is drawn per stratum from a log-normal distribution whose
+median matches the published stratum median and whose spread matches
+the published IQR, **truncated to the stratum's defining eGFR
+boundaries** so that a simulated "severe impairment" subject cannot
+land above 30 mL/min/1.73 m^2. Concomitant other-antibiotic use is
+drawn as a Bernoulli variable at the observed per-stratum frequency
+(19/25, 6/10, 2/5 from Table 2).
+
+```{r cohort}
+set.seed(20230225)
+n_per_arm  <- 200L
+infusion_h <- 0.5
+sim_end_h  <- 48
+dt         <- 0.1   # observation grid step; also the T > MIC resolution
+
+# Truncated log-normal matched to a published median and IQR. sdlog is
+# recovered from the IQR width, then inverse-CDF sampling is restricted
+# to [lo_trunc, hi_trunc] so draws respect the stratum definition.
+rlnorm_trunc <- function(n, med, q25, q75, lo_trunc, hi_trunc) {
+  sdlog <- (log(q75) - log(q25)) / (2 * qnorm(0.75))
+  plo   <- plnorm(lo_trunc, meanlog = log(med), sdlog = sdlog)
+  phi   <- plnorm(hi_trunc, meanlog = log(med), sdlog = sdlog)
+  qlnorm(runif(n, plo, phi), meanlog = log(med), sdlog = sdlog)
+}
+
+# Build one renal-function arm: covariates + q-tau dosing over sim_end_h
+# + a uniform observation grid. `id_offset` keeps subject IDs disjoint
+# across arms (duplicate IDs are silently merged by rxSolve).
+make_arm <- function(n, label, dose_mg, tau_h, med, q25, q75,
+                     lo_trunc, hi_trunc, p_abx, id_offset) {
+  subj <- tibble(
+    id         = id_offset + seq_len(n),
+    treatment  = label,
+    CRCL       = rlnorm_trunc(n, med, q25, q75, lo_trunc, hi_trunc),
+    CONMED_ABX = rbinom(n, size = 1L, prob = p_abx)
+  )
+
+  dose_rows <- subj |>
+    tidyr::expand_grid(time = seq(0, sim_end_h - tau_h, by = tau_h)) |>
+    mutate(
+      evid = 1L,
+      amt  = dose_mg,
+      cmt  = "central",
+      rate = dose_mg / infusion_h
+    )
+
+  # Observations are placed on the ODE state `central`, never on the
+  # algebraic observable `Cc` (that would renumber compartment slots).
+  obs_rows <- subj |>
+    tidyr::expand_grid(time = seq(0, sim_end_h, by = dt)) |>
+    mutate(
+      evid = 0L,
+      amt  = 0,
+      cmt  = "central",
+      rate = 0
+    )
+
+  bind_rows(dose_rows, obs_rows) |> arrange(id, time, desc(evid))
+}
+
+events <- bind_rows(
+  make_arm(n_per_arm, "Adequate (eGFR >= 50), 2000 mg q8h",
+           dose_mg = 2000, tau_h = 8,
+           med = 102.8, q25 = 78.1, q75 = 124.8,
+           lo_trunc = 50, hi_trunc = 180,
+           p_abx = 19 / 25, id_offset = 0L),
+  make_arm(n_per_arm, "Moderate (eGFR 30-50), 1000 mg q12h",
+           dose_mg = 1000, tau_h = 12,
+           med = 34.3, q25 = 30.9, q75 = 48.2,
+           lo_trunc = 30, hi_trunc = 50,
+           p_abx = 6 / 10, id_offset = 1L * n_per_arm),
+  make_arm(n_per_arm, "Severe (eGFR < 30), 1000 mg q24h",
+           dose_mg = 1000, tau_h = 24,
+           med = 18.6, q25 = 10.6, q75 = 25.9,
+           lo_trunc = 10, hi_trunc = 30,
+           p_abx = 2 / 5, id_offset = 2L * n_per_arm)
+)
+
+# Preserve the published stratum ordering in every plot and table.
+arm_levels <- c("Adequate (eGFR >= 50), 2000 mg q8h",
+                "Moderate (eGFR 30-50), 1000 mg q12h",
+                "Severe (eGFR < 30), 1000 mg q24h")
+events$treatment <- factor(events$treatment, levels = arm_levels)
+
+stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
+```
+
+The simulated covariate distributions reproduce the published stratum
+medians and IQRs:
+
+```{r cohort-check}
+events |>
+  distinct(id, treatment, CRCL, CONMED_ABX) |>
+  group_by(treatment) |>
+  summarise(
+    n           = n(),
+    eGFR_median = median(CRCL),
+    eGFR_q25    = quantile(CRCL, 0.25),
+    eGFR_q75    = quantile(CRCL, 0.75),
+    abx_pct     = 100 * mean(CONMED_ABX),
+    .groups     = "drop"
+  ) |>
+  rename(
+    "Stratum | regimen"           = treatment,
+    "n"                           = n,
+    "eGFR median"                 = eGFR_median,
+    "eGFR Q1"                     = eGFR_q25,
+    "eGFR Q3"                     = eGFR_q75,
+    "Concomitant antibiotic (%)"  = abx_pct
+  ) |>
+  knitr::kable(
+    digits  = 1,
+    caption = paste(
+      "Simulated virtual-cohort covariates against Zieck 2023 Table 2.",
+      "Published eGFR medians (IQR): adequate 102.8 (78.1-124.8),",
+      "moderate 34.3 (30.9-48.2), severe 18.6 (10.6-25.9)",
+      "mL/min/1.73 m^2. Published concomitant-antibiotic frequencies:",
+      "76%, 60%, 40%."
+    )
+  )
+```
+
+# Simulation
+
+Between-subject variability is simulated from the model's `$OMEGA`
+(IIV CL 31.3% CV, IIV V 40.2% CV). `Cc` is the individual prediction;
+the paper likewise computed T > MIC and AUC from empirical Bayes
+individual predictions rather than from residual-error-perturbed
+observations, so `Cc` is the right column for both endpoints.
+
+```{r simulate}
+mod <- readModelDb("Zieck_2023_ceftazidime")
+
+# readModelDb() returns the model *function*; rxode() evaluates it into the
+# rxUi object whose $theta / $omega are read back in the checks below.
+mod_ui <- rxode2::rxode(mod)
+
+sim <- rxode2::rxSolve(
+  mod,
+  events = events,
+  keep   = c("treatment", "CRCL", "CONMED_ABX")
+) |> as.data.frame()
+
+sim$treatment <- factor(as.character(sim$treatment), levels = arm_levels)
+```
+
+# Replicate Table 3 -- typical-value round-trip
+
+Reading the thetas back out of the packaged model and recomputing the
+published CL equation confirms the parameterisation round-trips.
+
+```{r table3-check}
+ths <- mod_ui$theta
+
+table3 <- tibble::tibble(
+  parameter = c(
+    "CL at eGFR 76.85, no concomitant antibiotic (L/h)",
+    "V (L)",
+    "eGFR exponent on CL",
+    "Concomitant-antibiotic factor on CL",
+    "IIV CL (%CV)",
+    "IIV V (%CV)",
+    "Proportional residual error (%)"
+  ),
+  paper_value = c(3.74, 21.8, 0.75, 1.56, 31.3, 40.2, 18.6),
+  packaged_value = c(
+    round(exp(ths[["lcl"]]), 2),
+    round(exp(ths[["lvc"]]), 1),
+    round(ths[["e_crcl_cl"]], 2),
+    round(ths[["e_conmed_abx_cl"]], 2),
+    round(100 * sqrt(exp(mod_ui$omega["etalcl", "etalcl"]) - 1), 1),
+    round(100 * sqrt(exp(mod_ui$omega["etalvc", "etalvc"]) - 1), 1),
+    round(100 * ths[["propSd"]], 1)
+  )
+) |>
+  mutate(difference = packaged_value - paper_value)
+
+table3 |>
+  rename(
+    "Parameter"        = parameter,
+    "Zieck 2023 Table 3" = paper_value,
+    "Packaged model"   = packaged_value,
+    "Difference"       = difference
+  ) |>
+  knitr::kable(
+    digits  = 2,
+    caption = paste(
+      "Zieck 2023 Table 3 final-model estimates vs the packaged model.",
+      "IIV columns are recovered from the encoded variances as",
+      "CV = sqrt(exp(omega^2) - 1). Differences are rounding only."
+    )
+  )
+```
+
+The published CL covariate equation is reproduced directly:
+
+```{r cl-equation-check}
+cl_equation <- tibble::tibble(
+  scenario = c(
+    "eGFR 76.85, no concomitant antibiotic",
+    "eGFR 76.85, concomitant antibiotic",
+    "eGFR 102.8 (adequate median), concomitant antibiotic",
+    "eGFR 34.3 (moderate median), concomitant antibiotic",
+    "eGFR 18.6 (severe median), concomitant antibiotic"
+  ),
+  CRCL       = c(76.85, 76.85, 102.8, 34.3, 18.6),
+  CONMED_ABX = c(0, 1, 1, 1, 1)
+) |>
+  mutate(
+    CL_L_per_h = exp(ths[["lcl"]]) *
+      (CRCL / 76.85)^ths[["e_crcl_cl"]] *
+      ths[["e_conmed_abx_cl"]]^CONMED_ABX,
+    half_life_h = log(2) * exp(ths[["lvc"]]) / CL_L_per_h
+  )
+
+cl_equation |>
+  rename(
+    "Scenario"                       = scenario,
+    "eGFR (mL/min/1.73 m^2)"         = CRCL,
+    "Concomitant antibiotic"         = CONMED_ABX,
+    "Typical CL (L/h)"               = CL_L_per_h,
+    "Typical half-life (h)"          = half_life_h
+  ) |>
+  knitr::kable(
+    digits  = 2,
+    caption = paste(
+      "Typical clearance from the Zieck 2023 Table 3 footnote equation",
+      "CL = 3.74 x (CKDEPI/76.85)^0.75 x 1.56^flag. Row 1 recovers the",
+      "reference CL of 3.74 L/h and row 2 recovers 3.74 x 1.56 = 5.83 L/h",
+      "exactly."
+    )
+  )
+```
+
+# Replicate Figure 1 -- concentration-time envelope
+
+Zieck 2023 Figure 1 is a *prediction-corrected* VPC of all 119 observed
+concentrations against time after administration, with the observed
+median and 5th/95th percentiles overlaid on the model-predicted
+confidence bands. Prediction correction cannot be reproduced without
+the observed dataset, so the panel below is the raw simulated envelope
+per stratum over the first dosing interval. The published pcVPC spans
+roughly 5 to 100 mg/L over 0-17 h after administration with a median
+falling from about 45 to 12 mg/L, which the adequate-renal-function arm
+brackets.
+
+```{r figure-1, fig.width = 7.5, fig.height = 4.5}
+sim |>
+  filter(time <= 24) |>
+  group_by(treatment, time) |>
+  summarise(
+    Q05 = quantile(Cc, 0.05, na.rm = TRUE),
+    Q50 = quantile(Cc, 0.50, na.rm = TRUE),
+    Q95 = quantile(Cc, 0.95, na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(time, Q50, colour = treatment, fill = treatment)) +
+  geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.20, colour = NA) +
+  geom_line(linewidth = 0.7) +
+  geom_hline(yintercept = 8, linetype = "dashed", colour = "red") +
+  scale_y_log10() +
+  facet_wrap(~treatment, nrow = 1) +
+  theme(legend.position = "none") +
+  labs(
+    x = "Time after start of treatment (h)",
+    y = "Ceftazidime Cc (mg/L, log scale)",
+    title = "Simulated ceftazidime concentration envelope by renal-function stratum",
+    subtitle = "200 subjects per arm; band = 5th-95th percentile, line = median",
+    caption = paste(
+      "Compare against Zieck 2023 Figure 1 (prediction-corrected VPC).",
+      "Red dashed line: P. aeruginosa clinical breakpoint MIC 8 mg/L."
+    )
+  )
+```
+
+# Replicate Figure 2 and Tables 4-6 -- PK/PD target attainment
+
+The paper's primary endpoint is 50% T0-24 > MIC: the ceftazidime
+concentration exceeding the MIC for more than 12 of the first 24 h.
+Secondary endpoints are 100% T0-24 > MIC (defined as >= 23.5 h, because
+the first dose is infused over 0.5 h) and 50% T24-48 > MIC.
+
+Time above MIC is accumulated on the `r dt`-h simulation grid: each
+grid point in the window contributes `r dt` h when `Cc` exceeds the MIC.
+
+```{r tmic}
+mic_grid <- c(0.125, 0.25, 0.5, 1, 2, 4, 8)
+
+# Per-subject time above each MIC in the 0-24 h and 24-48 h windows.
+tmic <- sim |>
+  filter(time < sim_end_h) |>
+  mutate(window = if_else(time < 24, "T0-24", "T24-48")) |>
+  tidyr::expand_grid(MIC = mic_grid) |>
+  group_by(treatment, id, window, MIC) |>
+  summarise(t_above = dt * sum(Cc > MIC, na.rm = TRUE), .groups = "drop")
+
+pta <- tmic |>
+  group_by(treatment, window, MIC) |>
+  summarise(
+    pta_50  = 100 * mean(t_above > 12),
+    pta_100 = 100 * mean(t_above >= 23.5),
+    .groups = "drop"
+  )
+```
+
+## Figure 2 -- time above MIC 8 mg/L in the first 24 h
+
+Zieck 2023 Figure 2 shows boxplots of observed and simulated time above
+MIC 8 mg/L within the first 24 h per renal-function stratum, with the
+12-h target marked. The Monte Carlo arm of that figure -- the original
+dataset re-simulated 1000 times using **exact** q8h / q12h / q24h
+intervals (Results 2.4) -- is the directly comparable quantity here,
+because this vignette also doses on exact intervals.
+
+```{r figure-2, fig.width = 7.5, fig.height = 4.5}
+tmic |>
+  filter(window == "T0-24", MIC == 8) |>
+  ggplot(aes(treatment, t_above, fill = treatment)) +
+  geom_boxplot(outlier.size = 0.6) +
+  geom_hline(yintercept = 12, colour = "darkorange",
+             linetype = "dotted", linewidth = 0.9) +
+  scale_x_discrete(labels = function(x) gsub(", ", ",\n", x)) +
+  theme(legend.position = "none") +
+  labs(
+    x = NULL,
+    y = "Time above MIC 8 mg/L in first 24 h (h)",
+    title = "Replicate Figure 2 -- time above target for MIC 8 mg/L",
+    subtitle = "Simulated with exact dosing intervals, 200 subjects per arm",
+    caption = paste(
+      "Orange dotted line: the 50% T0-24 > MIC target at 12 h.",
+      "Compare against the simulated boxplots of Zieck 2023 Figure 2."
+    )
+  )
+```
+
+## Primary endpoint against the published Monte Carlo PTA
+
+```{r pta-primary}
+published_mc <- tibble::tibble(
+  treatment = factor(arm_levels, levels = arm_levels),
+  # Results 2.4: "The PTA of 50% T0-24 > MIC remained high: 93%, 97% and
+  # 97% for patients with adequate, moderately impaired and severely
+  # impaired renal function, respectively".
+  published_mc_pta = c(93, 97, 97),
+  # Table 4, MIC 8 mg/L column: PTA computed from the observed data,
+  # which carries the extra-administration dose-shift artefact.
+  published_obs_pta = c(100, 90, 100)
+)
+
+pta |>
+  filter(window == "T0-24", MIC == 8) |>
+  select(treatment, pta_50) |>
+  left_join(published_mc, by = "treatment") |>
+  mutate(difference = pta_50 - published_mc_pta) |>
+  rename(
+    "Stratum | regimen"                          = treatment,
+    "Simulated PTA (%)"                          = pta_50,
+    "Zieck 2023 Monte Carlo PTA (%)"             = published_mc_pta,
+    "Zieck 2023 observed PTA (%), Table 4"       = published_obs_pta,
+    "Difference vs Monte Carlo (pp)"             = difference
+  ) |>
+  knitr::kable(
+    digits  = 1,
+    caption = paste(
+      "Primary endpoint: probability of attaining 50% T0-24 > MIC at",
+      "MIC 8 mg/L (the EUCAST P. aeruginosa clinical breakpoint).",
+      "The Monte Carlo column (Results 2.4) is the apples-to-apples",
+      "comparator because it also uses exact dosing intervals; the",
+      "Table 4 observed column is inflated by the 22/40 patients who",
+      "received an extra administration in the first 24 h."
+    )
+  )
+```
+
+## Tables 4 and 6 -- 50% T > MIC across the EUCAST MIC grid
+
+```{r table-4-6}
+pta |>
+  filter(window %in% c("T0-24", "T24-48")) |>
+  select(treatment, window, MIC, pta_50) |>
+  tidyr::pivot_wider(names_from = MIC, values_from = pta_50,
+                     names_prefix = "MIC ") |>
+  rename("Stratum | regimen" = treatment, "Window" = window) |>
+  knitr::kable(
+    digits  = 1,
+    caption = paste(
+      "Simulated PTA (%) of 50% T > MIC across the EUCAST MIC grid, for",
+      "the first 24 h (compare Zieck 2023 Table 4) and for 24-48 h",
+      "(compare Table 6). Published Table 4 at MIC 8: 100 / 90 / 100%;",
+      "Table 6 at MIC 8: 100 / 90 / 100%. The two windows give nearly",
+      "identical PTA because a subject who clears the 12-h target in the",
+      "first 24 h essentially always clears it again once concentrations",
+      "have accumulated (see the AUC table below, where every stratum's",
+      "AUC24-48 exceeds its AUC0-24)."
+    )
+  )
+```
+
+## Table 5 -- 100% T0-24 > MIC
+
+This is the endpoint that discriminates hardest between the strata: the
+paper reports it falling to 24% in the adequate-renal-function arm at
+MIC 8 mg/L while remaining at 75% in the severe-impairment arm, because
+the 2000 mg q8h regimen produces deep inter-dose troughs in patients who
+clear the drug quickly.
+
+```{r table-5}
+published_t5 <- tibble::tibble(
+  treatment = factor(arm_levels, levels = arm_levels),
+  published_pta_mic8 = c(24, 50, 75)  # Table 5, MIC 8 mg/L column
+)
+
+pta |>
+  filter(window == "T0-24") |>
+  select(treatment, MIC, pta_100) |>
+  tidyr::pivot_wider(names_from = MIC, values_from = pta_100,
+                     names_prefix = "MIC ") |>
+  left_join(published_t5, by = "treatment") |>
+  rename(
+    "Stratum | regimen"                 = treatment,
+    "Zieck 2023 Table 5 at MIC 8 (%)"   = published_pta_mic8
+  ) |>
+  knitr::kable(
+    digits  = 0,
+    caption = paste(
+      "Simulated PTA (%) of 100% T0-24 > MIC (>= 23.5 h above MIC)",
+      "across the EUCAST MIC grid, with the published Table 5 MIC-8",
+      "column alongside. Note that Table 5 excludes the one severely",
+      "impaired patient who received 2000 mg q24h, leaving n = 4 in that",
+      "stratum, so its published percentages move in 25-point steps."
+    )
+  )
+```
+
+**This is the one endpoint where the replication clearly disagrees with
+the paper, and it is not tuned away.** At MIC 8 mg/L the simulation
+attains 100% T0-24 in about 65% of the adequate-renal-function arm
+against the published 24% (6/25). The moderate arm (about 68% vs a
+published 50%, i.e. 5/10) and the severe arm (about 56% vs a published
+75%, i.e. 3/4) both sit inside the binomial sampling range of their tiny
+published denominators, so the adequate arm is the only material gap.
+Three things drive it, none of which is a parameter error:
+
+1. **The endpoint sits on a knife edge for the 2000 mg q8h regimen.**
+   For a typical adequate-arm patient at the stratum median eGFR *with*
+   a concomitant antibiotic (CL = 7.26 L/h, V = 21.8 L), the packaged
+   model puts the first inter-dose trough at roughly 7.0 mg/L and the
+   steady-state trough at roughly 7.5 mg/L -- just below the 8 mg/L
+   breakpoint. Total time below MIC over the first 24 h works out at
+   about 0.7 h against a 0.5 h allowance, so the typical patient fails by
+   a fraction of an hour. Because the whole arm is clustered around that
+   boundary, the attainment percentage is hypersensitive to small shifts
+   in CL, V, or trough depth, in a way the 50% target (which has roughly
+   11 h of slack) is not. The same sensitivity is visible in the paper's
+   own numbers: Table 5 drops from 100% at MIC 1 to 24% at MIC 8 in this
+   arm.
+2. **Irregular real-world dose timing punishes an all-or-nothing
+   endpoint.** This vignette doses on exact 8-h intervals. In the actual
+   study, 22/40 patients (55%) had follow-up doses shifted into the
+   nursing administration rounds (Results 2.4). That shift *raises*
+   cumulative exposure -- which is why the observed Table 4 values for
+   the 50% target are higher than the paper's own exact-interval Monte
+   Carlo re-simulation -- but it also introduces at least one unusually
+   long gap per patient, and a single long gap is enough to fail 100%
+   T > MIC while barely denting 50% T > MIC. The paper ran its
+   exact-interval Monte Carlo re-simulation only for the primary
+   endpoint, so no exact-interval published comparator exists for
+   Table 5.
+3. **n = 25.** A published 24% is 6 of 25 patients; the exact binomial
+   95% interval is roughly 9-45%.
+
+Taken together, the primary endpoint (which the paper *did* re-simulate
+with exact intervals, and which this vignette reproduces to within
+4 percentage points in every stratum) is the meaningful validation of
+the packaged model. The Table 5 comparison is best read as a measure of
+how much the secondary endpoint depends on real administration times
+rather than on the PK model.
+
+# PKNCA validation
+
+Zieck 2023 reports drug exposure as AUC0-24 and AUC24-48 per
+renal-function stratum, but only as boxplots (Figure 3) -- no numeric
+NCA table is published. The NCA below therefore validates the internal
+consistency of the packaged model and tests the paper's stated
+conclusion that exposure does **not** differ across strata under the
+guideline-recommended dose reductions.
+
+```{r pknca}
+# Only !is.na(Cc): adding `time > 0` or `Cc > 0` would drop the
+# time-zero row PKNCA needs to anchor AUC0-24.
+sim_nca <- sim |>
+  filter(!is.na(Cc)) |>
+  select(id, time, Cc, treatment)
+
+dose_df <- events |>
+  filter(evid == 1) |>
+  select(id, time, amt, treatment)
+
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | treatment + id,
+                             concu = "mg/L", timeu = "hr")
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id,
+                             doseu = "mg")
+
+# Two windows matching the paper's AUC0-24 and AUC24-48 endpoints.
+# Terminal-phase parameters (lambda.z, half.life) are not requested:
+# the profiles are multiple-dose and accumulating, so there is no clean
+# terminal phase within the simulation window.
+intervals <- data.frame(
+  start   = c(0, 24),
+  end     = c(24, 48),
+  auclast = TRUE,
+  cmax    = TRUE,
+  cmin    = TRUE,
+  cav     = TRUE
+)
+
+nca_res <- PKNCA::pk.nca(
+  PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
+)
+```
+
+```{r nca-summary}
+as.data.frame(nca_res$result) |>
+  filter(PPTESTCD %in% c("auclast", "cmax", "cmin", "cav")) |>
+  mutate(
+    treatment = factor(as.character(treatment), levels = arm_levels),
+    window    = if_else(start == 0, "0-24 h", "24-48 h")
+  ) |>
+  group_by(treatment, window, PPTESTCD) |>
+  summarise(
+    median = median(PPORRES, na.rm = TRUE),
+    p25    = quantile(PPORRES, 0.25, na.rm = TRUE),
+    p75    = quantile(PPORRES, 0.75, na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  mutate(
+    parameter = recode(
+      PPTESTCD,
+      auclast = "AUC (mg*h/L)",
+      cmax    = "Cmax (mg/L)",
+      cmin    = "Cmin (mg/L)",
+      cav     = "Cavg (mg/L)"
+    )
+  ) |>
+  select(treatment, window, parameter, median, p25, p75) |>
+  arrange(treatment, window, parameter) |>
+  rename(
+    "Stratum | regimen" = treatment,
+    "Window"            = window,
+    "NCA parameter"     = parameter,
+    "Median"            = median,
+    "Q1"                = p25,
+    "Q3"                = p75
+  ) |>
+  knitr::kable(
+    digits  = 1,
+    caption = paste(
+      "Simulated NCA per renal-function stratum and exposure window",
+      "(200 subjects per arm). Zieck 2023 publishes AUC0-24 and AUC24-48",
+      "only as Figure 3 boxplots, so no numeric reference table exists to",
+      "compare against; the paper's quantitative claim is that exposure",
+      "does not differ between strata (Kruskal-Wallis p = 0.159 for",
+      "AUC0-24 and p = 0.125 for AUC24-48)."
+    )
+  )
+```
+
+## Replicate Figure 3 -- exposure by renal-function stratum
+
+```{r figure-3, fig.width = 7.5, fig.height = 4.5}
+as.data.frame(nca_res$result) |>
+  filter(PPTESTCD == "auclast") |>
+  mutate(
+    treatment = factor(as.character(treatment), levels = arm_levels),
+    window    = if_else(start == 0, "AUC0-24", "AUC24-48")
+  ) |>
+  ggplot(aes(treatment, PPORRES, fill = treatment)) +
+  geom_boxplot(outlier.size = 0.6) +
+  facet_wrap(~window) +
+  scale_x_discrete(labels = function(x) gsub(", ", ",\n", x)) +
+  theme(legend.position = "none") +
+  labs(
+    x = NULL,
+    y = "Ceftazidime AUC (mg*h/L)",
+    title = "Replicate Figure 3 -- exposure by renal-function stratum",
+    subtitle = "Guideline-recommended dose reductions applied per stratum",
+    caption = paste(
+      "Compare against Zieck 2023 Figure 3. The paper found no",
+      "significant exposure difference between strata",
+      "(p = 0.159 for AUC0-24, p = 0.125 for AUC24-48)."
+    )
+  )
+```
+
+The paper's exposure claim is testable directly on the simulated
+cohort:
+
+```{r figure-3-test}
+auc_0_24 <- as.data.frame(nca_res$result) |>
+  filter(PPTESTCD == "auclast", start == 0) |>
+  mutate(treatment = factor(as.character(treatment), levels = arm_levels))
+
+kw <- kruskal.test(PPORRES ~ treatment, data = auc_0_24)
+
+tibble::tibble(
+  statistic = unname(kw$statistic),
+  df        = unname(kw$parameter),
+  p_value   = kw$p.value,
+  ratio_max_min_median = {
+    m <- tapply(auc_0_24$PPORRES, auc_0_24$treatment, median)
+    max(m) / min(m)
+  }
+) |>
+  rename(
+    "Kruskal-Wallis chi-squared" = statistic,
+    "df"                         = df,
+    "p-value"                    = p_value,
+    "Max/min stratum median AUC" = ratio_max_min_median
+  ) |>
+  knitr::kable(
+    digits  = 3,
+    caption = paste(
+      "Kruskal-Wallis test for a difference in simulated AUC0-24 across",
+      "the three renal-function strata, with the ratio of the largest to",
+      "the smallest stratum median AUC alongside. See the narrative below",
+      "for why the significant p-value here does not contradict the",
+      "paper's non-significant p = 0.159."
+    )
+  )
+```
+
+The simulated stratum median AUC0-24 values fall from about
+880 mg*h/L (adequate) to about 610 (moderate) to about 515 (severe) --
+a roughly 1.7-fold spread that the Kruskal-Wallis test resolves easily
+at 200 subjects per arm. Zieck 2023 reported p = 0.159 for the same
+comparison and concluded that exposure did **not** differ between
+strata. The two results are compatible rather than contradictory: with
+25 / 10 / 5 patients and 31% CV on CL plus 40% CV on V, a 1.7-fold
+difference in medians is well inside the noise, so the paper's test was
+underpowered rather than the underlying exposures being equal. The
+packaged model's own covariate structure says as much -- CL scales as
+`(eGFR/76.85)^0.75`, so a stratum whose median eGFR is 5.5-fold lower
+cannot have identical exposure at a 6-fold lower daily dose.
+
+Read carefully, the paper's clinical conclusion survives intact and is
+the one this vignette reproduces: the guideline-recommended dose
+reductions keep exposure in renally-impaired patients *in the same
+range* as untreated-dose patients, and keep the PK/PD target attainment
+above the prespecified 90% threshold in every stratum. That is a
+statement about target attainment, which the primary-endpoint table
+above reproduces to within 4 percentage points -- not a statement of
+strict exposure equality.
+
+# Assumptions and deviations
+
+* **eGFR normaliser 76.85 vs 76.86.** The Zieck 2023 Table 3 footnote
+  prints the CL equation as
+  `CL = 3.74 x (CKDEPI/76.86)^0.75 x 1.56^flag`, whereas the
+  Supplementary File S1 `$PK` block reads
+  `TVCL=THETA(3)*(CKDEPI/76.85)**THETA(4)*THETA(6)**FLAG1`. The model
+  encodes **76.85**, the value the estimated model actually executed
+  (standing policy: when text and printed equation conflict, trust the
+  equation). The two differ by 0.013%, which is numerically
+  irrelevant -- at the extreme of the observed eGFR range the induced
+  change in CL is under 0.01%.
+* **IIV on V: 0.1498 encoded, not the control stream's 0.157.** Table 3
+  reports IIV V as 40.2% CV for the final model, corroborated by the
+  structural model (40.5%) and the bootstrap (40.9%); back-transforming
+  40.2% gives omega^2 = log(1 + 0.402^2) = 0.1498. The File S1
+  `$OMEGA(2)` value of 0.157 implies 41.2% CV and matches none of those
+  three figures, while `$OMEGA(1) = 0.0936` for CL reproduces Table 3's
+  31.3% exactly. Per the "final values come from the paper's results
+  table" rule -- control-stream `$OMEGA` entries are commonly stale
+  initial estimates, and this block also carries a leftover editing
+  comment (`; IIV/BSV CL, fix to 0 to exclude`) -- the published table
+  value is used. Confirmed by the operator (task sidecar
+  `oare_PMC10044023` request-001 q2). The `etalcl` variance is taken
+  from the control stream because it agrees with the paper and carries
+  one more significant digit.
+* **`CONMED_ABX` is a new canonical covariate column.** Zieck 2023's
+  `COMED` flag is an umbrella "any other antibiotic" indicator; the
+  paper never names the co-administered agents, so no per-INN canonical
+  (`CONMED_MER`, `CONMED_GEN`, `CONMED_CIP`, ...) applies. It was
+  registered in `inst/references/covariate-columns.md` as a class-level
+  composite, following the `CONMED_IMMUNOMOD` precedent, with operator
+  approval (sidecar `oare_PMC10044023` request-001 q1).
+* **The concomitant-antibiotic effect is empirical, not mechanistic.**
+  Zieck 2023's Discussion states plainly that the authors "could not
+  find a physiological explanation for this association" and that "it
+  cannot be ruled out that the identification of this association is
+  based on coincidence". It was retained because it gave a significant
+  objective-function drop (p < 0.01), was precisely estimated
+  (RSE 12.4%), and explained 16.8% of the IIV in CL. Users should treat
+  `CONMED_ABX = 1` as a marker of a sicker, more heavily co-treated
+  patient rather than as a drug-drug interaction.
+* **The 0.75 exponent is estimated, not fixed.** It is not wrapped in
+  `fixed()` despite numerically equalling the canonical allometric
+  exponent, because Table 3 reports RSE 13.9% and a bootstrap 95% CI of
+  0.56-0.93.
+* **Body weight is not a covariate.** Zieck 2023 tested BMI (not weight
+  directly) among its covariates and did not retain it, and neither CL
+  nor V is allometrically scaled in the final model. The packaged model
+  therefore has no `WT` term, and simulated volumes are weight-independent.
+* **Virtual-cohort covariate distributions are assumed.** The paper
+  reports only per-stratum medians and IQRs for eGFR (Table 2), not the
+  underlying distribution. eGFR is drawn log-normally, matched to the
+  published median and IQR and truncated to each stratum's defining
+  boundaries; the adequate stratum's upper truncation at
+  180 mL/min/1.73 m^2 is a modelling choice (the paper reports an IQR
+  reaching 124.8 but no maximum). Concomitant-antibiotic use is drawn
+  independently of eGFR at the observed per-stratum frequency, whereas
+  in the real cohort the two are likely correlated.
+* **Exact dosing intervals are used; the observed study was not.**
+  22/40 patients (55%) received an extra administration within the
+  first 24 h because follow-up doses were shifted into the nursing
+  administration rounds (Results 2.4). The observed PTA values in
+  Tables 4-6 are inflated by that artefact; the paper's own Monte Carlo
+  re-simulation with exact intervals (93% / 97% / 97%) is the correct
+  comparator for this vignette and is the one used above.
+* **One severe-impairment patient received 2000 mg q24h**, not the
+  guideline 1000 mg q24h (Results 2.1). This vignette simulates the
+  guideline dose for the whole severe arm. The paper retained that
+  patient for the primary outcome and excluded them from all secondary
+  outcomes, which is why its Table 5 and Table 6 severe stratum has
+  n = 4.
+* **Time above MIC is computed on a `r dt`-h grid** rather than by
+  analytic root-finding, giving `r dt`-h (`r 60 * dt`-minute)
+  resolution on each T > MIC value. The paper computed T > MIC from
+  individual empirical Bayes estimates and does not state its own
+  resolution.
+* **Figure 1 is not prediction-corrected.** The published VPC applies
+  prediction correction, which requires the observed dataset; the
+  replication here is a plain simulated percentile envelope stratified
+  by renal function.
+* **No published numeric NCA table exists.** Zieck 2023 reports AUC0-24
+  and AUC24-48 only as Figure 3 boxplots, so
+  `nlmixr2lib::ncaComparisonTable()` is not used; the NCA section is a
+  self-consistency check plus a test of the paper's qualitative
+  exposure-equivalence conclusion.
+* **Known replication gap on the 100% T0-24 > MIC secondary endpoint.**
+  The simulated PTA in the adequate-renal-function arm is about 65% at
+  MIC 8 mg/L against the published 24% (Table 5); the other two strata
+  agree within their small-sample binomial ranges. No parameter was
+  adjusted to close this gap. The drivers are analysed in the Table 5
+  section above: the endpoint is knife-edge for the 2000 mg q8h regimen
+  (typical trough about 7.0-7.5 mg/L against an 8 mg/L breakpoint), it
+  is highly sensitive to the irregular real-world administration times
+  that this vignette replaces with exact intervals, and the published
+  denominator is 25 patients. The primary endpoint -- the one the paper
+  itself re-simulated with exact intervals -- reproduces to within 4
+  percentage points in every stratum.
+* **Simulated exposures are not equal across strata, and the paper's
+  non-significant p-value does not claim they are.** Simulated median
+  AUC0-24 spans about 1.7-fold from the adequate to the severe stratum
+  and is easily significant at 200 subjects per arm, whereas Zieck 2023
+  reported p = 0.159 at n = 25/10/5. This reflects the paper's limited
+  power rather than a model discrepancy, and it is consistent with the
+  packaged model's own `(eGFR/76.85)^0.75` scaling on CL. The paper's
+  clinical conclusion -- that the reduced doses keep target attainment
+  above 90% in every stratum -- is reproduced.
