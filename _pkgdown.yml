@@ -2016,6 +2016,8 @@ navbar:
         href: articles/CohenWolkowiez_2014_piperacillin_tazobactam.html
       - text: "Tazobactam (Nichols 2016)"
         href: articles/Nichols_2016_piperacillin_tazobactam.html
+      - text: "Tebipenem (Ganesan 2023)"
+        href: articles/Ganesan_2023_tebipenem.html
       - text: "Tefibazumab (Cao 2013)"
         href: articles/Cao_2013_tefibazumab.html
       - text: "Teicoplanin (Wi 2017)"
@@ -2690,6 +2692,7 @@ articles:
   - articles/Fung_2008_butanediol_rat
   - articles/Galluppi_2016_BIIB023
   - articles/Gandhi_2021_abatacept
+  - articles/Ganesan_2023_tebipenem
   - articles/Gaohua_2012_pregnancy_pbpk
   - articles/Garg_2014_pertuzumab
   - articles/Garmann_2017_BAY81_8973
