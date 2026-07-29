@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Yin 2021 pexidartinib exposure-response ([doi:10.1002/psp4.12712](https://doi.org/10.1002/psp4.12712)) -- adult patients with tenosynovial giant cell tumor (TGCT); semi-mechanistic longitudinal RECIST tumor-size PD model driven by running-average pexidartinib plasma concentration (Cavg) from the upstream Yin 2020 popPK; ratifies new `JOINT_SMALL` and `TUMEXT_UPPER` covariate canonicals.
+* Add Berkhout 2015 placebo-arm osteoporosis QSP ([doi:10.1002/psp4.12006](https://doi.org/10.1002/psp4.12006)) -- postmenopausal women in the placebo arm of the EPIC study (reduced Lemaire bone-remodelling QSP with indirect-response BMD; ratifies new canonical compartments `osteoblast`, `osteoclast`, `BMD_LS`, `BMD_TH` and extends the existing `T_ENTRY` covariate to a second registered use).
 * Add Beal 2001 one-compartment IV-bolus BQL methodology template ([doi:10.1023/a:1012299115260](https://doi.org/10.1023/a:1012299115260)) -- methodology reference (no drug, no patients); packages the SI1 generative model from Beal's M1-M7 below-quantification-limit paper as a teaching template with CL = 0.693 and Vd = 1 (time in half-lives).
 * Add Luu 2017 nusinersen ([doi:10.1002/jcph.884](https://doi.org/10.1002/jcph.884)) -- pediatric patients with spinal muscular atrophy receiving intrathecal nusinersen.
 * Add Gaohua 2012 pregnancy PBPK ([doi:10.1111/j.1365-2125.2012.04363.x](https://doi.org/10.1111/j.1365-2125.2012.04363.x)) -- healthy pregnant Caucasian women (14-compartment whole-body p-PBPK with GA-dependent maternal physiology, applied to caffeine [CYP1A2], metoprolol [CYP2D6], and midazolam [CYP3A4]); ratifies new canonical bare `skin` PBPK compartment.

@@ -605,7 +605,35 @@ The MTP framework partitions the bacterial population into three states. The ori
 - **Role:** Bone mineral density PD output, reported in g/cm^2 (femoral neck / lumbar spine / total hip per the source paper's DXA region). Used as the modelled endpoint in osteoporosis disease-progression models (e.g., piecewise-linear menopausal BMD trajectories driven by years since final menstrual period; semi-mechanistic bone-remodelling models linking RANKL / OPG / PTH / vitamin D dynamics to BMD turnover). Usually algebraic in `model()`; can be an ODE state in mechanistic bone-remodelling models.
 - **Source aliases:** `bmd`. Capitalisation matches the convention for upper-case observation variables (`Cc`).
 - **Example models:** `Plan_2012_bmd_fracture.R`.
-- **Notes:** Founding example Plan 2012 PAGE poster; the BMD output is algebraic (BMD <- b * (1 + sum(slope * piece) / 100)) and is the LHS of the residual-error declaration `BMD ~ add(addSd)`. Distinct from the `vp_bone` PBPK bone-vascular compartment, which is a drug-distribution state, not an output endpoint.
+- **Notes:** Founding example Plan 2012 PAGE poster; the BMD output is algebraic (BMD <- b * (1 + sum(slope * piece) / 100)) and is the LHS of the residual-error declaration `BMD ~ add(addSd)`. Distinct from the `vp_bone` PBPK bone-vascular compartment, which is a drug-distribution state, not an output endpoint. Anatomically-specific variants `BMD_LS` (lumbar spine) and `BMD_TH` (total hip) are registered as separate canonicals for models where the two DXA regions are distinct ODE states.
+
+### BMD_LS (**canonical lumbar-spine bone mineral density**)
+- **Type:** compartment
+- **Role:** Lumbar-spine (L2-L4) bone mineral density ODE state, reported in g/cm^2. Used by mechanistic bone-remodelling models that treat the lumbar-spine DXA region as an ODE compartment distinct from the femoral-neck / total-hip region (Berkhout 2015 indirect-response BMD equation, driven by relative osteoblast (`osteoblast`) production coefficient D_AOB and relative osteoclast (`osteoclast`) degradation coefficient D_AOC). The state's initial condition is a BMI-corrected baseline `BMD_LS_0 * (1 + BMI_frac_LS * (BMI - BMI_ref))` with exponential IIV.
+- **Source aliases:** `LS-BMD`, `LSBMD`, `B_LSBMD` (Berkhout 2015 NONMEM compartment name).
+- **Example models:** `Berkhout_2015_osteoporosis_placebo_qsp.R`.
+- **Notes:** Capitalisation matches the parent `BMD` canonical. Founding example Berkhout 2015 (doi:10.1002/psp4.12006). Distinct from the general `BMD` canonical (algebraic in Plan 2012; ODE state here) by anatomical region.
+
+### BMD_TH (**canonical total-hip bone mineral density**)
+- **Type:** compartment
+- **Role:** Total-hip (femoral neck + trochanter + intertrochanteric area) bone mineral density ODE state, reported in g/cm^2. Sibling of `BMD_LS` for models with two co-fit DXA regions (Berkhout 2015 indirect-response BMD equation). Same functional form as `BMD_LS` with independent baseline (`BMD_TH_0`), BMI covariate coefficient (`BMI_frac_TH`), and turnover rate (`k_in_TH`); the two states share the D_AOB / D_AOC osteoblast / osteoclast coupling coefficients.
+- **Source aliases:** `TH-BMD`, `THBMD`, `B_THBMD` (Berkhout 2015 NONMEM compartment name).
+- **Example models:** `Berkhout_2015_osteoporosis_placebo_qsp.R`.
+- **Notes:** Founding example Berkhout 2015 (doi:10.1002/psp4.12006).
+
+### osteoblast (**canonical relative active-osteoblast state (bone-remodelling QSP)**)
+- **Type:** compartment
+- **Role:** Dimensionless relative active-osteoblast state (y = B / B_0) in reduced Lemaire / Post 2013 bone-remodelling QSP models. Starts at 1 at menopause onset (baseline). Driven by k_B * (piz1 - y) where piz1 = pi_z / pi_1 and pi_z = z / (z + z_s). Feeds the BSAP transducer (`BSAP = BSAP_0 * y^q_BSAP`) and the BMD indirect-response production term (`(1 + D_AOB * osteoblast)`).
+- **Source aliases:** `y`, `AOB`, `BM_AOR` (Berkhout 2015 NONMEM compartment name).
+- **Example models:** `Berkhout_2015_osteoporosis_placebo_qsp.R`.
+- **Notes:** Registered 2026-07-24 alongside the Berkhout 2015 extraction. Founding example Berkhout 2015 (doi:10.1002/psp4.12006); the state originates in the mechanistic model of Lemaire et al. J Theor Biol 2004 as reduced by Schmidt et al. 2011 and applied to placebo-arm osteoporosis by Post et al. 2013 / Berkhout et al. 2015. Sibling state `osteoclast`.
+
+### osteoclast (**canonical relative active-osteoclast state (bone-remodelling QSP)**)
+- **Type:** compartment
+- **Role:** Dimensionless relative active-osteoclast state (z = C / C_0) in reduced Lemaire / Post 2013 bone-remodelling QSP models. Starts at 1 at menopause onset (baseline). Driven by D_A * pi_1 * (fdbf - piz1 * z) where fdbf = (y * (1 + b_baseline) / (1 + f(t) * piz1^2)) * PCa carries the disease-progression `f(t) = exp(-k_estrogen * t)` and the placebo (calcium) modulation `PCa`. Feeds the NTX transducer (`NTX = NTX_0 * z^q_NTX`) and the BMD indirect-response degradation term (`(1 + D_AOC * osteoclast)`).
+- **Source aliases:** `z`, `AOC`, `BN_AOB` (Berkhout 2015 NONMEM compartment name; note the paper's NONMEM $MODEL block has a typographic swap of AOR / AOB labels between compartments 2 and 3 but the equations DADT(2) / DADT(3) match this canonical assignment where osteoblast is `y` and osteoclast is `z`).
+- **Example models:** `Berkhout_2015_osteoporosis_placebo_qsp.R`.
+- **Notes:** Registered 2026-07-24 alongside the Berkhout 2015 extraction. Founding example Berkhout 2015 (doi:10.1002/psp4.12006). Sibling state `osteoblast`.
 
 ---
 
