@@ -425,9 +425,9 @@ knitr::kable(
 | stratum | Source | Cmax_mgL | Tmax_h | AUCinf_mgL_h | t_half_h |
 |:---|:---|---:|---:|---:|---:|
 | 1195 g (mean) | Muller 2007 derived (Table 2) | NA | NA | NA | 3.90 |
-| 1195 g (mean) | Simulated (typical value) | 99860.72 | 0 | 350496.9 | 3.48 |
+| 1195 g (mean) | Simulated (typical value) | 99860.72 | 0 | 350496.1 | 3.48 |
 | 2030 g (large) | Simulated (typical value) | 169637.88 | 0 | 352170.4 | 2.07 |
-| 650 g (small) | Simulated (typical value) | 54317.55 | 0 | 349349.6 | 6.35 |
+| 650 g (small) | Simulated (typical value) | 54317.55 | 0 | 349349.2 | 6.35 |
 
 Single-dose typical-value NCA per body-weight stratum vs Muller 2007
 Table 2 derived terminal half-life. Cmax / AUCinf are not reported per

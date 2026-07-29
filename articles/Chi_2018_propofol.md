@@ -314,7 +314,7 @@ knitr::kable(
 
 | cohort |  id | start | end | PPTESTCD            |    PPORRES | exclude |
 |:-------|----:|------:|----:|:--------------------|-----------:|:--------|
-| CTP A  |   1 |     0 |  60 | auclast             | 67.5566670 | NA      |
+| CTP A  |   1 |     0 |  60 | auclast             | 67.5566512 | NA      |
 | CTP A  |   1 |     0 |  60 | cmax                |  2.0971803 | NA      |
 | CTP A  |   1 |     0 |  60 | tmax                | 30.0000000 | NA      |
 | CTP A  |   1 |     0 |  60 | tlast               | 60.0000000 | NA      |
@@ -325,9 +325,9 @@ knitr::kable(
 | CTP A  |   1 |     0 |  60 | lambda.z.time.last  | 60.0000000 | NA      |
 | CTP A  |   1 |     0 |  60 | lambda.z.n.points   |  7.0000000 | NA      |
 | CTP A  |   1 |     0 |  60 | clast.pred          |  0.2920492 | NA      |
-| CTP A  |   1 |     0 |  60 | half.life           | 51.4202562 | NA      |
+| CTP A  |   1 |     0 |  60 | half.life           | 51.4202920 | NA      |
 | CTP A  |   1 |     0 |  60 | span.ratio          |  0.1166855 | NA      |
-| CTP B  |   2 |     0 |  60 | auclast             | 72.0600592 | NA      |
+| CTP B  |   2 |     0 |  60 | auclast             | 72.0600423 | NA      |
 | CTP B  |   2 |     0 |  60 | cmax                |  2.2154995 | NA      |
 | CTP B  |   2 |     0 |  60 | tmax                | 30.0000000 | NA      |
 | CTP B  |   2 |     0 |  60 | tlast               | 60.0000000 | NA      |
@@ -338,9 +338,9 @@ knitr::kable(
 | CTP B  |   2 |     0 |  60 | lambda.z.time.last  | 60.0000000 | NA      |
 | CTP B  |   2 |     0 |  60 | lambda.z.n.points   |  9.0000000 | NA      |
 | CTP B  |   2 |     0 |  60 | clast.pred          |  0.3419320 | NA      |
-| CTP B  |   2 |     0 |  60 | half.life           | 35.4610919 | NA      |
-| CTP B  |   2 |     0 |  60 | span.ratio          |  0.2255994 | NA      |
-| CTP C  |   3 |     0 |  60 | auclast             | 76.2343889 | NA      |
+| CTP B  |   2 |     0 |  60 | half.life           | 35.4611017 | NA      |
+| CTP B  |   2 |     0 |  60 | span.ratio          |  0.2255993 | NA      |
+| CTP C  |   3 |     0 |  60 | auclast             | 76.2343710 | NA      |
 | CTP C  |   3 |     0 |  60 | cmax                |  2.3370738 | NA      |
 | CTP C  |   3 |     0 |  60 | tmax                | 30.0000000 | NA      |
 | CTP C  |   3 |     0 |  60 | tlast               | 60.0000000 | NA      |
@@ -351,8 +351,8 @@ knitr::kable(
 | CTP C  |   3 |     0 |  60 | lambda.z.time.last  | 60.0000000 | NA      |
 | CTP C  |   3 |     0 |  60 | lambda.z.n.points   | 12.0000000 | NA      |
 | CTP C  |   3 |     0 |  60 | clast.pred          |  0.3619669 | NA      |
-| CTP C  |   3 |     0 |  60 | half.life           | 25.7155046 | NA      |
-| CTP C  |   3 |     0 |  60 | span.ratio          |  0.4277575 | NA      |
+| CTP C  |   3 |     0 |  60 | half.life           | 25.7155099 | NA      |
+| CTP C  |   3 |     0 |  60 | span.ratio          |  0.4277574 | NA      |
 
 PKNCA NCA over the 60-minute window for the typical-value profiles, by
 CTP class. {.table}

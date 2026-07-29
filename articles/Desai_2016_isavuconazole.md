@@ -281,7 +281,6 @@ events_vpc <- dplyr::bind_rows(vpc_doses, vpc_obs) |>
 stopifnot(!anyDuplicated(unique(events_vpc[, c("id", "time", "evid")])))
 
 sim_vpc <- rxode2::rxSolve(mod, events = events_vpc, keep = c("stratum"))
-#> ℹ parameter labels from comments will be replaced by 'label()'
 sim_vpc <- as.data.frame(sim_vpc)
 
 sim_vpc |>
@@ -958,9 +957,9 @@ print(knitr::kable(nca_summary, caption = "Simulated NCA parameters by route and
 | 0 | Inf | iv_healthy | 100 | 1.04 \[19.0\] | 2.00 \[2.00, 2.00\] | 151 \[76.9\] | NC | NC |
 | 0 | Inf | iv_mild | 100 | 0.972 \[17.1\] | 2.00 \[2.00, 2.00\] | 235 \[132\] | NC | NC |
 | 0 | Inf | iv_moderate | 100 | 0.774 \[21.2\] | 2.00 \[2.00, 2.00\] | 295 \[140\] | NC | NC |
-| 0 | Inf | po_healthy | 100 | 0.723 \[21.7\] | 3.00 \[2.00, 4.00\] | 159 \[98.7\] | NC | NC |
-| 0 | Inf | po_mild | 100 | 0.704 \[26.8\] | 3.00 \[2.00, 6.00\] | 254 \[123\] | NC | NC |
-| 0 | Inf | po_moderate | 100 | 0.547 \[25.9\] | 3.00 \[2.00, 8.00\] | 269 \[145\] | NC | NC |
+| 0 | Inf | po_healthy | 100 | 0.721 \[21.8\] | 3.00 \[1.00, 4.00\] | 159 \[98.7\] | NC | NC |
+| 0 | Inf | po_mild | 100 | 0.709 \[26.6\] | 2.00 \[2.00, 4.00\] | 254 \[123\] | NC | NC |
+| 0 | Inf | po_moderate | 100 | 0.544 \[25.7\] | 2.00 \[1.00, 8.00\] | 268 \[145\] | NC | NC |
 
 Simulated NCA parameters by route and hepatic-impairment stratum.
 {.table}
@@ -1023,9 +1022,9 @@ knitr::kable(
 
 | stratum | paper_mean_ng_per_mL | typ_ng_per_mL | mc_ng_per_mL | typ_pct_diff | mc_pct_diff |
 |:---|---:|---:|---:|---:|---:|
-| healthy | 3500 | 2897.187 | 2960 | -17.2 | -15.4 |
-| mild | 5300 | 4648.250 | 4777 | -12.3 | -9.9 |
-| moderate | 6068 | 5338.069 | 5435 | -12.0 | -10.4 |
+| healthy | 3500 | 2900.047 | 2947 | -17.1 | -15.8 |
+| mild | 5300 | 4650.930 | 4723 | -12.2 | -10.9 |
+| moderate | 6068 | 5339.997 | 5358 | -12.0 | -11.7 |
 
 Steady-state trough isavuconazole (ng/mL) at day 28 vs the Desai 2016
 Table 5 means. The Monte Carlo column is the closer comparator: both

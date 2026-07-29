@@ -238,7 +238,6 @@ sim_f4 <- rxode2::rxSolve(
   mod, events = ev_f4, keep = c("WT")
 ) |>
   as.data.frame()
-#> ℹ parameter labels from comments will be replaced by 'label()'
 
 cmax_by_wt <- sim_f4 |>
   dplyr::group_by(id, WT) |>

@@ -73,7 +73,7 @@ below collects the parameter values in one place for review.
 | BSV(CLI) | 71.0% CV | Standing 2012 Table 2 |
 | Proportional residual (parent) | 54.3% | Standing 2012 Table 2 |
 | Proportional residual (metabolite) | 23.2% | Standing 2012 Table 2 |
-| ODE compartments | 4 (depot, central, transit_oc, central_oc) | Standing 2012 Fig 1 |
+| ODE compartments | 4 (depot, central, transit_oselcarb, central_oselcarb) | Standing 2012 Fig 1 |
 
 %CV is mapped to log-normal variance via `omega^2 = log(1 + CV^2)`
 inside `ini()`. MW conversions used by Standing 2012 (and reused below
@@ -143,7 +143,7 @@ make_cohort <- function(n, pma_weeks_lo, pma_weeks_hi, wt_kg_lo, wt_kg_hi,
   # Observation rows: set cmt = "Cc" (parent observation) following the
   # multi-output pattern in Hennig_2006_itraconazole.Rmd. rxSolve()
   # in simulation mode computes ALL `<-` assignments in `model()` at every
-  # observation time, so the metabolite output Cc_oc lands in the result
+  # observation time, so the metabolite output Cc_oselcarb lands in the result
   # alongside Cc regardless of the cmt column on observation records.
   obs <- tidyr::expand_grid(id = id, time = obs_times) |>
     dplyr::mutate(evid = 0L, amt = NA_real_, cmt = "Cc")
@@ -205,18 +205,18 @@ Standing 2012 Figure 5 shows simulated oseltamivir carboxylate AUC0-12
 box plots for the Acosta dosing regimen across day 1 and day 7 of
 treatment, for PMA \<= 37 weeks (1 mg/kg q12h) and PMA \> 37 weeks (3
 mg/kg or 2 mg/kg q12h). Replicate the box plots from the simulated
-cohort here using the metabolite output `Cc_oc`.
+cohort here using the metabolite output `Cc_oselcarb`.
 
 ``` r
 
-# AUC0-12 helpers: trapezoidal integration of the metabolite Cc_oc (nmol/L)
+# AUC0-12 helpers: trapezoidal integration of the metabolite Cc_oselcarb (nmol/L)
 # over the specified time window for each subject.
 auc0_12 <- function(d, t_lo, t_hi) {
-  d <- dplyr::filter(d, time >= t_lo, time <= t_hi, !is.na(Cc_oc))
+  d <- dplyr::filter(d, time >= t_lo, time <= t_hi, !is.na(Cc_oselcarb))
   d |>
     dplyr::group_by(id, treatment) |>
     dplyr::summarise(
-      auc = sum(diff(time) * (head(Cc_oc, -1) + tail(Cc_oc, -1)) / 2),
+      auc = sum(diff(time) * (head(Cc_oselcarb, -1) + tail(Cc_oselcarb, -1)) / 2),
       .groups = "drop"
     ) |>
     dplyr::mutate(window = sprintf("AUC %g-%g h", t_lo, t_hi))
@@ -260,19 +260,19 @@ metabolite simulation.
 ``` r
 
 sim |>
-  dplyr::filter(time <= 24, !is.na(Cc_oc)) |>
+  dplyr::filter(time <= 24, !is.na(Cc_oselcarb)) |>
   dplyr::group_by(time, treatment) |>
   dplyr::summarise(
-    Q05 = quantile(Cc_oc, 0.05, na.rm = TRUE),
-    Q50 = quantile(Cc_oc, 0.50, na.rm = TRUE),
-    Q95 = quantile(Cc_oc, 0.95, na.rm = TRUE),
+    Q05 = quantile(Cc_oselcarb, 0.05, na.rm = TRUE),
+    Q50 = quantile(Cc_oselcarb, 0.50, na.rm = TRUE),
+    Q95 = quantile(Cc_oselcarb, 0.95, na.rm = TRUE),
     .groups = "drop"
   ) |>
   ggplot(aes(time, Q50)) +
   geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.25) +
   geom_line() +
   facet_wrap(~ treatment) +
-  labs(x = "Time (h)", y = "Carboxylate Cc_oc (nmol/L)",
+  labs(x = "Time (h)", y = "Carboxylate Cc_oselcarb (nmol/L)",
        title = "Oseltamivir carboxylate -- median (95% band), first 24 h",
        caption = "Approximates the metabolite panels of Standing 2012 Figs 3-4.") +
   theme_minimal()
@@ -287,11 +287,11 @@ Use PKNCA for Cmax, Tmax, AUC0-12 (steady state) of the metabolite. Day
 
 ``` r
 
-# Metabolite concentrations: keep the column named Cc_oc until we hand it to
+# Metabolite concentrations: keep the column named Cc_oselcarb until we hand it to
 # PKNCA, which expects a generic "conc" identifier on the LHS of its formula.
 sim_nca <- sim |>
-  dplyr::filter(!is.na(Cc_oc), time >= 144, time <= 156) |>
-  dplyr::select(id, time, conc = Cc_oc, treatment)
+  dplyr::filter(!is.na(Cc_oselcarb), time >= 144, time <= 156) |>
+  dplyr::select(id, time, conc = Cc_oselcarb, treatment)
 
 dose_df <- events |>
   dplyr::filter(evid == 1, time == 144) |>
@@ -436,13 +436,13 @@ Median simulated oseltamivir carboxylate AUC0-12 (nmol*h/L) vs Standing
   systemic CLTM (parent -\> metabolite conversion via the well-stirred
   liver model) routes through the transit or directly into the central
   metabolite compartment. This vignette and the packaged model file
-  route systemic CLTM directly to central_oc and only the first-pass FM
-  fraction through the transit, which is consistent with the Discussion
-  characterisation of Kam as a “mean absorption time” affected by
-  cholestasis and gut physiology (i.e. an absorption-side delay rather
-  than a systemic-metabolism delay). With FM ~ 0.978 the systemic CLTM
-  route contributes only ~1.4% of total metabolite formation, so the
-  topology choice has minimal impact on predictions.
+  route systemic CLTM directly to central_oselcarb and only the
+  first-pass FM fraction through the transit, which is consistent with
+  the Discussion characterisation of Kam as a “mean absorption time”
+  affected by cholestasis and gut physiology (i.e. an absorption-side
+  delay rather than a systemic-metabolism delay). With FM ~ 0.978 the
+  systemic CLTM route contributes only ~1.4% of total metabolite
+  formation, so the topology choice has minimal impact on predictions.
 
 - **No Kam \<= Ka constraint at simulation time.** Standing 2012 imposed
   `Kam <= Ka` during estimation. The packaged model file does not apply

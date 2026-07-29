@@ -10,7 +10,7 @@ library(PKNCA)
 #> 
 #>     filter
 library(rxode2)
-#> rxode2 5.1.2 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.5 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -387,9 +387,9 @@ knitr::kable(
 | NCA parameter          | matrix  | Reference | Simulated | % diff |
 |:-----------------------|:--------|:----------|:----------|:-------|
 | AUC0-∞ (obs) (mg/L\*h) | Total   | 12.8      | 12.5      | -2.3%  |
-| AUC0-∞ (obs) (mg/L\*h) | Unbound | 2.8       | 2.75      | -1.8%  |
+| AUC0-∞ (obs) (mg/L\*h) | Unbound | 2.8       | 2.63      | -6.1%  |
 | t½ (h)                 | Total   | 0.97      | 0.957     | -1.4%  |
-| t½ (h)                 | Unbound | 0.92      | 1         | +8.8%  |
+| t½ (h)                 | Unbound | 0.92      | 0.947     | +2.9%  |
 
 Simulated vs. published NCA from Nath 2010 Table 7. \* indicates \>20%
 absolute difference from the reference value. {.table}
@@ -418,9 +418,9 @@ knitr::kable(
 
 | Statistic               | Simulated | Published_Table_7 |
 |:------------------------|----------:|------------------:|
-| Median fraction unbound |     0.224 |              0.21 |
-| IQR lower (Q25)         |     0.163 |              0.17 |
-| IQR upper (Q75)         |     0.295 |              0.27 |
+| Median fraction unbound |     0.208 |              0.21 |
+| IQR lower (Q25)         |     0.160 |              0.17 |
+| IQR upper (Q75)         |     0.276 |              0.27 |
 
 Simulated unbound-to-total AUC ratio (per subject) vs. Nath 2010 Table 7
 fraction unbound. {.table}

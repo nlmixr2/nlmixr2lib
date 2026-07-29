@@ -320,9 +320,6 @@ sim_stoch <- lapply(seq_along(dose_levels_iu_per_kg), function(k) {
   dplyr::mutate(dose_label = factor(paste0(dose_iu_per_kg, " IU/kg"),
                                     levels = paste0(dose_levels_iu_per_kg, " IU/kg")))
 #> ℹ parameter labels from comments will be replaced by 'label()'
-#> ℹ parameter labels from comments will be replaced by 'label()'
-#> ℹ parameter labels from comments will be replaced by 'label()'
-#> ℹ parameter labels from comments will be replaced by 'label()'
 
 sim_stoch_summary <- sim_stoch |>
   dplyr::filter(!is.na(Cc)) |>

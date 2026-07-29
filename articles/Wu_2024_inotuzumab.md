@@ -4,7 +4,7 @@
 
 library(nlmixr2lib)
 library(rxode2)
-#> rxode2 5.1.2 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.5 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -279,7 +279,6 @@ events_adult <- bind_rows(doses_a, obs_a) %>%
 stopifnot(!anyDuplicated(unique(events_adult[, c("ID", "TIME", "EVID")])))
 
 sim_adult <- rxode2::rxSolve(mod, events_adult, returnType = "data.frame")
-#> ℹ parameter labels from comments will be replaced by 'label()'
 ```
 
 ``` r
@@ -486,7 +485,6 @@ events_nhl <- bind_rows(doses_n, obs_n) %>%
 stopifnot(!anyDuplicated(unique(events_nhl[, c("ID", "TIME", "EVID")])))
 
 sim_nhl <- rxode2::rxSolve(mod, events_nhl, returnType = "data.frame")
-#> ℹ parameter labels from comments will be replaced by 'label()'
 ```
 
 ### Assumptions and deviations

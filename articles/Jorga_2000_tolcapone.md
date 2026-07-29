@@ -4,7 +4,7 @@
 
 library(nlmixr2lib)
 library(rxode2)
-#> rxode2 5.1.2 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.5 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -411,8 +411,8 @@ knitr::kable(
 
 | Dose group | AUC (paper, ug\*h/mL) | AUC (simulated) | t1/2 (paper, h) | t1/2 (simulated, h) | Cmax,ss (simulated, ug/mL) |
 |:---|:---|:---|:---|:---|:---|
-| 200 mg t.i.d. | 28.0 +/- 10.8 | 28.2 | 8.0 +/- 4.2 | 6.0 | 6.00 |
-| 400 mg t.i.d. | 54.3 +/- 19.8 | 55.3 | 7.7 +/- 3.2 | 6.0 | 13.06 |
+| 200 mg t.i.d. | 28.0 +/- 10.8 | 26.9 | 8.0 +/- 4.2 | 5.7 | 6.66 |
+| 400 mg t.i.d. | 54.3 +/- 19.8 | 58.0 | 7.7 +/- 3.2 | 6.2 | 13.00 |
 
 Nonfluctuator model – steady-state NCA vs Jorga 2000 Table 4. {.table
 style="width:100%;"}

@@ -473,11 +473,11 @@ knitr::kable(
 |     0 |  48 | 4 mg/kg q24h | cmax     |   9.338 |
 |     0 |  48 | 4 mg/kg q24h | cmin     |   1.483 |
 |     0 |  48 | 4 mg/kg q24h | tmax     |   1.000 |
-|     0 |  48 | 4 mg/kg q24h | auclast  | 131.958 |
+|     0 |  48 | 4 mg/kg q24h | auclast  | 131.957 |
 |     0 |  48 | 4 mg/kg q24h | cmax     |  10.346 |
 |     0 |  48 | 4 mg/kg q24h | cmin     |   2.424 |
 |     0 |  48 | 4 mg/kg q24h | tmax     |   1.000 |
-|     0 |  48 | 4 mg/kg q24h | auclast  | 139.619 |
+|     0 |  48 | 4 mg/kg q24h | auclast  | 139.618 |
 |     0 |  48 | 4 mg/kg q24h | cmax     |  10.628 |
 |     0 |  48 | 4 mg/kg q24h | cmin     |   2.692 |
 |     0 |  48 | 4 mg/kg q24h | tmax     |   1.000 |

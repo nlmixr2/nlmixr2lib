@@ -358,24 +358,24 @@ knitr::kable(
 
 | regimen | age_group | id | start | end | PPTESTCD | PPORRES | exclude | PPORRESU |
 |:---|:---|---:|---:|---:|:---|---:|:---|:---|
-| Monotherapy 28-day | paediatric | 1 | 0 | 28 | auclast | 343.3190707 | NA | day\*ug/mL |
-| Monotherapy 28-day | paediatric | 1 | 0 | 28 | cmax | 21.8743506 | NA | ug/mL |
+| Monotherapy 28-day | paediatric | 1 | 0 | 28 | auclast | 343.3191673 | NA | day\*ug/mL |
+| Monotherapy 28-day | paediatric | 1 | 0 | 28 | cmax | 21.8743528 | NA | ug/mL |
 | Monotherapy 28-day | paediatric | 1 | 0 | 28 | tmax | 27.5000000 | NA | day |
 | Monotherapy 28-day | paediatric | 1 | 0 | Inf | tmax | 27.5000000 | NA | day |
 | Monotherapy 28-day | paediatric | 1 | 0 | Inf | tlast | 210.0000000 | NA | day |
 | Monotherapy 28-day | paediatric | 1 | 0 | Inf | clast.obs | 0.0038257 | NA | ug/mL |
-| Monotherapy 28-day | paediatric | 1 | 0 | Inf | lambda.z | 0.0151424 | NA | 1/day |
+| Monotherapy 28-day | paediatric | 1 | 0 | Inf | lambda.z | 0.0151423 | NA | 1/day |
 | Monotherapy 28-day | paediatric | 1 | 0 | Inf | r.squared | 0.9999556 | NA | unitless |
 | Monotherapy 28-day | paediatric | 1 | 0 | Inf | adj.r.squared | 0.9999522 | NA | unitless |
 | Monotherapy 28-day | paediatric | 1 | 0 | Inf | lambda.z.time.first | 140.0000000 | NA | day |
 | Monotherapy 28-day | paediatric | 1 | 0 | Inf | lambda.z.time.last | 210.0000000 | NA | day |
 | Monotherapy 28-day | paediatric | 1 | 0 | Inf | lambda.z.n.points | 15.0000000 | NA | count |
 | Monotherapy 28-day | paediatric | 1 | 0 | Inf | clast.pred | 0.0038168 | NA | ug/mL |
-| Monotherapy 28-day | paediatric | 1 | 0 | Inf | half.life | 45.7753752 | NA | day |
-| Monotherapy 28-day | paediatric | 1 | 0 | Inf | span.ratio | 1.5292065 | NA | fraction |
-| Monotherapy 28-day | paediatric | 1 | 0 | Inf | aucinf.obs | 555.3196698 | NA | day\*ug/mL |
-| Monotherapy 28-day | paediatric | 2 | 0 | 28 | auclast | 391.0291281 | NA | day\*ug/mL |
-| Monotherapy 28-day | paediatric | 2 | 0 | 28 | cmax | 24.7348513 | NA | ug/mL |
+| Monotherapy 28-day | paediatric | 1 | 0 | Inf | half.life | 45.7754150 | NA | day |
+| Monotherapy 28-day | paediatric | 1 | 0 | Inf | span.ratio | 1.5292051 | NA | fraction |
+| Monotherapy 28-day | paediatric | 1 | 0 | Inf | aucinf.obs | 555.3197920 | NA | day\*ug/mL |
+| Monotherapy 28-day | paediatric | 2 | 0 | 28 | auclast | 391.0292402 | NA | day\*ug/mL |
+| Monotherapy 28-day | paediatric | 2 | 0 | 28 | cmax | 24.7348539 | NA | ug/mL |
 | Monotherapy 28-day | paediatric | 2 | 0 | 28 | tmax | 27.5000000 | NA | day |
 | Monotherapy 28-day | paediatric | 2 | 0 | Inf | tmax | 27.5000000 | NA | day |
 
@@ -402,13 +402,13 @@ knitr::kable(
 
 | regimen            | age_group  | PPTESTCD   |  median |     p25 |     p75 |
 |:-------------------|:-----------|:-----------|--------:|--------:|--------:|
-| Monotherapy 28-day | adult      | aucinf.obs | 699.699 | 659.557 | 851.309 |
+| Monotherapy 28-day | adult      | aucinf.obs | 699.699 | 659.557 | 851.310 |
 | Monotherapy 28-day | adult      | auclast    | 402.071 | 375.273 | 472.086 |
 | Monotherapy 28-day | adult      | cmax       |  26.361 |  24.691 |  31.338 |
 | Monotherapy 28-day | adult      | half.life  |  54.317 |  53.329 |  55.434 |
 | Monotherapy 28-day | adult      | tmax       |  27.500 |  27.500 |  27.500 |
 | Monotherapy 28-day | paediatric | aucinf.obs | 541.348 | 479.466 | 586.117 |
-| Monotherapy 28-day | paediatric | auclast    | 333.403 | 289.848 | 365.290 |
+| Monotherapy 28-day | paediatric | auclast    | 333.403 | 289.848 | 365.291 |
 | Monotherapy 28-day | paediatric | cmax       |  21.277 |  18.639 |  23.194 |
 | Monotherapy 28-day | paediatric | half.life  |  46.123 |  44.901 |  47.950 |
 | Monotherapy 28-day | paediatric | tmax       |  27.500 |  27.500 |  27.500 |

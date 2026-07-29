@@ -353,7 +353,7 @@ knitr::kable(
 
 | overall_pct_below_8 | carrier_pct_below_8 |
 |--------------------:|--------------------:|
-|                  58 |                  60 |
+|                 100 |                 100 |
 
 Simulated percentage of subjects with steady-state Cmax \< 8 mg/L.
 {.table}
@@ -464,8 +464,8 @@ knitr::kable(
 
 | polymorphism | Simulated median AUC0-24 (mg.h/L) | n | Published median AUC0-24 (mg.h/L) |
 |:---|---:|---:|---:|
-| No polymorphism | 57.8 | 15 | 56 |
-| rs4149032 carrier | 42.6 | 185 | 43 |
+| No polymorphism | 0 | 15 | 56 |
+| rs4149032 carrier | 0 | 185 | 43 |
 
 Simulated vs. Chigutsa 2011 published median AUC0-24 stratified by
 SLCO1B1 rs4149032 polymorphism status. {.table style="width:100%;"}

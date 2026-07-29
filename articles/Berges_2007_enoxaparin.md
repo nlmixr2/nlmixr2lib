@@ -218,9 +218,9 @@ print(sim_pct)
 #> # A tibble: 3 × 3
 #>   threshold_IU_mL paper_pct sim_pct
 #>             <dbl>     <dbl>   <dbl>
-#> 1             0.5        29   40.7 
-#> 2             0.8        10    1.59
-#> 3             1           4    0
+#> 1             0.5        29     100
+#> 2             0.8        10     100
+#> 3             1           4     100
 
 ggplot(peak_window, aes(peak)) +
   geom_histogram(bins = 30, fill = "grey70", colour = "grey30") +
@@ -308,7 +308,7 @@ sim_peak_summary
 #> # A tibble: 1 × 7
 #>   treatment       median_peak min_peak max_peak pct_gt_0_5 pct_gt_0_8 pct_gt_1_0
 #>   <chr>                 <dbl>    <dbl>    <dbl>      <dbl>      <dbl>      <dbl>
-#> 1 Enoxaparin 400…       0.478    0.264    0.892       40.7        1.6          0
+#> 1 Enoxaparin 400…        478.     264.     892.        100        100        100
 
 published_peak <- tibble::tibble(
   treatment    = "Enoxaparin 4000 IU SC QD",
@@ -334,8 +334,8 @@ knitr::kable(
 
 | source | treatment | median_peak | min_peak | max_peak | pct_gt_0_5 | pct_gt_0_8 | pct_gt_1_0 |
 |:---|:---|---:|---:|---:|---:|---:|---:|
-| Simulated | Enoxaparin 4000 IU SC QD | 0.48 | 0.26 | 0.89 | 40.7 | 1.6 | 0 |
-| Berges 2007 (Bayesian predictions) | Enoxaparin 4000 IU SC QD | 0.44 | 0.10 | 1.20 | 29.0 | 10.0 | 4 |
+| Simulated | Enoxaparin 4000 IU SC QD | 478.13 | 264.06 | 891.52 | 100 | 100 | 100 |
+| Berges 2007 (Bayesian predictions) | Enoxaparin 4000 IU SC QD | 0.44 | 0.10 | 1.20 | 29 | 10 | 4 |
 
 Steady-state peak anti-Xa (3-5 h post final dose): simulated virtual
 cohort vs Berges 2007 Bayesian predictions. {.table}
@@ -360,13 +360,13 @@ knitr::kable(
 )
 ```
 
-| PPTESTCD | median |    q05 |   q95 |
-|:---------|-------:|-------:|------:|
-| auclast  | 5.8400 | 3.5500 | 8.800 |
-| cav      | 0.2430 | 0.1480 | 0.367 |
-| cmax     | 0.4780 | 0.3210 | 0.699 |
-| cmin     | 0.0915 | 0.0387 | 0.187 |
-| tmax     | 3.0000 | 2.5000 | 3.500 |
+| PPTESTCD | median |    q05 |    q95 |
+|:---------|-------:|-------:|-------:|
+| auclast  | 5840.0 | 3550.0 | 8800.0 |
+| cav      |  243.0 |  148.0 |  367.0 |
+| cmax     |  478.0 |  321.0 |  699.0 |
+| cmin     |   91.5 |   38.7 |  187.0 |
+| tmax     |    3.0 |    2.5 |    3.5 |
 
 Steady-state NCA summary (144-168 h cycle, virtual PROPHRE.75-like
 cohort). {.table}

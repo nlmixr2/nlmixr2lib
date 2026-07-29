@@ -333,8 +333,6 @@ conc_obj <- PKNCA::PKNCAconc(
   sim_nca, Cc ~ time | regimen + id,
   concu = "mg/L", timeu = "h"
 )
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
 dose_obj <- PKNCA::PKNCAdose(
   dose_df, amt ~ time | regimen + id,
   doseu = "mg"
@@ -350,31 +348,6 @@ intervals <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- PKNCA::pk.nca(nca_data)
-#> Warning in assert_conc(conc = conc): Negative concentrations found
-#> Warning in assert_conc(conc = conc): Negative concentrations found
-#> Warning in assert_conc(conc = conc): Negative concentrations found
-#> Warning in assert_conc(conc = conc): Negative concentrations found
-#> Warning in assert_conc(conc = conc): Negative concentrations found
-#> Warning in assert_conc(conc = conc): Negative concentrations found
-#> Warning in log(data$conc): NaNs produced
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in log(conc.2/conc.1): NaNs produced
-#> Warning in assert_conc(conc = conc): Negative concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in log(data$conc): NaNs produced
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in log(conc.2/conc.1): NaNs produced
 ```
 
 ### Comparison against Nath 2007 Table 6 (median AUC per dose group)
@@ -421,9 +394,9 @@ knitr::kable(
 
 | NCA parameter | regimen | Reference | Simulated | % diff |
 |:---|:---|---:|---:|---:|
-| AUC0-∞ (obs) (mg\*h/L) | 140 mg/m^2 (no carboplatin) | 9 | 8.4 | -6.7% |
-| AUC0-∞ (obs) (mg\*h/L) | 70 mg/m^2 (no carboplatin) | 5 | 4.86 | -2.8% |
-| AUC0-∞ (obs) (mg\*h/L) | 180 mg/m^2 (carboplatin) | 20.7 | 17.5 | -15.3% |
+| AUC0-∞ (obs) (mg\*h/L) | 140 mg/m^2 (no carboplatin) | 9 | 8.41 | -6.5% |
+| AUC0-∞ (obs) (mg\*h/L) | 70 mg/m^2 (no carboplatin) | 5 | 4.89 | -2.3% |
+| AUC0-∞ (obs) (mg\*h/L) | 180 mg/m^2 (carboplatin) | 20.7 | 17.6 | -14.9% |
 
 Simulated vs. published median NCA per dose group (Nath 2007 Table 6).
 \* differs from reference by \>20%. {.table}

@@ -224,6 +224,8 @@ sim <- rxode2::rxSolve(
   keep   = c("FORM_FDC", "OCC", "dose_label")
 ) |>
   as.data.frame()
+#> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_cl_1, etaiov_cl_2, etaiov_cl_3, etaiov_cl_4, etaiov_cl_5, etaiov_cl_6, etaiov_mtt_1, etaiov_mtt_2, etaiov_mtt_3, etaiov_mtt_4, etaiov_mtt_5, etaiov_mtt_6
+#> as a work-around try putting the mu-referenced expression on a simple line
 ```
 
 For the typical-value trajectory used in the figures and the PKNCA
@@ -241,6 +243,8 @@ sim_typical <- rxode2::rxSolve(
   keep   = c("FORM_FDC", "OCC", "dose_label")
 ) |>
   as.data.frame()
+#> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_cl_1, etaiov_cl_2, etaiov_cl_3, etaiov_cl_4, etaiov_cl_5, etaiov_cl_6, etaiov_mtt_1, etaiov_mtt_2, etaiov_mtt_3, etaiov_mtt_4, etaiov_mtt_5, etaiov_mtt_6
+#> as a work-around try putting the mu-referenced expression on a simple line
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalka', 'etalmtt', 'etalnn', 'etaiov_cl_1', 'etaiov_cl_2', 'etaiov_cl_3', 'etaiov_cl_4', 'etaiov_cl_5', 'etaiov_cl_6', 'etaiov_mtt_1', 'etaiov_mtt_2', 'etaiov_mtt_3', 'etaiov_mtt_4', 'etaiov_mtt_5', 'etaiov_mtt_6'
 #> Warning: multi-subject simulation without without 'omega'
 ```
@@ -437,17 +441,17 @@ knitr::kable(
 )
 ```
 
-| treatment | PPTESTCD |    median |       p05 |      p95 |
-|:----------|:---------|----------:|----------:|---------:|
-| 450 mg    | auclast  | 30.188675 |  8.649439 | 75.40645 |
-| 450 mg    | cmax     |  4.488030 |  1.815059 |  9.10072 |
-| 450 mg    | tmax     |  3.000000 |  1.500000 |  4.10000 |
-| 480 mg    | auclast  | 24.357957 | 10.866736 | 57.87313 |
-| 480 mg    | cmax     |  4.874297 |  1.867292 | 10.45508 |
-| 480 mg    | tmax     |  2.000000 |  1.000000 |  4.00000 |
-| 600 mg    | auclast  | 34.495613 | 19.795166 | 96.64108 |
-| 600 mg    | cmax     |  6.754103 |  4.231224 | 15.08227 |
-| 600 mg    | tmax     |  2.000000 |  1.000000 |  4.00000 |
+| treatment | PPTESTCD | median | p05 | p95 |
+|:----------|:---------|-------:|----:|----:|
+| 450 mg    | auclast  |      0 |   0 |   0 |
+| 450 mg    | cmax     |      0 |   0 |   0 |
+| 450 mg    | tmax     |     NA |  NA |  NA |
+| 480 mg    | auclast  |      0 |   0 |   0 |
+| 480 mg    | cmax     |      0 |   0 |   0 |
+| 480 mg    | tmax     |     NA |  NA |  NA |
+| 600 mg    | auclast  |      0 |   0 |   0 |
+| 600 mg    | cmax     |      0 |   0 |   0 |
+| 600 mg    | tmax     |     NA |  NA |  NA |
 
 Simulated steady-state NCA parameters (FDC = 1, OCC = 1, n = 20 per
 dose). {.table}

@@ -520,7 +520,7 @@ knitr::kable(
 
 | Interval Start | Interval End | treatment | N | Cmax (mg/L) | Tmax (min) | Half-life (min) | AUCinf,obs (min\*mg/L) |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | Inf | human_icu_4mgkgh | 20 | 2.85 \[42.2\] | 1440 \[1140, 1440\] | 83.6 \[34.7\] | NC |
+| 0 | Inf | human_icu_4mgkgh | 20 | 2.87 \[32.3\] | 1440 \[1440, 1440\] | 75.8 \[25.2\] | NC |
 
 Simulated 70 kg adult propofol NCA after a 4 mg/kg/h infusion for 24 h
 (n = 20). {.table}

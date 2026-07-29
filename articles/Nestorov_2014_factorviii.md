@@ -186,10 +186,8 @@ sim_25 <- rxSolve(mod, events = events_25, returnType = "data.frame",
 #> ℹ parameter labels from comments will be replaced by 'label()'
 sim_50 <- rxSolve(mod, events = events_50, returnType = "data.frame",
                   keep = c("treatment"))
-#> ℹ parameter labels from comments will be replaced by 'label()'
 sim_65 <- rxSolve(mod, events = events_65, returnType = "data.frame",
                   keep = c("treatment"))
-#> ℹ parameter labels from comments will be replaced by 'label()'
 
 sim <- bind_rows(sim_25, sim_50, sim_65)
 ```
@@ -280,8 +278,8 @@ knitr::kable(
 | Interval Start | Interval End | treatment | N | Cmax (IU/dL) | Tmax (h) | Clast (IU/dL) | Half-life (h) | AUCinf,obs (h\*IU/dL) |
 |---:|---:|:---|:---|:---|:---|:---|:---|:---|
 | 0 | Inf | 25 IU/kg single dose | 100 | 48.3 \[17.2\] | 0.000 \[0.000, 0.000\] | 0.0763 \[88.8\] | 62.4 \[3.96\] | 1130 \[35.8\] |
-| 0 | Inf | 50 IU/kg single dose | 100 | 98.5 \[18.5\] | 0.000 \[0.000, 0.000\] | 0.139 \[83.1\] | 63.1 \[3.87\] | 2190 \[35.1\] |
-| 0 | Inf | 65 IU/kg single dose | 100 | 129 \[16.3\] | 0.000 \[0.000, 0.000\] | 0.177 \[75.3\] | 63.4 \[3.67\] | 2830 \[31.1\] |
+| 0 | Inf | 50 IU/kg single dose | 100 | 96.6 \[15.5\] | 0.000 \[0.000, 0.000\] | 0.133 \[74.2\] | 63.3 \[3.11\] | 2150 \[31.0\] |
+| 0 | Inf | 65 IU/kg single dose | 100 | 127 \[17.4\] | 0.000 \[0.000, 0.000\] | 0.158 \[68.6\] | 63.8 \[2.70\] | 2710 \[30.5\] |
 
 Simulated single-dose NCA parameters, Nestorov 2014 final model. {.table
 style="width:100%;"}

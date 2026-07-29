@@ -455,7 +455,6 @@ sim_oneyear <- as.data.frame(rxode2::rxSolve(
   dplyr::mutate(
     base_age = baseline_ages[match(id, dmd_ids)]
   )
-#> ℹ parameter labels from comments will be replaced by 'label()'
 
 # Per subject keep only the baseline-age row (the rxSolve output
 # returns walkDist at each event time; the baseline-age row is

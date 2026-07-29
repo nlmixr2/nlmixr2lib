@@ -146,6 +146,7 @@ sim <- rxode2::rxSolve(mod, events = events,
 #> ℹ parameter labels from comments will be replaced by 'label()'
 #> Warning: some etas defaulted to non-mu referenced, possible parsing error: etalkdeg_egfp, etalkdeg_d2egfp
 #> as a work-around try putting the mu-referenced expression on a simple line
+#> [lsoda -- internal t + h = t (h too small for machine precision)]: 7355 warning(s) for subject(s): 1061
 sim <- dplyr::as_tibble(sim)
 sim_obs <- sim |> dplyr::filter(time >= 2)
 ```

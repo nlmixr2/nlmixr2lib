@@ -152,6 +152,18 @@ sim_typical <- rxode2::rxSolve(
   addDosing = FALSE
 ) |>
   as.data.frame()
+#> rxode2 model syntax error:
+#> ================================================================================
+#> :001: 'central(0)' are not supported in linCmt() models, you can try ODEs instead
+#> :
+#>       cl <- exp(lcl + etalcl) * (WT/70)^e_wt_cl * (SAPS_II/50)^e_saps_ii_cl
+#>       ^
+#> :002: vc <- exp(lvc)
+#> :003: rbase <- exp(lrbase + etalrbase)
+#> :004: kel <- cl/vc
+#> :005: central(0) <- rbase/kel
+#> :006: Cc <- linCmt(kel, vc)
+#> ================================================================================
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalrbase'
 #> Warning: multi-subject simulation without without 'omega'
 ```

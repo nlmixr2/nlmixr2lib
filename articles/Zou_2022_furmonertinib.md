@@ -388,7 +388,6 @@ sim_fe <- rxode2::rxSolve(
 ) |>
   as.data.frame() |>
   dplyr::as_tibble()
-#> ℹ parameter labels from comments will be replaced by 'label()'
 
 # PKNCA parent
 sim_nca_p <- sim_fe |>

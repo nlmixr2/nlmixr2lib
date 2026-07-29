@@ -15,7 +15,7 @@
   one-compartment distribution, and first-order elimination. Apparent
   clearance (CL/Fm) is modified by raw Cockcroft-Gault creatinine
   clearance based on lean body weight (CRCL), concomitant any-class
-  diuretic use (CONMED_DIUR; thiazide / furosemide / spironolactone
+  diuretic use (CONMED_DIURETIC; thiazide / furosemide / spironolactone
   pooled), and concomitant probenecid use (CONMED_PROBENECID), each via
   a linear-deviation multiplicative factor. Apparent volume (V/Fm) is
   allometrically scaled on lean body weight (LBW) with the volume
@@ -33,7 +33,7 @@ the paper’s prior published assumption (Stocker 2012 Methods, page 478,
 citing reference 6). Apparent clearance CL/Fm is modified by three
 covariates: raw Cockcroft-Gault creatinine clearance based on lean body
 weight (`CRCL`; linear-deviation slope centred at the cohort median 37.6
-mL/min), concomitant any-class diuretic use (`CONMED_DIUR`), and
+mL/min), concomitant any-class diuretic use (`CONMED_DIURETIC`), and
 concomitant probenecid use (`CONMED_PROBENECID`). Apparent central
 volume V/Fm is allometrically scaled on lean body weight (`LBM`;
 reference 60 kg, exponent held fixed at the theoretical value of 1.0).
@@ -80,7 +80,7 @@ pharmacokinetic model” and Figure 2).
 | `lvc` (V/Fm at ref LBM) | log(38.1) -\> 38.1 L | Table 3 row “V/Fm”; bootstrap median 38.3 (33.2, 44.4); reference LBM = 60 kg |
 | `e_lbm_vc` | fixed(1.0) | Equation page 480: `TVV/Fm = theta2 * (LBW/60)^theta9`; theta9 not reported in Table 3, inferred fixed at theoretical 1.0 |
 | `e_crcl_cl` (theta6) | +0.0250 | Table 3 row “Creatinine clearance (theta6)”; bootstrap median 0.025 (0.021, 0.028) |
-| `e_conmed_diur_cl` (theta7) | -0.294 | Table 3 row “Diuretics (theta7)”; bootstrap median -0.298 (-0.386, -0.207); -29.4% effect on CL/Fm |
+| `e_conmed_diuretic_cl` (theta7) | -0.294 | Table 3 row “Diuretics (theta7)”; bootstrap median -0.298 (-0.386, -0.207); -29.4% effect on CL/Fm |
 | `e_conmed_probenecid_cl` (theta8) | +0.383 | Table 3 row “Probenecid (theta8)”; bootstrap median 0.384 (0.264, 0.499); +38.3% effect on CL/Fm |
 | `etalcl` variance | log(1 + 0.28^2) = 0.0755 | Table 3 row “BSV CL/Fm”; 28% CV |
 | `etalvc` variance | log(1 + 0.45^2) = 0.1844 | Table 3 row “BSV V/Fm”; 45% CV |
@@ -152,7 +152,7 @@ renal_strata <- tibble::tribble(
 
 # Comedication strata at the cohort median CRCL.
 comed_strata <- tibble::tribble(
-  ~stratum,            ~CONMED_DIUR, ~CONMED_PROBENECID,
+  ~stratum,            ~CONMED_DIURETIC, ~CONMED_PROBENECID,
   "no comedication",            0L,                 0L,
   "+diuretic",                  1L,                 0L,
   "+probenecid",                0L,                 1L
@@ -165,7 +165,7 @@ make_cohort_events <- function(stratum, n, crcl, lbm, diur, prob,
     stratum           = stratum,
     CRCL              = crcl,
     LBM               = lbm,
-    CONMED_DIUR       = diur,
+    CONMED_DIURETIC       = diur,
     CONMED_PROBENECID = prob
   )
   doses <- tidyr::crossing(id = base$id, dose_idx = seq_len(n_doses)) |>
@@ -205,7 +205,7 @@ comed_events <- bind_rows(lapply(seq_len(nrow(comed_strata)), function(i) {
   make_cohort_events(
     stratum = comed_strata$stratum[i], n = n_per_arm,
     crcl = ref_crcl, lbm = ref_lbm,
-    diur = comed_strata$CONMED_DIUR[i],
+    diur = comed_strata$CONMED_DIURETIC[i],
     prob = comed_strata$CONMED_PROBENECID[i],
     n_doses = n_doses, tau = tau, dose_mg = dose_mg,
     id_offset = offset)
@@ -222,14 +222,14 @@ stopifnot(!anyDuplicated(unique(comed_events[, c("id", "time", "evid")])))
 sim_renal <- rxode2::rxSolve(
   object     = mod_full,
   events     = renal_events,
-  keep       = c("stratum", "CRCL", "LBM", "CONMED_DIUR", "CONMED_PROBENECID"),
+  keep       = c("stratum", "CRCL", "LBM", "CONMED_DIURETIC", "CONMED_PROBENECID"),
   returnType = "data.frame"
 )
 
 sim_comed <- rxode2::rxSolve(
   object     = mod_full,
   events     = comed_events,
-  keep       = c("stratum", "CRCL", "LBM", "CONMED_DIUR", "CONMED_PROBENECID"),
+  keep       = c("stratum", "CRCL", "LBM", "CONMED_DIURETIC", "CONMED_PROBENECID"),
   returnType = "data.frame"
 )
 ```
@@ -242,7 +242,7 @@ apparent-clearance values, zero out the random effects:
 sim_renal_typ <- rxode2::rxSolve(
   object     = mod_typical,
   events     = renal_events,
-  keep       = c("stratum", "CRCL", "LBM", "CONMED_DIUR", "CONMED_PROBENECID"),
+  keep       = c("stratum", "CRCL", "LBM", "CONMED_DIURETIC", "CONMED_PROBENECID"),
   returnType = "data.frame"
 )
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc'
@@ -251,7 +251,7 @@ sim_renal_typ <- rxode2::rxSolve(
 sim_comed_typ <- rxode2::rxSolve(
   object     = mod_typical,
   events     = comed_events,
-  keep       = c("stratum", "CRCL", "LBM", "CONMED_DIUR", "CONMED_PROBENECID"),
+  keep       = c("stratum", "CRCL", "LBM", "CONMED_DIURETIC", "CONMED_PROBENECID"),
   returnType = "data.frame"
 )
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc'
@@ -829,10 +829,10 @@ discrepancy.
 - **Composite any-class diuretic indicator.** Stocker 2012 pools
   thiazide, loop, and potassium-sparing diuretic use into a single
   binary `DIUR` covariate. The packaged model uses the canonical
-  `CONMED_DIUR` register entry (a composite multi-class indicator), with
-  per-model `covariateData[[CONMED_DIUR]]$notes` recording the specific
-  drug classes the source paper aggregated (thiazide + furosemide +
-  spironolactone).
+  `CONMED_DIURETIC` register entry (a composite multi-class indicator),
+  with per-model `covariateData[[CONMED_DIURETIC]]$notes` recording the
+  specific drug classes the source paper aggregated (thiazide +
+  furosemide + spironolactone).
 - **Dose convention.** All doses entered into the packaged model are
   oxypurinol-equivalent doses, taken as 0.9 times the allopurinol dose
   per Stocker 2012 Methods (page 478, citing reference 6). For a typical

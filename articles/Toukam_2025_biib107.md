@@ -193,7 +193,6 @@ sim_sad <- rxode2::rxSolve(mod,     events = events_sad,
 #> ℹ parameter labels from comments will be replaced by 'label()'
 sim_q8w <- rxode2::rxSolve(mod,     events = events_q8w,
                            keep = c("regimen", "WT"), returnType = "data.frame")
-#> ℹ parameter labels from comments will be replaced by 'label()'
 sim_q8w_typ <- rxode2::rxSolve(mod_typ, events = events_q8w,
                                keep = c("regimen", "WT"), returnType = "data.frame")
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalka', 'etala4satEC50'

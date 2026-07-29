@@ -215,10 +215,6 @@ ggplot(vpc, aes(time, Q50)) +
        y = "Piperacillin Cc (mg/L)",
        title = "Figure 2 -VPC by cohort (10%, 25%, 50%, 75%, 90% percentiles)",
        caption = "Replicates Figure 2 of Bulitta 2007 (visual predictive check of the two-compartment LBM-allometric model).")
-#> Warning in transformation$transform(x): NaNs produced
-#> Warning in scale_y_log10(): log-10 transformation introduced infinite values.
-#> Warning: Removed 1 row containing missing values or values outside the scale range
-#> (`geom_ribbon()`).
 ```
 
 ![](Bulitta_2007_piperacillin_files/figure-html/figure-2-1.png)
@@ -284,14 +280,14 @@ knitr::kable(nca_summary,
 | CF      | aucinf.obs |      NA |      NA |       NA |
 | CF      | cl.obs     |      NA |      NA |       NA |
 | CF      | cmax       | 773.649 | 549.762 | 1020.724 |
-| CF      | half.life  |   0.633 |   0.529 |    0.756 |
+| CF      | half.life  |   0.628 |   0.528 |    0.756 |
 | CF      | mrt.last   |      NA |      NA |       NA |
 | CF      | tmax       |   0.083 |   0.083 |    0.083 |
 | CF      | vss.obs    |      NA |      NA |       NA |
 | Healthy | aucinf.obs |      NA |      NA |       NA |
 | Healthy | cl.obs     |      NA |      NA |       NA |
 | Healthy | cmax       | 456.374 | 333.109 |  642.968 |
-| Healthy | half.life  |   0.763 |   0.635 |    0.898 |
+| Healthy | half.life  |   0.762 |   0.629 |    0.898 |
 | Healthy | mrt.last   |      NA |      NA |       NA |
 | Healthy | tmax       |   0.083 |   0.083 |    0.083 |
 | Healthy | vss.obs    |      NA |      NA |       NA |

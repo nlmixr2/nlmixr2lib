@@ -391,7 +391,7 @@ knitr::kable(
 | A: 10 mg/kg IV q8w                   | cav      |   20.171 |   33.177 |   59.560 |
 | A: 10 mg/kg IV q8w                   | cmax     |  290.658 |  388.212 |  553.785 |
 | A: 10 mg/kg IV q8w                   | cmin     |    1.560 |    5.580 |   16.885 |
-| B: 30 mg/kg IV q8w                   | auclast  | 3524.111 | 5534.524 | 9216.263 |
+| B: 30 mg/kg IV q8w                   | auclast  | 3524.110 | 5534.523 | 9216.262 |
 | B: 30 mg/kg IV q8w                   | cav      |   62.931 |   98.831 |  164.576 |
 | B: 30 mg/kg IV q8w                   | cmax     |  858.842 | 1198.290 | 1581.761 |
 | B: 30 mg/kg IV q8w                   | cmin     |    5.288 |   16.665 |   47.082 |
@@ -399,7 +399,7 @@ knitr::kable(
 | C: 10 mg/kg IV load + 5 mg/kg SC q2w | cav      |   27.217 |   50.112 |   79.973 |
 | C: 10 mg/kg IV load + 5 mg/kg SC q2w | cmax     |   39.815 |   64.390 |   96.176 |
 | C: 10 mg/kg IV load + 5 mg/kg SC q2w | cmin     |   15.126 |   34.760 |   59.881 |
-| D: 30 mg/kg IV load + 5 mg/kg SC q2w | auclast  |  446.143 |  713.850 | 1183.324 |
+| D: 30 mg/kg IV load + 5 mg/kg SC q2w | auclast  |  446.143 |  713.850 | 1183.325 |
 | D: 30 mg/kg IV load + 5 mg/kg SC q2w | cav      |   31.867 |   50.989 |   84.523 |
 | D: 30 mg/kg IV load + 5 mg/kg SC q2w | cmax     |   44.014 |   64.907 |  102.543 |
 | D: 30 mg/kg IV load + 5 mg/kg SC q2w | cmin     |   20.352 |   36.257 |   64.344 |

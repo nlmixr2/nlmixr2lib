@@ -533,10 +533,10 @@ knitr::kable(
 
 | metric | sim_median | sim_min | sim_max | paper_median | paper_min | paper_max | pct_diff_median | flag |
 |:---|---:|---:|---:|---:|---:|---:|---:|:---|
-| Cmin (IU/mL) | 0.23 | 0.03 | 0.71 | 0.45 | 0.10 | 1.33 | -48.3 | \* |
-| Cmax (IU/mL) | 0.78 | 0.31 | 2.50 | 0.91 | 0.46 | 3.38 | -13.8 |  |
-| AUC0-24 (h.IU/mL) | 11.92 | 4.24 | 32.08 | 13.90 | 6.90 | 25.30 | -14.2 |  |
-| cAUC (h.IU/mL) | 61.28 | 18.68 | 184.37 | 23.00 | 4.00 | 120.00 | 166.0 | \* |
+| Cmin (IU/mL) | 232.60 | 33.89 | 711.76 | 0.45 | 0.10 | 1.33 | 51600 | \* |
+| Cmax (IU/mL) | 784.75 | 306.11 | 2496.71 | 0.91 | 0.46 | 3.38 | 86100 | \* |
+| AUC0-24 (h.IU/mL) | 11922.26 | 4239.21 | 32075.94 | 13.90 | 6.90 | 25.30 | 85700 | \* |
+| cAUC (h.IU/mL) | 61279.16 | 18676.22 | 184367.28 | 23.00 | 4.00 | 120.00 | 266000 | \* |
 
 Simulated (n = 100 per arm, n = 200 combined) vs Barras 2009 Table 3
 PD-subset (n = 103) exposure metrics. \* indicates median differs from

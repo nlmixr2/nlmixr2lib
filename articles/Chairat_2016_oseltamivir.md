@@ -52,7 +52,7 @@ collects the parameter values in one place for review.
 | Equation / parameter | Value | Source location |
 |----|----|----|
 | Structural: depot -\> central (OS, 1-cmt) | n/a | Chairat 2016 Figure 1 + Results paragraph 1 |
-| Structural: central -\> metabolism -\> central_oc (OC, 1-cmt) | n/a | Chairat 2016 Figure 1 |
+| Structural: central -\> metabolism -\> central_oselcarb (OC, 1-cmt) | n/a | Chairat 2016 Figure 1 |
 | `ka` (absorption rate) | 2.81 1/h | Chairat 2016 Table 1 |
 | `CL/FOS` (apparent OS clearance) | 585 L/h | Chairat 2016 Table 1 |
 | `V/FOS` (apparent OS volume) | 1110 L | Chairat 2016 Table 1 |
@@ -68,7 +68,7 @@ collects the parameter values in one place for review.
 | IOV(V/FOS) | 18.6% CV (IOV) | Chairat 2016 Table 1; encoded as IIV in the packaged model |
 | IOV(km) | 43.2% CV (IOV) | Chairat 2016 Table 1; encoded as IIV in the packaged model |
 | Additive residual on log(OS) | 0.431 | Chairat 2016 Table 1 (encoded as ~ lnorm(expSd)) |
-| Additive residual on log(OC) | 0.161 | Chairat 2016 Table 1 (encoded as ~ lnorm(expSd_oc)) |
+| Additive residual on log(OC) | 0.161 | Chairat 2016 Table 1 (encoded as ~ lnorm(expSd_oselcarb)) |
 
 %CV is mapped to the model’s log-normal variance via
 `omega^2 = log(1 + CV^2)`, matching the NONMEM footnote in Table 1.
@@ -116,10 +116,10 @@ make_cohort <- function(n, dose_mg, treatment, id_offset = 0L) {
       evid = 0L,
       amt  = NA_real_,
       # cmt = "Cc" picks the parent oseltamivir observation slot; the
-      # metabolite Cc_oc lands in the same output dataframe as a column.
+      # metabolite Cc_oselcarb lands in the same output dataframe as a column.
       # For this multi-output rxUi model rxode2 requires the cmt to point
-      # at one of the modeled observation slots (Cc or Cc_oc), not at an
-      # ODE state (depot / central / metabolism / central_oc).
+      # at one of the modeled observation slots (Cc or Cc_oselcarb), not at an
+      # ODE state (depot / central / metabolism / central_oselcarb).
       cmt  = "Cc"
     )
 
@@ -184,7 +184,7 @@ sim_typical <- rxode2::rxSolve(mod_typical, events = typical_events,
                                 ) |>
   as.data.frame() |>
   dplyr::as_tibble()
-#> ℹ omega/sigma items treated as zero: 'etalfdepot', 'etalka', 'etalcl', 'etalvc', 'etalkm', 'etalvc_oc'
+#> ℹ omega/sigma items treated as zero: 'etalfdepot', 'etalka', 'etalcl', 'etalvc', 'etalkm', 'etalvc_oselcarb'
 #> Warning: multi-subject simulation without without 'omega'
 ```
 
@@ -198,10 +198,10 @@ peaks around 4-5 h and decays with the terminal slope of CL/FOC / V/FOC.
 
 sim_typical |>
   dplyr::filter(time <= 24) |>
-  tidyr::pivot_longer(c(Cc, Cc_oc), names_to = "analyte", values_to = "conc") |>
+  tidyr::pivot_longer(c(Cc, Cc_oselcarb), names_to = "analyte", values_to = "conc") |>
   dplyr::mutate(analyte = dplyr::recode(analyte,
                                           Cc = "Oseltamivir (OS)",
-                                          Cc_oc = "Oseltamivir carboxylate (OC)")) |>
+                                          Cc_oselcarb = "Oseltamivir carboxylate (OC)")) |>
   ggplot(aes(time, conc, colour = analyte)) +
   geom_line(linewidth = 0.7) +
   facet_wrap(~ treatment) +
@@ -225,10 +225,10 @@ cohort:
 
 sim |>
   dplyr::filter(time <= 24) |>
-  tidyr::pivot_longer(c(Cc, Cc_oc), names_to = "analyte", values_to = "conc") |>
+  tidyr::pivot_longer(c(Cc, Cc_oselcarb), names_to = "analyte", values_to = "conc") |>
   dplyr::mutate(analyte = dplyr::recode(analyte,
                                           Cc = "Oseltamivir (OS)",
-                                          Cc_oc = "Oseltamivir carboxylate (OC)")) |>
+                                          Cc_oselcarb = "Oseltamivir carboxylate (OC)")) |>
   dplyr::group_by(time, treatment, analyte) |>
   dplyr::summarise(
     Q05 = quantile(conc, 0.05, na.rm = TRUE),
@@ -275,15 +275,15 @@ sim_nca_parent <- dplyr::bind_rows(
   dplyr::distinct(id, treatment, time, .keep_all = TRUE) |>
   dplyr::arrange(id, treatment, time)
 
-# Metabolite (OC) concentration frame: same shape with Cc_oc.
-sim_nca_oc <- sim |>
-  dplyr::filter(!is.na(Cc_oc)) |>
-  dplyr::select(id, time, Cc_oc, treatment)
+# Metabolite (OC) concentration frame: same shape with Cc_oselcarb.
+sim_nca_oselcarb <- sim |>
+  dplyr::filter(!is.na(Cc_oselcarb)) |>
+  dplyr::select(id, time, Cc_oselcarb, treatment)
 
-sim_nca_oc <- dplyr::bind_rows(
-  sim_nca_oc,
-  sim_nca_oc |> dplyr::distinct(id, treatment) |>
-    dplyr::mutate(time = 0, Cc_oc = 0)
+sim_nca_oselcarb <- dplyr::bind_rows(
+  sim_nca_oselcarb,
+  sim_nca_oselcarb |> dplyr::distinct(id, treatment) |>
+    dplyr::mutate(time = 0, Cc_oselcarb = 0)
 ) |>
   dplyr::distinct(id, treatment, time, .keep_all = TRUE) |>
   dplyr::arrange(id, treatment, time)
@@ -297,8 +297,8 @@ conc_obj_parent <- PKNCA::PKNCAconc(sim_nca_parent,
                                      concu = "ng/mL", timeu = "h")
 #> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
 #> concentrations found
-conc_obj_oc     <- PKNCA::PKNCAconc(sim_nca_oc,
-                                     Cc_oc ~ time | treatment + id,
+conc_obj_oselcarb     <- PKNCA::PKNCAconc(sim_nca_oselcarb,
+                                     Cc_oselcarb ~ time | treatment + id,
                                      concu = "ng/mL", timeu = "h")
 dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id,
                              doseu = "mg")
@@ -314,7 +314,7 @@ intervals <- data.frame(
 
 nca_parent <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj_parent, dose_obj,
                                               intervals = intervals))
-nca_oc     <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj_oc,     dose_obj,
+nca_oselcarb     <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj_oselcarb,     dose_obj,
                                               intervals = intervals))
 ```
 
@@ -374,15 +374,15 @@ Oseltamivir (OS): simulated vs Chairat 2016 Table 2 non-obese medians.
 
 ``` r
 
-published_oc <- tibble::tribble(
+published_oselcarb <- tibble::tribble(
   ~treatment, ~cmax, ~tmax, ~auclast, ~half.life,
   "75 mg",    266,   4.88,      3160,       5.45,
   "150 mg",   558,   4.47,      6320,       5.45
 )
 
-cmp_oc <- nlmixr2lib::ncaComparisonTable(
-  simulated = nca_oc,
-  reference = published_oc,
+cmp_oselcarb <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_oselcarb,
+  reference = published_oselcarb,
   by        = "treatment",
   units     = c(cmax = "ng/mL", auclast = "ng*h/mL",
                 tmax = "h",     half.life = "h"),
@@ -390,7 +390,7 @@ cmp_oc <- nlmixr2lib::ncaComparisonTable(
 )
 
 knitr::kable(
-  cmp_oc,
+  cmp_oselcarb,
   caption = paste(
     "Oseltamivir carboxylate (OC): simulated vs Chairat 2016 Table 2",
     "non-obese medians. * differs from reference by >20%."
@@ -453,7 +453,7 @@ non-obese medians. \* differs from reference by \>20%. {.table}
   log-transformed concentration” residuals (sd = 0.431 for OS, sd =
   0.161 for OC). This corresponds to a log-normal residual on the
   natural scale and is encoded here via `Cc ~ lnorm(expSd)` and
-  `Cc_oc ~ lnorm(expSd_oc)`.
+  `Cc_oselcarb ~ lnorm(expSd_oselcarb)`.
 
 - **Concentration units.** The paper fitted the model in molar units
   (Methods paragraph 1 - concentrations were converted to equivalent

@@ -1,0 +1,467 @@
+# Nemtabrutinib (Kemal 2026)
+
+## Model and source
+
+- Citation: Kemal CC, Zweers TJ, Krekels EHJ, Chatterjee MS. Population
+  Pharmacokinetic Modeling and Exposure-Response Analyses of
+  Nemtabrutinib in Patients With Hematologic Malignancies. CPT
+  Pharmacometrics Syst Pharmacol. 2026;15(5). <doi:10.1002/psp4.70257>
+- Description: Two-compartment population PK model for nemtabrutinib
+  (oral BTK inhibitor) in adults with hematologic malignancies including
+  CLL/SLL (Kemal 2026, full covariate model)
+- Article: <https://doi.org/10.1002/psp4.70257>
+
+## Population
+
+The pooled analysis population comprised 578 adults with hematologic
+malignancies enrolled in two Merck-sponsored trials of the oral
+non-covalent BTK inhibitor nemtabrutinib (also known as MK-1026 and
+formerly ARQ 531):
+
+- BELLWAVE-001 (NCT03162536), a phase 1/2 dose-escalation study (n =
+  136, doses 5-75 mg qd), enrolled patients with relapsed / refractory
+  CLL/SLL, B-cell non-Hodgkin lymphoma, and Waldenstrom’s
+  macroglobulinemia.
+- BELLWAVE-003 (NCT04728893), a phase 2 dose-escalation and confirmation
+  study (n = 442, doses 45 / 65 / 80 mg qd), enrolled patients with
+  CLL/SLL, marginal zone / follicular / mantle-cell lymphomas, Richter’s
+  transformation, and Waldenstrom’s macroglobulinemia.
+
+Baseline demographics (Table 1 of Kemal et al. 2026): median age 68
+years (range 25-89), median body weight 74 kg (range 41-147), median
+baseline albumin 4.14 g/dL (i.e. 41.4 g/L), 34.1% female, 85.8% White,
+7.8% Asian, 2.4% Black, 2.4% Other, 1.6% Missing. Primary diagnosis:
+49.8% CLL/SLL, 30.6% other hematologic malignancies, 9.7% B-cell
+non-Hodgkin lymphoma, 9.7% Waldenstrom’s macroglobulinemia. Renal
+function: 29.2% normal, 38.6% mild impairment, 30.1% moderate
+impairment; hepatic function: 80.3% normal, 18.3% mild impairment, 1.4%
+moderate impairment. Concomitant medication exposure at any observation:
+27.7% weak / 3.3% moderate / 2.0% strong CYP3A4 inhibitor; 46.6% weak /
+2.8% moderate CYP3A4 inducer; 25.6% PPI; 6.8% H2 antagonist; 10.8%
+antacid (Table S3). Model development used 5669 non-BLQ observations.
+
+The same information is available programmatically via
+`readModelDb("Kemal_2026_nemtabrutinib")$population`.
+
+## Source trace
+
+Every `ini()` value in
+`inst/modeldb/specificDrugs/Kemal_2026_nemtabrutinib.R` carries an
+in-file comment identifying its source location; the table below
+collects the audit trail in one place. All final estimates come from
+Table 2 of the main article; the reference values for continuous
+covariates and the exact form of the multiplicative covariate
+composition come from the NONMEM control stream in the supplement.
+
+| Component | Value | Source |
+|----|----|----|
+| Two-compartment PK with first-order absorption + lag, first-order elimination | – | Kemal 2026 Methods 2.2.1 and NONMEM `$SUBROUTINES ADVAN4 TRANS4` |
+| CL/F (typical) | 3.33 L/h | Table 2 |
+| Vc/F (typical) | 120 L | Table 2 |
+| Ka | 2.83 1/h | Table 2 |
+| Q/F | 0.681 L/h | Table 2 |
+| Vp/F | 66.9 L | Table 2 |
+| Absorption lag | 0.494 h | Table 2 |
+| Weight exponent on CL (fixed) | 0.331 | Table 2 (fixed after WT-only fit; Methods 2.2.2) |
+| Weight exponent on Vc (fixed) | 0.807 | Table 2 (fixed after WT-only fit; Methods 2.2.2) |
+| Reference weight | 73.5 kg | NONMEM supplement `$PK` (`WT = 73.5` if missing) |
+| Reference age | 68 years | NONMEM supplement `$PK` (`AGEM = 68` if missing) |
+| Reference albumin | 41.2 g/L | NONMEM supplement `$PK` (`BALBM = 41.2` if missing) |
+| Age power exponent on CL | -0.503 | Table 2 |
+| Albumin power exponent on CL | -0.395 | Table 2 |
+| Sex effect on CL (female vs male ref) | -0.133 | Table 2 |
+| Sex effect on Vc | -0.0901 | Table 2 |
+| Race effect on CL (Black vs White ref) | 0.0533 | Table 2 |
+| Race effect on CL (Asian vs White ref) | -0.117 | Table 2 |
+| Race effect on Vc (Black) | 0.102 | Table 2 |
+| Race effect on Vc (Asian) | -0.116 | Table 2 |
+| Disease effect on CL (B-cell NHL vs CLL/SLL ref) | -0.166 | Table 2 |
+| Disease effect on CL (WM vs CLL/SLL) | 0.0718 | Table 2 |
+| Disease effect on CL (Other vs CLL/SLL) | -0.0244 | Table 2 |
+| Disease effect on Vc (B-cell NHL) | 0.00224 | Table 2 |
+| Disease effect on Vc (WM) | 0.152 | Table 2 |
+| Disease effect on Vc (Other) | -0.0200 | Table 2 |
+| Mild renal impairment effect on CL | 0.0537 | Table 2 |
+| Moderate renal impairment effect on CL | -0.00186 | Table 2 |
+| Mild hepatic impairment effect on CL | 0.00401 | Table 2 |
+| Moderate CYP3A4 inducer effect on CL | 0.0220 | Table 2 |
+| Strong CYP3A4 inhibitor effect on CL | -0.0119 | Table 2 |
+| Low-dose (\<30 mg) effect on F | -0.151 | Table 2 |
+| PPI effect on F | 0.00232 | Table 2 |
+| H2 antagonist effect on F | 0.0264 | Table 2 |
+| Antacid effect on F | -0.0360 | Table 2 |
+| CL IIV | 39.8% CV -\> omega^2 = 0.14710 | Table 2 (log(1 + 0.398^2)) |
+| Vc IIV | 17.1% CV -\> omega^2 = 0.02884 | Table 2 (log(1 + 0.171^2)) |
+| Proportional residual SD | 0.222 | Table 2 |
+| Additive residual SD | 3.19 ng/mL | Table 2 |
+| S2 = V2/1000 -\> Cc = 1000 \* central / vc | – | NONMEM `$PK S2 = V2 / 1000` (dose in mg, Vc in L, Cc in ng/mL) |
+| Terminal half-life derived from parameter estimates | 85 h | Kemal 2026 Section 3.2 |
+| Tmax (observed median) | ~2 h | Kemal 2026 Introduction |
+| Accumulation ratio (AUC0-24) | 1.8 to 3.4 | Kemal 2026 Introduction |
+| Accumulation ratio (Cmax) | 1.53 to 2.85 | Kemal 2026 Introduction |
+
+## Virtual cohort
+
+Original observed data are not publicly available. The figures below use
+small virtual populations (n = 50 per dose arm across the three
+BELLWAVE-003 dose levels of 45, 65, and 80 mg qd; 150 subjects total,
+well under the 200 per arm cap) whose covariate distributions
+approximate the pooled analysis population (Kemal 2026 Table 1). All
+covariates are set to the median / reference-category typical individual
+to keep the simulation deterministic-typical; between-arm differences
+reflect dose only. Reproducing the paper’s forest-plot covariate
+simulations (Figure 1) would require the full covariate distributions
+and is out of scope for this per-model validation.
+
+``` r
+
+set.seed(19260517)
+
+typical_covs <- list(
+  WT                       = 73.5,   # reference weight (NONMEM $PK)
+  AGE                      = 68,     # reference age
+  ALB                      = 41.2,   # reference albumin, g/L
+  SEXF                     = 0L,     # male reference
+  RACE_ASIAN               = 0L,     # White reference
+  RACE_BLACK               = 0L,
+  DIS_BCELLNHL             = 0L,     # CLL/SLL reference
+  DIS_WM                   = 0L,
+  DIS_OTHER_HEME           = 0L,
+  RENALIMP_MILD            = 0L,     # normal renal function
+  RENALIMP_MOD             = 0L,
+  HEPIMP_MILD              = 0L,     # normal hepatic function
+  CONMED_CYP3A4_IND_MOD    = 0L,     # no comedication
+  CONMED_CYP3A4_INH_STRONG = 0L,
+  CONMED_PPI               = 0L,
+  CONMED_H2RA              = 0L,
+  CONMED_ANTACID           = 0L
+)
+
+make_cohort <- function(dose_mg, n_id, id_offset) {
+  # 28 daily doses at 0, 24, ..., 24*27 h; dense observation grid over
+  # first 24 h and around each trough, plus post-dose-28 half-life
+  # window to expose the terminal phase.
+  dose_times   <- seq(0, by = 24, length.out = 28)
+  obs_times    <- sort(unique(c(
+    seq(0, 24, by = 0.5),                        # first-dose PK profile
+    dose_times,                                  # pre-dose troughs
+    dose_times + 2,                              # near-Tmax at each dose
+    seq(24 * 27, 24 * 27 + 24, by = 1),          # last-dose PK profile
+    seq(24 * 28, 24 * 28 + 24 * 10, by = 6)      # terminal-phase tail
+  )))
+
+  cov_cols <- as.data.frame(typical_covs)
+
+  ids <- id_offset + seq_len(n_id)
+
+  doses <- tidyr::crossing(id = ids, time = dose_times) |>
+    dplyr::mutate(evid = 1L, amt = dose_mg, cmt = "depot", DOSE = dose_mg)
+
+  obs <- tidyr::crossing(id = ids, time = obs_times) |>
+    dplyr::mutate(evid = 0L, amt = 0, cmt = "central", DOSE = dose_mg)
+
+  ev <- dplyr::bind_rows(doses, obs) |>
+    dplyr::arrange(id, time, dplyr::desc(evid)) |>
+    dplyr::mutate(treatment = paste0(dose_mg, " mg qd"))
+
+  cbind(ev, cov_cols)
+}
+
+events <- dplyr::bind_rows(
+  make_cohort(45, n_id = 50, id_offset =   0L),
+  make_cohort(65, n_id = 50, id_offset = 100L),
+  make_cohort(80, n_id = 50, id_offset = 200L)
+)
+
+stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
+```
+
+## Simulation
+
+``` r
+
+mod <- rxode2::rxode2(readModelDb("Kemal_2026_nemtabrutinib"))
+#> ℹ parameter labels from comments will be replaced by 'label()'
+
+sim <- rxode2::rxSolve(
+  mod,
+  events = events,
+  keep   = c("treatment", "DOSE"),
+  addDosing = FALSE
+) |>
+  as.data.frame()
+```
+
+## Replicate published patterns
+
+The paper does not publish observed concentration-time data (the
+BELLWAVE trials are ongoing) and does not publish a summary NCA table.
+Instead the Introduction reports narrative descriptors (median Tmax ~ 2
+h, dose-proportional exposure at \>= 30 mg, accumulation ratios 1.8-3.4
+for AUC0-24 and 1.53-2.85 for Cmax) and Section 3.2 reports a derived
+terminal half-life of 85 h. Figure 2 plots per-subject Cavg and Cmax
+across dose levels but the underlying values are not tabulated. The
+chunks below reproduce the exposure patterns implied by the packaged
+full-covariate model at the three BELLWAVE-003 doses (45, 65, 80 mg qd).
+
+### First-dose PK profile
+
+``` r
+
+sim |>
+  dplyr::filter(time <= 24) |>
+  ggplot(aes(time, Cc, group = interaction(id, treatment), colour = treatment)) +
+  geom_line(alpha = 0.35) +
+  facet_wrap(~treatment) +
+  labs(
+    x = "Time after first dose (h)",
+    y = "Nemtabrutinib plasma concentration (ng/mL)",
+    title = "First-dose PK profile by dose level",
+    caption = "Per-subject simulations (n = 50 per arm, typical covariates)."
+  ) +
+  theme_bw() +
+  theme(legend.position = "none")
+```
+
+![](Kemal_2026_nemtabrutinib_files/figure-html/first-dose-1.png)
+
+### Steady-state trough progression across the first 28 days
+
+``` r
+
+dose_times_grid <- seq(0, by = 24, length.out = 28)
+
+sim |>
+  dplyr::filter(time %in% dose_times_grid, time > 0) |>
+  dplyr::mutate(day = round(time / 24)) |>
+  dplyr::group_by(treatment, day) |>
+  dplyr::summarise(
+    median_pre = median(Cc, na.rm = TRUE),
+    p25_pre    = quantile(Cc, 0.25, na.rm = TRUE),
+    p75_pre    = quantile(Cc, 0.75, na.rm = TRUE),
+    .groups    = "drop"
+  ) |>
+  ggplot(aes(day, median_pre, colour = treatment, fill = treatment)) +
+  geom_ribbon(aes(ymin = p25_pre, ymax = p75_pre), alpha = 0.2, colour = NA) +
+  geom_line(size = 0.7) +
+  labs(
+    x = "Study day (pre-dose)",
+    y = "Nemtabrutinib pre-dose concentration (ng/mL)",
+    title = "Pre-dose (trough) concentrations approaching steady state",
+    caption = "Ribbons show IQR; lines show medians (n = 50 per arm). The paper reports 'plateau after ~15 days' (Introduction)."
+  ) +
+  theme_bw()
+#> Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
+#> ℹ Please use `linewidth` instead.
+#> This warning is displayed once per session.
+#> Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+#> generated.
+```
+
+![](Kemal_2026_nemtabrutinib_files/figure-html/trough-1.png)
+
+## PKNCA validation
+
+Compute Cmax, Tmax, AUC0-24 on day 1, and derived terminal half-life
+from the terminal-phase window after the 28th dose (last dose at t = 648
+h). PKNCA formulas include the treatment grouping variable so per-dose
+values are separately available.
+
+``` r
+
+sim_day1 <- sim |>
+  dplyr::filter(time <= 24, !is.na(Cc)) |>
+  dplyr::select(id, time, Cc, treatment)
+
+# Guarantee a time=0 row per (id, treatment); for extravascular pre-dose Cc=0.
+sim_day1 <- dplyr::bind_rows(
+  sim_day1,
+  sim_day1 |> dplyr::distinct(id, treatment) |>
+    dplyr::mutate(time = 0, Cc = 0)
+) |>
+  dplyr::distinct(id, treatment, time, .keep_all = TRUE) |>
+  dplyr::arrange(id, treatment, time)
+
+conc_day1 <- PKNCA::PKNCAconc(sim_day1, Cc ~ time | treatment + id)
+
+dose_day1 <- events |>
+  dplyr::filter(evid == 1, time == 0) |>
+  dplyr::select(id, time, amt, treatment)
+
+pk_dose_day1 <- PKNCA::PKNCAdose(dose_day1, amt ~ time | treatment + id)
+
+intervals_day1 <- data.frame(
+  start    = 0,
+  end      = 24,
+  cmax     = TRUE,
+  tmax     = TRUE,
+  auclast  = TRUE
+)
+
+nca_day1 <- PKNCA::pk.nca(
+  PKNCA::PKNCAdata(conc_day1, pk_dose_day1, intervals = intervals_day1)
+)
+```
+
+``` r
+
+# Terminal-phase profile after the last (28th) dose: obs times
+# 648 h ... 648 + 240 h. Use the paper's "85 h" claim as the check.
+sim_terminal <- sim |>
+  dplyr::filter(time >= 24 * 27, time <= 24 * 27 + 24 * 10, !is.na(Cc)) |>
+  dplyr::mutate(time_after_last_dose = time - 24 * 27) |>
+  dplyr::select(id, time = time_after_last_dose, Cc, treatment)
+
+# Guarantee a time=0 row per (id, treatment) so PKNCA can anchor the
+# terminal slope. Set Cc = 0 as the anchor -- half.life ignores the
+# time=0 point when it falls below the lambda-z window.
+sim_terminal <- dplyr::bind_rows(
+  sim_terminal,
+  sim_terminal |> dplyr::distinct(id, treatment) |>
+    dplyr::mutate(time = 0, Cc = 0)
+) |>
+  dplyr::distinct(id, treatment, time, .keep_all = TRUE) |>
+  dplyr::arrange(id, treatment, time)
+
+conc_terminal <- PKNCA::PKNCAconc(sim_terminal, Cc ~ time | treatment + id)
+
+# For the terminal window, no doses within the window -- use a synthetic
+# "dose at t=0" placeholder so PKNCA has a dose reference for half.life.
+dose_terminal <- events |>
+  dplyr::filter(evid == 1) |>
+  dplyr::group_by(id, treatment) |>
+  dplyr::summarise(time = 0, amt = dplyr::last(amt), .groups = "drop")
+
+pk_dose_terminal <- PKNCA::PKNCAdose(dose_terminal, amt ~ time | treatment + id)
+
+intervals_terminal <- data.frame(
+  start     = 0,
+  end       = 24 * 10,
+  half.life = TRUE
+)
+
+nca_terminal <- PKNCA::pk.nca(
+  PKNCA::PKNCAdata(conc_terminal, pk_dose_terminal, intervals = intervals_terminal)
+)
+```
+
+``` r
+
+# Assemble a per-treatment simulated summary alongside the paper's
+# narrative reference values. The paper gives an accumulation-ratio
+# range across dose levels rather than per-dose Cmax / AUC values;
+# the derived-half-life value is the single testable claim (85 h,
+# Kemal 2026 Section 3.2). Tmax and dose proportionality of exposure
+# are qualitative expectations.
+
+sim_day1_summary <- as.data.frame(nca_day1$result) |>
+  dplyr::group_by(treatment, PPTESTCD) |>
+  dplyr::summarise(sim_median = median(PPORRES, na.rm = TRUE), .groups = "drop") |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = sim_median) |>
+  dplyr::rename(
+    "Treatment"                 = treatment,
+    "Simulated Cmax (ng/mL)"    = cmax,
+    "Simulated Tmax (h)"        = tmax,
+    "Simulated AUC0-24 (ng*h/mL)" = auclast
+  )
+
+sim_terminal_summary <- as.data.frame(nca_terminal$result) |>
+  dplyr::filter(PPTESTCD == "half.life") |>
+  dplyr::group_by(treatment) |>
+  dplyr::summarise(
+    "Simulated t1/2 (h, terminal)" = median(PPORRES, na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  dplyr::rename("Treatment" = treatment)
+
+summary_tbl <- dplyr::left_join(sim_day1_summary, sim_terminal_summary, by = "Treatment") |>
+  dplyr::mutate(
+    "Paper Tmax (h, observed median)" = "~ 2 (Introduction)",
+    "Paper t1/2 (h, derived)"         = "85 (Section 3.2)"
+  )
+
+knitr::kable(
+  summary_tbl,
+  caption = "Simulated day-1 Cmax / Tmax / AUC0-24 and terminal-phase half-life per dose arm alongside the paper's reported values. Simulated Tmax should sit near 2 h and simulated t1/2 should be near 85 h; the paper does not tabulate per-dose Cmax / AUC values.",
+  digits  = 2
+)
+```
+
+| Treatment | Simulated AUC0-24 (ng\*h/mL) | Simulated Cmax (ng/mL) | Simulated Tmax (h) | Simulated t1/2 (h, terminal) | Paper Tmax (h, observed median) | Paper t1/2 (h, derived) |
+|:---|---:|---:|---:|---:|:---|:---|
+| 45 mg qd | 5950.79 | 360.36 | 2 | 84.69 | ~ 2 (Introduction) | 85 (Section 3.2) |
+| 65 mg qd | 8959.41 | 513.16 | 2 | 88.92 | ~ 2 (Introduction) | 85 (Section 3.2) |
+| 80 mg qd | 10888.23 | 626.23 | 2 | 84.22 | ~ 2 (Introduction) | 85 (Section 3.2) |
+
+Simulated day-1 Cmax / Tmax / AUC0-24 and terminal-phase half-life per
+dose arm alongside the paper’s reported values. Simulated Tmax should
+sit near 2 h and simulated t1/2 should be near 85 h; the paper does not
+tabulate per-dose Cmax / AUC values. {.table}
+
+### Dose proportionality check
+
+The paper states nemtabrutinib bioavailability is “linear at high
+concentrations” and the -0.151 low-dose effect on F applies only for
+doses \< 30 mg (Table 2). All three BELLWAVE-003 doses (45, 65, 80 mg)
+sit above the 30 mg threshold, so simulated AUC0-24 should scale
+proportionally with dose. Ratios of median AUC0-24 relative to the 45 mg
+arm:
+
+``` r
+
+sim_day1_summary |>
+  dplyr::mutate(
+    dose_mg = as.numeric(sub(" mg qd", "", `Treatment`)),
+    expected_ratio = dose_mg / 45
+  ) |>
+  dplyr::mutate(
+    simulated_ratio = `Simulated AUC0-24 (ng*h/mL)` / `Simulated AUC0-24 (ng*h/mL)`[dose_mg == 45]
+  ) |>
+  dplyr::select(`Treatment`, dose_mg, simulated_ratio, expected_ratio) |>
+  dplyr::rename(
+    "Dose (mg)"               = dose_mg,
+    "Simulated AUC0-24 ratio" = simulated_ratio,
+    "Expected (dose/45)"      = expected_ratio
+  ) |>
+  knitr::kable(
+    caption = "Dose proportionality check across the >= 30 mg linear-F regime.",
+    digits  = 3
+  )
+```
+
+| Treatment | Dose (mg) | Simulated AUC0-24 ratio | Expected (dose/45) |
+|:----------|----------:|------------------------:|-------------------:|
+| 45 mg qd  |        45 |                   1.000 |              1.000 |
+| 65 mg qd  |        65 |                   1.506 |              1.444 |
+| 80 mg qd  |        80 |                   1.830 |              1.778 |
+
+Dose proportionality check across the \>= 30 mg linear-F regime.
+{.table}
+
+## Assumptions and deviations
+
+- Covariate distributions in the virtual cohort were collapsed to the
+  reference / typical individual (73.5 kg, 68 y, 41.2 g/L albumin, White
+  male with CLL/SLL, no organ impairment, no CYP3A4 modulators, no
+  acid-reducing agents) to keep the simulation deterministic across the
+  three dose arms. Reproducing the paper’s forest-plot covariate
+  simulations (Figure 1) would require the full observed covariate
+  distributions from BELLWAVE-001 and -003, which are not published.
+- The paper does not publish observed concentration-time data or a
+  summary NCA table. The comparison chunk above therefore benchmarks
+  simulated Tmax (~ 2 h) and terminal half-life (~ 85 h) against the
+  paper’s narrative values; per-dose Cmax and AUC are shown as reference
+  values only.
+- Additive residual error (3.19 ng/mL, RSE 101%, 95% CI includes zero)
+  was retained in the final model per the paper’s full-model approach
+  even though its identifiability is very poor.
+- IIV variance was computed from the paper’s reported CV% via omega^2 =
+  log(1 + CV^2), which is the exact log-normal transformation matching
+  NONMEM’s `$OMEGA` in the supplement code (initial estimate 0.164 for
+  CL / 0.0692 for Vc; the final parameterization corresponds to the CV%
+  values reported in the main-article Table 2).
+- The 30 mg dose threshold for the low-dose bioavailability effect is
+  encoded as `if (DOSE < 30) dose_lt30 <- 1` using the `DOSE` regressor
+  carried on the event table; this matches the NONMEM supplement’s
+  `IF (DOSE < 30) THEN DOSE_F = 1 + THETA(7)` logic (dose-record level,
+  not subject level).

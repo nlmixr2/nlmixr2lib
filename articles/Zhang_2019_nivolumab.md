@@ -4,7 +4,7 @@
 
 library(nlmixr2lib)
 library(rxode2)
-#> rxode2 5.1.2 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.5 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -477,7 +477,7 @@ knitr::kable(
 
 | Interval Start | Interval End | treatment | N | AUClast (day\*ug/mL) | Cmax (ug/mL) | Cmin (ug/mL) |
 |---:|---:|:---|:---|:---|:---|:---|
-| 0 | 14 | nivo 3 mg/kg q2w monotherapy | 75 | 1080 \[42.9\] | 106 \[33.9\] | 58.4 \[52.6\] |
+| 0 | 14 | nivo 3 mg/kg q2w monotherapy | 75 | 1080 \[43.0\] | 106 \[34.0\] | 58.6 \[52.7\] |
 
 Cycle-12 NCA summary (days 154-168, monotherapy arm) — pseudo-steady
 state. {.table}

@@ -302,9 +302,6 @@ stopifnot(!anyDuplicated(unique(events_single[, c("id", "time", "evid")])))
 
 sim_single <- rxode2::rxSolve(mod, events = events_single,
                               keep = c("cohort", "WT", "DIS_HEALTHY"))
-#> ℹ parameter labels from comments will be replaced by 'label()'
-#> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_vc_1, etaiov_vc_2, etaiov_vc_3
-#> as a work-around try putting the mu-referenced expression on a simple line
 ```
 
 ``` r

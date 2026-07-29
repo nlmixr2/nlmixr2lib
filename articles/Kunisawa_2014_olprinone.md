@@ -250,7 +250,6 @@ sim_stoch_s2 <- rxode2::rxSolve(
   keep   = c("WT")
 ) |>
   as.data.frame()
-#> ℹ parameter labels from comments will be replaced by 'label()'
 ```
 
 ## Replicate published figures

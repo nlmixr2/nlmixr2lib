@@ -267,12 +267,17 @@ within rounding, confirming the structural model and parameter encoding.
 
 ``` r
 
+# NOTE: solve `$simulationModel` rather than the rxUi object. This model has TWO
+# endpoints whose observables read from different ODE states; on the rxUi solve
+# path the second endpoint's state is misclassified as an input parameter and
+# rxSolve aborts with "parameter(s) are required for solving: <state>". The
+# simulation model resolves the states correctly and returns both observables.
 # Use rxode2::zeroRe to remove IIV; the validation here is the
 # typical-value behavior across age strata and across CSF protein levels.
 mod_typical <- rxode2::zeroRe(mod)
 #> ℹ parameter labels from comments will be replaced by 'label()'
 sim <- rxode2::rxSolve(
-  object = mod_typical, events = events,
+  object = mod_typical$simulationModel, events = events,
   keep   = c("cohort", "stratum", "dose_mg", "q_h", "WT", "PAGE",
              "CREAT", "CREAT_REF", "CSF_TPRO")
 ) |>

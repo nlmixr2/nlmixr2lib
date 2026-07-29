@@ -4,7 +4,7 @@
 
 library(nlmixr2lib)
 library(rxode2)
-#> rxode2 5.1.2 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.5 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -263,7 +263,6 @@ events_flat <- pop |>
 sim_flat <- rxSolve(mod, events_flat,
                     keep = c("cohort"),
                     returnType = "data.frame")
-#> ℹ parameter labels from comments will be replaced by 'label()'
 
 sim_wt_c1 <- sim |>
   dplyr::filter(cohort == "15 mg/kg q1w x2 / 21-day cycle",

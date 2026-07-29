@@ -4,7 +4,7 @@
 
 library(nlmixr2lib)
 library(rxode2)
-#> rxode2 5.1.2 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.5 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -174,7 +174,6 @@ sim <- events_all %>%
   }) %>%
   ungroup()
 #> ℹ parameter labels from comments will be replaced by 'label()'
-#> ℹ parameter labels from comments will be replaced by 'label()'
 ```
 
 ### Replicate Figure 3: concentration-time profiles with and without loading dose
@@ -240,7 +239,6 @@ sim_bw <- rxSolve(mod, events_bw %>% rename(id = ID),
                   returnType = "data.frame",
                   keep = "wt_band") %>%
   as_tibble()
-#> ℹ parameter labels from comments will be replaced by 'label()'
 
 fig4 <- sim_bw %>%
   filter(time > 0) %>%
@@ -329,8 +327,8 @@ knitr::kable(nca_tbl,
 | PPTESTCD | median |
 |:---------|-------:|
 | auclast  |     NA |
-| cmax     | 27.530 |
-| cmin     | 10.987 |
+| cmax     | 26.640 |
+| cmin     | 10.764 |
 | tmax     |  7.000 |
 
 Simulated NCA on the first dosing interval of 240 mg LD + 120 mg QM (N =
@@ -395,8 +393,8 @@ knitr::kable(cmin_table,
 
 | metric | published_ngmL | simulated_ugmL | simulated_ngmL | ratio_sim_pub |
 |:---|---:|---:|---:|---:|
-| Cmin after 240 mg LD (end of month 1) | 15900 | 16.64 | 16643.29 | 1.05 |
-| Cmin,ss during 120 mg QM (end of month 11) | 15400 | 16.89 | 16890.95 | 1.10 |
+| Cmin after 240 mg LD (end of month 1) | 15900 | 17.04 | 17036.11 | 1.07 |
+| Cmin,ss during 120 mg QM (end of month 11) | 15400 | 16.77 | 16769.66 | 1.09 |
 
 Cmin comparison: simulated medians vs. Kielbasa 2020 reported values.
 {.table}

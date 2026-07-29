@@ -285,7 +285,6 @@ stopifnot(!anyDuplicated(regimens[, c("id", "time", "evid")]))
 
 set.seed(20262)
 sim2 <- rxode2::rxSolve(mod, events = regimens, keep = c("regimen"))
-#> ℹ parameter labels from comments will be replaced by 'label()'
 ```
 
 ``` r

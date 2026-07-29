@@ -438,10 +438,10 @@ knitr::kable(nca_summary,
 
 | start | end | cohort | N   | auclast | cmax | cmin | tmax |
 |------:|----:|:-------|:----|:--------|:-----|:-----|:-----|
-|   140 | 168 | BCL    | 1   | 14200   | 658  | 387  | 1.00 |
+|   140 | 168 | BCL    | 1   | 14200   | 658  | 388  | 1.00 |
 |   140 | 168 | CLL    | 1   | 12000   | 584  | 313  | 1.00 |
-|   140 | 168 | DLBCL  | 1   | 14200   | 658  | 387  | 1.00 |
-|   140 | 168 | MCL    | 1   | 6740    | 402  | 136  | 1.00 |
+|   140 | 168 | DLBCL  | 1   | 14200   | 658  | 388  | 1.00 |
+|   140 | 168 | MCL    | 1   | 6740    | 402  | 137  | 1.00 |
 
 Simulated steady-state (cycle 6, days 140-168) NCA parameters by
 diagnosis. {.table}
@@ -487,10 +487,10 @@ nca_compare |>
 
 | cohort | AUC tau (ug/mL \* h, simulated) | Cmax tau (ug/mL, simulated) | AUC tau (ug/mL \* h, published) |
 |:---|---:|---:|---:|
-| BCL | 339644.9 | 657.5642 | 12574 |
-| CLL | 287628.8 | 583.9265 | 9943 |
-| DLBCL | 339644.9 | 657.5642 | 12626 |
-| MCL | 161766.4 | 402.1802 | 6038 |
+| BCL | 340061.2 | 658.3408 | 12574 |
+| CLL | 287886.3 | 584.4277 | 9943 |
+| DLBCL | 340061.2 | 658.3408 | 12626 |
+| MCL | 161805.0 | 402.2699 | 6038 |
 
 Simulated vs published steady-state AUC tau by diagnosis (CLL11
 regimen). {.table style="width:100%;"}

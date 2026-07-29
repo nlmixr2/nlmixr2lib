@@ -278,7 +278,6 @@ ev_800    <- dplyr::bind_rows(doses_800, obs_800) |>
 sim_800 <- rxode2::rxSolve(mod, events = ev_800, keep = "WT") |>
            as.data.frame() |>
            dplyr::filter(time > 0)
-#> ℹ parameter labels from comments will be replaced by 'label()'
 
 fig3_summary <- sim_800 |>
   dplyr::group_by(time) |>
@@ -367,7 +366,6 @@ ev_oral    <- dplyr::bind_rows(doses_oral, obs_oral) |>
 sim_oral <- rxode2::rxSolve(mod, events = ev_oral, keep = "WT") |>
             as.data.frame() |>
             dplyr::filter(time > 0)
-#> ℹ parameter labels from comments will be replaced by 'label()'
 
 fig4_summary <- sim_oral |>
   dplyr::group_by(time) |>

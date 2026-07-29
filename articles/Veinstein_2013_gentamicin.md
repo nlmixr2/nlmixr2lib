@@ -224,8 +224,6 @@ ggplot(vpc_summary, aes(time, Q50)) +
 #> log-10 transformation introduced infinite values.
 #> log-10 transformation introduced infinite values.
 #> log-10 transformation introduced infinite values.
-#> Warning: Removed 3 rows containing missing values or values outside the scale range
-#> (`geom_ribbon()`).
 ```
 
 ![](Veinstein_2013_gentamicin_files/figure-html/fig-vpc-1.png)
@@ -372,7 +370,7 @@ dplyr::bind_rows(simulated_view, published) |>
 
 | Treatment | Source | Cmax (mg/L) | AUC0-24 (mg.h/L) |
 |:---|:---|---:|---:|
-| 6 mg/kg pre-HD | Simulated (this vignette, 200-subject VPC mean) | 31.0 | 192 |
+| 6 mg/kg pre-HD | Simulated (this vignette, 200-subject VPC mean) | 31.0 | 466 |
 | 6 mg/kg pre-HD | Table 3 (observed) | 31.8 +/- 16.8 | 209 +/- 103 |
 | 6 mg/kg pre-HD | Table 5 (MCS) | 31.0 +/- 10.9 | 190.8 +/- 65.0 |
 
@@ -411,8 +409,8 @@ knitr::kable(
 
 | Time_h | Simulated | Veinstein_2013_Table_3 |
 |-------:|----------:|-----------------------:|
-|     24 |      3.93 |            4.1 +/- 2.3 |
-|     48 |      1.93 |            1.8 +/- 1.2 |
+|     24 |     11.92 |            4.1 +/- 2.3 |
+|     48 |      5.52 |            1.8 +/- 1.2 |
 
 Simulated mean trough concentrations (mg/L) at t = 24 h and t = 48 h
 compared with the Veinstein 2013 Table 3 cohort means. {.table}

@@ -414,7 +414,7 @@ knitr::kable(ss_nca, digits = 2,
 | PMA 34-40 wk (q8h)  | cmax     |  29.97 |  16.48 |  51.52 |
 | PMA 34-40 wk (q8h)  | cmin     |  19.46 |   5.97 |  41.07 |
 | PMA \< 34 wk (q12h) | auclast  | 342.84 | 164.32 | 694.98 |
-| PMA \< 34 wk (q12h) | cav      |  28.57 |  13.69 |  57.92 |
+| PMA \< 34 wk (q12h) | cav      |  28.57 |  13.69 |  57.91 |
 | PMA \< 34 wk (q12h) | cmax     |  34.13 |  19.62 |  62.89 |
 | PMA \< 34 wk (q12h) | cmin     |  23.65 |   9.10 |  53.21 |
 | PMA \> 40 wk (q6h)  | auclast  | 134.60 |  83.04 | 260.01 |

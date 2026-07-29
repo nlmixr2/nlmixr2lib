@@ -243,8 +243,8 @@ intervals <- data.frame(
 
 nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
 summary(nca_res)
-#>  start end    treatment   N     auclast       cmax       cmin        cav
-#>      0  14 300mg_Q2W_SS 400 2080 [37.4] 160 [36.9] 128 [38.9] 148 [37.4]
+#>  start end    treatment   N     auclast       cmax        cmin        cav
+#>      0  14 300mg_Q2W_SS 400 1580 [37.4] 122 [36.9] 97.5 [38.9] 113 [37.4]
 #> 
 #> Caption: auclast, cmax, cmin, cav: geometric mean and geometric coefficient of variation; N: number of subjects
 ```
@@ -304,10 +304,10 @@ knitr::kable(typical_summary, digits = 2,
 
 | metric               | typical_value |
 |:---------------------|--------------:|
-| Cmax (ug/mL)         |        154.76 |
-| Cmin/Ctrough (ug/mL) |        124.40 |
-| Cavg (ug/mL)         |        141.34 |
-| AUC_tau (day\*ug/mL) |       2009.01 |
+| Cmax (ug/mL)         |        117.77 |
+| Cmin/Ctrough (ug/mL) |         94.67 |
+| Cavg (ug/mL)         |        107.56 |
+| AUC_tau (day\*ug/mL) |       1528.85 |
 
 Typical-subject steady-state exposure (WT = 75 kg, nonECZTRA = 0,
 dilution = 0; IIV zeroed). {.table}

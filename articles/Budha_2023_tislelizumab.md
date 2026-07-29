@@ -4,7 +4,7 @@
 
 library(nlmixr2lib)
 library(rxode2)
-#> rxode2 5.1.2 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.5 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -105,7 +105,7 @@ tumtp_p <- c(
   HCC   = 0.122,
   NPC   = 0.008,
   NSCLC = 0.443,
-  OC    = 0.020,
+  TUMTP_OVARIAN = 0.020,
   UC    = 0.058,
   Other = 0.108
 )

@@ -4,7 +4,7 @@
 
 library(nlmixr2lib)
 library(rxode2)
-#> rxode2 5.1.2 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.5 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -189,8 +189,8 @@ cycle1_peak <- sim_ref |>
   summarise(Cmax = max(Cc, na.rm = TRUE),
             Cmin = min(Cc[time > 0.1 & time < cycle_days], na.rm = TRUE))
 cycle1_peak
-#>       Cmax     Cmin
-#> 1 70.01182 1.679592
+#>       Cmax    Cmin
+#> 1 70.01182 1.67959
 ```
 
 For the 70-kg reference subject, the simulated C0 (end-of-infusion)

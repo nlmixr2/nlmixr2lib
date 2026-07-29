@@ -124,13 +124,18 @@ events <- dplyr::bind_rows(
 
 ``` r
 
+# NOTE: solve `$simulationModel` rather than the rxUi object. This model has TWO
+# endpoints whose observables read from different ODE states; on the rxUi solve
+# path the second endpoint's state is misclassified as an input parameter and
+# rxSolve aborts with "parameter(s) are required for solving: <state>". The
+# simulation model resolves the states correctly and returns both observables.
 mod <- readModelDb("Ngamprasertwong_2016_propofol_sheep") |> rxode2::rxode()
 #> ℹ parameter labels from comments will be replaced by 'label()'
 
 # Typical-subject simulation: zero out random effects to reproduce the
 # cohort-mean concentration time course shown in Table 1 / Fig 2.
 mod_typ <- rxode2::zeroRe(mod)
-sim_typ <- rxode2::rxSolve(mod_typ, events = events, keep = "HR") |>
+sim_typ <- rxode2::rxSolve(mod_typ$simulationModel, events = events, keep = "HR") |>
   as.data.frame()
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalqmf'
 ```
@@ -254,7 +259,7 @@ events_cohort <- purrr::map_dfr(seq_len(n_sim), function(i) {
 }) |>
   dplyr::arrange(id, time, dplyr::desc(evid))
 
-sim_cohort <- rxode2::rxSolve(mod, events = events_cohort,
+sim_cohort <- rxode2::rxSolve(mod$simulationModel, events = events_cohort,
                               keep = c("HR", "treatment")) |>
   as.data.frame()
 

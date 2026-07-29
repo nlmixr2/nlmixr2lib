@@ -399,17 +399,17 @@ knitr::kable(
 | stratum | Source | Cmax | Cmin | AUC012 | t_half |
 |:---|:---|---:|---:|---:|---:|
 | GA 32-34 wk 25 kIU | Padari 2018 Table 2 median | 62.5 | 3.3 | 173.6 | 3.5 |
-| GA 32-34 wk 25 kIU | Simulated (typical value) | 56151.2 | 3993.2 | 161756.0 | 4.2 |
+| GA 32-34 wk 25 kIU | Simulated (typical value) | 56151.2 | 3993.2 | 161756.1 | 4.2 |
 | GA 32-34 wk 50 kIU | Padari 2018 Table 2 median | 94.5 | 6.4 | 225.1 | 4.2 |
 | GA 32-34 wk 50 kIU | Simulated (typical value) | 112302.4 | 7986.5 | 323512.2 | 4.2 |
 | GA\<=28 wk 25 kIU | Padari 2018 Table 2 median | 58.9 | 3.4 | 161.2 | 4.6 |
-| GA\<=28 wk 25 kIU | Simulated (typical value) | 54652.9 | 6602.0 | 201967.6 | 5.3 |
+| GA\<=28 wk 25 kIU | Simulated (typical value) | 54652.8 | 6602.0 | 201967.3 | 5.3 |
 | GA\<=28 wk 50 kIU | Padari 2018 Table 2 median | 145.5 | 7.1 | 389.3 | 3.8 |
-| GA\<=28 wk 50 kIU | Simulated (typical value) | 109305.8 | 13204.0 | 403935.2 | 5.3 |
+| GA\<=28 wk 50 kIU | Simulated (typical value) | 109305.7 | 13204.0 | 403934.6 | 5.3 |
 | GA\>=35 wk 25 kIU | Padari 2018 Table 2 median | 62.5 | 3.3 | 173.6 | 3.5 |
-| GA\>=35 wk 25 kIU | Simulated (typical value) | 57822.9 | 3061.7 | 145859.1 | 3.8 |
+| GA\>=35 wk 25 kIU | Simulated (typical value) | 57822.8 | 3061.7 | 145859.1 | 3.8 |
 | GA\>=35 wk 50 kIU | Padari 2018 Table 2 median | 94.5 | 6.4 | 225.1 | 4.2 |
-| GA\>=35 wk 50 kIU | Simulated (typical value) | 115645.7 | 6123.4 | 291718.1 | 3.8 |
+| GA\>=35 wk 50 kIU | Simulated (typical value) | 115645.7 | 6123.4 | 291718.2 | 3.8 |
 
 Simulated typical-value NCA vs Padari 2018 Table 2 medians. Note that
 the table’s GA 32-34 wk and GA\>=35 wk rows of the paper share the same

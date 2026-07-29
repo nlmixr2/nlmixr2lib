@@ -491,14 +491,14 @@ knitr::kable(
 | 814 mg single dose           | cav        |   0.06 |   0.03 |    0.10 |
 | 814 mg single dose           | cmax       |   6.30 |   0.04 |   16.52 |
 | 814 mg single dose           | cmin       |   0.06 |   0.03 |    0.09 |
-| 814 mg single dose           | half.life  | 625.43 | 386.29 | 1237.31 |
+| 814 mg single dose           | half.life  | 625.43 | 386.29 | 1237.30 |
 | 814 mg single dose           | tmax       |   0.22 |   0.00 |    0.45 |
-| 900 mg q8h (GBS prophylaxis) | aucinf.obs |  90.79 |  61.76 |  112.25 |
+| 900 mg q8h (GBS prophylaxis) | aucinf.obs |  90.80 |  61.76 |  112.25 |
 | 900 mg q8h (GBS prophylaxis) | auclast    |  30.39 |  20.66 |   37.54 |
 | 900 mg q8h (GBS prophylaxis) | cav        |   3.80 |   2.58 |    4.69 |
 | 900 mg q8h (GBS prophylaxis) | cmax       |  17.83 |  15.79 |   18.99 |
 | 900 mg q8h (GBS prophylaxis) | cmin       |   0.56 |   0.18 |    0.97 |
-| 900 mg q8h (GBS prophylaxis) | half.life  |   2.34 |   2.11 |    2.66 |
+| 900 mg q8h (GBS prophylaxis) | half.life  |   2.35 |   2.11 |    2.66 |
 | 900 mg q8h (GBS prophylaxis) | tmax       |   8.50 |   0.50 |   16.50 |
 
 PKNCA-derived per-regimen summary statistics (median and 5th-95th

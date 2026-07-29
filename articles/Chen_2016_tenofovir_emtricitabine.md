@@ -4,7 +4,7 @@
 
 library(nlmixr2lib)
 library(rxode2)
-#> rxode2 5.1.2 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.5 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -427,7 +427,6 @@ day1_obs_times <- c(0.05, 0.1, 0.25, 0.5, 1, 2, 4, 6, 8, 12, 18, 24) / 24
 day1_events <- make_events(cohort, dose_times = 0, obs_times = day1_obs_times)
 sim_day1 <- rxSolve(mod, day1_events, returnType = "data.frame",
                     keep = c("WT", "SEXF", "HIV_POS"))
-#> ℹ parameter labels from comments will be replaced by 'label()'
 
 # TFV plasma NCA
 nca_tfv <- sim_day1 %>%
@@ -1016,7 +1015,6 @@ make_ipergay_events <- function(pop_df) {
 ipg_events <- make_ipergay_events(cohort)
 sim_ipg <- rxSolve(mod, ipg_events, returnType = "data.frame",
                    keep = c("SEXF", "HIV_POS"))
-#> ℹ parameter labels from comments will be replaced by 'label()'
 
 ipg_ratios <- sim_ipg %>%
   filter(time > 0) %>%

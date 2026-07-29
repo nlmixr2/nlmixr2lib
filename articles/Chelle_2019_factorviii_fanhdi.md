@@ -194,10 +194,8 @@ sim_25 <- rxSolve(mod, events = events_25, returnType = "data.frame",
 #> ℹ parameter labels from comments will be replaced by 'label()'
 sim_50 <- rxSolve(mod, events = events_50, returnType = "data.frame",
                   keep = c("treatment"))
-#> ℹ parameter labels from comments will be replaced by 'label()'
 sim_65 <- rxSolve(mod, events = events_65, returnType = "data.frame",
                   keep = c("treatment"))
-#> ℹ parameter labels from comments will be replaced by 'label()'
 
 sim <- bind_rows(sim_25, sim_50, sim_65)
 ```

@@ -398,7 +398,7 @@ sim_fig5 <- rxode2::rxSolve(mod_intr, events = ev_all,
                             params = params_fig5,
                             keep = c("cohort", "dose_mg"),
                             returnType = "data.frame")
-#> [====|====|====|====|====|====|====|====|====|====] 0:00:09
+#> [====|====|====|====|====|====|====|====|====|====] 0:00:11
 
 # Pick the day-90 (steady state) serumK per subject per cohort.
 ss_per_subj <- sim_fig5 |>

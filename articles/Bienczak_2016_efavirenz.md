@@ -203,6 +203,12 @@ ggplot(c12h_data, aes(genotype, Cc)) +
   theme_bw() +
   theme(legend.position = "none",
         axis.text.x = element_text(angle = 30, hjust = 1))
+#> Warning in scale_y_log10(): log-10 transformation introduced infinite values.
+#> log-10 transformation introduced infinite values.
+#> Warning: Removed 180 rows containing non-finite outside the scale range
+#> (`stat_boxplot()`).
+#> Warning in min(x): no non-missing arguments to min; returning Inf
+#> Warning in max(x): no non-missing arguments to max; returning -Inf
 ```
 
 ![](Bienczak_2016_efavirenz_files/figure-html/figure-1-1.png)
@@ -308,12 +314,12 @@ knitr::kable(
 
 | genotype | Published median C12h (mg/L) | Simulated median C12h (mg/L) | C12h diff (%) | Published median AUC (mg\*h/L) | Simulated median AUC (mg\*h/L) | AUC diff (%) |
 |:---|:---|:---|:---|:---|:---|:---|
-| 516GG\|983TT | 1.55 | 1.53 | -1% | 37.5 | 38.9 | +4% |
-| 516GG\|983TC | 2.03 | 2.71\* | +34% | 46.3 | 65.1\* | +41% |
-| 516GG\|983CC | 18.22 | 17.34 | -5% | 438.9 | 416.7 | -5% |
-| 516GT\|983TT | 2.20 | 2.22 | +1% | 56.0 | 51.7 | -8% |
-| 516GT\|983TC | 7.79 | 8.19 | +5% | 258.4 | 198.4\* | -23% |
-| 516TT\|983TT | 7.55 | 6.76 | -10% | 176.0 | 164.6 | -6% |
+| 516GG\|983TT | 1.55 | 0.00\* | -100% | 37.5 | 0.0\* | -100% |
+| 516GG\|983TC | 2.03 | 0.00\* | -100% | 46.3 | 0.0\* | -100% |
+| 516GG\|983CC | 18.22 | 0.00\* | -100% | 438.9 | 0.0\* | -100% |
+| 516GT\|983TT | 2.20 | 0.00\* | -100% | 56.0 | 0.0\* | -100% |
+| 516GT\|983TC | 7.79 | 0.00\* | -100% | 258.4 | 0.0\* | -100% |
+| 516TT\|983TT | 7.55 | 0.00\* | -100% | 176.0 | 0.0\* | -100% |
 
 Simulated vs. Bienczak 2016 Table 3 median steady-state mid-dose
 efavirenz concentration and AUC0-tau, by CYP2B6 516G\>T\|983T\>C

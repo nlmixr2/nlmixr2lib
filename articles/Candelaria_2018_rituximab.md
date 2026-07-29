@@ -4,7 +4,7 @@
 
 library(nlmixr2lib)
 library(rxode2)
-#> rxode2 5.1.2 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.5 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -344,7 +344,7 @@ knitr::kable(comparison, digits = 1,
 | Cmax cycle 1 (ug/mL) | 197.2 | 196.8 |
 | AUC0-21d cycle 1 (h\*ug/mL) | 30824.3 | 44519.0 |
 | Cmax cycle 6 (ug/mL) | 249.8 | 291.0 |
-| AUC0-21d cycle 6 (h\*ug/mL) | 50011.1 | 60875.0 |
+| AUC0-21d cycle 6 (h\*ug/mL) | 50011.0 | 60875.0 |
 
 Simulated geometric-mean NCA vs Candelaria 2018 Table 3 RTXM83-arm
 geometric LS means. {.table}

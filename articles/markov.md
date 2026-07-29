@@ -190,13 +190,17 @@ fit <- nlmixr2est::nlmixr(modFun, data = dMarkov, est = "focei", control = list(
 #> → loading into symengine environment...
 #> → pruning branches (`if`/`else`) of full model...
 #> ✔ done
-#> → finding duplicate expressions in EBE model...
-#> [====|====|====|====|====|====|====|====|====|====] 0:00:00
-#> → optimizing duplicate expressions in EBE model...
+#> → optimizing duplicate expressions in EBE model (2 chunks)...
+#> [====|====|====|====|====|====|====|====|====|====] 0:00:00 
+#> 
+#> [====|====|====|====|====|====|====|====|====|====] 0:00:00 
+#> 
+#> [====|====|====|====|====|====|====|====|====|====] 0:00:00 
+#> 
 #> [====|====|====|====|====|====|====|====|====|====] 0:00:00
 #> → compiling EBE model...
 #> ✔ done
-#> rxode2 5.1.2 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.5 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 #> calculating covariance matrix
 #> done
@@ -211,9 +215,9 @@ fit
 #> ── Time (sec fit$time): ──
 #> 
 #>              setup    optimize  covariance preprocess postprocess table
-#> elapsed 0.06440881 0.003698924 0.003128415      0.054       0.023 0.041
+#> elapsed 0.06967596 0.006652646 0.005219659      0.061       0.022 0.048
 #>         compress    other
-#> elapsed    0.001 3.306764
+#> elapsed    0.002 4.315452
 #> 
 #> ── (fit$parFixed or fit$parFixedDf): ──
 #> 

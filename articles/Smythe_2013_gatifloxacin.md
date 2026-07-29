@@ -192,6 +192,8 @@ sim <- rxode2::rxSolve(
 ) |>
   as.data.frame() |>
   tibble::as_tibble()
+#> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_cl_1, etaiov_cl_2, etaiov_vc_1, etaiov_vc_2, etaiov_mtt_1, etaiov_mtt_2
+#> as a work-around try putting the mu-referenced expression on a simple line
 ```
 
 ## Replicate published figures
@@ -225,6 +227,10 @@ ggplot(sim_vpc, aes(time, Q50)) +
     title = "Figure 1 -- VPC of gatifloxacin concentrations",
     caption = "Replicates Figure 1 of Smythe 2013."
   )
+#> Warning in scale_y_log10(): log-10 transformation introduced infinite values.
+#> log-10 transformation introduced infinite values.
+#> log-10 transformation introduced infinite values.
+#> log-10 transformation introduced infinite values.
 ```
 
 ![](Smythe_2013_gatifloxacin_files/figure-html/figure-1-1.png)
@@ -354,16 +360,16 @@ knitr::kable(
 )
 ```
 
-| occasion              | PPTESTCD   | median |  q05 |   q95 |
-|:----------------------|:-----------|-------:|-----:|------:|
-| First dose            | aucinf.obs |     NA |   NA |    NA |
-| First dose            | cmax       |   3.08 | 2.02 |  4.81 |
-| First dose            | half.life  |   7.26 | 4.09 | 13.02 |
-| First dose            | tmax       |   1.75 | 1.25 |  3.25 |
-| Steady state (day 28) | aucinf.obs |     NA |   NA |    NA |
-| Steady state (day 28) | cmax       |   2.73 | 1.76 |  3.99 |
-| Steady state (day 28) | half.life  |   6.95 | 3.85 | 13.24 |
-| Steady state (day 28) | tmax       |   1.75 | 1.00 |  3.00 |
+| occasion              | PPTESTCD   | median | q05 | q95 |
+|:----------------------|:-----------|-------:|----:|----:|
+| First dose            | aucinf.obs |      0 |   0 |   0 |
+| First dose            | cmax       |      0 |   0 |   0 |
+| First dose            | half.life  |     NA |  NA |  NA |
+| First dose            | tmax       |     NA |  NA |  NA |
+| Steady state (day 28) | aucinf.obs |      0 |   0 |   0 |
+| Steady state (day 28) | cmax       |      0 |   0 |   0 |
+| Steady state (day 28) | half.life  |     NA |  NA |  NA |
+| Steady state (day 28) | tmax       |     NA |  NA |  NA |
 
 Simulated NCA summary by occasion (median, 5th, 95th percentiles).
 {.table}
@@ -397,8 +403,8 @@ dplyr::left_join(published, simulated_auc, by = "occasion") |>
 
 | occasion | AUC_inf_pub | AUC_inf_p05_pub | AUC_inf_p95_pub | AUC_inf_sim | AUC_inf_p05_sim | AUC_inf_p95_sim |
 |:---|---:|---:|---:|---:|---:|---:|
-| First dose | 41.2 | 17.9 | 93.8 | NA | NA | NA |
-| Steady state (day 28) | 35.4 | 15.2 | 80.4 | NA | NA | NA |
+| First dose | 41.2 | 17.9 | 93.8 | 0 | 0 | 0 |
+| Steady state (day 28) | 35.4 | 15.2 | 80.4 | 0 | 0 | 0 |
 
 Published vs simulated AUC0-inf (mg\*h/L). Published values from Smythe
 2013 Figure 2 caption. {.table}

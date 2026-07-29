@@ -559,17 +559,17 @@ knitr::kable(
 | treatment    | PPTESTCD   |   median |      p05 |       p95 |
 |:-------------|:-----------|---------:|---------:|----------:|
 | Normal       | aucinf.obs |       NA |       NA |        NA |
-| Normal       | cmax       | 7687.751 | 5088.630 | 13675.693 |
-| Normal       | half.life  |   61.475 |   26.296 |   130.771 |
-| Normal       | tmax       |    1.750 |    0.750 |     4.100 |
+| Normal       | cmax       | 7848.261 | 4939.653 | 11594.765 |
+| Normal       | half.life  |   57.455 |   28.105 |   130.045 |
+| Normal       | tmax       |    1.750 |    0.750 |     4.000 |
 | Intermediate | aucinf.obs |       NA |       NA |        NA |
-| Intermediate | cmax       | 8129.596 | 4826.081 | 13235.497 |
-| Intermediate | half.life  |   64.042 |   35.142 |   133.536 |
-| Intermediate | tmax       |    2.000 |    0.750 |     4.000 |
+| Intermediate | cmax       | 8109.955 | 4916.797 | 12085.220 |
+| Intermediate | half.life  |   66.795 |   31.573 |   156.269 |
+| Intermediate | tmax       |    2.500 |    0.750 |     4.000 |
 | Slow         | aucinf.obs |       NA |       NA |        NA |
-| Slow         | cmax       | 8654.087 | 4451.810 | 13082.744 |
-| Slow         | half.life  |  113.056 |   67.919 |   172.002 |
-| Slow         | tmax       |    1.500 |    0.750 |     4.200 |
+| Slow         | cmax       | 8679.622 | 5396.176 | 12302.274 |
+| Slow         | half.life  |  122.499 |   61.947 |   222.779 |
+| Slow         | tmax       |    1.750 |    0.975 |     4.100 |
 
 Simulated single-dose PKNCA parameters by CYP2B6 metabolizer status
 (n=120 / 60 / 20). {.table}
@@ -652,8 +652,8 @@ knitr::kable(
 
 | treatment | cl_L_per_h | expected_aucinf_nmol_h_per_L | auc_inf_typical_nmol_h_per_L | typical_minus_expected_pct |
 |:---|---:|---:|---:|---:|
-| Normal | 7.52 | 252752 | 253451 | 0.28 |
-| Intermediate | 5.66 | 336106 | 336402 | 0.09 |
+| Normal | 7.52 | 252752 | 253450 | 0.28 |
+| Intermediate | 5.66 | 336106 | 336401 | 0.09 |
 | Slow | 3.68 | 515820 | 514914 | -0.18 |
 
 Simulated typical-value AUC_inf (trapezoid + tail extrapolation, no BSV,

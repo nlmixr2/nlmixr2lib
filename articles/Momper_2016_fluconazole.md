@@ -714,7 +714,6 @@ events_md <- bind_rows(
 sim_md <- rxode2::rxSolve(mod, events = events_md,
                           keep = c("treatment", "WT", "CREAT", "PAGE"),
                           returnType = "data.frame")
-#> ℹ parameter labels from comments will be replaced by 'label()'
 sim_md <- sim_md |> dplyr::filter(!is.na(Cc))
 ```
 

@@ -259,13 +259,13 @@ knitr::kable(
 
 | Interval Start | Interval End | band | N | AUClast (h\*ug/mL) | Cmax (ug/mL) | Tmax (h) | Cav (ug/mL) |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | 12 | 3.0-4.9 | 30 | 7.95 \[4.22\] | 3.74 \[1.55\] | 0.750 \[0.750, 0.750\] | 0.662 \[4.22\] |
-| 0 | 12 | 5.0-6.9 | 30 | 7.72 \[3.26\] | 3.72 \[1.21\] | 0.750 \[0.750, 0.750\] | 0.643 \[3.26\] |
-| 0 | 12 | 7.0-9.9 | 30 | 7.35 \[2.11\] | 3.67 \[0.832\] | 0.750 \[0.750, 0.750\] | 0.612 \[2.11\] |
-| 0 | 12 | 10.0-13.9 | 30 | 7.89 \[2.32\] | 3.77 \[0.867\] | 0.750 \[0.750, 0.750\] | 0.657 \[2.32\] |
-| 0 | 12 | 14.0-19.9 | 30 | 8.46 \[2.87\] | 3.87 \[1.02\] | 0.750 \[0.750, 0.750\] | 0.705 \[2.87\] |
-| 0 | 12 | 20.0-24.9 | 30 | 9.01 \[1.72\] | 3.96 \[0.579\] | 0.750 \[0.750, 0.750\] | 0.751 \[1.72\] |
-| 0 | 12 | 25.0-35.9 | 30 | 9.69 \[2.47\] | 4.05 \[0.787\] | 0.750 \[0.750, 0.750\] | 0.808 \[2.47\] |
+| 0 | 12 | 3.0-4.9 | 30 | NC | NC | NC | NC |
+| 0 | 12 | 5.0-6.9 | 30 | NC | NC | NC | NC |
+| 0 | 12 | 7.0-9.9 | 30 | NC | NC | NC | NC |
+| 0 | 12 | 10.0-13.9 | 30 | NC | NC | NC | NC |
+| 0 | 12 | 14.0-19.9 | 30 | NC | NC | NC | NC |
+| 0 | 12 | 20.0-24.9 | 30 | NC | NC | NC | NC |
+| 0 | 12 | 25.0-35.9 | 30 | NC | NC | NC | NC |
 
 Simulated steady-state NCA parameters by WHO weight band, abacavir 8
 mg/kg BID, LPV/r 4:1 reference, well-nourished, liquid formulation.
@@ -299,13 +299,13 @@ knitr::kable(
 
 | band      | median_auc | p25_auc | p75_auc |
 |:----------|-----------:|--------:|--------:|
-| 3.0-4.9   |       8.00 |    7.72 |    8.15 |
-| 5.0-6.9   |       7.76 |    7.52 |    7.88 |
-| 7.0-9.9   |       7.35 |    7.23 |    7.46 |
-| 10.0-13.9 |       7.91 |    7.78 |    8.04 |
-| 14.0-19.9 |       8.48 |    8.25 |    8.70 |
-| 20.0-24.9 |       9.01 |    8.86 |    9.13 |
-| 25.0-35.9 |       9.71 |    9.51 |    9.89 |
+| 3.0-4.9   |          0 |       0 |       0 |
+| 5.0-6.9   |          0 |       0 |       0 |
+| 7.0-9.9   |          0 |       0 |       0 |
+| 10.0-13.9 |          0 |       0 |       0 |
+| 14.0-19.9 |          0 |       0 |       0 |
+| 20.0-24.9 |          0 |       0 |       0 |
+| 25.0-35.9 |          0 |       0 |       0 |
 
 Simulated steady-state AUC0-12 (mg\*h/L) by WHO weight band on standard
 LPV/r 4:1, well-nourished, liquid formulation. Replicates Tikiso 2021
@@ -351,8 +351,8 @@ tibble(
 
 | source                                      | AUC0_12_mg_h_L |
 |:--------------------------------------------|---------------:|
-| Tikiso 2021 Table 3 (LPV/r 4:1)             |          10.20 |
-| This vignette (typical-value cohort median) |           8.07 |
+| Tikiso 2021 Table 3 (LPV/r 4:1)             |           10.2 |
+| This vignette (typical-value cohort median) |            0.0 |
 
 Pooled-cohort steady-state AUC0-12 comparison. {.table}
 
@@ -363,7 +363,7 @@ cat(sprintf(
   "Simulated / published AUC0-12 ratio = %.2f (target ~1.0; differences > 20%% would warrant investigation rather than tuning).\n",
   ratio_to_pub
 ))
-#> Simulated / published AUC0-12 ratio = 0.79 (target ~1.0; differences > 20% would warrant investigation rather than tuning).
+#> Simulated / published AUC0-12 ratio = 0.00 (target ~1.0; differences > 20% would warrant investigation rather than tuning).
 ```
 
 ## Co-medication and formulation arms
@@ -440,9 +440,9 @@ knitr::kable(
 
 | arm_label                     | published_auc | simulated_auc | ratio |
 |:------------------------------|--------------:|--------------:|------:|
-| LPV/r 4:1 (reference)         |         10.20 |          8.07 |  0.79 |
-| EFV                           |         10.40 |          7.20 |  0.69 |
-| RIF + super-boosted LPV/r 4:4 |          6.66 |          5.70 |  0.86 |
+| LPV/r 4:1 (reference)         |         10.20 |             0 |     0 |
+| EFV                           |         10.40 |             0 |     0 |
+| RIF + super-boosted LPV/r 4:4 |          6.66 |             0 |     0 |
 
 AUC0-12 (mg\*h/L) in three concomitant-medication arms: published value
 (Tikiso 2021 Table 3) vs simulated typical-value cohort median. {.table}

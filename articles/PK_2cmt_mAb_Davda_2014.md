@@ -262,10 +262,10 @@ nca_res <- PKNCA::pk.nca(
 
 summary(nca_res)
 #>  start end treatment   N        cmax                 tmax   half.life
-#>      0 Inf        IV 200 29.1 [36.1] 0.000 [0.000, 0.000] 25.0 [6.30]
-#>      0 Inf        SC 200 18.1 [33.2]   6.38 [0.917, 26.5] 23.8 [6.99]
+#>      0 Inf        IV 200 39.1 [36.1] 0.000 [0.000, 0.000] 25.0 [6.30]
+#>      0 Inf        SC 200 13.5 [33.2]   6.38 [0.917, 26.5] 23.8 [6.99]
 #>  aucinf.obs
-#>  532 [31.2]
+#>  715 [31.2]
 #>          NC
 #> 
 #> Caption: cmax, aucinf.obs: geometric mean and geometric coefficient of variation; tmax: median and range; half.life: arithmetic mean and standard deviation; N: number of subjects
@@ -320,8 +320,8 @@ knitr::kable(
 
 | treatment |   cmax | tmax | half.life | aucinf.obs |
 |:----------|-------:|-----:|----------:|-----------:|
-| IV        | 28.853 | 0.00 |    23.114 |    520.637 |
-| SC        | 17.694 | 5.75 |    23.289 |         NA |
+| IV        | 38.781 | 0.00 |    23.114 |     699.78 |
+| SC        | 13.165 | 5.75 |    23.289 |         NA |
 
 Typical-subject (70 kg, 2 mg/kg) NCA for the Davda 2014 consensus model.
 The paper does not publish NCA for comparison; values shown for reader

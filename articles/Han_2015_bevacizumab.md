@@ -222,8 +222,8 @@ knitr::kable(summary_stats,
 
 | tumour             |  Cmin_med | Cmax_med |   n |
 |:-------------------|----------:|---------:|----:|
-| Primary CNS tumour | 123.61402 | 244.1809 | 100 |
-| Sarcoma            |  78.74224 | 191.2594 | 100 |
+| Primary CNS tumour | 123.61402 | 244.1808 | 100 |
+| Sarcoma            |  78.74223 | 191.2592 | 100 |
 
 Steady-state Cmin / Cmax (ug/mL) medians by tumour type under 10 mg/kg
 Q2W. {.table}
@@ -243,8 +243,8 @@ knitr::kable(ratio_row,
 
 |   n | metric   |      CNS |      Sarc | ratio_CNS_over_Sarc | published_ratio |
 |----:|:---------|---------:|----------:|--------------------:|----------------:|
-| 100 | Cmin_med | 123.6140 |  78.74224 |            1.569856 |            1.49 |
-| 100 | Cmax_med | 244.1809 | 191.25937 |            1.276700 |            1.29 |
+| 100 | Cmin_med | 123.6140 |  78.74223 |            1.569857 |            1.49 |
+| 100 | Cmax_med | 244.1808 | 191.25923 |            1.276701 |            1.29 |
 
 CNS-tumour vs sarcoma exposure ratio at steady state (paper reports 1.49
 for Cmin, 1.29 for Cmax). {.table}

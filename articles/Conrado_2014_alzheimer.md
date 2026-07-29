@@ -191,19 +191,19 @@ events
 #> 0 dosing records (see x$get.dosing(); add with add.dosing or et)
 #> 21 observation times (see x$get.sampling(); add with add.sampling or et)
 #> ── First part of x: ──
-#> # A tibble: 21 × 2
-#>     time evid         
-#>    <dbl> <evid>       
-#>  1     0 0:Observation
-#>  2    91 0:Observation
-#>  3   182 0:Observation
-#>  4   273 0:Observation
-#>  5   364 0:Observation
-#>  6   455 0:Observation
-#>  7   546 0:Observation
-#>  8   637 0:Observation
-#>  9   728 0:Observation
-#> 10   819 0:Observation
+#> # A tibble: 21 × 6
+#>     time evid            AGE  SEXF APOE4_COUNT CONMED_AD
+#>    <dbl> <evid>        <dbl> <int>       <dbl>     <int>
+#>  1     0 0:Observation    75     1        0.72         1
+#>  2    91 0:Observation    75     1        0.72         1
+#>  3   182 0:Observation    75     1        0.72         1
+#>  4   273 0:Observation    75     1        0.72         1
+#>  5   364 0:Observation    75     1        0.72         1
+#>  6   455 0:Observation    75     1        0.72         1
+#>  7   546 0:Observation    75     1        0.72         1
+#>  8   637 0:Observation    75     1        0.72         1
+#>  9   728 0:Observation    75     1        0.72         1
+#> 10   819 0:Observation    75     1        0.72         1
 #> # ℹ 11 more rows
 ```
 

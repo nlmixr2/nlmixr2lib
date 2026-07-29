@@ -354,9 +354,9 @@ troughs |>
 | cohort | Trough (cycle boundary) | Cmin simulated (mg/L) | Median trough observed (mg/L, Rozman 2017) |
 |:---|:---|---:|---:|
 | No progression (PFS_EVENT = 0) | Pre-cycle 2 (day 21) | 0.00 | 23.2 |
-| No progression (PFS_EVENT = 0) | Pre-cycle 8 (day 147) | 86.24 | 80.7 |
+| No progression (PFS_EVENT = 0) | Pre-cycle 8 (day 147) | 86.35 | 80.7 |
 | Progression (PFS_EVENT = 1) | Pre-cycle 2 (day 21) | 0.00 | 23.2 |
-| Progression (PFS_EVENT = 1) | Pre-cycle 8 (day 147) | 75.95 | 80.7 |
+| Progression (PFS_EVENT = 1) | Pre-cycle 8 (day 147) | 76.18 | 80.7 |
 
 Simulated typical-value trough vs Rozman 2017 median observed troughs.
 The paper reports pooled medians across all 29 patients (not stratified
@@ -384,22 +384,22 @@ nca_wide |>
 
 | cohort | cycle | start | end | Cmax (mg/L) | Cmin (mg/L) | Tmax (day) | AUClast (mg\*day/L) |
 |:---|---:|---:|---:|---:|---:|---:|---:|
-| No progression (PFS_EVENT = 0) | 1 | 0 | 21 | 148.08 | 0.00 | 0.1 | 893.08 |
-| No progression (PFS_EVENT = 0) | 2 | 21 | 42 | 172.98 | 24.36 | 0.1 | 1465.88 |
-| No progression (PFS_EVENT = 0) | 3 | 42 | 63 | 195.17 | 46.57 | 0.1 | 1865.73 |
-| No progression (PFS_EVENT = 0) | 4 | 63 | 84 | 210.86 | 62.28 | 0.1 | 2142.33 |
-| No progression (PFS_EVENT = 0) | 5 | 84 | 105 | 221.81 | 73.25 | 0.1 | 2337.12 |
-| No progression (PFS_EVENT = 0) | 6 | 105 | 126 | 229.45 | 80.90 | 0.1 | 2470.93 |
-| No progression (PFS_EVENT = 0) | 7 | 126 | 147 | 234.77 | 86.24 | 0.1 | 2566.35 |
-| No progression (PFS_EVENT = 0) | 8 | 147 | 168 | 238.49 | 89.96 | 0.1 | 2630.76 |
-| Progression (PFS_EVENT = 1) | 1 | 0 | 21 | 148.07 | 0.00 | 0.1 | 818.64 |
-| Progression (PFS_EVENT = 1) | 2 | 21 | 42 | 167.50 | 19.22 | 0.1 | 1220.14 |
-| Progression (PFS_EVENT = 1) | 3 | 42 | 63 | 183.19 | 34.79 | 0.1 | 1548.69 |
-| Progression (PFS_EVENT = 1) | 4 | 63 | 84 | 196.52 | 48.05 | 0.1 | 1820.18 |
-| Progression (PFS_EVENT = 1) | 5 | 84 | 105 | 207.77 | 59.27 | 0.1 | 2045.47 |
-| Progression (PFS_EVENT = 1) | 6 | 105 | 126 | 217.04 | 68.52 | 0.1 | 2224.68 |
-| Progression (PFS_EVENT = 1) | 7 | 126 | 147 | 224.47 | 75.95 | 0.1 | 2367.74 |
-| Progression (PFS_EVENT = 1) | 8 | 147 | 168 | 230.29 | 81.76 | 0.1 | 2475.79 |
+| No progression (PFS_EVENT = 0) | 1 | 0 | 21 | 148.08 | 0.00 | 0.1 | 911.13 |
+| No progression (PFS_EVENT = 0) | 2 | 21 | 42 | 173.64 | 25.02 | 0.1 | 1478.44 |
+| No progression (PFS_EVENT = 0) | 3 | 42 | 63 | 195.66 | 47.06 | 0.1 | 1874.51 |
+| No progression (PFS_EVENT = 0) | 4 | 63 | 84 | 211.20 | 62.63 | 0.1 | 2148.45 |
+| No progression (PFS_EVENT = 0) | 5 | 84 | 105 | 222.05 | 73.49 | 0.1 | 2341.39 |
+| No progression (PFS_EVENT = 0) | 6 | 105 | 126 | 229.61 | 81.07 | 0.1 | 2473.91 |
+| No progression (PFS_EVENT = 0) | 7 | 126 | 147 | 234.89 | 86.35 | 0.1 | 2568.43 |
+| No progression (PFS_EVENT = 0) | 8 | 147 | 168 | 238.57 | 90.04 | 0.1 | 2632.21 |
+| Progression (PFS_EVENT = 1) | 1 | 0 | 21 | 148.07 | 0.00 | 0.1 | 823.18 |
+| Progression (PFS_EVENT = 1) | 2 | 21 | 42 | 167.69 | 19.41 | 0.1 | 1226.66 |
+| Progression (PFS_EVENT = 1) | 3 | 42 | 63 | 183.48 | 35.08 | 0.1 | 1556.24 |
+| Progression (PFS_EVENT = 1) | 4 | 63 | 84 | 196.84 | 48.38 | 0.1 | 1827.38 |
+| Progression (PFS_EVENT = 1) | 5 | 84 | 105 | 208.08 | 59.58 | 0.1 | 2051.99 |
+| Progression (PFS_EVENT = 1) | 6 | 105 | 126 | 217.31 | 68.80 | 0.1 | 2230.12 |
+| Progression (PFS_EVENT = 1) | 7 | 126 | 147 | 224.70 | 76.18 | 0.1 | 2372.18 |
+| Progression (PFS_EVENT = 1) | 8 | 147 | 168 | 230.47 | 81.94 | 0.1 | 2479.24 |
 
 Simulated typical-value NCA parameters per R-CHOP cycle (typical male,
 70 kg, 60 y, 700 mg per cycle). AUClast is over the current cycle’s

@@ -303,7 +303,6 @@ stopifnot(!anyDuplicated(unique(events_avg[, c("id", "time", "evid")])))
 sim_avg <- rxode2::rxSolve(mod, events = events_avg,
                            keep = c("treatment", "WT")) |>
   as.data.frame()
-#> ℹ parameter labels from comments will be replaced by 'label()'
 
 cavg_ss <- sim_avg |>
   dplyr::filter(time >= 19 * 24, !is.na(Cc)) |>

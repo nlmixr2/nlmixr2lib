@@ -228,7 +228,6 @@ sim_combo <- rxode2::rxSolve(mod, events = events_combo,
 #> ℹ parameter labels from comments will be replaced by 'label()'
 sim_mono  <- rxode2::rxSolve(mod, events = events_mono,
                              returnType = "data.frame")
-#> ℹ parameter labels from comments will be replaced by 'label()'
 
 sim <- dplyr::bind_rows(
   dplyr::mutate(sim_combo, treatment = "1 mg/kg + durva"),
@@ -392,7 +391,7 @@ knitr::kable(
 | Interval Start | Interval End | treatment | N | AUClast (day\*ug/mL) | Cmax (ug/mL) | Cmin (ug/mL) | Tmax (day) |
 |---:|---:|:---|:---|:---|:---|:---|:---|
 | 0 | 28 | 1 mg/kg + durva | 200 | 152 \[28.7\] | 12.1 \[19.7\] | NC | 3.00 \[3.00, 3.00\] |
-| 0 | 28 | 10 mg/kg mono | 200 | 1520 \[25.6\] | 121 \[18.8\] | NC | 3.00 \[3.00, 3.00\] |
+| 0 | 28 | 10 mg/kg mono | 200 | 1560 \[25.2\] | 122 \[17.9\] | NC | 3.00 \[3.00, 3.00\] |
 
 Simulated Cycle-1 NCA parameters by regimen (Hwang 2022) {.table}
 
@@ -446,7 +445,7 @@ knitr::kable(comparison)
 | treatment | Median Cmax (75 mg-eq, ug/mL) - simulated | Median Cmax (75 mg-eq, ug/mL) - Hwang 2022 Fig 1B | Median Cmin (75 mg-eq, ug/mL) - simulated | Median Cmin (75 mg-eq, ug/mL) - Hwang 2022 Fig 1A |
 |:---|---:|---:|---:|---:|
 | 1 mg/kg + durva | 12.96 | 21.8 | 0 | 3.3 |
-| 10 mg/kg mono | 12.74 | 21.8 | 0 | 3.3 |
+| 10 mg/kg mono | 13.15 | 21.8 | 0 | 3.3 |
 
 Hwang 2022 also reports a typical-value half-life of approximately **18
 days** (page 1609 narrative, derived from baseline CL = 0.276 L/day and

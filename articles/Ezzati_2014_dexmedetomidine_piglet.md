@@ -175,7 +175,7 @@ sim_typical |>
        title = "Figure 1 -- typical plasma dexmedetomidine, 48 h",
        caption = "Replicates Figure 1 of Ezzati 2014; dotted lines: safe sedative range 0.4-0.8 ug/L; dashed: haemodynamic-event threshold 1 ug/L.") +
   theme(legend.position = "right")
-#> Warning: Removed 160 rows containing missing values or values outside the scale range
+#> Warning: Removed 158 rows containing missing values or values outside the scale range
 #> (`geom_line()`).
 ```
 
@@ -295,11 +295,11 @@ knitr::kable(piglet4_pred, digits = 3,
 |  0.5 | 1.869 |  0.294 |  -84.256 |
 |  1.0 | 1.685 |  0.512 |  -69.619 |
 |  2.0 | 3.076 |  0.940 |  -69.456 |
-|  6.0 | 4.563 |  2.593 |  -43.169 |
-|  9.0 | 6.656 |  3.793 |  -43.014 |
-| 12.0 | 7.763 |  4.943 |  -36.323 |
-| 24.0 | 9.067 |  8.941 |   -1.394 |
-| 48.0 | 7.470 | 13.179 |   76.422 |
+|  6.0 | 4.563 |  2.597 |  -43.080 |
+|  9.0 | 6.656 |  3.797 |  -42.955 |
+| 12.0 | 7.763 |  4.947 |  -36.275 |
+| 24.0 | 9.067 |  8.924 |   -1.578 |
+| 48.0 | 7.470 | 13.169 |   76.296 |
 
 Piglet 4 (Table 3) observed vs typical-value simulated Cc. {.table}
 
@@ -355,13 +355,13 @@ knitr::kable(nca_summary, digits = 3,
 
 | regimen                                       | auclast |   cmax | tmax |
 |:----------------------------------------------|--------:|-------:|-----:|
-| 0.6 ug/kg/h                                   |     NaN |  5.340 |   48 |
-| 0.8 ug/kg/h                                   |     NaN |  7.082 |   48 |
+| 0.6 ug/kg/h                                   |     NaN |  5.336 |   48 |
+| 0.8 ug/kg/h                                   |     NaN |  7.077 |   48 |
 | 1.5 ug/kg/h (control; no HI, no cooling)      |     NaN |  9.087 |   48 |
-| 1.5 ug/kg/h (early start)                     |     NaN | 13.179 |   48 |
-| 1.5 ug/kg/h (late start)                      |     NaN | 12.734 |   48 |
-| 10 ug/kg/h                                    |     NaN | 84.211 |   48 |
-| 2-10 ug/kg/h (escalating; tail at 10 ug/kg/h) |     NaN | 84.211 |   48 |
+| 1.5 ug/kg/h (early start)                     |     NaN | 13.169 |   48 |
+| 1.5 ug/kg/h (late start)                      |     NaN | 12.722 |   48 |
+| 10 ug/kg/h                                    |     NaN | 84.130 |   48 |
+| 2-10 ug/kg/h (escalating; tail at 10 ug/kg/h) |     NaN | 84.130 |   48 |
 
 Simulated typical-value NCA over 0-48 h, by maintenance regimen.
 {.table}

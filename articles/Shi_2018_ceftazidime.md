@@ -316,7 +316,6 @@ sim_pta <- rxode2::rxSolve(
   keep   = c("WT", "CRCL", "dose_mg_kg", "tau")
 ) |>
   as.data.frame()
-#> ℹ parameter labels from comments will be replaced by 'label()'
 
 # Per-subject fraction of the final dosing interval with free Cc above
 # MIC (piecewise-constant integration on the simulated grid).

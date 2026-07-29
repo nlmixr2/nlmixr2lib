@@ -166,6 +166,26 @@ sim <- rxode2::rxSolve(
 ) |>
   as.data.frame()
 #> ℹ parameter labels from comments will be replaced by 'label()'
+#> rxode2 model syntax error:
+#> ================================================================================
+#> :001: 'central(0)' are not supported in linCmt() models, you can try ODEs instead
+#> :
+#>       wt_ref <- 62
+#>       ^
+#> :002: age_ref <- 22.7
+#> :003: creat_ref <- 0.98
+#> :004: ka <- exp(lka + etalka) * (WT/wt_ref)^e_wt_ka
+#> :005: cl <- exp(lcl + etalcl) * (WT/wt_ref)^e_wt_cl_vc * (CREAT/creat_ref)^e_creat_cl * (AGE/age_ref)^e_age_cl
+#> :006: vc <- exp(lvc + etalvc) * (WT/wt_ref)^e_wt_cl_vc
+#> :007: kel <- cl/vc
+#> :008: rbase <- exp(lrbase + etalrbase)
+#> :009: ra <- exp(lra)
+#> :010: tacro <- exp(ltacro)
+#> :011: clock_t <- t + 9
+#> :012: end_t <- rbase * (1 + ra * sin(2 * pi/24 * (tacro + 6 - clock_t)))
+#> :013: central(0) <- rbase * (1 + ra * sin(2 * pi/24 * (tacro - 3)))/kel
+#> :014: Cc <- linCmt(ka, kel, vc)
+#> ================================================================================
 #> Warning: 
 #> with negative times, compartments initialize at first negative observed time
 #> with positive times, compartments initialize at time zero
@@ -203,6 +223,26 @@ typ_sim <- dplyr::bind_rows(
   simulate_typical_one(1500, 1L),
   simulate_typical_one(3000, 2L)
 )
+#> rxode2 model syntax error:
+#> ================================================================================
+#> :001: 'central(0)' are not supported in linCmt() models, you can try ODEs instead
+#> :
+#>       wt_ref <- 62
+#>       ^
+#> :002: age_ref <- 22.7
+#> :003: creat_ref <- 0.98
+#> :004: ka <- exp(lka + etalka) * (WT/wt_ref)^e_wt_ka
+#> :005: cl <- exp(lcl + etalcl) * (WT/wt_ref)^e_wt_cl_vc * (CREAT/creat_ref)^e_creat_cl * (AGE/age_ref)^e_age_cl
+#> :006: vc <- exp(lvc + etalvc) * (WT/wt_ref)^e_wt_cl_vc
+#> :007: kel <- cl/vc
+#> :008: rbase <- exp(lrbase + etalrbase)
+#> :009: ra <- exp(lra)
+#> :010: tacro <- exp(ltacro)
+#> :011: clock_t <- t + 9
+#> :012: end_t <- rbase * (1 + ra * sin(2 * pi/24 * (tacro + 6 - clock_t)))
+#> :013: central(0) <- rbase * (1 + ra * sin(2 * pi/24 * (tacro - 3)))/kel
+#> :014: Cc <- linCmt(ka, kel, vc)
+#> ================================================================================
 #> ℹ omega/sigma items treated as zero: 'etalka', 'etalcl', 'etalvc', 'etalrbase'
 #> ℹ omega/sigma items treated as zero: 'etalka', 'etalcl', 'etalvc', 'etalrbase'
 ```

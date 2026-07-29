@@ -336,8 +336,6 @@ cfb_results <- cohorts |>
   lapply(simulate_cfb_1yr) |>
   setNames(unique(cohorts$label))
 #> ℹ parameter labels from comments will be replaced by 'label()'
-#> ℹ parameter labels from comments will be replaced by 'label()'
-#> ℹ parameter labels from comments will be replaced by 'label()'
 
 summarise_cfb <- function(df) {
   bind_rows(
@@ -438,7 +436,6 @@ vpc_ev <- vpc_cohort |>
 stopifnot(!anyDuplicated(unique(vpc_ev[, c("id", "time")])))
 
 sim_vpc <- as.data.frame(rxode2::rxSolve(mod, events = vpc_ev))
-#> ℹ parameter labels from comments will be replaced by 'label()'
 
 vpc_summary <- sim_vpc |>
   dplyr::group_by(AGE) |>

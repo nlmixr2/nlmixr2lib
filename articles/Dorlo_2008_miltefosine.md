@@ -278,8 +278,8 @@ knitr::kable(comparison,
 
 | window | median_ng_per_mL | q05 | q95 | paper_median | paper_range |
 |:---|---:|---:|---:|---:|:---|
-| Last week of treatment (days 22-28) | 34807.653914 | 24972.45674 | 46600.14758 | 30800.0 | not reported |
-| Late follow-up (days 178-202) | 8.236262 | 2.88839 | 32.04623 | 17.5 | 6.75-27.6 ng/mL |
+| Last week of treatment (days 22-28) | 34807.654280 | 24972.45680 | 46600.14773 | 30800.0 | not reported |
+| Late follow-up (days 178-202) | 8.236261 | 2.88839 | 32.04622 | 17.5 | 6.75-27.6 ng/mL |
 
 Simulated vs published exposure summaries from Dorlo 2008 Results
 paragraph ‘Pharmacokinetic data analysis’. {.table style="width:100%;"}

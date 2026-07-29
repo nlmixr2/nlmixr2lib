@@ -4,7 +4,7 @@
 
 library(nlmixr2lib)
 library(rxode2)
-#> rxode2 5.1.2 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.5 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -224,7 +224,6 @@ d_sim_q2w <- bind_rows(d_load_q2w, d_maint_q2w, d_obs_q2w) %>%
   as.data.frame()
 
 sim_q2w <- rxSolve(mod, d_sim_q2w, returnType = "data.frame")
-#> ℹ parameter labels from comments will be replaced by 'label()'
 ```
 
 ### PKNCA validation
@@ -297,8 +296,8 @@ knitr::kable(
 
 | start | end | treatment | N | auclast | cmax | cmin | tmax |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | 42 | Q2W_800_400 | 100 | 6160 \[39.0\] | 234 \[26.1\] | 87.6 \[60.3\] | 30.0 \[30.0, 30.0\] |
-| 0 | 42 | Q3W_800_600 | 100 | 5920 \[37.2\] | 326 \[19.8\] | 59.7 \[76.9\] | 22.0 \[22.0, 22.0\] |
+| 0 | 42 | Q2W_800_400 | 100 | 7030 \[31.9\] | 248 \[23.3\] | 115 \[44.0\] | 30.0 \[2.00, 30.0\] |
+| 0 | 42 | Q3W_800_600 | 100 | 7530 \[27.9\] | 362 \[17.5\] | 99.5 \[45.8\] | 22.0 \[22.0, 22.0\] |
 
 PKNCA summary for the steady-state 42-day window. Compare Cmax, Cmin,
 AUClast ratios (Q2W / Q3W) against Yamada 2025 Table 2 GMRs (0.792,
@@ -346,9 +345,9 @@ knitr::kable(comparison, digits = 3,
 
 | Parameter      | GMR (sim) | GMR (Yamada 2025 Table 2) |
 |:---------------|----------:|--------------------------:|
-| Cmax           |     0.718 |                     0.792 |
-| Cmin (Ctrough) |     1.341 |                     1.192 |
-| AUC42d         |     1.039 |                     1.000 |
+| Cmax           |     0.685 |                     0.792 |
+| Cmin (Ctrough) |     1.148 |                     1.192 |
+| AUC42d         |     0.932 |                     1.000 |
 
 Simulated vs. published GMRs (Q2W relative to Q3W, steady-state 42-day
 interval). {.table}

@@ -375,7 +375,6 @@ sim_single <- rxode2::rxSolve(
   keep   = c("treatment", "WT"),
   returnType = "data.frame"
 )
-#> ℹ parameter labels from comments will be replaced by 'label()'
 sim_single <- sim_single[sim_single$time >= 0, ]
 
 sim_nca <- sim_single |>

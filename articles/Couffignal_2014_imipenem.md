@@ -488,8 +488,6 @@ for (i in seq_along(regimens)) {
       mutate(regimen = r$label, MIC = mic)
   }
 }
-#> ℹ parameter labels from comments will be replaced by 'label()'
-#> ℹ parameter labels from comments will be replaced by 'label()'
 
 pta_tbl <- bind_rows(pta_rows) |>
   dplyr::select(regimen, MIC, pta_40, n)
@@ -527,8 +525,8 @@ pta_tbl |>
 |:---|---:|---:|---:|---:|
 | 1000 mg q8h | 2 | 0.985 | 200 | 0.979 |
 | 1000 mg q8h | 4 | 0.905 | 200 | 0.860 |
-| 750 mg q6h | 2 | 0.995 | 200 | 0.991 |
-| 750 mg q6h | 4 | 0.955 | 200 | 0.918 |
+| 750 mg q6h | 2 | 1.000 | 200 | 0.991 |
+| 750 mg q6h | 4 | 0.950 | 200 | 0.918 |
 
 Probability of pharmacodynamic-target attainment (PTA) at 40% fT \> MIC.
 Simulated for the typical-median virtual cohort (WT 77, CRCL 86.4, ALB

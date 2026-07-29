@@ -178,6 +178,8 @@ sim <- rxode2::rxSolve(
   keep   = c("OCC")
 ) |>
   as.data.frame()
+#> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_q_1, etaiov_q_2, etaiov_q_3, etaiov_q_4, etaiov_q_5, etaiov_vc_1, etaiov_vc_2, etaiov_vc_3, etaiov_vc_4, etaiov_vc_5
+#> as a work-around try putting the mu-referenced expression on a simple line
 ```
 
 For the typical-value reference trajectory (deterministic, no IIV and no
@@ -194,6 +196,8 @@ sim_typical <- rxode2::rxSolve(
   keep   = c("OCC")
 ) |>
   as.data.frame()
+#> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_q_1, etaiov_q_2, etaiov_q_3, etaiov_q_4, etaiov_q_5, etaiov_vc_1, etaiov_vc_2, etaiov_vc_3, etaiov_vc_4, etaiov_vc_5
+#> as a work-around try putting the mu-referenced expression on a simple line
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalq2', 'etalvp2', 'etaiov_q_1', 'etaiov_q_2', 'etaiov_q_3', 'etaiov_q_4', 'etaiov_q_5', 'etaiov_vc_1', 'etaiov_vc_2', 'etaiov_vc_3', 'etaiov_vc_4', 'etaiov_vc_5'
 #> Warning: multi-subject simulation without without 'omega'
 ```
@@ -334,8 +338,8 @@ knitr::kable(
 
 | PPTESTCD |   p05 | median |   p95 |
 |:---------|------:|-------:|------:|
-| auclast  | 2.644 |  4.815 | 7.101 |
-| cmax     | 0.597 |  0.861 | 1.236 |
+| auclast  | 2.644 |  4.764 | 7.124 |
+| cmax     | 0.593 |  0.853 | 1.236 |
 | tmax     | 1.000 |  1.000 | 1.000 |
 
 Simulated NCA after dose 1 of 36 mg/m^2 schedule A (n = 100). AUC0-24 in

@@ -299,7 +299,6 @@ stopifnot(!anyDuplicated(unique(fig4_events[, c("id", "time", "evid")])))
 sim_fig4 <- rxode2::rxSolve(mod, events = fig4_events,
                             keep = c("WT", "treatment", "RRT_HEMODIAL_ACTIVE")) |>
   as.data.frame()
-#> ℹ parameter labels from comments will be replaced by 'label()'
 
 sim_fig4_summary <- sim_fig4 |>
   dplyr::select(treatment, id, time, Cunbound, Cc) |>
@@ -417,10 +416,10 @@ comparison |>
 
 | Regimen | % subjects geq 40% T\>MIC (simulated) | % subjects geq 40% T\>MIC (published) | Median % T \> 2 mg/L (simulated) | Median % T \> 2 mg/L (published) |
 |:---|---:|---:|---:|---:|
-| 500 mg q12h | 100 | 100.0 | 100.0 | 99.2 |
-| 500 mg q24h | 96 | 96.2 | 64.6 | 58.3 |
-| 750 mg q24h | 100 | 99.9 | 85.4 | 75.0 |
-| 1000 mg q24h | 100 | 99.9 | 100.0 | 91.7 |
+| 500 mg q12h | 100 | 100.0 | 100 | 99.2 |
+| 500 mg q24h | 100 | 96.2 | 100 | 58.3 |
+| 750 mg q24h | 100 | 99.9 | 100 | 75.0 |
+| 1000 mg q24h | 100 | 99.9 | 100 | 91.7 |
 
 Replicates Table 3 of Eyler 2014 – probability of achieving unbound \> 2
 mg/L for \>= 40% of the first dosing interval, plus median percent time
@@ -509,11 +508,11 @@ knitr::kable(
 
 | Quantity                       | Value |
 |:-------------------------------|------:|
-| Cmax unbound (mg/L), mean      | 29.66 |
+| Cmax unbound (mg/L), mean      | 30.24 |
 | Tmax unbound (h), median       |  0.50 |
-| AUC0-24 unbound (mg.h/L), mean | 174.0 |
-| AUCinf unbound (mg.h/L), mean  | 201.4 |
-| Terminal half-life (h), mean   |  8.62 |
+| AUC0-24 unbound (mg.h/L), mean | 249.8 |
+| AUCinf unbound (mg.h/L), mean  | 358.4 |
+| Terminal half-life (h), mean   | 14.44 |
 
 PKNCA summary statistics for the unbound ertapenem profile in the
 200-subject virtual cohort (1 g q24h, continuous CRRT). {.table}

@@ -335,7 +335,6 @@ sim_anchor <- rxode2::rxSolve(
 ) |>
   as.data.frame() |>
   dplyr::filter(time >= ss_start)
-#> ℹ parameter labels from comments will be replaced by 'label()'
 
 per_subject_anchor <- sim_anchor |>
   dplyr::group_by(anchor_idx, id) |>
@@ -370,10 +369,10 @@ knitr::kable(
 
 | sweep       | note           | covariate | Cmax_pub | Cmax_sim | Ctrough_pub | Ctrough_sim |
 |:------------|:---------------|----------:|---------:|---------:|------------:|------------:|
-| BMI sweep   | BMI 5th pct    |      13.3 |     1.57 |    1.565 |        0.32 |       0.286 |
-| BMI sweep   | BMI 95th pct   |      25.1 |     1.30 |    1.236 |        0.38 |       0.337 |
-| FEV1% sweep | FEV1% 5th pct  |      29.7 |     1.22 |    1.166 |        0.39 |       0.340 |
-| FEV1% sweep | FEV1% 95th pct |     102.5 |     1.48 |    1.483 |        0.32 |       0.298 |
+| BMI sweep   | BMI 5th pct    |      13.3 |     1.57 |    1.584 |        0.32 |       0.296 |
+| BMI sweep   | BMI 95th pct   |      25.1 |     1.30 |    1.220 |        0.38 |       0.336 |
+| FEV1% sweep | FEV1% 5th pct  |      29.7 |     1.22 |    1.260 |        0.39 |       0.360 |
+| FEV1% sweep | FEV1% 95th pct |     102.5 |     1.48 |    1.516 |        0.32 |       0.289 |
 
 Stochastic cohort-mean Cmax and Ctrough (mg/L) at the published
 covariate-sweep anchor points (n = 200 subjects per anchor, BSV drawn
@@ -471,8 +470,8 @@ knitr::kable(
 
 | metric | anchor | published_p975 | simulated_p975 | toxicity_threshold |
 |:---|:---|---:|---:|---:|
-| Cmax (mg/L) | BMI 13.3 (5th pct) | 3.08 | 2.980 | 12 |
-| Ctrough (mg/L) | BMI 25.1 (95th pct) | 1.33 | 0.808 | 2 |
+| Cmax (mg/L) | BMI 13.3 (5th pct) | 3.08 | 3.021 | 12 |
+| Ctrough (mg/L) | BMI 25.1 (95th pct) | 1.33 | 0.767 | 2 |
 
 Simulated 97.5th-percentile Cmax and Ctrough at the anchor covariate
 values used to derive the published 95% predictive-interval upper bounds

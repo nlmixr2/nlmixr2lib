@@ -401,14 +401,14 @@ knitr::kable(nca_summary,
 | Single-dose QS reference | auclast | NA | NA | NA |
 | Single-dose QS reference | clast.obs | 0.0024603 | 0.0000506 | 0.0743528 |
 | Single-dose QS reference | clast.pred | 0.0024354 | 0.0000499 | 0.0739641 |
-| Single-dose QS reference | cmax | 2.4200005 | 0.8910787 | 6.4257447 |
-| Single-dose QS reference | half.life | 10.4771610 | 6.5483886 | 28.3071949 |
+| Single-dose QS reference | cmax | 2.4200005 | 0.8910787 | 6.4257440 |
+| Single-dose QS reference | half.life | 10.4771613 | 6.5483889 | 28.3071945 |
 | Single-dose QS reference | lambda.z | 0.0661617 | 0.0244893 | 0.1058515 |
 | Single-dose QS reference | lambda.z.n.points | 90.0000000 | 88.0000000 | 95.5500000 |
 | Single-dose QS reference | lambda.z.time.first | 9.5000000 | 6.7250000 | 10.5000000 |
 | Single-dose QS reference | lambda.z.time.last | 96.0000000 | 96.0000000 | 96.0000000 |
 | Single-dose QS reference | r.squared | 0.9999136 | 0.9999028 | 0.9999291 |
-| Single-dose QS reference | span.ratio | 8.1851223 | 3.1090928 | 13.4122973 |
+| Single-dose QS reference | span.ratio | 8.1851221 | 3.1090928 | 13.4122966 |
 | Single-dose QS reference | tlast | 96.0000000 | 96.0000000 | 96.0000000 |
 | Single-dose QS reference | tmax | 1.3500000 | 0.5500000 | 3.0700000 |
 

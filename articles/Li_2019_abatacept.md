@@ -543,9 +543,9 @@ intervals_iv <- data.frame(start = 0, end = tau_iv,
 nca_iv <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj_iv, dose_obj_iv, intervals = intervals_iv))
 summary(nca_iv)
 #>  start end            treatment   N     auclast       cmax        cmin
-#>      0  28 IV_weight_tiered_Q4W 150 1350 [33.2] 226 [25.6] 14.5 [55.0]
+#>      0  28 IV_weight_tiered_Q4W 150 1300 [32.0] 218 [25.0] 14.0 [58.3]
 #>                  tmax         cav
-#>  0.000 [0.000, 0.000] 48.4 [33.2]
+#>  0.000 [0.000, 0.000] 46.5 [32.0]
 #> 
 #> Caption: auclast, cmax, cmin, cav: geometric mean and geometric coefficient of variation; tmax: median and range; N: number of subjects
 ```
@@ -574,7 +574,7 @@ knitr::kable(pct_above, digits = 1,
 
 | regimen              | wt_group |   N | pct_ge_10_mgL | median_Cmin |
 |:---------------------|:---------|----:|--------------:|------------:|
-| IV weight-tiered Q4W | \>100 kg | 150 |          77.3 |        14.9 |
+| IV weight-tiered Q4W | \>100 kg | 150 |          75.3 |        13.8 |
 | SC 125 mg QW         | \>100 kg | 150 |          86.0 |        15.5 |
 
 Fraction of virtual subjects with steady-state trough Cc \>= 10 mg/L by

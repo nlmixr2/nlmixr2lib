@@ -121,7 +121,7 @@ build_typical_dose_arm <- function(dose_mg, subject_id) {
     dplyr::mutate(
       FFM             = 52,
       CRCL            = 6,
-      CONMED_DIUR = 0L,
+      CONMED_DIURETIC = 0L,
       arm             = paste(dose_mg, "mg daily")
     ) |>
     tidyr::crossing(
@@ -152,7 +152,7 @@ build_typical_diuretic_arm <- function(diuretic_flag, arm_label, subject_id) {
     dplyr::mutate(
       FFM             = 52,
       CRCL            = 6,
-      CONMED_DIUR = as.integer(diuretic_flag),
+      CONMED_DIURETIC = as.integer(diuretic_flag),
       arm             = arm_label
     ) |>
     tidyr::crossing(
@@ -181,7 +181,7 @@ build_vpc_arm <- function(dose_mg, id_offset = 5000L) {
     dplyr::mutate(
       FFM             = 52,
       CRCL            = 6,
-      CONMED_DIUR = 0L,
+      CONMED_DIURETIC = 0L,
       arm             = paste(dose_mg, "mg daily (VPC)")
     ) |>
     tidyr::crossing(
@@ -216,7 +216,7 @@ sim_dose <- rxode2::rxSolve(
   mod_typical,
   events = dose_events,
   addDosing = FALSE,
-  keep = c("FFM", "CRCL", "CONMED_DIUR", "arm")
+  keep = c("FFM", "CRCL", "CONMED_DIURETIC", "arm")
 ) |>
   as.data.frame() |>
   dplyr::distinct(id, time, .keep_all = TRUE)
@@ -227,7 +227,7 @@ sim_diuretic <- rxode2::rxSolve(
   mod_typical,
   events = diuretic_events,
   addDosing = FALSE,
-  keep = c("FFM", "CRCL", "CONMED_DIUR", "arm")
+  keep = c("FFM", "CRCL", "CONMED_DIURETIC", "arm")
 ) |>
   as.data.frame() |>
   dplyr::distinct(id, time, .keep_all = TRUE)
@@ -244,7 +244,7 @@ the between-subject spread.
 
 sim_vpc <- rxode2::rxSolve(mod, events = vpc_events,
                            addDosing = FALSE,
-                           keep = c("FFM", "CRCL", "CONMED_DIUR", "arm")) |>
+                           keep = c("FFM", "CRCL", "CONMED_DIURETIC", "arm")) |>
   as.data.frame() |>
   dplyr::distinct(id, time, .keep_all = TRUE)
 #> ℹ parameter labels from comments will be replaced by 'label()'

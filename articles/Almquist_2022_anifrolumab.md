@@ -228,7 +228,6 @@ sim_q4w <- rxode2::rxSolve(
   mod, events = q4w_year,
   keep = c("WT", "BGENE21_HIGH", "dose_grp")
 )
-#> ℹ parameter labels from comments will be replaced by 'label()'
 ```
 
 ## Replicate published figures

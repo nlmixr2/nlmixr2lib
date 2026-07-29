@@ -125,17 +125,17 @@ events
 #> 0 dosing records (see x$get.dosing(); add with add.dosing or et)
 #> 8 observation times (see x$get.sampling(); add with add.sampling or et)
 #> ── First part of x: ──
-#> # A tibble: 8 × 2
-#>    time evid         
-#>   <dbl> <evid>       
-#> 1     0 0:Observation
-#> 2     1 0:Observation
-#> 3     7 0:Observation
-#> 4    14 0:Observation
-#> 5    28 0:Observation
-#> 6    56 0:Observation
-#> 7    84 0:Observation
-#> 8   126 0:Observation
+#> # A tibble: 8 × 3
+#>    time evid          CONMED_PARA
+#>   <dbl> <evid>              <dbl>
+#> 1     0 0:Observation           0
+#> 2     1 0:Observation           0
+#> 3     7 0:Observation           0
+#> 4    14 0:Observation           0
+#> 5    28 0:Observation           0
+#> 6    56 0:Observation           0
+#> 7    84 0:Observation           0
+#> 8   126 0:Observation           0
 ```
 
 ## Simulation (F.3 mechanistic-sanity check)

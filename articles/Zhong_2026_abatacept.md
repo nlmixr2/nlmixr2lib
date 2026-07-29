@@ -517,9 +517,9 @@ knitr::kable(ped_cmin1, digits = 2,
   caption = "Pediatric (2 to <6 y) Cmin1 under the recommended 15+12 mg/kg regimen. Zhong 2026 Suppl. Fig S7 reports median Cmin1 above 50 ug/mL.")
 ```
 
-| median_Cmin1 |   p25 |  p75 | pct_ge_39 | pct_ge_50 |
-|-------------:|------:|-----:|----------:|----------:|
-|        56.69 | 47.52 | 65.8 |     91.67 |     68.33 |
+| median_Cmin1 |  p25 |   p75 | pct_ge_39 | pct_ge_50 |
+|-------------:|-----:|------:|----------:|----------:|
+|        58.07 | 48.9 | 64.76 |     92.67 |     72.33 |
 
 Pediatric (2 to \<6 y) Cmin1 under the recommended 15+12 mg/kg regimen.
 Zhong 2026 Suppl. Fig S7 reports median Cmin1 above 50 ug/mL. {.table}
@@ -552,9 +552,9 @@ nca_ped <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj_ped, dose_obj_ped,
                                           intervals = intervals_iv))
 summary(nca_ped)
 #>  start end         treatment   N    auclast       cmax cmin
-#>      0   6 ped_HM_15_then_12 300 500 [17.6] 180 [20.8]   NC
+#>      0   6 ped_HM_15_then_12 300 506 [17.4] 181 [21.8]   NC
 #>                   tmax         cav
-#>  0.100 [0.0400, 0.100] 83.4 [17.6]
+#>  0.100 [0.0400, 0.100] 84.3 [17.4]
 #> 
 #> Caption: auclast, cmax, cmin, cav: geometric mean and geometric coefficient of variation; tmax: median and range; N: number of subjects
 ```
@@ -576,9 +576,9 @@ nca_hm8 <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj_hm8, dose_obj_hm8,
                                           intervals = intervals_iv))
 summary(nca_hm8)
 #>  start end         treatment   N    auclast       cmax cmin
-#>      0   6 HM_8of8_IV_10mgkg 100 643 [14.3] 208 [18.4]   NC
+#>      0   6 HM_8of8_IV_10mgkg 100 656 [11.7] 209 [18.8]   NC
 #>                  tmax        cav
-#>  0.100 [0.100, 0.100] 107 [14.3]
+#>  0.100 [0.100, 0.100] 109 [11.7]
 #> 
 #> Caption: auclast, cmax, cmin, cav: geometric mean and geometric coefficient of variation; tmax: median and range; N: number of subjects
 ```
@@ -622,11 +622,11 @@ knitr::kable(frac_table, digits = 1,
 
 | regimen | N | median_Cmin1_mgL | pct_ge_39 | pct_ge_50 |
 |:---|---:|---:|---:|---:|
-| ped_HM_15_then_12 (this paper’s recommendation) | 300 | 56.7 | 91.7 | 68.3 |
-| ped_HM_IV_15mgkg fixed | 300 | 55.7 | 92.7 | 68.7 |
-| ped_HM_IV_12mgkg fixed | 300 | 44.4 | 73.3 | 34.3 |
-| ped_HM_IV_10mgkg fixed | 300 | 38.2 | 47.0 | 8.7 |
-| HM_8of8_IV_10mgkg (adult/older-ped reference) | 100 | 49.0 | 81.0 | 48.0 |
+| ped_HM_15_then_12 (this paper’s recommendation) | 300 | 58.1 | 92.7 | 72.3 |
+| ped_HM_IV_15mgkg fixed | 300 | 58.3 | 95.3 | 69.3 |
+| ped_HM_IV_12mgkg fixed | 300 | 45.3 | 77.0 | 31.7 |
+| ped_HM_IV_10mgkg fixed | 300 | 36.7 | 37.0 | 6.7 |
+| HM_8of8_IV_10mgkg (adult/older-ped reference) | 100 | 51.6 | 90.0 | 57.0 |
 
 Cmin1 (Day 5, just before second dose) by regimen. Zhong 2026 references
 Cmin1 \>= 39 ug/mL as the favorable-aGvHD threshold; the recommended

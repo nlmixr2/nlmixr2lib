@@ -367,17 +367,17 @@ knitr::kable(
 
 | NCA parameter | treatment                   |    median |       p05 |       p95 |
 |:--------------|:----------------------------|----------:|----------:|----------:|
-| AUClast       | delayed ART, day 1 (60 mg)  | 17.970352 | 10.466941 | 31.635434 |
-| Cmax          | delayed ART, day 1 (60 mg)  |  5.433701 |  3.446441 |  7.433760 |
+| AUClast       | delayed ART, day 1 (60 mg)  | 17.970348 | 10.466939 | 31.635428 |
+| Cmax          | delayed ART, day 1 (60 mg)  |  5.433700 |  3.446441 |  7.433759 |
 | Tmax          | delayed ART, day 1 (60 mg)  |  1.000000 |  1.000000 |  1.500000 |
-| AUClast       | delayed ART, day 14 (60 mg) |  9.335070 |  4.925630 | 15.616123 |
-| Cmax          | delayed ART, day 14 (60 mg) |  3.738890 |  2.311386 |  5.245073 |
+| AUClast       | delayed ART, day 14 (60 mg) |  9.335068 |  4.925630 | 15.616119 |
+| Cmax          | delayed ART, day 14 (60 mg) |  3.738890 |  2.311385 |  5.245072 |
 | Tmax          | delayed ART, day 14 (60 mg) |  0.750000 |  0.750000 |  1.000000 |
-| AUClast       | early ART, day 1 (60 mg)    | 23.472877 | 14.433157 | 37.255814 |
-| Cmax          | early ART, day 1 (60 mg)    |  6.919526 |  4.735552 |  9.592965 |
+| AUClast       | early ART, day 1 (60 mg)    | 23.472872 | 14.433154 | 37.255807 |
+| Cmax          | early ART, day 1 (60 mg)    |  6.919525 |  4.735551 |  9.592964 |
 | Tmax          | early ART, day 1 (60 mg)    |  1.000000 |  1.000000 |  1.500000 |
-| AUClast       | early ART, day 14 (60 mg)   | 12.081072 |  6.704068 | 27.628669 |
-| Cmax          | early ART, day 14 (60 mg)   |  4.785562 |  3.123182 |  9.031254 |
+| AUClast       | early ART, day 14 (60 mg)   | 12.081069 |  6.704066 | 27.628662 |
+| Cmax          | early ART, day 14 (60 mg)   |  4.785562 |  3.123182 |  9.031253 |
 | Tmax          | early ART, day 14 (60 mg)   |  0.750000 |  0.750000 |  1.000000 |
 
 Simulated abacavir NCA per cohort cell (60 mg, WT = 7 kg, n = 50 per

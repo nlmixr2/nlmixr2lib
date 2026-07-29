@@ -10,7 +10,7 @@ library(PKNCA)
 #> 
 #>     filter
 library(rxode2)
-#> rxode2 5.1.2 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.5 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -325,7 +325,7 @@ knitr::kable(as.data.frame(nca_single$result),
 
 | treatment    |  id | start | end | PPTESTCD            |     PPORRES | exclude |
 |:-------------|----:|------:|----:|:--------------------|------------:|:--------|
-| single_105mg |   1 |     0 | Inf | cmax                |  10.1850524 | NA      |
+| single_105mg |   1 |     0 | Inf | cmax                |  10.1850515 | NA      |
 | single_105mg |   1 |     0 | Inf | tmax                |   7.0000000 | NA      |
 | single_105mg |   1 |     0 | Inf | tlast               |  84.0000000 | NA      |
 | single_105mg |   1 |     0 | Inf | clast.obs           |   0.2042195 | NA      |
@@ -336,9 +336,9 @@ knitr::kable(as.data.frame(nca_single$result),
 | single_105mg |   1 |     0 | Inf | lambda.z.time.last  |  84.0000000 | NA      |
 | single_105mg |   1 |     0 | Inf | lambda.z.n.points   |  10.0000000 | NA      |
 | single_105mg |   1 |     0 | Inf | clast.pred          |   0.2051397 | NA      |
-| single_105mg |   1 |     0 | Inf | half.life           |  12.9744575 | NA      |
-| single_105mg |   1 |     0 | Inf | span.ratio          |   4.8556943 | NA      |
-| single_105mg |   1 |     0 | Inf | aucinf.obs          | 279.3925233 | NA      |
+| single_105mg |   1 |     0 | Inf | half.life           |  12.9744574 | NA      |
+| single_105mg |   1 |     0 | Inf | span.ratio          |   4.8556944 | NA      |
+| single_105mg |   1 |     0 | Inf | aucinf.obs          | 279.3925236 | NA      |
 
 Single-dose NCA on the typical-patient profile. {.table}
 
@@ -402,7 +402,7 @@ knitr::kable(as.data.frame(nca_ss$result),
 
 | treatment    |  id | start | end | PPTESTCD            |    PPORRES | exclude |
 |:-------------|----:|------:|----:|:--------------------|-----------:|:--------|
-| ss_105mg_Q4W |   1 |     0 | Inf | cmax                | 17.0457440 | NA      |
+| ss_105mg_Q4W |   1 |     0 | Inf | cmax                | 17.0457508 | NA      |
 | ss_105mg_Q4W |   1 |     0 | Inf | tmax                |  5.0000000 | NA      |
 | ss_105mg_Q4W |   1 |     0 | Inf | tlast               | 84.0000000 | NA      |
 | ss_105mg_Q4W |   1 |     0 | Inf | lambda.z            |  0.0411157 | NA      |
@@ -411,8 +411,8 @@ knitr::kable(as.data.frame(nca_ss$result),
 | ss_105mg_Q4W |   1 |     0 | Inf | lambda.z.time.first | 14.0000000 | NA      |
 | ss_105mg_Q4W |   1 |     0 | Inf | lambda.z.time.last  | 84.0000000 | NA      |
 | ss_105mg_Q4W |   1 |     0 | Inf | lambda.z.n.points   | 11.0000000 | NA      |
-| ss_105mg_Q4W |   1 |     0 | Inf | clast.pred          |  0.8055760 | NA      |
-| ss_105mg_Q4W |   1 |     0 | Inf | half.life           | 16.8584402 | NA      |
+| ss_105mg_Q4W |   1 |     0 | Inf | clast.pred          |  0.8055759 | NA      |
+| ss_105mg_Q4W |   1 |     0 | Inf | half.life           | 16.8584401 | NA      |
 | ss_105mg_Q4W |   1 |     0 | Inf | span.ratio          |  4.1522228 | NA      |
 
 Steady-state NCA on the final dosing interval. {.table}

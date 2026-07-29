@@ -253,7 +253,7 @@ nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = interv
 nca_tbl <- as.data.frame(nca_res$result)
 summary(nca_res)
 #>  start end    treatment   N    auclast        cmax        cmin
-#>      0  28 125mg_Q4W_SS 400 674 [40.2] 30.0 [38.8] 16.6 [45.6]
+#>      0  28 125mg_Q4W_SS 400 577 [40.2] 25.7 [38.8] 14.2 [45.6]
 #> 
 #> Caption: auclast, cmax, cmin: geometric mean and geometric coefficient of variation; N: number of subjects
 ```
@@ -307,7 +307,7 @@ knitr::kable(
 
 | Cmax_ss | Ctrough_ss | AUC_tau |
 |--------:|-----------:|--------:|
-|  34.427 |     20.434 | 791.966 |
+|  29.469 |     17.492 | 677.923 |
 
 Typical-subject steady-state exposure: 125 mg SC Q4W (reference CHO,
 white, male, 70 kg, age 40, ADA-negative). {.table}

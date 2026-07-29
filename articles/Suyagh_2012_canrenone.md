@@ -330,9 +330,9 @@ knitr::kable(
 | Typical 4 kg, 10.06 umol | lambda.z.time.last  |  72.0000000 |
 | Typical 4 kg, 10.06 umol | lambda.z.n.points   | 755.0000000 |
 | Typical 4 kg, 10.06 umol | clast.pred          |   0.0053637 |
-| Typical 4 kg, 10.06 umol | half.life           |  11.1265524 |
+| Typical 4 kg, 10.06 umol | half.life           |  11.1265525 |
 | Typical 4 kg, 10.06 umol | span.ratio          |   6.3937145 |
-| Typical 4 kg, 10.06 umol | aucinf.obs          |   7.5504246 |
+| Typical 4 kg, 10.06 umol | aucinf.obs          |   7.5504253 |
 
 PKNCA results on the typical-value 4 kg trajectory (single 10.06 umol
 K-canrenoate dose). {.table}

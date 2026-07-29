@@ -160,7 +160,6 @@ mod <- readModelDb("Bajaj_2017_nivolumab")
 sim_3  <- rxSolve(mod, events = events_3,  returnType = "data.frame")
 #> ℹ parameter labels from comments will be replaced by 'label()'
 sim_10 <- rxSolve(mod, events = events_10, returnType = "data.frame")
-#> ℹ parameter labels from comments will be replaced by 'label()'
 sim <- dplyr::bind_rows(
   dplyr::mutate(sim_3,  treatment = "3 mg/kg Q2W"),
   dplyr::mutate(sim_10, treatment = "10 mg/kg Q2W")
@@ -312,7 +311,7 @@ knitr::kable(
 
 | start | end | treatment | N | auclast | cmax | cmin | tmax | half.life |
 |---:|---:|:---|:---|:---|:---|:---|:---|:---|
-| 0 | 14 | 10 mg/kg Q2W | 200 | 3630 \[45.1\] | 360 \[37.4\] | 199 \[54.3\] | 1.00 \[1.00, 1.00\] | 26.6 \[11.7\] |
+| 0 | 14 | 10 mg/kg Q2W | 200 | 3810 \[45.2\] | 376 \[35.0\] | 210 \[55.8\] | 1.00 \[1.00, 1.00\] | 30.0 \[16.0\] |
 | 0 | 14 | 3 mg/kg Q2W | 200 | 1050 \[44.6\] | 106 \[36.3\] | 56.8 \[55.5\] | 1.00 \[1.00, 1.00\] | 27.1 \[14.5\] |
 
 Simulated NCA parameters at steady state (12th dosing interval, days

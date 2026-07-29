@@ -83,13 +83,13 @@ The table below collects them in one place for review.
 | `e_ffm_cl` = 0.75 (fixed) | FFM allometric exponent on CL | Wright 2016 Methods (Anderson and Holford) |
 | `e_wt_vc` = 1.0 (fixed) | TBW allometric exponent on V | Wright 2016 Methods (Anderson and Holford) |
 | `e_crcl_cl` = 0.587 | thetaRFexp | Wright 2016 Table 3 (RSE 11.7%) |
-| `e_conmed_diur_cl` = 0.740 | thetadiuretic | Wright 2016 Table 3 (RSE 6.4%) |
+| `e_conmed_diuretic_cl` = 0.740 | thetadiuretic | Wright 2016 Table 3 (RSE 6.4%) |
 | `lemax` = log(0.409) | Emax = 0.409 | Wright 2016 Table 3 Emax (RSE 12%) |
 | `lec50` = log(83.9) | C50 = 83.9 umol/L | Wright 2016 Table 3 C50 (RSE 17.4%) |
 | `lhill` = log(1.30) | lambda (Hill) = 1.30 | Wright 2016 Table 3 lambda (RSE 11%) |
 | `lrbase` = log(0.511) | U0 = 0.511 mmol/L | Wright 2016 Table 3 U0 (RSE 2.3%) |
 | `e_crcl_rbase` = -0.119 | thetaE0_RFexp | Wright 2016 Table 3 (RSE 21.6%) |
-| `e_conmed_diur_rbase` = 1.14 | thetaE0_diuretic | Wright 2016 Table 3 (RSE 1.8%) |
+| `e_conmed_diuretic_rbase` = 1.14 | thetaE0_diuretic | Wright 2016 Table 3 (RSE 1.8%) |
 | `etalcl` ~ 0.0586 | omega_CL = 24.2% | Wright 2016 Table 3 omegaCL (RSE 15.5%) |
 | `F_v_oxy` = 0.0355 (fixed) | V fractional shared-eta scaler | Wright 2016 Table 3 F_omegaV_oxy |
 | `etalka` ~ fixed(0.347) | omega_Ka = 58.9% fixed | Wright 2016 Table 3 (fixed both columns) |
@@ -140,7 +140,7 @@ make_cohort <- function(n, daily_dose_mg, diuretic = 0L, id_offset = 0L,
     WT     = pmin(pmax(round(rnorm(n, mean = 94, sd = 18)), 51), 171),
     HT_cm  = pmin(pmax(round(rnorm(n, mean = 173, sd = 9)), 150), 195),
     CRCL_mLmin = pmin(pmax(round(rnorm(n, mean = 68, sd = 22)), 20), 125),
-    CONMED_DIUR = as.integer(diuretic),
+    CONMED_DIURETIC = as.integer(diuretic),
     cohort   = cohort_label,
     treatment = paste0(daily_dose_mg, " mg/day"),
     daily_dose_mg = daily_dose_mg
@@ -166,18 +166,18 @@ build_events <- function(subj, dose_days = 28, obs_grid_h = NULL) {
     obs_grid_h <- c(0, seq(last_day_start, last_day_start + 24, by = 4))
   }
   doses <- subj |>
-    dplyr::select(id, daily_dose_mg, FFM, WT, CRCL, CONMED_DIUR,
+    dplyr::select(id, daily_dose_mg, FFM, WT, CRCL, CONMED_DIURETIC,
                   cohort, treatment) |>
     tidyr::expand_grid(time = seq(0, by = 24, length.out = dose_days)) |>
     dplyr::mutate(amt = daily_dose_mg, evid = 1L, cmt = "depot",
                   dvid = NA_integer_)
   obs_cc <- subj |>
-    dplyr::select(id, FFM, WT, CRCL, CONMED_DIUR, cohort, treatment) |>
+    dplyr::select(id, FFM, WT, CRCL, CONMED_DIURETIC, cohort, treatment) |>
     tidyr::expand_grid(time = obs_grid_h) |>
     dplyr::mutate(amt = NA_real_, evid = 0L, cmt = "Cc",
                   dvid = 1L)
   obs_urate <- subj |>
-    dplyr::select(id, FFM, WT, CRCL, CONMED_DIUR, cohort, treatment) |>
+    dplyr::select(id, FFM, WT, CRCL, CONMED_DIURETIC, cohort, treatment) |>
     tidyr::expand_grid(time = obs_grid_h) |>
     dplyr::mutate(amt = NA_real_, evid = 0L, cmt = "Eurate",
                   dvid = 2L)
@@ -216,7 +216,7 @@ stopifnot(!anyDuplicated(unique(events_dose[, c("id", "time", "evid")])))
 mod <- readModelDb("Wright_2016_allopurinol")
 sim <- rxode2::rxSolve(mod, events = events_dose,
                        keep = c("cohort", "treatment", "WT",
-                                "CRCL", "CONMED_DIUR")) |>
+                                "CRCL", "CONMED_DIURETIC")) |>
   as.data.frame()
 #> ℹ parameter labels from comments will be replaced by 'label()'
 nrow(sim)
@@ -319,7 +319,7 @@ make_table4_cohort <- function(n, daily_dose_mg, id_offset, cohort_label) {
     WT = 70,
     HT_cm = 175,
     CRCL_mLmin = runif(n, 50, 70),
-    CONMED_DIUR = 0L,
+    CONMED_DIURETIC = 0L,
     cohort = cohort_label,
     treatment = paste0(daily_dose_mg, " mg/day"),
     daily_dose_mg = daily_dose_mg
@@ -341,7 +341,6 @@ stopifnot(!anyDuplicated(unique(ev_t4[, c("id", "time", "evid")])))
 sim_t4 <- rxode2::rxSolve(mod, events = ev_t4,
                           keep = c("cohort", "treatment", "WT", "CRCL")) |>
   as.data.frame()
-#> ℹ parameter labels from comments will be replaced by 'label()'
 
 # Steady-state urate at the last sampled time.
 ss_t4 <- sim_t4 |>
@@ -466,13 +465,14 @@ arm here should sit slightly above that value. {.table}
   largest single sub-cohort at n = 74 of 133 and the median across
   studies). A user wanting to reproduce a specific sub-study’s VPC
   should override `addSd_Eurate` accordingly.
-- **CONMED_DIUR class membership.** Wright 2016’s CONMED_DIUR captures
-  thiazide diuretics OR loop diuretics (per Wright 2016 Table 4 footer).
-  This is NARROWER than the Stocker 2012 oxypurinol precedent
+- **CONMED_DIURETIC class membership.** Wright 2016’s CONMED_DIURETIC
+  captures thiazide diuretics OR loop diuretics (per Wright 2016 Table 4
+  footer). This is NARROWER than the Stocker 2012 oxypurinol precedent
   (`Stocker_2012_oxypurinol.R`), which pools thiazide + loop +
   spironolactone into the same column. The two papers use the same
-  canonical CONMED_DIUR column name; users simulating across both models
-  must populate the indicator according to each paper’s own definition.
+  canonical CONMED_DIURETIC column name; users simulating across both
+  models must populate the indicator according to each paper’s own
+  definition.
 - **IIV scale convention.** Wright 2016 reports omega values as “(CV%)”
   but the reported PD covariance block is only positive-definite when
   the reported %CV is interpreted as the log-scale SD directly (i.e.,

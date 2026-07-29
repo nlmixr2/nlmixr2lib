@@ -206,6 +206,7 @@ sim_iiv <- rxode2::rxSolve(
 ) |>
   as.data.frame()
 #> ℹ parameter labels from comments will be replaced by 'label()'
+#> [lsoda -- internal t + h = t (h too small for machine precision)]: 669064 warning(s) for subject(s): 73, 74, 76, 77, 81, ... (18 more)
 #> Warning: some ID(s) could not solve the ODEs correctly; These values are
 #> replaced with 'NA'
 

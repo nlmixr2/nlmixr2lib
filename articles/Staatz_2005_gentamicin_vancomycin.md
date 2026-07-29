@@ -449,13 +449,13 @@ knitr::kable(
 | NCA parameter          | drug       | Reference | Simulated | % diff |
 |:-----------------------|:-----------|:----------|:----------|:-------|
 | Cmax (mg/L)            | gentamicin | 6.64      | 6.27      | -5.6%  |
-| Cmax (mg/L)            | vancomycin | 10.9      | 11        | +1.2%  |
+| Cmax (mg/L)            | vancomycin | 10.9      | 10.1      | -7.0%  |
 | AUC0-∞ (obs) (mg\*h/L) | gentamicin | 42.7      | 42.9      | +0.4%  |
-| AUC0-∞ (obs) (mg\*h/L) | vancomycin | 337       | 349       | +3.6%  |
+| AUC0-∞ (obs) (mg\*h/L) | vancomycin | 337       | 342       | +1.6%  |
 | t½ (h)                 | gentamicin | 10.3      | 10.6      | +2.6%  |
-| t½ (h)                 | vancomycin | 21.4      | 21.8      | +2.0%  |
+| t½ (h)                 | vancomycin | 21.4      | 22.7      | +6.0%  |
 | CL/F (L/h)             | gentamicin | 2.81      | 2.8       | -0.4%  |
-| CL/F (L/h)             | vancomycin | 2.97      | 2.87      | -3.5%  |
+| CL/F (L/h)             | vancomycin | 2.97      | 2.92      | -1.6%  |
 
 Simulated PKNCA values vs. analytical predictions from the Staatz 2005
 final-model parameters at the typical patient (gentamicin: WT = 72 kg,

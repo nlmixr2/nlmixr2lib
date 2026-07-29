@@ -324,11 +324,11 @@ knitr::kable(auc_check,
 
 | drug | dose_mg | tau_day | cl_L_per_day | auc_per_dose_simulated | auc_per_dose_predicted | pct_difference |
 |:---|---:|---:|---:|---:|---:|---:|
-| paritaprevir | 150 | 1.0 | 1580 | 0.000631 | 0.000633 | -0.243708 |
-| ombitasvir | 25 | 1.0 | 453 | 0.002207 | 0.002208 | -0.037656 |
-| ritonavir | 100 | 1.0 | 439 | 0.002274 | 0.002278 | -0.183969 |
-| dasabuvir | 250 | 0.5 | 1150 | 0.000868 | 0.000870 | -0.202389 |
-| ribavirin | 600 | 0.5 | 427 | 0.002323 | 0.002342 | -0.812910 |
+| paritaprevir | 150 | 1.0 | 1580 | 0.000631 | 0.000633 | -0.243703 |
+| ombitasvir | 25 | 1.0 | 453 | 0.002207 | 0.002208 | -0.037633 |
+| ritonavir | 100 | 1.0 | 439 | 0.002274 | 0.002278 | -0.183983 |
+| dasabuvir | 250 | 0.5 | 1150 | 0.000868 | 0.000870 | -0.202372 |
+| ribavirin | 600 | 0.5 | 427 | 0.002323 | 0.002342 | -0.812907 |
 
 Independent check: simulated AUC0-tau,ss per mg dose vs the published
 CL/F (auc_per_dose = 1 / CL/F at steady state). {.table}

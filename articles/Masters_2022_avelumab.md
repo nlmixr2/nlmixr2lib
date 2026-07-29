@@ -141,7 +141,6 @@ mod <- readModelDb("Masters_2022_avelumab")
 sim_flat    <- rxSolve(mod, events = events_flat,    returnType = "data.frame")
 #> ℹ parameter labels from comments will be replaced by 'label()'
 sim_wtbased <- rxSolve(mod, events = events_wtbased, returnType = "data.frame")
-#> ℹ parameter labels from comments will be replaced by 'label()'
 sim <- dplyr::bind_rows(
   dplyr::mutate(sim_flat,    treatment = "800 mg Q2W"),
   dplyr::mutate(sim_wtbased, treatment = "10 mg/kg Q2W")
@@ -207,7 +206,6 @@ sim_cl <- rxSolve(
   omega  = NA,
   returnType = "data.frame"
 )
-#> ℹ parameter labels from comments will be replaced by 'label()'
 sim_cl <- sim_cl[sim_cl$time > 0, ]
 
 ggplot(sim_cl, aes(time, cl / cl_base)) +
@@ -268,7 +266,7 @@ knitr::kable(summary(nca_res),
 
 | start | end | treatment | N | auclast | cmax | tmax | half.life |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | 14 | 10 mg/kg Q2W | 200 | 1120 \[34.6\] | 202 \[22.7\] | 1.00 \[1.00, 1.00\] | 5.47 \[2.62\] |
+| 0 | 14 | 10 mg/kg Q2W | 200 | 1120 \[37.5\] | 201 \[23.7\] | 1.00 \[1.00, 1.00\] | 5.28 \[2.10\] |
 | 0 | 14 | 800 mg Q2W | 200 | 1080 \[34.4\] | 197 \[22.8\] | 1.00 \[1.00, 1.00\] | 5.67 \[3.34\] |
 
 Simulated NCA parameters (3rd dosing interval, days 28-42) {.table}

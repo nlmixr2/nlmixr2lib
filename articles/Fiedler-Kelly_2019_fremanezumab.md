@@ -4,7 +4,7 @@
 
 library(nlmixr2lib)
 library(rxode2)
-#> rxode2 5.1.2 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.5 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -367,8 +367,8 @@ knitr::kable(nca_summary,
 |---:|---:|:---|:---|:---|:---|:---|
 | 0 | 84 | 225 mg SC Q4W dose 1 | 500 | NC | 32.5 \[34.0\] | 8.00 \[2.00, 28.0\] |
 | 0 | 84 | 225 mg SC Q4W last dose | 500 | 1640 \[31.8\] | 71.8 \[29.0\] | 7.00 \[7.00, 14.0\] |
-| 0 | 84 | 675 mg SC Q12W dose 1 | 500 | NC | 98.2 \[35.8\] | 7.00 \[2.00, 56.0\] |
-| 0 | 84 | 675 mg SC Q12W last dose | 500 | 4860 \[34.6\] | 115 \[31.0\] | 7.00 \[7.00, 35.0\] |
+| 0 | 84 | 675 mg SC Q12W dose 1 | 500 | NC | 96.2 \[35.7\] | 8.00 \[2.00, 28.0\] |
+| 0 | 84 | 675 mg SC Q12W last dose | 500 | 4920 \[32.0\] | 113 \[30.5\] | 7.00 \[7.00, 21.0\] |
 
 PKNCA summary by treatment / interval (auclast in ug\*day/mL, Cmax in
 ug/mL). {.table style="width:100%;"}
@@ -407,7 +407,7 @@ knitr::kable(acc_table,
 | regimen | AR_AUC simulated | AR_AUC published (median) | AR_Cmax simulated | AR_Cmax published (median) |
 |:---|---:|---:|---:|---:|
 | 225 mg SC Q4W | NA | 2.43 | 2.20 | 2.38 |
-| 675 mg SC Q12W | NA | 1.21 | 1.17 | 1.22 |
+| 675 mg SC Q12W | NA | 1.21 | 1.19 | 1.22 |
 
 Accumulation ratios: simulated medians vs. Fiedler-Kelly 2019 Table 3.
 {.table}

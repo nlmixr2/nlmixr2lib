@@ -240,9 +240,6 @@ cyaa_vpc <- bind_rows(lapply(seq_along(cyaa_vpc_days), function(i) {
               n = 200, id_offset = i * 1000L)
 }))
 #> ℹ parameter labels from comments will be replaced by 'label()'
-#> ℹ parameter labels from comments will be replaced by 'label()'
-#> ℹ parameter labels from comments will be replaced by 'label()'
-#> ℹ parameter labels from comments will be replaced by 'label()'
 
 cyaa_vpc_summary <- cyaa_vpc |>
   group_by(dose_day, time) |>
@@ -293,12 +290,6 @@ cyaa_cure <- bind_rows(lapply(seq_along(cyaa_days), function(i) {
   filter(time == end_of_study) |>
   group_by(dose_day) |>
   summarise(prob_cure = mean(tumor_size <= 2, na.rm = TRUE), .groups = "drop")
-#> ℹ parameter labels from comments will be replaced by 'label()'
-#> ℹ parameter labels from comments will be replaced by 'label()'
-#> ℹ parameter labels from comments will be replaced by 'label()'
-#> ℹ parameter labels from comments will be replaced by 'label()'
-#> ℹ parameter labels from comments will be replaced by 'label()'
-#> ℹ parameter labels from comments will be replaced by 'label()'
 
 cyaa_cure |>
   dplyr::rename(

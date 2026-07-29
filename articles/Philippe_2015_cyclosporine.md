@@ -246,7 +246,6 @@ ev_nca <- cohort |>
 sim_nca <- rxode2::rxSolve(mod, ev_nca, keep = "WT") |>
   as.data.frame() |>
   filter(!is.na(Cc), time >= 24 * 6.5, time <= 24 * 7)
-#> ℹ parameter labels from comments will be replaced by 'label()'
 sim_nca$conc_ngmL <- 1000 * sim_nca$Cc
 sim_nca$treatment <- "1.0 mg/kg q12h"
 

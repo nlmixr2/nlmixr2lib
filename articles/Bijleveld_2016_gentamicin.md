@@ -442,12 +442,12 @@ knitr::kable(
 
 | regimen | median_trough_pub | median_trough_sim | iqr_trough_pub | iqr_trough_sim | median_peak_pub | median_peak_sim | iqr_peak_pub | iqr_peak_sim |
 |:---|---:|---:|:---|:---|---:|---:|:---|:---|
-| GA 36 wk, 4 mg/kg q24h | 1.4 | 1.44 | 1.1-1.8 | 1.13-1.85 | 2.7 | 8.80 | 2.1-3.5 | 7.06-10.57 |
+| GA 36 wk, 4 mg/kg q24h | 1.4 | 1.44 | 1.1-1.8 | 1.13-1.85 | 2.7 | 8.76 | 2.1-3.5 | 7.05-10.53 |
 | GA 36 wk, 5 mg/kg q36h | 0.7 | 0.94 | 0.5-1.0 | 0.67-1.24 | 9.5 | 10.25 | 7.5-11.9 | 7.69-13.08 |
-| GA 40 wk, 4 mg/kg q24h | 0.8 | 0.85 | 0.6-1.1 | 0.61-1.10 | 7.9 | 8.12 | 6.2-9.8 | 6.61-10.09 |
-| GA 40 wk, 5 mg/kg q24h | 1.0 | 0.94 | 0.7-1.4 | 0.68-1.26 | 9.8 | 9.43 | 7.8-12.2 | 7.48-11.91 |
-| GA 40 wk, 5 mg/kg q36h | 0.4 | 0.43 | 0.2-0.6 | 0.29-0.63 | 9.2 | 8.77 | 7.3-11.6 | 7.03-11.43 |
-| GA 42 wk, 5 mg/kg q24h | 0.7 | 0.76 | 0.5-1.1 | 0.55-1.04 | 9.4 | 8.96 | 7.5-11.7 | 7.04-11.63 |
+| GA 40 wk, 4 mg/kg q24h | 0.8 | 0.85 | 0.6-1.1 | 0.61-1.10 | 7.9 | 8.11 | 6.2-9.8 | 6.60-10.07 |
+| GA 40 wk, 5 mg/kg q24h | 1.0 | 0.94 | 0.7-1.4 | 0.68-1.26 | 9.8 | 9.39 | 7.8-12.2 | 7.45-11.88 |
+| GA 40 wk, 5 mg/kg q36h | 0.4 | 0.43 | 0.2-0.6 | 0.29-0.62 | 9.2 | 8.76 | 7.3-11.6 | 7.03-11.43 |
+| GA 42 wk, 5 mg/kg q24h | 0.7 | 0.76 | 0.5-1.1 | 0.55-1.04 | 9.4 | 8.90 | 7.5-11.7 | 7.03-11.59 |
 
 Comparison of simulated median (and IQR, mg/L) trough and peak
 concentrations against Bijleveld 2016 Table 3. Peaks are taken 1 h after
@@ -469,29 +469,29 @@ knitr::kable(
 
 | start | end | regimen                | PPTESTCD | PPORRES |
 |------:|----:|:-----------------------|:---------|--------:|
-|     0 |  36 | GA 36 wk, 4 mg/kg q24h | auclast  | 100.154 |
-|     0 |  36 | GA 36 wk, 4 mg/kg q24h | cmax     |  12.232 |
-|     0 |  36 | GA 36 wk, 4 mg/kg q24h | cmin     |   1.879 |
+|     0 |  36 | GA 36 wk, 4 mg/kg q24h | auclast  | 100.063 |
+|     0 |  36 | GA 36 wk, 4 mg/kg q24h | cmax     |  12.226 |
+|     0 |  36 | GA 36 wk, 4 mg/kg q24h | cmin     |   1.877 |
 |     0 |  36 | GA 36 wk, 4 mg/kg q24h | tmax     |   1.000 |
-|     0 |  36 | GA 36 wk, 4 mg/kg q24h | auclast  |  50.124 |
-|     0 |  36 | GA 36 wk, 4 mg/kg q24h | cmax     |   5.774 |
+|     0 |  36 | GA 36 wk, 4 mg/kg q24h | auclast  |  50.094 |
+|     0 |  36 | GA 36 wk, 4 mg/kg q24h | cmax     |   5.772 |
 |     0 |  36 | GA 36 wk, 4 mg/kg q24h | cmin     |   0.796 |
 |     0 |  36 | GA 36 wk, 4 mg/kg q24h | tmax     |   1.000 |
-|     0 |  36 | GA 36 wk, 4 mg/kg q24h | auclast  |  80.594 |
-|     0 |  36 | GA 36 wk, 4 mg/kg q24h | cmax     |   8.354 |
-|     0 |  36 | GA 36 wk, 4 mg/kg q24h | cmin     |   1.874 |
+|     0 |  36 | GA 36 wk, 4 mg/kg q24h | auclast  |  80.497 |
+|     0 |  36 | GA 36 wk, 4 mg/kg q24h | cmax     |   8.349 |
+|     0 |  36 | GA 36 wk, 4 mg/kg q24h | cmin     |   1.869 |
 |     0 |  36 | GA 36 wk, 4 mg/kg q24h | tmax     |   1.000 |
-|     0 |  36 | GA 36 wk, 4 mg/kg q24h | auclast  |  73.108 |
-|     0 |  36 | GA 36 wk, 4 mg/kg q24h | cmax     |   9.387 |
+|     0 |  36 | GA 36 wk, 4 mg/kg q24h | auclast  |  73.093 |
+|     0 |  36 | GA 36 wk, 4 mg/kg q24h | cmax     |   9.386 |
 |     0 |  36 | GA 36 wk, 4 mg/kg q24h | cmin     |   0.833 |
 |     0 |  36 | GA 36 wk, 4 mg/kg q24h | tmax     |   1.000 |
-|     0 |  36 | GA 36 wk, 4 mg/kg q24h | auclast  |  71.689 |
-|     0 |  36 | GA 36 wk, 4 mg/kg q24h | cmax     |   8.481 |
-|     0 |  36 | GA 36 wk, 4 mg/kg q24h | cmin     |   1.101 |
+|     0 |  36 | GA 36 wk, 4 mg/kg q24h | auclast  |  71.655 |
+|     0 |  36 | GA 36 wk, 4 mg/kg q24h | cmax     |   8.478 |
+|     0 |  36 | GA 36 wk, 4 mg/kg q24h | cmin     |   1.100 |
 |     0 |  36 | GA 36 wk, 4 mg/kg q24h | tmax     |   1.000 |
-|     0 |  36 | GA 36 wk, 4 mg/kg q24h | auclast  |  62.699 |
-|     0 |  36 | GA 36 wk, 4 mg/kg q24h | cmax     |   8.392 |
-|     0 |  36 | GA 36 wk, 4 mg/kg q24h | cmin     |   1.113 |
+|     0 |  36 | GA 36 wk, 4 mg/kg q24h | auclast  |  62.629 |
+|     0 |  36 | GA 36 wk, 4 mg/kg q24h | cmax     |   8.388 |
+|     0 |  36 | GA 36 wk, 4 mg/kg q24h | cmin     |   1.112 |
 |     0 |  36 | GA 36 wk, 4 mg/kg q24h | tmax     |   1.000 |
 
 Per-subject PKNCA NCA parameters by regimen (long form, first 24 rows

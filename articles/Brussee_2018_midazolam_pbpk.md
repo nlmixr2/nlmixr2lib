@@ -156,7 +156,6 @@ sim_iv <- rxode2::rxSolve(
   returnType = "data.frame"
 ) |>
   dplyr::mutate(route = "IV 30-min infusion")
-#> ℹ parameter labels from comments will be replaced by 'label()'
 
 sim <- dplyr::bind_rows(sim_oral, sim_iv)
 ```

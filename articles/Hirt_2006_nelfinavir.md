@@ -294,7 +294,6 @@ sim_nni_on <- rxode2::rxSolve(
   keep = c("cohort", "CONMED_NNRTI_IND")
 ) |>
   as.data.frame()
-#> ℹ parameter labels from comments will be replaced by 'label()'
 
 sim_nni_off <- sim |>
   dplyr::filter(cohort == "2-13 yr") |>

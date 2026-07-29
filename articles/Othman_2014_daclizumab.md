@@ -4,7 +4,7 @@
 
 library(nlmixr2lib)
 library(rxode2)
-#> rxode2 5.1.2 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.5 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -485,11 +485,11 @@ knitr::kable(
 
 | metric                        | published_median | simulated_median |
 |:------------------------------|:-----------------|:-----------------|
-| First dose Cmax (µg/mL)       | 17.8 (10.8-27.9) | 13.9 (8.2-22.5)  |
-| First dose AUCs (µg·day/mL)   | 298 (187-442)    | 308 (183-452)    |
-| Steady state Cmax (µg/mL)     | 31.5 (18.7-51.8) | 24.2 (14.2-38.7) |
-| Steady state AUCs (µg·day/mL) | 558 (335-871)    | 540 (334-855)    |
-| Steady state Ctrough (µg/mL)  | 12.7 (6.13-25.3) | 12.9 (7.2-23.4)  |
+| First dose Cmax (µg/mL)       | 17.8 (10.8-27.9) | 13.1 (7.6-20.9)  |
+| First dose AUCs (µg·day/mL)   | 298 (187-442)    | 295 (174-423)    |
+| Steady state Cmax (µg/mL)     | 31.5 (18.7-51.8) | 23.5 (13.7-38.7) |
+| Steady state AUCs (µg·day/mL) | 558 (335-871)    | 534 (306-832)    |
+| Steady state Ctrough (µg/mL)  | 12.7 (6.13-25.3) | 13.1 (6.9-22.2)  |
 
 Phase III 150 mg SC Q4W: published (Othman 2014 §3.7) vs simulated
 median (5th-95th percentile). Published AUC converted from mg·h/mL to

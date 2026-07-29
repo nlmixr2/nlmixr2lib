@@ -181,7 +181,6 @@ sim_typical <- rxode2::rxSolve(
   params = c(etalcl = 0, etalvc = 0),
   keep   = c("cohort", "WT", "PAGE", "CONMED_AMOXCLAV", "CONMED_SPIRON")
 ) |> as.data.frame()
-#> ℹ parameter labels from comments will be replaced by 'label()'
 #> Warning: multi-subject simulation without without 'omega'
 ```
 

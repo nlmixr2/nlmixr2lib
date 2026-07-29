@@ -4,7 +4,7 @@
 
 library(nlmixr2lib)
 library(rxode2)
-#> rxode2 5.1.2 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.5 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -549,30 +549,24 @@ sessionInfo()
 #> 
 #> other attached packages:
 #> [1] PKNCA_0.12.1          ggplot2_4.0.3         tidyr_1.3.2          
-#> [4] dplyr_1.2.1           rxode2_5.1.2          nlmixr2lib_0.3.2.9000
+#> [4] dplyr_1.2.1           rxode2_5.1.5          nlmixr2lib_0.3.2.9000
 #> 
 #> loaded via a namespace (and not attached):
-#>  [1] gtable_0.3.6          xfun_0.60             bslib_0.11.0         
-#>  [4] lattice_0.22-9        vctrs_0.7.3           tools_4.6.1          
-#>  [7] generics_0.1.4        parallel_4.6.1        tibble_3.3.1         
-#> [10] symengine_0.2.13      pkgconfig_2.0.3       data.table_1.18.4    
-#> [13] checkmate_2.3.4       RColorBrewer_1.1-3    S7_0.2.2             
-#> [16] desc_1.4.3            RcppParallel_5.1.11-2 lifecycle_1.0.5      
-#> [19] compiler_4.6.1        farver_2.1.2          textshaping_1.0.5    
-#> [22] fontawesome_0.5.3     htmltools_0.5.9       sys_3.4.3            
-#> [25] sass_0.4.10           yaml_2.3.12           crayon_1.5.3         
-#> [28] pillar_1.11.1         pkgdown_2.2.1         jquerylib_0.1.4      
-#> [31] whisker_0.4.1         openssl_2.4.2         cachem_1.1.0         
-#> [34] nlme_3.1-169          qs2_0.2.2             tidyselect_1.2.1     
-#> [37] digest_0.6.39         lotri_1.0.4           purrr_1.2.2          
-#> [40] labeling_0.4.3        rxode2ll_2.0.14       fastmap_1.2.0        
-#> [43] grid_4.6.1            cli_3.6.6             dparser_1.3.1-13     
-#> [46] magrittr_2.0.5        withr_3.0.3           scales_1.4.0         
-#> [49] backports_1.5.1       rmarkdown_2.31        otel_0.2.0           
-#> [52] askpass_1.2.1         ragg_1.5.2            stringfish_0.19.0    
-#> [55] memoise_2.0.1         evaluate_1.0.5        knitr_1.51           
-#> [58] rex_1.2.2             PreciseSums_0.7       rlang_1.3.0          
-#> [61] downlit_0.4.5         Rcpp_1.1.2            glue_1.8.1           
-#> [64] xml2_1.6.0            jsonlite_2.0.0        R6_2.6.1             
-#> [67] systemfonts_1.3.2     fs_2.1.0
+#>  [1] gtable_0.3.6       xfun_0.60          bslib_0.11.0       lattice_0.22-9    
+#>  [5] vctrs_0.7.3        tools_4.6.1        generics_0.1.4     parallel_4.6.1    
+#>  [9] tibble_3.3.1       symengine_0.2.13   pkgconfig_2.0.3    data.table_1.18.4 
+#> [13] checkmate_2.3.4    RColorBrewer_1.1-3 S7_0.2.2           desc_1.4.3        
+#> [17] RcppParallel_6.1.1 lifecycle_1.0.5    compiler_4.6.1     farver_2.1.2      
+#> [21] textshaping_1.0.5  fontawesome_0.5.3  htmltools_0.5.9    sys_3.4.3         
+#> [25] sass_0.4.10        yaml_2.3.12        crayon_1.5.3       pillar_1.11.1     
+#> [29] pkgdown_2.2.1      jquerylib_0.1.4    whisker_0.4.1      openssl_2.4.2     
+#> [33] cachem_1.1.0       nlme_3.1-169       qs2_0.2.2          tidyselect_1.2.1  
+#> [37] digest_0.6.39      lotri_1.0.4        purrr_1.2.2        labeling_0.4.3    
+#> [41] rxode2ll_2.0.16    fastmap_1.2.0      grid_4.6.1         cli_3.6.6         
+#> [45] dparser_1.3.1-13   magrittr_2.0.5     withr_3.0.3        scales_1.4.0      
+#> [49] backports_1.5.1    rmarkdown_2.31     otel_0.2.0         askpass_1.2.1     
+#> [53] ragg_1.5.2         stringfish_0.19.0  memoise_2.0.1      evaluate_1.0.5    
+#> [57] knitr_1.51         rex_1.2.2          PreciseSums_0.7    rlang_1.3.0       
+#> [61] downlit_0.4.5      Rcpp_1.1.2         glue_1.8.1         xml2_1.6.0        
+#> [65] jsonlite_2.0.0     R6_2.6.1           systemfonts_1.3.2  fs_2.1.0
 ```

@@ -282,28 +282,11 @@ vpc <- scenarios |>
   }) |>
   ungroup() |>
   mutate(scenario = factor(scenario, levels = scenarios$scenario))
-#> intdy -- t = 588 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 609 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 630 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 651 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 672 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 693 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 714 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 735 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 714 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 735 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 714 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 735 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 735 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 567 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 588 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 609 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 630 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 651 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 672 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 693 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 714 illegal. t not in interval tcur - _rxC(hu) to tcur
-#> intdy -- t = 735 illegal. t not in interval tcur - _rxC(hu) to tcur
+#> [intdy -- t = 6.91544e-310 illegal]: 8 warning(s) for subject(s): Unknown
+#> [intdy -- t = 4.65464e-310 illegal]: 5 warning(s) for subject(s): Unknown, Unknown
+#> [intdy -- t = 6.91544e-310 illegal]: 2 warning(s) for subject(s): Unknown
+#> [intdy -- t = 4.65464e-310 illegal]: 14 warning(s) for subject(s): Unknown, Unknown
+#> [intdy -- t = 6.91544e-310 illegal]: 1 warning(s) for subject(s): Unknown
 
 vpc_median <- vpc |>
   group_by(scenario, time) |>

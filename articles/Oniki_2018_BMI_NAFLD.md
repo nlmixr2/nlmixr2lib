@@ -455,7 +455,6 @@ sim_bmi_per_subj <- as.data.frame(
     id, AGE, SEXF, DSBAL_TT, PNPLA3_CG, PNPLA3_GG, HBA1C, HDLC, LDLC,
     BMI_pred = bmi
   )
-#> ℹ parameter labels from comments will be replaced by 'label()'
 
 # Step 2: feed each subject's predicted BMI into the NAFLD-risk model.
 naf_coupled_events <- sim_bmi_per_subj |>

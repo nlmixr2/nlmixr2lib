@@ -145,6 +145,8 @@ sim <- rxode2::rxSolve(
   keep = c("treatment", "OCC")
 ) |>
   as.data.frame()
+#> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_fdepot_1, etaiov_fdepot_2
+#> as a work-around try putting the mu-referenced expression on a simple line
 ```
 
 For deterministic typical-value replication (no random effects),
@@ -161,6 +163,8 @@ sim_typical <- rxode2::rxSolve(
   keep = c("treatment", "OCC")
 ) |>
   as.data.frame()
+#> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_fdepot_1, etaiov_fdepot_2
+#> as a work-around try putting the mu-referenced expression on a simple line
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalfdepot', 'etalnn', 'etalmtt', 'etaiov_fdepot_1', 'etaiov_fdepot_2'
 #> Warning: multi-subject simulation without without 'omega'
 ```
@@ -271,6 +275,46 @@ intervals <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- PKNCA::pk.nca(nca_data)
+#> Warning: Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
 
 nca_tbl <- as.data.frame(nca_res$result)
 knitr::kable(
@@ -279,22 +323,23 @@ knitr::kable(
 )
 ```
 
-| treatment |  id | start | end | PPTESTCD            |    PPORRES | exclude | PPORRESU |
-|:----------|----:|------:|----:|:--------------------|-----------:|:--------|:---------|
-| 300 mg    |   1 |     0 |   8 | auclast             | 20.7683115 | NA      | h\*mg/L  |
-| 300 mg    |   1 |     0 |   8 | cmax                |  4.4855222 | NA      | mg/L     |
-| 300 mg    |   1 |     0 |   8 | tmax                |  2.7500000 | NA      | h        |
-| 300 mg    |   1 |     0 |  24 | auclast             | 26.2911944 | NA      | h\*mg/L  |
-| 300 mg    |   1 |     0 |  24 | cmax                |  4.4855222 | NA      | mg/L     |
-| 300 mg    |   1 |     0 |  24 | tmax                |  2.7500000 | NA      | h        |
-| 300 mg    |   1 |     0 |  24 | tlast               | 24.0000000 | NA      | h        |
-| 300 mg    |   1 |     0 |  24 | lambda.z            |  0.2477855 | NA      | 1/h      |
-| 300 mg    |   1 |     0 |  24 | r.squared           |  0.9999424 | NA      | unitless |
-| 300 mg    |   1 |     0 |  24 | adj.r.squared       |  0.9999417 | NA      | unitless |
-| 300 mg    |   1 |     0 |  24 | lambda.z.time.first |  3.0000000 | NA      | h        |
-| 300 mg    |   1 |     0 |  24 | lambda.z.time.last  | 24.0000000 | NA      | h        |
+| treatment | id | start | end | PPTESTCD | PPORRES | exclude | PPORRESU |
+|:---|---:|---:|---:|:---|---:|:---|:---|
+| 300 mg | 1 | 0 | 8 | auclast | 0 | NA | h\*mg/L |
+| 300 mg | 1 | 0 | 8 | cmax | 0 | NA | mg/L |
+| 300 mg | 1 | 0 | 8 | tmax | NA | NA | h |
+| 300 mg | 1 | 0 | 24 | auclast | 0 | NA | h\*mg/L |
+| 300 mg | 1 | 0 | 24 | cmax | 0 | NA | mg/L |
+| 300 mg | 1 | 0 | 24 | tmax | NA | NA | h |
+| 300 mg | 1 | 0 | 24 | tlast | NA | NA | h |
+| 300 mg | 1 | 0 | 24 | lambda.z | NA | Too few points for half-life calculation (min.hl.points=3 with only 0 points) | 1/h |
+| 300 mg | 1 | 0 | 24 | r.squared | NA | Too few points for half-life calculation (min.hl.points=3 with only 0 points) | unitless |
+| 300 mg | 1 | 0 | 24 | adj.r.squared | NA | Too few points for half-life calculation (min.hl.points=3 with only 0 points) | unitless |
+| 300 mg | 1 | 0 | 24 | lambda.z.time.first | NA | Too few points for half-life calculation (min.hl.points=3 with only 0 points) | h |
+| 300 mg | 1 | 0 | 24 | lambda.z.time.last | NA | Too few points for half-life calculation (min.hl.points=3 with only 0 points) | h |
 
-First 12 rows of the per-subject PKNCA result table. {.table}
+First 12 rows of the per-subject PKNCA result table. {.table
+style="width:100%;"}
 
 ### Comparison against published NCA medians
 
@@ -347,9 +392,9 @@ knitr::kable(compare, caption = "Simulated vs Vinnard 2017 observed pre-ART NCA 
 
 | endpoint | simulated_median | simulated_5_95 | observed_median | observed_range |
 |:---|---:|:---|---:|:---|
-| AUC0-24 (mg\*h/L) | 31.94 | 19.00 - 53.25 | 34.4 | 8.2-80.2 |
-| Cmax (mg/L) | 7.09 | 4.30 - 11.15 | 7.4 | 2.56-11.61 |
-| Cmax (mg/L) | 7.09 | 4.30 - 11.15 | 7.4 | 2.56-11.61 |
+| AUC0-24 (mg\*h/L) | 0 | 0.00 - 0.00 | 34.4 | 8.2-80.2 |
+| Cmax (mg/L) | 0 | 0.00 - 0.00 | 7.4 | 2.56-11.61 |
+| Cmax (mg/L) | 0 | 0.00 - 0.00 | 7.4 | 2.56-11.61 |
 
 Simulated vs Vinnard 2017 observed pre-ART NCA medians. {.table}
 

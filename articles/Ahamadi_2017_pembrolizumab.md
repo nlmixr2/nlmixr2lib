@@ -195,7 +195,6 @@ mod <- readModelDb("Ahamadi_2017_pembrolizumab")
 sim_2  <- rxSolve(mod, events = events_2,  returnType = "data.frame")
 #> ℹ parameter labels from comments will be replaced by 'label()'
 sim_10 <- rxSolve(mod, events = events_10, returnType = "data.frame")
-#> ℹ parameter labels from comments will be replaced by 'label()'
 sim <- dplyr::bind_rows(
   dplyr::mutate(sim_2,  treatment = "2 mg/kg Q3W"),
   dplyr::mutate(sim_10, treatment = "10 mg/kg Q3W")
@@ -336,7 +335,7 @@ knitr::kable(
 
 | start | end | treatment | N | auclast | cmax | tmax | half.life |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | 21 | 10 mg/kg Q3W | 150 | 1470 \[24.8\] | 135 \[23.0\] | 2.00 \[2.00, 2.00\] | 26.6 \[8.65\] |
+| 0 | 21 | 10 mg/kg Q3W | 150 | 1490 \[21.8\] | 137 \[21.2\] | 2.00 \[2.00, 2.00\] | 26.1 \[9.40\] |
 | 0 | 21 | 2 mg/kg Q3W | 150 | 294 \[24.6\] | 27.1 \[23.0\] | 2.00 \[2.00, 2.00\] | 26.5 \[9.01\] |
 
 Simulated NCA parameters over the first dosing interval (days 0-21).
@@ -390,7 +389,7 @@ knitr::kable(
 
 | start | end | treatment | N | auclast | cmax | cmin | half.life |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | 21 | 10 mg/kg Q3W | 150 | 3410 \[41.0\] | 283 \[29.1\] | 110 \[55.0\] | 27.9 \[10.6\] |
+| 0 | 21 | 10 mg/kg Q3W | 150 | 3430 \[39.2\] | 286 \[27.1\] | 110 \[52.8\] | 27.9 \[12.0\] |
 | 0 | 21 | 2 mg/kg Q3W | 150 | 674 \[41.6\] | 56.4 \[29.5\] | 21.6 \[55.9\] | 27.5 \[10.7\] |
 
 Simulated NCA parameters at near steady state (8th interval, days

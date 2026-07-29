@@ -413,7 +413,6 @@ sim_ss <- rxode2::rxSolve(
   keep   = c("cohort", "AGE", "AST")
 ) |>
   as.data.frame()
-#> ℹ parameter labels from comments will be replaced by 'label()'
 
 trough_30 <- sim_ss |>
   filter(!is.na(Cc), abs(time - 30 * 24) < 1e-6)

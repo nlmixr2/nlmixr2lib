@@ -404,7 +404,7 @@ knitr::kable(
 | 1 g daily | 60-90 mL/min (median band)          |   5 |  18.08 | 17.28 | 20.10 |
 | 1 g daily | 90-150 mL/min (high band ~120)      |   4 |  13.36 |  5.35 | 21.66 |
 | 1 g daily | \>=150 mL/min (very high band ~180) |   4 |   8.56 |  1.63 | 16.04 |
-| 2 g daily | \<60 mL/min                         |  12 |  32.24 | 25.67 | 41.59 |
+| 2 g daily | \<60 mL/min                         |  12 |  32.24 | 25.67 | 41.58 |
 | 2 g daily | 60-90 mL/min (median band)          |   4 |  43.93 | 35.46 | 47.01 |
 | 2 g daily | 90-150 mL/min (high band ~120)      |   7 |  32.87 | 27.05 | 38.93 |
 | 2 g daily | \>=150 mL/min (very high band ~180) |   4 |  20.46 | 12.92 | 30.18 |

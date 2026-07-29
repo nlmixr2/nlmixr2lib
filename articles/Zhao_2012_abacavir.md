@@ -162,6 +162,8 @@ sim <- rxode2::rxSolve(
   keep   = c("WT", "OCC")
 ) |>
   as.data.frame()
+#> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_cl_1, etaiov_cl_2
+#> as a work-around try putting the mu-referenced expression on a simple line
 ```
 
 Deterministic typical-value lines (zero IIV / IOV / residual) for the
@@ -178,6 +180,8 @@ sim_typical <- rxode2::rxSolve(
   keep   = c("WT", "OCC")
 ) |>
   as.data.frame()
+#> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_cl_1, etaiov_cl_2
+#> as a work-around try putting the mu-referenced expression on a simple line
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvp', 'etalq', 'etaiov_cl_1', 'etaiov_cl_2'
 #> Warning: multi-subject simulation without without 'omega'
 ```
@@ -410,11 +414,11 @@ knitr::kable(
 
 | NCA parameter | treatment          |    median |      p05 |       p95 |
 |:--------------|:-------------------|----------:|---------:|----------:|
-| AUClast       | BID (8 mg/kg q12h) |  5.314691 | 3.405132 |  8.901297 |
-| Cmax          | BID (8 mg/kg q12h) |  2.610619 | 1.754336 |  3.836657 |
+| AUClast       | BID (8 mg/kg q12h) |  5.314691 | 3.405132 |  8.901295 |
+| Cmax          | BID (8 mg/kg q12h) |  2.610618 | 1.754336 |  3.836655 |
 | Tmax          | BID (8 mg/kg q12h) |  1.000000 | 1.000000 |  1.000000 |
-| AUClast       | QD (16 mg/kg q24h) | 11.767224 | 6.919091 | 18.813406 |
-| Cmax          | QD (16 mg/kg q24h) |  5.552471 | 3.576824 |  7.961253 |
+| AUClast       | QD (16 mg/kg q24h) | 11.767225 | 6.919092 | 18.813408 |
+| Cmax          | QD (16 mg/kg q24h) |  5.552473 | 3.576825 |  7.961252 |
 | Tmax          | QD (16 mg/kg q24h) |  1.000000 | 1.000000 |  1.000000 |
 
 Simulated abacavir steady-state NCA per crossover phase (WT = 12 kg, n =

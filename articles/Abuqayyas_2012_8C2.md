@@ -314,8 +314,8 @@ cmp |>
 
 | NCA parameter     | Dose          | Reference | Simulated |       % diff |
 |:------------------|:--------------|----------:|----------:|-------------:|
-| AUClast (nM\*day) | 0.04 mg/kg IV |      13.3 |     15400 | +115536.4%\* |
-| AUClast (nM\*day) | 0.10 mg/kg IV |      36.7 |     36600 |  +99419.2%\* |
+| AUClast (nM\*day) | 0.04 mg/kg IV |      13.3 |     15400 | +115536.3%\* |
+| AUClast (nM\*day) | 0.10 mg/kg IV |      36.7 |     36600 |  +99419.0%\* |
 | AUClast (nM\*day) | 0.40 mg/kg IV |       196 |    139000 |  +71169.0%\* |
 
 Simulated vs. published AUC0-10d (nM x day). \* differs from reference

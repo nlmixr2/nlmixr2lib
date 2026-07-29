@@ -4,7 +4,7 @@
 
 library(nlmixr2lib)
 library(rxode2)
-#> rxode2 5.1.2 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.5 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -424,7 +424,7 @@ knitr::kable(
 
 | Interval Start | Interval End | treatment | N | AUClast (day\*ug/mL) | Cmax (ug/mL) | Cmin (ug/mL) |
 |---:|---:|:---|:---|:---|:---|:---|
-| 0 | 21 | 1200 mg Q3W | 100 | 6380 \[27.0\] | 377 \[23.8\] | 232 \[32.3\] |
+| 0 | 21 | 1200 mg Q3W | 100 | 6410 \[26.9\] | 379 \[23.7\] | 233 \[32.2\] |
 
 Cycle 8 NCA summary (days 147-168, 1200 mg Q3W) - approaching steady
 state. {.table style="width:100%;"}
@@ -483,9 +483,9 @@ knitr::kable(
 
 | PPTESTCD | metric             | published_gm | geomean | diff_pct |
 |:---------|:-------------------|-------------:|--------:|---------:|
-| auclast  | AUCss (μg\*day/mL) |         6951 |  6380.2 |     -8.2 |
-| cmax     | Cmax,ss (μg/mL)    |          571 |   377.5 |    -33.9 |
-| cmin     | Cmin,ss (μg/mL)    |          221 |   231.5 |      4.8 |
+| auclast  | AUCss (μg\*day/mL) |         6951 |  6413.6 |     -7.7 |
+| cmax     | Cmax,ss (μg/mL)    |          571 |   379.1 |    -33.6 |
+| cmin     | Cmin,ss (μg/mL)    |          221 |   233.3 |      5.6 |
 
 Cycle-8 simulated geometric-mean NCA vs. Wang 2024 Table S1 (Age \<= 65
 subgroup, 1200 mg Q3W). {.table}

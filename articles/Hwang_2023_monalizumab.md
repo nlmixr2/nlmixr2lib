@@ -411,7 +411,7 @@ knitr::kable(
 
 | Interval Start | Interval End | treatment | N | AUClast (day\*mg/L) | Cmax (mg/L) | Cmin (mg/L) | Tmax (day) | Half-life (day) |
 |---:|---:|:---|:---|:---|:---|:---|:---|:---|
-| 0 | 14 | 10 mg/kg Q2W | 200 | 2320 \[40.5\] | 260 \[32.0\] | 109 \[50.9\] | 1.00 \[1.00, 1.00\] | 18.5 \[6.03\] |
+| 0 | 14 | 10 mg/kg Q2W | 200 | 2340 \[38.5\] | 263 \[30.7\] | 109 \[47.6\] | 1.00 \[1.00, 1.00\] | 18.2 \[6.47\] |
 | 0 | 14 | 750 mg Q2W | 200 | 2360 \[43.5\] | 267 \[34.1\] | 109 \[55.3\] | 1.00 \[1.00, 1.00\] | 18.4 \[6.96\] |
 
 Simulated NCA parameters at near-steady-state (5th dosing interval, days

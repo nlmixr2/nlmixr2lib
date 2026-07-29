@@ -114,6 +114,8 @@ sim <- rxode2::rxSolve(mod, events = events, keep = c("band", "WT", "NAT2_SLOW",
 #> ℹ parameter labels from comments will be replaced by 'label()'
 #> Warning: some etas defaulted to non-mu referenced, possible parsing error: etalcl_nonslow
 #> as a work-around try putting the mu-referenced expression on a simple line
+#> Warning: some etas defaulted to non-mu referenced, possible parsing error: etalcl_nonslow
+#> as a work-around try putting the mu-referenced expression on a simple line
 ```
 
 ## Replicate published figures
@@ -152,8 +154,6 @@ sim_pk <- sim |>
   dplyr::mutate(group = paste(band, nat2_group, sep = "/"))
 
 conc_obj <- PKNCA::PKNCAconc(sim_pk, Cc ~ time | group + id)
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
 
 dose_df <- events |>
   dplyr::filter(evid == 1) |>
@@ -173,30 +173,6 @@ intervals <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- PKNCA::pk.nca(nca_data)
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in log(conc.2/conc.1): NaNs produced
-#> Warning in assert_conc(conc = conc): Negative concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in log(conc.2/conc.1): NaNs produced
-#> Warning in assert_conc(conc = conc): Negative concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in log(conc.2/conc.1): NaNs produced
-#> Warning in assert_conc(conc = conc): Negative concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in log(conc.2/conc.1): NaNs produced
-#> Warning in assert_conc(conc = conc): Negative concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
 
 nca_summary <- summary(nca_res)
 knitr::kable(nca_summary, caption = "Simulated NCA parameters by weight band and NAT2 genotype (Horita 2018 isoniazid).")
@@ -206,11 +182,11 @@ knitr::kable(nca_summary, caption = "Simulated NCA parameters by weight band and
 |---:|---:|:---|:---|:---|:---|:---|
 | 0 | 24 | 15-20 kg/nonslow | 50 | 12.6 \[57.2\] | 3.63 \[24.0\] | 0.500 \[0.500, 1.50\] |
 | 0 | 24 | 15-20 kg/slow | 50 | 21.2 \[36.2\] | 4.20 \[32.0\] | 1.00 \[0.500, 2.00\] |
-| 0 | 24 | 21-30 kg/nonslow | 50 | 18.0 \[42.4\], n=49 | 5.44 \[28.4\] | 0.500 \[0.500, 2.00\] |
+| 0 | 24 | 21-30 kg/nonslow | 50 | 17.4 \[50.7\] | 5.44 \[28.4\] | 0.500 \[0.500, 2.00\] |
 | 0 | 24 | 21-30 kg/slow | 50 | 30.9 \[31.2\] | 5.96 \[24.0\] | 0.500 \[0.500, 2.00\] |
-| 0 | 24 | 5-7 kg/nonslow | 50 | 13.1 \[47.6\], n=49 | 5.24 \[31.8\] | 0.500 \[0.500, 1.00\] |
+| 0 | 24 | 5-7 kg/nonslow | 50 | 12.9 \[48.3\] | 5.24 \[31.8\] | 0.500 \[0.500, 1.00\] |
 | 0 | 24 | 5-7 kg/slow | 50 | 22.5 \[40.7\] | 5.90 \[21.6\] | 0.500 \[0.500, 1.50\] |
-| 0 | 24 | 8-14 kg/nonslow | 50 | 12.3 \[52.1\], n=48 | 4.12 \[25.5\] | 0.500 \[0.500, 1.50\] |
+| 0 | 24 | 8-14 kg/nonslow | 50 | 11.9 \[54.3\] | 4.12 \[25.5\] | 0.500 \[0.500, 1.50\] |
 | 0 | 24 | 8-14 kg/slow | 50 | 20.1 \[31.4\] | 4.30 \[22.0\] | 0.750 \[0.500, 1.50\] |
 
 Simulated NCA parameters by weight band and NAT2 genotype (Horita 2018

@@ -247,8 +247,8 @@ knitr::kable(nca_summary, digits = 2,
 
 | cohort       | aucinf.obs |     cmax | half.life | tmax |
 |:-------------|-----------:|---------:|----------:|-----:|
-| Older 0.3 mg |    4187497 | 39327.71 |     87.54 |   10 |
-| Young 0.5 mg |    3950673 | 43786.61 |     83.21 |   10 |
+| Older 0.3 mg |   310945.0 | 11066.80 |     87.60 |   15 |
+| Young 0.5 mg |   465666.5 | 17400.43 |     83.28 |   15 |
 
 Simulation-derived NCA parameters by dose cohort. {.table}
 

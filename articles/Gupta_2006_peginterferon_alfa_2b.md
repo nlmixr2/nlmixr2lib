@@ -356,13 +356,13 @@ knitr::kable(nca_summary,
 
 | treatment              | PPTESTCD | median |    q05 |    q95 |
 |:-----------------------|:---------|-------:|-------:|-------:|
-| Week 4 (6 ug/kg/week)  | auclast  | 10.935 |  4.725 | 23.494 |
-| Week 4 (6 ug/kg/week)  | cl.last  | 40.394 | 22.612 | 71.383 |
-| Week 4 (6 ug/kg/week)  | cmax     |  2.691 |  1.330 |  5.352 |
+| Week 4 (6 ug/kg/week)  | auclast  | 10.996 |  4.736 | 23.525 |
+| Week 4 (6 ug/kg/week)  | cl.last  | 40.259 | 22.565 | 71.355 |
+| Week 4 (6 ug/kg/week)  | cmax     |  2.700 |  1.332 |  5.357 |
 | Week 4 (6 ug/kg/week)  | tmax     |  1.000 |  1.000 |  1.500 |
-| Week 48 (6 ug/kg/week) | auclast  | 18.077 |  7.058 | 40.919 |
-| Week 48 (6 ug/kg/week) | cl.last  | 25.431 | 11.350 | 49.718 |
-| Week 48 (6 ug/kg/week) | cmax     |  3.717 |  1.685 |  7.666 |
+| Week 48 (6 ug/kg/week) | auclast  | 18.108 |  7.062 | 40.989 |
+| Week 48 (6 ug/kg/week) | cl.last  | 25.376 | 11.305 | 49.642 |
+| Week 48 (6 ug/kg/week) | cmax     |  3.726 |  1.686 |  7.692 |
 | Week 48 (6 ug/kg/week) | tmax     |  1.000 |  1.000 |  1.500 |
 
 Simulated single-interval NCA at weeks 4 and 48 (6 ug/kg/week SC).
@@ -403,8 +403,8 @@ knitr::kable(cmp,
 
 | NCA parameter   | treatment              | Reference | Simulated | % diff |
 |:----------------|:-----------------------|----------:|----------:|-------:|
-| cl.last (L/day) | Week 4 (6 ug/kg/week)  |      42.3 |      40.4 |  -4.5% |
-| cl.last (L/day) | Week 48 (6 ug/kg/week) |      29.3 |      25.4 | -13.2% |
+| cl.last (L/day) | Week 4 (6 ug/kg/week)  |      42.3 |      40.3 |  -4.8% |
+| cl.last (L/day) | Week 48 (6 ug/kg/week) |      29.3 |      25.4 | -13.4% |
 
 Simulated cohort-median apparent clearance (cohort-median cl.last from
 PKNCA) vs. published mean CL at weeks 4 and 48 (Gupta 2006 Results). \*

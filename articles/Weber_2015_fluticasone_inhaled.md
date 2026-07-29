@@ -427,7 +427,6 @@ set.seed(20260603)
 sim_ref_be <- rxode2::rxSolve(
   mod, events = events_ref, keep = c("product")
 ) |> as.data.frame()
-#> ℹ parameter labels from comments will be replaced by 'label()'
 
 # Test cohort: same model, logitflung overridden to the F_Lung = 0.144
 # value via params=. All other parameters and the omega block stay the
@@ -438,7 +437,6 @@ sim_test_be <- rxode2::rxSolve(
   params = c(logitflung = logitflung_test),
   keep = c("product")
 ) |> as.data.frame()
-#> ℹ parameter labels from comments will be replaced by 'label()'
 
 sim_both <- dplyr::bind_rows(sim_ref_be, sim_test_be)
 

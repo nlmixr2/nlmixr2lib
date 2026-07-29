@@ -287,8 +287,6 @@ conc_obj <- PKNCA::PKNCAconc(
   sim_nca, Cc ~ time | treatment + id,
   concu = "mg/L", timeu = "h"
 )
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
 
 dose_df <- cohorts |>
   filter(evid == 1) |>
@@ -311,42 +309,6 @@ intervals <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- PKNCA::pk.nca(nca_data)
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in log(conc.2/conc.1): NaNs produced
-#> Warning in assert_conc(conc = conc): Negative concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in log(data$conc): NaNs produced
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in log(conc.2/conc.1): NaNs produced
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in log(conc.2/conc.1): NaNs produced
-#> Warning in assert_conc(conc = conc): Negative concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in log(data$conc): NaNs produced
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in log(conc.2/conc.1): NaNs produced
 ```
 
 ### Comparison against published expectations
@@ -405,7 +367,7 @@ nca_summary |>
 | Adults 500 mg IV | 16.50 | 0.00 | 13.00 | 13.00 | 2.65 |
 | Adults 500 mg PO | 3.21 | 0.75 | 9.36 | 9.40 | 2.91 |
 | Children 1-2 y, 10 mg/kg PO | 3.24 | 0.50 | 8.38 | 8.38 | 1.65 |
-| Children 2-5 y, 10 mg/kg PO | 2.87 | 0.75 | 9.68 | 9.72 | 1.84 |
+| Children 2-5 y, 10 mg/kg PO | 2.87 | 0.75 | 9.20 | 9.24 | 1.84 |
 | Children 5-12 y, 10 mg/kg PO | 3.67 | 0.75 | 9.33 | 9.34 | 1.86 |
 
 Per-cohort median PKNCA-derived parameters. {.table}
@@ -461,7 +423,7 @@ compare_tbl |>
 | Cohort | AUC ratio (sim) | Cmax ratio (sim) | AUC ratio (paper) | Cmax ratio (paper) | AUC % diff | Cmax % diff |
 |:---|---:|---:|---:|---:|---:|---:|
 | Children 1-2 y, 10 mg/kg PO | 0.892 | 1.010 | 0.95 | 1.05 | -6.1 | -4.0 |
-| Children 2-5 y, 10 mg/kg PO | 1.030 | 0.895 | 0.96 | 1.10 | 7.8 | -18.6 |
+| Children 2-5 y, 10 mg/kg PO | 0.983 | 0.895 | 0.96 | 1.10 | 2.4 | -18.6 |
 | Children 5-12 y, 10 mg/kg PO | 0.994 | 1.140 | 1.02 | 1.15 | -2.6 | -0.7 |
 
 Paediatric / adult exposure ratios at 10 mg/kg PO, simulated vs

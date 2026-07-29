@@ -200,7 +200,6 @@ sim_morphine <- rxode2::rxSolve(
 sim_gfr <- rxode2::rxSolve(
   mod, events = events_gfr, keep = c("group", "WT", "CRCL")
 ) |> as.data.frame()
-#> ℹ parameter labels from comments will be replaced by 'label()'
 ```
 
 ## Replicate published figures
@@ -395,7 +394,6 @@ stopifnot(!anyDuplicated(unique(events_sd[, c("id", "time", "evid")])))
 sim_sd <- rxode2::rxSolve(mod, events = events_sd,
                           keep = c("group", "WT", "CRCL")) |>
   as.data.frame()
-#> ℹ parameter labels from comments will be replaced by 'label()'
 
 dose_df <- events_sd |>
   dplyr::filter(evid == 1L) |>

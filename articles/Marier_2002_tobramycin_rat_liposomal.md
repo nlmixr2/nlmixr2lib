@@ -218,7 +218,6 @@ events_pknca <- dplyr::bind_rows(dose_rows_pknca, sim_grid_pknca)
 stopifnot(!anyDuplicated(unique(events_pknca[, c("id", "time", "evid")])))
 
 sim_pknca <- as.data.frame(rxode2::rxSolve(mod, events_pknca))
-#> ℹ parameter labels from comments will be replaced by 'label()'
 ```
 
 ``` r

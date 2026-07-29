@@ -4,7 +4,7 @@
 
 library(nlmixr2lib)
 library(rxode2)
-#> rxode2 5.1.2 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.5 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -275,7 +275,6 @@ d_iv <- bind_rows(dose_iv, obs_iv) %>%
 ``` r
 
 sim_iv <- rxSolve(mod, d_iv, keep = "group", returnType = "data.frame")
-#> ℹ parameter labels from comments will be replaced by 'label()'
 ```
 
 ### Replicates Figure 5 (200 mg IV, UC vs non-UC)

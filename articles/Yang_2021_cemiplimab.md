@@ -168,7 +168,6 @@ mod <- readModelDb("Yang_2021_cemiplimab")
 sim_q2w <- rxSolve(mod, events = events_q2w, returnType = "data.frame")
 #> ℹ parameter labels from comments will be replaced by 'label()'
 sim_q3w <- rxSolve(mod, events = events_q3w, returnType = "data.frame")
-#> ℹ parameter labels from comments will be replaced by 'label()'
 sim <- dplyr::bind_rows(
   dplyr::mutate(sim_q2w, treatment = "3 mg/kg Q2W"),
   dplyr::mutate(sim_q3w, treatment = "350 mg Q3W")
@@ -307,7 +306,7 @@ knitr::kable(summary(nca_q2w),
 
 | start | end | N | auclast | cmax | cmin | tmax | half.life |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | 42 | 250 | 3560 \[45.1\] | 120 \[36.6\] | 61.0 \[55.0\] | 29.0 \[29.0, 29.0\] | 20.7 \[9.85\] |
+| 0 | 42 | 250 | 3560 \[45.1\] | 120 \[36.7\] | 61.0 \[55.0\] | 29.0 \[29.0, 29.0\] | 20.7 \[9.85\] |
 
 Simulated NCA at steady state (6-week window), 3 mg/kg Q2W {.table}
 
@@ -319,7 +318,7 @@ knitr::kable(summary(nca_q3w),
 
 | start | end | N | auclast | cmax | cmin | tmax | half.life |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | 42 | 250 | 3390 \[42.6\] | 136 \[36.1\] | 47.6 \[56.0\] | 22.0 \[22.0, 22.0\] | 19.7 \[7.56\] |
+| 0 | 42 | 250 | 3430 \[45.6\] | 139 \[37.3\] | 47.4 \[61.4\] | 22.0 \[22.0, 22.0\] | 19.6 \[8.62\] |
 
 Simulated NCA at steady state (6-week window), 350 mg Q3W {.table}
 

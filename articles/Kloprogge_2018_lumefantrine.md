@@ -393,19 +393,19 @@ knitr::kable(
 
 | band               | PPTESTCD |   median |     p05 |      p95 |
 |:-------------------|:---------|---------:|--------:|---------:|
-| child_15_24kg      | auclast  | 241312.3 | 94296.0 | 642035.0 |
+| child_15_24kg      | auclast  | 241312.4 | 94296.0 | 642035.2 |
 | child_15_24kg      | cmax     |   5222.1 |  1878.5 |  12724.5 |
 | child_15_24kg      | tmax     |     66.0 |    62.0 |     72.0 |
-| child_25_34kg      | auclast  | 262592.8 | 90833.6 | 636188.5 |
+| child_25_34kg      | auclast  | 262592.9 | 90833.6 | 636188.9 |
 | child_25_34kg      | cmax     |   5309.3 |  2007.7 |  13904.5 |
 | child_25_34kg      | tmax     |     66.0 |    64.0 |     72.0 |
-| child_lt15kg       | auclast  | 181891.8 | 63594.7 | 634628.5 |
+| child_lt15kg       | auclast  | 181891.9 | 63594.7 | 634629.1 |
 | child_lt15kg       | cmax     |   3637.2 |  1295.0 |  13631.1 |
 | child_lt15kg       | tmax     |     64.0 |    62.0 |     70.0 |
-| nonpreg_adult_ge35 | auclast  | 274870.3 | 95410.4 | 737953.0 |
+| nonpreg_adult_ge35 | auclast  | 274870.4 | 95410.5 | 737953.1 |
 | nonpreg_adult_ge35 | cmax     |   5641.3 |  1931.4 |  15194.4 |
 | nonpreg_adult_ge35 | tmax     |     66.0 |    62.0 |     72.0 |
-| pregnant_2_3_trim  | auclast  | 292461.4 | 81084.4 | 864413.5 |
+| pregnant_2_3_trim  | auclast  | 292461.6 | 81084.4 | 864413.9 |
 | pregnant_2_3_trim  | cmax     |   5799.0 |  1556.6 |  16702.9 |
 | pregnant_2_3_trim  | tmax     |     66.0 |    64.0 |     72.0 |
 

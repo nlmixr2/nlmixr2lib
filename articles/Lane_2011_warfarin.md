@@ -589,9 +589,9 @@ nca_r_summary |>
 
 | Stratum | AUC0-24 (mg\*h/L) | Cmax (mg/L) | Tmax (h) | CL = Dose/AUC0-24 (L/h) | Typical-value CL (L/h) | Diff (%) |
 |:---|---:|---:|---:|---:|---:|---:|
-| 70kg C19-het/A4-wild | 48.1948 | 2.1530 | 2 | 0.1037 | 0.0951 | 9.1 |
-| 70kg C19-varhom/A4-wild | 62.2293 | 2.7650 | 2 | 0.0803 | 0.0618 | 30.1 |
-| 70kg C19-wild/A4-wild | 34.4934 | 1.6357 | 2 | 0.1450 | 0.1250 | 16.0 |
+| 70kg C19-het/A4-wild | 48.0651 | 2.1564 | 2 | 0.1040 | 0.0951 | 9.4 |
+| 70kg C19-varhom/A4-wild | 68.1560 | 2.9974 | 2 | 0.0734 | 0.0618 | 18.8 |
+| 70kg C19-wild/A4-wild | 39.1900 | 1.8039 | 2 | 0.1276 | 0.1250 | 2.1 |
 
 R-warfarin: steady-state NCA from the simulation and back-calculated CL
 vs typical-value CL. {.table}

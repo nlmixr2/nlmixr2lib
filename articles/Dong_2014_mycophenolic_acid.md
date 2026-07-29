@@ -423,16 +423,16 @@ knitr::kable(
 )
 ```
 
-| protocol       | parameter          | median |    p05 |    p95 |
-|:---------------|:-------------------|-------:|-------:|-------:|
-| 450 mg/m^2 BID | AUC0-tau (mg\*h/L) | 26.635 | 17.096 | 36.977 |
-| 450 mg/m^2 BID | Cavg (mg/L)        |  2.220 |  1.425 |  3.081 |
-| 450 mg/m^2 BID | Cmax (mg/L)        |  7.370 |  3.966 | 11.859 |
-| 450 mg/m^2 BID | Tmax (h)           |  1.000 |  1.000 |  1.000 |
-| 600 mg/m^2 BID | AUC0-tau (mg\*h/L) | 32.693 | 20.745 | 44.983 |
-| 600 mg/m^2 BID | Cavg (mg/L)        |  2.724 |  1.729 |  3.749 |
-| 600 mg/m^2 BID | Cmax (mg/L)        |  9.230 |  4.856 | 14.676 |
-| 600 mg/m^2 BID | Tmax (h)           |  1.000 |  1.000 |  1.000 |
+| protocol       | parameter          | median | p05 | p95 |
+|:---------------|:-------------------|-------:|----:|----:|
+| 450 mg/m^2 BID | AUC0-tau (mg\*h/L) |      0 |   0 |   0 |
+| 450 mg/m^2 BID | Cavg (mg/L)        |      0 |   0 |   0 |
+| 450 mg/m^2 BID | Cmax (mg/L)        |      0 |   0 |   0 |
+| 450 mg/m^2 BID | Tmax (h)           |     NA |  NA |  NA |
+| 600 mg/m^2 BID | AUC0-tau (mg\*h/L) |      0 |   0 |   0 |
+| 600 mg/m^2 BID | Cavg (mg/L)        |      0 |   0 |   0 |
+| 600 mg/m^2 BID | Cmax (mg/L)        |      0 |   0 |   0 |
+| 600 mg/m^2 BID | Tmax (h)           |     NA |  NA |  NA |
 
 Simulated steady-state NCA per starting MMF protocol (median, 5th and
 95th percentiles across the virtual cohort). {.table}
@@ -486,8 +486,8 @@ cmax_per_subject %>%
 
 | protocol | median_cmax_mg_L | median_impdh_min | median_pct_baseline | median_expected_trough |
 |:---|---:|---:|---:|---:|
-| 450 mg/m^2 BID | 7.37 | 0.657 | 19.0 | 0.657 |
-| 600 mg/m^2 BID | 9.23 | 0.545 | 15.8 | 0.545 |
+| 450 mg/m^2 BID | 0 | 3.45 | 100 | 3.45 |
+| 600 mg/m^2 BID | 0 | 3.45 | 100 | 3.45 |
 
 Simulated cohort-median Cmax and the corresponding nadir IMPDH activity
 (typical-value cohort). The expected trough = E0 \* EC50 / (EC50 + Cmax)

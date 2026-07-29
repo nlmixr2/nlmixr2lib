@@ -243,7 +243,6 @@ typ_ev <- bind_rows(typ_dose, typ_obs) |>
   select(ID, TIME, AMT, EVID, CMT, DV, WT, SCORE_EASI, ALB)
 
 typ_sim <- rxode2::rxSolve(mod, events = typ_ev, omega = NA, sigma = NA)
-#> ℹ parameter labels from comments will be replaced by 'label()'
 
 ss_start <- 20 * 28   # day 560
 tau      <- 28        # dosing interval in days

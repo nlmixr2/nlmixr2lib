@@ -162,7 +162,7 @@ ggplot(sim_obs, aes(time, Cc)) +
        y = "Simulated gentamicin (mg/L)",
        title = "Figure 1 -- simulated concentration-time samples",
        caption = "Replicates the layout of Thomson 2003 Figure 1.")
-#> Warning: Removed 61 rows containing missing values or values outside the scale range
+#> Warning: Removed 62 rows containing missing values or values outside the scale range
 #> (`geom_point()`).
 ```
 
@@ -487,7 +487,7 @@ knitr::kable(
 
 |   n | cmax_med | cmax_min | cmax_max | tmax_med | thalf_med | thalf_p05 | thalf_p95 |
 |----:|---------:|---------:|---------:|---------:|----------:|----------:|----------:|
-| 200 | 10.38157 | 5.589595 | 20.63768 |      0.5 |  5.276473 |  1.863281 |  13.92864 |
+| 200 | 10.38157 |   5.5896 | 20.63769 |      0.5 |  5.276473 |  1.863281 |  13.92864 |
 
 Simulated single-dose NCA summary (n = 200 virtual infants), 8 mg/kg IM
 dose modelled as IV bolus. {.table style="width:100%;"}
@@ -524,7 +524,7 @@ knitr::kable(sim_nextday,
 
 |   n |       med |       p05 |      p95 |
 |----:|----------:|----------:|---------:|
-| 200 | 0.9826498 | 0.0059286 | 3.742433 |
+| 200 | 0.9826489 | 0.0059286 | 3.742429 |
 
 Simulated next-day concentration (one randomly chosen sample per infant
 in the 8.35 - 32.85 h window). {.table}

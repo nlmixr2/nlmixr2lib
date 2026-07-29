@@ -4,7 +4,7 @@
 
 library(nlmixr2lib)
 library(rxode2)
-#> rxode2 5.1.2 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.5 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -337,7 +337,7 @@ knitr::kable(sim_nca,
 | 600 mg    | auclast  | 3006.11 |  756.39 | 2907.81 | 1554.86 |  4988.55 |
 | 600 mg    | cmax     |  272.28 |   41.85 |  267.97 |  190.94 |   375.11 |
 | 600 mg    | cmin     |   51.36 |   22.54 |   47.76 |   12.37 |   113.99 |
-| 1200 mg   | auclast  | 6232.31 | 1747.09 | 5970.99 | 3146.19 | 10554.97 |
+| 1200 mg   | auclast  | 6232.30 | 1747.09 | 5970.99 | 3146.18 | 10554.96 |
 | 1200 mg   | cmax     |  536.99 |   93.52 |  537.22 |  342.05 |   834.14 |
 | 1200 mg   | cmin     |  111.24 |   51.42 |  105.02 |   33.12 |   245.36 |
 

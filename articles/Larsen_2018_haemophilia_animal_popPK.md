@@ -509,9 +509,9 @@ nca_summary |>
 
 | NCA parameter |  Median | 5th percentile | 95th percentile |
 |:--------------|--------:|---------------:|----------------:|
-| aucinf.obs    | 201.714 |        128.774 |         309.186 |
-| cmax          | 138.107 |         52.771 |         264.316 |
-| half.life     |   3.217 |          2.435 |          19.396 |
+| aucinf.obs    | 256.697 |        138.243 |         466.734 |
+| cmax          | 145.050 |         48.619 |         307.808 |
+| half.life     |   3.101 |          2.502 |           7.547 |
 | tmax          |   0.000 |          0.000 |           0.000 |
 
 Simulated NCA summary for monkey rFVIIa (270 ug/kg IV; n = 30). Median

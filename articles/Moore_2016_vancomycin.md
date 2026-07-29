@@ -335,10 +335,10 @@ knitr::kable(
 
 | Trough at t (h) | Cc (mg/L) |
 |----------------:|----------:|
-|              60 | 19.351591 |
-|              72 | 11.134507 |
-|              84 |  6.406929 |
-|              96 |  3.686622 |
+|              60 | 19.351592 |
+|              72 | 11.134505 |
+|              84 |  6.406926 |
+|              96 |  3.686621 |
 
 Typical-value trough concentrations across the late steady-state
 interval (1 g Q12H, fifth dose at t = 48 h). {.table}

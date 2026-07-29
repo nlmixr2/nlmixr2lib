@@ -208,7 +208,6 @@ events_q24_keep <- events_q24 |>
 sim_q24 <- rxode2::rxSolve(mod, events = events_q24_keep,
                            keep = c("cohort")) |>
   as.data.frame()
-#> ℹ parameter labels from comments will be replaced by 'label()'
 
 sim_q24_ss <- sim_q24 |>
   filter(time >= treatment_days * 24 - 24, time <= treatment_days * 24) |>

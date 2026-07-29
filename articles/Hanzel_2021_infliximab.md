@@ -4,7 +4,7 @@
 
 library(nlmixr2lib)
 library(rxode2)
-#> rxode2 5.1.2 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.5 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -308,7 +308,6 @@ events_vpc <- bind_rows(dose_vpc, obs_vpc) %>%
   arrange(ID, TIME, desc(EVID))
 
 sim_vpc <- rxSolve(mod, events_vpc, returnType = "data.frame")
-#> ℹ parameter labels from comments will be replaced by 'label()'
 ```
 
 ``` r

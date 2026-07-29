@@ -220,9 +220,6 @@ sd_all <- dplyr::bind_rows(sd_dose_depot, sd_dose_central, sd_obs) |>
 sd_sim <- rxode2::rxSolve(mod, events = sd_all,
                           keep = c("DIS_HEALTHY")) |>
   as.data.frame()
-#> ℹ parameter labels from comments will be replaced by 'label()'
-#> Warning: some etas defaulted to non-mu referenced, possible parsing error: etalfcap
-#> as a work-around try putting the mu-referenced expression on a simple line
 
 sd_summary <- sd_sim |>
   dplyr::filter(!is.na(Cc), time > 0) |>

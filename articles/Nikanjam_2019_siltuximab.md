@@ -4,7 +4,7 @@
 
 library(nlmixr2lib)
 library(rxode2)
-#> rxode2 5.1.2 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.5 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -202,7 +202,6 @@ sim_single <- rxSolve(mod, events = events_single, keep = c("cohort"),
 #> ℹ parameter labels from comments will be replaced by 'label()'
 sim_multi  <- rxSolve(mod, events = events_multi,  keep = c("cohort"),
                       returnType = "data.frame")
-#> ℹ parameter labels from comments will be replaced by 'label()'
 ```
 
 ## Replicate Figure 3 — median PK by disease state
@@ -366,9 +365,9 @@ knitr::kable(
 | Castleman’s disease | 2884.000 | 0 | 19.1 | Published (Nikanjam 2019 Table 3) |
 | Castleman’s disease | 2765.782 | 0 | 17.2 | Simulated (this vignette) |
 | Healthy volunteers | 4856.000 | 0 | 24.5 | Published (Nikanjam 2019 Table 3) |
-| Healthy volunteers | 4807.019 | 0 | 24.3 | Simulated (this vignette) |
+| Healthy volunteers | 4807.018 | 0 | 24.3 | Simulated (this vignette) |
 | Other tumors | 3515.000 | 0 | 22.2 | Published (Nikanjam 2019 Table 3) |
-| Other tumors | 3733.296 | 0 | 23.0 | Simulated (this vignette) |
+| Other tumors | 3733.295 | 0 | 23.0 | Simulated (this vignette) |
 
 Side-by-side comparison: simulated vs published Table 3 medians (11
 mg/kg single dose). {.table}

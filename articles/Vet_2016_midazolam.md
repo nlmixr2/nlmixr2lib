@@ -189,6 +189,8 @@ sim <- rxode2::rxSolve(
 #> ℹ parameter labels from comments will be replaced by 'label()'
 #> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_cl_1, etaiov_cl_2, etaiov_cl_3, etaiov_cl_4, etaiov_cl_5, etaiov_cl_6
 #> as a work-around try putting the mu-referenced expression on a simple line
+#> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_cl_1, etaiov_cl_2, etaiov_cl_3, etaiov_cl_4, etaiov_cl_5, etaiov_cl_6
+#> as a work-around try putting the mu-referenced expression on a simple line
 ```
 
 ``` r
@@ -207,6 +209,8 @@ sim_typical <- rxode2::rxSolve(
 ) |>
   as.data.frame() |>
   filter(time > 0)
+#> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_cl_1, etaiov_cl_2, etaiov_cl_3, etaiov_cl_4, etaiov_cl_5, etaiov_cl_6
+#> as a work-around try putting the mu-referenced expression on a simple line
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etaiov_cl_1', 'etaiov_cl_2', 'etaiov_cl_3', 'etaiov_cl_4', 'etaiov_cl_5', 'etaiov_cl_6'
 #> Warning: multi-subject simulation without without 'omega'
 ```
@@ -353,10 +357,10 @@ knitr::kable(
 
 | Interval Start | Interval End | orgf_label | N | Cmax (ug/L) | Tmax (hr) | Half-life (hr) | AUCinf,obs (hr\*ug/L) |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | Inf | ORG_FAIL_COUNT = 0 | 3 | 189 \[51.2\] | 120 \[36.0, 120\] | NC | NC |
-| 0 | Inf | ORG_FAIL_COUNT = 1 | 3 | 228 \[59.3\] | 72.0 \[72.0, 120\] | 7.41 \[4.69\], n=2 | NC |
-| 0 | Inf | ORG_FAIL_COUNT = 2 | 3 | 732 \[10.3\] | 96.0 \[72.0, 120\] | 9.12 \[6.79\], n=2 | NC |
-| 0 | Inf | ORG_FAIL_COUNT = 3 | 3 | 466 \[92.4\] | 36.0 \[36.0, 72.0\] | 12.6 \[8.71\] | NC |
+| 0 | Inf | ORG_FAIL_COUNT = 0 | 3 | 206 \[67.4\] | 108 \[108, 120\] | 7.31 \[5.09\], n=2 | NC |
+| 0 | Inf | ORG_FAIL_COUNT = 1 | 3 | 263 \[69.5\] | 120 \[108, 120\] | NC | NC |
+| 0 | Inf | ORG_FAIL_COUNT = 2 | 3 | 731 \[9.40\] | 84.0 \[60.0, 108\] | 12.5 \[7.55\] | NC |
+| 0 | Inf | ORG_FAIL_COUNT = 3 | 3 | 477 \[105\] | 60.0 \[20.5, 120\] | 8.91 \[8.58\], n=2 | NC |
 
 Simulated NCA parameters by ORG_FAIL_COUNT stratum (PKNCA). {.table}
 

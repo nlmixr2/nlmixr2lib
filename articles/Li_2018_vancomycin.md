@@ -2742,7 +2742,7 @@ knitr::kable(typ_lookup, digits = 2,
 
 | cohort | tau_h | Cmin_simulated | Cmax_simulated | Cavg_simulated | AUC24_simulated | AUC24_over_MIC1 | meets_target |
 |:---|---:|---:|---:|---:|---:|---:|:---|
-| WT_1.25_PMA_29 | 12 | 11.62 | 24.67 | 17.37 | 416.97 | 416.97 | TRUE |
+| WT_1.25_PMA_29 | 12 | 11.61 | 24.67 | 17.37 | 416.97 | 416.97 | TRUE |
 | WT_2.0_PMA_32.5 | 12 | 10.13 | 26.27 | 17.05 | 409.18 | 409.18 | TRUE |
 | WT_3.0_PMA_36.5 | 8 | 11.04 | 22.24 | 16.06 | 385.35 | 385.35 | FALSE |
 | WT_4.0_PMA_40.5 | 6 | 11.26 | 19.30 | 14.94 | 358.65 | 358.65 | FALSE |

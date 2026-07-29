@@ -290,12 +290,12 @@ knitr::kable(
 
 | rate_per_kg | location             |   n | below | in_range | above |
 |------------:|:---------------------|----:|------:|---------:|------:|
-|         4.2 | General medical unit | 200 |  72.5 |     27.5 |   0.0 |
-|         4.2 | ICU                  | 200 |  26.0 |     70.5 |   3.5 |
-|         5.0 | General medical unit | 200 |  63.0 |     36.0 |   1.0 |
-|         5.0 | ICU                  | 200 |  22.0 |     70.5 |   7.5 |
-|         5.8 | General medical unit | 200 |  52.5 |     46.5 |   1.0 |
-|         5.8 | ICU                  | 200 |  11.5 |     73.0 |  15.5 |
+|         4.2 | General medical unit | 200 |  73.0 |     26.0 |   1.0 |
+|         4.2 | ICU                  | 200 |  33.5 |     63.5 |   3.0 |
+|         5.0 | General medical unit | 200 |  63.5 |     35.0 |   1.5 |
+|         5.0 | ICU                  | 200 |  19.5 |     70.0 |  10.5 |
+|         5.8 | General medical unit | 200 |  51.5 |     45.0 |   3.5 |
+|         5.8 | ICU                  | 200 |  13.0 |     72.5 |  14.5 |
 |         8.3 | General medical unit | 200 |  23.0 |     60.5 |  16.5 |
 |         8.3 | ICU                  | 200 |   2.5 |     49.0 |  48.5 |
 
@@ -345,18 +345,18 @@ knitr::kable(
 
 | rate_per_kg | location             | crcl_band  | n_band | pct_below | pct_above |
 |------------:|:---------------------|:-----------|-------:|----------:|----------:|
-|         4.2 | General medical unit | CrCL 30-50 |     51 |      47.1 |       0.0 |
+|         4.2 | General medical unit | CrCL 30-50 |     51 |      49.0 |       3.9 |
 |         4.2 | General medical unit | CrCL \> 50 |    149 |      81.2 |       0.0 |
-|         4.2 | ICU                  | CrCL \< 30 |    123 |      18.7 |       5.7 |
-|         4.2 | ICU                  | CrCL 30-50 |     77 |      37.7 |       0.0 |
-|         5.0 | General medical unit | CrCL 30-50 |     51 |      47.1 |       2.0 |
-|         5.0 | General medical unit | CrCL \> 50 |    149 |      68.5 |       0.7 |
-|         5.0 | ICU                  | CrCL \< 30 |    123 |      14.6 |       8.9 |
-|         5.0 | ICU                  | CrCL 30-50 |     77 |      33.8 |       5.2 |
-|         5.8 | General medical unit | CrCL 30-50 |     51 |      27.5 |       2.0 |
-|         5.8 | General medical unit | CrCL \> 50 |    149 |      61.1 |       0.7 |
-|         5.8 | ICU                  | CrCL \< 30 |    123 |       4.9 |      22.8 |
-|         5.8 | ICU                  | CrCL 30-50 |     77 |      22.1 |       3.9 |
+|         4.2 | ICU                  | CrCL \< 30 |    123 |      19.5 |       4.9 |
+|         4.2 | ICU                  | CrCL 30-50 |     77 |      55.8 |       0.0 |
+|         5.0 | General medical unit | CrCL 30-50 |     51 |      37.3 |       5.9 |
+|         5.0 | General medical unit | CrCL \> 50 |    149 |      72.5 |       0.0 |
+|         5.0 | ICU                  | CrCL \< 30 |    123 |      12.2 |      15.4 |
+|         5.0 | ICU                  | CrCL 30-50 |     77 |      31.2 |       2.6 |
+|         5.8 | General medical unit | CrCL 30-50 |     51 |      19.6 |      11.8 |
+|         5.8 | General medical unit | CrCL \> 50 |    149 |      62.4 |       0.7 |
+|         5.8 | ICU                  | CrCL \< 30 |    123 |      10.6 |      20.3 |
+|         5.8 | ICU                  | CrCL 30-50 |     77 |      16.9 |       5.2 |
 |         8.3 | General medical unit | CrCL 30-50 |     51 |       9.8 |      43.1 |
 |         8.3 | General medical unit | CrCL \> 50 |    149 |      27.5 |       7.4 |
 |         8.3 | ICU                  | CrCL \< 30 |    123 |       1.6 |      60.2 |
@@ -530,7 +530,7 @@ knitr::kable(
 
 | Interval Start | Interval End | location | N | AUClast (hr\*IU/mL) | Cmax (IU/mL) | Tmax (hr) |
 |---:|---:|:---|:---|:---|:---|:---|
-| 0 | 24 | General medical unit | 80 | NC | 0.534 \[22.4\] | 4.00 \[2.00, 4.00\] |
+| 0 | 24 | General medical unit | 80 | NC | 0.523 \[23.7\] | 4.00 \[2.00, 6.00\] |
 
 Simulated SC enoxaparin NCA (100 IU/kg single SC dose,
 general-medical-unit virtual cohort). Cmax in IU/mL, AUClast in

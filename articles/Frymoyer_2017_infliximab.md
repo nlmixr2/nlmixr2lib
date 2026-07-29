@@ -4,7 +4,7 @@
 
 library(nlmixr2lib)
 library(rxode2)
-#> rxode2 5.1.2 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.5 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -301,8 +301,8 @@ troughs |>
 | strategy | median_trough | q25_trough | q75_trough | pct_above_3 | pct_above_5 | paper_median | paper_q25 | paper_q75 | paper_pct_above_3 | paper_pct_above_5 |
 |:---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
 | 5 mg/kg q8wk | 1.9 | 1.0 | 3.7 | 32.5 | 18.0 | 2.2 | 1.2 | 3.4 | 32 | 6 |
-| 7.5 mg/kg q8wk | 2.3 | 0.9 | 5.6 | 40.5 | 27.5 | 3.3 | 1.8 | 5.1 | 62 | 26 |
-| 10 mg/kg q8wk | 3.5 | 1.6 | 7.8 | 55.0 | 35.0 | 4.4 | 2.4 | 6.8 | 71 | 38 |
+| 7.5 mg/kg q8wk | 2.9 | 1.1 | 5.0 | 48.0 | 25.5 | 3.3 | 1.8 | 5.1 | 62 | 26 |
+| 10 mg/kg q8wk | 3.0 | 1.3 | 6.3 | 49.5 | 34.0 | 4.4 | 2.4 | 6.8 | 71 | 38 |
 
 Simulated steady-state troughs vs Frymoyer 2017 Table 3 (median, IQR,
 and percent above 3 and 5 ug/mL). {.table}
@@ -392,7 +392,6 @@ events_pknca <- bind_rows(dose_pknca, obs_pknca) |>
   arrange(ID, TIME, desc(EVID))
 
 sim_pknca <- rxSolve(mod, events_pknca, keep = "alb_quartile", returnType = "data.frame")
-#> ℹ parameter labels from comments will be replaced by 'label()'
 ```
 
 ``` r

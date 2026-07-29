@@ -198,11 +198,51 @@ events_typ <- events |>
 
 sim_typ <- rxode2::rxSolve(mod_typ, events = events_typ) |>
   as.data.frame()
+#> rxode2 model syntax error:
+#> ================================================================================
+#> :ERR: 'tad(depot)' and related functions require an depot compartment in 'linCmt()':
+#> 
+#> :ERR: 'f(depot)' present, but d/dt(depot) not defined:
+#> 
+#> :001: tr <- exp(lntr + etalntr)
+#> :002: mtt <- exp(lmtt + etalmtt)
+#> :003: cl <- exp(lcl + etalcl)
+#> :004: vc <- exp(lvc + etalvc)
+#> :005: q <- exp(lq + etalq)
+#> :006: vp <- exp(lvp + etalvp)
+#> :007: ka_pass <- exp(lka_pass)
+#> :008: bio <- exp(lfdepot)
+#> :009: kel <- cl/vc
+#> :010: k12 <- q/vc
+#> :011: k21 <- q/vp
+#> :012: f(depot) <- 0
+#> :013: Cc <- linCmt(ka_pass, kel, k12, k21, vc)
+#> ================================================================================
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalq', 'etalvp', 'etalntr', 'etalmtt'
 
 sim_vpc <- rxode2::rxSolve(mod, events = events, keep = "dose") |>
   as.data.frame()
 #> ℹ parameter labels from comments will be replaced by 'label()'
+#> rxode2 model syntax error:
+#> ================================================================================
+#> :ERR: 'tad(depot)' and related functions require an depot compartment in 'linCmt()':
+#> 
+#> :ERR: 'f(depot)' present, but d/dt(depot) not defined:
+#> 
+#> :001: tr <- exp(lntr + etalntr)
+#> :002: mtt <- exp(lmtt + etalmtt)
+#> :003: cl <- exp(lcl + etalcl)
+#> :004: vc <- exp(lvc + etalvc)
+#> :005: q <- exp(lq + etalq)
+#> :006: vp <- exp(lvp + etalvp)
+#> :007: ka_pass <- exp(lka_pass)
+#> :008: bio <- exp(lfdepot)
+#> :009: kel <- cl/vc
+#> :010: k12 <- q/vc
+#> :011: k21 <- q/vp
+#> :012: f(depot) <- 0
+#> :013: Cc <- linCmt(ka_pass, kel, k12, k21, vc)
+#> ================================================================================
 ```
 
 ## Replicate Figure 2/3: single-dose absorption profile
@@ -298,7 +338,6 @@ events_sd <- cohort |>
 
 sim_sd <- rxode2::rxSolve(mod, events = events_sd, keep = "dose") |>
   as.data.frame()
-#> ℹ parameter labels from comments will be replaced by 'label()'
 
 sim_nca <- sim_sd |>
   dplyr::filter(!is.na(Cc)) |>

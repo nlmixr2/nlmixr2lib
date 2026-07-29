@@ -186,6 +186,8 @@ sim <- rxode2::rxSolve(
 #> ℹ parameter labels from comments will be replaced by 'label()'
 #> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_cl_1, etaiov_cl_2, etaiov_cl_3, etaiov_cl_4, etaiov_cl_5
 #> as a work-around try putting the mu-referenced expression on a simple line
+#> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_cl_1, etaiov_cl_2, etaiov_cl_3, etaiov_cl_4, etaiov_cl_5
+#> as a work-around try putting the mu-referenced expression on a simple line
 
 # Tag day-1 vs steady-state windows for later figures.
 ss_start <- (n_doses_total - 1L) * tau
@@ -332,18 +334,18 @@ knitr::kable(nca_summary,
 
 | treatment | PPTESTCD          | geo_mean | gcv_pct |
 |:----------|:------------------|---------:|--------:|
-| 100 mg QD | AUC0-24 (mg\*h/L) |   283.14 |      40 |
-| 100 mg QD | Cmax (mg/L)       |    23.41 |      24 |
-| 100 mg QD | Cmin (mg/L)       |     7.29 |      59 |
-| 150 mg QD | AUC0-24 (mg\*h/L) |   408.52 |      33 |
-| 150 mg QD | Cmax (mg/L)       |    32.55 |      30 |
-| 150 mg QD | Cmin (mg/L)       |    10.60 |      51 |
-| 200 mg QD | AUC0-24 (mg\*h/L) |   506.99 |      40 |
-| 200 mg QD | Cmax (mg/L)       |    41.61 |      38 |
-| 200 mg QD | Cmin (mg/L)       |    11.94 |      55 |
-| 70 mg QD  | AUC0-24 (mg\*h/L) |   145.63 |      24 |
+| 100 mg QD | AUC0-24 (mg\*h/L) |   283.32 |      40 |
+| 100 mg QD | Cmax (mg/L)       |    23.44 |      24 |
+| 100 mg QD | Cmin (mg/L)       |     7.10 |      58 |
+| 150 mg QD | AUC0-24 (mg\*h/L) |   409.22 |      33 |
+| 150 mg QD | Cmax (mg/L)       |    32.56 |      30 |
+| 150 mg QD | Cmin (mg/L)       |    10.44 |      50 |
+| 200 mg QD | AUC0-24 (mg\*h/L) |   507.58 |      40 |
+| 200 mg QD | Cmax (mg/L)       |    41.62 |      38 |
+| 200 mg QD | Cmin (mg/L)       |    11.70 |      55 |
+| 70 mg QD  | AUC0-24 (mg\*h/L) |   145.75 |      24 |
 | 70 mg QD  | Cmax (mg/L)       |    13.20 |      21 |
-| 70 mg QD  | Cmin (mg/L)       |     3.33 |      40 |
+| 70 mg QD  | Cmin (mg/L)       |     3.27 |      40 |
 
 Simulated steady-state NCA (geometric mean and GCV%) by dose group.
 {.table}
@@ -393,18 +395,18 @@ compare |>
 
 | Dose group | Parameter | Sim geomean | Sim GCV% | Published geomean (Table 3) | Published GCV% | Percent difference |
 |:---|:---|---:|---:|---:|---:|---:|
-| 100 mg QD | AUC0-24 (mg\*h/L) | 283.14 | 40 | 243.0 | 34 | 16.5 |
-| 100 mg QD | Cmax (mg/L) | 23.41 | 24 | 19.7 | 31 | 18.8 |
-| 100 mg QD | Cmin (mg/L) | 7.29 | 59 | 6.0 | 49 | 21.5 |
-| 150 mg QD | AUC0-24 (mg\*h/L) | 408.52 | 33 | 365.0 | 34 | 11.9 |
-| 150 mg QD | Cmax (mg/L) | 32.55 | 30 | 29.6 | 31 | 10.0 |
-| 150 mg QD | Cmin (mg/L) | 10.60 | 51 | 9.0 | 49 | 17.8 |
-| 200 mg QD | AUC0-24 (mg\*h/L) | 506.99 | 40 | 487.0 | 34 | 4.1 |
-| 200 mg QD | Cmax (mg/L) | 41.61 | 38 | 39.4 | 31 | 5.6 |
-| 200 mg QD | Cmin (mg/L) | 11.94 | 55 | 12.0 | 49 | -0.5 |
-| 70 mg QD | AUC0-24 (mg\*h/L) | 145.63 | 24 | 170.0 | 34 | -14.3 |
+| 100 mg QD | AUC0-24 (mg\*h/L) | 283.32 | 40 | 243.0 | 34 | 16.6 |
+| 100 mg QD | Cmax (mg/L) | 23.44 | 24 | 19.7 | 31 | 19.0 |
+| 100 mg QD | Cmin (mg/L) | 7.10 | 58 | 6.0 | 49 | 18.3 |
+| 150 mg QD | AUC0-24 (mg\*h/L) | 409.22 | 33 | 365.0 | 34 | 12.1 |
+| 150 mg QD | Cmax (mg/L) | 32.56 | 30 | 29.6 | 31 | 10.0 |
+| 150 mg QD | Cmin (mg/L) | 10.44 | 50 | 9.0 | 49 | 16.0 |
+| 200 mg QD | AUC0-24 (mg\*h/L) | 507.58 | 40 | 487.0 | 34 | 4.2 |
+| 200 mg QD | Cmax (mg/L) | 41.62 | 38 | 39.4 | 31 | 5.6 |
+| 200 mg QD | Cmin (mg/L) | 11.70 | 55 | 12.0 | 49 | -2.5 |
+| 70 mg QD | AUC0-24 (mg\*h/L) | 145.75 | 24 | 170.0 | 34 | -14.3 |
 | 70 mg QD | Cmax (mg/L) | 13.20 | 21 | 13.8 | 31 | -4.3 |
-| 70 mg QD | Cmin (mg/L) | 3.33 | 40 | 4.2 | 49 | -20.7 |
+| 70 mg QD | Cmin (mg/L) | 3.27 | 40 | 4.2 | 49 | -22.1 |
 
 Steady-state NCA comparison between this simulation and Wurthwein 2013
 Table 3 (geometric mean across the median-weight 76 kg cohort). {.table}

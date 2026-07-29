@@ -395,16 +395,16 @@ knitr::kable(
 |:---|---:|---:|---:|---:|---:|
 | CRRT (1g equivalent) | 200 | 25 | 1 | 1.000 | 1.000 |
 | CRRT (1g equivalent) | 400 | 25 | 1 | 1.000 | 1.000 |
-| CRRT (1g equivalent) | 200 | 50 | 1 | 1.000 | 0.370 |
+| CRRT (1g equivalent) | 200 | 50 | 1 | 1.000 | 0.369 |
 | CRRT (1g equivalent) | 400 | 50 | 1 | 1.000 | 1.000 |
-| non-CRRT, no sepsis, resolved | 200 | 25 | 1 | 1.000 | 0.999 |
+| non-CRRT, no sepsis, resolved | 200 | 25 | 1 | 1.000 | 0.998 |
 | non-CRRT, no sepsis, resolved | 400 | 25 | 1 | 1.000 | 1.000 |
-| non-CRRT, no sepsis, resolved | 200 | 50 | 1 | 0.999 | 0.839 |
+| non-CRRT, no sepsis, resolved | 200 | 50 | 1 | 0.999 | 0.833 |
 | non-CRRT, no sepsis, resolved | 400 | 50 | 1 | 1.000 | 0.999 |
 | non-CRRT, septic, recent burn | 200 | 25 | 1 | 1.000 | 0.996 |
 | non-CRRT, septic, recent burn | 400 | 25 | 1 | 1.000 | 1.000 |
-| non-CRRT, septic, recent burn | 200 | 50 | 1 | 0.997 | 0.747 |
-| non-CRRT, septic, recent burn | 400 | 50 | 1 | 1.000 | 0.995 |
+| non-CRRT, septic, recent burn | 200 | 50 | 1 | 0.996 | 0.750 |
+| non-CRRT, septic, recent burn | 400 | 50 | 1 | 1.000 | 0.997 |
 
 Probability of fAUC/MIC target attainment (PTA) for fluconazole 200 and
 400 mg/day across three patient profiles, computed from 10,000

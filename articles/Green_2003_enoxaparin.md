@@ -307,7 +307,6 @@ sim_first <- rxode2::rxSolve(
   events = first_dose_events,
   keep   = c("cohort", "WT", "LBM")
 ) |> as.data.frame()
-#> ℹ parameter labels from comments will be replaced by 'label()'
 
 sim_nca <- sim_first |>
   filter(!is.na(Cc)) |>

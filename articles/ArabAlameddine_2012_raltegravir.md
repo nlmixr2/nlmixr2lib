@@ -206,7 +206,6 @@ sim_fig3 <- rxode2::rxSolve(
   keep   = c("regimen", "HIV_POS", "SEXF", "CONMED_ATAZANAVIR", "TBILI", "RACE_WHITE")
 ) |>
   as.data.frame()
-#> ℹ parameter labels from comments will be replaced by 'label()'
 ```
 
 ## Replicate published figures

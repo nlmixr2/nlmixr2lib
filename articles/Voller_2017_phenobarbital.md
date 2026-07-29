@@ -272,14 +272,14 @@ knitr::kable(
 
 | time | Cc_typical | Cc_simdataDV | rel_diff_pct |
 |-----:|-----------:|-------------:|-------------:|
-|   32 |     17.878 |         16.5 |          8.3 |
-|   52 |     19.182 |         14.9 |         28.7 |
-|   80 |     19.794 |         26.7 |        -25.9 |
-|   84 |     19.497 |         18.4 |          6.0 |
-|  132 |     20.778 |         27.6 |        -24.7 |
-|  340 |     22.118 |         25.2 |        -12.2 |
-|  552 |     16.533 |           NA |           NA |
-|  669 |      8.336 |         25.2 |        -66.9 |
+|   32 |     17.809 |         16.5 |          7.9 |
+|   52 |     19.086 |         14.9 |         28.1 |
+|   80 |     19.651 |         26.7 |        -26.4 |
+|   84 |     19.354 |         18.4 |          5.2 |
+|  132 |     20.549 |         27.6 |        -25.5 |
+|  340 |     21.598 |         25.2 |        -14.3 |
+|  552 |     16.040 |           NA |           NA |
+|  669 |      7.381 |         25.2 |        -70.7 |
 
 Subject 1 typical-value re-simulation vs DDMORE bundle DV (residual
 error in bundle DV). {.table}
@@ -394,13 +394,13 @@ knitr::kable(
 | Interval Start | Interval End | cohort | N | AUClast (hr\*mg/L) | Cmax (mg/L) | Tmax (hr) |
 |---:|---:|:---|:---|:---|:---|:---|
 | 0 | 24 | extreme preterm | 1 | NC | 12.2 | 0.500 |
-| 144 | 168 | extreme preterm | 1 | NC | 14.9 | 0.500 |
+| 144 | 168 | extreme preterm | 1 | NC | 14.8 | 0.500 |
 | 0 | 24 | late-preterm | 1 | NC | 16.4 | 0.500 |
-| 144 | 168 | late-preterm | 1 | NC | 14.6 | 0.500 |
+| 144 | 168 | late-preterm | 1 | NC | 14.5 | 0.500 |
 | 0 | 24 | preterm | 1 | NC | 15.0 | 0.500 |
-| 144 | 168 | preterm | 1 | NC | 16.4 | 0.500 |
+| 144 | 168 | preterm | 1 | NC | 16.3 | 0.500 |
 | 0 | 24 | term | 1 | NC | 17.7 | 0.500 |
-| 144 | 168 | term | 1 | NC | 19.1 | 0.500 |
+| 144 | 168 | term | 1 | NC | 18.9 | 0.500 |
 
 Simulated NCA parameters by cohort (PKNCA). {.table style="width:100%;"}
 

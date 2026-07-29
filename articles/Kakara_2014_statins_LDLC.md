@@ -527,7 +527,6 @@ sim_zero <- rxode2::rxSolve(readModelDb("Kakara_2014_rosuvastatin"),
                             events = events_zero,
                             keep = c("AGE")) |>
   as.data.frame()
-#> ℹ parameter labels from comments will be replaced by 'label()'
 
 baseline_individual <- sim_zero |>
   dplyr::filter(time == 0) |>

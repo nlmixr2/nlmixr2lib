@@ -319,7 +319,7 @@ knitr::kable(
 |:---|---:|---:|---:|---:|---:|---:|
 | CL / kg (L/h/kg) | 0.25 | 0.05 | 0.43 | 0.220 | 0.186 | 0.270 |
 | Vss / kg (L/kg) | 0.31 | 0.26 | 0.38 | 0.309 | 0.309 | 0.309 |
-| AUC0-24 (mg\*h/L) | NA | 120.00 | 550.00 | 395.748 | 60.736 | 1346.709 |
+| AUC0-24 (mg\*h/L) | NA | 120.00 | 550.00 | 395.747 | 60.736 | 1346.708 |
 
 Cefathiamidine pharmacokinetics: simulated vs published values. CL/kg
 and Vss/kg are typical-value derivations from the structural model

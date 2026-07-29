@@ -667,16 +667,16 @@ knitr::kable(nca_summary,
 | regimen | PPTESTCD | median | p05 | p95 |
 |:---|:---|---:|---:|---:|
 | Glasgow I 2.5 mg/1.2-kg q12h (Figure 3) | auclast | NA | NA | NA |
-| Glasgow I 2.5 mg/1.2-kg q12h (Figure 3) | cmax | 4.7087173 | 3.8239015 | 6.188164e+00 |
-| Glasgow I 2.5 mg/1.2-kg q12h (Figure 3) | cmin | 0.8264226 | 0.2316143 | 2.035012e+00 |
+| Glasgow I 2.5 mg/1.2-kg q12h (Figure 3) | cmax | 4.7087065 | 3.8238915 | 6.188152e+00 |
+| Glasgow I 2.5 mg/1.2-kg q12h (Figure 3) | cmin | 0.8264189 | 0.2316137 | 2.035006e+00 |
 | Glasgow I 2.5 mg/1.2-kg q12h (Figure 3) | tmax | 0.8000000 | 0.8000000 | 8.000000e-01 |
 | Manchester I 2.5 mg/kg q8h | auclast | NA | NA | NA |
-| Manchester I 2.5 mg/kg q8h | cmax | 5.9279032 | 3.5954260 | 8.990839e+00 |
-| Manchester I 2.5 mg/kg q8h | cmin | 1.0166826 | 0.1197493 | 4.128844e+00 |
+| Manchester I 2.5 mg/kg q8h | cmax | 5.6439697 | 3.9035464 | 1.151652e+01 |
+| Manchester I 2.5 mg/kg q8h | cmin | 1.3232623 | 0.1477243 | 5.379836e+00 |
 | Manchester I 2.5 mg/kg q8h | tmax | 1.0000000 | 1.0000000 | 1.000000e+00 |
 | Manchester II 2.5 mg/kg q8h | auclast | NA | NA | NA |
-| Manchester II 2.5 mg/kg q8h | cmax | 5.8266729 | 2.7937539 | 3.502798e+13 |
-| Manchester II 2.5 mg/kg q8h | cmin | 0.1649464 | 0.0019258 | 9.341961e+12 |
+| Manchester II 2.5 mg/kg q8h | cmax | 5.6281160 | 2.8147689 | 5.148666e+09 |
+| Manchester II 2.5 mg/kg q8h | cmin | 0.2211072 | 0.0002060 | 2.260683e+09 |
 | Manchester II 2.5 mg/kg q8h | tmax | 1.0000000 | 1.0000000 | 8.000000e+00 |
 
 Simulated steady-state NCA (median, 5th, 95th percentile) per cohort

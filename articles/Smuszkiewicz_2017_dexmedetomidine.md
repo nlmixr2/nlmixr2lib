@@ -255,7 +255,7 @@ knitr::kable(
 | 72 h  | aucinf.obs |     NA |     NA |     NA |
 | 72 h  | cmax       |  1.280 |  0.679 |  2.820 |
 | 72 h  | half.life  |  3.878 |  1.416 |  9.081 |
-| 72 h  | tmax       | 68.000 | 48.800 | 68.000 |
+| 72 h  | tmax       | 68.000 | 68.000 | 68.000 |
 
 Simulated NCA parameters by infusion-duration group (median, 10th and
 90th percentiles). {.table}

@@ -297,20 +297,20 @@ knitr::kable(
 | treatment    | PPTESTCD |     median |        q05 |        q95 |
 |:-------------|:---------|-----------:|-----------:|-----------:|
 | RTV100_LPV   | tmax     |  2.5000000 |  1.6125000 |  3.6375000 |
-| RTV100_LPV   | cmax     |  0.5657816 |  0.3662245 |  0.9094814 |
-| RTV100_LPV   | cmin     |  0.0824031 |  0.0097457 |  0.3141361 |
-| RTV100_LPV   | auclast  |  3.5956514 |  2.1164804 |  6.3846538 |
-| RTV100_LPV   | cav      |  0.2996376 |  0.1763734 |  0.5320545 |
+| RTV100_LPV   | cmax     |  0.5657817 |  0.3662248 |  0.9094814 |
+| RTV100_LPV   | cmin     |  0.0824031 |  0.0097457 |  0.3141358 |
+| RTV100_LPV   | auclast  |  3.5956515 |  2.1164778 |  6.3846479 |
+| RTV100_LPV   | cav      |  0.2996376 |  0.1763731 |  0.5320540 |
 | RTV100_noLPV | tmax     |  3.0000000 |  1.5000000 |  4.0000000 |
-| RTV100_noLPV | cmax     |  1.0740767 |  0.7345703 |  1.4626204 |
-| RTV100_noLPV | cmin     |  0.5002326 |  0.1282262 |  0.8683404 |
-| RTV100_noLPV | auclast  |  9.8165334 |  5.2846237 | 13.9123218 |
-| RTV100_noLPV | cav      |  0.8180444 |  0.4403853 |  1.1593602 |
+| RTV100_noLPV | cmax     |  1.0740768 |  0.7345704 |  1.4626209 |
+| RTV100_noLPV | cmin     |  0.5002326 |  0.1282261 |  0.8683410 |
+| RTV100_noLPV | auclast  |  9.8165376 |  5.2846242 | 13.9123238 |
+| RTV100_noLPV | cav      |  0.8180448 |  0.4403853 |  1.1593603 |
 | RTV600_noLPV | tmax     |  3.0000000 |  1.6125000 |  4.7500000 |
-| RTV600_noLPV | cmax     |  6.3343894 |  4.4724669 |  9.2103076 |
-| RTV600_noLPV | cmin     |  3.2810858 |  0.9025082 |  6.0970720 |
-| RTV600_noLPV | auclast  | 58.6065103 | 31.2936222 | 94.0320971 |
-| RTV600_noLPV | cav      |  4.8838759 |  2.6078019 |  7.8360081 |
+| RTV600_noLPV | cmax     |  6.3343891 |  4.4724675 |  9.2103170 |
+| RTV600_noLPV | cmin     |  3.2810852 |  0.9025082 |  6.0970721 |
+| RTV600_noLPV | auclast  | 58.6065279 | 31.2936251 | 94.0321374 |
+| RTV600_noLPV | cav      |  4.8838773 |  2.6078021 |  7.8360114 |
 
 Steady-state NCA parameters over the 12-hour dosing interval, computed
 by PKNCA from the simulated cohort. Cmax / Cmin in mg/L, tmax in h,
@@ -375,7 +375,7 @@ knitr::kable(
 
 | RTV100_LPV | RTV100_noLPV | RTV600_noLPV | ratio_noLPV_over_LPV | paper_predicted |
 |-----------:|-------------:|-------------:|---------------------:|----------------:|
-|   3.595651 |     9.816533 |     58.60651 |             2.730113 |            2.72 |
+|   3.595651 |     9.816538 |     58.60653 |             2.730114 |            2.72 |
 
 Steady-state AUC0-12 (median, mg\*h/L) for 100 mg BID with and without
 lopinavir co-administration, and the AUC ratio. Paper-predicted value

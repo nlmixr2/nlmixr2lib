@@ -171,8 +171,13 @@ stopifnot(!anyDuplicated(unique(events_sd[, c("id", "time", "evid")])))
 
 ``` r
 
+# NOTE: solve `$simulationModel` rather than the rxUi object. This model has TWO
+# endpoints whose observables read from different ODE states; on the rxUi solve
+# path the second endpoint's state is misclassified as an input parameter and
+# rxSolve aborts with "parameter(s) are required for solving: <state>". The
+# simulation model resolves the states correctly and returns both observables.
 sim_sd <- rxode2::rxSolve(
-  object  = mod,
+  object  = mod$simulationModel,
   events  = events_sd,
   keep    = c("WT", "CONMED_EIAED", "regimen"),
   returnType = "data.frame"
@@ -186,7 +191,7 @@ profile, zero out the random effects:
 ``` r
 
 sim_sd_typical <- rxode2::rxSolve(
-  object  = rxode2::zeroRe(mod),
+  object  = rxode2::zeroRe(mod)$simulationModel,
   events  = events_sd,
   keep    = c("WT", "CONMED_EIAED", "regimen"),
   returnType = "data.frame"
@@ -225,7 +230,7 @@ ev_typ <- bind_rows(
   arrange(id, time, desc(evid))
 
 sim_typ <- rxode2::rxSolve(
-  object  = rxode2::zeroRe(mod),
+  object  = rxode2::zeroRe(mod)$simulationModel,
   events  = ev_typ,
   keep    = c("WT", "CONMED_EIAED", "regimen"),
   returnType = "data.frame"
@@ -1247,7 +1252,7 @@ ev_ss <- do.call(
 stopifnot(!anyDuplicated(unique(ev_ss[, c("id", "time", "evid")])))
 
 sim_ss <- rxode2::rxSolve(
-  object = mod, events = ev_ss,
+  object = mod$simulationModel, events = ev_ss,
   keep   = c("WT", "CONMED_EIAED", "cell", "dose_per_kg_day"),
   returnType = "data.frame"
 ) |>

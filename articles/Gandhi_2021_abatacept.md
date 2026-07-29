@@ -493,7 +493,7 @@ nca_pjia <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj_pjia, dose_obj_pjia,
 #> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
 summary(nca_pjia)
 #>  start end             treatment   N auclast        cmax        cmin
-#>      0   7 pJIA_SC_weight_tiered 100      NC 43.8 [32.2] 33.9 [43.1]
+#>      0   7 pJIA_SC_weight_tiered 100      NC 43.8 [28.8] 32.6 [38.3]
 #>               tmax cav
 #>  3.00 [1.00, 3.00]  NC
 #> 
@@ -650,9 +650,9 @@ knitr::kable(pct_above_pjia, digits = 1,
 
 | age_grp   |   N | pct_ge_10_mgL | median_Cmin |
 |:----------|----:|--------------:|------------:|
-| 2 to \<6  |  32 |          96.9 |        46.4 |
-| 6 to \<12 |  34 |         100.0 |        32.0 |
-| 12-17     |  34 |         100.0 |        28.8 |
+| 2 to \<6  |  32 |           100 |        36.6 |
+| 6 to \<12 |  34 |           100 |        33.8 |
+| 12-17     |  34 |           100 |        26.1 |
 
 Fraction of virtual pJIA subjects achieving steady-state Cmin \>= 10
 mg/L on the weight-tiered SC regimen (Gandhi 2021: 130/131 = 99.2%).

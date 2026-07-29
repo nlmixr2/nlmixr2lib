@@ -125,9 +125,6 @@ sim_alone <- rxode2::rxSolve(mod, events = events_alone, keep = c("OCC", "CONMED
 #> as a work-around try putting the mu-referenced expression on a simple line
 sim_rif   <- rxode2::rxSolve(mod, events = events_rif,   keep = c("OCC", "CONMED_RIF")) |>
   as.data.frame()
-#> ℹ parameter labels from comments will be replaced by 'label()'
-#> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_ka_1, etaiov_ka_2, etaiov_ka_3
-#> as a work-around try putting the mu-referenced expression on a simple line
 
 mod_typical <- rxode2::zeroRe(mod)
 #> ℹ parameter labels from comments will be replaced by 'label()'
