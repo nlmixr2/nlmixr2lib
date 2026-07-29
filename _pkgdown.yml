@@ -2282,6 +2282,8 @@ navbar:
         href: articles/Landersdorfer_2012_vildagliptin.html
       - text: "Vinflunine (Schmitt 2018)"
         href: articles/Schmitt_2018_vinflunine.html
+      - text: "Vinpocetine (Petric 2023)"
+        href: articles/Petric_2023_vinpocetine.html
       - text: "Visilizumab (Cao 2013)"
         href: articles/Cao_2013_visilizumab.html
       - text: "Vismodegib (Lu 2015)"
@@ -3268,6 +3270,7 @@ articles:
   - articles/PerezRuixo_2020_esketamine
   - articles/PerezRuixo_2025_posdinemab
   - articles/Perrottet_2009_ganciclovir
+  - articles/Petric_2023_vinpocetine
   - articles/Petrov_2024_romiplostim
   - articles/Pettersen_2009_pantoprazole
   - articles/Philippe_2015_cyclosporine

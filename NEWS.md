@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Yu 2024 ilaprazole ([doi:10.3389/fphar.2023.1306222](https://doi.org/10.3389/fphar.2023.1306222)) -- Chinese healthy subjects and patients with duodenal ulcer receiving intravenous ilaprazole.
+* Add Petric 2023 vinpocetine / apovincaminic acid ([doi:10.3390/pharmaceutics15102502](https://doi.org/10.3390/pharmaceutics15102502)) -- healthy adult male volunteers dosed with a single 20 mg oral dose of three vinpocetine formulations (Ultra Vinca SR beta-cyclodextrin tablet reference, Cavinton immediate-release tablet, and extemporaneous oral solution); two-compartment popPK of the active metabolite AVA with zero-order absorption + lag; ratifies new `FORM_VINP_IR` covariate canonical.
 * Add Beal 2001 one-compartment IV-bolus BQL methodology template ([doi:10.1023/a:1012299115260](https://doi.org/10.1023/a:1012299115260)) -- methodology reference (no drug, no patients); packages the SI1 generative model from Beal's M1-M7 below-quantification-limit paper as a teaching template with CL = 0.693 and Vd = 1 (time in half-lives).
 * Add Luu 2017 nusinersen ([doi:10.1002/jcph.884](https://doi.org/10.1002/jcph.884)) -- pediatric patients with spinal muscular atrophy receiving intrathecal nusinersen.
 * Add Gaohua 2012 pregnancy PBPK ([doi:10.1111/j.1365-2125.2012.04363.x](https://doi.org/10.1111/j.1365-2125.2012.04363.x)) -- healthy pregnant Caucasian women (14-compartment whole-body p-PBPK with GA-dependent maternal physiology, applied to caffeine [CYP1A2], metoprolol [CYP2D6], and midazolam [CYP3A4]); ratifies new canonical bare `skin` PBPK compartment.
