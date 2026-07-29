@@ -844,8 +844,8 @@ navbar:
         href: articles/FiedlerKelly_2020_fremanezumab_em.html
       - text: "Furmonertinib (Zou 2022)"
         href: articles/Zou_2022_furmonertinib.html
-      - text: "FxiLica (Willmann 2021)"
-        href: articles/Willmann_2021_fxi_aso.html
+      - text: "FXa inhibitors mbma (Yoshioka 2018)"
+        href: articles/Yoshioka_2018_FXa_inhibitors_mbma.html
       - text: "G csf (Melhem 2018)"
         href: articles/Melhem_2018_g_csf.html
       - text: "Galcanezumab (Kielbasa 2020)"
@@ -1700,6 +1700,8 @@ navbar:
         href: articles/LeJouan_2005_quinine.html
       - text: "Quinine rat (Sheng 2016)"
         href: articles/Sheng_2016_quinine_rat.html
+      - text: "R methadone (Aruldhas 2021)"
+        href: articles/Aruldhas_2021_methadone.html
       - text: "RacSotalol QTcF (Darpo 2014)"
         href: articles/Darpo_2014_racSotalol.html
       - text: "RacSotalol QTcI (Darpo 2014)"
@@ -1840,6 +1842,8 @@ navbar:
         href: articles/Schmidt_2009_oxazolidinones.html
       - text: "S ketamine (Flint 2017)"
         href: articles/Flint_2017_s_ketamine.html
+      - text: "S methadone (Aruldhas 2021)"
+        href: articles/Aruldhas_2021_methadone.html
       - text: "S33138 (Bertrand 2011)"
         href: articles/Bertrand_2011_S33138.html
       - text: "Sacituzumab (Sathe 2024)"
@@ -2453,6 +2457,7 @@ articles:
   - articles/Archary_2019_lamivudine
   - articles/Areberg_2006_escitalopram
   - articles/Aregbe_2012_alvespimycin
+  - articles/Aruldhas_2021_methadone
   - articles/Asimus_2007_artemisinin
   - articles/Attarwala_2023_mRNA3927
   - articles/Ayyar_2024_givosiran
