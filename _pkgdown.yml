@@ -998,6 +998,8 @@ navbar:
         href: articles/Kerbusch_2000_ifosfamide.html
       - text: "Il12 (ParraGuillen 2013)"
         href: articles/ParraGuillen_2013_tumor_immunotherapy.html
+      - text: "Ilaprazole (Yu 2024)"
+        href: articles/Yu_2024_ilaprazole.html
       - text: "Iloperidone (Pei 2016)"
         href: articles/Pei_2016_iloperidone.html
       - text: "Imatinib (Chien 2022)"
@@ -3606,6 +3608,7 @@ articles:
   - articles/Yu_2015_sunitinib
   - articles/Yu_2017_mycophenolic_acid
   - articles/Yu_2022_ofatumumab
+  - articles/Yu_2024_ilaprazole
   - articles/Yuan_2019_concizumab
   - articles/Yukawa_1990_phenytoin
   - articles/Yukawa_2002_clonazepam_pediatric
