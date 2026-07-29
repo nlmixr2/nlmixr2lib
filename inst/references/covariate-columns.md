@@ -4357,6 +4357,18 @@ Baseline seizure-severity indicators derived from a pre-trial seizure count (typ
 - **Example models:** `Ouerdani_2015_pazopanib_mouse.R` (Ouerdani 2015 preclinical TGI in CAKI-2 xenograft mice; per-subject `TUM_VOL` initialises the `tumorSize` state and is held constant per individual across the 24-day dosing window).
 - **Notes:** General scope because xenograft tumor-volume baselines have a shared meaning across preclinical TGI papers regardless of the drug or cell line. Use `TUM_VOL` whenever a preclinical paper supplies per-animal caliper tumor volumes as the per-subject initial state of a tumor-volume ODE; use `TUM_SLD` for clinical RECIST sum-of-longest-diameters (a length, not a volume) and `TUMSZ` for the pooled "baseline tumor burden as a covariate on PK" use case in clinical models. Ratified canonically on 2026-05-12 alongside the Ouerdani 2015 pazopanib mouse extraction.
 
+### CTDNA (**canonical for baseline circulating tumor DNA burden**)
+- **Description:** Baseline (pre-treatment, cycle 1 day 1) circulating tumor DNA burden in plasma, quantified by next-generation sequencing as the average number of mutant tumor molecules per millilitre of plasma (MMPM). ctDNA is shed into the circulation when tumor cells die by apoptosis or necrosis, so MMPM acts as a liquid-biopsy surrogate for total tumor burden that is independent of the RECIST target-lesion selection captured by `TUM_SLD`.
+- **Units:** MMPM (mutant molecules per mL of plasma)
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- used as the per-subject regressor / ODE initial-condition input rather than as a covariate effect coefficient. Models that fit ctDNA on the base-10 logarithmic scale (the common convention, because raw MMPM spans several orders of magnitude) derive the state initial condition inside `model()` as `rbase_ctdna <- log10(CTDNA)`; the register stores the untransformed MMPM value so the transformation is visible at the call site.
+- **Source aliases:**
+  - `y0` (Ribba 2022 Eq. 1 symbol for the observed baseline used as a Monolix regressor).
+  - `ctDNA0` (Ribba 2022 Eq. 2 symbol for the same quantity in the joint ctDNA / SLD model).
+- **Example models:** `Ribba_2022_ctdna.R` (Stein bi-exponential on log10 ctDNA; `growth_ctdna(0) <- log10(CTDNA)`), `Ribba_2022_ctdna_sld_joint.R` (joint ctDNA / SLD model; same initial-condition use alongside `TUM_SLD`).
+- **Notes:** Ratified canonically on 2026-07-28 alongside the Ribba 2022 ctDNA extraction, the first ctDNA-modality model in the library. Deliberately NOT pooled with variant-allele-frequency (VAF) or ctDNA-tumor-fraction (cTF) readouts: MMPM is an absolute concentration of mutant molecules whereas VAF and cTF are dimensionless ratios of mutant to wild-type (or aneuploidy-derived) signal, so the two are not interconvertible without the wild-type denominator. A future VAF / cTF canonical should be registered separately (e.g. `CTDNA_VAF`) rather than aliased onto `CTDNA`. The assay platform matters for cross-study pooling -- Ribba 2022 used the Roche AVENIO panel for the MMPM cohorts (Weber 2021 and OAK) and the FMI panel for the cTF cohort (IMspire170) -- so record the panel in the per-model `covariateData[[CTDNA]]$notes`.
+
 ### TUMTP_HODGKIN_CLASSICAL (**canonical for classical Hodgkin lymphoma tumor-type indicator**)
 <!-- AUDIT 2026-06-19: renamed from `TUMTP_CHL` to `TUMTP_HODGKIN_CLASSICAL` per the canonical-register standardization audit. The prior name `TUMTP_CHL` is preserved as a source_alias for one release cycle so existing covariate-data CSVs continue to load. -->
 - **Description:** 1 = classical Hodgkin lymphoma (cHL) or Hodgkin lymphoma generally, 0 = other tumor types.

@@ -403,6 +403,28 @@ The Cao 2013 mAb mPBPK family uses paper-anatomical compartment names that are a
 - **Example models:** `Struemper_2025_tumorsize_OS_nsclc.R`.
 - **Notes:** Registered 2026-06-28. See `growth` for the Stein bi-exponential decomposition.
 
+### growth_ctdna (**canonical Stein-model ctDNA-growth sub-state**)
+- **Type:** compartment
+- **Role:** Circulating-tumor-DNA counterpart of the `growth` Stein sub-state: `d/dt(growth_ctdna) = kge_ctdna * growth_ctdna` with `growth_ctdna(0) = rbase_ctdna`, so `growth_ctdna(t) = rbase_ctdna * exp(kge_ctdna * t)`. Paired with `shrink_ctdna`; the observed ctDNA level is `ctdna = growth_ctdna + shrink_ctdna - rbase_ctdna`. The `_ctdna` endpoint suffix disambiguates the ctDNA Stein pair from the tumor-size pair (`growth` / `shrink`) when a single model fits both endpoints jointly.
+- **Source aliases:** none.
+- **Example models:** `Ribba_2022_ctdna.R`, `Ribba_2022_ctdna_sld_joint.R`.
+- **Notes:** Registered 2026-07-28 alongside the Ribba 2022 ctDNA extraction, the library's first ctDNA-modality model. `rbase_ctdna` is the model-side baseline, which in Ribba 2022 is `log10(CTDNA)` because the source paper fits the Stein form to base-10 log-transformed MMPM; a model fitting ctDNA on the natural scale would set `rbase_ctdna <- CTDNA` instead. See `growth` for the underlying Stein (2011) bi-exponential decomposition.
+
+### shrink_ctdna (**canonical Stein-model ctDNA-decay sub-state**)
+- **Type:** compartment
+- **Role:** Circulating-tumor-DNA counterpart of the `shrink` Stein sub-state: `d/dt(shrink_ctdna) = -kse_ctdna * shrink_ctdna` with `shrink_ctdna(0) = rbase_ctdna`, so `shrink_ctdna(t) = rbase_ctdna * exp(-kse_ctdna * t)`. Paired with `growth_ctdna`.
+- **Source aliases:** none.
+- **Example models:** `Ribba_2022_ctdna.R`, `Ribba_2022_ctdna_sld_joint.R`.
+- **Notes:** Registered 2026-07-28. In a joint ctDNA / tumor-size model the ctDNA decay rate may be tied to the tumor-size decay rate rather than estimated freely -- Ribba 2022 sets `kse_ctdna = zeta * kse` (see `zeta` in `parameter-names.md`). See `growth_ctdna` for the paired state.
+
+### ctdna (**canonical ctDNA output state**)
+- **Type:** compartment
+- **Role:** Circulating-tumor-DNA observation variable for liquid-biopsy biomarker models, analogous to `TS` for RECIST tumor size. In Stein bi-exponential ctDNA models it is the algebraic combination `ctdna = growth_ctdna + shrink_ctdna - rbase_ctdna`.
+- **Source aliases:**
+  - `ctDNA` -- the source-paper mixed-case spelling; the canonical form is all-lower-case for consistency with the rest of the compartment register.
+- **Example models:** `Ribba_2022_ctdna.R`, `Ribba_2022_ctdna_sld_joint.R`.
+- **Notes:** Registered 2026-07-28. The scale on which `ctdna` is expressed is model-specific and must be recorded in the model's `units` metadata: Ribba 2022 works on log10(MMPM) because the source paper log-transformed the data before fitting, so the residual-error parameter `addSd` is in log10 units, not MMPM. The related baseline covariate column is `CTDNA` (untransformed MMPM) in `covariate-columns.md`.
+
 ---
 
 ## CD3 bispecific / trispecific binding states (tumor microenvironment)
