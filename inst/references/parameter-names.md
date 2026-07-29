@@ -663,6 +663,39 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
 - **Source aliases:** none.
 - **Example models:** TMDD models with explicit complex internalisation.
 
+### kphag (**canonical threshold-gated phagocytic elimination rate**)
+- **Type:** paper-named-param
+- **Role:** First-order elimination rate constant for phagocytic clearance of antibody-coated target cells (platelets, RBCs, etc.) in TMDD models where phagocytosis is gated by a receptor-occupancy threshold: kphag acts on both the free-target and the drug-target-complex states while receptor occupancy exceeds the paper-fixed `thres` (percent), and is switched off below threshold. Distinct from the constitutive `kdeg` (baseline natural turnover), which is always on, and from `kint` (receptor-mediated complex internalisation, no threshold gate). Used in threshold-switch TMDD models where the paper reports a rate constant explicitly named "phagocytosis" alongside a receptor-occupancy threshold.
+- **Source aliases:**
+  - `KPH` -- Moc Willeford 2024 NONMEM abbreviation (supplement differential equations).
+  - `kphagocytosis` -- Moc Willeford 2024 Table 1 / 2 typeset name.
+- **Example models:** `MocWilleford_2024_rlyb212.R` (RLYB212 anti-HPA-1a IgG1 with threshold-gated phagocytic elimination of HPA-1a-positive platelets; founding example).
+- **Notes:** Paired with the canonical `thres` receptor-occupancy threshold. When the paper reports a rate constant for phagocytic clearance without a threshold gate (i.e., always on), it is functionally equivalent to `kdeg` and should be recorded as such; `kphag` is reserved for the threshold-switched form.
+
+### thres (**canonical receptor-occupancy threshold**)
+- **Type:** paper-named-param
+- **Role:** Threshold value of receptor occupancy (typically expressed as a percent) above which a threshold-gated elimination pathway (e.g., `kphag`) is switched on. Below the threshold, the gated pathway contributes zero to the target elimination rate; above the threshold, it contributes its full rate constant. Used in TMDD models where receptor engagement must exceed a minimum coating fraction before macrophage / RES-mediated phagocytic clearance is triggered.
+- **Source aliases:**
+  - `THRES` -- Moc Willeford 2024 NONMEM / typeset name.
+- **Example models:** `MocWilleford_2024_rlyb212.R` (THRES = 10 percent fixed, describing the minimum receptor coating required to drive phagocytic clearance of HPA-1a-positive platelets; founding example).
+- **Notes:** Usually held fixed at a value inferred from the paper's model-development results (Moc Willeford 2024: estimation ranged 3-22 percent when co-estimated with other parameters, so THRES was fixed at 10 percent). Distinct from a generic sigmoidal `hill` or `ec50` because the pathway is a hard switch rather than a smooth curve. When expressed as a percent, `thres` is compared to a percent receptor occupancy `ro = 100 * complex / (target + complex)`; when expressed as a fraction, `thres` is compared to the corresponding unitless ratio.
+
+### qp (**canonical target inter-compartmental clearance**)
+- **Type:** paper-named-param
+- **Role:** Inter-compartmental clearance between the central and peripheral compartments of a target species (platelet, receptor, or other cell population tracked as an ODE state alongside the drug in a TMDD model). Units L / time. Distinct from the canonical drug `lq` / `q` because the two flows are semantically different: `q` moves drug between drug compartments, `qp` moves target between target compartments. Used when the source paper carries a peripheral distribution for the target species with its own inter-compartmental clearance parameter.
+- **Source aliases:**
+  - `QP` -- Moc Willeford 2024 Table 1 / 2 / supplement notation.
+- **Example models:** `MocWilleford_2024_rlyb212.R` (QP = 2.45 L/h: platelet inter-compartmental clearance between the shared central compartment (V1) and the target peripheral compartment (V3); founding example).
+- **Notes:** Encoded via `lqp` in `ini()` and `qp` in `model()`; scales allometrically with body weight at exponent 0.75 in the Moc Willeford 2024 simulation.
+
+### vp_target (**canonical target peripheral volume**)
+- **Type:** paper-named-param
+- **Role:** Peripheral volume of distribution for a target species tracked as an ODE state alongside the drug in a TMDD model (units L). Distinct from the drug's canonical `lvp` / `vp` because the drug and the target may have physically different peripheral distribution volumes even when they share a central compartment. Paired with `qp` as the corresponding target inter-compartmental clearance.
+- **Source aliases:**
+  - `V3` -- Moc Willeford 2024 Table 1 / 2 / supplement notation for the target peripheral volume (the paper's V1 is the shared central, V2 is the drug peripheral, V3 is the target peripheral).
+- **Example models:** `MocWilleford_2024_rlyb212.R` (V3 = 0.523 L: peripheral platelet distribution volume, paired with target central sharing V1; founding example).
+- **Notes:** Encoded via `lvp_target` in `ini()` and `vp_target` in `model()`. Do not conflate with the drug's `lvp2` (second peripheral volume of a 3-compartment drug model); those are drug compartments, `vp_target` is a target compartment.
+
 ### kbm (**canonical biliary-metabolite excretion rate**)
 - **Type:** paper-named-param
 - **Role:** First-order rate constant for biliary excretion of a drug or metabolite from a plasma / central compartment into a downstream gut / bile compartment (1 / time). Used in enterohepatic-recirculation and interconversion submodels where the source paper carries biliary transport as a separate ODE flux (distinct from the drug's total clearance terms).
@@ -734,6 +767,46 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
   - `K_grow`, `Kgrow` -- Hien 2017 notation.
 - **Example models:** `Hien_2017_cipargamin.R` (founding example; `kgrow` fixed at ln(10)/48 = 0.0479 /h for the 10-fold per 48-h cycle Plasmodium falciparum multiplication rate).
 - **Notes:** Mechanistically distinct from `p` (generic proliferation / growth-rate constant, TGI-family) in that `kgrow` is specifically a life-cycle-anchored multiplication rate constrained by an independently-known cycle time and per-cycle amplification factor -- typically fixed rather than estimated. Also distinct from `kin` / `ksyn` (zero-order production rates into a turnover pool) because `kgrow` is a first-order growth rate proportional to the state itself. Ratified canonically on 2026-07-08 alongside the Hien 2017 cipargamin extraction.
+
+### kge (**canonical Stein bi-exponential growth-rate constant**)
+- **Type:** paper-named-param
+- **Role:** First-order growth-rate constant of the treatment-resistant fraction in the Stein (2011) bi-exponential tumor-dynamics model, `y(t) = y0 * (exp(-kse * t) + exp(kge * t) - 1)` (1 / time). Drives the `growth` sub-state: `d/dt(growth) = kge * growth` with `growth(0) = y0`. Paired with `kse`. Inside `model()` the bare name is `kge`; the log-transformed `lkge` form is used in `ini()` because the rate is strictly positive. Per-treatment-arm variants take an arm suffix (`lkge_pembro`, `lkge_chemo`, ...); per-endpoint variants in a joint multi-biomarker model take an endpoint suffix (`kge_ctdna`).
+- **Source aliases:**
+  - `KG`, `TVKG`, `kg`, `k_g`, `kgT` -- Stein-family paper notation for the growth rate (`kgT` when the paper needs to distinguish a tumor-size growth rate from a second endpoint's).
+- **Example models:** `Struemper_2025_tumorsize_OS_nsclc.R` (founding example; 12 per-arm `lkge_<arm>` values, 1/week), `Ribba_2022_sld.R` (`kge = 0.0016` 1/day for the OAK sum-of-longest-diameters fit).
+- **Notes:** Register entry backfilled 2026-07-28; the name has been in use since Struemper 2025 (2026-06-28) and is described inside the `growth` / `shrink` entries of `compartment-names.md`, but had no entry of its own. Distinct from `kgrow` (life-cycle-anchored multiplication rate constrained by a known cycle time) and from `p` (generic TGI proliferation constant): `kge` is specifically the growing-fraction exponent of the two-exponential Stein decomposition, whose defining feature is that growth and shrinkage act on two independent sub-populations that are summed rather than on a single net-rate state. The related time-to-tumor-growth summary statistic is `TTG = (log(kse) - log(kge)) / (kge + kse)`.
+
+### kse (**canonical Stein bi-exponential shrinkage-rate constant**)
+- **Type:** paper-named-param
+- **Role:** First-order decay-rate constant of the treatment-sensitive fraction in the Stein (2011) bi-exponential tumor-dynamics model (1 / time). Drives the `shrink` sub-state: `d/dt(shrink) = -kse * shrink` with `shrink(0) = y0`. Paired with `kge`. Inside `model()` the bare name is `kse`; the log-transformed `lkse` form is used in `ini()`. Arm- and endpoint-suffixed variants follow the same pattern as `kge`.
+- **Source aliases:**
+  - `KS`, `TVKS`, `ks`, `k_s`, `ksT` -- Stein-family paper notation for the shrinkage / decay rate.
+- **Example models:** `Struemper_2025_tumorsize_OS_nsclc.R` (founding example; 12 per-arm `lkse_<arm>` values, 1/week), `Ribba_2022_sld.R` (`kse = 0.0014` 1/day for the OAK sum-of-longest-diameters fit).
+- **Notes:** Register entry backfilled 2026-07-28 together with `kge`. **Name-collision warning:** the bare symbol `ks` used by much of the Stein literature is already taken in this register by a different canonical -- `ks` is the drug-mediated effect-compartment elimination rate of Kleijn 2011, with units 1 / (concentration * time). Always map a Stein-model paper's `ks` to `kse`, never to `ks`.
+
+### kge_ctdna (**canonical Stein ctDNA growth-rate constant**)
+- **Type:** paper-named-param
+- **Role:** Endpoint-suffixed `kge` for the circulating-tumor-DNA arm of a Stein bi-exponential biomarker model (1 / time). Drives `d/dt(growth_ctdna) = kge_ctdna * growth_ctdna`. The `_ctdna` suffix is required whenever a single model fits both a tumor-size and a ctDNA Stein pair, so the two growth rates are unambiguous. Log-transformed form `lkge_ctdna` in `ini()`.
+- **Source aliases:**
+  - `kg` -- Ribba 2022 notation for the ctDNA growth rate in both Eq. 1 and Eq. 2.
+- **Example models:** `Ribba_2022_ctdna.R` (founding example; `kge_ctdna = 0.0038` 1/day, RSE 30.1%), `Ribba_2022_ctdna_sld_joint.R` (same value, fixed).
+- **Notes:** Registered 2026-07-28. See `kge` for the underlying Stein decomposition and `growth_ctdna` in `compartment-names.md` for the paired state.
+
+### kse_ctdna (**canonical Stein ctDNA decay-rate constant**)
+- **Type:** paper-named-param
+- **Role:** Endpoint-suffixed `kse` for the circulating-tumor-DNA arm of a Stein bi-exponential biomarker model (1 / time). Drives `d/dt(shrink_ctdna) = -kse_ctdna * shrink_ctdna`. May be estimated directly (log-transformed `lkse_ctdna` in `ini()`) or derived inside `model()` from a tumor-size decay rate via the cross-endpoint link parameter `zeta`.
+- **Source aliases:**
+  - `ks` -- Ribba 2022 Eq. 1 notation for the freely-estimated ctDNA decay rate. Do NOT map this to the unrelated canonical `ks` (Kleijn 2011 effect-compartment elimination rate).
+- **Example models:** `Ribba_2022_ctdna.R` (founding example; freely estimated, `kse_ctdna = 0.0081` 1/day, RSE 27.4%), `Ribba_2022_ctdna_sld_joint.R` (derived as `kse_ctdna <- zeta * kse`, not estimated).
+- **Notes:** Registered 2026-07-28. See `kse` for the underlying Stein decomposition and the `ks` name-collision warning.
+
+### zeta (**canonical cross-endpoint decay-rate link**)
+- **Type:** paper-named-param
+- **Role:** Dimensionless multiplier that ties one endpoint's Stein decay-rate constant to a second, jointly-modeled endpoint's decay-rate constant, so the two biomarkers share a single underlying treatment-response process rather than decaying independently. Founding use: `kse_ctdna = zeta * kse` in Ribba 2022 Eq. 2, coupling the ctDNA decay rate to the tumor-size (sum-of-longest-diameters) decay rate. `zeta > 1` means the ctDNA signal falls faster than tumor size. Inside `model()` the bare name is `zeta`; the log-transformed `lzeta` form is used in `ini()` because the multiplier is strictly positive, with IIV `etalzeta`.
+- **Source aliases:**
+  - Greek `zeta` -- Ribba 2022 Eq. 2 typeset symbol.
+- **Example models:** `Ribba_2022_ctdna_sld_joint.R` (founding example; `zeta = 1.94`, RSE 37.3%, `omega_zeta = 0.86`, RSE 35.0%).
+- **Notes:** Ratified canonically on 2026-07-28 alongside the Ribba 2022 joint ctDNA / tumor-size extraction. Distinct from `frac` (a bounded 0-1 fraction of a pool) and from `alfm` (a mixture-model mixing proportion): `zeta` is an unbounded positive ratio between two rate constants of the same dimension, and is the identifiable free parameter of a joint fit whose remaining structural parameters are held at their single-endpoint values. Use this canonical for any joint-biomarker model that couples two endpoints through a shared rate constant scaled by an estimated factor; if a future model needs more than one such link, suffix by the linked endpoint (`zeta_<endpoint>`).
 
 ### kact (**canonical activation-rate parameter**)
 - **Type:** paper-named-param
@@ -810,6 +883,13 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
 - **Example models:** `Danielak_2017_clopidogrel.R` (clopidogrel -> H4 active thiol, doi:10.1007/s00228-017-2334-z).
 - **Notes:** Distinct from `kmet` (formation rate constant): `fm` is unitless and bounded; `kmet` has rate units.
 
+### logitfm (**canonical logit-transformed fraction metabolised**)
+- **Type:** paper-named-param
+- **Role:** Logit-transformed fraction of parent clearance routed to an active metabolite. Used when the source paper's estimation routine holds FM on the logit scale so that FM is bounded in (0, 1) regardless of covariate + eta combinations. Inside `model()` the bare form is `fm = 1 / (1 + exp(-logitfm_ind))` where `logitfm_ind` collects the fixed effect, covariate shifts, and IIV on the logit scale.
+- **Source aliases:** none.
+- **Example models:** `Mitra_2026_ziftomenib.R` (base `logitfm <- fixed(0.14)` corresponding to `logit^-1(0.14) = 0.535`; additive shift `e_dis_healthy_logitfm = -1.62` on the logit scale for the healthy-volunteer cohort; IIV `etalogitfm ~ 0.280` on the logit scale).
+- **Notes:** Follows the `logit`-transform-prefix family (`logitfr`, `logitemax`) applied to the existing `fm` canonical root. Prefer `logitfm` (paper's logit encoding) over `lfm` (log encoding) when the source paper's NONMEM control stream stores FM on the logit scale, because a log-scale encoding of a bounded quantity can leak above 1 under moderate eta or covariate values. Ratified canonically on 2026-07-24 alongside the Mitra 2026 ziftomenib extraction.
+
 ### kin (**canonical indirect-response production rate**)
 - **Type:** paper-named-param
 - **Role:** Zero-order production rate of an indirect-response / turnover pool (Dayneka 1993; Jusko traditions).
@@ -867,9 +947,56 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
 - **Example models:** `Campagne_2019_cyclophosphamide_mouse.R`.
 - **Notes:** Usually held fixed at the in-vitro equilibrium-dialysis-derived value. The BBB transfer term is `CLin * fu * Cp`.
 
+### kpu<n> (**canonical clustered unbound tissue:plasma partition coefficient**)
+- **Type:** paper-named-param
+- **Role:** Estimated unbound tissue-to-plasma partition coefficient (Kpu) shared by a *cluster* of PBPK tissues, numbered `kpu1`, `kpu2`, `kpu3`, `kpu4`, ... (log-transform prefix `lkpu<n>`). Unitless. Used by "steady-state commonality" PBPK simplifications that keep the full whole-body kinetic structure but reduce the number of unknown distribution parameters by assigning one common Kpu to every tissue in a composition-derived cluster. The numeric suffix indexes the cluster, not a compartment; the cluster-to-tissue mapping must be written out explicitly in `model()` (e.g. `kpu_bone <- kpu1`) and cited to the source table footnote. Convert to the tissue:blood coefficient with `kb = kpu * fu_p / BP`.
+- **Source aliases:**
+  - `KPU1` .. `KPU4` -- NONMEM `$PK` names in Yau 2023 Appendix S1.
+  - `Kpu1` .. `Kpu4` -- Yau 2023 Table 2 / Table S6.
+- **Example models:** `Yau_2023_diazepam_pbpk_kpu_human.R`, `Yau_2023_diazepam_pbpk_kpu_rat.R`, `Yau_2023_diazepam_pbpk_lumped_human.R`, `Yau_2023_diazepam_pbpk_lumped_rat.R`.
+- **Notes:** Distinct from the per-tissue `kp_<tissue>` family (a separate Kp value named for one specific organ, as in the Gaohua 2012 pregnancy PBPK models) -- `kpu<n>` is deliberately cluster-indexed because the whole point of the parameterisation is that several anatomically distinct tissues share one estimate. Also distinct from `sf<n>` below, which scales a *predicted* Kpu rather than replacing it. In kinetically lumped models the same `kpu<n>` names index the lumped compartments (`kpu1` = central lump, `kpu2` = peripheral1 lump, ...). Introduced 2026-07-26 with the Yau 2023 diazepam PBPK extraction.
+
+### sf<n> (**canonical clustered Kpu scaling factor**)
+- **Type:** paper-named-param
+- **Role:** Estimated multiplicative correction factor applied to a *bottom-up predicted* unbound tissue:plasma partition coefficient, shared by a cluster of PBPK tissues and numbered `sf1`, `sf2`, `sf3`, `sf4`, ... (log-transform prefix `lsf<n>`). Unitless. Implements `Kpu_i = Kpu_pred,i * SF_cluster(i)`, where `Kpu_pred,i` comes from a mechanistic tissue-composition model (Rodgers and Rowland, Poulin and Theil, Berezhkovskiy, ...) evaluated inside `model()`. The scalar therefore *quantifies the systematic bias* of the bottom-up prediction instead of discarding it, which is what makes this parameterisation attractive for interspecies translation (the bias is assumed to be conserved across species while the composition inputs change).
+- **Source aliases:**
+  - `SF1` .. `SF4` -- Yau 2023 Table 2 / Table S6 and Eq 10.
+- **Example models:** `Yau_2023_diazepam_pbpk_scalar_human.R`, `Yau_2023_diazepam_pbpk_scalar_rat.R`.
+- **Notes:** A value of 1 means the bottom-up prediction needs no correction, so `sf<n>` estimates are directly interpretable as fold-bias. Do NOT reuse `sf<n>` for a generic "scaling factor" on a non-partition-coefficient parameter -- allometric exponents use `allo_<param>`, and covariate multipliers use the `e_<cov>_<param>` family. Paired with the `kpurr_<tissue>` derived `model()` quantities in the founding examples. Introduced 2026-07-26 with the Yau 2023 diazepam PBPK extraction.
+
 ### eh (**canonical hepatic extraction ratio**)
 - **Type:** paper-named-param
 - **Role:** Hepatic extraction ratio in the well-stirred liver model (`CL_H = FQ * eh`, `F_HEP = 1 - eh`). Unitless, bounded in [0, 1]. Use whenever a paper parameterises hepatic clearance through the extraction-ratio physiology rather than through `lcl` / `lcl_nonren` directly. The companion log-transform prefix is `logiteh` (logit-scale `ini()` typical value) because the linear-scale `eh` is bounded; logit-additive eta on `logiteh` keeps every individual `eh_i` inside the (0, 1) box.
 - **Source aliases:** `EH` -- used in `Chan_2008_maraviroc.R` and Brussee 2018 mAb PBPK (the latter as a derived `model()`-block quantity rather than an `ini()` parameter, so the canonical applies to the `ini()` use case introduced by Chan 2008).
 - **Example models:** `Chan_2008_maraviroc.R` (estimated `logiteh = logit(0.662)` with logit-additive IIV per Chan 2008 Eq 9; downstream `eh` enters `clh = fq * eh` and `fhep = 1 - eh`).
 - **Notes:** Paired with the canonical compartment / pseudo-parameter `fq` (hepatic plasma flow, fixed at a literature value) and the canonical `clr` (renal clearance, often fixed) when the paper decomposes total CL into renal + hepatic with hepatic-extraction physiology. Distinct from `lcl_nonren` (additive renal + non-renal CL decomposition without an explicit extraction-ratio bound): use `eh` only when the source paper writes hepatic clearance as `CL_H = FQ * E_H` and constrains E_H in [0, 1] (e.g., via a logit-form IIV transformation).
+
+### nowsmax (**canonical bare NAS-natural-history maximum-baseline term**)
+- **Type:** paper-named-param
+- **Role:** Multiplicative baseline of the natural neonatal-abstinence-syndrome (NAS) severity-decay-with-postnatal-age term `NOWST = nowsmax * exp(-nowsm * PNA_days)` used inside the Eudy-Byrne 2021 buprenorphine indirect-response PD model of MOTHER NAS scores. `nowsmax` is unitless (a multiplier on `kin/kout`) and enters both the ODE production term `kin * (1 + nowst)` and the drug-free quasi-steady-state initial condition `nows(0) = kin * (1 + nowst) / kout`. Log-transformed form is `lnowsmax`.
+- **Source aliases:**
+  - `NOWSMAX` -- Eudy-Byrne 2021 Table S3 notation (all-caps).
+- **Example models:** `EudyByrne_2021_buprenorphine.R` (typical `nowsmax = 1.92`, unitless; 95% CI 1.76-2.08; log-normal IIV omega^2 = 1.14).
+- **Notes:** Paired with `nowsm` (natural decay rate) and the canonical PD state / observation `nows`. Registered 2026-07-25 alongside the Eudy-Byrne 2021 extraction. Distinct from `rbase` (generic IDR baseline) because `nowsmax` multiplies an exponential decay with postnatal age rather than being a fixed steady-state baseline.
+
+### lnowsmax (**canonical log-transformed NAS-natural-history maximum-baseline term**)
+- **Type:** paper-named-param
+- **Role:** Log-transformed form of `nowsmax` for `ini()` with log-normal IIV. Inside `model()` the bare name is `nowsmax = exp(lnowsmax + etalnowsmax)`.
+- **Source aliases:**
+  - `log NOWSMAX`, `lNOWSMAX` -- equivalent paper notation.
+- **Example models:** `EudyByrne_2021_buprenorphine.R`.
+
+### nowsm (**canonical bare NAS-natural-history decay rate with postnatal age**)
+- **Type:** paper-named-param
+- **Role:** First-order decay rate constant (1/day) of the natural NAS-severity term `NOWST = nowsmax * exp(-nowsm * PNA_days)` with chronological postnatal age. As PNA grows, NOWST decays toward zero and the drug-free quasi-steady-state NAS score `nows0 = kin * (1 + nowst) / kout` approaches its long-term floor `kin / kout`. Log-transformed form is `lnowsm`.
+- **Source aliases:**
+  - `NOWSM` -- Eudy-Byrne 2021 Table S3 notation (all-caps).
+- **Example models:** `EudyByrne_2021_buprenorphine.R` (typical `nowsm = 0.107 1/day`; 95% CI 0.102-0.112; log-normal IIV omega^2 = 1.42; correlated with `nowsmax` at corr = 0.778).
+- **Notes:** Units are 1/day. When paired with the canonical `PNA` covariate (which is in MONTHS), inside `model()` compute `pna_days = PNA * 30.4375` before use so the exponent stays dimensionless (same pattern as Zhao 2018).
+
+### lnowsm (**canonical log-transformed NAS-natural-history decay rate**)
+- **Type:** paper-named-param
+- **Role:** Log-transformed form of `nowsm` for `ini()` with log-normal IIV. Inside `model()` the bare name is `nowsm = exp(lnowsm + etalnowsm)`.
+- **Source aliases:**
+  - `log NOWSM`, `lNOWSM` -- equivalent paper notation.
+- **Example models:** `EudyByrne_2021_buprenorphine.R`.

@@ -2,6 +2,23 @@
 
 # development version
 
+- Disambiguated the overloaded `OC` name, which denoted five unrelated
+  concepts. Osteocalcin `OC` -> `OSTCALC` (uppercase, matching the sibling
+  biomarkers `P1NP` / `PSA` / `PLT` / `WBC` and the sister model
+  `Shoji_2017_fosdagrocorat_p1np`); the oseltamivir-carboxylate metabolite
+  suffix `_oc` -> `_oselcarb` (`central_oselcarb`, `lcl_oselcarb`,
+  `Cc_oselcarb`, ...) across Chairat 2016, Kamal 2013 and Standing 2012;
+  Hussein 1997's unregistered `OC` covariate column -> the existing
+  canonical `CONMED_BIRTHCONTROL`. **Breaking for simulation code** that
+  references the old names. Model ids and vignette filenames are unchanged.
+- Merged the `CONMED_DIUR` covariate canonical into `CONMED_DIURETIC`. The two
+  names denoted the same concept (concomitant diuretic use); the split was an
+  artifact of independent extractions. `Wright_2016_allopurinol`,
+  `Wright_2013_allopurinol` and `Stocker_2012_oxypurinol` now use
+  `CONMED_DIURETIC` (and `e_conmed_diuretic_*` effect parameters). **Breaking for
+  simulation code**: event tables / `keep=` vectors referencing `CONMED_DIUR`
+  must be renamed. Per-paper diuretic class composition (which differs between
+  these models) remains documented in each model's `covariateData` notes.
 * Add Beal 2001 one-compartment IV-bolus BQL methodology template ([doi:10.1023/a:1012299115260](https://doi.org/10.1023/a:1012299115260)) -- methodology reference (no drug, no patients); packages the SI1 generative model from Beal's M1-M7 below-quantification-limit paper as a teaching template with CL = 0.693 and Vd = 1 (time in half-lives).
 * Add Luu 2017 nusinersen ([doi:10.1002/jcph.884](https://doi.org/10.1002/jcph.884)) -- pediatric patients with spinal muscular atrophy receiving intrathecal nusinersen.
 * Add Gaohua 2012 pregnancy PBPK ([doi:10.1111/j.1365-2125.2012.04363.x](https://doi.org/10.1111/j.1365-2125.2012.04363.x)) -- healthy pregnant Caucasian women (14-compartment whole-body p-PBPK with GA-dependent maternal physiology, applied to caffeine [CYP1A2], metoprolol [CYP2D6], and midazolam [CYP3A4]); ratifies new canonical bare `skin` PBPK compartment.

@@ -24,37 +24,37 @@ library(ggplot2)
 
 # Population
 
-The osteocalcin (OC) K-PD fit used the same 321-patient phase II cohort as
+The osteocalcin (OSTCALC) K-PD fit used the same 321-patient phase II cohort as
 the sister P1NP analysis (NCT01393639); see
 [`Shoji_2017_fosdagrocorat_p1np`](Shoji_2017_fosdagrocorat_p1np.html) for the
-full demographic summary. For the OC fit Shoji 2017 fixed KDE to the
-P1NP-derived estimates (KDE-only re-estimation was unstable for OC data)
-and fixed `Imax` to 1 for both drugs (the unconstrained OC estimate was
+full demographic summary. For the OSTCALC fit Shoji 2017 fixed KDE to the
+P1NP-derived estimates (KDE-only re-estimation was unstable for OSTCALC data)
+and fixed `Imax` to 1 for both drugs (the unconstrained OSTCALC estimate was
 close to 1).
 
 # Source trace
 
 | Equation / parameter | Value | Source location |
 |----------------------|-------|-----------------|
-| `lkel` (KDE fosdagrocorat) | `fixed(log(0.597))` /week | Table 2 OC: "KDE Fosdagrocorat FIX" (from P1NP fit) |
-| `dlkel_pred` | `fixed(log(0.535/0.597))` | Table 2 OC: "KDE Prednisone FIX" (from P1NP fit) |
-| `lkd`  | `log(0.939)` /week | Table 2 OC, "Kd" |
-| `lbl`  | `log(22.2)` ng/mL | Table 2 OC, "BL" |
-| `imax` | `fixed(1)` | Table 2 OC, "Imax FIX" (both drugs) |
-| `ledk50` (EDK50 fos) | `log(148)` mg/week | Table 2 OC, "EDK50 Fosdagrocorat" |
-| `dledk50_pred` | `log(122/148)` | Table 2 OC, "EDK50 Prednisone" |
-| `hill` | `fixed(1)` | Table 2 OC, "c FIX" |
-| `lrbmax` | `log(0.0276)` /mg | Table 2 OC, "RBmax" |
-| `lt50`   | `log(2.24)` weeks | Table 2 OC, "T50" |
-| `slp`    | `0.0675` ng/mL/week | Table 2 OC, "SLP" |
-| `etalkel`   | `omega^2 = 1.5129` (123% CV) | Table 2 OC, "IIV %CV [g_KDE]" |
-| `etaledk50` | `omega^2 = 0.0650` (25.5% CV) | Table 2 OC, "IIV %CV [g_EDK50]" |
-| `etalbl`    | `omega^2 = 0.1901` (43.6% CV) | Table 2 OC, "IIV %CV [g_BL]" |
-| `etaslp`    | `omega^2 = 0.338^2 = 0.1142` | Table 2 OC, "IIV SD [g_SLP] = 0.338" |
-| `propSd`    | `0.141` | Table 2 OC, "Residual variability %CV [e] = 14.1" |
+| `lkel` (KDE fosdagrocorat) | `fixed(log(0.597))` /week | Table 2 OSTCALC: "KDE Fosdagrocorat FIX" (from P1NP fit) |
+| `dlkel_pred` | `fixed(log(0.535/0.597))` | Table 2 OSTCALC: "KDE Prednisone FIX" (from P1NP fit) |
+| `lkd`  | `log(0.939)` /week | Table 2 OSTCALC, "Kd" |
+| `lbl`  | `log(22.2)` ng/mL | Table 2 OSTCALC, "BL" |
+| `imax` | `fixed(1)` | Table 2 OSTCALC, "Imax FIX" (both drugs) |
+| `ledk50` (EDK50 fos) | `log(148)` mg/week | Table 2 OSTCALC, "EDK50 Fosdagrocorat" |
+| `dledk50_pred` | `log(122/148)` | Table 2 OSTCALC, "EDK50 Prednisone" |
+| `hill` | `fixed(1)` | Table 2 OSTCALC, "c FIX" |
+| `lrbmax` | `log(0.0276)` /mg | Table 2 OSTCALC, "RBmax" |
+| `lt50`   | `log(2.24)` weeks | Table 2 OSTCALC, "T50" |
+| `slp`    | `0.0675` ng/mL/week | Table 2 OSTCALC, "SLP" |
+| `etalkel`   | `omega^2 = 1.5129` (123% CV) | Table 2 OSTCALC, "IIV %CV [g_KDE]" |
+| `etaledk50` | `omega^2 = 0.0650` (25.5% CV) | Table 2 OSTCALC, "IIV %CV [g_EDK50]" |
+| `etalbl`    | `omega^2 = 0.1901` (43.6% CV) | Table 2 OSTCALC, "IIV %CV [g_BL]" |
+| `etaslp`    | `omega^2 = 0.338^2 = 0.1142` | Table 2 OSTCALC, "IIV SD [g_SLP] = 0.338" |
+| `propSd`    | `0.141` | Table 2 OSTCALC, "Residual variability %CV [e] = 14.1" |
 | `d/dt(depot_kpd)`  | -kel * depot_kpd | Methods, K-PD model equations |
 | `d/dt(effect)` | ks * rebound * inhibition - kd * effect | Methods, K-PD model + Results rebound equation |
-| `OC = effect + slp_i * t` | Observation = response + linear placebo trend | Methods, F(ij) equation |
+| `OSTCALC = effect + slp_i * t` | Observation = response + linear placebo trend | Methods, F(ij) equation |
 
 # Virtual cohort
 
@@ -126,7 +126,7 @@ sim_typ <- rxode2::rxSolve(
 ) |> as.data.frame()
 ```
 
-# Replicate Figure 2 (lower row): VPC of OC percent change from baseline
+# Replicate Figure 2 (lower row): VPC of OSTCALC percent change from baseline
 
 ```{r figure-2-oc}
 arm_order <- c("Placebo",
@@ -136,9 +136,9 @@ arm_order <- c("Placebo",
 vpc_summary <- sim |>
   filter(time %in% c(0, 2, 4, 6, 8, 10, 12, 13)) |>
   group_by(arm, id) |>
-  mutate(oc_baseline = first(OC[time == 0])) |>
+  mutate(oc_baseline = first(OSTCALC[time == 0])) |>
   ungroup() |>
-  mutate(cfb_pct = 100 * (OC - oc_baseline) / oc_baseline) |>
+  mutate(cfb_pct = 100 * (OSTCALC - oc_baseline) / oc_baseline) |>
   group_by(arm, time) |>
   summarise(
     p10 = quantile(cfb_pct, 0.10, na.rm = TRUE),
@@ -161,7 +161,7 @@ ggplot(vpc_summary, aes(time, p50)) +
        caption = "Vertical dotted line at week 8 marks the end of the active treatment period.")
 ```
 
-# Replicate Table 3: simulated median OC %CFB at week 8
+# Replicate Table 3: simulated median OSTCALC %CFB at week 8
 
 ```{r table-3-oc}
 published_table3 <- tibble::tribble(
@@ -178,8 +178,8 @@ published_table3 <- tibble::tribble(
 simulated_table3 <- sim |>
   group_by(id, arm) |>
   summarise(
-    oc_baseline = first(OC[time == 0]),
-    oc_week8    = first(OC[time == 8]),
+    oc_baseline = first(OSTCALC[time == 0]),
+    oc_week8    = first(OSTCALC[time == 8]),
     cfb_pct     = 100 * (oc_week8 - oc_baseline) / oc_baseline,
     .groups = "drop"
   ) |>
@@ -210,8 +210,8 @@ comparison |>
 sim_typ_summary <- sim_typ |>
   filter(time %in% c(0, 8)) |>
   group_by(arm, time) |>
-  summarise(OC_typ = first(OC), .groups = "drop") |>
-  pivot_wider(names_from = time, values_from = OC_typ, names_prefix = "wk") |>
+  summarise(OSTCALC_typ = first(OSTCALC), .groups = "drop") |>
+  pivot_wider(names_from = time, values_from = OSTCALC_typ, names_prefix = "wk") |>
   mutate(cfb_pct_typ = 100 * (wk8 - wk0) / wk0,
          arm = factor(arm, levels = arm_order)) |>
   arrange(arm)
@@ -219,8 +219,8 @@ sim_typ_summary <- sim_typ |>
 sim_typ_summary |>
   dplyr::rename(
     "Arm"               = arm,
-    "OC wk 0 (typical)" = wk0,
-    "OC wk 8 (typical)" = wk8,
+    "OSTCALC wk 0 (typical)" = wk0,
+    "OSTCALC wk 8 (typical)" = wk8,
     "%CFB typical"      = cfb_pct_typ
   ) |>
   knitr::kable(digits = 2,
@@ -229,35 +229,35 @@ sim_typ_summary |>
 
 Expected typical responses:
 
-* Placebo: OC = BL + SLP * 8 = 22.2 + 0.0675 * 8 = `r 22.2 + 0.0675 * 8` ng/mL.
+* Placebo: OSTCALC = BL + SLP * 8 = 22.2 + 0.0675 * 8 = `r 22.2 + 0.0675 * 8` ng/mL.
 * Fosdagrocorat 10 mg q.d.: ~ -13% CFB at week 8 (paper Discussion / Table 3).
 
 # Assumptions and deviations
 
 - **Observation variable naming.** The single-output observation is named
-  `OC` (the paper's name) rather than the canonical `Cc`. Same accepted
+  `OSTCALC` (the paper's name) rather than the canonical `Cc`. Same accepted
   deviation as the P1NP sister model and the wider codebase pattern for
   paper-named biomarker outputs.
 - **Drug arm switching via reparameterization.** Same convention as the
   P1NP sister model (base = fosdagrocorat; `dlkel_pred` and `dledk50_pred`
   log-ratio offsets recover the published prednisone values when
-  `DRUG_PRED = 1`). For OC the typical-value KDE is fixed to the P1NP
+  `DRUG_PRED = 1`). For OSTCALC the typical-value KDE is fixed to the P1NP
   estimates -- both `lkel` and `dlkel_pred` are wrapped in `fixed()`.
-- **Imax fixed to 1 for both drugs.** The OC fit set `Imax = 1` for both
+- **Imax fixed to 1 for both drugs.** The OSTCALC fit set `Imax = 1` for both
   fosdagrocorat and prednisone because the unconstrained estimate was
   close to 1 (paper Discussion). The inhibition term `1 - imax * ir^c /
   (edk50^c + ir^c)` therefore approaches 0 (full inhibition) at very high
-  IR; the typical OC %CFB at week 8 for the 15 mg fosdagrocorat arm
+  IR; the typical OSTCALC %CFB at week 8 for the 15 mg fosdagrocorat arm
   (-16.8% published; ~ -17% simulated) reflects this nearly-complete
-  inhibition combined with the slow OC turnover (Kd = 0.939 /week, longer
+  inhibition combined with the slow OSTCALC turnover (Kd = 0.939 /week, longer
   half-life than the 8-week treatment window).
 - **Independent (non-block) IIV.** Shoji 2017 used independent IIVs on
-  KDE, EDK50, BL for the OC fit (paper Methods: "To reduce estimation
+  KDE, EDK50, BL for the OSTCALC fit (paper Methods: "To reduce estimation
   instability, individual random effect parameters for KDE, EDK50, and
   BL were assumed to be independent."). The model encodes this with
   three diagonal `etal*` declarations (no block). The IIV CV%s for KDE
-  in OC (123%) are larger than for KDE in P1NP (95%) because the OC fit
-  fits g_KDE to OC residuals alone; this is the paper's published value
+  in OSTCALC (123%) are larger than for KDE in P1NP (95%) because the OSTCALC fit
+  fits g_KDE to OSTCALC residuals alone; this is the paper's published value
   and is preserved here.
 - **Taper-period dosing approximation.** Same approximation as the P1NP
   vignette (zero-order rates of 3.5 and 2.33 doses/week of the reduced

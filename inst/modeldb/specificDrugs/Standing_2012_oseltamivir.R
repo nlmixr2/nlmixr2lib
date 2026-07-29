@@ -7,7 +7,7 @@ Standing_2012_oseltamivir <- function() {
   # Standing 2012 Fig 1 compartment 3 is an empirical transit compartment that
   # delays first-pass metabolite appearance (causing flip-flop kinetics). It is
   # not a Savic absorption-chain transit; declare as paper-specific.
-  paper_specific_compartments <- "transit_oc"
+  paper_specific_compartments <- "transit_oselcarb"
 
   covariateData <- list(
     WT = list(
@@ -59,7 +59,7 @@ Standing_2012_oseltamivir <- function() {
     # to stabilize the fit given sparse data and largely flat profiles. FQ is the
     # adult typical liver blood flow used in the well-stirred hepatic model.
     lvc    <- fixed(log(91));    label("Volume of distribution of parent at 70 kg, VD (L) [fixed from He 2008]")        # Standing 2012 Results: VD fixed to 91 L/70 kg (ref 11)
-    lvc_oc <- fixed(log(25.6));  label("Volume of distribution of carboxylate at 70 kg, VDM (L) [fixed from He 2008]")  # Standing 2012 Results: VDM fixed to 25.6 L/70 kg (ref 11)
+    lvc_oselcarb <- fixed(log(25.6));  label("Volume of distribution of carboxylate at 70 kg, VDM (L) [fixed from He 2008]")  # Standing 2012 Results: VDM fixed to 25.6 L/70 kg (ref 11)
     lfq    <- fixed(log(75));    label("Liver blood flow at 70 kg, FQ (L/h) [fixed adult value]")                       # Standing 2012 Methods: FQ adult value 75 L/h/70 kg (ref 21)
 
     # Fixed allometric exponents (Standing 2012 Methods, Tod et al. 2008 scaling).
@@ -87,7 +87,7 @@ Standing_2012_oseltamivir <- function() {
 
     # Residual error (proportional on each output). Standing 2012 Table 2.
     propSd    <- 0.543; label("Proportional residual error on parent oseltamivir (fraction)")                           # Standing 2012 Table 2: 54.3%
-    propSd_oc <- 0.232; label("Proportional residual error on oseltamivir carboxylate (fraction)")                      # Standing 2012 Table 2: 23.2%
+    propSd_oselcarb <- 0.232; label("Proportional residual error on oseltamivir carboxylate (fraction)")                      # Standing 2012 Table 2: 23.2%
   })
 
   model({
@@ -113,7 +113,7 @@ Standing_2012_oseltamivir <- function() {
     cli   <- exp(lcli + etalcli) * (WT / ref_wt)^allo_cl * fmat_hce1
     fq    <- exp(lfq)            * (WT / ref_wt)^allo_cl
     vc    <- exp(lvc)            * (WT / ref_wt)^allo_vc
-    vc_oc <- exp(lvc_oc)         * (WT / ref_wt)^allo_vc
+    vc_oselcarb <- exp(lvc_oselcarb)         * (WT / ref_wt)^allo_vc
     kam   <- exp(lkam)
 
     # Well-stirred hepatic model (Standing 2012 Methods):
@@ -124,25 +124,25 @@ Standing_2012_oseltamivir <- function() {
 
     # ODE system (Standing 2012 Fig 1). Compartment 1 = depot (oral dose,
     # oseltamivir as administered), compartment 2 = central parent (oseltamivir),
-    # compartment 3 = transit_oc (empirical transit delaying first-pass
-    # metabolite appearance), compartment 4 = central_oc (oseltamivir carboxylate).
+    # compartment 3 = transit_oselcarb (empirical transit delaying first-pass
+    # metabolite appearance), compartment 4 = central_oselcarb (oseltamivir carboxylate).
     # The systemic CLTM route (parent -> carboxylate via hepatic well-stirred
-    # extraction) feeds central_oc directly; only the first-pass FM fraction
-    # passes through the transit_oc compartment (consistent with the Discussion
+    # extraction) feeds central_oselcarb directly; only the first-pass FM fraction
+    # passes through the transit_oselcarb compartment (consistent with the Discussion
     # description of Kam as a 'mean absorption time' affected by cholestasis
     # and gut physiology).
     d/dt(depot)      <- -ka * depot
     d/dt(central)    <-  (1 - fm) * ka * depot - (cl / vc) * central - (cltm / vc) * central
-    d/dt(transit_oc) <-  fm * ka * depot - kam * transit_oc
-    d/dt(central_oc) <-  kam * transit_oc + (cltm / vc) * central - (cl / vc_oc) * central_oc
+    d/dt(transit_oselcarb) <-  fm * ka * depot - kam * transit_oselcarb
+    d/dt(central_oselcarb) <-  kam * transit_oselcarb + (cltm / vc) * central - (cl / vc_oselcarb) * central_oselcarb
 
     # Observations and residual error. Both concentrations are in nM
     # (Standing 2012 transformed doses and observations to molar units using
     # MW oseltamivir = 312.40 g/mol and MW carboxylate = 284.35 g/mol).
     Cc    <- central    / vc
-    Cc_oc <- central_oc / vc_oc
+    Cc_oselcarb <- central_oselcarb / vc_oselcarb
 
     Cc    ~ prop(propSd)
-    Cc_oc ~ prop(propSd_oc)
+    Cc_oselcarb ~ prop(propSd_oselcarb)
   })
 }

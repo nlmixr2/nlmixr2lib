@@ -83,11 +83,15 @@ Jelliffe_2014_digoxin <- function() {
     # Oral bioavailability applied to the depot compartment
     f(depot) <- exp(lfdepot)
 
+    # Peripheral compartment exposed in the paper's normalization (amount per kg, ug/kg).
+    # Must be declared BEFORE the residual-error endpoint: statements placed after the
+    # `~` line are parsed into the error block, where a state reference such as
+    # peripheral1 is resolved as an input parameter and solving fails with
+    # "The following parameter(s) are required for solving: peripheral1".
+    Cp_ugkg <- peripheral1 / WT
+
     # Observation: serum concentration in ng/mL (dose ug / vc L = ug/L = ng/mL)
     Cc <- central / vc
     Cc ~ prop(propSd)
-
-    # Peripheral compartment exposed in the paper's normalization (amount per kg, ug/kg)
-    Cp_ugkg <- peripheral1 / WT
   })
 }

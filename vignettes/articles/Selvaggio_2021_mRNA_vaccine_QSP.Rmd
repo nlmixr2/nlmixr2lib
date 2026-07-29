@@ -1,0 +1,350 @@
+---
+title: "mRNA vaccine QSP (Selvaggio 2021)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{mRNA vaccine QSP (Selvaggio 2021)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE, comment = "#>",
+  fig.width = 7, fig.height = 4.2, dpi = 100,
+  error = FALSE
+)
+library(nlmixr2lib)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r readModelDb("Selvaggio_2021_mRNA_vaccine_QSP")()$reference`
+* Article: <https://doi.org/10.1002/psp4.12721>
+* Description: `r readModelDb("Selvaggio_2021_mRNA_vaccine_QSP")()$description`
+
+Selvaggio et al. (2021) present a Commentary in *CPT: Pharmacometrics and
+Systems Pharmacology* introducing a mechanistic quantitative systems
+pharmacology (QSP) framework for mRNA vaccine development. The framework
+adapts and extends the multiscale therapeutic-protein immunogenicity model
+of Chen, Hickling, and Vicini (2014) to represent the early events after
+injection of a lipid nanoparticle (LNP) carrying an mRNA cargo. The main
+text and Figure 1 present the two-compartment (injection site + draining
+lymph node) topology; the online Supplementary Material lists every ODE
+and every parameter value (Table S1).
+
+The paper is a QSP application, not a population-PK / -PD analysis: there
+is no fitted between-subject variability, no residual error, and no
+subject-level fit table. The full parameter set (Table S1) is delivered
+as a single deterministic mean-field simulation calibrated to the
+rhesus macaque migration data of Liang et al. (2017); the paper's
+principal result (Table 1) is a sensitivity analysis of the antibody
+titre at day 30 under 50 ug mRNA-LNP dosing.
+
+# Population
+
+The QSP framework is deterministic and describes a "typical" innate +
+adaptive immune response to a single intramuscular injection of an
+mRNA-LNP vaccine. The innate-cell layer (mDC, pDC, monocytes,
+neutrophils) is fit to rhesus macaque cell-count data from Liang et al.
+(2017), where macaques received a fluorescent-protein-encoding modified
+mRNA-LNP and cell counts at the injection site and draining lymph node
+were quantified over time. The adaptive-immune layer (T cells, B cells,
+antibody) inherits parameter values from Chen et al. (2014), a
+therapeutic-protein immunogenicity backbone developed against human
+data. Selvaggio 2021 explicitly maintains the adaptive-immune layer
+"unvaried" while introducing new mRNA-specific early-events dynamics.
+
+The model's `population` metadata is available programmatically via
+`readModelDb("Selvaggio_2021_mRNA_vaccine_QSP")()$population`.
+
+# Source trace
+
+Every parameter used by the model traces back to Selvaggio 2021
+Supplementary Material Table S1. The provenance is recorded inline in
+`inst/modeldb/therapeuticArea/Selvaggio_2021_mRNA_vaccine_QSP.R`. Below is
+a consolidated summary organised by biological subsystem.
+
+| Subsystem              | Parameters                                                | Source                                     |
+|------------------------|-----------------------------------------------------------|--------------------------------------------|
+| LNP kinetics           | `k_deg_lnp`                                                | Table S1 (fitted, Liang 2017)              |
+| Myeloid DC             | `mdc0`, `k_dt_mdc`, `k_rc_mdc`, `k_up_mdc`, `k_exp_mdc`, `k_is2ln_mdc_lnp`, `k_is2ln_mdc_ag`, `k_ln2bl_mdc_ag`, `k_is2bl_mdc` | Table S1 (mixed: initial numbers ref [2], death rates ref [1], all others fitted) |
+| Plasmacytoid DC        | `k_dt_pdc`, `k_rc_pdc`, `k_up_pdc`, `k_exp_pdc`, `k_is2ln_pdc_lnp`, `k_is2ln_pdc_ag`, `k_ln2bl_pdc_ag`, `k_is2bl_pdc` | Table S1 (mixed; initial number = 0 hard-coded in model()) |
+| DC MHC / transport     | `mhc0`, `k_tr`                                             | Table S1, ref [1]                          |
+| Monocytes              | `mc0`, `k_dt_mc`, `k_rc_mc`, `k_up_mc`, `k_exp_mc`, `k_is2ln_mc_lnp`, `k_is2ln_mc_ag`, `k_ln2bl_mc_ag`, `k_is2bl_mc` | Table S1 (mixed)                           |
+| Neutrophils            | `k_dt_np`, `k_rc_np`, `k_up_np`, `k_exp_np`, `k_is2ln_np_lnp`, `k_is2ln_np_ag`, `k_ln2bl_np_ag`, `k_is2bl_np` | Table S1 (mixed; initial number = 0 hard-coded) |
+| T cells                | `nt0`, `k_dt_nt`, `k_dt_at`, `k_dt_mt`, `k_dt_ft`, `k_act_nt`, `k_act_mt`, `k_prol_at`, `f1_t` | Table S1, ref [1]                          |
+| B cells                | `nb0`, `brn`, `ka_mean`, `kr_bcr`, `cc_n`, `cc_m`, `k_prol_anb`, `k_prol_amb`, `k_dt_ab_b`, `k_dt_mb`, `k_dt_lp`, `k_dt_sp`, `g1_b`, `g2_b`, `k_act_nb`, `k_act_mb` | Table S1, ref [1] (mean-affinity subgroup extraction; see Assumptions) |
+| Antibody               | `k_prod_ab`, `k_deg_ab`                                    | Table S1, ref [1]                          |
+| Lymph-node volume      | `v_ln`                                                     | Not in paper; canonical 0.5 mL default. See Assumptions. |
+
+The ODEs themselves are printed page-by-page in the Selvaggio 2021
+Supplementary Material section "Model equations" (pp. 1-5 of the
+supplement PDF). Each of the 45 compartments in the packaged model
+corresponds to a state-variable equation in the supplement, and every
+term in every ODE line is a one-to-one transcription except the two
+documented deviations below.
+
+# Simulation
+
+The model has 45 ODE states (LNP + 39 innate-cell states + 5 T-cell
+states + 7 B-cell / antibody states, with a single mean-affinity B-cell
+subgroup). Dosing is via `amt` into the `lnp` compartment, in number of
+LNP molecules. A 50 ug mRNA-LNP dose (as used in the Selvaggio 2021
+sensitivity analysis, Table 1) converts to ~5.6e16 molecules for the
+535 g/mol LNP MW listed in Table S1:
+
+```{r dose-conversion}
+lnp_mw   <- 535           # g/mol, Table S1
+n_avog   <- 6.022e23      # #molecules/mol
+dose_ug  <- 50            # single 50 ug mRNA-LNP (Selvaggio 2021 Table 1)
+dose_lnp <- dose_ug * 1e-6 / lnp_mw * n_avog
+sprintf("50 ug mRNA-LNP -> %.3g LNP molecules", dose_lnp)
+```
+
+```{r load-model}
+mod <- readModelDb("Selvaggio_2021_mRNA_vaccine_QSP")
+```
+
+## Baseline (no-dose) hold
+
+Before injecting the vaccine, the model should sit at its physiological
+baseline: naive mDC = 4288, naive T = 1445, naive B = 5200, and every
+other state (pDC, NP, LNP, antigen-processing intermediates, active /
+memory / functional cells, antibody) starting at zero. Simulating with
+`amt = 0` for 30 days should keep every state at its initial value.
+
+```{r no-dose}
+ev0 <- rxode2::et(amt = 0, cmt = "lnp", time = 0) |>
+  rxode2::et(seq(0, 30, by = 1))
+sim0 <- rxode2::rxSolve(mod, ev0)
+message("Range of mdc_is over 30 days: [",
+        format(min(sim0$mdc_is), digits = 4), ", ",
+        format(max(sim0$mdc_is), digits = 4), "]")
+message("Range of Ab over 30 days: [",
+        format(min(sim0$Ab), digits = 4), ", ",
+        format(max(sim0$Ab), digits = 4), "]")
+```
+
+At physiological baseline, `mdc_is`, `nt`, `nb` hold at their initial
+values within numerical precision, and the antibody state stays at zero.
+This confirms the steady-state closure `k_br^X = X0 * (k_dt^X +
+k_IS2BL^X)` (Selvaggio 2021 Table S1 note) is encoded consistently.
+
+## 50 ug single-dose mRNA-LNP simulation
+
+The following simulation reproduces the model's response to a single
+50 ug mRNA-LNP dose over 60 days:
+
+```{r sim-50ug}
+ev50 <- rxode2::et(amt = dose_lnp, cmt = "lnp", time = 0) |>
+  rxode2::et(seq(0, 60, by = 0.5))
+sim50 <- rxode2::rxSolve(mod, ev50)
+```
+
+### Innate cells at the injection site
+
+The four innate-cell populations mDC / pDC / MC / NP are recruited to
+the injection site by LNP-driven chemokine signalling (`k_rc^X`), take
+up LNP (`k_up^X`), and either migrate to the draining lymph node
+carrying LNP or antigen or clear peripherally. The panel below shows
+the total mDC / pDC / MC / NP counts at the injection site as a
+function of time, aggregated across their naive / LNP-carrying /
+antigen-expressing / antigen-presenting sub-states. This is the model
+analogue of the paper's supplementary Figure S1, upper row ("total cell
+recruitment at the IS").
+
+```{r fig-innate-IS}
+sim50 |>
+  dplyr::mutate(
+    mDC = mdc_is + mdc_is_lnp + mdc_is_ag + mdc_is_agl + mdc_is_agm + mdc_is_agh,
+    pDC = pdc_is + pdc_is_lnp + pdc_is_ag + pdc_is_agl + pdc_is_agm + pdc_is_agh,
+    MC  = mc_is  + mc_is_lnp  + mc_is_ag,
+    NP  = np_is  + np_is_lnp  + np_is_ag
+  ) |>
+  dplyr::select(time, mDC, pDC, MC, NP) |>
+  tidyr::pivot_longer(-time, names_to = "population", values_to = "cells") |>
+  dplyr::mutate(population = factor(population, levels = c("mDC", "pDC", "MC", "NP"))) |>
+  ggplot(aes(time, cells)) +
+  geom_line() +
+  facet_wrap(~population, scales = "free_y") +
+  labs(x = "Time (days)", y = "Cell count at injection site",
+       title = "Innate cells at the injection site",
+       caption = "Model analogue of Selvaggio 2021 supplement Figure S1 (top row).")
+```
+
+### Lymph-node antigen presentation
+
+Following uptake and maturation, DCs migrate to the draining lymph
+node and present antigen at low / medium / high membrane-loading levels.
+Total antigen in the lymph node (weighted 0.1 / 0.5 / 0.9 across
+AgL / AgM / AgH) drives B-cell activation.
+
+```{r fig-antigen}
+sim50 |>
+  dplyr::mutate(
+    Ag_total = 95.1e3 * (0.1 * (mdc_ln_agl + pdc_ln_agl) +
+                          0.5 * (mdc_ln_agm + pdc_ln_agm) +
+                          0.9 * (mdc_ln_agh + pdc_ln_agh))
+  ) |>
+  ggplot(aes(time, Ag_total)) +
+  geom_line() +
+  labs(x = "Time (days)", y = "Total antigen presented (#molecules)",
+       title = "Total presented antigen in the draining lymph node",
+       caption = "Ag = MHC0 * [0.1 * AgL + 0.5 * AgM + 0.9 * AgH] over mDC+pDC (Selvaggio 2021 supp).")
+```
+
+### Adaptive immune response and antibody
+
+The lymph-node antigen drives T-cell activation (naive T -> active T ->
+memory T + functional T) and B-cell activation (naive B -> active B ->
+memory B + short-/long-lived plasma cells -> antibody).
+
+```{r fig-adaptive}
+sim50 |>
+  dplyr::mutate(
+    Functional_T   = ft,
+    Memory_T       = mt,
+    Short_plasma   = sp,
+    Long_plasma    = lp,
+    Memory_B       = mb,
+    Antibody_pmole = ab
+  ) |>
+  dplyr::select(time, Functional_T, Memory_T, Short_plasma, Long_plasma,
+                Memory_B, Antibody_pmole) |>
+  tidyr::pivot_longer(-time, names_to = "state", values_to = "value") |>
+  ggplot(aes(time, value)) +
+  geom_line() +
+  facet_wrap(~state, scales = "free_y") +
+  labs(x = "Time (days)", y = "Cell count (or pmole for antibody)",
+       title = "Adaptive-immune response after 50 ug mRNA-LNP",
+       caption = "Chen 2014 T/B/Ab kinetics driven by Selvaggio 2021 innate-cell antigen presentation.")
+```
+
+## Dose-response sensitivity
+
+Selvaggio 2021 Table 1 reports a sensitivity analysis of antibody titre
+at day 30 with respect to `k_tr`, `k_up`, `k_rc` and `k_exp` under a
+50 ug injection. The table shows that increasing `k_up` (vector uptake)
+and `k_rc` (adjuvant-mediated recruitment) has the strongest impact on
+the antibody titre, with a "minor synergy beyond additive" between
+`k_up` and `k_rc`. As a proxy check on the model's monotonic
+dose-response, we run three dose levels (10 / 50 / 250 ug):
+
+```{r dose-response, fig.height=3.6}
+doses_ug <- c(10, 50, 250)
+ev_dr <- purrr::map2_dfr(seq_along(doses_ug), doses_ug, function(id, du) {
+  d_lnp <- du * 1e-6 / lnp_mw * n_avog
+  rxode2::et(amt = d_lnp, cmt = "lnp", time = 0, id = id) |>
+    rxode2::et(seq(0, 60, by = 0.5)) |>
+    as.data.frame() |>
+    dplyr::mutate(id = id, dose_ug = du)
+})
+sim_dr <- rxode2::rxSolve(mod, ev_dr, keep = "dose_ug")
+
+sim_dr |>
+  ggplot(aes(time, Ab, group = factor(dose_ug), colour = factor(dose_ug))) +
+  geom_line() +
+  labs(x = "Time (days)", y = "Antibody titre (pmole)", colour = "Dose (ug)",
+       title = "Antibody titre vs. time by mRNA-LNP dose",
+       caption = "Selvaggio 2021 Table 1 reports the day-30 antibody titre as the sensitivity endpoint.") +
+  scale_x_continuous(breaks = seq(0, 60, 10))
+```
+
+The model produces a monotonic dose-response in antibody titre over the
+10-250 ug range, consistent with the paper's sensitivity finding that
+higher LNP-driven recruitment / uptake amplifies the antibody response.
+
+## Day-30 antibody titre by dose
+
+```{r day30-table}
+sim_dr |>
+  dplyr::filter(abs(time - 30) < 1e-6) |>
+  dplyr::select(dose_ug, Ab) |>
+  dplyr::arrange(dose_ug) |>
+  dplyr::rename("Dose (ug mRNA-LNP)" = dose_ug,
+                "Antibody at day 30 (pmole)" = Ab) |>
+  knitr::kable(digits = 3,
+               caption = "Day-30 antibody titre by dose (Selvaggio 2021 Table 1 sensitivity endpoint).")
+```
+
+# Assumptions and deviations
+
+The extraction packages the Selvaggio 2021 QSP model with the following
+documented deviations from a bit-for-bit reproduction. Each is noted
+inline in the model file and expanded here so downstream users are aware
+of the scope of the packaged deterministic simulator.
+
+1. **Single-subgroup B-cell layer.** Selvaggio 2021 (inheriting from
+   Chen 2014) encodes 17 B-cell affinity-subclones ("J = 17") with
+   `Ka_j` spanning 3.91e-1 to 2.56e-4 pM^-1. Each subclone carries its
+   own `NB_i / ANB_i / AMB_i / MB_i / SP_i / LP_i / Ab_i` state. The
+   packaged model uses a single mean-affinity subgroup with
+   `ka_mean = 0.010005 /pM` (geometric mean of the endpoints). Reason:
+   17 subclones times 7 states plus the transcendental receptor-
+   competition equation for `Ag_f` are not natively expressible in
+   rxode2 (see item 2), and the practical simulation cost of enumerating
+   119 additional ODEs is high enough to break the 5-minute vignette
+   render budget. Downstream users who need the full affinity
+   distribution can extend the shipped model by hand-authoring the
+   17-clone block; the mean-field version is sufficient for the
+   sensitivity-style analyses that motivated the original paper.
+2. **Explicit `Ag_f` closure.** The paper's receptor-competition
+   equation
+   `Ag = Ag_f * [1 + 2 * sum_i(K_a_i * Ab_i / (1 + K_a_i * Ag_f))
+                    + sum_i(K_a_i * BCR_i / (1 + K_a_i * Ag_f))]`
+   is implicit in `Ag_f` and requires a Newton solve per timestep. The
+   packaged model uses the low-antibody closure
+   `Ag_f = Ag / (1 + 2 * K_a * Ab_conc + K_a * BCR_conc)`. This is
+   exact in the limit `K_a * Ag_f << 1` and progressively over-estimates
+   `Ag_f` (and therefore `ro`, `F_i`, `G_i`, `H_i`) as the antibody /
+   BCR loading approaches saturation. The approximation is documented
+   here so users interpreting late-time antibody dynamics understand the
+   direction of the systematic bias.
+3. **LNP mass-balance interpretation.** The Selvaggio 2021 supplement
+   writes the LNP loss equation as
+   `dLNP/dt = -k_up^X * (sum of all IS states of cell type X) * ... - k_deg^LNP * LNP`
+   (summing across every subtype of every cell), which conflicts with
+   the individual-cell equations that source LNP uptake only from the
+   naive form (`k_up^X * LNP * X_IS_naive`). The packaged model takes
+   the mass-balance-consistent interpretation: naive cells are the only
+   sink for LNP, matching the `mDC_IS -> mDC_IS^LNP` transition rate in
+   the individual-cell equations. This resolves an inconsistency in the
+   published supplement.
+4. **Lymph-node volume default.** The receptor-competition closure
+   converts per-cell BCR / Ab counts to lymph-node concentrations using
+   a lymph-node volume `v_ln`. Neither Selvaggio 2021 nor Chen 2014
+   tabulates this constant; the packaged model uses a canonical 0.5 mL
+   reference volume as a fixed literature default. Users who need to
+   match a specific anatomy can override `v_ln` at simulation time.
+5. **Immature-DC death rate not carried.** Table S1 lists
+   `k_dt^ImDC = 0.0924 /day` and `k_dt^IpDC = 0.0924 /day` for
+   immature dendritic cells; the paper's ODEs use only the mature-cell
+   death rate `k_dt^mDC = k_dt^pDC = 0.02310 /day` throughout. The
+   packaged model correspondingly carries only the mature rates,
+   matching the ODEs.
+6. **Nominal residual placeholder.** The nlmixr2 UI observation
+   declaration requires an estimable residual-error parameter; the
+   packaged model uses `addSd_Ab = 0.01` (pmole) as a placeholder. The
+   paper reports no residual-error model (the QSP is deterministic).
+   For typical-value simulations, suppress the residual via
+   `mod |> rxode2::zeroRe()`.
+7. **`amt`/`mta` rename.** The paper's active-memory-T state (`AMT`)
+   is called `mta` in the packaged model because `amt` is a reserved
+   rxode2 dose-amount keyword. All other state names transliterate
+   directly.
+
+# Errata
+
+* Selvaggio 2021 supplement Table S1 lists `k_IS2BL^pDC = 02605 /day`;
+  the missing decimal point reads as `0.02605 /day` in context (matching
+  the per-day order of the neighbouring `k_IS2BL^mDC = 0.6603 /day` and
+  `k_IS2BL^MC = 2.5318e-5 /day`) and is entered as such.
+* The B-cell IIV distribution "NB_0 is assumed to be normally distributed
+  within the 17 subgroups" is stated in Table S1's leading note but only
+  the group mean (5200 cells) is published; the per-subgroup variance is
+  not reported. This does not affect the mean-field extraction (see
+  Assumption 1).

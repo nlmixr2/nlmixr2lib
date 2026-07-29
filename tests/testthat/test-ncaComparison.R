@@ -5,6 +5,18 @@ test_that("ncaParamLabel maps known codes to friendly labels", {
   )
 })
 
+test_that("ncaParamLabel maps the IV-infusion MRT and Vss codes", {
+  # PKNCA's *.iv.* parameters subtract half the infusion duration from MRT,
+  # so they are the correct codes for IV-infusion models (e.g.
+  # Koumaki_2023_mecillinam) and must not fall through to the unknown-code
+  # warning path.
+  expect_equal(
+    ncaParamLabel(c("mrt.obs", "mrt.iv.obs", "vss.iv.obs", "vss.iv.pred")),
+    c("MRT", "MRT (IV)", "Vss (IV)", "Vss (IV)")
+  )
+  expect_no_warning(ncaParamLabel("vss.iv.obs"))
+})
+
 test_that("ncaParamLabel appends units when supplied", {
   expect_equal(
     ncaParamLabel(c("cmax", "auclast"),

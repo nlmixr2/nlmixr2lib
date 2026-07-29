@@ -438,14 +438,20 @@
 #' @noRd
 .parseCovariateColumns <- function(path) {
   lines <- readLines(path, warn = FALSE)
-  entries <- list()
+  # Accumulate into an explicit environment rather than using `<<-` from the
+  # inner flush() closure: environments have reference semantics, so a plain
+  # `<-` into `acc` mutates the shared accumulator. `<<-` walks the lexical
+  # scope chain at run time, which is hard to review and easy to break by
+  # moving code between scopes (lintr assignment_linter flags it).
+  acc <- new.env(parent = emptyenv())
+  acc$entries <- list()
   current <- NULL
   state <- "idle"
 
   flush <- function() {
     if (is.null(current)) return(invisible())
     for (nm in current$names) {
-      entries[[nm]] <<- list(
+      acc$entries[[nm]] <- list(
         units = current$units %||% "",
         type = current$type %||% "",
         scope = current$scope %||% NA_character_,
@@ -563,7 +569,7 @@
     }
   }
   flush()
-  entries
+  acc$entries
 }
 
 .loadCanonicalCovariates <- function(force = FALSE) {
@@ -607,7 +613,10 @@
 #' @noRd
 .parseTypedNamesMd <- function(path) {
   lines <- readLines(path, warn = FALSE)
-  entries <- list()
+  # Explicit environment accumulator; see .parseCovariateColumns for why this
+  # avoids a superassign from the inner flush() closure.
+  acc <- new.env(parent = emptyenv())
+  acc$entries <- list()
   current <- NULL
   state <- "idle"
 
@@ -630,7 +639,7 @@
     if (is.null(current)) return(invisible())
     if (is.null(current$type) || !nzchar(current$type)) return(invisible())
     for (nm in current$names) {
-      entries[[length(entries) + 1]] <<- list(
+      acc$entries[[length(acc$entries) + 1]] <- list(
         name = nm,
         type = current$type,
         aliases = current$aliases %||% character(),
@@ -713,7 +722,7 @@
     }
   }
   flush()
-  entries
+  acc$entries
 }
 
 .namesByType <- function(entries, type) {
