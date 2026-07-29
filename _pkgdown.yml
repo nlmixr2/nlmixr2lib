@@ -268,6 +268,8 @@ navbar:
         href: articles/Soy_2015_benznidazole.html
       - text: "Benzylpenicillin (Nielsen 2011)"
         href: articles/Nielsen_2011_antibacterial_efficacy.html
+      - text: "Benzylpenicillin (Shah 2023)"
+        href: articles/Shah_2023_benzylpenicillin.html
       - text: "Betamethasone (Schoenmakers 2025)"
         href: articles/Schoenmakers_2025_betamethasone.html
       - text: "Bevacizumab (Han 2015)"
@@ -3421,6 +3423,7 @@ articles:
   - articles/Selvaggio_2021_mRNA_vaccine_QSP
   - articles/Seng_2015_isoniazid
   - articles/Shah_2012_mAb_PBPK
+  - articles/Shah_2023_benzylpenicillin
   - articles/Sharma_2016_hydroxyprogesteroneCaproate
   - articles/Sharma_2018_naltrexone_bupropion
   - articles/Sharma_2018_SHetA2
