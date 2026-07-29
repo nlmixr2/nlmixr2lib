@@ -2128,8 +2128,12 @@ navbar:
         href: articles/FehlingKaschek_2019_trastuzumab_skbr3.html
       - text: "TrastuzumabDeruxtecan (Yin 2021)"
         href: articles/Yin_2021_trastuzumabDeruxtecan.html
+      - text: "TrastuzumabDeruxtecan mbma (Asiimwe 2025)"
+        href: articles/Asiimwe_2025_trastuzumab_ADCs_mbma.html
       - text: "Trastuzumabemtansine (Lu 2014)"
         href: articles/Lu_2014_trastuzumabemtansine.html
+      - text: "TrastuzumabEmtansine mbma (Asiimwe 2025)"
+        href: articles/Asiimwe_2025_trastuzumab_ADCs_mbma.html
       - text: "TrastuzumabEmtansine mechanistic (Bender 2014)"
         href: articles/Bender_2014_trastuzumabEmtansine_mechanistic.html
       - text: "TrastuzumabEmtansine reduced (Bender 2014)"
@@ -2459,7 +2463,7 @@ articles:
   - articles/Archary_2019_lamivudine
   - articles/Areberg_2006_escitalopram
   - articles/Aregbe_2012_alvespimycin
-  - articles/Aruldhas_2021_methadone
+  - articles/Asiimwe_2025_trastuzumab_ADCs_mbma
   - articles/Asimus_2007_artemisinin
   - articles/Attarwala_2023_mRNA3927
   - articles/Ayyar_2024_givosiran
