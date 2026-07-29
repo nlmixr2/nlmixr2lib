@@ -3256,6 +3256,18 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Example models:** `Girard_2012_pimasertib.R` (additive shift on the cumulative-logit AE-score model: `theta_mhhy * DIS_HYPERT`; +0.539 logit units in patients with prior hypertension).
 - **Notes:** Companion to `DIS_DIAB` (diabetes-mellitus comorbidity); both are baseline binary medical-history flags collected from clinical-history forms. Captures any prior or current hypertension diagnosis, regardless of treatment status; if a future model needs to separate treated vs untreated hypertension, register a refinement (`DIS_HYPERT_TREATED`). Renamed from `HYPERT` to `DIS_HYPERT` on 2026-06-19 per the canonical-register standardization audit (operator decision to apply the `DIS_<concept>` prefix uniformly to disease-state indicators).
 
+### DIS_HYPERLIP (**canonical for hyperlipidemia / hypercholesterolemia diagnosis indicator**)
+- **Description:** 1 = participant carries a diagnosis of hyperlipidemia (equivalently hypercholesterolemia / dyslipidemia) at study entry; 0 = no hyperlipidemia diagnosis (typically a healthy-volunteer or normolipidemic comparator arm pooled into the same analysis). Time-fixed per subject. Captures the generic acquired / polygenic lipid disorder that defines the target population of lipid-modifying therapies, as distinct from the monogenic familial forms carried by `DIS_HEFH` and `DIS_HOFH`.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no hyperlipidemia diagnosis).
+- **Source aliases:**
+  - `Hyperlipidemia` -- Jadhav 2023 Table 2 covariate row name.
+  - `HLD`, `HCHOL`, `DYSLIP` -- common clinical-dataset abbreviations for the same diagnosis flag.
+- **Example models:** `Jadhav_2023_bempedoicAcid.R` and `Jadhav_2023_bempedoicAcid_ldlc.R` (proportional shift `CL/F * (1 + (-0.0945) * DIS_HYPERLIP)`, i.e. 9.5% lower apparent bempedoic acid clearance in participants with hyperlipidemia relative to the pooled healthy / non-hyperlipidemic reference; Jadhav 2023 Table 2).
+- **Notes:** Not derivable from `DIS_HEALTHY` by complement, and not mutually exclusive with `DIS_DIAB`: the Jadhav 2023 popPK dataset contained 49 participants with diabetes alone plus 310 with hyperlipidemia and diabetes (Table 1 footnote c), so all three flags can be jointly set. Distinct from `DIS_HEFH` / `DIS_HOFH`, which identify the heterozygous and homozygous familial-hypercholesterolemia subsets; a HeFH patient normally also carries `DIS_HYPERLIP = 1`, so record the per-model convention in `covariateData[[DIS_HYPERLIP]]$notes` whenever both appear. Also distinct from the continuous lipid-panel canonicals (`LDLC`, `HDLC`), which carry the measured concentration rather than the diagnosis. Ratified canonically on 2026-07-27 alongside the Jadhav 2023 bempedoic acid extraction (sidecar request 001, operator answer A).
+
 ## Surgical history / disease state
 
 ### POD (**canonical for post-operative day**)
@@ -5348,7 +5360,7 @@ Baseline seizure-severity indicators derived from a pre-trial seizure count (typ
 - **Reference category:** 0 (not on ezetimibe).
 - **Source aliases:**
   - Derived from an ezetimibe-identifier column in the source.
-- **Example models:** `Kuchimanchi_2018_evolocumab.R` (multiplicative effect 1.20 on Vmax: `Vmax * 1.20^CONMED_EZE`; labeled "Statin + ezetimibe exponent" in Kuchimanchi 2018 Table 3 because ~99% of ezetimibe users in the dataset were also on a conmed_statin, so the effect effectively captures combination therapy), `Kuchimanchi_2018_evolocumab_ldlc.R` (same PK-layer effect plus a multiplicative exponent 0.768 on baseline LDL-C in the exposure-response layer, Table 4), `Kakara_2014_atorvastatin.R`, `Kakara_2014_pitavastatin.R`, `Kakara_2014_rosuvastatin.R` (additive +0.109 contribution to the indirect-response Imax inhibition fraction INH on the LDL-C synthesis rate Kin: `INH = Imax * DOSE / (ID50 + DOSE) + 0.109 * CONMED_EZE`; Kakara 2014 Table 2 INH_EZT).
+- **Example models:** `Kuchimanchi_2018_evolocumab.R` (multiplicative effect 1.20 on Vmax: `Vmax * 1.20^CONMED_EZE`; labeled "Statin + ezetimibe exponent" in Kuchimanchi 2018 Table 3 because ~99% of ezetimibe users in the dataset were also on a conmed_statin, so the effect effectively captures combination therapy), `Kuchimanchi_2018_evolocumab_ldlc.R` (same PK-layer effect plus a multiplicative exponent 0.768 on baseline LDL-C in the exposure-response layer, Table 4), `Kakara_2014_atorvastatin.R`, `Kakara_2014_pitavastatin.R`, `Kakara_2014_rosuvastatin.R` (additive +0.109 contribution to the indirect-response Imax inhibition fraction INH on the LDL-C synthesis rate Kin: `INH = Imax * DOSE / (ID50 + DOSE) + 0.109 * CONMED_EZE`; Kakara 2014 Table 2 INH_EZT), `Jadhav_2023_bempedoicAcid.R` and `Jadhav_2023_bempedoicAcid_ldlc.R` (cleanly separated concomitant-ezetimibe indicator: proportional shift `CL/F * (1 + (-0.0934) * CONMED_EZE)` in the PK layer, Jadhav 2023 Table 2, and `Imax * (1 + 0.190 * CONMED_EZE)` in the indirect-response LDL-C layer, Table 3; Jadhav 2023 also carries a separate prior-therapy column [[PRIOR_EZE]], so this indicator is concomitant use only and is not a statin-combination proxy).
 - **Notes:** Scope: specific because Kuchimanchi 2018 interprets the ezetimibe indicator as a combination-therapy marker rather than a pure ezetimibe effect. Future popPK/PD models with cleaner ezetimibe separation should add themselves here or register a more specific canonical.
 
 ### CONMED_FUSIDIC (**canonical for concomitant fusidic acid coadministration indicator**)
@@ -5767,6 +5779,42 @@ Baseline seizure-severity indicators derived from a pre-trial seizure count (typ
 - **Example models:** `Kuchimanchi_2018_evolocumab.R` (multiplicative effect 1.13 on Vmax: `Vmax * 1.13^CONMED_STATIN_MONO`), `Budha_2015_rg7652.R` (time-varying within-subject multiplicative log-effect on the indirect-response Ksyn anchor for LDL-C: `Ksyn = Kdeg * LDLC * exp(-0.648 * CONMED_STATIN_MONO(t))`; same parameter dynamically reproduces both the ~45% lower pre-dose baseline LDL-C in atorvastatin-pretreated cohorts and the LDL rebound after statin cessation, Budha 2015 Table II 'Statin on screening LDLc' = -0.648), `Kuchimanchi_2018_evolocumab_ldlc.R` (same PK-layer effect plus an exponent 0.797 on baseline LDL-C and 0.937 on Emax in the exposure-response layer, Table 4).
 - **Notes:** Scope: specific because both registered example models narrowly define the statin covariate as monotherapy only -- Kuchimanchi 2018 ("patients on a conmed_statin only and no other comedication"); Budha 2015 (atorvastatin 40 mg daily as the sole concomitant lipid-lowering therapy in the Phase 1 statin cohorts). Mutually compatible with `CONMED_EZE`: a subject on conmed_statin+ezetimibe has `CONMED_STATIN_MONO = 0` and `CONMED_EZE = 1`; a subject on conmed_statin alone has `CONMED_STATIN_MONO = 1` and `CONMED_EZE = 0`; a subject on no lipid-lowering therapy has both 0. Per-model temporal grain (time-fixed per subject vs time-varying within subject) is documented in `covariateData[[CONMED_STATIN_MONO]]$notes` per model. Future popPK/PD models that adopt a broader "any conmed_statin" definition should register a separate `CONMED_STATIN` or `CONMED_STATIN` canonical rather than reusing this name.
 
+### CONMED_STATIN_LI, CONMED_STATIN_MI, CONMED_STATIN_HI (**canonical for concomitant statin-intensity stratum indicators**)
+- **Description:** Three mutually exclusive binary indicators identifying the therapeutic-intensity stratum of a patient's concomitant statin regimen, following the low- / moderate- / high-intensity classification of the 2018 ACC/AHA cholesterol guideline (Grundy et al., J Am Coll Cardiol 2019;73:e285-e350). `CONMED_STATIN_LI` = 1 for a low-intensity regimen (roughly < 30% expected LDL-C lowering; e.g. simvastatin 10 mg, pravastatin 10-20 mg, lovastatin 20 mg, fluvastatin 20-40 mg, pitavastatin 1 mg). `CONMED_STATIN_MI` = 1 for a moderate-intensity regimen (~30-49% expected lowering; e.g. atorvastatin 10-20 mg, rosuvastatin 5-10 mg, simvastatin 20-40 mg, pravastatin 40-80 mg, lovastatin 40 mg, fluvastatin 40 mg BID or XL 80 mg, pitavastatin 2-4 mg). `CONMED_STATIN_HI` = 1 for a high-intensity regimen (>= 50% expected lowering; e.g. atorvastatin 40-80 mg, rosuvastatin 20-40 mg). A patient not on any concomitant statin has all three set to 0.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 for all three simultaneously = no concomitant statin therapy. At most one of the three may be 1 for a given patient/record; a model that references more than one of them multiplies the corresponding effects, so a data set that sets two to 1 is malformed.
+- **Source aliases:**
+  - `Low-intensity statin`, `Moderate-intensity statin`, `High-intensity statin` -- Jadhav 2023 Table 3 covariate row names.
+  - `STATINT` / `STATIN_INTENSITY` (a single ordinal 0/1/2/3 column) -- decompose into the three binaries rather than carrying the ordinal, per the register's decomposed-indicator convention.
+- **Example models:** `Jadhav_2023_bempedoicAcid_ldlc.R` (proportional shifts on the indirect-response Imax of -0.238 / -0.302 / -0.424 and on baseline LDL-C of -0.159 / -0.268 / -0.293 for low / moderate / high intensity; Jadhav 2023 Table 3).
+- **Notes:** Distinct from `CONMED_STATIN` (any concomitant statin, undifferentiated by intensity) and from `CONMED_STATIN_MONO` (statin monotherapy, i.e. a statin with no other lipid-lowering comedication) -- the intensity strata say nothing about whether other lipid-modifying therapies are co-administered, and the monotherapy flag says nothing about dose intensity, so the three families are orthogonal and may coexist in one model. Also distinct from the `CONMED_<INN>` binaries (`CONMED_ATORVASTATIN`, `CONMED_SIMVASTATIN`, ...), which identify the specific molecule irrespective of dose, and from the `CONMED_<drug>_DOSE` continuous family. The intensity classification is dose- and molecule-dependent, so a source paper's mapping from regimen to stratum must be recorded per model in `covariateData[[CONMED_STATIN_MI]]$notes` when it departs from the ACC/AHA table. Ratified canonically on 2026-07-27 alongside the Jadhav 2023 bempedoic acid extraction (sidecar request 001, operator answer A).
+
+### CONMED_ATORVASTATIN (**canonical for concomitant atorvastatin coadministration indicator**)
+- **Description:** 1 = patient is coadministered atorvastatin at the observation / dose record, 0 = no concomitant atorvastatin. Molecule-specific binary companion to the class-level `CONMED_STATIN` flag and the intensity strata.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no concomitant atorvastatin).
+- **Source aliases:**
+  - `Atorvastatin` -- Jadhav 2023 Table 2 covariate row name.
+  - `ATORVA`, `ATOR` -- common dataset abbreviations. The three-letter form `ATV` is NOT an acceptable alias: it is reserved for the atazanavir indicator `CONMED_ATAZANAVIR` (see the `CONMED_<drug>_DOSE` notes on that collision), which is why this entry spells out the full INN.
+- **Example models:** `Jadhav_2023_bempedoicAcid.R` and `Jadhav_2023_bempedoicAcid_ldlc.R` (proportional shift on relative oral bioavailability `F1 * (1 + 0.142 * CONMED_ATORVASTATIN)`, i.e. 14.2% higher relative bioavailability of bempedoic acid with concomitant atorvastatin relative to the F1 = 1 no-atorvastatin anchor; Jadhav 2023 Table 2 and footnote b).
+- **Notes:** Distinct from `CONMED_ATORVASTATIN_DOSE` (continuous mg/day), which should be used instead when a model scales an effect with the atorvastatin dose rather than switching on its presence. Ratified canonically on 2026-07-27 alongside the Jadhav 2023 bempedoic acid extraction, under the auto-approved `CONMED_<INN>` family.
+
+### CONMED_SIMVASTATIN (**canonical for concomitant simvastatin coadministration indicator**)
+- **Description:** 1 = patient is coadministered simvastatin at the observation / dose record, 0 = no concomitant simvastatin. Molecule-specific binary companion to the class-level `CONMED_STATIN` flag and the intensity strata.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no concomitant simvastatin).
+- **Source aliases:**
+  - `Simvastatin` -- Jadhav 2023 Table 2 covariate row name.
+  - `SIMVA`, `SMV` -- common dataset abbreviations.
+- **Example models:** `Jadhav_2023_bempedoicAcid.R` and `Jadhav_2023_bempedoicAcid_ldlc.R` (proportional shift on apparent central volume `Vc/F * (1 + (-0.154) * CONMED_SIMVASTATIN)`, i.e. 15.4% lower Vc/F with concomitant simvastatin; Jadhav 2023 Table 2).
+- **Notes:** Distinct from `CONMED_SMV_DOSE` (continuous mg/day). Ratified canonically on 2026-07-27 alongside the Jadhav 2023 bempedoic acid extraction, under the auto-approved `CONMED_<INN>` family.
+
 ### CONMED_STEROID (**canonical for systemic corticosteroid administration indicator**)
 - **Description:** 1 = patient is on systemic corticosteroid therapy at the observation (or, depending on the paper's encoding, during the time interval the observation summarises), 0 = no systemic corticosteroid administration. Supports two temporal grains depending on the source paper: (i) time-fixed per subject, capturing baseline / chronic concurrent corticosteroid use in diseases where background steroid use is standard of care (SLE, severe asthma); (ii) time-varying per record, capturing acute corticosteroid pulses for relapse / flare treatment in diseases where steroids are administered as a per-event course (multiple sclerosis acute relapse, autoimmune flares).
 - **Units:** (binary)
@@ -5954,6 +6002,30 @@ Baseline seizure-severity indicators derived from a pre-trial seizure count (typ
   - `IPI` (Ahamadi 2017; categorical with levels `IPI-naive`, `IPI-treated`, `missing`) -- decompose into `PRIOR_IPI = as.integer(IPI == "IPI-treated")` and treat the missing category like naive unless the source paper retains a separate "missing" coefficient.
 - **Example models:** `Ahamadi_2017_pembrolizumab.R` (proportional changes on CL of +14.0% and on Vc of +7.36% for IPI-treated relative to IPI-naive; "missing" 26.4% of cohort is pooled with naive in the canonical encoding because Table 3 reports only the naive-vs-treated coefficient).
 - **Notes:** Distinct from `PRIOR_ANTICANCER` (any modality), `PRIOR_BIO` (any biologic), `PRIOR_TNF` (anti-TNF biologic). Use `PRIOR_IPI` when the source paper specifically tested prior ipilimumab exposure as a covariate; this is a common covariate in advanced-melanoma popPK analyses where ipilimumab was the standard-of-care immune-checkpoint inhibitor preceding PD-1 / PD-L1 entrants. Ratified canonically on 2026-05-17 alongside the Ahamadi 2017 pembrolizumab extraction.
+
+### PRIOR_STATIN (**canonical for prior (pre-study) statin therapy indicator**)
+- **Description:** 1 = patient was on established statin (HMG-CoA reductase inhibitor) therapy before entering the study, 0 = statin-naive at study entry. Time-fixed per subject. Captures the pharmacological history that shapes the observed baseline lipid panel and the residual room for further LDL-C lowering, independent of whether a statin continues to be taken during the study.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (statin-naive at study entry).
+- **Source aliases:**
+  - `Statin prior therapy` -- Jadhav 2023 Table 3 covariate row name.
+  - `PRIORSTAT`, `STATINPR` -- common dataset abbreviations.
+- **Example models:** `Jadhav_2023_bempedoicAcid_ldlc.R` (proportional shifts on the indirect-response Imax of -0.373 and on baseline LDL-C of -0.296; Jadhav 2023 Table 3).
+- **Notes:** Deliberately distinct from the concomitant-use family (`CONMED_STATIN`, `CONMED_STATIN_MONO`, `CONMED_STATIN_LI` / `_MI` / `_HI`): Jadhav 2023 screened "prior established LMTs" and "concomitant medication (low-, moderate-, or high-intensity statin or ezetimibe)" as separate covariate sets and retained both in the final model, so the two must be carried as separate columns. Statin-intolerance cohorts commonly have `PRIOR_STATIN = 1` with all concomitant-statin indicators 0. Sibling of `PRIOR_EZE`. Ratified canonically on 2026-07-27 alongside the Jadhav 2023 bempedoic acid extraction (sidecar request 001, operator answer A).
+
+### PRIOR_EZE (**canonical for prior (pre-study) ezetimibe therapy indicator**)
+- **Description:** 1 = patient was on established ezetimibe therapy before entering the study, 0 = ezetimibe-naive at study entry. Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (ezetimibe-naive at study entry).
+- **Source aliases:**
+  - `Ezetimibe prior therapy` -- Jadhav 2023 Table 3 covariate row name.
+  - `PRIOREZE` -- common dataset abbreviation.
+- **Example models:** `Jadhav_2023_bempedoicAcid_ldlc.R` (proportional shift on baseline LDL-C of -0.0596; Jadhav 2023 Table 3).
+- **Notes:** Distinct from `CONMED_EZE` (concomitant ezetimibe during the study). Jadhav 2023 Online Resource 5 reports a "Prior Treatment (Ezetimibe : No Ezetimibe)" contrast alongside a separate "Concomitant Treatment (Ezetimibe : No Ezetimibe)" contrast, confirming that the analysis dataset carried both columns and that the two effects act on different model parameters (prior use on baseline LDL-C; concomitant use on Imax and on bempedoic acid CL/F). Sibling of `PRIOR_STATIN`. Ratified canonically on 2026-07-27 alongside the Jadhav 2023 bempedoic acid extraction (sidecar request 001, operator answer A).
 
 ### CONMED_NNRTI_IND (**canonical for concomitant enzyme-inducing NNRTI indicator**)
 - **Description:** 1 = subject is coadministered an enzyme-inducing non-nucleoside reverse transcriptase inhibitor (efavirenz or nevirapine) at the observation, 0 = no concomitant enzyme-inducing NNRTI. Both efavirenz and nevirapine are CYP3A4 inducers; this pooled indicator collapses their effects on metabolite elimination of co-administered antiretrovirals into a single binary covariate.
@@ -7879,7 +7951,7 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Scope:** specific
 - **Reference category:** 0 (non-HeFH arm).
 - **Source aliases:** `HEFH` legacy form (used in Vargo 2014 statins / ezetimibe MBMA pre-rename); alias of the canonical `DIS_HEFH` form per the 2026-05-28 naming audit rename.
-- **Example models:** `Vargo_2014_statins_ezetimibe_mbma.R` (additive shift of +0.127 on the statin Emax in HeFH arms; smaller statin LDL-C lowering in HeFH patients than in the non-HeFH reference; biologically consistent with the LDLR-pathway disruption in HeFH), `Kuchimanchi_2018_evolocumab_ldlc.R` (multiplicative exponent 1.28 on baseline LDL-C in the evolocumab Emax-on-AUC exposure-response layer, Table 4; HeFH patients have higher baseline LDL-C than the non-HeFH reference).
+- **Example models:** `Vargo_2014_statins_ezetimibe_mbma.R` (additive shift of +0.127 on the statin Emax in HeFH arms; smaller statin LDL-C lowering in HeFH patients than in the non-HeFH reference; biologically consistent with the LDLR-pathway disruption in HeFH), `Kuchimanchi_2018_evolocumab_ldlc.R` (multiplicative exponent 1.28 on baseline LDL-C in the evolocumab Emax-on-AUC exposure-response layer, Table 4; HeFH patients have higher baseline LDL-C than the non-HeFH reference), `Jadhav_2023_bempedoicAcid_ldlc.R` (proportional shift of +0.0671 on the indirect-response baseline LDL-C, Jadhav 2023 Table 3; two of the four pivotal phase 3 studies enrolled patients with prior ASCVD and/or HeFH on maximally tolerated statin therapy).
 - **Notes:** Specific scope because the HeFH-cohort effect on statin response is paper-specific. Sibling of `DIS_HOFH` (homozygous form, Pu_2021_evinacumab) and the broader `DIS_<indication>` family. Ratified 2026-05-28 per the naming audit.
 
 ### CONMED_RIF_CC, CONMED_INH_CC, CONMED_EMB_CC, CONMED_STR_CC, CONMED_CAB_CC, CONMED_COL_CC, CONMED_MER_CC, CONMED_GEN_CC, CONMED_CIP_CC (**canonical for time-varying plasma / in-vitro concentration of a co-administered named drug**)

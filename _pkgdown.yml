@@ -252,8 +252,10 @@ navbar:
         href: articles/Struemper_2017_belimumab.html
       - text: "Belimumab (Zhou 2021)"
         href: articles/Zhou_2021_belimumab.html
-      - text: "Belzutifan (Marathe 2023)"
-        href: articles/Marathe_2023_belzutifan.html
+      - text: "BempedoicAcid (Jadhav 2023)"
+        href: articles/Jadhav_2023_bempedoicAcid.html
+      - text: "BempedoicAcid ldlc (Jadhav 2023)"
+        href: articles/Jadhav_2023_bempedoicAcid.html
       - text: "Benralizumab (Wang 2017)"
         href: articles/Wang_2017_benralizumab.html
       - text: "Benzathine benzylpenicillin g (Kado 2020)"
@@ -2948,6 +2950,7 @@ articles:
   - articles/Jackson_2022_ixekizumab
   - articles/JacoboCabral_2015_tacrolimus
   - articles/Jacobs_2016_colistin
+  - articles/Jadhav_2023_bempedoicAcid
   - articles/Jager_2011_gemtuzumab
   - articles/Jain_2011_sorafenib
   - articles/Janssen_2017_cabazitaxel_phenotyping
