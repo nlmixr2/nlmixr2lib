@@ -788,6 +788,8 @@ navbar:
         href: articles/Larsen_2018_haemophilia_animal_popPK.html
       - text: "Farletuzumab (Farrell 2012)"
         href: articles/Farrell_2012_farletuzumab.html
+      - text: "Fasiglifam (Naik 2013)"
+        href: articles/Naik_2013_fasiglifam.html
       - text: "Fazpilodemab (Yoshida 2024)"
         href: articles/Yoshida_2024_fazpilodemab.html
       - text: "Febuxostat (Hirai 2016)"
@@ -3148,6 +3150,7 @@ articles:
   - articles/NA_NA_tte_loglogistic
   - articles/NA_NA_tte_lognormal
   - articles/Nader_2017_adalimumab
+  - articles/Naik_2013_fasiglifam
   - articles/Naik_2013_peginesatide
   - articles/Naik_2016_vortioxetine
   - articles/Nanga_2019_tacrolimus_metaanalysis
