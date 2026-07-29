@@ -1164,6 +1164,8 @@ navbar:
         href: articles/Zhang_2012_lopinavir_ritonavir_pedi.html
       - text: "Lopinavir unbound (Fauchet 2015)"
         href: articles/Fauchet_2015_lopinavir.html
+      - text: "Lorazepam (Swart 2004)"
+        href: articles/Swart_2004_lorazepam_midazolam.html
       - text: "LorenzosOil (Ahmed 2016)"
         href: articles/Ahmed_2016_lorenzosOil.html
       - text: "Lorlatinib (Chen 2021)"
@@ -1322,6 +1324,8 @@ navbar:
         href: articles/Franken_2017_midazolam.html
       - text: "Midazolam (Janssen 2017)"
         href: articles/Janssen_2017_cabazitaxel_phenotyping.html
+      - text: "Midazolam (Swart 2004)"
+        href: articles/Swart_2004_lorazepam_midazolam.html
       - text: "Midazolam (vanRongen 2015)"
         href: articles/vanRongen_2015_midazolam.html
       - text: "Midazolam (vanRongen 2017)"
@@ -3399,6 +3403,7 @@ articles:
   - articles/Svensson_2017_bedaquiline
   - articles/Svensson_2018_bedaquiline
   - articles/Svensson_2018_rifampicin
+  - articles/Swart_2004_lorazepam_midazolam
   - articles/Syvanen_2011_verapamil_rat
   - articles/Syvanen_2012_quinidine_rat
   - articles/Tadayasu_2014_linagliptin
