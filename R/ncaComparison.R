@@ -62,6 +62,14 @@ ncaParamLabel <- function(code, units = NULL) {
     cl.pred        = "CL/F",
     vss.obs        = "Vss/F",
     vss.pred       = "Vss/F",
+    # IV-infusion variants: PKNCA's *.iv.* parameters subtract half the
+    # infusion duration from MRT, so Vss is not inflated by dur/2.
+    mrt.obs        = "MRT",
+    mrt.pred       = "MRT",
+    mrt.iv.obs     = "MRT (IV)",
+    mrt.iv.pred    = "MRT (IV)",
+    vss.iv.obs     = "Vss (IV)",
+    vss.iv.pred    = "Vss (IV)",
     vz.obs         = "Vz/F",
     vz.pred        = "Vz/F",
     cav            = "Cavg",

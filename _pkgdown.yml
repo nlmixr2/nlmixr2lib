@@ -1292,10 +1292,8 @@ navbar:
         href: articles/Kuester_2008_matuzumab.html
       - text: "Mavrilimumab (Stein 2018)"
         href: articles/Stein_2018_mAb_nonlinear_PK.html
-      - text: "MBG453 (Xu 2023)"
-        href: articles/Xu_2023_MBG453.html
-      - text: "MEDI528 (Cao 2013)"
-        href: articles/Cao_2013_MEDI528.html
+      - text: "Mecillinam (Koumaki 2023)"
+        href: articles/Koumaki_2023_mecillinam.html
       - text: "Medi7836 (Hood 2021)"
         href: articles/Hood_2021_medi7836.html
       - text: "Mefloquine (Hoglund 2018)"
@@ -3086,6 +3084,7 @@ articles:
   - articles/Koopman_2023_factorix
   - articles/Kotani_2022_astegolimab
   - articles/Koue_2007_aripiprazole
+  - articles/Koumaki_2023_mecillinam
   - articles/Kovalenko_2016_dupilumab
   - articles/Kovalenko_2016_dupilumab_ddmore
   - articles/Kovalenko_2020_dupilumab
