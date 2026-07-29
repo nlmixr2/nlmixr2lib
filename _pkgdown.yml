@@ -58,6 +58,8 @@ navbar:
         href: articles/Zeng_2009_acyclovir.html
       - text: "Adalimumab (Drweesh 2026)"
         href: articles/Drweesh_2026_adalimumab.html
+      - text: "Adalimumab (Marcantonio 2022)"
+        href: articles/Marcantonio_2022_efa.html
       - text: "Adalimumab (Marquez-Megias 2023)"
         href: articles/Marquez-Megias_2023_adalimumab.html
       - text: "Adalimumab (Nader 2017)"
@@ -98,6 +100,8 @@ navbar:
         href: articles/Stricker_2015_aminocaproic_acid.html
       - text: "AminocaproicAcid (Stricker 2013)"
         href: articles/Stricker_2013_aminocaproicAcid.html
+      - text: "Amivantamab (Marcantonio 2022)"
+        href: articles/Marcantonio_2022_efa.html
       - text: "Amlitelimab (Tiraboschi 2025)"
         href: articles/Tiraboschi_2025_amlitelimab.html
       - text: "Amodiaquine (Ali 2018)"
@@ -240,6 +244,8 @@ navbar:
         href: articles/Collins_2023_belantamab_mprotein.html
       - text: "Belatacept (Shen 2013)"
         href: articles/Shen_2013_belatacept.html
+      - text: "Belimumab (Marcantonio 2022)"
+        href: articles/Marcantonio_2022_efa.html
       - text: "Belimumab (Struemper 2017)"
         href: articles/Struemper_2017_belimumab.html
       - text: "Belimumab (Zhou 2021)"
@@ -1030,6 +1036,8 @@ navbar:
         href: articles/Frymoyer_2017_infliximab.html
       - text: "Infliximab (Hanzel 2021)"
         href: articles/Hanzel_2021_infliximab.html
+      - text: "Infliximab (Marcantonio 2022)"
+        href: articles/Marcantonio_2022_efa.html
       - text: "Inotuzumab (Wu 2024)"
         href: articles/Wu_2024_inotuzumab.html
       - text: "Interferon alfa 2b (Chatelut 1999)"
@@ -1486,6 +1494,8 @@ navbar:
         href: articles/Hayashi_2007_omalizumab.html
       - text: "Omalizumab (Lowe 2009)"
         href: articles/Lowe_2009_omalizumab.html
+      - text: "Omalizumab (Marcantonio 2022)"
+        href: articles/Marcantonio_2022_efa.html
       - text: "Omalizumab pediatric (Zhu 2023)"
         href: articles/Zhu_2023_omalizumab_pediatric.html
       - text: "Ombitasvir (Mensing 2017)"
@@ -1530,6 +1540,8 @@ navbar:
         href: articles/Robbie_2012_palivizumab.html
       - text: "PAmAb (Cao 2013)"
         href: articles/Cao_2013_PAmAb.html
+      - text: "Panitumumab (Marcantonio 2022)"
+        href: articles/Marcantonio_2022_efa.html
       - text: "Pantoprazole (Pettersen 2009)"
         href: articles/Pettersen_2009_pantoprazole.html
       - text: "Paracetamol (Anderson 1998)"
@@ -1812,6 +1824,8 @@ navbar:
         href: articles/Zhang_2016_rilotumumab.html
       - text: "Rilpivirine (Aouri 2017)"
         href: articles/Aouri_2017_rilpivirine.html
+      - text: "Risankizumab (Marcantonio 2022)"
+        href: articles/Marcantonio_2022_efa.html
       - text: "Risankizumab (Suleiman 2018)"
         href: articles/Suleiman_2018_risankizumab.html
       - text: "Risankizumab (Suleiman 2019)"
@@ -2158,6 +2172,8 @@ navbar:
         href: articles/Bruno_2005_trastuzumab.html
       - text: "Trastuzumab (LeTilly 2021)"
         href: articles/LeTilly_2021_trastuzumab.html
+      - text: "Trastuzumab (Marcantonio 2022)"
+        href: articles/Marcantonio_2022_efa.html
       - text: "Trastuzumab (Quartino 2016)"
         href: articles/Quartino_2016_trastuzumab.html
       - text: "Trastuzumab (Quartino 2019)"
@@ -2204,6 +2220,8 @@ navbar:
         href: articles/vandenBerg_2021_uprifosbuvir.html
       - text: "Ustekinumab (Aguiar 2021)"
         href: articles/Aguiar_2021_ustekinumab.html
+      - text: "Ustekinumab (Marcantonio 2022)"
+        href: articles/Marcantonio_2022_efa.html
       - text: "Valganciclovir (Vezina 2010)"
         href: articles/Vezina_2010_valganciclovir.html
       - text: "Valganciclovir (Vezina 2014)"
@@ -2597,11 +2615,6 @@ articles:
   - articles/Caldes_2009_ganciclovir
   - articles/Campagne_2019_cyclophosphamide_mouse
   - articles/Candelaria_2018_rituximab
-  - articles/Canini_2015_danoprevir
-  - articles/Cao_2013_GNbAC1
-  - articles/Cao_2013_MEDI528
-  - articles/Cao_2013_PAmAb
-  - articles/Cao_2013_PRO95780
   - articles/Cao_2013_adecatumumab
   - articles/Cao_2013_gevokizumab
   - articles/Cao_2013_GNbAC1
@@ -2688,7 +2701,6 @@ articles:
   - articles/DeCock_2012_propyleneGlycol
   - articles/deHoogd_2017_morphine
   - articles/deJonge_2005_paclitaxel
-  - articles/DeJongh_2014_antithrombin
   - articles/deKock_2017_sulfadoxinePyrimethamine
   - articles/Delattre_2010_amikacin
   - articles/DelFrari_2018_propranolol
@@ -3109,6 +3121,7 @@ articles:
   - articles/Macpherson_2015_rosuvastatin
   - articles/Majekodunmi_2017_HIV_HCV_CD4_recovery
   - articles/MangasSanjuan_2016_axomadol
+  - articles/Marcantonio_2022_efa
   - articles/Marier_2002_tobramycin_rat_conventional
   - articles/Marier_2002_tobramycin_rat_liposomal
   - articles/MarquesMinana_2010_vancomycin
