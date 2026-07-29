@@ -664,6 +664,10 @@ navbar:
         href: articles/Baron_2016_empagliflozin.html
       - text: "Empagliflozin (Johnston 2019)"
         href: articles/Johnston_2019_empagliflozin.html
+      - text: "Empagliflozin MEASE1 (Johnston 2021)"
+        href: articles/Johnston_2021_empagliflozin.html
+      - text: "Empagliflozin popPK (Johnston 2021)"
+        href: articles/Johnston_2021_empagliflozin.html
       - text: "Emtricitabine (Valade 2014)"
         href: articles/Valade_2014_emtricitabine.html
       - text: "Emtricitabine (Valade 2015)"
@@ -2928,6 +2932,7 @@ articles:
   - articles/Joerger_2006_methotrexate
   - articles/Johnson_2011_olanzapine_rat
   - articles/Johnston_2019_empagliflozin
+  - articles/Johnston_2021_empagliflozin
   - articles/Jonckheere_2019_cefepime
   - articles/Jones_2011_PF04878691_HCV
   - articles/Jonsson_2005_disufenton
