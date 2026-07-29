@@ -396,15 +396,34 @@ ggplot(sim_scan, aes(time, pmax(CAR_perUL, 1e-4),
   vignette's outputs are typical-value (deterministic) predictions, not
   VPCs.
 
-- **Non-canonical covariates.** `FCD8TDP` (drug-product CD8 fraction),
+- **Newly registered covariates.** `FCD8TDP` (drug-product CD8 fraction),
   `TUM_CELLS0` (initial tumor cells), `NDIV` (T-cell expansion factor),
-  and `FMEM` (fraction of effector T-cells that become memory) are
-  paper-specific covariates without existing canonical entries in
-  `inst/references/covariate-columns.md`. Each has a `covariateData`
-  entry with an explicit `notes` field documenting the source paper
-  provenance. The `TUM_` covariate family in the register currently
-  covers volume-based tumor measures (`TUM_VOL`, `TUM_SLD`) rather than
-  cell-count-based measures.
+  and `FMEM` (fraction of effector T-cells that become memory) had no
+  canonical entries when this model was first drafted. All four were
+  ratified by the operator and added to
+  `inst/references/covariate-columns.md` as `scope: specific` canonicals
+  in the Oncology section, so `checkModelConventions()` now reports zero
+  issues for this model. `TUM_CELLS0` is deliberately kept distinct from
+  the existing `TUMSZ` / `TUM_SLD` / `TUM_VOL` family, which carries
+  length- and volume-based tumor measures, because this column's currency
+  is an absolute malignant-cell count with no source-defined conversion
+  to a length or volume.
+
+- **Three of the four new covariates are fit outputs, not measurements.**
+  `TUM_CELLS0`, `NDIV`, and `FMEM` were obtained by per-patient
+  trust-region optimisation against each subject's own CAR T-cell
+  cellular-kinetic trajectory, so they are model inputs rather than
+  independently observable patient characteristics. Several values sit
+  exactly on the optimiser's bounds -- `TUM_CELLS0` at 1e5 (F0109, F0110,
+  F0111, F0123) and 1e7 (F0104, F0106, F0107, F0118, F0119), and `FMEM`
+  at the 0.1 upper bound (F0110, F0111, F0123) with three further
+  patients numerically indistinguishable from zero (F0119, F0125,
+  F0126). Treat these as identifiability-limited: the paper reports no
+  uncertainty on them, and the model reproduces the published
+  trajectories rather than establishing that the values are uniquely
+  determined. `FCD8TDP` is the exception -- it is a measured property of
+  the manufactured drug product, taken from the per-patient CD4:CD8
+  ratios reported in Ying 2021.
 
 - **Non-canonical compartment names.** The six CAR T-cell state
   compartments (`t_cd8_inf`, `t_cd8_eff`, `t_cd8_mem`, `t_cd4_inf`,
