@@ -2449,6 +2449,157 @@ All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODA
 - **Example models:** `Renard_2011_indacaterol.R` (per-arm once-daily inhaled indacaterol dose driving the MBMA dose-response; dose range 18.75-600 ug/day across 11 trials, with the six discrete reported doses 18.75, 37.5, 75, 150, 300, and 600 ug).
 - **Notes:** Specific scope because the value is intrinsically tied to indacaterol and the Renard 2011 MBMA dose-response. Drug-specific dose canonical paralleling `DOSE_PHT_MGKGD` (phenytoin); future MBMA / dose-response models for other drugs should register a sibling `DOSE_<DRUG>` canonical rather than overloading this name. Ratified canonically on 2026-05-27 alongside the Renard 2011 indacaterol extraction.
 
+### CELLS_INTACT (**canonical for the intact-versus-lysed cell-preparation flag in an in-vitro target-binding assay**)
+- **Description:** Binary flag recording which cell preparation an in-vitro target-binding observation came from: `1` = intact (whole) bacterial cells, in which the outer membrane is present and drug must penetrate it to reach a periplasmic or intracellular target; `0` = lysed cells, i.e. isolated target-containing membrane fractions, in which the outer-membrane barrier has been removed and drug is applied in vast excess. The flag is a property of the sample preparation, not of the bioanalytical measurement method -- it is therefore distinct from the `ASSAY_<METHOD>` bioanalytical-method family.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** `0` = lysed cells (isolated membranes). Structural, not a coefficient multiplier: the flag gates both the outer-membrane influx term (`rate_influx = CELLS_INTACT * rate_influx_scaled * CONC_<DRUG>_MGL`) and the periplasmic initial condition (`periplasm(0) = (1 - CELLS_INTACT) * n_peri_lysed`).
+- **Source aliases:**
+  - `INTACT` -- used in the Lopez-Arguello 2023 S-ADAPT-TRAN estimation code (Fig. S8 line 66, `IF (INTACT.EQ.1) THEN`).
+- **Example models:** the fifteen `LopezArguello_2023_<drug>_qsp.R` files (whole-cell penicillin-binding-protein binding in *Pseudomonas aeruginosa* PAO1; intact-cell and lysed-cell data were fit simultaneously, and the difference between the two arms is what identifies the rate of net influx and PBP access).
+- **Notes:** General scope because the intact-versus-lysed contrast is a standard design in Gram-negative target-site-penetration work and is not specific to beta-lactams or to PBPs; a new model using the same design should reuse this name rather than register a sibling. Because the flag changes model structure rather than scaling a parameter, it has no associated `e_<cov>_<param>` covariate-effect coefficient. Ratified canonically on 2026-07-29 (operator sidecar `oare_PMC10269149` request-001 q1, answer A) alongside the Lopez-Arguello 2023 PBP-binding extraction.
+
+### CONC_DOR_MGL (**canonical for static in-vitro doripenem concentration driving a receptor-binding or antibacterial PD model**)
+- **Description:** Static (time-invariant) doripenem concentration applied to the medium of an in-vitro bacterial experiment, supplied as an exogenous covariate that drives target-receptor binding or bacterial kill. Distinct from a state-derived plasma concentration (`Cc`) and from the `CP_<DRUG>` plasma-PD-driver family: this is an applied experimental concentration in the in-vitro matrix.
+- **Units:** mg/L
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- scales the rate of net influx and PBP access in the whole-cell penicillin-binding-protein (PBP) binding QSP model (Eq 1: Rate_Influx/access = Rate_Influx/access,scaled x CONC_DOR_MGL). The lysed-cell arm of that assay sets `CELLS_INTACT = 0`, which zeroes the influx term, so the covariate has no effect there.
+- **Source aliases:** none standardized (Lopez-Arguello 2023 writes `C_drug` in Eq 1 and `CDRUG` in the Fig. S8 estimation code).
+- **Example models:** `LopezArguello_2023_doripenem_qsp.R` (static 2 mg/L, 2x the MIC of 1 mg/L; Lopez-Arguello 2023 Table 1).
+- **Notes:** Specific scope because the value is bound to doripenem and to the in-vitro assay design. Member of the in-vitro applied-drug-concentration `CONC_<DRUG>_MGL` family (siblings `CONC_RIF_MGL`, `CONC_INH_MGL`, `CONC_EMB_MGL`, `CONC_IPM_MGL`, `CONC_TOB_MGL`). Ratified canonically on 2026-07-29 alongside the Lopez-Arguello 2023 PBP-binding extraction.
+
+### CONC_MEM_MGL (**canonical for static in-vitro meropenem concentration driving a receptor-binding or antibacterial PD model**)
+- **Description:** Static (time-invariant) meropenem concentration applied to the medium of an in-vitro bacterial experiment, supplied as an exogenous covariate that drives target-receptor binding or bacterial kill. Distinct from a state-derived plasma concentration (`Cc`) and from the `CP_<DRUG>` plasma-PD-driver family: this is an applied experimental concentration in the in-vitro matrix.
+- **Units:** mg/L
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- scales the rate of net influx and PBP access in the whole-cell penicillin-binding-protein (PBP) binding QSP model (Eq 1: Rate_Influx/access = Rate_Influx/access,scaled x CONC_MEM_MGL). The lysed-cell arm of that assay sets `CELLS_INTACT = 0`, which zeroes the influx term, so the covariate has no effect there.
+- **Source aliases:** none standardized (Lopez-Arguello 2023 writes `C_drug` in Eq 1 and `CDRUG` in the Fig. S8 estimation code).
+- **Example models:** `LopezArguello_2023_meropenem_qsp.R` (static 1 mg/L, 2x the MIC of 0.5 mg/L; Lopez-Arguello 2023 Table 1).
+- **Notes:** Specific scope because the value is bound to meropenem and to the in-vitro assay design. Member of the in-vitro applied-drug-concentration `CONC_<DRUG>_MGL` family (siblings `CONC_RIF_MGL`, `CONC_INH_MGL`, `CONC_EMB_MGL`, `CONC_IPM_MGL`, `CONC_TOB_MGL`). Ratified canonically on 2026-07-29 alongside the Lopez-Arguello 2023 PBP-binding extraction.
+
+### CONC_ETP_MGL (**canonical for static in-vitro ertapenem concentration driving a receptor-binding or antibacterial PD model**)
+- **Description:** Static (time-invariant) ertapenem concentration applied to the medium of an in-vitro bacterial experiment, supplied as an exogenous covariate that drives target-receptor binding or bacterial kill. Distinct from a state-derived plasma concentration (`Cc`) and from the `CP_<DRUG>` plasma-PD-driver family: this is an applied experimental concentration in the in-vitro matrix.
+- **Units:** mg/L
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- scales the rate of net influx and PBP access in the whole-cell penicillin-binding-protein (PBP) binding QSP model (Eq 1: Rate_Influx/access = Rate_Influx/access,scaled x CONC_ETP_MGL). The lysed-cell arm of that assay sets `CELLS_INTACT = 0`, which zeroes the influx term, so the covariate has no effect there.
+- **Source aliases:** none standardized (Lopez-Arguello 2023 writes `C_drug` in Eq 1 and `CDRUG` in the Fig. S8 estimation code).
+- **Example models:** `LopezArguello_2023_ertapenem_qsp.R` (static 8 mg/L, 2x the MIC of 4 mg/L; Lopez-Arguello 2023 Table 1).
+- **Notes:** Specific scope because the value is bound to ertapenem and to the in-vitro assay design. Member of the in-vitro applied-drug-concentration `CONC_<DRUG>_MGL` family (siblings `CONC_RIF_MGL`, `CONC_INH_MGL`, `CONC_EMB_MGL`, `CONC_IPM_MGL`, `CONC_TOB_MGL`). Ratified canonically on 2026-07-29 alongside the Lopez-Arguello 2023 PBP-binding extraction.
+
+### CONC_CAZ_MGL (**canonical for static in-vitro ceftazidime concentration driving a receptor-binding or antibacterial PD model**)
+- **Description:** Static (time-invariant) ceftazidime concentration applied to the medium of an in-vitro bacterial experiment, supplied as an exogenous covariate that drives target-receptor binding or bacterial kill. Distinct from a state-derived plasma concentration (`Cc`) and from the `CP_<DRUG>` plasma-PD-driver family: this is an applied experimental concentration in the in-vitro matrix.
+- **Units:** mg/L
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- scales the rate of net influx and PBP access in the whole-cell penicillin-binding-protein (PBP) binding QSP model (Eq 1: Rate_Influx/access = Rate_Influx/access,scaled x CONC_CAZ_MGL). The lysed-cell arm of that assay sets `CELLS_INTACT = 0`, which zeroes the influx term, so the covariate has no effect there.
+- **Source aliases:** none standardized (Lopez-Arguello 2023 writes `C_drug` in Eq 1 and `CDRUG` in the Fig. S8 estimation code).
+- **Example models:** `LopezArguello_2023_ceftazidime_qsp.R` (static 2 mg/L, 2x the MIC of 1 mg/L; Lopez-Arguello 2023 Table 1).
+- **Notes:** Specific scope because the value is bound to ceftazidime and to the in-vitro assay design. Member of the in-vitro applied-drug-concentration `CONC_<DRUG>_MGL` family (siblings `CONC_RIF_MGL`, `CONC_INH_MGL`, `CONC_EMB_MGL`, `CONC_IPM_MGL`, `CONC_TOB_MGL`). Ratified canonically on 2026-07-29 alongside the Lopez-Arguello 2023 PBP-binding extraction.
+
+### CONC_FEP_MGL (**canonical for static in-vitro cefepime concentration driving a receptor-binding or antibacterial PD model**)
+- **Description:** Static (time-invariant) cefepime concentration applied to the medium of an in-vitro bacterial experiment, supplied as an exogenous covariate that drives target-receptor binding or bacterial kill. Distinct from a state-derived plasma concentration (`Cc`) and from the `CP_<DRUG>` plasma-PD-driver family: this is an applied experimental concentration in the in-vitro matrix.
+- **Units:** mg/L
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- scales the rate of net influx and PBP access in the whole-cell penicillin-binding-protein (PBP) binding QSP model (Eq 1: Rate_Influx/access = Rate_Influx/access,scaled x CONC_FEP_MGL). The lysed-cell arm of that assay sets `CELLS_INTACT = 0`, which zeroes the influx term, so the covariate has no effect there.
+- **Source aliases:** none standardized (Lopez-Arguello 2023 writes `C_drug` in Eq 1 and `CDRUG` in the Fig. S8 estimation code).
+- **Example models:** `LopezArguello_2023_cefepime_qsp.R` (static 2 mg/L, 2x the MIC of 1 mg/L; Lopez-Arguello 2023 Table 1).
+- **Notes:** Specific scope because the value is bound to cefepime and to the in-vitro assay design. Member of the in-vitro applied-drug-concentration `CONC_<DRUG>_MGL` family (siblings `CONC_RIF_MGL`, `CONC_INH_MGL`, `CONC_EMB_MGL`, `CONC_IPM_MGL`, `CONC_TOB_MGL`). Ratified canonically on 2026-07-29 alongside the Lopez-Arguello 2023 PBP-binding extraction.
+
+### CONC_FOX_MGL (**canonical for static in-vitro cefoxitin concentration driving a receptor-binding or antibacterial PD model**)
+- **Description:** Static (time-invariant) cefoxitin concentration applied to the medium of an in-vitro bacterial experiment, supplied as an exogenous covariate that drives target-receptor binding or bacterial kill. Distinct from a state-derived plasma concentration (`Cc`) and from the `CP_<DRUG>` plasma-PD-driver family: this is an applied experimental concentration in the in-vitro matrix.
+- **Units:** mg/L
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- scales the rate of net influx and PBP access in the whole-cell penicillin-binding-protein (PBP) binding QSP model (Eq 1: Rate_Influx/access = Rate_Influx/access,scaled x CONC_FOX_MGL). The lysed-cell arm of that assay sets `CELLS_INTACT = 0`, which zeroes the influx term, so the covariate has no effect there.
+- **Source aliases:** none standardized (Lopez-Arguello 2023 writes `C_drug` in Eq 1 and `CDRUG` in the Fig. S8 estimation code).
+- **Example models:** `LopezArguello_2023_cefoxitin_qsp.R` (static 2,048 mg/L, 2x the MIC of 1,024 mg/L; Lopez-Arguello 2023 Table 1).
+- **Notes:** Specific scope because the value is bound to cefoxitin and to the in-vitro assay design. Member of the in-vitro applied-drug-concentration `CONC_<DRUG>_MGL` family (siblings `CONC_RIF_MGL`, `CONC_INH_MGL`, `CONC_EMB_MGL`, `CONC_IPM_MGL`, `CONC_TOB_MGL`). Ratified canonically on 2026-07-29 alongside the Lopez-Arguello 2023 PBP-binding extraction.
+
+### CONC_ATM_MGL (**canonical for static in-vitro aztreonam concentration driving a receptor-binding or antibacterial PD model**)
+- **Description:** Static (time-invariant) aztreonam concentration applied to the medium of an in-vitro bacterial experiment, supplied as an exogenous covariate that drives target-receptor binding or bacterial kill. Distinct from a state-derived plasma concentration (`Cc`) and from the `CP_<DRUG>` plasma-PD-driver family: this is an applied experimental concentration in the in-vitro matrix.
+- **Units:** mg/L
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- scales the rate of net influx and PBP access in the whole-cell penicillin-binding-protein (PBP) binding QSP model (Eq 1: Rate_Influx/access = Rate_Influx/access,scaled x CONC_ATM_MGL). The lysed-cell arm of that assay sets `CELLS_INTACT = 0`, which zeroes the influx term, so the covariate has no effect there.
+- **Source aliases:** none standardized (Lopez-Arguello 2023 writes `C_drug` in Eq 1 and `CDRUG` in the Fig. S8 estimation code).
+- **Example models:** `LopezArguello_2023_aztreonam_qsp.R` (static 8 mg/L, 2x the MIC of 4 mg/L; Lopez-Arguello 2023 Table 1).
+- **Notes:** Specific scope because the value is bound to aztreonam and to the in-vitro assay design. Member of the in-vitro applied-drug-concentration `CONC_<DRUG>_MGL` family (siblings `CONC_RIF_MGL`, `CONC_INH_MGL`, `CONC_EMB_MGL`, `CONC_IPM_MGL`, `CONC_TOB_MGL`). Ratified canonically on 2026-07-29 alongside the Lopez-Arguello 2023 PBP-binding extraction.
+
+### CONC_PIP_MGL (**canonical for static in-vitro piperacillin concentration driving a receptor-binding or antibacterial PD model**)
+- **Description:** Static (time-invariant) piperacillin concentration applied to the medium of an in-vitro bacterial experiment, supplied as an exogenous covariate that drives target-receptor binding or bacterial kill. Distinct from a state-derived plasma concentration (`Cc`) and from the `CP_<DRUG>` plasma-PD-driver family: this is an applied experimental concentration in the in-vitro matrix.
+- **Units:** mg/L
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- scales the rate of net influx and PBP access in the whole-cell penicillin-binding-protein (PBP) binding QSP model (Eq 1: Rate_Influx/access = Rate_Influx/access,scaled x CONC_PIP_MGL). The lysed-cell arm of that assay sets `CELLS_INTACT = 0`, which zeroes the influx term, so the covariate has no effect there.
+- **Source aliases:** none standardized (Lopez-Arguello 2023 writes `C_drug` in Eq 1 and `CDRUG` in the Fig. S8 estimation code).
+- **Example models:** `LopezArguello_2023_piperacillin_qsp.R` (static 8 mg/L, 2x the MIC of 4 mg/L; Lopez-Arguello 2023 Table 1).
+- **Notes:** Specific scope because the value is bound to piperacillin and to the in-vitro assay design. Member of the in-vitro applied-drug-concentration `CONC_<DRUG>_MGL` family (siblings `CONC_RIF_MGL`, `CONC_INH_MGL`, `CONC_EMB_MGL`, `CONC_IPM_MGL`, `CONC_TOB_MGL`). Ratified canonically on 2026-07-29 alongside the Lopez-Arguello 2023 PBP-binding extraction.
+
+### CONC_CAR_MGL (**canonical for static in-vitro carbenicillin concentration driving a receptor-binding or antibacterial PD model**)
+- **Description:** Static (time-invariant) carbenicillin concentration applied to the medium of an in-vitro bacterial experiment, supplied as an exogenous covariate that drives target-receptor binding or bacterial kill. Distinct from a state-derived plasma concentration (`Cc`) and from the `CP_<DRUG>` plasma-PD-driver family: this is an applied experimental concentration in the in-vitro matrix.
+- **Units:** mg/L
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- scales the rate of net influx and PBP access in the whole-cell penicillin-binding-protein (PBP) binding QSP model (Eq 1: Rate_Influx/access = Rate_Influx/access,scaled x CONC_CAR_MGL). The lysed-cell arm of that assay sets `CELLS_INTACT = 0`, which zeroes the influx term, so the covariate has no effect there.
+- **Source aliases:** none standardized (Lopez-Arguello 2023 writes `C_drug` in Eq 1 and `CDRUG` in the Fig. S8 estimation code).
+- **Example models:** `LopezArguello_2023_carbenicillin_qsp.R` (static 96 mg/L, 2x the MIC of 48 mg/L; Lopez-Arguello 2023 Table 1).
+- **Notes:** Specific scope because the value is bound to carbenicillin and to the in-vitro assay design. Member of the in-vitro applied-drug-concentration `CONC_<DRUG>_MGL` family (siblings `CONC_RIF_MGL`, `CONC_INH_MGL`, `CONC_EMB_MGL`, `CONC_IPM_MGL`, `CONC_TOB_MGL`). Ratified canonically on 2026-07-29 alongside the Lopez-Arguello 2023 PBP-binding extraction.
+
+### CONC_TIC_MGL (**canonical for static in-vitro ticarcillin concentration driving a receptor-binding or antibacterial PD model**)
+- **Description:** Static (time-invariant) ticarcillin concentration applied to the medium of an in-vitro bacterial experiment, supplied as an exogenous covariate that drives target-receptor binding or bacterial kill. Distinct from a state-derived plasma concentration (`Cc`) and from the `CP_<DRUG>` plasma-PD-driver family: this is an applied experimental concentration in the in-vitro matrix.
+- **Units:** mg/L
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- scales the rate of net influx and PBP access in the whole-cell penicillin-binding-protein (PBP) binding QSP model (Eq 1: Rate_Influx/access = Rate_Influx/access,scaled x CONC_TIC_MGL). The lysed-cell arm of that assay sets `CELLS_INTACT = 0`, which zeroes the influx term, so the covariate has no effect there.
+- **Source aliases:** none standardized (Lopez-Arguello 2023 writes `C_drug` in Eq 1 and `CDRUG` in the Fig. S8 estimation code).
+- **Example models:** `LopezArguello_2023_ticarcillin_qsp.R` (static 48 mg/L, 2x the MIC of 24 mg/L; Lopez-Arguello 2023 Table 1).
+- **Notes:** Specific scope because the value is bound to ticarcillin and to the in-vitro assay design. Member of the in-vitro applied-drug-concentration `CONC_<DRUG>_MGL` family (siblings `CONC_RIF_MGL`, `CONC_INH_MGL`, `CONC_EMB_MGL`, `CONC_IPM_MGL`, `CONC_TOB_MGL`). Ratified canonically on 2026-07-29 alongside the Lopez-Arguello 2023 PBP-binding extraction.
+
+### CONC_AVI_MGL (**canonical for static in-vitro avibactam concentration driving a receptor-binding or antibacterial PD model**)
+- **Description:** Static (time-invariant) avibactam concentration applied to the medium of an in-vitro bacterial experiment, supplied as an exogenous covariate that drives target-receptor binding or bacterial kill. Distinct from a state-derived plasma concentration (`Cc`) and from the `CP_<DRUG>` plasma-PD-driver family: this is an applied experimental concentration in the in-vitro matrix.
+- **Units:** mg/L
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- scales the rate of net influx and PBP access in the whole-cell penicillin-binding-protein (PBP) binding QSP model (Eq 1: Rate_Influx/access = Rate_Influx/access,scaled x CONC_AVI_MGL). The lysed-cell arm of that assay sets `CELLS_INTACT = 0`, which zeroes the influx term, so the covariate has no effect there.
+- **Source aliases:** none standardized (Lopez-Arguello 2023 writes `C_drug` in Eq 1 and `CDRUG` in the Fig. S8 estimation code).
+- **Example models:** `LopezArguello_2023_avibactam_qsp.R` (static 4 mg/L, a fixed concentration within the clinically relevant range; MIC not determined for beta-lactamase inhibitors; Lopez-Arguello 2023 Table 1).
+- **Notes:** Specific scope because the value is bound to avibactam and to the in-vitro assay design. Member of the in-vitro applied-drug-concentration `CONC_<DRUG>_MGL` family (siblings `CONC_RIF_MGL`, `CONC_INH_MGL`, `CONC_EMB_MGL`, `CONC_IPM_MGL`, `CONC_TOB_MGL`). Ratified canonically on 2026-07-29 alongside the Lopez-Arguello 2023 PBP-binding extraction.
+
+### CONC_REL_MGL (**canonical for static in-vitro relebactam concentration driving a receptor-binding or antibacterial PD model**)
+- **Description:** Static (time-invariant) relebactam concentration applied to the medium of an in-vitro bacterial experiment, supplied as an exogenous covariate that drives target-receptor binding or bacterial kill. Distinct from a state-derived plasma concentration (`Cc`) and from the `CP_<DRUG>` plasma-PD-driver family: this is an applied experimental concentration in the in-vitro matrix.
+- **Units:** mg/L
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- scales the rate of net influx and PBP access in the whole-cell penicillin-binding-protein (PBP) binding QSP model (Eq 1: Rate_Influx/access = Rate_Influx/access,scaled x CONC_REL_MGL). The lysed-cell arm of that assay sets `CELLS_INTACT = 0`, which zeroes the influx term, so the covariate has no effect there.
+- **Source aliases:** none standardized (Lopez-Arguello 2023 writes `C_drug` in Eq 1 and `CDRUG` in the Fig. S8 estimation code).
+- **Example models:** `LopezArguello_2023_relebactam_qsp.R` (static 4 mg/L, a fixed concentration within the clinically relevant range; MIC not determined for beta-lactamase inhibitors; Lopez-Arguello 2023 Table 1).
+- **Notes:** Specific scope because the value is bound to relebactam and to the in-vitro assay design. Member of the in-vitro applied-drug-concentration `CONC_<DRUG>_MGL` family (siblings `CONC_RIF_MGL`, `CONC_INH_MGL`, `CONC_EMB_MGL`, `CONC_IPM_MGL`, `CONC_TOB_MGL`). Ratified canonically on 2026-07-29 alongside the Lopez-Arguello 2023 PBP-binding extraction.
+
+### CONC_SUL_MGL (**canonical for static in-vitro sulbactam concentration driving a receptor-binding or antibacterial PD model**)
+- **Description:** Static (time-invariant) sulbactam concentration applied to the medium of an in-vitro bacterial experiment, supplied as an exogenous covariate that drives target-receptor binding or bacterial kill. Distinct from a state-derived plasma concentration (`Cc`) and from the `CP_<DRUG>` plasma-PD-driver family: this is an applied experimental concentration in the in-vitro matrix.
+- **Units:** mg/L
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- scales the rate of net influx and PBP access in the whole-cell penicillin-binding-protein (PBP) binding QSP model (Eq 1: Rate_Influx/access = Rate_Influx/access,scaled x CONC_SUL_MGL). The lysed-cell arm of that assay sets `CELLS_INTACT = 0`, which zeroes the influx term, so the covariate has no effect there.
+- **Source aliases:** none standardized (Lopez-Arguello 2023 writes `C_drug` in Eq 1 and `CDRUG` in the Fig. S8 estimation code).
+- **Example models:** `LopezArguello_2023_sulbactam_qsp.R` (static 4 mg/L, a fixed concentration within the clinically relevant range; MIC not determined for beta-lactamase inhibitors; Lopez-Arguello 2023 Table 1).
+- **Notes:** Specific scope because the value is bound to sulbactam and to the in-vitro assay design. Member of the in-vitro applied-drug-concentration `CONC_<DRUG>_MGL` family (siblings `CONC_RIF_MGL`, `CONC_INH_MGL`, `CONC_EMB_MGL`, `CONC_IPM_MGL`, `CONC_TOB_MGL`). Ratified canonically on 2026-07-29 alongside the Lopez-Arguello 2023 PBP-binding extraction.
+
+### CONC_TZB_MGL (**canonical for static in-vitro tazobactam concentration driving a receptor-binding or antibacterial PD model**)
+- **Description:** Static (time-invariant) tazobactam concentration applied to the medium of an in-vitro bacterial experiment, supplied as an exogenous covariate that drives target-receptor binding or bacterial kill. Distinct from a state-derived plasma concentration (`Cc`) and from the `CP_<DRUG>` plasma-PD-driver family: this is an applied experimental concentration in the in-vitro matrix.
+- **Units:** mg/L
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- scales the rate of net influx and PBP access in the whole-cell penicillin-binding-protein (PBP) binding QSP model (Eq 1: Rate_Influx/access = Rate_Influx/access,scaled x CONC_TZB_MGL). The lysed-cell arm of that assay sets `CELLS_INTACT = 0`, which zeroes the influx term, so the covariate has no effect there.
+- **Source aliases:** none standardized (Lopez-Arguello 2023 writes `C_drug` in Eq 1 and `CDRUG` in the Fig. S8 estimation code).
+- **Example models:** `LopezArguello_2023_tazobactam_qsp.R` (static 4 mg/L, a fixed concentration within the clinically relevant range; MIC not determined for beta-lactamase inhibitors; Lopez-Arguello 2023 Table 1).
+- **Notes:** Specific scope because the value is bound to tazobactam and to the in-vitro assay design. Member of the in-vitro applied-drug-concentration `CONC_<DRUG>_MGL` family (siblings `CONC_RIF_MGL`, `CONC_INH_MGL`, `CONC_EMB_MGL`, `CONC_IPM_MGL`, `CONC_TOB_MGL`). Ratified canonically on 2026-07-29 alongside the Lopez-Arguello 2023 PBP-binding extraction.
+
 ### CONC_RIF_MGL (**canonical for static in-vitro rifampicin concentration driving an antibacterial PD model**)
 - **Description:** Static (time-invariant) rifampicin concentration in the growth medium of an in-vitro antibacterial time-kill experiment, supplied as an exogenous covariate that drives the bacterial-kill PD effect. Distinct from a state-derived plasma concentration (`Cc`) and from the `CP_<DRUG>` plasma-PD-driver family: this is an applied experimental concentration in the in-vitro matrix.
 - **Units:** mg/L
@@ -2492,15 +2643,15 @@ All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODA
 - **Example models:** `Xiang_2018_baicalein.R` (time-invariant baicalein concentration driving the log-linear inhibition of LPS-stimulated TNF-alpha production in RAW264.7 macrophages, propagating downstream to IL-6, iNOS, and NO).
 - **Notes:** Specific scope because the value is bound to baicalein and the in-vitro experimental design. Member of the in-vitro applied-drug-concentration `CONC_<drug>_<units>` family; here the unit is uM (sibling concentration covariates such as `CONC_RIF_MGL` are reported in mg/L, so the `<units>` suffix is load-bearing). Distinct from the `STIM_<drug>_<units>` antimalarial-well family and the `CP_<drug>` plasma-PD-driver family. Ratified canonically alongside the Xiang 2018 baicalein extraction.
 
-### CONC_IPM_MGL (**canonical for time-varying in-vitro imipenem concentration driving an antibacterial PD model**)
-- **Description:** Time-varying unbound imipenem concentration in the hollow-fiber infection model (HFIM) growth medium, supplied externally as an exogenous covariate that drives the bacterial-kill PD effect. Applied experimental concentration in the in-vitro matrix; distinct from `Cc` and the `CP_<DRUG>` plasma-PD-driver family.
+### CONC_IPM_MGL (**canonical for in-vitro imipenem concentration driving an antibacterial PD or receptor-binding model**)
+- **Description:** Unbound imipenem concentration applied to an in-vitro bacterial system, supplied externally as an exogenous covariate. Applied experimental concentration in the in-vitro matrix; distinct from `Cc` and the `CP_<DRUG>` plasma-PD-driver family. Used both time-varying (hollow-fiber infection model growth medium, driving the bacterial-kill PD effect) and static (60-min whole-cell penicillin-binding-protein binding assay, scaling the rate of net influx and PBP access).
 - **Units:** mg/L
 - **Type:** continuous
 - **Scope:** specific
 - **Reference category:** n/a -- enters the sigmoidal (Hill) imipenem kill function; set to 0 for tobramycin-monotherapy or control arms.
 - **Source aliases:** none standardized (the model column uses the canonical name directly; Landersdorfer 2018 labels it "imipenem concentration" in the Methods and Fig. 1 legend).
-- **Example models:** `Landersdorfer_2018_imipenem_tobramycin.R` (externally-supplied time-varying unbound imipenem concentration driving the Hill kill function; the HFIM used continuous infusion targeting the 5th-percentile 7.6, median 13.4, and 95th-percentile 23.3 mg/L unbound concentrations from imipenem 4 g/day continuous infusion in critically ill patients).
-- **Notes:** Specific scope because the value is bound to imipenem and the in-vitro HFIM design. Member of the in-vitro applied-drug-concentration `CONC_<DRUG>_MGL` family (siblings `CONC_RIF_MGL`, `CONC_INH_MGL`, `CONC_EMB_MGL`, `CONC_TOB_MGL`). Renamed from the model's earlier bare `Cipm` column on 2026-05-27 for consistency with the `CONC_<DRUG>_MGL` family. Ratified canonically on 2026-05-27 alongside the Landersdorfer 2018 extraction.
+- **Example models:** `Landersdorfer_2018_imipenem_tobramycin.R` (externally-supplied time-varying unbound imipenem concentration driving the Hill kill function; the HFIM used continuous infusion targeting the 5th-percentile 7.6, median 13.4, and 95th-percentile 23.3 mg/L unbound concentrations from imipenem 4 g/day continuous infusion in critically ill patients); `LopezArguello_2023_imipenem_qsp.R` (static 2 mg/L = 2x the MIC of 1 mg/L, scaling the rate of net influx and PBP access in the whole-cell PBP-binding QSP model; Lopez-Arguello 2023 Table 1).
+- **Notes:** Specific scope because the value is bound to imipenem and to an in-vitro assay design. Member of the in-vitro applied-drug-concentration `CONC_<DRUG>_MGL` family (siblings `CONC_RIF_MGL`, `CONC_INH_MGL`, `CONC_EMB_MGL`, `CONC_TOB_MGL`, and the fourteen `CONC_<DRUG>_MGL` entries ratified with the Lopez-Arguello 2023 extraction). Renamed from the model's earlier bare `Cipm` column on 2026-05-27 for consistency with the `CONC_<DRUG>_MGL` family. Ratified canonically on 2026-05-27 alongside the Landersdorfer 2018 extraction; scope broadened on 2026-07-29 to cover the static in-vitro receptor-binding use.
 
 ### CONC_TOB_MGL (**canonical for time-varying in-vitro tobramycin concentration driving an antibacterial PD model**)
 - **Description:** Time-varying unbound tobramycin concentration in the hollow-fiber infection model (HFIM) growth medium, supplied externally as an exogenous covariate that drives the bacterial-kill PD effect and the mechanistic-synergy switch on the imipenem KC50. Applied experimental concentration in the in-vitro matrix; distinct from `Cc` and the `CP_<DRUG>` plasma-PD-driver family.
