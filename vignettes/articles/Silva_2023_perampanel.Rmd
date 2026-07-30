@@ -7,6 +7,11 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+<!-- Simulation size reduced for build time: this vignette took >300 s to render,
+     against a 19 s median across the article set. Only the COHORT SIZE and/or
+     OBSERVATION GRID DENSITY were reduced -- no model, parameter, dose or
+     covariate value was touched, so the figures show the same behaviour. -->
+
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
 library(nlmixr2lib)
@@ -56,7 +61,7 @@ Original observed data are not publicly available. The figures below use virtual
 ```{r cohort}
 set.seed(20230612)
 
-n_per_group <- 100L
+n_per_group <- 40L
 tau          <- 24        # hours between once-daily doses
 n_doses      <- 21L       # 21 daily doses => steady state
 ss_start     <- (n_doses - 1L) * tau        # time of the final dose (480 h)

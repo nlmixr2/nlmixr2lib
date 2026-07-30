@@ -1225,6 +1225,14 @@ Each entry below is a paper-mechanistic PD endpoint registered as a canonical co
 
 ---
 
+### MCC (**canonical maximum cystometric capacity**)
+- **Type:** compartment
+- **Role:** Maximum cystometric capacity (MCC), the urodynamic bladder-volume PD endpoint measured by multichannel cystometry, in mL. Used in exposure-response models of overactive bladder (OAB) and neurogenic detrusor overactivity (NDO) antimuscarinics, where the maximum attainable MCC is commonly anchored to the age-based pediatric expected bladder capacity (EBC) rather than estimated. All-caps because MCC is the standard urodynamics abbreviation and is never spelled out in the source literature after first use, matching the `ANC` / `PLT` / `WBC` / `RBC` clinical-abbreviation precedent in this register.
+- **Source aliases:** none.
+- **Example models:** `Sano_2023_fesoterodine_mcc.R` (Emax exposure-response of 5-HMT average steady-state concentration on MCC in pediatric NDO; baseline MCC and the EBC ceiling both scale with age by the same `(AGE + 1)/13` factor, and residual error is combined proportional plus additive as `propSd_MCC` / `addSd_MCC`).
+
+---
+
 ## PBPK bare organ-amount compartments (Zhang 2011 family)
 
 PBPK bare organ-amount compartments used by Zhang 2011 nutlin3a and similar full-body PBPK extractions that don't prefix the organ name with `a_` / `vp_`. New PBPK extractions should prefer the spelled-out `a_<organ>` namespace, but the bare forms remain canonical for paper-mechanistic models that already use them. Registered 2026-05-29 per the naming-audit compartment-warning cleanup.
@@ -1357,6 +1365,22 @@ PBPK bare organ-amount compartments used by Zhang 2011 nutlin3a and similar full
 - **Source aliases:**
   - `PAN` -- NONMEM `$MODEL` compartment label in Yau 2023 Appendix S1.
 - **Example models:** `Yau_2023_diazepam_pbpk_kpu_human.R`, `Yau_2023_diazepam_pbpk_scalar_human.R`, `Yau_2023_diazepam_pbpk_kpu_rat.R`, `Yau_2023_diazepam_pbpk_scalar_rat.R`.
+
+---
+
+### skin_fat (**canonical bare lumped skin + fat compartment**)
+- **Type:** compartment
+- **Role:** Skin and subcutaneous fat lumped into a **single** well-stirred tissue compartment carrying one volume, one plasma flow and one tissue:plasma partition coefficient. Distinct from the separate bare `skin` and `adipose` canonicals: this is the combined tissue, used when a source model does not resolve the two organs independently. Use it only when the source genuinely lumps them -- a model that reports separate partition coefficients for skin and fat must use `skin` + `adipose`. The motivating case is veterinary residue-depletion PBPK: "skin and fat in natural proportions" is the statutory edible-tissue matrix against which both the Chinese (GB 31650) and European (Reg. 37/2010) maximum residue limits for poultry are set, so the combined tissue is the regulated unit and cannot be split without inventing per-organ partition coefficients the source does not report. Component volume fractions may still be documented separately (e.g. Yang 2023 Table 4 gives `Vcsk` 13.38% and `Vcfa` 13.40% of body weight, summing to the 26.78% of the combined compartment) while the ODE system carries exactly one state. Expected to recur across the poultry and swine residue-PBPK family. The associated partition coefficient follows the `lk_<organ>` pattern as `lk_skf`.
+- **Source aliases:** `skin + fat`, `skin+fat`, `sf` (Yang 2023 subscript).
+- **Example models:** `Yang_2023_diclazuril_chicken_pbpk.R` (founding example).
+
+### salivary_gland (**canonical bare salivary-gland compartment**)
+- **Type:** compartment
+- **Role:** Bare salivary-gland tissue compartment; the lumped state representing all major salivary glands (parotid and submandibular) in semi-physiologic distribution / dosimetry models. Registered for parity with the surrounding bare-organ canonicals (`liver`, `kidney`, `spleen`, `pancreas`, `skin`, `heart`, `other`) rather than as a new mechanistic role. Snake-cased on the multi-word-organ pattern already used by `small_intestine` / `large_intestine` / `renal_cortex`, and singular (one lumped state, not one per gland) on the pattern used by `kidney` for both kidneys.
+- **Source aliases:**
+  - `compartment 2` / "salivary glands" -- Siebinga 2023 numbers the six states 1-6 (blood, salivary gland, kidney, liver, tumor, other) and refers to the lumped state as "salivary glands" (plural).
+- **Example models:** `Siebinga_2023_lu177psma617.R`.
+- **Notes:** The salivary glands are the dose-limiting organ for PSMA-targeted radioligand therapy (and a target of interest for any drug or radiotracer with salivary uptake), so the state generalises beyond one paper and warrants a canonical rather than a `paper_specific_compartments` declaration. In Siebinga 2023 this is the only compartment with saturable (capacity-limited) uptake, parameterised by a maximum binding capacity `bmax`; the canonical name carries no commitment to saturable vs first-order kinetics.
 
 ---
 
@@ -2446,6 +2470,13 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Source aliases:** none.
 - **Example models:** mAb popPK extractions tracking NAb.
 
+### np (**canonical nanoparticle-conjugated species suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Nanoparticle- / carrier-conjugated form of a drug in dual-species nanoparticle biodistribution models, where the bare canonical compartment name holds the released (free) drug and the `_np` suffix holds the still-conjugated drug travelling with its carrier.
+- **Source aliases:** none.
+- **Example models:** `Vasalou_2023_dendriticNanoparticle_mouse.R`, `Vasalou_2023_dendriticNanoparticle_rat.R`, `Vasalou_2023_dendriticNanoparticle_dog.R`, `Vasalou_2023_dendriticNanoparticle_human.R`.
+- **Notes:** Registered for the library's first dual-species (carrier-bound + released) nanoparticle model. Use when a model carries the conjugated and the released drug through the *same* set of anatomical compartments, giving pairs such as `blood` / `blood_np`, `liver` / `liver_np`, `spleen` / `spleen_np`, `other` / `other_np`, and matching observation variables `Cc` / `Cc_np`. The bare-name-holds-free-drug orientation follows the rest of the library, where an unsuffixed state is the unbound / active species and a suffix marks a bound or carrier-associated form. Distinct from `nab` (neutralising antibody) and from the ADC payload suffixes (`mmae`, `dxd`, `sn38`), which name a specific chemical entity rather than the conjugation state; prefer a named payload suffix whenever the released moiety has a published INN, and reserve `np` for carriers whose API is unnamed. Operator-ratified 2026-07-29.
+
 ### dar0 (**canonical DAR-0 ADC isoform suffix**)
 - **Type:** metabolite-suffix
 - **Role:** Drug-to-antibody ratio 0 (unconjugated antibody) ADC isoform species suffix.
@@ -3035,6 +3066,13 @@ Per-paper metabolite / sibling-drug suffix additions discovered during the 2026-
 - **Role:** Emtricitabine (FTC) sibling-drug suffix.
 - **Source aliases:** none.
 - **Example models:** `Chen_2016_tenofovir_emtricitabine.R`.
+
+### tfv (**canonical tenofovir suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Tenofovir (TFV), the pharmacologically relevant plasma moiety formed by complete, irreversible intracellular hydrolysis of the ester prodrug tenofovir alafenamide (TAF). Used as the metabolite suffix on `central_tfv` compartments, `lcl_tfv` / `lvc_tfv` parameters, and the `Cc_tfv` observation in joint prodrug + active-moiety popPK models where tenofovir alafenamide itself is carried as a state and therefore keeps the canonical unsuffixed `central` / `Cc` names.
+- **Source aliases:** `TFV` (the standard antiretroviral-literature abbreviation, used by Thoueille 2023 in `CL_TFV`, `V_TFV`, `sigma_addTFV`).
+- **Example models:** `Thoueille_2023_tenofovir_alafenamide.R`.
+- **Notes:** Operator-ratified sidecar 2026-07-29 (oare_PMC10232258 request-001 Q1, option A). Apply this suffix ONLY when the prodrug is itself a modelled compartment, per the standing "the parent / dosed species always wins canonical naming" rule; models that dose into a tenofovir compartment directly, without carrying a tenofovir-disoproxil-fumarate or tenofovir-alafenamide state, keep tenofovir as the bare canonical `central` / `Cc` (existing precedents: `Baheti_2011_tenofovir.R`, `Chen_2016_tenofovir_emtricitabine.R`, and the two tenofovir-alone siblings `Thoueille_2023_tenofovir_full.R` / `Thoueille_2023_tenofovir_reduced.R`). Consequently `central` denotes tenofovir alafenamide in `Thoueille_2023_tenofovir_alafenamide.R` but tenofovir in that paper's other two model files -- an intended consequence of the parent-wins rule, not an inconsistency. Distinct from [[tfvdp]] (tenofovir diphosphate, the intracellular active anabolite) and from `taf`, which is deliberately NOT registered. STRING-COLLISION NOTE: `tfv` also appears as the tail of the unrelated compartment `brain_csf_tfv`, where it abbreviates "third + fourth ventricle" in rat intra-brain SBPK models. That makes `brain_csf_tfv` parseable both as a canonical compartment and as `brain_csf` + `_tfv` metabolite suffix by the `endsWith(name, "_<metab>")` test in `checkModelConventions()`; the collision is harmless because `brain_csf` is itself canonical and so the compartment passes the check either way.
 
 ### tfvdp (**canonical tenofovir diphosphate suffix**)
 - **Type:** metabolite-suffix

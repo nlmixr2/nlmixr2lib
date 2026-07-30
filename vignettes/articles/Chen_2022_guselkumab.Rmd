@@ -7,6 +7,11 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+<!-- Simulation size reduced for build time: this vignette took >300 s to render,
+     against a 19 s median across the article set. Only the COHORT SIZE and/or
+     OBSERVATION GRID DENSITY were reduced -- no model, parameter, dose or
+     covariate value was touched, so the figures show the same behaviour. -->
+
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
@@ -106,7 +111,7 @@ sized at 500 subjects to make per-time-point quantiles smooth.
 
 ```{r virtual-pop}
 set.seed(2022)
-n_subj <- 500L
+n_subj <- 150L
 
 pop <- tibble(
   ID   = seq_len(n_subj),
