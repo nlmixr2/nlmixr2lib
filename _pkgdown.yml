@@ -1030,6 +1030,14 @@ navbar:
         href: articles/Paule_2011_hydroxyurea.html
       - text: "Ibandronate (Pillai 2004)"
         href: articles/Pillai_2004_ibandronate.html
+      - text: "Ibrutinib competing risk (Ibrahim 2023)"
+        href: articles/Ibrahim_2023_ibrutinib.html
+      - text: "Ibrutinib dbp (Ibrahim 2023)"
+        href: articles/Ibrahim_2023_ibrutinib.html
+      - text: "Ibrutinib leukocyte spd (Ibrahim 2023)"
+        href: articles/Ibrahim_2023_ibrutinib.html
+      - text: "Ibrutinib sbp (Ibrahim 2023)"
+        href: articles/Ibrahim_2023_ibrutinib.html
       - text: "Ibuprofen (Hirt 2008)"
         href: articles/Hirt_2008_ibuprofen.html
       - text: "Iclaprim (Lodise 2018)"
@@ -3050,6 +3058,7 @@ articles:
   - articles/Hwang_2022_tremelimumab
   - articles/Hwang_2023_carvedilol
   - articles/Hwang_2023_monalizumab
+  - articles/Ibrahim_2023_ibrutinib
   - articles/Ide_2009_pravastatin
   - articles/Ide_2020_elotuzumab
   - articles/Iida_2008_nicorandil
