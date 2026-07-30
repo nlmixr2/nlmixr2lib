@@ -392,6 +392,8 @@ navbar:
         href: articles/Zieck_2023_ceftazidime.html
       - text: "Ceftriaxone (Garot 2011)"
         href: articles/Garot_2011_ceftriaxone.html
+      - text: "Ceftriaxone (Tsai 2023)"
+        href: articles/Tsai_2023_ceftriaxone.html
       - text: "Cefuroxime (Alqahtani 2018)"
         href: articles/Alqahtani_2018_cefuroxime.html
       - text: "Cefuroxime (Nielsen 2011)"
@@ -3598,6 +3600,7 @@ articles:
   - articles/Tortorici_2017_a1pi
   - articles/Toukam_2025_biib107
   - articles/Tremoulet_2014_ampicillin
+  - articles/Tsai_2023_ceftriaxone
   - articles/Tsuda_2010_tamsulosin
   - articles/Tsuji_2017_linezolid
   - articles/Ueshima_2018_apixaban

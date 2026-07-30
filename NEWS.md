@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Tsai 2023 ceftriaxone ([doi:10.1093/jac/dkad190](https://doi.org/10.1093/jac/dkad190)) — Indigenous Australian adults with end-stage renal disease on intermittent hemodialysis.
+
 - Disambiguated the overloaded `OC` name, which denoted five unrelated
   concepts. Osteocalcin `OC` -> `OSTCALC` (uppercase, matching the sibling
   biomarkers `P1NP` / `PSA` / `PLT` / `WBC` and the sister model
