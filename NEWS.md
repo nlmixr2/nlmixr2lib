@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Yamamoto 2023 tominersen ([doi:10.1002/psp4.13001](https://doi.org/10.1002/psp4.13001)) -- adults with early manifest or manifest Huntington's disease receiving intrathecal tominersen.
+
 * Drop `qs2`.  The model database now ships as `inst/modeldb.rds` instead of
   `inst/modeldb.qs2`, so `readModelDb()` no longer needs `qs2`.  It was only
   listed in `Suggests` yet used unconditionally, so `readModelDb()` failed

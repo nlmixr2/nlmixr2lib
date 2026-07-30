@@ -2250,6 +2250,8 @@ navbar:
         href: articles/Jorga_2000_tolcapone.html
       - text: "Tolcapone nonfluctuators (Jorga 2000)"
         href: articles/Jorga_2000_tolcapone.html
+      - text: "Tominersen (Yamamoto 2023)"
+        href: articles/Yamamoto_2023_tominersen.html
       - text: "Topiramate (Ahmed 2015)"
         href: articles/Ahmed_2015_topiramate.html
       - text: "Topiramate dog (Vuu 2016)"
@@ -3702,6 +3704,7 @@ articles:
   - articles/Yadav_2017_imipenem_aminoglycoside_pseudomonas
   - articles/Yadav_2017_imipenem_tobramycin
   - articles/Yamada_2025_zolbetuximab
+  - articles/Yamamoto_2023_tominersen
   - articles/Yamazaki_2008_crizotinib_mouse
   - articles/Yang_2010_rosuvastatin_mbma
   - articles/Yang_2013_losmapimod
