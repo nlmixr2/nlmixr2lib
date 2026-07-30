@@ -2,6 +2,11 @@
 
 # development version
 
+* Drop `qs2`.  The model database now ships as `inst/modeldb.rds` instead of
+  `inst/modeldb.qs2`, so `readModelDb()` no longer needs `qs2`.  It was only
+  listed in `Suggests` yet used unconditionally, so `readModelDb()` failed
+  outright when `qs2` was not installed.
+
 - Disambiguated the overloaded `OC` name, which denoted five unrelated
   concepts. Osteocalcin `OC` -> `OSTCALC` (uppercase, matching the sibling
   biomarkers `P1NP` / `PSA` / `PLT` / `WBC` and the sister model
