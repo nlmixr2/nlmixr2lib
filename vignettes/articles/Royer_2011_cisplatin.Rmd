@@ -7,6 +7,11 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+<!-- Simulation size reduced for build time: this vignette took >300 s to render,
+     against a 19 s median across the article set. Only the COHORT SIZE and/or
+     OBSERVATION GRID DENSITY were reduced -- no model, parameter, dose or
+     covariate value was touched, so the figures show the same behaviour. -->
+
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
 library(nlmixr2lib)
@@ -132,7 +137,7 @@ BATH_TIMES <- c(0.0, 1.0)
 # for a multi-output model (see the Urien 2004 and Morris 2011 vignettes).
 build_events <- function(cohort) {
   obs_t <- sort(unique(c(
-    seq(0.02, 2.0, by = 0.02),  # dense sampling during the two baths
+    seq(0.02, 2.0, by = 0.10),  # dense sampling during the two baths
     seq(2.5, 8.0, by = 0.5),    # after baths, moderate density
     c(12, 16, 24)               # late samples matching the paper's schedule
   )))
