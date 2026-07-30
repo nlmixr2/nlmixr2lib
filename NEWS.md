@@ -2,11 +2,8 @@
 
 # development version
 
-- Add nine ganciclovir / valganciclovir population PK models transcribed from the
-  Yang 2023 model repository ([doi:10.3390/pharmaceutics15071801](https://doi.org/10.3390/pharmaceutics15071801))
-  — Lalagkas 2023 and Krens 2020 (adults), Franck 2021, Li 2021, Facchin 2019 and
-  Zhao 2009 (pediatrics), Horvatits 2014 (critically ill adults on CVVHDF), and
-  Acosta 2007 and Zhou 1996 (neonates).
+- Add Tsai 2023 ceftriaxone ([doi:10.1093/jac/dkad190](https://doi.org/10.1093/jac/dkad190)) — Indigenous Australian adults with end-stage renal disease on intermittent hemodialysis.
+
 - Disambiguated the overloaded `OC` name, which denoted five unrelated
   concepts. Osteocalcin `OC` -> `OSTCALC` (uppercase, matching the sibling
   biomarkers `P1NP` / `PSA` / `PLT` / `WBC` and the sister model
