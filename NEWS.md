@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Vasalou 2023 dendritic nanoparticle interspecies PBPK ([doi:10.1371/journal.pone.0285798](https://doi.org/10.1371/journal.pone.0285798)) -- mouse, rat, beagle dog and a human projection (four species-specific files sharing one dual-species structure for nanoparticle-conjugated and released API); ratifies the new canonical `np` nanoparticle-conjugated compartment suffix.
+* Add Thoueille 2023 tenofovir ([doi:10.1093/jac/dkad103](https://doi.org/10.1093/jac/dkad103)) -- adults living with HIV on tenofovir alafenamide spanning creatinine clearance 33-203 mL/min (three models: the tenofovir-alone reduced and full covariate models plus the joint tenofovir alafenamide + tenofovir fit); ratifies the new `tfv` metabolite suffix and the `CONMED_COBICISTAT`, `CONMED_PGP_INH`, and `RACE_BLACK_HISPANIC` covariate canonicals.
 * Add Beal 2001 one-compartment IV-bolus BQL methodology template ([doi:10.1023/a:1012299115260](https://doi.org/10.1023/a:1012299115260)) -- methodology reference (no drug, no patients); packages the SI1 generative model from Beal's M1-M7 below-quantification-limit paper as a teaching template with CL = 0.693 and Vd = 1 (time in half-lives).
 * Add Luu 2017 nusinersen ([doi:10.1002/jcph.884](https://doi.org/10.1002/jcph.884)) -- pediatric patients with spinal muscular atrophy receiving intrathecal nusinersen.
 * Add Gaohua 2012 pregnancy PBPK ([doi:10.1111/j.1365-2125.2012.04363.x](https://doi.org/10.1111/j.1365-2125.2012.04363.x)) -- healthy pregnant Caucasian women (14-compartment whole-body p-PBPK with GA-dependent maternal physiology, applied to caffeine [CYP1A2], metoprolol [CYP2D6], and midazolam [CYP3A4]); ratifies new canonical bare `skin` PBPK compartment.

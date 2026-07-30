@@ -3041,6 +3041,13 @@ Per-paper metabolite / sibling-drug suffix additions discovered during the 2026-
 - **Source aliases:** none.
 - **Example models:** `Chen_2016_tenofovir_emtricitabine.R`.
 
+### tfv (**canonical tenofovir suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Tenofovir (TFV), the pharmacologically relevant plasma moiety formed by complete, irreversible intracellular hydrolysis of the ester prodrug tenofovir alafenamide (TAF). Used as the metabolite suffix on `central_tfv` compartments, `lcl_tfv` / `lvc_tfv` parameters, and the `Cc_tfv` observation in joint prodrug + active-moiety popPK models where tenofovir alafenamide itself is carried as a state and therefore keeps the canonical unsuffixed `central` / `Cc` names.
+- **Source aliases:** `TFV` (the standard antiretroviral-literature abbreviation, used by Thoueille 2023 in `CL_TFV`, `V_TFV`, `sigma_addTFV`).
+- **Example models:** `Thoueille_2023_tenofovir_alafenamide.R`.
+- **Notes:** Operator-ratified sidecar 2026-07-29 (oare_PMC10232258 request-001 Q1, option A). Apply this suffix ONLY when the prodrug is itself a modelled compartment, per the standing "the parent / dosed species always wins canonical naming" rule; models that dose into a tenofovir compartment directly, without carrying a tenofovir-disoproxil-fumarate or tenofovir-alafenamide state, keep tenofovir as the bare canonical `central` / `Cc` (existing precedents: `Baheti_2011_tenofovir.R`, `Chen_2016_tenofovir_emtricitabine.R`, and the two tenofovir-alone siblings `Thoueille_2023_tenofovir_full.R` / `Thoueille_2023_tenofovir_reduced.R`). Consequently `central` denotes tenofovir alafenamide in `Thoueille_2023_tenofovir_alafenamide.R` but tenofovir in that paper's other two model files -- an intended consequence of the parent-wins rule, not an inconsistency. Distinct from [[tfvdp]] (tenofovir diphosphate, the intracellular active anabolite) and from `taf`, which is deliberately NOT registered. STRING-COLLISION NOTE: `tfv` also appears as the tail of the unrelated compartment `brain_csf_tfv`, where it abbreviates "third + fourth ventricle" in rat intra-brain SBPK models. That makes `brain_csf_tfv` parseable both as a canonical compartment and as `brain_csf` + `_tfv` metabolite suffix by the `endsWith(name, "_<metab>")` test in `checkModelConventions()`; the collision is harmless because `brain_csf` is itself canonical and so the compartment passes the check either way.
+
 ### tfvdp (**canonical tenofovir diphosphate suffix**)
 - **Type:** metabolite-suffix
 - **Role:** Tenofovir diphosphate active intracellular metabolite suffix.

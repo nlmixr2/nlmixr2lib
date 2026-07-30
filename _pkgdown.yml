@@ -2198,12 +2198,18 @@ navbar:
         href: articles/Mazzocco_2015_temozolomide.html
       - text: "Tenofovir (Baheti 2011)"
         href: articles/Baheti_2011_tenofovir.html
+      - text: "Tenofovir alafenamide (Thoueille 2023)"
+        href: articles/Thoueille_2023_tenofovir_ckd.html
       - text: "Tenofovir combined (Lu 2016)"
         href: articles/Lu_2016_tenofovir.html
       - text: "Tenofovir emtricitabine (Chen 2016)"
         href: articles/Chen_2016_tenofovir_emtricitabine.html
+      - text: "Tenofovir full (Thoueille 2023)"
+        href: articles/Thoueille_2023_tenofovir_ckd.html
       - text: "Tenofovir prdi (Lu 2016)"
         href: articles/Lu_2016_tenofovir.html
+      - text: "Tenofovir reduced (Thoueille 2023)"
+        href: articles/Thoueille_2023_tenofovir_ckd.html
       - text: "Tesaglitazar (Hamren 2008)"
         href: articles/Hamren_2008_tesaglitazar.html
       - text: "Tesofensine (Lehr 2010)"
@@ -3588,6 +3594,7 @@ articles:
   - articles/Thomson_2003_gentamicin
   - articles/Thorsted_2016_somatropin_human
   - articles/Thorsted_2016_somatropin_rat
+  - articles/Thoueille_2023_tenofovir_ckd
   - articles/Thuo_2011_ciprofloxacin
   - articles/Tikiso_2021_abacavir
   - articles/Timmermann_2019_brodalumab
