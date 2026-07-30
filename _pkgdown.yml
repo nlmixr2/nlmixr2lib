@@ -1990,6 +1990,8 @@ navbar:
         href: articles/Suleiman_2019_risankizumab.html
       - text: "Risankizumab (Thakre 2022)"
         href: articles/Thakre_2022_risankizumab.html
+      - text: "Risdiplam (Cleary 2023)"
+        href: articles/Cleary_2023_risdiplam.html
       - text: "Risperidone (Feng 2008)"
         href: articles/Feng_2008_risperidone.html
       - text: "Risperidone (Sherwin 2012)"
@@ -2881,6 +2883,7 @@ articles:
   - articles/Cirincione_2017_exenatide
   - articles/Cirincione_2017_exenatide_er
   - articles/CirrincioneDall_2011_tacrolimus
+  - articles/Cleary_2023_risdiplam
   - articles/Clegg_2024_nirsevimab
   - articles/Clewe_2015_rifampicin
   - articles/Clewe_2016_rifampicin
