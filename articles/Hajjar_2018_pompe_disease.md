@@ -125,7 +125,7 @@ below.
 set.seed(20180918)
 
 n_arm <- 200L
-obs_grid <- c(seq(0, 4, by = 0.1), seq(4.25, 24, by = 0.25))
+obs_grid <- c(seq(0, 4, by = 0.25), seq(4.5, 24, by = 0.5))
 
 make_atb200_arm <- function(n, at2221_dose, id_offset) {
   doses <- tibble::tibble(
@@ -389,10 +389,10 @@ knitr::kable(
 | Tmax (h)                | 260 mg AT2221 |         — |         4 |      — |
 | AUC0-∞ (obs) (ug\*h/mL) |   0 mg AT2221 |         — |      1290 |      — |
 | AUC0-∞ (obs) (ug\*h/mL) | 130 mg AT2221 |         — |      1510 |      — |
-| AUC0-∞ (obs) (ug\*h/mL) | 260 mg AT2221 |      2040 |      1710 | -16.2% |
+| AUC0-∞ (obs) (ug\*h/mL) | 260 mg AT2221 |      2040 |      1710 | -16.3% |
 | t½ (h)                  |   0 mg AT2221 |         — |      4.11 |      — |
-| t½ (h)                  | 130 mg AT2221 |         — |       4.1 |      — |
-| t½ (h)                  | 260 mg AT2221 |         — |      4.06 |      — |
+| t½ (h)                  | 130 mg AT2221 |         — |      4.11 |      — |
+| t½ (h)                  | 260 mg AT2221 |         — |      4.07 |      — |
 
 ATB200 simulated vs. published NCA (Hajjar 2018 Figure 3 reports the
 AUC0-inf median for the 260 mg AT2221 arm only). \* differs from
@@ -425,11 +425,11 @@ knitr::kable(
 | NCA parameter           |        at2221 | Reference | Simulated | % diff |
 |:------------------------|--------------:|----------:|----------:|-------:|
 | Cmax (ug/mL)            | 130 mg AT2221 |         — |      1.61 |      — |
-| Cmax (ug/mL)            | 260 mg AT2221 |         — |      3.22 |      — |
-| Tmax (h)                | 130 mg AT2221 |         — |       2.6 |      — |
+| Cmax (ug/mL)            | 260 mg AT2221 |         — |      3.21 |      — |
+| Tmax (h)                | 130 mg AT2221 |         — |       2.5 |      — |
 | Tmax (h)                | 260 mg AT2221 |         — |       2.5 |      — |
 | AUC0-∞ (obs) (ug\*h/mL) | 130 mg AT2221 |         — |      14.8 |      — |
-| AUC0-∞ (obs) (ug\*h/mL) | 260 mg AT2221 |      25.9 |      29.5 | +13.9% |
+| AUC0-∞ (obs) (ug\*h/mL) | 260 mg AT2221 |      25.9 |      29.5 | +13.8% |
 | t½ (h)                  | 130 mg AT2221 |         — |      11.2 |      — |
 | t½ (h)                  | 260 mg AT2221 |         — |      11.2 |      — |
 

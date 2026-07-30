@@ -115,7 +115,7 @@ Bernoulli variable at the observed per-stratum frequency (19/25, 6/10,
 ``` r
 
 set.seed(20230225)
-n_per_arm  <- 200L
+n_per_arm  <- 60L
 infusion_h <- 0.5
 sim_end_h  <- 48
 dt         <- 0.1   # observation grid step; also the T > MIC resolution
@@ -230,9 +230,9 @@ events |>
 
 | Stratum \| regimen | n | eGFR median | eGFR Q1 | eGFR Q3 | Concomitant antibiotic (%) |
 |:---|---:|---:|---:|---:|---:|
-| Adequate (eGFR \>= 50), 2000 mg q8h | 200 | 102.7 | 82.0 | 125.0 | 76.5 |
-| Moderate (eGFR 30-50), 1000 mg q12h | 200 | 37.2 | 32.9 | 41.8 | 50.0 |
-| Severe (eGFR \< 30), 1000 mg q24h | 200 | 17.7 | 13.6 | 23.1 | 34.0 |
+| Adequate (eGFR \>= 50), 2000 mg q8h | 60 | 103.1 | 82.2 | 126.8 | 70.0 |
+| Moderate (eGFR 30-50), 1000 mg q12h | 60 | 35.5 | 32.8 | 42.0 | 61.7 |
+| Severe (eGFR \< 30), 1000 mg q24h | 60 | 18.0 | 14.2 | 22.4 | 35.0 |
 
 Simulated virtual-cohort covariates against Zieck 2023 Table 2.
 Published eGFR medians (IQR): adequate 102.8 (78.1-124.8), moderate 34.3
@@ -536,9 +536,9 @@ pta |>
 
 | Stratum \| regimen | Simulated PTA (%) | Zieck 2023 Monte Carlo PTA (%) | Zieck 2023 observed PTA (%), Table 4 | Difference vs Monte Carlo (pp) |
 |:---|---:|---:|---:|---:|
-| Adequate (eGFR \>= 50), 2000 mg q8h | 96.5 | 93 | 100 | 3.5 |
-| Moderate (eGFR 30-50), 1000 mg q12h | 97.5 | 97 | 90 | 0.5 |
-| Severe (eGFR \< 30), 1000 mg q24h | 93.5 | 97 | 100 | -3.5 |
+| Adequate (eGFR \>= 50), 2000 mg q8h | 98.3 | 93 | 100 | 5.3 |
+| Moderate (eGFR 30-50), 1000 mg q12h | 90.0 | 97 | 90 | -7.0 |
+| Severe (eGFR \< 30), 1000 mg q24h | 91.7 | 97 | 100 | -5.3 |
 
 Primary endpoint: probability of attaining 50% T0-24 \> MIC at MIC 8
 mg/L (the EUCAST P. aeruginosa clinical breakpoint). The Monte Carlo
@@ -574,12 +574,12 @@ pta |>
 
 | Stratum \| regimen | Window | MIC 0.125 | MIC 0.25 | MIC 0.5 | MIC 1 | MIC 2 | MIC 4 | MIC 8 |
 |:---|:---|---:|---:|---:|---:|---:|---:|---:|
-| Adequate (eGFR \>= 50), 2000 mg q8h | T0-24 | 100 | 100 | 100 | 100 | 99.5 | 98.0 | 96.5 |
-| Adequate (eGFR \>= 50), 2000 mg q8h | T24-48 | 100 | 100 | 100 | 100 | 99.5 | 98.0 | 96.5 |
-| Moderate (eGFR 30-50), 1000 mg q12h | T0-24 | 100 | 100 | 100 | 100 | 100.0 | 99.5 | 97.5 |
-| Moderate (eGFR 30-50), 1000 mg q12h | T24-48 | 100 | 100 | 100 | 100 | 100.0 | 99.5 | 97.5 |
-| Severe (eGFR \< 30), 1000 mg q24h | T0-24 | 100 | 100 | 100 | 100 | 99.0 | 98.5 | 93.5 |
-| Severe (eGFR \< 30), 1000 mg q24h | T24-48 | 100 | 100 | 100 | 100 | 99.0 | 98.5 | 94.0 |
+| Adequate (eGFR \>= 50), 2000 mg q8h | T0-24 | 100 | 100 | 100 | 100 | 100 | 100.0 | 98.3 |
+| Adequate (eGFR \>= 50), 2000 mg q8h | T24-48 | 100 | 100 | 100 | 100 | 100 | 100.0 | 98.3 |
+| Moderate (eGFR 30-50), 1000 mg q12h | T0-24 | 100 | 100 | 100 | 100 | 100 | 98.3 | 90.0 |
+| Moderate (eGFR 30-50), 1000 mg q12h | T24-48 | 100 | 100 | 100 | 100 | 100 | 98.3 | 90.0 |
+| Severe (eGFR \< 30), 1000 mg q24h | T0-24 | 100 | 100 | 100 | 100 | 100 | 95.0 | 91.7 |
+| Severe (eGFR \< 30), 1000 mg q24h | T24-48 | 100 | 100 | 100 | 100 | 100 | 95.0 | 91.7 |
 
 Simulated PTA (%) of 50% T \> MIC across the EUCAST MIC grid, for the
 first 24 h (compare Zieck 2023 Table 4) and for 24-48 h (compare Table
@@ -629,9 +629,9 @@ pta |>
 
 | Stratum \| regimen | MIC 0.125 | MIC 0.25 | MIC 0.5 | MIC 1 | MIC 2 | MIC 4 | MIC 8 | Zieck 2023 Table 5 at MIC 8 (%) |
 |:---|---:|---:|---:|---:|---:|---:|---:|---:|
-| Adequate (eGFR \>= 50), 2000 mg q8h | 98 | 97 | 96 | 94 | 88 | 80 | 65 | 24 |
-| Moderate (eGFR 30-50), 1000 mg q12h | 100 | 99 | 99 | 98 | 95 | 88 | 68 | 50 |
-| Severe (eGFR \< 30), 1000 mg q24h | 98 | 98 | 96 | 94 | 90 | 80 | 56 | 75 |
+| Adequate (eGFR \>= 50), 2000 mg q8h | 100 | 98 | 98 | 95 | 87 | 82 | 53 | 24 |
+| Moderate (eGFR 30-50), 1000 mg q12h | 98 | 98 | 97 | 92 | 88 | 82 | 60 | 50 |
+| Severe (eGFR \< 30), 1000 mg q24h | 98 | 95 | 93 | 92 | 85 | 73 | 55 | 75 |
 
 Simulated PTA (%) of 100% T0-24 \> MIC (\>= 23.5 h above MIC) across the
 EUCAST MIC grid, with the published Table 5 MIC-8 column alongside. Note
@@ -776,30 +776,30 @@ as.data.frame(nca_res$result) |>
 
 | Stratum \| regimen                  | Window  | NCA parameter | Median |    Q1 |     Q3 |
 |:------------------------------------|:--------|:--------------|-------:|------:|-------:|
-| Adequate (eGFR \>= 50), 2000 mg q8h | 0-24 h  | AUC (mg\*h/L) |  879.0 | 690.0 | 1129.0 |
-| Adequate (eGFR \>= 50), 2000 mg q8h | 0-24 h  | Cavg (mg/L)   |   36.6 |  28.8 |   47.0 |
-| Adequate (eGFR \>= 50), 2000 mg q8h | 0-24 h  | Cmax (mg/L)   |   93.5 |  77.2 |  117.1 |
+| Adequate (eGFR \>= 50), 2000 mg q8h | 0-24 h  | AUC (mg\*h/L) |  926.5 | 676.0 | 1059.5 |
+| Adequate (eGFR \>= 50), 2000 mg q8h | 0-24 h  | Cavg (mg/L)   |   38.6 |  28.2 |   44.1 |
+| Adequate (eGFR \>= 50), 2000 mg q8h | 0-24 h  | Cmax (mg/L)   |   99.7 |  71.9 |  130.4 |
 | Adequate (eGFR \>= 50), 2000 mg q8h | 0-24 h  | Cmin (mg/L)   |    0.0 |   0.0 |    0.0 |
-| Adequate (eGFR \>= 50), 2000 mg q8h | 24-48 h | AUC (mg\*h/L) |  937.4 | 716.1 | 1271.7 |
-| Adequate (eGFR \>= 50), 2000 mg q8h | 24-48 h | Cavg (mg/L)   |   39.1 |  29.8 |   53.0 |
-| Adequate (eGFR \>= 50), 2000 mg q8h | 24-48 h | Cmax (mg/L)   |   94.0 |  78.8 |  121.5 |
-| Adequate (eGFR \>= 50), 2000 mg q8h | 24-48 h | Cmin (mg/L)   |   12.1 |   5.3 |   21.1 |
-| Moderate (eGFR 30-50), 1000 mg q12h | 0-24 h  | AUC (mg\*h/L) |  608.7 | 511.9 |  770.0 |
-| Moderate (eGFR 30-50), 1000 mg q12h | 0-24 h  | Cavg (mg/L)   |   25.4 |  21.3 |   32.1 |
-| Moderate (eGFR 30-50), 1000 mg q12h | 0-24 h  | Cmax (mg/L)   |   55.7 |  44.4 |   67.8 |
+| Adequate (eGFR \>= 50), 2000 mg q8h | 24-48 h | AUC (mg\*h/L) |  986.8 | 697.4 | 1240.3 |
+| Adequate (eGFR \>= 50), 2000 mg q8h | 24-48 h | Cavg (mg/L)   |   41.1 |  29.1 |   51.7 |
+| Adequate (eGFR \>= 50), 2000 mg q8h | 24-48 h | Cmax (mg/L)   |   99.8 |  76.2 |  132.4 |
+| Adequate (eGFR \>= 50), 2000 mg q8h | 24-48 h | Cmin (mg/L)   |    8.8 |   5.1 |   20.1 |
+| Moderate (eGFR 30-50), 1000 mg q12h | 0-24 h  | AUC (mg\*h/L) |  576.1 | 430.7 |  737.3 |
+| Moderate (eGFR 30-50), 1000 mg q12h | 0-24 h  | Cavg (mg/L)   |   24.0 |  17.9 |   30.7 |
+| Moderate (eGFR 30-50), 1000 mg q12h | 0-24 h  | Cmax (mg/L)   |   56.8 |  43.9 |   72.8 |
 | Moderate (eGFR 30-50), 1000 mg q12h | 0-24 h  | Cmin (mg/L)   |    0.0 |   0.0 |    0.0 |
-| Moderate (eGFR 30-50), 1000 mg q12h | 24-48 h | AUC (mg\*h/L) |  736.4 | 590.9 |  941.5 |
-| Moderate (eGFR 30-50), 1000 mg q12h | 24-48 h | Cavg (mg/L)   |   30.7 |  24.6 |   39.2 |
-| Moderate (eGFR 30-50), 1000 mg q12h | 24-48 h | Cmax (mg/L)   |   61.0 |  49.3 |   73.0 |
-| Moderate (eGFR 30-50), 1000 mg q12h | 24-48 h | Cmin (mg/L)   |   13.5 |   7.9 |   19.4 |
-| Severe (eGFR \< 30), 1000 mg q24h   | 0-24 h  | AUC (mg\*h/L) |  515.4 | 410.9 |  617.7 |
-| Severe (eGFR \< 30), 1000 mg q24h   | 0-24 h  | Cavg (mg/L)   |   21.5 |  17.1 |   25.7 |
-| Severe (eGFR \< 30), 1000 mg q24h   | 0-24 h  | Cmax (mg/L)   |   44.6 |  35.7 |   56.3 |
+| Moderate (eGFR 30-50), 1000 mg q12h | 24-48 h | AUC (mg\*h/L) |  686.8 | 531.8 |  855.4 |
+| Moderate (eGFR 30-50), 1000 mg q12h | 24-48 h | Cavg (mg/L)   |   28.6 |  22.2 |   35.6 |
+| Moderate (eGFR 30-50), 1000 mg q12h | 24-48 h | Cmax (mg/L)   |   59.4 |  48.8 |   74.3 |
+| Moderate (eGFR 30-50), 1000 mg q12h | 24-48 h | Cmin (mg/L)   |    9.7 |   5.8 |   15.8 |
+| Severe (eGFR \< 30), 1000 mg q24h   | 0-24 h  | AUC (mg\*h/L) |  490.3 | 387.1 |  576.3 |
+| Severe (eGFR \< 30), 1000 mg q24h   | 0-24 h  | Cavg (mg/L)   |   20.4 |  16.1 |   24.0 |
+| Severe (eGFR \< 30), 1000 mg q24h   | 0-24 h  | Cmax (mg/L)   |   43.4 |  34.3 |   56.3 |
 | Severe (eGFR \< 30), 1000 mg q24h   | 0-24 h  | Cmin (mg/L)   |    0.0 |   0.0 |    0.0 |
-| Severe (eGFR \< 30), 1000 mg q24h   | 24-48 h | AUC (mg\*h/L) |  640.8 | 488.5 |  806.4 |
-| Severe (eGFR \< 30), 1000 mg q24h   | 24-48 h | Cavg (mg/L)   |   26.7 |  20.4 |   33.6 |
-| Severe (eGFR \< 30), 1000 mg q24h   | 24-48 h | Cmax (mg/L)   |   54.5 |  45.6 |   66.1 |
-| Severe (eGFR \< 30), 1000 mg q24h   | 24-48 h | Cmin (mg/L)   |    8.9 |   4.6 |   13.1 |
+| Severe (eGFR \< 30), 1000 mg q24h   | 24-48 h | AUC (mg\*h/L) |  590.7 | 476.2 |  728.2 |
+| Severe (eGFR \< 30), 1000 mg q24h   | 24-48 h | Cavg (mg/L)   |   24.6 |  19.8 |   30.3 |
+| Severe (eGFR \< 30), 1000 mg q24h   | 24-48 h | Cmax (mg/L)   |   56.2 |  42.9 |   66.1 |
+| Severe (eGFR \< 30), 1000 mg q24h   | 24-48 h | Cmin (mg/L)   |    8.7 |   3.7 |   12.1 |
 
 Simulated NCA per renal-function stratum and exposure window (200
 subjects per arm). Zieck 2023 publishes AUC0-24 and AUC24-48 only as
@@ -877,7 +877,7 @@ tibble::tibble(
 
 | Kruskal-Wallis chi-squared |  df | p-value | Max/min stratum median AUC |
 |---------------------------:|----:|--------:|---------------------------:|
-|                    184.326 |   2 |       0 |                      1.705 |
+|                     70.749 |   2 |       0 |                       1.89 |
 
 Kruskal-Wallis test for a difference in simulated AUC0-24 across the
 three renal-function strata, with the ratio of the largest to the

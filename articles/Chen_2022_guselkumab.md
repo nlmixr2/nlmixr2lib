@@ -113,7 +113,7 @@ sized at 500 subjects to make per-time-point quantiles smooth.
 ``` r
 
 set.seed(2022)
-n_subj <- 500L
+n_subj <- 150L
 
 pop <- tibble(
   ID   = seq_len(n_subj),
@@ -263,8 +263,8 @@ knitr::kable(
 
 | regimen | window      | Cmax_median | Ctrough_median | AUCtau_median |
 |:--------|:------------|------------:|---------------:|--------------:|
-| q4w     | weeks 48-52 |       8.061 |          3.497 |       157.980 |
-| q8w     | weeks 44-52 |       5.971 |          0.953 |       163.798 |
+| q4w     | weeks 48-52 |       8.215 |          3.941 |       166.587 |
+| q8w     | weeks 44-52 |       6.218 |          1.044 |       170.987 |
 
 Simulated steady-state per-interval exposures (Cmax / Ctrough in ug/mL;
 AUCtau in ug\*day/mL). {.table}
@@ -317,7 +317,7 @@ knitr::kable(
 
 | start | end | regimen | N | auclast | cmax | tmax | half.life |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | 56 | q8w | 500 | 161 \[44.2\] | 5.97 \[34.7\] | 3.50 \[3.50, 17.5\] | 20.1 \[9.47\] |
+| 0 | 56 | q8w | 150 | 171 \[44.8\] | 6.17 \[36.1\] | 3.50 \[3.50, 21.0\] | 21.2 \[9.36\] |
 
 PKNCA summary for the q8w steady-state maintenance interval (weeks
 44-52). Expected typical terminal half-life ~18.1 days (Chen 2022

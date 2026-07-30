@@ -82,7 +82,7 @@ below.
 
 set.seed(20230612)
 
-n_per_group <- 100L
+n_per_group <- 40L
 tau          <- 24        # hours between once-daily doses
 n_doses      <- 21L       # 21 daily doses => steady state
 ss_start     <- (n_doses - 1L) * tau        # time of the final dose (480 h)
@@ -222,18 +222,18 @@ reproduction |>
 
 | Dose (mg/day) | EIAED status | BMI 18.5 kg/m^2 | BMI 22.5 kg/m^2 | BMI 27.5 kg/m^2 | BMI 32.5 kg/m^2 |
 |---:|:---|---:|---:|---:|---:|
-| 2 | no EIAED | 0.144 | 0.169 | 0.187 | 0.190 |
-| 4 | no EIAED | 0.303 | 0.350 | 0.358 | 0.373 |
-| 6 | no EIAED | 0.433 | 0.499 | 0.531 | 0.540 |
-| 8 | no EIAED | 0.607 | 0.636 | 0.698 | 0.707 |
-| 10 | no EIAED | 0.788 | 0.849 | 0.880 | 0.901 |
-| 12 | no EIAED | 0.863 | 1.082 | 1.099 | 1.096 |
-| 2 | with EIAED | 0.029 | 0.040 | 0.053 | 0.058 |
-| 4 | with EIAED | 0.054 | 0.080 | 0.096 | 0.111 |
-| 6 | with EIAED | 0.094 | 0.125 | 0.142 | 0.181 |
-| 8 | with EIAED | 0.126 | 0.168 | 0.206 | 0.223 |
-| 10 | with EIAED | 0.150 | 0.209 | 0.278 | 0.271 |
-| 12 | with EIAED | 0.168 | 0.234 | 0.313 | 0.347 |
+| 2 | no EIAED | 0.139 | 0.168 | 0.186 | 0.190 |
+| 4 | no EIAED | 0.266 | 0.314 | 0.334 | 0.363 |
+| 6 | no EIAED | 0.433 | 0.452 | 0.550 | 0.553 |
+| 8 | no EIAED | 0.619 | 0.692 | 0.750 | 0.718 |
+| 10 | no EIAED | 0.701 | 0.887 | 0.864 | 0.971 |
+| 12 | no EIAED | 0.928 | 0.974 | 1.096 | 1.006 |
+| 2 | with EIAED | 0.030 | 0.047 | 0.050 | 0.061 |
+| 4 | with EIAED | 0.065 | 0.097 | 0.095 | 0.115 |
+| 6 | with EIAED | 0.092 | 0.126 | 0.142 | 0.166 |
+| 8 | with EIAED | 0.116 | 0.171 | 0.200 | 0.223 |
+| 10 | with EIAED | 0.125 | 0.232 | 0.241 | 0.278 |
+| 12 | with EIAED | 0.164 | 0.239 | 0.300 | 0.359 |
 
 Replicates Silva 2023 Table 3: mean simulated steady-state trough
 concentrations of perampanel (mg/L) by daily dose, BMI, and EIAED
@@ -311,18 +311,18 @@ nca_tbl |>
 
 | Treatment | AUC0-tau,ss (mg\*h/L) | Cav,ss (mg/L) | Cmax,ss (mg/L) | Cmin,ss (mg/L) |
 |:---|---:|---:|---:|---:|
-| 4 mg \| BMI 22.5 \| no EIAED | 10.00 | 0.416 | 0.508 | 0.3370 |
-| 4 mg \| BMI 22.5 \| with EIAED | 3.32 | 0.138 | 0.241 | 0.0699 |
-| 4 mg \| BMI 27.5 \| no EIAED | 9.43 | 0.393 | 0.451 | 0.3400 |
-| 4 mg \| BMI 27.5 \| with EIAED | 3.35 | 0.140 | 0.203 | 0.0913 |
-| 6 mg \| BMI 22.5 \| no EIAED | 14.60 | 0.608 | 0.746 | 0.4890 |
-| 6 mg \| BMI 22.5 \| with EIAED | 5.22 | 0.218 | 0.370 | 0.1140 |
-| 6 mg \| BMI 27.5 \| no EIAED | 15.10 | 0.630 | 0.718 | 0.5510 |
-| 6 mg \| BMI 27.5 \| with EIAED | 4.91 | 0.204 | 0.300 | 0.1320 |
-| 8 mg \| BMI 22.5 \| no EIAED | 18.10 | 0.753 | 0.937 | 0.5950 |
-| 8 mg \| BMI 22.5 \| with EIAED | 7.08 | 0.295 | 0.498 | 0.1560 |
-| 8 mg \| BMI 27.5 \| no EIAED | 18.50 | 0.773 | 0.890 | 0.6670 |
-| 8 mg \| BMI 27.5 \| with EIAED | 7.26 | 0.303 | 0.428 | 0.2040 |
+| 4 mg \| BMI 22.5 \| no EIAED | 8.53 | 0.356 | 0.448 | 0.2770 |
+| 4 mg \| BMI 22.5 \| with EIAED | 3.86 | 0.161 | 0.261 | 0.0903 |
+| 4 mg \| BMI 27.5 \| no EIAED | 9.19 | 0.383 | 0.442 | 0.3300 |
+| 4 mg \| BMI 27.5 \| with EIAED | 3.10 | 0.129 | 0.193 | 0.0815 |
+| 6 mg \| BMI 22.5 \| no EIAED | 12.70 | 0.531 | 0.669 | 0.4130 |
+| 6 mg \| BMI 22.5 \| with EIAED | 5.20 | 0.217 | 0.370 | 0.1130 |
+| 6 mg \| BMI 27.5 \| no EIAED | 13.70 | 0.571 | 0.659 | 0.4920 |
+| 6 mg \| BMI 27.5 \| with EIAED | 5.05 | 0.210 | 0.305 | 0.1380 |
+| 8 mg \| BMI 22.5 \| no EIAED | 19.30 | 0.803 | 0.986 | 0.6440 |
+| 8 mg \| BMI 22.5 \| with EIAED | 6.98 | 0.291 | 0.495 | 0.1530 |
+| 8 mg \| BMI 27.5 \| no EIAED | 20.60 | 0.859 | 0.975 | 0.7520 |
+| 8 mg \| BMI 27.5 \| with EIAED | 7.03 | 0.293 | 0.419 | 0.1950 |
 
 PKNCA-derived steady-state NCA on the final 24-h dosing interval (median
 across 100 stochastic subjects per group). {.table style="width:100%;"}

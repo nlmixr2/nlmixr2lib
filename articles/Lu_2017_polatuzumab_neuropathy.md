@@ -122,7 +122,7 @@ convention.
 set.seed(20170308)
 
 # Two clinically relevant dose levels, 200 subjects per arm
-n_per_arm   <- 200L
+n_per_arm   <- 60L
 dose_levels <- c(1.8, 2.4)   # mg/kg
 n_cycles    <- 8L            # observe through 8 cycles
 cycle_h     <- 21 * 24       # Q3W = 504 hours per cycle
@@ -212,7 +212,7 @@ events <- bind_rows(
 stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
 cat("Cohort: ", length(unique(events$id)), " subjects, ",
     nrow(events), " event rows\n", sep = "")
-#> Cohort: 400 subjects, 70800 event rows
+#> Cohort: 120 subjects, 21240 event rows
 ```
 
 ## Simulation
@@ -298,8 +298,8 @@ print(tbl)
 #> # A tibble: 2 × 4
 #>   cycles           `1.8 mg/kg` `2.4 mg/kg` RR_2.4_vs_1.8
 #>   <chr>                  <dbl>       <dbl>         <dbl>
-#> 1 6 cycles (126 d)       0.249       0.304          1.22
-#> 2 8 cycles (168 d)       0.409       0.485          1.19
+#> 1 6 cycles (126 d)       0.260       0.346          1.33
+#> 2 8 cycles (168 d)       0.421       0.532          1.26
 ```
 
 The vignette-simulated risk ratios should fall in the same direction as

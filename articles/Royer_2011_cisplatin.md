@@ -149,7 +149,7 @@ BATH_TIMES <- c(0.0, 1.0)
 # for a multi-output model (see the Urien 2004 and Morris 2011 vignettes).
 build_events <- function(cohort) {
   obs_t <- sort(unique(c(
-    seq(0.02, 2.0, by = 0.02),  # dense sampling during the two baths
+    seq(0.02, 2.0, by = 0.10),  # dense sampling during the two baths
     seq(2.5, 8.0, by = 0.5),    # after baths, moderate density
     c(12, 16, 24)               # late samples matching the paper's schedule
   )))
@@ -277,8 +277,8 @@ knitr::kable(rt_summary,
 
 | treatment                  | rt_mean | rt_sd |
 |:---------------------------|--------:|------:|
-| IP cisplatin + epinephrine |    44.0 |  11.3 |
-| IP cisplatin alone         |    58.5 |  11.4 |
+| IP cisplatin + epinephrine |    43.6 |  11.2 |
+| IP cisplatin alone         |    57.4 |  11.2 |
 
 Simulated individual rate of transfer of unbound Pt from peritoneum to
 bloodstream over 24 h (%); Royer 2011 Figure 3A reports a 40.2% decrease
@@ -294,7 +294,7 @@ rt_ratio <- rt_summary |>
   dplyr::pull(rt_mean)
 cat(sprintf("Simulated EPI:no-EPI RT ratio = %.3f (paper reports a 40.2%% decrease, i.e., ratio = 0.598).\n",
             rt_ratio))
-#> Simulated EPI:no-EPI RT ratio = 0.751 (paper reports a 40.2% decrease, i.e., ratio = 0.598).
+#> Simulated EPI:no-EPI RT ratio = 0.759 (paper reports a 40.2% decrease, i.e., ratio = 0.598).
 ```
 
 ### Figure 3C (duration of intraperitoneal Pt above 10 mg/L)
@@ -430,6 +430,8 @@ sim_nca_ip <- dplyr::bind_rows(
 conc_obj_ip <- PKNCA::PKNCAconc(sim_nca_ip,
                                 Cc ~ time | treatment + id,
                                 concu = "mg/L", timeu = "h")
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
 intervals_ip <- data.frame(
   start       = 0,
   end         = 24,
@@ -440,6 +442,156 @@ intervals_ip <- data.frame(
 nca_data_ip <- PKNCA::PKNCAdata(conc_obj_ip, dose_obj,
                                 intervals = intervals_ip)
 nca_res_ip  <- PKNCA::pk.nca(nca_data_ip)
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in log(conc.2/conc.1): NaNs produced
+#> Warning in assert_conc(conc = conc): Negative concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in log(conc.2/conc.1): NaNs produced
+#> Warning in assert_conc(conc = conc): Negative concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in log(conc.2/conc.1): NaNs produced
+#> Warning in assert_conc(conc = conc): Negative concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in log(conc.2/conc.1): NaNs produced
+#> Warning in assert_conc(conc = conc): Negative concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in log(conc.2/conc.1): NaNs produced
+#> Warning in assert_conc(conc = conc): Negative concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in log(conc.2/conc.1): NaNs produced
+#> Warning in assert_conc(conc = conc): Negative concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in log(conc.2/conc.1): NaNs produced
+#> Warning in assert_conc(conc = conc): Negative concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in log(conc.2/conc.1): NaNs produced
+#> Warning in assert_conc(conc = conc): Negative concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in log(conc.2/conc.1): NaNs produced
+#> Warning in assert_conc(conc = conc): Negative concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in log(conc.2/conc.1): NaNs produced
+#> Warning in assert_conc(conc = conc): Negative concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in log(conc.2/conc.1): NaNs produced
+#> Warning in assert_conc(conc = conc): Negative concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in log(conc.2/conc.1): NaNs produced
+#> Warning in assert_conc(conc = conc): Negative concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in log(conc.2/conc.1): NaNs produced
+#> Warning in assert_conc(conc = conc): Negative concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in log(conc.2/conc.1): NaNs produced
+#> Warning in assert_conc(conc = conc): Negative concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in log(conc.2/conc.1): NaNs produced
+#> Warning in assert_conc(conc = conc): Negative concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in log(conc.2/conc.1): NaNs produced
+#> Warning in assert_conc(conc = conc): Negative concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in log(conc.2/conc.1): NaNs produced
+#> Warning in assert_conc(conc = conc): Negative concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in log(conc.2/conc.1): NaNs produced
+#> Warning in assert_conc(conc = conc): Negative concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in log(conc.2/conc.1): NaNs produced
+#> Warning in assert_conc(conc = conc): Negative concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in log(conc.2/conc.1): NaNs produced
+#> Warning in assert_conc(conc = conc): Negative concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in log(conc.2/conc.1): NaNs produced
+#> Warning in assert_conc(conc = conc): Negative concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in log(conc.2/conc.1): NaNs produced
+#> Warning in assert_conc(conc = conc): Negative concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in log(conc.2/conc.1): NaNs produced
+#> Warning in assert_conc(conc = conc): Negative concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in log(conc.2/conc.1): NaNs produced
+#> Warning in assert_conc(conc = conc): Negative concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in log(conc.2/conc.1): NaNs produced
+#> Warning in assert_conc(conc = conc): Negative concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
 ```
 
 ### Comparison against published thresholds and IPCL point estimates
@@ -486,8 +638,8 @@ knitr::kable(serum_wide,
 
 | Cohort | Serum AUC0-inf (mg h/L) | Serum AUC0-24 (mg h/L) | Serum Cmax (mg/L) | Serum Tmax (h) |
 |:---|---:|---:|---:|---:|
-| IP cisplatin + epinephrine | 11.18 | 5.36 | 0.97 | 1.97 |
-| IP cisplatin alone | 13.34 | 7.37 | 2.03 | 1.58 |
+| IP cisplatin + epinephrine | 11.18 | 5.36 | 0.96 | 1.95 |
+| IP cisplatin alone | 13.33 | 7.36 | 2.03 | 1.58 |
 
 Simulated serum ultrafiltered Pt NCA (0-24 h), per-arm mean across 200
 subjects. Royer 2011 Table 3 lists an AUCserum toxicity threshold of 4.5
@@ -502,8 +654,8 @@ knitr::kable(ip_wide,
 
 | Cohort                     | IP AUC0-24 (mg h/L) | IP Cmax (mg/L) | IP Tmax (h) |
 |:---------------------------|--------------------:|---------------:|------------:|
-| IP cisplatin + epinephrine |               57.46 |          29.38 |           1 |
-| IP cisplatin alone         |               26.26 |          23.75 |           1 |
+| IP cisplatin + epinephrine |               57.84 |          28.95 |        1.02 |
+| IP cisplatin alone         |               27.69 |          23.01 |        1.02 |
 
 Simulated intraperitoneal Pt NCA (0-24 h), per-arm mean across 200
 subjects. Royer 2011 Table 3 lists an AUCIP toxicity threshold of 19.6

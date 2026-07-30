@@ -77,7 +77,7 @@ between-subject variability from the model’s omega matrix.
 
 set.seed(20160810)
 
-n_per_arm <- 1000
+n_per_arm <- 200
 obs_grid  <- sort(unique(c(seq(0, 1, by = 0.05),
                            seq(1, 12, by = 0.1))))
 
@@ -264,8 +264,8 @@ duration_80 |>
 
 | Treatment              | Last time P(Cc \> LLOQ) \>= 80% (h) |
 |:-----------------------|------------------------------------:|
-| 10 mg + 10 mg @ 15 min |                                 9.6 |
-| 10 mg single           |                                 7.1 |
+| 10 mg + 10 mg @ 15 min |                                10.5 |
+| 10 mg single           |                                 7.2 |
 | 5 mg single            |                                 4.8 |
 
 Duration above the 80% probability of exceeding LLOQ. Paper Results: 5
@@ -402,33 +402,33 @@ nca_tbl |>
 | Treatment    | NCA parameter       | Median |    P05 |    P95 |
 |:-------------|:--------------------|-------:|-------:|-------:|
 | 10 mg single | adj.r.squared       |   1.00 |   1.00 |   1.00 |
-| 10 mg single | aucinf.obs          | 235.55 | 109.30 | 502.09 |
-| 10 mg single | clast.obs           |   2.89 |   0.64 |  10.95 |
-| 10 mg single | clast.pred          |   2.88 |   0.64 |  10.92 |
-| 10 mg single | cmax                |  89.68 |  40.88 | 186.26 |
-| 10 mg single | half.life           |   2.96 |   2.14 |   4.54 |
-| 10 mg single | lambda.z            |   0.23 |   0.15 |   0.32 |
-| 10 mg single | lambda.z.n.points   | 100.00 |  91.00 | 105.00 |
-| 10 mg single | lambda.z.time.first |   2.10 |   1.60 |   3.00 |
+| 10 mg single | aucinf.obs          | 237.33 | 110.24 | 469.51 |
+| 10 mg single | clast.obs           |   2.95 |   0.65 |   9.93 |
+| 10 mg single | clast.pred          |   2.94 |   0.65 |   9.91 |
+| 10 mg single | cmax                |  92.06 |  40.81 | 194.36 |
+| 10 mg single | half.life           |   2.97 |   2.15 |   4.37 |
+| 10 mg single | lambda.z            |   0.23 |   0.16 |   0.32 |
+| 10 mg single | lambda.z.n.points   | 100.00 |  90.00 | 106.00 |
+| 10 mg single | lambda.z.time.first |   2.10 |   1.50 |   3.10 |
 | 10 mg single | lambda.z.time.last  |  12.00 |  12.00 |  12.00 |
 | 10 mg single | r.squared           |   1.00 |   1.00 |   1.00 |
-| 10 mg single | span.ratio          |   3.33 |   2.23 |   4.39 |
+| 10 mg single | span.ratio          |   3.31 |   2.32 |   4.32 |
 | 10 mg single | tlast               |  12.00 |  12.00 |  12.00 |
-| 10 mg single | tmax                |   0.25 |   0.10 |   0.70 |
+| 10 mg single | tmax                |   0.25 |   0.10 |   0.75 |
 | 5 mg single  | adj.r.squared       |   1.00 |   1.00 |   1.00 |
-| 5 mg single  | aucinf.obs          | 119.21 |  53.09 | 272.47 |
-| 5 mg single  | clast.obs           |   1.49 |   0.30 |   6.21 |
-| 5 mg single  | clast.pred          |   1.49 |   0.30 |   6.20 |
-| 5 mg single  | cmax                |  47.17 |  19.58 |  97.11 |
-| 5 mg single  | half.life           |   2.98 |   2.12 |   4.80 |
-| 5 mg single  | lambda.z            |   0.23 |   0.14 |   0.33 |
-| 5 mg single  | lambda.z.n.points   | 100.00 |  91.95 | 106.00 |
-| 5 mg single  | lambda.z.time.first |   2.10 |   1.50 |   2.90 |
+| 5 mg single  | aucinf.obs          | 123.34 |  60.71 | 247.84 |
+| 5 mg single  | clast.obs           |   1.60 |   0.38 |   5.46 |
+| 5 mg single  | clast.pred          |   1.60 |   0.38 |   5.44 |
+| 5 mg single  | cmax                |  45.77 |  20.94 |  97.36 |
+| 5 mg single  | half.life           |   3.03 |   2.23 |   4.51 |
+| 5 mg single  | lambda.z            |   0.23 |   0.15 |   0.31 |
+| 5 mg single  | lambda.z.n.points   | 100.00 |  91.00 | 105.00 |
+| 5 mg single  | lambda.z.time.first |   2.10 |   1.60 |   3.00 |
 | 5 mg single  | lambda.z.time.last  |  12.00 |  12.00 |  12.00 |
 | 5 mg single  | r.squared           |   1.00 |   1.00 |   1.00 |
-| 5 mg single  | span.ratio          |   3.32 |   2.17 |   4.43 |
+| 5 mg single  | span.ratio          |   3.24 |   2.26 |   4.31 |
 | 5 mg single  | tlast               |  12.00 |  12.00 |  12.00 |
-| 5 mg single  | tmax                |   0.25 |   0.10 |   0.70 |
+| 5 mg single  | tmax                |   0.25 |   0.05 |   0.65 |
 
 Simulated NCA values across the two single-dose arms (per-subject
 medians and 5-95% range). {.table}

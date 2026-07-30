@@ -5265,6 +5265,52 @@ release cycle.
   the linear concentration, so the column units must be pg/mL exactly
   (not ng/mL) for the published exponents to apply unchanged.
 
+### IL22 (**canonical for serum interleukin-22 concentration**)
+
+- **Description:** Serum (or plasma) interleukin-22 (IL-22)
+  concentration. Effector cytokine produced downstream of IL-23 receptor
+  signalling by Th17 / Th22 and innate lymphoid cells; elevated in
+  Crohn’s disease and ulcerative colitis and correlated with disease
+  activity. Both baseline and time-varying usages are covered; document
+  per-model in `covariateData[[IL22]]$notes` whether the column is
+  baseline-only or time-varying.
+- **Units:** pg/mL (= ng/L; the two labels are numerically equivalent).
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a – used as the driver variable of a sigmoid
+  Imax / Emax term rather than as a multiplicative covariate. Reference
+  (half-maximal) values observed: 22.8 pg/mL (Zhang 2023 brazikumab IB50
+  on the CDAI production-rate inhibition).
+- **Source aliases:**
+  - `BIL22`, `BLIL22`, `IL22_BASE` – baseline IL-22 (used in NONMEM
+    `$INPUT` columns; the canonical drops the `B` / `BL` prefix per the
+    `IL6` / `CRP` / `SCORE_EASI` convention, with
+    baseline-vs-time-varying status documented in per-model notes).
+  - `IL-22`, `IL_22` – punctuation variants seen in publication tables
+    and figures.
+- **Example models:** `Zhang_2023_brazikumab_il22.R` (baseline serum
+  IL-22 as the per-subject predictive-biomarker driver of the brazikumab
+  drug effect on the CDAI input rate:
+  `idrug = imax * IL22^hill / (ec50^hill + IL22^hill)` with
+  `imax = 0.297`, `ec50` (the paper’s IB50) `= 22.8 pg/mL`, `hill` (the
+  paper’s gamma) fixed at 20; the effect is gated by `ON_TREATMENT`
+  because the drug term is zero in the placebo arm).
+- **Notes:** Ratified 2026-07-29 alongside the Zhang 2023 brazikumab
+  extraction (sidecar request-001 / response-001, option A). Sibling of
+  `IL6`, but a biologically distinct cytokine and NOT an alias of it:
+  IL-22 sits downstream of IL-23 whereas IL-6 is an independent
+  pro-inflammatory mediator, and the two are measured on separate
+  assays. Anti-IL-23 antibodies (brazikumab, risankizumab, guselkumab,
+  mirikizumab) block IL-23 signalling and thereby suppress downstream
+  IL-22 production, so for those drugs a post-dose IL-22 column is
+  pharmacodynamically driven rather than a stable baseline covariate –
+  record the assay (Zhang 2023 used the R&D Systems Quantikine ELISA,
+  quantifiable range 10-800 pg/mL in 100% serum) and the
+  baseline-vs-time-varying status in each consuming model’s
+  `covariateData[[IL22]]$notes`. Distinct from `CRP`, which Zhang 2023
+  fits as a parallel alternative predictive biomarker in a separate
+  model file.
+
 ## Cardiometabolic / target biomarkers
 
 ### HDLC (**canonical for high-density lipoprotein cholesterol**)
@@ -5739,12 +5785,19 @@ release cycle.
   coefficient theta_drug = 0.000807 per ng/mL on the active-dose log
   hazard for repeated dose modifications; dose-hold periods set CAV = 0
   and switch to the dose-hold baseline log hazard),
-  `Yin_2021_pexidartinib.R` (running average pexidartinib plasma
-  concentration up to the current tumor-measurement time, in mg/L, from
-  the upstream Yin 2020 popPK `modellib('Yin_2020_pexidartinib')`;
-  drives a saturable `1 - exp(-kdrug * CAV)` drug-effect term in the
-  longitudinal RECIST tumor-size PD model with kdrug typical value 0.196
-  (mg/L)^-1; placebo periods carry CAV = 0).
+  `Sano_2023_fesoterodine_mcc.R` (individual 5-HMT average steady-state
+  concentration Cavg,ss in ng/mL from the companion Sano 2023 population
+  PK model, computed as `F * DOSE / (CL/F * tau)` with tau = 24 h;
+  drives an Emax model on maximum cystometric capacity with EC50 = 6.22
+  ng/mL; set to 0 on the baseline occasion per Sano 2023 Online Resource
+  8b, which collapses the Emax term so the baseline prediction is
+  exactly BASE), `Yin_2021_pexidartinib.R` (running average pexidartinib
+  plasma concentration up to the current tumor-measurement time, in
+  mg/L, from the upstream Yin 2020 popPK
+  `modellib('Yin_2020_pexidartinib')`; drives a saturable
+  `1 - exp(-kdrug * CAV)` drug-effect term in the longitudinal RECIST
+  tumor-size PD model with kdrug typical value 0.196 (mg/L)^-1; placebo
+  periods carry CAV = 0).
 - **Notes:** Specific scope because the value is intrinsically tied to
   the modelled drug – there is no shared meaning across drugs or
   studies. Each model’s `covariateData[[CAV]]$notes` should state how
@@ -5941,38 +5994,37 @@ release cycle.
   the same auto-approve pattern. Ratified canonically on 2026-07-08
   alongside the Hien 2017 cipargamin extraction.
 
-### DOSE_PTM_MG (**canonical for administered pretomanid per-administration dose amount**)
+### DOSE_TBPPI_MG (**canonical for administered tebipenem pivoxil hydrobromide dose level**)
 
-- **Description:** Administered oral dose of the nitroimidazooxazine
-  antituberculosis agent pretomanid (formerly PA-824), in mg, for the
-  current dose record. Per-dose-record covariate; must equal the `amt`
-  of the corresponding dosing record. Not a PK covariate in the usual
-  sense – the amount already appears on the dose record via `amt` – but
-  it is required as an explicit regressor because pretomanid
-  bioavailability is saturable in dose, so the dose amount has to be
-  readable inside `model()` to compute `f(depot)`.
+- **Description:** Administered dose of the oral carbapenem pro-drug
+  tebipenem pivoxil hydrobromide (TBP-PI-HBr) carried on each record, in
+  milligrams of pro-drug (not of the active moiety tebipenem).
+  Time-fixed per subject in fixed-dose designs and time-varying in
+  crossover designs where the same subject receives more than one dose
+  level.
 - **Units:** mg
 - **Type:** continuous
 - **Scope:** specific
-- **Reference category:** n/a – enters via the saturable bioavailability
-  `f(depot) = Fmax / (1 + DOSE_PTM_MG / ED50)` with `Fmax` assumed 1 and
-  `ED50` = 554 mg in humans (Mehta 2023 Table 1). A 200 mg dose
-  therefore gives F = 1 / (1 + 200/554) = 0.735.
+- **Reference category:** n/a – used as a normalized linear term
+  `(DOSE_TBPPI_MG / 1200)` inside a gated covariate effect, where 1200
+  mg is the high dose of the study SPR994-104 crossover.
 - **Source aliases:**
-  - `dose` – used in `Mehta_2023_pretomanid_mpbpk.R` (Mehta 2023 ESM S2,
-    which writes `doseIn = Fmax*dose/(1 + dose/ED50)` followed by
-    `f(depot) = doseIn/dose`; the packaged model uses the algebraically
-    identical single-expression form, which avoids dividing by the dose
-    amount).
-- **Example models:** `Mehta_2023_pretomanid_mpbpk.R` (drives the
-  dose-dependent bioavailability of the translational lung-lesion mPBPK
-  model; simulated regimen 200 mg once daily, clinical validation data
-  spanning 50-1200 mg).
-- **Notes:** Follows the `DOSE_<DRUG>_<UNITS>` auto-approve family
-  (siblings: `DOSE_EMPA_MGD`, `DOSE_CIPARGAMIN_MG`, `DOSE_PHT_MGKGD`).
-  Units suffix is `MG` because pretomanid is dosed as a
-  per-administration amount rather than a daily total. Ratified
-  canonically alongside the Mehta 2023 pretomanid extraction.
+  - `DOSEMG` – the column name printed in Ganesan 2023 Eq. 6.
+- **Example models:** `Ganesan_2023_tebipenem.R` (dose effect on the
+  absorption rate constant, gated to a single study:
+  `ka * (1 + e_dose_ka * (DOSE_TBPPI_MG / 1200) * STUDY_SPR994_104)`
+  with `e_dose_ka = -0.478`).
+- **Notes:** A drug-specific member of the `DOSE_<drug>_<units>` family,
+  preferred here over the general `DOSE` canonical for two reasons.
+  First, the dose recorded is pro-drug mass, so every apparent PK
+  parameter estimated against it is conditioned on the
+  pro-drug-to-active-moiety mass ratio and on the (unmeasured, presumed
+  near-complete) conversion fraction – a drug-specific caveat worth
+  carrying in the column name. Second, rxode2’s event-table translator
+  (`etTrans()`) consumes a column literally named `DOSE` and does not
+  expose it to `model()` as a covariate, so a model that reads the dose
+  level as a covariate must use a distinguishable name or supply it
+  through `params`.
 
 ### DOSE_UFH_UH (**canonical for concomitant continuous-infusion unfractionated heparin dose rate**)
 
@@ -6671,6 +6723,57 @@ release cycle.
 - **Notes:** Specific scope. Sibling anti-A-beta mAb AUC canonicals
   `AUC_ADU`, `AUC_DON`, `AUC_GAN` follow the same convention. Ratified
   canonically on 2026-07-24 alongside the van Maanen 2025 extraction.
+
+### AUC_TILM (**canonical for per-24-h-interval AUC of tilmicosin at the infection site**)
+
+- **Description:** Tilmicosin area under the concentration-time curve
+  over the current 24 h dosing interval (AUC_0-24h), measured at the
+  site of infection rather than in plasma, used as the drug-exposure
+  input to antibacterial PK/PD-index models. Chen 2023 measures it in
+  the fluid of a subcutaneously implanted silicone tissue cage (TCF) in
+  piglets by HPLC-MS/MS and derives the per-interval value
+  non-compartmentally in WinNonlin 6.1; because that source publishes no
+  structural PK model, the PD model consumes AUC_TILM directly as a
+  piecewise-constant time-varying covariate (one value per 24 h
+  interval) rather than integrating a PK ODE. The model forms the PK/PD
+  index AUC24h/MIC by dividing this covariate by the challenge strain’s
+  MIC.
+- **Units:** `ug*h/mL` (equivalently `mg*h/L`). Document per-model via
+  `covariateData[[AUC_TILM]]$units` if a different exposure unit is
+  reported.
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a – set to 0 for untreated control records
+  so the sigmoid term
+  `(Emax - E0) * (AUC_TILM/MIC)^N / (EC50^N + (AUC_TILM/MIC)^N)`
+  vanishes and the predicted 24 h change in bacterial count reduces to
+  the control value `E0`.
+- **Source aliases:**
+  - `AUC0-24h` / `AUC24h` – printed names in Chen 2023 Table 1 (per dose
+    group and per dosing day) and Section 2.6 (definition of the
+    AUC24h/MIC index). Chen 2023 Section 3.2 additionally reports the
+    24-48 h window after the final dose, which supplies the fourth
+    interval needed to reproduce the paper’s headline cumulative
+    reductions.
+- **Example models:** `Chen_2023_tilmicosin.R` (Chen 2023 sigmoidal Emax
+  PK/PD integration against *Pasteurella multocida* D:7 in a piglet
+  tissue-cage infection model; `AUC_TILM / mic` drives the per-interval
+  log10 CFU/mL reduction).
+- **Notes:** Specific scope – tilmicosin-specific, and tied to a 24 h
+  interval-AUC convention. Follows the `AUC_<DRUG>` sibling family
+  (`AUC_CARBO`, `AUC_GEM`, `AUC_GCV`, `AUC_LCM`, `AUC_CBZ`, `AUC_PAZO`,
+  `AUC_RTV`, `AUC_EMPA`); `AUC_GCV` is the closest structural analogue,
+  being likewise a per-dosing-interval AUC handed to a PD model as a
+  time-varying column in place of a PK ODE. Distinct from the
+  `CONC_<DRUG>_<UNITS>` family (`CONC_RIF_MGL`, `CONC_INH_MGL`,
+  `CONC_IPM_MGL`), which carries an instantaneous in-vitro concentration
+  driving a mechanism-based kill-rate model; `AUC_TILM` carries an
+  interval-integrated exposure driving a PK/PD-**index** model, so the
+  two are not interchangeable. A future tilmicosin model using a
+  different exposure metric (Cmax/MIC or %T\>MIC, both also reported by
+  Chen 2023) should register a parallel canonical rather than overload
+  `AUC_TILM`. Ratified canonically alongside the Chen 2023 tilmicosin
+  extraction.
 
 ### PLAQUE_BL (**canonical for per-subject baseline amyloid plaque burden (initial-condition use)**)
 
@@ -8287,6 +8390,440 @@ release cycle.
   canonically on 2026-05-27 alongside the Renard 2011 indacaterol
   extraction.
 
+### CELLS_INTACT (**canonical for the intact-versus-lysed cell-preparation flag in an in-vitro target-binding assay**)
+
+- **Description:** Binary flag recording which cell preparation an
+  in-vitro target-binding observation came from: `1` = intact (whole)
+  bacterial cells, in which the outer membrane is present and drug must
+  penetrate it to reach a periplasmic or intracellular target; `0` =
+  lysed cells, i.e. isolated target-containing membrane fractions, in
+  which the outer-membrane barrier has been removed and drug is applied
+  in vast excess. The flag is a property of the sample preparation, not
+  of the bioanalytical measurement method – it is therefore distinct
+  from the `ASSAY_<METHOD>` bioanalytical-method family.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** `0` = lysed cells (isolated membranes).
+  Structural, not a coefficient multiplier: the flag gates both the
+  outer-membrane influx term
+  (`rate_influx = CELLS_INTACT * rate_influx_scaled * CONC_<DRUG>_MGL`)
+  and the periplasmic initial condition
+  (`periplasm(0) = (1 - CELLS_INTACT) * n_peri_lysed`).
+- **Source aliases:**
+  - `INTACT` – used in the Lopez-Arguello 2023 S-ADAPT-TRAN estimation
+    code (Fig. S8 line 66, `IF (INTACT.EQ.1) THEN`).
+- **Example models:** `LopezArguello_2023_<drug>_qsp.R`.
+- **Notes:** General scope because the intact-versus-lysed contrast is a
+  standard design in Gram-negative target-site-penetration work and is
+  not specific to beta-lactams or to PBPs; a new model using the same
+  design should reuse this name rather than register a sibling. Because
+  the flag changes model structure rather than scaling a parameter, it
+  has no associated `e_<cov>_<param>` covariate-effect coefficient.
+  Ratified canonically on 2026-07-29 (operator sidecar
+  `oare_PMC10269149` request-001 q1, answer A) alongside the
+  Lopez-Arguello 2023 PBP-binding extraction.
+
+### CONC_DOR_MGL (**canonical for static in-vitro doripenem concentration driving a receptor-binding or antibacterial PD model**)
+
+- **Description:** Static (time-invariant) doripenem concentration
+  applied to the medium of an in-vitro bacterial experiment, supplied as
+  an exogenous covariate that drives target-receptor binding or
+  bacterial kill. Distinct from a state-derived plasma concentration
+  (`Cc`) and from the `CP_<DRUG>` plasma-PD-driver family: this is an
+  applied experimental concentration in the in-vitro matrix.
+- **Units:** mg/L
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a – scales the rate of net influx and PBP
+  access in the whole-cell penicillin-binding-protein (PBP) binding QSP
+  model (Eq 1: Rate_Influx/access = Rate_Influx/access,scaled x
+  CONC_DOR_MGL). The lysed-cell arm of that assay sets
+  `CELLS_INTACT = 0`, which zeroes the influx term, so the covariate has
+  no effect there.
+- **Source aliases:** none standardized (Lopez-Arguello 2023 writes
+  `C_drug` in Eq 1 and `CDRUG` in the Fig. S8 estimation code).
+- **Example models:** `LopezArguello_2023_doripenem_qsp.R` (static 2
+  mg/L, 2x the MIC of 1 mg/L; Lopez-Arguello 2023 Table 1).
+- **Notes:** Specific scope because the value is bound to doripenem and
+  to the in-vitro assay design. Member of the in-vitro
+  applied-drug-concentration `CONC_<DRUG>_MGL` family (siblings
+  `CONC_RIF_MGL`, `CONC_INH_MGL`, `CONC_EMB_MGL`, `CONC_IPM_MGL`,
+  `CONC_TOB_MGL`). Ratified canonically on 2026-07-29 alongside the
+  Lopez-Arguello 2023 PBP-binding extraction.
+
+### CONC_MEM_MGL (**canonical for static in-vitro meropenem concentration driving a receptor-binding or antibacterial PD model**)
+
+- **Description:** Static (time-invariant) meropenem concentration
+  applied to the medium of an in-vitro bacterial experiment, supplied as
+  an exogenous covariate that drives target-receptor binding or
+  bacterial kill. Distinct from a state-derived plasma concentration
+  (`Cc`) and from the `CP_<DRUG>` plasma-PD-driver family: this is an
+  applied experimental concentration in the in-vitro matrix.
+- **Units:** mg/L
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a – scales the rate of net influx and PBP
+  access in the whole-cell penicillin-binding-protein (PBP) binding QSP
+  model (Eq 1: Rate_Influx/access = Rate_Influx/access,scaled x
+  CONC_MEM_MGL). The lysed-cell arm of that assay sets
+  `CELLS_INTACT = 0`, which zeroes the influx term, so the covariate has
+  no effect there.
+- **Source aliases:** none standardized (Lopez-Arguello 2023 writes
+  `C_drug` in Eq 1 and `CDRUG` in the Fig. S8 estimation code).
+- **Example models:** `LopezArguello_2023_meropenem_qsp.R` (static 1
+  mg/L, 2x the MIC of 0.5 mg/L; Lopez-Arguello 2023 Table 1).
+- **Notes:** Specific scope because the value is bound to meropenem and
+  to the in-vitro assay design. Member of the in-vitro
+  applied-drug-concentration `CONC_<DRUG>_MGL` family (siblings
+  `CONC_RIF_MGL`, `CONC_INH_MGL`, `CONC_EMB_MGL`, `CONC_IPM_MGL`,
+  `CONC_TOB_MGL`). Ratified canonically on 2026-07-29 alongside the
+  Lopez-Arguello 2023 PBP-binding extraction.
+
+### CONC_ETP_MGL (**canonical for static in-vitro ertapenem concentration driving a receptor-binding or antibacterial PD model**)
+
+- **Description:** Static (time-invariant) ertapenem concentration
+  applied to the medium of an in-vitro bacterial experiment, supplied as
+  an exogenous covariate that drives target-receptor binding or
+  bacterial kill. Distinct from a state-derived plasma concentration
+  (`Cc`) and from the `CP_<DRUG>` plasma-PD-driver family: this is an
+  applied experimental concentration in the in-vitro matrix.
+- **Units:** mg/L
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a – scales the rate of net influx and PBP
+  access in the whole-cell penicillin-binding-protein (PBP) binding QSP
+  model (Eq 1: Rate_Influx/access = Rate_Influx/access,scaled x
+  CONC_ETP_MGL). The lysed-cell arm of that assay sets
+  `CELLS_INTACT = 0`, which zeroes the influx term, so the covariate has
+  no effect there.
+- **Source aliases:** none standardized (Lopez-Arguello 2023 writes
+  `C_drug` in Eq 1 and `CDRUG` in the Fig. S8 estimation code).
+- **Example models:** `LopezArguello_2023_ertapenem_qsp.R` (static 8
+  mg/L, 2x the MIC of 4 mg/L; Lopez-Arguello 2023 Table 1).
+- **Notes:** Specific scope because the value is bound to ertapenem and
+  to the in-vitro assay design. Member of the in-vitro
+  applied-drug-concentration `CONC_<DRUG>_MGL` family (siblings
+  `CONC_RIF_MGL`, `CONC_INH_MGL`, `CONC_EMB_MGL`, `CONC_IPM_MGL`,
+  `CONC_TOB_MGL`). Ratified canonically on 2026-07-29 alongside the
+  Lopez-Arguello 2023 PBP-binding extraction.
+
+### CONC_CAZ_MGL (**canonical for static in-vitro ceftazidime concentration driving a receptor-binding or antibacterial PD model**)
+
+- **Description:** Static (time-invariant) ceftazidime concentration
+  applied to the medium of an in-vitro bacterial experiment, supplied as
+  an exogenous covariate that drives target-receptor binding or
+  bacterial kill. Distinct from a state-derived plasma concentration
+  (`Cc`) and from the `CP_<DRUG>` plasma-PD-driver family: this is an
+  applied experimental concentration in the in-vitro matrix.
+- **Units:** mg/L
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a – scales the rate of net influx and PBP
+  access in the whole-cell penicillin-binding-protein (PBP) binding QSP
+  model (Eq 1: Rate_Influx/access = Rate_Influx/access,scaled x
+  CONC_CAZ_MGL). The lysed-cell arm of that assay sets
+  `CELLS_INTACT = 0`, which zeroes the influx term, so the covariate has
+  no effect there.
+- **Source aliases:** none standardized (Lopez-Arguello 2023 writes
+  `C_drug` in Eq 1 and `CDRUG` in the Fig. S8 estimation code).
+- **Example models:** `LopezArguello_2023_ceftazidime_qsp.R` (static 2
+  mg/L, 2x the MIC of 1 mg/L; Lopez-Arguello 2023 Table 1).
+- **Notes:** Specific scope because the value is bound to ceftazidime
+  and to the in-vitro assay design. Member of the in-vitro
+  applied-drug-concentration `CONC_<DRUG>_MGL` family (siblings
+  `CONC_RIF_MGL`, `CONC_INH_MGL`, `CONC_EMB_MGL`, `CONC_IPM_MGL`,
+  `CONC_TOB_MGL`). Ratified canonically on 2026-07-29 alongside the
+  Lopez-Arguello 2023 PBP-binding extraction.
+
+### CONC_FEP_MGL (**canonical for static in-vitro cefepime concentration driving a receptor-binding or antibacterial PD model**)
+
+- **Description:** Static (time-invariant) cefepime concentration
+  applied to the medium of an in-vitro bacterial experiment, supplied as
+  an exogenous covariate that drives target-receptor binding or
+  bacterial kill. Distinct from a state-derived plasma concentration
+  (`Cc`) and from the `CP_<DRUG>` plasma-PD-driver family: this is an
+  applied experimental concentration in the in-vitro matrix.
+- **Units:** mg/L
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a – scales the rate of net influx and PBP
+  access in the whole-cell penicillin-binding-protein (PBP) binding QSP
+  model (Eq 1: Rate_Influx/access = Rate_Influx/access,scaled x
+  CONC_FEP_MGL). The lysed-cell arm of that assay sets
+  `CELLS_INTACT = 0`, which zeroes the influx term, so the covariate has
+  no effect there.
+- **Source aliases:** none standardized (Lopez-Arguello 2023 writes
+  `C_drug` in Eq 1 and `CDRUG` in the Fig. S8 estimation code).
+- **Example models:** `LopezArguello_2023_cefepime_qsp.R` (static 2
+  mg/L, 2x the MIC of 1 mg/L; Lopez-Arguello 2023 Table 1).
+- **Notes:** Specific scope because the value is bound to cefepime and
+  to the in-vitro assay design. Member of the in-vitro
+  applied-drug-concentration `CONC_<DRUG>_MGL` family (siblings
+  `CONC_RIF_MGL`, `CONC_INH_MGL`, `CONC_EMB_MGL`, `CONC_IPM_MGL`,
+  `CONC_TOB_MGL`). Ratified canonically on 2026-07-29 alongside the
+  Lopez-Arguello 2023 PBP-binding extraction.
+
+### CONC_FOX_MGL (**canonical for static in-vitro cefoxitin concentration driving a receptor-binding or antibacterial PD model**)
+
+- **Description:** Static (time-invariant) cefoxitin concentration
+  applied to the medium of an in-vitro bacterial experiment, supplied as
+  an exogenous covariate that drives target-receptor binding or
+  bacterial kill. Distinct from a state-derived plasma concentration
+  (`Cc`) and from the `CP_<DRUG>` plasma-PD-driver family: this is an
+  applied experimental concentration in the in-vitro matrix.
+- **Units:** mg/L
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a – scales the rate of net influx and PBP
+  access in the whole-cell penicillin-binding-protein (PBP) binding QSP
+  model (Eq 1: Rate_Influx/access = Rate_Influx/access,scaled x
+  CONC_FOX_MGL). The lysed-cell arm of that assay sets
+  `CELLS_INTACT = 0`, which zeroes the influx term, so the covariate has
+  no effect there.
+- **Source aliases:** none standardized (Lopez-Arguello 2023 writes
+  `C_drug` in Eq 1 and `CDRUG` in the Fig. S8 estimation code).
+- **Example models:** `LopezArguello_2023_cefoxitin_qsp.R` (static 2,048
+  mg/L, 2x the MIC of 1,024 mg/L; Lopez-Arguello 2023 Table 1).
+- **Notes:** Specific scope because the value is bound to cefoxitin and
+  to the in-vitro assay design. Member of the in-vitro
+  applied-drug-concentration `CONC_<DRUG>_MGL` family (siblings
+  `CONC_RIF_MGL`, `CONC_INH_MGL`, `CONC_EMB_MGL`, `CONC_IPM_MGL`,
+  `CONC_TOB_MGL`). Ratified canonically on 2026-07-29 alongside the
+  Lopez-Arguello 2023 PBP-binding extraction.
+
+### CONC_ATM_MGL (**canonical for static in-vitro aztreonam concentration driving a receptor-binding or antibacterial PD model**)
+
+- **Description:** Static (time-invariant) aztreonam concentration
+  applied to the medium of an in-vitro bacterial experiment, supplied as
+  an exogenous covariate that drives target-receptor binding or
+  bacterial kill. Distinct from a state-derived plasma concentration
+  (`Cc`) and from the `CP_<DRUG>` plasma-PD-driver family: this is an
+  applied experimental concentration in the in-vitro matrix.
+- **Units:** mg/L
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a – scales the rate of net influx and PBP
+  access in the whole-cell penicillin-binding-protein (PBP) binding QSP
+  model (Eq 1: Rate_Influx/access = Rate_Influx/access,scaled x
+  CONC_ATM_MGL). The lysed-cell arm of that assay sets
+  `CELLS_INTACT = 0`, which zeroes the influx term, so the covariate has
+  no effect there.
+- **Source aliases:** none standardized (Lopez-Arguello 2023 writes
+  `C_drug` in Eq 1 and `CDRUG` in the Fig. S8 estimation code).
+- **Example models:** `LopezArguello_2023_aztreonam_qsp.R` (static 8
+  mg/L, 2x the MIC of 4 mg/L; Lopez-Arguello 2023 Table 1).
+- **Notes:** Specific scope because the value is bound to aztreonam and
+  to the in-vitro assay design. Member of the in-vitro
+  applied-drug-concentration `CONC_<DRUG>_MGL` family (siblings
+  `CONC_RIF_MGL`, `CONC_INH_MGL`, `CONC_EMB_MGL`, `CONC_IPM_MGL`,
+  `CONC_TOB_MGL`). Ratified canonically on 2026-07-29 alongside the
+  Lopez-Arguello 2023 PBP-binding extraction.
+
+### CONC_PIP_MGL (**canonical for static in-vitro piperacillin concentration driving a receptor-binding or antibacterial PD model**)
+
+- **Description:** Static (time-invariant) piperacillin concentration
+  applied to the medium of an in-vitro bacterial experiment, supplied as
+  an exogenous covariate that drives target-receptor binding or
+  bacterial kill. Distinct from a state-derived plasma concentration
+  (`Cc`) and from the `CP_<DRUG>` plasma-PD-driver family: this is an
+  applied experimental concentration in the in-vitro matrix.
+- **Units:** mg/L
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a – scales the rate of net influx and PBP
+  access in the whole-cell penicillin-binding-protein (PBP) binding QSP
+  model (Eq 1: Rate_Influx/access = Rate_Influx/access,scaled x
+  CONC_PIP_MGL). The lysed-cell arm of that assay sets
+  `CELLS_INTACT = 0`, which zeroes the influx term, so the covariate has
+  no effect there.
+- **Source aliases:** none standardized (Lopez-Arguello 2023 writes
+  `C_drug` in Eq 1 and `CDRUG` in the Fig. S8 estimation code).
+- **Example models:** `LopezArguello_2023_piperacillin_qsp.R` (static 8
+  mg/L, 2x the MIC of 4 mg/L; Lopez-Arguello 2023 Table 1).
+- **Notes:** Specific scope because the value is bound to piperacillin
+  and to the in-vitro assay design. Member of the in-vitro
+  applied-drug-concentration `CONC_<DRUG>_MGL` family (siblings
+  `CONC_RIF_MGL`, `CONC_INH_MGL`, `CONC_EMB_MGL`, `CONC_IPM_MGL`,
+  `CONC_TOB_MGL`). Ratified canonically on 2026-07-29 alongside the
+  Lopez-Arguello 2023 PBP-binding extraction.
+
+### CONC_CAR_MGL (**canonical for static in-vitro carbenicillin concentration driving a receptor-binding or antibacterial PD model**)
+
+- **Description:** Static (time-invariant) carbenicillin concentration
+  applied to the medium of an in-vitro bacterial experiment, supplied as
+  an exogenous covariate that drives target-receptor binding or
+  bacterial kill. Distinct from a state-derived plasma concentration
+  (`Cc`) and from the `CP_<DRUG>` plasma-PD-driver family: this is an
+  applied experimental concentration in the in-vitro matrix.
+- **Units:** mg/L
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a – scales the rate of net influx and PBP
+  access in the whole-cell penicillin-binding-protein (PBP) binding QSP
+  model (Eq 1: Rate_Influx/access = Rate_Influx/access,scaled x
+  CONC_CAR_MGL). The lysed-cell arm of that assay sets
+  `CELLS_INTACT = 0`, which zeroes the influx term, so the covariate has
+  no effect there.
+- **Source aliases:** none standardized (Lopez-Arguello 2023 writes
+  `C_drug` in Eq 1 and `CDRUG` in the Fig. S8 estimation code).
+- **Example models:** `LopezArguello_2023_carbenicillin_qsp.R` (static
+  96 mg/L, 2x the MIC of 48 mg/L; Lopez-Arguello 2023 Table 1).
+- **Notes:** Specific scope because the value is bound to carbenicillin
+  and to the in-vitro assay design. Member of the in-vitro
+  applied-drug-concentration `CONC_<DRUG>_MGL` family (siblings
+  `CONC_RIF_MGL`, `CONC_INH_MGL`, `CONC_EMB_MGL`, `CONC_IPM_MGL`,
+  `CONC_TOB_MGL`). Ratified canonically on 2026-07-29 alongside the
+  Lopez-Arguello 2023 PBP-binding extraction.
+
+### CONC_TIC_MGL (**canonical for static in-vitro ticarcillin concentration driving a receptor-binding or antibacterial PD model**)
+
+- **Description:** Static (time-invariant) ticarcillin concentration
+  applied to the medium of an in-vitro bacterial experiment, supplied as
+  an exogenous covariate that drives target-receptor binding or
+  bacterial kill. Distinct from a state-derived plasma concentration
+  (`Cc`) and from the `CP_<DRUG>` plasma-PD-driver family: this is an
+  applied experimental concentration in the in-vitro matrix.
+- **Units:** mg/L
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a – scales the rate of net influx and PBP
+  access in the whole-cell penicillin-binding-protein (PBP) binding QSP
+  model (Eq 1: Rate_Influx/access = Rate_Influx/access,scaled x
+  CONC_TIC_MGL). The lysed-cell arm of that assay sets
+  `CELLS_INTACT = 0`, which zeroes the influx term, so the covariate has
+  no effect there.
+- **Source aliases:** none standardized (Lopez-Arguello 2023 writes
+  `C_drug` in Eq 1 and `CDRUG` in the Fig. S8 estimation code).
+- **Example models:** `LopezArguello_2023_ticarcillin_qsp.R` (static 48
+  mg/L, 2x the MIC of 24 mg/L; Lopez-Arguello 2023 Table 1).
+- **Notes:** Specific scope because the value is bound to ticarcillin
+  and to the in-vitro assay design. Member of the in-vitro
+  applied-drug-concentration `CONC_<DRUG>_MGL` family (siblings
+  `CONC_RIF_MGL`, `CONC_INH_MGL`, `CONC_EMB_MGL`, `CONC_IPM_MGL`,
+  `CONC_TOB_MGL`). Ratified canonically on 2026-07-29 alongside the
+  Lopez-Arguello 2023 PBP-binding extraction.
+
+### CONC_AVI_MGL (**canonical for static in-vitro avibactam concentration driving a receptor-binding or antibacterial PD model**)
+
+- **Description:** Static (time-invariant) avibactam concentration
+  applied to the medium of an in-vitro bacterial experiment, supplied as
+  an exogenous covariate that drives target-receptor binding or
+  bacterial kill. Distinct from a state-derived plasma concentration
+  (`Cc`) and from the `CP_<DRUG>` plasma-PD-driver family: this is an
+  applied experimental concentration in the in-vitro matrix.
+- **Units:** mg/L
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a – scales the rate of net influx and PBP
+  access in the whole-cell penicillin-binding-protein (PBP) binding QSP
+  model (Eq 1: Rate_Influx/access = Rate_Influx/access,scaled x
+  CONC_AVI_MGL). The lysed-cell arm of that assay sets
+  `CELLS_INTACT = 0`, which zeroes the influx term, so the covariate has
+  no effect there.
+- **Source aliases:** none standardized (Lopez-Arguello 2023 writes
+  `C_drug` in Eq 1 and `CDRUG` in the Fig. S8 estimation code).
+- **Example models:** `LopezArguello_2023_avibactam_qsp.R` (static 4
+  mg/L, a fixed concentration within the clinically relevant range; MIC
+  not determined for beta-lactamase inhibitors; Lopez-Arguello 2023
+  Table 1).
+- **Notes:** Specific scope because the value is bound to avibactam and
+  to the in-vitro assay design. Member of the in-vitro
+  applied-drug-concentration `CONC_<DRUG>_MGL` family (siblings
+  `CONC_RIF_MGL`, `CONC_INH_MGL`, `CONC_EMB_MGL`, `CONC_IPM_MGL`,
+  `CONC_TOB_MGL`). Ratified canonically on 2026-07-29 alongside the
+  Lopez-Arguello 2023 PBP-binding extraction.
+
+### CONC_REL_MGL (**canonical for static in-vitro relebactam concentration driving a receptor-binding or antibacterial PD model**)
+
+- **Description:** Static (time-invariant) relebactam concentration
+  applied to the medium of an in-vitro bacterial experiment, supplied as
+  an exogenous covariate that drives target-receptor binding or
+  bacterial kill. Distinct from a state-derived plasma concentration
+  (`Cc`) and from the `CP_<DRUG>` plasma-PD-driver family: this is an
+  applied experimental concentration in the in-vitro matrix.
+- **Units:** mg/L
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a – scales the rate of net influx and PBP
+  access in the whole-cell penicillin-binding-protein (PBP) binding QSP
+  model (Eq 1: Rate_Influx/access = Rate_Influx/access,scaled x
+  CONC_REL_MGL). The lysed-cell arm of that assay sets
+  `CELLS_INTACT = 0`, which zeroes the influx term, so the covariate has
+  no effect there.
+- **Source aliases:** none standardized (Lopez-Arguello 2023 writes
+  `C_drug` in Eq 1 and `CDRUG` in the Fig. S8 estimation code).
+- **Example models:** `LopezArguello_2023_relebactam_qsp.R` (static 4
+  mg/L, a fixed concentration within the clinically relevant range; MIC
+  not determined for beta-lactamase inhibitors; Lopez-Arguello 2023
+  Table 1).
+- **Notes:** Specific scope because the value is bound to relebactam and
+  to the in-vitro assay design. Member of the in-vitro
+  applied-drug-concentration `CONC_<DRUG>_MGL` family (siblings
+  `CONC_RIF_MGL`, `CONC_INH_MGL`, `CONC_EMB_MGL`, `CONC_IPM_MGL`,
+  `CONC_TOB_MGL`). Ratified canonically on 2026-07-29 alongside the
+  Lopez-Arguello 2023 PBP-binding extraction.
+
+### CONC_SUL_MGL (**canonical for static in-vitro sulbactam concentration driving a receptor-binding or antibacterial PD model**)
+
+- **Description:** Static (time-invariant) sulbactam concentration
+  applied to the medium of an in-vitro bacterial experiment, supplied as
+  an exogenous covariate that drives target-receptor binding or
+  bacterial kill. Distinct from a state-derived plasma concentration
+  (`Cc`) and from the `CP_<DRUG>` plasma-PD-driver family: this is an
+  applied experimental concentration in the in-vitro matrix.
+- **Units:** mg/L
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a – scales the rate of net influx and PBP
+  access in the whole-cell penicillin-binding-protein (PBP) binding QSP
+  model (Eq 1: Rate_Influx/access = Rate_Influx/access,scaled x
+  CONC_SUL_MGL). The lysed-cell arm of that assay sets
+  `CELLS_INTACT = 0`, which zeroes the influx term, so the covariate has
+  no effect there.
+- **Source aliases:** none standardized (Lopez-Arguello 2023 writes
+  `C_drug` in Eq 1 and `CDRUG` in the Fig. S8 estimation code).
+- **Example models:** `LopezArguello_2023_sulbactam_qsp.R` (static 4
+  mg/L, a fixed concentration within the clinically relevant range; MIC
+  not determined for beta-lactamase inhibitors; Lopez-Arguello 2023
+  Table 1).
+- **Notes:** Specific scope because the value is bound to sulbactam and
+  to the in-vitro assay design. Member of the in-vitro
+  applied-drug-concentration `CONC_<DRUG>_MGL` family (siblings
+  `CONC_RIF_MGL`, `CONC_INH_MGL`, `CONC_EMB_MGL`, `CONC_IPM_MGL`,
+  `CONC_TOB_MGL`). Ratified canonically on 2026-07-29 alongside the
+  Lopez-Arguello 2023 PBP-binding extraction.
+
+### CONC_TZB_MGL (**canonical for static in-vitro tazobactam concentration driving a receptor-binding or antibacterial PD model**)
+
+- **Description:** Static (time-invariant) tazobactam concentration
+  applied to the medium of an in-vitro bacterial experiment, supplied as
+  an exogenous covariate that drives target-receptor binding or
+  bacterial kill. Distinct from a state-derived plasma concentration
+  (`Cc`) and from the `CP_<DRUG>` plasma-PD-driver family: this is an
+  applied experimental concentration in the in-vitro matrix.
+- **Units:** mg/L
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a – scales the rate of net influx and PBP
+  access in the whole-cell penicillin-binding-protein (PBP) binding QSP
+  model (Eq 1: Rate_Influx/access = Rate_Influx/access,scaled x
+  CONC_TZB_MGL). The lysed-cell arm of that assay sets
+  `CELLS_INTACT = 0`, which zeroes the influx term, so the covariate has
+  no effect there.
+- **Source aliases:** none standardized (Lopez-Arguello 2023 writes
+  `C_drug` in Eq 1 and `CDRUG` in the Fig. S8 estimation code).
+- **Example models:** `LopezArguello_2023_tazobactam_qsp.R` (static 4
+  mg/L, a fixed concentration within the clinically relevant range; MIC
+  not determined for beta-lactamase inhibitors; Lopez-Arguello 2023
+  Table 1).
+- **Notes:** Specific scope because the value is bound to tazobactam and
+  to the in-vitro assay design. Member of the in-vitro
+  applied-drug-concentration `CONC_<DRUG>_MGL` family (siblings
+  `CONC_RIF_MGL`, `CONC_INH_MGL`, `CONC_EMB_MGL`, `CONC_IPM_MGL`,
+  `CONC_TOB_MGL`). Ratified canonically on 2026-07-29 alongside the
+  Lopez-Arguello 2023 PBP-binding extraction.
+
 ### CONC_RIF_MGL (**canonical for static in-vitro rifampicin concentration driving an antibacterial PD model**)
 
 - **Description:** Static (time-invariant) rifampicin concentration in
@@ -8403,13 +8940,16 @@ release cycle.
   `CP_<drug>` plasma-PD-driver family. Ratified canonically alongside
   the Xiang 2018 baicalein extraction.
 
-### CONC_IPM_MGL (**canonical for time-varying in-vitro imipenem concentration driving an antibacterial PD model**)
+### CONC_IPM_MGL (**canonical for in-vitro imipenem concentration driving an antibacterial PD or receptor-binding model**)
 
-- **Description:** Time-varying unbound imipenem concentration in the
-  hollow-fiber infection model (HFIM) growth medium, supplied externally
-  as an exogenous covariate that drives the bacterial-kill PD effect.
+- **Description:** Unbound imipenem concentration applied to an in-vitro
+  bacterial system, supplied externally as an exogenous covariate.
   Applied experimental concentration in the in-vitro matrix; distinct
-  from `Cc` and the `CP_<DRUG>` plasma-PD-driver family.
+  from `Cc` and the `CP_<DRUG>` plasma-PD-driver family. Used both
+  time-varying (hollow-fiber infection model growth medium, driving the
+  bacterial-kill PD effect) and static (60-min whole-cell
+  penicillin-binding-protein binding assay, scaling the rate of net
+  influx and PBP access).
 - **Units:** mg/L
 - **Type:** continuous
 - **Scope:** specific
@@ -8423,14 +8963,20 @@ release cycle.
   driving the Hill kill function; the HFIM used continuous infusion
   targeting the 5th-percentile 7.6, median 13.4, and 95th-percentile
   23.3 mg/L unbound concentrations from imipenem 4 g/day continuous
-  infusion in critically ill patients).
+  infusion in critically ill patients),
+  `LopezArguello_2023_imipenem_qsp.R` (static 2 mg/L = 2x the MIC of 1
+  mg/L, scaling the rate of net influx and PBP access in the whole-cell
+  PBP-binding QSP model; Lopez-Arguello 2023 Table 1).
 - **Notes:** Specific scope because the value is bound to imipenem and
-  the in-vitro HFIM design. Member of the in-vitro
+  to an in-vitro assay design. Member of the in-vitro
   applied-drug-concentration `CONC_<DRUG>_MGL` family (siblings
-  `CONC_RIF_MGL`, `CONC_INH_MGL`, `CONC_EMB_MGL`, `CONC_TOB_MGL`).
-  Renamed from the model’s earlier bare `Cipm` column on 2026-05-27 for
-  consistency with the `CONC_<DRUG>_MGL` family. Ratified canonically on
-  2026-05-27 alongside the Landersdorfer 2018 extraction.
+  `CONC_RIF_MGL`, `CONC_INH_MGL`, `CONC_EMB_MGL`, `CONC_TOB_MGL`, and
+  the fourteen `CONC_<DRUG>_MGL` entries ratified with the
+  Lopez-Arguello 2023 extraction). Renamed from the model’s earlier bare
+  `Cipm` column on 2026-05-27 for consistency with the `CONC_<DRUG>_MGL`
+  family. Ratified canonically on 2026-05-27 alongside the Landersdorfer
+  2018 extraction; scope broadened on 2026-07-29 to cover the static
+  in-vitro receptor-binding use.
 
 ### CONC_TOB_MGL (**canonical for time-varying in-vitro tobramycin concentration driving an antibacterial PD model**)
 
@@ -9155,6 +9701,50 @@ tied to the study’s analysis plan.
 - **Example models:** `Clegg_2024_nirsevimab.R`.
 - **Notes:** Kept distinct from `RACE_BLACK` because the composite is
   not interchangeable.
+
+### RACE_BLACK_HISPANIC (**canonical for composite Black / Hispanic American group**)
+
+- **Description:** 1 = subject self-identifies as Black / African
+  American or as Hispanic American; 0 = White or Asian. Paper-specific
+  composite developed by Thoueille 2023, which first fitted a separate
+  tenofovir clearance per ethnic group (rich model) and then pooled the
+  levels into this two-way split, retained because the reduced grouping
+  cost only dOFV = +2 relative to the full ethnicity model (P \> 0.05).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 = White or Asian (Thoueille 2023 grouping;
+  the paper’s model-building cohort contained only White 71%, Black 23%,
+  Hispanic American 4% and Asian 2%, with no “Other” level, so the
+  indicator and its reference exactly partition the cohort).
+- **Source aliases:**
+  - Paper’s ethnicity levels “Black” + “Hispanic American” – decompose
+    into
+    `RACE_BLACK_HISPANIC = as.integer(ETHNICITY %in% c("Black", "Hispanic American"))`.
+    Thoueille 2023 Table 2 and Table S3 label the coefficient row
+    “theta_Black or Hispano American” (the papers’s spelling of
+    “Hispanic”).
+- **Example models:** `Thoueille_2023_tenofovir_full.R`,
+  `Thoueille_2023_tenofovir_alafenamide.R` (multiplicative fractional
+  effect on apparent tenofovir clearance:
+  `(1 + e_race_black_hispanic_cl * RACE_BLACK_HISPANIC)` with
+  `e_race_black_hispanic_cl` = 0.119 and 0.122 respectively, i.e. ~12%
+  higher CL/F than the White / Asian reference).
+- **Notes:** Operator-ratified sidecar 2026-07-29 (oare_PMC10232258
+  request-001 Q2, option A). Mutually exclusive with the decomposed
+  constituents \[\[RACE_BLACK\]\] and \[\[RACE_HISPANIC\]\] – a model
+  uses either this composite or the two separate indicators, never both,
+  because the composite carries a single pooled coefficient that the
+  constituents would double-count. Distinct from \[\[RACE_BLACK_OTH\]\]
+  (Black or Other, reference White / Native Hawaiian-Pacific Islander)
+  and, importantly, from \[\[RACE_NONBLACK_NONWHITE\]\], which places
+  Black in the *reference* group and therefore carries the opposite sign
+  convention. Specific scope: the grouping is paper-specific and
+  reflects the empirical clustering of Thoueille 2023’s ethnicity
+  covariate step rather than any biological homogeneity across the two
+  constituent populations; future papers that split Black from Hispanic,
+  or that add an “Other” level, should register their own composite
+  rather than overload this one.
 
 ### RACE_ASIAN (**canonical for Asian race indicator**)
 
@@ -11081,8 +11671,33 @@ serve other parameters that do separate that group.
   reference model; healthy-volunteer subjects show approximately 74
   percent higher receptor internalisation rate and 34 percent higher
   maximum stimulation of bone-marrow transit compared with cancer
-  patients on chemotherapy), `Chen_2023_nemonoxacin.R` (multiplicative
-  power-form effect on the peripheral volume of distribution Vp:
+  patients on chemotherapy), `Ganesan_2023_tebipenem.R` (cohort
+  indicator gating (a) three multiplicative structural effects from
+  Ganesan 2023 Eq. 4-6 – `Vc/F * (1 - 0.290 * DIS_HEALTHY)`,
+  `Vp/F * (1 - 0.245 * DIS_HEALTHY)`, `Ka * (1 + 0.368 * DIS_HEALTHY)` –
+  and (b) which of two cohort-specific CL/F IIV variances applies
+  (0.0614, 24.8 %CV for the 99 healthy phase 1 subjects vs 0.328, 57.2
+  %CV for the 647 infected ADAPT-PO patients), hosted on paired
+  `lcl_healthy` / `lcl_patient` anchors fixed at 0 because the source
+  reports no infection-status effect on the typical CL/F; reference
+  category 0 is the pooled cUTI / acute-pyelonephritis patient cohort,
+  and the paper’s `(1 - Infected)` term is re-expressed as DIS_HEALTHY),
+  `Zhang_2023_brazikumab.R` (linear fractional effect on CL:
+  `1 - 0.362 * DIS_HEALTHY`, i.e. healthy participants clear brazikumab
+  36.2 percent more slowly than patients at the same baseline albumin;
+  reference category 0 is the pooled mild-to-severe / moderate-to-severe
+  Crohn’s disease cohort across the phase Ib NCT01258205 and phase IIa
+  NCT01714726 studies, and Zhang 2023 attributes the faster patient
+  clearance to faecal protein loss through the inflamed gut wall; source
+  column `GRP` coded 1 = CD patient / 2 = healthy, re-expressed as
+  DIS_HEALTHY = GRP - 1), `Zhang_2023_brazikumab_il22.R`,
+  `Zhang_2023_brazikumab_crp.R` (same CL effect carried forward as a
+  `fixed()` parameter into the two biomarker-driven CDAI
+  indirect-response PK/PD variants; every subject in their phase IIa
+  efficacy cohort has DIS_HEALTHY = 0, so the term is inert there and is
+  retained only to keep the PK layer identical to the parent popPK
+  model), `Chen_2023_nemonoxacin.R` (multiplicative power-form effect on
+  the peripheral volume of distribution Vp:
   `e_dis_healthy_vp^DIS_HEALTHY` with
   `e_dis_healthy_vp = 1 / 1.23 = 0.813`; reference category 0 is the
   pooled Chinese community-acquired-pneumonia cohort from the phase II
@@ -16504,6 +17119,58 @@ indicators = 0 selects the reference).
   (page 325, “data not shown”) and retained only CBZ in the final model,
   consistent with the AED-specific decomposition rationale.
 
+### CONMED_COBICISTAT (**canonical for concomitant cobicistat (CYP3A4 inhibitor / PK-booster) coadministration indicator**)
+
+- **Description:** 1 = subject is receiving concomitant cobicistat
+  (COBI), a pharmacokinetic enhancer with no intrinsic antiviral
+  activity used to boost co-administered antiretrovirals; 0 = no
+  cobicistat. Cobicistat is a potent mechanism-based CYP3A4 inhibitor
+  and also inhibits P-glycoprotein, BCRP, OATP1B1/1B3 and the renal
+  transporters MATE1 and OCT2, so the indicator flags reduced
+  CYP3A4-mediated clearance and/or increased bioavailability of the
+  boosted co-administered drug. Time-fixed in fixed-dose-combination
+  cohorts; time-varying when boosting starts / stops within the
+  observation window.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no cobicistat coadministration).
+- **Source aliases:**
+  - `Cobicistat` – used in `Thoueille_2023_tenofovir_reduced.R` and its
+    sibling models (paper covariate row “theta_Cobicistat”, Thoueille
+    2023 Table 2 / Table S2 / Table S3).
+  - `COBI`, `c` – the standard antiretroviral-literature abbreviations;
+    `c` appears as the trailing boosting token in fixed-dose-combination
+    names (e.g., “elvitegravir/c”, “darunavir/c”).
+- **Example models:** `Thoueille_2023_tenofovir_reduced.R`,
+  `Thoueille_2023_tenofovir_full.R` (additive fractional effect on
+  tenofovir alafenamide relative bioavailability:
+  `f(depot) <- exp(lfdepot + etalfdepot) * (1 + e_cobi_fdepot * CONMED_COBICISTAT)`,
+  with `e_cobi_fdepot` = 1.11 in the reduced model and 1.15 in the full
+  model, i.e. F rises from 1 to ~2.1-2.2).
+- **Notes:** Follows the antiretroviral three/four-letter abbreviation
+  convention already used by \[\[CONMED_RTV\]\] (ritonavir),
+  \[\[CONMED_EFV\]\] (efavirenz), \[\[CONMED_NVP\]\] (nevirapine) and
+  \[\[CONMED_LPV\]\] (lopinavir). Cobicistat and ritonavir are the two
+  clinically used PK boosters and both are potent CYP3A4 inhibitors, but
+  they are **not** interchangeable columns: ritonavir has intrinsic
+  protease-inhibitor activity and a broader induction / inhibition
+  profile (including CYP2D6 and several UGTs), so a paper that boosts
+  with cobicistat must use this canonical rather than overloading
+  \[\[CONMED_RTV\]\]. Per-model
+  `covariateData[[CONMED_COBICISTAT]]$notes` must state whether the
+  indicator is confounded with dose level: in Thoueille 2023 every
+  cobicistat-treated subject received tenofovir alafenamide 10 mg and
+  every other subject 25 mg (cobicistat was forced into the model
+  specifically to absorb that dose difference into relative
+  bioavailability), so the coefficient there is a combined
+  dose-normalization-plus-boosting effect rather than a pure
+  drug-drug-interaction effect. Papers that test cobicistat as a
+  P-glycoprotein perpetrator alongside a separate P-gp-inhibitor class
+  flag should keep the two columns distinct – Thoueille 2023
+  deliberately excluded cobicistat from its P-gp-inhibitor covariate
+  analysis to avoid double-counting.
+
 ### CONMED_CSA (**canonical for concomitant cyclosporine (CsA) coadministration indicator**)
 
 - **Description:** 1 = subject is receiving cyclosporine (CsA) as the
@@ -17894,7 +18561,7 @@ indicators = 0 selects the reference).
   effect was found significant only in the oral-cephalexin +
   oral-quinapril group (paper found no DDI on CL when cephalexin was
   given intra-arterially, attributed to higher cephalexin renal
-  concentrations outcompeting quinapril at the carrier)…….
+  concentrations outcompeting quinapril at the carrier)……..
 - **Notes:** Scope: specific because the only on-disk source is a single
   preclinical rat popPK paper (Padoin 1998) and the column meaning is
   intrinsically tied to the oral cephalexin + oral quinapril DDI design
@@ -20602,53 +21269,64 @@ indicators = 0 selects the reference).
   FIDELIO-DKD analysis’s choice; the effect size (0.996) is much smaller
   than the high-exposure category (0.951).
 
-### CONMED_CYP3A4_INH_STRONG (**canonical for concomitant strong CYP3A4 inhibitor coadministration indicator**)
+### CONMED_PGP_INH (**canonical for concomitant P-glycoprotein inhibitor coadministration indicator**)
 
-- **Description:** 1 = subject / dose-record with concomitant
-  coadministration of a strong CYP3A4 inhibitor (FDA/EMA classification
-  of “strong”: AUC increase \>= 5-fold for a sensitive CYP3A4 substrate;
-  representative agents include itraconazole, ketoconazole,
-  posaconazole, voriconazole, clarithromycin, and ritonavir-boosted
-  regimens), 0 = no strong CYP3A4 inhibitor coadministration during the
-  observation window (whether no CYP3A4 inhibitor at all, or a
-  weak/moderate inhibitor only). Time-varying per record. Companion
-  canonical to the broader `CONMED_CYP3A4_INH` that stratifies
-  specifically by FDA/EMA inhibitor-strength tier – distinct from
-  `CONMED_CYP3A4_INH_HI` (which stratifies by cumulative exposure
-  duration rather than by inhibitor-strength category).
+- **Description:** 1 = subject coadministered a P-glycoprotein (P-gp /
+  MDR1 / ABCB1) efflux-transporter inhibitor during the study, 0 = no
+  concomitant P-gp inhibitor. P-gp inhibition raises the systemic
+  exposure of P-gp substrates by reducing intestinal efflux (increasing
+  oral bioavailability) and by reducing biliary and renal-tubular
+  secretion (reducing apparent clearance). Use this canonical when the
+  source paper enters P-gp-inhibitor coadministration into the popPK
+  model as a binary indicator, regardless of which inhibitor potencies
+  (potent / strong / moderate / weak) the paper pools into the `1`
+  category.
 - **Units:** (binary)
 - **Type:** binary
 - **Scope:** general
-- **Reference category:** 0 (no strong CYP3A4 inhibitor
-  coadministration; subject may still be on a weak or moderate CYP3A4
-  inhibitor).
+- **Reference category:** 0 (no P-glycoprotein-inhibitor
+  coadministration).
 - **Source aliases:**
-  - `DDICYPSH` – used in `Mitra_2026_ziftomenib.R` (Kura Oncology
-    KOMET-001 + KO-MEN-003 NONMEM control-stream column; strong CYP3A4
-    inhibitor coadministration during a ziftomenib dose record; dominant
-    driver in the R/R AML cohort is prophylactic antifungal azole use).
-- **Example models:** `Mitra_2026_ziftomenib.R` (multiplicative effects:
-  0.459x on parent ziftomenib CL/F, 0.195x on KO-739 CL, 0.449x on
-  KO-516 CL when CONMED_CYP3A4_INH_STRONG = 1; encoded as additive
-  shifts on the log(CL) scale per the paper’s NONMEM PK block),
-  `Kemal_2026_nemtabrutinib.R` (multiplicative effect on CL/F:
-  `(1 + -0.0119 * CONMED_CYP3A4_INH_STRONG)`, i.e. 1.2% lower CL/F under
-  strong CYP3A4 inhibition; RSE 774%, 95% CI includes zero – retained in
-  the full covariate model).
-- **Notes:** Companion canonical to `CONMED_CYP3A4_INH` (which pools any
-  inhibitor strength into a single 0/1 indicator) and to
-  `CONMED_CYP3A4_INH_HI` / `CONMED_CYP3A4_INH_LO` (which stratify by
-  cumulative exposure duration rather than by inhibitor-strength
-  category). Registered per the `CONMED_CYP3A4_INH` Notes explicit
-  guidance: “Future models that need stratified encoding (separate
-  strong / moderate / weak indicators) should register companion
-  canonicals (e.g. `CONMED_CYP3A4_INH_STRONG`, `CONMED_CYP3A4_INH_MOD`,
-  `CONMED_CYP3A4_INH_WEAK`) rather than overloading
-  `CONMED_CYP3A4_INH`.” Ratified canonically on 2026-07-24 alongside the
-  Mitra 2026 ziftomenib extraction. Future extractions that need the
-  sibling moderate- and weak-strength indicators should register
-  `CONMED_CYP3A4_INH_MOD` and `CONMED_CYP3A4_INH_WEAK` following the
-  same pattern.
+  - `Potent P-gp inhibitors` – Thoueille 2023 Table 1 / Table 2
+    coefficient row “theta_Potent P-gp inhibitors”.
+  - Other source-dataset column names typically: `PGPI`, `PGP_INH`,
+    `PGPINH`, or a free-text concomitant-medication indicator. Document
+    the source-column name per-model in
+    `covariateData[[CONMED_PGP_INH]]$source_name`.
+- **Example models:** `Thoueille_2023_tenofovir_full.R`,
+  `Thoueille_2023_tenofovir_alafenamide.R` (multiplicative fractional
+  effect on apparent tenofovir clearance:
+  `(1 + e_conmed_pgp_inh_cl * CONMED_PGP_INH)` with
+  `e_conmed_pgp_inh_cl` = -0.121 and -0.116 respectively, i.e. ~12%
+  lower CL/F, an effect the paper reports as independent of cobicistat
+  coadministration).
+- **Notes:** Operator-ratified sidecar 2026-07-29 (oare_PMC10232258
+  request-001 Q3, option A). Deliberately mirrors
+  \[\[CONMED_CYP3A4_INH\]\], including its rule that the pooled potency
+  tiers live in the per-model `covariateData[[CONMED_PGP_INH]]$notes`
+  rather than in the canonical name; that per-model note is mandatory,
+  because inclusion criteria vary by study. In Thoueille 2023 only the
+  *potent* tier is pooled into the `1` category (screened set:
+  amiodarone, carvedilol, clarithromycin, fluoxetine, itraconazole,
+  methadone, quetiapine, rilpivirine, risperidone, ritonavir,
+  sertraline; the actual positives in the model-building cohort were
+  carvedilol and sertraline, 45 of 486 subjects), while moderate
+  inhibitors (atazanavir, diltiazem, duloxetine, efavirenz) and P-gp
+  inducers (rifabutine, nevirapine) were screened separately and did
+  **not** enter the final model. Cobicistat, itself a P-gp inhibitor,
+  was deliberately excluded from that paper’s P-gp analysis and carried
+  separately as \[\[CONMED_COBICISTAT\]\] on relative bioavailability –
+  when a paper boosts with cobicistat or ritonavir, keep the booster in
+  its own `CONMED_<INN>` column rather than folding it into this class
+  flag, to avoid double-counting. Future models that need
+  potency-stratified encoding should register companion canonicals
+  (e.g. `CONMED_PGP_INH_MOD`, `CONMED_PGP_INH_WEAK`) and the
+  complementary inducer indicator as `CONMED_PGP_IND`, following the
+  \[\[CONMED_CYP3A4_INH\]\] / \[\[CONMED_CYP3A4_IND\]\] pattern, rather
+  than overloading this entry. Distinct from \[\[CONMED_TARIQUIDAR\]\],
+  which names one specific P-gp-inhibitor INN used as a preclinical
+  blood-brain-barrier probe rather than a class-level clinical
+  comedication flag.
 
 ### CONMED_CYP3A4_IND (**canonical for concomitant CYP3A4 inducer coadministration indicator**)
 
@@ -24442,6 +25120,14 @@ name alone.
   the mature liquid F is 39.9% CV (etaltvf_liq) and is gated to the
   liquid arm via
   `fdepot <- FORM_CAPSULE * 1 + (1 - FORM_CAPSULE) * f_liquid`),
+  `Sano_2023_fesoterodine.R` (fesoterodine beads-in-capsule (BIC) vs
+  tablet in pediatric patients with neurogenic detrusor overactivity;
+  same orientation as Gupta 2016 lenvatinib, with the tablet arm fixed
+  at F = 1 and the BIC arm carrying the estimated relative
+  bioavailability 0.648 per Sano 2023 Table 2, applied as
+  `f(depot) <- (1 - FORM_CAPSULE) + FORM_CAPSULE * exp(lfdepot)`; note
+  that in the source studies BIC was given only to the 25-kg-or-less
+  cohort, so formulation is confounded with body weight and dose),
   `vandenBerg_2021_uprifosbuvir_pbpk.R` (uprifosbuvir capsule vs tablet
   formulation stratification per van den Berg 2021 Table 3: capsule
   multiplicative factors are 2.02 on KA1, 3.23 on the pre-logit for the
@@ -26162,7 +26848,7 @@ name alone.
   the SR reference, consistent with a higher vinpocetine oral
   bioavailability / metabolite yield for the Cavinton IR arm; Petric
   2023 Table 1 beta_Tk0_Formulation#2 = -0.4 (RSE 29.0%) and
-  beta_V1/F_Formulation#2 = -1.26 (RSE 5.44%))..
+  beta_V1/F_Formulation#2 = -1.26 (RSE 5.44%))…
 - **Notes:** Scoped specific because the Cavinton-IR-vs-Ultra-Vinca-SR
   contrast is tied to the Petric 2023 relative-bioavailability crossover
   design (a three-level formulation stratification of vinpocetine as its
@@ -27253,6 +27939,45 @@ name alone.
   documents an unexplained between-study OS difference that no observed
   covariate could resolve. Subject-level (time-fixed). Follows the
   auto-approved `STUDY_<id>` canonical family.
+
+### STUDY_SPR994_104 (**canonical for tebipenem pivoxil hydrobromide study SPR994-104 (thorough-QT crossover) cohort indicator**)
+
+- **Description:** 1 = subject enrolled in study SPR994-104
+  (NCT04238195), the phase 1 randomized, double-blind, placebo- and
+  active-controlled four-way crossover thorough-QT study in which 24
+  healthy adults received single oral doses of 600 mg and 1200 mg
+  tebipenem pivoxil hydrobromide (TBP-PI-HBr) in crossover fashion; 0 =
+  subject enrolled in any other study of the Ganesan 2023 pooled
+  analysis (SPR994-101, SPR994-102, or the phase 3 SPR994-301 / ADAPT-PO
+  trial). Subject-level (time-fixed).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (studies SPR994-101, SPR994-102, and
+  SPR994-301 / ADAPT-PO).
+- **Source aliases:**
+  - `S104` – the flag variable named in Ganesan 2023 Eq. 6 (“where S104
+    is a flag variable to indicate if subject was enrolled in study
+    104”).
+- **Example models:** `Ganesan_2023_tebipenem.R` (gates the dose effect
+  on the absorption rate constant:
+  `ka * (1 + e_dose_ka * (DOSE / 1200) * STUDY_SPR994_104)` with
+  `e_dose_ka = -0.478`, so Ka is 47.8% lower at 1200 mg and 23.9% lower
+  at 600 mg relative to the same subject’s non-study-104 value, and the
+  term is inert for every other study).
+- **Notes:** Conceptually the same per-study switch family as `STUDY1` /
+  `STUDY5` / `STUDY_LBSL` / `STUDY_FARLETUZUMAB_PHASE2`, but the switch
+  here gates a *covariate effect* (dose on Ka) rather than a
+  residual-error magnitude or a structural scale factor. Ganesan 2023
+  restricts the dose effect to this study because it was the only
+  crossover design in the pooled analysis: the same 24 subjects received
+  both dose levels, which limits the between-subject variability that
+  otherwise masks the modest dose-on-absorption-rate signal (the effect
+  was not detectable across the 100-900 mg single doses of study
+  SPR994-101). Must be paired with a `DOSE` column carrying the
+  administered milligram amount; the product
+  `(DOSE / 1200) * STUDY_SPR994_104` is zero for every subject outside
+  study 104.
 
 ### STUDY_LBSL (**canonical for early-phase belimumab LBSL01 / LBSL02 study indicator**)
 
@@ -29800,6 +30525,87 @@ name alone.
   exposure metric (trough concentration, q12h-interval AUC) should
   register a parallel canonical rather than overload `AUC_EMPA`.
   Ratified canonically alongside the Johnston 2019 M-EASE-2 extraction.
+
+### CONMED_CYP3A4_INH_STRONG (**canonical for concomitant strong CYP3A4 inhibitor coadministration indicator**)
+
+- **Description:** 1 = subject / dose-record with concomitant
+  coadministration of a strong CYP3A4 inhibitor (FDA/EMA classification
+  of “strong”: AUC increase \>= 5-fold for a sensitive CYP3A4 substrate;
+  representative agents include itraconazole, ketoconazole,
+  posaconazole, voriconazole, clarithromycin, and ritonavir-boosted
+  regimens), 0 = no strong CYP3A4 inhibitor coadministration during the
+  observation window (whether no CYP3A4 inhibitor at all, or a
+  weak/moderate inhibitor only). Time-varying per record. Companion
+  canonical to the broader `CONMED_CYP3A4_INH` that stratifies
+  specifically by FDA/EMA inhibitor-strength tier – distinct from
+  `CONMED_CYP3A4_INH_HI` (which stratifies by cumulative exposure
+  duration rather than by inhibitor-strength category).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no strong CYP3A4 inhibitor
+  coadministration; subject may still be on a weak or moderate CYP3A4
+  inhibitor).
+- **Source aliases:**
+  - `DDICYPSH` – used in `Mitra_2026_ziftomenib.R` (Kura Oncology
+    KOMET-001 + KO-MEN-003 NONMEM control-stream column; strong CYP3A4
+    inhibitor coadministration during a ziftomenib dose record; dominant
+    driver in the R/R AML cohort is prophylactic antifungal azole use).
+- **Example models:** `Mitra_2026_ziftomenib.R` (multiplicative effects:
+  0.459x on parent ziftomenib CL/F, 0.195x on KO-739 CL, 0.449x on
+  KO-516 CL when CONMED_CYP3A4_INH_STRONG = 1; encoded as additive
+  shifts on the log(CL) scale per the paper’s NONMEM PK block),
+  `Kemal_2026_nemtabrutinib.R` (multiplicative effect on CL/F:
+  `(1 + -0.0119 * CONMED_CYP3A4_INH_STRONG)`, i.e. 1.2% lower CL/F under
+  strong CYP3A4 inhibition; RSE 774%, 95% CI includes zero – retained in
+  the full covariate model).
+- **Notes:** Companion canonical to `CONMED_CYP3A4_INH` (which pools any
+  inhibitor strength into a single 0/1 indicator) and to
+  `CONMED_CYP3A4_INH_HI` / `CONMED_CYP3A4_INH_LO` (which stratify by
+  cumulative exposure duration rather than by inhibitor-strength
+  category). Registered per the `CONMED_CYP3A4_INH` Notes explicit
+  guidance: “Future models that need stratified encoding (separate
+  strong / moderate / weak indicators) should register companion
+  canonicals (e.g. `CONMED_CYP3A4_INH_STRONG`, `CONMED_CYP3A4_INH_MOD`,
+  `CONMED_CYP3A4_INH_WEAK`) rather than overloading
+  `CONMED_CYP3A4_INH`.” Ratified canonically on 2026-07-24 alongside the
+  Mitra 2026 ziftomenib extraction. Future extractions that need the
+  sibling moderate- and weak-strength indicators should register
+  `CONMED_CYP3A4_INH_MOD` and `CONMED_CYP3A4_INH_WEAK` following the
+  same pattern.
+
+### DOSE_PTM_MG (**canonical for administered pretomanid per-administration dose amount**)
+
+- **Description:** Administered oral dose of the nitroimidazooxazine
+  antituberculosis agent pretomanid (formerly PA-824), in mg, for the
+  current dose record. Per-dose-record covariate; must equal the `amt`
+  of the corresponding dosing record. Not a PK covariate in the usual
+  sense – the amount already appears on the dose record via `amt` – but
+  it is required as an explicit regressor because pretomanid
+  bioavailability is saturable in dose, so the dose amount has to be
+  readable inside `model()` to compute `f(depot)`.
+- **Units:** mg
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a – enters via the saturable bioavailability
+  `f(depot) = Fmax / (1 + DOSE_PTM_MG / ED50)` with `Fmax` assumed 1 and
+  `ED50` = 554 mg in humans (Mehta 2023 Table 1). A 200 mg dose
+  therefore gives F = 1 / (1 + 200/554) = 0.735.
+- **Source aliases:**
+  - `dose` – used in `Mehta_2023_pretomanid_mpbpk.R` (Mehta 2023 ESM S2,
+    which writes `doseIn = Fmax*dose/(1 + dose/ED50)` followed by
+    `f(depot) = doseIn/dose`; the packaged model uses the algebraically
+    identical single-expression form, which avoids dividing by the dose
+    amount).
+- **Example models:** `Mehta_2023_pretomanid_mpbpk.R` (drives the
+  dose-dependent bioavailability of the translational lung-lesion mPBPK
+  model; simulated regimen 200 mg once daily, clinical validation data
+  spanning 50-1200 mg).
+- **Notes:** Follows the `DOSE_<DRUG>_<UNITS>` auto-approve family
+  (siblings: `DOSE_EMPA_MGD`, `DOSE_CIPARGAMIN_MG`, `DOSE_PHT_MGKGD`).
+  Units suffix is `MG` because pretomanid is dosed as a
+  per-administration amount rather than a daily total. Ratified
+  canonically alongside the Mehta 2023 pretomanid extraction.
 
 ### INSDOSE_BL (**canonical for baseline total daily insulin dose per body weight**)
 

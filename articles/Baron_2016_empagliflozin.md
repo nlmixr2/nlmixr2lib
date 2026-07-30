@@ -142,7 +142,7 @@ make_cohort <- function(n, dose_mg, id_offset = 0L) {
   # PK / PD model's dvid -> cmt mapping (see known-vignette-failure-patterns
   # pattern 5b and the Germovsek_2018_meropenem.Rmd precedent).
   obs_times <- sort(unique(c(
-    seq(0.5, 24, by = 0.5),                    # day 1 dense PK
+    seq(0.5, 24, by = 1),                    # day 1 dense PK
     24 * 7 * 12 + c(0, 1, 2, 4, 8, 12, 24),    # week 12 PK day
     seq(0, 4032, by = 24 * 7)                  # weekly grid for FPG / HbA1c
   )))
@@ -172,7 +172,7 @@ sim <- rxode2::rxSolve(
 ) |> as.data.frame()
 
 dim(sim)
-#> [1] 31600    51
+#> [1] 22000    51
 ```
 
 ## Replicate published figures
@@ -408,14 +408,14 @@ knitr::kable(
 
 | NCA parameter   | treatment | Reference | Simulated |   % diff |
 |:----------------|:----------|----------:|----------:|---------:|
-| Cmax (nM)       | 10 mg QD  |       500 |       261 | -47.8%\* |
-| Cmax (nM)       | 25 mg QD  |      1250 |       697 | -44.3%\* |
+| Cmax (nM)       | 10 mg QD  |       500 |       261 | -47.9%\* |
+| Cmax (nM)       | 25 mg QD  |      1250 |       694 | -44.5%\* |
 | Tmax (h)        | 10 mg QD  |       1.5 |       1.5 |    +0.0% |
 | Tmax (h)        | 25 mg QD  |       1.5 |       1.5 |    +0.0% |
-| AUClast (nM\*h) | 10 mg QD  |      1800 |      2010 |   +11.7% |
-| AUClast (nM\*h) | 25 mg QD  |      4500 |      5290 |   +17.7% |
-| t½ (h)          | 10 mg QD  |        12 |      10.9 |    -9.0% |
-| t½ (h)          | 25 mg QD  |        12 |      11.3 |    -5.6% |
+| AUClast (nM\*h) | 10 mg QD  |      1800 |      1950 |    +8.5% |
+| AUClast (nM\*h) | 25 mg QD  |      4500 |      5160 |   +14.6% |
+| t½ (h)          | 10 mg QD  |        12 |      10.6 |   -11.3% |
+| t½ (h)          | 25 mg QD  |        12 |        11 |    -8.5% |
 
 Day 1 NCA vs published-typical reference (Baron 2016 Figure 1b
 qualitative ranges; the paper does not tabulate per-dose-group day 1

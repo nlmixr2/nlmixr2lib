@@ -108,7 +108,7 @@ set.seed(20260620)
 # NAT2 acetylator phenotype is sampled with the observed cohort ratios
 # 7 / 15 / 11 (rapid / intermediate / slow), and converted to the paired
 # canonical indicators NAT2_RAPID + NAT2_SLOW.
-n_per_phenotype <- 60L
+n_per_phenotype <- 25L
 n_doses         <- 2L
 
 make_phenotype_cohort <- function(phenotype, n, id_offset) {
@@ -431,12 +431,12 @@ knitr::kable(cmax_comparison,
 
 | Dose | NAT2 phenotype | n simulated | Median Cmax (mg/L, sim) | % Cmax \< 3 mg/L (sim) | % Cmax \< 3 mg/L (Seng 2015) | % Cmax \> 6 mg/L (sim) | % Cmax \> 6 mg/L (Seng 2015) |
 |:---|:---|---:|---:|:---|---:|:---|---:|
-| 200 mg | rapid | 60 | 1.37 | 98.3\* | 39.6 | 0 | 10.4 |
-| 200 mg | intermediate | 60 | 1.99 | 85\* | 7.4 | 0\* | 42.4 |
-| 200 mg | slow | 60 | 4.43 | 13.3 | 0.0 | 11.7\* | 97.3 |
-| 300 mg | rapid | 60 | 1.87 | 93.3\* | 37.6 | 0 | 9.6 |
-| 300 mg | intermediate | 60 | 2.94 | 51.7\* | 6.7 | 1.7\* | 43.3 |
-| 300 mg | slow | 60 | 6.44 | 0 | 0.0 | 63.3\* | 98.3 |
+| 200 mg | rapid | 25 | 1.19 | 100\* | 39.6 | 0 | 10.4 |
+| 200 mg | intermediate | 25 | 1.85 | 92\* | 7.4 | 0\* | 42.4 |
+| 200 mg | slow | 25 | 4.84 | 12 | 0.0 | 20\* | 97.3 |
+| 300 mg | rapid | 25 | 1.93 | 84\* | 37.6 | 0 | 9.6 |
+| 300 mg | intermediate | 25 | 3.22 | 36\* | 6.7 | 4\* | 43.3 |
+| 300 mg | slow | 25 | 6.80 | 0 | 0.0 | 64\* | 98.3 |
 
 Simulated vs Seng 2015 Figure 5 INH Cmax thresholds. \* differs from the
 published proportion by \>20 percentage points. {.table}
@@ -480,29 +480,29 @@ knitr::kable(per_analyte_nca,
                              "computed from the packaged-model simulation."))
 ```
 
-| analyte | phenotype    | dose_label |  cmax |  tmax | auclast | aucinf.obs | half.life |
-|:--------|:-------------|:-----------|------:|------:|--------:|-----------:|----------:|
-| INH     | rapid        | 200 mg     | 1.392 | 0.575 |   3.384 |      3.389 |     4.039 |
-| INH     | intermediate | 200 mg     | 2.184 | 0.875 |   6.667 |      6.694 |     4.690 |
-| INH     | slow         | 200 mg     | 4.663 | 1.858 |  30.352 |     31.755 |     6.401 |
-| INH     | rapid        | 300 mg     | 1.985 | 0.550 |   4.749 |      4.757 |     4.181 |
-| INH     | intermediate | 300 mg     | 3.148 | 0.871 |   9.349 |      9.386 |     4.572 |
-| INH     | slow         | 300 mg     | 7.045 | 1.896 |  45.879 |     48.051 |     6.500 |
-| AcINH   | rapid        | 200 mg     | 1.271 | 1.562 |  10.302 |     10.569 |     4.257 |
-| AcINH   | intermediate | 200 mg     | 1.152 | 2.079 |  10.212 |     10.555 |     4.574 |
-| AcINH   | slow         | 200 mg     | 0.673 | 4.388 |   8.701 |      9.778 |     6.665 |
-| AcINH   | rapid        | 300 mg     | 1.792 | 1.467 |  14.462 |     14.882 |     4.305 |
-| AcINH   | intermediate | 300 mg     | 1.587 | 2.050 |  13.585 |     14.008 |     4.448 |
-| AcINH   | slow         | 300 mg     | 1.036 | 4.383 |  12.941 |     14.308 |     6.459 |
-| INA     | rapid        | 200 mg     | 0.487 | 2.025 |   3.903 |      4.005 |     4.248 |
-| INA     | intermediate | 200 mg     | 0.419 | 2.404 |   3.634 |      3.755 |     4.562 |
-| INA     | slow         | 200 mg     | 0.238 | 4.558 |   3.000 |      3.365 |     6.656 |
-| INA     | rapid        | 300 mg     | 0.661 | 1.921 |   5.224 |      5.373 |     4.296 |
-| INA     | intermediate | 300 mg     | 0.602 | 2.396 |   4.996 |      5.141 |     4.440 |
-| INA     | slow         | 300 mg     | 0.402 | 4.608 |   4.938 |      5.462 |     6.451 |
+| analyte | phenotype    | dose_label |  cmax | tmax | auclast | aucinf.obs | half.life |
+|:--------|:-------------|:-----------|------:|-----:|--------:|-----------:|----------:|
+| INH     | rapid        | 200 mg     | 1.322 | 0.60 |   3.320 |      3.327 |     4.334 |
+| INH     | intermediate | 200 mg     | 2.041 | 0.87 |   6.278 |      6.304 |     4.629 |
+| INH     | slow         | 200 mg     | 4.750 | 1.90 |  31.979 |     33.274 |     5.986 |
+| INH     | rapid        | 300 mg     | 2.044 | 0.55 |   4.862 |      4.871 |     4.244 |
+| INH     | intermediate | 300 mg     | 3.361 | 0.90 |  10.500 |     10.538 |     4.389 |
+| INH     | slow         | 300 mg     | 7.618 | 1.90 |  49.930 |     52.464 |     6.609 |
+| AcINH   | rapid        | 200 mg     | 1.206 | 1.65 |   9.828 |     10.079 |     4.178 |
+| AcINH   | intermediate | 200 mg     | 1.104 | 2.13 |   9.461 |      9.697 |     4.218 |
+| AcINH   | slow         | 200 mg     | 0.676 | 4.53 |   8.680 |      9.644 |     6.423 |
+| AcINH   | rapid        | 300 mg     | 1.753 | 1.45 |  14.022 |     14.418 |     4.437 |
+| AcINH   | intermediate | 300 mg     | 1.700 | 2.18 |  14.574 |     14.942 |     4.167 |
+| AcINH   | slow         | 300 mg     | 1.097 | 4.41 |  13.936 |     15.634 |     6.694 |
+| INA     | rapid        | 200 mg     | 0.489 | 2.08 |   3.933 |      4.036 |     4.172 |
+| INA     | intermediate | 200 mg     | 0.395 | 2.43 |   3.338 |      3.424 |     4.215 |
+| INA     | slow         | 200 mg     | 0.248 | 4.67 |   3.121 |      3.475 |     6.417 |
+| INA     | rapid        | 300 mg     | 0.666 | 1.90 |   5.274 |      5.423 |     4.422 |
+| INA     | intermediate | 300 mg     | 0.684 | 2.54 |   5.761 |      5.905 |     4.157 |
+| INA     | slow         | 300 mg     | 0.381 | 4.56 |   4.719 |      5.286 |     6.683 |
 
 Per-analyte mean NCA parameters by NAT2 phenotype and dose, computed
-from the packaged-model simulation. {.table style="width:100%;"}
+from the packaged-model simulation. {.table}
 
 ## Assumptions and deviations
 
