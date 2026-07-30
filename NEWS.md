@@ -2,7 +2,8 @@
 
 # development version
 
-- Add Mi 2023 cefquinome PBPK ([doi:10.1371/journal.pcbi.1011331](https://doi.org/10.1371/journal.pcbi.1011331)) -- nursery pigs (~25 kg) receiving intramuscular cefquinome.
+- Add Wu 2023 SPI-62 ([doi:10.1007/s40262-023-01278-8](https://doi.org/10.1007/s40262-023-01278-8)) - healthy adults.
+
 - Disambiguated the overloaded `OC` name, which denoted five unrelated
   concepts. Osteocalcin `OC` -> `OSTCALC` (uppercase, matching the sibling
   biomarkers `P1NP` / `PSA` / `PLT` / `WBC` and the sister model
