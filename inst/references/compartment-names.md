@@ -1216,6 +1216,15 @@ Each entry below is a paper-mechanistic PD endpoint registered as a canonical co
 - **Source aliases:** none.
 - **Example models:** `Bizzotto_2016_glucose.R`.
 
+### nows (**canonical neonatal opioid withdrawal severity-score PD state**)
+- **Type:** compartment
+- **Role:** Indirect-response turnover state and single-output PD endpoint for the MOTHER NAS (Modification of Finnegan / Modified Neonatal Abstinence Scoring) severity score in neonatal opioid withdrawal syndrome (NOWS). The state carries the ODE `d/dt(nows) = kin * (1 + nowst) - kout * nows * effect_drug` (Eudy-Byrne 2021 Results / Model development), where `nowst = nowsmax * exp(-nowsm * PNA_days)` describes the natural withdrawal-severity decay with postnatal age and `effect_drug = 1 + emax * C / (ec50 + C)` describes opioid-agonist stimulation of NAS-score elimination.
+- **Source aliases:** `NOWS`, `MOTHER_NAS`, `MNAS`, `NAS` -- equivalent paper notation for the same clinical scoring endpoint. NOWS = Neonatal Opioid Withdrawal Syndrome; NAS = Neonatal Abstinence Syndrome (older synonymous term); MOTHER NAS = the specific 19-item Modified Neonatal Abstinence scoring instrument used in the MOTHER, BBORN, and BPHORE clinical trials.
+- **Example models:** `EudyByrne_2021_buprenorphine.R`.
+- **Notes:** Registered 2026-07-25 alongside the Eudy-Byrne 2021 buprenorphine PD extraction. Companion paper-specific parameters `nowsmax` (unitless score baseline at PNA = 0) and `nowsm` (natural NAS decay rate, 1/day) live in `parameter-names.md`. Holds a NAS severity score (unitless integer scale, typically 0-40), not a drug concentration; the paired drug driver is buprenorphine plasma concentration supplied via the covariate `Cbuprenorphine`.
+
+---
+
 ### MCC (**canonical maximum cystometric capacity**)
 - **Type:** compartment
 - **Role:** Maximum cystometric capacity (MCC), the urodynamic bladder-volume PD endpoint measured by multichannel cystometry, in mL. Used in exposure-response models of overactive bladder (OAB) and neurogenic detrusor overactivity (NDO) antimuscarinics, where the maximum attainable MCC is commonly anchored to the age-based pediatric expected bladder capacity (EBC) rather than estimated. All-caps because MCC is the standard urodynamics abbreviation and is never spelled out in the source literature after first use, matching the `ANC` / `PLT` / `WBC` / `RBC` clinical-abbreviation precedent in this register.
@@ -1349,6 +1358,15 @@ PBPK bare organ-amount compartments used by Zhang 2011 nutlin3a and similar full
 - **Role:** Bare skin tissue compartment in full-body PBPK extractions. Total tissue (well-stirred) drug concentration; paired with `lung`, `liver`, `kidney`, `spleen`, `brain`, `heart`, `muscle`, `adipose`, `bone`, `other` etc. in whole-body PBPK extractions that resolve skin as a distinct organ. The token `skin` already appears in the `vp_skin` canonical entry and in the `pbpkSubCompartmentRegex` valid-organ list, so this entry registers the bare-organ form for parity with the surrounding canonicals.
 - **Source aliases:** none.
 - **Example models:** `Gaohua_2012_pregnancy_pbpk_caffeine.R`, `Gaohua_2012_pregnancy_pbpk_metoprolol.R`, `Gaohua_2012_pregnancy_pbpk_midazolam.R`, `Levitt_2005_propofol_pbpk.R`.
+
+### pancreas (**canonical bare pancreas compartment**)
+- **Type:** compartment
+- **Role:** Bare pancreas organ compartment in full-body PBPK extractions. Total tissue (well-stirred) drug concentration; one of the four splanchnic organs (with `stomach`, `gut`, `spleen`) whose venous outflow drains into `liver` via the portal vein rather than returning directly to blood. The token `pancreas` already appears in the `vp_pancreas` canonical entry and in the `pbpkSubCompartmentRegex` valid-organ list (alongside `lung`, `kidney`, `spleen`, `thymus`), so this entry registers the bare-organ form for parity with the surrounding canonicals -- exactly as `heart` and `skin` above.
+- **Source aliases:**
+  - `PAN` -- NONMEM `$MODEL` compartment label in Yau 2023 Appendix S1.
+- **Example models:** `Yau_2023_diazepam_pbpk_kpu_human.R`, `Yau_2023_diazepam_pbpk_scalar_human.R`, `Yau_2023_diazepam_pbpk_kpu_rat.R`, `Yau_2023_diazepam_pbpk_scalar_rat.R`.
+
+---
 
 ### skin_fat (**canonical bare lumped skin + fat compartment**)
 - **Type:** compartment
