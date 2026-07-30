@@ -396,6 +396,8 @@ navbar:
         href: articles/Bulitta_2011_cefpirome.html
       - text: "Cefpirome (Kang 2020)"
         href: articles/Kang_2020_cefpirome.html
+      - text: "Cefquinome pbpk (Mi 2023)"
+        href: articles/Mi_2023_cefquinome_pbpk.html
       - text: "Ceftazidime (Bulitta 2010)"
         href: articles/Bulitta_2010_ceftazidime.html
       - text: "Ceftazidime (Conil 2007)"
@@ -3334,6 +3336,7 @@ articles:
   - articles/Mensing_2017_3D_HCV_regimen
   - articles/Merchan_2015_azithromycin
   - articles/Mercier_2014_tramadol_tapentadol
+  - articles/Mi_2023_cefquinome_pbpk
   - articles/Milosheska_2016_lamotrigine
   - articles/Minucci_2024_CART_qsp
   - articles/Mitra_2026_ziftomenib
