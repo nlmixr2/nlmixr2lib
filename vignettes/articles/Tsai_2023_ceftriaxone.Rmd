@@ -134,10 +134,16 @@ quantile(cohort$ALB,   c(0.25, 0.5, 0.75))  # paper: 36 (IQR 33-39) g/L
 
 A helper builds event tables. Two points matter:
 
-* Observation rows use `cmt = "Cc"`. This model declares **two** endpoints
-  (`Cc` and `Cunbound`), each with its own residual-error term, so rxode2
-  allocates a real compartment slot to each; the endpoint name is the correct
-  `cmt` value here (the same pattern as `Eyler_2014_ertapenem`).
+* This model declares **two** endpoints (`Cc` and `Cunbound`), each with its own
+  residual-error term, and **neither is an ODE state** -- both are algebraic
+  observables built from `central`, `complex` and `peripheral1`. rxode2 injects a
+  compartment slot for each endpoint after the ODE states and then requires the
+  `dvid` -> `cmt` map to be satisfied, so observation rows carry
+  `cmt = NA_character_` plus an explicit `dvid = 1L`. Pointing `cmt` at an ODE
+  state (`cmt = "central"`) fails with
+  `'dvid'->'cmt' ... undefined compartment`. `dvid` is set on the dose rows too so
+  the column is not `NA`-typed. Both observables come back as columns regardless
+  of which endpoint `dvid` names.
 * `RRT_HEMODIAL_ACTIVE` is genuinely time-varying, so the event table is built
   as a plain data frame and the covariate column is set per row. Assigning
   covariates onto an `rxEt` object instead would silently drop them.
@@ -151,10 +157,12 @@ make_events <- function(subjects, dose_mg, dose_times, obs_times,
   purrr_rows <- lapply(seq_len(nrow(subjects)), function(i) {
     sid <- id_offset + subjects$id[i]
     dose_rows <- data.frame(
-      id = sid, time = dose_times, amt = dose_mg, evid = 1L, cmt = "central"
+      id = sid, time = dose_times, amt = dose_mg, evid = 1L,
+      cmt = "central", dvid = 1L
     )
     obs_rows <- data.frame(
-      id = sid, time = obs_times, amt = 0, evid = 0L, cmt = "Cc"
+      id = sid, time = obs_times, amt = 0, evid = 0L,
+      cmt = NA_character_, dvid = 1L
     )
     ev <- dplyr::arrange(dplyr::bind_rows(dose_rows, obs_rows), time, dplyr::desc(evid))
     ev$TBILI     <- subjects$TBILI[i]
@@ -193,14 +201,11 @@ nrow(sim_72)
 ```
 
 Typical-value (no between-subject variability) profiles use `omega = NA` rather
-than `zeroRe()`, because `zeroRe()` mutates shared model state.
+than `zeroRe()`, because `zeroRe()` mutates shared model state. A single-subject
+cohort at the cohort-median covariates serves for the figure replications below.
 
 ```{r simulate-typical}
 typ <- tibble(id = 1L, TBILI = 10, ALB = 36)  # cohort medians
-ev_typ <- make_events(typ, dose_mg = 2000, dose_times = 0, obs_times = obs_grid,
-                      label = "typical")
-sim_typ <- rxode2::rxSolve(mod, events = ev_typ, omega = NA, sigma = NA) |>
-  as.data.frame()
 ```
 
 # Replicate published figures
