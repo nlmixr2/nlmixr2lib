@@ -218,6 +218,8 @@ navbar:
         href: articles/Kakara_2014_statins_LDLC.html
       - text: "Avelumab (Masters 2022)"
         href: articles/Masters_2022_avelumab.html
+      - text: "Avibactam qsp (LopezArguello 2023)"
+        href: articles/LopezArguello_2023_pbp_binding_pseudomonas.html
       - text: "Axatilimab (Yang 2024)"
         href: articles/Yang_2024_axatilimab.html
       - text: "Axitinib (Garrett 2014)"
@@ -232,6 +234,8 @@ navbar:
         href: articles/Zheng_2014_azithromycin.html
       - text: "Azithromycin (Zheng 2018)"
         href: articles/Zheng_2018_azithromycin.html
+      - text: "Aztreonam qsp (LopezArguello 2023)"
+        href: articles/LopezArguello_2023_pbp_binding_pseudomonas.html
       - text: "BAY81 8973 (Garmann 2017)"
         href: articles/Garmann_2017_BAY81_8973.html
       - text: "BAY94 9027 (Solms 2020)"
@@ -348,6 +352,8 @@ navbar:
         href: articles/Blesch_2003_capecitabine.html
       - text: "Capecitabine (Urien 2005)"
         href: articles/Urien_2005_capecitabine.html
+      - text: "Carbenicillin qsp (LopezArguello 2023)"
+        href: articles/LopezArguello_2023_pbp_binding_pseudomonas.html
       - text: "Carboplatin (Ekhart 2008)"
         href: articles/Ekhart_2008_carboplatin.html
       - text: "Carboplatin (Zandvliet 2008)"
@@ -378,10 +384,14 @@ navbar:
         href: articles/Jonckheere_2019_cefepime.html
       - text: "Cefepime (Shoji 2016)"
         href: articles/Shoji_2016_cefepime.html
+      - text: "Cefepime qsp (LopezArguello 2023)"
+        href: articles/LopezArguello_2023_pbp_binding_pseudomonas.html
       - text: "Cefotaxime (Ahsman 2010)"
         href: articles/Ahsman_2010_cefotaxime.html
       - text: "Cefotaxime (Leroux 2016)"
         href: articles/Leroux_2016_cefotaxime.html
+      - text: "Cefoxitin qsp (LopezArguello 2023)"
+        href: articles/LopezArguello_2023_pbp_binding_pseudomonas.html
       - text: "Cefpirome (Bulitta 2011)"
         href: articles/Bulitta_2011_cefpirome.html
       - text: "Cefpirome (Kang 2020)"
@@ -394,8 +404,8 @@ navbar:
         href: articles/Georges_2009_ceftazidime.html
       - text: "Ceftazidime (Shi 2018)"
         href: articles/Shi_2018_ceftazidime.html
-      - text: "Ceftazidime (Zieck 2023)"
-        href: articles/Zieck_2023_ceftazidime.html
+      - text: "Ceftazidime qsp (LopezArguello 2023)"
+        href: articles/LopezArguello_2023_pbp_binding_pseudomonas.html
       - text: "Ceftriaxone (Garot 2011)"
         href: articles/Garot_2011_ceftriaxone.html
       - text: "Cefuroxime (Alqahtani 2018)"
@@ -636,6 +646,8 @@ navbar:
         href: articles/AbdulAziz_2016_doripenem.html
       - text: "Doripenem (Lee 2017)"
         href: articles/Lee_2017_doripenem.html
+      - text: "Doripenem qsp (LopezArguello 2023)"
+        href: articles/LopezArguello_2023_pbp_binding_pseudomonas.html
       - text: "Dostarlimab (Kuchimanchi 2024)"
         href: articles/Kuchimanchi_2024_dostarlimab.html
       - text: "Dostarlimab (Melhem 2022)"
@@ -766,6 +778,8 @@ navbar:
         href: articles/Eyler_2014_ertapenem.html
       - text: "Ertapenem (Lakota 2018)"
         href: articles/Lakota_2018_ertapenem.html
+      - text: "Ertapenem qsp (LopezArguello 2023)"
+        href: articles/LopezArguello_2023_pbp_binding_pseudomonas.html
       - text: "Erythromycin (Nielsen 2011)"
         href: articles/Nielsen_2011_antibacterial_efficacy.html
       - text: "Escitalopram (Areberg 2006)"
@@ -1066,6 +1080,8 @@ navbar:
         href: articles/Yadav_2017_imipenem_aminoglycoside_pseudomonas.html
       - text: "Imipenem amikacin PA088 (Yadav 2017)"
         href: articles/Yadav_2017_imipenem_aminoglycoside_pseudomonas.html
+      - text: "Imipenem qsp (LopezArguello 2023)"
+        href: articles/LopezArguello_2023_pbp_binding_pseudomonas.html
       - text: "Imipenem tobramycin PA001 (Yadav 2017)"
         href: articles/Yadav_2017_imipenem_aminoglycoside_pseudomonas.html
       - text: "Imipenem tobramycin PA022 (Yadav 2017)"
@@ -1368,6 +1384,8 @@ navbar:
         href: articles/Wittau_2015_meropenem.html
       - text: "Meropenem ciprofloxacin (Rees 2018)"
         href: articles/Rees_2018_meropenem_ciprofloxacin.html
+      - text: "Meropenem qsp (LopezArguello 2023)"
+        href: articles/LopezArguello_2023_pbp_binding_pseudomonas.html
       - text: "Meropenem tobramycin PAO1 (Landersdorfer 2018)"
         href: articles/Landersdorfer_2018_meropenem_tobramycin.html
       - text: "Meropenem tobramycin PAOmutS (Landersdorfer 2018)"
@@ -1726,6 +1744,8 @@ navbar:
         href: articles/Nichols_2016_piperacillin_tazobactam.html
       - text: "Piperacillin (ObrinkHansen 2015)"
         href: articles/ObrinkHansen_2015_piperacillin.html
+      - text: "Piperacillin qsp (LopezArguello 2023)"
+        href: articles/LopezArguello_2023_pbp_binding_pseudomonas.html
       - text: "Piperaquine (Hoglund 2012)"
         href: articles/Hoglund_2012_piperaquine.html
       - text: "Piperaquine (Hoglund 2017)"
@@ -1870,6 +1890,8 @@ navbar:
         href: articles/Xu_2013_ranibizumab.html
       - text: "Ranitidine (Hawwa 2013)"
         href: articles/Hawwa_2013_ranitidine.html
+      - text: "Relebactam qsp (LopezArguello 2023)"
+        href: articles/LopezArguello_2023_pbp_binding_pseudomonas.html
       - text: "Remifentanil (Choi 2011)"
         href: articles/Choi_2011_remifentanil.html
       - text: "Remifentanil (Yang 2017)"
@@ -2084,8 +2106,8 @@ navbar:
         href: articles/Kleijn_2011_sugammadex_rocuronium.html
       - text: "Sugemalimab (Wang 2024)"
         href: articles/Wang_2024_sugemalimab.html
-      - text: "Sulbactam durlobactam (Cammarata 2024)"
-        href: articles/Cammarata_2024_sulbactam_durlobactam.html
+      - text: "Sulbactam qsp (LopezArguello 2023)"
+        href: articles/LopezArguello_2023_pbp_binding_pseudomonas.html
       - text: "Sulfadoxine (Karunajeewa 2009)"
         href: articles/Karunajeewa_2009_sulfadoxinePyrimethamine.html
       - text: "SulfadoxinePyrimethamine (Odongo 2015)"
@@ -2184,8 +2206,8 @@ navbar:
         href: articles/CohenWolkowiez_2014_piperacillin_tazobactam.html
       - text: "Tazobactam (Nichols 2016)"
         href: articles/Nichols_2016_piperacillin_tazobactam.html
-      - text: "Tebipenem (Ganesan 2023)"
-        href: articles/Ganesan_2023_tebipenem.html
+      - text: "Tazobactam qsp (LopezArguello 2023)"
+        href: articles/LopezArguello_2023_pbp_binding_pseudomonas.html
       - text: "Tefibazumab (Cao 2013)"
         href: articles/Cao_2013_tefibazumab.html
       - text: "Teicoplanin (Chen 2023)"
@@ -2226,6 +2248,8 @@ navbar:
         href: articles/elDesoky_1997_theophylline_pediatric_asthma.html
       - text: "Ticagrelor (Almquist 2016)"
         href: articles/Almquist_2016_ticagrelor.html
+      - text: "Ticarcillin qsp (LopezArguello 2023)"
+        href: articles/LopezArguello_2023_pbp_binding_pseudomonas.html
       - text: "Tipifarnib (PerezRuixo 2006)"
         href: articles/PerezRuixo_2006_tipifarnib.html
       - text: "Tisagenlecleucel (Stein 2019)"
@@ -3244,6 +3268,7 @@ articles:
   - articles/Lon_2013_abatacept
   - articles/Long-Boyle_2015_busulfan
   - articles/Long_2017_necitumumab
+  - articles/LopezArguello_2023_pbp_binding_pseudomonas
   - articles/Lowe_2009_omalizumab
   - articles/Lu_2014_sglt_qsp
   - articles/Lu_2014_trastuzumabemtansine
