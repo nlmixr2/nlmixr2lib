@@ -1356,6 +1356,14 @@ PBPK bare organ-amount compartments used by Zhang 2011 nutlin3a and similar full
 - **Source aliases:** `skin + fat`, `skin+fat`, `sf` (Yang 2023 subscript).
 - **Example models:** `Yang_2023_diclazuril_chicken_pbpk.R` (founding example).
 
+### salivary_gland (**canonical bare salivary-gland compartment**)
+- **Type:** compartment
+- **Role:** Bare salivary-gland tissue compartment; the lumped state representing all major salivary glands (parotid and submandibular) in semi-physiologic distribution / dosimetry models. Registered for parity with the surrounding bare-organ canonicals (`liver`, `kidney`, `spleen`, `pancreas`, `skin`, `heart`, `other`) rather than as a new mechanistic role. Snake-cased on the multi-word-organ pattern already used by `small_intestine` / `large_intestine` / `renal_cortex`, and singular (one lumped state, not one per gland) on the pattern used by `kidney` for both kidneys.
+- **Source aliases:**
+  - `compartment 2` / "salivary glands" -- Siebinga 2023 numbers the six states 1-6 (blood, salivary gland, kidney, liver, tumor, other) and refers to the lumped state as "salivary glands" (plural).
+- **Example models:** `Siebinga_2023_lu177psma617.R`.
+- **Notes:** The salivary glands are the dose-limiting organ for PSMA-targeted radioligand therapy (and a target of interest for any drug or radiotracer with salivary uptake), so the state generalises beyond one paper and warrants a canonical rather than a `paper_specific_compartments` declaration. In Siebinga 2023 this is the only compartment with saturable (capacity-limited) uptake, parameterised by a maximum binding capacity `bmax`; the canonical name carries no commitment to saturable vs first-order kinetics.
+
 ---
 
 ## Adaptive-resistance bacterial states

@@ -121,6 +121,14 @@ The `l<base>` convention denotes a population mean estimated on the log scale (`
 - **Example models:** TMDD models, saturable-elimination popPK extractions.
 - **Notes:** Replaces the deprecated `vm` / `lvm` names (see `deprecatedVmaxNames`).
 
+### lbmax (**canonical log-transformed maximum binding capacity**)
+- **Type:** log-transformed-pk
+- **Role:** Log-scale maximum binding capacity of a saturable binding site or tissue -- the ceiling on bound drug (or bound radioligand), expressed in the units of the state it saturates (amount or concentration). Distinct from `lvmax`, which is a maximum *rate*: `lbmax` is a maximum *amount*.
+- **Source aliases:**
+  - `BMAX` / `Bmax` -- upper-case source-paper forms; the canonical bare name is `bmax`.
+- **Example models:** `Siebinga_2023_lu177psma617.R` (Bmax 40.4 MBq for saturable [177Lu]Lu-PSMA-617 binding in the salivary glands, Table 2), plus the wider `lbmax` / `bmax` population in `inst/modeldb/` (`GonzalezSales_2024_imetelstat.R`, `Nielsen_2011_*.R`, `Svensson_2016_rifampicin.R`, `Sikma_2020_tacrolimus_unbound_plasma.R`, `deWinter_2009_mycophenolic_acid.R`, ...).
+- **Notes:** Registered 2026-07-30 to give the long-used `lbmax` / `bmax` names an explicit register entry. Analyte- or site-suffixed variants (`lbmax_c`, `lbmax_p`, `lbmax_rbc`) are permitted on the standard suffix pattern when a model carries more than one binding pool.
+
 ### ltmax_abs (**canonical log-transformed saturable absorption Vmax**)
 - **Type:** log-transformed-pk
 - **Role:** Log-scale maximum rate of saturable Michaelis-Menten ABSORPTION from the depot / absorption compartment into central (amount / time). Distinct from `lvmax`, which is MM ELIMINATION from central.
@@ -405,6 +413,14 @@ The bare counterparts of the log-transformed parameters above. Used when the sou
 - **Source aliases:** none.
 - **Example models:** TMDD and saturable-elimination popPK extractions.
 - **Notes:** Replaces the deprecated `vm` name.
+
+### bmax (**canonical bare maximum binding capacity**)
+- **Type:** bare-pk
+- **Role:** Maximum binding capacity of a saturable binding site or tissue, in the units of the saturating state (amount or concentration). See `lbmax` for the log-transformed primary form.
+- **Source aliases:**
+  - `BMAX` / `Bmax` -- upper-case source-paper forms.
+- **Example models:** `Siebinga_2023_lu177psma617.R`, `GonzalezSales_2024_imetelstat.R`, `Nielsen_2011_cefuroxime.R`, `Svensson_2016_rifampicin.R`.
+- **Notes:** Registered 2026-07-30 alongside `lbmax`.
 
 ### tmax_abs (**canonical bare saturable absorption Vmax**)
 - **Type:** bare-pk
@@ -895,13 +911,13 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
 - **Role:** Zero-order production rate of an indirect-response / turnover pool (Dayneka 1993; Jusko traditions).
 - **Source aliases:** none.
 - **Example models:** indirect-response PD models.
-- **Notes:** Codified 2026-05-28 per the naming audit.
+- **Notes:** Codified 2026-05-28 per the naming audit. The compartment-suffixed forms `kin_<compartment>` / `kout_<compartment>` (with `lkin_<compartment>` / `lkout_<compartment>` as the log-transformed primaries) are the canonical family for **tissue-exchange rate constants** in semi-physiologic / dosimetry models that parameterise transport as first-order rate constants rather than as clearances: `kin_<tissue>` is central-to-tissue uptake and `kout_<tissue>` is tissue-to-central return, both 1/time. `<compartment>` must be a canonical compartment from `compartment-names.md`. Prefer these role-based names over the source paper's numeric micro-constants (`k12`, `k21`, `k13`, ...) whenever the compartments are anatomically named -- the canonical `k12` / `k21` / `k13` / `k31` entries mean central-to-`peripheral1` / `peripheral2` exchange specifically, so reusing them for organ compartments would silently mislead. Founding examples: `Lindauer_2017_pembrolizumab.R` and `Yamazaki_2008_crizotinib_mouse.R` (`kin_tumor` / `kout_tumor`); `Siebinga_2023_lu177psma617.R` (`kin_salivary_gland`, `kin_kidney`, `kin_liver`, `kin_tumor`, `kin_other` and their `kout_` partners, replacing Siebinga's `k12`/`k21`/`k13`/`k31`/`k14`/`k41`/`k15`/`k51`/`k16`/`k61`).
 
 ### kout (**canonical indirect-response elimination rate**)
 - **Type:** paper-named-param
-- **Role:** First-order elimination rate of an indirect-response turnover pool (1 / time).
+- **Role:** First-order elimination rate of an indirect-response turnover pool (1 / time). Also the tissue-to-central return leg of the `kin_<compartment>` / `kout_<compartment>` tissue-exchange family -- see the `kin` entry above.
 - **Source aliases:** none.
-- **Example models:** indirect-response PD models.
+- **Example models:** indirect-response PD models; `Lindauer_2017_pembrolizumab.R`, `Siebinga_2023_lu177psma617.R` (tissue-exchange form).
 
 ### kdeg (**canonical degradation rate**)
 - **Type:** paper-named-param
@@ -1009,3 +1025,27 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
 - **Source aliases:**
   - `log NOWSM`, `lNOWSM` -- equivalent paper notation.
 - **Example models:** `EudyByrne_2021_buprenorphine.R`.
+
+### cal_slope_<assay> (**canonical assay cross-calibration slope**)
+- **Type:** paper-named-param
+- **Role:** Slope of a linear recalibration mapping one measurement modality's predictions onto another modality's scale, used when a single structural state is observed by two assays with different bias / gain and the paper estimates the mapping as part of the model: `pred_reference = cal_slope_<assay> * pred_<assay> + cal_int_<assay>`. Unitless. `<assay>` is a short lower-case token naming the *non-reference* modality (`spect`, `pet`, `dbs`, `saliva`, ...).
+- **Source aliases:**
+  - `beta` -- Siebinga 2023 Equation 1 (`Cpred = Cpred_SPECT * beta + alpha`).
+- **Example models:** `Siebinga_2023_lu177psma617.R` (`cal_slope_spect` = 0.828, fixed; recalibrates SPECT/CT-derived blood activity onto the blood-sample scale).
+- **Notes:** Registered 2026-07-30. Distinct from a covariate effect (`e_<cov>_<param>`): the calibration parameters describe the *measurement* process, not a biological source of variability, and belong with the residual-error block rather than with the structural PK. Typically fixed after estimation in a data-source-only sub-model.
+
+### cal_int_<assay> (**canonical assay cross-calibration intercept**)
+- **Type:** paper-named-param
+- **Role:** Intercept of the linear recalibration described under `cal_slope_<assay>`, in the units of the observation.
+- **Source aliases:**
+  - `alpha` -- Siebinga 2023 Equation 1.
+- **Example models:** `Siebinga_2023_lu177psma617.R` (`cal_int_spect` = 6.27 MBq/L, fixed).
+- **Notes:** Registered 2026-07-30 alongside `cal_slope_<assay>`.
+
+### cal_bias_<matrix> (**canonical structural measurement bias**)
+- **Type:** paper-named-param
+- **Role:** Additive structural measurement offset applied to the model prediction for a given sampling matrix before the residual-error model, in the units of the observation. Encodes a known / assumed systematic difference between the measured and the true quantity (assay calibration bias, matrix interference, background signal) that the paper estimates as a structural parameter rather than absorbing into the residual error. `<matrix>` names the sampling matrix (`blood`, `plasma`, `urine`, ...).
+- **Source aliases:**
+  - `gamma` -- Siebinga 2023 Equation 2 (`Cobs = (Cpred + gamma) * (1 + eps_p) + eps_add`).
+- **Example models:** `Siebinga_2023_lu177psma617.R` (`cal_bias_blood` = 0.273 MBq/L, fixed; the paper attributes it to calibration uncertainty from extreme calibration ranges for blood samples).
+- **Notes:** Registered 2026-07-30. A positive `cal_bias_<matrix>` raises the prediction, so it forces predictions above the drug-free baseline; Siebinga 2023 notes this is the source of the apparent under-prediction of low blood observations in its CWRES plots.
