@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Wang 2023 dorzagliatin ([doi:10.1007/s40262-023-01286-8](https://doi.org/10.1007/s40262-023-01286-8)) — healthy subjects and adults with type 2 diabetes mellitus.
+
 * Drop `qs2`.  The model database now ships as `inst/modeldb.rds` instead of
   `inst/modeldb.qs2`, so `readModelDb()` no longer needs `qs2`.  It was only
   listed in `Suggests` yet used unconditionally, so `readModelDb()` failed
