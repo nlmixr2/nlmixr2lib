@@ -2444,6 +2444,13 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Source aliases:** none.
 - **Example models:** mAb popPK extractions tracking NAb.
 
+### np (**canonical nanoparticle-conjugated species suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Nanoparticle- / carrier-conjugated form of a drug in dual-species nanoparticle biodistribution models, where the bare canonical compartment name holds the released (free) drug and the `_np` suffix holds the still-conjugated drug travelling with its carrier.
+- **Source aliases:** none.
+- **Example models:** `Vasalou_2023_dendriticNanoparticle_mouse.R`, `Vasalou_2023_dendriticNanoparticle_rat.R`, `Vasalou_2023_dendriticNanoparticle_dog.R`, `Vasalou_2023_dendriticNanoparticle_human.R`.
+- **Notes:** Registered for the library's first dual-species (carrier-bound + released) nanoparticle model. Use when a model carries the conjugated and the released drug through the *same* set of anatomical compartments, giving pairs such as `blood` / `blood_np`, `liver` / `liver_np`, `spleen` / `spleen_np`, `other` / `other_np`, and matching observation variables `Cc` / `Cc_np`. The bare-name-holds-free-drug orientation follows the rest of the library, where an unsuffixed state is the unbound / active species and a suffix marks a bound or carrier-associated form. Distinct from `nab` (neutralising antibody) and from the ADC payload suffixes (`mmae`, `dxd`, `sn38`), which name a specific chemical entity rather than the conjugation state; prefer a named payload suffix whenever the released moiety has a published INN, and reserve `np` for carriers whose API is unnamed. Operator-ratified 2026-07-29.
+
 ### dar0 (**canonical DAR-0 ADC isoform suffix**)
 - **Type:** metabolite-suffix
 - **Role:** Drug-to-antibody ratio 0 (unconjugated antibody) ADC isoform species suffix.
