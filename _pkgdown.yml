@@ -1242,6 +1242,8 @@ navbar:
         href: articles/Chen_2021_lorlatinib.html
       - text: "Losmapimod (Yang 2013)"
         href: articles/Yang_2013_losmapimod.html
+      - text: "Lu177psma617 (Siebinga 2023)"
+        href: articles/Siebinga_2023_lu177psma617.html
       - text: "Lumefantrine (Hietala 2010)"
         href: articles/Hietala_2010_artemether_lumefantrine_malaria.html
       - text: "Lumefantrine (Hoglund 2015)"
@@ -3502,6 +3504,7 @@ articles:
   - articles/Shoji_2017_fosdagrocorat_oc
   - articles/Shoji_2017_fosdagrocorat_p1np
   - articles/Sidhu_1998_artemisinin
+  - articles/Siebinga_2023_lu177psma617
   - articles/Sikma_2020_tacrolimus_thoracic
   - articles/Sikma_2020_tacrolimus_unbound_plasma
   - articles/Silva_2023_perampanel
