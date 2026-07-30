@@ -2276,8 +2276,8 @@ navbar:
         href: articles/elDesoky_1997_theophylline_pediatric_asthma.html
       - text: "Ticagrelor (Almquist 2016)"
         href: articles/Almquist_2016_ticagrelor.html
-      - text: "Ticarcillin qsp (LopezArguello 2023)"
-        href: articles/LopezArguello_2023_pbp_binding_pseudomonas.html
+      - text: "Tilmicosin (Chen 2023)"
+        href: articles/Chen_2023_tilmicosin.html
       - text: "Tipifarnib (PerezRuixo 2006)"
         href: articles/PerezRuixo_2006_tipifarnib.html
       - text: "Tisagenlecleucel (Stein 2019)"
@@ -2840,6 +2840,7 @@ articles:
   - articles/Chen_2022_guselkumab
   - articles/Chen_2023_nemonoxacin
   - articles/Chen_2023_teicoplanin
+  - articles/Chen_2023_tilmicosin
   - articles/Cheng_2026_immunoglobulin
   - articles/Chi_2018_propofol
   - articles/Chien_2022_imatinib
