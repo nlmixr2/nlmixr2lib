@@ -300,6 +300,12 @@ navbar:
         href: articles/Toukam_2025_biib107.html
       - text: "Bivalirudin (Zhang 2012)"
         href: articles/Zhang_2012_bivalirudin.html
+      - text: "Brazikumab (Zhang 2023)"
+        href: articles/Zhang_2023_brazikumab.html
+      - text: "Brazikumab crp (Zhang 2023)"
+        href: articles/Zhang_2023_brazikumab.html
+      - text: "Brazikumab il22 (Zhang 2023)"
+        href: articles/Zhang_2023_brazikumab.html
       - text: "Brentuximab (Li 2017)"
         href: articles/Li_2017_brentuximab.html
       - text: "Brentuximab (Suri 2018)"
@@ -3750,6 +3756,7 @@ articles:
   - articles/Zhang_2019_nivolumab
   - articles/Zhang_2021_dupilumab
   - articles/Zhang_2022_ormutivimab
+  - articles/Zhang_2023_brazikumab
   - articles/Zhao_2010_mycophenolic_acid
   - articles/Zhao_2012_abacavir
   - articles/Zhao_2013_abacavir
