@@ -58,7 +58,7 @@ Choi_2018_metformin <- function() {
 
     ld2    <- log(4.49)  ; label("Duration of zero-order absorption D2 (h)")                              # Choi 2018 Table 3: D2 = 4.49 h, RSE 3.30%
     lalag2 <- log(0.250) ; label("Lag time of zero-order absorption ALAG2 (h)")                           # Choi 2018 Table 3: ALAG2 = 0.250 h, RSE 0.160%
-    logitf1 <- qlogis(0.289); label("Logit of fraction F1 absorbed by the first-order arm (unitless)")    # Choi 2018 Table 3: F1 = 0.289, RSE 20.5% -- bounded to [0,1] via logit so the simulated fraction respects 0 <= F1 <= 1
+    logitffo <- qlogis(0.289); label("Logit of fraction F1 absorbed by the first-order arm (unitless)")    # Choi 2018 Table 3: F1 = 0.289, RSE 20.5% -- bounded to [0,1] via logit so the simulated fraction respects 0 <= F1 <= 1
 
     # Formulation covariate effects. Choi 2018 Methods Eq. 2 parameterizes
     # the covariate as theta_test = theta_ref * X^formulation, so the
@@ -107,7 +107,7 @@ Choi_2018_metformin <- function() {
 
     d2    <- exp(ld2)
     alag2 <- exp(lalag2)
-    f1    <- expit(logitf1)
+    f1    <- expit(logitffo)
 
     # Formulation-dependent relative bioavailability. Choi 2018 Table 3
     # 'Influence of formulation on bioavailability' is F = 0.940 (RSE

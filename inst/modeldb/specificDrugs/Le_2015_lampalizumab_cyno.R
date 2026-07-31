@@ -67,7 +67,7 @@ Le_2015_lampalizumab_cyno <- function() {
     # dissociation equilibrium constant (K_D) of 11.7 pM (Loyet et al.
     # 2014)". log() inside fixed() per parameter-names.md.
     # ------------------------------------------------------------------
-    lKss <- fixed(log(1.17e-5));  label("Quasi-steady-state binding constant K_ss (nmol/mL; FIXED to in-vitro K_D 11.7 pM = 1.17e-5 nmol/mL from Loyet 2014)")  # Le 2015 text page 290, Loyet 2014 K_D
+    lkss <- fixed(log(1.17e-5));  label("Quasi-steady-state binding constant K_ss (nmol/mL; FIXED to in-vitro K_D 11.7 pM = 1.17e-5 nmol/mL from Loyet 2014)")  # Le 2015 text page 290, Loyet 2014 K_D
 
     # ------------------------------------------------------------------
     # Residual error. The paper (Methods, "Target-Mediated Drug
@@ -111,7 +111,7 @@ Le_2015_lampalizumab_cyno <- function() {
     kt12  <- exp(lkt12)
     kt21  <- kt12                                             # Le 2015 Methods (page 290, paragraph after Eq. 11): "k12T was assumed to be the same as k21T"
 
-    Kss   <- exp(lKss)
+    Kss   <- exp(lkss)
 
     # ---- Total-concentration observables (Le 2015 Eqs. 12-13) ------------
     CVITR <- depot   / VVITR                                 # Total vitreous lampalizumab concentration (nmol/mL) (Le 2015 Eq. 12)

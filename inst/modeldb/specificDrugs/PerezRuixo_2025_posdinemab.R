@@ -56,8 +56,8 @@ PerezRuixo_2025_posdinemab <- function() {
     lvisf  <- log(43.4e-3);  label("Posdinemab ISF volume of distribution (VISF, L, 70 kg ref)")        # Table 2: 43.4 x 10^-3 L = 0.0434 L
 
     # ----- Allometric exponents (Results: fixed; Germovsek 2021 priors) ------
-    e_wt_cl_q  <- 0.75;  label("Allometric (WT) exponent shared across all clearance-like terms (CL, Q, QCSF, QISF; fixed; Results: estimating exponents did not improve MOFV)")
-    e_wt_vc_vp <- 1.00;  label("Allometric (WT) exponent shared across all volume-like terms (Vc, Vp, VCSF, VISF; fixed; Results)")
+    e_wt_cl_q  <- fixed(0.75);  label("Allometric (WT) exponent shared across all clearance-like terms (CL, Q, QCSF, QISF; Results: estimating exponents did not improve MOFV)")
+    e_wt_vc_vp <- fixed(1.00);  label("Allometric (WT) exponent shared across all volume-like terms (Vc, Vp, VCSF, VISF; Results)")
 
     # ----- Mechanistic p217+tau / tau-seed parameters (Table 2) --------------
     lrbase    <- log(0.793);                  label("Baseline free p217+tau in CSF, healthy (R0_HV, pmol/L)") # Table 2: R0 healthy 0.793 pmol/L
@@ -72,8 +72,8 @@ PerezRuixo_2025_posdinemab <- function() {
     lkoff  <- log(0.224);                  label("Posdinemab-p217+tau dissociation rate in CSF (koff, 1/h)") # Table 2: 0.224 1/h
 
     # Fixed mechanistic assumptions (Methods, "Mechanism-based popPK-PD model"):
-    aff_isf_ratio <- 20; label("Affinity ratio kd(CSF)/kd(ISF), fixed at 20 (Methods: ISF binds tau seeds with 20-fold higher affinity)")
-    seed_ratio    <- 10; label("Baseline ISF tau seed / CSF p217+tau ratio, fixed at 10 (Methods: ISF tau seed levels 10-fold higher than CSF)")
+    aff_isf_ratio <- fixed(20); label("Affinity ratio kd(CSF)/kd(ISF) (Methods: ISF binds tau seeds with 20-fold higher affinity)")
+    seed_ratio    <- fixed(10); label("Baseline ISF tau seed / CSF p217+tau ratio (Methods: ISF tau seed levels 10-fold higher than CSF)")
 
     # MW for mg-to-pmol dose conversion. Posdinemab is a humanized IgG1 ~148 kDa
     # (Discussion: "13,805 pmol of posdinemab (148 kDa)").

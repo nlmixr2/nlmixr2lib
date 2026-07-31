@@ -147,7 +147,7 @@ Hanberg_2018_meropenem <- function() {
     label("Peripheral volume Vp (L)")                                       # Hanberg 2018 Table 2 (final model) row "Vp" = 6.99 L, %RSE 15
 
     # Fraction unbound in SCT (estimated). Encoded on logit scale per the
-    # nlmixr2lib logit-fraction convention (logitfr / logitfu precedent in
+    # nlmixr2lib logit-fraction convention (logitffo / logitfu precedent in
     # Tsuji_2017_linezolid.R). The _sct suffix disambiguates from plasma
     # protein-binding fraction unbound (which the paper treats as negligible
     # at <2% for meropenem).

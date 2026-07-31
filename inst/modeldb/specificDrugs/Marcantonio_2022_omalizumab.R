@@ -49,7 +49,7 @@ Marcantonio_2022_omalizumab <- function() {
     lkclearL1    <- fixed(log(log(2) / (2880 / 1440))); label("First-order IgE elimination rate constant (1/day; from t1/2 = 2 days)")             # Marcantonio 2022 Table S6 IgE Half Life = 2 days (Corne 1997); 2880 min
     lkclearR1    <- fixed(log(log(2) / (15 / 1440)));   label("First-order FcepsilonRI elimination rate constant (1/day; from t1/2 = 15 min)")     # Marcantonio 2022 Assess run file rec_half_1 = 15 min; Table S6 lists a 2 hr alternative that the paper explicitly says was 'tried both' (occupancy of soluble IgE vs FcepsilonRI inhibition); the Assess-JSON value of 15 min drives the paper's Table 5 dose prediction
     lkclearS1    <- fixed(log(log(2) / (30 / 1440)));   label("First-order shed-receptor elimination rate constant (1/day; unused)")               # Assess default
-    kd_LR        <- fixed(0.12);                     label("IgE:FcepsilonRI equilibrium dissociation constant (nM)")                              # Marcantonio 2022 Table S6 IgE:Receptor KD = 0.12 nM (Miller 1989)
+    kd_lr        <- fixed(0.12);                     label("IgE:FcepsilonRI equilibrium dissociation constant (nM)")                              # Marcantonio 2022 Table S6 IgE:Receptor KD = 0.12 nM (Miller 1989)
 
     V           <- fixed(5);                         label("Central compartment volume of distribution (L)")                                        # Table S6 Volume
     kon         <- fixed(0.001 * 86400);             label("Bimolecular association rate constant (L/nmol/day)")                                    # Assess default
@@ -67,7 +67,7 @@ Marcantonio_2022_omalizumab <- function() {
     kon1Ab     <- kon
     kon2Ab     <- floor(valency / 2) * kon
     koffAb     <- kon * kd_drug
-    koffL1R1   <- kon * kd_LR
+    koffL1R1   <- kon * kd_lr
 
     total_R1 <- R1_conc * V
     L1_0     <- L1_conc * V

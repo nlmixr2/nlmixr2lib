@@ -48,7 +48,7 @@ Marcantonio_2022_ustekinumab <- function() {
     lkclearL1    <- fixed(log(log(2) / (90 / 1440)));  label("First-order p40 elimination rate constant (1/day; from t1/2 = 1.5 hr)")             # Marcantonio 2022 Table S3 p-40 Half Life (Lotze 1985; assumed IL-2-like)
     lkclearR1    <- fixed(log(log(2) / (120 / 1440))); label("First-order p40-receptor elimination rate constant (1/day; from t1/2 = 2 hr)")     # Marcantonio 2022 Table S3 Receptor Internalization = 2 h (standard assumption)
     lkclearS1    <- fixed(log(log(2) / (30 / 1440)));  label("First-order shed-receptor elimination rate constant (1/day; unused)")               # Marcantonio 2022 Assess default; unused when S1_conc = 0
-    kd_LR        <- fixed(0.01);                   label("p40:Receptor equilibrium dissociation constant (nM)")                                   # Marcantonio 2022 Table S3 p-40:Receptor KD = 10 pM (Ma 2001)
+    kd_lr        <- fixed(0.01);                   label("p40:Receptor equilibrium dissociation constant (nM)")                                   # Marcantonio 2022 Table S3 p-40:Receptor KD = 10 pM (Ma 2001)
 
     V           <- fixed(5);                       label("Central compartment volume of distribution (L)")                                        # Marcantonio 2022 Table S3 Volume
     kon         <- fixed(0.001 * 86400);           label("Bimolecular association rate constant (L/nmol/day)")                                    # Marcantonio 2022 Assess default (0.001 nM-1 s-1)
@@ -66,7 +66,7 @@ Marcantonio_2022_ustekinumab <- function() {
     kon1Ab     <- kon
     kon2Ab     <- floor(valency / 2) * kon
     koffAb     <- kon * kd_drug
-    koffL1R1   <- kon * kd_LR
+    koffL1R1   <- kon * kd_lr
 
     total_R1 <- R1_conc * V
     L1_0     <- L1_conc * V

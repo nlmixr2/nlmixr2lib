@@ -64,7 +64,7 @@ Baverel_2015_tralokinumab <- function() {
     ld0      <- log(5.7);              label("Zero-order absorption duration (D0, day)")           # Table 3: D0 5.7 days
     ltlag    <- log(0.8);              label("First-order absorption lag time (Tlag, day)")        # Table 3: Tlag 0.8 day
     lfdepot  <- log(0.8);              label("Subcutaneous bioavailability (Fsc, fraction)")       # Table 3: Fsc 0.8
-    logitfr  <- log(0.7 / (1 - 0.7));  label("Logit of fraction of SC dose absorbed first-order (Fr, unitless)")  # Table 3: Fr 0.7 (logit-transformed per Eqs. 2-3)
+    logitffo  <- log(0.7 / (1 - 0.7));  label("Logit of fraction of SC dose absorbed first-order (Fr, unitless)")  # Table 3: Fr 0.7 (logit-transformed per Eqs. 2-3)
 
     # Allometric exponents on disposition parameters (Baverel 2015 Equation 5,
     # reference weight 73 kg). Fixed to canonical mAb values per the paper's
@@ -109,7 +109,7 @@ Baverel_2015_tralokinumab <- function() {
     # Fr IIV on the logit-transformed scale (Equation 2-3, Table 3 row 'Fr'):
     # bootstrap CV% midpoint (8.6 + 32.8) / 2 = 20.7%, interpreted as the SD of
     # eta_logitfr on the logit scale -> omega^2 = 0.207^2 = 0.04285.
-    etalogitfr ~ 0.04285                                                                           # Table 3 IIV row 'Fr', 8.6-32.8% on logit scale
+    etalogitffo ~ 0.04285                                                                           # Table 3 IIV row 'Fr', 8.6-32.8% on logit scale
 
     # Combined additive + proportional residual error (Baverel 2015 Equation 4,
     # Table 3 rows 'Additive residual error' and 'Proportional residual error').
@@ -133,7 +133,7 @@ Baverel_2015_tralokinumab <- function() {
     d0     <- exp(ld0)
     tlag   <- exp(ltlag)
     fdepot <- exp(lfdepot)
-    fr     <- exp(logitfr + etalogitfr) / (1 + exp(logitfr + etalogitfr))
+    fr     <- exp(logitffo + etalogitffo) / (1 + exp(logitffo + etalogitffo))
 
     # Two-compartment disposition micro-constants.
     kel <- cl / vc

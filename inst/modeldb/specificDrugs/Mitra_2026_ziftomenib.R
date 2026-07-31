@@ -178,10 +178,10 @@ Mitra_2026_ziftomenib <- function() {
     # Fraction of oral dose that is absorbed (F1). Logit link keeps F1 in
     # (0, 1) regardless of covariate combinations; FED and PPI enter as
     # additive shifts on the logit scale (paper NONMEM PK block).
-    logitf1 <- logitfdepot +
+    logitfdepot_i <- logitfdepot +
                e_fed_logitfdepot        * FED +
                e_conmed_ppi_logitfdepot * CONMED_PPI
-    fd      <- 1 / (1 + exp(-logitf1))
+    fd      <- 1 / (1 + exp(-logitfdepot_i))
 
     # Metabolites (KO-739 and KO-516).
     q_ko739  <- exp(lq_ko739  + etalq_ko739)

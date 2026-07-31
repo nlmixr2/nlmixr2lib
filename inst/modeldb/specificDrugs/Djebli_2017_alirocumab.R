@@ -1,5 +1,5 @@
 Djebli_2017_alirocumab <- function() {
-  description <- "Quasi-steady-state target-mediated drug disposition (TMDD-QSS) population PK model for alirocumab and total PCSK9 in healthy adults and adults with hypercholesterolemia (Djebli 2017, final model on expanded data set n=2870). Two-compartment disposition with first-order SC absorption (lag time and bioavailability), linear catabolic clearance from central, and PCSK9 binding / complex internalization described by QSS algebra; allometric weight scaling on CLL, Q, and Vc plus a statin-coadministration effect on CLL."
+  description <- "(Djebli 2017 writes the drug's linear catabolic clearance as CLL; it is stored here under the canonical name `lcl`.) Quasi-steady-state target-mediated drug disposition (TMDD-QSS) population PK model for alirocumab and total PCSK9 in healthy adults and adults with hypercholesterolemia (Djebli 2017, final model on expanded data set n=2870). Two-compartment disposition with first-order SC absorption (lag time and bioavailability), linear catabolic clearance from central, and PCSK9 binding / complex internalization described by QSS algebra; allometric weight scaling on CLL, Q, and Vc plus a statin-coadministration effect on CLL."
   reference   <- "Djebli N, Martinez JM, Lohan L, Khier S, Brunet A, Hurbin F, Fabre D. Target-Mediated Drug Disposition Population Pharmacokinetics Model of Alirocumab in Healthy Volunteers and Patients: Pooled Analysis of Randomized Phase I/II/III Studies. Clin Pharmacokinet. 2017;56(10):1155-1171. doi:10.1007/s40262-016-0505-1"
   vignette    <- "Djebli_2017_alirocumab"
   units       <- list(time = "day", dosing = "mg", concentration = "mg/L")
@@ -10,7 +10,7 @@ Djebli_2017_alirocumab <- function() {
       units              = "kg",
       type               = "continuous",
       reference_category = NULL,
-      notes              = "Allometric scaling P_i = TVP * (WT/WT_med)^EXP with EXP = 0.75 for CLL and Q and EXP = 1 for Vc (Djebli 2017 Sect. 3.6, n=2870 expanded model). Reference body weight 85 kg is the mean baseline weight reported in Table 3 for the expanded data set; the paper labels the reference as WT_med (median) but only reports the mean, so the mean is used here as the closest reported summary.",
+      notes              = "Allometric scaling P_i = TVP * (WT/WT_med)^EXP with EXP = 0.75 for linear clearance CL and Q and EXP = 1 for Vc (Djebli 2017 Sect. 3.6, n=2870 expanded model). Reference body weight 85 kg is the mean baseline weight reported in Table 3 for the expanded data set; the paper labels the reference as WT_med (median) but only reports the mean, so the mean is used here as the closest reported summary.",
       source_name        = "WT"
     ),
     CONMED_STATIN = list(
@@ -18,7 +18,7 @@ Djebli_2017_alirocumab <- function() {
       units              = "(binary)",
       type               = "binary",
       reference_category = "0 (no statin coadministration)",
-      notes              = "Multiplicative effect on linear clearance CLL: CLL = TVCLL * COV1^STATIN with COV1 = 1.27 (Djebli 2017 Table 4 expanded-model column and Sect. 3.6 equation). STATIN = 1 captures coadministration of any statin (rosuvastatin, atorvastatin, or simvastatin at any reported dose; low- and high-dose pooled). The covariate replaces the disease-state (DISST) effect on Vc retained in the smaller n=527 model because of strong collinearity between disease state and statin therapy in the n=527 cohort (Djebli 2017 Sect. 4).",
+      notes              = "Multiplicative effect on the linear clearance CL: CLL = TVCLL * COV1^STATIN with COV1 = 1.27 (Djebli 2017 Table 4 expanded-model column and Sect. 3.6 equation). STATIN = 1 captures coadministration of any statin (rosuvastatin, atorvastatin, or simvastatin at any reported dose; low- and high-dose pooled). The covariate replaces the disease-state (DISST) effect on Vc retained in the smaller n=527 model because of strong collinearity between disease state and statin therapy in the n=527 cohort (Djebli 2017 Sect. 4).",
       source_name        = "CONMED_STATIN"
     )
   )
@@ -45,7 +45,7 @@ Djebli_2017_alirocumab <- function() {
     # ---- Structural PK parameters (Djebli 2017 Table 4, final model of expanded data set n=2870) ----
     # Reference body weight 85 kg (mean baseline weight in the expanded data set; Table 3).
     # All rates are reported per day in the paper; no unit conversion needed.
-    lcl   <- log(0.176); label("Linear catabolic clearance CLL at reference covariates (L/day)")           # Table 4 expanded model column (CLL 0.176 L/day, 95% CI 0.152-0.200; CONMED_STATIN = 0, WT = 85 kg)
+    lcl   <- log(0.176); label("Linear catabolic clearance CL at reference covariates (L/day)")           # Table 4 expanded model column (CLL 0.176 L/day, 95% CI 0.152-0.200; CONMED_STATIN = 0, WT = 85 kg)
     lvc   <- log(4.67);  label("Central volume of distribution Vc at reference WT (L)")                    # Table 4 expanded model column (Vc 4.67 L, 95% CI 4.40-4.94; WT = 85 kg)
     lq    <- log(0.343); label("Inter-compartmental clearance Q at reference WT (L/day)")                  # Table 4 expanded model column (Q 0.343 L/day, 95% CI 0.321-0.365; WT = 85 kg)
     lvp   <- fixed(log(2.61)); label("Peripheral volume of distribution Vp (L; FIXED)")                    # Table 4 (Vp FIXED to 2.61 L in both the n=527 and expanded models; no allometric scaling)
@@ -75,14 +75,14 @@ Djebli_2017_alirocumab <- function() {
     # ---- Allometric exponents (Djebli 2017 Sect. 3.6 equation; theory-based, FIXED) ----
     # P_i = TVP * (WT / WT_med)^EXP with EXP = 0.75 for CLL and Q and EXP = 1 for Vc. The paper
     # describes these as "theory-based allometric scaling" (i.e., FIXED at the canonical values).
-    allo_cl  <- fixed(0.75); label("Allometric exponent of (WT/85)^EXP on CLL (FIXED)")                    # Sect. 3.6 (theory-based allometric scaling on CLL)
-    allo_q   <- fixed(0.75); label("Allometric exponent of (WT/85)^EXP on Q (FIXED)")                      # Sect. 3.6 (theory-based allometric scaling on Q)
-    allo_vc  <- fixed(1.0);  label("Allometric exponent of (WT/85)^EXP on Vc (FIXED)")                     # Sect. 3.6 (theory-based allometric scaling on Vc)
+    e_wt_cl  <- fixed(0.75); label("Allometric exponent of (WT/85)^EXP on linear clearance CL (FIXED)")                    # Sect. 3.6 (theory-based allometric scaling on CLL)
+    e_wt_q   <- fixed(0.75); label("Allometric exponent of (WT/85)^EXP on Q (FIXED)")                      # Sect. 3.6 (theory-based allometric scaling on Q)
+    e_wt_vc  <- fixed(1.0);  label("Allometric exponent of (WT/85)^EXP on Vc (FIXED)")                     # Sect. 3.6 (theory-based allometric scaling on Vc)
 
     # ---- Covariate effect: statin coadministration on CLL ----
     # CLL = TVCLL * COV1^STATIN; COV1 = 1.27 with statin coadministration (Table 4 final expanded
     # model). Implemented as a power of CONMED_STATIN: CLL = TVCLL * 1.27^CONMED_STATIN.
-    e_conmed_statin_cl <- 1.27; label("Multiplicative effect of CONMED_STATIN on CLL (unitless; CLL fold-change with statin)") # Table 4 expanded model column (COV1 STATIN on CLL 1.27, 95% CI 1.10-1.45)
+    e_conmed_statin_cl <- 1.27; label("Multiplicative effect of CONMED_STATIN on linear clearance CL (unitless; CLL fold-change with statin)") # Table 4 expanded model column (COV1 STATIN on CLL 1.27, 95% CI 1.10-1.45)
 
     # ---- Inter-individual variability (Djebli 2017 Table 4 expanded model) ----
     # Paper reports exponential IIV with CV%; estimate column gives the omega^2 value with
@@ -123,9 +123,9 @@ Djebli_2017_alirocumab <- function() {
     nmol_per_mg     <- 1e6 / mw_alirocumab  # 1 mg = 1e6 / MW nmol ~ 6.939 nmol per mg
 
     # ---- Individual parameters (covariate model: allometric on CLL/Q/Vc, STATIN on CLL) ----
-    cl   <- exp(lcl + etalcl) * (WT / 85)^allo_cl * e_conmed_statin_cl^CONMED_STATIN
-    vc   <- exp(lvc + etalvc) * (WT / 85)^allo_vc
-    q    <- exp(lq + etalq)   * (WT / 85)^allo_q
+    cl   <- exp(lcl + etalcl) * (WT / 85)^e_wt_cl * e_conmed_statin_cl^CONMED_STATIN
+    vc   <- exp(lvc + etalvc) * (WT / 85)^e_wt_vc
+    q    <- exp(lq + etalq)   * (WT / 85)^e_wt_q
     vp   <- exp(lvp)
     ka   <- exp(lka + etalka)
     fdepot <- exp(lfdepot + etalfdepot)

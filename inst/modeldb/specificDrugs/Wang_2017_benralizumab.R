@@ -9,7 +9,7 @@ Wang_2017_benralizumab <- function() {
       units              = "kg",
       type               = "continuous",
       reference_category = NULL,
-      notes              = "Allometric scaling on CL (exponent fixed at 0.75), Vc (estimated exponent allovc), and Vp (estimated exponent allovp), normalized to study-population mean 77 kg (Table 2; median not published).",
+      notes              = "Allometric scaling on CL (exponent fixed at 0.75), Vc (estimated exponent e_wt_vc), and Vp (estimated exponent e_wt_vp), normalized to study-population mean 77 kg (Table 2; median not published).",
       source_name        = "WT"
     ),
     ADA_POS = list(
@@ -41,8 +41,8 @@ Wang_2017_benralizumab <- function() {
 
     # Allometric scaling: CL fixed at 0.75, volumes estimated
     # CL exponent = 0.75 (fixed, standard allometric)
-    allovc  <- 0.651     ; label("Allometric exponent of body weight on Vc (unitless)")
-    allovp  <- 0.576     ; label("Allometric exponent of body weight on Vp (unitless)")
+    e_wt_vc  <- 0.651     ; label("Allometric exponent of body weight on Vc (unitless)")
+    e_wt_vp  <- 0.576     ; label("Allometric exponent of body weight on Vp (unitless)")
 
     # Covariate effects
     # ADA effect uses exp() form per Eq. 6 in paper: CL = theta1 * exp(I_ADA * theta2)
@@ -72,9 +72,9 @@ Wang_2017_benralizumab <- function() {
     # proxy for the unpublished median. If the median is later recovered from
     # a supplement or regulatory review, update this reference value.
     cl <- exp(lcl + etalcl) * (WT / 77)^0.75 * exp(e_ada_cl * ADA_POS)
-    vc <- exp(lvc + etalvc) * (WT / 77)^allovc * e_jpn_vc^RACE_JAPANESE
+    vc <- exp(lvc + etalvc) * (WT / 77)^e_wt_vc * e_jpn_vc^RACE_JAPANESE
     q  <- exp(lq + etalq)
-    vp <- exp(lvp + etalvp) * (WT / 77)^allovp
+    vp <- exp(lvp + etalvp) * (WT / 77)^e_wt_vp
     ka <- exp(lka + etalka)
     fdepot <- exp(lfdepot + etalfdepot)
 

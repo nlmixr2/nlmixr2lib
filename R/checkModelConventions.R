@@ -63,7 +63,8 @@ checkModelConventions <- function(model, verbose = TRUE) {
     .checkCompartments(ui, conv),
     .checkObservation(ui, conv),
     .checkUnits(ui, conv),
-    .checkDeprecatedNames(ui, conv)
+    .checkDeprecatedNames(ui, conv),
+    .checkFixedLabelAgreement(ui, conv)
   )
   issues <- do.call(rbind, checks)
   if (is.null(issues) || nrow(issues) == 0) {
@@ -1086,6 +1087,13 @@ checkModelConventions <- function(model, verbose = TRUE) {
         break
       }
     }
+    if (!is.null(conv$renamedParameters) && nm %in% names(conv$renamedParameters)) {
+      issues <- rbind(issues, .issue(
+        "deprecated_names", "error", nm,
+        sprintf("'%s' was renamed; this spelling defeats name-based discovery.", nm),
+        sprintf("Use '%s'.", conv$renamedParameters[[nm]])
+      ))
+    }
     issues <- rbind(issues, .checkDeprecatedVolumeOrVmaxName(nm, conv))
     issues <- rbind(issues, .checkDeprecatedAdcSuffix(nm, conv))
     issues <- rbind(issues, .checkDeprecatedCovEffectSuffix(nm, conv))
@@ -1241,3 +1249,43 @@ checkModelConventions <- function(model, verbose = TRUE) {
 }
 
 `%||%` <- function(a, b) if (is.null(a)) b else a
+
+
+# Severity is "warning", not "error", on purpose: a full-database scan at the
+# time this rule was added flagged 30 models beyond the ones issue #479
+# enumerated by hand. Erroring would break `buildModelDb()` for a pre-existing
+# backlog rather than for the new mistake the rule exists to catch. Promote to
+# "error" once that backlog is cleared -- the list is in issue #479.
+#
+# Issue #479: `iniDf$fix` is the only machine-readable signal that a value was
+# not estimated from the study's own data. Models that SAY in the label that a
+# parameter was fixed, assumed, borrowed from another paper, or set to a
+# theoretical value, while leaving it estimable, cause a downstream consumer to
+# treat an assumption as evidence -- e.g. counting a fixed 0.75 allometric
+# exponent as data supporting the 0.75 convention.
+.fixedClaimPattern <- paste(
+  "fixed", "FIXED", "assumed", "not published", "not paper-derived",
+  "literature value", "taken from", "transferred from", "theoretical",
+  sep = "|"
+)
+
+.checkFixedLabelAgreement <- function(ui, conv) {
+  issues <- .emptyIssues()
+  ini <- ui$iniDf
+  if (is.null(ini) || nrow(ini) == 0) return(issues)
+  if (!all(c("name", "label", "fix") %in% names(ini))) return(issues)
+  for (i in seq_len(nrow(ini))) {
+    lbl <- ini$label[[i]]
+    if (is.na(lbl) || !nzchar(lbl)) next
+    if (isTRUE(ini$fix[[i]])) next
+    if (grepl(.fixedClaimPattern, lbl, ignore.case = TRUE)) {
+      issues <- rbind(issues, .issue(
+        "fixed_label_disagreement", "warning", ini$name[[i]],
+        sprintf("Label of '%s' says the value was fixed/assumed/borrowed, but fix = FALSE.",
+                ini$name[[i]]),
+        "Wrap the value in `fixed(...)` so `iniDf$fix` matches the label, or reword the label if it was in fact estimated."
+      ))
+    }
+  }
+  issues
+}

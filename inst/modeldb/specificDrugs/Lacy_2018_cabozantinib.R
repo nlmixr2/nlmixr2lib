@@ -165,7 +165,7 @@ Lacy_2018_cabozantinib <- function() {
     # estimated THETA lives on the logit scale and the transformed value 0.854
     # is the back-transformed proportion. logit(0.854) = log(0.854 / 0.146)
     # = 1.7665.
-    logitf1 <- 1.7665      ; label("Logit of the fraction absorbed via the first-order depot1 process (F1 = expit(logitf1))")    # Lacy 2018 Table 3 FM F1 (transformed) = 0.854 (90% CI 0.819, 0.884); logit(0.854) = 1.7665
+    logitffo <- 1.7665      ; label("Logit of the fraction absorbed via the first-order depot1 process (F1 = expit(logitffo))")    # Lacy 2018 Table 3 FM F1 (transformed) = 0.854 (90% CI 0.819, 0.884); logit(0.854) = 1.7665
 
     # Bioavailability anchor. The reference (tablet) overall F is fixed at 1
     # because Lacy 2018 reports the capsule-vs-tablet F covariate only
@@ -232,7 +232,7 @@ Lacy_2018_cabozantinib <- function() {
     etalka      ~ 2.063   # Lacy 2018 Table 3 footnote d omega^2_Ka = 2.063
     etalcl      ~ 0.202   # Lacy 2018 Table 3 footnote d omega^2_CL/F = 0.202; off-diagonal with etalvc dropped (sidecar Q1-A; see vignette Errata)
     etalvc      ~ 0.233   # Lacy 2018 Table 3 footnote d omega^2_Vc/F = 0.233; off-diagonal with etalcl dropped (sidecar Q1-A; see vignette Errata)
-    etalogitf1  ~ 0.466   # Lacy 2018 Table 3 footnote d omega^2_F1 = 0.466 (on the logit scale, matching the F1 estimation scale per footnote a)
+    etalogitffo  ~ 0.466   # Lacy 2018 Table 3 footnote d omega^2_F1 = 0.466 (on the logit scale, matching the F1 estimation scale per footnote a)
 
     # ---- Residual error ----
     # Paper Methods: "Residual variability ... was initially modeled using the
@@ -297,7 +297,7 @@ Lacy_2018_cabozantinib <- function() {
 
     d2     <- exp(ld2)
     alag1  <- exp(lalag1)
-    f1     <- expit(logitf1 + etalogitf1)
+    f1     <- expit(logitffo + etalogitffo)
     fdepot <- exp(lfdepot) * f_form
 
     # ---- Micro-constants for the explicit ODE system ----

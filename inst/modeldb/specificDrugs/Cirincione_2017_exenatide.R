@@ -72,7 +72,7 @@ Cirincione_2017_exenatide <- function() {
     lkmka    <- log(16.9);   label("Michaelis-Menten constant for saturable absorption (ug)")        # Table 2: Km_ka = 16.9 ug
     ttau     <- fixed(1.35); label("Duration of zero-order absorption (hr)")                         # Results p. 520: tau fixed at 1.35 hr
     lfdepot  <- fixed(0);    label("Log absolute SC bioavailability (fixed to 0 = exp(0) = 1, i.e., no loss at injection site)")                               # Results p. 520: F fixed to 1 (absolute F not identifiable)
-    logitfr  <- logit(0.628); label("Fraction of dose entering first-order absorption (fraction)")   # Table 2: fr = 0.628
+    logitffo  <- logit(0.628); label("Fraction of dose entering first-order absorption (fraction)")   # Table 2: fr = 0.628
 
     # IIV — Table 2 reports CV% (Cl_int = 33.9%, Vc_int = 80.5%, Km = 95.7%); log-normal variance = log(1 + CV^2)
     etalcl ~ log(1 + 0.339^2)                                                                        # Table 2: CV Cl_int = 33.9%
@@ -95,7 +95,7 @@ Cirincione_2017_exenatide <- function() {
     km    <- exp(lkm + etalkm)
     kamax <- exp(lkamax)
     kmka  <- exp(lkmka)
-    fr    <- expit(logitfr)
+    fr    <- expit(logitffo)
 
     # Micro-constants
     k12 <- q / vc

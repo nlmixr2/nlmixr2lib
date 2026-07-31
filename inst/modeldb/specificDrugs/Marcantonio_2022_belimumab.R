@@ -48,7 +48,7 @@ Marcantonio_2022_belimumab <- function() {
     lkclearL1    <- fixed(log(log(2) / (60 / 1440)));  label("First-order BAFF elimination rate constant (1/day; from t1/2 = 60 min)")           # Marcantonio 2022 Table S5 BAFF Half Life (Moritz 1989, TNF-alpha analog)
     lkclearR1    <- fixed(log(log(2) / (120 / 1440))); label("First-order BAFF-R elimination rate constant (1/day; from t1/2 = 2 hr)")           # Marcantonio 2022 Table S5 Receptor Internalization = 2 h (standard)
     lkclearS1    <- fixed(log(log(2) / (30 / 1440)));  label("First-order shed-receptor elimination rate constant (1/day; unused)")               # Assess default
-    kd_LR        <- fixed(15);                     label("BAFF:BAFF-R equilibrium dissociation constant (nM)")                                   # Marcantonio 2022 Table S5 BAFF:Receptor KD = 15 nM for BAFF-R (Day 2005); BCMA 1550 nM and TACI 1.3 nM not modelled
+    kd_lr        <- fixed(15);                     label("BAFF:BAFF-R equilibrium dissociation constant (nM)")                                   # Marcantonio 2022 Table S5 BAFF:Receptor KD = 15 nM for BAFF-R (Day 2005); BCMA 1550 nM and TACI 1.3 nM not modelled
 
     V           <- fixed(5);                       label("Central compartment volume of distribution (L)")                                        # Table S5 Volume
     kon         <- fixed(0.001 * 86400);           label("Bimolecular association rate constant (L/nmol/day)")                                    # Assess default
@@ -66,7 +66,7 @@ Marcantonio_2022_belimumab <- function() {
     kon1Ab     <- kon
     kon2Ab     <- floor(valency / 2) * kon
     koffAb     <- kon * kd_drug
-    koffL1R1   <- kon * kd_LR
+    koffL1R1   <- kon * kd_lr
 
     total_R1 <- R1_conc * V
     L1_0     <- L1_conc * V

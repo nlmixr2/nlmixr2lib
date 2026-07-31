@@ -398,7 +398,29 @@
   # Deprecated parent-suffix marker. A model that names a parent-side
   # parameter `<base>_adc` should drop the `_adc` suffix; the parent
   # uses the canonical name unsuffixed.
-  deprecatedParentSuffix = "_adc"
+  deprecatedParentSuffix = "_adc",
+
+  # Exact parameter names retired by issues #474-#477, mapped to their
+  # replacement. Each was a spelling that defeated name-based discovery:
+  # a consumer looking for allometric exponents by `e_wt_*`, for logit-scale
+  # bioavailability, or for TMDD constants by case-normalised stems would
+  # silently miss these models. Keeping the map here (rather than in prose)
+  # means `checkModelConventions()` fails the build if one reappears.
+  renamedParameters = c(
+    # #474 allometric exponents -> e_wt_<param>
+    allo_cl = "e_wt_cl", allo_q = "e_wt_q", allo_vc = "e_wt_vc",
+    allovc = "e_wt_vc", allovp = "e_wt_vp",
+    dCLdWT = "e_wt_cl", dVdWT = "e_wt_vc",
+    # #475 logit-scale fractions: F vs absorption-pathway split
+    logitf1 = "logitfdepot (bioavailability) or logitffo/logitfburst (pathway split)",
+    logitfr = "logitffo (first-order arm) or logitfburst (burst/rapid-release)",
+    logitf1st = "logitffo",
+    # #476 CLL disambiguation
+    lcll = "lcl_ligand", cllira = "cl_lira", lcllira_ref = "lcl_lira_ref",
+    # #477 TMDD case / separator normalisation
+    lKss = "lkss", lkD = "lkd", lBmax = "lbmax", Km = "km",
+    kd_LR = "kd_lr", kd_T1 = "kd_t1", kd_T2 = "kd_t2"
+  )
 )
 
 # The following canonical-name lists are NOT carried on
