@@ -1128,6 +1128,8 @@ navbar:
         href: articles/Melhem_2018_g_csf.html
       - text: "GNbAC1 (Cao 2013)"
         href: articles/Cao_2013_GNbAC1.html
+      - text: "Ga68hadotatate (Siebinga 2023)"
+        href: articles/Siebinga_2023_hadotatate.html
       - text: "Galcanezumab (Kielbasa 2020)"
         href: articles/Kielbasa_2020_galcanezumab.html
       - text: "Ganciclovir (Acosta 2007)"
@@ -1518,6 +1520,8 @@ navbar:
         href: articles/Chen_2021_lorlatinib.html
       - text: "Losmapimod (Yang 2013)"
         href: articles/Yang_2013_losmapimod.html
+      - text: "Lu177hadotatate (Siebinga 2023)"
+        href: articles/Siebinga_2023_hadotatate.html
       - text: "Lu177psma617 (Siebinga 2023)"
         href: articles/Siebinga_2023_lu177psma617.html
       - text: "Lu177psmaIT (Siebinga 2024)"
@@ -4116,6 +4120,7 @@ articles:
   - articles/Shoji_2017_fosdagrocorat_p1np
   - articles/Shu_2024_posaconazole
   - articles/Sidhu_1998_artemisinin
+  - articles/Siebinga_2023_hadotatate
   - articles/Siebinga_2023_lu177psma617
   - articles/Siebinga_2024_lu177psmaIT
   - articles/Sikma_2020_tacrolimus_thoracic
