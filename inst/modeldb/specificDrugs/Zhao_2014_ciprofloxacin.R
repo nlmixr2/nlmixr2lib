@@ -88,10 +88,10 @@ Zhao_2014_ciprofloxacin <- function() {
     # rendering / OCR artifact in the published table; the surrounding
     # text and the Q row "(CW/1955)^0.75" confirm that V1 and V2 use the
     # fixed exponent 1, not theta1 / theta2.
-    allo_cl <- fixed(0.75); label("Allometric exponent on CL (unitless)")   # Zhao 2014 Methods, Covariate analysis
-    allo_q  <- fixed(0.75); label("Allometric exponent on Q (unitless)")    # Zhao 2014 Methods, Covariate analysis
-    allo_vc <- fixed(1);    label("Allometric exponent on V1 (unitless)")   # Zhao 2014 Methods, Covariate analysis
-    allo_vp <- fixed(1);    label("Allometric exponent on V2 (unitless)")   # Zhao 2014 Methods, Covariate analysis
+    e_wt_cl <- fixed(0.75); label("Allometric exponent on CL (unitless)")   # Zhao 2014 Methods, Covariate analysis
+    e_wt_q  <- fixed(0.75); label("Allometric exponent on Q (unitless)")    # Zhao 2014 Methods, Covariate analysis
+    e_wt_vc <- fixed(1);    label("Allometric exponent on V1 (unitless)")   # Zhao 2014 Methods, Covariate analysis
+    e_wt_vp <- fixed(1);    label("Allometric exponent on V2 (unitless)")   # Zhao 2014 Methods, Covariate analysis
 
     # Covariate effects on CL.
     e_ga_cl       <-  2.11;     label("Gestational-age power exponent on F_age (unitless; reference 27.9 weeks)")            # Zhao 2014 Table 4 theta5 = 2.11 (RSE 11.9%)
@@ -131,10 +131,10 @@ Zhao_2014_ciprofloxacin <- function() {
     f_inotrope <- e_inotrope_cl ^ CONMED_INOTROPE
 
     # ----- Individual parameters -----
-    cl <- exp(lcl + etalcl) * (WT / 1.955) ^ allo_cl * f_age * f_renal * f_inotrope
-    vc <- exp(lvc + etalvc) * (WT / 1.955) ^ allo_vc
-    vp <- exp(lvp + etalvp) * (WT / 1.955) ^ allo_vp
-    q  <- exp(lq)           * (WT / 1.955) ^ allo_q
+    cl <- exp(lcl + etalcl) * (WT / 1.955) ^ e_wt_cl * f_age * f_renal * f_inotrope
+    vc <- exp(lvc + etalvc) * (WT / 1.955) ^ e_wt_vc
+    vp <- exp(lvp + etalvp) * (WT / 1.955) ^ e_wt_vp
+    q  <- exp(lq)           * (WT / 1.955) ^ e_wt_q
 
     # ----- Micro-constants -----
     kel <- cl / vc

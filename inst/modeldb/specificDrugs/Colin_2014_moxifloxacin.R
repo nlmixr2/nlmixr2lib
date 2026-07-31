@@ -74,7 +74,7 @@ Colin_2014_moxifloxacin <- function() {
 
     # Allometric exponents - fixed in the final model (Colin 2014
     # Discussion; ka not scaled).
-    allo_cl <- fixed(0.75); label("Allometric exponent on all CL terms (unitless)")  # Colin 2014 Discussion: removing the 0.75 exponent on CL terms gave dAICc = -0.50 (no improvement); exponent fixed in the final model
+    e_wt_cl <- fixed(0.75); label("Allometric exponent on all CL terms (unitless)")  # Colin 2014 Discussion: removing the 0.75 exponent on CL terms gave dAICc = -0.50 (no improvement); exponent fixed in the final model
     allo_v  <- fixed(1.00); label("Allometric exponent on all V terms (unitless)")   # Colin 2014 Table 2 footnote: V terms scale linearly with (LBM/60)
 
     # IIV - diagonal omega matrix; only ka, V1, and CL carry random
@@ -92,11 +92,11 @@ Colin_2014_moxifloxacin <- function() {
     # carry IIV and LBM scaling; the remaining disposition parameters use
     # the typical value scaled by LBM.
     ka  <- exp(lka + etalka)
-    cl  <- exp(lcl + etalcl) * (LBM / 60)^allo_cl
+    cl  <- exp(lcl + etalcl) * (LBM / 60)^e_wt_cl
     vc  <- exp(lvc + etalvc) * (LBM / 60)^allo_v
-    q   <- exp(lq)           * (LBM / 60)^allo_cl
+    q   <- exp(lq)           * (LBM / 60)^e_wt_cl
     vp  <- exp(lvp)          * (LBM / 60)^allo_v
-    q2  <- exp(lq2)          * (LBM / 60)^allo_cl
+    q2  <- exp(lq2)          * (LBM / 60)^e_wt_cl
     vp2 <- exp(lvp2)         * (LBM / 60)^allo_v
 
     # Micro-constants.

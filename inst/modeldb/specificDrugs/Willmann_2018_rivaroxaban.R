@@ -69,8 +69,8 @@ Willmann_2018_rivaroxaban <- function() {
     # Results paragraph ("the scaling exponent of V with body weight was
     # estimated to be not significantly different from 1; therefore, it was
     # fixed to 1, consistent with the allometric theory").
-    allo_cl <- 0.323;         label("Allometric exponent on CL with body weight (unitless)")  # Willmann 2018 Table 1: CL exponent = 0.323, RSE 27.1%
-    allo_vc <- fixed(1.0);    label("Allometric exponent on central V with body weight (unitless, fixed)")  # Willmann 2018 Table 1: V exponent fixed at 1, consistent with allometric theory
+    e_wt_cl <- 0.323;         label("Allometric exponent on CL with body weight (unitless)")  # Willmann 2018 Table 1: CL exponent = 0.323, RSE 27.1%
+    e_wt_vc <- fixed(1.0);    label("Allometric exponent on central V with body weight (unitless, fixed)")  # Willmann 2018 Table 1: V exponent fixed at 1, consistent with allometric theory
 
     # IIV - Willmann 2018 reports CV% (Table 1 footer "b"; exponential IIV
     # model per Methods "exponential inter-individual variability (IIV)").
@@ -102,8 +102,8 @@ Willmann_2018_rivaroxaban <- function() {
     # weight relative to a body weight of 70 kg"; "Scaling of Vp and Q with
     # body weight did not improve the fit and led to implausibly large
     # values of Vp").
-    cl <- exp(lcl + etalcl) * (WT / ref_wt)^allo_cl
-    vc <- exp(lvc) * (WT / ref_wt)^allo_vc
+    cl <- exp(lcl + etalcl) * (WT / ref_wt)^e_wt_cl
+    vc <- exp(lvc) * (WT / ref_wt)^e_wt_vc
     q  <- exp(lq)
     vp <- exp(lvp)
 

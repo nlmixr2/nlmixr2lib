@@ -103,7 +103,7 @@ Gupta_2016_lenvatinib <- function() {
     lfcap      <- log(0.896);  label("Relative bioavailability of capsule vs tablet (unitless)")                                                                             # Gupta 2016 Table 2: F1 = 0.896
 
     # Allometric exponents held fixed at the paper's reported integer / canonical values.
-    allo_cl    <- fixed(0.75); label("Allometric exponent on CL/F and Q/F (unitless)")                                                                                       # Gupta 2016 Table 2: WGT/75 raised to 0.75 in CL/F and Q1/F, Q2/F covariate equations
+    e_wt_cl    <- fixed(0.75); label("Allometric exponent on CL/F and Q/F (unitless)")                                                                                       # Gupta 2016 Table 2: WGT/75 raised to 0.75 in CL/F and Q1/F, Q2/F covariate equations
     allo_v     <- fixed(1.0);  label("Allometric exponent on V1/F, V2/F, V3/F (unitless)")                                                                                   # Gupta 2016 Table 2: WGT/75 raised to 1 (linear) in V1/F, V2/F, V3/F covariate equations
 
     # Covariate effects on CL/F expressed on the log scale: source THETAs
@@ -154,7 +154,7 @@ Gupta_2016_lenvatinib <- function() {
     duration <- exp(lduration + etalduration)
 
     cl <- exp(lcl + etalcl) *
-          (WT / ref_wt)^allo_cl *
+          (WT / ref_wt)^e_wt_cl *
           exp(e_cyp3a4_ind_cl  * CONMED_CYP3A4_IND) *
           exp(e_cyp3a4_inh_cl  * CONMED_CYP3A4_INH) *
           exp(e_alb_cl         * alb_low) *
@@ -165,8 +165,8 @@ Gupta_2016_lenvatinib <- function() {
     vp  <- exp(lvp  + etalvp)  * (WT / ref_wt)^allo_v
     vp2 <- exp(lvp2 + etalvp2) * (WT / ref_wt)^allo_v
 
-    q   <- exp(lq)  * (WT / ref_wt)^allo_cl
-    q2  <- exp(lq2) * (WT / ref_wt)^allo_cl
+    q   <- exp(lq)  * (WT / ref_wt)^e_wt_cl
+    q2  <- exp(lq2) * (WT / ref_wt)^e_wt_cl
 
     # Formulation-effect bioavailability: 1 for the tablet reference arm,
     # 0.896 * exp(eta) for the capsule arm. The 30.2 percent CV IIV on F1

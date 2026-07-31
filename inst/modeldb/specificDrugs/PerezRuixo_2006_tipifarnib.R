@@ -98,7 +98,7 @@ PerezRuixo_2006_tipifarnib <- function() {
     e_solution_tlag <- 0.183; label("Solution-vs-solid tlag ratio (multiplicative; applied as ratio^FORM_SOLUTION)") # Perez-Ruixo 2006 Table 4 footnote k
 
     # Continuous-covariate exponents.
-    allo_vc      <- fixed(1);     label("WT exponent on V2 (unitless; fixed at 1 per Table 3 footnote 2)")    # Perez-Ruixo 2006 Table 3 footnote 2: exponent not different from 1, set to 1
+    e_wt_vc      <- fixed(1);     label("WT exponent on V2 (unitless; fixed at 1 per Table 3 footnote 2)")    # Perez-Ruixo 2006 Table 3 footnote 2: exponent not different from 1, set to 1
     e_tbili_cl   <- -0.103;       label("TBILI power exponent on CL (unitless; reference 9 umol/L)")          # Perez-Ruixo 2006 Table 4 footnote a: theta_TBIL = -0.103
 
     # Inter-individual variability (cancer-patient values; Perez-Ruixo 2006
@@ -161,7 +161,7 @@ PerezRuixo_2006_tipifarnib <- function() {
     # covariate equations applied. Bilirubin enters as a centred power law
     # on CL; body weight enters as a linear (exponent 1) ratio on V2.
     cl  <- exp(lcl + etalcl) * (TBILI / ref_tbil) ^ e_tbili_cl * f_healthy_cl
-    vc  <- exp(lvc + etalvc) * (WT / ref_wt) ^ allo_vc          * f_healthy_vc
+    vc  <- exp(lvc + etalvc) * (WT / ref_wt) ^ e_wt_vc          * f_healthy_vc
     q   <- exp(lq  + etalq)
     vp  <- exp(lvp + eta_lvp_corr)
     q2  <- exp(lq2 + eta_lq2_corr)                              * f_healthy_q2

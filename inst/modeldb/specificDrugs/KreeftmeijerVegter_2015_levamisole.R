@@ -117,9 +117,9 @@ KreeftmeijerVegter_2015_levamisole <- function() {
     # ... (power value of 0.75) to standard body weight (70 kg) ... than
     # linear scaling (corresponding allometric power of 1) of CL/F and
     # V/F." Both held fixed at the standard Anderson-Holford values.
-    allo_cl <- fixed(0.75)
+    e_wt_cl <- fixed(0.75)
     label("Allometric exponent on CL/F (unitless; fixed)")             # Results paragraph "Allometric scaling of CL/F (power value of 0.75)"
-    allo_vc <- fixed(1)
+    e_wt_vc <- fixed(1)
     label("Allometric exponent on V/F (unitless; fixed)")              # Table 3 row 2 "Allometric scaling of CL/F and V/F to BW (70 kg)"; linear scaling on V/F
 
     # Linear proportional age effect on CL/F, centred at the population
@@ -171,10 +171,10 @@ KreeftmeijerVegter_2015_levamisole <- function() {
 
     # Individual PK parameters
     ka <- exp(lka + etalka)
-    cl <- exp(lcl + etalcl) * (WT / 70)^allo_cl * age_eff_cl
+    cl <- exp(lcl + etalcl) * (WT / 70)^e_wt_cl * age_eff_cl
     # V/F shares the CL eta perfectly (paper Methods); the block omega
     # above carries the correlation, so etalvc is used directly here.
-    vc <- exp(lvc + etalvc) * (WT / 70)^allo_vc
+    vc <- exp(lvc + etalvc) * (WT / 70)^e_wt_vc
 
     kel <- cl / vc
 

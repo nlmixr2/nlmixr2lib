@@ -142,7 +142,7 @@ Lu_2019_polatuzumab <- function() {
     # WT enters all acMMAE clearance and volume parameters as power effects
     # normalized to 75 kg.
     e_wt_cl      <-  0.73;   label("Power exponent of WT on CL_SS (unitless)")                      # Lu 2019 Table 2, theta22
-    e_wt_vc         <-  0.50;   label("Shared power exponent of WT on Vc, Vp, Q (unitless)")           # Lu 2019 Table 2, theta23
+    e_wt_vc         <-  0.50;   label("Shared power exponent of WT on Vc, Vp, Q (unitless)")           # Lu 2019 Table 2, theta23. # Issue #479: exactly on a convention value; source paper was not obtainable (not open access / table not on hand), so provenance is UNVERIFIED -- left estimable rather than asserting fixed().
 
     # SEXF coding inverts vs. the source's male-indicator: paper theta24 = 1.20
     # is V1_male / V1_female; with SEXF the multiplicative ratio is V1_female /

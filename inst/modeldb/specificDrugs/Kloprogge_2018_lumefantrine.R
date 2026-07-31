@@ -230,8 +230,8 @@ Kloprogge_2018_lumefantrine <- function() {
     # footnote: 'Clearance and volume parameters were centred on the
     # median body weight (WT) and scaled allometrically (CL and Q =
     # theta(n) * (WT/42)^(3/4); V = theta(n) * (WT/42))'.
-    allo_cl <- fixed(3/4) ; label("Allometric exponent on CL/F and Q/F (unitless, fixed)")        # Kloprogge 2018 Table 2 footnote (allometric scaling)
-    allo_vc <- fixed(1)   ; label("Allometric exponent on Vc/F and Vp/F (unitless, fixed)")        # Kloprogge 2018 Table 2 footnote (allometric scaling)
+    e_wt_cl <- fixed(3/4) ; label("Allometric exponent on CL/F and Q/F (unitless, fixed)")        # Kloprogge 2018 Table 2 footnote (allometric scaling)
+    e_wt_vc <- fixed(1)   ; label("Allometric exponent on Vc/F and Vp/F (unitless, fixed)")        # Kloprogge 2018 Table 2 footnote (allometric scaling)
 
     # Dose-saturable absorption (saturation of relative bioavailability).
     # Table 2 footnote: 'dose-dependent absorption was implemented as a
@@ -293,10 +293,10 @@ Kloprogge_2018_lumefantrine <- function() {
     # the relevant covariates (WT, PREG, PARA, DOSE) are time-fixed
     # except DOSE which is per-dose-record (see covariateData notes).
     ka  <- exp(lka)              * (1 + e_preg_ka * PREG)
-    cl  <- exp(lcl)              * (WT / 42)^allo_cl
-    vc  <- exp(lvc  + etalvc)    * (WT / 42)^allo_vc
-    q   <- exp(lq)               * (WT / 42)^allo_cl
-    vp  <- exp(lvp)              * (WT / 42)^allo_vc
+    cl  <- exp(lcl)              * (WT / 42)^e_wt_cl
+    vc  <- exp(lvc  + etalvc)    * (WT / 42)^e_wt_vc
+    q   <- exp(lq)               * (WT / 42)^e_wt_cl
+    vp  <- exp(lvp)              * (WT / 42)^e_wt_vc
 
     # Two-compartment disposition micro-constants.
     kel <- cl / vc

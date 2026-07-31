@@ -63,7 +63,7 @@ Bellanti_2017_deferiprone <- function() {
     lka <- log(9.13); label("First-order absorption rate constant Ka (1/h)")  # Bellanti 2017 Table 2 (Ka Estimate; estimated with informative prior 8.2/h from Bellanti 2014)
 
     # Fixed allometric exponents on body weight (both marked FIX in Bellanti 2017 Table 2).
-    allo_cl <- fixed(0.75); label("Fixed allometric exponent on CL/F (unitless)")  # Bellanti 2017 Table 2 (WT on CL/F, 0.75 FIX)
+    e_wt_cl <- fixed(0.75); label("Fixed allometric exponent on CL/F (unitless)")  # Bellanti 2017 Table 2 (WT on CL/F, 0.75 FIX)
     allo_v  <- fixed(1);    label("Fixed allometric exponent on V/F (unitless)")   # Bellanti 2017 Table 2 (WT on V/F, 1 FIX)
 
     # IIV - block correlation between etalcl and etalvc; no IIV on Ka in the final model.
@@ -89,7 +89,7 @@ Bellanti_2017_deferiprone <- function() {
   model({
     # Individual PK parameters with fixed allometric scaling on body weight
     # (reference weight 16 kg = paediatric cohort mean).
-    cl <- exp(lcl + etalcl) * (WT / 16)^allo_cl
+    cl <- exp(lcl + etalcl) * (WT / 16)^e_wt_cl
     vc <- exp(lvc + etalvc) * (WT / 16)^allo_v
     ka <- exp(lka)
 

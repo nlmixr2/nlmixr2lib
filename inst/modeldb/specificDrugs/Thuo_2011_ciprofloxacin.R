@@ -57,8 +57,8 @@ Thuo_2011_ciprofloxacin <- function() {
 
     # Allometric exponents - fixed at standard adult-to-paediatric values per the source paper
     # (Methods 'Pharmacokinetic analysis': CL allometric exponent 0.75; V allometric exponent 1).
-    allo_cl <- fixed(0.75); label("Allometric exponent on apparent CL (unitless)")                                            # Thuo 2011 Methods, oral CL allometric equation
-    allo_vc <- fixed(1);    label("Allometric exponent on apparent Vc (unitless)")                                            # Thuo 2011 Methods, oral V allometric equation
+    e_wt_cl <- fixed(0.75); label("Allometric exponent on apparent CL (unitless)")                                            # Thuo 2011 Methods, oral CL allometric equation
+    e_wt_vc <- fixed(1);    label("Allometric exponent on apparent Vc (unitless)")                                            # Thuo 2011 Methods, oral V allometric equation
 
     # Covariate effects - linear centered-deviation form for sodium; fractional shift for high risk
     e_sod_cl           <-  0.0368; label("Linear sodium effect on apparent CL (per mmol/L from SOD=136)")                     # Thuo 2011 Table 2 theta2 = 0.0368
@@ -84,8 +84,8 @@ Thuo_2011_ciprofloxacin <- function() {
 
     # Individual PK parameters
     ka     <- exp(lka  + etalka)
-    cl     <- exp(lcl  + etalcl) * (WT / 70)^allo_cl * sod_cl * mortrisk_cl
-    vc     <- exp(lvc  + etalvc) * (WT / 70)^allo_vc * sod_vc
+    cl     <- exp(lcl  + etalcl) * (WT / 70)^e_wt_cl * sod_cl * mortrisk_cl
+    vc     <- exp(lvc  + etalvc) * (WT / 70)^e_wt_vc * sod_vc
     alag_t <- exp(ltlag)
 
     kel <- cl / vc

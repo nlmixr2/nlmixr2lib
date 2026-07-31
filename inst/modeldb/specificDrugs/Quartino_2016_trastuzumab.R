@@ -64,7 +64,7 @@ Quartino_2016_trastuzumab <- function() {
     # ). Reference WT = 68 kg, reference ALT = 19 IU/L.
     e_wt_cl  <- 1.04;  label("Power exponent of WT on linear CL (unitless; reference 68 kg)")    # Quartino 2016 Table 1
     e_wt_vc  <- 0.443; label("Power exponent of WT on Vc (unitless; reference 68 kg)")           # Quartino 2016 Table 1
-    e_wt_vp  <- 0.500; label("Power exponent of WT on Vp (unitless; reference 68 kg)")           # Quartino 2016 Table 1
+    e_wt_vp  <- 0.500; label("Power exponent of WT on Vp (unitless; reference 68 kg)")           # Quartino 2016 Table 1 ("Influence of body weight on Vp" 0.500, RSE 22.2%; bootstrap 0.481 [0.200, 0.735]). Estimated, not fixed -- the exact 0.500 is rounding, see issue #479.
     e_alt_cl <- 0.144; label("Power exponent of ALT on linear CL (unitless; reference 19 IU/L)") # Quartino 2016 Table 1
 
     # Inter-individual variability. Quartino 2016 Table 1 reports omega as

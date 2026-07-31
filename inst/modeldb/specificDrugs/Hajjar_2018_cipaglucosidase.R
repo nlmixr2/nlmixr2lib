@@ -196,7 +196,7 @@ Hajjar_2018_cipaglucosidase <- function() {
     # respectively'). Applied to ALL clearances (CL, Q, Vmax-mass-flow)
     # and ALL volumes (Vc, Vp) via the canonical Anderson-Holford scaling.
     # =========================================================================
-    allo_cl <- fixed(0.75);  label("Allometric exponent on clearances (unitless; fixed at theoretical 0.75)")     # Hajjar 2018 Methods 'Modeling' bullet: exponents fixed to 0.75 and 1
+    e_wt_cl <- fixed(0.75);  label("Allometric exponent on clearances (unitless; fixed at theoretical 0.75)")     # Hajjar 2018 Methods 'Modeling' bullet: exponents fixed to 0.75 and 1
     allo_v  <- fixed(1.00);  label("Allometric exponent on volumes (unitless; fixed at theoretical 1.00)")        # Hajjar 2018 Methods 'Modeling' bullet: exponents fixed to 0.75 and 1
 
     # =========================================================================
@@ -230,7 +230,7 @@ Hajjar_2018_cipaglucosidase <- function() {
     # multiplier. The two AT2221 dose effects are applied as ratio^indicator
     # (the no-AT2221 reference state has both indicators = 0 so neither
     # multiplier contributes).
-    cl <- exp(lcl + etalcl) * (WT / ref_wt) ^ allo_cl *
+    cl <- exp(lcl + etalcl) * (WT / ref_wt) ^ e_wt_cl *
           e_dose130mg_cl ^ DOSE_130MG * e_dose260mg_cl ^ DOSE_260MG
 
     # Central volume: log-normal eta + allometric WT^1.
@@ -238,12 +238,12 @@ Hajjar_2018_cipaglucosidase <- function() {
 
     # Inter-compartmental clearance and peripheral volume: allometric only
     # (no BSV reported by paper).
-    q  <- exp(lq) * (WT / ref_wt) ^ allo_cl
+    q  <- exp(lq) * (WT / ref_wt) ^ e_wt_cl
     vp <- exp(lvp) * (WT / ref_wt) ^ allo_v
 
     # MM Vmax allometrically scales as a clearance (mass/time, same exponent
     # as CL). Km is a concentration and does not scale with body weight.
-    vmax <- exp(lvmax) * (WT / ref_wt) ^ allo_cl
+    vmax <- exp(lvmax) * (WT / ref_wt) ^ e_wt_cl
     km   <- exp(lkm)
 
     # ---- ODE system ------------------------------------------------------

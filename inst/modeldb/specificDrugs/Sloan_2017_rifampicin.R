@@ -124,8 +124,8 @@ Sloan_2017_rifampicin <- function() {
     # CL/F_wt = (wt/wt_std)^(3/4) and for volume parameters is given by
     # V/F_wt = (wt/wt_std)^1').
     # ============================================================================
-    allo_cl <- fixed(0.75); label("Allometric exponent on CL/F (unitless)")  # Sloan 2017 Methods: CL exponent fixed at 3/4
-    allo_vc <- fixed(1.0);  label("Allometric exponent on V/F (unitless)")   # Sloan 2017 Methods: V exponent fixed at 1
+    e_wt_cl <- fixed(0.75); label("Allometric exponent on CL/F (unitless)")  # Sloan 2017 Methods: CL exponent fixed at 3/4
+    e_wt_vc <- fixed(1.0);  label("Allometric exponent on V/F (unitless)")   # Sloan 2017 Methods: V exponent fixed at 1
 
     # ============================================================================
     # Sex effect on CL/F. Sloan 2017 Table 3 reports the multiplicative ratio
@@ -165,8 +165,8 @@ Sloan_2017_rifampicin <- function() {
     # 1. Individual PK parameters with allometric weight scaling and sex effect on CL.
     #    Female (SEXF = 1) is the reference: CL_female = exp(lcl + etalcl) at 70 kg.
     #    Male (SEXF = 0): CL_male = CL_female * exp(e_sex_cl) = CL_female * 1.2.
-    cl <- exp(lcl + etalcl + e_sex_cl * (1 - SEXF)) * (WT / 70) ^ allo_cl
-    vc <- exp(lvc + etalvc)                          * (WT / 70) ^ allo_vc
+    cl <- exp(lcl + etalcl + e_sex_cl * (1 - SEXF)) * (WT / 70) ^ e_wt_cl
+    vc <- exp(lvc + etalvc)                          * (WT / 70) ^ e_wt_vc
 
     # 2. Absorption parameters (all fixed from stage 1).
     ka     <- exp(lka)

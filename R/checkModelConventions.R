@@ -1283,7 +1283,8 @@ checkModelConventions <- function(model, verbose = TRUE) {
         "fixed_label_disagreement", "warning", ini$name[[i]],
         sprintf("Label of '%s' says the value was fixed/assumed/borrowed, but fix = FALSE.",
                 ini$name[[i]]),
-        "Wrap the value in `fixed(...)` so `iniDf$fix` matches the label, or reword the label if it was in fact estimated."
+        paste("Wrap the value in `fixed(...)` so `iniDf$fix` matches the label,",
+              "or reword the label if it was in fact estimated.")
       ))
     }
   }

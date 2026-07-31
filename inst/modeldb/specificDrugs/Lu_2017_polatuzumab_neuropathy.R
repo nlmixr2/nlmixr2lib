@@ -203,7 +203,7 @@ Lu_2017_polatuzumab_neuropathy <- function() {
 
     # ----- Covariate effects on acMMAE PK parameters (Lu 2019 Table 2, theta22-theta37) -----
     e_wt_cl              <-  0.73;     label("Power exponent of WT on CL_SS (unitless)")                                                     # Lu 2019 Table 2, theta22
-    e_wt_vc              <-  0.50;     label("Shared power exponent of WT on Vc, Vp, Q (unitless)")                                          # Lu 2019 Table 2, theta23
+    e_wt_vc              <-  0.50;     label("Shared power exponent of WT on Vc, Vp, Q (unitless)")                                          # Lu 2019 Table 2, theta23. # Issue #479: exactly on a convention value; source paper was not obtainable (not open access / table not on hand), so provenance is UNVERIFIED -- left estimable rather than asserting fixed().
     e_sexf_vc            <-  1 / 1.20; label("Multiplicative effect of female sex on Vc (ratio female:male, unitless)")                      # Lu 2019 Table 2, theta24 inverted
     e_asian_vc           <-  0.929;    label("Multiplicative effect of Asian race on Vc (unitless; 7.1% lower V1 in Asian patients)")        # Lu 2019 Table 2, theta25
     e_line1l_vc          <-  1.20;     label("Multiplicative effect of treatment-naive (first-line) status on Vc (unitless)")                # Lu 2019 Table 2, theta26

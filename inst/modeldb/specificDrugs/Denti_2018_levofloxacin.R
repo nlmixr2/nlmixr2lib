@@ -165,7 +165,7 @@ Denti_2018_levofloxacin <- function() {
 
     # Allometric exponents (fixed per Denti 2018 Methods: 0.75 on CL parameters and
     # 1 on volume parameters, citing Anderson and Holford 2008).
-    allo_cl <- fixed(0.75); label("Allometric exponent on CL and Q (unitless)")  # Methods, p.7 col.2 paragraph 2
+    e_wt_cl <- fixed(0.75); label("Allometric exponent on CL and Q (unitless)")  # Methods, p.7 col.2 paragraph 2
     allo_v  <- fixed(1);    label("Allometric exponent on Vc and Vp (unitless)") # Methods, p.7 col.2 paragraph 2
 
     # Maturation parameters (Hill function on postmenstrual age, applied to CL).
@@ -208,9 +208,9 @@ Denti_2018_levofloxacin <- function() {
     ngt_tlag <- 1 + e_route_ngt_tlag * ROUTE_NGT
 
     # Individual PK parameters with allometric weight scaling (12 kg reference).
-    cl <- exp(lcl + etalcl)         * (WT / 12)^allo_cl * mat_cl * hiv_cl
+    cl <- exp(lcl + etalcl)         * (WT / 12)^e_wt_cl * mat_cl * hiv_cl
     vc <- exp(lvc)                  * (WT / 12)^allo_v
-    q  <- exp(lq)                   * (WT / 12)^allo_cl
+    q  <- exp(lq)                   * (WT / 12)^e_wt_cl
     vp <- exp(lvp)                  * (WT / 12)^allo_v
     ka <- exp(lka + etalka)
     tlag_central <- exp(ltlag + etaltlag) * ngt_tlag

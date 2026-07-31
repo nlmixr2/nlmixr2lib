@@ -2,6 +2,44 @@
 
 # development version
 
+- Parameter-naming and provenance cleanup across the model database
+  (issues #474-#479).
+
+  - Allometric exponents now use the `e_<covariate>_<parameter>` form the
+    rest of the library already used: `allo_cl`/`allo_q`/`allo_vc`/`allo_vp`
+    -> `e_wt_cl`/`e_wt_q`/`e_wt_vc`/`e_wt_vp` (35 models; all were
+    weight-based, verified before renaming).
+  - Logit-scale absorbed fractions are split by mechanism instead of sharing
+    `logitf1`/`logitfr`: `logitfdepot` (bioavailability), `logitffo`
+    (first-order arm of a parallel-pathway model), `logitfburst`
+    (burst/rapid-release arm), plus `logitfir` and `logitfmat` for the
+    immediate-release and transit-delay cases that fit neither stem.
+  - `lcll` -> `lcl_ligand`, so ligand clearance is not confused with the
+    `lcl` of the drug itself.
+  - Case and separator normalisation: `lKss` -> `lkss`, `lkD` -> `lkd`,
+    `lBmax` -> `lbmax`, `Km` -> `km`, `kd_LR`/`kd_T1`/`kd_T2` -> lowercase.
+  - Parameters the source paper fixed are now wrapped in `fixed()` rather
+    than only saying so in the label, so `iniDf$fix` is trustworthy.
+    Parameters that merely *land* on a convention value but were genuinely
+    estimated (Lowe 2009 `e_wt_cl` 1.00 +/- 0.0662, Lioger 2017, Quartino
+    2016 RSE 22.2%, Sathe 2024 RSE 13.3%, Frey 2013) are left estimable with
+    the reported precision recorded in a comment.
+
+  **Breaking for simulation code** that references parameters by name in two
+  models that shipped in 0.3.2: `Cirincione_2017_exenatide` (`logitfr` ->
+  `logitffo`) and `Kovalenko_2020_dupilumab` (`Km` -> `km`). The other 44
+  affected models were added after 0.3.2 and so had no released contract.
+  Model ids and vignette filenames are unchanged throughout.
+
+- `checkModelConventions()` gained two checks, both run by `buildModelDb()`
+  so they gate every database build:
+
+  - a retired-name check (error) driven by a `renamedParameters` map, so a
+    name retired above cannot quietly reappear in a new model; and
+  - a fixed-label agreement check (warning) that flags a parameter whose
+    label claims the value was fixed, assumed, or taken from another
+    publication while `fix` is still `FALSE`.
+
 - Add Wu 2023 SPI-62 ([doi:10.1007/s40262-023-01278-8](https://doi.org/10.1007/s40262-023-01278-8)) - healthy adults.
 
 - Disambiguated the overloaded `OC` name, which denoted five unrelated

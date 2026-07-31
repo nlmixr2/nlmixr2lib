@@ -339,7 +339,7 @@ Kay_2022_lumefantrine <- function() {
     # used an exponent of 0.75, 0.9, 1.0, or 1.2 for children age > 60
     # months, > 24 to 60 months, > 3 to 24 months, and <= 3 months,
     # respectively."
-    allo_cl <- 1.2  * (agemo <= 3)                +
+    e_wt_cl <- 1.2  * (agemo <= 3)                +
                1.0  * (agemo >  3 & agemo <= 24)  +
                0.9  * (agemo > 24 & agemo <= 60)  +
                0.75 * (agemo > 60)
@@ -350,12 +350,12 @@ Kay_2022_lumefantrine <- function() {
     # exponent, V2/F and V3/F use exponent 1. CL/F and ka additionally
     # carry the three mutually-exclusive ART indicator effects. IIV is
     # log-normal multiplicative.
-    cl <- exp(lcl + etalcl) * (WT / ref_wt)^allo_cl *
+    cl <- exp(lcl + etalcl) * (WT / ref_wt)^e_wt_cl *
             (1 + e_efv_cl * CONMED_EFV) *
             (1 + e_lpv_cl * CONMED_LPV) *
             (1 + e_nvp_cl * CONMED_NVP)
     vc <- exp(lvc + etalvc) * (WT / ref_wt)
-    q  <- exp(lq  + etalq ) * (WT / ref_wt)^allo_cl
+    q  <- exp(lq  + etalq ) * (WT / ref_wt)^e_wt_cl
     vp <- exp(lvp + etalvp) * (WT / ref_wt)
     ka <- exp(lka + etalka) *
             (1 + e_efv_ka * CONMED_EFV) *

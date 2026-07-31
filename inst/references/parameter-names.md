@@ -139,11 +139,11 @@ The `l<base>` convention denotes a population mean estimated on the log scale (`
 
 ### lkt_abs (**canonical log-transformed saturable absorption half-saturation amount**)
 - **Type:** log-transformed-pk
-- **Role:** Log-scale amount of drug in the depot / absorption compartment at which the saturable absorption rate equals half its maximum (amount). Functionally a Km but expressed in amount-in-compartment units rather than concentration.
+- **Role:** Log-scale amount of drug in the depot / absorption compartment at which the saturable absorption rate equals half its maximum (amount). Functionally a `km` but expressed in amount-in-compartment units rather than concentration.
 - **Source aliases:**
   - `Kt` -- used in `Jansson_2008_eflornithine_rat.R`.
 - **Example models:** `Jansson_2008_eflornithine_rat.R`.
-- **Notes:** Paired with `ltmax_abs`. The amount-in-compartment formulation differs from a concentration Km because the absorption compartment may not have a well-defined volume.
+- **Notes:** Paired with `ltmax_abs`. The amount-in-compartment formulation differs from a concentration `km` because the absorption compartment may not have a well-defined volume.
 
 ### lcl_ss (**canonical log-transformed steady-state clearance arm**)
 - **Type:** log-transformed-pk
@@ -304,7 +304,7 @@ The `l<base>` convention denotes a population mean estimated on the log scale (`
 - **Source aliases:**
   - `β` -- Greek letter used in Larsen 2018 Table 3 and Eq. 1.
 - **Example models:** `Larsen_2018_factorviii_rat.R`, `Larsen_2018_factorviii_monkey.R` (founding examples; rat `beta_cl = 0.162 mL/IU`, monkey `beta_cl = 0.0355 mL/IU`, both fitting the exponential-nonlinear-CL form on total FVIII activity).
-- **Notes:** Distinct from `lhill` (sigmoidal Emax / Imax exponent), `lgamma` (Friberg / TGI kinetic exponents), and `lvmax` / `Km` (Michaelis-Menten saturable elimination — a different mathematical form). Choose `lbeta_cl` when the source paper explicitly parameterises CL as an exponential function of concentration; choose `lvmax` / `Km` when the paper fits Michaelis-Menten saturation instead. The `_cl` suffix marks that the slope acts on clearance; parallel `beta_<param>` names are permitted for other parameters when a paper extends the exponential-nonlinear form to `V` or `Q`.
+- **Notes:** Distinct from `lhill` (sigmoidal Emax / Imax exponent), `lgamma` (Friberg / TGI kinetic exponents), and `lvmax` / `km` (Michaelis-Menten saturable elimination — a different mathematical form). Choose `lbeta_cl` when the source paper explicitly parameterises CL as an exponential function of concentration; choose `lvmax` / `km` when the paper fits Michaelis-Menten saturation instead. The `_cl` suffix marks that the slope acts on clearance; parallel `beta_<param>` names are permitted for other parameters when a paper extends the exponential-nonlinear form to `V` or `Q`.
 
 ---
 
@@ -904,7 +904,7 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
 - **Role:** Logit-transformed fraction of parent clearance routed to an active metabolite. Used when the source paper's estimation routine holds FM on the logit scale so that FM is bounded in (0, 1) regardless of covariate + eta combinations. Inside `model()` the bare form is `fm = 1 / (1 + exp(-logitfm_ind))` where `logitfm_ind` collects the fixed effect, covariate shifts, and IIV on the logit scale.
 - **Source aliases:** none.
 - **Example models:** `Mitra_2026_ziftomenib.R` (base `logitfm <- fixed(0.14)` corresponding to `logit^-1(0.14) = 0.535`; additive shift `e_dis_healthy_logitfm = -1.62` on the logit scale for the healthy-volunteer cohort; IIV `etalogitfm ~ 0.280` on the logit scale).
-- **Notes:** Follows the `logit`-transform-prefix family (`logitfr`, `logitemax`) applied to the existing `fm` canonical root. Prefer `logitfm` (paper's logit encoding) over `lfm` (log encoding) when the source paper's NONMEM control stream stores FM on the logit scale, because a log-scale encoding of a bounded quantity can leak above 1 under moderate eta or covariate values. Ratified canonically on 2026-07-24 alongside the Mitra 2026 ziftomenib extraction.
+- **Notes:** Follows the `logit`-transform-prefix family (`logitffo`, `logitemax`) applied to the existing `fm` canonical root. Prefer `logitfm` (paper's logit encoding) over `lfm` (log encoding) when the source paper's NONMEM control stream stores FM on the logit scale, because a log-scale encoding of a bounded quantity can leak above 1 under moderate eta or covariate values. Ratified canonically on 2026-07-24 alongside the Mitra 2026 ziftomenib extraction.
 
 ### kin (**canonical indirect-response production rate**)
 - **Type:** paper-named-param
@@ -1049,3 +1049,31 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
   - `gamma` -- Siebinga 2023 Equation 2 (`Cobs = (Cpred + gamma) * (1 + eps_p) + eps_add`).
 - **Example models:** `Siebinga_2023_lu177psma617.R` (`cal_bias_blood` = 0.273 MBq/L, fixed; the paper attributes it to calibration uncertainty from extreme calibration ranges for blood samples).
 - **Notes:** Registered 2026-07-30. A positive `cal_bias_<matrix>` raises the prediction, so it forces predictions above the drug-free baseline; Siebinga 2023 notes this is the source of the apparent under-prediction of low blood observations in its CWRES plots.
+
+## Retired names
+
+These spellings were used in the library and have been replaced. They are
+enforced by `conventions$renamedParameters` in `R/conventions.R`;
+`checkModelConventions()` raises an **error** if one reappears, and
+`buildModelDb()` runs that check on every build, so a new model cannot
+reintroduce them. Retired 2026-07-31 (issues #474-#477).
+
+| Retired | Use instead | Why |
+|---|---|---|
+| `allo_cl`, `allo_q`, `allo_vc`, `allo_vp` | `e_wt_cl`, `e_wt_q`, `e_wt_vc`, `e_wt_vp` | The `allo_` prefix hid *which* covariate drives the scaling, so a weight exponent could not be found by searching `e_wt_`. All 35 affected models were weight-based. |
+| `allovc`, `allovp` | `e_wt_vc`, `e_wt_vp` | As above, without the separator. |
+| `dCLdWT`, `dVdWT` | `e_wt_cl`, `e_wt_vc` | Derivative-style spelling for what is a power exponent. |
+| `logitf1` | `logitfdepot`, or `logitffo` / `logitfburst` | `f1` named the NONMEM slot, not the quantity; bioavailability and a parallel-pathway fraction were sharing one name. |
+| `logitfr` | `logitffo`, or `logitfburst` | Ambiguous `r` (rapid? relative? remaining?). |
+| `logitf1st` | `logitffo` | Positional, not mechanistic. |
+| `lcll` | `lcl_ligand` | One `l` apart from `lcl`, the drug's own clearance. |
+| `cllira`, `lcllira_ref` | `cl_lira`, `lcl_lira_ref` | Same collision, liraglutide-specific. |
+| `lKss`, `lkD`, `lBmax` | `lkss`, `lkd`, `lbmax` | Interior capitals defeat case-sensitive search. |
+| `Km` | `km` | As above. |
+| `kd_LR`, `kd_T1`, `kd_T2` | `kd_lr`, `kd_t1`, `kd_t2` | As above. |
+
+Renaming is deliberately *not* applied mechanically to every similar-looking
+name. `lrbase`, for example, appears in 102 models with at least four
+distinct meanings, 89 of them indirect-response PD baselines rather than
+target baselines; a blanket sweep would corrupt them. Names are retired only
+after checking every occurrence.

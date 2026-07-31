@@ -109,7 +109,7 @@ Foissac_2011_atazanavir <- function() {
     # 0.75 for clearance and 1 for volume of distribution'. Held FIXED at
     # those theoretical values rather than estimated.
     # ===================================================================
-    allo_cl <- fixed(0.75); label("Allometric exponent on CL/F (unitless, FIXED)") # Methods: PWR = 0.75 for CL (allometric theory)
+    e_wt_cl <- fixed(0.75); label("Allometric exponent on CL/F (unitless, FIXED)") # Methods: PWR = 0.75 for CL (allometric theory)
     allo_v  <- fixed(1);    label("Allometric exponent on V/F  (unitless, FIXED)") # Methods: PWR = 1    for V  (allometric theory)
 
     # ===================================================================
@@ -143,7 +143,7 @@ Foissac_2011_atazanavir <- function() {
     cl <- exp(lcl + etalcl) *
           (1 + e_no_rtv_cl * (1 - CONMED_RTV)) *
           (1 + e_tdf_cl    * CONMED_TDF) *
-          (WT / 70)^allo_cl
+          (WT / 70)^e_wt_cl
     vc <- exp(lvc) * (WT / 70)^allo_v
     ka <- exp(lka)
 

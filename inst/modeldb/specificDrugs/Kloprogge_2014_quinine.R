@@ -183,8 +183,8 @@ Kloprogge_2014_quinine <- function() {
     # better fit of the model compared with a coefficient of 3/4 ...
     # in good agreement with the observed physiology since clearance
     # does not normally scale linearly with body weight").
-    allo_cl  <- fixed(2/3) ; label("Allometric exponent on CL/F and Q/F (unitless, fixed)")    # Kloprogge 2014 Methods + Results paragraph 2
-    allo_vc  <- fixed(1)   ; label("Allometric exponent on Vc/F and Vp/F (unitless, fixed)")   # Kloprogge 2014 Methods + Results paragraph 2
+    e_wt_cl  <- fixed(2/3) ; label("Allometric exponent on CL/F and Q/F (unitless, fixed)")    # Kloprogge 2014 Methods + Results paragraph 2
+    e_wt_vc  <- fixed(1)   ; label("Allometric exponent on Vc/F and Vp/F (unitless, fixed)")   # Kloprogge 2014 Methods + Results paragraph 2
 
     # Covariate effects.
     # Body temperature is encoded as an exponential effect on CL/F,
@@ -230,10 +230,10 @@ Kloprogge_2014_quinine <- function() {
     # Individual structural parameters with allometric WT scaling and
     # the body-temperature exponential effect on CL/F.
     ka  <- exp(lka + etalka)
-    cl  <- exp(lcl + etalcl) * (WT / 56)^allo_cl * exp(e_bodytemp_cl * (BODYTEMP - 37.2))
-    vc  <- exp(lvc)          * (WT / 56)^allo_vc
-    q   <- exp(lq)           * (WT / 56)^allo_cl
-    vp  <- exp(lvp + etalvp) * (WT / 56)^allo_vc
+    cl  <- exp(lcl + etalcl) * (WT / 56)^e_wt_cl * exp(e_bodytemp_cl * (BODYTEMP - 37.2))
+    vc  <- exp(lvc)          * (WT / 56)^e_wt_vc
+    q   <- exp(lq)           * (WT / 56)^e_wt_cl
+    vp  <- exp(lvp + etalvp) * (WT / 56)^e_wt_vc
 
     # Two-compartment disposition micro-constants.
     kel <- cl / vc

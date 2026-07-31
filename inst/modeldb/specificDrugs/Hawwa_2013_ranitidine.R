@@ -118,8 +118,8 @@ Hawwa_2013_ranitidine <- function() {
     # but included as additional thetas (q s), did not result in any
     # significant improvement in model fit." -> the published model
     # keeps 0.75 and 1.0 as fixed structural exponents.
-    allo_cl <- fixed(0.75); label("Allometric exponent on CL (unitless, fixed)")  # Methods/Results page 5: fixed at 0.75
-    allo_vc <- fixed(1);    label("Allometric exponent on V (unitless, fixed)")   # Methods/Results page 5: fixed at 1.0
+    e_wt_cl <- fixed(0.75); label("Allometric exponent on CL (unitless, fixed)")  # Methods/Results page 5: fixed at 0.75
+    e_wt_vc <- fixed(1);    label("Allometric exponent on V (unitless, fixed)")   # Methods/Results page 5: fixed at 1.0
 
     # Covariate effect of cardiac failure / cardiac surgery on CL.
     # Hawwa 2013 Methods page 5 final equation:
@@ -158,9 +158,9 @@ Hawwa_2013_ranitidine <- function() {
     # cardiac-surgery indicator multiplies CL by 0.463 (1 -> 0.463;
     # 0 -> 1).
     ka <- exp(lka)
-    cl <- exp(lcl + etalcl) * (WT / 70)^allo_cl *
+    cl <- exp(lcl + etalcl) * (WT / 70)^e_wt_cl *
           exp(e_dis_hf_or_cardsurg_cl * DIS_HF_OR_CARDSURG)
-    vc <- exp(lvc + etalvc) * (WT / 70)^allo_vc
+    vc <- exp(lvc + etalvc) * (WT / 70)^e_wt_vc
 
     # Micro-constant
     kel <- cl / vc

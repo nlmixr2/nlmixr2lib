@@ -929,4 +929,135 @@ test_that("parallel-absorption depot/depot2 passes (already permitted by depot<n
   expect_equal(nrow(comps), 0)
 })
 
+
+# ---- Issue #474: retired parameter names -------------------------------------
+
+test_that("retired parameter names are flagged as errors with the replacement", {
+  retired <- function() {
+    description <- "A"
+    reference <- "R"
+    units <- list(time = "day", dosing = "mg", concentration = "mg/L")
+    ini({
+      lcl <- 1;   label("Clearance (CL, L/day)")
+      lvc <- 1;   label("Central volume (Vc, L)")
+      allo_cl <- fixed(0.75); label("Allometric exponent on CL (unitless)")
+      propSd <- 0.1; label("Proportional residual error (fraction)")
+    })
+    model({
+      cl <- exp(lcl) * (WT / 70)^allo_cl
+      vc <- exp(lvc)
+      d/dt(central) <- -cl / vc * central
+      Cc <- central / vc
+      Cc ~ prop(propSd)
+    })
+  }
+  res <- suppressWarnings(checkModelConventions(retired, verbose = FALSE))
+  hit <- res[res$name == "allo_cl" & res$category == "deprecated_names", ]
+  expect_equal(nrow(hit), 1L)
+  expect_equal(hit$severity, "error")
+  expect_match(hit$suggestion, "e_wt_cl", fixed = TRUE)
+})
+
+test_that("every renamedParameters entry maps to a different, non-empty name", {
+  conv <- nlmixr2lib:::.nlmixr2libConventions()
+  map <- conv$renamedParameters
+  expect_true(length(map) > 0L)
+  expect_true(all(nzchar(names(map))))
+  expect_true(all(nzchar(unlist(map))))
+  expect_true(all(names(map) != unlist(map)))
+})
+
+test_that("no model in the database uses a retired parameter name", {
+  # Enumerating the map rather than spot-checking, so a newly retired name
+  # fails here until every model is migrated (see CLAUDE.md: a contract that
+  # quantifies over "every case" needs an enumerating test).
+  conv <- nlmixr2lib:::.nlmixr2libConventions()
+  root <- system.file("modeldb", package = "nlmixr2lib")
+  skip_if(!nzchar(root) || !dir.exists(root), "modeldb sources not installed")
+  src <- vapply(
+    list.files(root, pattern = "[.]R$", recursive = TRUE, full.names = TRUE),
+    function(f) paste(readLines(f, warn = FALSE), collapse = "\n"),
+    character(1)
+  )
+  for (nm in names(conv$renamedParameters)) {
+    pat <- paste0("(^|[^A-Za-z0-9._])", nm, "[[:space:]]*<-")
+    expect_equal(sum(grepl(pat, src)), 0L, info = paste("retired name still used:", nm))
+  }
+})
+
+# ---- Issue #479: label claims "fixed" while the parameter is estimable -------
+
+test_that("a label claiming a value is fixed while fix is FALSE is flagged", {
+  claims <- function() {
+    description <- "A"
+    reference <- "R"
+    units <- list(time = "day", dosing = "mg", concentration = "mg/L")
+    ini({
+      lcl <- 1;   label("Clearance (CL, L/day)")
+      lvc <- 1;   label("Central volume (Vc, L)")
+      e_wt_cl <- 0.75; label("Allometric exponent on CL (unitless; FIXED)")
+      propSd <- 0.1; label("Proportional residual error (fraction)")
+    })
+    model({
+      cl <- exp(lcl) * (WT / 70)^e_wt_cl
+      vc <- exp(lvc)
+      d/dt(central) <- -cl / vc * central
+      Cc <- central / vc
+      Cc ~ prop(propSd)
+    })
+  }
+  res <- suppressWarnings(checkModelConventions(claims, verbose = FALSE))
+  hit <- res[res$category == "fixed_label_disagreement", ]
+  expect_equal(nrow(hit), 1L)
+  expect_equal(hit$name, "e_wt_cl")
+  expect_equal(hit$severity, "warning")
+})
+
+test_that("wrapping the same parameter in fixed() clears the disagreement", {
+  ok <- function() {
+    description <- "A"
+    reference <- "R"
+    units <- list(time = "day", dosing = "mg", concentration = "mg/L")
+    ini({
+      lcl <- 1;   label("Clearance (CL, L/day)")
+      lvc <- 1;   label("Central volume (Vc, L)")
+      e_wt_cl <- fixed(0.75); label("Allometric exponent on CL (unitless; FIXED)")
+      propSd <- 0.1; label("Proportional residual error (fraction)")
+    })
+    model({
+      cl <- exp(lcl) * (WT / 70)^e_wt_cl
+      vc <- exp(lvc)
+      d/dt(central) <- -cl / vc * central
+      Cc <- central / vc
+      Cc ~ prop(propSd)
+    })
+  }
+  res <- suppressWarnings(checkModelConventions(ok, verbose = FALSE))
+  expect_equal(sum(res$category == "fixed_label_disagreement"), 0L)
+})
+
+test_that("a plain label on an estimated parameter is not flagged", {
+  # Guards against the pattern matching ordinary prose such as "transferred".
+  plain <- function() {
+    description <- "A"
+    reference <- "R"
+    units <- list(time = "day", dosing = "mg", concentration = "mg/L")
+    ini({
+      lcl <- 1;   label("Clearance (CL, L/day)")
+      lvc <- 1;   label("Central volume (Vc, L)")
+      e_wt_cl <- 0.75; label("Allometric exponent on CL (unitless)")
+      propSd <- 0.1; label("Proportional residual error (fraction)")
+    })
+    model({
+      cl <- exp(lcl) * (WT / 70)^e_wt_cl
+      vc <- exp(lvc)
+      d/dt(central) <- -cl / vc * central
+      Cc <- central / vc
+      Cc ~ prop(propSd)
+    })
+  }
+  res <- suppressWarnings(checkModelConventions(plain, verbose = FALSE))
+  expect_equal(sum(res$category == "fixed_label_disagreement"), 0L)
+})
+
 # nolint end
