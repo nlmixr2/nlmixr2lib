@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Kloos 2021 PEGasparaginase ([doi:10.3324/haematol.2019.242289](https://doi.org/10.3324/haematol.2019.242289)) - children with acute lymphoblastic leukemia.
+
 - Add Wu 2023 SPI-62 ([doi:10.1007/s40262-023-01278-8](https://doi.org/10.1007/s40262-023-01278-8)) - healthy adults.
 
 - Disambiguated the overloaded `OC` name, which denoted five unrelated

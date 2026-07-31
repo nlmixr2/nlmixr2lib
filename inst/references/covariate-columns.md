@@ -4154,6 +4154,18 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Notes:** Distinct from chronic disease-state indicators (e.g., `DIS_UC`, `DIS_HAE`) -- sepsis is an acute / transient co-condition rather than a chronic indication label. Distinct from `CRP` / `IL6` / `SAPS_II`, which are biomarker / severity-score columns that may co-vary with clinical sepsis but are conceptually distinct from a binary clinical-sepsis diagnostic flag. Ratified canonically on 2026-06-09 alongside the Han 2013 fluconazole extraction.
 
 
+### DIS_INFECT_ACTIVE (**canonical for active clinical infection episode indicator**)
+- **Description:** 1 = the record falls within an active clinical infection episode; 0 = no active infection. Time-varying per record (an acute, transient episode), in contrast to chronic disease-state indicators. The clinical criterion is paper-specific and MUST be recorded in `covariateData[[DIS_INFECT_ACTIVE]]$notes` -- e.g. Kloos 2021 used "fever (>38 degrees Celsius) and hospital admission or prescription of antibiotics". Used as a multiplicative or additive shift on clearance (and occasionally volume) when acute infection / inflammation alters drug elimination, e.g. via activation of the mononuclear phagocyte system.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no active infection).
+- **Source aliases:**
+  - `INFECTION` -- used in `Kloos_2021_pegasparaginase.R` (Kloos 2021 Table 2 / Table 3 covariate; same orientation as the canonical).
+- **Example models:** `Kloos_2021_pegasparaginase.R` (multiplicative on CL: `1.38^DIS_INFECT_ACTIVE`, i.e. 38 percent higher PEGasparaginase clearance during an infection, attributed by the authors to activation of the mononuclear phagocyte system that clears PEGylated asparaginase).
+- **Notes:** Distinct from [[DIS_SEPSIS]], which denotes a specific septic syndrome -- `DIS_INFECT_ACTIVE` is the broader "any active clinical infection episode" flag and is typically time-varying where `DIS_SEPSIS` is often time-fixed at PK-sampling onset. Distinct from `DIS_INFECT_CSSSI_SEV` (an infection-severity grade in a specific-scope cSSSI indication). Distinct from its constituent measurements `BODYTEMP`, `CRP`, and the `CONMED_<INN>` antibiotic columns, which are biomarker / comedication columns that may co-vary with a clinical infection flag but are conceptually separate. Ratified canonically alongside the Kloos 2021 PEGasparaginase extraction (sidecar request-001 / response-001, question q2, option A).
+
+
 ### DIS_EDEMA (**canonical for clinical edema presence indicator**)
 - **Description:** 1 = clinical edema present (typical clinical definition: puffy face and/or pitting peripheral edema), 0 = no clinical edema. Time-fixed per subject in the typical popPK use-case (Han 2013), although time-varying use is permitted; document per-model in `covariateData[[DIS_EDEMA]]$notes` whether the indicator is fixed at PK-sampling onset or updated dynamically. Used as a binary co-condition indicator on PK volume (most commonly) when third-space / extravascular fluid expansion is expected to alter drug distribution.
 - **Units:** (binary)
@@ -7097,6 +7109,57 @@ Baseline seizure-severity indicators derived from a pre-trial seizure count (typ
 - **Notes:** The prior separate `ADA_TITRE` (British, `1` = negative) and `ADA_TITER` (American, `0` = negative) canonicals were merged on 2026-04-20 into a single general-scope `ADA_TITER`. The zero-encoding convention is the load-bearing semantic and must be documented per-model. Distinct from `ADA_POS` (binary presence/absence); when the paper reports both, the final model usually keeps only one. Imputation rules (LOCF / NOCB / baseline-as-negative) should be documented per-model.
 
 ## Disease / treatment history
+
+**`TRTPH_<phase>` -- canonical family for protocol-defined treatment-phase / treatment-block indicators.** Mutually exclusive binary indicators identifying which named phase (block, course, element) of a multi-phase treatment protocol a record falls in. Time-varying per record. Intended for regimens whose protocol is divided into named blocks that differ materially in concomitant therapy, intensity, or physiological state -- most commonly pediatric and adult oncology protocols (ALL, AML, lymphoma), but the concept generalises to any multi-block regimen. Source papers normally report this as a single multi-level categorical covariate ("treatment phase", "protocol element", "treatment block") with one row per level in the parameter table; decompose it into one `TRTPH_<phase>` binary per non-reference level, following the register's decomposed-binary convention for multi-level categoricals (`ICU_ADM_*`, `RACE_*`, `TUMTP_*`). The protocol's induction (or first) phase is the reference category and is encoded as all indicators 0, so no `TRTPH_` column is registered for it.
+
+Each model MUST document the protocol name and the phase-to-column mapping in `covariateData[[TRTPH_<phase>]]$notes`, because the same phase word ("maintenance", "intensification") means different things across protocols. A future paper using a different protocol registers its own members under this prefix; if two protocols use the same phase word with materially different therapy, qualify the member with the protocol (`TRTPH_ALL11_MAINT`) rather than overloading the bare name. Distinct from `TRT_PHASE`, which is a binary double-blind active-treatment-on / off gate for placebo-controlled PD models, NOT a multi-level protocol-block categorical. Distinct from `CYCLE` (an integer dose-number / cycle counter within a single regimen) and from `OCC` (a sampling-occasion index for inter-occasion variability). Distinct from the `CONMED_<INN>` family: a `TRTPH_<phase>` column deliberately stands in for the entire concomitant-chemotherapy block of that phase, which is the right encoding when the individual agents are co-administered and cannot be separated -- Kloos 2021 tested doxorubicin and methotrexate as individual covariates on top of the treatment phase and rejected both in backward elimination. Ratified canonically alongside the Kloos 2021 PEGasparaginase extraction (sidecar request-001 / response-001, question q3, option A).
+
+### TRTPH_1B (**canonical for DCOG ALL-11 protocol 1B treatment-phase indicator**)
+- **Description:** 1 = the record falls within protocol 1B of the Dutch Childhood Oncology Group ALL-11 acute-lymphoblastic-leukemia protocol; 0 = any other phase. Protocol 1B follows induction protocol 1A and comprises cyclophosphamide, cytarabine and 6-mercaptopurine plus a 1,500 IU/m^2 PEGasparaginase dose at day 40. Member of the `TRTPH_<phase>` family described above.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0, with all other `TRTPH_` indicators 0 = protocol 1A induction.
+- **Source aliases:** `1B` -- Kloos 2021 Table 2 / Table 3 treatment-phase row label.
+- **Example models:** `Kloos_2021_pegasparaginase.R` (clearance effect FIXED to 1, i.e. pooled with the 1A reference, because only two patients were treated as high risk and the effect was not estimable reliably; Kloos 2021 Table 2 prints "1 (fix)"). Retained as an explicit column so the protocol's phase mapping is complete and the fixed status is visible in `ini()`.
+- **Notes:** A fixed-to-reference member is still worth registering: dropping the column would silently erase the fact that the authors tested the phase and could not estimate it. See the family preamble above for the protocol-documentation requirement.
+
+### TRTPH_M (**canonical for DCOG ALL-11 protocol M treatment-phase indicator**)
+- **Description:** 1 = the record falls within protocol M of the DCOG ALL-11 protocol (6-mercaptopurine plus high-dose methotrexate, 5,000 mg/m^2/dose at days 8, 22, 36 and 50); 0 = any other phase. Member of the `TRTPH_<phase>` family described above.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0, with all other `TRTPH_` indicators 0 = protocol 1A induction.
+- **Source aliases:** `M` -- Kloos 2021 Table 2 / Table 3 treatment-phase row label.
+- **Example models:** `Kloos_2021_pegasparaginase.R` (multiplicative on CL: 0.87, RSE 5.2 percent, bootstrap 95 percent CI 0.80-0.95).
+
+### TRTPH_MR_INTENS (**canonical for DCOG ALL-11 medium-risk-group intensification treatment-phase indicator**)
+- **Description:** 1 = the record falls within the medium-risk-group intensification phase of the DCOG ALL-11 protocol (dexamethasone, vincristine, 6-mercaptopurine, plus doxorubicin in TEL/AML1-negative patients or methotrexate in TEL/AML1-positive patients); 0 = any other phase. Member of the `TRTPH_<phase>` family described above.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0, with all other `TRTPH_` indicators 0 = protocol 1A induction.
+- **Source aliases:** `MRG intens.` / `MR intensification` -- Kloos 2021 Table 2 / Table 3 treatment-phase row labels.
+- **Example models:** `Kloos_2021_pegasparaginase.R` (multiplicative on CL: 0.89, RSE 5.2 percent, bootstrap 95 percent CI 0.82-0.98).
+
+### TRTPH_MR_MAINT (**canonical for DCOG ALL-11 medium-risk-group maintenance treatment-phase indicator**)
+- **Description:** 1 = the record falls within the medium-risk-group maintenance phase of the DCOG ALL-11 protocol (dexamethasone, vincristine, methotrexate and 6-mercaptopurine); 0 = any other phase. Member of the `TRTPH_<phase>` family described above.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0, with all other `TRTPH_` indicators 0 = protocol 1A induction.
+- **Source aliases:** `MRG maint.` / `MR maintenance` -- Kloos 2021 Table 2 / Table 3 treatment-phase row labels.
+- **Example models:** `Kloos_2021_pegasparaginase.R` (multiplicative on CL: 0.81, RSE 3.9 percent, bootstrap 95 percent CI 0.75-0.86).
+
+### TRTPH_SR_IV (**canonical for DCOG ALL-11 standard-risk-group protocol IV treatment-phase indicator**)
+- **Description:** 1 = the record falls within protocol IV of the standard-risk arm of the DCOG ALL-11 protocol (dexamethasone and vincristine plus a single individualized PEGasparaginase dose at day 1); 0 = any other phase. Member of the `TRTPH_<phase>` family described above.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0, with all other `TRTPH_` indicators 0 = protocol 1A induction.
+- **Source aliases:** `SRG protocol IV` / `SR protocol IV` -- Kloos 2021 Table 2 / Table 3 treatment-phase row labels.
+- **Example models:** `Kloos_2021_pegasparaginase.R` (multiplicative on CL: 0.81, RSE 6.5 percent, bootstrap 95 percent CI 0.73-0.90).
+
 
 ### HCT_COND_RIC (**canonical for reduced-intensity conditioning regimen indicator**)
 - **Description:** 1 = subject received reduced-intensity conditioning (RIC) chemotherapy prior to allogeneic hematopoietic cell transplantation, 0 = subject received myeloablative conditioning (MAC). Conditioning intensity is fixed per subject for the analysis window (the conditioning regimen was completed before transplantation, before any of the post-transplant tacrolimus PK observations). RIC regimens use lower-dose chemotherapy / radiotherapy to preserve some host haematopoiesis and rely on graft-versus-tumour effect for cytoreduction; MAC regimens deliver high-dose chemotherapy and / or total-body irradiation that fully ablates host marrow.

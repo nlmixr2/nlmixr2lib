@@ -1726,6 +1726,8 @@ navbar:
         href: articles/Ouerdani_2015_pazopanib_mouse.html
       - text: "Pefloxacin (Wahlby 2004)"
         href: articles/Wahlby_2004_time_varying_covariates.html
+      - text: "Pegasparaginase (Kloos 2021)"
+        href: articles/Kloos_2021_pegasparaginase.html
       - text: "Pegfilgrastim (Brekkan 2018)"
         href: articles/Brekkan_2018_pegfilgrastim.html
       - text: "Peginesatide (Naik 2013)"
@@ -3216,6 +3218,7 @@ articles:
   - articles/Kleideiter_2018_cebranopadol
   - articles/Kleijn_2011_sugammadex_rocuronium
   - articles/Kloft_2004_sibrotuzumab
+  - articles/Kloos_2021_pegasparaginase
   - articles/Kloprogge_2013_lumefantrine
   - articles/Kloprogge_2014_quinine
   - articles/Kloprogge_2015_lumefantrine
