@@ -1693,6 +1693,39 @@ All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODA
 - **Example models:** `Wang_2015_rucaparib.R` (power effect on residual maximum-inhibition parameter Emin; exponent 0.620 with the form `Emin = TV(Emin) * (BL_PARP_PBL / BLB_median)^alpha`; PBL paired with a separate tumor-tissue PARP activity covariate that is not yet a registered canonical because the units differ -- pmol/mg protein for tumor vs pmol/10^6 PBL for blood).
 - **Notes:** Specific scope because the column is meaningful only for PARP-inhibitor PK/PD models (rucaparib, olaparib, niraparib, talazoparib, veliparib, etc.) and the units are tied to the PBL-specific assay format. A future tumor-tissue PARP activity covariate would need a separate canonical because the units differ (pmol/mg protein) and the biology of cellular PARP activity per mg of protein is not numerically interchangeable with PBL-normalized PARP activity. The Wang 2015 model uses BL_PARP_PBL only on Emin (residual maximum inhibition) and not on E0 or IC50; per-paper effects must be documented in each model's `covariateData[[BL_PARP_PBL]]$notes`. The paper does not publish the numeric study-cohort median of BLB used to center the covariate; the model file uses 90.8 pmol/10^6 PBL (the population typical baseline E0 reported in Wang 2015 Table 2) as a defensible default reference and documents the assumption in the vignette's Assumptions and deviations section.
 
+### BL_TGN_RBC (**canonical for baseline erythrocyte 6-thioguanine-nucleotide concentration**)
+- **Description:** Subject-specific baseline (first observed) concentration of 6-thioguanine nucleotides (TGN), the active metabolites of 6-mercaptopurine, inside red blood cells. Reported clinically as "E-TGN". Used as the initial condition of the `rbc_tgn` compartment in thiopurine PK/PD models whose observation record begins during ongoing maintenance therapy, when the red-cell pool has already accumulated and cannot be initialised at zero.
+- **Units:** umol/L. Document per-model via `covariateData[[BL_TGN_RBC]]$units`. Papers frequently report E-TGN as nmol per mmol hemoglobin; convert to umol/L using the assay's assumed hemoglobin molecular weight and erythrocyte hemoglobin concentration and record the conversion in `$notes` (Gebhard 2023 uses MW 64458 g/mol and 330 g Hb/L erythrocytes).
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- supplied as an ODE initial condition (`rbc_tgn(0) = BL_TGN_RBC`), not as a scaling covariate. Cohort median 0.83 umol/L, range 0-7.6 umol/L (Gebhard 2023 Table 1).
+- **Source aliases:**
+  - `INITGN` -- used in `Gebhard_2023_mercaptopurine.R` and `Gebhard_2023_mercaptopurine_anc.R` (Gebhard 2023: "`X_E^6MP(0) = INITGN` ... with `INITGN` being the first observation in the data set at time point 0").
+- **Example models:** `Gebhard_2023_mercaptopurine.R`, `Gebhard_2023_mercaptopurine_anc.R`.
+- **Notes:** Ratified 2026-07-30 (sidecar `oare_PMC10359452` request-001 q5, option A) as a member of the existing `BL_<biomarker>` family; the `_RBC` cell-compartment suffix mirrors the `_PBL` suffix of `BL_PARP_PBL`. Distinct from `CONMED_MP`, which is a concomitant-6-mercaptopurine-medication FLAG, not a measured red-cell concentration. Specific scope because the column is meaningful only for thiopurine models that carry an intracellular red-cell TGN state. A model that can start its estimation at a drug-free time point should initialise `rbc_tgn(0) = 0` and not carry this covariate; Gebhard 2023's own Discussion names that as the preferred remedy, but the published model as estimated requires the observed initial value.
+
+### BL_MTX_RBC (**canonical for baseline erythrocyte methotrexate concentration**)
+- **Description:** Subject-specific baseline (first observed) concentration of methotrexate -- predominantly as methotrexate polyglutamates -- inside red blood cells. Reported clinically as "E-MTX". Used as the initial condition of the `rbc_mtx` compartment in low-dose-methotrexate PK models whose observation record begins during ongoing maintenance therapy, when the red-cell pool has already accumulated and cannot be initialised at zero.
+- **Units:** umol/L. Document per-model via `covariateData[[BL_MTX_RBC]]$units`. Papers frequently report E-MTX as nmol per mmol hemoglobin; convert to umol/L and record the conversion in `$notes` (Gebhard 2023 uses MW 64458 g/mol and 330 g Hb/L erythrocytes).
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- supplied as an ODE initial condition (`rbc_mtx(0) = BL_MTX_RBC`), not as a scaling covariate. Cohort median 0.026 umol/L, range 0-0.10 umol/L (Gebhard 2023 Table 1).
+- **Source aliases:**
+  - `INIMTX` -- used in `Gebhard_2023_methotrexate.R` (Gebhard 2023: "`X_E^MTX(0) = INIMTX` with `INIMTX` being the first observation in the data set at time point 0").
+- **Example models:** `Gebhard_2023_methotrexate.R`.
+- **Notes:** Ratified 2026-07-30 (sidecar `oare_PMC10359452` request-001 q5, option A) alongside `BL_TGN_RBC`. Distinct from `CONMED_MTX`, which is a concomitant-methotrexate-medication FLAG, not a measured red-cell concentration. Note that the red-cell methotrexate half-life is long (30-40 days in the literature Gebhard 2023 cites), so this initial condition remains influential over a much longer horizon than a typical plasma baseline.
+
+### DOSE_MTX_MGM2 (**canonical for administered methotrexate dose per body-surface area**)
+- **Description:** The methotrexate dose administered on the current dose record, normalised to body-surface area and expressed in mg/m^2. Per-dose-record covariate; constant within an inter-dose interval and updated when the prescriber alters the dose.
+- **Units:** mg/m^2
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters a saturable dose-dependent bioavailability term `F = 1 - Imax * DOSE_MTX_MGM2 / (D50 + DOSE_MTX_MGM2)` (Gebhard 2023 Supplementary Table S1, `Imax = 0.77`, `D50 = 15.01 mg/m^2`, both fixed from the literature source Table S1 cites). Cohort median weekly dose 15.0 mg/m^2, range 1.3-45.0 mg/m^2 (Gebhard 2023 Table 1).
+- **Source aliases:**
+  - `MTX` -- used in `Gebhard_2023_methotrexate.R` (the bare symbol Gebhard 2023 Supplementary Table S1 uses inside the bioavailability formula, annotated "MTX in mg/m2").
+- **Example models:** `Gebhard_2023_methotrexate.R`.
+- **Notes:** Well-formed member of the auto-approved `DOSE_<DRUG>_<UNITS>` family (cf. `DOSE_EMPA_MGD`, `DOSE_PHT_MGKGD`). A dedicated column is required rather than the general `DOSE` canonical because `Gebhard_2023_methotrexate.R` supplies its `amt` in umol/m^2 (the unit the model's concentration states demand) while the published bioavailability formula is calibrated in mg/m^2; carrying both in one `DOSE` column would silently mix units. Convert with the methotrexate molecular weight 454.44 g/mol: `amt [umol/m^2] = DOSE_MTX_MGM2 [mg/m^2] * 1000 / 454.44`. Ratified 2026-07-30 alongside the Gebhard 2023 extraction.
+
 ### CSF1 (**canonical for colony-stimulating factor 1 / macrophage-colony-stimulating factor concentration**)
 - **Description:** Plasma colony-stimulating factor 1 (CSF-1, also known as macrophage colony-stimulating factor, M-CSF) concentration (baseline or time-varying). The hematopoietic cytokine that signals through CSF-1R to drive monocyte / macrophage differentiation and survival; used as both a target-engagement biomarker (anti-CSF-1R mAbs increase circulating free CSF-1) and a baseline covariate on PK / PD parameters in CSF-1R-pathway PopPK/PD models.
 - **Units:** pg/mL (= ng/L; the two labels are numerically equivalent). Document per-model via `covariateData[[CSF1]]$units`.

@@ -165,6 +165,20 @@
   # bact_intermediate_resistant1/2). The scheme is documented in
   # inst/references/compartment-names.md.
   bacterialSubpopRegex = "^bact_(susceptible|intermediate|resistant)(_(susceptible|intermediate|resistant))?[0-9]*$",
+  # Intracellular drug / active-metabolite pools inside red blood cells,
+  # carried as ODE states in concentration units (e.g. umol/L). Named
+  # `rbc_<analyte>` where <analyte> is the measured species inside the
+  # erythrocyte: `rbc_mtx` (methotrexate polyglutamates), `rbc_tgn`
+  # (6-thioguanine nucleotides). Deliberately NOT routed through
+  # registeredMetabolites, because the analyte is frequently the PARENT
+  # drug (methotrexate) rather than a metabolite, and recording a parent
+  # drug in the metabolite register would mislead later readers of that
+  # list. Distinct from the `erythrocytes` canonical, which is a red-cell
+  # COUNT pool (cells/L), not an intracellular drug concentration.
+  # Founding examples: Gebhard_2023_methotrexate,
+  # Gebhard_2023_mercaptopurine, Gebhard_2023_mercaptopurine_anc.
+  # Documented in inst/references/compartment-names.md.
+  rbcCompartmentRegex = "^rbc_[a-z0-9]+$",
   observationVar = "Cc",
   # propSd and addSd are the canonical proportional and additive
   # residual-error SDs; expSd is the log-scale residual SD used with
@@ -808,6 +822,7 @@
 #   - numbered chains via conv$compartmentRegex (transit/effect/precursor/lat/depot)
 #   - DAR-numbered ADC isoforms via conv$darCompartmentRegex
 #   - target species in physiologic compartments via conv$targetLocationRegex
+#   - intracellular red-cell analyte pools via conv$rbcCompartmentRegex
 #   - metabolite-suffixed compartments: <canonical>_<metab>
 .matchesCompartment <- function(name, conv) {
   if (name %in% conv$compartments) return(TRUE)
@@ -818,6 +833,8 @@
       grepl(conv$pbpkSubCompartmentRegex, name)) return(TRUE)
   if (!is.null(conv$bacterialSubpopRegex) &&
       grepl(conv$bacterialSubpopRegex, name)) return(TRUE)
+  if (!is.null(conv$rbcCompartmentRegex) &&
+      grepl(conv$rbcCompartmentRegex, name)) return(TRUE)
   for (metab in conv$registeredMetabolites) {
     suf <- paste0("_", metab)
     if (endsWith(name, suf)) {
