@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Thoueille 2023 lopinavir ([doi:10.1186/s40360-023-00687-6](https://doi.org/10.1186/s40360-023-00687-6)) - HIV-negative adults on COVID-19 post-exposure prophylaxis pooled with people living with HIV.
+
 - Add Wu 2023 SPI-62 ([doi:10.1007/s40262-023-01278-8](https://doi.org/10.1007/s40262-023-01278-8)) - healthy adults.
 
 - Disambiguated the overloaded `OC` name, which denoted five unrelated
