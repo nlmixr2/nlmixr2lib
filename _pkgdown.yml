@@ -812,6 +812,8 @@ navbar:
         href: articles/Horita_2018_ethambutol.html
       - text: "Ethambutol (Jonsson 2011)"
         href: articles/Jonsson_2011_ethambutol.html
+      - text: "Ethambutol pbpk (Ramachandran 2023)"
+        href: articles/Ramachandran_2023_tuberculosis_eptb_pbpk.html
       - text: "Ethanol (Nemoto 2017)"
         href: articles/Nemoto_2017_ethanol.html
       - text: "Ethaselen (Ye 2017)"
@@ -1178,6 +1180,8 @@ navbar:
         href: articles/Seng_2015_isoniazid.html
       - text: "Isoniazid (Wilkins 2011)"
         href: articles/Wilkins_2011_isoniazid.html
+      - text: "Isoniazid pbpk (Ramachandran 2023)"
+        href: articles/Ramachandran_2023_tuberculosis_eptb_pbpk.html
       - text: "Itraconazole (Abuhelwa 2015)"
         href: articles/Abuhelwa_2015_itraconazole.html
       - text: "Itraconazole (Hennig 2006)"
@@ -1880,6 +1884,8 @@ navbar:
         href: articles/Kim_2023_pyrazinamide.html
       - text: "Pyrazinamide mpbpk (Mehta 2023)"
         href: articles/Mehta_2023_tb_lesion_mpbpk.html
+      - text: "Pyrazinamide pbpk (Ramachandran 2023)"
+        href: articles/Ramachandran_2023_tuberculosis_eptb_pbpk.html
       - text: "Pyrimethamine (Karunajeewa 2009)"
         href: articles/Karunajeewa_2009_sulfadoxinePyrimethamine.html
       - text: "Pyronaridine (Ayyoub 2016)"
@@ -1976,6 +1982,8 @@ navbar:
         href: articles/Vinnard_2017_rifampicin.html
       - text: "Rifampicin (Wicha 2018)"
         href: articles/Wicha_2018_rifampicin.html
+      - text: "Rifampicin pbpk (Ramachandran 2023)"
+        href: articles/Ramachandran_2023_tuberculosis_eptb_pbpk.html
       - text: "Rifapentine (Zvada 2010)"
         href: articles/Zvada_2010_rifapentine.html
       - text: "Rilotumumab (Zhang 2016)"
@@ -3508,6 +3516,7 @@ articles:
   - articles/Qi_2014_sapropterin
   - articles/Quartino_2016_trastuzumab
   - articles/Quartino_2019_trastuzumab
+  - articles/Ramachandran_2023_tuberculosis_eptb_pbpk
   - articles/Rambiritch_2016_glibenclamide
   - articles/Ramharter_2019_mefloquine
   - articles/Rao_2023_covid19_qsp

@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Ramachandran 2023 rifampicin, ethambutol, isoniazid, and pyrazinamide whole-body PBPK ([doi:10.1002/psp4.13008](https://doi.org/10.1002/psp4.13008)) - 70-kg reference adult, extrapulmonary tuberculosis sites.
+
 - Add Wu 2023 SPI-62 ([doi:10.1007/s40262-023-01278-8](https://doi.org/10.1007/s40262-023-01278-8)) - healthy adults.
 
 - Disambiguated the overloaded `OC` name, which denoted five unrelated
