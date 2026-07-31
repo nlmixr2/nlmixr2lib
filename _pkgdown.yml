@@ -1818,6 +1818,8 @@ navbar:
         href: articles/Liang_2023_polymyxinB.html
       - text: "Ponezumab (Nicholas 2009)"
         href: articles/Nicholas_2009_ponezumab.html
+      - text: "Posaconazole (Dvorackova 2023)"
+        href: articles/Dvorackova_2023_posaconazole.html
       - text: "Posaconazole (Kohl 2010)"
         href: articles/Kohl_2010_posaconazole.html
       - text: "Posaconazole (vanIersel 2018)"
@@ -2944,6 +2946,7 @@ articles:
   - articles/Dunn_2025_tranexamicAcid
   - articles/Duong_2016_WHIG_T2DM
   - articles/Duong_2017_AT9283
+  - articles/Dvorackova_2023_posaconazole
   - articles/Easterling_2018_magnesium_sulfate
   - articles/Eckernas_2023_dimethyltryptamine_EEG
   - articles/Edstein_2001_tafenoquine

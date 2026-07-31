@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Dvorackova 2023 posaconazole ([doi:10.3390/antibiotics12091399](https://doi.org/10.3390/antibiotics12091399)) - adult lung-transplant recipients.
+
 - Add Wu 2023 SPI-62 ([doi:10.1007/s40262-023-01278-8](https://doi.org/10.1007/s40262-023-01278-8)) - healthy adults.
 
 - Disambiguated the overloaded `OC` name, which denoted five unrelated
