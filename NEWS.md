@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Zhang 2023 valproic acid, base and simple-exponent models ([doi:10.3389/fphar.2023.1228641](https://doi.org/10.3389/fphar.2023.1228641)) - Chinese children with epilepsy.
+
 - Add Wu 2023 SPI-62 ([doi:10.1007/s40262-023-01278-8](https://doi.org/10.1007/s40262-023-01278-8)) - healthy adults.
 
 - Disambiguated the overloaded `OC` name, which denoted five unrelated
