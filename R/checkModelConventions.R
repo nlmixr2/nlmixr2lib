@@ -1252,10 +1252,12 @@ checkModelConventions <- function(model, verbose = TRUE) {
 
 
 # Severity is "warning", not "error", on purpose: a full-database scan at the
-# time this rule was added flagged 30 models beyond the ones issue #479
-# enumerated by hand. Erroring would break `buildModelDb()` for a pre-existing
-# backlog rather than for the new mistake the rule exists to catch. Promote to
-# "error" once that backlog is cleared -- the list is in issue #479.
+# time this rule was added flagged 15 parameters in 10 models beyond the ones
+# issue #479 enumerated by hand. Erroring would break `buildModelDb()` for a
+# pre-existing backlog rather than for the new mistake the rule exists to
+# catch. Promote to "error" once that backlog is cleared -- the list, and the
+# per-group guidance for clearing it, is in
+# inst/references/fixed-provenance-followup.md.
 #
 # Issue #479: `iniDf$fix` is the only machine-readable signal that a value was
 # not estimated from the study's own data. Models that SAY in the label that a
@@ -1263,11 +1265,30 @@ checkModelConventions <- function(model, verbose = TRUE) {
 # theoretical value, while leaving it estimable, cause a downstream consumer to
 # treat an assumption as evidence -- e.g. counting a fixed 0.75 allometric
 # exponent as data supporting the 0.75 convention.
-.fixedClaimPattern <- paste(
-  "fixed", "FIXED", "assumed", "not published", "not paper-derived",
-  "literature value", "taken from", "transferred from", "theoretical",
-  sep = "|"
+# A label claims THIS parameter was not estimated only in a self-referential
+# construction. Matching the bare word "fixed" anywhere in the label produces
+# mostly false positives, because labels routinely describe a DIFFERENT
+# parameter as fixed: "the typical-value Ka is fixed but eta on Ka is
+# estimated", "corr(CL,Vp) = 0 (fixed)", "equivalent under fixed Km",
+# "F_HIV- = 1 fixed". Anchor on trailing qualifiers and on verb forms that
+# take the parameter itself as their subject.
+.fixedClaimPattern <- paste0(
+  # The claim must open its own clause. When another name precedes it in the
+  # same clause the sentence is about THAT parameter, not this one -- e.g.
+  # "IC50 ... (Imax fixed to 1)", "CL/F_DHA (L/h/kg); F_DHA fixed to 1",
+  # "CL_DM4 (L/day; V_DM4 fixed to 1 L)", "(correlation fixed to 1)",
+  # "P-gp components fixed to 0". Anchoring on the clause start keeps the
+  # self-referential "(unitless; fixed)" and "(fixed in source)" forms and
+  # drops the rest.
+  "(?:^|[;(),\u2014-])\\s*",
+  # "fixed effect" is the mixed-models term for a population parameter, not a
+  # claim that the value was held constant (Lehr 2010: "fixed effect, no IIV
+  # per the source paper", reported with RSE 6.9%).
+  "(?:fixed(?!\\s+effects?\\b)|assumed|not published|not paper-derived",
+  "|literature value|taken from|transferred from)\\b"
 )
+
+.estimatedDisclaimerPattern <- "\\b(?:is|was|were|are) estimated\\b|\\bestimated\\b[^.;]*\\bper\\b"
 
 .checkFixedLabelAgreement <- function(ui, conv) {
   issues <- .emptyIssues()
@@ -1278,7 +1299,11 @@ checkModelConventions <- function(model, verbose = TRUE) {
     lbl <- ini$label[[i]]
     if (is.na(lbl) || !nzchar(lbl)) next
     if (isTRUE(ini$fix[[i]])) next
-    if (grepl(.fixedClaimPattern, lbl, ignore.case = TRUE)) {
+    # Variance terms: their labels almost always discuss the fixed status of
+    # the corresponding typical value, not of the variance itself.
+    if (grepl("^eta", ini$name[[i]])) next
+    if (grepl(.estimatedDisclaimerPattern, lbl, ignore.case = TRUE)) next
+    if (grepl(.fixedClaimPattern, lbl, ignore.case = TRUE, perl = TRUE)) {
       issues <- rbind(issues, .issue(
         "fixed_label_disagreement", "warning", ini$name[[i]],
         sprintf("Label of '%s' says the value was fixed/assumed/borrowed, but fix = FALSE.",

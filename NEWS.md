@@ -38,7 +38,10 @@
     name retired above cannot quietly reappear in a new model; and
   - a fixed-label agreement check (warning) that flags a parameter whose
     label claims the value was fixed, assumed, or taken from another
-    publication while `fix` is still `FALSE`.
+    publication while `fix` is still `FALSE`. It is a warning rather than an
+    error because 15 parameters in 10 models pre-date it; those are listed
+    with per-group guidance in `inst/references/fixed-provenance-followup.md`,
+    and the check should be promoted to an error once they are cleared.
 
 - Add Wu 2023 SPI-62 ([doi:10.1007/s40262-023-01278-8](https://doi.org/10.1007/s40262-023-01278-8)) - healthy adults.
 

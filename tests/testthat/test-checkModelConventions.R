@@ -1060,4 +1060,63 @@ test_that("a plain label on an estimated parameter is not flagged", {
   expect_equal(sum(res$category == "fixed_label_disagreement"), 0L)
 })
 
+
+test_that("the fixed-claim pattern only matches claims about the parameter itself", {
+  # Each FALSE case is a real label from the database where the "fixed" clause
+  # describes a DIFFERENT parameter. Matching them was the rule's main source
+  # of false positives; see inst/references/fixed-provenance-followup.md.
+  pat <- nlmixr2lib:::.fixedClaimPattern
+  claims <- c(
+    "Allometric exponent on CL/F (unitless; fixed)",
+    "Max fractional decrease in UA production by febuxostat (fixed in source)",
+    "Vascular reflection coefficient for tight tissues (unitless; fixed at 0.95 in Cao 2013)",
+    "Proportional residual error (fraction) - ASSUMED from assay validation",
+    "Additive residual error (nmol cystine / mg protein; assumed; paper does not specify)"
+  )
+  notClaims <- c(
+    "IC50 for inhibition of precursor synthesis (Imax fixed to 1) (mg/L)",
+    "Apparent DHA metabolite clearance CL/F_DHA (L/h/kg); F_DHA fixed to 1",
+    "Apparent DM4 clearance CL_DM4 (L/day; V_DM4 fixed to 1 L)",
+    "Scaling factor K relating eta_V/F to eta_CL/F (correlation fixed to 1)",
+    "CMS nonrenal clearance CL_NRCMS (L/h); CL_RCMS structurally fixed at 0",
+    "Passive plasma -> CSF_CM clearance (mL/min) - P-gp components fixed to 0",
+    "Absorption lag time for Group 1 (h; Group 2 lag is fixed at 0)",
+    "Clearance (CL, L/day)"
+  )
+  for (lbl in claims) {
+    expect_true(grepl(pat, lbl, ignore.case = TRUE, perl = TRUE), info = lbl)
+  }
+  for (lbl in notClaims) {
+    expect_false(grepl(pat, lbl, ignore.case = TRUE, perl = TRUE), info = lbl)
+  }
+})
+
+test_that("variance terms are exempt from the fixed-label check", {
+  # Labels on eta terms routinely note that the corresponding typical value
+  # was fixed while the variance itself was estimated.
+  withEta <- function() {
+    description <- "A"
+    reference <- "R"
+    units <- list(time = "day", dosing = "mg", concentration = "mg/L")
+    ini({
+      lka <- 0.1; label("Absorption rate (ka, 1/day)")
+      lcl <- 1;   label("Clearance (CL, L/day)")
+      lvc <- 1;   label("Central volume (Vc, L)")
+      etalka ~ 1.41; label("Table IV omega_Ka (Ka pop is fixed but IIV is estimated)")
+      propSd <- 0.1; label("Proportional residual error (fraction)")
+    })
+    model({
+      ka <- exp(lka + etalka)
+      cl <- exp(lcl)
+      vc <- exp(lvc)
+      d/dt(depot) <- -ka * depot
+      d/dt(central) <- ka * depot - cl / vc * central
+      Cc <- central / vc
+      Cc ~ prop(propSd)
+    })
+  }
+  res <- suppressWarnings(checkModelConventions(withEta, verbose = FALSE))
+  expect_equal(sum(res$category == "fixed_label_disagreement"), 0L)
+})
+
 # nolint end
