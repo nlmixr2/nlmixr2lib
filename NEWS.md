@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Gong 2023 pemigatinib ([doi:10.1002/psp4.13064](https://doi.org/10.1002/psp4.13064)) - healthy participants and patients with advanced solid tumors including cholangiocarcinoma.
+
 - Canonical unit spellings. The machine-readable `units` block wrote the same
   time unit three ways -- `"hour"` in 643 models, `"h"` in 208 and `"hr"` in 28
   -- so a consumer parsing `units$time` could not canonicalise it without

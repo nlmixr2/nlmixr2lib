@@ -1806,6 +1806,10 @@ navbar:
         href: articles/Elassaiss-Schaap_2017_pembrolizumab.html
       - text: "Pembrolizumab (Lindauer 2017)"
         href: articles/Lindauer_2017_pembrolizumab.html
+      - text: "Pemigatinib (Gong 2023)"
+        href: articles/Gong_2023_pemigatinib.html
+      - text: "Pemigatinib creatinine (Gong 2023)"
+        href: articles/Gong_2023_pemigatinib.html
       - text: "Penciclovir (Ogungbenro 2009)"
         href: articles/Ogungbenro_2009_penciclovir.html
       - text: "Penicillin G (Muller 2007)"
@@ -3123,6 +3127,7 @@ articles:
   - articles/Goel_2016_Sonidegib
   - articles/Goggin_2004_emfilermin
   - articles/Golubovic_2019_sirolimus
+  - articles/Gong_2023_pemigatinib
   - articles/GonzalezSales_2015_testosterone
   - articles/GonzalezSales_2024_imetelstat
   - articles/Goteti_2024_SLE_mbma
