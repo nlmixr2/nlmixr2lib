@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Lignet 2023 M8891 ([doi:10.1007/s11095-023-03611-z](https://doi.org/10.1007/s11095-023-03611-z)) - Caki-1 xenograft-bearing mice, plus the translational human projection.
+
 - Add Wu 2023 SPI-62 ([doi:10.1007/s40262-023-01278-8](https://doi.org/10.1007/s40262-023-01278-8)) - healthy adults.
 
 - Disambiguated the overloaded `OC` name, which denoted five unrelated
