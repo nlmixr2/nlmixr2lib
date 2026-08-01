@@ -123,10 +123,10 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Units:** m^2
 - **Type:** continuous
 - **Scope:** general
-- **Reference category:** n/a -- used with power scaling `(BSA / ref)^exponent`.
+- **Reference category:** n/a -- used with power scaling `(BSA / ref)^exponent` or with linear centering `(1 + slope * (BSA - ref))`. Reference values observed: 1.70 m^2 (Yamada 2025, adult oncology), 1.11 m^2 (Park 2023, paediatric HSCT cohort median).
 - **Source aliases:** none.
-- **Example models:** `Yamada_2025_zolbetuximab.R` (reference 1.70 m^2; exponents 1.06 on clearances and 0.968 on volumes).
-- **Notes:** Oncology mAbs dosed by BSA (mg/m^2) often use BSA in place of body weight for allometric-style scaling. Document the BSA computation formula (DuBois / Mosteller / Haycock) the source paper used; if unstated, record "unspecified."
+- **Example models:** `Yamada_2025_zolbetuximab.R` (reference 1.70 m^2; power scaling, exponents 1.06 on clearances and 0.968 on volumes), `Park_2023_mycophenolic_acid.R` (reference 1.11 m^2; centered-linear scaling `Vd/F = 89.83 * (1 + 0.854 * (BSA - 1.11))` on the apparent volume of distribution in paediatric HSCT recipients; founding centered-linear example).
+- **Notes:** Oncology mAbs dosed by BSA (mg/m^2) often use BSA in place of body weight for allometric-style scaling. Document the BSA computation formula (DuBois / Mosteller / Haycock) the source paper used; if unstated, record "unspecified." Both power and centered-linear parameterizations are in use, following the same dual-form precedent as `CRCL`; record which form the source paper used in `covariateData[[BSA]]$notes`. A centered-linear form is unbounded below and turns negative for `BSA < ref - 1/slope`, so check that the implied zero-crossing lies outside any physiological range and clamp only if it does not.
 
 ### BMI (**canonical for body mass index**)
 - **Description:** Body mass index at baseline.
