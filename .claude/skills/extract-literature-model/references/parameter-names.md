@@ -467,3 +467,30 @@ Precedents in `inst/modeldb/specificDrugs/`: `AitOudhia_2012_canakinumab.R`. The
 ### Year-letter collision suffix
 
 When two extractions resolve to the same `<FirstAuthor>_<Year>_<drug>` name (e.g., two same-author/year/drug entries with different scenarios), append a lowercase letter to the year — `Author_2019a_drug.R`, `Author_2019b_drug.R`. Allocate letters in chronological model-development order when known. Never overwrite an existing file silently.
+
+## Time-varying clearance (issue #481)
+
+If clearance depends on time, use the stem that matches the functional form so
+the structure can be found by name. `checkModelConventions()` warns when a
+clearance expression references `t` / `time` without one of these.
+
+| Form | Stem | Roles |
+|---|---|---|
+| Sigmoidal in time: `cl <- cl_base * exp(max * t^g / (t50^g + t^g))` | `cl_hill_` | `cl_hill_max`, `cl_hill_t50`, `cl_hill_gamma` |
+| Exponential decay to a constant: `cl <- cl_exp_inf + cl_exp_component * exp(-k * t)` | `cl_exp_` | `cl_exp_inf`, `cl_exp_component`, `cl_exp_kdes` |
+
+Prefix `l` for the log scale (`lcl_hill_t50`), `eta` for the IIV partner
+(`etacl_hill_max`), `e_<cov>_` for a covariate effect
+(`e_nhl_cl_exp_kdes`).
+
+Do **not** reuse `emax`, `imax`, `gamma`, `hill` or `t50` for clearance
+time-dependence: all of them are also standard PD parameter names, and several
+models carry both a PD `emax` and a clearance one.
+
+**The symbol the ODE consumes is the total clearance.** Name components so they
+cannot be mistaken for it -- `cl_exp_component`, not `cl_time` or `cl_t_now`. A
+decaying component can fall by dozens of orders of magnitude over a treatment
+course, which is meaningless in isolation but looks like a clearance value.
+
+Periodic (diurnal / circadian) variation is a different structure and keeps its
+own names; do not fold it into `cl_hill_` or `cl_exp_`.

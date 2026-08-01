@@ -64,7 +64,9 @@ checkModelConventions <- function(model, verbose = TRUE) {
     .checkObservation(ui, conv),
     .checkUnits(ui, conv),
     .checkDeprecatedNames(ui, conv),
-    .checkFixedLabelAgreement(ui, conv)
+    .checkFixedLabelAgreement(ui, conv),
+    .checkTimeVaryingClearanceNames(ui, conv),
+    .checkCompartmentData(ui, conv)
   )
   issues <- do.call(rbind, checks)
   if (is.null(issues) || nrow(issues) == 0) {
@@ -1289,6 +1291,105 @@ checkModelConventions <- function(model, verbose = TRUE) {
 )
 
 .estimatedDisclaimerPattern <- "\\b(?:is|was|were|are) estimated\\b|\\bestimated\\b[^.;]*\\bper\\b"
+
+# Issue #481: a clearance that depends on time must say so in its parameter
+# names. The old spellings cannot simply be banned by name -- `emax`, `imax`,
+# `gamma`, `hill`, `t50` and `kdes` are all legitimate PD names elsewhere in
+# the library -- so the check is structural: find a clearance symbol whose
+# definition references `t` or `time`, then require the canonical stem to
+# appear in that same expression.
+.clearanceLhsPattern <- "^\\s*(cl[a-z0-9_]*|[a-z0-9_]*_cl|td_cl)\\s*<-"
+.bareTimePattern <- "(?<![A-Za-z0-9_.])(t|time)(?![A-Za-z0-9_])"
+
+# The `ini({})` block declares parameters and their labels; only `model({})`
+# contains the equations. Scanning the whole function makes label prose such as
+# "Sigmoidicity exponent of time on CL" look like a reference to `t`.
+.modelBlockLines <- function(ui) {
+  lines <- tryCatch(deparse(ui$fun), error = function(e) character(0))
+  if (!length(lines)) return(character(0))
+  start <- grep("^\\s*model\\(\\{", lines)
+  if (!length(start)) return(character(0))
+  lines[seq(start[1], length(lines))]
+}
+
+.checkTimeVaryingClearanceNames <- function(ui, conv) {
+  issues <- .emptyIssues()
+  lines <- .modelBlockLines(ui)
+  if (!length(lines)) return(issues)
+  for (ln in lines) {
+    if (!grepl(.clearanceLhsPattern, ln)) next
+    rhs <- sub("^[^<]*<-", "", ln)
+    rhs <- sub("#.*$", "", rhs)
+    # Strip string literals: a label such as "...exponent of time on CL..."
+    # is prose about the parameter, not a reference to the time variable.
+    rhs <- gsub("\"[^\"]*\"", "", rhs)
+    if (!grepl(.bareTimePattern, rhs, perl = TRUE)) next
+    if (grepl("cl_hill_|cl_exp_", rhs)) next
+    nm <- trimws(sub("\\s*<-.*$", "", ln))
+    issues <- rbind(issues, .issue(
+      "time_varying_clearance", "warning", nm,
+      sprintf("'%s' makes clearance depend on time but uses none of the canonical names.", nm),
+      paste("Use cl_hill_max / cl_hill_t50 / cl_hill_gamma for a sigmoidal-in-time",
+            "clearance, or cl_exp_inf / cl_exp_component / cl_exp_kdes for an",
+            "exponential decay, so the structure can be found by name (issue #481).")
+    ))
+  }
+  issues
+}
+
+# Issue #482: what molecule a compartment holds, in what units, and in what
+# biological matrix. Inferring the matrix from the state name works only
+# because most models happen to use `central` / `peripheral1`; where they do
+# not, inference fails silently or gets it wrong.
+.checkCompartmentData <- function(ui, conv) {
+  issues <- .emptyIssues()
+  meta <- as.list(ui$meta)
+  states <- tryCatch(ui$state, error = function(e) character(0))
+  if (!length(states)) return(issues)
+  cd <- meta$compartmentData
+  if (is.null(cd)) {
+    # Warning rather than error while the database is being backfilled; see
+    # inst/references/compartment-data-followup.md for the remaining models.
+    return(rbind(issues, .issue(
+      "compartment_data", "warning", "compartmentData",
+      "Model has ODE states but no `compartmentData` metadata.",
+      paste("Add compartmentData <- list(<state> = list(analyte=, units=,",
+            "specimen=, verified=)) for every d/dt() state (issue #482).")
+    )))
+  }
+  missing <- setdiff(states, names(cd))
+  if (length(missing)) {
+    issues <- rbind(issues, .issue(
+      "compartment_data", "error", paste(missing, collapse = ", "),
+      "ODE state(s) have no `compartmentData` entry.",
+      "Add one entry per d/dt() state."))
+  }
+  extra <- setdiff(names(cd), states)
+  if (length(extra)) {
+    issues <- rbind(issues, .issue(
+      "compartment_data", "error", paste(extra, collapse = ", "),
+      "`compartmentData` names a compartment that is not an ODE state.",
+      "Remove the entry, or correct the state name."))
+  }
+  for (nm in intersect(names(cd), states)) {
+    entry <- cd[[nm]]
+    absent <- setdiff(conv$compartmentDataFields, names(entry))
+    if (length(absent)) {
+      issues <- rbind(issues, .issue(
+        "compartment_data", "error", nm,
+        sprintf("`compartmentData$%s` is missing: %s.", nm, paste(absent, collapse = ", ")),
+        paste("Every entry needs", paste(conv$compartmentDataFields, collapse = ", "), ".")))
+      next
+    }
+    if (!entry$specimen %in% conv$specimenVocabulary) {
+      issues <- rbind(issues, .issue(
+        "compartment_data", "error", nm,
+        sprintf("`%s` is not in the specimen vocabulary.", entry$specimen),
+        paste("Use one of:", paste(conv$specimenVocabulary, collapse = ", "))))
+    }
+  }
+  issues
+}
 
 .checkFixedLabelAgreement <- function(ui, conv) {
   issues <- .emptyIssues()

@@ -420,7 +420,33 @@
     # #477 TMDD case / separator normalisation
     lKss = "lkss", lkD = "lkd", lBmax = "lbmax", Km = "km",
     kd_LR = "kd_lr", kd_T1 = "kd_t1", kd_T2 = "kd_t2"
-  )
+  ),
+
+  # Issue #482: controlled vocabulary for the biological matrix a compartment
+  # represents, so "restrict to blood, serum or plasma" is a filter rather
+  # than a judgement call made by reading state names.
+  #
+  # Two entries are deliberately NOT matrices, because forcing every state
+  # into a specimen would be worse than saying so plainly:
+  #   "administration site" -- depot / transit states, which hold drug that
+  #     has not reached a biological matrix yet
+  #   "not applicable"      -- latent, PD and bookkeeping states (effect,
+  #     precursor*, cumhaz, circ, bacterial subpopulations, tumor-size
+  #     states). A database scan found these in 642 of the 1403 models with
+  #     ODEs, so the category carries real weight.
+  specimenVocabulary = c(
+    "plasma", "serum", "whole blood", "blood cell", "CSF", "brain ISF",
+    "vitreous", "aqueous humour", "retina", "tissue", "tumor", "lymph",
+    "endosome", "urine", "bile", "faeces", "saliva", "milk",
+    "synovial fluid", "epithelial lining fluid", "bronchoalveolar lavage",
+    "administration site", "not applicable"
+  ),
+
+  # Fields every compartmentData entry must carry. `analyte` and `units`
+  # answer "what molecule, in what amount"; `specimen` answers "in what
+  # matrix". `verified` records whether the entry was checked against the
+  # source paper -- a mechanically derived entry is not evidence.
+  compartmentDataFields = c("analyte", "units", "specimen", "verified")
 )
 
 # The following canonical-name lists are NOT carried on

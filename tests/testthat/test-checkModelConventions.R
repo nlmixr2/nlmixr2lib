@@ -21,6 +21,10 @@ test_that("conventional parameter names produce no naming issues", {
     description <- "A"
     reference <- "R"
     units <- list(time = "day", dosing = "mg", concentration = "mg/L")
+    compartmentData <- list(
+      depot   = list(analyte = "drug", units = "mg", specimen = "administration site", verified = TRUE),
+      central = list(analyte = "drug", units = "mg", specimen = "plasma", verified = TRUE)
+    )
     ini({
       lka <- 0.1; label("Absorption rate (ka, 1/day)")
       lcl <- 1;   label("Clearance (CL, L/day)")
@@ -1117,6 +1121,109 @@ test_that("variance terms are exempt from the fixed-label check", {
   }
   res <- suppressWarnings(checkModelConventions(withEta, verbose = FALSE))
   expect_equal(sum(res$category == "fixed_label_disagreement"), 0L)
+})
+
+
+# ---- Issue #481: time-varying clearance naming --------------------------------
+
+test_that("a time-dependent clearance using non-canonical names is flagged", {
+  oldStyle <- function() {
+    description <- "A"
+    reference <- "R"
+    units <- list(time = "day", dosing = "mg", concentration = "mg/L")
+    ini({
+      lcl <- 1; label("Clearance (CL, L/day)")
+      lvc <- 1; label("Central volume (Vc, L)")
+      emax <- -0.3; label("Maximal fractional change in CL (unitless)")
+      hill <- 2.5; label("Sigmoidicity (unitless)")
+      t50 <- 50;   label("Time of half-maximal change (day)")
+      propSd <- 0.1; label("Proportional residual error (fraction)")
+    })
+    model({
+      cl <- exp(lcl) * exp(emax * t^hill / (t50^hill + t^hill))
+      vc <- exp(lvc)
+      d/dt(central) <- -cl / vc * central
+      Cc <- central / vc
+      Cc ~ prop(propSd)
+    })
+  }
+  res <- suppressWarnings(checkModelConventions(oldStyle, verbose = FALSE))
+  hit <- res[res$category == "time_varying_clearance", ]
+  expect_equal(nrow(hit), 1L)
+  expect_match(hit$suggestion, "cl_hill_max", fixed = TRUE)
+})
+
+test_that("the canonical time-varying clearance stems are accepted", {
+  newStyle <- function() {
+    description <- "A"
+    reference <- "R"
+    units <- list(time = "day", dosing = "mg", concentration = "mg/L")
+    ini({
+      lcl <- 1; label("Clearance (CL, L/day)")
+      lvc <- 1; label("Central volume (Vc, L)")
+      cl_hill_max <- -0.3;  label("Maximum fractional change in CL over time (unitless)")
+      cl_hill_gamma <- 2.5; label("Sigmoidicity of the time effect on CL (unitless)")
+      cl_hill_t50 <- 50;    label("Time of half-maximal change in CL (day)")
+      propSd <- 0.1; label("Proportional residual error (fraction)")
+    })
+    model({
+      cl <- exp(lcl) *
+        exp(cl_hill_max * t^cl_hill_gamma / (cl_hill_t50^cl_hill_gamma + t^cl_hill_gamma))
+      vc <- exp(lvc)
+      d/dt(central) <- -cl / vc * central
+      Cc <- central / vc
+      Cc ~ prop(propSd)
+    })
+  }
+  res <- suppressWarnings(checkModelConventions(newStyle, verbose = FALSE))
+  expect_equal(sum(res$category == "time_varying_clearance"), 0L)
+})
+
+test_that("no model in the database still uses a pre-#481 time-varying clearance name", {
+  # Enumerating rather than spot-checking: a newly added model that reuses the
+  # old spellings fails here until it is migrated.
+  root <- system.file("modeldb", package = "nlmixr2lib")
+  skip_if(!nzchar(root) || !dir.exists(root), "modeldb sources not installed")
+  offenders <- character(0)
+  for (f in list.files(root, pattern = "[.]R$", recursive = TRUE, full.names = TRUE)) {
+    lines <- readLines(f, warn = FALSE)
+    start <- grep("^\\s*model\\(\\{", lines)
+    if (!length(start)) next
+    for (ln in lines[seq(start[1], length(lines))]) {
+      if (!grepl(nlmixr2lib:::.clearanceLhsPattern, ln)) next
+      rhs <- sub("#.*$", "", sub("^[^<]*<-", "", ln))
+      rhs <- gsub('"[^"]*"', "", rhs)
+      if (!grepl(nlmixr2lib:::.bareTimePattern, rhs, perl = TRUE)) next
+      if (grepl("cl_hill_|cl_exp_", rhs)) next
+      offenders <- c(offenders, basename(f))
+    }
+  }
+  # The four deliberate exclusions are a different structure (diurnal cosine,
+  # circadian clock offset, a lag state, ADA-gated logistic onset).
+  allowed <- c("Bienczak_2016_nevirapine.R", "Hayashi_1998_epoetinBeta.R",
+               "Mann_2022_respiratory_physiology.R", "Yoshida_2024_fazpilodemab.R")
+  expect_equal(sort(unique(setdiff(offenders, allowed))), character(0))
+})
+
+# ---- Issue #482: compartmentData ----------------------------------------------
+
+test_that("compartmentData must cover every ODE state and use the vocabulary", {
+  conv <- nlmixr2lib:::.nlmixr2libConventions()
+  expect_true(length(conv$specimenVocabulary) > 0L)
+  expect_true(all(c("analyte", "units", "specimen", "verified") %in%
+                    conv$compartmentDataFields))
+  # The two non-matrix categories must exist, or every latent/PD state would be
+  # forced into a false specimen.
+  expect_true(all(c("administration site", "not applicable") %in%
+                    conv$specimenVocabulary))
+})
+
+test_that("the worked compartmentData examples validate", {
+  for (nm in c("PerezRuixo_2025_posdinemab", "HuttonSmith_2018_ranibizumab",
+               "Le_2015_lampalizumab_cyno")) {
+    res <- suppressWarnings(checkModelConventions(nm, verbose = FALSE))
+    expect_equal(sum(res$category == "compartment_data"), 0L, info = nm)
+  }
 })
 
 # nolint end

@@ -13,6 +13,17 @@ Le_2015_lampalizumab_cyno <- function() {
     "total_target_peripheral1"
   )
 
+  # Issue #482: this model spans ocular and systemic matrices, which is
+  # exactly the case that must not be pooled with serum-only disposition.
+  compartmentData <- list(
+    depot                    = list(analyte = "lampalizumab", units = "nmol", specimen = "administration site", verified = TRUE),
+    total_target             = list(analyte = "complement factor D (total)", units = "nmol", specimen = "vitreous", verified = TRUE),
+    central                  = list(analyte = "lampalizumab", units = "nmol", specimen = "serum",   verified = TRUE),
+    total_target_central     = list(analyte = "complement factor D (total)", units = "nmol", specimen = "serum",   verified = TRUE),
+    peripheral1              = list(analyte = "lampalizumab", units = "nmol", specimen = "tissue",  verified = TRUE),
+    total_target_peripheral1 = list(analyte = "complement factor D (total)", units = "nmol", specimen = "tissue",  verified = TRUE)
+  )
+
   covariateData <- list()
 
   population <- list(

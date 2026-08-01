@@ -42,6 +42,12 @@ Do not silently resolve ambiguity. Do not tune parameters to make a validation o
 - [ ] Every covariate used in `model()` is registered in `inst/references/covariate-columns.md` with a canonical name, or the PR adds a new entry.
 - [ ] No `## Change log` / `## Summary` section or per-extraction history line was added to `inst/references/covariate-columns.md`. Per-entry context (derivation rules, scope-promotion rationale, naming-decision sidecars) goes in the H3 entry's Description / Notes / Source aliases. Chronological history is read from `git log`.
 - [ ] Source column names different from the canonical names are recorded in `covariateData[[name]]$source_name` and any value transformation (e.g., `SEXM → SEXF` inverts values and flips the effect sign) is documented in `notes`.
+- [ ] **`compartmentData` covers every `d/dt()` state** (issue #482). One entry per ODE
+      state with `analyte`, `units`, `specimen`, `verified`. `specimen` must come from
+      `conventions$specimenVocabulary`; use `"administration site"` for depot/transit
+      states and `"not applicable"` for latent/PD states rather than inventing a matrix.
+      Set `verified = TRUE` only when analyte and specimen were confirmed against the
+      paper. `checkModelConventions()` errors on a missing or malformed entry.
 - [ ] **Reference categories** for categorical effects match the paper (especially after composite race groups like `RACE_BLACK_OTH` — the reference is everyone NOT in the composite).
 - [ ] **Effect form** is correct: multiplicative (`1 + e × COV`), power (`COV^e`), or exponential (`exp(e × COV)`). The form determines what `e` means.
 - [ ] **Continuous covariates** are centered / normalized the way the paper describes (e.g., `WT / 70`, `AGE / 40`, `PAGE - 40/4.35`). The skill uses the paper's convention even when it's not "round."

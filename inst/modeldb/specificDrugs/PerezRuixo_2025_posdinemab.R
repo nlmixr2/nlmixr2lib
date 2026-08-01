@@ -8,6 +8,19 @@ PerezRuixo_2025_posdinemab <- function() {
     concentration = "pmol/L"
   )
 
+  # Issue #482: what molecule each compartment holds, in what units, in what
+  # biological matrix. Verified against Perez-Ruixo 2025 Methods / Figure 1.
+  compartmentData <- list(
+    central      = list(analyte = "posdinemab",             units = "pmol", specimen = "serum",    verified = TRUE),
+    peripheral1  = list(analyte = "posdinemab",             units = "pmol", specimen = "serum",    verified = TRUE),
+    csf          = list(analyte = "posdinemab",             units = "pmol", specimen = "CSF",      verified = TRUE),
+    isf          = list(analyte = "posdinemab",             units = "pmol", specimen = "brain ISF", verified = TRUE),
+    target       = list(analyte = "p217+tau (free)",        units = "pmol", specimen = "CSF",      verified = TRUE),
+    complex      = list(analyte = "posdinemab-p217+tau complex", units = "pmol", specimen = "CSF", verified = TRUE),
+    target_isf   = list(analyte = "tau seeds (free)",       units = "pmol", specimen = "brain ISF", verified = TRUE),
+    complex_isf  = list(analyte = "posdinemab-tau-seed complex", units = "pmol", specimen = "brain ISF", verified = TRUE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight",

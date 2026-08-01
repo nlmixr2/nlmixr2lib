@@ -1077,3 +1077,24 @@ name. `lrbase`, for example, appears in 102 models with at least four
 distinct meanings, 89 of them indirect-response PD baselines rather than
 target baselines; a blanket sweep would corrupt them. Names are retired only
 after checking every occurrence.
+
+## Time-varying clearance (issue #481)
+
+Registered 2026-08-01. 31 models gave clearance an explicit time dependence
+under 20-odd different spellings, so neither the structure nor the magnitude of
+the change could be found or compared without expanding each `d/dt(central)`.
+Two stems, chosen so the functional form is visible in the name:
+
+### cl_hill_max / cl_hill_t50 / cl_hill_gamma (**canonical sigmoidal-in-time clearance**)
+- **Type:** parameter
+- **Role:** `cl <- cl_base * exp(cl_hill_max * t^cl_hill_gamma / (cl_hill_t50^cl_hill_gamma + t^cl_hill_gamma))`. `cl_hill_max` is the maximum fractional (log-scale) change, `cl_hill_t50` the time of half-maximal change, `cl_hill_gamma` the sigmoidicity.
+- **Source aliases:** `cl_emax`/`emax`/`imax`/`clm`/`cl_tmax_*`/`cltmax`/`dCLmax` (max); `t50`/`ti50`/`kcl`/`cl_tc50`/`clt50`/`tm50_time`/`t50_cl_time` (t50); `cl_hill`/`gamma`/`gam`/`hill`/`lambda`/`cl_lambda_*`/`clgamma` (gamma).
+- **Example models:** `Bajaj_2017_nivolumab.R`, `Zhang_2019_nivolumab.R`, `Sanghavi_2020_ipilimumab.R`, `Masters_2022_avelumab.R`, `Yang_2021_cemiplimab.R`, `Wang_2024_sugemalimab.R`, `Melhem_2022_dostarlimab.R`, `Kuchimanchi_2024_dostarlimab.R`, `Collins_2023_belantamab_mprotein.R`, `Papathanasiou_2025_belantamab.R`, `Fau_2020_isatuximab.R`, `Hwang_2022_tremelimumab.R`, `Bonate_2004_apomine.R`, `Lawson_2022_busulfan.R`, `Gupta_2006_peginterferon_alfa_2b.R`, `GonzalezSales_2024_imetelstat.R`, `PK_2cmt_tdcl_des.R`.
+- **Notes:** Do not reuse `emax` / `imax` / `gamma` / `hill` for this: all are standard PD names and several of these models carry both a PD `emax` and a clearance one. Where a model splits the exponent by treatment arm, suffix the arm (`cl_hill_gamma_mono`, `cl_hill_gamma_combo`).
+
+### cl_exp_inf / cl_exp_component / cl_exp_kdes (**canonical exponentially-decaying clearance**)
+- **Type:** parameter
+- **Role:** `cl <- cl_exp_inf + cl_exp_component * exp(-cl_exp_kdes * t)`. `cl_exp_inf` is the asymptote, `cl_exp_component` the decaying component at t = 0, `cl_exp_kdes` its first-order decay rate.
+- **Source aliases:** `cl_ss`/`clmx` (inf); `cl_time`/`cl_time0`/`cl_time_init`/`cl_time_typ`/`cl_t_now`/`cl_t` (component); `kdes`/`kdeg`/`kdeg_cl`/`kdecay`/`k_ind` (kdes).
+- **Example models:** `Gibiansky_2014_obinutuzumab.R`, `Rozman_2017_rituximab.R`, `Lu_2019_polatuzumab.R`, `Lee_2023_patritumab.R`, `Wu_2024_inotuzumab.R`, `Yamada_2025_zolbetuximab.R`, `Wang_2014_vatalanib.R`, `Chen_2021_lorlatinib.R`, `Jones_2011_PF04878691.R` (+3 siblings).
+- **Notes:** **The symbol the ODE consumes is the total clearance.** `cl_exp_component` is a component, not a clearance: it can fall by dozens of orders of magnitude over a treatment course, which is meaningless in isolation but looks like a clearance value. When the component is evaluated at time t inside `model()`, suffix it `_t` (`cl_exp_component_t`). Periodic (diurnal / circadian) variation is a different structure and keeps its own names -- `Bienczak_2016_nevirapine` and `Hayashi_1998_epoetinBeta` are deliberately excluded.
