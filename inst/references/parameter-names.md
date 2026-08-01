@@ -1080,21 +1080,67 @@ after checking every occurrence.
 
 ## Time-varying clearance (issue #481)
 
-Registered 2026-08-01. 31 models gave clearance an explicit time dependence
-under 20-odd different spellings, so neither the structure nor the magnitude of
-the change could be found or compared without expanding each `d/dt(central)`.
-Two stems, chosen so the functional form is visible in the name:
+Registered 2026-08-01. 31 models gave clearance an explicit time dependence under
+20-odd different spellings, so neither the structure nor the magnitude of the
+change could be found or compared without expanding each `d/dt(central)`. Two
+stems, chosen so the functional form is visible in the name.
+`checkModelConventions()` warns when a clearance expression in `model({})`
+references `t` / `time` without one of them.
 
-### cl_hill_max / cl_hill_t50 / cl_hill_gamma (**canonical sigmoidal-in-time clearance**)
-- **Type:** parameter
-- **Role:** `cl <- cl_base * exp(cl_hill_max * t^cl_hill_gamma / (cl_hill_t50^cl_hill_gamma + t^cl_hill_gamma))`. `cl_hill_max` is the maximum fractional (log-scale) change, `cl_hill_t50` the time of half-maximal change, `cl_hill_gamma` the sigmoidicity.
-- **Source aliases:** `cl_emax`/`emax`/`imax`/`clm`/`cl_tmax_*`/`cltmax`/`dCLmax` (max); `t50`/`ti50`/`kcl`/`cl_tc50`/`clt50`/`tm50_time`/`t50_cl_time` (t50); `cl_hill`/`gamma`/`gam`/`hill`/`lambda`/`cl_lambda_*`/`clgamma` (gamma).
-- **Example models:** `Bajaj_2017_nivolumab.R`, `Zhang_2019_nivolumab.R`, `Sanghavi_2020_ipilimumab.R`, `Masters_2022_avelumab.R`, `Yang_2021_cemiplimab.R`, `Wang_2024_sugemalimab.R`, `Melhem_2022_dostarlimab.R`, `Kuchimanchi_2024_dostarlimab.R`, `Collins_2023_belantamab_mprotein.R`, `Papathanasiou_2025_belantamab.R`, `Fau_2020_isatuximab.R`, `Hwang_2022_tremelimumab.R`, `Bonate_2004_apomine.R`, `Lawson_2022_busulfan.R`, `Gupta_2006_peginterferon_alfa_2b.R`, `GonzalezSales_2024_imetelstat.R`, `PK_2cmt_tdcl_des.R`.
-- **Notes:** Do not reuse `emax` / `imax` / `gamma` / `hill` for this: all are standard PD names and several of these models carry both a PD `emax` and a clearance one. Where a model splits the exponent by treatment arm, suffix the arm (`cl_hill_gamma_mono`, `cl_hill_gamma_combo`).
+**Do not reuse `emax`, `imax`, `gamma`, `hill` or `t50`** for clearance
+time-dependence: all are standard PD parameter names, and several of these models
+carry both a PD `emax` and a clearance one. That is also why these are enforced
+structurally rather than through `conventions$renamedParameters` -- a global ban
+on those spellings would break unrelated models.
 
-### cl_exp_inf / cl_exp_component / cl_exp_kdes (**canonical exponentially-decaying clearance**)
-- **Type:** parameter
-- **Role:** `cl <- cl_exp_inf + cl_exp_component * exp(-cl_exp_kdes * t)`. `cl_exp_inf` is the asymptote, `cl_exp_component` the decaying component at t = 0, `cl_exp_kdes` its first-order decay rate.
-- **Source aliases:** `cl_ss`/`clmx` (inf); `cl_time`/`cl_time0`/`cl_time_init`/`cl_time_typ`/`cl_t_now`/`cl_t` (component); `kdes`/`kdeg`/`kdeg_cl`/`kdecay`/`k_ind` (kdes).
-- **Example models:** `Gibiansky_2014_obinutuzumab.R`, `Rozman_2017_rituximab.R`, `Lu_2019_polatuzumab.R`, `Lee_2023_patritumab.R`, `Wu_2024_inotuzumab.R`, `Yamada_2025_zolbetuximab.R`, `Wang_2014_vatalanib.R`, `Chen_2021_lorlatinib.R`, `Jones_2011_PF04878691.R` (+3 siblings).
-- **Notes:** **The symbol the ODE consumes is the total clearance.** `cl_exp_component` is a component, not a clearance: it can fall by dozens of orders of magnitude over a treatment course, which is meaningless in isolation but looks like a clearance value. When the component is evaluated at time t inside `model()`, suffix it `_t` (`cl_exp_component_t`). Periodic (diurnal / circadian) variation is a different structure and keeps its own names -- `Bienczak_2016_nevirapine` and `Hayashi_1998_epoetinBeta` are deliberately excluded.
+**The symbol the ODE consumes is the total clearance.** Name components so they
+cannot be mistaken for it. A decaying component can fall by dozens of orders of
+magnitude over a treatment course, which is meaningless in isolation but looks
+like a clearance value.
+
+Periodic (diurnal / circadian) variation is a different structure and keeps its
+own names: `Bienczak_2016_nevirapine` (cosine) and `Hayashi_1998_epoetinBeta`
+(clock offset) are deliberately excluded, as are `Mann_2022_respiratory_physiology`
+(a lag state) and `Yoshida_2024_fazpilodemab` (ADA-gated logistic onset).
+
+### cl_hill_max (**canonical maximum fractional change in time-varying clearance**)
+- **Type:** bare-pk
+- **Role:** Maximum fractional (log-scale) change in CL as t grows, in `cl <- cl_base * exp(cl_hill_max * t^cl_hill_gamma / (cl_hill_t50^cl_hill_gamma + t^cl_hill_gamma))`. Negative when clearance falls over the treatment course.
+- **Source aliases:** `cl_emax`, `emax`, `imax`, `clm`, `cl_tmax_mono`, `cl_tmax_combo`, `cltmax`, `dCLmax`.
+- **Example models:** `Bajaj_2017_nivolumab.R`, `Zhang_2019_nivolumab.R`, `Sanghavi_2020_ipilimumab.R`, `Masters_2022_avelumab.R`, `Yang_2021_cemiplimab.R`, `Wang_2024_sugemalimab.R`, `Melhem_2022_dostarlimab.R`, `Kuchimanchi_2024_dostarlimab.R`, `Collins_2023_belantamab_mprotein.R`, `Papathanasiou_2025_belantamab.R`, `Fau_2020_isatuximab.R`, `Hwang_2022_tremelimumab.R`, `Bonate_2004_apomine.R`, `Lawson_2022_busulfan.R`.
+- **Notes:** Suffix the treatment arm when a model splits it (`cl_hill_max_mono`, `cl_hill_max_combo`); suffix `_i` for the individual value inside `model({})`.
+
+### cl_hill_t50 (**canonical time of half-maximal change in time-varying clearance**)
+- **Type:** bare-pk
+- **Role:** Time at which the change in CL reaches half of `cl_hill_max`.
+- **Source aliases:** `t50`, `ti50`, `kcl`, `cl_tc50`, `clt50`, `tm50_time`, `t50_cl_time`.
+- **Example models:** as `cl_hill_max`, plus `Gupta_2006_peginterferon_alfa_2b.R` and `GonzalezSales_2024_imetelstat.R`, which use the hyperbolic (gamma = 1) special case and so carry no `cl_hill_gamma`.
+- **Notes:** `lcl_hill_t50` for the log scale, `etalcl_hill_t50` for its IIV partner.
+
+### cl_hill_gamma (**canonical sigmoidicity of time-varying clearance**)
+- **Type:** bare-pk
+- **Role:** Hill / sigmoidicity exponent on time in the expression above.
+- **Source aliases:** `cl_hill`, `gamma`, `gam`, `hill`, `lambda`, `cl_lambda_mono`, `cl_lambda_combo`, `clgamma`.
+- **Example models:** as `cl_hill_max`.
+- **Notes:** Named `gamma` rather than `hill` inside the `cl_hill_` stem to avoid `cl_hill_hill`. Distinct from the PD `lhill` (sigmoidal Emax exponent) and `lgamma` (Friberg / TGI exponents).
+
+### cl_exp_inf (**canonical asymptote of exponentially-decaying clearance**)
+- **Type:** bare-pk
+- **Role:** Clearance as t goes to infinity, in `cl <- cl_exp_inf + cl_exp_component * exp(-cl_exp_kdes * t)`.
+- **Source aliases:** `cl_ss`, `clmx`, and a plain `lcl` where the paper's CL is the asymptote rather than the total.
+- **Example models:** `Gibiansky_2014_obinutuzumab.R`, `Rozman_2017_rituximab.R`, `Wang_2014_vatalanib.R`, `Yamada_2025_zolbetuximab.R`, `Wu_2024_inotuzumab.R`, `Chen_2021_lorlatinib.R`, `Jones_2011_PF04878691.R` (+3 siblings).
+- **Notes:** `lcl_exp_inf` for the log scale.
+
+### cl_exp_component (**canonical decaying component of time-varying clearance**)
+- **Type:** bare-pk
+- **Role:** Value at t = 0 of the component that decays away, leaving `cl_exp_inf`.
+- **Source aliases:** `cl_time`, `cl_time0`, `cl_time_init`, `cl_time_typ`, `cl_t_now`, `cl_t`.
+- **Example models:** as `cl_exp_inf`, plus `Lu_2019_polatuzumab.R`, `Lu_2017_polatuzumab_neuropathy.R`, `Lee_2023_patritumab.R`.
+- **Notes:** This is a component, **not** a clearance. Issue #481 singles out `Lee_2023_patritumab`'s old `cl_t_now`, which falls by 56 orders of magnitude over a year and looks like a clearance value in isolation. When evaluated at time t inside `model({})`, suffix `_t` (`cl_exp_component_t`).
+
+### cl_exp_kdes (**canonical decay rate of time-varying clearance**)
+- **Type:** bare-pk
+- **Role:** First-order rate constant at which `cl_exp_component` decays.
+- **Source aliases:** `kdes`, `kdeg`, `kdeg_cl`, `kdecay`, `k_ind`.
+- **Example models:** as `cl_exp_component`.
+- **Notes:** `lcl_exp_kdes` for the log scale, `e_<cov>_cl_exp_kdes` for a covariate effect (`e_nhl_cl_exp_kdes` in Gibiansky 2014).
