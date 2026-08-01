@@ -10,7 +10,7 @@ Jones_2011_PF04878691 <- function() {
     "model over-estimated Cmax on day 1 and under-estimated exposure on",
     "day 11. The clearance was therefore parameterised with an exponentially",
     "decaying time-dependent component superimposed on a steady-state arm:",
-    "CL(t) = CL_SS + CL_TIME * exp(-kdeg * TAFD), where TAFD is the time",
+    "CL(t) = CL_SS + CL_TIME * exp(-cl_exp_kdes * TAFD), where TAFD is the time",
     "after first dose. Reparameterised from the paper's CLF (final = CL_SS)",
     "and CL0 (initial = CL_SS + CL_TIME). The hypothesised mechanism for the",
     "time-varying clearance is IFN-mediated CYP1A2 inhibition by the",
@@ -67,31 +67,31 @@ Jones_2011_PF04878691 <- function() {
     #
     #     CL(TAFD) = CLF + (CL0 - CLF) * exp(-DEG * TAFD)
     #
-    # rewritten here in the canonical CL_SS + CL_TIME * exp(-kdeg * t)
+    # rewritten here in the canonical CL_SS + CL_TIME * exp(-cl_exp_kdes * t)
     # decomposition used throughout nlmixr2lib (Gibiansky 2014, Lu 2019,
     # Wu 2024, Hussein 1997, ...). The point-estimate mapping is:
     #
-    #     cl_ss   = CLF = 1.7  L/h/kg
-    #     cl_time = CL0 - CLF = 3.5 - 1.7 = 1.8 L/h/kg (initial offset)
-    #     kdeg    = DEG = 0.24 1/h
+    #     cl_exp_inf   = CLF = 1.7  L/h/kg
+    #     cl_exp_component = CL0 - CLF = 3.5 - 1.7 = 1.8 L/h/kg (initial offset)
+    #     cl_exp_kdes    = DEG = 0.24 1/h
     #
     # At t = 0 the total clearance is CL_SS + CL_TIME = 3.5 L/h/kg = CL0;
     # at t -> infinity it converges to CL_SS = 1.7 L/h/kg = CLF.
-    lcl       <- log(1.7);    label("Steady-state apparent clearance per kg body weight (CL_SS = paper CLF, L/h/kg)")              # Table 1 (CLF = 1.7 L/h/kg, %CV 6.8)
-    lcl_time  <- log(1.8);    label("Initial offset of the time-varying clearance component per kg (CL_TIME0 = CL0 - CLF, L/h/kg)") # Derived from Table 1 (CL0 = 3.5, CLF = 1.7)
-    lkdeg     <- log(0.24);   label("Exponential decay rate of the time-varying clearance component (paper DEG, 1/h)")              # Table 1 (DEG = 0.24 1/h, %CV 35)
+    lcl_exp_inf       <- log(1.7);    label("Steady-state apparent clearance per kg body weight (CL_SS = paper CLF, L/h/kg)")              # Table 1 (CLF = 1.7 L/h/kg, %CV 6.8)
+    lcl_exp_component  <- log(1.8);    label("Initial offset of the time-varying clearance component per kg (CL_TIME0 = CL0 - CLF, L/h/kg)") # Derived from Table 1 (CL0 = 3.5, CLF = 1.7)
+    lcl_exp_kdes     <- log(0.24);   label("Exponential decay rate of the time-varying clearance component (paper DEG, 1/h)")              # Table 1 (DEG = 0.24 1/h, %CV 35)
     lvc       <- log(3.3);    label("Apparent central volume of distribution per kg body weight (Vc, L/kg)")                        # Table 1 (Vc = 3.3 L/kg, %CV 47)
     lq        <- log(0.74);   label("Apparent intercompartmental clearance per kg body weight (Q, L/h/kg)")                         # Table 1 (Q = 0.74 L/h/kg, %CV 51)
     lvp       <- log(21);     label("Apparent peripheral volume of distribution per kg body weight (Vp, L/kg)")                     # Table 1 (Vp = 21 L/kg, %CV 17)
     lka       <- log(0.078);  label("First-order absorption rate constant (ka, 1/h)")                                               # Table 1 (ka = 0.078 1/h, %CV 22)
 
     # Inter-individual variability. Table 1 reports OM1 (IIV on CLF, here
-    # IIV on cl_ss) and OM3 (IIV on ka). OM2 is absent in the source
+    # IIV on cl_exp_inf) and OM3 (IIV on ka). OM2 is absent in the source
     # table -- no IIV was retained on Vc, Q, Vp, CL0 (the time-varying
     # initial offset), or DEG. The 'l h^-1 kg^-1' units of CLF mean the
     # IIV is on the log-scale variance of the per-kg parameter, which is
-    # what etalcl applies to inside model().
-    etalcl ~ 0.067                                                                                                                  # Table 1 (IIV CLF = 0.067, %CV 28)
+    # what etalcl_exp_inf applies to inside model().
+    etalcl_exp_inf ~ 0.067                                                                                                                  # Table 1 (IIV CLF = 0.067, %CV 28)
     etalka ~ 0.19                                                                                                                   # Table 1 (IIV ka  = 0.19,  %CV 36)
 
     # Residual error. Methods state 'intra-individual (residual)
@@ -104,22 +104,22 @@ Jones_2011_PF04878691 <- function() {
   model({
     # ----------------------------------------------------------------------
     # Individual disposition parameters (per kg) and per-subject scaling
-    # to absolute units via body weight. cl_ss carries the per-subject log-
+    # to absolute units via body weight. cl_exp_inf carries the per-subject log-
     # normal IIV (paper IIV on CLF); the time-varying component CL_TIME and
-    # the decay rate kdeg are population-typical with no IIV.
+    # the decay rate cl_exp_kdes are population-typical with no IIV.
     # ----------------------------------------------------------------------
-    cl_ss   <- exp(lcl + etalcl) * WT
-    cl_time <- exp(lcl_time) * WT
-    kdeg    <- exp(lkdeg)
+    cl_exp_inf   <- exp(lcl_exp_inf + etalcl_exp_inf) * WT
+    cl_exp_component <- exp(lcl_exp_component) * WT
+    cl_exp_kdes    <- exp(lcl_exp_kdes)
     vc      <- exp(lvc) * WT
     q       <- exp(lq)  * WT
     vp      <- exp(lvp) * WT
     ka      <- exp(lka + etalka)
 
-    # Time-varying clearance: CL(t) = CL_SS + CL_TIME * exp(-kdeg * t).
+    # Time-varying clearance: CL(t) = CL_SS + CL_TIME * exp(-cl_exp_kdes * t).
     # `time` is the rxode2 model time; with dosing initiated at t = 0 this
     # is equivalent to the paper's TAFD (time after first dose).
-    cl <- cl_ss + cl_time * exp(-kdeg * time)
+    cl <- cl_exp_inf + cl_exp_component * exp(-cl_exp_kdes * time)
 
     # Microconstants for the two-compartment disposition
     kel <- cl / vc

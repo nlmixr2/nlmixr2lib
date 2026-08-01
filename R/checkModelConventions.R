@@ -1251,12 +1251,12 @@ checkModelConventions <- function(model, verbose = TRUE) {
 `%||%` <- function(a, b) if (is.null(a)) b else a
 
 
-# Severity is "warning", not "error", on purpose: a full-database scan at the
-# time this rule was added flagged 15 parameters in 10 models beyond the ones
-# issue #479 enumerated by hand. Erroring would break `buildModelDb()` for a
-# pre-existing backlog rather than for the new mistake the rule exists to
-# catch. Promote to "error" once that backlog is cleared -- the list, and the
-# per-group guidance for clearing it, is in
+# Severity is "error". The backlog this rule found when it was added (15
+# parameters in 10 models beyond the ones issue #479 enumerated by hand) has
+# been cleared, so any hit is a new mistake. Keep it that way: if this ever
+# needs to be demoted to "warning" to land a change, the change is
+# reintroducing the class the rule exists to prevent.
+# History and the false-positive classes are in
 # inst/references/fixed-provenance-followup.md.
 #
 # Issue #479: `iniDf$fix` is the only machine-readable signal that a value was
@@ -1305,7 +1305,7 @@ checkModelConventions <- function(model, verbose = TRUE) {
     if (grepl(.estimatedDisclaimerPattern, lbl, ignore.case = TRUE)) next
     if (grepl(.fixedClaimPattern, lbl, ignore.case = TRUE, perl = TRUE)) {
       issues <- rbind(issues, .issue(
-        "fixed_label_disagreement", "warning", ini$name[[i]],
+        "fixed_label_disagreement", "error", ini$name[[i]],
         sprintf("Label of '%s' says the value was fixed/assumed/borrowed, but fix = FALSE.",
                 ini$name[[i]]),
         paste("Wrap the value in `fixed(...)` so `iniDf$fix` matches the label,",

@@ -100,7 +100,7 @@ Toffoli_2001_etoposide <- function() {
     # Residual error is not explicitly reported in Toffoli 2001. Using a proportional
     # error consistent with the assay intra-assay CV (5% at 0.4 mg/mL, 11% at 0.06
     # mg/mL; page 3, 'Drug assay'); prominently flagged in vignette Errata.
-    propSd <- 0.10; label("Proportional residual error (fraction) - ASSUMED from assay validation; not reported in Toffoli 2001")
+    propSd <- fixed(0); label("Proportional residual error (fraction)")  # Toffoli 2001 reports no residual-error estimate; encoded as fixed(0) per the library policy for unreported residual error (see vignette Errata)
   })
 
   model({

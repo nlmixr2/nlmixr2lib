@@ -107,9 +107,9 @@ Bajaj_2017_nivolumab_ddmore <- function() {
     # AEMAX is the maximal log-fractional change in CL; at t >> T50, CL approaches
     # CL_base * exp(AEMAX). With AEMAX = -0.295 the steady-state CL is
     # exp(-0.295) = 0.745 of baseline (a ~25% reduction). T50 is in hours.
-    cl_emax <- -0.295; label("Maximal fractional change in CL_EMAX (unitless)")           # Output_real_Nivo-PPK.lst FINAL PARAMETER ESTIMATE TH22 = -2.95E-01 (CL_EMAX)
-    t50     <-  1410;  label("Time at which the change in CL is 50%% of CL_EMAX (h)")     # Output_real_Nivo-PPK.lst FINAL PARAMETER ESTIMATE TH23 =  1.41E+03 h (CL_T50)
-    cl_hill <-  3.15;  label("Hill / sigmoidicity exponent of time on CL (unitless)")     # Output_real_Nivo-PPK.lst FINAL PARAMETER ESTIMATE TH24 =  3.15E+00 (CL_HILL)
+    cl_hill_max <- -0.295; label("Maximal fractional change in CL_EMAX (unitless)")           # Output_real_Nivo-PPK.lst FINAL PARAMETER ESTIMATE TH22 = -2.95E-01 (CL_EMAX)
+    cl_hill_t50     <-  1410;  label("Time at which the change in CL is 50%% of CL_EMAX (h)")     # Output_real_Nivo-PPK.lst FINAL PARAMETER ESTIMATE TH23 =  1.41E+03 h (CL_T50)
+    cl_hill_gamma <-  3.15;  label("Hill / sigmoidicity exponent of time on CL (unitless)")     # Output_real_Nivo-PPK.lst FINAL PARAMETER ESTIMATE TH24 =  3.15E+00 (CL_HILL)
 
     # Covariate effects on VC (Output_real_Nivo-PPK.lst $PK lines 159-160, 178-179).
     # Power on WT; exponential on sex (applied to male-indicator).
@@ -120,11 +120,11 @@ Bajaj_2017_nivolumab_ddmore <- function() {
     # OMEGA block lines 532-544). CL and V1 are correlated log-normal etas (BLOCK(2)
     # in $OMEGA: var_CL = 0.123, cov_CL_V1 = 0.0432, var_V1 = 0.123 -> correlation 0.352).
     # V2 (peripheral) and EMAX have independent diagonal etas. Note ETA on EMAX is
-    # ADDITIVE: EMAX_i = cl_emax + etacl_emax (.lst $PK line 163 / source line 79).
+    # ADDITIVE: EMAX_i = cl_hill_max + etacl_hill_max (.lst $PK line 163 / source line 79).
     etalcl + etalvc ~ c(0.123,
                         0.0432, 0.123)                                                                # Output_real_Nivo-PPK.lst OMEGA BLOCK(2): var(ETA1)=1.23E-01, cov(ETA1,ETA2)=4.32E-02, var(ETA2)=1.23E-01
     etalvp     ~ 0.258                                                                                # Output_real_Nivo-PPK.lst OMEGA: var(ETA3)=2.58E-01
-    etacl_emax ~ 0.0719                                                                               # Output_real_Nivo-PPK.lst OMEGA: var(ETA4)=7.19E-02
+    etacl_hill_max ~ 0.0719                                                                               # Output_real_Nivo-PPK.lst OMEGA: var(ETA4)=7.19E-02
 
     # Residual error (proportional only; the bundle fixes the additive residual
     # error TH5 to 0 (.lst $THETA line 38), and SIGMA is fixed at 1 so the
@@ -153,8 +153,8 @@ Bajaj_2017_nivolumab_ddmore <- function() {
       exp(e_sex_vc * sex_male)
 
     # Time-varying clearance (.lst $PK lines 162-164). Additive eta on Emax.
-    emax_i <- cl_emax + etacl_emax
-    cl     <- cl_base * exp(emax_i * t^cl_hill / (t50^cl_hill + t^cl_hill))
+    cl_hill_max_i <- cl_hill_max + etacl_hill_max
+    cl     <- cl_base * exp(cl_hill_max_i * t^cl_hill_gamma / (cl_hill_t50^cl_hill_gamma + t^cl_hill_gamma))
 
     vp <- exp(lvp + etalvp)
     q  <- exp(lq)

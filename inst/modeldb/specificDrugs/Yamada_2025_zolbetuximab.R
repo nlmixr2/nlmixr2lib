@@ -84,9 +84,9 @@ Yamada_2025_zolbetuximab <- function() {
     # in L/h; we use time in days here to align with Kdecay (1/day), so L/h is
     # multiplied by 24 to give L/day. Values are from Yamada 2025 Table 1
     # (final TDC model; footnote a identifies it as the final model).
-    lcl   <- log(0.0117 * 24); label("Steady-state clearance component (CLss, L/day)")    # Yamada 2025 Table 1 (0.0117 L/h * 24)
-    lcl_time <- log(0.0159 * 24); label("Time-decaying clearance component (CLT, L/day)")    # Yamada 2025 Table 1 (0.0159 L/h * 24)
-    lkdecay  <- log(0.0209);      label("First-order decay rate of CLT (Kdecay, 1/day)")     # Yamada 2025 Table 1
+    lcl_exp_inf   <- log(0.0117 * 24); label("Steady-state clearance component (CLss, L/day)")    # Yamada 2025 Table 1 (0.0117 L/h * 24)
+    lcl_exp_component <- log(0.0159 * 24); label("Time-decaying clearance component (CLT, L/day)")    # Yamada 2025 Table 1 (0.0159 L/h * 24)
+    lcl_exp_kdes  <- log(0.0209);      label("First-order decay rate of CLT (Kdecay, 1/day)")     # Yamada 2025 Table 1
     lvc      <- log(3.04);        label("Central volume of distribution (V1, L)")            # Yamada 2025 Table 1
     lq       <- log(0.0235 * 24); label("Intercompartmental clearance (Q, L/day)")           # Yamada 2025 Table 1 (0.0235 L/h * 24)
     lvp      <- log(2.49);        label("Peripheral volume of distribution (V2, L)")         # Yamada 2025 Table 1
@@ -111,9 +111,9 @@ Yamada_2025_zolbetuximab <- function() {
 
     # Inter-individual variability. The paper reports %CV on log-normal
     # parameters; the stored variance follows omega^2 = log(CV^2 + 1).
-    etalcl   ~ 0.0669  # 26.3% CV; Yamada 2025 Table 1
-    etalcl_time ~ 0.4569  # 76.1% CV; Yamada 2025 Table 1
-    etalkdecay  ~ 0.4685  # 77.3% CV; Yamada 2025 Table 1
+    etalcl_exp_inf   ~ 0.0669  # 26.3% CV; Yamada 2025 Table 1
+    etalcl_exp_component ~ 0.4569  # 76.1% CV; Yamada 2025 Table 1
+    etalcl_exp_kdes  ~ 0.4685  # 77.3% CV; Yamada 2025 Table 1
     etalvc      ~ 0.0396  # 20.1% CV; Yamada 2025 Table 1
     etalq       ~ 0.3424  # 63.9% CV; Yamada 2025 Table 1
     etalvp      ~ 0.0724  # 27.4% CV; Yamada 2025 Table 1
@@ -136,17 +136,17 @@ Yamada_2025_zolbetuximab <- function() {
     # Individual PK parameters. Reference subject (Yamada 2025 Figure 1):
     # BSA = 1.70 m^2, ALB = 39.1 g/L, HGB = 118 g/L, tbili_mgdL = 0.38 mg/dL, male,
     # no prior gastrectomy, non-EOX chemotherapy backbone.
-    cl <- exp(lcl + etalcl) *
+    cl_exp_inf <- exp(lcl_exp_inf + etalcl_exp_inf) *
       (BSA / 1.70)^e_bsa_cl *
       (ALB / 39.1)^e_alb_cl *
       (1 + e_prior_gast_cl * PRIOR_GAST) *
       (1 + e_sexf_cl * SEXF)
 
-    cl_time <- exp(lcl_time + etalcl_time) *
+    cl_exp_component <- exp(lcl_exp_component + etalcl_exp_component) *
       (BSA / 1.70)^e_bsa_cl *
       (1 + e_prior_gast_cl_time * PRIOR_GAST)
 
-    kdecay <- exp(lkdecay + etalkdecay) *
+    cl_exp_kdes <- exp(lcl_exp_kdes + etalcl_exp_kdes) *
       (ALB / 39.1)^e_alb_kdecay
 
     vc <- exp(lvc + etalvc) *
@@ -167,11 +167,11 @@ Yamada_2025_zolbetuximab <- function() {
     #   CL(t) = CLss + CLT * exp(-Kdecay * t)
     # `time` is the internal integration time in days, which corresponds to
     # time from the first dose for the event datasets this model expects.
-    cl_tot <- cl + cl_time * exp(-kdecay * time)
+    cl <- cl_exp_inf + cl_exp_component * exp(-cl_exp_kdes * time)
 
     # Two-compartment model with zero-order IV input (infusion rate supplied
     # via the `rate` column on dose events).
-    kel <- cl_tot / vc
+    kel <- cl / vc
     k12 <- q  / vc
     k21 <- q  / vp
 

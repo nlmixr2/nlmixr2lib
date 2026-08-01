@@ -13,7 +13,7 @@ Bonate_2004_apomine <- function() {
     "absorption rate, and a minority Group 2 subpopulation (3 %) with no",
     "lag time and slower absorption (Table 3). Apparent oral clearance is",
     "time-dependent via an empirical sigmoid Emax auto-induction model",
-    "in elapsed time (CL = CL0 + CLmax * time^n / (t50^n + time^n);",
+    "in elapsed time (CL = CL0 + CLmax * time^n / (cl_hill_t50^n + time^n);",
     "Table 3), reaching 50 % of the maximal induction-driven increment",
     "in about two days. Relative bioavailability F1 is dose-saturable",
     "(F1 = D50 / (Dose + D50)) with an additional fractional food effect",
@@ -75,7 +75,7 @@ Bonate_2004_apomine <- function() {
         "patients: CL0 = 10.2 mL/h, Vc = 7.11 L. Encoded as log-additive",
         "shifts e_cancer_cl = log(10.2 / 40.7) = -1.384 and",
         "e_cancer_vc = log(7.11 / 12.3) = -0.548. The auto-induction",
-        "parameters (CLmax, t50, n) and distribution parameters (Q, Vp)",
+        "parameters (CLmax, cl_hill_t50, n) and distribution parameters (Q, Vp)",
         "are common to both populations per Table 3 (asterisked footnote",
         "'common variability for both cancer patients and healthy males')."
       ),
@@ -215,12 +215,12 @@ Bonate_2004_apomine <- function() {
     # -------------------------------------------------------------------
     # Auto-induction model (sigmoid Emax in elapsed time, common between
     # populations per Table 3 footnote *; no covariate effects retained
-    # on t50 per paper Results paragraph 2).
-    # CL(t) = CL0 + CLmax * t^n / (t50^n + t^n)
+    # on cl_hill_t50 per paper Results paragraph 2).
+    # CL(t) = CL0 + CLmax * t^n / (cl_hill_t50^n + t^n)
     # -------------------------------------------------------------------
-    lclmax <- log(0.320) ; label("Maximum induction-driven increment in CL/F (L/h)")                                            # Bonate 2004 Table 3: CLmax = 320 mL/h (SE 85.3; variance too small to estimate)
-    lt50   <- log(46.4)  ; label("Time to 50% maximal auto-induction (h)")                                                      # Bonate 2004 Table 3: t50 = 46.4 h (SE 17.6; BSV 88%)
-    lhill  <- log(6.40)  ; label("Hill (shape) exponent for the auto-induction sigmoid (unitless)")                             # Bonate 2004 Table 3: Shape parameter (n) = 6.40 (SE 1.76; variance too small to estimate)
+    lcl_hill_max <- log(0.320) ; label("Maximum induction-driven increment in CL/F (L/h)")                                            # Bonate 2004 Table 3: CLmax = 320 mL/h (SE 85.3; variance too small to estimate)
+    lcl_hill_t50   <- log(46.4)  ; label("Time to 50% maximal auto-induction (h)")                                                      # Bonate 2004 Table 3: cl_hill_t50 = 46.4 h (SE 17.6; BSV 88%)
+    lcl_hill_gamma  <- log(6.40)  ; label("Hill (shape) exponent for the auto-induction sigmoid (unitless)")                             # Bonate 2004 Table 3: Shape parameter (n) = 6.40 (SE 1.76; variance too small to estimate)
 
     # -------------------------------------------------------------------
     # Distribution parameters (common to both populations per Table 3)
@@ -257,7 +257,7 @@ Bonate_2004_apomine <- function() {
     etalcl  ~ 0.4267                                                                                                            # Bonate 2004 Table 3: BSV CL = 68% -> omega^2 = log(0.68^2 + 1) = 0.4267 (common to healthy + cancer)
     etalvc  ~ 0.08619                                                                                                           # Bonate 2004 Table 3: BSV Vc = 30% -> omega^2 = log(0.30^2 + 1) = 0.08619 (common to healthy + cancer)
     etalvp  ~ 0.7945                                                                                                            # Bonate 2004 Table 3: BSV Vp = 141% -> omega^2 = log(1.41^2 + 1) = 0.7945
-    etalt50 ~ 0.5594                                                                                                            # Bonate 2004 Table 3: BSV t50 = 88% -> omega^2 = log(0.88^2 + 1) = 0.5594
+    etalcl_hill_t50 ~ 0.5594                                                                                                            # Bonate 2004 Table 3: BSV cl_hill_t50 = 88% -> omega^2 = log(0.88^2 + 1) = 0.5594
     etalka  ~ 0.8126                                                                                                            # Bonate 2004 Table 3: BSV ka = 145% -> omega^2 = log(1.45^2 + 1) = 0.8126 (common to Group 1 and Group 2)
 
     # -------------------------------------------------------------------
@@ -276,14 +276,14 @@ Bonate_2004_apomine <- function() {
     #    relative to first exposure to apomine" (Methods, "Base model
     #    development"). For the paper's single-dose Study 1, the authors
     #    held CL constant; with the formula below, induction at 24 h is
-    #    ~1.4% of CLmax for the typical t50 = 46.4 h and n = 6.40, so
+    #    ~1.4% of CLmax for the typical cl_hill_t50 = 46.4 h and n = 6.40, so
     #    the time-dependent CL has only a minor effect on single-dose
     #    simulations.
     cl0   <- exp(lcl + e_cancer_cl * DIS_CANCER + etalcl)
-    clmax <- exp(lclmax)
-    t50   <- exp(lt50 + etalt50)
-    hill  <- exp(lhill)
-    cl    <- cl0 + clmax * time^hill / (t50^hill + time^hill)
+    cl_hill_max <- exp(lcl_hill_max)
+    cl_hill_t50   <- exp(lcl_hill_t50 + etalcl_hill_t50)
+    cl_hill_gamma  <- exp(lcl_hill_gamma)
+    cl    <- cl0 + cl_hill_max * time^cl_hill_gamma / (cl_hill_t50^cl_hill_gamma + time^cl_hill_gamma)
 
     # 2. Distribution parameters. Vc carries the cancer effect plus an
     #    allometric WT/(75 kg) scaling at fixed exponent 1.0; Vp carries

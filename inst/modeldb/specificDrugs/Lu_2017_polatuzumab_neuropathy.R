@@ -189,8 +189,8 @@ Lu_2017_polatuzumab_neuropathy <- function() {
     # single-agent.
 
     # ----- acMMAE structural parameters (Lu 2019 Table 1, theta1-theta11) -----
-    lkdes      <- log(0.0046);  label("Rate constant of CL_TIME exponential decay (kdes, 1/hour)")     # Lu 2019 Table 1, theta1
-    lcl_time   <- log(0.00623); label("Initial CL_TIME at time 0 for the reference subject (CL_TIME, L/hour)") # Lu 2019 Table 1, theta2
+    lcl_exp_kdes      <- log(0.0046);  label("Rate constant of CL_TIME exponential decay (cl_exp_kdes, 1/hour)")     # Lu 2019 Table 1, theta1
+    lcl_exp_component   <- log(0.00623); label("Initial CL_TIME at time 0 for the reference subject (CL_TIME, L/hour)") # Lu 2019 Table 1, theta2
     lcl        <- log(0.0344);  label("acMMAE nonspecific linear clearance after repeated dosing (CL_SS, L/hour)") # Lu 2019 Table 1, theta3
     lvc        <- log(3.15);    label("acMMAE central volume (Vc, L)")                                 # Lu 2019 Table 1, theta4
     lvp        <- log(3.98);    label("acMMAE peripheral volume (Vp, L)")                              # Lu 2019 Table 1, theta5
@@ -212,15 +212,15 @@ Lu_2017_polatuzumab_neuropathy <- function() {
     e_conmed_ritux_cl    <-  0.844;    label("Multiplicative effect of rituximab combination (interpreted as the COMBO_RG indicator for the polatuzumab-only Lu 2017 cohort) on CL_SS (unitless)") # Lu 2019 Table 2, theta29
     e_blbcell_cl         <-  0.0212;   label("Power exponent of max(1, BLBCELL) on CL_SS (unitless; B-cell count in cells/uL floored at 1)") # Lu 2019 Table 2, theta30
     e_tumsz_cl           <-  0.0521;   label("Linear coefficient of (TUMSZ/5000 - 1) on CL_SS (unitless; PK-side reference 5000 mm^2 SPD)")  # Lu 2019 Table 2, theta31
-    e_line1l_kdes        <-  3.38;     label("Multiplicative effect of treatment-naive status on kdes (unitless)")                           # Lu 2019 Table 2, theta32
-    e_conmed_ritux_kdes  <-  0.932;    label("Multiplicative effect of rituximab combination on kdes (unitless)")                            # Lu 2019 Table 2, theta33
+    e_line1l_kdes        <-  3.38;     label("Multiplicative effect of treatment-naive status on cl_exp_kdes (unitless)")                           # Lu 2019 Table 2, theta32
+    e_conmed_ritux_kdes  <-  0.932;    label("Multiplicative effect of rituximab combination on cl_exp_kdes (unitless)")                            # Lu 2019 Table 2, theta33
     e_line1l_cl_time     <-  3.53;     label("Multiplicative effect of treatment-naive status on CL_TIME (unitless)")                        # Lu 2019 Table 2, theta34
     tmbd50_cl_time       <-  1150;     label("Half-maximal-effect TUMSZ on CL_TIME (mm^2 SPD; effect = TUMSZ / (tmbd50_cl_time + TUMSZ))")   # Lu 2019 Table 2, theta35
     bcell_thr_cl_time    <-  121;      label("B-cell threshold below which BLBCELL has no effect on CL_TIME (cells/uL)")                     # Lu 2019 Table 2, theta36
     e_blbcell_cl_time    <-  0.578;    label("Power exponent of max(1, BLBCELL/threshold) on CL_TIME (unitless)")                            # Lu 2019 Table 2, theta37
 
     # ----- Inter-individual variability on acMMAE PK parameters (Lu 2019 Table S3) -----
-    etalcl_time ~ 1.89                       # Lu 2019 Table S3, Omega11 (CV 138%)
+    etalcl_exp_component ~ 1.89                       # Lu 2019 Table S3, Omega11 (CV 138%)
     etalcl      ~ 0.0376                     # Lu 2019 Table S3, Omega22 (CV 19.5%)
     etalvc      ~ 0.0151                     # Lu 2019 Table S3, Omega33 (CV 12.3%)
     etalvp      ~ 0.107                      # Lu 2019 Table S3, Omega44 (CV 32.7%)
@@ -299,16 +299,16 @@ Lu_2017_polatuzumab_neuropathy <- function() {
               bcel_cl^e_blbcell_cl *
               (1 + e_tumsz_cl * (TUMSZ / 5000 - 1))
 
-    cov_kdes <- e_line1l_kdes^LINE_1L *
+    cov_cl_exp_kdes <- e_line1l_kdes^LINE_1L *
                 e_conmed_ritux_kdes^CONMED_RITUX
 
-    cov_cl_time <- e_line1l_cl_time^LINE_1L *
+    cov_cl_exp_component <- e_line1l_cl_time^LINE_1L *
                    (TUMSZ / (tmbd50_cl_time + TUMSZ)) *
                    bcel_cl_time^e_blbcell_cl_time
 
     # ===== 2. Individual PK parameters (Lu 2019 acMMAE side) =====
-    kdes         <- exp(lkdes) * cov_kdes                      # 1/hour
-    cl_time_init <- exp(lcl_time + etalcl_time) * cov_cl_time  # CL_TIME initial value at t = 0 (L/hour)
+    cl_exp_kdes         <- exp(lcl_exp_kdes) * cov_cl_exp_kdes                      # 1/hour
+    cl_exp_component <- exp(lcl_exp_component + etalcl_exp_component) * cov_cl_exp_component  # CL_TIME initial value at t = 0 (L/hour)
     cl_inf       <- exp(lcl + etalcl) * cov_cl                 # CL_SS, L/hour
     vc           <- exp(lvc + etalvc) * cov_vc                 # L
     vp           <- exp(lvp + etalvp) * (WT / 75)^e_wt_vc      # L
@@ -324,13 +324,13 @@ Lu_2017_polatuzumab_neuropathy <- function() {
     tgam  <- time^gamma_ns
     cl_ns <- cl_inf * (1 + clss_emax * t50_hr_gam / (t50_hr_gam + tgam))
 
-    # Exponential decay of CL_TIME: CLT = CL_TIME_init * exp(-kdes * t).
-    cl_t <- cl_time_init * exp(-kdes * time)
+    # Exponential decay of CL_TIME: CLT = CL_TIME_init * exp(-cl_exp_kdes * t).
+    cl_exp_component_t <- cl_exp_component * exp(-cl_exp_kdes * time)
 
     # ===== 4. acMMAE micro-constants =====
     k12 <- q / vc
     k21 <- q / vp
-    k10 <- (cl_t + cl_ns) / vc  # Linear (non-MM) elimination of acMMAE
+    k10 <- (cl_exp_component_t + cl_ns) / vc  # Linear (non-MM) elimination of acMMAE
 
     # ===== 5. acMMAE ODE system (Lu 2019; sign-corrected vs the published
     #         supplement Equations panel per the NONMEM DADT(2) form) =====

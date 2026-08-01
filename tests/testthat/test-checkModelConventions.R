@@ -1010,7 +1010,7 @@ test_that("a label claiming a value is fixed while fix is FALSE is flagged", {
   hit <- res[res$category == "fixed_label_disagreement", ]
   expect_equal(nrow(hit), 1L)
   expect_equal(hit$name, "e_wt_cl")
-  expect_equal(hit$severity, "warning")
+  expect_equal(hit$severity, "error")
 })
 
 test_that("wrapping the same parameter in fixed() clears the disagreement", {

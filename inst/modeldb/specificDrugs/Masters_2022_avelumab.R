@@ -42,14 +42,14 @@ Masters_2022_avelumab <- function() {
     lq     <- log(0.03352 * 24); label("Intercompartmental clearance Q for an 80 kg adult (L/day)")    # Masters 2022 Table 1 theta_Q, corrected via its own 95% CI to 0.03352 L/h
 
     # Time-dependent clearance modifier (Hill-type):
-    #   CL(t) = CL_baseline * (1 + imax * t^hill / (T50^hill + t^hill))
+    #   CL(t) = CL_baseline * (1 + imax * t^cl_hill_gamma / (T50^cl_hill_gamma + t^cl_hill_gamma))
     # imax is reported as -0.08533 (fractional decrease in CL at t >> T50).
     # Parameterized here via log|imax| so the magnitude is log-normally
     # distributed with IIV and the negative sign is applied in model(),
     # keeping imax < 0 across all simulated individuals.
-    limax  <- log(0.08533);      label("log|imax| - magnitude of the fractional change in CL at t >> T50 (unitless)") # Masters 2022 Table 1: theta_Imax = -0.08533 (sign applied in model())
-    lt50   <- log(99.24);        label("log T50 - time at which half of imax is reached (days)")       # Masters 2022 Table 1: theta_T50 = 99.24 days
-    lhill <- log(2.086);        label("log hill - Hill shape coefficient of the time-on-CL function (unitless)")    # Masters 2022 Table 1: theta_gamma = 2.086
+    lcl_hill_max  <- log(0.08533);      label("log|imax| - magnitude of the fractional change in CL at t >> T50 (unitless)") # Masters 2022 Table 1: theta_Imax = -0.08533 (sign applied in model())
+    lcl_hill_t50   <- log(99.24);        label("log T50 - time at which half of imax is reached (days)")       # Masters 2022 Table 1: theta_T50 = 99.24 days
+    lcl_hill_gamma <- log(2.086);        label("log cl_hill_gamma - Hill shape coefficient of the time-on-CL function (unitless)")    # Masters 2022 Table 1: theta_gamma = 2.086
 
     # Allometric exponents on body weight (reference 80 kg). Exponent on Q
     # is fixed to 1 per Masters 2022 Methods ("Study overview").
@@ -70,7 +70,7 @@ Masters_2022_avelumab <- function() {
       0.03048, 0.03776,
       0.08418, 0.01799, 1.204
     )
-    etalimax ~ 0.1052  # Masters 2022 Table 1: omega^2_Imax = 0.1052
+    etalcl_hill_max ~ 0.1052  # Masters 2022 Table 1: omega^2_Imax = 0.1052
 
     # Residual error (combined proportional + additive). The table column
     # is "sigma" (standard deviation, not variance).
@@ -85,10 +85,10 @@ Masters_2022_avelumab <- function() {
     q       <- exp(lq)           * (WT / 80)
 
     # Time-dependent clearance modifier (Hill function of time since first dose).
-    hill  <- exp(lhill)
-    t50    <- exp(lt50)
-    imax_i <- -exp(limax + etalimax)
-    cl     <- cl_base * (1 + imax_i * t^hill / (t50^hill + t^hill))
+    cl_hill_gamma  <- exp(lcl_hill_gamma)
+    cl_hill_t50    <- exp(lcl_hill_t50)
+    cl_hill_max_i <- -exp(lcl_hill_max + etalcl_hill_max)
+    cl     <- cl_base * (1 + cl_hill_max_i * t^cl_hill_gamma / (cl_hill_t50^cl_hill_gamma + t^cl_hill_gamma))
 
     # Two-compartment micro-constants.
     kel <- cl / vc
