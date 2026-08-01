@@ -2,6 +2,46 @@
 
 # development version
 
+- Time-varying clearance now has a shared vocabulary (issue #481). 31 models
+  gave clearance an explicit time dependence under some twenty different
+  spellings, so the structure could not be found by name and the magnitude of
+  the change could not be compared across drugs without expanding each
+  `d/dt(central)`. Two stems, so the functional form is visible in the name:
+
+  - sigmoidal in time: `cl_hill_max`, `cl_hill_t50`, `cl_hill_gamma`
+  - exponential decay to a constant: `cl_exp_inf`, `cl_exp_component`,
+    `cl_exp_kdes`
+
+  with the usual `l` prefix for the log scale, `eta` for the IIV partner and
+  `e_<cov>_` for covariate effects. The symbol the ODE consumes is now always
+  the total clearance; components are named so they cannot be mistaken for it.
+  `checkModelConventions()` warns when a clearance expression references time
+  without one of these stems. Periodic (diurnal / circadian) variation is a
+  different structure and keeps its own names.
+
+  **Breaking for simulation code** that references these parameters by name.
+  Of the 31 models, only `PK_2cmt_tdcl_des` shipped in 0.3.2.
+
+- New `compartmentData` model metadata (issue #482), declaring what each ODE
+  state holds: `analyte` (which molecular species), `units` (of the state
+  amount) and `specimen` (the biological matrix, from a 23-term controlled
+  vocabulary in `conventions$specimenVocabulary`), plus `verified` recording
+  whether it was confirmed against the source paper. This makes "restrict to
+  blood, serum or plasma" a filter rather than a judgement call made by
+  reading state names.
+
+  `checkModelConventions()` validates the block, and `buildModelDb()` runs it,
+  so a malformed entry is an error. A *missing* block is currently a warning
+  while the database is backfilled -- 1,403 models have ODE states. The
+  backfill plan is in `inst/references/compartment-data-followup.md`, and new
+  models are required to carry the block via the extraction skill's template
+  and verification checklist.
+
+  The vocabulary deliberately includes two non-matrix values,
+  `"administration site"` for depot and transit states and `"not applicable"`
+  for latent / PD / bookkeeping states, so that the 642 models using such
+  states are not forced to invent a specimen.
+
 - Parameter-naming and provenance cleanup across the model database
   (issues #474-#479).
 
