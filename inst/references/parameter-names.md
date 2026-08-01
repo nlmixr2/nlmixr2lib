@@ -748,9 +748,11 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
 
 ### p (**canonical proliferation / growth-rate parameter**)
 - **Type:** paper-named-param
-- **Role:** Proliferation / growth-rate constant (1 / time). Paper-mechanistic meaning depends on the model.
-- **Source aliases:** none.
-- **Example models:** TGI / cell-population PD models.
+- **Role:** Proliferation / growth-rate constant of a tumor-growth-inhibition or cell-population state. Paper-mechanistic meaning depends on the growth law. Inside `model()` the bare name is `p`; the log-transformed `lp` form is used in `ini()` because the rate is strictly positive.
+- **Source aliases:**
+  - `k` -- Yates 2023 notation for the growth-law rate constant of all three laws (exponential, Mayneord, von Bertalanffy).
+- **Example models:** `Yates_2023_tgi_exponential.R` (founding example; `p = 0.005` 1/day, the exponential fractional growth rate), `Yates_2023_tgi_mayneord.R` (`p = 0.005` L^(1/3)/day), `Yates_2023_tgi_bertalanffy.R` (`p = 0.005` L^(1/3)/day).
+- **Notes:** `p` is the TGI-family *generic*: use it whenever a paper's growth constant is not one of the mechanistically-specific alternatives. Distinct from `kgrow` (life-cycle-anchored multiplication rate constrained by a known cycle time and per-cycle amplification factor) and from `kge` (the growing-fraction exponent of the Stein two-exponential decomposition); both of those entries cross-reference `p` as the family generic. **Dimensions are set by the growth law, not by the name.** In an exponential law `dV/dt = p * V` the constant acts on volume and carries 1 / time; in the sub-exponential Mayneord and von Bertalanffy laws `dV/dt = p * V^(2/3) - ...` it acts on the tumor radius and carries length / time (L^(1/3)/day when V is in L). Record the dimensions in the parameter's `label()` rather than assuming 1 / time. Founding examples added 2026-08-05 with the Yates 2023 extraction; the entry itself predates them. Paired with `kdeath` in the von Bertalanffy law.
 
 ### vd (**canonical apparent volume of distribution**)
 - **Type:** paper-named-param
@@ -799,6 +801,14 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
   - `KS`, `TVKS`, `ks`, `k_s`, `ksT` -- Stein-family paper notation for the shrinkage / decay rate.
 - **Example models:** `Struemper_2025_tumorsize_OS_nsclc.R` (founding example; 12 per-arm `lkse_<arm>` values, 1/week), `Ribba_2022_sld.R` (`kse = 0.0014` 1/day for the OAK sum-of-longest-diameters fit).
 - **Notes:** Register entry backfilled 2026-07-28 together with `kge`. **Name-collision warning:** the bare symbol `ks` used by much of the Stein literature is already taken in this register by a different canonical -- `ks` is the drug-mediated effect-compartment elimination rate of Kleijn 2011, with units 1 / (concentration * time). Always map a Stein-model paper's `ks` to `kse`, never to `ks`.
+
+### kdeath (**canonical constitutive cell-death / loss rate**)
+- **Type:** paper-named-param
+- **Role:** Constitutive, drug-independent first-order cell-death / loss rate of a tumor state (1 / time). Founding use: the `- kd * V` loss term of the von Bertalanffy growth law `dV/dt = p * V^(2/3) - kdeath * V`, which is what makes an untreated tumor plateau at the finite carrying volume `(p / kdeath)^3`. Inside `model()` the bare name is `kdeath`; the log-transformed `lkdeath` form is used in `ini()` because the rate is strictly positive.
+- **Source aliases:**
+  - `kd` -- Yates 2023 notation for the von Bertalanffy natural cell-death rate.
+- **Example models:** `Yates_2023_tgi_bertalanffy.R` (founding example; `kdeath = 0.004` 1/day, giving an untreated plateau volume of `(0.005 / 0.004)^3 = 1.95` L).
+- **Notes:** Ratified 2026-08-05 with the Yates 2023 extraction. **Deliberately not named `kd`, and deliberately not merged into `kk`.** The bare `kd` is already this register's canonical for the mechanistic *dissociation* rate constant and is in live use with that meaning (`Kleijn_2011_sugammadex_rocuronium.R`, `Hayashi_2007_omalizumab.R`, `Lowe_2009_omalizumab.R`, `Anbari_2023`); overloading it would give one canonical two incompatible roles. The legacy templates `tgi_sat_VonBertalanffy.R` and `tgi_sat_genVonBertalanffy.R` use `lkd` for this concept -- they predate the register and are the collision, not the precedent. Distinct also from Cardilin 2018's `kk`, which is a *drug- or radiation-modulated* kill rate rather than the constitutive loss term encoded here, and from `kdeg` (first-order degradation of a turnover pool, a synthesis/degradation-balance concept rather than a growth-law loss term). Paired with `p`.
 
 ### kge_ctdna (**canonical Stein ctDNA growth-rate constant**)
 - **Type:** paper-named-param

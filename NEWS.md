@@ -33,6 +33,8 @@
 
 - Add Zhang 2024 sertraline ([doi:10.1016/j.heliyon.2024.e25231](https://doi.org/10.1016/j.heliyon.2024.e25231)) - Chinese inpatients with psychiatric disorders, aged 11-79 years.
 
+- Add Yates 2023 theoretical oncology dose-response models ([doi:10.1002/psp4.13020](https://doi.org/10.1002/psp4.13020)) - illustrative exponential, Mayneord and von Bertalanffy tumor-growth laws; no data fitted.
+
 - Add Wu 2023 SPI-62 ([doi:10.1007/s40262-023-01278-8](https://doi.org/10.1007/s40262-023-01278-8)) - healthy adults.
 
 - Add Wang 2024 amphenmulin ([doi:10.1128/spectrum.03675-23](https://doi.org/10.1128/spectrum.03675-23)) - broiler chickens and in-vitro *Mycoplasma gallisepticum*.
