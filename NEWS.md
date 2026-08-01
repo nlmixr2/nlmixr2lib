@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Roy 2023 erythropoiesis QSP model ([doi:10.3389/fphar.2023.1274490](https://doi.org/10.3389/fphar.2023.1274490)) - virtual patients with anemia due to chronic kidney disease.
+
 - Add Wu 2023 SPI-62 ([doi:10.1007/s40262-023-01278-8](https://doi.org/10.1007/s40262-023-01278-8)) - healthy adults.
 
 - Disambiguated the overloaded `OC` name, which denoted five unrelated
