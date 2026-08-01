@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Chan 2023 nirmatrelvir ([doi:10.1002/psp4.13039](https://doi.org/10.1002/psp4.13039)) - adults with and without COVID-19, including renal impairment.
+
 - Add Wu 2023 SPI-62 ([doi:10.1007/s40262-023-01278-8](https://doi.org/10.1007/s40262-023-01278-8)) - healthy adults.
 
 - Disambiguated the overloaded `OC` name, which denoted five unrelated
