@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Rodjun 2023 colistin and sitafloxacin ([doi:10.3389/fmicb.2023.1275909](https://doi.org/10.3389/fmicb.2023.1275909)) - critically ill adults with drug-resistant *Acinetobacter baumannii* infection.
+
 - Add Wu 2023 SPI-62 ([doi:10.1007/s40262-023-01278-8](https://doi.org/10.1007/s40262-023-01278-8)) - healthy adults.
 
 - Disambiguated the overloaded `OC` name, which denoted five unrelated
