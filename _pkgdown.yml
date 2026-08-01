@@ -282,6 +282,8 @@ navbar:
         href: articles/Wang_2017_benralizumab.html
       - text: "Benzathine benzylpenicillin g (Kado 2020)"
         href: articles/Kado_2020_benzathine_benzylpenicillin_g.html
+      - text: "Benzathine benzylpenicillin g (Kado 2023)"
+        href: articles/Kado_2023_benzathine_benzylpenicillin_g.html
       - text: "Benznidazole (Soy 2015)"
         href: articles/Soy_2015_benznidazole.html
       - text: "Benzylpenicillin (Nielsen 2011)"
@@ -3179,6 +3181,7 @@ articles:
   - articles/Jullien_2005_abacavir
   - articles/Jullien_2006_lopinavir
   - articles/Kado_2020_benzathine_benzylpenicillin_g
+  - articles/Kado_2023_benzathine_benzylpenicillin_g
   - articles/Kakara_2014_statins_LDLC
   - articles/Kamal_2013_oseltamivir
   - articles/Kamal_2015_oseltamivir
