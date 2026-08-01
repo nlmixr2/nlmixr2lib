@@ -13,7 +13,7 @@ PR `fix/issues-474-479` fixed every parameter #479 enumerated by hand, and added
 silently grow. Because `buildModelDb()` calls `checkModelConventions()`, the check
 runs on every database build.
 
-**Not yet done (follow-up work):** the 15 parameters in 10 models listed below. They
+**Not yet done (follow-up work):** the 3 parameters in 2 models listed below. They
 were found by the new check, not by hand, and were left for a separate change so the
 PR stayed reviewable. The check is registered at **warning** severity precisely
 because of this backlog -- erroring would fail the build for pre-existing models
@@ -53,52 +53,28 @@ Anything that survives all three is a genuine disagreement between the label and
 `fix`. **If a new false-positive class appears, tighten the pattern and add a case to
 that test rather than adding an exemption at the call site.**
 
-## Remaining work (15 parameters, 10 models)
+## Remaining work (3 parameters, 2 models)
+
+The 12 parameters whose provenance could be established were cleared in
+PR `fix/issues-474-479`. `Archary_2019_abacavir` / `Archary_2019_lamivudine`
+("Allometric exponents were fixed to 0.75 for CL/F and 1 for apparent volume of
+distribution"), `Aksenov_2018_uricAcid` ("The value of Rmax for febuxostat was fixed
+at 1") and `Caldes_2009_ganciclovir` (CL reported as `7.49 * (CLCR/57)`, a linear form
+whose exponent is 1 by construction) were confirmed against their source papers;
+`Bergmann_2014_tacrolimus`, `Boer-Perez_2026_piperacillin` and `Dunlap_2025_tacrolimus`
+were taken on their self-declaring labels plus the exact 0.75 / 1.0 values;
+`Cao_2013_mab7E3` carries over the 0.950 already confirmed for its two siblings.
+
+What remains is only the residual-error group, which is a value decision rather than a
+flag decision -- see the group heading below.
 
 | Model | Parameter | Value | Label |
 |---|---|---|---|
-| `Aksenov_2018_uricAcid` | `rmax_fbx` | 1 | Max fractional decrease in UA production by febuxostat (fixed in source) |
-| `Archary_2019_abacavir` | `e_wt_cl_q` | 0.75 | Allometric exponent on CL/F and Q/F (unitless; fixed) |
-| `Archary_2019_abacavir` | `e_wt_vc_vp` | 1 | Allometric exponent on Vc/F and Vp/F (unitless; fixed) |
-| `Archary_2019_lamivudine` | `e_wt_cl` | 0.75 | Allometric exponent on CL/F (unitless; fixed) |
-| `Archary_2019_lamivudine` | `e_wt_vc` | 1 | Allometric exponent on Vc/F (unitless; fixed) |
 | `Belldina_2003_cysteamine` | `addSd_cystine` | 0.1 | Additive residual error on WBC cystine output (nmol cystine / mg protein; assumed; paper does not specify a residual error structure for cystine) |
 | `Belldina_2003_cysteamine` | `propSd` | 0.15 | Proportional residual error on plasma cysteamine Cc (fraction; assumed; paper Methods specify proportional structure but SD value is not reported) |
-| `Bergmann_2014_tacrolimus` | `e_wt_cl` | 0.75 | Allometric exponent of (WT/70 kg) on CL/F (unitless; fixed) |
-| `Boer-Perez_2026_piperacillin` | `e_wt_cl` | 0.75 | Allometric exponent on CL (unitless, fixed) |
-| `Boer-Perez_2026_piperacillin` | `e_wt_vc` | 1 | Allometric exponent on V (unitless, fixed) |
-| `Caldes_2009_ganciclovir` | `e_crcl_cl` | 1 | Power exponent of CRCL on CL (unitless; reference 57 mL/min, fixed at 1 per linear paper form) |
-| `Cao_2013_mab7E3` | `sigma_tight` | 0.95 | Vascular reflection coefficient for tight tissues (unitless; fixed at 0.95 in Cao 2013) |
-| `Dunlap_2025_tacrolimus` | `e_wt_cl_q` | 0.75 | Allometric exponent of (TBW/70) on CL/F and Q/F (unitless; fixed) |
-| `Dunlap_2025_tacrolimus` | `e_wt_vc_vp` | 1 | Allometric exponent of (TBW/70) on V1/F and V2/F (unitless; fixed) |
 | `Toffoli_2001_etoposide` | `propSd` | 0.1 | Proportional residual error (fraction) - ASSUMED from assay validation; not reported in Toffoli 2001 |
 
 ## Per-group guidance
-
-### Allometric exponents fixed by the source paper (9 parameters, 5 models)
-
-`Archary_2019_abacavir`, `Archary_2019_lamivudine`, `Bergmann_2014_tacrolimus`,
-`Boer-Perez_2026_piperacillin`, `Dunlap_2025_tacrolimus`.
-
-Each label already says "fixed", each value is exactly 0.75 or 1.0, and none of the
-source papers report a standard error or RSE for the exponent. This is the same case
-as `Robbie_2012_palivizumab` and `Huynh_2026_VRC07523LS`, both resolved in the PR.
-Expected fix: wrap in `fixed()` and drop the now-redundant "; fixed" from the label.
-
-**Confirm against the paper before wrapping.** Several parameters in #479's tier-2
-list looked identical and turned out to be *estimated* values that happened to round
-to a convention (Lowe 2009 `e_wt_cl` = 1.00 +/- 0.0662; Quartino 2016 `e_wt_vp` =
-0.500 with RSE 22.2%; Sathe 2024 `e_wt_cl_q_sn38` = 0.500 with RSE 13.3%). A round
-value is a reason to check, not evidence on its own.
-
-### Structural parameters fixed by the source paper (3 parameters, 3 models)
-
-`Aksenov_2018_uricAcid` `rmax_fbx`, `Caldes_2009_ganciclovir` `e_crcl_cl`,
-`Cao_2013_mab7E3` `sigma_tight`.
-
-`Cao_2013_mab7E3` is the third member of a set whose two siblings
-(`Cao_2013_mepolizumab`, `Cao_2013_PAmAb`) were fixed in the PR; the same Cao 2013
-value of 0.950 applies, so this one is a straightforward carry-over.
 
 ### Residual-error parameters assumed by the encoder (3 parameters, 2 models)
 

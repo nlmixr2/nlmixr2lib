@@ -57,8 +57,8 @@ Archary_2019_abacavir <- function() {
     lfdepot <- fix(log(1)); label("Log baseline bioavailability F for delayed-ART reference (fixed at log(1) = 0)") # Table 3 (delayed-arm typical F = 1)
 
     # Allometric exponents (paper-fixed per Methods Section 2.3)
-    e_wt_cl_q  <- 0.75; label("Allometric exponent on CL/F and Q/F (unitless; fixed)")          # Methods 2.3
-    e_wt_vc_vp <- 1;    label("Allometric exponent on Vc/F and Vp/F (unitless; fixed)")         # Methods 2.3
+    e_wt_cl_q  <- fixed(0.75); label("Allometric exponent on CL/F and Q/F (unitless)")          # Methods 2.3
+    e_wt_vc_vp <- fixed(1);    label("Allometric exponent on Vc/F and Vp/F (unitless)")         # Methods 2.3
 
     # DAY14 effect on CL/F (multiplicative additive shift; encodes the day-1 -> day-14 step)
     # 5.86 / 3.33 - 1 = 0.760, i.e. CL/F rises by 76% on day 14 vs day 1

@@ -72,7 +72,7 @@ Aksenov_2018_uricAcid <- function() {
 
     # XOI -- febuxostat.  Default p50_fbx is the hyperuricemia/gout estimate (Table 1);
     # for healthy/normouricemic subjects override to p50_fbx = 87 ng/mL.
-    rmax_fbx <- 1;      label("Max fractional decrease in UA production by febuxostat (fixed in source)")  # Aksenov 2018 Table 1; fixed at 1 per Bhattaram & Gobburu 2017
+    rmax_fbx <- fixed(1);      label("Max fractional decrease in UA production by febuxostat")  # Aksenov 2018 Table 1; fixed at 1 per Bhattaram & Gobburu 2017
     p50_fbx  <- 120;    label("Febuxostat concentration at half-maximal production inhibition, hyperuricemic subjects (ng/mL)")  # Aksenov 2018 Table 1
 
     # Uricosuric -- lesinurad.  Default p50_lsn is the hyperuricemia/gout estimate (Table 1);

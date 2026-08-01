@@ -88,7 +88,7 @@ Bergmann_2014_tacrolimus <- function() {
     e_cyp3a5_expr_cl <- 1.60     ; label("CYP3A5*1-carrier multiplicative factor on CL/F (theta_CYP3A5; expressers have 60% higher CL/F)") # Bergmann 2014 Table 2 theta_CYP3A5 = 1.60
     e_hct_cl         <- -1.01    ; label("Hematocrit linear-deviation coefficient on CL/F (per unit fraction, centred at 0.33)")          # Bergmann 2014 Table 2 theta_HEM = -1.01
     e_pod_cl         <- -0.0021  ; label("Post-transplant-day linear-deviation coefficient on CL/F (per day, centred at 22.7 d, capped at 180 d)") # Bergmann 2014 Table 2 theta_POD = -0.21% per day
-    e_wt_cl          <- 0.75     ; label("Allometric exponent of (WT/70 kg) on CL/F (unitless; fixed)")                                    # Bergmann 2014 Table 2 footnote: power 0.75 fixed (allometric theory)
+    e_wt_cl          <- fixed(0.75)     ; label("Allometric exponent of (WT/70 kg) on CL/F (unitless)")                                    # Bergmann 2014 Table 2 footnote: power 0.75 fixed (allometric theory)
 
     # Covariate effect on V1/F -- Bergmann 2014 Table 2 footnote: V1/F_i =
     # theta_V1/F * (1 + theta_PRED * (PredCmax,free - 155.5)).

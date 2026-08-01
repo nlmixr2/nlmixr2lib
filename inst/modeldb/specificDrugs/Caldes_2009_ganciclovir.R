@@ -50,7 +50,7 @@ Caldes_2009_ganciclovir <- function() {
     # Linear CRCL effect on CL: CL = 7.49 * (CRCL / 57). Stored as a power exponent
     # of 1 on the (CRCL / 57) ratio so the covariate-effect parameter is identifiable
     # by checkModelConventions() and the form mirrors other CL ~ renal-function models.
-    e_crcl_cl <- 1.0; label("Power exponent of CRCL on CL (unitless; reference 57 mL/min, fixed at 1 per linear paper form)")  # Caldes 2009 Table 3 footnote c (linear scaling: CL = 7.49 * (CLCR/57))
+    e_crcl_cl <- fixed(1.0); label("Power exponent of CRCL on CL (unitless; reference 57 mL/min)")  # Caldes 2009 Table 3 footnote c (linear scaling: CL = 7.49 * (CLCR/57))
 
     # Inter-individual variability. Caldes 2009 Table 3 reports the IIV variances
     # directly (omega^2 column, expressed as variance). NONMEM exponential-on-log-scale

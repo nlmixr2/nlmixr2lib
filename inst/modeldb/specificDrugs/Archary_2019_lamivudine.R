@@ -62,8 +62,8 @@ Archary_2019_lamivudine <- function() {
     lvc  <- log(8.22);   label("Apparent central volume at 7 kg reference, TRIG = 5.3 mmol/L (Vc/F, L)") # Table 2
 
     # Allometric exponents (paper-fixed per Methods Section 2.3)
-    e_wt_cl <- 0.75; label("Allometric exponent on CL/F (unitless; fixed)")                     # Methods 2.3
-    e_wt_vc <- 1;    label("Allometric exponent on Vc/F (unitless; fixed)")                     # Methods 2.3
+    e_wt_cl <- fixed(0.75); label("Allometric exponent on CL/F (unitless)")                     # Methods 2.3
+    e_wt_vc <- fixed(1);    label("Allometric exponent on Vc/F (unitless)")                     # Methods 2.3
 
     # Maturation function for CL/F (sigmoid Emax in age)
     mat_hill   <- 1.47; label("Hill coefficient of the CL/F sigmoid Emax age-maturation function (unitless)") # Table 2
