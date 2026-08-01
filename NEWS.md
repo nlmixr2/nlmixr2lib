@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Keij 2023 amoxicillin ([doi:10.1093/cid/ciad432](https://doi.org/10.1093/cid/ciad432)) - preterm and term neonates treated for possible serious bacterial infection.
+
 - Add Wu 2023 SPI-62 ([doi:10.1007/s40262-023-01278-8](https://doi.org/10.1007/s40262-023-01278-8)) - healthy adults.
 
 - Disambiguated the overloaded `OC` name, which denoted five unrelated
