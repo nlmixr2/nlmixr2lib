@@ -37,7 +37,7 @@ Sanhajariya_2018_snake_venom <- function() {
     # Zero-order input duration into the central compartment. Held fixed
     # at 1 h by the authors because the bite event time is approximate
     # and the data do not constrain D1.
-    ld1 <- fixed(log(1)); label("Duration of zero-order input D1 into central (h, fixed)")        # Table A1: D1 = 1 h (FIX)
+    ld1 <- fixed(log(1)); label("Duration of zero-order input D1 into central (h)")        # Table A1: D1 = 1 h (FIX)
 
     # Bioavailability anchor for the reference (Viperidae) family is fixed
     # at 1; SNAKEFAMILY_ELAPID supplies a log-multiplicative shift to
@@ -45,7 +45,7 @@ Sanhajariya_2018_snake_venom <- function() {
     # input route into the central compartment (no depot compartment
     # exists in the structural model). See vignette 'Assumptions and
     # deviations' for the semantic-stretch note on naming lfdepot.
-    lfdepot                     <- fixed(log(1));    label("Bioavailability anchor for Viperidae bites (unitless, fixed reference)")   # Table A1: F1 (Viperidae) = 1 FIX
+    lfdepot                     <- fixed(log(1));    label("Bioavailability anchor for Viperidae bites (unitless, reference)")   # Table A1: F1 (Viperidae) = 1 FIX
     e_snakefamily_elapid_fdepot <- log(0.569);       label("Log-multiplicative effect on F1 for Elapidae vs Viperidae (unitless)")     # Table A1: F1 (Elapidae) = 0.569 (RSE 43 %)
 
     # IIV (CV %) reported in Table A1 'Covariate Model' column. Converted

@@ -32,7 +32,7 @@ FehlingKaschek_2019_trastuzumab_skbr3 <- function() {
     kact_R_T0 <- 0.4;          label("Effective trastuzumab activation rate on ruffled membrane (kact_R * T0, 1/min)")  # Table 3 Model B
     kact_F_T0 <- fixed(0.41);  label("Effective trastuzumab activation rate on flat membrane (kact_F * T0, 1/min); paper holds equal to kact_R per footnote *") # Table 3 Model B footnote *
     kdiss     <- 0.05;         label("Trastuzumab dissociation rate (kdiss, 1/min)")              # Table 3 Model B (5.0e-2 /min)
-    kon_A0    <- fixed(1.0);   label("Effective Affibody association rate (kon * A0, 1/min); non-identifiable in Model B, fixed at Model A value per footnote **") # Table 3 Model B footnote **
+    kon_A0    <- fixed(1.0);   label("Effective Affibody association rate (kon * A0, 1/min); non-identifiable in Model B, Model A value per footnote **") # Table 3 Model B footnote **
     koff      <- 6.8e-4;       label("Affibody dissociation rate (koff, 1/min)")                  # Table 3 Model B (6.8e-4 /min)
     kint_R_T  <- 49;           label("Internalization rate of trastuzumab-bound HER2 on ruffled membrane (kint_RT, 1/min); only lower bound identifiable") # Table 3 Model B
     kint_F_T  <- 0.0126;       label("Internalization rate of trastuzumab-bound HER2 on flat membrane (kint_FT, 1/min)") # Table 3 Model B

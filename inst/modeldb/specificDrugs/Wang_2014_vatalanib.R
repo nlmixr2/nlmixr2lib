@@ -94,24 +94,24 @@ Wang_2014_vatalanib <- function() {
     #   CL/F(t) = CL_induced/F - delta_CL/F * exp(-K_induct * t)
     # so that CL/F(t=0) = CL_initial/F = CL_induced/F - delta_CL/F
     # and    CL/F(t -> Inf) = CL_induced/F (the post-induction steady state).
-    # Implemented with the canonical CL-component names lcl_ss
-    # (post-induction asymptote = CL_induced/F) and lcl_time
+    # Implemented with the canonical CL-component names lcl_exp_inf
+    # (post-induction asymptote = CL_induced/F) and lcl_exp_component
     # (auto-induction offset = delta_CL/F) following the
     # Hussein_1997_lamotrigine precedent.
 
     # Apparent post-induction (steady-state) oral clearance CL_induced/F.
-    lcl_ss   <- log(54.9);  label("Apparent oral clearance after full induction CL_induced/F (L/h)")  # Wang 2014 Table 2: CL_induced/F = 54.9 L/h (95% CI 42.5-67.2; 11.7% RSE)
+    lcl_exp_inf   <- log(54.9);  label("Apparent oral clearance after full induction CL_induced/F (L/h)")  # Wang 2014 Table 2: CL_induced/F = 54.9 L/h (95% CI 42.5-67.2; 11.7% RSE)
 
     # Auto-induction offset: difference between post-induction steady-state
     # CL and pre-induction (t=0) CL, in the same units as CL/F (L/h).
-    lcl_time <- log(30.1);  label("Auto-induction offset on CL/F (CL_induced/F - CL_initial/F) (L/h)")  # Wang 2014 Table 2: delta_CL/F = 30.1 L/h (95% CI 14.8-45.4; 27.6% RSE)
+    lcl_exp_component <- log(30.1);  label("Auto-induction offset on CL/F (CL_induced/F - CL_initial/F) (L/h)")  # Wang 2014 Table 2: delta_CL/F = 30.1 L/h (95% CI 14.8-45.4; 27.6% RSE)
 
     # First-order auto-induction rate constant. Wang 2014 fixed this
     # parameter at 0.023 /h because samples were collected only on day 1
     # and after day 7, leaving insufficient information to estimate it
     # accurately; the value was chosen so that maximal induction is reached
     # on day 7 (Wang 2014 Table 2 footnote * and Discussion p. 1011).
-    lkdes    <- fixed(log(0.023)); label("Auto-induction first-order rate constant K_induct (1/h)")    # Wang 2014 Table 2: K_induct = 0.023 /h (fixed; footnote * 'maximal clearance induction was reached on day 7')
+    lcl_exp_kdes    <- fixed(log(0.023)); label("Auto-induction first-order rate constant K_induct (1/h)")    # Wang 2014 Table 2: K_induct = 0.023 /h (fixed; footnote * 'maximal clearance induction was reached on day 7')
 
     # Apparent volume of distribution V/F. One-compartment model.
     lvc      <- log(53.8);  label("Apparent volume of distribution Vd/F (L)")  # Wang 2014 Table 2: Vd/F = 53.8 L (95% CI 38.4-69.1; 14.9% RSE)
@@ -129,14 +129,14 @@ Wang_2014_vatalanib <- function() {
     # uses log-normal IIV: P_i = P_pop * exp(eta_i). Table 2 reports
     # variability as %CV (back-transformed from the omega^2 estimates).
     # Conversion: omega^2 = log(1 + CV^2).
-    # The IIV on delta_CL/F (cl_time) was fixed to zero (Wang 2014 Results
+    # The IIV on delta_CL/F (cl_exp_component) was fixed to zero (Wang 2014 Results
     # 'Model development': "the IIV value associated with delta CL/F was
     # fixed to zero due to extremely small estimate and failure of
-    # convergence of the covariance step"); cl_time therefore enters
+    # convergence of the covariance step"); cl_exp_component therefore enters
     # the model without an eta term.
     # No IIV on K_induct: Wang 2014 fixed K_induct itself and does not
     # report a between-subject random effect on it.
-    etalcl_ss ~ 0.0507  # Wang 2014 Table 2: %CV(CL_induced/F) = 22.8% (36.7% RSE); omega^2 = log(1 + 0.228^2) = 0.0507
+    etalcl_exp_inf ~ 0.0507  # Wang 2014 Table 2: %CV(CL_induced/F) = 22.8% (36.7% RSE); omega^2 = log(1 + 0.228^2) = 0.0507
     etalvc    ~ 0.5380  # Wang 2014 Table 2: %CV(Vd/F)        = 84.4% (20.3% RSE); omega^2 = log(1 + 0.844^2) = 0.5380
     etalka    ~ 0.1181  # Wang 2014 Table 2: %CV(Ka)          = 35.4% (24.1% RSE); omega^2 = log(1 + 0.354^2) = 0.1181
     etaltlag  ~ 1.0577  # Wang 2014 Table 2: %CV(A_lag)       = 137.1% (76.1% RSE); omega^2 = log(1 + 1.371^2) = 1.0577
@@ -153,23 +153,23 @@ Wang_2014_vatalanib <- function() {
 
   model({
     # Individual structural parameters. Wang 2014 puts a single eta on
-    # CL_induced/F; the auto-induction offset delta_CL/F (cl_time)
+    # CL_induced/F; the auto-induction offset delta_CL/F (cl_exp_component)
     # has its IIV fixed to zero per Results 'Model development'.
-    cl_ss   <- exp(lcl_ss + etalcl_ss)
-    cl_time <- exp(lcl_time)
-    kdes    <- exp(lkdes)
+    cl_exp_inf   <- exp(lcl_exp_inf + etalcl_exp_inf)
+    cl_exp_component <- exp(lcl_exp_component)
+    cl_exp_kdes    <- exp(lcl_exp_kdes)
     vc      <- exp(lvc + etalvc)
     ka      <- exp(lka + etalka)
     tlag    <- exp(ltlag + etaltlag)
 
     # Composite time-dependent apparent oral clearance:
     #   CL/F(t) = CL_induced/F - delta_CL/F * exp(-K_induct * t)
-    # At t = 0:        CL/F = cl_ss - cl_time = CL_initial/F (pre-induction).
-    # At t -> infinity: CL/F = cl_ss (post-induction steady state).
+    # At t = 0:        CL/F = cl_exp_inf - cl_exp_component = CL_initial/F (pre-induction).
+    # At t -> infinity: CL/F = cl_exp_inf (post-induction steady state).
     # `time` is the rxode2 simulation-time variable in hours since the start
     # of therapy (consistent with the dose schedule used in the cohort:
     # first dose on study day 1 hour 0).
-    cl <- cl_ss - cl_time * exp(-kdes * time)
+    cl <- cl_exp_inf - cl_exp_component * exp(-cl_exp_kdes * time)
 
     kel <- cl / vc
 

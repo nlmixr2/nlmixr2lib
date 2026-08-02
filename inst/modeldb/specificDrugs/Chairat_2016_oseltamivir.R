@@ -61,7 +61,7 @@ Chairat_2016_oseltamivir <- function() {
     lkm     <- log(2.13);  label("Metabolism rate constant km for OC formation (1/h)")             # Chairat 2016 Table 1: km = 2.13 1/h
     lcl_oselcarb  <- log(20.6);  label("Oseltamivir carboxylate apparent clearance CL/FOC (L/h)")        # Chairat 2016 Table 1: CL/FOC = 20.6 L/h
     lvc_oselcarb  <- log(159);   label("Oseltamivir carboxylate apparent volume of distribution V/FOC (L)") # Chairat 2016 Table 1: V/FOC = 159 L
-    lfdepot <- fixed(log(1)); label("Relative oral bioavailability F (fixed to unity)")            # Chairat 2016 Table 1: F = 100% (fixed)
+    lfdepot <- fixed(log(1)); label("Relative oral bioavailability F (unity)")            # Chairat 2016 Table 1: F = 100% (fixed)
 
     # Covariate effect on CL/FOC (Chairat 2016 Eq. 11 and Table 1 row "Effect
     # of CLCR on CL/FOC (% change per 10 units of CLCR)" = 3.84). The

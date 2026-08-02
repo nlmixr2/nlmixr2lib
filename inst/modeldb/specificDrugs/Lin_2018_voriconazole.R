@@ -71,7 +71,7 @@ Lin_2018_voriconazole <- function() {
 
     # Absorption: ka fixed at 1.1/h per Lin 2018 Methods 'Structural
     # model', citing the literature reference [21] (Hyland 2003).
-    lka <- fixed(log(1.1)); label("Absorption rate constant (1/h), fixed")  # Lin 2018 Methods: "The absorption rate constant was fixed at 1.1 h-1 based on the literature report [21]"
+    lka <- fixed(log(1.1)); label("Absorption rate constant (1/h)")  # Lin 2018 Methods: "The absorption rate constant was fixed at 1.1 h-1 based on the literature report [21]"
 
     # CL: Lin 2018 Table 3 reports theta_CL = 2.88 L/h with PM as the
     # paper's reference category, with exp(0.80) for EM relative to PM

@@ -183,7 +183,7 @@ Seng_2015_isoniazid <- function() {
     # 6791 / 6792: 'F_INH is not estimated due to a lack of pharmaco-
     # kinetic data from intravenous dosing') paired with an estimated
     # log-normal IIV (Table 2 final IIV F_INH 31.6%).
-    lfdepot  <- fixed(log(1));  label("INH oral bioavailability F_INH (unitless, fixed at 1)")       # Table 2 final F_INH = 1 (fixed)
+    lfdepot  <- fixed(log(1));  label("INH oral bioavailability F_INH (unitless)")       # Table 2 final F_INH = 1 (fixed)
 
     # Logit-transformed fraction of INH clearance forming AcINH.
     # F_AcINH = 0.973 (Table 2 final, RSE 1.3%); the complementary
@@ -192,7 +192,7 @@ Seng_2015_isoniazid <- function() {
 
     # ---- AcINH disposition -----------------------------------------
     lcl_acinh <- log(21.3); label("AcINH clearance CL_A at WT = 63 kg, CRCL = 113 mL/min (L/h)")     # Table 2 final CL_A = 21.3 L/h (RSE 7.2%)
-    lvc_acinh <- fixed(log(17)); label("AcINH central volume V_3 (L, fixed)")                       # Table 2 final V_3 = 17 L (fixed); Methods page 6792 / Fig 2 caption: 'fixed to ... 17 liters ... the calculated volume of distribution of the central compartment of AcINH in Boxenbaum and Riegelman'
+    lvc_acinh <- fixed(log(17)); label("AcINH central volume V_3 (L)")                       # Table 2 final V_3 = 17 L (fixed); Methods page 6792 / Fig 2 caption: 'fixed to ... 17 liters ... the calculated volume of distribution of the central compartment of AcINH in Boxenbaum and Riegelman'
     lq_acinh  <- log(69.2); label("AcINH inter-compartmental clearance Q_A at WT = 63 kg (L/h)")    # Table 2 final Q_A = 69.2 L/h (RSE 13.2%)
     lvp_acinh <- log(80.4); label("AcINH peripheral volume V_6 at WT = 63 kg (L)")                  # Table 2 final V_6 = 80.4 L (RSE 9.4%)
 
@@ -203,14 +203,14 @@ Seng_2015_isoniazid <- function() {
 
     # ---- INA disposition -------------------------------------------
     lcl_ina <- log(44.6);   label("INA clearance CL_I at WT = 63 kg (L/h)")                          # Table 2 final CL_I = 44.6 L/h (RSE 5.6%)
-    lvc_ina <- fixed(log(17)); label("INA volume V_4 (L, fixed)")                                  # Table 2 final V_4 = 17 L (fixed); Methods page 6792 / Fig 2 caption: 'fixed to a volume of 17 liters to ensure model identifiability'
+    lvc_ina <- fixed(log(17)); label("INA volume V_4 (L)")                                  # Table 2 final V_4 = 17 L (fixed); Methods page 6792 / Fig 2 caption: 'fixed to a volume of 17 liters to ensure model identifiability'
 
     # ---- Allometric exponents --------------------------------------
     # Fixed at the canonical Anderson & Holford 2008 values; Seng 2015
     # Methods page 6792 reports the allometric form without estimating
     # the exponents.
-    e_wt_cl  <- fixed(0.75); label("Allometric exponent of body weight on clearance (unitless, fixed)")        # Methods page 6792 allometric formula for CL/F with exponent 0.75
-    e_wt_vc  <- fixed(1);    label("Allometric exponent of body weight on volume (unitless, fixed)")           # Methods page 6792 allometric formula for V_2/F with exponent 1
+    e_wt_cl  <- fixed(0.75); label("Allometric exponent of body weight on clearance (unitless)")        # Methods page 6792 allometric formula for CL/F with exponent 0.75
+    e_wt_vc  <- fixed(1);    label("Allometric exponent of body weight on volume (unitless)")           # Methods page 6792 allometric formula for V_2/F with exponent 1
 
     # ---- Creatinine-clearance covariate on AcINH CL ----------------
     e_crcl_cl_acinh <- 0.4;  label("Power exponent of CRCL on AcINH clearance (unitless)")          # Table 2 final 'CrCL on CL_A' power-function exponent = 0.4 (RSE 21.5%)

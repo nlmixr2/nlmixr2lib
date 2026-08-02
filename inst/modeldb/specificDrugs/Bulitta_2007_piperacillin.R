@@ -91,14 +91,14 @@ Bulitta_2007_piperacillin <- function() {
     # Allometric exponents (Bulitta 2007 Materials and Methods 'Size models':
     # "The allometric exponent was fixed at 1.0 for all volume terms and at
     # 0.75 for all clearance terms.").
-    e_lbm_cl <- fixed(0.75); label("Allometric exponent on CL (unitless, fixed)")        # Bulitta 2007 Methods: 0.75 fixed
-    e_lbm_q  <- fixed(0.75); label("Allometric exponent on Q (unitless, fixed)")         # Bulitta 2007 Methods: 0.75 fixed
-    e_lbm_vc <- fixed(1.00); label("Allometric exponent on V1 (unitless, fixed)")        # Bulitta 2007 Methods: 1.0 fixed
-    e_lbm_vp <- fixed(1.00); label("Allometric exponent on V2 (unitless, fixed)")        # Bulitta 2007 Methods: 1.0 fixed
+    e_lbm_cl <- fixed(0.75); label("Allometric exponent on CL (unitless)")        # Bulitta 2007 Methods: 0.75 fixed
+    e_lbm_q  <- fixed(0.75); label("Allometric exponent on Q (unitless)")         # Bulitta 2007 Methods: 0.75 fixed
+    e_lbm_vc <- fixed(1.00); label("Allometric exponent on V1 (unitless)")        # Bulitta 2007 Methods: 1.0 fixed
+    e_lbm_vp <- fixed(1.00); label("Allometric exponent on V2 (unitless)")        # Bulitta 2007 Methods: 1.0 fixed
 
     # Reference LBM (Bulitta 2007 Materials and Methods 'Size models':
     # "a standard lean body mass (LBMSTD) of 53 kg").
-    lbm_std <- fixed(53); label("Reference lean body mass (kg, fixed)")                  # Bulitta 2007 Methods: LBM_STD = 53 kg
+    lbm_std <- fixed(53); label("Reference lean body mass (kg)")                  # Bulitta 2007 Methods: LBM_STD = 53 kg
 
     # ===== Between-subject variability (Bulitta 2007 Table 3, log-normal IIV) =====
     # The paper reports the apparent CV on a log scale; the variance is

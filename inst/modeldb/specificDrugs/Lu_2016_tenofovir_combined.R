@@ -42,7 +42,7 @@ Lu_2016_tenofovir_combined <- function() {
     # Ka is FIXED (Lu 2016 Discussion: 'The absorption rate constant was fixed
     # by a local search due to numerical instabilities posed during modeling of
     # the combined data set').
-    lka  <- fixed(log(1.5)); label("First-order absorption rate constant ka (1/h, fixed)")          # Lu 2016 Table 2 Combined final Ka = 1.5 (fixed)
+    lka  <- fixed(log(1.5)); label("First-order absorption rate constant ka (1/h)")          # Lu 2016 Table 2 Combined final Ka = 1.5 (fixed)
     ltlag <- log(0.41);      label("Absorption lag time ALAG1 (h)")                                 # Lu 2016 Table 2 Combined final ALAG1 = 0.41 h
     lcl  <- log(61.5);       label("Apparent oral clearance CL/F at CRCL = 106 mL/min (L/h)")       # Lu 2016 Table 2 Combined final CL = 61.5 L/h
     lvc  <- log(345);        label("Apparent central volume of distribution V1/F (L)")              # Lu 2016 Table 2 Combined final V1 = 345 L

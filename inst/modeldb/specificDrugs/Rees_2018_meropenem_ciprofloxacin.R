@@ -29,7 +29,7 @@ Rees_2018_meropenem_ciprofloxacin <- function() {
     # --- Bacterial growth and subpopulations (Table 2, HFIM) ---
     log10cfu0   <- 7.37;  label("Initial inoculum (log10 CFU/mL)")                                  # Table 2: Log10CFU0 = 7.37 (SE 2.53%)
     log10cfumax <- 8.80;  label("Maximum population size (log10 CFU/mL)")                           # Table 2: Log10CFUmax = 8.80 (SE 0.796%)
-    lk21        <- fixed(log(50.0)); label("Log replication rate constant k21 (1/h; FIXED)")        # Table 2: k21 = 50.0 (fixed; fast replication, ref 69)
+    lk21        <- fixed(log(50.0)); label("Log replication rate constant k21 (1/h)")        # Table 2: k21 = 50.0 (fixed; fast replication, ref 69)
 
     # Mean generation time per subpopulation (minutes); growth rate k12 = 60/MGT (1/h)
     mgt_ss <- 181;  label("Mean generation time, double-susceptible MEMs/CIPs (min)")              # Table 2: k12,ss row = 181 (SE 6.32%)

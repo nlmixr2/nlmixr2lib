@@ -111,9 +111,9 @@ Kovalenko_2016_dupilumab_ddmore <- function() {
     k32      <- 0.105    ; label("Peripheral-to-central rate constant (1/d)")                  # .lst FINAL TH 7 (POPK32)
 
     # Michaelis-Menten constant (mg/L).  Fixed at 0.01 in the .ctl ($THETA
-    # `(0.01 FIXED)`) per the publication, which fixed Km at 0.01 mg/L because
-    # the OFV was insensitive to Km below ~0.01 mg/L.  .lst final TH 8 = 0.01.
-    Km       <- fixed(0.01); label("Michaelis-Menten constant (mg/L; fixed)")                  # .lst FINAL TH 8 (POPKM)
+    # `(0.01 FIXED)`) per the publication, which fixed km at 0.01 mg/L because
+    # the OFV was insensitive to km below ~0.01 mg/L.  .lst final TH 8 = 0.01.
+    km       <- fixed(0.01); label("Michaelis-Menten constant (mg/L)")                  # .lst FINAL TH 8 (POPKM)
 
     # Inter-individual variability.  The .ctl declares
     #   $OMEGA DIAGONAL(1) ETAV2
@@ -137,7 +137,7 @@ Kovalenko_2016_dupilumab_ddmore <- function() {
     # exp(SD1*ERR1) ~ 1 + SD1*ERR1, which is exact to within ~0.1% for SD1 of
     # the magnitude reported here.  .lst final TH 9 = 0.0377.
     propSd   <- 0.0377   ; label("Proportional residual SD on log scale")                      # .lst FINAL TH 9 (POPSD1)
-    addSd    <- fixed(0.03); label("Additive residual SD (mg/L; fixed in .ctl)")               # .ctl $ERROR SD2 = 0.03
+    addSd    <- fixed(0.03); label("Additive residual SD (mg/L; from .ctl)")               # .ctl $ERROR SD2 = 0.03
   })
 
   model({
@@ -161,7 +161,7 @@ Kovalenko_2016_dupilumab_ddmore <- function() {
     d/dt(depot)       <- -ka * depot
     d/dt(central)     <-  ka * depot - kel * central -
                           k23 * central + k32 * peripheral1 -
-                          central * vmax / (Km + central / vc)
+                          central * vmax / (km + central / vc)
     d/dt(peripheral1) <-  k23 * central - k32 * peripheral1
 
     # Subcutaneous bioavailability.  The .ctl applies F1 = BIO directly with

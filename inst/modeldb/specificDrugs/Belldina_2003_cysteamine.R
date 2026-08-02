@@ -84,8 +84,8 @@ Belldina_2003_cysteamine <- function() {
     # Values below are operator-assumed placeholders documented in the
     # vignette Assumptions and deviations section; a refit can re-estimate.
     # ----------------------------------------------------------------
-    propSd        <- 0.15; label("Proportional residual error on plasma cysteamine Cc (fraction; assumed; paper Methods specify proportional structure but SD value is not reported)")
-    addSd_cystine <- 0.10; label("Additive residual error on WBC cystine output (nmol cystine / mg protein; assumed; paper does not specify a residual error structure for cystine)")
+    propSd        <- fixed(0); label("Proportional residual error on plasma cysteamine Cc (fraction)")  # Belldina 2003 specifies a proportional structure but reports no SD; encoded as fixed(0) per the library policy for unreported residual error (see vignette Errata)
+    addSd_cystine <- fixed(0); label("Additive residual error on WBC cystine output (nmol cystine / mg protein)")  # Belldina 2003 reports no residual-error structure for cystine; encoded as fixed(0) per the library policy for unreported residual error (see vignette Errata)
   })
 
   model({

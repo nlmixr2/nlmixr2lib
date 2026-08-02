@@ -41,7 +41,7 @@ Tanaka_2012_phenytoin <- function() {
     # Allometric exponents on body weight (Tanaka 2012 Equation 1, p494).
     # Reference weight 60 kg (average Japanese adult male; Results p493-494).
     e_wt_cl <- 0.569;      label("Body-weight exponent on CL (unitless)")  # Table 3 theta_2: 0.569
-    e_wt_vc <- fixed(1);   label("Body-weight exponent on V2, fixed (unitless)")  # Results p494: "The influence factor of V2 was fixed to 1"; no theta entry in Table 3
+    e_wt_vc <- fixed(1);   label("Body-weight exponent on V2 (unitless)")  # Results p494: "The influence factor of V2 was fixed to 1"; no theta entry in Table 3
     e_wt_vp <- 0.584;      label("Body-weight exponent on V3 (unitless)")  # Table 3 theta_6: 0.584
 
     # Inter-subject variability (variances reported on omega^2 scale in Table 3).

@@ -179,9 +179,9 @@ Jiao_2008_mycophenolic_acid <- function() {
     # ---- Body-weight scaling on CL_MPA/F, Q/F, V_3/F ----
     # Paper Eq 5 ('slope linear without intercept') with WT_m = 65.5 kg.
     # Implemented as (WT/65.5)^exponent with exponent fixed at 1.
-    e_wt_cl  <- fixed(1);     label("Allometric exponent on CL_MPA/F (unitless, fixed; paper Eq 5)")  # Methods Eq 5
-    e_wt_q   <- fixed(1);     label("Allometric exponent on Q/F (unitless, fixed; paper Eq 5)")       # Methods Eq 5
-    e_wt_vp  <- fixed(1);     label("Allometric exponent on V_3/F (unitless, fixed; paper Eq 5)")     # Methods Eq 5
+    e_wt_cl  <- fixed(1);     label("Allometric exponent on CL_MPA/F (unitless,; paper Eq 5)")  # Methods Eq 5
+    e_wt_q   <- fixed(1);     label("Allometric exponent on Q/F (unitless,; paper Eq 5)")       # Methods Eq 5
+    e_wt_vp  <- fixed(1);     label("Allometric exponent on V_3/F (unitless,; paper Eq 5)")     # Methods Eq 5
 
     # ---- Cross-parameter eta linkage (paper 'q') ----
     # Paper Table 3 reports an estimated scalar q such that

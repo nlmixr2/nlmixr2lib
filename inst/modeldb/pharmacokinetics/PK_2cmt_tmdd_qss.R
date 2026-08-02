@@ -31,7 +31,7 @@ PK_2cmt_tmdd_qss <- function() {
     lkint   <- log(1);     label("Drug-target complex internalization rate (kint, 1/day)")     # Gibiansky 2008 Eq 9 (k_int)
 
     # Binding (QSS)
-    lKss    <- log(1.1);   label("Steady-state binding constant (Kss = (koff + kint)/kon, mg/L)")  # Gibiansky 2008 Eq 7 (Kss)
+    lkss    <- log(1.1);   label("Steady-state binding constant (Kss = (koff + kint)/kon, mg/L)")  # Gibiansky 2008 Eq 7 (Kss)
 
     # IIV (generic archetype; single eta on each of CL, Vc, Ka)
     etalcl ~ 0.09
@@ -57,7 +57,7 @@ PK_2cmt_tmdd_qss <- function() {
     t0   <- exp(lT0)
     kdeg <- exp(lkdeg)
     kint <- exp(lkint)
-    kss  <- exp(lKss)
+    kss  <- exp(lkss)
     ksyn <- kdeg * t0
 
     total_target(0) <- t0

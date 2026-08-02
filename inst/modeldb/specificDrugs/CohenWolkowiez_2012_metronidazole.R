@@ -78,8 +78,8 @@ CohenWolkowiez_2012_metronidazole <- function() {
     # An estimated body-size exponent was tested by the authors and excluded for
     # lack of improvement in fit and imprecision (Cohen-Wolkowiez 2012 Results,
     # 'Population PK model building').
-    e_wt_cl <- fixed(1); label("Linear weight exponent on CL (unitless, fixed at 1)")  # Cohen-Wolkowiez 2012 Table 3 (final model: linear (WT/1.5))
-    e_wt_vc <- fixed(1); label("Linear weight exponent on V (unitless, fixed at 1)")   # Cohen-Wolkowiez 2012 Table 3 (final model: linear (WT/1.5))
+    e_wt_cl <- fixed(1); label("Linear weight exponent on CL (unitless)")  # Cohen-Wolkowiez 2012 Table 3 (final model: linear (WT/1.5))
+    e_wt_vc <- fixed(1); label("Linear weight exponent on V (unitless)")   # Cohen-Wolkowiez 2012 Table 3 (final model: linear (WT/1.5))
 
     # Power exponent on (PMA/32) for CL. Reference PMA 32 weeks = 32/4.35 months.
     e_page_cl <- 2.49; label("Power exponent on (PMA/32) for CL (unitless)")  # Cohen-Wolkowiez 2012 Table 4: theta_CL-PMA = 2.49 (RSE 29.8%)

@@ -103,8 +103,8 @@ Mody_2023_doxorubicin_dexrazoxane <- function() {
     # HCl salt (DOX HCl MW 579.98) should scale the amt column by
     # 543.52 / 579.98 = 0.9371 at the event-table build time to preserve
     # free-base amounts.
-    lconv_dox <- fixed(log(1.8397))  ; label("DOX mg/L -> uM conversion factor (dimensionless; FIXED literature)")   # PubChem CID 31703 (DOX free base MW 543.52 g/mol)
-    lconv_dex <- fixed(log(3.7275))  ; label("DEX mg/L -> uM conversion factor (dimensionless; FIXED literature)")   # PubChem CID 71384 (DEX free base MW 268.27 g/mol)
+    lconv_dox <- fixed(log(1.8397))  ; label("DOX mg/L -> uM conversion factor (dimensionless; literature)")   # PubChem CID 31703 (DOX free base MW 543.52 g/mol)
+    lconv_dex <- fixed(log(3.7275))  ; label("DEX mg/L -> uM conversion factor (dimensionless; literature)")   # PubChem CID 71384 (DEX free base MW 268.27 g/mol)
 
     # ===================================================================
     # RESIDUAL ERROR (PLACEHOLDERS)
@@ -115,11 +115,11 @@ Mody_2023_doxorubicin_dexrazoxane <- function() {
     # model parses cleanly; the paper's Methods introduces a 10% CV IIV
     # on TD parameters at simulation time (arbitrary, not fit).
     # operator-chosen placeholder (paper reports no residual SD)
-    addSd            <- fixed(1)   ; label("Additive residual SD on DOX plasma Cc (mg/L; FIXED placeholder)")
+    addSd            <- fixed(1)   ; label("Additive residual SD on DOX plasma Cc (mg/L; placeholder)")
     # operator-chosen placeholder (paper reports no residual SD)
-    addSd_dex        <- fixed(1)   ; label("Additive residual SD on DEX plasma Cc_dex (mg/L; FIXED placeholder)")
+    addSd_dex        <- fixed(1)   ; label("Additive residual SD on DEX plasma Cc_dex (mg/L; placeholder)")
     # operator-chosen placeholder (paper reports no residual SD)
-    addSd_viability  <- fixed(5)   ; label("Additive residual SD on AC16 cell viability (%; FIXED placeholder)")
+    addSd_viability  <- fixed(5)   ; label("Additive residual SD on AC16 cell viability (%; placeholder)")
   })
 
   model({

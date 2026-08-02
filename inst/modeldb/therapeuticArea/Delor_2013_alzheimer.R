@@ -131,7 +131,7 @@ Delor_2013_alzheimer <- function() {
     lpl <- log(0.434); label("Log placebo-effect magnitude (CDR-SOB units; subtracted from predicted score after study entry)")
     # Delor 2013 Table 2 final 'Placebo magnitude (PL)' = 0.434.
 
-    lkpl <- fixed(log(1)); label("Log placebo-effect equilibration rate constant (1/year; FIXED 1 in source -- IIV not supported by the data)")
+    lkpl <- fixed(log(1)); label("Log placebo-effect equilibration rate constant (1/year; 1 in source -- IIV not supported by the data)")
     # Delor 2013 Table 2 final 'Placebo rate (KPL), 1/year' = 1 with no
     # estimated CV%, indicating FIXED. The source text 'estimation of IIV on
     # KPL was not supported by the data' confirms that the typical value

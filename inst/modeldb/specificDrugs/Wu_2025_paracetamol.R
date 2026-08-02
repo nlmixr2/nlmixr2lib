@@ -77,7 +77,7 @@ Wu_2025_paracetamol <- function() {
     lvp        <- log(1.01)    ; label("PCM central volume V_P at WT = 1.08 kg (L)")            # Table 3 TVvp = 1.01 L (RSE 2.8%)
     e_wt_vp    <- 0.9781       ; label("Allometric exponent of WT on PCM V_P (unitless)")       # Table 3 theta_BWc(V_P) = 0.9781 (RSE 2%)
     lvpp       <- log(0.2707)  ; label("PCM peripheral volume V_PP at WT = 1.08 kg (L)")        # Table 3 TVvpp = 0.2707 L (RSE 9.8%)
-    e_wt_vpp   <- fixed(0)     ; label("Allometric exponent of WT on PCM V_PP (fixed)")         # Table 3 theta_BWc(V_PP) = 0 FIXED
+    e_wt_vpp   <- fixed(0)     ; label("Allometric exponent of WT on PCM V_PP")         # Table 3 theta_BWc(V_PP) = 0 FIXED
     lq         <- log(0.08921) ; label("PCM inter-compartmental CL Q at WT = 1.08 kg (L/h)")    # Table 3 TVQ = 0.08921 L/h (RSE 23%)
     e_wt_q     <- 2.212        ; label("Allometric exponent of WT on PCM Q (unitless)")         # Table 3 theta_BWc(Q) = 2.212 (RSE 26%) -- estimated >> 0.75; combined with fixed V_PP this collapses peripheral kinetics for larger subjects
 
@@ -93,11 +93,11 @@ Wu_2025_paracetamol <- function() {
     # expression (Table 3); the lcl_gluc placeholder anchors etalcl_gluc.
     # Reference birthweight and current weight both 1.75 kg.
     # =====================================================================
-    lcl_gluc            <- fixed(log(1))  ; label("Multiplicative anchor for CL_form(GLU) IIV (fixed at 1)") # placeholder so etalcl_gluc has a paired log-parameter (unit-multiplier in model())
+    lcl_gluc            <- fixed(log(1))  ; label("Multiplicative anchor for CL_form(GLU) IIV") # placeholder so etalcl_gluc has a paired log-parameter (unit-multiplier in model())
     lclbirth_gluc       <- log(0.007961)  ; label("PCM-GLU formation CL at birth at WT_BIRTH = 1.75 kg (L/h)") # Table 3 TVCLbirth(GLU) = 0.007961 L/h (RSE 18%)
     e_bwbirth_cl_gluc   <- 1.515          ; label("WT_BIRTH exponent on CL_birth(GLU) (unitless)")             # Table 3 theta_BWb(GLU) = 1.515 (RSE 16%)
     lclmax_gluc         <- log(0.3378)    ; label("PCM-GLU formation CL_max at WT = 1.75 kg (L/h)")             # Table 3 TVCLmax(GLU) = 0.3378 L/h (RSE 15%)
-    e_wt_cl_gluc        <- fixed(0.738)   ; label("WT exponent on CL_max(GLU) (fixed)")                         # Table 3 theta_BWc(GLU) = 0.738 FIXED (paper Methods: PTNA equation)
+    e_wt_cl_gluc        <- fixed(0.738)   ; label("WT exponent on CL_max(GLU)")                         # Table 3 theta_BWc(GLU) = 0.738 FIXED (paper Methods: PTNA equation)
     lpna50_gluc         <- log(62.67)     ; label("PCM-GLU PNA50 (days)")                                       # Table 3 TVPNA50(GLU) = 62.67 days (RSE 23%)
     e_ga_pna50_gluc     <- -4.625         ; label("GA exponent on PNA50(GLU) (unitless)")                       # Table 3 theta_GAPNA50(GLU) = -4.625 (RSE 14%)
     lhill_gluc          <- log(1.553)     ; label("PCM-GLU PTNA Hill coefficient (unitless)")                   # Table 3 Hill(GLU) = 1.553 (RSE 8.9%)
@@ -106,13 +106,13 @@ Wu_2025_paracetamol <- function() {
     # Formation CL of PCM-SULF via the PTNA equation (no-GA variant:
     # GA effect on PNA50 dropped per supplement Table S1 model 42.1).
     # =====================================================================
-    lcl_sulf            <- fixed(log(1))  ; label("Multiplicative anchor for CL_form(SULF) IIV (fixed at 1)") # placeholder so etalcl_sulf has a paired log-parameter
+    lcl_sulf            <- fixed(log(1))  ; label("Multiplicative anchor for CL_form(SULF) IIV") # placeholder so etalcl_sulf has a paired log-parameter
     lclbirth_sulf       <- log(0.1854)    ; label("PCM-SULF formation CL at birth at WT_BIRTH = 1.75 kg (L/h)") # Table 3 TVCLbirth(SULF) = 0.1854 L/h (RSE 4.2%)
     e_bwbirth_cl_sulf   <- 1.173          ; label("WT_BIRTH exponent on CL_birth(SULF) (unitless)")             # Table 3 theta_BWb(SULF) = 1.173 (RSE 5%)
     lclmax_sulf         <- log(0.3787)    ; label("PCM-SULF formation CL_max at WT = 1.75 kg (L/h)")             # Table 3 TVCLmax(SULF) = 0.3787 L/h (RSE 11%)
-    e_wt_cl_sulf        <- fixed(0.738)   ; label("WT exponent on CL_max(SULF) (fixed)")                         # Table 3 theta_BWc(SULF) = 0.738 FIXED
+    e_wt_cl_sulf        <- fixed(0.738)   ; label("WT exponent on CL_max(SULF)")                         # Table 3 theta_BWc(SULF) = 0.738 FIXED
     lpna50_sulf         <- log(25.92)     ; label("PCM-SULF PNA50 (days)")                                       # Table 3 TVPNA50(SULF) = 25.92 days (RSE 24%)
-    e_ga_pna50_sulf     <- fixed(0)       ; label("GA exponent on PNA50(SULF) (fixed)")                          # Table 3 theta_GAPNA50(SULF) = 0 FIXED (supplement Table S1 model 42.1 -- PTNAnoGA)
+    e_ga_pna50_sulf     <- fixed(0)       ; label("GA exponent on PNA50(SULF)")                          # Table 3 theta_GAPNA50(SULF) = 0 FIXED (supplement Table S1 model 42.1 -- PTNAnoGA)
     lhill_sulf          <- log(1.955)     ; label("PCM-SULF PTNA Hill coefficient (unitless)")                   # Table 3 Hill(SULF) = 1.955 (RSE 23%)
 
     # =====================================================================
@@ -121,13 +121,13 @@ Wu_2025_paracetamol <- function() {
     # 'cysmer' (per vanRongen 2016 precedent and rxode2 registered
     # metabolites list) carries the paper's combined PCM-OXI species.
     # =====================================================================
-    lcl_cysmer            <- fixed(log(1)) ; label("Multiplicative anchor for CL_form(cysmer/OXI) IIV (fixed at 1)") # placeholder so etalcl_cysmer has a paired log-parameter
+    lcl_cysmer            <- fixed(log(1)) ; label("Multiplicative anchor for CL_form(cysmer/OXI) IIV") # placeholder so etalcl_cysmer has a paired log-parameter
     lclbirth_cysmer       <- log(0.02047)  ; label("PCM-cysmer formation CL at birth at WT_BIRTH = 1.75 kg (L/h)")   # Table 3 TVCLbirth(OXI) = 0.02047 L/h (RSE 13%)
     e_bwbirth_cl_cysmer   <- 0.978         ; label("WT_BIRTH exponent on CL_birth(cysmer/OXI) (unitless)")           # Table 3 theta_BWb(OXI) = 0.978 (RSE 17%)
     lclmax_cysmer         <- log(0.06377)  ; label("PCM-cysmer formation CL_max at WT = 1.75 kg (L/h)")              # Table 3 TVCLmax(OXI) = 0.06377 L/h (RSE 12%)
-    e_wt_cl_cysmer        <- fixed(0.738)  ; label("WT exponent on CL_max(cysmer/OXI) (fixed)")                      # Table 3 theta_BWc(OXI) = 0.738 FIXED
+    e_wt_cl_cysmer        <- fixed(0.738)  ; label("WT exponent on CL_max(cysmer/OXI)")                      # Table 3 theta_BWc(OXI) = 0.738 FIXED
     lpna50_cysmer         <- log(10.47)    ; label("PCM-cysmer PNA50 (days)")                                         # Table 3 TVPNA50(OXI) = 10.47 days (RSE 12%)
-    e_ga_pna50_cysmer     <- fixed(0)      ; label("GA exponent on PNA50(cysmer/OXI) (fixed)")                        # Table 3 theta_GAPNA50(OXI) = 0 FIXED (supplement Table S1 model 53 -- OXI_PTNAnoGA)
+    e_ga_pna50_cysmer     <- fixed(0)      ; label("GA exponent on PNA50(cysmer/OXI)")                        # Table 3 theta_GAPNA50(OXI) = 0 FIXED (supplement Table S1 model 53 -- OXI_PTNAnoGA)
     lhill_cysmer          <- log(2.972)    ; label("PCM-cysmer PTNA Hill coefficient (unitless)")                     # Table 3 Hill(OXI) = 2.972 (RSE 17%)
 
     # =====================================================================
@@ -154,7 +154,7 @@ Wu_2025_paracetamol <- function() {
     # adult; 0.3059 * GFR_adult ~= 2.5 L/h gives total ~13.4 L/h ~=
     # 163% of GFR_adult ~= 8.2 L/h).
     lclmax_secr_sulf      <- log(11.92 * 0.06) ; label("PCM-SULF renal secretion CL_max at WT = 1.75 kg (L/h)")  # Table 3 TVCLmax (secretion) = 11.92 (RSE 20%); paper's Table 3 header says L/h but the secretion re-uses the GFR PTNA structure whose original publication (Wu 2024 Pharm Res 41:637-649) confirms mL/min, so we apply the same x0.06 conversion here so renal SULF = f_SULF * GFR + secretion is in L/h
-    e_wt_cl_secr_sulf     <- fixed(0.738)      ; label("WT exponent on PCM-SULF secretion CL_max (fixed)")        # Table 3 theta_BWc (secretion) = 0.738 FIXED
+    e_wt_cl_secr_sulf     <- fixed(0.738)      ; label("WT exponent on PCM-SULF secretion CL_max")        # Table 3 theta_BWc (secretion) = 0.738 FIXED
     lpna50_secr_sulf      <- log(80.03)        ; label("PCM-SULF secretion PNA50 (days)")                          # Table 3 TVPNA50 (secretion) = 80.03 days (RSE 28%)
     e_ga_pna50_secr_sulf  <- -5.849            ; label("GA exponent on PNA50 for PCM-SULF secretion (unitless)")   # Table 3 theta_GAPNA50 (secretion) = -5.849 (RSE 11%)
 
@@ -177,7 +177,7 @@ Wu_2025_paracetamol <- function() {
     # =====================================================================
     lclbirth_gfr        <- fixed(log(1.26 * 0.06))  ; label("GFR contribution at birth at WT_BIRTH = 1.75 kg (L/h)")  # Wu 2024 eq. 1; 1.26 mL/min converted to L/h
     lclmax_gfr          <- fixed(log(8.98 * 0.06))  ; label("GFR contribution at maturation at WT = 1.75 kg (L/h)")    # Wu 2024 eq. 1; 8.98 mL/min converted to L/h
-    e_wt_gfr            <- fixed(0.738)             ; label("WT exponent on GFR_max (fixed)")                          # Wu 2024 eq. 1; (CW/1.75)^0.738
+    e_wt_gfr            <- fixed(0.738)             ; label("WT exponent on GFR_max")                          # Wu 2024 eq. 1; (CW/1.75)^0.738
     lpna50_gfr          <- fixed(log(34))           ; label("GFR PNA50 (days)")                                         # Wu 2024 eq. 1; PNA50 = 34 days
     e_ga_pna50_gfr      <- fixed(-3.61)             ; label("GA exponent on PNA50 for GFR (unitless)")                  # Wu 2024 eq. 1; (GA/34)^-3.61
     lhill_gfr           <- fixed(log(1.03))         ; label("GFR PTNA Hill coefficient (unitless)")                      # Wu 2024 eq. 1; PNA^1.03

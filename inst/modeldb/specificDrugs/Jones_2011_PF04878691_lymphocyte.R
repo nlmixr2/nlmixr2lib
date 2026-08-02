@@ -66,12 +66,12 @@ Jones_2011_PF04878691_lymphocyte <- function() {
     # in fixed() because the lymphocyte model was fit sequentially using
     # the individual EBE PK parameters from the Table 1 popPK fit -- the
     # PK parameters are inherited, not re-estimated. Reparameterised from
-    # the paper's (CLF, CL0, DEG) into the canonical (cl_ss, cl_time, kdeg)
+    # the paper's (CLF, CL0, DEG) into the canonical (cl_exp_inf, cl_time, kdeg)
     # form per the companion PK file.
     # ----------------------------------------------------------------------
-    lcl       <- fixed(log(1.7));    label("Steady-state apparent clearance per kg body weight (CL_SS = paper CLF, L/h/kg)")              # Table 1 (CLF = 1.7 L/h/kg)
-    lcl_time  <- fixed(log(1.8));    label("Initial offset of the time-varying clearance component per kg (CL_TIME0 = CL0 - CLF, L/h/kg)") # Derived from Table 1 (CL0 = 3.5, CLF = 1.7)
-    lkdeg     <- fixed(log(0.24));   label("Exponential decay rate of the time-varying clearance component (paper DEG, 1/h)")              # Table 1 (DEG = 0.24 1/h)
+    lcl_exp_inf       <- fixed(log(1.7));    label("Steady-state apparent clearance per kg body weight (CL_SS = paper CLF, L/h/kg)")              # Table 1 (CLF = 1.7 L/h/kg)
+    lcl_exp_component  <- fixed(log(1.8));    label("Initial offset of the time-varying clearance component per kg (CL_TIME0 = CL0 - CLF, L/h/kg)") # Derived from Table 1 (CL0 = 3.5, CLF = 1.7)
+    lcl_exp_kdes     <- fixed(log(0.24));   label("Exponential decay rate of the time-varying clearance component (paper DEG, 1/h)")              # Table 1 (DEG = 0.24 1/h)
     lvc       <- fixed(log(3.3));    label("Apparent central volume of distribution per kg body weight (Vc, L/kg)")                        # Table 1 (Vc = 3.3 L/kg)
     lq        <- fixed(log(0.74));   label("Apparent intercompartmental clearance per kg body weight (Q, L/h/kg)")                         # Table 1 (Q = 0.74 L/h/kg)
     lvp       <- fixed(log(21));     label("Apparent peripheral volume of distribution per kg body weight (Vp, L/kg)")                     # Table 1 (Vp = 21 L/kg)
@@ -79,7 +79,7 @@ Jones_2011_PF04878691_lymphocyte <- function() {
 
     # PK IIVs from Table 1 -- also fixed because the lymphocyte fit used
     # EBE PK parameters from the upstream PK fit.
-    etalcl ~ fixed(0.067)                                                                                                                  # Table 1 (IIV CLF = 0.067)
+    etalcl_exp_inf ~ fixed(0.067)                                                                                                                  # Table 1 (IIV CLF = 0.067)
     etalka ~ fixed(0.19)                                                                                                                   # Table 1 (IIV ka  = 0.19)
 
     # ----------------------------------------------------------------------
@@ -111,19 +111,19 @@ Jones_2011_PF04878691_lymphocyte <- function() {
 
   model({
     # ----------------------------------------------------------------------
-    # Inherited PK (deterministic + per-subject log-normal IIV on cl_ss
+    # Inherited PK (deterministic + per-subject log-normal IIV on cl_exp_inf
     # and ka, exactly as Table 1 reports). See Jones_2011_PF04878691.R for
     # the standalone PK model rationale.
     # ----------------------------------------------------------------------
-    cl_ss    <- exp(lcl + etalcl) * WT
-    cl_time0 <- exp(lcl_time) * WT
-    kdeg_cl  <- exp(lkdeg)
+    cl_exp_inf    <- exp(lcl_exp_inf + etalcl_exp_inf) * WT
+    cl_exp_component <- exp(lcl_exp_component) * WT
+    cl_exp_kdes  <- exp(lcl_exp_kdes)
     vc       <- exp(lvc) * WT
     q        <- exp(lq)  * WT
     vp       <- exp(lvp) * WT
     ka       <- exp(lka + etalka)
 
-    cl  <- cl_ss + cl_time0 * exp(-kdeg_cl * time)
+    cl  <- cl_exp_inf + cl_exp_component * exp(-cl_exp_kdes * time)
     kel <- cl / vc
     k12 <- q  / vc
     k21 <- q  / vp

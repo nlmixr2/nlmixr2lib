@@ -130,7 +130,7 @@ Hietala_2010_artemether_parasitemia <- function() {
 
   ini({
     # === PK parameters (Hietala 2010 Table 1) -- identical to Hietala_2010_artemether ===
-    lka      <- fixed(log(1))    ; label("Absorption rate constant ka (1/h); fixed")                  # Hietala 2010 Table 1: ka = 1 (fixed)
+    lka      <- fixed(log(1))    ; label("Absorption rate constant ka (1/h)")                  # Hietala 2010 Table 1: ka = 1 (fixed)
     lcl      <- log(2.6)         ; label("Apparent oral artemether clearance at OCC = 1, theta1 (L/h/kg)") # Hietala 2010 Table 1: theta1 = 2.6 (95% CI 1.5-2.6)
     e_occ_cl <- 0.57             ; label("Fractional increase in CL/F_ARM per dose occasion, theta2") # Hietala 2010 Table 1: theta2 = 0.57 (95% CI 0.39-0.75)
     lvc      <- log(5.2)         ; label("Apparent artemether central volume Vc/F_ARM (L/kg)")        # Hietala 2010 Table 1: Vc/F_ARM = 5.2 (95% CI 3.5-7.1)
@@ -150,7 +150,7 @@ Hietala_2010_artemether_parasitemia <- function() {
     # the parasite population grows REPL_p ^ 4 ~ 200-fold (Discussion: REPL_p
     # = 4 corresponds to a ~12-fold per-cycle multiplication factor) to reach
     # clinically realistic admission parasitemia of order 10^3-10^5 / microL.
-    p_init   <- fixed(1)         ; label("Initial parasitemia introduced into PTR at simulation start (parasites/microL); fixed") # Hietala 2010 Table 3: P_init = 1 (fixed)
+    p_init   <- fixed(1)         ; label("Initial parasitemia introduced into PTR at simulation start (parasites/microL)") # Hietala 2010 Table 3: P_init = 1 (fixed)
 
     # Mean visible parasite transit time (VPT, h) and mean intraerythrocytic
     # cycle time (MTT, h). Inside model() the visible-stage rate constant is
@@ -171,10 +171,10 @@ Hietala_2010_artemether_parasitemia <- function() {
     # produced a significant drop in the OFV in asymptomatic individuals but
     # was not supported by the sparse data in symptomatic patients'). With
     # A_p = 0 the sine modulation collapses to a unity factor.
-    amp      <- fixed(0)         ; label("Amplitude of sine oscillation on PMT -> PTR transit, A_p (unitless); fixed") # Hietala 2010 Table 3: A_p = 0 (fixed)
+    amp      <- fixed(0)         ; label("Amplitude of sine oscillation on PMT -> PTR transit, A_p (unitless)") # Hietala 2010 Table 3: A_p = 0 (fixed)
 
     # Spleen elimination rate. Fixed to Gordi 2002 / Gordi 2005 (paper ref 9).
-    lkspleen <- fixed(log(0.26)) ; label("Spleen elimination rate k_spleen (1/h); fixed")             # Hietala 2010 Table 3: k_spleen = 0.26 (fixed; ref 9 = Gordi 2005)
+    lkspleen <- fixed(log(0.26)) ; label("Spleen elimination rate k_spleen (1/h)")             # Hietala 2010 Table 3: k_spleen = 0.26 (fixed; ref 9 = Gordi 2005)
 
     # Slope of the shared ARM / DHA log-concentration killing effect. The
     # paper writes k_ARM = S * log[ARM] and k_DHA = S * log[DHA] applied to
@@ -195,9 +195,9 @@ Hietala_2010_artemether_parasitemia <- function() {
     # ARM / DHA plasma concentrations: combined additive + proportional, with
     # the additive components fixed (Table 1).
     propSd     <- 0.61                                                                                 ; label("Proportional residual SD for artemether plasma concentration (fraction)") # Hietala 2010 Table 1: sigma_prop_ARM = 61%
-    addSd      <- fixed(2)                                                                             ; label("Additive residual SD for artemether plasma concentration (nM); fixed")    # Hietala 2010 Table 1: sigma_add_ARM = 2 nM (fixed)
+    addSd      <- fixed(2)                                                                             ; label("Additive residual SD for artemether plasma concentration (nM)")    # Hietala 2010 Table 1: sigma_add_ARM = 2 nM (fixed)
     propSd_dihydroart <- 0.82                                                                                 ; label("Proportional residual SD for DHA plasma concentration (fraction)")       # Hietala 2010 Table 1: sigma_prop_DHA = 82%
-    addSd_dihydroart  <- fixed(3)                                                                             ; label("Additive residual SD for DHA plasma concentration (nM); fixed")          # Hietala 2010 Table 1: sigma_add_DHA = 3 nM (fixed)
+    addSd_dihydroart  <- fixed(3)                                                                             ; label("Additive residual SD for DHA plasma concentration (nM)")          # Hietala 2010 Table 1: sigma_add_DHA = 3 nM (fixed)
 
     # Parasitemia residual error. Table 3 reports sigma = 138% as a
     # proportional residual on the log-transformed parasite-density

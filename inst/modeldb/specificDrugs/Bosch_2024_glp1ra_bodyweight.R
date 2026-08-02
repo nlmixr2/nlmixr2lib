@@ -198,7 +198,7 @@ Bosch_2024_glp1ra_bodyweight <- function() {
     # ===== Liraglutide PK (Bosch 2024 supplement S10; values from FDA Clinical Pharmacology Review, 17 Dec 2018) =====
     lkalira     <- fixed(log(0.0608 * 24))
     label("Log of liraglutide first-order absorption rate constant (1/d, FIXED)")                                    # supplement S10 (KAlira = 0.0608 * 24 = 1.4592 / d)
-    lcllira_ref <- fixed(log(1.11 * 24))
+    lcl_lira_ref <- fixed(log(1.11 * 24))
     label("Log of liraglutide clearance at reference covariates (L/d, FIXED; reference 90 kg male)")                 # supplement S10 (CLlira = 1.11 * 24 = 26.64 L/d at WT = 90 kg, male)
     lvclira_ref <- fixed(log(0.16))
     label("Log of liraglutide central volume of distribution at reference covariates (L, FIXED; reference 90 kg male)") # supplement S10 (VClira = 0.16 L at WT = 90 kg, male)
@@ -245,9 +245,9 @@ Bosch_2024_glp1ra_bodyweight <- function() {
     # Liraglutide: MALE = 1 - SEXF; supplement multiplier 1.32^MALE on CL, 1.4^MALE on Vc.
     male_indicator <- 1 - SEXF
     kalira <- exp(lkalira)
-    cllira <- exp(lcllira_ref + e_wt_cl_lira * log(WT / 90) + e_male_cl_lira * male_indicator)
-    vclira <- exp(lvclira_ref + e_wt_vc_lira * log(WT / 90) + e_male_vc_lira * male_indicator)
-    kellira <- cllira / vclira
+    cl_lira <- exp(lcl_lira_ref + e_wt_cl_lira * log(WT / 90) + e_male_cl_lira * male_indicator)
+    vc_lira <- exp(lvclira_ref + e_wt_vc_lira * log(WT / 90) + e_male_vc_lira * male_indicator)
+    kel_lira <- cl_lira / vc_lira
 
     # Semaglutide: WT scaling on CL only (Vc not scaled per supplement).
     kasema <- exp(lkasema)
@@ -459,7 +459,7 @@ Bosch_2024_glp1ra_bodyweight <- function() {
 
     # Free drug normalised concentrations (sum across both drugs;
     # only the dosed drug has non-zero state in single-drug simulations).
-    c_lira    <- central_lira / vclira
+    c_lira    <- central_lira / vc_lira
     c_sema    <- central_sema / vcsema
     cdrugf_norm <- c_lira * fulira / ec50lira + c_sema * fusema / ec50sema
 
@@ -733,7 +733,7 @@ Bosch_2024_glp1ra_bodyweight <- function() {
     # Drug PK ODEs - first-order absorption, one-compartment disposition,
     # one chain per drug; user doses to depot_lira OR depot_sema.
     d/dt(depot_lira)   <- -kalira * depot_lira
-    d/dt(central_lira) <-  kalira * depot_lira - kellira * central_lira
+    d/dt(central_lira) <-  kalira * depot_lira - kel_lira * central_lira
     d/dt(depot_sema)   <- -kasema * depot_sema
     d/dt(central_sema) <-  kasema * depot_sema - kelsema * central_sema
 

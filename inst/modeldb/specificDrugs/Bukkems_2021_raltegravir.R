@@ -156,11 +156,11 @@ Bukkems_2021_raltegravir <- function() {
     lcl  <- log(55.8);  label("Apparent oral clearance CL/F at 70 kg (L/h)")                                        # Table 2: CL/F = 55.8 L/h at 70 kg (RSE 5%)
     lq   <- log(5.68);  label("Apparent inter-compartmental clearance Q/F at 70 kg (L/h)")                          # Table 2: Q/F = 5.68 L/h at 70 kg (RSE 7%)
     lvp  <- log(92.8);  label("Apparent peripheral volume of distribution Vp/F at 70 kg (L)")                       # Table 2: V_p/F = 92.8 L at 70 kg (RSE 9%)
-    lfdepot <- fixed(log(1)); label("Typical bioavailability F at reference covariates (unitless, fixed at 1)")     # Table 2: F = 1 FIXED (no IV data; absolute F not identifiable)
+    lfdepot <- fixed(log(1)); label("Typical bioavailability F at reference covariates (unitless)")     # Table 2: F = 1 FIXED (no IV data; absolute F not identifiable)
 
     # ---- Allometric exponents (Bukkems 2021 Methods 'Development population pharmacokinetic model' paragraph 4, fixed) ----
-    e_wt_cl <- fixed(0.75); label("Allometric exponent on CL and Q (unitless, fixed)")                              # Methods p4: fixed allometric exponent 0.75 for flow parameters
-    e_wt_vc <- fixed(1.0);  label("Allometric exponent on Vc and Vp (unitless, fixed)")                             # Methods p4: fixed allometric exponent 1 for volume parameters
+    e_wt_cl <- fixed(0.75); label("Allometric exponent on CL and Q (unitless)")                              # Methods p4: fixed allometric exponent 0.75 for flow parameters
+    e_wt_vc <- fixed(1.0);  label("Allometric exponent on Vc and Vp (unitless)")                             # Methods p4: fixed allometric exponent 1 for volume parameters
 
     # ---- Covariate effects on structural parameters (Bukkems 2021 Table 2 covariate rows) ----
     # All applied via the linear additive form: parameter *= (1 + coefficient * indicator).

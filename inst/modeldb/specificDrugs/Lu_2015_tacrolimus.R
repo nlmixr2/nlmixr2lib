@@ -62,7 +62,7 @@ Lu_2015_tacrolimus <- function() {
     lcl   <- log(32.8 * 0.562)  ; label("Apparent CL/F (L/h); typical liver-transplant patient at ALT = 0")  # Lu 2015 Table 2 final: CL/F_healthy = 32.8 L/h x SubPop multiplier theta7 = 0.562 -> 18.4 L/h
     lvc   <- log(22.7)          ; label("Apparent central volume V2/F (L)")                                  # Lu 2015 Table 2 final: V2/F = 22.7 L
     lq    <- log(76.3)          ; label("Apparent inter-compartmental clearance Q/F (L/h)")                  # Lu 2015 Table 2 final: Q/F = 76.3 L/h
-    lvp   <- fixed(log(916))    ; label("Apparent peripheral volume V3/F (L); fixed from healthy-only fit")  # Lu 2015 Table 2 final: V3/F = 916 L (fixed per Methods "Population pharmacokinetic model development")
+    lvp   <- fixed(log(916))    ; label("Apparent peripheral volume V3/F (L); from healthy-only fit")  # Lu 2015 Table 2 final: V3/F = 916 L (fixed per Methods "Population pharmacokinetic model development")
     lka   <- log(0.419)         ; label("Absorption rate constant ka (1/h)")                                 # Lu 2015 Table 2 final: ka = 0.419 1/h
     ltlag <- log(0.404)         ; label("Absorption lag time ALAG1 (h)")                                     # Lu 2015 Table 2 final: ALAG1 = 0.404 h
 

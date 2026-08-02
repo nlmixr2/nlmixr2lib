@@ -79,7 +79,7 @@ Mitra_2026_ziftomenib <- function() {
     # bioavailability point estimate of 12.9% used to break the CL vs F
     # identifiability constraint). Covariate effects on F1 (FED, PPI) enter
     # additively on the logit scale.
-    logitfdepot <- fixed(-1.91); label("Logit-transformed base fraction of oral absorption F1 (unitless); logit^-1(-1.91) = 0.129 = paper's fixed F1")  # Supp NONMEM TH1 = -1.91 FIX; Table 1 F1 = 0.129 Fixed
+    logitfdepot <- fixed(-1.91); label("Logit-transformed base fraction of oral absorption F1 (unitless); logit^-1(1.91) = 0.129 = paper's F1")  # Supp NONMEM TH1 = -1.91 FIX; Table 1 F1 = 0.129 Fixed
 
     # ---------------- Covariate effects on parent parameters ----------------
     e_fed_logitfdepot          <- 3.21    ; label("Additive shift on logit(F1) for fed vs fasted state (unitless; +3.21 -> F1 x 6.09)")                # Supp TH14 = 3.21 -> logit^-1(-1.91 + 3.21) / logit^-1(-1.91) = 0.786 / 0.129 = 6.09; Table 1 'Effect of FED on F1' = x6.09
@@ -178,10 +178,10 @@ Mitra_2026_ziftomenib <- function() {
     # Fraction of oral dose that is absorbed (F1). Logit link keeps F1 in
     # (0, 1) regardless of covariate combinations; FED and PPI enter as
     # additive shifts on the logit scale (paper NONMEM PK block).
-    logitf1 <- logitfdepot +
+    logitfdepot_i <- logitfdepot +
                e_fed_logitfdepot        * FED +
                e_conmed_ppi_logitfdepot * CONMED_PPI
-    fd      <- 1 / (1 + exp(-logitf1))
+    fd      <- 1 / (1 + exp(-logitfdepot_i))
 
     # Metabolites (KO-739 and KO-516).
     q_ko739  <- exp(lq_ko739  + etalq_ko739)

@@ -58,12 +58,12 @@ Wright_2013_allopurinol <- function() {
     #     sequential model' and 'Final sequential model' columns because the
     #     allopurinol layer was held fixed while oxypurinol parameters were
     #     estimated).
-    lka       <- fixed(log(1.6));  label("Allopurinol first-order absorption rate constant ka (1/h; fixed)")                          # Wright 2013 Table 2, ka = 1.6 (fixed)
-    lcl_allo  <- fixed(log(49.6)); label("Allopurinol clearance CL_allo (L/h) at FFM = 70 kg (fixed)")                                 # Wright 2013 Table 2, CL_allo = 49.6 (fixed)
-    lvc_allo  <- fixed(log(11.4)); label("Allopurinol central volume V1_allo (L) at FFM = 70 kg (fixed)")                              # Wright 2013 Table 2, V1_allo = 11.4 (fixed)
-    lq_allo   <- fixed(log(142));  label("Allopurinol inter-compartmental clearance Q_allo (L/h) at FFM = 70 kg (fixed)")              # Wright 2013 Table 2, Q = 142 (fixed)
-    lvp_allo  <- fixed(log(90.7)); label("Allopurinol peripheral volume V2_allo (L) at FFM = 70 kg (fixed)")                           # Wright 2013 Table 2, V2_allo = 90.7 (fixed)
-    lfdepot   <- fixed(log(0.85)); label("Oral bioavailability F of allopurinol (unitless; fixed at 0.85 per prior literature)")       # Wright 2013 Table 2, F = 0.85 (fixed)
+    lka       <- fixed(log(1.6));  label("Allopurinol first-order absorption rate constant ka (1/h)")                          # Wright 2013 Table 2, ka = 1.6 (fixed)
+    lcl_allo  <- fixed(log(49.6)); label("Allopurinol clearance CL_allo (L/h) at FFM = 70 kg")                                 # Wright 2013 Table 2, CL_allo = 49.6 (fixed)
+    lvc_allo  <- fixed(log(11.4)); label("Allopurinol central volume V1_allo (L) at FFM = 70 kg")                              # Wright 2013 Table 2, V1_allo = 11.4 (fixed)
+    lq_allo   <- fixed(log(142));  label("Allopurinol inter-compartmental clearance Q_allo (L/h) at FFM = 70 kg")              # Wright 2013 Table 2, Q = 142 (fixed)
+    lvp_allo  <- fixed(log(90.7)); label("Allopurinol peripheral volume V2_allo (L) at FFM = 70 kg")                           # Wright 2013 Table 2, V2_allo = 90.7 (fixed)
+    lfdepot   <- fixed(log(0.85)); label("Oral bioavailability F of allopurinol (unitless; 0.85 per prior literature)")       # Wright 2013 Table 2, F = 0.85 (fixed)
 
     # --- Oxypurinol structural parameters (final sequential estimates from
     #     the Wright 2013 page-6 CL_oxy and V_oxy equations and Table 2
@@ -76,9 +76,9 @@ Wright_2013_allopurinol <- function() {
     lv_oxy        <- log(41.4); label("Oxypurinol central volume V_oxy (L) at FFM = 70 kg")                                              # Wright 2013 Table 2, V_oxy = 41.4 (final)
 
     # --- Allometric exponents and metabolic-fraction parameters (all FIXED).
-    e_ffm_cl <- fixed(0.75);       label("Allometric exponent on CL_allo, Q_allo, CL_oxy versus FFM / 70 kg (fixed)")                    # Wright 2013 Methods, "Clearance was allometrically scaled to an exponent of 0.75"
-    e_ffm_vc <- fixed(1.0);        label("Allometric exponent on V1_allo, V2_allo, V_oxy versus FFM / 70 kg (fixed)")                    # Wright 2013 Methods, "volume to an exponent of 1"
-    fmet_oxy <- fixed(0.80);       label("Molar fraction of allopurinol converted to oxypurinol (unitless; fixed at 0.80 per literature)")  # Wright 2013 Results, "fixed at 80% based on values previously reported [3, 14]"
+    e_ffm_cl <- fixed(0.75);       label("Allometric exponent on CL_allo, Q_allo, CL_oxy versus FFM / 70 kg")                    # Wright 2013 Methods, "Clearance was allometrically scaled to an exponent of 0.75"
+    e_ffm_vc <- fixed(1.0);        label("Allometric exponent on V1_allo, V2_allo, V_oxy versus FFM / 70 kg")                    # Wright 2013 Methods, "volume to an exponent of 1"
+    fmet_oxy <- fixed(0.80);       label("Molar fraction of allopurinol converted to oxypurinol (unitless; 0.80 per literature)")  # Wright 2013 Results, "fixed at 80% based on values previously reported [3, 14]"
 
     # --- Diuretic covariate effect on the RENAL component of oxypurinol
     #     clearance. Encoded as a fractional multiplier (0.61 = 39 percent
@@ -109,8 +109,8 @@ Wright_2013_allopurinol <- function() {
     #     doi:10.1111/bcp.12799), which reports oxypurinol proportional SD
     #     as 0.20 = 20% CV under the identical Table-column heading style.
     #     See vignette Assumptions and deviations for the full rationale.
-    addSd      <- fixed(0.0001);  label("Allopurinol additive residual SD (umol/L; fixed)")                                             # Wright 2013 Table 2, epsilon_add allo = 0.0001 (fixed)
-    propSd     <- fixed(0.74);    label("Allopurinol proportional residual SD (fraction; interpreted as 74% CV; fixed)")                # Wright 2013 Table 2, epsilon_prop allo = 0.74 (fixed)
+    addSd      <- fixed(0.0001);  label("Allopurinol additive residual SD (umol/L)")                                             # Wright 2013 Table 2, epsilon_add allo = 0.0001 (fixed)
+    propSd     <- fixed(0.74);    label("Allopurinol proportional residual SD (fraction; interpreted as 74% CV)")                # Wright 2013 Table 2, epsilon_prop allo = 0.74 (fixed)
     addSd_oxy  <- 0.21;           label("Oxypurinol additive residual SD (umol/L)")                                                     # Wright 2013 Table 2, epsilon_add oxy = 0.21
     propSd_oxy <- 0.00004;        label("Oxypurinol proportional residual SD (fraction; near-zero after fit)")                          # Wright 2013 Table 2, epsilon_prop oxy = 0.00004
   })

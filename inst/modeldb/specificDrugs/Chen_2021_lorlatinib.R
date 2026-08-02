@@ -9,9 +9,9 @@ Chen_2021_lorlatinib <- function() {
     "via a zero-order window of duration D1 = 1.15 h followed by",
     "first-order absorption at ka = 3.11 h^-1) and time-varying metabolic",
     "auto-induction of clearance: CL(t) = CLI + (CLMX - CLI) *",
-    "(1 - exp(-k_ind * t)), rising from a single-dose CLI = 9.04 L/h to",
+    "(1 - exp(-cl_exp_kdes * t)), rising from a single-dose CLI = 9.04 L/h to",
     "a steady-state CLMX = 14.5 L/h with induction rate constant",
-    "k_ind = 0.020 h^-1 (~7.25 d to functional steady state; Chen 2021",
+    "cl_exp_kdes = 0.020 h^-1 (~7.25 d to functional steady state; Chen 2021",
     "abstract, Table 4). CLI and CLMX share a fixed allometric",
     "exponent 0.75 on body weight (reference 70 kg) and both are",
     "modulated by a shared multiplicative covariate block:",
@@ -314,8 +314,8 @@ Chen_2021_lorlatinib <- function() {
     # the assay units in Chen 2021 Figure 1 and Figure 2).
     # ---------------------------------------------------------------------
     lcl    <- log(9.035)   ; label("Initial (single-dose) clearance CLI at 70 kg (L/h)")                                                            # Chen 2021 Table 4 theta_CLI = 9.035 L/h (bootstrap 95% CI 8.01, 10.06)
-    lclmax <- log(14.472)  ; label("Maximum induced (steady-state) clearance CLMX at 70 kg (L/h)")                                                  # Chen 2021 Table 4 theta_CLMX = 14.472 L/h (bootstrap 95% CI 12.73, 16.22)
-    lkind  <- log(0.020)   ; label("Auto-induction rate constant k_ind (1/h)")                                                                      # Chen 2021 Table 4 theta_IND = 0.020 1/h; abstract '~7.25 days to functional steady state (~5 induction half-lives)'
+    lcl_exp_inf <- log(14.472)  ; label("Maximum induced (steady-state) clearance CLMX at 70 kg (L/h)")                                                  # Chen 2021 Table 4 theta_CLMX = 14.472 L/h (bootstrap 95% CI 12.73, 16.22)
+    lcl_exp_kdes  <- log(0.020)   ; label("Auto-induction rate constant cl_exp_kdes (1/h)")                                                                      # Chen 2021 Table 4 theta_IND = 0.020 1/h; abstract '~7.25 days to functional steady state (~5 induction half-lives)'
     lvc    <- log(120.511) ; label("Central volume of distribution V2 at 70 kg (L)")                                                                # Chen 2021 Table 4 theta_V2 = 120.511 L (bootstrap 95% CI 103.4, 137.7)
     lvp    <- log(154.905) ; label("Peripheral volume of distribution V3 (L)")                                                                       # Chen 2021 Table 4 theta_V3 = 154.905 L (bootstrap 95% CI 134.2, 175.6)
     lq     <- log(22.002)  ; label("Inter-compartmental clearance Q (L/h)")                                                                          # Chen 2021 Table 4 theta_Q = 22.002 L/h (bootstrap 95% CI 17.65, 26.36)
@@ -333,8 +333,8 @@ Chen_2021_lorlatinib <- function() {
     # (no THETA slot). Wrapped in fixed() per fixed-parameter
     # conventions (parameter-names.md 'Fixed parameters').
     # ---------------------------------------------------------------------
-    e_wt_cl <- fixed(0.75) ; label("Body-weight allometric exponent on CL (unitless, fixed)")                                                        # Chen 2021 NONMEM ListS1: TVCLI = THETA(1)*(BWT/70)**0.75; TVCLMX = THETA(9)*(BWT/70)**0.75
-    e_wt_vc <- fixed(1.0)  ; label("Body-weight allometric exponent on V2 (unitless, fixed)")                                                        # Chen 2021 NONMEM ListS1: TVV2 = THETA(2)*(BWT/70)
+    e_wt_cl <- fixed(0.75) ; label("Body-weight allometric exponent on CL (unitless)")                                                        # Chen 2021 NONMEM ListS1: TVCLI = THETA(1)*(BWT/70)**0.75; TVCLMX = THETA(9)*(BWT/70)**0.75
+    e_wt_vc <- fixed(1.0)  ; label("Body-weight allometric exponent on V2 (unitless)")                                                        # Chen 2021 NONMEM ListS1: TVV2 = THETA(2)*(BWT/70)
 
     # ---------------------------------------------------------------------
     # Covariate effects on CL (linear centered ALB and DOSE_LOR_MGD; power
@@ -406,10 +406,10 @@ Chen_2021_lorlatinib <- function() {
     cl_cov    <- cl_balb * cl_tdose * cl_wncl
 
     cli  <- exp(lcl    + etalcl) * (WT / 70) ^ e_wt_cl * cl_cov
-    clmx <- exp(lclmax + etalcl) * (WT / 70) ^ e_wt_cl * cl_cov
+    cl_exp_inf <- exp(lcl_exp_inf + etalcl) * (WT / 70) ^ e_wt_cl * cl_cov
 
     # 2. Time-varying total CL via the paper's auto-induction model
-    #    CL(t) = CLI + (CLMX - CLI) * (1 - exp(-k_ind * t))
+    #    CL(t) = CLI + (CLMX - CLI) * (1 - exp(-cl_exp_kdes * t))
     #    rising from CLI at t = 0 (single-dose regime) to CLMX at
     #    t -> infinity (steady-state / auto-induced regime). Chen 2021
     #    Methods 'Lorlatinib clearance estimation' and Results
@@ -422,8 +422,8 @@ Chen_2021_lorlatinib <- function() {
     #
     #    `time` in rxode2 corresponds to elapsed simulation time from
     #    t = 0 at the first modeled dose event.
-    k_ind <- exp(lkind)
-    cl    <- cli + (clmx - cli) * (1 - exp(-k_ind * time))
+    cl_exp_kdes <- exp(lcl_exp_kdes)
+    cl    <- cli + (cl_exp_inf - cli) * (1 - exp(-cl_exp_kdes * time))
 
     # 3. Central and peripheral distribution (V2, V3, Q). V2 has fixed
     #    allometric exponent 1.0 on BWT; V3 and Q are constant.

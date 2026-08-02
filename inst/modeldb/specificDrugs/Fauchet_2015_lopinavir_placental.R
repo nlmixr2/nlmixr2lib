@@ -66,7 +66,7 @@ Fauchet_2015_lopinavir_placental <- function() {
     # Structural parameters from Fauchet 2015 Table 4 ('Population pharmacokinetic
     # parameters for lopinavir based on the MFLA model'). Apparent values absorb F;
     # CL and V are the maternal values for a nonpregnant reference subject.
-    lka  <- fixed(log(0.255)); label("Absorption rate constant (1/h, fixed)")                  # Table 4 row 'Ka' = 0.255 /h (footnote c 'Fixed value'); Results 'MFLA model' subsection: 'Our data did not allow estimation of a Ka value. The stability of the model was improved for a Ka value fixed to 0.255'
+    lka  <- fixed(log(0.255)); label("Absorption rate constant (1/h)")                  # Table 4 row 'Ka' = 0.255 /h (footnote c 'Fixed value'); Results 'MFLA model' subsection: 'Our data did not allow estimation of a Ka value. The stability of the model was improved for a Ka value fixed to 0.255'
     lcl  <- log(4.12);         label("Apparent nonpregnant maternal clearance (CL/F, L/h)")    # Table 4 row 'CL' = 4.12 L/h (nonpregnant reference; pregnancy applied via beta_CL_ENC)
     lvc  <- log(43.1);         label("Apparent maternal volume of distribution (V/F, L)")      # Table 4 row 'V' = 43.1 L
 

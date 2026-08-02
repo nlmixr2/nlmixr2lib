@@ -255,9 +255,9 @@ vandenBerg_2021_finerenone <- function() {
     # 'Population PK Modeling and Simulation' paragraph and ESM 'Volume of
     # Distribution' subsection)
     # =========================================================================
-    lvp_ratio <- fixed(log(1));     label("Log-ratio Vp/F to Vc/F (FIXED at 1, peripheral volume equals central volume)") # van den Berg 2021 Table 2 'Ratio Vp/F and Vc/F = 1 (fixed)' and ESM 'Volume of Distribution': 'two volumes of distribution were assumed equal as the data did not allow the estimation of two separate volumes ... supported by prior Phase 1 and 2 data analyses'
-    lalag1    <- fixed(log(0.215)); label("Absorption lag time ALAG1 (h, FIXED at 0.215)")               # van den Berg 2021 Table 2 'Absorption lag time (h) = 0.215 (fixed)'; ESM NONMEM '$THETA TH7 0.215 FIX'
-    lfdepot   <- fixed(log(1));     label("Reference relative bioavailability F1 (FIXED at 1; oral-only data)") # van den Berg 2021 Table 2 'Relative bioavailability = 1 (fixed)'; ESM NONMEM '$THETA TH8 1 FIX'
+    lvp_ratio <- fixed(log(1));     label("Log-ratio Vp/F to Vc/F (peripheral volume equals central volume)") # van den Berg 2021 Table 2 'Ratio Vp/F and Vc/F = 1 (fixed)' and ESM 'Volume of Distribution': 'two volumes of distribution were assumed equal as the data did not allow the estimation of two separate volumes ... supported by prior Phase 1 and 2 data analyses'
+    lalag1    <- fixed(log(0.215)); label("Absorption lag time ALAG1 (h)")               # van den Berg 2021 Table 2 'Absorption lag time (h) = 0.215 (fixed)'; ESM NONMEM '$THETA TH7 0.215 FIX'
+    lfdepot   <- fixed(log(1));     label("Reference relative bioavailability F1 (oral-only data)") # van den Berg 2021 Table 2 'Relative bioavailability = 1 (fixed)'; ESM NONMEM '$THETA TH8 1 FIX'
 
     # =========================================================================
     # Covariate effects - power-form exponents (continuous) and multiplicative

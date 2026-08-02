@@ -116,9 +116,9 @@ Barnett_2018_rosuvastatin <- function() {
     # that the model encodes by reading each row in its physically
     # plausible scale).
     propSd      <- 0.257;        label("Proportional residual error, RSV plasma (fraction)")  # Table 1, RSV row 'r prop (%) - plasma' = 0.257 (SE 6%), read as fraction.
-    addSd       <- fixed(0.05);  label("Additive residual error, RSV plasma (nmol/L, fixed)")  # Table 1, RSV row 'r add (nM) - plasma' = 0.05 FIXED
+    addSd       <- fixed(0.05);  label("Additive residual error, RSV plasma (nmol/L)")  # Table 1, RSV row 'r add (nM) - plasma' = 0.05 FIXED
     propSd_Ursv <- 0.578;        label("Proportional residual error, RSV urine (fraction)")    # Table 1, RSV row 'r prop (%) - urine'  = 0.578 (SE 16%), read as fraction.
-    addSd_Ursv  <- fixed(0.1);   label("Additive residual error, RSV urine (nmol/L, fixed)")   # Table 1, RSV row 'r prop (nM) - urine 0.1 FIXED' -- interpreted as the additive urine component (likely typo for 'r add (nM) - urine'); see in-file comment block above for rationale.
+    addSd_Ursv  <- fixed(0.1);   label("Additive residual error, RSV urine (nmol/L)")   # Table 1, RSV row 'r prop (nM) - urine 0.1 FIXED' -- interpreted as the additive urine component (likely typo for 'r add (nM) - urine'); see in-file comment block above for rationale.
   })
 
   model({

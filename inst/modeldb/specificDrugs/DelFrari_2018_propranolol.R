@@ -90,7 +90,7 @@ DelFrari_2018_propranolol <- function() {
     # Fixed allometric exponent on body weight for CL/F. The paper compared
     # an estimated vs fixed-at-0.75 exponent and retained the fixed-0.75
     # form on AIC grounds (Del Frari 2018 Results section 3.4 paragraph 2).
-    e_wt_cl <- fixed(0.75); label("Allometric exponent of (WT/6.3) on CL/F (unitless; fixed)")  # Del Frari 2018 Results 3.4 + Eq 5
+    e_wt_cl <- fixed(0.75); label("Allometric exponent of (WT/6.3) on CL/F (unitless)")  # Del Frari 2018 Results 3.4 + Eq 5
 
     # IIV from Table 5 final-model column. NONMEM exponential IIV with
     # variance reported directly as omega^2; the CV% column equals

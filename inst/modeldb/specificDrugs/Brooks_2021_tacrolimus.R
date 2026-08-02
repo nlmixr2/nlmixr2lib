@@ -154,13 +154,13 @@ Brooks_2021_tacrolimus <- function() {
     # both Q and V2", citing Xue 2011, Kassir 2014, Moes 2016, Andrews 2018,
     # Andrews 2020). Encoded as a unitless fixed parameter so the
     # provenance of the linked Q/V2 typical values is explicit in ini().
-    fact_q_vp <- fixed(2.0); label("Structural ratio linking Q to CL and V2 to V (Fact = Q/CL = V2/V; unitless, fixed)")  # Brooks 2021 Table 2 Fact = 2.0 (fixed)
+    fact_q_vp <- fixed(2.0); label("Structural ratio linking Q to CL and V2 to V (Fact = Q/CL = V2/V; unitless)")  # Brooks 2021 Table 2 Fact = 2.0 (fixed)
 
     # Allometric weight exponents (fixed at theoretic values). Reference 70 kg.
     # Shared exponent on CL and Q (Q = Fact * CL inherits the CL scaling) and
     # on V and V2 (V2 = Fact * V inherits the V scaling).
-    e_wt_cl_q  <- fixed(0.75); label("Allometric weight exponent on CL and Q (unitless, fixed theoretic)")  # Brooks 2021 Results: theoretic 0.75; estimated 0.73 then fixed
-    e_wt_vc_vp <- fixed(1.00); label("Allometric weight exponent on V and V2 (unitless, fixed theoretic)")  # Brooks 2021 Results: theoretic 1.0; estimated 0.83 then fixed
+    e_wt_cl_q  <- fixed(0.75); label("Allometric weight exponent on CL and Q (unitless, theoretic)")  # Brooks 2021 Results: theoretic 0.75; estimated 0.73 then fixed
+    e_wt_vc_vp <- fixed(1.00); label("Allometric weight exponent on V and V2 (unitless, theoretic)")  # Brooks 2021 Results: theoretic 1.0; estimated 0.83 then fixed
 
     # ----- Inter-individual variability (Brooks 2021 Table 2) -----
     # IIV on CL only. Reported as 26.1% CV; omega^2 = log(CV^2 + 1)

@@ -84,7 +84,7 @@ Othman_2007_carvedilol <- function() {
     # CR lag (fixed at 0.23 h based on sensitivity analysis; estimation of
     # the CR lag time gave rounding errors during NONMEM minimization).
     ltlag_ir <- log(0.20);          label("Absorption lag time for IR doses (h)")  # Table 1: 0.20 h (5.3% RSE)
-    ltlag_cr <- fixed(log(0.23));   label("Absorption lag time for CR doses (h, fixed by sensitivity analysis)")  # Table 1: 0.23 h (Fixed)
+    ltlag_cr <- fixed(log(0.23));   label("Absorption lag time for CR doses (h, by sensitivity analysis)")  # Table 1: 0.23 h (Fixed)
 
     # Inter-individual variability (omega^2 on the log scale of each
     # exponentiated typical-value parameter; Eq. 1 in Othman 2007).

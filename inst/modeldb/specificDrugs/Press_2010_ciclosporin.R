@@ -172,9 +172,9 @@ Press_2010_ciclosporin <- function() {
     # CL = 15 * (body weight/76)^0.75 ... typically with a value of 0.75
     # for clearance and 1 for volume of distribution [ref 24]."
     # ============================================================
-    allo_cl <- fixed(0.75)
+    e_wt_cl <- fixed(0.75)
     label("Allometric exponent on CL (unitless; FIXED)")
-    allo_vc <- fixed(1.0)
+    e_wt_vc <- fixed(1.0)
     label("Allometric exponent on Vc (unitless; FIXED)")
 
     # ============================================================
@@ -250,8 +250,8 @@ Press_2010_ciclosporin <- function() {
     # ka and on f(depot).
     # ------------------------------------------------------------
     ka <- exp(lka + etalka) * (1 + e_pred_dose_high_ka * pred_high)
-    cl <- exp(lcl + etalcl) * (WT / 76)^allo_cl
-    vc <- exp(lvc + etalvc) * (WT / 76)^allo_vc
+    cl <- exp(lcl + etalcl) * (WT / 76)^e_wt_cl
+    vc <- exp(lvc + etalvc) * (WT / 76)^e_wt_vc
     vp <- exp(lvp)
     q  <- exp(lq)
     fdepot <- exp(lfdepot + etalfdepot) *

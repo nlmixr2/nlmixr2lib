@@ -161,7 +161,7 @@ Li_2012_clozapine <- function() {
     # fixed at 1.3 h-1 based on several pharmacokinetic studies that
     # obtained rich data describing the pharmacokinetics of clozapine
     # in patients [ref 12]").
-    lka <- fixed(log(1.3)); label("Absorption rate constant Ka (1/h); fixed per Methods Results paragraph 1")  # Li 2012 Table 2: Ka = 1.3 (Fixed)
+    lka <- fixed(log(1.3)); label("Absorption rate constant Ka (1/h); per Methods Results paragraph 1")  # Li 2012 Table 2: Ka = 1.3 (Fixed)
 
     # Apparent oral clearance of clozapine (CL/F) and apparent volume of
     # distribution of clozapine (V/F) at the female-nonsmoker reference.
@@ -175,7 +175,7 @@ Li_2012_clozapine <- function() {
     # validated by the ratio of the mean amount of norclozapine to the
     # mean amount of clozapine at steady-state in these articles
     # [refs 22, 23]"). Linear-scale (in [0, 1]), wrapped in fixed().
-    kf  <- fixed(0.66); label("Fraction of absorbed clozapine converted to norclozapine (unitless, in [0, 1]); fixed")  # Li 2012 Table 2: KF = 0.66 (Fixed)
+    kf  <- fixed(0.66); label("Fraction of absorbed clozapine converted to norclozapine (unitless, in [0, 1])")  # Li 2012 Table 2: KF = 0.66 (Fixed)
 
     # Apparent oral clearance of norclozapine (CLM) and apparent volume
     # of distribution of norclozapine (VM) at the female-nonsmoker

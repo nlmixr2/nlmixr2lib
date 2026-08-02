@@ -98,7 +98,7 @@ Chigutsa_2011_rifampicin <- function() {
     # Allometric exponents fixed at canonical Anderson and Holford
     # (2008) values per Chigutsa 2011 Methods reference 3.
     # ============================================================
-    allo_cl <- fixed(0.75)
+    e_wt_cl <- fixed(0.75)
     label("Allometric exponent on CL (unitless; fixed)")
     # Chigutsa 2011 Methods reference 3 (Anderson and Holford 2008);
     # standard allometric scaling for clearance.
@@ -199,7 +199,7 @@ Chigutsa_2011_rifampicin <- function() {
     # 1. Body-weight allometric factors (Anderson and Holford 2008,
     #    Chigutsa 2011 Methods reference 3); reference 70 kg.
     # ------------------------------------------------------------
-    bw_cl <- (WT / 70) ^ allo_cl
+    bw_cl <- (WT / 70) ^ e_wt_cl
     bw_v  <- (WT / 70) ^ allo_v
 
     # ------------------------------------------------------------

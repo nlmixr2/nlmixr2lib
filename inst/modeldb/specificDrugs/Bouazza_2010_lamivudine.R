@@ -37,7 +37,7 @@ Bouazza_2010_lamivudine <- function() {
     # Two-compartment model with the structural assumption Ka = alpha (distribution
     # eigenvalue), which is required by the sparse early-time sampling design (no
     # samples during the absorption phase). See Methods 'Modeling strategy'.
-    lka <- fixed(log(0.71)); label("Absorption rate constant (1/h); fixed to the published value from reference 17 (= the model's alpha disposition eigenvalue)") # Table 2 K_a; Methods 'Modeling strategy' fixes K_a per ref. 17
+    lka <- fixed(log(0.71)); label("Absorption rate constant (1/h); the published value from reference 17 (= the model's alpha disposition eigenvalue)") # Table 2 K_a; Methods 'Modeling strategy' fixes K_a per ref. 17
     lcl <- log(16.9);        label("Apparent clearance at WT=16.8 kg (CL/F, L/h)") # Table 2 CL/F
     lvc <- log(30.8);        label("Apparent central volume at WT=16.8 kg (Vc/F, L)") # Table 2 Vc/F
     lvp <- log(58.6);        label("Apparent peripheral volume at WT=16.8 kg (Vp/F, L)") # Table 2 Vp/F
@@ -46,8 +46,8 @@ Bouazza_2010_lamivudine <- function() {
     # Allometric exponents -- fixed at canonical theoretical values per Methods
     # ("from allometric scaling theory, these are typically 0.75 for clearance
     # parameters and 1 for volumes of distribution (2)").
-    e_wt_cl <- fixed(0.75); label("Allometric exponent on CL/F and Q/F (unitless; fixed at 0.75)") # Methods 'Modeling strategy'
-    e_wt_vc <- fixed(1);    label("Allometric exponent on Vc/F and Vp/F (unitless; fixed at 1)")   # Methods 'Modeling strategy'
+    e_wt_cl <- fixed(0.75); label("Allometric exponent on CL/F and Q/F (unitless)") # Methods 'Modeling strategy'
+    e_wt_vc <- fixed(1);    label("Allometric exponent on Vc/F and Vp/F (unitless)")   # Methods 'Modeling strategy'
 
     # IIV on CL/F only (exponential model; only IIV retained in final model).
     # omega CL/F = 0.30 in Table 2 is reported as the SD on the log scale

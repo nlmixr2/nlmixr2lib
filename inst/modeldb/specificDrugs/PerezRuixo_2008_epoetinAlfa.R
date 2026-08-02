@@ -135,7 +135,7 @@ PerezRuixo_2008_epoetinAlfa <- function() {
     ltlag2  <- log(2.72);            label("Slower-pathway lag time tlag2 (h)")                   # Perez-Ruixo 2008 Table I prior mean
     lfdepot <- log(0.62);            label("Minimum absolute bioavailability F0 (fraction)")      # Perez-Ruixo 2008 Table I prior mean
     lrbase  <- log(13.9);            label("Baseline endogenous EPO concentration BSL (IU/L)")    # Perez-Ruixo 2008 Table I prior mean
-    logitfr <- logit(0.60);          label("Fast/slow absorption split fraction fr (logit scale)") # Perez-Ruixo 2008 Table I prior mean
+    logitffo <- logit(0.60);          label("Fast/slow absorption split fraction fr (logit scale)") # Perez-Ruixo 2008 Table I prior mean
 
     # PK structural parameters held fixed from Olsson-Gisleskog 2007
     # (Perez-Ruixo 2008 Table I footnote a). All six were fixed during
@@ -166,7 +166,7 @@ PerezRuixo_2008_epoetinAlfa <- function() {
     etaltlag2  ~ 0.2487  # log(0.53^2 + 1) = 0.2487; Table I prior CV(tlag2) = 53%
     etalfdepot ~ 0.1147  # log(0.35^2 + 1) = 0.1147; Table I prior CV(F0)    = 35%
     etalrbase  ~ 0.0862  # log(0.30^2 + 1) = 0.0862; Table I prior CV(BSL)   = 30%
-    etalogitfr ~ 0.1854  # log(0.45^2 + 1) = 0.1854; Table I prior CV(fr)    = 45% (logit-domain approximation)
+    etalogitffo ~ 0.1854  # log(0.45^2 + 1) = 0.1854; Table I prior CV(fr)    = 45% (logit-domain approximation)
 
     # =================================================================
     # PD STRUCTURAL PARAMETERS (Perez-Ruixo 2008 Table II Model D,
@@ -233,7 +233,7 @@ PerezRuixo_2008_epoetinAlfa <- function() {
     tlag2  <- exp(ltlag2  + etaltlag2)
     f0     <- exp(lfdepot + etalfdepot)
     bsl    <- exp(lrbase  + etalrbase)
-    fr     <- expit(logitfr + etalogitfr)
+    fr     <- expit(logitffo + etalogitffo)
 
     km     <- exp(lkm)
     q      <- exp(lq)

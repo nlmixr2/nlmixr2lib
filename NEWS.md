@@ -2,6 +2,87 @@
 
 # development version
 
+- Time-varying clearance now has a shared vocabulary (issue #481). 31 models
+  gave clearance an explicit time dependence under some twenty different
+  spellings, so the structure could not be found by name and the magnitude of
+  the change could not be compared across drugs without expanding each
+  `d/dt(central)`. Two stems, so the functional form is visible in the name:
+
+  - sigmoidal in time: `cl_hill_max`, `cl_hill_t50`, `cl_hill_gamma`
+  - exponential decay to a constant: `cl_exp_inf`, `cl_exp_component`,
+    `cl_exp_kdes`
+
+  with the usual `l` prefix for the log scale, `eta` for the IIV partner and
+  `e_<cov>_` for covariate effects. The symbol the ODE consumes is now always
+  the total clearance; components are named so they cannot be mistaken for it.
+  `checkModelConventions()` warns when a clearance expression references time
+  without one of these stems. Periodic (diurnal / circadian) variation is a
+  different structure and keeps its own names.
+
+  **Breaking for simulation code** that references these parameters by name.
+  Of the 31 models, only `PK_2cmt_tdcl_des` shipped in 0.3.2.
+
+- New `compartmentData` model metadata (issue #482), declaring what each ODE
+  state holds: `analyte` (which molecular species), `units` (of the state
+  amount) and `specimen` (the biological matrix, from a 23-term controlled
+  vocabulary in `conventions$specimenVocabulary`), plus `verified` recording
+  whether it was confirmed against the source paper. This makes "restrict to
+  blood, serum or plasma" a filter rather than a judgement call made by
+  reading state names.
+
+  `checkModelConventions()` validates the block, and `buildModelDb()` runs it,
+  so a malformed entry is an error. A *missing* block is currently a warning
+  while the database is backfilled -- 1,403 models have ODE states. The
+  backfill plan is in `inst/references/compartment-data-followup.md`, and new
+  models are required to carry the block via the extraction skill's template
+  and verification checklist.
+
+  The vocabulary deliberately includes two non-matrix values,
+  `"administration site"` for depot and transit states and `"not applicable"`
+  for latent / PD / bookkeeping states, so that the 642 models using such
+  states are not forced to invent a specimen.
+
+- Parameter-naming and provenance cleanup across the model database
+  (issues #474-#479).
+
+  - Allometric exponents now use the `e_<covariate>_<parameter>` form the
+    rest of the library already used: `allo_cl`/`allo_q`/`allo_vc`/`allo_vp`
+    -> `e_wt_cl`/`e_wt_q`/`e_wt_vc`/`e_wt_vp` (35 models; all were
+    weight-based, verified before renaming).
+  - Logit-scale absorbed fractions are split by mechanism instead of sharing
+    `logitf1`/`logitfr`: `logitfdepot` (bioavailability), `logitffo`
+    (first-order arm of a parallel-pathway model), `logitfburst`
+    (burst/rapid-release arm), plus `logitfir` and `logitfmat` for the
+    immediate-release and transit-delay cases that fit neither stem.
+  - `lcll` -> `lcl_ligand`, so ligand clearance is not confused with the
+    `lcl` of the drug itself.
+  - Case and separator normalisation: `lKss` -> `lkss`, `lkD` -> `lkd`,
+    `lBmax` -> `lbmax`, `Km` -> `km`, `kd_LR`/`kd_T1`/`kd_T2` -> lowercase.
+  - Parameters the source paper fixed are now wrapped in `fixed()` rather
+    than only saying so in the label, so `iniDf$fix` is trustworthy.
+    Parameters that merely *land* on a convention value but were genuinely
+    estimated (Lowe 2009 `e_wt_cl` 1.00 +/- 0.0662, Lioger 2017, Quartino
+    2016 RSE 22.2%, Sathe 2024 RSE 13.3%, Frey 2013) are left estimable with
+    the reported precision recorded in a comment.
+
+  **Breaking for simulation code** that references parameters by name in two
+  models that shipped in 0.3.2: `Cirincione_2017_exenatide` (`logitfr` ->
+  `logitffo`) and `Kovalenko_2020_dupilumab` (`Km` -> `km`). The other 44
+  affected models were added after 0.3.2 and so had no released contract.
+  Model ids and vignette filenames are unchanged throughout.
+
+- `checkModelConventions()` gained two checks, both run by `buildModelDb()`
+  so they gate every database build:
+
+  - a retired-name check (error) driven by a `renamedParameters` map, so a
+    name retired above cannot quietly reappear in a new model; and
+  - a fixed-label agreement check (warning) that flags a parameter whose
+    label claims the value was fixed, assumed, or taken from another
+    publication while `fix` is still `FALSE`. It is a warning rather than an
+    error because 15 parameters in 10 models pre-date it; those are listed
+    with per-group guidance in `inst/references/fixed-provenance-followup.md`,
+    and the check should be promoted to an error once they are cleared.
+
 - Add Wu 2023 SPI-62 ([doi:10.1007/s40262-023-01278-8](https://doi.org/10.1007/s40262-023-01278-8)) - healthy adults.
 
 - Disambiguated the overloaded `OC` name, which denoted five unrelated

@@ -43,7 +43,7 @@ Grover_2011_tacrolimus <- function() {
     # volume Vp/F = Vss/F - V/F = 462 - 73.3 = 388.7 L is held at this
     # derived constant with no IIV. This matches the secondary calculated
     # V2/F mean of 391 L in Table 2.
-    lvp   <- fixed(log(388.7)); label("Apparent peripheral volume Vp/F = Vss/F - V/F = 462 - 73.3 (L; fixed)") # Table 2 NONMEM Parameter Estimates: Vss/F = 462 L, V/F = 73.3 L; Vp/F derived and fixed (Vss IIV not estimable)
+    lvp   <- fixed(log(388.7)); label("Apparent peripheral volume Vp/F = Vss/F - V/F = 462 - 73.3 (L)") # Table 2 NONMEM Parameter Estimates: Vss/F = 462 L, V/F = 73.3 L; Vp/F derived and fixed (Vss IIV not estimable)
 
     # Inter-individual variability. Grover 2011 Table 2 reports IIV as %CV;
     # convert to log-scale variance via omega^2 = log(CV^2 + 1):

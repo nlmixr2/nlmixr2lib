@@ -176,8 +176,8 @@ Boak_2014_linezolid <- function() {
     # F_Ini_Pre and F_Ini_PL scale the initial precursor and platelet pools
     # away from steady state at time zero. Typical values are fixed at 1
     # (Boak 2014 Table 2 footnote d) with estimated BSV.
-    lfini_pre   <- fixed(log(1)) ; label("Initial-condition scale factor F_Ini_Pre for precursors (typical fixed to 1)")               # Boak 2014 Table 2 (F_Ini_Pre)
-    lfini_pl    <- fixed(log(1)) ; label("Initial-condition scale factor F_Ini_PL for platelets (typical fixed to 1)")                 # Boak 2014 Table 2 (F_Ini_PL)
+    lfini_pre   <- fixed(log(1)) ; label("Initial-condition scale factor F_Ini_Pre for precursors (typical)")               # Boak 2014 Table 2 (F_Ini_Pre)
+    lfini_pl    <- fixed(log(1)) ; label("Initial-condition scale factor F_Ini_PL for platelets (typical)")                 # Boak 2014 Table 2 (F_Ini_PL)
 
     # ---- Inter-individual variability ----
     # BSV values in Boak 2014 Table 2 are reported as decimal CV (confirmed

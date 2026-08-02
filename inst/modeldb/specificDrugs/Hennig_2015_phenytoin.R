@@ -43,16 +43,16 @@ Hennig_2015_phenytoin <- function() {
     # Reference body weight 70 kg; concentration in mg/L, time in hours.
     lcl  <- log(14.0); label("Clearance for unbound phenytoin at 70 kg (CL, L/h)")        # Table 2: CL = 14.0 L/h/70 kg
     lvc  <- log(447);  label("Volume of distribution for unbound phenytoin at 70 kg (V2, L)")  # Table 2: V2 = 447 L/70 kg
-    lvp  <- fixed(log(2.8));        label("Volume of distribution for bound phenytoin at 70 kg, fixed to plasma albumin volume (V3, L)")  # Table 2: V3 = 2.8 L/70 kg, fixed
-    lka  <- fixed(log(0.225));      label("First-order oral absorption rate constant, fixed (Ka, 1/h)")  # Methods p359 / Table 2: ka = 0.225 1/h, fixed after sensitivity analysis
+    lvp  <- fixed(log(2.8));        label("Volume of distribution for bound phenytoin at 70 kg, plasma albumin volume (V3, L)")  # Table 2: V3 = 2.8 L/70 kg, fixed
+    lka  <- fixed(log(0.225));      label("First-order oral absorption rate constant (Ka, 1/h)")  # Methods p359 / Table 2: ka = 0.225 1/h, fixed after sensitivity analysis
     lpub <- log(8.23); label("Unbound-bound partition coefficient at reference albumin 35 g/L (PUB, dimensionless)")  # Table 2: PUB = 8.23 at ALB = 35 g/L
-    lteq <- fixed(log(1.1e-4));     label("Half-life of unbound-bound equilibration, fixed to 0.4 s (Teq, h)")  # Methods p358: Teq fixed to 0.4 s = 1.1e-4 h
+    lteq <- fixed(log(1.1e-4));     label("Half-life of unbound-bound equilibration, 0.4 s (Teq, h)")  # Methods p358: Teq fixed to 0.4 s = 1.1e-4 h
     logitfdepot <- log(0.63 / (1 - 0.63));  label("Logit-transformed oral bioavailability (logit-scale; F = 0.63)")  # Table 2: F1 = 63 percent (logit-transformed in NONMEM run186 to keep F in [0,1])
 
     # Covariate effects
-    e_wt_cl   <- fixed(0.75); label("Allometric exponent on CL, fixed (unitless)")  # Methods p357 and p360 final equation: CL_i = CL * (WT/70)^0.75
-    e_wt_vc   <- fixed(1);    label("Allometric exponent on V2, fixed (unitless)")  # Methods p360: V2_i = V2 * (WT/70)
-    e_wt_vp   <- fixed(1);    label("Allometric exponent on V3, fixed (unitless)")  # Methods p360: V3_i = 2.8 * (WT/70)
+    e_wt_cl   <- fixed(0.75); label("Allometric exponent on CL (unitless)")  # Methods p357 and p360 final equation: CL_i = CL * (WT/70)^0.75
+    e_wt_vc   <- fixed(1);    label("Allometric exponent on V2 (unitless)")  # Methods p360: V2_i = V2 * (WT/70)
+    e_wt_vp   <- fixed(1);    label("Allometric exponent on V3 (unitless)")  # Methods p360: V3_i = 2.8 * (WT/70)
     e_alb_pub <- 0.00737;     label("Linear slope of PUB on (ALB - 35), per g/L")   # Table 2 and equation p360: PUB = 8.23 * (1 + 0.00737 * (ALB - 35))
 
     # IIV. Hennig 2015 reports CV percent equivalent to 100 * sqrt(omega^2) for

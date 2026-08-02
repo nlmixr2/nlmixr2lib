@@ -49,7 +49,7 @@ Brillac_2025_isatuximab <- function() {
     # poorly estimated (RSE 136% on the free fit).
     e_wt_cl <- 0.833;        label("Allometric exponent of WT on CL (unitless)")              # Brillac 2025 Table 1: beta_CL_log(WT/MedWT) = 0.833
     e_wt_vc <- 0.821;        label("Allometric exponent of WT on V1 (unitless)")              # Brillac 2025 Table 1: beta_V1_log(WT/MedWT) = 0.821
-    e_wt_q  <- fixed(0.85);  label("Allometric exponent of WT on Q (fixed; unitless)")        # Brillac 2025 Table 1: beta_Q_log(WT/MedWT)  = 0.85 (fixed)
+    e_wt_q  <- fixed(0.85);  label("Allometric exponent of WT on Q (unitless)")        # Brillac 2025 Table 1: beta_Q_log(WT/MedWT)  = 0.85 (fixed)
     e_wt_vp <- 0.72;         label("Allometric exponent of WT on V2 (unitless)")              # Brillac 2025 Table 1: beta_V2_log(WT/MedWT) = 0.72
 
     # Inter-individual variability (Monolix exponential model:

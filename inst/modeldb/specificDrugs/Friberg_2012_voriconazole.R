@@ -116,7 +116,7 @@ Friberg_2012_voriconazole <- function() {
     # ka (absorption rate constant)
     lka_ped                   <- log(1.19)   ; label("Absorption rate ka in pediatric studies (1/h)")                        # Table 3: thetaka = 1.19 (children studies 1-3)
     e_stdy4_adol_ka           <- -0.615      ; label("Additive-fractional shift on ka for Study 4 (adolescent) (unitless)")  # Table 3: thetaSTDY4,adol = -0.615 -> ka in adolescents = 1.19 * (1 - 0.615) = 0.458
-    ka_adult                  <- fixed(100)  ; label("Absorption rate ka in adults (1/h) -- structurally fixed at a high value because Alag absorbs the lag")  # Table 3: thetaSTDY5,adult ka = 100 (fixed; oral bioavailability and Alag are estimated against this high ka)
+    ka_adult                  <- fixed(100)  ; label("Absorption rate ka in adults (1/h) -- structurally a high value because Alag absorbs the lag")  # Table 3: thetaSTDY5,adult ka = 100 (fixed; oral bioavailability and Alag are estimated against this high ka)
 
     # Alag (absorption lag time)
     lalag_adult               <- log(0.949)  ; label("Absorption lag time Alag in adults (h)")                               # Table 3: thetaAlag = 0.949

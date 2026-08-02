@@ -75,8 +75,8 @@ Hennig_2006_itraconazole <- function() {
 
     # Allometric scaling exponents - fixed per the paper's Methods (Eq. 5 and
     # surrounding text) and the .ctl lines 20-21.
-    allo_cl <- fixed(0.75);  label("Allometric exponent on CL/F of itraconazole (fixed)")                         # Hennig 2006 Methods (Eq. 5): "exponent x was fixed to 0.75 for clearance"
-    allo_vc <- fixed(1.0);   label("Allometric exponent on Vd/F of itraconazole (fixed)")                         # Hennig 2006 Methods (Eq. 5): "and 1 for volume of distribution"
+    e_wt_cl <- fixed(0.75);  label("Allometric exponent on CL/F of itraconazole")                         # Hennig 2006 Methods (Eq. 5): "exponent x was fixed to 0.75 for clearance"
+    e_wt_vc <- fixed(1.0);   label("Allometric exponent on Vd/F of itraconazole")                         # Hennig 2006 Methods (Eq. 5): "and 1 for volume of distribution"
 
     # IIV. Hennig 2006 reports omega as %CV (Table II footer); convert to
     # log-normal variance via omega^2 = log(1 + CV^2). Block on CL_itra and
@@ -114,8 +114,8 @@ Hennig_2006_itraconazole <- function() {
     mw_ratio <- 722.64 / 705.64
 
     # Individual parameters - parent itraconazole.
-    cl <- exp(lcl + etalcl) * (WT / ref_wt)^allo_cl
-    vc <- exp(lvc + etalvc) * (WT / ref_wt)^allo_vc
+    cl <- exp(lcl + etalcl) * (WT / ref_wt)^e_wt_cl
+    vc <- exp(lvc + etalvc) * (WT / ref_wt)^e_wt_vc
 
     # Individual parameters - hydroxy-itraconazole metabolite (no IIV on
     # vc_ohi per Table II; mw_ratio applied to both clearance and volume

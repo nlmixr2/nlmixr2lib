@@ -65,17 +65,17 @@ Lommerse_2019_raltegravir <- function() {
     # which evaluates to 0 at PNA=0 by construction. No explicit CL_base parameter is needed.
     # F4 (neonate bioavailability after birth) fixed to 1 as the reference anchor for the
     # relative-bioavailability parameterisation.
-    lfdepot_neonate <- fixed(log(1)); label("Neonate oral bioavailability (F4, fraction; fixed to 1)")       # Table 2, F4 fixed = 1
+    lfdepot_neonate <- fixed(log(1)); label("Neonate oral bioavailability (F4, fraction)")       # Table 2, F4 fixed = 1
 
     # =====================================================================
     # MATERNAL PK -- Rizk 2015 pediatric popPK (ref [12]) values at the same
     # 25 kg reference. All maternal disposition parameters are fixed; only
     # KA and F are estimated to inform the mother-to-fetus transfer.
     # =====================================================================
-    lcl_mother    <- fixed(log(9.73));  label("Maternal apparent clearance at 25 kg, fixed from Rizk 2015 (CL, L/h)")     # Table 2, CL fixed = 9.73 L/h
-    lvc_mother    <- fixed(log(3.52));  label("Maternal central volume at 25 kg, fixed from Rizk 2015 (V2, L)")           # Table 2, V2 fixed = 3.52 L
-    lvp_mother    <- fixed(log(27));    label("Maternal peripheral volume at 25 kg, fixed from Rizk 2015 (V3, L)")        # Table 2, V3 fixed = 27 L
-    lq_mother     <- fixed(log(0.866)); label("Maternal intercompartmental clearance at 25 kg, fixed from Rizk 2015 (Q, L/h)") # Table 2, Q fixed = 0.866 L/h
+    lcl_mother    <- fixed(log(9.73));  label("Maternal apparent clearance at 25 kg, from Rizk 2015 (CL, L/h)")     # Table 2, CL fixed = 9.73 L/h
+    lvc_mother    <- fixed(log(3.52));  label("Maternal central volume at 25 kg, from Rizk 2015 (V2, L)")           # Table 2, V2 fixed = 3.52 L
+    lvp_mother    <- fixed(log(27));    label("Maternal peripheral volume at 25 kg, from Rizk 2015 (V3, L)")        # Table 2, V3 fixed = 27 L
+    lq_mother     <- fixed(log(0.866)); label("Maternal intercompartmental clearance at 25 kg, from Rizk 2015 (Q, L/h)") # Table 2, Q fixed = 0.866 L/h
     lka_mother    <- log(0.175);        label("Maternal first-order absorption rate constant (KA, 1/h)")                  # Table 2, KA = 0.175 1/h
     lfdepot_mother <- log(0.517);       label("Maternal oral bioavailability relative to neonate F=1 anchor (F, fraction)") # Table 2, F = 0.517
 
@@ -89,8 +89,8 @@ Lommerse_2019_raltegravir <- function() {
     # =====================================================================
     # ALLOMETRIC EXPONENTS (all fixed per Methods)
     # =====================================================================
-    e_wt_cl_q  <- fixed(0.75); label("Fixed shared allometric exponent on CL and Q (unitless; Holford 1996)")  # Methods: fixed to 0.75
-    e_wt_vc_vp <- fixed(1.0);  label("Fixed shared allometric exponent on Vc and Vp (unitless; isometric)")    # Methods: fixed to 1.0
+    e_wt_cl_q  <- fixed(0.75); label("Shared allometric exponent on CL and Q (unitless; Holford 1996)")  # Methods: fixed to 0.75
+    e_wt_vc_vp <- fixed(1.0);  label("Shared allometric exponent on Vc and Vp (unitless; isometric)")    # Methods: fixed to 1.0
 
     # =====================================================================
     # IIV -- paper reports the magnitudes as fractions in Table 2 (matching

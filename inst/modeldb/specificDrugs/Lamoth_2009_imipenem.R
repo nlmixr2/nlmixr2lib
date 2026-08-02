@@ -109,7 +109,7 @@ Lamoth_2009_imipenem <- function() {
     # weight improved the model" and Table 2 reports V in "liters per 70 kg
     # BW" -- i.e. a linear scaling V_i = V_70kg * (WT / 70). Encoded as a
     # fixed exponent so the structural assumption is visible in metadata.
-    e_wt_vc <- fixed(1); label("Linear WT exponent on Vc (fixed at 1)")                      # Lamoth 2009 Results paragraph 3 and Table 2 ("V (liters per 70 kg BW)")
+    e_wt_vc <- fixed(1); label("Linear WT exponent on Vc")                      # Lamoth 2009 Results paragraph 3 and Table 2 ("V (liters per 70 kg BW)")
 
     # Inter-individual variability. Lamoth 2009 reports a single IIV
     # magnitude ("17% +/- 6%") in Table 2 alongside the CL parameters; the

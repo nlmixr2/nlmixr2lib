@@ -130,7 +130,7 @@ LeJouan_2005_quinine <- function() {
     # not be estimated and was fixed to 0.001/h to be consistent with the
     # available data"). The 37% CV inter-individual variability on b is
     # retained via etalbfu.
-    lbfu <- fixed(log(0.001)) ; label("Slope of fu vs time (1/h, fixed)")              # Le Jouan 2005 Table 2: b = 0.001/h (fixed)
+    lbfu <- fixed(log(0.001)) ; label("Slope of fu vs time (1/h)")              # Le Jouan 2005 Table 2: b = 0.001/h (fixed)
 
     # Inter-individual variability. Le Jouan 2005 Table 2 reports CV%
     # ("Interindividual CV (%)" column). The internal log-normal

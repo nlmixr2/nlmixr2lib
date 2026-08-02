@@ -57,8 +57,8 @@ Bouazza_2011_lamivudine <- function() {
 
     # Allometric exponents (theory-based, not estimated; Bouazza 2011 Materials and Methods).
     # The paper applies the canonical 0.75 / 1 values without reporting RSE -> fixed.
-    e_wt_cl_q  <- fixed(0.75); label("Allometric WT exponent shared across CL/F and Q/F (unitless, fixed)")
-    e_wt_vc_vp <- fixed(1);    label("Allometric WT exponent shared across Vc/F and Vp/F (unitless, fixed)")
+    e_wt_cl_q  <- fixed(0.75); label("Allometric WT exponent shared across CL/F and Q/F (unitless)")
+    e_wt_vc_vp <- fixed(1);    label("Allometric WT exponent shared across Vc/F and Vp/F (unitless)")
 
     # Maturation parameters for CL: F(PMA) = PMA^gamma / (PMA50^gamma + PMA^gamma)
     # Bouazza 2011 Table 1. PMA50 is in weeks; the paper's published symbols are PMA50 and gamma.

@@ -65,7 +65,7 @@ Moes_2016_tacrolimus <- function() {
     # dose; the table-4 CL, Vc, Q, and Vp are therefore reported as actual
     # (not apparent) parameters and the model file applies the same F = 0.23
     # via f(depot).
-    lfdepot <- fixed(log(0.23)) ; label("Fixed oral bioavailability F (unitless)")  # Moes 2016 Methods Base model "F fixed to 0.23" and Table 4 row "F (fixed) = 0.23"
+    lfdepot <- fixed(log(0.23)) ; label("Oral bioavailability F (unitless)")  # Moes 2016 Methods Base model "F fixed to 0.23" and Table 4 row "F (fixed) = 0.23"
 
     # --- Covariate effects: CYP3A5*3 donor + recipient combination on CL ---
     # Moes 2016 Methods covariate-effect equation:

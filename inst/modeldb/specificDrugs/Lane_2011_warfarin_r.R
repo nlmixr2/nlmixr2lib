@@ -162,7 +162,7 @@ Lane_2011_warfarin_r <- function() {
     #   Additive residual: fixed at 1 ng/mL = 0.001 mg/L (Lane 2011 Table 3 "Additive error 1 Fixed")
     # ============================================================
     propSd <- 0.319           ; label("Proportional residual SD (fraction)")                              # Lane 2011 Table 3 (estimated, 95% CI 29.2-34.5%)
-    addSd  <- fixed(0.001)    ; label("Additive residual SD (mg/L; = 1 ng/mL fixed in the paper)")        # Lane 2011 Table 3 (fixed at low value; the additive component dropped out of the final R-warfarin model)
+    addSd  <- fixed(0.001)    ; label("Additive residual SD (mg/L; = 1 ng/mL from the paper)")        # Lane 2011 Table 3 (fixed at low value; the additive component dropped out of the final R-warfarin model)
   })
 
   model({

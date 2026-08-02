@@ -74,7 +74,7 @@ Golubovic_2019_sirolimus <- function() {
     # approximately 2e-5, i.e., numerical-noise level) and bootstrap
     # confidence interval 2.19-2.19, consistent with fix semantics rather
     # than true posterior uncertainty.
-    lka <- fixed(log(2.19)); label("First-order absorption rate constant, ka (1/h; prior-fixed)")  # Table IV: ka = 2.19 1/h (prior-fixed)
+    lka <- fixed(log(2.19)); label("First-order absorption rate constant, ka (1/h; prior-)")  # Table IV: ka = 2.19 1/h (prior-fixed)
 
     # Covariate effects on CL/F. The paper's final equation is
     #   CL/F = 12.2 * 0.63^AST_HIGH * (1 - 0.388 * AGE / 44)

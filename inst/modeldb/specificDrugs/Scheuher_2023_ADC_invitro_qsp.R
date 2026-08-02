@@ -45,7 +45,7 @@ Scheuher_2023_ADC_invitro_qsp <- function() {
     # (endocytosis, recycling, and degradation identical between HER2 and HER2:Ab)
 
     # Linker cleavage rate constant (1/hour); T-DM1 has non-cleavable linker so 0
-    lkcleave <- fixed(log(1e-12)); label("Endosomal linker cleavage rate (1/hour) - fixed at ~0 for T-DM1 non-cleavable linker")  # Table S2a: 0 /s
+    lkcleave <- fixed(log(1e-12)); label("Endosomal linker cleavage rate (1/hour) - ~0 for T-DM1 non-cleavable linker")  # Table S2a: 0 /s
 
     # Payload target binding
     # k_on_PL = 1e-3 /nM/s -> 3.6 /nM/hour (typical binding, per Frost 2016 / Guan 2015)
@@ -72,7 +72,7 @@ Scheuher_2023_ADC_invitro_qsp <- function() {
     # residual error in the paper (deterministic simulation vs. observed profiles),
     # but nlmixr2 conventions require at least one error term. Set a small
     # proportional error to allow simulation with observed noise levels.
-    propSd <- fixed(0.1); label("Proportional residual error (fraction) - not from paper; fixed at 10% for simulation")  # Assumption: paper reports deterministic fits, no residual error term
+    propSd <- fixed(0.1); label("Proportional residual error (fraction) - not from paper; 10% for simulation")  # Assumption: paper reports deterministic fits, no residual error term
   })
 
   model({

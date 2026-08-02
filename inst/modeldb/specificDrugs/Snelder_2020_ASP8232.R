@@ -74,7 +74,7 @@ Snelder_2020_ASP8232 <- function() {
     lvp2  <- log(26.7);   label("Apparent peripheral2 volume V4/F1 (L)")                       # Snelder 2020 Table 4 (V4/F1 = 26.7 L, RSE 17.4%)
     # V3/V2 = 1 fixed (Table 4 footnote a,b); vp is set = vc inside model()
     # F1 = 1 fixed (apparent-parameter convention); covariate on F1 rescales it
-    lfdepot <- fixed(log(1)); label("Reference relative bioavailability F1 (fixed at 1)")     # Snelder 2020: only apparent parameters (CL/F1, V2/F1, ...) are estimated; F1 anchored at 1
+    lfdepot <- fixed(log(1)); label("Reference relative bioavailability F1")     # Snelder 2020: only apparent parameters (CL/F1, V2/F1, ...) are estimated; F1 anchored at 1
 
     # ------------------------------------------------------------------
     # TMDD binding -- concentrations in nmol/L, KD in nmol/L. Every
@@ -86,7 +86,7 @@ Snelder_2020_ASP8232 <- function() {
     lsvap1c <- log(5.52);  label("Central-compartment soluble VAP-1 total concentration sVAP-1c (nmol/L)")  # Snelder 2020 Table 4 (sVAP-1c = 5.52 nM, RSE 1.97%); NONMEM Bmax in supplement per paper
     f_mvap1c  <- 2.13;               label("Factor for mVAP-1 in central compartment (mVAP-1c = f_mvap1c * sVAP-1c)")           # Snelder 2020 Table 4 (Factor for mVAP-1c = 2.13, RSE 15.9%); paper's Bmax2 / Bmax
     f_mvap1p1 <- 52;                 label("Factor for mVAP-1 in peripheral 1 compartment (mVAP-1p1 = f_mvap1p1 * sVAP-1c)")    # Snelder 2020 Table 4 (Factor for mVAP-1p1 = 52, RSE 11%); paper's Bmax3 / Bmax
-    f_mvap1p2 <- fixed(1);           label("Factor for mVAP-1 in peripheral 2 compartment (mVAP-1p2 = f_mvap1p2 * sVAP-1c) [fixed]")  # Snelder 2020 Table 4 footnote a,d (Factor for mVAP-1p2 fixed at 1)
+    f_mvap1p2 <- fixed(1);           label("Factor for mVAP-1 in peripheral 2 compartment (mVAP-1p2 = f_mvap1p2 * sVAP-1c) []")  # Snelder 2020 Table 4 footnote a,d (Factor for mVAP-1p2 fixed at 1)
 
     # ------------------------------------------------------------------
     # VAP-1 activity model -- power function on free (unbound) sVAP-1c.
@@ -99,7 +99,7 @@ Snelder_2020_ASP8232 <- function() {
     # ------------------------------------------------------------------
     emax_egfr_cl  <- 1.3;                     label("Emax of the sigmoid-Emax effect of baseline eGFR on CL (fractional)")     # Snelder 2020 Table 4 (Emax eGFR on CL/F1 = 1.3, RSE 15.5%)
     lec50_egfr_cl <- log(77);                 label("EC50 of the sigmoid-Emax effect of baseline eGFR on CL (mL/min/1.73 m^2)")  # Snelder 2020 Table 4 (EC50 eGFR on CL/F1 = 77 mL/min/1.73 m^2, RSE 3.95%)
-    hill_egfr_cl  <- fixed(10);               label("Hill exponent of the sigmoid-Emax effect of baseline eGFR on CL [fixed]")    # Snelder 2020 Table 4 (POW eGFR on CL/F1 = 10 fixed; nearly-step-function around EC50)
+    hill_egfr_cl  <- fixed(10);               label("Hill exponent of the sigmoid-Emax effect of baseline eGFR on CL []")    # Snelder 2020 Table 4 (POW eGFR on CL/F1 = 10 fixed; nearly-step-function around EC50)
     e_egfr_fdepot <- -0.257;                  label("Power exponent of baseline eGFR on F1 (unitless; centred at 90 mL/min/1.73 m^2)")  # Snelder 2020 Table 4 (eGFR on F1 = -0.257, RSE 32.8%)
     e_sexf_vap1   <- 0.125;                   label("Fractional increase in all VAP-1 concentrations for females (unitless)")   # Snelder 2020 Table 4 (SEX on VAP-1 concentrations = 0.125, RSE 28.4%; direction confirmed by paper text 'VAP-1 concentrations were found to be 12.5% higher for females')
 

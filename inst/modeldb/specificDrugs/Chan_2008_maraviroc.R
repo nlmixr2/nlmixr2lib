@@ -87,9 +87,9 @@ Chan_2008_maraviroc <- function() {
     e_age_q         <- 0.349   ; label("Power exponent of AGE on CL_ic (reference 30 years; unitless)")                 # Chan 2008 Table 4: Age effect on CL_ic = 0.349 (RSE 28.3%); verified by back-calc CL_ic(60)/CL_ic(30) = (60/30)^0.349 = 1.274
 
     # Fixed structural anchors (Chan 2008 Table 4 and Methods)
-    absemax <- fixed(1)     ; label("Maximum F_ABS (Eq 4; fixed by the authors)")                                       # Chan 2008 Table 4: ABSEmax = 1 FIX
-    fq      <- fixed(59.59) ; label("Hepatic plasma flow used in Eqs 2-3 (L/h; fixed)")                                 # Chan 2008 Table 4: FQ = 59.59 L/h FIX (from a prior mass-balance maraviroc analysis)
-    clr     <- fixed(12)    ; label("Renal clearance (L/h; fixed)")                                                     # Chan 2008 Methods: CL_R fixed at 12 L/h (taken from a previous mass-balance maraviroc analysis)
+    absemax <- fixed(1)     ; label("Maximum F_ABS (Eq 4; by the authors)")                                       # Chan 2008 Table 4: ABSEmax = 1 FIX
+    fq      <- fixed(59.59) ; label("Hepatic plasma flow used in Eqs 2-3 (L/h)")                                 # Chan 2008 Table 4: FQ = 59.59 L/h FIX (from a prior mass-balance maraviroc analysis)
+    clr     <- fixed(12)    ; label("Renal clearance (L/h)")                                                     # Chan 2008 Methods: CL_R fixed at 12 L/h (taken from a previous mass-balance maraviroc analysis)
 
     # TAD-dependent residual error (Chan 2008 Eq 12). The error is additive on
     # log-transformed concentration: ln(Y) = ln(Cc) + W(TAD) * eps with var(eps)

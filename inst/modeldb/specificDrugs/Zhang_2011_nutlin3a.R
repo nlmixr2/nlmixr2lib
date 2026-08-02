@@ -60,7 +60,7 @@ Zhang_2011_nutlin3a <- function() {
     lk_ret   <- log(4.01)    ; label("Retina tissue:plasma partition coefficient (unitless)")   # Table 2 (K_RET)
     lk_spl   <- log(2.72)    ; label("Spleen tissue:plasma partition coefficient (unitless)")   # Table 2 (K_SPL)
     lk_vit   <- log(0.012)   ; label("Vitreous tissue:plasma partition coefficient (unitless)") # Table 2 (K_VIT)
-    lk_mrw   <- fixed(log(1.0)) ; label("Bone marrow tissue:plasma partition coefficient (unitless); not reported in Table 2, fixed at 1.0") # see vignette Errata
+    lk_mrw   <- fixed(log(1.0)) ; label("Bone marrow tissue:plasma partition coefficient (unitless); not reported in Table 2") # see vignette Errata
     lk_res   <- log(4.8)     ; label("Residual diffusion-limited tissue:plasma partition coefficient (unitless)") # Table 2 (K_RES)
 
     # Permeability-surface area products for diffusion-limited compartments

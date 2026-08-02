@@ -242,7 +242,7 @@ Duong_2016_WHIG_T2DM <- function() {
     # -------------------------------------------------------------------
     b0_s1       <- -0.298            ; label("Baseline b-cell function logit b0 for Study 1 (newly diagnosed obese T2DM); BF0 = 1/(1+exp(b0))")        # Duong 2017 Table 4: b0 Study 1 = -0.298 (RSE 31 pct)
     b0_s23      <- 0.677             ; label("Baseline b-cell function logit b0 for Studies 2 and 3 (advanced T2DM)")                                  # Duong 2017 Table 4: b0 Studies 2 and 3 = 0.677 (RSE 17 pct)
-    rb          <- fixed(0.209)      ; label("Rate of b-cell function loss per year rB (logistic-function units; FIXED to the Choy 2016 upstream WHIG value)")  # Duong 2017 Table 4: rB = 0.209 (fixed); Choy 2016 Table 1
+    rb          <- fixed(0.209)      ; label("Rate of b-cell function loss per year rB (logistic-function units; the Choy 2016 upstream WHIG value)")  # Duong 2017 Table 4: rB = 0.209 (fixed); Choy 2016 Table 1
     efbt        <- 0.0781            ; label("Treatment effect on b-cell function EFBT (unitless; step at t > 0, all subjects)")                       # Duong 2017 Table 4: EFBT = 0.0781 (RSE 31 pct)
 
     # -------------------------------------------------------------------
@@ -251,7 +251,7 @@ Duong_2016_WHIG_T2DM <- function() {
     # block).
     # -------------------------------------------------------------------
     hba1c_kin   <- 0.0152            ; label("HbA1c compartment-1 production rate constant HbA1c_kin (pct per day per (mmol / L FPG))")                # Duong 2017 Table 4: HbA1c kin = 0.0152 (RSE 3 pct)
-    mtt         <- fixed(38.9)       ; label("HbA1c mean transit time MTT (days; FIXED to the Choy 2016 upstream WHIG value); HbA1c_kout = 3 / MTT")   # Duong 2017 Table 4: MTT = 38.9 (fixed); Choy 2016 Table 1
+    mtt         <- fixed(38.9)       ; label("HbA1c mean transit time MTT (days; the Choy 2016 upstream WHIG value); HbA1c_kout = 3 / MTT")   # Duong 2017 Table 4: MTT = 38.9 (fixed); Choy 2016 Table 1
     lppg        <- log(0.057)        ; label("FPG-independent HbA1c production residual PPG (pct per day; log-normal IIV per paper)")                  # Duong 2017 Table 4: PPG = 0.057 (RSE 7 pct)
     scale_ppg   <- 0.967             ; label("PPG scaling factor ScalePPG active at t > 0 (post-diet-and-exercise; unitless)")                         # Duong 2017 Table 4: Scale PPG = 0.967 (RSE 1 pct)
 

@@ -69,8 +69,8 @@ Nanga_2019_tacrolimus_metaanalysis <- function() {
     lvc   <- log(246.2)       ; label("Apparent central volume V2/F at WT = 50 kg (L)")                                       # Nanga 2019 Table 3 final V2/F = 246.2 L
     lq    <- log(24.2)        ; label("Apparent inter-compartmental clearance Q/F (L/h)")                                     # Nanga 2019 Table 3 final Q/F = 24.2 L/h
     lvp   <- log(109.9)       ; label("Apparent peripheral volume V3/F at WT = 50 kg (L)")                                    # Nanga 2019 Table 3 final V3/F = 109.9 L
-    lka   <- fixed(log(3.37)) ; label("Absorption rate constant ka (1/h; fixed)")                                              # Nanga 2019 Table 3 final KA = 3.37 1/h (fixed per Results section text, p.2815)
-    ltlag <- fixed(log(0.32)) ; label("Absorption lag time ALAG1 (h; fixed)")                                                  # Nanga 2019 Table 3 final ALAG1 = 0.32 h (fixed per Results section text, p.2815)
+    lka   <- fixed(log(3.37)) ; label("Absorption rate constant ka (1/h)")                                              # Nanga 2019 Table 3 final KA = 3.37 1/h (fixed per Results section text, p.2815)
+    ltlag <- fixed(log(0.32)) ; label("Absorption lag time ALAG1 (h)")                                                  # Nanga 2019 Table 3 final ALAG1 = 0.32 h (fixed per Results section text, p.2815)
 
     # Allometric exponents per Nanga 2019 Eq. (3): P_i = TVp * (WT_i / WT_med)^theta_WT.
     e_wt_cl <- 0.61  ; label("Allometric exponent of (WT / 50 kg) on CL/F (unitless)")            # Nanga 2019 Table 3 WT_CL = 0.61

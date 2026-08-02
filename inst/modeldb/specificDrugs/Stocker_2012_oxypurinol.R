@@ -81,7 +81,7 @@ Stocker_2012_oxypurinol <- function() {
     # value 1.0 (linear scaling), consistent with the absence of a
     # Table 3 row for theta9 and with the typical fixed-exponent
     # convention for V/F allometric scaling (Anderson & Holford).
-    e_lbm_vc <- fixed(1.0); label("Allometric LBW exponent on V/Fm (unitless, fixed)")                     # Stocker 2012 Results equation page 480: TVV/Fm = theta2 * (LBW/60)^theta9; theta9 not reported in Table 3, inferred fixed at theoretical 1.0
+    e_lbm_vc <- fixed(1.0); label("Allometric LBW exponent on V/Fm (unitless)")                     # Stocker 2012 Results equation page 480: TVV/Fm = theta2 * (LBW/60)^theta9; theta9 not reported in Table 3, inferred fixed at theoretical 1.0
 
     # Covariate effects on CL/Fm. Linear-deviation multiplicative form
     # (NONMEM "additive on theta1" / linear-deviation scaling): CL =

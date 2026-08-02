@@ -46,8 +46,8 @@ Marcantonio_2022_amivantamab <- function() {
   ini({
     lka       <- fixed(log(log(2) / 2.5));         label("First-order SC absorption placeholder rate constant (1/day; unused for IV dosing)")     # Assess default
     lkclearAb <- fixed(log(log(2) / 11));          label("First-order amivantamab elimination rate constant (1/day; from t1/2 = 11 days)")        # Marcantonio 2022 Table 4 Amivantamab Half-Life (Rybrevant USPI)
-    kd_T1     <- fixed(1.4);                       label("Amivantamab-EGFR equilibrium dissociation constant (nM)")                                # Marcantonio 2022 Table 4 Amivantamab KD for EGFR (Jarantow 2015)
-    kd_T2     <- fixed(0.04);                      label("Amivantamab-cMet equilibrium dissociation constant (nM)")                                # Marcantonio 2022 Table 4 Amivantamab KD for c-Met (Jarantow 2015)
+    kd_t1     <- fixed(1.4);                       label("Amivantamab-EGFR equilibrium dissociation constant (nM)")                                # Marcantonio 2022 Table 4 Amivantamab KD for EGFR (Jarantow 2015)
+    kd_t2     <- fixed(0.04);                      label("Amivantamab-cMet equilibrium dissociation constant (nM)")                                # Marcantonio 2022 Table 4 Amivantamab KD for c-Met (Jarantow 2015)
 
     R1_conc_c <- fixed(0.0152);                    label("EGFR receptor concentration in central compartment (nM)")                                # Marcantonio 2022 Table 3 EGFR expression central (bottom-up)
     R1_conc_p <- fixed(1.13);                      label("EGFR receptor concentration in peripheral compartment (nM)")                             # Marcantonio 2022 Table 3 EGFR expression peripheral (bottom-up)
@@ -78,8 +78,8 @@ Marcantonio_2022_amivantamab <- function() {
     kclearR2   <- exp(lkclearR2)
     kclearS2   <- exp(lkclearS2)
 
-    koff_T1    <- kon * kd_T1
-    koff_T2    <- kon * kd_T2
+    koff_T1    <- kon * kd_t1
+    koff_T2    <- kon * kd_t2
 
     # Drug distribution
     Tdist_Ab_d <- Tdist_Ab_hr / 24

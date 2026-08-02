@@ -42,7 +42,7 @@ Paule_2011_hydroxyurea <- function() {
     lcl  <- log(11.6 * 24);  label("Apparent oral clearance at 70 kg (CL/F, L/day)")              # Paule 2011 Table 2 (11.6 L/h)
     lvc  <- log(45.3);       label("Apparent central volume of distribution at 70 kg (Vc/F, L)")  # Paule 2011 Table 2
     lkcp <- log(0.027 * 24); label("Central-to-peripheral first-order transfer rate (kcp, 1/day)")  # Paule 2011 Table 2 (0.027 1/h)
-    lkpc <- fixed(log(0.004 * 24)); label("Peripheral-to-central first-order transfer rate (kpc, 1/day) -- fixed")  # Paule 2011 Table 2 (kpc fixed at 0.004 1/h)
+    lkpc <- fixed(log(0.004 * 24)); label("Peripheral-to-central first-order transfer rate (kpc, 1/day)")  # Paule 2011 Table 2 (kpc fixed at 0.004 1/h)
 
     # Allometric exponents (Paule 2011 Methods; held fixed at the canonical
     # values reported in the paper)

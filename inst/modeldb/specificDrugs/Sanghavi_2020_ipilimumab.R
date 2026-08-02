@@ -1,5 +1,5 @@
 Sanghavi_2020_ipilimumab <- function() {
-  description <- "Two-compartment population PK model for intravenous ipilimumab (anti-CTLA-4 IgG1) with time-varying clearance via a sigmoid emax function in patients with advanced solid tumors receiving ipilimumab alone or in combination with nivolumab (Sanghavi 2020)"
+  description <- "Two-compartment population PK model for intravenous ipilimumab (anti-CTLA-4 IgG1) with time-varying clearance via a sigmoid cl_hill_max function in patients with advanced solid tumors receiving ipilimumab alone or in combination with nivolumab (Sanghavi 2020)"
   reference <- "Sanghavi K, Zhang J, Zhao X, et al. Population Pharmacokinetics of Ipilimumab in Combination With Nivolumab in Patients With Advanced Solid Tumors. CPT Pharmacometrics Syst Pharmacol. 2020;9(1):29-39. doi:10.1002/psp4.12477"
   vignette <- "Sanghavi_2020_ipilimumab"
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
@@ -58,7 +58,7 @@ Sanghavi_2020_ipilimumab <- function() {
       units              = "(binary)",
       type               = "binary",
       reference_category = "0 (ipilimumab monotherapy)",
-      notes              = "Additive effect on the emax parameter of the time-varying CL function (Sanghavi 2020 Table 2: Emax_COMBO = -0.202). Captures the greater decrease in ipilimumab CL over time observed when ipilimumab is given with nivolumab (any regimen) compared with monotherapy. Distinct from the per-regimen NIVO_1Q3W / NIVO_3Q2W indicators on baseline CL.",
+      notes              = "Additive effect on the cl_hill_max parameter of the time-varying CL function (Sanghavi 2020 Table 2: Emax_COMBO = -0.202). Captures the greater decrease in ipilimumab CL over time observed when ipilimumab is given with nivolumab (any regimen) compared with monotherapy. Distinct from the per-regimen NIVO_1Q3W / NIVO_3Q2W indicators on baseline CL.",
       source_name        = "COMBO"
     )
   )
@@ -87,17 +87,17 @@ Sanghavi_2020_ipilimumab <- function() {
     lq     <- log(27.9 * 0.024); label("Intercompartmental clearance Q at reference (L/day)")       # Sanghavi 2020 Table 2: Q_REF = 27.9 mL/hour
     lvp    <- log(3.18);         label("Peripheral volume VP at reference (L)")                     # Sanghavi 2020 Table 2: VP_REF = 3.18 L
 
-    # Time-varying CL parameters: CL(t) = CL0 * exp(emax_i * t^HILL / (T50^HILL + t^HILL)),
-    # where emax_i = emax + e_combo_emax * COMBO_NIVO + etaemax.
-    # The fixed-effect parameter is named emax (the monotherapy reference
-    # value) so that the IIV pairs with it as 'etaemax' per the
-    # eta<param> naming convention. emax is signed and dimensionless and
+    # Time-varying CL parameters: CL(t) = CL0 * exp(cl_hill_max_i * t^HILL / (T50^HILL + t^HILL)),
+    # where cl_hill_max_i = cl_hill_max + e_combo_cl_hill_max * COMBO_NIVO + etacl_hill_max.
+    # The fixed-effect parameter is named cl_hill_max (the monotherapy reference
+    # value) so that the IIV pairs with it as 'etacl_hill_max' per the
+    # eta<param> naming convention. cl_hill_max is signed and dimensionless and
     # enters additively, so it is kept on the linear scale rather than
     # log-transformed. T50 and HILL are positive and log-transformed;
     # T50 converted from 2,540 h to days.
-    emax     <- -0.0644;          label("Reference (monotherapy) emax of time-varying CL (unitless)") # Sanghavi 2020 Table 2: Emax_REF
-    lt50     <- log(2540 / 24);   label("log T50 - time at which CL change reaches half of emax (day)") # Sanghavi 2020 Table 2: T50 = 2,540 hour
-    lhill    <- log(7.43);        label("log HILL - sigmoid shape coefficient of the time-on-CL function (unitless)") # Sanghavi 2020 Table 2: HILL = 7.43
+    cl_hill_max     <- -0.0644;          label("Reference (monotherapy) cl_hill_max of time-varying CL (unitless)") # Sanghavi 2020 Table 2: Emax_REF
+    lcl_hill_t50     <- log(2540 / 24);   label("log T50 - time at which CL change reaches half of cl_hill_max (day)") # Sanghavi 2020 Table 2: T50 = 2,540 hour
+    lcl_hill_gamma    <- log(7.43);        label("log HILL - sigmoid shape coefficient of the time-on-CL function (unitless)") # Sanghavi 2020 Table 2: HILL = 7.43
 
     # Allometric exponents on baseline body weight (reference 80 kg).
     # CL_BBWT applies to both CL and Q; V_BBWT applies to both VC and VP.
@@ -120,12 +120,12 @@ Sanghavi_2020_ipilimumab <- function() {
     e_n3q2w_cl  <-  0.191;        label("Exponential coefficient of nivolumab 3 mg/kg Q2W on CL")   # Sanghavi 2020 Table 2: CL_N3Q2W
 
     # Additive effect of any-regimen nivolumab combination therapy on
-    # emax (linear, not exponential). Applied on the same linear scale
-    # as Emax_ref and the etaemax random effect.
-    e_combo_emax <- -0.202;       label("Additive effect of nivolumab combination therapy on emax") # Sanghavi 2020 Table 2: Emax_COMBO
+    # cl_hill_max (linear, not exponential). Applied on the same linear scale
+    # as Emax_ref and the etacl_hill_max random effect.
+    e_combo_cl_hill_max <- -0.202;       label("Additive effect of nivolumab combination therapy on cl_hill_max") # Sanghavi 2020 Table 2: Emax_COMBO
 
     # IIV: log-normal on CL and VC (correlated 2x2 block); additive
-    # normal on emax (independent). Variance / covariance entered in
+    # normal on cl_hill_max (independent). Variance / covariance entered in
     # lower-triangular row-major order:
     #   row 1: omega^2_CL                  = 0.112    (33.4% CV)
     #   row 2: cov(CL,VC), omega^2_VC      = 0.0404, 0.0884 (29.7% CV; r 0.406)
@@ -134,10 +134,10 @@ Sanghavi_2020_ipilimumab <- function() {
       0.112,
       0.0404, 0.0884
     )
-    # Independent normal eta on emax. The "(0.126)" parenthetical in
+    # Independent normal eta on cl_hill_max. The "(0.126)" parenthetical in
     # Table 2 is sqrt(0.0158), reported as a standard deviation rather
-    # than CV% because emax itself is on a linear (not log) scale.
-    etaemax ~ 0.0158                                                                                # Sanghavi 2020 Table 2: omega^2_Emax
+    # than CV% because cl_hill_max itself is on a linear (not log) scale.
+    etacl_hill_max ~ 0.0158                                                                                # Sanghavi 2020 Table 2: omega^2_Emax
 
     # Combined proportional + additive residual error model. Treated as
     # standard deviations on the linear scale, matching the convention
@@ -168,18 +168,18 @@ Sanghavi_2020_ipilimumab <- function() {
     q  <- exp(lq)           * (WT / 80)^e_wt_cl_q
     vp <- exp(lvp)          * (WT / 80)^e_wt_vc_vp
 
-    # Individual emax: monotherapy reference (emax) + additive combo
+    # Individual cl_hill_max: monotherapy reference (cl_hill_max) + additive combo
     # offset for any-regimen nivolumab + additive normal eta.
-    emax_i <- emax + e_combo_emax * COMBO_NIVO + etaemax
+    cl_hill_max_i <- cl_hill_max + e_combo_cl_hill_max * COMBO_NIVO + etacl_hill_max
 
     # Hill exponent and T50 in linear space.
-    hill <- exp(lhill)
-    t50  <- exp(lt50)
+    cl_hill_gamma <- exp(lcl_hill_gamma)
+    cl_hill_t50  <- exp(lcl_hill_t50)
 
     # Time-varying CL: t is the within-subject simulation time (days
     # since first dose). At t = 0, CL = cl0; as t -> infinity,
-    # CL -> cl0 * exp(emax_i).
-    cl <- cl0 * exp(emax_i * t^hill / (t50^hill + t^hill))
+    # CL -> cl0 * exp(cl_hill_max_i).
+    cl <- cl0 * exp(cl_hill_max_i * t^cl_hill_gamma / (cl_hill_t50^cl_hill_gamma + t^cl_hill_gamma))
 
     # Two-compartment micro-constants and ODEs.
     kel <- cl / vc

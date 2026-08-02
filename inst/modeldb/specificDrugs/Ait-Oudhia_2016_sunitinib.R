@@ -72,9 +72,9 @@
     # ----------------------------------------------------------------------
     lvc <- log(1777);              label("Sunitinib apparent central volume V1_D/Fcentral (L)") # Table 1
     lcl <- log(30.3);               label("Sunitinib apparent clearance CL_D/Fcentral (L/h)")    # Table 1
-    lka <- fixed(log(0.195));       label("Sunitinib first-order absorption rate ka_D (1/h, fixed Houk 2009)")    # Table 1 footnote a
-    lq  <- fixed(log(6.37));        label("Sunitinib apparent inter-compartmental clearance Q_D/Fperipheral (L/h, fixed Houk 2009)")  # Table 1 footnote a
-    lvp <- fixed(log(588));         label("Sunitinib apparent peripheral volume V2_D/Fperipheral (L, fixed Houk 2009)")                # Table 1 footnote a
+    lka <- fixed(log(0.195));       label("Sunitinib first-order absorption rate ka_D (1/h, Houk 2009)")    # Table 1 footnote a
+    lq  <- fixed(log(6.37));        label("Sunitinib apparent inter-compartmental clearance Q_D/Fperipheral (L/h, Houk 2009)")  # Table 1 footnote a
+    lvp <- fixed(log(588));         label("Sunitinib apparent peripheral volume V2_D/Fperipheral (L, Houk 2009)")                # Table 1 footnote a
 
     # ----------------------------------------------------------------------
     # SU12662 (metabolite) PK -- Table 1.
@@ -84,9 +84,9 @@
     # ----------------------------------------------------------------------
     lvc_su12662 <- log(1840);       label("SU12662 apparent central volume V1_M/Fcentral (L)")   # Table 1
     lcl_su12662 <- log(19.72);      label("SU12662 apparent clearance CL_M/Fcentral (L/h)")      # Table 1
-    lka_su12662 <- fixed(log(0.487)); label("SU12662 first-order absorption rate ka_M (1/h, fixed Houk 2009)")  # Table 1 footnote a
-    lq_su12662  <- fixed(log(27.7));  label("SU12662 apparent inter-compartmental clearance Q_M/Fperipheral (L/h, fixed Houk 2009)")  # Table 1 footnote a
-    lvp_su12662 <- fixed(log(345));   label("SU12662 apparent peripheral volume V2_M/Fperipheral (L, fixed Houk 2009)")                # Table 1 footnote a
+    lka_su12662 <- fixed(log(0.487)); label("SU12662 first-order absorption rate ka_M (1/h, Houk 2009)")  # Table 1 footnote a
+    lq_su12662  <- fixed(log(27.7));  label("SU12662 apparent inter-compartmental clearance Q_M/Fperipheral (L/h, Houk 2009)")  # Table 1 footnote a
+    lvp_su12662 <- fixed(log(345));   label("SU12662 apparent peripheral volume V2_M/Fperipheral (L, Houk 2009)")                # Table 1 footnote a
 
     # ----------------------------------------------------------------------
     # sVEGFR2 indirect-response biomarker -- Table 2.
@@ -102,7 +102,7 @@
     # ----------------------------------------------------------------------
     lr0_svegfr2    <- log(18.3);        label("sVEGFR2 baseline plasma concentration R0 (ug/L)") # Table 2
     lalpha_svegfr2 <- log(0.77);        label("sVEGFR2 intrinsic activity alpha (dimensionless)") # Table 2
-    lkout_svegfr2  <- fixed(log(0.175)); label("sVEGFR2 first-order elimination rate kout (1/day, fixed Lindauer 2010)") # Table 2 footnote a
+    lkout_svegfr2  <- fixed(log(0.175)); label("sVEGFR2 first-order elimination rate kout (1/day, Lindauer 2010)") # Table 2 footnote a
 
     # ----------------------------------------------------------------------
     # Tumor growth inhibition -- Table 2.

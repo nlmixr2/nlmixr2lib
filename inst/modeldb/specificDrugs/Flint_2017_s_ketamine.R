@@ -57,7 +57,7 @@ Flint_2017_s_ketamine <- function() {
     # because varying it from 0.1 to 10 did not change the goodness of fit or
     # the other parameter values (Results Section 3.3).
     lcl_snk <- log(53.2);       label("S-norketamine apparent clearance Clsnk/Fm at 70 kg (L/h)") # Flint 2017 Table 3: Clsnk/Fm = 53.2 L/h/70 kg, %SE 27
-    lvc_snk <- fixed(log(1));   label("S-norketamine apparent central volume Vsnk/Fm at 70 kg, fixed (L)")  # Flint 2017 Table 3 footnote a: Vsnk/Fm fixed at 1
+    lvc_snk <- fixed(log(1));   label("S-norketamine apparent central volume Vsnk/Fm at 70 kg (L)")  # Flint 2017 Table 3 footnote a: Vsnk/Fm fixed at 1
 
     # ---------------- Allometric covariate effects ----------------------------
     # Fixed at the canonical Holford allometric exponents (Flint 2017 Methods

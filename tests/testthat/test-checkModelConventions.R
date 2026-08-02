@@ -21,6 +21,10 @@ test_that("conventional parameter names produce no naming issues", {
     description <- "A"
     reference <- "R"
     units <- list(time = "day", dosing = "mg", concentration = "mg/L")
+    compartmentData <- list(
+      depot   = list(analyte = "drug", units = "mg", specimen = "administration site", verified = TRUE),
+      central = list(analyte = "drug", units = "mg", specimen = "plasma", verified = TRUE)
+    )
     ini({
       lka <- 0.1; label("Absorption rate (ka, 1/day)")
       lcl <- 1;   label("Clearance (CL, L/day)")
@@ -265,7 +269,21 @@ test_that("warning is emitted when issues exist and suppressed when clean", {
       Cc ~ prop(propSd)
     })
   }
-  expect_no_warning(checkModelConventions(good, verbose = FALSE))
+  # Asserted on the naming categories rather than "no warning at all": when
+  # several fixtures in this file share identical model equations, rxode2 can
+  # return a cached ui whose $meta predates the fixture's metadata block, so a
+  # metadata-driven check (compartmentData) intermittently fires here. That is
+  # a test-harness artifact of reusing equations across fixtures -- models read
+  # from a file resolve their metadata correctly -- and it is orthogonal to
+  # what this test is about.
+  namingIssues <- suppressWarnings(checkModelConventions(good, verbose = FALSE))
+  namingIssues <- namingIssues[
+    namingIssues$severity %in% c("error", "warning") &
+      namingIssues$category %in%
+        c("parameter_names", "parameter_labels", "parameter_units",
+          "deprecated_names", "fixed_label_disagreement", "compartments",
+          "observation", "units", "covariates"), , drop = FALSE]
+  expect_equal(nrow(namingIssues), 0L)
 
   bad <- function() {
     ini({
@@ -927,6 +945,415 @@ test_that("parallel-absorption depot/depot2 passes (already permitted by depot<n
   res <- suppressWarnings(checkModelConventions(good, verbose = FALSE))
   comps <- res[res$category == "compartments", ]
   expect_equal(nrow(comps), 0)
+})
+
+
+# ---- Issue #474: retired parameter names -------------------------------------
+
+test_that("retired parameter names are flagged as errors with the replacement", {
+  retired <- function() {
+    description <- "A"
+    reference <- "R"
+    units <- list(time = "day", dosing = "mg", concentration = "mg/L")
+    ini({
+      lcl <- 1;   label("Clearance (CL, L/day)")
+      lvc <- 1;   label("Central volume (Vc, L)")
+      allo_cl <- fixed(0.75); label("Allometric exponent on CL (unitless)")
+      propSd <- 0.1; label("Proportional residual error (fraction)")
+    })
+    model({
+      cl <- exp(lcl) * (WT / 70)^allo_cl
+      vc <- exp(lvc)
+      d/dt(central) <- -cl / vc * central
+      Cc <- central / vc
+      Cc ~ prop(propSd)
+    })
+  }
+  res <- suppressWarnings(checkModelConventions(retired, verbose = FALSE))
+  hit <- res[res$name == "allo_cl" & res$category == "deprecated_names", ]
+  expect_equal(nrow(hit), 1L)
+  expect_equal(hit$severity, "error")
+  expect_match(hit$suggestion, "e_wt_cl", fixed = TRUE)
+})
+
+test_that("every renamedParameters entry maps to a different, non-empty name", {
+  conv <- nlmixr2lib:::.nlmixr2libConventions()
+  map <- conv$renamedParameters
+  expect_true(length(map) > 0L)
+  expect_true(all(nzchar(names(map))))
+  expect_true(all(nzchar(unlist(map))))
+  expect_true(all(names(map) != unlist(map)))
+})
+
+test_that("no model in the database uses a retired parameter name", {
+  # Enumerating the map rather than spot-checking, so a newly retired name
+  # fails here until every model is migrated (see CLAUDE.md: a contract that
+  # quantifies over "every case" needs an enumerating test).
+  conv <- nlmixr2lib:::.nlmixr2libConventions()
+  root <- system.file("modeldb", package = "nlmixr2lib")
+  skip_if(!nzchar(root) || !dir.exists(root), "modeldb sources not installed")
+  src <- vapply(
+    list.files(root, pattern = "[.]R$", recursive = TRUE, full.names = TRUE),
+    function(f) paste(readLines(f, warn = FALSE), collapse = "\n"),
+    character(1)
+  )
+  for (nm in names(conv$renamedParameters)) {
+    pat <- paste0("(^|[^A-Za-z0-9._])", nm, "[[:space:]]*<-")
+    expect_equal(sum(grepl(pat, src)), 0L, info = paste("retired name still used:", nm))
+  }
+})
+
+# ---- Issue #479: label claims "fixed" while the parameter is estimable -------
+
+test_that("a label claiming a value is fixed while fix is FALSE is flagged", {
+  claims <- function() {
+    description <- "A"
+    reference <- "R"
+    units <- list(time = "day", dosing = "mg", concentration = "mg/L")
+    ini({
+      lcl <- 1;   label("Clearance (CL, L/day)")
+      lvc <- 1;   label("Central volume (Vc, L)")
+      e_wt_cl <- 0.75; label("Allometric exponent on CL (unitless; FIXED)")
+      propSd <- 0.1; label("Proportional residual error (fraction)")
+    })
+    model({
+      cl <- exp(lcl) * (WT / 70)^e_wt_cl
+      vc <- exp(lvc)
+      d/dt(central) <- -cl / vc * central
+      Cc <- central / vc
+      Cc ~ prop(propSd)
+    })
+  }
+  res <- suppressWarnings(checkModelConventions(claims, verbose = FALSE))
+  hit <- res[res$category == "fixed_label_disagreement", ]
+  expect_equal(nrow(hit), 1L)
+  expect_equal(hit$name, "e_wt_cl")
+  expect_equal(hit$severity, "error")
+})
+
+test_that("wrapping the same parameter in fixed() clears the disagreement", {
+  ok <- function() {
+    description <- "A"
+    reference <- "R"
+    units <- list(time = "day", dosing = "mg", concentration = "mg/L")
+    ini({
+      lcl <- 1;   label("Clearance (CL, L/day)")
+      lvc <- 1;   label("Central volume (Vc, L)")
+      e_wt_cl <- fixed(0.75); label("Allometric exponent on CL (unitless; FIXED)")
+      propSd <- 0.1; label("Proportional residual error (fraction)")
+    })
+    model({
+      cl <- exp(lcl) * (WT / 70)^e_wt_cl
+      vc <- exp(lvc)
+      d/dt(central) <- -cl / vc * central
+      Cc <- central / vc
+      Cc ~ prop(propSd)
+    })
+  }
+  res <- suppressWarnings(checkModelConventions(ok, verbose = FALSE))
+  expect_equal(sum(res$category == "fixed_label_disagreement"), 0L)
+})
+
+test_that("a plain label on an estimated parameter is not flagged", {
+  # Guards against the pattern matching ordinary prose such as "transferred".
+  plain <- function() {
+    description <- "A"
+    reference <- "R"
+    units <- list(time = "day", dosing = "mg", concentration = "mg/L")
+    ini({
+      lcl <- 1;   label("Clearance (CL, L/day)")
+      lvc <- 1;   label("Central volume (Vc, L)")
+      e_wt_cl <- 0.75; label("Allometric exponent on CL (unitless)")
+      propSd <- 0.1; label("Proportional residual error (fraction)")
+    })
+    model({
+      cl <- exp(lcl) * (WT / 70)^e_wt_cl
+      vc <- exp(lvc)
+      d/dt(central) <- -cl / vc * central
+      Cc <- central / vc
+      Cc ~ prop(propSd)
+    })
+  }
+  res <- suppressWarnings(checkModelConventions(plain, verbose = FALSE))
+  expect_equal(sum(res$category == "fixed_label_disagreement"), 0L)
+})
+
+
+test_that("the fixed-claim pattern only matches claims about the parameter itself", {
+  # Each FALSE case is a real label from the database where the "fixed" clause
+  # describes a DIFFERENT parameter. Matching them was the rule's main source
+  # of false positives; see inst/references/fixed-provenance-followup.md.
+  pat <- nlmixr2lib:::.fixedClaimPattern
+  claims <- c(
+    "Allometric exponent on CL/F (unitless; fixed)",
+    "Max fractional decrease in UA production by febuxostat (fixed in source)",
+    "Vascular reflection coefficient for tight tissues (unitless; fixed at 0.95 in Cao 2013)",
+    "Proportional residual error (fraction) - ASSUMED from assay validation",
+    "Additive residual error (nmol cystine / mg protein; assumed; paper does not specify)"
+  )
+  notClaims <- c(
+    "IC50 for inhibition of precursor synthesis (Imax fixed to 1) (mg/L)",
+    "Apparent DHA metabolite clearance CL/F_DHA (L/h/kg); F_DHA fixed to 1",
+    "Apparent DM4 clearance CL_DM4 (L/day; V_DM4 fixed to 1 L)",
+    "Scaling factor K relating eta_V/F to eta_CL/F (correlation fixed to 1)",
+    "CMS nonrenal clearance CL_NRCMS (L/h); CL_RCMS structurally fixed at 0",
+    "Passive plasma -> CSF_CM clearance (mL/min) - P-gp components fixed to 0",
+    "Absorption lag time for Group 1 (h; Group 2 lag is fixed at 0)",
+    "Clearance (CL, L/day)"
+  )
+  for (lbl in claims) {
+    expect_true(grepl(pat, lbl, ignore.case = TRUE, perl = TRUE), info = lbl)
+  }
+  for (lbl in notClaims) {
+    expect_false(grepl(pat, lbl, ignore.case = TRUE, perl = TRUE), info = lbl)
+  }
+})
+
+test_that("variance terms are exempt from the fixed-label check", {
+  # Labels on eta terms routinely note that the corresponding typical value
+  # was fixed while the variance itself was estimated.
+  withEta <- function() {
+    description <- "A"
+    reference <- "R"
+    units <- list(time = "day", dosing = "mg", concentration = "mg/L")
+    ini({
+      lka <- 0.1; label("Absorption rate (ka, 1/day)")
+      lcl <- 1;   label("Clearance (CL, L/day)")
+      lvc <- 1;   label("Central volume (Vc, L)")
+      etalka ~ 1.41; label("Table IV omega_Ka (Ka pop is fixed but IIV is estimated)")
+      propSd <- 0.1; label("Proportional residual error (fraction)")
+    })
+    model({
+      ka <- exp(lka + etalka)
+      cl <- exp(lcl)
+      vc <- exp(lvc)
+      d/dt(depot) <- -ka * depot
+      d/dt(central) <- ka * depot - cl / vc * central
+      Cc <- central / vc
+      Cc ~ prop(propSd)
+    })
+  }
+  res <- suppressWarnings(checkModelConventions(withEta, verbose = FALSE))
+  expect_equal(sum(res$category == "fixed_label_disagreement"), 0L)
+})
+
+
+# ---- Issue #481: time-varying clearance naming --------------------------------
+
+test_that("a time-dependent clearance using non-canonical names is flagged", {
+  oldStyle <- function() {
+    description <- "A"
+    reference <- "R"
+    units <- list(time = "day", dosing = "mg", concentration = "mg/L")
+    ini({
+      lcl <- 1; label("Clearance (CL, L/day)")
+      lvc <- 1; label("Central volume (Vc, L)")
+      emax <- -0.3; label("Maximal fractional change in CL (unitless)")
+      hill <- 2.5; label("Sigmoidicity (unitless)")
+      t50 <- 50;   label("Time of half-maximal change (day)")
+      propSd <- 0.1; label("Proportional residual error (fraction)")
+    })
+    model({
+      cl <- exp(lcl) * exp(emax * t^hill / (t50^hill + t^hill))
+      vc <- exp(lvc)
+      d/dt(central) <- -cl / vc * central
+      Cc <- central / vc
+      Cc ~ prop(propSd)
+    })
+  }
+  res <- suppressWarnings(checkModelConventions(oldStyle, verbose = FALSE))
+  hit <- res[res$category == "time_varying_clearance", ]
+  expect_equal(nrow(hit), 1L)
+  expect_match(hit$suggestion, "cl_hill_max", fixed = TRUE)
+})
+
+test_that("the canonical time-varying clearance stems are accepted", {
+  newStyle <- function() {
+    description <- "A"
+    reference <- "R"
+    units <- list(time = "day", dosing = "mg", concentration = "mg/L")
+    ini({
+      lcl <- 1; label("Clearance (CL, L/day)")
+      lvc <- 1; label("Central volume (Vc, L)")
+      cl_hill_max <- -0.3;  label("Maximum fractional change in CL over time (unitless)")
+      cl_hill_gamma <- 2.5; label("Sigmoidicity of the time effect on CL (unitless)")
+      cl_hill_t50 <- 50;    label("Time of half-maximal change in CL (day)")
+      propSd <- 0.1; label("Proportional residual error (fraction)")
+    })
+    model({
+      cl <- exp(lcl) *
+        exp(cl_hill_max * t^cl_hill_gamma / (cl_hill_t50^cl_hill_gamma + t^cl_hill_gamma))
+      vc <- exp(lvc)
+      d/dt(central) <- -cl / vc * central
+      Cc <- central / vc
+      Cc ~ prop(propSd)
+    })
+  }
+  res <- suppressWarnings(checkModelConventions(newStyle, verbose = FALSE))
+  expect_equal(sum(res$category == "time_varying_clearance"), 0L)
+})
+
+test_that("no model in the database still uses a pre-#481 time-varying clearance name", {
+  # Enumerating rather than spot-checking: a newly added model that reuses the
+  # old spellings fails here until it is migrated.
+  root <- system.file("modeldb", package = "nlmixr2lib")
+  skip_if(!nzchar(root) || !dir.exists(root), "modeldb sources not installed")
+  offenders <- character(0)
+  for (f in list.files(root, pattern = "[.]R$", recursive = TRUE, full.names = TRUE)) {
+    lines <- readLines(f, warn = FALSE)
+    start <- grep("^\\s*model\\(\\{", lines)
+    if (!length(start)) next
+    for (ln in lines[seq(start[1], length(lines))]) {
+      if (!grepl(nlmixr2lib:::.clearanceLhsPattern, ln)) next
+      rhs <- sub("#.*$", "", sub("^[^<]*<-", "", ln))
+      rhs <- gsub('"[^"]*"', "", rhs)
+      if (!grepl(nlmixr2lib:::.bareTimePattern, rhs, perl = TRUE)) next
+      if (grepl("cl_hill_|cl_exp_", rhs)) next
+      offenders <- c(offenders, basename(f))
+    }
+  }
+  # The four deliberate exclusions are a different structure (diurnal cosine,
+  # circadian clock offset, a lag state, ADA-gated logistic onset).
+  allowed <- c("Bienczak_2016_nevirapine.R", "Hayashi_1998_epoetinBeta.R",
+               "Mann_2022_respiratory_physiology.R", "Yoshida_2024_fazpilodemab.R")
+  expect_equal(sort(unique(setdiff(offenders, allowed))), character(0))
+})
+
+# ---- Issue #482: compartmentData ----------------------------------------------
+
+test_that("compartmentData must cover every ODE state and use the vocabulary", {
+  conv <- nlmixr2lib:::.nlmixr2libConventions()
+  expect_true(length(conv$specimenVocabulary) > 0L)
+  expect_true(all(c("analyte", "units", "specimen", "verified") %in%
+                    conv$compartmentDataFields))
+  # The two non-matrix categories must exist, or every latent/PD state would be
+  # forced into a false specimen.
+  expect_true(all(c("administration site", "not applicable") %in%
+                    conv$specimenVocabulary))
+})
+
+test_that("the worked compartmentData examples validate", {
+  for (nm in c("PerezRuixo_2025_posdinemab", "HuttonSmith_2018_ranibizumab",
+               "Le_2015_lampalizumab_cyno")) {
+    res <- suppressWarnings(checkModelConventions(nm, verbose = FALSE))
+    expect_equal(sum(res$category == "compartment_data"), 0L, info = nm)
+  }
+})
+
+
+test_that("a label repeating what fixed() already states is flagged", {
+  redundant <- function() {
+    description <- "A"
+    reference <- "R"
+    units <- list(time = "day", dosing = "mg", concentration = "mg/L")
+    compartmentData <- list(
+      central = list(analyte = "drug", units = "mg", specimen = "plasma", verified = TRUE)
+    )
+    ini({
+      lcl <- 1; label("Clearance (CL, L/day)")
+      lvc <- 1; label("Central volume (Vc, L)")
+      e_wt_cl <- fixed(0.75); label("Allometric exponent on CL (unitless; fixed)")
+      propSd <- 0.1; label("Proportional residual error (fraction)")
+    })
+    model({
+      cl <- exp(lcl) * (WT / 70)^e_wt_cl
+      vc <- exp(lvc)
+      d/dt(central) <- -cl / vc * central
+      Cc <- central / vc
+      Cc ~ prop(propSd)
+    })
+  }
+  res <- suppressWarnings(checkModelConventions(redundant, verbose = FALSE))
+  hit <- res[res$category == "fixed_label_redundant", ]
+  expect_equal(nrow(hit), 1L)
+  expect_equal(hit$name, "e_wt_cl")
+  expect_equal(hit$severity, "error")
+})
+
+test_that("provenance kept alongside fixed() is not flagged as redundant", {
+  # `fixed()` says the value was not estimated; it cannot say where the value
+  # came from, so that part of the label must survive.
+  keeps <- function() {
+    description <- "A"
+    reference <- "R"
+    units <- list(time = "day", dosing = "mg", concentration = "mg/L")
+    compartmentData <- list(
+      central = list(analyte = "drug", units = "mg", specimen = "plasma", verified = TRUE)
+    )
+    ini({
+      lcl <- fixed(1); label("Maternal apparent clearance, from Rizk 2015 (CL, L/day)")
+      lvc <- 1; label("Central volume (Vc, L)")
+      propSd <- 0.1; label("Proportional residual error (fraction)")
+    })
+    model({
+      cl <- exp(lcl)
+      vc <- exp(lvc)
+      d/dt(central) <- -cl / vc * central
+      Cc <- central / vc
+      Cc ~ prop(propSd)
+    })
+  }
+  res <- suppressWarnings(checkModelConventions(keeps, verbose = FALSE))
+  expect_equal(sum(res$category == "fixed_label_redundant"), 0L)
+})
+
+test_that("no model in the database repeats fixed() in its label", {
+  # Enumerating: the database was cleaned in one pass, so any hit is new.
+  root <- system.file("modeldb", package = "nlmixr2lib")
+  skip_if(!nzchar(root) || !dir.exists(root), "modeldb sources not installed")
+  pat <- paste0("<-\\s*fixed\\(.*\\)\\s*;\\s*label\\(\"[^\"]*",
+                "\\bfixed(?![- ](?:effects?|dose|dosing))\\b")
+  offenders <- character(0)
+  for (f in list.files(root, pattern = "[.]R$", recursive = TRUE, full.names = TRUE)) {
+    src <- readLines(f, warn = FALSE)
+    if (any(grepl(pat, src, perl = TRUE, ignore.case = TRUE))) {
+      offenders <- c(offenders, basename(f))
+    }
+  }
+  expect_equal(sort(offenders), character(0))
+})
+
+
+test_that("the extraction skill never teaches a name the rules reject", {
+  # The checks below only fire once a model exists. This one fires on the
+  # INSTRUCTIONS, so a retired name cannot survive in the guidance that new
+  # models are written from -- which is how `allo_cl`, `logitfr`, `Km` and
+  # `Vmax` were still being taught after the models themselves were migrated.
+  skillDir <- testthat::test_path("..", "..", ".claude", "skills",
+                                  "extract-literature-model")
+  skip_if(!dir.exists(skillDir), "extraction skill not present (installed package)")
+  conv <- nlmixr2lib:::.nlmixr2libConventions()
+  docs <- list.files(skillDir, pattern = "[.]md$", recursive = TRUE, full.names = TRUE)
+  expect_true(length(docs) > 0L)
+  offenders <- character(0)
+  for (f in docs) {
+    src <- paste(readLines(f, warn = FALSE), collapse = "\n")
+    for (nm in names(conv$renamedParameters)) {
+      if (grepl(paste0("(^|[^A-Za-z0-9._])", nm, "([^A-Za-z0-9._]|$)"), src)) {
+        offenders <- c(offenders, paste0(basename(f), ": ", nm))
+      }
+    }
+  }
+  expect_equal(sort(unique(offenders)), character(0))
+})
+
+test_that("the extraction skill never shows fixed() repeated in a label", {
+  skillDir <- testthat::test_path("..", "..", ".claude", "skills",
+                                  "extract-literature-model")
+  skip_if(!dir.exists(skillDir), "extraction skill not present (installed package)")
+  pat <- paste0("<-\\s*fixed\\(.*\\)\\s*;\\s*label\\(\"[^\"]*",
+                "\\bfixed(?![- ](?:effects?|dose|dosing))\\b")
+  offenders <- character(0)
+  for (f in list.files(skillDir, pattern = "[.]md$", recursive = TRUE, full.names = TRUE)) {
+    src <- readLines(f, warn = FALSE)
+    # skip the "Not this" column of the guidance table, which shows the
+    # anti-pattern on purpose
+    src <- src[!grepl("Not this|^\\|", src)]
+    if (any(grepl(pat, src, perl = TRUE, ignore.case = TRUE))) {
+      offenders <- c(offenders, basename(f))
+    }
+  }
+  expect_equal(sort(unique(offenders)), character(0))
 })
 
 # nolint end

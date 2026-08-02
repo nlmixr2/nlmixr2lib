@@ -101,8 +101,8 @@ Chua_2025_mirikizumab <- function() {
     # residual error with a small additive floor is adopted as a
     # reasonable default for an IgG mAb popPK model; see the vignette
     # Assumptions section for detail.
-    propSd <- 0.20;  label("Proportional residual error (SD, fraction) -- not published; assumed for simulation")
-    addSd  <- 0.10;  label("Additive residual error (SD, ug/mL) -- not published; assumed for simulation")
+    propSd <- fixed(0.20);  label("Proportional residual error (SD, fraction) -- not published in the source paper")
+    addSd  <- fixed(0.10);  label("Additive residual error (SD, ug/mL) -- not published in the source paper")
   })
   model({
     # Individual PK parameters. Reference covariates per Table 2

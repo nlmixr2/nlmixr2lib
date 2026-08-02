@@ -88,8 +88,8 @@ Yu_2015_sunitinib <- function() {
     # Allometric scaling -- Methods Eqs 3-4. Fixed exponents (no SE / CI
     # reported in the paper); reference WT = 70 kg.
     # ----------------------------------------------------------------------
-    e_wt_cl <- fixed(0.75); label("Allometric exponent on CL, Qh, CL_SU12662, Qi_SU12662 (fixed; Methods Eq 3)")  # Methods Eq 3
-    e_wt_vc <- fixed(1.0);  label("Allometric exponent on Vc, Vc_SU12662, Vp_SU12662 (fixed; Methods Eq 4)")       # Methods Eq 4
+    e_wt_cl <- fixed(0.75); label("Allometric exponent on CL, Qh, CL_SU12662, Qi_SU12662 (Methods Eq 3)")  # Methods Eq 3
+    e_wt_vc <- fixed(1.0);  label("Allometric exponent on Vc, Vc_SU12662, Vp_SU12662 (Methods Eq 4)")       # Methods Eq 4
 
     # ----------------------------------------------------------------------
     # Inter-individual variability -- Table 2 + $OMEGA BLOCK(4) in the

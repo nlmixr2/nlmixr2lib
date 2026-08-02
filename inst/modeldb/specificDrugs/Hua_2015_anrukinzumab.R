@@ -64,7 +64,7 @@ Hua_2015_anrukinzumab <- function() {
     lfdepot <- log(0.973);  label("SC bioavailability in non-moderate-to-severe-asthma subjects (F, log-scale)")  # Hua 2015 Table 3: F,pop = 0.973
 
     # Allometric exponents on body weight (reference 75 kg; Hua 2015 Table 3).
-    e_wt_cl    <- fixed(0.75); label("Allometric exponent of WT on CL (fixed at 0.75)")                        # Hua 2015 Table 3 / Methods: fixed to 0.75
+    e_wt_cl    <- fixed(0.75); label("Allometric exponent of WT on CL")                        # Hua 2015 Table 3 / Methods: fixed to 0.75
     e_wt_vc_vp <- 0.688;       label("Allometric exponent of WT on Vc and Vp (estimated, shared)")             # Hua 2015 Table 3: theta_WT (Vc,Vp) = 0.688
 
     # Covariate effects on CL and F (Hua 2015 Table 3 final model).

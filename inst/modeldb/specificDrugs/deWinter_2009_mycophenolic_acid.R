@@ -74,7 +74,7 @@ deWinter_2009_mycophenolic_acid <- function() {
 
     # Absorption parameters
     ltlag   <- log(0.231);        label("Absorption lag time TLAG (h)")                                                     # Table 2 TLAG = 0.231 h
-    lka     <- fixed(log(4.00));  label("First-order absorption rate constant ka (1/h), fixed at 4.00")                     # Table 2 ka = 4.00 1/h (fixed)
+    lka     <- fixed(log(4.00));  label("First-order absorption rate constant ka (1/h)")                     # Table 2 ka = 4.00 1/h (fixed)
 
     # fMPA disposition (2-compartment, central + peripheral). Apparent CL / V
     # / Q values per Methods 'Because bioavailability (F) could not be
@@ -113,8 +113,8 @@ deWinter_2009_mycophenolic_acid <- function() {
     # were fixed during NONMEM estimation due to insufficient data between
     # 4-10 h postdose to identify the gallbladder-emptying kinetics.
     ltgb      <- log(7.90);       label("Time of gallbladder emptying TGB (h post-dose)")                                   # Table 2 TGB = 7.90 h
-    ldgb      <- fixed(log(1.00)); label("Duration of gallbladder emptying DGB (h), fixed")                                 # Table 2 DGB = 1.00 h (fixed)
-    lk72      <- fixed(log(10.0)); label("Gallbladder-to-fMPA-central rate constant during emptying k72 (1/h), fixed")      # Table 2 k72 = 10.0 1/h (fixed)
+    ldgb      <- fixed(log(1.00)); label("Duration of gallbladder emptying DGB (h)")                                 # Table 2 DGB = 1.00 h (fixed)
+    lk72      <- fixed(log(10.0)); label("Gallbladder-to-fMPA-central rate constant during emptying k72 (1/h)")      # Table 2 k72 = 10.0 1/h (fixed)
     lk57      <- log(0.0796);     label("fMPAG-to-gallbladder transport rate constant k57 (1/h, tacrolimus reference)")     # Table 2 k57 = 0.0796 1/h
 
     # Covariate effects

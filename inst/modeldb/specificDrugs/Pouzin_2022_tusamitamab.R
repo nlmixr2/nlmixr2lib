@@ -73,8 +73,8 @@ Pouzin_2022_tusamitamab <- function() {
     # V fixed to 1 L.
     lcldm4    <- log(240);    label("Apparent DM4 clearance CL_DM4 (L/day; V_DM4 fixed to 1 L)")                 # Pouzin 2022 Table 4: CL_DM4 = 240 L/day
     lclmedm4  <- log(0.256);  label("Apparent MeDM4 clearance CL_MeDM4 (L/day; V_MeDM4 fixed to 1 L)")           # Pouzin 2022 Table 4: CL_MeDM4 = 0.256 L/day
-    lvdm4     <- fixed(log(1));   label("Apparent DM4 volume V_DM4 (L; FIXED)")                                  # Pouzin 2022 Methods: V_DM4 fixed to 1 L
-    lvmedm4   <- fixed(log(1));   label("Apparent MeDM4 volume V_MeDM4 (L; FIXED)")                              # Pouzin 2022 Methods: V_MeDM4 fixed to 1 L
+    lvdm4     <- fixed(log(1));   label("Apparent DM4 volume V_DM4 (L)")                                  # Pouzin 2022 Methods: V_DM4 fixed to 1 L
+    lvmedm4   <- fixed(log(1));   label("Apparent MeDM4 volume V_MeDM4 (L)")                              # Pouzin 2022 Methods: V_MeDM4 fixed to 1 L
     lfrmedm4  <- log(0.0107); label("Apparent fraction of DM4 elimination producing MeDM4, FR_MeDM4 (unitless)") # Pouzin 2022 Table 4: FR_MeDM4 = 0.0107
 
     # ----- Administered DAR fractions (Pouzin 2022 Tables 3 & 4) -----

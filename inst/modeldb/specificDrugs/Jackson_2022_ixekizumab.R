@@ -48,7 +48,7 @@ Jackson_2022_ixekizumab <- function() {
     lvc     <- log(2.72);      label("Central volume of distribution at 58.6 kg reference weight (V2, L)")        # Table 2: V2 = 2.72 L
     lvp     <- log(2.11);      label("Peripheral volume of distribution at 58.6 kg reference weight (V3, L)")     # Table 2: V3 = 2.11 L
     lq      <- log(0.0119);    label("Intercompartmental clearance at 58.6 kg reference weight (Q, L/hour)")      # Table 2: Q = 0.0119 L/h
-    lfdepot <- fixed(log(0.72)); label("Subcutaneous bioavailability (F1, fraction) -- fixed at adult model value") # Table 2 footnote c: F1 fixed at 0.72 (adult model)
+    lfdepot <- fixed(log(0.72)); label("Subcutaneous bioavailability (F1, fraction) -- adult model value") # Table 2 footnote c: F1 fixed at 0.72 (adult model)
 
     # Allometric weight exponents (reference weight 58.6 kg)
     e_wt_cl_q  <- 0.989;       label("Allometric exponent on CL and Q (unitless)")                                # Table 2: weight on CL and Q = 0.989

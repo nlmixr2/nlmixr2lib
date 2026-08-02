@@ -90,10 +90,10 @@ Hong_2013_glucose_insulin_HGC <- function() {
     lgamma     <- log(0.000431)         ; label("Second-phase insulin-secretion slope gamma (mU/(min^2*(mg/L)))")             # Hong 2013 Table I: gamma = 0.000431
     lamplitude <- log(32.2)             ; label("Amplitude of the Gaussian first-phase insulin pulse (mU)")                    # Hong 2013 Table I: Amplitude = 32.2
     lcli       <- log(1.54)             ; label("Insulin clearance CLI (L/min)")                                              # Hong 2013 Table I: CL_I = 1.54
-    lvi        <- fixed(log(6.09))      ; label("Insulin volume of distribution VI (L; FIXED to Silber 2007 DIS_DIAB)")           # Hong 2013 Table I: V_I = 6.09 (FIXED, footnote a)
+    lvi        <- fixed(log(6.09))      ; label("Insulin volume of distribution VI (L; Silber 2007 DIS_DIAB)")           # Hong 2013 Table I: V_I = 6.09 (FIXED, footnote a)
     lkie       <- log(0.00291)          ; label("Insulin effect-compartment equilibration rate kIE (1/min)")                  # Hong 2013 Table I: k_IE = 0.00291
-    ltsec      <- fixed(log(3.54))      ; label("Time of peak first-phase insulin secretion Tsec (min; FIXED to lit value)")  # Hong 2013 Results: Tsec FIXED at 3.54 (ref 16)
-    ltdur      <- fixed(log(1.76))      ; label("Width of the Gaussian first-phase pulse Tdur (min; FIXED to lit value)")     # Hong 2013 Results: Tdur FIXED at 1.76 (ref 16)
+    ltsec      <- fixed(log(3.54))      ; label("Time of peak first-phase insulin secretion Tsec (min; lit value)")  # Hong 2013 Results: Tsec FIXED at 3.54 (ref 16)
+    ltdur      <- fixed(log(1.76))      ; label("Width of the Gaussian first-phase pulse Tdur (min; lit value)")     # Hong 2013 Results: Tdur FIXED at 1.76 (ref 16)
 
     # ---------------------------------------------------------------------
     # Inter-individual variability (Table I "Random effects model IIV"

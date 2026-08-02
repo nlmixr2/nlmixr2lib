@@ -75,8 +75,8 @@ Sahota_2015_miridesap <- function() {
     e_crcl_cl <- 0.015 ; label("Linear slope of CRCL effect on CPHPC CL below the 80 mL/min threshold (per mL/min)")  # Sahota 2015 Table 2 (CRCL x clearance) and Eq. 1
 
     # ---- Subcutaneous depot (KSC and F fixed at prior estimates) ---------
-    lka     <- fixed(log(1.5)) ; label("Log SC absorption rate constant (log 1/h); KSC = 1.5 1/h - FIXED")                  # Sahota 2015 Table 2 (KSC: 1.5 FIX); Methods
-    lfdepot <- fixed(log(1))   ; label("Log SC bioavailability (log unitless); F = 1 - FIXED")                              # Sahota 2015 Methods: bioavailability assumed complete for SC doses
+    lka     <- fixed(log(1.5)) ; label("Log SC absorption rate constant (log 1/h); KSC = 1.5 1/h")                  # Sahota 2015 Table 2 (KSC: 1.5 FIX); Methods
+    lfdepot <- fixed(log(1))   ; label("Log SC bioavailability (log unitless); F = 1")                              # Sahota 2015 Methods: bioavailability assumed complete for SC doses
 
     # ---- SAP turnover ---------------------------------------------------
     lkout <- log(0.046) ; label("Log SAP elimination rate constant (log 1/h); KOUT = 0.046 1/h")    # Sahota 2015 Table 2 (KOUT)

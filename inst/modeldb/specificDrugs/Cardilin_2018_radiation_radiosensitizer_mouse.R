@@ -61,7 +61,7 @@ Cardilin_2018_radiation_radiosensitizer_mouse <- function() {
     # Linear-quadratic radiation parameters. alpha/beta was FIXED to 10
     # (Methods; Table 1 footnote), so beta is derived as alpha/abratio.
     lalpha  <- log(0.08)  ; label("LQ linear radiation parameter alpha (1/Gy)")        # Table 1
-    abratio <- fixed(10)  ; label("LQ alpha/beta ratio (Gy) - fixed")                  # Methods (fixed at 10)
+    abratio <- fixed(10)  ; label("LQ alpha/beta ratio (Gy)")                  # Methods (fixed at 10)
 
     # Radiosensitizer pharmacodynamic coefficients. The Table 1 letters and the
     # Mathematica supplement code-variable names for these two coefficients are

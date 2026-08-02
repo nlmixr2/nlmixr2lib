@@ -117,7 +117,7 @@ Jain_2011_sorafenib <- function() {
     # "Baseline bodyweight was found to be a statistically significant
     # covariate for V/F and was modelled as a power function with the exponent
     # fixed to 1"). Reference weight 80 kg (cohort median).
-    e_wt_vc <- fixed(1.0); label("Allometric exponent on V/F (fixed)")                            # Results p. 300 ("exponent fixed to 1")
+    e_wt_vc <- fixed(1.0); label("Allometric exponent on V/F")                            # Results p. 300 ("exponent fixed to 1")
 
     # Inter-individual variability. Paper-reported %CV translates to log-scale
     # variance via omega^2 = log(1 + CV^2). IIV on CL/F and V/F are reported

@@ -55,13 +55,13 @@ Dogterom_2018_asenapine <- function() {
     # Bioavailability is not separately identifiable when CL/F and V/F are
     # reported as apparent values; F is anchored at 1 so the IIV(F) below
     # captures between-subject variability in the depot bioavailability.
-    lfdepot <- fixed(log(1));      label("Sublingual bioavailability F (fixed anchor; CL and V are apparent)")  # structural anchor
+    lfdepot <- fixed(log(1));      label("Sublingual bioavailability F (anchor; CL and V are apparent)")  # structural anchor
     # Residual-variability scaling anchor (log scale; anchored at 1). The
     # paper's 'IIV (rV)' in Table 3 is encoded as etalrv below, scaling the
     # per-observation residual SD by exp(lrv + etalrv); the lrv anchor exists
     # so the eta pairs with a typical-value fixed effect per the nlmixr2lib
     # naming convention.
-    lrv     <- fixed(log(1));      label("Residual-variability scaling anchor rV (fixed anchor)")  # structural anchor
+    lrv     <- fixed(log(1));      label("Residual-variability scaling anchor rV (anchor)")  # structural anchor
 
     # Inter-individual variability (exponential model). Paper reports %CV;
     # the log-scale variance is omega^2 = log(1 + CV^2):

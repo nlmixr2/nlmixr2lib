@@ -76,7 +76,7 @@ Vet_2016_midazolam <- function() {
     # ORG_FAIL_COUNT=0 typical CL (FIXED at .mod $THETA line 78 "1.6 FIX") for a 5 kg child with
     # CRP = 32 mg/L. Per-stratum CL values for ORG_FAIL_COUNT >= 1 are encoded as additive shifts
     # `e_orgf<k>_cl` on the log scale below; the reference category is ORG_FAIL_COUNT = 0.
-    lcl <- fixed(log(1.60))   ; label("Typical CL for ORG_FAIL_COUNT = 0, WT = 5 kg, CRP = 32 mg/L (L/h, FIXED)") # .lst line 455 TH 1 = 1.60E+00 (THETA(1) FIX in .mod)
+    lcl <- fixed(log(1.60))   ; label("Typical CL for ORG_FAIL_COUNT = 0, WT = 5 kg, CRP = 32 mg/L (L/h)") # .lst line 455 TH 1 = 1.60E+00 (THETA(1) FIX in .mod)
     lvc <- log(3.28)          ; label("Central volume of distribution V1 at WT = 5 kg (L)")             # .lst line 455 TH 2 = 3.28E+00
     lq  <- log(1.52)          ; label("Inter-compartmental clearance Q (L/h)")                          # .lst line 455 TH 3 = 1.52E+00
     lvp <- log(5.44)          ; label("Peripheral volume of distribution V2 (L)")                       # .lst line 455 TH 4 = 5.44E+00

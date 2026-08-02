@@ -44,8 +44,8 @@ Leshinsky_2017_caspofungin_cat <- function() {
     # modeling strategy': 'exponent fixed of 0.75 for clearance parameters and 1
     # for volumes', and Table 1 row labels 'CL * (WT/4)^0.75', 'V1 * (WT/4)',
     # 'V2 * (WT/4)', 'Q * (WT/4)^0.75'). Reference weight 4 kg.
-    e_wt_cl_q  <- fixed(0.75); label("Allometric exponent of WT on CL and Q (unitless; fixed)") # Leshinsky 2017 Methods / Table 1 footnote
-    e_wt_vc_vp <- fixed(1.0);  label("Allometric exponent of WT on V1 and V2 (unitless; fixed)") # Leshinsky 2017 Methods / Table 1 footnote
+    e_wt_cl_q  <- fixed(0.75); label("Allometric exponent of WT on CL and Q (unitless)") # Leshinsky 2017 Methods / Table 1 footnote
+    e_wt_vc_vp <- fixed(1.0);  label("Allometric exponent of WT on V1 and V2 (unitless)") # Leshinsky 2017 Methods / Table 1 footnote
 
     # IIV. Leshinsky 2017 Table 1 reports an exponential PPV model (eq 2,
     # Methods 'General modeling strategy'). Only CL had an independent eta;

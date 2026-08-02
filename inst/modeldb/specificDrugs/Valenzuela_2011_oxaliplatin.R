@@ -179,7 +179,7 @@ Valenzuela_2011_oxaliplatin <- function() {
     lmtt   <- fixed(log(118));  label("Mean transit time MTT through the proliferation -> circulation chain (h)")  # Table II 'MTT 118 Fixed'; ref 30 (Friberg 2002)
     gamma  <- 0.135;            label("Feedback exponent gamma on (Circ0/Circ) (unitless)")              # Table II gamma
     lalpha <- log(0.182);       label("Linear drug-effect slope alpha on the proliferation rate (L/mg); Edrug = alpha * Cc")  # Table II alpha; Eq 9
-    kcirc  <- fixed(0.07);      label("Circulating-cell elimination rate constant kCirc (1/h); fixed from Friberg 2002")  # text + ref 30 (Friberg 2002); see comments above re: Fig 1 vs text
+    kcirc  <- fixed(0.07);      label("Circulating-cell elimination rate constant kCirc (1/h); from Friberg 2002")  # text + ref 30 (Friberg 2002); see comments above re: Fig 1 vs text
 
     # ------------------------------------------------------------------
     # Inter-individual variability - Valenzuela 2011 Table II 'Inter-

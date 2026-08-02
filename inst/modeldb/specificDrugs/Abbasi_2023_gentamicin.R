@@ -67,7 +67,7 @@ Abbasi_2023_gentamicin <- function() {
     # deterministic given each virtual patient's sampled PK parameters and
     # total body weight (Methods, Monte Carlo Simulations). propSd is
     # therefore fixed at 0 to reproduce the paper's noise-free simulation.
-    propSd <- fixed(0); label("Proportional residual error (fraction; fixed at 0 - MCS is deterministic given sampled PK parameters)")  # Abbasi 2023 Methods (no RUV reported)
+    propSd <- fixed(0); label("Proportional residual error (fraction; 0 - MCS is deterministic given sampled PK parameters)")  # Abbasi 2023 Methods (no RUV reported)
   })
 
   model({

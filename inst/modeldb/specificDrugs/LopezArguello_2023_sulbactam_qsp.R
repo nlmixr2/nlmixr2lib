@@ -65,15 +65,15 @@ LopezArguello_2023_sulbactam_qsp <- function() {
     n_peri_lysed <- fixed(1e7); label("Periplasmic drug molecules per cell at time 0, lysed-cell assay") # Fig. S8 line 71: N_IN_IC = 10000000 (vast excess vs the 1,731 PBPs)
 
     # --- Michaelis-Menten constant, common to all six PBPs ---
-    km_pbp <- fixed(1000); label("Michaelis-Menten constant for PBP acylation (drug molecules per cell; FIXED)") # Materials and Methods: "The Km was fixed to 1,000 drug molecules" (only one concentration studied)
+    km_pbp <- fixed(1000); label("Michaelis-Menten constant for PBP acylation (drug molecules per cell)") # Materials and Methods: "The Km was fixed to 1,000 drug molecules" (only one concentration studied)
 
     # --- Nominal PBP expression: 1,731 molecules/cell split by relative band intensity ---
-    n_pbp1a_0 <- fixed(153);  label("Nominal PBP1a expression (molecules/cell; FIXED)") # Materials and Methods, Mass balance equations: 153 molecules for PBP1a (8.8% of all PBPs)
-    n_pbp1b_0 <- fixed(118);  label("Nominal PBP1b expression (molecules/cell; FIXED)") # Materials and Methods, Mass balance equations: 118 molecules for PBP1b (6.8% of all PBPs)
-    n_pbp2_0 <- fixed(50);    label("Nominal PBP2 expression (molecules/cell; FIXED)") # Materials and Methods, Mass balance equations: 50 molecules for PBP2 (2.9% of all PBPs)
-    n_pbp3_0 <- fixed(79);    label("Nominal PBP3 expression (molecules/cell; FIXED)") # Materials and Methods, Mass balance equations: 79 molecules for PBP3 (4.6% of all PBPs)
-    n_pbp4_0 <- fixed(99);    label("Nominal PBP4 expression (molecules/cell; FIXED)") # Materials and Methods, Mass balance equations: 99 molecules for PBP4 (5.7% of all PBPs)
-    n_pbp56_0 <- fixed(1232); label("Nominal PBP5/6 expression (molecules/cell; FIXED)") # Materials and Methods, Mass balance equations: 1232 molecules for PBP5/6 (71.2% of all PBPs)
+    n_pbp1a_0 <- fixed(153);  label("Nominal PBP1a expression (molecules/cell)") # Materials and Methods, Mass balance equations: 153 molecules for PBP1a (8.8% of all PBPs)
+    n_pbp1b_0 <- fixed(118);  label("Nominal PBP1b expression (molecules/cell)") # Materials and Methods, Mass balance equations: 118 molecules for PBP1b (6.8% of all PBPs)
+    n_pbp2_0 <- fixed(50);    label("Nominal PBP2 expression (molecules/cell)") # Materials and Methods, Mass balance equations: 50 molecules for PBP2 (2.9% of all PBPs)
+    n_pbp3_0 <- fixed(79);    label("Nominal PBP3 expression (molecules/cell)") # Materials and Methods, Mass balance equations: 79 molecules for PBP3 (4.6% of all PBPs)
+    n_pbp4_0 <- fixed(99);    label("Nominal PBP4 expression (molecules/cell)") # Materials and Methods, Mass balance equations: 99 molecules for PBP4 (5.7% of all PBPs)
+    n_pbp56_0 <- fixed(1232); label("Nominal PBP5/6 expression (molecules/cell)") # Materials and Methods, Mass balance equations: 1232 molecules for PBP5/6 (71.2% of all PBPs)
 
     # --- Non-suppressible background gel-band fraction (Table S2, dataset 4 (IPM, TZB, SUL, TIC)) ---
     noise_1a <- 0.08;   label("Background gel-band fraction not suppressible by drug, PBP1a (unitless)") # Table S2 NOISE_1a = 0.08

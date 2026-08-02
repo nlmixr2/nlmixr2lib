@@ -47,9 +47,9 @@ Danielak_2017_treosulfan <- function() {
     # 0.925 (V2) and then fixed them at 0.75 (CL) and 1 (V1, V2) per
     # Anderson and Holford (Danielak 2017 Results paragraph 1 and Table 2
     # entries marked "(fixed)"). Q has no weight covariate.
-    e_wt_cl <- fixed(0.75);  label("Allometric exponent on CL (unitless, fixed)")     # Danielak 2017 Table 2: "beta Cl, weight 0.75 (fixed)"
-    e_wt_vc <- fixed(1.0);   label("Allometric exponent on V1 (unitless, fixed)")     # Danielak 2017 Table 2: "beta V1, weight 1 (fixed)"
-    e_wt_vp <- fixed(1.0);   label("Allometric exponent on V2 (unitless, fixed)")     # Danielak 2017 Table 2: "beta V2, weight 1 (fixed)"
+    e_wt_cl <- fixed(0.75);  label("Allometric exponent on CL (unitless)")     # Danielak 2017 Table 2: "beta Cl, weight 0.75 (fixed)"
+    e_wt_vc <- fixed(1.0);   label("Allometric exponent on V1 (unitless)")     # Danielak 2017 Table 2: "beta V1, weight 1 (fixed)"
+    e_wt_vp <- fixed(1.0);   label("Allometric exponent on V2 (unitless)")     # Danielak 2017 Table 2: "beta V2, weight 1 (fixed)"
 
     # Correlated IIV on CL and V1. Paper reports omega-style IIV in percent
     # (Danielak 2017 Table 2: omega_Cl 25.5%, omega_V1 51.4%, omega_Cl-V1

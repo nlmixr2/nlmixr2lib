@@ -86,8 +86,8 @@ Salem_2014_efavirenz <- function() {
 
     # ---- Fixed allometric exponents on body weight (Salem 2014 Methods 'Development of the covariate model' paragraph 3) ----
     # "The exponents in the allometric model were fixed to 0.75 and 1 for CL/F and V/F, respectively."
-    e_wt_cl <- fixed(0.75); label("Allometric exponent of (WT/70) on CL/F (unitless; fixed)")        # Salem 2014 Methods 'Development of the covariate model' paragraph 3
-    e_wt_vc <- fixed(1.0);  label("Allometric exponent of (WT/70) on V/F (unitless; fixed)")         # Salem 2014 Methods 'Development of the covariate model' paragraph 3
+    e_wt_cl <- fixed(0.75); label("Allometric exponent of (WT/70) on CL/F (unitless)")        # Salem 2014 Methods 'Development of the covariate model' paragraph 3
+    e_wt_vc <- fixed(1.0);  label("Allometric exponent of (WT/70) on V/F (unitless)")         # Salem 2014 Methods 'Development of the covariate model' paragraph 3
 
     # ---- Bioavailability: oral liquid (suspension or solution) vs capsule (reference) ----
     # Salem 2014 Results paragraph 4 + equation following: "F_solution_and_suspension = 0.79 * [AGE/(AGE+10.6)]"

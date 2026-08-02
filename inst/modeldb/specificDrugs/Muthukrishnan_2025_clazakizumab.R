@@ -182,7 +182,7 @@ Muthukrishnan_2025_clazakizumab <- function() {
     lkout <- log(0.381); label("First-order hs-CRP elimination rate kout (1/day)")                          # Muthukrishnan 2025 Table 2
     lkin  <- log(3.76);  label("Zero-order hs-CRP production rate kin ([mg/L]/day) at reference CRP=8.15")  # Muthukrishnan 2025 Table 2
     lic50 <- log(3.39);  label("Clazakizumab IC50 for kin inhibition (ng/mL)")                              # Muthukrishnan 2025 Table 2
-    limax <- fixed(log(1)); label("Maximum fractional inhibition of kin (Imax, fixed at 1)")                # Muthukrishnan 2025 Table 2 "1.00 Fixed"
+    limax <- fixed(log(1)); label("Maximum fractional inhibition of kin (Imax)")                # Muthukrishnan 2025 Table 2 "1.00 Fixed"
     lhill <- log(0.523); label("Hill coefficient on the clazakizumab-vs-kin sigmoid (unitless)")            # Muthukrishnan 2025 Table 2 Hill factor
 
     # Baseline hs-CRP covariate effect on kin.

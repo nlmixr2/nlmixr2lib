@@ -114,10 +114,10 @@ Yin_2020_pexidartinib <- function() {
     # fixed exponents 0.75 on clearances and 1 on volumes, identical to the
     # standard size-scaling convention; reported in the table as the trailing
     # superscripts in the parameter equations).
-    e_wt_cl <- fixed(0.75); label("Allometric exponent of (WT/80) on CL/F (unitless; fixed at theory value)")  # Yin 2020 Table 2 row 1 trailing exponent
-    e_wt_vc <- fixed(1)   ; label("Allometric exponent of (WT/80) on Vc/F (unitless; fixed at theory value)")  # Yin 2020 Table 2 row 8 trailing exponent
-    e_wt_vp <- fixed(1)   ; label("Allometric exponent of (WT/80) on Vp/F (unitless; fixed at theory value)")  # Yin 2020 Table 2 row 9 trailing exponent
-    e_wt_q  <- fixed(0.75); label("Allometric exponent of (WT/80) on Q/F (unitless; fixed at theory value)")   # Yin 2020 Table 2 row 10 trailing exponent
+    e_wt_cl <- fixed(0.75); label("Allometric exponent of (WT/80) on CL/F (unitless; theory value)")  # Yin 2020 Table 2 row 1 trailing exponent
+    e_wt_vc <- fixed(1)   ; label("Allometric exponent of (WT/80) on Vc/F (unitless; theory value)")  # Yin 2020 Table 2 row 8 trailing exponent
+    e_wt_vp <- fixed(1)   ; label("Allometric exponent of (WT/80) on Vp/F (unitless; theory value)")  # Yin 2020 Table 2 row 9 trailing exponent
+    e_wt_q  <- fixed(0.75); label("Allometric exponent of (WT/80) on Q/F (unitless; theory value)")   # Yin 2020 Table 2 row 10 trailing exponent
 
     # Covariate effects on CL/F. The table reports raw power-exponent estimates
     # for the continuous-covariate piecewise effects (CRCL, AST, TBILI) and

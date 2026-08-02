@@ -46,7 +46,7 @@ Teuscher_2015_methylphenidate <- function() {
     lvc     <- log(64.7);     label("Apparent central volume V/F (L)")                                        # Teuscher 2015 Table 1: V = 64.7 L (RSE 25.8 %)
     lka1    <- log(0.25);     label("First-order absorption rate from the IR depot Ka1 (1/h)")                # Teuscher 2015 Table 1: Ka1 = 0.25 1/h (RSE 26.6 %)
     lka2    <- log(0.16);     label("First-order absorption rate from the ER depot Ka2 (1/h)")                # Teuscher 2015 Table 1: Ka2 = 0.16 1/h (RSE 31.8 %)
-    logitf1 <- qlogis(0.65);  label("Fraction of total dose released through the IR depot F1 (logit-scale)")  # Teuscher 2015 Table 1: F1 = 0.65 (RSE 10.5 %); ER fraction = 1 - F1
+    logitfir <- qlogis(0.65);  label("Fraction of total dose released through the IR depot F1 (logit-scale)")  # Teuscher 2015 Table 1: F1 = 0.65 (RSE 10.5 %); ER fraction = 1 - F1
     ltlag   <- log(5.75);     label("Absorption lag time tlag on the ER depot (h)")                           # Teuscher 2015 Table 1: tlag = 5.75 h (RSE 3.6 %)
     e_wt_cl <- 1.53;          label("Body weight exponent on CL (unitless) in CL = CL_TV * WT^theta")         # Teuscher 2015 Table 1, Eq 4: theta = 1.53 (RSE 12.9 %)
 
@@ -75,7 +75,7 @@ Teuscher_2015_methylphenidate <- function() {
     vc   <- exp(lvc + etalvc)
     ka1  <- exp(lka1)
     ka2  <- exp(lka2)
-    f1   <- expit(logitf1)
+    f1   <- expit(logitfir)
     tlag <- exp(ltlag)
 
     kel  <- cl / vc

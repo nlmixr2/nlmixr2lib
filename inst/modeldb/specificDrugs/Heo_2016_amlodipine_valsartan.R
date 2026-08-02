@@ -169,15 +169,15 @@ Heo_2016_amlodipine_valsartan <- function() {
 
     # Amlodipine PD parameters -- separate SBP-side and DBP-side effect
     # compartments (different Keqs and IC50s).
-    lec50_sbp <- fixed(log(8.27));  label("Amlodipine SBP IC50 (ng/mL); fixed at monotherapy value in the combined fit")  # Heo 2016 Table 1 SBP IC50 = 8.27 (RSE 32.2%)
-    lec50_dbp <- fixed(log(2.97));  label("Amlodipine DBP IC50 (ng/mL); fixed at monotherapy value in the combined fit")  # Heo 2016 Table 1 DBP IC50 = 2.97 (RSE 36.8%)
-    lke0_sbp  <- fixed(log(0.211)); label("Amlodipine SBP effect-compartment equilibration rate Keq (1/h); fixed at monotherapy value") # Heo 2016 Table 1 SBP Keq = 0.211 (RSE 38.3%) [teq = ln(2)/Keq = 3.3 h]
-    lke0_dbp  <- fixed(log(0.821)); label("Amlodipine DBP effect-compartment equilibration rate Keq (1/h); fixed at monotherapy value") # Heo 2016 Table 1 DBP Keq = 0.821 (RSE 104.7%) [teq = 0.84 h]
+    lec50_sbp <- fixed(log(8.27));  label("Amlodipine SBP IC50 (ng/mL); monotherapy value in the combined fit")  # Heo 2016 Table 1 SBP IC50 = 8.27 (RSE 32.2%)
+    lec50_dbp <- fixed(log(2.97));  label("Amlodipine DBP IC50 (ng/mL); monotherapy value in the combined fit")  # Heo 2016 Table 1 DBP IC50 = 2.97 (RSE 36.8%)
+    lke0_sbp  <- fixed(log(0.211)); label("Amlodipine SBP effect-compartment equilibration rate Keq (1/h); monotherapy value") # Heo 2016 Table 1 SBP Keq = 0.211 (RSE 38.3%) [teq = ln(2)/Keq = 3.3 h]
+    lke0_dbp  <- fixed(log(0.821)); label("Amlodipine DBP effect-compartment equilibration rate Keq (1/h); monotherapy value") # Heo 2016 Table 1 DBP Keq = 0.821 (RSE 104.7%) [teq = 0.84 h]
 
     # Valsartan PD parameters -- one effect compartment shared between
     # SBP and DBP (single Keq, single IC50).
-    lec50_val <- fixed(log(1200));  label("Valsartan IC50 (ng/mL, shared SBP+DBP); fixed at monotherapy value in the combined fit") # Heo 2016 Table 2 IC50 = 1200 (RSE 53.3%)
-    lke0_val  <- fixed(log(0.542)); label("Valsartan effect-compartment equilibration rate Keq (1/h, shared SBP+DBP); fixed at monotherapy value") # Heo 2016 Table 2 Keq = 0.542 (RSE 59.5%) [teq = 1.3 h]
+    lec50_val <- fixed(log(1200));  label("Valsartan IC50 (ng/mL, shared SBP+DBP); monotherapy value in the combined fit") # Heo 2016 Table 2 IC50 = 1200 (RSE 53.3%)
+    lke0_val  <- fixed(log(0.542)); label("Valsartan effect-compartment equilibration rate Keq (1/h, shared SBP+DBP); monotherapy value") # Heo 2016 Table 2 Keq = 0.542 (RSE 59.5%) [teq = 1.3 h]
 
     # Proportional drug-drug interaction terms (Heo 2016 Eq 8).
     # Not log-transformed because alpha can be negative (infra-additive).

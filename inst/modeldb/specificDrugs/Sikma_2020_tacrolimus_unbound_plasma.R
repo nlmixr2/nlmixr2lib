@@ -59,8 +59,8 @@ Sikma_2020_tacrolimus_unbound_plasma <- function() {
     lvp  <- log(469)          ; label("Whole-blood apparent peripheral volume V2/F (L)")                        # Sikma 2020 Table 3 V2 = 469 (95% CI 399-579)
 
     # ---- Absorption / bioavailability (fixed from upstream model) -----------
-    lka     <- fixed(log(0.579)) ; label("First-order absorption rate constant Ka (1/h; FIXED from upstream tacrolimus model)") # Sikma 2020 Table 3 Ka = 0.579 Fixed
-    lfdepot <- fixed(log(1))     ; label("Oral bioavailability F (FIXED at 1)")                                  # Sikma 2020 Table 3 F = 1 Fixed
+    lka     <- fixed(log(0.579)) ; label("First-order absorption rate constant Ka (1/h; from upstream tacrolimus model)") # Sikma 2020 Table 3 Ka = 0.579 Fixed
+    lfdepot <- fixed(log(1))     ; label("Oral bioavailability F")                                  # Sikma 2020 Table 3 F = 1 Fixed
 
     # ---- Erythrocyte and plasma binding (Sikma 2020 Table 3) ----------------
     # Bmax is the maximum binding capacity to erythrocytes. The model

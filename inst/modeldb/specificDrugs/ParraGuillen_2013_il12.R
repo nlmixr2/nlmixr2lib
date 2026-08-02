@@ -98,9 +98,9 @@ ParraGuillen_2013_il12 <- function() {
     # subsection p. 800: 'estimating those parameters dependent upon the
     # tumour cell line (Ts0, lambda and REG50) or upon the immunotherapeutic
     # agent (k1) together with the corresponding inter-animal variability').
-    lk3     <- fixed(log(1.08));    label("Vaccine efficacy second-order rate constant k3 (1 / day) -- fixed from CyaA-E7 fit")   # Table I row 'k3' (IL-12 column = '1.08 FIX')
-    lk4     <- fixed(log(0.0390));  label("First-order regulator dynamics rate k4 (1 / day) -- fixed from CyaA-E7 fit")           # Table I row 'k4' (IL-12 column = '0.0390 FIX')
-    lhill   <- fixed(log(5.24));    label("Hill steepness gamma for REG inhibition (unitless) -- fixed from CyaA-E7 fit")         # Table I row 'gamma' (IL-12 column = '5.24 FIX')
+    lk3     <- fixed(log(1.08));    label("Vaccine efficacy second-order rate constant k3 (1 / day) -- from CyaA-E7 fit")   # Table I row 'k3' (IL-12 column = '1.08 FIX')
+    lk4     <- fixed(log(0.0390));  label("First-order regulator dynamics rate k4 (1 / day) -- from CyaA-E7 fit")           # Table I row 'k4' (IL-12 column = '0.0390 FIX')
+    lhill   <- fixed(log(5.24));    label("Hill steepness gamma for REG inhibition (unitless) -- from CyaA-E7 fit")         # Table I row 'gamma' (IL-12 column = '5.24 FIX')
 
     # Regulator half-inhibition amount -- re-estimated for MC38
     lreg50  <- log(2.08);    label("Regulator amount at half inhibition REG50 (mm)")                  # Table I row 'REG50' (IL-12 column)

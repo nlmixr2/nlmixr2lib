@@ -92,7 +92,7 @@ Hirt_2009_didanosine <- function() {
     # Structural parameters (Table 2 final model). CL/F and Vc/F are reported
     # in absolute units (L/h and L) rather than per body surface area, with no
     # significant covariate scaling.
-    lka  <- fixed(log(4));   label("Absorption rate constant (ka, 1/h; fixed)") # Table 2 (ka fixed to give tmax ~ 0.5 h)
+    lka  <- fixed(log(4));   label("Absorption rate constant (ka, 1/h)") # Table 2 (ka fixed to give tmax ~ 0.5 h)
     lcl  <- log(208);        label("Apparent clearance (CL/F, L/h)")            # Table 2
     lvc  <- log(278);        label("Apparent central volume of distribution (Vc/F, L)") # Table 2
 

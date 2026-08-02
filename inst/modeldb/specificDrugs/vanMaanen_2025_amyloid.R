@@ -290,7 +290,7 @@ vanMaanen_2025_amyloid <- function() {
     # mg AUC of approximately 4.4 uM*h). The Table 1 point estimate 0.392
     # is used here as the primary fitted value.
     # =====================================================================
-    limax  <- fixed(log(1)) ; label("Log maximum verubecestat inhibition of plaque formation Imax (unitless; FIXED at 1 per Table 1)")  # Table 1 Imax = 1 (Fixed)
+    limax  <- fixed(log(1)) ; label("Log maximum verubecestat inhibition of plaque formation Imax (unitless; 1 per Table 1)")  # Table 1 Imax = 1 (Fixed)
     lauc50 <- log(0.392)    ; label("Log verubecestat AUC producing 50% of maximal plaque-formation inhibition AUC50 (log-uM*h)")      # Table 1 AUC50 = 0.392 uM*h (RSE 59.7%)
 
     # =====================================================================

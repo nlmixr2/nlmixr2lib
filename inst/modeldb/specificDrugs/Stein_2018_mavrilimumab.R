@@ -31,7 +31,7 @@ Stein_2018_mavrilimumab <- function() {
 
     # Target turnover and binding (QSS approximation; paper Eq. 7)
     lksyn <- fixed(log(2.4));  label("Target synthesis rate (ksyn = Vmax/Vc, nM/day)")          # Stein and Peletier 2018 Table 1: ksyn = Vmax/Vc = 2.4 nM/d
-    lKss  <- fixed(log(1.1));  label("QSS binding constant (Kss = (koff + ke(CR))/kon = KM, nM)")  # Stein and Peletier 2018 Table 1: Kss = KM = 1.1 nM
+    lkss  <- fixed(log(1.1));  label("QSS binding constant (Kss = (koff + ke(CR))/kon = KM, nM)")  # Stein and Peletier 2018 Table 1: Kss = KM = 1.1 nM
     lkdeg <- fixed(log(2.2));  label("Free target elimination rate (ke(R), 1/day)")              # Stein and Peletier 2018 Table 1: ke(R) = 2.2 1/d
     lkint <- fixed(log(2.2));  label("Drug-target complex internalization rate (ke(CR), 1/day)") # Stein and Peletier 2018 Table 1: ke(CR) = 2.2 1/d (assumed equal to ke(R); Stein and Peletier 2018 page 672)
   })
@@ -43,7 +43,7 @@ Stein_2018_mavrilimumab <- function() {
     cl   <- exp(lcl)
     q    <- exp(lq)
     ksyn <- exp(lksyn)
-    kss  <- exp(lKss)
+    kss  <- exp(lkss)
     kdeg <- exp(lkdeg)
     kint <- exp(lkint)
 

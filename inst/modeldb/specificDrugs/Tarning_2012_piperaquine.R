@@ -151,7 +151,7 @@ Tarning_2012_piperaquine <- function() {
     # variability in F is captured via the per-occasion BOV etas
     # (etaiov_fdepot_1..3, CV 56.3% per occasion) plus the proportional
     # pregnancy multiplier below.
-    lfdepot <- fixed(log(1)) ; label("Relative bioavailability F (unitless, fixed)")           # Tarning 2012 Table 2: F = 1 (fixed)
+    lfdepot <- fixed(log(1)) ; label("Relative bioavailability F (unitless)")           # Tarning 2012 Table 2: F = 1 (fixed)
 
     # Pregnancy proportional effects. Tarning 2012 Results
     # 'Pharmacokinetics of piperaquine': '45.0% and 46.8% increase in

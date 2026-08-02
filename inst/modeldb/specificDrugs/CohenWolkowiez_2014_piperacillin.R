@@ -87,8 +87,8 @@ CohenWolkowiez_2014_piperacillin <- function() {
     lvc <- log(0.42);  label("Typical V per kg body weight (L/kg)")                       # Cohen-Wolkowiez 2014 Table 3: typical V  value 0.42  L/kg (RSE 9.6%)
 
     # Allometric exponents (Cohen-Wolkowiez 2014 Table 2 base model and Population PK model building paragraph)
-    e_wt_cl <- fixed(1.0); label("Linear WT exponent on CL (unitless, fixed)")  # Population PK model building paragraph: WT exponent fixed at 1
-    e_wt_vc <- fixed(1.0); label("Linear WT exponent on V (unitless, fixed)")   # Population PK model building paragraph: WT exponent fixed at 1
+    e_wt_cl <- fixed(1.0); label("Linear WT exponent on CL (unitless)")  # Population PK model building paragraph: WT exponent fixed at 1
+    e_wt_vc <- fixed(1.0); label("Linear WT exponent on V (unitless)")   # Population PK model building paragraph: WT exponent fixed at 1
 
     # PMA maturation exponent on CL (Cohen-Wolkowiez 2014 Table 3 final piperacillin model)
     e_page_cl <- 1.76; label("Power exponent on (PMA / 33 weeks) for CL (unitless)")  # Cohen-Wolkowiez 2014 Table 3: PMA covariate 1.76 (RSE 33.6%)

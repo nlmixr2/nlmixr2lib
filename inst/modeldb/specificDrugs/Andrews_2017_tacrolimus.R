@@ -101,10 +101,10 @@ Andrews_2017_tacrolimus <- function() {
     # values."). Theory-based and held fixed during estimation. ka is NOT
     # allometrically scaled in Andrews 2017 (no exponent reported on ka,
     # unlike Prytula 2016 which uses -0.25).
-    e_wt_cl <- fixed(0.75) ; label("Allometric exponent of (WT/70) on CL/F (unitless; fixed at theory value)")              # Andrews 2017 Section 3.1
-    e_wt_q  <- fixed(0.75) ; label("Allometric exponent of (WT/70) on Q/F (unitless; fixed at theory value)")               # Andrews 2017 Section 3.1
-    e_wt_vc <- fixed(1)    ; label("Allometric exponent of (WT/70) on V1/F (unitless; fixed at theory value)")              # Andrews 2017 Section 3.1
-    e_wt_vp <- fixed(1)    ; label("Allometric exponent of (WT/70) on V2/F (unitless; fixed at theory value)")              # Andrews 2017 Section 3.1
+    e_wt_cl <- fixed(0.75) ; label("Allometric exponent of (WT/70) on CL/F (unitless; theory value)")              # Andrews 2017 Section 3.1
+    e_wt_q  <- fixed(0.75) ; label("Allometric exponent of (WT/70) on Q/F (unitless; theory value)")               # Andrews 2017 Section 3.1
+    e_wt_vc <- fixed(1)    ; label("Allometric exponent of (WT/70) on V1/F (unitless; theory value)")              # Andrews 2017 Section 3.1
+    e_wt_vp <- fixed(1)    ; label("Allometric exponent of (WT/70) on V2/F (unitless; theory value)")              # Andrews 2017 Section 3.1
 
     # Covariate effects on CL/F. Andrews 2017 final-model equation (Section 3.2,
     # reproduced from the PDF layout):

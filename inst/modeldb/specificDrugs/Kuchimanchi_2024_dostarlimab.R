@@ -98,9 +98,9 @@ Kuchimanchi_2024_dostarlimab <- function() {
     # (same pattern as Melhem 2022 dostarlimab). The resulting maximum
     # reduction at t >> T50 is 1 - exp(I_max) = 1 - exp(-0.113) = 0.107
     # (10.7%), matching the paper's narrative.
-    limax <- log(0.113); label("log|I_max|; magnitude of the log-CL reduction at t >> T50 (unitless)") # Kuchimanchi 2024 Table 2: imax = -0.113
-    lt50  <- log(145);   label("log T50; time at half of I_max (days)")                                # Kuchimanchi 2024 Table 2: T50 = 145 days
-    lhill <- log(7.05);  label("log Hill; sigmoid steepness coefficient (unitless)")                   # Kuchimanchi 2024 Table 2: Hill = 7.05
+    lcl_hill_max <- log(0.113); label("log|I_max|; magnitude of the log-CL reduction at t >> T50 (unitless)") # Kuchimanchi 2024 Table 2: imax = -0.113
+    lcl_hill_t50  <- log(145);   label("log T50; time at half of I_max (days)")                                # Kuchimanchi 2024 Table 2: T50 = 145 days
+    lcl_hill_gamma <- log(7.05);  label("log Hill; sigmoid steepness coefficient (unitless)")                   # Kuchimanchi 2024 Table 2: Hill = 7.05
 
     # Allometric exponents on body weight (reference 70 kg).
     e_wt_cl    <- 0.523;  label("Allometric exponent of WT on CL (unitless)")              # Kuchimanchi 2024 Table 2: Effect of WT on CL = 0.523
@@ -129,7 +129,7 @@ Kuchimanchi_2024_dostarlimab <- function() {
     # omega^2_Vc = 0.0278, omega^2_Imax = 0.903.
     etalcl + etalvc ~ c(0.0563,
                         0.0193, 0.0278)
-    etalimax ~ 0.903
+    etalcl_hill_max ~ 0.903
 
     # Residual error (combined additive + proportional). Kuchimanchi 2024
     # Table 2 reports two proportional residual errors (GARNET 0.16, RUBY
@@ -167,10 +167,10 @@ Kuchimanchi_2024_dostarlimab <- function() {
     # Time-dependent CL (Hill function of time since first dose; t in days).
     # I_max < 0; sign applied here to keep individual values strictly negative
     # under log-normal IIV on |I_max|.
-    imax_i <- -exp(limax + etalimax)
-    t50    <- exp(lt50)
-    hill   <- exp(lhill)
-    td_cl  <- exp(imax_i * t^hill / (t50^hill + t^hill))
+    cl_hill_max_i <- -exp(lcl_hill_max + etalcl_hill_max)
+    cl_hill_t50    <- exp(lcl_hill_t50)
+    cl_hill_gamma   <- exp(lcl_hill_gamma)
+    td_cl  <- exp(cl_hill_max_i * t^cl_hill_gamma / (cl_hill_t50^cl_hill_gamma + t^cl_hill_gamma))
 
     # Individual PK parameters. CL_base is at t=0 for the reference patient;
     # td_cl folds in the time dependency.

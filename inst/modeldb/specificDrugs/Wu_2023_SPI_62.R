@@ -199,7 +199,7 @@ Wu_2023_SPI_62 <- function() {
     # Bioavailability is not identifiable (all L and L/h above are apparent),
     # so F is anchored at 1 rather than estimated. Wu 2023 Eq. 1 writes the
     # depot initial condition as Dose * F.
-    lfdepot <- fixed(log(1)); label("Bioavailability F of SPI-62 (fraction, fixed at 1)")  # Wu 2023 Eq. 1 and Table 2 footnote a (F unknown; only apparent parameters estimated, so F is anchored at 1)
+    lfdepot <- fixed(log(1)); label("Bioavailability F of SPI-62 (fraction)")  # Wu 2023 Eq. 1 and Table 2 footnote a (F unknown; only apparent parameters estimated, so F is anchored at 1)
 
     # ------------------------------------------------------------------
     # Target binding (TMDD). Concentrations are nM and Rtotal is an

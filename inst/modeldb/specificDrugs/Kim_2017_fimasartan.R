@@ -70,7 +70,7 @@ Kim_2017_fimasartan <- function() {
     # Discussion). The interpretation is therefore a paper-defined
     # 'relative bioavailability scalar' rather than a strict fraction-
     # bounded-to-1 quantity.
-    fhealthy <- fixed(0.18);  label("Reference bioavailability F in healthy subjects (unitless; fixed from Kim 2008)")  # Kim 2017 Methods 'Population pharmacokinetic analysis' citing Kim 2008
+    fhealthy <- fixed(0.18);  label("Reference bioavailability F in healthy subjects (unitless; from Kim 2008)")  # Kim 2017 Methods 'Population pharmacokinetic analysis' citing Kim 2008
     il1      <- 0.0873;       label("Additive increment on F for mild hepatic impairment (unitless)")                   # Kim 2017 Table 2: IL1 = 0.0873, RSE 142.1 % (95 % CI 0.001-0.668)
     il2      <- 0.896;        label("Additive increment on F for moderate hepatic impairment (unitless)")               # Kim 2017 Table 2: IL2 = 0.896, RSE 19.7 % (95 % CI 0.607-1.481)
 
@@ -86,7 +86,7 @@ Kim_2017_fimasartan <- function() {
     # Residual error -- Kim 2017 Table 2 (proportional + small fixed
     # additive). The additive component is reported as 'fix' (held at
     # 0.0001 in the source units of ng/mL).
-    addSd  <- fixed(0.0001); label("Additive residual error on plasma fimasartan Cc (ng/mL; fixed per Kim 2017 Table 2)")  # Kim 2017 Table 2: sigma_add = 0.0001 (fix)
+    addSd  <- fixed(0.0001); label("Additive residual error on plasma fimasartan Cc (ng/mL; per Kim 2017 Table 2)")  # Kim 2017 Table 2: sigma_add = 0.0001 (fix)
     propSd <- 0.354;         label("Proportional residual error on plasma fimasartan Cc (fraction)")                        # Kim 2017 Table 2: sigma_prop = 0.354, RSE 8.8 %
 
     # ====================================================================
@@ -134,7 +134,7 @@ Kim_2017_fimasartan <- function() {
     etalec50_dbp ~ log(1 + 0.568^2)   # Kim 2017 Table 4: omega_EC50_DBP = 56.8 % CV, RSE 55.3 % -- shared between EC50_H+A and EC50_B groups since both share a structural EC50 with a covariate switch
 
     addSd_DBP  <- 6.27;        label("Additive residual error on DBP (mmHg)")                                                  # Kim 2017 Table 4: sigma_add_DBP = 6.27 mmHg, RSE 6.8 %
-    propSd_DBP <- fixed(1e-4); label("Proportional residual error on DBP (fraction; fixed at 0.0001 per Kim 2017 Table 4)")  # Kim 2017 Table 4: sigma_prop_DBP = 0.0001 (fix)
+    propSd_DBP <- fixed(1e-4); label("Proportional residual error on DBP (fraction; 0.0001 per Kim 2017 Table 4)")  # Kim 2017 Table 4: sigma_prop_DBP = 0.0001 (fix)
   })
 
   model({

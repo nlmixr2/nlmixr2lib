@@ -128,17 +128,17 @@ Niebecker_2015_edoxaban <- function() {
     # Vp/F to Q/F (fixed at 1.0, so Vp/F and Q/F share the same eta magnitude).
     # Table 3 final model footnote paragraph mark mark.
     theta_scale_cl_vc <- 1.56;        label("IIV scaling factor for etalcl applied to Vc/F (unitless)")  # Table 3 final model: theta_Scale1 = 1.56 (RSE 2.47%)
-    theta_scale_vp_q  <- fixed(1.00); label("IIV scaling factor for etalvp applied to Q/F (unitless, FIXED)") # Table 3 final model: theta_Scale2 = 1.00 FIXED
+    theta_scale_vp_q  <- fixed(1.00); label("IIV scaling factor for etalvp applied to Q/F (unitless)") # Table 3 final model: theta_Scale2 = 1.00 FIXED
 
     # Allometric exponents -- fixed per Table 3 footnote paragraph mark mark
     # (paper-as-printed): CL/F gets 3/4, Vc/F gets 1, Vp/F gets 3/4, Q/F gets 1.
     # The Vp-at-3/4 and Q-at-1 assignment is the opposite of the more common
     # volume-at-1 / clearance-at-3/4 grouping; the values are reproduced as
     # printed in the source paper.
-    allo_cl <- fixed(0.75); label("Allometric exponent on CL/F (unitless, fixed at 3/4)")  # Table 3 footnote paragraph mark mark: CL/F (WT/70)^(3/4)
-    allo_vc <- fixed(1.00); label("Allometric exponent on Vc/F (unitless, fixed at 1)")     # Table 3 footnote paragraph mark mark: Vc/F (WT/70)^1
-    allo_vp <- fixed(0.75); label("Allometric exponent on Vp/F (unitless, fixed at 3/4; paper-as-printed)") # Table 3 footnote paragraph mark mark: Vp/F (WT/70)^(3/4)
-    allo_q  <- fixed(1.00); label("Allometric exponent on Q/F (unitless, fixed at 1; paper-as-printed)")    # Table 3 footnote paragraph mark mark: Q/F (WT/70)^1
+    e_wt_cl <- fixed(0.75); label("Allometric exponent on CL/F (unitless)")  # Table 3 footnote paragraph mark mark: CL/F (WT/70)^(3/4)
+    e_wt_vc <- fixed(1.00); label("Allometric exponent on Vc/F (unitless)")     # Table 3 footnote paragraph mark mark: Vc/F (WT/70)^1
+    e_wt_vp <- fixed(0.75); label("Allometric exponent on Vp/F (unitless; paper-as-printed)") # Table 3 footnote paragraph mark mark: Vp/F (WT/70)^(3/4)
+    e_wt_q  <- fixed(1.00); label("Allometric exponent on Q/F (unitless; paper-as-printed)")    # Table 3 footnote paragraph mark mark: Q/F (WT/70)^1
 
     # Inter-individual variability (log-normal). The paper reports CV%; the
     # log-scale variance is omega^2 = log(1 + CV^2). etalcl is shared between
@@ -159,7 +159,7 @@ Niebecker_2015_edoxaban <- function() {
     # a fixed log-anchor lrv pairs the eta with a typical-value fixed effect, and
     # etalrv carries the reported variance.
     #   omega^2 = log(1 + 0.333^2) = 0.10516
-    lrv    <- fixed(log(1)); label("Residual-variability scaling anchor (fixed log(1))")               # structural anchor; pairs etalrv with a typical-value fixed effect
+    lrv    <- fixed(log(1)); label("Residual-variability scaling anchor (log(1))")               # structural anchor; pairs etalrv with a typical-value fixed effect
     etalrv ~ 0.10516                                                                                   # Table 3 final model: 'IIV on Residual unexplained variability' 33.3% CV (RSE 6.89%)
 
     # Residual error -- proportional in linear space (Niebecker's "additive on
@@ -202,25 +202,25 @@ Niebecker_2015_edoxaban <- function() {
     # Total apparent CL/F = (CLnr + CLr) * (WT/70)^(3/4) * exp(etalcl) * P-gp factor.
     # The P-gp +33.4% factor is applied to phase 1 subjects only via pgp_phase1.
     cl <- (cl_nonren_typ + cl_renal_typ) *
-          wt_ratio^allo_cl *
+          wt_ratio^e_wt_cl *
           (1 + e_pgp_inh_cl * pgp_phase1) *
           exp(etalcl)
 
     # Apparent central volume Vc/F = theta_Vc * (WT/70)^1 * exp(etalcl * 1.56) * Asian factor.
     # etalcl is shared with CL/F at full magnitude; for Vc/F it is scaled by theta_scale_cl_vc = 1.56.
     vc <- exp(lvc + etalcl * theta_scale_cl_vc) *
-          wt_ratio^allo_vc *
+          wt_ratio^e_wt_vc *
           (1 + e_race_asian_vc * RACE_ASIAN)
 
     # Apparent peripheral volume Vp/F = theta_Vp * (WT/70)^(3/4) * exp(etalvp).
     # Paper-as-printed: allometric exponent 3/4 on Vp/F.
-    vp <- exp(lvp + etalvp) * wt_ratio^allo_vp
+    vp <- exp(lvp + etalvp) * wt_ratio^e_wt_vp
 
     # Apparent intercompartmental clearance Q/F = theta_Q * (WT/70)^1 * exp(etalvp * 1.00) * phase 3 factor.
     # etalvp is shared with Vp/F at full magnitude; for Q/F it is scaled by theta_scale_vp_q = 1.00 (FIXED).
     # Paper-as-printed: allometric exponent 1 on Q/F.
     q <- exp(lq + etalvp * theta_scale_vp_q) *
-         wt_ratio^allo_q *
+         wt_ratio^e_wt_q *
          (1 + e_study_hokvte_q * STUDY_HOKVTE)
 
     # Absorption rate with fed-state effect (FED = 1 in study 6 only).

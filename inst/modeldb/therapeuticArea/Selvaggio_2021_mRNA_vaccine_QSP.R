@@ -157,7 +157,7 @@ Selvaggio_2021_mRNA_vaccine_QSP <- function() {
     # closure). Not tabulated in Selvaggio 2021 or Chen 2014; a canonical
     # lymph-node reference volume of 0.5 mL is used here to complete the
     # closure. See vignette Assumptions.
-    v_ln    <- fixed(5e-4);        label("Lymph node volume (L; fixed literature default)")                 # Assumption
+    v_ln    <- fixed(5e-4);        label("Lymph node volume (L; literature default)")                 # Assumption
 
     # Nominal residual placeholder. The paper is a deterministic mechanistic
     # QSP and does not report a residual-error model; this small additive SD

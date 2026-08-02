@@ -58,7 +58,7 @@ Almquist_2022_anifrolumab <- function() {
     # Supplement appendix (line 140) sets the internalisation rate kint equal to kdeg = 77.4 d^-1
     # so the drug-target complex is removed at the same rate as the unbound receptor.
     # supplement-derived (JCPH appendix; not in main paper's results table 1 except as the kint=kdeg constraint)
-    kdeg   <- fixed(77.4); label("Receptor degradation rate kdeg (1/day, fixed; equals internalisation rate kint per supplement)")  # Supplement appendix: kdeg = kint = 77.4 d^-1 fixed
+    kdeg   <- fixed(77.4); label("Receptor degradation rate kdeg (1/day,; equals internalisation rate kint per supplement)")  # Supplement appendix: kdeg = kint = 77.4 d^-1 fixed
 
     # Covariate effects on linear CL and Vc
     e_ifngslow_cl <- 0.793;  label("Multiplicative factor on CL for IFNGS-low subjects (1 = high reference, <1 = low)")  # Table 1: F_IFNGS-low = 0.793

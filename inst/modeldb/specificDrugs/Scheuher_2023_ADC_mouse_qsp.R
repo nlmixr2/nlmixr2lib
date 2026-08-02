@@ -109,7 +109,7 @@ Scheuher_2023_ADC_mouse_qsp <- function() {
     # -------------------------------------------------------------------
     # Residual error (placeholder - paper reports deterministic fits)
     # -------------------------------------------------------------------
-    propSd <- fixed(0.15); label("Proportional residual error (fraction) - not from paper; fixed 15% for simulation")  # Assumption: simulation-only default
+    propSd <- fixed(0.15); label("Proportional residual error (fraction) - not from paper; 15% for simulation")  # Assumption: simulation-only default
   })
 
   model({

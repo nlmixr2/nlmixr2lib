@@ -199,7 +199,7 @@ Tarning_2012_dihydroartemisinin <- function() {
     # (etalfdepot, CV 30.3%) plus the proportional pregnancy multiplier
     # and the linear log10-parasitaemia multiplier below capture all
     # F-related variability.
-    lfdepot <- fixed(log(1)) ; label("Relative bioavailability F (unitless, fixed)")           # Tarning 2012 Table 4: F = 1 (fixed)
+    lfdepot <- fixed(log(1)) ; label("Relative bioavailability F (unitless)")           # Tarning 2012 Table 4: F = 1 (fixed)
 
     # Allometric exponents. Fixed at the canonical Mahidol-Oxford
     # malaria-popPK values used by the source paper: 3/4 on clearance
@@ -212,8 +212,8 @@ Tarning_2012_dihydroartemisinin <- function() {
     # x (individual body weight / median body weight in the
     # population)^0.75].' Retained in the final dihydroartemisinin
     # covariate model (delta-OFV = -9.08).
-    allo_cl <- fixed(3/4) ; label("Allometric exponent on CL/F (unitless, fixed)")             # Tarning 2012 Methods + Results 'Pharmacokinetics of dihydroartemisinin'
-    allo_vc <- fixed(1)   ; label("Allometric exponent on V/F (unitless, fixed)")              # Tarning 2012 Methods + Results 'Pharmacokinetics of dihydroartemisinin'
+    e_wt_cl <- fixed(3/4) ; label("Allometric exponent on CL/F (unitless)")             # Tarning 2012 Methods + Results 'Pharmacokinetics of dihydroartemisinin'
+    e_wt_vc <- fixed(1)   ; label("Allometric exponent on V/F (unitless)")              # Tarning 2012 Methods + Results 'Pharmacokinetics of dihydroartemisinin'
 
     # Pregnancy proportional effect on F. Tarning 2012 Results
     # 'Pharmacokinetics of dihydroartemisinin': 'a 37.5% lower relative
@@ -282,8 +282,8 @@ Tarning_2012_dihydroartemisinin <- function() {
     #    CL/F (exponent 3/4) and V/F (exponent 1), plus a proportional
     #    pregnancy effect and a linear log10-parasitaemia effect on F.
     #    Allometric centering at the cohort reference 48.5 kg.
-    cl  <- exp(lcl)              * (WT / 48.5)^allo_cl
-    vc  <- exp(lvc + etalvc)     * (WT / 48.5)^allo_vc
+    cl  <- exp(lcl)              * (WT / 48.5)^e_wt_cl
+    vc  <- exp(lvc + etalvc)     * (WT / 48.5)^e_wt_vc
     mtt <- exp(lmtt + iov_mtt)
 
     # Transit absorption rate constant. Fig 1B: ktr = (n+1)/MTT with

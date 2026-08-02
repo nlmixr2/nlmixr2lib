@@ -95,9 +95,9 @@ Fau_2020_isatuximab <- function() {
     # distributed (the only normal IIV in this model); KCL is the time at
     # which the sigmoid has progressed half-way; gamma is the stiffness
     # exponent.
-    clm  <- 0.664;      label("Magnitude of CLlin change from baseline to steady state, log(CL_0/CLinf) (unitless)") # Fau 2020 Table S3: CLm
-    lkcl <- log(1055);  label("Half-time scale KCL of the time-on-CLlin sigmoid (hour)")                              # Fau 2020 Table S3: KCL
-    lgam <- log(3.91);  label("Sigmoidal stiffness exponent gamma of the time-on-CLlin function (unitless)")          # Fau 2020 Table S3: gamma
+    cl_hill_max  <- 0.664;      label("Magnitude of CLlin change from baseline to steady state, log(CL_0/CLinf) (unitless)") # Fau 2020 Table S3: CLm
+    lcl_hill_t50 <- log(1055);  label("Half-time scale KCL of the time-on-CLlin sigmoid (hour)")                              # Fau 2020 Table S3: KCL
+    lcl_hill_gamma <- log(3.91);  label("Sigmoidal stiffness exponent gamma of the time-on-CLlin function (unitless)")          # Fau 2020 Table S3: gamma
 
     # Allometric body-weight power exponents (reference 75.6 kg).
     e_wt_cl <- 0.621; label("Power exponent of WT/75.6 on steady-state CL (unitless)") # Fau 2020 Table S3: CLinf ~ Wght
@@ -110,7 +110,7 @@ Fau_2020_isatuximab <- function() {
 
     # Categorical covariate effects, applied as exp(coef * indicator).
     e_nigg_cl <- -0.751; label("Exponential coefficient of non-IgG MM (vs IgG MM) on steady-state CL") # Fau 2020 Table S3: CLinf ~ IgType=Not_IgG
-    e_nigg_kcl   <- -0.931; label("Exponential coefficient of non-IgG MM (vs IgG MM) on KCL")       # Fau 2020 Table S3: KCL ~ IgType=Not_IgG (main text rounds to -0.930)
+    e_nigg_cl_hill_t50   <- -0.931; label("Exponential coefficient of non-IgG MM (vs IgG MM) on KCL")       # Fau 2020 Table S3: KCL ~ IgType=Not_IgG (main text rounds to -0.930)
     e_p2f2_vc    <- -0.137; label("Exponential coefficient of P2F2 (vs P1F1) drug material on Vc")  # Fau 2020 Table S3: Vc ~ Formulation=P2F2
     e_asian_vc   <- -0.275; label("Exponential coefficient of Asian race (vs non-Asian) on Vc")     # Fau 2020 Table S3: Vc ~ Race=Asian
     e_sexf_vc    <- -0.126; label("Exponential coefficient of female sex (vs male) on Vc")          # Fau 2020 Table S3: Vc ~ Sex=Female
@@ -122,7 +122,7 @@ Fau_2020_isatuximab <- function() {
     #   normal CLm:  var     = (CLm * CV)^2    (additive eta on the linear scale)
     # CLinf 47.5% -> log(0.475^2 + 1) = 0.2035
     # KCL  115%   -> log(1.15^2 + 1)  = 0.8427
-    # gam  118%   -> log(1.18^2 + 1)  = 0.8723
+    # cl_hill_gamma  118%   -> log(1.18^2 + 1)  = 0.8723
     # Vc    25.7% -> log(0.257^2 + 1) = 0.0640
     # Q     85.8% -> log(0.858^2 + 1) = 0.5519
     # Vp    45.6% -> log(0.456^2 + 1) = 0.1889
@@ -131,9 +131,9 @@ Fau_2020_isatuximab <- function() {
     # CLm   97.2% -> (0.664 * 0.972)^2 = 0.4164
     # IIVs are reported independently (no off-block correlations in the source).
     etalcl ~ 0.2035  # Fau 2020 Table S3: ω(CLinf) 47.5%
-    etaclm    ~ 0.4164  # Fau 2020 Table S3: ω(CLm) 97.2% (additive normal eta)
-    etalkcl   ~ 0.8427  # Fau 2020 Table S3: ω(KCL) 115%
-    etalgam   ~ 0.8723  # Fau 2020 Table S3: ω(gamma) 118%
+    etacl_hill_max    ~ 0.4164  # Fau 2020 Table S3: ω(CLm) 97.2% (additive normal eta)
+    etalcl_hill_t50   ~ 0.8427  # Fau 2020 Table S3: ω(KCL) 115%
+    etalcl_hill_gamma   ~ 0.8723  # Fau 2020 Table S3: ω(gamma) 118%
     etalvc    ~ 0.0640  # Fau 2020 Table S3: ω(Vc) 25.7%
     etalq     ~ 0.5519  # Fau 2020 Table S3: ω(Q) 85.8%
     etalvp    ~ 0.1889  # Fau 2020 Table S3: ω(Vp) 45.6%
@@ -152,12 +152,12 @@ Fau_2020_isatuximab <- function() {
              (B2M / 3.90)^e_b2m_cl *
              exp(e_nigg_cl * MM_NIGG)
 
-    kcl <- exp(lkcl + etalkcl) * exp(e_nigg_kcl * MM_NIGG)
+    cl_hill_t50 <- exp(lcl_hill_t50 + etalcl_hill_t50) * exp(e_nigg_cl_hill_t50 * MM_NIGG)
 
-    # CLm is normally distributed; etaclm is additive on the linear scale.
-    clm_i <- clm + etaclm
+    # CLm is normally distributed; etacl_hill_max is additive on the linear scale.
+    cl_hill_max_i <- cl_hill_max + etacl_hill_max
 
-    gam <- exp(lgam + etalgam)
+    cl_hill_gamma <- exp(lcl_hill_gamma + etalcl_hill_gamma)
 
     vc <- exp(lvc + etalvc) *
           (WT / 75.6)^e_wt_vc *
@@ -174,7 +174,7 @@ Fau_2020_isatuximab <- function() {
     # Time-varying linear CL: starts at cl*exp(CLm) and decays to cl
     # as t -> infinity. KCL is the time at which the sigmoid is half-way
     # through (when gamma is large enough that the inflection is sharp).
-    cllin <- cl * exp(clm_i * (1 - t^gam / (kcl^gam + t^gam)))
+    cllin <- cl * exp(cl_hill_max_i * (1 - t^cl_hill_gamma / (cl_hill_t50^cl_hill_gamma + t^cl_hill_gamma)))
 
     # Two-compartment IV-input PK with parallel time-varying linear and
     # Michaelis-Menten eliminations from the central compartment.

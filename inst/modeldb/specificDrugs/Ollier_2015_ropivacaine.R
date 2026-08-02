@@ -103,8 +103,8 @@ Ollier_2015_ropivacaine <- function() {
     # from Aarons et al. and Table 2 reports it as '0.557 ( - )', i.e.,
     # without %RSE, indicating a prior-pinned quantity. Encoded as fixed()
     # per the parameter-names 'Fixed parameters' rule.
-    lkbind <- fixed(log(100));    label("Free-to-bound ropivacaine binding rate constant kbind (1/(h*uM)), fixed")  # Methods 'Base model' (paper-authorised kb range 100 - 10^15 uM^-1 h^-1)
-    lkdiss <- fixed(log(0.557));  label("Ropivacaine-AAG dissociation constant Kd (uM), fixed (prior-pinned)")     # Table 2 Kd = 0.557 uM (no RSE, prior-informed)
+    lkbind <- fixed(log(100));    label("Free-to-bound ropivacaine binding rate constant kbind (1/(h*uM))")  # Methods 'Base model' (paper-authorised kb range 100 - 10^15 uM^-1 h^-1)
+    lkdiss <- fixed(log(0.557));  label("Ropivacaine-AAG dissociation constant Kd (uM) (prior-pinned)")     # Table 2 Kd = 0.557 uM (no RSE, prior-informed)
 
     # Binding-site pool (latent variable BS approximating unbound AAG).
     # kin is the zero-order production rate of unbinding sites in uM/h.

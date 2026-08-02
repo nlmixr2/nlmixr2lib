@@ -83,7 +83,7 @@ Grasela_1985_phenobarbital <- function() {
     # model can be loaded and simulated deterministically; see Errata in
     # the vignette. Users who re-fit on real data must replace this with
     # an estimated proportional (or combined) error term.
-    propSd <- fixed(0); label("Proportional residual error (fraction; FIXED AT ZERO - not reported in source)")  # abstract: not reported
+    propSd <- fixed(0); label("Proportional residual error (fraction; ZERO - not reported in source)")  # abstract: not reported
   })
   model({
     # 1. Individual PK parameters. CL and V scale LINEARLY with body weight

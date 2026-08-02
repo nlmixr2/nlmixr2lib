@@ -76,9 +76,9 @@ Keizer_2011_E7820_mouse <- function() {
     # ------------------------------------------------------------------
     lrbase   <- log(22.5)    ; label("Baseline alpha2-integrin expression I_base (% units)")            # Keizer 2011 Table III preclinical I_base = 22.5% (RSE 1%)
     lkout    <- log(0.143)   ; label("Turnover rate kout for integrin pool (1/day)")                    # Keizer 2011 Table III preclinical kout = 0.143 day^-1
-    emax_int <- fixed(1)     ; label("Maximal Emax of E7820 on integrin input rate (fixed at 1)")       # Keizer 2011 Table III preclinical Emax,C = 1 (fixed; "the shape parameter gamma in the Hill equation was fixed to 1")
+    emax_int <- fixed(1)     ; label("Maximal Emax of E7820 on integrin input rate")       # Keizer 2011 Table III preclinical Emax,C = 1 (fixed; "the shape parameter gamma in the Hill equation was fixed to 1")
     lic50    <- log(656)     ; label("E7820 plasma conc at 50% maximal integrin inhibition IC50 (ng/mL)") # Keizer 2011 Table III preclinical IC50 = 656 ng/mL (RSE 18%)
-    lhill_int <- fixed(log(1)) ; label("Hill exponent on E7820->integrin (unitless; fixed at 1)")         # Keizer 2011 Table III preclinical gamma = 1 (fixed; sigmoidal Emax collapsed to non-sigmoidal Emax)
+    lhill_int <- fixed(log(1)) ; label("Hill exponent on E7820->integrin (unitless)")         # Keizer 2011 Table III preclinical gamma = 1 (fixed; sigmoidal Emax collapsed to non-sigmoidal Emax)
 
     # ------------------------------------------------------------------
     # Stage 3: Tumor growth model (Keizer 2011 Table IV; preclinical only).
@@ -90,7 +90,7 @@ Keizer_2011_E7820_mouse <- function() {
     lbeta        <- log(0.0391) ; label("Rate of decline of initial resistance to growth beta (1/day)")   # Keizer 2011 Table IV beta = 0.0391 day^-1 (RSE 130%)
     lemax_tumor  <- log(0.0472) ; label("Max effect of integrin inhibition on tumor growth Emax,I (1/day)") # Keizer 2011 Table IV Emax,I = 0.0472 day^-1 (RSE 5%)
     lii50        <- log(0.114)  ; label("Relative integrin inhibition at 50% max effect II50 (fraction)") # Keizer 2011 Table IV II50 = 11.4% (RSE 6%)
-    lhill_tumor  <- fixed(log(5)) ; label("Hill exponent integrin-inhibition -> tumor growth (unitless; fixed at 5)") # Keizer 2011 Table IV gamma = 5 (fixed)
+    lhill_tumor  <- fixed(log(5)) ; label("Hill exponent integrin-inhibition -> tumor growth (unitless)") # Keizer 2011 Table IV gamma = 5 (fixed)
 
     # ------------------------------------------------------------------
     # Inter-individual variability. Source reports BSV as CV%;

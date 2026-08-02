@@ -59,7 +59,7 @@ Livio_2014_tobramycin <- function() {
     # 60 / 1000. Both anchors are wrapped in fixed() because the paper did
     # not estimate either parameter independently of the covariate.
     lcl       <- fixed(log(7.14)); label("Typical CL at the population-mean CrCL of 119 mL/min (L/h)")  # Livio 2014 Table 1: CL = 7.14 L/h (equated to CLcr)
-    e_crcl_cl <- fixed(1.0);       label("Power exponent on (CRCL/119) for CL (unitless); fixed at 1 (CL equated to CrCL)") # Livio 2014 Methods: CL equated to CLcr
+    e_crcl_cl <- fixed(1.0);       label("Power exponent on (CRCL/119) for CL (unitless) (CL equated to CrCL)") # Livio 2014 Methods: CL equated to CLcr
 
     # Bioavailability change for the 20 g cast cohort vs the 10 g reference.
     # Encoded as a multiplicative fractional change on F via the canonical

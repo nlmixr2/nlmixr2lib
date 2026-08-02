@@ -150,8 +150,8 @@ Kim_2023_pyrazinamide <- function() {
     # exponents of 0.75 and 1, respectively" (Kim 2023 Methods). Confirmed by
     # the FIX flags in Supplementary File S1 $THETA: '(0.75 FIX)' = THETA(6)
     # and '(1 FIX)' = THETA(7). Neither is given an %RSE in Table 2.
-    e_lbm_cl <- fixed(0.75); label("Allometric exponent of lean body weight on CL/F (fixed, unitless)")     # Kim 2023 Methods; Suppl. S1 $THETA (0.75 FIX) = S1 THETA(6)
-    e_lbm_vc <- fixed(1.0);  label("Allometric exponent of lean body weight on V/F (fixed, unitless)")      # Kim 2023 Methods; Suppl. S1 $THETA (1 FIX) = S1 THETA(7)
+    e_lbm_cl <- fixed(0.75); label("Allometric exponent of lean body weight on CL/F (unitless)")     # Kim 2023 Methods; Suppl. S1 $THETA (0.75 FIX) = S1 THETA(6)
+    e_lbm_vc <- fixed(1.0);  label("Allometric exponent of lean body weight on V/F (unitless)")      # Kim 2023 Methods; Suppl. S1 $THETA (1 FIX) = S1 THETA(7)
 
     # Geriatric-diabetes effect on CL/F. Kim 2023 encodes the categorical
     # effect as a fractional increase from 1: Table 2 gives the covariate row
@@ -190,7 +190,7 @@ Kim_2023_pyrazinamide <- function() {
     # proportional term is retained here as fixed(0) to preserve that
     # provenance.
     addSd  <- 3.41;     label("Additive residual standard deviation (ug/mL)")                      # Kim 2023 Table 2 'Residual variability / Additive' = 3.41; = S1 THETA(4)
-    propSd <- fixed(0); label("Proportional residual standard deviation (fraction; fixed to zero)")  # Suppl. S1 $THETA (0 FIX) = S1 THETA(5); not reported in Table 2
+    propSd <- fixed(0); label("Proportional residual standard deviation (fraction; zero)")  # Suppl. S1 $THETA (0 FIX) = S1 THETA(5); not reported in Table 2
   })
 
   model({

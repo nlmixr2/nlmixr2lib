@@ -147,7 +147,7 @@ Ueshima_2018_apixaban <- function() {
     # trough + 2-point post-dose sampling and could not identify ka from
     # the absorption phase (Methods: 'ka was fixed at the reported value
     # of 0.42 h^-1 because of a lack of data on the absorption phase').
-    lka <- fixed(log(0.42)); label("Absorption rate constant ka (1/h); fixed at literature value")  # Ueshima 2018 Table 4 theta3 = 0.42 h^-1 (fixed)
+    lka <- fixed(log(0.42)); label("Absorption rate constant ka (1/h); literature value")  # Ueshima 2018 Table 4 theta3 = 0.42 h^-1 (fixed)
 
     # Base apparent oral clearance theta1 = 1.53 L/h. This is the typical
     # value of CL/F for a reference patient with CCR = 70 mL/min,

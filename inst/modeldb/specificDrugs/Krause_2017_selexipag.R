@@ -83,7 +83,7 @@ Krause_2017_selexipag <- function() {
     lvc   <- log(12.90); label("Apparent selexipag central volume V_p/F at 70 kg (L)")                         # Krause 2017 Table 1: V_p/F = 12.90 L, RSE 16%
     lk12  <- log(0.09);  label("Selexipag central-to-peripheral rate constant k_12 (1/h)")                     # Krause 2017 Table 1: k_12 = 0.09 1/h, RSE 18%
     lk21  <- log(0.06);  label("Selexipag peripheral-to-central rate constant k_21 (1/h)")                     # Krause 2017 Table 1: k_21 = 0.06 1/h, RSE 17%
-    ltlag <- fixed(log(0.668)); label("Selexipag absorption lag time t_lag, fixed (h)")                        # Krause 2017 Table 1 and Methods 'Population PK': t_lag = 0.668 h, fixed to the estimate from the healthy subject popPK model
+    ltlag <- fixed(log(0.668)); label("Selexipag absorption lag time t_lag (h)")                        # Krause 2017 Table 1 and Methods 'Population PK': t_lag = 0.668 h, fixed to the estimate from the healthy subject popPK model
 
     # ---------------- Metabolite (ACT-333679) structural parameters -----------
     # Apparent V_m/F is the metabolite central volume; k_m, k_34, k_43 are the

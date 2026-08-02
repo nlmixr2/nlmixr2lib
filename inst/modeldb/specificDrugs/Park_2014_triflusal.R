@@ -127,7 +127,7 @@ Park_2014_triflusal <- function() {
     # is not separately estimated -- encode it as fixed(1).
     # -----------------------------------------------------------------
     e_wt_cl <- 0.845;        label("Allometric power exponent of WT on CL/F (unitless)") # Park 2014 Table 2 theta_4 = 0.845 (RSE 17.4%)
-    e_wt_vc <- fixed(1.000); label("Allometric power exponent of WT on V/F (unitless, fixed at 1 per V/F = theta_2 * (WT/71.65))") # Park 2014 Table 2 V/F equation (no separate exponent reported)
+    e_wt_vc <- fixed(1.000); label("Allometric power exponent of WT on V/F (unitless, 1 per V/F = theta_2 * (WT/71.65))") # Park 2014 Table 2 V/F equation (no separate exponent reported)
 
     # -----------------------------------------------------------------
     # Structural PD parameters -- Park 2014 Table 2 (Estimates column).

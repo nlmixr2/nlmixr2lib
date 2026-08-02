@@ -233,7 +233,7 @@ Falkenhagen_2023_warfarin_qsp <- function() {
     # No residual error is reported: the model was never fitted to
     # observed INR data. Fixed at 0 per the standing convention for
     # unreported RUV (documented in the vignette Errata).
-    addSd <- fixed(0); label("Additive residual error SD on INR (unitless; fixed at 0)")
+    addSd <- fixed(0); label("Additive residual error SD on INR (unitless)")
   })
 
   model({

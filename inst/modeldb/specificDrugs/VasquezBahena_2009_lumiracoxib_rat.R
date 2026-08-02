@@ -55,7 +55,7 @@ VasquezBahena_2009_lumiracoxib_rat <- function() {
     # variability (IIV) was modelled exponentially and expressed as coefficient
     # of variation"); the dose-dependent reduction is applied as a derived
     # multiplicative factor (Ide 2009 pravastatin pattern in this package).
-    lfrel      <- fixed(log(1)) ; label("Relative-bioavailability anchor F0 (fixed at 1; the dose-dependent reduction is applied separately)")  # paired with etalfrel; Table 1 IIV row
+    lfrel      <- fixed(log(1)) ; label("Relative-bioavailability anchor F0 (the dose-dependent reduction is applied separately)")  # paired with etalfrel; Table 1 IIV row
     limax_frel <- log(0.67)     ; label("Maximum fractional reduction in relative bioavailability IMAX (dimensionless)") # Table 1: IMAX = 0.67 (RSE 6%)
     ld50_frel  <- log(4.3)      ; label("Dose eliciting half-maximal reduction in Frel D50 (mg/kg)")                     # Table 1: D50 = 4.3 mg/kg (RSE 43%)
 

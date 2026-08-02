@@ -97,7 +97,7 @@ Brekkan_2018_pegfilgrastim <- function() {
     # -----------------------------------------------------------------
     lka     <- log(0.0114) ; label("First-order absorption rate Ka (1/h)")                            # Brekkan 2018 Table I (Ka 0.0114, RSE 2.78%)
     lr1     <- log(2.84)   ; label("Zero-order input rate R1 into depot (mg/h)")                      # Brekkan 2018 Table I (R1 2.84 mg/h, RSE 23.8%)
-    lfdepot <- fixed(log(1)); label("Relative bioavailability Frel into depot (fixed)")                # Brekkan 2018 Table I (Frel 1, Fixed; no IV data)
+    lfdepot <- fixed(log(1)); label("Relative bioavailability Frel into depot")                # Brekkan 2018 Table I (Frel 1, Fixed; no IV data)
     lvc     <- log(1.81)   ; label("Apparent central volume Vc/F (L)")                                 # Brekkan 2018 Table I (Vc/F 1.81 L, RSE 7.31%)
     lvmax   <- log(0.0467) ; label("Maximum saturable elimination rate Vmax/F (mg/h)")                 # Brekkan 2018 Table I (Vmax/F 0.0467 mg/h, RSE 0.726%)
     lkm     <- log(2.05)   ; label("Michaelis-Menten constant Km (ng/mL)")                             # Brekkan 2018 Table I (Km 2.05 ng/mL, RSE 3.38%)
@@ -113,8 +113,8 @@ Brekkan_2018_pegfilgrastim <- function() {
     # neutrophils). The only estimated PD turnover parameter is BASE.
     # -----------------------------------------------------------------
     lbase  <- log(2.70)        ; label("Baseline neutrophil count BASE (10^9 cells/L)")               # Brekkan 2018 Table I (BASE 2.70, RSE 3.75%)
-    lthalf <- fixed(log(7))    ; label("Circulating neutrophil half-life T1/2 (h, fixed)")             # Brekkan 2018 Table I (T1/2 7 h, Fixed)
-    lmmt   <- fixed(log(120))  ; label("Mean maturation time MMT (h, fixed)")                          # Brekkan 2018 Table I (MMT 120 h, Fixed)
+    lthalf <- fixed(log(7))    ; label("Circulating neutrophil half-life T1/2 (h)")             # Brekkan 2018 Table I (T1/2 7 h, Fixed)
+    lmmt   <- fixed(log(120))  ; label("Mean maturation time MMT (h)")                          # Brekkan 2018 Table I (MMT 120 h, Fixed)
 
     # Drug-effect parameters -- Brekkan 2018 Table I and Eqs. 2-4 (page 5).
     # EC50 is shared between the proliferation and the maturation effects;

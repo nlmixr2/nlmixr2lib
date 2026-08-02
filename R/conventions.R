@@ -398,7 +398,59 @@
   # Deprecated parent-suffix marker. A model that names a parent-side
   # parameter `<base>_adc` should drop the `_adc` suffix; the parent
   # uses the canonical name unsuffixed.
-  deprecatedParentSuffix = "_adc"
+  deprecatedParentSuffix = "_adc",
+
+  # Exact parameter names retired by issues #474-#477, mapped to their
+  # replacement. Each was a spelling that defeated name-based discovery:
+  # a consumer looking for allometric exponents by `e_wt_*`, for logit-scale
+  # bioavailability, or for TMDD constants by case-normalised stems would
+  # silently miss these models. Keeping the map here (rather than in prose)
+  # means `checkModelConventions()` fails the build if one reappears.
+  renamedParameters = c(
+    # #474 allometric exponents -> e_wt_<param>
+    allo_cl = "e_wt_cl", allo_q = "e_wt_q", allo_vc = "e_wt_vc",
+    allovc = "e_wt_vc", allovp = "e_wt_vp",
+    dCLdWT = "e_wt_cl", dVdWT = "e_wt_vc",
+    # #475 logit-scale fractions: F vs absorption-pathway split
+    logitf1 = "logitfdepot (bioavailability) or logitffo/logitfburst (pathway split)",
+    logitfr = "logitffo (first-order arm) or logitfburst (burst/rapid-release)",
+    logitf1st = "logitffo",
+    # #476 CLL disambiguation
+    lcll = "lcl_ligand", cllira = "cl_lira", lcllira_ref = "lcl_lira_ref",
+    # #477 TMDD case / separator normalisation
+    lKss = "lkss", lkD = "lkd", lBmax = "lbmax", Km = "km",
+    kd_LR = "kd_lr", kd_T1 = "kd_t1", kd_T2 = "kd_t2",
+    # Same case-normalisation class, found while auditing the extraction
+    # skill's own docs against this map: 89 models used `vmax`, one used
+    # `Vmax`, and the skill taught the capitalised spelling.
+    Vmax = "vmax"
+  ),
+
+  # Issue #482: controlled vocabulary for the biological matrix a compartment
+  # represents, so "restrict to blood, serum or plasma" is a filter rather
+  # than a judgement call made by reading state names.
+  #
+  # Two entries are deliberately NOT matrices, because forcing every state
+  # into a specimen would be worse than saying so plainly:
+  #   "administration site" -- depot / transit states, which hold drug that
+  #     has not reached a biological matrix yet
+  #   "not applicable"      -- latent, PD and bookkeeping states (effect,
+  #     precursor*, cumhaz, circ, bacterial subpopulations, tumor-size
+  #     states). A database scan found these in 642 of the 1403 models with
+  #     ODEs, so the category carries real weight.
+  specimenVocabulary = c(
+    "plasma", "serum", "whole blood", "blood cell", "CSF", "brain ISF",
+    "vitreous", "aqueous humour", "retina", "tissue", "tumor", "lymph",
+    "endosome", "urine", "bile", "faeces", "saliva", "milk",
+    "synovial fluid", "epithelial lining fluid", "bronchoalveolar lavage",
+    "administration site", "not applicable"
+  ),
+
+  # Fields every compartmentData entry must carry. `analyte` and `units`
+  # answer "what molecule, in what amount"; `specimen` answers "in what
+  # matrix". `verified` records whether the entry was checked against the
+  # source paper -- a mechanically derived entry is not evidence.
+  compartmentDataFields = c("analyte", "units", "specimen", "verified")
 )
 
 # The following canonical-name lists are NOT carried on

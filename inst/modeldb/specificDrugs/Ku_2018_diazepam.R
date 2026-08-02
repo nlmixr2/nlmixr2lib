@@ -88,10 +88,10 @@ Ku_2018_diazepam <- function() {
     lvp <- log(56.5) ; label("Peripheral volume of distribution at WT = 70 kg (L)")          # Ku 2018 Table 2 (V2_70KG = 56.5 L, final)
 
     # Theory-based fixed allometric exponents (Ku 2018 Methods + Results).
-    e_wt_cl <- fixed(0.75) ; label("Allometric exponent of (WT/70) on CL (unitless; fixed)") # Ku 2018 Methods / Results
-    e_wt_q  <- fixed(0.75) ; label("Allometric exponent of (WT/70) on Q (unitless; fixed)")  # Ku 2018 Methods / Results
-    e_wt_vc <- fixed(1)    ; label("Allometric exponent of (WT/70) on V1 (unitless; fixed)") # Ku 2018 Methods / Results
-    e_wt_vp <- fixed(1)    ; label("Allometric exponent of (WT/70) on V2 (unitless; fixed)") # Ku 2018 Methods / Results
+    e_wt_cl <- fixed(0.75) ; label("Allometric exponent of (WT/70) on CL (unitless)") # Ku 2018 Methods / Results
+    e_wt_q  <- fixed(0.75) ; label("Allometric exponent of (WT/70) on Q (unitless)")  # Ku 2018 Methods / Results
+    e_wt_vc <- fixed(1)    ; label("Allometric exponent of (WT/70) on V1 (unitless)") # Ku 2018 Methods / Results
+    e_wt_vp <- fixed(1)    ; label("Allometric exponent of (WT/70) on V2 (unitless)") # Ku 2018 Methods / Results
 
     # IIV. Ku 2018 Table 2 footnote c states "IIV terms are shown as
     # variance"; the per-row CV% column in the source text (49.9% on CL,

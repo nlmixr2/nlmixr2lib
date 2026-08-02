@@ -48,7 +48,7 @@ Marcantonio_2022_risankizumab <- function() {
     lkclearL1    <- fixed(log(log(2) / (90 / 1440)));  label("First-order p19 elimination rate constant (1/day; from t1/2 = 1.5 hr)")             # Marcantonio 2022 Table S4 p-19 Half Life (Lotze 1985; assumed IL-2-like)
     lkclearR1    <- fixed(log(log(2) / (120 / 1440))); label("First-order p19-receptor elimination rate constant (1/day; from t1/2 = 2 hr)")     # Marcantonio 2022 Table S4 Receptor Internalization = 2 h (standard assumption)
     lkclearS1    <- fixed(log(log(2) / (30 / 1440)));  label("First-order shed-receptor elimination rate constant (1/day; unused)")               # Assess default; unused when S1_conc = 0
-    kd_LR        <- fixed(1.6);                    label("p19:Receptor equilibrium dissociation constant (nM)")                                   # Marcantonio 2022 Table S4 p-19:Receptor KD = 1.6 nM (Parham 2002, midpoint 0.3-3 nM)
+    kd_lr        <- fixed(1.6);                    label("p19:Receptor equilibrium dissociation constant (nM)")                                   # Marcantonio 2022 Table S4 p-19:Receptor KD = 1.6 nM (Parham 2002, midpoint 0.3-3 nM)
 
     V           <- fixed(5);                       label("Central compartment volume of distribution (L)")                                        # Marcantonio 2022 Table S4 Volume
     kon         <- fixed(0.001 * 86400);           label("Bimolecular association rate constant (L/nmol/day)")                                    # Assess default
@@ -66,7 +66,7 @@ Marcantonio_2022_risankizumab <- function() {
     kon1Ab     <- kon
     kon2Ab     <- floor(valency / 2) * kon
     koffAb     <- kon * kd_drug
-    koffL1R1   <- kon * kd_LR
+    koffL1R1   <- kon * kd_lr
 
     total_R1 <- R1_conc * V
     L1_0     <- L1_conc * V

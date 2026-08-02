@@ -89,7 +89,7 @@ Henin_2012_diclofenac <- function() {
     # ------------------------------------------------------------------
     lka_psi     <- log(1.06)  ; label("Log absorption rate from tablet in proximal SI KA_PSI (1/h)")               # Table III: KA_PSI = 1.06 1/h (RSE 21%)
     lka_dsi     <- log(8.64)  ; label("Log absorption rate from tablet in distal SI KA_DSI (1/h)")                 # Table III: KA_DSI = 8.64 1/h (RSE 258%; weak identifiability)
-    lka_col     <- fixed(log(1))  ; label("Log absorption rate from tablet in colon KA_Col (1/h; FIXED)")          # Table III: KA_Col = 1 1/h FIXED
+    lka_col     <- fixed(log(1))  ; label("Log absorption rate from tablet in colon KA_Col (1/h)")          # Table III: KA_Col = 1 1/h FIXED
 
     # Gut-wall bioavailability, logit-parameterized.
     logitfa     <- log(0.61 / (1 - 0.61))  ; label("Logit gut-wall bioavailability FA (unitless)")                 # Table III: FA = 0.61 (RSE 15%); logit(0.61) = 0.4479
@@ -106,15 +106,15 @@ Henin_2012_diclofenac <- function() {
     lq2         <- log(7.21)  ; label("Log second inter-compartmental clearance Q3 at 70 kg reference (L/h)")       # Table III: Q3 = 7.21 L/h/70kg^0.75 (RSE 3%)
     lvp2        <- log(3.79)  ; label("Log second peripheral volume V3 at 70 kg reference (L)")                     # Table III: V3 = 3.79 L/70kg (RSE 7%)
 
-    allo_cl     <- fixed(0.75); label("Allometric exponent on clearances (FIXED)")                                  # Table III headers 'L/h/70 kg^0.75' -- standard allometric scaling
-    allo_v      <- fixed(1)   ; label("Allometric exponent on volumes (FIXED)")                                     # Table III headers 'L/70 kg' -- standard allometric scaling
+    e_wt_cl     <- fixed(0.75); label("Allometric exponent on clearances")                                  # Table III headers 'L/h/70 kg^0.75' -- standard allometric scaling
+    allo_v      <- fixed(1)   ; label("Allometric exponent on volumes")                                     # Table III headers 'L/70 kg' -- standard allometric scaling
 
     # ------------------------------------------------------------------
     # STEP function sigmoidicity (paper Equation 1; FIXED). Value not
     # reported in the paper; SIG = 20 is used to give a sharp transition
     # between GI regions (see vignette Errata).
     # ------------------------------------------------------------------
-    sig         <- fixed(20)  ; label("STEP function sigmoidicity SIG (unitless; FIXED; not reported)")             # Paper Eq 1; SIG value not reported (see vignette Errata)
+    sig         <- fixed(20)  ; label("STEP function sigmoidicity SIG (unitless;; not reported)")             # Paper Eq 1; SIG value not reported (see vignette Errata)
 
     # ------------------------------------------------------------------
     # Combined additive + proportional residual error (Table III).
@@ -154,11 +154,11 @@ Henin_2012_diclofenac <- function() {
     fa          <- 1 / (1 + exp(-logitfa_i))
 
     # Allometric scaling to 70 kg reference.
-    cl          <- exp(lcl + etalcl) * (WT / 70)^allo_cl
+    cl          <- exp(lcl + etalcl) * (WT / 70)^e_wt_cl
     vc          <- exp(lvc + etalvc) * (WT / 70)^allo_v
-    q           <- exp(lq  + etalq)  * (WT / 70)^allo_cl
+    q           <- exp(lq  + etalq)  * (WT / 70)^e_wt_cl
     vp          <- exp(lvp + etalvp) * (WT / 70)^allo_v
-    q2          <- exp(lq2 + etalq2) * (WT / 70)^allo_cl
+    q2          <- exp(lq2 + etalq2) * (WT / 70)^e_wt_cl
     vp2         <- exp(lvp2 + etalvp2) * (WT / 70)^allo_v
 
     # ------------------------------------------------------------------

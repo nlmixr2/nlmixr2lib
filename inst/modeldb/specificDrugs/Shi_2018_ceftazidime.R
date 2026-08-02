@@ -56,8 +56,8 @@ Shi_2018_ceftazidime <- function() {
     # Allometric exponents (fixed at theoretical values per Shi 2018 Covariate analysis;
     # "this model with fixed allometric coefficients was more fit than that with unfixed
     # coefficients, which caused the significant drop in the objective function value of 23 points").
-    allo_cl <- fixed(0.75); label("Allometric exponent on CL (unitless, fixed)") # Shi 2018 Covariate analysis section
-    allo_vc <- fixed(1.0);  label("Allometric exponent on V (unitless, fixed)")  # Shi 2018 Covariate analysis section
+    e_wt_cl <- fixed(0.75); label("Allometric exponent on CL (unitless)") # Shi 2018 Covariate analysis section
+    e_wt_vc <- fixed(1.0);  label("Allometric exponent on V (unitless)")  # Shi 2018 Covariate analysis section
 
     # Power-form CRCL effect on CL: F_CRCL = (CRCL / 124)^theta_3.
     e_crcl_cl <- 0.82; label("CRCL exponent on CL (unitless)") # Shi 2018 Table 2: theta_3 = 0.82
@@ -84,8 +84,8 @@ Shi_2018_ceftazidime <- function() {
     # Individual PK parameters. CL has a body-weight allometric scaling with fixed
     # exponent 0.75 and a power-form CRCL effect; V has body-weight allometric
     # scaling with fixed exponent 1.0.
-    cl <- exp(lcl + etalcl) * (WT / 7.5)^allo_cl * (CRCL / 124)^e_crcl_cl
-    vc <- exp(lvc + etalvc) * (WT / 7.5)^allo_vc
+    cl <- exp(lcl + etalcl) * (WT / 7.5)^e_wt_cl * (CRCL / 124)^e_crcl_cl
+    vc <- exp(lvc + etalvc) * (WT / 7.5)^e_wt_vc
 
     kel <- cl / vc
 

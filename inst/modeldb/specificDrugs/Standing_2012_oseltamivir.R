@@ -58,13 +58,13 @@ Standing_2012_oseltamivir <- function() {
     # VD and VDM were fixed to literature values (He et al. 2008, Standing ref 11)
     # to stabilize the fit given sparse data and largely flat profiles. FQ is the
     # adult typical liver blood flow used in the well-stirred hepatic model.
-    lvc    <- fixed(log(91));    label("Volume of distribution of parent at 70 kg, VD (L) [fixed from He 2008]")        # Standing 2012 Results: VD fixed to 91 L/70 kg (ref 11)
-    lvc_oselcarb <- fixed(log(25.6));  label("Volume of distribution of carboxylate at 70 kg, VDM (L) [fixed from He 2008]")  # Standing 2012 Results: VDM fixed to 25.6 L/70 kg (ref 11)
-    lfq    <- fixed(log(75));    label("Liver blood flow at 70 kg, FQ (L/h) [fixed adult value]")                       # Standing 2012 Methods: FQ adult value 75 L/h/70 kg (ref 21)
+    lvc    <- fixed(log(91));    label("Volume of distribution of parent at 70 kg, VD (L) [from He 2008]")        # Standing 2012 Results: VD fixed to 91 L/70 kg (ref 11)
+    lvc_oselcarb <- fixed(log(25.6));  label("Volume of distribution of carboxylate at 70 kg, VDM (L) [from He 2008]")  # Standing 2012 Results: VDM fixed to 25.6 L/70 kg (ref 11)
+    lfq    <- fixed(log(75));    label("Liver blood flow at 70 kg, FQ (L/h) [ adult value]")                       # Standing 2012 Methods: FQ adult value 75 L/h/70 kg (ref 21)
 
     # Fixed allometric exponents (Standing 2012 Methods, Tod et al. 2008 scaling).
-    allo_cl <- fixed(0.75); label("Allometric exponent on clearances (CLU, CLM, CLI, FQ)")                              # Standing 2012 Methods: 0.75 on clearance (Tod et al.)
-    allo_vc <- fixed(1.0);  label("Allometric exponent on volumes (VD, VDM)")                                           # Standing 2012 Methods: linear weight scaling on volumes (exponent 1.0)
+    e_wt_cl <- fixed(0.75); label("Allometric exponent on clearances (CLU, CLM, CLI, FQ)")                              # Standing 2012 Methods: 0.75 on clearance (Tod et al.)
+    e_wt_vc <- fixed(1.0);  label("Allometric exponent on volumes (VD, VDM)")                                           # Standing 2012 Methods: linear weight scaling on volumes (exponent 1.0)
 
     # HCE1 maturation Hill-sigmoid parameters fitted by Standing 2012 to the
     # Yang et al. 2009 HCE1 expression data (Standing 2012 Fig 2 caption).
@@ -109,11 +109,11 @@ Standing_2012_oseltamivir <- function() {
 
     # Individual structural parameters (typical * IIV * size * maturation).
     ka    <- exp(lka  + etalka)
-    cl    <- exp(lcl  + etalcl)  * (WT / ref_wt)^allo_cl * fmat_renal
-    cli   <- exp(lcli + etalcli) * (WT / ref_wt)^allo_cl * fmat_hce1
-    fq    <- exp(lfq)            * (WT / ref_wt)^allo_cl
-    vc    <- exp(lvc)            * (WT / ref_wt)^allo_vc
-    vc_oselcarb <- exp(lvc_oselcarb)         * (WT / ref_wt)^allo_vc
+    cl    <- exp(lcl  + etalcl)  * (WT / ref_wt)^e_wt_cl * fmat_renal
+    cli   <- exp(lcli + etalcli) * (WT / ref_wt)^e_wt_cl * fmat_hce1
+    fq    <- exp(lfq)            * (WT / ref_wt)^e_wt_cl
+    vc    <- exp(lvc)            * (WT / ref_wt)^e_wt_vc
+    vc_oselcarb <- exp(lvc_oselcarb)         * (WT / ref_wt)^e_wt_vc
     kam   <- exp(lkam)
 
     # Well-stirred hepatic model (Standing 2012 Methods):

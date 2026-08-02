@@ -29,7 +29,7 @@ Tornoe_2006_triptorelin <- function() {
 
   paper_specific_compartments <- c("feedback", "lhpool", "lh", "testosterone")
   paper_specific_etas <- c(
-    "etalksc1", "etalksc2", "etalogitfr",
+    "etalksc1", "etalksc2", "etalogitfburst",
     "etalkrel", "etalec50", "etalkef", "etallmax", "etall50"
   )
 
@@ -85,7 +85,7 @@ Tornoe_2006_triptorelin <- function() {
     # of duration trel into central. Fr is logit-transformed per the
     # Table 3 IIV footnote (CV(q) = (1-q) * w_q).
     # logit(0.605) = log(0.605 / (1 - 0.605)) = 0.4263.
-    logitfr <- 0.4263      ; label("Logit-transformed burst fraction Fr (logit units)")             # Table 3: Fr = 0.605 (RSE 2.08%)
+    logitfburst <- 0.4263      ; label("Logit-transformed burst fraction Fr (logit units)")             # Table 3: Fr = 0.605 (RSE 2.08%)
     ltrel   <- log(1.77)   ; label("Duration of zero-order burst infusion t (h)")                    # Table 3: t = 1.77 h (RSE 4.45%)
 
     base_trip <- fixed(0.0107) ; label("Triptorelin baseline plasma concentration (ng/mL)")          # Table 3: Base = 0.0107 (RSE 5.02%); used as additive offset on Cc
@@ -127,7 +127,7 @@ Tornoe_2006_triptorelin <- function() {
     etalvc     ~ log(1 + 0.329^2)  # Table 3 IIV Vc/F CV 32.9% (RSE 14.1)
     etalksc1   ~ log(1 + 0.340^2)  # Table 3 IIV t_1/2,sc,1 CV 34.0% (RSE 21.3); same on log-rate
     etalksc2   ~ log(1 + 0.616^2)  # Table 3 IIV t_1/2,sc,2 CV 61.6% (RSE 25.2); same on log-rate
-    etalogitfr ~ (0.0660 / (1 - 0.605))^2  # Table 3 IIV Fr CV 6.60% (RSE 27.6) on logit scale
+    etalogitfburst ~ (0.0660 / (1 - 0.605))^2  # Table 3 IIV Fr CV 6.60% (RSE 27.6) on logit scale
 
     etalkrel   ~ log(1 + 0.834^2)  # Table 4 IIV krel,LH CV 83.4% (RSE 3.25)
     etalec50   ~ log(1 + 0.327^2)  # Table 4 IIV EC50    CV 32.7% (RSE 13.4)
@@ -155,7 +155,7 @@ Tornoe_2006_triptorelin <- function() {
     vp    <- exp(lvp)
     ksc1  <- exp(lksc1 + etalksc1)
     ksc2  <- exp(lksc2 + etalksc2)
-    fr    <- expit(logitfr + etalogitfr)
+    fr    <- expit(logitfburst + etalogitfburst)
     trel  <- exp(ltrel)
 
     # 2-compartment disposition micro-constants

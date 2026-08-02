@@ -105,9 +105,9 @@ Anderson_1998_paracetamol <- function() {
     # "The allometric exponential (b) was assumed to be 0.75 for
     # clearance, 1 for volume of distribution and 0.25 for equilibration
     # half-time (teq)." keq = ln(2)/teq scales with exponent -0.25.
-    allo_cl  <- fixed(0.75)
+    e_wt_cl  <- fixed(0.75)
     label("Allometric exponent on CL (unitless, fixed)")  # Methods: fixed at 0.75
-    allo_vc  <- fixed(1)
+    e_wt_vc  <- fixed(1)
     label("Allometric exponent on V (unitless, fixed)")  # Methods: fixed at 1
     allo_keq <- fixed(-0.25)
     label("Allometric exponent on keq (unitless, fixed; equals -0.25 because teq scales at 0.25)")  # Methods: teq fixed at 0.25 -> keq at -0.25
@@ -151,8 +151,8 @@ Anderson_1998_paracetamol <- function() {
     # Individual PK parameters, allometrically scaled to each subject's
     # body weight against the 70 kg reference. Anderson 1998 Methods.
     ka  <- exp(lka  + etalka)
-    cl  <- exp(lcl  + etalcl)  * (WT / 70)^allo_cl
-    vc  <- exp(lvc  + etalvc)  * (WT / 70)^allo_vc
+    cl  <- exp(lcl  + etalcl)  * (WT / 70)^e_wt_cl
+    vc  <- exp(lvc  + etalvc)  * (WT / 70)^e_wt_vc
     keq <- exp(lkeq + etalkeq) * (WT / 70)^allo_keq
     pc  <- exp(lpc  + etalpc)
 

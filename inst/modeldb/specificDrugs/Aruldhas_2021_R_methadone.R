@@ -282,7 +282,7 @@ Aruldhas_2021_R_methadone <- function() {
 
     # ----- Metabolite (R-EDDP) disposition (Aruldhas 2021 Table 2) -----
     lcl_eddp         <- log(25.7);           label("Typical R-EDDP apparent clearance CL3 (L/h)")                                                  # Aruldhas 2021 Table 2 'CL3 (L*h^-1) = 25.7 (37.3)' for R-methadone
-    lvf              <- fixed(log(1));       label("VF scaling factor between R-methadone V2 and R-EDDP V3 (V3 = V2 * VF; dimensionless, fixed at 1 due to metabolite unidentifiability)")  # Aruldhas 2021 Table 2 'VF = 1 FIX' and Figure 1 legend
+    lvf              <- fixed(log(1));       label("VF scaling factor between R-methadone V2 and R-EDDP V3 (V3 = V2 * VF; dimensionless, 1 due to metabolite unidentifiability)")  # Aruldhas 2021 Table 2 'VF = 1 FIX' and Figure 1 legend
 
     # ----- Allometric exponent (fixed) -----
     e_wt_cl                      <- fixed(0.75);  label("Allometric WT exponent on R-methadone CL (unitless)")                                    # Aruldhas 2021 Results 'Covariate modeling on R methadone' paragraph 1: "Bodyweight was added allometrically to the clearance of the drug with a fixed exponent of 0.75"; estimating the exponent gave 1.2 but was fixed to 0.75 to avoid small-cohort bias

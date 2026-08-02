@@ -103,7 +103,7 @@ Yu_2022_ofatumumab <- function() {
     lkep     <- log(1.31);     label("Population complex internalisation rate k_e(P) (1/day)")                                # Yu 2022 Table 3
     lcl      <- log(0.34);     label("Population free-drug clearance CL (L/day)")                                             # Yu 2022 Table 3
     lq       <- log(0.358);    label("Population intercompartmental clearance Q (L/day)")                                     # Yu 2022 Table 3
-    lvp      <- fixed(log(2.8));        label("Peripheral volume of distribution Vp (L; FIXED per Ryman & Meibohm 2017)")     # Yu 2022 Table 3 (fixed)
+    lvp      <- fixed(log(2.8));        label("Peripheral volume of distribution Vp (L; per Ryman & Meibohm 2017)")     # Yu 2022 Table 3 (fixed)
 
     # ---- TMDD-QSS receptor and binding parameters ----------------------------
     # R0, ksyn0, ksyn_inf, and KD are reported in nmol/L (or nmol/L/day) in
@@ -117,8 +117,8 @@ Yu_2022_ofatumumab <- function() {
     lrbase      <- log(4.8425);        label("Population baseline total CD20 receptor amount R0 in drug-equivalent mg/L (paper: 32.5 nmol/L)")  # Yu 2022 Table 3
     lksyn0   <- log(0.146765);      label("Population CD20 synthesis rate at t=0 ksyn0 in drug-equivalent mg/L/day (paper: 0.985 nmol/L/day)") # Yu 2022 Table 3
     lksyninf <- log(0.0082546);     label("Population CD20 synthesis rate at t=infinity ksyn_inf in drug-equivalent mg/L/day (paper: 0.0554 nmol/L/day)") # Yu 2022 Table 3
-    lkd      <- fixed(log(0.024883));   label("Equilibrium dissociation constant KD in drug-equivalent mg/L (paper: 0.167 nmol/L; FIXED)")    # Yu 2022 Table 3 (fixed)
-    lkoff    <- fixed(log(5.53));       label("Drug-target dissociation rate constant k_off (1/day; FIXED preclinical value)")                # Yu 2022 Table 3 (fixed)
+    lkd      <- fixed(log(0.024883));   label("Equilibrium dissociation constant KD in drug-equivalent mg/L (paper: 0.167 nmol/L)")    # Yu 2022 Table 3 (fixed)
+    lkoff    <- fixed(log(5.53));       label("Drug-target dissociation rate constant k_off (1/day; preclinical value)")                # Yu 2022 Table 3 (fixed)
     lkdes    <- log(2.58);          label("Time rate constant on receptor synthesis decay kdes (1/year)")                                     # Yu 2022 Table 3
 
     # ---- B cell PD parameters (Yu 2022 Table 3 final-model estimates) --------
@@ -127,7 +127,7 @@ Yu_2022_ofatumumab <- function() {
     lec50    <- log(0.0057);   label("Population free-drug concentration producing 50% of Emax EC50 (mg/L)")                # Yu 2022 Table 3
     lhill   <- log(2.81);     label("Hill / sigmoidicity parameter for the lysis stimulatory function (unitless)")         # Yu 2022 Table 3
     lkout    <- log(0.0124);   label("Population B cell elimination rate kout (1/day)")                                     # Yu 2022 Table 3
-    lqb      <- fixed(log(0.78));     label("Inter-B-cell-compartment flow QB (L/day; FIXED)")                              # Yu 2022 Table 3 (fixed; no IIV reported)
+    lqb      <- fixed(log(0.78));     label("Inter-B-cell-compartment flow QB (L/day)")                              # Yu 2022 Table 3 (fixed; no IIV reported)
     lvb      <- log(3.7);      label("Peripheral B cell compartment volume Vb (L)")                                         # Yu 2022 Table 3
 
     # ---- Covariate effects (Yu 2022 Table 3 + covariate equations) -----------

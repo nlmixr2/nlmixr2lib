@@ -82,7 +82,7 @@ Schipani_2016_rifampicin <- function() {
     # Allometric exponents fixed at canonical values (Schipani 2016
     # Methods: 'fixing the exponent to 0.75 for CL and 1 for V').
     # ============================================================
-    allo_cl <- fixed(0.75)
+    e_wt_cl <- fixed(0.75)
     label("Allometric exponent on CL (unitless; fixed)")
     # Schipani 2016 Methods, citing reference 18 (Anderson and
     # Holford 2008): 0.75 for CL.
@@ -145,7 +145,7 @@ Schipani_2016_rifampicin <- function() {
     # 1. Body-weight allometric factors (Schipani 2016 Methods,
     #    Anderson and Holford 2008); reference 70 kg.
     # ------------------------------------------------------------
-    bw_cl <- (WT / 70) ^ allo_cl
+    bw_cl <- (WT / 70) ^ e_wt_cl
     bw_v  <- (WT / 70) ^ allo_v
 
     # ------------------------------------------------------------

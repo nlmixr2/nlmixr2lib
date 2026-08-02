@@ -164,7 +164,7 @@ Kassir_2014_tacrolimus <- function() {
     lcl   <- log(12.1)  ; label("Apparent oral clearance CL/F at WT = 20 kg (L/h)")                      # Kassir 2014 Table 4 final CL/F = 12.1 L/h (RSE 10.1%)
     lvc   <- log(31.3)  ; label("Apparent central volume V1/F at WT = 20 kg (L)")                        # Kassir 2014 Table 4 final V1/F = 31.3 L (RSE 42.8%)
     lq    <- log(30.7)  ; label("Apparent inter-compartmental clearance Q2/F at WT = 20 kg (L/h)")       # Kassir 2014 Table 4 final Q2/F = 30.7 L/h (RSE 29.3%)
-    lvp   <- fixed(log(290)) ; label("Apparent peripheral volume V2/F at WT = 20 kg (L; fixed)")         # Kassir 2014 Table 4 final V2/F = 290 L (fixed; Table 4 footnote: "V2/F was fixed to a value estimated from a previous run in order to stabilize the model")
+    lvp   <- fixed(log(290)) ; label("Apparent peripheral volume V2/F at WT = 20 kg (L)")         # Kassir 2014 Table 4 final V2/F = 290 L (fixed; Table 4 footnote: "V2/F was fixed to a value estimated from a previous run in order to stabilize the model")
 
     # Allometric exponents -- Kassir 2014 Methods 'Population pharmacokinetic
     # analysis' equation block (citing references [20, 21], i.e., Anderson and
@@ -172,11 +172,11 @@ Kassir_2014_tacrolimus <- function() {
     # theory values; the paper's results state "Bodyweight was included in all
     # pharmacokinetic parameters as an allometric fixed term" (Table 4 footnote)
     # to confirm the fixed status.
-    e_wt_cl <- fixed(0.75)  ; label("Allometric exponent of (WT/20 kg) on CL/F (unitless; fixed)")        # Kassir 2014 Methods equation block (Anderson-Holford theory)
-    e_wt_q  <- fixed(0.75)  ; label("Allometric exponent of (WT/20 kg) on Q2/F (unitless; fixed)")        # Kassir 2014 Methods equation block
-    e_wt_vc <- fixed(1)     ; label("Allometric exponent of (WT/20 kg) on V1/F (unitless; fixed)")        # Kassir 2014 Methods equation block
-    e_wt_vp <- fixed(1)     ; label("Allometric exponent of (WT/20 kg) on V2/F (unitless; fixed)")        # Kassir 2014 Methods equation block
-    e_wt_ka <- fixed(-0.25) ; label("Allometric exponent of (WT/20 kg) on ka (unitless; fixed)")          # Kassir 2014 Methods equation block (ka = theta * (WT/WTmedian)^(-0.25))
+    e_wt_cl <- fixed(0.75)  ; label("Allometric exponent of (WT/20 kg) on CL/F (unitless)")        # Kassir 2014 Methods equation block (Anderson-Holford theory)
+    e_wt_q  <- fixed(0.75)  ; label("Allometric exponent of (WT/20 kg) on Q2/F (unitless)")        # Kassir 2014 Methods equation block
+    e_wt_vc <- fixed(1)     ; label("Allometric exponent of (WT/20 kg) on V1/F (unitless)")        # Kassir 2014 Methods equation block
+    e_wt_vp <- fixed(1)     ; label("Allometric exponent of (WT/20 kg) on V2/F (unitless)")        # Kassir 2014 Methods equation block
+    e_wt_ka <- fixed(-0.25) ; label("Allometric exponent of (WT/20 kg) on ka (unitless)")          # Kassir 2014 Methods equation block (ka = theta * (WT/WTmedian)^(-0.25))
 
     # Diagonal inter-individual variability on CL/F, V1/F, and Q2/F. Kassir 2014
     # Table 4 reports BSV as %CV from an exponential (log-normal) random-effect

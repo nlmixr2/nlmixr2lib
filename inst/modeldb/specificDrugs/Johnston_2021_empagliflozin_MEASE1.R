@@ -132,13 +132,13 @@ Johnston_2021_empagliflozin_MEASE1 <- function() {
     e_hba1c_tdid_t0 <-  0.368;     label("Power exponent of (HBA1C/8.1) on baseline TDID")                      # Table S3 theta_5 = 0.368
 
     emax_tdid       <- 0.186;                label("Typical Emax_TDID -- maximal proportional reduction in TDID (fraction)")  # Table S3 theta_11 / Table 3 = 0.186 (95% CI 0.145, 0.238)
-    lauc50_tdid     <- fixed(log(110));      label("AUC50 for TDID (nmol*h/L; log-scale, fixed from placebo-only fit)")       # Table S3 theta_12 = 110 nmol*h/L (fixed; footnote a "Estimated from placebo only data and fixed")
+    lauc50_tdid     <- fixed(log(110));      label("AUC50 for TDID (nmol*h/L; log-scale, from placebo-only fit)")       # Table S3 theta_12 = 110 nmol*h/L (fixed; footnote a "Estimated from placebo only data and fixed")
 
     # ---- MDG model (Table S3 M-EASE-1 MDG block; reference patient MDG_t0 = 4160 mg*day/dL) ----
     lmdg_t0         <- log(4160);            label("Typical baseline MDG (mg*day/dL cumulative over 24 h; log-scale)")          # Table S3 theta_1 = 4160
-    ins_mdg_eff     <- fixed(-0.261);        label("Power exponent for (TDID/TDID_t0) on MDG time course (unitless; fixed)")   # Table S3 theta_3 = -0.261 (INS_MDG effect; fixed per footnote c)
-    pbo_mdg_val     <- fixed(0.0136);        label("Placebo drift rate on MDG (mg*day/dL per hour; fixed)")                     # Table S3 theta_3 = 0.0136 (PBO_MDG; fixed per footnote c)
-    lauc50_mdg      <- fixed(log(370));      label("AUC50 for MDG (nmol*h/L; log-scale, fixed from placebo-only fit)")          # Table S3 theta_4 = 370 nmol*h/L (fixed per footnote c)
+    ins_mdg_eff     <- fixed(-0.261);        label("Power exponent for (TDID/TDID_t0) on MDG time course (unitless)")   # Table S3 theta_3 = -0.261 (INS_MDG effect; fixed per footnote c)
+    pbo_mdg_val     <- fixed(0.0136);        label("Placebo drift rate on MDG (mg*day/dL per hour)")                     # Table S3 theta_3 = 0.0136 (PBO_MDG; fixed per footnote c)
+    lauc50_mdg      <- fixed(log(370));      label("AUC50 for MDG (nmol*h/L; log-scale, from placebo-only fit)")          # Table S3 theta_4 = 370 nmol*h/L (fixed per footnote c)
     lemax_mdg       <- log(634);             label("Typical Emax_MDG -- maximal MDG reduction (mg*day/dL; log-scale)")          # Table S3 theta_5 = 634 mg*day/dL (95% CI 534, 753)
     e_wt_emax_mdg   <- -0.113;               label("Power exponent of (WT/82) on Emax_MDG")                                     # Table S3 theta_6 = -0.113
     sexf_emax_mdg   <-  1.09;                label("Multiplicative effect of female sex on Emax_MDG (ref = male)")             # Table S3 theta_7 = 1.09
