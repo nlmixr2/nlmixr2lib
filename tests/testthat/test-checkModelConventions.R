@@ -1313,4 +1313,47 @@ test_that("no model in the database repeats fixed() in its label", {
   expect_equal(sort(offenders), character(0))
 })
 
+
+test_that("the extraction skill never teaches a name the rules reject", {
+  # The checks below only fire once a model exists. This one fires on the
+  # INSTRUCTIONS, so a retired name cannot survive in the guidance that new
+  # models are written from -- which is how `allo_cl`, `logitfr`, `Km` and
+  # `Vmax` were still being taught after the models themselves were migrated.
+  skillDir <- testthat::test_path("..", "..", ".claude", "skills",
+                                  "extract-literature-model")
+  skip_if(!dir.exists(skillDir), "extraction skill not present (installed package)")
+  conv <- nlmixr2lib:::.nlmixr2libConventions()
+  docs <- list.files(skillDir, pattern = "[.]md$", recursive = TRUE, full.names = TRUE)
+  expect_true(length(docs) > 0L)
+  offenders <- character(0)
+  for (f in docs) {
+    src <- paste(readLines(f, warn = FALSE), collapse = "\n")
+    for (nm in names(conv$renamedParameters)) {
+      if (grepl(paste0("(^|[^A-Za-z0-9._])", nm, "([^A-Za-z0-9._]|$)"), src)) {
+        offenders <- c(offenders, paste0(basename(f), ": ", nm))
+      }
+    }
+  }
+  expect_equal(sort(unique(offenders)), character(0))
+})
+
+test_that("the extraction skill never shows fixed() repeated in a label", {
+  skillDir <- testthat::test_path("..", "..", ".claude", "skills",
+                                  "extract-literature-model")
+  skip_if(!dir.exists(skillDir), "extraction skill not present (installed package)")
+  pat <- paste0("<-\\s*fixed\\(.*\\)\\s*;\\s*label\\(\"[^\"]*",
+                "\\bfixed(?![- ](?:effects?|dose|dosing))\\b")
+  offenders <- character(0)
+  for (f in list.files(skillDir, pattern = "[.]md$", recursive = TRUE, full.names = TRUE)) {
+    src <- readLines(f, warn = FALSE)
+    # skip the "Not this" column of the guidance table, which shows the
+    # anti-pattern on purpose
+    src <- src[!grepl("Not this|^\\|", src)]
+    if (any(grepl(pat, src, perl = TRUE, ignore.case = TRUE))) {
+      offenders <- c(offenders, basename(f))
+    }
+  }
+  expect_equal(sort(unique(offenders)), character(0))
+})
+
 # nolint end

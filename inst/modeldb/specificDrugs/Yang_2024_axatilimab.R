@@ -82,7 +82,7 @@ Yang_2024_axatilimab <- function() {
     lvp       <- log(2.64);   label("Peripheral volume of distribution Vp (L)")                                                                                 # Yang 2024 Table 1 row 'Volume of distribution in the peripheral compartment (Vp)' = 2.64 L
 
     # === Target-mediated elimination (CSF-1R-driven, Hill cooperativity) ===
-    lvmax     <- log(0.37);   label("Maximum rate of CSF-1R-mediated elimination of axatilimab/CSF-1 complexes Vmax (nM/h)")                                    # Yang 2024 Table 1 row 'Elimination rates of the CSF-1 and axatilimab complexes with CSF-1R (Vmax)' = 0.37 nM/h
+    lvmax     <- log(0.37);   label("Maximum rate of CSF-1R-mediated elimination of axatilimab/CSF-1 complexes vmax (nM/h)")                                    # Yang 2024 Table 1 row 'Elimination rates of the CSF-1 and axatilimab complexes with CSF-1R (vmax)' = 0.37 nM/h
     lkd_pk    <- log(1.11);   label("Dissociation constant of axatilimab/CSF-1R complex Kd_PK (nM)")                                                            # Yang 2024 Table 1 row 'Dissociation constant of axatilimab/CSF-1R complex (KdPK)' = 1.11 nM
     lnh       <- log(2.5);    label("Hill coefficient for axatilimab cooperativity binding to CSF-1R (Nh, unitless)")                                           # Yang 2024 Table 1 row 'Hill coefficient (Nh)' = 2.5
 
@@ -129,7 +129,7 @@ Yang_2024_axatilimab <- function() {
     # Yang 2024 Table 1 reports omega; squared values used here.
     etalvc      ~ 0.055225  # Yang 2024 Table 1 omega(Vd) = 0.235 -> 0.235^2 = 0.055225
     etalcl      ~ 1.1881    # Yang 2024 Table 1 omega(CL) = 1.09 -> 1.09^2 = 1.1881
-    etalvmax    ~ 0.083521  # Yang 2024 Table 1 omega(Vmax) = 0.289 -> 0.289^2 = 0.083521 (eta-shrinkage 51.2%)
+    etalvmax    ~ 0.083521  # Yang 2024 Table 1 omega(vmax) = 0.289 -> 0.289^2 = 0.083521 (eta-shrinkage 51.2%)
     etalbl_csf1 ~ 0.034969  # Yang 2024 Table 1 omega(BLCSF1) = 0.187 -> 0.187^2 = 0.034969
     etalbl_ncmc ~ 0.753424  # Yang 2024 Table 1 omega(BLNCMC) = 0.868 -> 0.868^2 = 0.753424
     etalbl_ast  ~ 0.215296  # Yang 2024 Table 1 omega(BLAST)  = 0.464 -> 0.464^2 = 0.215296
@@ -160,7 +160,7 @@ Yang_2024_axatilimab <- function() {
     cl          <- exp(lcl       + etalcl)      * (CSF1 / 549)^e_csf1_cl * (1 + e_ada_cl * ADA_POS)
     q           <- exp(lq)
     vp          <- exp(lvp)
-    Vmax        <- exp(lvmax     + etalvmax)
+    vmax        <- exp(lvmax     + etalvmax)
     Kd_PK       <- exp(lkd_pk)
     Nh          <- exp(lnh)
     BL_CSF1     <- exp(lbl_csf1  + etalbl_csf1) * (CSF1 / 549)^e_csf1_blcsf1
@@ -195,19 +195,19 @@ Yang_2024_axatilimab <- function() {
 
     # === Steady-state synthesis-rate expressions (Yang 2024 Eqs. 6, 9 and supplement Eq. 19) ===
     BL_C2     <- (BL_CSF1 / Kd_CSF1) / (1 + BL_CSF1 / Kd_CSF1)                  # baseline value of C2 with Cc_nM = 0
-    ksyn_csf1 <- kdeg_csf1 * BL_CSF1 + Vmax * BL_C2                              # Eq. 6
+    ksyn_csf1 <- kdeg_csf1 * BL_CSF1 + vmax * BL_C2                              # Eq. 6
     ksyn_ncmc <- kdeg_ncmc * BL_NCMC / BL_C2                                     # Eq. 9
     ksyn_ast  <- BL_AST * (Vmax_AST_NCMC * BL_NCMC / (EC50_AST_NCMC + BL_NCMC) + kdeg_ast)  # supplement Eq. 19
     ksyn_cpk  <- BL_CPK * (Vmax_CPK_NCMC * BL_NCMC / (EC50_CPK_NCMC + BL_NCMC) + kdeg_cpk)  # supplement Eq. 19
 
     # === ODE system (Yang 2024 Eqs. 1, 2, 5, 8, 10, 11) ===
     # Axatilimab amounts (central, peripheral1) in mg; CSF-1 in nM; NCMC in cells/uL;
-    # AST and CPK in U/L. Saturable-elimination amount-term: Vmax [nM/h] x C1 x vc [L]
+    # AST and CPK in U/L. Saturable-elimination amount-term: vmax [nM/h] x C1 x vc [L]
     # converted to mg/h via x MW_PK / 1000 (1 nmol of MW_PK kDa weighs MW_PK/1000 mg).
     d/dt(central)     <- -cl * Cc * (1 + e_ada_cl * ADA_POS) - q * (Cc - Cp) -
-                          Vmax * C1 * vc * MW_PK / 1000
+                          vmax * C1 * vc * MW_PK / 1000
     d/dt(peripheral1) <-  q * (Cc - Cp)
-    d/dt(csf1)        <-  ksyn_csf1 - kdeg_csf1 * csf1 - Vmax * C2
+    d/dt(csf1)        <-  ksyn_csf1 - kdeg_csf1 * csf1 - vmax * C2
     d/dt(ncmc)        <-  ksyn_ncmc * C2 - kdeg_ncmc * ncmc
     d/dt(ast)         <-  ksyn_ast  - (Vmax_AST_NCMC * ncmc / (EC50_AST_NCMC + ncmc) + kdeg_ast) * ast
     d/dt(cpk)         <-  ksyn_cpk  - (Vmax_CPK_NCMC * ncmc / (EC50_CPK_NCMC + ncmc) + kdeg_cpk) * cpk

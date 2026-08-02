@@ -419,7 +419,11 @@
     lcll = "lcl_ligand", cllira = "cl_lira", lcllira_ref = "lcl_lira_ref",
     # #477 TMDD case / separator normalisation
     lKss = "lkss", lkD = "lkd", lBmax = "lbmax", Km = "km",
-    kd_LR = "kd_lr", kd_T1 = "kd_t1", kd_T2 = "kd_t2"
+    kd_LR = "kd_lr", kd_T1 = "kd_t1", kd_T2 = "kd_t2",
+    # Same case-normalisation class, found while auditing the extraction
+    # skill's own docs against this map: 89 models used `vmax`, one used
+    # `Vmax`, and the skill taught the capitalised spelling.
+    Vmax = "vmax"
   ),
 
   # Issue #482: controlled vocabulary for the biological matrix a compartment
