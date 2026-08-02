@@ -60,8 +60,8 @@
     # Allometric exponents on WT, both fixed at canonical values per the paper
     # ("Exponent for effect of weight on CL in: 0.75 (fixed)" and "Exponent for
     # effect of weight on V c: 1 (fixed)", Long-Boyle 2015 Table 3).
-    e_wt_cl <- fixed(0.75) ; label("Allometric exponent on CLin (unitless, fixed)")  # Long-Boyle 2015 Table 3
-    e_wt_vc <- fixed(1)    ; label("Allometric exponent on Vc (unitless, fixed)")    # Long-Boyle 2015 Table 3
+    e_wt_cl <- fixed(0.75) ; label("Allometric exponent on CLin (unitless)")  # Long-Boyle 2015 Table 3
+    e_wt_vc <- fixed(1)    ; label("Allometric exponent on Vc (unitless)")    # Long-Boyle 2015 Table 3
 
     # Hockey-stick AGE effect on CLin (Long-Boyle 2015 p. 240 CLin equations).
     # The breakpoint is fixed at 12 yrs (Table 3: "BP ... 12 (fixed)"). Below

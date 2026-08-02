@@ -70,7 +70,7 @@ Campagne_2019_cyclophosphamide_mouse <- function() {
 
     # ECF volume fixed -- shared across the three compounds; Stewart
     # 2010 reference 26 of the source paper.
-    lvecf <- fixed(log(0.001)); label("ECF central volume Vecf (L/kg), fixed per Campagne 2019 ref 26 (Stewart 2010)") # Methods 'Tumor and brain ECF pharmacokinetic modeling'
+    lvecf <- fixed(log(0.001)); label("ECF central volume Vecf (L/kg), per Campagne 2019 ref 26 (Stewart 2010)") # Methods 'Tumor and brain ECF pharmacokinetic modeling'
 
     # ============================================================
     # Plasma protein binding (fraction unbound) -- fixed to median
@@ -79,9 +79,9 @@ Campagne_2019_cyclophosphamide_mouse <- function() {
     # studies'). Only unbound drug crosses the BBB, so CLin acts on
     # FU x Cp.
     # ============================================================
-    fu        <- fixed(0.26); label("Cyclophosphamide plasma fraction unbound FU (unitless), fixed") # Results: median FU = 0.26 (range 0.24-0.28)
-    fu_4ohctx <- fixed(0.39); label("4OH-CTX plasma fraction unbound FU (unitless), fixed")          # Results: median FU = 0.39 (range 0.28-0.48)
-    fu_cepm   <- fixed(0.31); label("CEPM plasma fraction unbound FU (unitless), fixed")             # Results: median FU = 0.31 (range 0.29-0.34)
+    fu        <- fixed(0.26); label("Cyclophosphamide plasma fraction unbound FU (unitless)") # Results: median FU = 0.26 (range 0.24-0.28)
+    fu_4ohctx <- fixed(0.39); label("4OH-CTX plasma fraction unbound FU (unitless)")          # Results: median FU = 0.39 (range 0.28-0.48)
+    fu_cepm   <- fixed(0.31); label("CEPM plasma fraction unbound FU (unitless)")             # Results: median FU = 0.31 (range 0.29-0.34)
 
     # ============================================================
     # Inter-individual variability -- Campagne 2019 Table 2.

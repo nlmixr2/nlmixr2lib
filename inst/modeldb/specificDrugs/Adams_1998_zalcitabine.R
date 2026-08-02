@@ -91,7 +91,7 @@ Adams_1998_zalcitabine <- function() {
     #  doi:10.1002/j.1552-4604.1988.tb03225.x), an early dedicated single-dose PK
     #  study of oral zalcitabine in AIDS patients. Operator-named candidate primary
     #  source. The substitution is documented in the validation vignette.
-    lka <- fixed(log(2.5)); label("First-order absorption rate constant (1/h, FIXED; non-paper provenance per Klecker 1988)")
+    lka <- fixed(log(2.5)); label("First-order absorption rate constant (1/h,; non-paper provenance per Klecker 1988)")
 
     lcl <- log(14.8); label("Apparent clearance CL/F (L/h)")                     # Adams 1998 Table 3 / Results p. 412 col 2: CL/F = 14.8 L/h (0.19 L/h/kg; 95% CI 0.18-0.21 L/h/kg)
     lvc <- log(87.6); label("Apparent central volume of distribution V/F (L)")  # Adams 1998 Table 3 / Results p. 412 col 2: V/F = 87.6 L (1.18 L/kg; 95% CI 1.07-1.30 L/kg)

@@ -88,8 +88,8 @@ Schmidt_2009_linezolid <- function() {
     # and kd were estimated from the growth control data and were
     # assumed to be constant." Their between-experiment IIVs are still
     # estimated, however -- see the variance block below.
-    lnmax <- fixed(log(3.39e9));  label("Log maximum bacterial population Nmax (CFU/mL); FIXED from growth control") # Table 1: Nmax FIXED to 3.39e9
-    ldgs  <- fixed(log(0.24));    label("Log growth-onset delay-rate dgs (1/h); FIXED from growth control")          # Table 1: dgs FIXED to 0.24
+    lnmax <- fixed(log(3.39e9));  label("Log maximum bacterial population Nmax (CFU/mL); from growth control") # Table 1: Nmax FIXED to 3.39e9
+    ldgs  <- fixed(log(0.24));    label("Log growth-onset delay-rate dgs (1/h); from growth control")          # Table 1: dgs FIXED to 0.24
 
     # dks is estimated in the joint fit
     ldks  <- log(0.50);   label("Log kill-onset delay-rate dks (1/h)")                  # Table 1: dks = 0.50 +/- 0.049
@@ -99,11 +99,11 @@ Schmidt_2009_linezolid <- function() {
     # back-transfer rate; kps therefore stays in linear scale so the
     # zero value can be encoded exactly.
     lksp  <- log(0.004);  label("Log susceptible-to-persister transfer rate ksp (1/h)") # Table 1: ksp = 0.004 +/- 0.002
-    kps   <- fixed(0);    label("Persister-to-susceptible transfer rate kps (1/h); FIXED to 0 per Schmidt 2009 ref 22")
+    kps   <- fixed(0);    label("Persister-to-susceptible transfer rate kps (1/h); 0 per Schmidt 2009 ref 22")
 
     # Natural-death rate of both pools (estimated from the growth-control
     # fit and then held fixed in the joint fit).
-    lkd   <- fixed(log(0.015));   label("Log natural death-rate kd (1/h); FIXED from growth control")  # Table 1: kd FIXED to 0.015
+    lkd   <- fixed(log(0.015));   label("Log natural death-rate kd (1/h); from growth control")  # Table 1: kd FIXED to 0.015
 
     # Initial fraction of the inoculum in the susceptible pool F (the
     # rest 1-F seeds the persister pool). Logit-transformed to keep F in
@@ -119,12 +119,12 @@ Schmidt_2009_linezolid <- function() {
     # state declines with the published linezolid t1/2 ~ 5 h. kdeg is
     # carried on the linear scale rather than via lkdeg because log(0)
     # is not finite; this matches the RWJ-416457 sibling file.
-    kdeg  <- fixed(0); label("Drug degradation rate kdeg (1/h); FIXED to 0 (linezolid completely stable over 24 h per Results 'Drug stability')")
+    kdeg  <- fixed(0); label("Drug degradation rate kdeg (1/h) (linezolid completely stable over 24 h per Results 'Drug stability')")
 
     # Initial inoculum -- the experimental setup uses ~5e5 CFU/mL at the
     # start of the antibiotic-exposure window (Materials and Methods
     # 'Organisms' / 'Static time-kill curves').
-    lninit <- fixed(log(5e5)); label("Log initial total inoculum N0 (CFU/mL); FIXED from Methods")
+    lninit <- fixed(log(5e5)); label("Log initial total inoculum N0 (CFU/mL); from Methods")
 
     # =================================================================
     # Between-experiment IIV (Schmidt 2009 Table 1 'Variance model').

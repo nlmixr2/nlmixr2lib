@@ -60,8 +60,8 @@ Hao_2018_tacrolimus <- function() {
     # "The allometric size approach was used by implementing the body weight
     # into the basic model (the allometric coefficients fixed at 0.75 for CL
     # and 1 for V)." Theory-based and held fixed during estimation.
-    e_wt_cl <- fixed(0.75) ; label("Allometric exponent of (WT/70) on CL/F (unitless; fixed at theory value)")   # Hao 2018 Methods 'Covariate analysis'
-    e_wt_vc <- fixed(1)    ; label("Allometric exponent of (WT/70) on V/F (unitless; fixed at theory value)")    # Hao 2018 Methods 'Covariate analysis'
+    e_wt_cl <- fixed(0.75) ; label("Allometric exponent of (WT/70) on CL/F (unitless; theory value)")   # Hao 2018 Methods 'Covariate analysis'
+    e_wt_vc <- fixed(1)    ; label("Allometric exponent of (WT/70) on V/F (unitless; theory value)")    # Hao 2018 Methods 'Covariate analysis'
 
     # Covariate effect on CL/F -- Hao 2018 Table 2 final model equation:
     #   CL/F = theta_2 * (WT/70)^0.75 * F_CYP3A5

@@ -77,7 +77,7 @@ Svensson_2018_bedaquiline <- function() {
     # formulations (95% nonparametric CI of relative F 94-108%, predefined
     # BE criteria 80-125%), so F is identical across whole and suspended
     # tablets; only MAT shifts. See vignette's Assumptions and deviations.
-    lfdepot <- fixed(log(1))  ; label("Bioavailability F (fixed at 1 because CL and V are apparent F-relative values; relative F whole vs suspension was bioequivalent within 80-125% per Svensson 2018 Results)")
+    lfdepot <- fixed(log(1))  ; label("Bioavailability F (1 because CL and V are apparent F-relative values; relative F whole vs suspension was bioequivalent within 80-125% per Svensson 2018 Results)")
 
     # Formulation covariate effect. Encoded as additive-fractional on MAT:
     # MAT_typ = MAT_whole * (1 + e_susp_mat * FORM_SUSPENSION). At

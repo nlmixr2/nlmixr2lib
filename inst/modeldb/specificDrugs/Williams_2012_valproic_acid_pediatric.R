@@ -60,17 +60,17 @@ Williams_2012_valproic_acid_pediatric <- function() {
     #   Tablet:  Ka = 4.1 1/h, ALAG = 2 h
     # All four oral formulations approximate 100% bioavailability.
     # ----------------------------------------------------------------
-    lka     <- fixed(log(1.2));   label("First-order absorption rate constant for sprinkle (1/h, FIXED)") # Williams 2012 Table I (Sprinkle Ka = THETA3 = 1.2 1/h)
-    ltlag   <- fixed(log(1));     label("Absorption lag time for sprinkle (h, FIXED)")                    # Williams 2012 Table I (Sprinkle ALAG = THETA4 = 1 h)
-    lfdepot <- fixed(log(1));     label("Oral bioavailability (fraction, FIXED at 1)")                    # Williams 2012 Discussion: "approximately 100% bioavailability" for all 4 oral formulations
+    lka     <- fixed(log(1.2));   label("First-order absorption rate constant for sprinkle (1/h)") # Williams 2012 Table I (Sprinkle Ka = THETA3 = 1.2 1/h)
+    ltlag   <- fixed(log(1));     label("Absorption lag time for sprinkle (h)")                    # Williams 2012 Table I (Sprinkle ALAG = THETA4 = 1 h)
+    lfdepot <- fixed(log(1));     label("Oral bioavailability (fraction)")                    # Williams 2012 Discussion: "approximately 100% bioavailability" for all 4 oral formulations
 
     # ----------------------------------------------------------------
     # Allometric weight exponents (Williams 2012 Table I, theoretical
     # allometric values; reported without RSE in the Final Model column,
     # consistent with FIXED estimation)
     # ----------------------------------------------------------------
-    e_wt_cl_q  <- fixed(0.75); label("Shared allometric exponent on CL and Q (unitless, FIXED)")  # Williams 2012 Table I (WT power CL = 0.75, WT power Q = 0.75)
-    e_wt_vc_vp <- fixed(1.0);  label("Shared allometric exponent on Vc and Vp (unitless, FIXED)") # Williams 2012 Table I (WT power Vc = 1.0, WT power Vp = 1.0)
+    e_wt_cl_q  <- fixed(0.75); label("Shared allometric exponent on CL and Q (unitless)")  # Williams 2012 Table I (WT power CL = 0.75, WT power Q = 0.75)
+    e_wt_vc_vp <- fixed(1.0);  label("Shared allometric exponent on Vc and Vp (unitless)") # Williams 2012 Table I (WT power Vc = 1.0, WT power Vp = 1.0)
 
     # ----------------------------------------------------------------
     # Age effect on Vc (estimated; bootstrap 95% CI -0.378 to 0.211

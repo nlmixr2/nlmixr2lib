@@ -29,7 +29,7 @@ Yadav_2017_imipenem_amikacin_PA088 <- function() {
     # --- Bacterial growth and subpopulations (Table 3, FADDI-PA088, footnote b = amikacin fit) ---
     log10cfu0   <- 7.46;  label("Initial inoculum (log10 CFU/mL)")                                     # Table 3 footnote b: Log CFU0 = 7.46 (SE 1.8%)
     log10cfumax <- 9.56;  label("Maximum population size (log10 CFU/mL); PLAT half-saturation")        # Table 3: CFUmax = 9.56 (SE 1.8%) [strain-shared]
-    lk21        <- fixed(log(50.0)); label("Log replication rate constant k21 (1/h; FIXED)")           # Table 3: k21 = 50 (fixed)
+    lk21        <- fixed(log(50.0)); label("Log replication rate constant k21 (1/h)")           # Table 3: k21 = 50 (fixed)
 
     mgt_ss <- 26.9; label("Mean generation time, SS subpop (min)")                                     # Table 3: k12,SS row = 26.9 (SE 6.2%) [strain-shared]
     mgt_ri <- 873;  label("Mean generation time, IPM-resistant/AGS-intermediate (min)")                # Table 3: k12,RI row = 873 (SE 8.5%) [strain-shared]
@@ -52,7 +52,7 @@ Yadav_2017_imipenem_amikacin_PA088 <- function() {
     kc50_ir_ags <- 329;   label("Amikacin KC50, IR subpop (mg/L)")                                     # Table 3 footnote b: KC50,IR,AGS = 329 (SE 10.8%)
     hill_ags    <- 1.11;  label("Hill coefficient for AGS killing (unitless)")                         # Table 3: Hill,AGS = 1.11 (SE 5.5%) [shared]
 
-    mtt_sig      <- fixed(1);    label("Mean turnover time of hypothetical signal molecule (h; FIXED)") # Table 3: MTT,sig = 1 (fixed) [strain-shared]
+    mtt_sig      <- fixed(1);    label("Mean turnover time of hypothetical signal molecule (h)") # Table 3: MTT,sig = 1 (fixed) [strain-shared]
     imax_sig12   <- 0.997;       label("Max fractional inhibition of k12 by signal molecule (unitless)") # Table 3: Imax,sig12 = 0.997 (SE 13.7%) [strain-shared]
     log10ic50sig <- 10.2;        label("Log10 signal molecule concn at 50% Imax,sig12 (log10 CFU/mL)")  # Table 3: Log IC50,Sig = 10.2 (SE 4.3%) [strain-shared]
 

@@ -71,7 +71,7 @@ Yamazaki_2008_crizotinib_mouse <- function() {
     lka     <- log(0.331);  label("Absorption rate constant ka (1/h)")                 # Table 1 PKPD 2 at 50 mg/kg (SE 0.018)
     lcl     <- log(1.80);   label("Apparent oral clearance CL/F (L/h/kg)")             # Table 1 PKPD 2 at 50 mg/kg (SE 0.17)
     lvc     <- log(5.56);   label("Apparent oral volume of distribution V/F (L/kg)")   # Table 1 PKPD 2 at 50 mg/kg (SE 0.68)
-    ltlag   <- fixed(log(0.8)); label("Absorption lag time tlag (h) -- fixed")         # Results paragraph 1 ("fixed absorption lag time of 0.8 h")
+    ltlag   <- fixed(log(0.8)); label("Absorption lag time tlag (h)")         # Results paragraph 1 ("fixed absorption lag time of 0.8 h")
 
     # ---- PD link model: cMet phosphorylation inhibition (GTL16 cohort) ----
     # Equations 1 (effect compartment) and 2 (Imax response) of Methods.

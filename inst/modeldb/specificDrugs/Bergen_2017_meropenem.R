@@ -37,7 +37,7 @@ Bergen_2017_meropenem <- function() {
     # --- Bacterial life-cycle structural parameters (Table 3) ---
     log10cfu0   <- 6.97;  label("Initial inoculum (log10 CFU/mL)")                          # Bergen 2017 Table 3 (Log CFU0; SE 1.5%)
     log10cfumax <- 9.98;  label("Maximum population size (log10 CFU/mL)")                   # Bergen 2017 Table 3 (Log CFUmax; SE 0.9%)
-    lk21        <- fixed(log(50.0)); label("Log replication rate constant k21 (1/h; FIXED)") # Bergen 2017 Table 3 (k21 = 50, fixed: "Bacterial replication was assumed to be fast")
+    lk21        <- fixed(log(50.0)); label("Log replication rate constant k21 (1/h)") # Bergen 2017 Table 3 (k21 = 50, fixed: "Bacterial replication was assumed to be fast")
 
     # Mean generation time per subpopulation (minutes); growth rate k12 = 60 / MGT (1/h).
     # Table 3 calls these rows "k12,X^-1" with units of minutes -- they are mean
@@ -58,7 +58,7 @@ Bergen_2017_meropenem <- function() {
     # --- Inhibition of successful replication by meropenem (Table 3) ---
     # Imax_Rep_S was estimated at 0.999 and fixed at 1.0 (footnote b);
     # Hill_S was estimated at 1.03 and fixed at 1.0 (footnote c).
-    imax_rep_s <- fixed(1.0); label("Maximum inhibition of replication, susceptible (Imax_Rep_S, unitless; FIXED)") # Bergen 2017 Table 3 (footnote b: estimated 0.999, fixed to 1.0)
+    imax_rep_s <- fixed(1.0); label("Maximum inhibition of replication, susceptible (Imax_Rep_S, unitless)") # Bergen 2017 Table 3 (footnote b: estimated 0.999, fixed to 1.0)
     imax_rep_i <- 0.673;      label("Maximum inhibition of replication, intermediate (Imax_Rep_I, unitless)")        # Bergen 2017 Table 3 (Imax_Rep_I = 0.673; SE 56.3%)
     imax_rep_r <- 0.956;      label("Maximum inhibition of replication, resistant (Imax_Rep_R, unitless)")           # Bergen 2017 Table 3 (Imax_Rep_R = 0.956; SE 25.0%)
 
@@ -66,7 +66,7 @@ Bergen_2017_meropenem <- function() {
     ic50_rep_i <- 2.96;  label("Meropenem concn for 50% Imax_Rep, intermediate (mg/L)") # Bergen 2017 Table 3 (IC50_Rep_I = 2.96; SE 45.3%)
     ic50_rep_r <- 6.09;  label("Meropenem concn for 50% Imax_Rep, resistant (mg/L)")    # Bergen 2017 Table 3 (IC50_Rep_R = 6.09; SE 23.3%)
 
-    hill_s <- fixed(1.0); label("Hill coefficient, susceptible (unitless; FIXED)") # Bergen 2017 Table 3 (footnote c: estimated 1.03, fixed to 1.0)
+    hill_s <- fixed(1.0); label("Hill coefficient, susceptible (unitless)") # Bergen 2017 Table 3 (footnote c: estimated 1.03, fixed to 1.0)
     hill_i <- 7.14;       label("Hill coefficient, intermediate (unitless)")        # Bergen 2017 Table 3 (Hill_I = 7.14; SE 23.9%)
     hill_r <- 2.19;       label("Hill coefficient, resistant (unitless)")           # Bergen 2017 Table 3 (Hill_R = 2.19; SE 62.3%)
 

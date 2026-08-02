@@ -64,7 +64,7 @@ Clewe_2015_rifampicin <- function() {
     lemax   <- fixed(log(1.04))         ; label("Maximal fractional increase in enzyme production rate (unitless)")                         # Clewe 2015 Table 1: EMAX = 1.04 FIX; carried from Smythe 2012
     lec50   <- fixed(log(0.0705))       ; label("Rifampicin plasma concentration producing half EMAX (mg/L)")                                # Clewe 2015 Table 1: EC50 = 0.0705 mg/L FIX; carried from Smythe 2012
     lkenz   <- fixed(log(0.0036))       ; label("First-order degradation rate of the enzyme pool (1/h)")                                    # Clewe 2015 Table 1: kENZ = 0.0036/h FIX; carried from Smythe 2012
-    lfdepot <- fixed(log(1))            ; label("Oral bioavailability (fixed at 1 because CL and V are apparent F-relative)")               # Implicit anchor: CL/F and V/F are reported in Clewe 2015 Table 1, so F is structurally 1
+    lfdepot <- fixed(log(1))            ; label("Oral bioavailability (1 because CL and V are apparent F-relative)")               # Implicit anchor: CL/F and V/F are reported in Clewe 2015 Table 1, so F is structurally 1
 
     # =========================================================================
     # Plasma-to-ELF and plasma-to-AC effect-compartment distribution rate

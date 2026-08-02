@@ -170,7 +170,7 @@ Lu_2019_polatuzumab <- function() {
     # carried so the IIV `etalfrac_mmae` has a matching structural parameter
     # per nlmixr2lib convention; setting it to fixed(0) preserves the original
     # behavior (FRAC_0 = cov_mmae * exp(etalfrac_mmae) when lfrac_mmae = 0).
-    lfrac_mmae <- fixed(log(1)); label("Reference (covariate-free) FRAC_NS on log scale (unitless; FIXED at 0)")
+    lfrac_mmae <- fixed(log(1)); label("Reference (covariate-free) FRAC_NS on log scale (unitless)")
 
     # ----- Covariate effects on FRAC_NS (acMMAE -> MMAE conversion fraction; Lu 2019 Table 2, theta38-theta44) -----
     e_wt_frac_mmae        <- -0.467;    label("Power exponent of WT on FRAC_NS (unitless; reference 75 kg)")                  # Lu 2019 Table 2, theta38

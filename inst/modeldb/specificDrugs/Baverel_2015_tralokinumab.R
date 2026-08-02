@@ -70,8 +70,8 @@ Baverel_2015_tralokinumab <- function() {
     # reference weight 73 kg). Fixed to canonical mAb values per the paper's
     # Methods and Results: "fixed to prior knowledge (0.75 for CL and Q, and 1
     # for Vc and Vp) ... the choice of final model was to keep fixed exponents".
-    e_wt_cl_q   <- fixed(0.75);  label("Allometric exponent on CL and Q (unitless, fixed)")        # Table 3 row 'Effect of body weight' fixed per Methods
-    e_wt_vc_vp  <- fixed(1.00);  label("Allometric exponent on Vc and Vp (unitless, fixed)")       # Table 3 row 'Effect of body weight' fixed per Methods
+    e_wt_cl_q   <- fixed(0.75);  label("Allometric exponent on CL and Q (unitless)")        # Table 3 row 'Effect of body weight' fixed per Methods
+    e_wt_vc_vp  <- fixed(1.00);  label("Allometric exponent on Vc and Vp (unitless)")       # Table 3 row 'Effect of body weight' fixed per Methods
 
     # Categorical adolescent effect on CL. Baverel 2015 Equation 7 parameterises
     # this as an additive shift, with Table 3 reporting "CL decrease, %

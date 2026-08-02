@@ -68,7 +68,7 @@ Ng_2018_exendin939 <- function() {
     # in `pow(..., 0.5)` during forward simulation). See vignette Assumptions
     # and deviations section.
     powSd  <- sqrt(3.66); label("Poisson residual error scale (SD = powSd * sqrt(Cc); (ng/mL)^0.5)") # Ng 2018 Table 2: Sigma_poisson = 3.66 (SE 0.508)
-    powExp <- fixed(0.5); label("Power exponent on Cc in the residual error (fixed for NONMEM Poisson interpretation)") # Ng 2018 Methods: Poisson error model implies W = sqrt(F)
+    powExp <- fixed(0.5); label("Power exponent on Cc in the residual error (for NONMEM Poisson interpretation)") # Ng 2018 Methods: Poisson error model implies W = sqrt(F)
   })
   model({
     # Two-compartment IV-infusion PK with allometric scaling on all four

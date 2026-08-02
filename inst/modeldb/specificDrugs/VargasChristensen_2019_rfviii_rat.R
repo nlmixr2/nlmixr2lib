@@ -143,7 +143,7 @@ VargasChristensen_2019_rfviii_rat <- function() {
     # Allometric CL exponent held fixed at the theory-based 0.75. Reference
     # weight = 0.3 kg (median of the reported cohort) applied in model()
     # below.
-    e_wt_cl <- fixed(0.75); label("Allometric exponent of (WT/0.3 kg) on CL (fixed)")   # Table 1 + Results: Application of a fixed allometric exponent of 0.75 for CL
+    e_wt_cl <- fixed(0.75); label("Allometric exponent of (WT/0.3 kg) on CL")   # Table 1 + Results: Application of a fixed allometric exponent of 0.75 for CL
 
     # 4-parametric logistic mapping rFVIII:VWF complex plasma concentration
     # to the observed LOCI signal (Equation for LOCI signal in Methods;

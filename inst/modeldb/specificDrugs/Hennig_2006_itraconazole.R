@@ -75,8 +75,8 @@ Hennig_2006_itraconazole <- function() {
 
     # Allometric scaling exponents - fixed per the paper's Methods (Eq. 5 and
     # surrounding text) and the .ctl lines 20-21.
-    e_wt_cl <- fixed(0.75);  label("Allometric exponent on CL/F of itraconazole (fixed)")                         # Hennig 2006 Methods (Eq. 5): "exponent x was fixed to 0.75 for clearance"
-    e_wt_vc <- fixed(1.0);   label("Allometric exponent on Vd/F of itraconazole (fixed)")                         # Hennig 2006 Methods (Eq. 5): "and 1 for volume of distribution"
+    e_wt_cl <- fixed(0.75);  label("Allometric exponent on CL/F of itraconazole")                         # Hennig 2006 Methods (Eq. 5): "exponent x was fixed to 0.75 for clearance"
+    e_wt_vc <- fixed(1.0);   label("Allometric exponent on Vd/F of itraconazole")                         # Hennig 2006 Methods (Eq. 5): "and 1 for volume of distribution"
 
     # IIV. Hennig 2006 reports omega as %CV (Table II footer); convert to
     # log-normal variance via omega^2 = log(1 + CV^2). Block on CL_itra and

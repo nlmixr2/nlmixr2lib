@@ -177,7 +177,7 @@ Smythe_2013_gatifloxacin <- function() {
 
     # Bioavailability: first-dose F is fixed at 1 (Table 2: 'F first dose
     # = 1 FIX'); steady-state F is reduced by 11.7% relative to first dose.
-    lfdose1   <- fixed(log(1));    label("Bioavailability on the first dose, fixed at 1 (unitless)")                       # Smythe 2013 Table 2: F first dose = 1 FIX (not estimated)
+    lfdose1   <- fixed(log(1));    label("Bioavailability on the first dose(unitless)")                       # Smythe 2013 Table 2: F first dose = 1 FIX (not estimated)
     e_ss_fbio <- -0.117;            label("Fractional change in bioavailability at steady state vs first dose (unitless)") # Smythe 2013 Table 2: F steady-state = -11.7% change from F_first (RSE 17.4%)
 
     # Covariate effects on ka. Centred / fractional forms per Table 2 footnote.

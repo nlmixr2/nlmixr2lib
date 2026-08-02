@@ -55,7 +55,7 @@ Castelli_2022_dextroamphetamine <- function() {
     # report a typical-value F (only the existence of IOV on F). Anchor at 1
     # by the standard popPK convention for an apparent-parameter
     # parameterisation (CL/F, V/F).
-    lfdepot <- fixed(log(1.0)) ; label("Bioavailability into depot (F, fixed at 1)")    # Castelli 2022: typical-value F not reported (Methods: 'Inter-occasion variability was estimated for D1 and bioavailability (F)'); anchored at 1 per the apparent-parameter convention -- see vignette Errata
+    lfdepot <- fixed(log(1.0)) ; label("Bioavailability into depot (F)")    # Castelli 2022: typical-value F not reported (Methods: 'Inter-occasion variability was estimated for D1 and bioavailability (F)'); anchored at 1 per the apparent-parameter convention -- see vignette Errata
 
     # Body-weight covariate effects. Castelli 2022 Methods describes a
     # full-covariate modeling approach with body weight pre-specified on
@@ -89,7 +89,7 @@ Castelli_2022_dextroamphetamine <- function() {
     # remains usable for typical-value / IIV-only forward simulation; users
     # wanting a stochastic VPC must supply their own residual magnitude.
     # See vignette Errata.
-    propSd <- fixed(0) ; label("Proportional residual SD (fraction; FIXED at 0 -- not reported in poster)") # Castelli 2022: residual error model not reported in the conference poster
+    propSd <- fixed(0) ; label("Proportional residual SD (fraction; 0 -- not reported in poster)") # Castelli 2022: residual error model not reported in the conference poster
   })
 
   model({

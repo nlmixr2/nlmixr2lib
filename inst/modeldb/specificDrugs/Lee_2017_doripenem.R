@@ -53,8 +53,8 @@ Lee_2017_doripenem <- function() {
     # (CL/WT, V/WT) is mathematically equivalent to fixed linear allometric
     # exponents (1.0) on WT for both CL and V. Wrapped in fixed() because
     # this is a structural assumption, not an estimated parameter.
-    e_wt_cl <- fixed(1); label("WT exponent on CL (fixed, structural)") # Lee 2017 Methods/Results: structural per-kg parameterization CL/WT = constant
-    e_wt_vc <- fixed(1); label("WT exponent on V (fixed, structural)")  # Lee 2017 Methods/Results: structural per-kg parameterization V/WT = constant
+    e_wt_cl <- fixed(1); label("WT exponent on CL (structural)") # Lee 2017 Methods/Results: structural per-kg parameterization CL/WT = constant
+    e_wt_vc <- fixed(1); label("WT exponent on V (structural)")  # Lee 2017 Methods/Results: structural per-kg parameterization V/WT = constant
 
     # CLCR power-law covariate effect on CL (Lee 2017 Table 2 / Results
     # equation): CL/WT = 0.109 x (CLCR/57)^0.688.

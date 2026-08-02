@@ -170,7 +170,7 @@ Lacy_2018_cabozantinib <- function() {
     # Bioavailability anchor. The reference (tablet) overall F is fixed at 1
     # because Lacy 2018 reports the capsule-vs-tablet F covariate only
     # (no separate F estimate at the tablet reference).
-    lfdepot <- fixed(log(1.0)) ; label("Overall oral bioavailability at the tablet reference (F, fixed at 1)")                   # Lacy 2018 Methods; tablet is the reference formulation
+    lfdepot <- fixed(log(1.0)) ; label("Overall oral bioavailability at the tablet reference (F)")                   # Lacy 2018 Methods; tablet is the reference formulation
 
     # ---- Dose-dependent Ka power exponent ----
     # Paper Results: "The first-order absorption process including ... a dose-

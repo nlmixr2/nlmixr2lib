@@ -60,13 +60,13 @@ Bizzotto_2016_glucose <- function() {
     lhill <- log(1.62)  ; label("Hill exponent on insulin-driven Vmax saturation (unitless)")              # typ_gamma
     lkmi   <- log(784)   ; label("Insulin half-saturation for Vmax modulation (pmol/L)")                     # typ_KmI
     lt12i  <- log(15.9)  ; label("Insulin-at-action two-compartment delay half-life (min)")                  # typ_t12I
-    lt12g  <- fixed(log(0.7))  ; label("Glucose-at-action two-compartment delay half-life (min) - FIXED")    # typ_t12G fix=true
+    lt12g  <- fixed(log(0.7))  ; label("Glucose-at-action two-compartment delay half-life (min)")    # typ_t12G fix=true
     lvtot  <- log(12648) ; label("Total apparent volume of glucose distribution (mL)")                       # typ_V
     lflambda3 <- log(0.0582 / (1 - 0.0582)) ; label("Logit of flambda3 (ratio of channel-3 to channel-2 periphery rate constants)")  # typ_flambda3
     lflambda2 <- log(0.154  / (1 - 0.154))  ; label("Logit of flambda2 (ratio of channel-2 to channel-1 periphery rate constants)")  # typ_flambda2
     lw1       <- log(0.609  / (1 - 0.609))  ; label("Logit of w1 (fraction of periphery flow into channel 1)")                       # typ_w1
     lfw2      <- log(0.901  / (1 - 0.901))  ; label("Logit of fw2 (fraction of remaining periphery flow into channel 2 after w1)")   # typ_fw2
-    lpflow <- fixed(log(2688)) ; label("Peripheral flow rate F (mL/min/m^2) - FIXED at 3200*0.84")           # typ_F fix=true (3200*0.84)
+    lpflow <- fixed(log(2688)) ; label("Peripheral flow rate F (mL/min/m^2)")           # typ_F fix=true (3200*0.84)
 
     # Inter-individual variability - DDMODEL00000227 glucoseKinetics.mdl `gu_v1_par`
     # `VARIABILITY` block (lines 63-80). All etas are Normal(0, var) on the log-scale

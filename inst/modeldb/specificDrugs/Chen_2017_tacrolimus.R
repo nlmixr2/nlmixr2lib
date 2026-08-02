@@ -68,8 +68,8 @@ Chen_2017_tacrolimus <- function() {
     # ratios equal to 1.0.
     lcl   <- log(3.6)             ; label("Apparent oral clearance CL/F (L/h) at HCT = 38.4 %, BUN = 4.2 mmol/L")  # Chen 2017 Table 2 final-model CL/F = 3.6 L/h (RSE 39%)
     lvc   <- log(1700)            ; label("Apparent oral volume of distribution V/F (L)")                          # Chen 2017 Table 2 final-model V/F = 1700 L (RSE 9%)
-    lka   <- fixed(log(0.502))    ; label("Absorption rate constant ka (1/h); fixed from supplementary dataset")   # Chen 2017 Table 2 final-model Ka = 0.502 /h FIX
-    ltlag <- fixed(log(0.346))    ; label("Absorption lag time tlag (h); fixed from supplementary dataset")        # Chen 2017 Table 2 final-model Tlag = 0.346 h FIX
+    lka   <- fixed(log(0.502))    ; label("Absorption rate constant ka (1/h); from supplementary dataset")   # Chen 2017 Table 2 final-model Ka = 0.502 /h FIX
+    ltlag <- fixed(log(0.346))    ; label("Absorption lag time tlag (h); from supplementary dataset")        # Chen 2017 Table 2 final-model Tlag = 0.346 h FIX
 
     # Covariate effects on CL/F (Chen 2017 Eq. 3, power-of-ratio form referenced
     # to the cohort medians from Table 1).

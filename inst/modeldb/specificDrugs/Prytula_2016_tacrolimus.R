@@ -71,7 +71,7 @@ Prytula_2016_tacrolimus <- function() {
     lcl   <- log(35)   ; label("Apparent oral clearance CL/F at WT = 70 kg, CYP3A5 *3/*3, gGT 13 U/L, HCT 0.34 (L/h)")              # Table 2 final CL/F (CYP3A5 *3/*3) = 35 L/h/70 kg (SE 7%)
     lvc   <- log(12)   ; label("Apparent central volume V1/F at WT = 70 kg (L)")                                                   # Table 2 final V1/F = 12 L/70 kg (SE 12%)
     lq    <- log(68)   ; label("Apparent inter-compartmental clearance Q/F at WT = 70 kg (L/h)")                                   # Table 2 final Q/F = 68 L/h/70 kg (SE 17%)
-    lvp   <- fixed(log(1090)) ; label("Apparent peripheral volume V2/F at WT = 70 kg (L; fixed during covariate analysis)")        # Table 2 V2/F = 1090 L/70 kg (FIX)
+    lvp   <- fixed(log(1090)) ; label("Apparent peripheral volume V2/F at WT = 70 kg (L; during covariate analysis)")        # Table 2 V2/F = 1090 L/70 kg (FIX)
 
     # Covariate effects on CL/F. The Table 2 equations are:
     #   CYP3A5 = *3/*3: CL/F = 35 * (WT/70)^0.75 * (gGT/13)^-0.21 * (HCT/0.34)^-0.59 * exp(eta_CL + kappa_CL)
@@ -87,11 +87,11 @@ Prytula_2016_tacrolimus <- function() {
     # of the parameters with fixed exponents (values 0.75 [CL/F, Q/F], 1
     # [V1/F, V2/F] and -0.25 [ka])"). All five exponents are theory-based
     # and held fixed during estimation.
-    e_wt_cl <- fixed(0.75)  ; label("Allometric exponent of (WT/70) on CL/F (unitless; fixed at theory value)")                    # Section 3.2.1
-    e_wt_q  <- fixed(0.75)  ; label("Allometric exponent of (WT/70) on Q/F (unitless; fixed at theory value)")                     # Section 3.2.1
-    e_wt_vc <- fixed(1)     ; label("Allometric exponent of (WT/70) on V1/F (unitless; fixed at theory value)")                    # Section 3.2.1
-    e_wt_vp <- fixed(1)     ; label("Allometric exponent of (WT/70) on V2/F (unitless; fixed at theory value)")                    # Section 3.2.1
-    e_wt_ka <- fixed(-0.25) ; label("Allometric exponent of (WT/70) on ka (unitless; fixed at theory value)")                      # Section 3.2.1
+    e_wt_cl <- fixed(0.75)  ; label("Allometric exponent of (WT/70) on CL/F (unitless; theory value)")                    # Section 3.2.1
+    e_wt_q  <- fixed(0.75)  ; label("Allometric exponent of (WT/70) on Q/F (unitless; theory value)")                     # Section 3.2.1
+    e_wt_vc <- fixed(1)     ; label("Allometric exponent of (WT/70) on V1/F (unitless; theory value)")                    # Section 3.2.1
+    e_wt_vp <- fixed(1)     ; label("Allometric exponent of (WT/70) on V2/F (unitless; theory value)")                    # Section 3.2.1
+    e_wt_ka <- fixed(-0.25) ; label("Allometric exponent of (WT/70) on ka (unitless; theory value)")                      # Section 3.2.1
 
     # Q/F inter-individual variability is forced to perfect correlation with
     # CL/F's eta and is constructed as `q_eta_scale * etalcl` (Prytula 2016

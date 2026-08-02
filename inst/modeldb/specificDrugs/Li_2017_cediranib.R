@@ -64,7 +64,7 @@ Li_2017_cediranib <- function() {
     # the reference value (F = 1)" for sparse-sampling occasions; rich-sampling
     # F1 carried IOV (44.6% CV) that is dropped from this single-occasion
     # simulation library model (see vignette Assumptions and deviations).
-    lfdepot <- fixed(log(1.0)) ; label("Bioavailability into depot (F1, fixed)")                               # Li 2017 Table 2 F1 = 1 (fixed)
+    lfdepot <- fixed(log(1.0)) ; label("Bioavailability into depot (F1)")                               # Li 2017 Table 2 F1 = 1 (fixed)
 
     # Covariate effects -- Li 2017 page 1727 final covariate equations:
     #   CL/F = 26.3 * (Age/59)^-0.409 * (WT/73)^0.517

@@ -373,8 +373,8 @@ Ganesan_2023_tebipenem <- function() {
     # (whose Vc/F means are likewise identical across cohorts because
     # the source reports a cohort split on the variance only).
     # ---------------------------------------------------------------
-    lcl_healthy    <- fixed(0);   label("Log-scale CL/F anchor for healthy subjects (fixed at 0; hosts the phase 1 IIV)")   # Ganesan 2023 Table 2: no infection-status covariate on typical CL/F; the cohort split affects only the CL/F IIV variance
-    lcl_patient    <- fixed(0);   label("Log-scale CL/F anchor for infected patients (fixed at 0; hosts the phase 3 IIV)")  # Ganesan 2023 Table 2: no infection-status covariate on typical CL/F; the cohort split affects only the CL/F IIV variance
+    lcl_healthy    <- fixed(0);   label("Log-scale CL/F anchor for healthy subjects (hosts the phase 1 IIV)")   # Ganesan 2023 Table 2: no infection-status covariate on typical CL/F; the cohort split affects only the CL/F IIV variance
+    lcl_patient    <- fixed(0);   label("Log-scale CL/F anchor for infected patients (hosts the phase 3 IIV)")  # Ganesan 2023 Table 2: no infection-status covariate on typical CL/F; the cohort split affects only the CL/F IIV variance
     etalcl_healthy ~ 0.0614       # Ganesan 2023 Table 2 IIV CL (phase 1) = 0.0614 (24.8 %CV; %SEM 14.8; shrinkage 66.3%)
     etalcl_patient ~ 0.328        # Ganesan 2023 Table 2 IIV CL (phase 3) = 0.328 (57.2 %CV; %SEM 5.24; shrinkage 13.3%)
     etalvc         ~ 0.197        # Ganesan 2023 Table 2 IIV Vc/F = 0.197 (44.4 %CV; %SEM 10.6; shrinkage 41.5%)

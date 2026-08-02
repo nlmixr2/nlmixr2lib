@@ -62,7 +62,7 @@ Garrett_2014_axitinib <- function() {
     lq      <- log(1.74)         ; label("Inter-compartmental clearance Q (L/h)")                           # Garrett 2014 Table 3: Q = 1.74 L/h
     lvp     <- log(45.9)         ; label("Peripheral volume of distribution Vp (L)")                        # Garrett 2014 Table 3: Vp = 45.9 L
     lfdepot <- log(0.465)        ; label("Absolute oral bioavailability F, Form IV fed reference (unitless)")  # Garrett 2014 Table 3: F, Form IV, Fed = 0.465
-    ltlag   <- fixed(log(0.457)) ; label("Absorption lag time (h; FIXED)")                                  # Garrett 2014 Table 3 footnote: tlag fixed at 0.457 in the final run
+    ltlag   <- fixed(log(0.457)) ; label("Absorption lag time (h)")                                  # Garrett 2014 Table 3 footnote: tlag fixed at 0.457 in the final run
 
     # Covariate effects -- Garrett 2014 Table 3 final-model estimates.
     # Weight on Vc is an estimated allometric exponent (75 kg reference).

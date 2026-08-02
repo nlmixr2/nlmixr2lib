@@ -227,7 +227,7 @@ Bonate_2004_apomine <- function() {
     # -------------------------------------------------------------------
     lq           <- log(0.198) ; label("Inter-compartmental clearance Q/F (L/h)")                                               # Bonate 2004 Table 3: Q = 198 mL/h (SE 40.9; variance too small to estimate)
     lvp          <- log(1.83)  ; label("Apparent peripheral volume of distribution Vp/F (L; typical-Vp subgroup)")              # Bonate 2004 Table 3: V3 = 1.83 L (SE 0.679; BSV 141%)
-    e_wt_vc      <- fixed(1.0) ; label("Allometric exponent of WT on Vc/F (unitless, fixed at 1)")                              # Bonate 2004 Table 3: Power term = 1.00 Fixed
+    e_wt_vc      <- fixed(1.0) ; label("Allometric exponent of WT on Vc/F (unitless)")                              # Bonate 2004 Table 3: Power term = 1.00 Fixed
     e_high_vp_vp <- log(23.5)  ; label("Log multiplier on Vp/F for the high-Vp subgroup (Study 2 healthy-male MD)")             # Bonate 2004 Table 3: Peripheral compartment multiplier for study 2 = 23.5 (SE 7.42)
 
     # -------------------------------------------------------------------

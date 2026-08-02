@@ -95,7 +95,7 @@ Jiao_2009_sirolimus <- function() {
     # (IIV) was not estimated"]. The Results note that varying ka by 5- and
     # 10-fold changed final estimates by no more than 10% / 4%, confirming
     # the fit is insensitive to the exact ka value.
-    lka <- fixed(log(0.752)); label("First-order absorption rate constant, ka (1/h; literature-fixed)")  # Jiao 2009 Methods (paper ref 32 = Zahir 2006)
+    lka <- fixed(log(0.752)); label("First-order absorption rate constant, ka (1/h; literature-)")  # Jiao 2009 Methods (paper ref 32 = Zahir 2006)
 
     # Covariate effects on CL/F. Linear-deviation forms (TCHOL, CP_CSA_NGML)
     # carry the signed coefficient from Eq. 9; the power-form effects

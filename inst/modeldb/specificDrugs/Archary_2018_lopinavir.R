@@ -51,8 +51,8 @@ Archary_2018_lopinavir <- function() {
     # Allometric exponents fixed per Archary 2018 Methods page 4 ("Allometric exponents
     # were fixed to 0.75 for CL/F and 1 for Vd/F, when testing use of weight or fat-free
     # mass (FFM) to account for size").
-    e_ffm_cl <- fixed(0.75); label("Allometric exponent on CL with FFM (unitless, fixed)")  # Methods page 4
-    e_ffm_vc <- fixed(1.00); label("Allometric exponent on Vd with FFM (unitless, fixed)")  # Methods page 4
+    e_ffm_cl <- fixed(0.75); label("Allometric exponent on CL with FFM (unitless)")  # Methods page 4
+    e_ffm_vc <- fixed(1.00); label("Allometric exponent on Vd with FFM (unitless)")  # Methods page 4
 
     # Cholesterol linear effect on apparent CL/F (paper Table 2 footnote equation):
     #   CL = 3.1 * (FFM/5.6)^0.75 * (1 + 0.207 * (CHOL - 3))

@@ -54,8 +54,8 @@ Horita_2018_isoniazid <- function() {
     # Allometric exponents on body weight -- fixed at canonical theoretical values
     # for CL/F and Q/F (0.75) and V1/F and V2/F (1.0). Horita 2018 Results 'INH'
     # paragraph 1.
-    e_wt_cl <- fixed(0.75); label("Allometric exponent on CL/F and Q/F (fixed, unitless)")   # Horita 2018 Results 'INH' paragraph 1: fixed exponent
-    e_wt_vc <- fixed(1.0);  label("Allometric exponent on V1/F and V2/F (fixed, unitless)")  # Horita 2018 Results 'INH' paragraph 1: fixed exponent
+    e_wt_cl <- fixed(0.75); label("Allometric exponent on CL/F and Q/F (unitless)")   # Horita 2018 Results 'INH' paragraph 1: fixed exponent
+    e_wt_vc <- fixed(1.0);  label("Allometric exponent on V1/F and V2/F (unitless)")  # Horita 2018 Results 'INH' paragraph 1: fixed exponent
 
     # Inter-individual variability. Table 2 IIV column reports 'omega (CV%)' on the
     # log scale (variance = omega^2). The source uses SEPARATE omegas for the two

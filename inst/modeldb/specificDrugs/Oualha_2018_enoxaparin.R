@@ -52,13 +52,13 @@ Oualha_2018_enoxaparin <- function() {
     # Apparent ka, CL/F and V/F at the 70 kg adult allometric reference.
     # Anti-Xa activity units throughout (IU dose, IU/mL concentration); V
     # in L, CL in L/h.
-    lka <- fixed(log(1))     ; label("First-order absorption rate (1/h, FIXED)")             # Table 3: ka = 1 (fixed)
+    lka <- fixed(log(1))     ; label("First-order absorption rate (1/h)")             # Table 3: ka = 1 (fixed)
     lcl <- log(1.23)         ; label("Apparent clearance CL/F at 70 kg BWPREOP (L/h)")       # Table 3: CL_TYP = 1.23 L/h for 70 kg BWPREOP (RSE 15%)
     lvc <- log(14.6)         ; label("Apparent central volume V/F at 70 kg and fbw=0 (L)")   # Table 3: V_TYP = 14.6 L for 70 kg BWPREOP and f_BW = 0 (RSE 27%)
 
     # Allometric exponents -- FIXED per Table 3 (theta_BW(CL) = 3/4, theta_BW(V) = 1).
-    e_wt_cl <- fixed(0.75)   ; label("BWPREOP allometric exponent on CL/F (unitless, FIXED to 3/4)") # Table 3: theta_BW(CL) = 0.75 (fixed)
-    e_wt_vc <- fixed(1)      ; label("BW(t) allometric exponent on V/F (unitless, FIXED to 1)")     # Table 3: theta_BW(V) = 1 (fixed)
+    e_wt_cl <- fixed(0.75)   ; label("BWPREOP allometric exponent on CL/F (unitless)") # Table 3: theta_BW(CL) = 0.75 (fixed)
+    e_wt_vc <- fixed(1)      ; label("BW(t) allometric exponent on V/F (unitless)")     # Table 3: theta_BW(V) = 1 (fixed)
 
     # ---- BW(t) evolution sub-model (Table 3 of Oualha 2018) ----------------
     # Post-operative bodyweight curve: BW(t) = (BWPREOP + PFA/1000) *

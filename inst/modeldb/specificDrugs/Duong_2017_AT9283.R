@@ -110,8 +110,8 @@ Duong_2017_AT9283 <- function() {
     # 70 kg" combined with Equations 2-3 indicates the canonical 0.75 / 1.0
     # were held fixed during estimation, matching the convention in
     # AbdulAziz_2016_doripenem.R and other allometric-fixed registry models.
-    e_wt_cl_q   <- fixed(0.75); label("Allometric exponent on (WT/70) shared by CL and Q (unitless, fixed)")  # Duong 2017 Methods, Equation 2 (clearances)
-    e_wt_vc_vp  <- fixed(1.0);  label("Allometric exponent on (WT/70) shared by Vc and Vp (unitless, fixed)") # Duong 2017 Methods, Equation 3 (volumes)
+    e_wt_cl_q   <- fixed(0.75); label("Allometric exponent on (WT/70) shared by CL and Q (unitless)")  # Duong 2017 Methods, Equation 2 (clearances)
+    e_wt_vc_vp  <- fixed(1.0);  label("Allometric exponent on (WT/70) shared by Vc and Vp (unitless)") # Duong 2017 Methods, Equation 3 (volumes)
 
     # ===== Renal-function effect on CL (Duong 2017 Equation 6, Table 3) =====
     # Power effect of estimated GFR on CL, normalised to 100 mL/min (= 6 L/h):

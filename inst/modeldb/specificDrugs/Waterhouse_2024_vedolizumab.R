@@ -158,8 +158,8 @@ Waterhouse_2024_vedolizumab <- function() {
     # Equation S2 ("theta_11 for Q (fixed to 0.75)"). Following the paper's own equation form
     # (Eq S2) and the standard allometric-clearance convention, Q = 0.75. The Table 2 value
     # 0.50 is treated as a typographical error and is documented in the vignette Errata.
-    e_wt_q  <- fixed(0.75); label("Allometric exponent of WT on Q (fixed)")   # Section 3.2.2 + Supp Eq S2
-    e_wt_vp <- fixed(1.00); label("Allometric exponent of WT on Vp (fixed)")  # Table 2 + Supp Eq S2
+    e_wt_q  <- fixed(0.75); label("Allometric exponent of WT on Q")   # Section 3.2.2 + Supp Eq S2
+    e_wt_vp <- fixed(1.00); label("Allometric exponent of WT on Vp")  # Table 2 + Supp Eq S2
 
     # Estimated categorical covariate multipliers (Waterhouse 2024 Table 2, power form:
     # CL *= multiplier^indicator; null effect = 1).

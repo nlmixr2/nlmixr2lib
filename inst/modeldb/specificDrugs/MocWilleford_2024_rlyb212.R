@@ -50,8 +50,8 @@ MocWilleford_2024_rlyb212 <- function() {
 
     # Fixed binding constants and threshold from Moc Willeford 2024 Table 2 (FIX flag).
     # kon internal-data value 1/(nM*h); koff bivalent-avidity minimal-dissociation value 1/h.
-    lkon    <- fixed(log(1.43));     label("Association rate kon (1/(nM*h)); fixed from internal data")             # Moc Willeford 2024 Table 2: kon = 1.43 1/(nM*h) FIXED (internal data on soluble monomeric antigen)
-    lkoff   <- fixed(log(0.0001));   label("Dissociation rate koff (1/h); fixed for bivalent minimal dissociation") # Moc Willeford 2024 Table 2: koff = 0.0001 1/h FIXED (avidity-driven bivalent binding value 1.0e-4 /h)
+    lkon    <- fixed(log(1.43));     label("Association rate kon (1/(nM*h)); from internal data")             # Moc Willeford 2024 Table 2: kon = 1.43 1/(nM*h) FIXED (internal data on soluble monomeric antigen)
+    lkoff   <- fixed(log(0.0001));   label("Dissociation rate koff (1/h); for bivalent minimal dissociation") # Moc Willeford 2024 Table 2: koff = 0.0001 1/h FIXED (avidity-driven bivalent binding value 1.0e-4 /h)
     thres   <- fixed(10);            label("Receptor occupancy threshold for phagocytic elimination (percent)")     # Moc Willeford 2024 Table 2: THRES = 10 percent FIXED (paper Results: estimation ranged 3-22 percent across runs so THRES was fixed at 10)
 
     # Allometric scaling anchors used in simulation (fixed exponents; not estimated in Moc Willeford 2024).

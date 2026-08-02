@@ -52,7 +52,7 @@ Betts_2018_mAb_combined <- function() {
 
     # Per-compound residual error is in Supplementary Table 2 (not on disk); fixed at 0
     # per the skill's standing policy for unreported RUV (documented in vignette Errata).
-    propSd <- fixed(0); label("Proportional residual error (fraction; fixed at 0)")
+    propSd <- fixed(0); label("Proportional residual error (fraction)")
   })
   model({
     # WT is body weight in kg. Allometric scaling with reference 70 kg per Betts 2018 Table 4.

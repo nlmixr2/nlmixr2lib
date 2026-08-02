@@ -194,7 +194,7 @@ Wilkins_2011_isoniazid <- function() {
     # Bioavailability anchor. Oral-only data: absolute F is not
     # identifiable; the typical value is fixed at 1.0 and IIV on F
     # is propagated through etalfdepot below.
-    lfdepot <- fixed(log(1)); label("Relative bioavailability anchor (F, fixed at 1)")
+    lfdepot <- fixed(log(1)); label("Relative bioavailability anchor (F)")
 
     # ============================================================
     # Allometric scaling (fixed at the Anderson & Holford 2008

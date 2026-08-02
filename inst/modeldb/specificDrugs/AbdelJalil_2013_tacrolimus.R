@@ -126,7 +126,7 @@ AbdelJalil_2013_tacrolimus <- function() {
 
     # Covariate effects on CL/F -- Abdel Jalil 2013 Results final equation:
     # CL/F_i = theta_1 * (WT/13.2)^0.75 * exp(theta_2 * TPT) * exp(theta_3 * CYP3A5_EXPR).
-    e_wt_cl          <- fixed(0.75) ; label("Allometric exponent of (WT/13.2 kg) on CL/F (unitless; fixed)")               # Abdel Jalil 2013 Methods: allometric exponent fixed to 0.75 (theory-based)
+    e_wt_cl          <- fixed(0.75) ; label("Allometric exponent of (WT/13.2 kg) on CL/F (unitless)")               # Abdel Jalil 2013 Methods: allometric exponent fixed to 0.75 (theory-based)
     e_pod_cl         <- -0.00158    ; label("Time-post-transplant exponential coefficient on CL/F (per day)")              # Abdel Jalil 2013 Table 5 theta_2 = -0.00158 /day (13.8% RSE)
     e_cyp3a5_expr_cl <- 0.4282      ; label("CYP3A5 expresser exponential coefficient on CL/F (unitless)")                 # Abdel Jalil 2013 Table 5 theta_3 = 0.4282 (25.5% RSE)
 

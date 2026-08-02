@@ -117,7 +117,7 @@ Zhang_2012_lopinavir_ritonavir <- function() {
     lka <- log(0.991);   label("Lopinavir absorption rate constant ka (1/h)")                                 # Table 2 LPV ka = 0.991 h^-1 (95% CI 0.63-1.43)
     lcl <- log(37.9);    label("Lopinavir baseline apparent clearance CL/F when no ritonavir effect (L/h)")   # Table 2 LPV CL/F = 37.9 L/h (95% CI 28.5-52.1); footnote dagger: CL/F of lopinavir without ritonavir
     lvc <- log(54.7);    label("Lopinavir apparent central volume of distribution Vc/F (L)")                  # Table 2 LPV Vc/F = 54.7 L (95% CI 50.5-64.7)
-    lfdepot <- fixed(log(1));  label("Lopinavir reference relative bioavailability F (unitless, fixed at 1)") # Table 2 footnote: relative bioavailability of standard dose LPV/r without rifampicin assumed 100% reference
+    lfdepot <- fixed(log(1));  label("Lopinavir reference relative bioavailability F (unitless)") # Table 2 footnote: relative bioavailability of standard dose LPV/r without rifampicin assumed 100% reference
 
     # ==========================================================================
     # RITONAVIR (RTV, sibling-drug suffix _rtv) structural parameters
@@ -135,7 +135,7 @@ Zhang_2012_lopinavir_ritonavir <- function() {
     lvp_rtv <- log(56.6);    label("Ritonavir peripheral volume of distribution Vp/F (L)")                       # Table 2 RTV Vp/F = 56.6 L (95% CI 50.8-66.0)
     lmtt_rtv <- log(1.44);   label("Ritonavir mean transit time MTT through the absorption chain (h)")           # Table 2 RTV MTT = 1.44 h (95% CI 1.39-1.53)
     lnn_rtv  <- log(2.03);   label("Ritonavir number of Savic-style transit compartments NN (unitless)")         # Table 2 RTV NN = 2.03 (95% CI 1.83-2.37); continuous parameter, supports non-integer values
-    lfdepot_rtv <- fixed(log(1));  label("Ritonavir reference relative bioavailability F (unitless, fixed at 1)") # Table 2 footnote: relative bioavailability of standard dose LPV/r without rifampicin assumed 100% reference
+    lfdepot_rtv <- fixed(log(1));  label("Ritonavir reference relative bioavailability F (unitless)") # Table 2 footnote: relative bioavailability of standard dose LPV/r without rifampicin assumed 100% reference
 
     # ==========================================================================
     # Drug-drug interaction: dynamic sigmoidal Imax inhibition of LPV CL/F by
@@ -158,9 +158,9 @@ Zhang_2012_lopinavir_ritonavir <- function() {
     # allometric scaling of central and peripheral volumes' (Results 'Model
     # description' paragraph 4).
     # ==========================================================================
-    e_ffm_cl <- fixed(0.75);  label("Allometric exponent of FFM on CL/F for both LPV and RTV (unitless, fixed at Holford convention)")
-    e_wt_vc  <- fixed(1.0);   label("Allometric exponent of WT on Vc/F for both LPV and RTV (unitless, fixed at Holford convention)")
-    e_wt_vp  <- fixed(1.0);   label("Allometric exponent of WT on Vp/F for RTV (unitless, fixed at Holford convention)")
+    e_ffm_cl <- fixed(0.75);  label("Allometric exponent of FFM on CL/F for both LPV and RTV (unitless, Holford convention)")
+    e_wt_vc  <- fixed(1.0);   label("Allometric exponent of WT on Vc/F for both LPV and RTV (unitless, Holford convention)")
+    e_wt_vp  <- fixed(1.0);   label("Allometric exponent of WT on Vp/F for RTV (unitless, Holford convention)")
 
     # ==========================================================================
     # Concomitant rifampicin (CONMED_RIF) effects (Zhang 2012 Table 2 rows

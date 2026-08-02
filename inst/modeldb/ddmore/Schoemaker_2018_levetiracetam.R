@@ -119,11 +119,11 @@ Schoemaker_2018_levetiracetam <- function() {
     # estimated. The other three are FIXED 0 in the source; we keep them
     # FIXED 0 here so the structural form is preserved verbatim and a
     # downstream user can free them if they re-fit with a different cohort.
-    p_responder_ped <- fixed(0); label("Peds offset on mixture-logit (FIXED 0 in source)") # Output_real_P241.res TH10 (FIXED)
+    p_responder_ped <- fixed(0); label("Peds offset on mixture-logit (0 in source)") # Output_real_P241.res TH10 (FIXED)
     lbase_ped       <- 0.420;    label("Peds offset on log baseline seizure rate (added when CHILD = 1)") # Output_real_P241.res TH11
-    lplac_ped       <- fixed(0); label("Peds offset on log placebo effect (FIXED 0 in source)")           # Output_real_P241.res TH12 (FIXED)
-    lemax_ped       <- fixed(0); label("Peds offset on log Emax (FIXED 0 in source)")                     # Output_real_P241.res TH13 (FIXED)
-    lec50_ped       <- fixed(0); label("Peds offset on log EC50 (FIXED 0 in source)")                     # Output_real_P241.res TH14 (FIXED)
+    lplac_ped       <- fixed(0); label("Peds offset on log placebo effect (0 in source)")           # Output_real_P241.res TH12 (FIXED)
+    lemax_ped       <- fixed(0); label("Peds offset on log Emax (0 in source)")                     # Output_real_P241.res TH13 (FIXED)
+    lec50_ped       <- fixed(0); label("Peds offset on log EC50 (0 in source)")                     # Output_real_P241.res TH14 (FIXED)
 
     # ------------------------------------------------------------------
     # Inter-individual variability -- Output_real_P241.res FINAL OMEGA

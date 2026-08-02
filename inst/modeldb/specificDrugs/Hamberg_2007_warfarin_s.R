@@ -120,7 +120,7 @@ Hamberg_2007_warfarin_s <- function() {
     # ============================================================
     # INR PD -- Hamberg 2007 Table 4 + Appendix
     # ============================================================
-    lemax        <- fixed(log(1))     ; label("Maximum anticoagulant effect Emax (fixed at 1 = 100% inhibition)")  # Table 4 (fixed; Methods)
+    lemax        <- fixed(log(1))     ; label("Maximum anticoagulant effect Emax (1 = 100% inhibition)")  # Table 4 (fixed; Methods)
     lhill        <- log(0.424)        ; label("Sigmoidicity factor gamma for the inhibitory Emax (unitless)")      # Table 4 (estimated, RSE 12.4%); paper symbol gamma
     lmtt1        <- log(11.6)         ; label("Mean transit time MTT1 (h) -- six-compartment 'long' chain (per-compartment)")  # Table 4 (estimated, RSE 4.65%)
     lmtt2        <- log(120)          ; label("Mean transit time MTT2 (h) -- single-compartment 'short' chain")              # Table 4 (estimated, RSE 23.0%)

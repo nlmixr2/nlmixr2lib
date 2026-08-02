@@ -98,7 +98,7 @@ Ahlstrom_2010_nicotinicAcid_rat <- function() {
     lgam     <- log(1.48)    ; label("Sigmoidicity (Hill exponent) of inhibitory drug function gamma (unitless)") # Table 2: gamma = 1.48 (RSE 3.79%)
     lpmod    <- log(1.21)    ; label("Amplification factor p on moderator M1 in NEFA formation (unitless)")  # Table 2: p = 1.21 (RSE 6.64%)
     lkcap    <- log(0.0318)  ; label("NiAc-independent capillary NEFA release rate kcap (mmol/L/min)")        # Table 2: kcap = 0.0318 (RSE 6.51%)
-    imax     <- fixed(1.0)   ; label("Maximum drug-induced inhibition of NEFA formation Imax (fixed)")        # Table 2: Imax = 1 (fixed per Discussion)
+    imax     <- fixed(1.0)   ; label("Maximum drug-induced inhibition of NEFA formation Imax")        # Table 2: Imax = 1 (fixed per Discussion)
 
     # --------------------------------------------------------------
     # IIV -- omega^2 = log(CV^2 + 1) conversion from Tables 1 and 2.

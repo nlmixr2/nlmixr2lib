@@ -88,7 +88,7 @@ Hong_2013_glucose_insulin_MTT <- function() {
     lbio        <- log(0.252)            ; label("Bioavailability factor BIO on the dummy 100 g meal-glucose dose (fraction)")        # Hong 2013 Table II: BIO = 0.252
     lclgi_mtt   <- log(0.00425)          ; label("Insulin-dependent glucose clearance for MTT CLGI_MTT (L/min/(mU/L))")               # Hong 2013 Table II: CL_GI_MTT = 0.00425
     lemax       <- log(2.02)             ; label("Maximal incretin-driven insulin-secretion stimulation Emax (unitless)")             # Hong 2013 Table II: E_max = 2.02
-    labsg50     <- fixed(log(14.8))      ; label("Glucose absorption rate giving 50 percent of maximal incretin effect ABSG50 (mg/min; FIXED to Jauslin 2007)")  # Hong 2013 Table II: ABSG_50 = 14.8 (FIXED, footnote a)
+    labsg50     <- fixed(log(14.8))      ; label("Glucose absorption rate giving 50 percent of maximal incretin effect ABSG50 (mg/min; Jauslin 2007)")  # Hong 2013 Table II: ABSG_50 = 14.8 (FIXED, footnote a)
     liprg       <- log(3.06)             ; label("Power coefficient on (G/(VG*GCss)) for second-phase insulin secretion IPRG (unitless)")  # Hong 2013 Table II: IPRG = 3.06
 
     # ---------------------------------------------------------------------
@@ -99,11 +99,11 @@ Hong_2013_glucose_insulin_MTT <- function() {
     # between HGC and MTT after the incretin effect had been taken into
     # account").
     # ---------------------------------------------------------------------
-    lclg        <- fixed(log(0.164))     ; label("Insulin-independent glucose clearance CLG (L/min; FIXED from HGC Table I)")        # Hong 2013 Table I (HGC) -> MTT FIXED
-    lvg         <- fixed(log(23.7))      ; label("Glucose volume of distribution VG (L; FIXED from HGC Table I)")                    # Hong 2013 Table I (HGC) -> MTT FIXED
-    lcli        <- fixed(log(1.54))      ; label("Insulin clearance CLI (L/min; FIXED from HGC Table I)")                            # Hong 2013 Table I (HGC) -> MTT FIXED
-    lvi         <- fixed(log(6.09))      ; label("Insulin volume of distribution VI (L; FIXED from HGC Table I)")                    # Hong 2013 Table I (HGC) -> MTT FIXED
-    lkie        <- fixed(log(0.00291))   ; label("Insulin effect-compartment equilibration rate kIE (1/min; FIXED from HGC Table I)") # Hong 2013 Table I (HGC) -> MTT FIXED
+    lclg        <- fixed(log(0.164))     ; label("Insulin-independent glucose clearance CLG (L/min; from HGC Table I)")        # Hong 2013 Table I (HGC) -> MTT FIXED
+    lvg         <- fixed(log(23.7))      ; label("Glucose volume of distribution VG (L; from HGC Table I)")                    # Hong 2013 Table I (HGC) -> MTT FIXED
+    lcli        <- fixed(log(1.54))      ; label("Insulin clearance CLI (L/min; from HGC Table I)")                            # Hong 2013 Table I (HGC) -> MTT FIXED
+    lvi         <- fixed(log(6.09))      ; label("Insulin volume of distribution VI (L; from HGC Table I)")                    # Hong 2013 Table I (HGC) -> MTT FIXED
+    lkie        <- fixed(log(0.00291))   ; label("Insulin effect-compartment equilibration rate kIE (1/min; from HGC Table I)") # Hong 2013 Table I (HGC) -> MTT FIXED
 
     # ---------------------------------------------------------------------
     # Inter-individual variability (Table II "Random effects model IIV"

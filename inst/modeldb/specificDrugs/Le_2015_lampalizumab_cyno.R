@@ -48,8 +48,8 @@ Le_2015_lampalizumab_cyno <- function() {
     lVVITR      <- log(2.2);          label("Vitreous volume V_VITR (mL)")                                                        # Le 2015 Table 2 row 'V_VITR' (2.2 mL, RSE 7.5%)
     lkout       <- log(0.24);         label("Ocular elimination rate constant of unbound lampalizumab k_out (1/day)")             # Le 2015 Table 2 row 'k_out' (0.24 /day, RSE 2.1%)
     lkoutC      <- log(0.75);         label("Ocular elimination rate constant of lampalizumab-CFD complex k_outC (1/day)")        # Le 2015 Table 2 row 'k_outC' (0.75 /day, RSE 17%)
-    lkoutT      <- fixed(log(0.30));  label("Ocular elimination rate constant of free CFD k_outT (1/day; FIXED)")                  # Le 2015 Table 2 row 'k_outT' (0.30 /day FIXED to in-house vitreous CFD t1/2 data)
-    kinC        <- fixed(0);          label("Ocular influx rate constant of complex k_inC (1/day; FIXED to 0)")                    # Le 2015 Table 2 row 'K_inC' (0 FIXED; complex influx assumed negligible)
+    lkoutT      <- fixed(log(0.30));  label("Ocular elimination rate constant of free CFD k_outT (1/day)")                  # Le 2015 Table 2 row 'k_outT' (0.30 /day FIXED to in-house vitreous CFD t1/2 data)
+    kinC        <- fixed(0);          label("Ocular influx rate constant of complex k_inC (1/day)")                    # Le 2015 Table 2 row 'K_inC' (0 FIXED; complex influx assumed negligible)
     llambda_VA  <- log(4.4);          label("Vitreous-to-aqueous partition coefficient for lampalizumab lambda_VA (unitless)")     # Le 2015 Table 2 row 'lambda_VA' (4.4, RSE 12%)
     llambda_TVA <- log(0.47);         label("Vitreous-to-aqueous partition coefficient for CFD lambda_TVA (unitless)")             # Le 2015 Table 2 row 'lambda_TVA' (0.47, RSE 24%)
     llambda_VR  <- log(7.3);          label("Vitreous-to-retina partition coefficient for lampalizumab lambda_VR (unitless)")      # Le 2015 Table 2 row 'lambda_VR' (7.3, RSE 15%)
@@ -78,7 +78,7 @@ Le_2015_lampalizumab_cyno <- function() {
     # dissociation equilibrium constant (K_D) of 11.7 pM (Loyet et al.
     # 2014)". log() inside fixed() per parameter-names.md.
     # ------------------------------------------------------------------
-    lkss <- fixed(log(1.17e-5));  label("Quasi-steady-state binding constant K_ss (nmol/mL; FIXED to in-vitro K_D 11.7 pM = 1.17e-5 nmol/mL from Loyet 2014)")  # Le 2015 text page 290, Loyet 2014 K_D
+    lkss <- fixed(log(1.17e-5));  label("Quasi-steady-state binding constant K_ss (nmol/mL; in-vitro K_D 11.7 pM = 1.17e-5 nmol/mL from Loyet 2014)")  # Le 2015 text page 290, Loyet 2014 K_D
 
     # ------------------------------------------------------------------
     # Residual error. The paper (Methods, "Target-Mediated Drug
@@ -91,13 +91,13 @@ Le_2015_lampalizumab_cyno <- function() {
     # each proportional residual SD as fixed(0). Documented in vignette
     # Errata.
     # ------------------------------------------------------------------
-    propSd_CVITR <- fixed(0); label("Proportional residual SD for total vitreous lampalizumab (fraction; FIXED to 0 -- not reported)")   # Le 2015 Methods (proportional error, no numeric value)
-    propSd_CAQ   <- fixed(0); label("Proportional residual SD for total aqueous lampalizumab (fraction; FIXED to 0 -- not reported)")    # Le 2015 Methods
-    propSd_CRET  <- fixed(0); label("Proportional residual SD for total retinal lampalizumab (fraction; FIXED to 0 -- not reported)")    # Le 2015 Methods
-    propSd       <- fixed(0); label("Proportional residual SD for total serum lampalizumab (fraction; FIXED to 0 -- not reported)")      # Le 2015 Methods
-    propSd_RVITR <- fixed(0); label("Proportional residual SD for total vitreous CFD (fraction; FIXED to 0 -- not reported)")            # Le 2015 Methods
-    propSd_RAQ   <- fixed(0); label("Proportional residual SD for total aqueous CFD (fraction; FIXED to 0 -- not reported)")             # Le 2015 Methods
-    propSd_RSER  <- fixed(0); label("Proportional residual SD for total serum CFD (fraction; FIXED to 0 -- not reported)")               # Le 2015 Methods
+    propSd_CVITR <- fixed(0); label("Proportional residual SD for total vitreous lampalizumab (fraction; 0 -- not reported)")   # Le 2015 Methods (proportional error, no numeric value)
+    propSd_CAQ   <- fixed(0); label("Proportional residual SD for total aqueous lampalizumab (fraction; 0 -- not reported)")    # Le 2015 Methods
+    propSd_CRET  <- fixed(0); label("Proportional residual SD for total retinal lampalizumab (fraction; 0 -- not reported)")    # Le 2015 Methods
+    propSd       <- fixed(0); label("Proportional residual SD for total serum lampalizumab (fraction; 0 -- not reported)")      # Le 2015 Methods
+    propSd_RVITR <- fixed(0); label("Proportional residual SD for total vitreous CFD (fraction; 0 -- not reported)")            # Le 2015 Methods
+    propSd_RAQ   <- fixed(0); label("Proportional residual SD for total aqueous CFD (fraction; 0 -- not reported)")             # Le 2015 Methods
+    propSd_RSER  <- fixed(0); label("Proportional residual SD for total serum CFD (fraction; 0 -- not reported)")               # Le 2015 Methods
   })
 
   model({

@@ -63,14 +63,14 @@ Lawson_2022_busulfan <- function() {
     cl_hill_t50 <-  50.6;   label("Time at which 50% of cl_hill_max is attained (h)")                             # Lawson 2022 Table 3
 
     # Fat-mass fractions for parameter-specific NFM (fixed a priori per McCune 2014).
-    ffat_cl <- fixed(0.509);  label("Fraction of fat mass contributing to NFM on CL (unitless, fixed)")    # Lawson 2022 Table 3
-    ffat_v1 <- fixed(0.203);  label("Fraction of fat mass contributing to NFM on V1 (unitless, fixed)")    # Lawson 2022 Table 3
-    ffat_q  <- fixed(0.0);    label("Fraction of fat mass contributing to NFM on Q (unitless, fixed)")     # Lawson 2022 Table 3
-    ffat_v2 <- fixed(0.203);  label("Fraction of fat mass contributing to NFM on V2 (unitless, fixed)")    # Lawson 2022 Table 3
+    ffat_cl <- fixed(0.509);  label("Fraction of fat mass contributing to NFM on CL (unitless)")    # Lawson 2022 Table 3
+    ffat_v1 <- fixed(0.203);  label("Fraction of fat mass contributing to NFM on V1 (unitless)")    # Lawson 2022 Table 3
+    ffat_q  <- fixed(0.0);    label("Fraction of fat mass contributing to NFM on Q (unitless)")     # Lawson 2022 Table 3
+    ffat_v2 <- fixed(0.203);  label("Fraction of fat mass contributing to NFM on V2 (unitless)")    # Lawson 2022 Table 3
 
     # Maturation parameters fixed a priori (Lawson 2022 Methods + Table 3).
-    hill_mat <- fixed(2.3);   label("Hill coefficient for the CL maturation function (unitless, fixed)")   # Lawson 2022 Table 3 + Methods
-    tm50_mat <- fixed(45.6);  label("Postmenstrual age at 50% of adult CL via maturation (weeks, fixed)")  # Lawson 2022 Table 3 + Methods
+    hill_mat <- fixed(2.3);   label("Hill coefficient for the CL maturation function (unitless)")   # Lawson 2022 Table 3 + Methods
+    tm50_mat <- fixed(45.6);  label("Postmenstrual age at 50% of adult CL via maturation (weeks)")  # Lawson 2022 Table 3 + Methods
 
     # Inter-individual variability on CL and V1 (block).
     # Per Lawson 2022 Table 3 footnote: 'CV% are calculated as the Square root of variance

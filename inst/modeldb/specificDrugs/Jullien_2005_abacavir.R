@@ -38,7 +38,7 @@ Jullien_2005_abacavir <- function() {
     lcl <- log(47.5);      label("Apparent clearance at 65 kg (CL/F, L/h)")      # Table 3, TV(CL/F) = 47.5 L/h
     lvc <- log(75);        label("Apparent central volume (Vc/F, L)")            # Table 3, TV(Vc/F) = 75 L
     lvp <- log(24);        label("Apparent peripheral volume (Vp/F, L)")         # Table 3, TV(Vp/F) = 24 L
-    lq  <- fixed(log(10)); label("Apparent intercompartmental clearance (Q/F, L/h); fixed at the basic-model typical value when BW was added to CL/F")  # Table 3, TV(Q/F) = 10 L/h (fixed)
+    lq  <- fixed(log(10)); label("Apparent intercompartmental clearance (Q/F, L/h); the basic-model typical value when BW was added to CL/F")  # Table 3, TV(Q/F) = 10 L/h (fixed)
 
     # Estimated power-form covariate effect on CL/F.
     # CL/F = TV(CL/F) * (WT/65)^e_wt_cl

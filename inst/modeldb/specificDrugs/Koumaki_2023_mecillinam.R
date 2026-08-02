@@ -145,7 +145,7 @@ Koumaki_2023_mecillinam <- function() {
     # deterministically given the etas. Users re-fitting on individual-level
     # data must replace this with an estimated proportional (or combined)
     # error term. See vignette Errata.
-    propSd <- fixed(0); label("Proportional residual error (fraction; FIXED AT ZERO - not estimated in source)")  # Table 1 / Methods: no residual error term
+    propSd <- fixed(0); label("Proportional residual error (fraction; ZERO - not estimated in source)")  # Table 1 / Methods: no residual error term
   })
   model({
     # 1. Individual PK parameters. Every structural parameter scales

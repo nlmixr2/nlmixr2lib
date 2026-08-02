@@ -161,7 +161,7 @@ Lv_2025_asc10a <- function() {
     lq      <- log(1.24);  label("Apparent inter-compartmental clearance Q/F (L/h)")                            # Lv 2025 Table 2 row 'Q (L/h) = 1.24 (RSE 9.3%)'
     lvp     <- log(31.6);  label("Apparent ASC10-A peripheral volume Vp/F (L)")                                 # Lv 2025 Table 2 row 'V_P (L) = 31.6 (RSE 11.3%)'
     lktr    <- log(7.02);  label("Transit rate constant KTR for fasted state (1/h)")                            # Lv 2025 Table 2 row 'KTR (1/h) = 7.02 (RSE 19.5%)' (typical value = fasted; food scaling applied below)
-    lfdepot <- fixed(log(1)); label("Reference relative oral bioavailability F (fraction; fixed at 100%)")     # Lv 2025 Table 2 row 'F = 1 FIX'
+    lfdepot <- fixed(log(1)); label("Reference relative oral bioavailability F (fraction; 100%)")     # Lv 2025 Table 2 row 'F = 1 FIX'
 
     # =========================================================================
     # Covariate effect parameters. Continuous covariates enter as
@@ -170,7 +170,7 @@ Lv_2025_asc10a <- function() {
     # equation 2, with cov in {0, 1}).
     # =========================================================================
     e_wt_cl   <- 0.903;         label("Power exponent for body weight on ASC10-A CL/F (unitless)")              # Lv 2025 Table 2 row 'theta_CL-WT = 0.903 (RSE 21.2%)'; CL_i = 79.7 * (WT/61.4)^0.903
-    e_wt_vc   <- fixed(1);      label("Power exponent for body weight on ASC10-A Vc/F (unitless; fixed)")       # Lv 2025 Table 2 row 'theta_Vc-WT = 1 FIX'; Vc_i = 139 * (WT/61.4)^1
+    e_wt_vc   <- fixed(1);      label("Power exponent for body weight on ASC10-A Vc/F (unitless)")       # Lv 2025 Table 2 row 'theta_Vc-WT = 1 FIX'; Vc_i = 139 * (WT/61.4)^1
     r_ktr_fed <- 0.474;         label("Fed/fasted multiplier on KTR (unitless; KTR_fed = KTR_fasted * this)")   # Lv 2025 Table 2 row 'theta_KTR-food = 0.474 (RSE 16.8%)'; KTR_fed = 7.02 * 0.474 = 3.33 h^-1
 
     # =========================================================================
@@ -191,7 +191,7 @@ Lv_2025_asc10a <- function() {
     # additive SD is in ng/mL and was fixed during estimation.
     # =========================================================================
     propSd <- 0.41;        label("Proportional residual error on plasma ASC10-A concentration (fraction)")      # Lv 2025 Table 2 row 'sigma_prop = 0.41 (RSE 5.2%)'
-    addSd  <- fixed(2.3);  label("Additive residual error on plasma ASC10-A concentration (ng/mL; fixed)")      # Lv 2025 Table 2 row 'sigma_add (ng/mL) = 2.3 FIX'
+    addSd  <- fixed(2.3);  label("Additive residual error on plasma ASC10-A concentration (ng/mL)")      # Lv 2025 Table 2 row 'sigma_add (ng/mL) = 2.3 FIX'
   })
 
   model({

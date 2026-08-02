@@ -36,7 +36,7 @@ Betts_2018_mAb_tg32mouse <- function() {
 
     # Per-compound residual error is in Supplementary Table 1 (not on disk); fixed at 0
     # per the skill's standing policy for unreported RUV (documented in vignette Errata).
-    propSd <- fixed(0); label("Proportional residual error (fraction; fixed at 0)")
+    propSd <- fixed(0); label("Proportional residual error (fraction)")
   })
   model({
     cl <- exp(lcl + etalcl)

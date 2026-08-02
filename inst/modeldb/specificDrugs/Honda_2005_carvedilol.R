@@ -143,8 +143,8 @@ Honda_2005_carvedilol <- function() {
     # assumption -- see vignette 'Assumptions and deviations'.
     propSd_r <- sqrt(0.0584) ; label("Power-error SD coefficient for R-carvedilol ((ng/mL)^(1/2), = sqrt(Honda sigma^2))")  # Honda 2005 Table 1: sigma^2 = 0.0584 (95% CI 0.0074-0.1094); shared between R and S
     propSd_s <- sqrt(0.0584) ; label("Power-error SD coefficient for S-carvedilol ((ng/mL)^(1/2), = sqrt(Honda sigma^2))")  # Honda 2005 Table 1: sigma^2 = 0.0584 (95% CI 0.0074-0.1094); shared between R and S
-    powExp_r <- fixed(0.5)   ; label("Power-error exponent for R-carvedilol (Honda Eq. 3: Cb*^(1/2); unitless, FIXED)")      # Honda 2005 Eq. 3 (text after Eq. 2)
-    powExp_s <- fixed(0.5)   ; label("Power-error exponent for S-carvedilol (Honda Eq. 3: Cb*^(1/2); unitless, FIXED)")      # Honda 2005 Eq. 3 (text after Eq. 2)
+    powExp_r <- fixed(0.5)   ; label("Power-error exponent for R-carvedilol (Honda Eq. 3: Cb*^(1/2); unitless)")      # Honda 2005 Eq. 3 (text after Eq. 2)
+    powExp_s <- fixed(0.5)   ; label("Power-error exponent for S-carvedilol (Honda Eq. 3: Cb*^(1/2); unitless)")      # Honda 2005 Eq. 3 (text after Eq. 2)
   })
 
   model({

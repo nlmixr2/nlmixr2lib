@@ -100,8 +100,8 @@ Mondick_2006_dactinomycin <- function() {
     # normalized to a weight of 70 kg" and does not print the exponents; the
     # canonical theory-based values are assumed and held fixed. The assumption
     # is documented in the vignette Assumptions and deviations section.
-    e_wt_cl  <- fixed(0.75);  label("Allometric exponent on clearance (unitless, fixed)")   # standard theory-based; not printed in Mondick 2006 abstract
-    e_wt_vc  <- fixed(1.0);   label("Allometric exponent on volume (unitless, fixed)")      # standard theory-based; not printed in Mondick 2006 abstract
+    e_wt_cl  <- fixed(0.75);  label("Allometric exponent on clearance (unitless)")   # standard theory-based; not printed in Mondick 2006 abstract
+    e_wt_vc  <- fixed(1.0);   label("Allometric exponent on volume (unitless)")      # standard theory-based; not printed in Mondick 2006 abstract
 
     # IIV (log-normal) for V1 and CL. omega^2 = log(CV^2 + 1).
     #   V1: CV = 54.4%; omega^2 = log(1 + 0.544^2) = 0.25923
@@ -120,7 +120,7 @@ Mondick_2006_dactinomycin <- function() {
     # fixed(0) so the typical-value structural simulation is reproducible;
     # the assumption is documented in the vignette Assumptions and deviations
     # section.
-    propSd <- fixed(0); label("Proportional residual error (fraction, fixed)")             # not reported in Mondick 2006 abstract
+    propSd <- fixed(0); label("Proportional residual error (fraction)")             # not reported in Mondick 2006 abstract
   })
 
   model({

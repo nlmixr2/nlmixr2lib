@@ -137,7 +137,7 @@ Fung_2008_butanediol_rat <- function() {
     lcl_ghb   <- log(0.00046) ; label("GHB first-order linear clearance CL (L/min)")        # Table II GHB: CL = 0.00046
     lvmax_ghb <- log(0.00361) ; label("GHB Michaelis-Menten Vmax (mmol/min)")               # Table II GHB: Vmax = 0.00361 (calc as CLic 0.0398 * Km 0.0906)
     lkm_ghb   <- log(0.0906)  ; label("GHB Michaelis-Menten Km (mmol/L)")                   # Table II GHB: Km = 0.0906
-    lvc_ghb   <- fixed(log(0.010)) ; label("GHB central volume V fixed at rat plasma volume (L)") # Table II GHB footnote b: V FIXED to 0.010 L
+    lvc_ghb   <- fixed(log(0.010)) ; label("GHB central volume V rat plasma volume (L)") # Table II GHB footnote b: V FIXED to 0.010 L
     lk12_ghb  <- log(0.551)   ; label("GHB inter-compartmental rate constant k12 (1/min)")  # Table II GHB: K12 = 0.551
     lk21_ghb  <- log(0.0554)  ; label("GHB inter-compartmental rate constant k21 (1/min)")  # Table II GHB: K21 = 0.0554
 

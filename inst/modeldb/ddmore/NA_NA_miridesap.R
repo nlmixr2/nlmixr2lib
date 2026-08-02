@@ -86,8 +86,8 @@ NA_NA_miridesap <- function() {
 
     # Subcutaneous depot -- both fixed; bundle's simulated dataset does not
     # exercise SC dosing but the .ctl supports it via a separate compartment.
-    lka     <- fixed(0.4055)   ; label("Log SC absorption rate (log 1/h); ka = exp(lka) = 1.50 1/h - FIXED (Sahota 2015 Table 2: 1.5 FIX)")            # THETA(14) FIXED
-    lfdepot <- fixed(0)        ; label("Log SC bioavailability (log unitless); F = exp(lfdepot) = 1 - FIXED")                                          # THETA(13) FIXED
+    lka     <- fixed(0.4055)   ; label("Log SC absorption rate (log 1/h); ka = exp(lka) = 1.50 1/h (Sahota 2015 Table 2: 1.5 FIX)")            # THETA(14) FIXED
+    lfdepot <- fixed(0)        ; label("Log SC bioavailability (log unitless); F = exp(lfdepot) = 1")                                          # THETA(13) FIXED
 
     # SAP turnover and distribution
     lkout    <- -3.07          ; label("Log endogenous SAP elimination rate (log 1/h); kout = exp(lkout) = 0.0464 1/h (Sahota 2015 Table 2: 0.046)")   # THETA(1)

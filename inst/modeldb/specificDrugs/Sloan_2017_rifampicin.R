@@ -115,7 +115,7 @@ Sloan_2017_rifampicin <- function() {
     lka     <- fixed(log(0.277)); label("First-order absorption rate constant Ka (1/h)")                                                  # Sloan 2017 Table 3: Ka = 0.277/h (FIX); stage 1 estimate RSE 9.8%, 95% CI 0.23-0.32
     lmtt    <- fixed(log(0.326)); label("Mean transit time MMT (h)")                                                                      # Sloan 2017 Table 3: MMT = 0.326 h (FIX); stage 1 estimate RSE 35%, 95% CI 0.05-1.0
     lnn     <- fixed(log(1.5));   label("Number of absorption transit compartments NN (continuous, dimensionless)")                       # Sloan 2017 Table 3: NN = 1.5 (FIX); stage 1 estimate RSE 41%, 95% CI 0.09-3.9
-    lfdepot <- fixed(log(1));     label("Oral bioavailability F (fixed at 1; CL/F and V/F are F-relative)")                               # Sloan 2017 Methods 'Population pharmacokinetic analysis' paragraph 4: 'F is the oral bioavailability, which was fixed to 1'
+    lfdepot <- fixed(log(1));     label("Oral bioavailability F (CL/F and V/F are F-relative)")                               # Sloan 2017 Methods 'Population pharmacokinetic analysis' paragraph 4: 'F is the oral bioavailability, which was fixed to 1'
 
     # ============================================================================
     # Allometric weight model - canonical fixed exponents at reference weight 70 kg

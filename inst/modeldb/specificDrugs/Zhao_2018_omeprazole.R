@@ -89,12 +89,12 @@ Zhao_2018_omeprazole <- function() {
     # `kmet` paper-named-parameter token is used because it canonically
     # tags a metabolite-formation rate / formation-clearance scalar in
     # parent-plus-metabolite popPK models.
-    lvc_5oh    <- fixed(log(1));   label("Apparent volume of distribution V2/F of 5-hydroxy-omeprazole (L) -- fixed")   # Zhao 2018 Table 2: V2/F = 1 L FIX
+    lvc_5oh    <- fixed(log(1));   label("Apparent volume of distribution V2/F of 5-hydroxy-omeprazole (L)")   # Zhao 2018 Table 2: V2/F = 1 L FIX
     lkmet_5oh  <- log(0.658);      label("Formation parameter CLOMZ-M1 reference (theta2) for 5-hydroxy-omeprazole (L/h at PNA = 38 days / 1.249 months and EM/UM reference)")  # Zhao 2018 Table 2: theta2 = 0.658 L/h (RSE 21.4%)
     lcl_5oh    <- log(0.846);      label("Apparent elimination clearance CLM1/F of 5-hydroxy-omeprazole (L/h)")         # Zhao 2018 Table 2: CLM1/F = 0.846 L/h (RSE 18.4%)
 
     # Structural parameters -- omeprazole sulfone (M2) metabolite.
-    lvc_sfn    <- fixed(log(1));   label("Apparent volume of distribution V3/F of omeprazole sulfone (L) -- fixed")     # Zhao 2018 Table 2: V3/F = 1 L FIX
+    lvc_sfn    <- fixed(log(1));   label("Apparent volume of distribution V3/F of omeprazole sulfone (L)")     # Zhao 2018 Table 2: V3/F = 1 L FIX
     lkmet_sfn  <- log(0.140);      label("Formation parameter CLOMZ-M2 for omeprazole sulfone (L/h)")                   # Zhao 2018 Table 2: CLOMZ-M2 = 0.140 L/h (RSE 8.4%)
     lcl_sfn    <- log(0.130);      label("Apparent elimination clearance CLM2/F of omeprazole sulfone (L/h)")           # Zhao 2018 Table 2: CLM2/F = 0.130 L/h (RSE 27.3%)
 

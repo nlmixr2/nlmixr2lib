@@ -69,8 +69,8 @@ Schoemaker_2017_brivaracetam <- function() {
     # Allometric exponents on lean body weight (theoretical values held
     # fixed by the source authors per Anderson & Holford 2008; Schoemaker
     # 2017 Methods page 2).
-    e_lbm_cl <- fixed(0.750); label("Allometric LBW exponent on CL/F (unitless, fixed)")     # Schoemaker 2017 Table 1: "Allometric scaling CL/F 0.750 fixed"
-    e_lbm_vc <- fixed(1.00);  label("Allometric LBW exponent on V/F (unitless, fixed)")      # Schoemaker 2017 Table 1: "Allometric scaling V/F 1.00 fixed"
+    e_lbm_cl <- fixed(0.750); label("Allometric LBW exponent on CL/F (unitless)")     # Schoemaker 2017 Table 1: "Allometric scaling CL/F 0.750 fixed"
+    e_lbm_vc <- fixed(1.00);  label("Allometric LBW exponent on V/F (unitless)")      # Schoemaker 2017 Table 1: "Allometric scaling V/F 1.00 fixed"
 
     # AED coadministration effects on CL/F. Linear-additive categorical
     # parameterisation matching the PsN SCM "linear" categorical form,

@@ -103,7 +103,7 @@ Naik_2013_peginesatide <- function() {
     lfdepot  <- log(0.498)       ; label("Subcutaneous bioavailability (F1, fraction)")                                  # Naik 2013 Table 6
     lvc      <- log(35.6)        ; label("Central volume of distribution (V2, mL/kg) at reference BMI 26, age 59, TBILI 9")  # Naik 2013 Table 6
     lvp      <- log(7.44)        ; label("Peripheral volume of distribution (V3, mL/kg)")                                 # Naik 2013 Table 6
-    lq       <- fixed(log(5.23)) ; label("Inter-compartmental clearance (Q, mL/kg/hr) -- fixed for model stability")      # Naik 2013 Table 6 (Fixed)
+    lq       <- fixed(log(5.23)) ; label("Inter-compartmental clearance (Q, mL/kg/hr) -- for model stability")      # Naik 2013 Table 6 (Fixed)
     lvmax    <- log(45.3)        ; label("Maximum rate of elimination from central (Vmax, ng/mL/hr)")                     # Naik 2013 Table 6
     lkm      <- log(1880)        ; label("Concentration giving 50% of Vmax (Km, ng/mL) at reference ALP 87")              # Naik 2013 Table 6
 

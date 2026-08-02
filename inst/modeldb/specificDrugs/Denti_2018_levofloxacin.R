@@ -189,7 +189,7 @@ Denti_2018_levofloxacin <- function() {
 
     # Residual error: combined proportional + additive (additive fixed at 20% of LLOQ).
     propSd <- 0.116;           label("Proportional residual error (fraction)")  # Table 2 row "Proportional error (%)"
-    addSd  <- fixed(0.0160);   label("Additive residual error (mg/L; fixed at 20% of LLOQ)") # Table 2 row "Additive error" (fixed)
+    addSd  <- fixed(0.0160);   label("Additive residual error (mg/L; 20% of LLOQ)") # Table 2 row "Additive error" (fixed)
   })
 
   model({

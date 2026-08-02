@@ -58,9 +58,9 @@ Standing_2012_oseltamivir <- function() {
     # VD and VDM were fixed to literature values (He et al. 2008, Standing ref 11)
     # to stabilize the fit given sparse data and largely flat profiles. FQ is the
     # adult typical liver blood flow used in the well-stirred hepatic model.
-    lvc    <- fixed(log(91));    label("Volume of distribution of parent at 70 kg, VD (L) [fixed from He 2008]")        # Standing 2012 Results: VD fixed to 91 L/70 kg (ref 11)
-    lvc_oselcarb <- fixed(log(25.6));  label("Volume of distribution of carboxylate at 70 kg, VDM (L) [fixed from He 2008]")  # Standing 2012 Results: VDM fixed to 25.6 L/70 kg (ref 11)
-    lfq    <- fixed(log(75));    label("Liver blood flow at 70 kg, FQ (L/h) [fixed adult value]")                       # Standing 2012 Methods: FQ adult value 75 L/h/70 kg (ref 21)
+    lvc    <- fixed(log(91));    label("Volume of distribution of parent at 70 kg, VD (L) [from He 2008]")        # Standing 2012 Results: VD fixed to 91 L/70 kg (ref 11)
+    lvc_oselcarb <- fixed(log(25.6));  label("Volume of distribution of carboxylate at 70 kg, VDM (L) [from He 2008]")  # Standing 2012 Results: VDM fixed to 25.6 L/70 kg (ref 11)
+    lfq    <- fixed(log(75));    label("Liver blood flow at 70 kg, FQ (L/h) [ adult value]")                       # Standing 2012 Methods: FQ adult value 75 L/h/70 kg (ref 21)
 
     # Fixed allometric exponents (Standing 2012 Methods, Tod et al. 2008 scaling).
     e_wt_cl <- fixed(0.75); label("Allometric exponent on clearances (CLU, CLM, CLI, FQ)")                              # Standing 2012 Methods: 0.75 on clearance (Tod et al.)

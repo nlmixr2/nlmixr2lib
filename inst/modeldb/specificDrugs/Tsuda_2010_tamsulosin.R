@@ -138,8 +138,8 @@ Tsuda_2010_tamsulosin <- function() {
     # Body-weight exponents are theory-fixed at the final-model step (see
     # comment above); AAG exponents are estimated power-form covariates.
     # =========================================================================
-    e_wt_cl   <- fixed(0.75)   ; label("Allometric exponent of (WT/70) on CL/F (unitless; fixed at theory value)") # Tsuda 2010 Table 3 structural-model equation 'CL/F = theta_CL * (WT/70)^0.75 * ...'; Results 'Model building' Step 2: estimated 0.768 (95% CI 0.598-0.938), CI included 0.75 -> theory value used in final model
-    e_wt_vc   <- fixed(1.0)    ; label("Allometric exponent of (WT/70) on V/F (unitless; fixed at theory value)")  # Tsuda 2010 Table 3 structural-model equation 'V/F = theta_V * (WT/70) * ...'; Results 'Model building' Step 2: estimated 0.807 (95% CI 0.603-1.01), CI included 1 -> theory value used in final model
+    e_wt_cl   <- fixed(0.75)   ; label("Allometric exponent of (WT/70) on CL/F (unitless; theory value)") # Tsuda 2010 Table 3 structural-model equation 'CL/F = theta_CL * (WT/70)^0.75 * ...'; Results 'Model building' Step 2: estimated 0.768 (95% CI 0.598-0.938), CI included 0.75 -> theory value used in final model
+    e_wt_vc   <- fixed(1.0)    ; label("Allometric exponent of (WT/70) on V/F (unitless; theory value)")  # Tsuda 2010 Table 3 structural-model equation 'V/F = theta_V * (WT/70) * ...'; Results 'Model building' Step 2: estimated 0.807 (95% CI 0.603-1.01), CI included 1 -> theory value used in final model
     e_aag_cl  <- -0.844        ; label("Exponent of (AAG/20 uM) on CL/F (unitless; estimated)") # Tsuda 2010 Table 3 row 'theta_AAG_CL = -0.844' (RSE -15.1%)
     e_aag_vc  <- -0.663        ; label("Exponent of (AAG/20 uM) on V/F (unitless; estimated)")  # Tsuda 2010 Table 3 row 'theta_AAG_V = -0.663' (RSE -24.3%)
 

@@ -181,7 +181,7 @@ Koolen_2010_docetaxel <- function() {
     lq2     <- log(15.7)               ; label("Inter-compartmental clearance Q2 between central and peripheral2 (L/h)") # Table 2: Q2 = 15.7 L/h, CV 14%
     lvp2    <- log(376)                ; label("Peripheral2 volume of distribution, V_peripheral2 (L)")   # Table 2: V4 = 376 L, CV 15%
     lmat    <- log(1.3)                ; label("Docetaxel mean absorption time, MAT (h); ktr = 2 / MAT")  # Table 2: MAT = 1.3 h, CV 21%
-    qhep    <- fixed(80)               ; label("Hepatic blood flow, Q_hep (L/h, FIXED)")                  # Table 2: Q = 80 L/h (fixed); Methods: 'The hepatic blood flow was fixed at 80 L h-1 ... estimation of this parameter resulted in a poor precision'.
+    qhep    <- fixed(80)               ; label("Hepatic blood flow, Q_hep (L/h)")                  # Table 2: Q = 80 L/h (fixed); Methods: 'The hepatic blood flow was fixed at 80 L h-1 ... estimation of this parameter resulted in a poor precision'.
 
     # Gut bioavailability of docetaxel. The canonical lfdepot is the
     # log-scale F when CONMED_RTV = 0; the additive log-scale
@@ -212,10 +212,10 @@ Koolen_2010_docetaxel <- function() {
     # modellib('Kappelhoff_2005_ritonavir') and pass the resulting
     # ritonavir concentration profile in as a covariate.
     # ============================================================
-    lcl_rtv   <- fixed(log(10.5))      ; label("Ritonavir apparent oral clearance, CL/F (L/h, FIXED at Kappelhoff 2005 Table 2 typical value)") # Kappelhoff 2005 Table 2: CL/F = 10.5 L/h
-    lvc_rtv   <- fixed(log(96.6))      ; label("Ritonavir apparent volume of distribution, V/F (L, FIXED at Kappelhoff 2005 Table 2 typical value)") # Kappelhoff 2005 Table 2: V/F = 96.6 L
-    lka_rtv   <- fixed(log(0.871))     ; label("Ritonavir first-order absorption rate, ka (1/h, FIXED at Kappelhoff 2005 Table 2 typical value)") # Kappelhoff 2005 Table 2: ka = 0.871 1/h
-    ltlag_rtv <- fixed(log(0.778))     ; label("Ritonavir absorption lag time, Tlag (h, FIXED at Kappelhoff 2005 Table 2 typical value)") # Kappelhoff 2005 Table 2: Lag-time = 0.778 h
+    lcl_rtv   <- fixed(log(10.5))      ; label("Ritonavir apparent oral clearance, CL/F (L/h, Kappelhoff 2005 Table 2 typical value)") # Kappelhoff 2005 Table 2: CL/F = 10.5 L/h
+    lvc_rtv   <- fixed(log(96.6))      ; label("Ritonavir apparent volume of distribution, V/F (L, Kappelhoff 2005 Table 2 typical value)") # Kappelhoff 2005 Table 2: V/F = 96.6 L
+    lka_rtv   <- fixed(log(0.871))     ; label("Ritonavir first-order absorption rate, ka (1/h, Kappelhoff 2005 Table 2 typical value)") # Kappelhoff 2005 Table 2: ka = 0.871 1/h
+    ltlag_rtv <- fixed(log(0.778))     ; label("Ritonavir absorption lag time, Tlag (h, Kappelhoff 2005 Table 2 typical value)") # Kappelhoff 2005 Table 2: Lag-time = 0.778 h
 
     # ============================================================
     # Inter-individual variability. Log-normal IIV on the natural

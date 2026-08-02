@@ -117,8 +117,8 @@ Wittau_2015_meropenem <- function() {
     # a 14% difference). Encoded as fixed() because the paper holds them
     # constant and reports no uncertainty.
     # =========================================================================
-    e_ffm_cl_q  <- fixed(0.75); label("Allometric exponent on CL and CLd (unitless; fixed)")        # Methods 'Parameter variability model and covariate effects'; Discussion paragraph 4
-    e_ffm_vc_vp <- fixed(1.00); label("Allometric exponent on V1 and V2 (unitless; fixed)")         # Methods 'Parameter variability model and covariate effects'; Discussion paragraph 4
+    e_ffm_cl_q  <- fixed(0.75); label("Allometric exponent on CL and CLd (unitless)")        # Methods 'Parameter variability model and covariate effects'; Discussion paragraph 4
+    e_ffm_vc_vp <- fixed(1.00); label("Allometric exponent on V1 and V2 (unitless)")         # Methods 'Parameter variability model and covariate effects'; Discussion paragraph 4
 
     # =========================================================================
     # Between-subject variability. The model is exponential (Methods

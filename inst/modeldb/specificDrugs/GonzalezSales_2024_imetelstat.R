@@ -155,9 +155,9 @@ GonzalezSales_2024_imetelstat <- function() {
     # Allometric exponents -- theory-based, fixed (Gonzalez-Sales 2024 Methods, 'Base structural model',
     # Equation 1: 'theory-based allometric exponents for body weight of 1, 0.75, and -0.25 were
     # incorporated on Vc, CL, and Kback'). Reference weight 70 kg.
-    e_wt_cl    <- fixed(0.75);  label("Allometric exponent of (WT/70) on CL (unitless, fixed)")              # Methods Eq 1; supplement S1 line 70 FSIZE_CL = (WEIGHT/70)**0.75
-    e_wt_vc    <- fixed(1);     label("Allometric exponent of (WT/70) on Vc (unitless, fixed)")              # Methods Eq 1; supplement S1 line 72 FSIZE_VC = (WEIGHT/70)**1
-    e_wt_kback <- fixed(-0.25); label("Allometric exponent of (WT/70) on Kback (unitless, fixed)")           # Methods Eq 1; supplement S1 line 74 FSIZE_KBACK = (WEIGHT/70)**(-0.25)
+    e_wt_cl    <- fixed(0.75);  label("Allometric exponent of (WT/70) on CL (unitless)")              # Methods Eq 1; supplement S1 line 70 FSIZE_CL = (WEIGHT/70)**0.75
+    e_wt_vc    <- fixed(1);     label("Allometric exponent of (WT/70) on Vc (unitless)")              # Methods Eq 1; supplement S1 line 72 FSIZE_VC = (WEIGHT/70)**1
+    e_wt_kback <- fixed(-0.25); label("Allometric exponent of (WT/70) on Kback (unitless)")           # Methods Eq 1; supplement S1 line 74 FSIZE_KBACK = (WEIGHT/70)**(-0.25)
 
     # Covariate effects on CL (multiplicative; categorical effects via exp(coef * indicator),
     # continuous effects via power(coef) at the reference value).

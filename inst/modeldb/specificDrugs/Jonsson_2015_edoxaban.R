@@ -139,7 +139,7 @@ Jonsson_2015_edoxaban <- function() {
     #    the absorption rate constant was not separately identifiable and
     #    was constrained equal to ktr = (NN + 1) / MTT.
     lmtt        <- log(0.731)      ; label("Mean transit time MTT (h, log scale)")                                    # Jonsson 2015 Table 1 'Mean transit time (MTT), h = 0.731' (RSE 16.3%); control stream initial 0.735371
-    lnn         <- fixed(log(8.08)); label("Number of transit compartments NN (unitless, log scale; FIXED)")           # Jonsson 2015 Table 1 'Number of transit compartments (NN) = 8.08 (ne)'; footnote c 'ne, not estimated. Parameter estimate was fixed'; control stream $THETA 8.07871 FIX
+    lnn         <- fixed(log(8.08)); label("Number of transit compartments NN (unitless, log scale)")           # Jonsson 2015 Table 1 'Number of transit compartments (NN) = 8.08 (ne)'; footnote c 'ne, not estimated. Parameter estimate was fixed'; control stream $THETA 8.07871 FIX
     logitfdepot <- log(0.723 / (1 - 0.723)); label("Absolute oral bioavailability F (logit scale; F_pop = 0.723)")     # Jonsson 2015 Table 1 'Absolute oral bioavailability (F) = 0.723' (RSE 8.0%); logit form per control stream PSI = LOG(TVF1/(1-TVF1)); control stream initial 0.739588
 
     # -- Edoxaban disposition. Clearance is split into a non-renal arm
@@ -184,8 +184,8 @@ Jonsson_2015_edoxaban <- function() {
     #    Fixed allometric exponents, applied to the clearance terms that are
     #    NOT a function of kidney function (cl_nonren, q, cl_m4) and to all
     #    volume terms (vc, vp, vc_m4).
-    e_wt_cl_q       <- fixed(0.75) ; label("Allometric exponent on CLNR, Q and CLM4 (unitless; FIXED)")                # Jonsson 2015 Results 'Final Population PK Model': exponents 'fixed to 1 and 3/4 for volume and clearance terms'; control stream $THETA 0.75 FIX
-    e_wt_vc_vp      <- fixed(1)    ; label("Allometric exponent on Vc, Vp and VM4 (unitless; FIXED)")                  # Jonsson 2015 Results 'Final Population PK Model': exponents 'fixed to 1 and 3/4 for volume and clearance terms'; control stream $THETA 1 FIX
+    e_wt_cl_q       <- fixed(0.75) ; label("Allometric exponent on CLNR, Q and CLM4 (unitless)")                # Jonsson 2015 Results 'Final Population PK Model': exponents 'fixed to 1 and 3/4 for volume and clearance terms'; control stream $THETA 0.75 FIX
+    e_wt_vc_vp      <- fixed(1)    ; label("Allometric exponent on Vc, Vp and VM4 (unitless)")                  # Jonsson 2015 Results 'Final Population PK Model': exponents 'fixed to 1 and 3/4 for volume and clearance terms'; control stream $THETA 1 FIX
 
     # ---------------------------------------------------------------------
     # Inter-individual variability. Jonsson 2015 Results: 'Interindividual

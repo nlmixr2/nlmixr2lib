@@ -120,10 +120,10 @@ Fisher_2008_fosamprenavir <- function() {
     # using a normalized reference weight of 70 kg and fixed allometric power
     # values of 0.75 (CL and Q) and 1 (V2/F and V3)."). ka is NOT allometrically
     # scaled in Fisher 2008.
-    e_wt_cl <- fixed(0.75); label("Allometric exponent on CL/F with WT (unitless; fixed at theory)")  # Methods, Model and Modeling Assumptions
-    e_wt_q  <- fixed(0.75); label("Allometric exponent on Q with WT (unitless; fixed at theory)")     # Methods, Model and Modeling Assumptions
-    e_wt_vc <- fixed(1);    label("Allometric exponent on V2/F with WT (unitless; fixed at theory)")  # Methods, Model and Modeling Assumptions
-    e_wt_vp <- fixed(1);    label("Allometric exponent on V3 with WT (unitless; fixed at theory)")    # Methods, Model and Modeling Assumptions
+    e_wt_cl <- fixed(0.75); label("Allometric exponent on CL/F with WT (unitless; theory)")  # Methods, Model and Modeling Assumptions
+    e_wt_q  <- fixed(0.75); label("Allometric exponent on Q with WT (unitless; theory)")     # Methods, Model and Modeling Assumptions
+    e_wt_vc <- fixed(1);    label("Allometric exponent on V2/F with WT (unitless; theory)")  # Methods, Model and Modeling Assumptions
+    e_wt_vp <- fixed(1);    label("Allometric exponent on V3 with WT (unitless; theory)")    # Methods, Model and Modeling Assumptions
 
     # Concomitant ritonavir effect on CL/F. Fisher 2008 reports two CL/F values
     # in Table 3 (theta_1 = 34.1 L/h with RTV; theta_6 = 84.4 L/h without RTV).

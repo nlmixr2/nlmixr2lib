@@ -67,7 +67,7 @@ Zandvliet_2008_carboplatin <- function() {
     # ref [16]). Encoding follows the Tod_1998_amikacin precedent
     # (non-renal CL on log scale; IIV applied multiplicatively to the sum).
     cl_renal_fraction <- 0.76;       label("Renal-fraction multiplier on CLcr (Zandvliet theta1, unitless)") # Zandvliet 2008 Table 2 row 1 (theta1 = 0.76, RSE 0.05; Equation 2)
-    lcl_nonrenal      <- fixed(log(1.5)); label("Log non-renal CL (Zandvliet theta2, L/h; fixed from Calvert 1989)") # Zandvliet 2008 Table 2 footnote ** (theta2 = 1.5 L/h fixed); Calvert 1989 ref [16]
+    lcl_nonrenal      <- fixed(log(1.5)); label("Log non-renal CL (Zandvliet theta2, L/h; from Calvert 1989)") # Zandvliet 2008 Table 2 footnote ** (theta2 = 1.5 L/h fixed); Calvert 1989 ref [16]
 
     lvc <- log(15.5); label("Log central volume V1 (L)")               # Zandvliet 2008 Table 2 row 2 (V_central = 15.5 L, RSE 0.19)
     lq  <- log(3.46); label("Log inter-compartmental clearance Q (L/h)") # Zandvliet 2008 Table 2 row 3 (Q = 3.46 L/h, RSE 0.18)

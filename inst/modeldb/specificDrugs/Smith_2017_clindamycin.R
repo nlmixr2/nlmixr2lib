@@ -61,8 +61,8 @@ Smith_2017_clindamycin <- function() {
     lvc <- log(63.6); label("Central volume of distribution for a 70 kg reference subject (V_70kg, L)")  # Smith 2017 Table 2 (V_70kg = 63.6 L, RSE 5.0%)
 
     # Allometric exponents on TBW (fixed at canonical 0.75 / 1.0 per Methods Equations 4-5; no RSE reported in Table 2)
-    e_wt_cl <- fixed(0.75); label("Allometric exponent on CL for TBW (unitless, fixed)")  # Smith 2017 Methods Equation 4 (fixed)
-    e_wt_vc <- fixed(1);    label("Allometric exponent on V for TBW (unitless, fixed)")   # Smith 2017 Methods Equation 5 (fixed)
+    e_wt_cl <- fixed(0.75); label("Allometric exponent on CL for TBW (unitless)")  # Smith 2017 Methods Equation 4 (fixed)
+    e_wt_vc <- fixed(1);    label("Allometric exponent on V for TBW (unitless)")   # Smith 2017 Methods Equation 5 (fixed)
 
     # Sigmoidal Hill maturation function on CL with postmenstrual age (weeks)
     pma_tm50 <- 39.5; label("Postmenstrual age at 50% mature CL (TM50, weeks)")           # Smith 2017 Table 2 (TM50 = 39.5 weeks, RSE 12.1%)

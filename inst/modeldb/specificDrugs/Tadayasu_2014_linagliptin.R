@@ -37,7 +37,7 @@ Tadayasu_2014_linagliptin <- function() {
     # ---- Structural PK parameters (Tadayasu 2014 Table 3) ----
     # F1 = 1 is set as the structural reference (Table 3 row F1, footnote a / paper Methods);
     # the IIV on F1 (etalfdepot) captures relative bioavailability dispersion around 1.
-    lfdepot <- fixed(log(1));     label("Reference relative bioavailability (F1 = 1; fixed structural anchor)")        # Table 3 row F1
+    lfdepot <- fixed(log(1));     label("Reference relative bioavailability (F1 = 1; structural anchor)")        # Table 3 row F1
     lka     <- log(1.63);         label("First-order absorption rate constant Ka (1/h)")                                # Table 3 row KA
     lcl     <- log(121);          label("Apparent clearance of free linagliptin CL/F1 (L/h)")                            # Table 3 row CL/F1
     lvc     <- log(633);          label("Apparent central volume of distribution V2/F1 (L)")                             # Table 3 row V2/F1

@@ -84,13 +84,13 @@ Ribba_2022_ctdna_sld_joint <- function() {
     # ----- SLD Stein rate constants: FIXED to the independent SLD fit (Ribba_2022_sld.R) -----
     # Appendix: "For the joint ctDNA and SLD model, all population parameters (fixed and
     # random effects) were fixed to the values reported above."
-    lkge <- fixed(log(0.0016))   ; label("log SLD growth rate kge (1/day), FIXED from the independent SLD fit")  # Appendix tumor-size table: kgT_pop = 0.0016 1/day
-    lkse <- fixed(log(0.0014))   ; label("log SLD decay rate kse (1/day), FIXED from the independent SLD fit")   # Appendix tumor-size table: ksT_pop = 0.0014 1/day
+    lkge <- fixed(log(0.0016))   ; label("log SLD growth rate kge (1/day), from the independent SLD fit")  # Appendix tumor-size table: kgT_pop = 0.0016 1/day
+    lkse <- fixed(log(0.0014))   ; label("log SLD decay rate kse (1/day), from the independent SLD fit")   # Appendix tumor-size table: ksT_pop = 0.0014 1/day
 
     # ----- ctDNA growth rate: FIXED to the independent ctDNA fit (Ribba_2022_ctdna.R) -----
     # Eq. 2 reuses the symbol kg from Eq. 1 for the ctDNA growth rate. The ctDNA DECAY
     # rate ks from Eq. 1 is NOT reused: in the joint model it is replaced by zeta * kse.
-    lkge_ctdna <- fixed(log(0.0038)) ; label("log ctDNA growth rate kge_ctdna (1/day), FIXED from the independent ctDNA fit")  # Appendix ctDNA table: kg_pop = 0.0038 1/day
+    lkge_ctdna <- fixed(log(0.0038)) ; label("log ctDNA growth rate kge_ctdna (1/day), from the independent ctDNA fit")  # Appendix ctDNA table: kg_pop = 0.0038 1/day
 
     # ----- Cross-endpoint link parameter (the only estimated structural parameter) -----
     lzeta <- log(1.94)   ; label("log zeta -- dimensionless multiplier linking the SLD decay rate to the ctDNA decay rate (kse_ctdna = zeta * kse)")  # Appendix joint-model table: zeta_pop = 1.94, RSE 37.3%

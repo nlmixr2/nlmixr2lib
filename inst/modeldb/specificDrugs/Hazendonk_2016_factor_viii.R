@@ -89,8 +89,8 @@ Hazendonk_2016_factor_viii <- function() {
 
     # Fixed allometric exponents (paper explicitly fixed these at theory-based
     # values; Hazendonk 2016 Structural model development and Table 3 footnote).
-    e_wt_cl <- fixed(0.75); label("Allometric exponent of (WT / 68) on CL and Q (fixed)")  # Hazendonk 2016 Structural model development: "power exponents fixed at 0.75 for clearances"
-    e_wt_vc <- fixed(1.00); label("Allometric exponent of (WT / 68) on V1 and V2 (fixed)") # Hazendonk 2016 Structural model development: "power exponents fixed at ... 1.0 for volumes of distribution"
+    e_wt_cl <- fixed(0.75); label("Allometric exponent of (WT / 68) on CL and Q")  # Hazendonk 2016 Structural model development: "power exponents fixed at 0.75 for clearances"
+    e_wt_vc <- fixed(1.00); label("Allometric exponent of (WT / 68) on V1 and V2") # Hazendonk 2016 Structural model development: "power exponents fixed at ... 1.0 for volumes of distribution"
 
     # Inter-individual variability (exponential): omega^2 = CV^2 following the
     # convention of related FVIII popPK models (Chelle 2019, Nestorov 2014).

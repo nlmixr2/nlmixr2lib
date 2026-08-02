@@ -99,7 +99,7 @@ Smythe_2012_rifampicin <- function() {
     lkenz     <- log(0.00369)           ; label("First-order degradation rate constant of the enzyme pool kENZ (1/h)")   # Smythe 2012 Table 3: kENZ = 0.00369/h (RSE 5.6%) -> turnover half-life log(2)/kENZ = 187.8 h ~ 7.8 days
 
     # --- Bioavailability anchor (CL/F and V/F are apparent F-relative) ---
-    lfdepot   <- fixed(log(1))          ; label("Oral bioavailability F (fixed at 1 because CL and V are apparent F-relative)") # Implicit anchor: Smythe 2012 reports CL/F and V/F (no separate F estimate); see Methods 'Stochastic model' paragraph 1
+    lfdepot   <- fixed(log(1))          ; label("Oral bioavailability F (1 because CL and V are apparent F-relative)") # Implicit anchor: Smythe 2012 reports CL/F and V/F (no separate F estimate); see Methods 'Stochastic model' paragraph 1
 
     # =========================================================================
     # IIV. Smythe 2012 Table 3 reports IIV (%CV) on CL/F, V/F, and EC50, with

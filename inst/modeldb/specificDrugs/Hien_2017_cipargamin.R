@@ -148,7 +148,7 @@ Hien_2017_cipargamin <- function() {
     lvc     <- log(40.6);   label("Apparent cipargamin central volume V/F for a 59 kg patient (L)")           # Hien 2017 Table 3 row 'V/F (liters) = 40.6 (95% CI 37.3-44.7; %RSE 4.71)'
     lmtt    <- log(0.867);  label("Mean transit time MTT through the NN = 3 transit compartments (h)")        # Hien 2017 Table 3 row 'MTT (h) = 0.867 (95% CI 0.682-1.11; %RSE 12.6)'
     lka     <- log(1.65);   label("First-order absorption rate constant Ka from the last transit to central (1/h)")   # Hien 2017 Table 3 row 'Ka (1/h) = 1.65 (95% CI 1.04-2.81; %RSE 25.2)'
-    lfdepot <- fixed(log(1));  label("Reference relative oral bioavailability F (fraction; fixed at 100%)")   # Hien 2017 Table 3 row 'F (%) = 100 fix' (paper fixes typical F to 100% and estimates only its IIV)
+    lfdepot <- fixed(log(1));  label("Reference relative oral bioavailability F (fraction; 100%)")   # Hien 2017 Table 3 row 'F (%) = 100 fix' (paper fixes typical F to 100% and estimates only its IIV)
     nn_fix  <- fixed(3);    label("Number of Savic-style transit compartments (integer, unitless)")           # Hien 2017 Table 3 row 'No. trans comp = 3 fix' (paper fixed the number of transit compartments at 3 during estimation)
 
     # Fixed allometric exponents (Methods 'Pharmacokinetic modeling'
@@ -157,8 +157,8 @@ Hien_2017_cipargamin <- function() {
     # Holford 0.75 exponent on CL/F and 1.0 on V/F; the paper's supplement
     # (Text S1) with the explicit allometric equations was not on disk at
     # extraction time. See vignette Assumptions and deviations.
-    e_wt_cl <- fixed(0.75); label("Allometric exponent on cipargamin CL/F with body weight (unitless; fixed)") # Methods 'Pharmacokinetic modeling' + canonical Anderson-Holford 0.75
-    e_wt_vc <- fixed(1.0);  label("Allometric exponent on cipargamin V/F with body weight (unitless; fixed)")  # Methods 'Pharmacokinetic modeling' + canonical Anderson-Holford 1.0
+    e_wt_cl <- fixed(0.75); label("Allometric exponent on cipargamin CL/F with body weight (unitless)") # Methods 'Pharmacokinetic modeling' + canonical Anderson-Holford 0.75
+    e_wt_vc <- fixed(1.0);  label("Allometric exponent on cipargamin V/F with body weight (unitless)")  # Methods 'Pharmacokinetic modeling' + canonical Anderson-Holford 1.0
 
     # =========================================================================
     # PD: two-population parasite clearance model (Hien 2017 Table 3)
@@ -171,7 +171,7 @@ Hien_2017_cipargamin <- function() {
     # (the smallest cohort). e_dose_emax is estimated on the linear scale
     # per Table 3.
     # =========================================================================
-    lkgrow      <- fixed(log(0.0479));  label("Fixed asexual-parasite growth rate constant Kgrow (1/h); = ln(10)/48 for 10-fold multiplication per 48-h cycle") # Hien 2017 Table 3 row 'K_grow (1/h) = 0.0479 fix' (paper: 'K_grow was fixed to 10 per life cycle (i.e., 48 h)')
+    lkgrow      <- fixed(log(0.0479));  label("Asexual-parasite growth rate constant Kgrow (1/h); = ln(10)/48 for 10-fold multiplication per 48-h cycle") # Hien 2017 Table 3 row 'K_grow (1/h) = 0.0479 fix' (paper: 'K_grow was fixed to 10 per life cycle (i.e., 48 h)')
     lemax       <- log(0.564);          label("Typical maximum parasite-kill rate at DOSE = 10 mg, TVEmax (1/h)")                                                # Hien 2017 Table 3 row 'E_max (1/h) = 0.564 (95% CI 0.383-0.710; %RSE 12.9)'
     lec50       <- log(0.354);          label("Cipargamin concentration giving half-maximal parasite-kill rate EC50 (ng/mL)")                                    # Hien 2017 Table 3 row 'EC50 (ng/ml) = 0.354 (95% CI 0.222-0.466; %RSE 16.7)'
     lfsen       <- log(0.991);          label("Population fraction of asexual parasites that are fully drug-sensitive at enrolment Fsen (fraction)")             # Hien 2017 Table 3 row 'F_sen (%) = 99.1 (95% CI 98.8-99.4; %RSE 0.132)'

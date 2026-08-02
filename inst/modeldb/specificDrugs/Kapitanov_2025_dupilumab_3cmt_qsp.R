@@ -140,8 +140,8 @@ Kapitanov_2025_dupilumab_3cmt_qsp <- function() {
     ltdist <- fixed(log(55.9))      ; label("Central-peripheral1 distribution half-time t_dist,12 (h; Kapitanov 2025 Table S4)")  # Kapitanov 2025 Table S4 3-compt Approach 2: t_dist,12 = 55.9 h (recomputed via Eq 22 vs Case 2's 54.3 h)
     lpdist <- fixed(log(0.352))     ; label("Peripheral1 partition coefficient P_dist,12 (unitless; Kapitanov 2025 Table S4)")     # Kapitanov 2025 Table S4 3-compt Approach 2: P_dist,12 = 0.352 (unchanged from Case 2)
 
-    ltdist_p2 <- fixed(log(30))     ; label("Central-SoA distribution half-time t_dist,13 (h; Kapitanov 2025 Approach 2 fixed)")   # Kapitanov 2025 Table S4 3-compt Approach 2: t_dist,13 = 30 h (Approach 1 alternative: 150 h)
-    lpdist_p2 <- fixed(log(0.3))    ; label("SoA partition coefficient P_dist,13 (unitless; Kapitanov 2025 Approach 2 fixed)")     # Kapitanov 2025 Table S4 3-compt Approach 2: P_dist,13 = 0.3 (Approach 1 alternative: 0.352)
+    ltdist_p2 <- fixed(log(30))     ; label("Central-SoA distribution half-time t_dist,13 (h; Kapitanov 2025 Approach 2)")   # Kapitanov 2025 Table S4 3-compt Approach 2: t_dist,13 = 30 h (Approach 1 alternative: 150 h)
+    lpdist_p2 <- fixed(log(0.3))    ; label("SoA partition coefficient P_dist,13 (unitless; Kapitanov 2025 Approach 2)")     # Kapitanov 2025 Table S4 3-compt Approach 2: P_dist,13 = 0.3 (Approach 1 alternative: 0.352)
 
     # =====================================================================
     # IL4R receptor concentrations (Kapitanov 2025 Table S4 and Table

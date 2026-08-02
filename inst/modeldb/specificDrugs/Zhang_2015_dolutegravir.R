@@ -149,7 +149,7 @@ Zhang_2015_dolutegravir <- function() {
     lcl     <- log(0.901);      label("Apparent oral clearance CL/F (L/h)")           # Zhang 2015 Table 3: CL/F = 0.901 L/h (95% CI 0.864, 0.938)
     lvc     <- log(17.4);       label("Apparent central volume V/F (L)")              # Zhang 2015 Table 3: V/F = 17.4 L (95% CI 16.5, 18.3)
     ltlag   <- log(0.263);      label("Absorption lag time tlag (h)")                 # Zhang 2015 Table 3: ALAG = 0.263 h (95% CI 0.0942, 0.432)
-    lfdepot <- fixed(log(1));   label("Reference relative bioavailability F (unitless; fixed anchor at the 25/50 mg dose in males)")
+    lfdepot <- fixed(log(1));   label("Reference relative bioavailability F (unitless; anchor at the 25/50 mg dose in males)")
 
     # Continuous covariate power exponents (Zhang 2015 Table 3 footnote).
     #   CL/F: (WT/70)^e_wt_cl * (AGE/40)^e_age_cl * (TBILI/9)^e_tbili_cl

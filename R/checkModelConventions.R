@@ -1391,6 +1391,12 @@ checkModelConventions <- function(model, verbose = TRUE) {
   issues
 }
 
+# "fixed" in a label whose value is already `fixed(...)`. Excludes compound
+# terms where "fixed" modifies something else and is not a claim about this
+# parameter's estimation status: "fixed effect" is the mixed-models term,
+# "fixed dose" / "fixed-dose regimen" describes a dosing strategy.
+.redundantFixedPattern <- "\\bfixed(?!\\s*[- ]\\s*(?:effects?|dose|dosing))\\b"
+
 .checkFixedLabelAgreement <- function(ui, conv) {
   issues <- .emptyIssues()
   ini <- ui$iniDf
@@ -1399,7 +1405,21 @@ checkModelConventions <- function(model, verbose = TRUE) {
   for (i in seq_len(nrow(ini))) {
     lbl <- ini$label[[i]]
     if (is.na(lbl) || !nzchar(lbl)) next
-    if (isTRUE(ini$fix[[i]])) next
+    if (isTRUE(ini$fix[[i]])) {
+      # Mirror case: the value IS fixed, so saying so again in the label is
+      # redundant. `fixed()` is the machine-readable statement; the label
+      # should carry only what `fixed()` cannot express -- where the value
+      # came from ("from Rizk 2015"), or that the encoder assumed it.
+      if (grepl(.redundantFixedPattern, lbl, ignore.case = TRUE, perl = TRUE)) {
+        issues <- rbind(issues, .issue(
+          "fixed_label_redundant", "error", ini$name[[i]],
+          sprintf("Label of '%s' says the value is fixed, which `fixed()` already states.",
+                  ini$name[[i]]),
+          paste("Drop the word from the label. Keep any provenance around it --",
+                "\"fixed from Rizk 2015\" becomes \"from Rizk 2015\".")))
+      }
+      next
+    }
     # Variance terms: their labels almost always discuss the fixed status of
     # the corresponding typical value, not of the variance itself.
     if (grepl("^eta", ini$name[[i]])) next

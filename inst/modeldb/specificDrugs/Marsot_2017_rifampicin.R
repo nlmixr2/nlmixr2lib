@@ -154,13 +154,13 @@ Marsot_2017_rifampicin <- function() {
     # improve the fit, as presented in previous studies [14, 28]."
     # This is the transit-chain rate constant applied at both
     # depot -> transit1 and transit1 -> central transitions.
-    lka <- fixed(log(1.15));  label("Absorption / transit-chain rate constant (ka, 1/h; fixed)")
+    lka <- fixed(log(1.15));  label("Absorption / transit-chain rate constant (ka, 1/h)")
 
     # Bioavailability anchor. Oral-only data; absolute F is not
     # identifiable, so the typical value is fixed at 1.0. Marsot
     # 2017 parameterises exclusively in the CL/F and V/F apparent
     # forms and does not estimate F.
-    lfdepot <- fixed(log(1));  label("Relative bioavailability anchor (F, fixed at 1)")
+    lfdepot <- fixed(log(1));  label("Relative bioavailability anchor (F)")
 
     # ============================================================
     # Covariate effect of fusidic acid coadministration. Marsot

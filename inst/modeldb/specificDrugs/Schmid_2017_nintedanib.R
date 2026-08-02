@@ -208,7 +208,7 @@ Schmid_2017_nintedanib <- function() {
     lcl      <- log(897);    label("Log nintedanib apparent clearance CL/F at 71.5 kg (L/h)")  # Schmid 2017 Table 3: theta_CL = 897 (RSE 2.42%; 95% CI 855-941)
     lvc      <- log(465);    label("Log nintedanib apparent central volume V2/F (L)")     # Schmid 2017 Table 3: theta_V2 = 465 (RSE 10.7%; 95% CI 376-569)
     ltlag    <- log(0.417);  label("Log nintedanib absorption lag time ALAG (h)")         # Schmid 2017 Table 3: ALAG = 0.417 (RSE 5.59%; 95% CI 0.351-0.463)
-    lfdepot  <- fixed(log(1)); label("Log nintedanib reference bioavailability F1 (unitless; fixed = 1)")  # Schmid 2017 Table 3 footnote b: F1 reference fixed = 1
+    lfdepot  <- fixed(log(1)); label("Log nintedanib reference bioavailability F1 (unitless; = 1)")  # Schmid 2017 Table 3 footnote b: F1 reference fixed = 1
 
     # ----- Nintedanib covariate effects (Schmid 2017 Table 3) -----
     e_wt_cl                <- 0.619;     label("Power exponent of WT/71.5 on nintedanib CL (unitless)")            # Schmid 2017 Table 3: theta_WT = 0.619 (RSE 16.5%; 95% CI 0.453-0.789)
@@ -229,11 +229,11 @@ Schmid_2017_nintedanib <- function() {
     #   theta_CL2 = 7.05 L/h -> BIBF 1202 apparent CL2/F (estimated)
     #   theta_ffM = 0.000931 (FIXED from healthy-volunteer IV PK, Online Resource Table S4)
     lcl_bibf  <- log(7.05);     label("Log BIBF 1202 apparent clearance CL2/F (L/h)")            # Schmid 2017 Online Resource Table S5: theta_CL2 = 7.05 (RSE 6.37%; 95% CI 6.17-7.93)
-    lvc_bibf  <- fixed(log(8.6025));  label("Log BIBF 1202 apparent central volume V3/F at reference (L; fixed via V3/V2 = 0.0185)")  # Schmid 2017 Online Resource Table S5: theta_V3V2 = 0.0185 (fixed; from rat data ref [14]); V3 = V2 * 0.0185 = 465 * 0.0185 = 8.6025
+    lvc_bibf  <- fixed(log(8.6025));  label("Log BIBF 1202 apparent central volume V3/F at reference (L; via V3/V2 = 0.0185)")  # Schmid 2017 Online Resource Table S5: theta_V3V2 = 0.0185 (fixed; from rat data ref [14]); V3 = V2 * 0.0185 = 465 * 0.0185 = 8.6025
     lka_bibf  <- log(0.0553);   label("Log BIBF 1202 absorption rate constant ka2 reference (1/h)")  # Schmid 2017 Online Resource Table S5: theta_ka2ka = 1.47 (RSE 8.16%; 95% CI 1.23-1.71); ka2 = ka * 1.47 = 0.0376 * 1.47 = 0.0553 (1/h)
-    ltlag_bibf <- fixed(log(0.417));  label("Log BIBF 1202 absorption lag time ALAG2 (h; fixed = parent ALAG)")  # Schmid 2017 Online Resource Table S5: theta_ALAG2ALAG = 1.00 (fixed; ALAG2 = ALAG = 0.417 h)
+    ltlag_bibf <- fixed(log(0.417));  label("Log BIBF 1202 absorption lag time ALAG2 (h; = parent ALAG)")  # Schmid 2017 Online Resource Table S5: theta_ALAG2ALAG = 1.00 (fixed; ALAG2 = ALAG = 0.417 h)
     lfdepot_bibf <- log(0.0110);  label("Log BIBF 1202 reference bioavailability F2 (unitless; = F1 * 0.0110)")  # Schmid 2017 Online Resource Table S5: theta_F2F1 = 0.0110 (RSE 11.3%; 95% CI 0.00856-0.0134); F2 = F1 * 0.0110 at reference subject
-    lffm      <- fixed(log(0.000931));  label("Log fraction of nintedanib systemic CL forming BIBF 1202 (unitless; fixed)")  # Schmid 2017 Online Resource Table S5: theta_ffM = 0.000931 (fixed); derived from healthy-volunteer IV nintedanib PK (Online Resource Table S4)
+    lffm      <- fixed(log(0.000931));  label("Log fraction of nintedanib systemic CL forming BIBF 1202 (unitless)")  # Schmid 2017 Online Resource Table S5: theta_ffM = 0.000931 (fixed); derived from healthy-volunteer IV nintedanib PK (Online Resource Table S4)
 
     # ----- BIBF 1202 covariate effects (Schmid 2017 Online Resource Table S5) -----
     e_wt_fdepot_bibf       <- -0.848;    label("Power exponent of WT/71.5 on BIBF 1202 F2 (unitless)")             # Schmid 2017 Online Resource Table S5: theta_WT (F2) = -0.848 (RSE 12.2%; 95% CI -0.646 to -1.05)

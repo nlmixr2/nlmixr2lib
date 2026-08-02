@@ -87,7 +87,7 @@ VegaVilla_2013_sodium_nitrite_qsp <- function() {
 
     # Direct plasma nitrite-to-nitrate conversion (supplement THETA(7) TVKNO3P,
     # fixed to zero in the final model; included for structural completeness).
-    kno3_p <- fixed(0);        label("Direct plasma nitrite-to-nitrate conversion (1/min, fixed at 0)")  # supplement $THETA(7) FIX
+    kno3_p <- fixed(0);        label("Direct plasma nitrite-to-nitrate conversion (1/min)")  # supplement $THETA(7) FIX
 
     # ---- IIV (Table 1 %CV converted via omega^2 = log(1 + CV^2)) ----
     # Final %CV from Table 1, mapped to the corresponding nlmixr2 parameter.

@@ -51,12 +51,12 @@ Brochot_2015_darunavir <- function() {
     lq      <- log(19.1);  label("Apparent intercompartmental clearance Q/F (L/h)")                          # Brochot 2015 Table 3, Q/F = 19.1 L/h (SEE 16%)
     lvp     <- log(254);   label("Apparent peripheral volume V3/F (L)")                                      # Brochot 2015 Table 3, V3/F = 254 L (SEE 41%)
     lka     <- log(0.528); label("First-order absorption rate KA (1/h)")                                     # Brochot 2015 Table 3, KA = 0.528 1/h (SEE 17%)
-    lfdepot <- fixed(log(1.18)); label("Log relative bioavailability Frel (log-fraction, unitless); fixed at log(1.18)")  # Brochot 2015 Table 3, Frel = 1.18 FIXED (formulation correction from upstream Vis 2006 abstract; NONMEM supplement $THETA(8) FIXED, applied as F1 in $PK block on depot)
+    lfdepot <- fixed(log(1.18)); label("Log relative bioavailability Frel (log-fraction, unitless); log(1.18)")  # Brochot 2015 Table 3, Frel = 1.18 FIXED (formulation correction from upstream Vis 2006 abstract; NONMEM supplement $THETA(8) FIXED, applied as F1 in $PK block on depot)
 
     # Covariate effects
     e_wt_cl  <- 0.504;         label("Allometric power exponent of body weight on CL/F (unitless)")          # Brochot 2015 Table 3, "Influence of WT on CL/F" = 0.504 (SEE 11%)
     e_wt_vc  <- 0.774;         label("Allometric power exponent of body weight on V2/F (unitless)")          # Brochot 2015 Table 3, "Influence of WT on V2/F" = 0.774 (SEE 18%)
-    e_aag_cl <- fixed(3.04);   label("AAG effect on CL/F, e_aag_cl (L/g); fixed (inverse-saturation form)")  # Brochot 2015 Table 3, KAFF = 0.0304 dL/mg FIXED = 3.04 L/g in canonical g/L units; NONMEM supplement $THETA(3) FIXED
+    e_aag_cl <- fixed(3.04);   label("AAG effect on CL/F, e_aag_cl (L/g) (inverse-saturation form)")  # Brochot 2015 Table 3, KAFF = 0.0304 dL/mg FIXED = 3.04 L/g in canonical g/L units; NONMEM supplement $THETA(3) FIXED
 
     # IIV -- OMEGA reported as %CV in Table 3; interpreted as sqrt(OMEGA)*100 (matches NONMEM $OMEGA initial estimates 0.0858/0.422/0.5)
     etalcl ~ 0.0784   # Brochot 2015 Table 3, IIV CLint/F = 28% CV -> OMEGA = 0.28^2 = 0.0784 (SEE 20%)

@@ -56,8 +56,8 @@ Alsultan_2017_pyrazinamide <- function() {
     # scaling was used to describe the effect of body weight on both V/F
     # and CL/F, using fixed exponents of 1 and 0.75, respectively"
     # (Population pharmacokinetics paragraph, page 4).
-    e_wt_cl  <- fixed(0.75);  label("Allometric exponent on CL/F (fixed, unitless)")          # Alsultan 2017 Methods/Results: fixed allometric exponent
-    e_wt_vc  <- fixed(1.0);   label("Allometric exponent on V/F (fixed, unitless)")           # Alsultan 2017 Methods/Results: fixed allometric exponent
+    e_wt_cl  <- fixed(0.75);  label("Allometric exponent on CL/F (unitless)")          # Alsultan 2017 Methods/Results: fixed allometric exponent
+    e_wt_vc  <- fixed(1.0);   label("Allometric exponent on V/F (unitless)")           # Alsultan 2017 Methods/Results: fixed allometric exponent
     # Sex on V/F: source uses sex(male)=1 with female as reference.
     # Stored exponential coefficient is +0.148; applied in model() as
     # exp(e_sex_vc * (1 - SEXF)) to preserve the female-reference V/F.

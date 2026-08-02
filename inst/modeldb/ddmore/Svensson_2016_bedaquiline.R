@@ -116,7 +116,7 @@ Svensson_2016_bedaquiline <- function() {
     # to nmol/mL plasma concentration) — that factor is dropped here because
     # nlmixr2lib reports concentration in mg/L; only the BSV part is retained
     # below. See vignette Errata.
-    lfdepot <- fixed(log(1))                       ; label("Bioavailability F (fixed at 1 because CL and V are apparent F-relative values)")
+    lfdepot <- fixed(log(1))                       ; label("Bioavailability F (1 because CL and V are apparent F-relative values)")
 
     # Inter-individual variability. Final estimates (variances) from the .mod
     # $OMEGA blocks. The full .mod also models BSV on baseline albumin / Ass /

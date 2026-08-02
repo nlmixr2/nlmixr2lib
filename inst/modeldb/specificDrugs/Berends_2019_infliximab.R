@@ -69,7 +69,7 @@ Berends_2019_infliximab <- function() {
     lkss  <- log(2.0264);   label("Steady-state dissociation constant Kss in IFX-equivalent ug/mL (paper: 13.6 nM)")           # Berends 2019 Results "Final model" + Abstract (text 13.6 nM); Table 2 bootstrap 13.7 nM; Table 2 "Estimate" displays integer-rounded 14
     lbmax <- log(5.662e-5); label("Baseline TNF concentration Bmax in IFX-equivalent ug/mL (paper: 0.38 pM = 19.8 pg/mL)")     # Berends 2019 Table 2 (Bmax 0.38 pM = 19.8 pg/mL)
     lkint <- log(0.984);    label("Complex internalization rate ke(P) = kint (1/day)")                                          # Berends 2019 Table 2 (ke(P))
-    lkdeg <- fixed(log(5.12)); label("TNF degradation rate kdeg (1/day; FIXED per sensitivity analysis)")                       # Berends 2019 Table 2 (kdeg fixed = 5.12; Results "Simulations")
+    lkdeg <- fixed(log(5.12)); label("TNF degradation rate kdeg (1/day; per sensitivity analysis)")                       # Berends 2019 Table 2 (kdeg fixed = 5.12; Results "Simulations")
 
     # ---- Inter-individual variability ---------------------------------------
     # CV%-style values from Table 2 converted to log-normal variance via

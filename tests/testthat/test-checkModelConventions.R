@@ -1240,4 +1240,77 @@ test_that("the worked compartmentData examples validate", {
   }
 })
 
+
+test_that("a label repeating what fixed() already states is flagged", {
+  redundant <- function() {
+    description <- "A"
+    reference <- "R"
+    units <- list(time = "day", dosing = "mg", concentration = "mg/L")
+    compartmentData <- list(
+      central = list(analyte = "drug", units = "mg", specimen = "plasma", verified = TRUE)
+    )
+    ini({
+      lcl <- 1; label("Clearance (CL, L/day)")
+      lvc <- 1; label("Central volume (Vc, L)")
+      e_wt_cl <- fixed(0.75); label("Allometric exponent on CL (unitless; fixed)")
+      propSd <- 0.1; label("Proportional residual error (fraction)")
+    })
+    model({
+      cl <- exp(lcl) * (WT / 70)^e_wt_cl
+      vc <- exp(lvc)
+      d/dt(central) <- -cl / vc * central
+      Cc <- central / vc
+      Cc ~ prop(propSd)
+    })
+  }
+  res <- suppressWarnings(checkModelConventions(redundant, verbose = FALSE))
+  hit <- res[res$category == "fixed_label_redundant", ]
+  expect_equal(nrow(hit), 1L)
+  expect_equal(hit$name, "e_wt_cl")
+  expect_equal(hit$severity, "error")
+})
+
+test_that("provenance kept alongside fixed() is not flagged as redundant", {
+  # `fixed()` says the value was not estimated; it cannot say where the value
+  # came from, so that part of the label must survive.
+  keeps <- function() {
+    description <- "A"
+    reference <- "R"
+    units <- list(time = "day", dosing = "mg", concentration = "mg/L")
+    compartmentData <- list(
+      central = list(analyte = "drug", units = "mg", specimen = "plasma", verified = TRUE)
+    )
+    ini({
+      lcl <- fixed(1); label("Maternal apparent clearance, from Rizk 2015 (CL, L/day)")
+      lvc <- 1; label("Central volume (Vc, L)")
+      propSd <- 0.1; label("Proportional residual error (fraction)")
+    })
+    model({
+      cl <- exp(lcl)
+      vc <- exp(lvc)
+      d/dt(central) <- -cl / vc * central
+      Cc <- central / vc
+      Cc ~ prop(propSd)
+    })
+  }
+  res <- suppressWarnings(checkModelConventions(keeps, verbose = FALSE))
+  expect_equal(sum(res$category == "fixed_label_redundant"), 0L)
+})
+
+test_that("no model in the database repeats fixed() in its label", {
+  # Enumerating: the database was cleaned in one pass, so any hit is new.
+  root <- system.file("modeldb", package = "nlmixr2lib")
+  skip_if(!nzchar(root) || !dir.exists(root), "modeldb sources not installed")
+  pat <- paste0("<-\\s*fixed\\(.*\\)\\s*;\\s*label\\(\"[^\"]*",
+                "\\bfixed(?![- ](?:effects?|dose|dosing))\\b")
+  offenders <- character(0)
+  for (f in list.files(root, pattern = "[.]R$", recursive = TRUE, full.names = TRUE)) {
+    src <- readLines(f, warn = FALSE)
+    if (any(grepl(pat, src, perl = TRUE, ignore.case = TRUE))) {
+      offenders <- c(offenders, basename(f))
+    }
+  }
+  expect_equal(sort(offenders), character(0))
+})
+
 # nolint end

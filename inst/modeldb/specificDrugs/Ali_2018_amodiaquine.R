@@ -67,7 +67,7 @@ Ali_2018_amodiaquine <- function() {
     lvc     <- log(13500);  label("Apparent amodiaquine central volume Vc_AQ/F at WT = 50 kg (L)")                              # Table 3
     lq      <- log(2310);   label("Apparent amodiaquine inter-compartmental clearance Q_AQ/F at WT = 50 kg (L/h)")              # Table 3
     lvp     <- log(22700);  label("Apparent amodiaquine peripheral volume Vp_AQ/F at WT = 50 kg (L)")                           # Table 3
-    lfdepot <- fixed(log(1)); label("Reference relative bioavailability F (unitless; fixed at 1 per Ali 2018 Table 3)")          # Table 3, F = 1 Fixed
+    lfdepot <- fixed(log(1)); label("Reference relative bioavailability F (unitless; 1 per Ali 2018 Table 3)")          # Table 3, F = 1 Fixed
 
     # Desethylamodiaquine structural parameters (apparent values).
     lcl_deaq  <- log(32.6);  label("Apparent desethylamodiaquine clearance CL_DEAQ/F at WT = 50 kg (L/h)")                       # Table 3
@@ -78,8 +78,8 @@ Ali_2018_amodiaquine <- function() {
     lvp2_deaq <- log(5580);  label("Apparent desethylamodiaquine second peripheral volume Vp2_DEAQ/F at WT = 50 kg (L)")         # Table 3
 
     # Allometric exponents (fixed at canonical values 0.75 / 1.0).
-    e_wt_cl <- fixed(0.75); label("Allometric exponent on CL_AQ, Q_AQ, CL_DEAQ, Q1_DEAQ, Q2_DEAQ (unitless; fixed)")  # Methods, 'Effect of body size and age'
-    e_wt_vc <- fixed(1.0);  label("Allometric exponent on Vc_AQ, Vp_AQ, Vc_DEAQ, Vp1_DEAQ, Vp2_DEAQ (unitless; fixed)")  # Methods, 'Effect of body size and age'
+    e_wt_cl <- fixed(0.75); label("Allometric exponent on CL_AQ, Q_AQ, CL_DEAQ, Q1_DEAQ, Q2_DEAQ (unitless)")  # Methods, 'Effect of body size and age'
+    e_wt_vc <- fixed(1.0);  label("Allometric exponent on Vc_AQ, Vp_AQ, Vc_DEAQ, Vp1_DEAQ, Vp2_DEAQ (unitless)")  # Methods, 'Effect of body size and age'
 
     # Maturation parameters (estimated under weakly informative NONMEM priors;
     # Hill-type sigmoidal in postmenstrual age from conception).

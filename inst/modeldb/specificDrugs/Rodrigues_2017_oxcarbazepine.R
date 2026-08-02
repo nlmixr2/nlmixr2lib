@@ -66,7 +66,7 @@ Rodrigues_2017_oxcarbazepine <- function() {
     lkbt    <- log(0.0622); label("MHD -> OXC back-transformation rate constant (1/h)")                         # Rodrigues 2017 Table 3 + final-model equation: KBT = 0.0622 h^-1, RSE 15%
 
     # Bioavailability anchor: F fixed to 1 per the source paper.
-    lfdepot <- fixed(log(1)); label("OXC depot bioavailability (fixed to 1)")                                   # Rodrigues 2017 Methods, page 2697: "Based on previous results evidencing a bioavailability of OXC of 0.99, this parameter was fixed to 1"
+    lfdepot <- fixed(log(1)); label("OXC depot bioavailability")                                   # Rodrigues 2017 Methods, page 2697: "Based on previous results evidencing a bioavailability of OXC of 0.99, this parameter was fixed to 1"
 
     # Empirical allometric exponents on the four weight-scaled parameters.
     # Reported as estimated point values (with RSEs), not "FIX" -- these are

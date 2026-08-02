@@ -143,7 +143,7 @@ Lee_2023_patritumab <- function() {
     # Frac_ns is the identifiability anchor for the DXd-formation fractions
     # and is fixed at exp(theta18) = 1 per Lee 2023 Table 5 ("FIXED"). IIV
     # on Frac_ns is estimated (Table 7 Omega(18,18) = 0.0380).
-    lfracns      <- fixed(log(1)); label("Scaling factor for fractional conversion from CL_ns to DXd formation (unitless, fixed identifiability anchor)") # Lee 2023 Table 5 exp(theta18) = 1 FIXED
+    lfracns      <- fixed(log(1)); label("Scaling factor for fractional conversion from CL_ns to DXd formation (unitless, identifiability anchor)") # Lee 2023 Table 5 exp(theta18) = 1 FIXED
     lfract       <- log(0.272);   label("Scaling factor for fractional conversion from CL_t to DXd formation (unitless)") # Lee 2023 Table 5 exp(theta21) = 0.272
     lfracmm      <- log(0.272);   label("Scaling factor for fractional conversion from CL_mm to DXd formation (unitless)") # Lee 2023 Table 5 exp(theta22) = 0.272 (identical point estimate and 95% CI 0.0670-1.11 to theta21; likely jointly identified)
 

@@ -96,8 +96,8 @@ Gibiansky_2014_obinutuzumab <- function() {
     # and 1, respectively').
     e_wt_cl  <-  0.615;         label("Power exponent of (WT/75) on CL_T and CL_inf (shared; unitless)")    # Gibiansky 2014 Table 3 theta7 = 0.615
     e_wt_vc  <-  0.383;         label("Power exponent of (WT/75) on V1 (unitless)")                          # Gibiansky 2014 Table 3 theta8 = 0.383
-    e_wt_q   <- fixed(0.75);    label("Power exponent of (WT/75) on Q (unitless; fixed allometric)")        # Gibiansky 2014 Methods (allometric exponent 0.75 on clearances, fixed)
-    e_wt_vp  <- fixed(1.0);     label("Power exponent of (WT/75) on V2 (unitless; fixed allometric)")       # Gibiansky 2014 Methods (allometric exponent 1.0 on volumes, fixed)
+    e_wt_q   <- fixed(0.75);    label("Power exponent of (WT/75) on Q (unitless; allometric)")        # Gibiansky 2014 Methods (allometric exponent 0.75 on clearances, fixed)
+    e_wt_vp  <- fixed(1.0);     label("Power exponent of (WT/75) on V2 (unitless; allometric)")       # Gibiansky 2014 Methods (allometric exponent 1.0 on volumes, fixed)
 
     # ---- Sex effects (paper-reported values for SEX = 1 male; applied via (1 - SEXF)) ----
     e_sex_cl_exp_component <- log(1.49); label("log(ratio) of CL_T for males vs females (applied via (1-SEXF))")     # Gibiansky 2014 Table 3 exp(theta9) = 1.49

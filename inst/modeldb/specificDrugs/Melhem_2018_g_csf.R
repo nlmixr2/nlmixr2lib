@@ -191,9 +191,9 @@ Melhem_2018_g_csf <- function() {
     # Granulopoiesis parameters (drug-shared)
     # -----------------------------------------------------------------
     lkp          <- log(0.0276)                ; label("Log KP (receptor production rate) (nM/h)")                                                                # Melhem 2018 Table 2 (KP = 0.0276, RSE 1%)
-    lktr         <- fixed(log(4 / 120))        ; label("Log KTR (bone-marrow transit rate) (1/h) -- fixed at 4/120 (5-day maturation time)")                      # Melhem 2018 Table 2 (KTR = 0.033) and Methods 'Neutrophil maturation'
-    lkc          <- fixed(log(0.12))           ; label("Log KC (blood neutrophil elimination rate) (1/h) -- fixed at 0.12 (6-hour blood half-life)")              # Melhem 2018 Table 2 (KC = 0.12) and Results 'Covariate analysis'
-    lsr          <- fixed(log(0.059))          ; label("Log SR (receptor / ANC scaling factor) (nM per 10^9 cells/L) -- fixed at preliminary-run estimate")       # Melhem 2018 Table 2 (SR = 0.059) and Results 'Model development'
+    lktr         <- fixed(log(4 / 120))        ; label("Log KTR (bone-marrow transit rate) (1/h) (5-day maturation time)")                      # Melhem 2018 Table 2 (KTR = 0.033) and Methods 'Neutrophil maturation'
+    lkc          <- fixed(log(0.12))           ; label("Log KC (blood neutrophil elimination rate) (1/h) (6-hour blood half-life)")              # Melhem 2018 Table 2 (KC = 0.12) and Results 'Covariate analysis'
+    lsr          <- fixed(log(0.059))          ; label("Log SR (receptor / ANC scaling factor) (nM per 10^9 cells/L) -- preliminary-run estimate")       # Melhem 2018 Table 2 (SR = 0.059) and Results 'Model development'
 
     lstm1        <- log(7.53)                  ; label("Log STM1 (max stimulation of receptor production)")                                                       # Melhem 2018 Table 2 (STM1 = 7.53, RSE 2%)
     lstm2        <- log(3.89)                  ; label("Log STM2 (max stimulation of transit rate) -- patient reference")                                         # Melhem 2018 Table 2 (STM2 PT = 3.89, RSE 2%)
@@ -210,7 +210,7 @@ Melhem_2018_g_csf <- function() {
     ltlag_cort   <- log(16.3)                  ; label("Log LAG8 (corticosteroid KPD lag time) (h)")                                                              # Melhem 2018 Table 2 (LAG8 = 16.3, RSE 9%)
     ltlag_chem   <- log(66.2)                  ; label("Log LAG9 (chemotherapy KPD lag time) (h)")                                                                # Melhem 2018 Table 2 (LAG9 = 66.2, RSE 1%)
 
-    lkel_cort    <- fixed(log(0.2))            ; label("Log KCRT (corticosteroid KPD elimination rate) (1/h) -- fixed")                                            # Melhem 2018 Table 2 (KCRT = 0.2, Fixed)
+    lkel_cort    <- fixed(log(0.2))            ; label("Log KCRT (corticosteroid KPD elimination rate) (1/h)")                                            # Melhem 2018 Table 2 (KCRT = 0.2, Fixed)
     lkel_chem    <- log(0.0724)                ; label("Log KCHM (chemotherapy KPD elimination rate) (1/h)")                                                       # Melhem 2018 Table 2 (KCHM = 0.0724, RSE 1%)
 
     lchmsl       <- log(668)                   ; label("Log CHMSL (slope relating chemotherapy KPD output to mitotic-cell loss rate) (1/mg)")                      # Melhem 2018 Table 2 (CHMSL = 668, RSE 10%)

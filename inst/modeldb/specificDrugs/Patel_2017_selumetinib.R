@@ -83,7 +83,7 @@ Patel_2017_selumetinib <- function() {
 
     # Bioavailability anchor: F1 = 1 fixed under fasted condition per Patel 2017
     # Methods, "Bioavailability under the fasted condition was set to 1".
-    lfdepot <- fixed(log(1.0)) ; label("Selumetinib bioavailability (F1) under fasted reference (fixed at 1)")    # Patel 2017 Methods; F1 fasted fixed at 1
+    lfdepot <- fixed(log(1.0)) ; label("Selumetinib bioavailability (F1) under fasted reference")    # Patel 2017 Methods; F1 fasted fixed at 1
 
     # Food-effect (FED = 1, high-fat meal) covariate coefficients applied as
     # linear additive shifts on selumetinib absorption parameters (Patel 2017

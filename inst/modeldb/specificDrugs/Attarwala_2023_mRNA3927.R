@@ -97,7 +97,7 @@ Attarwala_2023_mRNA3927 <- function() {
     # amenable to suppression. PCC here is the central PCC protein
     # concentration in liver (mass-per-tissue units).
     # =========================================================================
-    imax <- fixed(0.999);          label("Maximum inhibition fraction (fixed)")                    # Table 1 footnote m
+    imax <- fixed(0.999);          label("Maximum inhibition fraction")                    # Table 1 footnote m
 
     # ---- 2-methylcitrate (2-MC) ----
     le0_mc2    <- log(1.67);   label("E0 for 2-MC (umol/L)")                                       # Table 1, RSE 4.46%

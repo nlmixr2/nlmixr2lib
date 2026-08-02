@@ -71,7 +71,7 @@ Revilla_2010_vancomycin <- function() {
     # additive multi-component-CL pattern parses cleanly under the package
     # conventions. Multiplying by WT and 60/1000 converts mL/min/kg to L/h.
     lcl_renal       <- log(0.67); label("Slope of weight-normalised renal CL on weight-normalised CRCL (mL/min/kg per mL/min/kg)") # Revilla 2010 Table 4 theta1 = 0.67 (RSE 6.6%; 95% CI 0.76, 0.58)
-    lcl_nonren      <- fixed(log(1)); label("Non-renal CL anchor (mL/min/kg at AGE = 1 year; structurally fixed to 1 per the paper's equation)") # Revilla 2010 implicit unit coefficient on AGE^theta2 (Results paragraph 2 above Table 4)
+    lcl_nonren      <- fixed(log(1)); label("Non-renal CL anchor (mL/min/kg at AGE = 1 year; structurally 1 per the paper's equation)") # Revilla 2010 implicit unit coefficient on AGE^theta2 (Results paragraph 2 above Table 4)
     e_age_cl_nonren <- -0.24; label("Age exponent on non-renal CL arm (unitless)") # Revilla 2010 Table 4 theta2 = -0.24 (RSE 6.7%; 95% CI -0.21, -0.27)
 
     lvc        <- log(0.82); label("Central volume of distribution at CrSe <= 1 mg/dL (L/kg)") # Revilla 2010 Table 4 theta3 = 0.82 L/kg (RSE 2.8%; 95% CI 0.94, 0.70)

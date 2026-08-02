@@ -117,15 +117,15 @@ vanHasselt_2013_eribulin <- function() {
     lvp2 <- fixed(log(121));  label("V3: peripheral2 volume of distribution (L)")                     # Majid 2014 (via Kawamura 2018 section 2.3): V3[L] = 121 * (WT/68.7)
 
     # PK covariate exponents -- all FIXED from Majid 2014.
-    e_wt_cl    <- fixed(0.75);   label("Allometric exponent of WT on CL (fixed)")
-    e_alb_cl   <- fixed(0.946);  label("Power exponent of ALB (g/dL scale) on CL (fixed)")
-    e_alp_cl   <- fixed(-0.209); label("Power exponent of ALP on CL (fixed)")
-    e_tbili_cl <- fixed(-0.180); label("Power exponent of TBILI (mg/dL scale) on CL (fixed)")
-    e_wt_q     <- fixed(0.75);   label("Allometric exponent of WT on Q2 (fixed)")
-    e_wt_q2    <- fixed(0.75);   label("Allometric exponent of WT on Q3 (fixed)")
-    e_wt_vc    <- fixed(1);      label("Linear exponent of WT on V1 (fixed)")
-    e_wt_vp    <- fixed(1);      label("Linear exponent of WT on V2 (fixed)")
-    e_wt_vp2   <- fixed(1);      label("Linear exponent of WT on V3 (fixed)")
+    e_wt_cl    <- fixed(0.75);   label("Allometric exponent of WT on CL")
+    e_alb_cl   <- fixed(0.946);  label("Power exponent of ALB (g/dL scale) on CL")
+    e_alp_cl   <- fixed(-0.209); label("Power exponent of ALP on CL")
+    e_tbili_cl <- fixed(-0.180); label("Power exponent of TBILI (mg/dL scale) on CL")
+    e_wt_q     <- fixed(0.75);   label("Allometric exponent of WT on Q2")
+    e_wt_q2    <- fixed(0.75);   label("Allometric exponent of WT on Q3")
+    e_wt_vc    <- fixed(1);      label("Linear exponent of WT on V1")
+    e_wt_vp    <- fixed(1);      label("Linear exponent of WT on V2")
+    e_wt_vp2   <- fixed(1);      label("Linear exponent of WT on V3")
 
     # =========================================================================
     # PD layer -- van Hasselt 2013 semi-physiological Friberg-style myelosup-

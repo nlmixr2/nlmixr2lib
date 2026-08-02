@@ -89,8 +89,8 @@ Hamren_2008_tesaglitazar <- function() {
 
     # Parent tesaglitazar -- structural parameters (reference covariates:
     # CRCL = 76 mL/min/1.73 m^2, WT = 80 kg, no probenecid, male, FU = 0.1%)
-    lka       <- fixed(log(1.5));  label("Absorption rate constant ka (1/h); fixed at 1.5 from prior PK knowledge of tesaglitazar")                # Table 2 ka = 1.5 (fixed); Discussion: 'The absorption rate constant of tesaglitazar was fixed in the present analysis due to limited plasma data early after dose administration.'
-    lfdepot   <- fixed(log(1));    label("Bioavailability (fraction); fixed at 1 because oral absorption is complete")                              # Methods 'Pharmacokinetic modelling': 'Since the oral absorption of tesaglitazar is known to be complete, the absolute bioavailability (F) was set to 1.'
+    lka       <- fixed(log(1.5));  label("Absorption rate constant ka (1/h); 1.5 from prior PK knowledge of tesaglitazar")                # Table 2 ka = 1.5 (fixed); Discussion: 'The absorption rate constant of tesaglitazar was fixed in the present analysis due to limited plasma data early after dose administration.'
+    lfdepot   <- fixed(log(1));    label("Bioavailability (fraction); 1 because oral absorption is complete")                              # Methods 'Pharmacokinetic modelling': 'Since the oral absorption of tesaglitazar is known to be complete, the absolute bioavailability (F) was set to 1.'
     lcl_renal <- log(0.027);       label("Renal clearance CLrt of tesaglitazar (L/h) at reference covariates")                                      # Table 2 CLrt = 0.027 (RSE 4.8%)
     lcl_met   <- log(1.91);        label("Metabolic clearance CLmt of tesaglitazar (L/h, parent -> acyl glucuronide formation) at reference covariates")  # Table 2 CLmt = 1.91 (RSE 8.2%)
     lq        <- log(0.22);        label("Inter-compartmental clearance Qt of tesaglitazar central <-> peripheral1 (L/h)")                          # Table 2 Qt = 0.22 (RSE 13%)

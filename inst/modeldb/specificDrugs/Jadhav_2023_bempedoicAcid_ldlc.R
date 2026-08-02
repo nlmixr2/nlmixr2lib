@@ -191,7 +191,7 @@ Jadhav_2023_bempedoicAcid_ldlc <- function() {
     lka  <- log(1.41);  label("Absorption / transit rate constant Ka under fasted dosing (1/h)")                  # Table 2: Ka = 1.41 1/h (%RSE 5.6)
     lk12 <- log(0.184); label("Central-to-peripheral distribution rate constant K23 (1/h)")                       # Table 2: K23 = 0.184 1/h (%RSE 8.3)
     lk21 <- log(0.156); label("Peripheral-to-central distribution rate constant K32 (1/h)")                       # Table 2: K32 = 0.156 1/h (%RSE 4.3)
-    lfdepot <- fixed(log(1)); label("Relative oral bioavailability F1 in the no-atorvastatin reference (fraction; FIXED at 1)")  # Fig. 1 caption: F1 typical value fixed at 1
+    lfdepot <- fixed(log(1)); label("Relative oral bioavailability F1 in the no-atorvastatin reference (fraction)")  # Fig. 1 caption: F1 typical value fixed at 1
 
     e_wt_cl              <- 0.61;    label("Power exponent of (WT / 83.7 kg) on CL/F (unitless)")                                   # Table 2: Body weight = 0.61 (%RSE 9.8)
     e_crcl_cl            <- 0.574;   label("Power exponent of (CRCL / 89.3 mL/min) on CL/F (unitless)")                             # Table 2: eGFR = 0.574 (%RSE 6.3)

@@ -97,7 +97,7 @@ Thomson_2003_gentamicin <- function() {
     # estimates while allowing parameter standard errors to be returned.
     # The vignette flags the loss of any meaningful concentration-level
     # error term as an assumption.
-    addSd <- fixed(0.0001); label("Additive residual error (mg/L) -- fixed to a negligible value in Thomson 2003 because residual error could not be characterised under FOCE with at most 2 samples per patient")  # Thomson 2003 Table 4: residual error 0.0001 mg/L FIXED
+    addSd <- fixed(0.0001); label("Additive residual error (mg/L) -- a negligible value in Thomson 2003 because residual error could not be characterised under FOCE with at most 2 samples per patient")  # Thomson 2003 Table 4: residual error 0.0001 mg/L FIXED
   })
 
   model({

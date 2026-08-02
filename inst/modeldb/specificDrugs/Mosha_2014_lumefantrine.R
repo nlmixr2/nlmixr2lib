@@ -132,7 +132,7 @@ Mosha_2014_lumefantrine <- function() {
     # linear scale; log() is applied here for the nlmixr2 internal scale.
     lcl     <- log(2.8)      ; label("Apparent elimination clearance, CL/F (L/h)")        # Mosha 2014 Table 3: CL = 2.8 (RSE 12%; bootstrap 2.8, 95% CI 2.2-3.6)
     lvc     <- log(134)      ; label("Apparent central volume of distribution, Vc/F (L)") # Mosha 2014 Table 3: Vc = 134 (RSE 14%; bootstrap 134, 95% CI 101-174)
-    lka     <- fixed(log(0.54)) ; label("Absorption rate constant, ka (1/h); fixed")       # Mosha 2014 Table 3: Ka fixed at 0.54 1/h (Methods: "the absorption rate constants ... were thus fixed ... to achieve peak plasma AM and LF concentrations, respectively, 2 h and 6 to 8 h after drug intake")
+    lka     <- fixed(log(0.54)) ; label("Absorption rate constant, ka (1/h)")       # Mosha 2014 Table 3: Ka fixed at 0.54 1/h (Methods: "the absorption rate constants ... were thus fixed ... to achieve peak plasma AM and LF concentrations, respectively, 2 h and 6 to 8 h after drug intake")
 
     # Relative bioavailability anchored at 1 (structural, fixed by the
     # source paper; Table 3 reports F1 = "Fixed at 1"). All structural
@@ -142,7 +142,7 @@ Mosha_2014_lumefantrine <- function() {
     # variability on LF bioavailability F1 (fixed at 1) accounting for
     # the correlation between CL and Vc and their variability resulted
     # in additional improvement of the model fit").
-    lfdepot <- fixed(log(1)) ; label("Relative bioavailability F1 (unitless); fixed at 1") # Mosha 2014 Table 3: F1 = "Fixed at 1"
+    lfdepot <- fixed(log(1)) ; label("Relative bioavailability F1 (unitless)") # Mosha 2014 Table 3: F1 = "Fixed at 1"
 
     # Pregnancy covariate effect on F1, applied as a linear-deviation
     # form F1_typical = TVF1 * (1 + e_preg_f * PREG) per the paper's

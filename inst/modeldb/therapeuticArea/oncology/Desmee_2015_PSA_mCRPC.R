@@ -78,8 +78,8 @@ Desmee_2015_PSA_mCRPC <- function() {
     # model for PSA kinetics"). Not estimated; held at literature
     # biological values, see refs [21] and [22].
     # ---------------------------------------------------------------
-    ld_fix     <- fixed(log(0.046)) ; label("Cell death rate d (1/day) - fixed (Tu 1996; apoptotic-index 5% => half-life 15 days)")  # paper Methods, ref [21]
-    ldelta_fix <- fixed(log(0.23))  ; label("PSA elimination rate delta (1/day) - fixed (Polascik 1999; PSA half-life ~3 days)")    # paper Methods, ref [22]
+    ld_fix     <- fixed(log(0.046)) ; label("Cell death rate d (1/day) (Tu 1996; apoptotic-index 5% => half-life 15 days)")  # paper Methods, ref [21]
+    ldelta_fix <- fixed(log(0.23))  ; label("PSA elimination rate delta (1/day) (Polascik 1999; PSA half-life ~3 days)")    # paper Methods, ref [22]
 
     # ---------------------------------------------------------------
     # Weibull baseline-hazard parameters and PSA-survival link (Table II).

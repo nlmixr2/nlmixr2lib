@@ -100,7 +100,7 @@ Willmann_2021_ionisFxirx <- function() {
     # (final PK/PD model, simultaneously fitted to pooled FXI-activity data
     # from ASO-CS1 + ASO-CS4 + LICA-CS1; shared baseline, kout, ke0, hill).
     # ---------------------------------------------------------------------
-    imax     <- fixed(1.00)    ; label("Maximum fractional inhibition of Kin (unitless; fixed to 1)")                      # Willmann 2021 Table S4: Imax = 1.00 (fixed)
+    imax     <- fixed(1.00)    ; label("Maximum fractional inhibition of Kin (unitless)")                      # Willmann 2021 Table S4: Imax = 1.00 (fixed)
     lic50    <- log(167)       ; label("IC50 of IONIS-FXIRX at the effect site (ng/mL)")                                    # Willmann 2021 Table S4: IC50 IONIS-FXIRX = 167 ng/mL (95% CI 139-195)
     lrbase   <- log(0.994)     ; label("Baseline FXI activity Baseline (U/mL)")                                             # Willmann 2021 Table S4: Baseline FXI activity = 0.994 U/mL (95% CI 0.971-1.02)
     lkout    <- log(0.00435)   ; label("First-order elimination rate constant kout for FXI activity (1/h)")                 # Willmann 2021 Table S4: kout = 0.00435 1/h (95% CI 0.00383-0.00488)

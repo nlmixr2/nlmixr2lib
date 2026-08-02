@@ -43,7 +43,7 @@ Carmichael_2003_hydroxychloroquine <- function() {
     # and held fixed during all downstream population fits (Results 'Bioavailability' final paragraph:
     # "The typical value for F was 0.746" and Results 'Population Pharmacokinetic Model for Single-Agent
     # HCQ' paragraph 1: "bioavailability was fixed to 0.746, as estimated previously.").
-    lfdepot <- fixed(log(0.746)) ; label("Oral bioavailability (F, fixed at bioavailability-sub-study estimate)") # Table 2 row (a): F = 0.746 (SE 0.068); fixed in row (d)
+    lfdepot <- fixed(log(0.746)) ; label("Oral bioavailability (F, bioavailability-sub-study estimate)") # Table 2 row (a): F = 0.746 (SE 0.068); fixed in row (d)
 
     # Additive shift in V per equation 3: V_i = V + V_MTX * MTX (linear, additive; L units).
     # See vignette Assumptions and deviations -- unusual coding relative to the more common

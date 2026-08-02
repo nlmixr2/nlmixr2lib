@@ -37,7 +37,7 @@ Betts_2018_mAb_human <- function() {
     # "Residual errors per compound are shown in Supplementary Table 1"); the supplement
     # is not on disk, so no class-level typical value is available. Fixed at 0 per the
     # skill's standing policy for unreported RUV (documented in vignette Errata).
-    propSd <- fixed(0); label("Proportional residual error (fraction; fixed at 0)")
+    propSd <- fixed(0); label("Proportional residual error (fraction)")
   })
   model({
     cl <- exp(lcl + etalcl)

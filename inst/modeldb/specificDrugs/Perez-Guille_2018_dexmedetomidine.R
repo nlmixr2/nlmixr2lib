@@ -55,10 +55,10 @@
     lvp <- log(81.2) ; label("Peripheral volume V2 at 70 kg (L)")                     # Table 2: theta_V2 = 81.2 L/70 kg (RSE 9%; bootstrap median 81.7, 95% CI 79-83.5)
 
     # Allometric exponents -- fixed a priori per Methods (Anderson and Holford theoretical exponents)
-    e_wt_cl <- fixed(0.75) ; label("Allometric exponent on CL (unitless, FIXED)")     # Table 2: beta_Cl = 0.75 fixed
-    e_wt_vc <- fixed(1)    ; label("Allometric exponent on V1 (unitless, FIXED)")     # Table 2: beta_V1 = 1.0 fixed
-    e_wt_q  <- fixed(0.75) ; label("Allometric exponent on Q  (unitless, FIXED)")     # Table 2: beta_Q  = 0.75 fixed
-    e_wt_vp <- fixed(1)    ; label("Allometric exponent on V2 (unitless, FIXED)")     # Table 2: beta_V2 = 1.0 fixed
+    e_wt_cl <- fixed(0.75) ; label("Allometric exponent on CL (unitless)")     # Table 2: beta_Cl = 0.75 fixed
+    e_wt_vc <- fixed(1)    ; label("Allometric exponent on V1 (unitless)")     # Table 2: beta_V1 = 1.0 fixed
+    e_wt_q  <- fixed(0.75) ; label("Allometric exponent on Q (unitless)")     # Table 2: beta_Q  = 0.75 fixed
+    e_wt_vp <- fixed(1)    ; label("Allometric exponent on V2 (unitless)")     # Table 2: beta_V2 = 1.0 fixed
 
     # ============================================================
     # Population PD: sigmoidal Imax model on HR fractional response

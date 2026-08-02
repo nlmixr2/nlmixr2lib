@@ -139,8 +139,8 @@ Elkomy_2015_morphine <- function() {
     lq  <- log(0.88);  label("Morphine inter-compartmental clearance CLD at WT = 6 kg (L/h)") # Table II: theta_CLD = 0.88 L/h (%SE 15; bootstrap median 0.91 [0.60, 1.4])
     lvp <- log(25.2);  label("Morphine peripheral volume at WT = 6 kg (L)")                   # Table II: theta_VP = 25.2 L (%SE 32; bootstrap median 25.2 [15.0, 61.1])
 
-    e_wt_cl_q  <- fixed(0.75); label("Shared allometric WT exponent on CL and CLD (unitless; FIXED)") # Methods para 4 / Results para 2: exponent 0.75 FIXED
-    e_wt_vc_vp <- fixed(1.0);  label("Shared allometric WT exponent on VC and VP (unitless; FIXED)")  # Methods para 4 / Results para 2: exponent 1.0 FIXED
+    e_wt_cl_q  <- fixed(0.75); label("Shared allometric WT exponent on CL and CLD (unitless)") # Methods para 4 / Results para 2: exponent 0.75 FIXED
+    e_wt_vc_vp <- fixed(1.0);  label("Shared allometric WT exponent on VC and VP (unitless)")  # Methods para 4 / Results para 2: exponent 1.0 FIXED
 
     # ================================================================
     # Metabolite intermediate-effect-compartment + Emax structural

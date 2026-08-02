@@ -54,8 +54,8 @@ Choe_2012_busulfan <- function() {
     # paper: "Simplified power model with the power terms fixed at 0.5 was
     # fitted to the data and estimation of power terms as unknown parameters
     # was found not to improve the model compared to fixing the power term."
-    e_wt_cl <- fixed(0.5) ; label("Allometric exponent of WT on CL (unitless, fixed)")   # Choe 2012 Results, p. 276
-    e_wt_vc <- fixed(0.5) ; label("Allometric exponent of WT on Vd (unitless, fixed)")   # Choe 2012 Results, p. 276
+    e_wt_cl <- fixed(0.5) ; label("Allometric exponent of WT on CL (unitless)")   # Choe 2012 Results, p. 276
+    e_wt_vc <- fixed(0.5) ; label("Allometric exponent of WT on Vd (unitless)")   # Choe 2012 Results, p. 276
 
     # Sex effect on Vd. The paper parameterised Vd as theta2 * ABW^0.5 *
     # (1 + SEX * theta3) with SEX = 1 for male, 0 for female and theta3 =

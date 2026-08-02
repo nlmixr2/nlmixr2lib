@@ -85,7 +85,7 @@ Kim_2018_tacrolimus <- function() {
     lk56     <- log(1.12);    label("MPA central->peripheral rate constant k56 (1/h)")                    # Table 3 k56 (integrated) = 1.12 1/h
     lk65     <- log(0.131);   label("MPA peripheral->central rate constant k65 (1/h)")                    # Table 3 k65 (integrated) = 0.131 1/h
     # Fraction of MPA metabolism that forms MPAG (vs AcMPAG); fixed at 0.85.
-    f_mpag   <- fixed(0.85);  label("Fraction of MPA metabolised to MPAG (fMPA), fixed")                  # Table 3 fMPA = 0.85 (fixed)
+    f_mpag   <- fixed(0.85);  label("Fraction of MPA metabolised to MPAG (fMPA)")                  # Table 3 fMPA = 0.85 (fixed)
 
     # --- MPAG (MPA 7-O-glucuronide): 1-compartment with enterohepatic
     #     recirculation through a gallbladder compartment.
@@ -94,13 +94,13 @@ Kim_2018_tacrolimus <- function() {
     lehc     <- log(0.367);   label("Fraction of MPAG undergoing enterohepatic recirculation (EHC)")      # Table 3 EHC (integrated) = 0.367; equation (1)
     lk84     <- log(18.4);    label("Gallbladder emptying rate constant k84 (1/h)")                       # Table 3 k84 (integrated) = 18.4 1/h
     lmtime1  <- log(7.96);    label("Meal time / gallbladder emptying start MTIME1 (h post-dose)")        # Table 3 MTIME1 (integrated) = 7.96 h
-    lmtime2  <- fixed(log(1.00)); label("Gallbladder emptying duration MTIME2 (h), fixed")                # Table 3 MTIME2 = 1 h (fixed)
+    lmtime2  <- fixed(log(1.00)); label("Gallbladder emptying duration MTIME2 (h)")                # Table 3 MTIME2 = 1 h (fixed)
 
     # --- AcMPAG (MPA acyl glucuronide): 1-compartment; structural parameters
     #     fixed after initial estimation (LAPL+I) because AcMPAG had a
     #     negligible effect on MPA and on the TAC-MMF interaction.
-    lvc_acmpag <- fixed(log(23));   label("AcMPAG apparent volume V9/F (L), fixed")                       # Table 3 V9/F = 23 L (fixed)
-    lk90       <- fixed(log(2.15)); label("AcMPAG elimination rate constant k90 (1/h), fixed")            # Table 3 k90 = 2.15 1/h (fixed)
+    lvc_acmpag <- fixed(log(23));   label("AcMPAG apparent volume V9/F (L)")                       # Table 3 V9/F = 23 L (fixed)
+    lk90       <- fixed(log(2.15)); label("AcMPAG elimination rate constant k90 (1/h)")            # Table 3 k90 = 2.15 1/h (fixed)
 
     # --- Inter-individual variability (exponential / log-normal). Reported as
     #     %CV in Table 3 (integrated model); omega^2 = log(1 + CV^2).

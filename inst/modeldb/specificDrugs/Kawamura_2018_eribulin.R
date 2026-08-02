@@ -104,15 +104,15 @@ Kawamura_2018_eribulin <- function() {
     lvp2 <- fixed(log(121));  label("V3: peripheral2 volume of distribution (L)")                     # Kawamura 2018 section 2.3: V3[L] = 121 * (WT/68.7)
 
     # PK covariate exponents -- all FIXED from Majid 2014 (Kawamura 2018 section 2.3 equations).
-    e_wt_cl    <- fixed(0.75);   label("Allometric exponent of WT on CL (fixed)")                        # Kawamura 2018 section 2.3 CL equation: (WT/68.7)^0.75
-    e_alb_cl   <- fixed(0.946);  label("Power exponent of ALB on CL (fixed)")                            # Kawamura 2018 section 2.3 CL equation: (ALB/4.0)^0.946
-    e_alp_cl   <- fixed(-0.209); label("Power exponent of ALP on CL (fixed)")                            # Kawamura 2018 section 2.3 CL equation: (ALP/132)^-0.209
-    e_tbili_cl <- fixed(-0.180); label("Power exponent of BILI on CL (fixed)")                           # Kawamura 2018 section 2.3 CL equation: (BILI/0.5)^-0.180
-    e_wt_q     <- fixed(0.75);   label("Allometric exponent of WT on Q2 (fixed)")                        # Kawamura 2018 section 2.3 Q2 equation: (WT/68.7)^0.75
-    e_wt_q2    <- fixed(0.75);   label("Allometric exponent of WT on Q3 (fixed)")                        # Kawamura 2018 section 2.3 Q3 equation: (WT/68.7)^0.75
-    e_wt_vc    <- fixed(1);      label("Linear exponent of WT on V1 (fixed)")                            # Kawamura 2018 section 2.3 V1 equation: linear (WT/68.7), i.e. exponent 1
-    e_wt_vp    <- fixed(1);      label("Linear exponent of WT on V2 (fixed)")                            # Kawamura 2018 section 2.3 V2 equation: linear (WT/68.7), i.e. exponent 1
-    e_wt_vp2   <- fixed(1);      label("Linear exponent of WT on V3 (fixed)")                            # Kawamura 2018 section 2.3 V3 equation: linear (WT/68.7), i.e. exponent 1
+    e_wt_cl    <- fixed(0.75);   label("Allometric exponent of WT on CL")                        # Kawamura 2018 section 2.3 CL equation: (WT/68.7)^0.75
+    e_alb_cl   <- fixed(0.946);  label("Power exponent of ALB on CL")                            # Kawamura 2018 section 2.3 CL equation: (ALB/4.0)^0.946
+    e_alp_cl   <- fixed(-0.209); label("Power exponent of ALP on CL")                            # Kawamura 2018 section 2.3 CL equation: (ALP/132)^-0.209
+    e_tbili_cl <- fixed(-0.180); label("Power exponent of BILI on CL")                           # Kawamura 2018 section 2.3 CL equation: (BILI/0.5)^-0.180
+    e_wt_q     <- fixed(0.75);   label("Allometric exponent of WT on Q2")                        # Kawamura 2018 section 2.3 Q2 equation: (WT/68.7)^0.75
+    e_wt_q2    <- fixed(0.75);   label("Allometric exponent of WT on Q3")                        # Kawamura 2018 section 2.3 Q3 equation: (WT/68.7)^0.75
+    e_wt_vc    <- fixed(1);      label("Linear exponent of WT on V1")                            # Kawamura 2018 section 2.3 V1 equation: linear (WT/68.7), i.e. exponent 1
+    e_wt_vp    <- fixed(1);      label("Linear exponent of WT on V2")                            # Kawamura 2018 section 2.3 V2 equation: linear (WT/68.7), i.e. exponent 1
+    e_wt_vp2   <- fixed(1);      label("Linear exponent of WT on V3")                            # Kawamura 2018 section 2.3 V3 equation: linear (WT/68.7), i.e. exponent 1
 
     # =========================================================================
     # PD layer -- Friberg-style myelosuppression model estimated on the 401-

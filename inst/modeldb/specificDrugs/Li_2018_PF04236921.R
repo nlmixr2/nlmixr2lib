@@ -226,7 +226,7 @@ Li_2018_PF04236921 <- function() {
 
     # Hill coefficient. Fixed at 1 for HV/RA/CD per paper (Table 3B
     # "theta_gamma,HV,RA,CD = 1 fix"); estimated as 1.55 for SLE only.
-    lgamma <- fixed(log(1));    label("Hill coefficient gamma in HV/RA/CD reference (fixed at 1)")        # Li 2018 Table 3B theta_gamma,HV,RA,CD = 1 fix
+    lgamma <- fixed(log(1));    label("Hill coefficient gamma in HV/RA/CD reference")        # Li 2018 Table 3B theta_gamma,HV,RA,CD = 1 fix
     e_sle_gamma <- log(1.55);   label("Log-shift on Hill gamma for SLE cohort vs reference (unitless)")   # Li 2018 Table 3B theta_gamma,SLE = 1.55
 
     # First-order CRP elimination rate (single value across all cohorts; the

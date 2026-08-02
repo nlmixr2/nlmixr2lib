@@ -152,10 +152,10 @@ Wang_2018_daclatasvir_asunaprevir <- function() {
     # =========================================================================
 
     # ---- FIXED literature constants ----
-    lTmax    <- fixed(log(18.5e6)); label("Maximum number of hepatocytes Tmax (cells/mL); FIXED")    # Wang 2018 Table 4: Tmax = 18.5e6 cells/mL (FIX)
-    ld       <- fixed(log(0.003));  label("Death rate constant of uninfected target cells d (1/day); FIXED")  # Wang 2018 Table 4: d = 0.003 /day (FIX)
-    lR0      <- fixed(log(7.15));   label("Basic reproductive ratio R0 (unitless); FIXED")           # Wang 2018 Table 4: R0 = 7.15 (FIX)
-    ldelta   <- fixed(log(0.139));  label("Loss rate constant of infected cells delta (1/day); FIXED")  # Wang 2018 Table 4: delta = 0.139 /day (FIX)
+    lTmax    <- fixed(log(18.5e6)); label("Maximum number of hepatocytes Tmax (cells/mL)")    # Wang 2018 Table 4: Tmax = 18.5e6 cells/mL (FIX)
+    ld       <- fixed(log(0.003));  label("Death rate constant of uninfected target cells d (1/day)")  # Wang 2018 Table 4: d = 0.003 /day (FIX)
+    lR0      <- fixed(log(7.15));   label("Basic reproductive ratio R0 (unitless)")           # Wang 2018 Table 4: R0 = 7.15 (FIX)
+    ldelta   <- fixed(log(0.139));  label("Loss rate constant of infected cells delta (1/day)")  # Wang 2018 Table 4: delta = 0.139 /day (FIX)
 
     # ---- Estimated VD system parameters ----
     lc       <- log(20.4); label("Virion clearance rate constant c (1/day)")                          # Wang 2018 Table 4: c = 20.4 /day

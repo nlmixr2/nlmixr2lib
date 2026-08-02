@@ -196,8 +196,8 @@ Hajjar_2018_cipaglucosidase <- function() {
     # respectively'). Applied to ALL clearances (CL, Q, Vmax-mass-flow)
     # and ALL volumes (Vc, Vp) via the canonical Anderson-Holford scaling.
     # =========================================================================
-    e_wt_cl <- fixed(0.75);  label("Allometric exponent on clearances (unitless; fixed at theoretical 0.75)")     # Hajjar 2018 Methods 'Modeling' bullet: exponents fixed to 0.75 and 1
-    allo_v  <- fixed(1.00);  label("Allometric exponent on volumes (unitless; fixed at theoretical 1.00)")        # Hajjar 2018 Methods 'Modeling' bullet: exponents fixed to 0.75 and 1
+    e_wt_cl <- fixed(0.75);  label("Allometric exponent on clearances (unitless; theoretical 0.75)")     # Hajjar 2018 Methods 'Modeling' bullet: exponents fixed to 0.75 and 1
+    allo_v  <- fixed(1.00);  label("Allometric exponent on volumes (unitless; theoretical 1.00)")        # Hajjar 2018 Methods 'Modeling' bullet: exponents fixed to 0.75 and 1
 
     # =========================================================================
     # Between-subject variability (Hajjar 2018 Table 2 'BSV' column reported

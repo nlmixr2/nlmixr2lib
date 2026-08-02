@@ -109,7 +109,7 @@ Xia_2024_warfarin <- function() {
     lcl_cyp2c9_s3 <- fixed(log(0.0422)) ; label("CL per CYP2C9*3 allele (L/h)")              # Xia 2024 Table 3 (fixed, Hamberg literature value)
     e_age_cl      <- fixed(-0.00571)    ; label("Age effect on CL (fractional change per year, reference age 71 y)")  # Xia 2024 Table 3 / supplement Eq 7 (fixed)
     lvc           <- fixed(log(14.3))   ; label("Apparent volume of distribution V/F (L) at effect site")             # Xia 2024 Table 3 (fixed, Hamberg literature value)
-    lemax         <- fixed(log(1))      ; label("Maximum anticoagulant effect Emax (fixed at 1 = 100%)")              # Xia 2024 supplement Section 1.1 (fixed)
+    lemax         <- fixed(log(1))      ; label("Maximum anticoagulant effect Emax (1 = 100%)")              # Xia 2024 supplement Section 1.1 (fixed)
     lhill        <- fixed(log(1.39))   ; label("Hill coefficient gamma for the sigmoid Emax effect (unitless)")      # Xia 2024 Table 3 (fixed)
     lmtt1         <- fixed(log(27.2))   ; label("Mean transit time of fast coagulation-factor chain MTT1 (h)")        # Xia 2024 Table 3 (fixed)
     lmtt2         <- fixed(log(110.9))  ; label("Mean transit time of slow coagulation-factor chain MTT2 (h)")        # Xia 2024 Table 3 (fixed)

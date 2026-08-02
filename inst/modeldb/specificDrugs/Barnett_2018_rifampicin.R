@@ -80,7 +80,7 @@ Barnett_2018_rifampicin <- function() {
     # Residual error -- combined additive + proportional. The additive
     # component is paper-reported in umol/L and fixed at estimation.
     propSd <- 0.313;       label("Proportional residual error (fraction)")             # Table 1, RIF row 'r prop (%)' = 31.3 (interpreted as 31.3% CV -> fraction 0.313)
-    addSd  <- fixed(0.01); label("Additive residual error (umol/L, fixed)")             # Table 1, RIF row 'r add (uM)' = 0.01 FIXED
+    addSd  <- fixed(0.01); label("Additive residual error (umol/L)")             # Table 1, RIF row 'r add (uM)' = 0.01 FIXED
   })
 
   model({

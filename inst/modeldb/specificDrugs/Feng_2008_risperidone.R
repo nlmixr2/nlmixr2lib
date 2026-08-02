@@ -167,7 +167,7 @@ Feng_2008_risperidone <- function() {
     # Ka SE column shows 'NA'); inter-individual variability is
     # estimated even though the typical value is fixed
     # (Table 3 w_ka% = 53.7, SE 89.3%).
-    lka <- fixed(log(1.7)); label("Absorption rate constant Ka (1/h); typical value fixed per Table 3")  # Feng 2008 Table 3: K_a = 1.7 (Fixed)
+    lka <- fixed(log(1.7)); label("Absorption rate constant Ka (1/h); typical value per Table 3")  # Feng 2008 Table 3: K_a = 1.7 (Fixed)
 
     # Shared apparent volume of distribution. The paper sets VM = V
     # for the metabolite due to identifiability (Results 'Base model':
@@ -181,7 +181,7 @@ Feng_2008_risperidone <- function() {
     # mixture estimation.
     lcl_pm <- log(12.9); label("Apparent oral clearance in CYP2D6 PMs, CL/F (L/h)")  # Feng 2008 Table 3: CL in PM = 12.9 L/h (SE 6.5%)
     lcl_em <- log(65.4); label("Apparent oral clearance in CYP2D6 EMs, CL/F (L/h)")  # Feng 2008 Table 3: CL in EM = 65.4 L/h (SE 9.9%)
-    lcl_im <- fixed(log(36)); label("Apparent oral clearance in CYP2D6 IMs, CL/F (L/h); fixed")  # Feng 2008 Table 3: CL in IM = 36 L/h (Fixed)
+    lcl_im <- fixed(log(36)); label("Apparent oral clearance in CYP2D6 IMs, CL/F (L/h)")  # Feng 2008 Table 3: CL in IM = 36 L/h (Fixed)
 
     # Metabolite apparent clearance referenced at age 45 years
     # (nominal round value approximating the combined-cohort median;
@@ -202,7 +202,7 @@ Feng_2008_risperidone <- function() {
     # the PM and EM populations."
     kf_pm <- 0.96;     label("Fraction of risperidone metabolized to 9-OH in CYP2D6 PMs (unitless, 0-1)")  # Feng 2008 Table 3: KF_PM = 0.96 (SE 42.8%)
     kf_em <- 0.595;    label("Fraction of risperidone metabolized to 9-OH in CYP2D6 EMs (unitless, 0-1)")  # Feng 2008 Table 3: KF_EM = 0.595 (SE 40.0%)
-    kf_im <- fixed(1); label("Fraction of risperidone metabolized to 9-OH in CYP2D6 IMs; fixed")  # Feng 2008 Table 3: KF_IM = 1 (Fixed)
+    kf_im <- fixed(1); label("Fraction of risperidone metabolized to 9-OH in CYP2D6 IMs")  # Feng 2008 Table 3: KF_IM = 1 (Fixed)
 
     # Inter-individual variability (NONMEM OMEGA, variance scale on
     # log eta). Table 3 reports omega as a CV-style percent (column

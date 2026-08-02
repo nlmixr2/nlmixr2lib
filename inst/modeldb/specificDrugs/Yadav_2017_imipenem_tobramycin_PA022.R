@@ -27,7 +27,7 @@ Yadav_2017_imipenem_tobramycin_PA022 <- function() {
   ini({
     log10cfu0   <- 6.99;  label("Initial inoculum (log10 CFU/mL)")                                     # Table 3: Log CFU0 = 6.99 (SE 1.3%)
     log10cfumax <- 9.54;  label("Maximum population size (log10 CFU/mL); PLAT half-saturation")        # Table 3: CFUmax = 9.54 (SE 2.9%)
-    lk21        <- fixed(log(50.0)); label("Log replication rate constant k21 (1/h; FIXED)")           # Table 3: k21 = 50 (fixed)
+    lk21        <- fixed(log(50.0)); label("Log replication rate constant k21 (1/h)")           # Table 3: k21 = 50 (fixed)
 
     mgt_ss <- 63.8; label("Mean generation time, SS subpop (min)")                                     # Table 3: k12,SS row = 63.8 (SE 10.8%)
     mgt_ri <- 565;  label("Mean generation time, IPM-resistant/TOB-intermediate (min)")                # Table 3: k12,RI row = 565 (SE 19.9%)

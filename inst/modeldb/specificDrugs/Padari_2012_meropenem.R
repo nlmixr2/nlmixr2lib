@@ -88,9 +88,9 @@ Padari_2012_meropenem <- function() {
     # 2009 Pediatr Nephrol 24:67-76 reports TM50 = 47.7 wk PMA and Hill = 3.4 for
     # human renal clearance maturation; the allometric exponent on CL is fixed
     # at 0.75 (Rhodin's published convention).
-    tmat50   <- fixed(47.7); label("PMA at 50% renal maturation (weeks; Rhodin 2009 fixed)")   # Padari 2012 ref (25): Rhodin 2009
-    hill_mat <- fixed(3.4);  label("Hill coefficient for renal maturation (unitless; Rhodin 2009 fixed)")  # Padari 2012 ref (25): Rhodin 2009
-    e_wt_cl  <- fixed(0.75); label("Allometric exponent on CL (unitless; Rhodin 2009 fixed)")  # Padari 2012 ref (25): Rhodin 2009 fixed allometric
+    tmat50   <- fixed(47.7); label("PMA at 50% renal maturation (weeks; Rhodin 2009)")   # Padari 2012 ref (25): Rhodin 2009
+    hill_mat <- fixed(3.4);  label("Hill coefficient for renal maturation (unitless; Rhodin 2009)")  # Padari 2012 ref (25): Rhodin 2009
+    e_wt_cl  <- fixed(0.75); label("Allometric exponent on CL (unitless; Rhodin 2009)")  # Padari 2012 ref (25): Rhodin 2009 fixed allometric
 
     # Inter-individual variability. Padari 2012 reports a final model with a
     # prediction-corrected VPC (Figure 3) and goodness-of-fit plots (Figure 2)

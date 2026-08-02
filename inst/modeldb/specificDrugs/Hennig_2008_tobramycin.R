@@ -56,7 +56,7 @@ Hennig_2008_tobramycin <- function() {
 
     # Dose-record adjustments
     ltlag <- log(0.40);   label("Lag between infusion hang time and drug entry into vein (h)")  # Hennig 2008 Table 2 (tlag, Covariate model)
-    ldur <- fixed(log(0.5)); label("Fixed infusion duration into central compartment (h, hospital protocol)")  # Hennig 2008 Table 2 (D2, fixed); Methods page 503
+    ldur <- fixed(log(0.5)); label("Infusion duration into central compartment (h, hospital protocol)")  # Hennig 2008 Table 2 (D2, fixed); Methods page 503
 
     # Inter-individual variability (full block on CL, Vc, Vper).
     # Conversion of CV% to log-scale variance: omega^2 = log(1 + CV^2).

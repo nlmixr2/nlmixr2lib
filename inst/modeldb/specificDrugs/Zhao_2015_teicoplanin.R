@@ -58,10 +58,10 @@ Zhao_2015_teicoplanin <- function() {
     # The two volume exponents (1) and the two clearance exponents (0.75) are
     # fixed a priori (Results: "allometric coefficients of 0.75 for CL and Q,
     # 1 for V1 and V2"). The CRCL exponent is estimated.
-    e_wt_vc   <- fixed(1);     label("Power exponent on (WT/27.1) for Vc (fixed)")                       # Zhao 2015 Results: V1 allometric coefficient fixed at 1
-    e_wt_vp   <- fixed(1);     label("Power exponent on (WT/27.1) for Vp (fixed)")                       # Zhao 2015 Results: V2 allometric coefficient fixed at 1
-    e_wt_q    <- fixed(0.75);  label("Power exponent on (WT/27.1) for Q (fixed)")                        # Zhao 2015 Results: Q  allometric coefficient fixed at 0.75
-    e_wt_cl   <- fixed(0.75);  label("Power exponent on (WT/27.1) for CL (fixed)")                       # Zhao 2015 Results: CL allometric coefficient fixed at 0.75
+    e_wt_vc   <- fixed(1);     label("Power exponent on (WT/27.1) for Vc")                       # Zhao 2015 Results: V1 allometric coefficient fixed at 1
+    e_wt_vp   <- fixed(1);     label("Power exponent on (WT/27.1) for Vp")                       # Zhao 2015 Results: V2 allometric coefficient fixed at 1
+    e_wt_q    <- fixed(0.75);  label("Power exponent on (WT/27.1) for Q")                        # Zhao 2015 Results: Q  allometric coefficient fixed at 0.75
+    e_wt_cl   <- fixed(0.75);  label("Power exponent on (WT/27.1) for CL")                       # Zhao 2015 Results: CL allometric coefficient fixed at 0.75
     e_crcl_cl <- 0.606;        label("Power exponent on (CRCL/179) for CL")                              # Zhao 2015 Table 2: theta5 = 0.606 (RSE 25.7%)
 
     # Inter-individual variability (Zhao 2015 Table 2 "Inter-individual

@@ -87,9 +87,9 @@ Keizer_2011_E7820_human <- function() {
     # ------------------------------------------------------------------
     lrbase   <- log(8350)    ; label("Baseline alpha2-integrin expression I_base (MESF)")               # Keizer 2011 Table III clinical I_base = 8350 MESF (RSE 1%)
     lkout    <- log(0.099)   ; label("Turnover rate kout for integrin pool (1/day)")                    # Keizer 2011 Table III clinical kout = 0.099 day^-1
-    emax_int <- fixed(1)     ; label("Maximal Emax of E7820 on integrin input rate (fixed at 1)")       # Keizer 2011 Table III clinical Emax,C = 1 (fixed; same as preclinical model)
+    emax_int <- fixed(1)     ; label("Maximal Emax of E7820 on integrin input rate")       # Keizer 2011 Table III clinical Emax,C = 1 (fixed; same as preclinical model)
     lic50    <- log(2840)    ; label("E7820 plasma conc at 50% maximal integrin inhibition IC50 (ng/mL)") # Keizer 2011 Table III clinical IC50 = 2840 ng/mL (RSE 32%)
-    lhill_int <- fixed(log(1)) ; label("Hill exponent on E7820->integrin (unitless; fixed at 1)")         # Keizer 2011 Table III clinical gamma = 1 (fixed; same as preclinical model)
+    lhill_int <- fixed(log(1)) ; label("Hill exponent on E7820->integrin (unitless)")         # Keizer 2011 Table III clinical gamma = 1 (fixed; same as preclinical model)
 
     # ------------------------------------------------------------------
     # Inter-individual variability.

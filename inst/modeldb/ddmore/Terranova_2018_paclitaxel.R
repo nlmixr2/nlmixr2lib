@@ -80,16 +80,16 @@ Terranova_2018_paclitaxel <- function() {
     addSd_tumorWeight <- 0.134 ; label("Additive residual-error coefficient on tumor weight (b_Wu; original form: SD = b_Wu * sqrt(Wu))") # .ctl $THETA(11) = 0.134  ; b_Wu
 
     # ----- Parameters fixed from upstream literature (.ctl $THETA FIX) -----
-    lk10        <- fixed(log(20.832))  ; label("Paclitaxel central-elimination rate constant (k10, 1/day) -- FIXED from upstream popPK")               # .ctl $THETA(12) = 20.832  FIX ; K10_POP
-    lk12        <- fixed(log(0.144))   ; label("Paclitaxel central-to-peripheral rate constant (k12, 1/day) -- FIXED from upstream popPK")              # .ctl $THETA(13) = 0.144   FIX ; K12_POP
-    lk21        <- fixed(log(2.011))   ; label("Paclitaxel peripheral-to-central rate constant (k21, 1/day) -- FIXED from upstream popPK")              # .ctl $THETA(14) = 2.011   FIX ; K21_POP
-    lvc         <- fixed(log(813.1))   ; label("Paclitaxel central-compartment volume Vc (source-unit volume; consistent with k10/k12/k21 and AMT) -- FIXED from upstream popPK")  # .ctl $THETA(15) = 813.1   FIX ; V1_POP
-    len_initial <- fixed(log(1.3))     ; label("Initial enzyme density EN (DEB host-energy state; unitless) -- FIXED")                                   # .ctl $THETA(16) = 1.3     FIX ; En_initial_POP
-    lxi         <- fixed(log(0.184))   ; label("DEB host-body composition coupling xi between EN and structural body component Z (unitless) -- FIXED")  # .ctl $THETA(17) = 0.184   FIX ; xi_POP
-    lni         <- fixed(log(1.2242))  ; label("Tumor proliferation rate scaling ni (DEB; unitless) -- FIXED")                                           # .ctl $THETA(18) = 1.2242  FIX ; ni_POP
-    lgr         <- fixed(log(12.2))    ; label("Tumor energy-budget rate constant gr (DEB; unitless) -- FIXED")                                          # .ctl $THETA(19) = 12.2    FIX ; gr_POP
-    lv1inf      <- fixed(log(22.6))    ; label("Asymptotic tumor-volume scale V1inf (g; DEB) -- FIXED")                                                  # .ctl $THETA(20) = 22.6    FIX ; V1inf_POP
-    lrho_b      <- fixed(log(1.0))     ; label("Basal proliferation factor rho_b (set to 1 = unrestricted untreated growth) -- FIXED")                   # .ctl $THETA(21) = 1.0     FIX ; rho_b_POP
+    lk10        <- fixed(log(20.832))  ; label("Paclitaxel central-elimination rate constant (k10, 1/day) -- from upstream popPK")               # .ctl $THETA(12) = 20.832  FIX ; K10_POP
+    lk12        <- fixed(log(0.144))   ; label("Paclitaxel central-to-peripheral rate constant (k12, 1/day) -- from upstream popPK")              # .ctl $THETA(13) = 0.144   FIX ; K12_POP
+    lk21        <- fixed(log(2.011))   ; label("Paclitaxel peripheral-to-central rate constant (k21, 1/day) -- from upstream popPK")              # .ctl $THETA(14) = 2.011   FIX ; K21_POP
+    lvc         <- fixed(log(813.1))   ; label("Paclitaxel central-compartment volume Vc (source-unit volume; consistent with k10/k12/k21 and AMT) -- from upstream popPK")  # .ctl $THETA(15) = 813.1   FIX ; V1_POP
+    len_initial <- fixed(log(1.3))     ; label("Initial enzyme density EN (DEB host-energy state; unitless)")                                   # .ctl $THETA(16) = 1.3     FIX ; En_initial_POP
+    lxi         <- fixed(log(0.184))   ; label("DEB host-body composition coupling xi between EN and structural body component Z (unitless)")  # .ctl $THETA(17) = 0.184   FIX ; xi_POP
+    lni         <- fixed(log(1.2242))  ; label("Tumor proliferation rate scaling ni (DEB; unitless)")                                           # .ctl $THETA(18) = 1.2242  FIX ; ni_POP
+    lgr         <- fixed(log(12.2))    ; label("Tumor energy-budget rate constant gr (DEB; unitless)")                                          # .ctl $THETA(19) = 12.2    FIX ; gr_POP
+    lv1inf      <- fixed(log(22.6))    ; label("Asymptotic tumor-volume scale V1inf (g; DEB)")                                                  # .ctl $THETA(20) = 22.6    FIX ; V1inf_POP
+    lrho_b      <- fixed(log(1.0))     ; label("Basal proliferation factor rho_b (set to 1 = unrestricted untreated growth)")                   # .ctl $THETA(21) = 1.0     FIX ; rho_b_POP
   })
 
   model({

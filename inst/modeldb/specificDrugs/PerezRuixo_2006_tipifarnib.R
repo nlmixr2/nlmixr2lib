@@ -98,7 +98,7 @@ PerezRuixo_2006_tipifarnib <- function() {
     e_solution_tlag <- 0.183; label("Solution-vs-solid tlag ratio (multiplicative; applied as ratio^FORM_SOLUTION)") # Perez-Ruixo 2006 Table 4 footnote k
 
     # Continuous-covariate exponents.
-    e_wt_vc      <- fixed(1);     label("WT exponent on V2 (unitless; fixed at 1 per Table 3 footnote 2)")    # Perez-Ruixo 2006 Table 3 footnote 2: exponent not different from 1, set to 1
+    e_wt_vc      <- fixed(1);     label("WT exponent on V2 (unitless; 1 per Table 3 footnote 2)")    # Perez-Ruixo 2006 Table 3 footnote 2: exponent not different from 1, set to 1
     e_tbili_cl   <- -0.103;       label("TBILI power exponent on CL (unitless; reference 9 umol/L)")          # Perez-Ruixo 2006 Table 4 footnote a: theta_TBIL = -0.103
 
     # Inter-individual variability (cancer-patient values; Perez-Ruixo 2006

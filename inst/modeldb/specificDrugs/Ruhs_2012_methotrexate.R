@@ -88,7 +88,7 @@ Ruhs_2012_methotrexate <- function() {
     lhcybl      <- log(4.88);  label("Typical HCY baseline at age 0 y (uM)")                # Ruhs 2012 Table 2 theta_BL = 4.88 (intercept of the linear age effect)
     lkout       <- log(0.027); label("Typical HCY elimination rate constant kout (1/h)")    # Ruhs 2012 Table 2 theta_kout = 0.027
     lec50       <- log(0.648); label("Typical MTX EC50 for inhibition of HCY elimination (uM)")  # Ruhs 2012 Table 2 theta_EC50 = 0.648
-    emax        <- fixed(1);   label("MTX maximum fractional inhibition of HCY elimination (unitless; fixed)")  # Ruhs 2012 Table 2 theta_Emax = 1 (fixed)
+    emax        <- fixed(1);   label("MTX maximum fractional inhibition of HCY elimination (unitless)")  # Ruhs 2012 Table 2 theta_Emax = 1 (fixed)
     e_age_hcybl <- 0.116;      label("Linear effect of age on typical HCY baseline (uM/year)")  # Ruhs 2012 Table 2 theta_BL,AGE = 0.116
 
     # ---------------------------------------------------------------

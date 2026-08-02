@@ -81,7 +81,7 @@ Fauchet_2015_lopinavir_unbound <- function() {
     # Appendix equation 2.
     lkhsa <- log(0.036);  label("Linear HSA binding constant K_HSA (L/umol; product N_HSA*K_HSA)")  # Table 2 row 'K_HSA' = 0.036 L/umol
     lkaag <- log(0.159);  label("Saturable AAG dissociation constant K_AAG (umol/L)")               # Table 2 row 'N_AAG K_AAG' with K_AAG = 0.159 umol/L
-    naag  <- fixed(1);    label("Number of LPV binding sites on AAG (unitless, fixed)")             # Table 2 footnote c 'Fixed value'; Results paragraph: N_AAG was fixed to 1 in the final model
+    naag  <- fixed(1);    label("Number of LPV binding sites on AAG (unitless)")             # Table 2 footnote c 'Fixed value'; Results paragraph: N_AAG was fixed to 1 in the final model
 
     # IIV on apparent unbound clearance only. Fauchet 2015 reports omega as the square
     # root of the between-subject variance (Table 2 footnote d), so the variance entered

@@ -69,7 +69,7 @@ Le_2015_lampalizumab <- function() {
     # than dissociation rate of the drug-target complex." log() goes
     # inside fixed() per naming-conventions.md.
     # ------------------------------------------------------------------
-    lkss   <- fixed(log(0.96e-3)); label("Quasi-steady-state binding constant Kss (mg/L = ug/mL); fixed at ~20 pM ~ in-vitro KD")        # Le 2015 Table 1, row 10 (FIXED)
+    lkss   <- fixed(log(0.96e-3)); label("Quasi-steady-state binding constant Kss (mg/L = ug/mL); ~20 pM ~ in-vitro KD")        # Le 2015 Table 1, row 10 (FIXED)
 
     # ------------------------------------------------------------------
     # Covariate effects on elimination rates (Le 2015 Table 1, covariates

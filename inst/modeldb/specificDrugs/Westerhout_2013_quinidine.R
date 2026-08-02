@@ -162,7 +162,7 @@ Westerhout_2013_quinidine <- function() {
     # Volumes (mL). V_PL is fixed at the Davies 1993 literature
     # value (paper Table 4 cites it via reference [52]); V_PER1 and
     # V_PER2 are estimated.
-    lvc     <- fixed(log(10.6));   label("Plasma volume V_PL (mL), fixed at literature value")  # Table 4: 10.6 mL [52]
+    lvc     <- fixed(log(10.6));   label("Plasma volume V_PL (mL), literature value")  # Table 4: 10.6 mL [52]
     lvp     <- log(6800);          label("First peripheral volume V_PER1 (mL)")                  # Table 4: 6.8 +/- 1.7 L = 6800 mL
     lvp2    <- log(13300);         label("Second peripheral volume V_PER2 (mL)")                 # Table 4: 13.3 +/- 2.2 L = 13300 mL
 

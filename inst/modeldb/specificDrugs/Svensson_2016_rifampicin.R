@@ -73,7 +73,7 @@ Svensson_2016_rifampicin <- function() {
     lemax   <- fixed(log(1.04))          ; label("Maximal fractional increase in the enzyme production rate (unitless)")                  # Svensson 2016 Table 2 Emax = 1.04; carried from Smythe 2012 Table 3
     lec50   <- fixed(log(0.0705))        ; label("Rifampicin plasma concentration producing half Emax (mg/L)")                            # Svensson 2016 Table 2 EC50 = 0.0705 mg/L; carried from Smythe 2012 Table 3
     lkenz   <- fixed(log(0.00369 * 24))  ; label("Rate constant for first-order degradation of the enzyme pool (1/day)")                  # Svensson 2016 Table 2 kENZ = 0.00369/h * 24 = 0.0886/day; carried from Smythe 2012 Table 3
-    lfdepot <- fixed(log(1))             ; label("Oral bioavailability (fixed at 1 because CL and V are reported apparent F-relative)")   # Svensson 2016 Table 2 F = 1.00 FIX
+    lfdepot <- fixed(log(1))             ; label("Oral bioavailability (1 because CL and V are reported apparent F-relative)")   # Svensson 2016 Table 2 F = 1.00 FIX
     e_fat_cl <- fixed(0.311)             ; label("Ffat on CL/F: fractional contribution of fat mass to NFM in the CL allometric scaling") # Svensson 2016 Table 2 (Ffat)CL/F = 0.311 FIX; carried from Smythe 2012 Table 3 model 3
     e_fat_vc <- fixed(0.188)             ; label("Ffat on V/F:  fractional contribution of fat mass to NFM in the V  allometric scaling") # Svensson 2016 Table 2 (Ffat)V/F  = 0.188 FIX; carried from Smythe 2012 Table 3 model 3
 

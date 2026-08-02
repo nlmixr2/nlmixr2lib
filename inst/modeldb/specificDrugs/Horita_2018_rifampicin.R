@@ -44,8 +44,8 @@ Horita_2018_rifampicin <- function() {
 
     # Allometric exponents on body weight -- fixed at canonical theoretical values.
     # Horita 2018 Results 'RIF' paragraph 1: 'The fixed exponents were 0.75 for CL/F and 1.0 for V/F.'
-    e_wt_cl <- fixed(0.75); label("Allometric exponent on CL/F (fixed, unitless)")   # Horita 2018 Results 'RIF' paragraph 1: fixed exponent
-    e_wt_vc <- fixed(1.0);  label("Allometric exponent on V/F  (fixed, unitless)")   # Horita 2018 Results 'RIF' paragraph 1: fixed exponent
+    e_wt_cl <- fixed(0.75); label("Allometric exponent on CL/F (unitless)")   # Horita 2018 Results 'RIF' paragraph 1: fixed exponent
+    e_wt_vc <- fixed(1.0);  label("Allometric exponent on V/F (unitless)")   # Horita 2018 Results 'RIF' paragraph 1: fixed exponent
 
     # Inter-individual variability. Table 2 IIV column reports 'omega (CV%)' on the
     # log scale (back-transformed via CV% = sqrt(exp(omega^2) - 1) * 100). Encode

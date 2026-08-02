@@ -222,7 +222,7 @@ Kloprogge_2018_lumefantrine <- function() {
     # RSE 19.5%) that mildly distorts the F IIV distribution away from
     # strict log-normality; this Box-Cox departure is NOT reproduced in
     # the encoded log-normal IIV here (see vignette Errata).
-    lfdepot <- fixed(log(1)) ; label("Relative bioavailability F (unitless, fixed)")             # Kloprogge 2018 Table 2: F = 1 (fixed)
+    lfdepot <- fixed(log(1)) ; label("Relative bioavailability F (unitless)")             # Kloprogge 2018 Table 2: F = 1 (fixed)
 
     # Allometric exponents. Fixed at the canonical Mahidol-Oxford
     # malaria-popPK values used by the source paper: 3/4 on clearance
@@ -230,8 +230,8 @@ Kloprogge_2018_lumefantrine <- function() {
     # footnote: 'Clearance and volume parameters were centred on the
     # median body weight (WT) and scaled allometrically (CL and Q =
     # theta(n) * (WT/42)^(3/4); V = theta(n) * (WT/42))'.
-    e_wt_cl <- fixed(3/4) ; label("Allometric exponent on CL/F and Q/F (unitless, fixed)")        # Kloprogge 2018 Table 2 footnote (allometric scaling)
-    e_wt_vc <- fixed(1)   ; label("Allometric exponent on Vc/F and Vp/F (unitless, fixed)")        # Kloprogge 2018 Table 2 footnote (allometric scaling)
+    e_wt_cl <- fixed(3/4) ; label("Allometric exponent on CL/F and Q/F (unitless)")        # Kloprogge 2018 Table 2 footnote (allometric scaling)
+    e_wt_vc <- fixed(1)   ; label("Allometric exponent on Vc/F and Vp/F (unitless)")        # Kloprogge 2018 Table 2 footnote (allometric scaling)
 
     # Dose-saturable absorption (saturation of relative bioavailability).
     # Table 2 footnote: 'dose-dependent absorption was implemented as a

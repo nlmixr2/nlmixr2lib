@@ -72,8 +72,8 @@ Olagunju_2018_efavirenz <- function() {
     # ---- Fixed allometric exponents on body weight (paper Methods paragraph 3) ----
     # "An allometric weight model for clearance parameters is given by CLwt = (WT/WTstd)^0.75
     #  and for volume parameters is given Vwt = (WT/WTstd)^1, where WTstd = 70 kg."
-    e_wt_cl <- fixed(0.75) ; label("Allometric exponent of (WT/70) on CL/F (unitless; fixed)") # Olagunju 2018 Methods paragraph 3
-    e_wt_vc <- fixed(1.0)  ; label("Allometric exponent of (WT/70) on V/F (unitless; fixed)")  # Olagunju 2018 Methods paragraph 3
+    e_wt_cl <- fixed(0.75) ; label("Allometric exponent of (WT/70) on CL/F (unitless)") # Olagunju 2018 Methods paragraph 3
+    e_wt_vc <- fixed(1.0)  ; label("Allometric exponent of (WT/70) on V/F (unitless)")  # Olagunju 2018 Methods paragraph 3
 
     # ---- IIV (diagonal omega; exponential errors, log-normal per equation 1) ----
     # Olagunju 2018 Methods equation 1: theta_i = theta_1 * exp(eta_i)

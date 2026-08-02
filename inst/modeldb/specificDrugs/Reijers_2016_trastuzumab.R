@@ -81,8 +81,8 @@ Reijers_2016_trastuzumab <- function() {
     # i.e. the covariate exponent is structurally 1 (linear in the
     # covariate ratio) rather than an estimated power. Encoded with
     # fixed(1) to document the slope-1 form explicitly.
-    e_lbm_vc  <- fixed(1); label("Power exponent of LBM on V1 (unitless, fixed at 1 by SI Eq. 1)")     # Reijers 2016 Online Resource Eq. 1
-    e_bmi_kel <- fixed(1); label("Power exponent of BMI on ke (unitless, fixed at 1 by SI Eq. 2)")    # Reijers 2016 Online Resource Eq. 2
+    e_lbm_vc  <- fixed(1); label("Power exponent of LBM on V1 (unitless, 1 by SI Eq. 1)")     # Reijers 2016 Online Resource Eq. 1
+    e_bmi_kel <- fixed(1); label("Power exponent of BMI on ke (unitless, 1 by SI Eq. 2)")    # Reijers 2016 Online Resource Eq. 2
 
     # Inter-individual variability (Reijers 2016 Table 2 combined model).
     # Table 2 reports omega^2 directly; the CV% column is a derived

@@ -54,7 +54,7 @@ Lin_2024_pozelimab <- function() {
     # TMDD-QE target parameters (Lin 2024 Table 2; molar units uM as in
     # Supplemental Text 1; mass-equivalent values from Table 2 footnote (a))
     # ---------------------------------------------------------------------------
-    lkd    <- fixed(log(0.000189));   label("Equilibrium dissociation constant kD (uM); FIXED per SPR-Biacore measurement [paper footnote: 0.03591 mg/L]")  # Lin 2024 Table 2
+    lkd    <- fixed(log(0.000189));   label("Equilibrium dissociation constant kD (uM); per SPR-Biacore measurement [paper footnote: 0.03591 mg/L]")  # Lin 2024 Table 2
     lksyn  <- log(0.04922);           label("Synthesis rate of free C5 ksyn (uM/day) [paper footnote: 9.352 mg/L/day]")  # Lin 2024 Table 2
     lkdeg  <- log(0.1105);            label("Degradation rate constant of free C5 kdeg (1/day)")  # Lin 2024 Table 2
     lkint1 <- log(0.08086);           label("Internalization rate of pozelimab-C5 complex kint1 (1/day)")  # Lin 2024 Table 2

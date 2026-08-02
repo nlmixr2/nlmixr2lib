@@ -88,7 +88,7 @@ Mosha_2014_artemether <- function() {
     lcl     <- log(98)                ; label("Apparent artemether elimination clearance, CL/F (L/h)")               # Mosha 2014 Table 3: CL = 98 (RSE 24%; bootstrap 102, 95% CI 69-140)
     lvc     <- log(373)               ; label("Apparent artemether central volume of distribution, Vc/F (L)")        # Mosha 2014 Table 3: Vc = 373 (RSE 16%; bootstrap 354, 95% CI 225-492)
     logitfdepot <- 1.4                ; label("Logit-transformed fraction of AM dose entering AM central, logit(F1); 1 - F1 = presystemic AM-to-DHA fraction")  # Mosha 2014 Table 3: Logit F1 = 1.4 (RSE 27%; bootstrap 1.5, 95% CI 0.7 to 2.6); F1 = expit(1.4) = 0.802
-    lka     <- fixed(log(0.70))       ; label("Absorption rate constant, ka (1/h); fixed")                            # Mosha 2014 Table 3: Ka fixed at 0.70 1/h (Methods: "the absorption rate constants ... were thus fixed ... to achieve peak plasma AM and LF concentrations, respectively, 2 h and 6 to 8 h after drug intake")
+    lka     <- fixed(log(0.70))       ; label("Absorption rate constant, ka (1/h)")                            # Mosha 2014 Table 3: Ka fixed at 0.70 1/h (Methods: "the absorption rate constants ... were thus fixed ... to achieve peak plasma AM and LF concentrations, respectively, 2 h and 6 to 8 h after drug intake")
     lk23    <- log(0.084)             ; label("AM-to-DHA formation rate constant, K23 (1/h)")                         # Mosha 2014 Table 3: K23 = 0.084 (bootstrap 0.088, 95% CI 0.05-0.16)
     lcl_dihydroart <- log(71)                ; label("Apparent dihydroartemisinin elimination clearance, CL_met/F (L/h)")    # Mosha 2014 Table 3: CL_met = 71 (RSE 46%; bootstrap 69, 95% CI 38-136)
 

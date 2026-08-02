@@ -98,7 +98,7 @@ Hirt_2009_efavirenz <- function() {
     lvc       <- log(73.472)  ; label("Apparent central volume V/F at WT = 16.4 kg (L)")                                # Table 2 final V/F = 4.48 L/kg (RSE 14%) x 16.4 kg
 
     # Covariate effects.
-    e_wt_cl_vc <- fixed(1)    ; label("Shared linear (power = 1) WT exponent on CL/F and V/F (unitless; fixed)")        # Hirt 2009 Discussion paragraph 3 on page 4410 (BW exponent fixed to 1; estimated value was 1.13)
+    e_wt_cl_vc <- fixed(1)    ; label("Shared linear (power = 1) WT exponent on CL/F and V/F (unitless)")        # Hirt 2009 Discussion paragraph 3 on page 4410 (BW exponent fixed to 1; estimated value was 1.13)
     # Power exponent for the AGE covariate on CL/F. The paper writes the
     # equation as CL/F = theta_CL/F * BW / (AGE/6.35)^0.535 (the age term in
     # the denominator); equivalent to CL/F * (AGE/6.35)^(-0.535), so the

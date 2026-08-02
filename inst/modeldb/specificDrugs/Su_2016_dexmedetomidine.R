@@ -79,10 +79,10 @@ Su_2016_dexmedetomidine <- function() {
 
     # Allometric exponents - fixed a priori per Su 2016 Methods 'Full Covariate Model'
     # (theoretical allometric exponents, Anderson and Holford)
-    e_wt_cl <- fixed(0.75) ; label("Allometric exponent on CL (unitless, FIXED)")     # Su 2016 Methods: theta_allometric = 0.75 for clearances, fixed
-    e_wt_vc <- fixed(1)    ; label("Allometric exponent on V1 (unitless, FIXED)")     # Su 2016 Methods: exponent = 1 for volumes, fixed
-    e_wt_q  <- fixed(0.75) ; label("Allometric exponent on Q  (unitless, FIXED)")     # Su 2016 Methods: theta_allometric = 0.75 for clearances, fixed
-    e_wt_vp <- fixed(1)    ; label("Allometric exponent on V2 (unitless, FIXED)")     # Su 2016 Methods: exponent = 1 for volumes, fixed
+    e_wt_cl <- fixed(0.75) ; label("Allometric exponent on CL (unitless)")     # Su 2016 Methods: theta_allometric = 0.75 for clearances, fixed
+    e_wt_vc <- fixed(1)    ; label("Allometric exponent on V1 (unitless)")     # Su 2016 Methods: exponent = 1 for volumes, fixed
+    e_wt_q  <- fixed(0.75) ; label("Allometric exponent on Q (unitless)")     # Su 2016 Methods: theta_allometric = 0.75 for clearances, fixed
+    e_wt_vp <- fixed(1)    ; label("Allometric exponent on V2 (unitless)")     # Su 2016 Methods: exponent = 1 for volumes, fixed
 
     # Covariate effects on CL (Su 2016 Table 4 footnote, allometric model)
     tm50_cl     <- log(0.032) ; label("Postnatal age at which CL reaches 50% of mature value (months)")  # Table 4: Age 50% CL = 0.032 months (LLP 95% CI 0.015-0.055; SE% 34.16); log-transformed to keep estimates positive

@@ -98,7 +98,7 @@ Barnett_2018_coproporphyrin_I <- function() {
     # plasma and urine, with the plasma additive component fixed and
     # the urine additive component estimated.
     propSd        <- 0.139;        label("Proportional residual error, CPI plasma (fraction)")  # Table 1, CPI row 'r prop (%) - plasma' = 13.9 (SE 10%) -> fraction 0.139
-    addSd         <- fixed(0.001); label("Additive residual error, CPI plasma (nmol/L, fixed)")  # Table 1, CPI row 'r add (nM) - plasma' = 0.001 FIXED
+    addSd         <- fixed(0.001); label("Additive residual error, CPI plasma (nmol/L)")  # Table 1, CPI row 'r add (nM) - plasma' = 0.001 FIXED
     propSd_Ucpi   <- 0.342;        label("Proportional residual error, CPI urine (fraction)")    # Table 1, CPI row 'r prop (%) - urine'  = 34.2 (SE 6%) -> fraction 0.342
     addSd_Ucpi    <- 2.69;         label("Additive residual error, CPI urine (nmol/L)")          # Table 1, CPI row 'r add (nM) - urine'   = 2.69 (SE 28%)
   })

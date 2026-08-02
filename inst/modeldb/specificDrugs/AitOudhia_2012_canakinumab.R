@@ -56,8 +56,8 @@ AitOudhia_2012_canakinumab <- function() {
     # Allometric exponents on body weight, fixed at the canonical values
     # (Ait-Oudhia 2012 Methods, Data analysis paragraph, page 9).
     # ------------------------------------------------------------------
-    e_wt_cl_q   <- fixed(0.75); label("Fixed allometric exponent on CL, CLDL, CLL, Q (unitless)")              # Ait-Oudhia 2012 Methods page 9 (fixed at 3/4)
-    e_wt_vc_vp  <- fixed(1);    label("Fixed allometric exponent on Vc, Vp (unitless)")                        # Ait-Oudhia 2012 Methods page 9 (fixed at 1)
+    e_wt_cl_q   <- fixed(0.75); label("Allometric exponent on CL, CLDL, CLL, Q (unitless)")              # Ait-Oudhia 2012 Methods page 9 (fixed at 3/4)
+    e_wt_vc_vp  <- fixed(1);    label("Allometric exponent on Vc, Vp (unitless)")                        # Ait-Oudhia 2012 Methods page 9 (fixed at 1)
 
     # ------------------------------------------------------------------
     # CRP transduction parameters (Ait-Oudhia 2012 Table 2).

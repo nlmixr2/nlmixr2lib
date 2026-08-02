@@ -28,7 +28,7 @@ Yadav_2017_imipenem_tobramycin_PA001 <- function() {
     # --- Bacterial growth and subpopulations (Table 3, FADDI-PA001, footnote a = tobramycin fit) ---
     log10cfu0   <- 7.92;  label("Initial inoculum (log10 CFU/mL)")                                     # Table 3 footnote a: Log CFU0 = 7.92 (SE 1.2%)
     log10cfumax <- 9.23;  label("Maximum population size (log10 CFU/mL); PLAT half-saturation")        # Table 3: CFUmax = 9.23 (SE 0.7%)
-    lk21        <- fixed(log(50.0)); label("Log replication rate constant k21 (1/h; FIXED)")           # Table 3: k21 = 50 (fixed)
+    lk21        <- fixed(log(50.0)); label("Log replication rate constant k21 (1/h)")           # Table 3: k21 = 50 (fixed)
 
     mgt_ss <- 45.3; label("Mean generation time, SS subpop (min)")                                     # Table 3: k12,SS row = 45.3 (SE 10.9%)
     mgt_ri <- 481;  label("Mean generation time, IPM-resistant/TOB-intermediate (min)")                # Table 3: k12,RI row = 481 (SE 15.2%)
@@ -51,7 +51,7 @@ Yadav_2017_imipenem_tobramycin_PA001 <- function() {
     kc50_ir_ags <- 46.7;  label("Tobramycin KC50, IR subpop (mg/L)")                                   # Table 3 footnote a: KC50,IR,AGS = 46.7 (SE 9.9%)
     hill_ags    <- 2.04;  label("Hill coefficient for AGS killing (unitless)")                         # Table 3: Hill,AGS = 2.04 (SE 10%)
 
-    mtt_sig      <- fixed(1);    label("Mean turnover time of hypothetical signal molecule (h; FIXED)") # Table 3: MTT,sig = 1 (fixed)
+    mtt_sig      <- fixed(1);    label("Mean turnover time of hypothetical signal molecule (h)") # Table 3: MTT,sig = 1 (fixed)
     imax_sig12   <- 0.996;       label("Max fractional inhibition of k12 by signal molecule (unitless)") # Table 3: Imax,sig12 = 0.996 (SE 11.3%)
     log10ic50sig <- 9.63;        label("Log10 signal molecule concn at 50% Imax,sig12 (log10 CFU/mL)")  # Table 3: Log IC50,Sig = 9.63 (SE 2.3%)
 

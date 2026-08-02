@@ -101,7 +101,7 @@ Sikma_2020_tacrolimus_thoracic <- function() {
     # absolute bioavailability was not identifiable, the variability in the
     # relative bioavailability was estimated similarly with theta_k fixed at
     # 1").
-    lfdepot <- fixed(log(1)) ; label("Oral bioavailability F (FIXED at 1)")             # Sikma 2020 Table 2 F = Fixed at 1
+    lfdepot <- fixed(log(1)) ; label("Oral bioavailability F")             # Sikma 2020 Table 2 F = Fixed at 1
 
     # ---- Inter-individual variability (Sikma 2020 Table 2) ------------------
     # Reported as %CV; converted to log-scale variance via

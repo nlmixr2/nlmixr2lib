@@ -95,15 +95,15 @@ CirrincioneDall_2011_tacrolimus <- function() {
     # (WT/70)^0.75 factor inside model(). All apparent clearances in L/h;
     # apparent volumes in L; ka in 1/h.
 
-    lka <- fixed(log(4.48)); label("Absorption rate constant ka (1/h) -- fixed from literature")  # Cirrincione-Dall 2011 Table 2 KA = 4.48 1/h, fixed (Results paragraph: "absorption rate constant could not be determined ... and was fixed to 4.48 hr^-1 [5]")
+    lka <- fixed(log(4.48)); label("Absorption rate constant ka (1/h) -- from literature")  # Cirrincione-Dall 2011 Table 2 KA = 4.48 1/h, fixed (Results paragraph: "absorption rate constant could not be determined ... and was fixed to 4.48 hr^-1 [5]")
     lcl <- log(25.8)       ; label("Apparent oral clearance CL/F at the reference subject (L/h)") # Cirrincione-Dall 2011 Table 2 theta_1 = 25.8 L/h
     lvc <- log(2490)       ; label("Apparent volume V/F at WT = 70 kg (L)")                       # Cirrincione-Dall 2011 Table 2 theta_2 = 2490 L
 
     # Allometric exponents fixed by the authors at the theory-based values
     # (Results paragraph: "CL/F and V/F were allometrically scaled by weight
     # (CL/F: exponent fixed at 0.75, V/F: exponent fixed at 1)").
-    e_wt_cl <- fixed(0.75); label("Allometric exponent of (WT/70) on CL/F (unitless; fixed at theory value)")  # Cirrincione-Dall 2011 Results -- CL/F exponent fixed at 0.75
-    e_wt_vc <- fixed(1.0) ; label("Allometric exponent of (WT/70) on V/F  (unitless; fixed at theory value)")  # Cirrincione-Dall 2011 Results -- V/F  exponent fixed at 1.0
+    e_wt_cl <- fixed(0.75); label("Allometric exponent of (WT/70) on CL/F (unitless; theory value)")  # Cirrincione-Dall 2011 Results -- CL/F exponent fixed at 0.75
+    e_wt_vc <- fixed(1.0) ; label("Allometric exponent of (WT/70) on V/F (unitless; theory value)")  # Cirrincione-Dall 2011 Results -- V/F  exponent fixed at 1.0
 
     # Covariate effects on CL/F -- Cirrincione-Dall 2011 Table 2 full-model
     # estimates (case: missing CYP3A5 imputed as non-expressers). The poster's

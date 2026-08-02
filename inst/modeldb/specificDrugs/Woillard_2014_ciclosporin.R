@@ -105,7 +105,7 @@ Woillard_2014_ciclosporin <- function() {
     # Apparent peripheral volume of distribution. The paper notes the
     # peripheral volume was "arbitrarily fixed to 500 L" (Results,
     # "Pharmacokinetic models"), so the value is encoded with fixed().
-    lvp  <- fixed(log(500)); label("Apparent peripheral volume of distribution Vp/F (L), fixed") # Table 2, Vp/F = 500 L (fixed; NA SE/CI)
+    lvp  <- fixed(log(500)); label("Apparent peripheral volume of distribution Vp/F (L)") # Table 2, Vp/F = 500 L (fixed; NA SE/CI)
 
     # Apparent oral clearance.
     lcl  <- log(41.2);  label("Apparent oral clearance CL/F (L/h)")                          # Table 2, CL/F = 41.2 L/h

@@ -77,7 +77,7 @@ Li_2006_meropenem <- function() {
     # Covariate effects (power form via the .mdl INDIVIDUAL_VARIABLES log-linear block)
     e_age_cl  <- -0.34; label("AGE effect on CL: exponent of (AGE / 35) (unitless)")  # DDMODEL00000213 parObj COV_CL_AGE
     # COV_CL_CLCR was FIXED at the publication value because no CLCR distribution was reported in Li 2006.
-    e_crcl_cl <- fixed(0.62); label("CRCL effect on CL: exponent of (CRCL / 83), FIXED (unitless)")  # DDMODEL00000213 parObj COV_CL_CLCR (fix=true)
+    e_crcl_cl <- fixed(0.62); label("CRCL effect on CL: exponent of (CRCL / 83) (unitless)")  # DDMODEL00000213 parObj COV_CL_CLCR (fix=true)
     e_wt_vc   <- 0.99; label("WT effect on V1: exponent of (WT / 70) (unitless)")  # DDMODEL00000213 parObj COV_V1_WT
 
     # Inter-individual variability; DDMORE parObj reports OMEGA as variance directly (type is var).

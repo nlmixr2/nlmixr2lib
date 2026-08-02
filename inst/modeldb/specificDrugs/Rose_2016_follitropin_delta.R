@@ -82,8 +82,8 @@ Rose_2016_follitropin_delta <- function() {
     # Allometric exponents on body weight. The paper held these fixed at
     # canonical allometric values (Section 3: "with the power exponent
     # fixed to allometric values").
-    e_wt_cl <- fixed(0.75); label("Allometric exponent of WT on CL/F (unitless, fixed)") # Rose 2016 Section 3 (fixed allometric exponent)
-    e_wt_vc <- fixed(1.00); label("Allometric exponent of WT on V/F (unitless, fixed)")  # Rose 2016 Section 3 (fixed allometric exponent)
+    e_wt_cl <- fixed(0.75); label("Allometric exponent of WT on CL/F (unitless)") # Rose 2016 Section 3 (fixed allometric exponent)
+    e_wt_vc <- fixed(1.00); label("Allometric exponent of WT on V/F (unitless)")  # Rose 2016 Section 3 (fixed allometric exponent)
 
     # IIV. Rose 2016 Table 2 reports IIV as CV%; conversion to the
     # log-eta variance scale uses omega^2 = log(CV^2 + 1).

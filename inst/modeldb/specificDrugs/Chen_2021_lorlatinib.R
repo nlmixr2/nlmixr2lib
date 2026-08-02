@@ -333,8 +333,8 @@ Chen_2021_lorlatinib <- function() {
     # (no THETA slot). Wrapped in fixed() per fixed-parameter
     # conventions (parameter-names.md 'Fixed parameters').
     # ---------------------------------------------------------------------
-    e_wt_cl <- fixed(0.75) ; label("Body-weight allometric exponent on CL (unitless, fixed)")                                                        # Chen 2021 NONMEM ListS1: TVCLI = THETA(1)*(BWT/70)**0.75; TVCLMX = THETA(9)*(BWT/70)**0.75
-    e_wt_vc <- fixed(1.0)  ; label("Body-weight allometric exponent on V2 (unitless, fixed)")                                                        # Chen 2021 NONMEM ListS1: TVV2 = THETA(2)*(BWT/70)
+    e_wt_cl <- fixed(0.75) ; label("Body-weight allometric exponent on CL (unitless)")                                                        # Chen 2021 NONMEM ListS1: TVCLI = THETA(1)*(BWT/70)**0.75; TVCLMX = THETA(9)*(BWT/70)**0.75
+    e_wt_vc <- fixed(1.0)  ; label("Body-weight allometric exponent on V2 (unitless)")                                                        # Chen 2021 NONMEM ListS1: TVV2 = THETA(2)*(BWT/70)
 
     # ---------------------------------------------------------------------
     # Covariate effects on CL (linear centered ALB and DOSE_LOR_MGD; power

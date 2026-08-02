@@ -30,7 +30,7 @@ Rambiritch_2016_glibenclamide <- function() {
     lvc  <- log(11.70); label("Apparent central volume of distribution Vc/F (L)")           # Rambiritch 2016 Table 3 (Final two-compartment): V2/F = 11.70 L, RSE 9.49% (paper labels the central volume V2/F)
     lq   <- log(3.84);  label("Apparent intercompartmental clearance Q/F (L/h)")            # Rambiritch 2016 Table 3 (Final two-compartment): Q/F = 3.84 L/h, RSE 14.97%
     lvp  <- log(68.10); label("Apparent peripheral volume of distribution Vp/F (L)")        # Rambiritch 2016 Table 3 (Final two-compartment): V3/F = 68.10 L, RSE 8.81% (paper labels the peripheral volume V3/F)
-    lfdepot <- fixed(log(1)); label("Bioavailability F (fixed at 1; absolute F not identifiable from oral-only data)")  # Apparent parameterisation (CL/F, V/F, Q/F): F is not separately estimated in Rambiritch 2016; log(1) FIXED is the standard apparent-parameter anchor.
+    lfdepot <- fixed(log(1)); label("Bioavailability F (absolute F not identifiable from oral-only data)")  # Apparent parameterisation (CL/F, V/F, Q/F): F is not separately estimated in Rambiritch 2016; log(1) FIXED is the standard apparent-parameter anchor.
 
     # Inter-individual variability (BSV) -- Rambiritch 2016 Methods Eq 1: P_j = TVP * exp(eta_j); paper reports
     # sqrt(omega^2) as an approximation of CV (Methods paragraph following Eq 1), so omega^2 = (BSV%/100)^2.
