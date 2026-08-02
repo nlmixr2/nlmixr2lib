@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Aoki 2024 bosentan PBPK-TMDD ([doi:10.1002/psp4.13055](https://doi.org/10.1002/psp4.13055)) - healthy adults, 10-750 mg intravenous.
+
 - Add Wu 2023 SPI-62 ([doi:10.1007/s40262-023-01278-8](https://doi.org/10.1007/s40262-023-01278-8)) - healthy adults.
 
 - Disambiguated the overloaded `OC` name, which denoted five unrelated
