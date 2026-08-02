@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Silva 2024 APX3330 ([doi:10.1002/psp4.13061](https://doi.org/10.1002/psp4.13061)) - healthy Japanese male volunteers and patients with advanced solid tumors.
+
 - Add Wu 2023 SPI-62 ([doi:10.1007/s40262-023-01278-8](https://doi.org/10.1007/s40262-023-01278-8)) - healthy adults.
 
 - Disambiguated the overloaded `OC` name, which denoted five unrelated

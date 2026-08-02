@@ -154,6 +154,8 @@ navbar:
         href: articles/Ueshima_2018_apixaban.html
       - text: "Apomine (Bonate 2004)"
         href: articles/Bonate_2004_apomine.html
+      - text: "Apx3330 (Silva 2024)"
+        href: articles/Silva_2024_apx3330.html
       - text: "Arginine (Brussee 2016)"
         href: articles/Brussee_2016_arginine.html
       - text: "Aripiprazole (Kim 2008)"
@@ -3598,6 +3600,7 @@ articles:
   - articles/Sikma_2020_tacrolimus_thoracic
   - articles/Sikma_2020_tacrolimus_unbound_plasma
   - articles/Silva_2023_perampanel
+  - articles/Silva_2024_apx3330
   - articles/Simpson_2013_artesunate
   - articles/Simpson_2013_chloroquine
   - articles/Simpson_2013_lumefantrine
