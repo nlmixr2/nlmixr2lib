@@ -428,6 +428,8 @@ navbar:
         href: articles/Yang_2021_cemiplimab.html
       - text: "Cephalexin rat (Padoin 1998)"
         href: articles/Padoin_1998_cephalexin_rat.html
+      - text: "Cephalothin (Kuroda 2023)"
+        href: articles/Kuroda_2023_cephalothin.html
       - text: "Certolizumab (Wade 2015)"
         href: articles/Wade_2015_certolizumab.html
       - text: "Cetuximab (Dirks 2008)"
@@ -3247,6 +3249,7 @@ articles:
   - articles/Kunarajah_2017_doxorubicin
   - articles/Kunisawa_2014_olprinone
   - articles/Kunisawa_2015_landiolol
+  - articles/Kuroda_2023_cephalothin
   - articles/Kyhl_2016_nalmefene
   - articles/Lacy_2018_cabozantinib
   - articles/Lacy_2018_cabozantinib_exposure_response

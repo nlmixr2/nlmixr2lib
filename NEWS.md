@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Kuroda 2023 cephalothin ([doi:10.1294/jes.34.111](https://doi.org/10.1294/jes.34.111)) - Thoroughbred horses given intramuscular and intravenous doses.
+
 - Add Wu 2023 SPI-62 ([doi:10.1007/s40262-023-01278-8](https://doi.org/10.1007/s40262-023-01278-8)) - healthy adults.
 
 - Disambiguated the overloaded `OC` name, which denoted five unrelated
