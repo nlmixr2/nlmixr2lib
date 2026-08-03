@@ -381,8 +381,13 @@ Parmar_2023_spectinamide_1599_mouse_pbpk <- function() {
     #          Q_Liver x Cb_Liver.
     #    Both follow uniquely from mass balance and from the tabulated-flow
     #    identity in block 1; with them the system conserves drug exactly.
-    #    Neither correction changes AUC-level behaviour (see the vignette
-    #    mass-balance check), only the transient shape.
+    #    Both corrections leave the AUC-level balance unchanged and alter only
+    #    the transient shape: integrating S3 to infinity gives
+    #    AUC(Cb_Lung) = AUC(C_VenousBlood), so (a) is AUC-neutral, and the
+    #    printed liver equation inflates AUC(Cb_Liver) by exactly
+    #    (Q_Liver + Q_Spleen) / Q_Liver, which cancels against the smaller
+    #    outflow coefficient in (b). The rounding fix in block 1, by contrast,
+    #    DOES change AUC -- see the vignette mass-balance check.
     #
     #    Subcutaneous absorption enters venous blood (Parmar 2023
     #    Section 2.8); supplement S19-S21.
