@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Beredaki 2023 micafungin ([doi:10.1093/jac/dkad096](https://doi.org/10.1093/jac/dkad096)) - in vitro dialysis/diffusion PK/PD against Candida albicans, with CLSI and EUCAST parameterisations.
+- Add Rodjun 2023 colistin and sitafloxacin ([doi:10.3389/fmicb.2023.1275909](https://doi.org/10.3389/fmicb.2023.1275909)) - critically ill adults with drug-resistant *Acinetobacter baumannii* infection.
 
 - Add Wu 2023 SPI-62 ([doi:10.1007/s40262-023-01278-8](https://doi.org/10.1007/s40262-023-01278-8)) - healthy adults.
 
