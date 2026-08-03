@@ -97,9 +97,6 @@ dose_row <- data.frame(
 )
 events_typ <- dplyr::bind_rows(dose_row, sim_grid)
 sim_typ <- as.data.frame(rxode2::rxSolve(mod_typical, events_typ))
-#> rxode2 already building model, waiting for lock file removal
-#> lock file: "/tmp/RtmpMQpghI/rxode2/rx_347ee35c97689db9fcdef5bf1717ef27__.rxd/rx_347ee35c97689db9fcdef5bf1717ef27_.c.lock"
-#> .
 #> ℹ omega/sigma items treated as zero: 'etalka', 'etalfdepot', 'etalk12', 'etalk21', 'etalkel'
 
 ggplot(sim_typ, aes(time, Cc)) +

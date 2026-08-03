@@ -1582,9 +1582,6 @@ caption.</p>
 <span><span class="op">)</span></span>
 <span><span class="va">events_typ</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">dose_row</span>, <span class="va">sim_grid</span><span class="op">)</span></span>
 <span><span class="va">sim_typ</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod_typical</span>, <span class="va">events_typ</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; rxode2 already building model, waiting for lock file removal</span></span>
-<span><span class="co">#&gt; lock file: "/tmp/RtmpMQpghI/rxode2/rx_347ee35c97689db9fcdef5bf1717ef27__.rxd/rx_347ee35c97689db9fcdef5bf1717ef27_.c.lock"</span></span>
-<span><span class="co">#&gt; .</span></span>
 <span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalka', 'etalfdepot', 'etalk12', 'etalk21', 'etalkel'</span></span>
 <span></span>
 <span><span class="fu">ggplot</span><span class="op">(</span><span class="va">sim_typ</span>, <span class="fu">aes</span><span class="op">(</span><span class="va">time</span>, <span class="va">Cc</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>

@@ -380,69 +380,10 @@ single_mc <- bind_rows(
 #> dosing ('ii': 24.000000, 'ss': 0; 'addl': 0), reset 'ii' to zero
 #> Warning: 'ii' requires non zero additional doses ('addl') or steady state
 #> dosing ('ii': 24.000000, 'ss': 0; 'addl': 0), reset 'ii' to zero
-#> DLSODA-  At T (=R1), too much accuracy requested  
-#>       for precision of machine..  See TOLSF (=R2) 
-#> IDID=-2, excess accuracy requested (tolerances too small).
-#> DLSODA-  At T (=R1), too much accuracy requested  
-#>       for precision of machine..  See TOLSF (=R2) 
-#> IDID=-2, excess accuracy requested (tolerances too small).
-#> DLSODA-  At T (=R1), too much accuracy requested  
-#>       for precision of machine..  See TOLSF (=R2) 
-#> IDID=-2, excess accuracy requested (tolerances too small).
-#> DLSODA-  At T (=R1), too much accuracy requested  
-#>       for precision of machine..  See TOLSF (=R2) 
-#> IDID=-2, excess accuracy requested (tolerances too small).
-#> DLSODA-  At T (=R1), too much accuracy requested  
-#>       for precision of machine..  See TOLSF (=R2) 
-#> IDID=-2, excess accuracy requested (tolerances too small).
-#> DLSODA-  At T (=R1), too much accuracy requested  
-#>       for precision of machine..  See TOLSF (=R2) 
-#> IDID=-2, excess accuracy requested (tolerances too small).
-#> DLSODA-  At T (=R1), too much accuracy requested  
-#>       for precision of machine..  See TOLSF (=R2) 
-#> IDID=-2, excess accuracy requested (tolerances too small).
-#> DLSODA-  At T (=R1), too much accuracy requested  
-#>       for precision of machine..  See TOLSF (=R2) 
-#> IDID=-2, excess accuracy requested (tolerances too small).
-#> DLSODA-  At T (=R1), too much accuracy requested  
-#>       for precision of machine..  See TOLSF (=R2) 
-#> IDID=-2, excess accuracy requested (tolerances too small).
-#> DLSODA-  At T (=R1), too much accuracy requested  
-#>       for precision of machine..  See TOLSF (=R2) 
-#> IDID=-2, excess accuracy requested (tolerances too small).
-#> DLSODA-  At T (=R1), too much accuracy requested  
-#>       for precision of machine..  See TOLSF (=R2) 
-#> IDID=-2, excess accuracy requested (tolerances too small).
-#> DLSODA-  At T (=R1), too much accuracy requested  
-#>       for precision of machine..  See TOLSF (=R2) 
-#> IDID=-2, excess accuracy requested (tolerances too small).
-#> DLSODA-  At T (=R1), too much accuracy requested  
-#>       for precision of machine..  See TOLSF (=R2) 
-#> IDID=-2, excess accuracy requested (tolerances too small).
-#> DLSODA-  At T (=R1), too much accuracy requested  
-#>       for precision of machine..  See TOLSF (=R2) 
-#> IDID=-2, excess accuracy requested (tolerances too small).
-#> DLSODA-  At T (=R1), too much accuracy requested  
-#>       for precision of machine..  See TOLSF (=R2) 
-#> IDID=-2, excess accuracy requested (tolerances too small).
-#> DLSODA-  At T (=R1), too much accuracy requested  
-#>       for precision of machine..  See TOLSF (=R2) 
-#> IDID=-2, excess accuracy requested (tolerances too small).
-#> DLSODA-  At T (=R1), too much accuracy requested  
-#>       for precision of machine..  See TOLSF (=R2) 
-#> IDID=-2, excess accuracy requested (tolerances too small).
-#> [lsoda -- internal t + h = t (h too small for machine precision)]: 999925 warning(s) for subject(s): 120
-#> IDID=-3, step size becomes too small
-#> IDID=-3, step size becomes too small
-#> IDID=-3, step size becomes too small
-#> IDID=-3, step size becomes too small
 #> Warning: 'ii' requires non zero additional doses ('addl') or steady state
 #> dosing ('ii': 24.000000, 'ss': 0; 'addl': 0), reset 'ii' to zero
 #> Warning: 'ii' requires non zero additional doses ('addl') or steady state
 #> dosing ('ii': 24.000000, 'ss': 0; 'addl': 0), reset 'ii' to zero
-#> DLSODA-  At T (=R1), too much accuracy requested  
-#>       for precision of machine..  See TOLSF (=R2) 
-#> IDID=-2, excess accuracy requested (tolerances too small).
 
 # Five 2 mg/kg IM doses at 24 h intervals, then residue depletion.
 repeat_mc <- bind_rows(
@@ -556,25 +497,6 @@ wdi_mc <- bind_rows(
   simulate_arm("3 mg/kg twice daily",           25, 3, 12, 10L, t_repeat, seed = 302),
   simulate_arm("5 mg/kg twice daily",           25, 5, 12, 10L, t_repeat, seed = 303)
 )
-#> DLSODA-  At T (=R1), too much accuracy requested  
-#>       for precision of machine..  See TOLSF (=R2) 
-#> IDID=-2, excess accuracy requested (tolerances too small).
-#> DLSODA-  At T (=R1), too much accuracy requested  
-#>       for precision of machine..  See TOLSF (=R2) 
-#> IDID=-2, excess accuracy requested (tolerances too small).
-#> DLSODA-  At T (=R1), too much accuracy requested  
-#>       for precision of machine..  See TOLSF (=R2) 
-#> IDID=-2, excess accuracy requested (tolerances too small).
-#> DLSODA-  At T (=R1), too much accuracy requested  
-#>       for precision of machine..  See TOLSF (=R2) 
-#> IDID=-2, excess accuracy requested (tolerances too small).
-#> DLSODA-  At T (=R1), too much accuracy requested  
-#>       for precision of machine..  See TOLSF (=R2) 
-#> IDID=-2, excess accuracy requested (tolerances too small).
-#> DLSODA-  At T (=R1), too much accuracy requested  
-#>       for precision of machine..  See TOLSF (=R2) 
-#> IDID=-2, excess accuracy requested (tolerances too small).
-#> [lsoda -- internal t + h = t (h too small for machine precision)]: 1999000 warning(s) for subject(s): 148, 155
 
 mrl <- c(Liver = 0.1, Kidney = 0.2)
 
@@ -732,150 +654,6 @@ intervals <- data.frame(
 
 nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj,
                                           intervals = intervals))
-#> Warning: Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
 ```
 
 ### Comparison against published NCA
@@ -907,15 +685,15 @@ knitr::kable(
 
 | NCA parameter           | treatment        | Reference | Simulated |    % diff |
 |:------------------------|:-----------------|----------:|----------:|----------:|
-| Cmax (ug/mL)            | Lung ISF (20 kg) |      2.48 |         0 | -100.0%\* |
+| Cmax (ug/mL)            | Lung ISF (20 kg) |      2.48 |      3.01 |  +21.3%\* |
 | Cmax (ug/mL)            | Plasma (15 kg)   |         — |      3.95 |         — |
 | Tmax (h)                | Lung ISF (20 kg) |      1.25 |         1 |    -20.0% |
 | Tmax (h)                | Plasma (15 kg)   |         — |      0.25 |         — |
-| AUC0-∞ (obs) (ug\*h/mL) | Lung ISF (20 kg) |       8.4 |      10.5 |  +25.3%\* |
+| AUC0-∞ (obs) (ug\*h/mL) | Lung ISF (20 kg) |       8.4 |      10.2 |  +21.0%\* |
 | AUC0-∞ (obs) (ug\*h/mL) | Plasma (15 kg)   |      9.77 |       9.2 |     -5.9% |
-| t½ (h)                  | Lung ISF (20 kg) |      1.34 |      13.3 | +896.1%\* |
+| t½ (h)                  | Lung ISF (20 kg) |      1.34 |      13.4 | +898.8%\* |
 | t½ (h)                  | Plasma (15 kg)   |         — |      13.5 |         — |
-| MRT (h)                 | Lung ISF (20 kg) |      3.08 |      4.43 |  +43.7%\* |
+| MRT (h)                 | Lung ISF (20 kg) |      3.08 |       4.4 |  +42.8%\* |
 | MRT (h)                 | Plasma (15 kg)   |         — |      4.01 |         — |
 
 Simulated (median of 200 virtual animals) vs published NCA. \* differs
@@ -954,150 +732,6 @@ nca_window <- PKNCA::pk.nca(PKNCA::PKNCAdata(
   intervals = data.frame(start = 0, end = 11.25,
                          half.life = TRUE, mrt.obs = TRUE)
 ))
-#> Warning: Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
 
 as.data.frame(nca_window) |>
   filter(PPTESTCD %in% c("half.life", "mrt.obs")) |>
@@ -1115,8 +749,8 @@ as.data.frame(nca_window) |>
 
 | Matrix           | Parameter | Simulated | Mi 2023 (lung ISF) |
 |:-----------------|:----------|----------:|:-------------------|
-| Lung ISF (20 kg) | half.life |      2.94 | 1.34               |
-| Lung ISF (20 kg) | mrt.obs   |      2.89 | 3.08               |
+| Lung ISF (20 kg) | half.life |      3.01 | 1.34               |
+| Lung ISF (20 kg) | mrt.obs   |      2.87 | 3.08               |
 | Plasma (15 kg)   | half.life |      3.61 | not reported       |
 | Plasma (15 kg)   | mrt.obs   |      2.53 | not reported       |
 
@@ -1171,6 +805,217 @@ tmic <- bind_rows(lapply(
        c(2, 12), c(3, 12), c(4, 12), c(5, 12)),
   function(x) tmic_arm(x[1], x[2])
 ))
+#> DLSODA-  At T (=R1), too much accuracy requested  
+#>       for precision of machine..  See TOLSF (=R2) 
+#> IDID=-2, excess accuracy requested (tolerances too small).
+#> DLSODA-  At T (=R1), too much accuracy requested  
+#>       for precision of machine..  See TOLSF (=R2) 
+#> IDID=-2, excess accuracy requested (tolerances too small).
+#> DLSODA-  At T (=R1), too much accuracy requested  
+#>       for precision of machine..  See TOLSF (=R2) 
+#> IDID=-2, excess accuracy requested (tolerances too small).
+#> DLSODA-  At T (=R1), too much accuracy requested  
+#>       for precision of machine..  See TOLSF (=R2) 
+#> IDID=-2, excess accuracy requested (tolerances too small).
+#> DLSODA-  At T (=R1), too much accuracy requested  
+#>       for precision of machine..  See TOLSF (=R2) 
+#> IDID=-2, excess accuracy requested (tolerances too small).
+#> DLSODA-  At T (=R1), too much accuracy requested  
+#>       for precision of machine..  See TOLSF (=R2) 
+#> IDID=-2, excess accuracy requested (tolerances too small).
+#> DLSODA-  At T (=R1), too much accuracy requested  
+#>       for precision of machine..  See TOLSF (=R2) 
+#> IDID=-2, excess accuracy requested (tolerances too small).
+#> DLSODA-  At T (=R1), too much accuracy requested  
+#>       for precision of machine..  See TOLSF (=R2) 
+#> IDID=-2, excess accuracy requested (tolerances too small).
+#> [lsoda -- internal t + h = t (h too small for machine precision)]: 32986344 warning(s) for subject(s): 48, 49, 50, 51, 52, ... (28 more)
+#> IDID=-3, step size becomes too small
+#> DLSODA-  At T (=R1), too much accuracy requested  
+#>       for precision of machine..  See TOLSF (=R2) 
+#> IDID=-2, excess accuracy requested (tolerances too small).
+#> DLSODA-  At T (=R1), too much accuracy requested  
+#>       for precision of machine..  See TOLSF (=R2) 
+#> IDID=-2, excess accuracy requested (tolerances too small).
+#> DLSODA-  At T (=R1), too much accuracy requested  
+#>       for precision of machine..  See TOLSF (=R2) 
+#> IDID=-2, excess accuracy requested (tolerances too small).
+#> DLSODA-  At T (=R1) and step size H (=R2), the    
+#>       corrector convergence failed repeatedly     
+#>       or with ABS(H) = HMIN   
+#> IDID=-5, repeated convergence failures (perhaps bad jacobian supplied or wrong choice of jt or tolerances).
+#> DLSODA-  At T (=R1) and step size H (=R2), the    
+#>       corrector convergence failed repeatedly     
+#>       or with ABS(H) = HMIN   
+#> IDID=-5, repeated convergence failures (perhaps bad jacobian supplied or wrong choice of jt or tolerances).
+#> DLSODA-  At T (=R1) and step size H (=R2), the    
+#>       corrector convergence failed repeatedly     
+#>       or with ABS(H) = HMIN   
+#> IDID=-5, repeated convergence failures (perhaps bad jacobian supplied or wrong choice of jt or tolerances).
+#> DLSODA-  At T (=R1) and step size H (=R2), the    
+#>       corrector convergence failed repeatedly     
+#>       or with ABS(H) = HMIN   
+#> IDID=-5, repeated convergence failures (perhaps bad jacobian supplied or wrong choice of jt or tolerances).
+#> DLSODA-  At T (=R1), too much accuracy requested  
+#>       for precision of machine..  See TOLSF (=R2) 
+#> IDID=-2, excess accuracy requested (tolerances too small).
+#> DLSODA-  At T (=R1) and step size H (=R2), the    
+#>       corrector convergence failed repeatedly     
+#>       or with ABS(H) = HMIN   
+#> IDID=-5, repeated convergence failures (perhaps bad jacobian supplied or wrong choice of jt or tolerances).
+#> DLSODA-  At T (=R1) and step size H (=R2), the    
+#>       corrector convergence failed repeatedly     
+#>       or with ABS(H) = HMIN   
+#> IDID=-5, repeated convergence failures (perhaps bad jacobian supplied or wrong choice of jt or tolerances).
+#> DLSODA-  Warning..Internal T (=R1) and H (=R2) are
+#>       such that in the machine, T + H = T on the next step  
+#>      (H = step size). Solver will continue anyway.
+#> DLSODA-  Warning..Internal T (=R1) and H (=R2) are
+#>       such that in the machine, T + H = T on the next step  
+#>      (H = step size). Solver will continue anyway.
+#> DLSODA-  Warning..Internal T (=R1) and H (=R2) are
+#>       such that in the machine, T + H = T on the next step  
+#>      (H = step size). Solver will continue anyway.
+#> DLSODA-  Warning..Internal T (=R1) and H (=R2) are
+#>       such that in the machine, T + H = T on the next step  
+#>      (H = step size). Solver will continue anyway.
+#> DLSODA-  Warning..Internal T (=R1) and H (=R2) are
+#>       such that in the machine, T + H = T on the next step  
+#>      (H = step size). Solver will continue anyway.
+#> DLSODA-  Warning..Internal T (=R1) and H (=R2) are
+#>       such that in the machine, T + H = T on the next step  
+#>      (H = step size). Solver will continue anyway.
+#> DLSODA-  Warning..Internal T (=R1) and H (=R2) are
+#>       such that in the machine, T + H = T on the next step  
+#>      (H = step size). Solver will continue anyway.
+#> DLSODA-  Warning..Internal T (=R1) and H (=R2) are
+#>       such that in the machine, T + H = T on the next step  
+#>      (H = step size). Solver will continue anyway.
+#> DLSODA-  Warning..Internal T (=R1) and H (=R2) are
+#>       such that in the machine, T + H = T on the next step  
+#>      (H = step size). Solver will continue anyway.
+#> DLSODA-  Warning..Internal T (=R1) and H (=R2) are
+#>       such that in the machine, T + H = T on the next step  
+#>      (H = step size). Solver will continue anyway.
+#> DLSODA-  Above warning has been issued I1 times.  
+#>      It will not be issued again for this problem.
+#> DLSODA-  Warning..Internal T (=R1) and H (=R2) are
+#>       such that in the machine, T + H = T on the next step  
+#>      (H = step size). Solver will continue anyway.
+#> DLSODA-  Warning..Internal T (=R1) and H (=R2) are
+#>       such that in the machine, T + H = T on the next step  
+#>      (H = step size). Solver will continue anyway.
+#> DLSODA-  Warning..Internal T (=R1) and H (=R2) are
+#>       such that in the machine, T + H = T on the next step  
+#>      (H = step size). Solver will continue anyway.
+#> DLSODA-  Warning..Internal T (=R1) and H (=R2) are
+#>       such that in the machine, T + H = T on the next step  
+#>      (H = step size). Solver will continue anyway.
+#> DLSODA-  Warning..Internal T (=R1) and H (=R2) are
+#>       such that in the machine, T + H = T on the next step  
+#>      (H = step size). Solver will continue anyway.
+#> DLSODA-  Warning..Internal T (=R1) and H (=R2) are
+#>       such that in the machine, T + H = T on the next step  
+#>      (H = step size). Solver will continue anyway.
+#> DLSODA-  Warning..Internal T (=R1) and H (=R2) are
+#>       such that in the machine, T + H = T on the next step  
+#>      (H = step size). Solver will continue anyway.
+#> DLSODA-  Warning..Internal T (=R1) and H (=R2) are
+#>       such that in the machine, T + H = T on the next step  
+#>      (H = step size). Solver will continue anyway.
+#> DLSODA-  Warning..Internal T (=R1) and H (=R2) are
+#>       such that in the machine, T + H = T on the next step  
+#>      (H = step size). Solver will continue anyway.
+#> DLSODA-  Warning..Internal T (=R1) and H (=R2) are
+#>       such that in the machine, T + H = T on the next step  
+#>      (H = step size). Solver will continue anyway.
+#> DLSODA-  Above warning has been issued I1 times.  
+#>      It will not be issued again for this problem.
+#> DLSODA-  At T (=R1), too much accuracy requested  
+#>       for precision of machine..  See TOLSF (=R2) 
+#> IDID=-2, excess accuracy requested (tolerances too small).
+#> DLSODA-  At T (=R1), too much accuracy requested  
+#>       for precision of machine..  See TOLSF (=R2) 
+#> IDID=-2, excess accuracy requested (tolerances too small).
+#> DLSODA-  At T (=R1), too much accuracy requested  
+#>       for precision of machine..  See TOLSF (=R2) 
+#> IDID=-2, excess accuracy requested (tolerances too small).
+#> DLSODA-  At T (=R1), too much accuracy requested  
+#>       for precision of machine..  See TOLSF (=R2) 
+#> IDID=-2, excess accuracy requested (tolerances too small).
+#> DLSODA-  At T (=R1), too much accuracy requested  
+#>       for precision of machine..  See TOLSF (=R2) 
+#> IDID=-2, excess accuracy requested (tolerances too small).
+#> DLSODA-  At T (=R1), too much accuracy requested  
+#>       for precision of machine..  See TOLSF (=R2) 
+#> IDID=-2, excess accuracy requested (tolerances too small).
+#> DLSODA-  At T (=R1), too much accuracy requested  
+#>       for precision of machine..  See TOLSF (=R2) 
+#> IDID=-2, excess accuracy requested (tolerances too small).
+#> DLSODA-  At T (=R1), too much accuracy requested  
+#>       for precision of machine..  See TOLSF (=R2) 
+#> IDID=-2, excess accuracy requested (tolerances too small).
+#> DLSODA-  At T (=R1), too much accuracy requested  
+#>       for precision of machine..  See TOLSF (=R2) 
+#> IDID=-2, excess accuracy requested (tolerances too small).
+#> DLSODA-  At T (=R1), too much accuracy requested  
+#>       for precision of machine..  See TOLSF (=R2) 
+#> IDID=-2, excess accuracy requested (tolerances too small).
+#> DLSODA-  At T (=R1), too much accuracy requested  
+#>       for precision of machine..  See TOLSF (=R2) 
+#> IDID=-2, excess accuracy requested (tolerances too small).
+#> DLSODA-  At T (=R1), too much accuracy requested  
+#>       for precision of machine..  See TOLSF (=R2) 
+#> IDID=-2, excess accuracy requested (tolerances too small).
+#> DLSODA-  At T (=R1), too much accuracy requested  
+#>       for precision of machine..  See TOLSF (=R2) 
+#> IDID=-2, excess accuracy requested (tolerances too small).
+#> DLSODA-  At T (=R1), too much accuracy requested  
+#>       for precision of machine..  See TOLSF (=R2) 
+#> IDID=-2, excess accuracy requested (tolerances too small).
+#> DLSODA-  At T (=R1), too much accuracy requested  
+#>       for precision of machine..  See TOLSF (=R2) 
+#> IDID=-2, excess accuracy requested (tolerances too small).
+#> DLSODA-  At T (=R1), too much accuracy requested  
+#>       for precision of machine..  See TOLSF (=R2) 
+#> IDID=-2, excess accuracy requested (tolerances too small).
+#> DLSODA-  At T (=R1), too much accuracy requested  
+#>       for precision of machine..  See TOLSF (=R2) 
+#> IDID=-2, excess accuracy requested (tolerances too small).
+#> DLSODA-  At T (=R1), too much accuracy requested  
+#>       for precision of machine..  See TOLSF (=R2) 
+#> IDID=-2, excess accuracy requested (tolerances too small).
+#> DLSODA-  At T (=R1), too much accuracy requested  
+#>       for precision of machine..  See TOLSF (=R2) 
+#> IDID=-2, excess accuracy requested (tolerances too small).
+#> DLSODA-  At T (=R1), too much accuracy requested  
+#>       for precision of machine..  See TOLSF (=R2) 
+#> IDID=-2, excess accuracy requested (tolerances too small).
+#> [lsoda -- internal t + h = t (h too small for machine precision)]: 995906 warning(s) for subject(s): 22
+#> DLSODA-  At T (=R1), too much accuracy requested  
+#>       for precision of machine..  See TOLSF (=R2) 
+#> IDID=-2, excess accuracy requested (tolerances too small).
+#> DLSODA-  At T (=R1), too much accuracy requested  
+#>       for precision of machine..  See TOLSF (=R2) 
+#> IDID=-2, excess accuracy requested (tolerances too small).
+#> DLSODA-  At T (=R1), too much accuracy requested  
+#>       for precision of machine..  See TOLSF (=R2) 
+#> IDID=-2, excess accuracy requested (tolerances too small).
+#> DLSODA-  At T (=R1), too much accuracy requested  
+#>       for precision of machine..  See TOLSF (=R2) 
+#> IDID=-2, excess accuracy requested (tolerances too small).
+#> DLSODA-  At T (=R1), too much accuracy requested  
+#>       for precision of machine..  See TOLSF (=R2) 
+#> IDID=-2, excess accuracy requested (tolerances too small).
+#> DLSODA-  At T (=R1), too much accuracy requested  
+#>       for precision of machine..  See TOLSF (=R2) 
+#> IDID=-2, excess accuracy requested (tolerances too small).
+#> DLSODA-  At T (=R1), too much accuracy requested  
+#>       for precision of machine..  See TOLSF (=R2) 
+#> IDID=-2, excess accuracy requested (tolerances too small).
+#> DLSODA-  At T (=R1), too much accuracy requested  
+#>       for precision of machine..  See TOLSF (=R2) 
+#> IDID=-2, excess accuracy requested (tolerances too small).
 ```
 
 ``` r
@@ -1240,7 +1085,7 @@ tmic_summary |>
 | 2 mg/kg q12h | PELF, MIC 1 | 22.9 / 31.2 / 41.9 | 18.6 / 27.1 / 35.7 | 1.15 |
 | 2 mg/kg q12h | Plasma, MIC 0.25 | 37.5 / 50.0 / 66.9 | 30.6 / 38.7 / 49.1 | 1.29 |
 | 2 mg/kg q12h | Plasma, MIC 1 | 18.8 / 25.0 / 33.3 | 16.3 / 20.3 / 25.4 | 1.23 |
-| 3 mg/kg q12h | PELF, MIC 0.25 | 47.9 / 68.8 / 95.8 | 40.6 / 51.2 / 64.6 | 1.34 |
+| 3 mg/kg q12h | PELF, MIC 0.25 | 47.9 / 68.8 / 96.0 | 40.6 / 51.2 / 64.6 | 1.34 |
 | 3 mg/kg q12h | PELF, MIC 1 | 27.1 / 39.6 / 54.2 | 24.8 / 33.6 / 43.3 | 1.18 |
 | 3 mg/kg q12h | Plasma, MIC 0.25 | 43.8 / 60.4 / 83.3 | 35.5 / 44.9 / 56.7 | 1.35 |
 | 3 mg/kg q12h | Plasma, MIC 1 | 25.0 / 31.2 / 43.8 | 20.4 / 25.8 / 32.9 | 1.21 |
@@ -1252,14 +1097,14 @@ tmic_summary |>
 | 5 mg/kg q12h | PELF, MIC 1 | 37.3 / 45.8 / 60.4 | 31.3 / 40.6 / 51.6 | 1.13 |
 | 5 mg/kg q12h | Plasma, MIC 0.25 | 56.2 / 72.9 / 99.0 | 41.4 / 53.5 / 69.7 | 1.36 |
 | 5 mg/kg q12h | Plasma, MIC 1 | 31.2 / 39.6 / 54.2 | 26.2 / 32.6 / 40.9 | 1.21 |
-| 2 mg/kg q24h | PELF, MIC 0.25 | 19.8 / 27.1 / 36.6 | 17.6 / 22.1 / 27.8 | 1.23 |
-| 2 mg/kg q24h | PELF, MIC 1 | 10.4 / 15.1 / 20.8 | 9.0 / 13.4 / 18.0 | 1.13 |
+| 2 mg/kg q24h | PELF, MIC 0.25 | 21.8 / 27.1 / 36.6 | 17.6 / 22.1 / 27.8 | 1.23 |
+| 2 mg/kg q24h | PELF, MIC 1 | 10.4 / 15.6 / 20.8 | 9.0 / 13.4 / 18.0 | 1.17 |
 | 2 mg/kg q24h | Plasma, MIC 0.25 | 17.7 / 25.0 / 33.3 | 15.3 / 19.3 / 24.1 | 1.30 |
 | 2 mg/kg q24h | Plasma, MIC 1 | 9.4 / 12.5 / 16.7 | 8.1 / 10.1 / 12.6 | 1.24 |
-| 3 mg/kg q24h | PELF, MIC 0.25 | 24.0 / 33.3 / 43.9 | 20.2 / 25.2 / 32.0 | 1.32 |
-| 3 mg/kg q24h | PELF, MIC 1 | 13.5 / 19.8 / 25.1 | 12.5 / 16.6 / 21.6 | 1.19 |
-| 3 mg/kg q24h | Plasma, MIC 0.25 | 21.8 / 29.2 / 39.6 | 17.5 / 22.3 / 28.3 | 1.31 |
-| 3 mg/kg q24h | Plasma, MIC 1 | 12.4 / 15.6 / 21.9 | 10.1 / 12.8 / 16.2 | 1.22 |
+| 3 mg/kg q24h | PELF, MIC 0.25 | 23.9 / 33.3 / 44.9 | 20.2 / 25.2 / 32.0 | 1.32 |
+| 3 mg/kg q24h | PELF, MIC 1 | 13.4 / 19.8 / 26.0 | 12.5 / 16.6 / 21.6 | 1.19 |
+| 3 mg/kg q24h | Plasma, MIC 0.25 | 21.8 / 29.2 / 39.9 | 17.5 / 22.3 / 28.3 | 1.31 |
+| 3 mg/kg q24h | Plasma, MIC 1 | 12.4 / 15.6 / 22.0 | 10.1 / 12.8 / 16.2 | 1.22 |
 | 4 mg/kg q24h | PELF, MIC 0.25 | 27.0 / 37.5 / 50.0 | 22.0 / 27.3 / 34.1 | 1.37 |
 | 4 mg/kg q24h | PELF, MIC 1 | 16.7 / 21.9 / 29.3 | 14.2 / 18.5 / 23.7 | 1.18 |
 | 4 mg/kg q24h | Plasma, MIC 0.25 | 24.9 / 33.3 / 44.9 | 19.3 / 24.4 / 31.2 | 1.37 |

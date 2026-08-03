@@ -203,6 +203,7 @@ fit <- nlmixr2est::nlmixr(modFun, data = dMarkov, est = "focei", control = list(
 #> rxode2 5.1.5 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 #> calculating covariance matrix
+#> [====|====|====|====|====|====|====|====|====|====] 0:00:00 
 #> done
 #> → Calculating residuals/tables
 #> ✔ done
@@ -214,10 +215,10 @@ fit
 #> 
 #> ── Time (sec fit$time): ──
 #> 
-#>             setup   optimize  covariance preprocess postprocess table compress
-#> elapsed 0.0822126 0.05393464 0.002613112      0.059       0.022 0.048    0.002
-#>           other
-#> elapsed 4.24224
+#>              setup  optimize covariance preprocess postprocess table compress
+#> elapsed 0.06692274 0.5006938  0.1021185      0.056       0.024 0.047    0.002
+#>            other
+#> elapsed 4.278265
 #> 
 #> ── (fit$parFixed or fit$parFixedDf): ──
 #> 
