@@ -9483,6 +9483,17 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Example models:** `Abrantes_2017_moroctocog.R` (multiplicative effect on CL: `(1 - 0.347 * STUDY_B1831090)` so B1831090 subjects have ~34.7% lower CL than the other 12 studies; Abrantes 2017 Table 2 also reports a 95% CI of -40.7% to -24.2%).
 - **Notes:** Specific scope because the contrast is tied to the Abrantes 2017 pooled-analysis design. Subject-level / time-fixed; set once from the trial identifier on each subject record. Inclusion in the model allows the typical PK parameters to describe the remaining 12 studies, with B1831090 captured by the indicator (Abrantes 2017 Discussion). Ratified canonically on 2026-06-21 alongside the Abrantes 2017 moroctocog extraction.
 
+### HEPARIN_RT (**canonical for heparin-chromatography retention time of the administered antibody**)
+- **Description:** Retention time (minutes) at which the administered monoclonal antibody elutes from a heparin affinity column under a defined salt gradient, measured at the centre of the elution peak. A high-throughput surrogate for charge-mediated nonspecific binding, and the strongest in-vitro predictor of fast mAb clearance in the Liu 2023 developability panel. Enters the model as the driver of a sigmoidal relationship for the antibody-specific pinocytosis-uptake scaling coefficient of the Shah & Betts platform PBPK model.
+- **Units:** min
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** NULL -- continuous.
+- **Source aliases:**
+  - `Heparin_RT` -- Liu 2023 Supplementary Table S1 column name.
+- **Example models:** `Liu_2023_mAb_mouse_pbpk.R`.
+- **Notes:** Unlike every other covariate in this register, the value is a property of the **administered molecule** rather than of the subject: in an inter-antibody-variability analysis many molecules are dosed under one protocol and a measured in-vitro attribute of each molecule explains the between-molecule spread in PK. Operationally it still behaves like an ordinary covariate column -- every record for a given animal carries the retention time of the antibody that animal received, and the value is constant within subject. Assay-condition dependent, so retention times are only comparable within a single column chemistry and gradient. Liu 2023 used a HiTrap Heparin High Performance 1 mL column (Cytiva 17040601), 0.4 mg antibody loaded in 50 mM Tris pH 7.6 / 5 mM NaCl, washed 5 column volumes, then eluted on a linear 5-400 mM NaCl gradient over 20 column volumes; the reported value is the elution-peak centre. Observed range in that panel: 2.92-31.5 min (56-antibody training set) and 15.1-32.6 min (14-antibody validation set); the paper's flag threshold for a fast-clearing antibody is 16.5 min. A related but distinct readout, `Heparin_pB_buffer` (percent B buffer at elution), was measured in the same runs and is highly correlated with `HEPARIN_RT`; it is not registered here because no extracted model uses it. Filed under this section rather than founding a separate molecule-attribute family; register further developability readouts (FcRn chromatography retention time, AC-SINS, HIC retention time, BVP, calculated pI) here as siblings if and when an extracted model uses them.
+
 ## Occasion / period (IOV)
 
 ### OCC (**canonical for the integer-valued occasion / period column**)
