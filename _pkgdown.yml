@@ -860,6 +860,8 @@ navbar:
         href: articles/Larsen_2018_haemophilia_animal_popPK.html
       - text: "Factorviii (Nestorov 2014)"
         href: articles/Nestorov_2014_factorviii.html
+      - text: "Factorviii (Valke 2024)"
+        href: articles/Valke_2024_factorviii_thrombin_plasmin.html
       - text: "Factorviii dog (Larsen 2018)"
         href: articles/Larsen_2018_haemophilia_animal_popPK.html
       - text: "Factorviii fanhdi (Chelle 2019)"
@@ -868,8 +870,14 @@ navbar:
         href: articles/Larsen_2018_haemophilia_animal_popPK.html
       - text: "Factorviii mouse (Larsen 2018)"
         href: articles/Larsen_2018_haemophilia_animal_popPK.html
+      - text: "Factorviii plasminPeak (Valke 2024)"
+        href: articles/Valke_2024_factorviii_thrombin_plasmin.html
       - text: "Factorviii rat (Larsen 2018)"
         href: articles/Larsen_2018_haemophilia_animal_popPK.html
+      - text: "Factorviii thrombinPeak (Valke 2024)"
+        href: articles/Valke_2024_factorviii_thrombin_plasmin.html
+      - text: "Factorviii thrombinPotential (Valke 2024)"
+        href: articles/Valke_2024_factorviii_thrombin_plasmin.html
       - text: "Farletuzumab (Farrell 2012)"
         href: articles/Farrell_2012_farletuzumab.html
       - text: "Fasiglifam (Naik 2013)"
@@ -3706,6 +3714,7 @@ articles:
   - articles/Valenzuela_2025_nipocalimab
   - articles/Valitalo_2017_ketorolac
   - articles/Valitalo_2017_morphine
+  - articles/Valke_2024_factorviii_thrombin_plasmin
   - articles/Valle_2005_exemestane
   - articles/VanWart_2004_garenoxacin
   - articles/Varatharajan_2016_daunorubicin
