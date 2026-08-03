@@ -176,7 +176,7 @@ Hoglund_2017_piperaquine <- function() {
     # page 5: "The bioavailability was fixed to unity for the population";
     # Table 3: F (percent) = 100 fix).
     lfdepot <- fixed(log(1))
-    label("Relative bioavailability F at OCC = 1 (unitless, fixed at 1)")
+    label("Relative bioavailability F at OCC = 1 (unitless)")
     # Hoglund 2017 Table 3: F = 100% fix
 
     # Allometric exponents fixed by the source paper. Hoglund 2017 Methods

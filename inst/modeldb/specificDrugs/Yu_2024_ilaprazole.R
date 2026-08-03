@@ -82,7 +82,7 @@ Yu_2024_ilaprazole <- function() {
     etalvc ~ 0.013                   # Yu 2024 Table 3: omega^2 V = 0.013 (RSE 31.284%, 95% CI 0.005-0.021; eta-shrinkage 34.0%)
     etalvp ~ 0.032                   # Yu 2024 Table 3: omega^2 Vp = 0.032 (RSE 21.763%, 95% CI 0.018-0.046; eta-shrinkage 1.82%)
     etalcl ~ 0.059                   # Yu 2024 Table 3: omega^2 CL = 0.059 (RSE 25.051%, 95% CI 0.030-0.089; eta-shrinkage 24.4%)
-    etalq  ~ fixed(0)                # Yu 2024 Table 3: omega^2 CLp reported only as Fixed; Section 3.2 states the CLp random effect was fixed because of 84% eta-shrinkage. No numeric variance is reported anywhere in the paper or supplement, so it is encoded as fixed(0) (see vignette Errata).
+    etalq  ~ fixed(0)                # Yu 2024 Table 3: omega^2 CLp reported only as; Section 3.2 states the CLp random effect was because of 84% eta-shrinkage. No numeric variance is reported anywhere in the paper or supplement, so it is encoded as (0) (see vignette Errata).
 
     # ------------------------------------------------------------------
     # Residual error - multiplicative (proportional) model.

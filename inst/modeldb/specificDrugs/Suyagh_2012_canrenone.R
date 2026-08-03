@@ -158,10 +158,10 @@ Suyagh_2012_canrenone <- function() {
 
     # ---- Allometric exponents (fixed at canonical 0.75 / 1.0) ----
     e_wt_cl <- fixed(0.75)
-    label("Allometric exponent for WT on CL/F (unitless, fixed)")               # Methods p. 866 + Table 3: theta_1 = 0.75, fixed (canonical adult allometric value per Anderson / Holford; not estimated in the final model)
+    label("Allometric exponent for WT on CL/F (unitless)")               # Methods p. 866 + Table 3: theta_1 = 0.75, fixed (canonical adult allometric value per Anderson / Holford; not estimated in the final model)
 
     e_wt_vc <- fixed(1.0)
-    label("Allometric exponent for WT on V/F (unitless, fixed)")                # Methods p. 866 + Table 3: theta_2 = 1.0, fixed (canonical adult allometric value per Anderson / Holford; not estimated in the final model)
+    label("Allometric exponent for WT on V/F (unitless)")                # Methods p. 866 + Table 3: theta_2 = 1.0, fixed (canonical adult allometric value per Anderson / Holford; not estimated in the final model)
 
     # ---- IIV (log-scale variances; omega^2 = log(1 + CV^2)) ----
     # The paper reports IIV in CV% on the log-normal P_i = P_pop * exp(eta_i)

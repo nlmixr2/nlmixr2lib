@@ -173,7 +173,7 @@ Morris_2011_telapristone <- function() {
 
     # Metabolite (CDB-4453) parameters
     lvc_cdb4453 <- fixed(log(1))
-    label("Metabolite V3/F -- apparent volume (L), FIXED for identifiability")              # Table II 'V3/F (L)' = 1 (fixed); Methods 'V3/F was fixed to 1 L'
+    label("Metabolite V3/F -- apparent volume (L), for identifiability")              # Table II 'V3/F (L)' = 1 (fixed); Methods 'V3/F was fixed to 1 L'
     lcl_cdb4453 <- log(2.43)
     label("Metabolite CLM/F -- apparent clearance (L/h)")                                   # Table II 'CLM/F (L/h)' (Estimate 2.43, RSE 15.1 %)
     lfmetest    <- log(0.201)

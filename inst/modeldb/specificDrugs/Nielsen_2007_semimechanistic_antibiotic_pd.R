@@ -91,7 +91,7 @@ Nielsen_2007_semimechanistic_antibiotic_pd <- function() {
     lke0_pen <- log(1.00)
     label("Log benzylpenicillin biophase equilibration rate constant (ke_pen, 1/h)")  # Table 3: ke = 1.00 (RSE 9.6%)
     lkdeg_pen <- fixed(log(0.020))
-    label("Log benzylpenicillin first-order degradation rate constant in broth (kdeg_pen, 1/h; FIXED from stability study)")  # Results p 132: kdeg = 0.020 h-1 (FIXED)
+    label("Log benzylpenicillin first-order degradation rate constant in broth (kdeg_pen, 1/h; from stability study)")  # Results p 132: kdeg = 0.020 h-1 (FIXED)
 
     # Cefuroxime (Emax = 3.30 1/h, EC50 = 0.00829 mg/L, gamma = 1.69, ke = 0.861 1/h)
     lemax_cxm <- log(3.30)
@@ -103,7 +103,7 @@ Nielsen_2007_semimechanistic_antibiotic_pd <- function() {
     lke0_cxm <- log(0.861)
     label("Log cefuroxime biophase equilibration rate constant (ke_cxm, 1/h)")  # Table 3: ke = 0.861 (RSE 17%)
     lkdeg_cxm <- fixed(log(0.026))
-    label("Log cefuroxime first-order degradation rate constant in broth (kdeg_cxm, 1/h; FIXED from stability study)")  # Results p 132: kdeg = 0.026 h-1 (FIXED)
+    label("Log cefuroxime first-order degradation rate constant in broth (kdeg_cxm, 1/h; from stability study)")  # Results p 132: kdeg = 0.026 h-1 (FIXED)
 
     # Erythromycin (Emax = 2.03 1/h, EC50 = 0.0276 mg/L, gamma = 0.769, ke fixed at 100 1/h,
     # kdeg = 0 because no significant degradation over 24 h per the stability study)
@@ -114,9 +114,9 @@ Nielsen_2007_semimechanistic_antibiotic_pd <- function() {
     lhill_ery <- log(0.769)
     label("Log erythromycin Hill sigmoidicity exponent (gamma_ery, unitless)")  # Table 3: gamma = 0.769 (RSE 19%)
     lke0_ery <- fixed(log(100))
-    label("Log erythromycin biophase equilibration rate constant (ke_ery, 1/h; FIXED -- data did not support estimation)")  # Table 3: ke = 100 (FIXED); Results p 132
+    label("Log erythromycin biophase equilibration rate constant (ke_ery, 1/h; -- data did not support estimation)")  # Table 3: ke = 100 (FIXED); Results p 132
     lkdeg_ery <- fixed(log(1e-6))
-    label("Log erythromycin first-order degradation rate constant in broth (kdeg_ery, 1/h; FIXED negligible)")  # Results p 132: no significant degradation over 24 h
+    label("Log erythromycin first-order degradation rate constant in broth (kdeg_ery, 1/h; negligible)")  # Results p 132: no significant degradation over 24 h
 
     # Moxifloxacin (Emax = 3.20 1/h, EC50 = 0.0747 mg/L, gamma = 1.59, ke = 0.644 1/h)
     lemax_mxf <- log(3.20)
@@ -128,7 +128,7 @@ Nielsen_2007_semimechanistic_antibiotic_pd <- function() {
     lke0_mxf <- log(0.644)
     label("Log moxifloxacin biophase equilibration rate constant (ke_mxf, 1/h)")  # Table 3: ke = 0.644 (RSE 20%)
     lkdeg_mxf <- fixed(log(1e-6))
-    label("Log moxifloxacin first-order degradation rate constant in broth (kdeg_mxf, 1/h; FIXED negligible)")  # Results p 132: no significant degradation over 24 h
+    label("Log moxifloxacin first-order degradation rate constant in broth (kdeg_mxf, 1/h; negligible)")  # Results p 132: no significant degradation over 24 h
 
     # Vancomycin (Emax = 1.36 1/h, EC50 = 0.384 mg/L, gamma = 20 FIXED, ke fixed at 100 1/h,
     # kdeg = 0 because no significant degradation over 24 h)
@@ -137,11 +137,11 @@ Nielsen_2007_semimechanistic_antibiotic_pd <- function() {
     lec50_van <- log(0.384)
     label("Log vancomycin half-maximum-effect biophase concentration (EC50_van, mg/L)")  # Table 3: EC50 = 0.384 (RSE 0.9%)
     lhill_van <- fixed(log(20))
-    label("Log vancomycin Hill sigmoidicity exponent (gamma_van, unitless; FIXED -- very steep all-or-nothing effect)")  # Table 3: gamma = 20 (FIXED at lowest value that did not harm the fit)
+    label("Log vancomycin Hill sigmoidicity exponent (gamma_van, unitless; -- very steep all-or-nothing effect)")  # Table 3: gamma = 20 (FIXED at lowest value that did not harm the fit)
     lke0_van <- fixed(log(100))
-    label("Log vancomycin biophase equilibration rate constant (ke_van, 1/h; FIXED -- data did not support estimation)")  # Table 3: ke = 100 (FIXED); Results p 132
+    label("Log vancomycin biophase equilibration rate constant (ke_van, 1/h; -- data did not support estimation)")  # Table 3: ke = 100 (FIXED); Results p 132
     lkdeg_van <- fixed(log(1e-6))
-    label("Log vancomycin first-order degradation rate constant in broth (kdeg_van, 1/h; FIXED negligible)")  # Results p 132: no significant degradation over 24 h
+    label("Log vancomycin first-order degradation rate constant in broth (kdeg_van, 1/h; negligible)")  # Results p 132: no significant degradation over 24 h
 
     # --- Residual error ---
     # Nielsen 2007 used the Karlsson 1995 two-component residual model with

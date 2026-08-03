@@ -93,19 +93,19 @@ Dodds_2021_covid19_viralkinetic <- function() {
     # =========================================================================
 
     lT0    <- fixed(log(1.33e5))
-    label("Initial target-cell density T0 (#/mL); FIXED")                              # Dodds 2021 Section 2.1: T0 = 1.33E5 #/mL
+    label("Initial target-cell density T0 (#/mL)")                              # Dodds 2021 Section 2.1: T0 = 1.33E5 #/mL
     lV0    <- fixed(log(0.1))
-    label("Initial free-virion concentration V0 (copies/mL); FIXED")                   # Dodds 2021 Section 2.1: V0 = 0.1 #/mL
+    label("Initial free-virion concentration V0 (copies/mL)")                   # Dodds 2021 Section 2.1: V0 = 0.1 #/mL
     lk     <- fixed(log(3))
-    label("Eclipse-to-productive transition rate k (1/day); FIXED")                    # Dodds 2021 Section 2.1: k = 3 1/d
+    label("Eclipse-to-productive transition rate k (1/day)")                    # Dodds 2021 Section 2.1: k = 3 1/d
     ldelta <- fixed(log(0.60))
-    label("Productively-infected cell death rate delta (1/day); FIXED")                # Dodds 2021 Section 2.1: delta = 0.60 1/d
+    label("Productively-infected cell death rate delta (1/day)")                # Dodds 2021 Section 2.1: delta = 0.60 1/d
     lrho   <- fixed(log(22.7))
-    label("Virion production rate rho (virions/cell/day); FIXED")                      # Dodds 2021 Section 2.1: rho = 22.7 1/d
+    label("Virion production rate rho (virions/cell/day)")                      # Dodds 2021 Section 2.1: rho = 22.7 1/d
     lc     <- fixed(log(10))
-    label("Free-virion clearance rate c (1/day); FIXED")                               # Dodds 2021 Section 2.1: c = 10 1/d
+    label("Free-virion clearance rate c (1/day)")                               # Dodds 2021 Section 2.1: c = 10 1/d
     lR0    <- fixed(log(8.6))
-    label("Basic reproductive ratio R0 (unitless); FIXED")                             # Dodds 2021 Section 2.1: R0 = 8.6 (used to derive beta)
+    label("Basic reproductive ratio R0 (unitless)")                             # Dodds 2021 Section 2.1: R0 = 8.6 (used to derive beta)
 
     # =========================================================================
     # Intervention parameters (Dodds 2021 Section 2.2). Interventions are
@@ -128,17 +128,17 @@ Dodds_2021_covid19_viralkinetic <- function() {
     # =========================================================================
 
     imax_beta  <- fixed(0)
-    label("Fractional inhibition of beta at t >= t_intervention (0-1); FIXED default = 0 (no effect)")  # Dodds 2021 Section 2.2 (inhibitory function on beta)
+    label("Fractional inhibition of beta at t >= t_intervention (0-1); default = 0 (no effect)")  # Dodds 2021 Section 2.2 (inhibitory function on beta)
     imax_k     <- fixed(0)
-    label("Fractional inhibition of k at t >= t_intervention (0-1); FIXED default = 0 (no effect)")     # Dodds 2021 Section 2.2 (inhibitory function on k)
+    label("Fractional inhibition of k at t >= t_intervention (0-1); default = 0 (no effect)")     # Dodds 2021 Section 2.2 (inhibitory function on k)
     imax_rho   <- fixed(0)
-    label("Fractional inhibition of rho at t >= t_intervention (0-1); FIXED default = 0 (no effect)")   # Dodds 2021 Section 2.2 (inhibitory function on rho)
+    label("Fractional inhibition of rho at t >= t_intervention (0-1); default = 0 (no effect)")   # Dodds 2021 Section 2.2 (inhibitory function on rho)
     smax_delta <- fixed(0)
-    label("Multiplicative stimulation of delta at t >= t_intervention (>= 0); FIXED default = 0")       # Dodds 2021 Section 2.2 (stimulatory function on delta)
+    label("Multiplicative stimulation of delta at t >= t_intervention (>= 0); default = 0")       # Dodds 2021 Section 2.2 (stimulatory function on delta)
     smax_c     <- fixed(0)
-    label("Multiplicative stimulation of c at t >= t_intervention (>= 0); FIXED default = 0")           # Dodds 2021 Section 2.2 (stimulatory function on c)
+    label("Multiplicative stimulation of c at t >= t_intervention (>= 0); default = 0")           # Dodds 2021 Section 2.2 (stimulatory function on c)
     t_intervention <- fixed(1e6)
-    label("Intervention start time (day); FIXED default = 1e6 (never during a normal simulation window)")  # Dodds 2021 Section 2.2 (Heaviside onset time)
+    label("Intervention start time (day); default = 1e6 (never during a normal simulation window)")  # Dodds 2021 Section 2.2 (Heaviside onset time)
   })
 
   model({

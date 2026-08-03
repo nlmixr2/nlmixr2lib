@@ -131,7 +131,7 @@ Knibbe_2009_morphine <- function() {
     label("Allometric exponent of body weight on clearances (unitless)")
     # Output_real_run4.lst FINAL: TH 4 = 1.44E+00.
     allo_v <- fix(1.00)
-    label("Allometric exponent of body weight on volumes (unitless, FIXED in source)")
+    label("Allometric exponent of body weight on volumes (unitless, from source)")
     # Output_real_run4.lst FINAL: TH 5 = 1.00E+00; source `.mod` $THETA flag `1 FIX`.
 
     # IIV. The source `.mod` $OMEGA structure is:

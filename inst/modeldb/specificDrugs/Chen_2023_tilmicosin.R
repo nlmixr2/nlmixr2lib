@@ -76,14 +76,14 @@ Chen_2023_tilmicosin <- function() {
     # the challenge strain, not an estimated parameter. Change it to
     # apply the model to an isolate with a different susceptibility.
     mic <- fixed(0.25)
-    label("Tilmicosin MIC against P. multocida D:7 (ug/mL; FIXED, measured)")  # Chen 2023 Section 3.1: MIC = 0.25 ug/mL in both TCF and TSB broth
+    label("Tilmicosin MIC against P. multocida D:7 (ug/mL;, measured)")  # Chen 2023 Section 3.1: MIC = 0.25 ug/mL in both TCF and TSB broth
 
     # =============================================================
     # Starting bacterial density
     # =============================================================
     # FIXED experimental design input, not an estimated parameter.
     log10_cfu0 <- fixed(7)
-    label("log10 starting bacterial density in the tissue cage (log10 CFU/mL; FIXED)")  # Chen 2023 Section 2.2 (cages with ~10^7 CFU/mL selected) and Section 3.3 (untreated control remained around 10^7 CFU/mL)
+    label("log10 starting bacterial density in the tissue cage (log10 CFU/mL)")  # Chen 2023 Section 2.2 (cages with ~10^7 CFU/mL selected) and Section 3.3 (untreated control remained around 10^7 CFU/mL)
 
     # =============================================================
     # Residual error
@@ -94,7 +94,7 @@ Chen_2023_tilmicosin <- function() {
     # held at zero for deterministic typical-value simulation. See the
     # vignette Assumptions and deviations section.
     addSd <- fixed(0)
-    label("Additive residual SD on log10 CFU/mL (FIXED 0; not reported in Chen 2023)")  # Chen 2023 reported R^2 only, no residual SD
+    label("Additive residual SD on log10 CFU/mL (0; not reported in Chen 2023)")  # Chen 2023 reported R^2 only, no residual SD
   })
 
   model({

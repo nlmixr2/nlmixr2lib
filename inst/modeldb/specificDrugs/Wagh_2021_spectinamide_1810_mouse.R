@@ -97,7 +97,7 @@ Wagh_2021_spectinamide_1810_mouse <- function() {
     # model() are the linear-scale carrying capacity and initial CFU.
     # =========================================================================
     lkgs    <- fixed(log(0.0357))
-    label("Net bacterial growth rate K_gs (1/h; FIXED from natural-growth fit)")
+    label("Net bacterial growth rate K_gs (1/h; from natural-growth fit)")
     # Wagh 2021 Table 2: K_gs = 0.0357 1/h (RSE 4%), corresponding to a
     # bacterial doubling time of log(2)/K_gs = 19.4 h (the paper reports a
     # mean generation time of 28.0 h via 1/K_gs * ln(2) when expressed on
@@ -105,13 +105,13 @@ Wagh_2021_spectinamide_1810_mouse <- function() {
     # parameterisation used here).
 
     lbmax   <- fixed(log(10) * 6.11)
-    label("Log of carrying capacity (natural-log of N_max linear; CFU per lung; FIXED)")
+    label("Log of carrying capacity (natural-log of N_max linear; CFU per lung)")
     # Wagh 2021 Table 2: Log N_max = 6.11 (RSE 1%) on log10 scale ->
     # N_max = 10^6.11 = 1.288e6 CFU per lung. Stored as natural log of the
     # linear value so bmax = exp(lbmax) returns the linear carrying capacity.
 
     lrbase  <- fixed(log(10) * 1.77)
-    label("Log of initial bacterial count at aerosol infection time (natural-log of CFU per lung; FIXED)")
+    label("Log of initial bacterial count at aerosol infection time (natural-log of CFU per lung)")
     # Wagh 2021 Table 2: Log CFU initial = 1.77 (RSE 3%) on log10 scale ->
     # 10^1.77 = 58.9 CFU per lung. Used as the bacteria(0) initial condition.
 
@@ -142,7 +142,7 @@ Wagh_2021_spectinamide_1810_mouse <- function() {
     # PAE half-life of log(2) / K_PAE = 48.8 h (Wagh 2021 Discussion).
 
     e_study_killmax <- fixed(1.15)
-    label("Study-2 multiplicative effect on K_kill_max relative to study 1 (FIXED)")
+    label("Study-2 multiplicative effect on K_kill_max relative to study 1")
     # Wagh 2021 Table 3: study-specific coefficient for K_kill_max = 1.15
     # (RSE 4.0%); applied multiplicatively as K_kill_max_study2 = K_kill_max *
     # (1 + STUDY_WAGH_2 * (e_study_killmax - 1)) = K_kill_max * 1.15 when

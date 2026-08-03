@@ -146,20 +146,20 @@ Morganroth_2015_moxifloxacin <- function() {
     # pooled kel above.
     # ------------------------------------------------------------------
     lka <- fixed(log(1.7))
-    label("Absorption rate constant ka (1/h; NCA-derived, fixed)")
+    label("Absorption rate constant ka (1/h; NCA-derived)")
     # NCA-derived to reproduce Morganroth 2015 Table 1 median tmax = 2 h
     # given the pooled 1-compartment kel = 0.0639 /h. NOT a popPK fit --
     # see vignette Errata.
 
     lcl <- fixed(log(8.47 * 70 / 71))
-    label("Apparent clearance CL/F (L/h, reference WT 70 kg; NCA-derived, fixed)")
+    label("Apparent clearance CL/F (L/h, reference WT 70 kg; NCA-derived)")
     # Pooled Dose / AUC(0, inf) from Morganroth 2015 Table 1: 400 mg /
     # ((52.1 + 42.4)/2 ug/mL h) = 8.47 L/h at pooled reference WT 71 kg.
     # Rescaled to canonical reference WT 70 kg via linear scaling:
     # 8.47 * 70/71 = 8.35 L/h. NOT a popPK fit -- see vignette Errata.
 
     lvc <- fixed(log(132.6 * 70 / 71))
-    label("Apparent central volume of distribution V/F (L, reference WT 70 kg; NCA-derived, fixed)")
+    label("Apparent central volume of distribution V/F (L, reference WT 70 kg; NCA-derived)")
     # Pooled V/F = (CL/F) / kel = 8.47 / (ln(2) / 10.85) = 132.6 L at
     # pooled reference WT 71 kg; rescaled to canonical reference WT 70
     # kg via linear scaling: 132.6 * 70/71 = 130.7 L. NOT a popPK fit

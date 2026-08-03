@@ -18,6 +18,42 @@ utils::globalVariables(c("modeldb"))
 #' @return The text needed for documenting the "modeldb" object (see the modeldb
 #'   roxygen eval statement)
 #' @noRd
+# Accumulator for error-severity convention issues found while loading models.
+# An environment rather than `<<-`: the assignment target is named at the
+# assignment site, and it survives being called from a nested loader.
+.conventionErrorEnv <- new.env(parent = emptyenv())
+
+.conventionErrorsReset <- function() {
+  .conventionErrorEnv$byModel <- list()
+  invisible(NULL)
+}
+
+.conventionErrorsAdd <- function(modelName, issues) {
+  if (is.null(.conventionErrorEnv$byModel)) .conventionErrorsReset()
+  .conventionErrorEnv$byModel[[modelName]] <- issues
+  invisible(NULL)
+}
+
+.conventionErrorsStopIfAny <- function() {
+  byModel <- .conventionErrorEnv$byModel
+  if (is.null(byModel) || length(byModel) == 0) return(invisible(NULL))
+  n <- sum(vapply(byModel, nrow, integer(1)))
+  detail <- vapply(names(byModel), function(nm) {
+    iss <- byModel[[nm]]
+    paste0("  ", nm, ": ",
+           paste(sprintf("%s (%s)", iss$name, iss$category), collapse = ", "))
+  }, character(1))
+  stop(
+    sprintf(
+      paste0("buildModelDb(): %d convention error(s) in %d model(s).\n%s\n",
+             "Run checkModelConventions(\"<model>\") for the full report and ",
+             "suggested fix."),
+      n, length(byModel), paste(detail, collapse = "\n")
+    ),
+    call. = FALSE
+  )
+}
+
 buildModelDb <- function() {
   # Find the package root directory
   packageDirectory <- normalizePath(".", winslash = "/")
@@ -30,6 +66,7 @@ buildModelDb <- function() {
     }
   }
   message("Building the modeldb from ", packageDirectory)
+  .conventionErrorsReset()
   cachePath <- file.path(packageDirectory, "data-raw/modeldb-cache.rds")
   cache <- .modeldbCacheRead(cachePath)
   sig <- .modeldbGlobalSig(packageDirectory)
@@ -44,6 +81,9 @@ buildModelDb <- function() {
     entries = cache$entries
   )
   modeldb <- result$modeldb
+  # Abort before writing artifacts: a database with convention errors in it
+  # must never be saved, or the next build starts from a bad cache.
+  .conventionErrorsStopIfAny()
   # Drop the base package directory name so that will be installation-agnostic
   modeldb$filename <-
     gsub(
@@ -148,8 +188,14 @@ addFileToModelDb <- function(dir, file, modeldb) {
   # Parse the model to get the fixed effects and DV parameters
   mod <- nlmixr2est::nlmixr(eval(parsedFile))
 
-  # Convention check. Reports deviations but does not halt the build so that
-  # grandfathered models continue to regenerate while their issues surface.
+  # Convention check. Error-severity issues are accumulated and abort
+  # `buildModelDb()` once every model has been visited -- see
+  # `.conventionErrors`. Failing at the end rather than on the first model
+  # means one run reports every offending model instead of one per rebuild.
+  #
+  # This used to only report. That made the checks advisory: 53 error-severity
+  # violations rode into a consolidation branch and the build still succeeded,
+  # because nothing consumed the count.
   issues <- tryCatch(
     suppressWarnings(checkModelConventions(mod, verbose = FALSE)),
     error = function(e) NULL
@@ -157,6 +203,9 @@ addFileToModelDb <- function(dir, file, modeldb) {
   if (!is.null(issues) && nrow(issues) > 0) {
     n_err <- sum(issues$severity == "error")
     n_warn <- sum(issues$severity == "warning")
+    if (n_err > 0) {
+      .conventionErrorsAdd(modelName, issues[issues$severity == "error", , drop = FALSE])
+    }
     if (n_err + n_warn > 0) {
       message(sprintf(
         "  %s: %d convention error(s), %d warning(s) - run checkModelConventions(\"%s\") for details",

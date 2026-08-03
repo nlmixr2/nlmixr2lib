@@ -80,7 +80,7 @@ Bulitta_2010_colistin_PAO1 <- function() {
     # static time-kill setup; this anchors the equilibrium that
     # defines POPmax via VGmax_S = POPmax * kd.
     kd_nat <- fixed(0.3)
-    label("First-order natural death rate constant (1/h; kd; FIXED to Meagher 2004 ref 45)")  # Bulitta 2010 Table 1 footnote (a)
+    label("First-order natural death rate constant (1/h; kd; Meagher 2004 ref 45)")  # Bulitta 2010 Table 1 footnote (a)
 
     # Growth-lag half-life: cells start in bact_slag (no growth, no
     # natural death) and transit to bact_s at rate klag = ln(2)/t12.
@@ -141,17 +141,17 @@ Bulitta_2010_colistin_PAO1 <- function() {
     # Hill coefficient: initially estimated 10-20 then fixed to 10
     # for model stability (footnote e).
     hill_rec <- fixed(10)
-    label("Receptor-occupancy Hill coefficient (unitless; gamma; FIXED at 10 per Table 1 footnote e)")  # Bulitta 2010 Table 1 footnote (e)
+    label("Receptor-occupancy Hill coefficient (unitless; gamma; per Table 1 footnote e)")  # Bulitta 2010 Table 1 footnote (e)
     # Receptor dissociation constants (footnote g) -- FIXED per
     # Schindler & Osborn 1979 (S. Typhimurium G30A) and Methods
     # Receptor occupancy paragraph. Units umol/L.
     kdiss_cation <- fixed(200)
-    label("Receptor dissociation constant for Mg2+/Ca2+ (umol/L; KdCations; FIXED at 200)")  # Bulitta 2010 Methods, Table 1 footnote (g)
+    label("Receptor dissociation constant for Mg2+/Ca2+ (umol/L; KdCations)")  # Bulitta 2010 Methods, Table 1 footnote (g)
     kdiss_colistin <- fixed(0.3)
-    label("Receptor dissociation constant for colistin (umol/L; KdColistin; FIXED at 0.3)")  # Bulitta 2010 Methods, Table 1 footnote (g)
+    label("Receptor dissociation constant for colistin (umol/L; KdColistin)")  # Bulitta 2010 Methods, Table 1 footnote (g)
     # Colistin molecular mass for mg/L <-> umol/L unit conversion.
     mw_colistin <- fixed(1.163)
-    label("Mean colistin A+B molar mass (mg/umol = g/mmol; equivalent to 1163 g/mol; FIXED)")  # Bulitta 2010 Methods, paragraph after Eq. 1
+    label("Mean colistin A+B molar mass (mg/umol = g/mmol; equivalent to 1163 g/mol)")  # Bulitta 2010 Methods, paragraph after Eq. 1
 
     # Second-order killing rate constants per subpopulation.
     lk2s <- log(5.72)

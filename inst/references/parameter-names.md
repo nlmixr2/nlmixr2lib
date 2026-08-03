@@ -919,6 +919,46 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
 - **Source aliases:** none.
 - **Example models:** indirect-response PD models; `Lindauer_2017_pembrolizumab.R`, `Siebinga_2023_lu177psma617.R` (tissue-exchange form).
 
+### lkinf_rbc, kinf_rbc (**canonical first-order influx rate constant into the red-cell analyte pool**)
+- **Type:** paper-named-param
+- **Role:** First-order rate constant (1 / time) for LINEAR influx of drug or active metabolite from plasma into the intracellular red-cell pool (`rbc_<analyte>`, see `compartment-names.md`). Enters as `d/dt(rbc_<analyte>) = kinf_rbc * Cc - keff_rbc * rbc_<analyte>`, so the plasma concentration `Cc` must be expressed in the same concentration units as the red-cell state for the term to be dimensionally consistent.
+- **Source aliases:**
+  - `Kin` -- used in `Gebhard_2023_methotrexate.R` (paper symbol `K_in^MTX`).
+- **Example models:** `Gebhard_2023_methotrexate.R` (`K_in^MTX = 0.031 1/day`), `Gebhard_2023_mercaptopurine_anc.R`.
+- **Notes:** Registered 2026-07-30 (sidecar `oare_PMC10359452` request-001 q2, option A). The `kinf` stem is deliberately NOT `kin`: the canonical `kin` is a ZERO-ORDER production rate into an indirect-response turnover pool, which is a different quantity with different units, so reusing that stem would actively mislead. Distinct also from `clin` / `clef` (`Campagne_2019_cyclophosphamide_mouse.R`), which are plasma-to-tissue influx / efflux CLEARANCES (volume / time) paired with an `ecf` compartment; `kinf_rbc` / `keff_rbc` are first-order RATE CONSTANTS. The `_rbc` suffix marks the destination pool; no analyte suffix is carried because each model file holds a single drug arm. A future model fitting two red-cell arms jointly would extend to `lkinf_rbc_<analyte>`.
+
+### lkeff_rbc, keff_rbc (**canonical first-order efflux / elimination rate constant out of the red-cell analyte pool**)
+- **Type:** paper-named-param
+- **Role:** First-order rate constant (1 / time) for loss of drug or active metabolite from the intracellular red-cell pool (`rbc_<analyte>`), combining efflux back to plasma, intracellular catabolism, and red-cell turnover into a single lumped rate. Enters as the `- keff_rbc * rbc_<analyte>` term of the red-cell ODE.
+- **Source aliases:**
+  - `Keff` -- used in `Gebhard_2023_methotrexate.R` and `Gebhard_2023_mercaptopurine.R` (paper symbols `K_eff^MTX`, `K_eff^6MP`).
+- **Example models:** `Gebhard_2023_methotrexate.R` (`K_eff^MTX = 0.018 1/day`), `Gebhard_2023_mercaptopurine.R` (`K_eff^6MP = 0.041 1/day`), `Gebhard_2023_mercaptopurine_anc.R` (`K_eff^6MP = 0.050 1/day`).
+- **Notes:** Registered 2026-07-30 (sidecar `oare_PMC10359452` request-001 q2, option A). Because the rate is lumped, its reciprocal half-life is a red-cell residence property rather than a pure membrane-transport property -- Gebhard 2023's Discussion validates `K_eff^MTX = 0.018 1/day` against literature red-cell methotrexate half-lives of 30-40 days (0.017-0.023 1/day).
+
+### lvmax_rbc, vmax_rbc (**canonical saturable-influx maximum rate into the red-cell analyte pool**)
+- **Type:** paper-named-param
+- **Role:** Maximum rate (concentration / time, e.g. umol/L/day) of SATURABLE Michaelis-Menten influx from plasma into the intracellular red-cell pool: `d/dt(rbc_<analyte>) = vmax_rbc * Cc / (km_rbc + Cc) - keff_rbc * rbc_<analyte>`.
+- **Source aliases:**
+  - `Vmm` -- used in `Gebhard_2023_mercaptopurine.R` (paper symbol `V_mm^6MP`).
+- **Example models:** `Gebhard_2023_mercaptopurine.R` (`V_mm^6MP = 0.096 umol/L/day`), `Gebhard_2023_mercaptopurine_anc.R` (`V_mm^6MP = 0.21 umol/L/day`).
+- **Notes:** Registered 2026-07-30 (sidecar `oare_PMC10359452` request-001 q2, option A). Extends the blessed `vmax_<suffix>` / `km_<suffix>` disambiguation pattern to a saturable INFLUX. Distinct from the canonical bare `vmax` / log `lvmax`, which are registered for saturable ELIMINATION and carry amount/time units; `vmax_rbc` is an influx into a concentration state and therefore carries concentration/time units.
+
+### lkm_rbc, km_rbc (**canonical saturable-influx half-saturation concentration for the red-cell analyte pool**)
+- **Type:** paper-named-param
+- **Role:** Michaelis constant (concentration, e.g. umol/L) of the saturable influx into the intracellular red-cell pool; the plasma concentration at which influx reaches half of `vmax_rbc`.
+- **Source aliases:**
+  - `Kmm` -- used in `Gebhard_2023_mercaptopurine.R` (paper symbol `K_mm^6MP`).
+- **Example models:** `Gebhard_2023_mercaptopurine.R` (`K_mm^6MP = 0.016 umol/L`), `Gebhard_2023_mercaptopurine_anc.R` (`K_mm^6MP = 0.14 umol/L`).
+- **Notes:** Registered 2026-07-30 (sidecar `oare_PMC10359452` request-001 q2, option A). Paired with `lvmax_rbc`; both are meaningless alone.
+
+### linieff, inieff (**canonical mid-therapy initialisation fraction for a turnover / maturation chain**)
+- **Type:** paper-named-param
+- **Role:** Dimensionless fraction of the turnover baseline (`rbase`) at which a turnover or maturation chain is initialised when the observation record starts DURING ongoing therapy rather than at drug-free baseline. The terminal state is initialised at `inieff * rbase` and the upstream chain states at the steady-state values implied by that terminal value, so the chain begins at a treatment steady state carrying an unobserved historical drug effect rather than at the untreated baseline.
+- **Source aliases:**
+  - `inieff` -- used in `Gebhard_2023_mercaptopurine_anc.R` (Gebhard 2023 main text: "we assume to have reached a treatment steady state with an additional parameter `inieff` describing the drug effect at the initial time point and `X_ma(0) = inieff * base`").
+- **Example models:** `Gebhard_2023_mercaptopurine_anc.R` (`inieff = 0.87`, RSE 22%, CV 54%; Friberg chain initialised mid-maintenance-therapy for childhood ALL).
+- **Notes:** Registered 2026-07-30 (sidecar `oare_PMC10359452` request-001 q3, option A -- paper-faithful naming, following the register's existing paper-named precedents `le0` and `kmet`). Estimated with IIV in Gebhard 2023, which is what distinguishes it from a fixed initialisation convention: it absorbs the between-patient spread in how suppressed each patient's ANC already was when their record began. A value of 1 recovers the ordinary drug-free-baseline initialisation. Distinct from `rbase`, which is the untreated baseline itself.
+
 ### kdeg (**canonical degradation rate**)
 - **Type:** paper-named-param
 - **Role:** First-order degradation rate constant (paper-synonym for elimination in turnover models).
@@ -1050,97 +1090,12 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
 - **Example models:** `Siebinga_2023_lu177psma617.R` (`cal_bias_blood` = 0.273 MBq/L, fixed; the paper attributes it to calibration uncertainty from extreme calibration ranges for blood samples).
 - **Notes:** Registered 2026-07-30. A positive `cal_bias_<matrix>` raises the prediction, so it forces predictions above the drug-free baseline; Siebinga 2023 notes this is the source of the apparent under-prediction of low blood observations in its CWRES plots.
 
-## Retired names
-
-These spellings were used in the library and have been replaced. They are
-enforced by `conventions$renamedParameters` in `R/conventions.R`;
-`checkModelConventions()` raises an **error** if one reappears, and
-`buildModelDb()` runs that check on every build, so a new model cannot
-reintroduce them. Retired 2026-07-31 (issues #474-#477).
-
-| Retired | Use instead | Why |
-|---|---|---|
-| `allo_cl`, `allo_q`, `allo_vc`, `allo_vp` | `e_wt_cl`, `e_wt_q`, `e_wt_vc`, `e_wt_vp` | The `allo_` prefix hid *which* covariate drives the scaling, so a weight exponent could not be found by searching `e_wt_`. All 35 affected models were weight-based. |
-| `allovc`, `allovp` | `e_wt_vc`, `e_wt_vp` | As above, without the separator. |
-| `dCLdWT`, `dVdWT` | `e_wt_cl`, `e_wt_vc` | Derivative-style spelling for what is a power exponent. |
-| `logitf1` | `logitfdepot`, or `logitffo` / `logitfburst` | `f1` named the NONMEM slot, not the quantity; bioavailability and a parallel-pathway fraction were sharing one name. |
-| `logitfr` | `logitffo`, or `logitfburst` | Ambiguous `r` (rapid? relative? remaining?). |
-| `logitf1st` | `logitffo` | Positional, not mechanistic. |
-| `lcll` | `lcl_ligand` | One `l` apart from `lcl`, the drug's own clearance. |
-| `cllira`, `lcllira_ref` | `cl_lira`, `lcl_lira_ref` | Same collision, liraglutide-specific. |
-| `lKss`, `lkD`, `lBmax` | `lkss`, `lkd`, `lbmax` | Interior capitals defeat case-sensitive search. |
-| `Km` | `km` | As above. |
-| `kd_LR`, `kd_T1`, `kd_T2` | `kd_lr`, `kd_t1`, `kd_t2` | As above. |
-
-Renaming is deliberately *not* applied mechanically to every similar-looking
-name. `lrbase`, for example, appears in 102 models with at least four
-distinct meanings, 89 of them indirect-response PD baselines rather than
-target baselines; a blanket sweep would corrupt them. Names are retired only
-after checking every occurrence.
-
-## Time-varying clearance (issue #481)
-
-Registered 2026-08-01. 31 models gave clearance an explicit time dependence under
-20-odd different spellings, so neither the structure nor the magnitude of the
-change could be found or compared without expanding each `d/dt(central)`. Two
-stems, chosen so the functional form is visible in the name.
-`checkModelConventions()` warns when a clearance expression in `model({})`
-references `t` / `time` without one of them.
-
-**Do not reuse `emax`, `imax`, `gamma`, `hill` or `t50`** for clearance
-time-dependence: all are standard PD parameter names, and several of these models
-carry both a PD `emax` and a clearance one. That is also why these are enforced
-structurally rather than through `conventions$renamedParameters` -- a global ban
-on those spellings would break unrelated models.
-
-**The symbol the ODE consumes is the total clearance.** Name components so they
-cannot be mistaken for it. A decaying component can fall by dozens of orders of
-magnitude over a treatment course, which is meaningless in isolation but looks
-like a clearance value.
-
-Periodic (diurnal / circadian) variation is a different structure and keeps its
-own names: `Bienczak_2016_nevirapine` (cosine) and `Hayashi_1998_epoetinBeta`
-(clock offset) are deliberately excluded, as are `Mann_2022_respiratory_physiology`
-(a lag state) and `Yoshida_2024_fazpilodemab` (ADA-gated logistic onset).
-
-### cl_hill_max (**canonical maximum fractional change in time-varying clearance**)
-- **Type:** bare-pk
-- **Role:** Maximum fractional (log-scale) change in CL as t grows, in `cl <- cl_base * exp(cl_hill_max * t^cl_hill_gamma / (cl_hill_t50^cl_hill_gamma + t^cl_hill_gamma))`. Negative when clearance falls over the treatment course.
-- **Source aliases:** `cl_emax`, `emax`, `imax`, `clm`, `cl_tmax_mono`, `cl_tmax_combo`, `cltmax`, `dCLmax`.
-- **Example models:** `Bajaj_2017_nivolumab.R`, `Zhang_2019_nivolumab.R`, `Sanghavi_2020_ipilimumab.R`, `Masters_2022_avelumab.R`, `Yang_2021_cemiplimab.R`, `Wang_2024_sugemalimab.R`, `Melhem_2022_dostarlimab.R`, `Kuchimanchi_2024_dostarlimab.R`, `Collins_2023_belantamab_mprotein.R`, `Papathanasiou_2025_belantamab.R`, `Fau_2020_isatuximab.R`, `Hwang_2022_tremelimumab.R`, `Bonate_2004_apomine.R`, `Lawson_2022_busulfan.R`.
-- **Notes:** Suffix the treatment arm when a model splits it (`cl_hill_max_mono`, `cl_hill_max_combo`); suffix `_i` for the individual value inside `model({})`.
-
-### cl_hill_t50 (**canonical time of half-maximal change in time-varying clearance**)
-- **Type:** bare-pk
-- **Role:** Time at which the change in CL reaches half of `cl_hill_max`.
-- **Source aliases:** `t50`, `ti50`, `kcl`, `cl_tc50`, `clt50`, `tm50_time`, `t50_cl_time`.
-- **Example models:** as `cl_hill_max`, plus `Gupta_2006_peginterferon_alfa_2b.R` and `GonzalezSales_2024_imetelstat.R`, which use the hyperbolic (gamma = 1) special case and so carry no `cl_hill_gamma`.
-- **Notes:** `lcl_hill_t50` for the log scale, `etalcl_hill_t50` for its IIV partner.
-
-### cl_hill_gamma (**canonical sigmoidicity of time-varying clearance**)
-- **Type:** bare-pk
-- **Role:** Hill / sigmoidicity exponent on time in the expression above.
-- **Source aliases:** `cl_hill`, `gamma`, `gam`, `hill`, `lambda`, `cl_lambda_mono`, `cl_lambda_combo`, `clgamma`.
-- **Example models:** as `cl_hill_max`.
-- **Notes:** Named `gamma` rather than `hill` inside the `cl_hill_` stem to avoid `cl_hill_hill`. Distinct from the PD `lhill` (sigmoidal Emax exponent) and `lgamma` (Friberg / TGI exponents).
-
-### cl_exp_inf (**canonical asymptote of exponentially-decaying clearance**)
-- **Type:** bare-pk
-- **Role:** Clearance as t goes to infinity, in `cl <- cl_exp_inf + cl_exp_component * exp(-cl_exp_kdes * t)`.
-- **Source aliases:** `cl_ss`, `clmx`, and a plain `lcl` where the paper's CL is the asymptote rather than the total.
-- **Example models:** `Gibiansky_2014_obinutuzumab.R`, `Rozman_2017_rituximab.R`, `Wang_2014_vatalanib.R`, `Yamada_2025_zolbetuximab.R`, `Wu_2024_inotuzumab.R`, `Chen_2021_lorlatinib.R`, `Jones_2011_PF04878691.R` (+3 siblings).
-- **Notes:** `lcl_exp_inf` for the log scale.
-
-### cl_exp_component (**canonical decaying component of time-varying clearance**)
-- **Type:** bare-pk
-- **Role:** Value at t = 0 of the component that decays away, leaving `cl_exp_inf`.
-- **Source aliases:** `cl_time`, `cl_time0`, `cl_time_init`, `cl_time_typ`, `cl_t_now`, `cl_t`.
-- **Example models:** as `cl_exp_inf`, plus `Lu_2019_polatuzumab.R`, `Lu_2017_polatuzumab_neuropathy.R`, `Lee_2023_patritumab.R`.
-- **Notes:** This is a component, **not** a clearance. Issue #481 singles out `Lee_2023_patritumab`'s old `cl_t_now`, which falls by 56 orders of magnitude over a year and looks like a clearance value in isolation. When evaluated at time t inside `model({})`, suffix `_t` (`cl_exp_component_t`).
-
-### cl_exp_kdes (**canonical decay rate of time-varying clearance**)
-- **Type:** bare-pk
-- **Role:** First-order rate constant at which `cl_exp_component` decays.
-- **Source aliases:** `kdes`, `kdeg`, `kdeg_cl`, `kdecay`, `k_ind`.
-- **Example models:** as `cl_exp_component`.
-- **Notes:** `lcl_exp_kdes` for the log scale, `e_<cov>_cl_exp_kdes` for a covariate effect (`e_nhl_cl_exp_kdes` in Gibiansky 2014).
+### mic (**canonical minimum inhibitory concentration of the challenge organism**)
+- **Type:** paper-named-param
+- **Role:** Minimum inhibitory concentration of the drug against the specific challenge isolate, in concentration units, used as the DENOMINATOR of a PK/PD index in antimicrobial / antifungal exposure-response models (`AUC/MIC`, `Cmax/MIC`, `%T>MIC`). Not an estimated parameter: it is a measured susceptibility property of the isolate, so it is always wrapped in `fixed()` and is the natural knob a downstream user changes to apply the model to an organism of different susceptibility. Because the same isolate has different MICs by different reference methods, a model whose exposure-response was fitted against one susceptibility methodology must state which one in the `label()`; when a paper fits parallel exposure-response relationships against two methodologies, those are separate model files (see `Beredaki_2023_micafungin_clsi.R` / `..._eucast.R`).
+- **Source aliases:**
+  - `MIC` -- near-universal paper notation.
+  - `MIC50`, `MIC90` -- population-distribution percentiles; use `mic` only for a single organism's own MIC, and record which percentile the value is in the `label()` and the source-trace comment.
+  - `MEC` -- minimum effective concentration, the echinocandin/mould analogue of the MIC, reported for filamentous fungi.
+- **Example models:** `Chen_2023_tilmicosin.R` (`mic` = 0.25 ug/mL, the CLSI broth-microdilution MIC of *Pasteurella multocida* C44-15, driving an `AUC24h/MIC` sigmoidal Emax); `Beredaki_2023_micafungin_clsi.R` (`mic` = 0.008 mg/L, CLSI M27 median MIC of *Candida albicans* CA 580) and `Beredaki_2023_micafungin_eucast.R` (`mic` = 0.016 mg/L, the EUCAST E.Def 7.3 median MIC of the same isolate), both driving an `fAUC0-24/MIC` sigmoidal Emax.
+- **Notes:** Ratified for AUC/MIC-index models alongside the Chen 2023 tilmicosin extraction; this register entry was written with the Beredaki 2023 micafungin extraction. Distinct from `ec50` / `lec50`: `ec50` is the *fitted* index value producing half-maximal effect (and in an `AUC/MIC`-indexed model is unitless, or has units of time), whereas `mic` is a *measured* concentration used to form the index in the first place. In a model where the index is a free-drug exposure, apply the unbound fraction (`fu`) to the exposure numerator and leave `mic` on the total-drug scale the susceptibility method actually reports.

@@ -212,7 +212,7 @@ Jonsson_2015_edoxaban <- function() {
     etalvc            ~ 0.027225   # var = 0.165^2 ; Jonsson 2015 Table 1 'Vc, %CV = 16.5' (RSE 32.7%); control stream initial 0.0281244
     etalvp            ~ 0.123201   # var = 0.351^2 ; Jonsson 2015 Table 1 'Vp, %CV = 35.1' (RSE 23.2%); control stream initial 0.123084
     etalmtt           ~ 0.283024   # var = 0.532^2 ; Jonsson 2015 Table 1 'MTT, %CV = 53.2' (RSE 27.9%); control stream initial 0.284762
-    etalnn            ~ fixed(1.4884) # var = 1.22^2 ; Jonsson 2015 Table 1 'NN, %CV = 122 (ne)' -- fixed, footnote c; control stream $OMEGA 1.50033 FIX
+    etalnn            ~ fixed(1.4884) # var = 1.22^2; Jonsson 2015 Table 1 'NN, %CV = 122 (ne)', footnote c; control stream $OMEGA 1.50033 FIX
 
     # IIV on F is on the LOGIT scale (control stream: VF1 = EXP(PSI +
     # ETA(5)); BIO = VF1/(1 + VF1)). Table 1 reports 0.129 for F, which per

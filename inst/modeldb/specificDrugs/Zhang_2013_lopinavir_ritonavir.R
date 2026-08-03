@@ -153,9 +153,9 @@ Zhang_2013_lopinavir_ritonavir <- function() {
     # peripheral volume (Vp)" -- allometric scaling on CL/Q with exponent
     # 0.75 and on V/Vp with exponent 1).
     e_wt_cl <- fixed(0.75)
-    label("Allometric exponent on apparent CL and Q (unitless, fixed)")        # Zhang 2013 Methods: allometric scaling
+    label("Allometric exponent on apparent CL and Q (unitless)")        # Zhang 2013 Methods: allometric scaling
     e_wt_vc <- fixed(1.00)
-    label("Allometric exponent on apparent V and Vp (unitless, fixed)")        # Zhang 2013 Methods: allometric scaling
+    label("Allometric exponent on apparent V and Vp (unitless)")        # Zhang 2013 Methods: allometric scaling
 
     # =========================================================================
     # Rifampicin effect on apparent CL of lopinavir and ritonavir.

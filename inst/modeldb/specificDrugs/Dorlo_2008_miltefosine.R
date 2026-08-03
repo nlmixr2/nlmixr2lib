@@ -162,7 +162,7 @@ Dorlo_2008_miltefosine <- function() {
     # so it is structurally fixed at 1; the structural parameters above
     # are all apparent CL/F, V/F, Q/F).
     lfdepot <- fixed(log(1))
-    label("Relative bioavailability F (unitless, FIXED at 1)")              # Methods 'Pharmacokinetic data analysis' paragraph 3: 'Bioavailability (F) was unknown, and therefore, parameters relative to the bioavailability were estimated (CL/F, V/F, etc.)'
+    label("Relative bioavailability F (unitless)")              # Methods 'Pharmacokinetic data analysis' paragraph 3: 'Bioavailability (F) was unknown, and therefore, parameters relative to the bioavailability were estimated (CL/F, V/F, etc.)'
 
     # ============================================================
     # Inter-individual variability -- Dorlo 2008 Table 2 column

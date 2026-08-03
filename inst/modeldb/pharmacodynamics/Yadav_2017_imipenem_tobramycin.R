@@ -70,7 +70,7 @@ Yadav_2017_imipenem_tobramycin <- function() {
     # and fixed at 50 /h per Table 1 ("Replication rate constant
     # (h-1) k21 = 50 (fixed)").
     lk21 <- fixed(log(50))
-    label("Replication rate constant k21 (1/h; S2 -> 2*S1 doubling; FIXED)")  # Yadav 2017 Table 1
+    label("Replication rate constant k21 (1/h; S2 -> 2*S1 doubling)")  # Yadav 2017 Table 1
 
     # Mean generation time (minutes) for the slow S1 -> S2 transition.
     # Table 1 reports k12,SR^-1 = 142 (min) and k12,IR^-1 = 142 (min)

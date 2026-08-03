@@ -109,7 +109,7 @@ Mazzocco_2015_temozolomide <- function() {
     # KDE IIV is reported as "50 (FIXED)" in Table 2 -- the value of the
     # variance is held constant rather than estimated. The corresponding
     # log-normal omega^2 is log(0.50^2 + 1) = 0.2231.
-    etalkel      ~ fixed(0.2231)  # CV 50% (FIXED) -> omega^2 = log(0.50^2 + 1) per Mazzocco 2015 Table 2
+    etalkel      ~ fixed(0.2231)  # CV 50% -> omega^2 = log(0.50^2 + 1) per Mazzocco 2015 Table 2
 
     # Constant additive residual error on MTD ("constant error model with
     # parameter value a", Mazzocco 2015 Methods).

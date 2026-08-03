@@ -102,7 +102,7 @@ Tarning_2012_artemether <- function() {
     # absolute oral bioavailability data available) but estimated IIV on
     # F to capture between-subject variability in absorption.
     lfdepot <- fixed(log(1))
-    label("Relative bioavailability F (unitless); fixed at 1")  # Tarning 2012 Table 2: F = "1 (fixed)" (no estimation, no RSE)
+    label("Relative bioavailability F (unitless)")  # Tarning 2012 Table 2: F = "1 (fixed)" (no estimation, no RSE)
 
     # Inter-individual variability. Tarning 2012 Table 2 reports IIV as
     # %CV with footnote a: "IIV is presented as 100 * sqrt(exp(omega^2) -

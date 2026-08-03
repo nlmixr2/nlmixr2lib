@@ -59,7 +59,7 @@ Schipani_2013_atazanavir_ritonavir <- function() {
     lvc    <- log(106)
     label("Atazanavir apparent volume of distribution, V/F (L)")                     # Table 2: V/F ATV = 106 L, RSE 7%
     lka    <- fixed(log(1.81))
-    label("Atazanavir first-order absorption rate, ka (1/h, FIXED)")                 # Table 2: ka ATV (per hour) fixed = 1.81 (final estimate of separate ATV model in Table 1)
+    label("Atazanavir first-order absorption rate, ka (1/h)")                 # Table 2: ka ATV (per hour) fixed = 1.81 (final estimate of separate ATV model in Table 1)
     ltlag  <- log(0.87)
     label("Atazanavir absorption lag time, Tlag (h)")                                # Table 2: Lag T ATV = 0.87 h, RSE 2%
 
@@ -72,7 +72,7 @@ Schipani_2013_atazanavir_ritonavir <- function() {
     lvc_rtv    <- log(124)
     label("Ritonavir apparent volume of distribution, V/F (L)")                      # Table 2: V/F RTV = 124 L, RSE 11%
     lka_rtv    <- fixed(log(0.898))
-    label("Ritonavir first-order absorption rate, ka (1/h, FIXED)")                  # Table 2: ka RTV (per hour) fixed = 0.898 (final estimate of separate RTV model in Table 1)
+    label("Ritonavir first-order absorption rate, ka (1/h)")                  # Table 2: ka RTV (per hour) fixed = 0.898 (final estimate of separate RTV model in Table 1)
     lalag_rtv  <- log(1.05)
     label("Ritonavir absorption lag time, Tlag (h)")                                 # Table 2: Lag T RTV = 1.05 h, RSE 1%
 

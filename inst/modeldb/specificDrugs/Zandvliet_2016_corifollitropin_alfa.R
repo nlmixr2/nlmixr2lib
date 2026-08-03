@@ -209,7 +209,7 @@ Zandvliet_2016_corifollitropin_alfa <- function() {
     label("Corifollitropin alfa apparent clearance CL/F (L/h)")         # Zandvliet 2016 Table 3 theta_3
 
     lfdepot <- fixed(log(1))
-    label("Corifollitropin alfa bioavailability anchor F (FIXED at 1; the dose / V / CL scaling carries the apparent F)")  # Zandvliet 2016 Table 3 theta_6 = 1 FIX
+    label("Corifollitropin alfa bioavailability anchor F (the dose / V / CL scaling carries the apparent F)")  # Zandvliet 2016 Table 3 theta_6 = 1 FIX
 
     # ------------------------------------------------------------------
     # CORIFOLLITROPIN ALFA COVARIATE EFFECTS

@@ -133,7 +133,7 @@ Hoglund_2012_piperaquine <- function() {
     # fixed to 100%"). All F variability is captured by IIV around F (BSV
     # and BOV in the source paper; see etalfdepot below).
     lfdepot <- fixed(log(1))
-    label("Relative bioavailability F (unitless, fixed at 1)")
+    label("Relative bioavailability F (unitless)")
     # Hoglund 2012 Table 2: F (%) = 100 fix (no estimation, no RSE)
 
     # Allometric exponents fixed by the source paper (strong biological prior;

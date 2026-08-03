@@ -59,7 +59,7 @@ Bulitta_2010_colistin_URMC1 <- function() {
     label("Least-susceptible-population low-density growth half-life (min; t1/2(kg,low CFU)_R)")  # Bulitta 2010 Table 1, URMC1
 
     kd_nat <- fixed(0.3)
-    label("First-order natural death rate constant (1/h; kd; FIXED to Meagher 2004 ref 45)")  # Bulitta 2010 Table 1 footnote (a)
+    label("First-order natural death rate constant (1/h; kd; Meagher 2004 ref 45)")  # Bulitta 2010 Table 1 footnote (a)
 
     t12_klag <- 1.36
     label("Growth-lag half-life (h; t1/2(klag); klag = ln(2)/t12_klag)")  # Bulitta 2010 Table 1, URMC1
@@ -98,13 +98,13 @@ Bulitta_2010_colistin_URMC1 <- function() {
     ec50_rec <- 0.316
     label("Fraction of receptors not occupied by Mg2+/Ca2+ giving 50% effective colistin (EC50, unitless)")  # Bulitta 2010 Table 1, URMC1
     hill_rec <- fixed(10)
-    label("Receptor-occupancy Hill coefficient (unitless; gamma; FIXED at 10 per Table 1 footnote e)")  # Bulitta 2010 Table 1 footnote (e)
+    label("Receptor-occupancy Hill coefficient (unitless; gamma; per Table 1 footnote e)")  # Bulitta 2010 Table 1 footnote (e)
     kdiss_cation <- fixed(200)
-    label("Receptor dissociation constant for Mg2+/Ca2+ (umol/L; KdCations; FIXED at 200)")  # Bulitta 2010 Methods, Table 1 footnote (g)
+    label("Receptor dissociation constant for Mg2+/Ca2+ (umol/L; KdCations)")  # Bulitta 2010 Methods, Table 1 footnote (g)
     kdiss_colistin <- fixed(0.3)
-    label("Receptor dissociation constant for colistin (umol/L; KdColistin; FIXED at 0.3)")  # Bulitta 2010 Methods, Table 1 footnote (g)
+    label("Receptor dissociation constant for colistin (umol/L; KdColistin)")  # Bulitta 2010 Methods, Table 1 footnote (g)
     mw_colistin <- fixed(1.163)
-    label("Mean colistin A+B molar mass (mg/umol = g/mmol; equivalent to 1163 g/mol; FIXED)")  # Bulitta 2010 Methods, paragraph after Eq. 1
+    label("Mean colistin A+B molar mass (mg/umol = g/mmol; equivalent to 1163 g/mol)")  # Bulitta 2010 Methods, paragraph after Eq. 1
 
     lk2s <- log(7.88)
     label("Susceptible-population second-order killing rate constant (L/(mg*h); k2S)")  # Bulitta 2010 Table 1, URMC1

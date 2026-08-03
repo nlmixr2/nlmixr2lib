@@ -96,7 +96,7 @@ Golubovic_2019_sirolimus <- function() {
     etalvc ~ 0.306            # Table IV: omega^2 Vc/F = 0.306
     etalvp ~ 0.0657           # Table IV: omega^2 Vp/F = 0.0657
     etalq  ~ 0.103            # Table IV: omega^2 Q/F  = 0.103
-    etalka ~ fixed(0.145)     # Table IV: omega^2 ka  = 0.145 (prior-fixed; SE 1.28e-6, bootstrap CI 0.144-0.144)
+    etalka ~ fixed(0.145)     # Table IV: omega^2 ka = 0.145 (prior; SE 1.28e-6, bootstrap CI 0.144-0.144)
 
     # Residual unexplained variability: "slope-intercept" (combined additive
     # + proportional) error model (Results, "the residual variability was

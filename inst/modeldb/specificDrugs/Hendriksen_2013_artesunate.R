@@ -84,7 +84,7 @@ Hendriksen_2013_artesunate <- function() {
     # phase to estimate it (Hendriksen 2013 Results p.444 / Table 2: DUR
     # 1.00 min FIXED).
     ldur    <- fixed(log(1 / 60))
-    label("IM zero-order input duration (h); fixed at 1 min")
+    label("IM zero-order input duration (h); 1 min")
 
     # Allometric exponents, fixed in the source paper ("body weight was used
     # as a fixed allometric function on all elimination clearance (power of

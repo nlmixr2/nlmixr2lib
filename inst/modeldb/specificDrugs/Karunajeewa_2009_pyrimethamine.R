@@ -125,7 +125,7 @@ Karunajeewa_2009_pyrimethamine <- function() {
     lvp <- log(76.8)
     label("PYR apparent peripheral volume Vp/F in nonpregnant women at WT = 70 kg (L)")   # Table 4: Vp/F = 76.8 L/70kg
     lfdepot <- fixed(log(1))
-    label("PYR relative bioavailability F (unitless, FIXED at 1)")                        # Methods: all V and CL parameters expressed relative to F
+    label("PYR relative bioavailability F (unitless)")                        # Methods: all V and CL parameters expressed relative to F
 
     # ============================================================
     # Pregnancy effects (all additive) on CL/F, Vc/F, Vp/F.

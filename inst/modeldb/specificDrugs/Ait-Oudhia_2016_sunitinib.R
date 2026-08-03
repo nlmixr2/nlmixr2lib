@@ -124,15 +124,15 @@
     # omega^2 = log(CV^2 + 1).
     # ----------------------------------------------------------------------
     # Sunitinib PK IIVs -- all fixed from Houk 2009 (Table 1 footnote a)
-    etalvc ~ fixed(0.1821); label("IIV variance on log V1_D/F (44.7% CV, fixed Houk 2009)")     # Table 1 footnote a
-    etalcl ~ fixed(0.1342); label("IIV variance on log CL_D/F (37.9% CV, fixed Houk 2009)")     # Table 1 footnote a
-    etalka ~ fixed(0.5066); label("IIV variance on log ka_D (81.2% CV, fixed Houk 2009)")       # Table 1 footnote a
+    etalvc ~ fixed(0.1821); label("IIV variance on log V1_D/F (44.7% CV, Houk 2009)")     # Table 1 footnote a
+    etalcl ~ fixed(0.1342); label("IIV variance on log CL_D/F (37.9% CV, Houk 2009)")     # Table 1 footnote a
+    etalka ~ fixed(0.5066); label("IIV variance on log ka_D (81.2% CV, Houk 2009)")       # Table 1 footnote a
 
     # SU12662 PK IIVs -- V1_M and CL_M BSVs fixed; ka_M BSV estimated
     # (Table 1 reports the "a" footnote on V1_M and CL_M BSV cells but
     # not on the ka_M BSV cell). Q_M and V2_M carry no IIV in Table 1.
-    etalvc_su12662 ~ fixed(0.3534); label("IIV variance on log V1_M/F (65.1% CV, fixed Houk 2009)")  # Table 1 footnote a
-    etalcl_su12662 ~ fixed(0.2410); label("IIV variance on log CL_M/F (52.2% CV, fixed Houk 2009)")  # Table 1 footnote a
+    etalvc_su12662 ~ fixed(0.3534); label("IIV variance on log V1_M/F (65.1% CV, Houk 2009)")  # Table 1 footnote a
+    etalcl_su12662 ~ fixed(0.2410); label("IIV variance on log CL_M/F (52.2% CV, Houk 2009)")  # Table 1 footnote a
     etalka_su12662 ~ 0.5843;        label("IIV variance on log ka_M (89.1% CV; estimated)")          # Table 1
 
     # sVEGFR2 IIVs -- kout BSV is reported with RSE on the BSV column

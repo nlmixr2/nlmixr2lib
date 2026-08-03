@@ -110,14 +110,14 @@ NA_NA_miridesap <- function() {
     etalkout    ~ 0.169          # OMEGA1 (KOUT)
     etalcl      ~ 0.0481         # OMEGA2 (CL)
     etalvc      ~ 0.0914         # OMEGA3 (V)
-    etalq       ~ fixed(0.0225)  # OMEGA4 (Q) FIXED
-    etalvp      ~ fixed(0.0225)  # OMEGA5 (V2) FIXED
+    etalq       ~ fixed(0.0225)  # OMEGA4 (Q)
+    etalvp      ~ fixed(0.0225)  # OMEGA5 (V2)
     etalsap0    ~ 0.0415         # OMEGA6 (SAP10)
-    etalkon     ~ fixed(0.0225)  # OMEGA7 (KON) FIXED
-    etalkint    ~ fixed(0.0225)  # OMEGA8 (KINT) FIXED
+    etalkon     ~ fixed(0.0225)  # OMEGA7 (KON)
+    etalkint    ~ fixed(0.0225)  # OMEGA8 (KINT)
     etalq_sap   ~ 0.273          # OMEGA9 (Q4)
     etalvp_sap  ~ 0.366          # OMEGA10 (V4)
-    etalka      ~ fixed(0.0225)  # OMEGA11 (KSC) FIXED
+    etalka      ~ fixed(0.0225)  # OMEGA11 (KSC)
 
     # Residual error - both observations are proportional only; the $ERROR
     # block multiplies IPRED by (1 + W * EPS1) for CMT.EQ.1 (CPHPC) and CMT.EQ.3

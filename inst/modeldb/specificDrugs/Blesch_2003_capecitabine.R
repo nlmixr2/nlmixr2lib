@@ -104,7 +104,7 @@ Blesch_2003_capecitabine <- function() {
     # development; literature value from Heggie 1987 [reference 2 in
     # source]). No ISV estimated for V2.
     lvc_5fu <- fixed(log(17.8))
-    label("Apparent 5-FU volume V2/F (L) -- FIXED to Heggie 1987 literature value")  # Blesch 2003 Table 1: V2 fixed at 17.8 L; "TV fixed, no ISV"
+    label("Apparent 5-FU volume V2/F (L) -- Heggie 1987 literature value")  # Blesch 2003 Table 1: V2 fixed at 17.8 L; "TV fixed, no ISV"
     lcl_5fu <- log(1190)
     label("Apparent 5-FU clearance CL2/F at ALP = 100 U/L (L/h)")  # Blesch 2003 Table 1: TV CL2 = 1190 L/h (SE 39.3)
 
@@ -142,7 +142,7 @@ Blesch_2003_capecitabine <- function() {
     # ----------------------------------------------------------------------
     etalka       ~ 0.39878  # Blesch 2003 Table 1: ISV KA 70% CV -> log(1 + 0.70^2)
     etaltlag     ~ 12.41    # Blesch 2003 Table 1: ISV TLAG 49,498% CV -> log(1 + 494.98^2); effectively unidentified
-    etalvc_dfur  ~ fixed(0.08618)  # Blesch 2003 Table 1: ISV V1 30% CV (FIXED) -> log(1 + 0.30^2)
+    etalvc_dfur  ~ fixed(0.08618)  # Blesch 2003 Table 1: ISV V1 30% CV -> log(1 + 0.30^2)
     etalcl_dfur  ~ 0.05598  # Blesch 2003 Table 1: ISV CL1 24% CV -> log(1 + 0.24^2)
     etalcl_5fu   ~ 0.10336  # Blesch 2003 Table 1: ISV CL2 33% CV -> log(1 + 0.33^2)
     etalvc_fbal  ~ 0.06537  # Blesch 2003 Table 1: ISV V3 26% CV -> log(1 + 0.26^2)

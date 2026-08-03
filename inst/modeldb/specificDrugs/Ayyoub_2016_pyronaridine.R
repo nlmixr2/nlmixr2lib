@@ -132,9 +132,9 @@ Ayyoub_2016_pyronaridine <- function() {
     # 'Base model development' p. 1453: exponents fixed at 0.75 on clearance
     # parameters and 1.0 on volume parameters; reference weight 20 kg).
     e_wt_cl_q  <- fixed(0.75)
-    label("Fixed allometric WT exponent shared across CL/F and Q/F (unitless)")  # Ayyoub 2016 Methods p. 1453: fixed at the theoretical 0.75
+    label("Allometric WT exponent shared across CL/F and Q/F (unitless)")  # Ayyoub 2016 Methods p. 1453: fixed at the theoretical 0.75
     e_wt_vc_vp <- fixed(1.00)
-    label("Fixed allometric WT exponent shared across V2/F and V3/F (unitless)")  # Ayyoub 2016 Methods p. 1453: fixed at the theoretical 1.00
+    label("Allometric WT exponent shared across V2/F and V3/F (unitless)")  # Ayyoub 2016 Methods p. 1453: fixed at the theoretical 1.00
 
     # Covariate effects retained after backward elimination (P < 0.001).
     # Age on V3/F: power covariate centred on the 7 yr cohort median.

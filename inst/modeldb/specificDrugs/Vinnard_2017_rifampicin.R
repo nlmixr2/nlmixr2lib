@@ -67,7 +67,7 @@ Vinnard_2017_rifampicin <- function() {
     # (matching the standard NONMEM $OMEGA BLOCK(1) + SAME pattern, e.g.
     # Wilkins_2008_rifampicin.R).
     etaiov_fdepot_1 ~ 0.00843        # Vinnard 2017 Table 1: IOV F = 9.2% CV; omega^2 = log(1 + 0.092^2) = 0.00843 (occasion 1, pre-ART)
-    etaiov_fdepot_2 ~ fix(0.00843)   # occasion 2 (post-ART) - variance fixed equal to occasion 1 (single IOV variance shared across occasions in source)
+    etaiov_fdepot_2 ~ fix(0.00843)   # occasion 2 (post-ART) - variance equal to occasion 1 (single IOV variance shared across occasions in source)
 
     # Combined additive + proportional residual error (Vinnard 2017 Table 1).
     # Concentrations are in mg/L (= ug/mL).

@@ -175,7 +175,7 @@ PillaReddy_2013_paliperidone_panss_subscales <- function() {
     etaemax_neg ~ 0.0729   # Part II Table 2 paliperidone: IIV Emax negative SD = 0.27
     etaemax_gen ~ 0.0484   # Part II Table 2 paliperidone: IIV Emax general  SD = 0.22
 
-    etaec50_pos ~ fixed(0.2231)  # Part II Table 2 footnote: IIV EC50 positive and general fixed at 50% CV
+    etaec50_pos ~ fixed(0.2231)  # Part II Table 2 footnote: IIV EC50 positive and general 50% CV
     etaec50_gen ~ fixed(0.2231)
     etaec50_neg ~ 1.8095         # Part II Table 2 paliperidone: IIV EC50 negative = 226% CV; omega^2 = log(1 + 2.26^2) = 1.8095
 

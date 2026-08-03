@@ -108,9 +108,9 @@ Heuberger_2018_salbutamol <- function() {
     # The two parameters explicitly fixed by the source (omega = 0.05 in
     # NONMEM, per Table 1 footnote b) are encoded as fixed(0.0515) to
     # mirror that small-CV approximation: log(1 + 0.23^2) = 0.0515.
-    etalco_coef ~ fixed(0.0515)  # Table 1 CV 23 % (Holt), footnote b fixed
+    etalco_coef ~ fixed(0.0515)  # Table 1 CV 23 % (Holt), footnote b
     etahct      ~ fixed(0.00489) # Table 1 CV 7  % (Moerkeberg)
-    etalfdepot  ~ fixed(0.0515)  # Table 1 CV 23 % (Auclair), footnote b fixed
+    etalfdepot  ~ fixed(0.0515)  # Table 1 CV 23 % (Auclair), footnote b
     etalka      ~ fixed(0.281)   # Table 1 CV 57 % (Auclair)
     etaltlag    ~ fixed(0.524)   # Table 1 CV 83 % (Auclair)
     etalcl      ~ fixed(0.0606)  # Table 1 CV 25 % (Morgan)

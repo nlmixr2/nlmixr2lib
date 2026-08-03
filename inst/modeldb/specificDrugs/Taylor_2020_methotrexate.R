@@ -74,8 +74,8 @@ Taylor_2020_methotrexate <- function() {
     # approached zero and were fixed at 0 in the final model (Taylor 2020
     # Results, page 638; Table 3 entries "0 FIX").
     etalcl  ~ 0.08          # Taylor 2020 Table 3: IIV(CL) variance 0.08 (RSE 4.7%)
-    etalvc  ~ fixed(0)      # Taylor 2020 Table 3: IIV(V1) 0 FIX (variance fixed at zero in the final model)
-    etalq   ~ fixed(0)      # Taylor 2020 Table 3: IIV(Q2) 0 FIX (variance fixed at zero in the final model)
+    etalvc  ~ fixed(0)      # Taylor 2020 Table 3: IIV(V1) 0 FIX (variance zero in the final model)
+    etalq   ~ fixed(0)      # Taylor 2020 Table 3: IIV(Q2) 0 FIX (variance zero in the final model)
     etalvp  ~ 0.12          # Taylor 2020 Table 3: IIV(V2) variance 0.12 (RSE 4.3%)
     etalq2  ~ 0.13          # Taylor 2020 Table 3: IIV(Q3) variance 0.13 (RSE 6.7%)
     etalvp2 ~ 0.10          # Taylor 2020 Table 3: IIV(V3) variance 0.10 (RSE 14.4%)

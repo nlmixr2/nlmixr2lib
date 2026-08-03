@@ -85,22 +85,22 @@ Hawwa_2008_mercaptopurine <- function() {
     # and first-order elimination dynamics that feed the two metabolite
     # compartments.
     lka      <- fixed(log(1.3))
-    label("6-MP first-order absorption rate constant ka (1/h) -- FIXED per Hawwa 2008 Methods (literature)") # Hawwa 2008 Methods page 4: "ka was fixed at 1.3 1/h according to the literature [1, 9]"
+    label("6-MP first-order absorption rate constant ka (1/h) -- per Hawwa 2008 Methods (literature)") # Hawwa 2008 Methods page 4: "ka was fixed at 1.3 1/h according to the literature [1, 9]"
     lfdepot  <- fixed(log(0.22))
-    label("6-MP oral bioavailability F (unitless) -- FIXED per Hawwa 2008 Methods (literature)") # Hawwa 2008 Methods page 4: "the bioavailability factor (F) of the model was fixed at 22% according to the literature [1, 9]"
+    label("6-MP oral bioavailability F (unitless) -- per Hawwa 2008 Methods (literature)") # Hawwa 2008 Methods page 4: "the bioavailability factor (F) of the model was fixed at 22% according to the literature [1, 9]"
     lvc      <- fixed(log(1))
-    label("6-MP central apparent volume V_central (L) -- FIXED to 1 L (not identifiable; 6-MP plasma not observed)") # Hawwa 2008 ADVAN6 implementation convention; same as Urien 2005 capecitabine metabolites (see vignette Errata)
+    label("6-MP central apparent volume V_central (L) -- 1 L (not identifiable; 6-MP plasma not observed)") # Hawwa 2008 ADVAN6 implementation convention; same as Urien 2005 capecitabine metabolites (see vignette Errata)
     lcl      <- fixed(log(0.53))
-    label("6-MP total apparent clearance CL_central (L/h) -- FIXED per Hawwa 2008 Methods (k20 = 0.53 1/h)") # Hawwa 2008 Methods page 5 equations: k20 = 0.53 1/h fixed per literature [1, 9]; with V_central = 1 L, CL_central = k20 * V_central = 0.53 L/h
+    label("6-MP total apparent clearance CL_central (L/h) -- per Hawwa 2008 Methods (k20 = 0.53 1/h)") # Hawwa 2008 Methods page 5 equations: k20 = 0.53 1/h fixed per literature [1, 9]; with V_central = 1 L, CL_central = k20 * V_central = 0.53 L/h
     e_fmet   <- fixed(0.78)
-    label("Fraction of 6-MP elimination that is metabolic (kme / k20) -- FIXED per Hawwa 2008 Methods") # Hawwa 2008 Methods page 5: "k_other = 0.22 * k20 = 0.1166 1/h" so kme = k20 - k_other = (1 - 0.22) * k20 = 0.78 * k20
+    label("Fraction of 6-MP elimination that is metabolic (kme / k20) -- per Hawwa 2008 Methods") # Hawwa 2008 Methods page 5: "k_other = 0.22 * k20 = 0.1166 1/h" so kme = k20 - k_other = (1 - 0.22) * k20 = 0.78 * k20
 
     # 6-TGN compartment. Apparent V is not identifiable and is fixed to
     # 1 L per the ADVAN6 implementation convention (see vignette Errata).
     # The apparent clearance CL_6TGNs is the only estimated parameter for
     # the elimination side of this compartment.
     lvc_tgn  <- fixed(log(1))
-    label("6-TGN apparent volume V_6TGNs (L) -- FIXED to 1 L (not identifiable)") # Hawwa 2008 ADVAN6 implementation convention (see vignette Errata)
+    label("6-TGN apparent volume V_6TGNs (L) -- 1 L (not identifiable)") # Hawwa 2008 ADVAN6 implementation convention (see vignette Errata)
     lcl_tgn  <- log(0.00914)
     label("6-TGN apparent clearance at BSA = 1 m^2 (L/h)") # Hawwa 2008 Table 4 FINAL model: theta_CL_6TGNs = 0.00914 L/h (SE 56.8%); BSA power-law equation TVCL_6TGNs = theta_CL_6TGNs * BSA^theta_BSA
 
@@ -108,7 +108,7 @@ Hawwa_2008_mercaptopurine <- function() {
     # 1 L per the same ADVAN6 convention; CL_6mMPNs is estimated with
     # no retained covariate effect.
     lvc_mmpn <- fixed(log(1))
-    label("6-mMPN apparent volume V_6mMPNs (L) -- FIXED to 1 L (not identifiable)") # Hawwa 2008 ADVAN6 implementation convention (see vignette Errata)
+    label("6-mMPN apparent volume V_6mMPNs (L) -- 1 L (not identifiable)") # Hawwa 2008 ADVAN6 implementation convention (see vignette Errata)
     lcl_mmpn <- log(0.0228)
     label("6-mMPN apparent clearance (L/h)") # Hawwa 2008 Table 4 FINAL model: theta_CL_6mMPNs = 0.0228 L/h (SE 14.2%); no covariate retained
 

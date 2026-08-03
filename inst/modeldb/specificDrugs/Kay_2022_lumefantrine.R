@@ -239,7 +239,7 @@ Kay_2022_lumefantrine <- function() {
     # estimated theta_6 below; without F = 1 fixed, the model would be
     # non-identifiable.
     lfdepot <- fixed(log(1))
-    label("Relative bioavailability F (unitless; structural anchor, fixed at 1)")
+    label("Relative bioavailability F (unitless; structural anchor)")
     # Kay 2022 Methods: structural anchor for apparent-PK parameterisation.
 
     # Power-form age effect on relative bioavailability:

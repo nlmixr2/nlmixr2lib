@@ -139,9 +139,9 @@ Franken_2017_midazolam <- function() {
     # h-1 for subcutaneous injection)').
     # ================================================================
     lka_oral <- fixed(log(5.5))
-    label("Ka oral route (1/h, FIXED literature)")              # Methods / Table 2 footnote: Ka oral = 5.5 1/h fixed (literature)
+    label("Ka oral route (1/h, literature)")              # Methods / Table 2 footnote: Ka oral = 5.5 1/h fixed (literature)
     lka_sc   <- fixed(log(10))
-    label("Ka subcutaneous route (1/h, FIXED literature)")      # Methods / Table 2 footnote: Ka SC = 10 1/h fixed (literature)
+    label("Ka subcutaneous route (1/h, literature)")      # Methods / Table 2 footnote: Ka SC = 10 1/h fixed (literature)
 
     # ================================================================
     # Oral bioavailability - estimated. SC F is structurally fixed

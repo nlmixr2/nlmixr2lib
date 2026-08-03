@@ -129,7 +129,7 @@ Karunajeewa_2009_sulfadoxine <- function() {
     lvc_nasdox <- log(3.69)
     label("NASDOX apparent volume V/F at WT = 70 kg (L)")                                        # Table 2: V/F NASDOX = 3.69 L/70kg
     lfdepot <- fixed(log(1))
-    label("SDOX relative bioavailability F (unitless, FIXED at 1)")                              # Methods 'Population pharmacokinetic analysis': all V and CL parameters expressed relative to F
+    label("SDOX relative bioavailability F (unitless)")                              # Methods 'Population pharmacokinetic analysis': all V and CL parameters expressed relative to F
 
     # ============================================================
     # Pregnancy effect on SDOX non-metabolic CL/F (additive)

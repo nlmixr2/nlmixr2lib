@@ -217,7 +217,7 @@ vonHentig_2009_saquinavir <- function() {
     # band can override the value when calling rxSolve.
     # ============================================================
     addSd <- fixed(0)
-    label("Additive residual SD (mg/L); not reported in paper -- fixed(0) placeholder, see vignette Errata")
+    label("Additive residual SD (mg/L); not reported in paper (0) placeholder, see vignette Errata")
   })
 
   model({

@@ -101,19 +101,19 @@ Robarge_2017_efavirenz <- function() {
     # ============================================================================
 
     logitfdepot <- fixed(log(0.414 / (1 - 0.414)))
-    label("Logit of first-order absorption fraction F1 (unitless; F1 = 0.414 fixed, F2 = 1 - F1 = 0.586 by mass balance)")  # Robarge 2017 Table 2: F1 = 0.414 (fixed); F2 = 0.586 (fixed); Results 'Population PK model' paragraph 2
+    label("Logit of first-order absorption fraction F1 (unitless; F1 = 0.414, F2 = 1 - F1 = 0.586 by mass balance)")  # Robarge 2017 Table 2: F1 = 0.414 (fixed); F2 = 0.586 (fixed); Results 'Population PK model' paragraph 2
 
     lka     <- fixed(log(0.504))
-    label("First-order absorption rate constant k_a (1/h, fixed)")  # Robarge 2017 Table 2: K_a = 0.504 1/h (fixed)
+    label("First-order absorption rate constant k_a (1/h)")  # Robarge 2017 Table 2: K_a = 0.504 1/h (fixed)
 
     ltlag1  <- fixed(log(1.97))
-    label("Absorption lag time prior to first-order absorption t_lag1 (h, fixed)")  # Robarge 2017 Table 2: t_lag1 = 1.97 h (fixed)
+    label("Absorption lag time prior to first-order absorption t_lag1 (h)")  # Robarge 2017 Table 2: t_lag1 = 1.97 h (fixed)
 
     ltlag2  <- fixed(log(0.445))
-    label("Absorption lag time prior to zero-order absorption t_lag2 (h, fixed)")  # Robarge 2017 Table 2: t_lag2 = 0.445 h (fixed)
+    label("Absorption lag time prior to zero-order absorption t_lag2 (h)")  # Robarge 2017 Table 2: t_lag2 = 0.445 h (fixed)
 
     ldur2   <- fixed(log(0.675))
-    label("Duration of zero-order absorption into central D2 (h, fixed)")  # Robarge 2017 Table 2: D2 (duration of zero-order absorption) = 0.675 h (fixed)
+    label("Duration of zero-order absorption into central D2 (h)")  # Robarge 2017 Table 2: D2 (duration of zero-order absorption) = 0.675 h (fixed)
 
     # ============================================================================
     # Disposition (estimated; reference covariate values FFM = 56 kg, FM = 19 kg,
@@ -148,9 +148,9 @@ Robarge_2017_efavirenz <- function() {
     # OFV = -4.686, P < 0.05) and was not strongly supported by bootstrap
     # estimation (mean of 100 bootstrap simulations = 1.13, 95% CI 0.79-1.46)."
     e_ffm_cl <- fixed(0.75)
-    label("Allometric exponent of (FFM/56) on CL/F (unitless; fixed at 3/4)")  # Robarge 2017 Table 2 / Results 'Covariate model development' para 1
+    label("Allometric exponent of (FFM/56) on CL/F (unitless)")  # Robarge 2017 Table 2 / Results 'Covariate model development' para 1
     e_fm_vp  <- fixed(1.0)
-    label("Allometric exponent of (FM/19) on V_p/F (unitless; fixed at 1)")  # Robarge 2017 Table 2 / Results 'Covariate model development' para 2
+    label("Allometric exponent of (FM/19) on V_p/F (unitless)")  # Robarge 2017 Table 2 / Results 'Covariate model development' para 2
 
     # --- CYP2B6 metaboliser-status effects on CL/F (estimated). ---
     # Robarge 2017 Table 2: reduction factor 0.752 (intermediate; %RSE 5.54,

@@ -106,11 +106,11 @@ Anderson_1998_paracetamol <- function() {
     # clearance, 1 for volume of distribution and 0.25 for equilibration
     # half-time (teq)." keq = ln(2)/teq scales with exponent -0.25.
     e_wt_cl  <- fixed(0.75)
-    label("Allometric exponent on CL (unitless, fixed)")  # Methods: fixed at 0.75
+    label("Allometric exponent on CL (unitless)")  # Methods: fixed at 0.75
     e_wt_vc  <- fixed(1)
-    label("Allometric exponent on V (unitless, fixed)")  # Methods: fixed at 1
+    label("Allometric exponent on V (unitless)")  # Methods: fixed at 1
     allo_keq <- fixed(-0.25)
-    label("Allometric exponent on keq (unitless, fixed; equals -0.25 because teq scales at 0.25)")  # Methods: teq fixed at 0.25 -> keq at -0.25
+    label("Allometric exponent on keq (unitless,; equals -0.25 because teq scales at 0.25)")  # Methods: teq fixed at 0.25 -> keq at -0.25
 
     # IIV: paper states "interindividual variability in model parameters
     # was modelled by an exponential variance model" (Methods, NONMEM

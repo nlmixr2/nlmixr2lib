@@ -73,7 +73,7 @@ Schipani_2016_rifampicin <- function() {
     # constant (ka), probably due to the limited data').
 
     lfdepot <- fixed(log(1))
-    label("Bioavailability anchor (adult; fixed at unity)")
+    label("Bioavailability anchor (adult; unity)")
     # Schipani 2016 Results: 'for the adults this bioavailability
     # factor was fixed at unity.' The reported child relative-F
     # value (0.517) is encoded as a multiplicative factor below.
@@ -83,12 +83,12 @@ Schipani_2016_rifampicin <- function() {
     # Methods: 'fixing the exponent to 0.75 for CL and 1 for V').
     # ============================================================
     e_wt_cl <- fixed(0.75)
-    label("Allometric exponent on CL (unitless; fixed)")
+    label("Allometric exponent on CL (unitless)")
     # Schipani 2016 Methods, citing reference 18 (Anderson and
     # Holford 2008): 0.75 for CL.
 
     allo_v <- fixed(1.0)
-    label("Allometric exponent on V (unitless; fixed)")
+    label("Allometric exponent on V (unitless)")
     # Schipani 2016 Methods, citing reference 18 (Anderson and
     # Holford 2008): 1.0 for V.
 

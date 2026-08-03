@@ -217,7 +217,7 @@ PiresdeMello_2018_zika_FAV_IFN_RBV <- function() {
     # Table 1: IC50_IFN = 4.12 IU/mL (RSE 15.9 percent).
 
     lhill_ifn     <- fixed(log(2.00))
-    label("Hill_IFN -- Hill coefficient for IFN inhibition (unitless, fixed)")
+    label("Hill_IFN -- Hill coefficient for IFN inhibition (unitless)")
     # Table 1: Hill_IFN = 2.00 (fixed; informed by IFN monotherapy modelling).
 
     # ---------------------------------------------------------------------

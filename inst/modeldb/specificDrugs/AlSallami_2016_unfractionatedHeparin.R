@@ -107,7 +107,7 @@ AlSallami_2016_unfractionatedHeparin <- function() {
     lvc  <- log(0.751)
     label("Central volume of distribution at reference WT = 20 kg (V, L)")             # Al-Sallami 2016 Table 2 final model: theta_V = 0.751 (L per 20 kg WT)
     tdur <- fixed(0.1)
-    label("IV bolus zero-order input duration (D1, h); fixed")                          # Al-Sallami 2016 Table 2 footnote: theta_D1 = 0.1 h (fixed)
+    label("IV bolus zero-order input duration (D1, h)")                          # Al-Sallami 2016 Table 2 footnote: theta_D1 = 0.1 h (fixed)
 
     # --- PK inter-individual variability (Al-Sallami 2016 Table 2) ---
     # Exponential ETA model. omega^2 = log(CV^2 + 1).

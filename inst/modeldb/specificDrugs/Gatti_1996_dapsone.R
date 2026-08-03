@@ -190,9 +190,9 @@ Gatti_1996_dapsone <- function() {
     # HPLC RSD < 10%) provide a defensible lower bound.
     # ============================================================
     propSd <- fixed(0)
-    label("Proportional residual SD (fraction; FIXED at 0 -- not reported in paper)")
+    label("Proportional residual SD (fraction; 0 -- not reported in paper)")
     addSd <- fixed(0)
-    label("Additive residual SD (mg/L; FIXED at 0 -- not reported in paper)")
+    label("Additive residual SD (mg/L; 0 -- not reported in paper)")
   })
 
   model({

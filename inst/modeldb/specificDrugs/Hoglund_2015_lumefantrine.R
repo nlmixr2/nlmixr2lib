@@ -179,7 +179,7 @@ Hoglund_2015_lumefantrine <- function() {
     # Hoglund_2017_piperaquine.R files).
 
     lfdepot <- fixed(log(1))
-    label("Relative bioavailability F (unitless; fixed at 1)")
+    label("Relative bioavailability F (unitless)")
     # Hoglund 2015 Table 2: Bioavailability = 1 FIX (Methods: "A fixed
     # bioavailability of 100% for the population with an estimated
     # between subject variability was evaluated").

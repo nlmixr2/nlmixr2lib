@@ -93,7 +93,7 @@ Cao_2017_dha_troph_early <- function() {
     # saturated.
 
     hill <- fixed(1.7892)
-    label("Hill coefficient (paper symbol gamma; unitless; fixed across stages)")
+    label("Hill coefficient (paper symbol gamma; unitless; across stages)")
     # Cao 2017 Table 1 footnote a: fixed at 1.7892, stage-pooled mean of
     # the four individually-estimated gamma values from Table S1.
 

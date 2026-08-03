@@ -59,7 +59,7 @@ Bulitta_2009_ceftazidime <- function() {
     lmtt12 <- log(28.3)
     label("Mean generation time MTT12 (min)")  # Bulitta 2009 Table 2, "Generation time at low CFUo"
     lk21 <- fixed(log(50))
-    label("Fast doubling rate constant k21 (1/h; FIXED -- assumed not rate-limiting)")  # Bulitta 2009 Table 2 footnote a
+    label("Fast doubling rate constant k21 (1/h; -- assumed not rate-limiting)")  # Bulitta 2009 Table 2 footnote a
 
     # ---- Signal-molecule kinetics -------------------------------------------
     # csig1 = central signal pool; csig2 = peripheral signal pool. MTT_S10 is
@@ -72,9 +72,9 @@ Bulitta_2009_ceftazidime <- function() {
     lmtt_s10 <- log(2.33)
     label("Signal-molecule synthesis/loss MTT in csig1 (min)")  # Bulitta 2009 Table 2, "MTT for elimination and synthesis"
     lmtt_s12 <- fixed(log(1))
-    label("Signal-molecule MTT csig1 -> csig2 (min; FIXED)")  # Bulitta 2009 Table 2 footnote b
+    label("Signal-molecule MTT csig1 -> csig2 (min)")  # Bulitta 2009 Table 2 footnote b
     lmtt_s21 <- fixed(log(24))
-    label("Signal-molecule MTT csig2 -> csig1 (h; FIXED)")  # Bulitta 2009 Table 2 footnote c
+    label("Signal-molecule MTT csig2 -> csig1 (h)")  # Bulitta 2009 Table 2 footnote c
 
     # ---- Autolysin / drug effect --------------------------------------------
     # Smax,S = 1 fixed (full inhibition of successful replication achievable
@@ -82,7 +82,7 @@ Bulitta_2009_ceftazidime <- function() {
     # resistant population is partially protected). SC50 shared across subpops.
     # The kout governing alys turnover is parameterised as a ratio to k12.
     smax_s <- fixed(1)
-    label("Maximum autolysin effect Smax,S in susceptible subpop (FIXED at 1)")  # Bulitta 2009 Table 2 footnote e
+    label("Maximum autolysin effect Smax,S in susceptible subpop")  # Bulitta 2009 Table 2 footnote e
     smax_r <- 0.560
     label("Maximum autolysin effect Smax,R in resistant subpop (unitless)")  # Bulitta 2009 Table 2
     lsc50 <- log(0.294)
@@ -103,14 +103,14 @@ Bulitta_2009_ceftazidime <- function() {
     lec50_drug <- log(35.3)
     label("Drug concentration at 50% stimulation of generation-time prolongation EC50,drug (mg/L)")  # Bulitta 2009 Table 2
     smax_k12 <- fixed(10)
-    label("Maximum stimulation of generation-time prolongation Smax,k12 (FIXED)")  # Bulitta 2009 Table 2 footnote d
+    label("Maximum stimulation of generation-time prolongation Smax,k12")  # Bulitta 2009 Table 2 footnote d
 
     # ---- Ceftazidime broth degradation --------------------------------------
     # First-order degradation in growth medium; half-life fixed at 45.9 h from
     # Viaene et al. 1973 (Methods, "the ceftazidime concentration in broth (CB)
     # was assumed to degrade with a fixed half-life of 45.9 h").
     lkdeg <- fixed(log(log(2) / 45.9))
-    label("Ceftazidime first-order degradation rate kdeg (1/h; FIXED, t1/2 = 45.9 h)")  # Bulitta 2009 Methods (cites Viaene 1973)
+    label("Ceftazidime first-order degradation rate kdeg (1/h;, t1/2 = 45.9 h)")  # Bulitta 2009 Methods (cites Viaene 1973)
 
     # ---- Residual error -----------------------------------------------------
     # Paper: "additive error model on the log scale was applied" (Methods,

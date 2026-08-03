@@ -67,7 +67,7 @@ Zhao_2012_abacavir <- function() {
     # nlmixr2 has no `SAME` shortcut so each occasion gets its own eta, with the
     # second fixed equal to the first (matching the Jonsson 2011 ethambutol pattern).
     etaiov_cl_1 ~ 0.04559         # Table 3 IOV CL/F = 21.6% CV; omega^2 = log(1 + 0.216^2) = 0.045591
-    etaiov_cl_2 ~ fix(0.04559)    # fixed equal to occasion-1 variance per Table 3 (`SAME` translation)
+    etaiov_cl_2 ~ fix(0.04559)    # equal to occasion-1 variance per Table 3 (`SAME` translation)
 
     # Residual error: paper Methods state "Residual variability was best described
     # by a proportional model"; Table 3 reports 14.1% (the residual proportional SD

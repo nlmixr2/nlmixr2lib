@@ -39,10 +39,10 @@ Rekic_2011_atazanavir <- function() {
     # Pharmacodynamic Model Building').
     # ====================================================================
     ltlag <- fixed(log(0.96))
-    label("Absorption lag time of atazanavir (h; fixed from Colombo 2006, ref 27)")  # Rekic 2011 Table I PK row: Lag time = 0.96 h, footnote a 'Fixed according to (27)'
+    label("Absorption lag time of atazanavir (h; from Colombo 2006, ref 27)")  # Rekic 2011 Table I PK row: Lag time = 0.96 h, footnote a 'Fixed according to (27)'
 
     lka <- fixed(log(3.4))
-    label("First-order absorption rate constant of atazanavir (1/h; fixed from Colombo 2006, ref 27)")  # Rekic 2011 Table I PK row: ka = 3.4 1/h, footnote a 'Fixed according to (27)'
+    label("First-order absorption rate constant of atazanavir (1/h; from Colombo 2006, ref 27)")  # Rekic 2011 Table I PK row: ka = 3.4 1/h, footnote a 'Fixed according to (27)'
 
     lvc <- log(93.6)
     label("Apparent central volume of distribution V/F of atazanavir at the reference 70 kg subject (L)")  # Rekic 2011 Table I PK row: V/F = 93.6 L (95% CI 62-125), RSE not reported
@@ -55,9 +55,9 @@ Rekic_2011_atazanavir <- function() {
     # priori set to 0.75 for clearance (CL/F) and to 1 for volume of
     # distribution (V/F)').
     e_wt_cl <- fixed(0.75)
-    label("Allometric exponent on CL/F (unitless; fixed a priori)")  # Rekic 2011 Methods 'Pharmacokinetic and Pharmacodynamic Model Building': "scaling factor was a priori set to 0.75 for clearance (CL/F)"
+    label("Allometric exponent on CL/F (unitless; a priori)")  # Rekic 2011 Methods 'Pharmacokinetic and Pharmacodynamic Model Building': "scaling factor was a priori set to 0.75 for clearance (CL/F)"
     e_wt_vc <- fixed(1)
-    label("Allometric exponent on V/F (unitless; fixed a priori)")   # Rekic 2011 Methods 'Pharmacokinetic and Pharmacodynamic Model Building': "and to 1 for volume of distribution (V/F)"
+    label("Allometric exponent on V/F (unitless; a priori)")   # Rekic 2011 Methods 'Pharmacokinetic and Pharmacodynamic Model Building': "and to 1 for volume of distribution (V/F)"
 
     # IIV on the PK parameters. Rekic 2011 Table I reports between-subject
     # variability as CV%; convert to log-scale variance via omega^2 =

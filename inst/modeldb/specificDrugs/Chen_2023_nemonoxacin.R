@@ -374,7 +374,7 @@ Chen_2023_nemonoxacin <- function() {
     # shortcut, so occasion 2 gets its own eta with the variance fixed equal to the
     # occasion-1 estimate (Jonsson_2011_ethambutol.R precedent).
     etaiov_cl_1 ~ 0.017        # Table 2 'pi^2 CL' = 0.017 (shrinkage 45 or 20) -> IOV SD 13% (estimated)
-    etaiov_cl_2 ~ fix(0.017)   # SAME-equivalent: fixed equal to the occasion-1 IOV variance
+    etaiov_cl_2 ~ fix(0.017)   # SAME-equivalent: equal to the occasion-1 IOV variance
 
     # Residual error. Eq. 2 is the mixed model 'Y = Ypred x (1 + eps1) + eps2', so the
     # Table 2 sigma^2 entries are variances and the nlmixr2 SDs are their square

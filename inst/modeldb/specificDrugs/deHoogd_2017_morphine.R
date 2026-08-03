@@ -134,7 +134,7 @@ deHoogd_2017_morphine <- function() {
     # paper reports no TBW effect on morphine CL, so this constant is
     # used unchanged for every subject.
     lcl_nongluc <- fixed(log(0.4805))
-    label("Morphine non-glucuronide elimination clearance (L/min, FIXED structural)")  # Methods 2.4: 35% of CL_total(70 kg)
+    label("Morphine non-glucuronide elimination clearance (L/min, structural)")  # Methods 2.4: 35% of CL_total(70 kg)
 
     # ============================================================
     # M3G formation-delay transit chain

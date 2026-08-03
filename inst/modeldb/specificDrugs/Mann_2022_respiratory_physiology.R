@@ -188,21 +188,21 @@ Mann_2022_respiratory_physiology <- function() {
     # at runtime.
 
     p1_naive    <- fixed(2.875)
-    label("Chemoreflex-drive sensitivity exponent P1 in opioid-naive subjects (unitless, FIXED)")  # FDA simulateToGetOD_IM.R line 188: P1 = 2.5 * 1.15 = 2.875 (naive)
+    label("Chemoreflex-drive sensitivity exponent P1 in opioid-naive subjects (unitless)")  # FDA simulateToGetOD_IM.R line 188: P1 = 2.5 * 1.15 = 2.875 (naive)
     p1_chronic  <- fixed(4.22625)
-    label("Chemoreflex-drive sensitivity exponent P1 in chronic opioid users (unitless, FIXED)")    # FDA simulateToGetOD_IM.R line 191: P1 = 2.5 * 1.47 * 1.15 = 4.22625 (chronic)
+    label("Chemoreflex-drive sensitivity exponent P1 in chronic opioid users (unitless)")    # FDA simulateToGetOD_IM.R line 191: P1 = 2.5 * 1.47 * 1.15 = 4.22625 (chronic)
     p3_naive    <- fixed(0.9)
-    label("Wakefulness-drive sensitivity exponent P3 in opioid-naive subjects (unitless, FIXED)")   # FDA simulateToGetOD_IM.R line 189: P3 = 0.9 (naive)
+    label("Wakefulness-drive sensitivity exponent P3 in opioid-naive subjects (unitless)")   # FDA simulateToGetOD_IM.R line 189: P3 = 0.9 (naive)
     p3_chronic  <- fixed(1.323)
-    label("Wakefulness-drive sensitivity exponent P3 in chronic opioid users (unitless, FIXED)")    # FDA simulateToGetOD_IM.R line 191: P3 = 0.9 * 1.47 = 1.323 (chronic)
+    label("Wakefulness-drive sensitivity exponent P3 in chronic opioid users (unitless)")    # FDA simulateToGetOD_IM.R line 191: P3 = 0.9 * 1.47 = 1.323 (chronic)
     p2          <- fixed(0.06319)
-    label("Metabolism scaling exponent P2 (unitless, FIXED, both patient types)")                   # FDA simulateToGetOD_IM.R line 186: P2 = 0.06319
+    label("Metabolism scaling exponent P2 (unitless,, both patient types)")                   # FDA simulateToGetOD_IM.R line 186: P2 = 0.06319
 
     # ===== Wakefulness drive (Magosso / Ursino) =====
     wmax_drive  <- fixed(6.62)
-    label("Maximum wakefulness drive Wmax (L/min, FIXED)")                                          # FDA delaypars.R: Wmax = 6.62
+    label("Maximum wakefulness drive Wmax (L/min)")                                          # FDA delaypars.R: Wmax = 6.62
     w_baseline  <- fixed(6.62)
-    label("Baseline wakefulness drive W (L/min, FIXED)")                                            # FDA delaypars.R: W = 6.62
+    label("Baseline wakefulness drive W (L/min)")                                            # FDA delaypars.R: W = 6.62
     # NOTE: FDA delaypars.R defines Bmax = 0.66 (dead-space-corrected
     # alveolar fraction) used internally as Venti_engine = totalVent *
     # Bmax / 60 in the per-second gas-exchange ODEs (delaymymod.c line
@@ -216,122 +216,122 @@ Mann_2022_respiratory_physiology <- function() {
 
     # ===== Alveolar / gas-exchange parameters =====
     v_a         <- fixed(3.28)
-    label("Alveolar volume V_A (L, FIXED)")                                                         # FDA delaypars.R: V_A = 3.28
+    label("Alveolar volume V_A (L)")                                                         # FDA delaypars.R: V_A = 3.28
     p_i_co2     <- fixed(0.0)
-    label("Inspired CO2 partial pressure P_I_co2 (mm Hg, FIXED room-air = 0)")                     # FDA delaypars.R: P_I_co2 = 0
+    label("Inspired CO2 partial pressure P_I_co2 (mm Hg, room-air = 0)")                     # FDA delaypars.R: P_I_co2 = 0
     p_i_o2_init <- fixed(149.0)
-    label("Inspired O2 partial pressure P_I_o2 (mm Hg, FIXED room-air sea-level)")                 # FDA delaystates.R initial state P_I_o2 = 149
+    label("Inspired O2 partial pressure P_I_o2 (mm Hg, room-air sea-level)")                 # FDA delaystates.R initial state P_I_o2 = 149
     lumbda      <- fixed(863.0)
-    label("Blood-to-gas partition coefficient lambda (unitless, FIXED, Henry's law family)")        # FDA delaypars.R: lumbda = 863
+    label("Blood-to-gas partition coefficient lambda (unitless,, Henry's law family)")        # FDA delaypars.R: lumbda = 863
     s1_shunt    <- fixed(0.024)
-    label("Pulmonary venous-admixture shunt fraction s1 (unitless, FIXED)")                        # FDA delaypars.R: s1 = 0.024
+    label("Pulmonary venous-admixture shunt fraction s1 (unitless)")                        # FDA delaypars.R: s1 = 0.024
     b_max       <- fixed(0.66)
-    label("Alveolar-fraction (dead-space-corrected) Bmax (unitless, FIXED)")                       # FDA delaypars.R: Bmax = 0.66; delaymymod.c line 543 scales totalVent by Bmax/60 in the gas-exchange ODEs
+    label("Alveolar-fraction (dead-space-corrected) Bmax (unitless)")                       # FDA delaypars.R: Bmax = 0.66; delaymymod.c line 543 scales totalVent by Bmax/60 in the gas-exchange ODEs
 
     # ===== Blood-gas (Spencer) dissociation curve constants =====
     alpha_co2   <- fixed(6.67e-4)
-    label("CO2 plasma solubility coefficient alpha_co2 (FIXED, Spencer)")                          # FDA delaypars.R: alpha_co2 = 6.67e-4
+    label("CO2 plasma solubility coefficient alpha_co2 (Spencer)")                          # FDA delaypars.R: alpha_co2 = 6.67e-4
     alpha_o2    <- fixed(3.17e-5)
-    label("O2 plasma solubility coefficient alpha_o2 (FIXED, Spencer)")                            # FDA delaypars.R: alpha_o2 = 3.17e-5
+    label("O2 plasma solubility coefficient alpha_o2 (Spencer)")                            # FDA delaypars.R: alpha_o2 = 3.17e-5
     c_b_hco3    <- fixed(0.5824)
-    label("Brain bicarbonate buffer concentration C_B_hco3 (FIXED, Spencer)")                      # FDA delaypars.R: C_B_hco3 = 0.5824
+    label("Brain bicarbonate buffer concentration C_B_hco3 (Spencer)")                      # FDA delaypars.R: C_B_hco3 = 0.5824
     c_t_hco3    <- fixed(0.5824)
-    label("Tissue bicarbonate buffer concentration C_T_hco3 (FIXED, Spencer)")                     # FDA delaypars.R: C_T_hco3 = 0.5824
+    label("Tissue bicarbonate buffer concentration C_T_hco3 (Spencer)")                     # FDA delaypars.R: C_T_hco3 = 0.5824
     k1_spencer  <- fixed(14.99)
-    label("Spencer constant K1 for O2 dissociation (FIXED)")                                       # FDA delaypars.R: K1 = 14.99
+    label("Spencer constant K1 for O2 dissociation")                                       # FDA delaypars.R: K1 = 14.99
     k2_spencer  <- fixed(194.4)
-    label("Spencer constant K2 for CO2 dissociation (FIXED)")                                      # FDA delaypars.R: K2 = 194.4
+    label("Spencer constant K2 for CO2 dissociation")                                      # FDA delaypars.R: K2 = 194.4
     a1_spencer  <- fixed(0.3836)
-    label("Spencer exponent a1 for O2 dissociation (FIXED)")                                       # FDA delaypars.R: a1 = 0.3836
+    label("Spencer exponent a1 for O2 dissociation")                                       # FDA delaypars.R: a1 = 0.3836
     a2_spencer  <- fixed(1.819)
-    label("Spencer exponent a2 for CO2 dissociation (FIXED)")                                      # FDA delaypars.R: a2 = 1.819
+    label("Spencer exponent a2 for CO2 dissociation")                                      # FDA delaypars.R: a2 = 1.819
     alpha1_sp   <- fixed(0.03198)
-    label("Spencer cross-term alpha1 (CO2 effect on O2 binding, FIXED)")                           # FDA delaypars.R: alpha1 = 0.03198
+    label("Spencer cross-term alpha1 (CO2 effect on O2 binding)")                           # FDA delaypars.R: alpha1 = 0.03198
     beta1_sp    <- fixed(0.008275)
-    label("Spencer cross-term beta1 (CO2 effect on O2 binding, FIXED)")                            # FDA delaypars.R: beta1 = 0.008275
+    label("Spencer cross-term beta1 (CO2 effect on O2 binding)")                            # FDA delaypars.R: beta1 = 0.008275
     alpha2_sp   <- fixed(0.05591)
-    label("Spencer cross-term alpha2 (O2 effect on CO2 binding, FIXED)")                           # FDA delaypars.R: alpha2 = 0.05591
+    label("Spencer cross-term alpha2 (O2 effect on CO2 binding)")                           # FDA delaypars.R: alpha2 = 0.05591
     beta2_sp    <- fixed(0.03255)
-    label("Spencer cross-term beta2 (O2 effect on CO2 binding, FIXED)")                            # FDA delaypars.R: beta2 = 0.03255
+    label("Spencer cross-term beta2 (O2 effect on CO2 binding)")                            # FDA delaypars.R: beta2 = 0.03255
     z_sp        <- fixed(0.02272)
-    label("Spencer scale Z (FIXED)")                                                                # FDA delaypars.R: Z = 0.02272
+    label("Spencer scale Z")                                                                # FDA delaypars.R: Z = 0.02272
     c1_spencer  <- fixed(9.0)
-    label("Spencer O2-asymptote C1Spencer (FIXED)")                                                # FDA delaypars.R: C1Spencer = 9
+    label("Spencer O2-asymptote C1Spencer")                                                # FDA delaypars.R: C1Spencer = 9
     c2_spencer  <- fixed(86.11)
-    label("Spencer CO2-asymptote C2Spencer (FIXED)")                                               # FDA delaypars.R: C2Spencer = 86.11
+    label("Spencer CO2-asymptote C2Spencer")                                               # FDA delaypars.R: C2Spencer = 86.11
 
     # ===== Brain and tissue physiology =====
     qb0_lmin    <- fixed(0.75)
-    label("Baseline cerebral blood flow Qb0 (L/min, FIXED)")                                       # FDA delaypars.R: Qb0 = 0.75/60 L/s = 0.75 L/min
+    label("Baseline cerebral blood flow Qb0 (L/min)")                                       # FDA delaypars.R: Qb0 = 0.75/60 L/s = 0.75 L/min
     qt0_lmin    <- fixed(4.25)
-    label("Baseline non-brain (peripheral tissue) blood flow Qt0 (L/min, FIXED)")                  # FDA delaypars.R: Qt0 = 4.25/60 L/s = 4.25 L/min
+    label("Baseline non-brain (peripheral tissue) blood flow Qt0 (L/min)")                  # FDA delaypars.R: Qt0 = 4.25/60 L/s = 4.25 L/min
     rou_factor  <- fixed(0.32)
-    label("Tissue blood-flow O2-sensitivity coefficient rou (unitless, FIXED)")                    # FDA delaypars.R: rou = 0.32
+    label("Tissue blood-flow O2-sensitivity coefficient rou (unitless)")                    # FDA delaypars.R: rou = 0.32
     v_b         <- fixed(1.32)
-    label("Brain blood volume V_B (L, FIXED)")                                                     # FDA delaypars.R: V_B = 1.32
+    label("Brain blood volume V_B (L)")                                                     # FDA delaypars.R: V_B = 1.32
     v_t         <- fixed(38.68)
-    label("Peripheral-tissue blood volume V_T (L, FIXED)")                                         # FDA delaypars.R: V_T = 38.68
+    label("Peripheral-tissue blood volume V_T (L)")                                         # FDA delaypars.R: V_T = 38.68
     m_b_co2_lmin <- fixed(0.04)
-    label("Brain CO2 metabolic production rate M_B_co2 at baseline (L/min, FIXED)")                # FDA delaypars.R: M_B_co2 = 0.04/60 L/s = 0.04 L/min
+    label("Brain CO2 metabolic production rate M_B_co2 at baseline (L/min)")                # FDA delaypars.R: M_B_co2 = 0.04/60 L/s = 0.04 L/min
     m_b_o2_0_lmin <- fixed(-0.05)
-    label("Brain O2 metabolic consumption rate M_B_o2_0 at baseline (L/min, FIXED, negative = consumption)") # FDA delaypars.R: M_B_o2_0 = -0.05/60 L/s = -0.05 L/min
+    label("Brain O2 metabolic consumption rate M_B_o2_0 at baseline (L/min,, negative = consumption)") # FDA delaypars.R: M_B_o2_0 = -0.05/60 L/s = -0.05 L/min
     m_t_co2_lmin <- fixed(0.16)
-    label("Tissue CO2 metabolic production rate M_T_co2 at baseline (L/min, FIXED)")               # FDA delaypars.R: M_T_co2 = 0.16/60 L/s = 0.16 L/min
+    label("Tissue CO2 metabolic production rate M_T_co2 at baseline (L/min)")               # FDA delaypars.R: M_T_co2 = 0.16/60 L/s = 0.16 L/min
     m_t_o2_0_lmin <- fixed(-0.2)
-    label("Tissue O2 metabolic consumption rate M_T_o2_0 at baseline (L/min, FIXED, negative)")    # FDA delaypars.R: M_T_o2_0 = -0.2/60 L/s = -0.2 L/min
+    label("Tissue O2 metabolic consumption rate M_T_o2_0 at baseline (L/min,, negative)")    # FDA delaypars.R: M_T_o2_0 = -0.2/60 L/s = -0.2 L/min
     fl_minfrac  <- fixed(0.87)
-    label("Minimum metabolic fraction fL during chronic suppression (FIXED)")                      # FDA delaypars.R: fL = 0.87
+    label("Minimum metabolic fraction fL during chronic suppression")                      # FDA delaypars.R: fL = 0.87
     fn_maxfrac  <- fixed(0.93)
-    label("Maximum metabolic fraction fN during compensation (FIXED)")                             # FDA delaypars.R: fN = 0.93
+    label("Maximum metabolic fraction fN during compensation")                             # FDA delaypars.R: fN = 0.93
 
     # ===== Chemoreflex drives =====
     aco2_drive  <- fixed(-30.0)
-    label("CO2 chemoreflex sigmoid asymptote A_co2 (FIXED)")                                       # FDA delaypars.R: Aco2 = -30
+    label("CO2 chemoreflex sigmoid asymptote A_co2")                                       # FDA delaypars.R: Aco2 = -30
     bco2_drive  <- fixed(60.0)
-    label("CO2 chemoreflex sigmoid amplitude B_co2 (FIXED)")                                       # FDA delaypars.R: Bco2 = 60
+    label("CO2 chemoreflex sigmoid amplitude B_co2")                                       # FDA delaypars.R: Bco2 = 60
     cco2_drive  <- fixed(40.0)
-    label("CO2 chemoreflex sigmoid midpoint C_co2 (mm Hg, FIXED)")                                 # FDA delaypars.R: Cco2 = 40
+    label("CO2 chemoreflex sigmoid midpoint C_co2 (mm Hg)")                                 # FDA delaypars.R: Cco2 = 40
     dco2_drive  <- fixed(4.5)
-    label("CO2 chemoreflex sigmoid steepness D_co2 (mm Hg, FIXED)")                                # FDA delaypars.R: Dco2 = 4.5
+    label("CO2 chemoreflex sigmoid steepness D_co2 (mm Hg)")                                # FDA delaypars.R: Dco2 = 4.5
     # NOTE: FDA delaypars.R also defines P_a_co2_0 = 40 mm Hg used as the
     # baseline arterial CO2 partial pressure. The central drive
     # ODE uses brain CO2 baseline P_B_co2_0 instead (delaymymod.c line
     # 518), so the arterial baseline is not separately required in this
     # encoding.
     tau_co2_min <- fixed(0.3333)
-    label("CO2 chemoreflex filtering time-constant tau_co2 (min, FIXED, = 20 s)")                 # FDA delaypars.R: tau_co2 = 20 s = 0.333 min
+    label("CO2 chemoreflex filtering time-constant tau_co2 (min,, = 20 s)")                 # FDA delaypars.R: tau_co2 = 20 s = 0.333 min
     c1o2_drive  <- fixed(17.0)
-    label("O2 chemoreflex exponential prefactor c1o2 (FIXED)")                                     # FDA delaypars.R: c1o2 = 17
+    label("O2 chemoreflex exponential prefactor c1o2")                                     # FDA delaypars.R: c1o2 = 17
     c2o2_drive  <- fixed(11.0)
-    label("O2 chemoreflex exponential length scale c2o2 (mm Hg, FIXED)")                           # FDA delaypars.R: c2o2 = 11
+    label("O2 chemoreflex exponential length scale c2o2 (mm Hg)")                           # FDA delaypars.R: c2o2 = 11
     p_a_o2_0    <- fixed(95.0)
-    label("Baseline arterial O2 partial pressure P_a_o2_0 (mm Hg, FIXED)")                         # FDA delaypars.R: P_a_o2_0 = 95
+    label("Baseline arterial O2 partial pressure P_a_o2_0 (mm Hg)")                         # FDA delaypars.R: P_a_o2_0 = 95
     tau_o2_min  <- fixed(0.1667)
-    label("O2 chemoreflex filtering time-constant tau_o2 (min, FIXED, = 10 s)")                   # FDA delaypars.R: tau_o2 = 10 s = 0.1667 min
+    label("O2 chemoreflex filtering time-constant tau_o2 (min,, = 10 s)")                   # FDA delaypars.R: tau_o2 = 10 s = 0.1667 min
 
     # ===== Peripheral and central chemoreflex drive parameters =====
     bp_log      <- fixed(18.0)
-    label("Peripheral-drive CO2 reference Bp (mm Hg, FIXED)")                                      # FDA delaypars.R: Bp = 18
+    label("Peripheral-drive CO2 reference Bp (mm Hg)")                                      # FDA delaypars.R: Bp = 18
     k_fpc       <- fixed(1.738)
-    label("Peripheral-drive scale K_fpc (FIXED)")                                                  # FDA delaypars.R: K_fpc = 1.738
+    label("Peripheral-drive scale K_fpc")                                                  # FDA delaypars.R: K_fpc = 1.738
     f_pc_max    <- fixed(12.3)
-    label("Peripheral-drive O2-modulation upper f_pc_max (FIXED)")                                 # FDA delaypars.R: f_pc_max = 12.3
+    label("Peripheral-drive O2-modulation upper f_pc_max")                                 # FDA delaypars.R: f_pc_max = 12.3
     f_pc_min    <- fixed(0.8352)
-    label("Peripheral-drive O2-modulation lower f_pc_min (FIXED)")                                 # FDA delaypars.R: f_pc_min = 0.8352
+    label("Peripheral-drive O2-modulation lower f_pc_min")                                 # FDA delaypars.R: f_pc_min = 0.8352
     f_pc_0      <- fixed(3.67)
-    label("Peripheral-drive baseline f_pc_0 (FIXED)")                                              # FDA delaypars.R: f_pc_0 = 3.67
+    label("Peripheral-drive baseline f_pc_0")                                              # FDA delaypars.R: f_pc_0 = 3.67
     p_a_o2_c    <- fixed(45.0)
-    label("Peripheral-drive O2-modulation midpoint P_a_o2_c (mm Hg, FIXED)")                       # FDA delaypars.R: P_a_o2_c = 45
+    label("Peripheral-drive O2-modulation midpoint P_a_o2_c (mm Hg)")                       # FDA delaypars.R: P_a_o2_c = 45
     k_pc_steep  <- fixed(29.27)
-    label("Peripheral-drive O2-modulation steepness K_pc (mm Hg, FIXED)")                          # FDA delaypars.R: K_pc = 29.27
+    label("Peripheral-drive O2-modulation steepness K_pc (mm Hg)")                          # FDA delaypars.R: K_pc = 29.27
     tau_dp_min  <- fixed(0.1167)
-    label("Peripheral-drive filtering time-constant tau_Dp (min, FIXED, = 7 s)")                  # FDA delaypars.R: tau_Dp = 7 s = 0.1167 min
+    label("Peripheral-drive filtering time-constant tau_Dp (min,, = 7 s)")                  # FDA delaypars.R: tau_Dp = 7 s = 0.1167 min
     tau_dc_min  <- fixed(1.0)
-    label("Central-drive filtering time-constant tau_Dc (min, FIXED, = 60 s)")                    # FDA delaypars.R: tau_Dc = 60 s = 1 min
+    label("Central-drive filtering time-constant tau_Dc (min,, = 60 s)")                    # FDA delaypars.R: tau_Dc = 60 s = 1 min
     g_dp        <- fixed(2.5)
-    label("Peripheral-drive gain G_Dp (FIXED)")                                                    # FDA delaypars.R: G_Dp = 2.5
+    label("Peripheral-drive gain G_Dp")                                                    # FDA delaypars.R: G_Dp = 2.5
     g_dc        <- fixed(2.0)
-    label("Central-drive gain G_Dc (FIXED)")                                                       # FDA delaypars.R: G_Dc = 2
+    label("Central-drive gain G_Dc")                                                       # FDA delaypars.R: G_Dc = 2
 
     # ===== Chemoreflex transport-delay durations (FDA delaymymod.c) =====
     # The FDA reference uses dynamic peripheralDelay = K_Dp / (Qb+Qt) and
@@ -340,33 +340,33 @@ Mann_2022_respiratory_physiology <- function() {
     # value here, which avoids the singularity guard at Q -> 0 during
     # cardiovascular collapse without materially changing the dynamics.
     peripheral_delay_min <- fixed(7 / 60)
-    label("Peripheral chemoreflex transport delay (min, FIXED, = 7 s / 60)")                       # FDA: K_Dp = 0.588, Q_baseline = 5 L/min => 7 s
+    label("Peripheral chemoreflex transport delay (min,, = 7 s / 60)")                       # FDA: K_Dp = 0.588, Q_baseline = 5 L/min => 7 s
     central_delay_min    <- fixed(11 / 60)
-    label("Central chemoreflex transport delay (min, FIXED, = 11 s / 60)")                         # FDA: K_Dc = 0.9239, Q_baseline => 11 s
+    label("Central chemoreflex transport delay (min,, = 11 s / 60)")                         # FDA: K_Dc = 0.9239, Q_baseline => 11 s
 
     # ===== Brain CO2 / O2 baselines for central-drive feedback =====
     p_b_co2_0   <- fixed(45.27)
-    label("Baseline brain CO2 partial pressure P_B_co2_0 (mm Hg, FIXED)")                          # FDA delaypars.R: P_B_co2_0 = 45.27
+    label("Baseline brain CO2 partial pressure P_B_co2_0 (mm Hg)")                          # FDA delaypars.R: P_B_co2_0 = 45.27
     p_b_o2_0    <- fixed(32.0)
-    label("Baseline brain O2 partial pressure P_B_o2_0 (mm Hg, FIXED)")                            # FDA delaypars.R: P_B_o2_0 = 32
+    label("Baseline brain O2 partial pressure P_B_o2_0 (mm Hg)")                            # FDA delaypars.R: P_B_o2_0 = 32
 
     # ===== Central ventilatory depression factor alphaH (Mann 2022 eqs 6-9) =====
     gh          <- fixed(10.0)
-    label("Hypoxic ventilatory depression slope G_H (unitless, FIXED)")                            # FDA delaypars.R: Gh = 10; Mann 2022 Supp eq 6-8
+    label("Hypoxic ventilatory depression slope G_H (unitless)")                            # FDA delaypars.R: Gh = 10; Mann 2022 Supp eq 6-8
     theta_hmin  <- fixed(29.8)
-    label("alphaH lower-saturation brain O2 threshold theta_Hmin (mm Hg, FIXED)")                  # FDA delaypars.R: theta_Hmin = 29.8; Mann 2022 Supp eq 6-8
+    label("alphaH lower-saturation brain O2 threshold theta_Hmin (mm Hg)")                  # FDA delaypars.R: theta_Hmin = 29.8; Mann 2022 Supp eq 6-8
     theta_hmax  <- fixed(37.0)
-    label("alphaH upper-saturation brain O2 threshold theta_Hmax (mm Hg, FIXED, Mann updated from Ursino 35)") # FDA delaypars.R: theta_Hmax = 37; Mann 2022 Supp text (paragraph after eq 8) -- updated from Ursino 35 to 37 mm Hg
+    label("alphaH upper-saturation brain O2 threshold theta_Hmax (mm Hg,, Mann updated from Ursino 35)") # FDA delaypars.R: theta_Hmax = 37; Mann 2022 Supp text (paragraph after eq 8) -- updated from Ursino 35 to 37 mm Hg
     tau_h_min   <- fixed(5.0)
-    label("alphaH filtering time-constant tau_h (min, FIXED, = 300 s)")                            # FDA delaypars.R: tau_h = 300 s = 5 min
+    label("alphaH filtering time-constant tau_h (min,, = 300 s)")                            # FDA delaypars.R: tau_h = 300 s = 5 min
 
     # ===== Cardiac arrest event parameters (Mann 2022 cardiac-arrest section) =====
     ca_pao2_threshold <- fixed(15.0)
-    label("PaO2 threshold for cardiac-arrest trigger (mm Hg, FIXED, Mann 2022 + Hobler 1973)")     # Mann 2022 Supplement 1 'Cardiovascular Collapse' section: PaO2 < 15 mm Hg triggers collapse; threshold inherited from Hobler 1973 [17]
+    label("PaO2 threshold for cardiac-arrest trigger (mm Hg,, Mann 2022 + Hobler 1973)")     # Mann 2022 Supplement 1 'Cardiovascular Collapse' section: PaO2 < 15 mm Hg triggers collapse; threshold inherited from Hobler 1973 [17]
     ca_sustain_min    <- fixed(3.6667)
-    label("Sustained-below-threshold time before collapse-decay activates (min, FIXED, = 220 s)")   # Mann 2022 Supplement 1 'Cardiovascular Collapse' section: 220 s sustained delay
+    label("Sustained-below-threshold time before collapse-decay activates (min,, = 220 s)")   # Mann 2022 Supplement 1 'Cardiovascular Collapse' section: 220 s sustained delay
     ca_decay_rate     <- fixed(0.004 * 6 * 60)
-    label("Cardiovascular-collapse decay rate Cim25 (1/min after trigger, FIXED)")                  # FDA delaypars.R: Cim25 = 0.004 * 6 = 0.024 /s; * 60 s/min = 1.44 /min
+    label("Cardiovascular-collapse decay rate Cim25 (1/min after trigger)")                  # FDA delaypars.R: Cim25 = 0.004 * 6 = 0.024 /s; * 60 s/min = 1.44 /min
   })
 
   model({

@@ -202,7 +202,7 @@ deKock_2017_sulfadoxinePyrimethamine <- function() {
     lvp     <- log(179)
     label("Sulfadoxine apparent peripheral volume of distribution at WT = 60 kg (L)") # Table 2 sulfa: Vp1/F = 179 L
     lfdepot <- fixed(log(1))
-    label("Sulfadoxine relative bioavailability F (unitless, FIXED at 1)")  # Table 2 sulfa: F = 1 FIXED
+    label("Sulfadoxine relative bioavailability F (unitless)")  # Table 2 sulfa: F = 1 FIXED
 
     # ============================================================
     # Pyrimethamine structural parameters
@@ -223,7 +223,7 @@ deKock_2017_sulfadoxinePyrimethamine <- function() {
     lvp2_pyra    <- log(251)
     label("Pyrimethamine apparent deep peripheral volume at WT = 60 kg (L)")     # Table 2 pyra: Vp2/F = 251 L
     lfdepot_pyra <- fixed(log(1))
-    label("Pyrimethamine relative bioavailability F (unitless, FIXED at 1)")     # Table 2 pyra: F = 1 FIXED
+    label("Pyrimethamine relative bioavailability F (unitless)")     # Table 2 pyra: F = 1 FIXED
 
     # ============================================================
     # Whole-blood / plasma partition (per drug)

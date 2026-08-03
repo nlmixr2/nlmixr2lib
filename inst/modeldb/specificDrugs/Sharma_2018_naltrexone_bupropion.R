@@ -105,7 +105,7 @@ Sharma_2018_naltrexone_bupropion <- function() {
 
     # Disease-progression BW gain rate, nondiabetic. FIXED at the NHANES literature value (Sharma 2018 Methods).
     lkpro_kgy <- fixed(log(0.7))
-    label("BW disease-progression rate kpro for nondiabetic (kg/year, FIXED at NHANES literature value)")
+    label("BW disease-progression rate kpro for nondiabetic (kg/year, NHANES literature value)")
     # Sharma 2018 Methods "Population Dose- and Time-Dependent Pharmacodynamic Model": "kpro was fixed to 0.7 kg per year for subjects without T2DM but was estimated for T2DM subjects to evaluate the effect of diabetes mellitus on the disease progression."
     # Table 2 DTPD column lists kpro = 0.7 [FIXED] in kg/y for nondiabetic. Discussion text inconsistently writes "0.7 kg/week" but that is contradicted by Methods, Table 2, and biological plausibility (0.7 kg/week would be 36 kg/year, not the NHANES adult linear BW-gain rate of ~0.7 kg/year).
     # Stored in kg/year and converted to kg/week in model() for consistency with the per-week time axis.

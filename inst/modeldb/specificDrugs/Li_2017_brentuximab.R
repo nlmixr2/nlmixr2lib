@@ -89,8 +89,8 @@ Li_2017_brentuximab <- function() {
 
     # Covariate effects on MMAE -- allometric exponents fixed by the paper
     # (Li 2017 Table 4 footnotes b and c).
-    e_wt_cl_mmae <- fix(0.75); label("Power exponent of WT on MMAE CLM, Q5 (unitless, fixed)") # Li 2017 Table 4 fixed
-    e_wt_vc_mmae <- fix(1.0);  label("Power exponent of WT on MMAE V4, V5 (unitless, fixed)")  # Li 2017 Table 4 fixed
+    e_wt_cl_mmae <- fix(0.75); label("Power exponent of WT on MMAE CLM, Q5 (unitless)") # Li 2017 Table 4 fixed
+    e_wt_vc_mmae <- fix(1.0);  label("Power exponent of WT on MMAE V4, V5 (unitless)")  # Li 2017 Table 4 fixed
 
     # IIV (log-normal; omega^2 = log(CV^2 + 1)). CL-V1 block with correlation
     # 0.229 on the log scale per Li 2017 Table 3 (Corr(CL, V1) row).
@@ -99,8 +99,8 @@ Li_2017_brentuximab <- function() {
     # cov       = 0.229 * sqrt(0.1988 * 0.01806) = 0.01372
     etalcl + etalvc ~ c(0.1988,
                         0.01372, 0.01806)     # Li 2017 Table 3: CL 46.9%, V1 13.5%, Corr 0.229
-    etalq   ~ fix(0.02225)                    # Li 2017 Table 3: Q2 15%  CV (fixed in paper); omega^2 = log(1.0225) = 0.02225
-    etalvp  ~ fix(0.06062)                    # Li 2017 Table 3: V2 25%  CV (fixed in paper); omega^2 = log(1.0625) = 0.06062
+    etalq   ~ fix(0.02225)                    # Li 2017 Table 3: Q2 15% CV (from paper); omega^2 = log(1.0225) = 0.02225
+    etalvp  ~ fix(0.06062)                    # Li 2017 Table 3: V2 25% CV (from paper); omega^2 = log(1.0625) = 0.06062
     etalq2  ~ 0.1859                          # Li 2017 Table 3: Q3 45.2% CV; omega^2 = log(1.2043) = 0.1859
     etalvp2 ~ 0.7530                          # Li 2017 Table 3: V3 106%  CV; omega^2 = log(2.1236) = 0.7530
 
@@ -123,7 +123,7 @@ Li_2017_brentuximab <- function() {
     #                     * 1 mL = 10^-6 / 153000 * 10^12 = 6.536 pmol/mL.
     #         0.0125 ug/mL = 0.0817 pmol/mL. (Equivalent to LLOQ 12.5 ng/mL.)
     #   MMAE: 0.0119 ng/mL * (1 / MW_MMAE_kDa) = 0.0119 / 0.718 = 0.01658 pmol/mL.
-    addSd        <- fix(0.0817); label("Additive residual error on ADC Cc (pmol/mL; equivalent to 0.0125 ug/mL = LLOQ 12.5 ng/mL, fixed)") # Li 2017 Table 3: sigma1 0.0125 ug/mL fixed
+    addSd        <- fix(0.0817); label("Additive residual error on ADC Cc (pmol/mL; equivalent to 0.0125 ug/mL = LLOQ 12.5 ng/mL)") # Li 2017 Table 3: sigma1 0.0125 ug/mL fixed
     propSd       <- 0.329;       label("Proportional residual error on ADC Cc (fraction)") # Li 2017 Table 3: sigma2 32.9% CV
     addSd_mmae     <- 0.01658;     label("Additive residual error on MMAE Cc_mmae (pmol/mL; equivalent to 0.0119 ng/mL)") # Li 2017 Table 4: sigma1 0.0119 ng/mL
     propSd_mmae    <- 0.368;       label("Proportional residual error on MMAE Cc_mmae (fraction)") # Li 2017 Table 4: sigma2 36.8% CV

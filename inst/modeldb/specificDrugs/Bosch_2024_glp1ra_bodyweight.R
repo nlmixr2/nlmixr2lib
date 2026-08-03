@@ -183,43 +183,43 @@ Bosch_2024_glp1ra_bodyweight <- function() {
 
     # ===== Lifestyle-change effect =====
     lkdiet    <- fixed(log(10))
-    label("Log of Kdiet = inverse-Bateman onset rate constant for the LSC effect (1/d, FIXED to a large value so the LSC effect onset is rapid)") # Bosch 2024 supplement S10 (THETA5 = 10, FIX)
+    label("Log of Kdiet = inverse-Bateman onset rate constant for the LSC effect (1/d, a large value so the LSC effect onset is rapid)") # Bosch 2024 supplement S10 (THETA5 = 10, FIX)
     lkred     <- log(0.00195)
     label("Log of Kred = inverse-Bateman reduction rate constant for the LSC effect (1/d) - default non-STEP-study value") # Bosch 2024 Table 3 Model D (Kred = 0.00195 / d for non-STEP studies; STEP 1/5/8 = 0.00541 / d, STEP 3 = 0.00924 / d - user may override per study)
 
     # ===== Compound in-vitro potency and free fraction (Bosch 2024 Table 2, FIXED) =====
     lec50lira <- fixed(log(1.2))
-    label("Log of in-vitro liraglutide EC50 (pM, FIXED) - GLP-1R activation assay")                                 # Bosch 2024 Table 2 (1.2 pM, in absence of serum protein)
+    label("Log of in-vitro liraglutide EC50 (pM) - GLP-1R activation assay")                                 # Bosch 2024 Table 2 (1.2 pM, in absence of serum protein)
     lec50sema <- fixed(log(0.9))
-    label("Log of in-vitro semaglutide EC50 (pM, FIXED) - GLP-1R activation assay")                                 # Bosch 2024 Table 2 (0.9 pM, in absence of serum protein)
+    label("Log of in-vitro semaglutide EC50 (pM) - GLP-1R activation assay")                                 # Bosch 2024 Table 2 (0.9 pM, in absence of serum protein)
     lfusema   <- fixed(log(0.0025))
-    label("Log of semaglutide free fraction (unitless, FIXED)")                                                     # Bosch 2024 Table 2 (0.25%)
+    label("Log of semaglutide free fraction (unitless)")                                                     # Bosch 2024 Table 2 (0.25%)
 
     # ===== Liraglutide PK (Bosch 2024 supplement S10; values from FDA Clinical Pharmacology Review, 17 Dec 2018) =====
     lkalira     <- fixed(log(0.0608 * 24))
-    label("Log of liraglutide first-order absorption rate constant (1/d, FIXED)")                                    # supplement S10 (KAlira = 0.0608 * 24 = 1.4592 / d)
+    label("Log of liraglutide first-order absorption rate constant (1/d)")                                    # supplement S10 (KAlira = 0.0608 * 24 = 1.4592 / d)
     lcl_lira_ref <- fixed(log(1.11 * 24))
-    label("Log of liraglutide clearance at reference covariates (L/d, FIXED; reference 90 kg male)")                 # supplement S10 (CLlira = 1.11 * 24 = 26.64 L/d at WT = 90 kg, male)
+    label("Log of liraglutide clearance at reference covariates (L/d,; reference 90 kg male)")                 # supplement S10 (CLlira = 1.11 * 24 = 26.64 L/d at WT = 90 kg, male)
     lvclira_ref <- fixed(log(0.16))
-    label("Log of liraglutide central volume of distribution at reference covariates (L, FIXED; reference 90 kg male)") # supplement S10 (VClira = 0.16 L at WT = 90 kg, male)
+    label("Log of liraglutide central volume of distribution at reference covariates (L,; reference 90 kg male)") # supplement S10 (VClira = 0.16 L at WT = 90 kg, male)
     e_wt_cl_lira   <- fixed(0.703)
-    label("Allometric exponent on WT for liraglutide CL (unitless, FIXED)")                                          # supplement S10 ((BW0 / 90)^0.703)
+    label("Allometric exponent on WT for liraglutide CL (unitless)")                                          # supplement S10 ((BW0 / 90)^0.703)
     e_wt_vc_lira   <- fixed(1.24)
-    label("Allometric exponent on WT for liraglutide Vc (unitless, FIXED)")                                          # supplement S10 ((BW0 / 90)^1.24)
+    label("Allometric exponent on WT for liraglutide Vc (unitless)")                                          # supplement S10 ((BW0 / 90)^1.24)
     e_male_cl_lira <- fixed(log(1.32))
-    label("Log multiplier on liraglutide CL for males (unitless, FIXED; applied as multiplier 1.32 if SEXF = 0)")    # supplement S10 (1.32^MALE)
+    label("Log multiplier on liraglutide CL for males (unitless,; applied as multiplier 1.32 if SEXF = 0)")    # supplement S10 (1.32^MALE)
     e_male_vc_lira <- fixed(log(1.4))
-    label("Log multiplier on liraglutide Vc for males (unitless, FIXED; applied as multiplier 1.4 if SEXF = 0)")     # supplement S10 (1.4^MALE)
+    label("Log multiplier on liraglutide Vc for males (unitless,; applied as multiplier 1.4 if SEXF = 0)")     # supplement S10 (1.4^MALE)
 
     # ===== Semaglutide PK (Bosch 2024 supplement S10; values from Carlsson Petri et al. 2018) =====
     lkasema     <- fixed(log(0.0286 * 24))
-    label("Log of semaglutide first-order absorption rate constant (1/d, FIXED)")                                    # supplement S10 (KAsema = 0.0286 * 24 = 0.6864 / d)
+    label("Log of semaglutide first-order absorption rate constant (1/d)")                                    # supplement S10 (KAsema = 0.0286 * 24 = 0.6864 / d)
     lvcsema_ref <- fixed(log(12.2))
-    label("Log of semaglutide central volume of distribution at reference covariates (L, FIXED; not WT-scaled in supplement)") # supplement S10 (VCsema = 12.2 L)
+    label("Log of semaglutide central volume of distribution at reference covariates (L,; not WT-scaled in supplement)") # supplement S10 (VCsema = 12.2 L)
     lclsema_ref <- fixed(log(0.0478 * 24))
-    label("Log of semaglutide clearance at reference covariates (L/d, FIXED; reference 85 kg)")                       # supplement S10 (CLsema = 0.0478 * 24 = 1.1472 L/d at WT = 85 kg)
+    label("Log of semaglutide clearance at reference covariates (L/d,; reference 85 kg)")                       # supplement S10 (CLsema = 0.0478 * 24 = 1.1472 L/d at WT = 85 kg)
     e_wt_cl_sema <- fixed(0.774)
-    label("Allometric exponent on WT for semaglutide CL (unitless, FIXED)")                                          # supplement S10 ((BW0 / 85)^0.774)
+    label("Allometric exponent on WT for semaglutide CL (unitless)")                                          # supplement S10 ((BW0 / 85)^0.774)
 
     # ===== Residual error =====
     propSd    <- 0.32

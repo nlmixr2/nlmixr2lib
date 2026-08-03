@@ -177,7 +177,7 @@ Wang_2018_daclatasvir_asunaprevir <- function() {
     lic50_dcv_gt1a <- log(0.041)
     label("IC50 of DCV for GT1A virion production (ug/L)")                    # Wang 2018 Table 4: IC50,DCV,GT1A = 0.041 ug/L
     scl_ic50_dcv   <- fixed(0.18)
-    label("Fixed scaling factor IC50_DCV_GT1B / IC50_DCV_GT1A (unitless); FIXED")  # Wang 2018 Table 4: SCL_IC50,DCV = 0.18 (FIX)
+    label("Scaling factor IC50_DCV_GT1B / IC50_DCV_GT1A (unitless)")  # Wang 2018 Table 4: SCL_IC50,DCV = 0.18 (FIX)
     etalic50_dcv   ~ log(1 + 2.194^2)  # Wang 2018 Table 4: IC50,DCV IIV CV = 219.4 percent -> omega^2 = log(1 + 2.194^2) = 1.7574
 
     # DCV sigmoid Emax shape factor (gamma); log-transformed because positive.
@@ -198,7 +198,7 @@ Wang_2018_daclatasvir_asunaprevir <- function() {
     lic50_asv_gt1a <- log(2.45)
     label("IC50 of ASV for GT1A virion production (ug/L)")                     # Wang 2018 Table 4: IC50,ASV,GT1A = 2.45 ug/L
     scl_ic50_asv   <- fixed(0.30)
-    label("Fixed scaling factor IC50_ASV_GT1B / IC50_ASV_GT1A (unitless); FIXED")  # Wang 2018 Table 4: SCL_IC50,ASV = 0.30 (FIX)
+    label("Scaling factor IC50_ASV_GT1B / IC50_ASV_GT1A (unitless)")  # Wang 2018 Table 4: SCL_IC50,ASV = 0.30 (FIX)
     etalic50_asv   ~ log(1 + 0.964^2)  # Wang 2018 Table 4: IC50,ASV IIV CV = 96.4 percent -> omega^2 = log(1 + 0.964^2) = 0.6516
 
     # ASV sigmoid Emax shape factor and resistance coefficient have no IIV

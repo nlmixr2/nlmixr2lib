@@ -203,11 +203,11 @@ Smythe_2013_gatifloxacin <- function() {
     # sister Wilkins 2008 rifampicin model (DDMODEL00000280). The OCC
     # column (1 or 2) is decomposed into binary indicators inside model().
     etaiov_cl_1  ~ 0.10336              # Smythe 2013 Table 2: IOV CL/F = 33.0% CV (RSE 5.7%) -> log(0.33^2 + 1) = 0.10336 (occasion 1)
-    etaiov_cl_2  ~ fix(0.10336)         # IOV on log-CL, occasion 2; variance fixed equal to occasion 1 per source's single-variance IOV reporting
+    etaiov_cl_2  ~ fix(0.10336)         # IOV on log-CL, occasion 2; variance equal to occasion 1 per source's single-variance IOV reporting
     etaiov_vc_1  ~ 0.01727              # Smythe 2013 Table 2: IOV V/F  = 13.2% CV (RSE 13.9%) -> log(0.132^2 + 1) = 0.01727 (occasion 1)
-    etaiov_vc_2  ~ fix(0.01727)         # IOV on log-V,  occasion 2; variance fixed equal to occasion 1
+    etaiov_vc_2  ~ fix(0.01727)         # IOV on log-V, occasion 2; variance equal to occasion 1
     etaiov_mtt_1 ~ 0.18365              # Smythe 2013 Table 2: IOV MTT  = 44.9% CV (RSE 12.3%) -> log(0.449^2 + 1) = 0.18365 (occasion 1)
-    etaiov_mtt_2 ~ fix(0.18365)         # IOV on log-MTT, occasion 2; variance fixed equal to occasion 1
+    etaiov_mtt_2 ~ fix(0.18365)         # IOV on log-MTT, occasion 2; variance equal to occasion 1
 
     # Residual error. Combined additive + proportional on the linear
     # concentration scale (mg/L). The source paper also reports a

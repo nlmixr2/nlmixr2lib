@@ -129,7 +129,7 @@ Antignac_2007_tacrolimus <- function() {
     label("Oral bioavailability F (fraction)")
     # Antignac 2007 Table 4 F Mean = 13.7% = 0.137
     lka <- fixed(log(4.5))
-    label("Absorption rate constant ka (1/h; FIXED from Jusko 1995)")
+    label("Absorption rate constant ka (1/h; from Jusko 1995)")
     # Antignac 2007 Table 4 'ka, fixed (1/h)' = 4.5; held fixed per
     # Results 'Population pharmacokinetics' (ka could not be estimated
     # from trough-only data; refitting with ka in {1.5, 2, 3} produced

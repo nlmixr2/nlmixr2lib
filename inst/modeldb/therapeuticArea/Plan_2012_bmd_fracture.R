@@ -219,7 +219,7 @@ Plan_2012_bmd_fracture <- function() {
     # Plan 2012 Results, Figure 5 right-panel caption: 'theta_BMD = 1.5 (95% CI 1.49-1.52)'.
 
     bmd_ref   <- fixed(0.8)
-    label("Reference BMD for hazard centring (g/cm^2; fixed at the cohort-typical postmenopausal BMD per Plan 2012 Figure 4 caption)")
+    label("Reference BMD for hazard centring (g/cm^2; the cohort-typical postmenopausal BMD per Plan 2012 Figure 4 caption)")
     # Plan 2012 Results, Figure 4 caption: 'BMD = 0.8 g/cm^2, alpha = 1'.
 
     # =====================================================================

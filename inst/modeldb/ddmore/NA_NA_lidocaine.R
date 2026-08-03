@@ -137,9 +137,9 @@ NA_NA_lidocaine <- function() {
     # 18.7 h, slower than the textbook lidocaine IV t1/2 (~1.5-2 h), which
     # the operator notes as a deviation pending publication recovery.
     lk_megx_form <- fixed(log(0.03))
-    label("Log lidocaine -> MEGX formation rate constant (1/time-unit) - FIXED")  # `.ctl` $THETA TH 1 (FIX); `.res` FINAL TH 1 = 3.00E-02
+    label("Log lidocaine -> MEGX formation rate constant (1/time-unit)")  # `.ctl` $THETA TH 1 (FIX); `.res` FINAL TH 1 = 3.00E-02
     lk_xyl_form  <- fixed(log(0.007))
-    label("Log lidocaine -> 2,6-xylidide formation rate constant (1/time-unit) - FIXED")  # `.ctl` $THETA TH 3 (FIX); `.res` FINAL TH 3 = 7.00E-03
+    label("Log lidocaine -> 2,6-xylidide formation rate constant (1/time-unit)")  # `.ctl` $THETA TH 3 (FIX); `.res` FINAL TH 3 = 7.00E-03
 
     # MEGX -> GX rate constant (k_gx_form). Estimated; `.res` FINAL TH 2 =
     # 1.93. No covariate effects in the source.
@@ -210,11 +210,11 @@ NA_NA_lidocaine <- function() {
     # central volumes can later be relaxed if the model structure is
     # extended.
     lvc_megx <- fixed(log(100))
-    label("Log MEGX apparent central volume (volume-unit) - FIXED, shared across metabolites")  # `.res` FINAL TH 16 (FIX) = 1.00E+02
+    label("Log MEGX apparent central volume (volume-unit), shared across metabolites")  # `.res` FINAL TH 16 (FIX) = 1.00E+02
     lvc_gx   <- fixed(log(100))
-    label("Log GX apparent central volume (volume-unit) - FIXED, shared across metabolites")    # `.res` FINAL TH 16 (FIX) = 1.00E+02
+    label("Log GX apparent central volume (volume-unit), shared across metabolites")    # `.res` FINAL TH 16 (FIX) = 1.00E+02
     lvc_xyl  <- fixed(log(100))
-    label("Log 2,6-xylidide apparent central volume (volume-unit) - FIXED, shared across metabolites")  # `.res` FINAL TH 16 (FIX) = 1.00E+02
+    label("Log 2,6-xylidide apparent central volume (volume-unit), shared across metabolites")  # `.res` FINAL TH 16 (FIX) = 1.00E+02
 
     # Inter-individual variability. Source `$OMEGA` is diagonal (no BLOCK).
     # `.res` FINAL OMEGA diagonals: ETA1 = 3.91E-01 on K30 (linear-scale
