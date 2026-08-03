@@ -400,6 +400,8 @@ navbar:
         href: articles/Kang_2020_cefpirome.html
       - text: "Cefquinome pbpk (Mi 2023)"
         href: articles/Mi_2023_cefquinome_pbpk.html
+      - text: "Ceftaroline (Riccobene 2016)"
+        href: articles/Riccobene_2016_ceftaroline.html
       - text: "Ceftazidime (Bulitta 2010)"
         href: articles/Bulitta_2010_ceftazidime.html
       - text: "Ceftazidime (Conil 2007)"
@@ -3519,6 +3521,7 @@ articles:
   - articles/Retlich_2015_linagliptin
   - articles/Revilla_2010_vancomycin
   - articles/Ribba_2022_ctdna_tumor_size
+  - articles/Riccobene_2016_ceftaroline
   - articles/Rietveld_2025_docetaxel
   - articles/Robarge_2017_efavirenz
   - articles/Robbie_2012_palivizumab

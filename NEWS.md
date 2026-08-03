@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Riccobene 2016 ceftaroline ([doi:10.1128/AAC.02755-15](https://doi.org/10.1128/AAC.02755-15)) — healthy adults, plasma and lung epithelial lining fluid.
+
 - Time-varying clearance now has a shared vocabulary (issue #481). 31 models
   gave clearance an explicit time dependence under some twenty different
   spellings, so the structure could not be found by name and the magnitude of
