@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Wang 2024 omega-3 PUFA ([doi:10.1038/s41387-024-00262-w](https://doi.org/10.1038/s41387-024-00262-w)) — community-dwelling adults with type 2 diabetes.
+
 - Time-varying clearance now has a shared vocabulary (issue #481). 31 models
   gave clearance an explicit time dependence under some twenty different
   spellings, so the structure could not be found by name and the magnitude of

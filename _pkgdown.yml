@@ -1636,6 +1636,8 @@ navbar:
         href: articles/Zhu_2023_omalizumab_pediatric.html
       - text: "Ombitasvir (Mensing 2017)"
         href: articles/Mensing_2017_3D_HCV_regimen.html
+      - text: "Omega3PUFA (Wang 2024)"
+        href: articles/Wang_2024_omega3PUFA.html
       - text: "Omeprazole (Solana 2014)"
         href: articles/Solana_2014_omeprazole.html
       - text: "Omeprazole (Zhao 2018)"
@@ -3743,6 +3745,7 @@ articles:
   - articles/Wang_2018_daclatasvir_asunaprevir
   - articles/Wang_2020_ontamalimab
   - articles/Wang_2021_pertuzumab
+  - articles/Wang_2024_omega3PUFA
   - articles/Wang_2024_sugemalimab
   - articles/Waterhouse_2024_vedolizumab
   - articles/Watson_2010_liraglutide
