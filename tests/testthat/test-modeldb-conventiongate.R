@@ -24,9 +24,12 @@ test_that("the accumulator aggregates across models rather than stopping at the 
   # Failing at the end means one run reports every offending model, instead
   # of surfacing one per rebuild.
   nlmixr2lib:::.conventionErrorsReset()
-  mk <- function(nm, param) data.frame(
-    model = nm, category = "deprecated_names", severity = "error", name = param,
-    message = "m", suggestion = "s", stringsAsFactors = FALSE)
+  mk <- function(nm, param) {
+    data.frame(
+      model = nm, category = "deprecated_names", severity = "error", name = param,
+      message = "m", suggestion = "s", stringsAsFactors = FALSE
+    )
+  }
   nlmixr2lib:::.conventionErrorsAdd("A_2026_one", mk("A_2026_one", "allo_cl"))
   nlmixr2lib:::.conventionErrorsAdd("B_2026_two", mk("B_2026_two", "Km"))
   expect_error(nlmixr2lib:::.conventionErrorsStopIfAny(),
