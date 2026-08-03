@@ -454,6 +454,8 @@ navbar:
         href: articles/Wade_2015_certolizumab.html
       - text: "Cetuximab (Dirks 2008)"
         href: articles/Dirks_2008_cetuximab.html
+      - text: "ChlorogenicAcid rat (Chen 2024)"
+        href: articles/Chen_2024_guhongInjection.html
       - text: "Chloroquine (Simpson 2013)"
         href: articles/Simpson_2013_chloroquine.html
       - text: "Ciclosporin (Fanta 2007)"
@@ -1108,10 +1110,14 @@ navbar:
         href: articles/Carmichael_2003_hydroxychloroquine.html
       - text: "HydroxyprogesteroneCaproate (Sharma 2016)"
         href: articles/Sharma_2016_hydroxyprogesteroneCaproate.html
+      - text: "HydroxysafflorYellowA rat (Chen 2024)"
+        href: articles/Chen_2024_guhongInjection.html
       - text: "Hydroxyurea (Dong 2016)"
         href: articles/Dong_2016_hydroxyurea.html
       - text: "Hydroxyurea (Paule 2011)"
         href: articles/Paule_2011_hydroxyurea.html
+      - text: "Hyperoside rat (Chen 2024)"
+        href: articles/Chen_2024_guhongInjection.html
       - text: "Ibandronate (Pillai 2004)"
         href: articles/Pillai_2004_ibandronate.html
       - text: "Ibrutinib competing risk (Ibrahim 2023)"
@@ -1232,6 +1238,10 @@ navbar:
         href: articles/Gupta_2017_ixazomib.html
       - text: "Ixekizumab (Jackson 2022)"
         href: articles/Jackson_2022_ixekizumab.html
+      - text: "Kaempferol3OGlucoside rat (Chen 2024)"
+        href: articles/Chen_2024_guhongInjection.html
+      - text: "Kaempferol3ORutinoside rat (Chen 2024)"
+        href: articles/Chen_2024_guhongInjection.html
       - text: "Ketoprofen (Park 2001)"
         href: articles/Park_2001_ketoprofen.html
       - text: "Ketorolac (Valitalo 2017)"
@@ -1604,6 +1614,8 @@ navbar:
         href: articles/Zhao_2010_mycophenolic_acid.html
       - text: "Mycophenolic acid (deWinter 2009)"
         href: articles/deWinter_2009_mycophenolic_acid.html
+      - text: "NAcetylglutamine rat (Chen 2024)"
+        href: articles/Chen_2024_guhongInjection.html
       - text: "Nab paclitaxel (Chen 2014)"
         href: articles/Chen_2014_nab_paclitaxel.html
       - text: "Nalmefene (Kyhl 2016)"
@@ -1728,6 +1740,8 @@ navbar:
         href: articles/Takeuchi_2023_ozoralizumab.html
       - text: "PAmAb (Cao 2013)"
         href: articles/Cao_2013_PAmAb.html
+      - text: "PCoumaricAcid rat (Chen 2024)"
+        href: articles/Chen_2024_guhongInjection.html
       - text: "PF 06939999 (Guo 2022)"
         href: articles/Guo_2022_PF_06939999.html
       - text: "PF00821385 dog (Langdon 2010)"
@@ -2120,6 +2134,8 @@ navbar:
         href: articles/Yang_2010_rosuvastatin_mbma.html
       - text: "Rucaparib (Wang 2015)"
         href: articles/Wang_2015_rucaparib.html
+      - text: "Rutin rat (Chen 2024)"
+        href: articles/Chen_2024_guhongInjection.html
       - text: "Rwj416457 (Schmidt 2009)"
         href: articles/Schmidt_2009_oxazolidinones.html
       - text: "S ketamine (Flint 2017)"
@@ -2956,6 +2972,7 @@ articles:
   - articles/Chen_2023_nemonoxacin
   - articles/Chen_2023_teicoplanin
   - articles/Chen_2023_tilmicosin
+  - articles/Chen_2024_guhongInjection
   - articles/Cheng_2026_immunoglobulin
   - articles/Chi_2018_propofol
   - articles/Chien_2022_imatinib
