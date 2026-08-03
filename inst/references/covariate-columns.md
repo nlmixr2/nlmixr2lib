@@ -9223,6 +9223,105 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Example models:** `Abrantes_2017_moroctocog.R` (multiplicative effect on CL: `(1 - 0.347 * STUDY_B1831090)` so B1831090 subjects have ~34.7% lower CL than the other 12 studies; Abrantes 2017 Table 2 also reports a 95% CI of -40.7% to -24.2%).
 - **Notes:** Specific scope because the contrast is tied to the Abrantes 2017 pooled-analysis design. Subject-level / time-fixed; set once from the trial identifier on each subject record. Inclusion in the model allows the typical PK parameters to describe the remaining 12 studies, with B1831090 captured by the indicator (Abrantes 2017 Discussion). Ratified canonically on 2026-06-21 alongside the Abrantes 2017 moroctocog extraction.
 
+### STUDY_SWEDEN_IV (**canonical for the Lallemand 2023 Swedish IV cohort indicator**)
+- **Description:** 1 = one of the 4 Swedish horses that received a single IV dose of sodium benzylpenicillin (Olsen 2018) and no intramuscular administration, in the Lallemand 2023 equine benzylpenicillin meta-analysis; 0 = any other cohort in the pool. Selects the Swedish IV level of the paper's `Nationcode` 'source of dataset' covariate on plasma clearance, giving CL = 481 * exp(-0.6833) = 243 mL/kg/h.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (the French cohort, `Nationcode = 0`, is the reference source of dataset).
+- **Source aliases:**
+  - `Nationcode == 1` -- the integer-valued 'source of dataset' column in Lallemand 2023 Supplementary Data 2 (`STUDY_SWEDEN_IV = as.integer(Nationcode == 1)`).
+- **Example models:** `Lallemand_2023_benzylpenicillin_horse.R` (log-additive effect on CL, coefficient -0.683254 FIXED from the IV-only analysis; Lallemand 2023 Table 4 `dCldSource_of_data1`).
+- **Notes:** Specific scope because the contrast is tied to the five-dataset VetCAST equine benzylpenicillin pool. Subject-level (time-fixed). A **separate level** from `STUDY_SWEDEN_IM`: Lallemand 2023 Section 2.2 states there was no reason to assume the 4 Swedish IV horses shared the clearance of the 8 Swedish horses studied only by the IM route (243 vs 351 mL/kg/h), and the origin of the difference (3 of the 4 IV horses had markedly higher concentration profiles) remains unexplained. Mutually exclusive with `STUDY_SWEDEN_IM`, `STUDY_USA1`, `STUDY_USA2` and `STUDY_JAPAN`; when all five are 0 the horse is French. Member of the `STUDY_<id>` family of paper-specific study cohort indicators.
+
+### STUDY_SWEDEN_IM (**canonical for the Lallemand 2023 Swedish IM crossover cohort indicator**)
+- **Description:** 1 = one of the 8 Swedish horses enrolled in the 2x2 crossover comparing four IM administrations of procaine benzylpenicillin against seven IM administrations of sodium benzylpenicillin at 12 h intervals (Olsen 2013), in the Lallemand 2023 equine benzylpenicillin meta-analysis; 0 = any other cohort in the pool. Selects the paper's `Nationcode = 11` level, which modifies plasma clearance (CL = 481 * exp(-0.3146) = 351 mL/kg/h), the procaine benzylpenicillin absorption rate constant, and the procaine benzylpenicillin logit bioavailability.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (the French cohort, `Nationcode = 0`, is the reference source of dataset).
+- **Source aliases:**
+  - `Nationcode == 11` -- the integer-valued 'source of dataset' column in Lallemand 2023 Supplementary Data 2 (`STUDY_SWEDEN_IM = as.integer(Nationcode == 11)`).
+- **Example models:** `Lallemand_2023_benzylpenicillin_horse.R` (log-additive effect on CL, coefficient -0.314630693388979 estimated indirectly by a Bayesian method in the full model because these horses received no IV dose; plus effects on `lka_proc` and on the logit of the procaine bioavailability).
+- **Notes:** Specific scope. Subject-level (time-fixed). These horses have no IV data, so their clearance is identified only through the extravascular profiles under the assumption -- justified in Lallemand 2023 Section 2.2 from the NCA exposures -- that Swedish, Japanese and French procaine formulations all have near-complete bioavailability. Without this separate level the Swedish procaine bioavailability would have been estimated at an implausible 37%. Sibling of `STUDY_SWEDEN_IV`; the two are deliberately distinct levels of the same `Nationcode` covariate. Member of the `STUDY_<id>` family.
+
+### STUDY_USA1 (**canonical for the Lallemand 2023 USA1 cohort indicator**)
+- **Description:** 1 = one of the 7 USA1 horses (Younkin 2019) that received two IV administrations of potassium benzylpenicillin at a 6 h interval followed by a single IM dose of procaine benzylpenicillin (Norocillin) 6 h after the second IV dose, in the Lallemand 2023 equine benzylpenicillin meta-analysis; 0 = any other cohort in the pool. Selects the paper's `Nationcode = 2` level, which modifies plasma clearance (CL = 481 * exp(-0.1258) = 424 mL/kg/h), the procaine absorption rate constant, and the procaine logit bioavailability.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (the French cohort, `Nationcode = 0`, is the reference source of dataset).
+- **Source aliases:**
+  - `Nationcode == 2` -- the integer-valued 'source of dataset' column in Lallemand 2023 Supplementary Data 2 (`STUDY_USA1 = as.integer(Nationcode == 2)`).
+- **Example models:** `Lallemand_2023_benzylpenicillin_horse.R` (log-additive effect on CL, coefficient -0.125766 FIXED from the IV-only analysis; plus effects on `lka_proc` and on the logit of the procaine bioavailability).
+- **Notes:** Specific scope. Subject-level (time-fixed). The clearance effect was **not statistically significant** (Lallemand 2023 Table 4: 95% CI -0.329 to 0.077, so USA1 clearance did not differ from the French reference) but was retained in the full model to let the USA1 bioavailability be estimated against these horses' own measured clearance. Only 3 sampling points were available, so the USA1 dataset was not analysable by NCA, and sampling stopped 12 h after the IM dose; the resulting very slow absorption (MAT 230 h versus roughly 21 h for the other three procaine formulations) is flagged as needing caution in the Discussion. Member of the `STUDY_<id>` family.
+
+### STUDY_USA2 (**canonical for the Lallemand 2023 USA2 cohort indicator**)
+- **Description:** 1 = one of the 6 USA2 horses (Wilson 2022) that received a single IV administration of potassium benzylpenicillin together with gentamicin 6.6 mg/kg, in the Lallemand 2023 equine benzylpenicillin meta-analysis; 0 = any other cohort in the pool. IV data only. Selects the paper's `Nationcode = 4` level, giving CL = 481 * exp(-0.1361) = 420 mL/kg/h, i.e. 87.3% of the French reference value.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (the French cohort, `Nationcode = 0`, is the reference source of dataset).
+- **Source aliases:**
+  - `Nationcode == 4` -- the integer-valued 'source of dataset' column in Lallemand 2023 Supplementary Data 2 (`STUDY_USA2 = as.integer(Nationcode == 4)`).
+- **Example models:** `Lallemand_2023_benzylpenicillin_horse.R` (log-additive effect on CL, coefficient -0.136097 FIXED from the IV-only analysis; Lallemand 2023 Table 4 `dCldSource_of_data3`).
+- **Notes:** Specific scope. Subject-level (time-fixed). Statistically significant (Lallemand 2023 Table 4: 95% CI -0.236 to -0.037). Modifies plasma clearance only, because these horses received no extravascular dose. Note that Lallemand 2023 Supplementary Data 2 applies the USA2 term **twice** in the Phoenix `stparm(Cl = ...)` expression; the single application encoded in the example model is the one consistent with the 420 mL/kg/h reported in Table 4, Table 6 and Supplementary Tables S7 / S8 (a doubled term would give 366 mL/kg/h). Member of the `STUDY_<id>` family.
+
+### STUDY_JAPAN (**canonical for the Lallemand 2023 Japanese cohort indicator**)
+- **Description:** 1 = one of the 6 Japanese horses that received a single IM dose of procaine benzylpenicillin (Procaine BP G sol for Animals "KS") in the Lallemand 2023 equine benzylpenicillin meta-analysis; 0 = any other cohort in the pool. No IV data were collected in Japan. Selects the paper's `Nationcode = 3` level, which modifies plasma clearance (CL = 481 * exp(-0.1567) = 411 mL/kg/h), the procaine absorption rate constant, and the procaine logit bioavailability.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (the French cohort, `Nationcode = 0`, is the reference source of dataset).
+- **Source aliases:**
+  - `Nationcode == 3` -- the integer-valued 'source of dataset' column in Lallemand 2023 Supplementary Data 2 (`STUDY_JAPAN = as.integer(Nationcode == 3)`).
+- **Example models:** `Lallemand_2023_benzylpenicillin_horse.R` (log-additive effect on CL, coefficient -0.156691638818043 estimated indirectly by a Bayesian method in the full model; plus effects on `lka_proc` and on the logit of the procaine bioavailability).
+- **Notes:** Specific scope. Subject-level (time-fixed). Distinct from `REGION_JAPAN`, which is the general-purpose Japan study-site / enrollment-country indicator for human pooled analyses: `STUDY_JAPAN` here denotes one of five deliberately-separated **datasets** in a veterinary meta-analysis (the USA contributes two distinct datasets and Sweden two distinct cohorts), so the covariate is a dataset identifier rather than a country of enrollment. Member of the `STUDY_<id>` family.
+
+### FORM_BP_NA_IM (**canonical for intramuscular sodium benzylpenicillin solution formulation indicator**)
+- **Description:** 1 = the observation was recorded after intramuscular administration of sodium benzylpenicillin solution (Geepenil, Orion Pharma Animal Health) in the Lallemand 2023 equine benzylpenicillin meta-analysis; 0 = the observation belongs to the reference IV block. Selects the IM sodium benzylpenicillin additive residual-error standard deviation (0.162677 ug/mL).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (IV administration of soluble sodium or potassium benzylpenicillin, the reference observation block).
+- **Source aliases:**
+  - observation block `CObsPeniNa` in Lallemand 2023 Supplementary Data 2.
+- **Example models:** `Lallemand_2023_benzylpenicillin_horse.R` (selects `addSd_na_im` = 0.162677 ug/mL; Lallemand 2023 Supplementary Table S7 row `stdev1`).
+- **Notes:** Specific scope. **Observation-level, not subject-level**: Lallemand 2023 estimated a separate additive residual standard deviation for each of its five observation blocks while sharing one multiplicative CV (0.283) across all of them, so a horse in the Swedish 2x2 crossover contributes rows with this indicator set to 1 on its sodium benzylpenicillin occasion and to 0 on its procaine occasion. Mutually exclusive with `FORM_BP_PROC`, `FORM_BP_DUPLO` and `FORM_BP_PENETH`. Member of the `FORM_<drug>_<formulation>` family; `BP` is the paper's own abbreviation for benzylpenicillin.
+
+### FORM_BP_PROC (**canonical for procaine benzylpenicillin single-ingredient IM suspension formulation indicator**)
+- **Description:** 1 = the observation was recorded after intramuscular administration of a single-ingredient procaine benzylpenicillin suspension in the Lallemand 2023 equine benzylpenicillin meta-analysis -- Depocilline (France), Penovet (Sweden), Norocillin (USA1) or Procaine BP G sol for Animals "KS" (Japan); 0 = the observation belongs to the reference IV block. Selects the procaine benzylpenicillin additive residual-error standard deviation (0.004579 ug/mL).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (IV administration of soluble sodium or potassium benzylpenicillin, the reference observation block).
+- **Source aliases:**
+  - observation block `CObsPROC` in Lallemand 2023 Supplementary Data 2.
+- **Example models:** `Lallemand_2023_benzylpenicillin_horse.R` (selects `addSd_proc` = 0.004579 ug/mL; Lallemand 2023 Supplementary Table S7 row `stdev3`).
+- **Notes:** Specific scope. Observation-level. Covers all four single-ingredient procaine products, which share one absorption rate constant and one logit bioavailability differentiated by the `STUDY_*` dataset indicators. Does **not** cover the procaine benzylpenicillin contained in the Duplocilline fixed combination, which Lallemand 2023 treats as its own observation block with its own absorption rate constant and bioavailability -- use `FORM_BP_DUPLO` for that. Mutually exclusive with the other three `FORM_BP_*` indicators. Member of the `FORM_<drug>_<formulation>` family.
+
+### FORM_BP_DUPLO (**canonical for the Duplocilline procaine + benzathine benzylpenicillin fixed-combination IM suspension formulation indicator**)
+- **Description:** 1 = the observation was recorded after intramuscular administration of Duplocilline (Intervet/MSD), a fixed combination of procaine benzylpenicillin and benzathine benzylpenicillin, in the Lallemand 2023 equine benzylpenicillin meta-analysis; 0 = the observation belongs to the reference IV block. Selects the Duplocilline additive residual-error standard deviation (0.006537 ug/mL).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (IV administration of soluble sodium or potassium benzylpenicillin, the reference observation block).
+- **Source aliases:**
+  - observation block `CObsBenza` in Lallemand 2023 Supplementary Data 2.
+- **Example models:** `Lallemand_2023_benzylpenicillin_horse.R` (selects `addSd_duplo` = 0.006537 ug/mL; Lallemand 2023 Supplementary Table S7 row `stdev2`).
+- **Notes:** Specific scope. Observation-level. The measured concentration is the **sum** of the benzylpenicillin released by both prodrug ingredients, which the example model reproduces by feeding two parallel depots into one central compartment. Per Lallemand 2023 Supplementary Table S2 the 12.4 mg/kg total benzylpenicillin dose is split by SPC composition into 5.96376 mg/kg as procaine benzylpenicillin and 6.43624 mg/kg as benzathine benzylpenicillin. Mutually exclusive with the other three `FORM_BP_*` indicators. Member of the `FORM_<drug>_<formulation>` family.
+
+### FORM_BP_PENETH (**canonical for penethamate hydriodide IM suspension formulation indicator**)
+- **Description:** 1 = the observation was recorded after intramuscular administration of penethamate hydriodide (Penetavet, Boehringer Ingelheim), a prodrug of benzylpenicillin, in the Lallemand 2023 equine benzylpenicillin meta-analysis; 0 = the observation belongs to the reference IV block. Selects the penethamate additive residual-error standard deviation (0.008068 ug/mL).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (IV administration of soluble sodium or potassium benzylpenicillin, the reference observation block).
+- **Source aliases:**
+  - observation block `CObsPenethamate` in Lallemand 2023 Supplementary Data 2.
+- **Example models:** `Lallemand_2023_benzylpenicillin_horse.R` (selects `addSd_peneth` = 0.008068 ug/mL; Lallemand 2023 Supplementary Table S7 row `stdev4`).
+- **Notes:** Specific scope. Observation-level. The measured concentration is the **sum** of the benzylpenicillin released from all three injection sites, each of which Lallemand 2023 models with its own sequential rapid-then-slow absorption rate constant pair and its own switch delay; the example model reproduces this with three parallel depots feeding one central compartment. Mutually exclusive with the other three `FORM_BP_*` indicators. Member of the `FORM_<drug>_<formulation>` family.
+
 ## Occasion / period (IOV)
 
 ### OCC (**canonical for the integer-valued occasion / period column**)

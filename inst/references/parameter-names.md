@@ -972,6 +972,15 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
 - **Example models:** `Campagne_2019_cyclophosphamide_mouse.R`.
 - **Notes:** Usually held fixed at the in-vitro equilibrium-dialysis-derived value. The BBB transfer term is `CLin * fu * Cp`.
 
+### mic (**canonical minimum inhibitory concentration**)
+- **Type:** paper-named-param
+- **Role:** Minimum inhibitory concentration of the drug against the target pathogen, in the model's concentration units (note that mg/L and ug/mL are numerically identical, which is why antimicrobial papers move between them freely). Used as the denominator of the PK/PD indices that drive antimicrobial PK/PD-integration, probability-of-target-attainment and PK/PD-cutoff models: `AUC/MIC`, `fAUC/MIC`, `Cmax/MIC`, and as the threshold for `T>MIC` / `fT>MIC`. Normally held `fixed()`, because it is a measured property of the isolate (CLSI / EUCAST broth microdilution) rather than an estimated model parameter; papers that sweep a range of MICs expose it so the user can override it per simulation.
+- **Source aliases:**
+  - `MIC` -- the near-universal paper symbol.
+  - `MIC90` -- when the paper drives the index off the 90th-percentile MIC of a surveillance distribution rather than a single isolate's MIC.
+- **Example models:** `Chen_2023_tilmicosin.R` (fixed at 0.25 ug/mL, the measured MIC of *Pasteurella multocida* D:7; forms the `AUC24h/MIC` index that drives a sigmoidal Emax kill model), `Lallemand_2023_benzylpenicillin_horse.R` (fixed at 0.25 mg/L, the paper's concluded PK/PD cutoff, and overridden via `params = c(mic = ...)` to sweep 0.0625-2 mg/L; used both as the `fAUC/MIC` denominator and as the threshold integrated by the `t_above_mic` state).
+- **Notes:** Keep the bare lower-case name -- do NOT log-transform (an `lmic` would imply the MIC is being estimated) and do NOT rename to a generic `thres` / `ec50`, which would lose the microbiological meaning and collide with the sigmoidal-PD canonicals. Pair with `fu` when the index is defined on free rather than total drug: the free-drug index is `fu * Cc` compared against `mic`, which is equivalent to comparing total `Cc` against `mic / fu`. For models that carry more than one pathogen or isolate, suffix per analyte in the usual way (`mic_<organism>`).
+
 ### kpu<n> (**canonical clustered unbound tissue:plasma partition coefficient**)
 - **Type:** paper-named-param
 - **Role:** Estimated unbound tissue-to-plasma partition coefficient (Kpu) shared by a *cluster* of PBPK tissues, numbered `kpu1`, `kpu2`, `kpu3`, `kpu4`, ... (log-transform prefix `lkpu<n>`). Unitless. Used by "steady-state commonality" PBPK simplifications that keep the full whole-body kinetic structure but reduce the number of unknown distribution parameters by assigning one common Kpu to every tissue in a composition-derived cluster. The numeric suffix indexes the cluster, not a compartment; the cluster-to-tissue mapping must be written out explicitly in `model()` (e.g. `kpu_bone <- kpu1`) and cited to the source table footnote. Convert to the tissue:blood coefficient with `kb = kpu * fu_p / BP`.
