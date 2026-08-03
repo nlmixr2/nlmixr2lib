@@ -2,12 +2,9 @@
 
 # development version
 
-- Add Wang 2023 dorzagliatin ([doi:10.1007/s40262-023-01286-8](https://doi.org/10.1007/s40262-023-01286-8)) — healthy subjects and adults with type 2 diabetes mellitus.
+- Add Dvorackova 2023 posaconazole ([doi:10.3390/antibiotics12091399](https://doi.org/10.3390/antibiotics12091399)) - adult lung-transplant recipients.
 
-* Drop `qs2`.  The model database now ships as `inst/modeldb.rds` instead of
-  `inst/modeldb.qs2`, so `readModelDb()` no longer needs `qs2`.  It was only
-  listed in `Suggests` yet used unconditionally, so `readModelDb()` failed
-  outright when `qs2` was not installed.
+- Add Wu 2023 SPI-62 ([doi:10.1007/s40262-023-01278-8](https://doi.org/10.1007/s40262-023-01278-8)) - healthy adults.
 
 - Disambiguated the overloaded `OC` name, which denoted five unrelated
   concepts. Osteocalcin `OC` -> `OSTCALC` (uppercase, matching the sibling
