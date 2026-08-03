@@ -85,6 +85,8 @@
 
 - Add Wu 2023 SPI-62 ([doi:10.1007/s40262-023-01278-8](https://doi.org/10.1007/s40262-023-01278-8)) - healthy adults.
 
+- Add Wang 2024 amphenmulin ([doi:10.1128/spectrum.03675-23](https://doi.org/10.1128/spectrum.03675-23)) - broiler chickens and in-vitro *Mycoplasma gallisepticum*.
+
 - Disambiguated the overloaded `OC` name, which denoted five unrelated
   concepts. Osteocalcin `OC` -> `OSTCALC` (uppercase, matching the sibling
   biomarkers `P1NP` / `PSA` / `PLT` / `WBC` and the sister model

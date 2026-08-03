@@ -126,6 +126,12 @@ navbar:
         href: articles/Muller_2008_amoxicillin.html
       - text: "Amoxicillin (Tang 2019)"
         href: articles/Tang_2019_amoxicillin.html
+      - text: "Amphenmulin chicken (Wang 2024)"
+        href: articles/Wang_2024_amphenmulin.html
+      - text: "Amphenmulin killrate (Wang 2024)"
+        href: articles/Wang_2024_amphenmulin.html
+      - text: "Amphenmulin pkpd index (Wang 2024)"
+        href: articles/Wang_2024_amphenmulin.html
       - text: "AmphotericinB liposomal (Hong 2006)"
         href: articles/Hong_2006_amphotericinB_liposomal.html
       - text: "Ampicillin (Tremoulet 2014)"
@@ -3743,6 +3749,7 @@ articles:
   - articles/Wang_2018_daclatasvir_asunaprevir
   - articles/Wang_2020_ontamalimab
   - articles/Wang_2021_pertuzumab
+  - articles/Wang_2024_amphenmulin
   - articles/Wang_2024_sugemalimab
   - articles/Waterhouse_2024_vedolizumab
   - articles/Watson_2010_liraglutide
