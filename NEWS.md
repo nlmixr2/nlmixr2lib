@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Liu 2023 monoclonal antibody panel ([doi:10.1080/19420862.2023.2263926](https://doi.org/10.1080/19420862.2023.2263926)) - female BALB/c mice.
+
 - Add Wu 2023 SPI-62 ([doi:10.1007/s40262-023-01278-8](https://doi.org/10.1007/s40262-023-01278-8)) - healthy adults.
 
 - Disambiguated the overloaded `OC` name, which denoted five unrelated
