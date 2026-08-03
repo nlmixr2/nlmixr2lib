@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Keij 2023 amoxicillin ([doi:10.1093/cid/ciad432](https://doi.org/10.1093/cid/ciad432)) - preterm and term neonates treated for possible serious bacterial infection.
+- Add Beredaki 2023 micafungin ([doi:10.1093/jac/dkad096](https://doi.org/10.1093/jac/dkad096)) - in vitro dialysis/diffusion PK/PD against Candida albicans, with CLSI and EUCAST parameterisations.
 
 - Add Wu 2023 SPI-62 ([doi:10.1007/s40262-023-01278-8](https://doi.org/10.1007/s40262-023-01278-8)) - healthy adults.
 

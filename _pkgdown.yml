@@ -1486,6 +1486,10 @@ navbar:
         href: articles/Leroux_2018_fluconazole_micafungin.html
       - text: "Micafungin (Martial 2017)"
         href: articles/Martial_2017_micafungin.html
+      - text: "Micafungin clsi (Beredaki 2023)"
+        href: articles/Beredaki_2023_micafungin.html
+      - text: "Micafungin eucast (Beredaki 2023)"
+        href: articles/Beredaki_2023_micafungin.html
       - text: "Midazolam (Brill 2014)"
         href: articles/Brill_2014_midazolam.html
       - text: "Midazolam (Franken 2017)"
@@ -2790,6 +2794,7 @@ articles:
   - articles/Bender_2014_trastuzumabEmtansine_reduced
   - articles/Benkali_2010_tacrolimus
   - articles/Benson_2014_PF04457845_qsp
+  - articles/Beredaki_2023_micafungin
   - articles/Berends_2019_infliximab
   - articles/Bergen_2017_meropenem
   - articles/Berges_2007_enoxaparin
