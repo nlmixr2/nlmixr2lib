@@ -9802,3 +9802,33 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Source aliases:** none.
 - **Example models:** `Henin_2012_felodipine.R`, `Henin_2012_diclofenac.R`.
 - **Notes:** Specific scope. Time-zero-referenced; effective DSI residence time is IP_DSI_C - IP_PSI_DSI. Ratified canonically alongside the Henin 2012 extraction.
+
+### CONMED_LAMOTRIGINE (**canonical for concomitant lamotrigine coadministration indicator**)
+- **Description:** 1 = subject is coadministered lamotrigine (phenyltriazine antiepileptic and mood stabiliser, cleared predominantly by UGT1A4 glucuronidation) at the pharmacokinetic observation, 0 = no concomitant lamotrigine. Time-varying when comedication start / stop events are captured; time-fixed at the analysis baseline in sources that record comedication only as a per-record flag.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no concomitant lamotrigine).
+- **Source aliases:** none.
+- **Example models:** `Zhang_2024_sertraline.R` (screened on sertraline CL/F and V/F via the paper's categorical-covariate form and not retained; declared in `covariatesDataExcluded` to preserve the screen -- founding example).
+- **Notes:** Named-drug member of the `CONMED_<INN>` family. Distinct from the class-level `CONMED_AED` (any antiepileptic) and `CONMED_EIAED` (enzyme-INDUCING antiepileptic): lamotrigine is not a clinically meaningful CYP inducer, so a model that pools it into `CONMED_EIAED` would be mis-specified. Also distinct from `CONMED_UGT_INH`, which is the pooled UGT-inhibitor indicator -- lamotrigine is a UGT substrate rather than a UGT inhibitor. Use the named indicator when the source paper screens lamotrigine specifically, and the class indicator when the source pools antiepileptics.
+
+### CONMED_QUETIAPINE (**canonical for concomitant quetiapine coadministration indicator**)
+- **Description:** 1 = subject is coadministered quetiapine (dibenzothiazepine second-generation antipsychotic, cleared predominantly by CYP3A4) at the pharmacokinetic observation, 0 = no concomitant quetiapine. Time-varying when comedication start / stop events are captured; time-fixed at the analysis baseline in sources that record comedication only as a per-record flag.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no concomitant quetiapine).
+- **Source aliases:** none.
+- **Example models:** `Zhang_2024_sertraline.R` (screened on sertraline CL/F and V/F via the paper's categorical-covariate form and not retained; declared in `covariatesDataExcluded` to preserve the screen -- founding example).
+- **Notes:** Named-drug member of the `CONMED_<INN>` family. Quetiapine is a CYP3A4 substrate and a weak CYP2D6 inhibitor; it is neither a strong CYP3A4 inhibitor nor an inducer, so it should not be folded into `CONMED_CYP3A4_INH` / `CONMED_CYP3A4_IND`. Register sibling named canonicals (`CONMED_OLANZAPINE`, `CONMED_RISPERIDONE`, ...) rather than reusing this one when a source screens a different antipsychotic, and reserve a future class-level `CONMED_ANTIPSYCHOTIC` for sources that pool the class.
+
+### CONMED_VENLAFAXINE (**canonical for concomitant venlafaxine coadministration indicator**)
+- **Description:** 1 = subject is coadministered venlafaxine (serotonin-norepinephrine reuptake inhibitor, cleared predominantly by CYP2D6 to O-desmethylvenlafaxine with a CYP3A4 minor route) at the pharmacokinetic observation, 0 = no concomitant venlafaxine. Time-varying when comedication start / stop events are captured; time-fixed at the analysis baseline in sources that record comedication only as a per-record flag.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no concomitant venlafaxine).
+- **Source aliases:** none.
+- **Example models:** `Zhang_2024_sertraline.R` (screened on sertraline CL/F and V/F via the paper's categorical-covariate form and not retained; declared in `covariatesDataExcluded` to preserve the screen -- founding example).
+- **Notes:** Named-drug member of the `CONMED_<INN>` family. Relevant to psychotropic popPK models both as a coadministered antidepressant and as a CYP2D6 substrate that can compete with other CYP2D6-cleared comedications. Register sibling named canonicals for other antidepressants screened by name rather than reusing this one; reserve a future class-level `CONMED_ANTIDEPRESSANT` for sources that pool the class.

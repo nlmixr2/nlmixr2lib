@@ -83,6 +83,8 @@
     with per-group guidance in `inst/references/fixed-provenance-followup.md`,
     and the check should be promoted to an error once they are cleared.
 
+- Add Zhang 2024 sertraline ([doi:10.1016/j.heliyon.2024.e25231](https://doi.org/10.1016/j.heliyon.2024.e25231)) - Chinese inpatients with psychiatric disorders, aged 11-79 years.
+
 - Add Wu 2023 SPI-62 ([doi:10.1007/s40262-023-01278-8](https://doi.org/10.1007/s40262-023-01278-8)) - healthy adults.
 
 - Disambiguated the overloaded `OC` name, which denoted five unrelated
