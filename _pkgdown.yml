@@ -2066,8 +2066,12 @@ navbar:
         href: articles/Feng_2008_risperidone.html
       - text: "Risperidone (Sherwin 2012)"
         href: articles/Sherwin_2012_risperidone.html
+      - text: "Risperidone consta (Wang 2024)"
+        href: articles/Wang_2024_risperidone_lai_switching.html
       - text: "Risperidone panss subscales (PillaReddy 2013)"
         href: articles/PillaReddy_2013_panss_subscales.html
+      - text: "Risperidone rykindo (Wang 2024)"
+        href: articles/Wang_2024_risperidone_lai_switching.html
       - text: "Ritonavir (Kappelhoff 2005)"
         href: articles/Kappelhoff_2005_ritonavir.html
       - text: "Ritonavir (Mensing 2017)"
@@ -3854,6 +3858,7 @@ articles:
   - articles/Wang_2021_pertuzumab
   - articles/Wang_2023_dorzagliatin
   - articles/Wang_2024_amphenmulin
+  - articles/Wang_2024_risperidone_lai_switching
   - articles/Wang_2024_sugemalimab
   - articles/Waterhouse_2024_vedolizumab
   - articles/Watson_2010_liraglutide
