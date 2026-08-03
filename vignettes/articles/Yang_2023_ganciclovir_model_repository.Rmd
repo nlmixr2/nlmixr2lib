@@ -42,19 +42,19 @@ rather than skipped as a secondary source.
 
 ## Models contributed by this paper
 
-Nine of the review's 16 models are packaged here. Five were already in
-nlmixr2lib, extracted directly from their **primary** publications, and are
-**not** re-extracted from the review (`Caldes_2009_ganciclovir`,
-`Chen_2021_ganciclovir`, `Perrottet_2009_ganciclovir`,
-`Vezina_2010_valganciclovir`, `Vezina_2014_valganciclovir`). Two more are blocked
-pending covariate-canonical ratification (Nguyen 2021, which needs a critical-illness
-indicator; Yuen 1995, which needs an any-solid-organ-transplant indicator and a
-CMV-retinitis indicator) -- see *Assumptions and deviations*.
+All 11 of the review's 16 models that were not already in nlmixr2lib are packaged
+here. The other five were already present, extracted directly from their
+**primary** publications, and are **not** re-extracted from the review
+(`Caldes_2009_ganciclovir`, `Chen_2021_ganciclovir`,
+`Perrottet_2009_ganciclovir`, `Vezina_2010_valganciclovir`,
+`Vezina_2014_valganciclovir`). Coverage of the review is therefore complete:
+11 + 5 = 16.
 
 ```{r model-list, echo = FALSE}
 repo_models <- tibble::tribble(
   ~model,                        ~cmt, ~route,               ~population,
   "Lalagkas_2023_ganciclovir",   "2",  "GCV IV + VGCV PO",   "Adult SOT recipients with CMV infection",
+  "Nguyen_2021_ganciclovir",     "2",  "GCV IV + VGCV PO",   "Pediatrics, incl. critically ill children",
   "Franck_2021_ganciclovir",     "2",  "GCV IV + VGCV PO",   "Pediatric SOT and SCT recipients",
   "Li_2021_ganciclovir",         "1",  "GCV IV",             "Critically ill children",
   "Krens_2020_ganciclovir",      "1",  "GCV IV",             "Critically ill adults",
@@ -62,7 +62,8 @@ repo_models <- tibble::tribble(
   "Horvatits_2014_ganciclovir",  "2",  "GCV IV",             "Critically ill adults on CVVHDF",
   "Zhao_2009_ganciclovir",       "2",  "VGCV PO",            "Pediatric renal transplant patients",
   "Acosta_2007_ganciclovir",     "1",  "GCV IV + VGCV PO",   "Neonates with congenital CMV disease",
-  "Zhou_1996_ganciclovir",       "1",  "GCV IV",             "Newborns with congenital CMV disease"
+  "Zhou_1996_ganciclovir",       "1",  "GCV IV",             "Newborns with congenital CMV disease",
+  "Yuen_1995_ganciclovir",       "2",  "GCV IV",             "CMV retinitis, CMV urine shedding, or SOT with renal dysfunction"
 )
 
 repo_models |>
@@ -84,8 +85,8 @@ cat(rxode2::rxode2(readModelDb("Krens_2020_ganciclovir"))$reference)
 
 # Population
 
-The nine packaged models were fitted to nine separate cohorts published between
-1996 and 2023, spanning newborns to adults. The table below reproduces the
+The 11 packaged models were fitted to 11 separate cohorts published between
+1995 and 2023, spanning newborns to adults. The table below reproduces the
 per-study demographics from Yang 2023 Table 2 (the review's own tabulation of the
 primary studies).
 
@@ -93,6 +94,7 @@ primary studies).
 tibble::tribble(
   ~study,             ~country,      ~n,    ~obs,   ~age,                    ~weight,               ~formulation,
   "Lalagkas 2023",    "Spain",       "60",  "640",  "57 y (22-78)",          "68 kg (43-131)",      "GCV i.v. + VGCV p.o.",
+  "Nguyen 2021",      "France",      "105", "374",  "2.5 y (0.01-17.3)",     "11.7 kg (2.6-80)",    "GCV i.v. + VGCV p.o.",
   "Franck 2021",      "Canada",      "50",  "580",  "7.5 y (0.5-17.4)",      "26.7 kg (5.96-87)",   "GCV i.v. + VGCV p.o.",
   "Li 2021",          "China",       "104", "138",  "2.46 y (0.10-12.83)",   "12.0 kg (2.5-55.0)",  "GCV i.v.",
   "Krens 2020",       "Netherlands", "34",  "128",  "56 y (30-82)",          "70 kg (44-140)",      "GCV i.v.",
@@ -100,7 +102,8 @@ tibble::tribble(
   "Horvatits 2014",   "see note",    "9",   "NR",   "56 +/- 9 y",            "86 +/- 25 kg",        "GCV i.v.",
   "Zhao 2009",        "France",      "22",  "164",  "9 y (3-17)",            "28 kg (12-76)",       "VGCV p.o.",
   "Acosta 2007",      "USA",         "24",  "484",  "30 d (11-34) / 20 d (8-33)", "2.7 / 2.9 kg",   "GCV i.v. + VGCV p.o.",
-  "Zhou 1996",        "USA",         "27",  "219",  "Newborns",              "NR",                  "GCV i.v."
+  "Zhou 1996",        "USA",         "27",  "219",  "Newborns",              "NR",                  "GCV i.v.",
+  "Yuen 1995",        "USA",         "53",  "558",  "NR",                    "NR",                  "GCV i.v."
 ) |>
   dplyr::rename(
     "Study"             = study,
@@ -133,14 +136,17 @@ meaningful.
 
 Per-parameter provenance is recorded as an in-file comment next to each `ini()`
 line in `inst/modeldb/specificDrugs/<model>.R`. **Every** structural parameter,
-between-subject variance, and residual-error term in all nine models comes from a
+between-subject variance, and residual-error term in all 11 models comes from a
 single source location: **Yang 2023 Table 3** ("Model strategies and final
-pharmacokinetic parameters of the included studies"), in the row for that study.
-The table below collects the structural equations exactly as Table 3 prints them.
+pharmacokinetic parameters of the included studies"), in the row for that study --
+with the group-effect coefficients of `Nguyen_2021` and `Yuen_1995` defined in
+Table 3's own footnote. The table below collects the structural equations exactly
+as Table 3 prints them.
 
 | Model | Fixed-effect equations (verbatim from Yang 2023 Table 3) | BSV (%) | RUV |
 |---|---|---|---|
 | `Lalagkas_2023` | CL = 6.93 x (CKD-EPI/55)^0.817 x (BW/70)^0.75; Vc = 43.1 x (BW/70); Q = 9.23 x (BW/70)^0.75; Vp = 219 x (BW/70); Ka = 0.766; F = 0.699; Tlag = 0.331 | CL 29.9, Vc 36.1, Vp 103.4, Ka 45.7, F 16.6 | 28.2% prop + 0.237 mg/L add |
+| `Nguyen_2021` | CL = 2.55 x (BW/11.7)^0.75 x (eGFR/167)^0.763 x 0.806^critically ill; Vc = 5.96 x (BW/11.7); Q = 0.222 x (BW/11.7)^0.75; Vp = 1.29 x (BW/11.7); Ka = 0.506; F = 0.438 | CL 48.6, Vc 46.9 | 47.7% prop |
 | `Franck_2021` | CL = 6.9 x (BW/26.7)^0.75 x (CrCL/149.8)^0.88; Vc = 9.7 x (BW/26.7); Q = 10.9; Vp = 7.6 x (BW/26.7); Tlag = 0.33; Ka = 0.73; F = 0.43 | CL 66.3, Vc 76.8, Ka 83.7, F 55.7 | 0.98 mg/L add |
 | `Li_2021` | CL = 5.23 x KF^0.92 x (BW/12.0)^1.02, KF = eGFR/120; Vc = 11.35 x (BW/12.0)^0.80 | CL 12.9, Vc 65.8 | 8.23% prop |
 | `Krens_2020` | CL = 2.3 x (CKD-EPI/65)^0.71; Vc = 42 | CL 47.0, Vc 80.0 | 43% prop |
@@ -149,11 +155,15 @@ The table below collects the structural equations exactly as Table 3 prints them
 | `Zhao_2009` | CL/F = 8.04 x (CLcr/89)^2.93 + 3.62 x (BW/28); Vc/F = 5.2; Vp/F = 30.7; Q/F = 3.97; Ka = 0.369; Tlag = 0.743 | CL 23.83, Vc 58.22, Ka 32.25 | 20.93% exponential |
 | `Acosta_2007` | CL = 0.146 x BW^1.68; V = 1.15 x BW; Ka = 0.591; F = 0.536 | CL 28.4, F 12.4 | 45.4% exponential |
 | `Zhou_1996` | CL = 0.262 + (0.00271 x ASCC); Vc = 0.627 + (0.437 x BW) | CL 35.4, Vc 30.1, COV 28.5 | 8.46% prop |
+| `Yuen_1995` | CL = 0.382 + 0.168 x BW x CLcr/100 x (1-T) x (1-CMV); Vc = 0.381 x BW; Vp = 0.511 x BW; Q = 13.4 | CL 47.5, Vc 27.5 | 36.1% prop |
 
 Supporting source locations for the encoding conventions:
 
 | Convention | Source location |
 |---|---|
+| `Nguyen_2021` critical-illness coding (1 = critically ill, 0 = others) | Yang 2023 Table 3 footnote: "critically ill: 1 for critically ill patients and 0 for others" |
+| `Yuen_1995` transplant coefficient T = 0.76 (0 for non-transplant) | Yang 2023 Table 3 footnote: "T: T = 0 for non-transplant patients and 0.76 for transplant patients" |
+| `Yuen_1995` CMV coefficient 0.41 (0 for CMV-shedding, 0.41 for retinitis) | Yang 2023 Table 3 footnote: "CMV: CMV = 0 for CMV-shedding patients and 0.41 for patients with CMV retinitis" |
 | BSV reported as %CV with omega = %CV/100 (so variance = (%CV/100)^2) | Yang 2023 Section 2.2: "BSV ... was recorded as the coefficient of variation (CV), and %CV = sqrt(omega^2) * 100%" |
 | BSV is exponential in every included study | Yang 2023 Section 3.2.1: "BSV was described by an exponential model in all the included studies." |
 | Exponential residual error encoded as proportional in linear space | Yang 2023 Section 3.2.1 residual-error tabulation; exponential residual on the natural scale = additive on the log scale = `prop()` in nlmixr2 |
@@ -228,6 +238,9 @@ Each model is simulated only in the age cohort(s) its source study targeted, and
 only via the route(s) it can support. Models parameterized in apparent oral
 clearances (`Facchin_2019`, `Zhao_2009`) are oral-only; models without a depot
 compartment (`Li_2021`, `Krens_2020`, `Horvatits_2014`, `Zhou_1996`) are IV-only.
+`Yuen_1995`'s cohort has no reported weights or ages but was an adult population
+(CMV retinitis, CMV urine shedding, and solid-organ transplant recipients), so it
+is simulated in the adult cohort, IV-only.
 
 ```{r arms}
 # `crcl_kind` selects which renal-function variant the model's CRCL column means
@@ -242,6 +255,10 @@ arms <- tibble::tribble(
   "Franck_2021_ganciclovir",     "Children",  "GCV IV",   "norm",
   "Franck_2021_ganciclovir",     "Infants",   "VGCV PO",  "norm",
   "Franck_2021_ganciclovir",     "Children",  "VGCV PO",  "norm",
+  "Nguyen_2021_ganciclovir",     "Infants",   "GCV IV",   "norm",
+  "Nguyen_2021_ganciclovir",     "Children",  "GCV IV",   "norm",
+  "Nguyen_2021_ganciclovir",     "Infants",   "VGCV PO",  "norm",
+  "Nguyen_2021_ganciclovir",     "Children",  "VGCV PO",  "norm",
   "Li_2021_ganciclovir",         "Infants",   "GCV IV",   "norm",
   "Li_2021_ganciclovir",         "Children",  "GCV IV",   "norm",
   "Facchin_2019_ganciclovir",    "Children",  "VGCV PO",  "norm",
@@ -249,7 +266,8 @@ arms <- tibble::tribble(
   "Lalagkas_2023_ganciclovir",   "Adults",    "GCV IV",   "norm",
   "Lalagkas_2023_ganciclovir",   "Adults",    "VGCV PO",  "norm",
   "Krens_2020_ganciclovir",      "Adults",    "GCV IV",   "norm",
-  "Horvatits_2014_ganciclovir",  "Adults",    "GCV IV",   "norm"
+  "Horvatits_2014_ganciclovir",  "Adults",    "GCV IV",   "norm",
+  "Yuen_1995_ganciclovir",       "Adults",    "GCV IV",   "raw"
 ) |>
   mutate(
     study = sub("_ganciclovir$", "", model),
@@ -303,6 +321,17 @@ make_arm_events <- function(model, cohort, route, crcl_kind, arm, id_offset) {
     CREAT = pat$CREAT,
     SEXF  = pat$SEXF,
     CRCL  = crcl,
+    # Three group indicators are each set to their model's REFERENCE category, so
+    # every arm reports that model's typical-value profile and the cross-model QC
+    # comparison is not confounded by a subgroup shift. The non-reference levels
+    # are exercised separately in the covariate-effect section below.
+    #   DIS_CRITILL       (Nguyen_2021): 0 = not critically ill
+    #   TX_ANY            (Yuen_1995):   0 = non-transplant patient
+    #   DIS_CMV_RETINITIS (Yuen_1995):   0 = CMV-positive without retinitis
+    #                                        (asymptomatic urine shedding)
+    DIS_CRITILL       = 0,
+    TX_ANY            = 0,
+    DIS_CMV_RETINITIS = 0,
     arm   = arm,
     cohort = cohort,
     route  = route
@@ -386,7 +415,7 @@ Yang 2023 Figure 2 (IV ganciclovir) and Figure 3 (oral valganciclovir) show
 simulated steady-state profiles for neonates, infants, children, and adults, with
 the median and 10th-90th percentiles across the virtual population, one line per
 retrieved study. The panels below reproduce that layout over the 72-96 h
-steady-state window for the nine packaged models.
+steady-state window for the 11 packaged models.
 
 ```{r figures-2-3, fig.width = 8, fig.height = 7}
 prof <- sim |>
@@ -439,34 +468,48 @@ the renal-function and body-size effects of the packaged models:
 # Renal-function effect: CL ratio between the low and high end of a common
 # eGFR range (Yang 2023 scaled renal function to a uniform range; the exact
 # Table S1 endpoints are unavailable, so 30-130 mL/min/1.73 m^2 is used).
+# `Zhao_2009` and `Yuen_1995` use raw CLcr in mL/min rather than the normalized
+# scale; the two coincide to within the BSA ratio (~5% for a 70 kg adult), which
+# is far smaller than the effect sizes being plotted, so the same range is used
+# for every model to keep the comparison on one axis (as Yang 2023 Figure 4 does).
 renal_lo <- 30; renal_hi <- 130
 ref_norm <- 90   # reference renal function for the ratio
+
+# `additive_yuen` evaluates Yuen 1995's CL = 0.382 + 0.168 * BW * CLcr/100 at a
+# 70 kg adult (the cohort weights are not reported), so its renal term is the
+# dominant one and the ratio is close to -- but not exactly -- proportional.
+yuen_cl <- function(crcl, wt = 70) 0.382 + 0.168 * wt * crcl / 100
 
 renal_effects <- tibble::tribble(
   ~study,           ~ref,   ~expo,   ~kind,
   "Lalagkas_2023",  55,     0.817,   "power",
+  "Nguyen_2021",    167,    0.763,   "power",
   "Franck_2021",    149.8,  0.88,    "power",
   "Li_2021",        120,    0.92,    "power",
   "Krens_2020",     65,     0.71,    "power",
   "Zhao_2009",      89,     2.93,    "power_partial",
-  "Zhou_1996",      NA,     NA,      "additive"
+  "Zhou_1996",      NA,     NA,      "additive",
+  "Yuen_1995",      NA,     NA,      "additive_yuen"
 ) |>
   rowwise() |>
   mutate(
     cl_lo = dplyr::case_when(
       kind == "power"         ~ (renal_lo / ref)^expo,
       kind == "power_partial" ~ (8.04 * (renal_lo / ref)^expo + 3.62) / (8.04 + 3.62),
-      kind == "additive"      ~ (0.262 + 0.00271 * renal_lo) / (0.262 + 0.00271 * ref_norm)
+      kind == "additive"      ~ (0.262 + 0.00271 * renal_lo) / (0.262 + 0.00271 * ref_norm),
+      kind == "additive_yuen" ~ yuen_cl(renal_lo) / yuen_cl(ref_norm)
     ),
     cl_hi = dplyr::case_when(
       kind == "power"         ~ (renal_hi / ref)^expo,
       kind == "power_partial" ~ (8.04 * (renal_hi / ref)^expo + 3.62) / (8.04 + 3.62),
-      kind == "additive"      ~ (0.262 + 0.00271 * renal_hi) / (0.262 + 0.00271 * ref_norm)
+      kind == "additive"      ~ (0.262 + 0.00271 * renal_hi) / (0.262 + 0.00271 * ref_norm),
+      kind == "additive_yuen" ~ yuen_cl(renal_hi) / yuen_cl(ref_norm)
     ),
     cl_ref = dplyr::case_when(
       kind == "power"         ~ (ref_norm / ref)^expo,
       kind == "power_partial" ~ (8.04 * (ref_norm / ref)^expo + 3.62) / (8.04 + 3.62),
-      kind == "additive"      ~ 1
+      kind == "additive"      ~ 1,
+      kind == "additive_yuen" ~ 1
     )
   ) |>
   ungroup() |>
@@ -811,9 +854,90 @@ tibble::tibble(
   knitr::kable()
 ```
 
+## Group-indicator effects (Nguyen 2021 and Yuen 1995)
+
+Three of the packaged models' covariates are binary group indicators whose
+coefficients Table 3 folds into the *coded value* of the column rather than
+printing as a separate THETA (`critically ill`, `T`, and `CMV`). Because the
+column is stored as a plain 0 / 1 canonical indicator and the coefficient lives in
+`ini()`, the encoding has to be checked by solving the model at both levels of
+each indicator and confirming the clearance ratio equals the coefficient the
+footnote prints. This is a direct test of the encoding, not of the paper.
+
+```{r group-indicators}
+# Read back the clearance the model actually computed at each level of each
+# indicator. `omega = NA` is passed at SOLVE time (rather than mutating the model
+# with `zeroRe()`) so the etas are zeroed for this solve only and the population
+# simulations above keep their between-subject variability; and the event table
+# omits `id` so rxode2 treats it as a genuine single-subject solve.
+group_cl <- function(model, covs) {
+  ev <- data.frame(
+    time = c(0, 1), amt = c(100, 0), cmt = "central", evid = c(1L, 0L)
+  )
+  for (nm in names(covs)) ev[[nm]] <- covs[[nm]]
+  out <- as.data.frame(
+    rxode2::rxSolve(readModelDb(model), events = ev, omega = NA, useLinCmt = FALSE)
+  )
+  out$cl[nrow(out)]
+}
+
+# Nguyen 2021: CL = 2.55 * (BW/11.7)^0.75 * (eGFR/167)^0.763 * 0.806^critically ill
+nguyen_cov <- list(WT = 11.7, CRCL = 167, DIS_CRITILL = 0)
+nguyen_ref  <- group_cl("Nguyen_2021_ganciclovir", nguyen_cov)
+nguyen_cov$DIS_CRITILL <- 1
+nguyen_crit <- group_cl("Nguyen_2021_ganciclovir", nguyen_cov)
+
+# Yuen 1995: CL = 0.382 + 0.168 * BW * CLcr/100 * (1-T) * (1-CMV).
+# Hand-computed at BW = 70 kg, CLcr = 90 mL/min for all four group combinations.
+yuen_hand <- function(tx, ret) {
+  0.382 + 0.168 * 70 * 90 / 100 * (1 - 0.76 * tx) * (1 - 0.41 * ret)
+}
+yuen_cov <- function(tx, ret) {
+  list(WT = 70, CRCL = 90, TX_ANY = tx, DIS_CMV_RETINITIS = ret)
+}
+yuen_grid <- tidyr::expand_grid(TX_ANY = 0:1, DIS_CMV_RETINITIS = 0:1) |>
+  rowwise() |>
+  mutate(
+    cl_model = group_cl("Yuen_1995_ganciclovir", yuen_cov(TX_ANY, DIS_CMV_RETINITIS)),
+    cl_hand  = yuen_hand(TX_ANY, DIS_CMV_RETINITIS)
+  ) |>
+  ungroup()
+
+tibble::tibble(
+  "Check" = c(
+    "Nguyen 2021: CL at reference covariates = 2.55 L/h",
+    "Nguyen 2021: critically-ill CL ratio = 0.806",
+    "Yuen 1995: CL matches the printed equation at all 4 group combinations",
+    "Yuen 1995: transplant CL (shedding) = 3.53 L/h at 70 kg, CLcr 90"
+  ),
+  "Value" = round(c(
+    nguyen_ref,
+    nguyen_crit / nguyen_ref,
+    max(abs(yuen_grid$cl_model - yuen_grid$cl_hand)),
+    yuen_grid$cl_model[yuen_grid$TX_ANY == 1 & yuen_grid$DIS_CMV_RETINITIS == 0]
+  ), 4),
+  "Expected" = c("2.55", "0.806", "max abs error 0", "3.5285")
+) |>
+  knitr::kable(caption = "Group-indicator encoding checks against Yang 2023 Table 3 and its footnote.")
+
+# Hard gates: each coefficient must be recovered exactly (to solver tolerance).
+stopifnot(
+  abs(nguyen_ref - 2.55) < 1e-6,
+  abs(nguyen_crit / nguyen_ref - 0.806) < 1e-6,
+  all(abs(yuen_grid$cl_model - yuen_grid$cl_hand) < 1e-6),
+  # Both reductions compose multiplicatively, so a transplanted retinitis patient
+  # keeps only (1 - 0.76) * (1 - 0.41) = 14.16% of the renal-elimination term.
+  abs(
+    (yuen_grid$cl_model[yuen_grid$TX_ANY == 1 & yuen_grid$DIS_CMV_RETINITIS == 1] - 0.382) /
+      (yuen_grid$cl_model[yuen_grid$TX_ANY == 0 & yuen_grid$DIS_CMV_RETINITIS == 0] - 0.382) -
+      0.24 * 0.59
+  ) < 1e-6
+)
+```
+
 # Assumptions and deviations
 
-**Extraction source.** All nine models are transcribed from **Yang 2023 Table 3**,
+**Extraction source.** All 11 models are transcribed from **Yang 2023 Table 3**,
 a systematic review, rather than from their primary publications. This is the
 "extract-from-review" path, taken because Table 3 tabulates complete fixed-effect
 equations, BSV, and RUV for every model. Each model file's `description` and
@@ -827,25 +951,68 @@ for those five agree with the primary-derived files, including Chen 2021's
 unusual `CL/F = 7.09 x (1 + CLcr/68.3 x 1.08)` form (which really does define
 CL/F at CrCl = 0 in the primary). Those five are **not** re-extracted here.
 
-**Models deferred pending covariate canonicals.** Two of the review's 16 models
-are not packaged because they require covariate columns that are not yet in
-`inst/references/covariate-columns.md` and are not members of an auto-approved
-canonical family:
+**Three new covariate canonicals.** `Nguyen_2021` and `Yuen_1995` needed covariate
+columns that did not exist in `inst/references/covariate-columns.md` and were not
+members of an auto-approved canonical family, so they were ratified by the operator
+before extraction (sidecar request 001, all three approved as proposed) and are
+registered in this same change:
 
-* **Nguyen 2021** (`CL = 2.55 x (BW/11.7)^0.75 x (eGFR/167)^0.763 x
-  0.806^critically_ill`) needs a binary critical-illness / ICU indicator. The
-  register has ICU severity scores (`SAPS_II`, `APACHE_II`), `ORG_FAIL_COUNT`,
-  `MECH_VENT`, and ICU-admission-etiology indicators, but no plain
-  "is critically ill" binary.
-* **Yuen 1995** (`CL = 0.382 + 0.168 x BW x CLcr/100 x (1-T) x (1-CMV)`, with
-  T = 0.76 for transplant recipients and CMV = 0.41 for CMV retinitis vs 0 for
-  CMV urine shedding) needs an any-solid-organ-transplant indicator (the register
-  has only organ-specific `TX_LIVER` / `TX_HEART` / `TX_LUNG` against a non-organ
-  reference) and a CMV-retinitis-vs-shedding indicator (the existing `DIS_CMV`
-  encodes transplant-with-CMV vs non-CMV, different semantics).
+* **`DIS_CRITILL`** -- binary critical-illness / ICU indicator (1 = critically ill),
+  needed by `Nguyen_2021`'s `0.806^critically_ill` factor on CL. The register
+  already had ICU severity *scores* (`SAPS_II`, `APACHE_II`), `ORG_FAIL_COUNT`,
+  `MECH_VENT`, and ICU-admission-*etiology* indicators, but no plain "is critically
+  ill" binary. It is deliberately not derived from `ORG_FAIL_COUNT > 0` or
+  `DIS_SEPSIS`: Nguyen 2021 reports a bare binary with neither behind it. Note the
+  distinction from `Li_2021`, `Krens_2020` and `Horvatits_2014`, whose cohorts are
+  *entirely* critically ill -- for those, critical illness is a population property
+  recorded in `population$disease_state`, not a covariate column.
+* **`TX_ANY`** -- any-solid-organ-transplant indicator against a **non-transplant**
+  reference, needed by `Yuen_1995`'s `(1 - T)` factor with T = 0.76. The existing
+  `TX_LIVER` / `TX_HEART` / `TX_LUNG` canonicals partition *within* a transplant
+  cohort (their reference is a different graft), so none of them can express
+  transplant-vs-never-transplanted. Only 5 of Yuen 1995's 53 subjects carry
+  `TX_ANY = 1`.
+* **`DIS_CMV_RETINITIS`** -- CMV-retinitis indicator against a CMV-positive,
+  non-retinitis reference, needed by `Yuen_1995`'s `(1 - CMV)` factor with
+  CMV = 0.41. This is a within-CMV-positive presentation split (31 retinitis vs 17
+  asymptomatic urine shedders), so it is orthogonal to the existing `DIS_CMV`,
+  which contrasts transplant-recipient-with-CMV against a non-CMV reference and
+  would take the value 1 for *both* Yuen groups.
 
-Both are recorded for operator ratification; they are additions to this
-repository, not corrections to it.
+All three are `Scope: specific` (each reference complement is paper-defined) and
+name their founding model in the register. Because Table 3 folds each coefficient
+into the coded value of the column (`T = 0.76`, `CMV = 0.41`) rather than printing
+a separate THETA, the model files store the column as a plain 0 / 1 indicator and
+carry the coefficient as a named `ini()` parameter; the *Group-indicator effects*
+section above verifies that round-trip against the printed equation.
+
+**Nguyen 2021 critical illness: Table 3 and Section 3.3.3 disagree.** Section 3.3.3
+says that of the two studies testing transplant status, CMV presentation and
+critical illness, "only transplant and CMV-shedding showed a significant
+influence" -- which reads as critical illness having been rejected. But Table 3
+prints the `0.806^critically ill` factor as part of Nguyen 2021's **final** CL
+equation, and Table 4 lists "critically ill" among that study's significant
+covariates on CL. Two of the three statements support inclusion, and the printed
+final equation is the authoritative one under the trust-the-equation rule, so the
+factor is encoded. Flagged here as a discrepancy inside the review rather than
+resolved silently.
+
+**Yuen 1995 clearance-equation precedence.** Table 3 prints
+`CL = 0.382 + 0.168 x BW x CLcr/100 x (1-T) x (1-CMV)`. As written, the two group
+factors multiply only the renal-elimination term, not the 0.382 L/h intercept, so
+a transplanted retinitis patient retains `(1-0.76)(1-0.41) = 14.2%` of the renal
+term plus the full intercept. That reading is encoded verbatim, per the
+trust-the-printed-equation rule; it is also the physiologically coherent one (a
+covariate-free intercept represents non-renal elimination, which group membership
+should not scale). The alternative reading -- both factors applied to the whole
+sum -- would drive CL below the intercept and is not what the equation prints.
+
+**Yuen 1995 cohort weights and ages are unreported.** Yang 2023 Table 2 records
+Yuen 1995's ages and weights as NR. The model is weight-driven on CL, Vc and Vp, so
+the vignette simulates it in the adult virtual patient (70 kg), which is consistent
+with the cohort description (CMV-retinitis and solid-organ-transplant adults) but
+is an assumption, not a reported value. The published dose range (1.2-5.0 mg/kg) is
+weight-normalized, so the 5 mg/kg regimen the vignette uses sits at its top end.
 
 **Unavailable supplement.** Yang 2023's supplementary materials (Table S1 uniform
 covariate ranges and reference values, Table S2 full PTA percentages, Figures
@@ -916,8 +1083,10 @@ recorded in `Facchin_2019_ganciclovir.R`'s `population$notes`.
 for any parameter, so estimated-vs-fixed status cannot be read off the table
 directly. Exponents at the canonical allometric values (0.75 on CL/Q, 1 on
 Vc/Vp) are encoded as `fixed()` because those are structural impositions;
-non-canonical exponents (0.817, 0.88, 0.92, 1.02, 0.80, 0.71, -0.768, 1.31,
-1.28, 2.93, 1.68) are encoded as estimated.
+non-canonical exponents (0.817, 0.763, 0.88, 0.92, 1.02, 0.80, 0.71, -0.768,
+1.31, 1.28, 2.93, 1.68) are encoded as estimated. The same reasoning applies to
+the three group-indicator coefficients (0.806, 0.76, 0.41), which are estimated
+effects, not structural impositions.
 
 **No published per-model NCA table to compare against.** The review reports no
 numeric Cmax / Tmax / AUC point estimates per model -- its similarity comparison
