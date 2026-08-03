@@ -310,6 +310,8 @@ navbar:
         href: articles/Toukam_2025_biib107.html
       - text: "Bivalirudin (Zhang 2012)"
         href: articles/Zhang_2012_bivalirudin.html
+      - text: "Bosentan pbpk (Aoki 2024)"
+        href: articles/Aoki_2024_bosentan_pbpk.html
       - text: "Brazikumab (Zhang 2023)"
         href: articles/Zhang_2023_brazikumab.html
       - text: "Brazikumab crp (Zhang 2023)"
@@ -2778,6 +2780,7 @@ articles:
   - articles/Andrews_2017_tacrolimus
   - articles/Angeli_2016_iron_hepcidin
   - articles/Antignac_2007_tacrolimus
+  - articles/Aoki_2024_bosentan_pbpk
   - articles/Aouri_2017_rilpivirine
   - articles/Aoyama_2012_sepantronium
   - articles/ArabAlameddine_2012_raltegravir
