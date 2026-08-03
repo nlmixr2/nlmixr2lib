@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Nagy 2017 obiltoxaximab ([doi:10.1111/cts.12433](https://doi.org/10.1111/cts.12433)) - healthy and anthrax-infected NZW rabbits, cynomolgus macaques, and healthy human volunteers, plus the companion Weibull cure-rate survival model.
+
 - Time-varying clearance now has a shared vocabulary (issue #481). 31 models
   gave clearance an explicit time dependence under some twenty different
   spellings, so the structure could not be found by name and the magnitude of
