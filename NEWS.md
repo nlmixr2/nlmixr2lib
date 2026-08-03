@@ -2,11 +2,8 @@
 
 # development version
 
-- Add Gebhard 2023 6-mercaptopurine and methotrexate ([doi:10.1038/s41598-023-38414-0](https://doi.org/10.1038/s41598-023-38414-0)) - children on maintenance therapy for acute lymphoblastic leukemia.
-- Add an `rbc_<analyte>` compartment family for intracellular drug / active-metabolite
-  pools inside red blood cells (`rbc_mtx`, `rbc_tgn`), validated by a new
-  `rbcCompartmentRegex` in `R/conventions.R`. Distinct from the `erythrocytes`
-  canonical, which is a red-cell count pool.
+- Add Kloos 2021 PEGasparaginase ([doi:10.3324/haematol.2019.242289](https://doi.org/10.3324/haematol.2019.242289)) - children with acute lymphoblastic leukemia.
+
 - Add Wu 2023 SPI-62 ([doi:10.1007/s40262-023-01278-8](https://doi.org/10.1007/s40262-023-01278-8)) - healthy adults.
 
 - Add Siebinga 2023 [177Lu]Lu-PSMA-617 ([doi:10.1002/psp4.12914](https://doi.org/10.1002/psp4.12914)) - men with low-volume metastatic prostate cancer receiving radioligand therapy. Ratifies the new canonical `salivary_gland` compartment, the `lbmax` / `bmax` maximum-binding-capacity names, the `kin_<compartment>` / `kout_<compartment>` tissue-exchange family, and the `cal_slope_<assay>` / `cal_int_<assay>` / `cal_bias_<matrix>` assay-calibration canonicals.
