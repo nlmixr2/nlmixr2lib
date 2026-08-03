@@ -666,8 +666,8 @@ navbar:
         href: articles/AbdulAziz_2016_doripenem.html
       - text: "Doripenem (Lee 2017)"
         href: articles/Lee_2017_doripenem.html
-      - text: "Doripenem qsp (LopezArguello 2023)"
-        href: articles/LopezArguello_2023_pbp_binding_pseudomonas.html
+      - text: "Dorzagliatin (Wang 2023)"
+        href: articles/Wang_2023_dorzagliatin.html
       - text: "Dostarlimab (Kuchimanchi 2024)"
         href: articles/Kuchimanchi_2024_dostarlimab.html
       - text: "Dostarlimab (Melhem 2022)"
@@ -3779,6 +3779,7 @@ articles:
   - articles/Wang_2018_daclatasvir_asunaprevir
   - articles/Wang_2020_ontamalimab
   - articles/Wang_2021_pertuzumab
+  - articles/Wang_2023_dorzagliatin
   - articles/Wang_2024_sugemalimab
   - articles/Waterhouse_2024_vedolizumab
   - articles/Watson_2010_liraglutide

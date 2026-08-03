@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Lee 2023 tripegfilgrastim ([doi:10.1002/psp4.13012](https://doi.org/10.1002/psp4.13012)) - healthy Korean adults and Korean pediatric patients with solid tumors after chemotherapy.
+- Add Wang 2023 dorzagliatin ([doi:10.1007/s40262-023-01286-8](https://doi.org/10.1007/s40262-023-01286-8)) — healthy subjects and adults with type 2 diabetes mellitus.
 
 * Drop `qs2`.  The model database now ships as `inst/modeldb.rds` instead of
   `inst/modeldb.qs2`, so `readModelDb()` no longer needs `qs2`.  It was only
