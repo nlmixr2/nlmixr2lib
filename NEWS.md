@@ -2,11 +2,12 @@
 
 # development version
 
-- Add Ramachandran 2023 rifampicin, ethambutol, isoniazid, and pyrazinamide whole-body PBPK ([doi:10.1002/psp4.13008](https://doi.org/10.1002/psp4.13008)) - 70-kg reference adult, extrapulmonary tuberculosis sites.
+- Add Yamamoto 2023 tominersen ([doi:10.1002/psp4.13001](https://doi.org/10.1002/psp4.13001)) -- adults with early manifest or manifest Huntington's disease receiving intrathecal tominersen.
 
-- Add Wu 2023 SPI-62 ([doi:10.1007/s40262-023-01278-8](https://doi.org/10.1007/s40262-023-01278-8)) - healthy adults.
-
-- Add Siebinga 2023 [177Lu]Lu-PSMA-617 ([doi:10.1002/psp4.12914](https://doi.org/10.1002/psp4.12914)) - men with low-volume metastatic prostate cancer receiving radioligand therapy. Ratifies the new canonical `salivary_gland` compartment, the `lbmax` / `bmax` maximum-binding-capacity names, the `kin_<compartment>` / `kout_<compartment>` tissue-exchange family, and the `cal_slope_<assay>` / `cal_int_<assay>` / `cal_bias_<matrix>` assay-calibration canonicals.
+* Drop `qs2`.  The model database now ships as `inst/modeldb.rds` instead of
+  `inst/modeldb.qs2`, so `readModelDb()` no longer needs `qs2`.  It was only
+  listed in `Suggests` yet used unconditionally, so `readModelDb()` failed
+  outright when `qs2` was not installed.
 
 - Disambiguated the overloaded `OC` name, which denoted five unrelated
   concepts. Osteocalcin `OC` -> `OSTCALC` (uppercase, matching the sibling
