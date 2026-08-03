@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Kroemer 2024 ceftazidime/avibactam + fosfomycin ([doi:10.1128/spectrum.03318-23](https://doi.org/10.1128/spectrum.03318-23)) - in vitro, clinical multidrug-resistant *Escherichia coli*.
+- Add Minichmayr 2024 ceftaroline ([doi:10.1007/s40262-023-01325-4](https://doi.org/10.1007/s40262-023-01325-4)) - healthy adult volunteers.
 
 - Add Wu 2023 SPI-62 ([doi:10.1007/s40262-023-01278-8](https://doi.org/10.1007/s40262-023-01278-8)) - healthy adults.
 
