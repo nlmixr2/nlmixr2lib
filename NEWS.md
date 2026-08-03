@@ -85,6 +85,8 @@
 
 - Add Wu 2023 SPI-62 ([doi:10.1007/s40262-023-01278-8](https://doi.org/10.1007/s40262-023-01278-8)) - healthy adults.
 
+- Add Wenker 2024 piperacillin/tazobactam ([doi:10.1093/jacamr/dlae036](https://doi.org/10.1093/jacamr/dlae036)) - in vitro hollow-fibre infection model against six Gram-negative strains.
+
 - Disambiguated the overloaded `OC` name, which denoted five unrelated
   concepts. Osteocalcin `OC` -> `OSTCALC` (uppercase, matching the sibling
   biomarkers `P1NP` / `PSA` / `PLT` / `WBC` and the sister model
