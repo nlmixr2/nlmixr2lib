@@ -412,6 +412,10 @@ navbar:
         href: articles/Shi_2018_ceftazidime.html
       - text: "Ceftazidime (Zieck 2023)"
         href: articles/Zieck_2023_ceftazidime.html
+      - text: "Ceftazidime avibactam fosfomycin hfim (Kroemer 2024)"
+        href: articles/Kroemer_2024_ceftazidime_avibactam_fosfomycin.html
+      - text: "Ceftazidime avibactam fosfomycin tkc (Kroemer 2024)"
+        href: articles/Kroemer_2024_ceftazidime_avibactam_fosfomycin.html
       - text: "Ceftazidime qsp (LopezArguello 2023)"
         href: articles/LopezArguello_2023_pbp_binding_pseudomonas.html
       - text: "Ceftobiprole (Cojutti 2023)"
@@ -3306,6 +3310,7 @@ articles:
   - articles/KreeftmeijerVegter_2015_levamisole
   - articles/Krekels_2015_paracetamol
   - articles/Kretsos_2014_olokizumab
+  - articles/Kroemer_2024_ceftazidime_avibactam_fosfomycin
   - articles/Ku_2018_diazepam
   - articles/Kuchimanchi_2018_evolocumab
   - articles/Kuchimanchi_2024_dostarlimab

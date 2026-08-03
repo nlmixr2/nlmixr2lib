@@ -2745,7 +2745,7 @@ All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODA
 - **Scope:** specific
 - **Reference category:** n/a -- scales the rate of net influx and PBP access in the whole-cell penicillin-binding-protein (PBP) binding QSP model (Eq 1: Rate_Influx/access = Rate_Influx/access,scaled x CONC_CAZ_MGL). The lysed-cell arm of that assay sets `CELLS_INTACT = 0`, which zeroes the influx term, so the covariate has no effect there.
 - **Source aliases:** none standardized (Lopez-Arguello 2023 writes `C_drug` in Eq 1 and `CDRUG` in the Fig. S8 estimation code).
-- **Example models:** `LopezArguello_2023_ceftazidime_qsp.R` (static 2 mg/L, 2x the MIC of 1 mg/L; Lopez-Arguello 2023 Table 1).
+- **Example models:** `LopezArguello_2023_ceftazidime_qsp.R` (static 2 mg/L, 2x the MIC of 1 mg/L; Lopez-Arguello 2023 Table 1); `Kroemer_2024_ceftazidime_avibactam_fosfomycin_tkc.R` (static time-kill concentrations 0.002-128 mg/L against a clinical MDR *Escherichia coli*; Kroemer 2024 Fig. 1).
 - **Notes:** Specific scope because the value is bound to ceftazidime and to the in-vitro assay design. Member of the in-vitro applied-drug-concentration `CONC_<DRUG>_MGL` family (siblings `CONC_RIF_MGL`, `CONC_INH_MGL`, `CONC_EMB_MGL`, `CONC_IPM_MGL`, `CONC_TOB_MGL`). Ratified canonically on 2026-07-29 alongside the Lopez-Arguello 2023 PBP-binding extraction.
 
 ### CONC_FEP_MGL (**canonical for static in-vitro cefepime concentration driving a receptor-binding or antibacterial PD model**)
@@ -2757,6 +2757,16 @@ All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODA
 - **Source aliases:** none standardized (Lopez-Arguello 2023 writes `C_drug` in Eq 1 and `CDRUG` in the Fig. S8 estimation code).
 - **Example models:** `LopezArguello_2023_cefepime_qsp.R` (static 2 mg/L, 2x the MIC of 1 mg/L; Lopez-Arguello 2023 Table 1).
 - **Notes:** Specific scope because the value is bound to cefepime and to the in-vitro assay design. Member of the in-vitro applied-drug-concentration `CONC_<DRUG>_MGL` family (siblings `CONC_RIF_MGL`, `CONC_INH_MGL`, `CONC_EMB_MGL`, `CONC_IPM_MGL`, `CONC_TOB_MGL`). Ratified canonically on 2026-07-29 alongside the Lopez-Arguello 2023 PBP-binding extraction.
+
+### CONC_FOF_MGL (**canonical for static in-vitro fosfomycin concentration driving a receptor-binding or antibacterial PD model**)
+- **Description:** Static (time-invariant) fosfomycin concentration applied to the medium of an in-vitro bacterial experiment, supplied as an exogenous covariate that drives target-receptor binding or bacterial kill. Distinct from a state-derived plasma concentration (`Cc`) and from the `CP_<DRUG>` plasma-PD-driver family: this is an applied experimental concentration in the in-vitro matrix.
+- **Units:** mg/L
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- 0 mg/L is the drug-free growth control.
+- **Source aliases:** `FOF` (Kroemer 2024).
+- **Example models:** `Kroemer_2024_ceftazidime_avibactam_fosfomycin_tkc.R` (static time-kill concentrations 2-16 mg/L against a clinical MDR *Escherichia coli*; Kroemer 2024 Fig. 1).
+- **Notes:** Specific scope because the value is bound to fosfomycin and to the in-vitro assay design. Member of the in-vitro applied-drug-concentration `CONC_<DRUG>_MGL` family (siblings `CONC_CAZ_MGL`, `CONC_AVI_MGL`, `CONC_RIF_MGL`, `CONC_INH_MGL`, `CONC_EMB_MGL`, `CONC_IPM_MGL`, `CONC_TOB_MGL`). Fosfomycin susceptibility testing and time-kill media are supplemented with 25 mg/L glucose-6-phosphate per EUCAST recommendations; the covariate carries the fosfomycin concentration only, not the glucose-6-phosphate. The dynamic sibling model `Kroemer_2024_ceftazidime_avibactam_fosfomycin_hfim.R` carries fosfomycin as a dosable ODE state (`conc_fof`) instead, because the hollow fiber concentrations are time-varying.
 
 ### CONC_FOX_MGL (**canonical for static in-vitro cefoxitin concentration driving a receptor-binding or antibacterial PD model**)
 - **Description:** Static (time-invariant) cefoxitin concentration applied to the medium of an in-vitro bacterial experiment, supplied as an exogenous covariate that drives target-receptor binding or bacterial kill. Distinct from a state-derived plasma concentration (`Cc`) and from the `CP_<DRUG>` plasma-PD-driver family: this is an applied experimental concentration in the in-vitro matrix.
@@ -2815,7 +2825,7 @@ All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODA
 - **Scope:** specific
 - **Reference category:** n/a -- scales the rate of net influx and PBP access in the whole-cell penicillin-binding-protein (PBP) binding QSP model (Eq 1: Rate_Influx/access = Rate_Influx/access,scaled x CONC_AVI_MGL). The lysed-cell arm of that assay sets `CELLS_INTACT = 0`, which zeroes the influx term, so the covariate has no effect there.
 - **Source aliases:** none standardized (Lopez-Arguello 2023 writes `C_drug` in Eq 1 and `CDRUG` in the Fig. S8 estimation code).
-- **Example models:** `LopezArguello_2023_avibactam_qsp.R` (static 4 mg/L, a fixed concentration within the clinically relevant range; MIC not determined for beta-lactamase inhibitors; Lopez-Arguello 2023 Table 1).
+- **Example models:** `LopezArguello_2023_avibactam_qsp.R` (static 4 mg/L, a fixed concentration within the clinically relevant range; MIC not determined for beta-lactamase inhibitors; Lopez-Arguello 2023 Table 1); `Kroemer_2024_ceftazidime_avibactam_fosfomycin_tkc.R` (static time-kill concentrations up to ~64 mg/L against a clinical MDR *Escherichia coli*; Kroemer 2024 Fig. 1).
 - **Notes:** Specific scope because the value is bound to avibactam and to the in-vitro assay design. Member of the in-vitro applied-drug-concentration `CONC_<DRUG>_MGL` family (siblings `CONC_RIF_MGL`, `CONC_INH_MGL`, `CONC_EMB_MGL`, `CONC_IPM_MGL`, `CONC_TOB_MGL`). Ratified canonically on 2026-07-29 alongside the Lopez-Arguello 2023 PBP-binding extraction.
 
 ### CONC_REL_MGL (**canonical for static in-vitro relebactam concentration driving a receptor-binding or antibacterial PD model**)

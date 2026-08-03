@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Park 2023 mycophenolic acid ([doi:10.3390/pharmaceutics15122741](https://doi.org/10.3390/pharmaceutics15122741)) - paediatric haematopoietic stem cell transplant recipients.
+- Add Kroemer 2024 ceftazidime/avibactam + fosfomycin ([doi:10.1128/spectrum.03318-23](https://doi.org/10.1128/spectrum.03318-23)) - in vitro, clinical multidrug-resistant *Escherichia coli*.
 
 - Add Wu 2023 SPI-62 ([doi:10.1007/s40262-023-01278-8](https://doi.org/10.1007/s40262-023-01278-8)) - healthy adults.
 
