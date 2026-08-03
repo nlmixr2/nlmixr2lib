@@ -1294,6 +1294,8 @@ navbar:
         href: articles/Jullien_2006_lopinavir.html
       - text: "Lopinavir (Schipani 2012)"
         href: articles/Schipani_2012_lopinavir.html
+      - text: "Lopinavir (Thoueille 2023)"
+        href: articles/Thoueille_2023_lopinavir.html
       - text: "Lopinavir placental (Fauchet 2015)"
         href: articles/Fauchet_2015_lopinavir.html
       - text: "Lopinavir ritonavir (Zhang 2012)"
@@ -3719,6 +3721,7 @@ articles:
   - articles/Thomson_2003_gentamicin
   - articles/Thorsted_2016_somatropin_human
   - articles/Thorsted_2016_somatropin_rat
+  - articles/Thoueille_2023_lopinavir
   - articles/Thoueille_2023_tenofovir_ckd
   - articles/Thuo_2011_ciprofloxacin
   - articles/Tikiso_2021_abacavir

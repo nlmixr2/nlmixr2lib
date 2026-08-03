@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Dvorackova 2023 posaconazole ([doi:10.3390/antibiotics12091399](https://doi.org/10.3390/antibiotics12091399)) - adult lung-transplant recipients.
+- Add Thoueille 2023 lopinavir ([doi:10.1186/s40360-023-00687-6](https://doi.org/10.1186/s40360-023-00687-6)) - HIV-negative adults on COVID-19 post-exposure prophylaxis pooled with people living with HIV.
 
 - Add Wu 2023 SPI-62 ([doi:10.1007/s40262-023-01278-8](https://doi.org/10.1007/s40262-023-01278-8)) - healthy adults.
 
