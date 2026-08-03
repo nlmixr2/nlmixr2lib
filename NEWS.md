@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Chen 2024 rituximab ([doi:10.3389/fphar.2023.1319744](https://doi.org/10.3389/fphar.2023.1319744)) - children with frequent-relapsing or steroid-dependent nephrotic syndrome.
+
 - Add Wu 2023 SPI-62 ([doi:10.1007/s40262-023-01278-8](https://doi.org/10.1007/s40262-023-01278-8)) - healthy adults.
 
 - Disambiguated the overloaded `OC` name, which denoted five unrelated
