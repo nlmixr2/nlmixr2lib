@@ -202,7 +202,7 @@ mod
 #>     # hard-coded in the Table S2 model file rather than reported as an
 #>     # estimated THETA in Table 2, so it is encoded as fixed().
 #>     e_tbili_cl <- fixed(0.5)
-#>     label("Inverse-power exponent of total bilirubin on interdialytic CL (unitless; FIXED)")
+#>     label("Inverse-power exponent of total bilirubin on interdialytic CL (unitless)")
 #>     # Tsai 2023 Table S2 secondary variables: CL=CL_nHD*(14.1/Bili)**0.5;
 #>     # same form printed in Results ('When dialysis is off'). Equivalent to
 #>     # (TBILI / 14.1)^-0.5. Supported by the Figure 2 inverse-power fit
@@ -321,7 +321,7 @@ mod
 #>     Cunbound ~ add(addSd_Cunbound) + prop(propSd_Cunbound)
 #>   })
 #> }
-#> <environment: 0x56009a6bee60>
+#> <environment: 0x55de925f7108>
 ```
 
 ## Virtual cohort

@@ -1,0 +1,803 @@
+# Valproic acid protein-binding non-linearity (Zhang 2023)
+
+## Model and source
+
+Zhang et al. (2023) is a two-part paper. The first part is a systematic
+review and external evaluation of ten previously published paediatric
+valproic acid (VPA) population PK models. The second part – the part
+packaged here – is an original modelling study in which the authors fit
+**a base model plus five alternative non-linearity strategies** to their
+own 202-child therapeutic drug monitoring (TDM) cohort, in order to ask
+which functional form best captures the concentration-dependent plasma
+protein binding that makes VPA clearance dose-dependent.
+
+Two of those six models are packaged in this release:
+
+- `Zhang_2023_valproic_acid_base` – the linear reference model.
+- `Zhang_2023_valproic_acid_exponent` – Model V, the simple exponent
+  model, in which apparent clearance is a power function of the
+  patient’s own daily dose.
+
+The remaining four (Model I one-binding-site, Model II Langmuir, Model
+III dose-dependent maximum effect, Model IV linear non-saturable
+binding) are **not yet packaged** – see [Deferred
+models](#deferred-models) below for the two specific blockers.
+
+**`Zhang_2023_valproic_acid_base`**
+
+- Citation: Zhang L, Liu M, Qin W, Shi D, Mao J, Li Z. Modeling the
+  protein binding non-linearity in population pharmacokinetic model of
+  valproic acid in children with epilepsy: a systematic evaluation
+  study. Front Pharmacol. 2023;14:1228641.
+  <doi:10.3389/fphar.2023.1228641>. PMID 37860114. Base-model parameter
+  estimates from Supplementary Table S3.
+- Description: One-compartment population PK model with first-order
+  absorption for total plasma valproic acid in Chinese children with
+  epilepsy (Zhang 2023 base model). Linear clearance with no covariates
+  on CL/F or V/F; formulation-specific absorption rate constants FIXED
+  from the literature (syrup 2.64 1/h reference, conventional tablet
+  1.57 1/h, sustained-release tablet 0.46 1/h). This is the reference
+  model against which the paper’s five protein-binding non-linearity
+  strategies are compared; see
+  modellib(‘Zhang_2023_valproic_acid_exponent’) for the daily-dose power
+  model.
+
+**`Zhang_2023_valproic_acid_exponent`**
+
+- Citation: Zhang L, Liu M, Qin W, Shi D, Mao J, Li Z. Modeling the
+  protein binding non-linearity in population pharmacokinetic model of
+  valproic acid in children with epilepsy: a systematic evaluation
+  study. Front Pharmacol. 2023;14:1228641.
+  <doi:10.3389/fphar.2023.1228641>. PMID 37860114. Model V structure
+  from Eq. 7; parameter estimates from Supplementary Table S3.
+
+- Description: One-compartment population PK model with first-order
+  absorption for total plasma valproic acid in Chinese children with
+  epilepsy (Zhang 2023 Model V, the simple exponent model). Apparent
+  clearance follows a power function of the patient’s own daily dose per
+  kilogram, CL/F = CLp/F \* (DD/25)^0.658, with DD in mg/kg/day and a
+  reference daily dose of 25 mg/kg/day; this is the empirical
+  dose-dependence strategy the authors contrast against mechanistic
+  protein-binding models. Formulation-specific absorption rate constants
+  FIXED from the literature (syrup 2.64 1/h reference, conventional
+  tablet 1.57 1/h, sustained-release tablet 0.46 1/h). Best
+  prediction-based performance of the five strategies (MDPE 1.50%, MAPE
+  17.68%) but the authors conclude it does not describe the underlying
+  non-linearity; see modellib(‘Zhang_2023_valproic_acid_base’) for the
+  reference model.
+
+- Article: <https://doi.org/10.3389/fphar.2023.1228641>
+
+- Supplement (Supplementary Tables S1-S3, Figures S1-S5):
+  <https://www.frontiersin.org/articles/10.3389/fphar.2023.1228641/full#supplementary-material>
+
+## Population
+
+The evaluation cohort was 202 Chinese children with epilepsy (139 male /
+63 female) treated with VPA at Wuhan Children’s Hospital between January
+2016 and November 2018, contributing 255 total plasma VPA concentrations
+(Zhang 2023 Table 2). Age was 4.92 years (range 0.17-15.00), body weight
+19.00 kg (range 4.00-70.00), daily dose 23.44 mg/kg/day (range
+8.70-57.69, equivalent to 60-1250 mg/day), and the observed VPA serum
+concentration 50.40 mg/L (range 22.60-118.50). Serum albumin was 42.10
+g/L (range 29.70-70.50). VPA was given orally as a syrup (194 records)
+or a sustained-release tablet (61 records), once, twice or three times
+daily.
+
+Two features of this cohort shape every model below. First, **all
+samples were troughs collected under steady-state conditions**, so
+absorption and distribution are only weakly identified – which is why
+the authors fixed the absorption rate constants to literature values and
+why the estimated `V/F` is large relative to the paediatric VPA
+literature. Second, patients with hepatic or renal impairment, abnormal
+albumin, or poor adherence were excluded, so the albumin range is
+narrow.
+
+Concentrations were measured by gas chromatography (limit of detection 1
+mg/L, calibration range 12.5-150 mg/L, CV below 10%). 77 of 202 children
+received a concomitant antiseizure medication – most often levetiracetam
+(27), oxcarbazepine (24) and topiramate (19) – but no co-medication
+effect was retained in any of the authors’ own models, because so few
+patients were on the classical enzyme inducers that dominate the older
+literature.
+
+The same information is available programmatically via
+`readModelDb("Zhang_2023_valproic_acid_base")()$population`.
+
+## Source trace
+
+Every `ini()` entry carries an in-file comment naming its source
+location. The table below collects them.
+
+| Equation / parameter | Value | Source location |
+|----|----|----|
+| One-compartment, first-order absorption | n/a | Zhang 2023 Section 2.4 (“a one-compartment model with first-order absorption was used as base model”) |
+| `lka` (syrup) | 2.64 1/h, FIXED | Supplementary Table S3 footnote |
+| `e_form_tablet_ka` | log(1.57 / 2.64), FIXED | Supplementary Table S3 footnote (conventional tablet Ka 1.57 1/h) |
+| `e_form_vpa_sr_ka` | log(0.46 / 2.64), FIXED | Supplementary Table S3 footnote (SR tablet Ka 0.46 1/h) |
+| **Base model** |  |  |
+| `lcl` | 0.311 L/h (4.6% RSE) | Supplementary Table S3, “Base model” |
+| `lvc` | 27.8 L (8.8% RSE) | Supplementary Table S3, “Base model” |
+| `etalcl` | BSV 45.7% -\> omega^2 0.18966 | Supplementary Table S3, “Base model” |
+| `etalvc` | BSV 68.6% -\> omega^2 0.38567 | Supplementary Table S3, “Base model” |
+| `propSd` / `addSd` | 8.9% / 6.3 mg/L | Supplementary Table S3, “Base model” |
+| **Model V (simple exponent)** |  |  |
+| `CL/F = CLp/F * (DD/25)^k` | n/a | Equation 7 |
+| `lcl` | 0.331 L/h (2.1% RSE) | Supplementary Table S3, “Model V” |
+| `lvc` | 17.2 L (20.0% RSE) | Supplementary Table S3, “Model V” |
+| `e_dose_vpa_mgkgd_cl` | 0.658 (7.7% RSE) | Supplementary Table S3, “Model V” (row `CL_DD`) |
+| `etalcl` | BSV 24.3% -\> omega^2 0.05737 | Supplementary Table S3, “Model V” |
+| `etalvc` | BSV 45.1% -\> omega^2 0.18515 | Supplementary Table S3, “Model V” |
+| `propSd` / `addSd` | 14.1% / 4.2 mg/L | Supplementary Table S3, “Model V” |
+| Reference daily dose 25 mg/kg/day | n/a | Equation 7 denominator; cohort mean 24.50 mg/kg/day (Table 2) |
+| Observed concentration median 50.40 mg/L | reference value | Table 2 |
+| Objective function values 1752.1 (base) / 1615.9 (Model V) | reference value | Supplementary Table S3 |
+| Prediction metrics MDPE 1.50%, MAPE 17.68% (Model V) | reference value | Table 3 |
+
+Between-subject variability is reported by Zhang 2023 as CV%, so the
+internal variance is `omega^2 = log(CV^2 + 1)`.
+
+## Virtual cohort
+
+The original observations are not public. The cohort below approximates
+the published demographics (Table 2) and is split into three daily-dose
+arms so the dose-dependence of Model V can be exercised and tested. The
+reference arm is 25 mg/kg/day, the denominator of Equation 7 and the
+rounded cohort mean; the flanking arms are exactly half and double that,
+which turns the paper’s power exponent into an exact arithmetic identity
+we can assert on.
+
+``` r
+
+set.seed(20231006)
+
+n_per_arm <- 150L # cap is 200 per arm
+tau <- 12         # twice-daily dosing interval (h)
+
+# Uniform grid over one dosing interval. A uniform spacing matters: the
+# structural checks below take a trapezoidal time-average of the profile, and
+# an unevenly-spaced grid would weight the densely-sampled absorption phase
+# more heavily than the terminal phase and bias that average per arm.
+obs_times <- seq(0, tau, by = 0.25)
+
+# The three dose arms are PAIRED: one set of subject covariates is drawn once
+# and reused across all three arms (only the id offset and the daily dose
+# change). Drawing weights independently per arm would leave sampling noise in
+# the between-arm exposure ratios and make the exact dose-scaling identities
+# below untestable.
+# Covariates are placed on deterministic quantiles rather than drawn randomly.
+# A random draw of n = 150 leaves several percent of sampling noise in the
+# cohort median (one seed gave 21.6 kg against the published 19.0 kg), which
+# propagates straight into the comparison against the published trough. Using
+# quantiles pins the cohort median to the published value exactly and makes the
+# whole vignette seed-independent.
+subj_template <- tibble(
+  # Weight: lognormal quantiles with median exactly the published 19.00 kg,
+  # clamped to the published 4.00-70.00 kg range (Zhang 2023 Table 2).
+  WT = pmin(pmax(round(stats::qlnorm(ppoints(n_per_arm), log(19), 0.45), 1), 4), 70),
+  # 61 of 255 records (23.9%) were sustained-release tablet; the rest syrup.
+  FORM_VPA_SR = as.integer(seq_len(n_per_arm) <= round(n_per_arm * 61 / 255)),
+  FORM_TABLET = 0L
+)
+
+# The cohort must reproduce the published median weight exactly.
+stopifnot(abs(median(subj_template$WT) - 19.00) < 0.05)
+
+# Build one daily-dose arm. Steady state is imposed with ss = 1 on the first
+# dose record: the apparent terminal half-life of these models is 35-60 h, so
+# dosing up from zero would need days of run-in to reach the trough the paper
+# actually observed.
+make_arm <- function(dd_mgkgd, id_offset = 0L) {
+  subj <- subj_template |>
+    mutate(
+      id = id_offset + seq_len(n()),
+      DOSE_VPA_MGKGD = dd_mgkgd,
+      arm = paste0(dd_mgkgd, " mg/kg/day"),
+      amt_per_dose = DOSE_VPA_MGKGD * WT / (24 / tau)
+    )
+
+  doses <- subj |>
+    mutate(time = 0, evid = 1L, amt = amt_per_dose,
+           cmt = "depot", ii = tau, ss = 1L)
+
+  obs <- subj |>
+    tidyr::crossing(time = obs_times) |>
+    mutate(evid = 0L, amt = NA_real_,
+           # cmt is the ODE STATE name, never the observable "Cc"
+           cmt = "central", ii = 0, ss = 0L)
+
+  bind_rows(doses, obs) |>
+    arrange(id, time, desc(evid)) |>
+    select(id, time, evid, amt, cmt, ii, ss,
+           WT, FORM_VPA_SR, FORM_TABLET, DOSE_VPA_MGKGD, arm)
+}
+
+events <- bind_rows(
+  make_arm(12.5, id_offset = 0L),
+  make_arm(25.0, id_offset = n_per_arm),
+  make_arm(50.0, id_offset = 2L * n_per_arm)
+)
+
+# Disjoint IDs across arms are mandatory: duplicated ids are silently merged
+# by rxSolve into one subject receiving the summed dose.
+stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
+stopifnot(length(unique(events$id)) == 3L * n_per_arm)
+# The arms are paired: the sorted weight vector must be identical in each arm.
+wt_by_arm <- events |>
+  distinct(arm, id, WT) |>
+  group_by(arm) |>
+  summarise(wt = list(sort(WT)), .groups = "drop")
+stopifnot(length(unique(wt_by_arm$wt)) == 1L)
+
+events |>
+  group_by(arm) |>
+  summarise(n = n_distinct(id),
+            `Median weight (kg)` = median(WT),
+            `Median dose per administration (mg)` = round(median(amt, na.rm = TRUE), 1),
+            .groups = "drop") |>
+  rename("Arm" = arm, "N" = n) |>
+  knitr::kable(caption = "Virtual cohort by daily-dose arm (twice-daily dosing).")
+```
+
+| Arm            |   N | Median weight (kg) | Median dose per administration (mg) |
+|:---------------|----:|-------------------:|------------------------------------:|
+| 12.5 mg/kg/day | 150 |                 19 |                               118.8 |
+| 25 mg/kg/day   | 150 |                 19 |                               237.5 |
+| 50 mg/kg/day   | 150 |                 19 |                               475.0 |
+
+Virtual cohort by daily-dose arm (twice-daily dosing). {.table}
+
+## Simulation
+
+``` r
+
+mod_base <- readModelDb("Zhang_2023_valproic_acid_base")
+mod_expo <- readModelDb("Zhang_2023_valproic_acid_exponent")
+
+keep_cols <- c("arm", "WT", "DOSE_VPA_MGKGD", "FORM_VPA_SR")
+
+sim_base <- rxode2::rxSolve(mod_base, events = events, keep = keep_cols) |>
+  as.data.frame() |>
+  mutate(model = "Base model")
+#> ℹ parameter labels from comments will be replaced by 'label()'
+
+sim_expo <- rxode2::rxSolve(mod_expo, events = events, keep = keep_cols) |>
+  as.data.frame() |>
+  mutate(model = "Model V (simple exponent)")
+#> ℹ parameter labels from comments will be replaced by 'label()'
+
+sim <- bind_rows(sim_base, sim_expo)
+
+# rxSolve returns observation records only (no evid column), so every row
+# below is an observation.
+stopifnot(nrow(sim) > 0, !all(is.na(sim$Cc)))
+```
+
+Typical-value (zero between-subject variability) profiles are used for
+the structural checks. Passing `omega = NA` to `rxSolve()` zeroes the
+random effects for this call only, without mutating the shared model
+object.
+
+``` r
+
+typ_base <- rxode2::rxSolve(mod_base, events = events, keep = keep_cols,
+                            omega = NA) |>
+  as.data.frame() |>
+  mutate(model = "Base model")
+#> Warning: multi-subject simulation without without 'omega'
+
+typ_expo <- rxode2::rxSolve(mod_expo, events = events, keep = keep_cols,
+                            omega = NA) |>
+  as.data.frame() |>
+  mutate(model = "Model V (simple exponent)")
+#> Warning: multi-subject simulation without without 'omega'
+
+typ <- bind_rows(typ_base, typ_expo)
+```
+
+## Structural checks
+
+### The exponent is exactly the published 0.658
+
+Equation 7 sets `CL/F = CLp/F * (DD/25)^k` with `k = 0.658`. Halving and
+doubling the daily dose relative to the 25 mg/kg/day reference must
+therefore scale typical clearance by exactly `0.5^0.658` and `2^0.658`.
+The base model, having no dose covariate, must show a clearance ratio of
+exactly 1.
+
+``` r
+
+k_pub <- 0.658
+
+cl_typ <- typ |>
+  group_by(model, arm, DOSE_VPA_MGKGD) |>
+  summarise(cl = mean(cl), .groups = "drop") |>
+  group_by(model) |>
+  mutate(cl_ratio = cl / cl[DOSE_VPA_MGKGD == 25]) |>
+  ungroup() |>
+  mutate(expected = if_else(model == "Base model",
+                            1,
+                            (DOSE_VPA_MGKGD / 25)^k_pub))
+
+cl_typ |>
+  mutate(across(c(cl, cl_ratio, expected), \(x) round(x, 4))) |>
+  rename("Model" = model, "Arm" = arm,
+         "Daily dose (mg/kg/day)" = DOSE_VPA_MGKGD,
+         "Typical CL/F (L/h)" = cl,
+         "CL/F ratio vs 25 mg/kg/day" = cl_ratio,
+         "Expected ratio" = expected) |>
+  knitr::kable(caption = "Typical clearance scales with daily dose exactly as Equation 7 specifies.")
+```
+
+| Model | Arm | Daily dose (mg/kg/day) | Typical CL/F (L/h) | CL/F ratio vs 25 mg/kg/day | Expected ratio |
+|:---|:---|---:|---:|---:|---:|
+| Base model | 12.5 mg/kg/day | 12.5 | 0.3110 | 1.0000 | 1.0000 |
+| Base model | 25 mg/kg/day | 25.0 | 0.3110 | 1.0000 | 1.0000 |
+| Base model | 50 mg/kg/day | 50.0 | 0.3110 | 1.0000 | 1.0000 |
+| Model V (simple exponent) | 12.5 mg/kg/day | 12.5 | 0.2098 | 0.6338 | 0.6338 |
+| Model V (simple exponent) | 25 mg/kg/day | 25.0 | 0.3310 | 1.0000 | 1.0000 |
+| Model V (simple exponent) | 50 mg/kg/day | 50.0 | 0.5223 | 1.5779 | 1.5779 |
+
+Typical clearance scales with daily dose exactly as Equation 7
+specifies. {.table}
+
+``` r
+
+
+stopifnot(all(abs(cl_typ$cl_ratio - cl_typ$expected) < 1e-6))
+
+# The reference-arm typical clearances must be the published point estimates.
+ref_cl <- cl_typ |> filter(DOSE_VPA_MGKGD == 25)
+stopifnot(
+  abs(ref_cl$cl[ref_cl$model == "Base model"] - 0.311) < 1e-6,
+  abs(ref_cl$cl[ref_cl$model == "Model V (simple exponent)"] - 0.331) < 1e-6
+)
+```
+
+### Exposure rises sub-proportionally with dose under Model V
+
+Because clearance itself increases with dose, Model V predicts that
+doubling the daily dose raises the average steady-state concentration by
+a factor of only `2 / 2^0.658 = 1.268`, not 2. The linear base model
+must double exactly. This is the qualitative behaviour the paper is
+trying to capture, expressed as an exact identity.
+
+First check the solved profile against the analytic steady-state
+identity: for any linear one-compartment model at steady state, the area
+under one dosing interval equals `Dose / CL` exactly. Recovering that
+from the trapezoidal integral of the simulated curve validates the ODE
+solve and the `ss = 1` handling together, independently of any
+dose-scaling argument.
+
+``` r
+
+trapz <- function(x, y) sum(diff(x) * (head(y, -1) + tail(y, -1)) / 2)
+
+auc_typ <- typ |>
+  arrange(model, id, time) |>
+  group_by(model, arm, DOSE_VPA_MGKGD, id) |>
+  summarise(auc_trap = trapz(time, Cc),
+            cl = first(cl),
+            .groups = "drop") |>
+  # 1:1 join by id onto a per-subject summary table (not per-time-point rows)
+  left_join(events |> filter(evid == 1) |> distinct(id, amt), by = "id") |>
+  mutate(auc_exact = amt / cl,
+         pct_err = 100 * (auc_trap - auc_exact) / auc_exact)
+
+# Trapezoidal integration on a 0.25 h grid recovers Dose/CL to well under 1%.
+stopifnot(max(abs(auc_typ$pct_err)) < 1)
+
+auc_typ |>
+  group_by(model, arm) |>
+  summarise(`Median trapezoidal AUC0-tau (mg*h/L)` = round(median(auc_trap), 2),
+            `Median Dose/CL (mg*h/L)` = round(median(auc_exact), 2),
+            `Max abs error (%)` = round(max(abs(pct_err)), 3),
+            .groups = "drop") |>
+  rename("Model" = model, "Arm" = arm) |>
+  knitr::kable(caption = paste("The solved steady-state profile reproduces the",
+                               "analytic identity AUC0-tau = Dose/CL."))
+```
+
+| Model | Arm | Median trapezoidal AUC0-tau (mg\*h/L) | Median Dose/CL (mg\*h/L) | Max abs error (%) |
+|:---|:---|---:|---:|---:|
+| Base model | 12.5 mg/kg/day | 381.77 | 381.83 | 0.015 |
+| Base model | 25 mg/kg/day | 763.55 | 763.67 | 0.015 |
+| Base model | 50 mg/kg/day | 1527.10 | 1527.33 | 0.015 |
+| Model V (simple exponent) | 12.5 mg/kg/day | 565.99 | 566.09 | 0.017 |
+| Model V (simple exponent) | 25 mg/kg/day | 717.33 | 717.52 | 0.026 |
+| Model V (simple exponent) | 50 mg/kg/day | 909.09 | 909.47 | 0.041 |
+
+The solved steady-state profile reproduces the analytic identity
+AUC0-tau = Dose/CL. {.table}
+
+Now the dose-scaling identity itself. Because the arms are paired on
+identical subjects, the between-arm ratio of the average steady-state
+concentration `Cav = AUC0-tau / tau` is exactly
+`(dose ratio) / (clearance ratio)`.
+
+``` r
+
+cav_typ <- auc_typ |>
+  mutate(cav = auc_trap / tau) |>
+  group_by(model, DOSE_VPA_MGKGD) |>
+  summarise(cav = median(cav), .groups = "drop") |>
+  group_by(model) |>
+  mutate(cav_ratio = cav / cav[DOSE_VPA_MGKGD == 25]) |>
+  ungroup() |>
+  mutate(expected = if_else(
+    model == "Base model",
+    DOSE_VPA_MGKGD / 25,
+    (DOSE_VPA_MGKGD / 25) / (DOSE_VPA_MGKGD / 25)^k_pub
+  ))
+
+cav_typ |>
+  mutate(across(c(cav, cav_ratio, expected), \(x) round(x, 4))) |>
+  rename("Model" = model, "Daily dose (mg/kg/day)" = DOSE_VPA_MGKGD,
+         "Median typical Cav (mg/L)" = cav,
+         "Cav ratio vs 25 mg/kg/day" = cav_ratio,
+         "Expected ratio" = expected) |>
+  knitr::kable(caption = "Base model exposure is dose-proportional; Model V is sub-proportional.")
+```
+
+| Model | Daily dose (mg/kg/day) | Median typical Cav (mg/L) | Cav ratio vs 25 mg/kg/day | Expected ratio |
+|:---|---:|---:|---:|---:|
+| Base model | 12.5 | 31.8145 | 0.5000 | 0.5000 |
+| Base model | 25.0 | 63.6291 | 1.0000 | 1.0000 |
+| Base model | 50.0 | 127.2582 | 2.0000 | 2.0000 |
+| Model V (simple exponent) | 12.5 | 47.1661 | 0.7890 | 0.7889 |
+| Model V (simple exponent) | 25.0 | 59.7778 | 1.0000 | 1.0000 |
+| Model V (simple exponent) | 50.0 | 75.7577 | 1.2673 | 1.2675 |
+
+Base model exposure is dose-proportional; Model V is sub-proportional.
+{.table}
+
+``` r
+
+
+stopifnot(all(abs(cav_typ$cav_ratio - cav_typ$expected) < 2e-3))
+```
+
+### Formulation switches the absorption rate constant
+
+``` r
+
+ka_check <- typ |>
+  filter(model == "Base model") |>
+  group_by(FORM_VPA_SR) |>
+  summarise(ka = mean(ka), .groups = "drop")
+
+stopifnot(
+  abs(ka_check$ka[ka_check$FORM_VPA_SR == 0] - 2.64) < 1e-6,
+  abs(ka_check$ka[ka_check$FORM_VPA_SR == 1] - 0.46) < 1e-6
+)
+
+ka_check |>
+  mutate(formulation = if_else(FORM_VPA_SR == 1, "SR tablet", "Syrup (reference)")) |>
+  select(formulation, ka) |>
+  rename("Formulation" = formulation, "Ka (1/h)" = ka) |>
+  knitr::kable(caption = "Formulation-specific fixed absorption rate constants.")
+```
+
+| Formulation       | Ka (1/h) |
+|:------------------|---------:|
+| Syrup (reference) |     2.64 |
+| SR tablet         |     0.46 |
+
+Formulation-specific fixed absorption rate constants. {.table}
+
+## Replicate published figures
+
+### Supplementary Figure S5B – clearance versus daily dose under Model V
+
+Supplementary Figure S5B plots empirical Bayes estimates of VPA apparent
+clearance against daily dose for the simple exponent model, with the
+model-predicted typical clearance as a dashed line. The panel below
+reproduces that structure from the packaged model: individual clearances
+from the between-subject-variability simulation as points, and the
+typical-value curve as the dashed line. As in the paper, the x-axis is
+the absolute daily dose in mg/day, so the curve reflects the joint
+distribution of weight and mg/kg dose in the cohort rather than being a
+pure function of the axis.
+
+``` r
+
+ebe <- sim |>
+  filter(model == "Model V (simple exponent)") |>
+  group_by(id, arm, WT, DOSE_VPA_MGKGD) |>
+  summarise(cl = first(cl), .groups = "drop") |>
+  mutate(dd_mgd = DOSE_VPA_MGKGD * WT)
+
+typ_curve <- tibble(dd_mgkgd = seq(8.7, 57.7, length.out = 200)) |>
+  mutate(cl = 0.331 * (dd_mgkgd / 25)^k_pub,
+         dd_mgd = dd_mgkgd * 19)
+
+ggplot(ebe, aes(dd_mgd, cl)) +
+  geom_point(shape = 1, colour = "steelblue", alpha = 0.6) +
+  geom_line(data = typ_curve, linetype = "dashed", colour = "red", linewidth = 0.9) +
+  labs(x = "Daily dose (mg/d)", y = "Apparent clearance (L/h)",
+       title = "The simple exponent model",
+       caption = paste("Replicates Supplementary Figure S5B of Zhang 2023.",
+                       "Dashed line: typical CL/F at the cohort median 19 kg.")) +
+  theme_bw()
+```
+
+![](Zhang_2023_valproic_acid_protein_binding_files/figure-html/figure-s5b-1.png)
+
+### Steady-state concentration-time profiles
+
+``` r
+
+sim |>
+  group_by(model, arm, time) |>
+  summarise(Q05 = quantile(Cc, 0.05, na.rm = TRUE),
+            Q50 = quantile(Cc, 0.50, na.rm = TRUE),
+            Q95 = quantile(Cc, 0.95, na.rm = TRUE),
+            .groups = "drop") |>
+  ggplot(aes(time, Q50, colour = arm, fill = arm)) +
+  geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.2, colour = NA) +
+  geom_line(linewidth = 0.8) +
+  facet_wrap(~model) +
+  labs(x = "Time within the dosing interval (h)",
+       y = "Total plasma VPA (mg/L)",
+       colour = "Daily dose", fill = "Daily dose",
+       title = "Steady-state profiles over one 12 h interval",
+       caption = paste("Median with 5th-95th percentile band, 150 subjects per arm.",
+                       "Note the compressed spacing of the Model V arms:",
+                       "clearance rises with dose.")) +
+  theme_bw()
+```
+
+![](Zhang_2023_valproic_acid_protein_binding_files/figure-html/figure-profiles-1.png)
+
+## PKNCA validation
+
+The paper’s own observations are steady-state troughs, so the NCA below
+is run over one complete 12 h steady-state dosing interval (Recipe 3).
+Because `ss = 1` puts the system at steady state from `time = 0`, the
+`time = 0` record is the steady-state trough and is a genuine
+measurement – the usual `Cc = 0` pre-dose back-fill would be wrong here
+and is deliberately omitted.
+
+``` r
+
+sim_nca <- sim |>
+  filter(!is.na(Cc)) |>
+  select(model, id, time, Cc, arm)
+
+# time = 0 is present by construction (it is the steady-state trough).
+stopifnot(all(
+  sim_nca |> group_by(model, id) |> summarise(has0 = any(time == 0), .groups = "drop") |> pull(has0)
+))
+
+dose_df <- events |>
+  filter(evid == 1) |>
+  select(id, time, amt, arm)
+
+intervals <- data.frame(
+  start = 0, end = tau,
+  cmax = TRUE, tmax = TRUE, cmin = TRUE,
+  auclast = TRUE, cav = TRUE
+)
+
+run_nca <- function(model_name) {
+  conc_obj <- PKNCA::PKNCAconc(
+    sim_nca |> filter(model == model_name) |> select(id, time, Cc, arm),
+    Cc ~ time | arm + id, concu = "mg/L", timeu = "h"
+  )
+  dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | arm + id, doseu = "mg")
+  PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+}
+
+nca_base <- run_nca("Base model")
+nca_expo <- run_nca("Model V (simple exponent)")
+```
+
+``` r
+
+tidy_nca <- function(res, model_name) {
+  as.data.frame(res$result) |>
+    # PKNCA emits dependency rows; filter on the interval as well as the code
+    filter(start == 0, end == tau,
+           PPTESTCD %in% c("cmax", "tmax", "cmin", "auclast", "cav")) |>
+    group_by(arm, PPTESTCD) |>
+    summarise(median = median(PPORRES, na.rm = TRUE), .groups = "drop") |>
+    mutate(model = model_name)
+}
+
+nca_tbl <- bind_rows(tidy_nca(nca_base, "Base model"),
+                     tidy_nca(nca_expo, "Model V (simple exponent)"))
+
+nca_tbl |>
+  mutate(median = round(median, 2),
+         Parameter = nlmixr2lib::ncaParamLabel(PPTESTCD)) |>
+  select(model, arm, Parameter, median) |>
+  tidyr::pivot_wider(names_from = Parameter, values_from = median) |>
+  rename("Model" = model, "Arm" = arm) |>
+  knitr::kable(caption = paste("Median steady-state NCA over one 12 h interval.",
+                               "Cmin is the trough the paper's TDM samples measured."))
+```
+
+| Model                     | Arm            | AUClast |   Cavg |   Cmax |   Cmin | Tmax |
+|:--------------------------|:---------------|--------:|-------:|-------:|-------:|-----:|
+| Base model                | 12.5 mg/kg/day |  379.01 |  31.58 |  33.04 |  28.70 | 1.25 |
+| Base model                | 25 mg/kg/day   |  676.75 |  56.40 |  62.55 |  49.04 | 1.25 |
+| Base model                | 50 mg/kg/day   | 1413.39 | 117.78 | 127.52 | 107.32 | 1.25 |
+| Model V (simple exponent) | 12.5 mg/kg/day |  583.90 |  48.66 |  51.59 |  45.69 | 1.25 |
+| Model V (simple exponent) | 25 mg/kg/day   |  696.20 |  58.02 |  64.61 |  51.40 | 1.25 |
+| Model V (simple exponent) | 50 mg/kg/day   |  900.02 |  75.00 |  86.71 |  63.43 | 1.25 |
+
+Median steady-state NCA over one 12 h interval. Cmin is the trough the
+paper’s TDM samples measured. {.table style="width:100%;"}
+
+### Comparison against the published concentration
+
+Zhang et al. report no NCA table – their cohort is trough-only TDM data,
+and their model metrics are prediction errors against individual
+observations that are not public. The one published concentration that a
+simulation can be held against is the observed steady-state trough
+itself: **median 50.40 mg/L** (mean 54.34, range 22.60-118.50; Table 2),
+at a cohort median daily dose of 23.44 mg/kg/day. The 25 mg/kg/day arm
+is the closest match.
+
+``` r
+
+published <- tibble::tribble(
+  ~arm,             ~cmin,
+  "25 mg/kg/day",   50.40
+)
+
+cmp_base <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_base, reference = published, by = "arm",
+  units = c(cmin = "mg/L"), tolerance_pct = 20
+)
+cmp_expo <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_expo, reference = published, by = "arm",
+  units = c(cmin = "mg/L"), tolerance_pct = 20
+)
+
+bind_rows(
+  cmp_base |> mutate(Model = "Base model"),
+  cmp_expo |> mutate(Model = "Model V (simple exponent)")
+) |>
+  relocate(Model) |>
+  knitr::kable(
+    caption = paste("Simulated vs published steady-state trough (Zhang 2023 Table 2).",
+                    "* differs from the reference by more than 20%."),
+    align = c("l", "l", "l", "r", "r", "r")
+  )
+```
+
+| Model | NCA parameter | arm | Reference | Simulated | % diff |
+|:---|:---|:---|---:|---:|---:|
+| Base model | Cmin (mg/L) | 25 mg/kg/day | 50.4 | 49 | -2.7% |
+| Model V (simple exponent) | Cmin (mg/L) | 25 mg/kg/day | 50.4 | 51.4 | +2.0% |
+
+Simulated vs published steady-state trough (Zhang 2023 Table 2). \*
+differs from the reference by more than 20%. {.table}
+
+Both models reproduce the published median trough closely – the base
+model about 3% below it and Model V about 2% above – and neither row is
+starred. For Model V the agreement is a genuine cross-check rather than
+a coincidence: the paper independently reports a median prediction error
+of **+1.50%** for this model against its own observations (Table 3), and
+the simulation here lands at +2.0% against the observed median. No
+parameter was tuned; the only change made after first seeing these
+numbers was to place the cohort weights on deterministic quantiles so
+the simulated median weight equals the published 19.00 kg exactly,
+instead of leaving several percent of sampling noise from a 150-subject
+random draw in the comparison.
+
+Two caveats on what this check does and does not establish. It compares
+medians across variable populations, so it validates the central
+tendency of `CL/F` and the steady-state trough machinery, but says
+nothing about the variance structure – and the paper is explicit that
+variance was where every model it evaluated performed badly (all models
+were rejected by the normalised prediction distribution error global
+test). It also uses a single 25 mg/kg/day twice-daily stratum in place
+of a cohort spanning 8.70-57.69 mg/kg/day and one to three doses daily,
+so it cannot detect a misspecified dose-dependence; the exact identities
+in the structural-checks section above are what pin that.
+
+## Assumptions and deviations
+
+- **Cohort composition is reconstructed, not published.** Weights are
+  placed on lognormal quantiles with the median pinned to the published
+  19.00 kg and clamped to the published 4.00-70.00 kg range; the paper
+  reports only summary statistics (Table 2), not the joint distribution
+  of weight, age and dose. Deterministic quantiles are used in
+  preference to a random draw so the cohort median matches the published
+  value exactly and the vignette is seed-independent. The
+  sustained-release fraction is set to 61/255 to match the record counts
+  in Table 2. Age is not simulated at all, because no model in this
+  paper uses it.
+- **Twice-daily dosing was chosen for the simulation.** The paper states
+  dosing was “one, two, or three times per day” without reporting the
+  mix, so a single representative interval (`tau = 12 h`) is used
+  throughout.
+- **Steady state is imposed with `ss = 1`.** The apparent terminal
+  half-life implied by the published parameters is long (about 62 h for
+  the base model, 36 h for Model V), so dosing up from zero would not
+  reach the trough the paper observed within a tractable simulation
+  horizon.
+- **`V/F` is large relative to the paediatric VPA literature** (27.8 L
+  for a cohort with a 19 kg median weight, about 1.5 L/kg, against a
+  literature value near 0.2 L/kg). This is faithful to the source: the
+  authors state that because their data were “mostly at trough
+  concentrations … parameters for the absorption and distribution stages
+  could not be obtained precisely.” The parameter is reproduced as
+  published and not adjusted.
+- **`DD` in Equation 7 is implemented on the mg/kg/day scale.** The
+  paper’s abbreviation list defines `DD` as daily dose in mg/day and
+  `DDW` as daily dose in mg/kg/day, and Equation 7 is printed with `DD`.
+  However the equation reads `(DD/25)`, and 25 matches the cohort mean
+  daily dose of 24.50 **mg/kg/day** (Table 2), not any mg/day quantity;
+  and the reported `CLp/F` of 0.331 L/h reproduces the base-model `CL/F`
+  of 0.311 L/h only on the mg/kg/day reading. On the mg/day reading,
+  typical clearance comes out at 2.42 L/h and the predicted trough at
+  about 9 mg/L, against an observed median of 50.40 mg/L – an 84%
+  under-prediction that is incompatible with the +1.50% MDPE the paper
+  reports for this model (Table 3). The mg/kg/day reading is therefore
+  used, and the text’s `DD`/`DDW` label is treated as a typographical
+  inconsistency. This is recorded in the `DOSE_VPA_MGKGD` register
+  entry.
+- **No covariates on `CL/F` or `V/F`.** Neither the base model nor Model
+  V carries a weight, age, albumin or co-medication effect. This is
+  unusual for a paediatric model and is faithful to Supplementary Table
+  S3; weight and albumin are recorded in `covariatesDataExcluded` with
+  the reason. Weight enters Model V only indirectly, through the
+  per-kilogram normalisation of the daily-dose covariate.
+- **Model V is not a dosing tool.** The authors argue explicitly that
+  because the daily dose is the quantity a TDM model exists to predict,
+  using it as a clearance covariate is circular, and they conclude the
+  simple exponent form “did not describe the non-linear properties of
+  the VPA PK process” despite its good prediction metrics. It is
+  packaged for fidelity to the published comparison.
+- **Between-subject variability is diagonal.** Zhang 2023 reports no
+  `CL/F`-`V/F` correlation for its own models, so no off-diagonal is
+  encoded.
+- **No non-paper-derived parameter values.** Every `ini()` value comes
+  from the paper’s Equation 7 or Supplementary Table S3. The two `Ka`
+  shift parameters are log-ratios computed from the three published
+  fixed `Ka` values (2.64 / 1.57 / 0.46 1/h); the arithmetic is visible
+  in the model file.
+
+## Deferred models
+
+Four of the paper’s six original models are not yet packaged. Both
+blockers are naming or reporting questions, not modelling questions –
+the structures themselves are fully determined.
+
+**Models I, II and IV (one-binding-site, Langmuir, linear
+non-saturable).** These share a structure that is well identified from
+the paper: a one-compartment model carried on the *unbound*
+concentration, with the observed total concentration recovered as
+`Cc = Cu + Cb` where `Cb` follows Equation 3, 4 or 6. That reading is
+confirmed three times over, because the ratio of each model’s `CLp/F`
+and `V/F` to the base model’s recovers the same unbound fraction that
+the binding equation itself implies at the steady-state unbound
+concentration (about 0.2% for Model I, 9% for Model II, 7% for Model
+IV). What is missing is a naming decision: the saturable-binding
+constants (`Bm` maximum binding-site concentration, `Kd` dissociation
+constant, `NS` non-saturable slope, `N` binding sites per albumin unit,
+`K` association constant) have no canonical names in the library’s
+parameter register, which records only a time-varying-unbound-fraction
+slope (`lbfu`) and Michaelis-Menten enzyme constants. Introducing a new
+canonical family requires operator ratification, so these three models
+await that decision.
+
+**Model III (dose-dependent maximum effect).** Equation 5 needs `Emax`,
+the Hill coefficient, and `DD50`. The paper fixes `Emax = 2.8` and the
+Hill coefficient at 1.68 from Ding 2015, but **never reports `DD50`** –
+it is absent from Supplementary Table S3 (whose `CL_DD` row is “/” for
+this model) and from the text. The value cannot be recovered from what
+is on disk: Ding 2015’s own `DD50` of 37.4 mg/kg/day, tabulated in
+Zhang’s Table 1, gives a typical clearance of 0.157 L/h and a predicted
+trough near 137 mg/L, which contradicts the -1.10% MDPE reported in
+Table 3; and digitising the typical curve in Supplementary Figure S5A
+yields mutually inconsistent `DD50` values across the dose range under
+every unit reading. The figure and Table 3 are themselves in tension for
+this model – Figure S5A shows a typical clearance near 0.15-0.19 L/h,
+roughly half the base model’s 0.311 L/h, which would imply a strongly
+positive prediction error rather than the near-zero one reported. Per
+the library’s sourcing rules no value is guessed, so this model awaits
+an operator decision.

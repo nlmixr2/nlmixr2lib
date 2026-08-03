@@ -90,7 +90,7 @@ rxode2::rxode(mod)
 #> [4] "Table 2 IIV k15 = 58.8% CV -> log(0.588^2 + 1)"               
 #> [5] "Table 2 IIV Bmax compartment 2 = 59.3% CV -> log(0.593^2 + 1)"
 #> [6] "Table 2 IOV k15 = 43.5% CV -> log(0.435^2 + 1)"               
-#> [7] "SAME-equivalent: fixed equal to the occasion-1 IOV variance"  
+#> [7] "SAME-equivalent: equal to the occasion-1 IOV variance"        
 #> attr(,"lotriFix")
 #>                    etalkel etalkin_kidney etalkout_liver etalkin_tumor etalbmax
 #> etalkel              FALSE          FALSE          FALSE         FALSE    FALSE
@@ -238,7 +238,7 @@ rxode2::rxode(mod)
 #>         etaiov_kin_tumor_1 ~ 0.173302
 #>         label("Table 2 IOV k15 = 43.5% CV -> log(0.435^2 + 1)")
 #>         etaiov_kin_tumor_2 ~ fix(0.173302)
-#>         label("SAME-equivalent: fixed equal to the occasion-1 IOV variance")
+#>         label("SAME-equivalent: equal to the occasion-1 IOV variance")
 #>     })
 #>     model({
 #>         oc1 <- (OCC == 1)

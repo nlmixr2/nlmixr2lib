@@ -116,6 +116,9 @@ sim <- rxode2::rxSolve(mod, events = events, keep = c("OCC"))
 #> ℹ parameter labels from comments will be replaced by 'label()'
 #> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_ka_1, etaiov_ka_2, etaiov_ka_3, etaiov_vc_1, etaiov_vc_2, etaiov_vc_3, etaiov_mtt_1, etaiov_mtt_2, etaiov_mtt_3
 #> as a work-around try putting the mu-referenced expression on a simple line
+#> rxode2 already building model, waiting for lock file removal
+#> lock file: "/tmp/RtmpMQpghI/rxode2/rx_bb4031ffc0b7e313dc4d8b1f541bc514__.rxd/rx_bb4031ffc0b7e313dc4d8b1f541bc514_.c.lock"
+#> .
 sim_df <- as.data.frame(sim)
 
 mod_typical <- rxode2::zeroRe(mod)
