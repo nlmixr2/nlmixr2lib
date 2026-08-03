@@ -4,6 +4,20 @@ Farrell_2014_eltrombopag <- function() {
   vignette <- "Farrell_2014_eltrombopag"
   units <- list(time = "h", dosing = "mg", concentration = "ug/mL", platelet = "Gi/L (10^9/L)")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "eltrombopag", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "eltrombopag", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "eltrombopag", units = "mg", specimen = "plasma", verified = FALSE),
+    precursor1  = list(analyte = "platelet precursor", units = "mg", specimen = "not applicable", verified = FALSE),
+    precursor2  = list(analyte = "platelet precursor", units = "mg", specimen = "not applicable", verified = FALSE),
+    precursor3  = list(analyte = "platelet precursor", units = "mg", specimen = "not applicable", verified = FALSE),
+    circ        = list(analyte = "platelets", units = "mg", specimen = "whole blood", verified = FALSE)
+  )
+
   covariateData <- list(
     SEXF = list(
       description        = "Female sex indicator",

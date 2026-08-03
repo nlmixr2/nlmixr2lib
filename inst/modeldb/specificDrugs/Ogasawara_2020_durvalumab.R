@@ -3,6 +3,14 @@ Ogasawara_2020_durvalumab <- function() {
   reference <- "Ogasawara K, Newhall K, Maxwell SE, et al. Population Pharmacokinetics of an Anti-PD-L1 Antibody, Durvalumab in Patients with Hematologic Malignancies. Clin Pharmacokinet. 2020;59(2):217-227. doi:10.1007/s40262-019-00804-x"
   vignette <- "Ogasawara_2020_durvalumab"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "durvalumab", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "durvalumab", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight",

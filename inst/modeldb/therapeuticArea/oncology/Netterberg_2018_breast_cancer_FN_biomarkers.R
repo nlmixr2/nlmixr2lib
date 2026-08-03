@@ -16,6 +16,15 @@ Netterberg_2018_breast_cancer_FN_biomarkers <- function() {
     concentration = "IL-6 in pg/mL; CRP in mg/L"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    il6 = list(analyte = "Interleukin-6 (IL-6)", units = NA_character_, specimen = "serum", verified = FALSE),
+    crp = list(analyte = "C-reactive protein (CRP)", units = NA_character_, specimen = "serum", verified = FALSE)
+  )
+
   covariateData <- list(
     MIX_ELEV_IL6 = list(
       description = "Binary cycle-level indicator: 1 = this cycle has an elevated IL-6 production surge (the IL-6 surge function g_IL6(t) is active); 0 = no elevated IL-6 production in this cycle (the surge function is zeroed out). Time-fixed within a single chemotherapy cycle; resampled between cycles 1 and 4.",

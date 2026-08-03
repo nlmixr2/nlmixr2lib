@@ -6,6 +6,18 @@ oncology_sdm_lobo_2002 <- function() {
   # Values for lkng, ltau, lec50, and kmax are for methotrexate from Lobo 2002,
   # Table 2.  propErr and addErr are added as reasonable values though not from
   # Lobo 2002 where no value is apparent in the paper.
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    tumor_vol = list(analyte = "tumour_size", units = NA_character_, specimen = "tumor", verified = FALSE),
+    transit1  = list(analyte = "drug", units = NA_character_, specimen = "administration site", verified = FALSE),
+    transit2  = list(analyte = "drug", units = NA_character_, specimen = "administration site", verified = FALSE),
+    transit3  = list(analyte = "drug", units = NA_character_, specimen = "administration site", verified = FALSE),
+    transit4  = list(analyte = "drug", units = NA_character_, specimen = "administration site", verified = FALSE)
+  )
+
   ini({
     lkng <- log(0.02) ; label("Cell net growth rate (growth minus death) (1/h)")
     ltau <- log(34.1) ; label("Mean transit time of each transit compartment (hr)")

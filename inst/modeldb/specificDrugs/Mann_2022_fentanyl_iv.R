@@ -36,6 +36,17 @@ Mann_2022_fentanyl_iv <- function() {
     concentration = "ng/mL"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "fentanyl", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "fentanyl", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral2 = list(analyte = "fentanyl", units = "mg", specimen = "plasma", verified = FALSE),
+    effect      = list(analyte = "fentanyl", units = "mg", specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Total body weight (Mann 2022 simulations fix WT = 70 kg; the allometric scaling block keeps WT exposed as a covariate so subject-level body weight can vary in downstream composition)",

@@ -4,6 +4,17 @@ Li_2018_PF04236921 <- function() {
   vignette <- "Li_2018_PF04236921"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL", CRP = "mg/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "PF-04236921", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "PF-04236921", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "PF-04236921", units = "mg", specimen = "plasma", verified = FALSE),
+    effect      = list(analyte = "CRP synthesis rate", units = "mg", specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Total body weight (baseline)",

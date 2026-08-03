@@ -9,6 +9,17 @@ Standing_2012_oseltamivir <- function() {
   # not a Savic absorption-chain transit; declare as paper-specific.
   paper_specific_compartments <- "transit_oselcarb"
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot            = list(analyte = "oseltamivir", units = "nmol", specimen = "administration site", verified = FALSE),
+    central          = list(analyte = "oseltamivir", units = "nmol", specimen = "plasma", verified = FALSE),
+    transit_oselcarb = list(analyte = "oseltamivir carboxylate", units = "nmol", specimen = "administration site", verified = FALSE),
+    central_oselcarb = list(analyte = "oseltamivir carboxylate", units = "nmol", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Total body weight (kg). Used for allometric size scaling on every disposition parameter: (WT/70)^0.75 on CLU, CLM, CLI, and liver blood flow FQ; (WT/70)^1.0 on VD and VDM. Reference weight 70 kg.",

@@ -47,6 +47,18 @@ Kloprogge_2015_lumefantrine <- function() {
   paper_specific_etas         <- c("etalcl_dlf", "etalvc_dlf")
   paper_specific_residual_sds <- c("propSd_dlf")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot           = list(analyte = "lumefantrine", units = "mg", specimen = "administration site", verified = FALSE),
+    central         = list(analyte = "lumefantrine", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1     = list(analyte = "lumefantrine", units = "mg", specimen = "plasma", verified = FALSE),
+    central_dlf     = list(analyte = "desbutyl-lumefantrine", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1_dlf = list(analyte = "desbutyl-lumefantrine", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     GA = list(
       description        = paste(

@@ -54,6 +54,22 @@ Fung_2008_butanediol_rat <- function() {
 
   units <- list(time = "min", dosing = "mmol", concentration = "mmol/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot            = list(analyte = "BD", units = NA_character_, specimen = "administration site", verified = FALSE),
+    central          = list(analyte = "BD", units = NA_character_, specimen = "plasma", verified = FALSE),
+    peripheral1      = list(analyte = "BD", units = NA_character_, specimen = "plasma", verified = FALSE),
+    central_ald      = list(analyte = "ALD", units = NA_character_, specimen = "plasma", verified = FALSE),
+    peripheral1_ald  = list(analyte = "ALD", units = NA_character_, specimen = "plasma", verified = FALSE),
+    central_ghb      = list(analyte = "GHB", units = NA_character_, specimen = "plasma", verified = FALSE),
+    peripheral1_ghb  = list(analyte = "GHB", units = NA_character_, specimen = "plasma", verified = FALSE),
+    central_etoh     = list(analyte = "ETOH", units = NA_character_, specimen = "plasma", verified = FALSE),
+    peripheral1_etoh = list(analyte = "ETOH", units = NA_character_, specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(

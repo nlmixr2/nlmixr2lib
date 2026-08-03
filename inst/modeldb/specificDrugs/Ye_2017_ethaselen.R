@@ -41,6 +41,16 @@ Ye_2017_ethaselen <- function() {
     concentration = "n/a (TrxR activity in U/mL and tumor volume in mm^3 are the two observed outputs)"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    trxr         = list(analyte = "thioredoxin reductase (TrxR) activity", units = NA_character_, specimen = "plasma", verified = FALSE),
+    trxr_ctrl    = list(analyte = "thioredoxin reductase (TrxR) activity", units = NA_character_, specimen = "tumor", verified = FALSE),
+    tumor_volume = list(analyte = "tumor volume", units = NA_character_, specimen = "tumor", verified = FALSE)
+  )
+
   covariateData <- list(
     DOSE = list(
       description        = "Time-varying current administered daily dose of ethaselen (mg/kg/day). Drives the sigmoidal Emax inhibition of TrxR Kout. Set to 0 outside the dosing window (vehicle control and post-treatment days).",

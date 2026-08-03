@@ -54,6 +54,22 @@ Melhem_2018_g_csf <- function() {
     )
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot                    = list(analyte = "filgrastim", units = NA_character_, specimen = "administration site", verified = FALSE),
+    central                  = list(analyte = "filgrastim", units = NA_character_, specimen = "plasma", verified = FALSE),
+    precursor1               = list(analyte = "G-CSFR", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    precursor2               = list(analyte = "G-CSFR", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    precursor3               = list(analyte = "G-CSFR", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    precursor4               = list(analyte = "G-CSFR", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    circ                     = list(analyte = "filgrastim-G-CSFR complex", units = NA_character_, specimen = "whole blood", verified = FALSE),
+    depot_kpd_corticosteroid = list(analyte = "corticosteroid", units = NA_character_, specimen = "administration site", verified = FALSE),
+    depot_kpd_chemotherapy   = list(analyte = "chemotherapy", units = NA_character_, specimen = "administration site", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight",

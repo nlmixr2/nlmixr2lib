@@ -7,6 +7,21 @@ Rees_2018_meropenem_ciprofloxacin <- function() {
   # No patient covariates: this is an in vitro mechanism-based model. The drug
   # exposures (meropenem and ciprofloxacin concentrations) are state variables
   # (cmem, ccip) dosed by the user, not covariate columns.
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    bact_susceptible_susceptible1 = list(analyte = "Pseudomonas aeruginosa (susceptible)", units = NA_character_, specimen = "administration site", verified = FALSE),
+    bact_susceptible_susceptible2 = list(analyte = "Pseudomonas aeruginosa (susceptible)", units = NA_character_, specimen = "administration site", verified = FALSE),
+    bact_resistant_intermediate1  = list(analyte = "Pseudomonas aeruginosa (resistant-intermediate)", units = NA_character_, specimen = "administration site", verified = FALSE),
+    bact_resistant_intermediate2  = list(analyte = "Pseudomonas aeruginosa (resistant-intermediate)", units = NA_character_, specimen = "administration site", verified = FALSE),
+    bact_intermediate_resistant1  = list(analyte = "Pseudomonas aeruginosa (intermediate-resistant)", units = NA_character_, specimen = "administration site", verified = FALSE),
+    bact_intermediate_resistant2  = list(analyte = "Pseudomonas aeruginosa (intermediate-resistant)", units = NA_character_, specimen = "administration site", verified = FALSE),
+    cmem                          = list(analyte = "meropenem", units = NA_character_, specimen = "administration site", verified = FALSE),
+    ccip                          = list(analyte = "ciprofloxacin", units = NA_character_, specimen = "administration site", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(

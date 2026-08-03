@@ -4,6 +4,16 @@ Brown_2017_osimertinib <- function() {
   vignette <- "Brown_2017_osimertinib"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot          = list(analyte = "osimertinib", units = "mg", specimen = "administration site", verified = FALSE),
+    central        = list(analyte = "osimertinib", units = "mg", specimen = "plasma", verified = FALSE),
+    central_az5104 = list(analyte = "AZ5104", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Total body weight (baseline; reported in kg).",

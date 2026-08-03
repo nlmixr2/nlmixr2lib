@@ -23,6 +23,14 @@ Hansson_2013c_sunitinib <- function() {
   ddmore_id <- "DDMODEL00000222"
   replicate_of <- NULL
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    svegfr3 = list(analyte = "sVEGFR-3", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     DOSE = list(
       description        = "Current administered sunitinib daily dose (mg) carried as a time-varying data column. Set to 0 during off-cycles (4 weeks on / 2 weeks off in the Hansson 2013 GIST cohort) or for placebo subjects so the derived AUC = DOSE / CLI becomes 0.",

@@ -21,6 +21,16 @@ Hansson_2013_sunitinib_OS <- function() {
     concentration = "probability (the model outputs sur_os and sur_cens are survival probabilities, not drug concentrations)"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    svegfr3     = list(analyte = "soluble VEGFR-3 (sVEGFR-3)", units = "mg", specimen = "plasma", verified = FALSE),
+    cumhaz_os   = list(analyte = "death hazard", units = "mg", specimen = "not applicable", verified = FALSE),
+    cumhaz_cens = list(analyte = "censoring hazard", units = "mg", specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list(
     DOSE = list(
       description        = "Current administered sunitinib daily dose (mg) carried as a time-varying data column. Set to 0 during off-cycles (e.g., the 4-weeks-on / 2-weeks-off GIST regimen) or for placebo subjects so the derived AUC = DOSE / CLI becomes 0.",

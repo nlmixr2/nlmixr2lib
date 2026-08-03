@@ -40,6 +40,14 @@ Hajjar_2018_DMD_6MWT <- function() {
     concentration = "m (six-minute walk test distance, observation walkDist)"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    walkDist = list(analyte = "6MWT distance", units = NA_character_, specimen = "administration site", verified = FALSE)
+  )
+
   covariateData <- list(
     DIS_DMD = list(
       description        = "Binary indicator for Duchenne muscular dystrophy diagnosis: 1 = DMD subject, 0 = non-DMD subject (healthy control). Time-fixed per subject. Source poster's NONMEM variable name is PATIENT with the same orientation (1 = DMD, 0 = healthy).",

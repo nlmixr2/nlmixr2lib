@@ -4,6 +4,17 @@ Zhao_2018_omeprazole <- function() {
   vignette    <- "Zhao_2018_omeprazole"
   units       <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "omeprazole", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "omeprazole", units = "mg", specimen = "plasma", verified = FALSE),
+    central_5oh = list(analyte = "5-hydroxy-omeprazole", units = "mg", specimen = "plasma", verified = FALSE),
+    central_sfn = list(analyte = "omeprazole sulfone", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     PNA = list(
       description        = "Postnatal age (chronological since birth).",

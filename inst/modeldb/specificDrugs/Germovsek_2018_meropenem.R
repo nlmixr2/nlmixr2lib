@@ -4,6 +4,14 @@ Germovsek_2018_meropenem <- function() {
   vignette <- "Germovsek_2018_meropenem"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central = list(analyte = "meropenem", units = "mg", specimen = "plasma", verified = FALSE),
+    csf     = list(analyte = "meropenem", units = "mg", specimen = "CSF", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Total body weight at enrolment",

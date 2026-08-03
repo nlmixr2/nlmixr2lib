@@ -43,6 +43,16 @@ VargasChristensen_2019_rfviii_rat <- function() {
     concentration = "nmol/L"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central      = list(analyte = "rFVIII (unbound)", units = "nmol", specimen = "plasma", verified = FALSE),
+    peripheral1  = list(analyte = "rFVIII (unbound)", units = "nmol", specimen = "plasma", verified = FALSE),
+    total_target = list(analyte = "rFVIII:VWF complex", units = "nmol", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight",

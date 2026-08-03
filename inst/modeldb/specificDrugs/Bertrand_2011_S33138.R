@@ -30,6 +30,16 @@ Bertrand_2011_S33138 <- function() {
     concentration = "nmol/L"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot          = list(analyte = "S33138", units = "nmol", specimen = "administration site", verified = FALSE),
+    central        = list(analyte = "S33138", units = "nmol", specimen = "plasma", verified = FALSE),
+    central_s35424 = list(analyte = "S35424", units = "nmol", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     DOSE = list(
       description        = "Current administered dose level of S33138 in mg per dose record. Used as a continuous covariate driving the linear dose effects on the bioavailability f (Bertrand 2011 Eq. 1) and the parent presystemic fraction Fp (Eq. 2). Reference dose 10 mg; observed levels 5, 10, and 20 mg.",

@@ -74,6 +74,16 @@ Beredaki_2023_micafungin_eucast <- function() {
     )
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central   = list(analyte = "micafungin", units = NA_character_, specimen = "plasma", verified = FALSE),
+    fauc_0_24 = list(analyte = "micafungin", units = NA_character_, specimen = "administration site", verified = FALSE),
+    bact      = list(analyte = "Candida albicans", units = NA_character_, specimen = "not applicable", verified = FALSE)
+  )
+
   ini({
     # ================================================================
     # In vitro pharmacokinetics

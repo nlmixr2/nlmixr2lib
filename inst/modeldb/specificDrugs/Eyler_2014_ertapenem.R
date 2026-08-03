@@ -4,6 +4,14 @@ Eyler_2014_ertapenem <- function() {
   vignette <- "Eyler_2014_ertapenem"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "ertapenem", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "ertapenem", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     RRT_HEMODIAL_ACTIVE = list(
       description        = "CRRT-active indicator (1 while continuous venovenous hemodialysis or hemodiafiltration is running, 0 otherwise)",

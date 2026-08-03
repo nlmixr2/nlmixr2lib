@@ -29,6 +29,15 @@ Patel_2011_fluconazole <- function() {
   vignette <- "Patel_2011_fluconazole"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "fluconazole", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "fluconazole", units = "mg", specimen = "plasma", verified = FALSE),
+    urine       = list(analyte = "fluconazole", units = "mg", specimen = "urine", verified = FALSE)
+  )
+
   covariateData <- list(
     FILT_AGE_HI = list(
       description        = "Indicator that the in-use CVVHDF hemofilter membrane has been operating for more than 48 hours; reduces CL_CVVHDF efficiency to 36.8 percent of the fresh-filter baseline (Patel 2011 Table 2: ffCL_CVVHDF = 0.368, bootstrap 95 percent CI 0.326-0.426; Delta-OBJ = -11.46 vs base model).",

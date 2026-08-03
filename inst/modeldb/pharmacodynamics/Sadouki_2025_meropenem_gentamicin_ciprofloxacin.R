@@ -4,6 +4,15 @@ Sadouki_2025_meropenem_gentamicin_ciprofloxacin <- function() {
   vignette <- "Sadouki_2025_meropenem_gentamicin_ciprofloxacin"
   units <- list(time = "h", dosing = "mg/L", concentration = "mg/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    mer      = list(analyte = "Meropenem", units = NA_character_, specimen = "plasma", verified = FALSE),
+    bacteria = list(analyte = "Escherichia coli NCTC 12,241", units = NA_character_, specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list(
     CONMED_MER = list(
       description        = "Indicator that meropenem is present in the experimental regimen",

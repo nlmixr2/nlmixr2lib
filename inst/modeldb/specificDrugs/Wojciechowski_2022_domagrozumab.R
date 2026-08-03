@@ -4,6 +4,17 @@ Wojciechowski_2022_domagrozumab <- function() {
   vignette <- "Wojciechowski_2022_domagrozumab"
   units <- list(time = "h", dosing = "mg", concentration = "nmol/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot        = list(analyte = "domagrozumab", units = "mg", specimen = "administration site", verified = FALSE),
+    central      = list(analyte = "domagrozumab", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1  = list(analyte = "domagrozumab", units = "mg", specimen = "plasma", verified = FALSE),
+    total_target = list(analyte = "myostatin", units = "mg", specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight",

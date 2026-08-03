@@ -39,6 +39,18 @@ Willmann_2021_fxiLica <- function() {
   paper_specific_compartments <- c("fxi")
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "FXI-LICA", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "FXI-LICA", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "FXI-LICA", units = "mg", specimen = "plasma", verified = FALSE),
+    fxi         = list(analyte = "FXI activity", units = "mg", specimen = "blood cell", verified = FALSE),
+    effect      = list(analyte = "FXI activity", units = "mg", specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list(
     RRT_HEMODIAL_STATUS = list(
       description        = "Intermittent-hemodialysis treatment-status indicator (1 = subject with end-stage renal disease on hemodialysis, 0 = healthy volunteer)",

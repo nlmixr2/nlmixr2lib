@@ -26,6 +26,17 @@ Chairat_2016_oseltamivir <- function() {
   # paper-specific so checkModelConventions() does not flag the name.
   paper_specific_compartments <- "metabolism"
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot            = list(analyte = "oseltamivir", units = "mg", specimen = "administration site", verified = FALSE),
+    central          = list(analyte = "oseltamivir", units = "mg", specimen = "plasma", verified = FALSE),
+    metabolism       = list(analyte = "oseltamivir carboxylate", units = "mg", specimen = "not applicable", verified = FALSE),
+    central_oselcarb = list(analyte = "oseltamivir carboxylate", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     CRCL = list(
       description        = "Creatinine clearance computed by the Cockcroft-Gault formula with fat-free mass (FFM, Janmahasatian 2005) substituted for total body weight; NOT BSA-normalised. Chairat 2016 Methods Eq. 9 (FFM) and the CG variant used as CLCR(FFM).",

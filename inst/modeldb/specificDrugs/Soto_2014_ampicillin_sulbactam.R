@@ -22,6 +22,17 @@ Soto_2014_ampicillin_sulbactam <- function() {
   vignette <- "Soto_2014_ampicillin_sulbactam"
   units    <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central         = list(analyte = "ampicillin", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1     = list(analyte = "ampicillin", units = "mg", specimen = "plasma", verified = FALSE),
+    central_sbt     = list(analyte = "sulbactam", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1_sbt = list(analyte = "sulbactam", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Total body weight",

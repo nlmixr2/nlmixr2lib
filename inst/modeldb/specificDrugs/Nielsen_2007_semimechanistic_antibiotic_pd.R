@@ -14,6 +14,25 @@ Nielsen_2007_semimechanistic_antibiotic_pd <- function() {
   # erythromycin 0.0078-8.00 mg/L (0.0625-64x MIC 0.125 mg/L),
   # moxifloxacin 0.0313-8.00 mg/L (0.25-64x MIC 0.125 mg/L),
   # vancomycin 0.0625-16.0 mg/L (0.25-64x MIC 0.25 mg/L).
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    pen              = list(analyte = "benzylpenicillin", units = NA_character_, specimen = "administration site", verified = FALSE),
+    cxm              = list(analyte = "cefuroxime", units = NA_character_, specimen = "administration site", verified = FALSE),
+    ery              = list(analyte = "erythromycin", units = NA_character_, specimen = "administration site", verified = FALSE),
+    mxf              = list(analyte = "moxifloxacin", units = NA_character_, specimen = "administration site", verified = FALSE),
+    van              = list(analyte = "vancomycin", units = NA_character_, specimen = "administration site", verified = FALSE),
+    pen_e            = list(analyte = "benzylpenicillin", units = NA_character_, specimen = "administration site", verified = FALSE),
+    cxm_e            = list(analyte = "cefuroxime", units = NA_character_, specimen = "administration site", verified = FALSE),
+    ery_e            = list(analyte = "erythromycin", units = NA_character_, specimen = "administration site", verified = FALSE),
+    mxf_e            = list(analyte = "moxifloxacin", units = NA_character_, specimen = "administration site", verified = FALSE),
+    van_e            = list(analyte = "vancomycin", units = NA_character_, specimen = "administration site", verified = FALSE),
+    bact_susceptible = list(analyte = "S. pyogenes", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    bact_resting     = list(analyte = "S. pyogenes", units = NA_character_, specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list()
 
   # Paper-specific compartments: five drug PK compartments (one per antibiotic

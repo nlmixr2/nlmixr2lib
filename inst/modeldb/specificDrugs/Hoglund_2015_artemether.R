@@ -41,6 +41,19 @@ Hoglund_2015_artemether <- function() {
   vignette <- "Hoglund_2015_artemether_lumefantrine"
   units    <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "artemether", units = "mg", specimen = "administration site", verified = FALSE),
+    transit1    = list(analyte = "artemether", units = "mg", specimen = "administration site", verified = FALSE),
+    transit2    = list(analyte = "artemether", units = "mg", specimen = "administration site", verified = FALSE),
+    transit3    = list(analyte = "artemether", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "artemether", units = "mg", specimen = "plasma", verified = FALSE),
+    central_dha = list(analyte = "dihydroartemisinin", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     CONMED_EFV = list(
       description        = "Concomitant efavirenz co-administration indicator",

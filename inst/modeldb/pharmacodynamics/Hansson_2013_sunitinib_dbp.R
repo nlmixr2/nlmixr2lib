@@ -20,6 +20,14 @@ Hansson_2013_sunitinib_dbp <- function() {
   vignette <- "Hansson_2013_sunitinib_dbp"
   units <- list(time = "h", dosing = "mg", concentration = "mmHg (diastolic blood pressure)")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    dbp = list(analyte = "diastolic blood pressure", units = "mg", specimen = "blood cell", verified = FALSE)
+  )
+
   covariateData <- list(
     DOSE = list(
       description        = "Current administered sunitinib daily dose (mg) carried as a time-varying data column. Set to 0 during off-cycles or for placebo subjects so the derived AUC = DOSE / CLI becomes 0.",

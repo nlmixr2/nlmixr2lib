@@ -11,6 +11,15 @@ Kyhl_2016_nalmefene <- function() {
   # covariateData entry to keep covariateData restricted to covariates the
   # model body actually reads.
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "nalmefene", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "nalmefene", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "nalmefene", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     AGE = list(
       description        = "Subject age",

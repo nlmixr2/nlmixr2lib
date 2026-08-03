@@ -39,6 +39,18 @@ Johnson_2011_olanzapine_rat <- function() {
     concentration = "mg/L"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central             = list(analyte = "olanzapine", units = NA_character_, specimen = "plasma", verified = FALSE),
+    peripheral1         = list(analyte = "olanzapine", units = NA_character_, specimen = "plasma", verified = FALSE),
+    brain_vascular      = list(analyte = "olanzapine", units = NA_character_, specimen = "tissue", verified = FALSE),
+    brain_extravascular = list(analyte = "olanzapine", units = NA_character_, specimen = "tissue", verified = FALSE),
+    effect              = list(analyte = "D2RO", units = NA_character_, specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list(
     ROUTE_IP = list(
       description        = paste(

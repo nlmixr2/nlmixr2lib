@@ -4,6 +4,14 @@ Petric_2023_vinpocetine <- function() {
   vignette    <- "Petric_2023_vinpocetine"
   units       <- list(time = "h", dosing = "mg", concentration = "ug/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "vinpocetine", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "vinpocetine", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     FORM_VINP_IR = list(
       description        = "Vinpocetine immediate-release tablet indicator (1 = Cavinton immediate-release 5 mg tablet, Organon / Gedeon Richter; 0 = sustained-release beta-cyclodextrin complex Ultra Vinca 10 mg tablet, Tecnimede -- the Petric 2023 reference formulation). Per-dose-occasion indicator (crossover design: each subject received all three formulations across occasions with a 7-day washout).",

@@ -4,6 +4,14 @@ Garmann_2017_BAY81_8973 <- function() {
   vignette <- "Garmann_2017_BAY81_8973"
   units <- list(time = "h", dosing = "IU", concentration = "IU/dL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "BAY81 8973", units = "IU", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "BAY81 8973", units = "IU", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     LBM = list(
       description        = "Lean body weight (canonical column LBM; source paper uses LBW)",

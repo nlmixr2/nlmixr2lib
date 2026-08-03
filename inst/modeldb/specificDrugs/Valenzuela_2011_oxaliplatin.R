@@ -24,6 +24,21 @@ Valenzuela_2011_oxaliplatin <- function() {
   units <- list(time = "h", dosing = "mg", concentration = "mg/L",
                 anc = "10^9 cells/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "oxaliplatin", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "oxaliplatin", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "oxaliplatin", units = "mg", specimen = "plasma", verified = FALSE),
+    precursor1  = list(analyte = "ANC", units = "mg", specimen = "not applicable", verified = FALSE),
+    precursor2  = list(analyte = "ANC", units = "mg", specimen = "not applicable", verified = FALSE),
+    precursor3  = list(analyte = "ANC", units = "mg", specimen = "not applicable", verified = FALSE),
+    precursor4  = list(analyte = "ANC", units = "mg", specimen = "not applicable", verified = FALSE),
+    circ        = list(analyte = "ANC", units = "mg", specimen = "whole blood", verified = FALSE)
+  )
+
   covariateData <- list()
 
   covariatesDataExcluded <- list(

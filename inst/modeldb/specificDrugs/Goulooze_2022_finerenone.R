@@ -8,6 +8,15 @@ Goulooze_2022_finerenone <- function() {
     concentration = "mmol/L (serum potassium; the PD output molecule is potassium, not the dosed finerenone, so the dosing-vs-concentration unit-dimensional check is intentionally a non-applicable PD comparison and the dosing string is parenthesised to skip it)"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot  = list(analyte = "finerenone", units = NA_character_, specimen = "administration site", verified = FALSE),
+    serumK = list(analyte = "potassium", units = NA_character_, specimen = "serum", verified = FALSE)
+  )
+
   covariateData <- list(
     CRCL = list(
       description        = "Baseline CKD-EPI estimated glomerular filtration rate, BSA-normalised to 1.73 m^2",

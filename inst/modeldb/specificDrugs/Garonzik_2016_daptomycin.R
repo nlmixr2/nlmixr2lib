@@ -8,6 +8,20 @@ Garonzik_2016_daptomycin <- function() {
     concentration = "log10 CFU/mL (observation); mg/L (daptomycin state)"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    dap                = list(analyte = "daptomycin", units = NA_character_, specimen = "administration site", verified = FALSE),
+    bact_susceptible1  = list(analyte = "Staphylococcus aureus (susceptible, vegetative)", units = NA_character_, specimen = "bronchoalveolar lavage", verified = FALSE),
+    bact_susceptible2  = list(analyte = "Staphylococcus aureus (susceptible, replicating)", units = NA_character_, specimen = "bronchoalveolar lavage", verified = FALSE),
+    bact_intermediate1 = list(analyte = "Staphylococcus aureus (intermediate, vegetative)", units = NA_character_, specimen = "bronchoalveolar lavage", verified = FALSE),
+    bact_intermediate2 = list(analyte = "Staphylococcus aureus (intermediate, replicating)", units = NA_character_, specimen = "bronchoalveolar lavage", verified = FALSE),
+    bact_resistant1    = list(analyte = "Staphylococcus aureus (resistant, vegetative)", units = NA_character_, specimen = "bronchoalveolar lavage", verified = FALSE),
+    bact_resistant2    = list(analyte = "Staphylococcus aureus (resistant, replicating)", units = NA_character_, specimen = "bronchoalveolar lavage", verified = FALSE)
+  )
+
   covariateData <- list(
     HS = list(
       description        = "Human serum percentage (v/v) supplementing Mueller-Hinton broth in the in-vitro time-kill experiment",

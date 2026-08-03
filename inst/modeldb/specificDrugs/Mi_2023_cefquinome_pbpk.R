@@ -55,6 +55,26 @@ Mi_2023_cefquinome_pbpk <- function() {
   # maximum residue limits in liver and kidney).
   units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot2   = list(analyte = "cefquinome", units = "mg", specimen = "administration site", verified = FALSE),
+    depot    = list(analyte = "cefquinome", units = "mg", specimen = "administration site", verified = FALSE),
+    venous   = list(analyte = "cefquinome", units = "mg", specimen = "plasma", verified = FALSE),
+    arterial = list(analyte = "cefquinome", units = "mg", specimen = "plasma", verified = FALSE),
+    liver    = list(analyte = "cefquinome", units = "mg", specimen = "tissue", verified = FALSE),
+    kidney   = list(analyte = "cefquinome", units = "mg", specimen = "tissue", verified = FALSE),
+    muscle   = list(analyte = "cefquinome", units = "mg", specimen = "tissue", verified = FALSE),
+    other    = list(analyte = "cefquinome", units = "mg", specimen = "tissue", verified = FALSE),
+    vp_lung  = list(analyte = "cefquinome", units = "mg", specimen = "tissue", verified = FALSE),
+    is_lung  = list(analyte = "cefquinome", units = "mg", specimen = "tissue", verified = FALSE),
+    int_lung = list(analyte = "cefquinome", units = "mg", specimen = "tissue", verified = FALSE),
+    urine    = list(analyte = "cefquinome", units = "mg", specimen = "urine", verified = FALSE),
+    bile     = list(analyte = "cefquinome", units = "mg", specimen = "bile", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight",

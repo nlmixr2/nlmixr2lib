@@ -14,6 +14,19 @@ Svensson_2014_bedaquiline_lpvr <- function() {
   vignette <- "Svensson_2014_bedaquiline_arv"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot          = list(analyte = "bedaquiline", units = "mg", specimen = "administration site", verified = FALSE),
+    central        = list(analyte = "bedaquiline", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1    = list(analyte = "bedaquiline", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral2    = list(analyte = "bedaquiline", units = "mg", specimen = "plasma", verified = FALSE),
+    central_m2     = list(analyte = "N-desmethyl bedaquiline (M2)", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1_m2 = list(analyte = "N-desmethyl bedaquiline (M2)", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight (used for allometric scaling around 70 kg)",

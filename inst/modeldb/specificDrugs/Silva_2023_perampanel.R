@@ -8,6 +8,13 @@ Silva_2023_perampanel <- function() {
     concentration = "mg/L"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central = list(analyte = "perampanel", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     BMI = list(
       description        = "Body mass index at baseline",

@@ -87,6 +87,20 @@ Brekkan_2018_pegfilgrastim <- function() {
     notes          = "Study PG-01-003 (Dr. Reddy's Laboratories). 192 enrolled; 174 included after excluding 15 subjects with measurable baseline PG and ADA-positive occasions (Brekkan 2018 Results, Data). 445 dosing occasions analysed. The paper does not tabulate age or weight ranges; baseline demographics are referenced via Fig 1 and prose only."
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot      = list(analyte = "pegfilgrastim (PG)", units = "mg", specimen = "administration site", verified = FALSE),
+    central    = list(analyte = "pegfilgrastim (PG)", units = "mg", specimen = "plasma", verified = FALSE),
+    precursor1 = list(analyte = "neutrophils", units = "mg", specimen = "not applicable", verified = FALSE),
+    precursor2 = list(analyte = "neutrophils", units = "mg", specimen = "not applicable", verified = FALSE),
+    precursor3 = list(analyte = "neutrophils", units = "mg", specimen = "not applicable", verified = FALSE),
+    precursor4 = list(analyte = "neutrophils", units = "mg", specimen = "not applicable", verified = FALSE),
+    circ       = list(analyte = "neutrophils", units = "mg", specimen = "whole blood", verified = FALSE)
+  )
+
   ini({
     # -----------------------------------------------------------------
     # Structural PK -- Brekkan 2018 Table I (PKPD model parameter estimates).

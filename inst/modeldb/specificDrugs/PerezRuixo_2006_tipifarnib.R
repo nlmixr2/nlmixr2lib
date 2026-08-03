@@ -4,6 +4,16 @@ PerezRuixo_2006_tipifarnib <- function() {
   vignette    <- "PerezRuixo_2006_tipifarnib"
   units       <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "tipifarnib", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "tipifarnib", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "tipifarnib", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral2 = list(analyte = "tipifarnib", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight",

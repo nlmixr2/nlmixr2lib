@@ -18,6 +18,19 @@ Clewe_2015_rifampicin <- function() {
   vignette <- "Clewe_2015_rifampicin"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot    = list(analyte = "Rifampicin", units = "mg", specimen = "administration site", verified = FALSE),
+    transit1 = list(analyte = "Rifampicin", units = "mg", specimen = "administration site", verified = FALSE),
+    central  = list(analyte = "Rifampicin", units = "mg", specimen = "plasma", verified = FALSE),
+    enz_pool = list(analyte = "Rifampicin", units = "mg", specimen = "not applicable", verified = FALSE),
+    effect1  = list(analyte = "Rifampicin", units = "mg", specimen = "epithelial lining fluid", verified = FALSE),
+    effect2  = list(analyte = "Rifampicin", units = "mg", specimen = "tissue", verified = FALSE)
+  )
+
   covariateData <- list(
     FFM = list(
       description        = "Fat-free mass at baseline, time-fixed per subject.",

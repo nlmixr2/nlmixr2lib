@@ -11,6 +11,19 @@ Valitalo_2017_ketorolac <- function() {
   vignette <- "Valitalo_2017_ketorolac"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central_r_enant     = list(analyte = "R-ketorolac", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1_r_enant = list(analyte = "R-ketorolac", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral2_r_enant = list(analyte = "R-ketorolac", units = "mg", specimen = "plasma", verified = FALSE),
+    central_s_enant     = list(analyte = "S-ketorolac", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1_s_enant = list(analyte = "S-ketorolac", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral2_s_enant = list(analyte = "S-ketorolac", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight",

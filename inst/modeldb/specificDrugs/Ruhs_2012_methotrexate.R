@@ -9,6 +9,16 @@ Ruhs_2012_methotrexate <- function() {
     notes         = "Dose entered as MTX amount in mg into the central compartment. The observation Cc is reported in umol/L (uM) via the conversion (central/vc) * 1000 / MW_MTX (MW_MTX = 454.44 g/mol) so that EC50 and HCY remain in their published uM units."
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "methotrexate", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "methotrexate", units = "mg", specimen = "plasma", verified = FALSE),
+    effect      = list(analyte = "homocysteine", units = "mg", specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list(
     BSA = list(
       description        = "Body surface area",

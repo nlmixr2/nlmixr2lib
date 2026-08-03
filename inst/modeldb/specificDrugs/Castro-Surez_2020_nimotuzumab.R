@@ -4,6 +4,16 @@
   vignette <- "Castro-Surez_2020_nimotuzumab"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "nimotuzumab", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "nimotuzumab", units = "mg", specimen = "plasma", verified = FALSE),
+    effect      = list(analyte = "EGFR binding", units = "mg", specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list(
     DOSE = list(
       description        = "Subject's assigned single IV infusion dose level (50, 100, 200, or 400 mg in the original trial; vignette also extrapolates to 800 and 1200 mg)",

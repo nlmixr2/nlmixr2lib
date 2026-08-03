@@ -13,6 +13,13 @@ Wahlby_2004_pefloxacin <- function() {
   vignette <- "Wahlby_2004_time_varying_covariates"
   units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central = list(analyte = "pefloxacin", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     CRCL = list(
       description        = "Creatinine clearance, time-varying within an individual (raw mL/min, NOT BSA-normalized).",

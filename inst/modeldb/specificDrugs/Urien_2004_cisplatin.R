@@ -28,6 +28,16 @@ Urien_2004_cisplatin <- function() {
 
   units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "cisplatin (unbound)", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "cisplatin (unbound)", units = "mg", specimen = "plasma", verified = FALSE),
+    bound       = list(analyte = "cisplatin (protein-bound)", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     BSA = list(
       description        = "Body surface area",

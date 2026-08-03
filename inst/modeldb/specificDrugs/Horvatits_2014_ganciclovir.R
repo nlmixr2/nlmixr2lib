@@ -75,6 +75,14 @@ Horvatits_2014_ganciclovir <- function() {
     )
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "ganciclovir", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "ganciclovir", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   ini({
     # Structural PK -- Yang 2023 Table 3, Horvatits et al. (2014) row. No
     # covariates; these are the covariate-free typical values. Clearances in L/h,

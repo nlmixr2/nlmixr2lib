@@ -36,6 +36,17 @@ Karunajeewa_2009_sulfadoxine <- function() {
     concentration = "mg/L for sulfadoxine; mg/L for N-acetylsulfadoxine"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot          = list(analyte = "sulfadoxine", units = "mg", specimen = "administration site", verified = FALSE),
+    central        = list(analyte = "sulfadoxine", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1    = list(analyte = "sulfadoxine", units = "mg", specimen = "plasma", verified = FALSE),
+    central_nasdox = list(analyte = "N-acetylsulfadoxine", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Total body weight",

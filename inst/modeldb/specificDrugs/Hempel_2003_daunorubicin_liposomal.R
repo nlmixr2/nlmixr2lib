@@ -19,6 +19,13 @@ Hempel_2003_daunorubicin_liposomal <- function() {
   vignette <- "Hempel_2003_daunorubicin_liposomal"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central = list(analyte = "daunorubicin liposomal", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Total body weight at the time of the dose. Enters as a linear (proportional) scalar on both CL and V: CL_ind = theta_CL * WT and V_ind = theta_V * WT (i.e., allometric exponent fixed to 1, no reference-weight normalisation -- the published typical-value parameters are reported per kg).",

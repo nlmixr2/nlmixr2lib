@@ -26,6 +26,13 @@ Kleiber_2017_clonidine <- function() {
   vignette <- "Kleiber_2017_clonidine"
   units <- list(time = "h", dosing = "ug", concentration = "ng/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central = list(analyte = "clonidine", units = "ug", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight",

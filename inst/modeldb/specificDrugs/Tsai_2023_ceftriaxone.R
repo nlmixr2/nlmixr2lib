@@ -4,6 +4,16 @@ Tsai_2023_ceftriaxone <- function() {
   vignette <- "Tsai_2023_ceftriaxone"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "unbound ceftriaxone", units = "mg", specimen = "plasma", verified = FALSE),
+    complex     = list(analyte = "bound ceftriaxone", units = "mg", specimen = "serum", verified = FALSE),
+    peripheral1 = list(analyte = "ceftriaxone", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     TBILI = list(
       description        = "Total serum bilirubin concentration",

@@ -5,6 +5,17 @@ Matsumoto_2005_TF_505 <- function() {
   paper_specific_compartments <- c("dht")
   units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "TF-505", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "TF-505", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "TF-505", units = "mg", specimen = "plasma", verified = FALSE),
+    dht         = list(analyte = "DHT", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(

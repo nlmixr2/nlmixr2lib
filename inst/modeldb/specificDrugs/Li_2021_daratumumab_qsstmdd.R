@@ -4,6 +4,16 @@ Li_2021_daratumumab_qsstmdd <- function() {
   vignette <- "Li_2021_daratumumab_qsstmdd"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central      = list(analyte = "daratumumab", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1  = list(analyte = "daratumumab", units = "mg", specimen = "plasma", verified = FALSE),
+    total_target = list(analyte = "CD38", units = "mg", specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list()
 
   # Covariates that the PAGE 29 abstract names as statistically significant

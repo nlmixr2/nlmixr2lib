@@ -47,6 +47,27 @@ Miyano_2022_atopicDermatitis_qsp <- function() {
   # overrides at rxSolve() time via params = c(...); virtual-patient
   # heterogeneity is captured entirely by the 51 etas on the mechanistic
   # rate constants.
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    barrier   = list(analyte = "skin barrier integrity", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    pathogens = list(analyte = "infiltrated pathogens", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    th1       = list(analyte = "Th1 helper T-cells", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    th2       = list(analyte = "Th2 helper T-cells", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    th17      = list(analyte = "Th17 helper T-cells", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    th22      = list(analyte = "Th22 helper T-cells", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    il4       = list(analyte = "IL-4 cytokine", units = NA_character_, specimen = "serum", verified = FALSE),
+    il13      = list(analyte = "IL-13 cytokine", units = NA_character_, specimen = "serum", verified = FALSE),
+    il17      = list(analyte = "IL-17A cytokine", units = NA_character_, specimen = "serum", verified = FALSE),
+    il22      = list(analyte = "IL-22 cytokine", units = NA_character_, specimen = "serum", verified = FALSE),
+    il31      = list(analyte = "IL-31 cytokine", units = NA_character_, specimen = "serum", verified = FALSE),
+    ifng      = list(analyte = "IFN-gamma cytokine", units = NA_character_, specimen = "serum", verified = FALSE),
+    tslp      = list(analyte = "TSLP cytokine", units = NA_character_, specimen = "serum", verified = FALSE),
+    ox40l     = list(analyte = "OX40L cytokine", units = NA_character_, specimen = "serum", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(

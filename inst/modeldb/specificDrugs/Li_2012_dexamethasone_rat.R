@@ -23,6 +23,28 @@ Li_2012_dexamethasone_rat <- function() {
     "propSd_EA"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central       = list(analyte = "DEX", units = NA_character_, specimen = "plasma", verified = FALSE),
+    peripheral1   = list(analyte = "DEX", units = NA_character_, specimen = "plasma", verified = FALSE),
+    stim_cyp3a1_1 = list(analyte = "DEX-PXR", units = NA_character_, specimen = "administration site", verified = FALSE),
+    stim_cyp3a2_1 = list(analyte = "DEX-PXR", units = NA_character_, specimen = "administration site", verified = FALSE),
+    stim_cyp3a2_2 = list(analyte = "DEX-PXR", units = NA_character_, specimen = "administration site", verified = FALSE),
+    stim_cyp3a2_3 = list(analyte = "DEX-PXR", units = NA_character_, specimen = "administration site", verified = FALSE),
+    stim_cyp3a2_4 = list(analyte = "DEX-PXR", units = NA_character_, specimen = "administration site", verified = FALSE),
+    stim_cyp3a2_5 = list(analyte = "DEX-PXR", units = NA_character_, specimen = "administration site", verified = FALSE),
+    stim_cyp3a2_6 = list(analyte = "DEX-PXR", units = NA_character_, specimen = "administration site", verified = FALSE),
+    stim_cyp3a2_7 = list(analyte = "DEX-PXR", units = NA_character_, specimen = "administration site", verified = FALSE),
+    stim_cyp3a2_8 = list(analyte = "DEX-PXR", units = NA_character_, specimen = "administration site", verified = FALSE),
+    mrna_cyp3a1   = list(analyte = "CYP3A1 mRNA", units = NA_character_, specimen = "tissue", verified = FALSE),
+    mrna_cyp3a2   = list(analyte = "CYP3A2 mRNA", units = NA_character_, specimen = "tissue", verified = FALSE),
+    prot_cyp3a1   = list(analyte = "CYP3A1 protein", units = NA_character_, specimen = "tissue", verified = FALSE),
+    prot_cyp3a2   = list(analyte = "CYP3A2 protein", units = NA_character_, specimen = "tissue", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(

@@ -13,6 +13,13 @@ Zieck_2023_ceftazidime <- function() {
   vignette <- "Zieck_2023_ceftazidime"
   units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central = list(analyte = "ceftazidime", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     CRCL = list(
       description        = "CKD-EPI estimated glomerular filtration rate, BSA-normalized",

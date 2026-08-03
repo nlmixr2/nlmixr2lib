@@ -4,6 +4,13 @@ Faelens_2021_infliximab <- function() {
   vignette <- "Faelens_2021_infliximab"
   units <- list(time = "day", dosing = "mg", concentration = "mg/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central = list(analyte = "infliximab", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     SCORE_MAYO_E = list(
       description        = "Mayo endoscopic subscore at baseline (1, 2, or 3)",

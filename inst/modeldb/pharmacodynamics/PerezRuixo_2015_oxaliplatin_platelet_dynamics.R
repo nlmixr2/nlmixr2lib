@@ -20,6 +20,19 @@ PerezRuixo_2015_oxaliplatin_platelet_dynamics <- function() {
     concentration = "10^9 cells/L (observed circulating platelet count, PLT); oxaliplatin plasma concentration covariate CP_OXA_MGL in mg/L"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    prol     = list(analyte = "megakaryocyte progenitor", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    transit1 = list(analyte = "young platelet", units = NA_character_, specimen = "administration site", verified = FALSE),
+    transit2 = list(analyte = "young platelet", units = NA_character_, specimen = "administration site", verified = FALSE),
+    transit3 = list(analyte = "young platelet", units = NA_character_, specimen = "administration site", verified = FALSE),
+    transit4 = list(analyte = "young platelet", units = NA_character_, specimen = "administration site", verified = FALSE),
+    transit5 = list(analyte = "young platelet", units = NA_character_, specimen = "administration site", verified = FALSE)
+  )
+
   covariateData <- list(
     CP_OXA_MGL = list(
       description        = "Oxaliplatin plasma concentration driving the platelet-dynamics drug effect E_drug = alpha * CP_OXA_MGL^beta on megakaryocyte-progenitor proliferation. Time-varying within subject.",

@@ -56,6 +56,17 @@ Dodds_2021_covid19_viralkinetic <- function() {
     concentration = "virus copies/mL; target/eclipse/infected cells #/mL"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    target   = list(analyte = "uninfected epithelial target cells", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    eclipse  = list(analyte = "latently (eclipse) infected cells", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    infected = list(analyte = "productively infected cells", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    virus    = list(analyte = "free virions", units = NA_character_, specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(

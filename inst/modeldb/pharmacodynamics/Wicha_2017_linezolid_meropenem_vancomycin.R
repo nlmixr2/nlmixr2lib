@@ -12,6 +12,23 @@ Wicha_2017_linezolid_meropenem_vancomycin <- function() {
   # Wicha 2017 Methods: LZD 0.5-32 mg/L, MER 0.015-8 mg/L, VAN 0.06-16 mg/L.
   # MER and VAN decay first-order in the growth medium (kdeg fixed from HPLC
   # measurements); LZD is chemically stable.
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Decoded from this model's systematic state-naming
+  # scheme; units are not derivable from its units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    lzd       = list(analyte = "linezolid", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    mer       = list(analyte = "meropenem", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    van       = list(analyte = "vancomycin", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    aroff_mer = list(analyte = "adaptive-resistance OFF subpopulation (meropenem)", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    aron_mer  = list(analyte = "adaptive-resistance ON subpopulation (meropenem)", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    aroff_van = list(analyte = "adaptive-resistance OFF subpopulation (vancomycin)", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    aron_van  = list(analyte = "adaptive-resistance ON subpopulation (vancomycin)", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    gro       = list(analyte = "growing bacteria", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    repl      = list(analyte = "replicating bacteria", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    pers      = list(analyte = "persister bacteria", units = NA_character_, specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(

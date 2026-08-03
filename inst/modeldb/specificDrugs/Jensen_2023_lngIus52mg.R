@@ -38,6 +38,18 @@ Jensen_2023_lngIus52mg <- function() {
     concentration = "ng/L (total LNG in plasma; also derived unbound LNG in ng/L) and nmol/L (SHBG in serum)"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "LNG", units = NA_character_, specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "unbound LNG", units = NA_character_, specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "unbound LNG", units = NA_character_, specimen = "plasma", verified = FALSE),
+    effect      = list(analyte = "LNG", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    shbg        = list(analyte = "SHBG", units = NA_character_, specimen = "serum", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight (kg). Continuous covariate on apparent clearance of LNG and on SHBG baseline via power-law scaling.",

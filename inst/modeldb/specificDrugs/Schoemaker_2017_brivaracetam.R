@@ -4,6 +4,14 @@ Schoemaker_2017_brivaracetam <- function() {
   vignette    <- "Schoemaker_2017_brivaracetam"
   units       <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "brivaracetam", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "brivaracetam", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     LBM = list(
       description        = "Lean body weight (paper notation LBW), calculated from total body weight and body mass index per Janmahasatian et al.",

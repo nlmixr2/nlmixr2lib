@@ -4,6 +4,14 @@ Conil_2007_ceftazidime <- function() {
   vignette <- "Conil_2007_ceftazidime"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "ceftazidime", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "ceftazidime", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     SEXF = list(
       description        = "Biological sex indicator, 1 = female, 0 = male",

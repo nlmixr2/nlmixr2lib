@@ -11,6 +11,17 @@ Abduljalil_2009_clarithromycin <- function() {
   vignette <- "Abduljalil_2009_clarithromycin"
   units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot         = list(analyte = "clarithromycin", units = "mg", specimen = "administration site", verified = FALSE),
+    central       = list(analyte = "clarithromycin", units = "mg", specimen = "plasma", verified = FALSE),
+    effect        = list(analyte = "clarithromycin", units = "mg", specimen = "not applicable", verified = FALSE),
+    central_ohcla = list(analyte = "14-OH-clarithromycin", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight; allometrically scales CL and V for parent and metabolite",

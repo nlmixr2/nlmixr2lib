@@ -21,6 +21,17 @@ Lignet_2023_m8891_mouse <- function() {
   # Ce (Lignet 2023 Eq. 5 / Fig. 1).
   paper_specific_compartments <- c("metef1a")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "M8891", units = NA_character_, specimen = "administration site", verified = FALSE),
+    central = list(analyte = "M8891", units = NA_character_, specimen = "plasma", verified = FALSE),
+    effect  = list(analyte = "Met-EF1a", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    metef1a = list(analyte = "Met-EF1a", units = NA_character_, specimen = "tumor", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(

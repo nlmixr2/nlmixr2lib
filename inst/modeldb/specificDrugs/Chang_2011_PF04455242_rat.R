@@ -13,6 +13,17 @@ Chang_2011_PF04455242_rat <- function() {
 
   units <- list(time = "h", dosing = "mg/kg", concentration = "ng/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot               = list(analyte = "PF-04455242", units = NA_character_, specimen = "administration site", verified = FALSE),
+    central             = list(analyte = "PF-04455242", units = NA_character_, specimen = "plasma", verified = FALSE),
+    depot_spiradoline   = list(analyte = "spiradoline", units = NA_character_, specimen = "administration site", verified = FALSE),
+    central_spiradoline = list(analyte = "spiradoline", units = NA_character_, specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     DOSE = list(
       description        = "Per-subject assigned PF-04455242 SC dose level (mg/kg). Used as a threshold-based switch for the dose-dependent PF-04455242 absorption rate constant: DOSE > 5 mg/kg selects the high-dose Ka (0.385 /h), DOSE <= 5 selects the low-dose Ka (1.64 /h). Spiradoline dose level does NOT enter this switch (spiradoline has its own depot/central compartments and a single dose-independent Ka).",

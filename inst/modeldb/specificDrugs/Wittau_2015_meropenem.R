@@ -13,6 +13,14 @@ Wittau_2015_meropenem <- function() {
   vignette <- "Wittau_2015_meropenem"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "meropenem", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "meropenem", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     FFM = list(
       description        = "Fat-free mass; derived from total body weight, height, and sex via the Janmahasatian et al. (2005) formula. Used for allometric scaling on CL, CLd, V1, and V2 with reference FFM = 53 kg.",

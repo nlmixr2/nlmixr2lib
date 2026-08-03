@@ -18,6 +18,14 @@ Chen_2023_tilmicosin <- function() {
   depends <- c("AUC_TILM")
   paper_specific_compartments <- c("bact")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    bact = list(analyte = "Pasteurella multocida serovar D:7", units = NA_character_, specimen = "tissue", verified = FALSE)
+  )
+
   covariateData <- list(
     AUC_TILM = list(
       description        = "Tilmicosin area under the tissue-cage-fluid concentration-time curve over the current 24 h dosing interval",

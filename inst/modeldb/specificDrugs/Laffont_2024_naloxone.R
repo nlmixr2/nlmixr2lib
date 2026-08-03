@@ -4,6 +4,15 @@ Laffont_2024_naloxone <- function() {
   vignette <- "Laffont_2024_naloxone"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "naloxone", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "naloxone", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "naloxone", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     # Laffont 2024 Table 2 reports no statistically significant covariates retained
     # in the IN naloxone final model (in particular, body weight is not on CL/F).

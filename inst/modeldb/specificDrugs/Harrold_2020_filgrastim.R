@@ -21,6 +21,23 @@ Harrold_2020_filgrastim <- function() {
     notes         = "Filgrastim dose in nmol to compartment 'depot' (1 ug = 1e-6/18800 mol = 53.2 pmol for filgrastim; molecular weight 18.8 kDa). Radiation dose in Gy delivered as a bolus to compartment 'depot_kpd'. Filgrastim concentration Cc reported in nM. ANC reported in cells/uL (= 10^9 cells/L when divided by 1000)."
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot      = list(analyte = "filgrastim", units = "nmol", specimen = "administration site", verified = FALSE),
+    central    = list(analyte = "filgrastim", units = "nmol", specimen = "plasma", verified = FALSE),
+    precursor1 = list(analyte = "neutrophils", units = "nmol", specimen = "not applicable", verified = FALSE),
+    precursor2 = list(analyte = "neutrophils", units = "nmol", specimen = "not applicable", verified = FALSE),
+    precursor3 = list(analyte = "neutrophils", units = "nmol", specimen = "not applicable", verified = FALSE),
+    precursor4 = list(analyte = "neutrophils", units = "nmol", specimen = "not applicable", verified = FALSE),
+    circ       = list(analyte = "neutrophils", units = "nmol", specimen = "whole blood", verified = FALSE),
+    depot_kpd  = list(analyte = "filgrastim", units = "nmol", specimen = "administration site", verified = FALSE),
+    effect     = list(analyte = "G-CSF receptor pool", units = "nmol", specimen = "not applicable", verified = FALSE),
+    cumhaz_os  = list(analyte = "overall survival", units = "nmol", specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight",

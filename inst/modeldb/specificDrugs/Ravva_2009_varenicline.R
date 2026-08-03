@@ -4,6 +4,15 @@ Ravva_2009_varenicline <- function() {
   vignette <- "Ravva_2009_varenicline"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "varenicline", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "varenicline", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "varenicline", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     CRCL = list(
       description        = "Estimated creatinine clearance by the Cockcroft-Gault formula (raw, NOT BSA-normalized)",

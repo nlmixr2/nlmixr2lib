@@ -4,6 +4,16 @@ Le_2015_lampalizumab <- function() {
   vignette <- "Le_2015_lampalizumab"
   units <- list(time = "day", dosing = "mg", concentration = "mg/L (equivalent to ug/mL) for lampalizumab and total CFD")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot        = list(analyte = "lampalizumab", units = "mg", specimen = "administration site", verified = FALSE),
+    total_target = list(analyte = "complement factor D (CFD)", units = "mg", specimen = "vitreous", verified = FALSE),
+    central      = list(analyte = "lampalizumab", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     AGE = list(
       description        = "Subject age",

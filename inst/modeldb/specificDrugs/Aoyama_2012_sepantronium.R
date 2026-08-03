@@ -4,6 +4,13 @@ Aoyama_2012_sepantronium <- function() {
   vignette <- "Aoyama_2012_sepantronium"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central = list(analyte = "sepantronium", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     CRCL = list(
       description        = "Cockcroft-Gault creatinine clearance (raw, not BSA-normalized)",

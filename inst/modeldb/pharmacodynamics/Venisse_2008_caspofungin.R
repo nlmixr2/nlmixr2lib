@@ -16,6 +16,15 @@ Venisse_2008_caspofungin <- function() {
 
   paper_specific_compartments <- c("candida")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central = list(analyte = "caspofungin", units = "mg", specimen = "plasma", verified = FALSE),
+    candida = list(analyte = "Candida albicans", units = "mg", specimen = "bronchoalveolar lavage", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(

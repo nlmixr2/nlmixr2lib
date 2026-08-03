@@ -12,6 +12,18 @@ Han_2015_sibutramine <- function() {
   vignette <- "Han_2015_sibutramine"
   units <- list(time = "day", dosing = "mg", concentration = "ng/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "sibutramine", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "M1", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "M1", units = "mg", specimen = "plasma", verified = FALSE),
+    central_m2  = list(analyte = "M2", units = "mg", specimen = "plasma", verified = FALSE),
+    bw          = list(analyte = "weight", units = "mg", specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list(
     AGE = list(
       description        = "Subject age",

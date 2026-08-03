@@ -23,6 +23,18 @@ Canini_2018_setrobuvir <- function() {
     concentration = "mg/L"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "setrobuvir", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "setrobuvir", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "setrobuvir", units = "mg", specimen = "plasma", verified = FALSE),
+    infected    = list(analyte = "HCV-infected cells", units = "mg", specimen = "not applicable", verified = FALSE),
+    virus       = list(analyte = "free HCV virus", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     HCV_GT1B = list(
       description        = "HCV genotype-1 subtype indicator. 1 = patient infected with HCV genotype 1B; 0 = patient infected with HCV genotype 1A (the source-paper reference subtype).",

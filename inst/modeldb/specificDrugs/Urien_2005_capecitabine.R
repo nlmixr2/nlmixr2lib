@@ -27,6 +27,18 @@ Urien_2005_capecitabine <- function() {
     concentration = "umol/L"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot        = list(analyte = "capecitabine", units = "umol", specimen = "administration site", verified = FALSE),
+    central      = list(analyte = "capecitabine", units = "umol", specimen = "plasma", verified = FALSE),
+    central_dfcr = list(analyte = "5'-DFCR", units = "umol", specimen = "plasma", verified = FALSE),
+    central_dfur = list(analyte = "5'-DFUR", units = "umol", specimen = "plasma", verified = FALSE),
+    central_5fu  = list(analyte = "5-FU", units = "umol", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     TBILI = list(
       description        = "Total serum bilirubin concentration (baseline; constant within an individual in the source dataset).",

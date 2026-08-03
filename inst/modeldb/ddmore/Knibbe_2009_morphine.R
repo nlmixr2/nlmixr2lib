@@ -26,6 +26,17 @@ Knibbe_2009_morphine <- function() {
     concentration = "ng/mL"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "morphine", units = "ug", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "morphine", units = "ug", specimen = "plasma", verified = FALSE),
+    central_m3g = list(analyte = "M3G", units = "ug", specimen = "plasma", verified = FALSE),
+    central_m6g = list(analyte = "M6G", units = "ug", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight, time-varying",

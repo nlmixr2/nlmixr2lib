@@ -9,6 +9,13 @@ Bellanti_2015_deferoxamine <- function() {
     concentration = "ug/L"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central = list(analyte = "deferoxamine", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     CSS_DFO = list(
       description = "Average steady-state plasma deferoxamine concentration driving the chelation effect on ferritin degradation",

@@ -28,6 +28,17 @@ Yamazaki_2008_crizotinib_mouse <- function() {
   vignette <- "Yamazaki_2008_crizotinib_mouse"
   units <- list(time = "h", dosing = "mg/kg", concentration = "ng/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot     = list(analyte = "crizotinib", units = NA_character_, specimen = "administration site", verified = FALSE),
+    central   = list(analyte = "crizotinib", units = NA_character_, specimen = "plasma", verified = FALSE),
+    effect    = list(analyte = "cMet phosphorylation", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    tumor_vol = list(analyte = "tumour size", units = NA_character_, specimen = "tumor", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(

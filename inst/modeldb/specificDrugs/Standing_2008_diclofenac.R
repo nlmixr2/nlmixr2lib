@@ -10,6 +10,15 @@ Standing_2008_diclofenac <- function() {
   vignette <- "Standing_2008_diclofenac"
   units <- list(time = "h", dosing = "nmol", concentration = "nmol/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot1  = list(analyte = "diclofenac", units = "nmol", specimen = "administration site", verified = FALSE),
+    depot2  = list(analyte = "diclofenac", units = "nmol", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "diclofenac", units = "nmol", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight",

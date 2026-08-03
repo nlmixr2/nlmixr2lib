@@ -4,6 +4,14 @@ Wright_2016_allopurinol <- function() {
   vignette    <- "Wright_2016_allopurinol"
   units       <- list(time = "h", dosing = "mg", concentration = "umol/L (oxypurinol Cc); mmol/L (urate Eurate)")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "allopurinol", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "allopurinol", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     FFM = list(
       description        = "Fat-free mass derived from total body weight, height, and sex by the Janmahasatian 2005 semi-mechanistic formula.",

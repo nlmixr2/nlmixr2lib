@@ -8,6 +8,18 @@ Sampson_2014_azithromycin <- function() {
     concentration = "mg/L"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "azithromycin", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "azithromycin", units = "mg", specimen = "plasma", verified = FALSE),
+    pbmc        = list(analyte = "azithromycin", units = "mg", specimen = "blood cell", verified = FALSE),
+    pmn         = list(analyte = "azithromycin", units = "mg", specimen = "blood cell", verified = FALSE),
+    peripheral1 = list(analyte = "azithromycin", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(

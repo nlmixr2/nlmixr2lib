@@ -4,6 +4,14 @@ Wi_2017_teicoplanin <- function() {
   vignette    <- "Wi_2017_teicoplanin"
   units       <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "teicoplanin", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "teicoplanin", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     ECMO_STATUS = list(
       description        = "Within-subject binary indicator for active venoarterial extracorporeal membrane oxygenation (VA-ECMO) cardiopulmonary support during the modeled record",

@@ -4,6 +4,17 @@ Yang_2016_dilmapimod <- function() {
   vignette    <- "Yang_2016_dilmapimod"
   units       <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "dilmapimod", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "dilmapimod", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral2 = list(analyte = "dilmapimod", units = "mg", specimen = "plasma", verified = FALSE),
+    crp         = list(analyte = "CRP", units = "mg", specimen = "serum", verified = FALSE)
+  )
+
   covariateData <- list(
     BMI = list(
       description        = "Body mass index at baseline.",

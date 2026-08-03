@@ -26,6 +26,17 @@ Blesch_2003_capecitabine <- function() {
     concentration = "ug/mL"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot        = list(analyte = "capecitabine", units = "mg", specimen = "administration site", verified = FALSE),
+    central_dfur = list(analyte = "5'-DFUR", units = "mg", specimen = "plasma", verified = FALSE),
+    central_5fu  = list(analyte = "5-FU", units = "mg", specimen = "plasma", verified = FALSE),
+    central_fbal = list(analyte = "FBAL", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     ALP = list(
       description        = "Baseline serum alkaline phosphatase activity, multiplicative power covariate on apparent 5-FU clearance CL2/F. The source paper does not state the reference value used for centering; this model file uses 100 U/L as a clinically reasonable median for an advanced-colorectal-cancer cohort, applied as (ALP / 100)^e_alp_cl_5fu. Document the chosen reference in vignette Errata; effect coefficient -0.169 is paper-derived (Table 1).",

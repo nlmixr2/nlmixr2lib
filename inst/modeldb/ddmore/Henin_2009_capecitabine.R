@@ -23,6 +23,13 @@ Henin_2009_capecitabine <- function() {
     # Assumptions and deviations section.
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central = list(analyte = "capecitabine", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     CRCL = list(
       description        = "Baseline creatinine clearance (Cockcroft-Gault), not BSA-normalized",

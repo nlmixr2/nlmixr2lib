@@ -4,6 +4,20 @@ Han_2018_methionineMetabolismCycle <- function() {
   vignette    <- "Han_2018_methionineMetabolismCycle"
   units       <- list(time = "h", dosing = "mmol/kg", concentration = "mmol/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    met    = list(analyte = "methionine", units = NA_character_, specimen = "plasma", verified = FALSE),
+    methep = list(analyte = "methionine", units = NA_character_, specimen = "lymph", verified = FALSE),
+    sam    = list(analyte = "S-adenosylmethionine", units = NA_character_, specimen = "tissue", verified = FALSE),
+    sah    = list(analyte = "S-adenosylhomocysteine", units = NA_character_, specimen = "tissue", verified = FALSE),
+    hcyhep = list(analyte = "homocysteine", units = NA_character_, specimen = "lymph", verified = FALSE),
+    cys    = list(analyte = "cysteine", units = NA_character_, specimen = "plasma", verified = FALSE),
+    hcy    = list(analyte = "homocysteine", units = NA_character_, specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     DIS_DIAB = list(
       description        = "Type-2 diabetes mellitus indicator: 1 = Zucker Diabetic Fatty (ZDF/Gmi fa/fa) rat as DIS_DIAB model; 0 = non-diabetic control (ZDF/Gmi fa/?).",

@@ -11,6 +11,18 @@ Kim_2016_udenafil <- function() {
   vignette    <- "Kim_2016_udenafil"
   units       <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot              = list(analyte = "udenafil", units = "mg", specimen = "administration site", verified = FALSE),
+    central            = list(analyte = "udenafil", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1        = list(analyte = "udenafil", units = "mg", specimen = "plasma", verified = FALSE),
+    central_da8164     = list(analyte = "DA-8164", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1_da8164 = list(analyte = "DA-8164", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     INR_BASE = list(
       description        = "Pre-dose prothrombin time expressed as the international normalised ratio (INR). Continuous, dimensionless, measured once per subject before the single 100 mg oral udenafil dose. The Kim 2016 paper labels this column 'PT' throughout but its Methods (Covariate selection and model evaluation paragraph) explicitly state 'prothrombin time and were expressed as international normalized ratio (PT)'.",

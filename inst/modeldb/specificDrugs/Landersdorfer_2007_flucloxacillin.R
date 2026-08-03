@@ -35,6 +35,16 @@ Landersdorfer_2007_flucloxacillin <- function() {
   vignette <- "Landersdorfer_2007_flucloxacillin"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "flucloxacillin", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "flucloxacillin", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral2 = list(analyte = "flucloxacillin", units = "mg", specimen = "plasma", verified = FALSE),
+    urine       = list(analyte = "flucloxacillin", units = "mg", specimen = "urine", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(

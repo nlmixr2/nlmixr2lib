@@ -47,6 +47,20 @@ Kleijn_2011_sugammadex_rocuronium <- function() {
     concentration = "umol/L"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central             = list(analyte = "sugammadex", units = "umol", specimen = "plasma", verified = FALSE),
+    peripheral1         = list(analyte = "sugammadex", units = "umol", specimen = "plasma", verified = FALSE),
+    central_roc         = list(analyte = "rocuronium", units = "umol", specimen = "plasma", verified = FALSE),
+    peripheral1_roc     = list(analyte = "rocuronium", units = "umol", specimen = "plasma", verified = FALSE),
+    central_complex     = list(analyte = "sugammadex-rocuronium complex", units = "umol", specimen = "plasma", verified = FALSE),
+    peripheral1_complex = list(analyte = "sugammadex-rocuronium complex", units = "umol", specimen = "plasma", verified = FALSE),
+    effect_roc          = list(analyte = "neuromuscular blockade effect", units = "umol", specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Total body weight",

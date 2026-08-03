@@ -4,6 +4,14 @@ Chatelut_1999_interferon_alfa_2b <- function() {
   vignette <- "Chatelut_1999_interferon_alfa_2b"
   units <- list(time = "h", dosing = "ng", concentration = "pg/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "interferon alfa 2b", units = "ng", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "interferon alfa 2b", units = "ng", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     RRT_HEMODIAL_STATUS = list(
       description        = "Chronic intermittent haemodialysis treatment-status indicator (1 = chronic haemodialysis patient; 0 = patient with normal renal function).",

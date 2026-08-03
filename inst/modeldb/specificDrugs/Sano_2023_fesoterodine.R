@@ -4,6 +4,14 @@ Sano_2023_fesoterodine <- function() {
   vignette <- "Sano_2023_fesoterodine"
   units <- list(time = "h", dosing = "ug", concentration = "ng/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "fesoterodine", units = "ug", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "fesoterodine", units = "ug", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Baseline total body weight",

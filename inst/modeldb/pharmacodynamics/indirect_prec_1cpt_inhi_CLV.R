@@ -2,6 +2,17 @@ indirect_prec_1cpt_inhi_CLV  <- function() {
   description <- "One compartment precursor-dependent indirect response model with inhibition of drug response. Parameterized with clearance and volume. (effect)."
   reference <- "nlmixr2lib template"
   units <- list(time = "time_unit", dosing = "dose_unit", concentration = "conc_unit/vol_unit")
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot      = list(analyte = "drug", units = NA_character_, specimen = "administration site", verified = FALSE),
+    central    = list(analyte = "drug", units = NA_character_, specimen = "plasma", verified = FALSE),
+    precursor1 = list(analyte = "precursor", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    effect     = list(analyte = "effect", units = NA_character_, specimen = "not applicable", verified = FALSE)
+  )
+
   ini({
     lka  <- 0.45 ; label("Absorption rate (Ka)")
     lvc <- 3.45  ; label("Central volume of distribution (Vc)")

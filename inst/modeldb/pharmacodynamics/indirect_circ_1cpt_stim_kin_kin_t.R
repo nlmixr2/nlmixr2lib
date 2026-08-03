@@ -3,6 +3,16 @@ indirect_circ_1cpt_stim_kin_kin_t <- function() {
   depends <- c("vc", "ic50")
   reference <- "nlmixr2lib template"
   units <- list(time = "time_unit", dosing = "dose_unit", concentration = "conc_unit/vol_unit")
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "drug", units = NA_character_, specimen = "administration site", verified = FALSE),
+    central = list(analyte = "drug", units = NA_character_, specimen = "plasma", verified = FALSE),
+    effect  = list(analyte = "stimulated kin and circadian kin_t", units = NA_character_, specimen = "not applicable", verified = FALSE)
+  )
+
   ini({
     lka  <- 0.45 ; label("Absorption rate (Ka)")
     lkel <- 0.534; label("elimination rate (1/d)")

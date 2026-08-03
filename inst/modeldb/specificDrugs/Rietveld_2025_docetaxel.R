@@ -59,6 +59,20 @@ Rietveld_2025_docetaxel <- function() {
 
   paper_specific_etas <- c("etalk_release_1")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    entrapped            = list(analyte = "DTX", units = "mg", specimen = "administration site", verified = FALSE),
+    peripheral_entrapped = list(analyte = "DTX", units = "mg", specimen = "administration site", verified = FALSE),
+    central              = list(analyte = "DTX", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1          = list(analyte = "DTX", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral2          = list(analyte = "DTX", units = "mg", specimen = "plasma", verified = FALSE),
+    tumor_entrapped      = list(analyte = "DTX", units = "mg", specimen = "tumor", verified = FALSE),
+    tumor_released       = list(analyte = "DTX", units = "mg", specimen = "tumor", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(

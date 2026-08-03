@@ -26,6 +26,15 @@ Honda_2005_carvedilol <- function() {
   vignette <- "Honda_2005_carvedilol"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central_r = list(analyte = "R-enantiomer of carvedilol", units = "mg", specimen = "plasma", verified = FALSE),
+    central_s = list(analyte = "S-enantiomer of carvedilol", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight at baseline.",

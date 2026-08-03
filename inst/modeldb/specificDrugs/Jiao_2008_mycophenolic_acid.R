@@ -12,6 +12,18 @@ Jiao_2008_mycophenolic_acid <- function() {
   vignette <- "Jiao_2008_mycophenolic_acid"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot            = list(analyte = "mycophenolate mofetil (MMF)", units = "mg", specimen = "administration site", verified = FALSE),
+    central          = list(analyte = "mycophenolic acid (MPA)", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1      = list(analyte = "mycophenolic acid (MPA)", units = "mg", specimen = "plasma", verified = FALSE),
+    central_mpag     = list(analyte = "7-O-glucuronide metabolite (MPAG)", units = "mg", specimen = "plasma", verified = FALSE),
+    gallbladder_mpag = list(analyte = "7-O-glucuronide metabolite (MPAG)", units = "mg", specimen = "bile", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Total body weight (kg).",

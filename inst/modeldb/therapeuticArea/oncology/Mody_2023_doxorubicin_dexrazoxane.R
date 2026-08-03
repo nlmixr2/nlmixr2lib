@@ -17,6 +17,22 @@ Mody_2023_doxorubicin_dexrazoxane <- function() {
     concentration = "mg/L (plasma, both drugs); uM (TD driver, derived); % (cell viability, TD readout)"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central         = list(analyte = "doxorubicin", units = NA_character_, specimen = "plasma", verified = FALSE),
+    peripheral1     = list(analyte = "doxorubicin", units = NA_character_, specimen = "plasma", verified = FALSE),
+    peripheral2     = list(analyte = "doxorubicin", units = NA_character_, specimen = "plasma", verified = FALSE),
+    central_dex     = list(analyte = "dexrazoxane", units = NA_character_, specimen = "plasma", verified = FALSE),
+    peripheral1_dex = list(analyte = "dexrazoxane", units = NA_character_, specimen = "plasma", verified = FALSE),
+    transit1        = list(analyte = "doxorubicin", units = NA_character_, specimen = "administration site", verified = FALSE),
+    transit2        = list(analyte = "doxorubicin", units = NA_character_, specimen = "administration site", verified = FALSE),
+    transit3        = list(analyte = "doxorubicin", units = NA_character_, specimen = "administration site", verified = FALSE),
+    viability       = list(analyte = "cell viability", units = NA_character_, specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list()
 
   # AC16 % cell viability is a proliferating-cell pool endpoint that does

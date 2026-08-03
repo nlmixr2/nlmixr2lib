@@ -8,6 +8,15 @@ Kroemer_2024_ceftazidime_avibactam_fosfomycin_tkc <- function() {
   # Neither maps onto a canonical PK compartment name.
   paper_specific_compartments <- c("bact_susceptible", "bact_resistant")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    bact_susceptible = list(analyte = "Escherichia coli (susceptible bacteria)", units = NA_character_, specimen = "bile", verified = FALSE),
+    bact_resistant   = list(analyte = "Escherichia coli (resistant bacteria)", units = NA_character_, specimen = "bile", verified = FALSE)
+  )
+
   covariateData <- list(
     CONC_CAZ_MGL = list(
       description = "Static (time-invariant) ceftazidime concentration in the time-kill tube. Drives the sigmoidal Emax kill of both bacterial subpopulations and, as perpetrator, the GPDI shift of the fosfomycin EC50 on the resistant subpopulation.",

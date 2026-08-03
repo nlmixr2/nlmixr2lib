@@ -59,6 +59,24 @@ Bosch_2024_glp1ra_bodyweight <- function() {
     concentration = "pmol/L"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    fat          = list(analyte = "triglycerides", units = "pmol", specimen = "administration site", verified = FALSE),
+    prot         = list(analyte = "protein", units = "pmol", specimen = "administration site", verified = FALSE),
+    carb         = list(analyte = "carbohydrates", units = "pmol", specimen = "administration site", verified = FALSE),
+    decw         = list(analyte = "water", units = "pmol", specimen = "administration site", verified = FALSE),
+    bwecw        = list(analyte = "water", units = "pmol", specimen = "administration site", verified = FALSE),
+    lipol_diet   = list(analyte = "triglycerides", units = "pmol", specimen = "administration site", verified = FALSE),
+    therm        = list(analyte = "energy", units = "pmol", specimen = "administration site", verified = FALSE),
+    depot_lira   = list(analyte = "liraglutide", units = "pmol", specimen = "administration site", verified = FALSE),
+    central_lira = list(analyte = "liraglutide", units = "pmol", specimen = "plasma", verified = FALSE),
+    depot_sema   = list(analyte = "semaglutide", units = "pmol", specimen = "administration site", verified = FALSE),
+    central_sema = list(analyte = "semaglutide", units = "pmol", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Baseline body weight at study entry; sets the steady-state energy balance and the allometric scaling of liraglutide and semaglutide PK.",

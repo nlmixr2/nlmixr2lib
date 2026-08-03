@@ -48,6 +48,16 @@ Bauer_2023_vwfFviii_humateP <- function() {
     concentration = "IU/dL (VWF:RCo activity; FVIII:C activity)"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "von Willebrand factor:ristocetin cofactor activity", units = NA_character_, specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "von Willebrand factor:ristocetin cofactor activity", units = NA_character_, specimen = "plasma", verified = FALSE),
+    fviii       = list(analyte = "factor VIII activity", units = NA_character_, specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight.",

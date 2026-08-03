@@ -18,6 +18,15 @@ Lindauer_2017_lacosamide_seizure <- function() {
     concentration = "probability (the model outputs `sur_1st` and `sur_2nd` are survival probabilities, not drug concentrations)"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    cumhaz_1st = list(analyte = "Hazard of first seizure", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    cumhaz_2nd = list(analyte = "Hazard of second and subsequent seizures", units = NA_character_, specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list(
     AGE = list(
       description        = "Subject age at enrolment (years).",

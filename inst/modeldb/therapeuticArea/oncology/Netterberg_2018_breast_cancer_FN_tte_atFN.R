@@ -18,6 +18,16 @@ Netterberg_2018_breast_cancer_FN_tte_atFN <- function() {
     concentration = "IL-6 in pg/mL; CRP in mg/L; `sur` is a survival probability"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    il6    = list(analyte = "IL-6", units = NA_character_, specimen = "plasma", verified = FALSE),
+    crp    = list(analyte = "CRP", units = NA_character_, specimen = "serum", verified = FALSE),
+    cumhaz = list(analyte = "hazard", units = NA_character_, specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list(
     MIX_ELEV_IL6 = list(
       description = "Binary cycle-level indicator: 1 = elevated IL-6 production surge active in this cycle; 0 = no elevated IL-6 production. Time-fixed within the cycle.",

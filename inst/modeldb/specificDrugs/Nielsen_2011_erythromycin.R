@@ -13,6 +13,17 @@ Nielsen_2011_erythromycin <- function() {
 
   paper_specific_compartments <- c("bact_sensitive", "bact_resting")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central        = list(analyte = "erythromycin", units = NA_character_, specimen = "plasma", verified = FALSE),
+    effect         = list(analyte = "erythromycin", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    bact_sensitive = list(analyte = "Streptococcus pyogenes M12 NCTC P1800 (sensitive)", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    bact_resting   = list(analyte = "Streptococcus pyogenes M12 NCTC P1800 (resistant)", units = NA_character_, specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(

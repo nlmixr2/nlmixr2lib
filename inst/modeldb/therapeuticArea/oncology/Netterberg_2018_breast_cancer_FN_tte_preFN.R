@@ -18,6 +18,17 @@ Netterberg_2018_breast_cancer_FN_tte_preFN <- function() {
     concentration = "IL-6 in pg/mL; CRP in mg/L; `sur` is a survival probability"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    il6    = list(analyte = "IL-6", units = NA_character_, specimen = "plasma", verified = FALSE),
+    crp    = list(analyte = "CRP", units = NA_character_, specimen = "plasma", verified = FALSE),
+    effect = list(analyte = "None", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    cumhaz = list(analyte = "None", units = NA_character_, specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list(
     NEUT = list(
       description = "Cycle-specific absolute neutrophil count (ANC) baseline as estimated by the upstream Friberg / Netterberg myelosuppression model (Netterberg 2018 reference [18]).",

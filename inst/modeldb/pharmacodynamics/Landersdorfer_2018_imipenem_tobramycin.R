@@ -19,6 +19,19 @@ Landersdorfer_2018_imipenem_tobramycin <- function() {
   # below for provenance).
   depends <- c("Cipm", "Ctob")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    bact_susceptible_susceptible1 = list(analyte = "Acinetobacter baumannii (susceptible to imipenem and tobramycin)", units = NA_character_, specimen = "administration site", verified = FALSE),
+    bact_susceptible_susceptible2 = list(analyte = "Acinetobacter baumannii (susceptible to imipenem and tobramycin)", units = NA_character_, specimen = "administration site", verified = FALSE),
+    bact_resistant_intermediate1  = list(analyte = "Acinetobacter baumannii (resistant to imipenem, intermediate to tobram", units = NA_character_, specimen = "administration site", verified = FALSE),
+    bact_resistant_intermediate2  = list(analyte = "Acinetobacter baumannii (resistant to imipenem, intermediate to tobram", units = NA_character_, specimen = "administration site", verified = FALSE),
+    bact_intermediate_resistant1  = list(analyte = "Acinetobacter baumannii (intermediate to imipenem, resistant to tobram", units = NA_character_, specimen = "administration site", verified = FALSE),
+    bact_intermediate_resistant2  = list(analyte = "Acinetobacter baumannii (intermediate to imipenem, resistant to tobram", units = NA_character_, specimen = "administration site", verified = FALSE)
+  )
+
   covariateData <- list(
     Cipm = list(
       description        = "Unbound imipenem concentration in the hollow-fiber growth medium",

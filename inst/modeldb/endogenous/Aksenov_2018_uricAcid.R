@@ -8,6 +8,15 @@ Aksenov_2018_uricAcid <- function() {
     concentration = "mg/dL"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    serum = list(analyte = "urate", units = "mg", specimen = "blood cell", verified = FALSE),
+    urine = list(analyte = "urate", units = "mg", specimen = "urine", verified = FALSE)
+  )
+
   covariateData <- list(
     CRCL = list(
       description = "Renal function as glomerular filtration rate (Cockcroft-Gault creatinine clearance, actual body weight, NOT BSA-normalized) -- the source paper uses the symbol GFR but operationally computes a creatinine clearance",

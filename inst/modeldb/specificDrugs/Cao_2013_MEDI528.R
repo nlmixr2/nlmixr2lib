@@ -4,6 +4,17 @@ Cao_2013_MEDI528 <- function() {
   vignette <- "Cao_2013_MEDI528"
   units <- list(time = "day", dosing = "mg", concentration = "mg/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    plasma = list(analyte = "MEDI-528", units = "mg", specimen = "plasma", verified = FALSE),
+    tight  = list(analyte = "MEDI-528", units = "mg", specimen = "tissue", verified = FALSE),
+    leaky  = list(analyte = "MEDI-528", units = "mg", specimen = "tissue", verified = FALSE),
+    lymph  = list(analyte = "MEDI-528", units = "mg", specimen = "lymph", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(

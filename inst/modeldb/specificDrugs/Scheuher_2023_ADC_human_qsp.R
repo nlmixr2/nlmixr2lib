@@ -4,6 +4,57 @@ Scheuher_2023_ADC_human_qsp <- function() {
   vignette    <- "Scheuher_2023_ADC_platform_qsp"
   units       <- list(time = "h", dosing = "nmol", concentration = "nM")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    adc_central         = list(analyte = "ADC", units = "nmol", specimen = "plasma", verified = FALSE),
+    ab_central          = list(analyte = "Ab", units = "nmol", specimen = "plasma", verified = FALSE),
+    pl_central          = list(analyte = "Prodrug/Placido", units = "nmol", specimen = "plasma", verified = FALSE),
+    adc_peripheral      = list(analyte = "ADC", units = "nmol", specimen = "tissue", verified = FALSE),
+    ab_peripheral       = list(analyte = "Ab", units = "nmol", specimen = "tissue", verified = FALSE),
+    pl_peripheral       = list(analyte = "Prodrug/Placido", units = "nmol", specimen = "tissue", verified = FALSE),
+    adc_ext_tumor       = list(analyte = "ADC", units = "nmol", specimen = "tumor", verified = FALSE),
+    ab_ext_tumor        = list(analyte = "Ab", units = "nmol", specimen = "tumor", verified = FALSE),
+    pl_ext_tumor        = list(analyte = "Prodrug/Placido", units = "nmol", specimen = "tumor", verified = FALSE),
+    her2_nc_c           = list(analyte = "HER2", units = "nmol", specimen = "not applicable", verified = FALSE),
+    her2adc_nc_c        = list(analyte = "ADC-HER2 complex", units = "nmol", specimen = "not applicable", verified = FALSE),
+    her2ab_nc_c         = list(analyte = "Ab-HER2 complex", units = "nmol", specimen = "not applicable", verified = FALSE),
+    her2endo_nc_c       = list(analyte = "Endocytosed HER2", units = "nmol", specimen = "not applicable", verified = FALSE),
+    her2adcendo_nc_c    = list(analyte = "Endocytosed ADC-HER2 complex", units = "nmol", specimen = "not applicable", verified = FALSE),
+    her2abendo_nc_c     = list(analyte = "Endocytosed Ab-HER2 complex", units = "nmol", specimen = "not applicable", verified = FALSE),
+    her2_nc_p           = list(analyte = "HER2", units = "nmol", specimen = "not applicable", verified = FALSE),
+    her2adc_nc_p        = list(analyte = "ADC-HER2 complex", units = "nmol", specimen = "not applicable", verified = FALSE),
+    her2ab_nc_p         = list(analyte = "Ab-HER2 complex", units = "nmol", specimen = "not applicable", verified = FALSE),
+    her2endo_nc_p       = list(analyte = "Endocytosed HER2", units = "nmol", specimen = "not applicable", verified = FALSE),
+    her2adcendo_nc_p    = list(analyte = "Endocytosed ADC-HER2 complex", units = "nmol", specimen = "not applicable", verified = FALSE),
+    her2abendo_nc_p     = list(analyte = "Endocytosed Ab-HER2 complex", units = "nmol", specimen = "not applicable", verified = FALSE),
+    sher2_c             = list(analyte = "Soluble HER2", units = "nmol", specimen = "plasma", verified = FALSE),
+    sher2adc_c          = list(analyte = "ADC-soluble HER2 complex", units = "nmol", specimen = "plasma", verified = FALSE),
+    sher2ab_c           = list(analyte = "Ab-soluble HER2 complex", units = "nmol", specimen = "plasma", verified = FALSE),
+    sher2_p             = list(analyte = "Soluble HER2", units = "nmol", specimen = "tissue", verified = FALSE),
+    sher2adc_p          = list(analyte = "ADC-soluble HER2 complex", units = "nmol", specimen = "tissue", verified = FALSE),
+    sher2ab_p           = list(analyte = "Ab-soluble HER2 complex", units = "nmol", specimen = "tissue", verified = FALSE),
+    sher2_tumor         = list(analyte = "Soluble HER2", units = "nmol", specimen = "tumor", verified = FALSE),
+    sher2adc_tumor      = list(analyte = "ADC-soluble HER2 complex", units = "nmol", specimen = "tumor", verified = FALSE),
+    sher2ab_tumor       = list(analyte = "Ab-soluble HER2 complex", units = "nmol", specimen = "tumor", verified = FALSE),
+    her2_surf_tumor     = list(analyte = "HER2 on tumor surface", units = "nmol", specimen = "tumor", verified = FALSE),
+    her2_adc_surf_tumor = list(analyte = "ADC-HER2 complex on tumor surface", units = "nmol", specimen = "tumor", verified = FALSE),
+    her2_ab_surf_tumor  = list(analyte = "Ab-HER2 complex on tumor surface", units = "nmol", specimen = "tumor", verified = FALSE),
+    her2_endo_tumor     = list(analyte = "Endocytosed HER2 in tumor", units = "nmol", specimen = "tumor", verified = FALSE),
+    her2_adc_endo_tumor = list(analyte = "Endocytosed ADC-HER2 complex in tumor", units = "nmol", specimen = "tumor", verified = FALSE),
+    her2_ab_endo_tumor  = list(analyte = "Endocytosed Ab-HER2 complex in tumor", units = "nmol", specimen = "tumor", verified = FALSE),
+    pl_endo_tumor       = list(analyte = "Prodrug/Placido in endosomes of tumor cells", units = "nmol", specimen = "tumor", verified = FALSE),
+    pl_cyto_tumor       = list(analyte = "Prodrug/Placido in cytoplasm of tumor cells", units = "nmol", specimen = "tumor", verified = FALSE),
+    t_cyto_tumor        = list(analyte = "Tumor cell components", units = "nmol", specimen = "tumor", verified = FALSE),
+    tpl_cyto_tumor      = list(analyte = "Tumor cell components", units = "nmol", specimen = "tumor", verified = FALSE),
+    n1                  = list(analyte = "Not specified", units = "nmol", specimen = "not applicable", verified = FALSE),
+    n2                  = list(analyte = "Not specified", units = "nmol", specimen = "not applicable", verified = FALSE),
+    n3                  = list(analyte = "Not specified", units = "nmol", specimen = "not applicable", verified = FALSE),
+    n4                  = list(analyte = "Not specified", units = "nmol", specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list()
 
   covariatesDataExcluded <- list()

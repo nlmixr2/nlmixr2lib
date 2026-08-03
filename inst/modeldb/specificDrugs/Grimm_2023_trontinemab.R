@@ -8,6 +8,21 @@ Grimm_2023_trontinemab <- function() {
     concentration = "ng/mL"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central              = list(analyte = "trontinemab", units = NA_character_, specimen = "plasma", verified = FALSE),
+    peripheral1          = list(analyte = "trontinemab", units = NA_character_, specimen = "plasma", verified = FALSE),
+    brain_cerebellum     = list(analyte = "trontinemab", units = NA_character_, specimen = "tissue", verified = FALSE),
+    brain_hippocampus    = list(analyte = "trontinemab", units = NA_character_, specimen = "tissue", verified = FALSE),
+    brain_striatum       = list(analyte = "trontinemab", units = NA_character_, specimen = "tissue", verified = FALSE),
+    brain_cortex         = list(analyte = "trontinemab", units = NA_character_, specimen = "tissue", verified = FALSE),
+    brain_choroid_plexus = list(analyte = "trontinemab", units = NA_character_, specimen = "tissue", verified = FALSE),
+    csf                  = list(analyte = "trontinemab", units = NA_character_, specimen = "CSF", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight",

@@ -4,6 +4,20 @@ Mitra_2026_ziftomenib <- function() {
   vignette    <- "Mitra_2026_ziftomenib"
   units       <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot             = list(analyte = "ziftomenib", units = "mg", specimen = "administration site", verified = FALSE),
+    central           = list(analyte = "ziftomenib", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1       = list(analyte = "ziftomenib", units = "mg", specimen = "plasma", verified = FALSE),
+    central_ko739     = list(analyte = "KO-739", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1_ko739 = list(analyte = "KO-739", units = "mg", specimen = "plasma", verified = FALSE),
+    central_ko516     = list(analyte = "KO-516", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1_ko516 = list(analyte = "KO-516", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     DIS_HEALTHY = list(
       description        = "Healthy-participant cohort indicator, 1 = healthy subject (KO-MEN-003 crossover food-effect / PPI-effect study), 0 = patient with R/R NPM1-m or KMT2A-r AML (KOMET-001).",

@@ -15,6 +15,23 @@ Bizzotto_2016_glucose <- function() {
   ddmore_id    <- "DDMODEL00000227"
   replicate_of <- NULL
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    X1    = list(analyte = "tracer", units = NA_character_, specimen = "plasma", verified = FALSE),
+    X     = list(analyte = "tracer", units = NA_character_, specimen = "plasma", verified = FALSE),
+    Z1    = list(analyte = "tracer", units = NA_character_, specimen = "administration site", verified = FALSE),
+    Z     = list(analyte = "tracer", units = NA_character_, specimen = "administration site", verified = FALSE),
+    xHL1  = list(analyte = "tracer", units = NA_character_, specimen = "administration site", verified = FALSE),
+    xHL2  = list(analyte = "tracer", units = NA_character_, specimen = "administration site", verified = FALSE),
+    xPER1 = list(analyte = "tracer", units = NA_character_, specimen = "administration site", verified = FALSE),
+    xPER2 = list(analyte = "tracer", units = NA_character_, specimen = "administration site", verified = FALSE),
+    xPER3 = list(analyte = "tracer", units = NA_character_, specimen = "administration site", verified = FALSE),
+    xPER4 = list(analyte = "tracer", units = NA_character_, specimen = "administration site", verified = FALSE)
+  )
+
   covariateData <- list(
     INS = list(
       description        = "Plasma insulin concentration time-course (regressor input)",

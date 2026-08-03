@@ -38,6 +38,17 @@ Hawwa_2008_mercaptopurine <- function() {
     concentration = "mg/L"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot        = list(analyte = "6-mercaptopurine (6-MP)", units = "mg", specimen = "administration site", verified = FALSE),
+    central      = list(analyte = "6-mercaptopurine (6-MP)", units = "mg", specimen = "plasma", verified = FALSE),
+    central_tgn  = list(analyte = "6-thioguanine nucleotides (6-TGNs)", units = "mg", specimen = "plasma", verified = FALSE),
+    central_mmpn = list(analyte = "6-methylmercaptopurine nucleotides (6-mMPNs)", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     BSA = list(
       description        = "Body surface area at baseline, computed from height and weight by the formula the source paper applied (Hawwa 2008 Table 1 lists BSA as a per-patient summary; the formula was not stated explicitly).",

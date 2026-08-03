@@ -4,6 +4,19 @@ Sathe_2025_sacituzumab <- function() {
   vignette <- "Sathe_2025_sacituzumab"
   units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central          = list(analyte = "SG", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1      = list(analyte = "SG", units = "mg", specimen = "plasma", verified = FALSE),
+    central_sn38     = list(analyte = "free SN-38", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1_sn38 = list(analyte = "free SN-38", units = "mg", specimen = "plasma", verified = FALSE),
+    central_tab      = list(analyte = "tAB", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1_tab  = list(analyte = "tAB", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Baseline body weight",

@@ -57,6 +57,18 @@ Kovalenko_2020_dupilumab_covariate <- function() {
   # SD(ln ke) = 0.293, Corr(ln(ke), ln(Vc)) = -0.450.  Variances and
   # covariance for the correlated (etalvc, etalkel) block in ini() are
   # computed inline so the reader can trace the SDs to the source table.
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "dupilumab covariate", units = "mg", specimen = "administration site", verified = FALSE),
+    transit1    = list(analyte = "dupilumab covariate", units = "mg", specimen = "administration site", verified = FALSE),
+    transit2    = list(analyte = "dupilumab covariate", units = "mg", specimen = "administration site", verified = FALSE),
+    transit3    = list(analyte = "dupilumab covariate", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "dupilumab covariate", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "dupilumab covariate", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight",

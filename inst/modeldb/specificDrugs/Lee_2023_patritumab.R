@@ -8,6 +8,16 @@ Lee_2023_patritumab <- function() {
     concentration = "nmol/L"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "anti-HER3-ac-DXd", units = "nmol", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "anti-HER3-ac-DXd", units = "nmol", specimen = "plasma", verified = FALSE),
+    central_dxd = list(analyte = "DXd", units = "nmol", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Baseline body weight",

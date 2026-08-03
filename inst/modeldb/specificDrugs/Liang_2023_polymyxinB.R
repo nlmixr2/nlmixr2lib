@@ -11,6 +11,14 @@ Liang_2023_polymyxinB <- function() {
   vignette <- "Liang_2023_polymyxinB"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "polymyxinB", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "polymyxinB", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     ALB = list(
       description        = "Serum albumin concentration. Power covariate on CL, normalized to the cohort median of 31.45 g/L (Table 1). Higher albumin gives lower total-drug clearance (exponent -0.95), consistent with the Discussion: 'the polymyxin B CL lowers as the level of ALB rises'.",

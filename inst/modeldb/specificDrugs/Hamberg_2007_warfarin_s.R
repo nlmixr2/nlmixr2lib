@@ -17,6 +17,23 @@ Hamberg_2007_warfarin_s <- function() {
 
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "S-warfarin", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "S-warfarin", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "S-warfarin", units = "mg", specimen = "plasma", verified = FALSE),
+    coag_s1     = list(analyte = "anticoagulant response", units = "mg", specimen = "not applicable", verified = FALSE),
+    coag_s2     = list(analyte = "anticoagulant response", units = "mg", specimen = "not applicable", verified = FALSE),
+    coag_s3     = list(analyte = "anticoagulant response", units = "mg", specimen = "not applicable", verified = FALSE),
+    coag_s4     = list(analyte = "anticoagulant response", units = "mg", specimen = "not applicable", verified = FALSE),
+    coag_s5     = list(analyte = "anticoagulant response", units = "mg", specimen = "not applicable", verified = FALSE),
+    coag_s6     = list(analyte = "anticoagulant response", units = "mg", specimen = "not applicable", verified = FALSE),
+    coag_l1     = list(analyte = "anticoagulant response", units = "mg", specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list(
     AGE = list(
       description        = "Subject age at baseline",

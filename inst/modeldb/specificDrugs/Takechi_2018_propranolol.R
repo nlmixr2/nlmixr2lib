@@ -4,6 +4,14 @@ Takechi_2018_propranolol <- function() {
   vignette <- "Takechi_2018_propranolol"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "propranolol", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "propranolol", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight (kg), time-varying. Used for fixed-exponent allometric scaling on CL (0.75) and V (1) normalized to the study median 6.115 kg.",

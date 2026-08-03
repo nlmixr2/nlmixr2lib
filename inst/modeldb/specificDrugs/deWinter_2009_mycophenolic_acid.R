@@ -11,6 +11,20 @@ deWinter_2009_mycophenolic_acid <- function() {
   vignette <- "deWinter_2009_mycophenolic_acid"
   units <- list(time = "h", dosing = "umol", concentration = "umol/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot            = list(analyte = "mycophenolate mofetil (MMF)", units = "umol", specimen = "administration site", verified = FALSE),
+    central          = list(analyte = "free mycophenolic acid (fMPA)", units = "umol", specimen = "plasma", verified = FALSE),
+    peripheral1      = list(analyte = "free mycophenolic acid (fMPA)", units = "umol", specimen = "plasma", verified = FALSE),
+    complex          = list(analyte = "mycophenolic acid-glucuronide (MPAG) bound to plasma proteins", units = "umol", specimen = "plasma", verified = FALSE),
+    central_mpag     = list(analyte = "free mycophenolic acid-glucuronide (fMPAG)", units = "umol", specimen = "plasma", verified = FALSE),
+    complex_mpag     = list(analyte = "mycophenolic acid-glucuronide (MPAG) bound to plasma proteins", units = "umol", specimen = "plasma", verified = FALSE),
+    gallbladder_mpag = list(analyte = "mycophenolic acid-glucuronide (MPAG)", units = "umol", specimen = "bile", verified = FALSE)
+  )
+
   covariateData <- list(
     CRCL = list(
       description        = "Creatinine clearance computed by the Cockcroft-Gault formula in mL/min (NOT BSA-normalized). Baseline value carried forward across the modeled occasions.",

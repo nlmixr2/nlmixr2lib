@@ -4,6 +4,14 @@ Admiraal_2023_iminobiotin <- function() {
   vignette <- "Admiraal_2023_iminobiotin"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "iminobiotin", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "iminobiotin", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     CRCL = list(
       description        = "Estimated glomerular filtration rate on hospital admission, by the Modification of Diet in Renal Disease (MDRD) equation: 186 * (Creat/88.4)^-1.154 * Age^-0.203 * (0.742 if female) * (1.210 if Black).",

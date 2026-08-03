@@ -26,6 +26,16 @@ Djerada_2014_nefopam <- function() {
   vignette <- "Djerada_2014_nefopam"
   units <- list(time = "h", dosing = "mg", concentration = "ug/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central      = list(analyte = "Nefopam", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1  = list(analyte = "Nefopam", units = "mg", specimen = "plasma", verified = FALSE),
+    central_dnef = list(analyte = "Desmethyl-nefopam", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list()
 
   covariatesDataExcluded <- list(

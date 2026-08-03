@@ -8,6 +8,17 @@ Ahn_2014_parathyroidHormone <- function() {
     concentration = "mmol/L (ionized Ca, observation Cc) and pg/mL (PTH, observation PTH)"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot    = list(analyte = "calcium", units = NA_character_, specimen = "administration site", verified = FALSE),
+    ca_unobs = list(analyte = "ionized calcium", units = NA_character_, specimen = "plasma", verified = FALSE),
+    ca       = list(analyte = "ionized calcium", units = NA_character_, specimen = "plasma", verified = FALSE),
+    pth      = list(analyte = "parathyroid hormone", units = NA_character_, specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     FORM_CACO3 = list(
       description        = "1 = calcium carbonate tablet (500 mg CaCO3 = 200 mg elemental Ca x 2 tablets, with 240 mL normal saline or 340 mL purified water); 0 = Geumjin thermal spring water (240 mL containing 400 mg elemental calcium followed by 100 mL purified water, the Ahn 2014 reference arm).",

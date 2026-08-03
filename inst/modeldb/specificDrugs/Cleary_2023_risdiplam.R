@@ -12,6 +12,18 @@ Cleary_2023_risdiplam <- function() {
   vignette <- "Cleary_2023_risdiplam"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "risdiplam", units = "mg", specimen = "administration site", verified = FALSE),
+    transit1    = list(analyte = "risdiplam", units = "mg", specimen = "administration site", verified = FALSE),
+    transit2    = list(analyte = "risdiplam", units = "mg", specimen = "administration site", verified = FALSE),
+    transit3    = list(analyte = "risdiplam", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "risdiplam", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "risdiplam", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight (time-varying over the observation period; median PK observation period 358 days in patients with SMA).",

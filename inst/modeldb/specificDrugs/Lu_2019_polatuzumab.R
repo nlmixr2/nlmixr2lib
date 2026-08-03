@@ -8,6 +8,17 @@ Lu_2019_polatuzumab <- function() {
     concentration = "ng/mL"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central          = list(analyte = "polatuzumab vedotin (acMMAE)", units = "ug", specimen = "plasma", verified = FALSE),
+    peripheral1      = list(analyte = "polatuzumab vedotin (acMMAE)", units = "ug", specimen = "plasma", verified = FALSE),
+    central_mmae     = list(analyte = "unconjugated MMAE", units = "ug", specimen = "plasma", verified = FALSE),
+    peripheral1_mmae = list(analyte = "unconjugated MMAE", units = "ug", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Baseline body weight",

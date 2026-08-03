@@ -12,6 +12,14 @@ Alqahtani_2018_cefuroxime <- function() {
   vignette <- "Alqahtani_2018_cefuroxime"
   units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "cefuroxime", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "cefuroxime", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     CRCL = list(
       description        = "Cockcroft-Gault creatinine clearance (raw mL/min, not BSA-normalized)",

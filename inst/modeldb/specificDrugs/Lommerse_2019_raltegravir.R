@@ -9,6 +9,19 @@ Lommerse_2019_raltegravir <- function() {
     "depot_neonate", "central_neonate", "peripheral_neonate"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot_mother       = list(analyte = "Raltegravir", units = "mg", specimen = "administration site", verified = FALSE),
+    central_mother     = list(analyte = "Raltegravir", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral_mother  = list(analyte = "Raltegravir", units = "mg", specimen = "tissue", verified = FALSE),
+    depot_neonate      = list(analyte = "Raltegravir", units = "mg", specimen = "administration site", verified = FALSE),
+    central_neonate    = list(analyte = "Raltegravir", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral_neonate = list(analyte = "Raltegravir", units = "mg", specimen = "tissue", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Neonate body weight (time-varying, kg)",

@@ -39,6 +39,16 @@ Schmidt_2009_linezolid <- function() {
 
   # No epidemiological covariates: this is an in vitro time-kill model.
   # The antibiotic concentration is a state (central), not a covariate.
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    bact_susceptible = list(analyte = "Staphylococcus aureus MRSA strain OC2878", units = NA_character_, specimen = "bile", verified = FALSE),
+    bact_persister   = list(analyte = "Staphylococcus aureus MRSA strain OC2878", units = NA_character_, specimen = "bile", verified = FALSE),
+    central          = list(analyte = "linezolid", units = NA_character_, specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(

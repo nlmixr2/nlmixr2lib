@@ -24,6 +24,17 @@ Gibbs_2011_amg221 <- function() {
   vignette <- "Gibbs_2011_amg221"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "AMG 221", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "AMG 221", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "AMG 221", units = "mg", specimen = "plasma", verified = FALSE),
+    effect      = list(analyte = "AMG 221", units = "mg", specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list(
     DOSE_LOW_AMG221 = list(
       description        = "Low-dose AMG 221 indicator (1 = 3 mg oral AMG 221 dose record; 0 = 30 or 100 mg oral AMG 221 dose record).",

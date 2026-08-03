@@ -45,6 +45,15 @@ VelezdeMendizabal_2012_lumiracoxib_rat <- function() {
     concentration = "flinches per 1-min window (number of paw flinches; the only observed quantity, no lumiracoxib concentration was measured)"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    lumxLocal = list(analyte = "Lumiracoxib", units = NA_character_, specimen = "administration site", verified = FALSE),
+    lumxCns   = list(analyte = "Lumiracoxib", units = NA_character_, specimen = "administration site", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(

@@ -12,6 +12,20 @@ Jain_2011_sorafenib <- function() {
   vignette <- "Jain_2011_sorafenib"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "sorafenib", units = "mg", specimen = "administration site", verified = FALSE),
+    transit1    = list(analyte = "sorafenib", units = "mg", specimen = "administration site", verified = FALSE),
+    transit2    = list(analyte = "sorafenib", units = "mg", specimen = "administration site", verified = FALSE),
+    transit3    = list(analyte = "sorafenib", units = "mg", specimen = "administration site", verified = FALSE),
+    transit4    = list(analyte = "sorafenib", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "sorafenib", units = "mg", specimen = "plasma", verified = FALSE),
+    gallbladder = list(analyte = "sorafenib", units = "mg", specimen = "bile", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight",

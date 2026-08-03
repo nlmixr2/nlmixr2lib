@@ -9,6 +9,14 @@ Shoji_2011_pregabalin <- function() {
     "propSdPatient", "addSdPatient"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "pregabalin", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "pregabalin", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     CRCL = list(
       description        = "Estimated creatinine clearance by the Cockcroft-Gault equation. NOT BSA-normalized; raw Cockcroft-Gault mL/min. Capped at the estimated break point th_bp = 107 mL/min when entering CL/F (the paper's saturation knot above which CL/F no longer scales linearly with CLcr).",

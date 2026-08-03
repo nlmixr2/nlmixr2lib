@@ -4,6 +4,22 @@ Almquist_2016_ticagrelor <- function() {
   vignette    <- "Almquist_2016_ticagrelor"
   units       <- list(time = "min", dosing = "nmol/kg", concentration = "nmol/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central         = list(analyte = "ticagrelor", units = NA_character_, specimen = "plasma", verified = FALSE),
+    peripheral1     = list(analyte = "ticagrelor", units = NA_character_, specimen = "plasma", verified = FALSE),
+    peripheral2     = list(analyte = "ticagrelor", units = NA_character_, specimen = "plasma", verified = FALSE),
+    central_tam     = list(analyte = "TAM (AR-C124910XX)", units = NA_character_, specimen = "plasma", verified = FALSE),
+    peripheral1_tam = list(analyte = "TAM (AR-C124910XX)", units = NA_character_, specimen = "plasma", verified = FALSE),
+    peripheral2_tam = list(analyte = "TAM (AR-C124910XX)", units = NA_character_, specimen = "plasma", verified = FALSE),
+    target          = list(analyte = "MEDI2452", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    complex         = list(analyte = "ticagrelor and MEDI2452 complex", units = NA_character_, specimen = "plasma", verified = FALSE),
+    complex_tam     = list(analyte = "TAM (AR-C124910XX) and MEDI2452 complex", units = NA_character_, specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(

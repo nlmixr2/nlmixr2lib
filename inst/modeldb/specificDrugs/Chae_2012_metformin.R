@@ -4,6 +4,17 @@ Chae_2012_metformin <- function() {
   vignette <- "Chae_2012_metformin"
   units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot    = list(analyte = "metformin", units = "mg", specimen = "administration site", verified = FALSE),
+    central  = list(analyte = "metformin", units = "mg", specimen = "plasma", verified = FALSE),
+    transit1 = list(analyte = "metformin", units = "mg", specimen = "administration site", verified = FALSE),
+    transit2 = list(analyte = "metformin", units = "mg", specimen = "administration site", verified = FALSE),
+    transit3 = list(analyte = "metformin", units = "mg", specimen = "administration site", verified = FALSE)
+  )
+
   covariateData <- list(
     CRCL = list(
       description        = "Creatinine clearance as reported by the source paper (Chae 2012 Table 1, mL/min). The paper does not state the derivation method (measured vs. Cockcroft-Gault).",

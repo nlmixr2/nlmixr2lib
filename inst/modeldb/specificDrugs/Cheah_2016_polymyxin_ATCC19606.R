@@ -17,6 +17,18 @@ Cheah_2016_polymyxin_ATCC19606 <- function() {
 
   paper_specific_compartments <- c("bact_s", "bact_r", "bact_d", "r_adapt")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    bact_s  = list(analyte = "Acinetobacter baumannii", units = NA_character_, specimen = "vitreous", verified = FALSE),
+    bact_r  = list(analyte = "Acinetobacter baumannii", units = NA_character_, specimen = "vitreous", verified = FALSE),
+    bact_d  = list(analyte = "Acinetobacter baumannii", units = NA_character_, specimen = "vitreous", verified = FALSE),
+    r_adapt = list(analyte = "Acinetobacter baumannii", units = NA_character_, specimen = "administration site", verified = FALSE),
+    central = list(analyte = "polymyxin B or colistin", units = NA_character_, specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(

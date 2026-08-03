@@ -14,6 +14,20 @@ Wahlby_2004_paclitaxel_myelosuppression <- function() {
   vignette <- "Wahlby_2004_time_varying_covariates"
   units    <- list(time = "h", dosing = "umol", concentration = "umol/L", neutrophils = "10^9/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "paclitaxel", units = "umol", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "paclitaxel", units = "umol", specimen = "plasma", verified = FALSE),
+    circ        = list(analyte = "neutrophils", units = "umol", specimen = "whole blood", verified = FALSE),
+    precursor1  = list(analyte = "neutrophil precursors", units = "umol", specimen = "not applicable", verified = FALSE),
+    precursor2  = list(analyte = "neutrophil precursors", units = "umol", specimen = "not applicable", verified = FALSE),
+    precursor3  = list(analyte = "neutrophil precursors", units = "umol", specimen = "not applicable", verified = FALSE),
+    precursor4  = list(analyte = "neutrophil precursors", units = "umol", specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list(
     CL_INDIV = list(
       description        = "Per-subject empirical-Bayes paclitaxel clearance",

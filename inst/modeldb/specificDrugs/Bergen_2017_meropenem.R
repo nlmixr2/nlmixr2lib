@@ -14,6 +14,20 @@ Bergen_2017_meropenem <- function() {
   # by overriding thalf_mem (1.1 h normal, 0.6 h augmented renal clearance,
   # 4.0 h impaired) and choosing dosing amounts to hit the published Cmax/Cmin
   # (Bergen 2017 Table 4).
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    bact_susceptible1  = list(analyte = "Pseudomonas aeruginosa", units = NA_character_, specimen = "administration site", verified = FALSE),
+    bact_susceptible2  = list(analyte = "Pseudomonas aeruginosa", units = NA_character_, specimen = "administration site", verified = FALSE),
+    bact_intermediate1 = list(analyte = "Pseudomonas aeruginosa", units = NA_character_, specimen = "administration site", verified = FALSE),
+    bact_intermediate2 = list(analyte = "Pseudomonas aeruginosa", units = NA_character_, specimen = "administration site", verified = FALSE),
+    bact_resistant1    = list(analyte = "Pseudomonas aeruginosa", units = NA_character_, specimen = "administration site", verified = FALSE),
+    bact_resistant2    = list(analyte = "Pseudomonas aeruginosa", units = NA_character_, specimen = "administration site", verified = FALSE),
+    cmem               = list(analyte = "meropenem", units = NA_character_, specimen = "administration site", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(

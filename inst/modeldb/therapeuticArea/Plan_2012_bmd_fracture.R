@@ -53,6 +53,14 @@ Plan_2012_bmd_fracture <- function() {
   # the final fit ('Centered covariate effects added on all parameters')
   # are documented in covariatesDataExcluded so the provenance is
   # preserved without triggering convention warnings.
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    cumhaz = list(analyte = "fracture hazard", units = NA_character_, specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list()
 
   covariatesDataExcluded <- list(

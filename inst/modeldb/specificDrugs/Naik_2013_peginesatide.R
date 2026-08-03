@@ -4,6 +4,24 @@ Naik_2013_peginesatide <- function() {
   vignette <- "Naik_2013_peginesatide"
   units <- list(time = "h", dosing = "ug", concentration = "ng/mL", hemoglobin = "g/dL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "peginesatide", units = "ug", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "peginesatide", units = "ug", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "peginesatide", units = "ug", specimen = "plasma", verified = FALSE),
+    precursor1  = list(analyte = "progenitor cells", units = "ug", specimen = "not applicable", verified = FALSE),
+    precursor2  = list(analyte = "progenitor cells", units = "ug", specimen = "not applicable", verified = FALSE),
+    precursor3  = list(analyte = "progenitor cells", units = "ug", specimen = "not applicable", verified = FALSE),
+    precursor4  = list(analyte = "progenitor cells", units = "ug", specimen = "not applicable", verified = FALSE),
+    precursor5  = list(analyte = "progenitor cells", units = "ug", specimen = "not applicable", verified = FALSE),
+    precursor6  = list(analyte = "progenitor cells", units = "ug", specimen = "not applicable", verified = FALSE),
+    precursor7  = list(analyte = "progenitor cells", units = "ug", specimen = "not applicable", verified = FALSE),
+    precursor8  = list(analyte = "hemoglobin", units = "ug", specimen = "blood cell", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight at baseline",

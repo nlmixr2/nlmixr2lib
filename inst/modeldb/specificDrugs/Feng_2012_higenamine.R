@@ -4,6 +4,14 @@ Feng_2012_higenamine <- function() {
   vignette    <- "Feng_2012_higenamine"
   units       <- list(time = "min", dosing = "ug", concentration = "ug/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "higenamine", units = "ug", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "higenamine", units = "ug", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list()
 
   covariatesDataExcluded <- list(

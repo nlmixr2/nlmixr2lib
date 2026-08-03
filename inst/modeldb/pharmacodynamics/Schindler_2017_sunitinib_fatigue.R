@@ -28,6 +28,18 @@ Schindler_2017_sunitinib_fatigue <- function() {
     concentration = "(NCI-CTCAE fatigue grade 0-3+, ordinal)"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    svegfr3 = list(analyte = "soluble vascular endothelial growth factor receptor 3 (sVEGFR-3)", units = "mg", specimen = "plasma", verified = FALSE),
+    pscore0 = list(analyte = "fatigue grade 0", units = "mg", specimen = "not applicable", verified = FALSE),
+    pscore1 = list(analyte = "fatigue grade 1", units = "mg", specimen = "not applicable", verified = FALSE),
+    pscore2 = list(analyte = "fatigue grade 2", units = "mg", specimen = "not applicable", verified = FALSE),
+    pscore3 = list(analyte = "fatigue grade 3+", units = "mg", specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list(
     DOSE = list(
       description        = "Current administered sunitinib daily dose (mg) carried as a time-varying data column. Set to 0 during off-cycles of a 4-weeks-on / 2-weeks-off schedule or for placebo subjects so the derived AUC = DOSE / CLI becomes 0.",

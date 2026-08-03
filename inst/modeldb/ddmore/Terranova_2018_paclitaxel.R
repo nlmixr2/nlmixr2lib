@@ -24,6 +24,21 @@ Terranova_2018_paclitaxel <- function() {
   ddmore_id    <- "DDMODEL00000274"
   replicate_of <- NULL
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "paclitaxel", units = NA_character_, specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "paclitaxel", units = NA_character_, specimen = "plasma", verified = FALSE),
+    bodyZ       = list(analyte = "not applicable", units = NA_character_, specimen = "tissue", verified = FALSE),
+    bodyEn      = list(analyte = "not applicable", units = NA_character_, specimen = "tissue", verified = FALSE),
+    tumor1      = list(analyte = "not applicable", units = NA_character_, specimen = "tumor", verified = FALSE),
+    tumor2      = list(analyte = "not applicable", units = NA_character_, specimen = "tumor", verified = FALSE),
+    tumor3      = list(analyte = "not applicable", units = NA_character_, specimen = "tumor", verified = FALSE),
+    tumor4      = list(analyte = "not applicable", units = NA_character_, specimen = "tumor", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(

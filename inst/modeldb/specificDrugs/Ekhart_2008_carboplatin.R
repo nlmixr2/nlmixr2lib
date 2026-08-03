@@ -7,6 +7,14 @@ Ekhart_2008_carboplatin <- function() {
   # Final structural model has no covariate effects: allometric scaling on CL
   # with ABW / IBW / AIBW / Benezet / FFM / LBM each gave delta-OFV < 6.63
   # versus the basic model (Table 6), so weight was not retained.
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "carboplatin", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "carboplatin", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(

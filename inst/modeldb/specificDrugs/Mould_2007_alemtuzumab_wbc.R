@@ -4,6 +4,16 @@ Mould_2007_alemtuzumab_wbc <- function() {
   vignette <- "Mould_2007_alemtuzumab"
   units <- list(time = "h", dosing = "mg", concentration = "ug/mL", wbc = "10^9 cells/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "alemtuzumab", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "alemtuzumab", units = "mg", specimen = "plasma", verified = FALSE),
+    WBC         = list(analyte = "alemtuzumab", units = "mg", specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(

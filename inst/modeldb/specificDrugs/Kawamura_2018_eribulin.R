@@ -28,6 +28,21 @@ Kawamura_2018_eribulin <- function() {
   # and Kawamura 2018 -- the factor-of-1000 conversion is applied inside the
   # model() body where slope (paper unit mL/ng) multiplies Cc.
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "Eribulin", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "Eribulin", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral2 = list(analyte = "Eribulin", units = "mg", specimen = "plasma", verified = FALSE),
+    precursor1  = list(analyte = "Eribulin", units = "mg", specimen = "not applicable", verified = FALSE),
+    precursor2  = list(analyte = "Eribulin", units = "mg", specimen = "not applicable", verified = FALSE),
+    precursor3  = list(analyte = "Eribulin", units = "mg", specimen = "not applicable", verified = FALSE),
+    precursor4  = list(analyte = "Eribulin", units = "mg", specimen = "not applicable", verified = FALSE),
+    circ        = list(analyte = "Neutrophil count", units = "mg", specimen = "whole blood", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight at baseline.",

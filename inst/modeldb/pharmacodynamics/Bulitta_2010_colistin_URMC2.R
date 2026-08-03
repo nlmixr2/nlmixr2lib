@@ -14,6 +14,18 @@ Bulitta_2010_colistin_URMC2 <- function() {
   depends <- c("Ccolistin", "Ccations")
   paper_specific_compartments <- c("bact_slag", "bact_s", "bact_i", "bact_r", "signal")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    bact_slag = list(analyte = "Pseudomonas aeruginosa URMC2", units = NA_character_, specimen = "administration site", verified = FALSE),
+    bact_s    = list(analyte = "Pseudomonas aeruginosa URMC2", units = NA_character_, specimen = "administration site", verified = FALSE),
+    bact_i    = list(analyte = "Pseudomonas aeruginosa URMC2", units = NA_character_, specimen = "administration site", verified = FALSE),
+    bact_r    = list(analyte = "Pseudomonas aeruginosa URMC2", units = NA_character_, specimen = "administration site", verified = FALSE),
+    signal    = list(analyte = "signal molecule", units = NA_character_, specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list(
     Ccolistin = list(
       description        = "Colistin concentration in growth medium",

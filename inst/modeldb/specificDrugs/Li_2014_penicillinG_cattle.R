@@ -4,6 +4,22 @@ Li_2014_penicillinG_cattle <- function() {
   vignette    <- "Li_2014_penicillinG"
   units       <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot1      = list(analyte = "penicillin G (procaine)", units = "mg", specimen = "administration site", verified = FALSE),
+    depot2      = list(analyte = "penicillin G (procaine)", units = "mg", specimen = "administration site", verified = FALSE),
+    depot3      = list(analyte = "penicillin G (procaine)", units = "mg", specimen = "administration site", verified = FALSE),
+    depot4      = list(analyte = "penicillin G", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "penicillin G", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "penicillin G", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral2 = list(analyte = "penicillin G", units = "mg", specimen = "plasma", verified = FALSE),
+    liver       = list(analyte = "penicillin G (procaine)", units = "mg", specimen = "tissue", verified = FALSE),
+    kidney      = list(analyte = "penicillin G", units = "mg", specimen = "tissue", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight",

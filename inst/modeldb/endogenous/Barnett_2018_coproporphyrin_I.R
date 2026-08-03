@@ -16,6 +16,14 @@ Barnett_2018_coproporphyrin_I <- function() {
   vignette <- "Barnett_2018_coproporphyrin_I"
   units <- list(time = "h", dosing = "none", concentration = "nmol/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central = list(analyte = "coproporphyrin I", units = NA_character_, specimen = "plasma", verified = FALSE),
+    urine   = list(analyte = "coproporphyrin I", units = NA_character_, specimen = "urine", verified = FALSE)
+  )
+
   covariateData <- list(
     OCC = list(
       description        = "Integer-valued occasion / period indicator (Barnett 2018 study design: OCC1 = rifampicin-only period, OCC2 = rosuvastatin-only period, OCC3 = combined rifampicin + rosuvastatin period).",

@@ -14,6 +14,20 @@ Xia_2024_warfarin <- function() {
 
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot_kpd = list(analyte = "warfarin", units = "mg", specimen = "administration site", verified = FALSE),
+    coag_s1   = list(analyte = "activated coagulation factor", units = "mg", specimen = "plasma", verified = FALSE),
+    coag_s2   = list(analyte = "activated coagulation factor", units = "mg", specimen = "plasma", verified = FALSE),
+    coag_s3   = list(analyte = "activated coagulation factor", units = "mg", specimen = "plasma", verified = FALSE),
+    coag_l1   = list(analyte = "inactive coagulation factor", units = "mg", specimen = "plasma", verified = FALSE),
+    coag_l2   = list(analyte = "inactive coagulation factor", units = "mg", specimen = "plasma", verified = FALSE),
+    coag_l3   = list(analyte = "inactive coagulation factor", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight",

@@ -16,6 +16,14 @@ Wahlby_2004_voriconazole <- function() {
   vignette <- "Wahlby_2004_time_varying_covariates"
   units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "voriconazole", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "voriconazole", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight, time-varying (Walsh 2004 / Wahlby 2004 voriconazole pediatric cohort uses linear WT scaling on all disposition parameters).",

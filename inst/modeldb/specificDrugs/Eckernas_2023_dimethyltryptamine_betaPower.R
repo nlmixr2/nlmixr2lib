@@ -16,6 +16,16 @@ Eckernas_2023_dimethyltryptamine_betaPower <- function() {
   vignette <- "Eckernas_2023_dimethyltryptamine_EEG"
   units    <- list(time = "min", dosing = "nmol", concentration = "nmol/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "DMT", units = "nmol", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "DMT", units = "nmol", specimen = "plasma", verified = FALSE),
+    effect      = list(analyte = "DMT", units = "nmol", specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list(
     OCC = list(
       description        = "Integer-valued occasion indicator. In the Eckernas 2023 fixed-sequence study design each participant contributed two occasions: OCC = 1 is the placebo visit and OCC = 2 is the DMT visit one week later.",

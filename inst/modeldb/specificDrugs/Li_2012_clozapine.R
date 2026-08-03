@@ -39,6 +39,16 @@ Li_2012_clozapine <- function() {
   vignette <- "Li_2012_clozapine"
   units    <- list(time = "h", dosing = "umol", concentration = "umol/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot           = list(analyte = "clozapine", units = "umol", specimen = "administration site", verified = FALSE),
+    central         = list(analyte = "clozapine", units = "umol", specimen = "plasma", verified = FALSE),
+    central_norcloz = list(analyte = "norclozapine", units = "umol", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     SEXF = list(
       description        = "Biological sex indicator",

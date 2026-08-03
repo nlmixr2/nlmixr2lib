@@ -33,6 +33,17 @@ Jones_2011_PF04878691_oas <- function() {
   paper_specific_residual_sds <- c("propSd_oas")
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "PF-04878691", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "PF-04878691", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "PF-04878691", units = "mg", specimen = "plasma", verified = FALSE),
+    oas         = list(analyte = "OAS gene-expression fold change", units = "mg", specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight",

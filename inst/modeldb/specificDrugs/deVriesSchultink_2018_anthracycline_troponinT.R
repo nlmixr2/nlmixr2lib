@@ -24,6 +24,14 @@ deVriesSchultink_2018_anthracycline_troponinT <- function() {
   vignette <- "deVriesSchultink_2018_cardiotoxicity"
   units <- list(time = "day", dosing = "mg", concentration = "ng/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot_kpd = list(analyte = "anthracycline", units = "mg", specimen = "administration site", verified = FALSE)
+  )
+
   covariateData <- list(
     CONMED_DOXORUBICIN = list(
       description        = "Indicator that the subject's anthracycline cycles used doxorubicin",

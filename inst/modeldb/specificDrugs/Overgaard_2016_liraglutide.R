@@ -8,6 +8,14 @@ Overgaard_2016_liraglutide <- function() {
   # simulated mg/L concentrations to nM before reporting AUC24 in nM*h to
   # match Overgaard 2016 Fig 3 / Table S1 units.
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "liraglutide", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "liraglutide", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Baseline body weight",

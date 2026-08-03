@@ -13,6 +13,17 @@ Smythe_2012_rifampicin <- function() {
   vignette <- "Smythe_2012_rifampicin"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot    = list(analyte = "Rifampicin", units = "mg", specimen = "administration site", verified = FALSE),
+    transit1 = list(analyte = "Rifampicin", units = "mg", specimen = "administration site", verified = FALSE),
+    central  = list(analyte = "Rifampicin", units = "mg", specimen = "plasma", verified = FALSE),
+    enz_pool = list(analyte = "Enzyme (unitary-baseline)", units = "mg", specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight at baseline (time-fixed in the Smythe 2012 analysis).",

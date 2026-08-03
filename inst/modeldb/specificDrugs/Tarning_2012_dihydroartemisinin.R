@@ -39,6 +39,21 @@ Tarning_2012_dihydroartemisinin <- function() {
   vignette <- "Tarning_2012_dihydroartemisinin_piperaquine"
   units    <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot    = list(analyte = "dihydroartemisinin", units = "mg", specimen = "administration site", verified = FALSE),
+    transit1 = list(analyte = "dihydroartemisinin", units = "mg", specimen = "administration site", verified = FALSE),
+    transit2 = list(analyte = "dihydroartemisinin", units = "mg", specimen = "administration site", verified = FALSE),
+    transit3 = list(analyte = "dihydroartemisinin", units = "mg", specimen = "administration site", verified = FALSE),
+    transit4 = list(analyte = "dihydroartemisinin", units = "mg", specimen = "administration site", verified = FALSE),
+    transit5 = list(analyte = "dihydroartemisinin", units = "mg", specimen = "administration site", verified = FALSE),
+    transit6 = list(analyte = "dihydroartemisinin", units = "mg", specimen = "administration site", verified = FALSE),
+    transit7 = list(analyte = "dihydroartemisinin", units = "mg", specimen = "administration site", verified = FALSE),
+    central  = list(analyte = "dihydroartemisinin", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight",

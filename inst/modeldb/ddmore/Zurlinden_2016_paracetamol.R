@@ -21,6 +21,44 @@ Zurlinden_2016_paracetamol <- function() {
   ddmore_id    <- "DDMODEL00000237"
   replicate_of <- NULL
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    a_liver_apap             = list(analyte = "Paracetamol (APAP)", units = "mg", specimen = "administration site", verified = FALSE),
+    a_fat_apap               = list(analyte = "Paracetamol (APAP)", units = "mg", specimen = "tissue", verified = FALSE),
+    a_muscle_apap            = list(analyte = "Paracetamol (APAP)", units = "mg", specimen = "tissue", verified = FALSE),
+    a_kidney_apap            = list(analyte = "Paracetamol (APAP)", units = "mg", specimen = "tissue", verified = FALSE),
+    a_rapidly_perfused_apap  = list(analyte = "Paracetamol (APAP)", units = "mg", specimen = "tissue", verified = FALSE),
+    a_slowly_perfused_apap   = list(analyte = "Paracetamol (APAP)", units = "mg", specimen = "tissue", verified = FALSE),
+    a_venous_apap            = list(analyte = "Paracetamol (APAP)", units = "mg", specimen = "blood cell", verified = FALSE),
+    a_arterial_apap          = list(analyte = "Paracetamol (APAP)", units = "mg", specimen = "blood cell", verified = FALSE),
+    a_urine_apap             = list(analyte = "Paracetamol (APAP)", units = "mg", specimen = "urine", verified = FALSE),
+    a_hepatic_apaps          = list(analyte = "Paracetamol-glucuronide (AG)", units = "mg", specimen = "tissue", verified = FALSE),
+    a_liver_apaps            = list(analyte = "Paracetamol-glucuronide (AG)", units = "mg", specimen = "tissue", verified = FALSE),
+    a_fat_apaps              = list(analyte = "Paracetamol-glucuronide (AG)", units = "mg", specimen = "tissue", verified = FALSE),
+    a_muscle_apaps           = list(analyte = "Paracetamol-glucuronide (AG)", units = "mg", specimen = "tissue", verified = FALSE),
+    a_kidney_apaps           = list(analyte = "Paracetamol-glucuronide (AG)", units = "mg", specimen = "tissue", verified = FALSE),
+    a_rapidly_perfused_apaps = list(analyte = "Paracetamol-glucuronide (AG)", units = "mg", specimen = "tissue", verified = FALSE),
+    a_slowly_perfused_apaps  = list(analyte = "Paracetamol-glucuronide (AG)", units = "mg", specimen = "tissue", verified = FALSE),
+    a_venous_apaps           = list(analyte = "Paracetamol-glucuronide (AG)", units = "mg", specimen = "blood cell", verified = FALSE),
+    a_arterial_apaps         = list(analyte = "Paracetamol-glucuronide (AG)", units = "mg", specimen = "blood cell", verified = FALSE),
+    a_urine_apaps            = list(analyte = "Paracetamol-glucuronide (AG)", units = "mg", specimen = "urine", verified = FALSE),
+    a_hepatic_apapg          = list(analyte = "Paracetamol-sulfate (AS)", units = "mg", specimen = "tissue", verified = FALSE),
+    a_liver_apapg            = list(analyte = "Paracetamol-sulfate (AS)", units = "mg", specimen = "tissue", verified = FALSE),
+    a_fat_apapg              = list(analyte = "Paracetamol-sulfate (AS)", units = "mg", specimen = "tissue", verified = FALSE),
+    a_muscle_apapg           = list(analyte = "Paracetamol-sulfate (AS)", units = "mg", specimen = "tissue", verified = FALSE),
+    a_kidney_apapg           = list(analyte = "Paracetamol-sulfate (AS)", units = "mg", specimen = "tissue", verified = FALSE),
+    a_rapidly_perfused_apapg = list(analyte = "Paracetamol-sulfate (AS)", units = "mg", specimen = "tissue", verified = FALSE),
+    a_slowly_perfused_apapg  = list(analyte = "Paracetamol-sulfate (AS)", units = "mg", specimen = "tissue", verified = FALSE),
+    a_venous_apapg           = list(analyte = "Paracetamol-sulfate (AS)", units = "mg", specimen = "blood cell", verified = FALSE),
+    a_arterial_apapg         = list(analyte = "Paracetamol-sulfate (AS)", units = "mg", specimen = "blood cell", verified = FALSE),
+    a_urine_apapg            = list(analyte = "Paracetamol-sulfate (AS)", units = "mg", specimen = "urine", verified = FALSE),
+    a_paps                   = list(analyte = "PAPS", units = "mg", specimen = "tissue", verified = FALSE),
+    a_gut                    = list(analyte = "Paracetamol (APAP) and its conjugated metabolites APAP-glucuronide (AG", units = "mg", specimen = "tissue", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight",

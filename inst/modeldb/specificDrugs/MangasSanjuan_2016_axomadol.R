@@ -60,6 +60,22 @@ MangasSanjuan_2016_axomadol <- function() {
     "etaltotal"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot_r       = list(analyte = "axomadol (R)", units = "mg", specimen = "administration site", verified = FALSE),
+    liver_r       = list(analyte = "axomadol (R)", units = "mg", specimen = "tissue", verified = FALSE),
+    central_r     = list(analyte = "axomadol (R)", units = "mg", specimen = "plasma", verified = FALSE),
+    central_odm_r = list(analyte = "O-demethyl axomadol (R)", units = "mg", specimen = "plasma", verified = FALSE),
+    depot_s       = list(analyte = "axomadol (S)", units = "mg", specimen = "administration site", verified = FALSE),
+    liver_s       = list(analyte = "axomadol (S)", units = "mg", specimen = "tissue", verified = FALSE),
+    central_s     = list(analyte = "axomadol (S)", units = "mg", specimen = "plasma", verified = FALSE),
+    central_odm_s = list(analyte = "O-demethyl axomadol (S)", units = "mg", specimen = "plasma", verified = FALSE),
+    effect_odm_r  = list(analyte = "O-demethyl axomadol (R) effect", units = "mg", specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(

@@ -12,6 +12,17 @@ Hennig_2007_itraconazole <- function() {
   vignette <- "Hennig_2007_itraconazole"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "itraconazole", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "itraconazole", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "itraconazole", units = "mg", specimen = "plasma", verified = FALSE),
+    central_ohi = list(analyte = "hydroxy-itraconazole", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     FORM_CAPSULE = list(
       description        = "Itraconazole oral formulation indicator (1 = Sporanox capsule, 0 = Sporanox oral solution)",

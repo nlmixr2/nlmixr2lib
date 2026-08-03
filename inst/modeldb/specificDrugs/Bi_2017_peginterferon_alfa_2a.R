@@ -17,6 +17,14 @@ Bi_2017_peginterferon_alfa_2a <- function() {
   vignette <- "Bi_2017_peginterferon_alfa_2a"
   units <- list(time = "h", dosing = "ng", concentration = "ng/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "peginterferon alfa 2a", units = "ng", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "peginterferon alfa 2a", units = "ng", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     CRCL = list(
       description        = "Cockcroft-Gault creatinine clearance in raw mL/min (NOT BSA-normalized). Source column CCR in Bi 2017.",

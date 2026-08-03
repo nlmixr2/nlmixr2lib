@@ -4,6 +4,18 @@ Hennig_2015_rifabutin <- function() {
   vignette <- "Hennig_2015_rifabutin"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot                    = list(analyte = "Rifabutin", units = "mg", specimen = "administration site", verified = FALSE),
+    central                  = list(analyte = "Rifabutin", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1              = list(analyte = "Rifabutin", units = "mg", specimen = "plasma", verified = FALSE),
+    central_desacetylrbn     = list(analyte = "25-O-desacetyl rifabutin", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1_desacetylrbn = list(analyte = "25-O-desacetyl rifabutin", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Total body weight",

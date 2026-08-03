@@ -37,6 +37,21 @@
   vignette <- "Ait-Oudhia_2016_sunitinib"
   units <- list(time = "h", dosing = "mg", concentration = "ug/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot               = list(analyte = "sunitinib", units = "mg", specimen = "administration site", verified = FALSE),
+    central             = list(analyte = "sunitinib", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1         = list(analyte = "sunitinib", units = "mg", specimen = "plasma", verified = FALSE),
+    depot_su12662       = list(analyte = "SU12662", units = "mg", specimen = "administration site", verified = FALSE),
+    central_su12662     = list(analyte = "SU12662", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1_su12662 = list(analyte = "SU12662", units = "mg", specimen = "plasma", verified = FALSE),
+    svegfr2             = list(analyte = "sVEGFR2", units = "mg", specimen = "plasma", verified = FALSE),
+    tumor               = list(analyte = "sunitinib", units = "mg", specimen = "tumor", verified = FALSE)
+  )
+
   covariateData <- list(
     TUM_VOL = list(
       description        = "Baseline HCC tumor volume measured by DCE-MRI at the start of sunitinib treatment, used as the per-subject initial condition of the tumor compartment and to derive the growth rate constant kg = ln(2) / (114 * TG0^0.14) per Taouli 2005.",

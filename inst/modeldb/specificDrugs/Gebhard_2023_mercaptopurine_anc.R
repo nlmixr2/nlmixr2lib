@@ -35,6 +35,21 @@ Gebhard_2023_mercaptopurine_anc <- function() {
   #   amt [umol/m^2] = dose [mg/m^2] * 1000 / 152.18.
   # That conversion factor is a derived quantity, not printed in the paper.
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot      = list(analyte = "6-mercaptopurine (6MP)", units = NA_character_, specimen = "administration site", verified = FALSE),
+    central    = list(analyte = "6-mercaptopurine (6MP)", units = NA_character_, specimen = "plasma", verified = FALSE),
+    rbc_tgn    = list(analyte = "6-thioguanine nucleotides (E-TGN)", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    precursor1 = list(analyte = "neutrophils", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    precursor2 = list(analyte = "neutrophils", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    precursor3 = list(analyte = "neutrophils", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    precursor4 = list(analyte = "neutrophils", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    circ       = list(analyte = "neutrophils", units = NA_character_, specimen = "whole blood", verified = FALSE)
+  )
+
   covariateData <- list(
     BL_TGN_RBC = list(
       description        = "Baseline (first observed) erythrocyte 6-thioguanine-nucleotide concentration, used as the initial condition of the rbc_tgn compartment.",

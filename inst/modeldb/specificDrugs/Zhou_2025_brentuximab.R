@@ -10,6 +10,20 @@ Zhou_2025_brentuximab <- function() {
     concentration = "umol/L"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central          = list(analyte = "brentuximab vedotin (ADC)", units = "umol", specimen = "plasma", verified = FALSE),
+    peripheral1      = list(analyte = "brentuximab vedotin (ADC)", units = "umol", specimen = "plasma", verified = FALSE),
+    peripheral2      = list(analyte = "brentuximab vedotin (ADC)", units = "umol", specimen = "plasma", verified = FALSE),
+    target           = list(analyte = "monomethyl auristatin E (MMAE)", units = "umol", specimen = "not applicable", verified = FALSE),
+    lag              = list(analyte = "brentuximab vedotin (ADC)", units = "umol", specimen = "administration site", verified = FALSE),
+    central_mmae     = list(analyte = "monomethyl auristatin E (MMAE)", units = "umol", specimen = "plasma", verified = FALSE),
+    peripheral1_mmae = list(analyte = "monomethyl auristatin E (MMAE)", units = "umol", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     BSA = list(
       description        = "Baseline body surface area",

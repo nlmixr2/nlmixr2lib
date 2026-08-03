@@ -17,6 +17,14 @@ Lin_2020_glasdegib_treatment <- function() {
     concentration = "probability (the model output `sur` is a survival probability, not a drug concentration)"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    cumhaz = list(analyte = "overall survival", units = NA_character_, specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list(
     CONMED_GLASDEGIB = list(
       description        = "Binary treatment-arm indicator: 1 = subject is in the glasdegib + LDAC arm, 0 = subject is in the LDAC alone arm.",

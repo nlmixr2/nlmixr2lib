@@ -4,6 +4,36 @@ Scheuher_2023_ADC_mouse_qsp <- function() {
   vignette    <- "Scheuher_2023_ADC_platform_qsp"
   units       <- list(time = "h", dosing = "nmol", concentration = "nM")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    adc_central         = list(analyte = "ADC", units = "nmol", specimen = "plasma", verified = FALSE),
+    ab_central          = list(analyte = "naked antibody", units = "nmol", specimen = "plasma", verified = FALSE),
+    pl_central          = list(analyte = "free payload", units = "nmol", specimen = "plasma", verified = FALSE),
+    adc_peripheral      = list(analyte = "ADC", units = "nmol", specimen = "plasma", verified = FALSE),
+    ab_peripheral       = list(analyte = "naked antibody", units = "nmol", specimen = "plasma", verified = FALSE),
+    pl_peripheral       = list(analyte = "free payload", units = "nmol", specimen = "plasma", verified = FALSE),
+    adc_ext_tumor       = list(analyte = "ADC", units = "nmol", specimen = "tumor", verified = FALSE),
+    ab_ext_tumor        = list(analyte = "naked antibody", units = "nmol", specimen = "tumor", verified = FALSE),
+    pl_ext_tumor        = list(analyte = "free payload", units = "nmol", specimen = "tumor", verified = FALSE),
+    n1                  = list(analyte = "not applicable", units = "nmol", specimen = "not applicable", verified = FALSE),
+    n2                  = list(analyte = "not applicable", units = "nmol", specimen = "not applicable", verified = FALSE),
+    n3                  = list(analyte = "not applicable", units = "nmol", specimen = "not applicable", verified = FALSE),
+    n4                  = list(analyte = "not applicable", units = "nmol", specimen = "not applicable", verified = FALSE),
+    her2_surf_tumor     = list(analyte = "HER2", units = "nmol", specimen = "tumor", verified = FALSE),
+    her2_adc_surf_tumor = list(analyte = "ADC-HER2 complex", units = "nmol", specimen = "tumor", verified = FALSE),
+    her2_ab_surf_tumor  = list(analyte = "naked antibody-HER2 complex", units = "nmol", specimen = "tumor", verified = FALSE),
+    her2_endo_tumor     = list(analyte = "endosomal HER2", units = "nmol", specimen = "tumor", verified = FALSE),
+    her2_adc_endo_tumor = list(analyte = "ADC-HER2 endosome complex", units = "nmol", specimen = "tumor", verified = FALSE),
+    her2_ab_endo_tumor  = list(analyte = "naked antibody-HER2 endosome complex", units = "nmol", specimen = "tumor", verified = FALSE),
+    pl_endo_tumor       = list(analyte = "free payload in endosomes", units = "nmol", specimen = "tumor", verified = FALSE),
+    pl_cyto_tumor       = list(analyte = "free payload in cytosol", units = "nmol", specimen = "tumor", verified = FALSE),
+    t_cyto_tumor        = list(analyte = "tubulin-bound payload", units = "nmol", specimen = "tumor", verified = FALSE),
+    tpl_cyto_tumor      = list(analyte = "payload bound to tubulin", units = "nmol", specimen = "tumor", verified = FALSE)
+  )
+
   covariateData <- list()
 
   covariatesDataExcluded <- list()

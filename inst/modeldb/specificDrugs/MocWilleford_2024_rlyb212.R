@@ -6,6 +6,19 @@ MocWilleford_2024_rlyb212 <- function() {
 
   paper_specific_compartments <- c("target_peripheral")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot             = list(analyte = "RLYB212", units = "mg", specimen = "administration site", verified = FALSE),
+    central           = list(analyte = "RLYB212, free receptor, drug-receptor complex", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1       = list(analyte = "RLYB212", units = "mg", specimen = "plasma", verified = FALSE),
+    target            = list(analyte = "HPA-1a-positive platelets", units = "mg", specimen = "blood cell", verified = FALSE),
+    target_peripheral = list(analyte = "HPA-1a-positive platelets", units = "mg", specimen = "plasma", verified = FALSE),
+    complex           = list(analyte = "drug-receptor complex", units = "mg", specimen = "blood cell", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight",

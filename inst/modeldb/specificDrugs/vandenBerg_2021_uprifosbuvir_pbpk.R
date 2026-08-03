@@ -37,6 +37,34 @@ vandenBerg_2021_uprifosbuvir_pbpk <- function() {
     "pseudo_m4_gut"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot            = list(analyte = "uprifosbuvir", units = "nmol", specimen = "administration site", verified = FALSE),
+    depot2           = list(analyte = "M5", units = "nmol", specimen = "administration site", verified = FALSE),
+    gut              = list(analyte = "uprifosbuvir", units = "nmol", specimen = "tissue", verified = FALSE),
+    gut_m6           = list(analyte = "M6", units = "nmol", specimen = "tissue", verified = FALSE),
+    liver            = list(analyte = "uprifosbuvir", units = "nmol", specimen = "tissue", verified = FALSE),
+    central          = list(analyte = "uprifosbuvir", units = "nmol", specimen = "plasma", verified = FALSE),
+    peripheral1      = list(analyte = "uprifosbuvir", units = "nmol", specimen = "plasma", verified = FALSE),
+    uxp              = list(analyte = "UXP", units = "nmol", specimen = "not applicable", verified = FALSE),
+    central_m6       = list(analyte = "M6", units = "nmol", specimen = "plasma", verified = FALSE),
+    transit_cxp_m5   = list(analyte = "CXP", units = "nmol", specimen = "administration site", verified = FALSE),
+    cxp              = list(analyte = "CXP", units = "nmol", specimen = "not applicable", verified = FALSE),
+    central_m5       = list(analyte = "M5", units = "nmol", specimen = "plasma", verified = FALSE),
+    portal_vein      = list(analyte = "uprifosbuvir", units = "nmol", specimen = "plasma", verified = FALSE),
+    gut_m5           = list(analyte = "M5", units = "nmol", specimen = "tissue", verified = FALSE),
+    transit_gut_m5_1 = list(analyte = "M5", units = "nmol", specimen = "administration site", verified = FALSE),
+    transit_gut_m5_2 = list(analyte = "M5", units = "nmol", specimen = "administration site", verified = FALSE),
+    transit_gut_m5_3 = list(analyte = "M5", units = "nmol", specimen = "administration site", verified = FALSE),
+    transit_gut_m5_4 = list(analyte = "M5", units = "nmol", specimen = "administration site", verified = FALSE),
+    transit_gut_par  = list(analyte = "uprifosbuvir", units = "nmol", specimen = "plasma", verified = FALSE),
+    peripheral2      = list(analyte = "uprifosbuvir", units = "nmol", specimen = "plasma", verified = FALSE),
+    pseudo_m4_gut    = list(analyte = "M4", units = "nmol", specimen = "tissue", verified = FALSE)
+  )
+
   covariateData <- list(
     DOSE = list(
       description        = paste(

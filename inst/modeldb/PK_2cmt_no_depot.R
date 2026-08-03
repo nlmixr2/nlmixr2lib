@@ -2,6 +2,15 @@ PK_2cmt_no_depot <- function() {
   description <- "Two compartment PK model with linear clearance using differential equations"
   reference <- "nlmixr2lib template"
   units <- list(time = "time_unit", dosing = "dose_unit", concentration = "conc_unit/vol_unit")
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "drug", units = NA_character_, specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "drug", units = NA_character_, specimen = "plasma", verified = FALSE)
+  )
+
   ini({
     lcl <- 1 ; label("Clearance (CL)")
     lvc  <- 3 ; label("Central volume of distribution (V)")

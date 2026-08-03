@@ -16,6 +16,15 @@ Denti_2010_glucoseMinimal <- function() {
     concentration = "mg/dL"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central        = list(analyte = "Glucose", units = NA_character_, specimen = "plasma", verified = FALSE),
+    insulin_action = list(analyte = "Insulin", units = NA_character_, specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     AGE = list(
       description = "Subject age",

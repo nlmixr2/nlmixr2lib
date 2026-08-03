@@ -32,6 +32,20 @@ Franken_2015_morphine <- function() {
     concentration = "ug/L"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "morphine", units = "mg", specimen = "administration site", verified = FALSE),
+    depot2      = list(analyte = "morphine", units = "mg", specimen = "administration site", verified = FALSE),
+    depot3      = list(analyte = "morphine", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "morphine", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "morphine", units = "mg", specimen = "plasma", verified = FALSE),
+    central_m3g = list(analyte = "M3G", units = "mg", specimen = "plasma", verified = FALSE),
+    central_m6g = list(analyte = "M6G", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     CRCL = list(
       description        = paste(

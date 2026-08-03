@@ -9,6 +9,16 @@ Snelder_2020_ASP8232 <- function() {
     dosing_notes  = "Amounts are carried internally in nmol so C = A / V yields nmol/L (equivalent to nM), directly comparable to KD, sVAP-1c, and mVAP-1 (all in nM per the paper). Convert an mg dose to nmol by multiplying by 1000/444, i.e. dividing by the ASP8232 free-base molecular weight of 444 g/mol (Snelder 2020 Main modeling assumption 6). Example: a 40 mg oral dose corresponds to 40 * 1000 / 444 = 90.09 nmol."
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "ASP8232", units = "nmol", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "ASP8232", units = "nmol", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "ASP8232", units = "nmol", specimen = "plasma", verified = FALSE),
+    peripheral2 = list(analyte = "ASP8232", units = "nmol", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     CRCL = list(
       description        = "Baseline estimated glomerular filtration rate (CKD-EPI equation), BSA-normalised.",

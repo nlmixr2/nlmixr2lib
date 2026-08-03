@@ -4,6 +4,18 @@ Joerger_2006_methotrexate <- function() {
   vignette    <- "Joerger_2006_methotrexate"
   units       <- list(time = "h", dosing = "umol", concentration = "umol/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central            = list(analyte = "methotrexate (MTX)", units = "umol", specimen = "plasma", verified = FALSE),
+    peripheral1        = list(analyte = "methotrexate (MTX)", units = "umol", specimen = "plasma", verified = FALSE),
+    peripheral2        = list(analyte = "methotrexate (MTX)", units = "umol", specimen = "plasma", verified = FALSE),
+    central_7ohmtx     = list(analyte = "7-hydroxy-methotrexate (7-OH-MTX)", units = "umol", specimen = "plasma", verified = FALSE),
+    peripheral1_7ohmtx = list(analyte = "7-hydroxy-methotrexate (7-OH-MTX)", units = "umol", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     CRCL = list(
       description        = "Baseline creatinine clearance estimated from serum creatinine via the Cockcroft-Gault formula and truncated at 140 mL/min. Time-fixed per cycle; the baseline value before each high-dose MTX cycle is used.",

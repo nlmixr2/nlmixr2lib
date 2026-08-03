@@ -39,6 +39,22 @@ Heathman_2024_efavirenz <- function() {
     concentration = "mg/L (= ug/mL) for plasma EFV (Cc), 8-OH EFV (Cc_8oh), and 7-OH EFV (Cc_7oh)"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot           = list(analyte = "efavirenz", units = "mg", specimen = "administration site", verified = FALSE),
+    central         = list(analyte = "efavirenz", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1     = list(analyte = "efavirenz", units = "mg", specimen = "plasma", verified = FALSE),
+    central_8oh     = list(analyte = "8-OH efavirenz", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1_8oh = list(analyte = "8-OH efavirenz", units = "mg", specimen = "plasma", verified = FALSE),
+    central_7oh     = list(analyte = "7-OH efavirenz", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1_7oh = list(analyte = "7-OH efavirenz", units = "mg", specimen = "plasma", verified = FALSE),
+    enzyme_2b6      = list(analyte = "CYP2B6 enzyme", units = "mg", specimen = "not applicable", verified = FALSE),
+    enzyme_2a6      = list(analyte = "CYP2A6 enzyme", units = "mg", specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list(
     CYP2B6_IM = list(
       description        = "1 = CYP2B6 intermediate-metabolizer phenotype, 0 = otherwise. Reference category (both CYP2B6_IM and CYP2B6_SM equal to 0) is the CYP2B6 normal (extensive) metabolizer phenotype.",

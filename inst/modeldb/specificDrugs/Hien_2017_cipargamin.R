@@ -38,6 +38,20 @@ Hien_2017_cipargamin <- function() {
     "parasite_refractory"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot               = list(analyte = "cipargamin", units = "mg", specimen = "administration site", verified = FALSE),
+    transit1            = list(analyte = "cipargamin", units = "mg", specimen = "administration site", verified = FALSE),
+    transit2            = list(analyte = "cipargamin", units = "mg", specimen = "administration site", verified = FALSE),
+    transit3            = list(analyte = "cipargamin", units = "mg", specimen = "administration site", verified = FALSE),
+    central             = list(analyte = "cipargamin", units = "mg", specimen = "plasma", verified = FALSE),
+    parasite_sensitive  = list(analyte = "Plasmodium falciparum parasites", units = "mg", specimen = "blood cell", verified = FALSE),
+    parasite_refractory = list(analyte = "Plasmodium falciparum parasites refractory to cipargamin", units = "mg", specimen = "blood cell", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight at enrolment",

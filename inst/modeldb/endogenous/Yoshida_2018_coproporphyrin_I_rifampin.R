@@ -19,6 +19,13 @@ Yoshida_2018_coproporphyrin_I_rifampin <- function() {
   vignette <- "Yoshida_2018_coproporphyrin_I_rifampin"
   units <- list(time = "h", dosing = "none", concentration = "nmol/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central = list(analyte = "coproporphyrin I rifampin", units = NA_character_, specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     CP_RIF_UM = list(
       description        = "Instantaneous rifampin portal-vein unbound concentration as a time-varying perpetrator covariate driving competitive OATP1B inhibition of the hepatic component of CPI clearance (Yoshida 2018 Methods, Model-based analysis with inhibitor kinetics).",

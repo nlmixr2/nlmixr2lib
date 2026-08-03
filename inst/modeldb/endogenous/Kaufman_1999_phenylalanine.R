@@ -10,6 +10,14 @@ Kaufman_1999_phenylalanine <- function() {
     notes          = "Deterministic mechanistic model; Kaufman 1999 fits no data. The six kinetic constants (vmax_pah, km_pah, kact_pah, vmax_trans, km_trans, v_npd) are derived from external literature or from Kowlessur and Kaufman unpublished measurements as cited in the paper's Methods; f_pah and bl_phe are scenario knobs varied to represent different physiological states (see Kaufman 1999 Table 1). No IIV; no residual error; no dosing events (the endogenous Phe pool starts at bl_phe). Body weight enters only the paper's Methods calculations (a 500 mL/kg volume-of-distribution assumption for translating urinary metabolite excretion into a plasma-rate; see Kaufman 1999 p.3162) and is NOT a covariate on the run-time model. Km_TRANS = 1.37 mM is Kaufman's calculation from Guldberg 1995 (ref 21) load-test data with reported mean +- SD = 1.37 +- 0.14 mM (n = 3); the point estimate is used here."
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    phe = list(analyte = "phenylalanine", units = NA_character_, specimen = "plasma", verified = FALSE)
+  )
+
   ini({
     vmax_pah <- fixed(0.9);   label("Maximum rate of Phe hydroxylation by PAH (mmol/L/h)")   # Kaufman 1999 p.3161 (ref 20: Guettler & Hansen 1977, Scand J Clin Lab Invest 37, 717-722); Kaufman notes this value is approximate ("probably an underestimate")
     km_pah   <- fixed(0.51);  label("Michaelis constant for Phe on PAH (mM)")                # Kaufman 1999 p.3161 (Kowlessur & Kaufman, unpublished data)

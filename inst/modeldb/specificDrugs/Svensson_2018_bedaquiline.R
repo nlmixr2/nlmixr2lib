@@ -15,6 +15,23 @@ Svensson_2018_bedaquiline <- function() {
   vignette <- "Svensson_2018_bedaquiline"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot          = list(analyte = "bedaquiline", units = "mg", specimen = "administration site", verified = FALSE),
+    transit1       = list(analyte = "bedaquiline", units = "mg", specimen = "administration site", verified = FALSE),
+    transit2       = list(analyte = "bedaquiline", units = "mg", specimen = "administration site", verified = FALSE),
+    transit3       = list(analyte = "bedaquiline", units = "mg", specimen = "administration site", verified = FALSE),
+    transit4       = list(analyte = "bedaquiline", units = "mg", specimen = "administration site", verified = FALSE),
+    central        = list(analyte = "bedaquiline", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1    = list(analyte = "bedaquiline", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral2    = list(analyte = "bedaquiline", units = "mg", specimen = "plasma", verified = FALSE),
+    central_m2     = list(analyte = "N-desmethyl bedaquiline (M2)", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1_m2 = list(analyte = "N-desmethyl bedaquiline (M2)", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     FORM_SUSPENSION = list(
       description        = "Suspended-tablet formulation indicator (1 = four 100 mg bedaquiline tablets suspended in approximately 30 mL water at bedside immediately before swallowing; 0 = four 100 mg tablets swallowed whole with water)",

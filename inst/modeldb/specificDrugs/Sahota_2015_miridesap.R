@@ -8,6 +8,19 @@ Sahota_2015_miridesap <- function() {
     concentration = "ng/mL (CPHPC plasma); ng/mL-equivalent for SAP (mg/L * 1000)"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot             = list(analyte = "miridesap", units = "mg", specimen = "administration site", verified = FALSE),
+    central           = list(analyte = "miridesap", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1       = list(analyte = "miridesap", units = "mg", specimen = "plasma", verified = FALSE),
+    total_target      = list(analyte = "serum amyloid P (SAP)", units = "mg", specimen = "plasma", verified = FALSE),
+    target_peripheral = list(analyte = "serum amyloid P (SAP)", units = "mg", specimen = "plasma", verified = FALSE),
+    complex           = list(analyte = "miridesap-SAP complex", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     CRCL = list(
       description        = "Creatinine clearance calculated by the MDRD formula at baseline (Sahota 2015 Methods, Dataset production).",

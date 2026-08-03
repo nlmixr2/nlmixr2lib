@@ -4,6 +4,14 @@ Swart_2004_lorazepam <- function() {
   vignette    <- "Swart_2004_lorazepam_midazolam"
   units       <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "lorazepam", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "lorazepam", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     PEEP = list(
       description        = "Positive end expiratory pressure applied during positive-pressure mechanical ventilation",

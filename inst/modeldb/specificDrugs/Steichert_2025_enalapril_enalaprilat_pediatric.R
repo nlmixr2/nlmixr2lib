@@ -4,6 +4,16 @@ Steichert_2025_enalapril_enalaprilat_pediatric <- function() {
   vignette    <- "Steichert_2025_enalapril_enalaprilat_pediatric"
   units       <- list(time = "h", dosing = "ug", concentration = "ug/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot         = list(analyte = "enalapril", units = "ug", specimen = "administration site", verified = FALSE),
+    central       = list(analyte = "enalapril", units = "ug", specimen = "plasma", verified = FALSE),
+    central_enaat = list(analyte = "enalaprilat", units = "ug", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Total body weight, used as the allometric size descriptor on the apparent clearances and apparent volumes of distribution of both enalapril and enalaprilat. Reference weight is the weighted median (5 kg) computed by Perl-speaks-NONMEM across the LENA ACEi-naive cohort.",

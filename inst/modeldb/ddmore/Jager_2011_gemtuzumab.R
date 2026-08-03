@@ -14,6 +14,18 @@ Jager_2011_gemtuzumab <- function() {
   ddmore_id    <- "DDMODEL00000229"
   replicate_of <- NULL
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "gemtuzumab ozogamicin", units = "mg", specimen = "plasma", verified = FALSE),
+    target      = list(analyte = "CD33 receptor", units = "mg", specimen = "blood cell", verified = FALSE),
+    complex     = list(analyte = "gemtuzumab ozogamicin-CD33 complex", units = "mg", specimen = "blood cell", verified = FALSE),
+    cells       = list(analyte = "leukemic blast cells", units = "mg", specimen = "tissue", verified = FALSE),
+    peripheral1 = list(analyte = "gemtuzumab ozogamicin", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(

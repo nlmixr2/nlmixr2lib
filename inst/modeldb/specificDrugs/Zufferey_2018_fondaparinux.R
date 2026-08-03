@@ -15,6 +15,14 @@ Zufferey_2018_fondaparinux <- function() {
     concentration = "probability (the model output `sur` is the survival probability for avoiding a major bleeding event; AUCinf is reported in mg*h/L as a derived internal quantity)"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    cumhaz = list(analyte = "hazard", units = NA_character_, specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list(
     DOSE = list(
       description        = "Per-subject daily fondaparinux dose (mg/day). Time-fixed within a regimen; in the pooled cohort POP-A-RIX subjects received 2.5 mg once daily and PROPICE subjects received 1.5 mg once daily.",

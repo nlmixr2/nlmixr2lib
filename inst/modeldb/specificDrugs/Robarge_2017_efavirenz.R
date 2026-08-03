@@ -28,6 +28,15 @@ Robarge_2017_efavirenz <- function() {
   vignette <- "Robarge_2017_efavirenz"
   units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "efavirenz", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "efavirenz", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "efavirenz", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     FFM = list(
       description        = "Fat-free mass derived from total body weight, height and sex via the Janmahasatian et al. (2005) semimechanistic formula; FFM = TBW - FM.",

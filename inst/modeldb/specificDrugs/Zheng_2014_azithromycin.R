@@ -4,6 +4,23 @@ Zheng_2014_azithromycin <- function() {
   vignette <- "Zheng_2014_azithromycin"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot        = list(analyte = "azithromycin", units = "mg", specimen = "administration site", verified = FALSE),
+    central      = list(analyte = "azithromycin", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1  = list(analyte = "azithromycin", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral2  = list(analyte = "azithromycin", units = "mg", specimen = "plasma", verified = FALSE),
+    muscle       = list(analyte = "azithromycin", units = "mg", specimen = "tissue", verified = FALSE),
+    muscle_deep  = list(analyte = "azithromycin", units = "mg", specimen = "tissue", verified = FALSE),
+    adipose      = list(analyte = "azithromycin", units = "mg", specimen = "tissue", verified = FALSE),
+    adipose_deep = list(analyte = "azithromycin", units = "mg", specimen = "tissue", verified = FALSE),
+    pmn          = list(analyte = "azithromycin", units = "mg", specimen = "tissue", verified = FALSE),
+    pmn_deep     = list(analyte = "azithromycin", units = "mg", specimen = "tissue", verified = FALSE)
+  )
+
   covariateData <- list()
 
   covariatesDataExcluded <- list(

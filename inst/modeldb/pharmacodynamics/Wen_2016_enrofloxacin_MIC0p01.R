@@ -26,6 +26,14 @@ Wen_2016_enrofloxacin_MIC0p01 <- function() {
   # CFU/mL) and is not in the canonical compartment register.
   paper_specific_compartments <- c("bact")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    bact = list(analyte = "Pasteurella multocida", units = NA_character_, specimen = "bronchoalveolar lavage", verified = FALSE)
+  )
+
   covariateData <- list(
     Cenrofloxacin = list(
       description        = "Enrofloxacin concentration in the broth",

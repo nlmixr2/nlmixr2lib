@@ -24,6 +24,14 @@ Koloskoff_2025_ganciclovir <- function() {
     AUC_GCV       = "mg*h/L (per q12h dosing interval; q24h regimens are entered as AUC_0-24 / 2 so all data live in a q12h framework)"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    viralLoad = list(analyte = "CMV", units = NA_character_, specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     AUC_GCV = list(
       description        = "Time-varying ganciclovir AUC over a q12h dosing interval (AUC_0-12) used as the drug-exposure input to the viral-load PD model.",

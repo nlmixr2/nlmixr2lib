@@ -33,6 +33,23 @@ Ramharter_2019_mefloquine <- function() {
   vignette <- "Ramharter_2019_mefloquine"
   units <- list(time = "h", dosing = "nmol", concentration = "nmol/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot_r         = list(analyte = "(+)-mefloquine", units = "nmol", specimen = "administration site", verified = FALSE),
+    central_r       = list(analyte = "(+)-mefloquine", units = "nmol", specimen = "plasma", verified = FALSE),
+    peripheral1_r   = list(analyte = "(+)-mefloquine", units = "nmol", specimen = "plasma", verified = FALSE),
+    depot_s         = list(analyte = "(-)-mefloquine", units = "nmol", specimen = "administration site", verified = FALSE),
+    central_s       = list(analyte = "(-)-mefloquine", units = "nmol", specimen = "plasma", verified = FALSE),
+    peripheral1_s   = list(analyte = "(-)-mefloquine", units = "nmol", specimen = "plasma", verified = FALSE),
+    central_cmq     = list(analyte = "carboxymefloquine", units = "nmol", specimen = "plasma", verified = FALSE),
+    peripheral1_cmq = list(analyte = "carboxymefloquine", units = "nmol", specimen = "plasma", verified = FALSE),
+    precursor1      = list(analyte = "enzymatic-RNA precursor pool", units = "nmol", specimen = "not applicable", verified = FALSE),
+    precursor2      = list(analyte = "enzyme-pool", units = "nmol", specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight at baseline.",

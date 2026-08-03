@@ -8,6 +8,23 @@ HillMcManus_2017_febuxostat_lesinurad <- function() {
     concentration = "mg/dL"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot_febx       = list(analyte = "febuxostat", units = "mg", specimen = "administration site", verified = FALSE),
+    central_febx     = list(analyte = "febuxostat", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1_febx = list(analyte = "febuxostat", units = "mg", specimen = "plasma", verified = FALSE),
+    depot_lesn       = list(analyte = "lesinurad", units = "mg", specimen = "administration site", verified = FALSE),
+    central_lesn     = list(analyte = "lesinurad", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1_lesn = list(analyte = "lesinurad", units = "mg", specimen = "plasma", verified = FALSE),
+    xanthine         = list(analyte = "hypoxanthine", units = "mg", specimen = "plasma", verified = FALSE),
+    urate            = list(analyte = "urate", units = "mg", specimen = "plasma", verified = FALSE),
+    xanthine_urine   = list(analyte = "hypoxanthine", units = "mg", specimen = "urine", verified = FALSE),
+    urate_urine      = list(analyte = "urate", units = "mg", specimen = "urine", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight",

@@ -22,6 +22,14 @@ EudyByrne_2021_buprenorphine <- function() {
 
   depends <- c("Cbuprenorphine", "PNA")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    nows = list(analyte = "MOTHER NAS severity scores", units = NA_character_, specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list(
     Cbuprenorphine = list(
       description        = "Buprenorphine plasma concentration (central compartment) driving the drug effect in the indirect-response NAS-score PD model. Time-varying; carried in the event-table `covariates` block.",

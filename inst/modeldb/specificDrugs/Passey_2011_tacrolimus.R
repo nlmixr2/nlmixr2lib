@@ -22,6 +22,13 @@ Passey_2011_tacrolimus <- function() {
   vignette <- "Passey_2011_tacrolimus"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central = list(analyte = "tacrolimus", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     POD = list(
       description        = "Post-operative day (days post-transplant)",

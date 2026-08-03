@@ -33,6 +33,18 @@ Kang_2023_pyronaridine_hamster_pbpk <- function() {
   # (102.01 g hamster) and fits the biochemical parameters to pooled
   # data. Body weight is therefore baked into the Table 1 constants
   # rather than entering as a scaling covariate.
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "pyronaridine", units = "ug", specimen = "administration site", verified = FALSE),
+    blood   = list(analyte = "pyronaridine", units = "ug", specimen = "whole blood", verified = FALSE),
+    lung    = list(analyte = "pyronaridine", units = "ug", specimen = "tissue", verified = FALSE),
+    trachea = list(analyte = "pyronaridine", units = "ug", specimen = "tissue", verified = FALSE),
+    other   = list(analyte = "pyronaridine", units = "ug", specimen = "tissue", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(

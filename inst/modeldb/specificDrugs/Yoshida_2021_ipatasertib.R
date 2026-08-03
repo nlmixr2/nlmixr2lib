@@ -30,6 +30,21 @@ Yoshida_2021_ipatasertib <- function() {
   vignette <- "Yoshida_2021_ipatasertib"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot          = list(analyte = "ipatasertib", units = "mg", specimen = "administration site", verified = FALSE),
+    central        = list(analyte = "ipatasertib", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1    = list(analyte = "ipatasertib", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral2    = list(analyte = "ipatasertib", units = "mg", specimen = "plasma", verified = FALSE),
+    depot_m1       = list(analyte = "M1 (G-037720)", units = "mg", specimen = "administration site", verified = FALSE),
+    central_m1     = list(analyte = "M1 (G-037720)", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1_m1 = list(analyte = "M1 (G-037720)", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral2_m1 = list(analyte = "M1 (G-037720)", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     AGE = list(
       description        = "Subject baseline age in years.",

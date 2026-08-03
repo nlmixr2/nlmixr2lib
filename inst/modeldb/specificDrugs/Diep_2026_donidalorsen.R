@@ -4,6 +4,17 @@ Diep_2026_donidalorsen <- function() {
   vignette    <- "Diep_2026_donidalorsen"
   units       <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "donidalorsen", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "donidalorsen", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "donidalorsen", units = "mg", specimen = "plasma", verified = FALSE),
+    effect      = list(analyte = "prekallikrein inhibition", units = "mg", specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Total body weight (baseline)",

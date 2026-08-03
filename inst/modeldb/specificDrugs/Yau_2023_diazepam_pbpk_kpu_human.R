@@ -37,6 +37,27 @@ Yau_2023_diazepam_pbpk_kpu_human <- function() {
   vignette <- "Yau_2023_diazepam_pbpk"
   units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central  = list(analyte = "diazepam", units = "mg", specimen = "plasma", verified = FALSE),
+    adipose  = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = FALSE),
+    bone     = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = FALSE),
+    brain    = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = FALSE),
+    heart    = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = FALSE),
+    kidney   = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = FALSE),
+    muscle   = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = FALSE),
+    skin     = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = FALSE),
+    other    = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = FALSE),
+    gut      = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = FALSE),
+    stomach  = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = FALSE),
+    spleen   = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = FALSE),
+    pancreas = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = FALSE),
+    liver    = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(

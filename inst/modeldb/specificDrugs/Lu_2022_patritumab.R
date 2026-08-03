@@ -8,6 +8,16 @@ Lu_2022_patritumab <- function() {
     concentration = "ug/mL"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "patritumab deruxtecan (intact ADC)", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "patritumab deruxtecan (intact ADC)", units = "mg", specimen = "plasma", verified = FALSE),
+    central_dxd = list(analyte = "unconjugated DXd (MAAA-1181a, exatecan-derivative payload)", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Baseline body weight",

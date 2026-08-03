@@ -42,6 +42,17 @@ Li_2015_taspoglutide_mbma <- function() {
     )
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    fpg_placebo   = list(analyte = "Fasting Plasma Glucose (change from baseline)", units = NA_character_, specimen = "plasma", verified = FALSE),
+    fpg_drug      = list(analyte = "Fasting Plasma Glucose (change from baseline)", units = NA_character_, specimen = "plasma", verified = FALSE),
+    hba1c_placebo = list(analyte = "Glycosylated Hemoglobin (change from baseline)", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    hba1c_drug    = list(analyte = "Glycosylated Hemoglobin (change from baseline)", units = NA_character_, specimen = "blood cell", verified = FALSE)
+  )
+
   covariateData <- list(
     METRIC_TASPO_C = list(
       description        = paste0(

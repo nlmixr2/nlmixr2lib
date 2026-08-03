@@ -21,6 +21,15 @@ Hansson_2013_sunitinib_os <- function() {
     concentration = "probability (the model output `sur` is a survival probability, not a drug concentration)"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    cumhaz      = list(analyte = "overall survival event count", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    cumhaz_cens = list(analyte = "censored overall survival event count", units = NA_character_, specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list(
     ANC = list(
       description        = "Time-varying absolute neutrophil count (10^9/L), typically simulated from the upstream Hansson_2013_sunitinib_myelosuppression model. Enters the hazard via beta_anc * ANC. Lower ANC -> lower hazard (paper: 'A more pronounced decrease in ANC over time ... decreased the hazard risk of death').",

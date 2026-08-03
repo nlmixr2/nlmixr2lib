@@ -4,6 +4,14 @@ Galluppi_2016_BIIB023 <- function() {
   vignette <- "Galluppi_2016_BIIB023"
   units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "BIIB023", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "BIIB023", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Total body weight (baseline)",

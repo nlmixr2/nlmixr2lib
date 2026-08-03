@@ -38,6 +38,18 @@ Ibrahim_2023_ibrutinib_leukocyte_spd <- function() {
     concentration = "leukocyte count in 10^9 cells/L; SPD in cm^2 (neither output is a drug concentration)"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    pbtk        = list(analyte = "phosphorylated Bruton tyrosine kinase (pBtk)", units = NA_character_, specimen = "administration site", verified = FALSE),
+    cll_subpop1 = list(analyte = "CLL cell subpopulation 1", units = NA_character_, specimen = "lymph", verified = FALSE),
+    cll_subpop2 = list(analyte = "CLL cell subpopulation 2", units = NA_character_, specimen = "lymph", verified = FALSE),
+    cll_subpop3 = list(analyte = "CLL cell subpopulation 3", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    cll_bld     = list(analyte = "CLL cells in blood", units = NA_character_, specimen = "blood cell", verified = FALSE)
+  )
+
   covariateData <- list(
     AUC_IBRU = list(
       description        = "Daily 0-24 h area under the ibrutinib plasma concentration-time curve, AUC(0-24).",

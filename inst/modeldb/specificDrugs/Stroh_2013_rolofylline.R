@@ -30,6 +30,18 @@ Stroh_2013_rolofylline <- function() {
   vignette    <- "Stroh_2013_rolofylline"
   units       <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central             = list(analyte = "rolofylline", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1         = list(analyte = "rolofylline", units = "mg", specimen = "plasma", verified = FALSE),
+    central_m1trans     = list(analyte = "M1-trans", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1_m1trans = list(analyte = "M1-trans", units = "mg", specimen = "plasma", verified = FALSE),
+    central_m1cis       = list(analyte = "M1-cis", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(

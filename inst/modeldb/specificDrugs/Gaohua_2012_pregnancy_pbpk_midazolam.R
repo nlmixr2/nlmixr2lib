@@ -36,6 +36,28 @@ Gaohua_2012_pregnancy_pbpk_midazolam <- function() {
 
   paper_specific_compartments <- c("preg")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot    = list(analyte = "midazolam", units = "mg", specimen = "administration site", verified = FALSE),
+    lung     = list(analyte = "midazolam", units = "mg", specimen = "tissue", verified = FALSE),
+    adipose  = list(analyte = "midazolam", units = "mg", specimen = "tissue", verified = FALSE),
+    bone     = list(analyte = "midazolam", units = "mg", specimen = "tissue", verified = FALSE),
+    brain    = list(analyte = "midazolam", units = "mg", specimen = "tissue", verified = FALSE),
+    heart    = list(analyte = "midazolam", units = "mg", specimen = "tissue", verified = FALSE),
+    kidney   = list(analyte = "midazolam", units = "mg", specimen = "tissue", verified = FALSE),
+    gut      = list(analyte = "midazolam", units = "mg", specimen = "tissue", verified = FALSE),
+    liver    = list(analyte = "midazolam", units = "mg", specimen = "tissue", verified = FALSE),
+    muscle   = list(analyte = "midazolam", units = "mg", specimen = "tissue", verified = FALSE),
+    skin     = list(analyte = "midazolam", units = "mg", specimen = "tissue", verified = FALSE),
+    spleen   = list(analyte = "midazolam", units = "mg", specimen = "tissue", verified = FALSE),
+    preg     = list(analyte = "midazolam", units = "mg", specimen = "not applicable", verified = FALSE),
+    arterial = list(analyte = "midazolam", units = "mg", specimen = "blood cell", verified = FALSE),
+    venous   = list(analyte = "midazolam", units = "mg", specimen = "blood cell", verified = FALSE)
+  )
+
   covariateData <- list(
     GA = list(
       description        = "Gestational age at the time of dose administration",

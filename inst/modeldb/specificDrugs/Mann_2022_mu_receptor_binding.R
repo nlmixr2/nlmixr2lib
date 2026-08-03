@@ -52,6 +52,15 @@ Mann_2022_mu_receptor_binding <- function() {
     concentration = "fraction (RL_op and RL_antag are fractions of total mu-opioid receptor pool)"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    RL_op    = list(analyte = "mu-opioid receptors bound by opioid agonist", units = NA_character_, specimen = "retina", verified = FALSE),
+    RL_antag = list(analyte = "mu-opioid receptors bound by opioid antagonist", units = NA_character_, specimen = "retina", verified = FALSE)
+  )
+
   covariateData <- list(
     OPIOID_ID = list(
       description        = "Integer 1..13 selecting which Table-S2 (Mann 2022) or Table-S3 (Laffont 2024) ligand fills the opioid agonist slot at runtime",

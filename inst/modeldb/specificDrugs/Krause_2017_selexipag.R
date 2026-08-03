@@ -4,6 +4,18 @@ Krause_2017_selexipag <- function() {
   vignette    <- "Krause_2017_selexipag"
   units       <- list(time = "h", dosing = "ug", concentration = "ng/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot           = list(analyte = "selexipag", units = "ug", specimen = "administration site", verified = FALSE),
+    central         = list(analyte = "selexipag", units = "ug", specimen = "plasma", verified = FALSE),
+    peripheral1     = list(analyte = "selexipag", units = "ug", specimen = "plasma", verified = FALSE),
+    central_act     = list(analyte = "ACT-333679", units = "ug", specimen = "plasma", verified = FALSE),
+    peripheral1_act = list(analyte = "ACT-333679", units = "ug", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Total body weight at baseline.",

@@ -35,6 +35,15 @@ Othman_2013_ABT_102 <- function() {
     concentration_notes = "ABT-102 plasma Cc; central is internally in mg with vc in L, Cc = 1000 * central / vc to express in ng/mL. Body temperature outputs BT_oral and BT_core are in degC."
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot    = list(analyte = "ABT 102", units = "mg", specimen = "administration site", verified = FALSE),
+    transit1 = list(analyte = "ABT 102", units = "mg", specimen = "administration site", verified = FALSE),
+    central  = list(analyte = "ABT 102", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     FORM_SOLUTION = list(
       description        = "Formulation indicator for ABT-102: 1 = oral solution (Studies 1 and 2), 0 = solid-dispersion (Study 3, the bioavailability and lag-time anchor in Othman 2012 / 2013). The solid-dispersion formulation is the F = 1 reference; the oral solution has a relative bioavailability of 40% and a shorter absorption lag (0.3 h vs 0.6 h) per Othman 2013 PK/PD-model Results paragraph 1 (citing the upstream Othman 2012 popPK fit).",

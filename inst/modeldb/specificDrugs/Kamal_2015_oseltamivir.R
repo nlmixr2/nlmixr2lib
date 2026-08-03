@@ -46,6 +46,16 @@ Kamal_2015_oseltamivir <- function() {
     concentration = "TCID50/mL of nasal wash (viralLoad)"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    target_cells   = list(analyte = "uninfected respiratory epithelial cells", units = NA_character_, specimen = "tissue", verified = FALSE),
+    infected_cells = list(analyte = "infected respiratory epithelial cells", units = NA_character_, specimen = "tissue", verified = FALSE),
+    virus          = list(analyte = "free virus", units = NA_character_, specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list(
     DOSE = list(
       description        = "Per-record administered oseltamivir dose level (mg) driving the inhibitory Hill function on viral production rate p. Set to 0 during placebo arms or outside the 5-day b.i.d. treatment window. The source paper does not include an oseltamivir PK ODE; dose enters the PD model directly (Equation 4).",

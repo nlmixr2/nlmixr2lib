@@ -6,6 +6,21 @@ Landersdorfer_2018_meropenem_tobramycin_PAO1 <- function() {
 
   paper_specific_compartment_pattern <- "^bact_"
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    bact_susceptible_susceptible1 = list(analyte = "Pseudomonas aeruginosa PAO1 (susceptible)", units = NA_character_, specimen = "bile", verified = FALSE),
+    bact_susceptible_susceptible2 = list(analyte = "Pseudomonas aeruginosa PAO1 (susceptible)", units = NA_character_, specimen = "bile", verified = FALSE),
+    bact_resistant_intermediate1  = list(analyte = "Pseudomonas aeruginosa PAO1 (resistant/intermediate)", units = NA_character_, specimen = "bile", verified = FALSE),
+    bact_resistant_intermediate2  = list(analyte = "Pseudomonas aeruginosa PAO1 (resistant/intermediate)", units = NA_character_, specimen = "bile", verified = FALSE),
+    bact_intermediate_resistant1  = list(analyte = "Pseudomonas aeruginosa PAO1 (intermediate/resistant)", units = NA_character_, specimen = "bile", verified = FALSE),
+    bact_intermediate_resistant2  = list(analyte = "Pseudomonas aeruginosa PAO1 (intermediate/resistant)", units = NA_character_, specimen = "bile", verified = FALSE),
+    cmem                          = list(analyte = "meropenem", units = NA_character_, specimen = "administration site", verified = FALSE),
+    ctob                          = list(analyte = "tobramycin", units = NA_character_, specimen = "administration site", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(

@@ -12,6 +12,18 @@ Mohamed_2012_gentamicin <- function() {
   # No patient covariates: this is an in-vitro mechanism-based PKPD model.
   # The gentamicin exposure is a state variable (cgent) dosed by the user,
   # not a covariate column.
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    bact_growing = list(analyte = "Escherichia coli ATCC 25922 (drug-susceptible)", units = NA_character_, specimen = "bile", verified = FALSE),
+    bact_resting = list(analyte = "Escherichia coli ATCC 25922 (insusceptible)", units = NA_character_, specimen = "bile", verified = FALSE),
+    ar_off       = list(analyte = "gentamicin", units = NA_character_, specimen = "administration site", verified = FALSE),
+    ar_on        = list(analyte = "gentamicin", units = NA_character_, specimen = "administration site", verified = FALSE),
+    cgent        = list(analyte = "gentamicin", units = NA_character_, specimen = "bile", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(

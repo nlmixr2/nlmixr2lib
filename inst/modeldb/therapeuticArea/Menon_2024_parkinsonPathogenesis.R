@@ -53,6 +53,18 @@ Menon_2024_parkinsonPathogenesis <- function() {
     concentration = "(dimensionless; all state variables scaled by 50 pM per Supinfo2 Section 1.4)"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    fagg      = list(analyte = "alpha-syn aggregate species", units = NA_character_, specimen = "administration site", verified = FALSE),
+    pcomplex  = list(analyte = "proteasome-aggregate complex", units = NA_character_, specimen = "administration site", verified = FALSE),
+    pfree     = list(analyte = "free proteasome components", units = NA_character_, specimen = "administration site", verified = FALSE),
+    alpha_syn = list(analyte = "misfolded alpha-synuclein monomer", units = NA_character_, specimen = "administration site", verified = FALSE),
+    ros       = list(analyte = "cytoplasmic reactive oxygen species", units = NA_character_, specimen = "administration site", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(

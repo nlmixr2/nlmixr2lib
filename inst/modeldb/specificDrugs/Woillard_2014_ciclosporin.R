@@ -85,6 +85,19 @@ Woillard_2014_ciclosporin <- function() {
     notes                 = "Three independent modelling approaches (NONMEM, iterative two-stage ITS, non-parametric Pmetrics) were fit in parallel to compare Bayesian estimators of CsA AUC(0,12h) under a three-sample limited sampling strategy. The packaged model file encodes the NONMEM final model (Table 2) parameterised in standard CL/V/Q form. The ITS and Pmetrics fits used a gamma-law absorption with macro-constant disposition (FAIV, FBIV, alpha, beta in Table 3) and are not packaged here; see the vignette's Assumptions and deviations section for rationale."
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "ciclosporin", units = "mg", specimen = "administration site", verified = FALSE),
+    transit1    = list(analyte = "ciclosporin", units = "mg", specimen = "administration site", verified = FALSE),
+    transit2    = list(analyte = "ciclosporin", units = "mg", specimen = "administration site", verified = FALSE),
+    transit3    = list(analyte = "ciclosporin", units = "mg", specimen = "administration site", verified = FALSE),
+    transit4    = list(analyte = "ciclosporin", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "ciclosporin", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "ciclosporin", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   ini({
     # NONMEM final-model estimates from Woillard 2014 Table 2. Structural
     # model: two-compartment with first-order elimination and Erlang

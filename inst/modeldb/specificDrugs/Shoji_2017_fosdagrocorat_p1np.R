@@ -4,6 +4,15 @@ Shoji_2017_fosdagrocorat_p1np <- function() {
   vignette <- "Shoji_2017_fosdagrocorat_p1np"
   units <- list(time = "week", dosing = "mg", concentration = "ng/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot_kpd = list(analyte = "fosdagrocorat", units = "mg", specimen = "administration site", verified = FALSE),
+    effect    = list(analyte = "P1NP", units = "mg", specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list(
     DOSE = list(
       description        = "Per-subject assigned once-daily oral dose (mg) of fosdagrocorat or prednisone driving the dose-and-time-dependent rebound term on biomarker synthesis. Set to 0 for placebo (methotrexate only).",

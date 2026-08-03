@@ -10,6 +10,15 @@ Rosario_2008_maraviroc <- function() {
   vignette <- "Rosario_2008_maraviroc"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "maraviroc", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "maraviroc", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "maraviroc", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     DOSE = list(
       description        = "Per-subject assigned maraviroc dose level (mg) carried as a continuous covariate column. Each subject was randomised to a single dose-cohort across the 12-day (healthy volunteers) or 10-day (HIV patients) treatment period.",

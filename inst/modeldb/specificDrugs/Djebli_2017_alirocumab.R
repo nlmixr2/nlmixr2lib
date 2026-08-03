@@ -4,6 +4,17 @@ Djebli_2017_alirocumab <- function() {
   vignette    <- "Djebli_2017_alirocumab"
   units       <- list(time = "day", dosing = "mg", concentration = "mg/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot        = list(analyte = "alirocumab", units = "mg", specimen = "administration site", verified = FALSE),
+    central      = list(analyte = "alirocumab", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1  = list(analyte = "PCSK9", units = "mg", specimen = "plasma", verified = FALSE),
+    total_target = list(analyte = "PCSK9", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight",

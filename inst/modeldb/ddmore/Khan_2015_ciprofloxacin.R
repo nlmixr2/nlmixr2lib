@@ -15,6 +15,19 @@ Khan_2015_ciprofloxacin <- function() {
   ddmore_id    <- "DDMODEL00000225"
   replicate_of <- NULL
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    bact_s    = list(analyte = "Escherichia coli K-12 wild-type bacteria (susceptible-growing)", units = NA_character_, specimen = "administration site", verified = FALSE),
+    bact_r    = list(analyte = "Escherichia coli K-12 wild-type bacteria (resting)", units = NA_character_, specimen = "administration site", verified = FALSE),
+    bact_spe  = list(analyte = "Escherichia coli K-12 wild-type bacteria (drug-induced non-colony-form", units = NA_character_, specimen = "administration site", verified = FALSE),
+    bact_np   = list(analyte = "Escherichia coli K-12 wild-type bacteria (non-colony-forming, suscepti", units = NA_character_, specimen = "administration site", verified = FALSE),
+    bact_rpe  = list(analyte = "Escherichia coli K-12 wild-type bacteria (drug-induced non-colony-form", units = NA_character_, specimen = "administration site", verified = FALSE),
+    bact_nppe = list(analyte = "Escherichia coli K-12 wild-type bacteria (non-colony-forming, resistan", units = NA_character_, specimen = "administration site", verified = FALSE)
+  )
+
   covariateData <- list(
     CONMED_STR_CC = list(
       description        = "Bacterial strain identifier (E. coli K-12 derivative). Values 347, 202, 378, 534, 625, 693, 707 select the matching strain-specific EC50 in `model()`. Strain LM202 is the wild-type reference (estimated EC50); the other six are quinolone-resistant single-step mutants with fixed published EC50s.",

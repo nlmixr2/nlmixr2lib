@@ -4,6 +4,13 @@ Solms_2020_BAY94_9027 <- function() {
   vignette <- "Solms_2020_BAY94_9027"
   units <- list(time = "h", dosing = "IU", concentration = "IU/dL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central = list(analyte = "BAY94 9027", units = "IU", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     LBM = list(
       description        = "Lean body weight (canonical column LBM; source paper uses LBW)",

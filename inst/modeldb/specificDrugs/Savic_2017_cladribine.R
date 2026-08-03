@@ -4,6 +4,16 @@ Savic_2017_cladribine <- function() {
   vignette <- "Savic_2017_cladribine"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "cladribine", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "cladribine", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "cladribine", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral2 = list(analyte = "cladribine", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     CRCL = list(
       description        = "Cockcroft-Gault creatinine clearance (raw, not BSA-normalized)",

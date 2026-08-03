@@ -14,6 +14,16 @@ Ngamprasertwong_2016_propofol_sheep <- function() {
 
   units    <- list(time = "min", dosing = "mg", concentration = "mg/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "propofol", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "propofol", units = "mg", specimen = "plasma", verified = FALSE),
+    fetus       = list(analyte = "propofol", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     HR = list(
       description        = "Maternal heart rate during the propofol observation window",

@@ -4,6 +4,22 @@ Yang_2023_diclazuril_chicken_pbpk <- function() {
   vignette    <- "Yang_2023_diclazuril"
   units       <- list(time = "h", dosing = "ug", concentration = "ug/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    a_gut    = list(analyte = "diclazuril", units = "ug", specimen = "tissue", verified = FALSE),
+    liver    = list(analyte = "diclazuril", units = "ug", specimen = "tissue", verified = FALSE),
+    kidney   = list(analyte = "diclazuril", units = "ug", specimen = "tissue", verified = FALSE),
+    skin_fat = list(analyte = "diclazuril", units = "ug", specimen = "tissue", verified = FALSE),
+    muscle   = list(analyte = "diclazuril", units = "ug", specimen = "tissue", verified = FALSE),
+    other    = list(analyte = "diclazuril", units = "ug", specimen = "tissue", verified = FALSE),
+    lung     = list(analyte = "diclazuril", units = "ug", specimen = "tissue", verified = FALSE),
+    arterial = list(analyte = "diclazuril", units = "ug", specimen = "bile", verified = FALSE),
+    venous   = list(analyte = "diclazuril", units = "ug", specimen = "bile", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight",

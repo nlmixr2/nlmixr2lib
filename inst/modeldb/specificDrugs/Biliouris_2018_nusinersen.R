@@ -42,6 +42,22 @@ Biliouris_2018_nusinersen <- function() {
     "pons"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    csf                  = list(analyte = "nusinersen", units = "mg", specimen = "CSF", verified = FALSE),
+    central              = list(analyte = "nusinersen", units = "mg", specimen = "plasma", verified = FALSE),
+    spinal_cord_cervical = list(analyte = "nusinersen", units = "mg", specimen = "administration site", verified = FALSE),
+    brain                = list(analyte = "nusinersen", units = "mg", specimen = "tissue", verified = FALSE),
+    peripheral1          = list(analyte = "nusinersen", units = "mg", specimen = "plasma", verified = FALSE),
+    spinal_cord_lumbar   = list(analyte = "nusinersen", units = "mg", specimen = "administration site", verified = FALSE),
+    brain_deep           = list(analyte = "nusinersen", units = "mg", specimen = "tissue", verified = FALSE),
+    spinal_cord_thoracic = list(analyte = "nusinersen", units = "mg", specimen = "administration site", verified = FALSE),
+    pons                 = list(analyte = "nusinersen", units = "mg", specimen = "administration site", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight (used with LOCF for time-varying body weight in the paediatric extrapolation)",

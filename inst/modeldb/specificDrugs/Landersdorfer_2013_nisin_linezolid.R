@@ -25,6 +25,20 @@ Landersdorfer_2013_nisin_linezolid <- function() {
   # replication for the Lin-S populations.
   paper_specific_compartments <- c("prot_pool")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    prot_pool                      = list(analyte = "protein pool P", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    bact_susceptible_susceptible1  = list(analyte = "Nis-S/Lin-S bacteria", units = NA_character_, specimen = "administration site", verified = FALSE),
+    bact_susceptible_susceptible2  = list(analyte = "Nis-S/Lin-S bacteria", units = NA_character_, specimen = "administration site", verified = FALSE),
+    bact_intermediate_susceptible1 = list(analyte = "Nis-I/Lin-S bacteria", units = NA_character_, specimen = "administration site", verified = FALSE),
+    bact_intermediate_susceptible2 = list(analyte = "Nis-I/Lin-S bacteria", units = NA_character_, specimen = "administration site", verified = FALSE),
+    bact_resistant_intermediate1   = list(analyte = "Nis-R/Lin-I bacteria", units = NA_character_, specimen = "administration site", verified = FALSE),
+    bact_resistant_intermediate2   = list(analyte = "Nis-R/Lin-I bacteria", units = NA_character_, specimen = "administration site", verified = FALSE)
+  )
+
   covariateData <- list(
     Cnis = list(
       description        = "Nisin concentration in the broth medium",

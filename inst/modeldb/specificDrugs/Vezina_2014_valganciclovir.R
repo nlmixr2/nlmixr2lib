@@ -4,6 +4,15 @@ Vezina_2014_valganciclovir <- function() {
   vignette    <- "Vezina_2014_valganciclovir"
   units       <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "valganciclovir", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "valganciclovir", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "valganciclovir", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Total body weight (most-recent value at the sampling occasion; piecewise-constant within subject between blood draws, with linear interpolation when no same-day measurement was recorded).",

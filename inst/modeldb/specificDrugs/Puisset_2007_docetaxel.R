@@ -25,6 +25,18 @@ Puisset_2007_docetaxel <- function() {
     aag           = "g/L"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    circ       = list(analyte = "ANC (Circulating Neutrophil Count)", units = "mg", specimen = "whole blood", verified = FALSE),
+    precursor1 = list(analyte = "Neutrophils in transit compartment 1", units = "mg", specimen = "not applicable", verified = FALSE),
+    precursor2 = list(analyte = "Neutrophils in transit compartment 2", units = "mg", specimen = "not applicable", verified = FALSE),
+    precursor3 = list(analyte = "Neutrophils in transit compartment 3", units = "mg", specimen = "not applicable", verified = FALSE),
+    precursor4 = list(analyte = "Proliferating Neutrophil Pool", units = "mg", specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list(
     AAG = list(
       description        = "Serum alpha-1 acid glycoprotein concentration, time-fixed at baseline.",

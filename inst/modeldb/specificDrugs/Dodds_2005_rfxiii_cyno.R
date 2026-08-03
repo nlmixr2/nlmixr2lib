@@ -26,6 +26,16 @@ Dodds_2005_rfxiii_cyno <- function() {
     concentration = "mg/L (each assay output: ELISA reading in mass/volume on plasma)"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    A2   = list(analyte = "rA2 dimer", units = NA_character_, specimen = "plasma", verified = FALSE),
+    A2B2 = list(analyte = "heterotetramer (A2B2)", units = NA_character_, specimen = "plasma", verified = FALSE),
+    B    = list(analyte = "Factor XIII B monomer", units = NA_character_, specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     # No covariates entered the final model. Body weight is baked into the
     # mg/kg parameterisation (doses, masses, influx rates, and apparent

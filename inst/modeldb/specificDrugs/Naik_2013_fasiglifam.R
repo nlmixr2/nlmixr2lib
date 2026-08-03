@@ -51,6 +51,18 @@ Naik_2013_fasiglifam <- function() {
     )
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "fasiglifam", units = NA_character_, specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "fasiglifam", units = NA_character_, specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "fasiglifam", units = NA_character_, specimen = "plasma", verified = FALSE),
+    glucose     = list(analyte = "glucose", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    Hba1c       = list(analyte = "HbA1c", units = NA_character_, specimen = "blood cell", verified = FALSE)
+  )
+
   covariateData <- list(
     SEXF = list(
       description        = "Sex (female indicator)",

@@ -4,6 +4,26 @@ Scheuher_2023_ADC_invitro_qsp <- function() {
   vignette    <- "Scheuher_2023_ADC_platform_qsp"
   units       <- list(time = "h", dosing = "nmol", concentration = "nM")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    adc_ext       = list(analyte = "ADC", units = "nmol", specimen = "plasma", verified = FALSE),
+    ab_ext        = list(analyte = "Ab", units = "nmol", specimen = "plasma", verified = FALSE),
+    pl_ext        = list(analyte = "payload", units = "nmol", specimen = "plasma", verified = FALSE),
+    her2          = list(analyte = "HER2", units = "nmol", specimen = "administration site", verified = FALSE),
+    her2_adc      = list(analyte = "ADC-HER2", units = "nmol", specimen = "administration site", verified = FALSE),
+    her2_ab       = list(analyte = "Ab-HER2", units = "nmol", specimen = "administration site", verified = FALSE),
+    her2_endo     = list(analyte = "endosomal HER2", units = "nmol", specimen = "administration site", verified = FALSE),
+    her2_adc_endo = list(analyte = "ADC-endosomal HER2", units = "nmol", specimen = "administration site", verified = FALSE),
+    her2_ab_endo  = list(analyte = "Ab-endosomal HER2", units = "nmol", specimen = "administration site", verified = FALSE),
+    pl_endo       = list(analyte = "payload", units = "nmol", specimen = "endosome", verified = FALSE),
+    pl_cyto       = list(analyte = "payload", units = "nmol", specimen = "plasma", verified = FALSE),
+    t_cyto        = list(analyte = "target", units = "nmol", specimen = "plasma", verified = FALSE),
+    tpl_cyto      = list(analyte = "payload-target complex", units = "nmol", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list()
 
   covariatesDataExcluded <- list()

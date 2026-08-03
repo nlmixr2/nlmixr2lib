@@ -8,6 +8,18 @@ Philippe_2015_cyclosporine <- function() {
     concentration = "mg/L (= ug/mL); the pharmacodynamic bounds gamma1 and gamma2 are in ng/mL and Cc is rescaled inside model() by a factor of 1000 to compare with them"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "cyclosporine", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "cyclosporine", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "cyclosporine", units = "mg", specimen = "plasma", verified = FALSE),
+    effect      = list(analyte = "effective concentration", units = "mg", specimen = "not applicable", verified = FALSE),
+    cumhaz      = list(analyte = "hazard", units = "mg", specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight (kg). Time-fixed in the source paper (baseline weight only); WT is the canonical column for body weight (baseline or time-varying).",

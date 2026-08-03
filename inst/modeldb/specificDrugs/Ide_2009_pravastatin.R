@@ -12,6 +12,23 @@ Ide_2009_pravastatin <- function() {
   vignette <- "Ide_2009_pravastatin"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "pravastatin", units = "mg", specimen = "administration site", verified = FALSE),
+    transit1    = list(analyte = "pravastatin", units = "mg", specimen = "administration site", verified = FALSE),
+    transit2    = list(analyte = "pravastatin", units = "mg", specimen = "administration site", verified = FALSE),
+    transit3    = list(analyte = "pravastatin", units = "mg", specimen = "administration site", verified = FALSE),
+    transit4    = list(analyte = "pravastatin", units = "mg", specimen = "administration site", verified = FALSE),
+    transit5    = list(analyte = "pravastatin", units = "mg", specimen = "administration site", verified = FALSE),
+    transit6    = list(analyte = "pravastatin", units = "mg", specimen = "administration site", verified = FALSE),
+    transit7    = list(analyte = "pravastatin", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "pravastatin", units = "mg", specimen = "plasma", verified = FALSE),
+    gallbladder = list(analyte = "pravastatin", units = "mg", specimen = "bile", verified = FALSE)
+  )
+
   covariateData <- list(
     SLCO1B1_HAP15_HET = list(
       description        = "SLCO1B1 *15 haplotype heterozygote indicator: 1 if subject carries exactly one *15 allele (diplotype *1a/*15 or *1b/*15), 0 otherwise.",

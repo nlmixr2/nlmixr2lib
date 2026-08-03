@@ -4,6 +4,19 @@ Yang_2024_axatilimab <- function() {
   vignette <- "Yang_2024_axatilimab"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "axatilimab", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "axatilimab", units = "mg", specimen = "plasma", verified = FALSE),
+    csf1        = list(analyte = "CSF-1", units = "mg", specimen = "plasma", verified = FALSE),
+    ncmc        = list(analyte = "NCMC", units = "mg", specimen = "plasma", verified = FALSE),
+    ast         = list(analyte = "AST", units = "mg", specimen = "serum", verified = FALSE),
+    cpk         = list(analyte = "CPK", units = "mg", specimen = "serum", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight (baseline)",

@@ -30,6 +30,15 @@ Hansson_2013_sunitinib_hfs <- function() {
     concentration = "(NCI-CTC HFS grade 0-3+, ordinal)"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    svegfr3 = list(analyte = "sVEGFR-3", units = "mg", specimen = "plasma", verified = FALSE),
+    bm      = list(analyte = "sunitinib", units = "mg", specimen = "administration site", verified = FALSE)
+  )
+
   covariateData <- list(
     DOSE = list(
       description        = "Current administered sunitinib daily dose (mg) carried as a time-varying data column. Set to 0 during off-cycles or for placebo subjects so the derived AUC = DOSE / CLI becomes 0.",

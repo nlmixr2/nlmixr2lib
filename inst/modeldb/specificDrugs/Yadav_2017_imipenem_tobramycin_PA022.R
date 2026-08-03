@@ -6,6 +6,22 @@ Yadav_2017_imipenem_tobramycin_PA022 <- function() {
 
   paper_specific_compartments <- c("cipm", "cags", "csig")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    bact_susceptible_susceptible1 = list(analyte = "Pseudomonas aeruginosa susceptible bacteria", units = NA_character_, specimen = "bile", verified = FALSE),
+    bact_susceptible_susceptible2 = list(analyte = "Pseudomonas aeruginosa susceptible bacteria", units = NA_character_, specimen = "bile", verified = FALSE),
+    bact_resistant_intermediate1  = list(analyte = "Pseudomonas aeruginosa resistant-intermediate bacteria", units = NA_character_, specimen = "bile", verified = FALSE),
+    bact_resistant_intermediate2  = list(analyte = "Pseudomonas aeruginosa resistant-intermediate bacteria", units = NA_character_, specimen = "bile", verified = FALSE),
+    bact_intermediate_resistant1  = list(analyte = "Pseudomonas aeruginosa intermediate-resistant bacteria", units = NA_character_, specimen = "bile", verified = FALSE),
+    bact_intermediate_resistant2  = list(analyte = "Pseudomonas aeruginosa intermediate-resistant bacteria", units = NA_character_, specimen = "bile", verified = FALSE),
+    csig                          = list(analyte = "Signal molecule", units = NA_character_, specimen = "administration site", verified = FALSE),
+    cipm                          = list(analyte = "Imipenem", units = NA_character_, specimen = "administration site", verified = FALSE),
+    cags                          = list(analyte = "Tobramycin", units = NA_character_, specimen = "administration site", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(

@@ -15,6 +15,15 @@ vanHasselt_2015_eribulin <- function() {
     concentration = "ng/mL (serum PSA)"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot_kpd = list(analyte = "eribulin mesilate", units = NA_character_, specimen = "administration site", verified = FALSE),
+    PSA       = list(analyte = "prostate-specific antigen (PSA)", units = NA_character_, specimen = "serum", verified = FALSE)
+  )
+
   covariateData <- list(
     PRIOR_TAXANE = list(
       description        = "Binary indicator of prior taxane chemotherapy at study entry (1 = received any prior taxane regimen, 0 = taxane-naive).",

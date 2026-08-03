@@ -13,6 +13,16 @@ Oualha_2014_epinephrine <- function() {
   vignette <- "Oualha_2014_epinephrine"
   units <- list(time = "h", dosing = "ug", concentration = "ug/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central = list(analyte = "epinephrine", units = "ug", specimen = "plasma", verified = FALSE),
+    glucose = list(analyte = "glucose", units = "ug", specimen = "plasma", verified = FALSE),
+    lactate = list(analyte = "lactate", units = "ug", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight",

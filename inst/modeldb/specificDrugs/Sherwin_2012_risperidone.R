@@ -41,6 +41,16 @@ Sherwin_2012_risperidone <- function() {
   vignette <- "Sherwin_2012_risperidone"
   units    <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "risperidone", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "risperidone", units = "mg", specimen = "plasma", verified = FALSE),
+    central_9oh = list(analyte = "+/-)-9-hydroxyrisperidone", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Total body weight",

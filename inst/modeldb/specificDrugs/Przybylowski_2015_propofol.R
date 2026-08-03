@@ -12,6 +12,17 @@ Przybylowski_2015_propofol <- function() {
   vignette <- "Przybylowski_2015_propofol"
   units    <- list(time = "min", dosing = "mg", concentration = "mg/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "propofol", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "propofol", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral2 = list(analyte = "propofol", units = "mg", specimen = "plasma", verified = FALSE),
+    effect      = list(analyte = "AAI auditory-evoked-potential depth-of-anesthesia index", units = "mg", specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list()  # No covariates retained in the final model (Przybylowski 2015 Results: no statistically significant (p < 0.01) relationships identified across body weight, gender, age, blood pressure, heart rate, laboratory blood tests, and stage of lung cancer).
 
   population <- list(

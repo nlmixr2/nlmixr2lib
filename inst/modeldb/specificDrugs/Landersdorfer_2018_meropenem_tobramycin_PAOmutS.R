@@ -6,6 +6,21 @@ Landersdorfer_2018_meropenem_tobramycin_PAOmutS <- function() {
 
   paper_specific_compartment_pattern <- "^bact_"
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    bact_susceptible_susceptible1 = list(analyte = "Pseudomonas aeruginosa PAOdelta-mutS hypermutable strain (susceptible)", units = NA_character_, specimen = "bile", verified = FALSE),
+    bact_susceptible_susceptible2 = list(analyte = "Pseudomonas aeruginosa PAOdelta-mutS hypermutable strain (susceptible)", units = NA_character_, specimen = "bile", verified = FALSE),
+    bact_resistant_intermediate1  = list(analyte = "Pseudomonas aeruginosa PAOdelta-mutS hypermutable strain (resistant/in", units = NA_character_, specimen = "bile", verified = FALSE),
+    bact_resistant_intermediate2  = list(analyte = "Pseudomonas aeruginosa PAOdelta-mutS hypermutable strain (resistant/in", units = NA_character_, specimen = "bile", verified = FALSE),
+    bact_intermediate_resistant1  = list(analyte = "Pseudomonus aeruginosa PAOdelta-mutS hypermutable strain (intermediate", units = NA_character_, specimen = "bile", verified = FALSE),
+    bact_intermediate_resistant2  = list(analyte = "Pseudomonas aeruginosa PAOdelta-mutS hypermutable strain (intermediate", units = NA_character_, specimen = "bile", verified = FALSE),
+    cmem                          = list(analyte = "meropenem", units = NA_character_, specimen = "administration site", verified = FALSE),
+    ctob                          = list(analyte = "tobramycin", units = NA_character_, specimen = "administration site", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(

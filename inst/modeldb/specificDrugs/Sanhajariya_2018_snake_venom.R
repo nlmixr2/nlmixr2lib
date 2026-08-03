@@ -4,6 +4,13 @@ Sanhajariya_2018_snake_venom <- function() {
   vignette <- "Sanhajariya_2018_snake_venom"
   units <- list(time = "h", dosing = "ug", concentration = "mcg/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central = list(analyte = "snake venom", units = "ug", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     SNAKEFAMILY_ELAPID = list(
       description        = "Snake-family categorical indicator for venom-source classification: 1 = Elapidae family (front-fanged elapids: cobras, kraits, mambas, sea snakes, Australian terrestrial elapids); 0 = Viperidae family (true vipers and pit vipers).",

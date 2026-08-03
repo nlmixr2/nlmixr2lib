@@ -33,6 +33,14 @@ Johnston_2019_empagliflozin <- function() {
     AUC_EMPA      = "nmol*h/L (empagliflozin steady-state AUC over the q24h dosing interval)"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    hba1c_placebo = list(analyte = "HbA1c", units = NA_character_, specimen = "blood cell", verified = FALSE)
+  )
+
   covariateData <- list(
     AUC_EMPA = list(
       description        = "Steady-state empagliflozin AUC over the q24h dosing interval supplied as a per-subject (time-fixed) drug-exposure covariate from an upstream popPK analysis (Mondick 2018, updated with EASE-2 / EASE-3 data on file).",

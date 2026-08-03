@@ -11,6 +11,18 @@ Lehr_2010_tesofensine <- function() {
   vignette <- "Lehr_2010_tesofensine"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot      = list(analyte = "tesofensine", units = "mg", specimen = "administration site", verified = FALSE),
+    central    = list(analyte = "tesofensine", units = "mg", specimen = "plasma", verified = FALSE),
+    central_m1 = list(analyte = "M1", units = "mg", specimen = "plasma", verified = FALSE),
+    effect     = list(analyte = "tesofensine", units = "mg", specimen = "not applicable", verified = FALSE),
+    effect_m1  = list(analyte = "M1", units = "mg", specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list()
 
   covariatesDataExcluded <- list()

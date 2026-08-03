@@ -11,6 +11,14 @@ Kunisawa_2015_landiolol <- function() {
   vignette <- "Kunisawa_2015_landiolol"
   units <- list(time = "h", dosing = "ug", concentration = "ng/mL") # Methods: TCI delivers landiolol hydrochloride at ug/kg/min infusion rates, plasma assayed by HPLC-fluorescence (Suno et al. 2009); time converted from minutes-as-reported to hours for nlmixr2lib convention
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "landiolol", units = "ug", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "landiolol", units = "ug", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Total body weight",

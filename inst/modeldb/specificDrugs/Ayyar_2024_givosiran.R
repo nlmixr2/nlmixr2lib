@@ -10,6 +10,34 @@ Ayyar_2024_givosiran <- function() {
     concentration = "nmol/L"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot            = list(analyte = "givosiran", units = "nmol", specimen = "administration site", verified = FALSE),
+    central          = list(analyte = "givosiran", units = "nmol", specimen = "plasma", verified = FALSE),
+    central_asn1     = list(analyte = "AS(N-1)3' givosiran metabolite", units = "nmol", specimen = "plasma", verified = FALSE),
+    target           = list(analyte = "ASGPR receptor", units = "nmol", specimen = "not applicable", verified = FALSE),
+    complex          = list(analyte = "givosiran - ASGPR complex", units = "nmol", specimen = "not applicable", verified = FALSE),
+    complex_asn1     = list(analyte = "AS(N-1)3' givosiran metabolite - ASGPR complex", units = "nmol", specimen = "not applicable", verified = FALSE),
+    liver            = list(analyte = "givosiran", units = "nmol", specimen = "tissue", verified = FALSE),
+    liver_asn1       = list(analyte = "AS(N-1)3' givosiran metabolite", units = "nmol", specimen = "tissue", verified = FALSE),
+    liver_endo       = list(analyte = "givosiran", units = "nmol", specimen = "tissue", verified = FALSE),
+    liver_endo_asn1  = list(analyte = "AS(N-1)3' givosiran metabolite", units = "nmol", specimen = "tissue", verified = FALSE),
+    liver_deep       = list(analyte = "givosiran", units = "nmol", specimen = "tissue", verified = FALSE),
+    liver_deep_asn1  = list(analyte = "AS(N-1)3' givosiran metabolite", units = "nmol", specimen = "tissue", verified = FALSE),
+    cyto             = list(analyte = "givosiran", units = "nmol", specimen = "not applicable", verified = FALSE),
+    cyto_asn1        = list(analyte = "AS(N-1)3' givosiran metabolite", units = "nmol", specimen = "not applicable", verified = FALSE),
+    risc             = list(analyte = "RISC-loaded siRNA (givosiran + AS(N-1)3' metabolite)", units = "nmol", specimen = "not applicable", verified = FALSE),
+    kidney_vas       = list(analyte = "givosiran", units = "nmol", specimen = "tissue", verified = FALSE),
+    kidney_vas_asn1  = list(analyte = "AS(N-1)3' givosiran metabolite", units = "nmol", specimen = "tissue", verified = FALSE),
+    kidney           = list(analyte = "givosiran", units = "nmol", specimen = "tissue", verified = FALSE),
+    kidney_asn1      = list(analyte = "AS(N-1)3' givosiran metabolite", units = "nmol", specimen = "tissue", verified = FALSE),
+    kidney_deep      = list(analyte = "givosiran", units = "nmol", specimen = "tissue", verified = FALSE),
+    kidney_deep_asn1 = list(analyte = "AS(N-1)3' givosiran metabolite", units = "nmol", specimen = "tissue", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(

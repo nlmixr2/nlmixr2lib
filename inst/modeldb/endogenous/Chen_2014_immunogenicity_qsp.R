@@ -19,6 +19,40 @@ Chen_2014_immunogenicity_qsp <- function() {
     concentration = "pM (antigenic protein in plasma)"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    MS   = list(analyte = "antigenic protein", units = NA_character_, specimen = "administration site", verified = FALSE),
+    iDC  = list(analyte = "T-epitope presenting dendritic cells", units = NA_character_, specimen = "administration site", verified = FALSE),
+    mDC  = list(analyte = "memory T-epitope presenting dendritic cells", units = NA_character_, specimen = "administration site", verified = FALSE),
+    AgE  = list(analyte = "antigen presenting endosomes", units = NA_character_, specimen = "administration site", verified = FALSE),
+    pE   = list(analyte = "processed antigen presenting endosomes", units = NA_character_, specimen = "administration site", verified = FALSE),
+    cpE  = list(analyte = "cytoplasmic processed antigen presenting endosomes", units = NA_character_, specimen = "administration site", verified = FALSE),
+    cptE = list(analyte = "cytoplasmic processed T-epitope presenting endosomes", units = NA_character_, specimen = "administration site", verified = FALSE),
+    mhcE = list(analyte = "MHC-II molecules on antigen presenting endosomes", units = NA_character_, specimen = "administration site", verified = FALSE),
+    pmE  = list(analyte = "processed antigen presenting macrophages", units = NA_character_, specimen = "administration site", verified = FALSE),
+    cpmE = list(analyte = "cytoplasmic processed antigen presenting macrophages", units = NA_character_, specimen = "administration site", verified = FALSE),
+    pmM  = list(analyte = "processed MHC-II molecules on macrophages", units = NA_character_, specimen = "administration site", verified = FALSE),
+    cpmM = list(analyte = "cytoplasmic processed MHC-II molecules on macrophages", units = NA_character_, specimen = "administration site", verified = FALSE),
+    mhcM = list(analyte = "MHC-II molecules on macrophages", units = NA_character_, specimen = "administration site", verified = FALSE),
+    NT   = list(analyte = "naive T-cells", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    aTn  = list(analyte = "activated naive T-cells", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    aTm  = list(analyte = "memory T-cells", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    MT   = list(analyte = "memory T-cells", units = NA_character_, specimen = "tumor", verified = FALSE),
+    FT   = list(analyte = "free tumor cells", units = NA_character_, specimen = "tumor", verified = FALSE),
+    NB   = list(analyte = "naive B-cells", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    aBn  = list(analyte = "activated naive B-cells", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    aBm  = list(analyte = "memory B-cells", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    MB   = list(analyte = "memory B-cells", units = NA_character_, specimen = "tumor", verified = FALSE),
+    SP   = list(analyte = "soluble protein", units = NA_character_, specimen = "plasma", verified = FALSE),
+    LP   = list(analyte = "lymph node", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    Ab   = list(analyte = "antibody", units = NA_character_, specimen = "plasma", verified = FALSE),
+    AgIS = list(analyte = "antigenic protein in depot", units = NA_character_, specimen = "administration site", verified = FALSE),
+    Ag   = list(analyte = "antigenic protein", units = NA_character_, specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(

@@ -4,6 +4,17 @@ Dunn_2025_tranexamicAcid <- function() {
   vignette    <- "Dunn_2025_tranexamicAcid"
   units       <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot_im    = list(analyte = "tranexamic acid", units = "mg", specimen = "administration site", verified = FALSE),
+    depot_oral  = list(analyte = "tranexamic acid", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "tranexamic acid", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "tranexamic acid", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Actual maternal body weight",

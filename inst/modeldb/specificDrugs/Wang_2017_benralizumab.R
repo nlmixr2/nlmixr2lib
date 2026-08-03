@@ -3,6 +3,15 @@ Wang_2017_benralizumab <- function() {
   reference <- "Wang B, Lau YY, Liang M, et al. Population Pharmacokinetics and Pharmacodynamics of Benralizumab in Healthy Volunteers and Patients With Asthma. CPT Pharmacometrics Syst Pharmacol. 2017;6(4):249-257. doi:10.1002/psp4.12160"
   vignette <- "Wang_2017_benralizumab"
   units <- list(time = "day", dosing = "mg", concentration = "mg/L")
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "benralizumab", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "benralizumab", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "benralizumab", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight",
