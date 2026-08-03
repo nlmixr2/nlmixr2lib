@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Cojutti 2023 ceftobiprole ([doi:10.3390/microorganisms11122964](https://doi.org/10.3390/microorganisms11122964)) - adults with severe Gram-positive infections.
+- Add Lignet 2023 M8891 ([doi:10.1007/s11095-023-03611-z](https://doi.org/10.1007/s11095-023-03611-z)) - Caki-1 xenograft-bearing mice, plus the translational human projection.
 
 - Add Wu 2023 SPI-62 ([doi:10.1007/s40262-023-01278-8](https://doi.org/10.1007/s40262-023-01278-8)) - healthy adults.
 

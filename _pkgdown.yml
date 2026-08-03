@@ -1348,6 +1348,10 @@ navbar:
         href: articles/Chen_2020_luspatercept.html
       - text: "M3g rat (Xie 2000)"
         href: articles/Xie_2000_m3g_rat.html
+      - text: "M8891 human (Lignet 2023)"
+        href: articles/Lignet_2023_m8891.html
+      - text: "M8891 mouse (Lignet 2023)"
+        href: articles/Lignet_2023_m8891.html
       - text: "MAb combined (Betts 2018)"
         href: articles/Betts_2018_mAb_linear_PK.html
       - text: "MAb cyno (Betts 2018)"
@@ -3368,6 +3372,7 @@ articles:
   - articles/LiemMoolenaar_2011_scopolamine
   - articles/Liesenfeld_2006_dabigatran
   - articles/Liesenfeld_2013_dabigatran
+  - articles/Lignet_2023_m8891
   - articles/Lin_2018_voriconazole
   - articles/Lin_2020_glasdegib_AML_overall_survival
   - articles/Lin_2024_casirivimab
