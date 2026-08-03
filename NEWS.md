@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Luo 2024 CES1 semi-PBPK family ([doi:10.3390/pharmaceutics16020234](https://doi.org/10.3390/pharmaceutics16020234)) — enalapril, benazepril, cilazapril, perindopril, temocapril, oseltamivir, flumazenil and remimazolam in healthy adults and Child-Pugh A/B/C liver cirrhosis.
+
 - Time-varying clearance now has a shared vocabulary (issue #481). 31 models
   gave clearance an explicit time dependence under some twenty different
   spellings, so the structure could not be found by name and the magnitude of

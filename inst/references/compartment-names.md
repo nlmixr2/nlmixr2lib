@@ -3319,7 +3319,42 @@ Antibiotic combination-PK drug suffixes (linezolid, vancomycin, meropenem long f
 - **Type:** metabolite-suffix
 - **Role:** Enalaprilat (ENAAT), the pharmacologically active diacid metabolite of enalapril formed by hepatic carboxylesterase 1 (CES1) hydrolysis of the inactive ester prodrug. Used as the metabolite suffix on `central_enaat` compartments, `lcl_enaat` / `lvc_enaat` parameters, and `Cc_enaat` observation in joint parent-prodrug + active-metabolite popPK models.
 - **Source aliases:** `ENAAT` (NONMEM-style abbreviation used by Steichert 2025).
-- **Example models:** `Steichert_2025_enalapril_enalaprilat_pediatric.R`.
+- **Example models:** `Steichert_2025_enalapril_enalaprilat_pediatric.R`, `Luo_2024_enalapril_pbpk.R`.
+
+### benat (**canonical benazeprilat metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Benazeprilat, the pharmacologically active diacid metabolite of the ester prodrug benazepril, formed by hepatic carboxylesterase 1 (CES1) hydrolysis and eliminated renally. Drives `central_benat` / `peripheral1_benat` / `liver_benat` / `kidney_benat` compartments, `lvc_benat` / `lcl_int_k_benat` / `kp_liver_benat` parameters and the `Cc_benat` plasma-concentration observation.
+- **Source aliases:** none.
+- **Example models:** `Luo_2024_benazepril_pbpk.R`.
+- **Notes:** Registered 2026-08-03 alongside the Luo 2024 CES1 semi-PBPK family. Follows the `enaat` (enalaprilat) precedent: drug stem plus `at` for the active diacid of an ACE-inhibitor ester prodrug.
+
+### cilat (**canonical cilazaprilat metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Cilazaprilat, the pharmacologically active diacid metabolite of the ester prodrug cilazapril, formed by hepatic CES1 hydrolysis and eliminated renally.
+- **Source aliases:** none.
+- **Example models:** `Luo_2024_cilazapril_pbpk.R`.
+- **Notes:** Registered 2026-08-03 alongside the Luo 2024 CES1 semi-PBPK family, per the `enaat` precedent.
+
+### temat (**canonical temocaprilat metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Temocaprilat, the pharmacologically active diacid metabolite of the ester prodrug temocapril, formed by hepatic CES1 hydrolysis. Unusually among the ACE-inhibitor diacids it is eliminated by BOTH renal and MRP2-mediated biliary routes, so it also drives a `lcl_int_bile_temat` biliary intrinsic-clearance parameter.
+- **Source aliases:** none.
+- **Example models:** `Luo_2024_temocapril_pbpk.R`.
+- **Notes:** Registered 2026-08-03 alongside the Luo 2024 CES1 semi-PBPK family, per the `enaat` precedent.
+
+### perat (**canonical perindoprilat metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Perindoprilat, the pharmacologically active diacid metabolite of the ester prodrug perindopril, formed by hepatic CES1 hydrolysis and eliminated renally. Note that perindopril's parallel UGT glucuronidation route does NOT form perindoprilat, so a model carrying this suffix must keep the two hepatic pathways separate.
+- **Source aliases:** none.
+- **Example models:** `Luo_2024_perindopril_pbpk.R`.
+- **Notes:** Registered 2026-08-03 alongside the Luo 2024 CES1 semi-PBPK family, per the `enaat` precedent.
+
+### oselc (**canonical oseltamivir carboxylate metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Oseltamivir carboxylate, the antivirally active carboxylate metabolite of the ester prodrug oseltamivir, formed by hepatic CES1 hydrolysis and eliminated renally by combined glomerular filtration and tubular secretion.
+- **Source aliases:** `OC` -- the abbreviation used by Luo 2024 Table 9 and Section 3.1.6.
+- **Example models:** `Luo_2024_oseltamivir_pbpk.R`.
+- **Notes:** Registered 2026-08-03 alongside the Luo 2024 CES1 semi-PBPK family. Deliberately NOT named `oc`: the former `OC` canonical was retired on 2026-07-26 precisely because it was overloaded across five unrelated concepts, oseltamivir carboxylate among them (see the `osteocalcin` entry). `oselc` keeps the drug stem explicit so the collision cannot recur.
 
 ### ppf (**canonical propofol active-metabolite suffix**)
 - **Type:** metabolite-suffix
