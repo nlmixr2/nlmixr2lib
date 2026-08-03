@@ -12,7 +12,7 @@ Ngamprasertwong_2016_propofol_sheep <- function() {
   vignette <- "Ngamprasertwong_2016_propofol_sheep"
   paper_specific_compartments <- c("fetus")
 
-  units    <- list(time = "minute", dosing = "mg", concentration = "mg/L")
+  units    <- list(time = "min", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     HR = list(

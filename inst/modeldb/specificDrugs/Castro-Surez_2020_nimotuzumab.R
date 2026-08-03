@@ -2,7 +2,7 @@
   description <- "Semi-mechanistic two-compartment QSS TMDD population PK model for nimotuzumab (anti-EGFR humanized IgG1) in adults with autosomal dominant polycystic kidney disease (Castro-Suarez 2020); EGFR binding represented in both central (Rtot) and peripheral (Rtotp) compartments under quasi-steady-state, plus a turnover mediator that stimulates non-specific clearance via a sigmoid Emax of free central nimotuzumab."
   reference <- "de Castro-Suarez N, Trame MN, Mangas-Sanjuan V, Garcia-Cremades M, Boix-Montanes A, Fernandez-Teruel C, Munoz-Camara A, Martin-Suarez A, Rebollo-Fernandez G, Lleonart-Vidal R. Semi-Mechanistic Pharmacokinetic Model to Guide the Dose Selection of Nimotuzumab in Patients with Autosomal Dominant Polycystic Kidney Disease. Pharmaceutics. 2020;12(12):1147. doi:10.3390/pharmaceutics12121147"
   vignette <- "Castro-Surez_2020_nimotuzumab"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     DOSE = list(

@@ -2,7 +2,7 @@ Li_2021_daratumumab_qsstmdd <- function() {
   description <- "Two-compartment semi-mechanistic target-mediated drug-disposition (TMDD) population PK model for IV daratumumab (anti-CD38 IgG1) in adults with multiple myeloma, with parallel non-specific linear clearance and CD38-mediated saturable clearance under the quasi-steady-state (QSS) approximation of Gibiansky 2008. The TMDD/QSS form supersedes an earlier empirical Michaelis-Menten parameterisation with time-dependent Vmax: receptor (CD38) turnover and complex internalisation reproduce mechanistically the observed Vmax time-dependency. PAGE 29 (2021) abstract II-52 by Li, Perez Ruixo, Zhou, Perez Ruixo, and Dosne (Janssen R and D, Beerse). Distinct from Xu 2020 daratumumab, which uses the empirical 2-cmt parallel-linear / time-dependent Vmax form."
   reference <- "Li X, Perez Ruixo C, Zhou H, Perez Ruixo JJ, Dosne AG. Population-based Target-Mediated Drug Disposition (TMDD) Pharmacokinetics Model of Daratumumab in Patients With Multiple Myeloma Following Intravenously Daratumumab Monotherapy. PAGE 29 (2021) Abstr 9701. www.page-meeting.org/?abstract=9701"
   vignette <- "Li_2021_daratumumab_qsstmdd"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list()
 
@@ -69,9 +69,9 @@ Li_2021_daratumumab_qsstmdd <- function() {
     # anchored to a specific reference WT / ALB / sex / myeloma-type. The
     # abstract reports CL = 0.0051 L/h, V1 = 3.76 L, Q = 0.0329 L/h, V2 = 3.31 L
     # ("L/h" in the printed abstract for V2 is a typo: V2 is a VOLUME, L).
-    lcl <- log(0.0051); label("Non-specific linear (FcRn-mediated) clearance CL (L/hour)")           # Li 2021 PAGE 29 Results: CL 0.0051 L/h
+    lcl <- log(0.0051); label("Non-specific linear (FcRn-mediated) clearance CL (L/h)")           # Li 2021 PAGE 29 Results: CL 0.0051 L/h
     lvc <- log(3.76);   label("Central volume of distribution V1 (L)")                               # Li 2021 PAGE 29 Results: V1 3.76 L
-    lq  <- log(0.0329); label("Inter-compartmental clearance Q (L/hour)")                            # Li 2021 PAGE 29 Results: Q 0.0329 L/h
+    lq  <- log(0.0329); label("Inter-compartmental clearance Q (L/h)")                            # Li 2021 PAGE 29 Results: Q 0.0329 L/h
     lvp <- log(3.31);   label("Peripheral volume of distribution V2 (L)")                            # Li 2021 PAGE 29 Results: V2 3.31 L (printed as 'L/h' in abstract; V2 is a volume)
 
     # TMDD / QSS parameters (Gibiansky 2008 parameterisation).
@@ -82,9 +82,9 @@ Li_2021_daratumumab_qsstmdd <- function() {
     # The abstract prints Kss in 1/h, which is dimensionally inconsistent with
     # the QSS expression and is treated here as a transcription error;
     # mg/L is the canonical concentration unit for Kss in the Gibiansky form.
-    lksyn <- log(0.178);  label("Target (CD38) zero-order synthesis rate constant Ksyn (mg/L/hour)")  # Li 2021 PAGE 29 Results: Ksyn 0.178 mg/L/h
-    lkdeg <- log(0.0082); label("Free-target first-order degradation rate constant Kdeg (1/hour)")    # Li 2021 PAGE 29 Results: Kdeg 0.0082 1/h
-    lkint <- log(0.092);  label("Drug-target complex internalisation rate constant Kint (1/hour)")    # Li 2021 PAGE 29 Results: Kint 0.092 1/h
+    lksyn <- log(0.178);  label("Target (CD38) zero-order synthesis rate constant Ksyn (mg/L/h)")  # Li 2021 PAGE 29 Results: Ksyn 0.178 mg/L/h
+    lkdeg <- log(0.0082); label("Free-target first-order degradation rate constant Kdeg (1/h)")    # Li 2021 PAGE 29 Results: Kdeg 0.0082 1/h
+    lkint <- log(0.092);  label("Drug-target complex internalisation rate constant Kint (1/h)")    # Li 2021 PAGE 29 Results: Kint 0.092 1/h
     lkss  <- log(1.79);   label("QSS steady-state dissociation constant Kss (mg/L; abstract prints 1/h, treated as typo)") # Li 2021 PAGE 29 Results: Kss 1.79 (units printed as 1/h; encoded as mg/L per Gibiansky 2008 QSS form)
 
     # Residual error. Li 2021 PAGE 29 reports RUV = 22.7% (proportional model

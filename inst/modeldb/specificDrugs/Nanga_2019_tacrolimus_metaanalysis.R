@@ -2,7 +2,7 @@ Nanga_2019_tacrolimus_metaanalysis <- function() {
   description <- "MBMA. Two-compartment population PK meta-model for oral tacrolimus in solid organ transplantation (Nanga 2019), built from pooled individual-patient data across 7 historical NONMEM datasets (n = 281 paediatric + adult liver and kidney transplant recipients). Structural model: first-order absorption with fixed lag time, time-varying first-order elimination, allometric (WT/50 kg) scaling on apparent clearance and apparent central volume, multiplicative reduction of CL/F in hepatic-graft recipients, sigmoidal post-transplant-day recovery of CL/F, and reduced relative bioavailability for the oral syrup formulation. The literature-review summary table (Nanga 2019 Table 2: 76 published popPK models) is not used for parameter fitting and is not reproduced here."
   reference <- "Nanga TM, Doan TTP, Marquet P, Musuamba FT. Toward a robust tool for pharmacokinetic-based personalization of treatment with tacrolimus in solid organ transplantation: A model-based meta-analysis approach. Br J Clin Pharmacol. 2019;85(12):2793-2823. doi:10.1111/bcp.14110"
   vignette <- "Nanga_2019_tacrolimus_metaanalysis"
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   covariateData <- list(
     WT = list(

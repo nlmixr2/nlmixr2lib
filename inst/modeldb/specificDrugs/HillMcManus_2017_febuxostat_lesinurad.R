@@ -3,7 +3,7 @@ HillMcManus_2017_febuxostat_lesinurad <- function() {
   reference <- "Hill-McManus D, Soto E, Marshall S, Lane S, Hughes D. Impact of non-adherence on the safety and efficacy of uric acid-lowering therapies in the treatment of gout. Br J Clin Pharmacol. 2018;84(1):142-152. doi:10.1111/bcp.13427"
   vignette <- "HillMcManus_2017_febuxostat_lesinurad"
   units <- list(
-    time = "hour",
+    time = "h",
     dosing = "mg",
     concentration = "mg/dL"
   )

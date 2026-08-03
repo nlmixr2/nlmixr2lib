@@ -37,7 +37,7 @@ Li_2012_clozapine <- function() {
     sep = " "
   )
   vignette <- "Li_2012_clozapine"
-  units    <- list(time = "hour", dosing = "umol", concentration = "umol/L")
+  units    <- list(time = "h", dosing = "umol", concentration = "umol/L")
 
   covariateData <- list(
     SEXF = list(

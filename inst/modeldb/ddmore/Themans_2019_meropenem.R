@@ -10,7 +10,7 @@ Themans_2019_meropenem <- function() {
     sep = " "
   )
   vignette <- "Themans_2019_meropenem"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   ddmore_id    <- "DDMODEL00000301"
   replicate_of <- NULL

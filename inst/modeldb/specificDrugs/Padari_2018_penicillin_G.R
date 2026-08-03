@@ -2,7 +2,7 @@ Padari_2018_penicillin_G <- function() {
   description <- "Two-compartment IV population PK model for penicillin G (benzylpenicillin) in preterm and term neonates (Padari 2018; pooled with Metsvaht 2007 GA <=28 wk cohort). CL and Q are allometrically scaled to body weight (fixed exponent 0.75) with a fixed Rhodin-style postmenstrual-age (PMA) sigmoidal renal-maturation function on CL; Vc and Vp are allometrically scaled (fixed exponent 1.0)."
   reference   <- "Padari H, Metsvaht T, Germovsek E, Barker CI, Kipper K, Herodes K, Standing JF, Oselin K, Tasa T, Soeorg H, Lutsar I. Pharmacokinetics of penicillin G in preterm and term neonates. Antimicrob Agents Chemother. 2018;62(5):e02238-17. doi:10.1128/AAC.02238-17"
   vignette    <- "Padari_2018_penicillin_G"
-  units       <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units       <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     WT = list(

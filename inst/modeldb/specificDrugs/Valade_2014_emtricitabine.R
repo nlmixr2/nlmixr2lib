@@ -8,7 +8,7 @@ Valade_2014_emtricitabine <- function() {
     "doi:10.1111/bcp.12457"
   )
   vignette <- "Valade_2014_emtricitabine"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     CRCL = list(

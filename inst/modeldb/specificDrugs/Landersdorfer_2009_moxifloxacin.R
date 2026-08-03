@@ -10,7 +10,7 @@ Landersdorfer_2009_moxifloxacin <- function() {
     sep = " "
   )
   vignette <- "Landersdorfer_2009_moxifloxacin"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   paper_specific_compartments <- c("cortical", "cancellous")
 

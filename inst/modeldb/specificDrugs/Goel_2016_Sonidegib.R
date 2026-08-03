@@ -2,7 +2,7 @@ Goel_2016_Sonidegib <- function() {
   description <- "Two-compartment population PK model for sonidegib (LDE225) in healthy subjects and patients with advanced solid tumors with first-order absorption, lag time, linear elimination, and dose-dependent bioavailability (Goel 2016)"
   reference   <- "Goel V, Hurh E, Stein A, Nedelman J, Zhou J, Chiparus O, Huang P-H, Gogov S, Sellami D. Population pharmacokinetics of sonidegib (LDE225), an oral inhibitor of hedgehog pathway signaling, in healthy subjects and in patients with advanced solid tumors. Cancer Chemother Pharmacol. 2016;77(4):745-755. doi:10.1007/s00280-016-2982-1"
   vignette    <- "Goel_2016_Sonidegib"
-  units       <- list(time = "hr", dosing = "mg", concentration = "ng/mL")
+  units       <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   covariateData <- list(
     AGE = list(

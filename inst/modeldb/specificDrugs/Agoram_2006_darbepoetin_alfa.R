@@ -18,7 +18,7 @@ Agoram_2006_darbepoetin_alfa <- function() {
     "doi:10.1111/j.1365-2125.2006.02752.x"
   )
   vignette <- "Agoram_2006_darbepoetin_alfa"
-  units <- list(time = "hour", dosing = "ug", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "ug", concentration = "ng/mL")
 
   covariateData <- list(
     WT = list(

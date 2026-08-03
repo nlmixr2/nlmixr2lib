@@ -22,7 +22,7 @@ Keij_2023_amoxicillin <- function() {
     "Clin Infect Dis. 2023;77(11):1595-1603. doi:10.1093/cid/ciad432"
   )
   vignette <- "Keij_2023_amoxicillin"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     WT = list(

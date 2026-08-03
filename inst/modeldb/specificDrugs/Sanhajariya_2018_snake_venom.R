@@ -2,7 +2,7 @@ Sanhajariya_2018_snake_venom <- function() {
   description <- "Exploratory population PK meta-analysis of snake venom in humans (Sanhajariya 2018): one-compartment model with zero-order input (duration D1 = 1 h, fixed) and first-order elimination, fit in NONMEM 7.2 to 218 timed venom concentrations from 145 snakebite patients pooled across 24 published case reports / series. Snake family (Elapidae vs Viperidae) modifies F1; Viperidae is the reference (F1 = 1, fixed). Authors describe the model as a preliminary prior for future snake-envenoming PK modelling; F1 also absorbs the large bite-to-bite variability in injected venom mass."
   reference <- "Sanhajariya S, Duffull SB, Isbister GK. Pharmacokinetics of snake venom. Toxins (Basel). 2018;10(2):73. doi:10.3390/toxins10020073"
   vignette <- "Sanhajariya_2018_snake_venom"
-  units <- list(time = "hour", dosing = "mcg", concentration = "mcg/L")
+  units <- list(time = "h", dosing = "ug", concentration = "mcg/L")
 
   covariateData <- list(
     SNAKEFAMILY_ELAPID = list(

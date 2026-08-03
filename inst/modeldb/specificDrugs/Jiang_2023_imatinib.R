@@ -21,7 +21,7 @@ Jiang_2023_imatinib <- function() {
     "doi:10.2147/DDDT.S400986."
   )
   vignette <- "Jiang_2023_imatinib"
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   covariateData <- list(
     RBC = list(

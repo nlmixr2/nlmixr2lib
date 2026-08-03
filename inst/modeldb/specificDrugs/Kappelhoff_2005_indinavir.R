@@ -15,7 +15,7 @@ Kappelhoff_2005_indinavir <- function() {
     "doi:10.1111/j.1365-2125.2005.02436.x."
   )
   vignette <- "Kappelhoff_2005_indinavir"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     CONMED_RTV = list(

@@ -30,7 +30,7 @@ Bender_2009_pregabalin_rat_smetab <- function() {
     sep = " "
   )
   vignette <- "Bender_2009_pregabalin_rat"
-  units    <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units    <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   covariateData <- list(
     SLDM = list(

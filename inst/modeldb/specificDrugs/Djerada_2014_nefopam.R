@@ -24,7 +24,7 @@ Djerada_2014_nefopam <- function() {
     sep = " "
   )
   vignette <- "Djerada_2014_nefopam"
-  units <- list(time = "hour", dosing = "mg", concentration = "ug/L")
+  units <- list(time = "h", dosing = "mg", concentration = "ug/L")
 
   covariateData <- list()
 

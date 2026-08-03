@@ -10,7 +10,7 @@ Frymoyer_2013_mycophenolic_acid <- function() {
     sep = " "
   )
   vignette <- "Frymoyer_2013_mycophenolic_acid"
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   covariateData <- list(
     CRCL = list(

@@ -2,7 +2,7 @@ Li_2014_penicillinG_cattle <- function() {
   description <- "Preclinical (cattle). Three-compartment population pharmacokinetic model for penicillin G in cattle, with four parallel first-order absorption depots covering intramuscular penicillin sodium, intramuscular procaine penicillin, subcutaneous procaine penicillin, and oral procaine penicillin (the oral depot feeds the liver compartment directly), plus separate liver and kidney tissue compartments connected to the central compartment by inter-compartmental clearance; pooled meta-analysis of 100 cattle from 30 published studies and FARAD records (Li 2014)."
   reference   <- "Li M, Gehring R, Tell L, Baynes R, Huang Q, Riviere JE. Interspecies mixed-effect pharmacokinetic modeling of penicillin G in cattle and swine. Antimicrob Agents Chemother. 2014;58(8):4495-4503. doi:10.1128/AAC.02806-14"
   vignette    <- "Li_2014_penicillinG"
-  units       <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units       <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     WT = list(

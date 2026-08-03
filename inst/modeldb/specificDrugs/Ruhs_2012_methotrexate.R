@@ -3,7 +3,7 @@ Ruhs_2012_methotrexate <- function() {
   reference <- "Ruhs H, Becker A, Drescher A, Panetta JC, Pui CH, Relling MV, Jaehde U. Population PK/PD Model of Homocysteine Concentrations after High-Dose Methotrexate Treatment in Patients with Acute Lymphoblastic Leukemia. PLoS ONE. 2012;7(9):e46015. doi:10.1371/journal.pone.0046015"
   vignette <- "Ruhs_2012_methotrexate"
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "mg",
     concentration = "umol/L",
     notes         = "Dose entered as MTX amount in mg into the central compartment. The observation Cc is reported in umol/L (uM) via the conversion (central/vc) * 1000 / MW_MTX (MW_MTX = 454.44 g/mol) so that EC50 and HCY remain in their published uM units."

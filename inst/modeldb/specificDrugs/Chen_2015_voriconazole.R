@@ -2,7 +2,7 @@ Chen_2015_voriconazole <- function() {
   description <- "One-compartment population pharmacokinetic model with first-order elimination for intravenous voriconazole in Chinese adult critically ill patients with pulmonary disease (Chen 2015); direct bilirubin enters as a power-form covariate on clearance."
   reference <- "Chen W, Xie H, Liang F, Meng D, Rui J, Yin X, Zhang T, Xiao X, Cai S, Liu X, Li Y. Population pharmacokinetics in China: the dynamics of intravenous voriconazole in critically ill patients with pulmonary disease. Biol Pharm Bull. 2015;38(7):996-1004. doi:10.1248/bpb.b14-00768"
   vignette <- "Chen_2015_voriconazole"
-  units <- list(time = "hour", dosing = "mg", concentration = "ug/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 
   covariateData <- list(
     DBIL = list(

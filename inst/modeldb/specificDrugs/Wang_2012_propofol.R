@@ -9,7 +9,7 @@ Wang_2012_propofol <- function() {
     sep = " "
   )
   vignette <- "Wang_2012_propofol"
-  units    <- list(time = "minute", dosing = "mg", concentration = "mg/L")
+  units    <- list(time = "min", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     WT = list(

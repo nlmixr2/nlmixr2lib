@@ -12,7 +12,7 @@ Lignet_2023_m8891_human <- function() {
     sep = " "
   )
   vignette <- "Lignet_2023_m8891"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # See Lignet_2023_m8891_mouse.R for the rationale; `effect` is the paper's
   # effect compartment Ce and `metef1a` is the tumour Met-EF1a turnover pool.

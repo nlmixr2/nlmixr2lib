@@ -8,7 +8,7 @@ Schipani_2011_nevirapine <- function() {
     "J Antimicrob Chemother. 2011;66(6):1332-1339. doi:10.1093/jac/dkr087."
   )
   vignette <- "Schipani_2011_nevirapine"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     WT = list(

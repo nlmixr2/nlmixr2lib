@@ -15,7 +15,7 @@ Frohlich_2018_mRNA_translation <- function() {
     sep = " "
   )
   vignette    <- "Frohlich_2018_mRNA_translation"
-  units       <- list(time = "hour", dosing = "normalized mRNA mass (m0 = 1)", concentration = "log fluorescence intensity (a.u.)")
+  units       <- list(time = "h", dosing = "normalized mRNA mass (m0 = 1)", concentration = "log fluorescence intensity (a.u.)")
 
   covariateData <- list(
     STUDY_d2eGFP = list(

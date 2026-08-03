@@ -9,7 +9,7 @@ Grasela_1985_phenobarbital <- function() {
     sep = " "
   )
   vignette <- "Grasela_1985_phenobarbital"
-  units    <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     WT = list(

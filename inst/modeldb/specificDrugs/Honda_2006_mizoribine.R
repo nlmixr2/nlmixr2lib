@@ -2,7 +2,7 @@ Honda_2006_mizoribine <- function() {
   description <- "One-compartment oral PK model for mizoribine in healthy Caucasian male volunteers (Honda 2006); first-order absorption with a fixed absorption-lag time, apparent volume of distribution V/F linear in body weight, apparent oral clearance CL/F linear in Cockcroft-Gault creatinine clearance (CLcr), and additive residual error on the serum-concentration scale."
   reference <- "Honda M, Itoh H, Suzuki T, Hashimoto Y. Population pharmacokinetics of higher-dose mizoribine in healthy male volunteers. Biol Pharm Bull. 2006 Dec;29(12):2460-2464. doi:10.1248/bpb.29.2460"
   vignette <- "Honda_2006_mizoribine"
-  units <- list(time = "hour", dosing = "mg", concentration = "ug/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 
   covariateData <- list(
     WT = list(

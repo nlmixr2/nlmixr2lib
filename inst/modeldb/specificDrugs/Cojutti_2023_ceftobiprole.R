@@ -2,7 +2,7 @@ Cojutti_2023_ceftobiprole <- function() {
   description <- "Three-compartment IV population PK model for ceftobiprole in adults with severe Gram-positive infections (real-life multicentre therapeutic drug monitoring cohort, Italy). Clearance rises exponentially with CKD-EPI estimated glomerular filtration rate; central volume V1 is larger in males. Supports probability-of-target-attainment analysis against free-trough or free-steady-state fCtrough/MIC and fCss/MIC targets."
   reference   <- "Cojutti PG, Giuliano S, Pascale R, Angelini J, Tascini C, Viale P, Pea F. Population Pharmacokinetic and Pharmacodynamic Analysis for Maximizing the Effectiveness of Ceftobiprole in the Treatment of Severe Methicillin-Resistant Staphylococcal Infections. Microorganisms. 2023;11(12):2964. doi:10.3390/microorganisms11122964"
   vignette    <- "Cojutti_2023_ceftobiprole"
-  units       <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units       <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     CRCL = list(

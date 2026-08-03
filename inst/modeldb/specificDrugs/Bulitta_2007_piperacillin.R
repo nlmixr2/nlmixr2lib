@@ -8,7 +8,7 @@ Bulitta_2007_piperacillin <- function() {
     "2007;51(7):2497-2507. doi:10.1128/AAC.01477-06."
   )
   vignette <- "Bulitta_2007_piperacillin"
-  units    <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     LBM = list(

@@ -50,7 +50,7 @@ PillaReddy_2013_haloperidol_panss_subscales <- function() {
     sep = " "
   )
   vignette <- "PillaReddy_2013_panss_subscales"
-  units    <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units    <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   covariateData <- list()
 
@@ -235,7 +235,7 @@ PillaReddy_2013_haloperidol_panss_subscales <- function() {
 
   model({
     # The paper reports time-dependent PD parameters in DAYS (TD in days, KT
-    # in 1/day) while units$time = "hour" for the PK ODE. Convert model time
+    # in 1/day) while units$time = "h" for the PK ODE. Convert model time
     # t (hours since first dose) to days for use in the placebo Weibull and
     # the Emax onset.
     t_days <- t / 24

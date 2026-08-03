@@ -36,7 +36,7 @@ Zingmark_2003_clomethiazole <- function() {
   )
   vignette <- "Zingmark_2003_clomethiazole"
   units    <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "mg (clomethiazole free base)",
     concentration = "umol/L"
   )

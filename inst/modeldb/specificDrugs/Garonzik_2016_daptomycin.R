@@ -3,7 +3,7 @@ Garonzik_2016_daptomycin <- function() {
   reference <- "Garonzik SM, Lenhard JR, Forrest A, Holden PN, Bulitta JB, Tsuji BT. Defining the active fraction of daptomycin against methicillin-resistant Staphylococcus aureus (MRSA) using a pharmacokinetic and pharmacodynamic approach. PLoS ONE. 2016;11(6):e0156131. doi:10.1371/journal.pone.0156131."
   vignette <- "Garonzik_2016_daptomycin"
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "mg/L (static initial daptomycin concentration in the broth)",
     concentration = "log10 CFU/mL (observation); mg/L (daptomycin state)"
   )

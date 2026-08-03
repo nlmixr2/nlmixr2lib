@@ -34,7 +34,7 @@ Ribba_2022_ctdna_sld_joint <- function() {
   vignette <- "Ribba_2022_ctdna_tumor_size"
 
   units <- list(
-    time          = "days",
+    time          = "day",
     dosing        = "n/a (no PK input; treatment effect is absorbed into the empirical growth and decay rate constants)",
     concentration = "two outputs on different scales -- `TS` is the RECIST 1.1 sum of longest diameters in mm, and `ctdna` is base-10 log-transformed average mutant molecules per mL of plasma (log10 MMPM). The residual-error parameters follow their outputs: addSd_TS is in mm, addSd_ctdna is in log10 units."
   )

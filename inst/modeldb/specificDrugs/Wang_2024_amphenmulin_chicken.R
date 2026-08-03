@@ -10,7 +10,7 @@ Wang_2024_amphenmulin_chicken <- function() {
   )
   vignette <- "Wang_2024_amphenmulin"
   units <- list(
-    time = "hour",
+    time = "h",
     dosing = "mg/kg",
     concentration = "ug/mL"
   )

@@ -2,7 +2,7 @@ Wu_2024_inotuzumab <- function() {
   description <- "Two-compartment population PK model for inotuzumab ozogamicin in pediatric and adult patients with relapsed/refractory B-cell precursor acute lymphoblastic leukemia (BCP-ALL) and adult patients with B-cell non-Hodgkin's lymphoma (NHL); linear plus time-dependent (target-mediated) clearance with covariate effects on CL_SS, Vc, CL_TIME, and cl_exp_kdes (Wu 2024, ITCC-059 pediatric trial pooled with 11 adult studies)."
   reference <- "Wu JH, Pennesi E, Bautista F, Garrett M, Fukuhara K, Brivio E, et al. Population Pharmacokinetics of Inotuzumab Ozogamicin in Pediatric Relapsed/Refractory B-Cell Precursor Acute Lymphoblastic Leukemia: Results of Study ITCC-059. Clin Pharmacokinet. 2024;63(7):981-997. doi:10.1007/s40262-024-01386-z"
   vignette <- "Wu_2024_inotuzumab"
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   covariateData <- list(
     LBM = list(

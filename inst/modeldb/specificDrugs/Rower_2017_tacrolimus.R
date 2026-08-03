@@ -19,7 +19,7 @@ Rower_2017_tacrolimus <- function() {
     "doi:10.1136/bmjpo-2017-000147."
   )
   vignette <- "Rower_2017_tacrolimus"
-  units <- list(time = "hour", dosing = "mg", concentration = "ug/L")
+  units <- list(time = "h", dosing = "mg", concentration = "ug/L")
 
   covariateData <- list(
     AGE = list(

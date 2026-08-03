@@ -2,7 +2,7 @@ Thoueille_2023_lopinavir <- function() {
   description <- "One-compartment first-order-absorption population PK model for oral ritonavir-boosted lopinavir (LPV/r) in HIV-negative individuals receiving 5-day COVID-19 post-exposure prophylaxis (COPEP study) pooled with people living with HIV followed by routine therapeutic drug monitoring; body weight enters apparent oral clearance as a linear deviation from a 70 kg reference (Thoueille 2023)."
   reference <- "Thoueille P, Delfraysse M, Andre P, Buclin T, Decosterd LA, Fedeli C, Ustero P, Calmy A, Guidi M; Swiss HIV Cohort Study. Population pharmacokinetic analysis of lopinavir in HIV negative individuals exposed to SARS-CoV-2: a COPEP (COronavirus Post-Exposure Prophylaxis) sub-study. BMC Pharmacol Toxicol. 2023;24:47. doi:10.1186/s40360-023-00687-6"
   vignette <- "Thoueille_2023_lopinavir"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     WT = list(

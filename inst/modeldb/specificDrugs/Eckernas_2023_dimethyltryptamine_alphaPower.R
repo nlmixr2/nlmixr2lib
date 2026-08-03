@@ -14,7 +14,7 @@ Eckernas_2023_dimethyltryptamine_alphaPower <- function() {
     sep = " "
   )
   vignette <- "Eckernas_2023_dimethyltryptamine_EEG"
-  units    <- list(time = "minute", dosing = "nmol", concentration = "nmol/L")
+  units    <- list(time = "min", dosing = "nmol", concentration = "nmol/L")
 
   covariateData <- list(
     OCC = list(

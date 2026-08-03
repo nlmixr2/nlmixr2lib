@@ -27,7 +27,7 @@ Watt_2015_fluconazole <- function() {
     "doi:10.1128/AAC.00102-15"
   )
   vignette <- "Watt_2015_fluconazole"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     WT = list(

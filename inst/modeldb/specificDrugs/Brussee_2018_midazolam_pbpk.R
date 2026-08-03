@@ -22,7 +22,7 @@ Brussee_2018_midazolam_pbpk <- function() {
     sep = " "
   )
   vignette <- "Brussee_2018_midazolam_pbpk"
-  units    <- list(time = "hour", dosing = "microgram", concentration = "microgram/L")
+  units    <- list(time = "h", dosing = "ug", concentration = "microgram/L")
 
   covariateData <- list(
     WT = list(

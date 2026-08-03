@@ -2,7 +2,7 @@ AbdelJalil_2013_tacrolimus <- function() {
   description <- "One-compartment population PK model for oral tacrolimus in paediatric liver transplant recipients (Abdel Jalil 2013), with first-order absorption (ka fixed at the literature value 4.5 1/h), an apparent volume of distribution fixed at the literature value 30 L/kg, allometric (WT/13.2 kg)^0.75 scaling on apparent clearance with the theory-based exponent fixed, multiplicative exponential effects of time post-transplantation (days) and CYP3A5*1 carrier status on CL/F, exponential (log-normal) inter-individual variability on CL/F, and proportional residual error."
   reference   <- "Abdel Jalil MH, Hawwa AF, McKiernan PJ, Shields MD, McElnay JC. Population pharmacokinetic and pharmacogenetic analysis of tacrolimus in paediatric liver transplant patients. Br J Clin Pharmacol. 2014;77(1):130-140. doi:10.1111/bcp.12174"
   vignette    <- "AbdelJalil_2013_tacrolimus"
-  units       <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units       <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   covariateData <- list(
     WT = list(

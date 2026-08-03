@@ -9,7 +9,7 @@ Nielsen_2011_benzylpenicillin <- function() {
     sep = " "
   )
   vignette <- "Nielsen_2011_antibacterial_efficacy"
-  units <- list(time = "hour", dosing = "mg/L (drug input concentration)", concentration = "natural log CFU/mL (observation); mg/L (drug compartment)")
+  units <- list(time = "h", dosing = "mg/L (drug input concentration)", concentration = "natural log CFU/mL (observation); mg/L (drug compartment)")
 
   paper_specific_compartments <- c("bact_sensitive", "bact_resting")
 

@@ -20,7 +20,7 @@ Hawwa_2013_ranitidine <- function() {
     "doi:10.1111/j.1365-2125.2012.04473.x."
   )
   vignette <- "Hawwa_2013_ranitidine"
-  units    <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     WT = list(

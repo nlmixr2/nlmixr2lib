@@ -70,7 +70,7 @@ Aoki_2024_bosentan_pbpk <- function() {
   # the tissue states hold concentrations in umol/L (micromolar) and the
   # receptor states hold amounts in umol, so doses must be supplied in
   # umol (bosentan MW 551.61 g/mol, so mg * 1000 / 551.61 = umol).
-  units <- list(time = "hour", dosing = "umol", concentration = "umol/L")
+  units <- list(time = "h", dosing = "umol", concentration = "umol/L")
 
   # No covariates. Every physiological volume, flow and partition
   # coefficient in PSP4-13-54-s004.r is a fixed constant for a single

@@ -16,7 +16,7 @@ Heuberger_2018_salbutamol <- function() {
     "doi:10.1111/bcp.13619. Final NONMEM code in Data S1 supplement."
   )
   vignette <- "Heuberger_2018_salbutamol"
-  units <- list(time = "hour", dosing = "ug", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "ug", concentration = "ng/mL")
 
   covariateData <- list(
     WT = list(

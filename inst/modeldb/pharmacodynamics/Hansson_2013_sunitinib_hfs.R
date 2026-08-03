@@ -25,7 +25,7 @@ Hansson_2013_sunitinib_hfs <- function() {
   )
   vignette <- "Hansson_2013_sunitinib_hfs"
   units <- list(
-    time = "hour",
+    time = "h",
     dosing = "mg",
     concentration = "(NCI-CTC HFS grade 0-3+, ordinal)"
   )

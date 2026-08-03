@@ -2,7 +2,7 @@ Grover_2011_tacrolimus <- function() {
   description <- "Two-compartment population PK model for oral tacrolimus in adult Native American kidney transplant recipients (Grover 2011), with first-order absorption after a lag time, no covariate effects (the Native American cohort showed no association of age, sex, weight, BMI, or post-transplant duration with PK parameters), and a placeholder proportional residual error model (residual error was not reported in the short communication)."
   reference <- "Grover A, Frassetto LA, Benet LZ, Chakkera HA. Pharmacokinetic Differences Corroborate Observed Low Tacrolimus Dosage in Native American Renal Transplant Patients. Drug Metab Dispos. 2011 Nov;39(11):2017-2019. doi:10.1124/dmd.111.041350."
   vignette <- "Grover_2011_tacrolimus"
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   covariateData <- list()
 

@@ -2,7 +2,7 @@ Shekar_2014_meropenem <- function() {
   description <- "Two-compartment IV population PK model for meropenem in critically ill adult patients on extracorporeal membrane oxygenation (ECMO) and historical critically ill control patients with sepsis, with a piecewise covariate on clearance that switches between a fixed RRT-cohort CL and a Cockcroft-Gault-CrCL-driven non-RRT CL (Shekar 2014)"
   reference   <- "Shekar K, Fraser JF, Taccone FS, Welch S, Wallis SC, Mullany DV, Lipman J, Roberts JA; ASAP ECMO Study Investigators. The combined effects of extracorporeal membrane oxygenation and renal replacement therapy on meropenem pharmacokinetics: a matched cohort study. Crit Care. 2014;18(6):565. doi:10.1186/s13054-014-0565-2"
   vignette    <- "Shekar_2014_meropenem"
-  units       <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units       <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     CRCL = list(

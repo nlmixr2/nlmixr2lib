@@ -2,7 +2,7 @@ Bergmann_2014_tacrolimus <- function() {
   description <- "Two-compartment population PK model for oral tacrolimus in adult kidney transplant recipients (Bergmann 2014), with first-order absorption after a lag time, allometric (WT/70 kg)^0.75 scaling on apparent clearance, multiplicative CYP3A5*1-carrier effect on CL/F, linear hematocrit and post-transplant-day effects on CL/F, linear free prednisolone Cmax effect on V1/F, correlated inter-individual variability across V1/F, ka, and V2/F, and proportional residual error."
   reference <- "Bergmann TK, Hennig S, Barraclough KA, Isbel NM, Staatz CE. Population Pharmacokinetics of Tacrolimus in Adult Kidney Transplant Patients: Impact of CYP3A5 Genotype on Starting Dose. Ther Drug Monit. 2014;36(1):62-70. doi:10.1097/FTD.0b013e31829f1ab8"
   vignette <- "Bergmann_2014_tacrolimus"
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   covariateData <- list(
     WT = list(

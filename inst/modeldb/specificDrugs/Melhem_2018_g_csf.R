@@ -38,7 +38,7 @@ Melhem_2018_g_csf <- function() {
   paper_specific_compartments <- c("depot_kpd_chemotherapy", "depot_kpd_corticosteroid")
 
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "nmol (G-CSF); mg (chemotherapy and corticosteroid KPD inputs)",
     concentration = "nmol/L (nM; serum G-CSF, endogenous BSLD plus exogenous FDC)",
     ANC           = "10^9 cells/L",

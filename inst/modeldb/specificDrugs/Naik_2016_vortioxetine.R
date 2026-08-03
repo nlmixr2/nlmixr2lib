@@ -2,7 +2,7 @@ Naik_2016_vortioxetine <- function() {
   description <- "Two-compartment population PK model for vortioxetine in adult patients with major depressive disorder or generalized anxiety disorder, with first-order oral absorption, region-specific oral clearance, and linear creatinine-clearance and height effects on CL/F (Naik 2016)"
   reference <- "Naik H, Chan S, Vakilynejad M, Chen G, Loft H, Mahableshwarkar AR, Areberg J. A Population Pharmacokinetic-Pharmacodynamic Meta-Analysis of Vortioxetine in Patients with Major Depressive Disorder. Basic Clin Pharmacol Toxicol. 2016;118(5):344-355. doi:10.1111/bcpt.12513"
   vignette <- "Naik_2016_vortioxetine"
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   covariateData <- list(
     CRCL = list(
@@ -61,15 +61,15 @@ Naik_2016_vortioxetine <- function() {
   ini({
     # Structural PK parameters - Table 3 of Naik 2016
     # Reference subject for covariates: USA, height = 167 cm, CRCL = 106 mL/min
-    lcl       <- log(51);   label("Typical CL/F in USA reference, log-scale (L/hr)")            # Table 3 ("CL/F for US" = 51 L/hr)
+    lcl       <- log(51);   label("Typical CL/F in USA reference, log-scale (L/h)")            # Table 3 ("CL/F for US" = 51 L/hr)
     lvc       <- log(2900); label("Central volume of distribution V2/F, log-scale (L)")          # Table 3 (V2/F = 2.9 x 10^3 L)
 
     # Parameters fixed in Naik 2016 from the upstream Phase I popPK (Areberg et al. 2014).
     # The Phase I model is not yet packaged in nlmixr2lib; the fixed values are listed
     # explicitly here so this file is self-contained.
-    lq        <- fixed(log(23));   label("Intercompartmental clearance Q/F, log-scale (L/hr)")    # Table 3 (Q/F = 23 L/hr, fixed)
+    lq        <- fixed(log(23));   label("Intercompartmental clearance Q/F, log-scale (L/h)")    # Table 3 (Q/F = 23 L/hr, fixed)
     lvp       <- fixed(log(670));  label("Peripheral volume of distribution V3/F, log-scale (L)") # Table 3 (V3/F = 6.7 x 10^2 L, fixed)
-    lka       <- fixed(log(0.14)); label("First-order absorption rate constant, log-scale (1/hr)")# Table 3 (ka = 0.14 /hr, fixed; Table 3 unit "L/hr" is a typo)
+    lka       <- fixed(log(0.14)); label("First-order absorption rate constant, log-scale (1/h)")# Table 3 (ka = 0.14 /hr, fixed; Table 3 unit "L/hr" is a typo)
 
     # Region effects on CL/F (log-multiplicative form recovering the paper's
     # additive intercepts TVCL_USA = 51, TVCL_EU = 39, TVCL_RoW = 38 L/hr).
@@ -77,8 +77,8 @@ Naik_2016_vortioxetine <- function() {
     e_region_row_cl    <- log(38 / 51); label("Log multiplicative effect of RoW region on CL/F (TVCL_RoW / TVCL_USA = 38 / 51)") # Table 3
 
     # Covariate effects on CL/F (linear additive on L/hr, per equation 12 of Naik 2016)
-    e_crcl_cl <- 0.18; label("Linear effect of creatinine clearance on CL/F (L/hr per (CRCL - 106) mL/min)") # Table 3 (CrCL on CL/F)
-    e_ht_cl   <- 0.40; label("Linear effect of height on CL/F (L/hr per (HT - 167) cm)")                    # Table 3 (Height on CL/F)
+    e_crcl_cl <- 0.18; label("Linear effect of creatinine clearance on CL/F (L/h per (CRCL - 106) mL/min)") # Table 3 (CrCL on CL/F)
+    e_ht_cl   <- 0.40; label("Linear effect of height on CL/F (L/h per (HT - 167) cm)")                    # Table 3 (Height on CL/F)
 
     # IIV: Naik 2016 estimated separate variances per region (EU:USA:RoW = 0.38:0.90:0.62).
     # This file uses a single etalcl with the RoW value (0.62) as a pragmatic single-value

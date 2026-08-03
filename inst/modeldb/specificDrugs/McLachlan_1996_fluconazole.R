@@ -2,7 +2,7 @@ McLachlan_1996_fluconazole <- function() {
   description <- "One-compartment population PK model for fluconazole in adults with HIV/AIDS, fit to 770 plasma concentrations from 113 male subjects pooled across an intensive-sampling sub-study (Study 1, n=13, 12-17 samples per dose) and a sparse routine-care sub-study (Study 2, n=100, single sample per subject). Oral capsules (Diflucan, 50-800 mg) and 50 mg per 15 min IV infusions are described by a single linear central compartment with first-order absorption from a depot and zero-order input during IV infusion. The final NONMEM clearance model is an additive intercept-plus-slopes regression on Cockcroft-Gault creatinine clearance (raw, not BSA-normalized) and absolute CD4+ T-lymphocyte count: CL (L/h) = 0.25 + 0.0057 * CLcr (mL/min) + 0.00068 * CD4 (cells/mm^3); volume of distribution, absorption rate, and bioavailability are not modulated by covariates."
   reference <- "McLachlan AJ, Tett SE. Pharmacokinetics of fluconazole in people with HIV infection: a population analysis. Br J Clin Pharmacol. 1996;41(4):291-298. doi:10.1046/j.1365-2125.1996.03085.x"
   vignette <- "McLachlan_1996_fluconazole"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     CRCL = list(

@@ -16,7 +16,7 @@ Bienczak_2016_nevirapine <- function() {
     sep = " "
   )
   vignette <- "Bienczak_2016_nevirapine"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     WT = list(

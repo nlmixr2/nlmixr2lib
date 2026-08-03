@@ -9,7 +9,7 @@ Liang_2023_polymyxinB <- function() {
     sep = " "
   )
   vignette <- "Liang_2023_polymyxinB"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     ALB = list(

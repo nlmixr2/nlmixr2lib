@@ -20,7 +20,7 @@ Kirubakaran_2022_tacrolimus <- function() {
     "doi:10.1007/s13318-019-00591-7."
   )
   vignette <- "Kirubakaran_2022_tacrolimus"
-  units <- list(time = "hour", dosing = "mg", concentration = "ug/L")
+  units <- list(time = "h", dosing = "mg", concentration = "ug/L")
 
   covariateData <- list(
     FFM = list(

@@ -9,7 +9,7 @@ Bajaj_2017_nivolumab_ddmore <- function() {
     sep = " "
   )
   vignette <- "Bajaj_2017_nivolumab_ddmore"
-  units <- list(time = "hour", dosing = "mg", concentration = "ug/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
   ddmore_id    <- "DDMODEL00000284"
   replicate_of <- "inst/modeldb/specificDrugs/Bajaj_2017_nivolumab.R"
 

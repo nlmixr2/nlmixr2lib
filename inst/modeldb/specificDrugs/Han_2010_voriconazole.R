@@ -2,7 +2,7 @@ Han_2010_voriconazole <- function() {
   description <- "Two-compartment population pharmacokinetic model with first-order absorption and first-order elimination for intravenous and oral voriconazole in adult lung transplant recipients during the early postoperative period (Han 2010). Bioavailability is estimated for the oral route. The base structural model is reported as the primary result; three separate single-covariate sub-models -- cystic fibrosis (CF) and postoperative time (POT) on bioavailability, and body weight (WT) on peripheral volume -- are reported in the paper but were not combined into a final model; the base-model typical-value parameter estimates are encoded here, and the three covariate sub-models are reproduced in the validation vignette."
   reference <- "Han K, Capitano B, Bies R, Potoski BA, Husain S, Gilbert S, Paterson DL, McCurry K, Venkataramanan R. Bioavailability and Population Pharmacokinetics of Voriconazole in Lung Transplant Recipients. Antimicrob Agents Chemother. 2010. doi:10.1128/AAC.00504-10"
   vignette <- "Han_2010_voriconazole"
-  units <- list(time = "hour", dosing = "mg", concentration = "ug/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 
   covariateData <- list()
 

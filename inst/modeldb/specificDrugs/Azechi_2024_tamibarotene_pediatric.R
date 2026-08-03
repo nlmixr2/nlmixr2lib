@@ -34,7 +34,7 @@ Azechi_2024_tamibarotene_pediatric <- function() {
   )
   vignette <- "Azechi_2024_tamibarotene_pediatric"
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "mg",
     concentration = "ng/mL"
   )

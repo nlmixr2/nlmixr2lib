@@ -9,7 +9,7 @@ Zou_2012_MI_219 <- function() {
     sep = " "
   )
   vignette <- "Zou_2012_MI_219"
-  units    <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list()
 

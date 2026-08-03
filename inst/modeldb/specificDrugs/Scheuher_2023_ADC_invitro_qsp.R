@@ -2,7 +2,7 @@ Scheuher_2023_ADC_invitro_qsp <- function() {
   description <- "QSP. In vitro cellular ADC processing model for HER2-targeting antibody-drug conjugates (T-DM1 default; T-DXd variant supported via parameter overrides). 13 ODE states describing extracellular ADC / Ab / free payload, cell-surface HER2 with reversible ADC and antibody binding, endosomal HER2 species, endosomal / cytosolic payload, and cytosolic intracellular target (tubulin for DM1, TOPO-1 for DXd). Amounts in nmol per paper Modeling Convention; concentrations are amount/volume. Parameter set defaults to SK-BR-3 cell line with T-DM1 (Erickson 2012 in vitro incubation)."
   reference   <- "Scheuher B, Ghusinga KR, McGirr K, Nowak M, Panday S, Apgar J, Subramanian K, Betts A. Towards a platform quantitative systems pharmacology (QSP) model for preclinical to clinical translation of antibody drug conjugates (ADCs). J Pharmacokinet Pharmacodyn. 2023;51(1):5-30. doi:10.1007/s10928-023-09884-6. In vitro cellular model = Tables S1a, S2a, S3a-b."
   vignette    <- "Scheuher_2023_ADC_platform_qsp"
-  units       <- list(time = "hour", dosing = "nmol", concentration = "nM")
+  units       <- list(time = "h", dosing = "nmol", concentration = "nM")
 
   covariateData <- list()
 
@@ -26,38 +26,38 @@ Scheuher_2023_ADC_invitro_qsp <- function() {
 
     # Deconjugation rate (1/s), converted to 1/hour for consistency with time units.
     # Table S2a: kdec = 6.41e-7 /s -> 6.41e-7 * 3600 = 2.308e-3 /hour
-    lkdec <- log(2.308e-3); label("Deconjugation rate constant (1/hour)")             # Table S2a: 6.41e-7 /s (T-DM1); fit to Erickson 2012 Figure 3
+    lkdec <- log(2.308e-3); label("Deconjugation rate constant (1/h)")             # Table S2a: 6.41e-7 /s (T-DM1); fit to Erickson 2012 Figure 3
 
     # HER2 binding (association rate constant, in nM^-1 hour^-1; converted from /s)
     # Table S2a: k_on_Ab = 1e-4 /nM/s -> 1e-4 * 3600 = 0.36 /nM/hour
-    lkonab <- fixed(log(0.36)); label("HER2 binding association rate constant (1/nM/hour)")  # Table S2a: 1e-4 /nM/s (Schlosshauer & Baker 2004 typical)
+    lkonab <- fixed(log(0.36)); label("HER2 binding association rate constant (1/nM/h)")  # Table S2a: 1e-4 /nM/s (Schlosshauer & Baker 2004 typical)
 
     # HER2 equilibrium binding constant (nM)
     lkdab <- log(0.314); label("HER2:ADC equilibrium binding constant K_D_Ab (nM)")   # Table S2a: 0.314 nM; fit to Austin 2004
 
     # HER2 receptor kinetics (1/s, converted to 1/hour)
     # Table S2a: k_endo_HER2 = 4.27e-5 /s -> 4.27e-5 * 3600 = 0.15372 /hour
-    lkendoher2 <- log(0.15372); label("HER2 endocytosis rate constant (1/hour)")      # Table S2a: 4.27e-5 /s; fit to Austin 2004
-    lkrecher2  <- log(2.4e-5 * 3600); label("HER2 recycling rate constant (1/hour)")  # Table S2a: 2.4e-5 /s = 0.0864 /hour
-    lkdegher2  <- log(1.27e-4 * 3600); label("HER2 endosomal degradation rate constant (1/hour)")  # Table S2a: 1.27e-4 /s = 0.4572 /hour
+    lkendoher2 <- log(0.15372); label("HER2 endocytosis rate constant (1/h)")      # Table S2a: 4.27e-5 /s; fit to Austin 2004
+    lkrecher2  <- log(2.4e-5 * 3600); label("HER2 recycling rate constant (1/h)")  # Table S2a: 2.4e-5 /s = 0.0864 /hour
+    lkdegher2  <- log(1.27e-4 * 3600); label("HER2 endosomal degradation rate constant (1/h)")  # Table S2a: 1.27e-4 /s = 0.4572 /hour
 
     # HER2:Ab complex kinetics assumed equal to free HER2 kinetics per Table S2a
     # (endocytosis, recycling, and degradation identical between HER2 and HER2:Ab)
 
     # Linker cleavage rate constant (1/hour); T-DM1 has non-cleavable linker so 0
-    lkcleave <- fixed(log(1e-12)); label("Endosomal linker cleavage rate (1/hour) - ~0 for T-DM1 non-cleavable linker")  # Table S2a: 0 /s
+    lkcleave <- fixed(log(1e-12)); label("Endosomal linker cleavage rate (1/h) - ~0 for T-DM1 non-cleavable linker")  # Table S2a: 0 /s
 
     # Payload target binding
     # k_on_PL = 1e-3 /nM/s -> 3.6 /nM/hour (typical binding, per Frost 2016 / Guan 2015)
-    lkonpl <- fixed(log(3.6)); label("Payload:target association rate constant (1/nM/hour)")  # Table S2a: 1e-3 /nM/s
+    lkonpl <- fixed(log(3.6)); label("Payload:target association rate constant (1/nM/h)")  # Table S2a: 1e-3 /nM/s
     lkdpl  <- log(930); label("Payload:target equilibrium binding K_D_PL (nM)")               # Table S2a: 930 nM DM1:tubulin (Lopus 2010)
 
     # Cytosolic target concentration per cell (nM)
     lTpercell <- log(65); label("Intracellular target concentration T_per_cell (nM)")  # Table S2a: 65 nM tubulin (Shah 2012 estimate)
 
     # Payload cellular flux (1/s -> 1/hour)
-    lkinpl <- log(5.95e-5 * 3600); label("Payload influx rate constant into cell (1/hour)")  # Table S2a: 5.95e-5 /s = 0.2142 /hour (Khera 2018)
-    lkoutpl <- log(3.95e-5 * 3600); label("Payload efflux rate constant from cell (1/hour)") # Table S2a: 3.95e-5 /s = 0.1422 /hour (Khera 2018)
+    lkinpl <- log(5.95e-5 * 3600); label("Payload influx rate constant into cell (1/h)")  # Table S2a: 5.95e-5 /s = 0.2142 /hour (Khera 2018)
+    lkoutpl <- log(3.95e-5 * 3600); label("Payload efflux rate constant from cell (1/h)") # Table S2a: 3.95e-5 /s = 0.1422 /hour (Khera 2018)
 
     # Cell/volume parameters (SK-BR-3 in vitro, T-DM1 with Erickson 2012 experiment)
     lVcell <- fixed(log(3.82e-12)); label("Cellular volume (L)")                        # Table S2a: 3.82e-12 L SK-BR-3

@@ -2,7 +2,7 @@ Alqahtani_2018_vancomycin <- function() {
   description <- "Two-compartment IV population PK model for vancomycin used as prophylactic antibiotic in 28 adult patients undergoing open heart surgery with cardiopulmonary bypass (Alqahtani 2018). Clearance scales by power exponent with Cockcroft-Gault creatinine clearance (raw mL/min, reference 83.5) and serum albumin (g/L, reference 35.5); central volume scales by power exponent with body weight (kg, reference 79.6)."
   reference <- "Alqahtani SA, Alsultan AS, Alqattan HM, Eldemerdash A, Albacker TB. Population pharmacokinetic model for vancomycin used in open heart surgery: model-based evaluation of standard dosing regimens. Antimicrob Agents Chemother. 2018;62(7):e00088-18. doi:10.1128/AAC.00088-18"
   vignette <- "Alqahtani_2018_vancomycin"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     WT = list(

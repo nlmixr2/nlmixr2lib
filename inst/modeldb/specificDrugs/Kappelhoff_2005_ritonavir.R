@@ -24,7 +24,7 @@ Kappelhoff_2005_ritonavir <- function() {
     "doi:10.1111/j.1365-2125.2004.02241.x."
   )
   vignette <- "Kappelhoff_2005_ritonavir"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     CONMED_LPV = list(

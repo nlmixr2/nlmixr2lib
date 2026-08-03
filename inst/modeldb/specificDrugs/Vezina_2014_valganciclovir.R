@@ -2,7 +2,7 @@ Vezina_2014_valganciclovir <- function() {
   description <- "Two-compartment population PK model for ganciclovir after oral valganciclovir prophylaxis in paediatric and adult solid organ transplant recipients (Vezina 2014). First-order absorption with fixed lag time and rate, allometric (WT/70 kg) scaling on apparent CL/F and Q/F (exponent 0.75) and on V2/F and V3/F (exponent 1.0), and a power-form effect of body-weight-adjusted creatinine clearance on CL/F (reference 60 mL/min)."
   reference   <- "Vezina HE, Brundage RC, Balfour HH Jr. Population pharmacokinetics of valganciclovir prophylaxis in paediatric and adult solid organ transplant recipients. Br J Clin Pharmacol. 2014;78(2):343-352. doi:10.1111/bcp.12343"
   vignette    <- "Vezina_2014_valganciclovir"
-  units       <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units       <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   covariateData <- list(
     WT = list(

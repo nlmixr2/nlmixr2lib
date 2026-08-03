@@ -15,7 +15,7 @@ Bi_2017_peginterferon_alfa_2a <- function() {
     "Sci Rep. 2017;7. doi:10.1038/s41598-017-08205-5"
   )
   vignette <- "Bi_2017_peginterferon_alfa_2a"
-  units <- list(time = "hour", dosing = "ng", concentration = "ng/L")
+  units <- list(time = "h", dosing = "ng", concentration = "ng/L")
 
   covariateData <- list(
     CRCL = list(

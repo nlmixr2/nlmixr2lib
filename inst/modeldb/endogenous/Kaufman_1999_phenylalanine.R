@@ -2,7 +2,7 @@ Kaufman_1999_phenylalanine <- function() {
   description <- "Mechanistic model of human phenylalanine metabolism (PAH hydroxylation with substrate activation, transaminase, net protein degradation) in normal subjects, PKU heterozygotes, and phenylketonuric patients"
   reference   <- "Kaufman S. A model of human phenylalanine metabolism in normal subjects and in phenylketonuric patients. Proc Natl Acad Sci USA. 1999 Mar 16;96(6):3160-3164. doi:10.1073/pnas.96.6.3160"
   vignette    <- "Kaufman_1999_phenylalanine"
-  units       <- list(time = "hour", dosing = "none", concentration = "mmol/L")
+  units       <- list(time = "h", dosing = "none", concentration = "mmol/L")
 
   population <- list(
     species        = "human",

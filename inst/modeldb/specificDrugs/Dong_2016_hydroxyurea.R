@@ -25,7 +25,7 @@ Dong_2016_hydroxyurea <- function() {
     sep = " "
   )
   vignette <- "Dong_2016_hydroxyurea"
-  units    <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     WT = list(

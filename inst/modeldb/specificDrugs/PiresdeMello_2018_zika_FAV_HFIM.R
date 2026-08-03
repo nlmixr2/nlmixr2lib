@@ -36,7 +36,7 @@ PiresdeMello_2018_zika_FAV_HFIM <- function() {
   )
 
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "no dosing events -- FAV concentration is supplied via the CONC_FAV_UM time-varying covariate",
     concentration = "log10(PFU/mL) for the model observation Cc"
   )

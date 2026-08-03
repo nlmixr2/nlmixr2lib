@@ -10,7 +10,7 @@ Ide_2009_pravastatin <- function() {
     sep = " "
   )
   vignette <- "Ide_2009_pravastatin"
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   covariateData <- list(
     SLCO1B1_HAP15_HET = list(

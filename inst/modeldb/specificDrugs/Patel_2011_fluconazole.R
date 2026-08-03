@@ -27,7 +27,7 @@ Patel_2011_fluconazole <- function() {
     "doi:10.1128/AAC.00424-11"
   )
   vignette <- "Patel_2011_fluconazole"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     FILT_AGE_HI = list(

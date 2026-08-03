@@ -30,7 +30,7 @@ Kang_2023_artesunate_hamster_pbpk <- function() {
     sep = " "
   )
   vignette <- "Kang_2023_pyronaridine_artesunate_hamster_pbpk"
-  units <- list(time = "hour", dosing = "nmol", concentration = "nmol/L")
+  units <- list(time = "h", dosing = "nmol", concentration = "nmol/L")
 
   # No covariates: the Kang 2023 minimal PBPK model fixes every
   # physiological volume and blood flow at the study-cohort mean

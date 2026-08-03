@@ -21,7 +21,7 @@ Hanberg_2018_meropenem <- function() {
     "doi:10.1128/AAC.02390-17"
   )
   vignette <- "Hanberg_2018_meropenem"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     CRCL = list(

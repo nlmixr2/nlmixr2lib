@@ -30,7 +30,7 @@ Barras_2009_enoxaparin <- function() {
     "doi:10.1111/j.1365-2125.2009.03518.x"
   )
   vignette <- "Barras_2009_enoxaparin"
-  units    <- list(time = "hour", dosing = "IU", concentration = "IU/mL")
+  units    <- list(time = "h", dosing = "IU", concentration = "IU/mL")
 
   covariateData <- list(
     LBM = list(

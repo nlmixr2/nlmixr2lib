@@ -2,7 +2,7 @@ Moore_1999_lamivudine <- function() {
   description <- "One-compartment population PK model for oral lamivudine in HIV-1-infected adults pooled from the NUCA3001 and NUCA3002 phase III trials (Moore 1999); CL/F scales with a Cockcroft-Gault-style renal function index ((140 - AGE)/(CREAT * 100), * 0.85 if female) raised to an estimated power and with linear body weight, V/F and ka carry no covariates"
   reference <- "Moore KHP, Yuen GJ, Hussey EK, Pakes GE, Eron JJ Jr, Bartlett JA. Population pharmacokinetics of lamivudine in adult human immunodeficiency virus-infected patients enrolled in two phase III clinical trials. Antimicrob Agents Chemother. 1999;43(12):3025-3029. doi:10.1128/aac.43.12.3025"
   vignette <- "Moore_1999_lamivudine"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     WT = list(

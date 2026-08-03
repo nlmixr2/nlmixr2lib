@@ -21,7 +21,7 @@ Schaefer_1996_ciprofloxacin <- function() {
     "doi:10.1128/aac.40.1.29."
   )
   vignette <- "Schaefer_1996_ciprofloxacin"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     WT = list(

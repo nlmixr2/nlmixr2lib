@@ -2,7 +2,7 @@ Solms_2020_BAY94_9027 <- function() {
   description <- "One-compartment population PK model for BAY 94-9027 (damoctocog alfa pegol, Jivi, an extended-half-life site-specifically PEGylated B-domain-deleted recombinant factor VIII) in 198 male patients aged 2-62 years with severe haemophilia A pooled from the BAY 94-9027 phase I (NCT01184820), PROTECT VIII (NCT01580293), and PROTECT VIII Kids (NCT01775618) trials (Solms 2020). Final chromogenic-assay model has lean body weight (LBW) as a power-form covariate on CL and Vc and von Willebrand factor antigen (VWF) as a power-form covariate on CL; between-subject variability is a BLOCK(2) on CL and Vc with correlation 0.449; residual error is combined additive plus proportional. NONMEM M3 likelihood was used for samples below the chromogenic-assay lower limit of quantitation (1.5-3 IU/dL)."
   reference <- "Solms A, Iorio A, Ahsman MJ, Vis P, Shah A, Berntorp E, Garmann D. Favorable Pharmacokinetic Characteristics of Extended-Half-Life Recombinant Factor VIII BAY 94-9027 Enable Robust Individual Profiling Using a Population Pharmacokinetic Approach. Clin Pharmacokinet. 2020 May;59(5):605-616. doi:10.1007/s40262-019-00832-7. PMID:31749076."
   vignette <- "Solms_2020_BAY94_9027"
-  units <- list(time = "hour", dosing = "IU", concentration = "IU/dL")
+  units <- list(time = "h", dosing = "IU", concentration = "IU/dL")
 
   covariateData <- list(
     LBM = list(

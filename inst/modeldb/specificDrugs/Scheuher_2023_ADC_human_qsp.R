@@ -2,7 +2,7 @@ Scheuher_2023_ADC_human_qsp <- function() {
   description <- "QSP. Human platform model for HER2-targeting antibody-drug conjugates in HER2+ metastatic breast cancer (T-DM1 default; T-DXd variant via parameter overrides). Extends the mouse model with: (i) HER2 receptor sinks on normal cells in the central and peripheral compartments (with binding, endocytosis, recycling, degradation); (ii) soluble HER2 (sHER2) shed from cell-surface HER2 into central + peripheral + tumor compartments, with reversible binding to ADC and Ab and its own turnover; and (iii) larger physiologic volumes (3 L central, 13 L peripheral for a 70 kg adult). Mouse-derived TGI parameters (kkill_max, kc50, tau, n_Hill) are carried over from N87 xenograft fits. Amounts in nmol; concentrations amount/volume."
   reference   <- "Scheuher B, Ghusinga KR, McGirr K, Nowak M, Panday S, Apgar J, Subramanian K, Betts A. Towards a platform quantitative systems pharmacology (QSP) model for preclinical to clinical translation of antibody drug conjugates (ADCs). J Pharmacokinet Pharmacodyn. 2023;51(1):5-30. doi:10.1007/s10928-023-09884-6. Human model = Tables S1c, S2d-e, S3e-f."
   vignette    <- "Scheuher_2023_ADC_platform_qsp"
-  units       <- list(time = "hour", dosing = "nmol", concentration = "nM")
+  units       <- list(time = "h", dosing = "nmol", concentration = "nM")
 
   covariateData <- list()
 
@@ -24,25 +24,25 @@ Scheuher_2023_ADC_human_qsp <- function() {
     # -------------------------------------------------------------------
     # Systemic PK parameters (T-DM1 in humans, Table S2d)
     # -------------------------------------------------------------------
-    lkdec <- log(8.5e-7 * 3600); label("Deconjugation rate constant kdec (1/hour) - T-DM1")   # Table S2d: 8.5e-7 /s (carried from mouse)
+    lkdec <- log(8.5e-7 * 3600); label("Deconjugation rate constant kdec (1/h) - T-DM1")   # Table S2d: 8.5e-7 /s (carried from mouse)
     lDAR  <- fixed(log(3.5)); label("Drug-to-antibody ratio DAR (T-DM1)")                     # Table S2b: 3.5
 
     # HER2 binding (identical to in vitro / mouse)
-    lkonab <- fixed(log(1e-4 * 3600)); label("HER2 binding association rate (1/nM/hour)")
+    lkonab <- fixed(log(1e-4 * 3600)); label("HER2 binding association rate (1/nM/h)")
     lkdab  <- log(0.3); label("HER2:ADC K_D_Ab (nM)")
 
     # HER2 receptor kinetics carried from mouse
-    lkendoher2 <- log(4.27e-5 * 3600); label("HER2 endocytosis (1/hour)")
-    lkrecher2  <- log(2.4e-5  * 3600); label("HER2 recycling (1/hour)")
-    lkdegher2  <- log(1.27e-4 * 3600); label("HER2 endosomal degradation (1/hour)")
+    lkendoher2 <- log(4.27e-5 * 3600); label("HER2 endocytosis (1/h)")
+    lkrecher2  <- log(2.4e-5  * 3600); label("HER2 recycling (1/h)")
+    lkdegher2  <- log(1.27e-4 * 3600); label("HER2 endosomal degradation (1/h)")
 
-    lkcleave <- fixed(log(1e-12)); label("Endosomal linker cleavage (1/hour, T-DM1)")
+    lkcleave <- fixed(log(1e-12)); label("Endosomal linker cleavage (1/h, T-DM1)")
 
     # Payload binding
-    lkonpl <- fixed(log(1e-3 * 3600)); label("Payload:target association (1/nM/hour)")
+    lkonpl <- fixed(log(1e-3 * 3600)); label("Payload:target association (1/nM/h)")
     lkdpl  <- log(930); label("Payload:target K_D_PL (nM, DM1)")
-    lkinpl <- log(5.95e-5 * 3600); label("Payload influx (1/hour)")
-    lkoutpl <- log(3.95e-5 * 3600); label("Payload efflux (1/hour)")
+    lkinpl <- log(5.95e-5 * 3600); label("Payload influx (1/h)")
+    lkoutpl <- log(3.95e-5 * 3600); label("Payload efflux (1/h)")
     lPcpl <- log(0.51); label("Payload tumor partition Pc_PL")
 
     # Cell / target constants
@@ -101,10 +101,10 @@ Scheuher_2023_ADC_human_qsp <- function() {
     lVtumor_i   <- log(0.0016); label("Initial human tumor volume V_tumor_i (L)")         # Table S2d: 0.0016 L
 
     ltdouble <- log(25 * 24); label("Human tumor doubling time (hour)")                   # Table S2d: 25 day
-    lklin    <- log(621 / 24); label("Human linear tumor growth k_lin (mm^3/hour)")       # Table S2d: 621 mm^3/day
+    lklin    <- log(621 / 24); label("Human linear tumor growth k_lin (mm^3/h)")       # Table S2d: 621 mm^3/day
 
     # Kill parameters from mouse N87 T-DM1 (Table S2c)
-    lkkillmax <- log(0.139 / 24); label("Kill max k_kill_max (1/hour, T-DM1 mean)")       # Table S2e: mean 1.39e-1 /day
+    lkkillmax <- log(0.139 / 24); label("Kill max k_kill_max (1/h, T-DM1 mean)")       # Table S2e: mean 1.39e-1 /day
     ltau      <- log(0.25 * 24); label("Kill delay tau (hour, N87)")                       # Table S2c: 0.25 day (N87 T-DM1)
     lkc50     <- log(23.8); label("Kill kc_50 (nM, T-DM1 mean)")                           # Table S2e: 23.8 nM (calibrated)
     lnHill    <- fixed(log(1)); label("Hill coefficient (N87 T-DM1)")                      # Table S2c: 1

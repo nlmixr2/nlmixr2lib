@@ -2,7 +2,7 @@ Areberg_2006_escitalopram <- function() {
   description <- "Two-compartment population PK model with first-order absorption and lag time for escitalopram in healthy and hepatic-impaired adults (Areberg 2006)"
   reference <- "Areberg J, Christophersen JS, Poulsen MN, Larsen F, Molz K-H. The Pharmacokinetics of Escitalopram in Patients With Hepatic Impairment. AAPS J. 2006;8(1):E14-E19 (Article 2). doi:10.1208/aapsj080102"
   vignette <- "Areberg_2006_escitalopram"
-  units <- list(time = "hour", dosing = "mg", concentration = "ug/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 
   covariateData <- list(
     WT = list(

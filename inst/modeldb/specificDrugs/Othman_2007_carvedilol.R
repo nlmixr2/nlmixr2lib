@@ -18,7 +18,7 @@ Othman_2007_carvedilol <- function() {
     "etalka_cr_iov", "etafrel_cr_iov"
   )
 
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   covariateData <- list()
 

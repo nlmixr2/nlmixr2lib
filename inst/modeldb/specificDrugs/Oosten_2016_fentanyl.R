@@ -10,7 +10,7 @@ Oosten_2016_fentanyl <- function() {
     sep = " "
   )
   vignette <- "Oosten_2016_fentanyl"
-  units <- list(time = "hr", dosing = "ug", concentration = "ng/mL") # dose ug + Vc L -> Cc ug/L = ng/mL; matches Oosten 2016 plasma units (Methods + Table 2)
+  units <- list(time = "h", dosing = "ug", concentration = "ng/mL") # dose ug + Vc L -> Cc ug/L = ng/mL; matches Oosten 2016 plasma units (Methods + Table 2)
 
   covariateData <- list(
     WT = list(

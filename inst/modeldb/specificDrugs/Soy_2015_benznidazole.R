@@ -22,7 +22,7 @@ Soy_2015_benznidazole <- function() {
     sep = " "
   )
   vignette <- "Soy_2015_benznidazole"
-  units    <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list()
 

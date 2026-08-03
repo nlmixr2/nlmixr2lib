@@ -29,7 +29,7 @@ Kloprogge_2014_quinine <- function() {
     sep = " "
   )
   vignette <- "Kloprogge_2014_quinine"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     WT = list(

@@ -21,7 +21,7 @@ SanchezPena_2005_enoxaparin <- function() {
   )
   vignette <- "SanchezPena_2005_enoxaparin"
   units    <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "IU",
     concentration = "IU/mL"
   )

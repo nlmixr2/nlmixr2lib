@@ -11,7 +11,7 @@ Smythe_2012_rifampicin <- function() {
     sep = " "
   )
   vignette <- "Smythe_2012_rifampicin"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     WT = list(

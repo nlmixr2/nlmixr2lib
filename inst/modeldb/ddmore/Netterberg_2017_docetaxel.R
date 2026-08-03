@@ -19,7 +19,7 @@ Netterberg_2017_docetaxel <- function() {
   # that supplies CP_MGL (Kloft 2006 / Netterberg 2017 reference: 100 mg/m^2 IV over 1 h).
   # The PD-only model itself has no dosing compartment; CP_MGL is read directly from the
   # time-varying covariate column.
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L", anc = "10^9 cells/L", aag = "g/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L", anc = "10^9 cells/L", aag = "g/L")
   ddmore_id    <- "DDMODEL00000224"
   replicate_of <- NULL
 

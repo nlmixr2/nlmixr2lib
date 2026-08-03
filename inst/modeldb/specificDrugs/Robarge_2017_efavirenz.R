@@ -26,7 +26,7 @@ Robarge_2017_efavirenz <- function() {
     sep = " "
   )
   vignette <- "Robarge_2017_efavirenz"
-  units    <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     FFM = list(

@@ -25,7 +25,7 @@ Marathe_2023_belzutifan <- function() {
     sep = " "
   )
   vignette <- "Marathe_2023_belzutifan"
-  units    <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units    <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   covariateData <- list(
     WT = list(

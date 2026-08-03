@@ -27,7 +27,7 @@ Schmidt_2009_linezolid <- function() {
   )
   vignette <- "Schmidt_2009_oxazolidinones"
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "ug/mL (initial antibiotic concentration in MHB)",
     concentration = "log10 CFU/mL (bacterial Cc output); ug/mL (antibiotic central state)"
   )

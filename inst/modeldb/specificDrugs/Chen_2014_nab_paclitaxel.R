@@ -12,7 +12,7 @@ Chen_2014_nab_paclitaxel <- function() {
   )
   vignette <- "Chen_2014_nab_paclitaxel"
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "ug",
     concentration = "ug/L",
     anc           = "10^9 cells/L"

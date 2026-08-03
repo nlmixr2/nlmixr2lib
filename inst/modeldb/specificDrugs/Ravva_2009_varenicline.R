@@ -2,7 +2,7 @@ Ravva_2009_varenicline <- function() {
   description <- "Two-compartment population PK model with first-order absorption and lag-time for varenicline in adult smokers (Ravva 2009): apparent clearance scales with creatinine clearance and race; central volume scales with body weight, age, and race; peripheral disposition uses fixed allometric exponents on weight."
   reference <- "Ravva P, Gastonguay MR, Tensfeldt TG, Faessel HM. Population pharmacokinetic analysis of varenicline in adult smokers. Br J Clin Pharmacol. 2009;68(5):669-681. doi:10.1111/j.1365-2125.2009.03520.x"
   vignette <- "Ravva_2009_varenicline"
-  units <- list(time = "hr", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   covariateData <- list(
     CRCL = list(

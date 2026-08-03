@@ -2,7 +2,7 @@ Zhao_2014_ciprofloxacin <- function() {
   description <- "Two-compartment population PK model with first-order elimination for intravenous ciprofloxacin in neonates and young infants less than three months of age (Zhao 2014). Central and peripheral volumes (V1, V2) scale allometrically with current body weight (fixed exponent 1, reference 1.955 kg); clearance (CL) and inter-compartmental clearance (Q) scale with current body weight at a fixed exponent of 0.75. CL is further multiplied by a renal-maturation factor in gestational age and postnatal age (F_age), a renal-function factor in serum creatinine (RF = exp((CREAT - 42 umol/L) * theta7)), and a fractional reduction (factor 0.708) when inotropic / vasoactive agents are coadministered. IIV is reported on V1, V2, and CL as %CV on an exponential model. Residual error is proportional. Inter-occasion variability on CL (16.4%CV) reported by Zhao 2014 is not encoded structurally here -- the source paper does not define an operational occasion mapping for the model-library use case; users who need IOV can add an OCC indicator and per-occasion eta downstream."
   reference   <- "Zhao W, Hill H, Le Guellec C, Neal T, Mahoney S, Paulus S, Castellan C, Kassai B, van den Anker JN, Kearns GL, Turner MA, Jacqz-Aigrain E. Population pharmacokinetics of ciprofloxacin in neonates and young infants less than three months of age. Antimicrob Agents Chemother. 2014;58(11):6572-6580. doi:10.1128/AAC.03568-14"
   vignette    <- "Zhao_2014_ciprofloxacin"
-  units       <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units       <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     WT = list(

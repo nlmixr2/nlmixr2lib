@@ -38,7 +38,7 @@ Bauer_2023_vonicogAlfa <- function() {
   paper_specific_compartments <- c("fviii")
 
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "IU (VWF:RCo activity)",
     concentration = "IU/dL (VWF:RCo activity; FVIII:C activity)"
   )

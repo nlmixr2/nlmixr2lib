@@ -2,7 +2,7 @@ Li_2018_vancomycin <- function() {
   description <- "One-compartment IV-infusion population PK model for vancomycin in critically ill Chinese ICU neonates (Li 2018). CL scales allometrically with body weight (reference 2.9 kg, exponent 1.55) and as an inverse power of serum creatinine (reference 23.3 umol/L, exponent 0.337 on the SCr_ref/SCr ratio). V scales allometrically with body weight (reference 2.9 kg, exponent 1.05). IIV is on CL only; residual error is proportional."
   reference <- "Li Z, Liu Y, Jiao Z, Qiu G, Huang J, Xiao Y, Wu S, Wang C, Hu W, Sun H. Population Pharmacokinetics of Vancomycin in Chinese ICU Neonates: Initial Dosage Recommendations. Front Pharmacol. 2018;9:603. doi:10.3389/fphar.2018.00603"
   vignette <- "Li_2018_vancomycin"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     WT = list(

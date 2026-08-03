@@ -10,7 +10,7 @@ Abuhelwa_2015_itraconazole <- function() {
     sep = " "
   )
   vignette <- "Abuhelwa_2015_itraconazole"
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   # The FVAR random effect is a paper-mechanistic "common variability on
   # bioavailability" eta (Abuhelwa 2015 Methods 'Base model development of

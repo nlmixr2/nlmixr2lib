@@ -10,7 +10,7 @@ Chen_2023_tilmicosin <- function() {
   )
   vignette <- "Chen_2023_tilmicosin"
   units <- list(
-    time = "hour",
+    time = "h",
     dosing = "ug*h/mL (tilmicosin AUC0-24h per dosing interval, supplied as a covariate)",
     concentration = "log10 CFU/mL (observation)"
   )

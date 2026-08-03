@@ -51,7 +51,7 @@ Chen_2014_immunogenicity_qsp <- function() {
     kExt      <- fixed(28.8);      label("Exocytosis rate of peptide-MHC complex (endosome -> membrane, 1/day)")# Table S2 (Agrawal 1996 ref 8)
     kIntCplx  <- fixed(14.4);      label("Internalization rate of peptide-MHC & Ag-BCR (membrane -> endosome, 1/day)")# Table S2 (Agrawal 1996 ref 8)
     Vendo     <- fixed(4e-16);     label("Endosome volume in one dendritic cell (L)")                           # Table S2 (Agrawal 1996 ref 8)
-    konMHC    <- fixed(8.64e-3);   label("On-rate constant for peptide-MHC-II binding (1/(pM.day))")            # Table S2 (Foote 1995 ref 1)
+    konMHC    <- fixed(8.64e-3);   label("On-rate constant for peptide-MHC-II binding (1/(pM*day))")            # Table S2 (Foote 1995 ref 1)
     KpMN      <- fixed(400);       label("Number of peptide-MHC on DC for half-max naive T activation (dimensionless)")# Table S2 (Kimachi 1997 ref 10)
     KpMM      <- fixed(40);        label("Number of peptide-MHC on DC for half-max memory T activation (dimensionless)")# Table S2 (Kimachi 1997 ref 10)
     cp0pl     <- fixed(3.025e8);   label("Endogenous competing-protein amount in plasma (pmole)")               # Table S2 (Agrawal 1996 ref 8)
@@ -87,7 +87,7 @@ Chen_2014_immunogenicity_qsp <- function() {
     NB0      <- fixed(5200);       label("Initial naive B-cell number (cells, i=1 lumped over 17 sub-clones)")# Table S2 (Castiglione 2005 / Crotty 2003 refs 26, 33)
 
     # 5) ADA (antibody) disposition (paper section 5)
-    alphaAb  <- fixed(8.64e8);     label("Ab secretion rate per plasma cell (molecules/(cell.day))") # Table S2 (Auner / Hibi refs 28-29)
+    alphaAb  <- fixed(8.64e8);     label("Ab secretion rate per plasma cell (molecules/(cell*day))") # Table S2 (Auner / Hibi refs 28-29)
     betaAb   <- fixed(0.0301);     label("Free Ab elimination rate (1/day)")                         # Table S2 (Castiglione 2005 ref 26)
     betaCmp  <- fixed(0.0301);     label("Ag-Ab immune complex elimination rate (1/day) (paper notes as Ag-specific; set equal to betaAb here as the neutral default)")# paper 'Ag-specific'; see vignette Errata
 

@@ -35,7 +35,7 @@ vanRongen_2017_midazolam <- function() {
     sep = " "
   )
   vignette <- "vanRongen_2017_midazolam"
-  units    <- list(time = "minute", dosing = "microgram", concentration = "microgram/L")
+  units    <- list(time = "min", dosing = "ug", concentration = "microgram/L")
 
   covariateData <- list(
     WT = list(

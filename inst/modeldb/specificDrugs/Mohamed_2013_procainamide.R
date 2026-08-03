@@ -40,7 +40,7 @@ Mohamed_2013_procainamide <- function() {
   )
   vignette <- "Mohamed_2013_procainamide"
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "mg",
     concentration = "mg/L"
   )

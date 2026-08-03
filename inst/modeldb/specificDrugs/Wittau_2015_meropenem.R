@@ -11,7 +11,7 @@ Wittau_2015_meropenem <- function() {
     sep = " "
   )
   vignette <- "Wittau_2015_meropenem"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     FFM = list(

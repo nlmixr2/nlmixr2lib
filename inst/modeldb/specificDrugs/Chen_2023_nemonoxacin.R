@@ -27,7 +27,7 @@ Chen_2023_nemonoxacin <- function() {
     sep = " "
   )
   vignette <- "Chen_2023_nemonoxacin"
-  units    <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     WT = list(

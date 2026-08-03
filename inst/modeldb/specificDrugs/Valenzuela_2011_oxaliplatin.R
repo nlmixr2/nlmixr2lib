@@ -21,7 +21,7 @@ Valenzuela_2011_oxaliplatin <- function() {
     sep = " "
   )
   vignette <- "Valenzuela_2011_oxaliplatin"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L",
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L",
                 anc = "10^9 cells/L")
 
   covariateData <- list()

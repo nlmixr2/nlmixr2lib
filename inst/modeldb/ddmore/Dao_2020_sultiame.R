@@ -14,7 +14,7 @@ Dao_2020_sultiame <- function() {
   ddmore_id <- "DDMODEL00000298"
   replicate_of <- NULL
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "mg",
     concentration = "mg/L"
   )

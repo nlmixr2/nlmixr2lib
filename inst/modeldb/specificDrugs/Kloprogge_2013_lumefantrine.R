@@ -27,7 +27,7 @@ Kloprogge_2013_lumefantrine <- function() {
     sep = " "
   )
   vignette <- "Kloprogge_2013_lumefantrine"
-  units <- list(time = "hour", dosing = "mg", concentration = "ug/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 
   covariateData <- list(
     PREG = list(

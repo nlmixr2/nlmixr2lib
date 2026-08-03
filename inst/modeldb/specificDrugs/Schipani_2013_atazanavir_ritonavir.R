@@ -21,7 +21,7 @@ Schipani_2013_atazanavir_ritonavir <- function() {
     "doi:10.1097/QAI.0b013e3182737231."
   )
   vignette <- "Schipani_2013_atazanavir_ritonavir"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list()
 

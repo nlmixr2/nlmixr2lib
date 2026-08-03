@@ -2,7 +2,7 @@ Koue_2007_aripiprazole <- function() {
   description <- "Two-compartment population PK model for oral aripiprazole in healthy Japanese male volunteers (Koue 2007), with first-order absorption, an absorption lag time, body-weight linear scaling on Vc/F, Vp/F, Q/F, and CL/F, additive linear-deviation CYP2D6 intermediate- and poor-metabolizer effects on CL/F (Group 1 = extensive metabolizer reference), an additive linear-deviation itraconazole-coadministration (CYP3A4 inhibitor) effect on CL/F, independent inter-individual variability on every structural parameter, and a log-normal (exponential) residual error."
   reference <- "Koue T, Kubo M, Funaki T, Fukuda T, Azuma J, Takaai M, Kayano Y, Hashimoto Y. Nonlinear mixed effects model analysis of the pharmacokinetics of aripiprazole in healthy Japanese males. Biol Pharm Bull. 2007;30(11):2154-2158. doi:10.1248/bpb.30.2154"
   vignette <- "Koue_2007_aripiprazole"
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   covariateData <- list(
     WT = list(

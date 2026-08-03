@@ -31,7 +31,7 @@ Ramharter_2019_mefloquine <- function() {
     sep = " "
   )
   vignette <- "Ramharter_2019_mefloquine"
-  units <- list(time = "hour", dosing = "nmol", concentration = "nmol/L")
+  units <- list(time = "h", dosing = "nmol", concentration = "nmol/L")
 
   covariateData <- list(
     WT = list(

@@ -3,7 +3,7 @@ Sampson_2014_azithromycin <- function() {
   reference <- "Sampson MR, Dumitrescu TP, Brouwer KLR, Schmith VD. Population pharmacokinetics of azithromycin in whole blood, peripheral blood mononuclear cells, and polymorphonuclear cells in healthy adults. CPT Pharmacometrics Syst Pharmacol. 2014;3(3):e103. doi:10.1038/psp.2013.80"
   vignette <- "Sampson_2014_azithromycin"
   units <- list(
-    time = "hour",
+    time = "h",
     dosing = "mg",
     concentration = "mg/L"
   )

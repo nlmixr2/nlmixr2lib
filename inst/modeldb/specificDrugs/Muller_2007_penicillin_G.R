@@ -8,7 +8,7 @@ Muller_2007_penicillin_G <- function() {
     sep = " "
   )
   vignette <- "Muller_2007_penicillin_G"
-  units    <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     WT = list(

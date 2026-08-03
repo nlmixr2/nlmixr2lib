@@ -30,7 +30,7 @@ Taubert_2018_finafloxacin <- function() {
     "doi:10.1128/AAC.02328-17"
   )
   vignette <- "Taubert_2018_finafloxacin"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     BSA = list(

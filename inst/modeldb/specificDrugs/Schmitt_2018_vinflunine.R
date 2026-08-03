@@ -10,7 +10,7 @@ Schmitt_2018_vinflunine <- function() {
     sep = " "
   )
   vignette <- "Schmitt_2018_vinflunine"
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL", ANC = "10^9/L")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL", ANC = "10^9/L")
 
   covariateData <- list(
     CRCL = list(

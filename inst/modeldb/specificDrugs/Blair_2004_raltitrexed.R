@@ -2,7 +2,7 @@ Blair_2004_raltitrexed <- function() {
   description <- "Three-compartment population PK model for intravenous raltitrexed (Tomudex) in adult patients with advanced solid tumours, with linear-additive covariate effects of Cockcroft-Gault creatinine clearance on CL and of body weight and serum albumin on central volume (Blair 2004)"
   reference <- "Blair EYL, Rivory LP, Clarke SJ, McLachlan AJ. Population pharmacokinetics of raltitrexed in patients with advanced solid tumours. Br J Clin Pharmacol. 2004;57(4):416-426. doi:10.1111/j.1365-2125.2003.02050.x"
   vignette <- "Blair_2004_raltitrexed"
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   covariateData <- list(
     CRCL = list(

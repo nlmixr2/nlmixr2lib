@@ -10,7 +10,7 @@ Wang_2013_morphine <- function() {
     sep = " "
   )
   vignette <- "Wang_2013_morphine"
-  units <- list(time = "minute", dosing = "ug", concentration = "ug/L")
+  units <- list(time = "min", dosing = "ug", concentration = "ug/L")
 
   ddmore_id    <- "DDMODEL00000269"
   replicate_of <- NULL

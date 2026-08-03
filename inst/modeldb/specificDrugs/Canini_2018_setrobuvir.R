@@ -18,7 +18,7 @@ Canini_2018_setrobuvir <- function() {
   # hours - consistent with the BID dosing interval (12 h) and the
   # absorption lag time (1.68 h).
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "mg",
     concentration = "mg/L"
   )

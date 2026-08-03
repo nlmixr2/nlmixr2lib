@@ -24,7 +24,7 @@ Thakkar_2017_amifampridine <- function() {
     sep = " "
   )
   vignette <- "Thakkar_2017_amifampridine"
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   covariateData <- list(
     WT = list(

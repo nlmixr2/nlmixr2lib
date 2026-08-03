@@ -9,7 +9,7 @@ Frymoyer_2013_gentamicin <- function() {
     sep = " "
   )
   vignette <- "Frymoyer_2013_gentamicin"
-  units    <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     WT_BIRTH = list(

@@ -23,7 +23,7 @@ Schindler_2017_sunitinib_hfs <- function() {
   paper_specific_compartments <- c("svegfr3", "pscore0", "pscore1", "pscore2", "pscore3")
 
   units <- list(
-    time = "hour",
+    time = "h",
     dosing = "mg",
     concentration = "(NCI-CTCAE HFS grade 0-3, ordinal)"
   )

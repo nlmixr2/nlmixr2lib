@@ -11,7 +11,7 @@ deJonge_2005_paclitaxel <- function() {
   paper_specific_compartments <- c("bound", "cremophor")
 
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "mg",
     concentration = "mg/L"
   )

@@ -10,7 +10,7 @@ Svensson_2018_rifampicin <- function() {
     sep = " "
   )
   vignette <- "Svensson_2018_rifampicin"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
   ddmore_id    <- "DDMODEL00000244"
   replicate_of <- NULL
 

@@ -15,7 +15,7 @@ Adams_1998_zalcitabine <- function() {
     sep = " "
   )
   vignette <- "Adams_1998_zalcitabine"
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   covariateData <- list()
 

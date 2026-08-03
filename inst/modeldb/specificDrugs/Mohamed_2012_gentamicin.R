@@ -2,7 +2,7 @@ Mohamed_2012_gentamicin <- function() {
   description <- "In vitro (Escherichia coli ATCC 25922). Semi-mechanistic PKPD model of gentamicin bactericidal activity with adaptive resistance: drug-susceptible growing bacteria (bact_growing) plus insusceptible resting bacteria (bact_resting), with a binding model (ar_off / ar_on) by which gentamicin reduces its own Emax. Fit jointly to static and dynamic in-vitro time-kill curves."
   reference <- "Mohamed AF, Nielsen EI, Cars O, Friberg LE. Pharmacokinetic-pharmacodynamic model for gentamicin and its adaptive resistance with predictions of dosing schedules in newborn infants. Antimicrob Agents Chemother. 2012 Jan;56(1):179-188. doi:10.1128/AAC.00694-11. Model differential equations (Eqs 1-7), Figure 1 schematic, and final-model parameter estimates (Table 1) are in the main text."
   vignette <- "Mohamed_2012_gentamicin"
-  units <- list(time = "hour", dosing = "mg/L", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg/L", concentration = "mg/L")
 
   # paper-mechanistic states (bacterial populations, adaptive-resistance
   # binding states, and the in-vitro flask gentamicin concentration);

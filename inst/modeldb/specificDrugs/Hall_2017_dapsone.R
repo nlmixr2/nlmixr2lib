@@ -2,7 +2,7 @@ Hall_2017_dapsone <- function() {
   description <- "One-compartment population PK model with first-order oral absorption for dapsone in healthy US adults across a wide weight range; covariate effects on Ka, CL, and Vc are encoded via the published MARS piecewise-linear basis functions of weight, age, and blood urea nitrogen (Hall 2017)."
   reference <- "Hall RG II, Pasipanodya JG, Swancutt MA, Meek C, Leff R, Gumbo T. Supervised machine-learning reveals that old and obese people achieve low dapsone concentrations. CPT Pharmacometrics Syst Pharmacol. 2017;6(8):552-559. doi:10.1002/psp4.12208"
   vignette <- "Hall_2017_dapsone"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     WT = list(

@@ -9,7 +9,7 @@ Barau_2012_mycophenolic_acid <- function() {
     sep = " "
   )
   vignette <- "Barau_2012_mycophenolic_acid"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     AGE = list(

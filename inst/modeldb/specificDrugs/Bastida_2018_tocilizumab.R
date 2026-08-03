@@ -2,7 +2,7 @@ Bastida_2018_tocilizumab <- function() {
   description <- "One-compartment population PK model for intravenous tocilizumab in adults with rheumatoid arthritis (Bastida 2018), with parallel first-order linear and Michaelis-Menten elimination from the central compartment; total body weight and time-varying C-reactive protein on linear CL."
   reference <- "Bastida C, Ruiz-Esquide V, Pascal M, de Vries Schultink AHM, Yague J, Sanmarti R, Huitema ADR, Soy D. Fixed dosing of intravenous tocilizumab in rheumatoid arthritis. Results from a population pharmacokinetic analysis. Br J Clin Pharmacol. 2018;84(4):716-725. doi:10.1111/bcp.13500"
   vignette <- "Bastida_2018_tocilizumab"
-  units <- list(time = "hour", dosing = "mg", concentration = "ug/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 
   covariateData <- list(
     WT = list(

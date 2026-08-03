@@ -10,7 +10,7 @@ Zhao_2010_mycophenolic_acid <- function() {
     sep = " "
   )
   vignette <- "Zhao_2010_mycophenolic_acid"
-  units <- list(time = "hour", dosing = "mg", concentration = "ug/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 
   covariateData <- list(
     WT = list(

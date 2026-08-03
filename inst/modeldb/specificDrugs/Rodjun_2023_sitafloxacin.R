@@ -16,7 +16,7 @@ Rodjun_2023_sitafloxacin <- function() {
   )
   vignette <- "Rodjun_2023_colistin_sitafloxacin"
 
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     CRCL = list(

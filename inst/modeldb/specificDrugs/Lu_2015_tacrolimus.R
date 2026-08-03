@@ -2,7 +2,7 @@ Lu_2015_tacrolimus <- function() {
   description <- "Two-compartment population PK model with first-order absorption and lag time for oral tacrolimus in pooled Chinese healthy volunteers and adult orthotopic liver-transplant recipients (Lu 2015). Apparent peripheral volume V3/F is fixed at the healthy-volunteer-only estimate (916 L). Apparent clearance CL/F is reduced multiplicatively in liver-transplant recipients and further modulated by an exponential serum ALT effect that applies only to the transplant cohort."
   reference   <- "Lu YX, Su QH, Wu KH, Ren YP, Li L, Zhou TY, Lu W. A population pharmacokinetic study of tacrolimus in healthy Chinese volunteers and liver transplant patients. Acta Pharmacol Sin. 2015;36(2):281-288. doi:10.1038/aps.2014.110"
   vignette    <- "Lu_2015_tacrolimus"
-  units       <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units       <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   covariateData <- list(
     DIS_HEALTHY = list(

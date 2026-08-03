@@ -18,7 +18,7 @@ Hansson_2013_sunitinib_dbp <- function() {
     sep = " "
   )
   vignette <- "Hansson_2013_sunitinib_dbp"
-  units <- list(time = "hour", dosing = "mg", concentration = "mmHg (diastolic blood pressure)")
+  units <- list(time = "h", dosing = "mg", concentration = "mmHg (diastolic blood pressure)")
 
   covariateData <- list(
     DOSE = list(

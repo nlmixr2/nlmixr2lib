@@ -40,7 +40,7 @@ Royer_2011_cisplatin <- function() {
   # this protein-binding formulation.
   paper_specific_compartments <- c("peritoneum", "bound")
 
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     CONMED_EPI = list(

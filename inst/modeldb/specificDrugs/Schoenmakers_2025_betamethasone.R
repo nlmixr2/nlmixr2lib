@@ -9,7 +9,7 @@ Schoenmakers_2025_betamethasone <- function() {
     sep = " "
   )
   vignette <- "Schoenmakers_2025_betamethasone"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     DIS_EOPE = list(

@@ -16,7 +16,7 @@ Brooks_2021_tacrolimus <- function() {
     "Front Pharmacol. 2021;12:750672. doi:10.3389/fphar.2021.750672."
   )
   vignette <- "Brooks_2021_tacrolimus"
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   covariateData <- list(
     WT = list(

@@ -2,7 +2,7 @@ Yang_2023_diclazuril_chicken_pbpk <- function() {
   description <- "PBPK (whole-body, flow-limited; broiler chicken). Nine-compartment physiologically based pharmacokinetic model for the anticoccidial diclazuril in broiler chickens after continuous oral exposure via medicated feed or drinking water, comprising intestinal contents (absorption site), liver, kidney, lumped skin + fat, muscle, a lumped rest-of-body compartment, lung, arterial plasma and venous plasma; all tissues are perfusion (flow) limited with tissue:plasma partition coefficients, absorption from the gut lumen is first order (Ka) in competition with first-order fecal loss of unabsorbed drug (Kgut), and elimination is hepatic (Clhe) plus fecal excretion. Built to predict edible-tissue residues and withdrawal periods against Chinese and European maximum residue limits (Yang 2023)."
   reference   <- "Yang F, Zhang M, Jin Y-G, Chen J-C, Duan M-H, Liu Y, Li Z-E, Li X-P, Yang F. Development and Application of a Physiologically Based Pharmacokinetic Model for Diclazuril in Broiler Chickens. Animals (Basel). 2023;13(9):1512. doi:10.3390/ani13091512"
   vignette    <- "Yang_2023_diclazuril"
-  units       <- list(time = "hour", dosing = "ug", concentration = "ug/L")
+  units       <- list(time = "h", dosing = "ug", concentration = "ug/L")
 
   covariateData <- list(
     WT = list(

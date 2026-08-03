@@ -2,7 +2,7 @@ Fau_2020_isatuximab <- function() {
   description <- "Two-compartment population PK model for intravenous isatuximab (anti-CD38 IgG1) in adults with relapsed/refractory multiple myeloma, with parallel time-varying linear and Michaelis-Menten eliminations from the central compartment (Fau 2020). The linear clearance follows a sigmoidal Emax decay from baseline to steady state; the magnitude of the decay differs by multiple-myeloma immunoglobulin type."
   reference <- "Fau JB, El-Cheikh R, Brillac C, et al. Drug-Disease Interaction and Time-Dependent Population Pharmacokinetics of Isatuximab in Relapsed/Refractory Multiple Myeloma Patients. CPT Pharmacometrics Syst Pharmacol. 2020;9(11):649-658. doi:10.1002/psp4.12561"
   vignette <- "Fau_2020_isatuximab"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     WT = list(
@@ -75,9 +75,9 @@ Fau_2020_isatuximab <- function() {
     # Structural typical-value parameters at the reference patient: 75.6 kg
     # body weight, 3.90 mg/L baseline B2M, IgG MM, P1F1 drug material,
     # non-Asian, male (Fau 2020 Table S3 final-model estimates).
-    lcl <- log(0.00955); label("Steady-state linear CL (CLinf at infinite time) at reference covariates (L/hour)") # Fau 2020 Table S3: CLinf
+    lcl <- log(0.00955); label("Steady-state linear CL (CLinf at infinite time) at reference covariates (L/h)") # Fau 2020 Table S3: CLinf
     lvc    <- log(5.13);    label("Central volume of distribution Vc at reference (L)")             # Fau 2020 Table S3: Vc
-    lq     <- log(0.0432);  label("Intercompartmental clearance Q at reference (L/hour)")           # Fau 2020 Table S3: Q
+    lq     <- log(0.0432);  label("Intercompartmental clearance Q at reference (L/h)")           # Fau 2020 Table S3: Q
     lvp    <- log(3.62);    label("Peripheral volume of distribution Vp at reference (L)")          # Fau 2020 Table S3: Vp
 
     # Parallel Michaelis-Menten (target-mediated approximation) elimination

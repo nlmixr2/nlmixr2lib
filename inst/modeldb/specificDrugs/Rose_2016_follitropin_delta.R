@@ -18,7 +18,7 @@ Rose_2016_follitropin_delta <- function() {
     sep = " "
   )
   vignette <- "Rose_2016_follitropin_delta"
-  units    <- list(time = "hour", dosing = "ug", concentration = "ug/L")
+  units    <- list(time = "h", dosing = "ug", concentration = "ug/L")
 
   covariateData <- list(
     WT = list(

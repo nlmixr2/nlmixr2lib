@@ -2,7 +2,7 @@ Shoji_2011_pregabalin <- function() {
   description <- "One-compartment population PK model for pregabalin in adults (Shoji 2011 BJCP; pooled healthy volunteers, subjects with impaired renal function, and patients with post-herpetic neuralgia or diabetic peripheral neuropathy from 14 clinical trials). CL/F is proportional to Cockcroft-Gault creatinine clearance (capped at an estimated break point) with an additional ideal-body-weight power effect. V/F depends on ideal body weight, body mass index, age, and sex. Absorption rate and lag-time are reduced by a high-fat meal at the time of dosing. Combined proportional + additive residual error is stratified by healthy-vs-patient status."
   reference <- "Shoji S, Suzuki M, Tomono Y, Bockbrader HN, Matsui S. Population pharmacokinetics of pregabalin in healthy subjects and patients with post-herpetic neuralgia or diabetic peripheral neuropathy. Br J Clin Pharmacol. 2011;72(1):63-76. doi:10.1111/j.1365-2125.2011.03932.x"
   vignette <- "Shoji_2011_pregabalin"
-  units <- list(time = "hour", dosing = "mg", concentration = "ug/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 
   paper_specific_residual_sds <- c(
     "propSdHealthy", "addSdHealthy",

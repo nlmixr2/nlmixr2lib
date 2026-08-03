@@ -19,7 +19,7 @@ Antignac_2007_tacrolimus <- function() {
     "doi:10.1111/j.1365-2125.2007.02895.x"
   )
   vignette <- "Antignac_2007_tacrolimus"
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   covariateData <- list(
     POD = list(

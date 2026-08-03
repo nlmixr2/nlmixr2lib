@@ -8,7 +8,7 @@ Hodiamont_2017_gentamicin <- function() {
     sep = " "
   )
   vignette <- "Hodiamont_2017_gentamicin"
-  units    <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Hodiamont 2017 tested total, ideal, and adjusted body weight as covariates
   # on CL, Q, V1, and V2 using both allometric and univariate forms, and

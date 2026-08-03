@@ -2,7 +2,7 @@ VanWart_2004_garenoxacin <- function() {
   description <- "One-compartment population pharmacokinetic model with first-order absorption and first-order elimination for oral garenoxacin (a des-F(6) quinolone) in adults with community-acquired respiratory tract infections (Van Wart 2004); CL/F covariates are creatinine clearance, ideal body weight, age, obesity (WT > 130% IBW), and concomitant pseudoephedrine; V/F covariates are body weight and male sex."
   reference <- "Van Wart S, Phillips L, Ludwig EA, Russo R, Gajjar DA, Bello A, Ambrose PG, Costanzo C, Grasela TH, Echols R, Grasela DM. Population pharmacokinetics and pharmacodynamics of garenoxacin in patients with community-acquired respiratory tract infections. Antimicrob Agents Chemother. 2004;48(12):4766-4777. doi:10.1128/AAC.48.12.4766-4777.2004"
   vignette <- "VanWart_2004_garenoxacin"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     CRCL = list(

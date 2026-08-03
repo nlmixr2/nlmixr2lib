@@ -466,7 +466,40 @@
   # answer "what molecule, in what amount"; `specimen` answers "in what
   # matrix". `verified` records whether the entry was checked against the
   # source paper -- a mechanically derived entry is not evidence.
-  compartmentDataFields = c("analyte", "units", "specimen", "verified")
+  compartmentDataFields = c("analyte", "units", "specimen", "verified"),
+
+  # Canonical spellings for the `units` block and for unit hints in labels.
+  # These are SPELLINGS, not conversions: "hour"/"hr" and "h" are the same
+  # unit written three ways, and a library that writes it three ways cannot be
+  # parsed by a consumer. Genuinely different units (min, day, s) stay
+  # distinct -- normalising those would silently misstate every value.
+  #
+  # A survey on 2026-08-03 found time = "hour" in 643 models, "h" in 208 and
+  # "hr" in 28, plus ~12 notations for second-order association rates.
+  canonicalTimeUnit = "h",
+  timeUnitSpellings = c(
+    hour = "h", hours = "h", hr = "h", hrs = "h",
+    minute = "min", minutes = "min", mins = "min",
+    days = "day", weeks = "week", months = "month", years = "year",
+    second = "s", seconds = "s", sec = "s", secs = "s"
+  ),
+  doseUnitSpellings = c(
+    microgram = "ug", micrograms = "ug", mcg = "ug",
+    milligram = "mg", milligrams = "mg",
+    nanogram = "ng", nanograms = "ng",
+    gram = "g", grams = "g"
+  ),
+
+  # Generic structural models (PK_1cmt, PK_2cmt, ...) are dimensionless by
+  # design and declare placeholders. These are correct, not unnormalised.
+  placeholderUnits = c("time_unit", "dose_unit", "conc_unit", "amount_unit",
+                       "vol_unit", "half_life", "none"),
+
+  # Second-order association rate constants. The library wrote these as
+  # 1/(nM*h), 1/nM/hour, nM^-1 h^-1, (pmol/L)^-1 h^-1, 1/(nM h) ... all the
+  # same shape. Canonical form is 1/(<concentration>*<time>), which keeps the
+  # concentration and time bases visible and greppable.
+  canonicalRateNotation = "1/(<conc>*<time>)"
 )
 
 # The following canonical-name lists are NOT carried on

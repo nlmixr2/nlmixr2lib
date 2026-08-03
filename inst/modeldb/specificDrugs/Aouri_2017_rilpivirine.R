@@ -9,7 +9,7 @@ Aouri_2017_rilpivirine <- function() {
     "doi:10.1128/AAC.00899-16"
   )
   vignette <- "Aouri_2017_rilpivirine"
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   covariateData <- list()
 

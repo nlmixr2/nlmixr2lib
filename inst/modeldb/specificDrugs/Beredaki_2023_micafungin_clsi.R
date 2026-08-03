@@ -11,7 +11,7 @@ Beredaki_2023_micafungin_clsi <- function() {
   )
   vignette <- "Beredaki_2023_micafungin"
   units <- list(
-    time = "hour",
+    time = "h",
     dosing = "mg (micafungin added to the 10 mL internal compartment)",
     concentration = "mg/L (micafungin, Cc); log10 CFU/mL (fungal density, log10cfu)"
   )

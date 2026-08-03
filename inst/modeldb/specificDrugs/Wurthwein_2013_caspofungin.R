@@ -24,7 +24,7 @@ Wurthwein_2013_caspofungin <- function() {
     "doi:10.1128/AAC.01912-12."
   )
   vignette <- "Wurthwein_2013_caspofungin"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     WT = list(

@@ -2,7 +2,7 @@ Laffont_2024_naloxone <- function() {
   description <- "Population PK model for intranasal (IN) naloxone HCl in healthy adult volunteers (Laffont 2024): two-compartment model with linear elimination and parallel zero-order plus lagged first-order absorption; Q/F and Vp/F fixed to literature values from Yassen 2007."
   reference <- "Laffont CM, Purohit P, Delcamp N, Gonzalez-Garcia I, Skolnick P. Comparison of intranasal naloxone and intranasal nalmefene in a translational model assessing the impact of synthetic opioid overdose on respiratory depression and cardiac arrest. Front Psychiatry. 2024;15:1399803. doi:10.3389/fpsyt.2024.1399803. Q/F and Vp/F fixed to values from Yassen A, Olofsen E, van Dorp E, Sarton E, Teppema L, Danhof M, Dahan A. Mechanism-based pharmacokinetic-pharmacodynamic modelling of the reversal of buprenorphine-induced respiratory depression by naloxone. Clin Pharmacokinet. 2007;46(11):965-980. doi:10.2165/00003088-200746110-00004"
   vignette <- "Laffont_2024_naloxone"
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   covariateData <- list(
     # Laffont 2024 Table 2 reports no statistically significant covariates retained

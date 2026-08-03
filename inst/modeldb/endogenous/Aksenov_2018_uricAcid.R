@@ -3,7 +3,7 @@ Aksenov_2018_uricAcid <- function() {
   reference <- "Aksenov S, Peck CC, Eriksson UG, Stanski DR. Individualized treatment strategies for hyperuricemia informed by a semi-mechanistic exposure-response model of uric acid dynamics. Physiol Rep. 2018 Mar;6(5):e13614. doi:10.14814/phy2.13614"
   vignette <- "Aksenov_2018_uricAcid"
   units <- list(
-    time = "hour",
+    time = "h",
     dosing = "mg",
     concentration = "mg/dL"
   )

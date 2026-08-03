@@ -24,7 +24,7 @@ Kleiber_2017_clonidine <- function() {
     sep = " "
   )
   vignette <- "Kleiber_2017_clonidine"
-  units <- list(time = "hour", dosing = "ug", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "ug", concentration = "ng/mL")
 
   covariateData <- list(
     WT = list(

@@ -15,7 +15,7 @@ PerezRuixo_2015_oxaliplatin_platelet_dynamics <- function() {
   )
   vignette <- "PerezRuixo_2015_oxaliplatin_platelet_dynamics"
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "not applicable (PD-only model; no drug dose enters the ODE system -- the oxaliplatin drug effect is driven by the exogenous CP_OXA_MGL covariate column)",
     concentration = "10^9 cells/L (observed circulating platelet count, PLT); oxaliplatin plasma concentration covariate CP_OXA_MGL in mg/L"
   )

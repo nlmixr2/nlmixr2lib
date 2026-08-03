@@ -12,7 +12,7 @@ Mody_2023_doxorubicin_dexrazoxane <- function() {
   vignette <- "Mody_2023_doxorubicin_dexrazoxane"
 
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "mg (IV; for a 1.8 m^2 body-surface-area typical subject, mg/m^2 doses are pre-multiplied by 1.8 in the event table)",
     concentration = "mg/L (plasma, both drugs); uM (TD driver, derived); % (cell viability, TD readout)"
   )

@@ -2,7 +2,7 @@ Tsuda_2010_tamsulosin <- function() {
   description <- "One-compartment population PK model for oral modified-release tamsulosin hydrochloride in paediatric patients (2-16 years) with neuropathic and non-neuropathic bladder (Tsuda 2010), with first-order absorption after a lag time, allometric (WT/70)^0.75 on apparent clearance and (WT/70)^1 on apparent central volume (allometric exponents fixed at theory values), a power-form alpha-1-acid glycoprotein (AAG/20 uM) effect on both CL/F and V/F, correlated inter-individual variability on CL/F and V/F, independent IIV on ka, and a combined additive + proportional residual error."
   reference <- "Tsuda Y, Tatami S, Yamamura N, Tadayasu Y, Sarashina A, Liesenfeld K-H, Staab A, Schaefer H-G, Ieiri I, Higuchi S. Population pharmacokinetics of tamsulosin hydrochloride in paediatric patients with neuropathic and non-neuropathic bladder. British Journal of Clinical Pharmacology. 2010;70(1):88-101. doi:10.1111/j.1365-2125.2010.03662.x"
   vignette <- "Tsuda_2010_tamsulosin"
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   covariateData <- list(
     WT = list(

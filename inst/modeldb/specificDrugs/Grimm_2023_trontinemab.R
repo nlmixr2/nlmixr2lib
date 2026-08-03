@@ -3,7 +3,7 @@ Grimm_2023_trontinemab <- function() {
   reference <- "Grimm HP, Schumacher V, Schafer M, et al. Delivery of the Brainshuttle amyloid-beta antibody fusion trontinemab to non-human primate brain and projected efficacious dose regimens in humans. mAbs. 2023;15(1):2261509. doi:10.1080/19420862.2023.2261509"
   vignette <- "Grimm_2023"
   units <- list(
-    time = "hour",
+    time = "h",
     dosing = "mg/kg",
     concentration = "ng/mL"
   )

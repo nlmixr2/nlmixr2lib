@@ -2,7 +2,7 @@ Lee_2013_colistin <- function() {
   description <- "One-compartment population PK model of colistin in adult burn-ICU patients receiving colistimethate sodium (CMS) as a 30-minute IV infusion every 12 hours, with first-order CMS-to-colistin conversion (Lee 2013). Apparent CL and Vc of colistin are scaled inversely by the relative fraction of CMS converted to colistin (RFM = 1 - theta4 * (CRCL/128)); the CMS-to-colistin turnover rate constant TR is reduced in patients with clinically-evident peripheral edema (TR = theta3 - theta5 * DIS_EDEMA)."
   reference <- "Lee J, Han S, Jeon S, Hong T, Song W, Woo H, Yim D-S. Population pharmacokinetic analysis of colistin in burn patients. Antimicrob Agents Chemother. 2013;57(5):2421-2427. doi:10.1128/AAC.00271-13"
   vignette <- "Lee_2013_colistin"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     CRCL = list(

@@ -9,7 +9,7 @@ Valitalo_2017_ketorolac <- function() {
     sep = " "
   )
   vignette <- "Valitalo_2017_ketorolac"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     WT = list(

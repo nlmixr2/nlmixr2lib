@@ -19,7 +19,7 @@ Foissac_2011_atazanavir <- function() {
     "doi:10.1111/j.1365-2125.2011.04035.x."
   )
   vignette <- "Foissac_2011_atazanavir"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     WT = list(

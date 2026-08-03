@@ -18,7 +18,7 @@ Yang_2013_losmapimod <- function() {
     "lack of dose-proportionality (possible saturable absorption).")
   reference   <- "Yang S, Lukey P, Beerahee M, Hoke F. Population pharmacokinetics of losmapimod in healthy subjects and patients with rheumatoid arthritis and chronic obstructive pulmonary diseases. Clin Pharmacokinet. 2013;52(3):187-198. doi:10.1007/s40262-012-0025-6"
   vignette    <- "Yang_2013_losmapimod"
-  units       <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units       <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   covariateData <- list(
     WT = list(

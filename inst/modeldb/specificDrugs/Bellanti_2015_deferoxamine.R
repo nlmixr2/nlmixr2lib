@@ -4,7 +4,7 @@ Bellanti_2015_deferoxamine <- function() {
   vignette <- "Bellanti_2015_deferoxamine"
 
   units <- list(
-    time = "hour",
+    time = "h",
     dosing = "mg",
     concentration = "ug/L"
   )

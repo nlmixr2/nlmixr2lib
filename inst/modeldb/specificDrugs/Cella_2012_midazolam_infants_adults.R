@@ -16,7 +16,7 @@ Cella_2012_midazolam_infants_adults <- function() {
     sep = " "
   )
   vignette <- "Cella_2012_midazolam_paediatric_scaling"
-  units    <- list(time = "minute", dosing = "mg", concentration = "mg/L")
+  units    <- list(time = "min", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     WT = list(

@@ -2,7 +2,7 @@ Cirincione_2017_exenatide <- function() {
   description <- "Population PK model for exenatide immediate-release (Cirincione 2017): two-compartment, parallel linear and Michaelis-Menten elimination, sequential zero-order then saturable first-order absorption after SC dosing."
   reference <- "Cirincione B, Mager DE. Population pharmacokinetics of exenatide. British Journal of Clinical Pharmacology. 2017;83(3):517-526. doi:10.1111/bcp.13135"
   vignette <- "Cirincione_2017_exenatide"
-  units <- list(time = "hour", dosing = "ug", concentration = "pg/mL")
+  units <- list(time = "h", dosing = "ug", concentration = "pg/mL")
 
   covariateData <- list(
     WT = list(
@@ -60,15 +60,15 @@ Cirincione_2017_exenatide <- function() {
 
   ini({
     # Structural parameters — Cirincione 2017 Table 2 (reference CRCL = 80 mL/min/1.73 m^2, reference WT = 84.8 kg)
-    lcl       <- log(4.58);  label("Linear clearance at reference CRCL (L/hr)")                      # Table 2: Cl_int = 4.58 L/hr
+    lcl       <- log(4.58);  label("Linear clearance at reference CRCL (L/h)")                      # Table 2: Cl_int = 4.58 L/hr
     e_crcl_cl <- 0.838;      label("Power effect of CRCL (MDRD eGFR) on linear clearance (unitless)") # Table 2: Cl_eGFR = 0.838
-    lq       <- log(3.72);   label("Intercompartmental clearance (L/hr)")                           # Table 2: Cld = 3.72 L/hr
+    lq       <- log(3.72);   label("Intercompartmental clearance (L/h)")                           # Table 2: Cld = 3.72 L/hr
     lvc      <- log(7.03);   label("Central volume at reference body weight (L)")                   # Table 2: Vc_int = 7.03 L
     e_wt_vc  <- 2.67;        label("Power effect of body weight on central volume (unitless)")       # Table 2: Vc_wtkg = 2.67
     lvp      <- log(7.04);   label("Peripheral volume (L)")                                          # Table 2: Vp = 7.04 L
-    lvmax    <- log(1.55);   label("Maximum Michaelis-Menten clearance (ug/hr)")                     # Table 2: Vmax = 1.55 ug/hr
+    lvmax    <- log(1.55);   label("Maximum Michaelis-Menten clearance (ug/h)")                     # Table 2: Vmax = 1.55 ug/hr
     lkm      <- log(0.567);  label("Michaelis-Menten constant for saturable clearance (ng/mL)")      # Table 2: Km = 567 pg/mL = 0.567 ng/mL (expressed in concentration units matching Cc = central(ug)/vc(L))
-    lkamax   <- log(12.8);   label("Maximum first-order absorption rate (1/hr)")                     # Table 2: ka_max = 12.8 /hr (RSE 42.5%)
+    lkamax   <- log(12.8);   label("Maximum first-order absorption rate (1/h)")                     # Table 2: ka_max = 12.8 /hr (RSE 42.5%)
     lkmka    <- log(16.9);   label("Michaelis-Menten constant for saturable absorption (ug)")        # Table 2: Km_ka = 16.9 ug
     ttau     <- fixed(1.35); label("Duration of zero-order absorption (hr)")                         # Results p. 520: tau fixed at 1.35 hr
     lfdepot  <- fixed(0);    label("Log absolute SC bioavailability (0 = exp(0) = 1, i.e., no loss at injection site)")                               # Results p. 520: F fixed to 1 (absolute F not identifiable)

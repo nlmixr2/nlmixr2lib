@@ -11,7 +11,7 @@ Oualha_2014_epinephrine <- function() {
     sep = " "
   )
   vignette <- "Oualha_2014_epinephrine"
-  units <- list(time = "hour", dosing = "ug", concentration = "ug/L")
+  units <- list(time = "h", dosing = "ug", concentration = "ug/L")
 
   covariateData <- list(
     WT = list(

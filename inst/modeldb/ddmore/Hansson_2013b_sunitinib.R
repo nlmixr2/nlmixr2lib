@@ -15,7 +15,7 @@ Hansson_2013b_sunitinib <- function() {
   vignette <- "Hansson_2013b_sunitinib"
   paper_specific_etas <- c("etaibase")
 
-  units <- list(time = "hour", dosing = "mg", concentration = "mm (tumor SLD)")
+  units <- list(time = "h", dosing = "mg", concentration = "mm (tumor SLD)")
   ddmore_id <- "DDMODEL00000198"
   replicate_of <- NULL
 
@@ -129,7 +129,7 @@ Hansson_2013b_sunitinib <- function() {
     #
     # Source paper THETA convention: rate constants reported in 1/week. The
     # .mod and the model() block convert to 1/h via the standard /24/7
-    # multiplier so all rates carry units of `units$time = "hour"`.
+    # multiplier so all rates carry units of `units$time = "h"`.
     # ----------------------------------------------------------------------
 
     # Tumor growth rate (paper Table 3: KG = 0.0118/week = 7.024e-5 /h).

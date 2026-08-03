@@ -9,7 +9,7 @@ Woillard_2014_ciclosporin <- function() {
     sep = " "
   )
   vignette <- "Woillard_2014_ciclosporin"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariatesDataExcluded <- list(
     HGB = list(

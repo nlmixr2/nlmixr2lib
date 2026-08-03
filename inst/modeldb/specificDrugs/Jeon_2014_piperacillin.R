@@ -2,7 +2,7 @@ Jeon_2014_piperacillin <- function() {
   description <- "Two-compartment IV population PK model for piperacillin in 50 Korean adult burn-ICU patients receiving piperacillin-tazobactam 4.5 g (4 g piperacillin + 0.5 g tazobactam) every 8 h as a 30-min infusion (Jeon 2014)"
   reference   <- "Jeon S, Han S, Lee J, Hong T, Paek J, Woo H, Yim DS. Population pharmacokinetic analysis of piperacillin in burn patients. Antimicrob Agents Chemother. 2014;58(7):3744-3751. doi:10.1128/AAC.02089-13"
   vignette    <- "Jeon_2014_piperacillin"
-  units       <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units       <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     CRCL = list(

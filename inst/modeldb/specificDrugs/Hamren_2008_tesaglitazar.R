@@ -9,7 +9,7 @@ Hamren_2008_tesaglitazar <- function() {
     sep = " "
   )
   vignette <- "Hamren_2008_tesaglitazar"
-  units    <- list(time = "hour", dosing = "umol", concentration = "umol/L")
+  units    <- list(time = "h", dosing = "umol", concentration = "umol/L")
 
   paper_specific_compartments <- c("gut_gluc")
 

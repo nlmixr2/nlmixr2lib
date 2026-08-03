@@ -11,7 +11,7 @@ Landersdorfer_2013_nisin_amikacin <- function() {
     sep = " "
   )
   vignette <- "Landersdorfer_2013_nisin_amikacin_linezolid"
-  units <- list(time = "hour", dosing = "mg/L (drug input concentration)", concentration = "log10 CFU/mL (observation); mg/L (drug covariates)")
+  units <- list(time = "h", dosing = "mg/L (drug input concentration)", concentration = "log10 CFU/mL (observation); mg/L (drug covariates)")
 
   # Cnis / Cami are the experimentally-controlled nisin and amikacin
   # broth concentrations in the static time-kill (and sequential

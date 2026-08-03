@@ -2,7 +2,7 @@ Stocker_2012_oxypurinol <- function() {
   description <- "One-compartment population PK model for oxypurinol (the active metabolite of allopurinol) in adults with gout (Stocker 2012). First-order formation from allopurinol (Kfm taken as the apparent first-order absorption rate into the central compartment), one-compartment distribution, and first-order elimination. Apparent clearance (CL/Fm) is modified by raw Cockcroft-Gault creatinine clearance based on lean body weight (CRCL), concomitant any-class diuretic use (CONMED_DIURETIC; thiazide / furosemide / spironolactone pooled), and concomitant probenecid use (CONMED_PROBENECID), each via a linear-deviation multiplicative factor. Apparent volume (V/Fm) is allometrically scaled on lean body weight (LBW) with the volume exponent held fixed at the theoretical value of 1.0. The dose entered into the model is the oxypurinol-equivalent dose, taken as 0.9 x allopurinol dose per the paper's prior published assumption."
   reference   <- "Stocker SL, McLachlan AJ, Savic RM, Kirkpatrick CM, Graham GG, Williams KM, Day RO. The pharmacokinetics of oxypurinol in people with gout. Br J Clin Pharmacol. 2012 Sep;74(3):477-489. doi:10.1111/j.1365-2125.2012.04207.x"
   vignette    <- "Stocker_2012_oxypurinol"
-  units       <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units       <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     CRCL = list(

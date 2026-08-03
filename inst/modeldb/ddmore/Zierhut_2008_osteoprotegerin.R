@@ -10,7 +10,7 @@ Zierhut_2008_osteoprotegerin <- function() {
     sep = " "
   )
   vignette <- "Zierhut_2008_osteoprotegerin"
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL", biomarker = "nM BCE/mM creatinine per hr")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL", biomarker = "nM BCE/mM creatinine per hr")
 
   ddmore_id    <- "DDMODEL00000233"
   replicate_of <- NULL

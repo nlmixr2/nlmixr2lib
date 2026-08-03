@@ -2,7 +2,7 @@ Yang_2024_axatilimab <- function() {
   description <- "Semimechanistic population PK/PD model for axatilimab (anti-CSF-1R IgG4 monoclonal antibody) in healthy adults, patients with advanced solid tumors, and patients with chronic graft-versus-host disease (Yang 2024). Two-compartment IV PK with parallel linear clearance and CSF-1R-mediated saturable elimination via competitive Hill binding with circulating CSF-1; CSF-1, NCMC, AST, and CPK pharmacodynamics integrated as turnover indirect-response biomarkers."
   reference <- "Yang Y, Sokolov V, Volkova A, et al. Semimechanistic Population PK/PD Modeling of Axatilimab in Healthy Participants and Patients With Solid Tumors or Chronic Graft-Versus-Host Disease. Clin Pharmacol Ther. 2025;117(3):704-714. doi:10.1002/cpt.3503"
   vignette <- "Yang_2024_axatilimab"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     WT = list(

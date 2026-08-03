@@ -43,7 +43,7 @@ Naik_2013_fasiglifam <- function() {
   paper_specific_compartments <- c("glucose", "Hba1c")
 
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "mg fasiglifam (TAK-875, oral, once daily)",
     concentration = paste(
       "Cc in mg/L (equivalent to ug/mL; EC50 = 3.16 ug/mL = 3.16 mg/L);",

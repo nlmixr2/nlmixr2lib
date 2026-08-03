@@ -64,7 +64,7 @@ Lehr_2010_tesofensine <- function() {
     # by Lehr 2010 (6 ADAS-Cog points/year per Lehr 2010 ref 26).
     # Stored in (ADAS-Cog points per hour) for unit consistency with
     # the rest of the model.
-    ldp_rate   <- fixed(log(6 / (365.25 * 24))) ; label("Log linear disease-progression rate (ADAS-Cog points/hour); literature 6 points/year (Lehr 2010 ref 26)") # Lehr 2010 Disease Progression and Placebo Effect Model section
+    ldp_rate   <- fixed(log(6 / (365.25 * 24))) ; label("Log linear disease-progression rate (ADAS-Cog points/h); literature 6 points/year (Lehr 2010 ref 26)") # Lehr 2010 Disease Progression and Placebo Effect Model section
 
     # IIV - Lehr 2010 Table I (Phase IIa column) reports each random
     # effect as a percent CV on the parameter. The log-normal variance

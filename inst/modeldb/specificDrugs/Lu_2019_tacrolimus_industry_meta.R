@@ -24,7 +24,7 @@ Lu_2019_tacrolimus_industry_meta <- function() {
     "Pharmacol. 2019;85(8):1692-1703. doi:10.1111/bcp.13952."
   )
   vignette <- "Lu_2019_tacrolimus_industry_meta"
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   covariateData <- list(
     RACE_ASIAN = list(

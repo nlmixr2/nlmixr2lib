@@ -2,7 +2,7 @@ Landersdorfer_2018_meropenem_tobramycin_PAO1 <- function() {
   description <- "In vitro (Pseudomonas aeruginosa PAO1 wild-type). Mechanism-based PK/PD (life-cycle growth) model of bacterial killing and resistance for meropenem plus tobramycin, with three pre-existing subpopulations (susceptible, MEM-resistant/TOB-intermediate, MEM-intermediate/TOB-resistant) and mechanistic synergy via tobramycin-induced outer-membrane permeabilisation of meropenem"
   reference <- "Landersdorfer CB, Rees VE, Yadav R, Rogers KE, Kim TH, Bergen PJ, Cheah SE, Boyce JD, Peleg AY, Oliver A, Shin BS, Nation RL, Bulitta JB. Optimization of a meropenem-tobramycin combination dosage regimen against hypermutable and nonhypermutable Pseudomonas aeruginosa via mechanism-based modeling and the hollow-fiber infection model. Antimicrob Agents Chemother. 2018 Mar 27;62(4):e02055-17. doi:10.1128/AAC.02055-17. Model differential equations (Eqs 2-5) and Table S3 population parameter estimates are in the supplemental material."
   vignette <- "Landersdorfer_2018_meropenem_tobramycin"
-  units <- list(time = "hour", dosing = "mg/L", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg/L", concentration = "mg/L")
 
   paper_specific_compartment_pattern <- "^bact_"
 

@@ -33,7 +33,7 @@ Hirt_2007_nelfinavir <- function() {
   )
 
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "mg",
     concentration = "mg/L"
   )

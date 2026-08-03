@@ -2,7 +2,7 @@ Caldes_2009_ganciclovir <- function() {
   description <- "Two-compartment population PK model for ganciclovir after IV ganciclovir and oral valganciclovir administration in solid organ transplant patients infected with cytomegalovirus, with first-order absorption, lag time, logit-transformed bioavailability, and creatinine-clearance scaling on CL (Caldes 2009)"
   reference   <- "Caldes A, Colom H, Armendariz Y, Garrido MJ, Troconiz IF, Gil-Vernet S, Lloberas N, Pou L, Peraire C, Grinyo JM. Population pharmacokinetics of ganciclovir after intravenous ganciclovir and oral valganciclovir administration in solid organ transplant patients infected with cytomegalovirus. Antimicrob Agents Chemother. 2009;53(11):4816-4824. doi:10.1128/AAC.00085-09"
   vignette    <- "Caldes_2009_ganciclovir"
-  units       <- list(time = "hr", dosing = "mg", concentration = "ug/mL")
+  units       <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 
   covariateData <- list(
     CRCL = list(

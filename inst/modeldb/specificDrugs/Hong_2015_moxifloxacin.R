@@ -10,7 +10,7 @@ Hong_2015_moxifloxacin <- function() {
     sep = " "
   )
   vignette <- "Hong_2015_moxifloxacin"
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   covariateData <- list(
     DOSE = list(

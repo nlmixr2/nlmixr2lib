@@ -16,7 +16,7 @@ Hansson_2013c_sunitinib <- function() {
   )
   vignette <- "Hansson_2013c_sunitinib"
   units <- list(
-    time = "hour",
+    time = "h",
     dosing = "mg",
     concentration = "(NCI-CTC fatigue grade 0-3+, ordinal)"
   )

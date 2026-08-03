@@ -9,7 +9,7 @@ Jager_2011_gemtuzumab <- function() {
     sep = " "
   )
   vignette <- "Jager_2011_gemtuzumab"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   ddmore_id    <- "DDMODEL00000229"
   replicate_of <- NULL

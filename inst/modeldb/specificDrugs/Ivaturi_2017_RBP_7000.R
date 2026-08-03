@@ -51,7 +51,7 @@ Ivaturi_2017_RBP_7000 <- function() {
     sep = " "
   )
   vignette <- "Ivaturi_2017_RBP_7000"
-  units    <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units    <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   covariateData <- list(
     CYP2D6_PM = list(

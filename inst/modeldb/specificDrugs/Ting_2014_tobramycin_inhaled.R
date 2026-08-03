@@ -6,7 +6,7 @@ Ting_2014_tobramycin_inhaled <- function() {
     "CPT Pharmacometrics Syst Pharmacol 3(9):e99. doi:10.1038/psp.2013.76"
   )
   vignette <- "Ting_2014_tobramycin_inhaled"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     BMI = list(

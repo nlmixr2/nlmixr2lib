@@ -2,7 +2,7 @@ Prytula_2016_tacrolimus <- function() {
   description <- "Two-compartment population PK model with first-order absorption and a fixed absorption lag time for twice-daily oral tacrolimus (Prograft) in stable paediatric renal transplant recipients at least one year after kidney transplantation (Prytula 2016). All apparent-PK parameters (CL/F, Q/F, V1/F, V2/F, ka) scale allometrically with body weight at fixed exponents (0.75 on CL/F and Q/F, 1 on V1/F and V2/F, -0.25 on ka) referenced to a 70 kg adult; V2/F is fixed at 1090 L/70 kg during covariate analysis; CL/F additionally varies with CYP3A5*1 carrier status (1+0.45-fold higher in carriers vs *3/*3 nonexpressers), gamma-glutamyltransferase (power -0.21, centred at 13 U/L), and haematocrit (power -0.59, centred at 0.34); eta_Q is perfectly correlated with eta_CL and is constructed as iiv_q_scale * etalcl (iiv_q_scale = 2.0; the 'IIV-CL-Q' parameter in Table 2); inter-individual variability is a 3x3 correlated block on (ka, CL/F, V1/F); proportional residual error."
   reference <- "Prytula AA, Cransberg K, Bouts AHM, van Schaik RHN, de Jong H, de Wildt SN, Mathot RAA. The Effect of Weight and CYP3A5 Genotype on the Population Pharmacokinetics of Tacrolimus in Stable Paediatric Renal Transplant Recipients. Clin Pharmacokinet. 2016;55(9):1129-1143. doi:10.1007/s40262-016-0390-7"
   vignette <- "Prytula_2016_tacrolimus"
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   covariateData <- list(
     WT = list(

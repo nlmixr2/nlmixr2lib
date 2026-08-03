@@ -31,7 +31,7 @@ Viberg_2012_AZD6088_rat <- function() {
   )
   vignette <- "Viberg_2012_AZD6088_rat"
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "umol/kg",
     concentration = "umol/L"
   )

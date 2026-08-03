@@ -10,7 +10,7 @@ Wilkins_2008_rifampicin <- function() {
     sep = " "
   )
   vignette <- "Wilkins_2008_rifampicin"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
   ddmore_id    <- "DDMODEL00000280"
   replicate_of <- NULL
 

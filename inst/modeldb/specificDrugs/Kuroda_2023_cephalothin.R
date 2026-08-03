@@ -35,7 +35,7 @@ Kuroda_2023_cephalothin <- function() {
   )
   vignette <- "Kuroda_2023_cephalothin"
   units <- list(
-    time = "hour",
+    time = "h",
     dosing = "mg",
     concentration = "ug/mL"
   )
@@ -84,9 +84,9 @@ Kuroda_2023_cephalothin <- function() {
     lvc <- log(0.083); label("Weight-normalized central volume of distribution V1 (L/kg)")                       # Table 1: V = 0.083 l/kg (CV% 8.1; 2.5-97.5% 0.071-0.099)
     lvp <- log(0.060); label("Weight-normalized rapidly equilibrating peripheral volume V2 (L/kg)")              # Table 1: V2 = 0.060 l/kg (CV% 16.5; 2.5-97.5% 0.040-0.082)
     lvp2 <- log(0.054); label("Weight-normalized slowly equilibrating peripheral volume V3 (L/kg)")              # Table 1: V3 = 0.054 l/kg (CV% 71.1; 2.5-97.5% 0.039-0.057)
-    lcl <- log(0.597); label("Weight-normalized plasma clearance CL (L/kg/hr)")                                  # Table 1: CL = 0.597 l/kg/hr (CV% 4.3; 2.5-97.5% 0.522-0.597)
-    lq <- log(0.106); label("Weight-normalized distribution clearance to peripheral1 CL2 (L/kg/hr)")             # Table 1: CL2 = 0.106 l/kg/hr (CV% 14.5; 2.5-97.5% 0.098-0.156)
-    lq2 <- log(0.018); label("Weight-normalized distribution clearance to peripheral2 CL3 (L/kg/hr)")            # Table 1: CL3 = 0.018 l/kg/hr (CV% 18.1; 2.5-97.5% 0.016-0.030)
+    lcl <- log(0.597); label("Weight-normalized plasma clearance CL (L/kg/h)")                                  # Table 1: CL = 0.597 l/kg/hr (CV% 4.3; 2.5-97.5% 0.522-0.597)
+    lq <- log(0.106); label("Weight-normalized distribution clearance to peripheral1 CL2 (L/kg/h)")             # Table 1: CL2 = 0.106 l/kg/hr (CV% 14.5; 2.5-97.5% 0.098-0.156)
+    lq2 <- log(0.018); label("Weight-normalized distribution clearance to peripheral2 CL3 (L/kg/h)")            # Table 1: CL3 = 0.018 l/kg/hr (CV% 18.1; 2.5-97.5% 0.016-0.030)
 
     # =====================================================================
     # Intramuscular absorption -- Kuroda 2023 Table 1
@@ -95,7 +95,7 @@ Kuroda_2023_cephalothin <- function() {
     # arm only (Methods paragraph 2). Kabs is consistent with the reported
     # secondary parameter: log(2)/1.070 = 0.648 hr, and Table 1 reports an
     # absorption half-life of 0.65 hr.
-    lka <- log(1.070); label("First-order intramuscular absorption rate constant Kabs (1/hr)")                   # Table 1: Kabs = 1.070 1/hr (CV% 24.6); cross-checks against the secondary parameter absorption half-life = 0.65 hr
+    lka <- log(1.070); label("First-order intramuscular absorption rate constant Kabs (1/h)")                   # Table 1: Kabs = 1.070 1/hr (CV% 24.6); cross-checks against the secondary parameter absorption half-life = 0.65 hr
     lfdepot <- log(0.997); label("Intramuscular bioavailability F (fraction)")                                    # Table 1: F = 99.7% (CV% 9.8; 2.5-97.5% 67.7-99.8%); Results text repeats "bioavailability ... 99.7%"
 
     # =====================================================================

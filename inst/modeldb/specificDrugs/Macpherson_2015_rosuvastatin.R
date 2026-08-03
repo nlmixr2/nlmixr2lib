@@ -9,7 +9,7 @@ Macpherson_2015_rosuvastatin <- function() {
     sep = " "
   )
   vignette <- "Macpherson_2015_rosuvastatin"
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   covariateData <- list(
     WT = list(

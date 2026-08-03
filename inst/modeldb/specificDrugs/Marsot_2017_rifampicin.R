@@ -27,7 +27,7 @@ Marsot_2017_rifampicin <- function() {
     "doi:10.1111/bcp.13178."
   )
   vignette <- "Marsot_2017_rifampicin"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     CONMED_FUSIDIC = list(

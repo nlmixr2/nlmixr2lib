@@ -22,7 +22,7 @@ Horvatits_2014_ganciclovir <- function() {
     sep = " "
   )
   vignette <- "Yang_2023_ganciclovir_model_repository"
-  units    <- list(time = "hr", dosing = "mg", concentration = "mg/L")
+  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # No covariateData: Yang 2023 Table 4 records "NR" for every covariate column of
   # this study, with the footnote "Covariates were not included in the model due to

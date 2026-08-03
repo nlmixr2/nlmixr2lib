@@ -2,7 +2,7 @@ Willemze_2008_ciclosporin <- function() {
   description <- "Two-compartment population PK model for ciclosporin in children (aged 1.8-16.1 years) after allogeneic haematopoietic stem cell transplantation (Willemze 2008). First-order absorption with lag time and partial bioavailability for oral Neoral microemulsion; intravenous Sandimmune is given as a 2-hour infusion to the central compartment. The 'alternative parameterization' (CL, Q, Vp, plus Ka, Vc, Tlag, F) reported in Table 2 is used directly because it is the more physiologically interpretable set. IIV on Vc was fixed to zero; IIVs on Ka, CL, Q, Vp, Tlag, and F are estimated. Residual error is proportional. No covariate (body weight, length, age, or estimated GFR) was retained in the final model; those covariates are documented in covariatesDataExcluded."
   reference <- "Willemze AJ, Cremers SC, Schoemaker RC, Lankester AC, den Hartigh J, Burggraaf J, Vossen JM. Ciclosporin kinetics in children after stem cell transplantation. Br J Clin Pharmacol. 2008;66(4):539-545. doi:10.1111/j.1365-2125.2008.03217.x"
   vignette <- "Willemze_2008_ciclosporin"
-  units <- list(time = "hour", dosing = "mg", concentration = "ug/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 
   covariateData <- list()
 

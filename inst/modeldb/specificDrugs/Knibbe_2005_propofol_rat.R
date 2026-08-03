@@ -24,7 +24,7 @@ Knibbe_2005_propofol_rat <- function() {
     sep = " "
   )
   vignette <- "Knibbe_2005_propofol"
-  units    <- list(time = "minute", dosing = "mg", concentration = "mg/L")
+  units    <- list(time = "min", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list()
 

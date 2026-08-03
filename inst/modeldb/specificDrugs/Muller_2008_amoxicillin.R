@@ -14,7 +14,7 @@ Muller_2008_amoxicillin <- function() {
     "doi:10.1111/j.1365-2125.2008.03292.x."
   )
   vignette <- "Muller_2008_amoxicillin"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     LABOR_ACTIVE = list(

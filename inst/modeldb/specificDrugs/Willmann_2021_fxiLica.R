@@ -37,7 +37,7 @@ Willmann_2021_fxiLica <- function() {
   )
   vignette <- "Willmann_2021_fxi_aso"
   paper_specific_compartments <- c("fxi")
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   covariateData <- list(
     RRT_HEMODIAL_STATUS = list(

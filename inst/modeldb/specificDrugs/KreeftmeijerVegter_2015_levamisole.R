@@ -23,7 +23,7 @@ KreeftmeijerVegter_2015_levamisole <- function() {
     sep = " "
   )
   vignette <- "KreeftmeijerVegter_2015_levamisole"
-  units    <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units    <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   covariateData <- list(
     WT = list(

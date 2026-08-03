@@ -2,7 +2,7 @@ Zhao_2012_abacavir <- function() {
   description <- "Two-compartment population PK model for oral abacavir in HIV-infected infants and toddlers (Zhao 2012) developed on the PENTA 15 crossover trial of 8 mg/kg twice-daily vs 16 mg/kg once-daily dosing; CL/F scales with body weight via an estimated power exponent (1.14) referenced to the population median weight of 12 kg, and inter-occasion variability on CL/F is multiplexed by the binary OCC indicator across the BID (occasion 1) and QD (occasion 2) study phases."
   reference <- "Zhao W, Cella M, Della Pasqua O, Burger D, Jacqz-Aigrain E, on behalf of Pediatric European Network for Treatment of AIDS (PENTA) 15 study group. Population pharmacokinetics and maximum a posteriori probability Bayesian estimator of abacavir: application of individualized therapy in HIV-infected infants and toddlers. Br J Clin Pharmacol. 2012;73(4):641-648. doi:10.1111/j.1365-2125.2011.04121.x"
   vignette <- "Zhao_2012_abacavir"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     WT = list(

@@ -7,7 +7,7 @@ Li_2017_cediranib <- function() {
     "Br J Clin Pharmacol 83(8):1723-1733. doi:10.1111/bcp.13266"
   )
   vignette <- "Li_2017_cediranib"
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   covariateData <- list(
     WT = list(

@@ -16,7 +16,7 @@ Karlsson_2009_voriconazole <- function() {
     "doi:10.1128/AAC.00751-08"
   )
   vignette <- "Karlsson_2009_voriconazole"
-  units    <- list(time = "hour", dosing = "mg", concentration = "ug/mL")
+  units    <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 
   covariateData <- list(
     WT = list(

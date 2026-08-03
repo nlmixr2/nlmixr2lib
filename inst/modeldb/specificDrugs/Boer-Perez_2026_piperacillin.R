@@ -18,7 +18,7 @@
     sep = " "
   )
   vignette <- "Boer-Perez_2026_piperacillin"
-  units    <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     WT = list(

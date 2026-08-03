@@ -2,7 +2,7 @@ Georges_2009_ceftazidime <- function() {
   description <- "Two-compartment IV population PK model for ceftazidime in critically ill adults (ICU). Total clearance is an additive linear function of MDRD-estimated glomerular filtration rate; central volume V1 is selected by mechanical-ventilation status; peripheral volume V2 is selected by ICU admission etiology (polytrauma, postsurgical, or medical)."
   reference   <- "Georges B, Conil J-M, Seguin T, Ruiz S, Minville V, Cougot P, Decun J-F, Gonzalez H, Houin G, Fourcade O, Saivin S. Population pharmacokinetics of ceftazidime in intensive care unit patients: influence of glomerular filtration rate, mechanical ventilation, and reason for admission. Antimicrob Agents Chemother. 2009;53(10):4483-4489. doi:10.1128/AAC.00430-09"
   vignette    <- "Georges_2009_ceftazidime"
-  units       <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units       <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     CRCL = list(

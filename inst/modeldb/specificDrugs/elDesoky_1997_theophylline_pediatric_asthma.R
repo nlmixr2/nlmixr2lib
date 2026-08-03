@@ -2,7 +2,7 @@ elDesoky_1997_theophylline_pediatric_asthma <- function() {
   description <- "One-compartment IV PK model for theophylline in 15 Egyptian pediatric patients (age 2-12 yr, weight 12-30 kg) treated for an acute asthma attack (elDesoky 1997). Aminophylline given as a 30-min loading infusion (6 mg/kg) followed by 12 hr of continuous maintenance infusion (1 mg/kg/hr); theophylline concentrations measured at 0.75, 7, and 13.25 hr. Parameter values taken from the Standard Calculations (SC) column of Table 2, which is independent of the Bayesian-prior population data and is treated by the authors as the reference (true) values."
   reference <- "El Desoky E, Ghazal MH, Mohamed MA, Klotz U. Disposition of intravenous theophylline in asthmatic children: Bayesian approach vs direct pharmacokinetic calculations. Japanese Journal of Pharmacology. 1997;75(1):13-20. doi:10.1254/jjp.75.13"
   vignette <- "elDesoky_1997_theophylline_pediatric_asthma"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     WT = list(
@@ -38,7 +38,7 @@ elDesoky_1997_theophylline_pediatric_asthma <- function() {
     # CL and Vd taken from the SC (Standard Calculations) column of Table 2 (mean +/- SD across 15 patients).
     # SC mean CL = 1.10 mL/min/kg = 0.066 L/hr/kg; at 19.7 kg, CL = 0.066 * 19.7 = 1.30 L/hr.
     # SC mean Vd = 0.50 L/kg; at 19.7 kg, Vd = 0.50 * 19.7 = 9.85 L.
-    lcl <- log(1.30); label("Clearance at reference 19.7 kg (L/hr)")                     # elDesoky 1997 Table 2 SC column: mean CL = 1.10 mL/min/kg, equivalent to 0.066 L/hr/kg
+    lcl <- log(1.30); label("Clearance at reference 19.7 kg (L/h)")                     # elDesoky 1997 Table 2 SC column: mean CL = 1.10 mL/min/kg, equivalent to 0.066 L/hr/kg
     lvc <- log(9.85); label("Apparent central volume at reference 19.7 kg (L)")          # elDesoky 1997 Table 2 SC column: mean Vd = 0.50 L/kg
 
     # IIV approximated from inter-subject SD/mean of the SC parameter estimates across the 15

@@ -27,7 +27,7 @@ Wilkins_2011_isoniazid <- function() {
     "doi:10.1111/j.1365-2125.2011.03940.x."
   )
   vignette <- "Wilkins_2011_isoniazid"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     WT = list(

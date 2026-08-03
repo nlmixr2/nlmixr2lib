@@ -29,7 +29,7 @@ Willmann_2021_rivaroxaban <- function() {
   )
   vignette <- "Willmann_2021_rivaroxaban"
   units    <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "mg",
     concentration = "ug/mL"
   )

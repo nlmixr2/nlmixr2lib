@@ -24,7 +24,7 @@ Han_2015_decitabine <- function() {
   )
   vignette <- "Han_2015_decitabine"
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "mg/m^2",
     concentration = "mg/L",
     anc           = "10^9 cells/L",

@@ -26,7 +26,7 @@ Borghardt_2016_olodaterol <- function() {
     sep = " "
   )
   vignette <- "Borghardt_2016_olodaterol"
-  units <- list(time = "hour", dosing = "ug", concentration = "pg/mL")
+  units <- list(time = "h", dosing = "ug", concentration = "pg/mL")
 
   covariateData <- list(
     SMOKE = list(

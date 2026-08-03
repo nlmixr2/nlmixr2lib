@@ -25,7 +25,7 @@ Zhang_2013_lopinavir_ritonavir <- function() {
     "doi:10.1111/bcp.12101."
   )
   vignette <- "Zhang_2013_lopinavir_ritonavir"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     WT = list(

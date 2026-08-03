@@ -9,7 +9,7 @@ Niebecker_2015_edoxaban <- function() {
     sep = " "
   )
   vignette <- "Niebecker_2015_edoxaban"
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   covariateData <- list(
     WT = list(

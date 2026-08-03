@@ -41,7 +41,7 @@ Kloprogge_2015_lumefantrine <- function() {
     sep = " "
   )
   vignette <- "Kloprogge_2015_lumefantrine"
-  units <- list(time = "hour", dosing = "mg", concentration = "ug/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 
   paper_specific_compartments <- c("central_dlf", "peripheral1_dlf")
   paper_specific_etas         <- c("etalcl_dlf", "etalvc_dlf")

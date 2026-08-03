@@ -12,7 +12,7 @@ Vet_2016_midazolam <- function() {
     sep = " "
   )
   vignette <- "Vet_2016_midazolam"
-  units <- list(time = "hour", dosing = "ug", concentration = "ug/L")
+  units <- list(time = "h", dosing = "ug", concentration = "ug/L")
 
   ddmore_id    <- "DDMODEL00000249"
   replicate_of <- NULL

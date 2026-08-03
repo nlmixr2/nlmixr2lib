@@ -2,7 +2,7 @@ Choe_2012_busulfan <- function() {
   description <- "One-compartment IV PK model for intravenous busulfan in adult Korean hematopoietic stem cell transplant recipients, with allometric scaling on actual body weight (fixed exponent 0.5) on CL and Vd and a sex effect on Vd (Choe 2012)."
   reference <- "Choe S, Kim G, Lim H-S, et al. A simple dosing scheme for intravenous busulfan based on retrospective population pharmacokinetic analysis in Korean patients. Korean J Physiol Pharmacol. 2012;16(4):273-280. doi:10.4196/kjpp.2012.16.4.273"
   vignette <- "Choe_2012_busulfan"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     WT = list(

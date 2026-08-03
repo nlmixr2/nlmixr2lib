@@ -32,7 +32,7 @@ Gaohua_2012_pregnancy_pbpk_midazolam <- function() {
     sep = " "
   )
   vignette <- "Gaohua_2012_pregnancy_pbpk"
-  units    <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   paper_specific_compartments <- c("preg")
 

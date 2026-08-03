@@ -25,7 +25,7 @@ Brussee_2016_arginine <- function() {
     sep = " "
   )
   vignette <- "Brussee_2016_arginine"
-  units    <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     WT = list(

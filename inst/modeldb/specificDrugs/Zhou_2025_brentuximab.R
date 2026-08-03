@@ -5,7 +5,7 @@ Zhou_2025_brentuximab <- function() {
   paper_specific_compartments <- c("lag")
 
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "umol",
     concentration = "umol/L"
   )
@@ -92,11 +92,11 @@ Zhou_2025_brentuximab <- function() {
   ini({
     # ADC structural parameters (Zhou 2025 Table S1; 3-compartment linear with
     # first-order elimination from central; ADVAN11 TRANS4 in NONMEM).
-    lcl  <- log(0.0208); label("ADC clearance (CL, L/hr)")                                     # Zhou 2025 Table S1: 0.0208 (16.3% RSE)
+    lcl  <- log(0.0208); label("ADC clearance (CL, L/h)")                                     # Zhou 2025 Table S1: 0.0208 (16.3% RSE)
     lvc  <- log(2.54);   label("ADC central volume (V1, L)")                                   # Zhou 2025 Table S1: 2.54 (0.7% RSE)
-    lq   <- log(0.0192); label("ADC inter-compartmental clearance to peripheral 1 (Q2, L/hr)") # Zhou 2025 Table S1: 0.0192 (14.2% RSE)
+    lq   <- log(0.0192); label("ADC inter-compartmental clearance to peripheral 1 (Q2, L/h)") # Zhou 2025 Table S1: 0.0192 (14.2% RSE)
     lvp  <- log(97.1);   label("ADC peripheral volume 1 (V2, L)")                              # Zhou 2025 Table S1: 97.1 (18.9% RSE)
-    lq2  <- log(0.0865); label("ADC inter-compartmental clearance to peripheral 2 (Q3, L/hr)") # Zhou 2025 Table S1: 0.0865 (7.3% RSE)
+    lq2  <- log(0.0865); label("ADC inter-compartmental clearance to peripheral 2 (Q3, L/h)") # Zhou 2025 Table S1: 0.0865 (7.3% RSE)
     lvp2 <- log(3.39);   label("ADC peripheral volume 2 (V3, L)")                              # Zhou 2025 Table S1: 3.39 (15.8% RSE)
 
     # ADC covariate effects (Zhou 2025 Table S1; reference values from the
@@ -112,13 +112,13 @@ Zhou_2025_brentuximab <- function() {
     # MMAE structural parameters (Zhou 2025 Table S2; 2-compartment linear with
     # an upstream Target binding pool and Lag compartment fed by ADC, ADVAN13
     # custom ODE in NONMEM).
-    lcl_mmae   <- log(0.794);    label("MMAE clearance (CLM, L/hr)")                                    # Zhou 2025 Table S2: 0.794 (2.0% RSE)
+    lcl_mmae   <- log(0.794);    label("MMAE clearance (CLM, L/h)")                                    # Zhou 2025 Table S2: 0.794 (2.0% RSE)
     lvc_mmae   <- log(20.1);     label("MMAE central volume (VM, L)")                                   # Zhou 2025 Table S2: 20.1 (0.7% RSE)
-    lq_mmae    <- log(0.628);    label("MMAE inter-compartmental clearance (QM, L/hr)")                 # Zhou 2025 Table S2: 0.628 (1.2% RSE)
+    lq_mmae    <- log(0.628);    label("MMAE inter-compartmental clearance (QM, L/h)")                 # Zhou 2025 Table S2: 0.628 (1.2% RSE)
     lvp_mmae   <- log(2.74);     label("MMAE peripheral volume (VMP, L)")                               # Zhou 2025 Table S2: 2.74 (0.7% RSE)
-    lkd_mmae   <- log(0.0186);   label("MMAE binding rate constant (Kd, 1/hr)")                         # Zhou 2025 Table S2: 0.0186 (0.4% RSE)
-    lalfm_mmae <- log(0.00462);  label("Decay rate of ADC->MMAE proteolytic-conversion fraction (ALFM, 1/hr)") # Zhou 2025 Table S2: 0.00462 (0.7% RSE)
-    lklag_mmae <- log(60.8);     label("Lag-compartment empty rate constant (Klag, 1/hr)")              # Zhou 2025 Table S2: 60.8 (1.3% RSE)
+    lkd_mmae   <- log(0.0186);   label("MMAE binding rate constant (Kd, 1/h)")                         # Zhou 2025 Table S2: 0.0186 (0.4% RSE)
+    lalfm_mmae <- log(0.00462);  label("Decay rate of ADC->MMAE proteolytic-conversion fraction (ALFM, 1/h)") # Zhou 2025 Table S2: 0.00462 (0.7% RSE)
+    lklag_mmae <- log(60.8);     label("Lag-compartment empty rate constant (Klag, 1/h)")              # Zhou 2025 Table S2: 60.8 (1.3% RSE)
     # FM (fraction metabolized) is fixed to 1 in Zhou 2025 Table S2 — encoded
     # as a literal constant in model() rather than an estimated parameter.
 

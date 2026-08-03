@@ -34,7 +34,7 @@ Boak_2014_linezolid <- function() {
   )
   vignette <- "Boak_2014_linezolid"
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "mg",
     concentration = "mg/L",
     platelet      = "10^9 cells/L"

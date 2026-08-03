@@ -12,7 +12,7 @@
     sep = " "
   )
   vignette <- "Llanos-Paez_2017_gentamicin"
-  units    <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     FFM = list(

@@ -18,7 +18,7 @@ Sampson_2014_gentamicin <- function() {
     sep = " "
   )
   vignette <- "Sampson_2014_gentamicin"
-  units    <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     WT = list(

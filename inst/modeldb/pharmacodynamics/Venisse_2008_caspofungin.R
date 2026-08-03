@@ -9,7 +9,7 @@ Venisse_2008_caspofungin <- function() {
   )
   vignette <- "Venisse_2008_candida_albicans"
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "mg",
     concentration = "mg/L (drug central; numerically equal to ug/mL used in the paper); CFU/mL (Candida count); log CFU/mL (Cc observation)"
   )

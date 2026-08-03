@@ -2,7 +2,7 @@ Fauchet_2015_lopinavir_placental <- function() {
   description <- "One-compartment first-order-absorption population PK model for total lopinavir in HIV-infected pregnant and nonpregnant women with a maternal-to-fetal effect-compartment placental-transfer chain and a downstream fetal-to-amniotic-fluid distribution-and-elimination chain; a 39% pregnancy effect is applied multiplicatively to apparent maternal CL (Fauchet 2015 MFLA submodel)."
   reference <- "Fauchet F, Treluyer JM, Illamola SM, Pressiat C, Lui G, Valade E, Mandelbrot L, Lechedanec J, Delmas S, Blanche S, Warszawski J, Urien S, Tubiana R, Hirt D, for the ANRS 135 PRIMEVA Study Group. Population approach to analyze the pharmacokinetics of free and total lopinavir in HIV-infected pregnant women and consequences for dose adjustment. Antimicrob Agents Chemother. 2015;59(9):5727-5735. doi:10.1128/AAC.00863-15"
   vignette <- "Fauchet_2015_lopinavir"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   paper_specific_compartments <- c("fetal", "amniotic")
 

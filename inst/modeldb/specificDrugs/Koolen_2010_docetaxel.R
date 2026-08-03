@@ -49,7 +49,7 @@ Koolen_2010_docetaxel <- function() {
     "see modellib('Kappelhoff_2005_ritonavir')."
   )
   vignette <- "Koolen_2010_docetaxel"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     CONMED_RTV = list(

@@ -11,7 +11,7 @@ Zieck_2023_ceftazidime <- function() {
     sep = " "
   )
   vignette <- "Zieck_2023_ceftazidime"
-  units    <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     CRCL = list(

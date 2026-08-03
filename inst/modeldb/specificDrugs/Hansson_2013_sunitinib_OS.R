@@ -16,7 +16,7 @@ Hansson_2013_sunitinib_OS <- function() {
   vignette <- "Hansson_2013_sunitinib_OS"
   paper_specific_compartments <- c("cumhaz_cens")
   units <- list(
-    time = "hour",
+    time = "h",
     dosing = "mg",
     concentration = "probability (the model outputs sur_os and sur_cens are survival probabilities, not drug concentrations)"
   )
@@ -93,7 +93,7 @@ Hansson_2013_sunitinib_OS <- function() {
     # CPT Pharmacometrics Syst Pharmacol 2013;2:e84 Table 3 (Survival model
     # column). Parameter convention: lam_haz (lambda) reported in 1/week in
     # the paper; converted to 1/h via /24/7 so all rates carry units of
-    # units$time = "hour", consistent with Hansson_2013a / Hansson_2013b.
+    # units$time = "h", consistent with Hansson_2013a / Hansson_2013b.
     # ----------------------------------------------------------------------
 
     # Weibull baseline-hazard scale (paper Table 3: lambda = 0.00596/week).

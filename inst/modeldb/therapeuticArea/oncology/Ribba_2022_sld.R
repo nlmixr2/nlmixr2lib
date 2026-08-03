@@ -29,7 +29,7 @@ Ribba_2022_sld <- function() {
   vignette <- "Ribba_2022_ctdna_tumor_size"
 
   units <- list(
-    time          = "days",
+    time          = "day",
     dosing        = "n/a (no PK input; treatment effect is absorbed into the empirical growth and decay rate constants)",
     concentration = "mm (the observable `TS` is the RECIST 1.1 sum of the longest diameters of target lesions)"
   )

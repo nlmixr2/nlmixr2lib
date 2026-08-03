@@ -11,7 +11,7 @@ Hansson_2013a_sunitinib <- function() {
     sep = " "
   )
   vignette <- "Hansson_2013a_sunitinib"
-  units <- list(time = "hour", dosing = "mg", concentration = "pg/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "pg/mL")
   ddmore_id <- "DDMODEL00000197"
   replicate_of <- NULL
 

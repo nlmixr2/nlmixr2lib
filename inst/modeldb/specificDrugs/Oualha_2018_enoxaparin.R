@@ -10,7 +10,7 @@ Oualha_2018_enoxaparin <- function() {
     sep = " "
   )
   vignette <- "Oualha_2018_enoxaparin"
-  units <- list(time = "hour", dosing = "IU", concentration = "IU/mL")
+  units <- list(time = "h", dosing = "IU", concentration = "IU/mL")
 
   covariateData <- list(
     WT = list(

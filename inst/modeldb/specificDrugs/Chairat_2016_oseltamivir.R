@@ -18,7 +18,7 @@ Chairat_2016_oseltamivir <- function() {
     "Cc and Cc_oselcarb).")
   reference <- "Chairat K, Jittamala P, Hanpithakpong W, Day NPJ, White NJ, Pukrittayakamee S, Tarning J. Population pharmacokinetics of oseltamivir and oseltamivir carboxylate in obese and non-obese volunteers. Br J Clin Pharmacol. 2016;81(6):1103-1112. doi:10.1111/bcp.12892"
   vignette <- "Chairat_2016_oseltamivir"
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   # Intermediate metabolism delay compartment between parent OS central and
   # metabolite OC central; not an absorption-chain transit (Savic) and not a

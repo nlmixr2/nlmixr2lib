@@ -19,7 +19,7 @@ Fukumoto_2023_meropenem <- function() {
     "Ther Drug Monit 45(3):392-399. doi:10.1097/FTD.0000000000001040"
   )
   vignette <- "Fukumoto_2023_meropenem"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     CRCL = list(

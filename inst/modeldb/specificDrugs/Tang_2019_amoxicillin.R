@@ -9,7 +9,7 @@ Tang_2019_amoxicillin <- function() {
     sep = " "
   )
   vignette <- "Tang_2019_amoxicillin"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     WT = list(

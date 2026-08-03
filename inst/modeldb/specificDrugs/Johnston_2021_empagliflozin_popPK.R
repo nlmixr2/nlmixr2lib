@@ -23,7 +23,7 @@ Johnston_2021_empagliflozin_popPK <- function() {
   )
   vignette <- "Johnston_2021_empagliflozin"
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "mg empagliflozin (oral, once daily)",
     concentration = "Cc in nmol/L (converted from mg/L via MW 450.91 g/mol)"
   )

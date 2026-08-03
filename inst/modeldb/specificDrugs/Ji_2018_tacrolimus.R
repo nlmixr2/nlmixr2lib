@@ -17,7 +17,7 @@ Ji_2018_tacrolimus <- function() {
     "doi:10.2147/TCRM.S184376"
   )
   vignette <- "Ji_2018_tacrolimus"
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   covariateData <- list(
     POD = list(

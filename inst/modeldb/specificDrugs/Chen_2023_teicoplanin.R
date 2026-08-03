@@ -2,7 +2,7 @@ Chen_2023_teicoplanin <- function() {
   description <- "Two-compartment IV infusion population PK model for teicoplanin in critically ill adults with sepsis in the intensive care unit, with CKD-EPI estimated glomerular filtration rate as a power covariate on clearance (Chen 2023)"
   reference   <- "Chen CY, Xie M, Gong J, Yu N, Wei R, Lei LL, Zhao SM, Li RM, Dong X, Zhang XL, Zhou Y, Li SL, Cui YM. Population pharmacokinetic analysis and dosing regimen optimization of teicoplanin in critically ill patients with sepsis. Front Pharmacol. 2023;14:1132367. doi:10.3389/fphar.2023.1132367"
   vignette    <- "Chen_2023_teicoplanin"
-  units       <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units       <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     CRCL = list(

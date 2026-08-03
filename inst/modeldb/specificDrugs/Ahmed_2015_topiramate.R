@@ -4,7 +4,7 @@ Ahmed_2015_topiramate <- function() {
   paper_specific_residual_sds <- c("propSdOral", "propSdIv")
   vignette <- "Ahmed_2015_topiramate"
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "mg",
     concentration = "mg/L (TPM plasma); words per three 60-second trials (COWA)"
   )

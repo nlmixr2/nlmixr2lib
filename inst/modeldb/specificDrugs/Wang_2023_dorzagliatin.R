@@ -38,7 +38,7 @@ Wang_2023_dorzagliatin <- function() {
     sep = " "
   )
   vignette <- "Wang_2023_dorzagliatin"
-  units    <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units    <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   covariateData <- list(
     WT = list(

@@ -9,7 +9,7 @@ Bulitta_2010_colistin_URMC1 <- function() {
     sep = " "
   )
   vignette <- "Bulitta_2010_colistin"
-  units <- list(time = "hour", dosing = "mg/L (colistin in broth)", concentration = "log10 CFU/mL (observation); mg/L (drug covariate); umol/L (cation covariate)")
+  units <- list(time = "h", dosing = "mg/L (colistin in broth)", concentration = "log10 CFU/mL (observation); mg/L (drug covariate); umol/L (cation covariate)")
 
   depends <- c("Ccolistin", "Ccations")
   paper_specific_compartments <- c("bact_slag", "bact_s", "bact_i", "bact_r", "signal")

@@ -9,7 +9,7 @@ Zhi_2018_cefathiamidine <- function() {
     "doi:10.2147/DDDT.S160329"
   )
   vignette <- "Zhi_2018_cefathiamidine"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     WT = list(

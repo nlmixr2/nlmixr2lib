@@ -39,7 +39,7 @@ Hoglund_2015_artemether <- function() {
     sep = " "
   )
   vignette <- "Hoglund_2015_artemether_lumefantrine"
-  units    <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units    <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   covariateData <- list(
     CONMED_EFV = list(

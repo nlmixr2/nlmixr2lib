@@ -9,7 +9,7 @@ deWinter_2009_mycophenolic_acid <- function() {
     sep = " "
   )
   vignette <- "deWinter_2009_mycophenolic_acid"
-  units <- list(time = "hour", dosing = "umol", concentration = "umol/L")
+  units <- list(time = "h", dosing = "umol", concentration = "umol/L")
 
   covariateData <- list(
     CRCL = list(

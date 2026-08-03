@@ -9,7 +9,7 @@ Shi_2018_ceftazidime <- function() {
     sep = " "
   )
   vignette <- "Shi_2018_ceftazidime"
-  units    <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     WT = list(

@@ -2,7 +2,7 @@ Bogason_2011_daunorubicin <- function() {
   description <- "Two-compartment population PK model for daunorubicin (DNR) in adults with acute myeloid leukaemia, with baseline white blood cell count as a covariate on central volume of distribution (Bogason 2011)"
   reference <- "Bogason A, Quartino AL, Lafolie P, Masquelier M, Karlsson MO, Paul C, Gruber A, Vitols S. Inverse relationship between leukaemic cell burden and plasma concentrations of daunorubicin in patients with acute myeloid leukaemia. Br J Clin Pharmacol. 2011;71(4):514-521. doi:10.1111/j.1365-2125.2010.03894.x"
   vignette <- "Bogason_2011_daunorubicin"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     WBC = list(

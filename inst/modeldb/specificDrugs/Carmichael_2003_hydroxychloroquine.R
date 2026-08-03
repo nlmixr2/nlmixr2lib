@@ -2,7 +2,7 @@ Carmichael_2003_hydroxychloroquine <- function() {
   description <- "One-compartment first-order-absorption population PK model with an absorption lag time for oral hydroxychloroquine (HCQ) whole-blood concentrations in 123 adult rheumatoid arthritis patients (74 on HCQ alone plus 49 on HCQ + methotrexate) pooled from four Australian studies, with bioavailability fixed at the value 0.746 estimated from a nine-patient IV/oral crossover sub-study and a linear additive shift in central volume of distribution for concomitant methotrexate coadministration (V_MTX = 1070 L added to the base V of 605 L when MTX is present) (Carmichael 2003)."
   reference   <- "Carmichael SJ, Charles B, Tett SE. Population Pharmacokinetics of Hydroxychloroquine in Patients With Rheumatoid Arthritis. Ther Drug Monit. 2003;25(6):671-681. doi:10.1097/00007691-200312000-00005. PMID 14639053."
   vignette    <- "Carmichael_2003_hydroxychloroquine"
-  units       <- list(time = "hour", dosing = "mg", concentration = "ug/L")
+  units       <- list(time = "h", dosing = "mg", concentration = "ug/L")
 
   covariateData <- list(
     CONMED_MTX = list(

@@ -11,7 +11,7 @@ Wahlby_2004_gentamicin <- function() {
     sep = " "
   )
   vignette <- "Wahlby_2004_time_varying_covariates"
-  units    <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     CRCL = list(

@@ -2,7 +2,7 @@ Salinger_2013_magnesiumSulfate <- function() {
   description <- "One-compartment population PK model of magnesium sulphate (MgSO4-7H2O) with first-order intramuscular absorption, IV dosing into the central compartment, and an endogenous baseline magnesium term added to the administered drug, in pregnant women with pre-eclampsia (Salinger 2013)."
   reference <- "Salinger DH, Mundle S, Regi A, Bracken H, Winikoff B, Vicini P, Easterling T. Magnesium sulphate for prevention of eclampsia: are intramuscular and intravenous regimens equivalent? A population pharmacokinetic study. BJOG 2013;120:894-900. doi:10.1111/1471-0528.12222"
   vignette  <- "Salinger_2013_magnesiumSulfate"
-  units     <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units     <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     WT = list(

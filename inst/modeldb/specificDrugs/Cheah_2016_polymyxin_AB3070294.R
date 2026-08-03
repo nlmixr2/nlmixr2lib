@@ -10,7 +10,7 @@ Cheah_2016_polymyxin_AB3070294 <- function() {
   )
   vignette <- "Cheah_2016_polymyxin_Abaumannii_dynamics"
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "mg (polymyxin B or colistin base, IV bolus or 1-h infusion into IVM central reservoir)",
     concentration = "log10 CFU/mL (Cc, observed viable count on drug-free agar)"
   )

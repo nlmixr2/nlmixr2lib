@@ -17,7 +17,7 @@ Watson_2010_liraglutide <- function() {
     "2010;50(8):886-894. doi:10.1177/0091270009354996"
   )
   vignette <- "Watson_2010_liraglutide"
-  units <- list(time = "hour", dosing = "nmol", concentration = "nmol/L (nM)")
+  units <- list(time = "h", dosing = "nmol", concentration = "nmol/L (nM)")
 
   covariateData <- list(
     WT = list(

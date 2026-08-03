@@ -2,7 +2,7 @@ Livio_2014_tobramycin <- function() {
   description <- "One-compartment population PK model with first-order absorption for systemic tobramycin released from an implanted calcium-sulfate bone-graft substitute (Osteoset T) in adults undergoing orthopedic surgery (Livio 2014); clearance equated to Cockcroft-Gault creatinine clearance under the assumption that absorbed tobramycin is exclusively eliminated by glomerular filtration, and absolute bioavailability differing between the 10 g (262 mg tobramycin) and 20 g (524 mg tobramycin) Osteoset T cast cohorts."
   reference <- "Livio F, Wahl P, Csajka C, Gautier E, Buclin T. Tobramycin exposure from active calcium sulfate bone graft substitute. BMC Pharmacol Toxicol. 2014;15:12. doi:10.1186/2050-6511-15-12"
   vignette <- "Livio_2014_tobramycin"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     CRCL = list(

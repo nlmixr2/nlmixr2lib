@@ -8,7 +8,7 @@ Friberg_2002_paclitaxel <- function() {
     sep = " "
   )
   vignette <- "Friberg_2002_paclitaxel"
-  units <- list(time = "hour", dosing = "umol", concentration = "umol/L", leukocyte = "10^9/L")
+  units <- list(time = "h", dosing = "umol", concentration = "umol/L", leukocyte = "10^9/L")
   ddmore_id    <- "DDMODEL00000186"
   replicate_of <- NULL
 

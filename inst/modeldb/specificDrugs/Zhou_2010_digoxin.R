@@ -2,7 +2,7 @@ Zhou_2010_digoxin <- function() {
   description <- "One-compartment first-order oral absorption population PK model of digoxin in older Chinese patients (Zhou 2010, Acta Pharmacol Sin); concomitant spironolactone, body weight, and serum creatinine modify Cl/F via multiplicative linear-deviation terms."
   reference <- "Zhou XD, Gao Y, Guan Z, Li ZD, Li J. Population pharmacokinetic model of digoxin in older Chinese patients and its application in clinical practice. Acta Pharmacologica Sinica. 2010;31(6):753-758. doi:10.1038/aps.2010.51."
   vignette <- "Zhou_2010_digoxin"
-  units <- list(time = "hour", dosing = "mg", concentration = "ug/L")
+  units <- list(time = "h", dosing = "mg", concentration = "ug/L")
 
   covariateData <- list(
     WT = list(

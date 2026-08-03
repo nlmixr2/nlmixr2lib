@@ -2,7 +2,7 @@ Horita_2018_ethambutol <- function() {
   description <- "Two-compartment population pharmacokinetic model with zero-order absorption (lag time + zero-order duration) and first-order elimination for oral ethambutol in Ghanaian children with active tuberculosis (Horita 2018); allometric weight scaling on CL/F, Q/F, V1/F, V2/F with non-canonical estimated exponents (0.382, 0.474, 0.228, 0.858) normalised to the cohort median 14.3 kg."
   reference <- "Horita Y, Alsultan A, Kwara A, Antwi S, Enimil A, Ortsin A, Dompreh A, Yang H, Wiesner L, Peloquin CA. Evaluation of the Adequacy of WHO Revised Dosages of the First-Line Antituberculosis Drugs in Children with Tuberculosis Using Population Pharmacokinetic Modeling and Simulations. Antimicrob Agents Chemother. 2018;62(9):e00008-18. doi:10.1128/AAC.00008-18"
   vignette <- "Horita_2018_ethambutol"
-  units <- list(time = "hour", dosing = "mg", concentration = "ug/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 
   covariateData <- list(
     WT = list(

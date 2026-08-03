@@ -2,7 +2,7 @@ Kemal_2026_nemtabrutinib <- function() {
   description <- "Two-compartment population PK model for nemtabrutinib (oral BTK inhibitor) in adults with hematologic malignancies including CLL/SLL (Kemal 2026, full covariate model)"
   reference <- "Kemal CC, Zweers TJ, Krekels EHJ, Chatterjee MS. Population Pharmacokinetic Modeling and Exposure-Response Analyses of Nemtabrutinib in Patients With Hematologic Malignancies. CPT Pharmacometrics Syst Pharmacol. 2026;15(5). doi:10.1002/psp4.70257"
   vignette <- "Kemal_2026_nemtabrutinib"
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   covariateData <- list(
     WT = list(

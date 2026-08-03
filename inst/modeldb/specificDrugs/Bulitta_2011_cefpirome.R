@@ -28,7 +28,7 @@ Bulitta_2011_cefpirome <- function() {
     "doi:10.1128/AAC.01484-10"
   )
   vignette <- "Bulitta_2011_cefpirome"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     LBM = list(

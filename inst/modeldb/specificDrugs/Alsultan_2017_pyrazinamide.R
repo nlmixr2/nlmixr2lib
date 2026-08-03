@@ -2,7 +2,7 @@ Alsultan_2017_pyrazinamide <- function() {
   description <- "One-compartment population pharmacokinetic model with first-order absorption and first-order elimination for oral pyrazinamide in adults with drug-susceptible pulmonary tuberculosis (Alsultan 2017); body weight is an allometric covariate on CL/F and V/F (fixed exponents 0.75 and 1) and biological sex is an exponential covariate on V/F"
   reference <- "Alsultan A, Savic R, Dooley KE, Weiner M, Whitworth W, Mac Kenzie WR, Peloquin CA, Tuberculosis Trials Consortium. Population pharmacokinetics of pyrazinamide in patients with tuberculosis. Antimicrob Agents Chemother. 2017;61(6):e02625-16. doi:10.1128/AAC.02625-16"
   vignette <- "Alsultan_2017_pyrazinamide"
-  units <- list(time = "hour", dosing = "mg", concentration = "ug/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 
   covariateData <- list(
     WT = list(

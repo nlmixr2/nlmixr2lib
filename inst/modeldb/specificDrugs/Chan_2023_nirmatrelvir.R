@@ -9,7 +9,7 @@ Chan_2023_nirmatrelvir <- function() {
     sep = " "
   )
   vignette <- "Chan_2023_nirmatrelvir"
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   covariateData <- list(
     WT = list(

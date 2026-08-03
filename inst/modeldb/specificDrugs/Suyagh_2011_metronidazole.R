@@ -22,7 +22,7 @@ Suyagh_2011_metronidazole <- function() {
     sep = " "
   )
   vignette <- "Suyagh_2011_metronidazole"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     WT = list(

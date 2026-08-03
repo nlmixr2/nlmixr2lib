@@ -33,7 +33,7 @@ Landersdorfer_2007_flucloxacillin <- function() {
     "doi:10.1128/AAC.01410-06"
   )
   vignette <- "Landersdorfer_2007_flucloxacillin"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list()
 

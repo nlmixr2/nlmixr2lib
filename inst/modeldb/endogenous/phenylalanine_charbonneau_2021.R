@@ -15,17 +15,17 @@ phenylalanine_charbonneau_2021 <- function() {
     bl_gut <- 0; label("Baseline Phe in the gut (mg)")
 
     ka_gut <- 0.25; label("Absorption rate from gut to plasma")
-    v_npd <- 0.012; label("Rate of net protein breakdown ((mmol/L)/hr)")
+    v_npd <- 0.012; label("Rate of net protein breakdown ((mmol/L)/h)")
 
-    vmax_pah <- 0.9; label("Maximum rate of Phe breakdown by PAH in a healthy subject ((mmol/L)/hr)")
+    vmax_pah <- 0.9; label("Maximum rate of Phe breakdown by PAH in a healthy subject ((mmol/L)/h)")
     f_pah <- 0; label("Fraction of healthy PAH activity (PKU patient = 0 to 0.02)")
     km_pah <- 0.51; label("Michaelis-Menten constant for Phe with PAH (mmol/L)")
     kact_pah <- 0.54; label("Phe activation constant for PAH")
 
-    vmax_trans <- 0.063; label("Maximum rate of Phe breakdown by transaminase ((mmol/L)/hr)")
+    vmax_trans <- 0.063; label("Maximum rate of Phe breakdown by transaminase ((mmol/L)/h)")
     km_trans <- 1.37; label("Michaelis-Menten constant for Phe with transaminase (mmol/L)")
 
-    lcl_renal <- log(5.696e-4); label("Renal clearance of Phe per body weight ((L/kg)/hr)")
+    lcl_renal <- log(5.696e-4); label("Renal clearance of Phe per body weight ((L/kg)/h)")
 
     vd <- 0.5; label("Body-weight normalized volume distribution of Phe (L/kg)")
   })

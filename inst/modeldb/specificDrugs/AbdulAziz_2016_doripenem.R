@@ -10,7 +10,7 @@ AbdulAziz_2016_doripenem <- function() {
     sep = " "
   )
   vignette <- "AbdulAziz_2016_doripenem"
-  units    <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     WT = list(

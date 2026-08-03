@@ -10,7 +10,7 @@ Padoin_1998_cephalexin_rat <- function() {
   )
   vignette <- "Padoin_1998_cephalexin_rat"
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "mg/kg",
     concentration = "mg/L"
   )

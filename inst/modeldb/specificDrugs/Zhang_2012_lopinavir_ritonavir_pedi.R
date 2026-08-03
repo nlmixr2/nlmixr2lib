@@ -33,7 +33,7 @@ Zhang_2012_lopinavir_ritonavir_pedi <- function() {
     sep = " "
   )
   vignette <- "Zhang_2012_lopinavir_ritonavir_pedi"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     WT = list(

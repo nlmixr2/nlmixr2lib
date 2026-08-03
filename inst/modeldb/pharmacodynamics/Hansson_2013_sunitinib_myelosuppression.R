@@ -22,7 +22,7 @@ Hansson_2013_sunitinib_myelosuppression <- function() {
     sep = " "
   )
   vignette <- "Hansson_2013_sunitinib_myelosuppression"
-  units <- list(time = "hour", dosing = "mg", concentration = "10^9 cells/L (ANC)")
+  units <- list(time = "h", dosing = "mg", concentration = "10^9 cells/L (ANC)")
 
   covariateData <- list(
     DOSE = list(

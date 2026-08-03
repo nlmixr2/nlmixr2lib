@@ -28,7 +28,7 @@ Willmann_2022_rivaroxaban <- function() {
   )
   vignette <- "Willmann_2022_rivaroxaban"
   units    <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "mg",
     concentration = "ug/L"
   )

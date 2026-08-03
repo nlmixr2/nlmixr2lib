@@ -32,7 +32,7 @@ Ribba_2022_ctdna <- function() {
   vignette <- "Ribba_2022_ctdna_tumor_size"
 
   units <- list(
-    time          = "days",
+    time          = "day",
     dosing        = "n/a (no PK input; treatment effect is absorbed into the empirical growth and decay rate constants of the atezolizumab arm)",
     concentration = "log10(MMPM) -- the observable `ctdna` is base-10 log-transformed average mutant molecules per mL of plasma, matching the scale on which Ribba 2022 fit the model; the residual-error parameter addSd is therefore in log10 units"
   )

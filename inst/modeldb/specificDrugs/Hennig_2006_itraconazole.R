@@ -2,7 +2,7 @@ Hennig_2006_itraconazole <- function() {
   description <- "Population PK model for oral itraconazole and its active metabolite hydroxy-itraconazole in paediatric cystic-fibrosis and bone-marrow-transplant patients (Hennig 2006). One-compartment parent + one-compartment metabolite with first-order absorption, first-order metabolic conversion (fm fixed to 1), allometric weight scaling on parent CL/F (0.75) and Vd/F (1.0), and formulation-specific ka and relative bioavailability for capsule vs oral solution."
   reference   <- "Hennig S, Wainwright CE, Bell SC, Miller H, Friberg LE, Charles BG. Population pharmacokinetics of itraconazole and its active metabolite hydroxy-itraconazole in paediatric cystic fibrosis and bone marrow transplant patients. Clin Pharmacokinet. 2006;45(11):1099-1114. doi:10.2165/00003088-200645110-00004"
   vignette    <- "Hennig_2006_itraconazole"
-  units       <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units       <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     WT = list(

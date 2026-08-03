@@ -26,7 +26,7 @@ Ganesan_2023_tebipenem <- function() {
     "doi:10.1128/aac.01451-22."
   )
   vignette <- "Ganesan_2023_tebipenem"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     CRCL = list(

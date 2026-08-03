@@ -27,7 +27,7 @@ Tsuji_2017_linezolid <- function() {
   )
   vignette <- "Tsuji_2017_linezolid"
   units <- list(
-    time = "hour", dosing = "mg",
+    time = "h", dosing = "mg",
     concentration = "mg/L", platelet = "cells/uL"
   )
 

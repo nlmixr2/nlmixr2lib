@@ -11,7 +11,7 @@ Jonsson_2011_ethambutol <- function() {
     sep = " "
   )
   vignette <- "Jonsson_2011_ethambutol"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
   replicate_of <- "inst/modeldb/ddmore/Jonsson_2011_ethambutol_ddmore.R"
 
   covariateData <- list(

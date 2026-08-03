@@ -24,7 +24,7 @@ Schindler_2017_likert_pain <- function() {
   )
 
   units <- list(
-    time = "hour",
+    time = "h",
     dosing = "(none; placebo arm)",
     concentration = "(11-point Likert pain score 0-10, ordinal)"
   )

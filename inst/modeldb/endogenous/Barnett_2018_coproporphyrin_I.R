@@ -14,7 +14,7 @@ Barnett_2018_coproporphyrin_I <- function() {
     sep = " "
   )
   vignette <- "Barnett_2018_coproporphyrin_I"
-  units <- list(time = "hour", dosing = "none", concentration = "nmol/L")
+  units <- list(time = "h", dosing = "none", concentration = "nmol/L")
 
   covariateData <- list(
     OCC = list(

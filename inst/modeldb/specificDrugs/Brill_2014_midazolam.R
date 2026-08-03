@@ -19,7 +19,7 @@ Brill_2014_midazolam <- function() {
     sep = " "
   )
   vignette <- "Brill_2014_midazolam"
-  units    <- list(time = "minute", dosing = "microgram", concentration = "microgram/L")
+  units    <- list(time = "min", dosing = "ug", concentration = "microgram/L")
 
   covariateData <- list(
     WT = list(

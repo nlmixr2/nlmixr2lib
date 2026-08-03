@@ -34,7 +34,7 @@ Hietala_2010_artemether <- function() {
     sep = " "
   )
   vignette <- "Hietala_2010_artemether_lumefantrine_malaria"
-  units <- list(time = "hour", dosing = "mg", concentration = "nmol/L")
+  units <- list(time = "h", dosing = "mg", concentration = "nmol/L")
 
   covariateData <- list(
     WT = list(

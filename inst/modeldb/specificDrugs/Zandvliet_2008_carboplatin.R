@@ -2,7 +2,7 @@ Zandvliet_2008_carboplatin <- function() {
   description <- "Two-compartment population PK model for free (ultrafilterable) carboplatin in adult cancer patients receiving combination chemotherapy with indisulam (Zandvliet 2008). Clearance is modelled as a renal + non-renal split: a Cockcroft-Gault creatinine-clearance-proportional renal component (theta1 = 0.76) plus a fixed non-renal component (theta2 = 1.5 L/h, fixed at the Calvert 1989 estimate)."
   reference   <- "Zandvliet AS, Schellens JHM, Dittrich C, Wanders J, Beijnen JH, Huitema ADR. Population pharmacokinetic and pharmacodynamic analysis to support treatment optimization of combination chemotherapy with indisulam and carboplatin. Br J Clin Pharmacol. 2008;66(4):485-497. doi:10.1111/j.1365-2125.2008.03230.x"
   vignette    <- "Zandvliet_2008_carboplatin"
-  units       <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units       <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     AGE = list(

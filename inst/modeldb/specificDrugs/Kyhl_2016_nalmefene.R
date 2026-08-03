@@ -2,7 +2,7 @@ Kyhl_2016_nalmefene <- function() {
   description <- "Population PK model for nalmefene in healthy volunteers (Kyhl 2016): two-compartment model with first-order absorption after oral dosing, separate absorption rates for tablet and solution formulations, and a link to mu-opioid receptor occupancy."
   reference <- "Kyhl LE, Li S, Faerch KU, Soegaard B, Larsen F, Areberg J. Population pharmacokinetics of nalmefene in healthy subjects and its relation to μ-opioid receptor occupancy. Br J Clin Pharmacol. 2016 Feb;81(2):290-300. doi: 10.1111/bcp.12805. Epub 2016 Jan 27. PMID: 26483076; PMCID: PMC4833148."
   vignette <- "Kyhl_2016_nalmefene"
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   # WT (body weight) is required upstream for LBM derivation but is not
   # referenced directly in model() equations -- LBM is computed from WT,
@@ -81,7 +81,7 @@ Kyhl_2016_nalmefene <- function() {
   ini({
     lka_tablet <- log(0.751); label("Absorption rate for oral tablet")
     etalka_tablet ~ sqrt(log((69.9/100)^2 + 1))
-    lka_solution <- log(1.4); label("Absorption rate constant for oral solution formulation (1/hr)")
+    lka_solution <- log(1.4); label("Absorption rate constant for oral solution formulation (1/h)")
 
     lcl <- log(60.4); label("Clearance (L/h)")
     etalcl ~ sqrt(log((18.7/100)^2 + 1))

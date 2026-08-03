@@ -32,7 +32,7 @@ Molto_2016_atazanavir_ritonavir <- function() {
     "doi:10.1111/bcp.13072."
   )
   vignette <- "Molto_2016_atazanavir_ritonavir"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list()
 

@@ -9,7 +9,7 @@ Landersdorfer_2018_imipenem_tobramycin <- function() {
     sep = " "
   )
   vignette <- "Landersdorfer_2018_imipenem_tobramycin"
-  units <- list(time = "hour", dosing = "mg/L (drug input concentration)", concentration = "log10 CFU/mL (observation); mg/L (drug covariates)")
+  units <- list(time = "h", dosing = "mg/L (drug input concentration)", concentration = "log10 CFU/mL (observation); mg/L (drug covariates)")
 
   # Cipm / Ctob are the experimentally-controlled imipenem / tobramycin
   # broth concentrations (the in-vitro HFIM PK forcing functions) supplied

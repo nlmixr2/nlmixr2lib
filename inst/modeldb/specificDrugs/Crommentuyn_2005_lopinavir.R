@@ -28,7 +28,7 @@ Crommentuyn_2005_lopinavir <- function() {
     "atazanavir precedent for an AUC-of-ritonavir-as-covariate encoding)."
   )
   vignette <- "Crommentuyn_2005_lopinavir"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     CONMED_RTV_AUC_12h = list(

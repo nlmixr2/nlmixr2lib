@@ -9,7 +9,7 @@ Nath_2007_melphalan <- function() {
     sep = " "
   )
   vignette <- "Nath_2007_melphalan"
-  units    <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     WT = list(

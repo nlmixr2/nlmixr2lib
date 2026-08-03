@@ -9,7 +9,7 @@ Sanchez_2011_efavirenz <- function() {
     "doi:10.1128/AAC.00194-11."
   )
   vignette <- "Sanchez_2011_efavirenz"
-  units <- list(time = "hour", dosing = "mg", concentration = "ug/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 
   covariateData <- list(
     GGT = list(

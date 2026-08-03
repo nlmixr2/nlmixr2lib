@@ -38,7 +38,7 @@ Wang_2011_raltegravir <- function() {
   # the paper's Table 1 NCA values use raltegravir molecular weight
   # 444.42 g/mol: 1 nmol/L = 444.42e-6 mg/L, so reported Cmax 2246 nmol/L =
   # 0.9982 mg/L and AUC0-inf 13119 nmol/L*h = 5.831 mg*h/L.
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list()
 

@@ -13,7 +13,7 @@ Ozawa_2007_docetaxel <- function() {
   paper_specific_compartments <- c("input")
 
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "mg",
     concentration = "mg/L",
     anc           = "10^9 cells/L",

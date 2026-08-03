@@ -9,7 +9,7 @@ Benkali_2010_tacrolimus <- function() {
     sep = " "
   )
   vignette <- "Benkali_2010_tacrolimus"
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   covariateData <- list(
     CYP3A5_EXPR = list(

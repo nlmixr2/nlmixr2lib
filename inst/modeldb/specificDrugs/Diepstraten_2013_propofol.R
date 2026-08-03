@@ -10,7 +10,7 @@ Diepstraten_2013_propofol <- function() {
     sep = " "
   )
   vignette <- "Diepstraten_2013_propofol"
-  units    <- list(time = "minute", dosing = "mg", concentration = "mg/L")
+  units    <- list(time = "min", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     WT = list(

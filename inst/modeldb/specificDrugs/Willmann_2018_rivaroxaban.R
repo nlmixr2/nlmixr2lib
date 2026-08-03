@@ -2,7 +2,7 @@ Willmann_2018_rivaroxaban <- function() {
   description <- "Paediatric population PK model for oral rivaroxaban in children aged 0.5-18 years (Willmann 2018, EINSTEIN-Jr phase I). Linear two-compartment model with first-order absorption from a depot and first-order elimination from the central compartment; CL and central V allometrically scaled to body weight (CL exponent 0.323 estimated; V exponent 1 fixed); ka shifted between the undiluted-oral-suspension formulation and the tablet / diluted-oral-suspension reference; relative bioavailability F1 reduced for the 20 mg-equivalent body-weight-adjusted dose relative to the 10 mg-equivalent reference."
   reference   <- "Willmann S, Thelen K, Kubitza D, Lensing AWA, Frede M, Coboeken K, Stampfuss J, Burghaus R, Mueck W, Lippert J. Pharmacokinetics of rivaroxaban in children using physiologically based and population pharmacokinetic modelling: an EINSTEIN-Jr phase I study. Thromb J. 2018;16:32. doi:10.1186/s12959-018-0185-1"
   vignette    <- "Willmann_2018_rivaroxaban"
-  units       <- list(time = "hour", dosing = "mg", concentration = "ug/L")
+  units       <- list(time = "h", dosing = "mg", concentration = "ug/L")
 
   covariateData <- list(
     WT = list(

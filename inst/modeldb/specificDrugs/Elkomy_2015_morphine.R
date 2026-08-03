@@ -31,7 +31,7 @@ Elkomy_2015_morphine <- function() {
   )
   vignette <- "Elkomy_2015_morphine"
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "nmol",
     concentration = "nmol/L"
   )

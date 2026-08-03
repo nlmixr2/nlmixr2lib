@@ -38,7 +38,7 @@ Yau_2023_diazepam_pbpk_scalar_human <- function() {
     sep = " "
   )
   vignette <- "Yau_2023_diazepam_pbpk"
-  units    <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list()
 

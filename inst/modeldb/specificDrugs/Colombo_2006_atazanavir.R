@@ -2,7 +2,7 @@ Colombo_2006_atazanavir <- function() {
   description <- "One-compartment first-order-absorption population PK model with absorption lag-time for orally administered atazanavir in HIV-1 infected adults; binary low-dose ritonavir (RTV) coadministration reduces apparent oral clearance by 46% (Colombo 2006)."
   reference <- "Colombo S, Buclin T, Cavassini M, Decosterd LA, Telenti A, Biollaz J, Csajka C. Population pharmacokinetics of atazanavir in patients with human immunodeficiency virus infection. Antimicrob Agents Chemother. 2006;50(11):3801-3808. doi:10.1128/aac.00098-06"
   vignette <- "Colombo_2006_atazanavir"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     CONMED_RTV = list(

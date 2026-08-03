@@ -17,7 +17,7 @@ Yoshida_2018_coproporphyrin_I_rifampin <- function() {
     sep = " "
   )
   vignette <- "Yoshida_2018_coproporphyrin_I_rifampin"
-  units <- list(time = "hour", dosing = "none", concentration = "nmol/L")
+  units <- list(time = "h", dosing = "none", concentration = "nmol/L")
 
   covariateData <- list(
     CP_RIF_UM = list(

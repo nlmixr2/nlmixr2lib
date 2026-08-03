@@ -2,7 +2,7 @@ Delattre_2010_amikacin <- function() {
   description <- "Two-compartment IV population PK model for amikacin in critically ill adult patients with severe sepsis or septic shock during the first 24 hours of antibiotic treatment (Delattre 2010)"
   reference <- "Delattre IK, Musuamba FT, Nyberg J, Taccone FS, Laterre PF, Verbeeck RK, Jacobs F, Wallemacq PE. Population pharmacokinetic modeling and optimal sampling strategy for Bayesian estimation of amikacin exposure in critically ill septic patients. Ther Drug Monit. 2010;32(6):749-756. doi:10.1097/FTD.0b013e3181f675c2"
   vignette <- "Delattre_2010_amikacin"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     CRCL = list(

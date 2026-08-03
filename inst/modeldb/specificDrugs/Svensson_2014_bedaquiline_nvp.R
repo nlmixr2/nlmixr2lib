@@ -12,7 +12,7 @@ Svensson_2014_bedaquiline_nvp <- function() {
     sep = " "
   )
   vignette <- "Svensson_2014_bedaquiline_arv"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     WT = list(

@@ -25,7 +25,7 @@ Fu_2023_cardiovascular_qsp <- function() {
   paper_specific_compartments <- c("hr", "svt", "tpr")
 
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "amount unit (implicit V = 1 in the hypothetical-drug PK; the drug-effect Emax uses the central amount directly so any amount unit is valid provided EC50 is on the same scale)",
     concentration = "beats/min (HR), mL/beat (SV), mmHg*min/mL (TPR), mL/min (CO), mmHg (MAP), and hypothetical amount units for the drug (Cc)"
   )

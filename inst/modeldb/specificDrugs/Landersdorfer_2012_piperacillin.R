@@ -9,7 +9,7 @@ Landersdorfer_2012_piperacillin <- function() {
     "doi:10.1128/AAC.00937-12"
   )
   vignette <- "Landersdorfer_2012_piperacillin"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list()
 

@@ -17,7 +17,7 @@ Hempel_2003_daunorubicin_liposomal <- function() {
   )
   reference <- "Hempel G, Reinhardt D, Creutzig U, Boos J. Population pharmacokinetics of liposomal daunorubicin in children. Br J Clin Pharmacol. 2003;56(4):370-377. doi:10.1046/j.1365-2125.2003.01886.x"
   vignette <- "Hempel_2003_daunorubicin_liposomal"
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   covariateData <- list(
     WT = list(

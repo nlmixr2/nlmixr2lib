@@ -2,7 +2,7 @@ Kim_2023_pyrazinamide <- function() {
   description <- "One-compartment population pharmacokinetic model with first-order absorption and first-order elimination for oral pyrazinamide in Korean adults with drug-susceptible tuberculosis (Kim 2023); lean body mass is an allometric covariate on CL/F and V/F (fixed exponents 0.75 and 1) and geriatric diabetes mellitus (age >= 70 years with diabetes mellitus) increases CL/F by 32%"
   reference <- "Kim R, Jayanti RP, Lee H, Kim H-K, Kang J, Park I-N, Kim J, Oh JY, Kim HW, Lee H, Ghim J-L, Ahn S, Long NP, Cho Y-S, Shin J-G; on behalf of the cPMTb. Development of a population pharmacokinetic model of pyrazinamide to guide personalized therapy: impacts of geriatric and diabetes mellitus on clearance. Front Pharmacol. 2023;14:1116226. doi:10.3389/fphar.2023.1116226"
   vignette <- "Kim_2023_pyrazinamide"
-  units <- list(time = "hour", dosing = "mg", concentration = "ug/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 
   covariateData <- list(
     LBM = list(

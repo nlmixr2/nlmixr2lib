@@ -2,7 +2,7 @@ Farrell_2014_eltrombopag <- function() {
   description <- "Population PK/PD model for eltrombopag in healthy male volunteers (single dose) and adult patients with chronic liver disease (CLD; multiple daily doses) (Farrell 2014). Two-compartment apparent disposition with dual sequential first-order absorption: Ka1 acts on the depot from the end of the absorption lag time (ALAG1) until time MTIME after the dose, and Ka2 acts thereafter. CL/F is reduced in females, in East Asian subjects, and in CLD patients with a linear-in-Child-Pugh-score gradient (HEPIMP_CP_SCORE >= 5). Vc/F is approximately three-fold higher in South/Central Asian subjects. Platelet dynamics use a four-compartment lifespan model (three maturing precursor pools feeding the circulating-platelet pool) with linear stimulation of precursor production by plasma eltrombopag; the slope SLOP is 34% lower in East Asian CLD patients. PD parameters are CLD-specific (median baseline platelet 41 Gi/L)."
   reference <- "Farrell C, Hayes S, Wire M, Zhang J. Population pharmacokinetic/pharmacodynamic modelling of eltrombopag in healthy volunteers and subjects with chronic liver disease. Br J Clin Pharmacol. 2014 May;77(5):717-728. doi:10.1111/bcp.12244."
   vignette <- "Farrell_2014_eltrombopag"
-  units <- list(time = "hour", dosing = "mg", concentration = "ug/mL", platelet = "Gi/L (10^9/L)")
+  units <- list(time = "h", dosing = "mg", concentration = "ug/mL", platelet = "Gi/L (10^9/L)")
 
   covariateData <- list(
     SEXF = list(

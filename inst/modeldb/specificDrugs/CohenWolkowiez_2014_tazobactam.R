@@ -10,7 +10,7 @@ CohenWolkowiez_2014_tazobactam <- function() {
     sep = " "
   )
   vignette <- "CohenWolkowiez_2014_piperacillin_tazobactam"
-  units    <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     WT = list(

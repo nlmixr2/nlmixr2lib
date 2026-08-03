@@ -2,7 +2,7 @@ Wade_2008_fluconazole <- function() {
   description <- "One-compartment intravenous population PK model for fluconazole in preterm and term infants (gestational age 23-40 weeks, postnatal age <120 days) with allometric body weight on CL and V (fixed exponents 0.75 and 1.0, reference 1 kg), power effects of gestational age at birth (reference 26 weeks) and postnatal age (reference 2 weeks) on CL, and an on/off power effect of serum creatinine on CL gated when SCR > 1 mg/dL (Wade 2008)."
   reference <- "Wade KC, Wu D, Kaufman DA, Ward RM, Benjamin DK Jr, Sullivan JE, Ramey N, Jayaraman B, Hoppu K, Adamson PC, Gastonguay MR, Barrett JS. Population pharmacokinetics of fluconazole in young infants. Antimicrob Agents Chemother. 2008. doi:10.1128/AAC.00569-08"
   vignette <- "Wade_2008_fluconazole"
-  units <- list(time = "hour", dosing = "mg", concentration = "ug/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 
   covariateData <- list(
     WT = list(

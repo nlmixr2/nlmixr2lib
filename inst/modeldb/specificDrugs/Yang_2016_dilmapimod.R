@@ -2,7 +2,7 @@ Yang_2016_dilmapimod <- function() {
   description <- "Three-compartment IV population PK model for dilmapimod (SB-681323, a p38 MAPK inhibitor) coupled with an empirical indirect-response model for the inflammatory biomarker C-reactive protein (CRP) in severe-trauma adults at risk for acute respiratory distress syndrome (Yang 2016). BMI is a power covariate on CL and Q2. No statistically significant dilmapimod effect on CRP was retained in the final PD model, so the CRP component is an empirical post-injury production-decline / first-order-loss profile that is decoupled from dilmapimod exposure (Yang 2016 Results section 3.3.1)."
   reference   <- "Yang S, Pene Dumitrescu T. Population pharmacokinetics and pharmacodynamics modelling of dilmapimod in severe trauma subjects at risk for acute respiratory distress syndrome. Drugs R D. 2017;17(1):145-156. doi:10.1007/s40268-016-0161-9"
   vignette    <- "Yang_2016_dilmapimod"
-  units       <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units       <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   covariateData <- list(
     BMI = list(

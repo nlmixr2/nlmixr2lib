@@ -11,7 +11,7 @@ Freyer_2000_doxorubicin <- function() {
     sep = " "
   )
   vignette <- "Freyer_2000_AVI_regimen"
-  units    <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list()
 

@@ -2,7 +2,7 @@ Sikma_2020_tacrolimus_unbound_plasma <- function() {
   description <- "Two-compartment population PK model for whole-blood (Cc), unbound plasma (Cupc), and total plasma (Ctpc) tacrolimus in 30 adult thoracic-organ (10 heart + 20 lung) transplant recipients during the first 6 postoperative days (Sikma 2020). First-order oral absorption with ka, F, and the within-PK fixed-parameter variabilities inherited from a previously estimated tacrolimus model; non-linear saturable binding of tacrolimus to erythrocytes (UPC = WBC * Kd / (Bmax * HCT - WBC)) with the maximum erythrocyte binding capacity Bmax scaled by hematocrit, and a linear non-specific plasma binding constant Nplasma linking unbound to total plasma (TPC = Nplasma * UPC)."
   reference <- "Sikma MA, Van Maarseveen EM, Hunault CC, Moreno JM, Van de Graaf EA, Kirkels JH, Verhaar MC, Grutters JC, Kesecioglu J, De Lange DW, Huitema ADR. Unbound Plasma, Total Plasma, and Whole-Blood Tacrolimus Pharmacokinetics Early After Thoracic Organ Transplantation. Clin Pharmacokinet. 2020;59(6):771-780. doi:10.1007/s40262-019-00854-1"
   vignette <- "Sikma_2020_tacrolimus_unbound_plasma"
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL (whole blood) and pg/mL (unbound and total plasma)")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL (whole blood) and pg/mL (unbound and total plasma)")
 
   covariateData <- list(
     HCT = list(

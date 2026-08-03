@@ -33,7 +33,7 @@ Yau_2023_diazepam_pbpk_lumped_human <- function() {
     sep = " "
   )
   vignette <- "Yau_2023_diazepam_pbpk"
-  units    <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list()
 
@@ -103,7 +103,7 @@ Yau_2023_diazepam_pbpk_lumped_human <- function() {
 
     # ================= Physiology: 70-kg reference man =================
     # Table S1 gives blood flows in L/min and volumes in L; flows are
-    # converted to L/h to match units$time = "hour".
+    # converted to L/h to match units$time = "h".
     q_adipose  <- 0.292 * 60
     q_bone     <- 0.292 * 60
     q_brain    <- 0.701 * 60

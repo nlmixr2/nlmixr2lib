@@ -2,7 +2,7 @@ Llanos_2017_gentamicin <- function() {
   description <- "Two-compartment population PK model of gentamicin in pediatric oncology patients with febrile neutropenia (Llanos-Paez 2017)"
   reference <- "Llanos-Paez CC, Staatz CE, Lawson R, Hennig S. A Population Pharmacokinetic Model of Gentamicin in Pediatric Oncology Patients To Facilitate Personalized Dosing. Antimicrob Agents Chemother. 2017;61(8):e00205-17. doi:10.1128/AAC.00205-17"
   vignette <- "Llanos_2017_gentamicin"
-  units <- list(time = "hr", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     FFM = list(

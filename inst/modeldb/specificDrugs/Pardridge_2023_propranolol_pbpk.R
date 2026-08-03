@@ -29,7 +29,7 @@ Pardridge_2023_propranolol_pbpk <- function() {
     sep = " "
   )
   vignette <- "Pardridge_2023_brain_plasma_protein_binding"
-  units    <- list(time = "minute", dosing = "nmol/kg", concentration = "nM")
+  units    <- list(time = "min", dosing = "nmol/kg", concentration = "nM")
 
   # Paper-mechanistic brain states (Table I).  The `brain_vascular` /
   # `brain_extravascular` stems are the registered canonical brain

@@ -2,7 +2,7 @@ Bellanti_2014_deferiprone <- function() {
   description <- "One-compartment population PK model for the oral iron chelator deferiprone in healthy adult subjects, with first-order absorption, absorption lag time, and a binary sex effect on the apparent volume of distribution (Bellanti 2014)."
   reference <- "Bellanti F, Danhof M, Della Pasqua O. Population pharmacokinetics of deferiprone in healthy subjects. Br J Clin Pharmacol. 2014 Dec;78(6):1397-1406. doi:10.1111/bcp.12473"
   vignette <- "Bellanti_2014_deferiprone"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     SEXF = list(

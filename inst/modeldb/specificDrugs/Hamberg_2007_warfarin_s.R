@@ -15,7 +15,7 @@ Hamberg_2007_warfarin_s <- function() {
     "coag_l1"
   )
 
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     AGE = list(

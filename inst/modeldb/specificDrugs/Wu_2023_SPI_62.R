@@ -39,7 +39,7 @@ Wu_2023_SPI_62 <- function() {
   vignette <- "Wu_2023_SPI_62"
 
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "nmol",
     concentration = "nmol/L",
     dosing_notes  = paste(

@@ -29,7 +29,7 @@ Weber_2015_fluticasone_inhaled <- function() {
   paper_specific_compartments <- c("LC1", "LC2", "LP1", "LP2")
   dosing <- c("LC1", "LP1")
 
-  units <- list(time = "hour", dosing = "ug", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "ug", concentration = "ng/mL")
 
   covariateData <- list()
 

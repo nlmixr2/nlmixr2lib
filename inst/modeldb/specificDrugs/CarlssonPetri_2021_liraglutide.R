@@ -2,7 +2,7 @@ CarlssonPetri_2021_liraglutide <- function() {
   description <- "Liraglutide PK model in adolescents (Carlsson Petri 2021)"
   reference <- "Carlsson Petri KC, Hale PM, Hesse D, Rathor N, Mastrandrea LD. Liraglutide pharmacokinetics and exposure-response in adolescents with obesity. Pediatric Obesity. 2021;16(10):e12799. doi:10.1111/ijpo.12799"
   vignette <- "CarlssonPetri_2021_liraglutide"
-  units <- list(time = "hr", dosing = "mg", concentration = "nmol/L") # Carlsson Petri 2021 Table 3 / Methods; LLOQ 0.03 nmol/L
+  units <- list(time = "h", dosing = "mg", concentration = "nmol/L") # Carlsson Petri 2021 Table 3 / Methods; LLOQ 0.03 nmol/L
 
   covariateData <- list(
     WT = list(
@@ -55,7 +55,7 @@ CarlssonPetri_2021_liraglutide <- function() {
   )
 
   ini({
-    lka <- fixed(log(0.0813)); label("Absorption rate (1/hr)") # Carlsson Petri 2021 Table 3 (fixed)
+    lka <- fixed(log(0.0813)); label("Absorption rate (1/h)") # Carlsson Petri 2021 Table 3 (fixed)
     lcl <- log(1.01); label("Apparent clearance (L/h)") # Carlsson Petri 2021 Table 3 (95% CI 0.922-1.09)
     e_wt_cl <- 0.762; label("Body weight exponent on CL/F") # Carlsson Petri 2021 Table 3 (95% CI 0.565-0.958), reference 100 kg
     e_sex_cl <- 1.12; label("Male/female CL/F ratio") # Carlsson Petri 2021 Table 3 (95% CI 0.993-1.24); applied as ratio^(1 - SEXF)

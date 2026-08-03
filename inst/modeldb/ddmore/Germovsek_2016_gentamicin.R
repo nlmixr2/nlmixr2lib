@@ -11,7 +11,7 @@ Germovsek_2016_gentamicin <- function() {
     sep = " "
   )
   vignette <- "Germovsek_2016_gentamicin"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   ddmore_id    <- "DDMODEL00000238"
   replicate_of <- NULL

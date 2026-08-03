@@ -29,7 +29,7 @@ Park_2014_triflusal <- function() {
     "doi:10.1186/2050-6511-15-75."
   )
   vignette <- "Park_2014_triflusal"
-  units    <- list(time = "hour", dosing = "mg", concentration = "ug/mL")
+  units    <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 
   covariateData <- list(
     WT = list(

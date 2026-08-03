@@ -10,7 +10,7 @@ Lignet_2023_m8891_mouse <- function() {
     sep = " "
   )
   vignette <- "Lignet_2023_m8891"
-  units <- list(time = "hour", dosing = "mg/kg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg/kg", concentration = "mg/L")
 
   # Met-EF1a is the paper's target-engagement biomarker (uncleaved
   # methionine-elongation-factor-1-alpha in tumour tissue, ug per mg total

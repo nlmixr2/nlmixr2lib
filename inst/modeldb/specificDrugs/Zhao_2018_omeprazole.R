@@ -2,7 +2,7 @@ Zhao_2018_omeprazole <- function() {
   description <- "Population PK-pharmacogenetic model for oral omeprazole and its two metabolites 5-hydroxy-omeprazole and omeprazole sulfone in Caucasian neonates and young infants (Zhao 2018). One-compartment parent disposition with first-order absorption (Ka modulated by ABCB1 C3435T genotype) is followed by parallel formation into two one-compartment metabolites with apparent volume V_M/F fixed to 1 L; the omeprazole-to-5-hydroxy-omeprazole formation clearance (CLOMZ-M1) is modulated by CYP2C19 metabolizer phenotype (poor / intermediate / extensive-or-ultrarapid) and a postnatal-age power function, while the omeprazole-to-omeprazole-sulfone formation clearance (CLOMZ-M2) and the metabolite apparent eliminations carry no covariates. Linear omeprazole elimination was estimated as negligible (< 0.0001 L/h) and is therefore not included in the final structural model."
   reference   <- "Zhao W, Leroux S, Biran V, Jacqz-Aigrain E. Developmental pharmacogenetics of CYP2C19 in neonates and young infants: omeprazole as a probe drug. Br J Clin Pharmacol. 2018;84(5):997-1005. doi:10.1111/bcp.13526"
   vignette    <- "Zhao_2018_omeprazole"
-  units       <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units       <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     PNA = list(

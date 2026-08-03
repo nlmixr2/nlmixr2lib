@@ -38,7 +38,7 @@ vandenBerg_2021_finerenone <- function() {
     sep = " "
   )
   vignette <- "vandenBerg_2021_finerenone"
-  units <- list(time = "hour", dosing = "mg", concentration = "ug/L")
+  units <- list(time = "h", dosing = "mg", concentration = "ug/L")
 
   covariateData <- list(
     WT = list(

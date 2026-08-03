@@ -8,7 +8,7 @@ Kunisawa_2014_olprinone <- function() {
     "doi:10.2147/CPAA.S50626."
   )
   vignette <- "Kunisawa_2014_olprinone"
-  units <- list(time = "hr", dosing = "ug", concentration = "ng/mL") # Methods: doses in ug/kg, plasma concentrations measured in ng/mL by HPLC; time converted from minutes-as-reported to hours
+  units <- list(time = "h", dosing = "ug", concentration = "ng/mL") # Methods: doses in ug/kg, plasma concentrations measured in ng/mL by HPLC; time converted from minutes-as-reported to hours
 
   covariateData <- list(
     WT = list(

@@ -28,7 +28,7 @@ Stroh_2013_rolofylline <- function() {
     sep = " "
   )
   vignette    <- "Stroh_2013_rolofylline"
-  units       <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units       <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   covariateData <- list()
 

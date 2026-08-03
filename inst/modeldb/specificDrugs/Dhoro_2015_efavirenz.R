@@ -8,7 +8,7 @@ Dhoro_2015_efavirenz <- function() {
     "BMC Pharmacol Toxicol. 2015;16:4. doi:10.1186/s40360-015-0004-2."
   )
   vignette <- "Dhoro_2015_efavirenz"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     WT = list(

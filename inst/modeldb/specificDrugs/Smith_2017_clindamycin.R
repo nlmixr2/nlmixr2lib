@@ -2,7 +2,7 @@ Smith_2017_clindamycin <- function() {
   description <- "One-compartment population PK model for intravenous clindamycin in obese and nonobese children, with allometric total body weight on CL and V, sigmoidal Hill maturation on CL by postmenstrual age, and power effects of serum albumin and alpha-1 acid glycoprotein on V (Smith 2017)."
   reference <- "Smith MJ, Gonzalez D, Goldman JL, Yogev R, Sullivan JE, Reed MD, Anand R, Martz K, Berezny K, Benjamin DK Jr, Smith PB, Cohen-Wolkowiez M, Watt K, on behalf of the Best Pharmaceuticals for Children Act-Pediatric Trials Network Steering Committee. Pharmacokinetics of Clindamycin in Obese and Nonobese Children. Antimicrob Agents Chemother. 2017;61(4):e02014-16. doi:10.1128/AAC.02014-16"
   vignette <- "Smith_2017_clindamycin"
-  units <- list(time = "hr", dosing = "mg", concentration = "ug/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 
   covariateData <- list(
     WT = list(
@@ -57,7 +57,7 @@ Smith_2017_clindamycin <- function() {
     # Structural parameters -- Smith 2017 Table 2 (Final model)
     # Reference subject is a 70 kg adult (CL_70kg, V_70kg) with full maturation (PMA -> infinity)
     # and reference protein binding (ALB = 3.3 g/dL, AAG = 2.4 g/L).
-    lcl <- log(13.8); label("Clearance for a 70 kg fully mature adult (CL_70kg, L/hr)")  # Smith 2017 Table 2 (CL_70kg = 13.8 L/h, RSE 6.2%)
+    lcl <- log(13.8); label("Clearance for a 70 kg fully mature adult (CL_70kg, L/h)")  # Smith 2017 Table 2 (CL_70kg = 13.8 L/h, RSE 6.2%)
     lvc <- log(63.6); label("Central volume of distribution for a 70 kg reference subject (V_70kg, L)")  # Smith 2017 Table 2 (V_70kg = 63.6 L, RSE 5.0%)
 
     # Allometric exponents on TBW (fixed at canonical 0.75 / 1.0 per Methods Equations 4-5; no RSE reported in Table 2)

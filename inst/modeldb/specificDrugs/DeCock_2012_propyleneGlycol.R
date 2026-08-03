@@ -9,7 +9,7 @@ DeCock_2012_propyleneGlycol <- function() {
     sep = " "
   )
   vignette <- "DeCock_2012_propyleneGlycol"
-  units    <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     WT_BIRTH = list(

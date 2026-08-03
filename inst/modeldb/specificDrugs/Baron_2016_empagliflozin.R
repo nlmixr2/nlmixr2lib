@@ -19,7 +19,7 @@ Baron_2016_empagliflozin <- function() {
   )
   vignette <- "Baron_2016_empagliflozin"
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "mg empagliflozin (oral, once daily)",
     concentration = "Cc in nmol/L (= nM; converted from mg/L via MW 450.91 g/mol); FPG in mmol/L; HbA1c in % (NGSP)"
   )

@@ -7,7 +7,7 @@ Olagunju_2018_efavirenz <- function() {
     "J Antimicrob Chemother. 2018;73(1):165-172. doi:10.1093/jac/dkx334."
   )
   vignette <- "Olagunju_2018_efavirenz"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     WT = list(

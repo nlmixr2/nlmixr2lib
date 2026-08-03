@@ -31,7 +31,7 @@ Morris_2011_telapristone <- function() {
   paper_specific_etas <- "etalfmetest"
 
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "nmol",
     concentration = "nmol/L"
   )

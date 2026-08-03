@@ -3,7 +3,7 @@ Bergen_2017_meropenem <- function() {
   reference <- "Bergen PJ, Bulitta JB, Kirkpatrick CMJ, Rogers KE, McGregor MJ, Wallis SC, Paterson DL, Nation RL, Lipman J, Roberts JA, Landersdorfer CB. Substantial impact of altered pharmacokinetics in critically ill patients on the antibacterial effects of meropenem evaluated via the dynamic hollow-fiber infection model. Antimicrob Agents Chemother. 2017;61(5):e02642-16. doi:10.1128/AAC.02642-16. Model differential equations (Eqs 1-5) and final parameter estimates (Table 3) are in the main text Materials and Methods + Discussion; HFIM dosing scenarios and concentration summaries are Table 4. Meropenem PK profiles were simulated from the upstream popPK model in reference 20 (Mattioli 2016, AAC; not packaged here)."
   vignette <- "Bergen_2017_meropenem"
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "mg/L (concentration dosed directly into the cmem state, as in the in-vitro HFIM)",
     concentration = "log10 CFU/mL (observation); mg/L (cmem state)"
   )

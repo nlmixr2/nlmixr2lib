@@ -40,7 +40,7 @@ Muliaditan_2025_mab_mpbpk_human <- function() {
   )
   vignette <- "Muliaditan_2025_mab_mpbpk"
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "nmol (convert mg via dose_nmol = dose_mg / mw_kda * 1000)",
     concentration = "nmol/L"
   )

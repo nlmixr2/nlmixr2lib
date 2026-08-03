@@ -2,7 +2,7 @@ Tsai_2023_ceftriaxone <- function() {
   description <- "Two-compartment population PK model for intravenous ceftriaxone in Indigenous Australian adults with end-stage renal disease on three-times-weekly intermittent high-flux hemodialysis, receiving a novel 2 g three-times-weekly post-dialysis regimen. PK is parameterised on unbound drug: the central state carries unbound ceftriaxone and an explicit second-order albumin-binding exchange (k1 on / k2 off) against a capacity bmax derived from serum albumin carries the bound drug, so total and unbound plasma concentrations are both model outputs. Clearance is replaced (not augmented) by a > 10-fold higher dialytic clearance while a session is running, gated by the time-varying RRT_HEMODIAL_ACTIVE covariate; interdialytic clearance falls with serum bilirubin through an inverse-power relationship. Estimated with the Pmetrics non-parametric adaptive grid (NPAG). Tsai 2023, n = 16 subjects, 122 total-and-unbound plasma samples."
   reference <- "Tsai D, Zam BB, Tongs C, Chiong F, Sajiv C, Pawar B, Ashok A, Cooper BP, Tong SYC, Janson S, Wallis SC, Roberts JA, Parker SL. Validating a novel three-times-weekly post-hemodialysis ceftriaxone regimen in infected Indigenous Australian patients - a population pharmacokinetic study. J Antimicrob Chemother. 2023;78(8):2032-2038. doi:10.1093/jac/dkad190"
   vignette <- "Tsai_2023_ceftriaxone"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     TBILI = list(

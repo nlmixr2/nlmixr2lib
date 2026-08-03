@@ -2,7 +2,7 @@ Vezina_2010_valganciclovir <- function() {
   description <- "One-compartment population PK model for ganciclovir following oral valganciclovir prophylaxis in pediatric solid organ transplant recipients at risk for Epstein-Barr virus disease (Vezina 2010). First-order absorption with no covariates retained in the final model; doses are mg of valganciclovir uncorrected for molecular weight, and the apparent CL/F and V/F absorb both oral bioavailability and the molar conversion from valganciclovir to ganciclovir."
   reference   <- "Vezina HE, Brundage RC, Nevins TE, Balfour HH Jr. The pharmacokinetics of valganciclovir prophylaxis in pediatric solid organ transplant patients at risk for Epstein-Barr virus disease. Clin Pharmacol Adv Appl. 2010;2:1-7. doi:10.2147/CPAA.S8341"
   vignette    <- "Vezina_2010_valganciclovir"
-  units       <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units       <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   covariateData <- list()
 

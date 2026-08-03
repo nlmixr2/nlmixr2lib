@@ -10,7 +10,7 @@ Guo_2022_PF_06939999 <- function() {
   )
   vignette <- "Guo_2022_PF_06939999"
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "mg",
     concentration = "ng/mL",
     sdma          = "ng/mL",

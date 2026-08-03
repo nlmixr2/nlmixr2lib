@@ -25,7 +25,7 @@ Bertrand_2011_S33138 <- function() {
   )
   vignette <- "Bertrand_2011_S33138"
   units <- list(
-    time = "hour",
+    time = "h",
     dosing = "nmol",
     concentration = "nmol/L"
   )

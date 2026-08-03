@@ -28,7 +28,7 @@ Othman_2013_ABT_102 <- function() {
   paper_specific_etas <- c("etabl", "etaamp", "etaps")
 
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "mg",
     concentration = "ng/mL",
     dosing_notes  = "Oral ABT-102; FORM_SOLUTION = 1 -> solution formulation (Studies 1 and 2), = 0 -> solid-dispersion formulation (Study 3).",

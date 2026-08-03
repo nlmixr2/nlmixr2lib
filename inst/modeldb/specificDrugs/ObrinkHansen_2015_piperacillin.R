@@ -11,7 +11,7 @@ ObrinkHansen_2015_piperacillin <- function() {
     sep = " "
   )
   vignette <- "ObrinkHansen_2015_piperacillin"
-  units    <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     CREAT = list(

@@ -2,7 +2,7 @@ Buelga_2005_vancomycin <- function() {
   description <- "One-compartment IV intermittent-infusion population PK model for vancomycin in adult patients with hematological malignancies (Buelga 2005). CL is a purely multiplicative function of Cockcroft-Gault creatinine clearance (CL [L/h] = 1.08 x CLCR [L/h]) and V is a purely multiplicative function of total body weight (V [L] = 0.98 x TBW [kg]). Exponential inter-individual variability on CL and V with an estimated CL-V correlation; additive residual error in mg/L. The AML-1 and AML-2 subpopulation-specific models from the same paper are not packaged here; only the general final model (Table 4) is implemented."
   reference <- "Buelga DS, Fernandez de Gatta MM, Herrera EV, Dominguez-Gil A, Garcia MJ. Population pharmacokinetic analysis of vancomycin in patients with hematological malignancies. Antimicrob Agents Chemother. 2005;49(12):4934-4941. doi:10.1128/AAC.49.12.4934-4941.2005"
   vignette <- "Buelga_2005_vancomycin"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     WT = list(

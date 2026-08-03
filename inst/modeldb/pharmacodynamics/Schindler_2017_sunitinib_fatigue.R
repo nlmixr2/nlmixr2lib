@@ -23,7 +23,7 @@ Schindler_2017_sunitinib_fatigue <- function() {
   paper_specific_compartments <- c("svegfr3", "pscore0", "pscore1", "pscore2", "pscore3")
 
   units <- list(
-    time = "hour",
+    time = "h",
     dosing = "mg",
     concentration = "(NCI-CTCAE fatigue grade 0-3+, ordinal)"
   )

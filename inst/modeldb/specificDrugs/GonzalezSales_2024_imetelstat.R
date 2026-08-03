@@ -3,7 +3,7 @@ GonzalezSales_2024_imetelstat <- function() {
   reference <- "Gonzalez-Sales M, Lennox AL, Huang F, Pamulapati C, Wan Y, Sun L, Berry T, Kelly Behrs M, Feller F, Morcos PN. (2024). Population pharmacokinetics of imetelstat, a first-in-class oligonucleotide telomerase inhibitor. CPT Pharmacometrics Syst Pharmacol 13(7):1264-1277. doi:10.1002/psp4.13160."
   vignette <- "GonzalezSales_2024_imetelstat"
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "umol",
     concentration = "umol/L"
   )

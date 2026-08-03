@@ -2,7 +2,7 @@ Diep_2022_eplontersen <- function() {
   description <- "Two-compartment population PK and indirect-response PD model for the GalNAc3-conjugated antisense oligonucleotide eplontersen targeting transthyretin (TTR) mRNA, fit to pooled data from two phase 1 studies in healthy volunteers (Diep 2022). First-order SC absorption with site-specific typical ka (arm vs abdomen), allometric scaling on CL by lean body mass, on Vc/Q/Vp by total body weight, and an indirect-response model with eplontersen-driven inhibition of TTR production."
   reference   <- "Diep JK, Yu RZ, Viney NJ, Schneider E, Guo S, Henry S, Monia B, Geary R, Wang Y. Population pharmacokinetic/pharmacodynamic modelling of eplontersen, an antisense oligonucleotide in development for transthyretin amyloidosis. Br J Clin Pharmacol. 2022;88(12):5389-5398. doi:10.1111/bcp.15468"
   vignette    <- "Diep_2022_eplontersen"
-  units       <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units       <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   covariateData <- list(
     WT = list(

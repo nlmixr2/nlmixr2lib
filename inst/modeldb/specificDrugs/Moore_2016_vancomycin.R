@@ -2,7 +2,7 @@ Moore_2016_vancomycin <- function() {
   description <- "Two-compartment IV population PK model for vancomycin in adult patients on extracorporeal membrane oxygenation (ECMO) therapy (Moore 2016). Linear (additive) covariate effects on CL (Cockcroft-Gault creatinine clearance), Vc, and Vp (body weight), each centered on the cohort median (CRCL 84 mL/min; WT 95 kg). Proportional residual error; IIV on CL and Vc only (Q and Vp had no IIV)."
   reference <- "Moore JN, Healy JR, Thoma BN, Peahota MM, Ahamadi M, Schmidt L, Cavarocchi NC, Kraft WK. A population pharmacokinetic model for vancomycin in adult patients receiving extracorporeal membrane oxygenation therapy. CPT Pharmacometrics Syst Pharmacol. 2016;5(9):495-502. doi:10.1002/psp4.12112"
   vignette <- "Moore_2016_vancomycin"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     WT = list(

@@ -13,7 +13,7 @@ Netterberg_2018_breast_cancer_FN_tte_atFN <- function() {
   )
   vignette <- "Netterberg_2018_breast_cancer_FN"
   units <- list(
-    time = "hour",
+    time = "h",
     dosing = "n/a (no drug doses; the cycle anchors t = 0 at the start of chemotherapy)",
     concentration = "IL-6 in pg/mL; CRP in mg/L; `sur` is a survival probability"
   )

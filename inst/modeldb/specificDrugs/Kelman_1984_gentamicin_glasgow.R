@@ -2,7 +2,7 @@ Kelman_1984_gentamicin_glasgow <- function() {
   description <- "One-compartment population PK model for gentamicin in neonates and very young infants (Kelman 1984, Glasgow I cohort; n=43, postnatal age 2-120 days, body weight 0.8-3.7 kg). Clearance is a linear-additive function of body weight, postnatal age, and serum creatinine (paper Equation 4, Model 1: CL = theta1*WT + theta2*AGE + theta3*CREAT); volume of distribution is proportional to body weight (Equation 5: V = theta4*WT). Encoded from Kelman 1984 Table 2 Model 1 (FULL model, paper's best by NONMEM objective function)."
   reference <- "Kelman AW, Thomson AH, Whiting B, Bryson SM, Steedman DA, Mawer GE, Samba-Donga LA. Estimation of gentamicin clearance and volume of distribution in neonates and young children. Br J Clin Pharmacol. 1984;18:685-692. doi:10.1111/j.1365-2125.1984.tb02530.x"
   vignette <- "Kelman_1984_gentamicin"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     WT = list(

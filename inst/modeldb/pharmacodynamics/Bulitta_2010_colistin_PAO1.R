@@ -9,7 +9,7 @@ Bulitta_2010_colistin_PAO1 <- function() {
     sep = " "
   )
   vignette <- "Bulitta_2010_colistin"
-  units <- list(time = "hour", dosing = "mg/L (colistin in broth)", concentration = "log10 CFU/mL (observation); mg/L (drug covariate); umol/L (cation covariate)")
+  units <- list(time = "h", dosing = "mg/L (colistin in broth)", concentration = "log10 CFU/mL (observation); mg/L (drug covariate); umol/L (cation covariate)")
 
   # Ccolistin and Ccations are experimentally-controlled in-vitro inputs
   # (static colistin concentration in broth + sum of Mg2+ and Ca2+ molar

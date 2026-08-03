@@ -8,7 +8,7 @@ Salem_2014_efavirenz <- function() {
     "doi:10.1128/AAC.01738-13."
   )
   vignette <- "Salem_2014_efavirenz"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     WT = list(

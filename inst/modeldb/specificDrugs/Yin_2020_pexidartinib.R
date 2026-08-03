@@ -2,7 +2,7 @@ Yin_2020_pexidartinib <- function() {
   description <- "Two-compartment population PK model for oral pexidartinib (CSF1R/KIT/FLT3 inhibitor) in healthy subjects and adult patients with tenosynovial giant cell tumour (TGCT) or other advanced solid tumours (Yin 2020). Absorption is sequential zero-order deposition into a depot (duration D1, lag time ALAG1) followed by first-order absorption (KA) into the central compartment, with linear elimination from central. Apparent clearance CL/F scales allometrically on (WT/80)^0.75 and is additionally modified by piecewise power effects of CRCL (active only when CRCL < 90 mL/min), AST (active only when AST > 80 U/L), and total bilirubin (active only when TBILI > 20.5 umol/L), plus multiplicative effects for Asian race (1.27x), healthy-participant cohort (1.26x; the Phase 1 healthy-subject studies), and female sex (0.869x). Apparent central and peripheral volumes Vc/F and Vp/F scale on (WT/80)^1; apparent inter-compartmental clearance Q/F scales on (WT/80)^0.75. Relative bioavailability of the Phase 1 formulation is fixed at 0.855 vs the Phase 3 / commercial reference formulation. Inter-individual variability is a 3x3 block on log(CL,Vc,Vp), independent diagonals on log(KA) and log(Q), and a Phase-1-formulation-specific IIV on the F1 bioavailability anchor. The published inter-occasion variability (5 occasions on KA, 10 occasions on F1) is not encoded structurally here (following the Andrews 2017 / Brooks 2021 tacrolimus precedent for the model-library use case where no operational occasion column is defined). Residual error is proportional with separate magnitudes for patient samples (29.7% CV) and healthy-subject samples (19.6% CV), switched per-subject by the DIS_HEALTHY indicator."
   reference <- "Yin O, Kang J, Knebel W, Zahir H, van de Sande M, Tap WD, Gelderblom H, Stacchiotti S, Greenberg J, Shuster D, Wagner AJ. Population Pharmacokinetic Analysis of Pexidartinib in Healthy Subjects and Patients With Tenosynovial Giant Cell Tumor or Other Solid Tumors. J Clin Pharmacol. 2021 Apr;61(4):480-492. doi:10.1002/jcph.1753. PDF on disk: ACoP 2019 poster of the same analysis (metrum_nd_pexidartinib_healthy.pdf)."
   vignette <- "Yin_2020_pexidartinib"
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   covariateData <- list(
     WT = list(
@@ -96,11 +96,11 @@ Yin_2020_pexidartinib <- function() {
     # exponentiated and are reported in the table" -- so the linear-scale
     # reference values are taken directly from Table 2 and re-logged here for the
     # `l` (log) prefix convention.
-    lcl   <- log(5.83) ; label("Apparent oral clearance CL/F (L/hr) at the reference subject")              # Yin 2020 Table 2: CL/F exp(theta1) = 5.83 L/hr (95% CI 5.43-6.27)
+    lcl   <- log(5.83) ; label("Apparent oral clearance CL/F (L/h) at the reference subject")              # Yin 2020 Table 2: CL/F exp(theta1) = 5.83 L/hr (95% CI 5.43-6.27)
     lvc   <- log(98.0) ; label("Apparent central volume Vc/F (L) at WT = 80 kg")                            # Yin 2020 Table 2: Vc/F exp(theta2) = 98.0 L (95% CI 90.0-107)
     lvp   <- log(116)  ; label("Apparent peripheral volume Vp/F (L) at WT = 80 kg")                         # Yin 2020 Table 2: Vp/F exp(theta3) = 116 L (95% CI 106-128)
-    lq    <- log(20.7) ; label("Apparent inter-compartmental clearance Q/F (L/hr) at WT = 80 kg")           # Yin 2020 Table 2: Q/F exp(theta4) = 20.7 L/hr (95% CI 17.9-23.8)
-    lka   <- log(6.82) ; label("First-order absorption rate constant KA (1/hr)")                            # Yin 2020 Table 2: KA exp(theta5) = 6.82 1/hr (95% CI 5.09-9.14)
+    lq    <- log(20.7) ; label("Apparent inter-compartmental clearance Q/F (L/h) at WT = 80 kg")           # Yin 2020 Table 2: Q/F exp(theta4) = 20.7 L/hr (95% CI 17.9-23.8)
+    lka   <- log(6.82) ; label("First-order absorption rate constant KA (1/h)")                            # Yin 2020 Table 2: KA exp(theta5) = 6.82 1/hr (95% CI 5.09-9.14)
     ltlag <- log(0.387); label("Absorption lag time ALAG1 (hr)")                                            # Yin 2020 Table 2: ALAG1 exp(theta6) = 0.387 hr (95% CI 0.385-0.390)
     ld1   <- log(1.22) ; label("Duration of zero-order deposition D1 (hr)")                                 # Yin 2020 Table 2: D1 exp(theta7) = 1.22 hr (95% CI 1.20-1.25)
 

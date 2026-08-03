@@ -11,7 +11,7 @@ Wagh_2021_spectinamide_1810_mouse <- function() {
   )
   vignette <- "Wagh_2021_spectinamide_1810_mouse"
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "mg/kg (per-kg dosing; PK volumes and clearances are also per-kg)",
     concentration = "mg/L for plasma Cc and PAE compartment; log10(CFU/lung) for the bacterial PD observation"
   )

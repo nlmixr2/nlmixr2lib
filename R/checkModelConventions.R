@@ -59,6 +59,7 @@ checkModelConventions <- function(model, verbose = TRUE) {
     .checkParameterNames(ui, conv),
     .checkParameterLabels(ui, conv),
     .checkParameterUnits(ui, conv),
+    .checkUnitSpellings(ui, conv),
     .checkCovariates(ui, conv, model_name),
     .checkCompartments(ui, conv),
     .checkObservation(ui, conv),
@@ -591,6 +592,33 @@ checkModelConventions <- function(model, verbose = TRUE) {
         sprintf("Parameter '%s' has no label.", nm),
         sprintf("Add `label(\"<description with units>\")` to the ini() entry for %s.", nm)
       ))
+    }
+  }
+  issues
+}
+
+# Issue: the library wrote the same time unit three ways in the machine-readable
+# `units` block -- "hour" (643 models), "h" (208) and "hr" (28) -- so a consumer
+# parsing units$time could not canonicalise without a spelling table of its own.
+# This checks SPELLING, not dimension: "min" and "h" are both canonical and are
+# never conflated, because normalising between them would misstate every value.
+.checkUnitSpellings <- function(ui, conv) {
+  issues <- .emptyIssues()
+  units <- as.list(ui$meta)$units
+  if (is.null(units)) return(issues)
+  spellings <- list(time = conv$timeUnitSpellings, dosing = conv$doseUnitSpellings)
+  for (fld in names(spellings)) {
+    val <- units[[fld]]
+    if (is.null(val) || !is.character(val) || length(val) != 1 || is.na(val)) next
+    if (val %in% conv$placeholderUnits) next
+    map <- spellings[[fld]]
+    key <- tolower(val)
+    if (key %in% names(map)) {
+      issues <- rbind(issues, .issue(
+        "unit_spelling", "error", sprintf("units$%s", fld),
+        sprintf("units$%s = '%s' is a non-canonical spelling.", fld, val),
+        sprintf("Use '%s'. Same unit, one spelling -- consumers cannot canonicalise otherwise.",
+                map[[key]])))
     }
   }
   issues

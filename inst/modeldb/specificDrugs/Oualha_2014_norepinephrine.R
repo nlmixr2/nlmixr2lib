@@ -21,7 +21,7 @@ Oualha_2014_norepinephrine <- function() {
     sep = " "
   )
   vignette <- "Oualha_2014_norepinephrine"
-  units <- list(time = "hour", dosing = "ug", concentration = "ug/L")
+  units <- list(time = "h", dosing = "ug", concentration = "ug/L")
 
   covariateData <- list(
     WT = list(

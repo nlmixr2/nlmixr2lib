@@ -27,7 +27,7 @@ Wattanakul_2016_paracetamol <- function() {
     sep = " "
   )
   vignette <- "Wattanakul_2016_paracetamol"
-  units    <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     # Wattanakul 2016 Results, Pharmacokinetics paragraph 2: "Allometric scaling

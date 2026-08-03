@@ -24,7 +24,7 @@ vonHentig_2009_saquinavir <- function() {
     "doi:10.1128/AAC.00025-09."
   )
   vignette <- "vonHentig_2009_saquinavir"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     CONMED_ATAZANAVIR = list(

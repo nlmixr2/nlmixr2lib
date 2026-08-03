@@ -2,7 +2,7 @@ Takeuchi_2023_ozoralizumab <- function() {
   description <- "One-compartment population PK model with first-order absorption for subcutaneous ozoralizumab (anti-TNF VHH NANOBODY) in Japanese patients with rheumatoid arthritis (Takeuchi 2023)"
   reference <- "Takeuchi T, Chino Y, Mano Y, Kawanishi M, Sato Y, Uchida S, Tanaka Y. Population Pharmacokinetics of Ozoralizumab in Patients with Rheumatoid Arthritis. J Clin Pharmacol. 2024;64(4):418-427. doi:10.1002/jcph.2380"
   vignette <- "Takeuchi_2023_ozoralizumab"
-  units <- list(time = "hour", dosing = "mg", concentration = "ug/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 
   covariateData <- list(
     WT = list(

@@ -16,7 +16,7 @@ Agerso_2004_desmopressin <- function() {
   )
   vignette <- "Agerso_2004_desmopressin"
   paper_specific_etas <- c("etalvc_vp2")
-  units <- list(time = "hour", dosing = "ng", concentration = "pg/mL")
+  units <- list(time = "h", dosing = "ng", concentration = "pg/mL")
 
   covariateData <- list(
     CRCL = list(

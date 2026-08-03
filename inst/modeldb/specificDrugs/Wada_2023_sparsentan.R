@@ -29,7 +29,7 @@ Wada_2023_sparsentan <- function() {
 
   vignette <- "Wada_2023_sparsentan"
 
-  units <- list(time = "hour", dosing = "mg", concentration = "ug/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 
   covariateData <- list(
     DOSE = list(

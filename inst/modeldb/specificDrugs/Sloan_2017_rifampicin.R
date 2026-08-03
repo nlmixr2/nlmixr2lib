@@ -10,7 +10,7 @@ Sloan_2017_rifampicin <- function() {
     sep = " "
   )
   vignette <- "Sloan_2017_rifampicin"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     WT = list(

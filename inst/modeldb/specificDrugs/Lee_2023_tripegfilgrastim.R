@@ -38,7 +38,7 @@ Lee_2023_tripegfilgrastim <- function() {
   paper_specific_compartments <- c("depot_kpd_chemotherapy", "endogenous_gcsf")
 
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "ug (tripegfilgrastim); mg (chemotherapy KPD input)",
     concentration = "ug/L (serum G-CSF, free exogenous drug plus free endogenous G-CSF)",
     ANC           = "cells/uL",

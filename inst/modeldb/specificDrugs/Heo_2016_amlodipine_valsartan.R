@@ -34,7 +34,7 @@ Heo_2016_amlodipine_valsartan <- function() {
 
   paper_specific_compartments <- c("effect_sbp", "effect_dbp")
 
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   covariateData <- list(
     WT = list(

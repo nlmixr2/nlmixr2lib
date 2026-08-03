@@ -28,7 +28,7 @@ Seng_2015_isoniazid <- function() {
     "doi:10.1128/AAC.01244-15."
   )
   vignette <- "Seng_2015_isoniazid"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     WT = list(

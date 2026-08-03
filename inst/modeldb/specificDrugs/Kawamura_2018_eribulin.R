@@ -15,7 +15,7 @@ Kawamura_2018_eribulin <- function() {
   )
   vignette <- "Kawamura_2018_eribulin"
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "mg",
     concentration = "mg/L",
     anc           = "cells/uL"

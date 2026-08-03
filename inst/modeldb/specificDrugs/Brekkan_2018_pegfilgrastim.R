@@ -6,7 +6,7 @@ Brekkan_2018_pegfilgrastim <- function() {
     "AAPS J 20(5):91. doi:10.1208/s12248-018-0249-y."
   )
   vignette <- "Brekkan_2018_pegfilgrastim"
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL", ANC = "10^9 cells/L")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL", ANC = "10^9 cells/L")
 
   # Covariates were evaluated using a full random effects model (FREM)
   # approach with sex, age, lean body weight (LBW = LBM), body mass index,

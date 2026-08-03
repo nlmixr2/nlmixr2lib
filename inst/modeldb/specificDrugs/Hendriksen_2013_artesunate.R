@@ -21,7 +21,7 @@ Hendriksen_2013_artesunate <- function() {
   )
   vignette  <- "Hendriksen_2013_artesunate"
   units     <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "mg",
     concentration = "mg/L"
   )

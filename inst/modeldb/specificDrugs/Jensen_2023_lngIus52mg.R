@@ -33,7 +33,7 @@ Jensen_2023_lngIus52mg <- function() {
   )
   vignette <- "Jensen_2023_lngIus52mg"
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "mg (levonorgestrel loaded in the intrauterine reservoir)",
     concentration = "ng/L (total LNG in plasma; also derived unbound LNG in ng/L) and nmol/L (SHBG in serum)"
   )
@@ -99,7 +99,7 @@ Jensen_2023_lngIus52mg <- function() {
     # NONMEM $THETA numbers verbatim.
     # ------------------------------------------------------------------
     lc12   <- log(7.98)          ; label("First release rate coefficient c12 (x 1e-6 per hour); THETA(1) in Jensen 2023 Supp Appendix")   # Supp Appendix $THETA TH1 = 7.98
-    lc13   <- fixed(log(303))    ; label("Second release rate coefficient c13 (x 1e-6 mg/hour); THETA(11) FIX in Jensen 2023 Supp Appendix")  # Supp Appendix $THETA TH11 = 303 FIX
+    lc13   <- fixed(log(303))    ; label("Second release rate coefficient c13 (x 1e-6 mg/h); THETA(11) FIX in Jensen 2023 Supp Appendix")  # Supp Appendix $THETA TH11 = 303 FIX
     lt1    <- log(58.8)          ; label("Release time-dependency parameter t1 (hour); THETA(12) in Jensen 2023 Supp Appendix")               # Supp Appendix $THETA TH12 = 58.8
 
     # ------------------------------------------------------------------
@@ -111,9 +111,9 @@ Jensen_2023_lngIus52mg <- function() {
     # CL * fuLNG ~ 242 * 0.016 = 3.87 L/h.
     # ------------------------------------------------------------------
     lvc    <- fixed(log(20.7))   ; label("Apparent central volume V2 (L); THETA(2) FIX in Jensen 2023 Supp Appendix")     # Supp Appendix $THETA TH2 = 20.7 FIX
-    lcl    <- log(242)           ; label("Apparent (free) clearance CL/F of LNG (L/hour); THETA(3) in Jensen 2023 Supp Appendix")     # Supp Appendix $THETA TH3 = 242
+    lcl    <- log(242)           ; label("Apparent (free) clearance CL/F of LNG (L/h); THETA(3) in Jensen 2023 Supp Appendix")     # Supp Appendix $THETA TH3 = 242
     lvp    <- fixed(log(4690))   ; label("Apparent peripheral volume V3 (L); THETA(4) FIX in Jensen 2023 Supp Appendix")  # Supp Appendix $THETA TH4 = 4690 FIX
-    lq     <- fixed(log(600))    ; label("Apparent intercompartmental clearance Q3 (L/hour); THETA(5) FIX in Jensen 2023 Supp Appendix")  # Supp Appendix $THETA TH5 = 600 FIX
+    lq     <- fixed(log(600))    ; label("Apparent intercompartmental clearance Q3 (L/h); THETA(5) FIX in Jensen 2023 Supp Appendix")  # Supp Appendix $THETA TH5 = 600 FIX
 
     # ------------------------------------------------------------------
     # SHBG delayed-inhibition parameters. tau is the effect-compartment
@@ -129,7 +129,7 @@ Jensen_2023_lngIus52mg <- function() {
     # equals SBL). kout is FIXED to the upstream Reinecke 2018 estimate.
     # ------------------------------------------------------------------
     lrbase_shbg <- log(51.8)             ; label("SHBG baseline concentration SBL (nmol/L); THETA(8) in Jensen 2023 Supp Appendix")   # Supp Appendix $THETA TH8 = 51.8
-    lkout_shbg  <- fixed(log(0.00313))   ; label("SHBG first-order elimination rate constant kout (1/hour); THETA(9) FIX in Jensen 2023 Supp Appendix")  # Supp Appendix $THETA TH9 = 0.00313 FIX
+    lkout_shbg  <- fixed(log(0.00313))   ; label("SHBG first-order elimination rate constant kout (1/h); THETA(9) FIX in Jensen 2023 Supp Appendix")  # Supp Appendix $THETA TH9 = 0.00313 FIX
 
     # ------------------------------------------------------------------
     # Bioavailability of the loaded reservoir. F1 = plogis(logitfdepot) so

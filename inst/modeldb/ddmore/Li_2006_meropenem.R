@@ -9,7 +9,7 @@ Li_2006_meropenem <- function() {
     sep = " "
   )
   vignette <- "Li_2006_meropenem"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   ddmore_id    <- "DDMODEL00000213"
   replicate_of <- NULL

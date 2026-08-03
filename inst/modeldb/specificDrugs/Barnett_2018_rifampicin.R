@@ -13,7 +13,7 @@ Barnett_2018_rifampicin <- function() {
     sep = " "
   )
   vignette <- "Barnett_2018_rifampicin"
-  units <- list(time = "hour", dosing = "mg", concentration = "umol/L")
+  units <- list(time = "h", dosing = "mg", concentration = "umol/L")
 
   covariateData <- list(
     OCC = list(

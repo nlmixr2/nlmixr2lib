@@ -13,7 +13,7 @@ Svensson_2018_bedaquiline <- function() {
     sep = " "
   )
   vignette <- "Svensson_2018_bedaquiline"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     FORM_SUSPENSION = list(

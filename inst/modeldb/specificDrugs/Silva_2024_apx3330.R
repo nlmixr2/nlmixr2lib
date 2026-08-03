@@ -26,7 +26,7 @@ Silva_2024_apx3330 <- function() {
     "doi:10.1002/psp4.13061."
   )
   vignette <- "Silva_2024_apx3330"
-  units <- list(time = "hour", dosing = "mg", concentration = "ug/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 
   covariateData <- list(
     WT = list(

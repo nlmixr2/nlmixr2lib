@@ -8,7 +8,7 @@ Rosario_2008_maraviroc <- function() {
     "doi:10.1111/j.1365-2125.2008.03140.x"
   )
   vignette <- "Rosario_2008_maraviroc"
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   covariateData <- list(
     DOSE = list(

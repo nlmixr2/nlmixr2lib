@@ -10,7 +10,7 @@ Aregbe_2012_alvespimycin <- function() {
     sep = " "
   )
   vignette <- "Aregbe_2012_alvespimycin"
-  units    <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     OCC = list(

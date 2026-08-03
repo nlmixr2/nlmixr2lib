@@ -10,7 +10,7 @@ Schipani_2012_lopinavir <- function() {
     sep = " "
   )
   vignette <- "Schipani_2012_lopinavir"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     WT = list(

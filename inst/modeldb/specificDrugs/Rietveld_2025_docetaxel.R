@@ -50,7 +50,7 @@ Rietveld_2025_docetaxel <- function() {
   )
   vignette <- "Rietveld_2025_docetaxel"
 
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   paper_specific_compartments <- c(
     "entrapped", "peripheral_entrapped",

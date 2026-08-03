@@ -34,7 +34,7 @@ Mosha_2014_artemether <- function() {
     sep = " "
   )
   vignette <- "Mosha_2014_artemether_lumefantrine"
-  units    <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units    <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   covariateData <- list()
 

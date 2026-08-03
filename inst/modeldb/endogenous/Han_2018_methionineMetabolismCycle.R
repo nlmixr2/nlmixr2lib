@@ -2,7 +2,7 @@ Han_2018_methionineMetabolismCycle <- function() {
   description <- "Preclinical (rat). Seven-compartment mechanistic methionine metabolism cycle (MMC) model in Zucker Diabetic Fatty (ZDF) rats vs non-diabetic controls; predicts plasma methionine and homocysteine after IV methionine."
   reference   <- "Han N, Chae JW, Jeon J, Lee J, Back HM, Song B, Kwon KI, Kim SK, Yun HY. Prediction of Methionine and Homocysteine levels in Zucker diabetic fatty (ZDF) rats as a DIS_DIAB animal model after consumption of a Methionine-rich diet. Nutr Metab (Lond). 2018;15:14. doi:10.1186/s12986-018-0247-1"
   vignette    <- "Han_2018_methionineMetabolismCycle"
-  units       <- list(time = "hour", dosing = "mmol/kg", concentration = "mmol/L")
+  units       <- list(time = "h", dosing = "mmol/kg", concentration = "mmol/L")
 
   covariateData <- list(
     DIS_DIAB = list(

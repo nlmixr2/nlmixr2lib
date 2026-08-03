@@ -10,7 +10,7 @@ Staatz_2005_gentamicin <- function() {
     sep = " "
   )
   vignette <- "Staatz_2005_gentamicin_vancomycin"
-  units    <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     WT = list(

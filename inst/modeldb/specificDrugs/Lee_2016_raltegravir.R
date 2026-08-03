@@ -35,7 +35,7 @@ Lee_2016_raltegravir <- function() {
     sep = " "
   )
   vignette <- "Lee_2016_raltegravir"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list()
 

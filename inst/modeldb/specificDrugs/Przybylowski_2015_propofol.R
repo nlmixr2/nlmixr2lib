@@ -10,7 +10,7 @@ Przybylowski_2015_propofol <- function() {
     sep = " "
   )
   vignette <- "Przybylowski_2015_propofol"
-  units    <- list(time = "minute", dosing = "mg", concentration = "mg/L")
+  units    <- list(time = "min", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list()  # No covariates retained in the final model (Przybylowski 2015 Results: no statistically significant (p < 0.01) relationships identified across body weight, gender, age, blood pressure, heart rate, laboratory blood tests, and stage of lung cancer).
 

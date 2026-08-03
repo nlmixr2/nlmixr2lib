@@ -10,7 +10,7 @@ Jonsson_2005_disufenton <- function() {
     sep = " "
   )
   vignette <- "Jonsson_2005_disufenton"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
   ddmore_id    <- "DDMODEL00000245"
   replicate_of <- NULL
 

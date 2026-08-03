@@ -2,7 +2,7 @@ Mould_2007_alemtuzumab_wbc <- function() {
   description <- "Coupled population PK-PD model for alemtuzumab in B-cell chronic lymphocytic leukaemia (Mould 2007): the two-compartment Michaelis-Menten PK from Mould 2007 Table 2 driven by the simulated WBC state via Vmax = TVVmax * (WBC/10)^0.194, joined to an indirect-response model on WBC (stimulation of Kout by alemtuzumab; Mould 2007 Table 3). WBC is a state variable initialised per subject at Kin/Kout."
   reference <- "Mould DR, Baumann A, Kuhlmann J, Keating MJ, Weitman S, Hillmen P, Brettman LR, Reif S, Bonate PL. Population pharmacokinetics-pharmacodynamics of alemtuzumab (Campath) in patients with chronic lymphocytic leukaemia and its link to treatment response. Br J Clin Pharmacol. 2007;64(3):278-291. doi:10.1111/j.1365-2125.2007.02914.x"
   vignette <- "Mould_2007_alemtuzumab"
-  units <- list(time = "hour", dosing = "mg", concentration = "ug/mL", wbc = "10^9 cells/L")
+  units <- list(time = "h", dosing = "mg", concentration = "ug/mL", wbc = "10^9 cells/L")
 
   covariateData <- list()
 

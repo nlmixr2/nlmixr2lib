@@ -20,7 +20,7 @@ Soto_2014_ampicillin_sulbactam <- function() {
     sep = " "
   )
   vignette <- "Soto_2014_ampicillin_sulbactam"
-  units    <- list(time = "hour", dosing = "mg", concentration = "ug/mL")
+  units    <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 
   covariateData <- list(
     WT = list(

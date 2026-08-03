@@ -48,7 +48,7 @@ Menon_2024_parkinsonPathogenesis <- function() {
   paper_specific_compartments <- c("alpha_syn", "fagg", "pfree", "pcomplex", "ros")
 
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "(none; mechanistic disease-pathogenesis model, no drug input)",
     concentration = "(dimensionless; all state variables scaled by 50 pM per Supinfo2 Section 1.4)"
   )

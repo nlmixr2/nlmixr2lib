@@ -10,7 +10,7 @@ Yadav_2017_imipenem_tobramycin <- function() {
     sep = " "
   )
   vignette <- "Yadav_2017_imipenem_tobramycin"
-  units <- list(time = "hour", dosing = "mg/L (drug input concentration)", concentration = "log10 CFU/thigh (observation); mg/L (drug covariates)")
+  units <- list(time = "h", dosing = "mg/L (drug input concentration)", concentration = "log10 CFU/thigh (observation); mg/L (drug covariates)")
 
   # Cipm / Ctob are the time-varying imipenem / tobramycin plasma
   # unbound concentrations supplied externally from a PK driver (the

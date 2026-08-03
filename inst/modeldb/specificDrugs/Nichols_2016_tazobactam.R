@@ -10,7 +10,7 @@ Nichols_2016_tazobactam <- function() {
     sep = " "
   )
   vignette <- "Nichols_2016_piperacillin_tazobactam"
-  units    <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     WT = list(

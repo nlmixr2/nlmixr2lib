@@ -10,7 +10,7 @@ Gastonguay_2005_efaproxiral <- function() {
     sep = " "
   )
   vignette <- "Gastonguay_2005_efaproxiral"
-  units <- list(time = "hour", dosing = "mg", concentration = "ug/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 
   covariateData <- list(
     BSA = list(

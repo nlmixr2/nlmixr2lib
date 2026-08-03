@@ -12,7 +12,7 @@ Byrne_2022_imr687 <- function() {
   )
   vignette <- "Byrne_2022_imr687"
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "mg",
     concentration = "ng/mL"
   )

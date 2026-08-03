@@ -16,7 +16,7 @@ Yoshida_2018_coproporphyrin_I_GDC0810 <- function() {
     sep = " "
   )
   vignette <- "Yoshida_2018_coproporphyrin_I_GDC0810"
-  units <- list(time = "hour", dosing = "none", concentration = "nmol/L")
+  units <- list(time = "h", dosing = "none", concentration = "nmol/L")
 
   covariateData <- list(
     CP_GDC_UM = list(

@@ -2,7 +2,7 @@ Williams_2012_valproic_acid_pediatric <- function() {
   description <- "Two-compartment population PK model for valproic acid in pediatric patients with epilepsy (Williams 2012). Allometric weight scaling on CL/Q (fixed 0.75) and Vc/Vp (fixed 1.0); estimated age power (-0.267) on Vc; reference weight 70 kg, reference age 8.5 years. Default first-order oral absorption is for divalproex sodium enteric-coated sprinkle (Ka 1.2 1/h, ALAG 1 h, FIXED); other formulations (syrup K0=410 mg/h, capsule Ka=2 1/h, tablet Ka=4.1 1/h with ALAG=2 h) require overriding lka/ltlag at simulation time. Direct IV dosing into the central compartment is supported. Residual error defaults to the TDM-subset proportional SD (CV 34.8%); paper also reports a TRIAL-subset SD (CV 4.6%) for the IV-infusion subset."
   reference <- "Williams JH, Jayaraman B, Swoboda KJ, Barrett JS. Population pharmacokinetics of valproic acid in pediatric patients with epilepsy: considerations for dosing spinal muscular atrophy patients. J Clin Pharmacol. 2012;52(11):1676-1688. doi:10.1177/0091270011428138. PMID 22167565."
   vignette <- "Williams_2012_valproic_acid_pediatric"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     WT = list(

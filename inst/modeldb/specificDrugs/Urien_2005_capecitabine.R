@@ -22,7 +22,7 @@ Urien_2005_capecitabine <- function() {
   reference <- "Urien S, Rezai K, Lokiec F. Pharmacokinetic modelling of 5-FU production from capecitabine--a population study in 40 adult patients with metastatic cancer. J Pharmacokinet Pharmacodyn. 2005;32(5-6):817-833. doi:10.1007/s10928-005-0018-2"
   vignette  <- "Urien_2005_capecitabine"
   units     <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "umol",
     concentration = "umol/L"
   )

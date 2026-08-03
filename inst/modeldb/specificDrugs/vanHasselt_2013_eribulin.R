@@ -19,7 +19,7 @@ vanHasselt_2013_eribulin <- function() {
   )
   vignette <- "vanHasselt_2013_eribulin"
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "mg",
     concentration = "mg/L",
     anc           = "cells/uL"

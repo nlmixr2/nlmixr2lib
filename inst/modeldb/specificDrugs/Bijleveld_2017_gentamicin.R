@@ -9,7 +9,7 @@ Bijleveld_2017_gentamicin <- function() {
     sep = " "
   )
   vignette <- "Bijleveld_2017_gentamicin"
-  units    <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     WT = list(

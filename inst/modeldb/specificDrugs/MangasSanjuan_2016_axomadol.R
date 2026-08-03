@@ -32,7 +32,7 @@ MangasSanjuan_2016_axomadol <- function() {
     sep = " "
   )
   vignette <- "MangasSanjuan_2016_axomadol"
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   # Per-paper named states. The metabolite plasma compartments
   # central_odm_r / central_odm_s and the RR-metabolite effect-site

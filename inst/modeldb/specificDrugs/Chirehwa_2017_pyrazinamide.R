@@ -9,7 +9,7 @@ Chirehwa_2017_pyrazinamide <- function() {
     sep = " "
   )
   vignette <- "Chirehwa_2017_pyrazinamide"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     FFM = list(

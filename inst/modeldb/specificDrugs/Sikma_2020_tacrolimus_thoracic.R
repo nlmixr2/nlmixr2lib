@@ -20,7 +20,7 @@ Sikma_2020_tacrolimus_thoracic <- function() {
     "2020;45(1):123-134. doi:10.1007/s13318-019-00591-7."
   )
   vignette <- "Sikma_2020_tacrolimus_thoracic"
-  units    <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units    <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   covariateData <- list()
 

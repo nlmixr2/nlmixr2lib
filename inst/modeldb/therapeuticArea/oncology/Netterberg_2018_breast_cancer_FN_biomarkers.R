@@ -11,7 +11,7 @@ Netterberg_2018_breast_cancer_FN_biomarkers <- function() {
   )
   vignette <- "Netterberg_2018_breast_cancer_FN"
   units <- list(
-    time = "hour",
+    time = "h",
     dosing = "n/a (no drug doses; the biomarker surge is gated by binary cycle-level covariates MIX_ELEV_IL6 / MIX_ELEV_CRP)",
     concentration = "IL-6 in pg/mL; CRP in mg/L"
   )

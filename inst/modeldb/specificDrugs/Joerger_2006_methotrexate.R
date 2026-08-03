@@ -2,7 +2,7 @@ Joerger_2006_methotrexate <- function() {
   description <- "Population PK model for methotrexate (MTX) and its principal circulating metabolite 7-hydroxy-methotrexate (7-OH-MTX) in adult cancer patients receiving high-dose intravenous MTX therapy (Joerger 2006). Joint parent + metabolite model: linear 3-compartment MTX (central + two peripheral compartments) with first-order elimination from the central compartment, feeding a linear 2-compartment 7-OH-MTX disposition through a fixed metabolic fraction of 10 percent. Additive-linear covariate effects of baseline creatinine clearance (Cockcroft-Gault, raw mL/min, truncated at 140), concurrent benzimidazole-class proton-pump-inhibitor comedication, and prior NSAID administration on both MTX and 7-OH-MTX total clearance."
   reference   <- "Joerger M, Huitema ADR, van den Bongard HJGD, Baas P, Schornagel JH, Schellens JHM, Beijnen JH. Determinants of the elimination of methotrexate and 7-hydroxy-methotrexate following high-dose infusional therapy to cancer patients. Br J Clin Pharmacol. 2006;62(1):71-80. doi:10.1111/j.1365-2125.2005.02513.x"
   vignette    <- "Joerger_2006_methotrexate"
-  units       <- list(time = "hour", dosing = "umol", concentration = "umol/L")
+  units       <- list(time = "h", dosing = "umol", concentration = "umol/L")
 
   covariateData <- list(
     CRCL = list(

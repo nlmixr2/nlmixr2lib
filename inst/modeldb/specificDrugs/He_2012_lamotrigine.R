@@ -2,7 +2,7 @@ He_2012_lamotrigine <- function() {
   description <- "One-compartment population PK model for oral lamotrigine in Chinese paediatric patients with epilepsy aged 0.5-17 years (He 2012). First-order absorption with Ka fixed at 1.0 1/h and bioavailability fixed at 1 (lamotrigine steady-state trough therapeutic-drug-monitoring data, which do not identify Ka or F), and first-order elimination from a single central compartment. Apparent oral clearance is scaled by an estimated power of total body weight (exponent 0.635) and modified exponentially by concomitant antiepileptic comedication: valproate (CONMED_VPA) reduces CL, while the enzyme-inducers carbamazepine (CONMED_CBZ) and phenobarbital (CONMED_PB) increase CL. Apparent central volume is fixed at 16.7 L at the 27.87 kg reference weight, scaled linearly with total body weight (allometric exponent fixed at 1.0)."
   reference   <- "He DK, Wang L, Lu W, Qin J, Zhang S, Li L, Zhang JM, Bao WQ, Song XQ, Liu HT. Population pharmacokinetics of lamotrigine in Chinese children with epilepsy. Acta Pharmacol Sin. 2012 Nov;33(11):1417-1423. doi:10.1038/aps.2012.118"
   vignette    <- "He_2012_lamotrigine"
-  units       <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units       <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     WT = list(

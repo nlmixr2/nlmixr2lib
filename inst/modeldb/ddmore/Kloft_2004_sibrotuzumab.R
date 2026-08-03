@@ -9,7 +9,7 @@ Kloft_2004_sibrotuzumab <- function() {
     sep = " "
   )
   vignette <- "Kloft_2004_sibrotuzumab"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
   ddmore_id    <- "DDMODEL00000195"
   replicate_of <- NULL
 

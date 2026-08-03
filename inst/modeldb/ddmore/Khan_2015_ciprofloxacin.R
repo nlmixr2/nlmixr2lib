@@ -11,7 +11,7 @@ Khan_2015_ciprofloxacin <- function() {
   vignette <- "Khan_2015_ciprofloxacin"
   paper_specific_compartments <- c("bact_s", "bact_r", "bact_spe", "bact_np", "bact_rpe", "bact_nppe")
 
-  units <- list(time = "hour", dosing = "mg/L", concentration = "log CFU/mL")
+  units <- list(time = "h", dosing = "mg/L", concentration = "log CFU/mL")
   ddmore_id    <- "DDMODEL00000225"
   replicate_of <- NULL
 

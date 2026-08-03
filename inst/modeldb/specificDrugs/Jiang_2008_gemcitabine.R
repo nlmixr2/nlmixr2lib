@@ -28,7 +28,7 @@ Jiang_2008_gemcitabine <- function() {
     sep = " "
   )
   vignette <- "Jiang_2008_gemcitabine"
-  units    <- list(time = "minute", dosing = "mg", concentration = "mg/L")
+  units    <- list(time = "min", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     CRCL = list(

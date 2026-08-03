@@ -12,7 +12,7 @@ Zurlinden_2016_paracetamol <- function() {
   paper_specific_compartments <- c("a_paps")
 
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "mg",
     concentration = "mcg/L",
     amount        = "mcmol",
@@ -66,35 +66,35 @@ Zurlinden_2016_paracetamol <- function() {
     # ---------------------------------------------------------------------
 
     # CYP-mediated metabolism (APAP -> NAPQI)
-    CYP_VmaxC      <- exp(  0.0918)  ; label("CYP allometric Vmax constant for liver oxidation (mcmol/hr/kg^0.75)")           # Forward_APAP1.in line 14: lnCYP_VmaxC =  0.0918
-    CYP_Km         <- exp(  4.8122)  ; label("CYP Michaelis constant (mcmol/L)")                                              # line 6:   lnCYP_Km       =  4.8122
+    CYP_VmaxC      <- exp(  0.0918)  ; label("CYP allometric Vmax constant for liver oxidation (umol/h/kg^0.75)")           # Forward_APAP1.in line 14: lnCYP_VmaxC =  0.0918
+    CYP_Km         <- exp(  4.8122)  ; label("CYP Michaelis constant (umol/L)")                                              # line 6:   lnCYP_Km       =  4.8122
 
     # SULT-mediated sulfation (APAP -> AS) with PAPS cofactor
-    SULT_VmaxC     <- exp(  5.9494)  ; label("SULT allometric Vmax constant for liver sulfation (mcmol/hr/kg^0.75)")          # line 11:  lnSULT_VmaxC   =  5.9494
-    SULT_Km_apap   <- exp(  6.7507)  ; label("SULT Km on APAP substrate (mcmol/L)")                                           # line 23:  lnSULT_Km_apap =  6.7507
+    SULT_VmaxC     <- exp(  5.9494)  ; label("SULT allometric Vmax constant for liver sulfation (umol/h/kg^0.75)")          # line 11:  lnSULT_VmaxC   =  5.9494
+    SULT_Km_apap   <- exp(  6.7507)  ; label("SULT Km on APAP substrate (umol/L)")                                           # line 23:  lnSULT_Km_apap =  6.7507
     SULT_Km_paps   <- exp( -1.1493)  ; label("SULT Km on PAPS cofactor (relative amount, unitless)")                          # line 15:  lnSULT_Km_paps = -1.1493
-    SULT_Ki        <- exp(  5.9984)  ; label("SULT partial substrate-inhibition constant (mcmol/L)")                          # line 12:  lnSULT_Ki      =  5.9984
+    SULT_Ki        <- exp(  5.9984)  ; label("SULT partial substrate-inhibition constant (umol/L)")                          # line 12:  lnSULT_Ki      =  5.9984
 
     # UGT-mediated glucuronidation (APAP -> AG) with GA (UDP-glucuronic acid) cofactor
-    UGT_VmaxC      <- exp(  8.2277)  ; label("UGT allometric Vmax constant for liver glucuronidation (mcmol/hr/kg^0.75)")     # line 5:   lnUGT_VmaxC    =  8.2277
-    UGT_Km         <- exp(  8.2749)  ; label("UGT Km on APAP substrate (mcmol/L)")                                            # line 9:   lnUGT_Km       =  8.2749
+    UGT_VmaxC      <- exp(  8.2277)  ; label("UGT allometric Vmax constant for liver glucuronidation (umol/h/kg^0.75)")     # line 5:   lnUGT_VmaxC    =  8.2277
+    UGT_Km         <- exp(  8.2749)  ; label("UGT Km on APAP substrate (umol/L)")                                            # line 9:   lnUGT_Km       =  8.2749
     UGT_Km_GA      <- exp( -1.4898)  ; label("UGT Km on GA cofactor (relative amount, unitless)")                             # line 16:  lnUGT_Km_GA    = -1.4898
-    UGT_Ki         <- exp( 10.7505)  ; label("UGT partial substrate-inhibition constant (mcmol/L)")                           # line 22:  lnUGT_Ki       = 10.7505
+    UGT_Ki         <- exp( 10.7505)  ; label("UGT partial substrate-inhibition constant (umol/L)")                           # line 22:  lnUGT_Ki       = 10.7505
 
     # Hepatic-to-systemic transport of conjugates (Vmax, Km on amount in hepatocyte sub-compartment)
-    Vmax_AG        <- exp( 10.9996)  ; label("Vmax for AG transport from hepatocyte to liver-blood (mcmol/hr)")               # line 18:  lnVmax_AG      = 10.9996
-    Km_AG          <- exp(  9.6067)  ; label("Km for AG hepatocyte-to-liver-blood transport (mcmol)")                         # line 24:  lnKm_AG        =  9.6067
-    Vmax_AS        <- exp( 13.6788)  ; label("Vmax for AS transport from hepatocyte to liver-blood (mcmol/hr)")               # line 21:  lnVmax_AS      = 13.6788
-    Km_AS          <- exp(  9.7220)  ; label("Km for AS hepatocyte-to-liver-blood transport (mcmol)")                         # line 13:  lnKm_AS        =  9.7220
+    Vmax_AG        <- exp( 10.9996)  ; label("Vmax for AG transport from hepatocyte to liver-blood (umol/h)")               # line 18:  lnVmax_AG      = 10.9996
+    Km_AG          <- exp(  9.6067)  ; label("Km for AG hepatocyte-to-liver-blood transport (umol)")                         # line 24:  lnKm_AG        =  9.6067
+    Vmax_AS        <- exp( 13.6788)  ; label("Vmax for AS transport from hepatocyte to liver-blood (umol/h)")               # line 21:  lnVmax_AS      = 13.6788
+    Km_AS          <- exp(  9.7220)  ; label("Km for AS hepatocyte-to-liver-blood transport (umol)")                         # line 13:  lnKm_AS        =  9.7220
 
     # Cofactor zeroth-order resynthesis rates (relative-amount/hr)
-    kPAPS_syn      <- exp(  7.9251)  ; label("PAPS zeroth-order resynthesis rate (1/hr)")                                     # line 7:   lnkPAPS_syn    =  7.9251
-    kGA_syn        <- exp(  9.0430)  ; label("GA zeroth-order resynthesis rate (1/hr)")                                       # line 25:  lnkGA_syn      =  9.0430
+    kPAPS_syn      <- exp(  7.9251)  ; label("PAPS zeroth-order resynthesis rate (1/h)")                                     # line 7:   lnkPAPS_syn    =  7.9251
+    kGA_syn        <- exp(  9.0430)  ; label("GA zeroth-order resynthesis rate (1/h)")                                       # line 25:  lnkGA_syn      =  9.0430
 
     # Renal blood clearance constants (L/hr/kg) for APAP and conjugates
-    CLC_APAP       <- exp( -4.6564)  ; label("APAP renal blood clearance per body weight (L/hr/kg)")                          # line 17:  lnCLC_APAP     = -4.6564
-    CLC_AG         <- exp( -1.9876)  ; label("AG renal blood clearance per body weight (L/hr/kg)")                            # line 19:  lnCLC_AG       = -1.9876
-    CLC_AS         <- exp( -2.0404)  ; label("AS renal blood clearance per body weight (L/hr/kg)")                            # line 8:   lnCLC_AS       = -2.0404
+    CLC_APAP       <- exp( -4.6564)  ; label("APAP renal blood clearance per body weight (L/h/kg)")                          # line 17:  lnCLC_APAP     = -4.6564
+    CLC_AG         <- exp( -1.9876)  ; label("AG renal blood clearance per body weight (L/h/kg)")                            # line 19:  lnCLC_AG       = -1.9876
+    CLC_AS         <- exp( -2.0404)  ; label("AS renal blood clearance per body weight (L/h/kg)")                            # line 8:   lnCLC_AS       = -2.0404
 
     # Bi-exponential gastric-emptying time constants (hours)
     Tg             <- exp( -1.1567)  ; label("Gastric-emptying time constant Tg (hr)")                                        # line 20:  lnTg           = -1.1567
@@ -107,7 +107,7 @@ Zurlinden_2016_paracetamol <- function() {
     # ---------------------------------------------------------------------
 
     # Cardiac-output allometric constant
-    QCC            <- 16.2    ; label("Cardiac-output allometric constant (L/hr/kg^0.75)")  # Executable_APAP.model line 24
+    QCC            <- 16.2    ; label("Cardiac-output allometric constant (L/h/kg^0.75)")  # Executable_APAP.model line 24
 
     # Tissue volume fractions (fraction of body weight, dimensionless)
     VFC            <- 0.214   ; label("Fat tissue volume fraction (kg/kg)")              # line 27

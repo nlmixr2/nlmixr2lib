@@ -6,7 +6,7 @@ Xie_2019_agomelatine <- function () {
   vignette <- "Xie_2019_agomelatine"
   units <-
     list(
-      time = "hr",
+      time = "h",
       dosing = "mg",
       concentration = "ng/mL" # applied to all three plasma outputs: calmt (agomelatine), c3oh (3-hydroxy-agomelatine), c7dm (7-desmethyl-agomelatine)
     )

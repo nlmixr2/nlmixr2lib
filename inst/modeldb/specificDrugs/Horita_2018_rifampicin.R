@@ -2,7 +2,7 @@ Horita_2018_rifampicin <- function() {
   description <- "One-compartment population pharmacokinetic model with sequential zero-order then first-order absorption and first-order elimination for oral rifampin (rifampicin) in Ghanaian children with active tuberculosis (Horita 2018); allometric weight scaling on CL/F (fixed 0.75) and V/F (fixed 1.0) normalised to the cohort median 14.3 kg."
   reference <- "Horita Y, Alsultan A, Kwara A, Antwi S, Enimil A, Ortsin A, Dompreh A, Yang H, Wiesner L, Peloquin CA. Evaluation of the Adequacy of WHO Revised Dosages of the First-Line Antituberculosis Drugs in Children with Tuberculosis Using Population Pharmacokinetic Modeling and Simulations. Antimicrob Agents Chemother. 2018;62(9):e00008-18. doi:10.1128/AAC.00008-18"
   vignette <- "Horita_2018_rifampicin"
-  units <- list(time = "hour", dosing = "mg", concentration = "ug/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 
   covariateData <- list(
     WT = list(

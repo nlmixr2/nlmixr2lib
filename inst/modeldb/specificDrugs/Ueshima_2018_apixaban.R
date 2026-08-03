@@ -22,7 +22,7 @@ Ueshima_2018_apixaban <- function() {
     "Br J Clin Pharmacol. 2018;84(6):1301-1312. doi:10.1111/bcp.13561."
   )
   vignette <- "Ueshima_2018_apixaban"
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   covariateData <- list(
     CRCL = list(

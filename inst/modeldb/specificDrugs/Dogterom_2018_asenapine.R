@@ -9,7 +9,7 @@ Dogterom_2018_asenapine <- function() {
     sep = " "
   )
   vignette <- "Dogterom_2018_asenapine"
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   covariateData <- list(
     SAMPLE_INTENSIVE = list(

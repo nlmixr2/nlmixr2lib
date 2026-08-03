@@ -6,7 +6,7 @@ Kleideiter_2018_cebranopadol <- function() {
     sep = " "
   )
   vignette    <- "Kleideiter_2018_cebranopadol"
-  units       <- list(time = "hr", dosing = "ug", concentration = "pg/mL")
+  units       <- list(time = "h", dosing = "ug", concentration = "pg/mL")
 
   covariateData <- list(
     AGE = list(

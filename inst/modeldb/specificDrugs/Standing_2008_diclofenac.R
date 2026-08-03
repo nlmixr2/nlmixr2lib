@@ -8,7 +8,7 @@ Standing_2008_diclofenac <- function() {
     sep = " "
   )
   vignette <- "Standing_2008_diclofenac"
-  units <- list(time = "hour", dosing = "nmol", concentration = "nmol/L")
+  units <- list(time = "h", dosing = "nmol", concentration = "nmol/L")
 
   covariateData <- list(
     WT = list(

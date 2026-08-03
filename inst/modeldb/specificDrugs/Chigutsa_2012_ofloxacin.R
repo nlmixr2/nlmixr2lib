@@ -30,7 +30,7 @@ Chigutsa_2012_ofloxacin <- function() {
     sep = " "
   )
   vignette <- "Chigutsa_2012_ofloxacin"
-  units    <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     WT = list(

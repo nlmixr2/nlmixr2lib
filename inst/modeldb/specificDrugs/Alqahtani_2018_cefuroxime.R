@@ -10,7 +10,7 @@ Alqahtani_2018_cefuroxime <- function() {
     sep = " "
   )
   vignette <- "Alqahtani_2018_cefuroxime"
-  units    <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     CRCL = list(

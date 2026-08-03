@@ -16,7 +16,7 @@ Clewe_2015_rifampicin <- function() {
     sep = " "
   )
   vignette <- "Clewe_2015_rifampicin"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     FFM = list(

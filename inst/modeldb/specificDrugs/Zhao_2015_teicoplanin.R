@@ -2,7 +2,7 @@ Zhao_2015_teicoplanin <- function() {
   description <- "Two-compartment IV-injection population PK model for teicoplanin in 85 children with malignant hematological disease (Zhao 2015). Body weight enters Vc and Vp with the fixed allometric exponent 1 and enters CL and Q with the fixed allometric exponent 0.75; Schwartz-formula creatinine clearance enters CL via a power exponent estimated at 0.606. Reference subject: WT = 27.1 kg, CRCL = 179 mL/min. The published model was used to derive age-band mg/kg dosing (18 mg/kg for infants, 14 mg/kg for children, 12 mg/kg for adolescents) and a patient-tailored daily dose (target AUC * CL_i) to attain the AUC(0,24 h) target of 750 mg.L/h."
   reference <- "Zhao W, Zhang D, Storme T, Baruchel A, Decleves X, Jacqz-Aigrain E. Population pharmacokinetics and dosing optimization of teicoplanin in children with malignant haematological disease. Br J Clin Pharmacol. 2015;80(5):1197-1207. doi:10.1111/bcp.12710"
   vignette <- "Zhao_2015_teicoplanin"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     WT = list(

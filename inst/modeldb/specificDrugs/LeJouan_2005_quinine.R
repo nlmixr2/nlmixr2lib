@@ -30,7 +30,7 @@ LeJouan_2005_quinine <- function() {
     sep = " "
   )
   vignette <- "LeJouan_2005_quinine"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     WT = list(

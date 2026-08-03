@@ -21,7 +21,7 @@ Taubert_2016_linezolid <- function() {
   )
   vignette <- "Taubert_2016_linezolid"
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "mg",
     concentration = "mg/L"
   )

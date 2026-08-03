@@ -33,7 +33,7 @@ PiresdeMello_2018_zika_FAV_IFN_RBV <- function() {
   )
 
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "static covariates (uM FAV, ug/mL RBV, IU/mL IFN) -- not administered events",
     concentration = "log10(PFU/mL) for the model observation Cc"
   )

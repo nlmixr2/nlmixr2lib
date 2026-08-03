@@ -2,7 +2,7 @@ Csajka_2004_indinavir <- function() {
   description <- "One-compartment first-order-absorption population PK model for oral indinavir 800 mg three-times-daily (alone) or 800 mg twice-daily with low-dose ritonavir in HIV-infected adults; concomitant ritonavir, sex, and body weight enter apparent oral clearance as multiplicative covariate effects (Csajka 2004)."
   reference <- "Csajka C, Marzolini C, Fattinger K, Decosterd LA, Telenti A, Biollaz J, Buclin T. Population pharmacokinetics of indinavir in patients infected with human immunodeficiency virus. Antimicrob Agents Chemother. 2004;48(9):3226-3232. doi:10.1128/aac.48.9.3226-3232.2004"
   vignette <- "Csajka_2004_indinavir"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     WT = list(

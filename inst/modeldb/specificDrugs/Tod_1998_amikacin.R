@@ -2,7 +2,7 @@ Tod_1998_amikacin <- function() {
   description <- "Two-compartment intravenous population PK model for amikacin in febrile, severely neutropenic adults with hematological malignancies (Tod 1998); clearance modeled as the sum of a non-renal intercept and a Cockcroft-Gault-like renal component with sex-stratified slope coefficient (males theta_1, females theta_2), age-correction factor (theta_3 - AGE/100), and Cockcroft-Gault-like renal-function ratio (WT / CREAT). Power-variance residual-error model."
   reference <- "Tod M, Lortholary O, Seytre D, Semaoun R, Uzzan B, Guillevin L, Casassus P, Petitjean O. Population pharmacokinetic study of amikacin administered once or twice daily to febrile, severely neutropenic adults. Antimicrob Agents Chemother. 1998;42(4):849-856. doi:10.1128/aac.42.4.849"
   vignette <- "Tod_1998_amikacin"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     WT = list(

@@ -2,7 +2,7 @@ Zhao_2013_abacavir <- function() {
   description <- "Two-compartment population PK model for oral abacavir in HIV-infected infants, toddlers, and children (Zhao 2013); body weight is the only retained covariate (allometric on CL/F and V1/F with estimated exponents and reference weight 17.6 kg)."
   reference <- "Zhao W, Piana C, Danhof M, Burger D, Della Pasqua O, Jacqz-Aigrain E. Population pharmacokinetics of abacavir in infants, toddlers and children. Br J Clin Pharmacol. 2013;75(6):1525-1535. doi:10.1111/bcp.12024"
   vignette <- "Zhao_2013_abacavir"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     WT = list(

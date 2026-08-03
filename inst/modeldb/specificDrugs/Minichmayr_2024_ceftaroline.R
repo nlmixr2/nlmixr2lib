@@ -3,7 +3,7 @@ Minichmayr_2024_ceftaroline <- function() {
   reference <- "Minichmayr IK, Wicha SG, Matzneller P, Kloft C, Zeitlinger M. Impact of key components of intensified ceftaroline dosing on pharmacokinetic/pharmacodynamic target attainment. Clin Pharmacokinet. 2024;63(1):121-131. doi:10.1007/s40262-023-01325-4. Final population PK parameter estimates are Table 1; the structural-model selection narrative (two-compartment, linear elimination, complete and immediate prodrug conversion, no CLcr covariate) is Results section 3.1; the ceftaroline-to-ceftaroline-fosamil molar-mass ratio of 0.883 and the 20% plasma protein binding used for fT>MIC are Methods sections 2.2 and 2.3; published median fT>MIC values across the eight systematically varied dosing regimens are Tables 2 and 3. The electronic supplementary material (ESM) adds baseline demographics (Table S1), the objective function values of the key candidate models explored during model development (Table S2), and the complete 72-cell grid of median fT>MIC across six MIC values, two dosing intervals, two total daily doses and three infusion durations including the 3 h infusions omitted from the main text (Table S3)."
   vignette <- "Minichmayr_2024_ceftaroline"
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "mg (ceftaroline fosamil, the administered prodrug)",
     concentration = "mg/L (total plasma ceftaroline)"
   )

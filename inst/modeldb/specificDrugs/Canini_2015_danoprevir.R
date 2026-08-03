@@ -31,7 +31,7 @@ Canini_2015_danoprevir <- function() {
   vignette <- "Canini_2015_danoprevir"
 
   units <- list(
-    time          = "hr",
+    time          = "h",
     dosing        = "mg",
     concentration = "ng/mL"
   )

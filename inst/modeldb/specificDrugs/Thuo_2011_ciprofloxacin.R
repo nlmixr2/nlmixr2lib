@@ -2,7 +2,7 @@ Thuo_2011_ciprofloxacin <- function() {
   description <- "One-compartment population PK model with first-order absorption and absorption lag for oral ciprofloxacin in Kenyan children with severe malnutrition (Thuo 2011). Apparent CL and apparent Vc are allometrically scaled to body weight (exponents 0.75 and 1) and modified by linear deviations from a serum sodium reference of 136 mmol/L; apparent CL is further reduced by 28.3% in the paper-defined high-mortality-risk stratum."
   reference   <- "Thuo N, Ungphakorn W, Karisa J, Muchohi S, Muturi A, Kokwaro G, Thomson AH, Maitland K. Dosing regimens of oral ciprofloxacin for children with severe malnutrition: a population pharmacokinetic study with Monte Carlo simulation. J Antimicrob Chemother. 2011 Oct;66(10):2336-45. doi:10.1093/jac/dkr314"
   vignette    <- "Thuo_2011_ciprofloxacin"
-  units       <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units       <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     WT = list(

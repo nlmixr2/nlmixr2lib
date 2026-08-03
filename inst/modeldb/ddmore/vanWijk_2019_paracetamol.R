@@ -9,7 +9,7 @@ vanWijk_2019_paracetamol <- function() {
     sep = " "
   )
   vignette <- "vanWijk_2019_paracetamol"
-  units <- list(time = "minute", dosing = "pmol", concentration = "pmol/larva")
+  units <- list(time = "min", dosing = "pmol", concentration = "pmol/larva")
 
   ddmore_id    <- "DDMODEL00000294"
   replicate_of <- NULL

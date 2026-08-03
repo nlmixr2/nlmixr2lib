@@ -9,7 +9,7 @@ Kim_2018_tacrolimus <- function() {
   )
   vignette <- "Kim_2018_tacrolimus"
   units <- list(
-    time = "hour",
+    time = "h",
     dosing = "mg",
     concentration = "ng/mL (tacrolimus); ug/mL (MPA, MPAG, AcMPAG)"
   )

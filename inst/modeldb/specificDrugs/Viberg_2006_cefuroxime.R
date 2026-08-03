@@ -8,7 +8,7 @@ Viberg_2006_cefuroxime <- function() {
     "doi:10.1111/j.1365-2125.2006.02652.x"
   )
   vignette <- "Viberg_2006_cefuroxime"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     CYSC = list(

@@ -20,7 +20,7 @@ Tan_2009_artesunate <- function() {
   )
   vignette  <- "Tan_2009_artesunate"
   units     <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "mg",
     concentration = "mg/L"
   )

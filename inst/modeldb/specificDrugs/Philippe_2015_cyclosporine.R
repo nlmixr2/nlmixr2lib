@@ -3,7 +3,7 @@ Philippe_2015_cyclosporine <- function() {
   reference <- "Philippe M, Henin E, Bertrand Y, Plantaz D, Goutelle S, Bleyzac N. Model-based determination of effective blood concentrations of cyclosporine for neutrophil response in the treatment of severe aplastic anemia in children. AAPS J. 2015;17(5):1157-1166. doi:10.1208/s12248-015-9779-8"
   vignette <- "Philippe_2015_cyclosporine"
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "mg",
     concentration = "mg/L (= ug/mL); the pharmacodynamic bounds gamma1 and gamma2 are in ng/mL and Cc is rescaled inside model() by a factor of 1000 to compare with them"
   )

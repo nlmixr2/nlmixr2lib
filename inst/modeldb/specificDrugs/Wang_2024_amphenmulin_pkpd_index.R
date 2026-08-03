@@ -10,7 +10,7 @@ Wang_2024_amphenmulin_pkpd_index <- function() {
   )
   vignette <- "Wang_2024_amphenmulin"
   units <- list(
-    time = "hour",
+    time = "h",
     dosing = "h*ug/mL (amphenmulin AUC0-24h per dosing interval, supplied as a covariate)",
     concentration = "log10 CFU/mL (observation)"
   )

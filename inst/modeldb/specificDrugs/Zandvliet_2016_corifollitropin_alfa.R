@@ -33,7 +33,7 @@ Zandvliet_2016_corifollitropin_alfa <- function() {
   )
   vignette <- "Zandvliet_2016_corifollitropin_alfa"
   paper_specific_compartments <- c("endo_fsh")
-  units <- list(time = "hour", dosing = "ug", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "ug", concentration = "ng/mL")
 
   covariateData <- list(
     WT = list(

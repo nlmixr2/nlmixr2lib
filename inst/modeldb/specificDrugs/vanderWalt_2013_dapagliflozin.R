@@ -37,7 +37,7 @@ vanderWalt_2013_dapagliflozin <- function() {
   )
   vignette <- "vanderWalt_2013_dapagliflozin"
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "mg",
     concentration = "ng/mL"
   )

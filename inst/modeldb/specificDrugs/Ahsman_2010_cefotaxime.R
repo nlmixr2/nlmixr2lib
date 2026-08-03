@@ -25,7 +25,7 @@ Ahsman_2010_cefotaxime <- function() {
     sep = " "
   )
   vignette <- "Ahsman_2010_cefotaxime"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     WT = list(

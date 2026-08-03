@@ -2,7 +2,7 @@ Conil_2010_tobramycin <- function() {
   description <- "Two-compartment IV population PK model for tobramycin in adult ICU patients receiving once-daily aminoglycoside therapy for nosocomial Gram-negative infections (Conil 2010); additive linear covariate effects of Cockcroft-Gault creatinine clearance and height on CL, with no IIV on Q or V2."
   reference <- "Conil JM, Georges B, Ruiz S, Rival T, Seguin T, Cougot P, Fourcade O, Houin G, Saivin S. Tobramycin disposition in ICU patients receiving a once daily regimen: population approach and dosage simulations. Br J Clin Pharmacol. 2011;71(1):61-71. doi:10.1111/j.1365-2125.2010.03793.x"
   vignette <- "Conil_2010_tobramycin"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     CRCL = list(

@@ -15,7 +15,7 @@ EudyByrne_2021_buprenorphine <- function() {
   )
   vignette <- "EudyByrne_2021_buprenorphine"
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "N/A (PD-only; buprenorphine concentration is a required input covariate)",
     concentration = "MOTHER NAS score (observation, unitless integer scale); ng/mL (buprenorphine input covariate)"
   )
@@ -88,11 +88,11 @@ EudyByrne_2021_buprenorphine <- function() {
 
     # Zero-order NAS production rate.
     lkin <- log(0.139)
-    label("Kin: NAS score production rate (score/hr)")  # Eudy-Byrne 2021 Table S3: Kin = 0.139 (95% CI 0.128-0.151)
+    label("Kin: NAS score production rate (score/h)")  # Eudy-Byrne 2021 Table S3: Kin = 0.139 (95% CI 0.128-0.151)
 
     # First-order NAS elimination rate constant.
     lkout <- log(0.0301)
-    label("Kout: first-order NAS score elimination rate constant (1/hr)")  # Eudy-Byrne 2021 Table S3: Kout = 0.0301 (95% CI 0.0300-0.0302)
+    label("Kout: first-order NAS score elimination rate constant (1/h)")  # Eudy-Byrne 2021 Table S3: Kout = 0.0301 (95% CI 0.0300-0.0302)
 
     # =====================================================================
     # Inter-individual variability (Table S3 omega-block). Table S3 lists

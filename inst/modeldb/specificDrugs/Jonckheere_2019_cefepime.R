@@ -8,7 +8,7 @@ Jonckheere_2019_cefepime <- function() {
     "doi:10.1128/AAC.01552-19"
   )
   vignette <- "Jonckheere_2019_cefepime"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     WT = list(

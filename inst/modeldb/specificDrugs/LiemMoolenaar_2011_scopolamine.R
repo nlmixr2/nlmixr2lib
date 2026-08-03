@@ -23,7 +23,7 @@ LiemMoolenaar_2011_scopolamine <- function() {
     "doi:10.1111/j.1365-2125.2011.03936.x"
   )
   vignette <- "LiemMoolenaar_2011_scopolamine"
-  units <- list(time = "minute", dosing = "mg", concentration = "pg/mL")
+  units <- list(time = "min", dosing = "mg", concentration = "pg/mL")
 
   covariateData <- list()
 

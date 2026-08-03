@@ -18,7 +18,7 @@ Puisset_2007_docetaxel <- function() {
   vignette <- "Puisset_2007_docetaxel"
 
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "mg",
     concentration = "mg/L",
     anc           = "10^9 cells/L",

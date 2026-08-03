@@ -8,7 +8,7 @@ Green_2005_enoxaparin <- function() {
     "doi:10.1111/j.1365-2125.2004.02253.x"
   )
   vignette <- "Green_2005_enoxaparin"
-  units <- list(time = "hour", dosing = "IU", concentration = "IU/L")
+  units <- list(time = "h", dosing = "IU", concentration = "IU/L")
   # Enoxaparin dose is expressed in anti-Xa International Units (IU) to
   # match the assay readout used to fit the model (anti-Xa IU/L). The
   # clinical dose (mg) is converted via the standard 100 IU per 1 mg

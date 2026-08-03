@@ -10,7 +10,7 @@ Allegaert_2015_paracetamol <- function() {
     sep = " "
   )
   vignette <- "Allegaert_2015_paracetamol"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
   ddmore_id    <- "DDMODEL00000267"
   replicate_of <- NULL
 

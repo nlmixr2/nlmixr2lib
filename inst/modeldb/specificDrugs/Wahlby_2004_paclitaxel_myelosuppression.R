@@ -12,7 +12,7 @@ Wahlby_2004_paclitaxel_myelosuppression <- function() {
     sep = " "
   )
   vignette <- "Wahlby_2004_time_varying_covariates"
-  units    <- list(time = "hour", dosing = "umol", concentration = "umol/L", neutrophils = "10^9/L")
+  units    <- list(time = "h", dosing = "umol", concentration = "umol/L", neutrophils = "10^9/L")
 
   covariateData <- list(
     CL_INDIV = list(

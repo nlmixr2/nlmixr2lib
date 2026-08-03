@@ -4,7 +4,7 @@ Friberg_2012_voriconazole <- function() {
   vignette <- "Friberg_2012_voriconazole"
   paper_specific_etas <- c("etalkm_vmax1", "etalvmax1_ped", "etalgtf1_other", "etalgtf1_adult", "etalka_nonadult", "eta_re_nonadult")
   paper_specific_residual_sds <- c("expSdStdy1", "expSdStdy2", "expSdStdy34", "expSdStdy5Iv", "expSdStdy5Oral")
-  units <- list(time = "hour", dosing = "mg", concentration = "ug/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 
   covariateData <- list(
     WT = list(

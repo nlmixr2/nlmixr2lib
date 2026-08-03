@@ -2,7 +2,7 @@ Wi_2017_teicoplanin <- function() {
   description <- "Two-compartment IV bolus population PK model for teicoplanin in adult patients receiving venoarterial extracorporeal membrane oxygenation (VA-ECMO) for cardiogenic shock, with binary within-subject ECMO indicators on the central volume of distribution (V1) and inter-compartmental clearance (Q) and a binary CRRT indicator on the peripheral volume of distribution (V2) (Wi 2017)"
   reference   <- "Wi J, Noh H, Min KL, Yang S, Jin BH, Hahn J, Bae SK, Kim J, Park MS, Choi D, Chang MJ. Population pharmacokinetics and dose optimization of teicoplanin during venoarterial extracorporeal membrane oxygenation. Antimicrob Agents Chemother. 2017;61(9):e01015-17. doi:10.1128/AAC.01015-17"
   vignette    <- "Wi_2017_teicoplanin"
-  units       <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units       <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     ECMO_STATUS = list(

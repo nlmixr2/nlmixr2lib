@@ -30,7 +30,7 @@ Chi_2018_propofol <- function() {
   )
   vignette <- "Chi_2018_propofol"
   units <- list(
-    time          = "minute",
+    time          = "min",
     dosing        = "mg",
     concentration = "ug/mL"
   )

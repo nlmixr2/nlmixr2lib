@@ -38,7 +38,7 @@ Ollier_2015_ropivacaine <- function() {
     sep = " "
   )
   vignette <- "Ollier_2015_ropivacaine"
-  units <- list(time = "hour", dosing = "umol", concentration = "uM")
+  units <- list(time = "h", dosing = "umol", concentration = "uM")
 
   covariateData <- list(
     WT = list(

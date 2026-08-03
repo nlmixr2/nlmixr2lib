@@ -2,7 +2,7 @@ Hu_2017_peginterferon_beta_1a <- function() {
   description <- "One-compartment population PK model for peginterferon beta-1a in adults with relapsing multiple sclerosis (Hu 2017). First-order SC absorption with the absorption rate constrained above the elimination rate to avoid flip-flop kinetics. BMI is a covariate on both clearance and volume of distribution."
   reference <- "Hu X, Hang Y, Cui Y, Zhang J, Liu S, Seddighzadeh A, Deykin A, Nestorov I. Population-Based Pharmacokinetic and Exposure-Efficacy Analyses of Peginterferon Beta-1a in Patients With Relapsing Multiple Sclerosis. J Clin Pharmacol. 2017;57(8):1005-1016. doi:10.1002/jcph.883"
   vignette <- "Hu_2017_peginterferon_beta_1a"
-  units <- list(time = "hour", dosing = "ug", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "ug", concentration = "ng/mL")
 
   covariateData <- list(
     BMI = list(

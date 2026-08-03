@@ -10,7 +10,7 @@ Bulitta_2009_ceftazidime <- function() {
   )
   vignette <- "Bulitta_2009_ceftazidime"
   units <- list(
-    time = "hour",
+    time = "h",
     dosing = "mg/L (initial ceftazidime concentration in broth)",
     concentration = "log10 CFU/mL (observation); mg/L (drug state cb)"
   )

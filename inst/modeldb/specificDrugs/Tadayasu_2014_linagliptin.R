@@ -8,7 +8,7 @@ Tadayasu_2014_linagliptin <- function() {
     "doi:10.18433/j3s304."
   )
   vignette <- "Tadayasu_2014_linagliptin"
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL (linagliptin total plasma concentration; converted from the internal nmol/L scale via MW 472.54 g/mol); % of baseline (DPP-4 activity)")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL (linagliptin total plasma concentration; converted from the internal nmol/L scale via MW 472.54 g/mol); % of baseline (DPP-4 activity)")
 
   covariateData <- list()
 

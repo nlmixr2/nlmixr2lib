@@ -10,7 +10,7 @@ Castelli_2022_dextroamphetamine <- function() {
     sep = " "
   )
   vignette <- "Castelli_2022_dextroamphetamine"
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   covariateData <- list(
     WT = list(

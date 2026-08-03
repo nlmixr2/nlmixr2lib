@@ -23,7 +23,7 @@ Bouazza_2012_clindamycin <- function() {
     sep = " "
   )
   vignette <- "Bouazza_2012_clindamycin"
-  units    <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     WT = list(

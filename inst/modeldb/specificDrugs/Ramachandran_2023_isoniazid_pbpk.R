@@ -40,7 +40,7 @@ Ramachandran_2023_isoniazid_pbpk <- function() {
     "rifampin in mice. Antimicrob Agents Chemother. 2013;57(4):1763-1771."
   )
   vignette <- "Ramachandran_2023_tuberculosis_eptb_pbpk"
-  units    <- list(time = "hour", dosing = "mg", concentration = "ug/mL")
+  units    <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 
   covariateData <- list(
     NAT2_SLOW = list(

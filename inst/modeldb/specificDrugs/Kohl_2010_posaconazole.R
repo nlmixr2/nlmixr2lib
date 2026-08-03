@@ -2,7 +2,7 @@ Kohl_2010_posaconazole <- function() {
   description <- "One-compartment population PK model for prophylactic oral posaconazole in adult allogeneic stem cell transplant recipients with hematological malignancies (Kohl 2010); ka fixed, age and concurrent diarrhea as covariates."
   reference <- "Kohl V, Muller C, Cornely OA, Abduljalil K, Fuhr U, Vehreschild JJ, Scheid C, Hallek M, Ruping MJGT. Factors Influencing Pharmacokinetics of Prophylactic Posaconazole in Patients Undergoing Allogeneic Stem Cell Transplantation. Antimicrob Agents Chemother. 2010;54(1):207-212. doi:10.1128/AAC.01027-09"
   vignette <- "Kohl_2010_posaconazole"
-  units <- list(time = "hour", dosing = "mg", concentration = "ug/L")
+  units <- list(time = "h", dosing = "mg", concentration = "ug/L")
 
   covariateData <- list(
     AGE = list(

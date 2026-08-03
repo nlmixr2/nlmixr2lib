@@ -2,7 +2,7 @@ ArabAlameddine_2012_raltegravir <- function() {
   description <- "Two-compartment first-order-absorption population PK model for oral raltegravir (RAL) in 145 HIV-positive adults and 19 healthy volunteers, with two HIV-status-specific absorption rate constants (ka HIV+ slower than HIV-), HIV-status-specific proportional residual error, a fixed reference bioavailability F=1 for healthy volunteers, and an estimated relative bioavailability for HIV+ subjects modified linearly by sex (female +55%), atazanavir coadministration (+39%), and total bilirubin centered at 30 umol/L (+36% per doubling), plus a -59% race effect on the central volume of distribution for Caucasian relative to non-Caucasian subjects (Arab-Alameddine 2012)."
   reference <- "Arab-Alameddine M, Fayet-Mello A, Lubomirov R, Neely M, di Iulio J, Owen A, Boffito M, Cavassini M, Gunthard HF, Rentsch K, Buclin T, Aouri M, Telenti A, Decosterd LA, Rotger M, Csajka C, and the Swiss HIV Cohort Study Group. Population Pharmacokinetic Analysis and Pharmacogenetics of Raltegravir in HIV-Positive and Healthy Individuals. Antimicrob Agents Chemother. 2012;56(6):2959-2966. doi:10.1128/AAC.05424-11"
   vignette <- "ArabAlameddine_2012_raltegravir"
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   covariateData <- list(
     HIV_POS = list(

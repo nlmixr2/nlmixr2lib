@@ -2,7 +2,7 @@ Wilbaux_2022_roblitinib <- function() {
   description <- "Two-compartment population PK model for oral roblitinib (FGF401), a selective FGFR4 inhibitor, in adults with hepatocellular carcinoma or other FGF19-FGFR4-expressing solid tumors (Wilbaux 2022). The paper describes a delayed zero-order absorption directly into the central compartment (lag time Tlag before absorption starts, then duration Tk0 of the zero-order input rate) with linear elimination. Categorical covariate effects on CL/F and V1/F for female sex (SEXF) and Asian race (RACE_ASIAN) with non-Asian male as the reference; on Tk0 for fed vs fasted (FED). Continuous power-form covariate effects: body weight on V1/F (exponent 0.332), BMI on Tk0 (exponent -1.66), and administered dose on Tk0 (exponent 0.983). The source paper reports these covariates as identified but not clinically relevant based on simulated exposure metrics. Diagonal IIV on Tlag, Tk0, CL/F, V1/F, and V2/F (Q/F fixed at 0 IIV per Table 1). Combined additive + proportional residual error."
   reference <- "Wilbaux M, Yang S, Jullion A, Demanse D, Graus Porta D, Myers A, Meille C, Gu Y. Integration of Pharmacokinetics, Pharmacodynamics, Safety, and Efficacy into Model-Informed Dose Selection in Oncology First-in-Human Study: A Case of Roblitinib (FGF401). Clin Pharmacol Ther. 2022;112(6):1330-1339. doi:10.1002/cpt.2752. PMID 36131557."
   vignette <- "Wilbaux_2022_roblitinib"
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   covariateData <- list(
     WT = list(

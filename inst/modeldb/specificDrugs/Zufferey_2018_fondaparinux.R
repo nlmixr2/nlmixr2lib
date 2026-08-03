@@ -10,7 +10,7 @@ Zufferey_2018_fondaparinux <- function() {
   )
   vignette <- "Zufferey_2018_fondaparinux"
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "mg (per-subject daily dose carried as the DOSE covariate; no rxode2 dose events)",
     concentration = "probability (the model output `sur` is the survival probability for avoiding a major bleeding event; AUCinf is reported in mg*h/L as a derived internal quantity)"
   )

@@ -26,7 +26,7 @@ Yamazaki_2008_crizotinib_mouse <- function() {
     "doi:10.1124/dmd.107.019711. PMID 18381487."
   )
   vignette <- "Yamazaki_2008_crizotinib_mouse"
-  units <- list(time = "hour", dosing = "mg/kg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg/kg", concentration = "ng/mL")
 
   covariateData <- list()
 

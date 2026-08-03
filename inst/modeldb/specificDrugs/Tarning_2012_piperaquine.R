@@ -34,7 +34,7 @@ Tarning_2012_piperaquine <- function() {
     sep = " "
   )
   vignette <- "Tarning_2012_dihydroartemisinin_piperaquine"
-  units    <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units    <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   covariateData <- list(
     PREG = list(

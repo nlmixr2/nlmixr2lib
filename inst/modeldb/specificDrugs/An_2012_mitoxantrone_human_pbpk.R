@@ -40,7 +40,7 @@ An_2012_mitoxantrone_human_pbpk <- function() {
     sep = " "
   )
   vignette <- "An_2012_mitoxantrone_pbpk"
-  units    <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list()
 

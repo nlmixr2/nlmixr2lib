@@ -20,7 +20,7 @@ Dunlap_2025_tacrolimus <- function() {
     "doi:10.1007/s40262-025-01529-w."
   )
   vignette <- "Dunlap_2025_tacrolimus"
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   covariateData <- list(
     WT = list(

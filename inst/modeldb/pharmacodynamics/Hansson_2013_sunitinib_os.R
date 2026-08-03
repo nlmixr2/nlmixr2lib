@@ -16,7 +16,7 @@ Hansson_2013_sunitinib_os <- function() {
   )
   vignette <- "Hansson_2013_sunitinib_os"
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "n/a (no drug-dosing events; ANC(t) and DBP_REL(t) enter as time-varying covariates from the upstream Hansson 2013 myelosuppression and dBP models)",
     concentration = "probability (the model output `sur` is a survival probability, not a drug concentration)"
   )

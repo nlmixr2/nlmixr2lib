@@ -3,7 +3,7 @@ Hirai_2016_febuxostat <- function() {
   reference <- "Hirai T, Kimura T, Echizen H. Modeling and simulation for estimating the influence of renal dysfunction on the hypouricemic effect of febuxostat in hyperuricemic patients due to overproduction or underexcretion of uric acid. Biol Pharm Bull. 2016;39(6):1013-1021. doi:10.1248/bpb.b15-01031"
   vignette <- "Hirai_2016_febuxostat"
   units <- list(
-    time = "hour",
+    time = "h",
     dosing = "mg",
     concentration = "mg/L"
   )

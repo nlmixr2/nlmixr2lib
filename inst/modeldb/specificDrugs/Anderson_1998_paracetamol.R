@@ -24,7 +24,7 @@ Anderson_1998_paracetamol <- function() {
     sep = " "
   )
   vignette <- "Anderson_1998_paracetamol"
-  units    <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     WT = list(

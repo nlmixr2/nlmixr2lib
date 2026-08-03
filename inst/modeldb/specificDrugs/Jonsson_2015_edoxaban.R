@@ -18,7 +18,7 @@ Jonsson_2015_edoxaban <- function() {
   # stoichiometry in d/dt(central_m4) below correct without a molecular-weight
   # ratio. To dose in mass units, convert with the edoxaban free-base
   # molecular weight of 548.0 g/mol (15 mg = 27372 nmol).
-  units <- list(time = "hour", dosing = "nmol", concentration = "nmol/L")
+  units <- list(time = "h", dosing = "nmol", concentration = "nmol/L")
 
   covariateData <- list(
     WT = list(

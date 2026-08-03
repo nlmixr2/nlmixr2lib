@@ -2,7 +2,7 @@ Klunder_2017_upadacitinib <- function() {
   description <- "Two-compartment population PK model with first-order absorption and an absorption lag time for oral upadacitinib (ABT-494), a selective JAK1 inhibitor, in healthy adults and adults with rheumatoid arthritis (Klunder 2017, pooled phase I + phase IIb analysis). Statistically significant covariates retained in the final model: population (RA vs healthy) on CL/F, sex on CL/F and Vc/F, baseline creatinine clearance on CL/F (raw Cockcroft-Gault, not BSA-normalized), and total body weight on Vc/F. ISV is reported separately for healthy subjects and RA patients on CL/F and Vc/F, and is encoded here as paired healthy / RA structural means with cohort-specific log-normal random effects gated by DIS_HEALTHY."
   reference   <- "Klunder B, Mohamed M-EF, Othman AA. Population pharmacokinetics of upadacitinib in healthy subjects and subjects with rheumatoid arthritis: analyses of phase I and II clinical trials. Clin Pharmacokinet. 2018;57(8):977-988. doi:10.1007/s40262-017-0605-6"
   vignette    <- "Klunder_2017_upadacitinib"
-  units       <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units       <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   covariateData <- list(
     WT = list(

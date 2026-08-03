@@ -6,7 +6,7 @@ Petrov_2024_romiplostim <- function() {
     "Makarenko I, Petrov A, Sokolov V, Drai R, Mishchenko A, Bondareva I, Galustyan A, Sigaev V. Population Pharmacokinetic and Pharmacodynamic Modeling of Romiplostim Biosimilar GP40141 and Reference Product in Healthy Volunteers to Evaluate Biosimilarity. Clin Pharmacol Drug Dev. 2024. doi:10.1002/cpdd.1367 (PMID 38168134; reference 20 in Petrov 2024)."
   )
   vignette <- "Petrov_2024_romiplostim"
-  units <- list(time = "hour", dosing = "ug", concentration = "ng/mL", platelet = "10^9/L")
+  units <- list(time = "h", dosing = "ug", concentration = "ng/mL", platelet = "10^9/L")
 
   covariateData <- list(
     WT = list(

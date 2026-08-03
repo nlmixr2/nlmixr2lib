@@ -26,7 +26,7 @@ Urien_2004_cisplatin <- function() {
   # composite parameters fm/Vm and CLm0/Vm absorbing the volume.
   paper_specific_compartments <- c("bound")
 
-  units <- list(time = "hour", dosing = "mg", concentration = "ug/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 
   covariateData <- list(
     BSA = list(

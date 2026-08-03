@@ -40,7 +40,7 @@ Feng_2008_risperidone <- function() {
     sep = " "
   )
   vignette <- "Feng_2008_risperidone"
-  units    <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units    <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   covariateData <- list(
     AGE = list(

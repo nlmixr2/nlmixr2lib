@@ -24,7 +24,7 @@ Tammara_2017_rivipansel <- function() {
     "doi:10.1002/psp4.12263."
   )
   vignette <- "Tammara_2017_rivipansel"
-  units <- list(time = "hour", dosing = "mg", concentration = "ug/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 
   covariateData <- list(
     WT = list(

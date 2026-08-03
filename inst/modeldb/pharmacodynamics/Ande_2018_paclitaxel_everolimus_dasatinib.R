@@ -11,7 +11,7 @@ Ande_2018_paclitaxel_everolimus_dasatinib <- function() {
   )
   vignette <- "Ande_2018_paclitaxel_everolimus_dasatinib"
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "ug (PAC IV infusion); 50 nM target bath concentration (DE)",
     concentration = "nmol/L (PAC PD driver Cc); fold/L (caspase3Act, unitless relative-to-baseline); cells/L (tumorCells, total bioreactor count)"
   )

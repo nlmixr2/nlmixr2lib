@@ -13,7 +13,7 @@ Barnett_2018_rosuvastatin <- function() {
     sep = " "
   )
   vignette <- "Barnett_2018_rosuvastatin"
-  units <- list(time = "hour", dosing = "mg", concentration = "nmol/L")
+  units <- list(time = "h", dosing = "mg", concentration = "nmol/L")
 
   covariateData <- list(
     OCC = list(

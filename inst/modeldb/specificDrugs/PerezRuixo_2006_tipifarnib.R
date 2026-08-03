@@ -2,7 +2,7 @@ PerezRuixo_2006_tipifarnib <- function() {
   description <- "Three-compartment population PK model for oral and IV tipifarnib in healthy subjects and adult cancer patients (Perez-Ruixo 2006). Sequential zero-order release into the depot (duration D1) followed by first-order absorption (Ka) into the central compartment, with absorption lag time, linear elimination, two peripheral compartments, and bioavailability fixed at 26.7 percent. Covariate effects retained in the final model are total bilirubin on CL (power exponent -0.103 centred at 9 umol/L) and body weight on V2 (linear scaling, exponent fixed at 1, centred at 70 kg); healthy-vs-cancer cohort multipliers apply to CL, V2, Q4, V4, and Ka; a solution-vs-solid formulation indicator scales D1, Ka, and tlag. The mixture-model lag-time subpopulation (71.7 percent subpop 1 vs 28.3 percent subpop 2) is collapsed to the typical subpop-1 lag time for library simulation use; correlated IIVs with paper-reported correlation 1 (Q3-V3, CL-Q4, CL-V4) are encoded as derived etas via the published variance-expansion factors."
   reference   <- "Perez-Ruixo JJ, Piotrovskij V, Zhang S, Hayes S, De Porre P, Zannikos P. Population pharmacokinetics of tipifarnib in healthy subjects and adult cancer patients. Br J Clin Pharmacol. 2006;62(1):81-96. doi:10.1111/j.1365-2125.2006.02615.x"
   vignette    <- "PerezRuixo_2006_tipifarnib"
-  units       <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units       <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   covariateData <- list(
     WT = list(

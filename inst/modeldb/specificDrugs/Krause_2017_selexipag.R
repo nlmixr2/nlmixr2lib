@@ -2,7 +2,7 @@ Krause_2017_selexipag <- function() {
   description <- "Joint two-compartment parent + two-compartment metabolite population PK model for oral selexipag and its active metabolite ACT-333679 in adults with pulmonary arterial hypertension (Krause 2017, GRIPHON study). First-order absorption with a fixed 0.668 h absorption lag delivers selexipag into a two-compartment disposition with linear total clearance CL/F (apparent total clearance, of which the rate constant kmet describes the fraction converted to ACT-333679); the metabolite has its own two-compartment disposition with first-order elimination via km. Body weight (allometric on V_p/F and CL/F; on V_m/F), total bilirubin (power on CL/F), sex (multiplicative on km), and a four-level PAH-comedication categorical (naive / ERA only / PDE5 inhibitor only / ERA + PDE5 combined; multiplicative on km) were retained as statistically significant covariates."
   reference   <- "Krause A, Machacek M, Lott D, Hurst N, Bruderer S, Dingemanse J. Population modeling of selexipag pharmacokinetics and clinical response parameters in patients with pulmonary arterial hypertension. CPT Pharmacometrics Syst Pharmacol. 2017;6(7):477-485. doi:10.1002/psp4.12202"
   vignette    <- "Krause_2017_selexipag"
-  units       <- list(time = "hour", dosing = "ug", concentration = "ng/mL")
+  units       <- list(time = "h", dosing = "ug", concentration = "ng/mL")
 
   covariateData <- list(
     WT = list(

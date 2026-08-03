@@ -23,7 +23,7 @@ vandenBerg_2021_uprifosbuvir_pbpk <- function() {
     sep = " "
   )
   vignette <- "vandenBerg_2021_uprifosbuvir"
-  units    <- list(time = "hour", dosing = "nmol", concentration = "nmol/L")
+  units    <- list(time = "h", dosing = "nmol", concentration = "nmol/L")
 
   paper_specific_compartments <- c(
     "gut", "gut_m5", "gut_m6",

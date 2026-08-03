@@ -43,7 +43,7 @@ Bauer_2023_vwfFviii_humateP <- function() {
   paper_specific_compartments <- c("fviii")
 
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "IU (VWF:RCo activity into central; FVIII:C activity into fviii)",
     concentration = "IU/dL (VWF:RCo activity; FVIII:C activity)"
   )

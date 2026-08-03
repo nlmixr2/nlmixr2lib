@@ -36,7 +36,7 @@ Bukkems_2021_raltegravir <- function() {
     sep = " "
   )
   vignette <- "Bukkems_2021_raltegravir"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     WT = list(

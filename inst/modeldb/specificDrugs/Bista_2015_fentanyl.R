@@ -9,7 +9,7 @@ Bista_2015_fentanyl <- function() {
     "for extraction."
   )
   vignette <- "Bista_2015_fentanyl"
-  units <- list(time = "hr", dosing = "ug", concentration = "ug/L") # Methods + Tables 1 and 3: dose in ug/h, plasma concentration in ug/L
+  units <- list(time = "h", dosing = "ug", concentration = "ug/L") # Methods + Tables 1 and 3: dose in ug/h, plasma concentration in ug/L
 
   covariateData <- list(
     WT = list(

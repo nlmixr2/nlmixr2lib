@@ -2,7 +2,7 @@ Schoemaker_2017_brivaracetam <- function() {
   description <- "One-compartment population PK model for oral brivaracetam in paediatric patients with epilepsy aged 1 month to 16 years (Schoemaker 2017). First-order absorption, single-compartment distribution, and first-order elimination, with allometric scaling of CL/F (exponent 0.750 fixed) and V/F (exponent 1.00 fixed) on lean body weight normalised to a 50 kg adult typical value. Co-administration of phenobarbital (PB; pooled with primidone), carbamazepine (CBZ), or valproate (VPA) modify apparent oral clearance via linear-additive multiplicative factors."
   reference   <- "Schoemaker R, Wade JR, Stockis A. Brivaracetam population pharmacokinetics in children with epilepsy aged 1 month to 16 years. Eur J Clin Pharmacol. 2017 Jun;73(6):727-733. doi:10.1007/s00228-017-2230-6"
   vignette    <- "Schoemaker_2017_brivaracetam"
-  units       <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units       <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     LBM = list(

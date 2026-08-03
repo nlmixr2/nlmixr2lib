@@ -7,7 +7,7 @@ Kleideiter_2017_cebranopadol <- function() {
     "Correction: Clin Pharmacokinet. 2018;57(11):1471-1472. doi:10.1007/s40262-018-0686-x."
   )
   vignette <- "Kleideiter_2017_cebranopadol"
-  units <- list(time = "hour", dosing = "ug", concentration = "pg/mL")
+  units <- list(time = "h", dosing = "ug", concentration = "pg/mL")
 
   covariateData <- list(
     WT = list(

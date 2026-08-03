@@ -10,7 +10,7 @@ Wen_2016_enrofloxacin_MIC1p5 <- function() {
   )
   vignette <- "Wen_2016_enrofloxacin_Pmultocida"
   units <- list(
-    time = "hour",
+    time = "h",
     dosing = "ug/mL (enrofloxacin in broth)",
     concentration = "log10 CFU/mL (observation); ug/mL (drug covariate)"
   )

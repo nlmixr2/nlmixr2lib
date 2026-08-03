@@ -2,7 +2,7 @@ Bulitta_2010_ceftazidime <- function() {
   description <- "Three-compartment population PK model for ceftazidime after 5-min IV infusion in cystic fibrosis patients and healthy volunteers (Bulitta 2010), with allometric fat-free-mass scaling and a cystic-fibrosis-vs-healthy disease-group factor on total clearance."
   reference   <- "Bulitta JB, Landersdorfer CB, Huttner SJ, Drusano GL, Kinzig M, Holzgrabe U, Stephan U, Sorgel F. Population pharmacokinetic comparison and pharmacodynamic breakpoints of ceftazidime in cystic fibrosis patients and healthy volunteers. Antimicrob Agents Chemother. 2010;54(3):1275-1282. doi:10.1128/AAC.00936-09"
   vignette    <- "Bulitta_2010_ceftazidime"
-  units       <- list(time = "hr", dosing = "mg", concentration = "mg/L")
+  units       <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     FFM = list(

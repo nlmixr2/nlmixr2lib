@@ -8,7 +8,7 @@ Li_2012_dexamethasone_rat <- function() {
     "doi:10.1038/aps.2011.161"
   )
   vignette <- "Li_2012_dexamethasone_rat"
-  units <- list(time = "hour", dosing = "mg/kg", concentration = "ug/mL")
+  units <- list(time = "h", dosing = "mg/kg", concentration = "ug/mL")
 
   paper_specific_compartments <- c(
     "stim_cyp3a1_1",

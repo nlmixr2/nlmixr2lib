@@ -2,7 +2,7 @@ Brekkan_2016_factorIX <- function() {
   description <- "Three-compartment population PK model for plasma-derived factor IX (FIX) activity in patients with moderate or severe haemophilia B, developed by Brekkan et al. 2016 to support pharmacokinetic dose individualisation. Disposition is described by linear three-compartment kinetics with intravenous input and first-order elimination from the central compartment; allometric body-weight scaling on CL/Q (0.75) and V1/V2/V3 (1.0) is fixed with a reference weight of 70 kg, and an endogenous baseline FIX activity is estimated as a structural parameter."
   reference <- "Brekkan A, Berntorp E, Jensen K, Nielsen EI, Jonsson S. Population pharmacokinetics of plasma-derived factor IX: procedures for dose individualization. J Thromb Haemost. 2016;14(4):724-732. doi:10.1111/jth.13271"
   vignette <- "Brekkan_2016_factorIX"
-  units <- list(time = "hour", dosing = "U", concentration = "U/mL")
+  units <- list(time = "h", dosing = "U", concentration = "U/mL")
 
   covariateData <- list(
     WT = list(

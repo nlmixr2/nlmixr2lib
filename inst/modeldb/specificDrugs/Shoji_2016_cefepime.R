@@ -10,7 +10,7 @@ Shoji_2016_cefepime <- function() {
     sep = " "
   )
   vignette <- "Shoji_2016_cefepime"
-  units    <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     WT = list(

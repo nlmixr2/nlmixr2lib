@@ -2,7 +2,7 @@ Mitra_2026_ziftomenib <- function() {
   description <- "Sequential two-stage population PK model for oral ziftomenib (a potent, selective, oral menin inhibitor for R/R NPM1-mutated acute myeloid leukemia) and its two active metabolites KO-739 and KO-516 (Mitra 2026 Kura Oncology KOMET-001 + KO-MEN-003). Parent PK is a 2-compartment model with first-order absorption, absorption lag time, and linear elimination from the central compartment; oral bioavailability F1 is fixed at 0.129 (identifiability constraint from the human ADME + absolute-BA study KO-MEN-005). Each metabolite is 2-compartment with linear elimination; the metabolic clearance is split between KO-739 and KO-516 by a fixed 1:1 in-vitro-anchored biotransformation ratio (FM_KO516 = 0.5), with the total metabolized fraction FM held fixed at 0.535 after an initial identifiability-limited estimation. Covariate effects retained in the final model: FED and PPI on parent F1 (logit-scale shifts +3.21 fed; -0.520 PPI = 6.09x and 0.627x multipliers on F1), PPI on parent Ka (log-scale shift -0.485 = 0.616x), FED on parent absorption lag time (log-scale shift +0.322 = 1.38x), strong CYP3A4 inhibitor on parent CL/F (log-scale -0.778 = 0.459x), healthy-volunteer status on parent CL/F (log-scale +0.950 = 2.59x), healthy-volunteer status on FM (logit-scale -1.62 = 0.348x multiplier on FM), strong CYP3A4 inhibitor on KO-739 CL (log-scale -1.64 = 0.195x), strong CYP3A4 inhibitor on KO-516 CL (log-scale -0.802 = 0.449x), healthy-volunteer status on KO-739 Vc (log-scale -1.62 = 0.197x), and healthy-volunteer status on KO-516 Vc (log-scale -1.87 = 0.154x). No effect of NPM1-m vs KMT2A-r mutational status, body weight, sex, race, age, mild/moderate renal or hepatic impairment, or P-gp inhibitor coadministration on ziftomenib PK. IIV: parent 47.3% CV on CL and 120% CV on Vc; metabolites 74.7% (KO-739 CL), 110% (KO-739 Vc), 162% (KO-739 Q), 31.2% (KO-516 CL), 191% (KO-516 Vc), 118% (KO-516 Q), and 56.8% CV on FM (all independent diagonals). Inter-occasion variability on F1 (Omega 1.06 corresponding to 137.3% CV) reported in the parent NONMEM run across 3 occasions is not encoded structurally here (no operational occasion column is defined for the model-library use case; see vignette Assumptions and deviations). Residual error: proportional 43.7% CV on parent Cc; proportional 45.2% CV plus additive 0.128 ng/mL on Cc_ko739; proportional 36.4% CV on Cc_ko516."
   reference   <- "Mitra A, Yang X, Ortiz RH, Jomphe C, Leoni M, Gosselin NH. Population Pharmacokinetics and Exposure-Response Analysis of Ziftomenib in Relapsed or Refractory Acute Myeloid Leukemia Patients With NPM1 Mutation. CPT Pharmacometrics Syst Pharmacol. 2026. doi:10.1002/psp4.70244."
   vignette    <- "Mitra_2026_ziftomenib"
-  units       <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units       <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   covariateData <- list(
     DIS_HEALTHY = list(
@@ -67,10 +67,10 @@ Mitra_2026_ziftomenib <- function() {
     # logit scale; the log-scale THETA values quoted below in each source-trace
     # comment are copied verbatim from the Supplement's Final Parameter Estimate
     # block ("Final Population PK Model of Ziftomenib - NONMEM Output Code").
-    lka       <- log(0.0928); label("First-order absorption rate KA (1/hr)")                                            # Mitra 2026 Table 1 KA = 0.0928 1/h; Supp NONMEM TH2 = -2.38 -> exp(-2.38) = 0.0927
-    lcl       <- log(11.6);   label("Apparent parent clearance CL/F (L/hr) in R/R AML patients, no strong CYP3A4 inhibitor")    # Table 1 CL = 11.6 L/h; Supp TH4 = 2.45 -> exp(2.45) = 11.6
+    lka       <- log(0.0928); label("First-order absorption rate KA (1/h)")                                            # Mitra 2026 Table 1 KA = 0.0928 1/h; Supp NONMEM TH2 = -2.38 -> exp(-2.38) = 0.0927
+    lcl       <- log(11.6);   label("Apparent parent clearance CL/F (L/h) in R/R AML patients, no strong CYP3A4 inhibitor")    # Table 1 CL = 11.6 L/h; Supp TH4 = 2.45 -> exp(2.45) = 11.6
     lvc       <- log(54.6);   label("Apparent parent central volume Vc/F (L)")                                          # Table 1 Vc = 54.6 L; Supp TH3 = 4.00 -> exp(4.00) = 54.6
-    lq        <- log(27.7);   label("Apparent parent inter-compartmental clearance Q/F (L/hr)")                         # Table 1 Q = 27.7 L/h; Supp TH5 = 3.32 -> exp(3.32) = 27.7
+    lq        <- log(27.7);   label("Apparent parent inter-compartmental clearance Q/F (L/h)")                         # Table 1 Q = 27.7 L/h; Supp TH5 = 3.32 -> exp(3.32) = 27.7
     lvp       <- log(1106);   label("Apparent parent peripheral volume Vp/F (L)")                                       # Table 1 Vp = 1106 L; Supp TH6 = 7.01 -> exp(7.01) = 1108
     ltlag     <- log(0.325);  label("Parent absorption lag time ALAG1 (hr)")                                            # Table 1 Lag = 0.325 h; Supp TH7 = 0.325 (linear scale in this THETA position)
 
@@ -108,14 +108,14 @@ Mitra_2026_ziftomenib <- function() {
     # Model of Metabolites - NONMEM Output Code") stores THETAs 1-8 in the
     # log domain; the linear-scale metabolite values in Table 1 back out to
     # those log-scale THETAs to within rounding.
-    lq_ko739  <- log(4.13);  label("Apparent KO-739 inter-compartmental clearance Q_KO-739 (L/hr)")           # Table 1 Q_KO-739 = 4.13 L/h; Supp meta TH1 = 1.42 -> exp(1.42) = 4.14
+    lq_ko739  <- log(4.13);  label("Apparent KO-739 inter-compartmental clearance Q_KO-739 (L/h)")           # Table 1 Q_KO-739 = 4.13 L/h; Supp meta TH1 = 1.42 -> exp(1.42) = 4.14
     lvc_ko739 <- log(8.20);  label("Apparent KO-739 central volume Vc_KO-739 (L) in R/R AML patients")        # Table 1 Vc of KO-739 = 8.20 L; Supp meta TH2 = 2.10 -> exp(2.10) = 8.17
     lvp_ko739 <- log(240);   label("Apparent KO-739 peripheral volume Vp_KO-739 (L)")                          # Table 1 Vp of KO-739 = 240 L; Supp meta TH3 = 5.48 -> exp(5.48) = 240
-    lcl_ko739 <- log(8.50);  label("Apparent KO-739 clearance CL_KO-739 (L/hr) in R/R AML patients, no strong CYP3A4 inhibitor")  # Table 1 CL of KO-739 = 8.50 L/h; Supp meta TH4 = 2.14 -> exp(2.14) = 8.50
-    lq_ko516  <- log(9.55);  label("Apparent KO-516 inter-compartmental clearance Q_KO-516 (L/hr)")           # Table 1 Q of KO-516 = 9.55 L/h; Supp meta TH5 = 2.26 -> exp(2.26) = 9.58
+    lcl_ko739 <- log(8.50);  label("Apparent KO-739 clearance CL_KO-739 (L/h) in R/R AML patients, no strong CYP3A4 inhibitor")  # Table 1 CL of KO-739 = 8.50 L/h; Supp meta TH4 = 2.14 -> exp(2.14) = 8.50
+    lq_ko516  <- log(9.55);  label("Apparent KO-516 inter-compartmental clearance Q_KO-516 (L/h)")           # Table 1 Q of KO-516 = 9.55 L/h; Supp meta TH5 = 2.26 -> exp(2.26) = 9.58
     lvc_ko516 <- log(11.8);  label("Apparent KO-516 central volume Vc_KO-516 (L) in R/R AML patients")        # Table 1 Vc of KO-516 = 11.8 L; Supp meta TH6 = 2.47 -> exp(2.47) = 11.8
     lvp_ko516 <- log(604);   label("Apparent KO-516 peripheral volume Vp_KO-516 (L)")                          # Table 1 Vp of KO-516 = 604 L; Supp meta TH7 = 6.40 -> exp(6.40) = 601
-    lcl_ko516 <- log(21.7);  label("Apparent KO-516 clearance CL_KO-516 (L/hr) in R/R AML patients, no strong CYP3A4 inhibitor")  # Table 1 CL of KO-516 = 21.7 L/h; Supp meta TH8 = 3.08 -> exp(3.08) = 21.8
+    lcl_ko516 <- log(21.7);  label("Apparent KO-516 clearance CL_KO-516 (L/h) in R/R AML patients, no strong CYP3A4 inhibitor")  # Table 1 CL of KO-516 = 21.7 L/h; Supp meta TH8 = 3.08 -> exp(3.08) = 21.8
 
     # Fraction of parent ziftomenib metabolized (FM) is on logit scale in the
     # source NONMEM code (THETA(9) FIXED at 0.14, yielding logit^-1(0.14) =
