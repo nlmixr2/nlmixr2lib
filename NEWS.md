@@ -85,6 +85,8 @@
 
 - Add Wu 2023 SPI-62 ([doi:10.1007/s40262-023-01278-8](https://doi.org/10.1007/s40262-023-01278-8)) - healthy adults.
 
+- Add Chen 2024 nadroparin ([doi:10.3389/fphar.2024.1331673](https://doi.org/10.3389/fphar.2024.1331673)) - preterm and term neonates and infants under 8 months with thromboembolic disease.
+
 - Disambiguated the overloaded `OC` name, which denoted five unrelated
   concepts. Osteocalcin `OC` -> `OSTCALC` (uppercase, matching the sibling
   biomarkers `P1NP` / `PSA` / `PLT` / `WBC` and the sister model
