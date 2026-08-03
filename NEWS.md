@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Aoki 2024 bosentan PBPK-TMDD ([doi:10.1002/psp4.13055](https://doi.org/10.1002/psp4.13055)) - healthy adults, 10-750 mg intravenous.
+- Add Ippolito 2024 pacmilimab ([doi:10.1002/psp4.13060](https://doi.org/10.1002/psp4.13060)) - virtual patients with triple-negative breast cancer.
 
 - Add Wu 2023 SPI-62 ([doi:10.1007/s40262-023-01278-8](https://doi.org/10.1007/s40262-023-01278-8)) - healthy adults.
 

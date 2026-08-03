@@ -1744,6 +1744,8 @@ navbar:
         href: articles/deJonge_2005_paclitaxel.html
       - text: "Paclitaxel myelosuppression (Wahlby 2004)"
         href: articles/Wahlby_2004_time_varying_covariates.html
+      - text: "Pacmilimab qsp (Ippolito 2024)"
+        href: articles/Ippolito_2024_pacmilimab_qsp.html
       - text: "Paliperidone panss subscales (PillaReddy 2013)"
         href: articles/PillaReddy_2013_panss_subscales.html
       - text: "Palivizumab (Robbie 2012)"
@@ -3217,6 +3219,7 @@ articles:
   - articles/Ide_2009_pravastatin
   - articles/Ide_2020_elotuzumab
   - articles/Iida_2008_nicorandil
+  - articles/Ippolito_2024_pacmilimab_qsp
   - articles/Ivaturi_2017_RBP_7000
   - articles/Jackson_2022_ixekizumab
   - articles/JacoboCabral_2015_tacrolimus
