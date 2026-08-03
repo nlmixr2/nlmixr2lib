@@ -1324,6 +1324,21 @@ PBPK bare organ-amount compartments used by Zhang 2011 nutlin3a and similar full
   - `Cles` -- lesion state in `Mehta_2023_bedaquiline_mpbpk.R` (Mehta 2023 ESM S2).
 - **Example models:** `Mehta_2023_bedaquiline_mpbpk.R` (founding example; also `lesion_m2` for the M2 metabolite), `Mehta_2023_pretomanid_mpbpk.R`, `Mehta_2023_pyrazinamide_mpbpk.R`.
 
+### pleura (**canonical pleural-space fluid compartment**)
+- **Type:** compartment
+- **Role:** The pleural space, a serous cavity modelled as a fluid sub-compartment of the lung. Pleural liquid is a microvascular filtrate that flows in through the parietal pleural capillaries and is removed via lymphatic stomata in the parietal pleura, so the state is fed by lung efflux at a pleural fluid flow `q_pleura` and drained at the same flow: `d/dt(pleura) = q_pleura * cv_lung - q_pleura * Cpleura`. Because it is a fluid space rather than a perfused tissue it carries **no** tissue:plasma partition coefficient -- its outflow uses the pleural concentration directly, not `Cpleura / kp_pleura`. Distinct from `isf` (the generic mAb interstitial-fluid space) and from `ecf` (brain / tumour extracellular fluid in microdialysis models): the pleural cavity is an anatomically separate serous cavity and a model could legitimately carry `pleura` alongside either of those. Pleural tuberculosis is the second most common form of extrapulmonary TB, and pleural effusion is also a site of interest for oncology and anti-infective penetration studies.
+- **Source aliases:**
+  - `Pl` / `C_Pl` -- pleural state in `Ramachandran_2023_*_pbpk.R` (Appendix S1 section 3).
+- **Example models:** `Ramachandran_2023_rifampicin_pbpk.R` (founding example), `Ramachandran_2023_ethambutol_pbpk.R`, `Ramachandran_2023_isoniazid_pbpk.R`, `Ramachandran_2023_pyrazinamide_pbpk.R`.
+- **Notes:** Pair with `lnode` when a model resolves both major extrapulmonary-TB sites. The volume and flow are per-kg quantities (0.3 mL/kg and 0.15 mL/kg/h in the founding example), not fractions of body weight or cardiac output.
+
+### gut_lumen (**canonical gut-luminal drug reservoir**)
+- **Type:** compartment
+- **Role:** Non-absorbed drug held in the intestinal lumen, as an **amount** rather than a concentration. Receives biliary / hepatic output and drains by two competing first-order routes: reabsorption back into the perfused `gut` tissue at `kr` (enterohepatic circulation) and faecal transit out of the body at `kF`. Distinct from `gallbladder`, which models a storage organ with delayed, gated emptying producing a discrete secondary peak -- the gut lumen is a continuously-draining reservoir with no emptying delay. Also distinct from `gut` / `a_gut`, which are the perfused gut *tissue* with their own volume, blood flow, lymph flow, and partition coefficient; a model that carries enterohepatic recycling needs both states simultaneously.
+- **Source aliases:**
+  - `GL` / `A_GL` -- gut lumen state in `Ramachandran_2023_*_pbpk.R` (Appendix S1 section 1).
+- **Example models:** `Ramachandran_2023_rifampicin_pbpk.R` (founding example; `kr = 0.17 /h` for rifampicin enterohepatic circulation), `Ramachandran_2023_ethambutol_pbpk.R`, `Ramachandran_2023_isoniazid_pbpk.R`, `Ramachandran_2023_pyrazinamide_pbpk.R` (all three with `kr = 0`, so the lumen is a terminal faecal-transit sink).
+
 ### brain (**canonical bare brain compartment**)
 - **Type:** compartment
 - **Role:** Bare brain organ compartment in full-body PBPK extractions.

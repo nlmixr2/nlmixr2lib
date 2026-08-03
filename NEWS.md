@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Kloos 2021 PEGasparaginase ([doi:10.3324/haematol.2019.242289](https://doi.org/10.3324/haematol.2019.242289)) - children with acute lymphoblastic leukemia.
+- Add Ramachandran 2023 rifampicin, ethambutol, isoniazid, and pyrazinamide whole-body PBPK ([doi:10.1002/psp4.13008](https://doi.org/10.1002/psp4.13008)) - 70-kg reference adult, extrapulmonary tuberculosis sites.
 
 - Add Wu 2023 SPI-62 ([doi:10.1007/s40262-023-01278-8](https://doi.org/10.1007/s40262-023-01278-8)) - healthy adults.
 
