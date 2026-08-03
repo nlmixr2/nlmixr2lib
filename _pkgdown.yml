@@ -128,6 +128,12 @@ navbar:
         href: articles/Tang_2019_amoxicillin.html
       - text: "AmphotericinB liposomal (Hong 2006)"
         href: articles/Hong_2006_amphotericinB_liposomal.html
+      - text: "AmphotericinB liposomal calbicans (Beredaki 2024)"
+        href: articles/Beredaki_2024_amphotericinB_liposomal.html
+      - text: "AmphotericinB liposomal cauris24h (Beredaki 2024)"
+        href: articles/Beredaki_2024_amphotericinB_liposomal.html
+      - text: "AmphotericinB liposomal cauris48h (Beredaki 2024)"
+        href: articles/Beredaki_2024_amphotericinB_liposomal.html
       - text: "Ampicillin (Tremoulet 2014)"
         href: articles/Tremoulet_2014_ampicillin.html
       - text: "Ampicillin sulbactam (Soto 2014)"
@@ -2750,6 +2756,7 @@ articles:
   - articles/Bender_2014_trastuzumabEmtansine_reduced
   - articles/Benkali_2010_tacrolimus
   - articles/Benson_2014_PF04457845_qsp
+  - articles/Beredaki_2024_amphotericinB_liposomal
   - articles/Berends_2019_infliximab
   - articles/Bergen_2017_meropenem
   - articles/Berges_2007_enoxaparin

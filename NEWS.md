@@ -85,6 +85,8 @@
 
 - Add Wu 2023 SPI-62 ([doi:10.1007/s40262-023-01278-8](https://doi.org/10.1007/s40262-023-01278-8)) - healthy adults.
 
+- Add Beredaki 2024 liposomal amphotericin B ([doi:10.1093/infdis/jiad583](https://doi.org/10.1093/infdis/jiad583)) - in vitro, Candida auris and Candida albicans isolates.
+
 - Disambiguated the overloaded `OC` name, which denoted five unrelated
   concepts. Osteocalcin `OC` -> `OSTCALC` (uppercase, matching the sibling
   biomarkers `P1NP` / `PSA` / `PLT` / `WBC` and the sister model
