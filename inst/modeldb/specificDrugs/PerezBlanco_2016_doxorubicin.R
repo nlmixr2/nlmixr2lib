@@ -210,10 +210,10 @@ PerezBlanco_2016_doxorubicin <- function() {
     # No correlation between random-effect parameters was identified.
 
     etalcl       ~ 0.051112                                                                           # IIV(CL)  = 22.9% CV -> omega^2 = log(1 + 0.229^2) = 0.051112
-    etalq        ~ fixed(0.344214)                                                                    # IIV(Q2)  = 64.1% CV -> omega^2 = log(1 + 0.641^2) = 0.344214 (FIXED at model-building value)
-    etalq2       ~ fixed(0.076520)                                                                    # IIV(Q3)  = 28.2% CV -> omega^2 = log(1 + 0.282^2) = 0.076520 (FIXED at model-building value)
+    etalq        ~ fixed(0.344214)                                                                    # IIV(Q2) = 64.1% CV -> omega^2 = log(1 + 0.641^2) = 0.344214 (model-building value)
+    etalq2       ~ fixed(0.076520)                                                                    # IIV(Q3) = 28.2% CV -> omega^2 = log(1 + 0.282^2) = 0.076520 (model-building value)
     etalfm       ~ 0.160322                                                                           # IIV(Fm)  = 41.7% CV -> omega^2 = log(1 + 0.417^2) = 0.160322
-    etalcl_doxol ~ fixed(0.201130)                                                                    # IIV(CLm) = 47.2% CV -> omega^2 = log(1 + 0.472^2) = 0.201130 (FIXED at model-building value)
+    etalcl_doxol ~ fixed(0.201130)                                                                    # IIV(CLm) = 47.2% CV -> omega^2 = log(1 + 0.472^2) = 0.201130 (model-building value)
     etalq_doxol  ~ 0.297821                                                                           # IIV(Q5)  = 58.9% CV -> omega^2 = log(1 + 0.589^2) = 0.297821
 
     # ------------------------------------------------------------------

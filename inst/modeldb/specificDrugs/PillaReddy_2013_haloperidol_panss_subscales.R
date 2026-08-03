@@ -219,7 +219,7 @@ PillaReddy_2013_haloperidol_panss_subscales <- function() {
     # II Table 2 footnote). For positive and general it was fixed at 50% CV
     # = log(1 + 0.5^2) = 0.2231 -- encoded as a fixed IIV to preserve the
     # paper's choice.
-    etaec50_pos ~ fixed(0.2231)  # Part II Table 2 footnote: IIV EC50 positive and general fixed at 50% CV
+    etaec50_pos ~ fixed(0.2231)  # Part II Table 2 footnote: IIV EC50 positive and general 50% CV
     etaec50_gen ~ fixed(0.2231)  # Part II Table 2 footnote: 50% CV nominal value because parameter not estimable
     etaec50_neg ~ 2.1085         # Part II Table 2 haloperidol: IIV EC50 negative = 269% CV; omega^2 = log(1 + 2.69^2) = 2.1085
 

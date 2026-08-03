@@ -49,7 +49,7 @@ Nielsen_2011_vancomycin <- function() {
     # Drug-specific PK parameters (vancomycin)
     # =============================================================
     kdeg <- fixed(0)
-    label("Drug degradation rate kdeg in broth (1/h; FIXED at 0 per Methods 'Semimechanistic PKPD model')")  # Methods: "For the other drugs, the kdeg was set to zero" (vancomycin = 0)
+    label("Drug degradation rate kdeg in broth (1/h; per Methods 'Semimechanistic PKPD model')")  # Methods: "For the other drugs, the kdeg was set to zero" (vancomycin = 0)
 
     # ke is the in vitro kinetic-system elimination rate. The
     # default below corresponds to a 5.1-h simulated human
@@ -69,13 +69,13 @@ Nielsen_2011_vancomycin <- function() {
     lhill <- log(4.99)
     label("Log Hill (sigmoidicity) exponent gamma on the killing function (unitless)")    # Table 3 "Static and dynamic" column: gamma VAN = 4.99 (RSE 24%)
     lke0  <- fixed(log(100))
-    label("Log effect-compartment delay rate ke0 (1/h; FIXED at 100 per Table 3 'Static and dynamic' column)")  # Table 3 "Static and dynamic" column: ke0 VAN = 100 FIX (effectively instantaneous equilibrium)
+    label("Log effect-compartment delay rate ke0 (1/h; per Table 3 'Static and dynamic' column)")  # Table 3 "Static and dynamic" column: ke0 VAN = 100 FIX (effectively instantaneous equilibrium)
 
     # =============================================================
     # Starting inoculum
     # =============================================================
     lcfu0 <- fixed(log(1e6))
-    label("Log starting bacterial inoculum (CFU/mL; FIXED at 10^6 per Methods)")  # Methods: "starting inoculum of 10^6 CFU/ml"
+    label("Log starting bacterial inoculum (CFU/mL; per Methods)")  # Methods: "starting inoculum of 10^6 CFU/ml"
 
     # =============================================================
     # Residual error

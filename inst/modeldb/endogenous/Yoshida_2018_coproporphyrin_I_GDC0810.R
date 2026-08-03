@@ -61,7 +61,7 @@ Yoshida_2018_coproporphyrin_I_GDC0810 <- function() {
     # estimates as plausibly transferable across DDI scenarios.
 
     logitfnh <- fixed(qlogis(0.129))
-    label("Logit of the non-hepatic fraction fNH of overall CPI clearance (unitless; fixed)")
+    label("Logit of the non-hepatic fraction fNH of overall CPI clearance (unitless)")
     # Table 2, GDC-0810-CPI: fNH = 12.9 % FIXED (not estimated). The
     # authors fix fNH to the rifampin-CPI estimated value because
     # their sensitivity analysis showed fNH has small influence on

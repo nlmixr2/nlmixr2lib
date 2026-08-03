@@ -104,7 +104,7 @@ Kuroda_2023_cephalothin <- function() {
     # Not estimated by Kuroda 2023; taken unchanged from the cited source and
     # used to convert total plasma concentration to the free concentration
     # that drives the fT > MIC PK/PD target, hence fixed().
-    fu <- fixed(0.8); label("Fraction unbound in plasma (FIXED; assumed, not estimated)")                         # Methods paragraph 2: "Using this model and the free fraction value of 0.8 reported in a previous study [1]" (Ambrose 2007, Clin Infect Dis 44:79-86)
+    fu <- fixed(0.8); label("Fraction unbound in plasma (assumed, not estimated)")                         # Methods paragraph 2: "Using this model and the free fraction value of 0.8 reported in a previous study [1]" (Ambrose 2007, Clin Infect Dis 44:79-86)
 
     # =====================================================================
     # Between-subject variability

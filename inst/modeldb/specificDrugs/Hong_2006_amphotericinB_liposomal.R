@@ -68,11 +68,11 @@ Hong_2006_amphotericinB_liposomal <- function() {
     # between-occasion drift the paper estimates. See vignette Assumptions and
     # deviations.
     lcl_bov_mult <- fixed(log(1))
-    label("Multiplicative CL factor anchor (log scale, fixed; carries IIV originally reported as BOV)")
+    label("Multiplicative CL factor anchor (log scale,; carries IIV originally reported as BOV)")
     etalcl_bov_mult ~ 0.209  # Hong 2006 Table 3 CL BOV 46%; matches Table 4 pi^2 CL = 0.209
 
     lvc_bov_mult <- fixed(log(1))
-    label("Multiplicative V1 factor anchor (log scale, fixed; carries IIV originally reported as BOV)")
+    label("Multiplicative V1 factor anchor (log scale,; carries IIV originally reported as BOV)")
     etalvc_bov_mult ~ 0.319  # Hong 2006 Table 3 V1 BOV 56%; matches Table 4 pi^2 V1 = 0.319
 
     # Combined additive + proportional residual error (Hong 2006 Table 3).

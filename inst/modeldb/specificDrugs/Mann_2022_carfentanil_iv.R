@@ -130,13 +130,13 @@ Mann_2022_carfentanil_iv <- function() {
     lq2  <- log(0.228)
     label("Inter-compartmental clearance Q3 (L/min)")                       # FDA: k13 / 10 implies Q3 / 10; Q3 = fentanyl Q3 / 10 = 2.28 / 10 = 0.228 L/min.
     lk1  <- fixed(log(10))
-    label("Biophase equilibration rate k1 (1/min, FIXED, faster than fentanyl)") # FDA: useFasterBiophaseEquilibriumForCarfentanil = yes -> k1 = 10/min (replaces fentanyl 0.18/min).
+    label("Biophase equilibration rate k1 (1/min,, faster than fentanyl)") # FDA: useFasterBiophaseEquilibriumForCarfentanil = yes -> k1 = 10/min (replaces fentanyl 0.18/min).
 
     # Fixed allometric exponents (inherited from Algera 2021 fentanyl PK)
     e_wt_cl <- fixed(0.75)
-    label("Body-weight allometric exponent on CL and Q (unitless, FIXED)")  # Inherited from fentanyl PK; Mann 2022 carfentanil uses same WT scaling
+    label("Body-weight allometric exponent on CL and Q (unitless)")  # Inherited from fentanyl PK; Mann 2022 carfentanil uses same WT scaling
     e_wt_vc  <- fixed(1)
-    label("Body-weight allometric exponent on V1, V2, V3 (unitless, FIXED)") # Inherited from fentanyl PK
+    label("Body-weight allometric exponent on V1, V2, V3 (unitless)") # Inherited from fentanyl PK
 
     # IIV -- same omega^2 values as fentanyl (Mann 2022 Supplement 1 Table
     # S1 footnote: "Carfentanil PK parameters were based on these fentanyl

@@ -104,7 +104,7 @@ Chen_2017_TB_MTP_GPDI_mouse <- function() {
 
     # ===== Isoniazid PK (1-compartment, dose-dependent CL) =====
     lka_inh <- fixed(log(12.6))
-    label("Isoniazid absorption rate constant ka (1/h, fixed from Chen 2016)")
+    label("Isoniazid absorption rate constant ka (1/h, from Chen 2016)")
     # Chen 2017 Table 1: ka = 12.6 FIX, fixed per Chen 2016 EJPS upstream popPK.
 
     lcl_inh_lowdose <- log(612)
@@ -122,7 +122,7 @@ Chen_2017_TB_MTP_GPDI_mouse <- function() {
 
     # ===== Ethambutol PK (2-compartment) =====
     lka_emb <- fixed(log(0.87))
-    label("Ethambutol absorption rate constant ka (1/h, fixed from Chen 2016)")
+    label("Ethambutol absorption rate constant ka (1/h, from Chen 2016)")
     # Chen 2017 Table 1: ka = 0.87 FIX, fixed per Chen 2016 EJPS upstream popPK.
 
     lcl_emb <- log(3400)
@@ -143,7 +143,7 @@ Chen_2017_TB_MTP_GPDI_mouse <- function() {
 
     # ===== Pyrazinamide PK (1-compartment, linear) =====
     lka_pza <- fixed(log(2.84))
-    label("Pyrazinamide absorption rate constant ka (1/h, fixed from Chen 2016)")
+    label("Pyrazinamide absorption rate constant ka (1/h, from Chen 2016)")
     # Chen 2017 Table 1: ka = 2.84 FIX, fixed per Chen 2016 EJPS upstream popPK.
 
     lcl_pza <- log(273.71)
@@ -172,19 +172,19 @@ Chen_2017_TB_MTP_GPDI_mouse <- function() {
     # Chen 2017 Table 2: kFS_lin = 6.65e-5, RSE 20.3%. kFS(t) = kFS_lin * t.
 
     lksf <- fixed(log(6.03e-4))
-    label("kSF -- first-order S->F transfer (1/h, fixed from Clewe 2016)")
+    label("kSF -- first-order S->F transfer (1/h, from Clewe 2016)")
     # Chen 2017 Table 2 footnote a: kSF = 6.03e-4, FIXED to in vitro Clewe 2016.
 
     lkfn <- fixed(log(3.74e-8))
-    label("kFN -- first-order F->N transfer (1/h, fixed from Clewe 2016)")
+    label("kFN -- first-order F->N transfer (1/h, from Clewe 2016)")
     # Chen 2017 Table 2 footnote a: kFN = 3.74e-8, FIXED to in vitro Clewe 2016.
 
     lksn <- fixed(log(7.73e-3))
-    label("kSN -- first-order S->N transfer (1/h, fixed from Clewe 2016)")
+    label("kSN -- first-order S->N transfer (1/h, from Clewe 2016)")
     # Chen 2017 Table 2 footnote a: kSN = 7.73e-3, FIXED to in vitro Clewe 2016.
 
     lkns <- fixed(log(5.11e-5))
-    label("kNS -- first-order N->S transfer (1/h, fixed from Clewe 2016)")
+    label("kNS -- first-order N->S transfer (1/h, from Clewe 2016)")
     # Chen 2017 Table 2 footnote a: kNS = 5.11e-5, FIXED to in vitro Clewe 2016.
 
     # ===== Rifampicin monotherapy drug effects =====

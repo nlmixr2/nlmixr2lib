@@ -92,13 +92,13 @@ Sikma_2020_tacrolimus_unbound_plasma <- function() {
     #   Kd      CV  3% Fixed   -> log(1 + 0.03^2)   = 0.000899
     #   Nplasma CV 29%         -> log(1 + 0.29^2)   = 0.08076
     etalcl      ~ 0.16320                                       # Sikma 2020 Table 3 IIV CL = 42.1% (95% CI 30-60)
-    etalvc      ~ fixed(0.00995)                                # Sikma 2020 Table 3 IIV V1 = 10% Fixed
-    etalq       ~ fixed(0.00995)                                # Sikma 2020 Table 3 IIV Q = 10% Fixed
-    etalvp      ~ fixed(0.00995)                                # Sikma 2020 Table 3 IIV V2 = 10% Fixed
-    etalka      ~ fixed(0.00995)                                # Sikma 2020 Table 3 IIV Ka = 10% Fixed
-    etalfdepot  ~ fixed(0.00995)                                # Sikma 2020 Table 3 IIV F = 10% Fixed
+    etalvc      ~ fixed(0.00995)                                # Sikma 2020 Table 3 IIV V1 = 10%
+    etalq       ~ fixed(0.00995)                                # Sikma 2020 Table 3 IIV Q = 10%
+    etalvp      ~ fixed(0.00995)                                # Sikma 2020 Table 3 IIV V2 = 10%
+    etalka      ~ fixed(0.00995)                                # Sikma 2020 Table 3 IIV Ka = 10%
+    etalfdepot  ~ fixed(0.00995)                                # Sikma 2020 Table 3 IIV F = 10%
     etalbmax    ~ 0.07034                                       # Sikma 2020 Table 3 IIV Bmax = 27% (95% CI 19-36)
-    etalkd      ~ fixed(0.000899)                               # Sikma 2020 Table 3 IIV Kd = 3% Fixed
+    etalkd      ~ fixed(0.000899)                               # Sikma 2020 Table 3 IIV Kd = 3%
     etalnplasma ~ 0.08076                                       # Sikma 2020 Table 3 IIV Nplasma = 29% (95% CI 22-41)
 
     # ---- Residual error (Sikma 2020 Table 3) --------------------------------

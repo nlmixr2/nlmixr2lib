@@ -419,7 +419,9 @@
   # a consumer looking for allometric exponents by `e_wt_*`, for logit-scale
   # bioavailability, or for TMDD constants by case-normalised stems would
   # silently miss these models. Keeping the map here (rather than in prose)
-  # means `checkModelConventions()` fails the build if one reappears.
+  # means `checkModelConventions()` reports an error-severity issue if one
+  # reappears, and `buildModelDb()` aborts on it (see
+  # `.conventionErrorsStopIfAny`) rather than merely printing a count.
   renamedParameters = c(
     # #474 allometric exponents -> e_wt_<param>
     allo_cl = "e_wt_cl", allo_q = "e_wt_q", allo_vc = "e_wt_vc",

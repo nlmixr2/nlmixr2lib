@@ -89,7 +89,7 @@ Wen_2016_enrofloxacin_MIC0p01 <- function() {
     # SD at zero for deterministic typical-value simulation; see the
     # vignette Assumptions and deviations section for details.
     addSd <- fixed(0)
-    label("Additive residual SD on log10 CFU/mL (FIXED 0; not reported in Wen 2016)")  # Wen 2016 did not report a density-scale residual SD
+    label("Additive residual SD on log10 CFU/mL (0; not reported in Wen 2016)")  # Wen 2016 did not report a density-scale residual SD
   })
 
   model({

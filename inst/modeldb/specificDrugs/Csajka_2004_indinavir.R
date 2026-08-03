@@ -67,7 +67,7 @@ Csajka_2004_indinavir <- function() {
     # set to 1 because intravenous drug administration not available,
     # hence no 95% CI or % SE evaluable."
     lfdepot <- fixed(log(1.0))
-    label("Oral bioavailability (FIXED to 1; no IV reference data)")              # Csajka 2004 Table 3 footnote h
+    label("Oral bioavailability (no IV reference data)")              # Csajka 2004 Table 3 footnote h
 
     # Covariate effects on CL/F. Final-model multiplicative form (Csajka
     # 2004 Table 3 footnote a):

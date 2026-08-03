@@ -77,7 +77,7 @@ Dvorackova_2023_posaconazole <- function() {
     # fixed to a value of 0.8 h-1, which was calculated from t1/2 and
     # time to reach maximum plasma concentration (tmax) values reported
     # in SmPC'. Table 2 accordingly reports R.S.E. = NA for Ka_pop.
-    lka <- fixed(log(0.8)); label("First-order absorption rate constant Ka (1/h, fixed from the posaconazole SmPC)")  # Dvorackova 2023 Table 2: Ka_pop = 0.8 1/h, R.S.E. NA (fixed)
+    lka <- fixed(log(0.8)); label("First-order absorption rate constant Ka (1/h, from the posaconazole SmPC)")  # Dvorackova 2023 Table 2: Ka_pop = 0.8 1/h, R.S.E. NA (fixed)
 
     lvc <- log(386.35);     label("Apparent volume of distribution Vd/F (L)")  # Dvorackova 2023 Table 2: Vd/F_pop = 386.35 L, R.S.E. 48.1 percent
 

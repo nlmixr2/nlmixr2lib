@@ -192,7 +192,7 @@ Tarning_2014_piperaquine <- function() {
     # Hoglund_2012_piperaquine.R; see vignette Assumptions and
     # deviations).
     lfdepot <- fixed(log(1))
-    label("Relative bioavailability F at OCC = 1 (unitless, fixed at 1)")
+    label("Relative bioavailability F at OCC = 1 (unitless)")
     # Tarning 2014 Table 2: F (%) = 100 (fixed)
 
     # Allometric exponents fixed by the source paper (strong biological

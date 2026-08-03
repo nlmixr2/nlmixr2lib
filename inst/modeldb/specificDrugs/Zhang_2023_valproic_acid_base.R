@@ -64,9 +64,9 @@ Zhang_2023_valproic_acid_base <- function() {
     # (Aruldhas 2021 methadone / Kleideiter 2017 cebranopadol pattern
     # for a multi-level formulation-specific Ka).
     # ----------------------------------------------------------------
-    lka <- fixed(log(2.64)); label("Absorption rate constant, oral syrup reference (1/h, FIXED)")            # Zhang 2023 Supplementary Table S3 footnote (syrup Ka = 2.64 1/h)
-    e_form_tablet_ka <- fixed(log(1.57 / 2.64)); label("Log-ratio shift on Ka for conventional tablet vs syrup (FIXED)") # Zhang 2023 Supplementary Table S3 footnote (conventional tablet Ka = 1.57 1/h)
-    e_form_vpa_sr_ka <- fixed(log(0.46 / 2.64)); label("Log-ratio shift on Ka for sustained-release tablet vs syrup (FIXED)") # Zhang 2023 Supplementary Table S3 footnote (SR tablet Ka = 0.46 1/h)
+    lka <- fixed(log(2.64)); label("Absorption rate constant, oral syrup reference (1/h)")            # Zhang 2023 Supplementary Table S3 footnote (syrup Ka = 2.64 1/h)
+    e_form_tablet_ka <- fixed(log(1.57 / 2.64)); label("Log-ratio shift on Ka for conventional tablet vs syrup") # Zhang 2023 Supplementary Table S3 footnote (conventional tablet Ka = 1.57 1/h)
+    e_form_vpa_sr_ka <- fixed(log(0.46 / 2.64)); label("Log-ratio shift on Ka for sustained-release tablet vs syrup") # Zhang 2023 Supplementary Table S3 footnote (SR tablet Ka = 0.46 1/h)
 
     # ----------------------------------------------------------------
     # Structural parameters (Zhang 2023 Supplementary Table S3, "Base

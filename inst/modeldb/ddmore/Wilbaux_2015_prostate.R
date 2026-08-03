@@ -77,7 +77,7 @@ Wilbaux_2015_prostate <- function() {
     # The paper fixes LV0 = 1 ("LV corresponded to the fractional change
     # in the latent variable from baseline"). The .mod fixes THETA(1) at
     # 1 and OMEGA(1,1) at 1e-7 FIX (effectively no IIV).
-    lrbase <- fix(log(1)); label("Log of latent tumour-variable initial / baseline value LV0 (AU; fixed at 1 per Wilbaux 2015 Methods; .mod TH(1) = 1 FIX)")  # .lst FINAL TH 1 = 1.00E+00 (FIX)
+    lrbase <- fix(log(1)); label("Log of latent tumour-variable initial / baseline value LV0 (AU; per Wilbaux 2015 Methods; .mod TH(1) = 1 FIX)")  # .lst FINAL TH 1 = 1.00E+00 (FIX)
 
     # --- K-PD elimination rates (1/day) ---
     lk1 <- log(0.248);  label("Log of chemotherapy K-PD elimination rate constant Kc (1/day)") # .lst FINAL TH 2 = 2.48E-01; paper Table 1 Kc = 0.248

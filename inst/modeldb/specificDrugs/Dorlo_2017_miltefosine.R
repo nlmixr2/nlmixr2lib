@@ -167,16 +167,16 @@ Dorlo_2017_miltefosine <- function() {
     # log-normal BSV draw (see model() for the predicate that gates
     # this multiplier to t > 0 and t <= tlowf).
     lfdepot <- fixed(log(1))
-    label("Reference bioavailability F at end of treatment (unitless, FIXED at 1)") # Table 2 'F (%, at end of treatment): 100 fixed'; Methods 'Population pharmacokinetic analysis'
+    label("Reference bioavailability F at end of treatment (unitless)") # Table 2 'F (%, at end of treatment): 100 fixed'; Methods 'Population pharmacokinetic analysis'
     lfred_mult <- log(1 - 0.743)
     label("Log of the F multiplier during the reduced-bioavailability window (unitless)") # Table 2 'Reduction in F at baseline (% change from end of treatment): -74.3' -> multiplier 1 - 0.743 = 0.257 of normal F
 
     # Allometric exponents fixed at the canonical Anderson and Holford
     # values; reference FFM 53 kg matches Table 2 footnote b.
     e_ffm_cl_q  <- fixed(0.75)
-    label("Allometric exponent shared by CL/F and Q/F (unitless, FIXED)")  # Table 2 footnote b: 'allometrically scaled (power exponents of 0.75 and 1, respectively) based on fat-free mass'
+    label("Allometric exponent shared by CL/F and Q/F (unitless)")  # Table 2 footnote b: 'allometrically scaled (power exponents of 0.75 and 1, respectively) based on fat-free mass'
     e_ffm_vc_vp <- fixed(1.0)
-    label("Allometric exponent shared by Vc/F and Vp/F (unitless, FIXED)") # Table 2 footnote b: see above; volumes get exponent 1
+    label("Allometric exponent shared by Vc/F and Vp/F (unitless)") # Table 2 footnote b: see above; volumes get exponent 1
 
     # ============================================================
     # Inter-individual variability -- Dorlo 2017 Table 2 'Between-
@@ -201,7 +201,7 @@ Dorlo_2017_miltefosine <- function() {
     propSd <- 0.310
     label("Proportional residual error on Cc (fraction)")                  # Table 2 'Residual proportional error (%)': 31.0 (RSE 5.74%)
     addSd  <- fixed(0.001)
-    label("Additive residual error on Cc (ug/mL, FIXED)")                  # Table 2 'Residual additive error (ug/mL)': 0.001 fixed
+    label("Additive residual error on Cc (ug/mL)")                  # Table 2 'Residual additive error (ug/mL)': 0.001 fixed
   })
 
   model({

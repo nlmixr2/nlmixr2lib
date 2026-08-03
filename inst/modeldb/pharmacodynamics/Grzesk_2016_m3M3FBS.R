@@ -144,7 +144,7 @@ Grzesk_2016_m3M3FBS <- function() {
     # vignette Errata for the rationale and a sensitivity discussion.
     # ====================================================================
     lhill <- fixed(log(1))
-    label("Hill coefficient (fabricated at 1, fixed; not reported in source)")
+    label("Hill coefficient (fabricated at 1,; not reported in source)")
 
     # ====================================================================
     # Per-agonist, per-arm maximal perfusion pressure Emax (mmHg).

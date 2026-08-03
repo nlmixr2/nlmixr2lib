@@ -135,7 +135,7 @@ Lahu_2010_roflumilast <- function() {
     label("Roflumilast apparent peripheral volume V2/F (L)")                 # Lahu 2010 Table I final-for-COPD: theta_6 = 201 L
 
     lfdepot <- fixed(log(1))
-    label("Roflumilast bioavailability into depot (F1, fixed at 1 -- absolute F not identifiable without IV data)")  # Lahu 2010 Methods page 591: "apparent fraction absorbed for roflumilast ... were unidentifiable"
+    label("Roflumilast bioavailability into depot (F1, 1 -- absolute F not identifiable without IV data)")  # Lahu 2010 Methods page 591: "apparent fraction absorbed for roflumilast ... were unidentifiable"
 
     # ------------------------------------------------------------------
     # PARENT (roflumilast) COVARIATE EFFECTS

@@ -206,7 +206,7 @@ Kay_2020_lumefantrine <- function() {
     # Kay 2020 Table 1: KA = theta_5 = 0.0215 1/h (95% CI 0.0197, 0.0234)
 
     lfdepot <- fixed(log(1))
-    label("Relative bioavailability F (unitless; fixed at 1 at AGE_REF = 5 yr in the no-ART reference)")
+    label("Relative bioavailability F (unitless; 1 at AGE_REF = 5 yr in the no-ART reference)")
     # Anchor: F = 1 by convention in the relative-bioavailability
     # parameterization. The AGE and ART effects are deviations from this
     # anchor (see e_age_f, e_*_cl, e_*_ka entries below). Anchor is fixed

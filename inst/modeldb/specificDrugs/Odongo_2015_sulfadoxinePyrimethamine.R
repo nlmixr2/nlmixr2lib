@@ -211,7 +211,7 @@ Odongo_2015_sulfadoxinePyrimethamine <- function() {
     ltlag   <- log(0.371)
     label("Sulfadoxine absorption lag time, ALAG (h)")                    # Table 2: ALAG_TV = 0.371 h (RSE 11.8%)
     lfdepot <- fixed(log(1))
-    label("Sulfadoxine relative bioavailability F (unitless, FIXED at 1)") # Section 3.1: "bioavailability was assumed to be equal to 1"
+    label("Sulfadoxine relative bioavailability F (unitless)") # Section 3.1: "bioavailability was assumed to be equal to 1"
 
     # ============================================================
     # Pyrimethamine structural parameters
@@ -230,7 +230,7 @@ Odongo_2015_sulfadoxinePyrimethamine <- function() {
     lalag_pyra   <- log(0.394)
     label("Pyrimethamine absorption lag time, ALAG (h)")                      # Table 2: ALAG_TV = 0.394 h (RSE 1.3%)
     lfdepot_pyra <- fixed(log(1))
-    label("Pyrimethamine relative bioavailability F (unitless, FIXED at 1)")  # Section 3.2: same structural assumption as sulfadoxine
+    label("Pyrimethamine relative bioavailability F (unitless)")  # Section 3.2: same structural assumption as sulfadoxine
 
     # ============================================================
     # Covariate effects on apparent CL/F (additive in L/h)

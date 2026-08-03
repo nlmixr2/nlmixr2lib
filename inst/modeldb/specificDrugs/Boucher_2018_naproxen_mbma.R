@@ -105,7 +105,7 @@ Boucher_2018_naproxen_mbma <- function() {
     # downstream simulation code (same pattern as Vargo_2014 MBMA).
     # ============================================================
     addSd <- fixed(1)
-    label("Residual error multiplier sigma (FIXED to 1); per study-arm-mean observation the residual SD is sigma * SE_ijk = SE_ijk (observed SD/sqrt(n))")  # Boucher 2018 Methods/Eq 1: "residuals ... variance SD_ijk^2/n_ijk ... sigma was fixed to 1"
+    label("Residual error multiplier sigma; per study-arm-mean observation the residual SD is sigma * SE_ijk = SE_ijk (observed SD/sqrt(n))")  # Boucher 2018 Methods/Eq 1: "residuals ... variance SD_ijk^2/n_ijk ... sigma was fixed to 1"
   })
 
   model({

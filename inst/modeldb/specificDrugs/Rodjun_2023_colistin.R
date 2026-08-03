@@ -131,8 +131,8 @@ Rodjun_2023_colistin <- function() {
     # fixed at 0 so the packaged model reproduces the paper's noise-free
     # simulation; a user fitting real data should re-estimate them.
     # ------------------------------------------------------------------
-    propSd     <- fixed(0); label("CMS proportional residual error (fraction; fixed at 0 - not reported)")       # Rodjun 2023 Materials and methods (no residual error model reported)
-    propSd_col <- fixed(0); label("Colistin proportional residual error (fraction; fixed at 0 - not reported)")  # Rodjun 2023 Materials and methods (no residual error model reported)
+    propSd     <- fixed(0); label("CMS proportional residual error (fraction; 0 - not reported)")       # Rodjun 2023 Materials and methods (no residual error model reported)
+    propSd_col <- fixed(0); label("Colistin proportional residual error (fraction; 0 - not reported)")  # Rodjun 2023 Materials and methods (no residual error model reported)
   })
 
   model({

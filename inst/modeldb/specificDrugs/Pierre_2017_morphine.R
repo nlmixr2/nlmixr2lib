@@ -126,11 +126,11 @@ Pierre_2017_morphine <- function() {
     # Eqs. 1-2. Applied to all morphine and M3G CL/Q and V parameters.
     # ============================================================
     e_wt_cl_q  <- fixed(0.75)
-    label("Allometric exponent on all CL/Q parameters (unitless, fixed)")
+    label("Allometric exponent on all CL/Q parameters (unitless)")
     # Paper Methods 'Covariate analysis': power exponent 0.75 fixed for
     # all CL and Q parameters (CL_M_NR, CL_M_R, Q_P1, Q_P2, CL_M3G).
     e_wt_vc_vp <- fixed(1)
-    label("Allometric exponent on all V parameters (unitless, fixed)")
+    label("Allometric exponent on all V parameters (unitless)")
     # Paper Methods 'Covariate analysis': power exponent 1 fixed for all
     # V parameters (V_M, V_P1, V_P2, V_M3G).
 

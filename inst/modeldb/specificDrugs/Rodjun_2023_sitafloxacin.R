@@ -101,7 +101,7 @@ Rodjun_2023_sitafloxacin <- function() {
     # reproduces the paper's noise-free simulation; a user fitting real
     # data should re-estimate it.
     # ------------------------------------------------------------------
-    propSd <- fixed(0); label("Proportional residual error (fraction; fixed at 0 - not reported)")  # Rodjun 2023 Materials and methods (no residual error model reported)
+    propSd <- fixed(0); label("Proportional residual error (fraction; 0 - not reported)")  # Rodjun 2023 Materials and methods (no residual error model reported)
   })
 
   model({

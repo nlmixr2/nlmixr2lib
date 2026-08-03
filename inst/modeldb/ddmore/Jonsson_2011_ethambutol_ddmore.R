@@ -83,9 +83,9 @@ Jonsson_2011_ethambutol_ddmore <- function() {
     # has no `SAME` shortcut, so each occasion gets its own eta with the variance fixed
     # to the shared value after the first (matching the Xie_2019_agomelatine pattern).
     etaiov_cl_1 ~ 0.127            # OMEGA(7,7)  FINAL = 1.27E-01 -- estimated occasion-1 IOV variance
-    etaiov_cl_2 ~ fix(0.127)       # OMEGA(8,8)  fixed equal to OMEGA(7,7) per `$OMEGA BLOCK(1) SAME`
-    etaiov_cl_3 ~ fix(0.127)       # OMEGA(9,9)  fixed equal to OMEGA(7,7) per `$OMEGA BLOCK(1) SAME`
-    etaiov_cl_4 ~ fix(0.127)       # OMEGA(10,10) fixed equal to OMEGA(7,7) per `$OMEGA BLOCK(1) SAME`
+    etaiov_cl_2 ~ fix(0.127)       # OMEGA(8,8) equal to OMEGA(7,7) per `$OMEGA BLOCK(1) SAME`
+    etaiov_cl_3 ~ fix(0.127)       # OMEGA(9,9) equal to OMEGA(7,7) per `$OMEGA BLOCK(1) SAME`
+    etaiov_cl_4 ~ fix(0.127)       # OMEGA(10,10) equal to OMEGA(7,7) per `$OMEGA BLOCK(1) SAME`
 
     # Combined residual error on the linear (mg/L) scale. The Jonsson .mod uses log-
     # transformed observations (`Y = LOG(F) + W*EPS(1)` with `W = SQRT(THETA(4)**2 +

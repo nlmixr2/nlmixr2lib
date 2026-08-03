@@ -310,15 +310,15 @@ vanderWalt_2013_dapagliflozin <- function() {
     # convention: 0.75 on CL-like, 1.0 on V-like. The paper does not
     # report uncertainty on either exponent (a priori scaling).
     e_wt_cl_form_d3og <- fixed(0.75)
-    label("Allometric exponent on CLP_M15 (fixed at 3/4 per Table 2 footnote a)")  # Table 2 footnote a: a priori (BBWT/70)^(3/4)
+    label("Allometric exponent on CLP_M15 (per Table 2 footnote a)")  # Table 2 footnote a: a priori (BBWT/70)^(3/4)
     e_wt_cl_nonren <- fixed(0.75)
-    label("Allometric exponent on CLP_other (fixed at 3/4 per Table 2 footnote a)")  # Table 2 footnote a: a priori (BBWT/70)^(3/4)
+    label("Allometric exponent on CLP_other (per Table 2 footnote a)")  # Table 2 footnote a: a priori (BBWT/70)^(3/4)
     e_wt_vc <- fixed(1.0)
-    label("Allometric exponent on V2P (fixed at 1 per Table 2 a priori scaling)")  # Table 2: a priori (BBWT/70)^1 on V2P
+    label("Allometric exponent on V2P (per Table 2 a priori scaling)")  # Table 2: a priori (BBWT/70)^1 on V2P
     e_wt_vp <- fixed(1.0)
-    label("Allometric exponent on V3P (fixed at 1 per Table 2 a priori scaling)")  # Table 2: a priori (BBWT/70)^1 on V3P
+    label("Allometric exponent on V3P (per Table 2 a priori scaling)")  # Table 2: a priori (BBWT/70)^1 on V3P
     e_wt_vc_d3og <- fixed(1.0)
-    label("Allometric exponent on V2M (fixed at 1 per Table 2 a priori scaling)")  # Table 2: a priori (BBWT/70)^1 on V2M
+    label("Allometric exponent on V2M (per Table 2 a priori scaling)")  # Table 2: a priori (BBWT/70)^1 on V2M
 
     # ============================================================
     # IIV -- van der Walt 2013 Table 1, Final model column. Reported

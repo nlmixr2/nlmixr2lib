@@ -209,7 +209,7 @@ Lee_2023_tripegfilgrastim <- function() {
     # pediatric chemotherapy cohort, so lvd / lkd carry the PATIENT
     # typical values and e_hv_* shift them to the healthy-adult values.
     # -----------------------------------------------------------------
-    lfsc      <- fixed(log(1))                ; label("Log FSC (subcutaneous bioavailability) -- fixed to 1")                                          # Lee 2023 Table 2 (Fsc = 1, no RSE reported) and Results 'Population PK-PD model' ('The bioavailability after subcutaneous administration of tripegfilgrastim was fixed to 1')
+    lfsc      <- fixed(log(1))                ; label("Log FSC (subcutaneous bioavailability)")                                          # Lee 2023 Table 2 (Fsc = 1, no RSE reported) and Results 'Population PK-PD model' ('The bioavailability after subcutaneous administration of tripegfilgrastim was fixed to 1')
 
     lksc      <- log(0.027)                   ; label("Log KSC (first-order SC absorption rate) at AGE 18.5 y (1/h)")                                  # Lee 2023 Table 2 (Ksc = 0.027, RSE 6.1%)
     e_age_ksc <- -0.97                        ; label("Exponent of the power relationship between AGE / 18.5 y and KSC")                               # Lee 2023 Table 2 (Age effect - beta_Ksc = -0.97, RSE 13.4%) and Equation 7
@@ -231,8 +231,8 @@ Lee_2023_tripegfilgrastim <- function() {
     lkp       <- log(0.083)                   ; label("Log KP (G-CSF receptor production rate) at NEUT 0 (ug/L/h)")                                    # Lee 2023 Table 2 (Kp = 0.083, RSE 14.4%)
     e_neut_kp <- 0.56                         ; label("Coefficient of the exponential relationship between NEUT / 2106 cells/uL and KP")               # Lee 2023 Table 2 (Baseline ANC effect - beta_Kp = 0.56, RSE 13.1%) and Equation 8
 
-    lktr      <- fixed(log(0.033))            ; label("Log KTR (bone-marrow receptor transit rate) (1/h) -- fixed to the literature value")            # Lee 2023 Table 2 (Ktr = 0.033, no RSE reported) and Methods 'Population PK-PD model development' ('The transit rate between the receptor compartments in the bone marrow was fixed to a literature value of 0.033 h-1, as 5 days have been reported for the maturation and migration of neutrophils'); note 4 transits / 120 h = 0.0333
-    lkc       <- fixed(log(0.1155))           ; label("Log KC (elimination rate of neutrophils from blood into tissues) (1/h) -- fixed")               # Lee 2023 Appendix S1 Monolix code comment ('KC ... (fixed to 0.1155 h-1)'); Methods reports 0.116 h-1 and Table 2 rounds to 0.12; 0.1155 = ln(2)/6 h for the stated 6-hour blood half-life
+    lktr      <- fixed(log(0.033))            ; label("Log KTR (bone-marrow receptor transit rate) (1/h) -- the literature value")            # Lee 2023 Table 2 (Ktr = 0.033, no RSE reported) and Methods 'Population PK-PD model development' ('The transit rate between the receptor compartments in the bone marrow was fixed to a literature value of 0.033 h-1, as 5 days have been reported for the maturation and migration of neutrophils'); note 4 transits / 120 h = 0.0333
+    lkc       <- fixed(log(0.1155))           ; label("Log KC (elimination rate of neutrophils from blood into tissues) (1/h)")               # Lee 2023 Appendix S1 Monolix code comment ('KC ... (fixed to 0.1155 h-1)'); Methods reports 0.116 h-1 and Table 2 rounds to 0.12; 0.1155 = ln(2)/6 h for the stated 6-hour blood half-life
     lsr       <- log(0.54)                    ; label("Log SR (scaling factor between receptor concentration and ANC) (g per 10^9 cells)")             # Lee 2023 Table 2 (Scale = 0.54, RSE 8.5%)
 
     lstm1     <- log(14.4)                    ; label("Log STM1 (stimulation of the G-CSF receptor production rate)")                                  # Lee 2023 Table 2 (STM1 = 14.4, RSE 13.5%)
@@ -244,10 +244,10 @@ Lee_2023_tripegfilgrastim <- function() {
     # self-regulating endogenous component was applied ... Therefore, we
     # fixed those parameters to the literature value.'
     # -----------------------------------------------------------------
-    lgam      <- fixed(log(0.145))            ; label("Log GAM (exponent of the baseline-ANC-to-ANC negative-feedback term) -- fixed")                 # Lee 2023 Results ('The negative feedback function is governed by gamma parameter, which was fixed to 0.145', ref 32); Table 2 rounds to 0.15
-    lgcsf0    <- fixed(log(0.0243))           ; label("Log GCSF0 (baseline endogenous G-CSF concentration) (ug/L) -- fixed")                           # Lee 2023 Results ('baseline endogenous G-CSF concentration (0.0243 ug/L)', ref 27 Quartino 2014); Table 2 rounds to 0.024
-    lkel_endo <- fixed(log(0.592))            ; label("Log KEL (nonspecific linear elimination rate of endogenous G-CSF) (1/h) -- fixed")              # Lee 2023 Results ('nonspecific linear elimination rate constant (0.592 h-1)', ref 27 Quartino 2014); Table 2 rounds to 0.59
-    lkin_endo <- fixed(log(0.498))            ; label("Log KIN (zero-order production rate of endogenous G-CSF) (ug/L/h) -- fixed")                    # Lee 2023 Results ('The endogenous G-CSF is explained with zero-order production rate (0.498 ug/L/h)', ref 27 Quartino 2014); Table 2 rounds to 0.5
+    lgam      <- fixed(log(0.145))            ; label("Log GAM (exponent of the baseline-ANC-to-ANC negative-feedback term)")                 # Lee 2023 Results ('The negative feedback function is governed by gamma parameter, which was fixed to 0.145', ref 32); Table 2 rounds to 0.15
+    lgcsf0    <- fixed(log(0.0243))           ; label("Log GCSF0 (baseline endogenous G-CSF concentration) (ug/L)")                           # Lee 2023 Results ('baseline endogenous G-CSF concentration (0.0243 ug/L)', ref 27 Quartino 2014); Table 2 rounds to 0.024
+    lkel_endo <- fixed(log(0.592))            ; label("Log KEL (nonspecific linear elimination rate of endogenous G-CSF) (1/h)")              # Lee 2023 Results ('nonspecific linear elimination rate constant (0.592 h-1)', ref 27 Quartino 2014); Table 2 rounds to 0.59
+    lkin_endo <- fixed(log(0.498))            ; label("Log KIN (zero-order production rate of endogenous G-CSF) (ug/L/h)")                    # Lee 2023 Results ('The endogenous G-CSF is explained with zero-order production rate (0.498 ug/L/h)', ref 27 Quartino 2014); Table 2 rounds to 0.5
 
     # -----------------------------------------------------------------
     # Chemotherapy KPD sub-model. Lee 2023 Results: 'Because of our
@@ -257,7 +257,7 @@ Lee_2023_tripegfilgrastim <- function() {
     # only LAG is estimated.
     # -----------------------------------------------------------------
     ltlag_chem <- log(171)                    ; label("Log LAG (lag between chemotherapy administration and its effect on mitotic cells) (h)")         # Lee 2023 Table 2 (Lag = 171 h, RSE 12.4%)
-    lkel_chem  <- fixed(log(0.072))           ; label("Log KCHM (chemotherapy KPD elimination rate) (1/h) -- fixed to the literature value")           # Lee 2023 Table 2 (Kchemo = 0.072, no RSE reported); fixed to Melhem 2018 (ref 23), whose Table 2 reports 0.0724
+    lkel_chem  <- fixed(log(0.072))           ; label("Log KCHM (chemotherapy KPD elimination rate) (1/h) -- the literature value")           # Lee 2023 Table 2 (Kchemo = 0.072, no RSE reported); fixed to Melhem 2018 (ref 23), whose Table 2 reports 0.0724
     lchmsl     <- fixed(log(668))             ; label("Log CHMSL (slope relating chemotherapy KPD output to mitotic-cell loss rate) (1/mg)")           # Lee 2023 Table 2 (CHMslope = 668, no RSE reported); fixed to Melhem 2018 (ref 23), whose Table 2 also reports 668
 
     # -----------------------------------------------------------------
@@ -276,8 +276,8 @@ Lee_2023_tripegfilgrastim <- function() {
     etalstm2      ~ 0.11^2                                                                                                                            # Lee 2023 Table 2 (Omega STM2 = 0.11, RSE 34.6%)
     etalkint      ~ 0.56^2                                                                                                                            # Lee 2023 Table 2 (Omega Kint = 0.56, RSE 26%)
     etaltlag_chem ~ 0.57^2                                                                                                                            # Lee 2023 Table 2 (Omega Lag = 0.57, RSE 22.1%); Results reports the corresponding CV as 62.6%
-    etalkel_chem  ~ fixed(0.26^2)                                                                                                                     # Lee 2023 Table 2 (Omega Kchemo = 0.26, no RSE); Results: 'Random effects were all estimated except for Kchemo and CHMslope, which were fixed with the reported value' (Melhem 2018 reports 0.259)
-    etalchmsl     ~ fixed(2.3^2)                                                                                                                      # Lee 2023 Table 2 (Omega CHMslope = 2.3, no RSE); fixed per the same Results sentence (Melhem 2018 reports 2.28)
+    etalkel_chem  ~ fixed(0.26^2)                                                                                                                     # Lee 2023 Table 2 (Omega Kchemo = 0.26, no RSE); Results: 'Random effects were all estimated except for Kchemo and CHMslope, which were with the reported value' (Melhem 2018 reports 0.259)
+    etalchmsl     ~ fixed(2.3^2)                                                                                                                      # Lee 2023 Table 2 (Omega CHMslope = 2.3, no RSE); per the same Results sentence (Melhem 2018 reports 2.28)
 
     # -----------------------------------------------------------------
     # Residual error. PK: combined additive + proportional (Results, 'a

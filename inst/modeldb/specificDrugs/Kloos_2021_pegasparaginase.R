@@ -195,8 +195,8 @@ Kloos_2021_pegasparaginase <- function() {
     # 3 get their own etas with the variance fixed equal to the occasion-1
     # estimate (Jonsson_2011_ethambutol.R / Chen_2023_nemonoxacin.R precedent).
     etaiov_cl_1 ~ 0.054197       # Kloos 2021 Table 2 final model (IOV CL 23.6% CV, RSE 10.3%; bootstrap 23.1%, 95% CI 18.5-27.5) converted as log(1 + 0.236^2)
-    etaiov_cl_2 ~ fix(0.054197)  # SAME-equivalent: fixed equal to the occasion-1 IOV variance
-    etaiov_cl_3 ~ fix(0.054197)  # SAME-equivalent: fixed equal to the occasion-1 IOV variance
+    etaiov_cl_2 ~ fix(0.054197)  # SAME-equivalent: equal to the occasion-1 IOV variance
+    etaiov_cl_3 ~ fix(0.054197)  # SAME-equivalent: equal to the occasion-1 IOV variance
 
     # ---- Residual error ---------------------------------------------------
     # Kloos 2021 Online Supplementary Appendix, Supplemental Results, PK

@@ -136,7 +136,7 @@ Zvada_2010_rifapentine <- function() {
     # evaluation.
 
     lfdepot <- fixed(log(1))
-    label("Rifapentine reference oral bioavailability F (FIXED to 1 as fasting anchor)")
+    label("Rifapentine reference oral bioavailability F (1 as fasting anchor)")
     # Zvada 2010 Table 2 'F = 1 (fixed)' and Results paragraph 1:
     # 'TVF = theta_F * (1 + RXF); theta_F is the value of F under fasting
     # conditions (fixed to 1)'. The meal effects are encoded below as fractional

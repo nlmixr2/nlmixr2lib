@@ -144,8 +144,8 @@ Leroux_2018_micafungin <- function() {
     # magnitudes are given. Per the skill policy for 'unreported IIV/RUV
     # (structural values present)', encode IIVs as fixed(0) and document
     # in vignette Errata.
-    etalcl ~ fixed(0)                                                        # Leroux 2018: IIV magnitude on CL not reported -> fixed(0) per policy
-    etalvc ~ fixed(0)                                                        # Leroux 2018: IIV magnitude on V not reported -> fixed(0) per policy
+    etalcl ~ fixed(0)                                                        # Leroux 2018: IIV magnitude on CL not reported -> (0) per policy
+    etalvc ~ fixed(0)                                                        # Leroux 2018: IIV magnitude on V not reported -> (0) per policy
 
     # Residual error structure is not reported in the main paper or the
     # supplement. Per the policy for ambiguous / unreported residual

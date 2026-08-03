@@ -230,7 +230,7 @@ Bjornsson_2011_naproxcinod <- function() {
     # Table 3 k_pl = 0.237 /h (RSE 68.8%); IIV 43% (RSE 39%).
 
     lemax <- fixed(log(1))
-    label("Maximum drug effect on PI (fraction, fixed at 1)")
+    label("Maximum drug effect on PI (fraction)")
     # Paper Methods 'Pain intensity model' + Table 3: 'Emax was
     # estimated close to 1, the upper boundary, and was therefore
     # fixed to 1.'

@@ -315,9 +315,9 @@ Collins_2023_belantamab_mprotein <- function() {
                                      0.546, 1.07,
                                      0.217, 1.12, 3.04)  # Collins 2023 Table 1: omega^2 KGR 0.677 (%RSE 15.5, shrinkage 15.8), Covariance(KGR~KD) 0.546 (20.0), omega^2 KD 1.07 (21.1) [19.7], Covariance(KGR~LAMBDA) 0.217 (78.3), Covariance(KD~LAMBDA) 1.12 (46.4), omega^2 LAMBDA 3.04 (32.9) [35.6]
 
-    etalke0   ~ fixed(0.015)  # Collins 2023 Table 1: omega^2 KEO FIXED = 0.015
-    etalslope ~ fixed(0.015)  # Collins 2023 Table 1: omega^2 Slope fixed = 0.015
-    etala50   ~ fixed(0.015)  # Collins 2023 Table 1: omega^2 A50 fixed = 0.015
+    etalke0   ~ fixed(0.015)  # Collins 2023 Table 1: omega^2 KEO = 0.015
+    etalslope ~ fixed(0.015)  # Collins 2023 Table 1: omega^2 Slope = 0.015
+    etala50   ~ fixed(0.015)  # Collins 2023 Table 1: omega^2 A50 = 0.015
 
     # ------------------------------------------------------------------
     # Residual error.

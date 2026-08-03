@@ -184,7 +184,7 @@ TerHeine_2018_everolimus <- function() {
     label("Apparent inter-compartmental clearance Q at FFM = 57.2 kg (L/h)")
     # Table 2 Final: Q = 85.7 L/h (95% CI 80.3 - 91.5)
     lqh <- fixed(log(90))
-    label("Hepatic blood flow QH at FFM = 57.2 kg (L/h; FIXED)")
+    label("Hepatic blood flow QH at FFM = 57.2 kg (L/h)")
     # Table 2 Final: QH = 90 L/h (FIXED; Methods 'Structural model development')
 
     # Reference unbound fraction (Methods 'Structural model development',
@@ -192,7 +192,7 @@ TerHeine_2018_everolimus <- function() {
     # 35). The paper notes an interindividual variability of 3% on fu
     # but this is not retained in the typical-value model encoded here.
     lfu <- fixed(log(0.27))
-    label("Unbound fraction fu (unitless; FIXED)")
+    label("Unbound fraction fu (unitless)")
 
     # Allometric exponents fixed at theory-based Anderson and Holford
     # values (Methods 'Structural model development' cites the Holford
@@ -201,9 +201,9 @@ TerHeine_2018_everolimus <- function() {
     # convention used in the well-stirred liver / FFM scaling literature
     # the paper references).
     e_ffm_flow <- fixed(0.75)
-    label("Allometric exponent on Q, QH (unitless; FIXED)")
+    label("Allometric exponent on Q, QH (unitless)")
     e_ffm_volume <- fixed(1.0)
-    label("Allometric exponent on VC, VP (unitless; FIXED)")
+    label("Allometric exponent on VC, VP (unitless)")
 
     # Prednisolone covariate effect on CLint (Methods 'Covariate
     # analysis'; Table 2 Final 'Increase in CLint due high dose

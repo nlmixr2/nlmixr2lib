@@ -119,7 +119,7 @@ Sharma_2016_hydroxyprogesteroneCaproate <- function() {
     # equations (9) and (10) (Sharma 2016, page 1087).
     # ============================================================
     lka <- fixed(log(3.0))
-    label("Absorption rate constant ka (1/day; FIXED)")
+    label("Absorption rate constant ka (1/day)")
     # Sharma 2016 Table 2: ka = 3.0 (Fixed); Methods 'Base model' (page 1086):
     # 'Due to lack of adequate sampling time points during the absorption phase
     # (Day 0 and 1), complex absorption profiles could not be characterized

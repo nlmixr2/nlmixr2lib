@@ -40,7 +40,7 @@ Wicha_2017_linezolid_meropenem_vancomycin <- function() {
     lkrep <- log(1.56)
     label("Transit rate constant from gro to repl (krep, 1/h)")  # Wicha 2017 Table 1
     lkdoub <- fixed(log(100))
-    label("Replication / doubling rate constant (kdoub, 1/h; FIXED -- not rate-limiting)")  # Wicha 2017 Table 1 (FIXED)
+    label("Replication / doubling rate constant (kdoub, 1/h; -- not rate-limiting)")  # Wicha 2017 Table 1 (FIXED)
     lkdeath_per <- log(0.23)
     label("Basal death rate of persisters (kdeath_per, 1/h)")  # Wicha 2017 Table 1
 
@@ -64,7 +64,7 @@ Wicha_2017_linezolid_meropenem_vancomycin <- function() {
     lec50_mer_eagle <- log(1.35)
     label("MER half-maximum paradoxical Eagle-effect concentration (EC50_MER,Eagle, mg/L)")  # Wicha 2017 Table 1
     lhill_mer_eagle <- fixed(log(4))
-    label("MER Eagle-effect Hill coefficient (H_MER,Eagle, unitless; FIXED)")  # Wicha 2017 Table 1 (FIXED)
+    label("MER Eagle-effect Hill coefficient (H_MER,Eagle, unitless)")  # Wicha 2017 Table 1 (FIXED)
 
     # ---- MER adaption submodel ----
     lb_mer <- log(9.53)
@@ -78,7 +78,7 @@ Wicha_2017_linezolid_meropenem_vancomycin <- function() {
 
     # ---- MER chemical degradation in growth medium (HPLC-determined; FIXED) ----
     lkdeg_mer <- fixed(log(0.019))
-    label("MER first-order degradation rate in growth medium (kdeg_MER, 1/h; FIXED -- HPLC)")  # Wicha 2017 Table 1 (FIXED)
+    label("MER first-order degradation rate in growth medium (kdeg_MER, 1/h; -- HPLC)")  # Wicha 2017 Table 1 (FIXED)
 
     # ---- VAN drug parameters (initial-killing arm) ----
     emax_van <- 0.743
@@ -86,13 +86,13 @@ Wicha_2017_linezolid_meropenem_vancomycin <- function() {
     lec50_van_t0 <- log(0.46)
     label("VAN half-maximum-effect concentration on kdoub and kper_van at t = 0 (EC50_VAN,t=0, mg/L)")  # Wicha 2017 Table 1
     lhill_van <- fixed(log(20))
-    label("VAN Hill coefficient (H_VAN, unitless; FIXED -- steep on/off shape)")  # Wicha 2017 Table 1 (FIXED)
+    label("VAN Hill coefficient (H_VAN, unitless; -- steep on/off shape)")  # Wicha 2017 Table 1 (FIXED)
 
     # ---- VAN-on-MER adaption inhibition (PD interaction) ----
     lec50_van_ari <- log(0.39)
     label("VAN half-maximum suppression of MSSA adaption to MER (EC50_VAN,ARI, mg/L)")  # Wicha 2017 Table 1
     lhill_van_ari <- fixed(log(1))
-    label("VAN-on-MER-adaption Hill coefficient (H_VAN,ARI, unitless; FIXED)")  # Wicha 2017 Table 1 (FIXED)
+    label("VAN-on-MER-adaption Hill coefficient (H_VAN,ARI, unitless)")  # Wicha 2017 Table 1 (FIXED)
 
     # ---- VAN adaption submodel ----
     lb_van <- log(3.59)
@@ -106,7 +106,7 @@ Wicha_2017_linezolid_meropenem_vancomycin <- function() {
 
     # ---- VAN chemical degradation in growth medium (HPLC-determined; FIXED) ----
     lkdeg_van <- fixed(log(0.0039))
-    label("VAN first-order degradation rate in growth medium (kdeg_VAN, 1/h; FIXED -- HPLC)")  # Wicha 2017 Table 1 (FIXED) -- "3.9e-03"
+    label("VAN first-order degradation rate in growth medium (kdeg_VAN, 1/h; -- HPLC)")  # Wicha 2017 Table 1 (FIXED) -- "3.9e-03"
 
     # ---- Residual error ----
     # Wicha 2017 Table 1, "r [log10 CFU/mL] = 0.63"; residual is additive on

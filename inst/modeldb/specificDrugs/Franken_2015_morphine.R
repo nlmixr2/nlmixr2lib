@@ -141,11 +141,11 @@ Franken_2015_morphine <- function() {
     # [26, 27]').
     # ============================================================
     lka_sc      <- fixed(log(10))
-    label("Ka subcutaneous bolus injection (1/h, FIXED)")           # Methods 3.1: ka SC = 10 /h
+    label("Ka subcutaneous bolus injection (1/h)")           # Methods 3.1: ka SC = 10 /h
     lka_oral_ir <- fixed(log(6))
-    label("Ka oral immediate-release liquid (1/h, FIXED)")          # Methods 3.1: ka IR liquid = 6 /h
+    label("Ka oral immediate-release liquid (1/h)")          # Methods 3.1: ka IR liquid = 6 /h
     lka_oral_cr <- fixed(log(0.8))
-    label("Ka oral controlled-release tablet (1/h, FIXED)")         # Methods 3.1: ka CR tablet = 0.8 /h
+    label("Ka oral controlled-release tablet (1/h)")         # Methods 3.1: ka CR tablet = 0.8 /h
 
     # Bioavailability of oral morphine; SC F is structurally fixed
     # at 1 per Methods 2.3.1.
@@ -183,9 +183,9 @@ Franken_2015_morphine <- function() {
     # values because the study lacked mass-balance data to estimate
     # them independently.
     fm_m3g <- fixed(0.55)
-    label("Fraction of morphine CL routed to M3G (FIXED)")          # Methods 2.3.1 / Table 2: Fm1 = 0.55 (fixed, literature)
+    label("Fraction of morphine CL routed to M3G")          # Methods 2.3.1 / Table 2: Fm1 = 0.55 (fixed, literature)
     fm_m6g <- fixed(0.10)
-    label("Fraction of morphine CL routed to M6G (FIXED)")          # Methods 2.3.1 / Table 2: Fm2 = 0.10 (fixed, literature)
+    label("Fraction of morphine CL routed to M6G")          # Methods 2.3.1 / Table 2: Fm2 = 0.10 (fixed, literature)
 
     # ============================================================
     # TTD (time-to-death) covariate on morphine CL.

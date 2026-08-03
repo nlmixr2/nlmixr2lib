@@ -134,7 +134,7 @@ Pei_2016_iloperidone <- function() {
     # absorption identification under sparse sampling. The RSE column in
     # Table 3 is reported as 'FIX'.
     lka              <- fixed(log(2.26))
-    label("Iloperidone absorption rate constant Ka (1/h); FIXED per Pei 2016 Methods and Table 3")  # Pei 2016 Table 3: Ka = 2.26 (FIX)
+    label("Iloperidone absorption rate constant Ka (1/h); per Pei 2016 Methods and Table 3")  # Pei 2016 Table 3: Ka = 2.26 (FIX)
 
     # K20 = iloperidone elimination via 'other' (non-M1, non-M2) pathways.
     # Inter-occasion variability (27.3% CV) is reported in Table 3 in
@@ -178,9 +178,9 @@ Pei_2016_iloperidone <- function() {
     # tracer); K23, K30 and K24, K40 are estimated against this fixed
     # apparent volume. The RSE column in Table 3 is reported as 'FIX'.
     lvc_p88          <- fixed(log(10))
-    label("M1 (P-88) apparent volume of distribution V3 (L); FIXED per Pei 2016 Methods")  # Pei 2016 Table 3: V3 = 10 (FIX)
+    label("M1 (P-88) apparent volume of distribution V3 (L); per Pei 2016 Methods")  # Pei 2016 Table 3: V3 = 10 (FIX)
     lvc_p95          <- fixed(log(10))
-    label("M2 (P-95) apparent volume of distribution V4 (L); FIXED per Pei 2016 Methods")  # Pei 2016 Table 3: V4 = 10 (FIX)
+    label("M2 (P-95) apparent volume of distribution V4 (L); per Pei 2016 Methods")  # Pei 2016 Table 3: V4 = 10 (FIX)
 
     # ====================================================================
     # CYP2D6*10 covariate effects on the metabolite formation rate

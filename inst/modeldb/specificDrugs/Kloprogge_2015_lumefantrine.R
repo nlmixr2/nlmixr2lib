@@ -197,7 +197,7 @@ Kloprogge_2015_lumefantrine <- function() {
     # (matches the same-author Kloprogge_2018 file's precedent; see
     # vignette Errata).
     lfdepot <- fixed(log(1))                                                         # Table 2: F                 = 100 (fixed)
-    label("LF relative bioavailability F (unitless, fixed at 1)")
+    label("LF relative bioavailability F (unitless)")
 
     lcl     <- log(5.35)                                                             # Table 2: CL_LF/F           = 5.35      (RSE 12.9%;  95% CI 4.11-6.77)
     label("LF apparent elimination clearance CL/F (L/h)")

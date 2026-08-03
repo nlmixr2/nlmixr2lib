@@ -147,8 +147,8 @@ Leroux_2018_fluconazole <- function() {
     # variability or was fixed during estimation. Per the skill policy
     # for 'unreported IIV/RUV (structural values present)', encode IIVs
     # as fixed(0) and document in vignette Errata.
-    etalcl ~ fixed(0)                                                        # Leroux 2018: IIV magnitude on CL not reported -> fixed(0) per policy
-    etalvc ~ fixed(0)                                                        # Leroux 2018: IIV on V absent (Table 3 95% CI degenerate) -> fixed(0)
+    etalcl ~ fixed(0)                                                        # Leroux 2018: IIV magnitude on CL not reported -> (0) per policy
+    etalvc ~ fixed(0)                                                        # Leroux 2018: IIV on V absent (Table 3 95% CI degenerate) -> (0)
 
     # Residual error structure is not reported in the main paper or the
     # supplement (the supplement shows DV vs PRED, DV vs IPRED, WRES vs

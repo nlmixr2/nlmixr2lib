@@ -132,7 +132,7 @@ Bienczak_2016_efavirenz <- function() {
     # Bienczak 2016 Table 2 row 'NN = 25.0 (17.7-35.1)' -- bootstrap median used as the fixed value; rxode2 transit() supports continuous NN but the integer-rounded median preserves the published structural model with negligible numerical impact at this NN
 
     lfdepot <- fixed(log(1))
-    label("Oral bioavailability F/F (unitless; FIXED to 1 because no intravenous data were available)")
+    label("Oral bioavailability F/F (unitless; 1 because no intravenous data were available)")
     # Bienczak 2016 Table 2 row 'BIO = 1 (FIXED)'; paper Results 'Population pharmacokinetics' paragraph 1: 'PK parameters were estimated relative to oral bioavailability whose typical value was fixed to one due to lack of intravenous data.'
 
     # =========================================================================

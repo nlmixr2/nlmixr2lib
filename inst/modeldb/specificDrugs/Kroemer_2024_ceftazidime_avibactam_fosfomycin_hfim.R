@@ -34,63 +34,63 @@ Kroemer_2024_ceftazidime_avibactam_fosfomycin_hfim <- function() {
 
   ini({
     # --- Structural growth model (Table S4, "Structural model parameters") ---
-    log10inoc_s <- fixed(6.86); label("Inoculum of the susceptible subpopulation (log10 CFU/mL; FIXED to the static time-kill estimate)") # Table S4: 6.86 FIX to TKC parameter
+    log10inoc_s <- fixed(6.86); label("Inoculum of the susceptible subpopulation (log10 CFU/mL; the static time-kill estimate)") # Table S4: 6.86 FIX to TKC parameter
     log10inoc_r <- 2.89;        label("Inoculum of the resistant subpopulation (log10 CFU/mL)")                                          # Table S4: 2.89 [2.68-2.99]
     log10bmax   <- 9.73;        label("Maximum bacterial capacity Bmax (log10 CFU/mL)")                                                  # Table S4: 9.73 [9.50-9.91]
-    kgs         <- fixed(1.81); label("Growth rate of the susceptible subpopulation (1/h; FIXED to the static time-kill estimate)")      # Table S4: 1.81 FIX to TKC parameter
-    kgr         <- fixed(0.45); label("Growth rate of the resistant subpopulation (1/h; FIXED to the static time-kill estimate)")        # Table S4: 0.45 FIX to TKC parameter
+    kgs         <- fixed(1.81); label("Growth rate of the susceptible subpopulation (1/h; the static time-kill estimate)")      # Table S4: 1.81 FIX to TKC parameter
+    kgr         <- fixed(0.45); label("Growth rate of the resistant subpopulation (1/h; the static time-kill estimate)")        # Table S4: 0.45 FIX to TKC parameter
 
     # --- Mono-drug PD, susceptible subpopulation (Table S4; all FIXED to Table S3) ---
-    emax_caz_s  <- fixed(3.40);  label("Emax of ceftazidime on the susceptible subpopulation (1/h; FIXED)")   # Table S4: 3.40 FIX to TKC parameter
-    ec50_caz_s  <- fixed(5.31);  label("EC50 of ceftazidime on the susceptible subpopulation (mg/L; FIXED)")  # Table S4: 5.31 FIX to TKC parameter
-    hill_caz_s  <- fixed(2.32);  label("Hill factor of ceftazidime on the susceptible subpopulation (FIXED)") # Table S4: 2.32 FIX to TKC parameter
-    emax_avi_s  <- fixed(3.3);   label("Emax of avibactam on the susceptible subpopulation (1/h; FIXED)")     # Table S4: 3.3 FIX to TKC parameter
-    ec50_avi_s  <- fixed(22.3);  label("EC50 of avibactam on the susceptible subpopulation (mg/L; FIXED)")    # Table S4: 22.3 FIX to TKC parameter
-    hill_avi_s  <- fixed(1.13);  label("Hill factor of avibactam on the susceptible subpopulation (FIXED)")   # Table S4: 1.13 FIX to TKC parameter
-    slope_fof_s <- fixed(2.71);  label("Power-model slope of fosfomycin on the susceptible subpopulation (L/(mg*h); FIXED)") # Table S4: 2.71 FIX to TKC parameter
-    hill_fof_s  <- fixed(0.333); label("Power-model exponent of fosfomycin on the susceptible subpopulation (FIXED)")        # Table S4: 0.333 FIX to TKC parameter
+    emax_caz_s  <- fixed(3.40);  label("Emax of ceftazidime on the susceptible subpopulation (1/h)")   # Table S4: 3.40 FIX to TKC parameter
+    ec50_caz_s  <- fixed(5.31);  label("EC50 of ceftazidime on the susceptible subpopulation (mg/L)")  # Table S4: 5.31 FIX to TKC parameter
+    hill_caz_s  <- fixed(2.32);  label("Hill factor of ceftazidime on the susceptible subpopulation") # Table S4: 2.32 FIX to TKC parameter
+    emax_avi_s  <- fixed(3.3);   label("Emax of avibactam on the susceptible subpopulation (1/h)")     # Table S4: 3.3 FIX to TKC parameter
+    ec50_avi_s  <- fixed(22.3);  label("EC50 of avibactam on the susceptible subpopulation (mg/L)")    # Table S4: 22.3 FIX to TKC parameter
+    hill_avi_s  <- fixed(1.13);  label("Hill factor of avibactam on the susceptible subpopulation")   # Table S4: 1.13 FIX to TKC parameter
+    slope_fof_s <- fixed(2.71);  label("Power-model slope of fosfomycin on the susceptible subpopulation (L/(mg*h))") # Table S4: 2.71 FIX to TKC parameter
+    hill_fof_s  <- fixed(0.333); label("Power-model exponent of fosfomycin on the susceptible subpopulation")        # Table S4: 0.333 FIX to TKC parameter
 
     # --- Mono-drug PD, resistant subpopulation (Table S4; all FIXED to Table S3) ---
-    emax_caz_r  <- fixed(0.659);  label("Emax of ceftazidime on the resistant subpopulation (1/h; FIXED)")   # Table S4: 0.659 FIX to TKC parameter
-    ec50_caz_r  <- fixed(74.40);  label("EC50 of ceftazidime on the resistant subpopulation (mg/L; FIXED)")  # Table S4: 74.40 FIX to TKC parameter
-    hill_caz_r  <- fixed(8.45);   label("Hill factor of ceftazidime on the resistant subpopulation (FIXED)") # Table S4: 8.45 FIX to TKC parameter
-    emax_fof_r  <- fixed(0.635);  label("Emax of fosfomycin on the resistant subpopulation (1/h; FIXED)")    # Table S4: 0.635 FIX to TKC parameter
-    ec50_fof_r  <- fixed(4.70);   label("EC50 of fosfomycin on the resistant subpopulation (mg/L; FIXED)")   # Table S4: 4.70 FIX to TKC parameter
-    hill_fof_r  <- fixed(4.08);   label("Hill factor of fosfomycin on the resistant subpopulation (FIXED)")  # Table S4: 4.08 FIX to TKC parameter
-    slope_avi_r <- fixed(0.0787); label("Power-model slope of avibactam on the resistant subpopulation (L/(mg*h); FIXED)") # Table S4: 0.0787 FIX to TKC parameter
-    hill_avi_r  <- fixed(0.317);  label("Power-model exponent of avibactam on the resistant subpopulation (FIXED)")        # Table S4: 0.317 FIX to TKC parameter
+    emax_caz_r  <- fixed(0.659);  label("Emax of ceftazidime on the resistant subpopulation (1/h)")   # Table S4: 0.659 FIX to TKC parameter
+    ec50_caz_r  <- fixed(74.40);  label("EC50 of ceftazidime on the resistant subpopulation (mg/L)")  # Table S4: 74.40 FIX to TKC parameter
+    hill_caz_r  <- fixed(8.45);   label("Hill factor of ceftazidime on the resistant subpopulation") # Table S4: 8.45 FIX to TKC parameter
+    emax_fof_r  <- fixed(0.635);  label("Emax of fosfomycin on the resistant subpopulation (1/h)")    # Table S4: 0.635 FIX to TKC parameter
+    ec50_fof_r  <- fixed(4.70);   label("EC50 of fosfomycin on the resistant subpopulation (mg/L)")   # Table S4: 4.70 FIX to TKC parameter
+    hill_fof_r  <- fixed(4.08);   label("Hill factor of fosfomycin on the resistant subpopulation")  # Table S4: 4.08 FIX to TKC parameter
+    slope_avi_r <- fixed(0.0787); label("Power-model slope of avibactam on the resistant subpopulation (L/(mg*h))") # Table S4: 0.0787 FIX to TKC parameter
+    hill_avi_r  <- fixed(0.317);  label("Power-model exponent of avibactam on the resistant subpopulation")        # Table S4: 0.317 FIX to TKC parameter
 
     # --- GPDI: avibactam shifts the ceftazidime EC50 (Table S4; all FIXED to Table S3) ---
     # Table S4 footnote 1: INT parameters estimated on a log scale, TV = exp(theta) - 1.
     # Table S4 footnote 2: interaction EC50s estimated on a log scale, TV = exp(theta).
-    lint_avi_caz_s     <- fixed(-6.70);  label("Log-scale INT: maximum change of the ceftazidime EC50 on (S) mediated by avibactam; INT = exp(theta) - 1 (FIXED)") # Table S4: -6.70 FIX to TKC parameter
-    lec50int_avi_caz_s <- fixed(-16.20); label("Log EC50 of avibactam in the interaction on the ceftazidime EC50 on (S) (log mg/L; FIXED)")                        # Table S4: -16.20 FIX to TKC parameter
-    hillint_avi_caz_s  <- fixed(0.266);  label("Hill factor of avibactam in the interaction on the ceftazidime EC50 on (S) (FIXED)")                               # Table S4: 0.266 FIX to TKC parameter
-    lint_avi_caz_r     <- fixed(-13.50); label("Log-scale INT: maximum change of the ceftazidime EC50 on (R) mediated by avibactam; INT = exp(theta) - 1 (FIXED)") # Table S4: -13.50 FIX to TKC parameter
-    lec50int_avi_caz_r <- fixed(-5.23);  label("Log EC50 of avibactam in the interaction on the ceftazidime EC50 on (R) (log mg/L; FIXED)")                        # Table S4: -5.23 FIX to TKC parameter
-    hillint_avi_caz_r  <- fixed(1);      label("Hill factor of avibactam in the interaction on the ceftazidime EC50 on (R) (FIXED)")                               # Table S4: 1 FIX to TKC parameter
+    lint_avi_caz_s     <- fixed(-6.70);  label("Log-scale INT: maximum change of the ceftazidime EC50 on (S) mediated by avibactam; INT = exp(theta) - 1") # Table S4: -6.70 FIX to TKC parameter
+    lec50int_avi_caz_s <- fixed(-16.20); label("Log EC50 of avibactam in the interaction on the ceftazidime EC50 on (S) (log mg/L)")                        # Table S4: -16.20 FIX to TKC parameter
+    hillint_avi_caz_s  <- fixed(0.266);  label("Hill factor of avibactam in the interaction on the ceftazidime EC50 on (S)")                               # Table S4: 0.266 FIX to TKC parameter
+    lint_avi_caz_r     <- fixed(-13.50); label("Log-scale INT: maximum change of the ceftazidime EC50 on (R) mediated by avibactam; INT = exp(theta) - 1") # Table S4: -13.50 FIX to TKC parameter
+    lec50int_avi_caz_r <- fixed(-5.23);  label("Log EC50 of avibactam in the interaction on the ceftazidime EC50 on (R) (log mg/L)")                        # Table S4: -5.23 FIX to TKC parameter
+    hillint_avi_caz_r  <- fixed(1);      label("Hill factor of avibactam in the interaction on the ceftazidime EC50 on (R)")                               # Table S4: 1 FIX to TKC parameter
 
     # --- GPDI: ceftazidime shifts the fosfomycin EC50 on (R) (Table S4; all FIXED to Table S3) ---
-    lint_caz_fof_r     <- fixed(-7.85);  label("Log-scale INT: maximum change of the fosfomycin EC50 on (R) mediated by ceftazidime; INT = exp(theta) - 1 (FIXED)") # Table S4: -7.85 FIX to TKC parameter
-    lec50int_caz_fof_r <- fixed(-12.40); label("Log EC50 of ceftazidime in the interaction on the fosfomycin EC50 on (R) (log mg/L; FIXED)")                        # Table S4: -12.40 FIX to TKC parameter
-    hillint_caz_fof_r  <- fixed(0.239);  label("Hill factor of ceftazidime in the interaction on the fosfomycin EC50 on (R) (FIXED)")                               # Table S4: 0.239 FIX to TKC parameter
+    lint_caz_fof_r     <- fixed(-7.85);  label("Log-scale INT: maximum change of the fosfomycin EC50 on (R) mediated by ceftazidime; INT = exp(theta) - 1") # Table S4: -7.85 FIX to TKC parameter
+    lec50int_caz_fof_r <- fixed(-12.40); label("Log EC50 of ceftazidime in the interaction on the fosfomycin EC50 on (R) (log mg/L)")                        # Table S4: -12.40 FIX to TKC parameter
+    hillint_caz_fof_r  <- fixed(0.239);  label("Hill factor of ceftazidime in the interaction on the fosfomycin EC50 on (R)")                               # Table S4: 0.239 FIX to TKC parameter
 
     # --- Less susceptible (3x MIC) subpopulation model (Table S4, "Less susceptible subpopulation model") ---
-    log10inoc_rcza <- fixed(-18); label("Inoculum of the ceftazidime/avibactam less susceptible subpopulation (log10 CFU/mL; FIXED to the final estimate)") # Table S4: -18, footnote 3 "parameter was fixed to final estimate"
+    log10inoc_rcza <- fixed(-18); label("Inoculum of the ceftazidime/avibactam less susceptible subpopulation (log10 CFU/mL; the final estimate)") # Table S4: -18, footnote 3 "parameter was fixed to final estimate"
     log10inoc_rfof <- -2.15;      label("Inoculum of the fosfomycin less susceptible subpopulation (log10 CFU/mL)")                                         # Table S4: -2.15 [-2.98 to -1.52]
     kgr2           <- 2.37;       label("Growth rate of both less susceptible subpopulations (1/h)")                                                        # Table S4: 2.37 [2.09-2.68]; merged to one parameter for both subpopulations (Text S5)
 
     ec50_cza_rcza  <- 0.576;      label("EC50 of ceftazidime suppressing the CZA less susceptible subpopulation (mg/L)")  # Table S4: 0.576 [0.441-0.765]
-    hill_cza_rcza  <- fixed(1);   label("Hill factor of ceftazidime suppressing the CZA less susceptible subpopulation (FIXED)")   # Table S4: 1, footnote 4 "parameter was fixed to a constant"
+    hill_cza_rcza  <- fixed(1);   label("Hill factor of ceftazidime suppressing the CZA less susceptible subpopulation")   # Table S4: 1, footnote 4 "parameter was fixed to a constant"
     ec50_fof_rcza  <- 1.38;       label("EC50 of fosfomycin suppressing the CZA less susceptible subpopulation (mg/L)")   # Table S4: 1.38 [1.00-2.49]
-    hill_fof_rcza  <- fixed(20);  label("Hill factor of fosfomycin suppressing the CZA less susceptible subpopulation (FIXED)")    # Table S4: 20, footnote 4 "parameter was fixed to a constant" (empirically fixed for very steep concentration-effect relations)
+    hill_fof_rcza  <- fixed(20);  label("Hill factor of fosfomycin suppressing the CZA less susceptible subpopulation")    # Table S4: 20, footnote 4 "parameter was fixed to a constant" (empirically fixed for very steep concentration-effect relations)
     ec50_fof_rfof  <- 6.84;       label("EC50 of fosfomycin suppressing the FOF less susceptible subpopulation (mg/L)")   # Table S4: 6.84 [6.48-7.17]
-    hill_fof_rfof  <- fixed(20);  label("Hill factor of fosfomycin suppressing the FOF less susceptible subpopulation (FIXED)")    # Table S4: 20, footnote 4 "parameter was fixed to a constant"
+    hill_fof_rfof  <- fixed(20);  label("Hill factor of fosfomycin suppressing the FOF less susceptible subpopulation")    # Table S4: 20, footnote 4 "parameter was fixed to a constant"
     ec50_cza_rfof  <- 0.049;      label("EC50 of ceftazidime suppressing the FOF less susceptible subpopulation (mg/L)")  # Table S4: 0.049 [0.040-0.057]
     hill_cza_rfof  <- 2.49;       label("Hill factor of ceftazidime suppressing the FOF less susceptible subpopulation")  # Table S4: 2.49 [1.76-4.20]
 
     # --- Nominal hollow fiber pharmacokinetics (main-text Table 1; not estimated) ---
-    thalf <- fixed(1.81); label("Joint elimination half-life of ceftazidime, avibactam and fosfomycin in the hollow fiber system (h; FIXED)") # Table 1: modal simulated half-life across the 14 hollow fiber experiments (range 1.81-3.03 h); Discussion: "a then-joint elimination half-life of approximately 2 h"
+    thalf <- fixed(1.81); label("Joint elimination half-life of ceftazidime, avibactam and fosfomycin in the hollow fiber system (h)") # Table 1: modal simulated half-life across the 14 hollow fiber experiments (range 1.81-3.03 h); Discussion: "a then-joint elimination half-life of approximately 2 h"
 
     # --- Variability model (Table S4, "Variability model") ---
     # Table S4 footnote 5: %CV = sqrt(exp(omega^2) - 1) * 100%, i.e. omega^2 = log(CV^2 + 1).

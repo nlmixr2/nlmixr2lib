@@ -181,10 +181,10 @@ Xiang_2018_baicalein <- function() {
     # reduce the model volatility').
     # ------------------------------------------------------------------
     kout_inos <- fixed(0)
-    label("koutiNOS -- iNOS elimination rate (fixed to 0 per source)")
+    label("koutiNOS -- iNOS elimination rate (per source)")
 
     kout_no <- fixed(0)
-    label("koutNO -- NO elimination rate (fixed to 0 per source)")
+    label("koutNO -- NO elimination rate (per source)")
 
     # ------------------------------------------------------------------
     # Baselines = control (t = 0) measurements per Eqs 3 and 5

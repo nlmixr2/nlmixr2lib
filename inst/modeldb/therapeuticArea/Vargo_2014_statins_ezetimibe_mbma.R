@@ -217,10 +217,10 @@ Vargo_2014_statins_ezetimibe_mbma <- function() {
     # Fixed to the literature ratio; no IIV.
     # ============================================================
     ratio_red_flv <- fixed(0.645)
-    label("Fluvastatin b.i.d./XR ED50 ratio (relative to q.d. IR; FIXED)")  # Vargo 2014 Table 3 ED50,fluvastatin (b.i.d.|XR)/ED50,fluvastatin
+    label("Fluvastatin b.i.d./XR ED50 ratio (relative to q.d. IR)")  # Vargo 2014 Table 3 ED50,fluvastatin (b.i.d.|XR)/ED50,fluvastatin
 
     ratio_red_lov <- fixed(0.59)
-    label("Lovastatin b.i.d./XR ED50 ratio (relative to q.d. IR; FIXED)")  # Vargo 2014 Table 3 ED50,lovastatin (b.i.d.|XR)/ED50,lovastatin
+    label("Lovastatin b.i.d./XR ED50 ratio (relative to q.d. IR)")  # Vargo 2014 Table 3 ED50,lovastatin (b.i.d.|XR)/ED50,lovastatin
 
     # ============================================================
     # Sigmoidicity (shared across statins; ezetimibe sigmoidicity is
@@ -239,7 +239,7 @@ Vargo_2014_statins_ezetimibe_mbma <- function() {
     label("Ezetimibe ED50 (mg/day)")  # Vargo 2014 Table 3 ED50,ezetimibe
 
     ln_ezt <- fixed(log(1))
-    label("Ezetimibe sigmoidicity (Hill exponent; FIXED to 1 per paper Methods)")  # Vargo 2014 Methods, ezetimibe dose-response paragraph: "with the sigmoidicity factor (n) fixed to 1"
+    label("Ezetimibe sigmoidicity (Hill exponent; per paper Methods)")  # Vargo 2014 Methods, ezetimibe dose-response paragraph: "with the sigmoidicity factor (n) fixed to 1"
 
     # ============================================================
     # Statin + ezetimibe interaction coefficient gamma (Vargo 2014 Eq 3

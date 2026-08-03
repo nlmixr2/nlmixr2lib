@@ -60,7 +60,7 @@ Landersdorfer_2013_nisin_amikacin <- function() {
     # Replication rate constant k21 (state 2 -> 2*state 1 doubling step),
     # shared across subpopulations and fixed per Table 1.
     lk21 <- fixed(log(50))
-    label("Replication rate constant k21 (1/h; state 2 -> 2*state 1 doubling; FIXED)")  # Landersdorfer 2013 Table 1, "k21 = 50 (fixed)"
+    label("Replication rate constant k21 (1/h; state 2 -> 2*state 1 doubling)")  # Landersdorfer 2013 Table 1, "k21 = 50 (fixed)"
 
     # Mean generation time for the slow state 1 -> state 2 transition.
     # Table 1 row "Nis_s/Ami_s and Nis_i/Ami_s = 57.3 min" (the two
@@ -102,7 +102,7 @@ Landersdorfer_2013_nisin_amikacin <- function() {
     # to 0. fk12_IR and fk12_RR were estimated via a logistic
     # transformation in S-ADAPT (footnote d).
     fk12_rs_sr <- fixed(0)
-    label("Growth-rate factor for Nis-R/Ami-S and Nis-S/Ami-R subpopulations (unitless; FIXED)")  # Landersdorfer 2013 Table 1 footnote a
+    label("Growth-rate factor for Nis-R/Ami-S and Nis-S/Ami-R subpopulations (unitless)")  # Landersdorfer 2013 Table 1 footnote a
     fk12_ir    <- 0.532
     label("Growth-rate factor for Nis-I/Ami-R subpopulation (unitless)")  # Landersdorfer 2013 Table 1 (S-ADAPT)
     fk12_rr    <- 0.413

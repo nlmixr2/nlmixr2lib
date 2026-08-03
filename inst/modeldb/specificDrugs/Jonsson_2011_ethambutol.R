@@ -110,9 +110,9 @@ Jonsson_2011_ethambutol <- function() {
     # Jonsson_2011_ethambutol_ddmore.R, Aregbe_2012_alvespimycin.R, and
     # Xie_2019_agomelatine.R).
     etaiov_cl_1 ~ 0.1296         # Table 2 'IOV on CL/F (% CV)' = 36; pi^2 = (0.36)^2 = 0.1296 (estimated)
-    etaiov_cl_2 ~ fix(0.1296)    # SAME-equivalent: fixed equal to occasion-1 IOV variance
-    etaiov_cl_3 ~ fix(0.1296)    # SAME-equivalent: fixed equal to occasion-1 IOV variance
-    etaiov_cl_4 ~ fix(0.1296)    # SAME-equivalent: fixed equal to occasion-1 IOV variance
+    etaiov_cl_2 ~ fix(0.1296)    # SAME-equivalent: equal to occasion-1 IOV variance
+    etaiov_cl_3 ~ fix(0.1296)    # SAME-equivalent: equal to occasion-1 IOV variance
+    etaiov_cl_4 ~ fix(0.1296)    # SAME-equivalent: equal to occasion-1 IOV variance
 
     # Combined residual error on the linear (mg/L) scale. The paper used log-
     # transformed observations with combined additive + proportional error terms

@@ -201,7 +201,7 @@ Willmann_2022_rivaroxaban <- function() {
     # 95% CI columns, indicating they were not estimated.
 
     lka <- fixed(log(0.799))
-    label("First-order absorption rate constant for tablet, granules, and diluted oral suspension (1/h; fixed to Willmann 2021 EINSTEIN-Jr)")
+    label("First-order absorption rate constant for tablet, granules, and diluted oral suspension (1/h; Willmann 2021 EINSTEIN-Jr)")
     # Willmann 2022 Table S2: KA (tablet, granules and diluted suspension) = 0.799 h^-1, fixed (SE reported as '-')
 
     lcl <- log(6.07)
@@ -209,15 +209,15 @@ Willmann_2022_rivaroxaban <- function() {
     # Willmann 2022 Table S2: CL subject with WGHT of 82.48 kg = 6.07 L/h (SE 0.356, RSE 5.86%, 95% CI 5.37-6.76); re-estimated in UNIVERSE (vs. 8.02 L/h in Willmann 2021 EINSTEIN-Jr)
 
     lvc <- fixed(log(53.2))
-    label("Central volume of distribution Vc at 82.48 kg reference weight (L; fixed to Willmann 2021 EINSTEIN-Jr)")
+    label("Central volume of distribution Vc at 82.48 kg reference weight (L; Willmann 2021 EINSTEIN-Jr)")
     # Willmann 2022 Table S2: Vc subject with WGHT of 82.48 kg = 53.2 L, fixed (SE reported as '-')
 
     lvp <- fixed(log(59.1))
-    label("Peripheral volume of distribution Vp at 82.48 kg reference weight (L; fixed to Willmann 2021 EINSTEIN-Jr)")
+    label("Peripheral volume of distribution Vp at 82.48 kg reference weight (L; Willmann 2021 EINSTEIN-Jr)")
     # Willmann 2022 Table S2: Vp subject with WGHT of 82.48 kg = 59.1 L, fixed (SE reported as '-')
 
     lq  <- fixed(log(2.50))
-    label("Intercompartmental clearance Q at 82.48 kg reference weight (L/h; fixed to Willmann 2021 EINSTEIN-Jr)")
+    label("Intercompartmental clearance Q at 82.48 kg reference weight (L/h; Willmann 2021 EINSTEIN-Jr)")
     # Willmann 2022 Table S2: Q subject with WGHT of 82.48 kg = 2.50 L/h, fixed (SE reported as '-')
 
     # Fixed allometric exponents inherited from Willmann 2021. Vc and Vp
@@ -225,13 +225,13 @@ Willmann_2022_rivaroxaban <- function() {
     # (Willmann 2021 supplement S2 THETA(5)); Willmann 2022 Table S2 also
     # reports a single 'Exponent to scale Vc and Vp on WGHT' row.
     e_wt_cl    <- fixed(0.481)
-    label("Allometric WT exponent on CL (unitless; fixed to Willmann 2021 EINSTEIN-Jr)")
+    label("Allometric WT exponent on CL (unitless; Willmann 2021 EINSTEIN-Jr)")
     # Willmann 2022 Table S2: Exponent to scale CL on WGHT = 0.481, fixed
     e_wt_vc_vp <- fixed(0.821)
-    label("Allometric WT exponent shared across Vc and Vp (unitless; fixed to Willmann 2021 EINSTEIN-Jr)")
+    label("Allometric WT exponent shared across Vc and Vp (unitless; Willmann 2021 EINSTEIN-Jr)")
     # Willmann 2022 Table S2: Exponent to scale Vc and Vp on WGHT = 0.821, fixed
     e_wt_q     <- fixed(0.761)
-    label("Allometric WT exponent on Q (unitless; fixed to Willmann 2021 EINSTEIN-Jr)")
+    label("Allometric WT exponent on Q (unitless; Willmann 2021 EINSTEIN-Jr)")
     # Willmann 2022 Table S2: Exponent to scale Q on WGHT = 0.761, fixed
 
     # Age-binned relative bioavailability. In the adapted popPK the

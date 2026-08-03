@@ -108,7 +108,7 @@ Hirt_2006_nelfinavir <- function() {
     # fixes Vm = 1 so K_M0 absorbs the physical M8 volume (Appendix:
     # "K_M0 = CLm0/Vm, with Vm = 1").
     lvc_m8 <- fixed(log(1))
-    label("M8 apparent distribution volume (L) -- FIXED to 1 per Hirt 2006 (not identifiable)")  # Hirt 2006 Appendix: 'K_M0 = CLm0/Vm with Vm = 1'
+    label("M8 apparent distribution volume (L) -- per Hirt 2006 (not identifiable)")  # Hirt 2006 Appendix: 'K_M0 = CLm0/Vm with Vm = 1'
 
     # Shared age exponent on V/F and CL/F. The paper applies the SAME
     # age effect to both V and CL (a 101-U combined OFV decrease vs.

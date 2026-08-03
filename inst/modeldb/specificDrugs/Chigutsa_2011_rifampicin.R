@@ -79,14 +79,14 @@ Chigutsa_2011_rifampicin <- function() {
     # Chigutsa 2011 Table 2 row 'MTT (h) = 1.6 (1.3, 1.8)'.
 
     lnn <- fixed(log(19))
-    label("Erlang transit-chain shape NN (unitless; fixed)")
+    label("Erlang transit-chain shape NN (unitless)")
     # Chigutsa 2011 Table 2 row 'NN = 19 (fixed)'. The Savic transit
     # chain shape parameter is fixed at 19 transit compartments;
     # rxode2's transit(n, mtt, bio) closed-form gamma-density input
     # accepts non-integer n but Chigutsa 2011 reports an integer 19.
 
     lfdepot <- fixed(log(1))
-    label("Bioavailability F (typical-value anchor; fixed)")
+    label("Bioavailability F (typical-value anchor)")
     # Chigutsa 2011 (Table 2 'BSV of F' and Results body text) treats F
     # as the bioavailability anchor relative to which the SLCO1B1
     # rs4149032 covariate effect is reported. Population value fixed
@@ -99,12 +99,12 @@ Chigutsa_2011_rifampicin <- function() {
     # (2008) values per Chigutsa 2011 Methods reference 3.
     # ============================================================
     e_wt_cl <- fixed(0.75)
-    label("Allometric exponent on CL (unitless; fixed)")
+    label("Allometric exponent on CL (unitless)")
     # Chigutsa 2011 Methods reference 3 (Anderson and Holford 2008);
     # standard allometric scaling for clearance.
 
     allo_v <- fixed(1.0)
-    label("Allometric exponent on V (unitless; fixed)")
+    label("Allometric exponent on V (unitless)")
     # Chigutsa 2011 Methods reference 3 (Anderson and Holford 2008);
     # standard allometric scaling for volume.
 

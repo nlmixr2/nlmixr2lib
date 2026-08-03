@@ -90,7 +90,7 @@ Kroemer_2024_ceftazidime_avibactam_fosfomycin_tkc <- function() {
     hillint_avi_caz_s  <- 0.266;  label("Hill factor of avibactam in the interaction on the ceftazidime EC50 on (S)")                                # Table S3: 0.266 [0.226-0.312]
     lint_avi_caz_r     <- -13.50; label("Log-scale INT: maximum change of the ceftazidime EC50 on (R) mediated by avibactam; INT = exp(theta) - 1")  # Table S3: -13.50 [-19.43 to -9.69]
     lec50int_avi_caz_r <- -5.23;  label("Log EC50 of avibactam in the interaction on the ceftazidime EC50 on (R) (log mg/L)")                        # Table S3: -5.23 [-5.53 to -5.04]
-    hillint_avi_caz_r  <- fixed(1); label("Hill factor of avibactam in the interaction on the ceftazidime EC50 on (R) (FIXED)")                      # Table S3: 1, footnote 3 "parameter was fixed to a constant"
+    hillint_avi_caz_r  <- fixed(1); label("Hill factor of avibactam in the interaction on the ceftazidime EC50 on (R)")                      # Table S3: 1, footnote 3 "parameter was fixed to a constant"
 
     # --- GPDI: ceftazidime shifts the fosfomycin EC50 on (R) (Table S3, "Interaction model: ceftazidime affecting fosfomycin") ---
     # Text S5: a monodirectional interaction (ceftazidime affecting fosfomycin) was best (dAIC -271.991 vs Bliss independence).

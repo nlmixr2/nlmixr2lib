@@ -100,7 +100,7 @@ Cao_2017_dha_ring_early <- function() {
     # has saturated.
 
     hill <- fixed(1.7892)
-    label("Hill coefficient (paper symbol gamma; unitless; fixed across stages)")
+    label("Hill coefficient (paper symbol gamma; unitless; across stages)")
     # Cao 2017 Table 1 footnote a: "gamma is fixed to be 1.7892 based on
     # estimates in Table S1 in the supplemental material" -- the stage-
     # pooled mean of the four individually-estimated gamma values.

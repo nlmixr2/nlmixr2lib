@@ -53,7 +53,7 @@ Nielsen_2011_erythromycin <- function() {
     # in-broth degradation), so the log-transform is not applicable
     # and kdeg is set on the linear scale instead.
     kdeg <- fixed(0)
-    label("Drug degradation rate kdeg in broth (1/h; FIXED at 0 per Methods 'Semimechanistic PKPD model')")  # Methods: "For the other drugs, the kdeg was set to zero" (erythromycin = 0)
+    label("Drug degradation rate kdeg in broth (1/h; per Methods 'Semimechanistic PKPD model')")  # Methods: "For the other drugs, the kdeg was set to zero" (erythromycin = 0)
 
     # ke is the in vitro kinetic-system elimination rate (flow rate
     # / volume). For dynamic experiments it is set to ln(2) /
@@ -81,7 +81,7 @@ Nielsen_2011_erythromycin <- function() {
     # Starting inoculum
     # =============================================================
     lcfu0 <- fixed(log(1e6))
-    label("Log starting bacterial inoculum (CFU/mL; FIXED at 10^6 per Methods)")  # Methods: "starting inoculum of 10^6 CFU/ml"
+    label("Log starting bacterial inoculum (CFU/mL; per Methods)")  # Methods: "starting inoculum of 10^6 CFU/ml"
 
     # =============================================================
     # Residual error

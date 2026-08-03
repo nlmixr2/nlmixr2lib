@@ -161,7 +161,7 @@ Press_2010_ciclosporin <- function() {
     # source paper.
 
     lfdepot <- fixed(log(0.5))
-    label("Oral bioavailability F (unitless; FIXED)")
+    label("Oral bioavailability F (unitless)")
     # Methods 'Structural model': "The value for the oral bioavailability
     # was fixed at 50%, as previously described [refs 3, 23] and used in
     # the clinically applied TDM model [ref 4]."
@@ -173,9 +173,9 @@ Press_2010_ciclosporin <- function() {
     # for clearance and 1 for volume of distribution [ref 24]."
     # ============================================================
     e_wt_cl <- fixed(0.75)
-    label("Allometric exponent on CL (unitless; FIXED)")
+    label("Allometric exponent on CL (unitless)")
     e_wt_vc <- fixed(1.0)
-    label("Allometric exponent on Vc (unitless; FIXED)")
+    label("Allometric exponent on Vc (unitless)")
 
     # ============================================================
     # Covariate effects -- concomitant high-dose prednisolone

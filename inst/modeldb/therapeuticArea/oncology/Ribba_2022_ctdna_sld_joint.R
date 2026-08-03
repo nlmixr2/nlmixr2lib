@@ -99,9 +99,9 @@ Ribba_2022_ctdna_sld_joint <- function() {
     # The three fixed etas carry the omegas of the two single-endpoint fits; only
     # omega_zeta was estimated. Table values are standard deviations of the random
     # effects, so the nlmixr2 variance is omega^2.
-    etalkge       ~ fixed(1.0609)   # Appendix tumor-size table: omega_kgT = 1.03; 1.03^2 = 1.0609 (FIXED in the joint fit)
-    etalkse       ~ fixed(2.6896)   # Appendix tumor-size table: omega_ksT = 1.64; 1.64^2 = 2.6896 (FIXED in the joint fit)
-    etalkge_ctdna ~ fixed(0.6724)   # Appendix ctDNA table:      omega_kg  = 0.82; 0.82^2 = 0.6724 (FIXED in the joint fit)
+    etalkge       ~ fixed(1.0609)   # Appendix tumor-size table: omega_kgT = 1.03; 1.03^2 = 1.0609 (from the joint fit)
+    etalkse       ~ fixed(2.6896)   # Appendix tumor-size table: omega_ksT = 1.64; 1.64^2 = 2.6896 (from the joint fit)
+    etalkge_ctdna ~ fixed(0.6724)   # Appendix ctDNA table: omega_kg = 0.82; 0.82^2 = 0.6724 (from the joint fit)
     etalzeta      ~ 0.7396          # Appendix joint-model table: omega_zeta = 0.86, RSE 35.0%; 0.86^2 = 0.7396 (estimated)
 
     # ----- Residual error: constant on both outputs (Appendix: "the parameters of the two error models (assumed constant)") -----

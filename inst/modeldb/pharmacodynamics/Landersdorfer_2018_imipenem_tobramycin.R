@@ -63,7 +63,7 @@ Landersdorfer_2018_imipenem_tobramycin <- function() {
     # and fixed at 50 /h per Table 1 footnote (a sensitivity-tested
     # value, not an estimate).
     lk21 <- fixed(log(50))
-    label("Replication rate constant k21 (1/h; S2 -> 2*S1 doubling; FIXED)")  # Landersdorfer 2018 Table 1
+    label("Replication rate constant k21 (1/h; S2 -> 2*S1 doubling)")  # Landersdorfer 2018 Table 1
 
     # Mean generation time per subpopulation (minutes). Inverse
     # gives the slow S1 -> S2 rate constant k12_p (1/min initially
@@ -100,7 +100,7 @@ Landersdorfer_2018_imipenem_tobramycin <- function() {
     lkmax_ipm <- log(1.74)
     label("Maximum imipenem killing rate Kmax,IPM (1/h)")  # Landersdorfer 2018 Table 1
     lhill_ipm <- fixed(log(3.0))
-    label("Imipenem Hill coefficient (unitless; FIXED per sensitivity analysis)")  # Landersdorfer 2018 Table 1 footnote (d)
+    label("Imipenem Hill coefficient (unitless; per sensitivity analysis)")  # Landersdorfer 2018 Table 1 footnote (d)
 
     # Imipenem KC50 per subpopulation. Population 3 has two
     # values: the monotherapy KC50 (without sufficient tobramycin)

@@ -235,7 +235,7 @@ Siebinga_2023_lu177psma617 <- function() {
     # occasion-1 estimate (Jonsson_2011_ethambutol.R / Chen_2023_nemonoxacin.R
     # precedent).
     etaiov_kin_tumor_1 ~ 0.173302        # Table 2 IOV k15 = 43.5% CV -> log(0.435^2 + 1)
-    etaiov_kin_tumor_2 ~ fix(0.173302)   # SAME-equivalent: fixed equal to the occasion-1 IOV variance
+    etaiov_kin_tumor_2 ~ fix(0.173302)   # SAME-equivalent: equal to the occasion-1 IOV variance
 
     # --------------------------------------------------------------------------
     # Residual unexplained variability. Table 2 reports the proportional terms

@@ -235,7 +235,7 @@ Kim_2008_aripiprazole <- function() {
     # fixed to 1.06 h-1 in accordance with previous population analysis [20]").
     # ========================================================================
     lka <- fixed(log(1.06))
-    label("Absorption rate constant Ka (1/h, FIXED)")  # Kim 2008 Table 3 row 'k_a (h-1) = 1.06 (FIXED)'
+    label("Absorption rate constant Ka (1/h)")  # Kim 2008 Table 3 row 'k_a (h-1) = 1.06 (FIXED)'
 
     # ========================================================================
     # Apparent clearance of aripiprazole, CYP2D6 stratum-specific typical

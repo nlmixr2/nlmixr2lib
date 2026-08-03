@@ -110,7 +110,7 @@ LohyDas_2018_artesunate <- function() {
     # median WT = 50 kg (Results p.5).
 
     lfdepot <- fixed(log(1))
-    label("Reference relative oral bioavailability of artesunate, F (unitless); fixed at 1 (the source paper fixes F at 100%, Table 2)")  # Lohy Das 2018 Table 2: F (%) = 100 fix
+    label("Reference relative oral bioavailability of artesunate, F (unitless) (the source paper fixes F at 100%, Table 2)")  # Lohy Das 2018 Table 2: F (%) = 100 fix
 
     lmtt    <- log(1.34)
     label("Mean transit time of the 3-compartment transit-absorption chain, MTT (h)")  # Lohy Das 2018 Table 2: MTT = 1.34 h (%RSE 18.8, 95% CI 1.04-1.96)

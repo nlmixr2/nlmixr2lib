@@ -73,7 +73,7 @@ Cheah_2016_polymyxin_FADDIAB008 <- function() {
     # Bacterial killing (Eq 7)
     # ===============================================================
     kill_max <- fixed(100)
-    label("Maximal polymyxin-induced killing rate constant (1/h; Kill_max; FIXED per Cheah 2016)")  # Cheah 2016 Table 1 (fixed) + Results paragraph 3
+    label("Maximal polymyxin-induced killing rate constant (1/h; Kill_max; per Cheah 2016)")  # Cheah 2016 Table 1 (fixed) + Results paragraph 3
     hill_killing <- 1.75
     label("Hill coefficient for polymyxin-induced killing (Hill_killing)")  # Cheah 2016 Table 1, FADDI-AB008
     killc50 <- 0.693
@@ -83,9 +83,9 @@ Cheah_2016_polymyxin_FADDIAB008 <- function() {
     # Adaptive resistance (Eqs 8-9)
     # ===============================================================
     s_max <- fixed(300)
-    label("Maximal fold reduction in effective polymyxin via adaptive resistance (S_max; FIXED per Cheah 2016)")  # Cheah 2016 Table 1 (fixed) + Results paragraph 3
+    label("Maximal fold reduction in effective polymyxin via adaptive resistance (S_max; per Cheah 2016)")  # Cheah 2016 Table 1 (fixed) + Results paragraph 3
     sc50 <- fixed(36.5)
-    label("Adaptive-resistance half-saturation polymyxin concentration (mg/L; SC50; FIXED, inherited from Bulitta 2015)")  # Bulitta JB et al. 2015 AAC 59:2315-2327, Table 1 PAO1-RH (operator-approved fixed-from-class proxy; not in Cheah 2016)
+    label("Adaptive-resistance half-saturation polymyxin concentration (mg/L; SC50;, inherited from Bulitta 2015)")  # Bulitta JB et al. 2015 AAC 59:2315-2327, Table 1 PAO1-RH (operator-approved fixed-from-class proxy; not in Cheah 2016)
     k_adapt <- 8.09
     label("Adaptation rate constant for R_adaptive turnover (1/h; k_adapt)")  # Cheah 2016 Table 1, FADDI-AB008
 
@@ -99,19 +99,19 @@ Cheah_2016_polymyxin_FADDIAB008 <- function() {
     # Medium / physical constants (inherited; see ATCC 19606 file)
     # ===============================================================
     kd_cations <- fixed(200)
-    label("Receptor dissociation constant for Mg2+/Ca2+ (umol/L; Kd_cations; FIXED per Bulitta 2010)")  # Bulitta JB et al. 2010 AAC 54:2051-2062, Table 1 footnote (g)
+    label("Receptor dissociation constant for Mg2+/Ca2+ (umol/L; Kd_cations; per Bulitta 2010)")  # Bulitta JB et al. 2010 AAC 54:2051-2062, Table 1 footnote (g)
     kd_polymyxin <- fixed(0.3)
-    label("Receptor dissociation constant for polymyxin (umol/L; Kd_polymyxin; FIXED per Bulitta 2010)")  # Bulitta JB et al. 2010 AAC 54:2051-2062, Table 1 footnote (g)
+    label("Receptor dissociation constant for polymyxin (umol/L; Kd_polymyxin; per Bulitta 2010)")  # Bulitta JB et al. 2010 AAC 54:2051-2062, Table 1 footnote (g)
     mw_polymyxin <- fixed(1.163)
-    label("Mean polymyxin molar mass (mg/umol; MW_polymyxin; FIXED at 1163 g/mol per Bulitta 2010 colistin reference)")  # Bulitta JB et al. 2010 AAC 54:2051-2062, Methods + Table 1 footnote
+    label("Mean polymyxin molar mass (mg/umol; MW_polymyxin; 1163 g/mol per Bulitta 2010 colistin reference)")  # Bulitta JB et al. 2010 AAC 54:2051-2062, Methods + Table 1 footnote
     c_cations <- fixed(1138)
-    label("Sum of Mg2+ and Ca2+ in CAMHB (umol/L; C_cations; FIXED per Bulitta 2010 Table 1 footnote f)")  # Bulitta JB et al. 2010 AAC 54:2051-2062, Table 1 footnote (f)
+    label("Sum of Mg2+ and Ca2+ in CAMHB (umol/L; C_cations; per Bulitta 2010 Table 1 footnote f)")  # Bulitta JB et al. 2010 AAC 54:2051-2062, Table 1 footnote (f)
 
     # ===============================================================
     # Residual error -- not reported in Cheah 2016
     # ===============================================================
     addSd <- fixed(0.01)
-    label("Additive residual SD on log10 CFU/mL (FIXED tiny placeholder -- not reported in Cheah 2016; vignette uses zeroRe())")  # Cheah 2016 does NOT report residual error SD
+    label("Additive residual SD on log10 CFU/mL (tiny placeholder -- not reported in Cheah 2016; vignette uses zeroRe)")  # Cheah 2016 does NOT report residual error SD
   })
 
   model({

@@ -124,7 +124,7 @@ Suyagh_2011_metronidazole <- function() {
     # the full text and find the exponent was actually estimated, drop the
     # fixed() wrapper and supply the point estimate.
     e_wt_cl <- fixed(0.75)
-    label("Allometric exponent on CL (unitless; fixed at the canonical 3/4-power value)")
+    label("Allometric exponent on CL (unitless; the canonical 3/4-power value)")
     # Suyagh 2011 abstract: (WT / 1.00)^0.75.
 
     # PMA maturation slope. The abstract reports postmenstrual age as a
@@ -154,7 +154,7 @@ Suyagh_2011_metronidazole <- function() {
     # documents this as a transcription gap rather than a paper-derived value.
     # =========================================================================
     propSd <- fixed(0)
-    label("Proportional residual SD (fraction; FIXED at 0 -- not reported in the abstract-only source)")
+    label("Proportional residual SD (fraction; 0 -- not reported in the abstract-only source)")
   })
 
   model({

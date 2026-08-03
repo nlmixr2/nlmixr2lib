@@ -95,18 +95,18 @@ Beredaki_2023_micafungin_eucast <- function() {
     # the apparatus, not an estimated parameter. Converts the micafungin
     # amount added to the dialysis tube into a concentration.
     lvc <- fixed(log(0.010))
-    label("Log volume of the internal compartment (L; FIXED, apparatus dimension)")  # Beredaki 2023 Methods, "In vitro PK/PD model": "an internal compartment (IC) of a 10 mL-volume semipermeable cellulose dialysis tube" = 0.010 L
+    label("Log volume of the internal compartment (L;, apparatus dimension)")  # Beredaki 2023 Methods, "In vitro PK/PD model": "an internal compartment (IC) of a 10 mL-volume semipermeable cellulose dialysis tube" = 0.010 L
 
     # Unbound fraction of micafungin. FIXED: a measured physicochemical
     # property. Beredaki 2023 applied it to convert the total in vitro
     # exposure into the fAUC0-24 that indexes the exposure-response.
     fu <- fixed(0.0025)
-    label("Unbound fraction of micafungin in serum (FIXED, measured)")  # Beredaki 2023 Methods, "PK/PD analysis": "For calculation of fAUC/MIC in serum, a protein binding of 99.75% was taken into account"; Discussion: "99.75% for micafungin"
+    label("Unbound fraction of micafungin in serum (measured)")  # Beredaki 2023 Methods, "PK/PD analysis": "For calculation of fAUC/MIC in serum, a protein binding of 99.75% was taken into account"; Discussion: "99.75% for micafungin"
 
     # Dosing interval. FIXED experimental design input. Also defines the
     # integration window of the paper's PK/PD index (fAUC0-24).
     tau <- fixed(24)
-    label("Dosing interval and PK/PD index integration window (h; FIXED, design)")  # Beredaki 2023 Methods: "Drug concentrations were added at the corresponding Cmax values in the in vitro model once daily"; the index is fAUC0-24/MIC
+    label("Dosing interval and PK/PD index integration window (h;, design)")  # Beredaki 2023 Methods: "Drug concentrations were added at the corresponding Cmax values in the in vitro model once daily"; the index is fAUC0-24/MIC
 
     # Target peak total micafungin concentration reached at the start of
     # every dosing interval. FIXED experimental design input; change it to
@@ -115,7 +115,7 @@ Beredaki_2023_micafungin_eucast <- function() {
     # peak once daily, so the peak is constant across intervals
     # (Figure 2a: target 20 mg/L at 0, 24 and 48 h).
     tcmax <- fixed(8)
-    label("Target peak total micafungin concentration per 24 h interval (mg/L; FIXED, design)")  # Beredaki 2023 Figure 4 legend: total Cmax arms of 0.25, 1, 4, 8, 16 and 32 mg/L with 10% serum; Methods: Cmax range 0.004-32 mg/L
+    label("Target peak total micafungin concentration per 24 h interval (mg/L;, design)")  # Beredaki 2023 Figure 4 legend: total Cmax arms of 0.25, 1, 4, 8, 16 and 32 mg/L with 10% serum; Methods: Cmax range 0.004-32 mg/L
 
     # ================================================================
     # Sigmoidal variable-slope Emax exposure-response
@@ -160,7 +160,7 @@ Beredaki_2023_micafungin_eucast <- function() {
     # to apply the model to another isolate; this file is indexed on EUCAST
     # MICs, so use Beredaki_2023_micafungin_clsi for CLSI M27 MICs.
     mic <- fixed(0.016)
-    label("Micafungin EUCAST E.Def 7.3 MIC of the simulated isolate (mg/L; FIXED, measured)")  # Beredaki 2023 Table 1: C. albicans CA 580 (fks1 wild-type) EUCAST median MIC 0.016 mg/L (range 0.008-0.016)
+    label("Micafungin EUCAST E.Def 7.3 MIC of the simulated isolate (mg/L;, measured)")  # Beredaki 2023 Table 1: C. albicans CA 580 (fks1 wild-type) EUCAST median MIC 0.016 mg/L (range 0.008-0.016)
 
     # ================================================================
     # Starting fungal density
@@ -169,7 +169,7 @@ Beredaki_2023_micafungin_eucast <- function() {
     # 10^4 CFU/mL; the measured starting density in the presence of serum
     # is used so the simulated trajectory starts where Figure 4 does.
     log10_cfu0 <- fixed(4.37)
-    label("Log10 starting fungal density in the internal compartment (log10 CFU/mL; FIXED)")  # Beredaki 2023 Results: "In presence of serum, C. albicans grew from a mean +/- SD of 4.37 +/- 0.24 log10CFU/mL at t = 0 h"; nominal inoculum 10^4 CFU/mL
+    label("Log10 starting fungal density in the internal compartment (log10 CFU/mL)")  # Beredaki 2023 Results: "In presence of serum, C. albicans grew from a mean +/- SD of 4.37 +/- 0.24 log10CFU/mL at t = 0 h"; nominal inoculum 10^4 CFU/mL
 
     # ================================================================
     # Residual error
@@ -180,7 +180,7 @@ Beredaki_2023_micafungin_eucast <- function() {
     # FIXED at that reported upper bound; the paper gives no point
     # estimate of an assay CV.
     propSd <- fixed(0.03)
-    label("Proportional residual error on micafungin concentration (fraction; FIXED at the reported assay CV upper bound)")  # Beredaki 2023 Methods: LOD 0.125 mg/L with interexperimental CV < 3%
+    label("Proportional residual error on micafungin concentration (fraction; the reported assay CV upper bound)")  # Beredaki 2023 Methods: LOD 0.125 mg/L with interexperimental CV < 3%
 
     # Fungal density: Beredaki 2023 reported only the coefficient of
     # determination of the Emax fit (R^2 = 0.87, Figure 5b) and no
@@ -188,7 +188,7 @@ Beredaki_2023_micafungin_eucast <- function() {
     # held at zero for deterministic typical-value simulation. See the
     # vignette "Assumptions and deviations".
     addSd_log10cfu <- fixed(0)
-    label("Additive residual SD on log10 CFU/mL (FIXED 0; not reported in Beredaki 2023)")  # Beredaki 2023 reported R^2 = 0.87 only, no residual SD
+    label("Additive residual SD on log10 CFU/mL (0; not reported in Beredaki 2023)")  # Beredaki 2023 reported R^2 = 0.87 only, no residual SD
   })
 
   model({

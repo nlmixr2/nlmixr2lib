@@ -199,7 +199,7 @@ Boak_2014_linezolid <- function() {
     etalec50       ~ 0.70307   # IC50         CV = 1.01  -> omega^2 = log(2.02010)
     etalmtt_pre    ~ 0.11375   # MTT_Pre      CV = 0.347 -> omega^2 = log(1.120409)
     etalmtt_pl     ~ 0.04039   # MTT_PL       CV = 0.203 -> omega^2 = log(1.041209)
-    etalgamma      ~ fixed(0.02226) # gamma   CV = 0.15 fixed -> omega^2 = log(1.0225)
+    etalgamma      ~ fixed(0.02226) # gamma CV = 0.15 -> omega^2 = log(1.0225)
     etalfini_pre   ~ 0.04569   # F_Ini_Pre    CV = 0.215 -> omega^2 = log(1.046225)
     etalfini_pl    ~ 0.05455   # F_Ini_PL     CV = 0.236 -> omega^2 = log(1.055696)
 

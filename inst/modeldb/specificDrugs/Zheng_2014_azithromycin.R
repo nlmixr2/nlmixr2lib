@@ -72,13 +72,13 @@ Zheng_2014_azithromycin <- function() {
     # plasma only.' i.e., the bootstrap re-estimated them in an unbound-
     # plasma-only model, but the tissue model held them fixed.
     ltlag <- fixed(log(1.45))
-    label("Absorption lag time (h, FIXED)")                                  # Zheng 2014 Table 1: 1.45 h (fixed)
+    label("Absorption lag time (h)")                                  # Zheng 2014 Table 1: 1.45 h (fixed)
 
     lka <- fixed(log(0.88))
-    label("First-order absorption rate constant (1/h, FIXED)")               # Zheng 2014 Table 1: 0.88 1/h (fixed)
+    label("First-order absorption rate constant (1/h)")               # Zheng 2014 Table 1: 0.88 1/h (fixed)
 
     lcl <- fixed(log(258))
-    label("Apparent oral clearance CL/F (L/h, FIXED)")                       # Zheng 2014 Table 1: 258 L/h (fixed)
+    label("Apparent oral clearance CL/F (L/h)")                       # Zheng 2014 Table 1: 258 L/h (fixed)
 
     lvc <- log(160)
     label("Apparent central volume Vc/F (L)")                                # Zheng 2014 Table 1: 160 L
@@ -105,13 +105,13 @@ Zheng_2014_azithromycin <- function() {
     # because the high-affinity binding sites saturate at higher Cp.
     # ------------------------------------------------------------------
     fu_base <- fixed(0.4984)
-    label("Baseline fraction unbound in plasma at low Cp (unitless, FIXED)")  # Zheng 2014 Equation 1
+    label("Baseline fraction unbound in plasma at low Cp (unitless)")  # Zheng 2014 Equation 1
 
     fu_emax <- fixed(0.5339)
-    label("Maximum incremental fraction unbound at high Cp (unitless, FIXED)") # Zheng 2014 Equation 1
+    label("Maximum incremental fraction unbound at high Cp (unitless)") # Zheng 2014 Equation 1
 
     fu_ec50 <- fixed(230.9)
-    label("Cp at which fu_emax is half-saturated (ng/mL, FIXED)")             # Zheng 2014 Equation 1
+    label("Cp at which fu_emax is half-saturated (ng/mL)")             # Zheng 2014 Equation 1
 
     # ------------------------------------------------------------------
     # Unionized fractions (Equation 6) at the cited compartment pH.
@@ -119,10 +119,10 @@ Zheng_2014_azithromycin <- function() {
     # AZM is a diprotic base with pKa1 = 8.1 and pKa2 = 8.8.
     # ------------------------------------------------------------------
     funi_plasma <- fixed(0.0076)
-    label("Fraction unionized in plasma at pH 7.4 (unitless, FIXED)")          # Zheng 2014 Results: f_unionized in plasma/ISF = 0.0076
+    label("Fraction unionized in plasma at pH 7.4 (unitless)")          # Zheng 2014 Results: f_unionized in plasma/ISF = 0.0076
 
     funi_pmn_cyto <- fixed(0.0012)
-    label("Fraction unionized in PML cytosol at pH ~7 (unitless, FIXED)")      # Zheng 2014 Results: f_unionized in PML cytosol = 0.0012
+    label("Fraction unionized in PML cytosol at pH ~7 (unitless)")      # Zheng 2014 Results: f_unionized in PML cytosol = 0.0012
 
     # ------------------------------------------------------------------
     # Tissue distribution rate constants (Equation 2). kin and kout are

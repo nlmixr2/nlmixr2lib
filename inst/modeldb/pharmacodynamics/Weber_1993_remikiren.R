@@ -81,7 +81,7 @@ Weber_1993_remikiren <- function() {
     # in-vitro IC50 of 0.5 ng/mL (0.8 nM) reported in the Discussion p. 553.
 
     lhill <- fixed(log(1))
-    label("Hill coefficient governing sigmoidicity (FIXED to 1 per Weber 1993)")
+    label("Hill coefficient governing sigmoidicity (per Weber 1993)")
     # Weber 1993, Results p. 552 ('the Emax-model with the Hill coefficient
     # set to 1') and Methods, 'Concentration-effect modelling'.
 

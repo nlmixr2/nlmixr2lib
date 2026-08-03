@@ -54,7 +54,7 @@ Archary_2019_abacavir <- function() {
     lvc  <- log(4.63);   label("Apparent central volume at 7 kg reference (Vc/F, L)")           # Table 3
     lq   <- log(0.63);   label("Apparent intercompartmental clearance (Q/F, L/h)")              # Table 3
     lvp  <- log(1.65);   label("Apparent peripheral volume (Vp/F, L)")                          # Table 3
-    lfdepot <- fix(log(1)); label("Log baseline bioavailability F for delayed-ART reference (fixed at log(1) = 0)") # Table 3 (delayed-arm typical F = 1)
+    lfdepot <- fix(log(1)); label("Log baseline bioavailability F for delayed-ART reference (log(1) = 0)") # Table 3 (delayed-arm typical F = 1)
 
     # Allometric exponents (paper-fixed per Methods Section 2.3)
     e_wt_cl_q  <- fixed(0.75); label("Allometric exponent on CL/F and Q/F (unitless)")          # Methods 2.3

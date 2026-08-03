@@ -160,7 +160,7 @@ deWinter_2009_mycophenolic_acid <- function() {
     etalbmax    ~ 0.207                                                                                                       # Table 2 IPV BMAX    =  48% CV -> log(1 + 0.48^2)
     etalcl_mpag ~ 0.753                                                                                                       # Table 2 IPV CL fMPAG= 106% CV -> log(1 + 1.06^2)
     etaltgb     ~ 1.095                                                                                                       # Table 2 IPV TGB     = 141% CV -> log(1 + 1.41^2); source used additive eta, packaged as log-normal (see vignette)
-    etalk57     ~ fixed(0.408)                                                                                                # Table 2 IPV k57     =  71% CV (FIXED) -> fixed(log(1 + 0.71^2))
+    etalk57     ~ fixed(0.408)                                                                                                # Table 2 IPV k57 = 71% CV -> (log(1 + 0.71^2))
 
     # Residual variability. Source paper reports 'Residual variability
     # between observed and predicted MPA plasma concentrations was described

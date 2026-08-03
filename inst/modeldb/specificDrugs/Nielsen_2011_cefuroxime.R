@@ -64,7 +64,7 @@ Nielsen_2011_cefuroxime <- function() {
     # was set to zero. Encoded on the linear scale so the same
     # ini() shape works across the five Nielsen 2011 drug files.
     kdeg <- fixed(0.026)
-    label("Drug degradation rate kdeg in broth (1/h; FIXED per Methods 'Semimechanistic PKPD model')")  # Methods: "for these drugs the kdeg values were fixed to 0.020 and 0.026 h-1, respectively" (cefuroxime = 0.026)
+    label("Drug degradation rate kdeg in broth (1/h; per Methods 'Semimechanistic PKPD model')")  # Methods: "for these drugs the kdeg values were fixed to 0.020 and 0.026 h-1, respectively" (cefuroxime = 0.026)
 
     # ke is the in vitro kinetic-system elimination rate (flow rate
     # / volume). For dynamic experiments it is set to ln(2) /
@@ -86,13 +86,13 @@ Nielsen_2011_cefuroxime <- function() {
     lhill <- log(1.35)
     label("Log Hill (sigmoidicity) exponent gamma on the killing function (unitless)")    # Table 3 "Static and dynamic" column: gamma CXM = 1.35 (RSE 14%)
     lke0  <- fixed(log(100))
-    label("Log effect-compartment delay rate ke0 (1/h; FIXED at 100 per Table 3 'Static and dynamic' column)")  # Table 3 "Static and dynamic" column: ke0 CXM = 100 FIX (effectively instantaneous equilibrium)
+    label("Log effect-compartment delay rate ke0 (1/h; per Table 3 'Static and dynamic' column)")  # Table 3 "Static and dynamic" column: ke0 CXM = 100 FIX (effectively instantaneous equilibrium)
 
     # =============================================================
     # Starting inoculum
     # =============================================================
     lcfu0 <- fixed(log(1e6))
-    label("Log starting bacterial inoculum (CFU/mL; FIXED at 10^6 per Methods)")  # Methods: "starting inoculum of 10^6 CFU/ml"
+    label("Log starting bacterial inoculum (CFU/mL; per Methods)")  # Methods: "starting inoculum of 10^6 CFU/ml"
 
     # =============================================================
     # Residual error

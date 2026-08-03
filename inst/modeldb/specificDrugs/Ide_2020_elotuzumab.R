@@ -197,7 +197,7 @@ Ide_2020_elotuzumab <- function() {
     # Covariate effects on Q and VP - body-weight allometry only.
     # Q: exponent fixed at allometric value 0.75 because the estimated value
     # was imprecise (Ide 2020 Table 2 footnote c).
-    e_wt_q          <- fix(0.75);      label("Power exponent of WT on Q (unitless; fixed allometric value)")           # Ide 2020 Table 2: QWT = 0.75 FIXED
+    e_wt_q          <- fix(0.75);      label("Power exponent of WT on Q (unitless; allometric value)")           # Ide 2020 Table 2: QWT = 0.75 FIXED
     e_wt_vp         <-  0.623;         label("Power exponent of WT on VP (unitless)")                                  # Ide 2020 Table 2: VPWT = 0.623
 
     # Covariate effects on VMAX and KINT (Ide 2020 Table 2). MCPROT enters
@@ -218,7 +218,7 @@ Ide_2020_elotuzumab <- function() {
     etalvp   ~ 0.137      # Ide 2020 Table 2: omega^2_VP    = 0.137
     etalrmax ~ 0.193      # Ide 2020 Table 2: omega^2_Rmax  = 0.193
     etalkint ~ 1.84       # Ide 2020 Table 2: omega^2_KINT  = 1.84
-    etalvmax ~ fix(0.0001)  # Ide 2020 Table 2: omega^2_VMAX = 0.0001 FIXED (set near zero per IMPMAP requirement)
+    etalvmax ~ fix(0.0001)  # Ide 2020 Table 2: omega^2_VMAX = 0.0001 (set near zero per IMPMAP requirement)
     etalkm   ~ 0.392      # Ide 2020 Table 2: omega^2_KM    = 0.392
 
     # Residual error - saturable concentration-dependent log-scale additive

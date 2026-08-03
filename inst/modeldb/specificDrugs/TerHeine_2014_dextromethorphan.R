@@ -103,7 +103,7 @@ TerHeine_2014_dextromethorphan <- function() {
     label("Apparent peripheral volume of distribution of dextromethorphan (L)")
     # Table 2: Peripheral Vd dextromethorphan = 1660 L, RSE 16.8%
     lvc_metab <- fixed(log(419))
-    label("Apparent volume of distribution shared by all metabolites (L; FIXED)")
+    label("Apparent volume of distribution shared by all metabolites (L)")
     # Methods, "Dextromethorphan and metabolites pharmacokinetic model
     # development": "we therefore assumed a volume of distribution of
     # 419 l for all dextromethorphan metabolites, as previously found

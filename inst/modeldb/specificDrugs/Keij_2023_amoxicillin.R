@@ -197,11 +197,11 @@ Keij_2023_amoxicillin <- function() {
     # approach was retained. Table 2 prints both exponents inline in the
     # equations with no RSE and no bootstrap CI, confirming they were fixed.
     e_wt_cl <- fixed(0.75)
-    label("Allometric exponent of body weight on clearance (unitless, fixed)")
+    label("Allometric exponent of body weight on clearance (unitless)")
     # Keij 2023 Table 2 equation: CL_A = TVCL * (BW/70)^0.75 * ...
 
     e_wt_vc <- fixed(1.00)
-    label("Allometric exponent of body weight on central volume (unitless, fixed)")
+    label("Allometric exponent of body weight on central volume (unitless)")
     # Keij 2023 Table 2 equation: V_A = TVV1 * (BW/70)^1.00
 
     # --- Estimated maturation covariate effects on clearance ---

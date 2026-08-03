@@ -95,11 +95,11 @@ Urien_2005_capecitabine <- function() {
     # amount. The naming `lk_<destination>_form` matches the parallel
     # NA_NA_lidocaine.R sequential-metabolite model (k_megx_form etc.).
     lvc_dfcr <- fixed(log(1))
-    label("5'-DFCR apparent central volume (L) -- FIXED to 1 per Urien 2005 (not identifiable)")  # Urien 2005 page 820: "metabolite distribution volumes are not identifiable and fixed to 1"
+    label("5'-DFCR apparent central volume (L) -- per Urien 2005 (not identifiable)")  # Urien 2005 page 820: "metabolite distribution volumes are not identifiable and fixed to 1"
     lvc_dfur <- fixed(log(1))
-    label("5'-DFUR apparent central volume (L) -- FIXED to 1 per Urien 2005 (not identifiable)")  # Urien 2005 page 820
+    label("5'-DFUR apparent central volume (L) -- per Urien 2005 (not identifiable)")  # Urien 2005 page 820
     lvc_5fu  <- fixed(log(1))
-    label("5-FU apparent central volume (L) -- FIXED to 1 per Urien 2005 (not identifiable)")    # Urien 2005 page 820
+    label("5-FU apparent central volume (L) -- per Urien 2005 (not identifiable)")    # Urien 2005 page 820
 
     lk_dfur_form <- log(10.7)
     label("5'-DFCR -> 5'-DFUR first-order rate constant K23 (1/h)")  # Urien 2005 Table II: K23 mean 10.7 1/h (median 7.9; 95% CI 5.8-14.3)

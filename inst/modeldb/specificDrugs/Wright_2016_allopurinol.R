@@ -128,7 +128,7 @@ Wright_2016_allopurinol <- function() {
 
     # Ka IIV. Wright 2016 Table 3: omega_Ka = 58.9% (fixed in both
     # base and final). Encoded as omega^2 = 0.589^2 = 0.347.
-    etalka ~ fixed(0.347)                                                                                    # Wright 2016 Table 3: omegaKa = 58.9% fixed; encoded as omega^2 = 0.589^2
+    etalka ~ fixed(0.347)                                                                                    # Wright 2016 Table 3: omegaKa = 58.9%; encoded as omega^2 = 0.589^2
 
     # PD block IIV (Wright 2016 Table 3) with reported off-diagonal
     # covariances on the log scale. Order in the block matrix: lrbase

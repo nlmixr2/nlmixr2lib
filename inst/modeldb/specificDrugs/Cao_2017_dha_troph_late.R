@@ -87,7 +87,7 @@ Cao_2017_dha_troph_late <- function() {
     # per eq 8.
 
     hill <- fixed(1.7892)
-    label("Hill coefficient (paper symbol gamma; unitless; fixed across stages)")
+    label("Hill coefficient (paper symbol gamma; unitless; across stages)")
     # Cao 2017 Table 1 footnote a: fixed at 1.7892.
 
     Cstar <- fixed(0.1)

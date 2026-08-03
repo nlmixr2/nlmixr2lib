@@ -165,99 +165,99 @@ Mann_2022_mu_receptor_binding <- function() {
 
     # 1 - alfentanil (Table S2)
     kon_alfentanil  <- fixed(3.32e-07)
-    label("Alfentanil association rate Kon (pM^-n s^-1, FIXED, Table S2)")  # Table S2 row 1
+    label("Alfentanil association rate Kon (pM^-n s^-1,, Table S2)")  # Table S2 row 1
     koff_alfentanil <- fixed(1.41e-02)
-    label("Alfentanil dissociation rate Koff (s^-1, FIXED, Table S2)")      # Table S2 row 1
+    label("Alfentanil dissociation rate Koff (s^-1,, Table S2)")      # Table S2 row 1
     n_alfentanil    <- fixed(1.0)
-    label("Alfentanil binding slope n (unitless, FIXED, Table S2)")         # Table S2 row 1
+    label("Alfentanil binding slope n (unitless,, Table S2)")         # Table S2 row 1
 
     # 2 - buprenorphine (Table S2)
     kon_buprenorphine  <- fixed(4.83e-05)
-    label("Buprenorphine association rate Kon (pM^-n s^-1, FIXED, Table S2)")  # Table S2 row 2
+    label("Buprenorphine association rate Kon (pM^-n s^-1,, Table S2)")  # Table S2 row 2
     koff_buprenorphine <- fixed(1.37e-04)
-    label("Buprenorphine dissociation rate Koff (s^-1, FIXED, Table S2)")      # Table S2 row 2; slowest dissociation in panel (t1/2 = 84.4 min)
+    label("Buprenorphine dissociation rate Koff (s^-1,, Table S2)")      # Table S2 row 2; slowest dissociation in panel (t1/2 = 84.4 min)
     n_buprenorphine    <- fixed(0.5)
-    label("Buprenorphine binding slope n (unitless, FIXED, Table S2)")         # Table S2 row 2
+    label("Buprenorphine binding slope n (unitless,, Table S2)")         # Table S2 row 2
 
     # 3 - butyryl fentanyl (Table S2)
     kon_butyrylfentanyl  <- fixed(1.14e-05)
-    label("Butyryl-fentanyl association rate Kon (pM^-n s^-1, FIXED, Table S2)")  # Table S2 row 3
+    label("Butyryl-fentanyl association rate Kon (pM^-n s^-1,, Table S2)")  # Table S2 row 3
     koff_butyrylfentanyl <- fixed(5.32e-03)
-    label("Butyryl-fentanyl dissociation rate Koff (s^-1, FIXED, Table S2)")      # Table S2 row 3
+    label("Butyryl-fentanyl dissociation rate Koff (s^-1,, Table S2)")      # Table S2 row 3
     n_butyrylfentanyl    <- fixed(0.99)
-    label("Butyryl-fentanyl binding slope n (unitless, FIXED, Table S2)")         # Table S2 row 3
+    label("Butyryl-fentanyl binding slope n (unitless,, Table S2)")         # Table S2 row 3
 
     # 4 - carfentanil (Table S2)
     kon_carfentanil  <- fixed(9.95e-06)
-    label("Carfentanil association rate Kon (pM^-n s^-1, FIXED, Table S2)")  # Table S2 row 4
+    label("Carfentanil association rate Kon (pM^-n s^-1,, Table S2)")  # Table S2 row 4
     koff_carfentanil <- fixed(2.47e-04)
-    label("Carfentanil dissociation rate Koff (s^-1, FIXED, Table S2)")      # Table S2 row 4; second-slowest dissociation in panel (t1/2 = 46.6 min) -- driver of difficult-to-reverse carfentanil overdose
+    label("Carfentanil dissociation rate Koff (s^-1,, Table S2)")      # Table S2 row 4; second-slowest dissociation in panel (t1/2 = 46.6 min) -- driver of difficult-to-reverse carfentanil overdose
     n_carfentanil    <- fixed(1.023)
-    label("Carfentanil binding slope n (unitless, FIXED, Table S2)")         # Table S2 row 4
+    label("Carfentanil binding slope n (unitless,, Table S2)")         # Table S2 row 4
 
     # 5 - fluorobutyryl fentanyl (Table S2)
     kon_fluorobutyrylfentanyl  <- fixed(3.96e-04)
-    label("Fluorobutyryl-fentanyl association rate Kon (pM^-n s^-1, FIXED, Table S2)")  # Table S2 row 5
+    label("Fluorobutyryl-fentanyl association rate Kon (pM^-n s^-1,, Table S2)")  # Table S2 row 5
     koff_fluorobutyrylfentanyl <- fixed(1.54e-02)
-    label("Fluorobutyryl-fentanyl dissociation rate Koff (s^-1, FIXED, Table S2)")      # Table S2 row 5
+    label("Fluorobutyryl-fentanyl dissociation rate Koff (s^-1,, Table S2)")      # Table S2 row 5
     n_fluorobutyrylfentanyl    <- fixed(0.5)
-    label("Fluorobutyryl-fentanyl binding slope n (unitless, FIXED, Table S2)")         # Table S2 row 5
+    label("Fluorobutyryl-fentanyl binding slope n (unitless,, Table S2)")         # Table S2 row 5
 
     # 6 - fentanyl (Table S2)
     kon_fentanyl  <- fixed(3.08e-05)
-    label("Fentanyl association rate Kon (pM^-n s^-1, FIXED, Table S2)")  # Table S2 row 6
+    label("Fentanyl association rate Kon (pM^-n s^-1,, Table S2)")  # Table S2 row 6
     koff_fentanyl <- fixed(4.33e-03)
-    label("Fentanyl dissociation rate Koff (s^-1, FIXED, Table S2)")      # Table S2 row 6; dissociation t1/2 = 2.66 min
+    label("Fentanyl dissociation rate Koff (s^-1,, Table S2)")      # Table S2 row 6; dissociation t1/2 = 2.66 min
     n_fentanyl    <- fixed(0.844)
-    label("Fentanyl binding slope n (unitless, FIXED, Table S2)")         # Table S2 row 6
+    label("Fentanyl binding slope n (unitless,, Table S2)")         # Table S2 row 6
 
     # 7 - fluoroisobutyryl fentanyl (Table S2)
     kon_fluoroisobutyrylfentanyl  <- fixed(1.77e-04)
-    label("Fluoroisobutyryl-fentanyl association rate Kon (pM^-n s^-1, FIXED, Table S2)")  # Table S2 row 7
+    label("Fluoroisobutyryl-fentanyl association rate Kon (pM^-n s^-1,, Table S2)")  # Table S2 row 7
     koff_fluoroisobutyrylfentanyl <- fixed(6.29e-03)
-    label("Fluoroisobutyryl-fentanyl dissociation rate Koff (s^-1, FIXED, Table S2)")      # Table S2 row 7
+    label("Fluoroisobutyryl-fentanyl dissociation rate Koff (s^-1,, Table S2)")      # Table S2 row 7
     n_fluoroisobutyrylfentanyl    <- fixed(0.5)
-    label("Fluoroisobutyryl-fentanyl binding slope n (unitless, FIXED, Table S2)")         # Table S2 row 7
+    label("Fluoroisobutyryl-fentanyl binding slope n (unitless,, Table S2)")         # Table S2 row 7
 
     # 8 - furanyl fentanyl (Table S2)
     kon_furanylfentanyl  <- fixed(3.42e-05)
-    label("Furanyl-fentanyl association rate Kon (pM^-n s^-1, FIXED, Table S2)")  # Table S2 row 8
+    label("Furanyl-fentanyl association rate Kon (pM^-n s^-1,, Table S2)")  # Table S2 row 8
     koff_furanylfentanyl <- fixed(5.43e-03)
-    label("Furanyl-fentanyl dissociation rate Koff (s^-1, FIXED, Table S2)")      # Table S2 row 8
+    label("Furanyl-fentanyl dissociation rate Koff (s^-1,, Table S2)")      # Table S2 row 8
     n_furanylfentanyl    <- fixed(1.01)
-    label("Furanyl-fentanyl binding slope n (unitless, FIXED, Table S2)")         # Table S2 row 8
+    label("Furanyl-fentanyl binding slope n (unitless,, Table S2)")         # Table S2 row 8
 
     # 9 - isobutyryl fentanyl (Table S2)
     kon_isobutyrylfentanyl  <- fixed(1.27e-04)
-    label("Isobutyryl-fentanyl association rate Kon (pM^-n s^-1, FIXED, Table S2)")  # Table S2 row 9
+    label("Isobutyryl-fentanyl association rate Kon (pM^-n s^-1,, Table S2)")  # Table S2 row 9
     koff_isobutyrylfentanyl <- fixed(3.11e-02)
-    label("Isobutyryl-fentanyl dissociation rate Koff (s^-1, FIXED, Table S2)")      # Table S2 row 9
+    label("Isobutyryl-fentanyl dissociation rate Koff (s^-1,, Table S2)")      # Table S2 row 9
     n_isobutyrylfentanyl    <- fixed(0.69)
-    label("Isobutyryl-fentanyl binding slope n (unitless, FIXED, Table S2)")         # Table S2 row 9
+    label("Isobutyryl-fentanyl binding slope n (unitless,, Table S2)")         # Table S2 row 9
 
     # 10 - naloxone (Table S2)
     kon_naloxone  <- fixed(1.67e-04)
-    label("Naloxone association rate Kon (pM^-n s^-1, FIXED, Table S2)")  # Table S2 row 10; primary antagonist in Mann 2022 overdose-rescue chain
+    label("Naloxone association rate Kon (pM^-n s^-1,, Table S2)")  # Table S2 row 10; primary antagonist in Mann 2022 overdose-rescue chain
     koff_naloxone <- fixed(3.96e-02)
-    label("Naloxone dissociation rate Koff (s^-1, FIXED, Table S2)")      # Table S2 row 10; dissociation t1/2 = 0.29 min
+    label("Naloxone dissociation rate Koff (s^-1,, Table S2)")      # Table S2 row 10; dissociation t1/2 = 0.29 min
     n_naloxone    <- fixed(0.86)
-    label("Naloxone binding slope n (unitless, FIXED, Table S2)")         # Table S2 row 10
+    label("Naloxone binding slope n (unitless,, Table S2)")         # Table S2 row 10
 
     # 11 - remifentanil (Table S2)
     kon_remifentanil  <- fixed(8.08e-06)
-    label("Remifentanil association rate Kon (pM^-n s^-1, FIXED, Table S2)")  # Table S2 row 11
+    label("Remifentanil association rate Kon (pM^-n s^-1,, Table S2)")  # Table S2 row 11
     koff_remifentanil <- fixed(2.08e-03)
-    label("Remifentanil dissociation rate Koff (s^-1, FIXED, Table S2)")      # Table S2 row 11
+    label("Remifentanil dissociation rate Koff (s^-1,, Table S2)")      # Table S2 row 11
     n_remifentanil    <- fixed(0.70)
-    label("Remifentanil binding slope n (unitless, FIXED, Table S2)")         # Table S2 row 11
+    label("Remifentanil binding slope n (unitless,, Table S2)")         # Table S2 row 11
 
     # 12 - sufentanil (Table S2)
     kon_sufentanil  <- fixed(1.16e-05)
-    label("Sufentanil association rate Kon (pM^-n s^-1, FIXED, Table S2)")  # Table S2 row 12
+    label("Sufentanil association rate Kon (pM^-n s^-1,, Table S2)")  # Table S2 row 12
     koff_sufentanil <- fixed(1.07e-03)
-    label("Sufentanil dissociation rate Koff (s^-1, FIXED, Table S2)")      # Table S2 row 12
+    label("Sufentanil dissociation rate Koff (s^-1,, Table S2)")      # Table S2 row 12
     n_sufentanil    <- fixed(1.02)
-    label("Sufentanil binding slope n (unitless, FIXED, Table S2)")         # Table S2 row 12
+    label("Sufentanil binding slope n (unitless,, Table S2)")         # Table S2 row 12
 
     # 13 - nalmefene (Laffont 2024 Supplement Table S3; added by task 131
     # since Mann 2022 Table S2 did not include nalmefene). Values derived
@@ -266,11 +266,11 @@ Mann_2022_mu_receptor_binding <- function() {
     # naloxone Kon and Koff to keep the binding panel internally
     # consistent. n was assumed identical to naloxone (0.86).
     kon_nalmefene  <- fixed(2.06e-04)
-    label("Nalmefene association rate Kon (pM^-n s^-1, FIXED, Laffont 2024 Supp Table S3)")  # Laffont 2024 Supp Table S3: nalmefene kon = 2.06e-04 pM^-n s^-1 (scaling from Cassel 2005 over Mann 2022 naloxone)
+    label("Nalmefene association rate Kon (pM^-n s^-1,, Laffont 2024 Supp Table S3)")  # Laffont 2024 Supp Table S3: nalmefene kon = 2.06e-04 pM^-n s^-1 (scaling from Cassel 2005 over Mann 2022 naloxone)
     koff_nalmefene <- fixed(1.35e-02)
-    label("Nalmefene dissociation rate Koff (s^-1, FIXED, Laffont 2024 Supp Table S3)")      # Laffont 2024 Supp Table S3: nalmefene koff = 1.35e-02 s^-1; ~2.9x slower than naloxone (3.96e-02) -> dissociation t1/2 = 0.86 min vs naloxone 0.29 min
+    label("Nalmefene dissociation rate Koff (s^-1,, Laffont 2024 Supp Table S3)")      # Laffont 2024 Supp Table S3: nalmefene koff = 1.35e-02 s^-1; ~2.9x slower than naloxone (3.96e-02) -> dissociation t1/2 = 0.86 min vs naloxone 0.29 min
     n_nalmefene    <- fixed(0.86)
-    label("Nalmefene binding slope n (unitless, FIXED, assumed identical to naloxone)")     # Laffont 2024 Supp Table S3 / Methods 2.3: n for nalmefene assumed equal to naloxone (0.86)
+    label("Nalmefene binding slope n (unitless,, assumed identical to naloxone)")     # Laffont 2024 Supp Table S3 / Methods 2.3: n for nalmefene assumed equal to naloxone (0.86)
   })
 
   model({

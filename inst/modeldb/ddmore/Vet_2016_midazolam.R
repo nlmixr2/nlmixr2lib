@@ -112,11 +112,11 @@ Vet_2016_midazolam <- function() {
     # nlmixr2 has no `SAME` shortcut so each occasion gets its own eta with the
     # variance fixed to the shared estimate after the first (the Jonsson 2011 pattern).
     etaiov_cl_1 ~ 0.197       # OMEGA(3,3) FINAL = 1.97E-01 ; estimated occasion-1 IOV variance
-    etaiov_cl_2 ~ fix(0.197)  # OMEGA(4,4) fixed equal to OMEGA(3,3) per `$OMEGA BLOCK(1) SAME`
-    etaiov_cl_3 ~ fix(0.197)  # OMEGA(5,5) fixed equal to OMEGA(3,3) per `$OMEGA BLOCK(1) SAME`
-    etaiov_cl_4 ~ fix(0.197)  # OMEGA(6,6) fixed equal to OMEGA(3,3) per `$OMEGA BLOCK(1) SAME`
-    etaiov_cl_5 ~ fix(0.197)  # OMEGA(7,7) fixed equal to OMEGA(3,3) per `$OMEGA BLOCK(1) SAME`
-    etaiov_cl_6 ~ fix(0.197)  # OMEGA(8,8) fixed equal to OMEGA(3,3) per `$OMEGA BLOCK(1) SAME`
+    etaiov_cl_2 ~ fix(0.197)  # OMEGA(4,4) equal to OMEGA(3,3) per `$OMEGA BLOCK(1) SAME`
+    etaiov_cl_3 ~ fix(0.197)  # OMEGA(5,5) equal to OMEGA(3,3) per `$OMEGA BLOCK(1) SAME`
+    etaiov_cl_4 ~ fix(0.197)  # OMEGA(6,6) equal to OMEGA(3,3) per `$OMEGA BLOCK(1) SAME`
+    etaiov_cl_5 ~ fix(0.197)  # OMEGA(7,7) equal to OMEGA(3,3) per `$OMEGA BLOCK(1) SAME`
+    etaiov_cl_6 ~ fix(0.197)  # OMEGA(8,8) equal to OMEGA(3,3) per `$OMEGA BLOCK(1) SAME`
 
     # Combined proportional + additive residual error on the linear (ug/L) scale, per
     # the .mod $ERROR block `Y = F * (1 + ERR(1)) + ERR(2)`. The .lst SIGMA block

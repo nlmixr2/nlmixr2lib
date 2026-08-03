@@ -147,13 +147,13 @@ deWit_2016_everolimus <- function() {
     lq  <- log(51.1)
     label("Apparent inter-compartmental clearance Q/F (L/h)")            # Table 2 Final: Q = 51.1 L/h (RSE 7.3%)
     lvp <- fixed(log(400))
-    label("Apparent peripheral volume V2/F (L; FIXED)")                  # Table 2 Final: V2 = 400 L (no RSE in 'Final model' column, no bootstrap CI in 'Bootstrap runs' column -- held fixed in the final model)
+    label("Apparent peripheral volume V2/F (L)")                  # Table 2 Final: V2 = 400 L (no RSE in 'Final model' column, no bootstrap CI in 'Bootstrap runs' column -- held fixed in the final model)
 
     # Bioavailability anchor (F = 1 structurally) and ABCB1 TTT
     # multiplier (Methods 'Base model' paragraph 3 and Table 2 Final
     # 'theta TTT on F').
     lfdepot <- fixed(log(1))
-    label("Reference bioavailability F (unitless, FIXED at 1)")          # Methods 'Base model' paragraph 3: F was fixed at 1 because absolute bioavailability is unknown
+    label("Reference bioavailability F (unitless)")          # Methods 'Base model' paragraph 3: F was fixed at 1 because absolute bioavailability is unknown
     e_abcb1_hap_ttt_fdepot <- 0.792
     label("Multiplicative effect of ABCB1 TTT carrier status on F (unitless)") # Table 2 Final: theta TTT on F = 0.792 (RSE 6.5%) -- 20.8% lower F in TTT carriers
 
@@ -161,9 +161,9 @@ deWit_2016_everolimus <- function() {
     # values (paper cites [12] for the allometric form but does not
     # restate the exponents); reference weight 70 kg.
     e_wt_cl <- fixed(0.75)
-    label("Allometric exponent on CL/F (unitless, FIXED)")               # Methods 'Base model': allometric scaling per Anderson and Holford [12]; canonical 0.75 on CL
+    label("Allometric exponent on CL/F (unitless)")               # Methods 'Base model': allometric scaling per Anderson and Holford [12]; canonical 0.75 on CL
     e_wt_vc <- fixed(1.0)
-    label("Allometric exponent on V1/F (unitless, FIXED)")               # Methods 'Base model': allometric scaling per Anderson and Holford [12]; canonical 1.0 on V
+    label("Allometric exponent on V1/F (unitless)")               # Methods 'Base model': allometric scaling per Anderson and Holford [12]; canonical 1.0 on V
 
     # ============================================================
     # Inter-individual variability -- de Wit 2016 Table 2 ('Final

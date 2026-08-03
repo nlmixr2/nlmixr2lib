@@ -165,7 +165,7 @@ PillaReddy_2013_olanzapine_panss_subscales <- function() {
     etaemax_neg ~ 0.1600   # Part II Table 2 olanzapine: IIV Emax negative SD = 0.40
     etaemax_gen ~ 0.0484   # Part II Table 2 olanzapine: IIV Emax general  SD = 0.22
 
-    etaec50_pos ~ fixed(0.2231)  # Part II Table 2 footnote: IIV EC50 positive and general fixed at 50% CV
+    etaec50_pos ~ fixed(0.2231)  # Part II Table 2 footnote: IIV EC50 positive and general 50% CV
     etaec50_gen ~ fixed(0.2231)
     etaec50_neg ~ 1.0948         # Part II Table 2 olanzapine: IIV EC50 negative = 141% CV; omega^2 = log(1 + 1.41^2) = 1.0948
 

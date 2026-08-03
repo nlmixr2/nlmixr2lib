@@ -90,7 +90,7 @@ Cheah_2016_polymyxin_ATCC19606 <- function() {
     # maximal bacterial killing rate (Kill_max) was fixed to 100 h-1
     # (equivalent to 11 log10 killing in 15 min)") and Table 1.
     kill_max <- fixed(100)
-    label("Maximal polymyxin-induced killing rate constant (1/h; Kill_max; FIXED per Cheah 2016 Results / Table 1)")  # Cheah 2016 Table 1 (fixed) + Results paragraph 3
+    label("Maximal polymyxin-induced killing rate constant (1/h; Kill_max; per Cheah 2016 Results / Table 1)")  # Cheah 2016 Table 1 (fixed) + Results paragraph 3
     hill_killing <- 3.85
     label("Hill coefficient for polymyxin-induced killing (Hill_killing)")  # Cheah 2016 Table 1, ATCC 19606
     killc50 <- 0.521
@@ -103,7 +103,7 @@ Cheah_2016_polymyxin_ATCC19606 <- function() {
     # maximal attenuation in killing (i.e., extent of adaptive
     # resistance; S_max) [was fixed] to 300") and Table 1.
     s_max <- fixed(300)
-    label("Maximal fold reduction in effective polymyxin concentration via adaptive resistance (S_max; FIXED per Cheah 2016 Results / Table 1)")  # Cheah 2016 Table 1 (fixed) + Results paragraph 3
+    label("Maximal fold reduction in effective polymyxin concentration via adaptive resistance (S_max; per Cheah 2016 Results / Table 1)")  # Cheah 2016 Table 1 (fixed) + Results paragraph 3
     # SC50 is the half-saturation polymyxin concentration in the Stim
     # equation. Cheah 2016 does NOT report SC50 anywhere; Table 1 lists
     # only k_adapt and the fixed S_max. The closest source for SC50 is
@@ -116,7 +116,7 @@ Cheah_2016_polymyxin_ATCC19606 <- function() {
     # FIXED here; operator-approved fixed-from-class proxy (see vignette
     # Errata).
     sc50 <- fixed(36.5)
-    label("Adaptive-resistance half-saturation polymyxin concentration (mg/L; SC50; FIXED, inherited from Bulitta 2015 ref 31 framework -- not reported in Cheah 2016)")  # Bulitta JB et al. 2015 AAC 59:2315-2327, Table 1 PAO1-RH (operator-approved fixed-from-class proxy)
+    label("Adaptive-resistance half-saturation polymyxin concentration (mg/L; SC50;, inherited from Bulitta 2015 ref 31 framework -- not reported in Cheah 2016)")  # Bulitta JB et al. 2015 AAC 59:2315-2327, Table 1 PAO1-RH (operator-approved fixed-from-class proxy)
     k_adapt <- 7.20
     label("Adaptation rate constant for R_adaptive turnover (1/h; k_adapt)")  # Cheah 2016 Table 1, ATCC 19606
 
@@ -127,7 +127,7 @@ Cheah_2016_polymyxin_ATCC19606 <- function() {
     # Eq 1. The operator-approved policy for unreported / not-estimated
     # structural shifts is fixed(0) with a clear inline note.
     g_inhib_max <- fixed(0)
-    label("Maximal fitness cost associated with adaptive resistance (G_inhib,max; FIXED at 0 -- Cheah 2016 Table 1 reports NE for ATCC 19606)")  # Cheah 2016 Table 1, ATCC 19606 (NE, not estimated)
+    label("Maximal fitness cost associated with adaptive resistance (G_inhib,max; 0 -- Cheah 2016 Table 1 reports NE for ATCC 19606)")  # Cheah 2016 Table 1, ATCC 19606 (NE, not estimated)
 
     # ===============================================================
     # Medium / physical constants (NOT in Cheah 2016; operator-approved
@@ -138,23 +138,23 @@ Cheah_2016_polymyxin_ATCC19606 <- function() {
     # Methods Receptor-occupancy paragraph (citing Schindler & Osborn
     # 1979) and the same paper's Table 1 footnote (g).
     kd_cations <- fixed(200)
-    label("Receptor dissociation constant for Mg2+/Ca2+ on lipid-A LPS (umol/L; Kd_cations; FIXED per Bulitta 2010 Table 1 footnote g)")  # Bulitta JB et al. 2010 AAC 54:2051-2062 (ref 30 in Cheah 2016), Table 1 footnote (g)
+    label("Receptor dissociation constant for Mg2+/Ca2+ on lipid-A LPS (umol/L; Kd_cations; per Bulitta 2010 Table 1 footnote g)")  # Bulitta JB et al. 2010 AAC 54:2051-2062 (ref 30 in Cheah 2016), Table 1 footnote (g)
     kd_polymyxin <- fixed(0.3)
-    label("Receptor dissociation constant for polymyxin on lipid-A LPS (umol/L; Kd_polymyxin; FIXED per Bulitta 2010 Table 1 footnote g)")  # Bulitta JB et al. 2010 AAC 54:2051-2062 (ref 30 in Cheah 2016), Table 1 footnote (g)
+    label("Receptor dissociation constant for polymyxin on lipid-A LPS (umol/L; Kd_polymyxin; per Bulitta 2010 Table 1 footnote g)")  # Bulitta JB et al. 2010 AAC 54:2051-2062 (ref 30 in Cheah 2016), Table 1 footnote (g)
     # Polymyxin molecular mass: polymyxin B (B1+B2 mix, ~1203 g/mol)
     # and colistin (E1+E2 mix, ~1163 g/mol) are within 3%. Inherited as
     # 1163 g/mol = 1.163 mg/umol from Bulitta 2010 (colistin reference)
     # because Cheah 2016 uses identical structural binding parameters
     # for both polymyxins per strain.
     mw_polymyxin <- fixed(1.163)
-    label("Mean polymyxin molar mass (mg/umol = g/mmol; MW_polymyxin; FIXED at 1163 g/mol per Bulitta 2010 colistin reference; polymyxin B and colistin within 3%)")  # Bulitta JB et al. 2010 AAC 54:2051-2062, Methods paragraph after Eq. 1 + Table 1 footnote
+    label("Mean polymyxin molar mass (mg/umol = g/mmol; MW_polymyxin; 1163 g/mol per Bulitta 2010 colistin reference; polymyxin B and colistin within 3%)")  # Bulitta JB et al. 2010 AAC 54:2051-2062, Methods paragraph after Eq. 1 + Table 1 footnote
     # Sum of Mg2+ and Ca2+ molar concentration in CAMHB: 0.514 mmol/L
     # Mg2+ + 0.624 mmol/L Ca2+ = 1.138 mmol/L = 1138 umol/L, per
     # Bulitta 2010 Table 1 footnote (f), which describes the same
     # CAMHB used by Cheah 2016 (Methods: "cation-adjusted Mueller-
     # Hinton broth").
     c_cations <- fixed(1138)
-    label("Sum of Mg2+ and Ca2+ molar concentration in CAMHB (umol/L; C_cations; FIXED per Bulitta 2010 Table 1 footnote f)")  # Bulitta JB et al. 2010 AAC 54:2051-2062, Table 1 footnote (f)
+    label("Sum of Mg2+ and Ca2+ molar concentration in CAMHB (umol/L; C_cations; per Bulitta 2010 Table 1 footnote f)")  # Bulitta JB et al. 2010 AAC 54:2051-2062, Table 1 footnote (f)
 
     # ===============================================================
     # Residual error (NOT reported in Cheah 2016)
@@ -164,7 +164,7 @@ Cheah_2016_polymyxin_ATCC19606 <- function() {
     # rxode2 simulation (the vignette uses zeroRe() to suppress
     # residual noise entirely). See vignette Errata.
     addSd <- fixed(0.01)
-    label("Additive residual SD on log10 CFU/mL (FIXED tiny placeholder -- not reported in Cheah 2016; vignette uses zeroRe())")  # Cheah 2016 does NOT report residual error SD (typical-value fit per strain)
+    label("Additive residual SD on log10 CFU/mL (tiny placeholder -- not reported in Cheah 2016; vignette uses zeroRe)")  # Cheah 2016 does NOT report residual error SD (typical-value fit per strain)
   })
 
   model({
