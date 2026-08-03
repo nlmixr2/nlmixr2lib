@@ -452,6 +452,8 @@ navbar:
         href: articles/Kuroda_2023_cephalothin.html
       - text: "Certolizumab (Wade 2015)"
         href: articles/Wade_2015_certolizumab.html
+      - text: "Cetagliptin (Zhou 2024)"
+        href: articles/Zhou_2024_cetagliptin.html
       - text: "Cetuximab (Dirks 2008)"
         href: articles/Dirks_2008_cetuximab.html
       - text: "Chloroquine (Simpson 2013)"
@@ -3980,6 +3982,7 @@ articles:
   - articles/Zhou_2010_digoxin
   - articles/Zhou_2016_warfarin_vk2
   - articles/Zhou_2021_belimumab
+  - articles/Zhou_2024_cetagliptin
   - articles/Zhou_2025_brentuximab
   - articles/Zhu_2014_tacrolimus
   - articles/Zhu_2017_lebrikizumab
