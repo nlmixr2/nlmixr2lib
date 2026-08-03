@@ -372,6 +372,18 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 
 ## Pregnancy / hormonal status
 
+### EGA (**canonical for maternal estimated gestational age during pregnancy**)
+- **Description:** The mother's estimated gestational age at the time of an observation or dose, in weeks. Time-varying across a pregnancy (though usually effectively constant within a single treatment cycle). `EGA = 0` is the non-pregnant anchor: semi-physiological pregnancy models are constructed so that every gestational relation collapses to its non-pregnant value at `EGA = 0`, which makes the covariate a continuous pregnant-vs-non-pregnant contrast rather than a within-pregnancy-only stratifier.
+- **Units:** weeks
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- `EGA = 0` is the non-pregnant reference value, not a category. Enters as the argument of the gestational physiology polynomials (serum albumin, alpha-1-acid glycoprotein, GFR, haematocrit, CYP3A4 activity, plasma volume, extracellular water, total body water), each of which is written so that it returns the non-pregnant value at `EGA = 0`.
+- **Source aliases:**
+  - `EGA` -- Janssen 2023 symbol for estimated gestational age; same orientation and units, no transformation.
+  - `GAWK`, `GESTAGE`, `GAWEEK` -- common NONMEM column spellings for maternal gestational age in weeks; same orientation, no transformation.
+- **Example models:** `Janssen_2023_docetaxel.R`, `Janssen_2023_paclitaxel.R`, `Janssen_2023_doxorubicin.R`, `Janssen_2023_epirubicin.R` (semi-physiological enriched cytotoxic models in which `EGA` drives all ten gestational physiology relations reprinted as Janssen 2023 Eqs 1-17).
+- **Notes:** Distinct from `GA` (**gestational age at birth**), which is a time-fixed maturity descriptor of the **neonate** used in paediatric models -- `EGA` describes the **mother** and varies over her pregnancy. Also distinct from `PREG` (binary pregnancy status) and from `TPP` (time postpartum, which is 0 during pregnancy and increases after delivery). `PREG` gives a step contrast; `EGA` gives the continuous within-pregnancy trajectory that `PREG` explicitly defers to (see the `PREG` entry's note that "trimester or gestational-age stratification within the pregnant cohort should use a separate canonical ... ratified separately when needed"). When a source paper reports trimesters rather than weeks, record the week value used per trimester in `covariateData[[EGA]]$notes` rather than introducing a trimester-indicator canonical.
+
 ### TPP (**canonical for time postpartum (time after delivery)**)
 - **Description:** Time elapsed since delivery, in weeks. 0 during pregnancy and at delivery; increases after delivery. Used by popPK models that describe the time-varying postpartum recovery of pregnancy-induced PK changes (e.g., renal blood flow, hepatic enzyme activity) that return gradually to the prepregnant baseline over weeks to months rather than instantaneously at delivery.
 - **Units:** weeks

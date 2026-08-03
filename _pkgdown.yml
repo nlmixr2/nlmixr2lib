@@ -644,6 +644,8 @@ navbar:
         href: articles/Eckernas_2023_dimethyltryptamine_EEG.html
       - text: "Dimethyltryptamine betaPower (Eckernas 2023)"
         href: articles/Eckernas_2023_dimethyltryptamine_EEG.html
+      - text: "Docetaxel (Janssen 2023)"
+        href: articles/Janssen_2023_pregnancy_cytotoxics.html
       - text: "Docetaxel (Koolen 2010)"
         href: articles/Koolen_2010_docetaxel.html
       - text: "Docetaxel (Ozawa 2007)"
@@ -674,6 +676,8 @@ navbar:
         href: articles/Melhem_2022_dostarlimab.html
       - text: "Doxorubicin (Freyer 2000)"
         href: articles/Freyer_2000_AVI_regimen.html
+      - text: "Doxorubicin (Janssen 2023)"
+        href: articles/Janssen_2023_pregnancy_cytotoxics.html
       - text: "Doxorubicin (Kunarajah 2017)"
         href: articles/Kunarajah_2017_doxorubicin.html
       - text: "Doxorubicin (PerezBlanco 2016)"
@@ -782,6 +786,8 @@ navbar:
         href: articles/Abboud_2009_epinephrine.html
       - text: "Epinephrine (Oualha 2014)"
         href: articles/Oualha_2014_epinephrine.html
+      - text: "Epirubicin (Janssen 2023)"
+        href: articles/Janssen_2023_pregnancy_cytotoxics.html
       - text: "Eplontersen (Diep 2022)"
         href: articles/Diep_2022_eplontersen.html
       - text: "EpoetinAlfa (PerezRuixo 2008)"
@@ -1692,6 +1698,8 @@ navbar:
         href: articles/Jones_2011_PF04878691_HCV.html
       - text: "PRO95780 (Cao 2013)"
         href: articles/Cao_2013_PRO95780.html
+      - text: "Paclitaxel (Janssen 2023)"
+        href: articles/Janssen_2023_pregnancy_cytotoxics.html
       - text: "Paclitaxel (deJonge 2005)"
         href: articles/deJonge_2005_paclitaxel.html
       - text: "Paclitaxel myelosuppression (Wahlby 2004)"
@@ -3149,6 +3157,7 @@ articles:
   - articles/Jager_2011_gemtuzumab
   - articles/Jain_2011_sorafenib
   - articles/Janssen_2017_cabazitaxel_phenotyping
+  - articles/Janssen_2023_pregnancy_cytotoxics
   - articles/Jansson_2008_eflornithine
   - articles/Jaworowicz_2006_levalbuterol
   - articles/Jelliffe_2014_digoxin

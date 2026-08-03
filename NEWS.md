@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Janssen 2023 docetaxel, paclitaxel, doxorubicin and epirubicin ([doi:10.1007/s40262-023-01263-1](https://doi.org/10.1007/s40262-023-01263-1)) - pregnant patients with cancer. Adds the canonical covariate `EGA` (maternal estimated gestational age, weeks).
+
 - Add Wu 2023 SPI-62 ([doi:10.1007/s40262-023-01278-8](https://doi.org/10.1007/s40262-023-01278-8)) - healthy adults.
 
 - Disambiguated the overloaded `OC` name, which denoted five unrelated
