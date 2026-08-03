@@ -1886,6 +1886,8 @@ navbar:
         href: articles/Dvorackova_2023_posaconazole.html
       - text: "Posaconazole (Kohl 2010)"
         href: articles/Kohl_2010_posaconazole.html
+      - text: "Posaconazole (Winchell 2024)"
+        href: articles/Winchell_2024_posaconazole.html
       - text: "Posaconazole (vanIersel 2018)"
         href: articles/vanIersel_2018_posaconazole.html
       - text: "Posdinemab (PerezRuixo 2025)"
@@ -3883,6 +3885,7 @@ articles:
   - articles/Willmann_2021_rivaroxaban
   - articles/Willmann_2022_rivaroxaban
   - articles/Wilson_2015_sunitinib_irinotecan_mouse
+  - articles/Winchell_2024_posaconazole
   - articles/Wittau_2015_meropenem
   - articles/Woillard_2011_tacrolimus
   - articles/Woillard_2014_ciclosporin

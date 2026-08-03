@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Winchell 2024 posaconazole ([doi:10.1128/aac.01197-23](https://doi.org/10.1128/aac.01197-23)) - pediatric patients aged 2 to 17 years with neutropenia.
+
 - Add Kuroda 2023 cephalothin ([doi:10.1294/jes.34.111](https://doi.org/10.1294/jes.34.111)) - Thoroughbred horses given intramuscular and intravenous doses.
 
 - Add Zhang 2024 sertraline ([doi:10.1016/j.heliyon.2024.e25231](https://doi.org/10.1016/j.heliyon.2024.e25231)) - Chinese inpatients with psychiatric disorders, aged 11-79 years.
