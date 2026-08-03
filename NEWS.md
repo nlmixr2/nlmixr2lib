@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Yamamoto 2023 tominersen ([doi:10.1002/psp4.13001](https://doi.org/10.1002/psp4.13001)) -- adults with early manifest or manifest Huntington's disease receiving intrathecal tominersen.
+* Add Ibrahim 2023 ibrutinib ([doi:10.1002/psp4.13010](https://doi.org/10.1002/psp4.13010)) -- adults with chronic lymphocytic leukemia (four model files: a semi-mechanistic pBtk + four-subpopulation CLL cell-dynamics model for leukocyte count and lymph-node SPD, separate systolic and diastolic blood-pressure turnover models, and a dropout/death competing-risk multistate model); ratifies new `AUC_IBRU`, `TUM_IGHV_MUT` and `TUM_17P_DEL` covariate canonicals and the `sbp` compartment canonical.
 
 * Drop `qs2`.  The model database now ships as `inst/modeldb.rds` instead of
   `inst/modeldb.qs2`, so `readModelDb()` no longer needs `qs2`.  It was only
