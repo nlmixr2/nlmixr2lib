@@ -154,7 +154,7 @@ typical_events <- typical_events %>%
   ) %>%
   dplyr::arrange(id, time, evid)
 sim_typical <- rxode2::rxSolve(mod_typical, events = typical_events, keep = c("cohort", "WT"))
-#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalq', 'etalogitfr'
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalq', 'etalogitffo'
 #> Warning: multi-subject simulation without without 'omega'
 ```
 

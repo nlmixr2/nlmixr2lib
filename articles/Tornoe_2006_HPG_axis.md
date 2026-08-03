@@ -211,9 +211,9 @@ obs_grid_year <- seq(0, 24 * 365, by = 24)  # 1 year of daily observations
 ev_obs_year <- make_obs_rows(times = obs_grid_year)
 
 ss_trip <- as.data.frame(rxode2::rxSolve(mod_trip_typical, ev_obs_year))
-#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalksc1', 'etalksc2', 'etalogitfr', 'etalkrel', 'etalec50', 'etalkef', 'etallmax', 'etall50'
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalksc1', 'etalksc2', 'etalogitfburst', 'etalkrel', 'etalec50', 'etalkef', 'etallmax', 'etall50'
 ss_deg  <- as.data.frame(rxode2::rxSolve(mod_deg_typical,  ev_obs_year))
-#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalkaslow', 'etalogitfr', 'etalogitfdeg', 'etalkrel', 'etalic50', 'etaldeltapd', 'etalkef', 'etallmax', 'etall50'
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalkaslow', 'etalogitfburst', 'etalogitfdeg', 'etalkrel', 'etalic50', 'etaldeltapd', 'etalkef', 'etallmax', 'etall50'
 
 ss_summary <- tibble::tibble(
   Model           = c("Tornoe_2006_triptorelin", "Tornoe_2006_degarelix"),
@@ -255,9 +255,9 @@ ev_trip <- make_trip_events(dose_mg = 3.75, times = obs_grid_hours)
 ev_deg  <- make_deg_events (dose_mg = 200,  times = obs_grid_hours)
 
 sim_trip <- as.data.frame(rxode2::rxSolve(mod_trip_typical, ev_trip))
-#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalksc1', 'etalksc2', 'etalogitfr', 'etalkrel', 'etalec50', 'etalkef', 'etallmax', 'etall50'
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalksc1', 'etalksc2', 'etalogitfburst', 'etalkrel', 'etalec50', 'etalkef', 'etallmax', 'etall50'
 sim_deg  <- as.data.frame(rxode2::rxSolve(mod_deg_typical,  ev_deg))
-#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalkaslow', 'etalogitfr', 'etalogitfdeg', 'etalkrel', 'etalic50', 'etaldeltapd', 'etalkef', 'etallmax', 'etall50'
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalkaslow', 'etalogitfburst', 'etalogitfdeg', 'etalkrel', 'etalic50', 'etaldeltapd', 'etalkef', 'etallmax', 'etall50'
 ```
 
 ### Figure 4 (top row) replication: drug Cc over time

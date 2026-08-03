@@ -88,15 +88,15 @@ consolidates the equation- and parameter-level provenance.
 |----|---:|----|
 | `central` 2-cmt + `peripheral1`, three parallel ADC pathways (CL_t, CL_ns, CL_mm) | n/a | Lee 2023 “Model Schematic”, Figure 1 |
 | `central_dxd` 1-cmt, linear + MM elimination | n/a | Lee 2023 “Model Schematic”, Figure 1 |
-| `cl_t(time) = cl_time_typ * exp(-kdes * time)` | n/a | Lee 2023 Methods: “CL t = CL T \* exp(-k des \* time)” |
+| `cl_t(time) = cl_exp_component * exp(-cl_exp_kdes * time)` | n/a | Lee 2023 Methods: “CL t = CL T \* exp(-k des \* time)” |
 | `cl_ns(time) = cl_ss * (1 + emax * t50^hill / (t50^hill + time^hill))` | n/a | Reconstructed from Lee 2023 Table 4 parameter descriptions (CLinf, CLinf,EMAX, T50, gamma) and Results text “initial value at time zero … 0.0217 L/hr … steady state value of 0.0143 L/hr”; 0.0136 \* (1 + 0.603) = 0.0218 ~ 0.0217 |
 | `cl_mm = vmax * central / (km + Cc)` | n/a | Lee 2023 Methods: “CLMM = Vmax / (Km + ac-DXd)” |
 | `formation_dxd = fracns * rate_ns + fract * rate_t + fracmm * rate_mm` | n/a | Lee 2023 Methods: “DXd formation was described by Frac ns, Frac t and Frac mm which were the relative fractions of anti-HER3-ac-DXd CLns, CLt, and CLMM, respectively” |
-| `lcl_time` (CL_T) | 0.0858 L/hr | Lee 2023 Table 4, exp(theta1) |
+| `lcl_exp_component` (CL_T) | 0.0858 L/hr | Lee 2023 Table 4, exp(theta1) |
 | `lvc` (V1) | 2.91 L | Lee 2023 Table 4, exp(theta2) |
 | `lq` (Q) | 0.0221 L/hr | Lee 2023 Table 4, exp(theta3) |
 | `lvp` (V2) | 3.17 L | Lee 2023 Table 4, exp(theta4) |
-| `lkdes` (Kdes) | 0.217 1/hr | Lee 2023 Table 4, exp(theta5) |
+| `lcl_exp_kdes` (Kdes) | 0.217 1/hr | Lee 2023 Table 4, exp(theta5) |
 | `lcl_ss` (CL_inf) | 0.0136 L/hr | Lee 2023 Table 4, exp(theta6) |
 | `lemaxclns` (CLinf,EMAX) | 0.603 | Lee 2023 Table 4, exp(theta7) |
 | `lt50clns` (T50) | 1380 hr | Lee 2023 Table 4, exp(theta8) |
@@ -246,7 +246,7 @@ mod <- mod_obj
 # Deterministic typical-subject simulation: zero out IIV and residual error.
 sim_typ <- rxode2::rxSolve(rxode2::zeroRe(mod), events = events_ref,
                            returnType = "data.frame")
-#> ℹ omega/sigma items treated as zero: 'etalcl_time', 'etalvc', 'etalq', 'etalvp', 'etalcl_ss', 'etalt50clns', 'etalcl_dxd', 'etalvc_dxd', 'etalfracns'
+#> ℹ omega/sigma items treated as zero: 'etalcl_exp_component', 'etalvc', 'etalq', 'etalvp', 'etalcl_ss', 'etalt50clns', 'etalcl_dxd', 'etalvc_dxd', 'etalfracns'
 
 # Stochastic 200-subject VPC simulation (covariate-stratified)
 sim_pop <- rxode2::rxSolve(mod, events = events_pop,
@@ -264,7 +264,7 @@ sim_typ |>
   dplyr::distinct(time, .keep_all = TRUE) |>
   dplyr::transmute(
     time,
-    `CL_t`  = cl_t_now,
+    `CL_t`  = cl_exp_component_t,
     `CL_ns` = cl_ns_now,
     `CL_mm (apparent)` = vmax / (km + Cc)  # Vmax/(Km+C) is the per-amount rate constant
   ) |>

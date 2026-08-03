@@ -1414,10 +1414,10 @@ death-ligand 1 (PD-L1) human monoclonal antibody, in patients with solid
 tumours or lymphomas across multiple Phase I-III studies. Br J Clin
 Pharmacol. 2025;91(3):748-760. <a href="doi:10.1111/bcp.16276" class="uri">doi:10.1111/bcp.16276</a>
 </li>
-<li>Description: Two-compartment population PK model with sigmoidal-emax
-time-varying clearance for intravenous sugemalimab (anti-PD-L1 IgG4) in
-adults with advanced solid tumours or lymphomas across nine Phase I-III
-trials (Wang 2024)</li>
+<li>Description: Two-compartment population PK model with
+sigmoidal-cl_hill_max time-varying clearance for intravenous sugemalimab
+(anti-PD-L1 IgG4) in adults with advanced solid tumours or lymphomas
+across nine Phase I-III trials (Wang 2024)</li>
 <li>Article: <a href="https://doi.org/10.1111/bcp.16276" class="external-link uri">https://doi.org/10.1111/bcp.16276</a>
 </li>
 </ul>
@@ -1521,13 +1521,13 @@ table below collects them in one place for review.</p>
 </tr>
 <tr class="even">
 <td>
-<code>lt50</code> (T50, log days)</td>
+<code>lcl_hill_t50</code> (T50, log days)</td>
 <td>log(53.6)</td>
 <td>Wang 2024 Table 3: theta6 = 53.6 day</td>
 </tr>
 <tr class="odd">
 <td>
-<code>llambda</code> (lambda, log unitless)</td>
+<code>lcl_hill_gamma</code> (lambda, log unitless)</td>
 <td>log(2.60)</td>
 <td>Wang 2024 Table 3: theta7 = 2.60</td>
 </tr>
@@ -1647,7 +1647,7 @@ table below collects them in one place for review.</p>
 ‘approximate CV%’ = SD / abs(Emax))</td>
 </tr>
 <tr class="odd">
-<td>IIV T50 (<code>etalt50</code>)</td>
+<td>IIV T50 (<code>etalcl_hill_t50</code>)</td>
 <td>omega^2 = log(1 + 0.642^2) = 0.3451</td>
 <td>Wang 2024 Table 3: IIV T50 64.2 % CV</td>
 </tr>
@@ -1674,7 +1674,7 @@ equivalent to nlmixr2 prop())</td>
 <li>Q: <code>Q = exp(theta3)</code>; Vp:
 <code>Vp = exp(theta4)</code>.</li>
 <li>Time-varying CL:
-<code>CL(t) = CL0 * exp(Emax_i * t^lambda / (T50^lambda + t^lambda))</code>.</li>
+<code>CL(t) = CL0 * exp(Emax_i * t^cl_hill_gamma / (T50^cl_hill_gamma + t^cl_hill_gamma))</code>.</li>
 <li>Emax_i: additive linear-scale eta
 <code>Emax_REF + eta_Emax_i</code>.</li>
 </ul>
@@ -1910,10 +1910,10 @@ days”).</p>
 <span><span class="va">cl0_typical</span> <span class="op">&lt;-</span> <span class="fl">0.259</span>                <span class="co"># L/day at reference covariates</span></span>
 <span><span class="va">emax_ref</span>    <span class="op">&lt;-</span> <span class="op">-</span><span class="fl">0.528</span>               <span class="co"># Wang 2024 theta5</span></span>
 <span><span class="va">t50_d</span>       <span class="op">&lt;-</span> <span class="fl">53.6</span>                 <span class="co"># Wang 2024 theta6 (days)</span></span>
-<span><span class="va">lambda</span>      <span class="op">&lt;-</span> <span class="fl">2.60</span>                 <span class="co"># Wang 2024 theta7</span></span>
+<span><span class="va">cl_hill_gamma</span>      <span class="op">&lt;-</span> <span class="fl">2.60</span>                 <span class="co"># Wang 2024 theta7</span></span>
 <span></span>
 <span><span class="va">cl_t</span> <span class="op">&lt;-</span> <span class="va">cl0_typical</span> <span class="op">*</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="va">emax_ref</span> <span class="op">*</span> <span class="va">t_grid</span><span class="op">^</span><span class="va">lambda</span> <span class="op">/</span> <span class="op">(</span><span class="va">t50_d</span><span class="op">^</span><span class="va">lambda</span> <span class="op">+</span> <span class="va">t_grid</span><span class="op">^</span><span class="va">lambda</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="va">emax_ref</span> <span class="op">*</span> <span class="va">t_grid</span><span class="op">^</span><span class="va">cl_hill_gamma</span> <span class="op">/</span> <span class="op">(</span><span class="va">t50_d</span><span class="op">^</span><span class="va">cl_hill_gamma</span> <span class="op">+</span> <span class="va">t_grid</span><span class="op">^</span><span class="va">cl_hill_gamma</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">cl_traj</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span>time <span class="op">=</span> <span class="va">t_grid</span>, cl <span class="op">=</span> <span class="va">cl_t</span><span class="op">)</span></span>
 <span></span>
@@ -1923,7 +1923,7 @@ days”).</p>
 <span>    x        <span class="op">=</span> <span class="st">"Time (days since first dose)"</span>,</span>
 <span>    y        <span class="op">=</span> <span class="st">"Typical CL (L/day)"</span>,</span>
 <span>    title    <span class="op">=</span> <span class="st">"Time-varying CL trajectory at reference covariates"</span>,</span>
-<span>    subtitle <span class="op">=</span> <span class="st">"Sigmoidal Emax decline (T50 = 53.6 days, lambda = 2.60, max reduction 41.0%)"</span></span>
+<span>    subtitle <span class="op">=</span> <span class="st">"Sigmoidal Emax decline (T50 = 53.6 days, cl_hill_gamma = 2.60, max reduction 41.0%)"</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Wang_2024_sugemalimab_files/figure-html/cl-trajectory-1.png" class="r-plt" alt="" width="576"></p>

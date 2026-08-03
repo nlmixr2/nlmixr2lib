@@ -836,5 +836,13 @@ nlmixr2lib::checkModelConventions("Ganesan_2023_tebipenem")
 #> as a work-around try putting the mu-referenced expression on a simple line
 #> 
 #> ── Convention check: "Ganesan_2023_tebipenem" ──────────────────────────────────
-#> ✔ No convention issues found.
+#> ℹ 1 warning
+#> 
+#> ── compartment_data ──
+#> 
+#> ! [warning] compartmentData: Model has ODE states but no `compartmentData` metadata.
+#> suggestion: Add compartmentData <- list(<state> = list(analyte=, units=,
+#> specimen=, verified=)) for every d/dt() state (issue #482).
+#> Warning: 1 convention issue(s) found for model 'Ganesan_2023_tebipenem'. Run
+#> `checkModelConventions('Ganesan_2023_tebipenem')` for the full report.
 ```

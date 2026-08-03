@@ -1394,11 +1394,11 @@ J Clin Pharmacol. 2017;83(8):1782-1790. <a href="doi:10.1111/bcp.13271" class="u
 <li>Description: Two-compartment population PK model of rituximab in
 adults with diffuse large B-cell lymphoma (DLBCL) receiving R-CHOP;
 total CL is the sum of a time-stationary non-specific (IgG-catabolic)
-component cl_ss and a mono-exponentially decaying target-mediated
-component cl_time * exp(-kdes * time), with age and body weight on
-cl_ss, sex on V1 (central volume), and a post-hoc
-progression-free-survival event indicator (PFS_EVENT) on kdes (Rozman
-2017).</li>
+component cl_exp_inf and a mono-exponentially decaying target-mediated
+component cl_exp_component * exp(-cl_exp_kdes * time), with age and body
+weight on cl_exp_inf, sex on V1 (central volume), and a post-hoc
+progression-free-survival event indicator (PFS_EVENT) on cl_exp_kdes
+(Rozman 2017).</li>
 <li>Article: <a href="https://doi.org/10.1111/bcp.13271" class="external-link">Br J Clin
 Pharmacol. 2017;83(8):1782-1790</a>
 </li>
@@ -1455,7 +1455,8 @@ table below collects them in one place.</p>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td>ODE: <code>CL(t) = cl_ss + cl_time * exp(-kdes * time)</code>
+<td>ODE:
+<code>CL(t) = cl_exp_inf + cl_exp_component * exp(-cl_exp_kdes * time)</code>
 (dual-arm CL)</td>
 <td>n/a</td>
 <td>Methods “Structural model development” / Equation (1)</td>
@@ -1467,17 +1468,17 @@ table below collects them in one place.</p>
 subroutine</td>
 </tr>
 <tr class="odd">
-<td><code>lcl_ss</code></td>
+<td><code>lcl_exp_inf</code></td>
 <td><code>log(0.252)</code></td>
 <td>Table 2 CL1 = 0.252 L/day (95% CI 0.227-0.279)</td>
 </tr>
 <tr class="even">
-<td><code>lcl_time</code></td>
+<td><code>lcl_exp_component</code></td>
 <td><code>log(0.278)</code></td>
 <td>Table 2 CL2,0 = 0.278 L/day (95% CI 0.181-0.390)</td>
 </tr>
 <tr class="odd">
-<td><code>lkdes</code></td>
+<td><code>lcl_exp_kdes</code></td>
 <td><code>log(0.143)</code></td>
 <td>Table 2 KD = 0.143 /day (95% CI 0.0478-0.418) at PFS_EVENT = 0
 reference</td>
@@ -1514,18 +1515,18 @@ brackets allometric 0.75)</td>
 <td>Table 2 sex effect on V1 (women 21.4% lower)</td>
 </tr>
 <tr class="even">
-<td><code>e_pfs_event_kdes</code></td>
+<td><code>e_pfs_event_cl_exp_kdes</code></td>
 <td><code>-0.822</code></td>
 <td>Table 2 disease-progression effect on KD (progressors 82.2% lower;
 95% CI -0.950 to -0.334)</td>
 </tr>
 <tr class="odd">
-<td><code>etalcl_ss</code></td>
+<td><code>etalcl_exp_inf</code></td>
 <td><code>0.03365</code></td>
 <td>Table 2 IIV CL1 (CV 18.5%; log(1 + 0.185^2))</td>
 </tr>
 <tr class="even">
-<td><code>etalkdes</code></td>
+<td><code>etalcl_exp_kdes</code></td>
 <td><code>1.27874</code></td>
 <td>Table 2 IIV KD (CV 161%; log(1 + 1.61^2); 22.7% shrinkage)</td>
 </tr>
@@ -1634,7 +1635,7 @@ between-subject random effects.</p>
 <span></span>
 <span><span class="va">sim_fig3</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod_typical</span>, events <span class="op">=</span> <span class="va">events_fig3</span>,</span>
 <span>                            keep <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cohort"</span>, <span class="st">"PFS_EVENT"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl_ss', 'etalkdes', 'etalvc'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl_exp_inf', 'etalcl_exp_kdes', 'etalvc'</span></span>
 <span><span class="co">#&gt; Warning: multi-subject simulation without without 'omega'</span></span>
 <span></span>
 <span><span class="fu">ggplot</span><span class="op">(</span><span class="va">sim_fig3</span>, <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">time</span>, y <span class="op">=</span> <span class="va">Cc</span>, colour <span class="op">=</span> <span class="va">cohort</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
@@ -1727,7 +1728,7 @@ reported for completeness.</p>
 <code class="sourceCode R"><span><span class="va">sim_nca_raw</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod_typical</span>, events <span class="op">=</span> <span class="va">events_fig3</span>,</span>
 <span>                               keep <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cohort"</span>, <span class="st">"PFS_EVENT"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl_ss', 'etalkdes', 'etalvc'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl_exp_inf', 'etalcl_exp_kdes', 'etalvc'</span></span>
 <span><span class="co">#&gt; Warning: multi-subject simulation without without 'omega'</span></span>
 <span></span>
 <span><span class="co"># One PKNCA interval per cycle (0-21 days, 21-42 days, ...). The last</span></span>
@@ -2076,17 +2077,18 @@ higher rituximab exposure through R-CHOP.</p>
 caveat).</strong> <code>PFS_EVENT</code> is assigned from longitudinal
 response-assessment data (per the revised response criteria for
 malignant lymphoma) at end of follow-up, and Rozman 2017 uses it as a
-covariate on the PK parameter <code>kdes</code> in the same analysis.
-This is unusual – a PK covariate is normally a baseline pre-treatment
-characteristic – but is what the paper did (Rozman 2017 Methods,
-“Covariate model”, and Results, “Of all covariate relationships tested,
-we observed a significant association … KD with disease progression”).
-Using an outcome as a covariate carries selection-bias implications for
-prospective PK prediction (a subject’s <code>PFS_EVENT</code> value is
-not known at treatment start), so downstream users simulating exposure
-in individuals with unknown future progression status should typically
-use <code>PFS_EVENT = 0</code> (the reference stratum) or draw the
-indicator from the observed 20.7% event rate.</li>
+covariate on the PK parameter <code>cl_exp_kdes</code> in the same
+analysis. This is unusual – a PK covariate is normally a baseline
+pre-treatment characteristic – but is what the paper did (Rozman 2017
+Methods, “Covariate model”, and Results, “Of all covariate relationships
+tested, we observed a significant association … KD with disease
+progression”). Using an outcome as a covariate carries selection-bias
+implications for prospective PK prediction (a subject’s
+<code>PFS_EVENT</code> value is not known at treatment start), so
+downstream users simulating exposure in individuals with unknown future
+progression status should typically use <code>PFS_EVENT = 0</code> (the
+reference stratum) or draw the indicator from the observed 20.7% event
+rate.</li>
 <li>
 <strong>Canonical column name <code>PFS_EVENT</code> (introduced by
 this paper).</strong> The paper’s prose descriptor “disease progression”

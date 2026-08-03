@@ -1430,7 +1430,7 @@ with time on repeated dosing via a sigmoidal Hill function
 <code>CL_NS(t) = CL_INF * (1 + CL_INF,EMAX * T50^gamma / (T50^gamma + t^gamma))</code>,</li>
 <li>
 <code>CL_t</code> (rapidly-declining linear clearance)
-<code>CL_t(t) = CL_T0 * exp(-kdes * t)</code>, and</li>
+<code>CL_t(t) = CL_T0 * exp(-cl_exp_kdes * t)</code>, and</li>
 <li>
 <code>CL_MM</code> (Michaelis-Menten clearance)
 <code>CL_MM = Vmax * V1 / (KM + A1/V1)</code>.</li>
@@ -1538,13 +1538,13 @@ table below collates them.</p>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td><code>lkdes</code></td>
+<td><code>lcl_exp_kdes</code></td>
 <td>kdes</td>
 <td>0.0046 1/hour</td>
 <td>Table 1, theta1</td>
 </tr>
 <tr class="even">
-<td><code>lcl_time</code></td>
+<td><code>lcl_exp_component</code></td>
 <td>CL_TIME (initial)</td>
 <td>0.00623 L/hour</td>
 <td>Table 1, theta2</td>
@@ -2002,18 +2002,18 @@ deterministic typical-value path uses <code><a href="https://nlmixr2.github.io/r
 <span><span class="va">typ_events</span><span class="op">$</span><span class="va">TUMSZ</span>      <span class="op">&lt;-</span> <span class="fl">5000</span></span>
 <span></span>
 <span><span class="va">typ_sim</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">typ</span>, <span class="va">typ_events</span>, returnType <span class="op">=</span> <span class="st">"data.frame"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl_time', 'etalcl', 'etalvc', 'etalvp', 'etalq', 'etalvmax', 'etalfrac_mmae', 'etalcl_mmae', 'etalvp_mmae'</span></span></code></pre></div>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl_exp_component', 'etalcl', 'etalvc', 'etalvp', 'etalq', 'etalvmax', 'etalfrac_mmae', 'etalcl_mmae', 'etalvp_mmae'</span></span></code></pre></div>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">typ_sim</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
 <span>    cl_mm <span class="op">=</span> <span class="va">vmax</span> <span class="op">/</span> <span class="op">(</span><span class="va">km_ac</span> <span class="op">+</span> <span class="va">central</span> <span class="op">/</span> <span class="va">vc</span><span class="op">)</span>,  <span class="co"># CL_MM in L/hour</span></span>
-<span>    cl_total <span class="op">=</span> <span class="va">cl_ns</span> <span class="op">+</span> <span class="va">cl_t</span> <span class="op">+</span> <span class="va">cl_mm</span></span>
+<span>    cl_total <span class="op">=</span> <span class="va">cl_ns</span> <span class="op">+</span> <span class="va">cl_exp_component_t</span> <span class="op">+</span> <span class="va">cl_mm</span></span>
 <span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">cl_ns</span>, <span class="va">cl_t</span>, <span class="va">cl_mm</span>, <span class="va">cl_total</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html" class="external-link">pivot_longer</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">cl_ns</span>, <span class="va">cl_t</span>, <span class="va">cl_mm</span>, <span class="va">cl_total</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">cl_ns</span>, <span class="va">cl_exp_component_t</span>, <span class="va">cl_mm</span>, <span class="va">cl_total</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html" class="external-link">pivot_longer</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">cl_ns</span>, <span class="va">cl_exp_component_t</span>, <span class="va">cl_mm</span>, <span class="va">cl_total</span><span class="op">)</span>,</span>
 <span>               names_to <span class="op">=</span> <span class="st">"pathway"</span>, values_to <span class="op">=</span> <span class="st">"cl_Lhr"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>pathway <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">pathway</span>,</span>
-<span>                          levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cl_ns"</span>, <span class="st">"cl_t"</span>, <span class="st">"cl_mm"</span>, <span class="st">"cl_total"</span><span class="op">)</span>,</span>
+<span>                          levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cl_ns"</span>, <span class="st">"cl_exp_component_t"</span>, <span class="st">"cl_mm"</span>, <span class="st">"cl_total"</span><span class="op">)</span>,</span>
 <span>                          labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CL_NS"</span>, <span class="st">"CL_t"</span>, <span class="st">"CL_MM"</span>, <span class="st">"Total CL"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">cl_Lhr</span>, colour <span class="op">=</span> <span class="va">pathway</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span> <span class="op">+</span></span>
@@ -2038,7 +2038,7 @@ arrow positions mark the dosing times at 0, 504, 1008, 1512, 2016, and
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
 <span>    cl_mm <span class="op">=</span> <span class="va">vmax</span> <span class="op">/</span> <span class="op">(</span><span class="va">km_ac</span> <span class="op">+</span> <span class="va">central</span> <span class="op">/</span> <span class="va">vc</span><span class="op">)</span>,</span>
 <span>    input_clns_ugh <span class="op">=</span> <span class="va">frac_ns</span> <span class="op">*</span> <span class="va">cl_ns</span> <span class="op">*</span> <span class="va">central</span> <span class="op">/</span> <span class="va">vc</span>,</span>
-<span>    input_clt_ugh  <span class="op">=</span> <span class="va">frac_ns</span> <span class="op">*</span> <span class="va">frac_clt</span> <span class="op">*</span> <span class="va">cl_t</span> <span class="op">*</span> <span class="va">central</span> <span class="op">/</span> <span class="va">vc</span>,</span>
+<span>    input_clt_ugh  <span class="op">=</span> <span class="va">frac_ns</span> <span class="op">*</span> <span class="va">frac_clt</span> <span class="op">*</span> <span class="va">cl_exp_component_t</span> <span class="op">*</span> <span class="va">central</span> <span class="op">/</span> <span class="va">vc</span>,</span>
 <span>    input_clmm_ugh <span class="op">=</span> <span class="va">frac_ns</span> <span class="op">*</span> <span class="va">frac_mm</span> <span class="op">*</span> <span class="va">cl_mm</span> <span class="op">*</span> <span class="va">central</span> <span class="op">/</span> <span class="va">vc</span>,</span>
 <span>    input_total_ugh <span class="op">=</span> <span class="va">input_clns_ugh</span> <span class="op">+</span> <span class="va">input_clt_ugh</span> <span class="op">+</span> <span class="va">input_clmm_ugh</span></span>
 <span>  <span class="op">)</span> <span class="op">|&gt;</span></span>

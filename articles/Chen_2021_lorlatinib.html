@@ -1400,26 +1400,27 @@ studies). Disposition is a two-compartment model with sequential
 zero-order and first-order oral absorption (dose enters the depot via a
 zero-order window of duration D1 = 1.15 h followed by first-order
 absorption at ka = 3.11 h^-1) and time-varying metabolic auto-induction
-of clearance: CL(t) = CLI + (CLMX - CLI) * (1 - exp(-k_ind * t)), rising
-from a single-dose CLI = 9.04 L/h to a steady-state CLMX = 14.5 L/h with
-induction rate constant k_ind = 0.020 h^-1 (~7.25 d to functional steady
-state; Chen 2021 abstract, Table 4). CLI and CLMX share a fixed
-allometric exponent 0.75 on body weight (reference 70 kg) and both are
-modulated by a shared multiplicative covariate block: 1 + e_alb_cl *
-(ALB - 40 g/L) with e_alb_cl = 0.00670 per g/L, 1 + e_dose_lor_cl *
-(DOSE_LOR_MGD - 100 mg/day) with e_dose_lor_cl = 0.00100 per mg/day, and
-a power effect (CRCL / 100)^e_crcl_cl with e_crcl_cl = 0.235. V2 = 121 L
-carries a fixed allometric exponent 1.0 on body weight; V3 = 155 L and Q
-= 22.0 L/h have no allometric scaling. ka is modulated by proton-pump
-inhibitor co-administration: ka x (1 - 0.675 * CONMED_PPI), i.e. a 67.5%
-ka reduction on PPI (which reduces Cmax by ~30% with no effect on AUCinf
-per the Chen 2021 Discussion). Bioavailability F1 = 0.759.
-Inter-individual variability is a correlated CL/F block (log-scale
-variances 0.030 and 0.022; covariance -0.006), a correlated V2/V3 block
-(0.086, -0.017, 0.101), and an independent ka block (2.33). Residual
-error is a route-specific log-scale additive term (approximately
-proportional in linear space): propSd 11.5% CV for IV data (Study
-B7461007 absolute bioavailability arm) and 43.8% CV for oral data.</li>
+of clearance: CL(t) = CLI + (CLMX - CLI) * (1 - exp(-cl_exp_kdes * t)),
+rising from a single-dose CLI = 9.04 L/h to a steady-state CLMX = 14.5
+L/h with induction rate constant cl_exp_kdes = 0.020 h^-1 (~7.25 d to
+functional steady state; Chen 2021 abstract, Table 4). CLI and CLMX
+share a fixed allometric exponent 0.75 on body weight (reference 70 kg)
+and both are modulated by a shared multiplicative covariate block: 1 +
+e_alb_cl * (ALB - 40 g/L) with e_alb_cl = 0.00670 per g/L, 1 +
+e_dose_lor_cl * (DOSE_LOR_MGD - 100 mg/day) with e_dose_lor_cl = 0.00100
+per mg/day, and a power effect (CRCL / 100)^e_crcl_cl with e_crcl_cl =
+0.235. V2 = 121 L carries a fixed allometric exponent 1.0 on body
+weight; V3 = 155 L and Q = 22.0 L/h have no allometric scaling. ka is
+modulated by proton-pump inhibitor co-administration: ka x (1 - 0.675 *
+CONMED_PPI), i.e. a 67.5% ka reduction on PPI (which reduces Cmax by
+~30% with no effect on AUCinf per the Chen 2021 Discussion).
+Bioavailability F1 = 0.759. Inter-individual variability is a correlated
+CL/F block (log-scale variances 0.030 and 0.022; covariance -0.006), a
+correlated V2/V3 block (0.086, -0.017, 0.101), and an independent ka
+block (2.33). Residual error is a route-specific log-scale additive term
+(approximately proportional in linear space): propSd 11.5% CV for IV
+data (Study B7461007 absolute bioavailability arm) and 43.8% CV for oral
+data.</li>
 <li>Article: <a href="https://doi.org/10.1002/psp4.12585" class="external-link uri">https://doi.org/10.1002/psp4.12585</a> (open access)</li>
 <li>Supplement: Wiley Online Library supporting information (Tables
 S1-S2 and NONMEM control stream ListS1); attached to the same DOI
@@ -1484,14 +1485,14 @@ the encoding of covariate multipliers (linear centered vs power).</p>
 </tr>
 <tr class="even">
 <td>
-<code>lclmax</code> (steady-state induced CL, CLMX)</td>
+<code>lcl_exp_inf</code> (steady-state induced CL, CLMX)</td>
 <td>log(14.472)</td>
 <td>Table 4 <code>theta_CLMX = 14.472 L/h</code>
 </td>
 </tr>
 <tr class="odd">
 <td>
-<code>lkind</code> (auto-induction rate constant)</td>
+<code>lcl_exp_kdes</code> (auto-induction rate constant)</td>
 <td>log(0.020)</td>
 <td>Table 4 <code>theta_IND = 0.020 h^-1</code>; abstract “~7.25 d to
 functional steady state”</td>
@@ -1608,7 +1609,7 @@ ListS1 <code>$OMEGA BLOCK(2)</code> line 105-107</td>
 </tr>
 <tr class="even">
 <td>Auto-induction ODE</td>
-<td><code>CL(t) = CLI + (CLMX - CLI) * (1 - exp(-k_ind * t))</code></td>
+<td><code>CL(t) = CLI + (CLMX - CLI) * (1 - exp(-cl_exp_kdes * t))</code></td>
 <td>Methods “Lorlatinib clearance estimation” (continuous canonical
 form; see Assumptions)</td>
 </tr>

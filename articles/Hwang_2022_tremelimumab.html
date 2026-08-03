@@ -1543,31 +1543,31 @@ table below collects them in one place for review.</p>
 </tr>
 <tr class="even">
 <td>
-<code>cl_tmax_mono</code> (Tmax mono)</td>
+<code>cl_hill_max_mono</code> (Tmax mono)</td>
 <td>0.151</td>
 <td>Hwang 2022 Table 3, covariate 4 Tmax (monotherapy)</td>
 </tr>
 <tr class="odd">
 <td>
-<code>cl_tc50</code> (TC50, days)</td>
+<code>cl_hill_t50</code> (TC50, days)</td>
 <td>95.1</td>
 <td>Hwang 2022 Table 3, covariate 5 TC50 (common)</td>
 </tr>
 <tr class="even">
 <td>
-<code>cl_lambda_mono</code> (lambda mono)</td>
+<code>cl_hill_gamma_mono</code> (lambda mono)</td>
 <td>14.5</td>
 <td>Hwang 2022 Table 3, covariate 6 Lambda (monotherapy)</td>
 </tr>
 <tr class="odd">
 <td>
-<code>cl_tmax_combo</code> (Tmax combo)</td>
+<code>cl_hill_max_combo</code> (Tmax combo)</td>
 <td>-0.187</td>
 <td>Hwang 2022 Table 3, covariate 7 Tmax (combination therapy)</td>
 </tr>
 <tr class="even">
 <td>
-<code>cl_lambda_combo</code> (lambda combo)</td>
+<code>cl_hill_gamma_combo</code> (lambda combo)</td>
 <td>3.20</td>
 <td>Hwang 2022 Table 3, covariate 8 Lambda (combination)</td>
 </tr>
@@ -1585,7 +1585,7 @@ table below collects them in one place for review.</p>
 </tr>
 <tr class="odd">
 <td>
-<code>etacl_tmax</code> (omega^2 on Tmax)</td>
+<code>etacl_hill_max</code> (omega^2 on Tmax)</td>
 <td>0.151 (38.9% CV)</td>
 <td>Hwang 2022 Table 3, IIV on Tmax</td>
 </tr>
@@ -1776,10 +1776,10 @@ reference subject (WT = 71 kg, ALB = 39 g/L, etas = 0).</p>
 <span><span class="co">#&gt; ℹ parameter labels from comments will be replaced by 'label()'</span></span>
 <span><span class="va">sim_typ_mono</span>  <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod_typ</span>, events <span class="op">=</span> <span class="fu">build_typ_events</span><span class="op">(</span><span class="fl">0</span><span class="op">)</span>,</span>
 <span>                                 returnType <span class="op">=</span> <span class="st">"data.frame"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etacl_tmax'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etacl_hill_max'</span></span>
 <span><span class="va">sim_typ_combo</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod_typ</span>, events <span class="op">=</span> <span class="fu">build_typ_events</span><span class="op">(</span><span class="fl">1</span><span class="op">)</span>,</span>
 <span>                                 returnType <span class="op">=</span> <span class="st">"data.frame"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etacl_tmax'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etacl_hill_max'</span></span>
 <span></span>
 <span><span class="va">cl_curves</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span><span class="va">sim_typ_mono</span>,  regimen <span class="op">=</span> <span class="st">"Monotherapy"</span><span class="op">)</span>,</span>
@@ -2034,12 +2034,12 @@ one-year typical-value CL increase is
 <code>exp(0.151) - 1 = 16.3%</code>, consistent with Hwang 2022’s
 reported “approximately 16%” (page 1609).</li>
 <li>
-<strong>Convention deviation: <code>etacl_tmax</code> IIV.</strong>
-The shared additive eta on the regimen-active Tmax does not pair with a
-single fixed-effect parameter named <code>cl_tmax</code> in
-<code>ini()</code>; instead, two regimen-specific
-<code>cl_tmax_mono</code> and <code>cl_tmax_combo</code> fixed effects
-are mixed at runtime by <code>COMBO_DURVA</code>.
+<strong>Convention deviation: <code>etacl_hill_max</code>
+IIV.</strong> The shared additive eta on the regimen-active Tmax does
+not pair with a single fixed-effect parameter named <code>cl_tmax</code>
+in <code>ini()</code>; instead, two regimen-specific
+<code>cl_hill_max_mono</code> and <code>cl_hill_max_combo</code> fixed
+effects are mixed at runtime by <code>COMBO_DURVA</code>.
 <code><a href="../reference/checkModelConventions.html">nlmixr2lib::checkModelConventions()</a></code> flags this with a
 <code>parameter_naming</code> warning. The structure faithfully encodes
 Hwang 2022’s NONMEM control stream and is not changed.</li>

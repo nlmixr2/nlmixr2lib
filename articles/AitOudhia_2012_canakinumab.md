@@ -159,7 +159,7 @@ sim_fig4 <- rxode2::rxSolve(
   keep   = c("regimen", "WT")
 ) |>
   as.data.frame()
-#> ℹ omega/sigma items treated as zero: 'etalka', 'etalvc', 'etalvp', 'etalcl', 'etalcll', 'etalq', 'etalkd', 'etalfdepot', 'etalcrp0', 'etalkout', 'etalbeta', 'etalgamma', 'etaacrshift'
+#> ℹ omega/sigma items treated as zero: 'etalka', 'etalvc', 'etalvp', 'etalcl', 'etalcl_ligand', 'etalq', 'etalkd', 'etalfdepot', 'etalcrp0', 'etalkout', 'etalbeta', 'etalgamma', 'etaacrshift'
 #> Warning: multi-subject simulation without without 'omega'
 ```
 
@@ -185,7 +185,7 @@ events_fig2 <- make_cohort(
 sim_fig2 <- rxode2::rxSolve(mod_typical, events = events_fig2,
                             keep = c("regimen", "WT")) |>
   as.data.frame()
-#> ℹ omega/sigma items treated as zero: 'etalka', 'etalvc', 'etalvp', 'etalcl', 'etalcll', 'etalq', 'etalkd', 'etalfdepot', 'etalcrp0', 'etalkout', 'etalbeta', 'etalgamma', 'etaacrshift'
+#> ℹ omega/sigma items treated as zero: 'etalka', 'etalvc', 'etalvp', 'etalcl', 'etalcl_ligand', 'etalq', 'etalkd', 'etalfdepot', 'etalcrp0', 'etalkout', 'etalbeta', 'etalgamma', 'etaacrshift'
 
 fig2 <- sim_fig2 |>
   dplyr::select(time, Cc, totalIL1b, freeIL1b, crp) |>
@@ -265,7 +265,7 @@ stopifnot(!anyDuplicated(unique(events_fig5[, c("id", "time", "evid")])))
 sim_fig5 <- rxode2::rxSolve(mod_typical, events = events_fig5,
                             keep = c("regimen", "WT")) |>
   as.data.frame()
-#> ℹ omega/sigma items treated as zero: 'etalka', 'etalvc', 'etalvp', 'etalcl', 'etalcll', 'etalq', 'etalkd', 'etalfdepot', 'etalcrp0', 'etalkout', 'etalbeta', 'etalgamma', 'etaacrshift'
+#> ℹ omega/sigma items treated as zero: 'etalka', 'etalvc', 'etalvp', 'etalcl', 'etalcl_ligand', 'etalq', 'etalkd', 'etalfdepot', 'etalcrp0', 'etalkout', 'etalbeta', 'etalgamma', 'etaacrshift'
 #> Warning: multi-subject simulation without without 'omega'
 
 fig5 <- sim_fig5 |>

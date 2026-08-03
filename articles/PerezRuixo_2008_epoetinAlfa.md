@@ -169,7 +169,7 @@ ev_baseline <- tibble::tibble(
 )
 s_baseline <- rxode2::rxSolve(mtyp, ev_baseline) |>
   as.data.frame()
-#> ℹ omega/sigma items treated as zero: 'etalka', 'etalcl', 'etalvc', 'etalvmax', 'etald1', 'etaltlag2', 'etalfdepot', 'etalrbase', 'etalogitfr', 'etalret0', 'etaltr', 'etaltp', 'etalsc50'
+#> ℹ omega/sigma items treated as zero: 'etalka', 'etalcl', 'etalvc', 'etalvmax', 'etald1', 'etaltlag2', 'etalfdepot', 'etalrbase', 'etalogitffo', 'etalret0', 'etaltr', 'etaltp', 'etalsc50'
 range(s_baseline$Cc)
 #> [1] 13.9 13.9
 range(s_baseline$RET)
@@ -235,7 +235,7 @@ sim <- rxode2::rxSolve(
   events,
   keep        = c("treatment", "DOSE")
 ) |> as.data.frame()
-#> ℹ omega/sigma items treated as zero: 'etalka', 'etalcl', 'etalvc', 'etalvmax', 'etald1', 'etaltlag2', 'etalfdepot', 'etalrbase', 'etalogitfr', 'etalret0', 'etaltr', 'etaltp', 'etalsc50'
+#> ℹ omega/sigma items treated as zero: 'etalka', 'etalcl', 'etalvc', 'etalvmax', 'etald1', 'etaltlag2', 'etalfdepot', 'etalrbase', 'etalogitffo', 'etalret0', 'etaltr', 'etaltp', 'etalsc50'
 #> Warning: multi-subject simulation without without 'omega'
 nrow(sim)
 #> [1] 1692

@@ -296,8 +296,8 @@ knitr::kable(
 
 | start | end | treatment | N | auclast | cmax | cmin | tmax |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | 42 | Q2W_800_400 | 100 | 7030 \[31.9\] | 248 \[23.3\] | 115 \[44.0\] | 30.0 \[2.00, 30.0\] |
-| 0 | 42 | Q3W_800_600 | 100 | 7530 \[27.9\] | 362 \[17.5\] | 99.5 \[45.8\] | 22.0 \[22.0, 22.0\] |
+| 0 | 42 | Q2W_800_400 | 100 | 5780 \[38.5\] | 221 \[25.7\] | 81.3 \[61.9\] | 30.0 \[30.0, 30.0\] |
+| 0 | 42 | Q3W_800_600 | 100 | 5940 \[37.1\] | 326 \[19.8\] | 60.1 \[76.6\] | 22.0 \[22.0, 22.0\] |
 
 PKNCA summary for the steady-state 42-day window. Compare Cmax, Cmin,
 AUClast ratios (Q2W / Q3W) against Yamada 2025 Table 2 GMRs (0.792,
@@ -345,9 +345,9 @@ knitr::kable(comparison, digits = 3,
 
 | Parameter      | GMR (sim) | GMR (Yamada 2025 Table 2) |
 |:---------------|----------:|--------------------------:|
-| Cmax           |     0.685 |                     0.792 |
-| Cmin (Ctrough) |     1.148 |                     1.192 |
-| AUC42d         |     0.932 |                     1.000 |
+| Cmax           |     0.678 |                     0.792 |
+| Cmin (Ctrough) |     1.227 |                     1.192 |
+| AUC42d         |     0.973 |                     1.000 |
 
 Simulated vs. published GMRs (Q2W relative to Q3W, steady-state 42-day
 interval). {.table}

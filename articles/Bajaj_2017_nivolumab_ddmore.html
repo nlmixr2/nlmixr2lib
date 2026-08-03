@@ -1543,19 +1543,19 @@ table below collects them in one place for review; line numbers refer to
 </tr>
 <tr class="even">
 <td>
-<code>cl_emax</code> (Emax, unitless)</td>
+<code>cl_hill_max</code> (Emax, unitless)</td>
 <td>-0.295</td>
 <td>TH22 = -2.95E-01 (CL_EMAX); $PK line 79</td>
 </tr>
 <tr class="odd">
 <td>
-<code>t50</code> (T50, h)</td>
+<code>cl_hill_t50</code> (T50, h)</td>
 <td>1410</td>
 <td>TH23 = 1.41E+03 h (CL_T50); $PK line 80</td>
 </tr>
 <tr class="even">
 <td>
-<code>cl_hill</code> (Hill, unitless)</td>
+<code>cl_hill_gamma</code> (Hill, unitless)</td>
 <td>3.15</td>
 <td>TH24 = 3.15 (CL_HILL); $PK line 81</td>
 </tr>
@@ -1573,7 +1573,7 @@ var(ETA2)=1.23E-01</td>
 </tr>
 <tr class="odd">
 <td>
-<code>etacl_emax</code> (additive, per Eq. 3)</td>
+<code>etacl_hill_max</code> (additive, per Eq. 3)</td>
 <td>0.0719</td>
 <td>OMEGA: var(ETA4)=7.19E-02</td>
 </tr>
@@ -1714,7 +1714,7 @@ reference subject (deterministic, etas = 0):</p>
 <span><span class="va">mod_typ</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/zeroRe.html" class="external-link">zeroRe</a></span><span class="op">(</span><span class="va">mod</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ℹ parameter labels from comments will be replaced by 'label()'</span></span>
 <span><span class="va">sim_cl</span>  <span class="op">&lt;-</span> <span class="fu">rxSolve</span><span class="op">(</span><span class="va">mod_typ</span>, events <span class="op">=</span> <span class="va">events_cl</span>, returnType <span class="op">=</span> <span class="st">"data.frame"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etacl_emax'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etacl_hill_max'</span></span>
 <span><span class="va">sim_cl</span>  <span class="op">&lt;-</span> <span class="va">sim_cl</span><span class="op">[</span><span class="va">sim_cl</span><span class="op">$</span><span class="va">time</span> <span class="op">&gt;</span> <span class="fl">0</span>, <span class="op">]</span></span>
 <span></span>
 <span><span class="fu">ggplot</span><span class="op">(</span><span class="va">sim_cl</span>, <span class="fu">aes</span><span class="op">(</span><span class="va">time</span> <span class="op">/</span> <span class="fl">24</span>, <span class="va">cl</span> <span class="op">/</span> <span class="va">cl_base</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
@@ -1796,7 +1796,7 @@ as.integer(RACEN == 3), ECOG_GE1 = PS).</p>
 <span></span>
 <span><span class="va">sim_self</span> <span class="op">&lt;-</span> <span class="fu">rxSolve</span><span class="op">(</span><span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/zeroRe.html" class="external-link">zeroRe</a></span><span class="op">(</span><span class="va">mod</span><span class="op">)</span>, events <span class="op">=</span> <span class="va">sub</span>, returnType <span class="op">=</span> <span class="st">"data.frame"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ℹ parameter labels from comments will be replaced by 'label()'</span></span>
-<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etacl_emax'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etacl_hill_max'</span></span>
 <span><span class="co">#&gt; Warning: multi-subject simulation without without 'omega'</span></span>
 <span></span>
 <span><span class="fu">ggplot</span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">sim_self</span>, <span class="va">time</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span>, <span class="fu">aes</span><span class="op">(</span><span class="va">time</span> <span class="op">/</span> <span class="fl">24</span>, <span class="va">Cc</span>, group <span class="op">=</span> <span class="va">id</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
@@ -1949,7 +1949,7 @@ cross-checked against the packaged model:</p>
 <tr class="even">
 <td>Mean maximal reduction in CL from baseline</td>
 <td>~24.5%</td>
-<td><code>1 - exp(cl_emax) = 1 - exp(-0.295) = 25.5%</code></td>
+<td><code>1 - exp(cl_hill_max) = 1 - exp(-0.295) = 25.5%</code></td>
 </tr>
 <tr class="odd">
 <td>Geometric mean terminal t_{1/2}(alpha)</td>
@@ -2025,11 +2025,11 @@ already removed); it produces identical predictions to the FCM.</li>
 <code>Output_real_Nivo-PPK.lst</code> <code>$PK</code> line 122
 expresses Emax as additive: <code>EMAX = AEMAX + ZEMAX</code> (rather
 than log-normal). The packaged model preserves this verbatim
-(<code>emax_i = cl_emax + etacl_emax</code>). At a stochastic simulation
-with the published omega^2_EMAX = 0.0719 (SD 0.268), a small fraction of
-individuals will draw Emax &gt; 0 and show a slight CL <em>increase</em>
-over time - this is a feature of the additive parameterization, not a
-coding change.</li>
+(<code>cl_hill_max_i = cl_hill_max + etacl_hill_max</code>). At a
+stochastic simulation with the published omega^2_EMAX = 0.0719 (SD
+0.268), a small fraction of individuals will draw Emax &gt; 0 and show a
+slight CL <em>increase</em> over time - this is a feature of the
+additive parameterization, not a coding change.</li>
 <li>
 <strong>Bundle-shipped simulated dataset is not bundled into the
 package.</strong> <code>Simulated_pkdata1_dataset.csv</code> is in the

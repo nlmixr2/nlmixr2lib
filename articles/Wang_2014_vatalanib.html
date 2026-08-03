@@ -1461,20 +1461,22 @@ development’ p. 1008</td>
 </tr>
 <tr class="odd">
 <td>
-<code>lcl_ss</code> -&gt; exp = 54.9 L/h (CL_induced/F)</td>
+<code>lcl_exp_inf</code> -&gt; exp = 54.9 L/h (CL_induced/F)</td>
 <td>54.9</td>
 <td>Table 2 row ‘CL_induced/F’, p. 1009 (95% CI 42.5-67.2; 11.7%
 RSE)</td>
 </tr>
 <tr class="even">
 <td>
-<code>lcl_time</code> -&gt; exp = 30.1 L/h (delta_CL/F)</td>
+<code>lcl_exp_component</code> -&gt; exp = 30.1 L/h
+(delta_CL/F)</td>
 <td>30.1</td>
 <td>Table 2 row ‘delta_CL/F’, p. 1009 (95% CI 14.8-45.4; 27.6% RSE)</td>
 </tr>
 <tr class="odd">
 <td>
-<code>lkdes</code> -&gt; exp = 0.023 /h (K_induct, fixed)</td>
+<code>lcl_exp_kdes</code> -&gt; exp = 0.023 /h (K_induct,
+fixed)</td>
 <td>0.023</td>
 <td>Table 2 row ‘K_induct’, p. 1009 (fixed; footnote * ‘maximal
 clearance induction was reached on day 7’)</td>
@@ -1499,8 +1501,8 @@ clearance induction was reached on day 7’)</td>
 </tr>
 <tr class="odd">
 <td>
-<code>etalcl_ss</code> IIV (CV 22.8%; omega^2 = log(1+0.228^2) =
-0.0507)</td>
+<code>etalcl_exp_inf</code> IIV (CV 22.8%; omega^2 = log(1+0.228^2)
+= 0.0507)</td>
 <td>0.0507</td>
 <td>Table 2 row ‘IIV for CL_induced/F’, p. 1009</td>
 </tr>
@@ -1636,7 +1638,7 @@ ID.</p>
 <span>  events     <span class="op">=</span> <span class="va">events</span>,</span>
 <span>  returnType <span class="op">=</span> <span class="st">"data.frame"</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl_ss', 'etalvc', 'etalka', 'etaltlag'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl_exp_inf', 'etalvc', 'etalka', 'etaltlag'</span></span>
 <span><span class="co">#&gt; Warning: multi-subject simulation without without 'omega'</span></span>
 <span><span class="va">sim_typ</span><span class="op">$</span><span class="va">time_d</span> <span class="op">&lt;-</span> <span class="va">sim_typ</span><span class="op">$</span><span class="va">time</span> <span class="op">/</span> <span class="fl">24</span></span></code></pre></div>
 </div>
@@ -2019,29 +2021,29 @@ after day 7, leaving insufficient information to estimate the induction
 rate directly (Table 2 footnote *; Discussion p. 1011). The fixed value
 was chosen so that maximal induction is reached on day 7 from prior
 internal data. The model encodes this with
-<code>lkdes &lt;- fixed(log(0.023))</code>.</li>
+<code>lcl_exp_kdes &lt;- fixed(log(0.023))</code>.</li>
 <li>
 <strong>IIV on delta_CL/F fixed at zero.</strong> Wang 2014 Results
 ‘Model development’ (p. 1008) reports that the IIV on delta_CL/F was
 fixed to zero because its estimate was extremely small and the
 covariance step failed to converge. In the packaged model,
-<code>cl_time</code> therefore enters as <code>exp(lcl_time)</code> with
-no eta term.</li>
+<code>cl_exp_component</code> therefore enters as
+<code>exp(lcl_exp_component)</code> with no eta term.</li>
 <li>
 <strong>Initial CL can in principle go negative for extreme
 draws.</strong> The composite CL trajectory
-<code>cl = cl_ss - cl_time * exp(-K_induct * t)</code> is non-negative
-only as long as the individual’s <code>cl_ss</code> (which carries IIV
-via <code>etalcl_ss</code>) stays above <code>cl_time</code> (which is
-held at the typical value). With the published variability (CV 22.8% on
-CL_induced/F), an individual draw of <code>etalcl_ss</code> below
-roughly -0.6 (= about 2.7 standard deviations) would push
-<code>cl_ss</code> below 30.1 L/h and give a negative initial CL. The
-published variability puts the probability of that event below 0.5%.
-This is a property of the paper’s additive autoinduction
-parameterisation, not an additional approximation introduced in
-nlmixr2lib; faithfully reproducing the paper preserves this corner
-case.</li>
+<code>cl = cl_exp_inf - cl_exp_component * exp(-K_induct * t)</code> is
+non-negative only as long as the individual’s <code>cl_exp_inf</code>
+(which carries IIV via <code>etalcl_exp_inf</code>) stays above
+<code>cl_exp_component</code> (which is held at the typical value). With
+the published variability (CV 22.8% on CL_induced/F), an individual draw
+of <code>etalcl_exp_inf</code> below roughly -0.6 (= about 2.7 standard
+deviations) would push <code>cl_exp_inf</code> below 30.1 L/h and give a
+negative initial CL. The published variability puts the probability of
+that event below 0.5%. This is a property of the paper’s additive
+autoinduction parameterisation, not an additional approximation
+introduced in nlmixr2lib; faithfully reproducing the paper preserves
+this corner case.</li>
 <li>
 <strong>Residual error encoding.</strong> Wang 2014 Methods ‘Base
 model building’ (p. 1006) declares an additive residual error model on

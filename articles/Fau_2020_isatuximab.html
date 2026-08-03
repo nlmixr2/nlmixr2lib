@@ -1540,19 +1540,19 @@ place.</p>
 <td>Table S3: Km</td>
 </tr>
 <tr class="odd">
-<td><code>clm</code></td>
+<td><code>cl_hill_max</code></td>
 <td>0.664</td>
 <td>Table S3: CLm</td>
 </tr>
 <tr class="even">
 <td>
-<code>lkcl</code> (KCL, h)</td>
+<code>lcl_hill_t50</code> (KCL, h)</td>
 <td>log(1055)</td>
 <td>Table S3: KCL</td>
 </tr>
 <tr class="odd">
 <td>
-<code>lgam</code> (γ, unitless)</td>
+<code>lcl_hill_gamma</code> (γ, unitless)</td>
 <td>log(3.91)</td>
 <td>Table S3: γ</td>
 </tr>
@@ -1572,7 +1572,7 @@ place.</p>
 <td>Table S3: CLinf ~ Ig=Not_IgG</td>
 </tr>
 <tr class="odd">
-<td><code>e_nigg_kcl</code></td>
+<td><code>e_nigg_cl_hill_t50</code></td>
 <td>-0.931</td>
 <td>Table S3: KCL ~ Ig=Not_IgG (main text rounds to -0.930)</td>
 </tr>
@@ -1612,17 +1612,17 @@ place.</p>
 <td>log(0.475² + 1)</td>
 </tr>
 <tr class="odd">
-<td>IIV <code>etaclm</code> ω = 97.2 % (normal)</td>
+<td>IIV <code>etacl_hill_max</code> ω = 97.2 % (normal)</td>
 <td>0.4164</td>
 <td>(0.664 × 0.972)²</td>
 </tr>
 <tr class="even">
-<td>IIV <code>etalkcl</code> ω = 115 %</td>
+<td>IIV <code>etalcl_hill_t50</code> ω = 115 %</td>
 <td>0.8427</td>
 <td>log(1.15² + 1)</td>
 </tr>
 <tr class="odd">
-<td>IIV <code>etalgam</code> ω = 118 %</td>
+<td>IIV <code>etalcl_hill_gamma</code> ω = 118 %</td>
 <td>0.8723</td>
 <td>log(1.18² + 1)</td>
 </tr>
@@ -1788,8 +1788,8 @@ patient per cohort:</p>
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="va">typical</span> <span class="op">&lt;-</span> <span class="fu">bind_rows</span><span class="op">(</span><span class="fu">make_typical_arm</span><span class="op">(</span><span class="fl">0L</span><span class="op">)</span>, <span class="fu">make_typical_arm</span><span class="op">(</span><span class="fl">1L</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl', 'etaclm', 'etalkcl', 'etalgam', 'etalvc', 'etalq', 'etalvp', 'etalvmax', 'etalkm'</span></span>
-<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl', 'etaclm', 'etalkcl', 'etalgam', 'etalvc', 'etalq', 'etalvp', 'etalvmax', 'etalkm'</span></span></code></pre></div>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl', 'etacl_hill_max', 'etalcl_hill_t50', 'etalcl_hill_gamma', 'etalvc', 'etalq', 'etalvp', 'etalvmax', 'etalkm'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl', 'etacl_hill_max', 'etalcl_hill_t50', 'etalcl_hill_gamma', 'etalvc', 'etalq', 'etalvp', 'etalvmax', 'etalkm'</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="replicate-published-figures">Replicate published figures<a class="anchor" aria-label="anchor" href="#replicate-published-figures"></a>

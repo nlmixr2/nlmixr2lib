@@ -466,7 +466,7 @@ sessionInfo()
 #> [29] memoise_2.0.1      checkmate_2.3.4    vctrs_0.7.3        R6_2.6.1          
 #> [33] lifecycle_1.0.5    fs_2.1.0           ragg_1.5.2         PreciseSums_0.7   
 #> [37] fontawesome_0.5.3  pkgconfig_2.0.3    desc_1.4.3         rex_1.2.2         
-#> [41] pkgdown_2.2.1      RcppParallel_6.1.1 pillar_1.11.1      bslib_0.11.0      
+#> [41] pkgdown_2.2.1      RcppParallel_6.2.0 pillar_1.11.1      bslib_0.11.0      
 #> [45] gtable_0.3.6       glue_1.8.1         data.table_1.18.4  Rcpp_1.1.2        
 #> [49] systemfonts_1.3.2  tidyselect_1.2.1   xfun_0.60          tibble_3.3.1      
 #> [53] sys_3.4.3          knitr_1.51         farver_2.1.2       dparser_1.3.1-13  

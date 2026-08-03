@@ -1396,9 +1396,9 @@ Exposure-Response in CLL. CPT Pharmacometrics Syst Pharmacol.
 (GA101, glycoengineered type II anti-CD20 mAb) in adults with chronic
 lymphocytic leukemia (CLL) or non-Hodgkin lymphoma (NHL); clearance is
 the sum of a time-independent component CL_inf and a mono-exponentially
-decaying time-dependent component CL_T<em>exp(-kdes</em>time), with
-histology (CLL / BCL / DLBCL / MCL), baseline tumor size, body weight,
-and sex as covariates (Gibiansky 2014).</li>
+decaying time-dependent component CL_T<em>exp(-cl_exp_kdes</em>time),
+with histology (CLL / BCL / DLBCL / MCL), baseline tumor size, body
+weight, and sex as covariates (Gibiansky 2014).</li>
 <li>Article: <a href="https://doi.org/10.1038/psp.2014.42" class="external-link">CPT
 Pharmacometrics Syst Pharmacol. 2014;3:e144</a>
 </li>
@@ -1453,7 +1453,7 @@ The table below collects them in one place.</p>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td>ODE: <code>CL(t) = CL_T * exp(-kdes * t) + CL_inf</code>
+<td>ODE: <code>CL(t) = CL_T * exp(-cl_exp_kdes * t) + CL_inf</code>
 </td>
 <td>n/a</td>
 <td>Methods “Base PK model development”; Supplementary Table S1
@@ -1467,17 +1467,17 @@ The table below collects them in one place.</p>
 </td>
 </tr>
 <tr class="odd">
-<td><code>lkdes</code></td>
+<td><code>lcl_exp_kdes</code></td>
 <td><code>log(0.0359)</code></td>
 <td>Table 3 exp(theta1) = 0.0359 1/day</td>
 </tr>
 <tr class="even">
-<td><code>lcl_time</code></td>
+<td><code>lcl_exp_component</code></td>
 <td><code>log(0.231)</code></td>
 <td>Table 3 exp(theta2) = 0.231 L/day</td>
 </tr>
 <tr class="odd">
-<td><code>lcl_ss</code></td>
+<td><code>lcl_exp_inf</code></td>
 <td><code>log(0.0828)</code></td>
 <td>Table 3 exp(theta3) = 0.0828 L/day</td>
 </tr>
@@ -1517,12 +1517,12 @@ The table below collects them in one place.</p>
 <td>Methods (fixed allometric exponent 1.0 on V2)</td>
 </tr>
 <tr class="odd">
-<td><code>e_sex_cl_time</code></td>
+<td><code>e_sex_cl_exp_component</code></td>
 <td><code>log(1.49)</code></td>
 <td>Table 3 exp(theta9) = 1.49 (male/female ratio on CL_T)</td>
 </tr>
 <tr class="even">
-<td><code>e_sex_cl_ss</code></td>
+<td><code>e_sex_cl_exp_inf</code></td>
 <td><code>log(1.22)</code></td>
 <td>Table 3 exp(theta10) = 1.22 (male/female ratio on CL_inf)</td>
 </tr>
@@ -1532,7 +1532,7 @@ The table below collects them in one place.</p>
 <td>Table 3 exp(theta11) = 1.18 (male/female ratio on V1)</td>
 </tr>
 <tr class="even">
-<td><code>e_nhl_kdes</code></td>
+<td><code>e_nhl_cl_exp_kdes</code></td>
 <td><code>log(2.08)</code></td>
 <td>Table 3 exp(theta12) = 2.08 (NHL/CLL ratio on kdes)</td>
 </tr>
@@ -1549,13 +1549,13 @@ CL_inf, shared)</td>
 shared)</td>
 </tr>
 <tr class="odd">
-<td><code>e_bsizlow_kdes</code></td>
+<td><code>e_bsizlow_cl_exp_kdes</code></td>
 <td><code>log(2.65)</code></td>
 <td>Table 3 exp(theta15) = 2.65 (BSIZ &lt;= 1750 vs &gt; 1750 mm^2 on
 kdes)</td>
 </tr>
 <tr class="even">
-<td><code>etalkdes</code></td>
+<td><code>etalcl_exp_kdes</code></td>
 <td><code>1.62</code></td>
 <td>Table 3 Omega(1,1) (CV 201%)</td>
 </tr>
@@ -1685,7 +1685,7 @@ with baseline tumor size &lt; 1,750 mm^2 and weight 75 kg).”</p>
 <span></span>
 <span><span class="va">sim_1a</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod_typical</span>, events <span class="op">=</span> <span class="va">events_1a</span>,</span>
 <span>                          keep <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cohort"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalkdes', 'etalcl_time', 'etalcl_ss', 'etalvc', 'etalvp', 'etalq'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl_exp_kdes', 'etalcl_time', 'etalcl_ss', 'etalvc', 'etalvp', 'etalq'</span></span>
 <span><span class="co">#&gt; Warning: multi-subject simulation without without 'omega'</span></span>
 <span></span>
 <span><span class="fu">ggplot</span><span class="op">(</span><span class="va">sim_1a</span>, <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">time</span>, y <span class="op">=</span> <span class="va">Cc</span>, colour <span class="op">=</span> <span class="va">cohort</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
@@ -1710,7 +1710,7 @@ with baseline tumor size &lt; 1,750 mm^2 and weight 75 kg).”</p>
 <span><span class="va">sim_1b</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod_typical</span>, events <span class="op">=</span> <span class="va">events_1b</span>,</span>
 <span>                          keep <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cohort"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">mutate</span><span class="op">(</span>cohort <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">cohort</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"40 kg"</span>, <span class="st">"75 kg"</span>, <span class="st">"120 kg"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalkdes', 'etalcl_time', 'etalcl_ss', 'etalvc', 'etalvp', 'etalq'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl_exp_kdes', 'etalcl_time', 'etalcl_ss', 'etalvc', 'etalvp', 'etalq'</span></span>
 <span><span class="co">#&gt; Warning: multi-subject simulation without without 'omega'</span></span>
 <span></span>
 <span><span class="fu">ggplot</span><span class="op">(</span><span class="va">sim_1b</span>, <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">time</span>, y <span class="op">=</span> <span class="va">Cc</span>, colour <span class="op">=</span> <span class="va">cohort</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
@@ -1739,7 +1739,7 @@ mm^2)<a class="anchor" aria-label="anchor" href="#figure-1c-diagnosis-effect-fem
 <span><span class="va">sim_1c</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod_typical</span>, events <span class="op">=</span> <span class="va">events_1c</span>,</span>
 <span>                          keep <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cohort"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">mutate</span><span class="op">(</span>cohort <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">cohort</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CLL"</span>, <span class="st">"BCL or DLBCL"</span>, <span class="st">"MCL"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalkdes', 'etalcl_time', 'etalcl_ss', 'etalvc', 'etalvp', 'etalq'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl_exp_kdes', 'etalcl_time', 'etalcl_ss', 'etalvc', 'etalvp', 'etalq'</span></span>
 <span><span class="co">#&gt; Warning: multi-subject simulation without without 'omega'</span></span>
 <span></span>
 <span><span class="fu">ggplot</span><span class="op">(</span><span class="va">sim_1c</span>, <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">time</span>, y <span class="op">=</span> <span class="va">Cc</span>, colour <span class="op">=</span> <span class="va">cohort</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
@@ -1764,7 +1764,7 @@ mm^2)<a class="anchor" aria-label="anchor" href="#figure-1c-diagnosis-effect-fem
 <span></span>
 <span><span class="va">sim_1d</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod_typical</span>, events <span class="op">=</span> <span class="va">events_1d</span>,</span>
 <span>                          keep <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cohort"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalkdes', 'etalcl_time', 'etalcl_ss', 'etalvc', 'etalvp', 'etalq'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl_exp_kdes', 'etalcl_time', 'etalcl_ss', 'etalvc', 'etalvp', 'etalq'</span></span>
 <span><span class="co">#&gt; Warning: multi-subject simulation without without 'omega'</span></span>
 <span></span>
 <span><span class="fu">ggplot</span><span class="op">(</span><span class="va">sim_1d</span>, <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">time</span>, y <span class="op">=</span> <span class="va">Cc</span>, colour <span class="op">=</span> <span class="va">cohort</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
@@ -1902,7 +1902,7 @@ regimen (days 140-168, the cycle 6 dosing interval of 28 days).</p>
 <span></span>
 <span><span class="va">sim_nca_raw</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod_typical</span>, events <span class="op">=</span> <span class="va">events_nca</span>,</span>
 <span>                               keep <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cohort"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalkdes', 'etalcl_time', 'etalcl_ss', 'etalvc', 'etalvp', 'etalq'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl_exp_kdes', 'etalcl_time', 'etalcl_ss', 'etalvc', 'etalvp', 'etalq'</span></span>
 <span><span class="co">#&gt; Warning: multi-subject simulation without without 'omega'</span></span>
 <span></span>
 <span><span class="va">sim_nca</span> <span class="op">&lt;-</span> <span class="va">sim_nca_raw</span> <span class="op">|&gt;</span></span>

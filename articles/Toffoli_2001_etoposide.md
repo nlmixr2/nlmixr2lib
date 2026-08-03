@@ -381,3 +381,26 @@ ggplot(emax_curve, aes(free_auc, pct_anc)) +
   applies this single population fu to convert total AUC to free AUC;
   the model file does not internally track per-subject fu because the
   paper’s Vc/k12 covariate coefficients on %PB are not published.
+
+### Errata
+
+- **Residual error is not reported and is encoded as `fixed(0)`.**
+  Toffoli 2001 reports no residual-error estimate for etoposide. An
+  earlier version of this model carried `propSd = 0.10`, described in
+  the label as assumed from assay validation. That value appears nowhere
+  in the paper, so it has been replaced with `fixed(0)`, following the
+  library policy that an unreported residual error is encoded as zero
+  and documented here rather than filled in with a class-typical guess.
+
+  **Consequence for simulation:** simulating from this model returns the
+  typical-value prediction without residual noise. If you need a
+  realistic observation model, set `propSd` yourself, e.g.
+
+  ``` r
+
+  m <- nlmixr2lib::readModelDb("Toffoli_2001_etoposide")
+  m <- rxode2::ini(m, propSd = 0.10)
+  ```
+
+  and note in your own write-up that the magnitude is your assumption,
+  not Toffoli 2001’s.

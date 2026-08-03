@@ -188,13 +188,13 @@ run_typical <- function(ada_status, alb_value) {
 }
 
 sim_neg_med <- run_typical(0, 38)   # ADA-, median ALB
-#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalBmax'
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalbmax'
 sim_pos_med <- run_typical(1, 38)   # ADA+, median ALB
-#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalBmax'
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalbmax'
 sim_neg_lo  <- run_typical(0, 23)   # ADA-, low ALB (cohort min)
-#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalBmax'
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalbmax'
 sim_neg_hi  <- run_typical(0, 45)   # ADA-, high ALB (cohort max)
-#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalBmax'
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalbmax'
 ```
 
 ## Replicate published figures
@@ -334,7 +334,7 @@ ev_sd <- et(id = 1) |>
 icov_sd <- data.frame(id = 1, ALB = 38, ADA_POS = 0)
 sim_sd <- rxode2::rxSolve(mod_typical, ev_sd, iCov = icov_sd,
                           returnType = "data.frame")
-#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalBmax'
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalbmax'
 sim_sd <- sim_sd[!duplicated(sim_sd$time), ]
 
 nca_conc <- sim_sd |>

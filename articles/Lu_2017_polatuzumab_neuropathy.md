@@ -385,7 +385,7 @@ ev_typ <- function(id, wt) {
 wt_sweep <- bind_rows(ev_typ(1L, 60), ev_typ(2L, 80), ev_typ(3L, 100))
 sim_wt   <- rxode2::rxSolve(m_typ, events = wt_sweep, keep = c("arm")) |>
   as.data.frame()
-#> ℹ omega/sigma items treated as zero: 'etalcl_time', 'etalcl', 'etalvc', 'etalvp', 'etalq', 'etalvmax'
+#> ℹ omega/sigma items treated as zero: 'etalcl_exp_component', 'etalcl', 'etalvc', 'etalvp', 'etalq', 'etalvmax'
 #> Warning: multi-subject simulation without without 'omega'
 incidence_at_168 <- sim_wt |>
   filter(time == max(time)) |>

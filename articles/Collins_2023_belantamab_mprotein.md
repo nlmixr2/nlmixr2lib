@@ -156,9 +156,9 @@ table below collects them in one place for review.
 | `lvc` (TVV1) | 4.46 L | Table S1 |
 | `lq` (TVQ) | 0.740 L/day | Table S1 |
 | `lvp` (TVV2) | 6.49 L | Table S1 |
-| `imax` (IMAX) | -0.309 | Table S1 |
-| `lti50` (TI50) | 56.9 days | Table S1 |
-| `gamma` (Gamma) | 3.81 | Table S1 |
+| `cl_hill_max` (IMAX) | -0.309 | Table S1 |
+| `lcl_hill_t50` (TI50) | 56.9 days | Table S1 |
+| `cl_hill_gamma` (Gamma) | 3.81 | Table S1 |
 | `propSd` (ADC residual) | 0.026 | Table S1 “RES ERR, additive sigma on log scale” |
 | B2M reference 350 nmol/L | n/a | Table 1 `KGRpop` equation |
 | SBCMA reference 100 ng/mL | n/a | Table 1 `KEOpop` equation |
@@ -762,7 +762,7 @@ collins_derived <- tibble::tribble(
   "Vss = Vc + Vp (L)",              round(vc + vp, 2),                 10.84,
   "Intercompartmental Q (L/day)",   round(q, 3),                       0.711,
   "Initial terminal t1/2 (days)",   round(log(2) / beta_rate, 1),      13.0,
-  "Steady-state CL (L/day)",        round(cl0 * exp(th[["imax"]]), 3), 0.619,
+  "Steady-state CL (L/day)",        round(cl0 * exp(th[["cl_hill_max"]]), 3), 0.619,
   "Cmax at 2.5 mg/kg, 76.2 kg (ug/mL)",
                                     round(76.2 * 2.5 / vc, 1),         44.2
 )

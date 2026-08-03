@@ -530,3 +530,29 @@ cohort. {.table}
   typical subject at the median 400 mg dose lands in the lower half of
   the observed range, reflecting the choice of a median weight + median
   dose rather than the heaviest-dose case.
+
+### Errata
+
+- **Residual error is not reported and is encoded as `fixed(0)`.**
+  Belldina 2003 states a proportional residual-error structure for
+  plasma cysteamine in the Methods but reports no SD for it, and reports
+  no residual-error structure at all for the WBC cystine output. Earlier
+  versions of this model carried assumed placeholders (`propSd = 0.15`,
+  `addSd_cystine = 0.10`). Those values appear nowhere in the paper, so
+  they have been replaced with `fixed(0)`, following the library policy
+  that an unreported residual error is encoded as zero and documented
+  here rather than filled in with a class-typical guess.
+
+  **Consequence for simulation:** simulating from this model returns the
+  typical-value prediction without residual noise. If you need a
+  realistic observation model, set `propSd` and `addSd_cystine` yourself
+  to values appropriate for your assay, e.g.
+
+  ``` r
+
+  m <- nlmixr2lib::readModelDb("Belldina_2003_cysteamine")
+  m <- rxode2::ini(m, propSd = 0.15, addSd_cystine = 0.10)
+  ```
+
+  and note in your own write-up that the magnitudes are your assumption,
+  not Belldina 2003’s.

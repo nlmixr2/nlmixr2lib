@@ -7,11 +7,13 @@
   Model of Alirocumab in Healthy Volunteers and Patients: Pooled
   Analysis of Randomized Phase I/II/III Studies. Clin Pharmacokinet.
   2017;56(10):1155-1171. <doi:10.1007/s40262-016-0505-1>
-- Description: Quasi-steady-state target-mediated drug disposition
-  (TMDD-QSS) population PK model for alirocumab and total PCSK9 in
-  healthy adults and adults with hypercholesterolemia (Djebli 2017,
-  final model on expanded data set n=2870). Two-compartment disposition
-  with first-order SC absorption (lag time and bioavailability), linear
+- Description: (Djebli 2017 writes the drug’s linear catabolic clearance
+  as CLL; it is stored here under the canonical name `lcl`.)
+  Quasi-steady-state target-mediated drug disposition (TMDD-QSS)
+  population PK model for alirocumab and total PCSK9 in healthy adults
+  and adults with hypercholesterolemia (Djebli 2017, final model on
+  expanded data set n=2870). Two-compartment disposition with
+  first-order SC absorption (lag time and bioavailability), linear
   catabolic clearance from central, and PCSK9 binding / complex
   internalization described by QSS algebra; allometric weight scaling on
   CLL, Q, and Vc plus a statin-coadministration effect on CLL.

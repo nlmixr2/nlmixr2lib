@@ -103,8 +103,8 @@ collects them in one place for review.
 | `lq` (Q, L/day) | log(34.9 \* 24 / 1000) = log(0.8376) | Zhang 2019 Table 2: Q REF = 34.9 mL/hour |
 | `lvp` (Vp, L) | log(2.70) | Zhang 2019 Table 2: VP REF = 2.70 L |
 | `Emax` (unitless; “Emax REF” in source) | -0.240 | Zhang 2019 Table 2: Emax REF = -0.240 |
-| `lt50` (T50, log days) | log(2200 / 24) = log(91.667) | Zhang 2019 Table 2: T50 = 2200 hour |
-| `lhill` (Hill, unitless) | log(2.77) | Zhang 2019 Table 2: HILL = 2.77 |
+| `lcl_hill_t50` (T50, log days) | log(2200 / 24) = log(91.667) | Zhang 2019 Table 2: T50 = 2200 hour |
+| `lcl_hill_gamma` (Hill, unitless) | log(2.77) | Zhang 2019 Table 2: HILL = 2.77 |
 | `e_wt_cl` | 0.530 | Zhang 2019 Table 2: CL BBWT = 0.530 |
 | `e_egfr_cl` | 0.202 | Zhang 2019 Table 2: CL eGFR = 0.202 |
 | `e_sexf_cl` | -0.181 | Zhang 2019 Table 2: CL SEX = -0.181 |
@@ -116,8 +116,8 @@ collects them in one place for review.
 | `e_chemo_cl` | -0.104 | Zhang 2019 Table 2: CL CHEMO = -0.104 |
 | `e_wt_vc` | 0.534 | Zhang 2019 Table 2: VC BBWT = 0.534 |
 | `e_sexf_vc` | -0.161 | Zhang 2019 Table 2: VC SEX = -0.161 |
-| `e_ecog_emax` | -0.138 | Zhang 2019 Table 2: Emax PS = -0.138 |
-| `e_ipico_emax` | -0.0668 | Zhang 2019 Table 2: Emax IPICO = -0.0668 |
+| `e_ecog_cl_hill_max` | -0.138 | Zhang 2019 Table 2: Emax PS = -0.138 |
+| `e_ipico_cl_hill_max` | -0.0668 | Zhang 2019 Table 2: Emax IPICO = -0.0668 |
 | IIV CL (`etalcl`) | omega^2 = 0.157 | Zhang 2019 Table 2: omega^2_CL |
 | IIV Vc (`etalvc`) | omega^2 = 0.152 | Zhang 2019 Table 2: omega^2_VC |
 | Cov(CL, Vc) | 0.0596 | Zhang 2019 Table 2: cov(omega^2_CL, omega^2_VC) |
@@ -139,7 +139,7 @@ Equation forms:
 - Time-varying CL:
   `CL(t) = CL0 * exp(Emax_i * t^HILL / (T50^HILL + t^HILL))`.
 - Emax_i: additive linear-scale form
-  `Emax_REF + e_ecog_emax * ECOG_GE1 + e_ipico_emax * CONMED_IPI_ANY + etaEmax`.
+  `Emax_REF + e_ecog_cl_hill_max * ECOG_GE1 + e_ipico_cl_hill_max * CONMED_IPI_ANY + etaEmax`.
 
 ## Covariate column naming
 
@@ -305,7 +305,7 @@ simulated regimens, this should differ only via the IPICO Emax effect
 
 typical_emax <- tibble::tibble(
   regimen     = c("monotherapy", "any IPI coadmin"),
-  emax        = c(-0.240, -0.240 + (-0.0668)),
+  cl_hill_max        = c(-0.240, -0.240 + (-0.0668)),
   cl_ss_cl_0  = exp(c(-0.240, -0.240 + (-0.0668)))
 )
 knitr::kable(typical_emax,
@@ -313,10 +313,10 @@ knitr::kable(typical_emax,
              caption = "Typical-subject CLss/CL0 ratio implied by the Emax additive structure (PS = 0).")
 ```
 
-| regimen         |   emax | cl_ss_cl_0 |
-|:----------------|-------:|-----------:|
-| monotherapy     | -0.240 |      0.787 |
-| any IPI coadmin | -0.307 |      0.736 |
+| regimen         | cl_hill_max | cl_ss_cl_0 |
+|:----------------|------------:|-----------:|
+| monotherapy     |      -0.240 |      0.787 |
+| any IPI coadmin |      -0.307 |      0.736 |
 
 Typical-subject CLss/CL0 ratio implied by the Emax additive structure
 (PS = 0). {.table}
@@ -370,9 +370,9 @@ cl0_typical <- 10.8 * 24 / 1000     # L/day at reference covariates
 emax_mono   <- -0.240               # PS=0, no IPI
 emax_ipi    <- -0.240 + (-0.0668)   # PS=0, with IPI
 t50_d       <- 2200 / 24
-hill        <- 2.77
+cl_hill_gamma        <- 2.77
 
-cl_t <- function(t, emax) cl0_typical * exp(emax * t^hill / (t50_d^hill + t^hill))
+cl_t <- function(t, cl_hill_max) cl0_typical * exp(cl_hill_max * t^cl_hill_gamma / (t50_d^cl_hill_gamma + t^cl_hill_gamma))
 
 cl_traj <- tibble::tibble(
   time   = rep(t_grid, 2),

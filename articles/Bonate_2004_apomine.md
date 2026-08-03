@@ -54,9 +54,9 @@ and then inspect `$population`).
 | `e_cancer_cl` = log(10.2 / 40.7) | -1.384 | Table 3 (CL0 cancer = 10.2 mL/h) |
 | `e_cancer_vc` = log(7.11 / 12.3) | -0.548 | Table 3 (TVV2 cancer = 7.11 L) |
 | Auto-induction: CL(t) = CL0 + CLmax x t^n / (t50^n + t^n) | structural | Table 3 “CL = CL0 + CLmax \* Time^n / (t50^n + Time^n)” |
-| `lclmax` (CLmax) | 320 mL/h = 0.320 L/h | Table 3 |
-| `lt50` (t50) | 46.4 h | Table 3 |
-| `lhill` (induction shape parameter n) | 6.40 | Table 3 |
+| `lcl_hill_max` (CLmax) | 320 mL/h = 0.320 L/h | Table 3 |
+| `lcl_hill_t50` (t50) | 46.4 h | Table 3 |
+| `lcl_hill_gamma` (induction shape parameter n) | 6.40 | Table 3 |
 | `lq` (intercompartmental clearance Q) | 198 mL/h = 0.198 L/h | Table 3 |
 | `lvp` (peripheral volume V3, typical-Vp subgroup) | 1.83 L | Table 3 |
 | `e_wt_vc` (allometric exponent on Vc, fixed) | 1.0 | Table 3 “Power term for weight on central compartment volume = 1.00 Fixed” |
@@ -74,7 +74,7 @@ and then inspect `$population`).
 | `etalcl` (BSV CL; omega^2 = log(CV^2 + 1)) | log(0.68^2 + 1) = 0.4267 | Table 3 BSV CL = 68% |
 | `etalvc` (BSV Vc) | log(0.30^2 + 1) = 0.08619 | Table 3 BSV TVV2 = 30% |
 | `etalvp` (BSV Vp) | log(1.41^2 + 1) = 0.7945 | Table 3 BSV V3 = 141% |
-| `etalt50` (BSV t50) | log(0.88^2 + 1) = 0.5594 | Table 3 BSV t50 = 88% |
+| `etalcl_hill_t50` (BSV t50) | log(0.88^2 + 1) = 0.5594 | Table 3 BSV t50 = 88% |
 | `etalka` (BSV ka, common to both groups) | log(1.45^2 + 1) = 0.8126 | Table 3 BSV ka = 145% |
 | `propSd` (proportional residual SD) | 0.11 | Table 3 “Proportional error = 11” |
 | `addSd` (additive residual SD, ug/mL) | 0.168 | Table 3 “Additive error = 0.168” |
@@ -117,7 +117,7 @@ events_50qd <- rxode2::et(amt = 50, cmt = "depot",
 ``` r
 
 sim_50qd <- rxode2::rxSolve(mod_typical, events_50qd) |> as.data.frame()
-#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalt50', 'etalka'
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalcl_hill_t50', 'etalka'
 ```
 
 ## Replicate published figures
@@ -223,9 +223,9 @@ two_cmt_half_lives <- function(cl, vc, q, vp) {
 # CL(t) in each population over 21 days
 days  <- 1:21
 hours <- days * 24
-hill  <- 6.40
-t50   <- 46.4
-clmax <- 0.320
+cl_hill_gamma  <- 6.40
+cl_hill_t50   <- 46.4
+cl_hill_max <- 0.320
 
 cl0_healthy <- 0.0407
 vc_healthy  <- 12.3
@@ -234,18 +234,18 @@ vc_cancer   <- 7.11
 q_common    <- 0.198
 vp_common   <- 1.83
 
-induction <- hours^hill / (t50^hill + hours^hill)
+induction <- hours^cl_hill_gamma / (cl_hill_t50^cl_hill_gamma + hours^cl_hill_gamma)
 
 hl_long <- dplyr::bind_rows(
   tibble::tibble(
     day        = days,
     population = "Healthy males",
     t1_2_alpha = vapply(induction, function(i) {
-      cl_t <- cl0_healthy + clmax * i
+      cl_t <- cl0_healthy + cl_hill_max * i
       two_cmt_half_lives(cl_t, vc_healthy, q_common, vp_common)[1]
     }, numeric(1)),
     t1_2_beta  = vapply(induction, function(i) {
-      cl_t <- cl0_healthy + clmax * i
+      cl_t <- cl0_healthy + cl_hill_max * i
       two_cmt_half_lives(cl_t, vc_healthy, q_common, vp_common)[2]
     }, numeric(1))
   ),
@@ -253,11 +253,11 @@ hl_long <- dplyr::bind_rows(
     day        = days,
     population = "Cancer patients",
     t1_2_alpha = vapply(induction, function(i) {
-      cl_t <- cl0_cancer + clmax * i
+      cl_t <- cl0_cancer + cl_hill_max * i
       two_cmt_half_lives(cl_t, vc_cancer, q_common, vp_common)[1]
     }, numeric(1)),
     t1_2_beta  = vapply(induction, function(i) {
-      cl_t <- cl0_cancer + clmax * i
+      cl_t <- cl0_cancer + cl_hill_max * i
       two_cmt_half_lives(cl_t, vc_cancer, q_common, vp_common)[2]
     }, numeric(1))
   )
@@ -324,12 +324,12 @@ sim_typ_healthy <- rxode2::rxSolve(mod_typical, ss_events(0)) |>
   as.data.frame() |>
   dplyr::mutate(id_label = 1L,
                 treatment = "Typical healthy male, 50 mg qd")
-#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalt50', 'etalka'
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalcl_hill_t50', 'etalka'
 sim_typ_cancer  <- rxode2::rxSolve(mod_typical, ss_events(1)) |>
   as.data.frame() |>
   dplyr::mutate(id_label = 2L,
                 treatment = "Typical cancer patient, 50 mg qd")
-#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalt50', 'etalka'
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalcl_hill_t50', 'etalka'
 
 sim_typ <- dplyr::bind_rows(sim_typ_healthy, sim_typ_cancer)
 

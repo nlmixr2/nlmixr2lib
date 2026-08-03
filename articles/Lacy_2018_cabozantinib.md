@@ -336,15 +336,15 @@ mod_typical <- mod |> rxode2::zeroRe()
 
 sim_a_typ <- rxode2::rxSolve(mod_typical, events = events_a,
                              keep = c("treatment", "dose_mg"))
-#> ℹ omega/sigma items treated as zero: 'etalka', 'etalcl', 'etalvc', 'etalogitf1'
+#> ℹ omega/sigma items treated as zero: 'etalka', 'etalcl', 'etalvc', 'etalogitffo'
 #> Warning: multi-subject simulation without without 'omega'
 sim_b_typ <- rxode2::rxSolve(mod_typical, events = events_b,
                              keep = c("treatment", "dose_mg", "FORM_CAPSULE"))
-#> ℹ omega/sigma items treated as zero: 'etalka', 'etalcl', 'etalvc', 'etalogitf1'
+#> ℹ omega/sigma items treated as zero: 'etalka', 'etalcl', 'etalvc', 'etalogitffo'
 #> Warning: multi-subject simulation without without 'omega'
 sim_c_typ <- rxode2::rxSolve(mod_typical, events = events_c,
                              keep = c("treatment", "dose_mg", "TUMTP_MTC"))
-#> ℹ omega/sigma items treated as zero: 'etalka', 'etalcl', 'etalvc', 'etalogitf1'
+#> ℹ omega/sigma items treated as zero: 'etalka', 'etalcl', 'etalvc', 'etalogitffo'
 #> Warning: multi-subject simulation without without 'omega'
 
 # Stochastic simulation across the HV single-dose cohort drives PKNCA.

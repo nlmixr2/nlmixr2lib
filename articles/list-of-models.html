@@ -5075,6 +5075,8 @@ variable initialised per subject at Kin/Kout.
 (Djebli 2017)</a>
 </td>
 <td style="text-align:left;">
+(Djebli 2017 writes the drug’s linear catabolic clearance as CLL; it is
+stored here under the canonical name <code>lcl</code>.)
 Quasi-steady-state target-mediated drug disposition (TMDD-QSS)
 population PK model for alirocumab and total PCSK9 in healthy adults and
 adults with hypercholesterolemia (Djebli 2017, final model on expanded
@@ -5667,8 +5669,8 @@ logit) with an estimable lag time and faster absorption rate, and a
 minority Group 2 subpopulation (3 %) with no lag time and slower
 absorption (Table 3). Apparent oral clearance is time-dependent via an
 empirical sigmoid Emax auto-induction model in elapsed time (CL = CL0 +
-CLmax * time^n / (t50^n + time^n); Table 3), reaching 50 % of the
-maximal induction-driven increment in about two days. Relative
+CLmax * time^n / (cl_hill_t50^n + time^n); Table 3), reaching 50 % of
+the maximal induction-driven increment in about two days. Relative
 bioavailability F1 is dose-saturable (F1 = D50 / (Dose + D50)) with an
 additional fractional food effect (1 + theta_food * FED), where the
 F1max anchor is structurally fixed at 1 (Table 3). Cancer patients have
@@ -14353,7 +14355,7 @@ Theory-based allometric exponents for body weight (1 on Vc, 0.75 on CL,
 -0.25 on Kback) are fixed. Final covariates: sex, dose, time, and MF /
 MM malignancy on CL; sex and MM malignancy on Vc; MF malignancy and
 baseline spleen volume on Bmax. The time effect encodes a hyperbolic
-decay of baseline CL: CL(t) = CL * t50_cl_time / (t + t50_cl_time).
+decay of baseline CL: CL(t) = CL * cl_hill_t50 / (t + cl_hill_t50).
 </td>
 </tr>
 <tr>
@@ -14723,8 +14725,8 @@ pediatric and adult patients with relapsed/refractory B-cell precursor
 acute lymphoblastic leukemia (BCP-ALL) and adult patients with B-cell
 non-Hodgkin’s lymphoma (NHL); linear plus time-dependent
 (target-mediated) clearance with covariate effects on CL_SS, Vc,
-CL_TIME, and kdes (Wu 2024, ITCC-059 pediatric trial pooled with 11
-adult studies).
+CL_TIME, and cl_exp_kdes (Wu 2024, ITCC-059 pediatric trial pooled with
+11 adult studies).
 </td>
 </tr>
 <tr>
@@ -14863,7 +14865,7 @@ melanoma (Feng 2014)
 </td>
 <td style="text-align:left;">
 Two-compartment population PK model for intravenous ipilimumab
-(anti-CTLA-4 IgG1) with time-varying clearance via a sigmoid emax
+(anti-CTLA-4 IgG1) with time-varying clearance via a sigmoid cl_hill_max
 function in patients with advanced solid tumors receiving ipilimumab
 alone or in combination with nivolumab (Sanghavi 2020)
 </td>
@@ -16069,10 +16071,10 @@ Disposition is a two-compartment model with sequential zero-order and
 first-order oral absorption (dose enters the depot via a zero-order
 window of duration D1 = 1.15 h followed by first-order absorption at ka
 = 3.11 h^-1) and time-varying metabolic auto-induction of clearance:
-CL(t) = CLI + (CLMX - CLI) * (1 - exp(-k_ind * t)), rising from a
+CL(t) = CLI + (CLMX - CLI) * (1 - exp(-cl_exp_kdes * t)), rising from a
 single-dose CLI = 9.04 L/h to a steady-state CLMX = 14.5 L/h with
-induction rate constant k_ind = 0.020 h^-1 (~7.25 d to functional steady
-state; Chen 2021 abstract, Table 4). CLI and CLMX share a fixed
+induction rate constant cl_exp_kdes = 0.020 h^-1 (~7.25 d to functional
+steady state; Chen 2021 abstract, Table 4). CLI and CLMX share a fixed
 allometric exponent 0.75 on body weight (reference 70 kg) and both are
 modulated by a shared multiplicative covariate block: 1 + e_alb_cl *
 (ALB - 40 g/L) with e_alb_cl = 0.00670 per g/L, 1 + e_dose_lor_cl *
@@ -19087,9 +19089,9 @@ Two-compartment population PK model of obinutuzumab (GA101,
 glycoengineered type II anti-CD20 mAb) in adults with chronic
 lymphocytic leukemia (CLL) or non-Hodgkin lymphoma (NHL); clearance is
 the sum of a time-independent component CL_inf and a mono-exponentially
-decaying time-dependent component CL_T<em>exp(-kdes</em>time), with
-histology (CLL / BCL / DLBCL / MCL), baseline tumor size, body weight,
-and sex as covariates (Gibiansky 2014).
+decaying time-dependent component CL_T<em>exp(-cl_exp_kdes</em>time),
+with histology (CLL / BCL / DLBCL / MCL), baseline tumor size, body
+weight, and sex as covariates (Gibiansky 2014).
 </td>
 </tr>
 <tr>
@@ -20474,10 +20476,10 @@ terminal half-life; a standard linear time-invariant two-compartment
 model over-estimated Cmax on day 1 and under-estimated exposure on day
 11. The clearance was therefore parameterised with an exponentially
 decaying time-dependent component superimposed on a steady-state arm:
-CL(t) = CL_SS + CL_TIME * exp(-kdeg * TAFD), where TAFD is the time
-after first dose. Reparameterised from the paper’s CLF (final = CL_SS)
-and CL0 (initial = CL_SS + CL_TIME). The hypothesised mechanism for the
-time-varying clearance is IFN-mediated CYP1A2 inhibition by the
+CL(t) = CL_SS + CL_TIME * exp(-cl_exp_kdes * TAFD), where TAFD is the
+time after first dose. Reparameterised from the paper’s CLF (final =
+CL_SS) and CL0 (initial = CL_SS + CL_TIME). The hypothesised mechanism
+for the time-varying clearance is IFN-mediated CYP1A2 inhibition by the
 TLR7-induced interferon response (Discussion). All disposition
 parameters are reported per kilogram body weight (paper: doses were
 body-weight-normalised so estimated PK parameters carry per-kg units);
@@ -23101,11 +23103,11 @@ time-varying CD19+ B-cell count and IgG serum concentration on k10
 <td style="text-align:left;">
 Two-compartment population PK model of rituximab in adults with diffuse
 large B-cell lymphoma (DLBCL) receiving R-CHOP; total CL is the sum of a
-time-stationary non-specific (IgG-catabolic) component cl_ss and a
-mono-exponentially decaying target-mediated component cl_time *
-exp(-kdes * time), with age and body weight on cl_ss, sex on V1 (central
-volume), and a post-hoc progression-free-survival event indicator
-(PFS_EVENT) on kdes (Rozman 2017).
+time-stationary non-specific (IgG-catabolic) component cl_exp_inf and a
+mono-exponentially decaying target-mediated component cl_exp_component *
+exp(-cl_exp_kdes * time), with age and body weight on cl_exp_inf, sex on
+V1 (central volume), and a post-hoc progression-free-survival event
+indicator (PFS_EVENT) on cl_exp_kdes (Rozman 2017).
 </td>
 </tr>
 <tr>
@@ -24580,10 +24582,10 @@ rocuronium MW = 529.78 g/mol and sugammadex MW = 2178.01 g/mol
 (Wang 2024)</a>
 </td>
 <td style="text-align:left;">
-Two-compartment population PK model with sigmoidal-emax time-varying
-clearance for intravenous sugemalimab (anti-PD-L1 IgG4) in adults with
-advanced solid tumours or lymphomas across nine Phase I-III trials (Wang
-2024)
+Two-compartment population PK model with sigmoidal-cl_hill_max
+time-varying clearance for intravenous sugemalimab (anti-PD-L1 IgG4) in
+adults with advanced solid tumours or lymphomas across nine Phase I-III
+trials (Wang 2024)
 </td>
 </tr>
 <tr>

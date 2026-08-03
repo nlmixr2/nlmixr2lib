@@ -220,7 +220,7 @@ sim_typical <- rxode2::rxSolve(rxode2::zeroRe(mod),
                                events = dplyr::filter(events, regimen == "150 mg SC SD",
                                                       id == 1L))
 #> ℹ parameter labels from comments will be replaced by 'label()'
-#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalpsd', 'etalka', 'etalcll', 'etalrli', 'etalkd', 'etalpsl'
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalpsd', 'etalka', 'etalcl_ligand', 'etalrli', 'etalkd', 'etalpsl'
 
 ggplot(as.data.frame(sim_typical), aes(time, Cc)) +
   geom_line(linewidth = 0.7) +
@@ -571,7 +571,7 @@ ev_q8w$ALB <- 43
 
 sim_ss <- as.data.frame(rxode2::rxSolve(rxode2::zeroRe(mod), ev_q8w))
 #> ℹ parameter labels from comments will be replaced by 'label()'
-#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalpsd', 'etalka', 'etalcll', 'etalrli', 'etalkd', 'etalpsl'
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalpsd', 'etalka', 'etalcl_ligand', 'etalrli', 'etalkd', 'etalpsl'
 
 cmax_first <- max(sim_ss$Cc[sim_ss$time <= 56])
 cmax_ss    <- max(sim_ss$Cc[sim_ss$time >= 224 & sim_ss$time <= 280])

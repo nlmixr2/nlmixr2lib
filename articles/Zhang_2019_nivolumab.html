@@ -1526,13 +1526,13 @@ table below collects them in one place for review.</p>
 </tr>
 <tr class="even">
 <td>
-<code>lt50</code> (T50, log days)</td>
+<code>lcl_hill_t50</code> (T50, log days)</td>
 <td>log(2200 / 24) = log(91.667)</td>
 <td>Zhang 2019 Table 2: T50 = 2200 hour</td>
 </tr>
 <tr class="odd">
 <td>
-<code>lhill</code> (Hill, unitless)</td>
+<code>lcl_hill_gamma</code> (Hill, unitless)</td>
 <td>log(2.77)</td>
 <td>Zhang 2019 Table 2: HILL = 2.77</td>
 </tr>
@@ -1595,12 +1595,12 @@ table below collects them in one place for review.</p>
 <td>Zhang 2019 Table 2: VC SEX = -0.161</td>
 </tr>
 <tr class="odd">
-<td><code>e_ecog_emax</code></td>
+<td><code>e_ecog_cl_hill_max</code></td>
 <td>-0.138</td>
 <td>Zhang 2019 Table 2: Emax PS = -0.138</td>
 </tr>
 <tr class="even">
-<td><code>e_ipico_emax</code></td>
+<td><code>e_ipico_cl_hill_max</code></td>
 <td>-0.0668</td>
 <td>Zhang 2019 Table 2: Emax IPICO = -0.0668</td>
 </tr>
@@ -1662,7 +1662,7 @@ per Methods).</li>
 <li>Time-varying CL:
 <code>CL(t) = CL0 * exp(Emax_i * t^HILL / (T50^HILL + t^HILL))</code>.</li>
 <li>Emax_i: additive linear-scale form
-<code>Emax_REF + e_ecog_emax * ECOG_GE1 + e_ipico_emax * CONMED_IPI_ANY + etaEmax</code>.</li>
+<code>Emax_REF + e_ecog_cl_hill_max * ECOG_GE1 + e_ipico_cl_hill_max * CONMED_IPI_ANY + etaEmax</code>.</li>
 </ul>
 </div>
 <div class="section level2">
@@ -1869,7 +1869,7 @@ effect (monotherapy: exp(-0.240); IPI combination: exp(-0.240 -
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">typical_emax</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
 <span>  regimen     <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"monotherapy"</span>, <span class="st">"any IPI coadmin"</span><span class="op">)</span>,</span>
-<span>  emax        <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">0.240</span>, <span class="op">-</span><span class="fl">0.240</span> <span class="op">+</span> <span class="op">(</span><span class="op">-</span><span class="fl">0.0668</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  cl_hill_max        <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">0.240</span>, <span class="op">-</span><span class="fl">0.240</span> <span class="op">+</span> <span class="op">(</span><span class="op">-</span><span class="fl">0.0668</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  cl_ss_cl_0  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">0.240</span>, <span class="op">-</span><span class="fl">0.240</span> <span class="op">+</span> <span class="op">(</span><span class="op">-</span><span class="fl">0.0668</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">typical_emax</span>,</span>
@@ -1880,7 +1880,7 @@ effect (monotherapy: exp(-0.240); IPI combination: exp(-0.240 -
 structure (PS = 0).</caption>
 <thead><tr class="header">
 <th align="left">regimen</th>
-<th align="right">emax</th>
+<th align="right">cl_hill_max</th>
 <th align="right">cl_ss_cl_0</th>
 </tr></thead>
 <tbody>
@@ -1945,9 +1945,9 @@ or about 5 months).</p>
 <span><span class="va">emax_mono</span>   <span class="op">&lt;-</span> <span class="op">-</span><span class="fl">0.240</span>               <span class="co"># PS=0, no IPI</span></span>
 <span><span class="va">emax_ipi</span>    <span class="op">&lt;-</span> <span class="op">-</span><span class="fl">0.240</span> <span class="op">+</span> <span class="op">(</span><span class="op">-</span><span class="fl">0.0668</span><span class="op">)</span>   <span class="co"># PS=0, with IPI</span></span>
 <span><span class="va">t50_d</span>       <span class="op">&lt;-</span> <span class="fl">2200</span> <span class="op">/</span> <span class="fl">24</span></span>
-<span><span class="va">hill</span>        <span class="op">&lt;-</span> <span class="fl">2.77</span></span>
+<span><span class="va">cl_hill_gamma</span>        <span class="op">&lt;-</span> <span class="fl">2.77</span></span>
 <span></span>
-<span><span class="va">cl_t</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">t</span>, <span class="va">emax</span><span class="op">)</span> <span class="va">cl0_typical</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="va">emax</span> <span class="op">*</span> <span class="va">t</span><span class="op">^</span><span class="va">hill</span> <span class="op">/</span> <span class="op">(</span><span class="va">t50_d</span><span class="op">^</span><span class="va">hill</span> <span class="op">+</span> <span class="va">t</span><span class="op">^</span><span class="va">hill</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">cl_t</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">t</span>, <span class="va">cl_hill_max</span><span class="op">)</span> <span class="va">cl0_typical</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="va">cl_hill_max</span> <span class="op">*</span> <span class="va">t</span><span class="op">^</span><span class="va">cl_hill_gamma</span> <span class="op">/</span> <span class="op">(</span><span class="va">t50_d</span><span class="op">^</span><span class="va">cl_hill_gamma</span> <span class="op">+</span> <span class="va">t</span><span class="op">^</span><span class="va">cl_hill_gamma</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">cl_traj</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
 <span>  time   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="va">t_grid</span>, <span class="fl">2</span><span class="op">)</span>,</span>

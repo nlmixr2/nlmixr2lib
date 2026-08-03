@@ -9,11 +9,11 @@
 - Description: Two-compartment population PK model of rituximab in
   adults with diffuse large B-cell lymphoma (DLBCL) receiving R-CHOP;
   total CL is the sum of a time-stationary non-specific (IgG-catabolic)
-  component cl_ss and a mono-exponentially decaying target-mediated
-  component cl_time \* exp(-kdes \* time), with age and body weight on
-  cl_ss, sex on V1 (central volume), and a post-hoc
-  progression-free-survival event indicator (PFS_EVENT) on kdes (Rozman
-  2017).
+  component cl_exp_inf and a mono-exponentially decaying target-mediated
+  component cl_exp_component \* exp(-cl_exp_kdes \* time), with age and
+  body weight on cl_exp_inf, sex on V1 (central volume), and a post-hoc
+  progression-free-survival event indicator (PFS_EVENT) on cl_exp_kdes
+  (Rozman 2017).
 - Article: [Br J Clin Pharmacol.
   2017;83(8):1782-1790](https://doi.org/10.1111/bcp.13271)
 
@@ -57,20 +57,20 @@ below collects them in one place.
 
 | Equation / parameter | Value | Source location |
 |----|----|----|
-| ODE: `CL(t) = cl_ss + cl_time * exp(-kdes * time)` (dual-arm CL) | n/a | Methods “Structural model development” / Equation (1) |
+| ODE: `CL(t) = cl_exp_inf + cl_exp_component * exp(-cl_exp_kdes * time)` (dual-arm CL) | n/a | Methods “Structural model development” / Equation (1) |
 | ODE: 2-compartment central + peripheral linear disposition | n/a | Results “Rituximab pharmacokinetic analysis”; ADVAN 6 subroutine |
-| `lcl_ss` | `log(0.252)` | Table 2 CL1 = 0.252 L/day (95% CI 0.227-0.279) |
-| `lcl_time` | `log(0.278)` | Table 2 CL2,0 = 0.278 L/day (95% CI 0.181-0.390) |
-| `lkdes` | `log(0.143)` | Table 2 KD = 0.143 /day (95% CI 0.0478-0.418) at PFS_EVENT = 0 reference |
+| `lcl_exp_inf` | `log(0.252)` | Table 2 CL1 = 0.252 L/day (95% CI 0.227-0.279) |
+| `lcl_exp_component` | `log(0.278)` | Table 2 CL2,0 = 0.278 L/day (95% CI 0.181-0.390) |
+| `lcl_exp_kdes` | `log(0.143)` | Table 2 KD = 0.143 /day (95% CI 0.0478-0.418) at PFS_EVENT = 0 reference |
 | `lvc` | `log(4.62)` | Table 2 V1 = 4.62 L (95% CI 4.34-4.93) at male reference |
 | `lvp` | `log(8.61)` | Table 2 V2 = 8.61 L (95% CI 7.45-9.81) |
 | `lq` | `log(1.02)` | Table 2 Q = 1.02 L/day (95% CI 0.664-1.95) |
 | `e_age_cl_ss` | `-0.00820` | Table 2 age effect on CL1 (-0.82% per year above 60) |
 | `e_wt_cl_ss` | `1.23` | Table 2 weight effect on CL1 (power exponent; 95% CI 0.70-1.73 brackets allometric 0.75) |
 | `e_sexf_vc` | `-0.214` | Table 2 sex effect on V1 (women 21.4% lower) |
-| `e_pfs_event_kdes` | `-0.822` | Table 2 disease-progression effect on KD (progressors 82.2% lower; 95% CI -0.950 to -0.334) |
-| `etalcl_ss` | `0.03365` | Table 2 IIV CL1 (CV 18.5%; log(1 + 0.185^2)) |
-| `etalkdes` | `1.27874` | Table 2 IIV KD (CV 161%; log(1 + 1.61^2); 22.7% shrinkage) |
+| `e_pfs_event_cl_exp_kdes` | `-0.822` | Table 2 disease-progression effect on KD (progressors 82.2% lower; 95% CI -0.950 to -0.334) |
+| `etalcl_exp_inf` | `0.03365` | Table 2 IIV CL1 (CV 18.5%; log(1 + 0.185^2)) |
+| `etalcl_exp_kdes` | `1.27874` | Table 2 IIV KD (CV 161%; log(1 + 1.61^2); 22.7% shrinkage) |
 | `etalvc` | `0.01337` | Table 2 IIV V1 (CV 11.6%; log(1 + 0.116^2)) |
 | `addSd` | `2.46` | Table 2 additive residual = 2.46 mg/L (95% CI 1.05-4.36) |
 | `propSd` | `0.159` | Table 2 proportional residual = 15.9% (95% CI 14.3-17.5) |
@@ -164,7 +164,7 @@ stopifnot(!anyDuplicated(unique(events_fig3[, c("id", "time", "evid")])))
 
 sim_fig3 <- rxode2::rxSolve(mod_typical, events = events_fig3,
                             keep = c("cohort", "PFS_EVENT")) |> as.data.frame()
-#> ℹ omega/sigma items treated as zero: 'etalcl_ss', 'etalkdes', 'etalvc'
+#> ℹ omega/sigma items treated as zero: 'etalcl_exp_inf', 'etalcl_exp_kdes', 'etalvc'
 #> Warning: multi-subject simulation without without 'omega'
 
 ggplot(sim_fig3, aes(x = time, y = Cc, colour = cohort)) +
@@ -263,7 +263,7 @@ reported for completeness.
 sim_nca_raw <- rxode2::rxSolve(mod_typical, events = events_fig3,
                                keep = c("cohort", "PFS_EVENT")) |>
   as.data.frame()
-#> ℹ omega/sigma items treated as zero: 'etalcl_ss', 'etalkdes', 'etalvc'
+#> ℹ omega/sigma items treated as zero: 'etalcl_exp_inf', 'etalcl_exp_kdes', 'etalvc'
 #> Warning: multi-subject simulation without without 'omega'
 
 # One PKNCA interval per cycle (0-21 days, 21-42 days, ...). The last
@@ -416,8 +416,8 @@ higher rituximab exposure through R-CHOP.
   `PFS_EVENT` is assigned from longitudinal response-assessment data
   (per the revised response criteria for malignant lymphoma) at end of
   follow-up, and Rozman 2017 uses it as a covariate on the PK parameter
-  `kdes` in the same analysis. This is unusual – a PK covariate is
-  normally a baseline pre-treatment characteristic – but is what the
+  `cl_exp_kdes` in the same analysis. This is unusual – a PK covariate
+  is normally a baseline pre-treatment characteristic – but is what the
   paper did (Rozman 2017 Methods, “Covariate model”, and Results, “Of
   all covariate relationships tested, we observed a significant
   association … KD with disease progression”). Using an outcome as a

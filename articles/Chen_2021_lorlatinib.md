@@ -16,9 +16,9 @@
   a zero-order window of duration D1 = 1.15 h followed by first-order
   absorption at ka = 3.11 h^-1) and time-varying metabolic
   auto-induction of clearance: CL(t) = CLI + (CLMX - CLI) \* (1 -
-  exp(-k_ind \* t)), rising from a single-dose CLI = 9.04 L/h to a
-  steady-state CLMX = 14.5 L/h with induction rate constant k_ind =
-  0.020 h^-1 (~7.25 d to functional steady state; Chen 2021 abstract,
+  exp(-cl_exp_kdes \* t)), rising from a single-dose CLI = 9.04 L/h to a
+  steady-state CLMX = 14.5 L/h with induction rate constant cl_exp_kdes
+  = 0.020 h^-1 (~7.25 d to functional steady state; Chen 2021 abstract,
   Table 4). CLI and CLMX share a fixed allometric exponent 0.75 on body
   weight (reference 70 kg) and both are modulated by a shared
   multiplicative covariate block: 1 + e_alb_cl \* (ALB - 40 g/L) with
@@ -86,8 +86,8 @@ covariate multipliers (linear centered vs power).
 | Equation / parameter | Value | Source location |
 |----|----|----|
 | `lcl` (initial CL, CLI) | log(9.035) | Table 4 `theta_CLI = 9.035 L/h` |
-| `lclmax` (steady-state induced CL, CLMX) | log(14.472) | Table 4 `theta_CLMX = 14.472 L/h` |
-| `lkind` (auto-induction rate constant) | log(0.020) | Table 4 `theta_IND = 0.020 h^-1`; abstract “~7.25 d to functional steady state” |
+| `lcl_exp_inf` (steady-state induced CL, CLMX) | log(14.472) | Table 4 `theta_CLMX = 14.472 L/h` |
+| `lcl_exp_kdes` (auto-induction rate constant) | log(0.020) | Table 4 `theta_IND = 0.020 h^-1`; abstract “~7.25 d to functional steady state” |
 | `lvc` (V2) | log(120.511) | Table 4 `theta_V2 = 120.511 L` |
 | `lvp` (V3) | log(154.905) | Table 4 `theta_V3 = 154.905 L` |
 | `lq` | log(22.002) | Table 4 `theta_Q = 22.002 L/h` |
@@ -104,7 +104,7 @@ covariate multipliers (linear centered vs power).
 | IIV block V2/V3 | var 0.086, cov -0.017, var 0.101 | Table 4 `omega^2 V2 / omega_V2 omega_V3 / omega^2 V3`; ListS1 `$OMEGA BLOCK(2)` line 105-107 |
 | IIV ka | var 2.329 | Table 4 `omega^2 ka` |
 | `propSd` (oral residual) | 0.438 | Table 4 `theta_Res_Error_for_PO = 0.438`; ListS1 line 11 |
-| Auto-induction ODE | `CL(t) = CLI + (CLMX - CLI) * (1 - exp(-k_ind * t))` | Methods “Lorlatinib clearance estimation” (continuous canonical form; see Assumptions) |
+| Auto-induction ODE | `CL(t) = CLI + (CLMX - CLI) * (1 - exp(-cl_exp_kdes * t))` | Methods “Lorlatinib clearance estimation” (continuous canonical form; see Assumptions) |
 | CL covariate composite | `CLCOV = CLBALB * CLTDOSE * CLWNCL`, applied to both CLI and CLMX | NONMEM ListS1 line 38 |
 | ka covariate multiplier | `ka * (1 + e_ppi_ka * CONMED_PPI)` | NONMEM ListS1 line 14-15 (KAPPI) |
 

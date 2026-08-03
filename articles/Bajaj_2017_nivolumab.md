@@ -78,14 +78,14 @@ The table below collects them in one place for review.
 | `e_ecog_ge1_cl` (exp, ECOG_GE1 on CL) | 0.172 | Bajaj 2017 Table 1, CL_BPS |
 | `e_sex_cl` (exp, male-indicator on CL) | 0.165 | Bajaj 2017 Table 1, CL_SEX |
 | `e_race_asian_cl` (exp, Asian on CL) | -0.125 | Bajaj 2017 Table 1, CL_RAAS |
-| `cl_emax` (Emax, unitless) | -0.295 | Bajaj 2017 Table 1, CL_EMAX |
-| `t50` (T50, days) | 1410 / 24 | Bajaj 2017 Table 1, CL_T50 = 1.41 × 10^3 h |
-| `cl_hill` (Hill, unitless) | 3.15 | Bajaj 2017 Table 1, CL_HILL |
+| `cl_hill_max` (Emax, unitless) | -0.295 | Bajaj 2017 Table 1, CL_EMAX |
+| `cl_hill_t50` (T50, days) | 1410 / 24 | Bajaj 2017 Table 1, CL_T50 = 1.41 × 10^3 h |
+| `cl_hill_gamma` (Hill, unitless) | 3.15 | Bajaj 2017 Table 1, CL_HILL |
 | `e_wt_vc` (power, WT on VC) | 0.597 | Bajaj 2017 Table 1, VC_BW |
 | `e_sex_vc` (exp, male-indicator on VC) | 0.152 | Bajaj 2017 Table 1, VC_SEX |
 | IIV block `etalcl + etalvc` | c(0.123, 0.0432, 0.123) | Bajaj 2017 Table 1, omega^2_CL, omega_CL:omega_VC, omega^2_VC |
 | `etalvp` | 0.258 | Bajaj 2017 Table 1, omega^2_VP |
-| `etacl_emax` | 0.0719 | Bajaj 2017 Table 1, omega^2_EMAX (additive IIV per Eq. 3) |
+| `etacl_hill_max` | 0.0719 | Bajaj 2017 Table 1, omega^2_EMAX (additive IIV per Eq. 3) |
 | `propSd` | 0.215 | Bajaj 2017 Table 1, proportional error |
 
 Equations: structural two-compartment micro-constant form; Eqs. 7, 8,
@@ -231,7 +231,7 @@ events_cl <- data.frame(
 mod_typ <- rxode2::zeroRe(mod)
 #> ℹ parameter labels from comments will be replaced by 'label()'
 sim_cl  <- rxSolve(mod_typ, events = events_cl, returnType = "data.frame")
-#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etacl_emax'
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etacl_hill_max'
 sim_cl  <- sim_cl[sim_cl$time > 0, ]
 
 ggplot(sim_cl, aes(time, cl / cl_base)) +
@@ -326,7 +326,7 @@ be cross-checked against the packaged model:
 | Quantity | Bajaj 2017 | This model |
 |----|----|----|
 | Baseline CL at reference covariates | 9.4 mL/h (= 0.226 L/day) | `exp(lcl) = 0.226 L/day` (see `ini()`) |
-| Mean maximal reduction in CL from baseline | ~24.5% | `1 - exp(cl_emax) = 1 - exp(-0.295) = 25.5%` |
+| Mean maximal reduction in CL from baseline | ~24.5% | `1 - exp(cl_hill_max) = 1 - exp(-0.295) = 25.5%` |
 | Geometric mean terminal t\_{1/2}(alpha) | 32.5 h (CV 24.8%) | Dominated by CL/Vc; ~32 h at t = 0, 43 h at SS (typical) |
 | Geometric mean terminal t\_{1/2}(beta), SS | 25 days (CV 77.5%) | Consistent with `half.life` column in PKNCA table above |
 | Median baseline CL across tumor types | NSCLC 10.5, MEL 10.8, RCC 11.5 mL/h | Not reproducible without per-tumor-type covariates (not in final model) |

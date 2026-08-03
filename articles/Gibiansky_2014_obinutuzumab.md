@@ -12,7 +12,7 @@
   lymphocytic leukemia (CLL) or non-Hodgkin lymphoma (NHL); clearance is
   the sum of a time-independent component CL_inf and a
   mono-exponentially decaying time-dependent component
-  CL_T*exp(-kdes*time), with histology (CLL / BCL / DLBCL / MCL),
+  CL_T*exp(-cl_exp_kdes*time), with histology (CLL / BCL / DLBCL / MCL),
   baseline tumor size, body weight, and sex as covariates (Gibiansky
   2014).
 - Article: [CPT Pharmacometrics Syst Pharmacol.
@@ -56,11 +56,11 @@ table below collects them in one place.
 
 | Equation / parameter | Value | Source location |
 |----|----|----|
-| ODE: `CL(t) = CL_T * exp(-kdes * t) + CL_inf` | n/a | Methods “Base PK model development”; Supplementary Table S1 `$DES` |
+| ODE: `CL(t) = CL_T * exp(-cl_exp_kdes * t) + CL_inf` | n/a | Methods “Base PK model development”; Supplementary Table S1 `$DES` |
 | ODE: 2-compartment central + peripheral linear disposition | n/a | Supplementary Table S1 `$DES` |
-| `lkdes` | `log(0.0359)` | Table 3 exp(theta1) = 0.0359 1/day |
-| `lcl_time` | `log(0.231)` | Table 3 exp(theta2) = 0.231 L/day |
-| `lcl_ss` | `log(0.0828)` | Table 3 exp(theta3) = 0.0828 L/day |
+| `lcl_exp_kdes` | `log(0.0359)` | Table 3 exp(theta1) = 0.0359 1/day |
+| `lcl_exp_component` | `log(0.231)` | Table 3 exp(theta2) = 0.231 L/day |
+| `lcl_exp_inf` | `log(0.0828)` | Table 3 exp(theta3) = 0.0828 L/day |
 | `lvc` | `log(2.76)` | Table 3 exp(theta4) = 2.76 L |
 | `lvp` | `log(1.01)` | Table 3 exp(theta5) = 1.01 L |
 | `lq` | `log(1.29)` | Table 3 exp(theta6) = 1.29 L/day |
@@ -68,14 +68,14 @@ table below collects them in one place.
 | `e_wt_vc` | `0.383` | Table 3 theta8 (WT exponent on V1) |
 | `e_wt_q` | `fixed(0.75)` | Methods (fixed allometric exponent 0.75 on Q) |
 | `e_wt_vp` | `fixed(1.0)` | Methods (fixed allometric exponent 1.0 on V2) |
-| `e_sex_cl_time` | `log(1.49)` | Table 3 exp(theta9) = 1.49 (male/female ratio on CL_T) |
-| `e_sex_cl_ss` | `log(1.22)` | Table 3 exp(theta10) = 1.22 (male/female ratio on CL_inf) |
+| `e_sex_cl_exp_component` | `log(1.49)` | Table 3 exp(theta9) = 1.49 (male/female ratio on CL_T) |
+| `e_sex_cl_exp_inf` | `log(1.22)` | Table 3 exp(theta10) = 1.22 (male/female ratio on CL_inf) |
 | `e_sex_vc` | `log(1.18)` | Table 3 exp(theta11) = 1.18 (male/female ratio on V1) |
-| `e_nhl_kdes` | `log(2.08)` | Table 3 exp(theta12) = 2.08 (NHL/CLL ratio on kdes) |
+| `e_nhl_cl_exp_kdes` | `log(2.08)` | Table 3 exp(theta12) = 2.08 (NHL/CLL ratio on kdes) |
 | `e_bcldlbcl_cl` | `log(0.834)` | Table 3 exp(theta13) = 0.834 (BCL or DLBCL vs CLL on CL_T and CL_inf, shared) |
 | `e_mcl_cl` | `log(1.75)` | Table 3 exp(theta14) = 1.75 (MCL vs CLL on CL_T and CL_inf, shared) |
-| `e_bsizlow_kdes` | `log(2.65)` | Table 3 exp(theta15) = 2.65 (BSIZ \<= 1750 vs \> 1750 mm^2 on kdes) |
-| `etalkdes` | `1.62` | Table 3 Omega(1,1) (CV 201%) |
+| `e_bsizlow_cl_exp_kdes` | `log(2.65)` | Table 3 exp(theta15) = 2.65 (BSIZ \<= 1750 vs \> 1750 mm^2 on kdes) |
+| `etalcl_exp_kdes` | `1.62` | Table 3 Omega(1,1) (CV 201%) |
 | `etalcl_time` | `0.907` | Table 3 Omega(2,2) (CV 122%) |
 | `etalcl_ss` | `0.159` | Table 3 Omega(3,3) (CV 41.5%) |
 | `etalvc` | `0.034` | Table 3 Omega(4,4) (CV 18.6%) |
@@ -175,7 +175,7 @@ events_1a <- bind_rows(
 
 sim_1a <- rxode2::rxSolve(mod_typical, events = events_1a,
                           keep = c("cohort")) |> as.data.frame()
-#> ℹ omega/sigma items treated as zero: 'etalkdes', 'etalcl_time', 'etalcl_ss', 'etalvc', 'etalvp', 'etalq'
+#> ℹ omega/sigma items treated as zero: 'etalcl_exp_kdes', 'etalcl_time', 'etalcl_ss', 'etalvc', 'etalvp', 'etalq'
 #> Warning: multi-subject simulation without without 'omega'
 
 ggplot(sim_1a, aes(x = time, y = Cc, colour = cohort)) +
@@ -202,7 +202,7 @@ events_1b <- bind_rows(
 sim_1b <- rxode2::rxSolve(mod_typical, events = events_1b,
                           keep = c("cohort")) |> as.data.frame() |>
   mutate(cohort = factor(cohort, levels = c("40 kg", "75 kg", "120 kg")))
-#> ℹ omega/sigma items treated as zero: 'etalkdes', 'etalcl_time', 'etalcl_ss', 'etalvc', 'etalvp', 'etalq'
+#> ℹ omega/sigma items treated as zero: 'etalcl_exp_kdes', 'etalcl_time', 'etalcl_ss', 'etalvc', 'etalvp', 'etalq'
 #> Warning: multi-subject simulation without without 'omega'
 
 ggplot(sim_1b, aes(x = time, y = Cc, colour = cohort)) +
@@ -232,7 +232,7 @@ events_1c <- bind_rows(
 sim_1c <- rxode2::rxSolve(mod_typical, events = events_1c,
                           keep = c("cohort")) |> as.data.frame() |>
   mutate(cohort = factor(cohort, levels = c("CLL", "BCL or DLBCL", "MCL")))
-#> ℹ omega/sigma items treated as zero: 'etalkdes', 'etalcl_time', 'etalcl_ss', 'etalvc', 'etalvp', 'etalq'
+#> ℹ omega/sigma items treated as zero: 'etalcl_exp_kdes', 'etalcl_time', 'etalcl_ss', 'etalvc', 'etalvp', 'etalq'
 #> Warning: multi-subject simulation without without 'omega'
 
 ggplot(sim_1c, aes(x = time, y = Cc, colour = cohort)) +
@@ -259,7 +259,7 @@ events_1d <- bind_rows(
 
 sim_1d <- rxode2::rxSolve(mod_typical, events = events_1d,
                           keep = c("cohort")) |> as.data.frame()
-#> ℹ omega/sigma items treated as zero: 'etalkdes', 'etalcl_time', 'etalcl_ss', 'etalvc', 'etalvp', 'etalq'
+#> ℹ omega/sigma items treated as zero: 'etalcl_exp_kdes', 'etalcl_time', 'etalcl_ss', 'etalvc', 'etalvp', 'etalq'
 #> Warning: multi-subject simulation without without 'omega'
 
 ggplot(sim_1d, aes(x = time, y = Cc, colour = cohort)) +
@@ -405,7 +405,7 @@ events_nca <- bind_rows(
 
 sim_nca_raw <- rxode2::rxSolve(mod_typical, events = events_nca,
                                keep = c("cohort")) |> as.data.frame()
-#> ℹ omega/sigma items treated as zero: 'etalkdes', 'etalcl_time', 'etalcl_ss', 'etalvc', 'etalvp', 'etalq'
+#> ℹ omega/sigma items treated as zero: 'etalcl_exp_kdes', 'etalcl_time', 'etalcl_ss', 'etalvc', 'etalvp', 'etalq'
 #> Warning: multi-subject simulation without without 'omega'
 
 sim_nca <- sim_nca_raw |>

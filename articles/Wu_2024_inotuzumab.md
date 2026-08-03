@@ -76,7 +76,7 @@ collects the mapping in one place for reviewer audit.
 | Element | Source location | Value / form |
 |----|----|----|
 | Two-compartment IV model | Wu 2024 Methods Section 2.3 + Figure 1 (schematic) | `d/dt(central) = -kel*central - k12*central + k21*peripheral1`; `d/dt(peripheral1) = k12*central - k21*peripheral1` |
-| Total clearance | Wu 2024 Methods Section 2.3 | `CL_total = CL_SS + CL_TIME * exp(-kdes * time)` (paper notation: CL1 + CL2*exp(-kdes*time)) |
+| Total clearance | Wu 2024 Methods Section 2.3 | `CL_total = CL_SS + CL_TIME * exp(-cl_exp_kdes * time)` (paper notation: CL1 + CL2*exp(-kdes*time)) |
 | CL_SS, Vc, CL_TIME, kdes, Q, Vp typical values | Wu 2024 Table 3 | 0.130 L/h, 6.49 L, 0.569 L/h, 0.0577 1/h, 0.0437 L/h, 4.74 L (for an NHL adult at LBM 52.7 kg, AGE 60 y, BLSTABL 0.352, RITUX 0) |
 | LBM on CL_SS | Wu 2024 Table 3 | Power: `(LBM/52.7)^1.05` |
 | LBM on Vc | Wu 2024 Table 3 | Power: `(LBM/52.7)^0.977` |
@@ -536,12 +536,12 @@ populations approximate the paper’s reported medians and ranges:
   L/h). Half-life and AUC values reported in the paper are quoted in h /
   h\*ng/mL or in days; convert as needed.
 - **Time-dependent CL `time` semantics**: `time` in
-  `cl_time * exp(-kdes * time)` is the integration time from the start
-  of the simulation (= time from the first dose for event datasets that
-  begin at t = 0). For patients whose first observation is partway
-  through a treatment course (e.g., cycle-2 only), build the event table
-  relative to the first dose so the time-decay term is on the correct
-  clock.
+  `cl_exp_component * exp(-cl_exp_kdes * time)` is the integration time
+  from the start of the simulation (= time from the first dose for event
+  datasets that begin at t = 0). For patients whose first observation is
+  partway through a treatment course (e.g., cycle-2 only), build the
+  event table relative to the first dose so the time-decay term is on
+  the correct clock.
 
 ### Model summary
 
