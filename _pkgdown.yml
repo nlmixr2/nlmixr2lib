@@ -414,6 +414,8 @@ navbar:
         href: articles/Zieck_2023_ceftazidime.html
       - text: "Ceftazidime qsp (LopezArguello 2023)"
         href: articles/LopezArguello_2023_pbp_binding_pseudomonas.html
+      - text: "Ceftobiprole (Cojutti 2023)"
+        href: articles/Cojutti_2023_ceftobiprole.html
       - text: "Ceftriaxone (Garot 2011)"
         href: articles/Garot_2011_ceftriaxone.html
       - text: "Ceftriaxone (Tsai 2023)"
@@ -2942,6 +2944,7 @@ articles:
   - articles/Clinckers_2008_MHD_rat
   - articles/CohenWolkowiez_2012_metronidazole
   - articles/CohenWolkowiez_2014_piperacillin_tazobactam
+  - articles/Cojutti_2023_ceftobiprole
   - articles/Colin_2014_moxifloxacin
   - articles/Collins_2023_belantamab_mprotein
   - articles/Colombo_2006_atazanavir
