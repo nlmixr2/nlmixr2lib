@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Tuffal 2023 avalglucosidase alfa ([doi:10.1097/FTD.0000000000001086](https://doi.org/10.1097/FTD.0000000000001086)) - adolescents and adults with late-onset Pompe disease.
+
 - Add Wu 2023 SPI-62 ([doi:10.1007/s40262-023-01278-8](https://doi.org/10.1007/s40262-023-01278-8)) - healthy adults.
 
 - Disambiguated the overloaded `OC` name, which denoted five unrelated

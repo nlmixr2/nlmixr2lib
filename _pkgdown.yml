@@ -218,6 +218,8 @@ navbar:
         href: articles/Anbari_2023_atezolizumab_cibisatamab_qsp.html
       - text: "Atorvastatin (Kakara 2014)"
         href: articles/Kakara_2014_statins_LDLC.html
+      - text: "Avalglucosidase alfa (Tuffal 2023)"
+        href: articles/Tuffal_2023_avalglucosidase_alfa.html
       - text: "Avelumab (Masters 2022)"
         href: articles/Masters_2022_avelumab.html
       - text: "Avibactam qsp (LopezArguello 2023)"
@@ -3695,6 +3697,7 @@ articles:
   - articles/Tsai_2023_ceftriaxone
   - articles/Tsuda_2010_tamsulosin
   - articles/Tsuji_2017_linezolid
+  - articles/Tuffal_2023_avalglucosidase_alfa
   - articles/Ueshima_2018_apixaban
   - articles/Ulldemolins_2015_meropenem
   - articles/Urien_2004_cisplatin
