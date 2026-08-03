@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Zhang 2023 valproic acid, base and simple-exponent models ([doi:10.3389/fphar.2023.1228641](https://doi.org/10.3389/fphar.2023.1228641)) - Chinese children with epilepsy.
+- Add Keij 2023 amoxicillin ([doi:10.1093/cid/ciad432](https://doi.org/10.1093/cid/ciad432)) - preterm and term neonates treated for possible serious bacterial infection.
 
 - Add Wu 2023 SPI-62 ([doi:10.1007/s40262-023-01278-8](https://doi.org/10.1007/s40262-023-01278-8)) - healthy adults.
 
