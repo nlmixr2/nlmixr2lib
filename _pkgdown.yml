@@ -1020,6 +1020,8 @@ navbar:
         href: articles/VanWart_2004_garenoxacin.html
       - text: "Gatifloxacin (Smythe 2013)"
         href: articles/Smythe_2013_gatifloxacin.html
+      - text: "Gefapixant (Chawla 2023)"
+        href: articles/Chawla_2023_gefapixant.html
       - text: "Gemcitabine (Jiang 2008)"
         href: articles/Jiang_2008_gemcitabine.html
       - text: "Gemifloxacin (Landersdorfer 2009)"
@@ -2930,6 +2932,7 @@ articles:
   - articles/Chang_2011_PF04455242_prolactin
   - articles/Charles_2007_tafenoquine
   - articles/Chatelut_1999_interferon_alfa_2b
+  - articles/Chawla_2023_gefapixant
   - articles/Cheah_2016_polymyxin_Abaumannii_dynamics
   - articles/Chelle_2019_factorviii_fanhdi
   - articles/Chen_2014_immunogenicity_qsp
