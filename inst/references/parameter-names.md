@@ -919,6 +919,46 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
 - **Source aliases:** none.
 - **Example models:** indirect-response PD models; `Lindauer_2017_pembrolizumab.R`, `Siebinga_2023_lu177psma617.R` (tissue-exchange form).
 
+### lkinf_rbc, kinf_rbc (**canonical first-order influx rate constant into the red-cell analyte pool**)
+- **Type:** paper-named-param
+- **Role:** First-order rate constant (1 / time) for LINEAR influx of drug or active metabolite from plasma into the intracellular red-cell pool (`rbc_<analyte>`, see `compartment-names.md`). Enters as `d/dt(rbc_<analyte>) = kinf_rbc * Cc - keff_rbc * rbc_<analyte>`, so the plasma concentration `Cc` must be expressed in the same concentration units as the red-cell state for the term to be dimensionally consistent.
+- **Source aliases:**
+  - `Kin` -- used in `Gebhard_2023_methotrexate.R` (paper symbol `K_in^MTX`).
+- **Example models:** `Gebhard_2023_methotrexate.R` (`K_in^MTX = 0.031 1/day`), `Gebhard_2023_mercaptopurine_anc.R`.
+- **Notes:** Registered 2026-07-30 (sidecar `oare_PMC10359452` request-001 q2, option A). The `kinf` stem is deliberately NOT `kin`: the canonical `kin` is a ZERO-ORDER production rate into an indirect-response turnover pool, which is a different quantity with different units, so reusing that stem would actively mislead. Distinct also from `clin` / `clef` (`Campagne_2019_cyclophosphamide_mouse.R`), which are plasma-to-tissue influx / efflux CLEARANCES (volume / time) paired with an `ecf` compartment; `kinf_rbc` / `keff_rbc` are first-order RATE CONSTANTS. The `_rbc` suffix marks the destination pool; no analyte suffix is carried because each model file holds a single drug arm. A future model fitting two red-cell arms jointly would extend to `lkinf_rbc_<analyte>`.
+
+### lkeff_rbc, keff_rbc (**canonical first-order efflux / elimination rate constant out of the red-cell analyte pool**)
+- **Type:** paper-named-param
+- **Role:** First-order rate constant (1 / time) for loss of drug or active metabolite from the intracellular red-cell pool (`rbc_<analyte>`), combining efflux back to plasma, intracellular catabolism, and red-cell turnover into a single lumped rate. Enters as the `- keff_rbc * rbc_<analyte>` term of the red-cell ODE.
+- **Source aliases:**
+  - `Keff` -- used in `Gebhard_2023_methotrexate.R` and `Gebhard_2023_mercaptopurine.R` (paper symbols `K_eff^MTX`, `K_eff^6MP`).
+- **Example models:** `Gebhard_2023_methotrexate.R` (`K_eff^MTX = 0.018 1/day`), `Gebhard_2023_mercaptopurine.R` (`K_eff^6MP = 0.041 1/day`), `Gebhard_2023_mercaptopurine_anc.R` (`K_eff^6MP = 0.050 1/day`).
+- **Notes:** Registered 2026-07-30 (sidecar `oare_PMC10359452` request-001 q2, option A). Because the rate is lumped, its reciprocal half-life is a red-cell residence property rather than a pure membrane-transport property -- Gebhard 2023's Discussion validates `K_eff^MTX = 0.018 1/day` against literature red-cell methotrexate half-lives of 30-40 days (0.017-0.023 1/day).
+
+### lvmax_rbc, vmax_rbc (**canonical saturable-influx maximum rate into the red-cell analyte pool**)
+- **Type:** paper-named-param
+- **Role:** Maximum rate (concentration / time, e.g. umol/L/day) of SATURABLE Michaelis-Menten influx from plasma into the intracellular red-cell pool: `d/dt(rbc_<analyte>) = vmax_rbc * Cc / (km_rbc + Cc) - keff_rbc * rbc_<analyte>`.
+- **Source aliases:**
+  - `Vmm` -- used in `Gebhard_2023_mercaptopurine.R` (paper symbol `V_mm^6MP`).
+- **Example models:** `Gebhard_2023_mercaptopurine.R` (`V_mm^6MP = 0.096 umol/L/day`), `Gebhard_2023_mercaptopurine_anc.R` (`V_mm^6MP = 0.21 umol/L/day`).
+- **Notes:** Registered 2026-07-30 (sidecar `oare_PMC10359452` request-001 q2, option A). Extends the blessed `vmax_<suffix>` / `km_<suffix>` disambiguation pattern to a saturable INFLUX. Distinct from the canonical bare `vmax` / log `lvmax`, which are registered for saturable ELIMINATION and carry amount/time units; `vmax_rbc` is an influx into a concentration state and therefore carries concentration/time units.
+
+### lkm_rbc, km_rbc (**canonical saturable-influx half-saturation concentration for the red-cell analyte pool**)
+- **Type:** paper-named-param
+- **Role:** Michaelis constant (concentration, e.g. umol/L) of the saturable influx into the intracellular red-cell pool; the plasma concentration at which influx reaches half of `vmax_rbc`.
+- **Source aliases:**
+  - `Kmm` -- used in `Gebhard_2023_mercaptopurine.R` (paper symbol `K_mm^6MP`).
+- **Example models:** `Gebhard_2023_mercaptopurine.R` (`K_mm^6MP = 0.016 umol/L`), `Gebhard_2023_mercaptopurine_anc.R` (`K_mm^6MP = 0.14 umol/L`).
+- **Notes:** Registered 2026-07-30 (sidecar `oare_PMC10359452` request-001 q2, option A). Paired with `lvmax_rbc`; both are meaningless alone.
+
+### linieff, inieff (**canonical mid-therapy initialisation fraction for a turnover / maturation chain**)
+- **Type:** paper-named-param
+- **Role:** Dimensionless fraction of the turnover baseline (`rbase`) at which a turnover or maturation chain is initialised when the observation record starts DURING ongoing therapy rather than at drug-free baseline. The terminal state is initialised at `inieff * rbase` and the upstream chain states at the steady-state values implied by that terminal value, so the chain begins at a treatment steady state carrying an unobserved historical drug effect rather than at the untreated baseline.
+- **Source aliases:**
+  - `inieff` -- used in `Gebhard_2023_mercaptopurine_anc.R` (Gebhard 2023 main text: "we assume to have reached a treatment steady state with an additional parameter `inieff` describing the drug effect at the initial time point and `X_ma(0) = inieff * base`").
+- **Example models:** `Gebhard_2023_mercaptopurine_anc.R` (`inieff = 0.87`, RSE 22%, CV 54%; Friberg chain initialised mid-maintenance-therapy for childhood ALL).
+- **Notes:** Registered 2026-07-30 (sidecar `oare_PMC10359452` request-001 q3, option A -- paper-faithful naming, following the register's existing paper-named precedents `le0` and `kmet`). Estimated with IIV in Gebhard 2023, which is what distinguishes it from a fixed initialisation convention: it absorbs the between-patient spread in how suppressed each patient's ANC already was when their record began. A value of 1 recovers the ordinary drug-free-baseline initialisation. Distinct from `rbase`, which is the untreated baseline itself.
+
 ### kdeg (**canonical degradation rate**)
 - **Type:** paper-named-param
 - **Role:** First-order degradation rate constant (paper-synonym for elimination in turnover models).

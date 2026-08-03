@@ -2,8 +2,11 @@
 
 # development version
 
-- Add Cleary 2023 risdiplam ([doi:10.1007/s40262-023-01241-7](https://doi.org/10.1007/s40262-023-01241-7)) - healthy adults and patients with spinal muscular atrophy aged 2 months to 61 years.
-
+- Add Gebhard 2023 6-mercaptopurine and methotrexate ([doi:10.1038/s41598-023-38414-0](https://doi.org/10.1038/s41598-023-38414-0)) - children on maintenance therapy for acute lymphoblastic leukemia.
+- Add an `rbc_<analyte>` compartment family for intracellular drug / active-metabolite
+  pools inside red blood cells (`rbc_mtx`, `rbc_tgn`), validated by a new
+  `rbcCompartmentRegex` in `R/conventions.R`. Distinct from the `erythrocytes`
+  canonical, which is a red-cell count pool.
 - Add Wu 2023 SPI-62 ([doi:10.1007/s40262-023-01278-8](https://doi.org/10.1007/s40262-023-01278-8)) - healthy adults.
 
 - Disambiguated the overloaded `OC` name, which denoted five unrelated

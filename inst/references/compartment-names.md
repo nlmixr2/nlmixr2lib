@@ -40,6 +40,7 @@ The following pattern constants remain hard-coded in `R/conventions.R::.nlmixr2l
 - `darCompartmentRegex = "^dar[0-9]+_(central|peripheral[0-9]?)$"` -- DAR-numbered ADC isoform compartments (`dar0_central`, `dar4_peripheral1`, ...).
 - `targetLocationRegex = "^(target|complex)_(csf|isf|peripheral[0-9]?)$"` -- target species in physiologic / numbered-peripheral compartments (`target_csf`, `target_isf`, `target_peripheral`, `target_peripheral1`, `complex_peripheral`, ...).
 - `pbpkSubCompartmentRegex = "^(bc|eu|eb|fr|is|int|mrna|luc)_(liver|lung|kidney|spleen|heart|muscle|skin|adipose|bone|brain|small_intestine|large_intestine|pancreas|thymus|portal|remainder|other|hepatic|fat|rapidly_perfused|slowly_perfused|venous|arterial|urine|gut)$` -- membrane-limited PBPK sub-compartments: vascular blood cells (`bc_`), endosomal unbound (`eu_`), endosomal FcRn-bound (`eb_`), endosomal free FcRn (`fr_`), interstitial space (`is_`), intracellular (`int_`), mRNA pool (`mrna_`), luciferase reporter (`luc_`).
+- `rbcCompartmentRegex = "^rbc_[a-z0-9]+$"` -- intracellular drug / active-metabolite pools inside red blood cells, carried as ODE states in concentration units (`rbc_mtx`, `rbc_tgn`). Deliberately kept out of `registeredMetabolites` because the analyte is frequently the *parent* drug (methotrexate), and recording a parent drug in the metabolite register would mislead later readers of that list. See the "Intracellular red-cell analyte pools" section below for the naming rule and the per-analyte entries.
 - `compartmentRegex` and the four extension patterns above are extended only when a new paper introduces a structurally new shape. Adding a new spelled-out organ to the `pbpkSubCompartmentRegex` is a routine extension; introducing a new chain prefix is a naming-audit decision.
 
 ---
@@ -1955,6 +1956,39 @@ Standard clinical-biomarker / endogenous-output compartments. Widely-recognised 
 - **Role:** Red blood cell pool.
 - **Source aliases:** none.
 - **Example models:** `Dao_2020_sultiame.R`.
+- **Notes:** This is a red-cell **count** state (cells per volume). It is NOT the state to use for a drug or active metabolite accumulating *inside* erythrocytes -- that role belongs to the `rbc_<analyte>` family (see "Intracellular red-cell analyte pools"), whose states carry drug concentration (e.g. umol/L). The two are physically different quantities and must not be conflated.
+
+### rbc_mtx (**canonical intracellular red-cell methotrexate pool**)
+- **Type:** compartment
+- **Role:** Methotrexate (predominantly as methotrexate polyglutamates) accumulated inside red blood cells, carried as an ODE state in concentration units (umol/L). Fed by an influx term driven by the plasma methotrexate concentration and drained by a first-order efflux / elimination rate constant.
+- **Source aliases:**
+  - `XEMTX` -- used in `Gebhard_2023_methotrexate.R` (paper symbol `X_E^MTX`; the observation is reported as "E-MTX").
+- **Example models:** `Gebhard_2023_methotrexate.R`, `Gebhard_2023_mercaptopurine_anc.R`.
+- **Notes:** Registered 2026-07-30 as the founding member of the `rbc_<analyte>` family (see below). Distinct from `erythrocytes`, which is a red-cell *count* pool.
+
+### rbc_tgn (**canonical intracellular red-cell thioguanine-nucleotide pool**)
+- **Type:** compartment
+- **Role:** 6-thioguanine nucleotides (TGN), the active metabolites of 6-mercaptopurine, accumulated inside red blood cells and carried as an ODE state in concentration units (umol/L). Fed by a saturable (Michaelis-Menten) or linear influx term driven by the plasma 6-mercaptopurine concentration and drained by a first-order efflux / elimination rate constant.
+- **Source aliases:**
+  - `XE6MP` -- used in `Gebhard_2023_mercaptopurine.R` (paper symbol `X_E^6MP`; the observation is reported as "E-TGN").
+- **Example models:** `Gebhard_2023_mercaptopurine.R`, `Gebhard_2023_mercaptopurine_anc.R`.
+- **Notes:** Registered 2026-07-30 alongside `rbc_mtx`. In the Gebhard 2023 PKPD model this state is the driver of the Friberg myelosuppression effect function (`Edrug = slope * rbc_tgn`).
+
+---
+
+## Intracellular red-cell analyte pools (`rbc_<analyte>` namespace)
+
+Naming rule: `rbc_<analyte>`, where `<analyte>` is the lowercase name of the species measured inside the erythrocyte (`mtx` for methotrexate / methotrexate polyglutamates, `tgn` for 6-thioguanine nucleotides). The state holds a **concentration** (typically umol/L), not an amount, because red-cell metabolite assays are reported per unit of red-cell volume (or per mmol hemoglobin, converted).
+
+Validated by `rbcCompartmentRegex = "^rbc_[a-z0-9]+$"` in `R/conventions.R`, NOT by the `<canonical>_<metabolite-suffix>` machinery. The distinction is deliberate: for methotrexate the intracellular analyte is the *parent* drug, so listing `mtx` in `registeredMetabolites` would record a parent drug in the metabolite register and mislead anyone reading that list. The regex lets any new red-cell analyte follow without further register edits, while keeping `registeredMetabolites` semantically clean.
+
+Use `rbc_<analyte>` when the model carries the red-cell pool as an ODE state with its own influx / efflux kinetics. When a paper instead models red-cell drug **algebraically** as a fixed proportion of plasma (e.g. `Crbc <- slprbc * Cc` in `Gastonguay_2005_efaproxiral.R`, or the saturable whole-blood binding in `Storset_2014_tacrolimus.R`), no compartment is needed and no `rbc_` state should be introduced.
+
+The corresponding transport parameters are `lkinf_rbc` / `lkeff_rbc` (first-order influx / efflux rate constants) and `lvmax_rbc` / `lkm_rbc` (saturable influx); see `parameter-names.md`.
+
+---
+
+## Cell populations and lymphoid tissues (continued)
 
 ### cells (**canonical generic cell population**)
 - **Type:** compartment

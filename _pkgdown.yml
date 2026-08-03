@@ -1408,8 +1408,12 @@ navbar:
         href: articles/Nath_2010_melphalan.html
       - text: "Mepolizumab (Cao 2013)"
         href: articles/Cao_2013_mepolizumab.html
+      - text: "Mercaptopurine (Gebhard 2023)"
+        href: articles/Gebhard_2023_leukemia_maintenance_therapy.html
       - text: "Mercaptopurine (Hawwa 2008)"
         href: articles/Hawwa_2008_mercaptopurine.html
+      - text: "Mercaptopurine anc (Gebhard 2023)"
+        href: articles/Gebhard_2023_leukemia_maintenance_therapy.html
       - text: "Meropenem (Bergen 2017)"
         href: articles/Bergen_2017_meropenem.html
       - text: "Meropenem (Fukumoto 2023)"
@@ -1442,6 +1446,8 @@ navbar:
         href: articles/Yoon_2013_metformin.html
       - text: "Metformin (vanRongen 2018)"
         href: articles/vanRongen_2018_metformin.html
+      - text: "Methotrexate (Gebhard 2023)"
+        href: articles/Gebhard_2023_leukemia_maintenance_therapy.html
       - text: "Methotrexate (Joerger 2006)"
         href: articles/Joerger_2006_methotrexate.html
       - text: "Methotrexate (Ruhs 2012)"
@@ -3019,6 +3025,7 @@ articles:
   - articles/Garrett_2014_axitinib
   - articles/Gastonguay_2005_efaproxiral
   - articles/Gatti_1996_dapsone
+  - articles/Gebhard_2023_leukemia_maintenance_therapy
   - articles/Geldof_2008_fluvoxamine_rat
   - articles/Georges_2009_ceftazidime
   - articles/Germovsek_2016_gentamicin
