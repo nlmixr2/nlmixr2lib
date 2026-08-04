@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Jiang 2024 empagliflozin ([doi:10.3390/ph17040522](https://doi.org/10.3390/ph17040522)) - healthy Korean adults given single oral doses of an empagliflozin L-proline cocrystal and the conventional formulation.
+
 - Add Kuroda 2023 cephalothin ([doi:10.1294/jes.34.111](https://doi.org/10.1294/jes.34.111)) - Thoroughbred horses given intramuscular and intravenous doses.
 
 - Add Zhang 2024 sertraline ([doi:10.1016/j.heliyon.2024.e25231](https://doi.org/10.1016/j.heliyon.2024.e25231)) - Chinese inpatients with psychiatric disorders, aged 11-79 years.
