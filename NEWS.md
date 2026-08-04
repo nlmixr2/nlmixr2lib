@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Decker 2024 baricitinib ([doi:10.1002/psp4.13131](https://doi.org/10.1002/psp4.13131)) - pediatric patients aged 2 to <18 years with juvenile idiopathic arthritis.
+- Add Chandasana 2024b abacavir, dolutegravir and lamivudine ([doi:10.1007/s40121-024-01008-y](https://doi.org/10.1007/s40121-024-01008-y)) - children with HIV-1 weighing 6 to 40 kg receiving the abacavir/dolutegravir/lamivudine fixed-dose combination (IMPAACT 2019).
 
 - Add Kuroda 2023 cephalothin ([doi:10.1294/jes.34.111](https://doi.org/10.1294/jes.34.111)) - Thoroughbred horses given intramuscular and intravenous doses.
 
