@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Zhao 2024 ciprofloxacin + colistin ([doi:10.1038/s41598-024-61518-0](https://doi.org/10.1038/s41598-024-61518-0)) - in-vitro *Escherichia coli* time-kill plus simulated critically ill adults with bloodstream infection or pyelonephritis.
+
 - Add Kuroda 2023 cephalothin ([doi:10.1294/jes.34.111](https://doi.org/10.1294/jes.34.111)) - Thoroughbred horses given intramuscular and intravenous doses.
 
 - Add Zhang 2024 sertraline ([doi:10.1016/j.heliyon.2024.e25231](https://doi.org/10.1016/j.heliyon.2024.e25231)) - Chinese inpatients with psychiatric disorders, aged 11-79 years.

@@ -482,6 +482,12 @@ navbar:
         href: articles/Thuo_2011_ciprofloxacin.html
       - text: "Ciprofloxacin (Zhao 2014)"
         href: articles/Zhao_2014_ciprofloxacin.html
+      - text: "Ciprofloxacin colistin invitro (Zhao 2024)"
+        href: articles/Zhao_2024_ciprofloxacin_colistin.html
+      - text: "Ciprofloxacin colistin kidney (Zhao 2024)"
+        href: articles/Zhao_2024_ciprofloxacin_colistin.html
+      - text: "Ciprofloxacin colistin plasma (Zhao 2024)"
+        href: articles/Zhao_2024_ciprofloxacin_colistin.html
       - text: "Cisplatin (Boer 2015)"
         href: articles/Boer_2015_cisplatin.html
       - text: "Cisplatin (Royer 2011)"
@@ -3971,6 +3977,7 @@ articles:
   - articles/Zhao_2014_vancomycin
   - articles/Zhao_2015_teicoplanin
   - articles/Zhao_2018_omeprazole
+  - articles/Zhao_2024_ciprofloxacin_colistin
   - articles/Zheng_2012_minipig_mab
   - articles/Zheng_2014_azithromycin
   - articles/Zheng_2016_sifalimumab
