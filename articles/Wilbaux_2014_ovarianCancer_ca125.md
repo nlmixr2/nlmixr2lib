@@ -259,8 +259,10 @@ a sensible range.
 
 sim_vpc <- rxSolve(mod, ev_one, nSub = n_subj, returnType = "data.frame")
 #> ℹ parameter labels from comments will be replaced by 'label()'
-#> [intdy -- t = 6.90349e-310 illegal]: 214 warning(s) for subject(s): Unknown, Unknown, Unknown, Unknown
-#> [intdy -- t = 6.90359e-310 illegal]: 14 warning(s) for subject(s): Unknown, Unknown, Unknown, Unknown
+#> [intdy -- t = 4.68133e-310 illegal]: 204 warning(s) for subject(s): Unknown, Unknown, Unknown
+#> [intdy -- t = 4.68151e-310 illegal]: 13 warning(s) for subject(s): Unknown, Unknown, Unknown
+#> [intdy -- t = 6.91601e-310 illegal]: 10 warning(s) for subject(s): Unknown
+#> [intdy -- t = 6.91602e-310 illegal]: 1 warning(s) for subject(s): Unknown
 #> [lsoda -- internal t + h = t (h too small for machine precision)]: 14 warning(s) for subject(s): Unknown, Unknown, Unknown, Unknown
 # rxSolve duplicates rows when multiple cmts are observed at the same time;
 # dedup by (sim.id, time).
@@ -465,7 +467,7 @@ sessionInfo()
 #> [29] memoise_2.0.1      checkmate_2.3.4    vctrs_0.7.3        R6_2.6.1          
 #> [33] lifecycle_1.0.5    fs_2.1.0           ragg_1.5.2         PreciseSums_0.7   
 #> [37] fontawesome_0.5.3  pkgconfig_2.0.3    desc_1.4.3         rex_1.2.2         
-#> [41] pkgdown_2.2.1      RcppParallel_6.2.0 pillar_1.11.1      bslib_0.11.0      
+#> [41] pkgdown_2.2.1      RcppParallel_6.2.0 pillar_1.11.1      bslib_0.12.0      
 #> [45] gtable_0.3.6       glue_1.8.1         data.table_1.18.4  Rcpp_1.1.2        
 #> [49] systemfonts_1.3.2  tidyselect_1.2.1   xfun_0.60          tibble_3.3.1      
 #> [53] sys_3.4.3          knitr_1.51         farver_2.1.2       dparser_1.3.1-13  

@@ -20,7 +20,7 @@ mod_meta$reference
 #> [1] "Bijleveld YA, de Haan TR, van der Lee HJH, Groenendaal F, Dijk PH, van Heijst A, de Jonge RCJ, Dijkman KP, van Straaten HLM, Rijken M, Zonnenberg IA, Cools F, Zecic A, Nuytemans DHGM, van Kaam AH, Mathot RAA; PharmaCool study group. Altered gentamicin pharmacokinetics in term neonates undergoing controlled hypothermia. Br J Clin Pharmacol. 2016;81(6):1067-1077. doi:10.1111/bcp.12883."
 mod_meta$units
 #> $time
-#> [1] "hour"
+#> [1] "h"
 #> 
 #> $dosing
 #> [1] "mg"

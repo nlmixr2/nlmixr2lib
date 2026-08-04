@@ -144,6 +144,17 @@ rxode2::rxode(mod)
 #> 
 #>  ── Model (Normalized Syntax): ── 
 #> function() {
+#>     compartmentData <- list(blood = list(analyte = "[177Lu]Lu-PSMA-617", 
+#>         units = NA_character_, specimen = "blood cell", verified = FALSE), 
+#>         salivary_gland = list(analyte = "[177Lu]Lu-PSMA-617", 
+#>             units = NA_character_, specimen = "administration site", 
+#>             verified = FALSE), kidney = list(analyte = "[177Lu]Lu-PSMA-617", 
+#>             units = NA_character_, specimen = "tissue", verified = FALSE), 
+#>         liver = list(analyte = "[177Lu]Lu-PSMA-617", units = NA_character_, 
+#>             specimen = "tissue", verified = FALSE), tumor = list(analyte = "[177Lu]Lu-PSMA-617", 
+#>             units = NA_character_, specimen = "tumor", verified = FALSE), 
+#>         other = list(analyte = "[177Lu]Lu-PSMA-617", units = NA_character_, 
+#>             specimen = "tissue", verified = FALSE))
 #>     covariateData <- list(CRCL = list(description = "Creatinine clearance calculated with the Cockcroft-Gault equation and NOT normalised to body surface area (raw mL/min), as reported in Table 1 (median 87.9, range 50.2-110 mL/min).", 
 #>         units = "mL/min", type = "continuous", reference_category = NULL, 
 #>         notes = "Added a priori on the blood excretion rate constant k10 with a linear function under the assumption of complete renal elimination (Methods, 'Structural effects'). The paper reports no coefficient for this effect in Table 2, which is consistent with a slope fixed to unity: kel scales in direct proportion to CRCL. Encoded as (CRCL / 87.9)^e_crcl_kel with e_crcl_kel fixed at 1 and the reference set to the Table 1 population median, because the paper does not state a centering value and the Table 2 k10 estimate of 0.288 1/h is the typical value for the cohort. Baseline value, held constant per subject.", 

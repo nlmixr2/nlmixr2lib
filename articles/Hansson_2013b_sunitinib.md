@@ -49,7 +49,7 @@ All parameter values come from the `FINAL PARAMETER ESTIMATE` block of
 `Output_real_TGI_GIST.lst` and have been cross-checked against the
 on-disk paper’s Table 3. Rate constants are reported in 1/week in the
 paper and `.mod` `$THETA`; the `.mod` and the model file convert to 1/h
-via `/24/7` so all rates carry units of `units$time = "hour"`.
+via `/24/7` so all rates carry units of `units$time = "h"`.
 
 | Equation / parameter | Source value | nlmixr2 form | Source location (DDMODEL00000198) |
 |----|----|----|----|

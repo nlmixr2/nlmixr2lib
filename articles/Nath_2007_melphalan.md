@@ -12,7 +12,7 @@ mod_meta$reference
 #> [1] "Nath CE, Shaw PJ, Montgomery K, Earl JW. Population pharmacokinetics of melphalan in paediatric blood or marrow transplant recipients. Br J Clin Pharmacol. 2007;64(2):151-164. doi:10.1111/j.1365-2125.2007.02862.x."
 mod_meta$units
 #> $time
-#> [1] "hour"
+#> [1] "h"
 #> 
 #> $dosing
 #> [1] "mg"

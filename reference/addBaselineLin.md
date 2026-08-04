@@ -74,6 +74,10 @@ readModelDb("PK_2cmt_no_depot") |>
 #> 
 #>  ── Model (Normalized Syntax): ── 
 #> function() {
+#>     compartmentData <- list(central = list(analyte = "drug", 
+#>         units = NA_character_, specimen = "plasma", verified = FALSE), 
+#>         peripheral1 = list(analyte = "drug", units = NA_character_, 
+#>             specimen = "plasma", verified = FALSE))
 #>     reference <- "nlmixr2lib template"
 #>     units <- list(time = "time_unit", dosing = "dose_unit", concentration = "conc_unit/vol_unit")
 #>     ini({

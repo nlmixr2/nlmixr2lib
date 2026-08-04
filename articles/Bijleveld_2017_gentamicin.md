@@ -19,7 +19,7 @@ mod_meta$reference
 #> [1] "Bijleveld YA, van den Heuvel ME, Hodiamont CJ, Mathot RAA, de Haan TR. Population pharmacokinetics and dosing considerations for gentamicin in newborns with suspected or proven sepsis caused by gram-negative bacteria. Antimicrob Agents Chemother. 2017;61(1):e01304-16. doi:10.1128/AAC.01304-16."
 mod_meta$units
 #> $time
-#> [1] "hour"
+#> [1] "h"
 #> 
 #> $dosing
 #> [1] "mg"

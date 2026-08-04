@@ -18,7 +18,7 @@ mod_meta$reference
 #> [1] "Weber B, Hochhaus G. (2015). A Systematic Analysis of the Sensitivity of Plasma Pharmacokinetics to Detect Differences in the Pulmonary Performance of Inhaled Fluticasone Propionate Products Using a Model-Based Simulation Approach. AAPS J 17(4):999-1010. doi:10.1208/s12248-015-9768-y."
 mod_meta$units
 #> $time
-#> [1] "hour"
+#> [1] "h"
 #> 
 #> $dosing
 #> [1] "ug"

@@ -18,7 +18,7 @@ mod_meta$reference
 #> [1] "Muller AE, Mouton JW, Oostvogel PM, Dorr PJ, Voskuyl RA, DeJongh J, Steegers EA, Danhof M. Pharmacokinetics of clindamycin in pregnant women in the peripartum period. Antimicrob Agents Chemother. 2010;54(5):2175-2181. doi:10.1128/AAC.01017-09."
 mod_meta$units
 #> $time
-#> [1] "hour"
+#> [1] "h"
 #> 
 #> $dosing
 #> [1] "mg"

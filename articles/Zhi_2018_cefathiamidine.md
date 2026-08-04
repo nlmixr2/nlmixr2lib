@@ -16,7 +16,7 @@ mod_meta$description
 #> [1] "Two-compartment population PK model for intravenous cefathiamidine (a first-generation cephalosporin) in 54 children (age 2.0-11.8 years; weight 8.0-36.0 kg) with hematologic disease, developed in NONMEM v7.2 (FOCE-I) from 120 sparse plasma samples. Structural model: first-order elimination from a central compartment, with allometric body-weight scaling on CL, Q (exponent 0.75) and V1, V2 (exponent 1), reference weight 17.75 kg (the cohort median current weight). Inter-individual variability (exponential) is estimated for CL and V2 only; residual variability is exponential (lognormal on the linear scale). Bodyweight was the only retained covariate; age and creatinine clearance were not significant in the limited cohort (CrCL range 130-462 mL/min)."
 mod_meta$units
 #> $time
-#> [1] "hour"
+#> [1] "h"
 #> 
 #> $dosing
 #> [1] "mg"

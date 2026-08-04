@@ -88,7 +88,7 @@ mod <- readModelDb("Li_2023_granisetron")
 rxode2::rxode2(mod)$units
 #> ℹ parameter labels from comments will be replaced by 'label()'
 #> $time
-#> [1] "hr"
+#> [1] "h"
 #> 
 #> $dosing
 #> [1] "ug"

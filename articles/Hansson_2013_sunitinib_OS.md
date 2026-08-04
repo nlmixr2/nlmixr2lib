@@ -79,8 +79,8 @@ Per-parameter origin is captured as in-file comments next to each
 `ini()` entry in
 `inst/modeldb/specificDrugs/Hansson_2013_sunitinib_OS.R`. The table
 below collects them in one place; rates reported in 1/week in the paper
-are converted to 1/h via `/24/7` to match `units$time = "hour"` (the
-same convention used by `Hansson_2013a` / `Hansson_2013b`).
+are converted to 1/h via `/24/7` to match `units$time = "h"` (the same
+convention used by `Hansson_2013a` / `Hansson_2013b`).
 
 | Equation / parameter | Value | nlmixr2 form | Source location |
 |----|----|----|----|

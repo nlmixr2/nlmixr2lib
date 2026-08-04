@@ -18,7 +18,7 @@ mod_meta$reference
 #> [1] "Ting L, Aksenov S, Bhansali SG, Ramakrishna R, Tang P, Geller DE. (2014). Population pharmacokinetics of inhaled tobramycin powder in cystic fibrosis patients. CPT Pharmacometrics Syst Pharmacol 3(9):e99. doi:10.1038/psp.2013.76"
 mod_meta$units
 #> $time
-#> [1] "hour"
+#> [1] "h"
 #> 
 #> $dosing
 #> [1] "mg"

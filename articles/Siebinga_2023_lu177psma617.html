@@ -1613,6 +1613,17 @@ uptake is the only saturable process.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;  ── Model (Normalized Syntax): ── </span></span>
 <span><span class="co">#&gt; function() {</span></span>
+<span><span class="co">#&gt;     compartmentData &lt;- list(blood = list(analyte = "[177Lu]Lu-PSMA-617", </span></span>
+<span><span class="co">#&gt;         units = NA_character_, specimen = "blood cell", verified = FALSE), </span></span>
+<span><span class="co">#&gt;         salivary_gland = list(analyte = "[177Lu]Lu-PSMA-617", </span></span>
+<span><span class="co">#&gt;             units = NA_character_, specimen = "administration site", </span></span>
+<span><span class="co">#&gt;             verified = FALSE), kidney = list(analyte = "[177Lu]Lu-PSMA-617", </span></span>
+<span><span class="co">#&gt;             units = NA_character_, specimen = "tissue", verified = FALSE), </span></span>
+<span><span class="co">#&gt;         liver = list(analyte = "[177Lu]Lu-PSMA-617", units = NA_character_, </span></span>
+<span><span class="co">#&gt;             specimen = "tissue", verified = FALSE), tumor = list(analyte = "[177Lu]Lu-PSMA-617", </span></span>
+<span><span class="co">#&gt;             units = NA_character_, specimen = "tumor", verified = FALSE), </span></span>
+<span><span class="co">#&gt;         other = list(analyte = "[177Lu]Lu-PSMA-617", units = NA_character_, </span></span>
+<span><span class="co">#&gt;             specimen = "tissue", verified = FALSE))</span></span>
 <span><span class="co">#&gt;     covariateData &lt;- list(CRCL = list(description = "Creatinine clearance calculated with the Cockcroft-Gault equation and NOT normalised to body surface area (raw mL/min), as reported in Table 1 (median 87.9, range 50.2-110 mL/min).", </span></span>
 <span><span class="co">#&gt;         units = "mL/min", type = "continuous", reference_category = NULL, </span></span>
 <span><span class="co">#&gt;         notes = "Added a priori on the blood excretion rate constant k10 with a linear function under the assumption of complete renal elimination (Methods, 'Structural effects'). The paper reports no coefficient for this effect in Table 2, which is consistent with a slope fixed to unity: kel scales in direct proportion to CRCL. Encoded as (CRCL / 87.9)^e_crcl_kel with e_crcl_kel fixed at 1 and the reference set to the Table 1 population median, because the paper does not state a centering value and the Table 2 k10 estimate of 0.288 1/h is the typical value for the cohort. Baseline value, held constant per subject.", </span></span>

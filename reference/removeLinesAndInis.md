@@ -46,6 +46,13 @@ readModelDb("PK_3cmt_des") |> removeLinesAndInis(c("kel", "k12", "k21"))
 #> 4                  4      peripheral2
 #>  ── Model (Normalized Syntax): ── 
 #> function() {
+#>     compartmentData <- list(depot = list(analyte = "drug", units = NA_character_, 
+#>         specimen = "administration site", verified = FALSE), 
+#>         central = list(analyte = "drug", units = NA_character_, 
+#>             specimen = "plasma", verified = FALSE), peripheral1 = list(analyte = "drug", 
+#>             units = NA_character_, specimen = "plasma", verified = FALSE), 
+#>         peripheral2 = list(analyte = "drug", units = NA_character_, 
+#>             specimen = "plasma", verified = FALSE))
 #>     reference <- "nlmixr2lib template"
 #>     units <- list(time = "time_unit", dosing = "dose_unit", concentration = "conc_unit/vol_unit")
 #>     ini({

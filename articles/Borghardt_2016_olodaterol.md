@@ -18,7 +18,7 @@ mod_meta$reference
 #> [1] "Borghardt JM, Weber B, Staab A, Kunz C, Formella S, Kloft C. Investigating pulmonary and systemic pharmacokinetics of inhaled olodaterol in healthy volunteers using a population pharmacokinetic approach. Br J Clin Pharmacol. 2016;81(3):538-552. doi:10.1111/bcp.12780."
 mod_meta$units
 #> $time
-#> [1] "hour"
+#> [1] "h"
 #> 
 #> $dosing
 #> [1] "ug"

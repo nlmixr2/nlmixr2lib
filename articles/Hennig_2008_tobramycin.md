@@ -18,7 +18,7 @@ mod_meta$reference
 #> [1] "Hennig S, Norris R, Kirkpatrick CMJ. (2008). Target concentration intervention is needed for tobramycin dosing in paediatric patients with cystic fibrosis - a population pharmacokinetic study. Br J Clin Pharmacol 65(4):502-510. doi:10.1111/j.1365-2125.2007.03045.x"
 mod_meta$units
 #> $time
-#> [1] "hour"
+#> [1] "h"
 #> 
 #> $dosing
 #> [1] "mg"

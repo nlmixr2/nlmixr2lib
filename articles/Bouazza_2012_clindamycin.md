@@ -18,7 +18,7 @@ mod_meta$reference
 #> [1] "Bouazza N, Pestre V, Jullien V, Curis E, Urien S, Salmon D, Treluyer JM. Population pharmacokinetics of clindamycin orally and intravenously administered in patients with osteomyelitis. British Journal of Clinical Pharmacology. 2012;74(6):971-977. doi:10.1111/j.1365-2125.2012.04292.x."
 mod_meta$units
 #> $time
-#> [1] "hour"
+#> [1] "h"
 #> 
 #> $dosing
 #> [1] "mg"

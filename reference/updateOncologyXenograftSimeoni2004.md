@@ -73,6 +73,13 @@ readModelDb("oncology_xenograft_simeoni_2004") |>
 #> 6                  6   damaged_cells5
 #>  ── Model (Normalized Syntax): ── 
 #> function() {
+#>     compartmentData <- list(cycling_cells = list(analyte = "tumor cells", 
+#>         units = NA_character_, specimen = "tumor", verified = FALSE), 
+#>         damaged_cells1 = list(analyte = "dead tumor cells", units = NA_character_, 
+#>             specimen = "tumor", verified = FALSE), damaged_cells2 = list(analyte = "dead tumor cells", 
+#>             units = NA_character_, specimen = "tumor", verified = FALSE), 
+#>         damaged_cells3 = list(analyte = "dead tumor cells", units = NA_character_, 
+#>             specimen = "tumor", verified = FALSE))
 #>     depends <- c("Cc", "tumor_vol0")
 #>     description <- "Oncology tumor growth model in xenograft models"
 #>     reference <- "Monica Simeoni, Paolo Magni, Cristiano Cammia, Giuseppe De Nicolao, Valter Croci, Enrico Pesenti, Massimiliano Germani, Italo Poggesi, Maurizio Rocchetti; Predictive Pharmacokinetic-Pharmacodynamic Modeling of Tumor Growth Kinetics in Xenograft Models after Administration of Anticancer Agents. Cancer Res 1 February 2004; 64 (3): 1094–1101. https://doi.org/10.1158/0008-5472.CAN-03-2524"

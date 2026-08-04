@@ -126,7 +126,16 @@ mod
 #>   description <- "Two-compartment population PK model with first-order absorption and an absorption lag time for the P2X3-receptor antagonist gefapixant in healthy volunteers and adults with refractory or unexplained chronic cough (Chawla 2023)"
 #>   reference <- "Chawla A, Largajolli A, Hussain A, et al. Population pharmacokinetic analysis of the P2X3-receptor antagonist gefapixant. CPT Pharmacometrics Syst Pharmacol. 2023;12(8):1107-1118. doi:10.1002/psp4.12978"
 #>   vignette <- "Chawla_2023_gefapixant"
-#>   units <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+#>   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+#> 
+#>   # Issue #482: what each ODE state holds, in what amount units, in what
+#>   # biological matrix. Derived mechanically; verified = FALSE means it has
+#>   # NOT been checked against the source paper.
+#>   compartmentData <- list(
+#>     depot       = list(analyte = "gefapixant", units = "mg", specimen = "administration site", verified = FALSE),
+#>     central     = list(analyte = "gefapixant", units = "mg", specimen = "plasma", verified = FALSE),
+#>     peripheral1 = list(analyte = "gefapixant", units = "mg", specimen = "plasma", verified = FALSE)
+#>   )
 #> 
 #>   covariateData <- list(
 #>     CRCL = list(
@@ -403,7 +412,7 @@ mod
 #>     Cc ~ add(addSd) + prop(propSd)
 #>   })
 #> }
-#> <environment: 0x5641c2c69e20>
+#> <environment: 0x562dcba46fa0>
 ```
 
 ## Virtual cohort

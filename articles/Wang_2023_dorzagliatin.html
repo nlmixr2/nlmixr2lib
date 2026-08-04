@@ -1497,7 +1497,16 @@ implicitly 1.</p>
 <span><span class="co">#&gt;     sep = " "</span></span>
 <span><span class="co">#&gt;   )</span></span>
 <span><span class="co">#&gt;   vignette &lt;- "Wang_2023_dorzagliatin"</span></span>
-<span><span class="co">#&gt;   units    &lt;- list(time = "hour", dosing = "mg", concentration = "ng/mL")</span></span>
+<span><span class="co">#&gt;   units    &lt;- list(time = "h", dosing = "mg", concentration = "ng/mL")</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;   # Issue #482: what each ODE state holds, in what amount units, in what</span></span>
+<span><span class="co">#&gt;   # biological matrix. Derived mechanically; verified = FALSE means it has</span></span>
+<span><span class="co">#&gt;   # NOT been checked against the source paper.</span></span>
+<span><span class="co">#&gt;   compartmentData &lt;- list(</span></span>
+<span><span class="co">#&gt;     depot       = list(analyte = "dorzagliatin", units = "mg", specimen = "administration site", verified = FALSE),</span></span>
+<span><span class="co">#&gt;     central     = list(analyte = "dorzagliatin", units = "mg", specimen = "plasma", verified = FALSE),</span></span>
+<span><span class="co">#&gt;     peripheral1 = list(analyte = "dorzagliatin", units = "mg", specimen = "plasma", verified = FALSE)</span></span>
+<span><span class="co">#&gt;   )</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;   covariateData &lt;- list(</span></span>
 <span><span class="co">#&gt;     WT = list(</span></span>
@@ -1950,7 +1959,7 @@ implicitly 1.</p>
 <span><span class="co">#&gt;     Cc ~ add(addSd) + prop(propSd)</span></span>
 <span><span class="co">#&gt;   })</span></span>
 <span><span class="co">#&gt; }</span></span>
-<span><span class="co">#&gt; &lt;environment: 0x5641b8673838&gt;</span></span></code></pre></div>
+<span><span class="co">#&gt; &lt;environment: 0x562dcd13c710&gt;</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="population">Population<a class="anchor" aria-label="anchor" href="#population"></a>

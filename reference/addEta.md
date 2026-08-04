@@ -71,6 +71,10 @@ readModelDb("PK_1cmt") |> addEta("ka")
 #> ℹ change initial estimate of `etaKa` to `0.1`
 #> function () 
 #> {
+#>     compartmentData <- list(depot = list(analyte = "drug", units = NA_character_, 
+#>         specimen = "administration site", verified = FALSE), 
+#>         central = list(analyte = "drug", units = NA_character_, 
+#>             specimen = "plasma", verified = FALSE))
 #>     description <- "One compartment PK model with linear clearance"
 #>     reference <- "nlmixr2lib template"
 #>     units <- list(time = "time_unit", dosing = "dose_unit", concentration = "conc_unit/vol_unit")
@@ -93,5 +97,5 @@ readModelDb("PK_1cmt") |> addEta("ka")
 #>         Cc ~ prop(propSd)
 #>     })
 #> }
-#> <environment: 0x5641ba5e83f0>
+#> <environment: 0x562dd11fe2a8>
 ```

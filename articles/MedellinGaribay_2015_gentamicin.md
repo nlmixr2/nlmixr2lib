@@ -12,7 +12,7 @@ mod_meta$reference
 #> [1] "Medellin-Garibay SE, Rueda-Naharro A, Pena-Cabia S, Garcia B, Romano-Moreno S, Barcia E. Population pharmacokinetics of gentamicin and dosing optimization for infants. Antimicrob Agents Chemother. 2015;59(1):482-489. doi:10.1128/AAC.03464-14."
 mod_meta$units
 #> $time
-#> [1] "hour"
+#> [1] "h"
 #> 
 #> $dosing
 #> [1] "mg"

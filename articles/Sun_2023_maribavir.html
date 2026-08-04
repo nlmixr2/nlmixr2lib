@@ -1675,7 +1675,16 @@ independent model, so it is deliberately not packaged.</p>
 <span><span class="co">#&gt;   description &lt;- "Two-compartment population PK model for oral maribavir with first-order absorption, an absorption lag time, and dose-dependent absorption rate in adult transplant recipients with cytomegalovirus infection/disease (Sun 2023)"</span></span>
 <span><span class="co">#&gt;   reference &lt;- "Sun K, Hayes S, Farrell C, Song IH. Population pharmacokinetic modeling and simulation of maribavir to support dose selection and regulatory approval in adolescents with posttransplant refractory cytomegalovirus. CPT Pharmacometrics Syst Pharmacol. 2023;12(5):719-723. doi:10.1002/psp4.12943"</span></span>
 <span><span class="co">#&gt;   vignette &lt;- "Sun_2023_maribavir"</span></span>
-<span><span class="co">#&gt;   units &lt;- list(time = "hour", dosing = "mg", concentration = "ug/mL")</span></span>
+<span><span class="co">#&gt;   units &lt;- list(time = "h", dosing = "mg", concentration = "ug/mL")</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;   # Issue #482: what each ODE state holds, in what amount units, in what</span></span>
+<span><span class="co">#&gt;   # biological matrix. Derived mechanically; verified = FALSE means it has</span></span>
+<span><span class="co">#&gt;   # NOT been checked against the source paper.</span></span>
+<span><span class="co">#&gt;   compartmentData &lt;- list(</span></span>
+<span><span class="co">#&gt;     depot       = list(analyte = "maribavir", units = "mg", specimen = "administration site", verified = FALSE),</span></span>
+<span><span class="co">#&gt;     central     = list(analyte = "maribavir", units = "mg", specimen = "plasma", verified = FALSE),</span></span>
+<span><span class="co">#&gt;     peripheral1 = list(analyte = "maribavir", units = "mg", specimen = "plasma", verified = FALSE)</span></span>
+<span><span class="co">#&gt;   )</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;   covariateData &lt;- list(</span></span>
 <span><span class="co">#&gt;     WT = list(</span></span>
@@ -1857,7 +1866,7 @@ independent model, so it is deliberately not packaged.</p>
 <span><span class="co">#&gt;     Cc ~ prop(propSd)</span></span>
 <span><span class="co">#&gt;   })</span></span>
 <span><span class="co">#&gt; }</span></span>
-<span><span class="co">#&gt; &lt;environment: 0x5641c169f120&gt;</span></span></code></pre></div>
+<span><span class="co">#&gt; &lt;environment: 0x562dd1ae4598&gt;</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="cross-validation-of-the-control-stream-against-table-s2">Cross-validation of the control stream against Table S2<a class="anchor" aria-label="anchor" href="#cross-validation-of-the-control-stream-against-table-s2"></a>

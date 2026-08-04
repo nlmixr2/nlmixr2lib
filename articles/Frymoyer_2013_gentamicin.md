@@ -18,7 +18,7 @@ mod_meta$reference
 #> [1] "Frymoyer A, Meng L, Bonifacio SL, Verotta D, Guglielmo BJ. Gentamicin pharmacokinetics and dosing in neonates with hypoxic ischemic encephalopathy receiving hypothermia. Pharmacotherapy. 2013;33(7):718-726. doi:10.1002/phar.1263."
 mod_meta$units
 #> $time
-#> [1] "hour"
+#> [1] "h"
 #> 
 #> $dosing
 #> [1] "mg"

@@ -18,7 +18,7 @@ mod_meta$reference
 #> [1] "Hodiamont CJ, Janssen JM, de Jong MD, Mathot RA, Juffermans NP, van Hest RM. Therapeutic Drug Monitoring of Gentamicin Peak Concentrations in Critically Ill Patients. Ther Drug Monit 2017;39(5):522-530. doi:10.1097/FTD.0000000000000432."
 mod_meta$units
 #> $time
-#> [1] "hour"
+#> [1] "h"
 #> 
 #> $dosing
 #> [1] "mg"

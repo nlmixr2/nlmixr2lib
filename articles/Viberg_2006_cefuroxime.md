@@ -18,7 +18,7 @@ mod_meta$reference
 #> [1] "Viberg A, Lannergard A, Larsson A, Cars O, Karlsson MO, Sandstrom M. A population pharmacokinetic model for cefuroxime using cystatin C as a marker of renal function. Br J Clin Pharmacol. 2006;62(3):297-303. doi:10.1111/j.1365-2125.2006.02652.x"
 mod_meta$units
 #> $time
-#> [1] "hour"
+#> [1] "h"
 #> 
 #> $dosing
 #> [1] "mg"

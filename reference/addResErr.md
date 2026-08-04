@@ -64,6 +64,10 @@ readModelDb("PK_1cmt") |> addResErr("addSd")
 #> 2                  2          central TRUE FALSE          2
 #>  ── Model (Normalized Syntax): ── 
 #> function() {
+#>     compartmentData <- list(depot = list(analyte = "drug", units = NA_character_, 
+#>         specimen = "administration site", verified = FALSE), 
+#>         central = list(analyte = "drug", units = NA_character_, 
+#>             specimen = "plasma", verified = FALSE))
 #>     description <- "One compartment PK model with linear clearance"
 #>     reference <- "nlmixr2lib template"
 #>     units <- list(time = "time_unit", dosing = "dose_unit", concentration = "conc_unit/vol_unit")
@@ -104,6 +108,10 @@ readModelDb("PK_1cmt") |> addResErr("lnormSd")
 #> 2                  2          central TRUE FALSE          2
 #>  ── Model (Normalized Syntax): ── 
 #> function() {
+#>     compartmentData <- list(depot = list(analyte = "drug", units = NA_character_, 
+#>         specimen = "administration site", verified = FALSE), 
+#>         central = list(analyte = "drug", units = NA_character_, 
+#>             specimen = "plasma", verified = FALSE))
 #>     description <- "One compartment PK model with linear clearance"
 #>     reference <- "nlmixr2lib template"
 #>     units <- list(time = "time_unit", dosing = "dose_unit", concentration = "conc_unit/vol_unit")
@@ -146,6 +154,10 @@ readModelDb("PK_1cmt") |> addResErr(c("addSd", "propSd"))
 #> 2                  2          central TRUE FALSE          2
 #>  ── Model (Normalized Syntax): ── 
 #> function() {
+#>     compartmentData <- list(depot = list(analyte = "drug", units = NA_character_, 
+#>         specimen = "administration site", verified = FALSE), 
+#>         central = list(analyte = "drug", units = NA_character_, 
+#>             specimen = "plasma", verified = FALSE))
 #>     description <- "One compartment PK model with linear clearance"
 #>     reference <- "nlmixr2lib template"
 #>     units <- list(time = "time_unit", dosing = "dose_unit", concentration = "conc_unit/vol_unit")

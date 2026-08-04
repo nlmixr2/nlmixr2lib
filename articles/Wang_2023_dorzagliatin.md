@@ -69,7 +69,16 @@ mod
 #>     sep = " "
 #>   )
 #>   vignette <- "Wang_2023_dorzagliatin"
-#>   units    <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+#>   units    <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+#> 
+#>   # Issue #482: what each ODE state holds, in what amount units, in what
+#>   # biological matrix. Derived mechanically; verified = FALSE means it has
+#>   # NOT been checked against the source paper.
+#>   compartmentData <- list(
+#>     depot       = list(analyte = "dorzagliatin", units = "mg", specimen = "administration site", verified = FALSE),
+#>     central     = list(analyte = "dorzagliatin", units = "mg", specimen = "plasma", verified = FALSE),
+#>     peripheral1 = list(analyte = "dorzagliatin", units = "mg", specimen = "plasma", verified = FALSE)
+#>   )
 #> 
 #>   covariateData <- list(
 #>     WT = list(
@@ -522,7 +531,7 @@ mod
 #>     Cc ~ add(addSd) + prop(propSd)
 #>   })
 #> }
-#> <environment: 0x5641b8673838>
+#> <environment: 0x562dcd13c710>
 ```
 
 ## Population

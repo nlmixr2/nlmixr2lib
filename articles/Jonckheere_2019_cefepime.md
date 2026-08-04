@@ -19,7 +19,7 @@ mod_meta$reference
 #> [1] "Jonckheere S, De Neve N, Verbeke J, De Decker K, Brandt I, Boel A, Van Bocxlaer J, Struys MMRF, Colin PJ. (2020). Target-Controlled Infusion of Cefepime in Critically Ill Patients. Antimicrob Agents Chemother 64(1):e01552-19. doi:10.1128/AAC.01552-19"
 mod_meta$units
 #> $time
-#> [1] "hour"
+#> [1] "h"
 #> 
 #> $dosing
 #> [1] "mg"

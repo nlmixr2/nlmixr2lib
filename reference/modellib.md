@@ -42,6 +42,15 @@ modellib(name = "PK_1cmt")
 #>   description <- "One compartment PK model with linear clearance"
 #>   reference <- "nlmixr2lib template"
 #>   units <- list(time = "time_unit", dosing = "dose_unit", concentration = "conc_unit/vol_unit")
+#>   # Issue #482: what each ODE state holds, in what amount units, in what
+#>   # biological matrix. analyte/specimen proposed by a local model from the
+#>   # model description; units derived from the units block. verified = FALSE
+#>   # means NOT checked against the source paper.
+#>   compartmentData <- list(
+#>     depot   = list(analyte = "drug", units = NA_character_, specimen = "administration site", verified = FALSE),
+#>     central = list(analyte = "drug", units = NA_character_, specimen = "plasma", verified = FALSE)
+#>   )
+#> 
 #>   ini({
 #>     lka <- 0.45 ; label("Absorption rate (Ka)")
 #>     lcl <- 1 ; label("Clearance (CL)")
@@ -57,7 +66,7 @@ modellib(name = "PK_1cmt")
 #>     Cc ~ prop(propSd)
 #>   })
 #> }
-#> <environment: 0x5641c29bbf00>
+#> <environment: 0x562dcf5ae670>
 modellib(name = "PK_1cmt", eta = c("ka", "vc"), reserr = "addSd")
 #>  
 #>  
@@ -112,6 +121,10 @@ modellib(name = "PK_1cmt", eta = c("ka", "vc"), reserr = "addSd")
 #> 
 #>  ── Model (Normalized Syntax): ── 
 #> function() {
+#>     compartmentData <- list(depot = list(analyte = "drug", units = NA_character_, 
+#>         specimen = "administration site", verified = FALSE), 
+#>         central = list(analyte = "drug", units = NA_character_, 
+#>             specimen = "plasma", verified = FALSE))
 #>     description <- "One compartment PK model with linear clearance"
 #>     reference <- "nlmixr2lib template"
 #>     units <- list(time = "time_unit", dosing = "dose_unit", concentration = "conc_unit/vol_unit")
@@ -154,6 +167,10 @@ modellib(name = "PK_1cmt", reserr = "addSd")
 #> 2                  2          central TRUE FALSE          2
 #>  ── Model (Normalized Syntax): ── 
 #> function() {
+#>     compartmentData <- list(depot = list(analyte = "drug", units = NA_character_, 
+#>         specimen = "administration site", verified = FALSE), 
+#>         central = list(analyte = "drug", units = NA_character_, 
+#>             specimen = "plasma", verified = FALSE))
 #>     description <- "One compartment PK model with linear clearance"
 #>     reference <- "nlmixr2lib template"
 #>     units <- list(time = "time_unit", dosing = "dose_unit", concentration = "conc_unit/vol_unit")

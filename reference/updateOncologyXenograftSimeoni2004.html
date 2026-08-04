@@ -1471,6 +1471,13 @@ effect and transit rate (as used in the model block)</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 6                  6   damaged_cells5</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ── <span style="font-weight: bold;">Model (Normalized Syntax):</span> ── </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> function() {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     compartmentData &lt;- list(cycling_cells = list(analyte = "tumor cells", </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         units = NA_character_, specimen = "tumor", verified = FALSE), </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         damaged_cells1 = list(analyte = "dead tumor cells", units = NA_character_, </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             specimen = "tumor", verified = FALSE), damaged_cells2 = list(analyte = "dead tumor cells", </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             units = NA_character_, specimen = "tumor", verified = FALSE), </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         damaged_cells3 = list(analyte = "dead tumor cells", units = NA_character_, </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             specimen = "tumor", verified = FALSE))</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     depends &lt;- c("Cc", "tumor_vol0")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     description &lt;- "Oncology tumor growth model in xenograft models"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     reference &lt;- "Monica Simeoni, Paolo Magni, Cristiano Cammia, Giuseppe De Nicolao, Valter Croci, Enrico Pesenti, Massimiliano Germani, Italo Poggesi, Maurizio Rocchetti; Predictive Pharmacokinetic-Pharmacodynamic Modeling of Tumor Growth Kinetics in Xenograft Models after Administration of Anticancer Agents. Cancer Res 1 February 2004; 64 (3): 1094–1101. https://doi.org/10.1158/0008-5472.CAN-03-2524"</span>

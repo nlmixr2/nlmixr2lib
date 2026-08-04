@@ -1833,6 +1833,22 @@ and elimination”</td>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;  ── Model (Normalized Syntax): ── </span></span>
 <span><span class="co">#&gt; function() {</span></span>
+<span><span class="co">#&gt;     compartmentData &lt;- list(central = list(analyte = "pembrolizumab", </span></span>
+<span><span class="co">#&gt;         units = "mg", specimen = "plasma", verified = FALSE), </span></span>
+<span><span class="co">#&gt;         peripheral1 = list(analyte = "pembrolizumab", units = "mg", </span></span>
+<span><span class="co">#&gt;             specimen = "plasma", verified = FALSE), tumor_vs = list(analyte = "pembrolizumab", </span></span>
+<span><span class="co">#&gt;             units = "mg", specimen = "tumor", verified = FALSE), </span></span>
+<span><span class="co">#&gt;         tumor_es_ub = list(analyte = "pembrolizumab", units = "mg", </span></span>
+<span><span class="co">#&gt;             specimen = "tumor", verified = FALSE), tumor_es_b = list(analyte = "pembrolizumab", </span></span>
+<span><span class="co">#&gt;             units = "mg", specimen = "tumor", verified = FALSE), </span></span>
+<span><span class="co">#&gt;         tumor_is = list(analyte = "pembrolizumab", units = "mg", </span></span>
+<span><span class="co">#&gt;             specimen = "tumor", verified = FALSE), complex_blood = list(analyte = "pembrolizumab-PD-1 complex", </span></span>
+<span><span class="co">#&gt;             units = "mg", specimen = "plasma", verified = FALSE), </span></span>
+<span><span class="co">#&gt;         complex_tumor = list(analyte = "pembrolizumab-PD-1 complex", </span></span>
+<span><span class="co">#&gt;             units = "mg", specimen = "tumor", verified = FALSE), </span></span>
+<span><span class="co">#&gt;         target_tumor = list(analyte = "PD-1", units = "mg", specimen = "tumor", </span></span>
+<span><span class="co">#&gt;             verified = FALSE), tumor_vol = list(analyte = "none", </span></span>
+<span><span class="co">#&gt;             units = "mg", specimen = "tumor", verified = FALSE))</span></span>
 <span><span class="co">#&gt;     covariateData &lt;- list()</span></span>
 <span><span class="co">#&gt;     description &lt;- "QSP / mini-PBPK. Translational semi-mechanistic PK/PD/TGI model for the anti-PD-1 monoclonal antibody pembrolizumab in advanced melanoma. Couples a two-compartment plasma PK (parallel linear + Michaelis-Menten clearance, human PK substituted from Elassaiss-Schaap 2017 KEYNOTE-001) to a Shah-Betts (2012) physiologic tumor tissue compartment (vascular, endosomal, interstitial sub-spaces with FcRn recycling), mechanistic pembrolizumab-PD-1 binding in both blood and tumor, an indirect-response positive feedback that upregulates tumor PD-1 expression when the complex forms, and a Simeoni-type tumor-growth model in which the antitumor effect is a power function of the tumor receptor occupancy. Mouse-derived parameter estimates plus three human melanoma growth-rate scenarios (slow/medium/fast) and two kill-rate scaling options (allometric / growth-proportional) are tabulated in Lindauer 2017 Table 1 and Table S3; the default human parameterisation here is medium growth with allometric kill-rate scaling (the central reference scenario)."</span></span>
 <span><span class="co">#&gt;     paper_specific_compartments &lt;- c("tumor_vs", "tumor_is", </span></span>

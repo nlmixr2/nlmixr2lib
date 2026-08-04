@@ -187,6 +187,22 @@ mod
 #> 
 #>  ── Model (Normalized Syntax): ── 
 #> function() {
+#>     compartmentData <- list(central = list(analyte = "pembrolizumab", 
+#>         units = "mg", specimen = "plasma", verified = FALSE), 
+#>         peripheral1 = list(analyte = "pembrolizumab", units = "mg", 
+#>             specimen = "plasma", verified = FALSE), tumor_vs = list(analyte = "pembrolizumab", 
+#>             units = "mg", specimen = "tumor", verified = FALSE), 
+#>         tumor_es_ub = list(analyte = "pembrolizumab", units = "mg", 
+#>             specimen = "tumor", verified = FALSE), tumor_es_b = list(analyte = "pembrolizumab", 
+#>             units = "mg", specimen = "tumor", verified = FALSE), 
+#>         tumor_is = list(analyte = "pembrolizumab", units = "mg", 
+#>             specimen = "tumor", verified = FALSE), complex_blood = list(analyte = "pembrolizumab-PD-1 complex", 
+#>             units = "mg", specimen = "plasma", verified = FALSE), 
+#>         complex_tumor = list(analyte = "pembrolizumab-PD-1 complex", 
+#>             units = "mg", specimen = "tumor", verified = FALSE), 
+#>         target_tumor = list(analyte = "PD-1", units = "mg", specimen = "tumor", 
+#>             verified = FALSE), tumor_vol = list(analyte = "none", 
+#>             units = "mg", specimen = "tumor", verified = FALSE))
 #>     covariateData <- list()
 #>     description <- "QSP / mini-PBPK. Translational semi-mechanistic PK/PD/TGI model for the anti-PD-1 monoclonal antibody pembrolizumab in advanced melanoma. Couples a two-compartment plasma PK (parallel linear + Michaelis-Menten clearance, human PK substituted from Elassaiss-Schaap 2017 KEYNOTE-001) to a Shah-Betts (2012) physiologic tumor tissue compartment (vascular, endosomal, interstitial sub-spaces with FcRn recycling), mechanistic pembrolizumab-PD-1 binding in both blood and tumor, an indirect-response positive feedback that upregulates tumor PD-1 expression when the complex forms, and a Simeoni-type tumor-growth model in which the antitumor effect is a power function of the tumor receptor occupancy. Mouse-derived parameter estimates plus three human melanoma growth-rate scenarios (slow/medium/fast) and two kill-rate scaling options (allometric / growth-proportional) are tabulated in Lindauer 2017 Table 1 and Table S3; the default human parameterisation here is medium growth with allometric kill-rate scaling (the central reference scenario)."
 #>     paper_specific_compartments <- c("tumor_vs", "tumor_is", 
