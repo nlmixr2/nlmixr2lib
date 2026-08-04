@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Chandasana 2024b abacavir, dolutegravir and lamivudine ([doi:10.1007/s40121-024-01008-y](https://doi.org/10.1007/s40121-024-01008-y)) - children with HIV-1 weighing 6 to 40 kg receiving the abacavir/dolutegravir/lamivudine fixed-dose combination (IMPAACT 2019).
+
 - Add Kuroda 2023 cephalothin ([doi:10.1294/jes.34.111](https://doi.org/10.1294/jes.34.111)) - Thoroughbred horses given intramuscular and intravenous doses.
 
 - Add Zhang 2024 sertraline ([doi:10.1016/j.heliyon.2024.e25231](https://doi.org/10.1016/j.heliyon.2024.e25231)) - Chinese inpatients with psychiatric disorders, aged 11-79 years.

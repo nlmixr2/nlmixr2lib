@@ -44,6 +44,8 @@ navbar:
         href: articles/Viberg_2012_AZD6088_rat.html
       - text: "Abacavir (Archary 2019)"
         href: articles/Archary_2019_abacavir.html
+      - text: "Abacavir (Chandasana 2024b)"
+        href: articles/Chandasana_2024_abacavir_dolutegravir_lamivudine_pediatric.html
       - text: "Abacavir (Jullien 2005)"
         href: articles/Jullien_2005_abacavir.html
       - text: "Abacavir (Tikiso 2021)"
@@ -678,6 +680,8 @@ navbar:
         href: articles/Rietveld_2025_docetaxel.html
       - text: "Dolutegravir (Chandasana 2024)"
         href: articles/Chandasana_2024_dolutegravir_lamivudine.html
+      - text: "Dolutegravir (Chandasana 2024b)"
+        href: articles/Chandasana_2024_abacavir_dolutegravir_lamivudine_pediatric.html
       - text: "Dolutegravir (Zhang 2015)"
         href: articles/Zhang_2015_dolutegravir.html
       - text: "Domagrozumab (Wojciechowski 2022)"
@@ -1248,6 +1252,8 @@ navbar:
         href: articles/Bouazza_2011_lamivudine.html
       - text: "Lamivudine (Chandasana 2024)"
         href: articles/Chandasana_2024_dolutegravir_lamivudine.html
+      - text: "Lamivudine (Chandasana 2024b)"
+        href: articles/Chandasana_2024_abacavir_dolutegravir_lamivudine_pediatric.html
       - text: "Lamivudine (Moore 1999)"
         href: articles/Moore_1999_lamivudine.html
       - text: "Lamotrigine (He 2012)"
@@ -2936,6 +2942,7 @@ articles:
   - articles/Chakraborty_2012_canakinumab
   - articles/Chan_2008_maraviroc
   - articles/Chan_2023_nirmatrelvir
+  - articles/Chandasana_2024_abacavir_dolutegravir_lamivudine_pediatric
   - articles/Chandasana_2024_dolutegravir_lamivudine
   - articles/Chang_2011_PF04455242_prolactin
   - articles/Charles_2007_tafenoquine
