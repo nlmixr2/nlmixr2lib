@@ -2026,6 +2026,8 @@ navbar:
         href: articles/Yang_2017_remifentanil.html
       - text: "Respiratory physiology (Mann 2022)"
         href: articles/Laffont_2025_opioid_overdose_reversal_simulation.html
+      - text: "Rezafungin (Roepcke 2023)"
+        href: articles/Roepcke_2023_rezafungin.html
       - text: "Rfviii rat (VargasChristensen 2019)"
         href: articles/VargasChristensen_2019_rfviii_rat.html
       - text: "Rfxiii cyno (Dodds 2005)"
@@ -3653,6 +3655,7 @@ articles:
   - articles/Rodjun_2023_colistin_sitafloxacin
   - articles/Rodrigues_2017_oxcarbazepine
   - articles/Roepcke_2018_tak_079
+  - articles/Roepcke_2023_rezafungin
   - articles/Rosario_2008_maraviroc
   - articles/Rosario_2015_vedolizumab
   - articles/Rose_2016_follitropin_delta
