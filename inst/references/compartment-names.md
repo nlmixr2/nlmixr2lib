@@ -906,6 +906,21 @@ PBPK organ-vascular concentration compartments used by membrane-limited PBPK ext
   - `vp_ot` -- deprecated.
 - **Example models:** `Parhiz_2024_mRNA_LNP.R`, `Shah_2012_mAb_PBPK.R`.
 
+### vp_subcutaneous (**canonical PBPK subcutaneous-injection-site vascular concentration**)
+- **Type:** compartment
+- **Role:** Vascular concentration in the subcutaneous injection-site compartment
+  of a whole-body PBPK model that bifurcates skin into a small
+  dose-receiving subcutaneous depot plus a "rest of skin" compartment. The
+  companion sub-compartments follow the standard membrane-limited pattern
+  (`bc_subcutaneous`, `eu_subcutaneous`, `eb_subcutaneous`,
+  `fr_subcutaneous`, `is_subcutaneous`); the SC dose is administered into
+  `is_subcutaneous` (the interstitial space), not into a `depot`.
+  Distinct from the canonical `depot`, which is an empirical
+  first-order absorption compartment with no physiological volume or flow.
+- **Source aliases:**
+  - `SC` -- Kumar 2024 Figure 1 / Table 1.
+- **Example models:** `Kumar_2024_mAb_popPBPK_sc.R`.
+
 ---
 
 ## Whole-body blood / lymph compartments
